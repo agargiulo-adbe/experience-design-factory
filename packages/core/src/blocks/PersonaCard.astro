@@ -1,0 +1,59 @@
+---
+interface Props {
+  name: string;
+  age?: number;
+  location?: string;
+  title: string;
+  story: string;
+  variant?: 'primary' | 'secondary';
+}
+
+const { name, age, location, title, story, variant = 'primary' } = Astro.props;
+const isPrimary = variant === 'primary';
+---
+
+<article class:list={[
+  "py-16 md:py-24",
+  isPrimary ? "bg-[var(--surface-primary)]" : "bg-[var(--surface-secondary)]"
+]} data-block="persona" data-variant={variant}>
+  <div class="max-w-5xl mx-auto px-6 md:px-12">
+    <div class="grid md:grid-cols-[1fr_2fr] gap-10 md:gap-16 items-start">
+      <!-- Avatar / visual -->
+      <div class="relative">
+        <div class:list={[
+          "aspect-[3/4] rounded-sm overflow-hidden",
+          isPrimary ? "bg-[var(--surface-secondary)]" : "bg-[var(--surface-tertiary)]"
+        ]}>
+          <slot name="avatar" />
+          <div class="absolute inset-0 flex items-end p-6 bg-gradient-to-t from-black/30 to-transparent">
+            <div>
+              <p class="text-xl font-[family-name:var(--font-display)] font-light text-white">
+                {name}
+              </p>
+              {(age || location) && (
+                <p class="text-sm text-white/80 mt-0.5">
+                  {[age && `${age} anni`, location].filter(Boolean).join(' · ')}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Story -->
+      <div class="space-y-6">
+        <div>
+          <p class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--accent-primary)] mb-3">
+            {isPrimary ? 'Nuova generazione' : 'Cliente storica'}
+          </p>
+          <h3 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2vw+0.5rem,2.25rem)] font-light leading-[1.2] text-[var(--ink-primary)]">
+            {title}
+          </h3>
+        </div>
+        <div class="text-[var(--ink-secondary)] leading-relaxed space-y-4 max-w-prose">
+          <Fragment set:html={story} />
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,108 @@
+---
+interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  items: NavItem[];
+  currentPath: string;
+  base: string;
+}
+
+const { items, currentPath, base } = Astro.props;
+
+function isActive(href: string): boolean {
+  const fullHref = href === '/' ? base : `${base}${href}`;
+  if (href === '/') return currentPath === base || currentPath === `${base}/`;
+  return currentPath.startsWith(fullHref);
+}
+---
+
+<header class="sticky top-0 z-50 bg-[var(--surface-primary)]/95 backdrop-blur-sm border-b border-[var(--line-subtle)]" role="banner">
+  <nav class="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between" aria-label="Navigazione principale">
+    <!-- Logo / Brand -->
+    <a href={base} class="flex items-center gap-3 no-underline group">
+      <span class="font-[family-name:var(--font-display)] text-lg font-light text-[var(--ink-primary)] tracking-tight group-hover:text-[var(--accent-primary)] transition-colors">
+        Generazioni
+      </span>
+    </a>
+
+    <!-- Desktop nav -->
+    <ul class="hidden md:flex items-center gap-1" role="list">
+      {items.map((item) => {
+        const href = item.href === '/' ? base : `${base}${item.href}`;
+        const active = isActive(item.href);
+        return (
+          <li>
+            <a
+              href={href}
+              class:list={[
+                "px-3 py-2 text-sm transition-colors duration-[var(--duration-fast)] no-underline rounded-sm",
+                active
+                  ? "text-[var(--accent-primary)] font-medium"
+                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]"
+              ]}
+              aria-current={active ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <!-- Mobile menu button -->
+    <button
+      class="md:hidden p-2 -mr-2 text-[var(--ink-primary)] hover:text-[var(--accent-primary)] transition-colors"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="Apri menu di navigazione"
+      id="menu-toggle"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="4" y1="6" x2="20" y2="6" class="menu-line-1" />
+        <line x1="4" y1="12" x2="20" y2="12" class="menu-line-2" />
+        <line x1="4" y1="18" x2="20" y2="18" class="menu-line-3" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-nav" class="md:hidden hidden bg-[var(--surface-primary)] border-b border-[var(--line-subtle)]">
+    <ul class="px-6 py-4 space-y-1" role="list">
+      {items.map((item) => {
+        const href = item.href === '/' ? base : `${base}${item.href}`;
+        const active = isActive(item.href);
+        return (
+          <li>
+            <a
+              href={href}
+              class:list={[
+                "block px-3 py-2.5 text-sm rounded-sm transition-colors no-underline",
+                active
+                  ? "text-[var(--accent-primary)] font-medium bg-[var(--surface-secondary)]"
+                  : "text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] hover:bg-[var(--surface-secondary)]"
+              ]}
+              aria-current={active ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const nav = document.getElementById('mobile-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('hidden');
+    });
+  }
+</script>

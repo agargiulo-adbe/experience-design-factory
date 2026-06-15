@@ -1,0 +1,66 @@
+---
+interface Props {
+  title: string;
+  subtitle: string;
+  label?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  variant?: 'full' | 'split' | 'centered';
+}
+
+const { title, subtitle, label, ctaLabel, ctaHref, variant = 'full' } = Astro.props;
+---
+
+<section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-[var(--surface-primary)]" data-block="hero">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[var(--surface-primary)] opacity-60 pointer-events-none" aria-hidden="true"></div>
+  <div class="relative z-10 max-w-5xl mx-auto px-6 md:px-12 py-24 md:py-32 text-center">
+    {label && (
+      <p class="text-xs md:text-sm font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)] mb-6 md:mb-8 animate-fade-up" style="animation-delay: 0ms;">
+        {label}
+      </p>
+    )}
+    <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,5rem)] font-light leading-[1.1] tracking-tight text-[var(--ink-primary)] mb-6 md:mb-8 animate-fade-up" style="animation-delay: 100ms;">
+      {title}
+    </h1>
+    <p class="text-[clamp(1.125rem,1vw+0.875rem,1.5rem)] text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 md:mb-12 animate-fade-up" style="animation-delay: 200ms;">
+      {subtitle}
+    </p>
+    {ctaLabel && ctaHref && (
+      <a
+        href={ctaHref}
+        class="inline-flex items-center gap-2 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-[var(--ink-primary)] text-[var(--ink-primary)] hover:bg-[var(--ink-primary)] hover:text-[var(--ink-inverse)] transition-colors duration-[var(--duration-normal)] focus-visible:outline-2 focus-visible:outline-[var(--focus-ring)] focus-visible:outline-offset-2 animate-fade-up"
+        style="animation-delay: 300ms;"
+      >
+        {ctaLabel}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" class="transition-transform duration-[var(--duration-fast)] group-hover:translate-x-0.5">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    )}
+  </div>
+</section>
+
+<style>
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    opacity: 0;
+    animation: fade-up 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up {
+      opacity: 1;
+      animation: none;
+    }
+  }
+</style>

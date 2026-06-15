@@ -1,0 +1,47 @@
+---
+interface Props {
+  title: string;
+  body: string;
+  eyebrow?: string;
+  mediaPosition?: 'left' | 'right' | 'above' | 'below';
+  variant?: 'default' | 'wide' | 'narrow';
+}
+
+const { title, body, eyebrow, mediaPosition = 'right', variant = 'default' } = Astro.props;
+const isHorizontal = mediaPosition === 'left' || mediaPosition === 'right';
+const isReversed = mediaPosition === 'left';
+---
+
+<section class="py-20 md:py-32 bg-[var(--surface-primary)]" data-block="narrative">
+  <div class:list={[
+    "max-w-7xl mx-auto px-6 md:px-12",
+    isHorizontal ? "grid md:grid-cols-2 gap-12 md:gap-20 items-center" : "max-w-3xl",
+    isReversed && "md:[direction:rtl] md:[&>*]:[direction:ltr]"
+  ]}>
+    <div class="space-y-6">
+      {eyebrow && (
+        <p class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--accent-primary)]">
+          {eyebrow}
+        </p>
+      )}
+      <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)]">
+        {title}
+      </h2>
+      <div class="text-[var(--ink-secondary)] leading-relaxed space-y-4 max-w-prose">
+        <Fragment set:html={body} />
+      </div>
+    </div>
+    {isHorizontal && (
+      <div class="relative aspect-[4/5] bg-[var(--surface-secondary)] rounded-sm overflow-hidden">
+        <slot name="media" />
+        <div class="absolute inset-0 flex items-center justify-center text-[var(--ink-tertiary)]">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="m21 15-5-5L5 21" />
+          </svg>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
