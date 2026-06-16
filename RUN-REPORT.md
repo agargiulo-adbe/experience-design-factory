@@ -1,6 +1,39 @@
 # Run Report — Experience Design Factory
 
-## Status: Pre-meeting CMO (lunedì) — Blocco 1 (verifica Acquisizione) ✅ · Blocco 2 (restyle leggero 3 fasi) ✅ in revisione · Blocco 3 (asset finali Acquisizione) da fare
+## Status: Pre-meeting CMO (lunedì) — Blocco 1 ✅ · Blocco 2 ✅ · Blocco 3 (asset finali Acquisizione) ✅ con 1 slot FLAGGATO (ritratto Francesca) — in revisione
+
+---
+
+## Pre-meeting CMO — Blocco 3: asset finali di Acquisizione
+
+### ✅ InstagramPost credibile e curato (commit `feat(deck)`)
+Problema: la sorgente `whitney-post` (1920×2400, **4:5**) era forzata in una striscia 9/19 →
+ritaglio sgradevole (testa/piedi tagliati) = il "povero/tagliato". Fix **component-only** (nessun
+asset toccato): area immagine ora **4:5** → la sorgente si vede INTERA; chrome IG curato (pill,
+avatar, handle + "Sponsorizzato", azioni, like, caption, commenti); phone width-driven (`max-w-280`)
+→ altezza costante, **sta nella safe-area senza clipping**. `audit:deck` **0 FAIL** ai 3 viewport
+(c/j/k verdi). L'immagine è una shot di prodotto **senza volto** (sorgente ritagliata al collo) →
+nessun problema di identità/diritti, coerente col mondo Max Mara (la borsa è l'eroe).
+
+### ✅ Ritratto Giulia — verificato OK ai 3 viewport
+Grading editoriale (fondo navy), ben inquadrato nel card 4:5, volto protetto (`noText`), legge
+~28–32 anni → **entro ±5 dai 29 dichiarati**. Nessun intervento necessario.
+
+### 🚩 Ritratto Francesca — FLAGGATO, STOP sullo slot (NON un "abbastanza buono")
+Grading e inquadratura sono a posto, **ma il soggetto legge ~65–70 anni contro i 52 dichiarati**
+→ **fallisce il criterio #1 (age fidelity ±5 anni)** di ~15 anni. È esattamente il failure-mode che
+abbiamo deciso di NON razionalizzare. Come da regola Blocco 3 ("immagine borderline → segnala e
+FERMATI sullo slot"), **non l'ho sostituita con un'altra faccia non verificata né lasciata passare
+come finale**: resta com'è ORA in produzione (invariata) in attesa di tua decisione.
+Opzioni: (a) tenerla come "cliente storica" (accettazione esplicita della deroga), (b) ritentare
+`assets:build` con query mirata ~50–55 anni — **con il caveat roulette** (la pipeline prende la
+risoluzione più alta, non la più pertinente; 4 query precedenti hanno mancato), (c) altra strada
+che preferisci. **Non procedo da solo su questo slot.**
+
+### Gate Blocco 3
+- `audit:deck` **0 FAIL** ai 3 viewport (frontstage/IG inclusa). `pnpm build` + `pnpm typecheck` verdi.
+- **`assets:build` NON rilanciato**: nessuno slot toccato (il fix IG è solo di layout) → `provenance.json` invariato.
+- Redeploy su Pages (ship del fix IG; Francesca invariata). Screenshot di conferma: IG 1920/1280, Giulia 1920/1280, Francesca 1920/1280.
 
 ---
 
