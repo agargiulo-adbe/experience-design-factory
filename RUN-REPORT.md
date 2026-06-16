@@ -1,6 +1,46 @@
 # Run Report — Experience Design Factory
 
-## Status: Pre-meeting CMO (lunedì) — Blocco 1 ✅ · Blocco 2 ✅ · Blocco 3 (asset finali Acquisizione) ✅ con 1 slot FLAGGATO (ritratto Francesca) — in revisione
+## Status: Strada B — ENGAGEMENT portata a KEYNOTE slide-grade + immagini reali ✅ — in revisione (poi Conversione & Loyalty su questo modello)
+
+---
+
+## Strada B — Engagement → keynote slide-grade (modello per Conversione/Loyalty)
+
+**Engagement live (deck):** https://agargiulo-adbe.github.io/experience-design-factory/engagement/
+**Francesca:** sbloccata — tenuta com'è in produzione (deroga esplicita "cliente storica", età
+non vincolante). Nessun nuovo tentativo di query. Immagine byte-identical, deploy pulito.
+
+**Unità & commit:**
+| Unità | Cosa | Commit |
+|---|---|---|
+| Engine | handler deck per `[data-personalize]` (prepareSlide/playSlide), no-op su Acquisizione | `feat(core)` |
+| Asset | slot `engagement-editoriale` — cappotto cammello still-life (niente volto) | `feat(assets)` |
+| Pagina + audit | Engagement = DeckContainer/Slide (6 slide); deck-audit multi-rotta | `feat(engagement)` |
+
+**Conversione (Step→deck):**
+- 6 slide mappate dagli step: apertura (firma **filo** CoBrandSignature) · personalize (tile
+  deck-animate) · frontstage (**mockup con FOTO REALE** del cappotto, non più icona) · impulse
+  (pulse) · backstage (prodotti Adobe nel **"Scopri come" inline**, pattern Acquisizione) · payoff
+  (`data-display` +15% + CTA "Continua · Conversione"). Copy riusato dagli step; nessun copy nuovo
+  (lo statement backstage è lift dei claim esistenti). Regola d'oro rispettata: corretto il LAYOUT,
+  mai tagliato il testo (tile compresse, card impulse `justify-between`, statement come-pattern).
+
+**Immagini — postura di rifiuto applicata:** per `engagement-editoriale` ho **scartato 2 candidate
+borderline** prima di accettare la terza: (1) modella street-night fuori registro + volto nuovo,
+(2) tweed rosso fuori palette. Accettata: cappotto cammello in interno elegante, **senza volto**,
+in palette, registro quiet-luxury. Sfondi atmosferici = riuso dei textile già generati (no nuovi slot).
+
+**Audit a frame fisso:** `deck-audit.ts` ora gira su **più rotte** (acquisizione + engagement);
+`audit:deck engagement` filtra una rotta. NN/NN automatico dal controller (6 slide → "0X / 06").
+
+**Gate Strada B/Engagement:**
+- `audit:deck` → **0 FAIL** su ENTRAMBE le rotte a 1920×1080 / 1440×900 / 1280×800, "Scopri come"
+  testato da **espanso inline**. Acquisizione **non regredita** (verde dopo l'aggiunta del handler e dei token).
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi · `assets:build` rilanciato · `provenance.json` aggiornato.
+- Redeploy su Pages verde; **Engagement live no-404** (deck `data-deck`/`deck-progress`, asset incl. `engagement-editoriale` tutti 200); Acquisizione 200.
+- Screenshot ai 3 viewport: apertura (filo), frontstage (foto reale del capo), "Scopri come" espanso inline, payoff. + screenshot prod.
+
+➡️ **STOP per revisione.** Conversione e Loyalty NON toccate: ricalcheranno questo modello dopo conferma.
 
 ---
 
