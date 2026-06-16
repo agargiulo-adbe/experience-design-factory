@@ -1,7 +1,15 @@
 ---
 /**
  * Slide — a single full-screen keynote slide inside a DeckContainer.
- * Fills the 16:9 frame with a ~8% safe area. One idea per slide.
+ *
+ * Safe-area guarantee: content lives inside the viewport minus ~8% margins,
+ * vertically centred, and is height-constrained (max-h-full + min-h-0) so it
+ * never pushes past the safe box or clips the title at the top. If a slide's
+ * content doesn't fit, SPLIT it into two slides — don't compress.
+ *
+ * Slots:
+ *  - default  → the slide content (centred within the safe area)
+ *  - backdrop → full-bleed layers (atmosphere image, scrim) behind the content
  */
 interface Props {
   id?: string;
@@ -18,23 +26,24 @@ const bgMap = {
   brand: 'bg-[var(--accent-primary)]',
 };
 
-const alignMap = {
-  center: 'items-center justify-center text-center',
-  left: 'items-start justify-center text-left',
-  split: 'items-center justify-center',
+const innerAlign = {
+  center: 'items-center text-center',
+  left: 'items-start text-left',
+  split: 'items-center',
 };
 ---
 
 <section
   id={id}
   data-slide
-  class:list={[
-    "slide w-full h-full flex flex-col overflow-hidden",
-    "px-[8vw] py-[8vh]",
-    bgMap[bg],
-    alignMap[align],
-    className,
-  ]}
+  class:list={["slide relative w-full h-[100dvh] overflow-hidden", bgMap[bg], className]}
 >
-  <slot />
+  <slot name="backdrop" />
+  <!-- Safe area: ~8% margins on every edge -->
+  <div class="absolute inset-0 px-[8vw] py-[8vh] flex">
+    <!-- Centred, height-constrained content box -->
+    <div class:list={["slide-inner m-auto w-full max-h-full min-h-0 flex flex-col", innerAlign[align]]}>
+      <slot />
+    </div>
+  </div>
 </section>

@@ -3,228 +3,192 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import InstagramPost from '@edf/core/blocks/InstagramPost.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 
-// Data-lake dots: many, scattered far, converging cinematically to centre.
-const dots = Array.from({ length: 64 }).map((_, i) => {
-  const angle = (i / 64) * Math.PI * 2 + (i % 3);
-  const radius = 140 + Math.random() * 260;
+// Data-lake dots — scattered, converging to centre (kept compact to fit the frame).
+const dots = Array.from({ length: 56 }).map((_, i) => {
+  const angle = (i / 56) * Math.PI * 2 + (i % 3);
+  const radius = 120 + Math.random() * 200;
   return {
     dx: Math.round(Math.cos(angle) * radius),
-    dy: Math.round(Math.sin(angle) * radius * 0.62),
+    dy: Math.round(Math.sin(angle) * radius * 0.55),
   };
 });
-
-const products = [
-  { code: 'Gs', name: 'GenStudio', claim: 'Creatività on-brand, a scala' },
-  { code: 'Ff', name: 'Adobe Firefly', claim: 'Immagini AI sicure per il commerciale' },
-  { code: 'RC', name: 'Real-Time CDP', claim: 'Audience lookalike, nuove clienti' },
-  { code: 'CJ', name: 'Customer Journey Analytics', claim: 'Quali touchpoint convertono' },
-  { code: 'Mx', name: 'Mix Modeler', claim: 'Budget dove funziona' },
-];
 ---
-<BaseLayout title="Acquisizione" description="Ringiovanire il target: come attrarre una nuova generazione di clienti Max Mara.">
+<BaseLayout title="Acquisizione" description="Ringiovanire il target: come Max Mara incontra Giulia, la nuova generazione di clienti.">
   <DeckContainer nextHref={href(base, '/engagement')}>
 
     <!-- ── SLIDE 1: Apertura ─────────────────────────────────────── -->
     <Slide id="slide-apertura" bg="secondary" align="center">
-      <!-- Atmosphere / hero (subtle, behind the title) -->
-      <MediaSlot {...mediaProps('acquisizione-atmosfera')} fill loading="eager" class="z-0 opacity-40" />
-      <div class="absolute inset-0 z-0 bg-[var(--surface-secondary)]/35" aria-hidden="true"></div>
-      <div class="relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-        <p class="slide-eyebrow text-[var(--accent-primary)] mb-8" data-reveal>Fase 1 — Acquisizione</p>
-        <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-6" style="font-size: clamp(4rem, 9vw, 9rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">01</p>
-        <h1 class="slide-title text-[var(--ink-primary)] mb-10" data-reveal data-reveal-delay="0.2">
-          Ringiovanire il target
-        </h1>
-        <p class="slide-lead text-[var(--ink-secondary)] max-w-3xl" data-reveal data-reveal-delay="0.35">
-          Tre quarti della spesa luxury sarà guidata da Millennial e Gen Z. Intercettarle oggi è il business di domani.
-        </p>
-      </div>
+      <MediaSlot slot="backdrop" {...mediaProps('acquisizione-atmosfera')} fill loading="eager" class="opacity-30" />
+      <div slot="backdrop" class="absolute inset-0 bg-[var(--surface-secondary)]/55" aria-hidden="true"></div>
+
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-6" data-reveal>Fase 1 · Acquisizione</p>
+      <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-4" style="font-size: clamp(4rem, 9vw, 9rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">01</p>
+      <h1 class="slide-title text-[var(--ink-primary)] mb-8" data-reveal data-reveal-delay="0.2">Ringiovanire il target</h1>
+      <p class="slide-lead text-[var(--ink-secondary)] max-w-3xl" data-reveal data-reveal-delay="0.32">
+        Entro il 2025 tre quarti della spesa nel lusso verrà da Millennial e Gen Z. Conquistarli oggi non è una campagna: è costruire il brand di domani.
+      </p>
     </Slide>
 
-    <!-- ── SLIDE 2: Data lake → profili ──────────────────────────── -->
-    <Slide id="slide-datalake" bg="primary" align="center">
-      <div class="w-full h-full flex flex-col items-center justify-center">
-        <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>Il problema</p>
-        <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
-          Dal data lake ai profili azionabili
-        </h2>
-
-        <!-- Big convergence visual (fills the frame) -->
-        <div class="relative w-full max-w-[1100px] flex-1 min-h-0 my-2" data-datalake>
-          {dots.map((d) => (
-            <div
-              class="data-dot absolute left-1/2 top-1/2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[var(--accent-primary)]"
-              data-dx={d.dx}
-              data-dy={d.dy}
-            />
-          ))}
-          <div class="absolute inset-0 flex items-center justify-center gap-10 md:gap-20">
-            <div class="profile-circle flex flex-col items-center gap-3">
-              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-lg">
-                <MediaSlot {...mediaProps('persona-giulia')} fill />
-              </div>
-              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-            </div>
-            <div class="profile-circle flex flex-col items-center gap-3">
-              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-lg">
-                <MediaSlot {...mediaProps('persona-francesca')} fill />
-              </div>
-              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
-            </div>
+    <!-- ── SLIDE 2: Giulia, il volto ─────────────────────────────── -->
+    <Slide id="slide-giulia" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[0.85fr_1fr] gap-10 md:gap-16 items-center">
+        <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.15">
+          <div class="relative h-full max-h-[70vh] aspect-[4/5] rounded-lg overflow-hidden shadow-xl bg-[var(--accent-primary)] mx-auto">
+            <MediaSlot {...mediaProps('persona-giulia')} fill loading="eager" />
           </div>
         </div>
-
-        <p class="slide-lead text-[var(--ink-tertiary)] max-w-3xl mt-2" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.2">
-          Real-Time CDP unifica dati frammentati in profili conosciuti.
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 3: Front stage — what she sees ──────────────────── -->
-    <Slide id="slide-frontstage" bg="primary" align="split">
-      <div class="w-full max-w-[1400px] mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-        <div class="text-left order-2 md:order-1">
-          <div class="flex items-center gap-3 mb-6" data-reveal>
-            <span class="w-4 h-4 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-            <span class="slide-eyebrow text-[var(--ink-tertiary)]">Ciò che vede la cliente</span>
-          </div>
-          <h2 class="slide-title text-[var(--ink-primary)] mb-8" style="font-size: clamp(2.5rem, 5vw, 5rem);" data-reveal data-reveal-delay="0.1">
-            Scopre Max Mara per la prima volta
-          </h2>
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>Una nuova generazione</p>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-7" style="font-size: clamp(2.5rem, 5vw, 4.5rem);" data-reveal data-reveal-delay="0.1">Giulia, 29 anni</h2>
           <p class="slide-lead text-[var(--ink-secondary)] max-w-xl" data-reveal data-reveal-delay="0.2">
-            Una ventottenne milanese vede una borsa Monogram tra i suoi feed. Il contenuto parla la sua lingua.
+            Milanese, occhio educato, niente ostentazione. Non conosce ancora Max Mara — ma il quiet luxury è già la sua lingua. È la cliente che il brand deve incontrare.
           </p>
         </div>
+      </div>
+    </Slide>
 
-        <!-- Larger, realistic phone mockup -->
-        <div class="order-1 md:order-2 flex justify-center" data-reveal data-reveal-delay="0.3">
-          <div class="relative w-[min(72vw,22rem)] aspect-[9/19] bg-[var(--surface-inverse)] rounded-[2.5rem] border-[6px] border-[var(--surface-inverse)] overflow-hidden shadow-2xl">
-            <div class="absolute top-0 inset-x-0 h-7 bg-[var(--surface-inverse)] flex items-center justify-center z-10">
-              <span class="w-24 h-5 bg-black/60 rounded-b-2xl"></span>
+    <!-- ── SLIDE 3: Il problema → profili ────────────────────────── -->
+    <Slide id="slide-datalake" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>Il punto di partenza</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2.1rem, 4vw, 3.5rem);" data-reveal data-reveal-delay="0.1">
+        Max Mara ha i dati. Non ancora le persone.
+      </h2>
+
+      <div class="relative w-full max-w-[1000px] flex-1 min-h-0 mx-auto my-2" data-datalake>
+        {dots.map((d) => (
+          <div class="data-dot absolute left-1/2 top-1/2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[var(--accent-primary)]" data-dx={d.dx} data-dy={d.dy} />
+        ))}
+        <div class="absolute inset-0 flex items-center justify-center gap-10 md:gap-16">
+          <div class="profile-circle flex flex-col items-center gap-3">
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-lg">
+              <MediaSlot {...mediaProps('persona-giulia')} fill />
             </div>
-            <div class="h-full bg-[var(--surface-primary)] pt-7 flex flex-col">
-              <!-- post header -->
-              <div class="flex items-center gap-2.5 px-3 py-2.5">
-                <span class="w-8 h-8 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-white text-[0.7rem] font-bold">MM</span>
-                <span class="text-sm font-semibold text-[var(--ink-primary)]">maxmara</span>
-                <span class="ml-auto text-[var(--ink-tertiary)]">···</span>
-              </div>
-              <!-- product image -->
-              <div class="relative flex-1 overflow-hidden bg-[var(--surface-secondary)]">
-                <MediaSlot {...mediaProps('monogram-post')} fill />
-              </div>
-              <!-- actions + caption -->
-              <div class="px-3 py-2.5">
-                <div class="flex items-center gap-4 mb-2 text-[var(--ink-primary)]">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/></svg>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-4-1L3 20l1.1-4.5a8.4 8.4 0 1 1 16.9-4z"/></svg>
-                </div>
-                <p class="text-[0.78rem] text-[var(--ink-primary)] leading-snug"><span class="font-semibold">maxmara</span> La nuova Monogram Collection ↗</p>
-              </div>
-            </div>
+            <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
           </div>
+          <div class="profile-circle flex flex-col items-center gap-3">
+            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-lg">
+              <MediaSlot {...mediaProps('persona-francesca')} fill />
+            </div>
+            <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="slide-lead text-[var(--ink-tertiary)] max-w-3xl mx-auto mt-2" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.2">
+        Oggi i dati vivono in un lago silenzioso, slegati. Real-Time CDP li ricompone in profili vivi: Giulia smette di essere un numero e diventa qualcuno da raggiungere.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 4: Front stage — la scoperta ────────────────────── -->
+    <Slide id="slide-frontstage" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left order-2 md:order-1">
+          <div class="flex items-center gap-3 mb-5" data-reveal>
+            <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+            <span class="slide-eyebrow text-[var(--ink-tertiary)]">Ciò che vede Giulia</span>
+          </div>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-7" style="font-size: clamp(2.5rem, 5vw, 4.5rem);" data-reveal data-reveal-delay="0.1">La incontra dove già vive</h2>
+          <p class="slide-lead text-[var(--ink-secondary)] max-w-xl" data-reveal data-reveal-delay="0.2">
+            Una borsa Monogram appare nel suo feed. Per Giulia non è pubblicità: è il suo mondo, la sua estetica, la sua lingua. Si ferma. Tocca.
+          </p>
+        </div>
+        <div class="order-1 md:order-2 h-full flex items-center justify-center" data-reveal data-reveal-delay="0.3">
+          <InstagramPost {...mediaProps('monogram-post')} />
         </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 4: Front→Back impulse (the aha) ─────────────────── -->
+    <!-- ── SLIDE 5: Front→back — l'aha ───────────────────────────── -->
     <Slide id="slide-impulse" bg="secondary" align="center">
-      <div class="w-full max-w-[1300px] mx-auto flex flex-col justify-center">
-        <h2 class="slide-title text-[var(--ink-primary)] mb-12 md:mb-16 text-center" style="font-size: clamp(2.25rem, 4.2vw, 3.75rem);" data-reveal>
-          Dietro ogni interazione, la piattaforma risponde
-        </h2>
+      <p class="slide-eyebrow text-[var(--ink-tertiary)] mb-5" data-reveal>Dietro le quinte</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-14 md:mb-16" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
+        Quel tocco non si perde
+      </h2>
 
-        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch" data-pulse-line>
-          <div class="bg-[var(--surface-primary)] rounded-md p-8 md:p-12 border border-[var(--line-subtle)] flex flex-col justify-center" data-reveal>
-            <div class="flex items-center gap-3 mb-4">
-              <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-              <span class="slide-eyebrow text-[var(--ink-tertiary)]">Front stage</span>
-            </div>
-            <p class="text-[clamp(1.4rem,2vw,2rem)] text-[var(--ink-primary)] font-medium leading-tight">La cliente clicca</p>
-            <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--ink-secondary)] mt-2">Scopre la borsa, visita il sito</p>
-          </div>
-
-          <div class="hidden md:flex items-center justify-center px-6">
-            <svg width="180" height="60" viewBox="0 0 180 60" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 0 30 L 150 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="166" cy="30" r="9" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-          <div class="flex md:hidden items-center justify-center py-1">
-            <svg width="60" height="50" viewBox="0 0 60 50" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 30 0 L 30 38" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="30" cy="44" r="6" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-
-          <div class="bg-[var(--surface-inverse)] rounded-md p-8 md:p-12 text-[var(--ink-inverse)] flex flex-col justify-center" data-reveal data-reveal-delay="0.3">
-            <div class="flex items-center gap-3 mb-4">
-              <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-              <span class="slide-eyebrow text-[var(--color-grigio-300)]">Back stage</span>
-            </div>
-            <p class="text-[clamp(1.4rem,2vw,2rem)] font-medium leading-tight">La piattaforma attiva</p>
-            <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--color-grigio-300)] mt-2">Riconosce, segmenta, personalizza</p>
-          </div>
+      <div class="relative w-full max-w-[1200px] mx-auto grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch" data-pulse-line>
+        <div class="bg-[var(--surface-primary)] rounded-lg p-9 md:p-12 border border-[var(--line-subtle)] flex flex-col justify-center" data-reveal>
+          <span class="slide-eyebrow text-[var(--ink-tertiary)] mb-3">Front</span>
+          <p class="text-[clamp(1.3rem,1.9vw,1.9rem)] text-[var(--ink-primary)] font-medium leading-tight">Giulia tocca</p>
+          <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--ink-secondary)] mt-1.5">scopre la borsa</p>
         </div>
+
+        <div class="hidden md:flex items-center justify-center px-6">
+          <svg width="180" height="60" viewBox="0 0 180 60" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 0 30 L 150 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="166" cy="30" r="9" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+        <div class="flex md:hidden items-center justify-center py-1">
+          <svg width="60" height="46" viewBox="0 0 60 46" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 30 0 L 30 34" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="30" cy="40" r="6" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+
+        <div class="bg-[var(--surface-inverse)] rounded-lg p-9 md:p-12 text-[var(--ink-inverse)] flex flex-col justify-center" data-reveal data-reveal-delay="0.3">
+          <span class="slide-eyebrow text-[var(--color-grigio-300)] mb-3">Back</span>
+          <p class="text-[clamp(1.3rem,1.9vw,1.9rem)] font-medium leading-tight">La piattaforma risponde</p>
+          <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--color-grigio-300)] mt-1.5">la riconosce e adatta tutto</p>
+        </div>
+      </div>
+
+      <p class="slide-lead text-[var(--ink-secondary)] max-w-3xl mx-auto mt-12" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.4">
+        Nell'istante in cui tocca, la piattaforma la riconosce come nuova visitatrice e ricompone l'esperienza intorno a lei, in tempo reale.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 6: Come — prodotti in contesto (non lista) ──────── -->
+    <Slide id="slide-come" bg="inverse" align="center">
+      <div class="flex items-center gap-3 mb-5" data-reveal>
+        <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+        <span class="slide-eyebrow text-[var(--color-grigio-300)]">Ciò che fa la piattaforma</span>
+      </div>
+      <h2 class="slide-title text-[var(--ink-inverse)] mb-12" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
+        Parlarle la sua lingua, a scala
+      </h2>
+
+      <div class="w-full max-w-4xl mx-auto flex flex-col gap-7 text-left" data-stagger="0.25">
+        <p class="text-[clamp(1.35rem,2vw,2rem)] text-[var(--ink-inverse)] leading-snug border-l-2 border-[var(--accent-secondary)] pl-6">
+          Contenuti on-brand alla velocità dei social — i team interni creano e adattano con <strong class="font-semibold text-[var(--accent-secondary)]">GenStudio</strong> e <strong class="font-semibold text-[var(--accent-secondary)]">Firefly</strong>, senza attendere l'agenzia.
+        </p>
+        <p class="text-[clamp(1.35rem,2vw,2rem)] text-[var(--ink-inverse)] leading-snug border-l-2 border-[var(--accent-secondary)] pl-6">
+          Altre clienti come lei, ovunque siano — <strong class="font-semibold text-[var(--accent-secondary)]">Real-Time CDP</strong> costruisce audience simili alle migliori.
+        </p>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 5: Back stage — 5 Adobe products one by one ─────── -->
-    <Slide id="slide-backstage" bg="inverse" align="center">
-      <div class="w-full max-w-[1200px] mx-auto">
-        <div class="flex items-center gap-3 mb-4" data-reveal>
-          <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-          <span class="slide-eyebrow text-[var(--color-grigio-300)]">Ciò che fa la piattaforma</span>
-        </div>
-        <h2 class="slide-title text-[var(--ink-inverse)] mb-10" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
-          Cinque prodotti, un unico flusso
-        </h2>
-
-        <div class="space-y-4 md:space-y-5" data-stagger="0.22">
-          {products.map((p) => (
-            <div class="flex items-center gap-5 md:gap-7 p-4 md:p-5 rounded-md border border-[var(--color-grigio-500)]/40 bg-[var(--color-grigio-500)]/10">
-              <div class="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-md bg-[var(--accent-secondary)]/25 flex items-center justify-center">
-                <span class="text-lg md:text-xl font-bold text-[var(--accent-secondary)]">{p.code}</span>
-              </div>
-              <div class="flex items-baseline gap-x-4 gap-y-0 flex-wrap">
-                <p class="text-[clamp(1.4rem,2.4vw,2.1rem)] font-medium text-[var(--ink-inverse)] leading-tight">{p.name}</p>
-                <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--color-grigio-300)]">{p.claim}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 6: Payoff — the metric (dark text on cammello) ──── -->
+    <!-- ── SLIDE 7: Payoff + filo ────────────────────────────────── -->
     <Slide id="slide-payoff" bg="brand" align="center">
-      <div class="max-w-4xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-8" style="font-size: clamp(7rem, 20vw, 16rem);">
-          <span data-count-up="75" data-count-suffix="%">0%</span>
-        </p>
-        <p class="text-[clamp(1.75rem,3vw,2.75rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-5" data-reveal data-reveal-delay="0.2">
-          della spesa luxury sarà guidata da Millennial e Gen Z
-        </p>
-        <p class="text-[clamp(1.2rem,1.5vw,1.5rem)] text-[var(--ink-primary)]/75" data-reveal data-reveal-delay="0.3">
-          Fonte: Bain &amp; Company / Altagamma
-        </p>
+      <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-6" style="font-size: clamp(5rem, 13vw, 11rem);">
+        <span data-count-up="75" data-count-suffix="%">0%</span>
+      </p>
+      <p class="text-[clamp(1.4rem,2.2vw,2.1rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-3 max-w-3xl" data-reveal data-reveal-delay="0.2">
+        Entro il 2025 il lusso sarà guidato da Millennial e Gen Z.
+      </p>
+      <p class="text-[clamp(1.15rem,1.4vw,1.35rem)] text-[var(--ink-primary)]/70 mb-10" data-reveal data-reveal-delay="0.28">
+        Fonte: Bain &amp; Company / Altagamma
+      </p>
 
-        <div class="mt-14" data-reveal data-reveal-delay="0.45">
-          <a
-            href={href(base, '/engagement')}
-            class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide uppercase bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
-          >
-            Fase successiva: Engagement
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
+      <p class="text-[clamp(1.3rem,1.9vw,1.75rem)] text-[var(--ink-primary)] leading-snug max-w-3xl border-t border-[var(--ink-primary)]/25 pt-8" data-reveal data-reveal-delay="0.36">
+        Giulia è entrata nel mondo Max Mara. Adesso il punto non è venderle qualcosa — è iniziare una relazione.
+      </p>
+
+      <div class="mt-10" data-reveal data-reveal-delay="0.5">
+        <a
+          href={href(base, '/engagement')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide uppercase bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Fase successiva: Engagement
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
     </Slide>
 
