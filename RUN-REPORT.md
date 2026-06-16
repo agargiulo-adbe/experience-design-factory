@@ -1,9 +1,58 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase E — Immersive model propagated to all pages ✅
+## Status: Phase F — Acquisizione in modalità keynote/deck (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
+**Phase F:** 2026-06-16 — SOLO Acquisizione trasformata in deck da proiezione; in attesa di revisione prima di propagare
+
+---
+
+## Phase F — Deck da presentazione (keynote), solo Acquisizione
+
+Cambio di paradigma: non un sito da scrollare ma un **deck da proiettare in sala
+riunioni**. Aggiornati i componenti riusabili in `packages/core/src/blocks/immersive/`
+così il pattern potrà propagarsi; **StepContainer/Step restano intatti** per le altre
+7 pagine finché non si propaga.
+
+### Nuovi componenti riusabili
+- **`DeckContainer.astro`** — wrapper keynote (`fixed inset-0`, niente scroll). Chrome
+  minimo auto-nascondente: indicatore `01 / 06`, prev/next, fullscreen. Tipografia da
+  proiezione come classi globali (`.slide-title`, `.slide-lead`, `.slide-eyebrow`,
+  `.slide-num`) con clamp dimensionati per lettura a 4–8 m.
+- **`Slide.astro`** — singola slide a schermo pieno, area di sicurezza ~8% (`px-[8vw] py-[8vh]`).
+- **`deck.ts`** — controller presentatore: frecce ←/→/↑/↓, barra spaziatrice,
+  PageUp/PageDown, Home/End, **click metà destra/sinistra**, **swipe touch**,
+  **fullscreen** (tasto `F` + bottone). Transizione **orizzontale ~500ms ease-in-out**,
+  **cross-fade** con `prefers-reduced-motion`. Indicatore di avanzamento + controlli
+  auto-nascondenti (idle 2.6s → cursore nascosto). Dall'ultima slide, `→` passa alla
+  **fase successiva (Engagement)** con dissolvenza. Re-init/teardown su View Transitions.
+- **`animations.ts`** — aggiunti `prepareSlide()` (stato pre-animazione) e `playSlide()`:
+  le animazioni partono **quando la slide diventa attiva** (non allo scroll) e fanno
+  **replay** alla rivisitazione. Coprono reveal/stagger/count-up/pulse + data-lake con
+  **convergenza reale** (dot con `data-dx/dy` che convergono al centro). Le metafore
+  delle altre pagine avranno il loro handler deck al momento della propagazione.
+
+### Acquisizione ridisegnata per la proiezione
+Tipografia grande (titolo `clamp(3rem,6vw,6rem)`, lead `clamp(1.5rem,2.4vw,2.25rem)`,
+niente testo < ~1.15rem), alto contrasto, visual che **riempiono il frame 16:9**, una
+idea per slide. Fix per-slide: (1) via "Scorri", "01" forte, titolo enorme, una riga;
+(2) data-lake molto più grande con convergenza cinematografica; (3) phone mockup grande
+e realistico (post stile social riconoscibile); (4) impulso grande/centrale, card
+ingrandite; (5) 5 prodotti con nomi grandi e descrizioni di 4–6 parole, reveal uno alla
+volta; (6) payoff con **testo scuro su cammello** (contrasto risolto), count-up 75%,
+→ fase successiva. **Nav del sito rimossa** in presentazione (chrome minimo).
+
+### Verifica Phase F
+- `pnpm build` (8 pagine) e `pnpm typecheck` **verdi**.
+- Struttura del build verificata: 6 slide, `data-deck`, `data-deck-next` → engagement,
+  chrome progress, tipografia `.slide-*`, selettori animazione presenti; controller deck nel bundle.
+- **Limite onesto:** la verifica *dal vivo* in browser (transizioni, tasti, fullscreen,
+  impatto/leggibilità a 1920×1080 e a distanza) non è automatizzabile in questo ambiente
+  (nessun browser headless installato). Verificati struttura, build, typecheck e la logica
+  del controller per revisione. **In attesa della tua revisione prima di propagare.**
+
+---
 
 ---
 
