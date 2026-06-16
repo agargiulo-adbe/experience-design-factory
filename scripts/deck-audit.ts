@@ -25,6 +25,7 @@ import * as path from 'node:path';
 const ROUTES: Array<{ name: string; route: string }> = [
   { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
   { name: 'engagement', route: '/experience-design-factory/engagement/' },
+  { name: 'conversione', route: '/experience-design-factory/conversione/' },
 ];
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
 const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
