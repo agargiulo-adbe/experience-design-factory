@@ -1,6 +1,6 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase J — Visual feedback loop (gli "occhi") + auto-correzione layout Acquisizione (in revisione) ⏳
+## Status: Phase J — Visual feedback loop + check più severi (a–i) + auto-correzione (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
@@ -9,6 +9,37 @@
 **Phase H:** 2026-06-16 — Acquisizione rifinita come riferimento d'oro del deck (persona-led + area sicura); in attesa di revisione
 **Phase I:** 2026-06-16 — cover cinematografica, layer "Come funziona", correzioni di sostanza (Whitney, fonti); in attesa di revisione
 **Phase J:** 2026-06-16 — Claude Code "vede" il proprio output e si auto-corregge sui difetti di layout del deck a 1920×1080; in attesa di revisione
+
+---
+
+## Phase J (estensione) — check più severi (a–i) + cause profonde
+
+I 4 check iniziali erano troppo deboli: 0 FAIL ma slide visivamente rotte. Estesi a **9
+check** (a–i) → tornano a fallire dove è rotto, poi loop di auto-correzione fino a 0 FAIL reali.
+
+**Nuovi check** (`scripts/deck-audit.ts`): (e) collisione testo-su-testo; (f) **pannello
+slide-over testato da APERTO** (lo script apre ogni HowItWorks e ri-misura: top-level fixed,
+ancorato al bordo, scrim a tutto schermo, larghezza ≤min(440px,38vw)); (g) ritmo verticale
+≥16px tra blocchi; (h) contrasto WCAG AA di bottoni/CTA (bg compositato); (i) uso dello spazio
+≥45% altezza utile + centro di massa centrale.
+
+**Cause profonde trovate e corrette** (non patch superficiali):
+- **Layering CSS**: reset `* { margin:0 }` + `a { color }` erano UNLAYERED → battevano le
+  utility Tailwind (`mb-*`, `text-*`) → niente ritmo verticale, CTA illeggibile (avorio su
+  cammello). Spostato in `@layer base`. Questo da solo ha risolto difetto 4 e parte del 3.
+- **Centratura**: `Slide` ora centra sul **centro del viewport** con riserva simmetrica della
+  banda chrome → la fascia [30,70] (a) e il target ≥45% (i) diventano compatibili.
+- **HowItWorks**: da aperto sposta pannello+overlay in `<body>` (esce dal contesto trasformato
+  della slide → vero overlay fixed top-level con scrim). Risolve difetto 1.
+
+**Correzioni per slide** (loop a–i): payoff (75% separato dalla riga; CTA dark/avorio AA;
+respiro), "Parlarle la sua lingua" + apertura (ritmo verticale), data-lake (split bilanciato +
+campo dati persistente + profili più grandi + caption — la viz usa lo spazio), trigger `tone`
+AA, cover/apertura dimensionate per (i). Mockup IG verificato intero.
+
+**Esito**: `audit:deck` → **PASS, 0 FAIL** su tutte le 8 slide con i 9 check, pannelli testati
+da aperti; `pnpm build` + `pnpm typecheck` verdi. Conferma visiva (screenshot Playwright) di
+payoff, data-lake, "Parlarle la sua lingua", e pannello HowItWorks aperto: corrispondono ai check.
 
 ---
 

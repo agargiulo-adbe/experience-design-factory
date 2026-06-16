@@ -169,26 +169,34 @@ is the deterministic gate run headless (`pnpm --filter <client> audit:deck`, dev
 
 It navigates the deck slide-by-slide at 1920×1080 (reduced-motion for stable layout),
 measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
-to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 4 checks:**
-1. **text not too high** — significant text (font-size ≥ 24px) centre within the central
-   band [30%,70%]; never anchored near the top (guard at 18%).
-2. **chrome collision** — no content text intersects the controls (target the `button[...]`
-   controls, NOT the deck root which also carries `data-deck-next`).
-3. **margins / overflow** — no content/media box past `--slide-safe-inset`; no element with
-   `scrollWidth > clientWidth`.
-4. **text over faces** — no text intersects an image's `data-no-text` zone; text over an
-   image needs a `[data-scrim]`.
+to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 9 checks (a–i):**
+- **(a)** significant text (≥24px) centre in the band [30%,70%]; never anchored near the top.
+- **(b)** no content text intersects the chrome controls (target `button[...]`, NOT the deck
+  root which also carries `data-deck-next`).
+- **(c)** no box past `--slide-safe-inset`; no `scrollWidth > clientWidth`.
+- **(d)** no text over an image's `data-no-text` zone; text over an image needs a `[data-scrim]`.
+- **(e)** no two non-nested text blocks overlap (text-on-text).
+- **(f)** an OPEN `HowItWorks` is a top-level fixed panel anchored to an edge, width
+  ≤ min(440px,38vw), with a full-viewport scrim — the audit **opens each panel** and re-measures.
+- **(g)** adjacent stacked text blocks (outside cards) have ≥ 16px vertical gap.
+- **(h)** every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon) against its composited bg.
+- **(i)** content covers ≥ 45% of usable height and its centre of mass is in the central band.
 
 **Auto-correction loop:** run the audit → for each FAIL read the screenshot, fix the
 **component/page source** (not inline patches), re-run → iterate until 0 FAIL.
 
-Conventions this relies on:
-- **Safe-area tokens** in `global.css` (fixed px so JS can read them): `--slide-safe-inset`
-  (all-sides gutter), `--deck-chrome-safe` (bottom band). `Slide` applies them via inline
-  style + `justify-center` — Tailwind does NOT reliably emit `max(var(...))` arbitrary values.
-- **`data-no-text="top,left,width,height"`** (%) — face/subject zone on `MediaSlot`
-  (and forwarded by `InstagramPost`); add to any subject image so text can't fall on a face.
-- **`data-scrim`** — mark the overlay behind text that sits over a full-bleed image.
+Conventions & hard-won lessons:
+- **Layering is the #1 trap.** Keep the base reset in `@layer base`. An unlayered
+  `* { margin:0 }` or `a { color }` BEATS Tailwind utilities (`mb-*`, `text-*`) and silently
+  kills vertical rhythm and button colours — and the audit's (g)/(h) catch it.
+- **Centre on the viewport centre**, not the padded-box centre, with a symmetric chrome
+  reserve — otherwise (a) band and (i) ≥45% fight each other. `Slide` uses inline-style
+  padding/`max-height` (Tailwind doesn't reliably emit `max(var(...))`).
+- **Safe-area tokens** in `global.css` (fixed px): `--slide-safe-inset`, `--deck-chrome-safe`.
+- **Slide-over:** `HowItWorks` moves its panel + overlay to `<body>` on open (escapes the
+  deck's transformed slide → true viewport-fixed); `tone="onDark"` for AA triggers on dark slides.
+- **`data-no-text="top,left,width,height"`** (% subject zone on `MediaSlot`/`InstagramPost`);
+  **`data-scrim`** on the overlay behind text-over-image.
 
 ## Stack & conventions (must-know)
 - **Astro 6** static site + **View Transitions** (multipage immersion). Re-init animations on `astro:after-swap`.

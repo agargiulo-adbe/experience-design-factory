@@ -75,14 +75,23 @@ display serif **Cormorant Garamond** + grotesque **Inter**; editorial compositio
 negative space; motion sober (~500ms ease, sartorial), `prefers-reduced-motion` respected;
 Adobe discreet/in-context (full stack reveal only on "Il Motore Adobe").
 
-### The 4 defects every slide must pass at 1920×1080 (`audit:deck`)
-1. **Text not too high** — each significant text block's vertical centre inside the central
-   reading band (30%–70%); never anchored near the top edge.
-2. **No chrome collision** — no content text intersects the deck controls (prev/next/progress/fullscreen).
-3. **Margins / no overflow** — no content/media box past `--slide-safe-inset` on any side;
-   no horizontal overflow (`scrollWidth > clientWidth`).
-4. **No text over faces** — no text intersects an image's `[data-no-text]` zone; any text
-   over an image needs a `[data-scrim]` behind it.
+### The 9 checks every slide must pass at 1920×1080 (`audit:deck`)
+1. **(a) text not too high** — significant text centre in the central band (30%–70%); never near the top.
+2. **(b) no chrome collision** — no content text intersects the deck controls.
+3. **(c) margins / no overflow** — no box past `--slide-safe-inset`; no horizontal overflow.
+4. **(d) no text over faces** — no text over an image's `[data-no-text]` zone; text over an image needs a `[data-scrim]`.
+5. **(e) no text-on-text** — no two (non-nested) text blocks overlap.
+6. **(f) clean slide-over** — an OPEN `HowItWorks` is a top-level fixed panel anchored to the edge, width ≤ min(440px,38vw), with a full-viewport scrim behind. The audit OPENS each panel and re-measures.
+7. **(g) vertical rhythm** — adjacent stacked text blocks (outside cards) have ≥ 16px gap.
+8. **(h) button contrast** — every button/CTA meets WCAG AA (4.5:1; 3:1 for large/icon).
+9. **(i) space usage** — content covers ≥ 45% of the usable height and its centre of mass is in the central horizontal band.
 
-Safe-area tokens (in `global.css`, fixed px so the audit can read them):
-`--slide-safe-inset` (gutter, all sides), `--deck-chrome-safe` (reserved bottom band).
+Contract details:
+- **Safe-area tokens** in `global.css` (fixed px): `--slide-safe-inset`, `--deck-chrome-safe`.
+  `Slide` centres content on the VIEWPORT centre with a symmetric chrome reserve, so (a) band and (i) ≥45% are compatible.
+- **Layering:** the base reset MUST be in `@layer base` — an unlayered `* { margin:0 }` /
+  `a { color }` beats Tailwind utilities (kills `mb-*`, `text-*` → no rhythm, wrong colours).
+- **Slide-over contract:** `HowItWorks`, when open, moves its panel + overlay to `<body>`
+  (escaping the deck's transformed slide) so it's a true viewport-fixed top-level overlay
+  with a scrim. Use `tone="onDark"` on dark slides for an AA-contrast trigger.
+- **`data-no-text="t,l,w,h"`** (% face/subject zone), **`data-scrim`** on the overlay behind text-over-image.

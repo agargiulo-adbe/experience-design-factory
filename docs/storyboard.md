@@ -47,14 +47,19 @@ reads fine without opening it (self-sufficient on screen for the live telling).
 
 ## Layout contract & visual audit
 Every slide must pass `pnpm --filter generazioni-maxmara audit:deck` (Playwright,
-1920×1080) — 4 deterministic DOM checks: (1) significant text centre in the [30%,70%]
-band; (2) no collision with deck chrome; (3) margins ≥ `--slide-safe-inset`, no overflow;
-(4) no text over an image's `data-no-text` zone, and any text over an image has a
-`[data-scrim]`. Failures save a screenshot to `audit/acquisizione/<slide-id>.png`.
+1920×1080) — **9 deterministic DOM checks (a–i)**: text-in-band, chrome collision,
+margins/overflow, text-over-faces, **text-on-text (e)**, **clean open slide-over (f, panels
+are opened and re-measured)**, **vertical rhythm ≥16px (g)**, **WCAG-AA button contrast (h)**,
+**space usage ≥45% + centred mass (i)**. Failures save a screenshot to `audit/acquisizione/`.
 
 Notes baked into the slides:
-- Slide 3 is a **split** (text column centred in-band, data-lake viz fills the other
-  column) — a stacked title+visual+lead would push text out of the band.
-- Slide 1's atmosphere is full-bleed behind text → it carries a `data-scrim` overlay.
-- Portraits and the IG product image carry `data-no-text` face/subject zones.
-- Safe-area tokens live in `global.css` (`--slide-safe-inset`, `--deck-chrome-safe`).
+- Content is centred on the **viewport centre** with a symmetric chrome reserve, so the band
+  (a) and the ≥45% usage (i) are mutually satisfiable.
+- The base CSS reset is in `@layer base` — unlayered `* {margin:0}` / `a {color}` would beat
+  Tailwind utilities and kill rhythm/contrast.
+- Slide 3 is a **balanced split** (text in-band on the left; a persistent faint data-field +
+  larger profiles + "Profili unificati" caption on the right — the viz uses the space).
+- `HowItWorks` opens as a true top-level slide-over (panel + scrim moved to `<body>`);
+  `tone="onDark"` on dark slides keeps the trigger AA.
+- Slide 1's atmosphere is full-bleed behind text → `data-scrim`; portraits + IG image carry
+  `data-no-text` zones. Safe-area tokens in `global.css`.
