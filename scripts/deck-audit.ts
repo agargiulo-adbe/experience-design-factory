@@ -93,9 +93,12 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     && (el.textContent || '').trim().length >= 10)
     .map((el) => ({ el, r: el.getBoundingClientRect(), txt: (el.textContent || '').trim().slice(0, 42) }));
 
-  // (a) text too high
+  // (a) text too high — applies to PROSE. A `[data-display]` hero (a giant metric
+  // numeral like "tre quarti" / "75%") is a display element, not prose, and is
+  // deliberately top-anchored; exclude it (as short numerals were already excluded).
   const topGuard = 0.18 * H;
-  const a = big.map((t) => ({ ...t, cy: t.r.top + t.r.height / 2 }))
+  const a = big.filter((t) => !t.el.closest('[data-display]'))
+    .map((t) => ({ ...t, cy: t.r.top + t.r.height / 2 }))
     .filter((t) => t.cy < bandTop || t.cy > bandBot || t.r.top < topGuard)
     .map((t) => ({ txt: t.txt, top: Math.round(t.r.top), centerY: Math.round(t.cy) }));
 
