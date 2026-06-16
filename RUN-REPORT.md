@@ -1,6 +1,42 @@
 # Run Report — Experience Design Factory
 
-## Status: Strada B — ENGAGEMENT portata a KEYNOTE slide-grade + immagini reali ✅ — in revisione (poi Conversione & Loyalty su questo modello)
+## Status: Strada B — ENGAGEMENT ✅ + CONVERSIONE ✅ keynote slide-grade + immagini reali — in revisione (poi Loyalty su questo modello)
+
+---
+
+## Strada B — Conversione → keynote slide-grade (stesso stampo di Engagement)
+
+**Conversione live (deck):** https://agargiulo-adbe.github.io/experience-design-factory/conversione/
+
+**Unità & commit:**
+| Unità | Cosa | Commit |
+|---|---|---|
+| Engine | handler deck per `[data-converse]` (chat bubble), no-op altrove | `feat(core)` |
+| Asset | slot `conversione-pelle` — texture pelle pregiata (no volto) | `feat(assets)` |
+| Pagina + audit | Conversione = DeckContainer/Slide (6 slide); rotta audit aggiunta | `feat(conversione)` |
+
+**6 slide** (copy riusato): apertura (firma **filo**) · converse (chat Giulia↔Concierge deck-animate) ·
+frontstage (**foto reale** di pelle pregiata nel phone, card "Whitney Bag — pelle martellata") · impulse
+(pulse) · backstage (4 Adobe — JO, Target, Commerce, Brand Concierge — nel **"Scopri come" inline**) ·
+payoff (`data-display` 3× + CTA "Continua · Loyalty").
+
+**Immagini — postura di rifiuto applicata:** per `conversione-pelle` **scartate 2 candidate** — (1) la
+**stessa foto di whitney-post** (ripetitiva tra le fasi), (2) portachiavi su denim fuori registro.
+Accettata una **texture di pelle calda e pregiata, senza volto, in palette**. ⚠ **Da validare:** è una
+*texture* di pelle, non la borsa letterale (la caption del card porta la specificità Whitney). Sfondi = riuso textile.
+
+**Fix audit-driven (regola d'oro: corretto il layout, mai tagliato il testo):** il testo delle chat-bubble
+era in un `<div>` (non misurato dall'audit → `i` falsato a 0.15): spostato in `<p>` e bubble compattate
+perché il titolo resti in banda; statement backstage più piene per `i≥0.45`.
+
+**Gate Conversione:**
+- `audit:deck` → **0 FAIL** su **acquisizione + engagement + conversione** a 1920/1440/1280, "Scopri come" da **espanso inline**. Rotte precedenti **non regredite**.
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi · `assets:build` rilanciato · `provenance.json` aggiornato (Francesca/whitney byte-identical).
+- Redeploy verde; **Conversione live no-404** (`data-deck`, `conversione-pelle` + 14 asset campionati 200); acquisizione+engagement 200.
+- Screenshot ai 3 viewport: apertura (filo) · converse (chat) · frontstage (foto reale) · "Scopri come" espanso · payoff.
+
+➡️ **STOP per revisione PRIMA di Loyalty.** Loyalty NON toccata: stesso stampo, con `loyalty-*` reale e
+il riuso del ritratto `persona-giulia` come avatar nella clienteling card (verifica + flag-stop se non regge).
 
 ---
 
