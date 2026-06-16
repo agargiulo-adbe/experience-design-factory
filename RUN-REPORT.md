@@ -1,6 +1,43 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase J — Visual feedback loop + check a–l (invarianti) + HowItWorks overlay centrato (in revisione) ⏳
+## Status: Phase L — Audit reale + copy validato su Acquisizione (9 slide, dato 2030, 3 viewport) — in revisione ⏳
+
+---
+
+## Phase L — Audit (docs/AUDIT.md) + applicazione COPY validato (solo Acquisizione + componenti)
+
+### Fase 1 — Audit reale (sola lettura) → `docs/AUDIT.md`
+Diagnosi di codice + FE ai 3 viewport, con FILE:riga e severità (A salute codice, B front-end,
+C a11y, D perf, E copy). Reperti chiave: dato "entro il 2025" stale; cover col co-brand
+ridondante; Francesca assente dal racconto; tipografia "a occhio"; l'audit girava solo a
+1920×1080. Più correzioni critiche alle ipotesi (es. il "leak" di HowItWorks **non** era un leak).
+
+### Fase 3 — Copy validato applicato (stringhe esatte fornite)
+- **Audit a 3 viewport**: `deck-audit.ts` ora cicla 1920×1080, 1440×900, 1280×800; i hero
+  `[data-display]` (numerali/metriche) sono esclusi dal check di banda (a) — come i numeri brevi.
+- **Cover ristrutturata** ("tagline eroe, co-brand firma"): eyebrow `GENERAZIONI`, tagline
+  display centrale, firma `Max Mara —•— Adobe` col filo in basso. Via la ridondanza.
+- **Slide 1**: "Incontrare chi ancora non ci conosce" (rimossa la duplicazione dell'h1 della
+  cover e il dato 2025 stale).
+- **Slide 2 (Giulia)**: eyebrow `LEI` + corpo nuovo. **Slide 3 (data-lake)**: eyebrow maiuscolo,
+  "incontrare", "sistemi di oggi"; pannello con 3 paragrafi validati.
+- **Slide 4**: rimosse le etichette gergali `FRONT`/`BACK`. **Slide 5**: titolo senza "a scala";
+  blocchi validati; pannello "Contenuti on-brand, sempre".
+- **NUOVA slide Francesca** ("Nel frattempo") tra "Parlarle la sua lingua" e il payoff → il deck
+  passa da 8 a **9 slide** (il conteggio/indicatore deriva dal DOM: nessun array hardcoded da
+  aggiornare in deck.ts/deck-audit.ts).
+- **Payoff**: "tre quarti" a parole, orizzonte **2030**, fonte "Bain & Company · Altagamma,
+  Luxury Goods Worldwide Market Study", bottone "Segue · L'incontro" (via l'all-caps gridato).
+- **Fix di contenimento** (per passare ai 3 viewport senza tagliare il testo validato):
+  phone IG con `max-h` legato al viewport.
+
+### Verifica Phase L
+- `pnpm --filter generazioni-maxmara audit:deck` → **0 FAIL su 9 slide × 3 viewport** (a–l, pannelli aperti).
+- `pnpm build` + `pnpm typecheck` verdi. Conferma visiva (Playwright) di cover, Francesca, payoff
+  e dei due pannelli ai viewport estremi.
+- Convenzioni di stile: terza persona, "Max Mara" con spazio, "Whitney Bag", nomi prodotto Adobe
+  solo in contesto/pannelli, fonti uniformi. (Residuo "Monogram" su persona.astro: fuori scope, a propagazione.)
+- **NON propagato alle altre fasi.**
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi

@@ -75,7 +75,10 @@ display serif **Cormorant Garamond** + grotesque **Inter**; editorial compositio
 negative space; motion sober (~500ms ease, sartorial), `prefers-reduced-motion` respected;
 Adobe discreet/in-context (full stack reveal only on "Il Motore Adobe").
 
-### The 12 checks every slide must pass at 1920×1080 (`audit:deck`)
+### The 12 checks every slide must pass — at 1920×1080, 1440×900 AND 1280×800 (`audit:deck`)
+> `audit:deck` runs all three viewports (a projected keynote must hold beyond exactly 1920×1080).
+> A **display hero** (giant metric numeral, e.g. "tre quarti") is tagged `data-display` and
+> excluded from the prose band check (a) — it's a display element, not prose.
 1. **(a) text not too high** — significant text centre in the central band (30%–70%); never near the top.
 2. **(b) no chrome collision** — no content text intersects the deck controls.
 3. **(c) margins / no overflow** — no box past `--slide-safe-inset`; no horizontal overflow.

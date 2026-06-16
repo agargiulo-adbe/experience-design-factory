@@ -167,7 +167,9 @@ Don't trust the eye — **measure**. The **playwright MCP** gives interactive br
 tools (browser_resize to 1920×1080, browser_evaluate, screenshots); `scripts/deck-audit.ts`
 is the deterministic gate run headless (`pnpm --filter <client> audit:deck`, dev server up).
 
-It navigates the deck slide-by-slide at 1920×1080 (reduced-motion for stable layout),
+It navigates the deck slide-by-slide at **three viewports (1920×1080, 1440×900, 1280×800)**
+— a projected keynote must hold beyond exactly 1920×1080 — reduced-motion for stable layout;
+a **display hero** numeral tagged `data-display` is excluded from the prose band check (a). It
 measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
 to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 12 checks (a–l):**
 - **(a)** significant text (≥24px) centre in the band [30%,70%]; never anchored near the top.
