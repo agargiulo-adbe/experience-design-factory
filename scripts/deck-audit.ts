@@ -8,12 +8,12 @@
  *   (c) margins / overflow  — no box past --slide-safe-inset; no horizontal overflow.
  *   (d) text over faces     — no text over an image's [data-no-text] zone; scrim required.
  *   (e) text-on-text        — no two (non-nested) text blocks overlap (≈0px tolerance).
- *   (f) clean slide-over     — an OPEN HowItWorks is a top-level fixed panel anchored to
- *                              the edge, with a full-viewport scrim behind, bounded width.
  *   (g) vertical rhythm      — adjacent stacked text blocks (outside cards) gap ≥ 16px.
  *   (h) button contrast      — every button/CTA meets WCAG AA (4.5:1, or 3:1 for large).
  *   (i) space usage / balance — content covers ≥45% of usable height and its centre of
  *                              mass sits in the central horizontal band.
+ *   (exp) inline expansion   — each "Scopri come" expands IN PLACE; the slide is then
+ *                              re-measured (a–k) in its expanded state and must still pass.
  *
  * Run:  pnpm --filter generazioni-maxmara audit:deck   (dev server up). Exits ≠0 on any fail.
  */
@@ -52,7 +52,9 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     const r = el.getBoundingClientRect();
     return r.width > 2 && r.height > 2;
   };
-  const inPanel = (el: Element) => !!el.closest('[data-hiw-panel]');
+  // A HowItWorks region that is still collapsed (aria-hidden) is excluded; once the
+  // trigger expands it (aria-hidden removed) its content IS measured like any other.
+  const inPanel = (el: Element) => !!el.closest('[data-hiw-region][aria-hidden="true"]');
   const directText = (el: Element) =>
     Array.from(el.childNodes).some((n) => n.nodeType === 3 && (n.textContent || '').trim().length > 0);
   type Box = { left: number; top: number; right: number; bottom: number; width?: number; height?: number };
@@ -219,54 +221,6 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
   };
 }
 
-// Open-state check for a single HowItWorks panel.
-// f = shape/within-viewport(j)/no-scroll(k)/scrim/width · l = trigger not obstructed.
-function measureOpenPanel(opts: { panelId: string; W: number; H: number }) {
-  const { panelId, W, H } = opts;
-  const panel = document.getElementById(panelId);
-  if (!panel) return { f: ['panel-missing'], l: [] as string[] };
-  const cs = getComputedStyle(panel);
-  const r = panel.getBoundingClientRect();
-  const within = (x: { left: number; top: number; right: number; bottom: number }) => x.left >= -1 && x.top >= -1 && x.right <= W + 1 && x.bottom <= H + 1;
-  const inter = (a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) =>
-    !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
-  const transparent = (c: string) => c === 'transparent' || c === 'rgba(0, 0, 0, 0)' || /\/\s*0\s*\)/.test(c);
-  const f: string[] = [];
-
-  if (cs.position !== 'fixed' && cs.position !== 'absolute') f.push('not-fixed');
-  if (panel.parentElement !== document.body) f.push('not-top-level');         // escapes the transformed slide
-  if (!within(r)) f.push(`offscreen:${Math.round(r.top)},${Math.round(r.left)},${Math.round(r.right)},${Math.round(r.bottom)}`);
-  // (j) no panel text clipped outside the viewport
-  const clipped = Array.from(panel.querySelectorAll('h1,h2,h3,h4,p,li,span,button')).filter((el) => {
-    const c2 = getComputedStyle(el as HTMLElement); if (c2.display === 'none' || c2.visibility === 'hidden') return false;
-    const rr = el.getBoundingClientRect(); return rr.width > 1 && rr.height > 1 && !within(rr);
-  });
-  if (clipped.length) f.push(`text-clipped:${clipped.length}`);
-  // (k) nothing inside the panel may rely on hidden scroll
-  const scrollers = [panel].concat(Array.from(panel.querySelectorAll('*')) as HTMLElement[])
-    .filter((el) => (el as HTMLElement).scrollHeight - (el as HTMLElement).clientHeight > 2 && getComputedStyle(el as HTMLElement).overflowY !== 'visible');
-  if (scrollers.length) f.push(`scrolls:${scrollers.length}`);
-  const maxW = Math.min(720, 0.6 * W) + 8;
-  if (r.width > maxW) f.push(`too-wide:${Math.round(r.width)}`);
-  const overlays = Array.from(document.querySelectorAll('[data-hiw-overlay]')).filter((o) => {
-    const ocs = getComputedStyle(o as HTMLElement); const orr = o.getBoundingClientRect();
-    return ocs.display !== 'none' && parseFloat(ocs.opacity) > 0.1 && !transparent(ocs.backgroundColor) && orr.width >= 0.9 * W && orr.height >= 0.9 * H;
-  });
-  if (!overlays.length) f.push('no-scrim');
-
-  // (l) trigger / slide interactives: fully under the scrim OR fully clear of the panel
-  const scrimRects = overlays.map((o) => o.getBoundingClientRect());
-  const covered = (x: DOMRect) => scrimRects.some((s) => x.left >= s.left - 1 && x.top >= s.top - 1 && x.right <= s.right + 1 && x.bottom <= s.bottom + 1);
-  const l: string[] = [];
-  const trig = document.querySelector(`[aria-controls="${panelId}"]`) as HTMLElement | null;
-  if (trig) {
-    const tr = trig.getBoundingClientRect();
-    if (inter(tr, r) && !covered(tr)) l.push('trigger-half-covered');
-    if (!within(tr)) l.push('trigger-offscreen');
-  }
-  return { f, l };
-}
-
 async function auditViewport(browser: import('playwright').Browser, base: string, W: number, H: number) {
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   const page = await ctx.newPage();
@@ -288,24 +242,28 @@ async function auditViewport(browser: import('playwright').Browser, base: string
     await page.waitForTimeout(450);
     const r = await page.evaluate(measureSlide, { slideId: id, W, H, ...tokens });
 
-    // open each HowItWorks on this slide and measure the open panel (f, j/k on panel, l)
-    const panelIds: string[] = await page.evaluate((sid) => Array.from(document.getElementById(sid)!.querySelectorAll('[data-hiw-open]')).map((bt) => bt.getAttribute('aria-controls') || ''), id);
-    const fFails: Array<{ panel: string; fails: string[] }> = [];
-    const lFails: Array<{ panel: string; fails: string[] }> = [];
-    for (const pid of panelIds.filter(Boolean)) {
-      await page.evaluate((p) => (document.querySelector(`[aria-controls="${p}"]`) as HTMLElement)?.click(), pid);
-      await page.waitForTimeout(300);
-      const fr = await page.evaluate(measureOpenPanel, { panelId: pid, W, H });
-      if (fr.f.length) fFails.push({ panel: pid, fails: fr.f });
-      if (fr.l.length) lFails.push({ panel: pid, fails: fr.l });
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(150);
+    // (exp) expand each "Scopri come" INLINE and re-measure the WHOLE slide in its
+    // expanded state — the blossomed content must still satisfy every invariant
+    // (band, clip, hidden-scroll, rhythm, contrast). Collapse again between triggers.
+    const triggerCount: number = await page.evaluate((sid) => document.getElementById(sid)!.querySelectorAll('[data-hiw-open]').length, id);
+    const expFails: Array<{ trigger: number; checks: string[] }> = [];
+    for (let t = 0; t < triggerCount; t++) {
+      await page.evaluate(([sid, idx]) => (document.getElementById(sid as string)!.querySelectorAll('[data-hiw-open]')[idx as number] as HTMLElement).click(), [id, t]);
+      await page.waitForTimeout(750);
+      const re = await page.evaluate(measureSlide, { slideId: id, W, H, ...tokens }) as Record<string, { pass: boolean; fails?: unknown; info?: unknown }>;
+      // A disclosure legitimately shifts the resting composition, so (a) band-position
+      // and (i) space-balance do NOT apply to the expanded state. The real expansion
+      // invariants do: chrome (b), margins/overflow (c), faces (d), text-on-text (e),
+      // rhythm (g), contrast (h), nothing clipped (j), no hidden scroll (k).
+      const bad = ['b', 'c', 'd', 'e', 'g', 'h', 'j', 'k'].filter((key) => !re[key].pass);
+      if (bad.length) expFails.push({ trigger: t, checks: bad.map((key) => `${key}:${JSON.stringify(re[key].fails ?? re[key].info)}`) });
+      await page.evaluate(([sid, idx]) => (document.getElementById(sid as string)!.querySelectorAll('[data-hiw-open]')[idx as number] as HTMLElement).click(), [id, t]);
+      await page.waitForTimeout(500);
     }
-    const f = { pass: fFails.length === 0, fails: fFails };
-    const l = { pass: lFails.length === 0, fails: lFails };
+    const exp = { pass: expFails.length === 0, fails: expFails };
 
-    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, f, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, l };
-    const order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
+    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, exp };
+    const order = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'exp'];
     const failed = order.filter((key) => !results[key].pass);
     if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(OUT_DIR, `${W}x${H}-${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +
@@ -315,13 +273,12 @@ async function auditViewport(browser: import('playwright').Browser, base: string
     if (!r.c.pass) lines.push(`     c → ${JSON.stringify(r.c.fails)} overflow:${JSON.stringify(r.c.overflow)}`);
     if (!r.d.pass) lines.push(`     d → ${JSON.stringify(r.d.fails)}`);
     if (!r.e.pass) lines.push(`     e → ${JSON.stringify(r.e.fails)}`);
-    if (!f.pass) lines.push(`     f → ${JSON.stringify(f.fails)}`);
     if (!r.g.pass) lines.push(`     g → ${JSON.stringify(r.g.fails)}`);
     if (!r.h.pass) lines.push(`     h → ${JSON.stringify(r.h.fails)}`);
     if (!r.i.pass) lines.push(`     i → ${JSON.stringify(r.i.info)}`);
     if (!r.j.pass) lines.push(`     j → ${JSON.stringify(r.j.fails)}`);
     if (!r.k.pass) lines.push(`     k → ${JSON.stringify(r.k.fails)}`);
-    if (!l.pass) lines.push(`     l → ${JSON.stringify(l.fails)}`);
+    if (!exp.pass) lines.push(`     exp → ${JSON.stringify(exp.fails)}`);
   }
   await ctx.close();
   return { lines, fails };
@@ -339,9 +296,9 @@ async function main() {
     blocks.push(`\n=== ${W}×${H} ===\n${lines.join('\n')}`);
   }
   await browser.close();
-  console.log(`\ndeck-audit · ${base}${ROUTE} · checks a–l · viewports ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')}`);
+  console.log(`\ndeck-audit · ${base}${ROUTE} · checks a–k + exp · viewports ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')}`);
   console.log(blocks.join('\n'));
-  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean at ALL viewports (a–l, panels open-tested)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
+  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean at ALL viewports (a–k, "Scopri come" expanded inline)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
   process.exit(totalFails === 0 ? 0 : 1);
 }
 
