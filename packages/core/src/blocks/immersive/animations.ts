@@ -575,6 +575,150 @@ export async function initStackAssemble(container: HTMLElement) {
   });
 }
 
+// ════════════════════════════════════════════════════════════════════
+// DECK MODE — animations fire when a slide becomes ACTIVE (keynote),
+// not on scroll. prepareSlide() paints the pre-animation state; playSlide()
+// animates. Calling them again replays the slide on revisit.
+// Covers the generic primitives + the Acquisizione metaphor (data lake).
+// Page-specific metaphors (personalize/converse/lifecycle/clienteling/
+// thread/stackAssemble) get deck handlers when their pages move to the deck.
+// ════════════════════════════════════════════════════════════════════
+
+async function ensureGsapCore() {
+  const { gsap } = await import('gsap');
+  return gsap;
+}
+
+/** Set the pre-animation (hidden) state for everything animated in a slide. */
+export function prepareSlide(slide: HTMLElement) {
+  // Reveals
+  slide.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
+    if (REDUCED_MOTION) { el.style.opacity = '1'; el.style.transform = 'none'; return; }
+    const dir = el.dataset.reveal || 'up';
+    const y = dir === 'up' ? 48 : dir === 'down' ? -48 : 0;
+    const x = dir === 'left' ? 48 : dir === 'right' ? -48 : 0;
+    el.style.opacity = '0';
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  });
+  // Stagger groups
+  slide.querySelectorAll<HTMLElement>('[data-stagger]').forEach(group => {
+    Array.from(group.children).forEach(c => {
+      const el = c as HTMLElement;
+      if (REDUCED_MOTION) { el.style.opacity = '1'; el.style.transform = 'none'; return; }
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(48px)';
+    });
+  });
+  // Count-up
+  slide.querySelectorAll<HTMLElement>('[data-count-up]').forEach(el => {
+    const prefix = el.dataset.countPrefix || '';
+    const suffix = el.dataset.countSuffix || '';
+    el.textContent = REDUCED_MOTION ? `${prefix}${el.dataset.countUp || ''}${suffix}` : `${prefix}0${suffix}`;
+  });
+  // Pulse line
+  slide.querySelectorAll<HTMLElement>('[data-pulse-line]').forEach(el => {
+    const line = el.querySelector<SVGPathElement>('.pulse-path');
+    const dot = el.querySelector<SVGElement>('.pulse-dot');
+    if (REDUCED_MOTION) {
+      if (line) line.style.strokeDashoffset = '0';
+      if (dot) (dot as SVGElement).style.opacity = '1';
+      return;
+    }
+    if (line) {
+      const len = line.getTotalLength?.() || 200;
+      line.style.strokeDasharray = `${len}`;
+      line.style.strokeDashoffset = `${len}`;
+    }
+    if (dot) (dot as SVGElement).style.opacity = '0';
+  });
+  // Data lake (deck variant: dots carry data-dx/data-dy; positions set in play)
+  const dl = slide.querySelector<HTMLElement>('[data-datalake]');
+  if (dl) {
+    const dots = dl.querySelectorAll<HTMLElement>('.data-dot');
+    const profiles = dl.querySelectorAll<HTMLElement>('.profile-circle');
+    if (REDUCED_MOTION) {
+      dots.forEach(d => { d.style.opacity = '0'; });
+      profiles.forEach(p => { p.style.opacity = '1'; p.style.transform = 'none'; });
+    } else {
+      // Stay invisible until play() positions them — avoids a stacked flash.
+      dots.forEach(d => { d.style.opacity = '0'; });
+      profiles.forEach(p => { p.style.opacity = '0'; });
+    }
+  }
+}
+
+/** Animate everything in a slide. Safe to call repeatedly (replay). */
+export async function playSlide(slide: HTMLElement) {
+  if (REDUCED_MOTION) {
+    // prepareSlide already painted final states; only count-up text needs it.
+    return;
+  }
+  const gsap = await ensureGsapCore();
+
+  // Reveals
+  slide.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
+    const delay = parseFloat(el.dataset.revealDelay || '0');
+    gsap.to(el, { opacity: 1, x: 0, y: 0, duration: 0.8, delay, ease: 'power3.out' });
+  });
+  // Stagger
+  slide.querySelectorAll<HTMLElement>('[data-stagger]').forEach(group => {
+    const children = Array.from(group.children) as HTMLElement[];
+    const sd = parseFloat(group.dataset.stagger || '0.15');
+    gsap.to(children, { opacity: 1, y: 0, duration: 0.7, stagger: sd, delay: 0.25, ease: 'power3.out' });
+  });
+  // Count-up
+  slide.querySelectorAll<HTMLElement>('[data-count-up]').forEach(el => {
+    const target = el.dataset.countUp || '';
+    const prefix = el.dataset.countPrefix || '';
+    const suffix = el.dataset.countSuffix || '';
+    const m = target.match(/[\d.]+/);
+    if (!m) return;
+    const endVal = parseFloat(m[0]);
+    const proxy = { val: 0 };
+    gsap.to(proxy, {
+      val: endVal, duration: 1.6, delay: 0.3, ease: 'power2.out',
+      onUpdate: () => {
+        const f = endVal % 1 === 0 ? Math.round(proxy.val).toString() : proxy.val.toFixed(1);
+        el.textContent = `${prefix}${f}${suffix}`;
+      },
+    });
+  });
+  // Pulse
+  slide.querySelectorAll<HTMLElement>('[data-pulse-line]').forEach(el => {
+    const line = el.querySelector<SVGPathElement>('.pulse-path');
+    const dot = el.querySelector('.pulse-dot');
+    if (line) {
+      const len = line.getTotalLength?.() || 200;
+      gsap.fromTo(line, { strokeDasharray: len, strokeDashoffset: len },
+        { strokeDashoffset: 0, duration: 1.1, delay: 0.3, ease: 'power2.inOut' });
+    }
+    if (dot) {
+      gsap.fromTo(dot, { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, delay: 1.2, ease: 'back.out(2)', transformOrigin: 'center center' });
+    }
+  });
+  // Data lake — dots converge cinematically to centre, then profiles emerge
+  const dl = slide.querySelector<HTMLElement>('[data-datalake]');
+  if (dl) {
+    const dots = Array.from(dl.querySelectorAll<HTMLElement>('.data-dot'));
+    const profiles = dl.querySelectorAll<HTMLElement>('.profile-circle');
+    // Centre each dot with xPercent/yPercent, scatter via x/y from data-dx/dy
+    dots.forEach(d => {
+      gsap.set(d, {
+        xPercent: -50, yPercent: -50,
+        x: parseFloat(d.dataset.dx || '0'),
+        y: parseFloat(d.dataset.dy || '0'),
+        opacity: 0,
+      });
+    });
+    gsap.set(profiles, { scale: 0.3, opacity: 0 });
+    const tl = gsap.timeline({ delay: 0.2 });
+    tl.to(dots, { opacity: 0.9, duration: 0.4, stagger: 0.01 });
+    tl.to(dots, { x: 0, y: 0, opacity: 0, duration: 1.3, stagger: 0.012, ease: 'power3.inOut' }, '>-0.1');
+    tl.to(profiles, { opacity: 1, scale: 1, duration: 0.8, stagger: 0.2, ease: 'back.out(1.6)' }, '-=0.5');
+  }
+}
+
 // ── Master init: call all animation initializers ────────────────────
 export async function initAllAnimations(container: HTMLElement) {
   await Promise.all([

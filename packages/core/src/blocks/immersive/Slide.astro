@@ -1,0 +1,40 @@
+---
+/**
+ * Slide — a single full-screen keynote slide inside a DeckContainer.
+ * Fills the 16:9 frame with a ~8% safe area. One idea per slide.
+ */
+interface Props {
+  id?: string;
+  bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
+  align?: 'center' | 'left' | 'split';
+  class?: string;
+}
+const { id, bg = 'primary', align = 'center', class: className } = Astro.props;
+
+const bgMap = {
+  primary: 'bg-[var(--surface-primary)]',
+  secondary: 'bg-[var(--surface-secondary)]',
+  inverse: 'bg-[var(--surface-inverse)]',
+  brand: 'bg-[var(--accent-primary)]',
+};
+
+const alignMap = {
+  center: 'items-center justify-center text-center',
+  left: 'items-start justify-center text-left',
+  split: 'items-center justify-center',
+};
+---
+
+<section
+  id={id}
+  data-slide
+  class:list={[
+    "slide w-full h-full flex flex-col overflow-hidden",
+    "px-[8vw] py-[8vh]",
+    bgMap[bg],
+    alignMap[align],
+    className,
+  ]}
+>
+  <slot />
+</section>

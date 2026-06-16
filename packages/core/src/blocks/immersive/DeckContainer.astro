@@ -1,0 +1,126 @@
+---
+/**
+ * DeckContainer — keynote presentation wrapper (no scroll).
+ * Stacks full-screen <Slide> children; the Deck controller handles horizontal
+ * slide transitions, presenter controls, fullscreen and animation activation.
+ * Minimal chrome: progress indicator + auto-hiding prev/next + fullscreen.
+ */
+interface Props {
+  /** URL of the next phase — reached by advancing past the last slide. */
+  nextHref?: string;
+  class?: string;
+}
+const { nextHref, class: className } = Astro.props;
+---
+
+<div
+  data-deck
+  data-deck-next={nextHref}
+  class:list={["deck fixed inset-0 overflow-hidden bg-[var(--surface-primary)]", className]}
+>
+  <slot />
+
+  <!-- Minimal, auto-hiding chrome -->
+  <div class="deck-chrome">
+    <!-- Fullscreen (top-right) -->
+    <button
+      type="button"
+      data-deck-fs
+      aria-label="Schermo intero"
+      class="deck-btn absolute top-[3vh] right-[3vw]"
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <!-- Bottom bar: prev · progress · next -->
+    <div class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 flex items-center gap-5">
+      <button type="button" data-deck-prev aria-label="Slide precedente" class="deck-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <span data-deck-progress class="deck-progress tabular-nums">01 / 01</span>
+      <button type="button" data-deck-next aria-label="Slide successiva" class="deck-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Projection typography — sized for reading at 4–8 m, not the laptop. */
+  .slide-eyebrow {
+    font-size: clamp(1.05rem, 1.3vw, 1.3rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .slide-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    font-weight: 300;
+  }
+  .slide-lead {
+    font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+    line-height: 1.32;
+  }
+  .slide-num {
+    font-family: var(--font-display);
+    font-size: clamp(6rem, 16vw, 16rem);
+    line-height: 0.9;
+    font-weight: 300;
+  }
+
+  /* Chrome */
+  .deck-chrome {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 40;
+    transition: opacity 0.3s ease;
+  }
+  .deck-idle .deck-chrome { opacity: 0; }
+  .deck-idle { cursor: none; }
+  .deck-btn {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    color: var(--ink-secondary);
+    background: color-mix(in srgb, var(--surface-primary) 70%, transparent);
+    border: 1px solid var(--line-subtle);
+    backdrop-filter: blur(6px);
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+  .deck-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  .deck-progress {
+    pointer-events: auto;
+    font-size: clamp(0.95rem, 1.1vw, 1.15rem);
+    letter-spacing: 0.18em;
+    font-weight: 500;
+    color: var(--ink-tertiary);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deck-chrome { transition: none; }
+  }
+</style>
+
+<script>
+  import { initDeck } from '@edf/core/blocks/immersive/deck';
+  const w = window as Window & { __edfDeck?: { destroy: () => void } };
+  function boot() { initDeck(); }
+  function teardown() { w.__edfDeck?.destroy(); }
+  boot();
+  document.addEventListener('astro:after-swap', boot);
+  document.addEventListener('astro:before-swap', teardown);
+</script>
