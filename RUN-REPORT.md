@@ -84,6 +84,21 @@
 **Issue:** `import.meta.env.BASE_URL` returns `/experience-design-factory` (no trailing slash). Concatenation like `${base}favicon.svg` produced `/experience-design-factoryfavicon.svg`.
 **Fix:** Added `.replace(/\/?$/, '/')` where BASE_URL is used in concatenation. Added `trailingSlash: 'always'` to Astro config.
 
+### Tailwind v4 monorepo @source (post-review fix)
+**Issue:** Tailwind v4 does not auto-scan pnpm-symlinked packages. Components in `packages/core/src/` used Tailwind utility classes (`hidden`, `md:flex`, `sticky`, `max-w-7xl`, etc.) but those classes were never generated in the CSS output. Result: no layout/spacing, navigation menu appeared twice (desktop `<ul>` not hidden on mobile).
+**Root cause:** Tailwind v4's content detection follows filesystem paths, not symlinks. The `@agargiulo-adbe/experience-core` workspace package is symlinked in `node_modules/` but its actual source lives in `../../packages/core/src/`, outside Tailwind's default scan scope.
+**Fix:** Added `@source` directives in `global.css` immediately after `@import "tailwindcss"`:
+```css
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+```
+**Verified:** CSS output now contains `.hidden`, `.flex`, `.sticky`, `md:flex`, `max-w-*`, etc. Nav renders once (desktop hidden on mobile, mobile hidden by default).
+
+### Internal links 404 with trailingSlash: 'always' (post-review fix)
+**Issue:** `trailingSlash: 'always'` in `astro.config.mjs` means Astro serves pages only at paths with trailing slash (e.g. `/experience-design-factory/acquisizione/`). But Navigation and hero CTA links were built without trailing slashes (e.g. `/experience-design-factory/acquisizione`), causing 404s in the dev server.
+**Root cause:** Manual string concatenation `${base}${href}` without normalizing slashes or ensuring trailing slash.
+**Fix:** Created centralized `packages/core/src/utils/url.ts` with `href(base, path)` helper that joins segments, deduplicates slashes, and always appends a trailing slash. Updated Navigation.astro and index.astro hero CTA to use it. All 8 pages now return HTTP 200.
+
 ---
 
 ## What to Review (mattina)
@@ -98,7 +113,6 @@
 - [ ] Factory Console (apps/console) — local SPA editor + Node backend
 - [ ] Self-host fonts (currently Google Fonts CDN)
 - [ ] Firefly/placeholder imagery for media slots (currently empty placeholders)
-- [ ] View Transitions between pages (Astro supports it, needs `<ViewTransitions />` in head)
 - [ ] EN locale content
 - [ ] Publish @agargiulo-adbe/experience-core to GitHub Packages
 - [ ] Template repository setup

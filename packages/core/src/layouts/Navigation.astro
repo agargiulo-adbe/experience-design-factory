@@ -1,4 +1,6 @@
 ---
+import { href as buildHref } from '../utils/url.js';
+
 interface NavItem {
   label: string;
   href: string;
@@ -12,17 +14,21 @@ interface Props {
 
 const { items, currentPath, base } = Astro.props;
 
-function isActive(href: string): boolean {
-  const fullHref = href === '/' ? base : `${base}${href}`;
-  if (href === '/') return currentPath === base || currentPath === `${base}/`;
-  return currentPath.startsWith(fullHref);
+function resolveHref(path: string): string {
+  return buildHref(base, path);
+}
+
+function isActive(path: string): boolean {
+  const resolved = resolveHref(path);
+  if (path === '/') return currentPath === resolved || currentPath === resolved.replace(/\/$/, '');
+  return currentPath.startsWith(resolved);
 }
 ---
 
 <header class="sticky top-0 z-50 bg-[var(--surface-primary)]/95 backdrop-blur-sm border-b border-[var(--line-subtle)]" role="banner">
   <nav class="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between" aria-label="Navigazione principale">
     <!-- Logo / Brand -->
-    <a href={base} class="flex items-center gap-3 no-underline group">
+    <a href={resolveHref('/')} class="flex items-center gap-3 no-underline group">
       <span class="font-[family-name:var(--font-display)] text-lg font-light text-[var(--ink-primary)] tracking-tight group-hover:text-[var(--accent-primary)] transition-colors">
         Generazioni
       </span>
@@ -31,7 +37,7 @@ function isActive(href: string): boolean {
     <!-- Desktop nav -->
     <ul class="hidden md:flex items-center gap-1" role="list">
       {items.map((item) => {
-        const href = item.href === '/' ? base : `${base}${item.href}`;
+        const href = resolveHref(item.href);
         const active = isActive(item.href);
         return (
           <li>
@@ -72,7 +78,7 @@ function isActive(href: string): boolean {
   <div id="mobile-nav" class="md:hidden hidden bg-[var(--surface-primary)] border-b border-[var(--line-subtle)]">
     <ul class="px-6 py-4 space-y-1" role="list">
       {items.map((item) => {
-        const href = item.href === '/' ? base : `${base}${item.href}`;
+        const href = resolveHref(item.href);
         const active = isActive(item.href);
         return (
           <li>
