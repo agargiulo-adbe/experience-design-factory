@@ -44,3 +44,17 @@ reads fine without opening it (self-sufficient on screen for the live telling).
 - **Safe-area absolute** — every slide fits whole at 1920×1080, centred, no clipping.
   If it doesn't fit, SPLIT into two slides.
 - **prefers-reduced-motion** respected everywhere (final static states).
+
+## Layout contract & visual audit
+Every slide must pass `pnpm --filter generazioni-maxmara audit:deck` (Playwright,
+1920×1080) — 4 deterministic DOM checks: (1) significant text centre in the [30%,70%]
+band; (2) no collision with deck chrome; (3) margins ≥ `--slide-safe-inset`, no overflow;
+(4) no text over an image's `data-no-text` zone, and any text over an image has a
+`[data-scrim]`. Failures save a screenshot to `audit/acquisizione/<slide-id>.png`.
+
+Notes baked into the slides:
+- Slide 3 is a **split** (text column centred in-band, data-lake viz fills the other
+  column) — a stacked title+visual+lead would push text out of the band.
+- Slide 1's atmosphere is full-bleed behind text → it carries a `data-scrim` overlay.
+- Portraits and the IG product image carry `data-no-text` face/subject zones.
+- Safe-area tokens live in `global.css` (`--slide-safe-inset`, `--deck-chrome-safe`).

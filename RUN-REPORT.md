@@ -1,6 +1,6 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase I — Acquisizione: cover cinematografica + layer "Come funziona" + correzioni di sostanza (in revisione) ⏳
+## Status: Phase J — Visual feedback loop (gli "occhi") + auto-correzione layout Acquisizione (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
@@ -8,6 +8,47 @@
 **Phase G:** 2026-06-16 — pipeline asset programmatica (manifest → Pexels + sharp → MediaSlot); in attesa di revisione
 **Phase H:** 2026-06-16 — Acquisizione rifinita come riferimento d'oro del deck (persona-led + area sicura); in attesa di revisione
 **Phase I:** 2026-06-16 — cover cinematografica, layer "Come funziona", correzioni di sostanza (Whitney, fonti); in attesa di revisione
+**Phase J:** 2026-06-16 — Claude Code "vede" il proprio output e si auto-corregge sui difetti di layout del deck a 1920×1080; in attesa di revisione
+
+---
+
+## Phase J — Visual feedback loop + auto-correzione layout
+
+### Stadio 1 — Gli "occhi" (Playwright, locale e gratuito)
+- Installato **Playwright MCP** (`claude mcp add playwright …` → Connected) + binari
+  Chromium (`npx playwright install chromium`). Nessun blocco di rete @adobe.com.
+- `CLAUDE.md`: blocco **"Deck visual contract"** — API dei componenti deck, brief
+  quiet-luxury, e la checklist dei 4 difetti.
+
+### Stadio 2 — Check DOM deterministici + loop di auto-correzione
+- **`scripts/deck-audit.ts`** (Playwright headless, 1920×1080, reduced-motion per layout
+  stabile): naviga le 8 slide, misura i bounding box, stampa PASS/FAIL per slide+check,
+  salva screenshot SOLO per le slide che falliscono (`audit/acquisizione/<id>.png`), exit≠0
+  se almeno un FAIL. Script `audit:deck`. I 4 check: (a) testo nella fascia centrale
+  [30%,70%]; (b) nessuna collisione col chrome; (c) margini ≥ `--slide-safe-inset` + niente
+  overflow; (d) niente testo sui volti (`data-no-text`) + scrim obbligatorio sopra le immagini.
+- **Loop eseguito**: 21 FAIL → 0 FAIL su tutte le 8 slide. Bug trovati e corretti nel sorgente:
+  1. Padding area-sicura non applicato (Tailwind non genera `max(var(...))`) → spostato in
+     inline style su `Slide`; contenuto **centrato verticalmente** (`justify-center`).
+     Risolve "testo troppo in alto", "margini mancanti" e "testo coperto dai bottoni"
+     (banda chrome riservata in basso).
+  2. Slide 3 (data-lake) era stacked title+visual+lead → **convertita in split** (testo
+     centrato nella fascia, viz nella colonna). 
+  3. Slide 1: aggiunto `data-scrim` sull'atmosfera (testo-su-immagine richiede scrim).
+  4. `MediaSlot.noText` (zone `data-no-text` su volti/soggetti) su ritratti + post IG.
+  5. Fix del check (b): selezionavo anche il root `[data-deck-next]` (full viewport) → ora
+     solo i `button[...]` del chrome.
+
+### Token di area-sicura
+`global.css`: `--slide-safe-inset` (gutter su tutti i lati) e `--deck-chrome-safe` (banda
+bassa riservata al chrome), in px fissi così `deck-audit.ts` può leggerli.
+
+### Verifica Phase J
+- `pnpm build` (8 pagine) e `pnpm typecheck` **verdi**.
+- `pnpm --filter generazioni-maxmara audit:deck` → **PASS, 0 FAIL** su tutte le 8 slide.
+- Conferma visiva (screenshot Playwright) di cover, data-lake e payoff: layout pulito,
+  testo nella fascia, margini, contrasto su cammello, volti protetti.
+- **In attesa di revisione: NON propagato alle altre fasi.**
 
 ---
 

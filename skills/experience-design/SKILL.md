@@ -162,6 +162,34 @@ use `modulate({saturation:0})` (keeps 3 bands) — `grayscale()` collapses to 1 
 `.env.example`); it must never reach the static site or CI. **Commit the generated webp +
 provenance.json** so the site builds without the key — generation is a deliberate local step.
 
+## Visual self-audit (give the deck "eyes")
+Don't trust the eye — **measure**. The **playwright MCP** gives interactive browser
+tools (browser_resize to 1920×1080, browser_evaluate, screenshots); `scripts/deck-audit.ts`
+is the deterministic gate run headless (`pnpm --filter <client> audit:deck`, dev server up).
+
+It navigates the deck slide-by-slide at 1920×1080 (reduced-motion for stable layout),
+measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
+to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 4 checks:**
+1. **text not too high** — significant text (font-size ≥ 24px) centre within the central
+   band [30%,70%]; never anchored near the top (guard at 18%).
+2. **chrome collision** — no content text intersects the controls (target the `button[...]`
+   controls, NOT the deck root which also carries `data-deck-next`).
+3. **margins / overflow** — no content/media box past `--slide-safe-inset`; no element with
+   `scrollWidth > clientWidth`.
+4. **text over faces** — no text intersects an image's `data-no-text` zone; text over an
+   image needs a `[data-scrim]`.
+
+**Auto-correction loop:** run the audit → for each FAIL read the screenshot, fix the
+**component/page source** (not inline patches), re-run → iterate until 0 FAIL.
+
+Conventions this relies on:
+- **Safe-area tokens** in `global.css` (fixed px so JS can read them): `--slide-safe-inset`
+  (all-sides gutter), `--deck-chrome-safe` (bottom band). `Slide` applies them via inline
+  style + `justify-center` — Tailwind does NOT reliably emit `max(var(...))` arbitrary values.
+- **`data-no-text="top,left,width,height"`** (%) — face/subject zone on `MediaSlot`
+  (and forwarded by `InstagramPost`); add to any subject image so text can't fall on a face.
+- **`data-scrim`** — mark the overlay behind text that sits over a full-bleed image.
+
 ## Stack & conventions (must-know)
 - **Astro 6** static site + **View Transitions** (multipage immersion). Re-init animations on `astro:after-swap`.
 - **Tailwind v4** via `@tailwindcss/vite` (NOT `@astrojs/tailwind`). In a monorepo, Tailwind does NOT scan pnpm-symlinked packages — add `@source` directives in `global.css` pointing at `packages/core/src/**` and the app's own `src/**`.
