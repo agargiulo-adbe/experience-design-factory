@@ -526,12 +526,13 @@ export async function initStackAssemble(container: HTMLElement) {
   if (!stacks.length) return;
 
   if (REDUCED_MOTION) {
+    // Elements are centred on their anchor via translate(-50%,-50%); keep it.
     stacks.forEach(s => {
       const core = s.querySelector<HTMLElement>('.stack-core');
-      if (core) { core.style.opacity = '1'; core.style.transform = 'none'; }
+      if (core) { core.style.opacity = '1'; core.style.transform = 'translate(-50%, -50%)'; }
       s.querySelectorAll<HTMLElement>('.stack-product').forEach(p => {
         p.style.opacity = '1';
-        p.style.transform = 'none';
+        p.style.transform = 'translate(-50%, -50%)';
       });
     });
     return;
