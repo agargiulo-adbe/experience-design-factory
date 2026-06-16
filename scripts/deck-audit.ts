@@ -21,10 +21,14 @@ import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import * as path from 'node:path';
 
-const ROUTE = '/experience-design-factory/acquisizione/';
+// Every keynote-deck route to gate (each must hold the a–k + exp invariants).
+const ROUTES: Array<{ name: string; route: string }> = [
+  { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
+  { name: 'engagement', route: '/experience-design-factory/engagement/' },
+];
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
 const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
-const OUT_DIR = path.resolve(process.cwd(), 'audit/acquisizione');
+const OUT_BASE = path.resolve(process.cwd(), 'audit');
 
 async function findBaseUrl(): Promise<string> {
   const fromEnv = process.env.DECK_URL;
@@ -32,7 +36,7 @@ async function findBaseUrl(): Promise<string> {
   for (let port = 4321; port <= 4332; port++) {
     const url = `http://localhost:${port}`;
     try {
-      const res = await fetch(url + ROUTE, { method: 'HEAD' });
+      const res = await fetch(url + ROUTES[0].route, { method: 'HEAD' });
       if (res.ok || res.status === 200) return url;
     } catch { /* port not listening */ }
   }
@@ -221,11 +225,11 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
   };
 }
 
-async function auditViewport(browser: import('playwright').Browser, base: string, W: number, H: number) {
+async function auditViewport(browser: import('playwright').Browser, base: string, route: string, outDir: string, W: number, H: number) {
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   await page.addInitScript(() => { (window as unknown as { __name: (f: unknown) => unknown }).__name = (f) => f; });
-  await page.goto(base + ROUTE, { waitUntil: 'networkidle' });
+  await page.goto(base + route, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => (window as unknown as { __edfDeck?: unknown }).__edfDeck !== undefined, { timeout: 8000 });
 
   const tokens = await page.evaluate(() => {
@@ -265,7 +269,7 @@ async function auditViewport(browser: import('playwright').Browser, base: string
     const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, exp };
     const order = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'exp'];
     const failed = order.filter((key) => !results[key].pass);
-    if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(OUT_DIR, `${W}x${H}-${id}.png`) }); }
+    if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(outDir, `${W}x${H}-${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +
       order.map((key) => `${key}:${results[key].pass ? 'ok' : 'F'}`).join(' '));
     if (!r.a.pass) lines.push(`     a → ${JSON.stringify(r.a.fails)}`);
@@ -286,19 +290,28 @@ async function auditViewport(browser: import('playwright').Browser, base: string
 
 async function main() {
   const base = await findBaseUrl();
-  await mkdir(OUT_DIR, { recursive: true });
   const browser = await chromium.launch();
   let totalFails = 0;
-  const blocks: string[] = [];
-  for (const [W, H] of VIEWPORTS) {
-    const { lines, fails } = await auditViewport(browser, base, W, H);
-    totalFails += fails;
-    blocks.push(`\n=== ${W}×${H} ===\n${lines.join('\n')}`);
+  // Optional route filter: `audit:deck engagement` audits only that route.
+  const filter = process.argv.slice(2).filter((a) => !a.startsWith('-'));
+  const routes = filter.length ? ROUTES.filter((r) => filter.includes(r.name)) : ROUTES;
+
+  for (const { name, route } of routes) {
+    const outDir = path.join(OUT_BASE, name);
+    await mkdir(outDir, { recursive: true });
+    const blocks: string[] = [];
+    let routeFails = 0;
+    for (const [W, H] of VIEWPORTS) {
+      const { lines, fails } = await auditViewport(browser, base, route, outDir, W, H);
+      routeFails += fails; totalFails += fails;
+      blocks.push(`\n=== ${W}×${H} ===\n${lines.join('\n')}`);
+    }
+    console.log(`\n━━━ ${name} · ${base}${route} · checks a–k + exp · ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')} ━━━`);
+    console.log(blocks.join('\n'));
+    console.log(routeFails === 0 ? `✓ ${name}: PASS — all slides clean at ALL viewports` : `✗ ${name}: ${routeFails} check failure(s) — see audit/${name}/`);
   }
   await browser.close();
-  console.log(`\ndeck-audit · ${base}${ROUTE} · checks a–k + exp · viewports ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')}`);
-  console.log(blocks.join('\n'));
-  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean at ALL viewports (a–k, "Scopri come" expanded inline)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
+  console.log(`\n${totalFails === 0 ? 'PASS — all decks clean at ALL viewports (a–k, "Scopri come" expanded inline)' : `FAIL — ${totalFails} check failure(s) total`}\n`);
   process.exit(totalFails === 0 ? 0 : 1);
 }
 
