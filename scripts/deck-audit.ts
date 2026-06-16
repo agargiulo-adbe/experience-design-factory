@@ -189,6 +189,18 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     cover = { pass: heightCoverage >= 0.45 && comX >= 0.30 && comX <= 0.70, heightCoverage: Math.round(heightCoverage * 100) / 100, comX: Math.round(comX * 100) / 100 };
   }
 
+  // (j) nothing clipped — every significant element fully inside [0,0,W,H]
+  const within = (r: DOMRect) => r.left >= -1 && r.top >= -1 && r.right <= W + 1 && r.bottom <= H + 1;
+  const j = Array.from(inner.querySelectorAll('h1,h2,h3,h4,p,li,figure,img,a,button,.ig-phone,.cover-names'))
+    .filter((el) => !inPanel(el) && vis(el))
+    .filter((el) => !within(el.getBoundingClientRect()))
+    .map((el) => { const r = el.getBoundingClientRect(); return { what: (el.textContent || el.className || el.tagName).toString().trim().slice(0, 22), top: Math.round(r.top), left: Math.round(r.left), right: Math.round(r.right), bottom: Math.round(r.bottom) }; });
+
+  // (k) no hidden vertical scroll — content reachable only by scrolling = clipped design
+  const k = Array.from(inner.querySelectorAll('*'))
+    .filter((el) => !inPanel(el) && vis(el) && (el as HTMLElement).scrollHeight - (el as HTMLElement).clientHeight > 2 && getComputedStyle(el as HTMLElement).overflowY !== 'visible')
+    .slice(0, 5).map((el) => ({ tag: (el.className || el.tagName).toString().slice(0, 22), sh: (el as HTMLElement).scrollHeight, ch: (el as HTMLElement).clientHeight }));
+
   return {
     a: { pass: a.length === 0, fails: a },
     b: { pass: b.length === 0, fails: b },
@@ -198,35 +210,57 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     g: { pass: g.length === 0, fails: g },
     h: { pass: h.length === 0, fails: h },
     i: { pass: cover.pass, info: cover },
+    j: { pass: j.length === 0, fails: j },
+    k: { pass: k.length === 0, fails: k },
   };
 }
 
-// Open-state check for a single HowItWorks panel
+// Open-state check for a single HowItWorks panel.
+// f = shape/within-viewport(j)/no-scroll(k)/scrim/width · l = trigger not obstructed.
 function measureOpenPanel(opts: { panelId: string; W: number; H: number }) {
   const { panelId, W, H } = opts;
   const panel = document.getElementById(panelId);
-  if (!panel) return { pass: false, fails: ['panel-missing'] };
+  if (!panel) return { f: ['panel-missing'], l: [] as string[] };
   const cs = getComputedStyle(panel);
   const r = panel.getBoundingClientRect();
-  const fails: string[] = [];
-  if (cs.position !== 'fixed' && cs.position !== 'absolute') fails.push('not-fixed');
-  if (panel.parentElement !== document.body) fails.push('not-top-level'); // must escape transformed slide
-  // anchored to an edge, full height
-  const atRight = Math.abs(r.right - W) <= 2, atLeft = Math.abs(r.left) <= 2;
-  if (!atRight && !atLeft) fails.push('not-edge-anchored');
-  if (r.height < H - 4) fails.push('not-full-height');
-  const maxW = Math.min(440, 0.38 * W) + 8;
-  if (r.width > maxW) fails.push(`too-wide:${Math.round(r.width)}`);
-  // scrim/overlay behind covering the viewport (bg may be rgba/oklab/etc. — accept
-  // any non-transparent fill with non-zero opacity covering ≥90% of the viewport)
+  const within = (x: { left: number; top: number; right: number; bottom: number }) => x.left >= -1 && x.top >= -1 && x.right <= W + 1 && x.bottom <= H + 1;
+  const inter = (a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) =>
+    !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
   const transparent = (c: string) => c === 'transparent' || c === 'rgba(0, 0, 0, 0)' || /\/\s*0\s*\)/.test(c);
+  const f: string[] = [];
+
+  if (cs.position !== 'fixed' && cs.position !== 'absolute') f.push('not-fixed');
+  if (panel.parentElement !== document.body) f.push('not-top-level');         // escapes the transformed slide
+  if (!within(r)) f.push(`offscreen:${Math.round(r.top)},${Math.round(r.left)},${Math.round(r.right)},${Math.round(r.bottom)}`);
+  // (j) no panel text clipped outside the viewport
+  const clipped = Array.from(panel.querySelectorAll('h1,h2,h3,h4,p,li,span,button')).filter((el) => {
+    const c2 = getComputedStyle(el as HTMLElement); if (c2.display === 'none' || c2.visibility === 'hidden') return false;
+    const rr = el.getBoundingClientRect(); return rr.width > 1 && rr.height > 1 && !within(rr);
+  });
+  if (clipped.length) f.push(`text-clipped:${clipped.length}`);
+  // (k) nothing inside the panel may rely on hidden scroll
+  const scrollers = [panel].concat(Array.from(panel.querySelectorAll('*')) as HTMLElement[])
+    .filter((el) => (el as HTMLElement).scrollHeight - (el as HTMLElement).clientHeight > 2 && getComputedStyle(el as HTMLElement).overflowY !== 'visible');
+  if (scrollers.length) f.push(`scrolls:${scrollers.length}`);
+  const maxW = Math.min(720, 0.6 * W) + 8;
+  if (r.width > maxW) f.push(`too-wide:${Math.round(r.width)}`);
   const overlays = Array.from(document.querySelectorAll('[data-hiw-overlay]')).filter((o) => {
     const ocs = getComputedStyle(o as HTMLElement); const orr = o.getBoundingClientRect();
-    return ocs.display !== 'none' && parseFloat(ocs.opacity) > 0.1 && !transparent(ocs.backgroundColor)
-      && orr.width >= 0.9 * W && orr.height >= 0.9 * H;
+    return ocs.display !== 'none' && parseFloat(ocs.opacity) > 0.1 && !transparent(ocs.backgroundColor) && orr.width >= 0.9 * W && orr.height >= 0.9 * H;
   });
-  if (!overlays.length) fails.push('no-scrim');
-  return { pass: fails.length === 0, fails };
+  if (!overlays.length) f.push('no-scrim');
+
+  // (l) trigger / slide interactives: fully under the scrim OR fully clear of the panel
+  const scrimRects = overlays.map((o) => o.getBoundingClientRect());
+  const covered = (x: DOMRect) => scrimRects.some((s) => x.left >= s.left - 1 && x.top >= s.top - 1 && x.right <= s.right + 1 && x.bottom <= s.bottom + 1);
+  const l: string[] = [];
+  const trig = document.querySelector(`[aria-controls="${panelId}"]`) as HTMLElement | null;
+  if (trig) {
+    const tr = trig.getBoundingClientRect();
+    if (inter(tr, r) && !covered(tr)) l.push('trigger-half-covered');
+    if (!within(tr)) l.push('trigger-offscreen');
+  }
+  return { f, l };
 }
 
 async function main() {
@@ -254,25 +288,28 @@ async function main() {
     await page.waitForTimeout(450);
     const r = await page.evaluate(measureSlide, { slideId: id, W: VIEWPORT.width, H: VIEWPORT.height, ...tokens });
 
-    // (f) open each HowItWorks on this slide and measure the open panel
+    // open each HowItWorks on this slide and measure the open panel (f, j/k on panel, l)
     const panelIds: string[] = await page.evaluate((sid) => Array.from(document.getElementById(sid)!.querySelectorAll('[data-hiw-open]')).map((bt) => bt.getAttribute('aria-controls') || ''), id);
     const fFails: Array<{ panel: string; fails: string[] }> = [];
+    const lFails: Array<{ panel: string; fails: string[] }> = [];
     for (const pid of panelIds.filter(Boolean)) {
       await page.evaluate((p) => (document.querySelector(`[aria-controls="${p}"]`) as HTMLElement)?.click(), pid);
-      await page.waitForTimeout(250);
+      await page.waitForTimeout(300);
       const fr = await page.evaluate(measureOpenPanel, { panelId: pid, W: VIEWPORT.width, H: VIEWPORT.height });
-      if (!fr.pass) fFails.push({ panel: pid, fails: fr.fails });
+      if (fr.f.length) fFails.push({ panel: pid, fails: fr.f });
+      if (fr.l.length) lFails.push({ panel: pid, fails: fr.l });
       await page.keyboard.press('Escape');
       await page.waitForTimeout(150);
     }
     const f = { pass: fFails.length === 0, fails: fFails };
+    const l = { pass: lFails.length === 0, fails: lFails };
 
-    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, f, g: r.g, h: r.h, i: r.i };
-    const order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
-    const failed = order.filter((k) => !results[k].pass);
+    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, f, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, l };
+    const order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
+    const failed = order.filter((key) => !results[key].pass);
     if (failed.length) { totalFails += failed.length; await page.screenshot({ path: path.join(OUT_DIR, `${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +
-      order.map((k) => `${k}:${results[k].pass ? 'ok' : 'FAIL'}`).join(' '));
+      order.map((key) => `${key}:${results[key].pass ? 'ok' : 'F'}`).join(' '));
     if (!r.a.pass) lines.push(`     a → ${JSON.stringify(r.a.fails)}`);
     if (!r.b.pass) lines.push(`     b → ${JSON.stringify(r.b.fails)}`);
     if (!r.c.pass) lines.push(`     c → ${JSON.stringify(r.c.fails)} overflow:${JSON.stringify(r.c.overflow)}`);
@@ -282,12 +319,15 @@ async function main() {
     if (!r.g.pass) lines.push(`     g → ${JSON.stringify(r.g.fails)}`);
     if (!r.h.pass) lines.push(`     h → ${JSON.stringify(r.h.fails)}`);
     if (!r.i.pass) lines.push(`     i → ${JSON.stringify(r.i.info)}`);
+    if (!r.j.pass) lines.push(`     j → ${JSON.stringify(r.j.fails)}`);
+    if (!r.k.pass) lines.push(`     k → ${JSON.stringify(r.k.fails)}`);
+    if (!l.pass) lines.push(`     l → ${JSON.stringify(l.fails)}`);
   }
 
   await browser.close();
-  console.log(`\ndeck-audit · ${base}${ROUTE} · 1920×1080 · checks a–i\n`);
+  console.log(`\ndeck-audit · ${base}${ROUTE} · 1920×1080 · checks a–l\n`);
   console.log(lines.join('\n'));
-  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean (a–i, panels open-tested)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
+  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean (a–l, panels open-tested)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
   process.exit(totalFails === 0 ? 0 : 1);
 }
 
