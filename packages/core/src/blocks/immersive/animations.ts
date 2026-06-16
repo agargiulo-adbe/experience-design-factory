@@ -667,6 +667,10 @@ export function prepareSlide(slide: HTMLElement) {
       if (knot) knot.style.opacity = '0';
     }
   }
+  // Atmospheric parallax: over-scaled so the drift never reveals an edge.
+  slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+    el.style.transform = REDUCED_MOTION ? 'scale(1.04)' : 'scale(1.06) translateX(16px)';
+  });
 }
 
 /** Animate everything in a slide. Safe to call repeatedly (replay). */
@@ -753,6 +757,10 @@ export async function playSlide(slide: HTMLElement) {
     if (thread) tl.to(thread, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, 0.45);
     if (knot) tl.to(knot, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '>-0.25');
   }
+  // Atmospheric parallax: a quiet drift on activation (stays over-scaled to cover).
+  slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
+    gsap.fromTo(el, { scale: 1.06, x: 16 }, { scale: 1.06, x: 0, duration: 1.6, ease: 'power2.out' });
+  });
 }
 
 // ── Master init: call all animation initializers ────────────────────

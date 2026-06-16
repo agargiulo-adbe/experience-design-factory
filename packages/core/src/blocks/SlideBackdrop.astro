@@ -1,0 +1,31 @@
+---
+/**
+ * SlideBackdrop — atmospheric textile background for an otherwise-flat slide.
+ * Goes in a Slide's `backdrop` named slot (BEHIND the content, outside .slide-inner
+ * so it is NOT measured by the audit). ALWAYS sits under a scrim strong enough to
+ * keep the text WCAG-AA (invariant h). A subtle parallax (data-parallax) drifts it
+ * on slide activation; reduced-motion = static. The image is over-scaled (1.06) so
+ * the drift never reveals an edge.
+ *
+ *   <SlideBackdrop slot="backdrop" {...mediaProps('bg-linen')} scrim="bg-[var(--surface-secondary)]/72" />
+ */
+import MediaSlot from './MediaSlot.astro';
+import type { ImageMetadata } from 'astro';
+import type { AssetSlot } from '@edf/core/assets/types';
+
+interface Props {
+  media: AssetSlot;
+  src?: ImageMetadata | null;
+  /** Tailwind opacity class for the image. */
+  imageClass?: string;
+  /** Scrim layer class — must guarantee WCAG-AA on the text above. */
+  scrim?: string;
+}
+const { media, src = null, imageClass = 'opacity-25', scrim = 'bg-[var(--surface-secondary)]/72' } = Astro.props;
+---
+<div class="slide-backdrop absolute inset-0 overflow-hidden" aria-hidden="true">
+  <div data-parallax class="absolute inset-0 will-change-transform">
+    <MediaSlot media={media} src={src} fill class={imageClass} />
+  </div>
+  <div data-scrim class:list={["absolute inset-0", scrim]}></div>
+</div>
