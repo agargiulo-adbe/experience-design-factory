@@ -677,6 +677,16 @@ export function prepareSlide(slide: HTMLElement) {
       items.forEach(el => { el.style.opacity = '0'; el.style.transform = 'scale(0.9)'; });
     }
   }
+  // Converse (chat bubbles appear one by one) — deck variant.
+  const conv = slide.querySelector<HTMLElement>('[data-converse]');
+  if (conv) {
+    const bubbles = conv.querySelectorAll<HTMLElement>('.chat-bubble');
+    if (REDUCED_MOTION) {
+      bubbles.forEach(b => { b.style.opacity = '1'; b.style.transform = 'none'; });
+    } else {
+      bubbles.forEach(b => { const fromIn = b.dataset.side === 'in'; b.style.opacity = '0'; b.style.transform = `translate(${fromIn ? -24 : 24}px, 16px)`; });
+    }
+  }
   // Atmospheric parallax: over-scaled so the drift never reveals an edge.
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
     el.style.transform = REDUCED_MOTION ? 'scale(1.04)' : 'scale(1.06) translateX(16px)';
@@ -777,6 +787,12 @@ export async function playSlide(slide: HTMLElement) {
     tl.to(items, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.05, ease: 'power3.out' });
     tl.to(others, { opacity: 0.2, scale: 0.95, duration: 0.6, ease: 'power2.inOut' }, '+=0.4');
     tl.to(matches, { scale: 1.04, duration: 0.5, ease: 'back.out(2)' }, '<');
+  }
+  // Converse — bubbles appear one by one, alternating sides
+  const conv = slide.querySelector<HTMLElement>('[data-converse]');
+  if (conv) {
+    const bubbles = Array.from(conv.querySelectorAll<HTMLElement>('.chat-bubble'));
+    gsap.to(bubbles, { opacity: 1, x: 0, y: 0, duration: 0.55, stagger: 0.5, delay: 0.25, ease: 'power3.out' });
   }
   // Atmospheric parallax: a quiet drift on activation (stays over-scaled to cover).
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
