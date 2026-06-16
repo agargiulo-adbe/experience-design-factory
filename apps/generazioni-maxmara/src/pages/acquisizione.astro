@@ -30,7 +30,7 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
     <!-- ── SLIDE 1: Apertura fase ────────────────────────────────── -->
     <Slide id="slide-apertura" bg="secondary" align="center">
       <MediaSlot slot="backdrop" {...mediaProps('acquisizione-atmosfera')} fill loading="eager" class="opacity-30" />
-      <div slot="backdrop" class="absolute inset-0 bg-[var(--surface-secondary)]/55" aria-hidden="true"></div>
+      <div slot="backdrop" data-scrim class="absolute inset-0 bg-[var(--surface-secondary)]/55" aria-hidden="true"></div>
 
       <p class="slide-eyebrow text-[var(--accent-primary)] mb-6" data-reveal>Fase 1 · Acquisizione</p>
       <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-4" style="font-size: clamp(3rem, 7vw, 7rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">01</p>
@@ -48,7 +48,7 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
       <div class="w-full flex-1 min-h-0 grid md:grid-cols-[0.85fr_1fr] gap-10 md:gap-16 items-center">
         <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.15">
           <div class="relative h-full max-h-[70vh] aspect-[4/5] rounded-lg overflow-hidden shadow-xl bg-[var(--accent-primary)] mx-auto">
-            <MediaSlot {...mediaProps('persona-giulia')} fill loading="eager" />
+            <MediaSlot {...mediaProps('persona-giulia')} fill loading="eager" noText="4,12,76,64" />
           </div>
         </div>
         <div class="text-left">
@@ -61,43 +61,46 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
       </div>
     </Slide>
 
-    <!-- ── SLIDE 3: Il problema → profili ────────────────────────── -->
-    <Slide id="slide-datalake" bg="primary" align="center">
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>Il punto di partenza</p>
-      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2.1rem, 4vw, 3.5rem);" data-reveal data-reveal-delay="0.1">
-        Max Mara ha i dati. Non ancora le persone.
-      </h2>
-
-      <div class="relative w-full max-w-[1000px] flex-1 min-h-0 mx-auto my-2" data-datalake>
-        {dots.map((d) => (
-          <div class="data-dot absolute left-1/2 top-1/2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[var(--accent-primary)]" data-dx={d.dx} data-dy={d.dy} />
-        ))}
-        <div class="absolute inset-0 flex items-center justify-center gap-10 md:gap-16">
-          <div class="profile-circle flex flex-col items-center gap-3">
-            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-lg">
-              <MediaSlot {...mediaProps('persona-giulia')} fill />
-            </div>
-            <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-          </div>
-          <div class="profile-circle flex flex-col items-center gap-3">
-            <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-lg">
-              <MediaSlot {...mediaProps('persona-francesca')} fill />
-            </div>
-            <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
-          </div>
-        </div>
-      </div>
-
-      <p class="slide-lead text-[var(--ink-tertiary)] max-w-3xl mx-auto mt-2" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.2">
-        I dati vivono in un lago silenzioso, slegati. Real-Time CDP li ricompone in profili vivi: Giulia smette di essere un numero e diventa qualcuno da raggiungere.
-      </p>
-      <div class="mt-5 flex flex-col items-center gap-2" data-reveal data-reveal-delay="0.3">
-        <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-tertiary)]">Il CRM e i sistemi attuali non si sostituiscono — si collegano.</p>
-        <HowItWorks title="Dal data lake ai profili">
+    <!-- ── SLIDE 3: Il problema → profili (split: testo + viz) ───── -->
+    <Slide id="slide-datalake" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>Il punto di partenza</p>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2rem, 3.4vw, 3.25rem);" data-reveal data-reveal-delay="0.1">
+            Max Mara ha i dati. Non ancora le persone.
+          </h2>
+          <p class="slide-lead text-[var(--ink-secondary)] mb-4" style="font-size: clamp(1.15rem, 1.6vw, 1.5rem);" data-reveal data-reveal-delay="0.2">
+            I dati vivono in un lago silenzioso, slegati. Real-Time CDP li ricompone in profili vivi: Giulia smette di essere un numero e diventa qualcuno da raggiungere.
+          </p>
+          <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-tertiary)] mb-4" data-reveal data-reveal-delay="0.28">Il CRM e i sistemi attuali non si sostituiscono — si collegano.</p>
+          <div data-reveal data-reveal-delay="0.34">
+          <HowItWorks title="Dal data lake ai profili">
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed mb-4">Oggi i dati di Max Mara vivono separati: e-commerce, CRM, punto vendita, campagne. <strong class="text-[var(--ink-primary)] font-semibold">Real-Time CDP</strong> li unifica in un unico profilo vivo per ogni cliente.</p>
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed mb-4">Non sostituisce i sistemi attuali: li collega. Il CRM e gli strumenti che già usate restano — la piattaforma li mette in dialogo, in tempo reale.</p>
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed">E permette di trovare nuove clienti come Giulia in modo privacy-safe, collaborando con i dati dei partner in ambienti protetti (clean room), senza scambiare dati grezzi.</p>
-        </HowItWorks>
+          </HowItWorks>
+          </div>
+        </div>
+
+        <div class="relative h-full min-h-0" data-datalake>
+          {dots.map((d) => (
+            <div class="data-dot absolute left-1/2 top-1/2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[var(--accent-primary)]" data-dx={d.dx} data-dy={d.dy} />
+          ))}
+          <div class="absolute inset-0 flex items-center justify-center gap-8 md:gap-12">
+            <div class="profile-circle flex flex-col items-center gap-3">
+              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-lg">
+                <MediaSlot {...mediaProps('persona-giulia')} fill noText="6,14,72,58" />
+              </div>
+              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
+            </div>
+            <div class="profile-circle flex flex-col items-center gap-3">
+              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-lg">
+                <MediaSlot {...mediaProps('persona-francesca')} fill noText="6,14,72,58" />
+              </div>
+              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Slide>
 

@@ -20,17 +20,20 @@ interface Props {
   src?: ImageMetadata | null;
   /** Fill the (positioned) parent instead of using the slot aspect-ratio box. */
   fill?: boolean;
+  /** Protected subject/face zone as "top,left,width,height" in % — no text may
+   *  overlap it (checked by scripts/deck-audit.ts). */
+  noText?: string;
   class?: string;
   sizes?: string;
   loading?: 'lazy' | 'eager';
 }
 
-const { media, src = null, fill = false, class: className, sizes = '100vw', loading = 'lazy' } = Astro.props;
+const { media, src = null, fill = false, noText, class: className, sizes = '100vw', loading = 'lazy' } = Astro.props;
 const ratioStyle = fill ? undefined : `aspect-ratio:${ASPECT_CSS[media.aspect]}`;
 const boxClass = fill ? 'absolute inset-0' : 'relative w-full';
 ---
 {src ? (
-  <figure class:list={["ms-media overflow-hidden block", boxClass, className]} style={ratioStyle}>
+  <figure class:list={["ms-media overflow-hidden block", boxClass, className]} style={ratioStyle} data-no-text={noText}>
     <Picture
       src={src}
       formats={['avif', 'webp']}

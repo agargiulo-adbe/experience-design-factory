@@ -29,8 +29,14 @@ const bgMap = {
 const innerAlign = {
   center: 'items-center text-center',
   left: 'items-start text-left',
-  split: 'items-center',
+  split: 'items-stretch',
 };
+// Token-driven safe-area gutters (inline style: Tailwind doesn't generate
+// arbitrary `max(var(...))` reliably). Bottom reserves the deck chrome band.
+const safePadding =
+  'padding-inline: max(var(--slide-safe-inset), 6vw);' +
+  'padding-top: max(var(--slide-safe-inset), 7vh);' +
+  'padding-bottom: max(var(--deck-chrome-safe), 7vh);';
 ---
 
 <section
@@ -39,10 +45,10 @@ const innerAlign = {
   class:list={["slide relative w-full h-[100dvh] overflow-hidden", bgMap[bg], className]}
 >
   <slot name="backdrop" />
-  <!-- Safe area: ~8% margins on every edge -->
-  <div class="absolute inset-0 px-[8vw] py-[8vh] flex">
-    <!-- Centred, height-constrained content box -->
-    <div class:list={["slide-inner m-auto w-full max-h-full min-h-0 flex flex-col", innerAlign[align]]}>
+  <!-- Safe area -->
+  <div class="absolute inset-0 flex" style={safePadding}>
+    <!-- Full-height content box; content vertically centred within it -->
+    <div class:list={["slide-inner h-full w-full min-h-0 flex flex-col justify-center", innerAlign[align]]}>
       <slot />
     </div>
   </div>
