@@ -11,16 +11,16 @@ export const assets: AssetSlot[] = [
   {
     id: 'acquisizione-atmosfera',
     type: 'stock',
-    query: 'elegant woman camel coat autumn editorial fashion neutral',
+    query: 'elegant woman camel coat minimal',
     aspect: '16:9',
     width: 2400,
-    grade: 'editorial',
+    grade: 'duotone',
     alt: 'Atmosfera editoriale: donna elegante in cappotto cammello',
   },
   {
     id: 'monogram-post',
     type: 'stock',
-    query: 'luxury beige leather handbag still life minimal neutral',
+    query: 'luxury leather handbag beige minimal',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
@@ -29,7 +29,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-giulia',
     type: 'stock',
-    query: 'young professional woman portrait natural light minimal serene',
+    query: 'young woman portrait natural light neutral',
     aspect: '4:5',
     width: 1000,
     grade: 'editorial',
@@ -38,7 +38,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-francesca',
     type: 'stock',
-    query: 'elegant mature woman portrait sophisticated grey hair soft light',
+    query: 'elegant woman fifties portrait refined',
     aspect: '4:5',
     width: 1000,
     grade: 'editorial',
