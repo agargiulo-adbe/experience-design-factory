@@ -96,7 +96,20 @@ export const assets: AssetSlot[] = [
     alt: 'Editoriale: il cappotto in lana cammello',
   },
 
-  // ── Altre fasi (Conversione/Loyalty) — estendi qui con la stessa struttura ──
+  // ── Conversione ───────────────────────────────────────────────────
+  {
+    id: 'conversione-pelle',
+    // Fine-leather texture (no face): the cart-card hero. The card caption carries
+    // the Whitney Bag specificity; this conveys the "pelle martellata" craftsmanship.
+    type: 'stock',
+    query: 'brown leather texture macro stitching detail warm',
+    aspect: '4:5',
+    width: 1200,
+    grade: 'editorial',
+    alt: 'Dettaglio editoriale: pelle pregiata, lavorazione artigianale',
+  },
+
+  // ── Altre fasi (Loyalty) — estendi qui con la stessa struttura ──
   // {
   //   id: 'loyalty-boutique',
   //   type: 'aigen',
