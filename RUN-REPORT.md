@@ -1,8 +1,9 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase D — Complete
+## Status: Phase E — Immersive model propagated to all pages ✅
 **Started:** 2026-06-15 ~22:45 CEST
-**Completed:** 2026-06-16 ~00:30 CEST
+**Phase D completed:** 2026-06-16 ~00:30 CEST
+**Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
 
 ---
 
@@ -103,6 +104,14 @@
 **Issue:** `@theme` block defined `--color-grigio-100` (with hyphen) but `:root` and blocks used `--color-grigio100` (no hyphen). Footer and AdobeStackReveal referenced non-existent vars.
 **Fix:** Standardized all references to use hyphens (`grigio-100`, `grigio-200`, etc.) across global.css, tokens.ts, css-generator.ts, Footer.astro, AdobeStackReveal.astro.
 
+### typecheck rosso — chiavi con trattino non quotate (pre-esistente)
+**Issue:** `tokens.ts` definiva `grigio-100: '#…'` come chiavi oggetto bare. Un trattino non è un identificatore valido: `tsc` falliva con cascata di errori. Il build Vite/esbuild lo tollerava, quindi era passato inosservato.
+**Fix:** Quotate le chiavi (`'grigio-100': …`). L'accesso resta via bracket, nessun cambio a runtime.
+
+### typecheck rosso — `Locale` esportato due volte (pre-esistente)
+**Issue:** `src/index.ts` fa `export *` sia da `schema` (zod `z.infer`) sia da `i18n`, entrambi esportano `Locale` (`'it' | 'en'`) → TS2308 ambiguità.
+**Fix:** Aggiunto un re-export esplicito `export type { Locale } from './schema/index.js';` dopo i wildcard: l'export nominato esplicito risolve l'ambiguità. Il sito non era impattato (importa i sottopath, non il barrel), ma `pnpm typecheck` ora è verde.
+
 ---
 
 ## Cambio di direzione: Experience Design immersivo
@@ -128,8 +137,37 @@ Trasformata da brochure densa a flusso immersivo con scroll-snap:
   - `initDataLake()` — data dots → profili unificati
   - Tutto con `prefers-reduced-motion` rispettato (stati finali statici)
 
-### In attesa di revisione
-Le altre 7 pagine NON sono state toccate. Aspettano il feedback su Acquisizione prima di propagare il pattern.
+### Pattern immersivo propagato a TUTTE le pagine ✅
+Dopo l'approvazione di Acquisizione (pagina-riferimento), il modello step-by-step
+è stato esteso a Home, Engagement, Conversione, Loyalty, Il Motore Adobe, Persona,
+Chiusura. Ogni pagina segue la sequenza-tipo (apertura → animazione di valore →
+front stage → impulso front→back → back stage coi prodotti Adobe uno alla volta →
+payoff con count-up + CTA). Poco testo per step, animazioni che spiegano il valore,
+`prefers-reduced-motion` rispettato, multipagina + View Transitions, link via `href(base, path)`.
+
+**Nuove primitive in `animations.ts`** (oltre a reveal/countUp/stagger/pulse/dataLake):
+- `initPersonalize` — `data-personalize`: contenuti generici che si risolvono nel match personalizzato (Engagement)
+- `initConverse` — `data-converse`: bolle chat una alla volta, scoperta conversazionale / Brand Concierge (Conversione)
+- `initLifecycle` — `data-lifecycle`: la relazione come ciclo ricorrente, anello con nodi che si accendono (Loyalty)
+- `initClienteling` — `data-clienteling`: riconoscimento, profilo che si popola sotto una scansione (Loyalty/Persona)
+- `initThread` — `data-thread`: il "filo" Generazioni tra due clienti (Home/Persona)
+- `initStackAssemble` — `data-stack-assemble`: lo stack Adobe che converge sul cuore AEP — **la rivelazione completa** su "Il Motore Adobe"
+
+Metafora per pagina: Home → thread + dataLake + pulse · Engagement → personalize ·
+Conversione → converse · Loyalty → lifecycle + clienteling · Il Motore Adobe →
+stackAssemble (culmine) + dettaglio fase-per-fase · Persona → thread + clienteling ·
+Chiusura → sintesi 4 fasi + trio metriche count-up + CTA finale.
+
+### GitHub allineato ✅
+Repo creato e pushato: `agargiulo-adbe/experience-design-factory` (private).
+Regola operativa: `git push` dopo ogni commit. Hosting Pages da abilitare in uno step dedicato.
+
+### Verifica ✅
+- `pnpm build` — 8 pagine buildate, nessun errore.
+- `pnpm typecheck` — **0 errori, 0 warning** (sistemati 2 bug pre-esistenti, sotto).
+- Conteggio step per pagina verificato (Home/Acq/Eng/Conv/Loyalty/Motore/Persona = 6, Chiusura = 5).
+- Tutti i selettori di animazione presenti nel bundle; link interni con trailing slash validi.
+- Nota: la verifica pixel-perfect in browser reale (overlap, 360px, motion live) non è automatizzabile in questo ambiente — verificata la struttura, i contratti di animazione e il reduced-motion nel sorgente.
 
 ---
 
@@ -143,10 +181,12 @@ Le altre 7 pagine NON sono state toccate. Aspettano il feedback su Acquisizione 
 6. Le altre pagine restano come prima (non toccate)
 
 ## TODO (future phases)
+- [x] Create GitHub repo + push to remote (`agargiulo-adbe/experience-design-factory`)
+- [x] Propagare il modello immersivo a tutte le 8 pagine
+- [ ] Abilitare hosting GitHub Pages (step dedicato)
 - [ ] Factory Console (apps/console) — local SPA editor + Node backend
 - [ ] Self-host fonts (currently Google Fonts CDN)
 - [ ] Firefly/placeholder imagery for media slots (currently empty placeholders)
 - [ ] EN locale content
 - [ ] Publish @agargiulo-adbe/experience-core to GitHub Packages
 - [ ] Template repository setup
-- [ ] Create GitHub repo + push to remote

@@ -21,10 +21,34 @@ The Experience Design Factory is a reusable system for creating branded experien
 
 ### Stack
 - **Astro 6** — static site generation with View Transitions
-- **Tailwind CSS v4** — via @tailwindcss/vite plugin
+- **Tailwind CSS v4** — via `@tailwindcss/vite` plugin (NOT `@astrojs/tailwind`); monorepo needs `@source` directives so Tailwind scans the symlinked `packages/core/src/**`
+- **GSAP + ScrollTrigger** — scroll-driven animation for the immersive steps, lazy-imported, reduced-motion safe
 - **TypeScript** — strict mode, zod schemas
 - **CSS Custom Properties** — design tokens as CSS variables
-- **GitHub Actions** — CI + deploy to GitHub Pages
+- **Routing** — `trailingSlash: 'always'` + base path; internal links via the `href(base, path)` helper (`packages/core/src/utils/url.ts`)
+- **GitHub Actions** — CI + deploy to GitHub Pages; keep local + remote in sync (`git push` after every commit)
+
+## Immersive step-by-step model (the format)
+The signature presentation is an **immersive, full-screen, scroll-snapped flow**:
+each page is a `StepContainer` wrapping N × `Step` (`min-h-[100dvh]`, `snap-start`).
+**Animation explains the value of each phase — it is not decoration.**
+
+Reusable engine pieces in `packages/core/src/blocks/immersive/`:
+- `StepContainer.astro` — scroll-snap wrapper (disables snap under reduced-motion)
+- `Step.astro` — one full-screen step (`bg`, `align` props)
+- `animations.ts` — GSAP/ScrollTrigger primitives, each driven by a `data-*` attribute and reduced-motion safe (final static state when motion is reduced)
+
+Per-phase sequence-type: (1) apertura — title + one line; (2) value animation
+specific to the phase; (3) front stage; (4) front→back impulse (the "aha");
+(5) back stage with Adobe products revealed **one at a time**; (6) payoff metric
+(count-up) + CTA to the next phase.
+
+Animation primitives (metaphor per phase): `reveal`, `countUp`, `stagger`,
+`pulse` (front→back), `dataLake` (data → profiles, Acquisizione/Home),
+`personalize` (Engagement), `converse` (Conversione/Brand Concierge),
+`lifecycle` (Loyalty loop), `clienteling` (recognition, Loyalty/Persona),
+`thread` (the "Generazioni" filo, Home/Persona), `stackAssemble` (full Adobe
+stack onto the AEP core — the culmination on **Il Motore Adobe**).
 
 ### Design Token System (3 levels)
 1. **Primitive** — raw design scale (colors, typography, spacing, motion)
