@@ -1,37 +1,231 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageLayout from '@edf/core/layouts/PageLayout.astro';
-import JourneyPhase from '@edf/core/blocks/JourneyPhase.astro';
-import NarrativeSection from '@edf/core/blocks/NarrativeSection.astro';
-import FrontBackStageSplit from '@edf/core/blocks/FrontBackStageSplit.astro';
+import Navigation from '@edf/core/layouts/Navigation.astro';
+import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
+import Step from '@edf/core/blocks/immersive/Step.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Acquisizione', href: '/acquisizione' },
+  { label: 'Engagement', href: '/engagement' },
+  { label: 'Conversione', href: '/conversione' },
+  { label: 'Loyalty', href: '/loyalty' },
+  { label: 'Il Motore', href: '/motore-adobe' },
+  { label: 'Persona', href: '/persona' },
+];
+
+// Generic catalogue tiles — the matched ones are relevant to Giulia.
+const contenuti = [
+  { label: 'Teddy Bear Coat', tag: 'Editoriale', match: true },
+  { label: 'Materiali & artigianato', tag: 'Storia', match: true },
+  { label: 'Runway FW25', tag: 'Sfilata', match: false },
+  { label: 'Profumi', tag: 'Beauty', match: false },
+  { label: 'Cappotto 101801', tag: 'Icona', match: false },
+  { label: 'Saldi stagione', tag: 'Promo', match: false },
+];
+
+const adobe = [
+  { code: 'AEM', name: 'AEM Sites', claim: 'Storytelling digitale personalizzato: ogni pagina si adatta al profilo della visitatrice, mostrando i contenuti più rilevanti' },
+  { code: 'Tgt', name: 'Adobe Target', claim: 'Test A/B e personalizzazione in tempo reale — il sito impara cosa funziona per ogni segmento e si ottimizza' },
+  { code: 'Com', name: 'Adobe Commerce', claim: 'Esperienze d\'acquisto seamless che fondono contenuto editoriale e catalogo prodotto' },
+];
 ---
 <BaseLayout title="Engagement" description="Dalla scoperta alla relazione: come nutrire il legame con le clienti Max Mara.">
-  <PageLayout title="Engagement">
-    <JourneyPhase
-      phaseNumber={2}
-      phaseId="engagement"
-      title="Dalla scoperta alla relazione"
-      subtitle="Fase 2 — Engagement"
-      body="<p>La prima visita non basta. Dopo la scoperta, inizia il momento più delicato: trasformare la curiosità in interesse, l'interesse in familiarità. Qui il brand deve raccontare la propria storia — il heritage, la qualità, il mondo valoriale — in modo che risuoni con chi è appena arrivata, senza alienare chi c'è da sempre.</p><p>Il segreto è la personalizzazione: mostrare a ciascuna cliente il volto del brand più rilevante per lei, nel momento giusto, sul canale giusto.</p>"
-    />
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
+  </div>
 
-    <NarrativeSection
-      eyebrow="Heritage"
-      title="Settant'anni di stile senza tempo"
-      body="<p>Dal 1951, Max Mara ha costruito un linguaggio fatto di qualità sartoriale, linee pulite e materiali eccellenti. Il cappotto cammello non è solo un capo: è un gesto culturale, un codice condiviso tra generazioni di donne che scelgono la sostanza sull'apparenza.</p><p>Raccontare questo heritage alla nuova generazione non significa ripetere il passato — significa mostrare perché quei valori sono più attuali che mai in un mondo saturo di fast fashion e tendenze effimere.</p>"
-    />
+  <StepContainer>
+    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
+    <Step id="step-apertura" bg="secondary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <span class="block text-[clamp(5rem,12vw,10rem)] font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] opacity-20 leading-none mb-6" data-reveal aria-hidden="true">02</span>
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.1">Fase 2 — Engagement</p>
+        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
+          Dalla scoperta alla relazione
+        </h1>
+        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
+          La prima visita non basta. Trasformare la curiosità in familiarità è il momento più delicato.
+        </p>
+      </div>
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
+        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
+          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </Step>
 
-    <FrontBackStageSplit
-      phaseId="engagement"
-      phaseLabel="Engagement — Front stage / Back stage"
-      customerTitle="Un'esperienza che parla a lei"
-      customerBody="<p>La stessa cliente che ha scoperto la borsa Monogram torna sul sito. Questa volta l'homepage non è generica: le mostra contenuti editoriali sul Teddy Bear Coat — un pezzo iconico che incontra il suo gusto — e la invita a esplorare la storia dei materiali Max Mara. Ogni touchpoint rafforza la familiarità senza forzare la vendita.</p>"
-      adobeStack={[
-        { id: 'aem-sites', name: 'AEM Sites', claim: 'Storytelling digitale personalizzato: ogni pagina si adatta al profilo della visitatrice, mostrando i contenuti più rilevanti' },
-        { id: 'target', name: 'Adobe Target', claim: 'Test A/B e personalizzazione in tempo reale — il sito impara cosa funziona per ogni segmento e si ottimizza' },
-        { id: 'commerce', name: 'Adobe Commerce', claim: 'Esperienze d\'acquisto seamless che fondono contenuto editoriale e catalogo prodotto' },
-      ]}
-      reversed={true}
-    />
-  </PageLayout>
+    <!-- ── STEP 2: Personalizzazione (the value animation) ───────── -->
+    <Step id="step-personalize" bg="primary" align="center">
+      <div class="max-w-4xl mx-auto w-full">
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il meccanismo</p>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
+          Lo stesso brand, il volto giusto per lei
+        </h2>
+
+        <!-- Personalize: generic tiles resolve to Giulia's matches -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-2xl mx-auto" data-personalize>
+          {contenuti.map((c) => (
+            <div class:list={["perso-item p-4 rounded-sm border text-left", c.match ? "border-[var(--accent-primary)] bg-[var(--accent-primary)]/8" : "border-[var(--line-subtle)] bg-[var(--surface-secondary)]"]} data-match={c.match ? '' : undefined}>
+              <span class="block text-[0.6rem] tracking-[0.1em] uppercase text-[var(--ink-tertiary)] mb-1">{c.tag}</span>
+              <span class="text-sm font-medium text-[var(--ink-primary)]">{c.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-sm text-[var(--ink-tertiary)] mt-10 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
+          La homepage non è generica: tra tutti i contenuti, emergono quelli che parlano a Giulia.
+        </p>
+      </div>
+    </Step>
+
+    <!-- ── STEP 3: Front stage ───────────────────────────────────── -->
+    <Step id="step-frontstage" bg="primary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)]">Ciò che vede la cliente</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-light leading-[1.1] text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.1">
+          Un'esperienza che parla a lei
+        </h2>
+        <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto mb-10" data-reveal data-reveal-delay="0.2">
+          Giulia torna sul sito. L'homepage le mostra contenuti editoriali sul Teddy Bear Coat e la invita a scoprire la storia dei materiali. Ogni touchpoint rafforza la familiarità, senza forzare la vendita.
+        </p>
+        <div class="relative w-48 md:w-56 mx-auto aspect-[9/16] bg-[var(--surface-secondary)] rounded-2xl border-2 border-[var(--line-default)] overflow-hidden shadow-lg" data-reveal data-reveal-delay="0.3">
+          <div class="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1 bg-[var(--line-default)] rounded-full"></div>
+          <div class="flex flex-col items-center justify-center h-full p-6 text-center">
+            <div class="w-14 h-14 bg-[var(--accent-primary)]/15 rounded-lg mb-4 flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="1.5" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/></svg>
+            </div>
+            <p class="text-xs font-medium text-[var(--ink-primary)] leading-relaxed">La storia del Teddy Bear Coat</p>
+            <p class="text-[0.65rem] text-[var(--ink-tertiary)] mt-1">Scopri i materiali →</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 4: Front→Back impulse (the aha) ──────────────────── -->
+    <Step id="step-impulse" bg="secondary" align="center">
+      <div class="max-w-4xl mx-auto w-full">
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
+          Ogni contenuto rilevante è una decisione della piattaforma
+        </h2>
+
+        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
+          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">Front stage</span>
+            </div>
+            <p class="text-sm text-[var(--ink-primary)] font-medium">La cliente esplora</p>
+            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Legge, sfoglia, torna a trovarci</p>
+          </div>
+
+          <div class="hidden md:flex items-center justify-center px-4">
+            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+          <div class="flex md:hidden items-center justify-center py-2">
+            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+
+          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Back stage</span>
+            </div>
+            <p class="text-sm font-medium">La piattaforma adatta</p>
+            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Sceglie i contenuti, testa, ottimizza</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 5: Back stage — prodotti Adobe uno alla volta ────── -->
+    <Step id="step-backstage" bg="inverse" align="center">
+      <div class="max-w-3xl mx-auto w-full text-[var(--ink-inverse)]">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--color-grigio-400)]">Ciò che fa la piattaforma</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,3.5vw+0.5rem,3rem)] font-light leading-[1.1] mb-10" data-reveal data-reveal-delay="0.1">
+          Personalizzazione, su ogni canale
+        </h2>
+
+        <div class="space-y-4" data-stagger="0.2">
+          {adobe.map((p) => (
+            <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+              <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+                <span class="text-[0.6rem] font-bold text-[var(--accent-secondary)]">{p.code}</span>
+              </div>
+              <div>
+                <p class="text-sm font-medium">{p.name}</p>
+                <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">{p.claim}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 6: Payoff — metrica + CTA ────────────────────────── -->
+    <Step id="step-payoff" bg="brand" align="center">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
+          <span data-count-up="15" data-count-prefix="+" data-count-suffix="%">+0%</span>
+        </p>
+        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
+          di ricavi in più quando l'esperienza è personalizzata in modo coerente
+        </p>
+        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
+          Fonte: McKinsey & Company
+        </p>
+
+        <div class="mt-16" data-reveal data-reveal-delay="0.5">
+          <a
+            href={href(base, '/conversione')}
+            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          >
+            Fase successiva: Conversione
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </Step>
+  </StepContainer>
 </BaseLayout>
+
+<style>
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-bounce-subtle { animation: none; }
+    .scroll-hint { display: none; }
+  }
+</style>
+
+<script>
+  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
+  function setup() {
+    const container = document.querySelector<HTMLElement>('[data-step-container]');
+    if (container) initAllAnimations(container);
+  }
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>
