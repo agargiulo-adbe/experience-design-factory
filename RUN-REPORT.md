@@ -1,8 +1,37 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase M — Acquisizione: filo cover, sfondi atmosferici, ritratto Francesca, "Scopri come" inline, copy arricchito, deploy pubblico — in revisione ⏳
+## Status: Pre-meeting CMO (lunedì) — Blocco 1 (verifica Acquisizione) ✅ · Blocco 2 (restyle leggero 3 fasi) + Blocco 3 (asset finali Acquisizione) da fare
 
 ---
+
+## Pre-meeting CMO — Blocco 1: verifica stato reale di Acquisizione ✅ (PASS)
+
+Strategia: **una fase perfetta (Acquisizione) + tre presentabili**. Profondità > ampiezza.
+Stato dei sei interventi del giro precedente — tutti committati, funzionanti, online:
+
+| Intervento | Commit | Stato |
+|---|---|---|
+| Filo cover (curva cucita + nodo) | `981d736` | ✅ committato, visibile |
+| Sfondi Pexels textile + parallax | `8c9e721` | ✅ committato, visibile |
+| Ritratto Francesca sobrio | `44d5c1b` | ✅ committato, visibile |
+| "Scopri come" inline | `e90e325` | ✅ committato, espande inline |
+| Testo Front/Back arricchito (verbatim) | `70d50a9` | ✅ committato, visibile |
+| Deploy Pages pubblico | `3ded7a4`,`22a3786` | ✅ live, no 404 |
+
+**Gate eseguiti:**
+- `audit:deck` → **PASS** a 1920×1080 / 1440×900 / 1280×800 (a–k + exp), "Scopri come" testati da **espansi inline**.
+- `pnpm typecheck` → 0 errori · `pnpm build` → 8 pagine, verde.
+- **Live prod** https://agargiulo-adbe.github.io/experience-design-factory/acquisizione/ → pagina **200**, 22 asset campionati (css/js/webp/avif, incl. `persona-giulia`/`persona-francesca`/`bg-*`) tutti **200**, base corretta, **nessun 404**.
+- Screenshot ai 3 viewport: cover (filo) ✓, slide Pexels+scrim (impulse, corpo arricchito leggibile) ✓, slide 08 Francesca (ritratto-profilo) ✓, "Scopri come" espanso inline (datalake, fit a 1280 senza clip) ✓.
+
+➡️ Acquisizione è **verde e online**. Via libera ai blocchi 2 e 3.
+
+---
+
+## Phase M — Sei interventi su Acquisizione + deploy GitHub Pages pubblico (solo Acquisizione + componenti riusabili)
+
+**URL pubblico live:** https://agargiulo-adbe.github.io/experience-design-factory/acquisizione/
+**Dev locale:** http://localhost:4321/experience-design-factory/acquisizione/
 
 ## Phase M — Sei interventi su Acquisizione + deploy GitHub Pages pubblico (solo Acquisizione + componenti riusabili)
 
