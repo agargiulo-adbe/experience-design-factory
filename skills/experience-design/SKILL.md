@@ -92,8 +92,30 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
 2–3 per slide. The full stack reveal belongs ONLY to "Il Motore Adobe".
 
 - `packages/core/src/blocks/InstagramPost.astro` — a credible IG post inside a phone
-  (header + `· Sponsorizzato`, image via `MediaSlot`, actions, likes, caption, comments),
-  sized to fit whole within the safe area. Usage: `<InstagramPost {...mediaProps('id')} />`.
+  (header + `· Sponsorizzato`, image via `MediaSlot`, actions, likes, `caption` prop,
+  comments), sized to fit whole within the safe area. Usage:
+  `<InstagramPost {...mediaProps('id')} caption="…" />`.
+- `packages/core/src/blocks/CoverSlide.astro` — cinematic, quiet-luxury **slide 0**:
+  camel ground, a sartorial *filo* that draws itself between the two wordmarks
+  (`Max Mara` primary, `Adobe` discreet) which converge; tagline + co-brand eyebrow.
+  Driven by `[data-cover]` in `animations.ts`; reduced-motion safe; plays on activation.
+- `packages/core/src/blocks/HowItWorks.astro` — optional **"Scopri come →"** slide-over
+  from the right with plain-language tech detail (Adobe products named in context). Does
+  NOT change slide; closes on Esc / × / click-outside; focus-trapped. While open it sets
+  `data-deck-lock` on the deck so the controller pauses navigation and hides chrome. The
+  deck must read fine WITHOUT opening it (self-sufficient on screen for the live telling).
+  Body content via the default slot.
+
+### Content rules (substance)
+- **Persona-led, on-brand language** — name the theme from the brand's world, not jargon
+  (e.g. "Una relazione che attraversa il tempo", never "ringiovanire il target").
+- **One hero product, used consistently** (e.g. the Whitney Bag for Generazioni) — don't
+  drift between products across slides.
+- **Sources: never cross-attribute a number.** Each statistic carries its own correct,
+  readable micro-source (e.g. 75% luxury-spend → Bain/Altagamma; +306% emotional-connection
+  LTV → Motista 2018 — NOT Harvard/Bain). Verify before citing.
+- **Products discreet & contextual** — light attributions while the platform *acts*, max
+  2–3 per slide; the full stack reveal belongs ONLY to the "engine" page.
 
 ## The 9 underlying blocks (library)
 Hero, NarrativeSection, FrontBackStageSplit, JourneyPhase, PersonaCard,

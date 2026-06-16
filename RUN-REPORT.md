@@ -1,12 +1,58 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase H — Acquisizione golden-reference persona-led (in revisione) ⏳
+## Status: Phase I — Acquisizione: cover cinematografica + layer "Come funziona" + correzioni di sostanza (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
 **Phase F:** 2026-06-16 — SOLO Acquisizione trasformata in deck da proiezione; in attesa di revisione prima di propagare
 **Phase G:** 2026-06-16 — pipeline asset programmatica (manifest → Pexels + sharp → MediaSlot); in attesa di revisione
 **Phase H:** 2026-06-16 — Acquisizione rifinita come riferimento d'oro del deck (persona-led + area sicura); in attesa di revisione
+**Phase I:** 2026-06-16 — cover cinematografica, layer "Come funziona", correzioni di sostanza (Whitney, fonti); in attesa di revisione
+
+---
+
+## Phase I — Acquisizione: sostanza + due pattern globali
+
+### Correzioni di contenuto (verificate, con fonte)
+- **Tema/titolo**: "Ringiovanire il target" → **"Una relazione che attraversa il tempo"**
+  (sottotitolo "Incontrare una nuova generazione, onorare chi sceglie Max Mara da sempre").
+  Più on-brand del gergo; il senso strategico (giovani + LTV) resta nel copy.
+- **Prodotto-eroe = Whitney Bag** (NON Monogram) ovunque. Manifest: slot rinominato
+  `monogram-post` → `whitney-post`, query "structured leather handbag camel minimal",
+  grade editorial. Caption IG: "Whitney Bag. Dieci anni, senza tempo." Orfano rimosso.
+- **Fonti corrette**: 75%/Gen Z → **Bain & Company / Altagamma**; +306% LTV connessione
+  emotiva → **Motista, *Leveraging the Value of Emotional Connection for Retailers*, 2018**
+  (corretto su Home/Persona/Loyalty, NON Harvard). Micro-fonte leggibile sotto ogni dato.
+
+### Nuovo componente — `CoverSlide.astro` (slide 0)
+Apertura cinematografica quiet-luxury: fondo cammello, **filo sartoriale** che si disegna
+(stroke-dashoffset ~1.5s) e collega i wordmark **Max Mara** (primario) e **Adobe** (discreto)
+che convergono; tagline + eyebrow co-brand. Animazione su `[data-cover]` in `animations.ts`
+(prepareSlide/playSlide), reduced-motion safe, parte all'attivazione.
+
+### Nuovo pattern — `HowItWorks.astro` (layer "Come funziona")
+Affordance discreto "Scopri come →" che apre un **pannello slide-over da destra** con la
+tecnologia in **linguaggio piano** (prodotti Adobe in contesto). Apertura ~350ms, chiusura
+con Esc / × / click-fuori, **focus-trap**. Non cambia slide; mentre è aperto setta
+`data-deck-lock` sul deck → il controller sospende la navigazione e nasconde il chrome.
+È **opzionale**: il deck si capisce anche senza aprirlo. Due layer su Acquisizione:
+(a) "Dal data lake ai profili" (Real-Time CDP, integrazione coi sistemi esistenti, clean
+room privacy-safe); (b) "Contenuti on-brand a scala" (GenStudio + Firefly, content supply chain).
+
+### Stack esteso in contesto (discreto)
+Clean room / Data Collaboration e messaggio "il CRM non si sostituisce, si collega"
+(potenziamento, non rip-and-replace per il CMO) — come attribuzioni leggere e nei layer
+HowItWorks, mai come lista. La vetrina completa resta su "Il Motore Adobe".
+
+### Verifica Phase I
+- `pnpm build` (8 pagine) e `pnpm typecheck` **verdi**; `pnpm assets:build` rigenera 4 slot
+  (incl. `whitney-post`) + provenance, committati.
+- Struttura build: **8 slide** (cover + 7), 1 `data-cover`, **2 pannelli HowItWorks**
+  (`role=dialog`) + 2 trigger, 5 `<picture>` reali, **0 ref "Monogram"**, fonti corrette,
+  caption Whitney, tutto il copy presente.
+- **Limite onesto:** la verifica *visiva/interattiva* a 1920×1080 fullscreen (cover animata,
+  apri/chiudi pannello fluido, reduced-motion, nessun clipping) non è automatizzabile qui —
+  validati struttura, build, typecheck e la logica di lock/focus-trap. **In attesa di revisione.**
 
 ---
 
