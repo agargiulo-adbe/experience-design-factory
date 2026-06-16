@@ -667,6 +667,16 @@ export function prepareSlide(slide: HTMLElement) {
       if (knot) knot.style.opacity = '0';
     }
   }
+  // Personalize (tiles resolve to the matching ones) — deck variant.
+  const perso = slide.querySelector<HTMLElement>('[data-personalize]');
+  if (perso) {
+    const items = perso.querySelectorAll<HTMLElement>('.perso-item');
+    if (REDUCED_MOTION) {
+      items.forEach(el => { el.style.opacity = el.hasAttribute('data-match') ? '1' : '0.25'; el.style.transform = 'none'; });
+    } else {
+      items.forEach(el => { el.style.opacity = '0'; el.style.transform = 'scale(0.9)'; });
+    }
+  }
   // Atmospheric parallax: over-scaled so the drift never reveals an edge.
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
     el.style.transform = REDUCED_MOTION ? 'scale(1.04)' : 'scale(1.06) translateX(16px)';
@@ -756,6 +766,17 @@ export async function playSlide(slide: HTMLElement) {
     if (adobe) tl.to(adobe, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' }, 0.1);
     if (thread) tl.to(thread, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, 0.45);
     if (knot) tl.to(knot, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '>-0.25');
+  }
+  // Personalize — all tiles appear neutral, then non-matches dim and matches assert
+  const perso = slide.querySelector<HTMLElement>('[data-personalize]');
+  if (perso) {
+    const items = Array.from(perso.querySelectorAll<HTMLElement>('.perso-item'));
+    const matches = items.filter(el => el.hasAttribute('data-match'));
+    const others = items.filter(el => !el.hasAttribute('data-match'));
+    const tl = gsap.timeline({ delay: 0.3 });
+    tl.to(items, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.05, ease: 'power3.out' });
+    tl.to(others, { opacity: 0.2, scale: 0.95, duration: 0.6, ease: 'power2.inOut' }, '+=0.4');
+    tl.to(matches, { scale: 1.04, duration: 0.5, ease: 'back.out(2)' }, '<');
   }
   // Atmospheric parallax: a quiet drift on activation (stays over-scaled to cover).
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
