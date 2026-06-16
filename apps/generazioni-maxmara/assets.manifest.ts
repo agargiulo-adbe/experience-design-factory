@@ -84,14 +84,19 @@ export const assets: AssetSlot[] = [
     alt: '',
   },
 
-  // ── Altre fasi — estendi qui con la stessa struttura ──────────────
-  // {
-  //   id: 'engagement-editoriale',
-  //   type: 'stock',
-  //   query: 'fashion editorial teddy coat texture detail',
-  //   aspect: '4:5', width: 1200, grade: 'editorial',
-  //   alt: 'Dettaglio editoriale del Teddy Bear Coat',
-  // },
+  // ── Engagement ────────────────────────────────────────────────────
+  {
+    id: 'engagement-editoriale',
+    // Garment still-life (camel coat), framed on the coat — no recurring face.
+    type: 'stock',
+    query: 'beige camel wool coat minimalist still life neutral',
+    aspect: '4:5',
+    width: 1200,
+    grade: 'editorial',
+    alt: 'Editoriale: il cappotto in lana cammello',
+  },
+
+  // ── Altre fasi (Conversione/Loyalty) — estendi qui con la stessa struttura ──
   // {
   //   id: 'loyalty-boutique',
   //   type: 'aigen',
