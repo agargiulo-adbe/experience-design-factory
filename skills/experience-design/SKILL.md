@@ -96,14 +96,22 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
   comments), sized to fit whole within the safe area. Usage:
   `<InstagramPost {...mediaProps('id')} caption="…" />`.
 - `packages/core/src/blocks/CoverSlide.astro` — cinematic, quiet-luxury **slide 0**:
-  camel ground, a sartorial *filo* that draws itself between the two wordmarks
-  (`Max Mara` primary, `Adobe` discreet) which converge; tagline + co-brand eyebrow.
+  camel ground, a sartorial *filo* (curved stitch path + knot) that sews itself between
+  the two wordmarks (`Max Mara` primary, `Adobe` discreet); tagline hero + co-brand eyebrow.
   Driven by `[data-cover]` in `animations.ts`; reduced-motion safe; plays on activation.
-- `packages/core/src/blocks/HowItWorks.astro` — optional **"Scopri come →"** slide-over
-  from the right with plain-language tech detail (Adobe products named in context). Does
-  NOT change slide; closes on Esc / × / click-outside; focus-trapped. While open it sets
-  `data-deck-lock` on the deck so the controller pauses navigation and hides chrome. The
-  deck must read fine WITHOUT opening it (self-sufficient on screen for the live telling).
+  Optional atmospheric backdrop via `bgMedia`/`bgSrc` (always under a brand scrim).
+- `packages/core/src/blocks/SlideBackdrop.astro` — atmospheric textile background for an
+  otherwise-flat slide. Goes in Slide's `backdrop` slot (BEHIND content, **outside
+  `.slide-inner` so the audit does not measure it**). ALWAYS under a `scrim` strong enough
+  to keep text WCAG-AA (invariant h) — if text loses contrast, strengthen the scrim, never
+  lighten the text. `[data-parallax]` over-scaled 1.06 so the drift never reveals an edge;
+  reduced-motion = static. `<SlideBackdrop slot="backdrop" {...mediaProps('bg-linen')} scrim="…/78" />`.
+- `packages/core/src/blocks/HowItWorks.astro` — optional **"Scopri come →"** disclosure that
+  expands **INLINE, in place**, pushing the content below it down (GSAP height tween ~450ms,
+  arrow rotates). NO overlay, NO scrim, NO `position:fixed` — content stays in normal flow,
+  so the expanded state must still satisfy the deck invariants (clip, hidden-scroll, ≥16px
+  rhythm, AA contrast). reduced-motion = instant toggle. On a dark slide pass on-dark colours
+  to the body. The deck must read fine WITHOUT expanding it (self-sufficient for the live telling).
   Body content via the default slot.
 
 ### Content rules (substance)
@@ -171,21 +179,23 @@ It navigates the deck slide-by-slide at **three viewports (1920×1080, 1440×900
 — a projected keynote must hold beyond exactly 1920×1080 — reduced-motion for stable layout;
 a **display hero** numeral tagged `data-display` is excluded from the prose band check (a). It
 measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
-to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 12 checks (a–l):**
+to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). Runs at **3 viewports**
+(1920×1080, 1440×900, 1280×800). **The checks (a–k + exp):**
 - **(a)** significant text (≥24px) centre in the band [30%,70%]; never anchored near the top.
 - **(b)** no content text intersects the chrome controls (target `button[...]`, NOT the deck
   root which also carries `data-deck-next`).
 - **(c)** no box past `--slide-safe-inset`; no `scrollWidth > clientWidth`.
 - **(d)** no text over an image's `data-no-text` zone; text over an image needs a `[data-scrim]`.
 - **(e)** no two non-nested text blocks overlap (text-on-text).
-- **(f)** an OPEN `HowItWorks` is a top-level fixed dialog **within the viewport, no scroll,
-  no clipping**, full-viewport scrim, width ≤ min(720px,60vw) — the audit **opens each panel**.
 - **(g)** adjacent stacked text blocks (outside cards) have ≥ 16px vertical gap.
 - **(h)** every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon) against its composited bg.
 - **(i)** content covers ≥ 45% of usable height and its centre of mass is in the central band.
-- **(j)** nothing clipped — every significant element (incl. open panel + its text) fully inside `[0,0,1920,1080]`.
+- **(j)** nothing clipped — every significant element fully inside `[0,0,W,H]`.
 - **(k)** no hidden scroll — no container with `scrollHeight > clientHeight` (a keynote never scrolls).
-- **(l)** while a panel is open, interactives are fully under the scrim OR fully visible — never half.
+- **(exp)** each `HowItWorks` is **expanded INLINE** and the slide is re-measured in the expanded
+  state — it must still pass b, c, d, e, g, h, j, k. (a) band-position and (i) space-balance do NOT
+  apply to a disclosure, which legitimately shifts the resting composition. A collapsed region
+  (`[data-hiw-region][aria-hidden]`) is excluded from measurement; once expanded its content counts.
 
 **Auto-correction loop:** run the audit → for each FAIL read the screenshot, fix the
 **component/page source** (not inline patches), re-run → iterate until 0 FAIL.
@@ -198,10 +208,11 @@ Conventions & hard-won lessons:
   reserve — otherwise (a) band and (i) ≥45% fight each other. `Slide` uses inline-style
   padding/`max-height` (Tailwind doesn't reliably emit `max(var(...))`).
 - **Safe-area tokens** in `global.css` (fixed px): `--slide-safe-inset`, `--deck-chrome-safe`.
-- **Slide-over = centred bounded dialog**, NOT a full-height side panel (that's fragile: dense
-  text can't fit 1080px → scroll/clipping). `HowItWorks`: `w=min(720px,60vw)`,
-  `max-height: calc(100dvh - 2*--slide-safe-inset)`, content MUST fit without scroll (keep copy
-  short), full-viewport scrim, panel+overlay moved to `<body>`; `tone="onDark"` for AA on dark slides.
+- **"Scopri come" = inline disclosure**, NOT an overlay/side-panel/dialog (those were fragile —
+  dense text couldn't fit, scroll/clipping). `HowItWorks` expands **in place** in normal flow
+  (GSAP height tween), so the expanded content MUST fit the slide without clip/scroll: keep copy
+  short and compact (smaller detail font on dense split slides), keep ≥16px rhythm, pass `tone="onDark"`
+  for AA on dark slides. The audit's **(exp)** check expands it and re-measures.
 - **`data-no-text="top,left,width,height"`** (% subject zone on `MediaSlot`/`InstagramPost`);
   **`data-scrim`** on the overlay behind text-over-image.
 

@@ -8,6 +8,13 @@ Monorepo for the Experience Design Factory: a reusable system where each client 
 - `pnpm build` — build all packages
 - `pnpm lint` — lint all files
 - `pnpm typecheck` — type-check all packages
+- `pnpm --filter generazioni-maxmara audit:deck` — deterministic deck layout audit (3 viewports)
+- `pnpm --filter generazioni-maxmara assets:build` — fetch/grade Pexels assets → `src/assets/generated/` + `provenance.json`
+
+## Deployment
+- **Public** repo `agargiulo-adbe/experience-design-factory`; GitHub Pages source = **GitHub Actions** (`.github/workflows/deploy.yml`, Node 22, pnpm via `packageManager`).
+- Live: https://agargiulo-adbe.github.io/experience-design-factory/acquisizione/ — Astro `base = /experience-design-factory`, `trailingSlash: 'always'`.
+- Push to `main` auto-deploys. Only public Adobe capabilities / demo material — no reserved Max Mara IP.
 
 ## Architecture
 - `packages/core` — shared engine (`@agargiulo-adbe/experience-core`): 9 experience blocks, design tokens, schema, theme, i18n, motion

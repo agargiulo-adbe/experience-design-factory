@@ -1,6 +1,40 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase L — Audit reale + copy validato su Acquisizione (9 slide, dato 2030, 3 viewport) — in revisione ⏳
+## Status: Phase M — Acquisizione: filo cover, sfondi atmosferici, ritratto Francesca, "Scopri come" inline, copy arricchito, deploy pubblico — in revisione ⏳
+
+---
+
+## Phase M — Sei interventi su Acquisizione + deploy GitHub Pages pubblico (solo Acquisizione + componenti riusabili)
+
+**URL pubblico live:** https://agargiulo-adbe.github.io/experience-design-factory/acquisizione/
+**Dev locale:** http://localhost:4321/experience-design-factory/acquisizione/
+
+1. **Filo sartoriale sulla cover** — il connettore retta+punto tra `Max Mara` e `Adobe` è ora
+   un *filo* che si cuce (stroke-dashoffset, stessa grammatica di `[data-cover]` in `animations.ts`)
+   e finisce nel nodo. Reduced-motion = stato finale disegnato. Connettore Front/Back invariato.
+2. **Sfondi atmosferici Pexels + parallax leggero** — nuovo `SlideBackdrop.astro` (engine) nel
+   `backdrop` slot di Slide (fuori da `.slide-inner` → non misurato dall'audit), SEMPRE sotto uno
+   scrim che garantisce WCAG AA. Slot `bg-cashmere`/`bg-linen`/`bg-wool` (pipeline Pexels+sharp).
+   Su cover/impulse/come/payoff; le slide con ritratto/immagine dominante restano pulite. Parallax
+   impercettibile (over-scale 1.06, nessun bordo) in `prepareSlide/playSlide`; reduced-motion = statico.
+3. **Ritratto Francesca coerente con Giulia** — slot `persona-francesca` ri-queryato a profilo studio
+   sobrio (neutro, elegante, non evocativo); ri-gradato e propagato (cerchio data-lake + slide-08).
+4. **"Scopri come" → espansione INLINE** — `HowItWorks` riscritto: si apre IN PLACE spingendo il
+   contenuto sotto (GSAP height ~450ms), niente overlay/scrim/fixed; reduced-motion = toggle istantaneo.
+   Rimosso tutto il codice overlay centrato. `deck-audit` ora ESPANDE ogni trigger e ri-misura la slide
+   nello stato espanso (b,c,d,e,g,h,j,k; a/i non si applicano a una disclosure).
+5. **Corpo "Quel tocco non si perde" arricchito** — sostituito verbatim col testo fornito (le label
+   "Giulia tocca / scopre la Whitney Bag" e "La piattaforma risponde / la riconosce e adatta tutto" restano).
+6. **Deploy GitHub Pages pubblico** — repo reso **PUBLIC**; Pages source = GitHub Actions; workflow
+   sistemato (rimossa versione pnpm duplicata; Node 22 per `node:sqlite`). Deploy verde, sito live,
+   pagina + asset (css/js/webp/avif) tutti **200**, base `/experience-design-factory` corretta, nessun 404.
+
+### Verifica Phase M ✅
+- `audit:deck` — **0 FAIL** a 1920×1080, 1440×900, 1280×800, con "Scopri come" testato **da espanso inline**.
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi; `assets:build` ri-eseguito (provenance.json aggiornato).
+- Screenshot verificati: filo cover, slide Pexels+scrim (impulse/come), ritratto Francesca, "Scopri come" espanso, ai viewport.
+- Deploy live verificato via HTTP: `/acquisizione/` 200, asset `_astro/*` 200.
+- Nessuna propagazione alle altre fasi/pagine.
 
 ---
 
@@ -510,7 +544,7 @@ Regola operativa: `git push` dopo ogni commit. Hosting Pages da abilitare in uno
 ## TODO (future phases)
 - [x] Create GitHub repo + push to remote (`agargiulo-adbe/experience-design-factory`)
 - [x] Propagare il modello immersivo a tutte le 8 pagine
-- [ ] Abilitare hosting GitHub Pages (step dedicato)
+- [x] Abilitare hosting GitHub Pages (repo PUBLIC, Actions source) → live: https://agargiulo-adbe.github.io/experience-design-factory/acquisizione/
 - [ ] Factory Console (apps/console) — local SPA editor + Node backend
 - [ ] Self-host fonts (currently Google Fonts CDN)
 - [ ] Firefly/placeholder imagery for media slots (currently empty placeholders)

@@ -26,19 +26,20 @@ no jargon in the main narrative ("a scala", "Front/Back", "privacy-safe" → pla
 ## Slides (cover + 8 = 9)
 | # | Slide | bg | Beat | Key components |
 |---|-------|----|------|----------------|
-| 0 | Cover | brand | Tagline HERO ("Una relazione che attraversa il tempo"); eyebrow GENERAZIONI; co-brand **signature** `Max Mara —•— Adobe` (filo) at the bottom | `CoverSlide` |
+| 0 | Cover | brand | Tagline HERO ("Una relazione che attraversa il tempo"); eyebrow GENERAZIONI; co-brand **signature** `Max Mara` · *filo* (sartorial stitch + knot, self-sewing) · `Adobe` at the bottom; subtle cashmere backdrop under scrim | `CoverSlide` + `SlideBackdrop` |
 | 1 | Apertura | secondary | "FASE 1 · ACQUISIZIONE" + "01" + "Incontrare chi ancora non ci conosce" | `Slide` + atmosphere backdrop |
 | 2 | Giulia (LEI) | primary | The human face — portrait + who she is | `MediaSlot` (persona-giulia) |
 | 3 | Il problema → profili | primary | Data lake → live profiles (Giulia + Francesca); "il CRM si collega, non si sostituisce" | data-lake anim + `HowItWorks` "Dal data lake ai profili" |
 | 4 | Front stage | primary | She meets the Whitney Bag in her IG feed | `InstagramPost` (whitney-post) |
-| 5 | L'aha ("Dietro le quinte") | secondary | The touch isn't lost — platform recognises her in real time (labels: "Giulia tocca" / "La piattaforma risponde", no Front/Back) | pulse diagram |
+| 5 | L'aha ("Dietro le quinte") | secondary | The touch isn't lost — platform recognises her in real time (labels: "Giulia tocca" / "La piattaforma risponde", no Front/Back) + enriched body "il gesto naturale … una relazione su misura"; linen backdrop under scrim | pulse diagram + `SlideBackdrop` |
 | 6 | Parlarle la sua lingua | inverse | Content on her terms — GenStudio+Firefly; lookalikes in plain Italian (RT-CDP) | `HowItWorks` "Contenuti on-brand, sempre" |
 | 7 | Nel frattempo (Francesca) | secondary | The thread: same care that wins Giulia kept Francesca for 20 years | split portrait (persona-francesca) |
 | 8 | Payoff + filo | brand | **"tre quarti"** (words, dark on camel) + 2030 stat; closing "iniziare una relazione"; CTA "Segue · L'incontro" | display hero (`data-display`) |
 
 ## "How it works" layers (optional depth)
-`HowItWorks` opens a right slide-over with plain-language tech detail; the deck
-reads fine without opening it (self-sufficient on screen for the live telling).
+`HowItWorks` expands **inline, in place** (pushing the content below down) with
+plain-language tech detail; the deck reads fine without expanding it (self-sufficient
+on screen for the live telling). No overlay/scrim/fixed — pure in-flow disclosure.
 - **Dal data lake ai profili** → Real-Time CDP in 3 plain sentences: unify existing
   data into live profiles · connects (doesn't replace) CRM/existing systems ·
   privacy-safe data collaboration / clean room to find new clients like Giulia.
@@ -54,11 +55,11 @@ reads fine without opening it (self-sufficient on screen for the live telling).
 
 ## Layout contract & visual audit
 Every slide must pass `pnpm --filter generazioni-maxmara audit:deck` (Playwright) at **three
-viewports — 1920×1080, 1440×900, 1280×800** — **12 deterministic DOM checks (a–l)**: text-in-band,
-chrome collision, margins/overflow, text-over-faces, text-on-text, clean open slide-over (panels
-opened & re-measured), vertical rhythm ≥16px, WCAG-AA button contrast, space usage ≥45% — plus the
-**structural invariants**: **(j) nothing clipped / all inside the viewport**, **(k) no hidden
-scroll**, **(l) trigger not obstructed when a panel is open**. Failures save a per-viewport screenshot.
+viewports — 1920×1080, 1440×900, 1280×800** — **deterministic DOM checks (a–k + exp)**: text-in-band,
+chrome collision, margins/overflow, text-over-faces, text-on-text, vertical rhythm ≥16px, WCAG-AA
+button contrast, space usage ≥45% — plus the **structural invariants**: **(j) nothing clipped / all
+inside the viewport**, **(k) no hidden scroll**, and **(exp)** each "Scopri come" **expanded inline**
+and the slide re-measured in its expanded state (b,c,d,e,g,h,j,k). Failures save a per-viewport screenshot.
 A **display hero** (giant metric numeral) is tagged `data-display` and excluded from the prose
 band check (a) — it's a display element, not prose, like the cover tagline or "tre quarti".
 
@@ -69,8 +70,9 @@ Notes baked into the slides:
   Tailwind utilities and kill rhythm/contrast.
 - Slide 3 is a **balanced split** (text in-band on the left; a persistent faint data-field +
   larger profiles + "Profili unificati" caption on the right — the viz uses the space).
-- `HowItWorks` opens as a **centred, bounded dialog** (`w≤min(720px,60vw)`,
-  `max-height: calc(100dvh - 2*--slide-safe-inset)`, content fits without scroll; full-viewport
-  scrim; panel moved to `<body>`) — never a clippable full-height side panel. `tone="onDark"` on dark slides.
-- Slide 1's atmosphere is full-bleed behind text → `data-scrim`; portraits + IG image carry
-  `data-no-text` zones. Safe-area tokens in `global.css`.
+- `HowItWorks` expands **inline in normal flow** (GSAP height tween, no overlay/scrim/fixed),
+  so the expanded content must fit the slide without clip/scroll — keep copy short & compact
+  (smaller detail font on dense split slides), keep ≥16px rhythm. `tone="onDark"` on dark slides.
+- Atmospheric textile backdrops (`SlideBackdrop` in the `backdrop` slot, outside `.slide-inner`)
+  always sit under a `[data-scrim]` strong enough for WCAG-AA — strengthen the scrim, never lighten
+  the text. Portraits + IG image carry `data-no-text` zones. Safe-area tokens in `global.css`.
