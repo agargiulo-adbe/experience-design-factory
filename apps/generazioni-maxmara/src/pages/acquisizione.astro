@@ -11,6 +11,13 @@ import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 
+// Faint persistent "data lake" field behind the profiles (visible in every state,
+// so the data → people metaphor reads even when the convergence isn't playing).
+const field = Array.from({ length: 46 }).map((_, i) => ({
+  x: Math.round(6 + (((i * 53) % 88))),
+  y: Math.round(8 + (((i * 37) % 84))),
+}));
+
 // Data-lake dots — scattered, converging to centre (kept compact to fit the frame).
 const dots = Array.from({ length: 56 }).map((_, i) => {
   const angle = (i / 56) * Math.PI * 2 + (i % 3);
@@ -33,9 +40,9 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
       <div slot="backdrop" data-scrim class="absolute inset-0 bg-[var(--surface-secondary)]/55" aria-hidden="true"></div>
 
       <p class="slide-eyebrow text-[var(--accent-primary)] mb-6" data-reveal>Fase 1 · Acquisizione</p>
-      <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-4" style="font-size: clamp(3rem, 7vw, 7rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">01</p>
-      <h1 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2.25rem, 5vw, 4.5rem);" data-reveal data-reveal-delay="0.2">Una relazione che attraversa il tempo</h1>
-      <p class="text-[clamp(1.3rem,2vw,1.9rem)] font-[family-name:var(--font-display)] text-[var(--ink-secondary)] mb-7 max-w-3xl" data-reveal data-reveal-delay="0.3">
+      <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-5" style="font-size: clamp(2.5rem, 4vw, 4rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">01</p>
+      <h1 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2.5rem, 5.2vw, 4.75rem);" data-reveal data-reveal-delay="0.2">Una relazione che attraversa il tempo</h1>
+      <p class="text-[clamp(1.35rem,2vw,1.85rem)] font-[family-name:var(--font-display)] text-[var(--ink-secondary)] mb-7 max-w-3xl" data-reveal data-reveal-delay="0.3">
         Incontrare una nuova generazione, onorare chi sceglie Max Mara da sempre.
       </p>
       <p class="text-[clamp(1.15rem,1.5vw,1.45rem)] text-[var(--ink-tertiary)] leading-snug max-w-3xl" data-reveal data-reveal-delay="0.4">
@@ -82,23 +89,34 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
           </div>
         </div>
 
-        <div class="relative h-full min-h-0" data-datalake>
+        <div class="relative h-full min-h-0 flex items-center justify-center" data-datalake>
+          <!-- faint persistent data field (the silent lake) -->
+          <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+            {field.map((f) => (
+              <span class="absolute w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]/20" style={`left:${f.x}%; top:${f.y}%;`} />
+            ))}
+          </div>
+          <!-- converging dots (animate into the profiles) -->
           {dots.map((d) => (
             <div class="data-dot absolute left-1/2 top-1/2 w-3 h-3 md:w-3.5 md:h-3.5 rounded-full bg-[var(--accent-primary)]" data-dx={d.dx} data-dy={d.dy} />
           ))}
-          <div class="absolute inset-0 flex items-center justify-center gap-8 md:gap-12">
-            <div class="profile-circle flex flex-col items-center gap-3">
-              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-lg">
-                <MediaSlot {...mediaProps('persona-giulia')} fill noText="6,14,72,58" />
+          <!-- emerged profiles -->
+          <div class="relative flex flex-col items-center gap-8">
+            <div class="flex items-center justify-center gap-10 md:gap-14">
+              <div class="profile-circle flex flex-col items-center gap-3">
+                <div class="w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden relative bg-[var(--accent-primary)] shadow-xl ring-4 ring-[var(--surface-primary)]">
+                  <MediaSlot {...mediaProps('persona-giulia')} fill noText="6,14,72,58" />
+                </div>
+                <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
               </div>
-              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-            </div>
-            <div class="profile-circle flex flex-col items-center gap-3">
-              <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-lg">
-                <MediaSlot {...mediaProps('persona-francesca')} fill noText="6,14,72,58" />
+              <div class="profile-circle flex flex-col items-center gap-3">
+                <div class="w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] shadow-xl ring-4 ring-[var(--surface-primary)]">
+                  <MediaSlot {...mediaProps('persona-francesca')} fill noText="6,14,72,58" />
+                </div>
+                <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
               </div>
-              <span class="text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
             </div>
+            <span class="text-[clamp(1rem,1.2vw,1.2rem)] text-[var(--ink-tertiary)] tracking-wide">Profili unificati, in tempo reale</span>
           </div>
         </div>
       </div>
@@ -126,12 +144,12 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
     <!-- ── SLIDE 5: Front→back — l'aha ───────────────────────────── -->
     <Slide id="slide-impulse" bg="secondary" align="center">
       <p class="slide-eyebrow text-[var(--ink-tertiary)] mb-5" data-reveal>Dietro le quinte</p>
-      <h2 class="slide-title text-[var(--ink-primary)] mb-14 md:mb-16" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
+      <h2 class="slide-title text-[var(--ink-primary)] mb-7" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
         Quel tocco non si perde
       </h2>
 
       <div class="relative w-full max-w-[1200px] mx-auto grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch" data-pulse-line>
-        <div class="bg-[var(--surface-primary)] rounded-lg p-9 md:p-12 border border-[var(--line-subtle)] flex flex-col justify-center" data-reveal>
+        <div class="bg-[var(--surface-primary)] rounded-lg p-7 md:p-9 border border-[var(--line-subtle)] flex flex-col justify-center" data-reveal>
           <span class="slide-eyebrow text-[var(--ink-tertiary)] mb-3">Front</span>
           <p class="text-[clamp(1.3rem,1.9vw,1.9rem)] text-[var(--ink-primary)] font-medium leading-tight">Giulia tocca</p>
           <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--ink-secondary)] mt-1.5">scopre la Whitney Bag</p>
@@ -150,14 +168,14 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
           </svg>
         </div>
 
-        <div class="bg-[var(--surface-inverse)] rounded-lg p-9 md:p-12 text-[var(--ink-inverse)] flex flex-col justify-center" data-reveal data-reveal-delay="0.3">
+        <div class="bg-[var(--surface-inverse)] rounded-lg p-7 md:p-9 text-[var(--ink-inverse)] flex flex-col justify-center" data-reveal data-reveal-delay="0.3">
           <span class="slide-eyebrow text-[var(--color-grigio-300)] mb-3">Back</span>
           <p class="text-[clamp(1.3rem,1.9vw,1.9rem)] font-medium leading-tight">La piattaforma risponde</p>
           <p class="text-[clamp(1.15rem,1.4vw,1.4rem)] text-[var(--color-grigio-300)] mt-1.5">la riconosce e adatta tutto</p>
         </div>
       </div>
 
-      <p class="slide-lead text-[var(--ink-secondary)] max-w-3xl mx-auto mt-12" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.4">
+      <p class="slide-lead text-[var(--ink-secondary)] max-w-3xl mx-auto mt-6" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem);" data-reveal data-reveal-delay="0.4">
         Nell'istante in cui tocca, la piattaforma la riconosce come nuova visitatrice e ricompone l'esperienza intorno a lei, in tempo reale.
       </p>
     </Slide>
@@ -168,7 +186,7 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
         <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
         <span class="slide-eyebrow text-[var(--color-grigio-300)]">Ciò che fa la piattaforma</span>
       </div>
-      <h2 class="slide-title text-[var(--ink-inverse)] mb-12" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
+      <h2 class="slide-title text-[var(--ink-inverse)] mb-9" style="font-size: clamp(2.25rem, 4.4vw, 4rem);" data-reveal data-reveal-delay="0.1">
         Parlarle la sua lingua, a scala
       </h2>
 
@@ -182,7 +200,7 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
       </div>
 
       <div class="mt-9" data-reveal data-reveal-delay="0.5">
-        <HowItWorks title="Contenuti on-brand a scala">
+        <HowItWorks title="Contenuti on-brand a scala" tone="onDark">
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed mb-4">I social chiedono contenuti continui. <strong class="text-[var(--ink-primary)] font-semibold">GenStudio</strong> permette ai team interni di creare e declinare campagne on-brand, senza attendere i tempi dell'agenzia.</p>
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed mb-4"><strong class="text-[var(--ink-primary)] font-semibold">Firefly</strong> genera immagini sicure per l'uso commerciale, addestrato su contenuti licenziati: niente rischi di copyright.</p>
           <p class="text-[1.2rem] text-[var(--ink-secondary)] leading-relaxed">Insieme formano una content supply chain: dal brief alla pubblicazione, con il controllo del brand sempre al centro.</p>
@@ -192,21 +210,21 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
 
     <!-- ── SLIDE 7: Payoff + filo ────────────────────────────────── -->
     <Slide id="slide-payoff" bg="brand" align="center">
-      <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-5" style="font-size: clamp(5rem, 13vw, 11rem);">
+      <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-10" style="font-size: clamp(6rem, 15vw, 14rem);">
         <span data-count-up="75" data-count-suffix="%">0%</span>
       </p>
-      <p class="text-[clamp(1.4rem,2.2vw,2.1rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-2 max-w-3xl" data-reveal data-reveal-delay="0.2">
+      <p class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-6 max-w-3xl" data-reveal data-reveal-delay="0.2">
         Entro il 2025 il lusso sarà guidato da Millennial e Gen Z.
       </p>
-      <p class="text-[clamp(1.1rem,1.35vw,1.3rem)] text-[var(--ink-primary)]/70 mb-9" data-reveal data-reveal-delay="0.28">
+      <p class="text-[clamp(1.1rem,1.35vw,1.3rem)] text-[var(--ink-primary)]/70 mb-14" data-reveal data-reveal-delay="0.28">
         Fonte: Bain &amp; Company / Altagamma
       </p>
 
-      <p class="text-[clamp(1.3rem,1.9vw,1.75rem)] text-[var(--ink-primary)] leading-snug max-w-3xl border-t border-[var(--ink-primary)]/25 pt-8" data-reveal data-reveal-delay="0.36">
+      <p class="text-[clamp(1.3rem,1.9vw,1.75rem)] text-[var(--ink-primary)] leading-snug max-w-3xl border-t border-[var(--ink-primary)]/25 pt-10" data-reveal data-reveal-delay="0.36">
         Giulia è entrata nel mondo Max Mara. Adesso il punto non è venderle qualcosa — è iniziare una relazione.
       </p>
 
-      <div class="mt-10" data-reveal data-reveal-delay="0.5">
+      <div class="mt-12" data-reveal data-reveal-delay="0.5">
         <a
           href={href(base, '/engagement')}
           class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide uppercase bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
