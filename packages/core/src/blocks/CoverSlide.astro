@@ -1,0 +1,42 @@
+---
+/**
+ * CoverSlide — cinematic, quiet-luxury opening slide for a deck (slide 0).
+ * Camel ground, editorial composition, NO "tech" aesthetic. A thin sartorial
+ * "filo" draws itself between the two wordmarks (Max Mara primary, Adobe
+ * discreet), which appear and converge. Animation runs on slide activation and
+ * respects prefers-reduced-motion (static final state). Driven via [data-cover]
+ * handled by animations.ts (prepareSlide / playSlide).
+ */
+import Slide from './immersive/Slide.astro';
+
+interface Props {
+  eyebrow?: string;
+  tagline: string;
+  primary?: string;
+  secondary?: string;
+  class?: string;
+}
+const {
+  eyebrow = 'Max Mara × Adobe · Experience Design',
+  tagline,
+  primary = 'Max Mara',
+  secondary = 'Adobe',
+  class: className,
+} = Astro.props;
+---
+<Slide id="slide-cover" bg="brand" align="center" class={className}>
+  <div data-cover class="w-full flex flex-col items-center">
+    <p class="slide-eyebrow text-[var(--ink-primary)]/70 mb-12" data-reveal>{eyebrow}</p>
+
+    <div class="cover-names flex items-center justify-center gap-5 md:gap-9 mb-12">
+      <span class="cover-word cover-word-mm font-[family-name:var(--font-display)] font-light text-[var(--ink-primary)] leading-none" style="font-size: clamp(2.5rem, 6.5vw, 6rem);">{primary}</span>
+      <svg class="cover-thread w-16 md:w-28 h-6 overflow-visible flex-shrink-0" viewBox="0 0 120 24" fill="none" aria-hidden="true">
+        <path class="cover-thread-path" d="M2 12 H118" stroke="var(--ink-primary)" stroke-width="1.25" stroke-linecap="round"/>
+        <circle class="cover-knot" cx="60" cy="12" r="2.6" fill="var(--ink-primary)" opacity="0"/>
+      </svg>
+      <span class="cover-word cover-word-adobe font-[family-name:var(--font-display)] font-light text-[var(--ink-primary)]/75 leading-none" style="font-size: clamp(1.6rem, 3.2vw, 3rem);">{secondary}</span>
+    </div>
+
+    <h1 class="slide-title text-[var(--ink-primary)] max-w-4xl" style="font-size: clamp(2rem, 4.6vw, 4rem);" data-reveal data-reveal-delay="0.25">{tagline}</h1>
+  </div>
+</Slide>

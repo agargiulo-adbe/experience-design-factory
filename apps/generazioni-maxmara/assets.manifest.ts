@@ -18,13 +18,13 @@ export const assets: AssetSlot[] = [
     alt: 'Atmosfera editoriale: donna elegante in cappotto cammello',
   },
   {
-    id: 'monogram-post',
+    id: 'whitney-post',
     type: 'stock',
-    query: 'luxury leather handbag beige minimal',
+    query: 'structured leather handbag camel minimal',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
-    alt: 'Borsa Monogram in pelle su fondo neutro — post social',
+    alt: 'Whitney Bag in pelle cammello su fondo neutro — post social',
   },
   {
     id: 'persona-giulia',

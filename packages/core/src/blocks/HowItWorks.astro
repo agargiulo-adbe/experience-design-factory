@@ -1,0 +1,125 @@
+---
+/**
+ * HowItWorks — a discreet "Scopri come →" affordance that opens a slide-over
+ * panel from the right, explaining the technology in plain language (Adobe
+ * products named in context). The front-stage slide stays visible on the left.
+ *
+ * - Does NOT change slide; opens/closes over the deck (~350ms).
+ * - Close with Esc, the × button, or a click outside; focus-trapped for a11y.
+ * - Optional: the deck reads fine without it. Respects prefers-reduced-motion.
+ *
+ * Body content is passed via the default slot (style your own <p> elements).
+ */
+interface Props {
+  label?: string;
+  title: string;
+  class?: string;
+}
+const { label = 'Scopri come', title, class: className } = Astro.props;
+const panelId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+<div class:list={["hiw inline-block", className]} data-hiw>
+  <button
+    type="button"
+    class="hiw-trigger inline-flex items-center gap-2 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide text-[var(--accent-primary)] hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4"
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls={panelId}
+    data-hiw-open
+  >
+    {label}
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <div class="hiw-overlay fixed inset-0 z-[60] bg-black/35 opacity-0 pointer-events-none transition-opacity duration-300" data-hiw-overlay></div>
+
+  <aside
+    id={panelId}
+    class="hiw-panel fixed top-0 right-0 z-[61] h-[100dvh] w-[min(92vw,30rem)] bg-[var(--surface-primary)] shadow-2xl translate-x-full transition-transform duration-[350ms] ease-out"
+    role="dialog"
+    aria-modal="true"
+    aria-label={title}
+    data-hiw-panel
+    inert
+  >
+    <div class="flex flex-col h-full px-8 md:px-10 py-10 text-left">
+      <div class="flex items-start justify-between gap-6 mb-7">
+        <h3 class="font-[family-name:var(--font-display)] font-light text-[clamp(1.6rem,2.4vw,2.25rem)] leading-tight text-[var(--ink-primary)]">{title}</h3>
+        <button type="button" class="hiw-close flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-[var(--ink-secondary)] hover:bg-[var(--surface-secondary)] focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-2" aria-label="Chiudi" data-hiw-close>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="hiw-body flex-1 overflow-y-auto"><slot /></div>
+      <p class="mt-6 pt-5 border-t border-[var(--line-subtle)] text-xs text-[var(--ink-tertiary)]">Premi Esc per chiudere</p>
+    </div>
+  </aside>
+</div>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    .hiw-panel, .hiw-overlay { transition: none; }
+  }
+</style>
+
+<script>
+  function wireHowItWorks() {
+    const lockDeck = (locked: boolean) => {
+      const deck = document.querySelector('[data-deck]');
+      if (!deck) return;
+      if (locked) deck.setAttribute('data-deck-lock', '');
+      else deck.removeAttribute('data-deck-lock');
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-hiw]').forEach((root) => {
+      if (root.dataset.hiwReady) return;
+      root.dataset.hiwReady = 'true';
+
+      const trigger = root.querySelector<HTMLButtonElement>('[data-hiw-open]');
+      const panel = root.querySelector<HTMLElement>('[data-hiw-panel]');
+      const overlay = root.querySelector<HTMLElement>('[data-hiw-overlay]');
+      const closeBtn = root.querySelector<HTMLButtonElement>('[data-hiw-close]');
+      if (!trigger || !panel || !overlay) return;
+
+      const focusable = () => Array.from(
+        panel.querySelectorAll<HTMLElement>('a[href],button,textarea,input,select,[tabindex]:not([tabindex="-1"])')
+      ).filter((el) => !el.hasAttribute('disabled'));
+
+      const onKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+        if (e.key === 'Tab') {
+          const items = focusable();
+          if (!items.length) return;
+          const first = items[0], last = items[items.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      };
+
+      function open() {
+        panel.classList.remove('translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        panel.removeAttribute('inert');
+        trigger.setAttribute('aria-expanded', 'true');
+        lockDeck(true);
+        document.addEventListener('keydown', onKey, true);
+        (closeBtn ?? focusable()[0])?.focus();
+      }
+      function close() {
+        panel.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        panel.setAttribute('inert', '');
+        trigger.setAttribute('aria-expanded', 'false');
+        lockDeck(false);
+        document.removeEventListener('keydown', onKey, true);
+        trigger.focus();
+      }
+
+      trigger.addEventListener('click', (e) => { e.stopPropagation(); open(); });
+      overlay.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+      closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+    });
+  }
+
+  wireHowItWorks();
+  document.addEventListener('astro:after-swap', wireHowItWorks);
+</script>

@@ -645,6 +645,28 @@ export function prepareSlide(slide: HTMLElement) {
       profiles.forEach(p => { p.style.opacity = '0'; });
     }
   }
+  // Cover slide (sartorial thread + converging wordmarks)
+  const cover = slide.querySelector<HTMLElement>('[data-cover]');
+  if (cover) {
+    const mm = cover.querySelector<HTMLElement>('.cover-word-mm');
+    const adobe = cover.querySelector<HTMLElement>('.cover-word-adobe');
+    const thread = cover.querySelector<SVGPathElement>('.cover-thread-path');
+    const knot = cover.querySelector<SVGElement>('.cover-knot');
+    if (REDUCED_MOTION) {
+      [mm, adobe].forEach(el => { if (el) { el.style.opacity = '1'; el.style.transform = 'none'; } });
+      if (thread) thread.style.strokeDashoffset = '0';
+      if (knot) knot.style.opacity = '1';
+    } else {
+      if (mm) { mm.style.opacity = '0'; mm.style.transform = 'translateX(-30px)'; }
+      if (adobe) { adobe.style.opacity = '0'; adobe.style.transform = 'translateX(30px)'; }
+      if (thread) {
+        const len = thread.getTotalLength?.() || 120;
+        thread.style.strokeDasharray = `${len}`;
+        thread.style.strokeDashoffset = `${len}`;
+      }
+      if (knot) knot.style.opacity = '0';
+    }
+  }
 }
 
 /** Animate everything in a slide. Safe to call repeatedly (replay). */
@@ -716,6 +738,20 @@ export async function playSlide(slide: HTMLElement) {
     tl.to(dots, { opacity: 0.9, duration: 0.4, stagger: 0.01 });
     tl.to(dots, { x: 0, y: 0, opacity: 0, duration: 1.3, stagger: 0.012, ease: 'power3.inOut' }, '>-0.1');
     tl.to(profiles, { opacity: 1, scale: 1, duration: 0.8, stagger: 0.2, ease: 'back.out(1.6)' }, '-=0.5');
+  }
+
+  // Cover slide — wordmarks converge, then the sartorial thread draws itself
+  const cover = slide.querySelector<HTMLElement>('[data-cover]');
+  if (cover) {
+    const mm = cover.querySelector<HTMLElement>('.cover-word-mm');
+    const adobe = cover.querySelector<HTMLElement>('.cover-word-adobe');
+    const thread = cover.querySelector('.cover-thread-path');
+    const knot = cover.querySelector('.cover-knot');
+    const tl = gsap.timeline({ delay: 0.15 });
+    if (mm) tl.to(mm, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' }, 0);
+    if (adobe) tl.to(adobe, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' }, 0.1);
+    if (thread) tl.to(thread, { strokeDashoffset: 0, duration: 1.5, ease: 'power2.inOut' }, 0.45);
+    if (knot) tl.to(knot, { opacity: 1, duration: 0.4, ease: 'power2.out' }, '>-0.25');
   }
 }
 

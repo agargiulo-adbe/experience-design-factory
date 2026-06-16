@@ -82,6 +82,11 @@ export class Deck {
     this.root.removeEventListener('touchend', this.onTouchEnd);
   }
 
+  // True while a slide-over (HowItWorks) is open — pause deck navigation.
+  private get locked(): boolean {
+    return this.root.hasAttribute('data-deck-lock');
+  }
+
   // ── Navigation ──────────────────────────────────────────────────
   goTo(i: number) {
     const clamped = Math.max(0, Math.min(this.slides.length - 1, i));
@@ -96,11 +101,13 @@ export class Deck {
   }
 
   next() {
+    if (this.locked) return;
     if (this.index < this.slides.length - 1) this.goTo(this.index + 1);
     else this.exitForward();
   }
 
   prev() {
+    if (this.locked) return;
     if (this.index > 0) this.goTo(this.index - 1);
   }
 
@@ -162,6 +169,7 @@ export class Deck {
 
   // ── Input ───────────────────────────────────────────────────────
   private handleKey(e: KeyboardEvent) {
+    if (this.locked) return; // a slide-over owns the keyboard (Esc handled there)
     switch (e.key) {
       case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Spacebar':
         e.preventDefault(); this.next(); break;
