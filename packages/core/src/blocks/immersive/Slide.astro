@@ -31,12 +31,14 @@ const innerAlign = {
   left: 'items-start text-left',
   split: 'items-stretch',
 };
-// Token-driven safe-area gutters (inline style: Tailwind doesn't generate
-// arbitrary `max(var(...))` reliably). Bottom reserves the deck chrome band.
-const safePadding =
-  'padding-inline: max(var(--slide-safe-inset), 6vw);' +
-  'padding-top: max(var(--slide-safe-inset), 7vh);' +
-  'padding-bottom: max(var(--deck-chrome-safe), 7vh);';
+// Content is centred on the VIEWPORT centre (not the padded-box centre) so the
+// reading band [30%,70%] and the ≥45% space-usage target are mutually satisfiable.
+// A symmetric vertical reserve = the chrome band keeps content clear of the deck
+// controls (bottom) and the fullscreen button (top). Horizontal gutter via inset.
+// (inline style: Tailwind doesn't reliably emit arbitrary `max(var(...))`.)
+const safePadding = 'padding-inline: max(var(--slide-safe-inset), 6vw);';
+const bound = 'calc(100dvh - 2 * max(var(--deck-chrome-safe), 7vh))';
+const innerStyle = align === 'split' ? `height: ${bound};` : `max-height: ${bound};`;
 ---
 
 <section
@@ -45,10 +47,9 @@ const safePadding =
   class:list={["slide relative w-full h-[100dvh] overflow-hidden", bgMap[bg], className]}
 >
   <slot name="backdrop" />
-  <!-- Safe area -->
-  <div class="absolute inset-0 flex" style={safePadding}>
-    <!-- Full-height content box; content vertically centred within it -->
-    <div class:list={["slide-inner h-full w-full min-h-0 flex flex-col justify-center", innerAlign[align]]}>
+  <!-- Safe area: centre content on the viewport centre -->
+  <div class="absolute inset-0 flex items-center justify-center" style={safePadding}>
+    <div class:list={["slide-inner w-full min-h-0 flex flex-col justify-center", innerAlign[align]]} style={innerStyle}>
       <slot />
     </div>
   </div>

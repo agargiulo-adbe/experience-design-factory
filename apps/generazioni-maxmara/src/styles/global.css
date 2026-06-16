@@ -150,15 +150,20 @@
   --deck-chrome-safe: 132px;  /* reserved bottom band for prev/next + progress */
 }
 
-/* Base styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* Base styles — reset lives in @layer base so Tailwind utilities (mb-*, space-y-*,
+   in @layer utilities) can override it. An UNLAYERED `* { margin:0 }` would beat
+   every margin utility and kill vertical rhythm. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
+@layer base {
 html {
   font-family: var(--font-body);
   font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
@@ -221,6 +226,8 @@ img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
 }
+}
+/* end @layer base */
 
 /* Utility: screen reader only */
 .sr-only {

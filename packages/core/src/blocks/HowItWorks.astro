@@ -13,15 +13,18 @@
 interface Props {
   label?: string;
   title: string;
+  /** Slide background tone — sets an AA-contrast trigger colour. */
+  tone?: 'onLight' | 'onDark';
   class?: string;
 }
-const { label = 'Scopri come', title, class: className } = Astro.props;
+const { label = 'Scopri come', title, tone = 'onLight', class: className } = Astro.props;
 const panelId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[var(--ink-secondary)]';
 ---
 <div class:list={["hiw inline-block", className]} data-hiw>
   <button
     type="button"
-    class="hiw-trigger inline-flex items-center gap-2 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide text-[var(--accent-primary)] hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4"
+    class:list={["hiw-trigger inline-flex items-center gap-2 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide underline underline-offset-4 decoration-1 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4", triggerColor]}
     aria-haspopup="dialog"
     aria-expanded="false"
     aria-controls={panelId}
@@ -35,7 +38,7 @@ const panelId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace
 
   <aside
     id={panelId}
-    class="hiw-panel fixed top-0 right-0 z-[61] h-[100dvh] w-[min(92vw,30rem)] bg-[var(--surface-primary)] shadow-2xl translate-x-full transition-transform duration-[350ms] ease-out"
+    class="hiw-panel fixed top-0 right-0 z-[61] h-[100dvh] w-[min(440px,38vw)] bg-[var(--surface-primary)] shadow-2xl translate-x-full transition-transform duration-[350ms] ease-out"
     role="dialog"
     aria-modal="true"
     aria-label={title}
@@ -96,6 +99,11 @@ const panelId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace
       };
 
       function open() {
+        // Move overlay + panel to <body> so they escape the deck's transformed
+        // slide (a fixed element inside a transformed ancestor is NOT viewport-fixed).
+        // This makes the slide-over a true top-level overlay above everything.
+        document.body.appendChild(overlay);
+        document.body.appendChild(panel);
         panel.classList.remove('translate-x-full');
         overlay.classList.remove('opacity-0', 'pointer-events-none');
         panel.removeAttribute('inert');
