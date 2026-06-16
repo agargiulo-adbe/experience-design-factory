@@ -687,6 +687,35 @@ export function prepareSlide(slide: HTMLElement) {
       bubbles.forEach(b => { const fromIn = b.dataset.side === 'in'; b.style.opacity = '0'; b.style.transform = `translate(${fromIn ? -24 : 24}px, 16px)`; });
     }
   }
+  // Lifecycle ring — deck variant.
+  const ring = slide.querySelector<HTMLElement>('[data-lifecycle]');
+  if (ring) {
+    const nodes = ring.querySelectorAll<HTMLElement>('.cycle-node');
+    const track = ring.querySelector<SVGPathElement>('.cycle-track');
+    const dot = ring.querySelector<SVGElement>('.cycle-dot');
+    if (REDUCED_MOTION) {
+      nodes.forEach(n => { n.style.opacity = '1'; n.style.transform = 'none'; });
+      if (track) track.style.strokeDashoffset = '0';
+      if (dot) dot.style.opacity = '0';
+    } else {
+      nodes.forEach(n => { n.style.opacity = '0.25'; n.style.transform = 'scale(0.85)'; });
+      if (track) { const len = track.getTotalLength?.() || 600; track.style.strokeDasharray = `${len}`; track.style.strokeDashoffset = `${len}`; }
+      if (dot) dot.style.opacity = '0';
+    }
+  }
+  // Clienteling recognition card — deck variant.
+  const cl = slide.querySelector<HTMLElement>('[data-clienteling]');
+  if (cl) {
+    const attrs = cl.querySelectorAll<HTMLElement>('.reveal-attr');
+    const scan = cl.querySelector<HTMLElement>('.scan-line');
+    if (REDUCED_MOTION) {
+      attrs.forEach(a => { a.style.opacity = '1'; a.style.transform = 'none'; });
+      if (scan) scan.style.opacity = '0';
+    } else {
+      attrs.forEach(a => { a.style.opacity = '0'; a.style.transform = 'translateX(-12px)'; });
+      if (scan) { scan.style.opacity = '0'; scan.style.top = '0%'; }
+    }
+  }
   // Atmospheric parallax: over-scaled so the drift never reveals an edge.
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
     el.style.transform = REDUCED_MOTION ? 'scale(1.04)' : 'scale(1.06) translateX(16px)';
@@ -793,6 +822,30 @@ export async function playSlide(slide: HTMLElement) {
   if (conv) {
     const bubbles = Array.from(conv.querySelectorAll<HTMLElement>('.chat-bubble'));
     gsap.to(bubbles, { opacity: 1, x: 0, y: 0, duration: 0.55, stagger: 0.5, delay: 0.25, ease: 'power3.out' });
+  }
+  // Lifecycle — track draws, nodes light up, dot orbits perpetually
+  const ring = slide.querySelector<HTMLElement>('[data-lifecycle]');
+  if (ring) {
+    const nodes = Array.from(ring.querySelectorAll<HTMLElement>('.cycle-node'));
+    const track = ring.querySelector('.cycle-track');
+    const dot = ring.querySelector<SVGElement>('.cycle-dot');
+    const tl = gsap.timeline({ delay: 0.2 });
+    if (track instanceof SVGElement) tl.to(track, { strokeDashoffset: 0, duration: 1.6, ease: 'none' });
+    tl.to(nodes, { opacity: 1, scale: 1, duration: 0.4, stagger: 0.35, ease: 'back.out(2)' }, '<+=0.2');
+    if (dot) {
+      gsap.killTweensOf(dot);
+      tl.set(dot, { opacity: 1 }, '>-0.2');
+      gsap.to(dot, { rotation: 360, duration: 8, repeat: -1, ease: 'none', transformOrigin: 'center center', svgOrigin: `${dot.getAttribute('data-cx') || 100} ${dot.getAttribute('data-cy') || 100}` });
+    }
+  }
+  // Clienteling — scan sweep, then attributes reveal one by one
+  const cl = slide.querySelector<HTMLElement>('[data-clienteling]');
+  if (cl) {
+    const attrs = Array.from(cl.querySelectorAll<HTMLElement>('.reveal-attr'));
+    const scan = cl.querySelector<HTMLElement>('.scan-line');
+    const tl = gsap.timeline({ delay: 0.2 });
+    if (scan) tl.to(scan, { opacity: 1, duration: 0.2 }).to(scan, { top: '100%', duration: 1.1, ease: 'power1.inOut' }).to(scan, { opacity: 0, duration: 0.3 }, '-=0.2');
+    tl.to(attrs, { opacity: 1, x: 0, duration: 0.5, stagger: 0.18, ease: 'power3.out' }, scan ? '-=1.2' : 0);
   }
   // Atmospheric parallax: a quiet drift on activation (stays over-scaled to cover).
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
