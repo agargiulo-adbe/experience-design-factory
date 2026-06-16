@@ -39,3 +39,50 @@ Monorepo for the Experience Design Factory: a reusable system where each client 
 
 ## Error Recovery
 If you encounter errors, diagnose, fix, and continue. Do not stop.
+
+## Deck visual contract
+Some pages are **keynote decks** (full-screen slides, projected at **1920×1080**).
+Claude can *see* its output: the **playwright MCP** (browser_* tools) for interactive
+inspection, and `scripts/deck-audit.ts` (`pnpm --filter generazioni-maxmara audit:deck`)
+as the deterministic DOM gate. Measure bounding boxes → pass/fail; screenshots only
+confirm failures (saved to `audit/<deck>/<slide-id>.png`).
+
+### Component API (deck)
+- `immersive/DeckContainer.astro` — deck wrapper (`fixed inset-0`, no scroll). Chrome:
+  progress `NN/NN`, prev/next, fullscreen (auto-hide; hidden while a panel is open via
+  `data-deck-lock`). Prop `nextHref` → advancing past the last slide.
+- `immersive/Slide.astro` — one slide. **Safe-area contract:** content lives inside the
+  viewport minus token gutters, **vertically centred** (`justify-center`), height-bounded
+  (`max-h/min-h-0`), **never clipping**; bottom reserves the chrome band. Slots: default
+  (content) + `backdrop` (full-bleed). `bg` = primary|secondary|inverse|brand; `align` =
+  center|left|split. If content doesn't fit → SPLIT into two slides.
+- `immersive/deck.ts` — presenter controller (←/→/↑/↓, Space, PageUp/Down, Home/End,
+  click halves, swipe, `F`). Fires `prepareSlide`/`playSlide` on activation (replay on
+  revisit). Pauses when `data-deck-lock` is set.
+- `CoverSlide.astro` — cinematic slide 0 (camel; sartorial *filo* draws between
+  `Max Mara`/`Adobe` wordmarks; tagline). `[data-cover]` animation, reduced-motion safe.
+- `HowItWorks.astro` — optional "Scopri come →" right slide-over (plain-language tech;
+  Esc/×/click-outside, focus-trap; sets `data-deck-lock`). Deck reads fine without it.
+- `InstagramPost.astro` — credible IG post in a phone (`{...mediaProps('id')} caption=…`).
+- `MediaSlot.astro` — `<Picture>` (AVIF/WebP) or palette placeholder; `fill`,
+  `noText="top,left,width,height"` (% face/subject zone — no text may overlap it).
+- The 9 experience blocks (non-deck library): Hero, NarrativeSection, FrontBackStageSplit,
+  JourneyPhase, PersonaCard, ProductGateway, AdobeStackReveal, MetricCallout, Timeline.
+
+### Aesthetic brief (quiet-luxury)
+Palette cammello `#C19A6B` / avorio `#F5F0E6` / testa-di-moro `#3E2C20` (+ sabbia, oro);
+display serif **Cormorant Garamond** + grotesque **Inter**; editorial composition, generous
+negative space; motion sober (~500ms ease, sartorial), `prefers-reduced-motion` respected;
+Adobe discreet/in-context (full stack reveal only on "Il Motore Adobe").
+
+### The 4 defects every slide must pass at 1920×1080 (`audit:deck`)
+1. **Text not too high** — each significant text block's vertical centre inside the central
+   reading band (30%–70%); never anchored near the top edge.
+2. **No chrome collision** — no content text intersects the deck controls (prev/next/progress/fullscreen).
+3. **Margins / no overflow** — no content/media box past `--slide-safe-inset` on any side;
+   no horizontal overflow (`scrollWidth > clientWidth`).
+4. **No text over faces** — no text intersects an image's `[data-no-text]` zone; any text
+   over an image needs a `[data-scrim]` behind it.
+
+Safe-area tokens (in `global.css`, fixed px so the audit can read them):
+`--slide-safe-inset` (gutter, all sides), `--deck-chrome-safe` (reserved bottom band).
