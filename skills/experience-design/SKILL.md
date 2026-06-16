@@ -57,6 +57,44 @@ state and returning, then register it in `initAllAnimations`.
 > GSAP parses inline `translate(%)` into xPercent/yPercent and composes `x/y` on top,
 > so set inline `transform`, not Tailwind `-translate-*`, on GSAP-animated nodes.
 
+## Keynote deck mode (golden reference: the Acquisizione page)
+Some pages are presented as a **projected keynote deck**, not a scrolled page:
+full-screen slides, advanced one at a time with a horizontal slide transition
+(~500ms, cross-fade under reduced-motion). Use this when the page must be *run live
+in a room* as well as read.
+
+- `packages/core/src/blocks/immersive/DeckContainer.astro` — deck wrapper (`fixed inset-0`,
+  no scroll). Minimal auto-hiding chrome: progress `01 / NN`, prev/next, fullscreen.
+  Projection type as global classes (`.slide-title`, `.slide-lead`, `.slide-eyebrow`).
+  `nextHref` → advancing past the last slide goes to the next phase.
+- `packages/core/src/blocks/immersive/Slide.astro` — one slide. **Absolute safe-area
+  guarantee:** content sits inside the viewport minus ~8% margins, **vertically centred**,
+  height-constrained (`max-h-full` + `min-h-0`) so it **never clips** (no title glued to the
+  top, no text spilling off the bottom). A `backdrop` slot carries full-bleed layers
+  (atmosphere image + scrim). `bg` = `primary|secondary|inverse|brand`, `align` =
+  `center|left|split`.
+- `packages/core/src/blocks/immersive/deck.ts` — presenter controller: ←/→/↑/↓, Space,
+  PageUp/Down, Home/End, click halves, swipe, fullscreen (`F`). Fires `prepareSlide` +
+  `playSlide` (from `animations.ts`) when a slide becomes active — animations **replay** on
+  revisit. Re-inits/tears down across View Transitions.
+
+**Safe-area rule (non-negotiable):** every slide must fit WHOLE at 1920×1080 with
+breathing room above and below — verify there. If content doesn't fit, **SPLIT into two
+slides; do not compress.** No site nav in presentation mode — only the deck chrome.
+
+**Persona-led narrative spine:** the deck *follows one human face* through the journey
+(for Generazioni: **Giulia, 29**, the new customer). The heritage client (**Francesca, 52**)
+appears as the *thread* that grows in later phases. Each slide is a beat: clear title +
+1–2 sentences that read in projection — more short beats, not dense slides.
+
+**Products in context, never a catalogue:** name Adobe products as *light attributions*
+while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly**"), max
+2–3 per slide. The full stack reveal belongs ONLY to "Il Motore Adobe".
+
+- `packages/core/src/blocks/InstagramPost.astro` — a credible IG post inside a phone
+  (header + `· Sponsorizzato`, image via `MediaSlot`, actions, likes, caption, comments),
+  sized to fit whole within the safe area. Usage: `<InstagramPost {...mediaProps('id')} />`.
+
 ## The 9 underlying blocks (library)
 Hero, NarrativeSection, FrontBackStageSplit, JourneyPhase, PersonaCard,
 ProductGateway, AdobeStackReveal, MetricCallout, Timeline. These remain available

@@ -1,11 +1,56 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase G — Pipeline asset programmatica (in revisione) ⏳
+## Status: Phase H — Acquisizione golden-reference persona-led (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
 **Phase F:** 2026-06-16 — SOLO Acquisizione trasformata in deck da proiezione; in attesa di revisione prima di propagare
 **Phase G:** 2026-06-16 — pipeline asset programmatica (manifest → Pexels + sharp → MediaSlot); in attesa di revisione
+**Phase H:** 2026-06-16 — Acquisizione rifinita come riferimento d'oro del deck (persona-led + area sicura); in attesa di revisione
+
+---
+
+## Phase H — Acquisizione golden-reference (deck persona-led)
+
+Rifinitura SOLO di Acquisizione come **riferimento d'oro** del deck. Il racconto ora
+**segue Giulia** (29, la nuova cliente); Francesca (52) è il filo verso le fasi successive.
+
+### Regole incardinate nei componenti riusabili
+- **Area sicura assoluta** (in `Slide.astro`): contenuto centrato verticalmente entro il
+  viewport meno ~8% margini, height-constrained (`max-h-full` + `min-h-0`), **MAI clipping**.
+  Se non ci sta → **splittare in due slide**, non comprimere. Slot `backdrop` per i layer
+  full-bleed (atmosfera + scrim).
+- **Nav del sito rimossa** in presentazione: solo chrome minimo del deck.
+- **Spina narrativa persona-led**: si segue Giulia; Francesca compare come filo (nei profili).
+- **Prodotti discreti in contesto** (attribuzioni leggere mentre la piattaforma agisce),
+  **mai lista-catalogo**. La rivelazione completa dello stack resta su "Il Motore Adobe".
+- **Ritratti persona uniformi**: `persona-francesca` grade `editorial` (a colori, come Giulia).
+
+### Nuovo componente engine
+- **`InstagramPost.astro`** — post IG credibile dentro il phone (header + "· Sponsorizzato",
+  immagine via `MediaSlot(monogram-post)`, azioni, "Mi piace: 2.418", caption, "84 commenti"),
+  dimensionato per stare intero nell'area sicura. Sostituisce il vecchio mockup.
+
+### Beat sheet (7 slide)
+1. Apertura (01 + "Ringiovanire il target" + atmosfera duotone con scrim) · 2. Giulia, il volto
+(ritratto) · 3. Il problema → profili (data-lake → Giulia + Francesca) · 4. Front stage: la
+scoperta (InstagramPost) · 5. Front→back: l'aha (impulso arioso) · 6. Come — prodotti in
+contesto (GenStudio/Firefly, Real-Time CDP; 2 righe narrative, non lista) · 7. Payoff + filo
+(75% count-up, testo scuro su cammello, chiusura relazione, CTA → Engagement).
+
+### Asset reali
+La `PEXELS_API_KEY` è stata fornita ed eseguito `pnpm assets:build`: i 4 sorgenti
+(`acquisizione-atmosfera` duotone, `monogram-post`/`persona-giulia`/`persona-francesca`
+editorial) sono stati generati e **committati** con `provenance.json`. Il sito ora builda
+con immagini reali; gli slot eventualmente vuoti userebbero comunque i placeholder.
+
+### Verifica Phase H
+- `pnpm build` (8 pagine) e `pnpm typecheck` **verdi**.
+- Struttura build: 7 slide, 7 `slide-inner` (area sicura), 5 `<picture>` reali, InstagramPost
+  con testi esatti, tutto il copy del beat sheet presente.
+- **Limite onesto:** la verifica *visiva* a 1920×1080/fullscreen (sta-intera, niente clipping,
+  respiro, transizioni live) non è automatizzabile qui — verificate struttura, area-sicura,
+  build e typecheck. **In attesa della tua revisione prima di propagare.**
 
 ---
 
