@@ -37,8 +37,9 @@ export const assets: AssetSlot[] = [
   },
   {
     id: 'persona-francesca',
+    // Sober studio profile, coherent with Giulia (not an evocative campaign shot).
     type: 'stock',
-    query: 'elegant woman fifties portrait refined',
+    query: 'elegant mature woman portrait natural light neutral',
     aspect: '4:5',
     width: 1000,
     grade: 'editorial',
@@ -52,6 +53,35 @@ export const assets: AssetSlot[] = [
     width: 1100,
     grade: 'none',
     alt: 'Animazione: dal data lake ai profili unificati',
+  },
+
+  // ── Sfondi atmosferici (textile, quiet-luxury) — sempre dietro a uno scrim ──
+  {
+    id: 'bg-cashmere',
+    type: 'stock',
+    query: 'cashmere fabric texture warm light macro',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: '',
+  },
+  {
+    id: 'bg-linen',
+    type: 'stock',
+    query: 'soft linen folds beige natural light',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: '',
+  },
+  {
+    id: 'bg-wool',
+    type: 'stock',
+    query: 'camel wool textile macro warm',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'duotone',
+    alt: '',
   },
 
   // ── Altre fasi — estendi qui con la stessa struttura ──────────────
