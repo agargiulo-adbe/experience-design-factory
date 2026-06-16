@@ -109,7 +109,19 @@ export const assets: AssetSlot[] = [
     alt: 'Dettaglio editoriale: pelle pregiata, lavorazione artigianale',
   },
 
-  // ── Altre fasi (Loyalty) — estendi qui con la stessa struttura ──
+  // ── Loyalty ───────────────────────────────────────────────────────
+  {
+    id: 'loyalty-boutique',
+    // Boutique/atelier ambiance (no face): backdrop for the clienteling slide.
+    type: 'stock',
+    query: 'elegant boutique interior warm minimal neutral light',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: '',
+  },
+
+  // ── Estendi qui con la stessa struttura ──
   // {
   //   id: 'loyalty-boutique',
   //   type: 'aigen',
