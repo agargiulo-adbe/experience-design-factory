@@ -1,6 +1,50 @@
 # Run Report — Experience Design Factory
 
-## Status: Strada B — ENGAGEMENT ✅ + CONVERSIONE ✅ keynote slide-grade + immagini reali — in revisione (poi Loyalty su questo modello)
+## Status: Strada B COMPLETA — tutte e 4 le fasi (Acquisizione + Engagement + Conversione + Loyalty) keynote slide-grade + immagini reali, live, audit 0 FAIL — in revisione finale
+
+---
+
+## Strada B — Loyalty → keynote slide-grade (ultima fase; stesso stampo)
+
+**Loyalty live (deck):** https://agargiulo-adbe.github.io/experience-design-factory/loyalty/
+
+**Unità & commit:**
+| Unità | Cosa | Commit |
+|---|---|---|
+| Engine | handler deck per `[data-lifecycle]` + `[data-clienteling]`, no-op altrove | `feat(core)` |
+| Asset | slot `loyalty-boutique` — ambiente elegante caldo (no volto) | `feat(assets)` |
+| Pagina + audit | Loyalty = DeckContainer/Slide (6 slide); rotta audit aggiunta | `feat(loyalty)` |
+
+**6 slide** (copy riusato): apertura (firma **filo**) · lifecycle (ring deck-animate, dot sulla
+circonferenza + legenda) · frontstage (**clienteling card col ritratto `persona-giulia` RIUSATO come
+avatar** — l'unico punto che nomina Giulia, rafforza il filo acquisizione→fedeltà) · impulse (pulse) ·
+backstage (JO / RT-CDP / CJA nel **"Scopri come" inline**) · payoff (`data-display` +306% Motista + CTA).
+
+**Punto 1 (avatar Giulia):** verificato a schermo ai 3 viewport — lo **studio-portrait regge bene come
+avatar CRM** (foto profilo tonda, naturale nel card di riconoscimento). Nessun flag necessario.
+**Immagini:** `loyalty-boutique` (interno caldo, no volto) sotto scrim dietro la card; sfondi = riuso textile.
+
+**Punto 2 + bug visivi colti dallo screenshot (l'audit non li vede):**
+- Testo dei meccanismi in contenitori **misurati ≥16px** (ring: tolte le label perimetrali che sforavano →
+  legenda; clienteling: testi in `<p>`/`<li>` ≥16px). Niente falsi 0 su `i`.
+- `data-clienteling` avatar: il `MediaSlot fill` **sforava sulla card** (il div avatar non era `relative`) →
+  il ritratto copriva la lista; **risolto** con `relative`. Card compatta + `flex-shrink-0` (no clip a 1280).
+- Dot del ring riposizionati **sulla circonferenza** (no overflow orizzontale). Regola d'oro: corretto il layout, mai tagliato il testo.
+
+**Gate Loyalty (finale):**
+- `audit:deck` → **0 FAIL su TUTTE e 4 le rotte** (acquisizione + engagement + conversione + loyalty) a
+  1920×1080 / 1440×900 / 1280×800, "Scopri come" da **espanso inline**. Le 3 precedenti **non regredite**.
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi · `assets:build` rilanciato · `provenance.json` aggiornato (Giulia/Francesca/whitney byte-identical).
+- Redeploy verde; **Loyalty live no-404** (`data-deck`; `loyalty-boutique` + `persona-giulia` + 14 asset 200); **tutte e 4 le rotte 200**.
+- Screenshot ai 3 viewport: apertura (filo) · lifecycle (ring) · frontstage (clienteling + avatar Giulia) · "Scopri come" espanso · payoff.
+
+### Debito noto da validare insieme (post-meeting)
+- **Statement backstage** (le 2 righe sopra "Scopri come") di Engagement/Conversione/Loyalty = sintesi/lift
+  dai claim Adobe, non copy validato. Da rivedere tutto insieme.
+- **`conversione-pelle`** è una *texture* di pelle, non la borsa letterale (caption porta la specificità).
+- **Ritratto Francesca** (Acquisizione) tenuto come "cliente storica" (deroga età).
+
+➡️ **STOP — è l'ultima fase. Facciamo il punto su tutto.** Le 4 fasi sono keynote slide-grade, con immagini reali, audit 0 FAIL, live.
 
 ---
 
