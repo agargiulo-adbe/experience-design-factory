@@ -1,253 +1,207 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navigation from '@edf/core/layouts/Navigation.astro';
-import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
-import Step from '@edf/core/blocks/immersive/Step.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoBrandSignature from '@edf/core/blocks/CoBrandSignature.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const currentPath = Astro.url.pathname;
-
-const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Acquisizione', href: '/acquisizione' },
-  { label: 'Engagement', href: '/engagement' },
-  { label: 'Conversione', href: '/conversione' },
-  { label: 'Loyalty', href: '/loyalty' },
-  { label: 'Il Motore', href: '/motore-adobe' },
-  { label: 'Persona', href: '/persona' },
-];
+const base = import.meta.env.BASE_URL;
 
 const adobe = [
   { code: 'JO', name: 'Journey Optimizer', claim: 'Journey lifecycle personalizzati: dal welcome post-acquisto al re-engagement, ogni comunicazione è rilevante e tempestiva' },
   { code: 'RC', name: 'Real-Time CDP', claim: 'Profilo unificato real-time: il negozio vede il browsing online, l\'e-commerce vede gli acquisti in store — una vista unica' },
   { code: 'CJ', name: 'Customer Journey Analytics', claim: 'Analisi LTV per coorti, predizione del churn, segmentazione RFM — per intervenire prima che la cliente si allontani' },
 ];
+
+const cycle = ['1 · Acquisto', '2 · Welcome', '3 · Riconoscimento', '4 · Invito'];
+const recognition = [
+  'Cliente dal 2024 · 3 acquisti',
+  'Ultimo: Whitney Bag, online',
+  'Stile: minimal, materiali pregiati',
+  'Invito trunk show: da proporre',
+];
 ---
 <BaseLayout title="Loyalty" description="Dalla prima transazione al valore nel tempo: costruire fedeltà che dura generazioni.">
-  <div class="fixed top-0 left-0 right-0 z-50">
-    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
-  </div>
+  <DeckContainer nextHref={href(base, '/motore-adobe')}>
 
-  <StepContainer>
-    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
-    <Step id="step-apertura" bg="secondary" align="center">
-      <SlideBackdrop {...mediaProps('bg-wool')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/72" />
-      <div class="relative z-10 max-w-3xl mx-auto">
-        <span class="block text-[clamp(5rem,12vw,10rem)] font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] opacity-20 leading-none mb-6" data-reveal aria-hidden="true">04</span>
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.1">Fase 4 — Loyalty</p>
-        <h1 class="font-[family-name:var(--font-display)] text-[length:var(--text-display-lg)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
-          Dal primo acquisto al valore nel tempo
-        </h1>
-        <p class="text-[length:var(--text-heading-sm)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
-          La loyalty nel luxury non si compra con i punti: si costruisce con esperienze che fanno sentire riconosciute.
-        </p>
-        <CoBrandSignature tone="ink" class="mt-12" />
-      </div>
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
-        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
-          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- ── SLIDE 0: Apertura fase ────────────────────────────────── -->
+    <Slide id="slide-apertura" bg="secondary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-wool')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/72" />
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-7" data-reveal>FASE 4 · LOYALTY</p>
+      <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-7" style="font-size: clamp(2.75rem, 5.5vw, 5.5rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">04</p>
+      <h1 class="slide-title text-[var(--ink-primary)] max-w-4xl" style="font-size: clamp(2.4rem, 5vw, 4.6rem);" data-reveal data-reveal-delay="0.2">Dal primo acquisto al valore nel tempo</h1>
+      <p class="slide-lead text-[var(--ink-secondary)] max-w-2xl mx-auto mt-7" data-reveal data-reveal-delay="0.3">La loyalty nel luxury non si compra con i punti: si costruisce con esperienze che fanno sentire riconosciute.</p>
+      <CoBrandSignature tone="ink" class="mt-12" />
+    </Slide>
+
+    <!-- ── SLIDE 1: Lifecycle (il meccanismo) ────────────────────── -->
+    <Slide id="slide-lifecycle" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL MECCANISMO</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Non una linea, ma un ciclo che continua
+      </h2>
+
+      <!-- Lifecycle ring (deck-animated): perimeter dots light up; names in a legend -->
+      <div class="relative w-full max-w-[11rem] mx-auto aspect-square" data-lifecycle>
+        <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+          <circle cx="100" cy="100" r="70" stroke="var(--line-subtle)" stroke-width="1"/>
+          <path class="cycle-track" d="M100,30 a70,70 0 1,1 -0.1,0" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round"/>
+          <circle class="cycle-dot" cx="100" cy="30" r="5" fill="var(--accent-primary)" data-cx="100" data-cy="100"/>
         </svg>
+        {['top-[15%] left-1/2', 'top-1/2 left-[85%]', 'top-[85%] left-1/2', 'top-1/2 left-[15%]'].map((pos) => (
+          <div class:list={["cycle-node absolute -translate-x-1/2 -translate-y-1/2", pos]}>
+            <span class="block w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]"></span>
+          </div>
+        ))}
       </div>
-    </Step>
 
-    <!-- ── STEP 2: Lifecycle (the value animation) ───────────────── -->
-    <Step id="step-lifecycle" bg="primary" align="center">
-      <div class="max-w-3xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il meccanismo</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[length:var(--text-display-md)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Non una linea, ma un ciclo che continua
-        </h2>
-
-        <!-- Lifecycle ring -->
-        <div class="relative w-full max-w-xs mx-auto aspect-square" data-lifecycle>
-          <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-            <circle cx="100" cy="100" r="70" stroke="var(--line-subtle)" stroke-width="1"/>
-            <path class="cycle-track" d="M100,30 a70,70 0 1,1 -0.1,0" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round"/>
-            <circle class="cycle-dot" cx="100" cy="30" r="5" fill="var(--accent-primary)" data-cx="100" data-cy="100"/>
-          </svg>
-          <!-- Nodes around the ring -->
-          <div class="cycle-node absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-            <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]"></span>
-            <span class="text-[0.65rem] font-medium text-[var(--ink-secondary)] mt-1 whitespace-nowrap">1 · Acquisto</span>
-          </div>
-          <div class="cycle-node absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-            <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]"></span>
-            <span class="text-[0.65rem] font-medium text-[var(--ink-secondary)] mt-1 whitespace-nowrap">2 · Welcome</span>
-          </div>
-          <div class="cycle-node absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 flex flex-col items-center">
-            <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]"></span>
-            <span class="text-[0.65rem] font-medium text-[var(--ink-secondary)] mt-1 whitespace-nowrap">3 · Riconoscimento</span>
-          </div>
-          <div class="cycle-node absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-            <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]"></span>
-            <span class="text-[0.65rem] font-medium text-[var(--ink-secondary)] mt-1 whitespace-nowrap">4 · Invito</span>
-          </div>
-        </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-12 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          Ogni giro aumenta il valore: la seconda visita, il terzo acquisto, il momento in cui smette di confrontare.
-        </p>
+      <div class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 mt-6 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.35">
+        {cycle.map((label) => (
+          <span class="text-[clamp(1rem,1.25vw,1.25rem)] font-medium text-[var(--ink-secondary)] whitespace-nowrap">{label}</span>
+        ))}
       </div>
-    </Step>
 
-    <!-- ── STEP 3: Front stage — clienteling (recognition) ───────── -->
-    <Step id="step-frontstage" bg="primary" align="center">
-      <div class="max-w-3xl mx-auto">
-        <div class="flex items-center gap-3 mb-6" data-reveal>
-          <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
-        </div>
-        <h2 class="font-[family-name:var(--font-display)] text-[length:var(--text-display-lg)] font-light leading-[1.1] text-[var(--ink-primary)] mb-8" data-reveal data-reveal-delay="0.1">
-          Essere riconosciute, ovunque
-        </h2>
+      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-tertiary)] mt-4 max-w-xl mx-auto" data-reveal data-reveal-delay="0.45">
+        Ogni giro aumenta il valore: la seconda visita, il terzo acquisto, il momento in cui smette di confrontare.
+      </p>
+    </Slide>
 
-        <!-- Clienteling: recognition card populates under a scan sweep -->
-        <div class="relative max-w-sm mx-auto p-6 rounded-sm border border-[var(--line-default)] bg-[var(--surface-secondary)] overflow-hidden text-left" data-clienteling>
-          <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
-          <div class="flex items-center gap-3 mb-5">
-            <div class="w-12 h-12 rounded-full bg-[var(--accent-primary)] flex items-center justify-center flex-shrink-0">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-[var(--ink-primary)]">Giulia M.</p>
-              <p class="text-xs text-[var(--ink-tertiary)]">Via Montenapoleone, ore 16:20</p>
-            </div>
-          </div>
-          <ul class="space-y-2.5 text-sm text-[var(--ink-secondary)]">
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Cliente dal 2024 · 3 acquisti</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Ultimo: Whitney Bag, online</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Stile: minimal, materiali pregiati</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Invito trunk show: da proporre</li>
-          </ul>
-        </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-8 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          La store advisor l'accoglie per nome. Non è magia: è un profilo unificato che attraversa i canali.
-        </p>
+    <!-- ── SLIDE 2: Front stage — clienteling (riconoscimento) ───── -->
+    <Slide id="slide-frontstage" bg="primary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('loyalty-boutique')} imageClass="opacity-20" scrim="bg-[var(--surface-primary)]/82" />
+      <div class="flex items-center gap-3 mb-4 justify-center" data-reveal>
+        <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+        <span class="slide-eyebrow text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
       </div>
-    </Step>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2.1rem, 4vw, 3.6rem);" data-reveal data-reveal-delay="0.1">
+        Essere riconosciute, ovunque
+      </h2>
 
-    <!-- ── STEP 4: Front→Back impulse (the aha) ──────────────────── -->
-    <Step id="step-impulse" bg="secondary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <h2 class="font-[family-name:var(--font-display)] text-[length:var(--text-heading-lg)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
-          Il digitale che potenzia l'umano
-        </h2>
-
-        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
-          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">In scena</span>
-            </div>
-            <p class="text-sm text-[var(--ink-primary)] font-medium">La store advisor la conosce</p>
-            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Per nome, gusto, storia d'acquisto</p>
+      <!-- Clienteling: recognition card with Giulia's avatar (reused portrait) -->
+      <div class="relative w-full max-w-md mx-auto flex-shrink-0 p-4 rounded-lg border border-[var(--line-default)] bg-[var(--surface-card)] shadow-xl overflow-hidden text-left" data-clienteling data-reveal data-reveal-delay="0.25">
+        <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
+        <div class="flex items-center gap-3 mb-3.5">
+          <div class="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)]">
+            <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
           </div>
-
-          <div class="hidden md:flex items-center justify-center px-4">
-            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-          <div class="flex md:hidden items-center justify-center py-2">
-            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-
-          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Dietro le quinte</span>
-            </div>
-            <p class="text-sm font-medium">La piattaforma ricorda</p>
-            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Profilo unificato, online e in store</p>
+          <div>
+            <p class="text-[clamp(1.05rem,1.35vw,1.3rem)] font-semibold text-[var(--ink-primary)]">Giulia M.</p>
+            <p class="text-[clamp(0.88rem,1vw,1rem)] text-[var(--ink-tertiary)]">Via Montenapoleone, ore 16:20</p>
           </div>
         </div>
-      </div>
-    </Step>
-
-    <!-- ── STEP 5: Back stage — prodotti Adobe uno alla volta ────── -->
-    <Step id="step-backstage" bg="inverse" align="center">
-      <div class="max-w-3xl mx-auto w-full text-[var(--ink-inverse)]">
-        <div class="flex items-center gap-3 mb-6" data-reveal>
-          <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--color-grigio-400)]">Ciò che fa la piattaforma</span>
-        </div>
-        <h2 class="font-[family-name:var(--font-display)] text-[length:var(--text-display-md)] font-light leading-[1.1] mb-10" data-reveal data-reveal-delay="0.1">
-          Ricordare, anticipare, intervenire
-        </h2>
-
-        <div class="space-y-4" data-stagger="0.2">
-          {adobe.map((p) => (
-            <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
-              <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
-                <span class="text-[0.6rem] font-bold text-[var(--accent-secondary)]">{p.code}</span>
-              </div>
-              <div>
-                <p class="text-sm font-medium">{p.name}</p>
-                <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">{p.claim}</p>
-              </div>
-            </div>
+        <ul class="space-y-1.5 text-[clamp(0.95rem,1.15vw,1.12rem)] text-[var(--ink-secondary)]">
+          {recognition.map((r) => (
+            <li class="reveal-attr flex items-center gap-2.5"><span class="text-[var(--accent-primary)]">›</span> {r}</li>
           ))}
+        </ul>
+      </div>
+
+      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-secondary)] mt-3 max-w-xl mx-auto" data-reveal data-reveal-delay="0.4">
+        La store advisor l'accoglie per nome. Non è magia: è un profilo unificato che attraversa i canali.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: Front→Back impulse (l'aha) ───────────────────── -->
+    <Slide id="slide-impulse" bg="secondary" align="center">
+      <h2 class="slide-title text-[var(--ink-primary)] mb-10" style="font-size: clamp(2rem, 3.8vw, 3.4rem);" data-reveal>
+        Il digitale che potenzia l'umano
+      </h2>
+
+      <div class="relative w-full max-w-[1100px] mx-auto grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch min-h-[30vh]" data-pulse-line>
+        <div class="bg-[var(--surface-primary)] rounded-lg p-8 md:p-10 border border-[var(--line-subtle)] flex flex-col justify-between" data-reveal>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">In scena</span>
+          </div>
+          <div>
+            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] text-[var(--ink-primary)] font-medium leading-tight">La store advisor la conosce</p>
+            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--ink-secondary)] mt-1.5">Per nome, gusto, storia d'acquisto</p>
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center justify-center px-6">
+          <svg width="180" height="60" viewBox="0 0 180 60" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 0 30 L 150 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="166" cy="30" r="9" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+        <div class="flex md:hidden items-center justify-center py-1">
+          <svg width="60" height="46" viewBox="0 0 60 46" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 30 0 L 30 34" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="30" cy="40" r="6" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+
+        <div class="bg-[var(--surface-inverse)] rounded-lg p-8 md:p-10 text-[var(--ink-inverse)] flex flex-col justify-between" data-reveal data-reveal-delay="0.3">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-300)]">Dietro le quinte</span>
+          </div>
+          <div>
+            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] font-medium leading-tight">La piattaforma ricorda</p>
+            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--color-grigio-300)] mt-1.5">Profilo unificato, online e in store</p>
+          </div>
         </div>
       </div>
-    </Step>
+    </Slide>
 
-    <!-- ── STEP 6: Payoff — metrica + CTA ────────────────────────── -->
-    <Step id="step-payoff" bg="brand" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
-          <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
-        </p>
-        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
-          il Lifetime Value delle clienti emotivamente connesse rispetto a quelle soddisfatte
-        </p>
-        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
-          Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
-        </p>
-
-        <div class="mt-16" data-reveal data-reveal-delay="0.5">
-          <a
-            href={href(base, '/motore-adobe')}
-            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          >
-            Scopri il motore Adobe
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
+    <!-- ── SLIDE 4: Back stage — i prodotti Adobe in "Scopri come" ── -->
+    <Slide id="slide-backstage" bg="inverse" align="center">
+      <div class="flex items-center gap-3 mb-5" data-reveal>
+        <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+        <span class="slide-eyebrow text-[var(--color-grigio-300)]">CIÒ CHE FA LA PIATTAFORMA</span>
       </div>
-    </Step>
-  </StepContainer>
+      <h2 class="slide-title text-[var(--ink-inverse)] mb-9" style="font-size: clamp(2.25rem, 4.2vw, 3.75rem);" data-reveal data-reveal-delay="0.1">
+        Ricordare, anticipare, intervenire
+      </h2>
+
+      <div class="w-full max-w-3xl mx-auto flex flex-col gap-7 text-left" data-stagger="0.25">
+        <p class="text-[clamp(1.35rem,2vw,2rem)] text-[var(--ink-inverse)] leading-snug border-l-2 border-[var(--accent-secondary)] pl-6">
+          Una vista unica: il negozio vede l'online, l'e-commerce vede gli acquisti in store.
+        </p>
+        <p class="text-[clamp(1.35rem,2vw,2rem)] text-[var(--ink-inverse)] leading-snug border-l-2 border-[var(--accent-secondary)] pl-6">
+          Intervenire prima che la cliente si allontani, non dopo.
+        </p>
+      </div>
+
+      <div class="mt-9" data-reveal data-reveal-delay="0.5">
+        <HowItWorks title="Ricordare, anticipare, intervenire" tone="onDark">
+          {adobe.map((p) => (
+            <p class="text-[clamp(1.05rem,1.35vw,1.3rem)] text-[var(--ink-inverse)] leading-snug"><strong class="text-[var(--accent-secondary)] font-semibold">{p.name}</strong> — {p.claim}.</p>
+          ))}
+        </HowItWorks>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Payoff — metrica + CTA ───────────────────────── -->
+    <Slide id="slide-payoff" bg="brand" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
+      <p data-display class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-6" style="font-size: clamp(4.5rem, 12vw, 11rem);">
+        <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
+      </p>
+      <p class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-5 max-w-3xl" data-reveal data-reveal-delay="0.2">
+        il Lifetime Value delle clienti emotivamente connesse rispetto a quelle soddisfatte
+      </p>
+      <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-primary)]/70 mb-12 max-w-2xl" data-reveal data-reveal-delay="0.28">
+        Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
+      </p>
+
+      <div data-reveal data-reveal-delay="0.5">
+        <a
+          href={href(base, '/motore-adobe')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Scopri il motore Adobe
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
 </BaseLayout>
-
-<style>
-  @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-bounce-subtle { animation: none; }
-    .scroll-hint { display: none; }
-  }
-</style>
-
-<script>
-  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
-  function setup() {
-    const container = document.querySelector<HTMLElement>('[data-step-container]');
-    if (container) initAllAnimations(container);
-  }
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>
