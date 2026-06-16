@@ -1,10 +1,61 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase F — Acquisizione in modalità keynote/deck (in revisione) ⏳
+## Status: Phase G — Pipeline asset programmatica (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
 **Phase F:** 2026-06-16 — SOLO Acquisizione trasformata in deck da proiezione; in attesa di revisione prima di propagare
+**Phase G:** 2026-06-16 — pipeline asset programmatica (manifest → Pexels + sharp → MediaSlot); in attesa di revisione
+
+---
+
+## Phase G — Pipeline asset programmatica
+
+Obiettivo: riempire TUTTE le immagini da un manifest, con **un comando**, senza
+selezione manuale. Gratuita, IP-safe (Pexels License), riusabile per la Factory.
+
+### Pezzi
+- **`packages/core/src/assets/types.ts`** — `AssetSlot` tipizzato (`stock|aigen|code`,
+  aspect, width, grade, alt) + helper geometria/orientamento (condivisi da manifest,
+  componente e script).
+- **`apps/generazioni-maxmara/assets.manifest.ts`** — slot per-cliente. Scaffold
+  Acquisizione: `acquisizione-atmosfera` (16:9), `monogram-post` (4:5), `persona-giulia`,
+  `persona-francesca` (4:5), `acquisizione-datalake` (`code`, visual in codice).
+  Estendibile per fase (esempi commentati engagement/loyalty).
+- **`scripts/build-assets.ts`** (Node+TS via `tsx`, **riusabile tra clienti**):
+  `stock` → Pexels (orientamento coerente con l'aspect, risoluzione più alta, download);
+  `aigen` → FLUX locale via `mflux` (salta con warning se assente); `code` → no-op.
+  Color-grade **alla palette del brand** con `sharp`: `editorial` (desat leggera +
+  bilanciamento caldo verso cammello + contrasto S-soft), `duotone` (luminanza
+  testa-di-moro → avorio), `none`. Crop all'aspect, **sorgente webp ~2400px** in
+  `src/assets/generated/<id>.webp`, **`provenance.json`** (fonte, autore/URL, licenza,
+  query/prompt). Idempotente.
+- **`assets.index.ts`** — loader `id → ImageMetadata` via `import.meta.glob`, con
+  **fallback a placeholder** se il file non esiste (`mediaProps(id)`).
+- **`MediaSlot.astro`** (engine) — `<Picture>` AVIF/WebP responsive, lazy, `alt` dal
+  manifest, OPPURE placeholder duotone nella palette. Usato per phone (post Monogram),
+  atmosfera hero, ritratti persona (Acquisizione + pagina Persona).
+
+### Sicurezza & deploy
+- Chiave `PEXELS_API_KEY` **solo a build-time locale**: letta da `.env` (gitignored,
+  con `.env.example`), mai esposta al sito statico né alla CI. La generazione è uno
+  **step locale deliberato**; gli output webp sono **versionati** così il sito builda
+  senza chiave. Deploy/CI invariati, nessun segreto aggiunto.
+- Comando: `pnpm assets:build` (root → app → `tsx scripts/build-assets.ts`).
+
+### Verifica Phase G
+- `pnpm build` (8 pagine) e `pnpm typecheck` **verdi** (con `generated/` vuota → placeholder).
+- Guard senza chiave: messaggio chiaro + exit 1 (testato).
+- Pipeline `sharp` testata su immagine sintetica: grade `editorial`/`duotone`/`none` +
+  crop 2400 → webp validi (fix: `duotone` usa `modulate({saturation:0})` per mantenere
+  3 canali, `grayscale()` collassa a 1 e `linear` non espande le bande).
+- Path "riempito": inserito un webp sintetico → Astro emette `<picture>` AVIF+WebP
+  responsive; poi rimosso (niente immagini finte committate).
+- **Limite onesto:** non ho una `PEXELS_API_KEY`, quindi non ho potuto eseguire il
+  fetch reale né committare i sorgenti generati. La pipeline è pronta: con una chiave
+  valida, `pnpm assets:build` riempie gli slot `stock` e produce sorgenti tonalmente
+  coesi; gli slot non riempiti mostrano placeholder. **Da eseguire localmente con la
+  chiave, poi committare `src/assets/generated/*.webp` + `provenance.json`.**
 
 ---
 

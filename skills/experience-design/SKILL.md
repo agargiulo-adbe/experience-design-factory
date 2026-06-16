@@ -71,6 +71,37 @@ Single source of truth in `registry/adobe-products.ts`. Products mapped by phase
 - **Loyalty:** Journey Optimizer, RT-CDP, CJA
 - **Operations:** Workfront, GenStudio
 
+## Asset pipeline (programmatic imagery — reusable Factory capability)
+Fill ALL images from a typed manifest with ONE command — no manual picking. Free,
+IP-safe (Pexels License), reusable across clients. The **script is shared**; the
+**manifest is per-client**.
+
+- **`packages/core/src/assets/types.ts`** — `AssetSlot` type (`stock|aigen|code`,
+  `aspect`, `width`, `grade`, `alt`) + geometry helpers. Shared by manifest, component, script.
+- **`<client>/assets.manifest.ts`** — one entry per image slot. `stock` = photo to
+  fetch; `aigen` = local FLUX prompt; `code` = visual already built in components.
+- **`scripts/build-assets.ts`** (run via `tsx`, `pnpm assets:build`):
+  - `stock` → Pexels search (orientation matched to aspect, highest resolution), download.
+  - `aigen` → local FLUX via `mflux-generate` (skips with a warning if not installed).
+  - `code` → no-op.
+  - Brand color-grade with **sharp**: `editorial` (slight desat + warm balance toward
+    the brand accent + soft S-contrast), `duotone` (luminance mapped between two brand
+    colours), `none`. Crop to aspect, write a high-res `~2400px` `<id>.webp` to
+    `src/assets/generated/`, plus `provenance.json` (source, author, license, query/prompt).
+    Idempotent.
+- **`<client>/assets.index.ts`** — `import.meta.glob` loader mapping `id → ImageMetadata`,
+  with placeholder fallback. `mediaProps(id)` returns `{ media, src }`.
+- **`MediaSlot.astro`** (engine) — optimized `<Picture>` (AVIF/WebP, responsive, lazy,
+  `alt` from manifest) OR a refined palette placeholder when the asset isn't generated yet.
+  Usage: `<MediaSlot {...mediaProps('id')} fill />`.
+
+Gotchas: `slot` is a **reserved attribute** in Astro — the prop is named `media`, so
+pass via `{...mediaProps('id')}` (never a literal `slot="…"`). sharp `duotone` must
+use `modulate({saturation:0})` (keeps 3 bands) — `grayscale()` collapses to 1 band and
+`linear()` can't expand it. The **API key is build-time only** (`.env`, gitignored, with
+`.env.example`); it must never reach the static site or CI. **Commit the generated webp +
+provenance.json** so the site builds without the key — generation is a deliberate local step.
+
 ## Stack & conventions (must-know)
 - **Astro 6** static site + **View Transitions** (multipage immersion). Re-init animations on `astro:after-swap`.
 - **Tailwind v4** via `@tailwindcss/vite` (NOT `@astrojs/tailwind`). In a monorepo, Tailwind does NOT scan pnpm-symlinked packages — add `@source` directives in `global.css` pointing at `packages/core/src/**` and the app's own `src/**`.
