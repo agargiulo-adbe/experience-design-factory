@@ -169,18 +169,21 @@ is the deterministic gate run headless (`pnpm --filter <client> audit:deck`, dev
 
 It navigates the deck slide-by-slide at 1920×1080 (reduced-motion for stable layout),
 measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
-to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 9 checks (a–i):**
+to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). **The 12 checks (a–l):**
 - **(a)** significant text (≥24px) centre in the band [30%,70%]; never anchored near the top.
 - **(b)** no content text intersects the chrome controls (target `button[...]`, NOT the deck
   root which also carries `data-deck-next`).
 - **(c)** no box past `--slide-safe-inset`; no `scrollWidth > clientWidth`.
 - **(d)** no text over an image's `data-no-text` zone; text over an image needs a `[data-scrim]`.
 - **(e)** no two non-nested text blocks overlap (text-on-text).
-- **(f)** an OPEN `HowItWorks` is a top-level fixed panel anchored to an edge, width
-  ≤ min(440px,38vw), with a full-viewport scrim — the audit **opens each panel** and re-measures.
+- **(f)** an OPEN `HowItWorks` is a top-level fixed dialog **within the viewport, no scroll,
+  no clipping**, full-viewport scrim, width ≤ min(720px,60vw) — the audit **opens each panel**.
 - **(g)** adjacent stacked text blocks (outside cards) have ≥ 16px vertical gap.
 - **(h)** every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon) against its composited bg.
 - **(i)** content covers ≥ 45% of usable height and its centre of mass is in the central band.
+- **(j)** nothing clipped — every significant element (incl. open panel + its text) fully inside `[0,0,1920,1080]`.
+- **(k)** no hidden scroll — no container with `scrollHeight > clientHeight` (a keynote never scrolls).
+- **(l)** while a panel is open, interactives are fully under the scrim OR fully visible — never half.
 
 **Auto-correction loop:** run the audit → for each FAIL read the screenshot, fix the
 **component/page source** (not inline patches), re-run → iterate until 0 FAIL.
@@ -193,8 +196,10 @@ Conventions & hard-won lessons:
   reserve — otherwise (a) band and (i) ≥45% fight each other. `Slide` uses inline-style
   padding/`max-height` (Tailwind doesn't reliably emit `max(var(...))`).
 - **Safe-area tokens** in `global.css` (fixed px): `--slide-safe-inset`, `--deck-chrome-safe`.
-- **Slide-over:** `HowItWorks` moves its panel + overlay to `<body>` on open (escapes the
-  deck's transformed slide → true viewport-fixed); `tone="onDark"` for AA triggers on dark slides.
+- **Slide-over = centred bounded dialog**, NOT a full-height side panel (that's fragile: dense
+  text can't fit 1080px → scroll/clipping). `HowItWorks`: `w=min(720px,60vw)`,
+  `max-height: calc(100dvh - 2*--slide-safe-inset)`, content MUST fit without scroll (keep copy
+  short), full-viewport scrim, panel+overlay moved to `<body>`; `tone="onDark"` for AA on dark slides.
 - **`data-no-text="top,left,width,height"`** (% subject zone on `MediaSlot`/`InstagramPost`);
   **`data-scrim`** on the overlay behind text-over-image.
 

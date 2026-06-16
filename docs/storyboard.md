@@ -47,10 +47,11 @@ reads fine without opening it (self-sufficient on screen for the live telling).
 
 ## Layout contract & visual audit
 Every slide must pass `pnpm --filter generazioni-maxmara audit:deck` (Playwright,
-1920×1080) — **9 deterministic DOM checks (a–i)**: text-in-band, chrome collision,
-margins/overflow, text-over-faces, **text-on-text (e)**, **clean open slide-over (f, panels
-are opened and re-measured)**, **vertical rhythm ≥16px (g)**, **WCAG-AA button contrast (h)**,
-**space usage ≥45% + centred mass (i)**. Failures save a screenshot to `audit/acquisizione/`.
+1920×1080) — **12 deterministic DOM checks (a–l)**: text-in-band, chrome collision,
+margins/overflow, text-over-faces, text-on-text, clean open slide-over (panels opened &
+re-measured), vertical rhythm ≥16px, WCAG-AA button contrast, space usage ≥45% — plus the
+**structural invariants**: **(j) nothing clipped / all inside the viewport**, **(k) no hidden
+scroll**, **(l) trigger not obstructed when a panel is open**. Failures save a screenshot.
 
 Notes baked into the slides:
 - Content is centred on the **viewport centre** with a symmetric chrome reserve, so the band
@@ -59,7 +60,8 @@ Notes baked into the slides:
   Tailwind utilities and kill rhythm/contrast.
 - Slide 3 is a **balanced split** (text in-band on the left; a persistent faint data-field +
   larger profiles + "Profili unificati" caption on the right — the viz uses the space).
-- `HowItWorks` opens as a true top-level slide-over (panel + scrim moved to `<body>`);
-  `tone="onDark"` on dark slides keeps the trigger AA.
+- `HowItWorks` opens as a **centred, bounded dialog** (`w≤min(720px,60vw)`,
+  `max-height: calc(100dvh - 2*--slide-safe-inset)`, content fits without scroll; full-viewport
+  scrim; panel moved to `<body>`) — never a clippable full-height side panel. `tone="onDark"` on dark slides.
 - Slide 1's atmosphere is full-bleed behind text → `data-scrim`; portraits + IG image carry
   `data-no-text` zones. Safe-area tokens in `global.css`.

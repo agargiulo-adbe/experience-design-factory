@@ -1,6 +1,6 @@
 # Run Report — Experience Design Factory
 
-## Status: Phase J — Visual feedback loop + check più severi (a–i) + auto-correzione (in revisione) ⏳
+## Status: Phase J — Visual feedback loop + check a–l (invarianti) + HowItWorks overlay centrato (in revisione) ⏳
 **Started:** 2026-06-15 ~22:45 CEST
 **Phase D completed:** 2026-06-16 ~00:30 CEST
 **Phase E completed:** 2026-06-16 — tutte le 8 pagine immersive, GitHub allineato, build + typecheck verdi
@@ -9,6 +9,33 @@
 **Phase H:** 2026-06-16 — Acquisizione rifinita come riferimento d'oro del deck (persona-led + area sicura); in attesa di revisione
 **Phase I:** 2026-06-16 — cover cinematografica, layer "Come funziona", correzioni di sostanza (Whitney, fonti); in attesa di revisione
 **Phase J:** 2026-06-16 — Claude Code "vede" il proprio output e si auto-corregge sui difetti di layout del deck a 1920×1080; in attesa di revisione
+
+---
+
+## Phase J (estensione 2) — invarianti strutturali (j–l) + HowItWorks overlay centrato
+
+I check (a–i) erano ancora troppo deboli: 0 FAIL ma il pannello "Scopri come" da aperto
+poteva uscire/clippare. Il check (f) verificava la FORMA del pannello, non il RISULTATO.
+
+**Invarianti aggiunte** (`scripts/deck-audit.ts`), valgono per ogni elemento renderizzato
+(slide E pannelli aperti):
+- **(j)** niente clipping: ogni elemento significativo interamente dentro [0,0,1920,1080] (±1px).
+- **(k)** niente scroll nascosto: nessun container con `scrollHeight > clientHeight` (in un
+  keynote non si scrolla — se non entra è un difetto di design, non da nascondere in overflow).
+- **(l)** trigger non ostruito: da pannello aperto, gli interattivi sono o sotto lo scrim del
+  tutto o pienamente visibili, mai a metà.
+Il check (f) sullo stato APERTO ora include j+k sul pannello e su tutto il suo testo.
+
+**HowItWorks ridisegnato** (causa alla radice): il laterale a piena altezza con 3 paragrafi
+densi era fragile (non entra in 1080px). Ora **overlay CENTRATO**: riquadro `w=min(720px,60vw)`,
+`max-height: calc(100dvh - 2*--slide-safe-inset)`, scrim a tutto schermo, contenuto che **entra
+senza scroll**; copy dei pannelli **accorciato** a forma essenziale (nomi Adobe in contesto),
+leggibile da proiezione. Pannello+overlay spostati in `<body>` (vero fixed top-level).
+
+**Verifica**: `audit:deck` → **0 FAIL, 8 slide, check a–l**, pannelli testati da aperti.
+Conferma visiva a 1920×1080 in **NORMAL motion** (screenshot Playwright): pannelli (slide 3 e 6)
+**interi, centrati, dentro viewport, niente scroll, niente testo tagliato**; payoff e data-lake
+da chiuse ok. `pnpm build` + `pnpm typecheck` verdi.
 
 ---
 

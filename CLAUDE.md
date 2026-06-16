@@ -75,23 +75,27 @@ display serif **Cormorant Garamond** + grotesque **Inter**; editorial compositio
 negative space; motion sober (~500ms ease, sartorial), `prefers-reduced-motion` respected;
 Adobe discreet/in-context (full stack reveal only on "Il Motore Adobe").
 
-### The 9 checks every slide must pass at 1920×1080 (`audit:deck`)
+### The 12 checks every slide must pass at 1920×1080 (`audit:deck`)
 1. **(a) text not too high** — significant text centre in the central band (30%–70%); never near the top.
 2. **(b) no chrome collision** — no content text intersects the deck controls.
 3. **(c) margins / no overflow** — no box past `--slide-safe-inset`; no horizontal overflow.
 4. **(d) no text over faces** — no text over an image's `[data-no-text]` zone; text over an image needs a `[data-scrim]`.
 5. **(e) no text-on-text** — no two (non-nested) text blocks overlap.
-6. **(f) clean slide-over** — an OPEN `HowItWorks` is a top-level fixed panel anchored to the edge, width ≤ min(440px,38vw), with a full-viewport scrim behind. The audit OPENS each panel and re-measures.
+6. **(f) clean slide-over** — an OPEN `HowItWorks` is a top-level fixed dialog **within the viewport, no scroll, no clipping**, with a full-viewport scrim, width ≤ min(720px,60vw). The audit OPENS each panel and re-measures.
 7. **(g) vertical rhythm** — adjacent stacked text blocks (outside cards) have ≥ 16px gap.
 8. **(h) button contrast** — every button/CTA meets WCAG AA (4.5:1; 3:1 for large/icon).
 9. **(i) space usage** — content covers ≥ 45% of the usable height and its centre of mass is in the central horizontal band.
+10. **(j) nothing clipped** — every significant element (texts, media, panels, buttons; incl. the open panel + its text) lies fully inside `[0,0,1920,1080]` (±1px).
+11. **(k) no hidden scroll** — no content/panel container has `scrollHeight > clientHeight`. A keynote never scrolls: if it doesn't fit, it's a design defect (shorten the copy or split).
+12. **(l) trigger not obstructed** — while a panel is open, interactive elements are EITHER fully under the scrim OR fully visible — never half-covered/cut.
 
 Contract details:
 - **Safe-area tokens** in `global.css` (fixed px): `--slide-safe-inset`, `--deck-chrome-safe`.
   `Slide` centres content on the VIEWPORT centre with a symmetric chrome reserve, so (a) band and (i) ≥45% are compatible.
 - **Layering:** the base reset MUST be in `@layer base` — an unlayered `* { margin:0 }` /
   `a { color }` beats Tailwind utilities (kills `mb-*`, `text-*` → no rhythm, wrong colours).
-- **Slide-over contract:** `HowItWorks`, when open, moves its panel + overlay to `<body>`
-  (escaping the deck's transformed slide) so it's a true viewport-fixed top-level overlay
-  with a scrim. Use `tone="onDark"` on dark slides for an AA-contrast trigger.
+- **Slide-over contract:** `HowItWorks` opens a **centred, bounded dialog** (NOT a full-height
+  side panel): `w=min(720px,60vw)`, `max-height: calc(100dvh - 2*--slide-safe-inset)`, content
+  must fit WITHOUT scroll (keep the copy short), full-viewport scrim, panel+overlay moved to
+  `<body>` (escapes the transformed slide). `tone="onDark"` for AA triggers on dark slides.
 - **`data-no-text="t,l,w,h"`** (% face/subject zone), **`data-scrim`** on the overlay behind text-over-image.
