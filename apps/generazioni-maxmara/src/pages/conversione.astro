@@ -1,37 +1,234 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageLayout from '@edf/core/layouts/PageLayout.astro';
-import JourneyPhase from '@edf/core/blocks/JourneyPhase.astro';
-import FrontBackStageSplit from '@edf/core/blocks/FrontBackStageSplit.astro';
-import MetricCallout from '@edf/core/blocks/MetricCallout.astro';
+import Navigation from '@edf/core/layouts/Navigation.astro';
+import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
+import Step from '@edf/core/blocks/immersive/Step.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Acquisizione', href: '/acquisizione' },
+  { label: 'Engagement', href: '/engagement' },
+  { label: 'Conversione', href: '/conversione' },
+  { label: 'Loyalty', href: '/loyalty' },
+  { label: 'Il Motore', href: '/motore-adobe' },
+  { label: 'Persona', href: '/persona' },
+];
+
+// Conversational discovery — Brand Concierge dialogue
+const chat = [
+  { side: 'in', who: 'Giulia', text: 'Ho messo nel carrello la Whitney Bag, ma sto ancora pensando…' },
+  { side: 'out', who: 'Concierge', text: 'Ottima scelta. È in pelle martellata, lavorata a mano: ti racconto la storia del modello?' },
+  { side: 'in', who: 'Giulia', text: 'Sì. E sta bene con un look da ufficio?' },
+  { side: 'out', who: 'Concierge', text: 'Perfetta dal lunedì al weekend. Vuoi vederla abbinata, o provarla in Corso Venezia?' },
+];
+
+const adobe = [
+  { code: 'JO', name: 'Journey Optimizer', claim: 'Orchestrazione in tempo reale: il messaggio giusto, nel momento giusto, sul canale giusto — trigger da browse e carrello abbandonato' },
+  { code: 'Tgt', name: 'Adobe Target', claim: 'Raccomandazioni personalizzate basate sul comportamento reale, non su regole statiche' },
+  { code: 'Com', name: 'Adobe Commerce', claim: 'Checkout seamless cross-device: il carrello la segue dal mobile al desktop al negozio' },
+  { code: 'BC', name: 'Brand Concierge', claim: 'Assistenza conversazionale AI: consigli, taglie, abbinamenti — come avere una personal shopper sempre disponibile' },
+];
 ---
 <BaseLayout title="Conversione" description="Dal desiderio all'acquisto: rimuovere ogni attrito nel percorso verso la prima transazione.">
-  <PageLayout title="Conversione">
-    <JourneyPhase
-      phaseNumber={3}
-      phaseId="conversione"
-      title="Dal desiderio all'acquisto"
-      subtitle="Fase 3 — Conversione"
-      body="<p>Il momento della conversione non è un punto — è un percorso. Una cliente che ha esplorato, sfogliato, aggiunto al carrello, ma non ha ancora comprato. Il rischio più grande non è il prezzo: è l'attrito. Un'esperienza frammentata, un messaggio sbagliato, un canale che non riconosce ciò che è successo sull'altro.</p><p>La conversione nel luxury richiede un equilibrio sottile: accompagnare senza pressare, essere presenti senza essere invadenti, personalizzare senza risultare inquietanti.</p>"
-    />
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
+  </div>
 
-    <FrontBackStageSplit
-      phaseId="conversione"
-      phaseLabel="Conversione — Front stage / Back stage"
-      customerTitle="Un accompagnamento discreto"
-      customerBody="<p>Giulia ha aggiunto una Whitney Bag al carrello tre giorni fa. Non riceve un'email aggressiva con un countdown — riceve un messaggio curato che le racconta la storia della borsa, i materiali, l'artigianato. Pochi giorni dopo, visitando il negozio in Corso Venezia, la store advisor sa già cosa le interessa e può completare l'esperienza.</p>"
-      adobeStack={[
-        { id: 'journey-optimizer', name: 'Journey Optimizer', claim: 'Orchestrazione in tempo reale: il messaggio giusto, nel momento giusto, sul canale giusto — trigger automatici da browse e carrello abbandonato' },
-        { id: 'target', name: 'Adobe Target', claim: 'Raccomandazioni personalizzate basate sul comportamento reale, non su regole statiche' },
-        { id: 'commerce', name: 'Adobe Commerce', claim: 'Checkout seamless cross-device: il carrello la segue dal mobile al desktop al negozio' },
-        { id: 'brand-concierge', name: 'Brand Concierge', claim: 'Assistenza conversazionale AI: la cliente può chiedere consigli, taglie, abbinamenti — come avere una personal shopper sempre disponibile' },
-      ]}
-    />
+  <StepContainer>
+    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
+    <Step id="step-apertura" bg="secondary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <span class="block text-[clamp(5rem,12vw,10rem)] font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] opacity-20 leading-none mb-6" data-reveal aria-hidden="true">03</span>
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.1">Fase 3 — Conversione</p>
+        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
+          Dal desiderio all'acquisto
+        </h1>
+        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
+          Il rischio più grande non è il prezzo: è l'attrito. Accompagnare senza pressare.
+        </p>
+      </div>
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
+        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
+          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </Step>
 
-    <MetricCallout
-      value="3×"
-      label="Il tasso di conversione quando l'esperienza è coerente tra canali digitali e punto vendita"
-      context="L'omnicanalità non è un lusso tecnologico — è il modo naturale in cui le clienti si muovono."
-    />
-  </PageLayout>
+    <!-- ── STEP 2: Scoperta conversazionale (the value animation) ── -->
+    <Step id="step-converse" bg="primary" align="center">
+      <div class="max-w-2xl mx-auto w-full">
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il meccanismo</p>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
+          Una conversazione, non una pressione
+        </h2>
+
+        <!-- Converse: chat bubbles appear one by one -->
+        <div class="flex flex-col gap-3 max-w-md mx-auto" data-converse>
+          {chat.map((m) => (
+            <div
+              class:list={[
+                "chat-bubble max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-snug",
+                m.side === 'in'
+                  ? "self-end bg-[var(--accent-primary)] text-white rounded-br-sm"
+                  : "self-start bg-[var(--surface-secondary)] text-[var(--ink-primary)] border border-[var(--line-subtle)] rounded-bl-sm",
+              ]}
+              data-side={m.side}
+            >
+              <span class:list={["block text-[0.6rem] tracking-[0.08em] uppercase mb-1", m.side === 'in' ? "text-white/70" : "text-[var(--ink-tertiary)]"]}>{m.who}</span>
+              {m.text}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 3: Front stage ───────────────────────────────────── -->
+    <Step id="step-frontstage" bg="primary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-light leading-[1.1] text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.1">
+          Un accompagnamento discreto
+        </h2>
+        <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto mb-10" data-reveal data-reveal-delay="0.2">
+          Niente email aggressive con countdown. Giulia riceve un messaggio curato sulla storia della borsa. Pochi giorni dopo, in Corso Venezia, la store advisor sa già cosa le interessa.
+        </p>
+        <div class="relative w-48 md:w-56 mx-auto aspect-[9/16] bg-[var(--surface-secondary)] rounded-2xl border-2 border-[var(--line-default)] overflow-hidden shadow-lg" data-reveal data-reveal-delay="0.3">
+          <div class="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1 bg-[var(--line-default)] rounded-full"></div>
+          <div class="flex flex-col items-center justify-center h-full p-6 text-center">
+            <div class="w-14 h-14 bg-[var(--accent-primary)]/15 rounded-lg mb-4 flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="1.5" aria-hidden="true"><path d="M6 2l1.5 4h9L18 2"/><path d="M3 6h18l-1.5 14a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2L3 6z"/></svg>
+            </div>
+            <p class="text-xs font-medium text-[var(--ink-primary)] leading-relaxed">Whitney Bag — nel tuo carrello</p>
+            <p class="text-[0.65rem] text-[var(--ink-tertiary)] mt-1">La storia del modello →</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 4: Front→Back impulse (the aha) ──────────────────── -->
+    <Step id="step-impulse" bg="secondary" align="center">
+      <div class="max-w-4xl mx-auto w-full">
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
+          Dal carrello al negozio, senza salti
+        </h2>
+
+        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
+          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">Front stage</span>
+            </div>
+            <p class="text-sm text-[var(--ink-primary)] font-medium">La cliente esita</p>
+            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Aggiunge al carrello, non conclude</p>
+          </div>
+
+          <div class="hidden md:flex items-center justify-center px-4">
+            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+          <div class="flex md:hidden items-center justify-center py-2">
+            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+
+          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Back stage</span>
+            </div>
+            <p class="text-sm font-medium">La piattaforma accompagna</p>
+            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Trigger curato, carrello che segue, advisor informata</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 5: Back stage — prodotti Adobe uno alla volta ────── -->
+    <Step id="step-backstage" bg="inverse" align="center">
+      <div class="max-w-3xl mx-auto w-full text-[var(--ink-inverse)]">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--color-grigio-400)]">Ciò che fa la piattaforma</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,3.5vw+0.5rem,3rem)] font-light leading-[1.1] mb-10" data-reveal data-reveal-delay="0.1">
+          Quattro prodotti, zero attrito
+        </h2>
+
+        <div class="space-y-4" data-stagger="0.2">
+          {adobe.map((p) => (
+            <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+              <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+                <span class="text-[0.6rem] font-bold text-[var(--accent-secondary)]">{p.code}</span>
+              </div>
+              <div>
+                <p class="text-sm font-medium">{p.name}</p>
+                <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">{p.claim}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 6: Payoff — metrica + CTA ────────────────────────── -->
+    <Step id="step-payoff" bg="brand" align="center">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
+          <span data-count-up="3" data-count-prefix="" data-count-suffix="×">0×</span>
+        </p>
+        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
+          il tasso di conversione quando l'esperienza è coerente tra digitale e punto vendita
+        </p>
+        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
+          L'omnicanalità è il modo naturale in cui le clienti si muovono
+        </p>
+
+        <div class="mt-16" data-reveal data-reveal-delay="0.5">
+          <a
+            href={href(base, '/loyalty')}
+            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          >
+            Fase successiva: Loyalty
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </Step>
+  </StepContainer>
 </BaseLayout>
+
+<style>
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-bounce-subtle { animation: none; }
+    .scroll-hint { display: none; }
+  }
+</style>
+
+<script>
+  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
+  function setup() {
+    const container = document.querySelector<HTMLElement>('[data-step-container]');
+    if (container) initAllAnimations(container);
+  }
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>
