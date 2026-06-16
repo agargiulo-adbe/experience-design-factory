@@ -1,0 +1,37 @@
+---
+/**
+ * CoBrandSignature — the discreet Max Mara × Adobe co-brand lock-up where a thin
+ * sartorial *filo* sews itself between the two wordmarks, finishing in a knot.
+ *
+ * Shared between the keynote CoverSlide and the scroll-page section aperturas:
+ * - Inside a CoverSlide's [data-cover], the deck (animations.ts prepareSlide/playSlide)
+ *   choreographs it — wordmarks converge, the thread draws (stroke-dashoffset), the knot
+ *   fades in. prepareSlide overrides the defaults, so the animated behaviour is unchanged.
+ * - On a scroll page (no deck), it renders in its DRAWN final state by default (no JS
+ *   needed) — which is also the prefers-reduced-motion state. Hence the knot defaults to
+ *   opacity:1 (the deck sets it to 0 before drawing).
+ *
+ * Keep the class names (.cover-word-mm/.cover-word-adobe/.cover-thread-path/.cover-knot) —
+ * animations.ts targets them.
+ */
+interface Props {
+  primary?: string;
+  secondary?: string;
+  /** 'ink' = dark wordmarks (on a light bg) · 'inverse' = light wordmarks (on a dark bg). */
+  tone?: 'ink' | 'inverse';
+  class?: string;
+}
+const { primary = 'Max Mara', secondary = 'Adobe', tone = 'ink', class: className } = Astro.props;
+const wordColor = tone === 'inverse' ? 'text-[var(--ink-inverse)]' : 'text-[var(--ink-primary)]';
+const adobeColor = tone === 'inverse' ? 'text-[var(--ink-inverse)]/75' : 'text-[var(--ink-primary)]/75';
+const stroke = tone === 'inverse' ? 'var(--ink-inverse)' : 'var(--ink-primary)';
+---
+<div class:list={["cover-names flex items-center justify-center gap-4 md:gap-6", className]}>
+  <span class:list={["cover-word cover-word-mm font-[family-name:var(--font-display)] font-light leading-none", wordColor]} style="font-size: clamp(1.5rem, 2.6vw, 2.4rem);">{primary}</span>
+  <svg class="cover-thread w-16 md:w-28 h-6 overflow-visible flex-shrink-0" viewBox="0 0 120 24" fill="none" aria-hidden="true">
+    <!-- sartorial filo: stitches itself between the names, finishing in the knot -->
+    <path class="cover-thread-path" d="M2 12 C 22 3, 42 21, 62 12 S 98 5, 113 12" stroke={stroke} stroke-width="1.25" stroke-linecap="round"/>
+    <circle class="cover-knot" cx="113" cy="12" r="2.6" fill={stroke} opacity="1"/>
+  </svg>
+  <span class:list={["cover-word cover-word-adobe font-[family-name:var(--font-display)] font-light leading-none", adobeColor]} style="font-size: clamp(1.35rem, 2.2vw, 2rem);">{secondary}</span>
+</div>
