@@ -1,50 +1,302 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageLayout from '@edf/core/layouts/PageLayout.astro';
-import JourneyPhase from '@edf/core/blocks/JourneyPhase.astro';
-import FrontBackStageSplit from '@edf/core/blocks/FrontBackStageSplit.astro';
-import ProductGateway from '@edf/core/blocks/ProductGateway.astro';
-import MetricCallout from '@edf/core/blocks/MetricCallout.astro';
+import Navigation from '@edf/core/layouts/Navigation.astro';
+import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
+import Step from '@edf/core/blocks/immersive/Step.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Acquisizione', href: '/acquisizione' },
+  { label: 'Engagement', href: '/engagement' },
+  { label: 'Conversione', href: '/conversione' },
+  { label: 'Loyalty', href: '/loyalty' },
+  { label: 'Il Motore', href: '/motore-adobe' },
+  { label: 'Persona', href: '/persona' },
+];
 ---
 <BaseLayout title="Acquisizione" description="Ringiovanire il target: come attrarre una nuova generazione di clienti Max Mara.">
-  <PageLayout title="Acquisizione">
-    <JourneyPhase
-      phaseNumber={1}
-      phaseId="acquisizione"
-      title="Ringiovanire il target"
-      subtitle="Fase 1 — Acquisizione"
-      body="<p>Millennial e Gen Z rappresentano circa tre quarti della spesa luxury entro fine 2025. Max Mara ha un vantaggio naturale: il quiet luxury risuona con queste generazioni, che cercano qualità duratura, non ostentazione. Ma raggiungerle richiede nuovi linguaggi, nuovi canali e la capacità di creare contenuti on-brand a una velocità che le agenzie tradizionali, da sole, non possono garantire.</p><p>La risposta non è sostituire le agenzie — è potenziarle. Con strumenti che permettono ai team interni di produrre varianti creative a scala, mantenendo il controllo del brand, mentre le agenzie si concentrano sulla visione strategica.</p>"
-    />
+  <!-- Nav overlay on top of the steps -->
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
+  </div>
 
-    <FrontBackStageSplit
-      phaseId="acquisizione"
-      phaseLabel="Acquisizione — Front stage / Back stage"
-      customerTitle="Scoprire Max Mara per la prima volta"
-      customerBody="<p>Una ventottenne milanese scopre una borsa Monogram su Instagram. Il contenuto è perfetto: parla il suo linguaggio, mostra il prodotto nel suo mondo — non in una vetrina distante. Clicca, atterra su una pagina che la riconosce come nuova visitatrice e le mostra un percorso pensato per chi sta scoprendo il brand.</p>"
-      adobeStack={[
-        { id: 'genstudio', name: 'GenStudio for Performance Marketing', claim: 'Creatività on-brand a scala con AI generativa — il team interno produce varianti senza dipendere da tempi d\'agenzia' },
-        { id: 'firefly', name: 'Adobe Firefly', claim: 'Immagini e contenuti generati con AI, sicuri per uso commerciale e coerenti con l\'identità visiva del brand' },
-        { id: 'rtcdp', name: 'Real-Time CDP', claim: 'Audience lookalike per raggiungere profili simili alle migliori clienti — anche chi non conosce ancora il brand' },
-        { id: 'cja', name: 'Customer Journey Analytics', claim: 'Analisi cross-channel per capire quali touchpoint convertono le nuove clienti, e ottimizzare il mix' },
-        { id: 'mix-modeler', name: 'Mix Modeler', claim: 'Ottimizzazione del media mix con AI: più budget sui canali che funzionano, meno spreco' },
-      ]}
-    />
+  <StepContainer>
+    <!-- ── STEP 1: Phase opening — the challenge ─────────────────── -->
+    <Step id="step-apertura" bg="secondary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <span class="block text-[clamp(5rem,12vw,10rem)] font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] opacity-20 leading-none mb-6" data-reveal aria-hidden="true">01</span>
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.1">Fase 1 — Acquisizione</p>
+        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
+          Ringiovanire il target
+        </h1>
+        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
+          Tre quarti della spesa luxury viene da Millennial e Gen Z. Intercettarle oggi significa costruire il business di domani.
+        </p>
+      </div>
+      <!-- Scroll hint -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
+        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
+          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </Step>
 
-    <ProductGateway
-      title="I pezzi d'ingresso"
-      body="Accessori, Monogram, fragranze: prodotti più accessibili che aprono la porta al mondo Max Mara. Ogni pezzo d'ingresso è un'opportunità per iniziare una relazione."
-      products={[
-        { name: 'Monogram', description: 'La firma riconoscibile che costruisce appartenenza — borse, accessori, piccola pelletteria.' },
-        { name: 'Accessori', description: 'Sciarpe, cinture, gioielli: oggetti che entrano nella quotidianità e creano familiarità col brand.' },
-        { name: 'Fragranze', description: 'Il punto d\'ingresso più accessibile — un gesto quotidiano che porta Max Mara nella vita delle nuove clienti.' },
-      ]}
-    />
+    <!-- ── STEP 2: Data Lake → Profiles (the animation step) ─────── -->
+    <Step id="step-datalake" bg="primary" align="center">
+      <div class="max-w-4xl mx-auto w-full">
+        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il problema</p>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
+          Dal data lake silente ai profili azionabili
+        </h2>
 
-    <MetricCallout
-      value="¾"
-      label="della spesa luxury entro il 2025 sarà guidata da Millennial e Gen Z"
-      context="Intercettarle oggi significa costruire il business di domani."
-      source="Bain & Company / Altagamma"
-    />
-  </PageLayout>
+        <!-- Data Lake → Profiles animation -->
+        <div class="relative w-full max-w-2xl mx-auto aspect-[16/9]" data-datalake>
+          <!-- Scattered data dots (initial state: scattered) -->
+          {Array.from({ length: 24 }).map((_, i) => {
+            const angle = (i / 24) * Math.PI * 2;
+            const radius = 80 + Math.random() * 120;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            return (
+              <div
+                class="data-dot absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]"
+                style={`left: calc(50% + ${x}px); top: calc(50% + ${y}px); transform: translate(-50%, -50%);`}
+              />
+            );
+          })}
+
+          <!-- Unified profiles (emerge after dots converge) -->
+          <div class="absolute inset-0 flex items-center justify-center gap-6 md:gap-10">
+            <div class="profile-circle flex flex-col items-center gap-2">
+              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
+            </div>
+            <div class="profile-circle flex flex-col items-center gap-2">
+              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-secondary)] flex items-center justify-center">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <span class="text-xs font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-sm text-[var(--ink-tertiary)] mt-8 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
+          Real-Time CDP unifica dati frammentati in profili azionabili — la base di tutto.
+        </p>
+      </div>
+    </Step>
+
+    <!-- ── STEP 3: Front stage — what the customer sees ──────────── -->
+    <Step id="step-frontstage" bg="primary" align="center">
+      <div class="max-w-3xl mx-auto">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)]">Ciò che vede la cliente</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-light leading-[1.1] text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.1">
+          Scopre Max Mara per la prima volta
+        </h2>
+        <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto mb-10" data-reveal data-reveal-delay="0.2">
+          Una ventottenne milanese vede una borsa Monogram su Instagram. Il contenuto parla il suo linguaggio, mostra il prodotto nel suo mondo.
+        </p>
+        <!-- Visual: mock phone/screen -->
+        <div class="relative w-48 md:w-56 mx-auto aspect-[9/16] bg-[var(--surface-secondary)] rounded-2xl border-2 border-[var(--line-default)] overflow-hidden shadow-lg" data-reveal data-reveal-delay="0.3">
+          <div class="absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1 bg-[var(--line-default)] rounded-full"></div>
+          <div class="flex flex-col items-center justify-center h-full p-6 text-center">
+            <div class="w-12 h-12 bg-[var(--accent-primary)] rounded-lg mb-4 flex items-center justify-center">
+              <span class="text-white text-xs font-bold">MM</span>
+            </div>
+            <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">Monogram Collection</p>
+            <p class="text-[0.65rem] text-[var(--ink-tertiary)] mt-1">Scopri di più →</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 4: Front→Back impulse — the "aha" ────────────────── -->
+    <Step id="step-impulse" bg="secondary" align="center">
+      <div class="max-w-4xl mx-auto w-full">
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
+          Dietro ogni interazione, la piattaforma risponde
+        </h2>
+
+        <!-- Front → Back impulse diagram -->
+        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
+          <!-- Front stage card -->
+          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">Front stage</span>
+            </div>
+            <p class="text-sm text-[var(--ink-primary)] font-medium">La cliente clicca</p>
+            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Scopre la borsa, visita il sito</p>
+          </div>
+
+          <!-- Pulse line (SVG arrow) -->
+          <div class="hidden md:flex items-center justify-center px-4">
+            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+          <!-- Mobile: vertical arrow -->
+          <div class="flex md:hidden items-center justify-center py-2">
+            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
+              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
+            </svg>
+          </div>
+
+          <!-- Back stage card -->
+          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Back stage</span>
+            </div>
+            <p class="text-sm font-medium">La piattaforma attiva</p>
+            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Riconosce, segmenta, personalizza</p>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 5: Back stage — Adobe products revealed one by one ── -->
+    <Step id="step-backstage" bg="inverse" align="center">
+      <div class="max-w-3xl mx-auto w-full text-[var(--ink-inverse)]">
+        <div class="flex items-center gap-3 mb-6" data-reveal>
+          <span class="w-3 h-3 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+          <span class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--color-grigio-400)]">Ciò che fa la piattaforma</span>
+        </div>
+        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,3.5vw+0.5rem,3rem)] font-light leading-[1.1] mb-10" data-reveal data-reveal-delay="0.1">
+          Cinque prodotti, un unico flusso
+        </h2>
+
+        <!-- Products staggered reveal -->
+        <div class="space-y-4" data-stagger="0.2">
+          <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+            <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+              <span class="text-xs font-bold text-[var(--accent-secondary)]">Gs</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium">GenStudio for Performance Marketing</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">Creatività on-brand a scala — il team produce varianti senza attendere l'agenzia</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+            <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+              <span class="text-xs font-bold text-[var(--accent-secondary)]">Ff</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Adobe Firefly</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">Immagini generate con AI, sicure per uso commerciale e coerenti col brand</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+            <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+              <span class="text-xs font-bold text-[var(--accent-secondary)]">RC</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Real-Time CDP</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">Audience lookalike per raggiungere chi non conosce ancora il brand</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+            <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+              <span class="text-xs font-bold text-[var(--accent-secondary)]">CJ</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Customer Journey Analytics</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">Analisi cross-channel: quali touchpoint convertono le nuove clienti</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 p-4 md:p-5 rounded-sm border border-[var(--color-grigio-500)]/30 bg-[var(--color-grigio-500)]/5 hover:border-[var(--accent-secondary)]/60 transition-colors">
+            <div class="flex-shrink-0 w-10 h-10 rounded-sm bg-[var(--accent-secondary)]/20 flex items-center justify-center">
+              <span class="text-xs font-bold text-[var(--accent-secondary)]">Mx</span>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Mix Modeler</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">Ottimizzazione del media mix con AI: più budget dove funziona</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Step>
+
+    <!-- ── STEP 6: Payoff — the metric ──────────────────────────── -->
+    <Step id="step-payoff" bg="brand" align="center">
+      <div class="max-w-3xl mx-auto text-center">
+        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
+          <span data-count-up="75" data-count-prefix="" data-count-suffix="%">0%</span>
+        </p>
+        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
+          della spesa luxury sarà guidata da Millennial e Gen Z
+        </p>
+        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
+          Fonte: Bain & Company / Altagamma
+        </p>
+
+        <!-- Navigate to next phase -->
+        <div class="mt-16" data-reveal data-reveal-delay="0.5">
+          <a
+            href={`${base}engagement/`}
+            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+          >
+            Fase successiva: Engagement
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </Step>
+  </StepContainer>
 </BaseLayout>
+
+<style>
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-bounce-subtle {
+      animation: none;
+    }
+    .scroll-hint {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
+
+  function setup() {
+    const container = document.querySelector<HTMLElement>('[data-step-container]');
+    if (container) {
+      initAllAnimations(container);
+    }
+  }
+
+  // Run on initial load and after View Transition navigation
+  setup();
+  document.addEventListener('astro:after-swap', setup);
+</script>

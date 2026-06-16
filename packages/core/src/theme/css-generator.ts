@@ -24,14 +24,14 @@ export function generateSemanticCSS(): string {
   /* Surface */
   --surface-primary: var(--color-avorio);
   --surface-secondary: var(--color-sabbia);
-  --surface-tertiary: var(--color-grigio100);
+  --surface-tertiary: var(--color-grigio-100);
   --surface-inverse: var(--color-nero);
   --surface-brand: var(--color-cammello);
 
   /* Ink */
   --ink-primary: var(--color-testadimoro);
   --ink-secondary: var(--color-marroncaldo);
-  --ink-tertiary: var(--color-grigio500);
+  --ink-tertiary: var(--color-grigio-500);
   --ink-inverse: var(--color-avorio);
   --ink-brand: var(--color-cammello);
   --ink-link: var(--color-marroncaldo);
@@ -42,8 +42,8 @@ export function generateSemanticCSS(): string {
   --accent-hover: var(--color-marroncaldo);
 
   /* Line */
-  --line-subtle: var(--color-grigio200);
-  --line-default: var(--color-grigio300);
+  --line-subtle: var(--color-grigio-200);
+  --line-default: var(--color-grigio-300);
   --line-strong: var(--color-marroncaldo);
 
   /* Focus */

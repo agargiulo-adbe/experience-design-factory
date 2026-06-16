@@ -1,0 +1,46 @@
+---
+/**
+ * Step — a single full-screen step within a StepContainer.
+ * Minimal text: title + one line. Meaning comes from animation.
+ */
+interface Props {
+  id?: string;
+  bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
+  align?: 'center' | 'left' | 'bottom-left';
+  class?: string;
+}
+
+const { id, bg = 'primary', align = 'center', class: className } = Astro.props;
+
+const bgMap = {
+  primary: 'bg-[var(--surface-primary)]',
+  secondary: 'bg-[var(--surface-secondary)]',
+  inverse: 'bg-[var(--surface-inverse)]',
+  brand: 'bg-[var(--accent-primary)]',
+};
+
+const alignMap = {
+  center: 'items-center justify-center text-center',
+  left: 'items-center justify-center md:items-start md:justify-center md:text-left',
+  'bottom-left': 'items-end justify-start md:items-end md:justify-start text-left',
+};
+---
+
+<section
+  id={id}
+  class:list={[
+    "step relative min-h-[100dvh] w-full flex flex-col px-6 md:px-16 lg:px-24 py-16 md:py-20 snap-start overflow-hidden",
+    bgMap[bg],
+    alignMap[align],
+    className,
+  ]}
+  data-step
+>
+  <slot />
+</section>
+
+<style>
+  .step {
+    scroll-snap-align: start;
+  }
+</style>

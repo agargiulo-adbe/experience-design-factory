@@ -99,15 +99,48 @@
 **Root cause:** Manual string concatenation `${base}${href}` without normalizing slashes or ensuring trailing slash.
 **Fix:** Created centralized `packages/core/src/utils/url.ts` with `href(base, path)` helper that joins segments, deduplicates slashes, and always appends a trailing slash. Updated Navigation.astro and index.astro hero CTA to use it. All 8 pages now return HTTP 200.
 
+### Grigio var name inconsistency
+**Issue:** `@theme` block defined `--color-grigio-100` (with hyphen) but `:root` and blocks used `--color-grigio100` (no hyphen). Footer and AdobeStackReveal referenced non-existent vars.
+**Fix:** Standardized all references to use hyphens (`grigio-100`, `grigio-200`, etc.) across global.css, tokens.ts, css-generator.ts, Footer.astro, AdobeStackReveal.astro.
+
 ---
 
-## What to Review (mattina)
+## Cambio di direzione: Experience Design immersivo
 
-1. `pnpm dev` — navigate all 8 pages, check the front/back-stage split experience
-2. Check responsive at 360px, 768px, 1280px
-3. Review Italian copy quality on each page
-4. Check the progressive Adobe reveal flow: discrete on phase pages → full on "Il Motore Adobe"
-5. Verify the persona page (Giulia + Francesca) reads well as a dual-generation story
+### Acquisizione — step-by-step (reference page)
+Trasformata da brochure densa a flusso immersivo con scroll-snap:
+- 6 step a schermo pieno (`min-h-[100dvh]`, `scroll-snap-type: y mandatory`)
+- **Step 1:** Apertura fase — titolo + frase, scroll hint
+- **Step 2:** Data lake → profili (animazione GSAP: punti sparsi che convergono in profili)
+- **Step 3:** Front stage — ciò che vede la cliente (mockup phone)
+- **Step 4:** Impulso front→back — l'aha (SVG pulse line animated)
+- **Step 5:** Back stage — 5 prodotti Adobe rivelati uno alla volta (stagger)
+- **Step 6:** Payoff — metrica count-up (75%) + CTA fase successiva
+
+### Componenti riusabili creati
+- `packages/core/src/blocks/immersive/StepContainer.astro` — scroll-snap wrapper
+- `packages/core/src/blocks/immersive/Step.astro` — singolo step full-screen
+- `packages/core/src/blocks/immersive/animations.ts` — sistema animazioni GSAP
+  - `initReveal()` — fade-up al scroll
+  - `initCountUp()` — numeri animati
+  - `initStagger()` — elementi che entrano uno alla volta
+  - `initPulse()` — impulso SVG front→back
+  - `initDataLake()` — data dots → profili unificati
+  - Tutto con `prefers-reduced-motion` rispettato (stati finali statici)
+
+### In attesa di revisione
+Le altre 7 pagine NON sono state toccate. Aspettano il feedback su Acquisizione prima di propagare il pattern.
+
+---
+
+## What to Review
+
+1. `pnpm dev` → `/experience-design-factory/acquisizione/` — verificare il flusso step-by-step
+2. Scroll-snap: uno step per schermata, avanzamento fluido
+3. Animazioni: data lake → profili, impulso front→back, prodotti stagger, count-up 75%
+4. Responsive a 360px (step si adattano)
+5. `prefers-reduced-motion`: stati finali statici, no movimento
+6. Le altre pagine restano come prima (non toccate)
 
 ## TODO (future phases)
 - [ ] Factory Console (apps/console) — local SPA editor + Node backend
