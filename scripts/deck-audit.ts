@@ -22,7 +22,8 @@ import { mkdir } from 'node:fs/promises';
 import * as path from 'node:path';
 
 const ROUTE = '/experience-design-factory/acquisizione/';
-const VIEWPORT = { width: 1920, height: 1080 };
+// A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
+const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
 const OUT_DIR = path.resolve(process.cwd(), 'audit/acquisizione');
 
 async function findBaseUrl(): Promise<string> {
@@ -263,11 +264,8 @@ function measureOpenPanel(opts: { panelId: string; W: number; H: number }) {
   return { f, l };
 }
 
-async function main() {
-  const base = await findBaseUrl();
-  await mkdir(OUT_DIR, { recursive: true });
-  const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: VIEWPORT, reducedMotion: 'reduce', deviceScaleFactor: 1 });
+async function auditViewport(browser: import('playwright').Browser, base: string, W: number, H: number) {
+  const ctx = await browser.newContext({ viewport: { width: W, height: H }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   await page.addInitScript(() => { (window as unknown as { __name: (f: unknown) => unknown }).__name = (f) => f; });
   await page.goto(base + ROUTE, { waitUntil: 'networkidle' });
@@ -279,14 +277,13 @@ async function main() {
   });
   const slideIds: string[] = await page.evaluate(() => Array.from(document.querySelectorAll('[data-slide]')).map((s) => s.id));
 
-  let totalFails = 0;
+  let fails = 0;
   const lines: string[] = [];
-  const KEYS = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i'] as const;
   for (let i = 0; i < slideIds.length; i++) {
     const id = slideIds[i];
     await page.evaluate((idx) => (window as unknown as { __edfDeck: { goTo(n: number): void } }).__edfDeck.goTo(idx), i);
     await page.waitForTimeout(450);
-    const r = await page.evaluate(measureSlide, { slideId: id, W: VIEWPORT.width, H: VIEWPORT.height, ...tokens });
+    const r = await page.evaluate(measureSlide, { slideId: id, W, H, ...tokens });
 
     // open each HowItWorks on this slide and measure the open panel (f, j/k on panel, l)
     const panelIds: string[] = await page.evaluate((sid) => Array.from(document.getElementById(sid)!.querySelectorAll('[data-hiw-open]')).map((bt) => bt.getAttribute('aria-controls') || ''), id);
@@ -295,7 +292,7 @@ async function main() {
     for (const pid of panelIds.filter(Boolean)) {
       await page.evaluate((p) => (document.querySelector(`[aria-controls="${p}"]`) as HTMLElement)?.click(), pid);
       await page.waitForTimeout(300);
-      const fr = await page.evaluate(measureOpenPanel, { panelId: pid, W: VIEWPORT.width, H: VIEWPORT.height });
+      const fr = await page.evaluate(measureOpenPanel, { panelId: pid, W, H });
       if (fr.f.length) fFails.push({ panel: pid, fails: fr.f });
       if (fr.l.length) lFails.push({ panel: pid, fails: fr.l });
       await page.keyboard.press('Escape');
@@ -307,7 +304,7 @@ async function main() {
     const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, f, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, l };
     const order = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l'];
     const failed = order.filter((key) => !results[key].pass);
-    if (failed.length) { totalFails += failed.length; await page.screenshot({ path: path.join(OUT_DIR, `${id}.png`) }); }
+    if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(OUT_DIR, `${W}x${H}-${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +
       order.map((key) => `${key}:${results[key].pass ? 'ok' : 'F'}`).join(' '));
     if (!r.a.pass) lines.push(`     a → ${JSON.stringify(r.a.fails)}`);
@@ -323,11 +320,25 @@ async function main() {
     if (!r.k.pass) lines.push(`     k → ${JSON.stringify(r.k.fails)}`);
     if (!l.pass) lines.push(`     l → ${JSON.stringify(l.fails)}`);
   }
+  await ctx.close();
+  return { lines, fails };
+}
 
+async function main() {
+  const base = await findBaseUrl();
+  await mkdir(OUT_DIR, { recursive: true });
+  const browser = await chromium.launch();
+  let totalFails = 0;
+  const blocks: string[] = [];
+  for (const [W, H] of VIEWPORTS) {
+    const { lines, fails } = await auditViewport(browser, base, W, H);
+    totalFails += fails;
+    blocks.push(`\n=== ${W}×${H} ===\n${lines.join('\n')}`);
+  }
   await browser.close();
-  console.log(`\ndeck-audit · ${base}${ROUTE} · 1920×1080 · checks a–l\n`);
-  console.log(lines.join('\n'));
-  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean (a–l, panels open-tested)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
+  console.log(`\ndeck-audit · ${base}${ROUTE} · checks a–l · viewports ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')}`);
+  console.log(blocks.join('\n'));
+  console.log(`\n${totalFails === 0 ? 'PASS — all slides clean at ALL viewports (a–l, panels open-tested)' : `FAIL — ${totalFails} check failure(s); screenshots in audit/acquisizione/`}\n`);
   process.exit(totalFails === 0 ? 0 : 1);
 }
 
