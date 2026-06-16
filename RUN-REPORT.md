@@ -1,6 +1,40 @@
 # Run Report — Experience Design Factory
 
-## Status: Pre-meeting CMO (lunedì) — Blocco 1 (verifica Acquisizione) ✅ · Blocco 2 (restyle leggero 3 fasi) + Blocco 3 (asset finali Acquisizione) da fare
+## Status: Pre-meeting CMO (lunedì) — Blocco 1 (verifica Acquisizione) ✅ · Blocco 2 (restyle leggero 3 fasi) ✅ in revisione · Blocco 3 (asset finali Acquisizione) da fare
+
+---
+
+## Pre-meeting CMO — Blocco 2: restyle LEGGERO di Engagement / Conversione / Loyalty ✅
+
+Obiettivo: che le tre fasi NON stonino accanto ad Acquisizione. **Restano pagine scroll-snap
+(Step), nessuna conversione slide-grade, nessuna nuova immagine Pexels, nessun --mode=step.**
+
+**Unità & commit:**
+| Unità | Cosa | Commit |
+|---|---|---|
+| CoBrandSignature condiviso | estratto da CoverSlide (firma filo Max Mara × Adobe); default = stato disegnato | `refactor(core)` |
+| Engagement | token tipografici + filo apertura + de-gergo + backdrop bg-linen | `feat(engagement)` |
+| Conversione | token + filo + de-gergo + backdrop bg-cashmere | `feat(conversione)` |
+| Loyalty | token + filo + de-gergo + backdrop bg-wool | `feat(loyalty)` |
+
+**Cosa è stato fatto, per fase:**
+- **Token tipografici:** aggiunta la scala fluida EDF (`--text-display/heading/body/caption`) al
+  `:root` dell'app (mancava: `var(--text-*)` risolveva vuoto → titoli a 18px). Sostituiti i
+  font-size inline `clamp()` con i token. Additivo → **Acquisizione invariata (audit verde)**.
+- **Firma filo:** `CoBrandSignature.astro` condiviso (NON copia-incolla) nell'apertura di ogni
+  fase. Estrazione provata senza regressioni → **"audit:deck Acquisizione verde dopo l'estrazione"**.
+- **De-gergo (solo sostituzione termini, nessun paragrafo riscritto):** `Front stage`→`In scena`,
+  `Back stage`→`Dietro le quinte`, `Fase successiva: X`→`Continua: X`. Nessun "a scala"/"privacy-safe" presente.
+- **Backdrop a costo zero:** `SlideBackdrop` con gli sfondi-texture GIÀ generati (linen/cashmere/wool)
+  sotto scrim sulle aperture. Nessuna nuova immagine, nessun nuovo slot.
+
+**Gate Blocco 2:** `pnpm typecheck` 0 errori · `pnpm build` 8 pagine verde · le tre pagine
+caricano **200** in locale (no 404) · screenshot apertura a 1440 per le tre fasi (filo + backdrop +
+titolo display) + verifica de-gergo ("In scena"/"Dietro le quinte"). Acquisizione **audit:deck verde**
+dopo l'estrazione del componente condiviso.
+
+> Rinviato esplicitamente a dopo il meeting: conversione slide-grade, `--mode=step`, sostituzione
+> dei mockup CSS con immagini reali, nuovi slot editoriali, ritratto Giulia nel clienteling card.
 
 ---
 
