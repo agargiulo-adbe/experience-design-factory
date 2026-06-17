@@ -29,6 +29,7 @@ const ROUTES: Array<{ name: string; route: string }> = [
   { name: 'conversione', route: '/experience-design-factory/conversione/' },
   { name: 'loyalty', route: '/experience-design-factory/loyalty/' },
   { name: 'persona', route: '/experience-design-factory/persona/' },
+  { name: 'motore-adobe', route: '/experience-design-factory/motore-adobe/' },
 ];
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
 const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];

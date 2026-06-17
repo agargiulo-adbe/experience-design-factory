@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '@edf/core/layouts/Navigation.astro';
-import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
-import Step from '@edf/core/blocks/immersive/Step.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Acquisizione', href: '/acquisizione' },
@@ -28,237 +28,174 @@ const ringProducts = [
 ];
 const ring = ringProducts.map((name, i) => {
   const angle = (i / ringProducts.length) * Math.PI * 2 - Math.PI / 2;
-  const rx = 42; // % radius horizontal
-  const ry = 40; // % radius vertical
+  const rx = 37; const ry = 37;
   const left = 50 + rx * Math.cos(angle);
   const top = 50 + ry * Math.sin(angle);
-  // Fly in from far out along the same radial direction
   const fromX = Math.round(Math.cos(angle) * 240);
   const fromY = Math.round(Math.sin(angle) * 240);
   return { name, left, top, fromX, fromY };
 });
 
-// Complete per-phase reveal (reference detail)
 const phases = [
-  { label: 'Cuore — Trasversale', products: [
-    'Adobe Experience Platform', 'Real-Time CDP', 'AI Assistant', 'Agent Orchestrator',
-  ] },
-  { label: 'Acquisizione', products: [
-    'GenStudio for Performance Marketing', 'Adobe Firefly', 'Adobe Express', 'Customer Journey Analytics', 'Mix Modeler',
-  ] },
-  { label: 'Engagement', products: [
-    'AEM Sites', 'Adobe Target', 'Adobe Commerce',
-  ] },
-  { label: 'Conversione', products: [
-    'Journey Optimizer', 'Brand Concierge',
-  ] },
-  { label: 'Loyalty & LTV', products: [
-    'Journey Optimizer', 'Real-Time CDP', 'Customer Journey Analytics',
-  ] },
-  { label: 'Operations & Content Supply Chain', products: [
-    'Workfront', 'GenStudio for Performance Marketing',
-  ] },
+  { label: 'Cuore — Trasversale', products: ['Adobe Experience Platform', 'Real-Time CDP', 'AI Assistant', 'Agent Orchestrator'] },
+  { label: 'Acquisizione', products: ['GenStudio for Performance Marketing', 'Adobe Firefly', 'Adobe Express', 'Customer Journey Analytics', 'Mix Modeler'] },
+  { label: 'Engagement', products: ['AEM Sites', 'Adobe Target', 'Adobe Commerce'] },
+  { label: 'Conversione', products: ['Journey Optimizer', 'Brand Concierge'] },
+  { label: 'Loyalty & LTV', products: ['Journey Optimizer', 'Real-Time CDP', 'Customer Journey Analytics'] },
+  { label: 'Operations & Content Supply Chain', products: ['Workfront', 'GenStudio for Performance Marketing'] },
 ];
+const dataDots = Array.from({ length: 24 }).map((_, i) => {
+  const angle = (i / 24) * Math.PI * 2;
+  const radius = 80 + ((i * 41) % 120);
+  return { x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius) };
+});
 ---
 <BaseLayout title="Il Motore Adobe" description="L'architettura Adobe che trasforma un data lake silente in relazioni conosciute e durature.">
   <div class="fixed top-0 left-0 right-0 z-50">
     <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
   </div>
 
-  <StepContainer>
-    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
-    <Step id="step-apertura" bg="secondary" align="center">
-      <SlideBackdrop {...mediaProps('bg-wool')} imageClass="opacity-20" scrim="bg-[var(--surface-secondary)]/74" />
-      <div class="relative z-10 max-w-3xl mx-auto">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>L'architettura</p>
-        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
-          Il Motore Adobe
-        </h1>
-        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
-          Non una collezione di strumenti separati, ma un tessuto connettivo unico. Adobe potenzia l'ecosistema esistente — non lo sostituisce.
-        </p>
-      </div>
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
-        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
-          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </Step>
+  <DeckContainer nextHref={href(base, '/persona')}>
 
-    <!-- ── STEP 2: Da data lake a profili ────────────────────────── -->
-    <Step id="step-datalake" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il punto di partenza</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Da data lake silente a profili real-time
-        </h2>
+    <!-- ── SLIDE 0: Apertura ─────────────────────────────────────── -->
+    <Slide id="slide-apertura" bg="secondary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-wool')} imageClass="opacity-20" scrim="bg-[var(--surface-secondary)]/74" />
+      <CoverHero eyebrow="L'ARCHITETTURA" title="Il Motore Adobe" lead="Non una collezione di strumenti separati, ma un tessuto connettivo unico. Adobe potenzia l'ecosistema esistente — non lo sostituisce." />
+    </Slide>
 
-        <div class="relative w-full max-w-2xl mx-auto aspect-[16/9]" data-datalake>
-          {Array.from({ length: 24 }).map((_, i) => {
-            const angle = (i / 24) * Math.PI * 2;
-            const radius = 80 + Math.random() * 120;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius;
-            return (
-              <div class="data-dot absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]" style={`left: calc(50% + ${x}px); top: calc(50% + ${y}px); transform: translate(-50%, -50%);`} />
-            );
-          })}
-          <div class="absolute inset-0 flex items-center justify-center">
-            <div class="profile-circle flex flex-col items-center gap-2">
-              <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
-                <span class="text-[0.7rem] font-bold text-white text-center leading-tight">AEP<br/>Profili</span>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Profili unificati</span>
+    <!-- ── SLIDE 1: Da data lake a profili (viz statica) ─────────── -->
+    <Slide id="slide-datalake" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL PUNTO DI PARTENZA</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Da data lake silente a profili real-time
+      </h2>
+
+      <div class="relative w-full max-w-md mx-auto aspect-[2/1]" aria-hidden="true">
+        {dataDots.map((d) => (
+          <div class="absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]/40" style={`left: calc(50% + ${d.x}px); top: calc(50% + ${d.y}px); transform: translate(-50%, -50%);`} />
+        ))}
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="flex flex-col items-center gap-2">
+            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[var(--accent-primary)] flex items-center justify-center shadow-xl ring-4 ring-[var(--surface-primary)]">
+              <span class="text-[0.8rem] font-bold text-white text-center leading-tight">AEP<br/>Profili</span>
             </div>
           </div>
         </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-8 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          Adobe Experience Platform raccoglie, normalizza e attiva i dati da ogni fonte in profili azionabili.
-        </p>
       </div>
-    </Step>
 
-    <!-- ── STEP 3: La rivelazione completa — stack assemble ──────── -->
-    <Step id="step-assemble" bg="inverse" align="center">
-      <div class="max-w-4xl mx-auto w-full text-[var(--ink-inverse)]">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-secondary)] mb-4 text-center" data-reveal>La piattaforma, intera</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] mb-10 text-center" data-reveal data-reveal-delay="0.1">
-          Ogni prodotto converge in un unico motore
-        </h2>
+      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-tertiary)] mt-5 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.3">
+        Adobe Experience Platform raccoglie, normalizza e attiva i dati da ogni fonte in profili azionabili.
+      </p>
+    </Slide>
 
-        <!-- Stack assemble: products fly in to orbit the AEP core -->
-        <div class="relative w-full max-w-2xl mx-auto aspect-square" data-stack-assemble>
-          <div class="stack-core absolute left-1/2 top-1/2 w-28 h-28 md:w-36 md:h-36 rounded-full bg-[var(--accent-secondary)] flex flex-col items-center justify-center text-center px-3 z-10 shadow-xl" style="transform: translate(-50%, -50%);">
-            <span class="text-[0.6rem] tracking-[0.1em] uppercase text-[var(--surface-inverse)]/70">Cuore</span>
-            <span class="text-sm font-bold text-[var(--surface-inverse)] leading-tight">Experience Platform</span>
-          </div>
-          {ring.map((p) => (
-            <div
-              class="stack-product absolute px-3 py-2 rounded-sm bg-[var(--color-grigio-500)]/15 border border-[var(--color-grigio-500)]/40 backdrop-blur-sm"
-              style={`left: ${p.left}%; top: ${p.top}%; transform: translate(-50%, -50%);`}
-              data-from-x={p.fromX}
-              data-from-y={p.fromY}
-            >
-              <span class="text-[0.65rem] md:text-xs font-medium whitespace-nowrap">{p.name}</span>
-            </div>
-          ))}
+    <!-- ── SLIDE 2: La piattaforma, intera (stack assemble) ──────── -->
+    <Slide id="slide-assemble" bg="inverse" align="center">
+      <p class="slide-eyebrow text-[var(--accent-secondary)] mb-4" data-reveal>LA PIATTAFORMA, INTERA</p>
+      <h2 class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Ogni prodotto converge in un unico motore
+      </h2>
+
+      <div class="relative w-[clamp(18rem,38vh,25rem)] mx-auto aspect-square" data-stack-assemble>
+        <div class="stack-core absolute left-1/2 top-1/2 w-24 h-24 md:w-28 md:h-28 rounded-full bg-[var(--accent-secondary)] flex flex-col items-center justify-center text-center px-3 z-10 shadow-xl" style="transform: translate(-50%, -50%);">
+          <span class="text-[0.62rem] tracking-[0.1em] uppercase text-[var(--surface-inverse)]/70">Cuore</span>
+          <span class="text-[0.95rem] font-bold text-[var(--surface-inverse)] leading-tight">Experience Platform</span>
         </div>
-      </div>
-    </Step>
-
-    <!-- ── STEP 4: Fase per fase — il dettaglio completo ─────────── -->
-    <Step id="step-fasi" bg="primary" align="center">
-      <div class="max-w-5xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Lo stack, fase per fase</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10" data-reveal data-reveal-delay="0.1">
-          Ogni fase del percorso, i suoi prodotti
-        </h2>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left" data-stagger="0.12">
-          {phases.map((ph) => (
-            <div class="p-5 rounded-sm border border-[var(--line-subtle)] bg-[var(--surface-secondary)]">
-              <p class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--accent-primary)] mb-3">{ph.label}</p>
-              <ul class="space-y-1.5">
-                {ph.products.map((name) => (
-                  <li class="text-sm text-[var(--ink-secondary)] flex items-start gap-2">
-                    <span class="text-[var(--accent-primary)] mt-0.5">·</span> {name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Step>
-
-    <!-- ── STEP 5: Front→Back — potenzia, non sostituisce ────────── -->
-    <Step id="step-impulse" bg="secondary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
-          Completa il quadro, non sostituisce ciò che funziona
-        </h2>
-
-        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
-          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">L'ecosistema esistente</span>
-            </div>
-            <p class="text-sm text-[var(--ink-primary)] font-medium">CRM, ERP, agenzie</p>
-            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Le competenze e gli strumenti già in casa</p>
-          </div>
-
-          <div class="hidden md:flex items-center justify-center px-4">
-            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-          <div class="flex md:hidden items-center justify-center py-2">
-            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-
-          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Il tessuto Adobe</span>
-            </div>
-            <p class="text-sm font-medium">Unifica e attiva</p>
-            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Trasforma i dati in azione, in tempo reale</p>
-          </div>
-        </div>
-      </div>
-    </Step>
-
-    <!-- ── STEP 6: Payoff — CTA ──────────────────────────────────── -->
-    <Step id="step-payoff" bg="brand" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-8" style="font-size: clamp(3rem, 9vw, 6rem);">
-          Un data lake.<br/>Un motore di relazioni.
-        </p>
-        <p class="text-lg md:text-xl text-white/85 leading-relaxed mb-4 max-w-xl mx-auto" data-reveal data-reveal-delay="0.2">
-          Real-Time CDP trasforma i dati in audience. Journey Optimizer orchestra. Customer Journey Analytics misura. Tutto, in un unico flusso.
-        </p>
-
-        <div class="mt-12" data-reveal data-reveal-delay="0.5">
-          <a
-            href={href(base, '/persona')}
-            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+        {ring.map((p) => (
+          <div
+            class="stack-product absolute px-3 py-2 rounded-md bg-[var(--color-grigio-500)]/15 border border-[var(--color-grigio-500)]/40 backdrop-blur-sm"
+            style={`left: ${p.left}%; top: ${p.top}%; transform: translate(-50%, -50%);`}
+            data-from-x={p.fromX}
+            data-from-y={p.fromY}
           >
-            Le protagoniste
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
+            <span class="text-[0.72rem] md:text-[0.82rem] font-medium text-[var(--ink-inverse)] whitespace-nowrap">{p.name}</span>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Lo stack, fase per fase ──────────────────────── -->
+    <Slide id="slide-fasi" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>LO STACK, FASE PER FASE</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(1.9rem, 3.4vw, 3.1rem);" data-reveal data-reveal-delay="0.1">
+        Ogni fase del percorso, i suoi prodotti
+      </h2>
+
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 text-left w-full max-w-5xl mx-auto" data-stagger="0.1">
+        {phases.map((ph) => (
+          <div class="p-4 rounded-lg border border-[var(--line-subtle)] bg-[var(--surface-secondary)]">
+            <p class="text-[0.8rem] font-semibold tracking-[0.06em] uppercase text-[var(--accent-primary)] mb-2">{ph.label}</p>
+            <p class="text-[clamp(0.92rem,1.05vw,1.08rem)] text-[var(--ink-secondary)] leading-snug">{ph.products.join(' · ')}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Front→Back — potenzia, non sostituisce ───────── -->
+    <Slide id="slide-impulse" bg="secondary" align="center">
+      <h2 class="slide-title text-[var(--ink-primary)] mb-10" style="font-size: clamp(2rem, 3.8vw, 3.4rem);" data-reveal>
+        Completa il quadro, non sostituisce ciò che funziona
+      </h2>
+
+      <div class="relative w-full max-w-[1100px] mx-auto grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch min-h-[30vh]" data-pulse-line>
+        <div class="bg-[var(--surface-primary)] rounded-lg p-8 md:p-10 border border-[var(--line-subtle)] flex flex-col justify-between" data-reveal>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">L'ecosistema esistente</span>
+          </div>
+          <div>
+            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] text-[var(--ink-primary)] font-medium leading-tight">CRM, ERP, agenzie</p>
+            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--ink-secondary)] mt-1.5">Le competenze e gli strumenti già in casa</p>
+          </div>
+        </div>
+
+        <div class="hidden md:flex items-center justify-center px-6">
+          <svg width="180" height="60" viewBox="0 0 180 60" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 0 30 L 150 30" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="166" cy="30" r="9" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+        <div class="flex md:hidden items-center justify-center py-1">
+          <svg width="60" height="46" viewBox="0 0 60 46" class="text-[var(--accent-primary)]">
+            <path class="pulse-path" d="M 30 0 L 30 34" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle class="pulse-dot" cx="30" cy="40" r="6" fill="currentColor" opacity="0"/>
+          </svg>
+        </div>
+
+        <div class="bg-[var(--surface-inverse)] rounded-lg p-8 md:p-10 text-[var(--ink-inverse)] flex flex-col justify-between" data-reveal data-reveal-delay="0.3">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
+            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-300)]">Il tessuto Adobe</span>
+          </div>
+          <div>
+            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] font-medium leading-tight">Unifica e attiva</p>
+            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--color-grigio-300)] mt-1.5">Trasforma i dati in azione, in tempo reale</p>
+          </div>
         </div>
       </div>
-    </Step>
-  </StepContainer>
+    </Slide>
+
+    <!-- ── SLIDE 5: Payoff — CTA ─────────────────────────────────── -->
+    <Slide id="slide-payoff" bg="brand" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
+      <p data-display class="font-[family-name:var(--font-display)] font-light leading-[1.05] text-[var(--ink-primary)] mb-8 max-w-4xl" style="font-size: clamp(2.5rem, 6vw, 5.5rem);">
+        Un data lake.<br/>Un motore di relazioni.
+      </p>
+      <p class="text-[clamp(1.2rem,1.7vw,1.7rem)] text-[var(--ink-primary)] leading-snug mb-12 max-w-3xl" data-reveal data-reveal-delay="0.2">
+        Real-Time CDP trasforma i dati in audience. Journey Optimizer orchestra. Customer Journey Analytics misura. Tutto, in un unico flusso.
+      </p>
+
+      <div data-reveal data-reveal-delay="0.5">
+        <a
+          href={href(base, '/persona')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Le protagoniste
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
 </BaseLayout>
-
-<style>
-  @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-bounce-subtle { animation: none; }
-    .scroll-hint { display: none; }
-  }
-</style>
-
-<script>
-  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
-  function setup() {
-    const container = document.querySelector<HTMLElement>('[data-step-container]');
-    if (container) initAllAnimations(container);
-  }
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>
