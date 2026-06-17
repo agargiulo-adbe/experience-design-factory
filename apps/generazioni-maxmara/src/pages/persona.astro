@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '@edf/core/layouts/Navigation.astro';
-import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
-import Step from '@edf/core/blocks/immersive/Step.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Acquisizione', href: '/acquisizione' },
@@ -19,187 +20,151 @@ const navItems = [
   { label: 'Il Motore', href: '/motore-adobe' },
   { label: 'Persona', href: '/persona' },
 ];
+
+const recognition = [
+  'Giulia · scopre da social, compra online',
+  'Francesca · fedele da 20 anni, acquista in store',
+  'Stessa vista: preferenze, storia, valore nel tempo',
+  'Ogni canale parla la lingua giusta per ciascuna',
+];
 ---
 <BaseLayout title="La Persona" description="Giulia e Francesca: due generazioni, un solo brand. Il percorso dalla scoperta alla fedeltà.">
   <div class="fixed top-0 left-0 right-0 z-50">
     <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
   </div>
 
-  <StepContainer>
-    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
-    <Step id="step-apertura" bg="secondary" align="center">
-      <div class="max-w-3xl mx-auto">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>Le protagoniste</p>
-        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
-          Due donne, un filo che le unisce
-        </h1>
-        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
-          Giulia e Francesca non sono statistiche: sono le due generazioni che Max Mara deve unire in un unico disegno.
-        </p>
-      </div>
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
-        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
-          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+  <DeckContainer nextHref={href(base, '/chiusura')}>
+
+    <!-- ── SLIDE 0: Apertura ─────────────────────────────────────── -->
+    <Slide id="slide-apertura" bg="secondary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-linen')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/70" />
+      <CoverHero eyebrow="LE PROTAGONISTE" title="Due donne, un filo che le unisce" lead="Giulia e Francesca non sono statistiche: sono le due generazioni che Max Mara deve unire in un unico disegno." />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il filo (thread) ─────────────────────────────── -->
+    <Slide id="slide-filo" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL LEGAME</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-8" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Dalla prima scoperta alla fedeltà di una vita
+      </h2>
+
+      <div class="relative w-full max-w-3xl mx-auto" data-thread>
+        <svg class="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 400 100" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+          <path class="thread-path" d="M60 50 C 160 8, 240 92, 340 50" stroke="var(--accent-primary)" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
-      </div>
-    </Step>
-
-    <!-- ── STEP 2: Il filo (thread animation) ────────────────────── -->
-    <Step id="step-filo" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il legame</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Dalla prima scoperta alla fedeltà di una vita
-        </h2>
-
-        <div class="relative w-full max-w-2xl mx-auto" data-thread>
-          <svg class="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 400 100" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-            <path class="thread-path" d="M60 50 C 160 8, 240 92, 340 50" stroke="var(--accent-primary)" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <div class="relative flex items-center justify-between px-2 md:px-6 py-4">
-            <div class="thread-node flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-              <span class="text-[0.65rem] text-[var(--ink-tertiary)]">Milano</span>
+        <div class="relative flex items-center justify-between px-2 md:px-10 py-4">
+          <div class="thread-node flex flex-col items-center gap-2">
+            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden relative bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+              <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
             </div>
-            <div class="thread-node flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-secondary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
-              <span class="text-[0.65rem] text-[var(--ink-tertiary)]">Bologna</span>
+            <span class="text-[clamp(1rem,1.2vw,1.2rem)] font-medium text-[var(--ink-primary)]">Giulia, 29</span>
+            <span class="text-[0.85rem] text-[var(--ink-tertiary)]">Milano</span>
+          </div>
+          <div class="thread-node flex flex-col items-center gap-2">
+            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden relative bg-[var(--accent-secondary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+              <MediaSlot {...mediaProps('francesca-atmosfera')} fill noText="0,0,0,0" />
             </div>
+            <span class="text-[clamp(1rem,1.2vw,1.2rem)] font-medium text-[var(--ink-primary)]">Francesca, 52</span>
+            <span class="text-[0.85rem] text-[var(--ink-tertiary)]">Bologna</span>
           </div>
         </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-10 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          La prima scopre il brand dai pezzi d'ingresso; la seconda è il brand. Allungare il ciclo di vita le unisce.
-        </p>
       </div>
-    </Step>
 
-    <!-- ── STEP 3: Giulia — la nuova generazione ─────────────────── -->
-    <Step id="step-giulia" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full grid md:grid-cols-[auto_1fr] gap-8 md:gap-12 items-center text-left">
-        <div class="flex md:flex-col items-center md:items-start gap-4" data-reveal>
-          <div class="w-28 h-28 rounded-full overflow-hidden relative flex-shrink-0 shadow-md bg-[var(--accent-primary)]">
-            <MediaSlot {...mediaProps('persona-giulia')} fill />
-          </div>
-          <div>
-            <p class="font-[family-name:var(--font-display)] text-2xl font-light text-[var(--ink-primary)]">Giulia, 29</p>
-            <p class="text-xs text-[var(--ink-tertiary)]">Product manager · Milano</p>
+      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-tertiary)] mt-8 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.3">
+        La prima scopre il brand dai pezzi d'ingresso; la seconda è il brand. Il valore che cresce nel tempo le unisce.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: Giulia — la nuova generazione ────────────────── -->
+    <Slide id="slide-giulia" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[0.8fr_1fr] gap-10 md:gap-16 items-center">
+        <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.15">
+          <div class="relative h-full max-h-[64vh] aspect-[4/5] rounded-lg overflow-hidden shadow-xl bg-[var(--accent-primary)] mx-auto">
+            <MediaSlot {...mediaProps('persona-giulia')} fill noText="4,12,76,64" />
           </div>
         </div>
-        <div>
-          <p class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>La nuova generazione</p>
-          <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed mb-4" data-reveal data-reveal-delay="0.1">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>LA NUOVA GENERAZIONE</p>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-4" style="font-size: clamp(2.25rem, 4.4vw, 3.75rem);" data-reveal data-reveal-delay="0.1">Giulia, 29</h2>
+          <p class="text-[var(--ink-tertiary)] mb-6" style="font-size: clamp(1rem,1.2vw,1.15rem);" data-reveal data-reveal-delay="0.16">Product manager · Milano</p>
+          <p class="text-[clamp(1.1rem,1.5vw,1.4rem)] text-[var(--ink-secondary)] leading-relaxed mb-4" data-reveal data-reveal-delay="0.2">
             Non segue i trend: cerca pezzi che durino. Ha scoperto Max Mara da una borsa Monogram su Instagram, non dal cappotto cammello delle colleghe più senior.
           </p>
-          <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed" data-reveal data-reveal-delay="0.2">
+          <p class="text-[clamp(1.1rem,1.5vw,1.4rem)] text-[var(--ink-secondary)] leading-relaxed" data-reveal data-reveal-delay="0.28">
             Per lei il lusso è qualità senza ostentazione. Si informa, confronta, compra quando è convinta — non quando è pressata.
           </p>
         </div>
       </div>
-    </Step>
+    </Slide>
 
-    <!-- ── STEP 4: Francesca — la cliente storica ────────────────── -->
-    <Step id="step-francesca" bg="secondary" align="center">
-      <div class="max-w-4xl mx-auto w-full grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center text-left">
-        <div class="md:order-1 order-2">
-          <p class="text-xs font-medium tracking-[0.1em] uppercase text-[var(--accent-secondary)] mb-4" data-reveal>La cliente storica</p>
-          <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed mb-4" data-reveal data-reveal-delay="0.1">
+    <!-- ── SLIDE 3: Francesca — la cliente storica ───────────────── -->
+    <Slide id="slide-francesca" bg="secondary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1fr_0.8fr] gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>LA CLIENTE STORICA</p>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-4" style="font-size: clamp(2.25rem, 4.4vw, 3.75rem);" data-reveal data-reveal-delay="0.1">Francesca, 52</h2>
+          <p class="text-[var(--ink-tertiary)] mb-6" style="font-size: clamp(1rem,1.2vw,1.15rem);" data-reveal data-reveal-delay="0.16">Avvocata · Bologna</p>
+          <p class="text-[clamp(1.1rem,1.5vw,1.4rem)] text-[var(--ink-secondary)] leading-relaxed mb-4" data-reveal data-reveal-delay="0.2">
             Il suo primo Max Mara l'ha comprato a trent'anni — un Manuela che porta ancora oggi. Da allora il brand è parte della sua identità.
           </p>
-          <p class="text-[clamp(1rem,1vw+0.75rem,1.25rem)] text-[var(--ink-secondary)] leading-relaxed" data-reveal data-reveal-delay="0.2">
+          <p class="text-[clamp(1.1rem,1.5vw,1.4rem)] text-[var(--ink-secondary)] leading-relaxed" data-reveal data-reveal-delay="0.28">
             Non va convinta: va fatta sentire speciale. Vuole essere riconosciuta, ricevere le novità prima degli altri, vivere il brand come una relazione.
           </p>
         </div>
-        <div class="flex md:flex-col items-center md:items-end gap-4 md:order-2 order-1" data-reveal>
-          <div class="w-28 h-28 rounded-full overflow-hidden relative flex-shrink-0 shadow-md bg-[var(--accent-secondary)]">
-            <MediaSlot {...mediaProps('francesca-atmosfera')} fill />
-          </div>
-          <div class="md:text-right">
-            <p class="font-[family-name:var(--font-display)] text-2xl font-light text-[var(--ink-primary)]">Francesca, 52</p>
-            <p class="text-xs text-[var(--ink-tertiary)]">Avvocata · Bologna</p>
+        <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.15">
+          <div class="relative h-full max-h-[64vh] aspect-[4/5] rounded-lg overflow-hidden shadow-xl bg-[var(--accent-secondary)] mx-auto">
+            <MediaSlot {...mediaProps('francesca-atmosfera')} fill noText="0,0,0,0" />
           </div>
         </div>
       </div>
-    </Step>
+    </Slide>
 
-    <!-- ── STEP 5: Riconoscere entrambe (clienteling) ────────────── -->
-    <Step id="step-recognition" bg="primary" align="center">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-light leading-[1.1] text-[var(--ink-primary)] mb-8 text-center" data-reveal>
-          Un'unica piattaforma le conosce entrambe
-        </h2>
+    <!-- ── SLIDE 4: Riconoscere entrambe (clienteling) ───────────── -->
+    <Slide id="slide-recognition" bg="primary" align="center">
+      <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2.1rem, 4vw, 3.6rem);" data-reveal>
+        Un'unica piattaforma le conosce entrambe
+      </h2>
 
-        <div class="relative max-w-sm mx-auto p-6 rounded-sm border border-[var(--line-default)] bg-[var(--surface-secondary)] overflow-hidden text-left" data-clienteling>
-          <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
-          <p class="text-xs font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)] mb-4">Profilo unificato — cross-canale</p>
-          <ul class="space-y-2.5 text-sm text-[var(--ink-secondary)]">
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Giulia · scopre da social, compra online</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Francesca · fedele da 20 anni, acquista in store</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Stessa vista: preferenze, storia, valore nel tempo</li>
-            <li class="reveal-attr flex items-center gap-2"><span class="text-[var(--accent-primary)]">›</span> Ogni canale parla la lingua giusta per ciascuna</li>
-          </ul>
-        </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-8 max-w-md mx-auto text-center" data-reveal data-reveal-delay="0.2">
-          Acquisire giovani è necessario; far crescere il loro valore nel tempo è ciò che cambia il business.
-        </p>
+      <div class="relative w-full max-w-lg mx-auto flex-shrink-0 p-4 rounded-lg border border-[var(--line-default)] bg-[var(--surface-card)] shadow-xl overflow-hidden text-left" data-clienteling data-reveal data-reveal-delay="0.2">
+        <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
+        <p class="text-[0.78rem] font-medium tracking-[0.08em] uppercase text-[var(--ink-tertiary)] mb-4">Profilo unificato — cross-canale</p>
+        <ul class="space-y-1.5 text-[clamp(1rem,1.25vw,1.2rem)] text-[var(--ink-secondary)]">
+          {recognition.map((r) => (
+            <li class="reveal-attr flex items-center gap-2.5"><span class="text-[var(--accent-primary)]">›</span> {r}</li>
+          ))}
+        </ul>
       </div>
-    </Step>
 
-    <!-- ── STEP 6: Payoff — metrica + CTA ────────────────────────── -->
-    <Step id="step-payoff" bg="brand" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
-          <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
-        </p>
-        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
-          il valore di una cliente emotivamente connessa — la ragione per cui unire le generazioni conta
-        </p>
-        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
-          Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
-        </p>
+      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-tertiary)] mt-4 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.4">
+        Acquisire giovani è necessario; far crescere il loro valore nel tempo è ciò che cambia il business.
+      </p>
+    </Slide>
 
-        <div class="mt-16" data-reveal data-reveal-delay="0.5">
-          <a
-            href={href(base, '/chiusura')}
-            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          >
-            Il prossimo passo
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
+    <!-- ── SLIDE 5: Payoff — metrica + CTA ───────────────────────── -->
+    <Slide id="slide-payoff" bg="brand" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
+      <p data-display class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-6" style="font-size: clamp(4.5rem, 12vw, 11rem);">
+        <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
+      </p>
+      <p class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-5 max-w-3xl" data-reveal data-reveal-delay="0.2">
+        il valore di una cliente emotivamente connessa — la ragione per cui unire le generazioni conta
+      </p>
+      <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-primary)]/70 mb-12 max-w-2xl" data-reveal data-reveal-delay="0.28">
+        Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
+      </p>
+
+      <div data-reveal data-reveal-delay="0.5">
+        <a
+          href={href(base, '/chiusura')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Il prossimo passo
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
-    </Step>
-  </StepContainer>
+    </Slide>
+
+  </DeckContainer>
 </BaseLayout>
-
-<style>
-  @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-bounce-subtle { animation: none; }
-    .scroll-hint { display: none; }
-  }
-</style>
-
-<script>
-  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
-  function setup() {
-    const container = document.querySelector<HTMLElement>('[data-step-container]');
-    if (container) initAllAnimations(container);
-  }
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>
