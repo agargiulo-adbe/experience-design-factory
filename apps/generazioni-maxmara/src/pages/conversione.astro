@@ -22,19 +22,19 @@ const navItems = [
   { label: 'Persona', href: '/persona' },
 ];
 
-// Conversational discovery — Brand Concierge dialogue
+// Conversational discovery — the Brand Concierge is the Adobe AI assistant (not a human).
 const chat = [
-  { side: 'in', who: 'Giulia', text: 'Ho messo nel carrello la Whitney Bag, ma sto ancora pensando…' },
-  { side: 'out', who: 'Concierge', text: 'Ottima scelta. È in pelle martellata, lavorata a mano: ti racconto la storia del modello?' },
-  { side: 'in', who: 'Giulia', text: 'Sì. E sta bene con un look da ufficio?' },
-  { side: 'out', who: 'Concierge', text: 'Perfetta dal lunedì al weekend. Vuoi vederla abbinata, o provarla in Corso Venezia?' },
+  { side: 'in', who: 'Giulia', ai: false, text: 'Ho messo nel carrello la Whitney Bag, ma sto ancora pensando…' },
+  { side: 'out', who: 'Assistente Max Mara', ai: true, text: 'Pelle martellata, lavorata a mano. Se ti va, ti racconto la storia del modello.' },
+  { side: 'in', who: 'Giulia', ai: false, text: 'Sì. E sta bene con un look da ufficio?' },
+  { side: 'out', who: 'Assistente Max Mara', ai: true, text: 'Dal lunedì al weekend. Se vuoi, in Corso Venezia te la tengono da parte.' },
 ];
 
 const adobe = [
   { code: 'JO', name: 'Journey Optimizer', claim: 'Orchestrazione in tempo reale: il messaggio giusto, nel momento giusto, sul canale giusto — trigger da browse e carrello abbandonato' },
   { code: 'Tgt', name: 'Adobe Target', claim: 'Raccomandazioni personalizzate basate sul comportamento reale, non su regole statiche' },
   { code: 'Com', name: 'Adobe Commerce', claim: 'Checkout seamless cross-device: il carrello la segue dal mobile al desktop al negozio' },
-  { code: 'BC', name: 'Brand Concierge', claim: 'Assistenza conversazionale AI: consigli, taglie, abbinamenti — come avere una personal shopper sempre disponibile' },
+  { code: 'BC', name: 'Brand Concierge', claim: 'L\'assistente NON è un umano: è l\'AI conversazionale di Adobe (Product Advisor Agent su Agent Orchestrator), addestrata sul catalogo e sulla voce del brand — consigli, taglie, abbinamenti, sul canale, in quel momento' },
 ];
 ---
 <BaseLayout title="Conversione" description="Dal desiderio all'acquisto: rimuovere ogni attrito nel percorso verso la prima transazione.">
@@ -52,25 +52,44 @@ const adobe = [
 
     <!-- ── SLIDE 1: Scoperta conversazionale (il meccanismo) ─────── -->
     <Slide id="slide-converse" bg="primary" align="center">
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL MECCANISMO</p>
-      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>IL MECCANISMO</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-4" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
         Una conversazione, non una pressione
       </h2>
 
+      <!-- Context: canale · momento + natura AI esplicita -->
+      <div class="max-w-3xl w-full mx-auto mb-3 flex items-center justify-center gap-2.5 flex-wrap" data-reveal data-reveal-delay="0.15">
+        <span class="inline-flex items-center gap-2 text-[0.82rem] text-[var(--ink-secondary)] px-3.5 py-1 rounded-full bg-[var(--surface-secondary)] border border-[var(--line-subtle)]">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 19h2"/></svg>
+          App Max Mara · mentre Giulia esita sul carrello
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-[0.8rem] font-medium text-[var(--accent-primary)] px-3 py-1 rounded-full bg-[var(--accent-primary)]/12">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6z"/></svg>
+          Assistente AI, non un umano
+        </span>
+      </div>
+
       <!-- Converse: chat bubbles appear one by one (deck-animated) -->
-      <div class="flex flex-col gap-2.5 max-w-2xl w-full mx-auto" data-converse>
+      <div class="flex flex-col gap-2 max-w-3xl w-full mx-auto" data-converse>
         {chat.map((m) => (
           <div
             class:list={[
-              "chat-bubble max-w-[82%] px-5 py-2.5 rounded-2xl text-left",
+              "chat-bubble max-w-[80%] px-5 py-2 rounded-2xl text-left",
               m.side === 'in'
                 ? "self-end bg-[var(--accent-primary)] text-white rounded-br-sm"
                 : "self-start bg-[var(--surface-secondary)] text-[var(--ink-primary)] border border-[var(--line-subtle)] rounded-bl-sm",
             ]}
             data-side={m.side}
           >
-            <span class:list={["block text-[0.64rem] tracking-[0.08em] uppercase mb-0.5", m.side === 'in' ? "text-white/70" : "text-[var(--ink-tertiary)]"]}>{m.who}</span>
-            <p class="text-[clamp(0.9rem,1vw,1.1rem)] leading-snug">{m.text}</p>
+            <span class:list={["flex items-center gap-1.5 text-[0.64rem] tracking-[0.08em] uppercase mb-0.5", m.side === 'in' ? "text-white/70" : "text-[var(--ink-tertiary)]"]}>
+              {m.who}
+              {m.ai && (
+                <span class="inline-flex items-center gap-1 normal-case tracking-normal text-[var(--accent-primary)] font-semibold">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6z"/></svg>AI
+                </span>
+              )}
+            </span>
+            <p class="text-[clamp(0.92rem,0.98vw,1.08rem)] leading-snug">{m.text}</p>
           </div>
         ))}
       </div>
@@ -170,7 +189,7 @@ const adobe = [
           Il messaggio giusto, nel momento giusto, sul canale giusto — dal browse al carrello abbandonato.
         </p>
         <p class="text-[clamp(1.35rem,2vw,2rem)] text-[var(--ink-inverse)] leading-snug border-l-2 border-[var(--accent-secondary)] pl-6">
-          Checkout seamless cross-device: il carrello la segue dal mobile al desktop al negozio.
+          L'assistente che risponde è AI, non un umano: parla la lingua del brand, addestrato sul catalogo.
         </p>
       </div>
 
