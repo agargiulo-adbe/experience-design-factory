@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '@edf/core/layouts/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
@@ -10,6 +11,16 @@ import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Acquisizione', href: '/acquisizione' },
+  { label: 'Engagement', href: '/engagement' },
+  { label: 'Conversione', href: '/conversione' },
+  { label: 'Loyalty', href: '/loyalty' },
+  { label: 'Il Motore', href: '/motore-adobe' },
+  { label: 'Persona', href: '/persona' },
+];
 
 // Generic catalogue tiles — the matched ones are relevant to Giulia.
 const contenuti = [
@@ -28,6 +39,10 @@ const adobe = [
 ];
 ---
 <BaseLayout title="Engagement" description="Dalla scoperta alla relazione: come nutrire il legame con le clienti Max Mara.">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
+  </div>
+
   <DeckContainer nextHref={href(base, '/conversione')}>
 
     <!-- ── SLIDE 0: Apertura fase ────────────────────────────────── -->

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '@edf/core/layouts/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverSlide from '@edf/core/blocks/CoverSlide.astro';
@@ -12,6 +13,16 @@ import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const navItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Acquisizione', href: '/acquisizione' },
+  { label: 'Engagement', href: '/engagement' },
+  { label: 'Conversione', href: '/conversione' },
+  { label: 'Loyalty', href: '/loyalty' },
+  { label: 'Il Motore', href: '/motore-adobe' },
+  { label: 'Persona', href: '/persona' },
+];
 
 // Faint persistent "data lake" field behind the profiles (visible in every state,
 // so the data → people metaphor reads even when the convergence isn't playing).
@@ -31,6 +42,10 @@ const dots = Array.from({ length: 56 }).map((_, i) => {
 });
 ---
 <BaseLayout title="Acquisizione" description="Una relazione che attraversa il tempo: come Max Mara incontra Giulia, la nuova generazione di clienti.">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
+  </div>
+
   <DeckContainer nextHref={href(base, '/engagement')}>
 
     <!-- ── SLIDE 0: Cover cinematografica ────────────────────────── -->
