@@ -1,6 +1,43 @@
 # Run Report — Experience Design Factory
 
-## Status: Round unificazione — copertina unica, nav ovunque, slide-manifesto, Home senza pain, Francesca ricorrente non-volto, immagini arricchite. Tutto live, audit 0 FAIL — per revisione
+## Status: Round formato+scene — TUTTE le 8 rotte keynote (nessuna in scroll) + scene interattive credibili (canale·momento·AI Adobe). Live, audit 0 FAIL — per revisione
+
+---
+
+## Round formato + scene credibili (PART A + PART B)
+
+**Live:** https://agargiulo-adbe.github.io/experience-design-factory/ — tutte e 8 le rotte 200, **tutte keynote, nessuna in scroll**.
+
+### PART A — unificazione formato: tutto keynote
+Home, Il Motore, Persona (e Chiusura) erano ancora scroll-snap. Ora sono **deck keynote** come le 4 fasi:
+| Rotta | Slide | Commit |
+|---|---|---|
+| Engine | handler deck `[data-thread]` + `[data-stack-assemble]` | `feat(core)` |
+| **Home** | cover · **manifesto** (il filo Giulia→4 momenti→Francesca) · invito (+306% + CTA) | `feat(home)` |
+| **Persona** | apertura · filo(thread) · Giulia(ritratto) · Francesca(atmosfera) · clienteling · payoff | `feat(persona)` |
+| **Il Motore** | apertura · data-lake · **stack-assemble** (10 prodotti→core AEP) · stack fase-per-fase · pulse · payoff | `feat(motore)` |
+| **Chiusura** | apertura · sintesi · tre numeri · la promessa · payoff (CTA) | `feat(chiusura)` |
+
+Nodo della slide-manifesto sciolto: cover + manifesto = due slide dello stesso deck Home (si avanza con le frecce, niente scroll). Copy riusato; blocchi densi **ridistribuiti** per stare nel frame (prodotti inline, ring in vh-clamp) — **mai tagliato il contenuto**. `deck-audit` esteso a tutte e 8 le rotte → **0 FAIL** a 1920/1440/1280.
+
+### PART B — scene interattive credibili e contestualizzate
+La chat di Conversione (segnalata dal cliente: non credibile, canale/momento poco chiari, sembrava un umano) ora è esplicita:
+- **Etichetta di contesto**: «App Max Mara · mentre Giulia esita sul carrello» + badge «Assistente AI, non un umano».
+- **AI Adobe esplicita**: l'assistente non è «Concierge» generico ma «Assistente Max Mara» con badge AI sulle bolle; nel **"Scopri come"** è nominato **Brand Concierge / Product Advisor Agent su Agent Orchestrator**, AI conversazionale addestrata sul catalogo e sulla voce del brand — chiude il debito noto su questa scena.
+- **Dialogo credibile**: breve, naturale, di servizio (storia del prodotto + opzione boutique Corso Venezia), non pubblicitario.
+- Contesto anche su Engagement (eyebrow «SITO MAX MARA · HOMEPAGE, AL RITORNO DI GIULIA») e Loyalty (clienteling «Boutique Montenapoleone · ore 16:20»).
+
+### Gate finale
+- `audit:deck` → **0 FAIL su tutte e 8 le rotte keynote** a 1920/1440/1280, "Scopri come" da espanso. Le 4 fasi blindate non regredite.
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi.
+- Redeploy verde; **8 rotte live 200, tutte `data-deck`, nessun `data-step-container` (nessuna in scroll)**; AI labeling in prod.
+
+### Stato dei debiti noti
+1. **Francesca** — ✅ risolto (atmosferica non-volto + ricorrente).
+2. **Statement backstage / natura AI** — ✅ **risolto per Conversione** (Brand Concierge / Agent Orchestrator nominati, AI esplicita). Resta da rifinire insieme il fraseggio degli statement di Engagement/Loyalty (sintesi dai claim).
+3. **`conversione-pelle`** — texture di pelle, non la borsa letterale (caption porta la specificità) — da validare.
+
+➡️ Factory Console NON toccata (capitolo separato).
 
 ---
 
