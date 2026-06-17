@@ -716,6 +716,28 @@ export function prepareSlide(slide: HTMLElement) {
       if (scan) { scan.style.opacity = '0'; scan.style.top = '0%'; }
     }
   }
+  // Thread (two generations, a drawn filo) — deck variant.
+  const thread = slide.querySelector<HTMLElement>('[data-thread]');
+  if (thread) {
+    const nodes = thread.querySelectorAll<HTMLElement>('.thread-node');
+    const path = thread.querySelector<SVGPathElement>('.thread-path');
+    if (REDUCED_MOTION) {
+      nodes.forEach(n => { n.style.opacity = '1'; n.style.transform = 'none'; });
+      if (path) path.style.strokeDashoffset = '0';
+    } else {
+      nodes.forEach(n => { n.style.opacity = '0'; n.style.transform = 'scale(0.6)'; });
+      if (path) { const len = path.getTotalLength?.() || 400; path.style.strokeDasharray = `${len}`; path.style.strokeDashoffset = `${len}`; }
+    }
+  }
+  // Stack assemble (Adobe products → one core) — deck variant. Keep the CSS
+  // translate(-50%,-50%) anchor; only opacity is pre-set (play() positions/animates).
+  const stack = slide.querySelector<HTMLElement>('[data-stack-assemble]');
+  if (stack) {
+    const core = stack.querySelector<HTMLElement>('.stack-core');
+    const products = stack.querySelectorAll<HTMLElement>('.stack-product');
+    if (core) core.style.opacity = REDUCED_MOTION ? '1' : '0';
+    products.forEach(p => { p.style.opacity = REDUCED_MOTION ? '1' : '0'; });
+  }
   // Atmospheric parallax: over-scaled so the drift never reveals an edge.
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
     el.style.transform = REDUCED_MOTION ? 'scale(1.04)' : 'scale(1.06) translateX(16px)';
@@ -846,6 +868,29 @@ export async function playSlide(slide: HTMLElement) {
     const tl = gsap.timeline({ delay: 0.2 });
     if (scan) tl.to(scan, { opacity: 1, duration: 0.2 }).to(scan, { top: '100%', duration: 1.1, ease: 'power1.inOut' }).to(scan, { opacity: 0, duration: 0.3 }, '-=0.2');
     tl.to(attrs, { opacity: 1, x: 0, duration: 0.5, stagger: 0.18, ease: 'power3.out' }, scan ? '-=1.2' : 0);
+  }
+  // Thread — first node, the filo draws, second node
+  const thread = slide.querySelector<HTMLElement>('[data-thread]');
+  if (thread) {
+    const nodes = Array.from(thread.querySelectorAll<HTMLElement>('.thread-node'));
+    const path = thread.querySelector('.thread-path');
+    if (path instanceof SVGElement) { const len = (path as SVGPathElement).getTotalLength?.() || 400; gsap.set(path, { strokeDasharray: len, strokeDashoffset: len }); }
+    nodes.forEach(n => gsap.set(n, { opacity: 0, scale: 0.6 }));
+    const tl = gsap.timeline({ delay: 0.2 });
+    if (nodes[0]) tl.to(nodes[0], { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' });
+    if (path instanceof SVGElement) tl.to(path, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' });
+    if (nodes[1]) tl.to(nodes[1], { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, '-=0.2');
+  }
+  // Stack assemble — products fly in from data-from-x/y to orbit the core
+  const stack = slide.querySelector<HTMLElement>('[data-stack-assemble]');
+  if (stack) {
+    const core = stack.querySelector<HTMLElement>('.stack-core');
+    const products = Array.from(stack.querySelectorAll<HTMLElement>('.stack-product'));
+    if (core) gsap.set(core, { opacity: 0, scale: 0.4 });
+    products.forEach(p => { const fx = parseFloat(p.dataset.fromX || '0'), fy = parseFloat(p.dataset.fromY || '0'); gsap.set(p, { opacity: 0, x: fx, y: fy, scale: 0.7 }); });
+    const tl = gsap.timeline({ delay: 0.2 });
+    if (core) tl.to(core, { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.6)' });
+    tl.to(products, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, '-=0.3');
   }
   // Atmospheric parallax: a quiet drift on activation (stays over-scaled to cover).
   slide.querySelectorAll<HTMLElement>('[data-parallax]').forEach((el) => {
