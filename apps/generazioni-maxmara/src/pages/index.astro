@@ -5,6 +5,7 @@ import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
 import Step from '@edf/core/blocks/immersive/Step.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
@@ -26,6 +27,14 @@ const fasi = [
   { n: '02', label: 'Engagement', desc: 'Dalla scoperta alla relazione', path: '/engagement' },
   { n: '03', label: 'Conversione', desc: 'Dal desiderio all\'acquisto', path: '/conversione' },
   { n: '04', label: 'Loyalty', desc: 'Dal valore al valore nel tempo', path: '/loyalty' },
+];
+
+// Slide-manifesto: i quattro momenti come archi di un'unica relazione.
+const tappe = [
+  { label: 'Acquisizione', essence: 'Incontrare' },
+  { label: 'Engagement', essence: 'Conoscersi' },
+  { label: 'Conversione', essence: 'Scegliere' },
+  { label: 'Loyalty', essence: 'Restare' },
 ];
 ---
 <BaseLayout title="Generazioni" description="Incontrare una nuova generazione, onorare chi sceglie Max Mara da sempre. Una relazione che attraversa il tempo.">
@@ -50,6 +59,50 @@ const fasi = [
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
           <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+      </div>
+    </Step>
+
+    <!-- ── STEP 1b: SLIDE-MANIFESTO — l'intero percorso in una schermata ─ -->
+    <Step id="step-manifesto" bg="primary" align="center">
+      <SlideBackdrop {...mediaProps('bg-cashmere')} imageClass="opacity-15" scrim="bg-[var(--surface-primary)]/82" />
+      <div class="relative z-10 max-w-5xl mx-auto w-full">
+        <p class="text-xs font-medium tracking-[0.14em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>Il percorso</p>
+        <h2 class="font-[family-name:var(--font-display)] font-light leading-[1.12] text-[var(--ink-primary)] mb-5" style="font-size: var(--text-display-md);" data-reveal data-reveal-delay="0.1">
+          Una sola relazione, quattro momenti
+        </h2>
+        <p class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-16" style="font-size: var(--text-body-lg);" data-reveal data-reveal-delay="0.2">
+          Dall'incontro alla fedeltà: accogliere una nuova generazione e onorare chi sceglie Max Mara da sempre — un solo filo che attraversa il tempo.
+        </p>
+
+        <!-- Il filo: da Giulia (la nuova) attraverso le quattro fasi, fino a Francesca (chi resta) -->
+        <div class="relative" data-reveal data-reveal-delay="0.3">
+          <div class="hidden md:block absolute top-8 left-[10%] right-[10%] h-px bg-[var(--accent-primary)]/35" aria-hidden="true"></div>
+          <div class="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-y-8 gap-x-4 items-start">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+                <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
+              </div>
+              <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)]">Giulia, 29</span>
+              <span class="text-[0.78rem] text-[var(--ink-tertiary)]">la nuova cliente</span>
+            </div>
+
+            {tappe.map((t) => (
+              <div class="flex flex-col items-center gap-2 text-center pt-3.5">
+                <span class="w-4 h-4 rounded-full bg-[var(--accent-primary)] ring-4 ring-[var(--surface-primary)]" aria-hidden="true"></span>
+                <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)] mt-1.5">{t.label}</span>
+                <span class="text-[0.78rem] text-[var(--ink-tertiary)]">{t.essence}</span>
+              </div>
+            ))}
+
+            <div class="flex flex-col items-center gap-2 text-center">
+              <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-secondary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+                <MediaSlot {...mediaProps('francesca-atmosfera')} fill noText="0,0,0,0" />
+              </div>
+              <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)]">Francesca, 52</span>
+              <span class="text-[0.78rem] text-[var(--ink-tertiary)]">la cliente storica</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Step>
 

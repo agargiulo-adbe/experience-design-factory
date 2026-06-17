@@ -109,6 +109,17 @@ export const assets: AssetSlot[] = [
     alt: 'Dettaglio editoriale: pelle pregiata, lavorazione artigianale',
   },
 
+  // ── Francesca (cliente storica) — presenza atmosferica, MAI un volto ──
+  {
+    id: 'francesca-atmosfera',
+    type: 'stock',
+    query: 'silk scarf folds elegant warm neutral still life',
+    aspect: '4:5',
+    width: 1200,
+    grade: 'editorial',
+    alt: 'Dettaglio sartoriale: la cura che dura nel tempo',
+  },
+
   // ── Loyalty ───────────────────────────────────────────────────────
   {
     id: 'loyalty-boutique',
