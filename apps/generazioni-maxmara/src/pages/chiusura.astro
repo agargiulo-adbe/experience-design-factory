@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '@edf/core/layouts/Navigation.astro';
-import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
-import Step from '@edf/core/blocks/immersive/Step.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Acquisizione', href: '/acquisizione' },
@@ -21,10 +21,16 @@ const navItems = [
 ];
 
 const fasi = [
-  { n: '01', label: 'Acquisizione', desc: 'Raggiungere le nuove generazioni con contenuti on-brand a scala', path: '/acquisizione' },
+  { n: '01', label: 'Acquisizione', desc: 'Raggiungere le nuove generazioni con contenuti on-brand', path: '/acquisizione' },
   { n: '02', label: 'Engagement', desc: 'Personalizzare ogni touchpoint: da curiosità a familiarità', path: '/engagement' },
   { n: '03', label: 'Conversione', desc: 'Accompagnare con discrezione, dall\'online al negozio, senza attrito', path: '/conversione' },
   { n: '04', label: 'Loyalty', desc: 'Riconoscere ovunque, anticipare, costruire valore nel tempo', path: '/loyalty' },
+];
+
+const numeri = [
+  { value: '306', prefix: '+', suffix: '%', label: 'LTV delle clienti connesse emotivamente' },
+  { value: '75', prefix: '', suffix: '%', label: 'della spesa luxury da Millennial e Gen Z' },
+  { value: '3', prefix: '', suffix: '×', label: 'conversione con esperienza omnicanale coerente' },
 ];
 ---
 <BaseLayout title="Il prossimo passo" description="Dalla visione all'azione: il prossimo passo per Max Mara con Adobe.">
@@ -32,137 +38,84 @@ const fasi = [
     <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
   </div>
 
-  <StepContainer>
-    <!-- ── STEP 1: Apertura ──────────────────────────────────────── -->
-    <Step id="step-apertura" bg="secondary" align="center">
-      <SlideBackdrop {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--surface-secondary)]/72" />
-      <div class="relative z-10 max-w-3xl mx-auto">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>Il prossimo passo</p>
-        <h1 class="font-[family-name:var(--font-display)] text-[clamp(2.5rem,5vw+1rem,4.5rem)] font-light leading-[1.05] tracking-tight text-[var(--ink-primary)] mb-6" data-reveal data-reveal-delay="0.2">
-          Dalla visione all'azione
-        </h1>
-        <p class="text-[clamp(1.125rem,1vw+0.875rem,1.375rem)] text-[var(--ink-secondary)] leading-relaxed max-w-xl mx-auto" data-reveal data-reveal-delay="0.3">
-          Il data lake diventa profili. I profili diventano relazioni. Le relazioni diventano valore che dura generazioni.
-        </p>
-      </div>
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
-        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
-          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </Step>
+  <DeckContainer nextHref={href(base, '/')}>
 
-    <!-- ── STEP 2: Cosa abbiamo visto — le quattro fasi ──────────── -->
-    <Step id="step-sintesi" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>La sintesi</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Un percorso end-to-end, un unico tessuto
-        </h2>
+    <!-- ── SLIDE 0: Apertura ─────────────────────────────────────── -->
+    <Slide id="slide-apertura" bg="secondary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--surface-secondary)]/72" />
+      <CoverHero eyebrow="IL PROSSIMO PASSO" title="Dalla visione all'azione" lead="Il data lake diventa profili. I profili diventano relazioni. Le relazioni diventano valore che dura generazioni." />
+    </Slide>
 
-        <div class="grid sm:grid-cols-2 gap-4 text-left" data-stagger="0.15">
-          {fasi.map((f) => (
-            <a href={href(base, f.path)} class="group flex gap-4 p-5 rounded-sm border border-[var(--line-subtle)] bg-[var(--surface-secondary)] hover:border-[var(--accent-primary)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-2">
-              <span class="font-[family-name:var(--font-display)] text-2xl font-light text-[var(--accent-primary)] flex-shrink-0">{f.n}</span>
-              <div>
-                <p class="text-sm font-medium text-[var(--ink-primary)] mb-1">{f.label}</p>
-                <p class="text-xs text-[var(--ink-tertiary)] leading-relaxed">{f.desc}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-    </Step>
+    <!-- ── SLIDE 1: La sintesi — le quattro fasi ─────────────────── -->
+    <Slide id="slide-sintesi" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>LA SINTESI</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-10" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Un percorso end-to-end, un unico tessuto
+      </h2>
 
-    <!-- ── STEP 3: I numeri che contano (count-up trio) ──────────── -->
-    <Step id="step-numeri" bg="inverse" align="center">
-      <div class="max-w-4xl mx-auto w-full text-[var(--ink-inverse)]">
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] mb-14 text-center" data-reveal>
-          Tre numeri, una direzione
-        </h2>
-        <div class="grid sm:grid-cols-3 gap-10 md:gap-8 text-center">
-          <div>
-            <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-secondary)] mb-3" style="font-size: clamp(3rem, 8vw, 5rem);">
-              <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
-            </p>
-            <p class="text-sm text-[var(--color-grigio-400)] leading-snug">LTV delle clienti connesse emotivamente</p>
-          </div>
-          <div>
-            <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-secondary)] mb-3" style="font-size: clamp(3rem, 8vw, 5rem);">
-              <span data-count-up="75" data-count-suffix="%">0%</span>
-            </p>
-            <p class="text-sm text-[var(--color-grigio-400)] leading-snug">della spesa luxury da Millennial e Gen Z</p>
-          </div>
-          <div>
-            <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-secondary)] mb-3" style="font-size: clamp(3rem, 8vw, 5rem);">
-              <span data-count-up="3" data-count-suffix="×">0×</span>
-            </p>
-            <p class="text-sm text-[var(--color-grigio-400)] leading-snug">conversione con esperienza omnicanale coerente</p>
-          </div>
-        </div>
-      </div>
-    </Step>
-
-    <!-- ── STEP 4: La promessa ───────────────────────────────────── -->
-    <Step id="step-promessa" bg="primary" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.75rem)] font-light leading-[1.3] text-[var(--ink-primary)]">
-          <span class="block" data-reveal>Ogni generazione merita un'esperienza che la riconosca.</span>
-          <span class="block text-[var(--accent-primary)]" data-reveal data-reveal-delay="0.25">Ogni relazione merita la tecnologia giusta per durare.</span>
-        </p>
-      </div>
-    </Step>
-
-    <!-- ── STEP 5: Payoff — CTA finale ───────────────────────────── -->
-    <Step id="step-payoff" bg="brand" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw+0.5rem,3.5rem)] font-light leading-[1.1] text-white mb-6" data-reveal>
-          Costruiamo insieme il prossimo capitolo
-        </h2>
-        <p class="text-lg text-white/85 leading-relaxed mb-10 max-w-xl mx-auto" data-reveal data-reveal-delay="0.2">
-          Il tessuto connettivo è pronto. Serve solo il primo passo. Il momento di iniziare è adesso.
-        </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal data-reveal-delay="0.4">
-          <a
-            href="mailto:experience-design@adobe.com"
-            class="inline-flex items-center gap-2 px-10 py-4 text-sm font-medium tracking-wide uppercase bg-white text-[var(--accent-primary)] hover:bg-white/90 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          >
-            Parliamone
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left w-full max-w-5xl mx-auto" data-stagger="0.12">
+        {fasi.map((f) => (
+          <a href={href(base, f.path)} class="group flex flex-col gap-2 p-5 rounded-lg border border-[var(--line-subtle)] bg-[var(--surface-secondary)] hover:border-[var(--accent-primary)] transition-colors">
+            <span class="font-[family-name:var(--font-display)] text-[clamp(1.6rem,2vw,2.1rem)] font-light text-[var(--accent-primary)]">{f.n}</span>
+            <span class="text-[clamp(1.05rem,1.3vw,1.25rem)] font-medium text-[var(--ink-primary)]">{f.label}</span>
+            <span class="text-[clamp(0.92rem,1.05vw,1.05rem)] text-[var(--ink-tertiary)] leading-snug">{f.desc}</span>
           </a>
-          <a
-            href={href(base, '/')}
-            class="inline-flex items-center gap-2 px-8 py-4 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white/10 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          >
-            Rivedi il percorso
-          </a>
-        </div>
+        ))}
       </div>
-    </Step>
-  </StepContainer>
+    </Slide>
+
+    <!-- ── SLIDE 2: I numeri che contano ─────────────────────────── -->
+    <Slide id="slide-numeri" bg="inverse" align="center">
+      <h2 class="slide-title text-[var(--ink-inverse)] mb-24" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal>
+        Tre numeri, una direzione
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-10 md:gap-8 text-center w-full max-w-5xl mx-auto">
+        {numeri.map((n) => (
+          <div>
+            <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-secondary)] mb-4" style="font-size: clamp(4rem, 9vw, 7.5rem);">
+              <span data-count-up={n.value} data-count-prefix={n.prefix} data-count-suffix={n.suffix}>{n.prefix}0{n.suffix}</span>
+            </p>
+            <p class="text-[clamp(1rem,1.2vw,1.2rem)] text-[var(--color-grigio-300)] leading-snug">{n.label}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: La promessa ──────────────────────────────────── -->
+    <Slide id="slide-promessa" bg="primary" align="center">
+      <p class="font-[family-name:var(--font-display)] font-light leading-[1.25] text-[var(--ink-primary)] max-w-4xl mx-auto" style="font-size: clamp(2.2rem, 4.2vw, 4rem);">
+        <span class="block" data-reveal>Ogni generazione merita un'esperienza che la riconosca.</span>
+        <span class="block text-[var(--accent-primary)] mt-6" data-reveal data-reveal-delay="0.25">Ogni relazione merita la tecnologia giusta per durare.</span>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 4: Payoff — CTA finale ──────────────────────────── -->
+    <Slide id="slide-payoff" bg="brand" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
+      <h2 class="slide-title text-[var(--ink-primary)] mb-6 max-w-4xl" style="font-size: clamp(2.25rem, 4.5vw, 4rem);" data-reveal>
+        Costruiamo insieme il prossimo capitolo
+      </h2>
+      <p class="text-[clamp(1.2rem,1.7vw,1.65rem)] text-[var(--ink-primary)]/85 leading-relaxed mb-12 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.2">
+        Il tessuto connettivo è pronto. Serve solo il primo passo. Il momento di iniziare è adesso.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4" data-reveal data-reveal-delay="0.4">
+        <a
+          href="mailto:experience-design@adobe.com"
+          class="inline-flex items-center gap-2 px-10 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-medium tracking-wide bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Parliamone
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a
+          href={href(base, '/')}
+          class="inline-flex items-center gap-2 px-8 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-medium tracking-wide border border-[var(--ink-primary)]/40 text-[var(--ink-primary)] hover:bg-[var(--ink-primary)]/10 transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-2"
+        >
+          Rivedi il percorso
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
 </BaseLayout>
-
-<style>
-  @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-  .animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-bounce-subtle { animation: none; }
-    .scroll-hint { display: none; }
-  }
-</style>
-
-<script>
-  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
-  function setup() {
-    const container = document.querySelector<HTMLElement>('[data-step-container]');
-    if (container) initAllAnimations(container);
-  }
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>
