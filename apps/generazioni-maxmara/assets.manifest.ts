@@ -109,7 +109,29 @@ export const assets: AssetSlot[] = [
     alt: 'Dettaglio editoriale: pelle pregiata, lavorazione artigianale',
   },
 
-  // ── Francesca (cliente storica) — presenza atmosferica, MAI un volto ──
+  // ── Francesca (cliente storica) — ritratto reale, matura ed elegante ──
+  // Sorgente locale (AdobeStock_461205310), graded 'editorial' a mano e croppata
+  // ai due aspect esatti dei box: 1:1 per gli avatar, 4:5 per i ritratti.
+  {
+    id: 'francesca-volto',
+    type: 'stock',
+    query: 'elegant mature woman portrait natural light urban',
+    aspect: '1:1',
+    width: 1600,
+    grade: 'editorial',
+    alt: 'Ritratto ravvicinato di Francesca, 52 anni — la cliente storica',
+  },
+  {
+    id: 'francesca-ritratto',
+    type: 'stock',
+    query: 'elegant mature woman portrait natural light urban',
+    aspect: '4:5',
+    width: 1600,
+    grade: 'editorial',
+    alt: 'Ritratto di Francesca, 52 anni — la cliente storica',
+  },
+  // Slot atmosfera precedente (silk scarf, no-volto): non più referenziato,
+  // lasciato per eventuale riuso. Vedi francesca-volto / francesca-ritratto.
   {
     id: 'francesca-atmosfera',
     type: 'stock',
