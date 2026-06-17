@@ -1,6 +1,39 @@
 # Run Report — Experience Design Factory
 
-## Status: Strada B COMPLETA — tutte e 4 le fasi (Acquisizione + Engagement + Conversione + Loyalty) keynote slide-grade + immagini reali, live, audit 0 FAIL — in revisione finale
+## Status: Round unificazione — copertina unica, nav ovunque, slide-manifesto, Home senza pain, Francesca ricorrente non-volto, immagini arricchite. Tutto live, audit 0 FAIL — per revisione
+
+---
+
+## Round unificazione (6 step, un solo STOP) — sito coeso per il CMO
+
+**Live:** https://agargiulo-adbe.github.io/experience-design-factory/ — tutte e 8 le rotte 200, nessun 404.
+
+| Step | Cosa | Commit |
+|---|---|---|
+| 1 | **Copertina UNICA** `CoverHero` (eyebrow · numerale · titolo display · lead · firma filo), riusata da Home + apertura di tutte e 4 le fasi; `CoverSlide` ora wrapper su `CoverHero` | `feat(core)` |
+| 2 | **Nav coerente OVUNQUE** (deck inclusi; Acquisizione la aveva persa). FS del deck spostato nella barra inferiore → niente collisione (invariante b verde) | `feat(nav)` |
+| 3 | **SLIDE-MANIFESTO** sulla Home dopo la cover: il filo Giulia → 4 momenti → Francesca, in una schermata | `feat(home)` |
+| 4 | **Home senza pain interno**: via "Ringiovanire il target / ciclo di vita"; copy validato quiet-luxury | `fix(home)` |
+| 5A | **Francesca atmosferica non-volto** ovunque (`francesca-atmosfera` satin): data-lake, slide 08, Persona | `feat(francesca)` |
+| 5B | **Francesca ricorrente**: richiamo breve sul payoff di Engagement/Conversione/Loyalty → il finale pesa per DUE persone | `feat(francesca)` |
+| 6 | **Immagini arricchite**: backdrop textile sulle aperture piatte (Chiusura, Il Motore) a costo zero | `feat(images)` |
+
+**Componente nuovo:** `CoverHero.astro` (tipografia self-contained → funziona in `<Slide>` e `<Step>`).
+**Asset nuovo:** `francesca-atmosfera` (satin caldo, **senza volto**, in palette) — scartate 2 candidate (foto whitney ripetitiva).
+
+**Gate finale:**
+- `audit:deck` → **0 FAIL** su acquisizione + engagement + conversione + loyalty a 1920/1440/1280, "Scopri come" da espanso. Nessuna regressione delle 4 fasi blindate (ogni step su componenti condivisi ri-auditato).
+- `pnpm build` (8 pagine) + `pnpm typecheck` (0 errori) verdi · `assets:build` rilanciato · `provenance.json` aggiornato (Giulia/persona-francesca/whitney byte-identical).
+- Redeploy verde; **tutte e 8 le rotte live 200**, `francesca-atmosfera` 200, pain copy assente, nav presente sui deck — **nessun 404**.
+
+### Stato dei debiti noti
+1. **Francesca** — ✅ **RISOLTO**: non più un volto (immagine atmosferica satin) + presenza ricorrente.
+2. **Statement backstage** (le 2 righe sopra "Scopri come" di Eng/Conv/Loyalty) = sintesi/lift dai claim Adobe — ancora da validare insieme.
+3. **`conversione-pelle`** = texture di pelle, non la borsa letterale (caption porta la specificità) — da validare.
+
+> Postura di rifiuto immagini: per `francesca-atmosfera` scartata la foto-whitney ripetitiva → scelto un satin senza volto, in palette. Mai sostituita la faccia di Giulia dove è nominata. Nessun fallback "abbastanza buono".
+
+➡️ Factory Console NON toccata (capitolo separato).
 
 ---
 
