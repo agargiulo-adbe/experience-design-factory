@@ -1,0 +1,54 @@
+---
+/**
+ * CoverHero — the ONE shared cover/apertura grammar, reused identically by the
+ * Home and by the apertura of every phase deck: eyebrow · (optional phase numeral)
+ * · display title · (optional lead) · co-brand sartorial filo (CoBrandSignature).
+ *
+ * Self-contained typography (no dependency on deck-only .slide-* classes) so it
+ * renders the same inside a <Slide> (keynote deck) and inside a <Step> (scroll Home).
+ * Wrapped in [data-cover] so the deck choreographs the filo on activation; on a scroll
+ * page the signature simply renders in its drawn state (reduced-motion-equivalent).
+ */
+import CoBrandSignature from './CoBrandSignature.astro';
+
+interface Props {
+  eyebrow: string;
+  /** Optional large phase numeral (e.g. "02"). */
+  numeral?: string;
+  title: string;
+  lead?: string;
+  /** 'hero' = Home/cinematic (bigger title) · 'phase' = section apertura. */
+  size?: 'hero' | 'phase';
+  /** Text tone for a light vs dark/brand background. */
+  tone?: 'ink' | 'inverse';
+  /** Show the co-brand filo signature (off when a cinematic cover already shows it). */
+  signature?: boolean;
+  class?: string;
+}
+const { eyebrow, numeral, title, lead, size = 'phase', tone = 'ink', signature = true, class: className } = Astro.props;
+
+const ink = tone === 'inverse' ? 'var(--ink-inverse)' : 'var(--ink-primary)';
+const inkSoft = tone === 'inverse' ? 'var(--ink-inverse)' : 'var(--ink-secondary)';
+const titleSize = size === 'hero' ? 'clamp(2.75rem, 6vw, 6rem)' : 'clamp(2.3rem, 5vw, 4.6rem)';
+// Eyebrow: dark-soft on the cinematic/brand cover (reads on cammello), accent on phase aperturas.
+const eyebrowColor = tone === 'inverse'
+  ? 'var(--ink-inverse)'
+  : size === 'hero'
+    ? 'color-mix(in srgb, var(--ink-primary) 72%, transparent)'
+    : 'var(--accent-primary)';
+---
+<div data-cover class:list={["w-full flex flex-col items-center text-center", className]}>
+  <p class="font-medium uppercase mb-7" style={`font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em; color: ${eyebrowColor};`} data-reveal>{eyebrow}</p>
+
+  {numeral && (
+    <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-7" style="font-size: clamp(2.75rem, 5.5vw, 5.5rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">{numeral}</p>
+  )}
+
+  <h1 class="font-[family-name:var(--font-display)] font-light tracking-tight max-w-4xl" style={`font-size: ${titleSize}; line-height: 1.04; color: ${ink};`} data-reveal data-reveal-delay="0.2">{title}</h1>
+
+  {lead && (
+    <p class="leading-relaxed max-w-2xl mx-auto mt-7" style={`font-size: clamp(1.2rem, 1.7vw, 1.6rem); color: ${inkSoft};`} data-reveal data-reveal-delay="0.3">{lead}</p>
+  )}
+
+  {signature && <CoBrandSignature tone={tone === 'inverse' ? 'inverse' : 'ink'} class="mt-12" />}
+</div>
