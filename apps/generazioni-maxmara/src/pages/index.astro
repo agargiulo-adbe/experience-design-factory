@@ -1,17 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '@edf/core/layouts/Navigation.astro';
-import StepContainer from '@edf/core/blocks/immersive/StepContainer.astro';
-import Step from '@edf/core/blocks/immersive/Step.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
-const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Acquisizione', href: '/acquisizione' },
@@ -20,13 +19,6 @@ const navItems = [
   { label: 'Loyalty', href: '/loyalty' },
   { label: 'Il Motore', href: '/motore-adobe' },
   { label: 'Persona', href: '/persona' },
-];
-
-const fasi = [
-  { n: '01', label: 'Acquisizione', desc: 'Incontrare chi ancora non ci conosce', path: '/acquisizione' },
-  { n: '02', label: 'Engagement', desc: 'Dalla scoperta alla relazione', path: '/engagement' },
-  { n: '03', label: 'Conversione', desc: 'Dal desiderio all\'acquisto', path: '/conversione' },
-  { n: '04', label: 'Loyalty', desc: 'Dal valore al valore nel tempo', path: '/loyalty' },
 ];
 
 // Slide-manifesto: i quattro momenti come archi di un'unica relazione.
@@ -42,270 +34,86 @@ const tappe = [
     <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
   </div>
 
-  <StepContainer>
-    <!-- ── STEP 1: Apertura — il manifesto ───────────────────────── -->
-    <Step id="step-apertura" bg="secondary" align="center">
-      <SlideBackdrop {...mediaProps('bg-linen')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/70" />
-      <div class="relative z-10 w-full">
-        <CoverHero
-          size="hero"
-          eyebrow="Max Mara × Adobe"
-          title="Generazioni"
-          lead="Incontrare una nuova generazione, onorare chi sceglie Max Mara da sempre. Una relazione che attraversa il tempo."
-        />
-      </div>
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[var(--ink-tertiary)] opacity-60 scroll-hint" data-reveal data-reveal-delay="0.6">
-        <span class="text-[0.65rem] tracking-[0.15em] uppercase">Scorri</span>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="animate-bounce-subtle" aria-hidden="true">
-          <path d="M10 4v12M5 11l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </Step>
+  <DeckContainer nextHref={href(base, '/acquisizione')}>
 
-    <!-- ── STEP 1b: SLIDE-MANIFESTO — l'intero percorso in una schermata ─ -->
-    <Step id="step-manifesto" bg="primary" align="center">
-      <SlideBackdrop {...mediaProps('bg-cashmere')} imageClass="opacity-15" scrim="bg-[var(--surface-primary)]/82" />
-      <div class="relative z-10 max-w-5xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.14em] uppercase text-[var(--accent-primary)] mb-4" data-reveal>Il percorso</p>
-        <h2 class="font-[family-name:var(--font-display)] font-light leading-[1.12] text-[var(--ink-primary)] mb-5" style="font-size: var(--text-display-md);" data-reveal data-reveal-delay="0.1">
-          Una sola relazione, quattro momenti
-        </h2>
-        <p class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-16" style="font-size: var(--text-body-lg);" data-reveal data-reveal-delay="0.2">
-          Dall'incontro alla fedeltà: accogliere una nuova generazione e onorare chi sceglie Max Mara da sempre — un solo filo che attraversa il tempo.
-        </p>
+    <!-- ── SLIDE 0: Copertina ────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-linen')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/70" />
+      <CoverHero
+        size="hero"
+        eyebrow="Max Mara × Adobe"
+        title="Generazioni"
+        lead="Incontrare una nuova generazione, onorare chi sceglie Max Mara da sempre. Una relazione che attraversa il tempo."
+      />
+    </Slide>
 
-        <!-- Il filo: da Giulia (la nuova) attraverso le quattro fasi, fino a Francesca (chi resta) -->
-        <div class="relative" data-reveal data-reveal-delay="0.3">
-          <div class="hidden md:block absolute top-8 left-[10%] right-[10%] h-px bg-[var(--accent-primary)]/35" aria-hidden="true"></div>
-          <div class="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-y-8 gap-x-4 items-start">
-            <div class="flex flex-col items-center gap-2 text-center">
-              <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)] shadow-md">
-                <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
-              </div>
-              <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)]">Giulia, 29</span>
-              <span class="text-[0.78rem] text-[var(--ink-tertiary)]">la nuova cliente</span>
+    <!-- ── SLIDE 1: Manifesto — l'intero percorso in una schermata ── -->
+    <Slide id="slide-manifesto" bg="primary" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-15" scrim="bg-[var(--surface-primary)]/82" />
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>IL PERCORSO</p>
+      <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
+        Una sola relazione, quattro momenti
+      </h2>
+      <p class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-16" style="font-size: clamp(1.15rem, 1.5vw, 1.45rem);" data-reveal data-reveal-delay="0.2">
+        Dall'incontro alla fedeltà: accogliere una nuova generazione e onorare chi sceglie Max Mara da sempre — un solo filo che attraversa il tempo.
+      </p>
+
+      <!-- Il filo: da Giulia (la nuova) attraverso le quattro fasi, fino a Francesca (chi resta) -->
+      <div class="relative w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.3">
+        <div class="hidden md:block absolute top-8 left-[10%] right-[10%] h-px bg-[var(--accent-primary)]/35" aria-hidden="true"></div>
+        <div class="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-y-8 gap-x-4 items-start">
+          <div class="flex flex-col items-center gap-2 text-center">
+            <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+              <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
             </div>
-
-            {tappe.map((t) => (
-              <div class="flex flex-col items-center gap-2 text-center pt-3.5">
-                <span class="w-4 h-4 rounded-full bg-[var(--accent-primary)] ring-4 ring-[var(--surface-primary)]" aria-hidden="true"></span>
-                <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)] mt-1.5">{t.label}</span>
-                <span class="text-[0.78rem] text-[var(--ink-tertiary)]">{t.essence}</span>
-              </div>
-            ))}
-
-            <div class="flex flex-col items-center gap-2 text-center">
-              <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-secondary)] ring-2 ring-[var(--surface-primary)] shadow-md">
-                <MediaSlot {...mediaProps('francesca-atmosfera')} fill noText="0,0,0,0" />
-              </div>
-              <span class="text-[clamp(0.95rem,1.1vw,1.1rem)] font-medium text-[var(--ink-primary)]">Francesca, 52</span>
-              <span class="text-[0.78rem] text-[var(--ink-tertiary)]">la cliente storica</span>
-            </div>
+            <span class="text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium text-[var(--ink-primary)]">Giulia, 29</span>
+            <span class="text-[0.8rem] text-[var(--ink-tertiary)]">la nuova cliente</span>
           </div>
-        </div>
-      </div>
-    </Step>
 
-    <!-- ── STEP 2: Il filo — due generazioni (thread animation) ──── -->
-    <Step id="step-filo" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>La visione</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Due generazioni, un solo filo
-        </h2>
-
-        <!-- Thread animation: Giulia ↔ Francesca -->
-        <div class="relative w-full max-w-2xl mx-auto" data-thread>
-          <svg class="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 400 100" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-            <path class="thread-path" d="M60 50 C 160 8, 240 92, 340 50" stroke="var(--accent-primary)" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <div class="relative flex items-center justify-between px-2 md:px-6 py-4">
-            <div class="thread-node flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-              <span class="text-[0.65rem] text-[var(--ink-tertiary)]">Scopre il brand</span>
+          {tappe.map((t) => (
+            <div class="flex flex-col items-center gap-2 text-center pt-3.5">
+              <span class="w-4 h-4 rounded-full bg-[var(--accent-primary)] ring-4 ring-[var(--surface-primary)]" aria-hidden="true"></span>
+              <span class="text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium text-[var(--ink-primary)] mt-1.5">{t.label}</span>
+              <span class="text-[0.8rem] text-[var(--ink-tertiary)]">{t.essence}</span>
             </div>
-            <div class="thread-node flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-secondary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
-              <span class="text-[0.65rem] text-[var(--ink-tertiary)]">È il brand</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-10 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          Il filo che le unisce è il valore nel tempo: acquisire giovani è necessario, farle restare cambia il business.
-        </p>
-      </div>
-    </Step>
-
-    <!-- ── STEP 3: Il percorso — le quattro fasi ─────────────────── -->
-    <Step id="step-percorso" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>Il percorso</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Un unico flusso, dalla scoperta alla fedeltà
-        </h2>
-
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" data-stagger="0.15">
-          {fasi.map((f) => (
-            <a href={href(base, f.path)} class="group block text-left p-5 md:p-6 rounded-sm border border-[var(--line-subtle)] bg-[var(--surface-secondary)] hover:border-[var(--accent-primary)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-2">
-              <span class="block font-[family-name:var(--font-display)] text-2xl font-light text-[var(--accent-primary)] mb-3">{f.n}</span>
-              <p class="text-sm font-medium text-[var(--ink-primary)] mb-1">{f.label}</p>
-              <p class="text-xs text-[var(--ink-tertiary)] leading-relaxed">{f.desc}</p>
-              <span class="inline-flex items-center gap-1 text-[0.7rem] text-[var(--accent-primary)] mt-3 opacity-0 group-hover:opacity-100 transition-opacity">Esplora →</span>
-            </a>
           ))}
-        </div>
-      </div>
-    </Step>
 
-    <!-- ── STEP 4: Il tessuto — Adobe sotto la superficie (aha) ──── -->
-    <Step id="step-tessuto" bg="secondary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.5rem,2.5vw+0.5rem,2.5rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-10 text-center" data-reveal>
-          Sotto ogni momento, un tessuto connettivo
-        </h2>
-
-        <div class="relative grid md:grid-cols-[1fr_auto_1fr] gap-4 md:gap-0 items-center" data-pulse-line>
-          <div class="bg-[var(--surface-primary)] rounded-sm p-6 md:p-8 border border-[var(--line-subtle)]" data-reveal>
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
+          <div class="flex flex-col items-center gap-2 text-center">
+            <div class="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-secondary)] ring-2 ring-[var(--surface-primary)] shadow-md">
+              <MediaSlot {...mediaProps('francesca-atmosfera')} fill noText="0,0,0,0" />
             </div>
-            <p class="text-sm text-[var(--ink-primary)] font-medium">Un'esperienza fluida</p>
-            <p class="text-xs text-[var(--ink-tertiary)] mt-1">Riconosciuta, su ogni canale, in ogni momento</p>
-          </div>
-
-          <div class="hidden md:flex items-center justify-center px-4">
-            <svg width="120" height="40" viewBox="0 0 120 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 0 20 L 100 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="110" cy="20" r="6" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-          <div class="flex md:hidden items-center justify-center py-2">
-            <svg width="40" height="40" viewBox="0 0 40 40" class="text-[var(--accent-primary)]">
-              <path class="pulse-path" d="M 20 0 L 20 30" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-              <circle class="pulse-dot" cx="20" cy="36" r="4" fill="currentColor" opacity="0"/>
-            </svg>
-          </div>
-
-          <div class="bg-[var(--surface-inverse)] rounded-sm p-6 md:p-8 text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2 h-2 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-              <span class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-400)]">Ciò che la rende possibile</span>
-            </div>
-            <p class="text-sm font-medium">Adobe Experience Platform</p>
-            <p class="text-xs text-[var(--color-grigio-400)] mt-1">Unifica i dati, attiva i profili, orchestra ogni canale</p>
+            <span class="text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium text-[var(--ink-primary)]">Francesca, 52</span>
+            <span class="text-[0.8rem] text-[var(--ink-tertiary)]">la cliente storica</span>
           </div>
         </div>
       </div>
-    </Step>
+    </Slide>
 
-    <!-- ── STEP 5: Il patrimonio → profili (data lake) ───────────── -->
-    <Step id="step-datalake" bg="primary" align="center">
-      <div class="max-w-4xl mx-auto w-full">
-        <p class="text-xs font-medium tracking-[0.12em] uppercase text-[var(--accent-primary)] mb-6" data-reveal>La tesi</p>
-        <h2 class="font-[family-name:var(--font-display)] text-[clamp(1.75rem,3vw+0.5rem,3rem)] font-light leading-[1.15] text-[var(--ink-primary)] mb-12" data-reveal data-reveal-delay="0.1">
-          Dal data lake silente alle relazioni
-        </h2>
+    <!-- ── SLIDE 2: Invito — il valore + entra nel percorso ──────── -->
+    <Slide id="slide-payoff" bg="brand" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
+      <p data-display class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-6" style="font-size: clamp(4.5rem, 12vw, 11rem);">
+        <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
+      </p>
+      <p class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-5 max-w-3xl" data-reveal data-reveal-delay="0.2">
+        il Lifetime Value delle clienti emotivamente connesse rispetto a quelle soddisfatte
+      </p>
+      <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-primary)]/70 mb-12 max-w-2xl" data-reveal data-reveal-delay="0.28">
+        Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
+      </p>
 
-        <div class="relative w-full max-w-2xl mx-auto aspect-[16/9]" data-datalake>
-          {Array.from({ length: 24 }).map((_, i) => {
-            const angle = (i / 24) * Math.PI * 2;
-            const radius = 80 + Math.random() * 120;
-            const x = Math.cos(angle) * radius;
-            const y = Math.sin(angle) * radius;
-            return (
-              <div
-                class="data-dot absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]"
-                style={`left: calc(50% + ${x}px); top: calc(50% + ${y}px); transform: translate(-50%, -50%);`}
-              />
-            );
-          })}
-          <div class="absolute inset-0 flex items-center justify-center gap-6 md:gap-10">
-            <div class="profile-circle flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-primary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Giulia, 29</span>
-            </div>
-            <div class="profile-circle flex flex-col items-center gap-2">
-              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--accent-secondary)] flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--surface-primary)" stroke-width="1.5" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
-              </div>
-              <span class="text-xs font-medium text-[var(--ink-secondary)]">Francesca, 52</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="text-sm text-[var(--ink-tertiary)] mt-8 max-w-md mx-auto" data-reveal data-reveal-delay="0.2">
-          Real-Time CDP unifica dati frammentati in profili azionabili — la base di tutto.
-        </p>
+      <div data-reveal data-reveal-delay="0.5">
+        <a
+          href={href(base, '/acquisizione')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-primary)] text-[var(--ink-inverse)] hover:bg-[var(--surface-inverse)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-primary)] focus-visible:outline-offset-4"
+        >
+          Inizia il percorso · Acquisizione
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       </div>
-    </Step>
+    </Slide>
 
-    <!-- ── STEP 6: Payoff — la metrica + CTA ─────────────────────── -->
-    <Step id="step-payoff" bg="brand" align="center">
-      <div class="max-w-3xl mx-auto text-center">
-        <p class="font-[family-name:var(--font-display)] font-light leading-none text-white mb-6" style="font-size: clamp(5rem, 15vw, 12rem);">
-          <span data-count-up="306" data-count-prefix="+" data-count-suffix="%">+0%</span>
-        </p>
-        <p class="text-xl md:text-2xl font-[family-name:var(--font-display)] font-light text-white/90 leading-snug mb-4" data-reveal data-reveal-delay="0.2">
-          il Lifetime Value delle clienti emotivamente connesse rispetto a quelle soddisfatte
-        </p>
-        <p class="text-sm text-white/60" data-reveal data-reveal-delay="0.3">
-          Fonte: Motista, «Leveraging the Value of Emotional Connection for Retailers», 2018
-        </p>
-
-        <div class="mt-16" data-reveal data-reveal-delay="0.5">
-          <a
-            href={href(base, '/acquisizione')}
-            class="inline-flex items-center gap-3 px-8 py-3.5 text-sm font-medium tracking-wide uppercase border border-white/40 text-white hover:bg-white hover:text-[var(--accent-primary)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-          >
-            Inizia il percorso
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </Step>
-  </StepContainer>
+  </DeckContainer>
 </BaseLayout>
-
-<style>
-  @keyframes bounce-subtle {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-  .animate-bounce-subtle {
-    animation: bounce-subtle 2s ease-in-out infinite;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .animate-bounce-subtle { animation: none; }
-    .scroll-hint { display: none; }
-  }
-</style>
-
-<script>
-  import { initAllAnimations } from '@edf/core/blocks/immersive/animations';
-  function setup() {
-    const container = document.querySelector<HTMLElement>('[data-step-container]');
-    if (container) initAllAnimations(container);
-  }
-  setup();
-  document.addEventListener('astro:after-swap', setup);
-</script>

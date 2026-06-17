@@ -23,6 +23,7 @@ import * as path from 'node:path';
 
 // Every keynote-deck route to gate (each must hold the a–k + exp invariants).
 const ROUTES: Array<{ name: string; route: string }> = [
+  { name: 'home', route: '/experience-design-factory/' },
   { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
   { name: 'engagement', route: '/experience-design-factory/engagement/' },
   { name: 'conversione', route: '/experience-design-factory/conversione/' },
