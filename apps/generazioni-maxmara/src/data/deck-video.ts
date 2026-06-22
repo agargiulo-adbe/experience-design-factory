@@ -1,15 +1,12 @@
 /**
- * deck-video.ts — UNICO punto di configurazione della consultazione del deck.
+ * deck-video.ts — UNICA configurazione della consultazione del deck nella LP
+ * `/maxmara-adobe/`.
  *
- * La LP `/maxmara-adobe/` mostra la presentazione MaxMara_Adobe come player video
- * cinematografico on-brand (le animazioni del PPTX si preservano perché il sorgente
- * è un MP4 esportato da PowerPoint). Media pesanti ospitati su Supabase Storage
- * (bucket pubblico) — qui vanno gli URL pubblici.
- *
- * SEQUENCING: l'MP4 arriva dopo. Finché `src === null` la LP renderizza lo stato
- * "video in arrivo" (poster + download .pptx) e tutto buildà comunque. Quando il
- * video è pronto: 1) carica l'MP4 su Supabase, 2) incolla l'URL in `src`,
- * 3) riconcilia i `start` dei capitoli con i tempi reali del montaggio.
+ * Il deck è consultato come player video cinematografico on-brand: le animazioni
+ * del PPTX si preservano perché il sorgente è un MP4 esportato da PowerPoint.
+ * L'MP4 (64 MB) è ospitato come asset di GitHub Release del repo (gratis, fino a
+ * 2 GB/file, URL diretto con range-requests → streaming e seeking) per non gonfiare
+ * il repo. Il poster è il frame di copertina estratto dal video (public/deck-poster.jpg).
  */
 
 export interface Chapter {
@@ -17,63 +14,50 @@ export interface Chapter {
   id: string;
   /** etichetta breve mostrata nella rail capitoli. */
   label: string;
-  /** secondo d'inizio nel video. Placeholder finché l'MP4 non è montato. */
+  /** secondo d'inizio nel video (calibrato sulla struttura reale del montaggio). */
   start: number;
   /** slide del PPTX coperte (solo documentazione/orientamento). */
   slideRange?: string;
 }
 
 export interface DeckVideoConfig {
-  /** URL pubblico dell'MP4 (Supabase). `null` → stato "video in arrivo". */
+  /** URL diretto dell'MP4 (GitHub Release). `null` → stato "in arrivo". */
   src: string | null;
-  /** Poster 16:9: URL esplicito; se vuoto la LP usa il fallback on-brand (slot `deck-poster`). */
+  /** Poster 16:9 del player (frame di copertina). Se null, fallback dalla pagina. */
   poster?: string | null;
   /**
-   * Presentazione HTML5 self-hosted con animazioni (es. export iSpring), entry
-   * `index.html`, servita dal nostro repo → iframe SAME-ORIGIN nel player.
-   * Ha precedenza su `src`. Esempio: '/experience-design-factory/deck/index.html'.
-   * Metti l'export in `apps/generazioni-maxmara/public/deck/`.
+   * Presentazione HTML5 self-hosted con animazioni (entry index.html in public/deck/),
+   * iframe SAME-ORIGIN. Ha precedenza su `src`. Non in uso (si usa l'MP4).
    */
   embedUrl?: string | null;
   /** URL del file .vtt captions IT, oppure null. */
   captionsSrc?: string | null;
-  /**
-   * Link al deck originale da APRIRE in una nuova scheda (non un download):
-   * visualizzatore Adobe Acrobat. Risolve il problema dei 122 MB — il file non
-   * vive nel repo. (X-Frame-Options SAMEORIGIN → non incorporabile, solo link-out.)
-   */
-  deckUrl: string;
-  /** Durata stimata in secondi: layout proporzionale della rail prima di `loadedmetadata`. */
+  /** Durata in secondi: layout proporzionale della rail prima di `loadedmetadata`. */
   durationHint?: number;
   chapters: Chapter[];
 }
 
 /**
- * Gli 8 capitoli rispecchiano l'arco reale del deck (56 slide):
- * Content · Data · People, amplificati da Gen AI — narrati attraverso Chiara, 42, Milano.
- * I `start` sono placeholder proporzionati su `durationHint`; vanno corretti a MP4 pronto.
+ * Capitoli mappati sull'arco del deck (Content · Data · People + Gen AI, narrato
+ * attraverso Chiara, 42, Milano). I `start` sono calibrati sulla struttura reale
+ * del video (durata 3:10): intro 0–38s · Content ~38–105s · Data ~105–167s ·
+ * People/Journey ~167s+ · chiusura ~182s. Ritoccabili qui se serve precisione al secondo.
  */
 export const deckVideo: DeckVideoConfig = {
-  // ⤵︎ Export HTML5 animato self-hosted (precede `src`). Dopo aver messo l'export
-  //    in public/deck/, valorizza: '/experience-design-factory/deck/index.html'.
+  src: 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/Adobe_x_Max_Mara.mp4',
+  poster: '/experience-design-factory/deck-poster.jpg',
   embedUrl: null,
-  // ⤵︎ MP4 del deck (fallback se non usi l'embed HTML5).
-  src: null,
-  // ⤵︎ Poster Supabase opzionale; lasciando null si usa lo slot `deck-poster`.
-  poster: null,
   captionsSrc: null,
-  // Visualizzatore Adobe Acrobat del deck — si apre in una nuova scheda.
-  deckUrl: 'https://acrobat.adobe.com/id/urn:aaid:sc:VA6C2:f8e7b07a-b243-4883-9c34-b1a4ffde6385',
-  durationHint: 480, // ~8 min — stima, corregge da sé al loadedmetadata
+  durationHint: 190,
   chapters: [
-    { id: 'visione',    label: 'La visione 1-to-1',            start: 0,   slideRange: '1–3' },
-    { id: 'pilastri',   label: 'Content · Data · People',      start: 40,  slideRange: '4–7' },
-    { id: 'chiara',     label: 'Conosci Chiara',               start: 75,  slideRange: '8' },
-    { id: 'content',    label: 'Content: on-brand a scala',    start: 105, slideRange: '9–27' },
-    { id: 'data',       label: 'Data: un profilo, real-time',  start: 215, slideRange: '28–44' },
-    { id: 'people',     label: 'People: il Journey di Chiara', start: 320, slideRange: '45–54' },
-    { id: 'fisico',     label: 'Fisico + digitale',            start: 430, slideRange: '55' },
-    { id: 'sintesi',    label: 'The bigger picture',           start: 460, slideRange: '56' },
+    { id: 'visione',  label: 'La visione 1-to-1',            start: 0,   slideRange: '1–3' },
+    { id: 'pilastri', label: 'Content · Data · People',      start: 10,  slideRange: '4–7' },
+    { id: 'chiara',   label: 'Conosci Chiara',               start: 30,  slideRange: '8' },
+    { id: 'content',  label: 'Content: on-brand a scala',    start: 38,  slideRange: '9–27' },
+    { id: 'data',     label: 'Data: un profilo, real-time',  start: 105, slideRange: '28–44' },
+    { id: 'people',   label: 'People: il Journey di Chiara', start: 167, slideRange: '45–54' },
+    { id: 'fisico',   label: 'Fisico + digitale',            start: 182, slideRange: '55' },
+    { id: 'sintesi',  label: 'The bigger picture',           start: 186, slideRange: '56' },
   ],
 };
 
