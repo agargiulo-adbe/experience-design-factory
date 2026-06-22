@@ -1,9 +1,10 @@
 /**
  * roi-metrics.ts — Executive Summary della LP `/maxmara-adobe/`.
  *
- * Numeri REALI estratti dal deck MaxMara_Adobe (niente dati inventati): sono gli
- * stessi insight che il deck dimostra, inquadrati per un CMO che ha 60 secondi.
- * `headline` è la statistica-chiave (mostrata in grande); `grid` è la fila di callout.
+ * Statistiche REALI e con FONTE, estratte dai POV Adobe di settore (Fashion &
+ * Luxury POV 2026, Retail Industry Stat Pack 2026) — coerenti col mondo
+ * fashion/luxury e mappate sul journey del deck: Content · Data · People + ROI.
+ * `headline` è il dato-chiave (il costo dell'irrilevanza); `grid` è la fila di callout.
  */
 
 export interface RoiMetric {
@@ -12,34 +13,38 @@ export interface RoiMetric {
   source?: string;
 }
 
-/** Statistica-chiave: il costo dello status quo. */
+/** Dato-chiave: il costo dell'esperienza che non è rilevante. */
 export const headlineMetric: RoiMetric = {
-  value: '11%',
+  value: '45%',
   label:
-    'Di 100 clienti che raggiungiamo, solo 11 completano l’acquisto: l’attenzione c’è, la rilevanza no. Il journey si rompe molto prima del checkout.',
-  source: 'Funnel d’acquisto — analisi del deck',
+    'dei clienti nel mondo abbandona spesso l’acquisto quando l’esperienza digitale è frustrante. L’attenzione c’è, la rilevanza no: il journey si rompe prima del checkout.',
+  source: 'The Business of Fashion & Adobe, 2026',
 };
 
-/** Callout a griglia: cosa cambia quando Content, Data e People lavorano insieme. */
+/** Callout a griglia, mappati sul journey: Content · Data · People · ROI. */
 export const roiMetrics: RoiMetric[] = [
   {
-    value: '+64%',
-    label: 'di pull dall’immagine giusta sul target 35–45, riconosciuta e misurata dall’AI (auto-tagging).',
-    source: 'Content intelligence — deck',
+    value: '5×',
+    label:
+      'la crescita della domanda di contenuti che i brand affronteranno entro il 2027, attesa dal 71% dei marketer. La creatività on-brand va prodotta a scala.',
+    source: 'Adobe, 2025',
   },
   {
-    value: '2.5×',
-    label: 'nuovi visitatori (target più giovane) attivati dalla campagna giusta sul canale giusto.',
-    source: 'Activation — deck',
+    value: '70%',
+    label:
+      'dei consumatori europei si aspetta esperienze fluide e personalizzate tra online e boutique. Un solo profilo, riconosciuto su ogni canale.',
+    source: 'Adobe, 2026',
   },
   {
-    value: '+18%',
-    label: 'di ROI previsto riallocando il budget dove genera davvero contribuzione incrementale.',
-    source: 'Media mix — deck',
+    value: '62%',
+    label:
+      'dei consumatori ha un legame emotivo con i brand che ama, e la community ne è il primo driver. La relazione vale più della singola vendita.',
+    source: 'BoF–McKinsey, State of Fashion 2026',
   },
   {
-    value: '25%',
-    label: 'della spesa media oggi attribuita al canale sbagliato: budget che lavora a vuoto.',
-    source: 'Attribution — deck',
+    value: '3×',
+    label:
+      'il ROAS incrementale, con +30% di conversione sui segmenti target, quando contenuti, dati e persone lavorano insieme.',
+    source: 'Adobe, casi cliente',
   },
 ];
