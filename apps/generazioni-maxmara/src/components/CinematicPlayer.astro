@@ -14,15 +14,36 @@ interface Props {
   poster?: string | null;
 }
 const { poster = null } = Astro.props;
-const { src, captionsSrc, deckUrl, chapters, durationHint } = deckVideo;
-const hasVideo = Boolean(src);
+const { src, embedUrl, captionsSrc, deckUrl, chapters, durationHint } = deckVideo;
+// Precedenza: embed HTML5 animato > MP4 > stato "in arrivo".
+const mode: 'embed' | 'video' | 'empty' = embedUrl ? 'embed' : src ? 'video' : 'empty';
+const hasVideo = mode === 'video';
 const posterUrl = deckVideo.poster ?? poster ?? null;
 const initialDuration = durationHint ?? 0;
 const transportDisabled = hasVideo ? undefined : true;
 ---
 
+{mode === 'embed' ? (
+  <figure data-player data-mode="embed" data-ready="false" data-fullscreen="false" class="cinematic-player">
+    <div class="cp-stage cp-stage--embed">
+      <iframe
+        class="cp-embed"
+        src={embedUrl!}
+        title="Presentazione interattiva Max Mara × Adobe"
+        allow="fullscreen; autoplay; clipboard-write"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+      <button type="button" data-action="fullscreen" class="cp-embed-fs" aria-pressed="false" aria-label="Schermo intero">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+      </button>
+    </div>
+    <figcaption class="sr-only">Presentazione Max Mara × Adobe — versione interattiva con animazioni.</figcaption>
+  </figure>
+) : (
 <figure
   data-player
+  data-mode={mode}
   data-has-video={hasVideo ? 'true' : 'false'}
   data-ready="false"
   data-playing="false"
@@ -58,11 +79,11 @@ const transportDisabled = hasVideo ? undefined : true;
       <div class="cp-empty">
         {posterUrl && <img src={posterUrl} alt="" class="cp-empty-bg" loading="lazy" />}
         <div class="cp-empty-card">
-          <p class="cp-empty-eyebrow">La presentazione video</p>
+          <p class="cp-empty-eyebrow">La presentazione</p>
           <p class="cp-empty-title">Disponibile a breve</p>
           <p class="cp-empty-text">
-            Il filmato della presentazione, con tutte le animazioni originali, sarà
-            consultabile qui. Nel frattempo puoi aprire la presentazione completa in
+            La presentazione interattiva, con tutte le animazioni originali, sarà
+            consultabile qui. Nel frattempo puoi aprire la versione completa in
             Adobe Acrobat.
           </p>
           <a href={deckUrl} class="cp-empty-cta" target="_blank" rel="noopener">
@@ -170,6 +191,7 @@ const transportDisabled = hasVideo ? undefined : true;
     Usa Spazio per riprodurre, frecce per spostarti, F per lo schermo intero.
   </figcaption>
 </figure>
+)}
 
 <style>
   .cinematic-player {
@@ -193,6 +215,40 @@ const transportDisabled = hasVideo ? undefined : true;
     object-fit: contain;
     background: var(--color-nero);
   }
+
+  /* Embed mode — HTML5 deck self-hosted in iframe same-origin */
+  .cp-stage--embed { background: var(--surface-secondary); }
+  .cp-embed {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .cp-embed-fs {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--ink-inverse);
+    background: color-mix(in srgb, var(--color-nero) 55%, transparent);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--easing-default),
+      color var(--duration-fast) var(--easing-default);
+  }
+  .cp-stage--embed:hover .cp-embed-fs,
+  .cp-embed-fs:focus-visible { opacity: 1; }
+  .cp-embed-fs:hover { color: var(--accent-primary); }
+  .cp-embed-fs:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 
   /* Big play overlay */
   .cp-bigplay {

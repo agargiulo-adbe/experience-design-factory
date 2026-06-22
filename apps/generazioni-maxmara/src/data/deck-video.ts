@@ -28,6 +28,13 @@ export interface DeckVideoConfig {
   src: string | null;
   /** Poster 16:9: URL esplicito; se vuoto la LP usa il fallback on-brand (slot `deck-poster`). */
   poster?: string | null;
+  /**
+   * Presentazione HTML5 self-hosted con animazioni (es. export iSpring), entry
+   * `index.html`, servita dal nostro repo → iframe SAME-ORIGIN nel player.
+   * Ha precedenza su `src`. Esempio: '/experience-design-factory/deck/index.html'.
+   * Metti l'export in `apps/generazioni-maxmara/public/deck/`.
+   */
+  embedUrl?: string | null;
   /** URL del file .vtt captions IT, oppure null. */
   captionsSrc?: string | null;
   /**
@@ -47,7 +54,10 @@ export interface DeckVideoConfig {
  * I `start` sono placeholder proporzionati su `durationHint`; vanno corretti a MP4 pronto.
  */
 export const deckVideo: DeckVideoConfig = {
-  // ⤵︎ Incolla qui l'URL pubblico Supabase dell'MP4 quando è pronto.
+  // ⤵︎ Export HTML5 animato self-hosted (precede `src`). Dopo aver messo l'export
+  //    in public/deck/, valorizza: '/experience-design-factory/deck/index.html'.
+  embedUrl: null,
+  // ⤵︎ MP4 del deck (fallback se non usi l'embed HTML5).
   src: null,
   // ⤵︎ Poster Supabase opzionale; lasciando null si usa lo slot `deck-poster`.
   poster: null,
