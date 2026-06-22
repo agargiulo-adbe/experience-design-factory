@@ -1,0 +1,374 @@
+---
+/**
+ * CinematicPlayer — player video on-brand per la consultazione del deck.
+ * Markup + controlli custom + rail capitoli + stato "video in arrivo".
+ * Logica in `cinematic-player.ts` (initPlayer). Config in `../data/deck-video.ts`.
+ *
+ * Progressive enhancement: il <video> nasce con `controls` nativi (no-JS funziona);
+ * con JS i controlli custom prendono il posto (data-ready="true").
+ */
+import { deckVideo, formatTime } from '../data/deck-video';
+
+interface Props {
+  /** Poster 16:9 risolto dalla pagina (Supabase o webp di fallback). */
+  poster?: string | null;
+}
+const { poster = null } = Astro.props;
+const { src, captionsSrc, deckUrl, chapters, durationHint } = deckVideo;
+const hasVideo = Boolean(src);
+const posterUrl = deckVideo.poster ?? poster ?? null;
+const initialDuration = durationHint ?? 0;
+const transportDisabled = hasVideo ? undefined : true;
+---
+
+<figure
+  data-player
+  data-has-video={hasVideo ? 'true' : 'false'}
+  data-ready="false"
+  data-playing="false"
+  data-muted="false"
+  data-idle="false"
+  data-rail-open="false"
+  class="cinematic-player"
+>
+  <div class="cp-stage">
+    {hasVideo ? (
+      <>
+        <video
+          data-player-video
+          class="cp-video"
+          poster={posterUrl ?? undefined}
+          preload="metadata"
+          playsinline
+          controls
+        >
+          <source src={src!} type="video/mp4" />
+          {captionsSrc && (
+            <track kind="captions" srclang="it" label="Italiano" src={captionsSrc} default />
+          )}
+        </video>
+
+        <button type="button" data-action="bigplay" class="cp-bigplay" aria-label="Riproduci">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="currentColor" aria-hidden="true">
+            <path d="M8 5.5v13l11-6.5z" />
+          </svg>
+        </button>
+      </>
+    ) : (
+      <div class="cp-empty">
+        {posterUrl && <img src={posterUrl} alt="" class="cp-empty-bg" loading="lazy" />}
+        <div class="cp-empty-card">
+          <p class="cp-empty-eyebrow">La presentazione video</p>
+          <p class="cp-empty-title">Disponibile a breve</p>
+          <p class="cp-empty-text">
+            Il filmato della presentazione, con tutte le animazioni originali, sarà
+            consultabile qui. Nel frattempo puoi aprire la presentazione completa in
+            Adobe Acrobat.
+          </p>
+          <a href={deckUrl} class="cp-empty-cta" target="_blank" rel="noopener">
+            Apri la presentazione
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4h6v6M12 4 4 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    )}
+
+    <p data-player-hint data-flash="false" class="cp-hint" aria-live="polite">
+      Il video sarà disponibile a breve — intanto puoi scaricare il&nbsp;.pptx.
+    </p>
+
+    <div class="cp-controls" data-cp-controls>
+      <button
+        type="button"
+        data-action="playpause"
+        class="cp-btn cp-btn-play"
+        aria-pressed="false"
+        aria-label="Riproduci"
+        aria-disabled={transportDisabled}
+      >
+        <svg class="cp-i cp-i-play" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+        <svg class="cp-i cp-i-pause" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /></svg>
+      </button>
+
+      <div class="cp-seek-wrap">
+        <div
+          data-player-seek
+          role="slider"
+          tabindex="0"
+          aria-label="Avanzamento della presentazione"
+          aria-valuemin="0"
+          aria-valuemax={Math.round(initialDuration)}
+          aria-valuenow="0"
+          aria-valuetext="0:00"
+          class="cp-seek"
+        >
+          <div class="cp-seek-track">
+            <div data-player-buffer class="cp-seek-buffer"></div>
+            <div data-player-progress class="cp-seek-progress"></div>
+          </div>
+        </div>
+      </div>
+
+      <span class="cp-time" aria-hidden="true">
+        <span data-player-time-current>0:00</span>
+        <span class="cp-time-sep">/</span>
+        <span data-player-time-duration>{formatTime(initialDuration)}</span>
+      </span>
+
+      <button
+        type="button"
+        data-action="mute"
+        class="cp-btn"
+        aria-pressed="false"
+        aria-label="Disattiva audio"
+        aria-disabled={transportDisabled}
+      >
+        <svg class="cp-i cp-i-sound" viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a3.5 3.5 0 0 0-2-3.15v6.3a3.5 3.5 0 0 0 2-3.15zM14.5 4.2v2.06A5.5 5.5 0 0 1 14.5 19.7v2.06A7.5 7.5 0 0 0 14.5 4.2z" /></svg>
+        <svg class="cp-i cp-i-muted" viewBox="0 0 24 24" width="21" height="21" fill="currentColor" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" /><path d="M16 9.5l5 5M21 9.5l-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none" /></svg>
+      </button>
+
+      <button
+        type="button"
+        data-action="rail"
+        class="cp-btn cp-btn-rail"
+        aria-expanded="false"
+        aria-controls="cp-rail"
+        aria-label="Capitoli"
+      >
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" /></svg>
+      </button>
+
+      <button
+        type="button"
+        data-action="fullscreen"
+        class="cp-btn"
+        aria-pressed="false"
+        aria-label="Schermo intero"
+        aria-disabled={transportDisabled}
+      >
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" /></svg>
+      </button>
+    </div>
+
+    <div id="cp-rail" data-player-rail class="cp-rail" role="group" aria-label="Capitoli della presentazione">
+      <p class="cp-rail-title">Capitoli</p>
+      <ul role="list" class="cp-rail-list">
+        {chapters.map((c) => (
+          <li>
+            <button type="button" data-chapter-id={c.id} class="cp-chapter" aria-current="false">
+              <span class="cp-chapter-time">{formatTime(c.start)}</span>
+              <span class="cp-chapter-label">{c.label}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <figcaption class="sr-only">
+    Presentazione Max Mara × Adobe — player video con {chapters.length} capitoli.
+    Usa Spazio per riprodurre, frecce per spostarti, F per lo schermo intero.
+  </figcaption>
+</figure>
+
+<style>
+  .cinematic-player {
+    position: relative;
+    width: 100%;
+    margin: 0;
+  }
+  .cp-stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: var(--color-nero);
+    box-shadow: 0 30px 80px -40px color-mix(in srgb, var(--ink-primary) 60%, transparent);
+  }
+  .cp-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--color-nero);
+  }
+
+  /* Big play overlay */
+  .cp-bigplay {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 88px;
+    height: 88px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--color-nero);
+    background: color-mix(in srgb, var(--surface-primary) 92%, transparent);
+    box-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--easing-default),
+      transform var(--duration-normal) var(--easing-out);
+  }
+  .cp-bigplay svg { transform: translateX(2px); }
+  .cp-bigplay:hover { transform: scale(1.06); }
+  [data-ready='true'][data-playing='false'] .cp-bigplay { opacity: 1; }
+
+  /* Empty state */
+  .cp-empty { position: absolute; inset: 0; display: grid; place-items: center; }
+  .cp-empty-bg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; opacity: 0.28;
+  }
+  .cp-empty-card {
+    position: relative; z-index: 1; text-align: center;
+    max-width: min(34rem, 84%); padding: 1.5rem; color: var(--ink-inverse);
+  }
+  .cp-empty-eyebrow {
+    font-size: var(--text-caption); letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-primary); margin-bottom: 0.5rem;
+  }
+  .cp-empty-title {
+    font-family: var(--font-display); font-weight: 300;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.1; margin-bottom: 0.85rem;
+  }
+  .cp-empty-text {
+    font-size: var(--text-body-md); line-height: 1.6;
+    color: color-mix(in srgb, var(--ink-inverse) 82%, transparent);
+    margin: 0 auto 1.5rem; max-width: 30rem;
+  }
+  .cp-empty-cta {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    padding: 0.85rem 1.6rem; border-radius: var(--radius-sm);
+    background: var(--accent-primary); color: var(--color-nero);
+    font-weight: 500; text-decoration: none;
+    transition: background var(--duration-fast) var(--easing-default);
+  }
+  .cp-empty-cta:hover { background: var(--accent-secondary); color: var(--color-nero); }
+
+  /* Hint */
+  .cp-hint {
+    position: absolute; left: 50%; bottom: 5.5rem; transform: translateX(-50%);
+    max-width: 90%; padding: 0.6rem 1rem; border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-nero) 78%, transparent);
+    color: var(--ink-inverse); font-size: var(--text-body-sm); text-align: center;
+    opacity: 0; pointer-events: none; transition: opacity var(--duration-normal) var(--easing-default);
+  }
+  .cp-hint[data-flash='true'] { opacity: 1; }
+
+  /* Control bar (overlay, auto-hide on idle while playing) */
+  .cp-controls {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 1.4rem 0.9rem 0.85rem;
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-nero) 80%, transparent), transparent);
+    color: var(--ink-inverse);
+    opacity: 0; pointer-events: none;
+    transition: opacity var(--duration-normal) var(--easing-default);
+  }
+  [data-ready='true'] .cp-controls { opacity: 1; pointer-events: auto; }
+  [data-ready='true'][data-playing='true'][data-idle='true'] .cp-controls { opacity: 0; pointer-events: none; }
+  [data-ready='true'][data-playing='true'][data-idle='true'] .cp-stage { cursor: none; }
+
+  .cp-btn {
+    flex: 0 0 auto; display: inline-grid; place-items: center;
+    width: 40px; height: 40px; padding: 0;
+    border: none; border-radius: var(--radius-sm);
+    background: transparent; color: var(--ink-inverse); cursor: pointer;
+    transition: color var(--duration-fast) var(--easing-default),
+      background var(--duration-fast) var(--easing-default);
+  }
+  .cp-btn:hover { color: var(--accent-primary); background: color-mix(in srgb, var(--ink-inverse) 12%, transparent); }
+  .cp-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  .cp-btn[aria-disabled='true'] { opacity: 0.4; cursor: default; }
+  .cp-btn[aria-disabled='true']:hover { color: var(--ink-inverse); background: transparent; }
+
+  /* icon toggles */
+  .cp-i-pause, .cp-i-muted { display: none; }
+  [data-playing='true'] .cp-i-play { display: none; }
+  [data-playing='true'] .cp-i-pause { display: block; }
+  [data-muted='true'] .cp-i-sound { display: none; }
+  [data-muted='true'] .cp-i-muted { display: block; }
+
+  /* Seek */
+  .cp-seek-wrap { flex: 1 1 auto; min-width: 0; padding: 0 0.4rem; }
+  .cp-seek {
+    position: relative; height: 28px; display: flex; align-items: center;
+    cursor: pointer; touch-action: none;
+  }
+  .cp-seek:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; border-radius: var(--radius-full); }
+  .cp-seek-track {
+    position: relative; width: 100%; height: 4px; border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--ink-inverse) 28%, transparent); overflow: hidden;
+  }
+  .cp-seek:hover .cp-seek-track { height: 6px; }
+  .cp-seek-buffer {
+    position: absolute; inset: 0; width: 0%;
+    background: color-mix(in srgb, var(--ink-inverse) 40%, transparent);
+  }
+  .cp-seek-progress {
+    position: absolute; inset: 0; width: 0%;
+    background: var(--accent-primary);
+  }
+
+  .cp-time {
+    flex: 0 0 auto; font-size: var(--text-body-sm); font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em; color: color-mix(in srgb, var(--ink-inverse) 88%, transparent);
+    white-space: nowrap; padding: 0 0.3rem;
+  }
+  .cp-time-sep { opacity: 0.5; margin: 0 0.15rem; }
+
+  /* Chapter rail — bottom sheet within the stage */
+  .cp-rail {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    max-height: 72%; overflow-y: auto;
+    padding: 1.1rem 1.1rem 1.3rem;
+    background: color-mix(in srgb, var(--color-nero) 90%, transparent);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid color-mix(in srgb, var(--ink-inverse) 18%, transparent);
+    transform: translateY(101%);
+    transition: transform var(--duration-slow) var(--easing-out);
+    color: var(--ink-inverse);
+  }
+  [data-rail-open='true'] .cp-rail { transform: translateY(0); }
+  .cp-rail-title {
+    font-size: var(--text-caption); letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent-primary); margin-bottom: 0.75rem;
+  }
+  .cp-rail-list { list-style: none; display: grid; gap: 0.25rem; margin: 0; padding: 0; }
+  .cp-chapter {
+    width: 100%; display: flex; align-items: baseline; gap: 0.9rem;
+    padding: 0.6rem 0.7rem; border: none; border-radius: var(--radius-sm);
+    background: transparent; color: var(--ink-inverse); text-align: left; cursor: pointer;
+    transition: background var(--duration-fast) var(--easing-default);
+  }
+  .cp-chapter:hover { background: color-mix(in srgb, var(--ink-inverse) 12%, transparent); }
+  .cp-chapter:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+  .cp-chapter[aria-current='true'] { background: color-mix(in srgb, var(--accent-primary) 22%, transparent); }
+  .cp-chapter[aria-current='true'] .cp-chapter-label { color: var(--accent-primary); }
+  .cp-chapter-time {
+    flex: 0 0 auto; min-width: 3rem; font-variant-numeric: tabular-nums;
+    font-size: var(--text-body-sm); color: color-mix(in srgb, var(--ink-inverse) 60%, transparent);
+  }
+  .cp-chapter-label { font-size: var(--text-body-md); line-height: 1.3; }
+
+  @media (max-width: 480px) {
+    .cp-time { display: none; }
+    .cp-btn { width: 36px; height: 36px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cp-bigplay, .cp-controls, .cp-rail, .cp-hint { transition: none; }
+  }
+</style>
+
+<script>
+  import { initPlayer } from './cinematic-player';
+  function boot() { initPlayer(); }
+  function teardown() { window.__edfPlayer?.destroy(); }
+  boot();
+  document.addEventListener('astro:after-swap', boot);
+  document.addEventListener('astro:before-swap', teardown);
+</script>

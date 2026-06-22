@@ -154,6 +154,19 @@ export const assets: AssetSlot[] = [
     alt: '',
   },
 
+  // ── LP cliente Max Mara × Adobe (/maxmara-adobe/) ─────────────────
+  {
+    id: 'deck-poster',
+    // Poster 16:9 on-brand dietro al player video finché l'MP4 non è caricato
+    // (o come <video poster>). Degrada al placeholder MediaSlot senza webp.
+    type: 'stock',
+    query: 'elegant fashion atelier warm camel light cinematic still',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: 'Anteprima della presentazione Max Mara × Adobe',
+  },
+
   // ── Estendi qui con la stessa struttura ──
   // {
   //   id: 'loyalty-boutique',

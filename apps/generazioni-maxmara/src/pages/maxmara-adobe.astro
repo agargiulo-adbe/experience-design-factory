@@ -1,0 +1,393 @@
+---
+/**
+ * /maxmara-adobe/ — Landing page cliente: introduce il valore di Adobe per Max Mara
+ * (audience: CMO) e offre la consultazione del deck via player video on-brand.
+ * Pagina editoriale a scorrimento (NON il deck engine). Vedi piano:
+ * ~/.claude/plans/voglio-condividere-il-seguente-glowing-shannon.md
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import CinematicPlayer from '../components/CinematicPlayer.astro';
+import { mediaProps } from '../../assets.index';
+import { deckVideo, formatTime } from '../data/deck-video';
+import { headlineMetric, roiMetrics } from '../data/roi-metrics';
+
+const { deckUrl } = deckVideo;
+
+// Poster del player: webp on-brand dedicato, fallback al cashmere già committato.
+const posterMeta = mediaProps('deck-poster').src ?? mediaProps('bg-cashmere').src;
+const posterUrl = posterMeta?.src ?? null;
+
+// Walkthrough guidato: ogni voce fa deep-link a un capitolo (il tempo è single-source).
+const chapterById = new Map(deckVideo.chapters.map((c) => [c.id, c]));
+const walkthrough: Array<{ chapterId: string; annotation: string }> = [
+  {
+    chapterId: 'chiara',
+    annotation:
+      'Tutto parte da una persona, non da un segmento. Chiara, 42, Milano: compra poco e sceglie bene. Per un CMO è il promemoria che la personalizzazione di lusso è riconoscere l’individuo, non profilare la massa.',
+  },
+  {
+    chapterId: 'content',
+    annotation:
+      'Content on-brand a scala: Firefly, Workfront e il DAM producono varianti per formato, lingua e segmento senza tradire l’identità. È il nodo dove il time-to-market si gioca davvero.',
+  },
+  {
+    chapterId: 'data',
+    annotation:
+      'Un solo profilo in tempo reale dietro ogni canale. Qui emerge il dato che pesa: di 100 clienti raggiunte solo 11 arrivano all’acquisto. L’AI mostra dove il journey si rompe — e dove investire.',
+  },
+  {
+    chapterId: 'people',
+    annotation:
+      'L’orchestrazione: da Instagram alla wishlist, dall’email al messaggio della stylist, fino alla boutique. La stessa Chiara, riconosciuta su ogni canale, vive un’unica relazione che evolve con lei.',
+  },
+  {
+    chapterId: 'sintesi',
+    annotation:
+      'La sintesi: Content, Data e People amplificati dalla Gen AI. Una sola Max Mara, raccontata a ciascuna cliente come se fosse solo per lei — alla scala di ogni canale e mercato.',
+  },
+];
+
+const eyebrowCls = 'text-[var(--accent-primary)] font-medium uppercase tracking-[0.16em] text-sm';
+const h2Cls =
+  'font-[family-name:var(--font-display)] font-light leading-[1.1] text-[var(--ink-primary)]';
+---
+
+<BaseLayout
+  title="Max Mara × Adobe"
+  description="Il valore di Adobe per Max Mara: dalla personalizzazione 1-to-1 alla consultazione completa della presentazione. Una landing dedicata ai CMO."
+>
+  <a href="#main" class="skip-link">Salta al contenuto</a>
+
+  <!-- Header slim standalone (non la nav del deck) -->
+  <header class="lp-header">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 md:px-12">
+      <a href="#top" class="lp-wordmark" aria-label="Max Mara × Adobe — torna su">
+        <span>Max&nbsp;Mara</span>
+        <span class="lp-wordmark-x" aria-hidden="true">×</span>
+        <span>Adobe</span>
+      </a>
+      <a href={deckUrl} target="_blank" rel="noopener" class="lp-header-cta">
+        Apri il deck
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4h6v6M12 4 4 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top" aria-hidden="true"></span>
+
+    <!-- ── HERO ─────────────────────────────────────────────────────── -->
+    <section class="hero" aria-label="Introduzione">
+      <SlideBackdrop {...mediaProps('bg-cashmere')} imageClass="opacity-30" scrim="bg-[var(--surface-primary)]/74" />
+      <div class="relative z-10 w-full max-w-5xl">
+        <CoverHero
+          size="hero"
+          eyebrow="Max Mara × Adobe"
+          title="Il lusso che riconosce ogni cliente"
+          lead="Dalla prima impressione alla fedeltà che dura: come Adobe dà a Max Mara gli strumenti per orchestrare esperienze su misura — su ogni canale, senza tradire l’eleganza del marchio."
+        />
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <a href="#presentazione" class="cta-primary">
+            Guarda la presentazione
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href={deckUrl} target="_blank" rel="noopener" class="cta-ghost">
+            Apri la presentazione
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4h6v6M12 4 4 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PERCHÉ ADOBE ─────────────────────────────────────────────── -->
+    <section class="bg-[var(--surface-primary)] py-20 md:py-32" aria-labelledby="visione-title">
+      <div class="mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2 md:gap-20 md:px-12">
+        <div class="space-y-6">
+          <p class={eyebrowCls}>La visione</p>
+          <h2 id="visione-title" class={`${h2Cls} text-[clamp(1.75rem,3vw+0.5rem,3rem)]`}>
+            La tecnologia al servizio dell’artigianalità
+          </h2>
+          <div class="max-w-prose space-y-4 leading-relaxed text-[var(--ink-secondary)]">
+            <p>Per un brand di moda e lusso la tecnologia non deve farsi vedere: deve far sentire la cliente riconosciuta. Adobe unifica i dati senza freddezza, così ogni segnale — dalla boutique al digitale — diventa un gesto di attenzione.</p>
+            <p>Personalizzazione discreta, coerenza omnicanale, contenuti on-brand prodotti a scala: gli stessi valori dell’artigianalità Max Mara, portati sulla relazione con ogni cliente.</p>
+          </div>
+        </div>
+        <div class="relative aspect-[4/5] overflow-hidden rounded-sm bg-[var(--surface-secondary)]">
+          <MediaSlot {...mediaProps('engagement-editoriale')} fill />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── EXECUTIVE SUMMARY + ROI ──────────────────────────────────── -->
+    <section id="sintesi" class="scroll-mt-24 bg-[var(--surface-secondary)] py-20 md:py-28" aria-labelledby="sintesi-title">
+      <div class="mx-auto max-w-6xl px-6 md:px-12">
+        <p class={eyebrowCls}>In sintesi</p>
+        <h2 id="sintesi-title" class={`${h2Cls} mt-3 text-[clamp(1.75rem,3vw+0.5rem,3rem)]`}>
+          La sintesi in 60 secondi
+        </h2>
+        <p class="mt-5 max-w-2xl text-[var(--text-body-lg)] leading-relaxed text-[var(--ink-secondary)]">
+          Tre leve, una direzione: contenuti on-brand a scala, un profilo cliente in tempo reale,
+          la persona giusta al momento giusto. Ecco cosa cambia, in numeri presi dal deck.
+        </p>
+
+        <!-- Statistica-chiave -->
+        <div class="mt-12 flex flex-col gap-5 border-l-2 border-[var(--accent-primary)] pl-6 md:flex-row md:items-baseline md:gap-10 md:pl-8">
+          <p class="shrink-0 font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-primary)] text-[clamp(3.5rem,9vw,6.5rem)]">
+            {headlineMetric.value}
+          </p>
+          <div class="max-w-2xl">
+            <p class="text-[var(--text-heading-sm)] leading-snug text-[var(--ink-primary)]">{headlineMetric.label}</p>
+            {headlineMetric.source && <p class="mt-3 text-sm text-[var(--ink-tertiary)]">Fonte: {headlineMetric.source}</p>}
+          </div>
+        </div>
+
+        <!-- Griglia ROI -->
+        <ul role="list" class="mt-16 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          {roiMetrics.map((m) => (
+            <li class="border-t border-[var(--line-default)] pt-5">
+              <p class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--accent-primary)] text-[clamp(2.5rem,4vw,3.5rem)]">{m.value}</p>
+              <p class="mt-4 leading-relaxed text-[var(--ink-primary)]">{m.label}</p>
+              {m.source && <p class="mt-3 text-xs text-[var(--ink-tertiary)] opacity-70">{m.source}</p>}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── LA PRESENTAZIONE (player) ────────────────────────────────── -->
+    <section id="presentazione" class="scroll-mt-24 bg-[var(--surface-primary)] py-20 md:py-28" aria-labelledby="presentazione-title">
+      <div class="mx-auto max-w-6xl px-6 md:px-12">
+        <p class={eyebrowCls}>Il deck</p>
+        <h2 id="presentazione-title" class={`${h2Cls} mt-3 text-[clamp(1.75rem,3vw+0.5rem,3rem)]`}>
+          Sfoglia la presentazione, capitolo per capitolo
+        </h2>
+        <p class="mt-5 max-w-2xl text-[var(--text-body-lg)] leading-relaxed text-[var(--ink-secondary)]">
+          La presentazione completa, con tutte le animazioni originali. Naviga per capitolo
+          o guardala dall’inizio.
+        </p>
+        <div class="mt-12">
+          <CinematicPlayer poster={posterUrl} />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── WALKTHROUGH ──────────────────────────────────────────────── -->
+    <section class="bg-[var(--surface-secondary)] py-20 md:py-28" aria-labelledby="momenti-title">
+      <div class="mx-auto max-w-5xl px-6 md:px-12">
+        <p class={eyebrowCls}>La guida</p>
+        <h2 id="momenti-title" class={`${h2Cls} mt-3 text-[clamp(1.75rem,3vw+0.5rem,3rem)]`}>
+          I momenti che contano
+        </h2>
+        <p class="mt-5 max-w-2xl text-[var(--text-body-lg)] leading-relaxed text-[var(--ink-secondary)]">
+          Cinque passaggi chiave del deck, commentati per un CMO. Tocca «Vai al capitolo»
+          per saltare al punto esatto nel video.
+        </p>
+
+        <ol role="list" class="mt-12 space-y-px">
+          {walkthrough.map((w, i) => {
+            const c = chapterById.get(w.chapterId);
+            return (
+              <li class="wt-row">
+                <span class="wt-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <div class="wt-body">
+                  <div class="wt-head">
+                    <h3 class="wt-title">{c?.label}</h3>
+                    {c && <span class="wt-time">{formatTime(c.start)}</span>}
+                  </div>
+                  <p class="wt-annotation">{w.annotation}</p>
+                  <button type="button" class="wt-cta" data-seek={w.chapterId}>
+                    Vai al capitolo
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── CLOSING CTA ──────────────────────────────────────────────── -->
+    <section class="bg-[var(--surface-brand)] py-24 text-center md:py-32" aria-labelledby="cta-title">
+      <div class="mx-auto max-w-3xl px-6 md:px-12">
+        <h2 id="cta-title" class="font-[family-name:var(--font-display)] font-light leading-[1.1] text-[var(--ink-primary)] text-[clamp(2rem,4vw,3.4rem)]">
+          Costruiamo insieme il prossimo capitolo
+        </h2>
+        <p class="mx-auto mt-5 max-w-xl text-[var(--text-body-lg)] leading-relaxed text-[color-mix(in_srgb,var(--ink-primary)_80%,transparent)]">
+          La presentazione è solo l’inizio. Parliamone: trasformiamo questa visione in
+          un percorso su misura per Max Mara.
+        </p>
+        <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <a href={deckUrl} target="_blank" rel="noopener" class="cta-onbrand-primary">
+            Apri la presentazione
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4h6v6M12 4 4 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="mailto:?subject=Max%20Mara%20%C3%97%20Adobe" class="cta-onbrand-ghost">Parliamone</a>
+          <button type="button" class="cta-onbrand-ghost" data-copy-link>
+            <span data-copy-label>Copia link</span>
+          </button>
+        </div>
+        <p class="mt-4 h-5 text-sm text-[var(--ink-primary)]/70" role="status" aria-live="polite" data-copy-status></p>
+      </div>
+    </section>
+
+    <footer class="bg-[var(--surface-inverse)] py-8 text-center">
+      <p class="text-sm text-[color-mix(in_srgb,var(--ink-inverse)_60%,transparent)]">
+        Max&nbsp;Mara × Adobe — materiale riservato alla consultazione del cliente.
+      </p>
+    </footer>
+  </main>
+</BaseLayout>
+
+<style>
+  .skip-link {
+    position: absolute; left: 1rem; top: 0.5rem; z-index: 100;
+    transform: translateY(-150%);
+    padding: 0.6rem 1rem; border-radius: var(--radius-sm);
+    background: var(--ink-primary); color: var(--ink-inverse); text-decoration: none;
+    transition: transform var(--duration-fast) var(--easing-default);
+  }
+  .skip-link:focus { transform: translateY(0); color: var(--ink-inverse); }
+
+  .lp-header {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--surface-primary) 86%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .lp-wordmark {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.03em;
+    color: var(--ink-primary); text-decoration: none;
+  }
+  .lp-wordmark-x { color: var(--accent-primary); }
+  .lp-header-cta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 1.1rem; border-radius: var(--radius-sm);
+    border: 1px solid var(--line-default);
+    font-size: var(--text-body-sm); font-weight: 500;
+    color: var(--ink-primary); text-decoration: none;
+    transition: border-color var(--duration-fast) var(--easing-default),
+      color var(--duration-fast) var(--easing-default);
+  }
+  .lp-header-cta:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+  .hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    min-height: clamp(34rem, 86vh, 52rem);
+    padding: 6rem 1.5rem;
+  }
+  @media (min-width: 768px) { .hero { padding: 6rem 3rem; } }
+
+  /* CTA — light sections */
+  .cta-primary {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 1rem 2rem; font-weight: 500;
+    background: var(--ink-primary); color: var(--ink-inverse); text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: background var(--duration-normal) var(--easing-default);
+  }
+  .cta-primary:hover { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .cta-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 1rem 2rem; font-weight: 500;
+    border: 1px solid var(--line-default); color: var(--ink-primary); text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: border-color var(--duration-fast) var(--easing-default),
+      color var(--duration-fast) var(--easing-default);
+  }
+  .cta-ghost:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+  /* CTA — on the cammello (brand) closing section */
+  .cta-onbrand-primary {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 1rem 2rem; font-weight: 500;
+    background: var(--ink-primary); color: var(--ink-inverse); text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: background var(--duration-normal) var(--easing-default);
+  }
+  .cta-onbrand-primary:hover { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .cta-onbrand-ghost {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 1rem 2rem; font-weight: 500; cursor: pointer;
+    border: 1px solid color-mix(in srgb, var(--ink-primary) 45%, transparent);
+    background: transparent; color: var(--ink-primary); text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: border-color var(--duration-fast) var(--easing-default),
+      background var(--duration-fast) var(--easing-default);
+  }
+  .cta-onbrand-ghost:hover { border-color: var(--ink-primary); background: color-mix(in srgb, var(--ink-primary) 8%, transparent); }
+  .cta-onbrand-ghost:focus-visible,
+  .cta-onbrand-primary:focus-visible { outline: 2px solid var(--ink-primary); outline-offset: 3px; }
+
+  /* Walkthrough rows */
+  .wt-row {
+    display: grid; grid-template-columns: auto 1fr; gap: 1.25rem 1.5rem;
+    align-items: start; padding: 1.75rem 0;
+    border-top: 1px solid var(--line-default);
+  }
+  .wt-row:last-child { border-bottom: 1px solid var(--line-default); }
+  .wt-index {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 300;
+    color: var(--accent-primary); line-height: 1;
+  }
+  .wt-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem; }
+  .wt-title {
+    font-family: var(--font-display); font-weight: 400; font-size: clamp(1.25rem, 2vw, 1.6rem);
+    color: var(--ink-primary); line-height: 1.2;
+  }
+  .wt-time {
+    font-variant-numeric: tabular-nums; font-size: var(--text-body-sm);
+    color: var(--ink-tertiary); letter-spacing: 0.04em;
+  }
+  .wt-annotation {
+    margin-top: 0.6rem; max-width: 60ch; line-height: 1.6; color: var(--ink-secondary);
+  }
+  .wt-cta {
+    display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
+    padding: 0.5rem 0.9rem 0.5rem 0; border: none; background: transparent;
+    font-family: var(--font-body); font-size: var(--text-body-md); font-weight: 500;
+    color: var(--accent-hover); cursor: pointer;
+    transition: gap var(--duration-fast) var(--easing-default), color var(--duration-fast) var(--easing-default);
+  }
+  .wt-cta:hover { gap: 0.75rem; color: var(--ink-primary); }
+  .wt-cta:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skip-link, .cta-primary, .cta-ghost, .cta-onbrand-primary, .cta-onbrand-ghost, .wt-cta { transition: none; }
+  }
+</style>
+
+<script>
+  // Deep-link dei capitoli (walkthrough) + copia-link. Delegazione su document,
+  // con guardia per non duplicare i listener attraverso le view transitions.
+  // `__edfPlayer` è già tipizzato globalmente da cinematic-player.ts.
+  declare global {
+    interface Window { __mmLpWired?: boolean }
+  }
+  const w = window;
+  if (!w.__mmLpWired) {
+    w.__mmLpWired = true;
+    document.addEventListener('click', (e) => {
+      const seekEl = (e.target as HTMLElement).closest<HTMLElement>('[data-seek]');
+      if (seekEl) {
+        const id = seekEl.dataset.seek ?? '';
+        if (w.__edfPlayer) w.__edfPlayer.seekToChapter(id);
+        else document.getElementById('presentazione')?.scrollIntoView({ block: 'start' });
+        return;
+      }
+      const copyEl = (e.target as HTMLElement).closest<HTMLElement>('[data-copy-link]');
+      if (copyEl) {
+        const status = document.querySelector<HTMLElement>('[data-copy-status]');
+        navigator.clipboard?.writeText(location.href).then(
+          () => { if (status) status.textContent = 'Link copiato negli appunti.'; },
+          () => { if (status) status.textContent = location.href; },
+        );
+      }
+    });
+  }
+</script>
