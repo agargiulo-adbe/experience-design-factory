@@ -61,6 +61,18 @@ export const deckVideo: DeckVideoConfig = {
   ],
 };
 
+/**
+ * Versione PDF del deck — stessa presentazione, formato leggibile / stampabile /
+ * condivisibile. Ospitata come asset della stessa GitHub Release `media` (come l'MP4),
+ * per non gonfiare il repo. `url: null` → la CTA di download non viene renderizzata.
+ */
+export const deckPdf: { url: string | null; pages: number; sizeLabel: string; fileName: string } = {
+  url: 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/Adobe_x_Max_Mara.pdf',
+  pages: 54,
+  sizeLabel: '6,9 MB',
+  fileName: 'Adobe_x_Max_Mara.pdf',
+};
+
 /** Trova l'id del capitolo attivo per un dato istante (l'ultimo con start ≤ t). */
 export function activeChapterId(t: number, chapters: Chapter[] = deckVideo.chapters): string | null {
   let active: string | null = chapters.length ? chapters[0].id : null;
