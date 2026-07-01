@@ -1,11 +1,11 @@
 import type { AssetSlot } from '@edf/core/assets/types';
 
 export const assets: AssetSlot[] = [
-  // ── Cover / Background ────────────────────────────────────────────
+  // ── Cover / Hero backgrounds ──────────────────────────────────────
   {
     id: 'bg-banking-city',
     type: 'stock',
-    query: 'modern city financial district aerial night lights',
+    query: 'Milan Porta Nuova skyline financial district modern glass buildings twilight',
     aspect: '16:9',
     width: 2400,
     grade: 'editorial',
@@ -14,7 +14,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'bg-digital-blue',
     type: 'stock',
-    query: 'abstract digital data network blue dark minimal',
+    query: 'abstract dark blue geometric data network lines technology minimal',
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
@@ -23,10 +23,28 @@ export const assets: AssetSlot[] = [
   {
     id: 'bg-marble',
     type: 'stock',
-    query: 'white marble texture minimal clean light',
+    query: 'white marble texture clean architectural surface light minimal luxury',
     aspect: '16:9',
     width: 2400,
     grade: 'editorial',
+    alt: '',
+  },
+  {
+    id: 'bg-unlimited',
+    type: 'stock',
+    query: 'wide open horizon sea sky sunrise expansive blue unlimited freedom',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: '',
+  },
+  {
+    id: 'bg-data-dark',
+    type: 'stock',
+    query: 'dark abstract digital dashboard analytics data visualization dark minimal',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'duotone',
     alt: '',
   },
 
@@ -34,7 +52,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-marco',
     type: 'stock',
-    query: 'professional man portrait 40 years confident neutral light',
+    query: 'italian professional businessman portrait 40 years confident suit indoor natural light',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
@@ -43,7 +61,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-sara',
     type: 'stock',
-    query: 'young woman portrait 26 years smartphone natural light',
+    query: 'young italian woman portrait 26 years smartphone smiling natural light',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
@@ -54,18 +72,18 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-adriana',
     type: 'stock',
-    query: 'business woman portrait executive professional office neutral',
+    query: 'professional woman executive portrait 50 years elegant business office confident',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
     alt: 'Ritratto di Adriana, CFO PMI',
   },
 
-  // ── Scenario ──────────────────────────────────────────────────────
+  // ── Digital Banking ────────────────────────────────────────────────
   {
     id: 'banking-mobile',
     type: 'stock',
-    query: 'smartphone banking app digital finance minimal',
+    query: 'smartphone banking app finance screen hand modern minimal dark',
     aspect: '4:5',
     width: 1200,
     grade: 'editorial',
@@ -79,49 +97,87 @@ export const assets: AssetSlot[] = [
     grade: 'none',
     alt: 'Animazione: unificazione dati cliente in profilo real-time',
   },
+  {
+    id: 'banking-branch',
+    type: 'stock',
+    query: 'modern bank interior italy elegant minimal clean office professional',
+    aspect: '16:9',
+    width: 1800,
+    grade: 'editorial',
+    alt: 'Filiale bancaria moderna',
+  },
 
-  // ── Acquisizione ──────────────────────────────────────────────────
+  // ── Analytics & AI ─────────────────────────────────────────────────
+  {
+    id: 'analytics-screen',
+    type: 'stock',
+    query: 'data analytics dashboard screen charts business intelligence dark office minimal',
+    aspect: '16:9',
+    width: 1800,
+    grade: 'editorial',
+    alt: 'Dashboard analytics su schermo',
+  },
+  {
+    id: 'ai-platform',
+    type: 'stock',
+    query: 'artificial intelligence neural network technology blue abstract futuristic minimal',
+    aspect: '16:9',
+    width: 1800,
+    grade: 'duotone',
+    alt: 'Piattaforma AI astratta',
+  },
+
+  // ── Acquisizione / Onboarding ──────────────────────────────────────
   {
     id: 'onboarding-digital',
     type: 'stock',
-    query: 'person signing document tablet digital signature modern',
+    query: 'person digital tablet signature signing document modern professional light background',
     aspect: '16:9',
     width: 1800,
     grade: 'editorial',
     alt: 'Onboarding digitale: firma elettronica su tablet',
   },
 
-  // ── Contenuti / GenStudio ─────────────────────────────────────────
+  // ── Contenuti / GenStudio ──────────────────────────────────────────
   {
     id: 'content-creation',
     type: 'stock',
-    query: 'creative team digital content marketing office collaboration',
+    query: 'creative marketing team laptop collaboration modern office bright minimal',
     aspect: '16:9',
     width: 1800,
     grade: 'editorial',
     alt: 'Team creativo al lavoro su contenuti digitali',
   },
 
-  // ── B2B ───────────────────────────────────────────────────────────
+  // ── B2B ────────────────────────────────────────────────────────────
   {
     id: 'business-meeting',
     type: 'stock',
-    query: 'business meeting professional handshake office warm light',
+    query: 'professional business meeting handshake partners corporate office modern',
     aspect: '16:9',
     width: 1800,
     grade: 'editorial',
     alt: 'Meeting professionale: relazione banca-impresa',
   },
+  {
+    id: 'business-growth',
+    type: 'stock',
+    query: 'small business owner entrepreneur office italy confident modern light',
+    aspect: '4:5',
+    width: 1200,
+    grade: 'editorial',
+    alt: 'Imprenditore PMI',
+  },
 
-  // ── Risultati ─────────────────────────────────────────────────────
+  // ── Risultati / ROI ────────────────────────────────────────────────
   {
     id: 'results-growth',
     type: 'stock',
-    query: 'financial growth chart upward arrow success business',
+    query: 'financial success growth upward chart blue minimal clean office light',
     aspect: '16:9',
     width: 1800,
     grade: 'editorial',
-    alt: 'Grafico crescita finanziaria',
+    alt: 'Crescita finanziaria',
   },
 ];
 
