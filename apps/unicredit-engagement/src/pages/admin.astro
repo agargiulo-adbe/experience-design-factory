@@ -61,8 +61,8 @@ const deckHref = href(base, '/');
             <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <span>
-            Le configurazioni sono salvate localmente in questo browser.
-            Usa lo stesso browser e dispositivo durante la presentazione.
+            Configura gli slot e usa il pannello <strong>Condividi configurazione</strong> in fondo alla pagina per generare un link condivisibile con cliente e colleghi.
+            Chi apre il link vedrà l'experience con gli stessi contenuti demo attivi — senza installare nulla.
           </span>
         </div>
 
@@ -127,6 +127,42 @@ const deckHref = href(base, '/');
               </div>
             </div>
           ))}
+        </div>
+
+        <!-- Share panel -->
+        <div class="admin-share-panel" id="share-panel">
+          <div class="admin-share-header">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;color:#BE2027;">
+              <path d="M14 6a2 2 0 100-4 2 2 0 000 4zM6 10a2 2 0 100-4 2 2 0 000 4zM14 14a2 2 0 100 4 2 2 0 000-4z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8.17 8.88l3.66-2.76M8.17 11.12l3.66 2.76" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <h2 class="admin-share-title">Condividi configurazione</h2>
+              <p class="admin-share-desc">
+                Genera un link condivisibile con la configurazione attuale degli slot.
+                Il destinatario vedrà l'experience con gli stessi contenuti demo attivi — senza login, senza server.
+              </p>
+            </div>
+          </div>
+          <div class="admin-share-url-row">
+            <input
+              type="text"
+              id="share-url-input"
+              readonly
+              class="share-url-input"
+              placeholder="Salva almeno uno slot per generare il link…"
+            />
+            <button id="copy-share-url" class="btn-copy-share" title="Copia URL">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <rect x="4" y="4" width="9" height="9" rx="1"/>
+                <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
+              </svg>
+              Copia link
+            </button>
+          </div>
+          <p class="admin-share-note">
+            La configurazione è codificata nell'URL — non richiede server. Aggiorna il link dopo ogni modifica premendo "Salva" su uno slot.
+          </p>
         </div>
 
         <!-- Footer actions -->
@@ -437,6 +473,95 @@ const deckHref = href(base, '/');
     opacity: 1;
   }
 
+  /* ---- Share panel ---- */
+  .admin-share-panel {
+    background: #fff;
+    border: 1.5px solid #BE2027;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .admin-share-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .admin-share-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .admin-share-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .admin-share-url-row {
+    display: flex;
+    gap: 0.625rem;
+    align-items: stretch;
+  }
+  .share-url-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-family: 'Menlo', 'Consolas', monospace;
+    color: #374151;
+    background: #f9fafb;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .share-url-input:focus {
+    outline: none;
+    border-color: #BE2027;
+    box-shadow: 0 0 0 2px rgba(190,32,39,0.1);
+    background: #fff;
+  }
+  .share-url-input::placeholder {
+    color: #9ca3af;
+    font-family: Inter, system-ui, sans-serif;
+  }
+  .btn-copy-share {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: #BE2027;
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-copy-share:hover {
+    background: #9e1a20;
+  }
+  .btn-copy-share:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+  }
+  .admin-share-note {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin: 0;
+    line-height: 1.5;
+  }
+
   /* ---- Footer actions ---- */
   .admin-footer-actions {
     border-top: 1px solid #e5e7eb;
@@ -471,9 +596,10 @@ const deckHref = href(base, '/');
   }
 </style>
 
-<script is:inline>
+<script is:inline define:vars={{ deckHref }}>
 (function() {
   var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
+  var EXPERIENCE_URL = location.origin + deckHref;
 
   function loadConfig() {
     try {
@@ -484,6 +610,38 @@ const deckHref = href(base, '/');
   function saveConfig(config) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     window.dispatchEvent(new CustomEvent('edf:slots-updated'));
+    updateShareableUrl();
+  }
+
+  // Encode slot config as URL-safe base64 (UTF-8 safe)
+  function encodeSlotConfig(config) {
+    try {
+      var json = JSON.stringify(config);
+      var bytes = new TextEncoder().encode(json);
+      var binary = '';
+      bytes.forEach(function(b) { binary += String.fromCharCode(b); });
+      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    } catch(e) { return ''; }
+  }
+
+  function updateShareableUrl() {
+    var shareInput = document.getElementById('share-url-input');
+    var copyBtn = document.getElementById('copy-share-url');
+    if (!shareInput) return;
+
+    var config = loadConfig();
+    var hasActive = Object.keys(config).some(function(k) { return config[k] && config[k].active && config[k].url; });
+
+    if (!hasActive) {
+      shareInput.value = '';
+      shareInput.placeholder = 'Salva almeno uno slot attivo per generare il link…';
+      if (copyBtn) copyBtn.disabled = true;
+      return;
+    }
+
+    var encoded = encodeSlotConfig(config);
+    shareInput.value = EXPERIENCE_URL + (encoded ? '?slots=' + encoded : '');
+    if (copyBtn) copyBtn.disabled = false;
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -506,6 +664,9 @@ const deckHref = href(base, '/');
       if (captionInput && cfg.caption) captionInput.value = cfg.caption;
     });
 
+    // Init shareable URL
+    updateShareableUrl();
+
     // Save buttons
     document.querySelectorAll('[data-slot-save]').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -526,17 +687,34 @@ const deckHref = href(base, '/');
 
         saveConfig(currentConfig);
 
-        // Visual feedback on the feedback span
+        // Visual feedback
         var feedback = document.querySelector('[data-slot-feedback="' + id + '"]');
         if (feedback) {
           feedback.textContent = '✓ Salvato';
           feedback.classList.add('visible');
-          setTimeout(function() {
-            feedback.classList.remove('visible');
-          }, 2000);
+          setTimeout(function() { feedback.classList.remove('visible'); }, 2000);
         }
       });
     });
+
+    // Copy share URL button
+    var copyBtn = document.getElementById('copy-share-url');
+    var shareInput = document.getElementById('share-url-input');
+    if (copyBtn && shareInput) {
+      copyBtn.addEventListener('click', function() {
+        var url = shareInput.value;
+        if (!url) return;
+        navigator.clipboard.writeText(url).then(function() {
+          var origHtml = copyBtn.innerHTML;
+          copyBtn.textContent = '✓ Copiato!';
+          setTimeout(function() { copyBtn.innerHTML = origHtml; }, 2000);
+        }).catch(function() {
+          // Fallback for non-https
+          shareInput.select();
+          document.execCommand('copy');
+        });
+      });
+    }
 
     // Reset all button
     var resetBtn = document.getElementById('reset-all-slots');

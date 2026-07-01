@@ -50,6 +50,20 @@ const PROJECT_SLUG = 'unicredit-engagement';
 (function() {
   var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
 
+  // Seed localStorage from ?slots= shareable URL param (decode UTF-8-safe base64)
+  (function seedFromUrlParam() {
+    var param = new URLSearchParams(location.search).get('slots');
+    if (!param) return;
+    try {
+      var pad = (4 - param.length % 4) % 4;
+      var b64 = param.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat(pad);
+      var binary = atob(b64);
+      var bytes = Uint8Array.from(binary, function(c) { return c.charCodeAt(0); });
+      var incoming = JSON.parse(new TextDecoder().decode(bytes));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
+    } catch(_) {}
+  })();
+
   function applySlots() {
     var rawConfig = null;
     try { rawConfig = localStorage.getItem(STORAGE_KEY); } catch(e) {}
