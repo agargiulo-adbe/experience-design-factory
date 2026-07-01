@@ -17,6 +17,8 @@ const {
 
 const base = import.meta.env.BASE_URL;
 const PROJECT_SLUG = 'unicredit-engagement';
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 <!doctype html>
 <html lang="it">
@@ -46,22 +48,33 @@ const PROJECT_SLUG = 'unicredit-engagement';
   so the parent flex container reflows content to full width automatically.
   Listens for storage events (cross-tab) and edf:slots-updated (same-tab admin).
 -->
-<script is:inline>
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
 (function() {
   var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
 
-  // Seed localStorage from ?slots= shareable URL param (decode UTF-8-safe base64)
-  (function seedFromUrlParam() {
-    var param = new URLSearchParams(location.search).get('slots');
-    if (!param) return;
-    try {
-      var pad = (4 - param.length % 4) % 4;
-      var b64 = param.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat(pad);
-      var binary = atob(b64);
-      var bytes = Uint8Array.from(binary, function(c) { return c.charCodeAt(0); });
-      var incoming = JSON.parse(new TextDecoder().decode(bytes));
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
-    } catch(_) {}
+  // Seed localStorage from ?cfg=<uuid> Supabase shareable link
+  (function seedFromSupabase() {
+    var cfgId = new URLSearchParams(location.search).get('cfg');
+    if (!cfgId || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+
+    var seededKey = 'edf:cfg:' + cfgId;
+    if (sessionStorage.getItem(seededKey)) return; // already seeded this session
+
+    fetch(SUPABASE_URL + '/rest/v1/media_configs?id=eq.' + cfgId + '&select=config', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows[0] && rows[0].config) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rows[0].config)); } catch(_) {}
+        try { sessionStorage.setItem(seededKey, '1'); } catch(_) {}
+        location.reload();
+      }
+    })
+    .catch(function() {});
   })();
 
   function applySlots() {

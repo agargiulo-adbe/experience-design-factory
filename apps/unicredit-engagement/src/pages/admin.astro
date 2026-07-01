@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 // Registry di tutti i media slot disponibili nell'experience
 const SLOT_REGISTRY = [
@@ -144,14 +146,15 @@ const deckHref = href(base, '/');
               </p>
             </div>
           </div>
-          <div class="admin-share-url-row">
-            <input
-              type="text"
-              id="share-url-input"
-              readonly
-              class="share-url-input"
-              placeholder="Salva almeno uno slot per generare il link…"
-            />
+          <button id="generate-link-btn" class="btn-generate-link">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M8 3v10M3 8h10"/>
+            </svg>
+            Genera link condivisibile
+          </button>
+
+          <div class="admin-share-url-row" id="share-url-row" style="display:none">
+            <input type="text" id="share-url-input" readonly class="share-url-input" />
             <button id="copy-share-url" class="btn-copy-share" title="Copia URL">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
                 <rect x="4" y="4" width="9" height="9" rx="1"/>
@@ -160,8 +163,8 @@ const deckHref = href(base, '/');
               Copia link
             </button>
           </div>
-          <p class="admin-share-note">
-            La configurazione è codificata nell'URL — non richiede server. Aggiorna il link dopo ogni modifica premendo "Salva" su uno slot.
+          <p class="admin-share-note" id="share-note">
+            Ogni link è permanente. Rigenera dopo ogni modifica per aggiornare la configurazione condivisa.
           </p>
         </div>
 
@@ -501,6 +504,29 @@ const deckHref = href(base, '/');
     margin: 0;
     line-height: 1.5;
   }
+  .btn-generate-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5625rem 1.125rem;
+    background: #111827;
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-generate-link:hover {
+    background: #1f2937;
+  }
+  .btn-generate-link:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
   .admin-share-url-row {
     display: flex;
     gap: 0.625rem;
@@ -596,7 +622,7 @@ const deckHref = href(base, '/');
   }
 </style>
 
-<script is:inline define:vars={{ deckHref }}>
+<script is:inline define:vars={{ deckHref, SUPABASE_URL, SUPABASE_ANON_KEY }}>
 (function() {
   var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
   var EXPERIENCE_URL = location.origin + deckHref;
@@ -610,38 +636,54 @@ const deckHref = href(base, '/');
   function saveConfig(config) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     window.dispatchEvent(new CustomEvent('edf:slots-updated'));
-    updateShareableUrl();
   }
 
-  // Encode slot config as URL-safe base64 (UTF-8 safe)
-  function encodeSlotConfig(config) {
-    try {
-      var json = JSON.stringify(config);
-      var bytes = new TextEncoder().encode(json);
-      var binary = '';
-      bytes.forEach(function(b) { binary += String.fromCharCode(b); });
-      return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    } catch(e) { return ''; }
-  }
-
-  function updateShareableUrl() {
-    var shareInput = document.getElementById('share-url-input');
-    var copyBtn = document.getElementById('copy-share-url');
-    if (!shareInput) return;
-
+  async function generateShareableLink() {
     var config = loadConfig();
-    var hasActive = Object.keys(config).some(function(k) { return config[k] && config[k].active && config[k].url; });
+    var hasActive = Object.keys(config).some(function(k) {
+      return config[k] && config[k].active && config[k].url;
+    });
+
+    var genBtn = document.getElementById('generate-link-btn');
+    var urlRow = document.getElementById('share-url-row');
+    var shareInput = document.getElementById('share-url-input');
+    var note = document.getElementById('share-note');
 
     if (!hasActive) {
-      shareInput.value = '';
-      shareInput.placeholder = 'Salva almeno uno slot attivo per generare il link…';
-      if (copyBtn) copyBtn.disabled = true;
+      if (note) { note.textContent = 'Attiva e salva almeno uno slot prima di generare il link.'; note.style.color = '#BE2027'; }
       return;
     }
 
-    var encoded = encodeSlotConfig(config);
-    shareInput.value = EXPERIENCE_URL + (encoded ? '?slots=' + encoded : '');
-    if (copyBtn) copyBtn.disabled = false;
+    if (genBtn) { genBtn.disabled = true; genBtn.textContent = 'Generazione…'; }
+    if (note) { note.textContent = ''; note.style.color = ''; }
+
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/media_configs', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ project_slug: 'unicredit-engagement', config: config })
+      });
+      var rows = await res.json();
+      var id = rows && rows[0] && rows[0].id;
+      if (!id) throw new Error('no id');
+
+      var shareUrl = EXPERIENCE_URL + '?cfg=' + id;
+      if (shareInput) shareInput.value = shareUrl;
+      if (urlRow) urlRow.style.display = 'flex';
+      if (note) { note.textContent = 'Link generato. Rigenera dopo ogni modifica per aggiornare la configurazione condivisa.'; note.style.color = '#16a34a'; }
+    } catch(e) {
+      if (note) { note.textContent = 'Errore nella generazione del link. Controlla la connessione e riprova.'; note.style.color = '#BE2027'; }
+    } finally {
+      if (genBtn) {
+        genBtn.disabled = false;
+        genBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Genera link condivisibile';
+      }
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -663,9 +705,6 @@ const deckHref = href(base, '/');
       var captionInput = document.querySelector('[data-slot-caption="' + id + '"]');
       if (captionInput && cfg.caption) captionInput.value = cfg.caption;
     });
-
-    // Init shareable URL
-    updateShareableUrl();
 
     // Save buttons
     document.querySelectorAll('[data-slot-save]').forEach(function(btn) {
@@ -697,6 +736,10 @@ const deckHref = href(base, '/');
       });
     });
 
+    // Generate link button
+    var genBtn = document.getElementById('generate-link-btn');
+    if (genBtn) genBtn.addEventListener('click', generateShareableLink);
+
     // Copy share URL button
     var copyBtn = document.getElementById('copy-share-url');
     var shareInput = document.getElementById('share-url-input');
@@ -709,7 +752,6 @@ const deckHref = href(base, '/');
           copyBtn.textContent = '✓ Copiato!';
           setTimeout(function() { copyBtn.innerHTML = origHtml; }, 2000);
         }).catch(function() {
-          // Fallback for non-https
           shareInput.select();
           document.execCommand('copy');
         });
