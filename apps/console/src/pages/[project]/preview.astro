@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PROJECTS, getProject } from '../../data/projects-registry';
+
+export function getStaticPaths() {
+  return PROJECTS.filter(p => p.solutions.length > 0).map((p) => ({
+    params: { project: p.slug },
+  }));
+}
+
+const { project: slug } = Astro.params;
+const project = getProject(slug!)!;
+
+const base = import.meta.env.BASE_URL;
+
+function consoleHref(path: string): string {
+  return base.replace(/\/$/, '') + path;
+}
+
+const storageKey = `edf-solutions-${slug}`;
+---
+<BaseLayout title={`${project.name} — Preview`}>
+  <div class="flex flex-col h-[calc(100dvh-3rem)]">
+
+    <!-- Preview toolbar -->
+    <div
+      class="flex items-center gap-3 px-4 py-2 border-b flex-shrink-0"
+      style="background: var(--bg-panel); border-color: var(--border);"
+    >
+      <a
+        href={consoleHref(`/${slug}/`)}
+        class="flex items-center gap-1.5 text-xs transition-colors"
+        style="color: var(--ink-secondary);"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M10 3L5 8l5 5"/>
+        </svg>
+        Configura
+      </a>
+
+      <div class="w-px h-4 flex-shrink-0" style="background: var(--border);"></div>
+
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <span class="text-xs" style="color: var(--ink-tertiary);">Preview:</span>
+        <span class="text-xs font-medium truncate" style="color: var(--ink-primary);">{project.client} · {project.name}</span>
+      </div>
+
+      <div class="flex items-center gap-2 ml-auto">
+        <span class="text-[11px] flex items-center gap-1" style="color: var(--ink-tertiary);" id="sync-indicator">
+          <span class="w-1.5 h-1.5 rounded-full" style="background: var(--accent-green);" aria-hidden="true"></span>
+          Sincronizzato
+        </span>
+
+        <a
+          href={project.baseUrl}
+          target="_blank"
+          rel="noopener"
+          class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded border transition-colors"
+          style="border-color: var(--border-strong); color: var(--ink-secondary);"
+        >
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/>
+            <path d="M13 1h2v2M9 7l6-6"/>
+          </svg>
+          Apri in una nuova scheda
+        </a>
+      </div>
+    </div>
+
+    <!-- iframe -->
+    <div class="flex-1 min-h-0 relative bg-black">
+      <iframe
+        id="preview-iframe"
+        src={project.baseUrl}
+        class="w-full h-full border-0"
+        title={`Preview: ${project.name}`}
+        allow="fullscreen"
+        loading="lazy"
+      ></iframe>
+    </div>
+  </div>
+</BaseLayout>
+
+<script define:vars={{ storageKey, projectSlug: slug }}>
+(function () {
+  const iframe = document.getElementById('preview-iframe');
+  const syncIndicator = document.getElementById('sync-indicator');
+
+  function getSyncDot() {
+    return syncIndicator ? syncIndicator.querySelector('span') : null;
+  }
+
+  function setStatus(status) {
+    const dot = getSyncDot();
+    if (!dot) return;
+    if (status === 'syncing') {
+      dot.style.background = 'var(--accent-gold)';
+      if (syncIndicator) syncIndicator.lastChild.textContent = ' In aggiornamento…';
+    } else {
+      dot.style.background = 'var(--accent-green)';
+      if (syncIndicator) syncIndicator.lastChild.textContent = ' Sincronizzato';
+    }
+  }
+
+  // Push current localStorage config into iframe on load
+  function pushConfigToIframe() {
+    if (!iframe) return;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (!stored) return;
+      const activeIds = JSON.parse(stored);
+      iframe.contentWindow.postMessage(
+        { type: 'edf:solutions-changed', project: projectSlug, activeIds },
+        location.origin
+      );
+    } catch (_) {}
+  }
+
+  // Listen for iframe ready
+  if (iframe) {
+    iframe.addEventListener('load', function () {
+      setTimeout(pushConfigToIframe, 200);
+    });
+  }
+
+  // Listen for storage changes from the configurator page (same tab via BroadcastChannel, or cross-tab via storage event)
+  window.addEventListener('storage', function (e) {
+    if (e.key !== storageKey) return;
+    setStatus('syncing');
+    try {
+      const activeIds = e.newValue ? JSON.parse(e.newValue) : [];
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(
+          { type: 'edf:solutions-changed', project: projectSlug, activeIds },
+          location.origin
+        );
+      }
+    } catch (_) {}
+    setTimeout(function() { setStatus('synced'); }, 600);
+  });
+
+  // BroadcastChannel for same-origin cross-tab (modern browsers)
+  try {
+    const bc = new BroadcastChannel('edf-console');
+    bc.addEventListener('message', function (e) {
+      if (e.data && e.data.type === 'edf:solutions-changed' && e.data.project === projectSlug) {
+        setStatus('syncing');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage(e.data, location.origin);
+        }
+        setTimeout(function() { setStatus('synced'); }, 600);
+      }
+    });
+  } catch (_) {}
+})();
+</script>

@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PROJECTS } from '../data/projects-registry';
+
+const base = import.meta.env.BASE_URL;
+
+function consoleHref(path: string): string {
+  return base.replace(/\/$/, '') + path;
+}
+---
+<BaseLayout title="Factory Dashboard">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+
+    <!-- Header -->
+    <div class="mb-10">
+      <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color: var(--ink-tertiary);">Experience Design Factory</p>
+      <h1 class="text-2xl font-semibold mb-2" style="color: var(--ink-primary);">Progetti</h1>
+      <p class="text-sm" style="color: var(--ink-secondary);">Seleziona un progetto per configurare le soluzioni Adobe attive e generare link condivisibili.</p>
+    </div>
+
+    <!-- Project grid -->
+    <div class="grid md:grid-cols-2 gap-4">
+      {PROJECTS.map((project) => {
+        const configHref = project.solutions.length > 0
+          ? consoleHref(`/${project.slug}/`)
+          : null;
+        return (
+          <div
+            class="p-6 rounded-lg border group transition-colors"
+            style="background: var(--bg-panel); border-color: var(--border);"
+          >
+            <!-- Client + badge -->
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <p class="text-xs font-medium uppercase tracking-widest mb-1" style="color: var(--ink-tertiary);">{project.client}</p>
+                <h2 class="text-lg font-semibold" style="color: var(--ink-primary);">{project.name}</h2>
+              </div>
+              {project.solutions.length > 0
+                ? (
+                  <span class="text-[11px] font-medium px-2 py-1 rounded flex-shrink-0" style="background: var(--accent-red-soft); color: var(--accent-red);">
+                    {project.solutions.length} soluzioni
+                  </span>
+                )
+                : (
+                  <span class="text-[11px] font-medium px-2 py-1 rounded flex-shrink-0" style="background: var(--border); color: var(--ink-tertiary);">
+                    sempre visibile
+                  </span>
+                )
+              }
+            </div>
+
+            <p class="text-sm leading-relaxed mb-6" style="color: var(--ink-secondary);">{project.description}</p>
+
+            <!-- Actions -->
+            <div class="flex flex-wrap gap-2">
+              <a
+                href={project.baseUrl}
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-medium border transition-colors"
+                style="border-color: var(--border-strong); color: var(--ink-secondary);"
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                  <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/>
+                  <path d="M13 1h2v2M9 7l6-6"/>
+                </svg>
+                Apri experience
+              </a>
+              {configHref && (
+                <>
+                  <a
+                    href={configHref}
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-medium transition-colors"
+                    style="background: var(--accent-red-soft); color: var(--accent-red);"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                      <circle cx="8" cy="8" r="2"/>
+                      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/>
+                    </svg>
+                    Configura
+                  </a>
+                  <a
+                    href={consoleHref(`/${project.slug}/preview/`)}
+                    class="inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-medium transition-colors"
+                    style="background: var(--accent-blue-soft); color: var(--accent-blue);"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                      <rect x="1" y="3" width="14" height="10" rx="1"/>
+                      <path d="M5 14h6M8 13v1"/>
+                    </svg>
+                    Preview
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Footer note -->
+    <p class="mt-8 text-xs" style="color: var(--ink-tertiary);">
+      Le configurazioni vengono salvate in <code class="font-mono px-1 rounded" style="background: var(--bg-card);">localStorage</code> del browser e applicate istantaneamente senza rebuild. Usa i link condivisibili per pre-configurare la presentazione prima del meeting.
+    </p>
+  </div>
+</BaseLayout>

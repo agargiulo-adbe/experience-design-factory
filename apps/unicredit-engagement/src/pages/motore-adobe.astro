@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const pillars = [
+  {
+    id: 'data',
+    label: 'Foundation & Data',
+    color: 'var(--accent-primary)',
+    products: [
+      { name: 'Adobe Experience Platform', abbr: 'AEP', claim: 'La fondazione dati unificata: raccoglie, governa e attiva ogni dato cliente in tempo reale.' },
+      { name: 'Real-Time CDP', abbr: 'CDP', claim: "Profilo cliente unificato aggiornato in millisecondi su ogni sorgente." },
+      { name: 'Customer Journey Analytics', abbr: 'CJA', claim: 'Analisi cross-channel: dall\'app alla filiale, in un unico workspace.' },
+    ],
+  },
+  {
+    id: 'journeys',
+    label: 'Journeys & Personalization',
+    color: 'var(--accent-secondary)',
+    products: [
+      { name: 'Journey Optimizer B2C', abbr: 'AJO', claim: 'Orchestrazione omnicanale in tempo reale — push, email, in-app, SMS.' },
+      { name: 'Adobe Target', abbr: 'TGT', claim: 'A/B testing e personalizzazione AI-powered su ogni touchpoint digitale.' },
+      { name: 'AEM Sites', abbr: 'AEM', claim: 'Gestione contenuti web e app con personalizzazione nativa integrata.' },
+    ],
+  },
+  {
+    id: 'content',
+    label: 'Content at Scale',
+    color: 'var(--accent-primary)',
+    products: [
+      { name: 'GenStudio for Performance Marketing', abbr: 'GS', claim: 'Generazione varianti di contenuto in minuti, brand-safe e segment-specific.' },
+      { name: 'Adobe Firefly', abbr: 'FF', claim: 'Immagini generate su licenza commerciale — zero rischi IP.' },
+      { name: 'AEM Assets', abbr: 'DAM', claim: 'DAM unificato: ogni asset approvato, versionato e distribuito su tutti i canali.' },
+    ],
+  },
+  {
+    id: 'b2b',
+    label: 'B2B & Enterprise',
+    color: 'var(--accent-secondary)',
+    products: [
+      { name: 'Journey Optimizer B2B', abbr: 'B2B', claim: 'Account-based journeys e orchestrazione buying group per il corporate banking.' },
+      { name: 'Marketo Engage', abbr: 'MKT', claim: 'Demand generation e lead nurturing per i segmenti business ed enterprise.' },
+    ],
+  },
+];
+---
+<BaseLayout
+  title="Il motore Adobe"
+  description="Lo stack Adobe completo per UniCredit: dalla fondazione dati alle journey, dai contenuti al B2B enterprise."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/risultati')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-20"
+        scrim="bg-[var(--surface-inverse)]/82"
+      />
+      <CoverHero
+        eyebrow="IL SISTEMA"
+        title="Il motore Adobe"
+        lead="Non tre soluzioni separate. Una piattaforma unificata che connette dati, journey, contenuti e analytics in un unico sistema nervoso della customer experience."
+        size="hero"
+        tone="inverse"
+        primary="UniCredit"
+        secondary="Adobe"
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Foundation & Data ─────────────────────────────── -->
+    <Slide id="slide-data" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-inverse)]/90"
+      />
+      {pillars.filter(p => p.id === 'data').map(pillar => (
+        <>
+          <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 1 DI 4</p>
+          <h2
+            class="slide-title text-[var(--ink-inverse)] mb-10"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            {pillar.label}
+          </h2>
+          <div
+            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            {pillar.products.map(p => (
+              <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="w-8 h-8 rounded bg-[var(--accent-primary)]/20 flex items-center justify-center text-[10px] font-bold text-[var(--accent-primary)]">{p.abbr}</span>
+                  <span class="text-xs font-semibold text-[var(--ink-inverse)]">{p.name}</span>
+                </div>
+                <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{p.claim}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      ))}
+    </Slide>
+
+    <!-- ── SLIDE 2: Journeys & Personalization ────────────────────── -->
+    <Slide id="slide-journeys" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-inverse)]/90"
+      />
+      {pillars.filter(p => p.id === 'journeys').map(pillar => (
+        <>
+          <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 2 DI 4</p>
+          <h2
+            class="slide-title text-[var(--ink-inverse)] mb-10"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            {pillar.label}
+          </h2>
+          <div
+            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            {pillar.products.map(p => (
+              <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="w-8 h-8 rounded bg-[var(--accent-secondary)]/20 flex items-center justify-center text-[10px] font-bold text-[var(--accent-secondary)]">{p.abbr}</span>
+                  <span class="text-xs font-semibold text-[var(--ink-inverse)]">{p.name}</span>
+                </div>
+                <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{p.claim}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      ))}
+    </Slide>
+
+    <!-- ── SLIDE 3: Content & B2B ─────────────────────────────────── -->
+    <Slide id="slide-content-b2b" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-inverse)]/90"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 3–4 DI 4</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Content at Scale + B2B
+      </h2>
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {pillars.filter(p => p.id === 'content' || p.id === 'b2b').map(pillar => (
+          <div class="p-5 bg-[var(--color-grigio-500)]/8 border border-[var(--color-grigio-500)]/20 rounded-sm">
+            <p class="text-xs font-semibold uppercase tracking-widest mb-4" style={`color: ${pillar.color};`}>{pillar.label}</p>
+            <div class="flex flex-col gap-3">
+              {pillar.products.map(p => (
+                <div class="flex items-start gap-3">
+                  <span class="w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-[9px] font-bold mt-0.5" style={`background: ${pillar.color}20; color: ${pillar.color};`}>{p.abbr}</span>
+                  <div>
+                    <p class="text-xs font-medium text-[var(--ink-inverse)]">{p.name}</p>
+                    <p class="text-[11px] text-[var(--color-grigio-400)] leading-relaxed mt-0.5">{p.claim}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Sistema unificato → risultati ─────────────────── -->
+    <Slide id="slide-unified" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--accent-primary)]/80"
+      />
+      <p class="slide-eyebrow text-[var(--ink-inverse)]/75 mb-5" data-reveal>IL VANTAGGIO DELL'INTEGRAZIONE</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-8"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Un sistema. Non tre soluzioni.
+      </h2>
+      <p
+        class="text-[clamp(1.1rem,1.6vw,1.5rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-12"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        AEP come hub centrale significa che ogni dato, ogni journey e ogni contenuto parla la stessa lingua. Zero integrazione custom. Time-to-value misurato in settimane, non anni.
+      </p>
+
+      <div
+        class="flex flex-wrap justify-center gap-3 mb-12"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        {['AEP', 'Real-Time CDP', 'CJA', 'AJO B2C', 'Target', 'AEM Sites', 'GenStudio', 'Firefly', 'AEM Assets', 'AJO B2B', 'Marketo'].map(name => (
+          <span class="px-3 py-1.5 bg-[var(--ink-inverse)]/15 text-[var(--ink-inverse)] text-xs font-medium border border-[var(--ink-inverse)]/25 rounded-full">
+            {name}
+          </span>
+        ))}
+      </div>
+
+      <div data-reveal data-reveal-delay="0.45">
+        <a
+          href={href(base, '/risultati')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300"
+        >
+          I risultati
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -23,9 +23,13 @@ interface Props {
   tone?: 'ink' | 'inverse';
   /** Show the co-brand filo signature (off when a cinematic cover already shows it). */
   signature?: boolean;
+  /** Primary brand name for the co-brand signature. Defaults to 'Max Mara'. */
+  primary?: string;
+  /** Secondary brand name for the co-brand signature. Defaults to 'Adobe'. */
+  secondary?: string;
   class?: string;
 }
-const { eyebrow, numeral, title, lead, size = 'phase', tone = 'ink', signature = true, class: className } = Astro.props;
+const { eyebrow, numeral, title, lead, size = 'phase', tone = 'ink', signature = true, primary, secondary, class: className } = Astro.props;
 
 const ink = tone === 'inverse' ? 'var(--ink-inverse)' : 'var(--ink-primary)';
 const inkSoft = tone === 'inverse' ? 'var(--ink-inverse)' : 'var(--ink-secondary)';
@@ -50,5 +54,5 @@ const eyebrowColor = tone === 'inverse'
     <p class="leading-relaxed max-w-2xl mx-auto mt-7" style={`font-size: clamp(1.2rem, 1.7vw, 1.6rem); color: ${inkSoft};`} data-reveal data-reveal-delay="0.3">{lead}</p>
   )}
 
-  {signature && <CoBrandSignature tone={tone === 'inverse' ? 'inverse' : 'ink'} class="mt-12" />}
+  {signature && <CoBrandSignature primary={primary} secondary={secondary} tone={tone === 'inverse' ? 'inverse' : 'ink'} class="mt-12" />}
 </div>

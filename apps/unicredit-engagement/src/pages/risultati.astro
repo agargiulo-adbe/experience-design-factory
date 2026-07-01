@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const topMetrics = [
+  { stat: '19×', label: 'aumento conversioni CDP', sub: 'US Bank · campagne personalizzate vs broadcast', data: '19' },
+  { stat: '+127%', label: 'nuovi conti aperti', sub: 'con onboarding digitale AJO', data: '127' },
+  { stat: '10×', label: 'velocità produzione contenuti', sub: 'GenStudio vs. processo tradizionale', data: '10' },
+];
+
+const caseStudies = [
+  {
+    bank: 'US Bank',
+    country: 'Stati Uniti',
+    challenge: 'Personalizzazione campagne su 70M di clienti senza aumentare il team creativo.',
+    solution: 'Adobe Real-Time CDP + Journey Optimizer + GenStudio',
+    result: '19× aumento conversioni · –60% costo per acquisizione · +2700% traffico AI-driven',
+    relevance: 'Dimensioni comparabili. Stesso obiettivo: scala + rilevanza.',
+  },
+  {
+    bank: 'Itaú Unibanco',
+    country: 'Brasile',
+    challenge: 'Unificare i dati di 55M di clienti da 12+ sistemi legacy in un unico profilo azionabile.',
+    solution: 'Adobe Experience Platform · Real-Time CDP · Customer Journey Analytics',
+    result: '+42% engagement campagne personalizzate · 90% riduzione time-to-market campagne',
+    relevance: 'Architettura legacy comparabile a UniCredit. Stesso stack di dati.',
+  },
+  {
+    bank: 'TSB Bank',
+    country: 'UK',
+    challenge: 'Aumentare la rilevanza dei touchpoint digitali senza aumentare il volume di comunicazioni.',
+    solution: 'Adobe Journey Optimizer · Adobe Target · Real-Time CDP',
+    result: '+31% NPS digitale · –28% opt-out email · 4× retention su clienti a rischio churn',
+    relevance: 'Retail banking europeo. Focus su engagement e churn prevention.',
+  },
+];
+
+const unicreditRoi = [
+  { label: '€ risparmio operativo annuo', value: '+€45M', sub: 'ottimizzazione campagne + automazione contenuti' },
+  { label: 'Riduzione cost per acquisition', value: '–55%', sub: 'grazie a timing e targeting precisi' },
+  { label: 'Incremento CLTV medio', value: '+€1.200', sub: 'per cliente attivamente digitale' },
+  { label: 'Time-to-market campagne', value: '–85%', sub: 'da 6 settimane a <1 settimana' },
+];
+---
+<BaseLayout
+  title="I risultati"
+  description="19× conversioni, +127% conti digitali, 10× velocità contenuti. I benchmark banking reali con Adobe Experience Cloud."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('results-growth')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-inverse)]/85"
+      />
+      <CoverHero
+        eyebrow="BUSINESS IMPACT"
+        title="I risultati"
+        lead="Banche di tutto il mondo misurano già l'impatto. Questi sono i benchmark che definiscono il possibile per UniCredit."
+        size="hero"
+        tone="inverse"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: 3 metriche chiave ────────────────────────────── -->
+    <Slide id="slide-metrics" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--accent-primary)]/82"
+      />
+      <p class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-8" data-reveal>BENCHMARK SETTORE BANKING</p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-8"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        {topMetrics.map((m) => (
+          <div class="text-center">
+            <p
+              class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-3"
+              style="font-size: clamp(3.5rem, 7vw, 6.5rem);"
+              data-display
+              data-count-up={m.data}
+            >
+              {m.stat}
+            </p>
+            <p class="text-base font-medium text-[var(--ink-inverse)] mb-1">{m.label}</p>
+            <p class="text-xs text-[var(--ink-inverse)]/60 leading-relaxed">{m.sub}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Case studies ──────────────────────────────────── -->
+    <Slide id="slide-cases" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CASE STUDY BANKING</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-8"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Chi ha già fatto il percorso
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {caseStudies.map((cs) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col">
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <p class="text-sm font-semibold text-[var(--ink-primary)]">{cs.bank}</p>
+              <span class="text-[10px] text-[var(--ink-tertiary)] bg-[var(--surface-secondary)] border border-[var(--line-subtle)] px-1.5 py-0.5 rounded flex-shrink-0">{cs.country}</span>
+            </div>
+            <p class="text-xs text-[var(--ink-tertiary)] mb-3 leading-relaxed flex-1">{cs.challenge}</p>
+            <div class="border-t border-[var(--line-subtle)] pt-3 mb-3">
+              <p class="text-xs font-semibold text-[var(--accent-primary)] leading-relaxed">{cs.result}</p>
+            </div>
+            <p class="text-[10px] text-[var(--ink-tertiary)] italic">{cs.relevance}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: ROI proiezione UniCredit + CTA ────────────────── -->
+    <Slide id="slide-roi" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-inverse)]/85"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PROIEZIONE UNICREDIT</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-8"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Il ROI di Engagement Unlimited
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {unicreditRoi.map((r) => (
+          <div class="flex items-center gap-5 p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm">
+            <p
+              class="font-[family-name:var(--font-display)] font-light text-[var(--accent-secondary)] leading-none flex-shrink-0"
+              style="font-size: clamp(1.75rem, 2.5vw, 2.5rem);"
+            >
+              {r.value}
+            </p>
+            <div>
+              <p class="text-sm font-medium text-[var(--ink-inverse)]">{r.label}</p>
+              <p class="text-xs text-[var(--color-grigio-400)] mt-0.5">{r.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-xs text-[var(--color-grigio-500)] mb-8" data-reveal data-reveal-delay="0.3">
+        Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB · adattata per portafoglio UniCredit 7M clienti
+      </p>
+
+      <div class="flex flex-wrap gap-4 justify-center" data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300"
+        >
+          Ricomincia il percorso
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a
+          href={href(base.replace('/unicredit-engagement', ''), '/console/unicredit-engagement')}
+          class="inline-flex items-center gap-3 px-8 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide border border-[var(--ink-inverse)]/40 text-[var(--ink-inverse)] hover:border-[var(--ink-inverse)] transition-colors duration-300"
+        >
+          Configura la presentazione
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="2" y="2" width="5" height="5" rx="0.5"/>
+            <rect x="9" y="2" width="5" height="5" rx="0.5"/>
+            <rect x="2" y="9" width="5" height="5" rx="0.5"/>
+            <rect x="9" y="9" width="5" height="5" rx="0.5"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

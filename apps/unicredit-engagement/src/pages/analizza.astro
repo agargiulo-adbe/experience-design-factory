@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const funnelSteps = [
+  { channel: 'App', event: 'Accesso', users: '4.000.000', pct: 100 },
+  { channel: 'App', event: 'Sezione Prestiti', users: '820.000', pct: 20.5 },
+  { channel: 'Web / App', event: 'Simulazione mutuo', users: '144.000', pct: 3.6 },
+  { channel: 'Call / Filiale', event: 'Appuntamento', users: '28.000', pct: 0.7 },
+  { channel: 'Filiale', event: 'Contratto firmato', users: '9.200', pct: 0.23 },
+];
+
+const insights = [
+  { label: 'Drop-off critico', value: '80% abbandona a "Sezione Prestiti"', action: 'A/B test con Target: landing semplificata, rata subito visibile' },
+  { label: 'Churn prediction', value: '12.400 clienti a rischio abbandono', action: 'AJO attiva journey di retention 14 giorni prima del churn previsto' },
+  { label: 'Attribution gap', value: 'Il 40% dei mutui chiusi non risulta attribuito', action: 'CJA traccia il percorso completo cross-device, incl. filiale' },
+];
+
+const cjaCapabilities = [
+  { label: 'Cross-channel stitching', body: 'Unifica app, web, filiale, call center in un unico percorso cliente.' },
+  { label: 'AI anomaly detection', body: 'Identifica automaticamente drop-off anomali e ne avvisa il team analytics.' },
+  { label: 'Cohort analysis', body: 'Confronta comportamento clienti acquisiti via app vs. filiale nel lungo periodo.' },
+  { label: 'Real-time attribution', body: "Ogni campagna sa quanto ha contribuito alla conversione — senza silos di dati." },
+];
+---
+<BaseLayout
+  title="L'intelligenza dei dati"
+  description="Customer Journey Analytics unifica il percorso cross-channel per rivelare opportunità e prevenire il churn."
+  pageSolutions={['cja']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/b2b')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-marble')}
+        imageClass="opacity-30"
+        scrim="bg-[var(--surface-secondary)]/78"
+      />
+      <CoverHero
+        eyebrow="05 · ANALYTICS"
+        numeral="05"
+        title="L'intelligenza dei dati"
+        lead="Ogni cliente attraversa 5–7 canali prima di firmare. Customer Journey Analytics rivela dove si perde il valore — e perché."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Cross-channel funnel ─────────────────────────── -->
+    <Slide id="slide-funnel" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CUSTOMER JOURNEY ANALYTICS</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-6"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Il funnel mutuo:<br/>dove si perde il cliente
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed"
+            style="font-size: clamp(1.05rem, 1.4vw, 1.3rem);"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            4 milioni di accessi al mese. Solo 9.200 contratti firmati. Il 99,8% dei potenziali clienti si perde lungo il percorso — spesso in punti che senza CJA restano invisibili.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2" data-reveal data-reveal-delay="0.3">
+          {funnelSteps.map((step, i) => (
+            <div class="flex items-center gap-3">
+              <div
+                class="h-9 bg-[var(--accent-primary)] rounded-sm flex items-center px-3 text-white text-xs font-medium flex-shrink-0 transition-all"
+                style={`width: clamp(40px, ${step.pct * 0.85 + 15}%, 100%);`}
+              >
+                {step.event}
+              </div>
+              <div class="flex-shrink-0 text-right">
+                <span class="text-xs font-semibold text-[var(--ink-primary)]">{step.users}</span>
+                <span class="text-[10px] text-[var(--ink-tertiary)] ml-1">({step.pct}%)</span>
+              </div>
+            </div>
+          ))}
+          <p class="text-xs text-[var(--ink-tertiary)] mt-2">Dato illustrativo · pattern reale UniCredit 2024</p>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Insights azionabili ──────────────────────────── -->
+    <Slide id="slide-insights" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-inverse)]/88"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>DA DATI A DECISIONI</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Ogni insight ha un'azione
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {insights.map((ins) => (
+          <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
+            <p class="text-xs font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-2">{ins.label}</p>
+            <p class="text-sm font-medium text-[var(--ink-inverse)] mb-3 leading-snug">{ins.value}</p>
+            <div class="pt-3 border-t border-[var(--color-grigio-500)]/20">
+              <p class="text-[10px] text-[var(--color-grigio-400)] uppercase tracking-wide mb-1">Azione connessa</p>
+              <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{ins.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: CJA capabilities ─────────────────────────────── -->
+    <Slide id="slide-cja" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CUSTOMER JOURNEY ANALYTICS</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        La visione completa del cliente
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {cjaCapabilities.map((cap) => (
+          <div class="p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-sm font-semibold text-[var(--accent-primary)] mb-2">{cap.label}</p>
+            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">{cap.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/b2b')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
+        >
+          Banking per le imprese
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

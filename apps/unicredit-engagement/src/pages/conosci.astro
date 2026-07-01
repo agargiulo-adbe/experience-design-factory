@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const sources = [
+  { label: 'App mobile', icon: '📱', count: '4M+ eventi/giorno' },
+  { label: 'Online banking', icon: '💻', count: '3M+ sessioni' },
+  { label: 'Filiali', icon: '🏛️', count: '3.800 sportelli' },
+  { label: 'Call center', icon: '📞', count: '65K chiamate/g' },
+  { label: 'ATM / POS', icon: '💳', count: '7.500 ATM' },
+  { label: 'Open Banking', icon: '🔗', count: 'dati terze parti' },
+];
+
+const profileAttribs = [
+  { label: 'Profilo unificato', value: 'Marco Rossi · 38a · Bergamo' },
+  { label: 'Propensity score mutuo', value: '87/100 ↑' },
+  { label: 'Next-Best-Action', value: 'Mutuo 20Y · offerta personalizzata' },
+  { label: 'Canale preferito', value: 'App · mercoledì mattina' },
+  { label: 'Segmento', value: 'Small business · alto CLTV' },
+  { label: 'Ultimo evento', value: 'Ricerca "mutuo" in-app 14:23' },
+];
+
+const capabilities = [
+  { label: 'Segmentazione real-time', body: 'Segmenti aggiornati al cambiare del comportamento, non in batch notturni.', color: 'var(--accent-primary)' },
+  { label: 'Propensity scoring', body: 'Punteggi di propensione per ogni prodotto, calcolati live su ogni evento.', color: 'var(--accent-secondary)' },
+  { label: 'Next-Best-Action', body: "L'offerta giusta, nel momento giusto, sul canale preferito del cliente.", color: 'var(--accent-primary)' },
+  { label: 'Privacy by design', body: 'Governance GDPR integrata: consensi, data residency europea, audit trail.', color: 'var(--accent-secondary)' },
+];
+---
+<BaseLayout
+  title="Conosci ogni cliente"
+  description="Real-Time CDP unifica i dati di 7M di clienti in profili azionabili in tempo reale."
+  pageSolutions={['rtcdp']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/acquisisci')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-20"
+        scrim="bg-[var(--surface-secondary)]/80"
+      />
+      <CoverHero
+        eyebrow="01 · DATI"
+        numeral="01"
+        title="Conosci ogni cliente"
+        lead="7 milioni di clienti. 6+ sistemi separati. Real-Time CDP crea il profilo unificato che ti mancava — aggiornato in millisecondi."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Marco + dati frammentati ─────────────────────── -->
+    <Slide id="slide-persona" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL PROBLEMA</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-6"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Marco usa 6 canali.<br/>La banca non lo sa.
+          </h2>
+          <div
+            class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm mb-5"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            <p class="text-sm font-semibold text-[var(--ink-primary)] mb-1">Marco Rossi · 38 anni · Bergamo</p>
+            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">Piccolo imprenditore, cliente UniCredit da 12 anni. Usa l'app ogni giorno. Ha cercato "mutuo" tre volte questa settimana. La banca non ha collegato i punti.</p>
+          </div>
+          <p class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3">
+            Il problema non è la mancanza di dati: <strong class="text-[var(--ink-primary)]">ogni sistema parla da solo</strong>. Il profilo completo di Marco non esiste ancora in nessun posto.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.35">
+          {sources.map((s) => (
+            <div class="flex items-center gap-4 p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <span class="text-2xl flex-shrink-0" aria-hidden="true">{s.icon}</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-[var(--ink-primary)]">{s.label}</p>
+                <p class="text-xs text-[var(--ink-tertiary)]">{s.count}</p>
+              </div>
+              <span class="text-[10px] font-semibold uppercase tracking-wide text-[var(--accent-primary)] bg-[var(--accent-primary)]/10 px-2 py-0.5 rounded-full flex-shrink-0">isolato</span>
+            </div>
+          ))}
+          <p class="text-xs text-[var(--ink-tertiary)] mt-1">UniCredit Digital & Data Strategy · UCX Programme 2024</p>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Real-Time CDP — unificazione ─────────────────── -->
+    <Slide id="slide-cdp" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-inverse)]/87"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>ADOBE REAL-TIME CDP</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Un profilo. In tempo reale.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid grid-cols-[1fr_72px_1fr] gap-4 items-center"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        <!-- Sorgenti -->
+        <div class="flex flex-col gap-2">
+          {sources.map((s) => (
+            <div class="flex items-center gap-3 p-3 bg-[var(--color-grigio-500)]/15 border border-[var(--color-grigio-500)]/25 rounded-sm text-sm text-[var(--color-grigio-300)]">
+              <span aria-hidden="true">{s.icon}</span>
+              <span>{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <!-- CDP hub -->
+        <div class="flex flex-col items-center gap-2">
+          <div class="w-px flex-1 bg-gradient-to-b from-transparent to-[var(--accent-primary)]" aria-hidden="true" />
+          <div class="w-14 h-14 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-white text-[10px] font-semibold text-center leading-tight px-1 flex-shrink-0">
+            Real-Time CDP
+          </div>
+          <div class="w-px flex-1 bg-gradient-to-b from-[var(--accent-primary)] to-transparent" aria-hidden="true" />
+        </div>
+
+        <!-- Profilo unificato -->
+        <div class="p-5 bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/35 rounded-sm h-full flex flex-col justify-center">
+          <p class="text-[10px] font-semibold text-[var(--accent-primary)] uppercase tracking-widest mb-4">Profilo unificato</p>
+          {profileAttribs.map((a) => (
+            <div class="mb-3 last:mb-0">
+              <span class="block text-[10px] text-[var(--color-grigio-400)] uppercase tracking-wide mb-0.5">{a.label}</span>
+              <span class="text-xs text-[var(--ink-inverse)] leading-snug">{a.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Capabilities → next-best-action ───────────────── -->
+    <Slide id="slide-nba" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>COSA DIVENTA POSSIBILE</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Dal dato all'azione,<br/>in millisecondi
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {capabilities.map((cap) => (
+          <div class="p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-sm font-semibold mb-2" style={`color: ${cap.color};`}>{cap.label}</p>
+            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">{cap.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/acquisisci')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
+        >
+          Acquisisci digitale
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

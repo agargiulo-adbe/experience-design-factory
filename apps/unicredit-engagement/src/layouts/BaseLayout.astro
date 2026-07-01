@@ -1,0 +1,99 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Solutions active for this page — checked client-side at boot. */
+  pageSolutions?: string[];
+}
+
+const {
+  title,
+  description = 'Engagement Unlimited — UniCredit × Adobe',
+  pageSolutions,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const PROJECT_SLUG = 'unicredit-engagement';
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} | Engagement Unlimited</title>
+    <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <ClientRouter />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<!--
+  Solutions runtime: runs synchronously (is:inline) before any module script (deck.ts).
+  Reads active solutions from localStorage or ?s= URL param.
+  Removes [data-slide] from disabled-solution slides so the deck doesn't count them.
+  Listens for postMessage from the Admin Console iframe for live preview.
+-->
+<script is:inline define:vars={{ PROJECT_SLUG, pageSolutions }}>
+(function () {
+  var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
+
+  // Determine active solution IDs
+  var urlParam = new URLSearchParams(location.search).get('s');
+  var activeIds = null;
+  if (urlParam) {
+    activeIds = urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+  } else {
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) activeIds = JSON.parse(stored);
+    } catch (_) {}
+  }
+
+  // If restrictions set, apply them before deck.ts runs
+  if (activeIds) {
+    // Hide solution-gated slides/sections
+    var gated = document.querySelectorAll('[data-solution]');
+    gated.forEach(function(el) {
+      var ids = (el.getAttribute('data-solution') || '').split(',').map(function(s) { return s.trim(); });
+      var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!anyActive) {
+        // Remove data-slide so the Deck controller doesn't count this slide
+        el.removeAttribute('data-slide');
+        el.setAttribute('aria-hidden', 'true');
+        el.setAttribute('inert', '');
+        el.style.display = 'none';
+      }
+    });
+
+    // Check if this page itself is gated
+    if (pageSolutions && pageSolutions.length > 0) {
+      var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!pageActive) {
+        // Redirect to home
+        location.replace(location.origin + location.pathname.replace(/\/[^/]+\/$/, '/'));
+      }
+    }
+  }
+
+  // Listen for live config changes from Admin Console (postMessage)
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(e.data.activeIds));
+    } catch (_) {}
+    location.reload();
+  });
+})();
+</script>

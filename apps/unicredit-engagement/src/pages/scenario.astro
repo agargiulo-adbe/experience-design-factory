@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout
+  title="Il momento del banking"
+  description="Il contesto digitale del mercato bancario italiano e le sfide di UniCredit."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/conosci')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-banking-city')}
+        imageClass="opacity-25"
+        scrim="bg-[var(--surface-secondary)]/75"
+      />
+      <CoverHero
+        eyebrow="IL CONTESTO"
+        numeral="00"
+        title="Il momento del banking"
+        lead="Il mercato bancario si trasforma. Chi non personalizza, perde."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il cliente digitale oggi ─────────────────────── -->
+    <Slide id="slide-cliente" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL CLIENTE OGGI</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-7"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Digitale di default, non di necessità
+          </h2>
+          <p
+            class="slide-lead text-[var(--ink-secondary)] max-w-xl"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            Il cliente bancario italiano del 2026 non sceglie il digitale perché non ha alternativa — lo sceglie perché è più veloce, più comodo, più suo. Ma si aspetta che la banca lo conosca davvero.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-5" data-reveal data-reveal-delay="0.3">
+          {[
+            { stat: '4M', label: 'clienti UniCredit attivamente digitali', icon: '📱' },
+            { stat: '60%+', label: 'transazioni via online/mobile nel 2024', icon: '📊' },
+            { stat: '+15%', label: 'crescita YoY delle transazioni digitali', icon: '📈' },
+            { stat: '1 su 3', label: 'clienti ha interagito SOLO via app negli ultimi 90 giorni', icon: '🏦' },
+          ].map((item) => (
+            <div class="flex items-center gap-5 p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <span
+                class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none flex-shrink-0"
+                style="font-size: clamp(1.75rem, 2.5vw, 2.25rem);"
+              >
+                {item.stat}
+              </span>
+              <span class="text-[var(--ink-secondary)] text-sm leading-snug">{item.label}</span>
+            </div>
+          ))}
+          <p class="text-xs text-[var(--ink-tertiary)] mt-1">Fonti: UniCredit Annual Report 2024 · UniCredit Digital & Data Strategy</p>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: La sfida: scala ≠ rilevanza ─────────────────── -->
+    <Slide id="slide-challenge" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-25"
+        scrim="bg-[var(--surface-inverse)]/78"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>LA SFIDA</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-9"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Essere grande non basta più
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-6 mb-12"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {[
+          {
+            problem: 'Dati frammentati',
+            detail: '7M di clienti, 6+ sistemi separati. Il profilo completo non esiste ancora.',
+            accent: 'rtcdp',
+          },
+          {
+            problem: 'Interazioni generiche',
+            detail: "L'app risponde alla transazione. Non conosce il momento di vita del cliente.",
+            accent: 'ajo-b2c',
+          },
+          {
+            problem: 'Contenuti lenti',
+            detail: "Campagne che arrivano 3 settimane dopo l'evento che le ha ispirate.",
+            accent: 'genstudio',
+          },
+        ].map((c) => (
+          <div class="p-6 bg-[var(--color-grigio-500)]/15 border border-[var(--color-grigio-500)]/30 rounded-sm text-left">
+            <p class="text-[var(--accent-secondary)] text-sm font-semibold tracking-wide uppercase mb-3">{c.problem}</p>
+            <p class="text-[var(--color-grigio-300)] text-sm leading-relaxed">{c.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <p
+        class="text-[clamp(1.2rem,1.8vw,1.7rem)] font-[family-name:var(--font-display)] text-[var(--ink-inverse)] leading-snug max-w-3xl"
+        data-reveal
+        data-reveal-delay="0.4"
+      >
+        Adobe colma questi tre gap — con una piattaforma unificata, non tre soluzioni separate.
+      </p>
+
+      <div class="mt-12" data-reveal data-reveal-delay="0.55">
+        <a
+          href={href(base, '/conosci')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
+        >
+          Come Adobe risolve · Conosci ogni cliente
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

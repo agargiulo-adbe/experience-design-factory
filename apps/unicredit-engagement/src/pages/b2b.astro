@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const rmInsights = [
+  { label: 'Fatturato aziendale', value: '€4.2M · crescita +11% YoY', source: 'Open Banking' },
+  { label: 'Flussi di cassa', value: 'Stagionalità agosto–settembre', source: 'Conto corrente business' },
+  { label: 'Propensity leasing', value: 'Score 79/100 · flotta auto', source: 'AEP + CJA' },
+  { label: 'Evento triggering', value: 'Ha visitato "/finanziamenti-aziendali" × 4', source: 'CDP real-time' },
+  { label: 'Prossima scadenza', value: 'Mutuo sede operativa: 18 mesi', source: 'Core banking' },
+];
+
+const ajoB2bFeatures = [
+  { label: 'Buying group orchestration', body: "AJO B2B identifica tutti i decision-maker dell'azienda (CEO, CFO, RM) e orchestra touchpoint coerenti per ognuno." },
+  { label: 'Account-based journeys', body: 'Campagne e sequenze dedicate per ogni azienda cliente, con contenuti personalizzati per settore e dimensione.' },
+  { label: 'RM enablement', body: "Il Relationship Manager riceve suggerimenti AI in tempo reale prima di ogni interazione, con next-best-action calcolata." },
+  { label: 'Marketo integration', body: 'Pipeline B2B corporate integrata con Marketo: lead scoring, nurturing, handoff automatico al team Sales Enterprise.' },
+];
+
+const b2bKpis = [
+  { stat: '3.2×', label: 'deal velocity per PMI', sub: 'con account-based journeys' },
+  { stat: '+58%', label: 'penetrazione prodotti per azienda', sub: 'grazie a cross-sell intelligente' },
+  { stat: '–40%', label: 'tempo preparazione meeting RM', sub: 'con AI insights automatici' },
+];
+---
+<BaseLayout
+  title="Banking per le imprese"
+  description="AJO B2B e Marketo portano la personalizzazione enterprise al livello del business banking UniCredit."
+  pageSolutions={['ajo-b2b', 'marketo']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/motore-adobe')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('business-meeting')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-secondary)]/82"
+      />
+      <CoverHero
+        eyebrow="06 · B2B"
+        numeral="06"
+        title="Banking per le imprese"
+        lead="Adriana gestisce 45 dipendenti e vuole un rapporto consulenziale, non solo transazionale. AJO B2B rende questo scalabile."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Adriana + esigenze B2B ───────────────────────── -->
+    <Slide id="slide-adriana" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL CLIENTE BUSINESS</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-6"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Adriana vuole un partner,<br/>non solo una banca
+          </h2>
+          <div
+            class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm mb-5"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            <p class="text-sm font-semibold text-[var(--ink-primary)] mb-1">Adriana Conti · CFO · PMI manifatturiera · 45 dipendenti</p>
+            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">Cliente UniCredit Business da 8 anni. Gestisce liquidità, finanziamenti e pagamenti internazionali. Vuole proattività: il suo RM dovrebbe anticipare i suoi bisogni, non aspettare che lei chiami.</p>
+          </div>
+          <p class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3">
+            Con 250.000 aziende clienti, la sfida di UniCredit è fornire il livello di servizio personalizzato di un private banker — <strong class="text-[var(--ink-primary)]">in modo scalabile</strong>.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2" data-reveal data-reveal-delay="0.35">
+          <p class="text-xs font-semibold text-[var(--accent-primary)] uppercase tracking-widest mb-2">Profilo aziendale · AI Insights per il RM</p>
+          {rmInsights.map((ins) => (
+            <div class="flex items-start gap-3 p-3.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-medium text-[var(--ink-primary)]">{ins.label}</p>
+                <p class="text-sm text-[var(--ink-secondary)]">{ins.value}</p>
+              </div>
+              <span class="text-[10px] text-[var(--ink-tertiary)] bg-[var(--surface-secondary)] border border-[var(--line-subtle)] px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5">{ins.source}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: AJO B2B features ─────────────────────────────── -->
+    <Slide id="slide-ajo-b2b" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-inverse)]/88"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>JOURNEY OPTIMIZER B2B + MARKETO</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Il consulente aumentato dall'AI
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {ajoB2bFeatures.map((f) => (
+          <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
+            <p class="text-sm font-semibold text-[var(--accent-secondary)] mb-2">{f.label}</p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed">{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: KPI risultati B2B ─────────────────────────────── -->
+    <Slide id="slide-kpi-b2b" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IMPATTO BUSINESS</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Il bancario di relazione<br/>torna a fare la differenza
+      </h2>
+
+      <div
+        class="w-full max-w-3xl mx-auto grid md:grid-cols-3 gap-6 mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {b2bKpis.map((k) => (
+          <div class="text-center p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <p
+              class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-2"
+              style="font-size: clamp(2.25rem, 4vw, 3.5rem);"
+            >
+              {k.stat}
+            </p>
+            <p class="text-sm font-medium text-[var(--ink-primary)] mb-1">{k.label}</p>
+            <p class="text-xs text-[var(--ink-tertiary)]">{k.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/motore-adobe')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
+        >
+          Il motore Adobe
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

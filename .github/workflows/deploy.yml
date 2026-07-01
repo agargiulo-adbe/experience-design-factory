@@ -26,10 +26,18 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      - name: Merge app dists into a single artifact
+        run: |
+          mkdir -p pages
+          cp -r apps/generazioni-maxmara/dist/. pages/
+          mkdir -p pages/unicredit-engagement
+          cp -r apps/unicredit-engagement/dist/. pages/unicredit-engagement/
+          mkdir -p pages/console
+          cp -r apps/console/dist/. pages/console/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/generazioni-maxmara/dist
+          path: pages
 
   deploy:
     needs: build

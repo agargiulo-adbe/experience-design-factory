@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const nbaSignals = [
+  { icon: '🔍', label: 'Ricerca in-app', detail: '"mutuo" × 3 in 7 giorni' },
+  { icon: '💳', label: 'Comportamento', detail: 'Accrediti +18% ultimi 3 mesi' },
+  { icon: '📊', label: 'Propensity CDP', detail: 'Score mutuo: 87/100' },
+  { icon: '📅', label: 'Momento di vita', detail: 'Età media acquisto casa: 36-40a' },
+];
+
+const channels = [
+  { label: 'Push notification', timing: 'sabato mattina', message: '"Hai pensato al mutuo? Scopri il tasso dedicato a te →"' },
+  { label: 'In-app banner', timing: 'accesso successivo', message: 'Offerta mutuo personalizzata con rata stimata per Marco.' },
+  { label: 'Email personalizzata', timing: '+2 giorni se non apre', message: 'Contenuto generato da GenStudio: tono professionale, dati reali.' },
+  { label: 'Consulente proattivo', timing: '+5 giorni', message: 'Il RM di Marco riceve il segnale AJO e lo richiama con offerta pronta.' },
+];
+
+const results = [
+  { stat: '5×', label: 'tasso di conversione sui mutui', sub: 'vs. campagne broadcast' },
+  { stat: '–68%', label: 'costo di acquisizione prodotto', sub: 'grazie a timing preciso' },
+  { stat: '+41%', label: 'NPS post-offerta personalizzata', sub: 'vs. offerta generica' },
+];
+---
+<BaseLayout
+  title="Coinvolgi in tempo reale"
+  description="AJO B2C intercetta il momento giusto di ogni cliente con il messaggio giusto, sul canale giusto."
+  pageSolutions={['ajo-b2c', 'target']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/contenuti')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-banking-city')}
+        imageClass="opacity-20"
+        scrim="bg-[var(--surface-secondary)]/82"
+      />
+      <CoverHero
+        eyebrow="03 · ENGAGEMENT"
+        numeral="03"
+        title="Coinvolgi in tempo reale"
+        lead="Il mutuo giusto, nel momento in cui Marco ci stava già pensando. Non tre settimane dopo."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il momento di Marco ──────────────────────────── -->
+    <Slide id="slide-momento" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL MOMENTO DI VITA</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-6"
+            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Marco pensa a comprare casa
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
+            style="font-size: clamp(1.05rem, 1.5vw, 1.3rem);"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            38 anni, imprenditore con un'attività in crescita. Ha cercato "mutuo" tre volte nell'app questa settimana. Il suo profilo Real-Time CDP mostra un propensity score di 87/100. La banca lo sa già — ma finora non ha agito.
+          </p>
+          <p class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3">
+            <strong class="text-[var(--ink-primary)]">Journey Optimizer B2C</strong> intercetta questi segnali e orchestra l'azione omnicanale nel momento esatto di massima rilevanza.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.35">
+          <p class="text-xs font-semibold text-[var(--accent-primary)] uppercase tracking-widest mb-1">Segnali rilevati da Real-Time CDP</p>
+          {nbaSignals.map((s) => (
+            <div class="flex items-center gap-4 p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <span class="text-2xl flex-shrink-0" aria-hidden="true">{s.icon}</span>
+              <div>
+                <p class="text-sm font-medium text-[var(--ink-primary)]">{s.label}</p>
+                <p class="text-xs text-[var(--ink-secondary)]">{s.detail}</p>
+              </div>
+            </div>
+          ))}
+          <div class="mt-2 p-4 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm">
+            <p class="text-sm font-semibold text-[var(--accent-primary)] mb-1">Next-Best-Action calcolata</p>
+            <p class="text-sm text-[var(--ink-secondary)]">Proposta mutuo 20 anni · tasso personalizzato · canale: app push + email</p>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Orchestrazione omnicanale ────────────────────── -->
+    <Slide id="slide-orch" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-inverse)]/88"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>JOURNEY OPTIMIZER B2C</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Il messaggio giusto,<br/>sul canale giusto
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-4 gap-4"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {channels.map((ch, i) => (
+          <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left relative">
+            {i < channels.length - 1 && (
+              <div class="hidden md:block absolute top-9 -right-2 text-[var(--accent-secondary)] z-10" aria-hidden="true">→</div>
+            )}
+            <p class="text-xs font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-2">{ch.label}</p>
+            <p class="text-[10px] text-[var(--color-grigio-400)] mb-3">{ch.timing}</p>
+            <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed italic">"{ch.message}"</p>
+          </div>
+        ))}
+      </div>
+
+      <p
+        class="mt-8 text-[var(--color-grigio-400)] text-sm max-w-2xl"
+        data-reveal
+        data-reveal-delay="0.4"
+      >
+        Adobe Target personalizza ogni touchpoint in tempo reale — headline, immagine, offerta — in base al profilo CDP di Marco.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: Risultati ─────────────────────────────────────── -->
+    <Slide id="slide-results" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IMPATTO BUSINESS</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-10"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Scala + rilevanza = risultati
+      </h2>
+
+      <div
+        class="w-full max-w-3xl mx-auto grid md:grid-cols-3 gap-6 mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {results.map((r) => (
+          <div class="text-center p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <p
+              class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-2"
+              style="font-size: clamp(2.25rem, 4vw, 3.5rem);"
+            >
+              {r.stat}
+            </p>
+            <p class="text-sm font-medium text-[var(--ink-primary)] mb-1">{r.label}</p>
+            <p class="text-xs text-[var(--ink-tertiary)]">{r.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/contenuti')}
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
+        >
+          Contenuti senza limiti
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
