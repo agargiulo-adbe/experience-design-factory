@@ -11,51 +11,62 @@ import { mediaProps } from '../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const pillars = [
+const aiPlatformCapabilities = [
+  { label: 'Grounded in customer data', body: 'L\'AI è alimentata dal contesto reale: dati cliente, contenuti approvati, brand guidelines, processi aziendali.' },
+  { label: 'Enterprise-grade by design', body: 'Governance, sicurezza e compliance costruite dalla base — non aggiunte. Progettato per settori regolamentati come il banking.' },
+  { label: '1st + 3rd party models', body: 'I migliori modelli fondazionali di mercato + modelli proprietari Adobe specializzati per CX, analytics, creative.' },
+  { label: 'Purpose-built agents', body: 'Agenti AI che scalano le operazioni CX: orchestrano journeys, generano insight, producono contenuti — in autonomia.' },
+];
+
+const stackLayers = [
   {
-    id: 'data',
-    label: 'Foundation & Data',
-    color: 'var(--accent-primary)',
-    products: [
-      { name: 'Adobe Experience Platform', abbr: 'AEP', claim: 'La fondazione dati unificata: raccoglie, governa e attiva ogni dato cliente in tempo reale.' },
-      { name: 'Real-Time CDP', abbr: 'CDP', claim: "Profilo cliente unificato aggiornato in millisecondi su ogni sorgente." },
-      { name: 'Customer Journey Analytics', abbr: 'CJA', claim: 'Analisi cross-channel: dall\'app alla filiale, in un unico workspace.' },
-    ],
-  },
-  {
-    id: 'journeys',
-    label: 'Journeys & Personalization',
+    layer: 'Brand Visibility',
+    products: ['AEM Sites', 'AEM Assets', 'Firefly'],
     color: 'var(--accent-secondary)',
-    products: [
-      { name: 'Journey Optimizer B2C', abbr: 'AJO', claim: 'Orchestrazione omnicanale in tempo reale — push, email, in-app, SMS.' },
-      { name: 'Adobe Target', abbr: 'TGT', claim: 'A/B testing e personalizzazione AI-powered su ogni touchpoint digitale.' },
-      { name: 'AEM Sites', abbr: 'AEM', claim: 'Gestione contenuti web e app con personalizzazione nativa integrata.' },
-    ],
+    claim: 'Presenza digitale orchestrata: contenuti web, DAM unificato, immagini AI-generated su licenza commerciale.',
   },
   {
-    id: 'content',
-    label: 'Content at Scale',
-    color: 'var(--accent-primary)',
-    products: [
-      { name: 'GenStudio for Performance Marketing', abbr: 'GS', claim: 'Generazione varianti di contenuto in minuti, brand-safe e segment-specific.' },
-      { name: 'Adobe Firefly', abbr: 'FF', claim: 'Immagini generate su licenza commerciale — zero rischi IP.' },
-      { name: 'AEM Assets', abbr: 'DAM', claim: 'DAM unificato: ogni asset approvato, versionato e distribuito su tutti i canali.' },
-    ],
-  },
-  {
-    id: 'b2b',
-    label: 'B2B & Enterprise',
+    layer: 'Content Supply Chain',
+    products: ['GenStudio', 'AEM Assets', 'Frame.io'],
     color: 'var(--accent-secondary)',
-    products: [
-      { name: 'Journey Optimizer B2B', abbr: 'B2B', claim: 'Account-based journeys e orchestrazione buying group per il corporate banking.' },
-      { name: 'Marketo Engage', abbr: 'MKT', claim: 'Demand generation e lead nurturing per i segmenti business ed enterprise.' },
-    ],
+    claim: 'Dalla brief al deployment: varianti di contenuto in minuti, tracciabilità completa, review nativa.',
   },
+  {
+    layer: 'Customer Engagement',
+    products: ['Journey Optimizer B2C', 'Adobe Target', 'Real-Time CDP'],
+    color: 'var(--accent-primary)',
+    claim: 'Orchestrazione omnicanale in tempo reale — push, email, in-app, SMS, web — con profilo cliente unificato.',
+  },
+  {
+    layer: 'Adobe CX Analytics',
+    products: ['Customer Journey Analytics', 'Adobe Analytics', 'Mix Modeler', 'Content Analytics'],
+    color: 'var(--accent-primary)',
+    claim: 'Intelligence unificata: digital analytics, journey analytics, marketing ROI, content performance.',
+  },
+];
+
+const dataFoundation = [
+  { abbr: 'AEP', name: 'Adobe Experience Platform', claim: 'Hub centrale: raccoglie, governa, unifica e attiva ogni dato cliente in tempo reale su tutti i canali.' },
+  { abbr: 'CDP', name: 'Real-Time CDP', claim: 'Profilo cliente unificato aggiornato in millisecondi — da app, filiale, call center, online.' },
+  { abbr: 'DIA', name: 'Data Insights Agent', claim: 'AI agent che risponde in linguaggio naturale con root cause analysis verificata.' },
+  { abbr: 'MCP', name: 'MCP Server', claim: 'Espone le capability Adobe a qualsiasi AI client — Copilot, ChatGPT, Gemini, tool interni.' },
+];
+
+const b2bLayer = [
+  { abbr: 'AJO B2B', name: 'Journey Optimizer B2B', claim: 'Account-based journeys e buying group orchestration per il corporate banking.' },
+  { abbr: 'MKT', name: 'Marketo Engage', claim: 'Demand generation e lead nurturing per segmenti business ed enterprise.' },
+  { abbr: 'CJA B2B', name: 'CJA B2B Edition', claim: 'Analytics dedicato ai journey account-based — misura l\'engagement dei buying group.' },
+];
+
+const integrationAdvantages = [
+  { stat: '1', label: 'schema dati unificato', body: 'Tutti i prodotti parlano XDM. Zero mapping custom tra soluzioni.' },
+  { stat: '0', label: 'integrazioni da costruire', body: 'AEP è il data hub nativo. Ogni prodotto è già connesso.' },
+  { stat: '∞', label: 'scalabilità', body: 'Da 7M a 100M di clienti — stessa architettura, stessa governance.' },
 ];
 ---
 <BaseLayout
-  title="Il motore Adobe"
-  description="Lo stack Adobe completo per UniCredit: dalla fondazione dati alle journey, dai contenuti al B2B enterprise."
+  title="Adobe AI Platform"
+  description="Il sistema nervoso della CX UniCredit: Adobe AI Platform come fondazione, CX Analytics come intelligence, AEP come hub dati."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <UniNavigation currentPath={currentPath} base={base} />
@@ -68,13 +79,13 @@ const pillars = [
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-20"
-        scrim="bg-[var(--surface-inverse)]/82"
+        imageClass="opacity-18"
+        scrim="bg-[var(--surface-inverse)]/84"
       />
       <CoverHero
         eyebrow="IL SISTEMA"
-        title="Il motore Adobe"
-        lead="Non tre soluzioni separate. Una piattaforma unificata che connette dati, journey, contenuti e analytics in un unico sistema nervoso della customer experience."
+        title="Adobe CX Enterprise"
+        lead="Non quattro soluzioni separate. Una piattaforma unificata — alimentata da Adobe AI Platform — che connette dati, journey, contenuti e intelligence in un sistema nervoso unico."
         size="hero"
         tone="inverse"
         primary="UniCredit"
@@ -82,164 +93,231 @@ const pillars = [
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Foundation & Data ─────────────────────────────── -->
-    <Slide id="slide-data" bg="inverse" align="center">
+    <!-- ── SLIDE 1: Adobe AI Platform ────────────────────────────── -->
+    <Slide id="slide-ai-platform" bg="inverse" align="center">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--surface-inverse)]/90"
+        imageClass="opacity-8"
+        scrim="bg-[var(--surface-inverse)]/92"
       />
-      {pillars.filter(p => p.id === 'data').map(pillar => (
-        <>
-          <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 1 DI 4</p>
-          <h2
-            class="slide-title text-[var(--ink-inverse)] mb-10"
-            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-            data-reveal
-            data-reveal-delay="0.1"
-          >
-            {pillar.label}
-          </h2>
-          <div
-            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
-            data-reveal
-            data-reveal-delay="0.2"
-          >
-            {pillar.products.map(p => (
-              <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-8 h-8 rounded bg-[var(--accent-primary)]/20 flex items-center justify-center text-[10px] font-bold text-[var(--accent-primary)]">{p.abbr}</span>
-                  <span class="text-xs font-semibold text-[var(--ink-inverse)]">{p.name}</span>
-                </div>
-                <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{p.claim}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ))}
-    </Slide>
-
-    <!-- ── SLIDE 2: Journeys & Personalization ────────────────────── -->
-    <Slide id="slide-journeys" bg="inverse" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--surface-inverse)]/90"
-      />
-      {pillars.filter(p => p.id === 'journeys').map(pillar => (
-        <>
-          <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 2 DI 4</p>
-          <h2
-            class="slide-title text-[var(--ink-inverse)] mb-10"
-            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-            data-reveal
-            data-reveal-delay="0.1"
-          >
-            {pillar.label}
-          </h2>
-          <div
-            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
-            data-reveal
-            data-reveal-delay="0.2"
-          >
-            {pillar.products.map(p => (
-              <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
-                <div class="flex items-center gap-2 mb-3">
-                  <span class="w-8 h-8 rounded bg-[var(--accent-secondary)]/20 flex items-center justify-center text-[10px] font-bold text-[var(--accent-secondary)]">{p.abbr}</span>
-                  <span class="text-xs font-semibold text-[var(--ink-inverse)]">{p.name}</span>
-                </div>
-                <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{p.claim}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      ))}
-    </Slide>
-
-    <!-- ── SLIDE 3: Content & B2B ─────────────────────────────────── -->
-    <Slide id="slide-content-b2b" bg="inverse" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--surface-inverse)]/90"
-      />
-      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PILLAR 3–4 DI 4</p>
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-4" data-reveal>LA FONDAZIONE</p>
       <h2
-        class="slide-title text-[var(--ink-inverse)] mb-10"
+        class="slide-title text-[var(--ink-inverse)] mb-3"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
-        data-reveal-delay="0.1"
+        data-reveal-delay="0.08"
       >
-        Content at Scale + B2B
+        Adobe AI Platform
       </h2>
-      <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6"
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
         data-reveal
-        data-reveal-delay="0.2"
+        data-reveal-delay="0.15"
       >
-        {pillars.filter(p => p.id === 'content' || p.id === 'b2b').map(pillar => (
-          <div class="p-5 bg-[var(--color-grigio-500)]/8 border border-[var(--color-grigio-500)]/20 rounded-sm">
-            <p class="text-xs font-semibold uppercase tracking-widest mb-4" style={`color: ${pillar.color};`}>{pillar.label}</p>
-            <div class="flex flex-col gap-3">
-              {pillar.products.map(p => (
-                <div class="flex items-start gap-3">
-                  <span class="w-7 h-7 rounded flex-shrink-0 flex items-center justify-center text-[9px] font-bold mt-0.5" style={`background: ${pillar.color}20; color: ${pillar.color};`}>{p.abbr}</span>
-                  <div>
-                    <p class="text-xs font-medium text-[var(--ink-inverse)]">{p.name}</p>
-                    <p class="text-[11px] text-[var(--color-grigio-400)] leading-relaxed mt-0.5">{p.claim}</p>
-                  </div>
-                </div>
-              ))}
+        L'AI che alimenta Adobe CX Enterprise non è generica — è radicata nel contesto del cliente: dati, contenuti, brand, processi. Costruita per enterprise regolamentate come il banking.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {aiPlatformCapabilities.map((cap) => (
+          <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
+            <p class="text-sm font-semibold text-[var(--accent-secondary)] mb-2">{cap.label}</p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed">{cap.body}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Data Foundation (AEP + CDP + DIA + MCP) ───────── -->
+    <Slide id="slide-data-foundation" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>FONDAZIONE DATI</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-5"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Un hub. Quattro superpoteri.
+      </h2>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-secondary)] max-w-2xl mb-10"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Adobe Experience Platform centralizza tutti i dati UniCredit. Sopra ci costruisce il profilo cliente unificato, l'intelligence AI e la connettività universale.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {dataFoundation.map((item) => (
+          <div class="flex items-start gap-4 p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <span class="w-10 h-10 flex-shrink-0 rounded bg-[var(--accent-primary)]/12 flex items-center justify-center text-[10px] font-bold text-[var(--accent-primary)]">
+              {item.abbr}
+            </span>
+            <div>
+              <p class="text-sm font-semibold text-[var(--ink-primary)] mb-1">{item.name}</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">{item.claim}</p>
             </div>
           </div>
         ))}
       </div>
     </Slide>
 
-    <!-- ── SLIDE 4: Sistema unificato → risultati ─────────────────── -->
-    <Slide id="slide-unified" bg="brand" align="center">
+    <!-- ── SLIDE 3: Stack completo (4 layer) ──────────────────────── -->
+    <Slide id="slide-stack" bg="secondary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>ADOBE CX ENTERPRISE · STACK COMPLETO</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-8"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Da ogni dato a ogni esperienza
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto flex flex-col gap-3"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        {stackLayers.map((layer, i) => (
+          <div class="flex items-center gap-5 p-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm">
+            <div class="w-40 flex-shrink-0 text-left">
+              <p class="text-[10px] font-semibold uppercase tracking-wider mb-0.5" style={`color: ${layer.color};`}>Layer {i + 1}</p>
+              <p class="text-xs font-semibold text-[var(--ink-primary)]">{layer.layer}</p>
+            </div>
+            <div class="flex flex-wrap gap-2 flex-1">
+              {layer.products.map((p) => (
+                <span class="px-2.5 py-1 text-[10px] font-medium border rounded-sm" style={`border-color: ${layer.color}40; color: ${layer.color};`}>
+                  {p}
+                </span>
+              ))}
+            </div>
+            <p class="text-xs text-[var(--ink-secondary)] leading-relaxed flex-1 text-right max-w-xs hidden md:block">{layer.claim}</p>
+          </div>
+        ))}
+
+        <div class="flex items-center gap-5 p-4 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/20 rounded-sm">
+          <div class="w-40 flex-shrink-0">
+            <p class="text-[10px] font-semibold uppercase tracking-wider text-[var(--accent-secondary)] mb-0.5">Foundation</p>
+            <p class="text-xs font-semibold text-[var(--ink-primary)]">Adobe Experience Platform</p>
+          </div>
+          <p class="text-xs text-[var(--ink-secondary)] flex-1">AEP · Real-Time CDP · Data Insights Agent · MCP Server · Adobe AI Platform</p>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: B2B Layer ─────────────────────────────────────── -->
+    <Slide id="slide-b2b-layer" bg="inverse" align="center" data-solution="ajo-b2b">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--accent-primary)]/80"
+        imageClass="opacity-8"
+        scrim="bg-[var(--surface-inverse)]/92"
       />
-      <p class="slide-eyebrow text-[var(--ink-inverse)]/75 mb-5" data-reveal>IL VANTAGGIO DELL'INTEGRAZIONE</p>
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-4" data-reveal>B2B · CORPORATE BANKING</p>
       <h2
-        class="slide-title text-[var(--ink-inverse)] mb-8"
+        class="slide-title text-[var(--ink-inverse)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
-        data-reveal-delay="0.1"
+        data-reveal-delay="0.08"
       >
-        Un sistema. Non tre soluzioni.
+        Il layer B2B:<br/>account-based intelligence
+      </h2>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Le stesse fondamenta AEP — estese per il corporate banking: journey orchestrati per account, analytics dei buying group, demand generation automation.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {b2bLayer.map((item) => (
+          <div class="flex flex-col gap-3 p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm">
+            <span class="w-9 h-9 rounded bg-[var(--accent-secondary)]/20 flex items-center justify-center text-[10px] font-bold text-[var(--accent-secondary)] flex-shrink-0">
+              {item.abbr}
+            </span>
+            <div>
+              <p class="text-sm font-semibold text-[var(--ink-inverse)] mb-2">{item.name}</p>
+              <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{item.claim}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Vantaggio integrazione ────────────────────────── -->
+    <Slide id="slide-integration" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-8"
+        scrim="bg-[var(--accent-primary)]/85"
+      />
+      <p class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-5" data-reveal>IL VANTAGGIO ARCHITETTURALE</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-5"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Un sistema.<br/>Non undici soluzioni.
       </h2>
       <p
         class="text-[clamp(1.1rem,1.6vw,1.5rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-12"
         data-reveal
-        data-reveal-delay="0.2"
+        data-reveal-delay="0.15"
       >
-        AEP come hub centrale significa che ogni dato, ogni journey e ogni contenuto parla la stessa lingua. Zero integrazione custom. Time-to-value misurato in settimane, non anni.
+        AEP come hub centrale significa che ogni dato, ogni journey e ogni contenuto parla la stessa lingua. Zero integrazione custom tra prodotti. Time-to-value in settimane, non anni.
       </p>
 
       <div
-        class="flex flex-wrap justify-center gap-3 mb-12"
+        class="w-full max-w-3xl mx-auto grid grid-cols-3 gap-6 mb-12"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {integrationAdvantages.map((adv) => (
+          <div class="text-center">
+            <p
+              class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-2"
+              style="font-size: clamp(3rem, 6vw, 5.5rem);"
+            >
+              {adv.stat}
+            </p>
+            <p class="text-sm font-medium text-[var(--ink-inverse)] mb-1.5">{adv.label}</p>
+            <p class="text-xs text-[var(--ink-inverse)]/65 leading-relaxed">{adv.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="flex flex-wrap justify-center gap-2.5 mb-12"
         data-reveal
         data-reveal-delay="0.3"
       >
-        {['AEP', 'Real-Time CDP', 'CJA', 'AJO B2C', 'Target', 'AEM Sites', 'GenStudio', 'Firefly', 'AEM Assets', 'AJO B2B', 'Marketo'].map(name => (
-          <span class="px-3 py-1.5 bg-[var(--ink-inverse)]/15 text-[var(--ink-inverse)] text-xs font-medium border border-[var(--ink-inverse)]/25 rounded-full">
+        {['AEP', 'Real-Time CDP', 'CX Analytics', 'AJO B2C', 'Target', 'AEM Sites', 'GenStudio', 'Firefly', 'AEM Assets', 'AJO B2B', 'Marketo', 'Mix Modeler', 'Data Insights Agent', 'MCP'].map((name) => (
+          <span class="px-3 py-1.5 bg-[var(--ink-inverse)]/12 text-[var(--ink-inverse)] text-xs font-medium border border-[var(--ink-inverse)]/22 rounded-full">
             {name}
           </span>
         ))}
       </div>
 
-      <div data-reveal data-reveal-delay="0.45">
+      <div data-reveal data-reveal-delay="0.4">
         <a
           href={href(base, '/risultati')}
-          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300"
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
         >
           I risultati
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">

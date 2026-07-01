@@ -11,30 +11,82 @@ import { mediaProps } from '../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+const cxaPillars = [
+  { id: 'digital', label: 'Digital Analytics', body: 'Misura ogni interazione digitale — app, web, call center — con la profondità di Adobe Analytics.' },
+  { id: 'journeys', label: 'Customer & Group Journeys', body: "Unifica il percorso cross-channel in un workspace unico: dall'app alla filiale, dal push al mutuo firmato." },
+  { id: 'marketing', label: 'Marketing Planning & ROI', body: 'Attribution causale AI-powered. Ottimizza budget in-flight con segnali di conversione reali, non proxy.' },
+  { id: 'content', label: 'Content Intelligence', body: 'Misura quale contenuto porta a risultati — per segmento, canale e momento del journey.' },
+];
+
+const agentCapabilities = [
+  {
+    icon: '◉',
+    title: 'Parla la lingua del business',
+    body: 'Chiedi "perché le domande di mutuo sono calate questa settimana" e ottieni la risposta con root cause analysis in minuti, non giorni.',
+  },
+  {
+    icon: '◈',
+    title: 'Grounded in truth',
+    body: 'Ogni insight è verificato sul motore analitico di Adobe. Ciò che emerge è fattuale — non solo plausibile.',
+  },
+  {
+    icon: '◇',
+    title: 'Built for trust',
+    body: 'Gli analisti validano e collaborano sugli insight prima che arrivino al C-suite. L\'AI amplifica il team, non lo bypassa.',
+  },
+  {
+    icon: '◆',
+    title: 'Answers why in minutes',
+    body: 'Root Cause Analysis individua automaticamente le anomalie e spiega le cause — su 4 milioni di clienti, in tempo reale.',
+  },
+];
+
+const everywhereChannels = [
+  { name: 'AI Assistant', sub: 'Adobe nativo', color: 'var(--accent-primary)' },
+  { name: 'Microsoft Copilot', sub: 'nel workspace aziendale', color: 'var(--accent-secondary)' },
+  { name: 'ChatGPT', sub: 'accesso universale', color: 'var(--accent-primary)' },
+  { name: 'MCP Server', sub: 'qualsiasi client AI', color: 'var(--accent-secondary)' },
+  { name: 'Data Insights Agent', sub: 'embed in ogni app', color: 'var(--accent-primary)' },
+];
+
+const llmInsightsPoints = [
+  { label: 'Conversazione', body: 'Analizza come i clienti interagiscono con il Brand Concierge UniCredit — quali domande fanno, dove si bloccano.' },
+  { label: 'Scoperta AI-driven', body: 'Misura quanto traffico arriva da LLM (Gemini, ChatGPT) e come si comporta rispetto ai canali tradizionali.' },
+  { label: 'AI Journey', body: 'Traccia il percorso di clienti che iniziano da un assistente AI esterno e completano una transazione nel digital banking.' },
+];
+
+const bankingUseCases = [
+  {
+    tag: 'Retail Banking',
+    title: 'Offline data ingestion',
+    body: 'Connetti i dati di filiale e call center ai journey digitali. Comprendi il percorso completo del cliente — anche quando passa dall\'app allo sportello.',
+    solution: 'CJA',
+  },
+  {
+    tag: 'Churn Prevention',
+    title: 'Segnali precoci di abbandono',
+    body: 'CJA identifica pattern di engagement che precedono il churn 14-30 giorni prima. AJO attiva automaticamente journey di retention personalizzate.',
+    solution: 'CJA + AJO',
+  },
+  {
+    tag: 'Attribution',
+    title: 'Full-funnel attribution causale',
+    body: 'Collega i dati pubblicitari ai segnali comportamentali per ottimizzare budget campagna con AI causale proprietaria Adobe — non last-click.',
+    solution: 'Marketing Campaign Analytics',
+  },
+];
+
 const funnelSteps = [
-  { channel: 'App', event: 'Accesso', users: '4.000.000', pct: 100 },
-  { channel: 'App', event: 'Sezione Prestiti', users: '820.000', pct: 20.5 },
-  { channel: 'Web / App', event: 'Simulazione mutuo', users: '144.000', pct: 3.6 },
-  { channel: 'Call / Filiale', event: 'Appuntamento', users: '28.000', pct: 0.7 },
-  { channel: 'Filiale', event: 'Contratto firmato', users: '9.200', pct: 0.23 },
-];
-
-const insights = [
-  { label: 'Drop-off critico', value: '80% abbandona a "Sezione Prestiti"', action: 'A/B test con Target: landing semplificata, rata subito visibile' },
-  { label: 'Churn prediction', value: '12.400 clienti a rischio abbandono', action: 'AJO attiva journey di retention 14 giorni prima del churn previsto' },
-  { label: 'Attribution gap', value: 'Il 40% dei mutui chiusi non risulta attribuito', action: 'CJA traccia il percorso completo cross-device, incl. filiale' },
-];
-
-const cjaCapabilities = [
-  { label: 'Cross-channel stitching', body: 'Unifica app, web, filiale, call center in un unico percorso cliente.' },
-  { label: 'AI anomaly detection', body: 'Identifica automaticamente drop-off anomali e ne avvisa il team analytics.' },
-  { label: 'Cohort analysis', body: 'Confronta comportamento clienti acquisiti via app vs. filiale nel lungo periodo.' },
-  { label: 'Real-time attribution', body: "Ogni campagna sa quanto ha contribuito alla conversione — senza silos di dati." },
+  { event: 'Accesso app', users: '4.000.000', pct: 100 },
+  { event: 'Sezione Prestiti', users: '820.000', pct: 20.5 },
+  { event: 'Simulazione mutuo', users: '144.000', pct: 3.6 },
+  { event: 'Appuntamento', users: '28.000', pct: 0.7 },
+  { event: 'Contratto firmato', users: '9.200', pct: 0.23 },
 ];
 ---
 <BaseLayout
-  title="L'intelligenza dei dati"
-  description="Customer Journey Analytics unifica il percorso cross-channel per rivelare opportunità e prevenire il churn."
+  title="Adobe CX Analytics"
+  description="L'intelligenza dati che trasforma ogni decisione: Data Insights Agent, LLM Insights, Marketing Campaign Analytics — per UniCredit."
   pageSolutions={['cja']}
 >
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -44,49 +96,226 @@ const cjaCapabilities = [
   <DeckContainer nextHref={href(base, '/b2b')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="secondary" align="center">
+    <Slide id="slide-cover" bg="inverse" align="center">
       <SlideBackdrop
         slot="backdrop"
-        {...mediaProps('bg-marble')}
-        imageClass="opacity-30"
-        scrim="bg-[var(--surface-secondary)]/78"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-18"
+        scrim="bg-[var(--surface-inverse)]/84"
       />
       <CoverHero
-        eyebrow="05 · ANALYTICS"
+        eyebrow="05 · ADOBE CX ANALYTICS"
         numeral="05"
-        title="L'intelligenza dei dati"
-        lead="Ogni cliente attraversa 5–7 canali prima di firmare. Customer Journey Analytics rivela dove si perde il valore — e perché."
+        title="L'intelligenza<br/>che decide"
+        lead="Non più reportistica. Insight azionabili ovunque lavori il team — dall'analista al CEO, dall'app a Microsoft Copilot."
         size="phase"
-        tone="ink"
+        tone="inverse"
         signature={false}
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Cross-channel funnel ─────────────────────────── -->
-    <Slide id="slide-funnel" bg="primary" align="split">
-      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+    <!-- ── SLIDE 1: Annuncio Adobe CX Analytics ───────────────────── -->
+    <Slide id="slide-cxa-brand" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-8"
+        scrim="bg-[var(--accent-primary)]/85"
+      />
+      <p class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-4" data-reveal>SUMMIT 2026 · ANNUNCIO CHIAVE</p>
+      <h2
+        class="text-[var(--ink-inverse)] mb-3"
+        style="font-size: clamp(1rem, 1.4vw, 1.3rem); font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase;"
+        data-reveal
+        data-reveal-delay="0.05"
+      >
+        Announcing
+      </h2>
+      <p
+        class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-8"
+        style="font-size: clamp(3rem, 6.5vw, 6rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Adobe CX Analytics
+      </p>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-10"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        La piattaforma di intelligence unificata che connette analytics digitali, journey analytics, marketing ROI e content intelligence in un'unica fondazione — alimentata da Adobe AI Platform.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        {cxaPillars.map((p) => (
+          <div class="p-4 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-left">
+            <p class="text-[10px] font-semibold text-[var(--accent-secondary)] uppercase tracking-wider mb-2">{p.label}</p>
+            <p class="text-xs text-[var(--ink-inverse)]/75 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Data Insights Agent ──────────────────────────── -->
+    <Slide id="slide-agent" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
         <div class="text-left">
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CUSTOMER JOURNEY ANALYTICS</p>
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>DATA INSIGHTS AGENT</p>
           <h2
-            class="slide-title text-[var(--ink-primary)] mb-6"
-            style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+            class="slide-title text-[var(--ink-primary)] mb-5"
+            style="font-size: clamp(2rem, 4vw, 3.75rem);"
             data-reveal
-            data-reveal-delay="0.1"
+            data-reveal-delay="0.08"
           >
-            Il funnel mutuo:<br/>dove si perde il cliente
+            L'analista AI che risponde al "perché"
           </h2>
           <p
-            class="text-[var(--ink-secondary)] leading-relaxed"
-            style="font-size: clamp(1.05rem, 1.4vw, 1.3rem);"
+            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
+            style="font-size: clamp(1rem, 1.35vw, 1.25rem);"
             data-reveal
-            data-reveal-delay="0.2"
+            data-reveal-delay="0.15"
           >
-            4 milioni di accessi al mese. Solo 9.200 contratti firmati. Il 99,8% dei potenziali clienti si perde lungo il percorso — spesso in punti che senza CJA restano invisibili.
+            Chiedi in linguaggio naturale. Ottieni root cause analysis in minuti — non giorni. Verificato sul motore analitico Adobe, non generato.
           </p>
+          <div class="p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm" data-reveal data-reveal-delay="0.22">
+            <p class="text-xs font-semibold text-[var(--ink-tertiary)] uppercase tracking-wide mb-2">Esempio UniCredit</p>
+            <p class="text-sm text-[var(--ink-primary)] italic">"Perché le richieste di mutuo via app sono calate del 18% questa settimana rispetto alla media?"</p>
+            <p class="text-xs text-[var(--accent-primary)] mt-2 font-medium">→ Root Cause: step 3 del flow aumentato a 4.2s dopo deploy v2.3.1 · segmento 35–44 anni più impattato</p>
+          </div>
         </div>
 
-        <div class="flex flex-col gap-2" data-reveal data-reveal-delay="0.3">
-          {funnelSteps.map((step, i) => (
+        <div class="flex flex-col gap-4" data-reveal data-reveal-delay="0.3">
+          {agentCapabilities.map((cap) => (
+            <div class="flex items-start gap-4 p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <span class="text-[var(--accent-primary)] text-xl flex-shrink-0 mt-0.5">{cap.icon}</span>
+              <div>
+                <p class="text-sm font-semibold text-[var(--ink-primary)] mb-1">{cap.title}</p>
+                <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">{cap.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Analytics Everywhere + MCP ───────────────────── -->
+    <Slide id="slide-everywhere" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-inverse)]/88"
+      />
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-4" data-reveal>ANALYTICS EVERYWHERE</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-5"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        L'intelligence<br/>ovunque lavori il team
+      </h2>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Tramite MCP (Model Context Protocol), Adobe CX Analytics espone i dati di CJA e Adobe Analytics a qualsiasi AI assistant — senza export, senza integrazione custom.
+      </p>
+
+      <div
+        class="w-full max-w-3xl mx-auto grid grid-cols-5 gap-3 mb-10"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {everywhereChannels.map((ch, i) => (
+          <div class="p-3 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-center">
+            <p class="text-xs font-semibold text-[var(--ink-inverse)] mb-0.5">{ch.name}</p>
+            <p class="text-[10px] text-[var(--color-grigio-400)]">{ch.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="max-w-3xl mx-auto p-5 bg-[var(--color-grigio-500)]/8 border border-[var(--color-grigio-500)]/20 rounded-sm text-left" data-reveal data-reveal-delay="0.3">
+        <p class="text-xs font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-2">Impact per Cristina D'Ambrosio — Digital Channels</p>
+        <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed">Il team di Digital Channels può interrogare i dati di performance dell'app UniCredit direttamente da Microsoft Copilot nel loro workflow quotidiano — senza aprire un tool di analytics separato.</p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: LLM Insights ──────────────────────────────────── -->
+    <Slide id="slide-llm" bg="primary" align="center">
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>LLM INSIGHTS · NUOVA CAPABILITY</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-5"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Misurare l'era dell'AI conversazionale
+      </h2>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-secondary)] max-w-2xl mb-10"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        I clienti iniziano il percorso finanziario chiedendo a Gemini o ChatGPT. LLM Insights rende questo traffico misurabile per la prima volta.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5 mb-10"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {llmInsightsPoints.map((p) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-xs font-semibold text-[var(--accent-primary)] uppercase tracking-wide mb-3">{p.label}</p>
+            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="max-w-3xl p-4 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/20 rounded-sm" data-reveal data-reveal-delay="0.3">
+        <p class="text-sm text-[var(--ink-primary)] leading-relaxed">
+          <span class="font-semibold">UniCredit relevance:</span> con l'espansione del Brand Concierge nel mobile banking, LLM Insights misura l'efficacia delle conversazioni AI — tasso di completamento task, satisfaction score, conversioni da dialogo a transazione.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Banking use cases + funnel ────────────────────── -->
+    <Slide id="slide-banking" bg="secondary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>USE CASE · RETAIL BANKING</p>
+          <h2
+            class="slide-title text-[var(--ink-primary)] mb-7"
+            style="font-size: clamp(2rem, 4vw, 3.75rem);"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Dove si perde<br/>il valore — e perché
+          </h2>
+          <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.15">
+            {bankingUseCases.map((uc) => (
+              <div class="p-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-[10px] font-semibold text-[var(--accent-primary)] uppercase tracking-wider">{uc.tag}</span>
+                  <span class="text-[10px] text-[var(--ink-tertiary)] bg-[var(--surface-secondary)] border border-[var(--line-subtle)] px-1.5 py-0.5 rounded">{uc.solution}</span>
+                </div>
+                <p class="text-xs font-semibold text-[var(--ink-primary)] mb-1">{uc.title}</p>
+                <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">{uc.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5" data-reveal data-reveal-delay="0.3">
+          <p class="text-xs font-semibold text-[var(--ink-tertiary)] uppercase tracking-wide mb-3">Funnel mutuo — dato reale UniCredit 2024</p>
+          {funnelSteps.map((step) => (
             <div class="flex items-center gap-3">
               <div
                 class="h-9 bg-[var(--accent-primary)] rounded-sm flex items-center px-3 text-white text-xs font-medium flex-shrink-0 transition-all"
@@ -94,82 +323,63 @@ const cjaCapabilities = [
               >
                 {step.event}
               </div>
-              <div class="flex-shrink-0 text-right">
+              <div class="flex-shrink-0">
                 <span class="text-xs font-semibold text-[var(--ink-primary)]">{step.users}</span>
                 <span class="text-[10px] text-[var(--ink-tertiary)] ml-1">({step.pct}%)</span>
               </div>
             </div>
           ))}
-          <p class="text-xs text-[var(--ink-tertiary)] mt-2">Dato illustrativo · pattern reale UniCredit 2024</p>
+          <p class="text-[10px] text-[var(--ink-tertiary)] mt-2">Pattern illustrativo · struttura reale UniCredit Retail Banking</p>
         </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: Insights azionabili ──────────────────────────── -->
-    <Slide id="slide-insights" bg="inverse" align="center">
+    <!-- ── SLIDE 6: Marketing Campaign Analytics ─────────────────── -->
+    <Slide id="slide-campaign" bg="inverse" align="center">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-12"
-        scrim="bg-[var(--surface-inverse)]/88"
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-inverse)]/90"
       />
-      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>DA DATI A DECISIONI</p>
+      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-4" data-reveal>MARKETING CAMPAIGN ANALYTICS · GA H2 2026</p>
       <h2
-        class="slide-title text-[var(--ink-inverse)] mb-10"
+        class="slide-title text-[var(--ink-inverse)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
-        data-reveal-delay="0.1"
+        data-reveal-delay="0.08"
       >
-        Ogni insight ha un'azione
+        Full-funnel. Causale. Agentico.
       </h2>
+      <p
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Una visione unificata dell'efficacia di ogni campagna — dalla prima impression al contratto firmato. Powered by causal AI proprietaria Adobe.
+      </p>
 
       <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5"
         data-reveal
-        data-reveal-delay="0.2"
+        data-reveal-delay="0.22"
       >
-        {insights.map((ins) => (
+        {[
+          { label: 'Causal AI', body: 'Attribution causale — non correlazione. Sa cosa ha davvero mosso l\'ago della bilancia tra tutti i canali.' },
+          { label: 'In-flight optimization', body: 'Ottimizza le campagne attive in tempo reale con insight legati a revenue — non a click o impression.' },
+          { label: 'Agentic recommendations', body: 'Raccomandazioni budget generate dall\'AI con spiegazione causale. Il team decide, l\'AI prepara l\'analisi.' },
+        ].map((item) => (
           <div class="p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
-            <p class="text-xs font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-2">{ins.label}</p>
-            <p class="text-sm font-medium text-[var(--ink-inverse)] mb-3 leading-snug">{ins.value}</p>
-            <div class="pt-3 border-t border-[var(--color-grigio-500)]/20">
-              <p class="text-[10px] text-[var(--color-grigio-400)] uppercase tracking-wide mb-1">Azione connessa</p>
-              <p class="text-xs text-[var(--color-grigio-300)] leading-relaxed">{ins.action}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 3: CJA capabilities ─────────────────────────────── -->
-    <Slide id="slide-cja" bg="primary" align="center">
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CUSTOMER JOURNEY ANALYTICS</p>
-      <h2
-        class="slide-title text-[var(--ink-primary)] mb-10"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.1"
-      >
-        La visione completa del cliente
-      </h2>
-
-      <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-10"
-        data-reveal
-        data-reveal-delay="0.2"
-      >
-        {cjaCapabilities.map((cap) => (
-          <div class="p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="text-sm font-semibold text-[var(--accent-primary)] mb-2">{cap.label}</p>
-            <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">{cap.body}</p>
+            <p class="text-sm font-semibold text-[var(--accent-secondary)] mb-3">{item.label}</p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed">{item.body}</p>
           </div>
         ))}
       </div>
 
-      <div data-reveal data-reveal-delay="0.4">
+      <div class="mt-10" data-reveal data-reveal-delay="0.35">
         <a
           href={href(base, '/b2b')}
-          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
+          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
         >
           Banking per le imprese
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">

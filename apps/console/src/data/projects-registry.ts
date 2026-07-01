@@ -1,4 +1,4 @@
-export type SolutionPillar = 'foundation' | 'data' | 'journeys' | 'content' | 'analytics' | 'personalization' | 'b2b';
+export type SolutionPillar = 'foundation' | 'data' | 'journeys' | 'content' | 'analytics' | 'personalization' | 'b2b' | 'intelligence';
 
 export interface ConsoleSolution {
   id: string;
@@ -107,6 +107,38 @@ const UNICREDIT_SOLUTIONS: ConsoleSolution[] = [
     description: 'Marketing automation B2B per lead generation corporate.',
     pagesGated: ['B2B'],
   },
+  {
+    id: 'cx-analytics',
+    name: 'Adobe CX Analytics',
+    shortName: 'CX Analytics',
+    pillar: 'intelligence',
+    description: 'Nuovo umbrella: CJA + Content Analytics + Adobe Analytics — intelligence unificata.',
+    pagesGated: ['Analizza'],
+  },
+  {
+    id: 'data-insights-agent',
+    name: 'Data Insights Agent',
+    shortName: 'DIA',
+    pillar: 'intelligence',
+    description: 'AI agent per root cause analysis in linguaggio naturale — powered by Adobe AI Platform.',
+    pagesGated: ['Analizza'],
+  },
+  {
+    id: 'content-analytics',
+    name: 'Adobe Content Analytics',
+    shortName: 'Content Analytics',
+    pillar: 'intelligence',
+    description: 'Misura quale contenuto porta a risultati — per segmento, canale, momento del journey.',
+    pagesGated: ['Contenuti', 'Analizza'],
+  },
+  {
+    id: 'mix-modeler',
+    name: 'Adobe Mix Modeler',
+    shortName: 'Mix Modeler',
+    pillar: 'intelligence',
+    description: 'Marketing Campaign Analytics con causal AI — full-funnel attribution e budget optimization.',
+    pagesGated: ['Analizza'],
+  },
 ];
 
 export const PROJECTS: ConsoleProject[] = [
@@ -140,6 +172,7 @@ export const PILLAR_LABELS: Record<SolutionPillar, string> = {
   analytics: 'Analytics',
   personalization: 'Personalization',
   b2b: 'B2B',
+  intelligence: 'CX Analytics & AI',
 };
 
 export const PILLAR_ORDER: SolutionPillar[] = [
@@ -148,6 +181,7 @@ export const PILLAR_ORDER: SolutionPillar[] = [
   'journeys',
   'content',
   'analytics',
+  'intelligence',
   'personalization',
   'b2b',
 ];

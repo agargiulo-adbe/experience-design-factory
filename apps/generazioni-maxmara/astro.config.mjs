@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'url';
 
 export default defineConfig({
   site: 'https://agargiulo-adbe.github.io',
@@ -10,7 +11,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     resolve: {
       alias: {
-        '@edf/core': new URL('../../packages/core/src', import.meta.url).pathname,
+        '@edf/core': fileURLToPath(new URL('../../packages/core/src', import.meta.url)),
       },
     },
   },

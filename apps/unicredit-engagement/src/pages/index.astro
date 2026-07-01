@@ -5,25 +5,33 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
-import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const pillars = [
-  { label: 'Conosci', sublabel: 'Real-Time CDP', solution: 'rtcdp', color: '#BE2027' },
-  { label: 'Acquisisci', sublabel: 'Journey Optimizer', solution: 'ajo-b2c', color: '#C9A96E' },
-  { label: 'Coinvolgi', sublabel: 'Personalization', solution: 'ajo-b2c', color: '#BE2027' },
-  { label: 'Scala', sublabel: 'GenStudio', solution: 'genstudio', color: '#C9A96E' },
-  { label: 'Analizza', sublabel: 'CJA', solution: 'cja', color: '#BE2027' },
-  { label: 'B2B', sublabel: 'AJO B2B', solution: 'ajo-b2b', color: '#C9A96E' },
+const journey = [
+  { num: '00', label: 'Scenario', sub: 'Il momento del banking', href: '/scenario' },
+  { num: '01', label: 'Conosci', sub: 'Real-Time CDP', href: '/conosci', solution: 'rtcdp' },
+  { num: '02', label: 'Acquisisci', sub: 'Journey Optimizer', href: '/acquisisci', solution: 'ajo-b2c' },
+  { num: '03', label: 'Coinvolgi', sub: 'Personalizzazione', href: '/coinvolgi', solution: 'ajo-b2c' },
+  { num: '04', label: 'Contenuti', sub: 'GenStudio', href: '/contenuti', solution: 'genstudio' },
+  { num: '05', label: 'Analizza', sub: 'CX Analytics', href: '/analizza', solution: 'cja' },
+  { num: '06', label: 'B2B', sub: 'AJO B2B + Marketo', href: '/b2b', solution: 'ajo-b2b' },
+  { num: '07', label: 'Il Motore', sub: 'Adobe AI Platform', href: '/motore-adobe' },
+  { num: '08', label: 'Risultati', sub: 'ROI & business case', href: '/risultati' },
+];
+
+const unicreditStats = [
+  { value: '7M', label: 'clienti UniCredit', sub: '4M attivamente digitali' },
+  { value: '60%+', label: 'transazioni online', sub: 'target 80% entro 2026 · UCX' },
+  { value: '€13B', label: 'utile netto 2028', sub: 'obiettivo piano Unlimited' },
 ];
 ---
 <BaseLayout
   title="Engagement Unlimited"
-  description="Come Adobe trasforma ogni interazione in una relazione per UniCredit."
+  description="Come Adobe trasforma ogni interazione digitale in una relazione che crea valore — per UniCredit."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <UniNavigation currentPath={currentPath} base={base} />
@@ -36,8 +44,8 @@ const pillars = [
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-banking-city')}
-        imageClass="opacity-20"
-        scrim="bg-[var(--surface-inverse)]/82"
+        imageClass="opacity-18"
+        scrim="bg-[var(--surface-inverse)]/84"
       />
       <CoverHero
         eyebrow="UniCredit × Adobe"
@@ -50,39 +58,38 @@ const pillars = [
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Piano strategico UniCredit Unlimited ─────────── -->
+    <!-- ── SLIDE 1: Piano strategico UniCredit ────────────────────── -->
     <Slide id="slide-strategy" bg="primary" align="center">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-marble')}
-        imageClass="opacity-30"
-        scrim="bg-[var(--surface-primary)]/80"
+        imageClass="opacity-25"
+        scrim="bg-[var(--surface-primary)]/82"
       />
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>IL CONTESTO</p>
+      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>IL CONTESTO STRATEGICO</p>
       <h2
-        class="slide-title text-[var(--ink-primary)] mb-6"
+        class="slide-title text-[var(--ink-primary)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
-        data-reveal-delay="0.1"
+        data-reveal-delay="0.08"
       >
         UniCredit Unlimited
       </h2>
       <p
-        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-14"
-        style="font-size: clamp(1.15rem, 1.5vw, 1.45rem);"
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10"
+        style="font-size: clamp(1.1rem, 1.45vw, 1.4rem);"
         data-reveal
-        data-reveal-delay="0.2"
+        data-reveal-delay="0.15"
       >
-        Il piano strategico 2026–2028 punta su tecnologia e AI come abilitatori chiave.
-        L'obiettivo: diventare la banca di riferimento per la relazione digitale con i clienti.
+        Il piano strategico 2026–2028 identifica tecnologia e AI come abilitatori chiave per diventare la banca di riferimento nella relazione digitale con i clienti italiani.
       </p>
 
-      <div class="relative w-full max-w-4xl mx-auto grid grid-cols-3 gap-6" data-reveal data-reveal-delay="0.3">
-        {[
-          { value: '7M', label: 'clienti UniCredit', sub: '4M attivamente digitali' },
-          { value: '60%+', label: 'transazioni online', sub: 'target 80% entro 2026' },
-          { value: '€13B', label: 'utile netto 2028', sub: 'dal piano Unlimited' },
-        ].map((m) => (
+      <div
+        class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-6"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {unicreditStats.map((m) => (
           <div class="text-center p-6 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
             <p
               class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-2"
@@ -97,53 +104,61 @@ const pillars = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: La sfida + il percorso ───────────────────────── -->
+    <!-- ── SLIDE 2: Roadmap del percorso ──────────────────────────── -->
     <Slide id="slide-journey" bg="brand" align="center">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--accent-primary)]/82"
+        imageClass="opacity-12"
+        scrim="bg-[var(--accent-primary)]/83"
       />
-      <p
-        data-display
-        class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-inverse)] mb-7"
-        style="font-size: clamp(4rem, 10vw, 9rem);"
-      >
-        <span data-count-up="60">0</span>%
-      </p>
-      <p
-        class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-inverse)] leading-snug mb-5 max-w-3xl"
+      <p class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-5" data-reveal>IL PERCORSO</p>
+      <h2
+        class="slide-title text-[var(--ink-inverse)] mb-4"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
-        data-reveal-delay="0.2"
+        data-reveal-delay="0.08"
       >
-        Il 60% delle transazioni è già digitale. Ma digital non significa ancora personale.
-        Adobe trasforma la scala in rilevanza.
-      </p>
+        Da ogni dato a ogni relazione
+      </h2>
       <p
-        class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--ink-inverse)]/65 mb-12"
+        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-inverse)]/78 max-w-2xl mb-10"
         data-reveal
-        data-reveal-delay="0.28"
+        data-reveal-delay="0.15"
       >
-        UniCredit Investor Day 2024 · UCX Programme
+        Una piattaforma unificata. Nove capitoli. Dalla conoscenza del cliente alla prova del ROI — alimentato da Adobe AI Platform.
       </p>
 
       <div
-        class="flex flex-wrap justify-center gap-3 mb-12"
+        class="w-full max-w-5xl mx-auto grid grid-cols-3 md:grid-cols-5 gap-3 mb-10"
         data-reveal
-        data-reveal-delay="0.35"
+        data-reveal-delay="0.22"
       >
-        {pillars.map((p) => (
-          <span
-            data-nav-solution={p.solution}
-            class="inline-flex items-center gap-1.5 px-4 py-2 bg-[var(--ink-inverse)]/15 text-[var(--ink-inverse)] text-sm font-medium tracking-wide border border-[var(--ink-inverse)]/30 rounded-full"
+        {journey.slice(0, 5).map((step) => (
+          <a
+            href={href(base, step.href)}
+            data-nav-solution={step.solution ?? undefined}
+            class="p-3 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-left hover:bg-[var(--ink-inverse)]/18 transition-colors no-underline group"
           >
-            {p.label}
-          </span>
+            <p class="text-[10px] font-semibold text-[var(--ink-inverse)]/55 mb-1">{step.num}</p>
+            <p class="text-xs font-semibold text-[var(--ink-inverse)] mb-0.5 group-hover:text-[var(--ink-inverse)]">{step.label}</p>
+            <p class="text-[10px] text-[var(--ink-inverse)]/60">{step.sub}</p>
+          </a>
+        ))}
+        {journey.slice(5).map((step) => (
+          <a
+            href={href(base, step.href)}
+            data-nav-solution={step.solution ?? undefined}
+            class="p-3 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-left hover:bg-[var(--ink-inverse)]/18 transition-colors no-underline group"
+          >
+            <p class="text-[10px] font-semibold text-[var(--ink-inverse)]/55 mb-1">{step.num}</p>
+            <p class="text-xs font-semibold text-[var(--ink-inverse)] mb-0.5 group-hover:text-[var(--ink-inverse)]">{step.label}</p>
+            <p class="text-[10px] text-[var(--ink-inverse)]/60">{step.sub}</p>
+          </a>
         ))}
       </div>
 
-      <div data-reveal data-reveal-delay="0.5">
+      <div data-reveal data-reveal-delay="0.35">
         <a
           href={href(base, '/scenario')}
           class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
