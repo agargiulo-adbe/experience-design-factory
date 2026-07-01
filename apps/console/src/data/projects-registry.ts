@@ -1,5 +1,11 @@
 export type SolutionPillar = 'foundation' | 'data' | 'journeys' | 'content' | 'analytics' | 'personalization' | 'b2b' | 'intelligence';
 
+export interface MediaSlot {
+  id: string;
+  label: string;
+  page: string;
+}
+
 export interface ConsoleSolution {
   id: string;
   name: string;
@@ -16,6 +22,7 @@ export interface ConsoleProject {
   description: string;
   baseUrl: string;
   solutions: ConsoleSolution[];
+  mediaSlots?: MediaSlot[];
 }
 
 const UNICREDIT_SOLUTIONS: ConsoleSolution[] = [
@@ -141,6 +148,9 @@ const UNICREDIT_SOLUTIONS: ConsoleSolution[] = [
   },
 ];
 
+// Media slots are dynamic demo boxes inside deck slides.
+// Each slot is addressable by ID; config is stored in localStorage key
+// `edf:media-slots:<project-slug>` and applied at runtime (no server needed).
 export const PROJECTS: ConsoleProject[] = [
   {
     slug: 'unicredit-engagement',
@@ -149,6 +159,19 @@ export const PROJECTS: ConsoleProject[] = [
     description: 'Come Adobe trasforma ogni interazione digitale in una relazione che crea valore — per ogni cliente UniCredit, in ogni momento.',
     baseUrl: '/experience-design-factory/unicredit-engagement/',
     solutions: UNICREDIT_SOLUTIONS,
+    mediaSlots: [
+      { id: 'conosci-rtcdp-demo', label: 'RT-CDP Unified Profile', page: 'Conosci' },
+      { id: 'acquisisci-jo-demo', label: 'Journey Optimizer Demo', page: 'Acquisisci' },
+      { id: 'coinvolgi-target-demo', label: 'Adobe Target Demo', page: 'Coinvolgi' },
+      { id: 'coinvolgi-experimentation-demo', label: 'Experimentation Accelerator', page: 'Coinvolgi' },
+      { id: 'contenuti-genstudio-demo', label: 'GenStudio Demo', page: 'Contenuti' },
+      { id: 'contenuti-brandconcierge-demo', label: 'Brand Concierge Demo', page: 'Contenuti' },
+      { id: 'analizza-dia-demo', label: 'Data Insights Agent Demo', page: 'Analizza' },
+      { id: 'analizza-cxa-demo', label: 'CX Analytics Dashboard', page: 'Analizza' },
+      { id: 'coworker-chat-demo', label: 'Coworker Chat Demo', page: 'Coworker AI' },
+      { id: 'coworker-campaigns-demo', label: 'Coworker Campaigns Demo', page: 'Coworker AI' },
+      { id: 'motore-stack-demo', label: 'AI Platform Architecture', page: 'Motore Adobe' },
+    ],
   },
   {
     slug: 'generazioni-maxmara',

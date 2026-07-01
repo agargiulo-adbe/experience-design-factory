@@ -48,6 +48,24 @@ export const assets: AssetSlot[] = [
     alt: '',
   },
 
+  {
+    id: 'bg-visibilita',
+    type: 'stock',
+    query: 'AI search digital discovery network abstract dark minimal future technology',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'duotone',
+    alt: '',
+  },
+  {
+    id: 'bg-coworker',
+    type: 'stock',
+    query: 'AI collaboration professional workflow team light modern minimal office',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'editorial',
+    alt: '',
+  },
   // ── Persona B2C ────────────────────────────────────────────────────
   {
     id: 'persona-marco',

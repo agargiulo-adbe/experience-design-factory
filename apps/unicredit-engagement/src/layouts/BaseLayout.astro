@@ -40,6 +40,71 @@ const PROJECT_SLUG = 'unicredit-engagement';
 </html>
 
 <!--
+  Media Demo Slot runtime: runs synchronously (is:inline) before deck.ts.
+  Reads slot config from localStorage and injects media into [data-media-slot]
+  elements. When a slot is active + has a URL: shows it. When hidden: display:none
+  so the parent flex container reflows content to full width automatically.
+  Listens for storage events (cross-tab) and edf:slots-updated (same-tab admin).
+-->
+<script is:inline>
+(function() {
+  var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
+
+  function applySlots() {
+    var rawConfig = null;
+    try { rawConfig = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+    if (!rawConfig) return;
+
+    var config;
+    try { config = JSON.parse(rawConfig); } catch(e) { return; }
+
+    var slots = document.querySelectorAll('[data-media-slot]');
+    slots.forEach(function(el) {
+      var id = el.getAttribute('data-media-slot');
+      var slotCfg = config[id];
+
+      if (!slotCfg || !slotCfg.active || !slotCfg.url) {
+        el.style.display = 'none';
+        // Remove active marker from parent flex container
+        var parentFlex = el.closest('[data-demo-flex]');
+        if (parentFlex) parentFlex.removeAttribute('data-slot-active');
+        return;
+      }
+
+      el.style.display = 'block';
+      var inner = el.querySelector('.media-slot-inner');
+      if (!inner) return;
+
+      if (slotCfg.type === 'video') {
+        inner.innerHTML = '<video src="' + slotCfg.url + '" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>';
+      } else {
+        inner.innerHTML = '<img src="' + slotCfg.url + '" alt="' + (slotCfg.caption || '') + '" style="width:100%;height:100%;object-fit:cover;">';
+      }
+
+      // Signal parent flex container to enable split layout
+      var parentFlex = el.closest('[data-demo-flex]');
+      if (parentFlex) {
+        parentFlex.setAttribute('data-slot-active', '');
+      }
+    });
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applySlots);
+  } else {
+    applySlots();
+  }
+
+  // Listen for admin updates: cross-tab via storage event, same-tab via custom event
+  window.addEventListener('storage', function(e) {
+    if (e.key === STORAGE_KEY) applySlots();
+  });
+  window.addEventListener('edf:slots-updated', applySlots);
+})();
+</script>
+
+<!--
   Solutions runtime: runs synchronously (is:inline) before any module script (deck.ts).
   Reads active solutions from localStorage or ?s= URL param.
   Removes [data-slide] from disabled-solution slides so the deck doesn't count them.
