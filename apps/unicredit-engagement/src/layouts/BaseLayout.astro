@@ -152,13 +152,28 @@ const PROJECT_SLUG = 'unicredit-engagement';
     }
   }
 
-  // Listen for live config changes from Admin Console (postMessage)
+  function applyIncoming(activeIds) {
+    var incoming = JSON.stringify(activeIds);
+    var current = null;
+    try { current = localStorage.getItem(STORAGE_KEY); } catch (_) {}
+    if (current === incoming) return; // already synced — no reload, prevents iframe loop
+    try { localStorage.setItem(STORAGE_KEY, incoming); } catch (_) {}
+    location.reload();
+  }
+
+  // postMessage from preview iframe wrapper
   window.addEventListener('message', function(e) {
     if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(e.data.activeIds));
-    } catch (_) {}
-    location.reload();
+    applyIncoming(e.data.activeIds);
   });
+
+  // BroadcastChannel from Admin Console (same-origin, cross-tab)
+  try {
+    var bc = new BroadcastChannel('edf-console');
+    bc.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
+      applyIncoming(e.data.activeIds);
+    });
+  } catch (_) {}
 })();
 </script>
