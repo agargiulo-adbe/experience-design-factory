@@ -50,9 +50,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Separate concurrency group for deploy — queue, never cancel.
-    # This prevents mid-flight cancellations from leaving stale
-    # GitHub Pages deployments that block the next activation.
     concurrency:
       group: github-pages-deploy
       cancel-in-progress: false
@@ -60,5 +57,35 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Cancel stuck GitHub Pages deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ids=$(gh api "repos/${{ github.repository }}/pages/deployments" \
+            --jq '.[] | select(
+              .status != "succeed" and
+              .status != "failed" and
+              .status != "cancelled" and
+              .status != "timeout"
+            ) | .id' 2>/dev/null || true)
+          for id in $ids; do
+            echo "Canceling stuck deployment: $id"
+            gh api -X POST "repos/${{ github.repository }}/pages/deployments/$id/cancel" || true
+          done
+
+      - name: Skip if not latest commit on main
+        id: guard
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(gh api "repos/${{ github.repository }}/git/refs/heads/main" --jq '.object.sha')
+          if [ "$latest" != "${{ github.sha }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Stale commit — skipping deploy (${{ github.sha }} is not $latest)"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - id: deployment
+        if: steps.guard.outputs.skip != 'true'
         uses: actions/deploy-pages@v4
