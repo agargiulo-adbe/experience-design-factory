@@ -208,11 +208,35 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     applySlots();
   }
 
+  // Re-run on Astro ClientRouter navigations (inline scripts with identical content
+  // are not re-executed by the router, so we must listen for astro:page-load)
+  document.addEventListener('astro:page-load', applySlots);
+
   // Listen for admin updates: cross-tab via storage event, same-tab via custom event
   window.addEventListener('storage', function(e) {
     if (e.key === STORAGE_KEY) applySlots();
   });
   window.addEventListener('edf:slots-updated', applySlots);
+
+  // Show admin-only elements when console session is active
+  function applyConsoleMode() {
+    var show = false;
+    try {
+      if (new URLSearchParams(location.search).get('console') === '1') {
+        sessionStorage.setItem('edf:console', '1');
+        show = true;
+      } else if (sessionStorage.getItem('edf:console') === '1') {
+        show = true;
+      }
+    } catch(e) {}
+    if (show) {
+      document.querySelectorAll('[data-admin-only]').forEach(function(el) {
+        el.style.removeProperty('display');
+      });
+    }
+  }
+  document.addEventListener('astro:page-load', applyConsoleMode);
+  applyConsoleMode();
 })();
 </script>
 
