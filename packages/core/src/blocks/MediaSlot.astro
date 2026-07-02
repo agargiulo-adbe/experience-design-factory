@@ -26,9 +26,11 @@ interface Props {
   class?: string;
   sizes?: string;
   loading?: 'lazy' | 'eager';
+  /** CSS object-position for the image (default: 'center'). Use 'top' for portraits. */
+  objectPosition?: string;
 }
 
-const { media, src = null, fill = false, noText, class: className, sizes = '100vw', loading = 'lazy' } = Astro.props;
+const { media, src = null, fill = false, noText, class: className, sizes = '100vw', loading = 'lazy', objectPosition = 'center' } = Astro.props;
 const ratioStyle = fill ? undefined : `aspect-ratio:${ASPECT_CSS[media.aspect]}`;
 const boxClass = fill ? 'absolute inset-0' : 'relative w-full';
 ---
@@ -43,6 +45,7 @@ const boxClass = fill ? 'absolute inset-0' : 'relative w-full';
       loading={loading}
       decoding="async"
       class="absolute inset-0 h-full w-full object-cover"
+      style={`object-position: ${objectPosition}`}
     />
   </figure>
 ) : (

@@ -25,6 +25,7 @@ const caseStudies = [
     solution: 'Adobe Real-Time CDP + Journey Optimizer + GenStudio',
     result: '19× aumento conversioni · –60% costo per acquisizione · +2700% traffico AI-driven',
     relevance: 'Dimensioni comparabili. Stesso obiettivo: scala + rilevanza.',
+    pages: 'conosci,acquisisci,contenuti',
   },
   {
     bank: 'Itaú Unibanco',
@@ -33,6 +34,7 @@ const caseStudies = [
     solution: 'Adobe Experience Platform · Real-Time CDP · Customer Journey Analytics',
     result: '+42% engagement campagne personalizzate · 90% riduzione time-to-market campagne',
     relevance: 'Architettura legacy comparabile a UniCredit. Stesso stack di dati.',
+    pages: 'conosci,analizza',
   },
   {
     bank: 'TSB Bank',
@@ -41,6 +43,25 @@ const caseStudies = [
     solution: 'Adobe Journey Optimizer · Adobe Target · Real-Time CDP',
     result: '+31% NPS digitale · –28% opt-out email · 4× retention su clienti a rischio churn',
     relevance: 'Retail banking europeo. Focus su engagement e churn prevention.',
+    pages: 'conosci,acquisisci,coinvolgi',
+  },
+  {
+    bank: 'Deutsche Bank',
+    country: 'Germania',
+    challenge: "Modernizzare l'acquisizione digitale con SEO AI-driven e ridurre il time-to-market dei contenuti.",
+    solution: 'AEM Sites Edge Delivery · Real-Time CDP · Customer Journey Analytics',
+    result: '+45% traffico organico · –35% tempo produzione contenuti · 3× velocità go-to-market',
+    relevance: 'Stesso contesto regolatorio europeo e percorso di migrazione AEM Sites.',
+    pages: 'visibilita,conosci,analizza',
+  },
+  {
+    bank: 'Crédit Agricole Italia',
+    country: 'Italia',
+    challenge: 'Personalizzare le comunicazioni per 3M+ clienti in un mercato retail e PMI altamente competitivo.',
+    solution: 'Adobe Journey Optimizer · GenStudio for Performance Marketing · Real-Time CDP',
+    result: '+67% email open rate · +42% conversioni digital lending · –30% costo per lead',
+    relevance: 'Competitor diretto in Italia. Stesso segmento retail e PMI. Framework regolatorio identico.',
+    pages: 'acquisisci,contenuti',
   },
 ];
 
@@ -181,12 +202,13 @@ const unicreditRoi = [
       </h2>
 
       <div
+        id="case-studies-grid"
         class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
         data-reveal
         data-reveal-delay="0.2"
       >
         {caseStudies.map((cs) => (
-          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col">
+          <div class="case-study-card p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col" data-cs-pages={cs.pages}>
             <div class="flex items-start justify-between gap-2 mb-3">
               <p class="text-sm font-semibold text-[var(--ink-primary)]">{cs.bank}</p>
               <span class="text-sm text-[var(--ink-tertiary)] bg-[var(--surface-secondary)] border border-[var(--line-subtle)] px-1.5 py-0.5 rounded flex-shrink-0">{cs.country}</span>
@@ -261,7 +283,7 @@ const unicreditRoi = [
       </div>
 
       <p class="text-xs text-[var(--color-grigio-500)] mb-8" data-reveal data-reveal-delay="0.3">
-        Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB · adattata per portafoglio UniCredit 7M clienti
+        Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB, Deutsche Bank, Crédit Agricole Italia · adattata per portafoglio UniCredit 7M clienti
       </p>
 
       <div class="mt-8 text-center" data-reveal data-reveal-delay="0.4">
@@ -296,3 +318,45 @@ const unicreditRoi = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script is:inline>
+(function () {
+  var STORAGE_KEY = 'edf:media-slots:unicredit-engagement';
+
+  function filterCaseStudies() {
+    var config;
+    try { config = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (_) { config = {}; }
+
+    var activePages = new Set();
+    Object.keys(config).forEach(function (slotId) {
+      var cfg = config[slotId];
+      if (cfg && cfg.active && cfg.url) {
+        var prefix = slotId.split('-')[0];
+        activePages.add(prefix);
+      }
+    });
+
+    var cards = document.querySelectorAll('.case-study-card');
+    if (activePages.size === 0) {
+      cards.forEach(function (c) { c.style.display = ''; });
+      return;
+    }
+
+    cards.forEach(function (card) {
+      var pages = (card.getAttribute('data-cs-pages') || '').split(',');
+      var relevant = pages.some(function (p) { return activePages.has(p.trim()); });
+      card.style.display = relevant ? '' : 'none';
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', filterCaseStudies);
+  } else {
+    filterCaseStudies();
+  }
+  window.addEventListener('storage', function (e) {
+    if (e.key === STORAGE_KEY) filterCaseStudies();
+  });
+  window.addEventListener('edf:slots-updated', filterCaseStudies);
+})();
+</script>

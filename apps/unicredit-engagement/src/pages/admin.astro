@@ -111,6 +111,36 @@ const deckHref = href(base, '/');
                   </div>
                 </div>
 
+                <div class="field-row" data-autoplay-row={slot.id} style="display:none">
+                  <span class="field-label">Autoplay</span>
+                  <div class="radio-group">
+                    <label class="radio-label">
+                      <input type="radio" name={`autoplay-${slot.id}`} data-slot-autoplay={slot.id} value="auto" checked />
+                      Automatico
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" name={`autoplay-${slot.id}`} data-slot-autoplay={slot.id} value="delayed" />
+                      Ritardato
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" name={`autoplay-${slot.id}`} data-slot-autoplay={slot.id} value="manual" />
+                      Manuale
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field-group" data-delay-row={slot.id} style="display:none">
+                  <label class="field-label" for={`delay-${slot.id}`}>Ritardo <span class="field-optional">(secondi prima dell'avvio)</span></label>
+                  <input
+                    type="number"
+                    id={`delay-${slot.id}`}
+                    data-slot-delay={slot.id}
+                    min="1" max="60" value="3"
+                    class="field-input"
+                    style="max-width:120px;"
+                  />
+                </div>
+
                 <div class="field-group">
                   <label class="field-label" for={`caption-${slot.id}`}>Didascalia <span class="field-optional">(opzionale)</span></label>
                   <input
@@ -702,7 +732,21 @@ const deckHref = href(base, '/');
       if (urlInput && cfg.url) urlInput.value = cfg.url;
 
       var typeInputs = document.querySelectorAll('[data-slot-type="' + id + '"]');
-      typeInputs.forEach(function(r) { r.checked = r.value === (cfg.type || 'image'); });
+      var savedType = cfg.type || 'image';
+      typeInputs.forEach(function(r) { r.checked = r.value === savedType; });
+
+      var autoplayInputs = document.querySelectorAll('[data-slot-autoplay="' + id + '"]');
+      var savedAutoplay = cfg.autoplay || 'auto';
+      autoplayInputs.forEach(function(r) { r.checked = r.value === savedAutoplay; });
+
+      var delayInput = document.querySelector('[data-slot-delay="' + id + '"]');
+      if (delayInput && cfg.autoplayDelay) delayInput.value = cfg.autoplayDelay;
+
+      var autoplayRow = document.querySelector('[data-autoplay-row="' + id + '"]');
+      if (autoplayRow) autoplayRow.style.display = savedType === 'video' ? '' : 'none';
+
+      var delayRow = document.querySelector('[data-delay-row="' + id + '"]');
+      if (delayRow) delayRow.style.display = (savedType === 'video' && savedAutoplay === 'delayed') ? '' : 'none';
 
       var captionInput = document.querySelector('[data-slot-caption="' + id + '"]');
       if (captionInput && cfg.caption) captionInput.value = cfg.caption;
@@ -718,12 +762,16 @@ const deckHref = href(base, '/');
         var toggleInput = document.querySelector('[data-slot-toggle="' + id + '"]');
         var typeInput = document.querySelector('[data-slot-type="' + id + '"]:checked');
         var captionInput = document.querySelector('[data-slot-caption="' + id + '"]');
+        var autoplayInput = document.querySelector('[data-slot-autoplay="' + id + '"]:checked');
+        var delayInput2 = document.querySelector('[data-slot-delay="' + id + '"]');
 
         currentConfig[id] = {
           active: toggleInput ? toggleInput.checked : false,
           url: urlInput ? urlInput.value.trim() : '',
           type: typeInput ? typeInput.value : 'image',
           caption: captionInput ? captionInput.value.trim() : '',
+          autoplay: autoplayInput ? autoplayInput.value : 'auto',
+          autoplayDelay: delayInput2 ? (parseInt(delayInput2.value, 10) || 3) : 3,
         };
 
         saveConfig(currentConfig);
@@ -735,6 +783,28 @@ const deckHref = href(base, '/');
           feedback.classList.add('visible');
           setTimeout(function() { feedback.classList.remove('visible'); }, 2000);
         }
+      });
+    });
+
+    // Type change → show/hide autoplay row
+    document.querySelectorAll('[data-slot-type]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        var sid = r.getAttribute('data-slot-type');
+        var aRow = document.querySelector('[data-autoplay-row="' + sid + '"]');
+        if (aRow) aRow.style.display = r.value === 'video' ? '' : 'none';
+        if (r.value !== 'video') {
+          var dRow = document.querySelector('[data-delay-row="' + sid + '"]');
+          if (dRow) dRow.style.display = 'none';
+        }
+      });
+    });
+
+    // Autoplay mode change → show/hide delay row
+    document.querySelectorAll('[data-slot-autoplay]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        var sid = r.getAttribute('data-slot-autoplay');
+        var dRow = document.querySelector('[data-delay-row="' + sid + '"]');
+        if (dRow) dRow.style.display = r.value === 'delayed' ? '' : 'none';
       });
     });
 
