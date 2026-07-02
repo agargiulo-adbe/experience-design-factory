@@ -10,8 +10,12 @@ permissions:
   pages: write
   id-token: write
 
+# Cancel in-progress BUILD runs when a new push arrives,
+# but let DEPLOY runs queue rather than cancel mid-flight.
+# Orphaned GitHub Pages deployments (from canceled deploys) cause
+# the next deploy to wait for them to expire — triggering timeouts.
 concurrency:
-  group: pages
+  group: pages-build
   cancel-in-progress: true
 
 jobs:
@@ -46,11 +50,15 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Separate concurrency group for deploy — queue, never cancel.
+    # This prevents mid-flight cancellations from leaving stale
+    # GitHub Pages deployments that block the next activation.
+    concurrency:
+      group: github-pages-deploy
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          timeout: 1800000
