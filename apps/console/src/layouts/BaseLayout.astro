@@ -3,53 +3,139 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
-  description?: string;
+  /** Active nav item — omitted on the bare login screen. */
+  active?: 'experiences' | 'users';
+  /** Hide the app shell (used by the login page). */
+  bare?: boolean;
 }
 
-const { title, description = 'Experience Design Factory Console' } = Astro.props;
+const { title, active, bare = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
-
-function consoleHref(path: string): string {
-  return base.replace(/\/$/, '') + path;
-}
+const href = (path: string) => base.replace(/\/$/, '') + path;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="it">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <title>{title} | EDF Console</title>
+    <title>{title} · EDF Console</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <header class="fixed top-0 left-0 right-0 z-50 h-12 flex items-center px-6 border-b" style="background: var(--bg-panel); border-color: var(--border);">
-      <a href={consoleHref('/')} class="flex items-center gap-2.5 group">
-        <div class="w-6 h-6 rounded flex items-center justify-center" style="background: var(--accent-red);">
-          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <rect x="2" y="2" width="5" height="5" rx="0.5"/>
-            <rect x="9" y="2" width="5" height="5" rx="0.5"/>
-            <rect x="2" y="9" width="5" height="5" rx="0.5"/>
-            <rect x="9" y="9" width="5" height="5" rx="0.5"/>
-          </svg>
+    {!bare && (
+      <header class="app-header">
+        <div class="app-header-inner">
+          <a href={href('/')} class="app-brand">
+            <span class="app-logo">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <rect x="2" y="2" width="5" height="5" rx="0.5"/><rect x="9" y="2" width="5" height="5" rx="0.5"/>
+                <rect x="2" y="9" width="5" height="5" rx="0.5"/><rect x="9" y="9" width="5" height="5" rx="0.5"/>
+              </svg>
+            </span>
+            <span class="app-brand-name">Experience Design Factory</span>
+            <span class="app-brand-badge">Super Admin</span>
+          </a>
+
+          <nav class="app-nav" aria-label="Sezioni console">
+            <a href={href('/')} class:list={['app-nav-link', active === 'experiences' && 'is-active']}>Experiences</a>
+            <a href={href('/users/')} class:list={['app-nav-link', active === 'users' && 'is-active']} data-super-only hidden>Utenti</a>
+          </nav>
+
+          <div class="app-user" data-user-menu hidden>
+            <span class="app-user-email" data-user-email></span>
+            <span class="app-user-role" data-user-role></span>
+            <button type="button" class="app-signout" data-signout title="Esci">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M11 11l3-3-3-3M14 8H6"/>
+              </svg>
+            </button>
+          </div>
         </div>
-        <span class="text-sm font-semibold" style="color: var(--ink-primary);">Experience Design Factory</span>
-        <span class="text-xs px-1.5 py-0.5 rounded text-[10px] font-medium" style="background: var(--accent-red-soft); color: var(--accent-red);">Console</span>
-      </a>
+      </header>
+    )}
 
-      <div class="ml-auto flex items-center gap-1.5 text-xs" style="color: var(--ink-tertiary);">
-        <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-green)]" aria-hidden="true"></span>
-        agargiulo@adobe.com
-      </div>
-    </header>
-
-    <main class="pt-12 min-h-dvh">
+    <main class:list={['app-main', bare && 'app-main-bare']}>
       <slot />
     </main>
+
+    <!-- Backend-not-configured banner (shown by guard when Supabase env missing) -->
+    <div class="backend-missing" data-backend-banner>
+      <div class="backend-missing-card">
+        <p class="backend-missing-title">Backend non configurato</p>
+        <p class="backend-missing-body">Imposta <code>PUBLIC_SUPABASE_URL</code> e <code>PUBLIC_SUPABASE_ANON_KEY</code> ed esegui il setup in <code>supabase/README.md</code>.</p>
+      </div>
+    </div>
+
+    {!bare && (
+      <script>
+        import { getSession, signOut } from '../lib/supabase';
+        import { getProfile } from '../lib/supabase';
+        const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+        (async () => {
+          const session = await getSession();
+          if (!session) return;
+          const menu = document.querySelector('[data-user-menu]');
+          const emailEl = document.querySelector('[data-user-email]');
+          const roleEl = document.querySelector('[data-user-role]');
+          if (emailEl) emailEl.textContent = session.user.email || '—';
+          try {
+            const p = await getProfile(session);
+            if (p?.is_super_admin) {
+              document.querySelectorAll('[data-super-only]').forEach((el) => el.removeAttribute('hidden'));
+              if (roleEl) roleEl.textContent = 'Super Admin';
+            } else if (roleEl) {
+              roleEl.textContent = 'Experience Admin';
+            }
+          } catch { /* ignore */ }
+          if (menu) menu.removeAttribute('hidden');
+          document.querySelector('[data-signout]')?.addEventListener('click', () => {
+            signOut();
+            location.href = base + '/login/';
+          });
+        })();
+      </script>
+    )}
+
+    <style is:global>
+      html { background: var(--bg-canvas); color: var(--ink-primary); font-size: 14px; }
+      body { min-height: 100dvh; font-family: var(--font-sans); }
+
+      .app-header { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid var(--border); }
+      .app-header-inner { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; height: 56px; display: flex; align-items: center; gap: 1.5rem; }
+      .app-brand { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+      .app-logo { width: 26px; height: 26px; border-radius: 6px; background: var(--accent-red); display: flex; align-items: center; justify-content: center; }
+      .app-brand-name { font-weight: 600; color: var(--ink-primary); letter-spacing: -0.01em; }
+      .app-brand-badge { font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-red); background: var(--accent-red-soft); padding: 2px 8px; border-radius: 20px; }
+      .app-nav { display: flex; gap: 0.25rem; margin-left: 0.5rem; }
+      .app-nav-link { padding: 0.4rem 0.75rem; font-size: 0.875rem; font-weight: 500; color: var(--ink-secondary); border-radius: 6px; transition: background 0.15s, color 0.15s; }
+      .app-nav-link:hover { background: var(--bg-card); color: var(--ink-primary); }
+      .app-nav-link.is-active { color: var(--accent-red); background: var(--accent-red-soft); }
+      .app-user { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; }
+      .app-user-email { font-size: 0.8125rem; color: var(--ink-secondary); }
+      .app-user-role { font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-tertiary); border: 1px solid var(--border); padding: 2px 7px; border-radius: 20px; }
+      .app-signout { display: inline-flex; padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: #fff; color: var(--ink-secondary); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+      .app-signout:hover { background: var(--accent-red-soft); color: var(--accent-red); border-color: var(--accent-red); }
+
+      .app-main { max-width: 68rem; margin: 0 auto; padding: 2.5rem 1.5rem; }
+      .app-main-bare { display: flex; align-items: center; justify-content: center; min-height: 100dvh; padding: 1.5rem; }
+
+      .backend-missing { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(245,242,238,0.96); align-items: center; justify-content: center; padding: 1.5rem; }
+      html[data-backend='missing'] .backend-missing { display: flex; }
+      .backend-missing-card { max-width: 26rem; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; text-align: center; }
+      .backend-missing-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+      .backend-missing-body { font-size: 0.875rem; color: var(--ink-secondary); line-height: 1.6; }
+      .backend-missing code { font-family: var(--font-mono); background: var(--bg-card); padding: 1px 5px; border-radius: 4px; font-size: 0.8em; }
+
+      /* Shared admin primitives */
+      .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--accent-red); color: #fff; font-weight: 500; font-size: 0.875rem; border: none; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+      .btn-primary:hover { background: #9e1a20; }
+      .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+      .btn-ghost { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; background: #fff; color: var(--ink-secondary); font-weight: 500; font-size: 0.8125rem; border: 1px solid var(--border-strong); border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+      .btn-ghost:hover { background: var(--accent-red-soft); color: var(--accent-red); border-color: var(--accent-red); }
+      .field-input { width: 100%; border: 1px solid var(--border-strong); border-radius: 6px; padding: 0.55rem 0.75rem; font-size: 0.875rem; font-family: inherit; color: var(--ink-primary); background: #fff; box-sizing: border-box; }
+      .field-input:focus { outline: none; border-color: var(--accent-red); box-shadow: 0 0 0 2px var(--accent-red-soft); }
+    </style>
   </body>
 </html>

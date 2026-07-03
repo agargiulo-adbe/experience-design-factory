@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Accedi" bare>
+  <div class="login-card">
+    <div class="login-head">
+      <span class="login-logo">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <rect x="2" y="2" width="5" height="5" rx="0.5"/><rect x="9" y="2" width="5" height="5" rx="0.5"/>
+          <rect x="2" y="9" width="5" height="5" rx="0.5"/><rect x="9" y="9" width="5" height="5" rx="0.5"/>
+        </svg>
+      </span>
+      <h1 class="login-title">Experience Design Factory</h1>
+      <p class="login-sub">Console di configurazione · accedi per continuare</p>
+    </div>
+
+    <form class="login-form" data-login-form>
+      <label class="login-label" for="email">Email di lavoro</label>
+      <input class="field-input" type="email" id="email" name="email" autocomplete="email" placeholder="nome@adobe.com" required />
+
+      <div data-password-row>
+        <label class="login-label" for="password">Password</label>
+        <input class="field-input" type="password" id="password" name="password" autocomplete="current-password" placeholder="••••••••" />
+      </div>
+
+      <p class="login-error" data-login-error hidden></p>
+
+      <button type="submit" class="btn-primary login-submit" data-login-submit>Accedi</button>
+
+      <button type="button" class="login-magic" data-magic-toggle>
+        Preferisci un link via email? <span>Invia magic link</span>
+      </button>
+      <p class="login-magic-sent" data-magic-sent hidden>✓ Link inviato. Controlla la tua casella.</p>
+    </form>
+
+    <p class="login-foot">
+      Nuovo qui? L'accesso è su invito. Chiedi a un Super Admin di aggiungerti.
+    </p>
+  </div>
+
+  <script>
+    import { signInWithPassword, signInWithOtp, captureHashSession, getSession } from '../lib/supabase';
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+    (async () => {
+      // If we arrived via an invite / magic-link, capture the token and enter.
+      captureHashSession();
+      const s = await getSession();
+      if (s) { location.replace(base + '/'); return; }
+    })();
+
+    const form = document.querySelector('[data-login-form]');
+    const err = document.querySelector('[data-login-error]');
+    const submit = document.querySelector('[data-login-submit]');
+    const pwRow = document.querySelector('[data-password-row]');
+    const magicToggle = document.querySelector('[data-magic-toggle]');
+    const magicSent = document.querySelector('[data-magic-sent]');
+    let magicMode = false;
+
+    function showError(msg) {
+      if (!err) return;
+      err.textContent = msg;
+      err.hidden = false;
+    }
+
+    magicToggle?.addEventListener('click', () => {
+      magicMode = !magicMode;
+      if (pwRow) pwRow.style.display = magicMode ? 'none' : '';
+      if (submit) submit.textContent = magicMode ? 'Invia magic link' : 'Accedi';
+      const span = magicToggle.querySelector('span');
+      if (span) span.textContent = magicMode ? 'usa la password' : 'Invia magic link';
+    });
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (err) err.hidden = true;
+      const fd = new FormData(form);
+      const email = String(fd.get('email') || '').trim();
+      const password = String(fd.get('password') || '');
+      if (submit) { submit.disabled = true; submit.textContent = '…'; }
+      try {
+        if (magicMode) {
+          await signInWithOtp(email, base + '/');
+          if (magicSent) magicSent.hidden = false;
+          if (submit) submit.textContent = 'Inviato';
+        } else {
+          await signInWithPassword(email, password);
+          location.href = base + '/';
+        }
+      } catch (ex) {
+        showError(ex.message || 'Accesso non riuscito. Controlla le credenziali.');
+        if (submit) { submit.disabled = false; submit.textContent = magicMode ? 'Invia magic link' : 'Accedi'; }
+      }
+    });
+  </script>
+
+  <style>
+    .login-card { width: 100%; max-width: 25rem; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 2rem; box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+    .login-head { text-align: center; margin-bottom: 1.75rem; }
+    .login-logo { display: inline-flex; width: 40px; height: 40px; border-radius: 10px; background: var(--accent-red); align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .login-title { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+    .login-sub { font-size: 0.8125rem; color: var(--ink-secondary); }
+    .login-form { display: flex; flex-direction: column; gap: 0.75rem; }
+    .login-label { font-size: 0.75rem; font-weight: 500; color: var(--ink-secondary); margin-bottom: 0.25rem; display: block; }
+    .login-error { font-size: 0.8125rem; color: var(--accent-red); background: var(--accent-red-soft); padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0; }
+    .login-submit { justify-content: center; margin-top: 0.25rem; }
+    .login-magic { background: none; border: none; font-size: 0.8125rem; color: var(--ink-tertiary); cursor: pointer; text-align: center; padding: 0.25rem; }
+    .login-magic span { color: var(--accent-red); font-weight: 500; }
+    .login-magic-sent { font-size: 0.8125rem; color: var(--accent-green); text-align: center; margin: 0; }
+    .login-foot { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--ink-tertiary); text-align: center; line-height: 1.5; }
+  </style>
+</BaseLayout>
