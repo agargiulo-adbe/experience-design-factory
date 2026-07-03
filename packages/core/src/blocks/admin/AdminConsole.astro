@@ -1,0 +1,1146 @@
+---
+/**
+ * AdminConsole — motore condiviso e config-driven dell'Experience Admin Console.
+ * UNA sola codebase per ogni experience: ogni miglioria/CR si propaga a tutte.
+ * La pagina che lo usa passa la config dell'experience come props.
+ */
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+interface SolutionEntry { id: string; name: string; shortName: string; pillar: string; description: string; appearsIn: string[]; }
+interface SolutionGroup { pillar: string; label: string; color: string; solutions: SolutionEntry[]; }
+
+interface Props {
+  projectSlug: string;
+  projectName: string;
+  clientLabel?: string;
+  deckHref: string;
+  pages: PageEntry[];
+  solutionGroups: SolutionGroup[];
+  allSolutionIds: string[];
+  supabaseUrl?: string;
+  supabaseAnonKey?: string;
+}
+
+const {
+  projectSlug,
+  projectName,
+  clientLabel = '',
+  deckHref,
+  pages: PAGE_REGISTRY,
+  solutionGroups,
+  allSolutionIds,
+  supabaseUrl: SUPABASE_URL = '',
+  supabaseAnonKey: SUPABASE_ANON_KEY = '',
+} = Astro.props;
+---
+
+<div class="admin-root">
+    <!-- Sticky Header -->
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-header-brand">
+          <span class="admin-logo">EDF Console</span>
+          <span class="admin-separator">·</span>
+          <span class="admin-project">{projectName}</span>
+          {clientLabel && <span class="admin-badge">{clientLabel}</span>}
+        </div>
+        <a href={deckHref} class="admin-back-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Torna al deck
+        </a>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="admin-main">
+      <div class="admin-content">
+        <!-- Page title -->
+        <div class="admin-page-title">
+          <h1>Console di configurazione</h1>
+          <p class="admin-subtitle">
+            Un unico posto per adattare l'experience al cliente: accendi o spegni le sezioni Adobe
+            e configura immagini o video demo per ogni slide. Tutto senza installare nulla.
+          </p>
+        </div>
+
+        <!-- Tab switcher -->
+        <div class="admin-tabs" role="tablist">
+          <button class="admin-tab is-active" type="button" role="tab" data-tab="sezioni" aria-selected="true">
+            <span class="admin-tab-num" data-count-sezioni></span>
+            Sezioni dell'esperienza
+          </button>
+          <button class="admin-tab" type="button" role="tab" data-tab="media" aria-selected="false">
+            <span class="admin-tab-num">{PAGE_REGISTRY.reduce((n, p) => n + p.slides.length, 0)}</span>
+            Media demo per slide
+          </button>
+        </div>
+
+        <!-- ══════════ TAB: SEZIONI (solutions on/off) ══════════ -->
+        <section class="admin-tabpanel" data-tabpanel="sezioni">
+          <!-- Info box -->
+          <div class="admin-info-box" role="note">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>
+              Ogni soluzione controlla le sezioni dell'experience in cui appare. Spegnendola, le slide legate
+              vengono nascoste dal deck. Le modifiche si applicano <strong>in tempo reale</strong> a ogni deck aperto in questo browser.
+            </span>
+          </div>
+
+          <div class="admin-block-header">
+            <div>
+              <h2 class="admin-block-title">Soluzioni attive</h2>
+              <p class="admin-block-sub">Compongono l'experience su misura per il cliente.</p>
+            </div>
+            <div class="admin-bulk-actions">
+              <button id="sol-enable-all" type="button" class="btn-ghost">Abilita tutto</button>
+              <button id="sol-disable-all" type="button" class="btn-ghost">Disabilita tutto</button>
+            </div>
+          </div>
+
+          <div class="solution-groups">
+            {solutionGroups.map((group) => (
+              <div class="solution-group">
+                <p class="solution-group-label" style={`color:${group.color};`}>
+                  <span class="solution-group-dot" style={`background:${group.color};`}></span>
+                  {group.label}
+                </p>
+                <div class="solution-grid">
+                  {group.solutions.map((sol) => (
+                    <div class="solution-card" data-solution-row={sol.id}>
+                      <div class="solution-card-main">
+                        <div class="solution-card-top">
+                          <span class="solution-name">{sol.name}</span>
+                          <span class="solution-short" style={`background:${group.color}18;color:${group.color};`}>{sol.shortName}</span>
+                        </div>
+                        <p class="solution-desc">{sol.description}</p>
+                        <div class="solution-sections">
+                          <span class="solution-sections-label">Compare in</span>
+                          {sol.appearsIn.map((sec) => (
+                            <span class="section-tag" style={`background:${group.color}14;color:${group.color};`}>{sec}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <label class="toggle-switch" title="Attiva soluzione">
+                        <input type="checkbox" data-solution-toggle={sol.id} checked />
+                        <span class="toggle-thumb"></span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Share sezioni (?s=) -->
+          <div class="admin-share-panel" id="sol-share-panel">
+            <div class="admin-share-header">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;color:#BE2027;">
+                <path d="M14 6a2 2 0 100-4 2 2 0 000 4zM6 10a2 2 0 100-4 2 2 0 000 4zM14 14a2 2 0 100 4 2 2 0 000-4z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8.17 8.88l3.66-2.76M8.17 11.12l3.66 2.76" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <h2 class="admin-share-title">Link con questa configurazione di sezioni</h2>
+                <p class="admin-share-desc">
+                  Il link pre-carica le sezioni attive tramite parametro <code>?s=</code> — senza toccare il browser del destinatario.
+                  Si aggiorna automaticamente a ogni modifica qui sopra.
+                </p>
+              </div>
+            </div>
+            <div class="admin-share-url-row">
+              <input type="text" id="sol-share-url" readonly class="share-url-input" placeholder="Tutte le sezioni attive — nessun parametro necessario" />
+              <button id="sol-copy-url" class="btn-copy-share" title="Copia URL">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                  <rect x="4" y="4" width="9" height="9" rx="1"/>
+                  <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
+                </svg>
+                Copia link
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════ TAB: MEDIA (slot manager) ══════════ -->
+        <section class="admin-tabpanel" data-tabpanel="media" hidden>
+          <!-- Info box -->
+          <div class="admin-info-box" role="note">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>
+              Configura gli slot e usa il pannello <strong>Condividi configurazione</strong> in fondo per generare un link condivisibile con cliente e colleghi.
+              Chi apre il link vedrà l'experience con gli stessi contenuti demo attivi — senza installare nulla.
+            </span>
+          </div>
+
+          <!-- Pages accordion -->
+        <div class="pages-accordion" id="pages-accordion">
+          {PAGE_REGISTRY.map((page) => (
+            <div class="page-section" data-page-section={page.slug}>
+              <button class="page-toggle" type="button" data-page-toggle={page.slug} aria-expanded="false">
+                <span class="page-section-label">{page.label}</span>
+                <span class="page-section-count">{page.slides.length} slide</span>
+                <svg class="page-toggle-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="slides-panel" data-slides-panel={page.slug} hidden>
+                <div class="slides-grid">
+                  {page.slides.map((slide, slideIndex) => {
+                    const slotKey = `${page.slug}:${slide.id}`;
+                    return (
+                      <div class="slide-card" data-card-key={slotKey}>
+                        <div class="slide-card-header">
+                          <div class="slide-card-info">
+                            <span class="slide-num-badge">{slideIndex}</span>
+                            <code class="slide-id-badge">{slide.id}</code>
+                            <span class="slide-card-label">{slide.label}</span>
+                          </div>
+                          <label class="toggle-switch" title="Attiva slot">
+                            <input type="checkbox" data-slot-toggle={slotKey} />
+                            <span class="toggle-thumb"></span>
+                          </label>
+                        </div>
+
+                        <div class="field-group">
+                          <label class="field-label" for={`url-${slotKey}`}>URL immagine o video</label>
+                          <input type="url" id={`url-${slotKey}`} data-slot-url={slotKey} placeholder="https://..." class="field-input" />
+                        </div>
+
+                        <div class="field-row">
+                          <span class="field-label">Tipo</span>
+                          <div class="radio-group">
+                            <label class="radio-label">
+                              <input type="radio" name={`type-${slotKey}`} data-slot-type={slotKey} value="image" checked />
+                              Immagine
+                            </label>
+                            <label class="radio-label">
+                              <input type="radio" name={`type-${slotKey}`} data-slot-type={slotKey} value="video" />
+                              Video
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="field-row" data-autoplay-row={slotKey} style="display:none">
+                          <span class="field-label">Autoplay</span>
+                          <div class="radio-group">
+                            <label class="radio-label">
+                              <input type="radio" name={`autoplay-${slotKey}`} data-slot-autoplay={slotKey} value="auto" checked />
+                              Automatico
+                            </label>
+                            <label class="radio-label">
+                              <input type="radio" name={`autoplay-${slotKey}`} data-slot-autoplay={slotKey} value="delayed" />
+                              Ritardato
+                            </label>
+                            <label class="radio-label">
+                              <input type="radio" name={`autoplay-${slotKey}`} data-slot-autoplay={slotKey} value="manual" />
+                              Manuale
+                            </label>
+                          </div>
+                        </div>
+
+                        <div class="field-group" data-delay-row={slotKey} style="display:none">
+                          <label class="field-label" for={`delay-${slotKey}`}>Ritardo <span class="field-optional">(secondi)</span></label>
+                          <input type="number" id={`delay-${slotKey}`} data-slot-delay={slotKey} min="1" max="60" value="3" class="field-input" style="max-width:120px;" />
+                        </div>
+
+                        <div class="slot-card-actions">
+                          <button data-slot-save={slotKey} class="btn-save">Salva</button>
+                          <span class="save-feedback" data-slot-feedback={slotKey} aria-live="polite"></span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Share panel -->
+        <div class="admin-share-panel" id="share-panel">
+          <div class="admin-share-header">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;color:#BE2027;">
+              <path d="M14 6a2 2 0 100-4 2 2 0 000 4zM6 10a2 2 0 100-4 2 2 0 000 4zM14 14a2 2 0 100 4 2 2 0 000-4z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8.17 8.88l3.66-2.76M8.17 11.12l3.66 2.76" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <h2 class="admin-share-title">Condividi configurazione</h2>
+              <p class="admin-share-desc">
+                Genera un link condivisibile con la configurazione attuale degli slot.
+                Il destinatario vedrà l'experience con gli stessi contenuti demo attivi — senza login, senza server.
+              </p>
+            </div>
+          </div>
+          <button id="generate-link-btn" class="btn-generate-link">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <path d="M8 3v10M3 8h10"/>
+            </svg>
+            Genera link condivisibile
+          </button>
+
+          <div class="admin-share-url-row" id="share-url-row" style="display:none">
+            <input type="text" id="share-url-input" readonly class="share-url-input" />
+            <button id="copy-share-url" class="btn-copy-share" title="Copia URL">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                <rect x="4" y="4" width="9" height="9" rx="1"/>
+                <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
+              </svg>
+              Copia link
+            </button>
+          </div>
+          <p class="admin-share-note" id="share-note">
+            Ogni link è permanente. Rigenera dopo ogni modifica per aggiornare la configurazione condivisa.
+          </p>
+        </div>
+
+          <!-- Footer actions -->
+          <div class="admin-footer-actions">
+            <button id="reset-all-slots" class="btn-reset">
+              Ripristina tutto
+            </button>
+            <p class="reset-hint">Elimina tutte le configurazioni demo slot dal browser.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+<style>
+  /* ---- Reset & Root ---- */
+  .admin-root {
+    min-height: 100dvh;
+    background: #F5F2EE;
+    font-family: Inter, system-ui, sans-serif;
+  }
+
+  /* ---- Header ---- */
+  .admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .admin-header-inner {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .admin-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+  .admin-logo {
+    font-weight: 600;
+    color: #111827;
+    letter-spacing: -0.01em;
+  }
+  .admin-separator {
+    color: #9ca3af;
+  }
+  .admin-project {
+    color: #6b7280;
+  }
+  .admin-badge {
+    background: #BE2027;
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.01em;
+    margin-left: 0.25rem;
+  }
+  .admin-back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: #6b7280;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+  }
+  .admin-back-link:hover {
+    background: #f3f4f6;
+    color: #111827;
+  }
+
+  /* ---- Main layout ---- */
+  .admin-main {
+    padding: 2.5rem 1.5rem;
+  }
+  .admin-content {
+    max-width: 56rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* ---- Page title ---- */
+  .admin-page-title h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #111827;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+  }
+  .admin-subtitle {
+    font-size: 0.9375rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ---- Info box ---- */
+  .admin-info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    background: #EEF2FF;
+    border: 1px solid #c7d2fe;
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+    color: #3730a3;
+    line-height: 1.5;
+  }
+
+  /* ---- Tabs ---- */
+  .admin-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: -0.5rem;
+  }
+  .admin-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-bottom: -1px;
+  }
+  .admin-tab:hover { color: #111827; }
+  .admin-tab.is-active { color: #BE2027; border-bottom-color: #BE2027; }
+  .admin-tab-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 20px; padding: 0 6px;
+    background: #e5e7eb; color: #374151;
+    font-size: 0.6875rem; font-weight: 700; border-radius: 20px;
+    font-variant-numeric: tabular-nums;
+  }
+  .admin-tab.is-active .admin-tab-num { background: #BE2027; color: #fff; }
+
+  .admin-tabpanel { display: flex; flex-direction: column; gap: 2rem; }
+  .admin-tabpanel[hidden] { display: none; }
+
+  /* ---- Block header ---- */
+  .admin-block-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .admin-block-title { font-size: 1.125rem; font-weight: 600; color: #111827; margin: 0 0 0.2rem; letter-spacing: -0.01em; }
+  .admin-block-sub { font-size: 0.8125rem; color: #6b7280; margin: 0; }
+  .admin-bulk-actions { display: flex; gap: 0.5rem; }
+  .btn-ghost {
+    padding: 0.375rem 0.75rem; background: #fff; color: #6b7280;
+    font-size: 0.8125rem; font-family: inherit; font-weight: 500;
+    border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s; white-space: nowrap;
+  }
+  .btn-ghost:hover { background: #fef2f2; color: #BE2027; border-color: #BE2027; }
+
+  /* ---- Solution groups ---- */
+  .solution-groups { display: flex; flex-direction: column; gap: 1.75rem; }
+  .solution-group-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.6875rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; margin: 0 0 0.75rem;
+  }
+  .solution-group-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.625rem; }
+  @media (max-width: 640px) { .solution-grid { grid-template-columns: 1fr; } }
+  .solution-card {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 0.875rem 1rem; transition: opacity 0.15s, border-color 0.15s;
+  }
+  .solution-card[data-inactive] { opacity: 0.5; border-style: dashed; }
+  .solution-card-main { flex: 1; min-width: 0; }
+  .solution-card-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
+  .solution-name { font-size: 0.875rem; font-weight: 600; color: #111827; }
+  .solution-short { font-size: 0.625rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  .solution-desc { font-size: 0.75rem; color: #6b7280; line-height: 1.45; margin: 0; }
+  .solution-sections { display: flex; align-items: center; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.5rem; }
+  .solution-sections-label { font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; }
+  .section-tag { font-size: 0.625rem; font-weight: 600; padding: 1px 7px; border-radius: 20px; white-space: nowrap; }
+
+  /* ---- Accordion ---- */
+  .pages-accordion { display: flex; flex-direction: column; gap: 0.5rem; }
+  .page-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+  .page-toggle {
+    width: 100%; display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 1.25rem; background: transparent; border: none;
+    cursor: pointer; text-align: left; transition: background 0.15s;
+  }
+  .page-toggle:hover { background: #f9fafb; }
+  .page-toggle[aria-expanded="true"] { background: #fef2f2; }
+  .page-section-label { flex: 1; font-size: 0.9375rem; font-weight: 600; color: #111827; }
+  .page-section-count { font-size: 0.8125rem; color: #6b7280; }
+  .page-toggle-chevron { flex-shrink: 0; color: #9ca3af; transition: transform 0.2s; }
+  .page-toggle[aria-expanded="true"] .page-toggle-chevron { transform: rotate(180deg); }
+  .slides-panel { padding: 0 1rem 1rem; }
+  .slides-panel[hidden] { display: none; }
+  .slides-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+
+  /* ---- Slide card (compact) ---- */
+  .slide-card {
+    background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 1rem; font-size: 0.875rem;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .slide-card-header { display: flex; align-items: center; gap: 0.75rem; }
+  .slide-card-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 0.625rem; flex-wrap: wrap; }
+  .slide-num-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; background: #374151; color: #fff; font-size: 0.625rem; font-weight: 700; border-radius: 50%; padding: 0 2px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .slide-id-badge { font-family: 'Menlo','Consolas',monospace; font-size: 0.6875rem; background: #e5e7eb; color: #374151; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+  .slide-card-label { font-size: 0.875rem; font-weight: 500; color: #374151; }
+
+  /* ---- Toggle switch ---- */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .toggle-thumb {
+    position: absolute;
+    inset: 0;
+    background: #d1d5db;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .toggle-thumb::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .toggle-switch input:checked + .toggle-thumb {
+    background: #BE2027;
+  }
+  .toggle-switch input:checked + .toggle-thumb::before {
+    transform: translateX(20px);
+  }
+  .toggle-switch input:focus-visible + .toggle-thumb {
+    outline: 2px solid #BE2027;
+    outline-offset: 2px;
+  }
+
+  /* ---- Fields ---- */
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+  }
+  .field-optional {
+    font-weight: 400;
+    color: #9ca3af;
+  }
+  .field-input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: #111827;
+    background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: #BE2027;
+    box-shadow: 0 0 0 2px rgba(190,32,39,0.12);
+  }
+  .field-input::placeholder {
+    color: #9ca3af;
+  }
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .radio-group {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+  }
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+  }
+  .radio-label input[type="radio"] {
+    accent-color: #BE2027;
+    cursor: pointer;
+  }
+
+  /* ---- Card actions ---- */
+  .slot-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+  .btn-save {
+    padding: 0.4375rem 1rem;
+    background: #BE2027;
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn-save:hover {
+    background: #9e1a20;
+  }
+  .save-feedback {
+    font-size: 0.8125rem;
+    color: #16a34a;
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .save-feedback.visible {
+    opacity: 1;
+  }
+
+  /* ---- Share panel ---- */
+  .admin-share-panel {
+    background: #fff;
+    border: 1.5px solid #BE2027;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .admin-share-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .admin-share-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .admin-share-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .btn-generate-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5625rem 1.125rem;
+    background: #111827;
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-generate-link:hover {
+    background: #1f2937;
+  }
+  .btn-generate-link:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .admin-share-url-row {
+    display: flex;
+    gap: 0.625rem;
+    align-items: stretch;
+  }
+  .share-url-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-family: 'Menlo', 'Consolas', monospace;
+    color: #374151;
+    background: #f9fafb;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .share-url-input:focus {
+    outline: none;
+    border-color: #BE2027;
+    box-shadow: 0 0 0 2px rgba(190,32,39,0.1);
+    background: #fff;
+  }
+  .share-url-input::placeholder {
+    color: #9ca3af;
+    font-family: Inter, system-ui, sans-serif;
+  }
+  .btn-copy-share {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: #BE2027;
+    color: #fff;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-copy-share:hover {
+    background: #9e1a20;
+  }
+  .btn-copy-share:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+  }
+  .admin-share-note {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---- Footer actions ---- */
+  .admin-footer-actions {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .btn-reset {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .btn-reset:hover {
+    background: #fef2f2;
+    color: #BE2027;
+    border-color: #BE2027;
+  }
+  .reset-hint {
+    font-size: 0.8125rem;
+    color: #9ca3af;
+    margin: 0;
+  }
+</style>
+
+<script is:inline define:vars={{ projectSlug, deckHref, SUPABASE_URL, SUPABASE_ANON_KEY, allSolutionIds }}>
+(function() {
+  var STORAGE_KEY = 'edf:media-slots:' + projectSlug;
+  var SOL_STORAGE_KEY = 'edf-solutions-' + projectSlug;
+  var PROJECT_SLUG = projectSlug;
+  var EXPERIENCE_URL = location.origin + deckHref;
+
+  // ── Solutions (section on/off) ────────────────────────────────
+  function loadSolutions() {
+    try {
+      var raw = localStorage.getItem(SOL_STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return null; // null = all active (no restriction)
+  }
+
+  function activeSolutionIds() {
+    var out = [];
+    document.querySelectorAll('[data-solution-toggle]').forEach(function(t) {
+      if (t.checked) out.push(t.getAttribute('data-solution-toggle'));
+    });
+    return out;
+  }
+
+  function updateSolutionRows() {
+    document.querySelectorAll('[data-solution-toggle]').forEach(function(t) {
+      var row = t.closest('[data-solution-row]');
+      if (!row) return;
+      if (t.checked) row.removeAttribute('data-inactive');
+      else row.setAttribute('data-inactive', '');
+    });
+  }
+
+  function updateSolutionCount() {
+    var badge = document.querySelector('[data-count-sezioni]');
+    if (badge) badge.textContent = activeSolutionIds().length + '/' + allSolutionIds.length;
+  }
+
+  function saveSolutions() {
+    var active = activeSolutionIds();
+    try { localStorage.setItem(SOL_STORAGE_KEY, JSON.stringify(active)); } catch(e) {}
+
+    // Shareable ?s= link (omit when all active)
+    var input = document.getElementById('sol-share-url');
+    if (input) {
+      input.value = active.length < allSolutionIds.length
+        ? EXPERIENCE_URL + '?s=' + active.join(',')
+        : '';
+    }
+
+    // Live broadcast to any open deck (same-origin, cross-tab)
+    var msg = { type: 'edf:solutions-changed', project: PROJECT_SLUG, activeIds: active };
+    try { new BroadcastChannel('edf-console').postMessage(msg); } catch(e) {}
+
+    updateSolutionRows();
+    updateSolutionCount();
+  }
+
+  function loadConfig() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch(e) { return {}; }
+  }
+
+  function saveConfig(config) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+    window.dispatchEvent(new CustomEvent('edf:slots-updated'));
+  }
+
+  async function generateShareableLink() {
+    var config = loadConfig();
+    var hasActive = Object.keys(config).some(function(k) {
+      return config[k] && config[k].active && config[k].url;
+    });
+
+    var genBtn = document.getElementById('generate-link-btn');
+    var urlRow = document.getElementById('share-url-row');
+    var shareInput = document.getElementById('share-url-input');
+    var note = document.getElementById('share-note');
+
+    if (!hasActive) {
+      if (note) { note.textContent = 'Attiva e salva almeno uno slot prima di generare il link.'; note.style.color = '#BE2027'; }
+      return;
+    }
+
+    if (genBtn) { genBtn.disabled = true; genBtn.textContent = 'Generazione…'; }
+    if (note) { note.textContent = ''; note.style.color = ''; }
+
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/media_configs', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ project_slug: PROJECT_SLUG, config: config })
+      });
+      var rows = await res.json();
+      var id = rows && rows[0] && rows[0].id;
+      if (!id) throw new Error('no id');
+
+      var shareUrl = EXPERIENCE_URL + '?cfg=' + id;
+      if (shareInput) shareInput.value = shareUrl;
+      if (urlRow) urlRow.style.display = 'flex';
+      if (note) { note.textContent = 'Link generato. Rigenera dopo ogni modifica per aggiornare la configurazione condivisa.'; note.style.color = '#16a34a'; }
+    } catch(e) {
+      if (note) { note.textContent = 'Errore nella generazione del link. Controlla la connessione e riprova.'; note.style.color = '#BE2027'; }
+    } finally {
+      if (genBtn) {
+        genBtn.disabled = false;
+        genBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg> Genera link condivisibile';
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    try { sessionStorage.setItem('edf:console', '1'); } catch(e) {}
+    var config = loadConfig();
+
+    // ── Tab switching ──────────────────────────────────────────
+    document.querySelectorAll('.admin-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        var name = tab.getAttribute('data-tab');
+        document.querySelectorAll('.admin-tab').forEach(function(t) {
+          var on = t === tab;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        document.querySelectorAll('[data-tabpanel]').forEach(function(p) {
+          if (p.getAttribute('data-tabpanel') === name) p.removeAttribute('hidden');
+          else p.setAttribute('hidden', '');
+        });
+      });
+    });
+
+    // ── Solutions init ─────────────────────────────────────────
+    var savedSolutions = loadSolutions();
+    if (savedSolutions) {
+      document.querySelectorAll('[data-solution-toggle]').forEach(function(t) {
+        t.checked = savedSolutions.indexOf(t.getAttribute('data-solution-toggle')) !== -1;
+      });
+    }
+    updateSolutionRows();
+    updateSolutionCount();
+    // Sync share URL to current state (without forcing a write if untouched)
+    (function() {
+      var input = document.getElementById('sol-share-url');
+      var active = activeSolutionIds();
+      if (input) input.value = active.length < allSolutionIds.length ? EXPERIENCE_URL + '?s=' + active.join(',') : '';
+    })();
+
+    document.querySelectorAll('[data-solution-toggle]').forEach(function(t) {
+      t.addEventListener('change', saveSolutions);
+    });
+
+    var solEnableAll = document.getElementById('sol-enable-all');
+    if (solEnableAll) solEnableAll.addEventListener('click', function() {
+      document.querySelectorAll('[data-solution-toggle]').forEach(function(t) { t.checked = true; });
+      saveSolutions();
+    });
+    var solDisableAll = document.getElementById('sol-disable-all');
+    if (solDisableAll) solDisableAll.addEventListener('click', function() {
+      document.querySelectorAll('[data-solution-toggle]').forEach(function(t) { t.checked = false; });
+      saveSolutions();
+    });
+
+    var solCopyBtn = document.getElementById('sol-copy-url');
+    var solShareInput = document.getElementById('sol-share-url');
+    if (solCopyBtn && solShareInput) {
+      solCopyBtn.addEventListener('click', function() {
+        var url = solShareInput.value || EXPERIENCE_URL;
+        navigator.clipboard.writeText(url).then(function() {
+          var orig = solCopyBtn.innerHTML;
+          solCopyBtn.textContent = '✓ Copiato!';
+          setTimeout(function() { solCopyBtn.innerHTML = orig; }, 2000);
+        }).catch(function() { solShareInput.select(); document.execCommand('copy'); });
+      });
+    }
+
+    // Accordion toggle logic
+    document.querySelectorAll('[data-page-toggle]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var slug = btn.getAttribute('data-page-toggle');
+        var panel = document.querySelector('[data-slides-panel="' + slug + '"]');
+        if (!panel) return;
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        if (expanded) {
+          panel.setAttribute('hidden', '');
+        } else {
+          panel.removeAttribute('hidden');
+        }
+      });
+    });
+
+    // Auto-expand sections that have active slots
+    Object.keys(config).forEach(function(slotKey) {
+      if (config[slotKey] && config[slotKey].active && config[slotKey].url) {
+        var parts = slotKey.split(':');
+        if (parts.length >= 2) {
+          var slug = parts[0];
+          var btn = document.querySelector('[data-page-toggle="' + slug + '"]');
+          var panel = document.querySelector('[data-slides-panel="' + slug + '"]');
+          if (btn && panel) {
+            btn.setAttribute('aria-expanded', 'true');
+            panel.removeAttribute('hidden');
+          }
+        }
+      }
+    });
+
+    // Populate each slot form from stored config
+    document.querySelectorAll('[data-slot-toggle]').forEach(function(toggle) {
+      var id = toggle.getAttribute('data-slot-toggle');
+      var cfg = config[id] || {};
+
+      toggle.checked = !!cfg.active;
+
+      var urlInput = document.querySelector('[data-slot-url="' + id + '"]');
+      if (urlInput && cfg.url) urlInput.value = cfg.url;
+
+      var typeInputs = document.querySelectorAll('[data-slot-type="' + id + '"]');
+      var savedType = cfg.type || 'image';
+      typeInputs.forEach(function(r) { r.checked = r.value === savedType; });
+
+      var autoplayInputs = document.querySelectorAll('[data-slot-autoplay="' + id + '"]');
+      var savedAutoplay = cfg.autoplay || 'auto';
+      autoplayInputs.forEach(function(r) { r.checked = r.value === savedAutoplay; });
+
+      var delayInput = document.querySelector('[data-slot-delay="' + id + '"]');
+      if (delayInput && cfg.autoplayDelay) delayInput.value = cfg.autoplayDelay;
+
+      var autoplayRow = document.querySelector('[data-autoplay-row="' + id + '"]');
+      if (autoplayRow) autoplayRow.style.display = savedType === 'video' ? '' : 'none';
+
+      var delayRow = document.querySelector('[data-delay-row="' + id + '"]');
+      if (delayRow) delayRow.style.display = (savedType === 'video' && savedAutoplay === 'delayed') ? '' : 'none';
+    });
+
+    // Save buttons
+    document.querySelectorAll('[data-slot-save]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var id = btn.getAttribute('data-slot-save');
+        var currentConfig = loadConfig();
+
+        var urlInput = document.querySelector('[data-slot-url="' + id + '"]');
+        var toggleInput = document.querySelector('[data-slot-toggle="' + id + '"]');
+        var typeInput = document.querySelector('[data-slot-type="' + id + '"]:checked');
+        var autoplayInput = document.querySelector('[data-slot-autoplay="' + id + '"]:checked');
+        var delayInput2 = document.querySelector('[data-slot-delay="' + id + '"]');
+
+        currentConfig[id] = {
+          active: toggleInput ? toggleInput.checked : false,
+          url: urlInput ? urlInput.value.trim() : '',
+          type: typeInput ? typeInput.value : 'image',
+          autoplay: autoplayInput ? autoplayInput.value : 'auto',
+          autoplayDelay: delayInput2 ? (parseInt(delayInput2.value, 10) || 3) : 3,
+        };
+
+        saveConfig(currentConfig);
+
+        // Visual feedback
+        var feedback = document.querySelector('[data-slot-feedback="' + id + '"]');
+        if (feedback) {
+          feedback.textContent = '✓ Salvato';
+          feedback.classList.add('visible');
+          setTimeout(function() { feedback.classList.remove('visible'); }, 2000);
+        }
+      });
+    });
+
+    // Type change → show/hide autoplay row
+    document.querySelectorAll('[data-slot-type]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        var sid = r.getAttribute('data-slot-type');
+        var aRow = document.querySelector('[data-autoplay-row="' + sid + '"]');
+        if (aRow) aRow.style.display = r.value === 'video' ? '' : 'none';
+        if (r.value !== 'video') {
+          var dRow = document.querySelector('[data-delay-row="' + sid + '"]');
+          if (dRow) dRow.style.display = 'none';
+        }
+      });
+    });
+
+    // Autoplay mode change → show/hide delay row
+    document.querySelectorAll('[data-slot-autoplay]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        var sid = r.getAttribute('data-slot-autoplay');
+        var dRow = document.querySelector('[data-delay-row="' + sid + '"]');
+        if (dRow) dRow.style.display = r.value === 'delayed' ? '' : 'none';
+      });
+    });
+
+    // Generate link button
+    var genBtn = document.getElementById('generate-link-btn');
+    if (genBtn) genBtn.addEventListener('click', generateShareableLink);
+
+    // Copy share URL button
+    var copyBtn = document.getElementById('copy-share-url');
+    var shareInput = document.getElementById('share-url-input');
+    if (copyBtn && shareInput) {
+      copyBtn.addEventListener('click', function() {
+        var url = shareInput.value;
+        if (!url) return;
+        navigator.clipboard.writeText(url).then(function() {
+          var origHtml = copyBtn.innerHTML;
+          copyBtn.textContent = '✓ Copiato!';
+          setTimeout(function() { copyBtn.innerHTML = origHtml; }, 2000);
+        }).catch(function() {
+          shareInput.select();
+          document.execCommand('copy');
+        });
+      });
+    }
+
+    // Reset all button
+    var resetBtn = document.getElementById('reset-all-slots');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function() {
+        if (confirm('Eliminare tutte le configurazioni demo slot?')) {
+          localStorage.removeItem(STORAGE_KEY);
+          window.dispatchEvent(new CustomEvent('edf:slots-updated'));
+          location.reload();
+        }
+      });
+    }
+  });
+})();
+</script>
