@@ -264,7 +264,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   // If restrictions set, apply them before deck.ts runs
   if (activeIds) {
-    // Hide solution-gated slides/sections
+    // Hide solution-gated slides/sections + inline product chips
     var gated = document.querySelectorAll('[data-solution]');
     gated.forEach(function(el) {
       var ids = (el.getAttribute('data-solution') || '').split(',').map(function(s) { return s.trim(); });
@@ -274,6 +274,17 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         el.removeAttribute('data-slide');
         el.setAttribute('aria-hidden', 'true');
         el.setAttribute('inert', '');
+        el.style.display = 'none';
+      }
+    });
+
+    // Hide nav links + home roadmap cards pointing to gated sections
+    // (data-nav-solution: navigational, not a slide — just hide it).
+    document.querySelectorAll('[data-nav-solution]').forEach(function(el) {
+      var ids = (el.getAttribute('data-nav-solution') || '').split(',').map(function(s) { return s.trim(); });
+      var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!anyActive) {
+        el.setAttribute('aria-hidden', 'true');
         el.style.display = 'none';
       }
     });

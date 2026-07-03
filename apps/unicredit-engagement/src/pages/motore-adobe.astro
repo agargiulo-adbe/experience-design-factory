@@ -47,29 +47,59 @@ const stackLayers = [
 ];
 
 const dataFoundation = [
-  { abbr: 'AEP', name: 'Adobe Experience Platform', claim: 'Hub centrale: raccoglie, governa, unifica e attiva ogni dato cliente in tempo reale su tutti i canali.' },
-  { abbr: 'CDP', name: 'Real-Time CDP', claim: 'Profilo cliente unificato aggiornato in millisecondi — da app, filiale, call center, online.' },
-  { abbr: 'DIA', name: 'Data Insights Agent', claim: 'AI agent che risponde in linguaggio naturale con root cause analysis verificata.' },
-  { abbr: 'MCP', name: 'MCP Server', claim: 'Espone le capability Adobe a qualsiasi AI client — Copilot, ChatGPT, Gemini, tool interni.' },
+  { abbr: 'AEP', name: 'Adobe Experience Platform', sol: 'aep', claim: 'Hub centrale: raccoglie, governa, unifica e attiva ogni dato cliente in tempo reale su tutti i canali.' },
+  { abbr: 'CDP', name: 'Real-Time CDP', sol: 'rtcdp', claim: 'Profilo cliente unificato aggiornato in millisecondi — da app, filiale, call center, online.' },
+  { abbr: 'DIA', name: 'Data Insights Agent', sol: 'data-insights-agent', claim: 'AI agent che risponde in linguaggio naturale con root cause analysis verificata.' },
+  { abbr: 'MCP', name: 'MCP Server', sol: null, claim: 'Espone le capability Adobe a qualsiasi AI client — Copilot, ChatGPT, Gemini, tool interni.' },
 ];
 
 const contentEngine = [
-  { abbr: 'GEN', name: 'GenStudio', claim: 'Genera copy e layout per ogni segmento in minuti — brand guidelines UniCredit integrate, compliance automatica.' },
-  { abbr: 'FF', name: 'Adobe Firefly', claim: 'Immagini generate su licenza commerciale — brand-safe by design, zero rischi IP.' },
-  { abbr: 'DAM', name: 'AEM Assets', claim: 'Digital Asset Management unificato: ogni asset approvato, versionato e distribuito su tutti i canali.' },
-  { abbr: 'EDS', name: 'AEM Sites', claim: 'Edge Delivery: il sito UniCredit a 0.3s, authoring git-based, ottimizzazione SEO AI-driven.' },
+  { abbr: 'GEN', name: 'GenStudio', sol: 'genstudio', claim: 'Genera copy e layout per ogni segmento in minuti — brand guidelines UniCredit integrate, compliance automatica.' },
+  { abbr: 'FF', name: 'Adobe Firefly', sol: 'firefly', claim: 'Immagini generate su licenza commerciale — brand-safe by design, zero rischi IP.' },
+  { abbr: 'DAM', name: 'AEM Assets', sol: 'aem-assets', claim: 'Digital Asset Management unificato: ogni asset approvato, versionato e distribuito su tutti i canali.' },
+  { abbr: 'EDS', name: 'AEM Sites', sol: 'aem-sites', claim: 'Edge Delivery: il sito UniCredit a 0.3s, authoring git-based, ottimizzazione SEO AI-driven.' },
 ];
 
 const b2bLayer = [
-  { abbr: 'AJO B2B', name: 'Journey Optimizer B2B', claim: 'Account-based journeys e buying group orchestration per il corporate banking.' },
-  { abbr: 'MKT', name: 'Marketo Engage', claim: 'Demand generation e lead nurturing per segmenti business ed enterprise.' },
-  { abbr: 'CJA B2B', name: 'CJA B2B Edition', claim: 'Analytics dedicato ai journey account-based — misura l\'engagement dei buying group.' },
+  { abbr: 'AJO B2B', name: 'Journey Optimizer B2B', sol: 'ajo-b2b', claim: 'Account-based journeys e buying group orchestration per il corporate banking.' },
+  { abbr: 'MKT', name: 'Marketo Engage', sol: 'marketo', claim: 'Demand generation e lead nurturing per segmenti business ed enterprise.' },
+  { abbr: 'CJA B2B', name: 'CJA B2B Edition', sol: 'cja', claim: 'Analytics dedicato ai journey account-based — misura l\'engagement dei buying group.' },
 ];
 
 const integrationAdvantages = [
   { stat: '1', label: 'schema dati unificato', body: 'Tutti i prodotti parlano XDM. Zero mapping custom tra soluzioni.' },
   { stat: '0', label: 'integrazioni da costruire', body: 'AEP è il data hub nativo. Ogni prodotto è già connesso.' },
   { stat: '∞', label: 'scalabilità', body: 'Da 7M a 100M di clienti — stessa architettura, stessa governance.' },
+];
+
+// Mappa prodotto→soluzione: consente al runtime di gating (data-solution)
+// di nascondere i singoli chip/pill nelle slide aggregate quando la relativa
+// soluzione viene spenta dalla console. Prodotti senza toggle (Frame.io,
+// Adobe Analytics, MCP, Adobe AI Platform) → null = sempre visibili.
+const PRODUCT_SOL: Record<string, string | null> = {
+  'AEM Sites': 'aem-sites', 'AEM Assets': 'aem-assets', 'Firefly': 'firefly',
+  'GenStudio': 'genstudio', 'Frame.io': null,
+  'Journey Optimizer B2C': 'ajo-b2c', 'Adobe Target': 'target', 'Real-Time CDP': 'rtcdp',
+  'Customer Journey Analytics': 'cja', 'Adobe Analytics': null, 'Mix Modeler': 'mix-modeler',
+  'Content Analytics': 'content-analytics',
+};
+
+const foundationBand = [
+  { name: 'AEP', sol: 'aep' },
+  { name: 'Real-Time CDP', sol: 'rtcdp' },
+  { name: 'Data Insights Agent', sol: 'data-insights-agent' },
+  { name: 'MCP Server', sol: null },
+  { name: 'Adobe AI Platform', sol: null },
+];
+
+const integrationPills = [
+  { name: 'AEP', sol: 'aep' }, { name: 'Real-Time CDP', sol: 'rtcdp' },
+  { name: 'CX Analytics', sol: 'cx-analytics' }, { name: 'AJO B2C', sol: 'ajo-b2c' },
+  { name: 'Target', sol: 'target' }, { name: 'AEM Sites', sol: 'aem-sites' },
+  { name: 'GenStudio', sol: 'genstudio' }, { name: 'Firefly', sol: 'firefly' },
+  { name: 'AEM Assets', sol: 'aem-assets' }, { name: 'AJO B2B', sol: 'ajo-b2b' },
+  { name: 'Marketo', sol: 'marketo' }, { name: 'Mix Modeler', sol: 'mix-modeler' },
+  { name: 'Data Insights Agent', sol: 'data-insights-agent' }, { name: 'MCP', sol: null },
 ];
 ---
 <BaseLayout
@@ -165,7 +195,7 @@ const integrationAdvantages = [
         data-reveal-delay="0.22"
       >
         {dataFoundation.map((item) => (
-          <div class="flex items-start gap-4 p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+          <div class="flex items-start gap-4 p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left" data-solution={item.sol ?? undefined}>
             <span class="w-10 h-10 flex-shrink-0 rounded bg-[var(--accent-primary)]/12 flex items-center justify-center text-sm font-bold text-[var(--accent-primary)]">
               {item.abbr}
             </span>
@@ -203,7 +233,7 @@ const integrationAdvantages = [
         data-reveal-delay="0.22"
       >
         {contentEngine.map((item) => (
-          <div class="flex items-start gap-4 p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+          <div class="flex items-start gap-4 p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left" data-solution={item.sol ?? undefined}>
             <span class="w-10 h-10 flex-shrink-0 rounded bg-[var(--accent-secondary)]/12 flex items-center justify-center text-sm font-bold text-[var(--accent-secondary)]">
               {item.abbr}
             </span>
@@ -243,7 +273,7 @@ const integrationAdvantages = [
                 </div>
                 <div class="flex flex-wrap gap-2 flex-1">
                   {layer.products.map((p) => (
-                    <span class="px-2.5 py-1 text-sm font-medium border rounded-sm" style={`border-color: ${layer.color}40; color: ${layer.color};`}>
+                    <span class="px-2.5 py-1 text-sm font-medium border rounded-sm" style={`border-color: ${layer.color}40; color: ${layer.color};`} data-solution={PRODUCT_SOL[p] ?? undefined}>
                       {p}
                     </span>
                   ))}
@@ -257,7 +287,11 @@ const integrationAdvantages = [
                 <p class="text-sm font-semibold uppercase tracking-wider text-[var(--accent-secondary)] mb-0.5">Foundation</p>
                 <p class="text-xs font-semibold text-[var(--ink-primary)]">Adobe Experience Platform</p>
               </div>
-              <p class="text-sm text-[var(--ink-secondary)] flex-1">AEP · Real-Time CDP · Data Insights Agent · MCP Server · Adobe AI Platform</p>
+              <p class="foundation-band text-sm text-[var(--ink-secondary)] flex-1">
+                {foundationBand.map((f) => (
+                  <span class="foundation-item" data-solution={f.sol ?? undefined}>{f.name}</span>
+                ))}
+              </p>
             </div>
           </div>
 
@@ -302,7 +336,7 @@ const integrationAdvantages = [
         data-reveal-delay="0.22"
       >
         {b2bLayer.map((item) => (
-          <div class="flex flex-col gap-3 p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm">
+          <div class="flex flex-col gap-3 p-5 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm" data-solution={item.sol ?? undefined}>
             <span class="w-9 h-9 rounded bg-[var(--accent-secondary)]/20 flex items-center justify-center text-sm font-bold text-[var(--accent-secondary)] flex-shrink-0">
               {item.abbr}
             </span>
@@ -364,9 +398,9 @@ const integrationAdvantages = [
         data-reveal
         data-reveal-delay="0.3"
       >
-        {['AEP', 'Real-Time CDP', 'CX Analytics', 'AJO B2C', 'Target', 'AEM Sites', 'GenStudio', 'Firefly', 'AEM Assets', 'AJO B2B', 'Marketo', 'Mix Modeler', 'Data Insights Agent', 'MCP'].map((name) => (
-          <span class="px-3 py-1.5 bg-[var(--ink-inverse)]/12 text-[var(--ink-inverse)] text-xs font-medium border border-[var(--ink-inverse)]/22 rounded-full">
-            {name}
+        {integrationPills.map((pill) => (
+          <span class="px-3 py-1.5 bg-[var(--ink-inverse)]/12 text-[var(--ink-inverse)] text-xs font-medium border border-[var(--ink-inverse)]/22 rounded-full" data-solution={pill.sol ?? undefined}>
+            {pill.name}
           </span>
         ))}
       </div>
@@ -386,3 +420,11 @@ const integrationAdvantages = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* Foundation band: middot separators that disappear together with a
+     gated item (display:none hides the element AND its ::after). The last
+     item — Adobe AI Platform (sol:null) — is never hidden, so no trailing dot. */
+  .foundation-band { display: inline; }
+  .foundation-item:not(:last-child)::after { content: ' · '; opacity: 0.6; }
+</style>
