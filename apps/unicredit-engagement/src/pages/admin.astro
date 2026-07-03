@@ -102,24 +102,27 @@ const PAGE_REGISTRY: PageEntry[] = [
 
 // Registry delle soluzioni Adobe — controllano l'accensione/spegnimento
 // delle sezioni dell'experience (data-solution / pageSolutions).
-interface SolutionEntry { id: string; name: string; shortName: string; pillar: string; description: string; pagesGated: string[]; }
+// `gate` = sezioni per cui questo prodotto è NECESSARIO (spente tutte → sezione via).
+// `appearsIn` = tutte le sezioni in cui il prodotto compare (chip/slide gated),
+//   così l'utente sa dove agisce il toggle anche se compare in più sezioni.
+interface SolutionEntry { id: string; name: string; shortName: string; pillar: string; description: string; appearsIn: string[]; }
 
 const SOLUTIONS: SolutionEntry[] = [
-  { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'Foundation: unifica tutti i dati cliente in real-time.', pagesGated: [] },
-  { id: 'rtcdp', name: 'Real-Time CDP', shortName: 'RT-CDP', pillar: 'data', description: 'Profili unificati e audience segmentation in tempo reale.', pagesGated: ['Conosci'] },
-  { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Cross-channel analytics: dal branch al mobile in una vista.', pagesGated: ['Analizza'] },
-  { id: 'ajo-b2c', name: 'Journey Optimizer B2C', shortName: 'AJO B2C', pillar: 'journeys', description: 'Orchestrazione omnicanale per acquisizione e engagement.', pagesGated: ['Acquisisci', 'Coinvolgi'] },
-  { id: 'aem-sites', name: 'AEM Sites & Edge Delivery', shortName: 'AEM Sites', pillar: 'content', description: 'Gestione canali digitali con velocità editoriale enterprise.', pagesGated: ['Acquisisci'] },
-  { id: 'aem-assets', name: 'AEM Assets + Dynamic Media', shortName: 'AEM Assets', pillar: 'content', description: 'DAM enterprise per contenuti multicanale a scala.', pagesGated: ['Contenuti'] },
-  { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'Varianti di contenuto on-brand in pochi minuti.', pagesGated: ['Contenuti'] },
-  { id: 'firefly', name: 'Adobe Firefly', shortName: 'Firefly', pillar: 'content', description: 'AI image generation sicura per uso commerciale.', pagesGated: [] },
-  { id: 'target', name: 'Adobe Target', shortName: 'Target', pillar: 'personalization', description: 'A/B testing e personalizzazione su ogni touchpoint digitale.', pagesGated: ['Coinvolgi'] },
-  { id: 'ajo-b2b', name: 'Journey Optimizer B2B Edition', shortName: 'AJO B2B', pillar: 'b2b', description: 'Account-based journeys per PMI e corporate banking.', pagesGated: ['B2B'] },
-  { id: 'marketo', name: 'Marketo Engage', shortName: 'Marketo', pillar: 'b2b', description: 'Marketing automation B2B per lead generation corporate.', pagesGated: ['B2B'] },
-  { id: 'cx-analytics', name: 'Adobe CX Analytics', shortName: 'CX Analytics', pillar: 'intelligence', description: 'Umbrella: CJA + Content Analytics + Adobe Analytics — intelligence unificata.', pagesGated: ['Analizza'] },
-  { id: 'data-insights-agent', name: 'Data Insights Agent', shortName: 'DIA', pillar: 'intelligence', description: 'AI agent per root cause analysis in linguaggio naturale.', pagesGated: ['Analizza'] },
-  { id: 'content-analytics', name: 'Adobe Content Analytics', shortName: 'Content Analytics', pillar: 'intelligence', description: 'Misura quale contenuto porta a risultati — per segmento e canale.', pagesGated: ['Contenuti', 'Analizza'] },
-  { id: 'mix-modeler', name: 'Adobe Mix Modeler', shortName: 'Mix Modeler', pillar: 'intelligence', description: 'Causal AI — full-funnel attribution e budget optimization.', pagesGated: ['Analizza'] },
+  { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'Foundation: unifica tutti i dati cliente in real-time.', appearsIn: ['Motore'] },
+  { id: 'rtcdp', name: 'Real-Time CDP', shortName: 'RT-CDP', pillar: 'data', description: 'Profili unificati e audience segmentation in tempo reale.', appearsIn: ['Conosci', 'Motore'] },
+  { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Cross-channel analytics: dal branch al mobile in una vista.', appearsIn: ['Analizza', 'B2B', 'Motore'] },
+  { id: 'ajo-b2c', name: 'Journey Optimizer B2C', shortName: 'AJO B2C', pillar: 'journeys', description: 'Orchestrazione omnicanale per acquisizione e engagement.', appearsIn: ['Acquisisci', 'Coinvolgi', 'Motore'] },
+  { id: 'aem-sites', name: 'AEM Sites & Edge Delivery', shortName: 'AEM Sites', pillar: 'content', description: 'Gestione canali digitali con velocità editoriale enterprise.', appearsIn: ['Acquisisci', 'Motore'] },
+  { id: 'aem-assets', name: 'AEM Assets + Dynamic Media', shortName: 'AEM Assets', pillar: 'content', description: 'DAM enterprise per contenuti multicanale a scala.', appearsIn: ['Contenuti', 'Motore'] },
+  { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'Varianti di contenuto on-brand in pochi minuti.', appearsIn: ['Contenuti', 'Motore'] },
+  { id: 'firefly', name: 'Adobe Firefly', shortName: 'Firefly', pillar: 'content', description: 'AI image generation sicura per uso commerciale.', appearsIn: ['Motore'] },
+  { id: 'target', name: 'Adobe Target', shortName: 'Target', pillar: 'personalization', description: 'A/B testing e personalizzazione su ogni touchpoint digitale.', appearsIn: ['Coinvolgi', 'Motore'] },
+  { id: 'ajo-b2b', name: 'Journey Optimizer B2B Edition', shortName: 'AJO B2B', pillar: 'b2b', description: 'Account-based journeys per PMI e corporate banking.', appearsIn: ['B2B', 'Motore'] },
+  { id: 'marketo', name: 'Marketo Engage', shortName: 'Marketo', pillar: 'b2b', description: 'Marketing automation B2B per lead generation corporate.', appearsIn: ['B2B', 'Motore'] },
+  { id: 'cx-analytics', name: 'Adobe CX Analytics', shortName: 'CX Analytics', pillar: 'intelligence', description: 'Umbrella: CJA + Content Analytics + Adobe Analytics — intelligence unificata.', appearsIn: ['Analizza', 'Motore'] },
+  { id: 'data-insights-agent', name: 'Data Insights Agent', shortName: 'DIA', pillar: 'intelligence', description: 'AI agent per root cause analysis in linguaggio naturale.', appearsIn: ['Analizza', 'Motore'] },
+  { id: 'content-analytics', name: 'Adobe Content Analytics', shortName: 'Content Analytics', pillar: 'intelligence', description: 'Misura quale contenuto porta a risultati — per segmento e canale.', appearsIn: ['Contenuti', 'Analizza', 'Motore'] },
+  { id: 'mix-modeler', name: 'Adobe Mix Modeler', shortName: 'Mix Modeler', pillar: 'intelligence', description: 'Causal AI — full-funnel attribution e budget optimization.', appearsIn: ['Analizza', 'Motore'] },
 ];
 
 const PILLAR_LABELS: Record<string, string> = {
@@ -232,11 +235,12 @@ const deckHref = href(base, '/');
                           <span class="solution-short" style={`background:${group.color}18;color:${group.color};`}>{sol.shortName}</span>
                         </div>
                         <p class="solution-desc">{sol.description}</p>
-                        {sol.pagesGated.length > 0 ? (
-                          <p class="solution-gated">Sezione: {sol.pagesGated.join(', ')}</p>
-                        ) : (
-                          <p class="solution-gated solution-gated-global">Trasversale · nessuna sezione dedicata</p>
-                        )}
+                        <div class="solution-sections">
+                          <span class="solution-sections-label">Compare in</span>
+                          {sol.appearsIn.map((sec) => (
+                            <span class="section-tag" style={`background:${group.color}14;color:${group.color};`}>{sec}</span>
+                          ))}
+                        </div>
                       </div>
                       <label class="toggle-switch" title="Attiva soluzione">
                         <input type="checkbox" data-solution-toggle={sol.id} checked />
@@ -609,8 +613,9 @@ const deckHref = href(base, '/');
   .solution-name { font-size: 0.875rem; font-weight: 600; color: #111827; }
   .solution-short { font-size: 0.625rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
   .solution-desc { font-size: 0.75rem; color: #6b7280; line-height: 1.45; margin: 0; }
-  .solution-gated { font-size: 0.6875rem; color: #9ca3af; margin: 0.375rem 0 0; }
-  .solution-gated-global { font-style: italic; }
+  .solution-sections { display: flex; align-items: center; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.5rem; }
+  .solution-sections-label { font-size: 0.625rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #9ca3af; }
+  .section-tag { font-size: 0.625rem; font-weight: 600; padding: 1px 7px; border-radius: 20px; white-space: nowrap; }
 
   /* ---- Accordion ---- */
   .pages-accordion { display: flex; flex-direction: column; gap: 0.5rem; }

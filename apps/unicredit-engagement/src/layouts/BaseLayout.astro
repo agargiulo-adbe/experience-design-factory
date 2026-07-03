@@ -262,6 +262,45 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     } catch (_) {}
   }
 
+  // Ordered section flow + per-section gate (mirrors pageSolutions).
+  // A section is enabled when its gate is null OR any gate solution is active.
+  var SECTION_FLOW = [
+    { slug: 'scenario', gate: null },
+    { slug: 'visibilita', gate: null },
+    { slug: 'conosci', gate: ['rtcdp'] },
+    { slug: 'acquisisci', gate: ['ajo-b2c', 'aem-sites'] },
+    { slug: 'coinvolgi', gate: ['ajo-b2c', 'target'] },
+    { slug: 'contenuti', gate: ['genstudio', 'aem-assets'] },
+    { slug: 'analizza', gate: ['cja'] },
+    { slug: 'coworker', gate: null },
+    { slug: 'b2b', gate: ['ajo-b2b', 'marketo'] },
+    { slug: 'motore-adobe', gate: null },
+    { slug: 'risultati', gate: null },
+  ];
+  function sectionEnabled(entry) {
+    if (!entry || !entry.gate) return true;
+    return entry.gate.some(function(id) { return activeIds.indexOf(id) !== -1; });
+  }
+  function currentSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+  function swapSlug(href, slug) {
+    // href ends with "…/<slug>/" — replace the last path segment
+    return href.replace(/[^/]+\/?$/, slug + '/');
+  }
+  function homeFrom(href) {
+    return href.replace(/[^/]+\/?$/, '');
+  }
+  function nextEnabledAfter(slug) {
+    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
+    if (i === -1) return undefined;
+    for (var j = i + 1; j < SECTION_FLOW.length; j++) {
+      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
+    }
+    return null; // nothing enabled forward → home
+  }
+
   // If restrictions set, apply them before deck.ts runs
   if (activeIds) {
     // Hide solution-gated slides/sections + inline product chips
@@ -289,12 +328,25 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
     });
 
-    // Check if this page itself is gated
+    // Rewrite the deck's "next section" target so arrow navigation SKIPS
+    // gated sections (runs before deck.ts reads data-deck-next).
+    var deckRoot = document.querySelector('[data-deck-next]');
+    if (deckRoot) {
+      var curNext = deckRoot.getAttribute('data-deck-next');
+      var nextEntry = nextEnabledAfter(currentSlug());
+      if (curNext && nextEntry !== undefined) {
+        deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : homeFrom(curNext));
+      }
+    }
+
+    // If this page itself is gated → jump to the next enabled section
+    // (forward), not home — so a shared/bookmarked link lands somewhere useful.
     if (pageSolutions && pageSolutions.length > 0) {
       var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
       if (!pageActive) {
-        // Redirect to home
-        location.replace(location.origin + location.pathname.replace(/\/[^/]+\/$/, '/'));
+        var basePath = location.pathname.replace(/[^/]+\/?$/, '');
+        var target = nextEnabledAfter(currentSlug());
+        location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
       }
     }
   }
