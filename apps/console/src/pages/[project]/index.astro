@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { PROJECTS, PILLAR_LABELS, PILLAR_ORDER, getProject } from '../../data/projects-registry';
-import type { SolutionPillar } from '../../data/projects-registry';
+import { PROJECTS, getProject } from '../../data/projects-registry';
 
 export function getStaticPaths() {
   return PROJECTS.filter(p => p.solutions.length > 0).map((p) => ({
@@ -13,305 +12,41 @@ const { project: slug } = Astro.params;
 const project = getProject(slug!)!;
 
 const base = import.meta.env.BASE_URL;
-
 function consoleHref(path: string): string {
   return base.replace(/\/$/, '') + path;
 }
 
-const storageKey = `edf-solutions-${slug}`;
-
-const pillarGroups = PILLAR_ORDER
-  .map(pillar => ({
-    pillar,
-    label: PILLAR_LABELS[pillar],
-    solutions: project.solutions.filter(s => s.pillar === pillar),
-  }))
-  .filter(g => g.solutions.length > 0);
-
-const pillarColor: Record<SolutionPillar, string> = {
-  foundation: 'var(--pillar-foundation)',
-  data: 'var(--pillar-data)',
-  journeys: 'var(--pillar-journeys)',
-  content: 'var(--pillar-content)',
-  analytics: 'var(--pillar-analytics)',
-  intelligence: 'var(--pillar-analytics)',
-  personalization: 'var(--pillar-personalization)',
-  b2b: 'var(--pillar-b2b)',
-};
+// La configurazione (sezioni on/off + media demo) è stata unificata
+// nella console di configurazione dell'experience: {baseUrl}admin/.
+const adminUrl = `${project.baseUrl}admin/`;
 ---
 <BaseLayout title={`${project.name} — Configura`}>
-  <div class="max-w-5xl mx-auto px-6 py-10">
-
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs mb-8" style="color: var(--ink-tertiary);" aria-label="Breadcrumb">
+  <div class="max-w-lg mx-auto px-6 py-24 text-center">
+    <nav class="flex items-center justify-center gap-2 text-xs mb-10" style="color: var(--ink-tertiary);" aria-label="Breadcrumb">
       <a href={consoleHref('/')} class="hover:underline" style="color: var(--ink-secondary);">Progetti</a>
       <span aria-hidden="true">›</span>
       <span style="color: var(--ink-primary);">{project.client} · {project.name}</span>
     </nav>
 
-    <div class="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+    <h1 class="text-xl font-semibold mb-3" style="color: var(--ink-primary);">Console di configurazione</h1>
+    <p class="text-sm mb-8" style="color: var(--ink-secondary); line-height: 1.6;">
+      La configurazione delle sezioni e dei media demo è ora unificata nella
+      console dell'experience. Ti stiamo reindirizzando…
+    </p>
 
-      <!-- Left: solution toggles -->
-      <div>
-        <div class="flex items-center justify-between gap-4 mb-6">
-          <h1 class="text-xl font-semibold" style="color: var(--ink-primary);">Soluzioni attive</h1>
-          <div class="flex gap-2">
-            <button
-              id="btn-all"
-              class="px-3 py-1 rounded text-xs font-medium border transition-colors"
-              style="border-color: var(--border-strong); color: var(--ink-secondary);"
-            >Abilita tutto</button>
-            <button
-              id="btn-none"
-              class="px-3 py-1 rounded text-xs font-medium border transition-colors"
-              style="border-color: var(--border-strong); color: var(--ink-secondary);"
-            >Disabilita tutto</button>
-          </div>
-        </div>
-
-        <div class="space-y-6" id="pillar-groups">
-          {pillarGroups.map(group => (
-            <div>
-              <p
-                class="text-[11px] font-semibold uppercase tracking-widest mb-3 flex items-center gap-2"
-                style={`color: ${pillarColor[group.pillar as SolutionPillar]};`}
-              >
-                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={`background: ${pillarColor[group.pillar as SolutionPillar]};`} aria-hidden="true"></span>
-                {group.label}
-              </p>
-              <div class="space-y-2">
-                {group.solutions.map(sol => (
-                  <label
-                    class="flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors solution-row"
-                    style="background: var(--bg-panel); border-color: var(--border);"
-                    data-solution-id={sol.id}
-                  >
-                    <div class="pt-0.5 flex-shrink-0">
-                      <input
-                        type="checkbox"
-                        class="solution-toggle w-4 h-4 accent-[var(--accent-red)] cursor-pointer"
-                        data-solution-id={sol.id}
-                        checked
-                      />
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 mb-0.5">
-                        <span class="text-sm font-medium" style="color: var(--ink-primary);">{sol.name}</span>
-                        <span
-                          class="text-[10px] font-medium px-1.5 py-0.5 rounded"
-                          style={`background: ${pillarColor[group.pillar as SolutionPillar]}20; color: ${pillarColor[group.pillar as SolutionPillar]};`}
-                        >
-                          {sol.shortName}
-                        </span>
-                      </div>
-                      <p class="text-xs" style="color: var(--ink-secondary);">{sol.description}</p>
-                      {sol.pagesGated.length > 0 && (
-                        <p class="text-[10px] mt-1" style="color: var(--ink-tertiary);">
-                          Sezione: {sol.pagesGated.join(', ')}
-                        </p>
-                      )}
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <!-- Right: links panel -->
-      <div class="lg:sticky lg:top-16 space-y-4">
-
-        <!-- Preview link -->
-        <div class="p-5 rounded-lg border" style="background: var(--bg-panel); border-color: var(--border);">
-          <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: var(--ink-tertiary);">Preview live</p>
-          <a
-            href={consoleHref(`/${slug}/preview/`)}
-            target="_blank"
-            class="flex items-center gap-2 text-sm font-medium py-2 px-4 rounded border text-center transition-colors w-full justify-center"
-            style="background: var(--accent-blue-soft); color: var(--accent-blue); border-color: transparent;"
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-              <rect x="1" y="3" width="14" height="10" rx="1"/>
-              <path d="M5 14h6M8 13v1"/>
-            </svg>
-            Apri preview con configurazione live
-          </a>
-          <p class="text-[11px] mt-2" style="color: var(--ink-tertiary);">La preview si aggiorna in tempo reale quando cambi i toggle — senza ricaricare.</p>
-        </div>
-
-        <!-- Shareable URL -->
-        <div class="p-5 rounded-lg border" style="background: var(--bg-panel); border-color: var(--border);">
-          <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: var(--ink-tertiary);">Link condivisibile</p>
-          <div class="flex gap-2 mb-2">
-            <input
-              id="shareable-url"
-              type="text"
-              readonly
-              class="flex-1 px-3 py-2 rounded border text-xs font-mono min-w-0"
-              style="background: var(--bg-card); border-color: var(--border); color: var(--ink-secondary);"
-              placeholder="Configura le soluzioni per generare il link..."
-            />
-            <button
-              id="btn-copy"
-              class="flex-shrink-0 px-3 py-2 rounded text-xs font-medium transition-colors"
-              style="background: var(--accent-red-soft); color: var(--accent-red);"
-              title="Copia URL"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-                <rect x="4" y="4" width="9" height="9" rx="1"/>
-                <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
-              </svg>
-            </button>
-          </div>
-          <p class="text-[11px]" style="color: var(--ink-tertiary);">Il link usa il parametro <code class="font-mono px-0.5" style="background: var(--bg-card);">?s=</code> per pre-caricare la configurazione senza toccare il localStorage del destinatario.</p>
-        </div>
-
-        <!-- Media Demo Slots -->
-        {project.mediaSlots && project.mediaSlots.length > 0 && (
-          <div class="p-5 rounded-lg border" style="background: var(--bg-panel); border-color: var(--border);">
-            <p class="text-xs font-semibold uppercase tracking-widest mb-3" style="color: var(--ink-tertiary);">Demo Media Slot</p>
-            <a
-              href={`${project.baseUrl}admin/`}
-              target="_blank"
-              rel="noopener"
-              class="flex items-center gap-2 text-sm font-medium py-2 px-4 rounded border w-full justify-center transition-colors"
-              style="background: var(--accent-red-soft); color: var(--accent-red); border-color: transparent;"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-                <rect x="1" y="4" width="14" height="9" rx="1"/>
-                <path d="M4 4V3a1 1 0 011-1h6a1 1 0 011 1v1"/>
-                <path d="M8 8v3M6 10h4"/>
-              </svg>
-              Gestisci screenshot & video demo
-            </a>
-            <p class="text-[11px] mt-2" style="color: var(--ink-tertiary);">{project.mediaSlots.length} slot disponibili — attiva/disattiva e carica URL immagine o video per ogni slide.</p>
-          </div>
-        )}
-
-        <!-- Open experience -->
-        <a
-          href={project.baseUrl}
-          target="_blank"
-          class="flex items-center justify-center gap-2 w-full py-2.5 rounded border text-sm font-medium transition-colors"
-          style="border-color: var(--border-strong); color: var(--ink-secondary);"
-        >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
-            <path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/>
-            <path d="M13 1h2v2M9 7l6-6"/>
-          </svg>
-          Apri experience
-        </a>
-
-      </div>
-    </div>
+    <a
+      href={adminUrl}
+      class="inline-flex items-center gap-2 py-2.5 px-5 rounded text-sm font-medium transition-colors"
+      style="background: var(--accent-red-soft); color: var(--accent-red);"
+    >
+      Apri la console di configurazione
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
   </div>
+
+  <script is:inline define:vars={{ adminUrl }}>
+    location.replace(adminUrl);
+  </script>
 </BaseLayout>
-
-<script define:vars={{ storageKey, projectBaseUrl: project.baseUrl, allSolutionIds: project.solutions.map(s => s.id) }}>
-(function () {
-  const toggles = document.querySelectorAll('.solution-toggle');
-  const shareableInput = document.getElementById('shareable-url');
-  const btnCopy = document.getElementById('btn-copy');
-  const btnAll = document.getElementById('btn-all');
-  const btnNone = document.getElementById('btn-none');
-
-  // Load saved state
-  function loadState() {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        const active = JSON.parse(stored);
-        toggles.forEach(function(toggle) {
-          const id = toggle.getAttribute('data-solution-id');
-          toggle.checked = active.indexOf(id) !== -1;
-        });
-      }
-    } catch (_) {}
-  }
-
-  // Save state + update URL + broadcast to preview iframes
-  function saveState() {
-    const active = [];
-    toggles.forEach(function(toggle) {
-      if (toggle.checked) active.push(toggle.getAttribute('data-solution-id'));
-    });
-
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(active));
-    } catch (_) {}
-
-    // Update shareable URL
-    const urlParam = active.length < allSolutionIds.length
-      ? '?s=' + active.join(',')
-      : '';
-    const shareUrl = location.origin + projectBaseUrl.replace(/\/$/, '') + '/' + urlParam;
-    if (shareableInput) shareableInput.value = shareUrl;
-
-    // Broadcast to preview tab (BroadcastChannel) and any popup window
-    const msg = { type: 'edf:solutions-changed', project: storageKey.replace('edf-solutions-', ''), activeIds: active };
-    try {
-      new BroadcastChannel('edf-console').postMessage(msg);
-    } catch (_) {}
-    if (window.__previewWindow && !window.__previewWindow.closed) {
-      window.__previewWindow.postMessage(msg, location.origin);
-    }
-  }
-
-  // Row visual state
-  function updateRowStyles() {
-    toggles.forEach(function(toggle) {
-      const row = toggle.closest('.solution-row');
-      if (row) {
-        if (toggle.checked) {
-          row.style.borderColor = 'var(--border-strong)';
-          row.style.opacity = '1';
-        } else {
-          row.style.borderColor = 'var(--border)';
-          row.style.opacity = '0.45';
-        }
-      }
-    });
-  }
-
-  // Init
-  loadState();
-  saveState();
-  updateRowStyles();
-
-  // Toggle change handler
-  toggles.forEach(function(toggle) {
-    toggle.addEventListener('change', function() {
-      updateRowStyles();
-      saveState();
-    });
-  });
-
-  // Bulk actions
-  if (btnAll) {
-    btnAll.addEventListener('click', function() {
-      toggles.forEach(function(t) { t.checked = true; });
-      updateRowStyles();
-      saveState();
-    });
-  }
-  if (btnNone) {
-    btnNone.addEventListener('click', function() {
-      toggles.forEach(function(t) { t.checked = false; });
-      updateRowStyles();
-      saveState();
-    });
-  }
-
-  // Copy button
-  if (btnCopy && shareableInput) {
-    btnCopy.addEventListener('click', function() {
-      navigator.clipboard.writeText(shareableInput.value).then(function() {
-        const orig = btnCopy.innerHTML;
-        btnCopy.textContent = '✓';
-        setTimeout(function() { btnCopy.innerHTML = orig; }, 1500);
-      });
-    });
-  }
-})();
-</script>
