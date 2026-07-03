@@ -3,15 +3,17 @@
 //  Creates a new admin user by email (Supabase Auth invite) and assigns
 //  role + per-experience access. Only callable by a super admin.
 //
-//  Deploy:  supabase functions deploy invite-user
-//  Secrets: SB_URL, SB_SERVICE_ROLE_KEY  (set via `supabase secrets set`)
-//           — the service_role key lives ONLY here, never in the client.
+//  Deploy:  paste into the Supabase dashboard Edge Functions editor, or
+//           `supabase functions deploy invite-user`.
+//  Env:     SUPABASE_URL / SUPABASE_ANON_KEY / SUPABASE_SERVICE_ROLE_KEY are
+//           auto-injected by the platform — no secrets to set. The
+//           service_role key lives ONLY here, never in the client.
 // ════════════════════════════════════════════════════════════════════
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const SB_URL = Deno.env.get('SB_URL')!;
-const SERVICE_ROLE = Deno.env.get('SB_SERVICE_ROLE_KEY')!;
-const ANON = Deno.env.get('SB_ANON_KEY')!;
+const SB_URL = Deno.env.get('SUPABASE_URL')!;
+const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const ANON = Deno.env.get('SUPABASE_ANON_KEY')!;
 
 const cors = {
   'Access-Control-Allow-Origin': '*',

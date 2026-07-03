@@ -20,19 +20,23 @@ policies, the signup trigger, and seeds the two current experiences.
 
 ## 3. Deploy the invite Edge Function
 
-Requires the [Supabase CLI](https://supabase.com/docs/guides/cli).
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` are injected
+automatically into every Edge Function — **no secrets to set.**
 
+**Option A — Dashboard (no CLI, easiest):**
+1. Dashboard → **Edge Functions** → **Deploy a new function** (via editor).
+2. Name it exactly `invite-user`.
+3. Paste the full contents of
+   [`functions/invite-user/index.ts`](./functions/invite-user/index.ts) → **Deploy**.
+
+**Option B — CLI:**
 ```bash
 supabase link --project-ref <your-project-ref>
-supabase functions deploy invite-user --no-verify-jwt
-supabase secrets set \
-  SB_URL="https://<ref>.supabase.co" \
-  SB_ANON_KEY="<anon key>" \
-  SB_SERVICE_ROLE_KEY="<service_role key>"
+supabase functions deploy invite-user
 ```
 
-> The `service_role` key lives **only** in the function's secrets — never in
-> the client bundle. This is the one place it is allowed.
+> The `service_role` key is used **only** inside this function (auto-injected),
+> never in the client bundle. This is the one place it is allowed.
 
 ## 4. Become super admin
 
