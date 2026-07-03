@@ -10,10 +10,8 @@ permissions:
   pages: write
   id-token: write
 
-# Cancel in-progress BUILD runs when a new push arrives,
-# but let DEPLOY runs queue rather than cancel mid-flight.
-# Orphaned GitHub Pages deployments (from canceled deploys) cause
-# the next deploy to wait for them to expire — triggering timeouts.
+# New pushes cancel in-progress BUILD jobs (cheap to restart).
+# DEPLOY jobs are never canceled to avoid orphaned Pages deployments.
 concurrency:
   group: pages-build
   cancel-in-progress: true
@@ -57,22 +55,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Cancel stuck GitHub Pages deployments
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          ids=$(gh api "repos/${{ github.repository }}/pages/deployments" \
-            --jq '.[] | select(
-              .status != "succeed" and
-              .status != "failed" and
-              .status != "cancelled" and
-              .status != "timeout"
-            ) | .id' 2>/dev/null || true)
-          for id in $ids; do
-            echo "Canceling stuck deployment: $id"
-            gh api -X POST "repos/${{ github.repository }}/pages/deployments/$id/cancel" || true
-          done
-
       - name: Skip if not latest commit on main
         id: guard
         env:
@@ -89,3 +71,5 @@ jobs:
       - id: deployment
         if: steps.guard.outputs.skip != 'true'
         uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
