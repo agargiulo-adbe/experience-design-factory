@@ -53,7 +53,7 @@ jobs:
       cancel-in-progress: false
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment-retry.outputs.page_url }}
     steps:
       - name: Skip if not latest commit on main
         id: guard
@@ -70,6 +70,18 @@ jobs:
 
       - id: deployment
         if: steps.guard.outputs.skip != 'true'
+        continue-on-error: true
         uses: actions/deploy-pages@v4
         with:
           timeout: 900000
+          # GitHub Pages backend occasionally returns transient
+          # "Deployment failed, try again later" during syncing_files.
+          error_count: 15
+
+      # Retry once on transient GitHub Pages backend failures.
+      - id: deployment-retry
+        if: steps.guard.outputs.skip != 'true' && steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 900000
+          error_count: 15
