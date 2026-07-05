@@ -113,8 +113,13 @@ const { nextHref, class: className } = Astro.props;
 
 <script>
   import { initDeck } from '@edf/core/blocks/immersive/deck';
-  const w = window as Window & { __edfDeck?: { destroy: () => void } };
-  function boot() { initDeck(); }
+  const w = window as Window & { __edfDeck?: { destroy: () => void }; __edfInitDeck?: () => void };
+  function boot() {
+    // Let the custom-slide injector add authored slides before we count them.
+    (window as Window & { __edfInjectCustomSlides?: () => void }).__edfInjectCustomSlides?.();
+    initDeck();
+  }
+  w.__edfInitDeck = boot;   // exposed so the injector can re-init after SPA nav
   function teardown() { w.__edfDeck?.destroy(); }
   boot();
   document.addEventListener('astro:after-swap', boot);

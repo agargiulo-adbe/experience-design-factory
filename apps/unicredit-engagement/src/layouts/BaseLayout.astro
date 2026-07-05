@@ -376,3 +376,174 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   } catch (_) {}
 })();
 </script>
+
+<!--
+  Custom slides runtime: injects Admin-authored slides into the deck, styled
+  with the SAME Slide structure + tokens (100% coherent). Defined on window so
+  the deck's boot() calls it right before counting slides (first load + SPA nav).
+-->
+<script is:inline define:vars={{ PROJECT_SLUG }}>
+(function () {
+  var CS_KEY = 'edf:custom-slides:' + PROJECT_SLUG;
+  var MEDIA_KEY = 'edf:media-slots:' + PROJECT_SLUG;
+
+  function currentSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+
+  function load() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(CS_KEY) || '[]');
+      if (arr && arr.length) return arr;
+    } catch (_) {}
+    // Fallback: custom slides carried inside a shared media config (?cfg=)
+    try {
+      var m = JSON.parse(localStorage.getItem(MEDIA_KEY) || '{}');
+      if (m.__customSlides) return m.__customSlides;
+    } catch (_) {}
+    return [];
+  }
+
+  // Allowlist sanitizer for authored rich text.
+  var ALLOWED = { P:1, BR:1, STRONG:1, B:1, EM:1, I:1, U:1, H3:1, UL:1, OL:1, LI:1, A:1, SPAN:1 };
+  function sanitize(html) {
+    var t = document.createElement('template');
+    t.innerHTML = html || '';
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 1) {
+          if (!ALLOWED[n.tagName]) {
+            n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
+            return;
+          }
+          Array.prototype.slice.call(n.attributes).forEach(function (a) {
+            if (n.tagName === 'A' && a.name === 'href' && /^(https?:|mailto:)/i.test(a.value)) return;
+            n.removeAttribute(a.name);
+          });
+          if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+          walk(n);
+        } else if (n.nodeType === 8) {
+          n.parentNode.removeChild(n);
+        }
+      });
+    })(t.content);
+    return t.innerHTML;
+  }
+
+  function videoHtml(url, mode) {
+    var yt = String(url).match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (yt) {
+      var id = yt[1];
+      var p = mode === 'manual'
+        ? '?rel=0&playsinline=1'
+        : '?autoplay=1&mute=1&loop=1&playlist=' + id + '&controls=0&rel=0&playsinline=1';
+      return '<iframe src="https://www.youtube.com/embed/' + id + p + '" allow="autoplay;encrypted-media" title="Video"></iframe>';
+    }
+    var attrs = mode === 'manual' ? 'controls playsinline' : 'autoplay muted loop playsinline';
+    return '<video src="' + url + '" ' + attrs + '></video>';
+  }
+
+  var BG = {
+    primary: 'bg-[var(--surface-primary)]', secondary: 'bg-[var(--surface-secondary)]',
+    inverse: 'bg-[var(--surface-inverse)]', brand: 'bg-[var(--accent-primary)]',
+  };
+
+  function build(slide) {
+    var tone = (slide.bg === 'inverse' || slide.bg === 'brand') ? 'dark' : 'light';
+    var section = document.createElement('section');
+    section.id = slide.id;
+    section.setAttribute('data-slide', '');
+    section.setAttribute('data-edf-custom', '');
+    section.setAttribute('data-cs-tone', tone);
+    section.className = 'slide cs-slide relative w-full h-[100dvh] overflow-hidden ' + (BG[slide.bg] || BG.primary);
+
+    var safe = document.createElement('div');
+    safe.className = 'absolute inset-0 flex items-center justify-center';
+    safe.style.paddingInline = 'max(var(--slide-safe-inset), 6vw)';
+    var inner = document.createElement('div');
+    inner.className = 'slide-inner w-full min-h-0 flex flex-col justify-center items-center';
+    inner.style.maxHeight = 'calc(100dvh - 2 * max(var(--deck-chrome-safe), 7vh))';
+    var content = document.createElement('div');
+    content.className = 'cs-content';
+
+    if (slide.eyebrow) {
+      var eb = document.createElement('p');
+      eb.className = 'slide-eyebrow cs-eyebrow';
+      eb.textContent = slide.eyebrow;
+      content.appendChild(eb);
+    }
+    if (slide.title) {
+      var h = document.createElement('h2');
+      h.className = 'cs-title';
+      h.textContent = slide.title;
+      content.appendChild(h);
+    }
+    (slide.blocks || []).forEach(function (b) {
+      if (b.type === 'text' && b.html) {
+        var d = document.createElement('div');
+        d.className = 'cs-prose';
+        d.innerHTML = sanitize(b.html);
+        content.appendChild(d);
+      } else if ((b.type === 'image' || b.type === 'video') && b.url) {
+        var fig = document.createElement('figure');
+        fig.style.margin = '0';
+        var m = document.createElement('div');
+        m.className = 'cs-media';
+        if (b.type === 'image') {
+          var img = document.createElement('img');
+          img.src = b.url; img.alt = b.alt || ''; img.loading = 'lazy';
+          m.appendChild(img);
+        } else {
+          m.innerHTML = videoHtml(b.url, b.autoplay);
+        }
+        fig.appendChild(m);
+        if (b.caption) {
+          var c = document.createElement('figcaption');
+          c.className = 'cs-caption'; c.textContent = b.caption;
+          fig.appendChild(c);
+        }
+        content.appendChild(fig);
+      }
+    });
+
+    inner.appendChild(content);
+    safe.appendChild(inner);
+    section.appendChild(safe);
+    return section;
+  }
+
+  window.__edfInjectCustomSlides = function () {
+    var deck = document.querySelector('[data-deck]');
+    if (!deck) return;
+    deck.querySelectorAll('[data-edf-custom]').forEach(function (el) { el.remove(); });
+    var slug = currentSlug();
+    var slides = load().filter(function (s) { return s && s.section === slug; });
+    if (!slides.length) return;
+    var chrome = deck.querySelector('.deck-chrome');
+    slides.forEach(function (slide) {
+      var el = build(slide);
+      var ref = (slide.after && slide.after.indexOf('__') !== 0)
+        ? deck.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(slide.after) : slide.after))
+        : null;
+      if (slide.after === '__start') {
+        deck.insertBefore(el, deck.querySelector('[data-slide]'));
+      } else if (ref) {
+        deck.insertBefore(el, ref.nextSibling);
+      } else {
+        deck.insertBefore(el, chrome); // append at end of section
+      }
+    });
+  };
+
+  // Live update from the Admin Console (same browser): re-inject + re-init.
+  try {
+    var bc2 = new BroadcastChannel('edf-console');
+    bc2.addEventListener('message', function (e) {
+      if (!e.data || e.data.type !== 'edf:custom-slides-changed' || e.data.project !== PROJECT_SLUG) return;
+      location.reload();
+    });
+  } catch (_) {}
+  window.addEventListener('storage', function (e) { if (e.key === CS_KEY) location.reload(); });
+})();
+</script>
