@@ -65,9 +65,9 @@ export class Deck {
     this.root.addEventListener('touchstart', this.onTouchStart, { passive: true });
     this.root.addEventListener('touchend', this.onTouchEnd, { passive: true });
 
-    this.root.querySelector('[data-deck-prev]')?.addEventListener('click', (e) => { e.stopPropagation(); this.prev(); });
-    this.root.querySelector('[data-deck-next]')?.addEventListener('click', (e) => { e.stopPropagation(); this.next(); });
-    this.root.querySelector('[data-deck-fs]')?.addEventListener('click', (e) => { e.stopPropagation(); this.toggleFullscreen(); });
+    this.root.querySelector('[data-deck-prev]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.prev(); });
+    this.root.querySelector('[data-deck-next]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.next(); });
+    this.root.querySelector('[data-deck-fs]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleFullscreen(); });
   }
 
   destroy() {
@@ -183,8 +183,9 @@ export class Deck {
 
   private onClick = (e: MouseEvent) => {
     const t = e.target as HTMLElement;
-    if (t.closest('a, button, [data-deck-nochrome]')) return; // let links/buttons work
+    if (t.closest('a, button, .deck-chrome, [data-deck-nochrome]')) return; // let links/controls work
     if (window.getSelection()?.toString()) return;
+    if (!e.clientX && !e.clientY) return; // ignore synthetic/coordinateless clicks
     const x = e.clientX;
     if (x > window.innerWidth / 2) this.next(); else this.prev();
   };
@@ -203,14 +204,21 @@ export class Deck {
   };
 
   // ── Fullscreen ──────────────────────────────────────────────────
+  // Fullscreen the document element (not the fixed deck root): more robust
+  // across browsers and avoids position:fixed fullscreen quirks.
   private toggleFullscreen() {
     const doc = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
-    const el = this.root as HTMLElement & { webkitRequestFullscreen?: () => void };
-    if (!document.fullscreenElement && !doc.webkitFullscreenElement) {
-      (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el);
-    } else {
-      (document.exitFullscreen || doc.webkitExitFullscreen)?.call(document);
-    }
+    const el = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => void };
+    const isFs = document.fullscreenElement || doc.webkitFullscreenElement;
+    try {
+      if (!isFs) {
+        const req = (el.requestFullscreen || el.webkitRequestFullscreen);
+        if (req) Promise.resolve(req.call(el)).catch(() => {});
+      } else {
+        const exit = (document.exitFullscreen || doc.webkitExitFullscreen);
+        if (exit) Promise.resolve(exit.call(document)).catch(() => {});
+      }
+    } catch { /* fullscreen unavailable — no-op */ }
   }
 
   // ── Auto-hide controls / cursor ─────────────────────────────────

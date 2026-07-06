@@ -109,6 +109,42 @@ const { nextHref, class: className } = Astro.props;
   @media (prefers-reduced-motion: reduce) {
     .deck-chrome { transition: none; }
   }
+
+  /* ════════════════════════════════════════════════════════════════
+     Responsive: auto-optimise the SAME deck from mobile → desktop → giant TV.
+     Safe-area + chrome scale by viewport, scoped to [data-deck] so they
+     override each experience's :root tokens without any per-app edit.
+     Applies to ALL experiences that use DeckContainer.
+     ════════════════════════════════════════════════════════════════ */
+  /* Phone (portrait) */
+  @media (max-width: 640px) {
+    [data-deck] { --slide-safe-inset: 18px; --deck-chrome-safe: 74px; }
+    [data-deck] .deck-btn { width: 2.75rem; height: 2.75rem; }
+    [data-deck] .deck-btn svg { width: 22px; height: 22px; }
+    [data-deck] .absolute.bottom-\[3vh\] { gap: 1rem; }
+    /* Dense slides scroll (safe-centered) instead of clipping on small screens */
+    [data-slide] .slide-inner {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      justify-content: safe center;
+    }
+  }
+  /* Tablet */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    [data-deck] { --slide-safe-inset: 44px; --deck-chrome-safe: 120px; }
+  }
+  /* Short viewports (phone landscape) — reclaim vertical space */
+  @media (max-height: 520px) {
+    [data-deck] { --slide-safe-inset: 16px; --deck-chrome-safe: 60px; }
+    [data-slide] .slide-inner { overflow-y: auto; justify-content: safe center; }
+  }
+  /* Giant TV / 4K — more breathing room + bigger controls for 4–8 m viewing */
+  @media (min-width: 2200px) {
+    [data-deck] { --slide-safe-inset: 140px; --deck-chrome-safe: 220px; }
+    [data-deck] .deck-btn { width: 4.5rem; height: 4.5rem; }
+    [data-deck] .deck-btn svg { width: 34px; height: 34px; }
+  }
 </style>
 
 <script>
