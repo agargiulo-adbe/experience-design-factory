@@ -12,7 +12,6 @@ export const assets: AssetSlot[] = [
   { id: 'bg-pit', type: 'stock', query: 'motorsport pit lane garage mechanics telemetry screens dark', aspect: '16:9', width: 2400, grade: 'editorial', alt: '' },
   { id: 'bg-grid', type: 'stock', query: 'motorsport starting grid asphalt tire marks aerial abstract', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
   // ── Story imagery ─────────────────────────────────────────────────
-  { id: 'hero-car', type: 'stock', query: 'red racing car speed motion blur track cornering', aspect: '16:9', width: 2400, grade: 'editorial', alt: 'A red racing car at speed on track' },
   { id: 'tifosi', type: 'stock', query: 'motorsport fans grandstand crowd red flags celebration passion', aspect: '16:9', width: 2400, grade: 'editorial', alt: 'Passionate motorsport fans in the grandstand' },
   { id: 'podium', type: 'stock', query: 'motorsport podium celebration champagne trophy crowd', aspect: '16:9', width: 2400, grade: 'editorial', alt: 'Podium celebration' },
   { id: 'data-telemetry', type: 'stock', query: 'abstract data visualization glowing lines red network dark analytics', aspect: '16:9', width: 2400, grade: 'duotone', alt: 'Abstract telemetry data visualization' },
