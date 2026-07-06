@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const arenaStats = [
+  { stat: '70%', en: 'of the web is unreachable via third-party cookies', it: 'del web è irraggiungibile via cookie di terze parti' },
+  { stat: '88%', en: 'of sports organizations now collect first-party fan data', it: 'delle organizzazioni sportive raccoglie già dati fan first-party' },
+  { stat: '~400M', en: 'Tifosi worldwide — the most-followed team in Formula 1', it: 'Tifosi nel mondo — la squadra più seguita della Formula 1' },
+];
+
+const journey = [
+  { num: '01', en: 'Protagonists', it: 'Protagonisti', subEn: 'Ferrari · Partner · Tifosi', subIt: 'Ferrari · Partner · Tifosi', href: '/protagonisti' },
+  { num: '02', en: 'Define', it: 'Definisci', subEn: 'Data Collaboration', subIt: 'Data Collaboration', href: '/define', solution: 'rtcdp-collab' },
+  { num: '03', en: 'Create', it: 'Crea', subEn: 'GenStudio + Express', subIt: 'GenStudio + Express', href: '/create', solution: 'genstudio,express' },
+  { num: '04', en: 'Activate', it: 'Attiva', subEn: 'On-brand, on their channels', subIt: 'On-brand, sui loro canali', href: '/activate', solution: 'genstudio' },
+  { num: '05', en: 'Analytics', it: 'Analisi', subEn: 'One CJA, all partners', subIt: 'Una CJA, tutti i partner', href: '/analisi', solution: 'cja' },
+  { num: '06', en: 'The Loop', it: 'Il Loop', subEn: 'Season over season', subIt: 'Stagione dopo stagione', href: '/loop' },
+];
+---
+<BaseLayout title="Pole Position">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/protagonisti')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/78" />
+      <p class="slide-eyebrow text-[var(--accent-secondary)] mb-5" data-reveal>FERRARI RACING × ADOBE</p>
+      <T en="Pole Position" it="Pole Position" as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(3.5rem, 9vw, 8rem); text-transform: uppercase;" />
+      <T
+        as="p"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="The data advantage that turns every sponsorship into a season-long, measurable partnership — from Maranello to every fan."
+        it="Il vantaggio del dato che trasforma ogni sponsorship in una partnership misurabile lunga una stagione — da Maranello a ogni tifoso."
+      />
+      <div class="flex items-center justify-center gap-3 mt-9" data-reveal data-reveal-delay="0.3">
+        <span class="px-3 py-1.5 text-xs font-semibold tracking-widest uppercase rounded-sm bg-[var(--accent-primary)] text-white">Scuderia Ferrari HP</span>
+        <span class="text-[var(--color-grigio-400)] text-sm">
+          <span data-lang-en>powered by Adobe</span><span data-lang-it>con Adobe</span>
+        </span>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: The Arena ─────────────────────────────────────── -->
+    <Slide id="slide-arena" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-grid')} imageClass="opacity-12" scrim="bg-[var(--surface-inverse)]/88" />
+      <T en="THE NEW ARENA" it="LA NUOVA ARENA" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="Attention is the race.<br/>Data decides who wins."
+        it="L'attenzione è la gara.<br/>Il dato decide chi vince."
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-11"
+        en="The stadium is now the whole media ecosystem. As third-party signals disappear, first-party fan data becomes the field where sponsors and rights-holders win together."
+        it="Lo stadio è ormai l'intero ecosistema media. Mentre i segnali di terze parti spariscono, il dato fan first-party diventa il campo dove sponsor e rights-holder vincono insieme."
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+        {arenaStats.map((s) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-center">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-3" style="font-size: clamp(2.25rem, 4vw, 3.25rem);">{s.stat}</p>
+            <T as="p" class="text-sm text-[var(--color-grigio-300)] leading-relaxed" en={s.en} it={s.it} />
+          </div>
+        ))}
+      </div>
+      <p class="mt-7 text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]">
+        <span data-lang-en>Source: Adobe / Forrester, Data Collaboration for Sports · Ferrari FY2025</span>
+        <span data-lang-it>Fonte: Adobe / Forrester, Data Collaboration for Sports · Ferrari FY2025</span>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: The Shift ─────────────────────────────────────── -->
+    <Slide id="slide-shift" bg="brand" align="center">
+      <T en="FROM LOGO TO LOOP" it="DAL LOGO AL LOOP" as="p" class="slide-eyebrow text-white/75 mb-5" />
+      <T
+        as="h2" class="slide-title text-white mb-6" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="A sticker on the car is not a strategy."
+        it="Un adesivo sulla monoposto non è una strategia."
+      />
+      <T
+        as="p" class="text-[clamp(1.1rem,1.6vw,1.5rem)] text-white/85 max-w-3xl mb-12"
+        en="The winning model is a data loop: define audiences together, create on-brand, activate on the partner's channels, and measure every campaign — so the value compounds season after season."
+        it="Il modello vincente è un loop di dati: definire insieme le audience, creare on-brand, attivare sui canali del partner e misurare ogni campagna — così il valore si accumula stagione dopo stagione."
+      />
+      <div class="w-full max-w-3xl mx-auto grid grid-cols-3 gap-6" data-reveal data-reveal-delay="0.25">
+        <div class="text-center">
+          <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-2" style="font-size: clamp(2rem,4vw,3.25rem);">€800M<span class="text-white/60">+</span></p>
+          <T as="p" class="text-sm text-white/80" en="sponsorship, commercial & brand revenue" it="ricavi sponsorship, commercial & brand" />
+        </div>
+        <div class="text-center">
+          <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-2" style="font-size: clamp(2rem,4vw,3.25rem);">+22%</p>
+          <T as="p" class="text-sm text-white/80" en="year-over-year growth (FY2025)" it="crescita anno su anno (FY2025)" />
+        </div>
+        <div class="text-center">
+          <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-2" style="font-size: clamp(2rem,4vw,3.25rem);">€9.0B</p>
+          <T as="p" class="text-sm text-white/80" en="2030 revenue ambition" it="obiettivo ricavi 2030" />
+        </div>
+      </div>
+      <p class="mt-8 text-center text-[0.62rem] tracking-widest uppercase text-white/45">
+        <span data-lang-en>Source: Ferrari FY2025 results · Capital Markets Day 2030</span>
+        <span data-lang-it>Fonte: risultati Ferrari FY2025 · Capital Markets Day 2030</span>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: Journey ───────────────────────────────────────── -->
+    <Slide id="slide-journey" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-carbon')} imageClass="opacity-20" scrim="bg-[var(--surface-inverse)]/85" />
+      <T en="THE RACE PLAN" it="IL PIANO GARA" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-9" style="font-size: clamp(2.25rem, 4.4vw, 3.75rem);"
+        en="Six chapters. One virtuous loop."
+        it="Sei capitoli. Un unico loop virtuoso."
+      />
+      <div class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 mb-10" data-reveal data-reveal-delay="0.2">
+        {journey.map((step) => (
+          <a href={href(base, step.href)} data-nav-solution={step.solution ?? undefined}
+             class="group p-5 bg-[var(--color-grafite)]/35 border border-white/10 rounded-sm text-left hover:border-[var(--accent-primary)]/60 transition-colors no-underline">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] text-sm mb-1">{step.num}</p>
+            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-0.5"><span data-lang-en>{step.en}</span><span data-lang-it>{step.it}</span></p>
+            <p class="text-sm text-[var(--color-grigio-400)]"><span data-lang-en>{step.subEn}</span><span data-lang-it>{step.subIt}</span></p>
+          </a>
+        ))}
+      </div>
+      <a href={href(base, '/protagonisti')}
+         class="inline-flex items-center gap-3 px-9 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-semibold tracking-wide uppercase bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors rounded-sm" data-reveal data-reveal-delay="0.4">
+        <span data-lang-en>Lights out</span><span data-lang-it>Semaforo verde</span>
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

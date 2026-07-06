@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'ferrari-racing', label: 'Arena (00)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-arena', label: "L'arena della sponsorship" },
+    { id: 'slide-shift', label: 'Il cambio di paradigma' },
+    { id: 'slide-journey', label: 'Il percorso' },
+  ]},
+  { slug: 'protagonisti', label: 'Protagonisti (01)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-ferrari', label: 'Ferrari Racing' },
+    { id: 'slide-partner', label: 'Il Partner Sponsor' },
+    { id: 'slide-tifosi', label: 'I Tifosi' },
+  ]},
+  { slug: 'define', label: 'Define · Data Collaboration (02)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-collab', label: 'RT-CDP Collaboration' },
+    { id: 'slide-audiences', label: 'Audience condivise' },
+    { id: 'slide-privacy', label: 'Privacy by design' },
+  ]},
+  { slug: 'create', label: 'Create · GenStudio + Express (03)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-genstudio', label: 'GenStudio for Performance Marketing' },
+    { id: 'slide-guardrails', label: 'Brand guardrails Ferrari' },
+    { id: 'slide-express', label: 'Adobe Express' },
+  ]},
+  { slug: 'activate', label: 'Activate + Results (04)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-activate', label: 'Pubblicazione sui canali Partner' },
+    { id: 'slide-results-partner', label: 'Risultati in GenStudio' },
+  ]},
+  { slug: 'analisi', label: 'Analytics · CJA Ferrari (05)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-cja', label: 'CJA Ferrari Racing' },
+    { id: 'slide-aggregate', label: 'Tutti i partner, una vista' },
+    { id: 'slide-insights', label: 'Insight di stagione' },
+  ]},
+  { slug: 'loop', label: 'The Loop (06)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-loop', label: 'Il loop virtuoso E2E' },
+    { id: 'slide-engine', label: 'Il motore Adobe' },
+    { id: 'slide-roi', label: 'ROI & business case' },
+  ]},
+];
+
+interface SolutionEntry { id: string; name: string; shortName: string; pillar: string; description: string; appearsIn: string[]; }
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'La fondazione dati: unifica audience e risultati di tutti i partner.', appearsIn: ['Loop'] },
+  { id: 'rtcdp-collab', name: 'Real-Time CDP Collaboration', shortName: 'RT-CDP Collab', pillar: 'data', description: 'Data collaboration privacy-centric: Ferrari e i Partner definiscono le audience.', appearsIn: ['Define', 'Loop'] },
+  { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'I Partner creano varianti on-brand in minuti; risultati campagna integrati.', appearsIn: ['Create', 'Activate', 'Loop'] },
+  { id: 'express', name: 'Adobe Express', shortName: 'Express', pillar: 'content', description: 'Editing rapido e template brand-safe per i team dei Partner.', appearsIn: ['Create'] },
+  { id: 'brand', name: 'Brand Guardrails (Brand Concierge)', shortName: 'Brand', pillar: 'content', description: 'Guardrail e linee guida Ferrari con verifiche pre e post pubblicazione.', appearsIn: ['Create'] },
+  { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: "L'istanza Ferrari che aggrega i risultati di tutte le campagne di tutti i Partner.", appearsIn: ['Analisi', 'Loop'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { foundation: 'Foundation', data: 'Data Collaboration', content: 'Content', analytics: 'Analytics' };
+const PILLAR_ORDER = ['foundation', 'data', 'content', 'analytics'];
+const PILLAR_COLORS: Record<string, string> = { foundation: '#FF2800', data: '#2563eb', content: '#ea580c', analytics: '#0891b2' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console di configurazione — Ferrari Racing">
+  <AdminConsole
+    projectSlug="ferrari-racing"
+    projectName="Ferrari Racing × Adobe"
+    clientLabel="Scuderia Ferrari HP"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

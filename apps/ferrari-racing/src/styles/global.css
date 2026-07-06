@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* ── Ferrari Racing brand palette ─────────────────────────────────── */
+@theme {
+  --color-rosso-corsa: #FF2800;   /* Rosso Corsa */
+  --color-rosso-scuro: #C8102E;
+  --color-carbonio: #0B0B0D;      /* carbon black */
+  --color-asfalto: #17171C;       /* asphalt / lifted dark */
+  --color-grafite: #2A2A31;
+  --color-giallo-modena: #FFF200; /* Scuderia shield yellow */
+  --color-argento: #E9E9E7;       /* silver / off-white */
+  --color-bianco: #FFFFFF;
+  --color-grigio-300: #C7C7CC;
+  --color-grigio-400: #9A9AA2;
+  --color-grigio-500: #6E6E77;
+
+  --font-display: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+:root {
+  /* Primitives */
+  --color-rosso-corsa: #FF2800;
+  --color-rosso-scuro: #C8102E;
+  --color-carbonio: #0B0B0D;
+  --color-asfalto: #17171C;
+  --color-grafite: #2A2A31;
+  --color-giallo-modena: #FFF200;
+  --color-argento: #E9E9E7;
+  --color-bianco: #FFFFFF;
+  --color-grigio-300: #C7C7CC;
+  --color-grigio-400: #9A9AA2;
+  --color-grigio-500: #6E6E77;
+
+  --font-display: 'Archivo', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+
+  /* Semantic — Surface. primary/secondary = light, inverse = dark (carbon),
+     brand = Rosso Corsa. Ferrari decks are dark-dominant → most slides use
+     bg="inverse" or bg="brand". Keeps the shared Slide/cs-tone contract intact. */
+  --surface-primary: var(--color-argento);
+  --surface-secondary: var(--color-bianco);
+  --surface-tertiary: #F4F4F2;
+  --surface-inverse: var(--color-carbonio);
+  --surface-brand: var(--color-rosso-corsa);
+
+  /* Semantic — Ink */
+  --ink-primary: var(--color-carbonio);
+  --ink-secondary: #3A3A42;
+  --ink-tertiary: var(--color-grigio-500);
+  --ink-inverse: #F4F4F2;
+  --ink-brand: var(--color-rosso-corsa);
+  --ink-link: var(--color-rosso-corsa);
+
+  /* Semantic — Accent */
+  --accent-primary: var(--color-rosso-corsa);
+  --accent-secondary: var(--color-giallo-modena);
+  --accent-hover: var(--color-rosso-scuro);
+
+  /* Semantic — Line */
+  --line-subtle: rgba(11, 11, 13, 0.12);
+  --line-default: rgba(11, 11, 13, 0.22);
+  --line-strong: var(--color-carbonio);
+
+  --focus-ring: var(--color-rosso-corsa);
+
+  /* Deck safe-area contract (projected keynote) */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: 1.6;
+    color: var(--ink-primary);
+    background-color: var(--surface-inverse);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body { min-height: 100dvh; }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3 { font-family: var(--font-display); }
+}
+
+/* ── Deck title styling — Ferrari is bold/condensed, not light-serif ── */
+.slide-title { font-weight: 700 !important; letter-spacing: -0.02em; }
+.slide-eyebrow { font-weight: 600; }
+
+/* Readability on projected TV */
+[data-slide] p { max-width: 62ch; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ── i18n: show only the active language ─────────────────────────── */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+/* ── Admin-only UI (revealed by console mode) ────────────────────── */
+[data-admin-only] { display: none !important; }
+
+/* ════════════════════════════════════════════════════════════════════
+   Custom slides — Admin-authored, injected into the deck, coherent styling.
+   Shared by the deck runtime injection AND the Admin Console live preview.
+   ════════════════════════════════════════════════════════════════════ */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.02; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 700; }
+.cs-prose em { font-style: italic; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; text-underline-offset: 0.15em; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose li + li { margin-top: 0.35em; }
+.cs-prose ul { list-style: disc; }
+.cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: color-mix(in srgb, var(--ink-primary) 8%, transparent); box-shadow: 0 12px 40px -12px rgba(0,0,0,0.35); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-inverse); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: color-mix(in srgb, var(--ink-inverse) 82%, transparent); }
+.cs-slide[data-cs-tone="dark"] .slide-eyebrow { color: var(--accent-secondary); }
+.cs-slide[data-cs-tone="dark"] .cs-caption { color: color-mix(in srgb, var(--ink-inverse) 55%, transparent); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--accent-primary); }

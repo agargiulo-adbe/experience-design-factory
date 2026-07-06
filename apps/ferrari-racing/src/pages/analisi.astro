@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const cjaCards = [
+  { en: 'Every partner', it: 'Ogni partner', subEn: 'HP · Shell · Puma · IBM · UniCredit · Aon — one portfolio', subIt: 'HP · Shell · Puma · IBM · UniCredit · Aon — un unico portfolio' },
+  { en: 'Every channel', it: 'Ogni canale', subEn: 'Web, app, social, CRM and on-site — unified', subIt: 'Web, app, social, CRM e on-site — unificati' },
+  { en: 'Every season', it: 'Ogni stagione', subEn: 'Race by race, campaign by campaign, year over year', subIt: 'Gara dopo gara, campagna dopo campagna, anno su anno' },
+];
+
+const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
+
+const insights = [
+  { en: 'Audience value, proven', it: 'Valore dell’audience, dimostrato', subEn: 'Which Tifosi segments each partner truly reached — and moved.', subIt: 'Quali segmenti di Tifosi ogni partner ha davvero raggiunto — e attivato.' },
+  { en: 'ROI per partner', it: 'ROI per partner', subEn: 'Value read side by side, in one shared model — no more black box.', subIt: 'Valore letto fianco a fianco, in un unico modello condiviso — niente più scatola nera.' },
+  { en: 'What to scale next', it: 'Cosa scalare dopo', subEn: 'The activations that earned their place in next season’s plan.', subIt: 'Le attivazioni che si sono guadagnate un posto nel piano della prossima stagione.' },
+];
+---
+<BaseLayout title="Analytics" pageSolutions={['cja']}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/loop')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('data-telemetry')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/78" />
+      <p class="slide-eyebrow text-[var(--accent-secondary)] mb-5" data-reveal>ANALYTICS / ANALISI</p>
+      <T
+        as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(3rem, 7.5vw, 6.5rem);"
+        en="One CJA.<br/>Every partner."
+        it="Una CJA.<br/>Ogni partner."
+      />
+      <T
+        as="p"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="While each partner sees its own results in GenStudio, all campaign data converges into Ferrari Racing's Customer Journey Analytics — one season view."
+        it="Mentre ogni partner vede i propri risultati in GenStudio, tutti i dati delle campagne confluiscono nella Customer Journey Analytics di Ferrari Racing — un'unica vista di stagione."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: CJA — the whole portfolio ─────────────────────── -->
+    <Slide id="slide-cja" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-pit')} imageClass="opacity-15" scrim="bg-[var(--surface-inverse)]/88" />
+      <T en="CUSTOMER JOURNEY ANALYTICS" it="CUSTOMER JOURNEY ANALYTICS" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="The whole portfolio, in one place."
+        it="L'intero portfolio, in un unico posto."
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-11"
+        en="Results from every partner campaign flow into Ferrari's CJA instance on Adobe Experience Platform — cross-channel, cross-partner, cross-season."
+        it="I risultati di ogni campagna partner confluiscono nell'istanza CJA di Ferrari su Adobe Experience Platform — cross-channel, cross-partner, cross-stagione."
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+        {cjaCards.map((c) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1.5"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed"><span data-lang-en>{c.subEn}</span><span data-lang-it>{c.subIt}</span></p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Cross-partner view (demo) ─────────────────────── -->
+    <Slide id="slide-aggregate" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-carbon')} imageClass="opacity-20" scrim="bg-[var(--surface-inverse)]/86" />
+      <div data-demo-flex class="w-full flex items-start gap-8">
+        <div class="flex-1 min-w-0 flex flex-col items-center">
+          <T en="CROSS-PARTNER VIEW / VISTA CROSS-PARTNER" it="CROSS-PARTNER VIEW / VISTA CROSS-PARTNER" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+          <T
+            as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2rem, 4vw, 3.5rem);"
+            en="Compare, rank, learn."
+            it="Confronta, classifica, impara."
+          />
+          <T
+            as="p" class="text-[clamp(1rem,1.35vw,1.25rem)] text-[var(--color-grigio-300)] max-w-2xl mb-8"
+            en="Ferrari compares partners, audiences and channels side by side — which segments and which activations created the most value."
+            it="Ferrari confronta partner, audience e canali fianco a fianco — quali segmenti e quali attivazioni hanno creato più valore."
+          />
+          <div class="flex flex-wrap items-center justify-center gap-2.5 mb-4" data-reveal data-reveal-delay="0.25">
+            {partners.map((p) => (
+              <span class="px-3.5 py-1.5 text-sm font-semibold rounded-sm bg-[var(--color-grafite)]/60 border border-white/10 text-[var(--ink-inverse)]">{p}</span>
+            ))}
+          </div>
+          <p class="text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]">
+            <span data-lang-en>Illustrative sponsors — six partners feeding one dashboard</span>
+            <span data-lang-it>Sponsor illustrativi — sei partner in un'unica dashboard</span>
+          </p>
+        </div>
+        <MediaDemoSlot id="analisi-cja-demo" label="CJA — Cross-partner dashboard" />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Season insights ───────────────────────────────── -->
+    <Slide id="slide-insights" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-25" scrim="bg-[var(--surface-inverse)]/84" />
+      <T en="SEASON INSIGHTS / INSIGHT DI STAGIONE" it="SEASON INSIGHTS / INSIGHT DI STAGIONE" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.4vw, 3.75rem);"
+        en="Data that wins the next deal."
+        it="Dati che vincono il prossimo accordo."
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-10"
+        en="The season's insights quantify each partnership's value — the evidence Ferrari brings to renewals and to net-new sponsors."
+        it="Gli insight di stagione quantificano il valore di ogni partnership — le prove che Ferrari porta ai rinnovi e ai nuovi sponsor."
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5 mb-10" data-reveal data-reveal-delay="0.22">
+        {insights.map((i) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1.5"><span data-lang-en>{i.en}</span><span data-lang-it>{i.it}</span></p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed"><span data-lang-en>{i.subEn}</span><span data-lang-it>{i.subIt}</span></p>
+          </div>
+        ))}
+      </div>
+      <a href={href(base, '/loop')}
+         class="inline-flex items-center gap-3 px-9 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-semibold tracking-wide uppercase bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors rounded-sm" data-reveal data-reveal-delay="0.4">
+        <span data-lang-en>To the Loop</span><span data-lang-it>Verso il Loop</span>
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

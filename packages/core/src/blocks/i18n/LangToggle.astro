@@ -1,0 +1,37 @@
+---
+/**
+ * LangToggle — EN/IT switch. Sets <html data-lang> + persists to localStorage.
+ * The anti-flash init lives in the layout <head>; this only wires the buttons.
+ */
+---
+<div class="lang-toggle" role="group" aria-label="Language">
+  <button type="button" data-lang-btn="en" class="lang-btn">EN</button>
+  <span class="lang-sep" aria-hidden="true">/</span>
+  <button type="button" data-lang-btn="it" class="lang-btn">IT</button>
+</div>
+
+<style>
+  .lang-toggle { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .lang-btn {
+    background: none; border: none; cursor: pointer; padding: 0.1rem 0.15rem;
+    font-family: var(--font-body); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--ink-tertiary); transition: color 0.15s;
+  }
+  .lang-btn:hover { color: var(--ink-primary); }
+  .lang-sep { color: var(--ink-tertiary); font-size: 0.7rem; opacity: 0.5; }
+  html[data-lang="en"] [data-lang-btn="en"],
+  html[data-lang="it"] [data-lang-btn="it"] { color: var(--accent-primary); }
+</style>
+
+<script is:inline>
+  (function () {
+    function setLang(l) {
+      document.documentElement.setAttribute('data-lang', l);
+      try { localStorage.setItem('edf:lang', l); } catch (e) {}
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-lang-btn]');
+      if (b) setLang(b.getAttribute('data-lang-btn'));
+    });
+  })();
+</script>

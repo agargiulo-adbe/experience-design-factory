@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const channels = [
+  {
+    en: 'Owned', it: 'Owned',
+    subEn: 'HP homepage & app', subIt: 'Homepage e app HP',
+    bodyEn: 'The on-brand hero unit goes live on the HP homepage — the partner’s highest-traffic, fully-owned surface.',
+    bodyIt: 'L’unità hero on-brand va live sulla homepage HP — la superficie di proprietà del partner con più traffico.',
+  },
+  {
+    en: 'Social', it: 'Social',
+    subEn: 'Feed & stories', subIt: 'Feed e stories',
+    bodyEn: 'The same approved creative, sized for social, engages the defined Tifosi audiences on the partner’s channels.',
+    bodyIt: 'La stessa creatività approvata, adattata al social, ingaggia le audience Tifosi definite sui canali del partner.',
+  },
+  {
+    en: 'Commerce & CTV', it: 'Commerce & CTV',
+    subEn: 'Retail media & connected TV', subIt: 'Retail media e TV connessa',
+    bodyEn: 'On-brand content extends into retail media and CTV — reaching fans across the partner’s full commerce footprint.',
+    bodyIt: 'Il contenuto on-brand si estende a retail media e CTV — raggiungendo i fan sull’intera presenza commerce del partner.',
+  },
+];
+
+const kpis = [
+  { stat: '+34%', en: 'CTR vs. manual', it: 'CTR vs. manuale' },
+  { stat: '3×', en: 'ROAS', it: 'ROAS' },
+  { stat: '2×', en: 'conversions', it: 'conversioni' },
+];
+---
+<BaseLayout title="Activate" pageSolutions={['genstudio']}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/analisi')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('billboard')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/80" />
+      <T en="ACTIVATE" it="ATTIVA" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
+      <T
+        as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(2.75rem, 6.5vw, 6rem);"
+        en="Live on the partner’s channels."
+        it="Live sui canali del partner."
+      />
+      <T
+        as="p"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="The approved, on-brand content reaches the jointly-defined audiences — on the partner’s homepage, social, CTV and retail media."
+        it="Il contenuto approvato e on-brand raggiunge le audience definite insieme — sulla homepage del partner, su social, CTV e retail media."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: On their turf ─────────────────────────────────── -->
+    <Slide id="slide-activate" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-15" scrim="bg-[var(--surface-inverse)]/88" />
+      <T en="ON THEIR TURF" it="SUL LORO CAMPO" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="The HP homepage, on-brand"
+        it="La homepage HP, on-brand"
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-11"
+        en="The partner publishes to its owned channels — the defined Tifosi audiences are engaged exactly where the partner already has presence and trust."
+        it="Il partner pubblica sui propri canali di proprietà — le audience Tifosi definite vengono ingaggiate proprio dove il partner ha già presenza e fiducia."
+      />
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+        {channels.map((c) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+            <p class="text-lg font-semibold text-[var(--accent-primary)] mb-1"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
+            <p class="text-sm font-medium text-[var(--ink-inverse)] mb-3"><span data-lang-en>{c.subEn}</span><span data-lang-it>{c.subIt}</span></p>
+            <T as="p" class="text-sm text-[var(--color-grigio-300)] leading-relaxed" en={c.bodyEn} it={c.bodyIt} />
+          </div>
+        ))}
+      </div>
+      <p class="mt-7 text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]">
+        <span data-lang-en>Partner names & logos illustrative — HP homepage shown as a guiding example</span>
+        <span data-lang-it>Nomi e loghi partner illustrativi — homepage HP mostrata come esempio guida</span>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: Results in GenStudio ──────────────────────────── -->
+    <Slide id="slide-results-partner" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('data-telemetry')} imageClass="opacity-18" scrim="bg-[var(--surface-inverse)]/88" />
+      <div data-demo-flex class="w-full flex items-start gap-8">
+        <div class="flex-1 min-w-0 flex flex-col items-center">
+          <T en="RESULTS IN GENSTUDIO" it="RISULTATI IN GENSTUDIO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+          <T
+            as="h2" class="slide-title text-[var(--ink-inverse)] mb-5 text-center" style="font-size: clamp(2rem, 4vw, 3.5rem);"
+            en="The partner sees performance, in one place"
+            it="Il partner vede la performance, in un unico posto"
+          />
+          <T
+            as="p" class="text-[clamp(1rem,1.3vw,1.25rem)] text-[var(--color-grigio-300)] max-w-2xl text-center mb-9"
+            en="Campaign results flow back to the partner inside GenStudio for Performance Marketing — impressions, CTR, conversions, ROAS — with the depth to optimize in-flight and plan the next drop."
+            it="I risultati di campagna tornano al partner dentro GenStudio for Performance Marketing — impression, CTR, conversioni, ROAS — con la profondità per ottimizzare in corsa e pianificare il prossimo drop."
+          />
+          <div class="w-full max-w-2xl grid grid-cols-3 gap-5 mb-6" data-reveal data-reveal-delay="0.22">
+            {kpis.map((k) => (
+              <div class="p-5 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-center">
+                <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2" style="font-size: clamp(1.75rem, 3.4vw, 2.75rem);">{k.stat}</p>
+                <T as="p" class="text-sm text-[var(--color-grigio-300)]" en={k.en} it={k.it} />
+              </div>
+            ))}
+          </div>
+          <p class="text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)] mb-7">
+            <span data-lang-en>Illustrative results — closed-loop measurement, closed-beta figures</span>
+            <span data-lang-it>Risultati illustrativi — misurazione closed-loop, dati closed-beta</span>
+          </p>
+          <a href={href(base, '/analisi')} data-nav-solution="cja"
+             class="inline-flex items-center gap-3 px-8 py-3.5 text-[clamp(0.95rem,1.1vw,1.1rem)] font-semibold tracking-wide uppercase bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors rounded-sm no-underline" data-reveal data-reveal-delay="0.35">
+            <span data-lang-en>Next: Analytics</span><span data-lang-it>Avanti: Analisi</span>
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <MediaDemoSlot id="activate-results-demo" label="GenStudio — Campaign results" />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -1,0 +1,81 @@
+---
+import { href as buildHref } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+
+interface NavItem { en: string; it: string; href: string; solution?: string; }
+interface Props { currentPath: string; base: string; }
+const { currentPath, base } = Astro.props;
+
+const navItems: NavItem[] = [
+  { en: 'Home', it: 'Home', href: '/' },
+  { en: 'Protagonists', it: 'Protagonisti', href: '/protagonisti' },
+  { en: 'Define', it: 'Definisci', href: '/define', solution: 'rtcdp-collab' },
+  { en: 'Create', it: 'Crea', href: '/create', solution: 'genstudio,express' },
+  { en: 'Activate', it: 'Attiva', href: '/activate', solution: 'genstudio' },
+  { en: 'Analytics', it: 'Analisi', href: '/analisi', solution: 'cja' },
+  { en: 'The Loop', it: 'Il Loop', href: '/loop' },
+];
+
+const resolve = (p: string) => buildHref(base, p);
+const isActive = (p: string) => {
+  const r = resolve(p);
+  if (p === '/') return currentPath === r || currentPath === r.replace(/\/$/, '');
+  return currentPath.startsWith(r);
+};
+---
+<header class="fer-nav" role="banner" style="view-transition-name: fer-nav;">
+  <nav class="fer-nav-inner" aria-label="Ferrari Racing">
+    <a href={resolve('/')} class="fer-brand">
+      <span class="fer-shield" aria-hidden="true"></span>
+      <span class="fer-brand-name">Ferrari&nbsp;Racing<span class="fer-brand-x"> × Adobe</span></span>
+    </a>
+
+    <ul class="fer-links" role="list">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={resolve(item.href)}
+            data-nav-solution={item.solution ?? undefined}
+            class:list={['fer-link', isActive(item.href) && 'is-active']}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            <span data-lang-en>{item.en}</span><span data-lang-it>{item.it}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="fer-nav-right">
+      <LangToggle />
+      <a
+        href={buildHref(base.replace('/ferrari-racing', ''), '/console/ferrari-racing')}
+        class="fer-console" data-admin-only title="Experience Design Factory Console"
+      >
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <rect x="2" y="2" width="5" height="5" rx="0.5"/><rect x="9" y="2" width="5" height="5" rx="0.5"/>
+          <rect x="2" y="9" width="5" height="5" rx="0.5"/><rect x="9" y="9" width="5" height="5" rx="0.5"/>
+        </svg>
+        Console
+      </a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .fer-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: color-mix(in srgb, var(--color-carbonio) 82%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .fer-nav-inner { max-width: 90rem; margin: 0 auto; padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .fer-brand { display: flex; align-items: center; gap: 0.55rem; flex-shrink: 0; }
+  .fer-shield { width: 18px; height: 22px; background: var(--color-giallo-modena); clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%); position: relative; }
+  .fer-shield::after { content: ''; position: absolute; inset: 3px 3px 5px; background: var(--color-rosso-corsa); clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%); }
+  .fer-brand-name { font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; letter-spacing: -0.01em; color: #F4F4F2; text-transform: uppercase; }
+  .fer-brand-x { color: var(--color-grigio-400); font-weight: 600; }
+  .fer-links { display: none; align-items: center; gap: 0.15rem; }
+  @media (min-width: 1024px) { .fer-links { display: flex; } }
+  .fer-link { padding: 0.4rem 0.7rem; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-400); border-radius: 4px; transition: color 0.15s, background 0.15s; }
+  .fer-link:hover { color: #F4F4F2; }
+  .fer-link.is-active { color: var(--color-rosso-corsa); }
+  .fer-nav-right { display: flex; align-items: center; gap: 0.9rem; flex-shrink: 0; }
+  .fer-console { display: none; align-items: center; gap: 0.4rem; padding: 0.35rem 0.7rem; font-size: 0.72rem; font-weight: 600; color: var(--color-grigio-400); border: 1px solid rgba(255,255,255,0.14); border-radius: 4px; }
+  @media (min-width: 1024px) { .fer-console { display: inline-flex; } }
+  .fer-console:hover { color: var(--color-rosso-corsa); border-color: var(--color-rosso-corsa); }
+</style>

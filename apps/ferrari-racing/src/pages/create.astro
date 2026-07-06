@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const genstudioCards = [
+  { en: 'Brief → variants', it: 'Brief → varianti', bodyEn: 'One campaign brief becomes many channel-ready cuts — hero, social, display — in minutes.', bodyIt: 'Un brief di campagna diventa tante versioni pronte per i canali — hero, social, display — in pochi minuti.' },
+  { en: 'Channel-ready formats', it: 'Formati pronti per i canali', bodyEn: 'Every variant exports in the exact sizes each placement needs, from homepage banner to Stories.', bodyIt: 'Ogni variante esce nei formati esatti richiesti da ogni placement, dal banner homepage alle Stories.' },
+  { en: 'Ferrari brand kit built-in', it: 'Brand kit Ferrari integrato', bodyEn: 'Rosso Corsa, the Cavallino Rampante and typography are pre-loaded, so partners start on-brand.', bodyIt: 'Rosso Corsa, il Cavallino Rampante e la tipografia sono già caricati: i partner partono on-brand.' },
+];
+
+const guardrailPoints = [
+  { en: 'Pre-publication check', it: 'Controllo pre-pubblicazione', bodyEn: 'Every asset is verified against Ferrari guidelines before it can go live.', bodyIt: 'Ogni asset è verificato rispetto alle linee guida Ferrari prima di poter andare online.' },
+  { en: 'Post-publication monitoring', it: 'Monitoraggio post-pubblicazione', bodyEn: 'Live campaigns are watched continuously — drift is flagged, not discovered later.', bodyIt: 'Le campagne live sono monitorate di continuo — le deviazioni si segnalano, non si scoprono dopo.' },
+  { en: '~70% auto pre-approved', it: '~70% pre-approvati in automatico', bodyEn: 'Brand Concierge clears the majority of assets automatically, so review time collapses.', bodyIt: 'Brand Concierge approva in automatico la maggior parte degli asset, azzerando i tempi di revisione.' },
+];
+
+const expressCards = [
+  { en: 'Brand-locked templates', it: 'Template brand-locked', bodyEn: 'Colours, logo and layout are locked — partners edit only what they should.', bodyIt: 'Colori, logo e layout sono bloccati — i partner modificano solo ciò che devono.' },
+  { en: 'Social posts & banners', it: 'Post social & banner', bodyEn: 'Non-designers adapt approved assets for every placement in a few clicks.', bodyIt: 'Chi non è designer adatta gli asset approvati per ogni placement in pochi clic.' },
+  { en: 'Fast, safe, consistent', it: 'Veloce, sicuro, coerente', bodyEn: 'Every partner team ships on-brand work without a creative bottleneck.', bodyIt: 'Ogni team partner produce lavoro on-brand senza colli di bottiglia creativi.' },
+];
+---
+<BaseLayout title="Create" pageSolutions={['genstudio','express']}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/activate')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('content-studio')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/80" />
+      <T en="CREATE" it="CREA" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
+      <T
+        as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(2.75rem, 6.5vw, 6rem);"
+        en="On-brand in minutes,<br/>not weeks."
+        it="On-brand in minuti,<br/>non settimane."
+      />
+      <T
+        as="p"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="Partners create campaign content for their own channels — always inside Ferrari's brand guardrails."
+        it="I partner creano contenuti di campagna per i propri canali — sempre dentro i guardrail di brand Ferrari."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: GenStudio for Performance Marketing ───────────── -->
+    <Slide id="slide-genstudio" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-pit')} imageClass="opacity-15" scrim="bg-[var(--surface-inverse)]/88" />
+      <T en="GENSTUDIO FOR PERFORMANCE MARKETING" it="GENSTUDIO FOR PERFORMANCE MARKETING" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="One brief. Every variant."
+        it="Un brief. Ogni variante."
+      />
+      <div data-demo-flex class="w-full max-w-6xl mx-auto flex items-start gap-8">
+        <div class="flex-1 min-w-0 flex flex-col items-center">
+          <T
+            as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-6"
+            en="A partner — say HP — generates on-brand campaign variants for its homepage, social and display in minutes, using GenStudio for Performance Marketing."
+            it="Un partner — ad esempio HP — genera in pochi minuti varianti di campagna on-brand per la propria homepage, i social e il display, con GenStudio for Performance Marketing."
+          />
+          <div class="w-full grid md:grid-cols-3 gap-4 mb-5" data-reveal data-reveal-delay="0.22">
+            {genstudioCards.map((c) => (
+              <div class="p-5 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+                <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1.5"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
+                <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed"><span data-lang-en>{c.bodyEn}</span><span data-lang-it>{c.bodyIt}</span></p>
+              </div>
+            ))}
+          </div>
+          <span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold tracking-widest uppercase rounded-sm bg-[var(--accent-primary)] text-white" data-reveal data-reveal-delay="0.35">
+            1 brief → 12 variants · 2 min
+          </span>
+        </div>
+        <MediaDemoSlot id="create-genstudio-demo" label="GenStudio — Demo" />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Brand Guardrails ──────────────────────────────── -->
+    <Slide id="slide-guardrails" bg="brand" align="center">
+      <T en="BRAND GUARDRAILS" it="GUARDRAIL DI BRAND" as="p" class="slide-eyebrow text-white/75 mb-5" />
+      <T
+        as="h2" class="slide-title text-white mb-6" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="The Cavallino stays perfect."
+        it="Il Cavallino resta perfetto."
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.5vw,1.4rem)] text-white/85 max-w-3xl mb-10"
+        en="Brand Concierge enforces Ferrari's guidelines — Rosso Corsa, logo usage, tone — with automated pre-publication checks and post-publication monitoring. Only compliant work goes live. This is the trust that lets Ferrari open its brand to partners."
+        it="Brand Concierge applica le linee guida Ferrari — Rosso Corsa, uso del logo, tono — con controlli automatici pre-pubblicazione e monitoraggio post-pubblicazione. Solo il lavoro conforme va online. È la fiducia che permette a Ferrari di aprire il proprio brand ai partner."
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.25">
+        {guardrailPoints.map((p) => (
+          <div class="p-6 bg-white/10 border border-white/20 rounded-sm text-left">
+            <p class="text-base font-semibold text-white mb-1.5"><span data-lang-en>{p.en}</span><span data-lang-it>{p.it}</span></p>
+            <p class="text-sm text-white/80 leading-relaxed"><span data-lang-en>{p.bodyEn}</span><span data-lang-it>{p.bodyIt}</span></p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Adobe Express ─────────────────────────────────── -->
+    <Slide id="slide-express" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('billboard')} imageClass="opacity-18" scrim="bg-[var(--surface-inverse)]/86" />
+      <T en="ADOBE EXPRESS" it="ADOBE EXPRESS" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.4vw, 3.75rem);"
+        en="Every partner team, on-brand"
+        it="Ogni team partner, on-brand"
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.5vw,1.4rem)] text-[var(--color-grigio-300)] max-w-3xl mb-10"
+        en="Non-designers on the partner side adapt approved assets with brand-locked Adobe Express templates — social posts, banners — fast, safe and consistent."
+        it="Chi non è designer, sul lato partner, adatta gli asset approvati con i template brand-locked di Adobe Express — post social, banner — in modo veloce, sicuro e coerente."
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5 mb-10" data-reveal data-reveal-delay="0.22">
+        {expressCards.map((c) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1.5"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
+            <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed"><span data-lang-en>{c.bodyEn}</span><span data-lang-it>{c.bodyIt}</span></p>
+          </div>
+        ))}
+      </div>
+      <a href={href(base, '/activate')}
+         class="inline-flex items-center gap-3 px-9 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-semibold tracking-wide uppercase bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors rounded-sm" data-reveal data-reveal-delay="0.4">
+        <span data-lang-en>Now activate it</span><span data-lang-it>Ora attivala</span>
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

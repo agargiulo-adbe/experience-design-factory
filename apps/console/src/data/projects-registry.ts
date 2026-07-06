@@ -174,6 +174,21 @@ export const PROJECTS: ConsoleProject[] = [
     ],
   },
   {
+    slug: 'ferrari-racing',
+    name: 'Pole Position',
+    client: 'Ferrari Racing',
+    description: 'Come il dato trasforma ogni sponsorship in una partnership misurabile — Ferrari Racing e i suoi Partner Sponsor, con Adobe.',
+    baseUrl: '/experience-design-factory/ferrari-racing/',
+    solutions: [
+      { id: 'rtcdp-collab', name: 'Real-Time CDP Collaboration', shortName: 'RT-CDP Collab', pillar: 'data', description: 'Ferrari e i Partner definiscono insieme le audience, privacy-first.', pagesGated: ['Define'] },
+      { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'I Partner creano on-brand; risultati campagna integrati.', pagesGated: ['Create', 'Activate'] },
+      { id: 'express', name: 'Adobe Express', shortName: 'Express', pillar: 'content', description: 'Template brand-safe per i team dei Partner.', pagesGated: ['Create'] },
+      { id: 'brand', name: 'Brand Guardrails (Brand Concierge)', shortName: 'Brand', pillar: 'content', description: 'Guardrail Ferrari con verifiche pre e post.', pagesGated: ['Create'] },
+      { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Aggrega i risultati di tutti i Partner in una vista.', pagesGated: ['Analytics'] },
+      { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'La fondazione dati del loop.', pagesGated: [] },
+    ],
+  },
+  {
     slug: 'generazioni-maxmara',
     name: 'Generazioni',
     client: 'Max Mara',

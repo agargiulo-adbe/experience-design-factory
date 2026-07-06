@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const loopSteps = [
+  { num: '01', en: 'Define', it: 'Definisci', toolEn: 'Real-Time CDP Collaboration', toolIt: 'Real-Time CDP Collaboration', descEn: 'Audiences built together, privacy-safe', descIt: 'Audience costruite insieme, privacy-safe' },
+  { num: '02', en: 'Create', it: 'Crea', toolEn: 'GenStudio + Adobe Express', toolIt: 'GenStudio + Adobe Express', descEn: 'On-brand assets at scale', descIt: 'Asset on-brand su larga scala' },
+  { num: '03', en: 'Activate', it: 'Attiva', toolEn: 'Partner channels', toolIt: 'Canali del partner', descEn: 'Live where the fans already are', descIt: 'Vivi dove i tifosi sono già' },
+  { num: '04', en: 'Measure', it: 'Misura', toolEn: 'GenStudio for the partner', toolIt: 'GenStudio per il partner', descEn: 'Every campaign result, proven', descIt: 'Ogni risultato di campagna, dimostrato' },
+  { num: '05', en: 'Aggregate', it: 'Aggrega', toolEn: 'Ferrari CJA', toolIt: 'Ferrari CJA', descEn: 'One Ferrari-wide view of value', descIt: 'Una visione del valore su tutta Ferrari' },
+];
+
+const engineStack = [
+  { name: 'Real-Time CDP Collaboration', en: 'Define audiences together, privacy-safe', it: 'Definisci le audience insieme, privacy-safe' },
+  { name: 'GenStudio for Performance Marketing', en: 'Create at scale + prove partner results', it: 'Crea su larga scala + dimostra i risultati partner' },
+  { name: 'Adobe Express', en: 'On-brand for every partner, at scale', it: 'On-brand per ogni partner, su larga scala' },
+  { name: 'Brand Concierge', en: 'Guardrails that keep the brand intact', it: 'Guardrail che tengono il brand intatto' },
+  { name: 'Customer Journey Analytics (CJA)', en: 'Measurement across all of Ferrari', it: 'Misurazione su tutta Ferrari' },
+  { name: 'Adobe Experience Platform', en: 'The foundation the loop runs on', it: 'La fondazione su cui gira il loop' },
+];
+
+const prizeStats = [
+  { stat: '€800M+', en: 'sponsorship, commercial & brand (+22%)', it: 'sponsorship, commercial & brand (+22%)' },
+  { stat: '€9.0B', en: '2030 revenue ambition', it: 'obiettivo ricavi 2030' },
+  { stat: '~400M', en: 'Tifosi reached', it: 'Tifosi raggiunti' },
+];
+---
+<BaseLayout title="The Loop">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('podium')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/78" />
+      <T en="THE LOOP" it="IL LOOP" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
+      <T
+        as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(3rem, 7vw, 6.5rem);"
+        en="The virtuous loop."
+        it="Il loop virtuoso."
+      />
+      <T
+        as="p"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="Define → create → activate → measure → aggregate → define again — better every time."
+        it="Definisci → crea → attiva → misura → aggrega → definisci di nuovo — meglio ogni volta."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: The Loop ──────────────────────────────────────── -->
+    <Slide id="slide-loop" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-15" scrim="bg-[var(--surface-inverse)]/88" />
+      <T en="END-TO-END" it="END-TO-END" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-8" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        en="Every campaign makes the next one smarter"
+        it="Ogni campagna rende la prossima più intelligente"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-reveal data-reveal-delay="0.2">
+        {loopSteps.map((step) => (
+          <div class="p-5 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] text-sm mb-1">{step.num}</p>
+            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1"><span data-lang-en>{step.en}</span><span data-lang-it>{step.it}</span></p>
+            <p class="text-xs font-semibold text-[var(--accent-secondary)] mb-1.5"><span data-lang-en>{step.toolEn}</span><span data-lang-it>{step.toolIt}</span></p>
+            <p class="text-xs text-[var(--color-grigio-400)] leading-relaxed"><span data-lang-en>{step.descEn}</span><span data-lang-it>{step.descIt}</span></p>
+          </div>
+        ))}
+      </div>
+      <T
+        as="p" class="text-[clamp(1rem,1.3vw,1.25rem)] text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="Then back to step 1. Season over season, the collaboration compounds."
+        it="Poi di nuovo allo step 1. Stagione dopo stagione, la collaborazione si accumula."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 2: The Engine ────────────────────────────────────── -->
+    <Slide id="slide-engine" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-carbon')} imageClass="opacity-20" scrim="bg-[var(--surface-inverse)]/85" />
+      <T en="THE ENGINE" it="IL MOTORE" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-8" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        en="One connected system"
+        it="Un unico sistema connesso"
+      />
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-3 mb-7" data-reveal data-reveal-delay="0.2">
+        {engineStack.map((tool) => (
+          <div class="flex items-baseline gap-3 p-4 bg-[var(--color-grafite)]/35 border border-white/10 rounded-sm text-left">
+            <span class="shrink-0 w-1.5 h-1.5 mt-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+            <div>
+              <p class="text-sm font-semibold text-[var(--ink-inverse)]">{tool.name}</p>
+              <p class="text-xs text-[var(--color-grigio-400)] leading-relaxed"><span data-lang-en>{tool.en}</span><span data-lang-it>{tool.it}</span></p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.35rem)] font-semibold text-[var(--ink-inverse)] max-w-3xl mx-auto"
+        en="One engine — not six disconnected tools."
+        it="Un motore — non sei strumenti scollegati."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 3: The Prize ─────────────────────────────────────── -->
+    <Slide id="slide-roi" bg="brand" align="center">
+      <T en="THE PRIZE" it="IL PREMIO" as="p" class="slide-eyebrow text-white/75 mb-5" />
+      <T
+        as="h2" class="slide-title text-white mb-6" style="font-size: clamp(2rem, 4.4vw, 3.75rem);"
+        en="Turn data into the next pole position"
+        it="Trasforma il dato nella prossima pole position"
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.5vw,1.4rem)] text-white/85 max-w-3xl mx-auto mb-10"
+        en="With proof of value, Ferrari retains and expands sponsors, commands a price premium, and attracts net-new partners — growing the €800M+ (+22%) sponsorship line toward the €9.0B 2030 ambition."
+        it="Con la prova del valore, Ferrari trattiene ed espande gli sponsor, impone un premium di prezzo e attrae partner del tutto nuovi — facendo crescere la linea sponsorship da €800M+ (+22%) verso l'obiettivo €9.0B del 2030."
+      />
+      <div class="w-full max-w-3xl mx-auto grid grid-cols-3 gap-6 mb-9" data-reveal data-reveal-delay="0.22">
+        {prizeStats.map((s) => (
+          <div class="text-center">
+            <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-2" style="font-size: clamp(1.75rem,3.6vw,3rem);">{s.stat}</p>
+            <T as="p" class="text-sm text-white/80" en={s.en} it={s.it} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p" class="text-[clamp(1.1rem,1.6vw,1.5rem)] italic text-white/90 max-w-3xl mx-auto mb-8"
+        en="From Maranello to every fan — and back, as data."
+        it="Da Maranello a ogni tifoso — e ritorno, come dato."
+      />
+      <a href={href(base, '/')}
+         class="inline-flex items-center gap-3 px-9 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-semibold tracking-wide uppercase bg-white text-[var(--accent-primary)] hover:bg-white/90 transition-colors rounded-sm" data-reveal data-reveal-delay="0.4">
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3a5 5 0 1 0 4.9 6M8 3V1M8 3l2 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-lang-en>Restart the lap</span><span data-lang-it>Ricomincia il giro</span>
+      </a>
+      <p class="mt-8 text-center text-[0.62rem] tracking-widest uppercase text-white/45">
+        <span data-lang-en>Source: Ferrari FY2025 · Capital Markets Day 2030 · Adobe Data Collaboration for Sports</span>
+        <span data-lang-it>Fonte: Ferrari FY2025 · Capital Markets Day 2030 · Adobe Data Collaboration for Sports</span>
+      </p>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
