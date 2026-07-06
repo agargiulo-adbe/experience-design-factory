@@ -113,11 +113,15 @@ export class Deck {
 
   private exitForward() {
     if (!this.nextHref) return;
-    if (reduced) { window.location.assign(this.nextHref); return; }
-    // Quick fade, then navigate to the next phase.
+    const href = this.nextHref;
+    // Prefer SPA navigation (ClientRouter) so an active fullscreen session is
+    // PRESERVED across sections; a full page load would exit fullscreen.
+    const nav = (window as Window & { __edfNavigate?: (h: string) => void }).__edfNavigate;
+    const go = () => { if (nav) nav(href); else window.location.assign(href); };
+    if (reduced) { go(); return; }
     this.root.style.transition = 'opacity 240ms ease-in';
     this.root.style.opacity = '0';
-    window.setTimeout(() => window.location.assign(this.nextHref as string), 240);
+    window.setTimeout(go, 240);
   }
 
   private scheduleActivate(delay: number) {
