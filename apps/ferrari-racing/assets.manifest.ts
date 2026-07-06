@@ -7,10 +7,12 @@ import type { AssetSlot } from '@edf/core/assets/types';
  */
 export const assets: AssetSlot[] = [
   // ── Backgrounds ───────────────────────────────────────────────────
-  { id: 'bg-track-night', type: 'stock', query: 'formula one race track night grandstand lights long exposure motion', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
+  // Abstract, CAR-FREE atmospherics (Pexels motorsport photos often show
+  // non-Ferrari/competitor cars — never depict an identifiable car here).
+  { id: 'bg-track-night', type: 'stock', query: 'stadium floodlights night bokeh blur dark abstract lights', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
   { id: 'bg-carbon', type: 'stock', query: 'carbon fiber texture dark macro weave black minimal', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
-  { id: 'bg-pit', type: 'stock', query: 'motorsport pit lane garage mechanics telemetry screens dark', aspect: '16:9', width: 2400, grade: 'editorial', alt: '' },
-  { id: 'bg-grid', type: 'stock', query: 'motorsport starting grid asphalt tire marks aerial abstract', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
+  { id: 'bg-pit', type: 'stock', query: 'dark red glowing light streaks motion abstract technology', aspect: '16:9', width: 2400, grade: 'editorial', alt: '' },
+  { id: 'bg-grid', type: 'stock', query: 'asphalt tarmac texture dark aerial abstract pattern road', aspect: '16:9', width: 2400, grade: 'duotone', alt: '' },
   // ── Story imagery ─────────────────────────────────────────────────
   { id: 'tifosi', type: 'stock', query: 'motorsport fans grandstand crowd red flags celebration passion', aspect: '16:9', width: 2400, grade: 'editorial', alt: 'Passionate motorsport fans in the grandstand' },
   { id: 'podium', type: 'stock', query: 'motorsport podium celebration champagne trophy crowd', aspect: '16:9', width: 2400, grade: 'editorial', alt: 'Podium celebration' },
