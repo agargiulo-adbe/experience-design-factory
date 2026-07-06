@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const cases = [
+  {
+    org: 'NBCUniversal',
+    en: 'Reaches 227M US adults monthly. Real-Time CDP Collaboration matched audiences with an advertiser, activated, and closed the loop with privacy-safe measurement.',
+    it: 'Raggiunge 227M di adulti USA al mese. Con Real-Time CDP Collaboration ha allineato le audience con un advertiser, attivato e chiuso il loop con misurazione privacy-safe.',
+    stats: [['10×', 'match rate'], ['2×', 'conversions'], ['90%', 'lift']],
+  },
+  {
+    org: 'Alterra Mountain Co.',
+    en: '19 ski resorts, the Ikon Pass. Fragmented data and CTV challenges solved by activating first-party data privacy-first with Real-Time CDP Collaboration.',
+    it: '19 ski resort, l’Ikon Pass. Dati frammentati e sfide CTV risolti attivando i dati first-party in modo privacy-first con Real-Time CDP Collaboration.',
+    stats: [['3×', 'ROAS'], ['+30%', 'conversions'], ['1', 'clean room']],
+  },
+  {
+    org: 'Scuderia Ferrari HP',
+    en: 'The 2025 app relaunch — powered by first-party fan signals — turned engagement into measurable growth with the Tifosi.',
+    it: 'Il rilancio dell’app 2025 — alimentato dai segnali fan first-party — ha trasformato l’engagement in crescita misurabile con i Tifosi.',
+    stats: [['+56%', 'race-day users'], ['+35%', 'downloads'], ['~400M', 'Tifosi']],
+  },
+];
+
+const valueRights = [
+  { en: 'Expand the sponsor roster & improve retention', it: 'Amplia il roster sponsor e migliora la retention' },
+  { en: 'Increase the value of existing partnerships', it: 'Aumenta il valore delle partnership esistenti' },
+  { en: 'Command a price premium with proven audiences', it: 'Ottieni un price premium con audience dimostrate' },
+  { en: 'Attract net-new partners with data-backed value', it: 'Attrai nuovi partner con valore basato sul dato' },
+];
+const valueSponsors = [
+  { en: 'New channels & insights to reach the right fans', it: 'Nuovi canali e insight per i tifosi giusti' },
+  { en: 'Better outcomes via privacy-safe personalization', it: 'Risultati migliori con personalizzazione privacy-safe' },
+  { en: 'Improved, measurable ROI on sponsorship spend', it: 'ROI migliore e misurabile sulla spesa sponsorship' },
+];
+---
+<BaseLayout title="Proof">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/loop')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('podium')} imageClass="opacity-40" scrim="bg-[var(--surface-inverse)]/82" />
+      <T en="THE PROOF" it="LA PROVA" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.25rem, 4.6vw, 4rem);"
+        en="It already works." it="Funziona già."
+      />
+      <T
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl"
+        en="This is not a promise. Publishers and brands are already winning with Adobe data collaboration — and the Tifosi are already responding."
+        it="Non è una promessa. Publisher e brand vincono già con la data collaboration Adobe — e i Tifosi stanno già rispondendo."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Case studies ──────────────────────────────────── -->
+    <Slide id="slide-cases" bg="inverse" align="center">
+      <T en="CASE STUDIES" it="CASE STUDY" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-9" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        en="Winning, in the real world" it="Si vince, nel mondo reale"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.2">
+        {cases.map((c) => (
+          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left flex flex-col">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--ink-inverse)] text-lg mb-3">{c.org}</p>
+            <div class="flex flex-wrap gap-x-5 gap-y-2 mb-4">
+              {c.stats.map(([v, l]) => (
+                <div>
+                  <span class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)]" style="font-size: clamp(1.4rem,2.2vw,2rem);">{v}</span>
+                  <span class="block text-[0.7rem] uppercase tracking-wider text-[var(--color-grigio-400)]">{l}</span>
+                </div>
+              ))}
+            </div>
+            <T as="p" class="text-sm text-[var(--color-grigio-300)] leading-relaxed" en={c.en} it={c.it} />
+          </div>
+        ))}
+      </div>
+      <p class="mt-7 text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]">
+        <span data-lang-en>Sources: Adobe RT-CDP Collaboration closed betas (NBCUniversal, Alterra) · Ferrari/IBM 2025 · names illustrative</span>
+        <span data-lang-it>Fonti: closed beta Adobe RT-CDP Collaboration (NBCUniversal, Alterra) · Ferrari/IBM 2025 · nomi illustrativi</span>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: The value of getting it right ─────────────────── -->
+    <Slide id="slide-value" bg="brand" align="center">
+      <T en="THE VALUE OF GETTING IT RIGHT" it="IL VALORE DI FARLO BENE" as="p" class="slide-eyebrow text-white/75 mb-5" />
+      <T
+        as="h2" class="slide-title text-white mb-9" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        en="Everyone crosses the line first" it="Tutti tagliano il traguardo per primi"
+      />
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.2">
+        <div class="p-6 bg-white/10 border border-white/20 rounded-sm text-left">
+          <T en="For Ferrari Racing" it="Per Ferrari Racing" as="p" class="text-sm font-bold uppercase tracking-wider text-white mb-4" />
+          <ul class="space-y-2.5">
+            {valueRights.map((v) => (
+              <li class="flex items-start gap-2.5 text-white/85 text-sm">
+                <span class="mt-1 size-1.5 rounded-full bg-white flex-shrink-0"></span>
+                <span data-lang-en>{v.en}</span><span data-lang-it>{v.it}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="p-6 bg-white/10 border border-white/20 rounded-sm text-left">
+          <T en="For the Partner Sponsors" it="Per i Partner Sponsor" as="p" class="text-sm font-bold uppercase tracking-wider text-white mb-4" />
+          <ul class="space-y-2.5">
+            {valueSponsors.map((v) => (
+              <li class="flex items-start gap-2.5 text-white/85 text-sm">
+                <span class="mt-1 size-1.5 rounded-full bg-white flex-shrink-0"></span>
+                <span data-lang-en>{v.en}</span><span data-lang-it>{v.it}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <T
+        as="p" class="mt-9 font-[family-name:var(--font-display)] italic text-white/90 text-[clamp(1.1rem,1.6vw,1.5rem)]"
+        en="Now, the loop that makes it repeatable." it="Ora, il loop che lo rende ripetibile."
+      />
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
