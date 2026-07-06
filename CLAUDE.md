@@ -73,7 +73,7 @@ inside the media config under `__customSlides`. Styling: `.cs-*` classes in each
 `<T en="…" it="…" as="h2" class="…" />` renders BOTH languages; global CSS on
 `html[data-lang]` shows the active one (instant, no reload). `LangToggle` sets + persists
 `localStorage['edf:lang']`; anti‑flash init in `<head>`. Ferrari defaults EN with EN/IT
-toggle; maxmara/unicredit are IT.
+toggle; maxmara/unicredit are IT. Ferrari intentionally defaults to EN (international event context); Max Mara and UniCredit default to IT. The lang/data-lang attributes in Ferrari's BaseLayout are 'en' by design — do not change without updating this note.
 
 ## Responsive & fullscreen (all experiences)
 The immersive deck **auto‑optimises mobile → desktop → giant TV** from a single source:
