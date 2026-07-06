@@ -91,24 +91,47 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return parts[parts.length - 1] || 'index';
   }
 
-  function buildMediaHtml(slotCfg) {
+  // Build media as DOM nodes (NEVER innerHTML from remote config → no XSS).
+  // Only https: URLs are accepted; YouTube only via the matched 11-char id.
+  function isSafeUrl(u) { return /^https:\/\//i.test(String(u || '')); }
+  function csPlaceholderEl(text) {
+    var d = document.createElement('div');
+    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;font-size:0.875rem;';
+    d.textContent = text || 'Media non valido';
+    return d;
+  }
+  function buildMediaEl(slotCfg) {
     var autoplayMode = slotCfg.autoplay || 'auto';
-    var url = slotCfg.url;
+    var url = String(slotCfg.url || '');
     if (slotCfg.type === 'video') {
       var ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
       if (ytMatch) {
         var ytId = ytMatch[1];
-        var ytParams = autoplayMode === 'manual'
+        var q = autoplayMode === 'manual'
           ? '?controls=1&rel=0&playsinline=1'
           : '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&rel=0&playsinline=1';
-        return '<iframe src="https://www.youtube.com/embed/' + ytId + ytParams + '" allow="autoplay;encrypted-media" style="width:100%;height:100%;border:0;" title="Demo video"></iframe>';
-      } else {
-        var videoAttrs = autoplayMode === 'manual' ? 'controls playsinline' : 'autoplay muted loop playsinline';
-        return '<video src="' + url + '" ' + videoAttrs + ' style="width:100%;height:100%;object-fit:cover;"></video>';
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/' + ytId + q;
+        iframe.setAttribute('allow', 'autoplay;encrypted-media');
+        iframe.setAttribute('title', 'Demo video');
+        iframe.style.cssText = 'width:100%;height:100%;border:0;';
+        return iframe;
       }
-    } else {
-      return '<img src="' + url + '" alt="' + (slotCfg.caption || '') + '" style="width:100%;height:100%;object-fit:cover;">';
+      if (!isSafeUrl(url)) return csPlaceholderEl();
+      var video = document.createElement('video');
+      video.src = url;
+      video.setAttribute('playsinline', '');
+      if (autoplayMode === 'manual') { video.controls = true; }
+      else { video.autoplay = true; video.muted = true; video.loop = true; }
+      video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+      return video;
     }
+    if (!isSafeUrl(url)) return csPlaceholderEl();
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = slotCfg.caption || '';   // property assignment — not HTML-parsed
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+    return img;
   }
 
   function injectSlideMedia(slide, slotKey, slotCfg) {
@@ -124,10 +147,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         var inner = mediaSlot.querySelector('.media-slot-inner');
         if (inner) {
           if (autoplayMode === 'delayed') {
-            inner.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;font-size:0.875rem;">Avvio tra ' + autoplayDelay + 's…</div>';
-            (function(t, delay) { setTimeout(function() { t.innerHTML = buildMediaHtml(slotCfg); }, delay * 1000); })(inner, autoplayDelay);
+            inner.replaceChildren(csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…'));
+            (function(t, delay) { setTimeout(function() { t.replaceChildren(buildMediaEl(slotCfg)); }, delay * 1000); })(inner, autoplayDelay);
           } else {
-            inner.innerHTML = buildMediaHtml(slotCfg);
+            inner.replaceChildren(buildMediaEl(slotCfg));
           }
           flexContainer.setAttribute('data-slot-active', '');
         }
@@ -141,17 +164,13 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
     var bg = (window.getComputedStyle(slide).backgroundColor) || 'rgba(255,255,255,1)';
 
-    var mediaHtml = autoplayMode === 'delayed'
-      ? '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;font-size:0.875rem;">Avvio tra ' + autoplayDelay + 's…</div>'
-      : buildMediaHtml(slotCfg);
-
     var panel = document.createElement('div');
     panel.setAttribute('data-edf-media', slotKey);
     panel.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
 
     var mediaDivEl = document.createElement('div');
     mediaDivEl.style.cssText = 'position:absolute;right:0;top:var(--slide-safe-inset,60px);bottom:var(--slide-safe-inset,60px);width:48%;overflow:hidden;border-radius:4px;pointer-events:auto;';
-    mediaDivEl.innerHTML = mediaHtml;
+    mediaDivEl.replaceChildren(autoplayMode === 'delayed' ? csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…') : buildMediaEl(slotCfg));
 
     var scrimEl = document.createElement('div');
     scrimEl.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to right,' + bg + ' 25%,transparent 62%);pointer-events:none;';
@@ -168,7 +187,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
     if (autoplayMode === 'delayed') {
       (function(target, delay) {
-        setTimeout(function() { target.innerHTML = buildMediaHtml(slotCfg); }, delay * 1000);
+        setTimeout(function() { target.replaceChildren(buildMediaEl(slotCfg)); }, delay * 1000);
       })(mediaDivEl, autoplayDelay);
     }
   }

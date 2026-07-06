@@ -1049,6 +1049,16 @@ const {
       return;
     }
 
+    // Writes to media_configs require an authenticated console session
+    // (shared same-origin via localStorage['edf:sb-session']). The anon key
+    // must NOT be used as the write bearer.
+    var accessToken = '';
+    try { accessToken = (JSON.parse(localStorage.getItem('edf:sb-session') || 'null') || {}).access_token || ''; } catch (e) {}
+    if (!accessToken) {
+      if (note) { note.textContent = 'Accedi dalla Console (/console/) per generare un link condivisibile.'; note.style.color = '#BE2027'; }
+      return;
+    }
+
     // Carry custom slides inside the same shared config blob.
     var shareConfig = Object.assign({}, config);
     if (customSlides.length) shareConfig.__customSlides = customSlides;
@@ -1061,7 +1071,7 @@ const {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_ANON_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + accessToken,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },
