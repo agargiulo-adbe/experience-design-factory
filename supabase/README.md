@@ -3,13 +3,20 @@
 One-time backend setup for the Experience Design Factory console
 (auth, users, experiences). ~10 minutes.
 
-## 1. Run the migration
+## 1. Run the migrations
 
-Open your Supabase project → **SQL Editor** → paste the contents of
-[`migrations/0001_super_admin.sql`](./migrations/0001_super_admin.sql) → **Run**.
+Open your Supabase project → **SQL Editor** → paste + **Run**, in order:
+[`migrations/0001_super_admin.sql`](./migrations/0001_super_admin.sql) then
+[`migrations/0002_seed_ferrari.sql`](./migrations/0002_seed_ferrari.sql).
 
-This creates `profiles`, `experiences`, `user_experience_roles`, the RLS
-policies, the signup trigger, and seeds the two current experiences.
+`0001` creates `profiles`, `experiences`, `user_experience_roles`, the RLS
+policies, the signup trigger, and seeds the maxmara + unicredit experiences.
+`0002` seeds the Ferrari Racing experience.
+
+> **Via CLI (alternative):** with the CLI logged into the owning account and the
+> project linked (`supabase link --project-ref <ref>`), run any SQL against the
+> remote DB with the Management API (no DB password):
+> `supabase db query --linked -f supabase/migrations/0002_seed_ferrari.sql`
 
 ## 2. Enable email auth + redirect URLs
 
