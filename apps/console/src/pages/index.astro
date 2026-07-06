@@ -14,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </div>
 
   <script>
-    import { requireAuth, consoleHref } from '../lib/guard';
+    import { requireAuth } from '../lib/guard';
     import { listExperiences, rest } from '../lib/supabase';
 
     const STATUS = {
@@ -22,18 +22,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       draft:    { label: 'Bozza',      color: 'var(--accent-gold)',  soft: 'var(--accent-gold-soft)' },
       archived: { label: 'Archiviata', color: 'var(--ink-tertiary)', soft: 'var(--bg-card)' },
     };
-
-    function esc(s) { return String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+    type StatusKey = keyof typeof STATUS;
+    const escMap: Record<string, string> = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' };
+    function esc(s: unknown): string { return String(s ?? '').replace(/[&<>"]/g, (c) => escMap[c] ?? c); }
 
     (async () => {
       const ctx = await requireAuth();
       if (!ctx) return;
       const { session, profile, access } = ctx;
-      const grid = document.querySelector('[data-exp-grid]');
-      const sub = document.querySelector('[data-sub]');
+      const grid = document.querySelector<HTMLElement>('[data-exp-grid]');
+      if (!grid) return;
+      const sub = document.querySelector<HTMLElement>('[data-sub]');
 
-      let experiences = [];
-      try { experiences = await listExperiences(session); } catch (e) { grid.innerHTML = '<p class="exp-empty">Impossibile caricare le experience.</p>'; return; }
+      let experiences: import('../lib/supabase').Experience[] = [];
+      try { experiences = await listExperiences(session); } catch { grid.innerHTML = '<p class="exp-empty">Impossibile caricare le experience.</p>'; return; }
 
       const accessSlugs = new Set(access.map((a) => a.experience_slug));
       const visible = profile.is_super_admin ? experiences : experiences.filter((e) => accessSlugs.has(e.slug) && e.status !== 'archived');
@@ -48,7 +50,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
 
       grid.innerHTML = visible.map((exp) => {
-        const st = STATUS[exp.status] || STATUS.draft;
+        const st = STATUS[(exp.status as StatusKey)] || STATUS.draft;
         const adminUrl = exp.base_url.replace(/\/$/, '') + '/admin/';
         const canManage = profile.is_super_admin;
         return `
@@ -77,9 +79,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       // Wire status changes (super admin only)
       if (profile.is_super_admin) {
-        grid.querySelectorAll('[data-status-select]').forEach((sel) => {
+        grid.querySelectorAll<HTMLSelectElement>('[data-status-select]').forEach((sel) => {
           sel.addEventListener('change', async () => {
-            const card = sel.closest('.exp-card');
+            const card = sel.closest<HTMLElement>('.exp-card');
+            if (!card) return;
             const slug = card.getAttribute('data-slug');
             const status = sel.value;
             try {
@@ -88,12 +91,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 headers: { Prefer: 'return=minimal' },
                 body: JSON.stringify({ status, updated_at: new Date().toISOString() }),
               }, session);
-              const pill = card.querySelector('.exp-status');
-              const st = STATUS[status];
+              const pill = card.querySelector<HTMLElement>('.exp-status');
+              const st = STATUS[(status as StatusKey)] || STATUS.draft;
               if (pill) { pill.textContent = st.label; pill.style.color = st.color; pill.style.background = st.soft; }
-              const saved = card.querySelector('[data-saved]');
-              if (saved) { saved.hidden = false; setTimeout(() => saved.hidden = true, 1800); }
-            } catch (e) { alert('Aggiornamento non riuscito.'); }
+              const saved = card.querySelector<HTMLElement>('[data-saved]');
+              if (saved) { saved.hidden = false; setTimeout(() => { saved.hidden = true; }, 1800); }
+            } catch { alert('Aggiornamento non riuscito.'); }
           });
         });
       }

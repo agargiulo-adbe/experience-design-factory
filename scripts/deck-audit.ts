@@ -21,17 +21,59 @@ import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 import * as path from 'node:path';
 
-// Every keynote-deck route to gate (each must hold the a–k + exp invariants).
-const ROUTES: Array<{ name: string; route: string }> = [
-  { name: 'home', route: '/experience-design-factory/' },
-  { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
-  { name: 'engagement', route: '/experience-design-factory/engagement/' },
-  { name: 'conversione', route: '/experience-design-factory/conversione/' },
-  { name: 'loyalty', route: '/experience-design-factory/loyalty/' },
-  { name: 'persona', route: '/experience-design-factory/persona/' },
-  { name: 'motore-adobe', route: '/experience-design-factory/motore-adobe/' },
-  { name: 'chiusura', route: '/experience-design-factory/chiusura/' },
-];
+// Per-app route sets. Each route includes the full path after the origin.
+const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
+  maxmara: [
+    { name: 'home',         route: '/experience-design-factory/' },
+    { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
+    { name: 'engagement',   route: '/experience-design-factory/engagement/' },
+    { name: 'conversione',  route: '/experience-design-factory/conversione/' },
+    { name: 'loyalty',      route: '/experience-design-factory/loyalty/' },
+    { name: 'persona',      route: '/experience-design-factory/persona/' },
+    { name: 'motore-adobe', route: '/experience-design-factory/motore-adobe/' },
+    { name: 'chiusura',     route: '/experience-design-factory/chiusura/' },
+  ],
+  unicredit: [
+    { name: 'home',         route: '/experience-design-factory/unicredit-engagement/' },
+    { name: 'coworker',     route: '/experience-design-factory/unicredit-engagement/coworker/' },
+    { name: 'motore-adobe', route: '/experience-design-factory/unicredit-engagement/motore-adobe/' },
+    { name: 'scenario',     route: '/experience-design-factory/unicredit-engagement/scenario/' },
+    { name: 'acquisisci',   route: '/experience-design-factory/unicredit-engagement/acquisisci/' },
+    { name: 'analizza',     route: '/experience-design-factory/unicredit-engagement/analizza/' },
+    { name: 'coinvolgi',    route: '/experience-design-factory/unicredit-engagement/coinvolgi/' },
+    { name: 'conosci',      route: '/experience-design-factory/unicredit-engagement/conosci/' },
+    { name: 'contenuti',    route: '/experience-design-factory/unicredit-engagement/contenuti/' },
+    { name: 'b2b',          route: '/experience-design-factory/unicredit-engagement/b2b/' },
+    { name: 'risultati',    route: '/experience-design-factory/unicredit-engagement/risultati/' },
+  ],
+  ferrari: [
+    { name: 'home',         route: '/experience-design-factory/ferrari-racing/' },
+    { name: 'protagonisti', route: '/experience-design-factory/ferrari-racing/protagonisti/' },
+    { name: 'define',       route: '/experience-design-factory/ferrari-racing/define/' },
+    { name: 'create',       route: '/experience-design-factory/ferrari-racing/create/' },
+    { name: 'activate',     route: '/experience-design-factory/ferrari-racing/activate/' },
+    { name: 'analisi',      route: '/experience-design-factory/ferrari-racing/analisi/' },
+    { name: 'proof',        route: '/experience-design-factory/ferrari-racing/proof/' },
+    { name: 'loop',         route: '/experience-design-factory/ferrari-racing/loop/' },
+  ],
+};
+
+// Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
+const CWD_ALIAS: Record<string, string> = {
+  'generazioni-maxmara': 'maxmara',
+  'unicredit-engagement': 'unicredit',
+  'ferrari-racing': 'ferrari',
+};
+const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
+const appFlag = (() => {
+  const idx = process.argv.indexOf('--app');
+  if (idx !== -1 && process.argv[idx + 1]) return process.argv[idx + 1];
+  const prefixed = process.argv.find((a) => a.startsWith('--app='));
+  if (prefixed) return prefixed.split('=')[1];
+  return appFromCwd;
+})();
+const ROUTES = ROUTE_SETS[appFlag] ?? ROUTE_SETS.maxmara;
+
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
 const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
 const OUT_BASE = path.resolve(process.cwd(), 'audit');

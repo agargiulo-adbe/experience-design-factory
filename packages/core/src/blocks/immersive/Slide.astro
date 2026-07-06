@@ -11,13 +11,14 @@
  *  - default  → the slide content (centred within the safe area)
  *  - backdrop → full-bleed layers (atmosphere image, scrim) behind the content
  */
-interface Props {
+type Props = {
   id?: string;
   bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
   align?: 'center' | 'left' | 'split';
   class?: string;
-}
-const { id, bg = 'primary', align = 'center', class: className } = Astro.props;
+  [key: string]: unknown;
+};
+const { id, bg = 'primary', align = 'center', class: className, ...rest } = Astro.props as Props;
 
 const bgMap = {
   primary: 'bg-[var(--surface-primary)]',
@@ -44,6 +45,7 @@ const innerStyle = align === 'split' ? `height: ${bound};` : `max-height: ${boun
 <section
   id={id}
   data-slide
+  {...rest}
   class:list={["slide relative w-full h-[100dvh] overflow-hidden", bgMap[bg], className]}
 >
   <slot name="backdrop" />

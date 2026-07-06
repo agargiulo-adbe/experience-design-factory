@@ -45,15 +45,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     import { requireAuth } from '../lib/guard';
     import { rest, inviteUser } from '../lib/supabase';
 
-    function esc(s) { return String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+    const escMap: Record<string, string> = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' };
+    function esc(s: unknown): string { return String(s ?? '').replace(/[&<>"]/g, (c) => escMap[c] ?? c); }
 
     (async () => {
       const ctx = await requireAuth({ superOnly: true });
       if (!ctx) return;
       const { session, profile } = ctx;
 
-      const wrap = document.querySelector('[data-users-wrap]');
-      let experiences = [], profiles = [], roles = [];
+      const wrapEl = document.querySelector<HTMLElement>('[data-users-wrap]');
+      if (!wrapEl) return;
+      const wrap = wrapEl;
+
+      interface Experience { slug: string; name: string; client: string; }
+      interface Profile { id: string; email: string; full_name: string | null; is_super_admin: boolean; status: string; }
+      interface Role { user_id: string; experience_slug: string; role: string; }
+
+      let experiences: Experience[] = [];
+      let profiles: Profile[] = [];
+      let roles: Role[] = [];
       async function loadAll() {
         [experiences, profiles, roles] = await Promise.all([
           rest('experiences?select=slug,name,client&order=name.asc', {}, session),
@@ -61,42 +71,56 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           rest('user_experience_roles?select=*', {}, session),
         ]);
       }
-      try { await loadAll(); } catch (e) { wrap.innerHTML = '<p class="users-empty">Impossibile caricare gli utenti.</p>'; return; }
+      try { await loadAll(); } catch { wrap.innerHTML = '<p class="users-empty">Impossibile caricare gli utenti.</p>'; return; }
 
       // ── Invite panel ──────────────────────────────────────────────
-      const panel = document.querySelector('[data-invite-panel]');
-      const accessWrap = document.querySelector('[data-inv-access]');
-      accessWrap.innerHTML = experiences.map((e) =>
-        `<label class="inv-access-chip"><input type="checkbox" value="${esc(e.slug)}" /> ${esc(e.name)}</label>`
-      ).join('');
+      const panel = document.querySelector<HTMLElement>('[data-invite-panel]');
+      const accessWrap = document.querySelector<HTMLElement>('[data-inv-access]');
+      if (accessWrap) {
+        accessWrap.innerHTML = experiences.map((e) =>
+          `<label class="inv-access-chip"><input type="checkbox" value="${esc(e.slug)}" /> ${esc(e.name)}</label>`
+        ).join('');
+      }
 
-      document.querySelector('[data-open-invite]')?.addEventListener('click', () => panel.hidden = !panel.hidden);
-      document.querySelector('[data-cancel-invite]')?.addEventListener('click', () => panel.hidden = true);
-      const invSuper = document.querySelector('#inv-super');
-      const accessBlock = document.querySelector('[data-inv-access-wrap]');
-      invSuper?.addEventListener('change', () => { accessBlock.style.opacity = invSuper.checked ? '0.4' : '1'; accessBlock.style.pointerEvents = invSuper.checked ? 'none' : ''; });
+      document.querySelector('[data-open-invite]')?.addEventListener('click', () => { if (panel) panel.hidden = !panel.hidden; });
+      document.querySelector('[data-cancel-invite]')?.addEventListener('click', () => { if (panel) panel.hidden = true; });
+      const invSuper = document.querySelector<HTMLInputElement>('#inv-super');
+      const accessBlock = document.querySelector<HTMLElement>('[data-inv-access-wrap]');
+      invSuper?.addEventListener('change', () => {
+        if (!accessBlock || !invSuper) return;
+        accessBlock.style.opacity = invSuper.checked ? '0.4' : '1';
+        accessBlock.style.pointerEvents = invSuper.checked ? 'none' : '';
+      });
 
       document.querySelector('[data-send-invite]')?.addEventListener('click', async () => {
-        const email = document.querySelector('#inv-email').value.trim();
-        const full_name = document.querySelector('#inv-name').value.trim();
-        const is_super_admin = invSuper.checked;
-        const access = [...accessWrap.querySelectorAll('input:checked')].map((c) => ({ experience_slug: c.value, role: 'admin' }));
-        const fb = document.querySelector('[data-invite-feedback]');
-        if (!email) { fb.hidden = false; fb.textContent = 'Inserisci un\'email.'; fb.style.color = 'var(--accent-red)'; return; }
-        const btn = document.querySelector('[data-send-invite]');
-        btn.disabled = true; btn.textContent = 'Invio…';
+        const emailEl = document.querySelector<HTMLInputElement>('#inv-email');
+        const nameEl = document.querySelector<HTMLInputElement>('#inv-name');
+        const email = emailEl?.value.trim() ?? '';
+        const full_name = nameEl?.value.trim() ?? '';
+        const is_super_admin = invSuper?.checked ?? false;
+        const access = [...(accessWrap?.querySelectorAll<HTMLInputElement>('input:checked') ?? [])].map((c) => ({ experience_slug: c.value, role: 'admin' as const }));
+        const fb = document.querySelector<HTMLElement>('[data-invite-feedback]');
+        const btn = document.querySelector<HTMLButtonElement>('[data-send-invite]');
+        if (!email) {
+          if (fb) { fb.hidden = false; fb.textContent = 'Inserisci un\'email.'; fb.style.color = 'var(--accent-red)'; }
+          return;
+        }
+        if (btn) { btn.disabled = true; btn.textContent = 'Invio…'; }
         try {
           await inviteUser(session, { email, full_name, is_super_admin, access });
-          fb.hidden = false; fb.textContent = '✓ Invito inviato a ' + email; fb.style.color = 'var(--accent-green)';
+          if (fb) { fb.hidden = false; fb.textContent = '✓ Invito inviato a ' + email; fb.style.color = 'var(--accent-green)'; }
           await loadAll(); render();
-          document.querySelector('#inv-email').value = ''; document.querySelector('#inv-name').value = '';
+          if (emailEl) emailEl.value = '';
+          if (nameEl) nameEl.value = '';
         } catch (ex) {
-          fb.hidden = false; fb.textContent = ex.message || 'Invito non riuscito.'; fb.style.color = 'var(--accent-red)';
-        } finally { btn.disabled = false; btn.textContent = 'Invia invito'; }
+          if (fb) { fb.hidden = false; fb.textContent = ex instanceof Error ? ex.message : 'Invito non riuscito.'; fb.style.color = 'var(--accent-red)'; }
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = 'Invia invito'; }
+        }
       });
 
       // ── Users table ───────────────────────────────────────────────
-      function accessFor(uid) { return roles.filter((r) => r.user_id === uid); }
+      function accessFor(uid: string) { return roles.filter((r) => r.user_id === uid); }
 
       function render() {
         if (profiles.length === 0) { wrap.innerHTML = '<p class="users-empty">Nessun utente.</p>'; return; }
@@ -136,33 +160,33 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       }
 
       function wire() {
-        wrap.querySelectorAll('.user-row').forEach((row) => {
+        wrap.querySelectorAll<HTMLElement>('.user-row').forEach((row) => {
           const uid = row.getAttribute('data-uid');
           const user = profiles.find((p) => p.id === uid);
 
           row.querySelector('[data-toggle-super]')?.addEventListener('click', async (e) => {
-            if (e.currentTarget.disabled) return;
+            if ((e.currentTarget as HTMLButtonElement).disabled) return;
             try {
-              await rest(`profiles?id=eq.${uid}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ is_super_admin: !user.is_super_admin }) }, session);
+              await rest(`profiles?id=eq.${uid}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ is_super_admin: !user?.is_super_admin }) }, session);
               await loadAll(); render();
             } catch { alert('Operazione non riuscita.'); }
           });
 
           row.querySelector('[data-toggle-status]')?.addEventListener('click', async (e) => {
-            if (e.currentTarget.disabled) return;
+            if ((e.currentTarget as HTMLButtonElement).disabled) return;
             try {
-              await rest(`profiles?id=eq.${uid}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ status: user.status === 'active' ? 'suspended' : 'active' }) }, session);
+              await rest(`profiles?id=eq.${uid}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ status: user?.status === 'active' ? 'suspended' : 'active' }) }, session);
               await loadAll(); render();
             } catch { alert('Operazione non riuscita.'); }
           });
 
-          const editor = row.querySelector('[data-access-editor]');
+          const editor = row.querySelector<HTMLElement>('[data-access-editor]');
           row.querySelector('[data-edit-access]')?.addEventListener('click', (e) => {
-            if (e.currentTarget.disabled) return;
-            editor.hidden = !editor.hidden;
+            if ((e.currentTarget as HTMLButtonElement).disabled) return;
+            if (editor) editor.hidden = !editor.hidden;
           });
 
-          editor?.querySelectorAll('input[type=checkbox]').forEach((cb) => {
+          editor?.querySelectorAll<HTMLInputElement>('input[type=checkbox]').forEach((cb) => {
             cb.addEventListener('change', async () => {
               const slug = cb.value;
               try {
@@ -171,11 +195,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 } else {
                   await rest(`user_experience_roles?user_id=eq.${uid}&experience_slug=eq.${slug}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }, session);
                 }
-                cb.closest('.acc-chip').classList.toggle('on', cb.checked);
+                cb.closest('.acc-chip')?.classList.toggle('on', cb.checked);
                 await loadAll();
-                // refresh only the role chips for this row
                 const acc = roles.filter((r) => r.user_id === uid);
-                const rolesEl = row.querySelector('.user-roles');
+                const rolesEl = row.querySelector<HTMLElement>('.user-roles');
                 if (rolesEl) rolesEl.innerHTML = acc.length ? acc.map((a) => `<span class="role-chip">${esc(a.experience_slug)}</span>`).join('') : '<span class="role-none">nessun accesso</span>';
               } catch { alert('Operazione non riuscita.'); cb.checked = !cb.checked; }
             });

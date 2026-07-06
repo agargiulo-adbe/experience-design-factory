@@ -41,6 +41,14 @@ jobs:
           cp -r apps/ferrari-racing/dist/. pages/ferrari-racing/
           mkdir -p pages/console
           cp -r apps/console/dist/. pages/console/
+      - name: Verify artifact structure
+        run: |
+          fail=0
+          for f in pages/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html; do
+            if [ ! -f "$f" ]; then echo "MISSING: $f"; fail=1; fi
+          done
+          if [ $fail -ne 0 ]; then echo "Artifact structure check failed" && exit 1; fi
+          echo "Artifact OK — $(find pages -name 'index.html' | wc -l | tr -d ' ') pages indexed"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

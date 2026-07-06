@@ -49,15 +49,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       if (s) { location.replace(base + '/'); return; }
     })();
 
-    const form = document.querySelector('[data-login-form]');
-    const err = document.querySelector('[data-login-error]');
-    const submit = document.querySelector('[data-login-submit]');
-    const pwRow = document.querySelector('[data-password-row]');
-    const magicToggle = document.querySelector('[data-magic-toggle]');
-    const magicSent = document.querySelector('[data-magic-sent]');
+    const form = document.querySelector<HTMLFormElement>('[data-login-form]');
+    const err = document.querySelector<HTMLElement>('[data-login-error]');
+    const submit = document.querySelector<HTMLButtonElement>('[data-login-submit]');
+    const pwRow = document.querySelector<HTMLElement>('[data-password-row]');
+    const magicToggle = document.querySelector<HTMLElement>('[data-magic-toggle]');
+    const magicSent = document.querySelector<HTMLElement>('[data-magic-sent]');
     let magicMode = false;
 
-    function showError(msg) {
+    function showError(msg: string) {
       if (!err) return;
       err.textContent = msg;
       err.hidden = false;
@@ -74,7 +74,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (err) err.hidden = true;
-      const fd = new FormData(form);
+      const fd = new FormData(form!);
       const email = String(fd.get('email') || '').trim();
       const password = String(fd.get('password') || '');
       if (submit) { submit.disabled = true; submit.textContent = '…'; }
@@ -88,7 +88,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           location.href = base + '/';
         }
       } catch (ex) {
-        showError(ex.message || 'Accesso non riuscito. Controlla le credenziali.');
+        showError(ex instanceof Error ? ex.message : 'Accesso non riuscito. Controlla le credenziali.');
         if (submit) { submit.disabled = false; submit.textContent = magicMode ? 'Invia magic link' : 'Accedi'; }
       }
     });

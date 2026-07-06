@@ -16,7 +16,7 @@ const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const ANON = Deno.env.get('SUPABASE_ANON_KEY')!;
 
 const cors = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://agargiulo-adbe.github.io',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
@@ -79,11 +79,17 @@ Deno.serve(async (req) => {
   const newId = invited.user.id;
 
   // 5) Ensure the profile exists with the requested role/name.
+  //    Guard: if the profile already exists as super admin, never downgrade it on re-invite.
+  const { data: existingProfile } = await admin
+    .from('profiles')
+    .select('is_super_admin')
+    .eq('id', newId)
+    .maybeSingle();
   await admin.from('profiles').upsert({
     id: newId,
     email,
     full_name: payload.full_name ?? '',
-    is_super_admin: !!payload.is_super_admin,
+    is_super_admin: existingProfile?.is_super_admin || !!payload.is_super_admin,
   });
 
   // 6) Assign per-experience access.
