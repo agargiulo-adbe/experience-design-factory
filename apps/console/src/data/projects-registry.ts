@@ -183,7 +183,7 @@ export const PROJECTS: ConsoleProject[] = [
       { id: 'rtcdp-collab', name: 'Real-Time CDP Collaboration', shortName: 'RT-CDP Collab', pillar: 'data', description: 'Ferrari e i Partner definiscono insieme le audience, privacy-first.', pagesGated: ['Define'] },
       { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'I Partner creano on-brand; risultati campagna integrati.', pagesGated: ['Create', 'Activate'] },
       { id: 'express', name: 'Adobe Express', shortName: 'Express', pillar: 'content', description: 'Template brand-safe per i team dei Partner.', pagesGated: ['Create'] },
-      { id: 'brand', name: 'Brand Guardrails (Brand Concierge)', shortName: 'Brand', pillar: 'content', description: 'Guardrail Ferrari con verifiche pre e post.', pagesGated: ['Create'] },
+      { id: 'brand', name: 'Brand Guardrails (GenStudio)', shortName: 'Brand', pillar: 'content', description: 'Controlli brand GenStudio: verifica pre-pubblicazione e monitoraggio post — garantisce conformità alle linee guida Ferrari.', pagesGated: ['Create'] },
       { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Aggrega i risultati di tutti i Partner in una vista.', pagesGated: ['Analytics'] },
       { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'La fondazione dati del loop.', pagesGated: [] },
     ],
