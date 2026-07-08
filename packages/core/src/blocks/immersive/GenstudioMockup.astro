@@ -1,0 +1,851 @@
+---
+/**
+ * GenstudioMockup — replica HTML fedele della UI GenStudio for Performance Marketing.
+ * Anima automaticamente il flusso: brief → generazione → varianti → loop.
+ * Si integra con il sistema di feature toggle del Mockup Engine (localStorage).
+ * Usato in create.astro al posto del generico MockupSlide per il prodotto genstudio.
+ */
+interface Props {
+  sectionId: string;
+  slug: string;
+  id?: string;
+}
+const { sectionId, slug, id } = Astro.props;
+
+const VARIANTS = [
+  {
+    label: 'HP × Ferrari — Race Day',
+    score: 97,
+    headlinEn: 'Speed. Precision. Victory.',
+    headlineIt: 'Velocità. Precisione. Vittoria.',
+    bodyEn: 'HP technology powers every Scuderia Ferrari HP data decision. Experience the partnership that wins races.',
+    bodyIt: 'La tecnologia HP guida ogni decisione dati della Scuderia Ferrari HP.',
+    grad: 'linear-gradient(160deg,#CC0000 0%,#8B0000 40%,#1a1a1a 100%)',
+    accent: '#FF2800',
+  },
+  {
+    label: 'HP × Ferrari — Tifosi',
+    score: 94,
+    headlinEn: 'Your passion. Our data.',
+    headlineIt: 'La tua passione. I nostri dati.',
+    bodyEn: 'For millions of Tifosi worldwide — Scuderia Ferrari HP and HP bring the race to life with real-time fan intelligence.',
+    bodyIt: 'Per milioni di Tifosi nel mondo — Scuderia Ferrari HP e HP portano la gara in vita.',
+    grad: 'linear-gradient(160deg,#1a1a1a 0%,#2a1a00 50%,#FF2800 100%)',
+    accent: '#FFF200',
+  },
+  {
+    label: 'HP × Ferrari — Tech',
+    score: 91,
+    headlinEn: 'Where AI meets Maranello.',
+    headlineIt: 'Dove l\'AI incontra Maranello.',
+    bodyEn: 'HP AI workstations compute race simulations in real-time. Inside every winning strategy, there is HP.',
+    bodyIt: 'Le workstation HP AI calcolano le simulazioni di gara in tempo reale.',
+    grad: 'linear-gradient(160deg,#0a0a2e 0%,#1a1a4a 50%,#CC0000 100%)',
+    accent: '#4488FF',
+  },
+  {
+    label: 'HP × Ferrari — Premium',
+    score: 89,
+    headlinEn: 'Performance without limits.',
+    headlineIt: 'Prestazioni senza limiti.',
+    bodyEn: 'The same relentless pursuit of excellence that drives Ferrari\'s Cavallino Rampante now powers HP\'s innovation.',
+    bodyIt: 'La stessa ricerca inarrestabile dell\'eccellenza che guida il Cavallino Rampante di Ferrari ora alimenta l\'innovazione HP.',
+    grad: 'linear-gradient(160deg,#111 0%,#222 40%,#CC0000 100%)',
+    accent: '#FFFFFF',
+  },
+];
+
+const now = new Date();
+const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} PM`;
+---
+
+<section
+  data-slide
+  data-mockup-slide="genstudio"
+  data-mockup-section={sectionId}
+  data-solution="genstudio"
+  id={id ?? 'slide-mockup-genstudio'}
+  class="gs-mock-slide"
+>
+  <!-- Browser chrome strip -->
+  <div class="gs-browser-chrome" aria-hidden="true">
+    <div class="gs-traffic-lights">
+      <span class="gs-tl gs-tl-red"></span>
+      <span class="gs-tl gs-tl-yellow"></span>
+      <span class="gs-tl gs-tl-green"></span>
+    </div>
+    <div class="gs-address-bar">
+      <span class="gs-address-icon">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </span>
+      experience.adobe.com/genstudio/create/meta
+    </div>
+  </div>
+
+  <!-- GenStudio app wrapper -->
+  <div class="gs-app" data-gs-app>
+    <!-- ── Sidebar ────────────────────────────────────────────── -->
+    <aside class="gs-sidebar" aria-label="GenStudio navigation">
+      <div class="gs-sidebar-logo" aria-label="Adobe GenStudio">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M19 2L30 28H21.5L16 14.5L10.5 28H2L13 2H19Z" fill="#FF0000"/>
+        </svg>
+        <span>GenStudio</span>
+      </div>
+      <nav class="gs-sidebar-nav">
+        <button class="gs-nav-btn" aria-label="Campaigns">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="4" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.2"/></svg>
+          <span>Campaigns</span>
+        </button>
+        <button class="gs-nav-btn" aria-label="Content">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 6h6M5 9h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>Content</span>
+        </button>
+        <button class="gs-nav-btn gs-nav-active" aria-current="page">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span>Create</span>
+        </button>
+        <button class="gs-nav-btn" aria-label="Activate">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 8l4-4 4 4M8 4v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Activate</span>
+        </button>
+        <button class="gs-nav-btn" aria-label="Insights">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 12l3.5-4 3 3 3-6 2 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Insights</span>
+        </button>
+      </nav>
+      <div class="gs-sidebar-bottom">
+        <div class="gs-sidebar-avatar" aria-label="User avatar">A</div>
+      </div>
+    </aside>
+
+    <!-- ── Main content ──────────────────────────────────────── -->
+    <div class="gs-main">
+      <!-- Top bar -->
+      <header class="gs-topbar">
+        <button class="gs-topbar-back" aria-label="Back">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="gs-doc-title">
+          Meta: Ferrari × HP — Race Week &middot; {ts}
+        </span>
+        <div class="gs-topbar-actions">
+          <button class="gs-btn-ghost">Publish</button>
+          <button class="gs-btn-ghost">Export</button>
+          <button class="gs-btn-outline-primary">Request approval</button>
+        </div>
+        <!-- Channel icons -->
+        <div class="gs-channel-icons" aria-label="Target channels">
+          <span class="gs-channel-icon gs-channel-meta" title="Meta">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          </span>
+        </div>
+      </header>
+
+      <!-- ── PHASE 1: Brief creation ────────────────────────── -->
+      <div class="gs-phase gs-phase-brief" data-gs-phase="brief">
+        <!-- 4 empty variant slots -->
+        <div class="gs-variant-grid">
+          {VARIANTS.map((v, i) => (
+            <div class="gs-variant-col gs-variant-empty">
+              <div class="gs-variant-label">
+                <span>4:5 Vertical AD {i+1}/{VARIANTS.length}</span>
+              </div>
+              <div class="gs-variant-card gs-variant-card-skeleton">
+                <div class="gs-skeleton-header">
+                  <span class="gs-skeleton-avatar"></span>
+                  <span class="gs-skeleton-name"></span>
+                </div>
+                <div class="gs-skeleton-body">
+                  <span class="gs-skeleton-line gs-skeleton-line-long"></span>
+                  <span class="gs-skeleton-line gs-skeleton-line-med"></span>
+                  <span class="gs-skeleton-line gs-skeleton-line-short"></span>
+                </div>
+                <div class="gs-skeleton-image"></div>
+                <div class="gs-skeleton-footer">
+                  <span class="gs-skeleton-line gs-skeleton-line-med"></span>
+                  <span class="gs-skeleton-cta"></span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Parameters panel -->
+        <div class="gs-params-panel">
+          <div class="gs-params-header">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 4h12M5 8h6M7 12h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Parameters
+          </div>
+          <div class="gs-params-body">
+            <div class="gs-param-row">
+              <label class="gs-param-label">Brand</label>
+              <div class="gs-param-select gs-param-filled">Ferrari Racing Brand</div>
+            </div>
+            <div class="gs-param-row">
+              <label class="gs-param-label">Language</label>
+              <div class="gs-param-select gs-param-filled">English (EN/IT)</div>
+            </div>
+            <div class="gs-param-row">
+              <label class="gs-param-label">Persona</label>
+              <div class="gs-param-select gs-param-filled">Tifosi Premium</div>
+            </div>
+            <div class="gs-param-row">
+              <label class="gs-param-label">Product</label>
+              <div class="gs-param-select gs-param-filled">HP × Ferrari Partnership</div>
+            </div>
+            <div class="gs-param-prompt">
+              <label class="gs-param-label">Describe the experience to generate</label>
+              <div class="gs-prompt-area" data-gs-prompt>
+                <span class="gs-prompt-text" data-gs-typed></span>
+                <span class="gs-prompt-cursor">|</span>
+              </div>
+            </div>
+            <div class="gs-param-tags">
+              <span class="gs-tag">Ferrari Racing Brand <span class="gs-tag-x">×</span></span>
+              <span class="gs-tag">HP Technology <span class="gs-tag-x">×</span></span>
+              <span class="gs-tag">English (US) <span class="gs-tag-x">×</span></span>
+            </div>
+          </div>
+          <button class="gs-generate-btn" data-gs-generate>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4.2 4.2l2.1 2.1M9.7 9.7l2.1 2.1M4.2 11.8l2.1-2.1M9.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Generate
+          </button>
+        </div>
+      </div>
+
+      <!-- ── PHASE 2: Generating ──────────────────────────────── -->
+      <div class="gs-phase gs-phase-generating" data-gs-phase="generating" hidden>
+        <div class="gs-variant-grid">
+          {VARIANTS.map((v, i) => (
+            <div class="gs-variant-col">
+              <div class="gs-variant-label">
+                <span>4:5 Vertical AD {i+1}/{VARIANTS.length}</span>
+                <span class="gs-score-spinner" aria-label="Generating..."></span>
+              </div>
+              <div class="gs-variant-card gs-variant-card-gen">
+                <div class="gs-gen-header">
+                  <span class="gs-gen-avatar" style={`animation-delay:${i*0.2}s`}></span>
+                  <div>
+                    <div class="gs-gen-name">Ferrari Racing</div>
+                    <div class="gs-gen-sub">Sponsored</div>
+                  </div>
+                </div>
+                <div class="gs-gen-lines">
+                  <span class="gs-gen-line gs-gen-line-full" style={`animation-delay:${i*0.15}s`}></span>
+                  <span class="gs-gen-line gs-gen-line-3q" style={`animation-delay:${i*0.15+0.1}s`}></span>
+                </div>
+                <div class="gs-gen-image" style={`animation-delay:${i*0.25}s`}></div>
+                <div class="gs-gen-footer">
+                  <span class="gs-gen-line gs-gen-line-half" style={`animation-delay:${i*0.2+0.1}s`}></span>
+                  <span class="gs-gen-cta" style={`animation-delay:${i*0.2+0.2}s`}></span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="gs-generating-toast" aria-live="polite">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4.2 4.2l2.1 2.1M9.7 9.7l2.1 2.1M4.2 11.8l2.1-2.1M9.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Just a moment while your variations are generated…
+        </div>
+      </div>
+
+      <!-- ── PHASE 3: Variants ready ────────────────────────── -->
+      <div class="gs-phase gs-phase-variants" data-gs-phase="variants" hidden>
+        <div class="gs-variant-grid">
+          {VARIANTS.map((v, i) => (
+            <div class="gs-variant-col" style={`animation-delay:${i*0.12}s`}>
+              <div class="gs-variant-label">
+                <span>4:5 Vertical AD {i+1}/{VARIANTS.length}</span>
+                <span class="gs-score-badge" style={`--score-color:${v.score >= 90 ? '#16a34a' : v.score >= 80 ? '#2563eb' : '#9333ea'}`}>
+                  {v.score}
+                </span>
+                <button class="gs-variant-menu" aria-label="More options">···</button>
+              </div>
+              <div class="gs-variant-card gs-variant-card-live">
+                <!-- Ad header: brand avatar + name -->
+                <div class="gs-ad-header">
+                  <div class="gs-ad-avatar" style={`background:${v.grad}`}></div>
+                  <div>
+                    <div class="gs-ad-brand">Ferrari Racing × HP</div>
+                    <div class="gs-ad-sponsored">Sponsored</div>
+                  </div>
+                </div>
+                <!-- Ad body copy -->
+                <div class="gs-ad-body">
+                  <span data-lang-en>{v.bodyEn}</span>
+                  <span data-lang-it style="display:none">{v.bodyIt}</span>
+                </div>
+                <!-- Creative image (CSS gradient) -->
+                <div class="gs-ad-image" style={`background:${v.grad}`}>
+                  <!-- Racing circuit silhouette via SVG path -->
+                  <div class="gs-ad-overlay" aria-hidden="true">
+                    <div class="gs-ad-circuit"></div>
+                  </div>
+                  <!-- Headline over image -->
+                  <div class="gs-ad-headline">
+                    <span data-lang-en>{v.headlinEn}</span>
+                    <span data-lang-it style="display:none">{v.headlineIt}</span>
+                  </div>
+                  <!-- Brand mark -->
+                  <div class="gs-ad-brand-mark">Scuderia Ferrari HP × HP</div>
+                </div>
+                <!-- Ad footer: description + CTA -->
+                <div class="gs-ad-footer">
+                  <div class="gs-ad-footer-text">{v.label}</div>
+                  <button class="gs-ad-learn-more">Learn more</button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Generate again bar -->
+        <div class="gs-variants-bottom">
+          <button class="gs-generate-btn gs-generate-btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4.2 4.2l2.1 2.1M9.7 9.7l2.1 2.1M4.2 11.8l2.1-2.1M9.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Generate
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ── GenstudioMockup slide ──────────────────────────────────────────────── */
+.gs-mock-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #e8e8e8;
+  overflow: hidden;
+  font-family: -apple-system, 'Segoe UI', Inter, sans-serif;
+}
+
+/* Browser chrome strip */
+.gs-browser-chrome {
+  height: 2.5rem;
+  background: #3c3c3c;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.875rem;
+  flex-shrink: 0;
+}
+.gs-traffic-lights { display: flex; gap: 5px; }
+.gs-tl { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.gs-tl-red    { background: #ff5f57; }
+.gs-tl-yellow { background: #ffbd2e; }
+.gs-tl-green  { background: #28c840; }
+.gs-address-bar {
+  flex: 1;
+  max-width: 26rem;
+  margin: 0 auto;
+  height: 1.5rem;
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0 0.5rem;
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.6);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.gs-address-icon { color: rgba(255,255,255,0.4); flex-shrink: 0; }
+
+/* App wrapper */
+.gs-app {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  background: #f4f4f4;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.gs-sidebar {
+  width: 3.75rem;
+  background: #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.625rem 0;
+  flex-shrink: 0;
+}
+.gs-sidebar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.375rem 0;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  font-size: 0.45rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.gs-sidebar-nav { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; width: 100%; padding: 0 0.25rem; }
+.gs-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.45rem 0.25rem;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.42rem;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+  width: 100%;
+  letter-spacing: 0.02em;
+}
+.gs-nav-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+.gs-nav-active { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.gs-sidebar-bottom { margin-top: auto; padding: 0.5rem 0; }
+.gs-sidebar-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg, #FF2800, #8B0000);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; font-weight: 700; color: #fff;
+}
+
+/* ── Main ────────────────────────────────────────────────────── */
+.gs-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bar */
+.gs-topbar {
+  height: 2.5rem;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0 0.875rem;
+  flex-shrink: 0;
+}
+.gs-topbar-back {
+  width: 22px; height: 22px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #555;
+  flex-shrink: 0;
+}
+.gs-doc-title { font-size: 0.65rem; color: #1a1a1a; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gs-topbar-actions { display: flex; gap: 0.375rem; flex-shrink: 0; }
+.gs-btn-ghost {
+  padding: 0.25rem 0.625rem;
+  font-size: 0.6rem; font-family: inherit; font-weight: 500;
+  border: 1px solid #d0d0d0; border-radius: 4px;
+  background: transparent; color: #333; cursor: pointer;
+}
+.gs-btn-outline-primary {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.6rem; font-family: inherit; font-weight: 600;
+  border: 1px solid #1473E6; border-radius: 4px;
+  background: transparent; color: #1473E6; cursor: pointer;
+}
+.gs-channel-icons { display: flex; gap: 0.25rem; margin-left: 0.375rem; }
+.gs-channel-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid #d0d0d0; cursor: pointer;
+}
+.gs-channel-meta { color: #1877F2; background: #fff; }
+
+/* ── Phase container ────────────────────────────────────────── */
+.gs-phase {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.gs-phase[hidden] { display: none; }
+
+/* ── Variant grid ───────────────────────────────────────────── */
+.gs-variant-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem 0;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+.gs-variant-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-height: 0;
+}
+.gs-variant-label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.55rem;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Score badge */
+.gs-score-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px;
+  background: var(--score-color, #2563eb);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.5rem; font-weight: 700;
+}
+.gs-variant-menu { margin-left: auto; background: transparent; border: none; font-size: 0.65rem; color: #888; cursor: pointer; }
+
+/* ── Skeleton (brief phase) ─────────────────────────────────── */
+.gs-variant-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  flex: 1;
+}
+.gs-variant-card-skeleton { padding: 0.5rem; display: flex; flex-direction: column; gap: 0.375rem; }
+.gs-skeleton-header { display: flex; align-items: center; gap: 0.375rem; }
+.gs-skeleton-avatar { width: 16px; height: 16px; border-radius: 50%; background: #e0e0e0; flex-shrink: 0; }
+.gs-skeleton-name { height: 8px; width: 50%; background: #e0e0e0; border-radius: 3px; }
+.gs-skeleton-body { display: flex; flex-direction: column; gap: 4px; }
+.gs-skeleton-line { height: 6px; background: #e0e0e0; border-radius: 3px; display: block; }
+.gs-skeleton-line-long { width: 90%; }
+.gs-skeleton-line-med { width: 70%; }
+.gs-skeleton-line-short { width: 50%; }
+.gs-skeleton-image { flex: 1; min-height: 50px; background: #e8e8e8; border-radius: 3px; }
+.gs-skeleton-footer { display: flex; align-items: center; justify-content: space-between; }
+.gs-skeleton-cta { width: 40px; height: 14px; background: #e0e0e0; border-radius: 10px; }
+
+/* ── Generating phase ───────────────────────────────────────── */
+.gs-score-spinner {
+  width: 18px; height: 18px;
+  border: 2.5px solid #e0e0e0;
+  border-top-color: #1473E6;
+  border-radius: 50%;
+  animation: gs-spin 0.8s linear infinite;
+}
+@keyframes gs-spin { to { transform: rotate(360deg); } }
+
+.gs-variant-card-gen { padding: 0.5rem; display: flex; flex-direction: column; gap: 0.375rem; }
+.gs-gen-header { display: flex; align-items: center; gap: 0.375rem; }
+.gs-gen-avatar {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: linear-gradient(135deg, #e0e0e0 25%, #c8c8c8 100%);
+  flex-shrink: 0;
+  animation: gs-shimmer 1.5s ease-in-out infinite alternate;
+}
+@keyframes gs-shimmer { from { opacity: 0.4; } to { opacity: 1; } }
+.gs-gen-name { font-size: 0.5rem; font-weight: 600; color: #333; }
+.gs-gen-sub { font-size: 0.4rem; color: #888; }
+.gs-gen-lines { display: flex; flex-direction: column; gap: 3px; }
+.gs-gen-line { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #e0e0e0 25%, #d0d0d0 50%, #e0e0e0 75%); background-size: 200% 100%; animation: gs-loading 1.5s ease-in-out infinite; display: block; }
+.gs-gen-line-full { width: 90%; }
+.gs-gen-line-3q { width: 70%; }
+.gs-gen-line-half { width: 45%; }
+@keyframes gs-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.gs-gen-image {
+  flex: 1; min-height: 45px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #d0d0d0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: gs-loading 1.5s ease-in-out infinite;
+  border-radius: 3px;
+}
+.gs-gen-footer { display: flex; align-items: center; justify-content: space-between; }
+.gs-gen-cta { width: 35px; height: 12px; border-radius: 8px; background: linear-gradient(90deg, #e0e0e0 25%, #d0d0d0 50%, #e0e0e0 75%); background-size: 200%; animation: gs-loading 1.5s ease-in-out infinite; display: block; }
+
+/* Toast */
+.gs-generating-toast {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.65rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  white-space: nowrap;
+}
+.gs-phase-generating { position: relative; }
+
+/* ── Variants phase ─────────────────────────────────────────── */
+.gs-phase-variants .gs-variant-col {
+  animation: gs-variant-in 0.35s ease both;
+}
+@keyframes gs-variant-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.gs-variant-card-live { display: flex; flex-direction: column; }
+
+.gs-ad-header {
+  display: flex; align-items: center; gap: 0.375rem;
+  padding: 0.4rem 0.5rem 0.25rem;
+  flex-shrink: 0;
+}
+.gs-ad-avatar { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.gs-ad-brand { font-size: 0.5rem; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+.gs-ad-sponsored { font-size: 0.4rem; color: #888; }
+
+.gs-ad-body {
+  font-size: 0.5rem;
+  color: #333;
+  line-height: 1.4;
+  padding: 0 0.5rem 0.25rem;
+  flex-shrink: 0;
+}
+
+.gs-ad-image {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.gs-ad-overlay { position: absolute; inset: 0; }
+
+.gs-ad-circuit {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 10px,
+      rgba(255,255,255,0.04) 10px,
+      rgba(255,255,255,0.04) 11px
+    );
+  opacity: 0.6;
+}
+
+.gs-ad-headline {
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 0.5rem 0.375rem;
+  font-size: clamp(0.55rem, 1.1vw, 0.75rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+  letter-spacing: -0.01em;
+}
+
+.gs-ad-brand-mark {
+  position: relative;
+  z-index: 1;
+  padding: 0.2rem 0.5rem 0.375rem;
+  font-size: 0.38rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gs-ad-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 0.5rem;
+  border-top: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+.gs-ad-footer-text { font-size: 0.45rem; color: #555; font-weight: 500; }
+.gs-ad-learn-more {
+  font-size: 0.45rem; font-family: inherit; font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  background: #1473E6; color: #fff;
+  border: none; border-radius: 3px; cursor: pointer;
+}
+
+/* Generate button in variants */
+.gs-variants-bottom {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+  flex-shrink: 0;
+}
+
+/* Generate button */
+.gs-generate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.45rem 1.5rem;
+  background: #1473E6;
+  color: #fff;
+  font-size: 0.7rem; font-family: inherit; font-weight: 600;
+  border: none; border-radius: 20px; cursor: pointer;
+  transition: background 0.15s;
+}
+.gs-generate-btn:hover { background: #0d5abf; }
+.gs-generate-btn-secondary { background: #f5f5f5; color: #333; border: 1px solid #d0d0d0; }
+.gs-generate-btn-secondary:hover { background: #e8e8e8; }
+.gs-generate-btn-pulse { animation: gs-pulse 1s ease-in-out; }
+@keyframes gs-pulse { 0%,100% { box-shadow: none; } 50% { box-shadow: 0 0 0 6px rgba(20,115,230,0.25); } }
+
+/* ── Parameters panel (brief phase) ─────────────────────────── */
+.gs-params-panel {
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  padding: 0.625rem 0.875rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.gs-params-header {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.6rem; font-weight: 600; color: #333;
+  flex-basis: 100%;
+}
+.gs-params-body {
+  display: flex; gap: 0.625rem; flex-wrap: wrap; align-items: flex-end; flex: 1;
+}
+.gs-param-row { display: flex; flex-direction: column; gap: 0.2rem; }
+.gs-param-label { font-size: 0.5rem; color: #888; font-weight: 500; }
+.gs-param-select {
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border: 1px solid #d0d0d0; border-radius: 4px;
+  font-size: 0.55rem; color: #1a1a1a; background: #fff;
+  display: flex; align-items: center;
+  white-space: nowrap;
+}
+.gs-param-filled { border-color: #1473E6; background: #f0f7ff; color: #1473E6; }
+.gs-param-prompt { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 12rem; }
+.gs-prompt-area {
+  min-height: 2rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #d0d0d0; border-radius: 4px;
+  font-size: 0.55rem; color: #1a1a1a;
+  background: #fff;
+  display: flex; align-items: flex-start;
+  flex-wrap: wrap;
+}
+.gs-prompt-cursor {
+  color: #1473E6;
+  animation: gs-blink 1s step-end infinite;
+  font-weight: 300;
+}
+@keyframes gs-blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+.gs-param-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; flex-basis: 100%; }
+.gs-tag {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  padding: 0.15rem 0.4rem;
+  background: #f0f7ff; border: 1px solid #1473E6;
+  border-radius: 3px;
+  font-size: 0.48rem; color: #1473E6; font-weight: 500;
+}
+.gs-tag-x { opacity: 0.5; }
+
+/* Typed text animation */
+.gs-prompt-text { color: #1a1a1a; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gs-score-spinner,
+  .gs-gen-avatar,
+  .gs-gen-image,
+  .gs-gen-line,
+  .gs-gen-cta,
+  .gs-prompt-cursor { animation: none; opacity: 1; }
+  .gs-phase-variants .gs-variant-col { animation: none; }
+}
+</style>
+
+<script is:inline define:vars={{ slug }}>
+(function () {
+  var PROMPT = 'Race day emotion — Ferrari × HP — speed precision victory Tifosi';
+  var PHASE_DURATIONS = { brief: 3800, generating: 2600, variants: 5000 };
+  var phases = ['brief', 'generating', 'variants'];
+  var currentPhase = 0;
+  var timer = null;
+
+  function showPhase(name) {
+    var app = document.querySelector('[data-gs-app]');
+    if (!app) return;
+    app.querySelectorAll('[data-gs-phase]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-gs-phase') !== name;
+    });
+  }
+
+  function typePrompt() {
+    var el = document.querySelector('[data-gs-typed]');
+    if (!el) return;
+    el.textContent = '';
+    var i = 0;
+    var t = setInterval(function () {
+      if (i >= PROMPT.length) { clearInterval(t); return; }
+      el.textContent += PROMPT[i++];
+    }, 40);
+  }
+
+  function animateGenerate() {
+    var btn = document.querySelector('[data-gs-generate]');
+    if (!btn) return;
+    btn.classList.add('gs-generate-btn-pulse');
+    setTimeout(function () { btn.classList.remove('gs-generate-btn-pulse'); }, 1000);
+  }
+
+  function advance() {
+    currentPhase = (currentPhase + 1) % phases.length;
+    var name = phases[currentPhase];
+    showPhase(name);
+    if (name === 'brief') typePrompt();
+    if (name === 'generating') animateGenerate();
+    timer = setTimeout(advance, PHASE_DURATIONS[name]);
+  }
+
+  function init() {
+    showPhase('brief');
+    typePrompt();
+    timer = setTimeout(advance, PHASE_DURATIONS.brief);
+  }
+
+  // Start when slide becomes active (or on DOMContentLoaded)
+  var slide = document.querySelector('[data-mockup-slide="genstudio"]');
+  if (slide) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    // Reset animation loop when slide gets focus via deck navigation
+    slide.addEventListener('playSlide', function () {
+      currentPhase = 0;
+      clearTimeout(timer);
+      init();
+    });
+  }
+})();
+</script>
