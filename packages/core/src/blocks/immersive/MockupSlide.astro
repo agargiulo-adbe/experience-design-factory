@@ -1,0 +1,436 @@
+---
+/**
+ * MockupSlide — slide dedicata al mockup interattivo di un prodotto Adobe.
+ * Si comporta come qualsiasi altra slide del deck (data-slide, data-solution).
+ * La configurazione delle feature attive viene letta da localStorage al runtime.
+ * Inserire DOPO la slide principale del prodotto nella pagina .astro dell'experience.
+ */
+import { MOCKUP_LIBRARY } from '../../data/mockups';
+
+interface Props {
+  mockupId: string;
+  /** Slug della sezione in cui è inserita (es. "create", "define", "analisi") */
+  sectionId: string;
+  /** Project slug per la chiave localStorage */
+  slug: string;
+  id?: string;
+}
+
+const { mockupId, sectionId, slug, id } = Astro.props;
+const mockup = MOCKUP_LIBRARY.find(m => m.id === mockupId);
+if (!mockup) throw new Error(`MockupSlide: unknown mockupId "${mockupId}"`);
+const serializedFeatures = mockup.features.map(f => ({
+  id: f.id, nameEn: f.nameEn, nameIt: f.nameIt, descEn: f.descEn, descIt: f.descIt,
+}));
+---
+
+<section
+  data-slide
+  data-mockup-slide={mockupId}
+  data-mockup-section={sectionId}
+  data-solution={mockup.solutionId}
+  id={id ?? `slide-mockup-${mockupId}`}
+  class="mockup-slide"
+>
+  <div class="mockup-backdrop" aria-hidden="true"></div>
+
+  <div class="mockup-content">
+    <div class="mockup-header">
+      <p class="mockup-eyebrow">PRODUCT DEMO</p>
+      <h2 class="mockup-title">{mockup.nameEn}</h2>
+    </div>
+
+    <div class="mockup-feature-tabs" data-mockup-tabs aria-label="Feature navigation"></div>
+
+    <div class="mockup-stage" data-mockup-stage>
+      <div class="mockup-stage-placeholder">
+        <div class="mockup-placeholder-chrome">
+          <div class="mockup-placeholder-toolbar">
+            <span class="mockup-dot"></span>
+            <span class="mockup-dot"></span>
+            <span class="mockup-dot"></span>
+            <span class="mockup-toolbar-spacer"></span>
+            <span class="mockup-toolbar-label">Adobe {mockup.nameEn}</span>
+          </div>
+          <div class="mockup-placeholder-body" data-mockup-body></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="mockup-caption" data-mockup-caption aria-live="polite"></p>
+  </div>
+</section>
+
+<style is:global>
+  /* ── MockupSlide ──────────────────────────────────────────────────────── */
+  [data-mockup-slide] {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--surface-inverse, #0B0B0D);
+    overflow: hidden;
+  }
+
+  .mockup-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 25% 50%, rgba(255,40,0,0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 50%, rgba(255,242,0,0.03) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .mockup-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: calc(100% - var(--slide-safe-inset, 6rem) * 2);
+    max-height: calc(100% - var(--deck-chrome-safe, 5rem));
+    padding: 0 var(--slide-safe-inset, 6rem);
+  }
+
+  .mockup-header { flex-shrink: 0; }
+
+  .mockup-eyebrow {
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent-primary, #FF2800);
+    margin: 0 0 0.3rem;
+  }
+
+  .mockup-title {
+    font-family: var(--font-display, Archivo, sans-serif);
+    font-size: clamp(1.125rem, 1.75vw, 1.75rem);
+    font-weight: 700;
+    color: var(--ink-inverse, #fff);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  /* Feature tabs */
+  .mockup-feature-tabs {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .mockup-feature-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3125rem 0.75rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    white-space: nowrap;
+  }
+
+  .mockup-feature-tab.is-active {
+    background: var(--accent-primary, #FF2800);
+    border-color: var(--accent-primary, #FF2800);
+    color: #fff;
+  }
+
+  .mockup-feature-tab:hover:not(.is-active) {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* Main stage */
+  .mockup-stage {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+  }
+
+  .mockup-stage-placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .mockup-placeholder-chrome {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .mockup-placeholder-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    background: rgba(255,255,255,0.025);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0;
+  }
+
+  .mockup-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  .mockup-toolbar-spacer { flex: 1; }
+
+  .mockup-toolbar-label {
+    font-size: 0.625rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.25);
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+    letter-spacing: 0.02em;
+  }
+
+  .mockup-placeholder-body {
+    flex: 1;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    overflow: hidden;
+  }
+
+  /* Scene content */
+  .mockup-feature-scene {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    height: 100%;
+  }
+
+  .mockup-scene-title {
+    font-family: var(--font-display, Archivo, sans-serif);
+    font-size: clamp(0.9375rem, 1.25vw, 1.25rem);
+    font-weight: 700;
+    color: var(--ink-inverse, #fff);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .mockup-scene-desc {
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+    font-size: clamp(0.6875rem, 0.875vw, 0.875rem);
+    color: rgba(255,255,255,0.55);
+    line-height: 1.55;
+    margin: 0;
+    max-width: 54em;
+  }
+
+  .mockup-scene-visual {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.625rem;
+    align-content: start;
+  }
+
+  .mockup-scene-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .mockup-scene-card-label {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(255,255,255,0.35);
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+  }
+
+  .mockup-scene-card-value {
+    font-size: clamp(1rem, 1.5vw, 1.375rem);
+    font-weight: 700;
+    color: var(--ink-inverse, #fff);
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-display, Archivo, sans-serif);
+    letter-spacing: -0.02em;
+  }
+
+  .mockup-scene-card-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .mockup-scene-card-bar-fill {
+    height: 100%;
+    background: var(--accent-primary, #FF2800);
+    border-radius: 2px;
+    transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Caption */
+  .mockup-caption {
+    font-family: var(--font-body, Inter, system-ui, sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.3);
+    margin: 0;
+    flex-shrink: 0;
+    min-height: 1em;
+    letter-spacing: 0.01em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mockup-scene-card-bar-fill { transition: none; }
+    .mockup-feature-tab { transition: none; }
+  }
+</style>
+
+<script is:inline define:vars={{ mockupId, sectionId, slug, features: serializedFeatures, maxVisible: mockup.maxVisible }}>
+(function() {
+  var MK_KEY = 'edf:mockup-config:' + slug;
+
+  function loadEnabled() {
+    try {
+      var cfg = JSON.parse(localStorage.getItem(MK_KEY) || '{}');
+      if (Array.isArray(cfg[mockupId])) return cfg[mockupId];
+    } catch(e) {}
+    return features.slice(0, maxVisible).map(function(f) { return f.id; });
+  }
+
+  // Representative scene data per feature ID
+  var SCENE_DATA = {
+    'brief-to-variants':     [{ l:'Varianti generate', v:'4', f:100 },{ l:'Generazione',     v:'8s',    f:15  },{ l:'Brand score',    v:'97%',   f:97  }],
+    'brand-check':           [{ l:'Controlli',         v:'12/12', f:100},{ l:'Logo OK',        v:'✓',    f:100 },{ l:'Tone OK',        v:'✓',    f:100 }],
+    'channel-activation':    [{ l:'Canali live',       v:'3',     f:75  },{ l:'Meta CTR',       v:'3.2%', f:64  },{ l:'LinkedIn CTR',   v:'1.8%', f:36  }],
+    'insights-dashboard':    [{ l:'CTR medio',         v:'2.9%',  f:58  },{ l:'CPA −',          v:'23%',  f:77  },{ l:'ROAS',           v:'4.1×', f:82  }],
+    'express-quick-edit':    [{ l:'Templates',         v:'240+',  f:80  },{ l:'Tempo edit',     v:'<2m',  f:30  },{ l:'Brand score',    v:'100%', f:100 }],
+    'translation':           [{ l:'Lingue',            v:'40+',   f:100 },{ l:'Accuracy AI',   v:'98%',  f:98  },{ l:'Tempo avg',      v:'12s',  f:20  }],
+    'discover-overlap':      [{ l:'Overlap ID',        v:'2.4M',  f:80  },{ l:'Affinità sport', v:'94%',  f:94  },{ l:'Copertura geo',  v:'48',   f:60  }],
+    'activate-audiences':    [{ l:'Segmenti',          v:'6',     f:75  },{ l:'CTV reach',      v:'820K', f:82  },{ l:'Paid media',     v:'1.2M', f:60  }],
+    'measure-attribution':   [{ l:'Conversioni',       v:'14.2K', f:71  },{ l:'ROAS partner',   v:'3.8×', f:76  },{ l:'Incrementalità', v:'+31%', f:62  }],
+    'clean-sketches':        [{ l:'Privacy score',     v:'100%',  f:100 },{ l:'Identità mosse', v:'0',    f:0   },{ l:'Audit log',      v:'✓',    f:100 }],
+    'collaboration-starter': [{ l:'Partner onboarded', v:'3',     f:75  },{ l:'IDs supported',  v:'50M',  f:80  },{ l:'Tempo setup',    v:'<24h', f:20  }],
+    'cross-partner-view':    [{ l:'Partner',           v:'4',     f:100 },{ l:'Sessioni tot.',  v:'3.2M', f:80  },{ l:'Top ROAS',       v:'5.1×', f:100 }],
+    'season-insights':       [{ l:'Gare analizzate',   v:'24',    f:100 },{ l:'Revenue attr.',  v:'€2.8M',f:70  },{ l:'Renewal rate',   v:'87%',  f:87  }],
+    'ai-attribution':        [{ l:'Attributi AI',      v:'18',    f:90  },{ l:'Top driver',     v:'Tone', f:80  },{ l:'CPA ottimiz.',   v:'−19%', f:62  }],
+    'cross-channel-dashboard':[{ l:'Canali monit.',    v:'6',     f:100 },{ l:'Touchpoints',    v:'8.4M', f:70  },{ l:'Data lag',       v:'<1h',  f:95  }],
+    'brand-locked-templates':[{ l:'Template',          v:'240+',  f:80  },{ l:'Brand score',    v:'100%', f:100 },{ l:'Errori brand',   v:'0',    f:0   }],
+    'last-mile-edit':        [{ l:'Editor attivi',     v:'12',    f:60  },{ l:'Tempo prod.',    v:'−65%', f:65  },{ l:'Assets out',     v:'340',  f:85  }],
+    'express-translation':   [{ l:'Lingue',            v:'40+',   f:100 },{ l:'Regioni',        v:'18',   f:72  },{ l:'Tempo avg',      v:'<15s', f:25  }],
+  };
+
+  function renderScene(feature) {
+    var tabs = document.querySelector('[data-mockup-slide="' + mockupId + '"] [data-mockup-tabs]');
+    var body = document.querySelector('[data-mockup-slide="' + mockupId + '"] [data-mockup-body]');
+    var caption = document.querySelector('[data-mockup-slide="' + mockupId + '"] [data-mockup-caption]');
+    if (!body) return;
+
+    if (caption) caption.textContent = feature.nameEn;
+
+    if (tabs) {
+      tabs.querySelectorAll('.mockup-feature-tab').forEach(function(t) {
+        t.classList.toggle('is-active', t.getAttribute('data-feature-tab') === feature.id);
+      });
+    }
+
+    var cards = SCENE_DATA[feature.id] || [
+      { l: 'Feature', v: '✓', f: 100 },
+      { l: 'Status',  v: 'Active', f: 100 },
+      { l: 'Score',   v: '—',  f: 0   },
+    ];
+
+    body.innerHTML = '<div class="mockup-feature-scene">'
+      + '<h3 class="mockup-scene-title">' + feature.nameEn + '</h3>'
+      + '<p class="mockup-scene-desc">' + feature.descEn + '</p>'
+      + '<div class="mockup-scene-visual">'
+      + cards.map(function(c) {
+          return '<div class="mockup-scene-card">'
+            + '<span class="mockup-scene-card-label">' + c.l + '</span>'
+            + '<span class="mockup-scene-card-value">' + c.v + '</span>'
+            + '<div class="mockup-scene-card-bar">'
+            + '<div class="mockup-scene-card-bar-fill" style="width:0%"></div>'
+            + '</div></div>';
+        }).join('')
+      + '</div></div>';
+
+    requestAnimationFrame(function() {
+      body.querySelectorAll('.mockup-scene-card-bar-fill').forEach(function(bar, i) {
+        bar.style.width = (cards[i] ? cards[i].f : 0) + '%';
+      });
+    });
+  }
+
+  function buildTabs(enabledFeatures) {
+    var slide = document.querySelector('[data-mockup-slide="' + mockupId + '"]');
+    var tabs = slide && slide.querySelector('[data-mockup-tabs]');
+    if (!tabs) return;
+
+    tabs.innerHTML = enabledFeatures.map(function(f) {
+      return '<button type="button" class="mockup-feature-tab" data-feature-tab="' + f.id + '">'
+        + f.nameEn + '</button>';
+    }).join('');
+
+    tabs.querySelectorAll('.mockup-feature-tab').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var fid = btn.getAttribute('data-feature-tab');
+        var feature = features.filter(function(f) { return f.id === fid; })[0];
+        if (feature) renderScene(feature);
+      });
+    });
+  }
+
+  function init() {
+    var enabled = loadEnabled();
+    var enabledFeatures = features.filter(function(f) { return enabled.indexOf(f.id) !== -1; });
+    if (enabledFeatures.length === 0) enabledFeatures = features.slice(0, 1);
+
+    buildTabs(enabledFeatures);
+    if (enabledFeatures[0]) renderScene(enabledFeatures[0]);
+  }
+
+  // Listen for config changes from admin console
+  try {
+    new BroadcastChannel('edf-console').addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'edf:mockup-changed' && e.data.project === slug) init();
+    });
+  } catch(e) {}
+  window.addEventListener('storage', function(ev) {
+    if (ev.key === MK_KEY) init();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
