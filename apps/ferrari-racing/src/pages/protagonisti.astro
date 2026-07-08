@@ -8,14 +8,15 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import { cite } from '../data/sources';
+import { STATS } from '../data/stats';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// Ferrari slide-ferrari: raceday + downloads (€800M/+22% are auth on index; ~400M on slide-tifosi)
 const ferrariStats = [
-  { stat: '~400M', en: 'Tifosi worldwide — the most-followed team in Formula 1', it: 'Tifosi nel mondo — la squadra più seguita della Formula 1' },
-  { stat: '+56%', en: 'race-day active users on the Scuderia Ferrari HP app (2025)', it: 'utenti attivi nei giorni di gara sull\'app Scuderia Ferrari HP (2025)' },
-  { stat: '€800M+', en: 'sponsorship, commercial & brand revenue — +22% YoY', it: 'ricavi sponsorship, commercial & brand — +22% su base annua' },
+  { stat: STATS.raceday.value, en: STATS.raceday.en, it: STATS.raceday.it },
+  { stat: STATS.downloads.value, en: STATS.downloads.en, it: STATS.downloads.it },
 ];
 
 const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
@@ -38,8 +39,8 @@ const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
       />
       <T
         as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-10"
-        en="Ferrari Racing, its sponsor partners, and ~400 million Tifosi — brought together by first-party data into a partnership that compounds."
-        it="Ferrari Racing, i suoi partner sponsor e ~400 milioni di Tifosi — uniti dal dato first-party in una partnership che si accumula nel tempo."
+        en="Ferrari Racing, its sponsor partners, and millions of Tifosi — brought together by first-party data into a partnership that compounds."
+        it="Ferrari Racing, i suoi partner sponsor e milioni di Tifosi — uniti dal dato first-party in una partnership che si accumula nel tempo."
       />
       <p class="text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]" data-reveal data-reveal-delay="0.3">
         <span data-lang-en>The story aligns three players around one shared asset — fan data.</span>
@@ -60,17 +61,17 @@ const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
         en="Maranello. The Cavallino Rampante. The most-followed team in Formula 1. Its real asset today is fan attention — and the consented, first-party data behind it."
         it="Maranello. Il Cavallino Rampante. La squadra più seguita della Formula 1. Il suo vero asset oggi è l'attenzione dei tifosi — e il dato first-party, con consenso, che la sostiene."
       />
-      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+      <div class="w-full max-w-3xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.22">
         {ferrariStats.map((s) => (
           <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-center">
             <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-3" style="font-size: clamp(2rem, 4vw, 3.25rem);">{s.stat}</p>
-            <p class="text-sm text-white/80 leading-relaxed"><span data-lang-en>{s.en}</span><span data-lang-it>{s.it}</span></p>
+            <T as="p" class="text-sm text-white/80 leading-relaxed" en={s.en} it={s.it} />
           </div>
         ))}
       </div>
       <p class="mt-7 text-center text-[0.62rem] tracking-widest uppercase text-white/45">
-        <span data-lang-en>Source: {cite('ferrari_fy2025', 'ibm_case_study')}</span>
-        <span data-lang-it>Fonte: {cite('ferrari_fy2025', 'ibm_case_study')}</span>
+        <span data-lang-en>Source: {cite('ibm_ferrari_2026')}</span>
+        <span data-lang-it>Fonte: {cite('ibm_ferrari_2026')}</span>
       </p>
     </Slide>
 
@@ -112,10 +113,18 @@ const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
         it="I Tifosi sono il campo"
       />
       <T
-        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-10"
-        en="~400 million passionate fans. Their consented, first-party data is the shared ground where Ferrari and its partners win together — privacy-first, always."
-        it="~400 milioni di tifosi appassionati. Il loro dato first-party, con consenso, è il terreno condiviso dove Ferrari e i suoi partner vincono insieme — con la privacy al primo posto, sempre."
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-3xl mb-7"
+        en="Their consented, first-party data is the shared ground where Ferrari and its partners win together — without exposing a single individual."
+        it="Il loro dato first-party, con consenso, è il terreno condiviso dove Ferrari e i suoi partner vincono insieme — senza esporre alcun individuo."
       />
+      <div class="w-full max-w-xl mx-auto text-center mb-9" data-reveal data-reveal-delay="0.25">
+        <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2" style="font-size: clamp(2.5rem,5vw,4rem);">{STATS.tifosi.value}</p>
+        <T as="p" class="text-sm text-[var(--color-grigio-300)]" en="Tifosi worldwide" it="Tifosi nel mondo" />
+        <p class="mt-3 text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-500)]">
+          <span data-lang-en>Source: {cite('ibm_case_study')}</span>
+          <span data-lang-it>Fonte: {cite('ibm_case_study')}</span>
+        </p>
+      </div>
       <a href={href(base, '/define')}
          class="inline-flex items-center gap-3 px-9 py-4 text-[clamp(1rem,1.2vw,1.2rem)] font-semibold tracking-wide uppercase bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-hover)] transition-colors rounded-sm" data-reveal data-reveal-delay="0.4">
         <span data-lang-en>Define the loop</span><span data-lang-it>Definisci il loop</span>

@@ -1,0 +1,36 @@
+---
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Props {
+  value: string;
+  en: string;
+  it: string;
+  valueClass?: string;
+  valueStyle?: string;
+  labelClass?: string;
+  /** Wrap with the standard dark card background used in grid layouts */
+  card?: boolean;
+}
+const {
+  value,
+  en,
+  it,
+  valueClass = '',
+  valueStyle = '',
+  labelClass = 'text-sm text-[var(--color-grigio-300)] leading-relaxed',
+  card = false,
+} = Astro.props;
+---
+{card ? (
+  <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-center">
+    <p class:list={['font-[family-name:var(--font-display)] font-bold leading-none mb-3', valueClass]}
+       style={valueStyle}>{value}</p>
+    <T as="p" class={labelClass} {en} {it} />
+  </div>
+) : (
+  <div class="text-center">
+    <p class:list={['font-[family-name:var(--font-display)] font-bold leading-none mb-2', valueClass]}
+       style={valueStyle}>{value}</p>
+    <T as="p" class={labelClass} {en} {it} />
+  </div>
+)}
