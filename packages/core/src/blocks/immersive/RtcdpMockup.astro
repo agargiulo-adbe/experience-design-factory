@@ -582,70 +582,73 @@ const MEASURE_ROWS = [
 
 <script is:inline define:vars={{ slug }}>
 (function () {
-  var PHASES      = ['discover', 'activate', 'measure'];
-  var DURATIONS   = { discover: 5000, activate: 3500, measure: 4000 };
-  var TABS        = { discover: 0, activate: 1, measure: 2 };
-  var currentIdx  = 0;
-  var timer       = null;
+  var PHASES = ['discover', 'activate', 'measure'];
+  var currentPhase = 0;
+
+  var slide = document.querySelector('[data-mockup-slide="rtcdp-collab"]');
+  if (!slide) return;
 
   function showPhase(name) {
-    var app = document.querySelector('[data-rtcdp-app]');
-    if (!app) return;
-    app.querySelectorAll('[data-rtcdp-phase]').forEach(function (el) {
+    slide.querySelectorAll('[data-rtcdp-phase]').forEach(function (el) {
       el.hidden = el.getAttribute('data-rtcdp-phase') !== name;
     });
-    // Sync tab active state
-    app.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
+    slide.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
       var on = btn.getAttribute('data-rtcdp-tab') === name;
       btn.classList.toggle('rtcdp-tab-active', on);
       btn.setAttribute('aria-selected', on ? 'true' : 'false');
     });
-    // Animate bars in Discover
     if (name === 'discover') {
       requestAnimationFrame(function () {
-        app.querySelectorAll('[data-bar-fill]').forEach(function (bar) {
-          bar.style.width = bar.style.getPropertyValue('--bar-w') || '0%';
+        slide.querySelectorAll('[data-bar-fill]').forEach(function (bar) {
+          var w = bar.style.getPropertyValue('--bar-w');
+          if (w) bar.style.width = w;
         });
       });
     }
   }
 
-  function advance() {
-    currentIdx = (currentIdx + 1) % PHASES.length;
-    var name = PHASES[currentIdx];
-    showPhase(name);
-    timer = setTimeout(advance, DURATIONS[name]);
-  }
-
   function init() {
-    currentIdx = 0;
-    clearTimeout(timer);
+    currentPhase = 0;
     showPhase('discover');
-    timer = setTimeout(advance, DURATIONS.discover);
   }
 
-  // Tab click override (manual navigation)
-  var app = document.querySelector('[data-rtcdp-app]');
-  if (app) {
-    app.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var name = btn.getAttribute('data-rtcdp-tab');
-        clearTimeout(timer);
-        var idx = PHASES.indexOf(name);
-        if (idx >= 0) { currentIdx = idx; showPhase(name); }
-        timer = setTimeout(advance, DURATIONS[name] || 4000);
-      });
+  // Reset when slide becomes active via deck navigation
+  slide.addEventListener('playSlide', init);
+
+  // Tab click allows manual phase jump; arrows continue from the new position
+  slide.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var name = btn.getAttribute('data-rtcdp-tab');
+      var idx = PHASES.indexOf(name);
+      if (idx >= 0) { currentPhase = idx; showPhase(name); }
     });
+  });
+
+  // Intercept deck navigation to advance/retreat between phases
+  function patchDeck() {
+    var deck = window.__edfDeck;
+    if (!deck) return;
+    var origNext = deck.next.bind(deck);
+    var origPrev = deck.prev.bind(deck);
+    deck.next = function () {
+      if (deck.slides[deck.index] === slide && currentPhase < PHASES.length - 1) {
+        currentPhase++;
+        showPhase(PHASES[currentPhase]);
+        return;
+      }
+      origNext();
+    };
+    deck.prev = function () {
+      if (deck.slides[deck.index] === slide && currentPhase > 0) {
+        currentPhase--;
+        showPhase(PHASES[currentPhase]);
+        return;
+      }
+      origPrev();
+    };
   }
 
-  var slide = document.querySelector('[data-mockup-slide="rtcdp-collab"]');
-  if (slide) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
-    slide.addEventListener('playSlide', init);
-  }
+  // astro:page-load fires after DeckContainer has initialized __edfDeck
+  document.addEventListener('astro:page-load', patchDeck, { once: true });
 })();
 </script>

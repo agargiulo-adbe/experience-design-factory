@@ -317,6 +317,8 @@ const serializedFeatures = mockup.features.map(f => ({
 <script is:inline define:vars={{ mockupId, sectionId, slug, features: serializedFeatures, maxVisible: mockup.maxVisible }}>
 (function() {
   var MK_KEY = 'edf:mockup-config:' + slug;
+  var currentFeatureIdx = 0;
+  var enabledFeatures = [];
 
   function loadEnabled() {
     try {
@@ -389,9 +391,9 @@ const serializedFeatures = mockup.features.map(f => ({
     });
   }
 
-  function buildTabs(enabledFeatures) {
-    var slide = document.querySelector('[data-mockup-slide="' + mockupId + '"]');
-    var tabs = slide && slide.querySelector('[data-mockup-tabs]');
+  function buildTabs() {
+    var slideEl = document.querySelector('[data-mockup-slide="' + mockupId + '"]');
+    var tabs = slideEl && slideEl.querySelector('[data-mockup-tabs]');
     if (!tabs) return;
 
     tabs.innerHTML = enabledFeatures.map(function(f) {
@@ -402,19 +404,33 @@ const serializedFeatures = mockup.features.map(f => ({
     tabs.querySelectorAll('.mockup-feature-tab').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var fid = btn.getAttribute('data-feature-tab');
-        var feature = features.filter(function(f) { return f.id === fid; })[0];
-        if (feature) renderScene(feature);
+        for (var i = 0; i < enabledFeatures.length; i++) {
+          if (enabledFeatures[i].id === fid) {
+            currentFeatureIdx = i;
+            renderScene(enabledFeatures[i]);
+            return;
+          }
+        }
       });
     });
   }
 
   function init() {
     var enabled = loadEnabled();
-    var enabledFeatures = features.filter(function(f) { return enabled.indexOf(f.id) !== -1; });
+    enabledFeatures = features.filter(function(f) { return enabled.indexOf(f.id) !== -1; });
     if (enabledFeatures.length === 0) enabledFeatures = features.slice(0, 1);
-
-    buildTabs(enabledFeatures);
+    currentFeatureIdx = 0;
+    buildTabs();
     if (enabledFeatures[0]) renderScene(enabledFeatures[0]);
+  }
+
+  // Reset to first feature when slide becomes active via deck navigation
+  var slideEl = document.querySelector('[data-mockup-slide="' + mockupId + '"]');
+  if (slideEl) {
+    slideEl.addEventListener('playSlide', function() {
+      currentFeatureIdx = 0;
+      if (enabledFeatures[0]) renderScene(enabledFeatures[0]);
+    });
   }
 
   // Listen for config changes from admin console
@@ -426,6 +442,33 @@ const serializedFeatures = mockup.features.map(f => ({
   window.addEventListener('storage', function(ev) {
     if (ev.key === MK_KEY) init();
   });
+
+  // Intercept deck navigation to advance/retreat through feature tabs
+  function patchDeck() {
+    var deck = window.__edfDeck;
+    if (!deck || !slideEl) return;
+    var origNext = deck.next.bind(deck);
+    var origPrev = deck.prev.bind(deck);
+    deck.next = function () {
+      if (deck.slides[deck.index] === slideEl && currentFeatureIdx < enabledFeatures.length - 1) {
+        currentFeatureIdx++;
+        renderScene(enabledFeatures[currentFeatureIdx]);
+        return;
+      }
+      origNext();
+    };
+    deck.prev = function () {
+      if (deck.slides[deck.index] === slideEl && currentFeatureIdx > 0) {
+        currentFeatureIdx--;
+        renderScene(enabledFeatures[currentFeatureIdx]);
+        return;
+      }
+      origPrev();
+    };
+  }
+
+  // astro:page-load fires after DeckContainer has initialized __edfDeck
+  document.addEventListener('astro:page-load', patchDeck, { once: true });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

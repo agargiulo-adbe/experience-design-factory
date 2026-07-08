@@ -785,67 +785,73 @@ const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes())
 <script is:inline define:vars={{ slug }}>
 (function () {
   var PROMPT = 'Race day emotion — Ferrari × HP — speed precision victory Tifosi';
-  var PHASE_DURATIONS = { brief: 3800, generating: 2600, variants: 5000 };
-  var phases = ['brief', 'generating', 'variants'];
+  var PHASES = ['brief', 'generating', 'variants'];
   var currentPhase = 0;
-  var timer = null;
+  var typingInterval = null;
+
+  var slide = document.querySelector('[data-mockup-slide="genstudio"]');
+  if (!slide) return;
 
   function showPhase(name) {
-    var app = document.querySelector('[data-gs-app]');
-    if (!app) return;
-    app.querySelectorAll('[data-gs-phase]').forEach(function (el) {
+    slide.querySelectorAll('[data-gs-phase]').forEach(function (el) {
       el.hidden = el.getAttribute('data-gs-phase') !== name;
     });
+    if (name === 'brief') typePrompt();
+    if (name === 'generating') animateGenerate();
   }
 
   function typePrompt() {
-    var el = document.querySelector('[data-gs-typed]');
+    var el = slide.querySelector('[data-gs-typed]');
     if (!el) return;
+    clearInterval(typingInterval);
     el.textContent = '';
     var i = 0;
-    var t = setInterval(function () {
-      if (i >= PROMPT.length) { clearInterval(t); return; }
+    typingInterval = setInterval(function () {
+      if (i >= PROMPT.length) { clearInterval(typingInterval); return; }
       el.textContent += PROMPT[i++];
     }, 40);
   }
 
   function animateGenerate() {
-    var btn = document.querySelector('[data-gs-generate]');
+    var btn = slide.querySelector('[data-gs-generate]');
     if (!btn) return;
     btn.classList.add('gs-generate-btn-pulse');
     setTimeout(function () { btn.classList.remove('gs-generate-btn-pulse'); }, 1000);
   }
 
-  function advance() {
-    currentPhase = (currentPhase + 1) % phases.length;
-    var name = phases[currentPhase];
-    showPhase(name);
-    if (name === 'brief') typePrompt();
-    if (name === 'generating') animateGenerate();
-    timer = setTimeout(advance, PHASE_DURATIONS[name]);
-  }
-
   function init() {
+    currentPhase = 0;
     showPhase('brief');
-    typePrompt();
-    timer = setTimeout(advance, PHASE_DURATIONS.brief);
   }
 
-  // Start when slide becomes active (or on DOMContentLoaded)
-  var slide = document.querySelector('[data-mockup-slide="genstudio"]');
-  if (slide) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
-    } else {
-      init();
-    }
+  // Reset to brief when slide becomes active via deck navigation
+  slide.addEventListener('playSlide', init);
 
-    // Reset animation loop when slide gets focus via deck navigation
-    slide.addEventListener('playSlide', function () {
-      currentPhase = 0;
-      clearTimeout(timer);
-      init();
-    });
+  // Intercept deck navigation to advance/retreat between phases
+  function patchDeck() {
+    var deck = window.__edfDeck;
+    if (!deck) return;
+    var origNext = deck.next.bind(deck);
+    var origPrev = deck.prev.bind(deck);
+    deck.next = function () {
+      if (deck.slides[deck.index] === slide && currentPhase < PHASES.length - 1) {
+        currentPhase++;
+        showPhase(PHASES[currentPhase]);
+        return;
+      }
+      origNext();
+    };
+    deck.prev = function () {
+      if (deck.slides[deck.index] === slide && currentPhase > 0) {
+        currentPhase--;
+        showPhase(PHASES[currentPhase]);
+        return;
+      }
+      origPrev();
+    };
   }
+
+  // astro:page-load fires after DeckContainer has initialized __edfDeck
+  document.addEventListener('astro:page-load', patchDeck, { once: true });
 })();
 </script>
