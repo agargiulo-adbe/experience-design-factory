@@ -1,0 +1,651 @@
+---
+/**
+ * RtcdpMockup — replica HTML fedele della UI Real-Time CDP Collaboration.
+ * Anima il flusso: Discover (overlap) → Activate (segmenti) → Measure (attribution).
+ * Usato in define.astro al posto del generico MockupSlide per rtcdp-collab.
+ */
+interface Props {
+  sectionId: string;
+  slug: string;
+  id?: string;
+}
+const { sectionId, slug, id } = Astro.props;
+
+const OVERLAP_SEGMENTS = [
+  { label: 'Motorsport Enthusiasts', ferrari: '4.2M', overlap: '1.8M', partner: '3.1M', pct: 43, color: '#FF2800' },
+  { label: 'Premium Tech Adopters',  ferrari: '2.9M', overlap: '1.1M', partner: '5.4M', pct: 38, color: '#1473E6' },
+  { label: 'High-Income Males 25–44', ferrari: '1.7M', overlap: '890K', partner: '2.2M', pct: 52, color: '#9333ea' },
+];
+
+const CHANNELS = [
+  { name: 'Meta Ads', icon: 'M', status: 'active',  reach: '1.8M', color: '#1877F2' },
+  { name: 'Google DV360', icon: 'G', status: 'active',  reach: '2.4M', color: '#EA4335' },
+  { name: 'The Trade Desk', icon: 'T', status: 'active',  reach: '890K', color: '#00B388' },
+  { name: 'CTV / Amazon', icon: 'A', status: 'pending', reach: '420K', color: '#FF9900' },
+];
+
+const MEASURE_ROWS = [
+  { campaign: 'HP × Ferrari Race Day — Meta',     impressions: '4.2M',  clicks: '126K', conv: '8.4K',  roas: '4.1×', delta: '+23%' },
+  { campaign: 'Tifosi Premium — DV360',           impressions: '2.1M',  clicks: '63K',  conv: '5.1K',  roas: '3.8×', delta: '+17%' },
+  { campaign: 'Maranello Fans — CTV',             impressions: '820K',  clicks: '—',    conv: '2.2K',  roas: '5.2×', delta: '+31%' },
+];
+---
+
+<section
+  data-slide
+  data-mockup-slide="rtcdp-collab"
+  data-mockup-section={sectionId}
+  data-solution="rtcdp-collab"
+  id={id ?? 'slide-mockup-rtcdp'}
+  class="rtcdp-mock-slide"
+>
+  <!-- Browser chrome -->
+  <div class="rtcdp-chrome" aria-hidden="true">
+    <div class="rtcdp-traffic-lights">
+      <span class="rtcdp-tl rtcdp-tl-red"></span>
+      <span class="rtcdp-tl rtcdp-tl-yellow"></span>
+      <span class="rtcdp-tl rtcdp-tl-green"></span>
+    </div>
+    <div class="rtcdp-address-bar">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 1.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z" fill="currentColor" opacity=".4"/></svg>
+      experience.adobe.com/platform/cdp/collaboration
+    </div>
+  </div>
+
+  <!-- App shell -->
+  <div class="rtcdp-app" data-rtcdp-app>
+    <!-- ── Sidebar ─────────────────────────────────────────────── -->
+    <aside class="rtcdp-sidebar">
+      <div class="rtcdp-sidebar-logo" aria-label="Real-Time CDP">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M19 2L30 28H21.5L16 14.5L10.5 28H2L13 2H19Z" fill="#FF0000"/>
+        </svg>
+        <span>Real-Time CDP</span>
+      </div>
+      <nav class="rtcdp-nav">
+        {[
+          { icon: 'home',    label: 'Home' },
+          { icon: 'profile', label: 'Profiles' },
+          { icon: 'segment', label: 'Audiences' },
+          { icon: 'collab',  label: 'Collaboration', active: true },
+          { icon: 'dest',    label: 'Destinations' },
+          { icon: 'insight', label: 'Insights' },
+        ].map(item => (
+          <button class={`rtcdp-nav-btn${item.active ? ' rtcdp-nav-active' : ''}`} aria-current={item.active ? 'page' : undefined}>
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              {item.icon === 'home'    && <path d="M2 7l6-5 6 5v7H10v-4H6v4H2V7z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>}
+              {item.icon === 'profile' && <><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 14c0-2.5 2.5-4.5 6-4.5s6 2 6 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></>}
+              {item.icon === 'segment' && <><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/></>}
+              {item.icon === 'collab'  && <><circle cx="5" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/><circle cx="11" cy="8" r="3.5" stroke="currentColor" stroke-width="1.2"/></>}
+              {item.icon === 'dest'    && <><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/></>}
+              {item.icon === 'insight' && <path d="M2 12l3-4 3 3 3-7 3 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>}
+            </svg>
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </nav>
+      <div class="rtcdp-sidebar-footer">
+        <div class="rtcdp-org-badge">Ferrari Racing</div>
+      </div>
+    </aside>
+
+    <!-- ── Main ───────────────────────────────────────────────── -->
+    <div class="rtcdp-main">
+      <!-- Top bar -->
+      <header class="rtcdp-topbar">
+        <div class="rtcdp-topbar-left">
+          <span class="rtcdp-breadcrumb">Collaboration</span>
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span class="rtcdp-breadcrumb rtcdp-breadcrumb-active">HP Technology — Race Season</span>
+          <span class="rtcdp-status-pill rtcdp-status-active">Active</span>
+        </div>
+        <div class="rtcdp-topbar-right">
+          <button class="rtcdp-btn-ghost">Invite partner</button>
+          <button class="rtcdp-btn-primary">Configure</button>
+        </div>
+      </header>
+
+      <!-- Tab bar -->
+      <nav class="rtcdp-tabs" role="tablist">
+        {['Discover', 'Activate', 'Measure'].map((t, i) => (
+          <button
+            class={`rtcdp-tab${i === 0 ? ' rtcdp-tab-active' : ''}`}
+            role="tab"
+            data-rtcdp-tab={t.toLowerCase()}
+            aria-selected={i === 0 ? 'true' : 'false'}
+          >{t}</button>
+        ))}
+      </nav>
+
+      <!-- ── PHASE: Discover ───────────────────────────────────── -->
+      <div class="rtcdp-phase" data-rtcdp-phase="discover">
+        <div class="rtcdp-discover-layout">
+          <!-- Left: Ferrari audience -->
+          <div class="rtcdp-audience-panel rtcdp-panel-left">
+            <div class="rtcdp-panel-header">
+              <div class="rtcdp-panel-icon rtcdp-panel-icon-ferrari" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><path d="M19 2L30 28H21.5L16 14.5L10.5 28H2L13 2H19Z" fill="currentColor"/></svg>
+              </div>
+              <div>
+                <div class="rtcdp-panel-name">Scuderia Ferrari HP</div>
+                <div class="rtcdp-panel-sub">Data provider · Verified</div>
+              </div>
+            </div>
+            <div class="rtcdp-stat-block">
+              <div class="rtcdp-stat-value">12.4M</div>
+              <div class="rtcdp-stat-label">Total profiles</div>
+            </div>
+            <div class="rtcdp-segment-list">
+              {OVERLAP_SEGMENTS.map(s => (
+                <div class="rtcdp-segment-row">
+                  <div class="rtcdp-segment-dot" style={`background:${s.color}`}></div>
+                  <span class="rtcdp-segment-name">{s.label}</span>
+                  <span class="rtcdp-segment-count">{s.ferrari}</span>
+                </div>
+              ))}
+            </div>
+            <div class="rtcdp-privacy-badge">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L3 5v4c0 3 2.5 5.5 5 6 2.5-.5 5-3 5-6V5L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              Clean Sketches · Privacy by design
+            </div>
+          </div>
+
+          <!-- Center: Venn overlap -->
+          <div class="rtcdp-venn-panel">
+            <div class="rtcdp-venn-container" aria-label="Audience overlap visualization">
+              <!-- Left circle -->
+              <div class="rtcdp-venn-circle rtcdp-venn-left"></div>
+              <!-- Right circle -->
+              <div class="rtcdp-venn-circle rtcdp-venn-right"></div>
+              <!-- Overlap zone label -->
+              <div class="rtcdp-venn-overlap-label">
+                <div class="rtcdp-overlap-value" data-rtcdp-overlap>2.4M</div>
+                <div class="rtcdp-overlap-sub">shared profiles</div>
+              </div>
+            </div>
+            <!-- Segment bars -->
+            <div class="rtcdp-overlap-bars">
+              {OVERLAP_SEGMENTS.map(s => (
+                <div class="rtcdp-overlap-bar-row">
+                  <span class="rtcdp-overlap-bar-label">{s.label}</span>
+                  <div class="rtcdp-overlap-bar-track">
+                    <div class="rtcdp-overlap-bar-fill" style={`--bar-w:${s.pct}%;background:${s.color}`} data-bar-fill></div>
+                  </div>
+                  <span class="rtcdp-overlap-bar-pct">{s.pct}%</span>
+                  <span class="rtcdp-overlap-bar-count">{s.overlap}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Right: Partner audience -->
+          <div class="rtcdp-audience-panel rtcdp-panel-right">
+            <div class="rtcdp-panel-header">
+              <div class="rtcdp-panel-icon rtcdp-panel-icon-partner" aria-label="HP">HP</div>
+              <div>
+                <div class="rtcdp-panel-name">HP Technology</div>
+                <div class="rtcdp-panel-sub">Collaboration Starter · Verified</div>
+              </div>
+            </div>
+            <div class="rtcdp-stat-block">
+              <div class="rtcdp-stat-value">28.7M</div>
+              <div class="rtcdp-stat-label">Total profiles</div>
+            </div>
+            <div class="rtcdp-segment-list">
+              {OVERLAP_SEGMENTS.map(s => (
+                <div class="rtcdp-segment-row">
+                  <div class="rtcdp-segment-dot" style={`background:${s.color}`}></div>
+                  <span class="rtcdp-segment-name">{s.label}</span>
+                  <span class="rtcdp-segment-count">{s.partner}</span>
+                </div>
+              ))}
+            </div>
+            <div class="rtcdp-privacy-badge">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L3 5v4c0 3 2.5 5.5 5 6 2.5-.5 5-3 5-6V5L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              No raw data shared · Zero identity movement
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PHASE: Activate ───────────────────────────────────── -->
+      <div class="rtcdp-phase" data-rtcdp-phase="activate" hidden>
+        <div class="rtcdp-activate-layout">
+          <div class="rtcdp-activate-header">
+            <h3 class="rtcdp-section-title">Activate shared audiences</h3>
+            <p class="rtcdp-section-sub">2.4M shared profiles · 3 segments selected · No raw data leaves either party</p>
+          </div>
+          <div class="rtcdp-channels-grid">
+            {CHANNELS.map(ch => (
+              <div class={`rtcdp-channel-card${ch.status === 'active' ? ' rtcdp-channel-active' : ''}`}>
+                <div class="rtcdp-channel-header">
+                  <div class="rtcdp-channel-icon" style={`background:${ch.color};color:#fff`}>{ch.icon}</div>
+                  <div>
+                    <div class="rtcdp-channel-name">{ch.name}</div>
+                    <div class="rtcdp-channel-status">{ch.status === 'active' ? '● Live' : '◌ Pending'}</div>
+                  </div>
+                  <div class="rtcdp-channel-toggle" data-on={ch.status === 'active' ? 'true' : undefined}>
+                    <div class="rtcdp-toggle-thumb"></div>
+                  </div>
+                </div>
+                <div class="rtcdp-channel-reach">
+                  <span class="rtcdp-reach-value">{ch.reach}</span>
+                  <span class="rtcdp-reach-label">estimated reach</span>
+                </div>
+                <div class="rtcdp-channel-bar-track">
+                  <div class="rtcdp-channel-bar-fill" style={`width:${ch.status === 'active' ? '100%' : '35%'};background:${ch.color}`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="rtcdp-activate-footer">
+            <button class="rtcdp-btn-primary rtcdp-btn-lg">Activate all selected</button>
+            <span class="rtcdp-activate-note">Audiences delivered within 24h · Refreshed automatically</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PHASE: Measure ────────────────────────────────────── -->
+      <div class="rtcdp-phase" data-rtcdp-phase="measure" hidden>
+        <div class="rtcdp-measure-layout">
+          <!-- KPI row -->
+          <div class="rtcdp-kpi-row">
+            {[
+              { label: 'Total reach',         value: '5.5M',  delta: '+18%',  good: true  },
+              { label: 'Conversions attrib.',  value: '15.7K', delta: '+27%',  good: true  },
+              { label: 'Avg. ROAS partner',    value: '4.4×',  delta: '+12%',  good: true  },
+              { label: 'CPA',                  value: '€18.4', delta: '−23%',  good: true  },
+            ].map(k => (
+              <div class="rtcdp-kpi-card">
+                <div class="rtcdp-kpi-label">{k.label}</div>
+                <div class="rtcdp-kpi-value">{k.value}</div>
+                <div class={`rtcdp-kpi-delta ${k.good ? 'rtcdp-delta-good' : 'rtcdp-delta-bad'}`}>{k.delta} vs. baseline</div>
+              </div>
+            ))}
+          </div>
+          <!-- Campaign table -->
+          <div class="rtcdp-table-wrap">
+            <table class="rtcdp-table">
+              <thead>
+                <tr>
+                  <th>Campaign</th>
+                  <th>Impressions</th>
+                  <th>Clicks</th>
+                  <th>Conversions</th>
+                  <th>ROAS</th>
+                  <th>Δ vs. baseline</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MEASURE_ROWS.map(r => (
+                  <tr>
+                    <td class="rtcdp-td-name">{r.campaign}</td>
+                    <td>{r.impressions}</td>
+                    <td>{r.clicks}</td>
+                    <td>{r.conv}</td>
+                    <td class="rtcdp-td-roas">{r.roas}</td>
+                    <td class="rtcdp-td-delta">{r.delta}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div class="rtcdp-measure-footer">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L3 5v4c0 3 2.5 5.5 5 6 2.5-.5 5-3 5-6V5L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+            Powered by RT-CDP Collaboration · Data processed without identity movement · Exportable to CJA
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+/* ── RtcdpMockup slide ──────────────────────────────────────────────────── */
+.rtcdp-mock-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #e8e8e8;
+  overflow: hidden;
+  font-family: -apple-system, 'Segoe UI', Inter, sans-serif;
+}
+
+/* Browser chrome */
+.rtcdp-chrome {
+  height: 2.5rem;
+  background: #3c3c3c;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.875rem;
+  flex-shrink: 0;
+}
+.rtcdp-traffic-lights { display: flex; gap: 5px; }
+.rtcdp-tl { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.rtcdp-tl-red    { background: #ff5f57; }
+.rtcdp-tl-yellow { background: #ffbd2e; }
+.rtcdp-tl-green  { background: #28c840; }
+.rtcdp-address-bar {
+  flex: 1; max-width: 26rem; margin: 0 auto;
+  height: 1.5rem; background: rgba(255,255,255,0.12); border-radius: 4px;
+  display: flex; align-items: center; gap: 0.375rem; padding: 0 0.5rem;
+  font-size: 0.6rem; color: rgba(255,255,255,0.6);
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+
+/* App shell */
+.rtcdp-app { flex: 1; min-height: 0; display: flex; background: #f4f4f4; }
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+.rtcdp-sidebar {
+  width: 3.875rem; background: #1c1c1c;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.625rem 0; flex-shrink: 0;
+}
+.rtcdp-sidebar-logo {
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  padding: 0.375rem 0; margin-bottom: 0.5rem;
+  color: #fff; font-size: 0.42rem; font-weight: 700; letter-spacing: 0.04em;
+  text-align: center; line-height: 1.2;
+}
+.rtcdp-nav { flex: 1; display: flex; flex-direction: column; gap: 0.1rem; width: 100%; padding: 0 0.25rem; }
+.rtcdp-nav-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  padding: 0.45rem 0.25rem; border: none; background: transparent;
+  color: rgba(255,255,255,0.4); cursor: pointer; border-radius: 6px;
+  font-size: 0.4rem; font-family: inherit; letter-spacing: 0.02em;
+  transition: background 0.15s, color 0.15s; width: 100%;
+}
+.rtcdp-nav-btn:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.65); }
+.rtcdp-nav-active { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.rtcdp-sidebar-footer { margin-top: auto; padding: 0.5rem 0.25rem; width: 100%; }
+.rtcdp-org-badge {
+  font-size: 0.38rem; font-weight: 600; color: rgba(255,255,255,0.35);
+  text-align: center; letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+/* ── Main ────────────────────────────────────────────────────── */
+.rtcdp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; background: #fff; }
+
+/* Top bar */
+.rtcdp-topbar {
+  height: 2.75rem; background: #fff; border-bottom: 1px solid #e0e0e0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1rem; flex-shrink: 0;
+}
+.rtcdp-topbar-left { display: flex; align-items: center; gap: 0.375rem; }
+.rtcdp-breadcrumb { font-size: 0.6rem; color: #888; }
+.rtcdp-breadcrumb-active { color: #1a1a1a; font-weight: 600; }
+.rtcdp-status-pill {
+  padding: 0.125rem 0.5rem; border-radius: 20px;
+  font-size: 0.5rem; font-weight: 600;
+}
+.rtcdp-status-active { background: #dcfce7; color: #16a34a; }
+.rtcdp-topbar-right { display: flex; gap: 0.375rem; }
+.rtcdp-btn-ghost {
+  padding: 0.25rem 0.625rem; font-size: 0.6rem; font-family: inherit; font-weight: 500;
+  border: 1px solid #d0d0d0; border-radius: 4px; background: transparent; color: #333; cursor: pointer;
+}
+.rtcdp-btn-primary {
+  padding: 0.25rem 0.75rem; font-size: 0.6rem; font-family: inherit; font-weight: 600;
+  border: none; border-radius: 4px; background: #1473E6; color: #fff; cursor: pointer;
+}
+.rtcdp-btn-lg { padding: 0.5rem 1.25rem; font-size: 0.7rem; }
+
+/* Tabs */
+.rtcdp-tabs {
+  display: flex; gap: 0; border-bottom: 1px solid #e0e0e0;
+  padding: 0 1rem; flex-shrink: 0;
+}
+.rtcdp-tab {
+  padding: 0.5rem 1rem; font-size: 0.65rem; font-family: inherit; font-weight: 500;
+  border: none; border-bottom: 2px solid transparent; background: transparent;
+  color: #888; cursor: pointer; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
+}
+.rtcdp-tab:hover { color: #333; }
+.rtcdp-tab-active { color: #1473E6; border-bottom-color: #1473E6; font-weight: 600; }
+
+/* ── Phase container ────────────────────────────────────────── */
+.rtcdp-phase {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.rtcdp-phase[hidden] { display: none; }
+
+/* ════════════════════════════════════════════════════════════════
+   DISCOVER PHASE
+   ════════════════════════════════════════════════════════════════ */
+.rtcdp-discover-layout {
+  display: grid; grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 0; flex: 1; min-height: 0;
+}
+
+/* Audience panels */
+.rtcdp-audience-panel {
+  padding: 1rem 0.875rem; display: flex; flex-direction: column; gap: 0.75rem;
+  border-top: none;
+}
+.rtcdp-panel-left  { border-right: 1px solid #e8e8e8; background: #fafafa; }
+.rtcdp-panel-right { border-left: 1px solid #e8e8e8; background: #fafafa; }
+
+.rtcdp-panel-header { display: flex; align-items: center; gap: 0.5rem; }
+.rtcdp-panel-icon {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 800;
+}
+.rtcdp-panel-icon-ferrari { background: #CC0000; color: #fff; }
+.rtcdp-panel-icon-partner { background: #1473E6; color: #fff; font-size: 0.55rem; }
+.rtcdp-panel-name { font-size: 0.625rem; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+.rtcdp-panel-sub  { font-size: 0.5rem; color: #888; }
+
+.rtcdp-stat-block { }
+.rtcdp-stat-value { font-size: clamp(1rem, 1.8vw, 1.5rem); font-weight: 800; color: #1a1a1a; letter-spacing: -0.02em; }
+.rtcdp-stat-label { font-size: 0.5rem; color: #888; margin-top: 0.1rem; }
+
+.rtcdp-segment-list { display: flex; flex-direction: column; gap: 0.375rem; flex: 1; }
+.rtcdp-segment-row { display: flex; align-items: center; gap: 0.375rem; }
+.rtcdp-segment-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rtcdp-segment-name { font-size: 0.5rem; color: #333; flex: 1; line-height: 1.3; }
+.rtcdp-segment-count { font-size: 0.5rem; font-weight: 700; color: #1a1a1a; white-space: nowrap; }
+
+.rtcdp-privacy-badge {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.45rem; color: #16a34a; font-weight: 500;
+  background: #dcfce7; border: 1px solid #bbf7d0; border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Venn panel */
+.rtcdp-venn-panel {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1rem; padding: 1rem 0.75rem; background: #fff;
+}
+.rtcdp-venn-container {
+  position: relative; width: 11rem; height: 5.5rem; flex-shrink: 0;
+}
+.rtcdp-venn-circle {
+  position: absolute; top: 0; width: 5.5rem; height: 5.5rem; border-radius: 50%;
+}
+.rtcdp-venn-left  { left: 0;    background: rgba(204,0,0,0.18); border: 2px solid rgba(204,0,0,0.4); }
+.rtcdp-venn-right { right: 0;   background: rgba(20,115,230,0.15); border: 2px solid rgba(20,115,230,0.35); }
+.rtcdp-venn-overlap-label {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; z-index: 2;
+  background: rgba(255,255,255,0.92); border-radius: 4px; padding: 0.1rem 0.25rem;
+}
+.rtcdp-overlap-value {
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 800; color: #1a1a1a; letter-spacing: -0.02em;
+}
+.rtcdp-overlap-sub { font-size: 0.42rem; color: #888; }
+
+/* Bar rows */
+.rtcdp-overlap-bars { display: flex; flex-direction: column; gap: 0.4rem; width: 100%; }
+.rtcdp-overlap-bar-row { display: flex; align-items: center; gap: 0.375rem; }
+.rtcdp-overlap-bar-label { font-size: 0.48rem; color: #555; width: 7.5rem; flex-shrink: 0; line-height: 1.3; }
+.rtcdp-overlap-bar-track { flex: 1; height: 5px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+.rtcdp-overlap-bar-fill { height: 100%; border-radius: 3px; width: 0; transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
+.rtcdp-overlap-bar-pct   { font-size: 0.48rem; font-weight: 700; color: #1a1a1a; width: 1.5rem; text-align: right; }
+.rtcdp-overlap-bar-count { font-size: 0.48rem; color: #888; width: 2rem; text-align: right; }
+
+/* ════════════════════════════════════════════════════════════════
+   ACTIVATE PHASE
+   ════════════════════════════════════════════════════════════════ */
+.rtcdp-activate-layout {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column; gap: 0.875rem; padding: 0.875rem 1rem;
+}
+.rtcdp-activate-header {}
+.rtcdp-section-title { font-size: 0.8rem; font-weight: 700; color: #1a1a1a; margin: 0 0 0.2rem; }
+.rtcdp-section-sub { font-size: 0.55rem; color: #6b7280; margin: 0; }
+.rtcdp-channels-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.625rem; }
+.rtcdp-channel-card {
+  background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem;
+  display: flex; flex-direction: column; gap: 0.5rem; opacity: 0.6;
+}
+.rtcdp-channel-active { background: #fff; border-color: #d1fae5; opacity: 1; }
+.rtcdp-channel-header { display: flex; align-items: center; gap: 0.5rem; }
+.rtcdp-channel-icon {
+  width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem; font-weight: 800;
+}
+.rtcdp-channel-name { font-size: 0.575rem; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+.rtcdp-channel-status { font-size: 0.45rem; color: #16a34a; }
+.rtcdp-channel-toggle {
+  margin-left: auto; width: 28px; height: 16px; border-radius: 8px;
+  background: #d1d5db; position: relative; flex-shrink: 0;
+}
+.rtcdp-channel-toggle[data-on] { background: #16a34a; }
+.rtcdp-toggle-thumb {
+  position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%; background: #fff;
+  transition: transform 0.2s;
+}
+.rtcdp-channel-toggle[data-on] .rtcdp-toggle-thumb { transform: translateX(12px); }
+.rtcdp-reach-value { font-size: 0.75rem; font-weight: 800; color: #1a1a1a; letter-spacing: -0.02em; display: block; }
+.rtcdp-reach-label { font-size: 0.45rem; color: #888; }
+.rtcdp-channel-bar-track { height: 3px; background: #e5e7eb; border-radius: 2px; overflow: hidden; }
+.rtcdp-channel-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+.rtcdp-activate-footer {
+  display: flex; align-items: center; gap: 1rem; margin-top: auto; padding-top: 0.5rem;
+  border-top: 1px solid #f3f4f6;
+}
+.rtcdp-activate-note { font-size: 0.5rem; color: #6b7280; }
+
+/* ════════════════════════════════════════════════════════════════
+   MEASURE PHASE
+   ════════════════════════════════════════════════════════════════ */
+.rtcdp-measure-layout {
+  flex: 1; min-height: 0; display: flex; flex-direction: column;
+  gap: 0.75rem; padding: 0.875rem 1rem; overflow: hidden;
+}
+.rtcdp-kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.625rem; flex-shrink: 0; }
+.rtcdp-kpi-card {
+  background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem;
+}
+.rtcdp-kpi-label { font-size: 0.5rem; color: #6b7280; margin-bottom: 0.25rem; }
+.rtcdp-kpi-value { font-size: clamp(0.875rem, 1.4vw, 1.25rem); font-weight: 800; color: #1a1a1a; letter-spacing: -0.02em; }
+.rtcdp-kpi-delta { font-size: 0.5rem; font-weight: 600; margin-top: 0.2rem; }
+.rtcdp-delta-good { color: #16a34a; }
+.rtcdp-delta-bad  { color: #dc2626; }
+
+/* Table */
+.rtcdp-table-wrap { flex: 1; min-height: 0; overflow: hidden; }
+.rtcdp-table { width: 100%; border-collapse: collapse; font-size: 0.55rem; }
+.rtcdp-table thead tr { background: #f3f4f6; border-bottom: 1px solid #e5e7eb; }
+.rtcdp-table th { padding: 0.4rem 0.625rem; text-align: left; font-size: 0.5rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.rtcdp-table tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.1s; }
+.rtcdp-table tbody tr:hover { background: #f9fafb; }
+.rtcdp-table td { padding: 0.5rem 0.625rem; color: #374151; }
+.rtcdp-td-name { font-weight: 500; color: #1a1a1a; max-width: 12rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rtcdp-td-roas { font-weight: 700; color: #1a1a1a; }
+.rtcdp-td-delta { font-weight: 700; color: #16a34a; }
+
+.rtcdp-measure-footer {
+  display: flex; align-items: center; gap: 0.375rem;
+  font-size: 0.48rem; color: #9ca3af; flex-shrink: 0;
+  padding-top: 0.375rem; border-top: 1px solid #f3f4f6;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .rtcdp-overlap-bar-fill { transition: none; }
+  .rtcdp-toggle-thumb { transition: none; }
+  .rtcdp-channel-bar-fill { transition: none; }
+}
+</style>
+
+<script is:inline define:vars={{ slug }}>
+(function () {
+  var PHASES      = ['discover', 'activate', 'measure'];
+  var DURATIONS   = { discover: 5000, activate: 3500, measure: 4000 };
+  var TABS        = { discover: 0, activate: 1, measure: 2 };
+  var currentIdx  = 0;
+  var timer       = null;
+
+  function showPhase(name) {
+    var app = document.querySelector('[data-rtcdp-app]');
+    if (!app) return;
+    app.querySelectorAll('[data-rtcdp-phase]').forEach(function (el) {
+      el.hidden = el.getAttribute('data-rtcdp-phase') !== name;
+    });
+    // Sync tab active state
+    app.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
+      var on = btn.getAttribute('data-rtcdp-tab') === name;
+      btn.classList.toggle('rtcdp-tab-active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    // Animate bars in Discover
+    if (name === 'discover') {
+      requestAnimationFrame(function () {
+        app.querySelectorAll('[data-bar-fill]').forEach(function (bar) {
+          bar.style.width = bar.style.getPropertyValue('--bar-w') || '0%';
+        });
+      });
+    }
+  }
+
+  function advance() {
+    currentIdx = (currentIdx + 1) % PHASES.length;
+    var name = PHASES[currentIdx];
+    showPhase(name);
+    timer = setTimeout(advance, DURATIONS[name]);
+  }
+
+  function init() {
+    currentIdx = 0;
+    clearTimeout(timer);
+    showPhase('discover');
+    timer = setTimeout(advance, DURATIONS.discover);
+  }
+
+  // Tab click override (manual navigation)
+  var app = document.querySelector('[data-rtcdp-app]');
+  if (app) {
+    app.querySelectorAll('[data-rtcdp-tab]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var name = btn.getAttribute('data-rtcdp-tab');
+        clearTimeout(timer);
+        var idx = PHASES.indexOf(name);
+        if (idx >= 0) { currentIdx = idx; showPhase(name); }
+        timer = setTimeout(advance, DURATIONS[name] || 4000);
+      });
+    });
+  }
+
+  var slide = document.querySelector('[data-mockup-slide="rtcdp-collab"]');
+  if (slide) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+    slide.addEventListener('playSlide', init);
+  }
+})();
+</script>
