@@ -117,6 +117,9 @@ const MEASURE_ROWS = [
         ))}
       </nav>
 
+      <!-- ── Phases container (stable size via position:absolute) ─ -->
+      <div class="rtcdp-phases-container">
+
       <!-- ── PHASE: Discover ───────────────────────────────────── -->
       <div class="rtcdp-phase" data-rtcdp-phase="discover">
         <div class="rtcdp-discover-layout">
@@ -296,7 +299,16 @@ const MEASURE_ROWS = [
           </div>
         </div>
       </div>
+      </div><!-- end rtcdp-phases-container -->
     </div>
+  </div>
+
+  <!-- Caption bilingue overlay -->
+  <div class="rtcdp-caption-bar" aria-live="polite">
+    <span class="rtcdp-caption-text">
+      <span data-lang-en data-rtcdp-cap="en"></span>
+      <span data-lang-it data-rtcdp-cap="it"></span>
+    </span>
   </div>
 </section>
 
@@ -408,12 +420,29 @@ const MEASURE_ROWS = [
 .rtcdp-tab:hover { color: #333; }
 .rtcdp-tab-active { color: #1473E6; border-bottom-color: #1473E6; font-weight: 600; }
 
-/* ── Phase container ────────────────────────────────────────── */
+/* ── Phases container + phases (stable size via absolute) ───── */
+.rtcdp-phases-container {
+  position: relative; flex: 1; min-height: 0; overflow: hidden;
+}
 .rtcdp-phase {
-  flex: 1; min-height: 0; overflow: hidden;
-  display: flex; flex-direction: column;
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; overflow: hidden;
 }
 .rtcdp-phase[hidden] { display: none; }
+
+/* Caption overlay */
+.rtcdp-caption-bar {
+  position: absolute; bottom: 4.5rem; left: 0; right: 0;
+  display: flex; justify-content: center; z-index: 20;
+  pointer-events: none; padding: 0 2rem;
+}
+.rtcdp-caption-text {
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.92);
+  font-size: clamp(0.68rem, 0.9vw, 0.82rem);
+  padding: 0.4rem 1.25rem; border-radius: 20px;
+  text-align: center; max-width: 58rem;
+}
 
 /* ════════════════════════════════════════════════════════════════
    DISCOVER PHASE
@@ -588,6 +617,29 @@ const MEASURE_ROWS = [
   var slide = document.querySelector('[data-mockup-slide="rtcdp-collab"]');
   if (!slide) return;
 
+  var CAPTIONS = {
+    discover: {
+      en: 'Ferrari × HP clean room: 2.4M shared profiles found — no identity movement',
+      it: 'Clean room Ferrari × HP: 2,4M profili condivisi trovati — zero movimento di identità'
+    },
+    activate: {
+      en: 'Shared audiences securely delivered to Meta, DV360 and CTV — reach 5.5M',
+      it: 'Audience condivise consegnate in sicurezza a Meta, DV360 e CTV — reach 5,5M'
+    },
+    measure: {
+      en: 'HP × Ferrari campaign: 4.4× ROAS, +27% conversions vs. pre-collaboration baseline',
+      it: 'Campagna HP × Ferrari: ROAS 4,4×, +27% conversioni vs. baseline pre-collaborazione'
+    }
+  };
+
+  function setCaption(name) {
+    var cap = CAPTIONS[name]; if (!cap) return;
+    var enEl = slide.querySelector('[data-rtcdp-cap="en"]');
+    var itEl = slide.querySelector('[data-rtcdp-cap="it"]');
+    if (enEl) enEl.textContent = cap.en;
+    if (itEl) itEl.textContent = cap.it;
+  }
+
   function showPhase(name) {
     slide.querySelectorAll('[data-rtcdp-phase]').forEach(function (el) {
       el.hidden = el.getAttribute('data-rtcdp-phase') !== name;
@@ -597,6 +649,7 @@ const MEASURE_ROWS = [
       btn.classList.toggle('rtcdp-tab-active', on);
       btn.setAttribute('aria-selected', on ? 'true' : 'false');
     });
+    setCaption(name);
     if (name === 'discover') {
       requestAnimationFrame(function () {
         slide.querySelectorAll('[data-bar-fill]').forEach(function (bar) {
