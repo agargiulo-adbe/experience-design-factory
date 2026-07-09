@@ -18,6 +18,7 @@ export class Deck {
   slides: HTMLElement[];
   index = 0;
   nextHref: string | null;
+  prevHref: string | null;
   private playTimer: number | undefined;
   private idleTimer: number | undefined;
   private touchX = 0;
@@ -32,6 +33,16 @@ export class Deck {
     this.root = root;
     this.slides = Array.from(root.querySelectorAll<HTMLElement>('[data-slide]'));
     this.nextHref = root.dataset.deckNext || null;
+    this.prevHref = root.dataset.deckPrevHref || null;
+
+    // If we arrived by navigating BACK from the next section, open on the LAST
+    // slide so arrow nav is continuous across section boundaries (both ways).
+    try {
+      if (sessionStorage.getItem('edf:deck-enter-last') === '1') {
+        sessionStorage.removeItem('edf:deck-enter-last');
+        this.index = Math.max(0, this.slides.length - 1);
+      }
+    } catch { /* sessionStorage unavailable — start at 0 */ }
 
     // Stack every slide; paint pre-animation state.
     this.slides.forEach(s => {
@@ -109,11 +120,21 @@ export class Deck {
   prev() {
     if (this.locked) return;
     if (this.index > 0) this.goTo(this.index - 1);
+    else this.exitBackward();
   }
 
   private exitForward() {
-    if (!this.nextHref) return;
-    const href = this.nextHref;
+    this.exitTo(this.nextHref, false);
+  }
+
+  private exitBackward() {
+    // Land on the LAST slide of the previous section (continuous back-nav).
+    this.exitTo(this.prevHref, true);
+  }
+
+  private exitTo(href: string | null, enterLast: boolean) {
+    if (!href) return;
+    if (enterLast) { try { sessionStorage.setItem('edf:deck-enter-last', '1'); } catch { /* ignore */ } }
     // Prefer SPA navigation (ClientRouter) so an active fullscreen session is
     // PRESERVED across sections; a full page load would exit fullscreen.
     const nav = (window as Window & { __edfNavigate?: (h: string) => void }).__edfNavigate;
@@ -166,8 +187,10 @@ export class Deck {
     if (prog) prog.textContent = `${pad(this.index + 1)} / ${pad(n)}`;
     const prevBtn = this.root.querySelector<HTMLButtonElement>('[data-deck-prev]');
     if (prevBtn) {
-      prevBtn.disabled = this.index === 0;
-      prevBtn.style.opacity = this.index === 0 ? '0.25' : '1';
+      // Enabled unless we're at the very first slide with no previous section.
+      const canPrev = this.index > 0 || !!this.prevHref;
+      prevBtn.disabled = !canPrev;
+      prevBtn.style.opacity = canPrev ? '1' : '0.25';
     }
   }
 

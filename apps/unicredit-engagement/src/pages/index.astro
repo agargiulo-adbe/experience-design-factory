@@ -26,9 +26,9 @@ const journey = [
 ];
 
 const unicreditStats = [
-  { value: '14M', label: 'clienti retail', sub: 'affluent, private e retail · +1M imprese' },
-  { value: '€9,7B', label: 'utile netto FY24', sub: '+8% vs 2023 (netto DTA)' },
-  { value: '17,7%', label: 'RoTE FY24', sub: 'return on tangible equity' },
+  { value: '€5,5B+', label: 'in tecnologia, digitale e dati', sub: 'investimento di piano entro il 2027' },
+  { value: '€11B+', label: 'ambizione di utile netto', sub: 'obiettivo di piano al 2027' },
+  { value: '>20%', label: 'RoTE obiettivo', sub: 'return on tangible equity al 2027' },
 ];
 ---
 <BaseLayout
@@ -96,7 +96,7 @@ const unicreditStats = [
         data-reveal
         data-reveal-delay="0.15"
       >
-        Dopo "UniCredit Unlocked", il Gruppo entra nella fase "UniCredit Unlimited": tecnologia e AI diventano gli abilitatori chiave per essere la banca di riferimento nella relazione digitale con i clienti italiani.
+        Con "UniCredit Unlimited" il Gruppo destina oltre €5,5B a tecnologia, digitale e dati entro il 2027: tecnologia e AI sono gli abilitatori chiave per raggiungere gli obiettivi di piano ed essere la banca di riferimento nella relazione digitale con i clienti italiani.
       </p>
 
       <div
@@ -119,7 +119,7 @@ const unicreditStats = [
       </div>
       <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase opacity-40">
         Fonte:
-        <a href="https://www.unicreditgroup.eu/en/press-media/press-releases-price-sensitive/2025/february/unicredit--4q24-and-fy24-group-results-.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">UniCredit, risultati FY24 (feb 2025)</a>
+        <a href="https://www.unicreditgroup.eu/en/one-unicredit/articles/2026/february/unicredit-unpacked-welcome-to-unicredit-unlimited-outperforming-the-old-and-the-new.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">UniCredit — piano UniCredit Unlimited (feb 2026)</a>
       </p>
     </Slide>
 
@@ -158,9 +158,10 @@ const unicreditStats = [
           <a
             href={href(base, step.href)}
             data-nav-solution={step.solution ?? undefined}
+            data-edf-journey-card
             class="p-5 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-left hover:bg-[var(--ink-inverse)]/18 transition-colors no-underline group"
           >
-            <p class="text-sm font-semibold text-[var(--ink-inverse)]/55 mb-1">{step.num}</p>
+            <p class="text-sm font-semibold text-[var(--ink-inverse)]/55 mb-1" data-edf-cardnum>{step.num}</p>
             <p class="text-base font-semibold text-[var(--ink-inverse)] mb-0.5 group-hover:text-[var(--ink-inverse)]">{step.label}</p>
             <p class="text-sm text-[var(--ink-inverse)]/60">{step.sub}</p>
           </a>
@@ -217,9 +218,22 @@ const unicreditStats = [
       var w = WORDS[n] || String(n);
       return w.charAt(0).toUpperCase() + w.slice(1) + ' capitoli';
     }
+    function renumber() {
+      // Renumber visible roadmap cards consecutively so a gated-off section
+      // never leaves a gap in the numbering (00, 01, 02 …).
+      var n = 0;
+      document.querySelectorAll('[data-edf-journey-card]').forEach(function (card) {
+        var hidden = card.offsetParent === null || getComputedStyle(card).display === 'none';
+        if (hidden) return;
+        var numEl = card.querySelector('[data-edf-cardnum]');
+        if (numEl) numEl.textContent = ('0' + n).slice(-2);
+        n++;
+      });
+    }
     function apply() {
       var txt = label(count()) + '. Due storie. Una relazione.';
       document.querySelectorAll('[data-edf-chapters]').forEach(function (el) { el.textContent = txt; });
+      renumber();
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
     document.addEventListener('astro:page-load', apply);
