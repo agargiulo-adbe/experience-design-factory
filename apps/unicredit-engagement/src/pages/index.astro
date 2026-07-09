@@ -52,7 +52,7 @@ const unicreditStats = [
       <CoverHero
         eyebrow="UniCredit × Adobe"
         title="Engagement Unlimited"
-        lead="Due clienti reali. Un'unica piattaforma. Undici momenti di valore."
+        lead="Due clienti reali. Un'unica piattaforma. Ogni sezione, un momento di valore."
         size="hero"
         tone="inverse"
         primary="UniCredit"
@@ -137,6 +137,7 @@ const unicreditStats = [
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.08"
+        data-edf-chapters
       >
         Undici capitoli. Due storie. Una relazione.
       </h2>
@@ -180,4 +181,49 @@ const unicreditStats = [
     </Slide>
 
   </DeckContainer>
+
+  <!--
+    Dynamic chapter count: "Undici capitoli" reflects the sections actually
+    active in the Admin Console (solution gating). Gates mirror the home
+    roadmap cards' data-nav-solution so the number matches the visible cards.
+  -->
+  <script is:inline>
+  (function () {
+    var KEY = 'edf-solutions-unicredit-engagement';
+    // Per-section gate, in section order — matches the home roadmap cards.
+    var GATES = [
+      null, null, ['rtcdp'], ['ajo-b2c', 'aem-sites'], ['ajo-b2c', 'target'],
+      ['genstudio', 'aem-assets'], ['cja'], null, ['ajo-b2b'], null, null,
+    ];
+    var WORDS = ['zero', 'una', 'due', 'tre', 'quattro', 'cinque', 'sei', 'sette', 'otto', 'nove', 'dieci', 'undici'];
+
+    function activeIds() {
+      var p = new URLSearchParams(location.search).get('s');
+      if (p) return p.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+      try { var st = localStorage.getItem(KEY); if (st) return JSON.parse(st); } catch (_) {}
+      return null;
+    }
+    function count() {
+      var ids = activeIds();
+      if (!ids) return GATES.length; // no restriction → every section active
+      var n = 0;
+      GATES.forEach(function (g) {
+        if (!g || g.some(function (id) { return ids.indexOf(id) !== -1; })) n++;
+      });
+      return n;
+    }
+    function label(n) {
+      if (n === 1) return 'Un capitolo';
+      var w = WORDS[n] || String(n);
+      return w.charAt(0).toUpperCase() + w.slice(1) + ' capitoli';
+    }
+    function apply() {
+      var txt = label(count()) + '. Due storie. Una relazione.';
+      document.querySelectorAll('[data-edf-chapters]').forEach(function (el) { el.textContent = txt; });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
+    document.addEventListener('astro:page-load', apply);
+    window.addEventListener('storage', function (e) { if (e.key === KEY) apply(); });
+  })();
+  </script>
 </BaseLayout>

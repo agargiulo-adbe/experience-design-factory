@@ -149,31 +149,33 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       return;
     }
 
-    // Case 2: generic overlay injection (right 48% panel + left gradient scrim)
+    // Case 2: reflow layout — content shifts to the LEFT column, media panel
+    // sits on the RIGHT, so text NEVER overlaps the injected image/video. The
+    // slide content re-adapts dynamically (no fixed markup needed per slide).
     var existing = slide.querySelector('[data-edf-media]');
     if (existing) existing.remove();
-
-    var bg = (window.getComputedStyle(slide).backgroundColor) || 'rgba(255,255,255,1)';
 
     var panel = document.createElement('div');
     panel.setAttribute('data-edf-media', slotKey);
     panel.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
 
     var mediaDivEl = document.createElement('div');
-    mediaDivEl.style.cssText = 'position:absolute;right:0;top:var(--slide-safe-inset,60px);bottom:var(--slide-safe-inset,60px);width:48%;overflow:hidden;border-radius:4px;pointer-events:auto;';
+    mediaDivEl.style.cssText = 'position:absolute;right:max(var(--slide-safe-inset,60px),6vw);top:max(var(--deck-chrome-safe,60px),7vh);bottom:max(var(--deck-chrome-safe,60px),7vh);width:42%;overflow:hidden;border-radius:4px;pointer-events:auto;background:var(--surface-secondary);';
     mediaDivEl.replaceChildren(autoplayMode === 'delayed' ? csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…') : buildMediaEl(slotCfg));
 
-    var scrimEl = document.createElement('div');
-    scrimEl.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to right,' + bg + ' 25%,transparent 62%);pointer-events:none;';
-
     panel.appendChild(mediaDivEl);
-    panel.appendChild(scrimEl);
     slide.appendChild(panel);
 
-    // Raise content wrapper above injected media
+    // Reflow the slide content into the left column so it clears the media zone.
     var slideInner = slide.querySelector('.slide-inner');
-    if (slideInner && slideInner.parentElement) {
-      slideInner.parentElement.style.zIndex = '2';
+    var host = slideInner && slideInner.parentElement; // safe-area wrapper (flex centre)
+    if (host) {
+      host.style.zIndex = '2';
+      if (!host.hasAttribute('data-edf-reflowed')) {
+        host.setAttribute('data-edf-reflowed', '');
+        host.style.justifyContent = 'flex-start';
+        host.style.paddingRight = 'calc(42% + max(var(--slide-safe-inset,60px),6vw) + 3vw)';
+      }
     }
 
     if (autoplayMode === 'delayed') {
@@ -204,8 +206,17 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         var existingMedia = slide.querySelector('[data-edf-media]');
         if (existingMedia) existingMedia.remove();
 
+        // Restore reflowed content (Case 2) back to the centred layout.
         var slideInner = slide.querySelector('.slide-inner');
-        if (slideInner && slideInner.parentElement) slideInner.parentElement.style.zIndex = '';
+        var dHost = slideInner && slideInner.parentElement;
+        if (dHost) {
+          dHost.style.zIndex = '';
+          if (dHost.hasAttribute('data-edf-reflowed')) {
+            dHost.removeAttribute('data-edf-reflowed');
+            dHost.style.justifyContent = '';
+            dHost.style.paddingRight = '';
+          }
+        }
 
         var flex = slide.querySelector('[data-demo-flex]');
         if (flex) {
