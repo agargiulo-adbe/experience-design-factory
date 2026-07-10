@@ -1,0 +1,62 @@
+---
+import { href as buildHref } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Props { base: string; }
+const { base } = Astro.props;
+const home = buildHref(base, '/');
+const blueprint = buildHref(base, '/blueprint');
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div class="foot-brand">
+      <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+        <rect width="32" height="32" rx="6" fill="#fff" opacity="0.06"/>
+        <path fill-rule="evenodd" d="M16 6L8 26h4.6l1.6-4.2h6.2l1.6 4.2H24ZM16 12.6l2 5.4h-4Z" fill="var(--color-adobe-red)"/>
+      </svg>
+      <div>
+        <p class="foot-title">Experience Design Factory</p>
+        <T
+          en="One engine. Every brand. Any experience."
+          it="Un solo motore. Ogni brand. Qualunque esperienza."
+          as="p" class="foot-tagline" />
+      </div>
+    </div>
+
+    <nav class="foot-links" aria-label="Footer">
+      <a href={`${home}#what`}><T en="What it is" it="Cos’è" /></a>
+      <a href={`${home}#proof`}><T en="The experiences" it="Le esperienze" /></a>
+      <a href={blueprint}><T en="Architecture blueprint" it="Blueprint architettura" /></a>
+      <a href="mailto:agargiulo@adobe.com">Contact</a>
+    </nav>
+  </div>
+
+  <div class="wrap foot-bottom">
+    <T
+      en="Built with public Adobe capabilities and demo material only — no reserved client IP, no wrong-brand imagery."
+      it="Realizzato solo con capability Adobe pubbliche e materiale demo — nessuna IP cliente riservata, nessuna imagery brand impropria."
+      as="p" class="foot-fine" />
+    <div class="foot-meta">
+      <span class="foot-fine">© {year} · Antonio Argiulo · Adobe</span>
+      <LangToggle />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot { background: var(--surface-inverse); color: var(--ink-inverse); padding-block: clamp(3rem, 6vh, 4.5rem) 1.75rem; }
+  .foot-inner { display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: space-between; align-items: flex-start; }
+  .foot-brand { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .foot-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; font-size: 1.05rem; }
+  :global(.foot-tagline) { color: var(--color-slate-400); font-size: 0.9rem; margin-top: 0.15rem; }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem; }
+  .foot-links a { color: var(--color-slate-300); font-size: 0.9rem; font-weight: 500; transition: color 0.15s; }
+  .foot-links a:hover { color: #fff; }
+  .foot-bottom { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); }
+  .foot-meta { display: inline-flex; align-items: center; gap: 1.25rem; }
+  :global(.foot-fine) { color: var(--color-slate-500); font-size: 0.8rem; max-width: 60ch; }
+  :global(.foot .lang-btn) { color: var(--color-slate-400); }
+  :global(.foot .lang-btn:hover) { color: #fff; }
+</style>

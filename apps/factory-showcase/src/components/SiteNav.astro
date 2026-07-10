@@ -1,0 +1,101 @@
+---
+import { href as buildHref } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+
+interface Props { base: string; }
+const { base } = Astro.props;
+
+const home = buildHref(base, '/');
+const blueprint = buildHref(base, '/blueprint');
+
+// In-page anchors (index). On other pages they jump back to the home section.
+const links = [
+  { id: 'what', en: 'What', it: 'Cos’è' },
+  { id: 'why', en: 'Why', it: 'Perché' },
+  { id: 'proof', en: 'Proof', it: 'La prova' },
+  { id: 'architecture', en: 'Architecture', it: 'Architettura' },
+  { id: 'grow', en: 'Roadmap', it: 'Roadmap' },
+];
+---
+<header class="nav" role="banner">
+  <nav class="nav-inner wrap" aria-label="Primary">
+    <a href={home} class="brand" aria-label="Experience Design Factory — home">
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" class="brand-mark">
+        <rect width="32" height="32" rx="6" fill="var(--color-ink-900)"/>
+        <path fill-rule="evenodd" d="M16 6L8 26h4.6l1.6-4.2h6.2l1.6 4.2H24ZM16 12.6l2 5.4h-4Z" fill="var(--color-adobe-red)"/>
+      </svg>
+      <span class="brand-name">Experience&nbsp;Design&nbsp;<span class="brand-strong">Factory</span></span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      {links.map((l) => (
+        <li>
+          <a href={`${home}#${l.id}`} class="nav-link" data-nav={l.id}>
+            <span data-lang-en>{l.en}</span><span data-lang-it>{l.it}</span>
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href={blueprint} class="nav-link nav-link--blueprint">
+          <span data-lang-en>Blueprint</span><span data-lang-it>Blueprint</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-right">
+      <LangToggle />
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50; height: var(--nav-h);
+    background: color-mix(in srgb, var(--surface-primary) 82%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .nav-inner { height: var(--nav-h); display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+  .brand-mark { border-radius: 6px; flex-shrink: 0; }
+  .brand-name { font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; letter-spacing: -0.01em; color: var(--ink-secondary); }
+  .brand-strong { color: var(--ink-primary); font-weight: 800; }
+
+  .nav-links { display: none; align-items: center; gap: 0.15rem; }
+  @media (min-width: 900px) { .nav-links { display: flex; } }
+  .nav-link {
+    padding: 0.4rem 0.7rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--ink-tertiary); border-radius: 6px; transition: color 0.15s, background 0.15s;
+  }
+  .nav-link:hover { color: var(--ink-primary); }
+  .nav-link.is-active { color: var(--accent-primary); }
+  .nav-link--blueprint { color: var(--ink-primary); border: 1px solid var(--line-default); margin-left: 0.4rem; }
+  .nav-link--blueprint:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+</style>
+
+<script is:inline>
+  (function () {
+    function initSpy() {
+      var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+      var links = {};
+      document.querySelectorAll('.nav-link[data-nav]').forEach(function (a) {
+        links[a.getAttribute('data-nav')] = a;
+      });
+      if (!sections.length || !('IntersectionObserver' in window)) return;
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var id = e.target.id;
+          Object.keys(links).forEach(function (k) { links[k].classList.toggle('is-active', k === id); });
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      sections.forEach(function (s) { if (links[s.id]) spy.observe(s); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSpy);
+    } else { initSpy(); }
+    document.addEventListener('astro:page-load', initSpy);
+  })();
+</script>

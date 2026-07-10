@@ -1,0 +1,476 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href as buildHref } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const base = import.meta.env.BASE_URL;
+const blueprint = buildHref(base, '/blueprint');
+
+// Live, deployed experiences (absolute — they live at sibling paths on Pages)
+const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
+const experiences = [
+  {
+    key: 'maxmara',
+    name: 'Generazioni',
+    client: 'Max Mara',
+    href: `${LIVE}/`,
+    accent: '#C19A6B',
+    tagEn: 'Quiet-luxury · IT · the first instance',
+    tagIt: 'Quiet-luxury · IT · la prima istanza',
+    descEn: 'The founding experience. A generational, quiet-luxury journey that proved the engine and set the quality bar.',
+    descIt: 'L’esperienza fondativa. Un viaggio generazionale quiet-luxury che ha collaudato il motore e fissato lo standard di qualità.',
+  },
+  {
+    key: 'unicredit',
+    name: 'Engagement Unlimited',
+    client: 'UniCredit',
+    href: `${LIVE}/unicredit-engagement/`,
+    accent: '#BE2027',
+    tagEn: '11 sections · IT · the most mature',
+    tagIt: '11 sezioni · IT · la più matura',
+    descEn: 'A full Adobe CX story woven through real personas — the deepest content model, refined across five client-feedback rounds.',
+    descIt: 'Una storia Adobe CX completa intrecciata a persona reali — il modello di contenuto più profondo, rifinito in cinque round di feedback.',
+  },
+  {
+    key: 'ferrari',
+    name: 'Pole Position',
+    client: 'Ferrari × Adobe',
+    href: `${LIVE}/ferrari-racing/`,
+    accent: '#FF2800',
+    tagEn: 'Bilingual EN/IT · motorsport · live product mockups',
+    tagIt: 'Bilingue EN/IT · motorsport · mockup di prodotto live',
+    descEn: 'A data-collaboration narrative from Maranello to every fan, with interactive Adobe product mockups built into the deck.',
+    descIt: 'Un racconto di data-collaboration da Maranello a ogni tifoso, con mockup interattivi dei prodotti Adobe integrati nel deck.',
+  },
+];
+
+const values = [
+  {
+    n: '01',
+    titleEn: 'From weeks to hours', titleIt: 'Da settimane a ore',
+    bodyEn: 'A brand-perfect, accessible experience isn’t rebuilt each time — it’s a skin over a shared core. A new client experience takes about half a day, not a sprint.',
+    bodyIt: 'Un’esperienza on-brand e accessibile non si ricostruisce ogni volta — è una skin sopra un core condiviso. Una nuova esperienza cliente richiede circa mezza giornata, non uno sprint.',
+  },
+  {
+    n: '02',
+    titleEn: 'Improve once, everyone inherits', titleIt: 'Migliora una volta, tutti ereditano',
+    bodyEn: 'The deck, the admin console, i18n, responsiveness — they live in one engine. Fix or enhance it once and every experience in the portfolio gets it, verified.',
+    bodyIt: 'Il deck, la console admin, l’i18n, il responsive — vivono in un solo motore. Correggi o migliori una volta e ogni esperienza del portfolio lo riceve, verificato.',
+  },
+  {
+    n: '03',
+    titleEn: 'A hard quality bar, enforced', titleIt: 'Uno standard alto, garantito',
+    bodyEn: 'WCAG 2.2 AA, Lighthouse ≥ 95, auto-responsive from phone to giant TV. A deterministic 12-point deck audit runs at three projection sizes — quality is measured, not hoped for.',
+    bodyIt: 'WCAG 2.2 AA, Lighthouse ≥ 95, auto-responsive dal telefono al maxi-schermo. Un audit deterministico a 12 punti gira su tre risoluzioni di proiezione — la qualità è misurata, non sperata.',
+  },
+  {
+    n: '04',
+    titleEn: 'Reconfigurable at runtime', titleIt: 'Riconfigurabile a runtime',
+    bodyEn: 'Toggle Adobe solutions on or off, attach demo media to any slide, author new on-brand slides — then share a link. Tailor a live demo per audience with no redeploy.',
+    bodyIt: 'Attiva o disattiva le solution Adobe, allega media demo a ogni slide, crea nuove slide on-brand — poi condividi un link. Adatta una demo live per ogni pubblico senza redeploy.',
+  },
+  {
+    n: '05',
+    titleEn: 'Bilingual by construction', titleIt: 'Bilingue per costruzione',
+    bodyEn: 'Every string can carry EN and IT together; the active language switches instantly, with no reload. Built for an international audience from the first line.',
+    bodyIt: 'Ogni stringa può portare EN e IT insieme; la lingua attiva cambia all’istante, senza reload. Pensato per un pubblico internazionale dalla prima riga.',
+  },
+  {
+    n: '06',
+    titleEn: 'Governed and multi-user', titleIt: 'Governato e multi-utente',
+    bodyEn: 'A Super Admin Console with real authentication and per-experience roles sits on top — the system of record for who can configure what.',
+    bodyIt: 'In cima c’è una Super Admin Console con autenticazione reale e ruoli per-esperienza — il sistema di riferimento su chi può configurare cosa.',
+  },
+];
+---
+<BaseLayout title="Home">
+  <!-- ══ HERO ══ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow" data-reveal>Adobe · Experience Design</p>
+      <h1 id="hero-title" class="h-display hero-title" data-reveal data-reveal-delay="1">
+        <T en="One engine." it="Un solo motore." as="span" class="hero-line" />
+        <T en="Every brand." it="Ogni brand." as="span" class="hero-line" />
+        <T en="Any experience." it="Qualunque esperienza." as="span" class="hero-line hero-line--grad" />
+      </h1>
+      <T
+        en="The Experience Design Factory turns brand-perfect, accessible, interactive Adobe experiences into something you assemble — not rebuild. A shared core, a skin per client, and a console to run them all."
+        it="La Experience Design Factory trasforma esperienze Adobe on-brand, accessibili e interattive in qualcosa che assembli — non ricostruisci. Un core condiviso, una skin per cliente e una console per governarle tutte."
+        as="p" class="lead hero-lead" data-reveal data-reveal-delay="2" />
+      <div class="hero-cta" data-reveal data-reveal-delay="3">
+        <a href="#proof" class="btn btn-primary">
+          <T en="See it live" it="Guardalo dal vivo" />
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href={blueprint} class="btn btn-ghost">
+          <T en="Read the blueprint" it="Leggi il blueprint" />
+        </a>
+      </div>
+      <dl class="hero-stats" data-reveal data-reveal-delay="3">
+        <div><dt>3</dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
+        <div><dt>~30<span>min</span></dt><dd><T en="to a new experience" it="per una nuova esperienza" /></dd></div>
+        <div><dt>12</dt><dd><T en="automated quality checks" it="controlli di qualità automatici" /></dd></div>
+        <div><dt>2</dt><dd><T en="languages, instant switch" it="lingue, switch istantaneo" /></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ══ WHAT IT IS ══ -->
+  <section id="what" class="section band-what" aria-labelledby="what-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="What it is" it="Cos’è" /></p>
+      <h2 id="what-title" class="h-section" data-reveal>
+        <T en="A factory, not a folder of templates." it="Una fabbrica, non una cartella di template." />
+      </h2>
+      <T
+        en="Every client Experience Design is a <em>skin</em> — design tokens, content, assets and configuration — laid over one shared engine. The engine owns the hard parts: the immersive keynote deck, the admin console, bilingual text, motion, the responsive behaviour and the quality gate. The skin owns what makes it unmistakably that brand."
+        it="Ogni Experience Design cliente è una <em>skin</em> — design token, contenuti, asset e configurazione — stesa su un unico motore condiviso. Il motore possiede le parti difficili: il deck keynote immersivo, la console admin, il testo bilingue, il motion, il comportamento responsive e il controllo qualità. La skin possiede ciò che la rende inconfondibilmente quel brand."
+        as="p" class="lead prose-max what-lead serif-note" data-reveal />
+
+      <div class="split-cards">
+        <article class="split-card split-card--engine" data-reveal>
+          <span class="split-tag"><T en="The engine" it="Il motore" /></span>
+          <h3><T en="Shared core" it="Core condiviso" /></h3>
+          <ul role="list">
+            <li><T en="Immersive keynote deck + presenter controls" it="Deck keynote immersivo + controlli presenter" /></li>
+            <li><T en="Config-driven Admin Console" it="Admin Console guidata da configurazione" /></li>
+            <li><T en="Bilingual i18n · motion · design-token contract" it="i18n bilingue · motion · contratto design-token" /></li>
+            <li><T en="Responsive + fullscreen, phone → giant TV" it="Responsive + fullscreen, telefono → maxi-schermo" /></li>
+          </ul>
+        </article>
+        <div class="split-plus" aria-hidden="true">+</div>
+        <article class="split-card split-card--skin" data-reveal data-reveal-delay="1">
+          <span class="split-tag"><T en="The skin" it="La skin" /></span>
+          <h3><T en="Per client" it="Per cliente" /></h3>
+          <ul role="list">
+            <li><T en="Design tokens — colour, type, spacing" it="Design token — colore, tipografia, spaziatura" /></li>
+            <li><T en="Real bilingual copy — never lorem" it="Copy bilingue reale — mai lorem" /></li>
+            <li><T en="Curated, brand-safe imagery" it="Imagery curata e brand-safe" /></li>
+            <li><T en="Section flow + solution configuration" it="Flusso sezioni + configurazione solution" /></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHY IT MATTERS ══ -->
+  <section id="why" class="section band-why" aria-labelledby="why-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="Why it matters" it="Perché conta" /></p>
+      <h2 id="why-title" class="h-section" data-reveal>
+        <T en="Speed and quality usually trade off. Here they compound." it="Velocità e qualità di solito sono un compromesso. Qui si sommano." />
+      </h2>
+      <div class="value-grid">
+        {values.map((v, i) => (
+          <article class="value-card" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)}>
+            <span class="value-n">{v.n}</span>
+            <h3 class="value-title"><T en={v.titleEn} it={v.titleIt} /></h3>
+            <T en={v.bodyEn} it={v.bodyIt} as="p" class="value-body" />
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROOF ══ -->
+  <section id="proof" class="section band-proof" aria-labelledby="proof-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--dark" data-reveal><T en="Proof" it="La prova" /></p>
+      <h2 id="proof-title" class="h-section proof-title" data-reveal>
+        <T en="Not slides. Live, running software." it="Non slide. Software vivo, in esecuzione." />
+      </h2>
+      <T
+        en="Three experiences are deployed and interactive right now — each a different brand, all the same engine. Open any of them."
+        it="Tre esperienze sono già online e interattive — ognuna un brand diverso, tutte lo stesso motore. Aprine una qualsiasi."
+        as="p" class="lead proof-lead" data-reveal />
+
+      <div class="exp-grid">
+        {experiences.map((e, i) => (
+          <a class="exp-card" href={e.href} target="_blank" rel="noopener" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)} style={`--exp-accent:${e.accent}`}>
+            <div class="exp-visual" aria-hidden="true">
+              <span class="exp-chip">{e.client}</span>
+              <span class="exp-orb"></span>
+            </div>
+            <div class="exp-body">
+              <h3 class="exp-name">{e.name}</h3>
+              <p class="exp-tag"><T en={e.tagEn} it={e.tagIt} /></p>
+              <T en={e.descEn} it={e.descIt} as="p" class="exp-desc" />
+              <span class="exp-open">
+                <T en="Open experience" it="Apri l’esperienza" /> <span aria-hidden="true">↗</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <a class="console-strip" href={`${LIVE}/console/`} target="_blank" rel="noopener" data-reveal>
+        <div class="console-ico" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+            <rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/>
+            <rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/>
+          </svg>
+        </div>
+        <div class="console-text">
+          <p class="console-title"><T en="Super Admin Console" it="Super Admin Console" /></p>
+          <T en="The governance layer — auth, users, and the experiences registry that runs above them all."
+             it="Il layer di governance — auth, utenti e il registry delle esperienze che sta sopra a tutte." as="p" class="console-desc" />
+        </div>
+        <span class="console-open" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ══ ARCHITECTURE ══ -->
+  <section id="architecture" class="section band-arch" aria-labelledby="arch-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="How it’s built" it="Com’è fatto" /></p>
+      <h2 id="arch-title" class="h-section" data-reveal>
+        <T en="One monorepo, cleanly layered." it="Un monorepo, a strati puliti." />
+      </h2>
+      <T
+        en="A shared engine at the bottom, client skins in the middle, a governance console on top, a backend for auth and sharing, and a build that merges everything into one deploy."
+        it="Un motore condiviso alla base, le skin cliente al centro, una console di governance in cima, un backend per auth e condivisione, e una build che unisce tutto in un unico deploy."
+        as="p" class="lead prose-max" data-reveal />
+
+      <div class="arch-diagram" data-reveal role="img"
+           aria-label="Architecture: console and backend on top, three client skins in the middle, shared core engine at the base, delivered to GitHub Pages.">
+        <div class="arch-layer arch-top">
+          <div class="arch-box arch-box--console">
+            <span class="arch-kicker">apps/console</span>
+            <strong><T en="Super Admin Console" it="Super Admin Console" /></strong>
+            <em><T en="auth · users · experiences registry" it="auth · utenti · registry esperienze" /></em>
+          </div>
+          <div class="arch-box arch-box--backend">
+            <span class="arch-kicker">supabase</span>
+            <strong>Backend</strong>
+            <em><T en="Auth · Postgres/RLS · Edge Function" it="Auth · Postgres/RLS · Edge Function" /></em>
+          </div>
+        </div>
+
+        <div class="arch-layer arch-skins">
+          <span class="arch-layer-label"><T en="Client skins — apps/*" it="Skin cliente — apps/*" /></span>
+          <div class="arch-skins-row">
+            <div class="arch-skin" style="--k:#C19A6B"><strong>Max Mara</strong><span>Generazioni</span></div>
+            <div class="arch-skin" style="--k:#BE2027"><strong>UniCredit</strong><span>Engagement Unlimited</span></div>
+            <div class="arch-skin" style="--k:#FF2800"><strong>Ferrari × Adobe</strong><span>Pole Position</span></div>
+            <div class="arch-skin arch-skin--next"><strong>+</strong><span><T en="the next brand" it="il prossimo brand" /></span></div>
+          </div>
+        </div>
+
+        <div class="arch-layer arch-core">
+          <span class="arch-core-kicker">packages/core · @edf/core</span>
+          <strong class="arch-core-title"><T en="Shared engine" it="Motore condiviso" /></strong>
+          <div class="arch-core-chips">
+            <span>Immersive deck</span><span>Admin engine</span><span>i18n</span>
+            <span>Design tokens</span><span>Motion</span><span>Responsive + fullscreen</span>
+          </div>
+        </div>
+
+        <div class="arch-deliver">
+          <span class="arch-arrow" aria-hidden="true">↓</span>
+          <span class="arch-deliver-label">GitHub Actions → GitHub Pages · <T en="one merged artifact, one URL space" it="un artifact unico, un solo spazio di URL" /></span>
+        </div>
+      </div>
+
+      <div class="arch-cta" data-reveal>
+        <div>
+          <h3 class="arch-cta-title"><T en="Want the engineering detail?" it="Vuoi il dettaglio ingegneristico?" /></h3>
+          <T en="The blueprint covers the deck visual contract, runtime configurability, i18n, governance, delivery and the quality method."
+             it="Il blueprint copre il contratto visivo del deck, la configurabilità a runtime, l’i18n, la governance, la delivery e il metodo di qualità."
+             as="p" class="arch-cta-desc" />
+        </div>
+        <a href={blueprint} class="btn btn-primary">
+          <T en="Open the blueprint" it="Apri il blueprint" /> <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ HOW IT GROWS ══ -->
+  <section id="grow" class="section band-grow" aria-labelledby="grow-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--dark" data-reveal><T en="How it could grow" it="Come può crescere" /></p>
+      <h2 id="grow-title" class="h-section grow-title" data-reveal>
+        <T en="The engine is the asset. The roadmap writes itself." it="Il motore è l’asset. La roadmap si scrive da sé." />
+      </h2>
+      <div class="grow-grid">
+        <article class="grow-card" data-reveal>
+          <h3><T en="Self-serve authoring" it="Authoring self-serve" /></h3>
+          <T en="Extend the console so a marketer or seller composes a full experience — sections, media, copy — with zero code."
+             it="Estendere la console perché un marketer o un seller componga un’esperienza intera — sezioni, media, copy — senza codice." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="1">
+          <h3><T en="Brand-to-tokens" it="Dal brand ai token" /></h3>
+          <T en="Point at a brand’s guidelines and auto-generate the skin’s token set — colour, type, imagery direction — in minutes."
+             it="Puntare alle guidelines di un brand e generare automaticamente il set di token della skin — colore, tipografia, direzione imagery — in minuti." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="2">
+          <h3><T en="Instrumented experiences" it="Esperienze strumentate" /></h3>
+          <T en="Wire in Adobe Analytics / CJA so every experience reports engagement — the factory measuring its own output."
+             it="Collegare Adobe Analytics / CJA così ogni esperienza riporta l’engagement — la fabbrica che misura il proprio output." as="p" />
+        </article>
+        <article class="grow-card" data-reveal>
+          <h3><T en="AI-assisted content" it="Contenuti assistiti da AI" /></h3>
+          <T en="Draft on-brand slide copy and imagery inside the quality bar, using Adobe’s own generative capabilities."
+             it="Generare copy e imagery on-brand dentro lo standard di qualità, usando le capability generative di Adobe." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="1">
+          <h3><T en="Experience library" it="Libreria di esperienze" /></h3>
+          <T en="A growing catalogue of reusable sections and product mockups any new skin can draw from on day one."
+             it="Un catalogo crescente di sezioni riusabili e mockup di prodotto da cui ogni nuova skin attinge dal primo giorno." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="2">
+          <h3><T en="Multi-tenant platform" it="Piattaforma multi-tenant" /></h3>
+          <T en="Give each team or region its own governed space — the console already models roles and a registry to get there."
+             it="Dare a ogni team o region uno spazio governato proprio — la console modella già ruoli e registry per arrivarci." as="p" />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ WHO'S BEHIND IT ══ -->
+  <section id="author" class="section band-author" aria-labelledby="author-title">
+    <div class="wrap author-inner">
+      <p class="eyebrow" data-reveal><T en="Who’s behind it" it="Chi c’è dietro" /></p>
+      <h2 id="author-title" class="h-section author-title" data-reveal>Antonio Argiulo</h2>
+      <T
+        en="I design and build the Experience Design Factory at Adobe — the engine, the client experiences and the console. The method is deliberate: only public Adobe capabilities and demo material, real bilingual copy, a hard accessibility and layout bar, and everything shipped as live software you can open, not a slide about software."
+        it="Progetto e costruisco la Experience Design Factory in Adobe — il motore, le esperienze cliente e la console. Il metodo è preciso: solo capability Adobe pubbliche e materiale demo, copy bilingue reale, uno standard alto di accessibilità e layout, e tutto consegnato come software vivo che puoi aprire, non una slide sul software."
+        as="p" class="lead prose-max author-bio serif-note" data-reveal />
+      <div class="author-cta" data-reveal>
+        <a href="mailto:agargiulo@adobe.com" class="btn btn-primary">
+          <T en="Get in touch" it="Scrivimi" /> <span aria-hidden="true">→</span>
+        </a>
+        <a href="#proof" class="btn btn-ghost"><T en="Revisit the experiences" it="Rivedi le esperienze" /></a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ── HERO ── */
+  .hero { position: relative; padding-top: calc(var(--nav-h) + clamp(3rem, 9vh, 7rem)); padding-bottom: clamp(3rem, 8vh, 6rem); overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: -2; background:
+      radial-gradient(60% 55% at 78% 8%, color-mix(in srgb, var(--color-adobe-red) 22%, transparent), transparent 70%),
+      radial-gradient(55% 50% at 12% 100%, color-mix(in srgb, var(--color-adobe-violet) 16%, transparent), transparent 70%); }
+  .hero-grid { position: absolute; inset: 0; z-index: -1; opacity: 0.5;
+    background-image: linear-gradient(var(--line-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--line-subtle) 1px, transparent 1px);
+    background-size: 46px 46px; mask-image: radial-gradient(70% 60% at 50% 30%, #000 40%, transparent 100%); }
+  .hero-inner { position: relative; }
+  .hero-title { margin-top: 1.1rem; }
+  :global(.hero-line) { display: block; }
+  :global(.hero-line--grad) { background: var(--grad-adobe); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  :global(.hero-lead) { margin-top: 1.5rem; max-width: 40ch; }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+  .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; margin-top: 3.5rem; max-width: 40rem; }
+  @media (min-width: 720px) { .hero-stats { grid-template-columns: repeat(4, auto); } }
+  .hero-stats dt { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.6rem); letter-spacing: -0.03em; line-height: 1; }
+  .hero-stats dt span { font-size: 0.9rem; font-weight: 700; color: var(--ink-tertiary); margin-left: 0.15rem; }
+  .hero-stats dd { font-size: 0.82rem; color: var(--ink-tertiary); margin-top: 0.4rem; max-width: 16ch; }
+
+  /* ── WHAT ── */
+  .band-what { background: var(--surface-primary); }
+  :global(.what-lead) { margin-top: 1.5rem; }
+  :global(.serif-note em) { font-family: var(--font-serif); font-style: italic; color: var(--ink-primary); }
+  .split-cards { display: grid; gap: 1rem; margin-top: 3rem; align-items: center; }
+  @media (min-width: 820px) { .split-cards { grid-template-columns: 1fr auto 1fr; } }
+  .split-card { border: 1px solid var(--line-subtle); border-radius: 16px; padding: 1.75rem; background: var(--surface-secondary); }
+  .split-card--engine { background: var(--surface-inverse); color: var(--ink-inverse); border-color: transparent; }
+  .split-tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-primary); }
+  .split-card--engine .split-tag { color: color-mix(in srgb, var(--color-adobe-red) 70%, #fff); }
+  .split-card h3 { font-size: 1.5rem; margin: 0.35rem 0 1rem; }
+  .split-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .split-card li { position: relative; padding-left: 1.4rem; font-size: 0.95rem; color: var(--ink-secondary); }
+  .split-card--engine li { color: color-mix(in srgb, var(--ink-inverse) 82%, transparent); }
+  .split-card li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 0.5rem; height: 0.5rem; border-radius: 2px; background: var(--accent-primary); }
+  .split-plus { font-size: 2rem; font-weight: 300; color: var(--ink-tertiary); text-align: center; }
+
+  /* ── WHY ── */
+  .band-why { background: var(--surface-secondary); }
+  .value-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 3rem; }
+  @media (min-width: 640px) { .value-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 980px) { .value-grid { grid-template-columns: repeat(3, 1fr); } }
+  .value-card { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-radius: 16px; padding: 1.6rem; transition: transform 0.2s, box-shadow 0.2s; }
+  .value-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(22,22,26,0.4); }
+  .value-n { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--accent-primary); letter-spacing: 0.1em; }
+  .value-title { font-size: 1.2rem; margin: 0.6rem 0 0.7rem; }
+  :global(.value-body) { font-size: 0.94rem; color: var(--ink-secondary); }
+
+  /* ── PROOF (dark) ── */
+  .band-proof { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .eyebrow--dark { color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
+  .proof-title { color: #fff; }
+  :global(.proof-lead) { color: var(--color-slate-300); margin-top: 1.2rem; }
+  .exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-top: 3rem; }
+  @media (min-width: 720px) { .exp-grid { grid-template-columns: repeat(3, 1fr); } }
+  .exp-card { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
+  .exp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
+  .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+    background: radial-gradient(120% 120% at 20% 0%, color-mix(in srgb, var(--exp-accent) 42%, #16161A), #101014 70%); }
+  .exp-orb { position: absolute; width: 60%; aspect-ratio: 1; right: -12%; bottom: -30%; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--exp-accent) 85%, #fff) 0%, var(--exp-accent) 40%, transparent 72%); filter: blur(4px); opacity: 0.85; }
+  .exp-chip { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); padding: 0.25rem 0.6rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  .exp-body { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .exp-name { font-size: 1.35rem; color: #fff; }
+  .exp-tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
+  :global(.exp-desc) { font-size: 0.9rem; color: var(--color-slate-300); flex: 1; }
+  .exp-open { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  .console-strip { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; padding: 1.1rem 1.3rem; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.2s, background 0.2s; }
+  .console-strip:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.07); }
+  .console-ico { flex-shrink: 0; color: color-mix(in srgb, var(--color-adobe-red) 70%, #fff); }
+  .console-text { flex: 1; }
+  .console-title { font-family: var(--font-display); font-weight: 700; color: #fff; }
+  :global(.console-desc) { font-size: 0.85rem; color: var(--color-slate-400); }
+  .console-open { color: #fff; font-size: 1.1rem; }
+
+  /* ── ARCHITECTURE ── */
+  .band-arch { background: var(--surface-primary); }
+  .arch-diagram { margin-top: 3rem; display: flex; flex-direction: column; gap: 0.85rem; }
+  .arch-layer { border-radius: 16px; padding: 1.25rem; border: 1px solid var(--line-subtle); }
+  .arch-top { display: grid; grid-template-columns: 1fr; gap: 0.85rem; border: none; padding: 0; }
+  @media (min-width: 640px) { .arch-top { grid-template-columns: 2fr 1fr; } }
+  .arch-box { border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .arch-box--console { background: var(--grad-adobe); color: #fff; }
+  .arch-box--backend { background: var(--surface-secondary); border: 1px solid var(--line-subtle); }
+  .arch-kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
+  .arch-box strong { font-size: 1.05rem; font-family: var(--font-display); }
+  .arch-box em { font-style: normal; font-size: 0.8rem; opacity: 0.8; }
+  .arch-skins { background: var(--surface-secondary); }
+  .arch-layer-label, .arch-core-kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .arch-skins-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
+  @media (min-width: 720px) { .arch-skins-row { grid-template-columns: repeat(4, 1fr); } }
+  .arch-skin { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-left: 3px solid var(--k, var(--accent-primary)); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; }
+  .arch-skin strong { font-size: 0.95rem; }
+  .arch-skin span { font-size: 0.72rem; color: var(--ink-tertiary); }
+  .arch-skin--next { border-left-style: dashed; border-left-color: var(--ink-tertiary); opacity: 0.75; }
+  .arch-core { background: var(--surface-inverse); color: var(--ink-inverse); border-color: transparent; text-align: center; padding: 1.75rem 1.25rem; }
+  .arch-core-kicker { color: color-mix(in srgb, #fff 55%, transparent); }
+  .arch-core-title { display: block; font-family: var(--font-display); font-size: 1.5rem; margin: 0.3rem 0 1rem; }
+  .arch-core-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .arch-core-chips span { font-size: 0.8rem; padding: 0.35rem 0.8rem; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); }
+  .arch-deliver { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+  .arch-arrow { color: var(--ink-tertiary); font-size: 1.1rem; }
+  .arch-deliver-label { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-tertiary); }
+  .arch-cta { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; align-items: center; justify-content: space-between; padding: 1.75rem; border-radius: 16px; background: var(--surface-secondary); border: 1px solid var(--line-subtle); }
+  .arch-cta-title { font-size: 1.25rem; }
+  :global(.arch-cta-desc) { font-size: 0.9rem; color: var(--ink-secondary); max-width: 52ch; margin-top: 0.35rem; }
+
+  /* ── GROW (dark) ── */
+  .band-grow { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .grow-title { color: #fff; max-width: 20ch; }
+  .grow-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 3rem; }
+  @media (min-width: 640px) { .grow-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 980px) { .grow-grid { grid-template-columns: repeat(3, 1fr); } }
+  .grow-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1.5rem; background: rgba(255,255,255,0.03); transition: border-color 0.2s; }
+  .grow-card:hover { border-color: color-mix(in srgb, var(--color-adobe-red) 55%, transparent); }
+  .grow-card h3 { font-size: 1.12rem; color: #fff; margin-bottom: 0.5rem; }
+  .grow-card :global(p) { font-size: 0.9rem; color: var(--color-slate-300); }
+
+  /* ── AUTHOR ── */
+  .band-author { background: var(--surface-primary); }
+  .author-title { margin-top: 0.6rem; }
+  :global(.author-bio) { margin-top: 1.4rem; }
+  .author-cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+</style>

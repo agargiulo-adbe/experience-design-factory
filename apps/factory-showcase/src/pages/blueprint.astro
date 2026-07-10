@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href as buildHref } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const base = import.meta.env.BASE_URL;
+const home = buildHref(base, '/');
+
+const toc = [
+  { id: 'repo', en: 'Repository', it: 'Repository' },
+  { id: 'engine', en: 'Engine & skin', it: 'Motore e skin' },
+  { id: 'deck', en: 'Deck contract', it: 'Contratto deck' },
+  { id: 'runtime', en: 'Runtime config', it: 'Config a runtime' },
+  { id: 'i18n', en: 'Bilingual', it: 'Bilingue' },
+  { id: 'responsive', en: 'Responsive', it: 'Responsive' },
+  { id: 'governance', en: 'Governance', it: 'Governance' },
+  { id: 'delivery', en: 'Delivery', it: 'Delivery' },
+  { id: 'quality', en: 'Quality method', it: 'Metodo qualità' },
+];
+
+const checks = [
+  { k: 'a', en: 'Text sits in the central reading band', it: 'Il testo sta nella banda centrale di lettura' },
+  { k: 'b', en: 'No collision with the deck chrome', it: 'Nessuna collisione con la chrome del deck' },
+  { k: 'c', en: 'Margins respected, no overflow', it: 'Margini rispettati, nessun overflow' },
+  { k: 'd', en: 'No text over faces / subjects', it: 'Nessun testo sopra volti / soggetti' },
+  { k: 'e', en: 'No text-on-text overlap', it: 'Nessuna sovrapposizione testo-su-testo' },
+  { k: 'f', en: 'Clean, contained slide-over dialogs', it: 'Slide-over puliti e contenuti' },
+  { k: 'g', en: 'Vertical rhythm between blocks', it: 'Ritmo verticale tra i blocchi' },
+  { k: 'h', en: 'Buttons meet WCAG AA contrast', it: 'I bottoni rispettano il contrasto WCAG AA' },
+  { k: 'i', en: 'Content uses enough of the canvas', it: 'Il contenuto usa abbastanza canvas' },
+  { k: 'j', en: 'Nothing clipped outside the viewport', it: 'Niente tagliato fuori dal viewport' },
+  { k: 'k', en: 'No hidden scroll at projection sizes', it: 'Nessuno scroll nascosto in proiezione' },
+  { k: 'l', en: 'Triggers never obstructed by panels', it: 'I trigger mai ostruiti dai pannelli' },
+];
+---
+<BaseLayout title="Blueprint">
+  <!-- Header -->
+  <section class="bp-hero" aria-labelledby="bp-title">
+    <div class="wrap">
+      <a href={home} class="bp-back"><span aria-hidden="true">←</span> <T en="Back to overview" it="Torna alla panoramica" /></a>
+      <p class="eyebrow" data-reveal><T en="Architecture blueprint" it="Blueprint architettura" /></p>
+      <h1 id="bp-title" class="h-display bp-title" data-reveal data-reveal-delay="1">
+        <T en="Under the hood." it="Sotto il cofano." />
+      </h1>
+      <T
+        en="The engineering detail behind the factory — how the engine, the skins, the console and the delivery pipeline fit together, and how quality is enforced rather than assumed."
+        it="Il dettaglio ingegneristico dietro la fabbrica — come motore, skin, console e pipeline di delivery si incastrano, e come la qualità è garantita invece che presunta."
+        as="p" class="lead bp-lead" data-reveal data-reveal-delay="2" />
+    </div>
+  </section>
+
+  <div class="wrap bp-layout">
+    <!-- TOC -->
+    <aside class="bp-toc" aria-label="On this page">
+      <p class="bp-toc-label"><T en="On this page" it="In questa pagina" /></p>
+      <ul role="list">
+        {toc.map((t) => (
+          <li><a href={`#${t.id}`} data-bp-toc={t.id}><T en={t.en} it={t.it} /></a></li>
+        ))}
+      </ul>
+    </aside>
+
+    <div class="bp-content">
+      <!-- REPO -->
+      <section id="repo" class="bp-section" aria-labelledby="repo-h">
+        <span class="bp-kicker">01</span>
+        <h2 id="repo-h" class="bp-h" data-reveal><T en="One monorepo" it="Un monorepo" /></h2>
+        <T en="A pnpm workspace. The engine is consumed as source (no build step); each app is a static Astro site."
+           it="Un workspace pnpm. Il motore è consumato come sorgente (nessuno step di build); ogni app è un sito Astro statico."
+           as="p" class="bp-p" data-reveal />
+        <pre class="bp-tree" data-reveal aria-label="Repository structure"><code>experience-design-factory/
+├─ packages/core/          <span class="c">@edf/core — the shared engine</span>
+│  └─ src/blocks/immersive/ <span class="c">deck: DeckContainer · Slide · deck.ts</span>
+│     blocks/admin/         <span class="c">AdminConsole.astro (one engine)</span>
+│     blocks/i18n/          <span class="c">T.astro · LangToggle.astro</span>
+├─ apps/
+│  ├─ generazioni-maxmara/  <span class="c">skin · Max Mara</span>
+│  ├─ unicredit-engagement/ <span class="c">skin · UniCredit</span>
+│  ├─ ferrari-racing/       <span class="c">skin · Ferrari × Adobe</span>
+│  ├─ factory-showcase/     <span class="c">this site</span>
+│  └─ console/              <span class="c">Super Admin Console</span>
+├─ supabase/                <span class="c">auth · migrations · Edge Function</span>
+└─ .github/workflows/       <span class="c">build + deploy to Pages</span></code></pre>
+      </section>
+
+      <!-- ENGINE & SKIN -->
+      <section id="engine" class="bp-section" aria-labelledby="engine-h">
+        <span class="bp-kicker">02</span>
+        <h2 id="engine-h" class="bp-h" data-reveal><T en="Engine & skin: the token contract" it="Motore e skin: il contratto dei token" /></h2>
+        <T en="Shared blocks never hardcode colour or spacing — they read semantic design tokens. Each skin defines the same token names in its own global.css, so a component written once looks native in every brand."
+           it="I blocchi condivisi non fissano mai colore o spaziatura — leggono design token semantici. Ogni skin definisce gli stessi nomi di token nel proprio global.css, così un componente scritto una volta appare nativo in ogni brand."
+           as="p" class="bp-p" data-reveal />
+        <div class="bp-token-row" data-reveal>
+          <div class="bp-token"><code>--surface-primary / secondary / inverse / brand</code><span><T en="light, light, dark, brand" it="chiaro, chiaro, scuro, brand" /></span></div>
+          <div class="bp-token"><code>--ink-primary / secondary / inverse</code><span><T en="text on each surface" it="testo su ogni superficie" /></span></div>
+          <div class="bp-token"><code>--accent-primary / secondary</code><span><T en="brand accents" it="accenti di brand" /></span></div>
+          <div class="bp-token"><code>--font-display / body · --slide-safe-inset</code><span><T en="type + safe-area" it="tipografia + safe-area" /></span></div>
+        </div>
+        <div class="bp-swatches" data-reveal aria-hidden="true">
+          <span style="--s:#C19A6B">Max Mara</span>
+          <span style="--s:#BE2027">UniCredit</span>
+          <span style="--s:#FF2800">Ferrari</span>
+          <span style="--s:#EB1000">Adobe</span>
+        </div>
+      </section>
+
+      <!-- DECK -->
+      <section id="deck" class="bp-section" aria-labelledby="deck-h">
+        <span class="bp-kicker">03</span>
+        <h2 id="deck-h" class="bp-h" data-reveal><T en="The immersive deck & its visual contract" it="Il deck immersivo e il suo contratto visivo" /></h2>
+        <T en="Keynote-grade slides projected at 1920×1080, now auto-responsive down to mobile and up to giant TV. Every slide must pass a deterministic 12-point audit measured on the real DOM at three projection sizes — 1920×1080, 1440×900 and 1280×800. Screenshots only confirm failures; the bounding-box measurements are the gate."
+           it="Slide keynote proiettate a 1920×1080, ora auto-responsive fino al mobile e su fino ai maxi-schermi. Ogni slide deve superare un audit deterministico a 12 punti misurato sul DOM reale a tre risoluzioni di proiezione — 1920×1080, 1440×900 e 1280×800. Gli screenshot confermano solo i fallimenti; le misure dei bounding box sono il gate."
+           as="p" class="bp-p" data-reveal />
+        <ul class="bp-checks" data-reveal role="list">
+          {checks.map((c) => (
+            <li class="bp-check"><span class="bp-check-k">{c.k}</span><T en={c.en} it={c.it} /></li>
+          ))}
+        </ul>
+        <p class="bp-note" data-reveal><code>pnpm --filter &lt;app&gt; audit:deck</code> — <T en="runs all three viewports and reports pass/fail per check." it="gira tutti e tre i viewport e riporta pass/fail per ogni check." /></p>
+      </section>
+
+      <!-- RUNTIME -->
+      <section id="runtime" class="bp-section" aria-labelledby="runtime-h">
+        <span class="bp-kicker">04</span>
+        <h2 id="runtime-h" class="bp-h" data-reveal><T en="Configurable at runtime, shareable by link" it="Configurabile a runtime, condivisibile via link" /></h2>
+        <T en="The same deployed deck reshapes itself per audience — no rebuild. Three mechanisms, all driven from the shared Admin Console:"
+           it="Lo stesso deck deployato si rimodella per pubblico — senza rebuild. Tre meccanismi, tutti guidati dalla Admin Console condivisa:"
+           as="p" class="bp-p" data-reveal />
+        <div class="bp-feature-grid">
+          <article class="bp-feature" data-reveal>
+            <h3><T en="Solution gating" it="Gating delle solution" /></h3>
+            <T en="Turn Adobe solutions on or off. Gated slides lose their slide marker so the deck stops counting them, nav entries hide, and arrow navigation is rewritten to skip the hidden sections. State persists locally and rides a ?s= link."
+               it="Attiva o disattiva le solution Adobe. Le slide gated perdono il marcatore così il deck smette di contarle, le voci di nav si nascondono e la navigazione a frecce viene riscritta per saltare le sezioni nascoste. Lo stato persiste in locale e viaggia su un link ?s=." as="p" />
+          </article>
+          <article class="bp-feature" data-reveal data-reveal-delay="1">
+            <h3><T en="Media demo slots" it="Slot media demo" /></h3>
+            <T en="Attach an image or video to any slide; content reflows to make room. Configuration is shared through the backend as a ?cfg= link, so a colleague opens exactly the demo you set up."
+               it="Allega un’immagine o un video a qualsiasi slide; il contenuto rifluisce per fare spazio. La configurazione si condivide via backend come link ?cfg=, così un collega apre esattamente la demo che hai preparato." as="p" />
+          </article>
+          <article class="bp-feature" data-reveal data-reveal-delay="2">
+            <h3><T en="Custom slides" it="Slide personalizzate" /></h3>
+            <T en="Author new slides (formatted text, image or video) that adopt the deck’s exact structure and tokens — sanitised, injected before the deck counts slides, and carried inside a shared link. Fully deck-coherent."
+               it="Crea nuove slide (testo formattato, immagine o video) che adottano struttura e token esatti del deck — sanitizzate, iniettate prima che il deck conti le slide e trasportate dentro un link condiviso. Totalmente coerenti col deck." as="p" />
+          </article>
+        </div>
+      </section>
+
+      <!-- I18N -->
+      <section id="i18n" class="bp-section" aria-labelledby="i18n-h">
+        <span class="bp-kicker">05</span>
+        <h2 id="i18n-h" class="bp-h" data-reveal><T en="Bilingual by construction" it="Bilingue per costruzione" /></h2>
+        <T en="A single component renders both languages into the DOM; CSS keyed on the root data-lang attribute reveals the active one. Switching is instant, with no reload and no round-trip — and nothing can fall out of sync, because both languages ship together."
+           it="Un singolo componente rende entrambe le lingue nel DOM; il CSS basato sull’attributo data-lang della radice mostra quella attiva. Il cambio è istantaneo, senza reload e senza round-trip — e niente può andare fuori sincrono, perché entrambe le lingue viaggiano insieme."
+           as="p" class="bp-p" data-reveal />
+        <pre class="bp-code" data-reveal><code>&lt;T en="One engine" it="Un solo motore" as="h2" /&gt;
+html[data-lang="it"] [data-lang-en] &#123; display: none &#125;</code></pre>
+      </section>
+
+      <!-- RESPONSIVE -->
+      <section id="responsive" class="bp-section" aria-labelledby="resp-h">
+        <span class="bp-kicker">06</span>
+        <h2 id="resp-h" class="bp-h" data-reveal><T en="Responsive & fullscreen, from one source" it="Responsive e fullscreen, da un’unica sorgente" /></h2>
+        <T en="The deck auto-optimises from a single set of safe-area tokens, overridden per breakpoint and scoped to the deck: tight insets and scrollable dense slides on phones, generous framing and larger controls on a giant TV. Fullscreen targets the document root and persists across sections, because cross-section navigation is SPA — not a full reload."
+           it="Il deck si auto-ottimizza da un unico set di token di safe-area, sovrascritti per breakpoint e limitati al deck: inset stretti e slide dense scrollabili su telefono, inquadratura generosa e controlli più grandi sui maxi-schermi. Il fullscreen agisce sulla radice del documento e persiste tra le sezioni, perché la navigazione tra sezioni è SPA — non un reload completo."
+           as="p" class="bp-p" data-reveal />
+      </section>
+
+      <!-- GOVERNANCE -->
+      <section id="governance" class="bp-section" aria-labelledby="gov-h">
+        <span class="bp-kicker">07</span>
+        <h2 id="gov-h" class="bp-h" data-reveal><T en="Governance: the Super Admin Console" it="Governance: la Super Admin Console" /></h2>
+        <T en="A real multi-user layer: Supabase authentication (email/password + magic link), a global super-admin flag plus per-experience roles (admin / viewer), and an experiences registry that is the system of record for the dashboard. Invites run through a server-side Edge Function so privileged keys never reach the browser."
+           it="Un vero layer multi-utente: autenticazione Supabase (email/password + magic link), un flag globale super-admin più ruoli per-esperienza (admin / viewer) e un registry delle esperienze che è il sistema di riferimento della dashboard. Gli inviti passano da una Edge Function lato server così le chiavi privilegiate non arrivano mai al browser."
+           as="p" class="bp-p" data-reveal />
+        <T en="Crucially, the Admin Console is one engine: each experience’s admin page is a thin wrapper passing its slug, page registry and solution groups. Improve the engine once — every experience inherits it."
+           it="Punto chiave: la Admin Console è un solo motore: la pagina admin di ogni esperienza è un wrapper sottile che passa slug, registry delle pagine e gruppi di solution. Migliora il motore una volta — ogni esperienza lo eredita."
+           as="p" class="bp-p" data-reveal />
+      </section>
+
+      <!-- DELIVERY -->
+      <section id="delivery" class="bp-section" aria-labelledby="del-h">
+        <span class="bp-kicker">08</span>
+        <h2 id="del-h" class="bp-h" data-reveal><T en="Delivery" it="Delivery" /></h2>
+        <T en="A push to main triggers GitHub Actions (Node 22): it builds every app, merges each dist into one artifact — root plus /unicredit-engagement/, /ferrari-racing/, /showcase/, /console/ — verifies the structure, and publishes to GitHub Pages. The deploy job retries transient Pages backend failures and skips stale commits. Build secrets come from Actions secrets and never live in the repo."
+           it="Un push su main innesca GitHub Actions (Node 22): builda ogni app, unisce ogni dist in un unico artifact — root più /unicredit-engagement/, /ferrari-racing/, /showcase/, /console/ — verifica la struttura e pubblica su GitHub Pages. Il job di deploy ritenta i fallimenti transitori del backend Pages e salta i commit obsoleti. I segreti di build vengono dagli Actions secrets e non stanno mai nel repo."
+           as="p" class="bp-p" data-reveal />
+      </section>
+
+      <!-- QUALITY -->
+      <section id="quality" class="bp-section" aria-labelledby="qual-h">
+        <span class="bp-kicker">09</span>
+        <h2 id="qual-h" class="bp-h" data-reveal><T en="How quality is enforced" it="Come si garantisce la qualità" /></h2>
+        <T en="The bar is explicit — WCAG 2.2 AA, Lighthouse ≥ 95, reduced-motion respected, no wrong-brand imagery — and regressions are caught by comparison, not by eye. Each change is audited against a stashed baseline: soft, aspirational checks may move, but the hard checks (chrome collision, clipping, hidden scroll) must never regress."
+           it="Lo standard è esplicito — WCAG 2.2 AA, Lighthouse ≥ 95, reduced-motion rispettato, nessuna imagery brand impropria — e le regressioni si colgono per confronto, non a occhio. Ogni modifica è auditata contro una baseline messa da parte con stash: i check soft e aspirazionali possono muoversi, ma i check hard (collisione con la chrome, clipping, scroll nascosto) non devono mai regredire."
+           as="p" class="bp-p" data-reveal />
+        <div class="bp-endcta" data-reveal>
+          <T en="That’s the whole loop: assemble a skin, let the engine carry the hard parts, measure against the bar, ship as live software." it="Ecco l’intero ciclo: assembla una skin, lascia che il motore porti le parti difficili, misura contro lo standard, consegna come software vivo." as="p" class="bp-endcta-text serif-note-bp" />
+          <a href={home} class="btn btn-primary"><T en="Back to overview" it="Torna alla panoramica" /> <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .bp-hero { padding-top: calc(var(--nav-h) + clamp(2.5rem, 7vh, 5rem)); padding-bottom: clamp(1.5rem, 4vh, 3rem); background:
+      radial-gradient(60% 60% at 85% 0%, color-mix(in srgb, var(--color-adobe-violet) 12%, transparent), transparent 70%); }
+  .bp-back { display: inline-flex; gap: 0.4rem; align-items: center; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-tertiary); margin-bottom: 1.5rem; }
+  .bp-back:hover { color: var(--accent-primary); }
+  .bp-title { margin-top: 1rem; }
+  :global(.bp-lead) { margin-top: 1.25rem; max-width: 52ch; }
+
+  .bp-layout { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding-bottom: clamp(4rem, 9vh, 7rem); }
+  @media (min-width: 960px) { .bp-layout { grid-template-columns: 200px 1fr; gap: 4rem; align-items: start; } }
+
+  .bp-toc { display: none; }
+  @media (min-width: 960px) { .bp-toc { display: block; position: sticky; top: calc(var(--nav-h) + 1.5rem); } }
+  .bp-toc-label { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-tertiary); margin-bottom: 0.8rem; }
+  .bp-toc ul { list-style: none; display: flex; flex-direction: column; gap: 0.15rem; border-left: 1px solid var(--line-subtle); }
+  .bp-toc a { display: block; padding: 0.35rem 0.9rem; font-size: 0.85rem; color: var(--ink-tertiary); margin-left: -1px; border-left: 2px solid transparent; transition: color 0.15s, border-color 0.15s; }
+  .bp-toc a:hover { color: var(--ink-primary); }
+  .bp-toc a.is-active { color: var(--accent-primary); border-left-color: var(--accent-primary); }
+
+  .bp-content { min-width: 0; }
+  .bp-section { padding-block: clamp(2rem, 5vh, 3.5rem); border-top: 1px solid var(--line-subtle); }
+  .bp-section:first-child { border-top: none; padding-top: 0; }
+  .bp-kicker { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--accent-primary); letter-spacing: 0.1em; }
+  .bp-h { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 0.5rem 0 1rem; }
+  :global(.bp-p) { color: var(--ink-secondary); max-width: 64ch; }
+  :global(.bp-p + .bp-p) { margin-top: 1rem; }
+
+  .bp-tree, .bp-code { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7; background: var(--surface-inverse); color: #E7E7EA; padding: 1.25rem 1.4rem; border-radius: 12px; margin-top: 1.5rem; overflow-x: auto; }
+  .bp-tree .c { color: var(--color-slate-400); }
+  .bp-code { line-height: 1.6; }
+  .bp-code code { color: color-mix(in srgb, var(--color-adobe-red) 40%, #fff); }
+
+  .bp-token-row { display: grid; gap: 0.6rem; margin-top: 1.5rem; }
+  .bp-token { display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; align-items: baseline; padding: 0.7rem 1rem; background: var(--surface-secondary); border-radius: 10px; border: 1px solid var(--line-subtle); }
+  .bp-token code { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-primary); }
+  .bp-token span { font-size: 0.78rem; color: var(--ink-tertiary); }
+  .bp-swatches { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+  .bp-swatches span { position: relative; padding: 0.4rem 0.9rem 0.4rem 1.6rem; border-radius: 999px; border: 1px solid var(--line-subtle); font-size: 0.8rem; font-weight: 600; }
+  .bp-swatches span::before { content: ""; position: absolute; left: 0.7rem; top: 50%; transform: translateY(-50%); width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--s); }
+
+  .bp-checks { list-style: none; display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-top: 1.5rem; }
+  @media (min-width: 560px) { .bp-checks { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .bp-checks { grid-template-columns: repeat(3, 1fr); } }
+  .bp-check { display: flex; gap: 0.6rem; align-items: baseline; font-size: 0.85rem; color: var(--ink-secondary); padding: 0.5rem 0.6rem; border-radius: 8px; background: var(--surface-secondary); }
+  .bp-check-k { flex-shrink: 0; width: 1.35rem; height: 1.35rem; display: inline-grid; place-items: center; border-radius: 5px; background: var(--accent-primary); color: #fff; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; }
+  .bp-note { margin-top: 1.25rem; font-size: 0.85rem; color: var(--ink-tertiary); }
+  .bp-note code, :global(.bp-p code) { font-family: var(--font-mono); font-size: 0.85em; background: var(--surface-secondary); padding: 0.1rem 0.4rem; border-radius: 5px; color: var(--ink-primary); }
+
+  .bp-feature-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+  @media (min-width: 820px) { .bp-feature-grid { grid-template-columns: repeat(3, 1fr); } }
+  .bp-feature { border: 1px solid var(--line-subtle); border-radius: 12px; padding: 1.25rem; background: var(--surface-primary); }
+  .bp-feature h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .bp-feature :global(p) { font-size: 0.86rem; color: var(--ink-secondary); }
+
+  .bp-endcta { margin-top: 2rem; padding: 1.75rem; border-radius: 16px; background: var(--surface-secondary); border: 1px solid var(--line-subtle); display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; justify-content: space-between; }
+  :global(.bp-endcta-text) { font-family: var(--font-serif); font-style: italic; font-size: 1.1rem; color: var(--ink-primary); max-width: 46ch; }
+</style>
+
+<script is:inline>
+  (function () {
+    function initBpSpy() {
+      var secs = Array.prototype.slice.call(document.querySelectorAll('.bp-section[id]'));
+      var links = {};
+      document.querySelectorAll('[data-bp-toc]').forEach(function (a) { links[a.getAttribute('data-bp-toc')] = a; });
+      if (!secs.length || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          Object.keys(links).forEach(function (k) { links[k].classList.toggle('is-active', k === e.target.id); });
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+      secs.forEach(function (s) { io.observe(s); });
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initBpSpy); }
+    else { initBpSpy(); }
+    document.addEventListener('astro:page-load', initBpSpy);
+  })();
+</script>
