@@ -1,5 +1,9 @@
 # Experience Design Factory — Agent Guide
 
+> **Handover / current state:** see `docs/HANDOVER.md` for the detailed, dated project
+> handover (per-experience status, UniCredit content model & verified product naming,
+> deck runtime features, audit method, pending items, recent change log).
+
 ## Project Overview
 Monorepo for the **Experience Design Factory**: a reusable engine where each client
 **Experience Design** is a *skin* (design tokens + content + assets + config) over the
