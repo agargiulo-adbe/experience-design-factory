@@ -15,6 +15,7 @@ const links = [
   { id: 'proof', en: 'Proof', it: 'La prova' },
   { id: 'architecture', en: 'Architecture', it: 'Architettura' },
   { id: 'flow', en: 'Flow', it: 'Il flusso' },
+  { id: 'skill', en: 'Skill', it: 'Skill' },
   { id: 'grow', en: 'Roadmap', it: 'Roadmap' },
 ];
 ---
@@ -47,6 +48,7 @@ const links = [
       <LangToggle />
     </div>
   </nav>
+  <div class="nav-progress" aria-hidden="true"><span class="nav-progress-fill"></span></div>
 </header>
 
 <style>
@@ -62,10 +64,10 @@ const links = [
   .brand-name { font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; letter-spacing: -0.01em; color: var(--ink-secondary); }
   .brand-strong { color: var(--ink-primary); font-weight: 800; }
 
-  .nav-links { display: none; align-items: center; gap: 0.1rem; }
-  @media (min-width: 1000px) { .nav-links { display: flex; } }
+  .nav-links { display: none; align-items: center; gap: 0.05rem; }
+  @media (min-width: 1080px) { .nav-links { display: flex; } }
   .nav-link {
-    padding: 0.4rem 0.7rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+    padding: 0.4rem 0.6rem; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.01em;
     color: var(--ink-tertiary); border-radius: 6px; transition: color 0.15s, background 0.15s;
   }
   .nav-link:hover { color: var(--ink-primary); }
@@ -74,6 +76,9 @@ const links = [
   .nav-link--blueprint:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
 
   .nav-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+  .nav-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }
+  .nav-progress-fill { display: block; height: 100%; width: 0%; background: var(--grad-adobe); transition: width 0.08s linear; }
 </style>
 
 <script is:inline>
@@ -98,5 +103,20 @@ const links = [
       document.addEventListener('DOMContentLoaded', initSpy);
     } else { initSpy(); }
     document.addEventListener('astro:page-load', initSpy);
+
+    // Scroll progress bar
+    var fill = document.querySelector('.nav-progress-fill');
+    function onScroll() {
+      if (!fill) fill = document.querySelector('.nav-progress-fill');
+      if (!fill) return;
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      fill.style.width = p.toFixed(1) + '%';
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    document.addEventListener('astro:page-load', function () { fill = document.querySelector('.nav-progress-fill'); onScroll(); });
+    onScroll();
   })();
 </script>

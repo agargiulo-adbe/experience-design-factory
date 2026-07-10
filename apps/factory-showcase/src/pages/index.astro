@@ -4,9 +4,12 @@ import { href as buildHref } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
+const b = base.replace(/\/?$/, '/');
 const blueprint = buildHref(base, '/blueprint');
 const TEAMS_URL = 'https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com';
 const SKILL_URL = 'https://github.com/agargiulo-adbe/experience-design-factory/tree/main/skills/experience-brief';
+const SKILL_ZIP = `${b}skill/experience-brief-skill.zip`;
+const SKILL_MD = `${b}skill/experience-brief-SKILL.md`;
 
 // Live, deployed experiences (absolute — they live at sibling paths on Pages)
 const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
@@ -16,6 +19,7 @@ const experiences = [
     name: 'Generazioni',
     client: 'Max Mara',
     href: `${LIVE}/`,
+    shot: `${b}shots/maxmara.webp`,
     accent: '#C19A6B',
     tagEn: 'Quiet-luxury · IT · the first instance',
     tagIt: 'Quiet-luxury · IT · la prima istanza',
@@ -27,6 +31,7 @@ const experiences = [
     name: 'Engagement Unlimited',
     client: 'UniCredit',
     href: `${LIVE}/unicredit-engagement/`,
+    shot: `${b}shots/unicredit.webp`,
     accent: '#BE2027',
     tagEn: '11 sections · IT · the most mature',
     tagIt: '11 sezioni · IT · la più matura',
@@ -38,6 +43,7 @@ const experiences = [
     name: 'Pole Position',
     client: 'Ferrari × Adobe',
     href: `${LIVE}/ferrari-racing/`,
+    shot: `${b}shots/ferrari.webp`,
     accent: '#FF2800',
     tagEn: 'Bilingual EN/IT · motorsport · live product mockups',
     tagIt: 'Bilingue EN/IT · motorsport · mockup di prodotto live',
@@ -49,9 +55,9 @@ const experiences = [
 const values = [
   {
     n: '01',
-    titleEn: 'From weeks to hours', titleIt: 'Da settimane a ore',
-    bodyEn: 'A brand-perfect, accessible experience isn’t rebuilt each time — it’s a skin over a shared core. A new client experience takes about half a day, not a sprint.',
-    bodyIt: 'Un’esperienza on-brand e accessibile non si ricostruisce ogni volta — è una skin sopra un core condiviso. Una nuova esperienza cliente richiede circa mezza giornata, non uno sprint.',
+    titleEn: 'No rebuilding, ever', titleIt: 'Mai più da zero',
+    bodyEn: 'A brand-perfect, accessible experience isn’t rebuilt each time — it’s a skin over a shared core. Once the thinking is done, the engine assembles a working build in an hour, so effort goes to strategy, not scaffolding.',
+    bodyIt: 'Un’esperienza on-brand e accessibile non si ricostruisce ogni volta — è una skin sopra un core condiviso. Fatto il pensiero, il motore assembla una build funzionante in un’ora: l’impegno va alla strategia, non all’impalcatura.',
   },
   {
     n: '02',
@@ -111,10 +117,10 @@ const values = [
         </a>
       </div>
       <dl class="hero-stats" data-reveal data-reveal-delay="3">
-        <div><dt>3</dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
-        <div><dt>~30<span>min</span></dt><dd><T en="to a new experience" it="per una nuova esperienza" /></dd></div>
-        <div><dt>12</dt><dd><T en="automated quality checks" it="controlli di qualità automatici" /></dd></div>
-        <div><dt>2</dt><dd><T en="languages, instant switch" it="lingue, switch istantaneo" /></dd></div>
+        <div><dt><span data-count="3">3</span></dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
+        <div><dt><span class="hero-stat-lt">&lt;</span>&nbsp;1<span class="hero-stat-u">h</span></dt><dd><T en="from brief to a working build" it="dal brief a una build funzionante" /></dd></div>
+        <div><dt><span data-count="12">12</span></dt><dd><T en="automated quality checks" it="controlli di qualità automatici" /></dd></div>
+        <div><dt><span data-count="2">2</span></dt><dd><T en="languages, instant switch" it="lingue, switch istantaneo" /></dd></div>
       </dl>
     </div>
   </section>
@@ -191,9 +197,10 @@ const values = [
       <div class="exp-grid">
         {experiences.map((e, i) => (
           <a class="exp-card" href={e.href} target="_blank" rel="noopener" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)} style={`--exp-accent:${e.accent}`}>
-            <div class="exp-visual" aria-hidden="true">
+            <div class="exp-visual">
+              <img class="exp-shot" src={e.shot} alt={`${e.name} — ${e.client}, live experience`} loading="lazy" width="1200" height="750" />
               <span class="exp-chip">{e.client}</span>
-              <span class="exp-orb"></span>
+              <span class="exp-live" aria-hidden="true"><span class="exp-live-dot"></span>LIVE</span>
             </div>
             <div class="exp-body">
               <h3 class="exp-name">{e.name}</h3>
@@ -295,8 +302,12 @@ const values = [
     <div class="wrap">
       <p class="eyebrow" data-reveal><T en="How an experience is born" it="Come nasce un’esperienza" /></p>
       <h2 id="flow-title" class="h-section" data-reveal>
-        <T en="From a brand’s context to a live experience — in under an hour." it="Dal contesto di un brand a un’esperienza live — in meno di un’ora." />
+        <T en="You do the thinking. The engine does the hour." it="Il pensiero è tuo. L’ora è del motore." />
       </h2>
+      <p class="lead prose-max flow-lead serif-note" data-reveal>
+        <T en="Researching the brand, finding the angle, shaping the story — that’s the Adobian’s craft, and it takes the time it deserves. The factory removes everything that <em>isn’t</em> that: once the brief is ready, a working, brand-perfect experience is scaffolded in under an hour — then the Adobian makes it grow."
+           it="Studiare il brand, trovare l’angolo, dare forma alla storia — è il mestiere dell’Adobian, e prende il tempo che merita. La fabbrica toglie tutto ciò che <em>non</em> è quello: quando il brief è pronto, un’esperienza funzionante e on-brand viene scaffoldata in meno di un’ora — poi l’Adobian la fa crescere." />
+      </p>
 
       <div class="flow-kb" data-reveal>
         <span class="flow-kb-badge" aria-hidden="true">KB</span>
@@ -313,6 +324,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">01</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="Research" it="Ricerca" /></h3>
             <p class="flow-step-desc">
               <T en="An Adobian runs deep research in their own Claude, ChatGPT or Copilot — objectives, industrial plan, financials, news, brand and CX initiatives: the full context of the company the experience is for. A shareable Factory skill asks the right questions."
@@ -326,6 +338,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">02</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="Draft" it="Draft" /></h3>
             <p class="flow-step-desc">
               <T en="The same Adobian sketches the experience they want to create — the story, the sections, the Adobe capabilities to reveal."
@@ -336,6 +349,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">03</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="The brief" it="Il brief" /></h3>
             <p class="flow-step-desc">
               <T en="The output is a hyper-detailed brief. It lands with Antonio Gargiulo, who turns intent into an executable spec."
@@ -346,6 +360,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">04</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="engine"><T en="The engine · ~1h" it="Il motore · ~1h" /></span>
             <h3 class="flow-step-title"><T en="Scaffold" it="Scaffold" /></h3>
             <p class="flow-step-desc">
               <T en="The new Experience Design is scaffolded on the shared engine. In under an hour, a working, brand-perfect experience is delivered."
@@ -356,6 +371,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">05</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="Grow" it="Crescita" /></h3>
             <p class="flow-step-desc">
               <T en="The commissioning Adobian is granted Admin Console access — and grows the experience themselves: sections, demo media, custom slides, shareable links."
@@ -366,6 +382,7 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">06</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="factory"><T en="Factory KB" it="KB Factory" /></span>
             <h3 class="flow-step-title"><T en="Verified" it="Verifica" /></h3>
             <p class="flow-step-desc">
               <T en="Every step is checked against the Experience Design Factory knowledge base — so what ships is accurate, on-message and on-brand."
@@ -385,6 +402,60 @@ const values = [
     </div>
   </section>
 
+  <!-- ══ THE SKILL ══ -->
+  <section id="skill" class="section band-skill" aria-labelledby="skill-title">
+    <div class="skill-glow" aria-hidden="true"></div>
+    <div class="wrap skill-wrap">
+      <p class="eyebrow eyebrow--dark" data-reveal><T en="For every Adobian — available today" it="Per ogni Adobian — disponibile oggi" /></p>
+      <h2 id="skill-title" class="h-section skill-title" data-reveal>
+        <T en="Put the factory’s intake inside your own AI." it="Metti l’intake della fabbrica dentro la tua AI." />
+      </h2>
+      <p class="lead skill-lead" data-reveal>
+        <T en="One installable skill turns your Claude, ChatGPT or Copilot into a guided interview: it researches the brand with you and writes the hyper-detailed brief that seeds a new experience. It runs in your own account — no extra licence, nothing to set up."
+           it="Una skill installabile trasforma il tuo Claude, ChatGPT o Copilot in un’intervista guidata: studia il brand con te e scrive il brief di iper-dettaglio che dà vita a una nuova esperienza. Gira nel tuo account — nessuna licenza aggiuntiva, niente da configurare." />
+      </p>
+
+      <div class="skill-platforms">
+        <article class="skill-card" data-reveal>
+          <span class="skill-card-mark" aria-hidden="true">C</span>
+          <h3 class="skill-card-name">Claude</h3>
+          <p class="skill-card-steps"><T en="Claude Code: drop the folder in <code>~/.claude/skills</code> and run <code>/experience-brief</code>. Or Claude.ai: paste it into a Project’s instructions."
+             it="Claude Code: metti la cartella in <code>~/.claude/skills</code> e lancia <code>/experience-brief</code>. Oppure Claude.ai: incollala nelle istruzioni di un Project." /></p>
+        </article>
+        <article class="skill-card" data-reveal data-reveal-delay="1">
+          <span class="skill-card-mark" aria-hidden="true">G</span>
+          <h3 class="skill-card-name">ChatGPT</h3>
+          <p class="skill-card-steps"><T en="Create a Custom GPT, paste the instructions and enable web search — or drop them into a Project or a fresh chat."
+             it="Crea un Custom GPT, incolla le istruzioni e abilita la ricerca web — oppure mettile in un Project o in una nuova chat." /></p>
+        </article>
+        <article class="skill-card" data-reveal data-reveal-delay="2">
+          <span class="skill-card-mark" aria-hidden="true">▲</span>
+          <h3 class="skill-card-name">Copilot</h3>
+          <p class="skill-card-steps"><T en="Microsoft 365 Copilot: create an agent with the instructions — or use them as a prompt file in GitHub Copilot Chat."
+             it="Microsoft 365 Copilot: crea un agent con le istruzioni — oppure usale come prompt file in GitHub Copilot Chat." /></p>
+        </article>
+      </div>
+
+      <div class="skill-actions" data-reveal>
+        <a class="btn btn-primary" href={SKILL_ZIP} download>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+          <T en="Download the skill" it="Scarica la skill" />
+        </a>
+        <button class="btn btn-on-dark" type="button" data-copy-skill data-skill-src={SKILL_MD}>
+          <span data-copy-idle><T en="Copy the instructions" it="Copia le istruzioni" /></span>
+          <span data-copy-done hidden><T en="Copied ✓" it="Copiato ✓" /></span>
+        </button>
+        <a class="btn btn-on-dark" href={SKILL_URL} target="_blank" rel="noopener">
+          <T en="View on GitHub" it="Vedi su GitHub" /> <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <p class="skill-fineprint" data-reveal>
+        <T en="Send the brief it produces to Antonio via Teams — the experience is scaffolded and you’re given Admin Console access to grow it."
+           it="Invia il brief che produce ad Antonio via Teams — l’esperienza viene scaffoldata e ricevi l’accesso alla Admin Console per farla crescere." />
+      </p>
+    </div>
+  </section>
+
   <!-- ══ HOW IT GROWS ══ -->
   <section id="grow" class="section band-grow" aria-labelledby="grow-title">
     <div class="wrap">
@@ -393,48 +464,41 @@ const values = [
         <T en="The engine is the asset. The roadmap writes itself." it="Il motore è l’asset. La roadmap si scrive da sé." />
       </h2>
       <p class="lead grow-lead" data-reveal>
-        <T en="Two moves ahead: bring brand-perfect visuals inside the factory with Firefly, and hand the intake to every Adobian as an installable skill — the skill is ready today."
-           it="Due mosse davanti a noi: portare visual on-brand dentro la fabbrica con Firefly e affidare l’intake a ogni Adobian come skill installabile — la skill è già pronta." />
+        <T en="A mix of what’s under evaluation and what’s already in motion — each one compounds on the shared engine, for every experience at once."
+           it="Un mix di ciò che è in valutazione e ciò che è già in movimento — ognuno si somma sul motore condiviso, per tutte le esperienze insieme." />
       </p>
-
-      <div class="grow-flagships">
-        <article class="grow-card grow-card--flagship" data-reveal>
-          <span class="grow-badge"><T en="Next up" it="In arrivo" /></span>
-          <h3><T en="Firefly-generated imagery & video" it="Imagery e video generati con Firefly" /></h3>
-          <T en="Move beyond stock. Generate on-brand imagery and video with Adobe Firefly — commercially safe, tuned to each brand, produced inside the factory instead of sourced."
-             it="Oltre lo stock. Generare imagery e video on-brand con Adobe Firefly — sicuri per uso commerciale, calibrati su ogni brand, prodotti dentro la fabbrica invece che reperiti." as="p" />
-        </article>
-        <article class="grow-card grow-card--flagship" data-reveal data-reveal-delay="1">
-          <span class="grow-badge grow-badge--live"><T en="Available" it="Disponibile" /></span>
-          <h3><T en="A skill any Adobian can install" it="Una skill che ogni Adobian può installare" /></h3>
-          <T en="The intake, packaged as a shareable skill for Claude, ChatGPT or Copilot. Install it in your own account and be guided — question by question — to the brief that seeds a new experience."
-             it="L’intake, impacchettato come skill condivisibile per Claude, ChatGPT o Copilot. Installala nel tuo account e fatti guidare — domanda dopo domanda — fino al brief che dà vita a una nuova esperienza." as="p" />
-          <a class="grow-link" href={SKILL_URL} target="_blank" rel="noopener">
-            <T en="Get the skill + install guide" it="Ottieni la skill + guida all’installazione" /> <span aria-hidden="true">↗</span>
-          </a>
-        </article>
-      </div>
 
       <div class="grow-grid">
         <article class="grow-card" data-reveal>
+          <span class="grow-eval"><T en="Under evaluation" it="In valutazione" /></span>
+          <h3><T en="Firefly imagery & video" it="Imagery e video con Firefly" /></h3>
+          <T en="Move beyond stock: generate on-brand imagery and video with Adobe Firefly — commercially safe, tuned to each brand, produced inside the factory instead of sourced."
+             it="Oltre lo stock: generare imagery e video on-brand con Adobe Firefly — sicuri per uso commerciale, calibrati su ogni brand, prodotti dentro la fabbrica invece che reperiti." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="1">
           <h3><T en="Self-serve authoring" it="Authoring self-serve" /></h3>
           <T en="Extend the console so a marketer or seller composes a full experience — sections, media, copy — with zero code."
              it="Estendere la console perché un marketer o un seller componga un’esperienza intera — sezioni, media, copy — senza codice." as="p" />
         </article>
-        <article class="grow-card" data-reveal data-reveal-delay="1">
+        <article class="grow-card" data-reveal data-reveal-delay="2">
           <h3><T en="Brand-to-tokens" it="Dal brand ai token" /></h3>
           <T en="Point at a brand’s guidelines and auto-generate the skin’s token set — colour, type, imagery direction — in minutes."
              it="Puntare alle guidelines di un brand e generare automaticamente il set di token della skin — colore, tipografia, direzione imagery — in minuti." as="p" />
         </article>
-        <article class="grow-card" data-reveal data-reveal-delay="2">
+        <article class="grow-card" data-reveal>
           <h3><T en="More product mockups" it="Più mockup di prodotto" /></h3>
           <T en="Extend the interactive product-mockup library — Customer Journey Analytics, Express and more — so every experience can demo the real thing, not a screenshot."
              it="Estendere la libreria di mockup di prodotto interattivi — Customer Journey Analytics, Express e altri — così ogni esperienza può mostrare il prodotto reale, non uno screenshot." as="p" />
         </article>
-        <article class="grow-card" data-reveal data-reveal-delay="2">
+        <article class="grow-card" data-reveal data-reveal-delay="1">
           <h3><T en="Multi-tenant platform" it="Piattaforma multi-tenant" /></h3>
           <T en="Give each team or region its own governed space — the console already models roles and a registry to get there."
              it="Dare a ogni team o region uno spazio governato proprio — la console modella già ruoli e registry per arrivarci." as="p" />
+        </article>
+        <article class="grow-card" data-reveal data-reveal-delay="2">
+          <h3><T en="Beyond EN / IT" it="Oltre EN / IT" /></h3>
+          <T en="Add languages as easily as the two here — every string already carries its translations, so a new market is a config away, not a rebuild."
+             it="Aggiungere lingue con la stessa facilità delle due attuali — ogni stringa porta già le sue traduzioni, così un nuovo mercato è a un passo di configurazione, non una riscrittura." as="p" />
         </article>
       </div>
     </div>
@@ -466,9 +530,16 @@ const values = [
 <style>
   /* ── HERO ── */
   .hero { position: relative; padding-top: calc(var(--nav-h) + clamp(3rem, 9vh, 7rem)); padding-bottom: clamp(3rem, 8vh, 6rem); overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; z-index: -2; background:
-      radial-gradient(60% 55% at 78% 8%, color-mix(in srgb, var(--color-adobe-red) 22%, transparent), transparent 70%),
-      radial-gradient(55% 50% at 12% 100%, color-mix(in srgb, var(--color-adobe-violet) 16%, transparent), transparent 70%); }
+  .hero-bg { position: absolute; inset: -20%; z-index: -2; background:
+      radial-gradient(55% 50% at 78% 12%, color-mix(in srgb, var(--color-adobe-red) 26%, transparent), transparent 68%),
+      radial-gradient(50% 48% at 14% 92%, color-mix(in srgb, var(--color-adobe-violet) 20%, transparent), transparent 70%),
+      radial-gradient(42% 42% at 52% 40%, color-mix(in srgb, var(--color-adobe-magenta) 12%, transparent), transparent 72%);
+    animation: heroDrift 22s ease-in-out infinite alternate; will-change: transform; }
+  @keyframes heroDrift {
+    0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+    100% { transform: translate3d(3%, 2%, 0) scale(1.08); }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero-bg { animation: none; } }
   .hero-grid { position: absolute; inset: 0; z-index: -1; opacity: 0.5;
     background-image: linear-gradient(var(--line-subtle) 1px, transparent 1px), linear-gradient(90deg, var(--line-subtle) 1px, transparent 1px);
     background-size: 46px 46px; mask-image: radial-gradient(70% 60% at 50% 30%, #000 40%, transparent 100%); }
@@ -481,7 +552,8 @@ const values = [
   .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 2rem; margin-top: 3.5rem; max-width: 40rem; }
   @media (min-width: 720px) { .hero-stats { grid-template-columns: repeat(4, auto); } }
   .hero-stats dt { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.6rem); letter-spacing: -0.03em; line-height: 1; }
-  .hero-stats dt span { font-size: 0.9rem; font-weight: 700; color: var(--ink-tertiary); margin-left: 0.15rem; }
+  .hero-stats .hero-stat-u { font-size: 0.9rem; font-weight: 700; color: var(--ink-tertiary); }
+  .hero-stats .hero-stat-lt { color: var(--accent-primary); }
   .hero-stats dd { font-size: 0.82rem; color: var(--ink-tertiary); margin-top: 0.4rem; max-width: 16ch; }
 
   /* ── WHAT ── */
@@ -521,11 +593,15 @@ const values = [
   @media (min-width: 720px) { .exp-grid { grid-template-columns: repeat(3, 1fr); } }
   .exp-card { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
   .exp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
-  .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden;
-    background: radial-gradient(120% 120% at 20% 0%, color-mix(in srgb, var(--exp-accent) 42%, #16161A), #101014 70%); }
-  .exp-orb { position: absolute; width: 60%; aspect-ratio: 1; right: -12%; bottom: -30%; border-radius: 50%;
-    background: radial-gradient(circle at 40% 40%, color-mix(in srgb, var(--exp-accent) 85%, #fff) 0%, var(--exp-accent) 40%, transparent 72%); filter: blur(4px); opacity: 0.85; }
-  .exp-chip { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2); padding: 0.25rem 0.6rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #101014; }
+  .exp-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.5s cubic-bezier(.2,.7,.2,1); }
+  .exp-card:hover .exp-shot { transform: scale(1.045); }
+  .exp-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,16,20,0) 55%, rgba(16,16,20,0.55) 100%); }
+  .exp-chip { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.25rem 0.6rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  .exp-live { position: absolute; top: 0.9rem; right: 0.9rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.22rem 0.55rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  .exp-live-dot { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #33D17A; box-shadow: 0 0 0 0 rgba(51,209,122,0.7); animation: livePulse 2s infinite; }
+  @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(51,209,122,0.6); } 70% { box-shadow: 0 0 0 6px rgba(51,209,122,0); } 100% { box-shadow: 0 0 0 0 rgba(51,209,122,0); } }
+  @media (prefers-reduced-motion: reduce) { .exp-live-dot { animation: none; } .exp-card:hover .exp-shot { transform: none; } }
   .exp-body { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
   .exp-name { font-size: 1.35rem; color: #fff; }
   .exp-tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
@@ -573,6 +649,11 @@ const values = [
 
   /* ── FLOW ── */
   .band-flow { background: var(--surface-secondary); }
+  :global(.flow-lead) { margin-top: 1.4rem; }
+  .flow-step-actor { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.18rem 0.55rem; border-radius: 999px; margin-bottom: 0.5rem; }
+  .flow-step-actor[data-actor="human"] { color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 12%, transparent); }
+  .flow-step-actor[data-actor="engine"] { color: var(--ink-secondary); background: var(--surface-tertiary); }
+  .flow-step-actor[data-actor="factory"] { color: var(--accent-secondary); background: color-mix(in srgb, var(--accent-secondary) 12%, transparent); }
   .flow-kb { display: flex; gap: 1.1rem; align-items: flex-start; margin-top: 2.5rem; padding: 1.5rem 1.6rem; border-radius: 16px;
     background: var(--surface-primary); border: 1px solid var(--line-subtle); border-left: 4px solid var(--accent-primary); }
   .flow-kb-badge { flex-shrink: 0; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border-radius: 10px;
@@ -598,9 +679,30 @@ const values = [
     color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); flex-shrink: 0; }
   .flow-note-text { font-size: 0.92rem; color: color-mix(in srgb, var(--ink-inverse) 88%, transparent); max-width: 72ch; }
 
+  /* ── SKILL (dark, showpiece) ── */
+  .band-skill { position: relative; background: var(--surface-inverse); color: var(--ink-inverse); overflow: hidden; }
+  .skill-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
+      radial-gradient(50% 60% at 85% 0%, color-mix(in srgb, var(--color-adobe-red) 26%, transparent), transparent 62%),
+      radial-gradient(45% 55% at 8% 100%, color-mix(in srgb, var(--color-adobe-violet) 24%, transparent), transparent 66%); }
+  .skill-wrap { position: relative; z-index: 1; }
+  .skill-title { color: #fff; max-width: 20ch; }
+  :global(.skill-lead) { color: var(--color-slate-300); margin-top: 1.2rem; max-width: 60ch; }
+  .skill-platforms { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 2.5rem; }
+  @media (min-width: 780px) { .skill-platforms { grid-template-columns: repeat(3, 1fr); } }
+  .skill-card { border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.5rem; background: rgba(255,255,255,0.04); transition: border-color 0.2s, transform 0.2s; }
+  .skill-card:hover { border-color: color-mix(in srgb, var(--color-adobe-red) 55%, transparent); transform: translateY(-3px); }
+  .skill-card-mark { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 10px; background: var(--grad-adobe); color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; }
+  .skill-card-name { font-size: 1.15rem; color: #fff; margin: 0.7rem 0 0.5rem; }
+  :global(.skill-card-steps) { font-size: 0.88rem; color: var(--color-slate-300); }
+  :global(.skill-card-steps code) { font-family: var(--font-mono); font-size: 0.85em; background: rgba(255,255,255,0.1); padding: 0.05rem 0.35rem; border-radius: 4px; color: #fff; }
+  .skill-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+  :global(.skill-fineprint) { margin-top: 1.25rem; font-size: 0.85rem; color: var(--color-slate-400); max-width: 62ch; }
+
   /* ── GROW (dark) ── */
   .band-grow { background: var(--surface-inverse); color: var(--ink-inverse); }
-  :global(.grow-lead) { color: var(--color-slate-300); margin-top: 1.2rem; }
+  :global(.grow-lead) { color: var(--color-slate-300); margin-top: 1.2rem; max-width: 60ch; }
+  .grow-card { position: relative; }
+  .grow-eval { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #E8A317; background: color-mix(in srgb, #E8A317 16%, transparent); padding: 0.2rem 0.55rem; border-radius: 999px; margin-bottom: 0.6rem; }
   .grow-flagships { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
   @media (min-width: 720px) { .grow-flagships { grid-template-columns: repeat(2, 1fr); } }
   .grow-card--flagship { position: relative; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
@@ -627,3 +729,53 @@ const values = [
   :global(.author-bio) { margin-top: 1.4rem; }
   .author-cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
 </style>
+
+<script is:inline>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function countUp(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      if (isNaN(target) || reduce) { return; }
+      var dur = 900, start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(eased * target));
+        if (p < 1) requestAnimationFrame(step); else el.textContent = String(target);
+      }
+      el.textContent = '0';
+      requestAnimationFrame(step);
+    }
+    function initCount() {
+      var els = document.querySelectorAll('[data-count]:not([data-counted])');
+      if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.setAttribute('data-counted',''); }); return; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.setAttribute('data-counted',''); countUp(e.target); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.6 });
+      els.forEach(function (e) { io.observe(e); });
+    }
+    function initCopy() {
+      document.querySelectorAll('[data-copy-skill]').forEach(function (btn) {
+        if (btn.__wired) return; btn.__wired = true;
+        btn.addEventListener('click', function () {
+          var src = btn.getAttribute('data-skill-src');
+          fetch(src).then(function (r) { return r.text(); }).then(function (txt) {
+            var body = txt.replace(/^---[\s\S]*?---\s*/, '');
+            return navigator.clipboard.writeText(body);
+          }).then(function () {
+            var idle = btn.querySelector('[data-copy-idle]'), done = btn.querySelector('[data-copy-done]');
+            if (idle && done) { idle.hidden = true; done.hidden = false; setTimeout(function () { idle.hidden = false; done.hidden = true; }, 2200); }
+          }).catch(function () {
+            var src2 = btn.getAttribute('data-skill-src'); if (src2) window.open(src2, '_blank');
+          });
+        });
+      });
+    }
+    function init() { initCount(); initCopy(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    document.addEventListener('astro:page-load', init);
+  })();
+</script>
