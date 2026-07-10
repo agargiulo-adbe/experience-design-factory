@@ -180,18 +180,20 @@ It navigates the deck slide-by-slide at **three viewports (1920×1080, 1440×900
 a **display hero** numeral tagged `data-display` is excluded from the prose band check (a). It
 measures bounding boxes, prints PASS/FAIL per slide+check, screenshots ONLY failing slides
 to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). Runs at **3 viewports**
-(1920×1080, 1440×900, 1280×800). **The checks (a–k + exp):**
+(1920×1080, 1440×900, 1280×800). **The checks (a–l, + exp):**
 - **(a)** significant text (≥24px) centre in the band [30%,70%]; never anchored near the top.
 - **(b)** no content text intersects the chrome controls (target `button[...]`, NOT the deck
   root which also carries `data-deck-next`).
 - **(c)** no box past `--slide-safe-inset`; no `scrollWidth > clientWidth`.
 - **(d)** no text over an image's `data-no-text` zone; text over an image needs a `[data-scrim]`.
 - **(e)** no two non-nested text blocks overlap (text-on-text).
+- **(f)** an OPEN slide-over is a top-level fixed dialog within the viewport — no scroll/clip, full-viewport scrim, width ≤ min(720px, 60vw).
 - **(g)** adjacent stacked text blocks (outside cards) have ≥ 16px vertical gap.
 - **(h)** every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon) against its composited bg.
 - **(i)** content covers ≥ 45% of usable height and its centre of mass is in the central band.
 - **(j)** nothing clipped — every significant element fully inside `[0,0,W,H]`.
 - **(k)** no hidden scroll — no container with `scrollHeight > clientHeight` (a keynote never scrolls).
+- **(l)** while a panel is open, interactive elements are EITHER fully under the scrim OR fully visible (trigger not obstructed).
 - **(exp)** each `HowItWorks` is **expanded INLINE** and the slide is re-measured in the expanded
   state — it must still pass b, c, d, e, g, h, j, k. (a) band-position and (i) space-balance do NOT
   apply to a disclosure, which legitimately shifts the resting composition. A collapsed region
