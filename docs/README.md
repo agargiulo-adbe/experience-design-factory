@@ -10,7 +10,7 @@ you don't need all of it for most tasks.
 - **memory `MEMORY.md`** (~0.6k tok) — index of auto-memories. Individual memory files load on recall (not all at once; ~9k total across 15 files).
 
 ## Read order (on demand, via the Read tool)
-1. **`docs/HANDOVER.md`** (~4.2k tok) — **read this first.** Dated current state: per-experience status, the full UniCredit content model & verified product naming, deck runtime features, the audit method, pending items, recent change log.
+1. **`docs/HANDOVER.md`** (~4.2k tok) — **read this first.** Dated current state: per-experience status, the full UniCredit content model & verified product naming, deck runtime features, the audit method, pending items, recent change log, **and the Factory Showcase site + intake skill (§13)**.
 2. **`docs/new-client-in-30-min.md`** (~0.9k tok) — read **only if** creating a new experience (steps + gotchas: Tailwind v4 + monorepo, trailing slash, base URL, GSAP scroller, reduced-motion, hyphenated TS keys, CSS translucency).
 3. **`docs/AUDIT.md`** (~4.9k tok) — read **only if** working on **Max Mara / Acquisizione**. Phase‑1 diagnosis (dated 2026‑06‑16); proposals **not yet applied** — validate before acting.
 4. **`docs/storyboard.md`** (~1.6k tok) — narrative storyboard; read if you need the story arc.

@@ -18,14 +18,20 @@ Monorepo di una **Experience Design Factory**: un motore condiviso (`packages/co
 **Experience Design** cliente è una *skin* (design token + contenuti + asset + config). Sopra, una
 **Super Admin Console** (`apps/console`) per gestire esperienze e utenti.
 
-Esperienze:
+Esperienze (cliente):
 - **Generazioni — Max Mara** (`apps/generazioni-maxmara`, root del deploy) · IT, quiet-luxury. Prima istanza.
 - **Engagement Unlimited — UniCredit** (`apps/unicredit-engagement`) · IT · **oggetto di tutto il lavoro recente** (vedi §5).
 - **Pole Position — Ferrari × Adobe** (`apps/ferrari-racing`) · EN/IT bilingue, motorsport.
 
+App interne (non-cliente):
+- **Experience Design Factory — Showcase** (`apps/factory-showcase`, `/showcase/`) · sito **vetrina** bilingue EN/IT che presenta la Factory a leadership/colleghi Adobe (valorizzare il lavoro + visibilità internazionale). **Non è un deck**: è uno scroll-site. **Dettaglio iperdettagliato in §13.**
+- **Super Admin Console** (`apps/console`, `/console/`) — vedi §7.
+
+Correlato: **skill di intake** `skills/experience-brief/` (Claude/ChatGPT/Copilot) che genera il brief per una nuova esperienza — vedi §13.4.
+
 Solo capability Adobe pubbliche / materiale demo — **niente IP cliente riservata**, **niente imagery brand sbagliata** (Quality Bar in `CLAUDE.md`).
 
-Stato build: `pnpm build` verde su tutti i pacchetti (core, console, 3 app). Deploy automatico su push a `main`.
+Stato build: `pnpm build` verde su tutti i pacchetti (core, console, **4 app**: maxmara, unicredit, ferrari, factory-showcase). Deploy automatico su push a `main`.
 
 ---
 
@@ -38,8 +44,10 @@ Stato build: `pnpm build` verde su tutti i pacchetti (core, console, 3 app). Dep
   - `blocks/i18n/` — `T.astro` (rende EN+IT, CSS mostra la lingua attiva) + `LangToggle.astro`.
 - `apps/<exp>/` — ogni esperienza: pagine Astro statiche, `src/layouts/BaseLayout.astro`, `src/styles/global.css` (token contract), `assets.index.ts`/`assets.manifest.ts`, `src/pages/admin.astro` (wrapper sottile sull'engine).
 - `apps/console` — Super Admin (Supabase Auth, users, registry esperienze).
+- `apps/factory-showcase` — **scroll-site vetrina** (NON deck). Riusa dal core SOLO `blocks/i18n/T.astro` + `LangToggle.astro` + `utils/url.ts` (`href`); ha un proprio `global.css` con token Adobe. 2 pagine: `index.astro` + `blueprint.astro`. Dettaglio in §13.
 - `supabase/` — `migrations/` (schema+seed), `functions/invite-user/` (Edge Function), `README.md` (setup una-tantum).
-- `.github/workflows/deploy.yml` — build+merge dist di ogni app in un unico artifact → GitHub Pages (Node 22).
+- `skills/` — `experience-design/SKILL.md` (come si **costruisce** un'esperienza) + `experience-brief/` (skill di **intake** condivisibile → brief; vedi §13.4).
+- `.github/workflows/deploy.yml` — build+merge dist di ogni app in un unico artifact → GitHub Pages (Node 22). Merge: root=maxmara + `/unicredit-engagement/` + `/ferrari-racing/` + `/console/` + `/showcase/`; lo step "Verify" controlla anche `pages/showcase/index.html`.
 
 **Sorgenti autorevoli** (in `docs/`, non committate se pesanti): i `.pptx` Adobe (es. `Summit 2026 Analytics Track MEGA DECK.pptx`) sono la **fonte di verità** per nomi/prodotti. Per leggerli: `unzip -q "<file>.pptx" 'ppt/slides/*.xml'` e strip dei tag `<a:t>` (vedi §5.4 per un esempio già usato).
 
@@ -51,10 +59,12 @@ Stato build: `pnpm build` verde su tutti i pacchetti (core, console, 3 app). Dep
 pnpm dev                                   # dev server default
 pnpm build                                 # build TUTTE le app (verifica ognuna)
 pnpm lint · pnpm typecheck
-pnpm --filter <app> dev|build|preview      # per app: generazioni-maxmara | unicredit-engagement | ferrari-racing | console
+pnpm --filter <app> dev|build|preview      # per app: generazioni-maxmara | unicredit-engagement | ferrari-racing | console | factory-showcase
+pnpm dev:showcase                          # alias per il solo showcase (root package.json)
 pnpm --filter unicredit-engagement audit:deck   # gate DOM deterministico su 3 viewport (1920/1440/1280)
 pnpm --filter <app> assets:build           # fetch/grade asset Pexels → src/assets/generated/ (+ PEXELS_API_KEY in .env)
 ```
+Nota: **factory-showcase non ha `audit:deck`** (non è un deck) né `assets:build` (asset statici in `public/`).
 
 Deploy: **push su `main`** → GitHub Actions → Pages. Live es.
 `https://agargiulo-adbe.github.io/experience-design-factory/unicredit-engagement/`.
@@ -70,6 +80,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 | Generazioni Max Mara | Stabile; `docs/AUDIT.md` elenca refinement proposti (copy 2025→2030, scala tipografica, ecc.) **non ancora applicati** | La pagina Acquisizione è deck; le altre 7 sono scroll-Step. |
 | Ferrari Racing | Stabile; include i **Product Mockup** (GenstudioMockup, RtcdpMockup, MockupSlide). CJAMockup/ExpressMockup **pending** (memoria `product-mockup-engine`). | Bilingue EN default. |
 | Console (Super Admin) | Codice pronto; **setup Supabase una-tantum PENDING** (`supabase/README.md`). | Auth + registry. |
+| **Factory Showcase** | **Live e in evoluzione** (lug 2026). Scroll-site vetrina + skill di intake. | Vedi §13. Ultimo focus di lavoro. |
 
 ---
 
@@ -152,7 +163,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 ## 9. Deploy & segreti
 
 - Repo pubblico `agargiulo-adbe/experience-design-factory`; Pages source = **GitHub Actions**.
-- Build unisce i `dist`: root = maxmara; `/unicredit-engagement/`, `/ferrari-racing/`, `/console/`. Ogni app: `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`.
+- Build unisce i `dist`: root = maxmara; `/unicredit-engagement/`, `/ferrari-racing/`, `/console/`, `/showcase/`. Ogni app: `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`.
 - Il job di deploy **ritenta** sui fallimenti transitori `syncing_files` di Pages e salta i commit stale.
 - Env di build: `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` da **GitHub Actions secrets** (mai in repo). **Mai committare** `.env`/token/service_role.
 - SQL remoto: `supabase db query --linked` (serve `supabase link` + login account agargiulo-adbe).
@@ -168,6 +179,9 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 5. **Ferrari** — CJAMockup / ExpressMockup pending (memoria `product-mockup-engine`). Prima di toccare i mockup leggi `mockup-navigation-patterns`.
 6. **Cosmetico** — la `description` meta di `coworker.astro` cita ancora "CX Enterprise Coworker" (non visibile in slide; ok, ma allineabile a "Coworker").
 7. **Non rilavorate col nuovo standard**: le altre esperienze non hanno il pass credibilità/fonti fatto su UniCredit.
+8. **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (per download+copia on-site). La **source of truth è `skills/experience-brief/`**; se la modifichi, ri-copia i file e rigenera lo `.zip` (vedi §13.4).
+9. **Showcase — a11y/Lighthouse pass** (consigliato, non fatto): verificare contrasto dei testi grigi su fondo chiaro, focus order, `prefers-reduced-motion` — per certificare lo standard che la pagina *dichiara*.
+10. **Showcase — Firefly "in valutazione"**: la card roadmap Firefly è marcata *Under evaluation*, non un impegno. Non promettere date.
 
 ---
 
@@ -182,6 +196,16 @@ Dal più recente:
 
 Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `audit:deck` con confronto baseline via stash; commit + push.
 
+### Change log — Factory Showcase (lug 2026, dal più recente)
+- Uniformità KPI (link "12 controlli" dentro l'etichetta) + review pagina (fix IT `personas`, entry-point skill unificati su `#skill`) + skill file storico allineato ad `a–l`.
+- KPI "12" reso preciso/verificabile ("controlli di layout e accessibilità, per slide" → link a `blueprint#deck`); no overselling.
+- **Mark distintivo** (chip gradiente + due piani core/skin) su favicon+nav+footer, al posto della "A" Adobe.
+- **Skill above the fold** (CTA "Ottieni la skill" secondaria con dot verde → `#skill`); blueprint declassato a link testuale.
+- **WOW pass**: screenshot reali delle 3 esperienze nelle card Proof (badge LIVE), **sezione Skill dedicata** (valore + install Claude/ChatGPT/Copilot + download .zip + copia istruzioni), roadmap **simmetrica** 3×2 con Firefly "in valutazione", hero animato + count-up + barra progresso; **reframe** tempo ("l'ora è del motore", tag actor sugli step del flusso) per valorizzare il lavoro dell'Adobian.
+- Sezione **"Come nasce un'esperienza"** (flusso KB→ricerca→draft→brief→scaffold→crescita→verifica) + nota "Da segnalare" (tutto su @adobe.com/Google, nessuna licenza) + KB **solo locale**.
+- Skill **`experience-brief`** creata (SKILL.md + INSTALL.md, Claude/ChatGPT/Copilot).
+- Prima versione del sito + wiring nel workflow di deploy (`/showcase/`).
+
 ---
 
 ## 12. Puntatori
@@ -190,4 +214,44 @@ Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `aud
 - `docs/new-client-in-30-min.md` — creare una nuova esperienza + gotchas (Tailwind v4 + monorepo, trailing slash, base URL, GSAP scroller, reduced-motion, chiavi TS con trattino, translucency in CSS raw).
 - `docs/AUDIT.md` — diagnosi (Fase 1) di Max Mara Acquisizione.
 - `docs/storyboard.md` — storyboard.
-- Memorie (`~/.claude/projects/.../memory/`): `unicredit-personas-credibility` (il riferimento più aggiornato per UniCredit), `deck-responsive-fullscreen`, `mockup-navigation-patterns`, `custom-slides-authoring`, `super-admin-console`, `ferrari-racing-experience`, `round-2-status`.
+- `skills/experience-brief/` — skill di intake (SKILL.md + INSTALL.md); `skills/experience-design/SKILL.md` — skill di costruzione.
+- Memorie (`~/.claude/projects/.../memory/`): `factory-showcase-site` (la vetrina + gotcha Astro), `unicredit-personas-credibility` (il riferimento più aggiornato per UniCredit), `deck-responsive-fullscreen`, `mockup-navigation-patterns`, `custom-slides-authoring`, `super-admin-console`, `ferrari-racing-experience`, `round-2-status`.
+
+---
+
+## 13. Factory Showcase — sito vetrina (iperdettaglio)
+
+`apps/factory-showcase` · **live**: `https://agargiulo-adbe.github.io/experience-design-factory/showcase/`.
+**Scopo**: presentare la Experience Design Factory a **leadership e colleghi Adobe** (valorizzare il lavoro di Antonio + visibilità internazionale). **Pubblico misto** (leadership strategica + practitioner/eng). `<meta robots="noindex">` (uso interno).
+
+### 13.1 Formato & stack
+- **Scroll-site, NON un deck** (nessun `DeckContainer`/`audit:deck`). Astro 6 statico, Tailwind v4, `trailingSlash:'always'`, `base = /experience-design-factory/showcase`.
+- Riusa dal core **solo** `blocks/i18n/T.astro`, `LangToggle.astro`, `utils/url.ts` (`href`). Nessuna dipendenza da deck/admin/supabase.
+- **Token contract proprio** in `src/styles/global.css` (mantiene i nomi semantici del core così `T`/`LangToggle` funzionano): accent = **Adobe red `#EB1000`**, gradiente firma `--grad-adobe` (rosso→magenta `#E1077B`→violet `#6236FF`); font Inter (display+body) + Source Serif 4 (accenti corsivi); mono di sistema.
+- **Bilingue EN default + toggle IT** (via `T`/`LangToggle`, anti-flash init in `BaseLayout`). *Tutto* il testo è EN+IT reale.
+- **2 pagine**: `src/pages/index.astro` (la narrativa) e `src/pages/blueprint.astro` (deep-dive tecnico). Componenti: `layouts/BaseLayout.astro`, `components/SiteNav.astro`, `components/SiteFooter.astro`.
+
+### 13.2 Struttura `index` (ordine sezioni) + comportamenti
+Hero → **what** → **why** → **proof** → **architecture** → **flow** → **skill** → **grow** (roadmap) → **author**. Nav sticky con anchor + **scrollspy** + **barra di progresso** (gradiente, in `SiteNav`). `blueprint.astro`: TOC sticky + 9 sezioni + elenco dei 12 check a–l.
+- **Hero**: gradiente animato (`heroDrift`, reduced-motion off), 4 **KPI** con count-up (`[data-count]`), CTA **primaria "Guardalo dal vivo"** (`#proof`), **secondaria "Ottieni la skill"** (dot verde → `#skill`), link testuale al blueprint.
+- **Proof**: 3 card con **screenshot reali** delle esperienze live (badge "LIVE" pulsante) + strip Console.
+- **Motion**: reveal-on-scroll (`[data-reveal]` + IntersectionObserver in `BaseLayout`), count-up, progress bar, copy-to-clipboard — **tutti reduced-motion safe**.
+
+### 13.3 Decisioni di contenuto (LOCKED — non regredire)
+- **Autore = Antonio Gargiulo** (NON "Argiulo"), titolo **"Senior Product Sales Specialist · Adobe Italia"**. Contatto = **deep-link Teams** `https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com` (CTA "Scrivimi su Teams"). Coerente con email `agargiulo@adobe.com`.
+- **Reframe tempo (importante)**: il "~1h / < 1h" è **solo lo step di scaffold del motore**, non l'intera esperienza. Headline flusso **"Il pensiero è tuo. L'ora è del motore."**; ogni step del flusso ha un **tag actor** (Adobian ×4 · Il motore ×1 · KB Factory ×1) per **valorizzare il lavoro dell'Adobian** (ricerca/concezione) e l'ottimizzazione a valle. KPI hero = *"dal brief a una build funzionante"*. **Non trivializzare il lavoro umano.**
+- **Nota KB = solo locale**: la KB vive **solo sul computer di Antonio**, **mai** su sistemi terzi/cloud/esterni (tutela dati Adobe). Tenere esplicito.
+- **Nota "Da segnalare"**: copre **sia** i tool della catena **sia** ogni componente dell'architettura/runtime della Factory — tutti su account `@adobe.com` via login Google, **nessuna licenza aggiuntiva**, non bloccati da Adobe.
+- **KPI "12"** = i 12 check del contratto deck (a–l); etichetta precisa *"controlli di layout e accessibilità, per slide"*, **linkata a `blueprint#deck`** (verificabile, no overselling).
+- **Roadmap**: Firefly (imagery/video) è **"In valutazione"**; la skill di intake è **"Disponibile"**. Griglia **simmetrica 3×2**.
+- **Mark distintivo**: chip gradiente + **due piani (core+skin)** — NON la "A" Adobe (leggeva come logo Adobe rotto). In `public/favicon.svg` + SVG inline in `SiteNav`/`SiteFooter` (id gradiente distinti: `edf-fav`/`edf-grad-nav`/`edf-grad-foot`).
+
+### 13.4 La skill di intake (`experience-brief`)
+- **Source of truth**: `skills/experience-brief/` → `SKILL.md` (frontmatter + istruzioni: intervista guidata che ricerca il brand e produce il **brief iperdettagliato**) + `INSTALL.md` (Claude / ChatGPT Custom GPT / Microsoft Copilot).
+- **Copie servite** per il sito in `apps/factory-showcase/public/skill/`: `experience-brief-SKILL.md`, `experience-brief-INSTALL.md`, `experience-brief-skill.zip`. La sezione **Skill** offre **Download (.zip)**, **Copia istruzioni** (fetch della `SKILL.md` + strip frontmatter → clipboard) e **Vedi su GitHub**.
+- ⚠️ **Sync manuale**: se cambi `skills/experience-brief/`, ri-copia in `public/skill/` e rigenera lo zip: `cp skills/experience-brief/*.md apps/factory-showcase/public/skill/` (rinominando con prefisso `experience-brief-`) e `(cd skills && zip -qr ../apps/factory-showcase/public/skill/experience-brief-skill.zip experience-brief)`.
+
+### 13.5 Asset & gotcha
+- **Screenshot proof** in `public/shots/{maxmara,unicredit,ferrari}.webp` (1200×750). Rigenerazione: playwright naviga gli URL **live** delle esperienze → sharp `resize(1200,750, fit:cover, top)` → webp q82. (Script usa-e-getta dalla root; `playwright` + `sharp` sono già devDep.)
+- **Committare** `public/shots/*` e `public/skill/*` (serviti staticamente; NON gitignored). `dist/` è gitignored.
+- **Gotcha Astro (CRITICO, riusabile)**: le classi passate al componente **`<T>`** (child) **NON ricevono gli stili *scoped*** della pagina (l'elemento reso da `T` non ha l'attributo di scope). Fix: usare **`:global(.classe)`** oppure **wrappare `<T>` in un elemento nativo** con la classe. Ha rotto titolo hero + molti paragrafi finché non corretto. Vale per qualunque componente che renda markup proprio.

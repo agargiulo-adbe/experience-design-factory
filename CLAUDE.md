@@ -16,12 +16,14 @@ Experiences today:
 - **Engagement Unlimited** — UniCredit (IT, 11 sections).
 - **Pole Position** — Ferrari Racing × Adobe (EN/IT bilingual, motorsport, 7 sections).
 
+Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, and the shareable **intake skill** `skills/experience-brief/`. Full detail in `docs/HANDOVER.md` §13.
+
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no
 wrong‑brand imagery** (see Quality Bar).
 
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
-- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `console`)
+- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `console`, `factory-showcase`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports)
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
@@ -29,11 +31,12 @@ wrong‑brand imagery** (see Quality Bar).
 - `packages/core` — shared engine (`@agargiulo-adbe/experience-core`, alias `@edf/core`): experience blocks, the **immersive deck** (`blocks/immersive/*`), the **shared Admin Console** (`blocks/admin/AdminConsole.astro`), **i18n** (`blocks/i18n/T.astro` + `LangToggle.astro`), design‑token contract, motion.
 - `apps/generazioni-maxmara` · `apps/unicredit-engagement` · `apps/ferrari-racing` — client experiences (Astro static, per‑app `global.css` tokens + `assets.manifest.ts` + `BaseLayout.astro` + `/admin/` wrapper).
 - `apps/console` — **Super Admin Console** (auth, users, experiences registry).
+- `apps/factory-showcase` — internal **scroll‑site** showcasing the Factory (NOT a deck; no `audit:deck`). Reuses only `@edf/core` i18n (`T`/`LangToggle`) + `href`; own Adobe‑red `global.css`. See `docs/HANDOVER.md` §13.
 - `supabase/` — backend: `migrations/` (schema + seeds), `functions/invite-user/` (Edge Function), `README.md` (one‑time setup).
 
 ## Deployment
 - Public repo `agargiulo-adbe/experience-design-factory`; GitHub Pages source = **GitHub Actions** (`.github/workflows/deploy.yml`, Node 22).
-- Build merges every app's `dist` into one artifact: root = maxmara; `/unicredit-engagement/`, `/ferrari-racing/`, `/console/`. Each app: Astro `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`.
+- Build merges every app's `dist` into one artifact: root = maxmara; `/unicredit-engagement/`, `/ferrari-racing/`, `/console/`, `/showcase/`. Each app: Astro `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`.
 - Live e.g. `https://agargiulo-adbe.github.io/experience-design-factory/ferrari-racing/`.
 - Push to `main` auto‑deploys. The **deploy job retries** on transient GitHub Pages `syncing_files` failures (backend can be flaky) and skips stale commits.
 - Build env: `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` from **GitHub Actions secrets** (never in repo).
