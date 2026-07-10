@@ -1,8 +1,9 @@
 # Experience Design Factory — Agent Guide
 
-> **Handover / current state:** see `docs/HANDOVER.md` for the detailed, dated project
-> handover (per-experience status, UniCredit content model & verified product naming,
-> deck runtime features, audit method, pending items, recent change log).
+> **Docs / handover:** new sessions — read `docs/README.md` first (index + reading order +
+> which docs to skip). Then `docs/HANDOVER.md` for the detailed dated state (per-experience
+> status, UniCredit content model & verified product naming, deck runtime features, audit
+> method, pending items, change log). Never `Read` the `docs/*.pptx`/`*.mp4` (huge, git-ignored).
 
 ## Project Overview
 Monorepo for the **Experience Design Factory**: a reusable engine where each client

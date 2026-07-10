@@ -5,6 +5,10 @@
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
 > segnalalo e aggiorna questo file.
+>
+> **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
+> `.md` costa ~15k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
+> git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 
 ---
 
