@@ -371,3 +371,23 @@
 }
 [data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
 [data-deck] .deck-progress { color: var(--color-grigio-200); }
+
+/* Backdrop parallax clip — the shared SlideBackdrop over-scales its image
+   (scale 1.04–1.06) so the drift never reveals an edge. On `overflow:hidden`
+   that over-scaled child still enlarges the container's scrollHeight (~2% of
+   viewport) and trips audit checks c/j/k. `overflow:clip` clips identically but
+   creates no scroll container, so scrollHeight === clientHeight. Visually
+   unchanged; the drift still covers. */
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* The over-scaled parallax child (scale 1.04–1.06) is centred, so it overspills
+   the backdrop top AND bottom; the bottom spill inflates scrollHeight (audit k).
+   Anchor the scale to the bottom edge so it only ever grows UPWARD (top overflow
+   is never counted in scrollHeight). Full-bleed atmosphere — visually identical. */
+[data-deck] .slide-backdrop [data-parallax] { transform-origin: 50% 100%; }
+
+/* Journey roadmap cards sit on the solid rosso (brand) slide. Use an explicit
+   rgba dark tint (NOT a Tailwind opacity modifier, which emits oklab() the audit
+   contrast parser can't read) so ghiaccio text composites to ≥4.5:1. */
+.journey-card { background: rgba(13, 13, 20, 0.55); }
+.journey-card:hover { background: rgba(13, 13, 20, 0.7); }
