@@ -8,7 +8,7 @@ create table if not exists public.scenarios (
   project_slug text not null,
   title        text not null,
   payload      jsonb not null,
-  created_by   uuid references public.profiles (id) on delete set null,
+  created_by   uuid references public.profiles (id) on delete set null default auth.uid(),
   visibility   text not null default 'private'
                check (visibility in ('private', 'link', 'team')),
   created_at   timestamptz not null default now(),
@@ -38,6 +38,7 @@ create policy scenarios_select on public.scenarios
   );
 
 -- INSERT: authenticated users, only as themselves.
+-- created_by defaults to auth.uid() so the WITH CHECK passes; the client need not send it.
 drop policy if exists scenarios_insert on public.scenarios;
 create policy scenarios_insert on public.scenarios
   for insert to authenticated

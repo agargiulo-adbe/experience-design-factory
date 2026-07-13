@@ -78,7 +78,7 @@ export async function listMine(ctx: StoreCtx): Promise<Scenario[]> {
   if (!token) return [];
   const res = await fetch(
     ctx.supabaseUrl + '/rest/v1/scenarios?project_slug=eq.' + encodeURIComponent(ctx.projectSlug) +
-      '&select=id,title,payload,visibility&order=updated_at.desc',
+      '&select=id,title,payload,visibility&order=created_at.desc',
     { headers: { apikey: ctx.supabaseAnonKey, Authorization: 'Bearer ' + token } },
   );
   const rows = await res.json();
