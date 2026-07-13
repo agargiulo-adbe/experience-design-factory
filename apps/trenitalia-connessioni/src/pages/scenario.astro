@@ -1,0 +1,309 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const emailTipi = [
+  { label: 'CartaFreccia Responsys', icon: '🏅', desc: 'Saldo punti, offerte partner, premi collection', freq: '~2×/settimana', badge: 'Loyalty' },
+  { label: 'X-GO Responsys',         icon: '🎟️', desc: 'Sconti Regionale/Intercity, carnet, cashback', freq: '~1×/settimana', badge: 'Youth' },
+  { label: 'Biglietti webmaster',     icon: '🎫', desc: 'Conferma acquisto, cambio soluzione, rimborsi', freq: 'Transazionale', badge: 'Transact' },
+  { label: 'Feedback & NPS',          icon: '📋', desc: 'Sondaggi soddisfazione a cadenza fissa', freq: '2×/mese', badge: 'Survey' },
+  { label: 'Infomobilità',            icon: '🚨', desc: 'Ritardi e disservizi — alert di servizio', freq: 'On event', badge: 'Alert' },
+  { label: 'FS Park',                 icon: '🅿️', desc: '— nessuna comunicazione integrata —', freq: 'Silenzio', badge: 'Gap' },
+];
+
+const touchpoints = [
+  { label: 'trenitalia.com',  icon: '🌐', nota: 'Adobe Analytics istanza 1 (homepage · Accenture)' },
+  { label: 'Frecce booking',  icon: '🎫', nota: 'Adobe Analytics istanza 2 (funnel · IBM + Pico)' },
+  { label: 'App Trenitalia', icon: '📱', nota: 'AI-powered · eventi comportamentali' },
+  { label: 'Oracle Responsys', icon: '📧', nota: 'Campagne CRM · CartaFreccia · X-GO' },
+  { label: 'Salesforce CRM',  icon: '☁️', nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
+  { label: 'FS Park app/web', icon: '🅿️', nota: 'EasyPark · prenotazione parcheggio · loyalty' },
+];
+---
+<BaseLayout
+  title="Il viaggio del cliente oggi"
+  description="Sei sistemi, sei touchpoint — mai una visione unica. Lo scenario che CJA risolve."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/fondazione')}
+    prevHref={href(base, '/')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-viaggio')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <CoverHero
+        eyebrow="01 · Scenario"
+        numeral="01"
+        title="Il viaggio del cliente oggi"
+        lead="Marco usa 6 touchpoint diversi in un solo viaggio. Ogni sistema lo vede. Nessuno sistema lo conosce."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Marco, il pendolare ──────────────────────────── -->
+    <Slide id="slide-marco" bg="primary" align="split">
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="flex items-center justify-center" data-reveal>
+          <div class="relative overflow-hidden rounded-sm" style="width:100%; height:min(500px,62dvh);">
+            <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="top" />
+          </div>
+        </div>
+
+        <div class="text-left">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>
+            STORIA DI MARCO · PASSO 1 DI 6
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Marco, 38 anni.<br />Pendolare business.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
+            style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            Ogni lunedì mattina Marco parcheggia a Milano Centrale, sale su un Frecciarossa per Roma
+            e acquista il biglietto direttamente in app. È un cliente CartaFreccia Oro da 4 anni,
+            con un abbonamento mensile A/R. Lui, la sua auto e il suo smartphone generano dati
+            ogni settimana — su tre sistemi che non si parlano.
+          </p>
+          <div
+            class="mt-8 flex items-start gap-4 p-4 bg-[var(--surface-secondary)] border-l-2 border-[var(--accent-primary)] rounded-r-sm"
+            data-reveal
+            data-reveal-delay="0.4"
+          >
+            <div class="flex-shrink-0 size-9 rounded-full bg-[var(--accent-primary)]/15 flex items-center justify-center font-bold text-[var(--accent-primary)] font-[family-name:var(--font-display)]">
+              M
+            </div>
+            <div>
+              <p class="text-xs font-semibold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">Marco, oggi</p>
+              <p class="text-sm text-[var(--ink-secondary)] leading-relaxed italic">
+                «Ricevo email CartaFreccia ogni settimana — mai un'offerta di parcheggio.
+                Nessuno sa che arrivo sempre dall'auto.»
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: I 6 touchpoint → dato frammentato ─────────────── -->
+    <Slide id="slide-touchpoints" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+        IL PROBLEMA
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Marco usa 6 sistemi.<br/>Il Gruppo ne vede uno per volta.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(1rem, 1.35vw, 1.2rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Il dato esiste — ma è distribuito tra analytics separati, sistemi CRM distinti, app,
+        piattaforme di parcheggio. Nessun sistema conosce il viaggio completo. Il risultato:
+        analisi parziali, opportunità di cross-selling invisibili, comunicazioni non tempificate.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {touchpoints.map((tp) => (
+          <div class="flex items-start gap-3 p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{tp.icon}</span>
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{tp.label}</p>
+              <p class="text-xs text-[var(--ink-tertiary)] mt-0.5 leading-snug">{tp.nota}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-5 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-tertiary)]/50">
+        Scenario illustrativo · non descrive l'architettura interna di FS Italiane
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: Le email — Oracle Responsys in azione ─────────── -->
+    <Slide id="slide-email-gap" bg="secondary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-5" data-reveal>
+        ORACLE RESPONSYS · CRM EMAIL ATTIVO
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        611 email in un anno.<br/>Nessuna sull'orario di arrivo di Marco.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(0.95rem, 1.25vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Oracle Responsys gestisce una macchina CRM attiva: CartaFreccia, X-GO, FrecciaFun, alert di servizio.
+        Personalizzazione di primo nome. Frequenza elevata. Ma nessuna comunicazione
+        sfrutta il momento del viaggio — e FS Park non appare mai.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-3"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {emailTipi.map((e) => (
+          <div class={[
+            'flex items-start gap-3 p-4 rounded-sm border',
+            e.badge === 'Gap'
+              ? 'bg-[var(--accent-primary)]/8 border-[var(--accent-primary)]/30'
+              : 'bg-[var(--surface-primary)] border-[var(--line-subtle)]',
+          ].join(' ')}>
+            <span class="text-xl flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap">
+                <p class="text-sm font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{e.label}</p>
+                <span class={[
+                  'text-[0.6rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase',
+                  e.badge === 'Gap'
+                    ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'
+                    : 'bg-[var(--line-subtle)] text-[var(--ink-tertiary)]',
+                ].join(' ')}>{e.badge}</span>
+              </div>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug mb-1">{e.desc}</p>
+              <p class="text-xs text-[var(--ink-tertiary)] font-medium">{e.freq}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 flex items-start gap-3 max-w-2xl mx-auto p-4 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm" data-reveal data-reveal-delay="0.35">
+        <svg class="flex-shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="9" stroke="var(--accent-primary)" stroke-width="1.5"/>
+          <path d="M10 6v5M10 13.5v.5" stroke="var(--accent-primary)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">
+          <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> Responsys esegue bene le campagne, Salesforce gestisce i profili CRM.
+          Manca l'intelligenza del <em>journey</em> — la connessione che trasforma i segnali sparsi in opportunità tempificate.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Il momento dell'opportunità ───────────────────── -->
+    <Slide id="slide-opportunity" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-18"
+        scrim="bg-[var(--color-ghiaccio)]/92"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+        L'OPPORTUNITÀ MANCATA
+      </p>
+      <h2
+        class="text-[var(--color-carbonio)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Marco parcheggia ogni lunedì.<br/>L'offerta giusta non arriva mai.
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-6 mb-8"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {[
+          {
+            label: 'Quello che FS Park sa',
+            items: ['Marco parcheggia ogni lunedì', 'Stazione Milano Centrale, Hub P1', 'Abbonamento mensile parcheggio in scadenza'],
+            tone: 'left',
+          },
+          {
+            label: 'Quello che Trenitalia sa',
+            items: ['Marco ha CartaFreccia Oro', 'Abbonamento A/R Milano–Roma in corso', 'Acquista sempre in app, lunedì mattina'],
+            tone: 'right',
+          },
+        ].map((col) => (
+          <div class="p-5 bg-[var(--color-bianco)] border border-[var(--color-grigio-200)] rounded-sm">
+            <p class="text-xs font-bold tracking-widest uppercase text-[var(--color-grigio-400)] mb-4">{col.label}</p>
+            <ul class="space-y-2">
+              {col.items.map((item) => (
+                <li class="flex items-start gap-2 text-sm text-[var(--color-grigio-500)]">
+                  <span class="flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="max-w-3xl mx-auto p-5 bg-[var(--accent-primary)] text-[var(--color-ghiaccio)] rounded-sm"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        <p class="text-xs font-bold tracking-widest uppercase text-[var(--color-ghiaccio)]/70 mb-2">
+          Quello che un journey unificato renderebbe possibile
+        </p>
+        <p class="text-base font-semibold font-[family-name:var(--font-display)] leading-snug">
+          «Ciao Marco, il tuo abbonamento parcheggio scade il 31. Rinnova insieme all'abbonamento
+          Frecciarossa e risparmia il 15% su entrambi.»
+        </p>
+        <p class="text-xs text-[var(--color-ghiaccio)]/60 mt-2">
+          Push il venerdì 3 settimane prima della scadenza · canale preferito: app
+        </p>
+      </div>
+
+      <div class="mt-8" data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/fondazione')}
+          class="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          La foundation che avete già
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

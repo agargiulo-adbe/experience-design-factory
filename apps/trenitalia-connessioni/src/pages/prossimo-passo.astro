@@ -1,0 +1,280 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const workshopAgenda = [
+  {
+    slot: '09:00–09:30',
+    titolo: 'Allineamento & contesto',
+    desc: 'Revisione degli obiettivi di business FS: abbonamenti, cross-sell FS Park, loyalty CartaFreccia. Mapping con le capability Adobe.',
+    chi: 'FS Technology + Trenitalia + FS Park + Adobe',
+  },
+  {
+    slot: '09:30–11:00',
+    titolo: 'Live demo personalizzata CJA',
+    desc: 'Demo CJA su journey Marco: dalla ricerca sito al parcheggio. Workspace live con dati illustrativi FS-like. Domande e Q&A tecnico.',
+    chi: 'Adobe + FS Technology',
+  },
+  {
+    slot: '11:00–11:15',
+    titolo: 'Break',
+    desc: '',
+    chi: '',
+  },
+  {
+    slot: '11:15–12:30',
+    titolo: 'Architettura & integration design',
+    desc: 'Workshop tecnico: connettore AEP per Oracle Responsys, integrazione Salesforce/MuleSoft, governance dati, piano di deploy Fase 1.',
+    chi: 'FS Technology + Adobe Engineering',
+  },
+  {
+    slot: '12:30–13:00',
+    titolo: 'Use case prioritization',
+    desc: 'I 3 use case nel contesto FS. Votazione e ranking per impatto/sforzo. Definizione del POC (Proof of Concept) della Fase 1.',
+    chi: 'Tutti',
+  },
+];
+
+const sixMonthUseCases = [
+  {
+    n: '01',
+    titolo: 'Journey end-to-end visibile',
+    horizon: '0–2 mesi',
+    desc: 'Configurazione CJA + connessione Analytics ×2 + App. Prima volta che FS vede il journey completo dalla homepage all\'acquisto.',
+    colore: 'var(--accent-primary)',
+  },
+  {
+    n: '02',
+    titolo: 'Early-trigger abbonamenti',
+    horizon: '2–4 mesi',
+    desc: 'Segmento "frequenza in calo 18 giorni prima scadenza" → campagna Oracle Responsys. KPI: +15% rinnovi early vs batch.',
+    colore: 'var(--accent-secondary)',
+  },
+  {
+    n: '03',
+    titolo: 'Bundle FS Park pilot',
+    horizon: '4–6 mesi',
+    desc: 'Primo pilot Data Collaboration FS Park × Trenitalia su un segmento geografico (es. Milano Centrale). KPI: primo €/viaggio bundle misurabile.',
+    colore: 'var(--color-grigio-300)',
+  },
+];
+---
+<BaseLayout
+  title="Il prossimo passo"
+  description="Workshop di mezza giornata per definire il POC CJA e i 3 use case ad alto impatto nei primi 6 mesi."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    prevHref={href(base, '/roadmap')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-stazione')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--accent-primary)]/88"
+      />
+      <CoverHero
+        eyebrow="06 · Prossimo Passo"
+        numeral="06"
+        title="Un workshop. Tre use case. Sei mesi."
+        lead="Proponiamo mezza giornata di lavoro condiviso — FS Technology, Trenitalia, FS Park, Adobe — per definire il POC Fase 1, validare l'architettura e selezionare i tre use case ad impatto più rapido."
+        size="phase"
+        tone="inverse"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Workshop agenda ───────────────────────────────── -->
+    <Slide id="slide-workshop" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        HALF-DAY WORKSHOP · PROPOSTA ADOBE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Dal pitch alla decisione,<br/>in mezza giornata.
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto flex flex-col gap-2"
+        data-reveal
+        data-reveal-delay="0.16"
+      >
+        {workshopAgenda.map((item, i) => (
+          <div class={[
+            'flex gap-4 items-start p-4 rounded-sm text-left',
+            item.desc ? 'bg-[var(--surface-secondary)] border border-[var(--line-subtle)]' : 'opacity-40',
+          ].join(' ')}>
+            <div class="flex-shrink-0 w-24 text-right">
+              <p class="text-[0.65rem] font-bold tabular-nums text-[var(--ink-tertiary)] mt-0.5">{item.slot}</p>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5">{item.titolo}</p>
+              {item.desc && (
+                <p class="text-xs text-[var(--ink-secondary)] leading-snug">{item.desc}</p>
+              )}
+              {item.chi && (
+                <p class="mt-1 text-[0.6rem] font-bold tracking-wide uppercase text-[var(--ink-tertiary)]/60">{item.chi}</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 w-full max-w-4xl mx-auto flex flex-wrap gap-3 justify-center" data-reveal data-reveal-delay="0.3">
+        {[
+          { label: 'Formato', val: 'Half-day workshop in presenza (Milano o Roma)' },
+          { label: 'Partecipanti', val: 'FS Technology · Trenitalia CMO · FS Park · Adobe (SE + Sales)' },
+          { label: 'Output', val: 'POC scope definito · architettura validata · roadmap firmata' },
+        ].map((meta) => (
+          <div class="px-4 py-2.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-xs">
+            <span class="font-bold text-[var(--ink-primary)]">{meta.label}:&nbsp;</span>
+            <span class="text-[var(--ink-secondary)]">{meta.val}</span>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: I 3 use case in 6 mesi ───────────────────────── -->
+    <Slide id="slide-6mesi" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        6 MESI · 3 USE CASE · ROI MISURABILE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        I risultati si vedono<br/>in sei mesi, non in tre anni.
+      </h2>
+
+      <div
+        class="w-full max-w-4xl mx-auto flex flex-col gap-4 mb-8"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {sixMonthUseCases.map((uc) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex items-start gap-5">
+            <div class="flex-shrink-0 flex flex-col items-center gap-2">
+              <div
+                class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold font-[family-name:var(--font-display)]"
+                style={`background: color-mix(in srgb, ${uc.colore} 15%, transparent); color: ${uc.colore};`}
+              >
+                {uc.n}
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-3 mb-1 flex-wrap">
+                <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{uc.titolo}</p>
+                <span class="text-[0.6rem] px-1.5 py-0.5 rounded-sm font-bold tracking-wide uppercase text-[var(--ink-tertiary)] bg-[var(--surface-primary)] border border-[var(--line-subtle)]">
+                  {uc.horizon}
+                </span>
+              </div>
+              <p class="text-sm text-[var(--ink-secondary)] leading-snug">{uc.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-4"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        {[
+          { value: '6 mesi', label: 'al primo ROI misurabile', sub: 'Fase 1 completata' },
+          { value: '0', label: 'sistemi esistenti dismessi', sub: 'Responsys, Salesforce, AA: tutti attivi' },
+          { value: '3→1', label: 'vista del journey', sub: 'Da siloed a unificato' },
+        ].map((m) => (
+          <div class="text-center p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <p
+              class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-1.5"
+              style="font-size: clamp(1.8rem, 3vw, 2.8rem);"
+            >
+              {m.value}
+            </p>
+            <p class="text-sm font-medium text-[var(--ink-primary)] mb-0.5">{m.label}</p>
+            <p class="text-xs text-[var(--ink-tertiary)]">{m.sub}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: CTA finale ────────────────────────────────────── -->
+    <Slide id="slide-cta" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-binari')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--color-carbonio)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-8" data-reveal>
+        ADOBE × FS GROUP
+      </p>
+      <h2
+        class="font-[family-name:var(--font-display)] text-[var(--color-ghiaccio)] mb-6"
+        style="font-size: clamp(2.5rem, 5.5vw, 5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Ogni connessione<br/>è già lì ad aspettare.
+      </h2>
+      <p
+        class="text-[var(--color-ghiaccio)]/75 leading-relaxed max-w-2xl mx-auto mb-12"
+        style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
+        data-reveal
+        data-reveal-delay="0.16"
+      >
+        I dati esistono. I sistemi esistono. I clienti sono già lì, con i loro journey
+        invisibili. CJA li rende visibili. La roadmap li rende azionabili.
+        Il workshop lo rende reale.
+      </p>
+
+      <div
+        class="flex flex-col sm:flex-row gap-4 justify-center"
+        data-reveal
+        data-reveal-delay="0.24"
+      >
+        <a
+          href="mailto:agargiulo@adobe.com?subject=FS%20Group%20×%20Adobe%20CJA%20—%20Workshop%20Connessioni%20Intelligenti"
+          class="inline-flex items-center gap-3 px-10 py-5 text-base font-semibold tracking-wide bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity duration-300 font-[family-name:var(--font-display)]"
+        >
+          Fissiamo il workshop
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a
+          href={href(base, '/')}
+          class="inline-flex items-center gap-3 px-8 py-5 text-base font-semibold tracking-wide border border-[var(--color-ghiaccio)]/30 text-[var(--color-ghiaccio)]/70 hover:border-[var(--color-ghiaccio)]/60 hover:text-[var(--color-ghiaccio)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          Ricomincia dall'inizio
+        </a>
+      </div>
+
+      <p class="mt-12 text-center text-[0.58rem] tracking-widest uppercase text-[var(--color-ghiaccio)]/25">
+        Antonio Gargiulo · Senior Product Sales Specialist, Adobe Italia · agargiulo@adobe.com
+      </p>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -1,0 +1,340 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const useCases = [
+  {
+    id: 'uc1',
+    tag: 'Use Case 01 · Abbonamento',
+    title: 'Il pendolare che non sa ancora di voler rinnovare',
+    persona: 'Marco',
+    scenario: 'Marco ha un abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni ha ridotto i viaggi del 40%. CJA rileva l\'anomalia comportamentale 18 giorni prima della scadenza — molto prima che Oracle Responsys invii la classica email di rinnovo.',
+    segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia caduta a 12% (vs 35% media)',
+    azione: 'Oracle Responsys invia un\'offerta di rinnovo personalizzata — non generica. AJO orchestra il canale ottimale (push app se mobile, email se desktop) nel momento di maggiore propensione all\'acquisto.',
+    impatto: '+22% tasso di rinnovo abbonamenti early trigger vs campagne batch standard',
+    colore: 'var(--accent-primary)',
+  },
+  {
+    id: 'uc2',
+    tag: 'Use Case 02 · FS Park × Trenitalia',
+    title: 'Parcheggio come leva di cross-sell',
+    persona: 'Marco',
+    scenario: 'Marco prenota un Frecciarossa e, 3 ore dopo, CJA rileva che ha cercato "parcheggio Milano Centrale" su trenitalia.com senza convertire. FS Park e Trenitalia non comunicano: Marco va su un\'app terza e paga parcheggio concorrente.',
+    segnale: 'Ricerca parcheggio post-booking + 0 conversioni su FS Park nel 90-day window',
+    azione: 'Data Collaboration clean room: FS Park riceve il segnale di interesse senza mai vedere l\'identità di Marco. Campagna mirata: offerta parcheggio+biglietto bundled in-app, 20% sconto primo utilizzo.',
+    impatto: '€ 8–15 di ricavo accessorio per viaggio · 0% incremento infrastruttura · GDPR-compliant',
+    colore: 'var(--accent-secondary)',
+  },
+  {
+    id: 'uc3',
+    tag: 'Use Case 03 · Loyalty Frecce',
+    title: 'Dalla singola tratta alla relazione',
+    persona: 'Sofia',
+    scenario: 'Sofia prenota sempre in business class, 3 volte al mese. Non ha un abbonamento, non ha CartaFreccia. CJA classifica Sofia come "cliente ad alto LTV latente" basandosi su frequenza × ticket medio × canale — ma nessun sistema la conosce come tale.',
+    segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio >€80 × 0 loyalty card registrata',
+    azione: 'Campagna di onboarding CartaFreccia personalizzata: "Ti viaggi regolarmente — i tuoi punti non stanno aspettando." Offerta: accumulo punti retroattivo sugli ultimi 3 acquisti.',
+    impatto: 'Conversione in loyalty member di clienti ad alto valore oggi non tracciati come tali',
+    colore: 'var(--color-grigio-300)',
+  },
+];
+---
+<BaseLayout
+  title="Connessioni FS Park × Trenitalia"
+  description="Use case concreti di cross-sell e Data Collaboration tra FS Park e Trenitalia, orchestrati da Adobe CJA e Adobe Data Collaboration."
+  pageSolutions={['data-collab']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/roadmap')}
+    prevHref={href(base, '/convergenza')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="data-collab">
+      <CoverHero
+        eyebrow="04 · Connessioni"
+        numeral="04"
+        title="FS Park × Trenitalia: connessioni intelligenti"
+        lead="Il viaggio non inizia al binario e non finisce all'arrivo. Ogni touchpoint — dal parcheggio alla lounge — è un'opportunità di relazione. CJA la rende visibile. Data Collaboration la rende azionabile."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il gap di oggi ────────────────────────────────── -->
+    <Slide id="slide-gap" bg="primary" align="center" data-solution="data-collab">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+        IL GAP ATTUALE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Dati che non si parlano.<br/>Clienti che ve lo costano.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {[
+          {
+            brand: 'FS Park',
+            icon: '🅿️',
+            sa: 'Chi ha prenotato · quando · dove · durata sosta',
+            nonSa: 'Se il cliente ha viaggiato in Frecce · se ha abbonamento · se è CartaFreccia',
+            gap: 'Nessuna offerta bundled possibile. Parcheggio = commodity.',
+          },
+          {
+            brand: 'Trenitalia',
+            icon: '🚄',
+            sa: 'Storico biglietti · classe · frequenza · canale acquisto',
+            nonSa: 'Se il cliente ha usato FS Park · se ha cercato parcheggio alternativo · dove arriva in auto',
+            gap: 'Potenziale bundle viaggio+parcheggio invisibile. Revenue accessorio perso.',
+          },
+          {
+            brand: 'Oracle Responsys',
+            icon: '📧',
+            sa: 'Open rate · click · programma CRM · device',
+            nonSa: 'Se il cliente ha appena prenotato un viaggio · se ha un abbonamento in scadenza · LTV reale',
+            gap: 'Campagne a calendario, non contestuali. Rilevanza bassa. Disiscrizioni alte.',
+          },
+        ].map((item) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-3">
+            <div class="flex items-center gap-3">
+              <span class="text-2xl" aria-hidden="true">{item.icon}</span>
+              <p class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{item.brand}</p>
+            </div>
+            <div>
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-emerald-400 mb-1">SA</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug">{item.sa}</p>
+            </div>
+            <div>
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-1">NON SA</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug">{item.nonSa}</p>
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-xs text-[var(--ink-tertiary)] italic">{item.gap}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p
+        class="mt-6 text-center text-sm text-[var(--ink-secondary)]"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        CJA + Adobe Data Collaboration chiude questi gap — nel rispetto della privacy,
+        senza condividere dati personali tra sistemi.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: Use Cases ─────────────────────────────────────── -->
+    <Slide id="slide-usecases" bg="secondary" align="center" data-solution="data-collab">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-5" data-reveal>
+        TRE USE CASE · ROI MISURABILE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-8 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Dalla data intelligence<br/>all'azione concreta.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto flex flex-col gap-4"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {useCases.map((uc) => (
+          <div class="p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0">
+                <p class="text-[0.6rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
+                <h3 class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] max-w-xs leading-snug">{uc.title}</h3>
+              </div>
+              <div class="flex-1 grid md:grid-cols-3 gap-4 text-xs text-[var(--ink-secondary)]">
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SCENARIO</p>
+                  <p class="leading-snug">{uc.scenario}</p>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SEGNALE CJA</p>
+                  <p class="leading-snug">{uc.segnale}</p>
+                  <div class="mt-2 pt-2 border-t border-[var(--line-subtle)]">
+                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">AZIONE</p>
+                    <p class="leading-snug">{uc.azione}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">IMPATTO ATTESO</p>
+                  <p class="leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Data Collaboration — come funziona ────────────── -->
+    <Slide id="slide-data-collab" bg="primary" align="center" data-solution="data-collab">
+      <div data-demo-flex class="w-full flex items-start gap-8">
+        <div class="flex-1 min-w-0 flex flex-col">
+          <p class="slide-eyebrow text-[var(--accent-secondary)] mb-5" data-reveal>
+            ADOBE DATA COLLABORATION
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.75rem, 3.2vw, 3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Privacy-first.<br/>Revenue-positive.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
+            style="font-size: clamp(0.9rem, 1.15vw, 1.1rem);"
+            data-reveal
+            data-reveal-delay="0.14"
+          >
+            Adobe Data Collaboration crea un clean room tra FS Park e Trenitalia: le due entità
+            possono collaborare sull'overlap dei propri clienti senza mai scambiarsi dati
+            personali identificativi. Il risultato è audience matching GDPR-compliant e
+            campagne cross-brand misurabili con attribuzione chiara.
+          </p>
+
+          <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.2">
+            {[
+              {
+                step: '01',
+                label: 'Hashing & Match',
+                desc: 'FS Park e Trenitalia portano i propri segmenti clienti sotto forma di hash pseudonimi — mai dati in chiaro.',
+              },
+              {
+                step: '02',
+                label: 'Clean Room Overlap',
+                desc: 'Data Collaboration calcola l\'overlap: quanti clienti FS Park hanno viaggiato in Frecce negli ultimi 90 giorni.',
+              },
+              {
+                step: '03',
+                label: 'Audience Activation',
+                desc: 'L\'audience sovrapposta viene attivata in Oracle Responsys (FS Park) e nell\'app Trenitalia — senza trasferimento di dati tra le due.',
+              },
+              {
+                step: '04',
+                label: 'Attribution chiara',
+                desc: 'Ogni conversione bundle viene attribuita con modello fractional: quota FS Park, quota Trenitalia, contributo Adobe Analytics.',
+              },
+            ].map((s) => (
+              <div class="flex gap-4 items-start">
+                <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)] flex items-center justify-center text-xs font-bold font-[family-name:var(--font-display)]">
+                  {s.step}
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5">{s.label}</p>
+                  <p class="text-xs text-[var(--ink-secondary)] leading-snug">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <MediaDemoSlot id="data-collab-demo" label="Adobe Data Collaboration — Clean Room FS" />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Il valore end-to-end ─────────────────────────── -->
+    <Slide id="slide-value" bg="brand" align="center" data-solution="data-collab">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-viaggio')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--accent-primary)]/88"
+      />
+      <p class="slide-eyebrow text-center text-[var(--color-ghiaccio)]/70 mb-5" data-reveal>
+        IL VALORE COMPLESSIVO
+      </p>
+      <h2
+        class="font-[family-name:var(--font-display)] text-[var(--color-ghiaccio)] mb-4"
+        style="font-size: clamp(2.25rem, 4.4vw, 4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Ogni viaggio.<br/>Ogni parcheggio.<br/>Una relazione.
+      </h2>
+      <p
+        class="text-[var(--color-ghiaccio)]/75 leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(1rem, 1.35vw, 1.25rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        La combinazione CJA + Data Collaboration trasforma ogni touchpoint in un segnale
+        di relazione — e ogni segnale in un'azione pertinente. Non più batch-and-blast.
+        Non più dati siloed. Un unico ecosistema che cresce con ogni interazione.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {[
+          { value: '+18%', label: 'LTV medio cliente cross-brand', sub: 'Benchmark Adobe Travel & Transport' },
+          { value: '–35%', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger vs campagna standard' },
+          { value: '€12–18', label: 'Revenue accessorio/viaggio (stima)', sub: 'Bundle parcheggio + servizi correlati' },
+          { value: '100%', label: 'GDPR-compliant', sub: 'Zero PII condivisi tra FS Park e Trenitalia' },
+        ].map((m) => (
+          <div class="text-center p-4 bg-[var(--color-ghiaccio)]/10 border border-[var(--color-ghiaccio)]/20 rounded-sm">
+            <p
+              class="font-[family-name:var(--font-display)] font-bold text-[var(--color-ghiaccio)] leading-none mb-1"
+              style="font-size: clamp(1.8rem, 3vw, 2.8rem);"
+            >
+              {m.value}
+            </p>
+            <p class="text-xs font-medium text-[var(--color-ghiaccio)]/80 mb-0.5">{m.label}</p>
+            <p class="text-[0.6rem] text-[var(--color-ghiaccio)]/45">{m.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href={href(base, '/roadmap')}
+        class="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ghiaccio)] text-[var(--color-carbonio)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        Roadmap: i prossimi passi
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
