@@ -49,59 +49,76 @@ const coreCases = [
 ];
 
 // ── Da esplorare insieme — nuovi casi d'uso, per tema ──────────────
+// Struttura: scenario / segnale / azione / impatto (da validare sul campo)
 const explore = {
   retention: [
     {
       title: 'Service recovery da infomobilità',
-      ipotesi: 'Un ritardo Frecce > 30 min rilevato da CJA innesca in AJO un journey di recupero: scuse proattive, rebooking assistito, un\'ora gratis FS Park e bonus punti CartaFreccia — prima ancora che il cliente si lamenti.',
-      capability: ['CJA (evento disservizio)', 'AJO real-time', 'Responsys / push'],
-      valore: 'Il disservizio diventa un momento di loyalty. Meno reclami, meno churn post-ritardo.',
+      scenario: 'Un cliente Frecce subisce un ritardo > 30 min. CJA rileva l\'evento in real-time tramite il segnale infomobilità — prima ancora che il cliente apra l\'app o si lamenti.',
+      segnale: 'Evento ritardo > 30 min su treno prenotato + profilo cliente attivo in CJA',
+      azione: 'AJO attiva journey di recovery proattivo: notifica con scuse, opzione rebooking assistito, bonus punti CartaFreccia e 1 ora FS Park in omaggio — tutto automatico, canale preferito.',
+      impatto: 'Il disservizio diventa un momento di loyalty. Atteso: riduzione reclami post-ritardo e churn associato — KPI da validare sul campo.',
+      capability: ['CJA (evento disservizio)', 'AJO real-time', 'Oracle Responsys / push'],
     },
     {
       title: 'Churn prevention abbonamenti',
-      ipotesi: 'Un modello predittivo sui segnali comportamentali (frequenza, apertura email, uso app) individua gli abbonati a rischio disdetta 30–45 giorni prima; RT-CDP e AJO attivano un journey di retention mirato.',
+      scenario: 'Un abbonato mensile Frecce mostra segnali di disengagement nei 30 giorni pre-scadenza: frequenza in calo, email non aperte, accessi app ridotti.',
+      segnale: 'Frequenza viaggi –30% + open rate email <15% + login app ridotto nei 30 gg pre-scadenza',
+      azione: 'RT-CDP e AJO attivano un journey di retention mirato: offerta personalizzata, canale ottimale, timing di massima propensione. Estende il Caso 01 con modello predittivo AI.',
+      impatto: 'Retention proattiva invece di win-back reattivo. Atteso: incremento rinnovi anticipati — KPI da validare.',
       capability: ['CJA', 'RT-CDP', 'AJO', 'AI predittiva'],
-      valore: 'Retention proattiva invece di win-back reattivo. Estende il Caso 01 con l\'AI.',
     },
     {
       title: 'NPS closed-loop',
-      ipotesi: 'I detrattori dei sondaggi entrano in un journey di recovery automatico; i promotori in un flusso di referral e advocacy. Il feedback smette di essere un report e diventa azione.',
-      capability: ['CJA (evento feedback)', 'AJO', 'Responsys'],
-      valore: 'Chiude il cerchio sui sondaggi già raccolti (2×/mese) — oggi inerti.',
+      scenario: 'I sondaggi NPS raccolgono feedback 2×/mese. Oggi restano come report statici: né i detrattori né i promotori ricevono follow-up automatizzato.',
+      segnale: 'Risposta NPS < 6 (detractor) o > 8 (promoter) + profilo attivo in CJA',
+      azione: 'AJO: journey recovery per detrattori (ascolto, compenso, escalation); journey advocacy per promotori (referral CartaFreccia). Il feedback smette di essere inerte.',
+      impatto: 'Chiude il cerchio sui sondaggi già raccolti. Atteso: miglioramento NPS e riduzione abbandono tra detrattori — KPI da validare.',
+      capability: ['CJA (evento feedback)', 'AJO', 'Oracle Responsys'],
     },
   ],
   growth: [
     {
       title: 'Funnel giovani X-GO',
-      ipotesi: 'Gli under-30 che acquistano carnet o biglietti singoli entrano in un journey app-first e gamificato verso l\'abbonamento X-GO: nudge sui punti, sfide, offerte a tempo.',
-      capability: ['CJA', 'RT-CDP', 'AJO', 'Target (app)', 'GenStudio'],
-      valore: 'Conversione carnet→abbonamento e LTV sul segmento youth, oggi under-served.',
+      scenario: 'Gli under-30 acquistano carnet o biglietti singoli ripetutamente ma non passano all\'abbonamento X-GO. Il segmento ha alta frequenza d\'acquisto ma LTV sottoutilizzato.',
+      segnale: 'Età < 30 + acquisto carnet ≥ 2 in 60 gg + 0 abbonamenti X-GO attivi',
+      azione: 'Journey app-first e gamificato: nudge sui punti accumulati, sfide di frequenza, offerta tempo-limitata abbonamento X-GO con vantaggi visibili in-app. GenStudio produce le varianti creative.',
+      impatto: 'Conversione carnet→abbonamento. Atteso: incremento LTV segmento youth, oggi under-served — KPI da validare.',
+      capability: ['CJA', 'RT-CDP', 'AJO', 'Adobe Target', 'GenStudio'],
     },
     {
       title: 'Corporate & business travel',
-      ipotesi: 'Frecce Corporate e CartaFreccia Business: journey account-based per il business traveler ad alta frequenza e alto ticket (il profilo di Sofia), con servizi e offerte riconosciuti in tempo reale.',
-      capability: ['CJA (LTV latente)', 'RT-CDP (account)', 'AJO'],
-      valore: 'Monetizza il segmento business ad alto valore. Estende il Caso 03 al B2B.',
+      scenario: 'Sofia prenota in business 3 volte al mese senza abbonamento né CartaFreccia. CJA la classifica come "alto LTV latente" su frequenza × ticket medio × canale — ma nessun sistema la riconosce come tale oggi.',
+      segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio >€80 × 0 loyalty card × 0 corporate account',
+      azione: 'Journey account-based con RTCDP: invito personalizzato a CartaFreccia Business, proposta Frecce Corporate, riconoscimento del valore storico. Canale: email + LinkedIn (B2B).',
+      impatto: 'Monetizza il segmento business ad alto valore. Atteso: incremento conversioni CartaFreccia Business — KPI da validare.',
+      capability: ['CJA (LTV latente)', 'RT-CDP', 'AJO'],
     },
     {
       title: 'Bundle mobilità cross-brand',
-      ipotesi: 'Oltre il parcheggio: clean room di Data Collaboration con partner di last-mile (bus, bike/scooter sharing, hotel) per comporre bundle porta-a-porta — senza mai scambiare PII.',
+      scenario: 'Oltre FS Park: un cliente prenota Frecce e in passato ha usato bike sharing o bus. CJA vede il pattern multi-modale — ma il Gruppo non lo connette a partner last-mile.',
+      segnale: 'Booking Frecce + pattern mobilità multi-modale storico + area geografica di arrivo',
+      azione: 'Data Collaboration con partner last-mile (bus, micro-mobility, hotel): bundle porta-a-porta attivato senza scambio di PII tra enti. Attribuzione misurabile cross-brand.',
+      impatto: 'Ecosistema FS esteso: ricavo accessorio oltre FS Park. Esperienza door-to-door misurabile — KPI da validare.',
       capability: ['Data Collaboration', 'CJA (attribution)', 'AJO'],
-      valore: 'Ecosistema FS esteso: ricavo accessorio oltre FS Park, esperienza door-to-door.',
     },
   ],
   intelligence: [
     {
       title: 'Content intelligence su AEM',
-      ipotesi: 'Adobe Content Analytics misura quali contenuti e pagine di trenitalia.com guidano il booking — e dove si perde il cliente — per un\'ottimizzazione editoriale continua e data-driven.',
+      scenario: 'Il team editoriale pubblica decine di varianti ogni settimana senza sapere quale formato, CTA o immagine guida davvero il booking su trenitalia.com.',
+      segnale: 'Attributi contenuto AEM (formato, CTA, layout) correlati a dati CJA di engagement e conversione',
+      azione: 'Content Analytics identifica i pattern ad alto impatto; il team AEM ottimizza su dati. A/B test guidati da attributi, non solo varianti manuali.',
+      impatto: 'Ottimizzazione editoriale data-driven. Atteso: incremento conversioni organiche da sito — KPI da validare.',
       capability: ['Content Analytics', 'CJA', 'AEM'],
-      valore: 'Ottimizzazione del sito su impatto reale sul funnel, non su opinioni.',
     },
     {
       title: 'Media mix & budget what-if',
-      ipotesi: 'Adobe Mix Modeler simula la riallocazione del budget (es. TV → digital paid): quanti biglietti e abbonamenti incrementali? Raccomandazione automatica, con effetto halo tra canali.',
+      scenario: 'FS investe in campagna TV estiva per X-GO + paid digital + email Responsys senza poter misurare il reale contributo incrementale di ciascun canale né l\'effetto halo.',
+      segnale: 'Dati spesa media per canale + CJA multi-touch + conversioni per campagna',
+      azione: 'Mix Modeler simula scenari what-if: quanti biglietti/abbonamenti spostando €X da TV a digital? Raccomandazione automatica con Causal AI — non solo correlazione.',
+      impatto: 'ROI media ottimizzato e decisioni di budget causali. Già nella Roadmap Fase 3 — KPI da validare.',
       capability: ['Mix Modeler', 'CJA (multi-touch)'],
-      valore: 'Decisioni di marketing causali e ROI media ottimizzato (già in Roadmap · Fase 3).',
     },
   ],
 };
@@ -125,7 +142,7 @@ const explore = {
         eyebrow="06 · Casi d'uso"
         numeral="06"
         title="Dai casi core a ciò che possiamo esplorare insieme"
-        lead="Tre casi d'uso dimostrano il valore oggi. Ma la fondazione CJA + RT-CDP ne abilita molti altri — retention, crescita, ecosistema, intelligence. Ecco la mappa, per costruirla insieme."
+        lead="Tre casi d'uso illustrano il potenziale — da validare sul campo. Ma la fondazione CJA + RT-CDP ne abilita molti altri. Ecco la mappa, per costruirla insieme."
         size="phase"
         tone="ink"
         signature={false}
@@ -139,13 +156,13 @@ const explore = {
         imageClass="opacity-10"
         scrim="bg-[var(--surface-primary)]/90"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>I tre casi core, in sintesi</p>
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>I tre casi core da validare · in sintesi</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
         data-reveal data-reveal-delay="0.08"
       >
-        Il valore, dimostrato su tre journey reali.
+        Il valore ipotizzato su tre journey tipo.
       </h2>
 
       <div class="w-full max-w-5xl mx-auto flex flex-col gap-4" data-reveal data-reveal-delay="0.16">
@@ -198,19 +215,36 @@ const explore = {
       <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
         Trattenere vale più che riacquisire. La stessa fondazione che anticipa il rinnovo anticipa anche il disservizio, la disdetta e il malcontento.
       </p>
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+      <div class="w-full max-w-5xl mx-auto flex flex-col gap-4" data-reveal data-reveal-delay="0.18">
         {explore.retention.map((c) => (
-          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
-            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
-            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
-            <div class="flex flex-wrap gap-1">
-              {c.capability.map((cap) => (
-                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
-              ))}
-            </div>
-            <div class="pt-2 border-t border-[var(--line-subtle)]">
-              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
-              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 max-w-[13rem]">
+                <h3 class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-2">{c.title}</h3>
+                <div class="flex flex-wrap gap-1">
+                  {c.capability.map((cap) => (
+                    <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="flex-1 grid md:grid-cols-3 gap-4 text-xs text-[var(--ink-secondary)]">
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SCENARIO</p>
+                  <p class="leading-snug">{c.scenario}</p>
+                  <div class="mt-2 pt-2 border-t border-[var(--line-subtle)]">
+                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SEGNALE CJA</p>
+                    <p class="leading-snug">{c.segnale}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">AZIONE</p>
+                  <p class="leading-snug">{c.azione}</p>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">IMPATTO ATTESO</p>
+                  <p class="leading-snug font-semibold text-[var(--ink-primary)]">{c.impatto}</p>
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -230,19 +264,36 @@ const explore = {
       <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
         Crescere sui segmenti giusti — giovani, business — ed estendere il valore oltre il treno, dentro l'intero ecosistema di mobilità FS.
       </p>
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+      <div class="w-full max-w-5xl mx-auto flex flex-col gap-4" data-reveal data-reveal-delay="0.18">
         {explore.growth.map((c) => (
-          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
-            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
-            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
-            <div class="flex flex-wrap gap-1">
-              {c.capability.map((cap) => (
-                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
-              ))}
-            </div>
-            <div class="pt-2 border-t border-[var(--line-subtle)]">
-              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
-              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 max-w-[13rem]">
+                <h3 class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-2">{c.title}</h3>
+                <div class="flex flex-wrap gap-1">
+                  {c.capability.map((cap) => (
+                    <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="flex-1 grid md:grid-cols-3 gap-4 text-xs text-[var(--ink-secondary)]">
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SCENARIO</p>
+                  <p class="leading-snug">{c.scenario}</p>
+                  <div class="mt-2 pt-2 border-t border-[var(--line-subtle)]">
+                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SEGNALE CJA</p>
+                    <p class="leading-snug">{c.segnale}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">AZIONE</p>
+                  <p class="leading-snug">{c.azione}</p>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">IMPATTO ATTESO</p>
+                  <p class="leading-snug font-semibold text-[var(--ink-primary)]">{c.impatto}</p>
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -262,19 +313,36 @@ const explore = {
       <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
         Quando la fondazione è solida, i dati non descrivono soltanto: ottimizzano contenuti e budget, e rendono causale ciò che oggi è correlazionale.
       </p>
-      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+      <div class="w-full max-w-5xl mx-auto flex flex-col gap-4" data-reveal data-reveal-delay="0.18">
         {explore.intelligence.map((c) => (
-          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
-            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
-            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
-            <div class="flex flex-wrap gap-1">
-              {c.capability.map((cap) => (
-                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
-              ))}
-            </div>
-            <div class="pt-2 border-t border-[var(--line-subtle)]">
-              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
-              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 max-w-[13rem]">
+                <h3 class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-2">{c.title}</h3>
+                <div class="flex flex-wrap gap-1">
+                  {c.capability.map((cap) => (
+                    <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="flex-1 grid md:grid-cols-3 gap-4 text-xs text-[var(--ink-secondary)]">
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SCENARIO</p>
+                  <p class="leading-snug">{c.scenario}</p>
+                  <div class="mt-2 pt-2 border-t border-[var(--line-subtle)]">
+                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SEGNALE CJA</p>
+                    <p class="leading-snug">{c.segnale}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">AZIONE</p>
+                  <p class="leading-snug">{c.azione}</p>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">IMPATTO ATTESO</p>
+                  <p class="leading-snug font-semibold text-[var(--ink-primary)]">{c.impatto}</p>
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -294,12 +362,12 @@ const explore = {
         style="font-size: clamp(1.9rem, 3.6vw, 3rem); max-width: 60rem;"
         data-reveal data-reveal-delay="0.08"
       >
-        3 casi oggi. 8 da esplorare. Un'unica fondazione dati.
+        3 casi da validare. 8 da esplorare. Un'unica fondazione dati.
       </h2>
       <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-7" data-reveal data-reveal-delay="0.16">
         {[
-          { n: '3', l: 'Casi core dimostrati', s: 'Rinnovo · Cross-sell · Loyalty' },
-          { n: '8', l: 'Casi da esplorare', s: 'Retention · Growth · Ecosystem · Intelligence' },
+          { n: '3', l: 'Casi core da validare', s: 'Rinnovo · Cross-sell · Loyalty' },
+          { n: '8', l: 'Casi da esplorare insieme', s: 'Retention · Growth · Ecosystem · Intelligence' },
           { n: '1', l: 'Fondazione CJA + RT-CDP', s: 'Ogni caso riusa la stessa base' },
           { n: '100%', l: 'GDPR-compliant', s: 'Clean room · governance dati' },
         ].map((m) => (

@@ -21,7 +21,7 @@ const useCases = [
     scenario: 'Marco ha un abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni ha ridotto i viaggi del 40%. CJA rileva l\'anomalia comportamentale 18 giorni prima della scadenza — molto prima che Oracle Responsys invii la classica email di rinnovo.',
     segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia caduta a 12% (vs 35% media)',
     azione: 'Oracle Responsys invia un\'offerta di rinnovo personalizzata — non generica. AJO orchestra il canale ottimale (push app se mobile, email se desktop) nel momento di maggiore propensione all\'acquisto.',
-    impatto: '+22% tasso di rinnovo abbonamenti early trigger vs campagne batch standard',
+    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch (stima illustrativa)',
     colore: 'var(--accent-primary)',
   },
   {
@@ -32,7 +32,7 @@ const useCases = [
     scenario: 'Marco prenota un Frecciarossa e, 3 ore dopo, CJA rileva che ha cercato "parcheggio Milano Centrale" su trenitalia.com senza convertire. FS Park e Trenitalia non comunicano: Marco va su un\'app terza e paga parcheggio concorrente.',
     segnale: 'Ricerca parcheggio post-booking + 0 conversioni su FS Park nel 90-day window',
     azione: 'Data Collaboration clean room: FS Park riceve il segnale di interesse senza mai vedere l\'identità di Marco. Campagna mirata: offerta parcheggio+biglietto bundled in-app, 20% sconto primo utilizzo.',
-    impatto: '€ 8–15 di ricavo accessorio per viaggio · 0% incremento infrastruttura · GDPR-compliant',
+    impatto: '€ 8–15 di ricavo accessorio per viaggio (stima illustrativa) · 0% incremento infrastruttura · GDPR-compliant',
     colore: 'var(--accent-secondary)',
   },
   {
@@ -92,7 +92,7 @@ const useCases = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Dati che non si parlano.<br/>Clienti che ve lo costano.
+        Dati che non si parlano.<br/>Revenue che rimane sul tavolo.
       </h2>
 
       <div
@@ -143,14 +143,25 @@ const useCases = [
         ))}
       </div>
 
-      <p
-        class="mt-6 text-center text-sm text-[var(--ink-secondary)]"
+      <!-- Perché serve Data Collaboration anche all'interno dello stesso Gruppo -->
+      <div
+        class="mt-6 w-full max-w-5xl mx-auto p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] border-l-2 border-l-[var(--accent-secondary)] rounded-sm"
         data-reveal
         data-reveal-delay="0.3"
       >
-        CJA + Adobe Data Collaboration chiude questi gap — nel rispetto della privacy,
-        senza condividere dati personali tra sistemi.
-      </p>
+        <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-2">
+          PERCHÉ SERVE DATA COLLABORATION — ANCHE ALL'INTERNO DEL GRUPPO FS
+        </p>
+        <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">
+          FS Park e Trenitalia sono <strong class="text-[var(--ink-primary)]">entità giuridiche separate</strong> — anche all'interno del Gruppo.
+          Il GDPR impone che la condivisione di dati personali identificativi tra società distinte avvenga attraverso
+          meccanismi di consenso, DPA formale e minimizzazione dei dati.
+          CJA può analizzare i comportamenti aggregati di entrambe le entità, ma <strong class="text-[var(--ink-primary)]">non può attivare campagne
+          cross-entità su PII senza una clean room</strong>.
+          Adobe Data Collaboration è la risposta privacy-first: audience matching senza scambio di dati in chiaro,
+          GDPR-compliant by design, con attribuzione misurabile.
+        </p>
+      </div>
     </Slide>
 
     <!-- ── SLIDE 2: Use Cases ─────────────────────────────────────── -->
@@ -267,6 +278,22 @@ const useCases = [
         </div>
         <MediaDemoSlot id="data-collab-demo" label="Adobe Data Collaboration — Clean Room FS" />
       </div>
+
+      <!-- AEP + Governance + Breach angle -->
+      <div class="mt-6 p-4 bg-[var(--accent-primary)]/6 border border-[var(--accent-primary)]/20 rounded-sm max-w-full" data-reveal data-reveal-delay="0.35">
+        <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-2">
+          AEP DATA GOVERNANCE · RISPOSTA DIRETTA AL RISCHIO VIOLAZIONE DATI
+        </p>
+        <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">
+          PII distribuiti su sei sistemi non connessi moltiplicano la superficie di attacco (come evidenziato dall'incidente dati Trenitalia del giugno 2026).
+          AEP centralizza governance, pseudonimizzazione e audit trail: dati classificati con label di sensibilità,
+          policy di utilizzo enforce-ate automaticamente, log di ogni accesso. Un'unica piattaforma governata riduce il rischio strutturale
+          rispetto a dati sparsi e non monitorati.
+        </p>
+        <p class="text-[0.58rem] text-[var(--ink-tertiary)]/50 mt-2">
+          Rif: sky.it/cronaca/2026/06/26 — attacco hacker Trenitalia · violazione dati personali
+        </p>
+      </div>
     </Slide>
 
     <!-- ── SLIDE 4: Il valore end-to-end ─────────────────────────── -->
@@ -306,7 +333,7 @@ const useCases = [
       >
         {[
           { value: '+18%', label: 'LTV medio cliente cross-brand', sub: 'Benchmark Adobe Travel & Transport' },
-          { value: '–35%', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger vs campagna standard' },
+          { value: '–35%', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger vs batch — stima illustrativa' },
           { value: '€12–18', label: 'Revenue accessorio/viaggio (stima)', sub: 'Bundle parcheggio + servizi correlati' },
           { value: '100%', label: 'GDPR-compliant', sub: 'Zero PII condivisi tra FS Park e Trenitalia' },
         ].map((m) => (
