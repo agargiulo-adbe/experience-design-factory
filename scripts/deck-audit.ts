@@ -24,14 +24,14 @@ import * as path from 'node:path';
 // Per-app route sets. Each route includes the full path after the origin.
 const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
   maxmara: [
-    { name: 'home',         route: '/experience-design-factory/' },
-    { name: 'acquisizione', route: '/experience-design-factory/acquisizione/' },
-    { name: 'engagement',   route: '/experience-design-factory/engagement/' },
-    { name: 'conversione',  route: '/experience-design-factory/conversione/' },
-    { name: 'loyalty',      route: '/experience-design-factory/loyalty/' },
-    { name: 'persona',      route: '/experience-design-factory/persona/' },
-    { name: 'motore-adobe', route: '/experience-design-factory/motore-adobe/' },
-    { name: 'chiusura',     route: '/experience-design-factory/chiusura/' },
+    { name: 'home',         route: '/experience-design-factory/generazioni-maxmara/' },
+    { name: 'acquisizione', route: '/experience-design-factory/generazioni-maxmara/acquisizione/' },
+    { name: 'engagement',   route: '/experience-design-factory/generazioni-maxmara/engagement/' },
+    { name: 'conversione',  route: '/experience-design-factory/generazioni-maxmara/conversione/' },
+    { name: 'loyalty',      route: '/experience-design-factory/generazioni-maxmara/loyalty/' },
+    { name: 'persona',      route: '/experience-design-factory/generazioni-maxmara/persona/' },
+    { name: 'motore-adobe', route: '/experience-design-factory/generazioni-maxmara/motore-adobe/' },
+    { name: 'chiusura',     route: '/experience-design-factory/generazioni-maxmara/chiusura/' },
   ],
   unicredit: [
     { name: 'home',         route: '/experience-design-factory/unicredit-engagement/' },
@@ -56,6 +56,15 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'proof',        route: '/experience-design-factory/ferrari-racing/proof/' },
     { name: 'loop',         route: '/experience-design-factory/ferrari-racing/loop/' },
   ],
+  trenitalia: [
+    { name: 'home',        route: '/experience-design-factory/trenitalia-connessioni/' },
+    { name: 'scenario',    route: '/experience-design-factory/trenitalia-connessioni/scenario/' },
+    { name: 'fondazione',  route: '/experience-design-factory/trenitalia-connessioni/fondazione/' },
+    { name: 'convergenza', route: '/experience-design-factory/trenitalia-connessioni/convergenza/' },
+    { name: 'connessioni', route: '/experience-design-factory/trenitalia-connessioni/connessioni/' },
+    { name: 'roadmap',     route: '/experience-design-factory/trenitalia-connessioni/roadmap/' },
+    { name: 'casi-duso',   route: '/experience-design-factory/trenitalia-connessioni/casi-duso/' },
+  ],
 };
 
 // Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
@@ -63,6 +72,7 @@ const CWD_ALIAS: Record<string, string> = {
   'generazioni-maxmara': 'maxmara',
   'unicredit-engagement': 'unicredit',
   'ferrari-racing': 'ferrari',
+  'trenitalia-connessioni': 'trenitalia',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {
