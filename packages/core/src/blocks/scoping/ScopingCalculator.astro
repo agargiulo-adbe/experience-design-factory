@@ -137,6 +137,7 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
     const fmtMoney = (n: number | null) =>
       n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: prices.currency, maximumFractionDigits: 0 }).format(n);
+    const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 
     function writeInputs() {
       root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
@@ -259,7 +260,7 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
       }));
       const thead = comparePanel.querySelector('thead')!;
       const tbody = comparePanel.querySelector('tbody')!;
-      thead.innerHTML = '<tr><th></th>' + snaps.map((x) => `<th>${x.title}</th>`).join('') + '</tr>';
+      thead.innerHTML = '<tr><th></th>' + snaps.map((x) => `<th>${esc(x.title)}</th>`).join('') + '</tr>';
       tbody.innerHTML = rows
         .map(([label, f]) => `<tr><td>${label}</td>` + snaps.map((x) => `<td>${f(x.snap)}</td>`).join('') + '</tr>')
         .join('');
