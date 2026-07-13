@@ -58,10 +58,10 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-marco',
     type: 'stock',
-    query: 'smiling businessman suit portrait train station platform face confident',
+    query: 'confident bearded businessman glasses suit portrait smiling professional headshot',
     aspect: '4:5',
     width: 900,
     grade: 'editorial',
-    alt: 'Marco — pendolare business Milano–Roma',
+    alt: 'Davide — pendolare business Milano–Roma',
   },
 ];
