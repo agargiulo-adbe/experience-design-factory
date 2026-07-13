@@ -1,0 +1,319 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// ── I 3 casi core, riepilogati in dettaglio (dalla sezione Connessioni) ──
+const coreCases = [
+  {
+    tag: 'Caso 01 · Abbonamento',
+    title: 'Il pendolare che non sa ancora di voler rinnovare',
+    persona: 'Marco',
+    scenario: 'Abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni i viaggi calano del 40%: CJA rileva l\'anomalia 18 giorni prima della scadenza, molto prima della classica email di rinnovo Responsys.',
+    segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia scesa al 12% (vs 35% media)',
+    azione: 'Responsys invia un\'offerta di rinnovo personalizzata; AJO sceglie canale e timing ottimali (push app se mobile, email se desktop) nel momento di massima propensione.',
+    prodotti: ['CJA', 'RT-CDP', 'AJO', 'Oracle Responsys'],
+    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch',
+    colore: 'var(--accent-primary)',
+  },
+  {
+    tag: 'Caso 02 · FS Park × Trenitalia',
+    title: 'Il parcheggio come leva di cross-sell',
+    persona: 'Marco',
+    scenario: 'Marco prenota un Frecciarossa e 3 ore dopo cerca "parcheggio Milano Centrale" senza convertire. Oggi FS Park e Trenitalia non comunicano: paga un parcheggio concorrente su un\'app terza.',
+    segnale: 'Ricerca parcheggio post-booking + 0 conversioni FS Park nel 90-day window',
+    azione: 'Clean room di Data Collaboration: FS Park riceve il segnale d\'interesse senza mai vedere l\'identità di Marco. Bundle parcheggio + biglietto in-app, 20% sul primo utilizzo.',
+    prodotti: ['CJA', 'Data Collaboration', 'AJO'],
+    impatto: '€ 8–15 di ricavo accessorio per viaggio · 0% infrastruttura · GDPR-safe',
+    colore: 'var(--accent-secondary)',
+  },
+  {
+    tag: 'Caso 03 · Loyalty Frecce',
+    title: 'Dalla singola tratta alla relazione',
+    persona: 'Sofia',
+    scenario: 'Sofia prenota in business 3 volte al mese, senza abbonamento né CartaFreccia. CJA la classifica come "alto LTV latente" su frequenza × ticket × canale — ma nessun sistema oggi la riconosce.',
+    segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio > €80 × 0 loyalty card',
+    azione: 'Onboarding CartaFreccia personalizzato: "Viaggi già regolarmente — i tuoi punti ti stanno aspettando." Accumulo retroattivo sugli ultimi 3 acquisti.',
+    prodotti: ['CJA', 'RT-CDP', 'Oracle Responsys'],
+    impatto: 'Conversione in loyalty member di clienti alto-valore oggi non tracciati',
+    colore: 'var(--color-grigio-300)',
+  },
+];
+
+// ── Da esplorare insieme — nuovi casi d'uso, per tema ──────────────
+const explore = {
+  retention: [
+    {
+      title: 'Service recovery da infomobilità',
+      ipotesi: 'Un ritardo Frecce > 30 min rilevato da CJA innesca in AJO un journey di recupero: scuse proattive, rebooking assistito, un\'ora gratis FS Park e bonus punti CartaFreccia — prima ancora che il cliente si lamenti.',
+      capability: ['CJA (evento disservizio)', 'AJO real-time', 'Responsys / push'],
+      valore: 'Il disservizio diventa un momento di loyalty. Meno reclami, meno churn post-ritardo.',
+    },
+    {
+      title: 'Churn prevention abbonamenti',
+      ipotesi: 'Un modello predittivo sui segnali comportamentali (frequenza, apertura email, uso app) individua gli abbonati a rischio disdetta 30–45 giorni prima; RT-CDP e AJO attivano un journey di retention mirato.',
+      capability: ['CJA', 'RT-CDP', 'AJO', 'AI predittiva'],
+      valore: 'Retention proattiva invece di win-back reattivo. Estende il Caso 01 con l\'AI.',
+    },
+    {
+      title: 'NPS closed-loop',
+      ipotesi: 'I detrattori dei sondaggi entrano in un journey di recovery automatico; i promotori in un flusso di referral e advocacy. Il feedback smette di essere un report e diventa azione.',
+      capability: ['CJA (evento feedback)', 'AJO', 'Responsys'],
+      valore: 'Chiude il cerchio sui sondaggi già raccolti (2×/mese) — oggi inerti.',
+    },
+  ],
+  growth: [
+    {
+      title: 'Funnel giovani X-GO',
+      ipotesi: 'Gli under-30 che acquistano carnet o biglietti singoli entrano in un journey app-first e gamificato verso l\'abbonamento X-GO: nudge sui punti, sfide, offerte a tempo.',
+      capability: ['CJA', 'RT-CDP', 'AJO', 'Target (app)', 'GenStudio'],
+      valore: 'Conversione carnet→abbonamento e LTV sul segmento youth, oggi under-served.',
+    },
+    {
+      title: 'Corporate & business travel',
+      ipotesi: 'Frecce Corporate e CartaFreccia Business: journey account-based per il business traveler ad alta frequenza e alto ticket (il profilo di Sofia), con servizi e offerte riconosciuti in tempo reale.',
+      capability: ['CJA (LTV latente)', 'RT-CDP (account)', 'AJO'],
+      valore: 'Monetizza il segmento business ad alto valore. Estende il Caso 03 al B2B.',
+    },
+    {
+      title: 'Bundle mobilità cross-brand',
+      ipotesi: 'Oltre il parcheggio: clean room di Data Collaboration con partner di last-mile (bus, bike/scooter sharing, hotel) per comporre bundle porta-a-porta — senza mai scambiare PII.',
+      capability: ['Data Collaboration', 'CJA (attribution)', 'AJO'],
+      valore: 'Ecosistema FS esteso: ricavo accessorio oltre FS Park, esperienza door-to-door.',
+    },
+  ],
+  intelligence: [
+    {
+      title: 'Content intelligence su AEM',
+      ipotesi: 'Adobe Content Analytics misura quali contenuti e pagine di trenitalia.com guidano il booking — e dove si perde il cliente — per un\'ottimizzazione editoriale continua e data-driven.',
+      capability: ['Content Analytics', 'CJA', 'AEM'],
+      valore: 'Ottimizzazione del sito su impatto reale sul funnel, non su opinioni.',
+    },
+    {
+      title: 'Media mix & budget what-if',
+      ipotesi: 'Adobe Mix Modeler simula la riallocazione del budget (es. TV → digital paid): quanti biglietti e abbonamenti incrementali? Raccomandazione automatica, con effetto halo tra canali.',
+      capability: ['Mix Modeler', 'CJA (multi-touch)'],
+      valore: 'Decisioni di marketing causali e ROI media ottimizzato (già in Roadmap · Fase 3).',
+    },
+  ],
+};
+---
+<BaseLayout
+  title="Casi d'uso · recap e da esplorare"
+  description="Riepilogo dei tre casi d'uso core e una mappa estesa di ulteriori casi d'uso FS × Adobe da esplorare insieme."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/')}
+    prevHref={href(base, '/roadmap')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <CoverHero
+        eyebrow="06 · Casi d'uso"
+        numeral="06"
+        title="Dai casi core a ciò che possiamo esplorare insieme"
+        lead="Tre casi d'uso dimostrano il valore oggi. Ma la fondazione CJA + RT-CDP ne abilita molti altri — retention, crescita, ecosistema, intelligence. Ecco la mappa, per costruirla insieme."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Recap dei 3 casi core ─────────────────────────── -->
+    <Slide id="slide-recap" bg="primary" align="center">
+      <SlideBackdrop
+        {...mediaProps('bg-dati')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>I tre casi core, in sintesi</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Il valore, dimostrato su tre journey reali.
+      </h2>
+
+      <div class="w-full max-w-5xl mx-auto flex flex-col gap-4" data-reveal data-reveal-delay="0.16">
+        {coreCases.map((uc) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 max-w-[13rem]">
+                <p class="text-[0.6rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
+                <h3 class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-2">{uc.title}</h3>
+                <div class="flex flex-wrap gap-1">
+                  {uc.prodotti.map((p) => (
+                    <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{p}</span>
+                  ))}
+                </div>
+              </div>
+              <div class="flex-1 grid md:grid-cols-3 gap-4 text-xs text-[var(--ink-secondary)]">
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SCENARIO</p>
+                  <p class="leading-snug">{uc.scenario}</p>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">SEGNALE CJA</p>
+                  <p class="leading-snug">{uc.segnale}</p>
+                  <div class="mt-2 pt-2 border-t border-[var(--line-subtle)]">
+                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">AZIONE</p>
+                    <p class="leading-snug">{uc.azione}</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">IMPATTO ATTESO</p>
+                  <p class="leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Da esplorare · Retention & Loyalty ────────────── -->
+    <Slide id="slide-explore-retention" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-3" data-reveal>Da esplorare insieme · 01</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Retention & Loyalty
+      </h2>
+      <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
+        Trattenere vale più che riacquisire. La stessa fondazione che anticipa il rinnovo anticipa anche il disservizio, la disdetta e il malcontento.
+      </p>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+        {explore.retention.map((c) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
+            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
+            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
+            <div class="flex flex-wrap gap-1">
+              {c.capability.map((cap) => (
+                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+              ))}
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
+              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Da esplorare · Acquisition & Ecosystem ────────── -->
+    <Slide id="slide-explore-growth" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-3" data-reveal>Da esplorare insieme · 02</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Acquisition & Ecosystem
+      </h2>
+      <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
+        Crescere sui segmenti giusti — giovani, business — ed estendere il valore oltre il treno, dentro l'intero ecosistema di mobilità FS.
+      </p>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+        {explore.growth.map((c) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
+            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
+            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
+            <div class="flex flex-wrap gap-1">
+              {c.capability.map((cap) => (
+                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+              ))}
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
+              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Da esplorare · Intelligence & Optimization ────── -->
+    <Slide id="slide-explore-intelligence" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-3" data-reveal>Da esplorare insieme · 03</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Intelligence & Optimization
+      </h2>
+      <p class="text-center text-sm text-[var(--ink-secondary)] max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
+        Quando la fondazione è solida, i dati non descrivono soltanto: ottimizzano contenuti e budget, e rendono causale ciò che oggi è correlazionale.
+      </p>
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 text-left" data-reveal data-reveal-delay="0.18">
+        {explore.intelligence.map((c) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm flex flex-col gap-3">
+            <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{c.title}</h3>
+            <p class="text-xs text-[var(--ink-secondary)] leading-snug flex-1">{c.ipotesi}</p>
+            <div class="flex flex-wrap gap-1">
+              {c.capability.map((cap) => (
+                <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{cap}</span>
+              ))}
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">VALORE</p>
+              <p class="text-xs leading-snug font-semibold text-[var(--ink-primary)]">{c.valore}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Sintesi + invito ──────────────────────────────── -->
+    <Slide id="slide-sintesi" bg="secondary" align="center">
+      <SlideBackdrop
+        {...mediaProps('bg-binari')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-secondary)]/88"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>Una fondazione, molti casi d'uso</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.9rem, 3.6vw, 3rem); max-width: 60rem;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        3 casi oggi. 8 da esplorare. Un'unica fondazione dati.
+      </h2>
+      <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-7" data-reveal data-reveal-delay="0.16">
+        {[
+          { n: '3', l: 'Casi core dimostrati', s: 'Rinnovo · Cross-sell · Loyalty' },
+          { n: '8', l: 'Casi da esplorare', s: 'Retention · Growth · Ecosystem · Intelligence' },
+          { n: '1', l: 'Fondazione CJA + RT-CDP', s: 'Ogni caso riusa la stessa base' },
+          { n: '100%', l: 'GDPR-compliant', s: 'Clean room · governance dati' },
+        ].map((m) => (
+          <div class="p-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2" style="font-size: clamp(1.6rem, 2.6vw, 2.2rem);">{m.n}</p>
+            <p class="text-xs font-bold text-[var(--ink-primary)] leading-snug mb-1">{m.l}</p>
+            <p class="text-[0.68rem] text-[var(--ink-tertiary)] leading-snug">{m.s}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-center text-base text-[var(--ink-secondary)] max-w-2xl mx-auto" data-reveal data-reveal-delay="0.24">
+        Quali portiamo per primi? Scegliamo insieme i casi a maggior impatto e minor sforzo — la fondazione è la stessa, il valore è cumulativo.
+      </p>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
