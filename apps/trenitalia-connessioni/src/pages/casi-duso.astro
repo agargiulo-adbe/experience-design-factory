@@ -14,36 +14,39 @@ const currentPath = Astro.url.pathname;
 // ── I 3 casi core, riepilogati in dettaglio (dalla sezione Connessioni) ──
 const coreCases = [
   {
-    tag: 'Caso 01 · Abbonamento',
-    title: 'Il pendolare che non sa ancora di voler rinnovare',
-    persona: 'Marco',
-    scenario: 'Abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni i viaggi calano del 40%: CJA rileva l\'anomalia 18 giorni prima della scadenza, molto prima della classica email di rinnovo Responsys.',
-    segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia scesa al 12% (vs 35% media)',
-    azione: 'Responsys invia un\'offerta di rinnovo personalizzata; AJO sceglie canale e timing ottimali (push app se mobile, email se desktop) nel momento di massima propensione.',
-    prodotti: ['CJA', 'RT-CDP', 'AJO', 'Oracle Responsys'],
-    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch',
+    tag: 'Caso 01 · Rinnovo',
+    title: 'Il rinnovo che si anticipa',
+    persona: 'Davide',
+    scenario: 'Abbonamento mensile Frecce Milano–Roma: in 14 giorni i viaggi calano del 40%. CJA coglie l\'anomalia 18 giorni prima della scadenza.',
+    segnale: 'Viaggi –40% in 14 gg + apertura email CartaFreccia al 12% (vs 35%).',
+    azione: 'Responsys invia l\'offerta di rinnovo; AJO sceglie canale e timing al picco di propensione.',
+    recap: 'Viaggi –40% in 14 giorni: CJA coglie l\'anomalia 18 giorni prima della scadenza. Responsys e AJO attivano il rinnovo al momento giusto.',
+    prodotti: ['CJA', 'RT-CDP', 'AJO'],
+    impatto: '+22% rinnovi su early trigger vs campagne batch.',
     colore: 'var(--accent-primary)',
   },
   {
-    tag: 'Caso 02 · FS Park × Trenitalia',
-    title: 'Il parcheggio come leva di cross-sell',
-    persona: 'Marco',
-    scenario: 'Marco prenota un Frecciarossa e 3 ore dopo cerca "parcheggio Milano Centrale" senza convertire. Oggi FS Park e Trenitalia non comunicano: paga un parcheggio concorrente su un\'app terza.',
-    segnale: 'Ricerca parcheggio post-booking + 0 conversioni FS Park nel 90-day window',
-    azione: 'Clean room di Data Collaboration: FS Park riceve il segnale d\'interesse senza mai vedere l\'identità di Marco. Bundle parcheggio + biglietto in-app, 20% sul primo utilizzo.',
-    prodotti: ['CJA', 'Data Collaboration', 'AJO'],
-    impatto: '€ 8–15 di ricavo accessorio per viaggio · 0% infrastruttura · GDPR-safe',
+    tag: 'Caso 02 · Cross-sell',
+    title: 'Il parcheggio come cross-sell',
+    persona: 'Davide',
+    scenario: 'Davide prenota un Frecciarossa, poi cerca "parcheggio Milano Centrale" senza convertire. FS Park e Trenitalia non si parlano.',
+    segnale: 'Ricerca parcheggio post-booking + 0 conversioni FS Park in 90 giorni.',
+    azione: 'Clean room Data Collaboration: FS Park riceve il segnale senza vedere l\'identità. Bundle parcheggio + biglietto, –20%.',
+    recap: 'Cerca parcheggio dopo il booking, ma FS Park e Trenitalia non si parlano. Clean room Data Collaboration: bundle parcheggio + biglietto.',
+    prodotti: ['CJA', 'Data Collab.', 'AJO'],
+    impatto: '€ 8–15 di ricavo accessorio per viaggio · GDPR-safe.',
     colore: 'var(--accent-secondary)',
   },
   {
-    tag: 'Caso 03 · Loyalty Frecce',
-    title: 'Dalla singola tratta alla relazione',
-    persona: 'Sofia',
-    scenario: 'Sofia prenota in business 3 volte al mese, senza abbonamento né CartaFreccia. CJA la classifica come "alto LTV latente" su frequenza × ticket × canale — ma nessun sistema oggi la riconosce.',
-    segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio > €80 × 0 loyalty card',
-    azione: 'Onboarding CartaFreccia personalizzato: "Viaggi già regolarmente — i tuoi punti ti stanno aspettando." Accumulo retroattivo sugli ultimi 3 acquisti.',
-    prodotti: ['CJA', 'RT-CDP', 'Oracle Responsys'],
-    impatto: 'Conversione in loyalty member di clienti alto-valore oggi non tracciati',
+    tag: 'Caso 03 · Loyalty',
+    title: 'Dalla tratta alla relazione',
+    persona: 'Elena',
+    scenario: 'Elena viaggia in business 3 volte al mese, senza abbonamento né CartaFreccia. CJA la vede come "alto LTV latente" — nessun sistema la riconosce.',
+    segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio > €80 × 0 loyalty card.',
+    azione: 'Onboarding CartaFreccia mirato con accumulo retroattivo sugli ultimi 3 acquisti.',
+    recap: 'Business 3×/mese senza loyalty card: CJA la legge come "alto LTV latente". Onboarding CartaFreccia con accumulo retroattivo.',
+    prodotti: ['CJA', 'RT-CDP', 'Responsys'],
+    impatto: 'Clienti alto-valore oggi non tracciati diventano loyalty member.',
     colore: 'var(--color-grigio-300)',
   },
 ];
@@ -88,7 +91,7 @@ const explore = {
     },
     {
       title: 'Corporate & business travel',
-      scenario: 'Sofia prenota in business 3 volte al mese senza abbonamento né CartaFreccia. CJA la classifica come "alto LTV latente" su frequenza × ticket medio × canale — ma nessun sistema la riconosce come tale oggi.',
+      scenario: 'Elena prenota in business 3 volte al mese senza abbonamento né CartaFreccia. CJA la classifica come "alto LTV latente" su frequenza × ticket medio × canale — ma nessun sistema la riconosce come tale oggi.',
       segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio >€80 × 0 loyalty card × 0 corporate account',
       azione: 'Journey account-based con RTCDP: invito personalizzato a CartaFreccia Business, proposta Frecce Corporate, riconoscimento del valore storico. Canale: email + LinkedIn (B2B).',
       impatto: 'Monetizza il segmento business ad alto valore. Atteso: incremento conversioni CartaFreccia Business — KPI da validare.',
@@ -159,42 +162,34 @@ const explore = {
       />
       <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>Tre journey, in dettaglio</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.7vw, 2.2rem);"
+        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.7vw, 2.2rem); line-height: 1.05;"
         data-reveal data-reveal-delay="0.08"
       >
         Tre scenari raccontati end-to-end.
       </h2>
 
-      <div class="w-full max-w-6xl mx-auto flex flex-col gap-1" data-reveal data-reveal-delay="0.16">
+      <div class="w-full max-w-6xl mx-auto flex flex-col gap-1.5" data-reveal data-reveal-delay="0.16">
         {coreCases.map((uc) => (
-          <div class="px-3.5 py-0.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <div class="flex items-start gap-3">
-              <div class="flex-shrink-0 max-w-[15rem]">
-                <p class="text-[0.6rem] font-bold tracking-widest uppercase mb-0.5" style={`color: ${uc.colore};`}>{uc.tag}</p>
-                <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight mb-0.5">{uc.title}</h3>
+          <div class="px-5 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-md text-left" style={`border-left: 3px solid ${uc.colore};`}>
+            <div class="flex items-center gap-6">
+              <div class="flex-shrink-0 w-[14rem]">
+                <p class="text-[0.72rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
+                <h3 class="text-[1.02rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-1.5">{uc.title}</h3>
                 <div class="flex flex-wrap gap-1">
                   {uc.prodotti.map((p) => (
-                    <span class="text-[0.58rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--ink-secondary)]">{p}</span>
+                    <span class="text-[0.68rem] font-semibold px-1.5 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--color-grigio-200)]">{p}</span>
                   ))}
                 </div>
               </div>
-              <div class="flex-1 grid md:grid-cols-3 gap-x-2 gap-y-0 text-[0.55rem] leading-none text-[var(--ink-secondary)]">
+              <div class="flex-1 grid md:grid-cols-[2.1fr_1fr] gap-x-7 gap-y-1 items-start">
                 <div>
-                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">SCENARIO</p>
-                  <p class="leading-tight">{uc.scenario}</p>
+                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Scenario &amp; azione Adobe</p>
+                  <p class="text-[0.86rem] leading-snug text-[var(--color-grigio-200)]">{uc.recap}</p>
                 </div>
                 <div>
-                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">SEGNALE CJA</p>
-                  <p class="leading-tight">{uc.segnale}</p>
-                  <div class="mt-1 pt-1 border-t border-[var(--line-subtle)]">
-                    <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">AZIONE</p>
-                    <p class="leading-tight">{uc.azione}</p>
-                  </div>
-                </div>
-                <div>
-                  <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">IMPATTO ATTESO</p>
-                  <p class="leading-tight font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
+                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Impatto atteso</p>
+                  <p class="text-[0.92rem] leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
                 </div>
               </div>
             </div>

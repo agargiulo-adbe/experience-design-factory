@@ -15,35 +15,38 @@ const currentPath = Astro.url.pathname;
 const useCases = [
   {
     id: 'uc1',
-    tag: 'Use Case 01 · Abbonamento',
-    title: 'Il pendolare che non sa ancora di voler rinnovare',
-    persona: 'Marco',
-    scenario: 'Marco ha un abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni ha ridotto i viaggi del 40%. CJA rileva l\'anomalia comportamentale 18 giorni prima della scadenza — molto prima che Oracle Responsys invii la classica email di rinnovo.',
+    tag: 'Use Case 01 · Rinnovo',
+    title: 'Il rinnovo che si anticipa',
+    persona: 'Davide',
+    scenario: 'Davide ha un abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni ha ridotto i viaggi del 40%. CJA rileva l\'anomalia comportamentale 18 giorni prima della scadenza — molto prima che Oracle Responsys invii la classica email di rinnovo.',
     segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia caduta a 12% (vs 35% media)',
     azione: 'Oracle Responsys invia un\'offerta di rinnovo personalizzata — non generica. AJO orchestra il canale ottimale (push app se mobile, email se desktop) nel momento di maggiore propensione all\'acquisto.',
-    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch (stima illustrativa)',
+    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch',
+    recap: 'Viaggi –40% in 14 giorni: CJA coglie l\'anomalia 18 giorni prima della scadenza. Responsys e AJO attivano il rinnovo al momento giusto.',
     colore: 'var(--accent-primary)',
   },
   {
     id: 'uc2',
-    tag: 'Use Case 02 · FS Park × Trenitalia',
-    title: 'Parcheggio come leva di cross-sell',
-    persona: 'Marco',
-    scenario: 'Marco prenota un Frecciarossa e, 3 ore dopo, CJA rileva che ha cercato "parcheggio Milano Centrale" su trenitalia.com senza convertire. FS Park e Trenitalia non comunicano: Marco va su un\'app terza e paga parcheggio concorrente.',
+    tag: 'Use Case 02 · Cross-sell',
+    title: 'Il parcheggio come cross-sell',
+    persona: 'Davide',
+    scenario: 'Davide prenota un Frecciarossa e, 3 ore dopo, CJA rileva che ha cercato "parcheggio Milano Centrale" su trenitalia.com senza convertire. FS Park e Trenitalia non comunicano: Davide va su un\'app terza e paga parcheggio concorrente.',
     segnale: 'Ricerca parcheggio post-booking + 0 conversioni su FS Park nel 90-day window',
-    azione: 'Data Collaboration clean room: FS Park riceve il segnale di interesse senza mai vedere l\'identità di Marco. Campagna mirata: offerta parcheggio+biglietto bundled in-app, 20% sconto primo utilizzo.',
-    impatto: '€ 8–15 di ricavo accessorio per viaggio (stima illustrativa) · 0% incremento infrastruttura · GDPR-compliant',
+    azione: 'Data Collaboration clean room: FS Park riceve il segnale di interesse senza mai vedere l\'identità di Davide. Campagna mirata: offerta parcheggio+biglietto bundled in-app, 20% sconto primo utilizzo.',
+    impatto: '€ 8–15 di ricavo accessorio per viaggio · GDPR-compliant',
+    recap: 'Cerca parcheggio dopo il booking, ma FS Park e Trenitalia non si parlano. Clean room Data Collaboration: bundle parcheggio + biglietto.',
     colore: 'var(--accent-secondary)',
   },
   {
     id: 'uc3',
-    tag: 'Use Case 03 · Loyalty Frecce',
-    title: 'Dalla singola tratta alla relazione',
-    persona: 'Sofia',
-    scenario: 'Sofia prenota sempre in business class, 3 volte al mese. Non ha un abbonamento, non ha CartaFreccia. CJA classifica Sofia come "cliente ad alto LTV latente" basandosi su frequenza × ticket medio × canale — ma nessun sistema la conosce come tale.',
+    tag: 'Use Case 03 · Loyalty',
+    title: 'Dalla tratta alla relazione',
+    persona: 'Elena',
+    scenario: 'Elena prenota sempre in business class, 3 volte al mese. Non ha un abbonamento, non ha CartaFreccia. CJA classifica Elena come "cliente ad alto LTV latente" basandosi su frequenza × ticket medio × canale — ma nessun sistema la conosce come tale.',
     segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio >€80 × 0 loyalty card registrata',
     azione: 'Campagna di onboarding CartaFreccia personalizzata: "Ti viaggi regolarmente — i tuoi punti non stanno aspettando." Offerta: accumulo punti retroattivo sugli ultimi 3 acquisti.',
-    impatto: 'Conversione in loyalty member di clienti ad alto valore oggi non tracciati come tali',
+    impatto: 'Clienti alto-valore oggi non tracciati diventano loyalty member',
+    recap: 'Business 3×/mese senza loyalty card: CJA la legge come "alto LTV latente". Onboarding CartaFreccia con accumulo retroattivo.',
     colore: 'var(--color-grigio-300)',
   },
 ];
@@ -87,7 +90,7 @@ const useCases = [
         IL GAP ATTUALE
       </p>
       <h2
-        class="text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+        class="text-[var(--ink-primary)] mb-1 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.2rem, 1.7vw, 1.7rem); font-weight: 600; line-height: 1.0; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -105,36 +108,36 @@ const useCases = [
             brand: 'FS Park',
             icon: '🅿️',
             sa: 'Chi ha prenotato · quando · dove · durata sosta',
-            nonSa: 'Se il cliente ha viaggiato in Frecce · se ha abbonamento · se è CartaFreccia',
+            nonSa: 'Se ha viaggiato in Frecce · se ha abbonamento · se è CartaFreccia',
             gap: 'Nessuna offerta bundled possibile. Parcheggio = commodity.',
           },
           {
             brand: 'Trenitalia',
             icon: '🚄',
             sa: 'Storico biglietti · classe · frequenza · canale acquisto',
-            nonSa: 'Se il cliente ha usato FS Park · se ha cercato parcheggio alternativo · dove arriva in auto',
+            nonSa: 'Se ha usato FS Park · se ha cercato parcheggio alternativo · dove arriva',
             gap: 'Potenziale bundle viaggio+parcheggio invisibile. Revenue accessorio perso.',
           },
           {
             brand: 'Oracle Responsys',
             icon: '📧',
             sa: 'Open rate · click · programma CRM · device',
-            nonSa: 'Se il cliente ha appena prenotato un viaggio · se ha un abbonamento in scadenza · LTV reale',
+            nonSa: 'Se ha appena prenotato · se ha un abbonamento in scadenza · LTV reale',
             gap: 'Campagne a calendario, non contestuali. Rilevanza bassa. Disiscrizioni alte.',
           },
         ].map((item) => (
-          <div class="px-3 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-1">
-            <div class="flex items-center gap-2">
-              <span class="text-sm" aria-hidden="true">{item.icon}</span>
-              <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{item.brand}</p>
+          <div class="px-4 py-1 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-0.5">
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="text-base" aria-hidden="true">{item.icon}</span>
+              <p class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{item.brand}</p>
             </div>
-            <p class="text-[0.6rem] text-[var(--ink-secondary)] leading-tight">
-              <span class="font-bold tracking-wider uppercase text-emerald-400 text-[0.52rem]">SA · </span>{item.sa}
+            <p class="text-[0.8rem] text-[var(--color-grigio-200)] leading-tight">
+              <span class="font-bold tracking-wider uppercase text-emerald-400 text-[0.66rem]">SA · </span>{item.sa}
             </p>
-            <p class="text-[0.6rem] text-[var(--ink-secondary)] leading-tight">
-              <span class="font-bold tracking-wider uppercase text-[var(--accent-primary)] text-[0.52rem]">NON SA · </span>{item.nonSa}
+            <p class="text-[0.8rem] text-[var(--color-grigio-200)] leading-tight">
+              <span class="font-bold tracking-wider uppercase text-[var(--accent-primary)] text-[0.66rem]">NON SA · </span>{item.nonSa}
             </p>
-            <p class="text-[0.6rem] text-[var(--ink-tertiary)] italic leading-tight pt-0.5 mt-0.5 border-t border-[var(--line-subtle)]">{item.gap}</p>
+            <p class="text-[0.78rem] text-[var(--color-grigio-300)] italic leading-tight pt-0.5 mt-0.5 border-t border-[var(--line-subtle)]">{item.gap}</p>
           </div>
         ))}
       </div>
@@ -166,8 +169,8 @@ const useCases = [
         TRE USE CASE · ROI MISURABILE
       </p>
       <h2
-        class="text-[var(--ink-primary)] mb-2.5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.15rem, 1.7vw, 1.55rem); font-weight: 600; line-height: 1.0; letter-spacing: -0.02em;"
+        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.7vw, 2.2rem); line-height: 1.05;"
         data-reveal
         data-reveal-delay="0.08"
       >
@@ -175,33 +178,25 @@ const useCases = [
       </h2>
 
       <div
-        class="w-full max-w-5xl mx-auto flex flex-col gap-1"
+        class="w-full max-w-6xl mx-auto flex flex-col gap-1.5"
         data-reveal
         data-reveal-delay="0.18"
       >
         {useCases.map((uc) => (
-          <div class="px-4 py-1 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <div class="flex items-start gap-3">
-              <div class="flex-shrink-0 w-44">
-                <p class="text-[0.52rem] font-bold tracking-widest uppercase mb-0.5" style={`color: ${uc.colore};`}>{uc.tag}</p>
-                <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-none">{uc.title}</h3>
+          <div class="px-5 py-1.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-md text-left" style={`border-left: 3px solid ${uc.colore};`}>
+            <div class="flex items-center gap-6">
+              <div class="flex-shrink-0 w-[14rem]">
+                <p class="text-[0.72rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
+                <h3 class="text-[1.02rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{uc.title}</h3>
               </div>
-              <div class="flex-1 grid md:grid-cols-3 gap-3 text-[0.57rem] text-[var(--ink-secondary)]">
+              <div class="flex-1 grid md:grid-cols-[2.1fr_1fr] gap-x-7 gap-y-1 items-start">
                 <div>
-                  <p class="text-[0.52rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">SCENARIO</p>
-                  <p class="leading-tight">{uc.scenario}</p>
+                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Scenario &amp; azione Adobe</p>
+                  <p class="text-[0.86rem] leading-snug text-[var(--color-grigio-200)]">{uc.recap}</p>
                 </div>
                 <div>
-                  <p class="text-[0.52rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">SEGNALE CJA</p>
-                  <p class="leading-tight">{uc.segnale}</p>
-                  <div class="mt-1 pt-1 border-t border-[var(--line-subtle)]">
-                    <p class="text-[0.52rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">AZIONE</p>
-                    <p class="leading-tight">{uc.azione}</p>
-                  </div>
-                </div>
-                <div>
-                  <p class="text-[0.52rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">IMPATTO ATTESO</p>
-                  <p class="leading-tight font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
+                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Impatto atteso</p>
+                  <p class="text-[0.9rem] leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
                 </div>
               </div>
             </div>
