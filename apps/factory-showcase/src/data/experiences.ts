@@ -76,8 +76,8 @@ export const EXPERIENCES: Experience[] = [
   {
     slug: 'ferrari-racing',
     name: 'Pole Position',
-    client: 'Ferrari × Adobe',
-    brandLabel: 'Ferrari × Adobe',
+    client: 'Ferrari Racing',
+    brandLabel: 'Ferrari Racing',
     url: `${LIVE}/ferrari-racing/`,
     shot: 'shots/ferrari.webp',
     accent: '#FF2800',
