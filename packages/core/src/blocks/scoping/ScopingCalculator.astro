@@ -33,8 +33,30 @@ function grouped(g: 'collab' | 'cja') {
 const collabGroups = grouped('collab');
 const cjaGroups = grouped('cja');
 const currencyPrefix = '€';
+
+// Metric-explanation tooltips for every licensing concept (generic to the
+// Adobe products, hence hardcoded bilingual here — not Ferrari-specific).
+const collabResults = [
+  { out: 'collabCreditsEstimated', en: 'Est. credits / yr', it: 'Credits stimati / anno',
+    tip: { en: 'Estimated Collaboration Credits consumed per year across audience management, activation and measurement — RT-CDP Collaboration’s license metric.', it: 'Collaboration Credits stimati consumati in un anno tra audience management, activation e measurement — la metrica di licenza di RT-CDP Collaboration.' } },
+  { out: 'collabBillableCredits', en: 'Billable credits / yr', it: 'Credits fatturabili / anno',
+    tip: { en: 'Estimated credits minus the bundled allotment (2,500 Prime / 5,000 Ultimate). Only the excess is billable, via a separate Sales Order.', it: 'Credits stimati meno l’allotment incluso (2.500 Prime / 5.000 Ultimate). Solo l’eccedenza è fatturabile, con un Sales Order separato.' } },
+  { out: 'collabCost', en: 'Collaboration cost', it: 'Costo Collaboration',
+    tip: { en: 'Billable credits × price per credit. The per-credit price is quote-only (illustrative here).', it: 'Credits fatturabili × prezzo per credito. Il prezzo per credito è solo da preventivo (qui illustrativo).' } },
+];
+const cjaResults = [
+  { out: 'cjaRowsPerYear', en: 'Licensed rows / yr', it: 'Righe licenziate / anno',
+    tip: { en: 'Rows of Data licensed = the contracted analytical capacity (rolling 13-month Core Data window). 1 row = 0.25 KB — CJA’s license metric.', it: 'Rows of Data licenziate = la capacità analitica contrattualizzata (finestra Core Data 13 mesi mobile). 1 riga = 0,25 KB — la metrica di licenza di CJA.' } },
+  { out: 'cjaAnnualIngestionLimit', en: 'Ingestion limit (3×)', it: 'Limite ingestion (3×)', guard: true,
+    tip: { en: 'Annual Ingestion Limit: you may ingest up to 3× the licensed rows per year. A guardrail on flow, not reporting capacity.', it: 'Annual Ingestion Limit: puoi ingerire fino a 3× le righe licenziate all’anno. Un guardrail sul flusso, non capacità di reporting.' } },
+  { out: 'cjaCost', en: 'CJA cost', it: 'Costo CJA',
+    tip: { en: 'Licensed rows × price per 1M rows. The price is quote-only (illustrative here).', it: 'Righe licenziate × prezzo per 1M righe. Il prezzo è solo da preventivo (qui illustrativo).' } },
+];
+const badgeCollab = { en: 'The license metric for Real-Time CDP Collaboration — a finite pool of credits consumed by collaboration activities.', it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits consumato dalle attività di collaboration.' };
+const badgeCja = { en: 'The license metric for CJA — the daily-average rows of data available for analysis (1 row = 0.25 KB).', it: 'La metrica di licenza di CJA — la media giornaliera di righe di dati disponibili per l’analisi (1 riga = 0,25 KB).' };
+const allotmentTip = { en: 'One-time allotment of Collaboration Credits included in some RT-CDP packages (2,500 Prime / 5,000 Ultimate). It is subtracted from the estimated credits.', it: 'Allotment one-time di Collaboration Credits incluso in alcuni package RT-CDP (2.500 Prime / 5.000 Ultimate). Si sottrae ai credits stimati.' };
 ---
-<div class="scoping" data-scoping
+<div class="scoping" data-scoping data-deck-nochrome
      data-project={projectSlug}
      data-supabase-url={supabaseUrl}
      data-supabase-key={supabaseAnonKey}
@@ -61,15 +83,29 @@ const currencyPrefix = '€';
     <div class="scoping-res-groups">
       <div class="scoping-res-group">
         <p class="scoping-res-h">Real-Time CDP Collaboration</p>
-        <div class="scoping-metric"><span data-lang-en>Est. credits / yr</span><span data-lang-it>Credits stimati / anno</span><b data-out="collabCreditsEstimated">—</b></div>
-        <div class="scoping-metric"><span data-lang-en>Billable credits / yr</span><span data-lang-it>Credits fatturabili / anno</span><b data-out="collabBillableCredits">—</b></div>
-        <div class="scoping-metric"><span data-lang-en>Collaboration cost</span><span data-lang-it>Costo Collaboration</span><b data-out="collabCost">—</b></div>
+        {collabResults.map((r) => (
+          <div class={`scoping-metric${r.guard ? ' scoping-guard' : ''}`}>
+            <span class="scoping-mlabel">
+              <span data-lang-en>{r.en}</span><span data-lang-it>{r.it}</span>
+              <button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button>
+              <span class="scoping-tip scoping-tip--metric"><span data-lang-en>{r.tip.en}</span><span data-lang-it>{r.tip.it}</span></span>
+            </span>
+            <b data-out={r.out}>—</b>
+          </div>
+        ))}
       </div>
       <div class="scoping-res-group">
         <p class="scoping-res-h">Customer Journey Analytics</p>
-        <div class="scoping-metric"><span data-lang-en>Licensed rows / yr</span><span data-lang-it>Righe licenziate / anno</span><b data-out="cjaRowsPerYear">—</b></div>
-        <div class="scoping-metric scoping-guard"><span data-lang-en>Ingestion limit (3×)</span><span data-lang-it>Limite ingestion (3×)</span><b data-out="cjaAnnualIngestionLimit">—</b></div>
-        <div class="scoping-metric"><span data-lang-en>CJA cost</span><span data-lang-it>Costo CJA</span><b data-out="cjaCost">—</b></div>
+        {cjaResults.map((r) => (
+          <div class={`scoping-metric${r.guard ? ' scoping-guard' : ''}`}>
+            <span class="scoping-mlabel">
+              <span data-lang-en>{r.en}</span><span data-lang-it>{r.it}</span>
+              <button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button>
+              <span class="scoping-tip scoping-tip--metric"><span data-lang-en>{r.tip.en}</span><span data-lang-it>{r.tip.it}</span></span>
+            </span>
+            <b data-out={r.out}>—</b>
+          </div>
+        ))}
       </div>
     </div>
   </aside>
@@ -79,12 +115,12 @@ const currencyPrefix = '€';
     <section class="scoping-card" aria-labelledby="sc-collab-h">
       <h3 id="sc-collab-h" class="scoping-card-h">
         <span>Real-Time CDP Collaboration</span>
-        <span class="scoping-card-metric">Collaboration Credits</span>
+        <span class="scoping-card-metric scoping-badge-tip">Collaboration Credits<button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric scoping-tip--right"><span data-lang-en>{badgeCollab.en}</span><span data-lang-it>{badgeCollab.it}</span></span></span>
       </h3>
 
       <div class="scoping-controls">
         <label class="scoping-field">
-          <span class="scoping-label"><span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span></span>
+          <span class="scoping-label"><span class="scoping-label-txt"><span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span></span><button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric"><span data-lang-en>{allotmentTip.en}</span><span data-lang-it>{allotmentTip.it}</span></span></span>
           <select data-k="collabPackage">
             <option value="none">None (0)</option>
             <option value="prime">Prime (2,500)</option>
@@ -129,7 +165,7 @@ const currencyPrefix = '€';
     <section class="scoping-card" aria-labelledby="sc-cja-h">
       <h3 id="sc-cja-h" class="scoping-card-h">
         <span>Customer Journey Analytics</span>
-        <span class="scoping-card-metric">Rows of Data</span>
+        <span class="scoping-card-metric scoping-badge-tip">Rows of Data<button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric scoping-tip--right"><span data-lang-en>{badgeCja.en}</span><span data-lang-it>{badgeCja.it}</span></span></span>
       </h3>
       {cjaGroups.map((grp) => (
         <div class="scoping-group">
@@ -433,10 +469,16 @@ const currencyPrefix = '€';
   .scoping-field input:focus, .scoping-field select:focus { outline: none; border-color: var(--accent-primary, #FF2800); }
 
   /* audit tooltip */
-  .scoping-tip { position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); width: min(20rem, 78vw); display: none; flex-direction: column; gap: 0.4rem; padding: 0.65rem 0.75rem; background: #16161a; border: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .scoping-tip { position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); width: min(20rem, 78vw); display: none; flex-direction: column; gap: 0.4rem; padding: 0.65rem 0.75rem; background: #16161a; border: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: none; }
   .scoping-info:hover ~ .scoping-tip, .scoping-info:focus ~ .scoping-tip, .scoping-info:focus-visible ~ .scoping-tip { display: flex; }
   .scoping-tip-row { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.72rem; line-height: 1.4; color: var(--color-grigio-300, #cfcfcf); }
   .scoping-tip-row b { font-size: 0.55rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary, #FFF200); }
+  .scoping-tip--metric { font-size: 0.72rem; line-height: 1.45; color: var(--color-grigio-300, #cfcfcf); font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .scoping-tip--right { left: auto; right: 0; }
+
+  /* metric-tip anchors (results labels + card badges) */
+  .scoping-mlabel { position: relative; display: inline-flex; align-items: center; gap: 0.35rem; }
+  .scoping-badge-tip { position: relative; display: inline-flex; align-items: center; gap: 0.32rem; }
 
   /* results bar (horizontal, sticky, full-width) */
   .scoping-results { z-index: 20; display: flex; flex-wrap: wrap; align-items: stretch; gap: 1.25rem 2rem; background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 66%, #fff 8%); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); border-radius: 8px; padding: 1rem 1.4rem; position: sticky; top: 0; }
