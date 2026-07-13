@@ -30,8 +30,8 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
       <label class="scoping-field">
         <span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span>
         <select data-k="collabMode">
-          <option value="activity" data-lang-en>Estimate from activity</option>
-          <option value="direct" data-lang-en>Direct credits</option>
+          <option value="activity">Stima da attività · Estimate from activity</option>
+          <option value="direct">Crediti diretti · Direct credits</option>
         </select>
       </label>
       <label class="scoping-field" data-when="direct">
@@ -83,9 +83,9 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     <select data-scoping-picker aria-label="Scenario"></select>
     <input type="text" data-scoping-title placeholder="Scenario name" />
     <select data-scoping-visibility aria-label="Visibility">
-      <option value="private" data-lang-en>Private</option>
-      <option value="link" data-lang-en>Shared via link</option>
-      <option value="team" data-lang-en>Team</option>
+      <option value="private">Privato · Private</option>
+      <option value="link">Condiviso via link · Shared via link</option>
+      <option value="team">Team</option>
     </select>
     <button data-scoping-save><span data-lang-en>Save</span><span data-lang-it>Salva</span></button>
     <button data-scoping-share><span data-lang-en>Share</span><span data-lang-it>Condividi</span></button>
@@ -126,6 +126,13 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     let assumptions: ScopingAssumptions = { ...DEFAULT_ASSUMPTIONS };
     let prices: UnitPrices = { ...DEFAULT_PRICES };
     const note = root.querySelector<HTMLElement>('[data-scoping-note]')!;
+
+    let baseline: any = {};
+    try { baseline = JSON.parse(localStorage.getItem('edf:scoping-baseline:' + ctx.projectSlug) || '{}'); } catch { baseline = {}; }
+    function applyBaselinePrices() {
+      if (prices.pricePerCredit == null && baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
+      if (prices.pricePerMillionRows == null && baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
+    }
 
     const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
     const fmtMoney = (n: number | null) =>
@@ -186,6 +193,7 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     function applyScenario(sc: Scenario) {
       assumptions = { ...DEFAULT_ASSUMPTIONS, ...sc.assumptions };
       prices = { ...DEFAULT_PRICES, ...sc.prices };
+      applyBaselinePrices();
       (root.querySelector('[data-scoping-title]') as HTMLInputElement).value = sc.title;
       (root.querySelector('[data-scoping-visibility]') as HTMLSelectElement).value = sc.visibility;
       writeInputs(); render();
@@ -263,15 +271,6 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     scenarios = (seeded ? seeded.slice() : []).concat(loadLocal(ctx.projectSlug));
     refreshPicker();
 
-    try {
-      const baseline = JSON.parse(localStorage.getItem('edf:scoping-baseline:' + ctx.projectSlug) || '{}');
-      if (baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
-      if (baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
-      ['partners','audienceSize','activationsPerYear'].forEach((k) => {
-        if (baseline[k] != null) (assumptions as any)[k] = baseline[k];
-      });
-    } catch {}
-
     const sharedId = scenarioIdFromSearch(location.search);
     if (sharedId) {
       fetchRemoteById(ctx, sharedId).then((sc) => {
@@ -280,6 +279,10 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     } else if (scenarios[0]) {
       applyScenario(scenarios[0]);
     } else {
+      if (baseline.partners != null) assumptions.partners = baseline.partners;
+      if (baseline.audienceSize != null) assumptions.audienceSize = baseline.audienceSize;
+      if (baseline.activationsPerYear != null) assumptions.activationsPerYear = baseline.activationsPerYear;
+      applyBaselinePrices();
       writeInputs(); render();
     }
     if (isLoggedIn()) listMine(ctx).then((mine) => { if (mine.length) { scenarios = mine.concat(scenarios); refreshPicker(); } });
