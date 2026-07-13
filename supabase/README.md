@@ -8,14 +8,16 @@ One-time backend setup for the Experience Design Factory console
 Open your Supabase project → **SQL Editor** → paste + **Run**, in order:
 [`migrations/0001_super_admin.sql`](./migrations/0001_super_admin.sql),
 [`migrations/0002_seed_ferrari.sql`](./migrations/0002_seed_ferrari.sql),
-[`migrations/0003_hardening.sql`](./migrations/0003_hardening.sql), then
-[`migrations/0004_scenarios.sql`](./migrations/0004_scenarios.sql).
+[`migrations/0003_hardening.sql`](./migrations/0003_hardening.sql),
+[`migrations/0004_scenarios.sql`](./migrations/0004_scenarios.sql), then
+[`migrations/0005_hub_registry.sql`](./migrations/0005_hub_registry.sql).
 
 `0001` creates `profiles`, `experiences`, `user_experience_roles`, the RLS
 policies, the signup trigger, and seeds the maxmara + unicredit experiences.
 `0002` seeds the Ferrari Racing experience.
 `0003` security hardening: privilege-escalation guards + `media_configs` table.
 `0004_scenarios.sql` — persistent licensing/scoping scenarios (private/link/team RLS) for the Ferrari `/scoping` calculator.
+`0005_hub_registry.sql` — root becomes the Factory hub: repoints maxmara's `base_url` to `/generazioni-maxmara/` and upserts the Connessioni Intelligenti (FS Group) experience. Idempotent.
 
 > **Via CLI (alternative):** with the CLI logged into the owning account and the
 > project linked (`supabase link --project-ref <ref>`), run any SQL against the

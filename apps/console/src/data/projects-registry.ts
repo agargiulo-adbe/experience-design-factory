@@ -193,8 +193,22 @@ export const PROJECTS: ConsoleProject[] = [
     name: 'Generazioni',
     client: 'Max Mara',
     description: "L'eredità generazionale del guardaroba Max Mara — come Adobe Experience Cloud alimenta la relazione con le clienti.",
-    baseUrl: '/experience-design-factory/',
+    baseUrl: '/experience-design-factory/generazioni-maxmara/',
     solutions: [],
+  },
+  {
+    slug: 'trenitalia-connessioni',
+    name: 'Connessioni Intelligenti',
+    client: 'FS Group',
+    description: 'Il dato che connette treni, viaggiatori e servizi in un unico journey misurabile — FS Group con Adobe.',
+    baseUrl: '/experience-design-factory/trenitalia-connessioni/',
+    solutions: [
+      { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Layer di convergenza cross-sistema: unifica AA, App, Responsys, Salesforce e FS Park in un\'unica vista del journey cliente.', pagesGated: ['CJA — Convergenza', 'Connessioni FS Park', 'Roadmap Adobe'] },
+      { id: 'rtcdp', name: 'Adobe Real-Time CDP', shortName: 'RT-CDP', pillar: 'data', description: 'Profili cliente unificati in real-time: risoluzione identità cross-sistema e segmentazione streaming per AJO.', pagesGated: ['Roadmap Adobe'] },
+      { id: 'ajo', name: 'Adobe Journey Optimizer', shortName: 'AJO', pillar: 'journeys', description: 'Orchestrazione journey omnicanale con AI: trigger CJA → decisione canale → esecuzione su Responsys/push/AEM.', pagesGated: ['Roadmap Adobe'] },
+      { id: 'mix-modeler', name: 'Adobe Mix Modeler', shortName: 'Mix Modeler', pillar: 'intelligence', description: 'Media Mix Modeling con Causal AI: misura il contributo incrementale di ogni canale e ottimizza il budget media cross-canale.', pagesGated: ['Roadmap Adobe'] },
+      { id: 'data-collab', name: 'Adobe Data Collaboration', shortName: 'Data Collab', pillar: 'data', description: 'Clean room privacy-first per FS Park × Trenitalia: audience matching GDPR-compliant senza condividere PII.', pagesGated: ['Connessioni FS Park', 'Roadmap Adobe'] },
+    ],
   },
 ];
 
