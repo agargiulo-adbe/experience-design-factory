@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+// Slide ids mirror the real <Slide id="…"> values in each page (verified).
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Apertura (00)', slides: [
+    { id: 'slide-cover', label: 'Cover' },
+    { id: 'slide-manifesto', label: 'Una sola relazione, quattro momenti' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'acquisizione', label: 'Acquisizione (01)', slides: [
+    { id: 'slide-apertura', label: 'Incontrare chi ancora non ci conosce' },
+    { id: 'slide-giulia', label: 'Giulia, 29 anni' },
+    { id: 'slide-datalake', label: 'Data lake → Profili unificati' },
+    { id: 'slide-frontstage', label: 'La scoperta — Whitney Bag su Instagram' },
+    { id: 'slide-impulse', label: 'Quel tocco non si perde' },
+    { id: 'slide-come', label: 'Come la piattaforma funziona' },
+    { id: 'slide-francesca', label: 'Nel frattempo — Francesca' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'engagement', label: 'Engagement (02)', slides: [
+    { id: 'slide-apertura', label: 'Dalla scoperta alla relazione' },
+    { id: 'slide-personalize', label: 'Lo stesso brand, il volto giusto' },
+    { id: 'slide-frontstage', label: "Un'esperienza che parla a lei" },
+    { id: 'slide-impulse', label: 'Ogni contenuto rilevante è una decisione' },
+    { id: 'slide-backstage', label: 'I prodotti Adobe — personalizzazione su ogni canale' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'conversione', label: 'Conversione (03)', slides: [
+    { id: 'slide-apertura', label: "Dal desiderio all'acquisto" },
+    { id: 'slide-converse', label: 'Una conversazione, non una pressione' },
+    { id: 'slide-frontstage', label: 'Un accompagnamento discreto' },
+    { id: 'slide-impulse', label: 'Dal carrello al negozio' },
+    { id: 'slide-backstage', label: 'I prodotti Adobe — quattro prodotti, zero attrito' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'loyalty', label: 'Loyalty (04)', slides: [
+    { id: 'slide-apertura', label: 'Dal primo acquisto al valore nel tempo' },
+    { id: 'slide-lifecycle', label: 'Non una linea, ma un ciclo' },
+    { id: 'slide-frontstage', label: 'Clienteling — essere riconosciute, ovunque' },
+    { id: 'slide-impulse', label: 'Il digitale che potenzia l’umano' },
+    { id: 'slide-backstage', label: 'I prodotti Adobe — ricordare, anticipare, intervenire' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'motore-adobe', label: 'Il Motore Adobe (05)', slides: [
+    { id: 'slide-apertura', label: "L'architettura" },
+    { id: 'slide-datalake', label: 'Da data lake silente a profili real-time' },
+    { id: 'slide-assemble', label: 'Ogni prodotto converge in un unico motore' },
+    { id: 'slide-fasi', label: 'Lo stack, fase per fase' },
+    { id: 'slide-impulse', label: 'Completa il quadro, non sostituisce' },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'persona', label: 'Persone (06)', slides: [
+    { id: 'slide-apertura', label: 'Due donne, un filo che le unisce' },
+    { id: 'slide-filo', label: 'Dalla prima scoperta alla fedeltà di una vita' },
+    { id: 'slide-giulia', label: 'Giulia, 29 — la nuova generazione' },
+    { id: 'slide-francesca', label: 'Francesca, 52 — la cliente storica' },
+    { id: 'slide-recognition', label: "Un'unica piattaforma le conosce entrambe" },
+    { id: 'slide-payoff', label: 'Payoff + CTA' },
+  ]},
+  { slug: 'chiusura', label: 'Chiusura (07)', slides: [
+    { id: 'slide-apertura', label: "Dalla visione all'azione" },
+    { id: 'slide-sintesi', label: 'Un percorso end-to-end, un unico tessuto' },
+    { id: 'slide-numeri', label: 'Tre numeri, una direzione' },
+    { id: 'slide-promessa', label: 'La promessa' },
+    { id: 'slide-payoff', label: 'Costruiamo insieme il prossimo capitolo' },
+  ]},
+];
+
+// Solutions registry — derived from the Adobe products actually featured in the
+// Generazioni content (verified per page). appearsIn uses the page labels above.
+interface SolutionEntry { id: string; name: string; shortName: string; pillar: string; description: string; appearsIn: string[]; }
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'aep', name: 'Adobe Experience Platform', shortName: 'AEP', pillar: 'foundation', description: 'La fondazione dati: raccoglie, normalizza e attiva i profili in tempo reale.', appearsIn: ['Il Motore Adobe'] },
+  { id: 'rtcdp', name: 'Real-Time CDP', shortName: 'RT-CDP', pillar: 'data', description: 'Unifica i dati in un profilo unico e costruisce pubblici simili per la scoperta.', appearsIn: ['Acquisizione', 'Loyalty', 'Il Motore Adobe'] },
+  { id: 'aem-sites', name: 'Adobe Experience Manager Sites', shortName: 'AEM Sites', pillar: 'content', description: 'Storytelling digitale personalizzato su ogni touchpoint editoriale.', appearsIn: ['Engagement', 'Il Motore Adobe'] },
+  { id: 'genstudio', name: 'GenStudio for Performance Marketing', shortName: 'GenStudio', pillar: 'content', description: 'I team interni creano e declinano varianti on-brand in minuti, senza attendere l’agenzia.', appearsIn: ['Acquisizione', 'Il Motore Adobe'] },
+  { id: 'firefly', name: 'Adobe Firefly', shortName: 'Firefly', pillar: 'content', description: 'Generazione creativa AI brand-safe per ampliare gli asset di campagna.', appearsIn: ['Acquisizione', 'Il Motore Adobe'] },
+  { id: 'express', name: 'Adobe Express', shortName: 'Express', pillar: 'content', description: 'Editing rapido e template brand-safe per i team marketing.', appearsIn: ['Il Motore Adobe'] },
+  { id: 'target', name: 'Adobe Target', shortName: 'Target', pillar: 'engagement', description: 'Test A/B, raccomandazioni e personalizzazione in tempo reale.', appearsIn: ['Engagement', 'Conversione', 'Il Motore Adobe'] },
+  { id: 'ajo', name: 'Adobe Journey Optimizer', shortName: 'AJO', pillar: 'engagement', description: 'Orchestrazione dei journey lifecycle personalizzati, in tempo reale e cross-canale.', appearsIn: ['Conversione', 'Loyalty', 'Il Motore Adobe'] },
+  { id: 'brand-concierge', name: 'Brand Concierge', shortName: 'Brand Concierge', pillar: 'engagement', description: 'L’assistente conversazionale AI di Adobe (Product Advisor Agent su Agent Orchestrator).', appearsIn: ['Conversione', 'Il Motore Adobe'] },
+  { id: 'commerce', name: 'Adobe Commerce', shortName: 'Commerce', pillar: 'commerce', description: 'Checkout seamless cross-device ed esperienze d’acquisto senza attrito.', appearsIn: ['Engagement', 'Conversione', 'Il Motore Adobe'] },
+  { id: 'cja', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'analytics', description: 'Analisi LTV per coorti e predizione del churn su tutti i touchpoint.', appearsIn: ['Loyalty', 'Il Motore Adobe'] },
+  { id: 'workfront', name: 'Adobe Workfront', shortName: 'Workfront', pillar: 'operations', description: 'Coordina flussi e team che alimentano il motore di esperienza.', appearsIn: ['Il Motore Adobe'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { foundation: 'Foundation', data: 'Data', content: 'Content', engagement: 'Engagement', commerce: 'Commerce', analytics: 'Analytics', operations: 'Operations' };
+const PILLAR_ORDER = ['foundation', 'data', 'content', 'engagement', 'commerce', 'analytics', 'operations'];
+const PILLAR_COLORS: Record<string, string> = { foundation: '#C19A6B', data: '#6B4F3A', content: '#B8975A', engagement: '#3E2C20', commerce: '#9B7B4F', analytics: '#736B61', operations: '#C4BDB3' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console di configurazione — Generazioni">
+  <AdminConsole
+    projectSlug="generazioni-maxmara"
+    projectName="Generazioni — Max Mara"
+    clientLabel="Max Mara"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

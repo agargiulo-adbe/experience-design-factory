@@ -5,10 +5,20 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** Solutions active for this page — checked client-side at boot. */
+  pageSolutions?: string[];
 }
 
-const { title, description = 'Generazioni — Max Mara × Adobe' } = Astro.props;
+const {
+  title,
+  description = 'Generazioni — Max Mara × Adobe',
+  pageSolutions,
+} = Astro.props;
+
 const base = import.meta.env.BASE_URL;
+const PROJECT_SLUG = 'generazioni-maxmara';
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 <!doctype html>
 <html lang="it">
@@ -27,3 +37,561 @@ const base = import.meta.env.BASE_URL;
     <slot />
   </body>
 </html>
+
+<!--
+  Media Demo Slot runtime: runs synchronously (is:inline) before deck.ts.
+  Reads slot config from localStorage and injects media into [data-media-slot]
+  elements. When a slot is active + has a URL: shows it. When hidden: display:none
+  so the parent flex container reflows content to full width automatically.
+  Listens for storage events (cross-tab) and edf:slots-updated (same-tab admin).
+-->
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+(function() {
+  var STORAGE_KEY = 'edf:media-slots:generazioni-maxmara';
+
+  // Seed localStorage from ?cfg=<uuid> Supabase shareable link
+  (function seedFromSupabase() {
+    var cfgId = new URLSearchParams(location.search).get('cfg');
+    if (!cfgId || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+
+    var seededKey = 'edf:cfg:' + cfgId;
+    if (sessionStorage.getItem(seededKey)) return; // already seeded this session
+
+    fetch(SUPABASE_URL + '/rest/v1/media_configs?id=eq.' + cfgId + '&select=config', {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(rows) {
+      if (rows && rows[0] && rows[0].config) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(rows[0].config)); } catch(_) {}
+        try { sessionStorage.setItem(seededKey, '1'); } catch(_) {}
+        location.reload();
+      }
+    })
+    .catch(function() {});
+  })();
+
+  function getCurrentPageSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+
+  // Build media as DOM nodes (NEVER innerHTML from remote config → no XSS).
+  // Only https: URLs are accepted; YouTube only via the matched 11-char id.
+  function isSafeUrl(u) { return /^https:\/\//i.test(String(u || '')); }
+  function csPlaceholderEl(text) {
+    var d = document.createElement('div');
+    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;font-size:0.875rem;';
+    d.textContent = text || 'Media non valido';
+    return d;
+  }
+  function buildMediaEl(slotCfg) {
+    var autoplayMode = slotCfg.autoplay || 'auto';
+    var url = String(slotCfg.url || '');
+    if (slotCfg.type === 'video') {
+      var ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (ytMatch) {
+        var ytId = ytMatch[1];
+        var q = autoplayMode === 'manual'
+          ? '?controls=1&rel=0&playsinline=1'
+          : '?autoplay=1&mute=1&loop=1&playlist=' + ytId + '&controls=0&rel=0&playsinline=1';
+        var iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube.com/embed/' + ytId + q;
+        iframe.setAttribute('allow', 'autoplay;encrypted-media');
+        iframe.setAttribute('title', 'Demo video');
+        iframe.style.cssText = 'width:100%;height:100%;border:0;';
+        return iframe;
+      }
+      if (!isSafeUrl(url)) return csPlaceholderEl();
+      var video = document.createElement('video');
+      video.src = url;
+      video.setAttribute('playsinline', '');
+      if (autoplayMode === 'manual') { video.controls = true; }
+      else { video.autoplay = true; video.muted = true; video.loop = true; }
+      video.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+      return video;
+    }
+    if (!isSafeUrl(url)) return csPlaceholderEl();
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = slotCfg.caption || '';   // property assignment — not HTML-parsed
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+    return img;
+  }
+
+  function injectSlideMedia(slide, slotKey, slotCfg) {
+    var autoplayMode = slotCfg.autoplay || 'auto';
+    var autoplayDelay = slotCfg.autoplayDelay || 3;
+
+    // Case 1: slide has explicit data-demo-flex → use split-layout mechanism
+    var flexContainer = slide.querySelector('[data-demo-flex]');
+    if (flexContainer) {
+      var mediaSlot = flexContainer.querySelector('[data-media-slot]');
+      if (mediaSlot) {
+        mediaSlot.style.display = 'block';
+        var inner = mediaSlot.querySelector('.media-slot-inner');
+        if (inner) {
+          if (autoplayMode === 'delayed') {
+            inner.replaceChildren(csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…'));
+            (function(t, delay) { setTimeout(function() { t.replaceChildren(buildMediaEl(slotCfg)); }, delay * 1000); })(inner, autoplayDelay);
+          } else {
+            inner.replaceChildren(buildMediaEl(slotCfg));
+          }
+          flexContainer.setAttribute('data-slot-active', '');
+        }
+      }
+      return;
+    }
+
+    // Case 2: reflow layout — content shifts to the LEFT column, media panel
+    // sits on the RIGHT, so text NEVER overlaps the injected image/video. The
+    // slide content re-adapts dynamically (no fixed markup needed per slide).
+    var existing = slide.querySelector('[data-edf-media]');
+    if (existing) existing.remove();
+
+    var panel = document.createElement('div');
+    panel.setAttribute('data-edf-media', slotKey);
+    panel.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
+
+    var mediaDivEl = document.createElement('div');
+    mediaDivEl.style.cssText = 'position:absolute;right:max(var(--slide-safe-inset,60px),6vw);top:max(var(--deck-chrome-safe,60px),7vh);bottom:max(var(--deck-chrome-safe,60px),7vh);width:42%;overflow:hidden;border-radius:4px;pointer-events:auto;background:var(--surface-secondary);';
+    mediaDivEl.replaceChildren(autoplayMode === 'delayed' ? csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…') : buildMediaEl(slotCfg));
+
+    panel.appendChild(mediaDivEl);
+    slide.appendChild(panel);
+
+    // Reflow the slide content into the left column so it clears the media zone.
+    var slideInner = slide.querySelector('.slide-inner');
+    var host = slideInner && slideInner.parentElement; // safe-area wrapper (flex centre)
+    if (host) {
+      host.style.zIndex = '2';
+      if (!host.hasAttribute('data-edf-reflowed')) {
+        host.setAttribute('data-edf-reflowed', '');
+        host.style.justifyContent = 'flex-start';
+        host.style.paddingRight = 'calc(42% + max(var(--slide-safe-inset,60px),6vw) + 3vw)';
+      }
+    }
+
+    if (autoplayMode === 'delayed') {
+      (function(target, delay) {
+        setTimeout(function() { target.replaceChildren(buildMediaEl(slotCfg)); }, delay * 1000);
+      })(mediaDivEl, autoplayDelay);
+    }
+  }
+
+  function applySlots() {
+    var rawConfig = null;
+    try { rawConfig = localStorage.getItem(STORAGE_KEY); } catch(e) {}
+    if (!rawConfig) return;
+    var config;
+    try { config = JSON.parse(rawConfig); } catch(e) { return; }
+
+    var pageSlug = getCurrentPageSlug();
+
+    document.querySelectorAll('[data-slide]').forEach(function(slide) {
+      var slideId = slide.id;
+      if (!slideId) return;
+
+      var slotKey = pageSlug + ':' + slideId;
+      var slotCfg = config[slotKey];
+
+      if (!slotCfg || !slotCfg.active || !slotCfg.url) {
+        // Deactivate
+        var existingMedia = slide.querySelector('[data-edf-media]');
+        if (existingMedia) existingMedia.remove();
+
+        // Restore reflowed content (Case 2) back to the centred layout.
+        var slideInner = slide.querySelector('.slide-inner');
+        var dHost = slideInner && slideInner.parentElement;
+        if (dHost) {
+          dHost.style.zIndex = '';
+          if (dHost.hasAttribute('data-edf-reflowed')) {
+            dHost.removeAttribute('data-edf-reflowed');
+            dHost.style.justifyContent = '';
+            dHost.style.paddingRight = '';
+          }
+        }
+
+        var flex = slide.querySelector('[data-demo-flex]');
+        if (flex) {
+          var ms = flex.querySelector('[data-media-slot]');
+          if (ms) ms.style.display = 'none';
+          flex.removeAttribute('data-slot-active');
+        }
+        return;
+      }
+
+      injectSlideMedia(slide, slotKey, slotCfg);
+    });
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applySlots);
+  } else {
+    applySlots();
+  }
+
+  // Re-run on Astro ClientRouter navigations (inline scripts with identical content
+  // are not re-executed by the router, so we must listen for astro:page-load)
+  document.addEventListener('astro:page-load', applySlots);
+
+  // Listen for admin updates: cross-tab via storage event, same-tab via custom event
+  window.addEventListener('storage', function(e) {
+    if (e.key === STORAGE_KEY) applySlots();
+  });
+  window.addEventListener('edf:slots-updated', applySlots);
+
+  // Show admin-only elements when console session is active
+  function applyConsoleMode() {
+    var show = false;
+    try {
+      if (new URLSearchParams(location.search).get('console') === '1') {
+        sessionStorage.setItem('edf:console', '1');
+        show = true;
+      } else if (sessionStorage.getItem('edf:console') === '1') {
+        show = true;
+      }
+    } catch(e) {}
+    if (show) {
+      document.querySelectorAll('[data-admin-only]').forEach(function(el) {
+        el.style.removeProperty('display');
+      });
+    }
+  }
+  document.addEventListener('astro:page-load', applyConsoleMode);
+  applyConsoleMode();
+})();
+</script>
+
+<!--
+  Solutions runtime: runs synchronously (is:inline) before any module script (deck.ts).
+  Reads active solutions from localStorage or ?s= URL param.
+  Removes [data-slide] from disabled-solution slides so the deck doesn't count them.
+  Listens for postMessage from the Admin Console iframe for live preview.
+-->
+<script is:inline define:vars={{ PROJECT_SLUG, pageSolutions }}>
+(function () {
+  var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
+
+  // Determine active solution IDs
+  var urlParam = new URLSearchParams(location.search).get('s');
+  var activeIds = null;
+  if (urlParam) {
+    activeIds = urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+  } else {
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) activeIds = JSON.parse(stored);
+    } catch (_) {}
+  }
+
+  // Ordered section flow + per-section gate (mirrors pageSolutions).
+  // A section is enabled when its gate is null OR any gate solution is active.
+  // The funnel pages tell one continuous persona journey (Giulia → Francesca)
+  // with Adobe products woven in, so they stay UNGATED (gate: null); solutions
+  // still toggle their inline [data-solution] chips. Only the pure architecture
+  // hub (motore-adobe) is a candidate for gating, and even that stays null so a
+  // shared deck never loses a section unexpectedly.
+  var SECTION_FLOW = [
+    { slug: 'index', gate: null },
+    { slug: 'acquisizione', gate: null },
+    { slug: 'engagement', gate: null },
+    { slug: 'conversione', gate: null },
+    { slug: 'loyalty', gate: null },
+    { slug: 'motore-adobe', gate: null },
+    { slug: 'persona', gate: null },
+    { slug: 'chiusura', gate: null },
+  ];
+  function sectionEnabled(entry) {
+    if (!entry || !entry.gate) return true;
+    return entry.gate.some(function(id) { return activeIds.indexOf(id) !== -1; });
+  }
+  function currentSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+  function swapSlug(href, slug) {
+    // href ends with "…/<slug>/" — replace the last path segment
+    return href.replace(/[^/]+\/?$/, slug + '/');
+  }
+  function homeFrom(href) {
+    return href.replace(/[^/]+\/?$/, '');
+  }
+  function nextEnabledAfter(slug) {
+    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
+    if (i === -1) return undefined;
+    for (var j = i + 1; j < SECTION_FLOW.length; j++) {
+      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
+    }
+    return null; // nothing enabled forward → home
+  }
+  function prevEnabledBefore(slug) {
+    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
+    if (i === -1) return undefined;
+    for (var j = i - 1; j >= 0; j--) {
+      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
+    }
+    return null; // nothing enabled backward → home
+  }
+
+  // If restrictions set, apply them before deck.ts runs
+  if (activeIds) {
+    // Hide solution-gated slides/sections + inline product chips
+    var gated = document.querySelectorAll('[data-solution]');
+    gated.forEach(function(el) {
+      var ids = (el.getAttribute('data-solution') || '').split(',').map(function(s) { return s.trim(); });
+      var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!anyActive) {
+        // Remove data-slide so the Deck controller doesn't count this slide
+        el.removeAttribute('data-slide');
+        el.setAttribute('aria-hidden', 'true');
+        el.setAttribute('inert', '');
+        el.style.display = 'none';
+      }
+    });
+
+    // Hide nav links + home roadmap cards pointing to gated sections
+    // (data-nav-solution: navigational, not a slide — just hide it).
+    document.querySelectorAll('[data-nav-solution]').forEach(function(el) {
+      var ids = (el.getAttribute('data-nav-solution') || '').split(',').map(function(s) { return s.trim(); });
+      var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!anyActive) {
+        el.setAttribute('aria-hidden', 'true');
+        el.style.display = 'none';
+      }
+    });
+
+    // Rewrite the deck's "next section" target so arrow navigation SKIPS
+    // gated sections (runs before deck.ts reads data-deck-next).
+    var deckRoot = document.querySelector('[data-deck-next]');
+    if (deckRoot) {
+      var curNext = deckRoot.getAttribute('data-deck-next');
+      var nextEntry = nextEnabledAfter(currentSlug());
+      if (curNext && nextEntry !== undefined) {
+        deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : homeFrom(curNext));
+      }
+    }
+
+    // Same for the "previous section" target (← past the first slide) so back
+    // navigation SKIPS gated sections and never lands on a hidden one.
+    var deckRootP = document.querySelector('[data-deck-prev-href]');
+    if (deckRootP) {
+      var curPrev = deckRootP.getAttribute('data-deck-prev-href');
+      var prevEntry = prevEnabledBefore(currentSlug());
+      if (curPrev && prevEntry !== undefined) {
+        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : homeFrom(curPrev));
+      }
+    }
+
+    // If this page itself is gated → jump to the next enabled section
+    // (forward), not home — so a shared/bookmarked link lands somewhere useful.
+    if (pageSolutions && pageSolutions.length > 0) {
+      var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
+      if (!pageActive) {
+        var basePath = location.pathname.replace(/[^/]+\/?$/, '');
+        var target = nextEnabledAfter(currentSlug());
+        location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
+      }
+    }
+  }
+
+  function applyIncoming(activeIds) {
+    var incoming = JSON.stringify(activeIds);
+    var current = null;
+    try { current = localStorage.getItem(STORAGE_KEY); } catch (_) {}
+    if (current === incoming) return; // already synced — no reload, prevents iframe loop
+    try { localStorage.setItem(STORAGE_KEY, incoming); } catch (_) {}
+    location.reload();
+  }
+
+  // postMessage from preview iframe wrapper
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
+    applyIncoming(e.data.activeIds);
+  });
+
+  // BroadcastChannel from Admin Console (same-origin, cross-tab)
+  try {
+    var bc = new BroadcastChannel('edf-console');
+    bc.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
+      applyIncoming(e.data.activeIds);
+    });
+  } catch (_) {}
+})();
+</script>
+
+<!--
+  Custom slides runtime: injects Admin-authored slides into the deck, styled
+  with the SAME Slide structure + tokens (100% coherent). Defined on window so
+  the deck's boot() calls it right before counting slides (first load + SPA nav).
+-->
+<script is:inline define:vars={{ PROJECT_SLUG }}>
+(function () {
+  var CS_KEY = 'edf:custom-slides:' + PROJECT_SLUG;
+  var MEDIA_KEY = 'edf:media-slots:' + PROJECT_SLUG;
+
+  function currentSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+
+  function load() {
+    try {
+      var arr = JSON.parse(localStorage.getItem(CS_KEY) || '[]');
+      if (arr && arr.length) return arr;
+    } catch (_) {}
+    // Fallback: custom slides carried inside a shared media config (?cfg=)
+    try {
+      var m = JSON.parse(localStorage.getItem(MEDIA_KEY) || '{}');
+      if (m.__customSlides) return m.__customSlides;
+    } catch (_) {}
+    return [];
+  }
+
+  // Allowlist sanitizer for authored rich text.
+  var ALLOWED = { P:1, BR:1, STRONG:1, B:1, EM:1, I:1, U:1, H3:1, UL:1, OL:1, LI:1, A:1, SPAN:1 };
+  function sanitize(html) {
+    var t = document.createElement('template');
+    t.innerHTML = html || '';
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 1) {
+          if (!ALLOWED[n.tagName]) {
+            n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
+            return;
+          }
+          Array.prototype.slice.call(n.attributes).forEach(function (a) {
+            if (n.tagName === 'A' && a.name === 'href' && /^(https?:|mailto:)/i.test(a.value)) return;
+            n.removeAttribute(a.name);
+          });
+          if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
+          walk(n);
+        } else if (n.nodeType === 8) {
+          n.parentNode.removeChild(n);
+        }
+      });
+    })(t.content);
+    return t.innerHTML;
+  }
+
+  function videoHtml(url, mode) {
+    var yt = String(url).match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (yt) {
+      var id = yt[1];
+      var p = mode === 'manual'
+        ? '?rel=0&playsinline=1'
+        : '?autoplay=1&mute=1&loop=1&playlist=' + id + '&controls=0&rel=0&playsinline=1';
+      return '<iframe src="https://www.youtube.com/embed/' + id + p + '" allow="autoplay;encrypted-media" title="Video"></iframe>';
+    }
+    var attrs = mode === 'manual' ? 'controls playsinline' : 'autoplay muted loop playsinline';
+    return '<video src="' + url + '" ' + attrs + '></video>';
+  }
+
+  var BG = {
+    primary: 'bg-[var(--surface-primary)]', secondary: 'bg-[var(--surface-secondary)]',
+    inverse: 'bg-[var(--surface-inverse)]', brand: 'bg-[var(--accent-primary)]',
+  };
+
+  function build(slide) {
+    var tone = (slide.bg === 'inverse' || slide.bg === 'brand') ? 'dark' : 'light';
+    var section = document.createElement('section');
+    section.id = slide.id;
+    section.setAttribute('data-slide', '');
+    section.setAttribute('data-edf-custom', '');
+    section.setAttribute('data-cs-tone', tone);
+    section.className = 'slide cs-slide relative w-full h-[100dvh] overflow-hidden ' + (BG[slide.bg] || BG.primary);
+
+    var safe = document.createElement('div');
+    safe.className = 'absolute inset-0 flex items-center justify-center';
+    safe.style.paddingInline = 'max(var(--slide-safe-inset), 6vw)';
+    var inner = document.createElement('div');
+    inner.className = 'slide-inner w-full min-h-0 flex flex-col justify-center items-center';
+    inner.style.maxHeight = 'calc(100dvh - 2 * max(var(--deck-chrome-safe), 7vh))';
+    var content = document.createElement('div');
+    content.className = 'cs-content';
+
+    if (slide.eyebrow) {
+      var eb = document.createElement('p');
+      eb.className = 'slide-eyebrow cs-eyebrow';
+      eb.textContent = slide.eyebrow;
+      content.appendChild(eb);
+    }
+    if (slide.title) {
+      var h = document.createElement('h2');
+      h.className = 'cs-title';
+      h.textContent = slide.title;
+      content.appendChild(h);
+    }
+    (slide.blocks || []).forEach(function (b) {
+      if (b.type === 'text' && b.html) {
+        var d = document.createElement('div');
+        d.className = 'cs-prose';
+        d.innerHTML = sanitize(b.html);
+        content.appendChild(d);
+      } else if ((b.type === 'image' || b.type === 'video') && b.url) {
+        var fig = document.createElement('figure');
+        fig.style.margin = '0';
+        var m = document.createElement('div');
+        m.className = 'cs-media';
+        if (b.type === 'image') {
+          var img = document.createElement('img');
+          img.src = b.url; img.alt = b.alt || ''; img.loading = 'lazy';
+          m.appendChild(img);
+        } else {
+          m.innerHTML = videoHtml(b.url, b.autoplay);
+        }
+        fig.appendChild(m);
+        if (b.caption) {
+          var c = document.createElement('figcaption');
+          c.className = 'cs-caption'; c.textContent = b.caption;
+          fig.appendChild(c);
+        }
+        content.appendChild(fig);
+      }
+    });
+
+    inner.appendChild(content);
+    safe.appendChild(inner);
+    section.appendChild(safe);
+    return section;
+  }
+
+  window.__edfInjectCustomSlides = function () {
+    var deck = document.querySelector('[data-deck]');
+    if (!deck) return;
+    deck.querySelectorAll('[data-edf-custom]').forEach(function (el) { el.remove(); });
+    var slug = currentSlug();
+    var slides = load().filter(function (s) { return s && s.section === slug; });
+    if (!slides.length) return;
+    var chrome = deck.querySelector('.deck-chrome');
+    slides.forEach(function (slide) {
+      var el = build(slide);
+      var ref = (slide.after && slide.after.indexOf('__') !== 0)
+        ? deck.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(slide.after) : slide.after))
+        : null;
+      if (slide.after === '__start') {
+        deck.insertBefore(el, deck.querySelector('[data-slide]'));
+      } else if (ref) {
+        deck.insertBefore(el, ref.nextSibling);
+      } else {
+        deck.insertBefore(el, chrome); // append at end of section
+      }
+    });
+  };
+
+  // Live update from the Admin Console (same browser): re-inject + re-init.
+  try {
+    var bc2 = new BroadcastChannel('edf-console');
+    bc2.addEventListener('message', function (e) {
+      if (!e.data || e.data.type !== 'edf:custom-slides-changed' || e.data.project !== PROJECT_SLUG) return;
+      location.reload();
+    });
+  } catch (_) {}
+  window.addEventListener('storage', function (e) { if (e.key === CS_KEY) location.reload(); });
+})();
+</script>
