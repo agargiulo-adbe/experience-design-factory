@@ -263,6 +263,15 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     scenarios = (seeded ? seeded.slice() : []).concat(loadLocal(ctx.projectSlug));
     refreshPicker();
 
+    try {
+      const baseline = JSON.parse(localStorage.getItem('edf:scoping-baseline:' + ctx.projectSlug) || '{}');
+      if (baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
+      if (baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
+      ['partners','audienceSize','activationsPerYear'].forEach((k) => {
+        if (baseline[k] != null) (assumptions as any)[k] = baseline[k];
+      });
+    } catch {}
+
     const sharedId = scenarioIdFromSearch(location.search);
     if (sharedId) {
       fetchRemoteById(ctx, sharedId).then((sc) => {

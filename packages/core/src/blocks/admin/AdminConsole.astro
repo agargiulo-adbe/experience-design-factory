@@ -20,6 +20,7 @@ interface Props {
   allSolutionIds: string[];
   supabaseUrl?: string;
   supabaseAnonKey?: string;
+  showScopingTab?: boolean;
 }
 
 const {
@@ -32,6 +33,7 @@ const {
   allSolutionIds,
   supabaseUrl: SUPABASE_URL = '',
   supabaseAnonKey: SUPABASE_ANON_KEY = '',
+  showScopingTab = false,
 } = Astro.props;
 const pageSlugs = PAGE_REGISTRY.map(p => p.slug);
 const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.solutionId));
@@ -86,6 +88,11 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
             <button class="admin-tab" type="button" role="tab" data-tab="mockup" aria-selected="false">
               <span class="admin-tab-num" data-count-mockup>0</span>
               Mockup prodotto
+            </button>
+          )}
+          {showScopingTab && (
+            <button class="admin-tab" type="button" role="tab" data-tab="scoping" aria-selected="false">
+              Modello di licensing
             </button>
           )}
         </div>
@@ -475,6 +482,21 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
                 </div>
               </div>
             ))}
+          </section>
+        )}
+        {showScopingTab && (
+          <section class="admin-tabpanel" data-tabpanel="scoping" hidden>
+            <h2 class="admin-h2">Baseline di licensing &amp; scoping</h2>
+            <p class="admin-help">Questi valori pre-compilano un calcolatore nuovo. I prezzi restano opzionali (quote-only) e non vengono mai hardcoded nel codice.</p>
+            <div class="admin-scoping-grid">
+              <label>Prezzo per credito<input type="number" step="0.01" data-scoping-baseline="pricePerCredit" placeholder="—" /></label>
+              <label>Prezzo per 1M righe<input type="number" step="0.01" data-scoping-baseline="pricePerMillionRows" placeholder="—" /></label>
+              <label>Partner (baseline)<input type="number" data-scoping-baseline="partners" /></label>
+              <label>Audience distinta<input type="number" data-scoping-baseline="audienceSize" /></label>
+              <label>Attivazioni / anno<input type="number" data-scoping-baseline="activationsPerYear" /></label>
+            </div>
+            <button class="admin-btn" data-scoping-baseline-save>Salva baseline</button>
+            <span class="admin-note" data-scoping-baseline-note></span>
           </section>
         )}
       </div>
@@ -1050,6 +1072,16 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
   .mockup-relevant-tag { font-size: 0.5625rem; font-weight: 600; padding: 1px 6px; border-radius: 20px; background: #EEF2FF; color: #4338ca; white-space: nowrap; }
   .mockup-save-row { display: flex; align-items: center; gap: 0.875rem; padding-top: 0.75rem; border-top: 1px solid #f3f4f6; flex-wrap: wrap; }
   .mockup-active-count { font-size: 0.8125rem; color: #6b7280; margin-left: auto; }
+
+  /* ---- Scoping baseline tab ---- */
+  .admin-h2 { font-size: 1.1rem; font-weight: 700; color: #111827; margin-bottom: 0.25rem; }
+  .admin-help { font-size: 0.85rem; color: #6b7280; margin-bottom: 1rem; max-width: 44rem; }
+  .admin-scoping-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+  .admin-scoping-grid label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: #374151; }
+  .admin-scoping-grid input { border: 1px solid #d1d5db; border-radius: 4px; padding: 0.4rem 0.5rem; font-size: 0.9rem; }
+  .admin-btn { background: #BE2027; color: #fff; border: none; border-radius: 4px; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .admin-btn:hover { background: #a01a20; }
+  .admin-note { margin-left: 0.75rem; font-size: 0.8rem; color: #16a34a; }
 </style>
 
 <script is:inline define:vars={{ projectSlug, deckHref, SUPABASE_URL, SUPABASE_ANON_KEY, allSolutionIds, pagesMap: PAGE_REGISTRY, mockupLibrary: relevantMockups }}>
@@ -1742,6 +1774,26 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
         });
       });
     })();
+
+    // ── Scoping baseline (optional tab) ──────────────────────
+    var scopingKey = 'edf:scoping-baseline:' + projectSlug;
+    var scopingInputs = document.querySelectorAll('[data-scoping-baseline]');
+    if (scopingInputs.length) {
+      var savedScoping = {};
+      try { savedScoping = JSON.parse(localStorage.getItem(scopingKey) || '{}'); } catch (e) {}
+      scopingInputs.forEach(function (el) {
+        var k = el.getAttribute('data-scoping-baseline');
+        if (savedScoping[k] != null) el.value = savedScoping[k];
+      });
+      var sBtn = document.querySelector('[data-scoping-baseline-save]');
+      var sNote = document.querySelector('[data-scoping-baseline-note]');
+      if (sBtn) sBtn.addEventListener('click', function () {
+        var out = {};
+        scopingInputs.forEach(function (el) { if (el.value !== '') out[el.getAttribute('data-scoping-baseline')] = Number(el.value); });
+        localStorage.setItem(scopingKey, JSON.stringify(out));
+        if (sNote) sNote.textContent = 'Baseline salvata.';
+      });
+    }
   });
 })();
 </script>
