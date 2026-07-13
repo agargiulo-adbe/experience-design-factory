@@ -1,0 +1,348 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const roadmapPhases = [
+  {
+    fase: 'Fase 1',
+    label: 'Convergenza · 0–6 mesi',
+    colore: 'var(--accent-primary)',
+    headline: 'CJA: la vista unificata',
+    prodotti: ['Customer Journey Analytics', 'Adobe Analytics (×2)', 'Content Analytics'],
+    deliverable: 'Prima vista end-to-end del journey cliente. Identità stitching cross-domain. Workspace FS personalizzato. Content Analytics su AEM attivo.',
+    kpi: 'Riduzione blind spot analytics · +360° vista journey · Prima ottimizzazione contenuti AEM data-driven',
+  },
+  {
+    fase: 'Fase 2',
+    label: 'Attivazione · 6–18 mesi',
+    colore: 'var(--accent-secondary)',
+    headline: 'RTCDP + AJO: dal dato all\'azione',
+    prodotti: ['Adobe Real-Time CDP', 'Adobe Journey Optimizer', 'Adobe Target (extension)'],
+    deliverable: 'RTCDP profili unificati real-time. AJO orchestrazione journey omnicanale. Target esteso da homepage a funnel e app. Personalizzazione 1:1 in-momento.',
+    kpi: '+15–20% conversione abbonamenti · –25% tasso abbandono funnel · +12% engagement app',
+  },
+  {
+    fase: 'Fase 3',
+    label: 'Intelligence · 18–36 mesi',
+    colore: 'var(--color-grigio-300)',
+    headline: 'Mix Modeler + Data Collaboration: intelligence strategica',
+    prodotti: ['Adobe Mix Modeler', 'Adobe Data Collaboration', 'Adobe GenStudio for Performance Marketing'],
+    deliverable: 'Mix Modeler ottimizza l\'allocazione budget media cross-canale. Data Collaboration FS Park × Trenitalia a regime. GenStudio genera varianti creative scale-ready per ogni canale.',
+    kpi: 'ROI media ottimizzato · Revenue bundle misurabile · Content velocity ×3 con AI creative',
+  },
+];
+
+const mixModelerCapabilita = [
+  {
+    label: 'Media Mix Modeling (MMM)',
+    desc: 'Analisi econometrica AI-driven che modella il contributo incrementale di TV, digital paid, email, organico e offline — e misura l\'effetto halo tra canali.',
+    differenza: 'Vs CJA: CJA analizza il journey del singolo cliente; MMM analizza l\'impatto aggregato degli investimenti media a livello di portafoglio.',
+  },
+  {
+    label: 'Budget Optimization',
+    desc: 'Scenario planning what-if: quanti biglietti/abbonamenti genera spostare €1M da TV a paid digital? Raccomandazione automatica di riallocazione budget.',
+    differenza: 'Use case FS: ottimizzare la spesa per campagna CartaFreccia, X-GO, Frecciarossa vs yield reale per ciascuna tariffa.',
+  },
+  {
+    label: 'Causal AI & Touchpoint Attribution',
+    desc: 'Mix Modeler combina multi-touch attribution (CJA) con market mix modeling per una visione causale — non solo correlazionale — dell\'impatto delle campagne.',
+    differenza: 'Il connettore nativo CJA→Mix Modeler porta i dati person-level nel modello aggregato: massima precisione.',
+  },
+];
+---
+<BaseLayout
+  title="Roadmap Adobe · FS Group"
+  description="Il percorso evolutivo in tre fasi: CJA convergenza, RTCDP+AJO attivazione, Mix Modeler+Data Collaboration intelligence strategica."
+  pageSolutions={['rtcdp', 'ajo', 'mix-modeler']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/prossimo-passo')}
+    prevHref={href(base, '/connessioni')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="rtcdp">
+      <CoverHero
+        eyebrow="05 · Roadmap"
+        numeral="05"
+        title="La roadmap verso l'eccellenza"
+        lead="Tre fasi. Nessun big bang. Ogni fase porta valore misurabile — e costruisce la fondazione per la successiva. CJA ora, attivazione domani, intelligence strategica nel tempo."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Le 3 fasi ─────────────────────────────────────── -->
+    <Slide id="slide-3fasi" bg="primary" align="center" data-solution="rtcdp">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dashboard')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        L'ECOSISTEMA ADOBE PER FS
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Da analytics a intelligence.<br/>Passo dopo passo.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {roadmapPhases.map((phase) => (
+          <div class="p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-3">
+            <div>
+              <span class="inline-block text-[0.6rem] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm mb-2" style={`color: ${phase.colore}; background: color-mix(in srgb, ${phase.colore} 12%, transparent);`}>
+                {phase.fase}
+              </span>
+              <p class="text-xs text-[var(--ink-tertiary)] mb-1">{phase.label}</p>
+              <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{phase.headline}</p>
+            </div>
+            <div>
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-2">PRODOTTI</p>
+              <ul class="space-y-1">
+                {phase.prodotti.map((p) => (
+                  <li class="flex items-center gap-2 text-xs text-[var(--ink-secondary)]">
+                    <span class="w-1 h-1 rounded-full flex-shrink-0" style={`background: ${phase.colore};`} aria-hidden="true"/>
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">DELIVERABLE</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug">{phase.deliverable}</p>
+            </div>
+            <div class="pt-2 border-t border-[var(--line-subtle)]">
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1.5">KPI TARGET</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug italic">{phase.kpi}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: RTCDP + AJO ───────────────────────────────────── -->
+    <Slide id="slide-rtcdp-ajo" bg="secondary" align="center" data-solution="rtcdp">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-5" data-reveal>
+        FASE 2 · REAL-TIME CDP + ADOBE JOURNEY OPTIMIZER
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Dal profilo al momento giusto.<br/>Sempre.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        <!-- RTCDP -->
+        <div class="p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+          <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-3">ADOBE REAL-TIME CDP</p>
+          <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-4">Profili unificati in tempo reale</h3>
+          <ul class="space-y-3">
+            {[
+              { label: 'Profilo unificato', desc: 'Risoluzione identità tra CJA, Salesforce, Oracle Responsys, App e FS Park — profilo aggiornato in <1s.' },
+              { label: 'Segmenti streaming', desc: 'Segmento "abbonamento in scadenza 30gg + attivo nei 14gg" → disponibile in real-time per AJO.' },
+              { label: 'Governance GDPR', desc: 'Labels sui dati, policy di utilizzo, audit trail completo su ogni dato utilizzato in ogni campagna.' },
+              { label: 'Connettori nativi', desc: 'Out-of-the-box con Oracle Responsys, Salesforce Data Cloud, AEM, Adobe Analytics.' },
+            ].map((item) => (
+              <li class="flex items-start gap-3 text-sm">
+                <span class="flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
+                <div>
+                  <span class="font-semibold text-[var(--ink-primary)]">{item.label}: </span>
+                  <span class="text-[var(--ink-secondary)]">{item.desc}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- AJO -->
+        <div class="p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+          <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-3">ADOBE JOURNEY OPTIMIZER</p>
+          <h3 class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-4">Il journey come esperienza</h3>
+          <ul class="space-y-3">
+            {[
+              { label: 'Journey orchestration', desc: 'Canvas visuale per disegnare il journey di Marco: trigger CJA → decisione canale → esecuzione Responsys/push/AEM.' },
+              { label: 'Decisioni AI', desc: 'AI engine seleziona il messaggio migliore, il canale ottimale e il timing perfetto per ogni profilo.' },
+              { label: 'Target esteso', desc: 'Adobe Target attivo solo sull\'homepage oggi → con AJO+RTCDP si estende a funnel di acquisto e app nativa.' },
+              { label: 'Soppressione intelligente', desc: 'Chi ha già rinnovato non riceve la push. Frequenza cappata per profilo. Zero over-messaging.' },
+            ].map((item) => (
+              <li class="flex items-start gap-3 text-sm">
+                <span class="flex-shrink-0 mt-1 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
+                <div>
+                  <span class="font-semibold text-[var(--ink-primary)]">{item.label}: </span>
+                  <span class="text-[var(--ink-secondary)]">{item.desc}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Mix Modeler ───────────────────────────────────── -->
+    <Slide id="slide-mix-modeler" bg="primary" align="center" data-solution="mix-modeler">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+        FASE 3 · ADOBE MIX MODELER
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Ogni euro di marketing:<br/>dove rende di più?
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-6"
+        style="font-size: clamp(0.95rem, 1.25vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Mix Modeler combina Causal AI e modellazione econometrica per misurare il reale
+        contributo di ogni canale — TV, paid digital, email, AEM organico — e ottimizzare
+        l'allocazione del budget marketing in tempo quasi-reale. Si integra nativamente con
+        CJA: i dati person-level arricchiscono il modello aggregato.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto flex flex-col gap-4 mb-6"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {mixModelerCapabilita.map((cap) => (
+          <div class="p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left grid md:grid-cols-[220px_1fr_1fr] gap-4 items-start">
+            <div>
+              <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{cap.label}</p>
+            </div>
+            <div>
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">COSA FA</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug">{cap.desc}</p>
+            </div>
+            <div>
+              <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-1">DIMENSIONE UNICA</p>
+              <p class="text-xs text-[var(--ink-secondary)] leading-snug">{cap.differenza}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="w-full max-w-4xl mx-auto p-5 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/20 rounded-sm text-left"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        <p class="text-[0.6rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-2">USE CASE FS · SCENARIO ILLUSTRATIVO</p>
+        <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">
+          FS investe in campagna TV estiva per X-GO e Frecciarossa + paid digital + email Oracle Responsys.
+          Mix Modeler misura l'incremento prenotazioni attribuibile a ciascun canale, l'effetto halo TV→digital,
+          la saturazione per canale. Output: raccomandazione di spostare €2M da TV a paid digital
+          per massimizzare le prenotazioni Frecciarossa nel Q3.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: GenStudio ─────────────────────────────────────── -->
+    <Slide id="slide-genstudio" bg="secondary" align="center" data-solution="mix-modeler">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-5" data-reveal>
+        ACCELERATORE CREATIVO · ADOBE GENSTUDIO FOR PERFORMANCE MARKETING
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        La creatività alla velocità<br/>della personalizzazione.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(0.95rem, 1.25vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        GenStudio for Performance Marketing chiude il loop: CJA e Mix Modeler identificano
+        quale messaggio e quale canale performano meglio — GenStudio genera le varianti creative
+        in pochi minuti, rispettando le brand guidelines di Trenitalia, FS Park e CartaFreccia.
+        Approvate dal team, attivate direttamente in Oracle Responsys e nell'app.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-4 gap-4 mb-6"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {[
+          {
+            icon: '🎨',
+            label: 'Varianti creative on-brand',
+            desc: 'Email, social, banner per ogni segmento CJA — tutte nel brand system FS.',
+          },
+          {
+            icon: '⚡',
+            label: 'Da settimane a ore',
+            desc: 'Produzione varianti per A/B test: da 2 settimane a 2 ore con AI generativa.',
+          },
+          {
+            icon: '📊',
+            label: 'Performance loop',
+            desc: 'I dati CJA + Mix Modeler alimentano in continuo le prossime varianti creative.',
+          },
+          {
+            icon: '✅',
+            label: 'Workflow approvazione',
+            desc: 'Review umana prima di ogni uscita. AI velocizza, il team decide.',
+          },
+        ].map((item) => (
+          <div class="p-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-2xl mb-3" aria-hidden="true">{item.icon}</p>
+            <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1.5">{item.label}</p>
+            <p class="text-xs text-[var(--ink-secondary)] leading-snug">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <a
+        href={href(base, '/prossimo-passo')}
+        class="inline-flex items-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--accent-primary)] text-[var(--color-ghiaccio)] hover:opacity-90 transition-opacity duration-300 font-[family-name:var(--font-display)]"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        Il prossimo passo
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

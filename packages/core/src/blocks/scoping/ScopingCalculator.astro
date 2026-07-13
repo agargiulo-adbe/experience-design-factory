@@ -1,0 +1,317 @@
+---
+interface Props {
+  projectSlug: string;
+  supabaseUrl: string;
+  supabaseAnonKey: string;
+  experienceUrl: string; // absolute URL of the /scoping/ page for share links
+}
+const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props;
+---
+<div class="scoping" data-scoping
+     data-project={projectSlug}
+     data-supabase-url={supabaseUrl}
+     data-supabase-key={supabaseAnonKey}
+     data-experience-url={experienceUrl}>
+
+  <div class="scoping-cols">
+    <!-- ── Collaboration column ─────────────────────────────── -->
+    <section class="scoping-card" aria-labelledby="sc-collab-h">
+      <h3 id="sc-collab-h" class="scoping-card-h">
+        <span data-lang-en>Real-Time CDP Collaboration</span><span data-lang-it>Real-Time CDP Collaboration</span>
+      </h3>
+      <label class="scoping-field">
+        <span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span>
+        <select data-k="collabPackage">
+          <option value="none">None (0)</option>
+          <option value="prime">Prime (2,500)</option>
+          <option value="ultimate">Ultimate (5,000)</option>
+        </select>
+      </label>
+      <label class="scoping-field">
+        <span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span>
+        <select data-k="collabMode">
+          <option value="activity" data-lang-en>Estimate from activity</option>
+          <option value="direct" data-lang-en>Direct credits</option>
+        </select>
+      </label>
+      <label class="scoping-field" data-when="direct">
+        <span data-lang-en>Annual Collaboration Credits</span><span data-lang-it>Collaboration Credits annui</span>
+        <input type="number" min="0" data-k="directCredits" />
+      </label>
+      <div data-when="activity">
+        <label class="scoping-field"><span data-lang-en>Data-collaboration partners</span><span data-lang-it>Partner in data collaboration</span><input type="number" min="0" data-k="partners" /></label>
+        <label class="scoping-field"><span data-lang-en>Distinct addressable audience</span><span data-lang-it>Audience distinta indirizzabile</span><input type="number" min="0" data-k="audienceSize" /></label>
+        <label class="scoping-field"><span data-lang-en>Activations / year</span><span data-lang-it>Attivazioni / anno</span><input type="number" min="0" data-k="activationsPerYear" /></label>
+        <label class="scoping-field scoping-so"><span data-lang-en>Credits per activation</span><span data-lang-it>Credits per attivazione</span><input type="number" min="0" step="0.01" data-k="creditPerActivation" /></label>
+        <label class="scoping-field scoping-so"><span data-lang-en>Credits per partner audience mgmt</span><span data-lang-it>Credits per audience mgmt partner</span><input type="number" min="0" step="0.01" data-k="creditPerAudienceMgmt" /></label>
+        <label class="scoping-field scoping-so"><span data-lang-en>Credits per measurement</span><span data-lang-it>Credits per measurement</span><input type="number" min="0" step="0.01" data-k="creditPerMeasurement" /></label>
+      </div>
+      <label class="scoping-field scoping-so"><span data-lang-en>Price per credit (Sales Order)</span><span data-lang-it>Prezzo per credito (Sales Order)</span><input type="number" min="0" step="0.01" data-k="pricePerCredit" placeholder="—" /></label>
+    </section>
+
+    <!-- ── CJA column ───────────────────────────────────────── -->
+    <section class="scoping-card" aria-labelledby="sc-cja-h">
+      <h3 id="sc-cja-h" class="scoping-card-h">
+        <span data-lang-en>Customer Journey Analytics</span><span data-lang-it>Customer Journey Analytics</span>
+      </h3>
+      <label class="scoping-field"><span data-lang-en>Web visits / year</span><span data-lang-it>Visite web / anno</span><input type="number" min="0" data-k="webVisitsPerYear" /></label>
+      <label class="scoping-field"><span data-lang-en>Hits per visit</span><span data-lang-it>Hit per visita</span><input type="number" min="0" data-k="webHitsPerVisit" /></label>
+      <label class="scoping-field scoping-so"><span data-lang-en>App MAU (client to confirm)</span><span data-lang-it>App MAU (da confermare)</span><input type="number" min="0" data-k="appMau" /></label>
+      <label class="scoping-field"><span data-lang-en>App events / MAU / month</span><span data-lang-it>Eventi app / MAU / mese</span><input type="number" min="0" data-k="appEventsPerMauPerMonth" /></label>
+      <label class="scoping-field"><span data-lang-en>Social audience</span><span data-lang-it>Audience social</span><input type="number" min="0" data-k="socialAudience" /></label>
+      <label class="scoping-field"><span data-lang-en>Active share (0–1)</span><span data-lang-it>Quota attiva (0–1)</span><input type="number" min="0" max="1" step="0.01" data-k="socialActivePct" /></label>
+      <label class="scoping-field"><span data-lang-en>Social actions / active / month</span><span data-lang-it>Azioni social / attivo / mese</span><input type="number" min="0" data-k="socialActionsPerActivePerMonth" /></label>
+      <label class="scoping-field scoping-so"><span data-lang-en>CRM profiles (client to confirm)</span><span data-lang-it>Profili CRM (da confermare)</span><input type="number" min="0" data-k="crmProfiles" /></label>
+      <label class="scoping-field"><span data-lang-en>CRM events / profile / year</span><span data-lang-it>Eventi CRM / profilo / anno</span><input type="number" min="0" data-k="crmEventsPerProfilePerYear" /></label>
+      <label class="scoping-field"><span data-lang-en>Events / eSports rows / year</span><span data-lang-it>Righe eventi / eSports / anno</span><input type="number" min="0" data-k="eventsRowsPerYear" /></label>
+      <label class="scoping-field scoping-so"><span data-lang-en>Price per 1M rows (Sales Order)</span><span data-lang-it>Prezzo per 1M righe (Sales Order)</span><input type="number" min="0" step="0.01" data-k="pricePerMillionRows" placeholder="—" /></label>
+    </section>
+
+    <!-- ── Results panel ────────────────────────────────────── -->
+    <aside class="scoping-results" aria-live="polite">
+      <div class="scoping-metric"><span data-lang-en>Billable credits / yr</span><span data-lang-it>Credits fatturabili / anno</span><b data-out="collabBillableCredits">—</b></div>
+      <div class="scoping-metric"><span data-lang-en>Collaboration cost</span><span data-lang-it>Costo Collaboration</span><b data-out="collabCost">—</b></div>
+      <div class="scoping-metric"><span data-lang-en>CJA Rows / yr</span><span data-lang-it>Righe CJA / anno</span><b data-out="cjaRowsPerYear">—</b></div>
+      <div class="scoping-metric"><span data-lang-en>Annual ingestion limit (3×)</span><span data-lang-it>Limite ingestion annuo (3×)</span><b data-out="cjaAnnualIngestionLimit">—</b></div>
+      <div class="scoping-metric"><span data-lang-en>CJA cost</span><span data-lang-it>Costo CJA</span><b data-out="cjaCost">—</b></div>
+      <div class="scoping-metric scoping-total"><span data-lang-en>Total (indicative)</span><span data-lang-it>Totale (indicativo)</span><b data-out="totalCost">—</b></div>
+    </aside>
+  </div>
+
+  <!-- ── Action bar ─────────────────────────────────────────── -->
+  <div class="scoping-actions">
+    <select data-scoping-picker aria-label="Scenario"></select>
+    <input type="text" data-scoping-title placeholder="Scenario name" />
+    <select data-scoping-visibility aria-label="Visibility">
+      <option value="private" data-lang-en>Private</option>
+      <option value="link" data-lang-en>Shared via link</option>
+      <option value="team" data-lang-en>Team</option>
+    </select>
+    <button data-scoping-save><span data-lang-en>Save</span><span data-lang-it>Salva</span></button>
+    <button data-scoping-share><span data-lang-en>Share</span><span data-lang-it>Condividi</span></button>
+    <button data-scoping-reset><span data-lang-en>Reset</span><span data-lang-it>Reset</span></button>
+    <button data-scoping-compare><span data-lang-en>Compare</span><span data-lang-it>Confronta</span></button>
+    <span data-scoping-note class="scoping-note"></span>
+  </div>
+  <div class="scoping-compare" data-scoping-compare-panel hidden>
+    <table class="scoping-compare-table"><thead></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<script>
+  import {
+    computeSnapshot, type ScopingAssumptions, type UnitPrices,
+  } from './cost-model';
+  import {
+    DEFAULT_ASSUMPTIONS, DEFAULT_PRICES, scenarioIdFromSearch, type Scenario,
+  } from './scenario';
+  import {
+    isLoggedIn, loadLocal, saveLocal, saveRemote, fetchRemoteById, listMine, type StoreCtx,
+  } from './scenario-store';
+
+  const NUM_KEYS = new Set([
+    'directCredits','partners','audienceSize','activationsPerYear','creditPerActivation',
+    'creditPerAudienceMgmt','creditPerMeasurement','webVisitsPerYear','webHitsPerVisit',
+    'appMau','appEventsPerMauPerMonth','socialAudience','socialActivePct',
+    'socialActionsPerActivePerMonth','crmProfiles','crmEventsPerProfilePerYear','eventsRowsPerYear',
+  ]);
+
+  function initScoping(root: HTMLElement) {
+    const ctx: StoreCtx = {
+      projectSlug: root.dataset.project!,
+      supabaseUrl: root.dataset.supabaseUrl!,
+      supabaseAnonKey: root.dataset.supabaseKey!,
+    };
+    const experienceUrl = root.dataset.experienceUrl!;
+    let assumptions: ScopingAssumptions = { ...DEFAULT_ASSUMPTIONS };
+    let prices: UnitPrices = { ...DEFAULT_PRICES };
+    const note = root.querySelector<HTMLElement>('[data-scoping-note]')!;
+
+    const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
+    const fmtMoney = (n: number | null) =>
+      n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: prices.currency, maximumFractionDigits: 0 }).format(n);
+
+    function writeInputs() {
+      root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
+        const k = el.dataset.k!;
+        if (k === 'pricePerCredit') el.value = prices.pricePerCredit == null ? '' : String(prices.pricePerCredit);
+        else if (k === 'pricePerMillionRows') el.value = prices.pricePerMillionRows == null ? '' : String(prices.pricePerMillionRows);
+        else el.value = String((assumptions as any)[k]);
+      });
+      root.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => {
+        el.style.display = el.dataset.when === assumptions.collabMode ? '' : 'none';
+      });
+    }
+
+    function readInput(el: HTMLInputElement | HTMLSelectElement) {
+      const k = el.dataset.k!;
+      if (k === 'pricePerCredit') prices.pricePerCredit = el.value === '' ? null : Number(el.value);
+      else if (k === 'pricePerMillionRows') prices.pricePerMillionRows = el.value === '' ? null : Number(el.value);
+      else if (NUM_KEYS.has(k)) (assumptions as any)[k] = Number(el.value) || 0;
+      else (assumptions as any)[k] = el.value; // collabMode / collabPackage
+    }
+
+    function render() {
+      const s = computeSnapshot(assumptions, prices);
+      const out = (name: string, v: string) => {
+        const el = root.querySelector(`[data-out="${name}"]`);
+        if (el) el.textContent = v;
+      };
+      out('collabBillableCredits', fmt(s.collabBillableCredits));
+      out('collabCost', fmtMoney(s.collabCost));
+      out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
+      out('cjaAnnualIngestionLimit', fmt(s.cjaAnnualIngestionLimit));
+      out('cjaCost', fmtMoney(s.cjaCost));
+      out('totalCost', fmtMoney(s.totalCost));
+    }
+
+    root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
+      el.addEventListener('input', () => { readInput(el); if (el.dataset.k === 'collabMode') writeInputs(); render(); });
+    });
+
+    // ── Scenario picker ────────────────────────────────────
+    const picker = root.querySelector<HTMLSelectElement>('[data-scoping-picker]')!;
+    let scenarios: Scenario[] = [];
+
+    function refreshPicker() {
+      picker.innerHTML = '';
+      scenarios.forEach((sc, i) => {
+        const o = document.createElement('option');
+        o.value = String(i);
+        o.textContent = sc.title + (sc.visibility !== 'private' ? ` · ${sc.visibility}` : '');
+        picker.appendChild(o);
+      });
+    }
+
+    function applyScenario(sc: Scenario) {
+      assumptions = { ...DEFAULT_ASSUMPTIONS, ...sc.assumptions };
+      prices = { ...DEFAULT_PRICES, ...sc.prices };
+      (root.querySelector('[data-scoping-title]') as HTMLInputElement).value = sc.title;
+      (root.querySelector('[data-scoping-visibility]') as HTMLSelectElement).value = sc.visibility;
+      writeInputs(); render();
+    }
+
+    picker.addEventListener('change', () => {
+      const sc = scenarios[Number(picker.value)];
+      if (sc) applyScenario(sc);
+    });
+
+    // ── Save / Share / Reset ───────────────────────────────
+    root.querySelector('[data-scoping-save]')!.addEventListener('click', async () => {
+      const title = (root.querySelector('[data-scoping-title]') as HTMLInputElement).value || 'Scenario';
+      const visibility = (root.querySelector('[data-scoping-visibility]') as HTMLSelectElement).value as Scenario['visibility'];
+      const sc: Scenario = { title, assumptions: { ...assumptions }, prices: { ...prices }, visibility };
+      if (isLoggedIn()) {
+        try {
+          const id = await saveRemote(ctx, sc);
+          sc.id = id;
+          scenarios.unshift(sc); refreshPicker();
+          note.textContent = 'Saved to your account.';
+        } catch { note.textContent = 'Save failed — check your connection.'; }
+      } else {
+        scenarios.unshift(sc); saveLocal(ctx.projectSlug, scenarios.filter((x) => !x.id)); refreshPicker();
+        note.textContent = 'Saved locally. Log in from the Console to persist & share.';
+      }
+    });
+
+    root.querySelector('[data-scoping-share]')!.addEventListener('click', async () => {
+      if (!isLoggedIn()) { note.textContent = 'Log in from the Console (/console/) to create a share link.'; return; }
+      const title = (root.querySelector('[data-scoping-title]') as HTMLInputElement).value || 'Scenario';
+      const sc: Scenario = { title, assumptions: { ...assumptions }, prices: { ...prices }, visibility: 'link' };
+      try {
+        const id = await saveRemote(ctx, sc);
+        // Absolute URL from the live origin (Astro `site` may be unset) — the
+        // passed experienceUrl is the fallback when opened off-origin.
+        const path = location.pathname.replace(/\?.*$/, '');
+        const url = (location.origin ? location.origin + path : experienceUrl) + '?scenario=' + id;
+        await navigator.clipboard?.writeText(url).catch(() => {});
+        note.textContent = 'Share link copied: ' + url;
+      } catch { note.textContent = 'Could not create share link.'; }
+    });
+
+    root.querySelector('[data-scoping-reset]')!.addEventListener('click', () => {
+      assumptions = { ...DEFAULT_ASSUMPTIONS }; prices = { ...DEFAULT_PRICES };
+      writeInputs(); render(); note.textContent = '';
+    });
+
+    const comparePanel = root.querySelector<HTMLElement>('[data-scoping-compare-panel]')!;
+    root.querySelector('[data-scoping-compare]')!.addEventListener('click', () => {
+      if (!scenarios.length) { note.textContent = 'No scenarios to compare yet.'; return; }
+      const rows: Array<[string, (s: ReturnType<typeof computeSnapshot>) => string]> = [
+        ['Billable credits', (s) => fmt(s.collabBillableCredits)],
+        ['Collab cost', (s) => fmtMoney(s.collabCost)],
+        ['CJA rows / yr', (s) => fmt(s.cjaRowsPerYear)],
+        ['Ingestion limit (3×)', (s) => fmt(s.cjaAnnualIngestionLimit)],
+        ['CJA cost', (s) => fmtMoney(s.cjaCost)],
+        ['Total', (s) => fmtMoney(s.totalCost)],
+      ];
+      const snaps = scenarios.map((sc) => ({
+        title: sc.title,
+        snap: computeSnapshot({ ...DEFAULT_ASSUMPTIONS, ...sc.assumptions }, { ...DEFAULT_PRICES, ...sc.prices }),
+      }));
+      const thead = comparePanel.querySelector('thead')!;
+      const tbody = comparePanel.querySelector('tbody')!;
+      thead.innerHTML = '<tr><th></th>' + snaps.map((x) => `<th>${x.title}</th>`).join('') + '</tr>';
+      tbody.innerHTML = rows
+        .map(([label, f]) => `<tr><td>${label}</td>` + snaps.map((x) => `<td>${f(x.snap)}</td>`).join('') + '</tr>')
+        .join('');
+      comparePanel.hidden = false;
+    });
+
+    // ── Boot: seed list from data attribute-injected globals, load shared/local ──
+    const seeded = (window as any).__edfScopingSeeds as Scenario[] | undefined;
+    scenarios = (seeded ? seeded.slice() : []).concat(loadLocal(ctx.projectSlug));
+    refreshPicker();
+
+    const sharedId = scenarioIdFromSearch(location.search);
+    if (sharedId) {
+      fetchRemoteById(ctx, sharedId).then((sc) => {
+        if (sc) { scenarios.unshift(sc); refreshPicker(); applyScenario(sc); }
+      });
+    } else if (scenarios[0]) {
+      applyScenario(scenarios[0]);
+    } else {
+      writeInputs(); render();
+    }
+    if (isLoggedIn()) listMine(ctx).then((mine) => { if (mine.length) { scenarios = mine.concat(scenarios); refreshPicker(); } });
+  }
+
+  // Init on first load AND on SPA nav (the deck uses ClientRouter — a module
+  // script evaluates once; astro:page-load re-fires per SPA navigation). Guard
+  // against double-init with a dataset flag (see mockup-navigation patterns).
+  function bootAll() {
+    document.querySelectorAll<HTMLElement>('[data-scoping]').forEach((el) => {
+      if (el.dataset.scopingReady === '1') return;
+      el.dataset.scopingReady = '1';
+      initScoping(el);
+    });
+  }
+  bootAll();
+  document.addEventListener('astro:page-load', bootAll);
+</script>
+
+<style>
+  .scoping { display: flex; flex-direction: column; gap: 1rem; width: 100%; height: 100%; overflow-y: auto; padding: 1rem; }
+  .scoping-cols { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  @media (min-width: 900px) { .scoping-cols { grid-template-columns: 1fr 1fr 0.8fr; } }
+  .scoping-card { background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 82%, #fff 4%); border: 1px solid var(--line-subtle, rgba(255,255,255,0.1)); border-radius: 6px; padding: 1rem; }
+  .scoping-card-h { font-family: var(--font-display); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; color: var(--ink-inverse, #F4F4F2); }
+  .scoping-field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-field input, .scoping-field select { background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 4px; padding: 0.4rem 0.5rem; font-size: 0.85rem; }
+  .scoping-so { border-left: 2px solid var(--accent-secondary, #FFF200); padding-left: 0.5rem; }
+  .scoping-results { display: flex; flex-direction: column; gap: 0.5rem; background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 70%, #fff 6%); border-radius: 6px; padding: 1rem; align-self: start; }
+  .scoping-metric { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-metric b { font-family: var(--font-display); font-size: 1.05rem; color: var(--ink-inverse, #F4F4F2); }
+  .scoping-total { border-top: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); padding-top: 0.5rem; }
+  .scoping-total b { color: var(--accent-primary, #FF2800); font-size: 1.35rem; }
+  .scoping-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .scoping-actions input, .scoping-actions select, .scoping-actions button { background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  .scoping-actions button { cursor: pointer; font-weight: 600; }
+  .scoping-actions button:hover { border-color: var(--accent-primary, #FF2800); color: var(--accent-primary, #FF2800); }
+  .scoping-note { font-size: 0.72rem; color: var(--color-grigio-400, #9a9a9a); flex-basis: 100%; }
+  .scoping-compare { overflow-x: auto; }
+  .scoping-compare-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-compare-table th, .scoping-compare-table td { border: 1px solid var(--line-subtle, rgba(255,255,255,0.12)); padding: 0.4rem 0.6rem; text-align: right; }
+  .scoping-compare-table th:first-child, .scoping-compare-table td:first-child { text-align: left; color: var(--ink-inverse, #F4F4F2); }
+  .scoping-compare-table thead th { color: var(--accent-secondary, #FFF200); }
+</style>

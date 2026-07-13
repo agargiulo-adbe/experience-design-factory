@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import ScopingCalculator from '@edf/core/blocks/scoping/ScopingCalculator.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SEED_SCENARIOS, ASSUMPTION_META, RIGOR_LABELS, DISCLAIMER } from '../data/scoping.ts';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+const site = Astro.site ? Astro.site.toString().replace(/\/$/, '') : '';
+const experienceUrl = site + href(base, '/scoping');
+---
+<BaseLayout title="Licensing & Scoping" pageSolutions={['scoping']}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')}>
+
+    <!-- SLIDE 0: Cover -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <T en="LICENSING & SCOPING" it="LICENSING E SCOPING" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
+      <T as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(2.5rem, 6vw, 5rem);"
+        en="Two products.<br/>One clear estimate." it="Due prodotti.<br/>Una stima chiara." />
+      <T as="p" class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="RTCDP Collaboration and CJA share the Adobe Experience Platform foundation and integrate — yet they license independently, on different metrics. Model both here."
+        it="RTCDP Collaboration e CJA condividono la fondazione Adobe Experience Platform e si integrano — ma si licenziano in modo indipendente, su metriche diverse. Modellali qui." />
+      <T as="p" class="slide-caption text-[var(--color-grigio-400)] mt-6 text-sm max-w-2xl mx-auto"
+        en={`Terminology: “Data Collaboration” here means Adobe Real-Time CDP Collaboration.`}
+        it={`Terminologia: “Data Collaboration” qui indica Adobe Real-Time CDP Collaboration.`} />
+    </Slide>
+
+    <!-- SLIDE 1: Assumptions & rigor -->
+    <Slide id="slide-assumptions" bg="inverse" align="left">
+      <T en="ASSUMPTIONS" it="ASSUNZIONI" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(1.8rem, 3.6vw, 3rem);"
+        en="Every number, classified." it="Ogni numero, classificato." />
+      <ul class="sc-assume">
+        {ASSUMPTION_META.map((m) => (
+          <li class={`sc-chip sc-${m.tag}`}>
+            <span class="sc-tag"><span data-lang-en>{RIGOR_LABELS[m.tag].en}</span><span data-lang-it>{RIGOR_LABELS[m.tag].it}</span></span>
+            <span class="sc-txt"><span data-lang-en>{m.en}</span><span data-lang-it>{m.it}</span></span>
+          </li>
+        ))}
+      </ul>
+    </Slide>
+
+    <!-- SLIDE 2: The calculator (full-bleed interactive; exempt from audit:deck) -->
+    <Slide id="slide-calculator" bg="inverse" align="center" data-demo-flex>
+      <ScopingCalculator
+        projectSlug="ferrari-racing"
+        supabaseUrl={SUPABASE_URL}
+        supabaseAnonKey={SUPABASE_ANON_KEY}
+        experienceUrl={experienceUrl}
+      />
+    </Slide>
+
+    <!-- SLIDE 3: Disclaimer -->
+    <Slide id="slide-disclaimer" bg="brand" align="center">
+      <T en="IMPORTANT" it="IMPORTANTE" as="p" class="slide-eyebrow mb-4" />
+      <T as="p" class="slide-lead max-w-3xl mx-auto" en={DISCLAIMER.en} it={DISCLAIMER.it} />
+    </Slide>
+
+  </DeckContainer>
+
+  <script is:inline define:vars={{ seeds: SEED_SCENARIOS }}>
+    // Hand the seed scenarios to the calculator island.
+    window.__edfScopingSeeds = seeds;
+  </script>
+
+  <style>
+    .sc-assume { display: grid; grid-template-columns: 1fr; gap: 0.5rem; max-width: 60rem; }
+    @media (min-width: 768px) { .sc-assume { grid-template-columns: 1fr 1fr; } }
+    .sc-chip { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.5rem 0.75rem; border-radius: 5px; border: 1px solid var(--line-subtle); background: rgba(255,255,255,0.03); }
+    .sc-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .sc-fact .sc-tag { color: #4ade80; }
+    .sc-inference .sc-tag { color: var(--accent-secondary); }
+    .sc-sales-order .sc-tag { color: var(--accent-primary); }
+    .sc-txt { font-size: 0.8rem; color: var(--color-grigio-300); }
+  </style>
+</BaseLayout>

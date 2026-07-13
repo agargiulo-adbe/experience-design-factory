@@ -5,44 +5,34 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
-  /** Solutions active for this page — checked client-side at boot. */
   pageSolutions?: string[];
 }
 
 const {
   title,
-  description = 'Ferrari Racing × Adobe — data-driven sponsorship, from Maranello to every fan.',
+  description = 'Connessioni Intelligenti — FS Group × Adobe',
   pageSolutions,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
-const PROJECT_SLUG = 'ferrari-racing';
+const PROJECT_SLUG = 'trenitalia-connessioni';
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 <!doctype html>
-<html lang="en" data-lang="en">
+<html lang="it">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <title>{title} | Ferrari Racing × Adobe</title>
+    <title>{title} | Connessioni Intelligenti</title>
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <!-- Anti-flash language init (before paint) -->
-    <script is:inline>
-      (function () {
-        try {
-          var l = localStorage.getItem('edf:lang');
-          if (l === 'en' || l === 'it') document.documentElement.setAttribute('data-lang', l);
-        } catch (e) {}
-      })();
-    </script>
     <ClientRouter />
   </head>
   <body>
@@ -50,30 +40,17 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   </body>
 </html>
 
-<!--
-  Media Demo Slot runtime: runs synchronously (is:inline) before deck.ts.
-  Reads slot config from localStorage and injects media into [data-media-slot]
-  elements. When a slot is active + has a URL: shows it. When hidden: display:none
-  so the parent flex container reflows content to full width automatically.
-  Listens for storage events (cross-tab) and edf:slots-updated (same-tab admin).
--->
 <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
 (function() {
-  var STORAGE_KEY = 'edf:media-slots:ferrari-racing';
+  var STORAGE_KEY = 'edf:media-slots:trenitalia-connessioni';
 
-  // Seed localStorage from ?cfg=<uuid> Supabase shareable link
   (function seedFromSupabase() {
     var cfgId = new URLSearchParams(location.search).get('cfg');
     if (!cfgId || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
-
     var seededKey = 'edf:cfg:' + cfgId;
-    if (sessionStorage.getItem(seededKey)) return; // already seeded this session
-
+    if (sessionStorage.getItem(seededKey)) return;
     fetch(SUPABASE_URL + '/rest/v1/media_configs?id=eq.' + cfgId + '&select=config', {
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
-      }
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
     })
     .then(function(r) { return r.json(); })
     .then(function(rows) {
@@ -91,12 +68,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return parts[parts.length - 1] || 'index';
   }
 
-  // Build media as DOM nodes (NEVER innerHTML from remote config → no XSS).
-  // Only https: URLs are accepted; YouTube only via the matched 11-char id.
   function isSafeUrl(u) { return /^https:\/\//i.test(String(u || '')); }
   function csPlaceholderEl(text) {
     var d = document.createElement('div');
-    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#111827;color:#9ca3af;font-size:0.875rem;';
+    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1A1A28;color:#7A8196;font-size:0.875rem;';
     d.textContent = text || 'Media non valido';
     return d;
   }
@@ -129,7 +104,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     if (!isSafeUrl(url)) return csPlaceholderEl();
     var img = document.createElement('img');
     img.src = url;
-    img.alt = slotCfg.caption || '';   // property assignment — not HTML-parsed
+    img.alt = slotCfg.caption || '';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
     return img;
   }
@@ -137,8 +112,6 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   function injectSlideMedia(slide, slotKey, slotCfg) {
     var autoplayMode = slotCfg.autoplay || 'auto';
     var autoplayDelay = slotCfg.autoplayDelay || 3;
-
-    // Case 1: slide has explicit data-demo-flex → use split-layout mechanism
     var flexContainer = slide.querySelector('[data-demo-flex]');
     if (flexContainer) {
       var mediaSlot = flexContainer.querySelector('[data-media-slot]');
@@ -157,34 +130,26 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
       return;
     }
-
-    // Case 2: generic overlay injection (right 48% panel + left gradient scrim)
     var existing = slide.querySelector('[data-edf-media]');
     if (existing) existing.remove();
-
-    var bg = (window.getComputedStyle(slide).backgroundColor) || 'rgba(255,255,255,1)';
-
     var panel = document.createElement('div');
     panel.setAttribute('data-edf-media', slotKey);
     panel.style.cssText = 'position:absolute;inset:0;z-index:1;pointer-events:none;';
-
     var mediaDivEl = document.createElement('div');
-    mediaDivEl.style.cssText = 'position:absolute;right:0;top:var(--slide-safe-inset,60px);bottom:var(--slide-safe-inset,60px);width:48%;overflow:hidden;border-radius:4px;pointer-events:auto;';
+    mediaDivEl.style.cssText = 'position:absolute;right:max(var(--slide-safe-inset,60px),6vw);top:max(var(--deck-chrome-safe,60px),7vh);bottom:max(var(--deck-chrome-safe,60px),7vh);width:42%;overflow:hidden;border-radius:4px;pointer-events:auto;background:var(--surface-secondary);';
     mediaDivEl.replaceChildren(autoplayMode === 'delayed' ? csPlaceholderEl('Avvio tra ' + autoplayDelay + 's…') : buildMediaEl(slotCfg));
-
-    var scrimEl = document.createElement('div');
-    scrimEl.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to right,' + bg + ' 25%,transparent 62%);pointer-events:none;';
-
     panel.appendChild(mediaDivEl);
-    panel.appendChild(scrimEl);
     slide.appendChild(panel);
-
-    // Raise content wrapper above injected media
     var slideInner = slide.querySelector('.slide-inner');
-    if (slideInner && slideInner.parentElement) {
-      slideInner.parentElement.style.zIndex = '2';
+    var host = slideInner && slideInner.parentElement;
+    if (host) {
+      host.style.zIndex = '2';
+      if (!host.hasAttribute('data-edf-reflowed')) {
+        host.setAttribute('data-edf-reflowed', '');
+        host.style.justifyContent = 'flex-start';
+        host.style.paddingRight = 'calc(42% + max(var(--slide-safe-inset,60px),6vw) + 3vw)';
+      }
     }
-
     if (autoplayMode === 'delayed') {
       (function(target, delay) {
         setTimeout(function() { target.replaceChildren(buildMediaEl(slotCfg)); }, delay * 1000);
@@ -198,24 +163,25 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     if (!rawConfig) return;
     var config;
     try { config = JSON.parse(rawConfig); } catch(e) { return; }
-
     var pageSlug = getCurrentPageSlug();
-
     document.querySelectorAll('[data-slide]').forEach(function(slide) {
       var slideId = slide.id;
       if (!slideId) return;
-
       var slotKey = pageSlug + ':' + slideId;
       var slotCfg = config[slotKey];
-
       if (!slotCfg || !slotCfg.active || !slotCfg.url) {
-        // Deactivate
         var existingMedia = slide.querySelector('[data-edf-media]');
         if (existingMedia) existingMedia.remove();
-
         var slideInner = slide.querySelector('.slide-inner');
-        if (slideInner && slideInner.parentElement) slideInner.parentElement.style.zIndex = '';
-
+        var dHost = slideInner && slideInner.parentElement;
+        if (dHost) {
+          dHost.style.zIndex = '';
+          if (dHost.hasAttribute('data-edf-reflowed')) {
+            dHost.removeAttribute('data-edf-reflowed');
+            dHost.style.justifyContent = '';
+            dHost.style.paddingRight = '';
+          }
+        }
         var flex = slide.querySelector('[data-demo-flex]');
         if (flex) {
           var ms = flex.querySelector('[data-media-slot]');
@@ -224,38 +190,25 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         }
         return;
       }
-
       injectSlideMedia(slide, slotKey, slotCfg);
     });
   }
 
-  // Run on DOM ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', applySlots);
   } else {
     applySlots();
   }
-
-  // Re-run on Astro ClientRouter navigations (inline scripts with identical content
-  // are not re-executed by the router, so we must listen for astro:page-load)
   document.addEventListener('astro:page-load', applySlots);
-
-  // Listen for admin updates: cross-tab via storage event, same-tab via custom event
-  window.addEventListener('storage', function(e) {
-    if (e.key === STORAGE_KEY) applySlots();
-  });
+  window.addEventListener('storage', function(e) { if (e.key === STORAGE_KEY) applySlots(); });
   window.addEventListener('edf:slots-updated', applySlots);
 
-  // Show admin-only elements when console session is active
   function applyConsoleMode() {
     var show = false;
     try {
       if (new URLSearchParams(location.search).get('console') === '1') {
-        sessionStorage.setItem('edf:console', '1');
-        show = true;
-      } else if (sessionStorage.getItem('edf:console') === '1') {
-        show = true;
-      }
+        sessionStorage.setItem('edf:console', '1'); show = true;
+      } else if (sessionStorage.getItem('edf:console') === '1') { show = true; }
     } catch(e) {}
     if (show) {
       document.querySelectorAll('[data-admin-only]').forEach(function(el) {
@@ -268,17 +221,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 })();
 </script>
 
-<!--
-  Solutions runtime: runs synchronously (is:inline) before any module script (deck.ts).
-  Reads active solutions from localStorage or ?s= URL param.
-  Removes [data-slide] from disabled-solution slides so the deck doesn't count them.
-  Listens for postMessage from the Admin Console iframe for live preview.
--->
 <script is:inline define:vars={{ PROJECT_SLUG, pageSolutions }}>
 (function () {
   var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
 
-  // Determine active solution IDs
   var urlParam = new URLSearchParams(location.search).get('s');
   var activeIds = null;
   if (urlParam) {
@@ -290,52 +236,48 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     } catch (_) {}
   }
 
-  // Ordered section flow + per-section gate (mirrors pageSolutions).
-  // A section is enabled when its gate is null OR any gate solution is active.
   var SECTION_FLOW = [
-    { slug: 'ferrari-racing', gate: null },   // index (Arena)
-    { slug: 'protagonisti', gate: null },
-    { slug: 'define', gate: ['rtcdp-collab'] },
-    { slug: 'create', gate: ['genstudio', 'express'] },
-    { slug: 'activate', gate: ['genstudio'] },
-    { slug: 'analisi', gate: ['cja'] },
-    { slug: 'proof', gate: null },
-    { slug: 'loop', gate: null },
-    { slug: 'scoping', gate: ['scoping'] },
+    { slug: 'scenario',       gate: null },
+    { slug: 'fondazione',     gate: null },
+    { slug: 'convergenza',    gate: ['cja'] },
+    { slug: 'connessioni',    gate: ['data-collab'] },
+    { slug: 'roadmap',        gate: ['rtcdp', 'ajo', 'mix-modeler'] },
+    { slug: 'prossimo-passo', gate: null },
   ];
+
   function sectionEnabled(entry) {
     if (!entry || !entry.gate) return true;
+    if (!activeIds) return true;
     return entry.gate.some(function(id) { return activeIds.indexOf(id) !== -1; });
   }
   function currentSlug() {
     var parts = location.pathname.replace(/\/+$/, '').split('/');
     return parts[parts.length - 1] || 'index';
   }
-  function swapSlug(href, slug) {
-    // href ends with "…/<slug>/" — replace the last path segment
-    return href.replace(/[^/]+\/?$/, slug + '/');
-  }
-  function homeFrom(href) {
-    return href.replace(/[^/]+\/?$/, '');
-  }
+  function swapSlug(href, slug) { return href.replace(/[^/]+\/?$/, slug + '/'); }
+  function homeFrom(href) { return href.replace(/[^/]+\/?$/, ''); }
   function nextEnabledAfter(slug) {
     var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
     if (i === -1) return undefined;
     for (var j = i + 1; j < SECTION_FLOW.length; j++) {
       if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
     }
-    return null; // nothing enabled forward → home
+    return null;
+  }
+  function prevEnabledBefore(slug) {
+    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
+    if (i === -1) return undefined;
+    for (var j = i - 1; j >= 0; j--) {
+      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
+    }
+    return null;
   }
 
-  // If restrictions set, apply them before deck.ts runs
   if (activeIds) {
-    // Hide solution-gated slides/sections + inline product chips
-    var gated = document.querySelectorAll('[data-solution]');
-    gated.forEach(function(el) {
+    document.querySelectorAll('[data-solution]').forEach(function(el) {
       var ids = (el.getAttribute('data-solution') || '').split(',').map(function(s) { return s.trim(); });
       var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
       if (!anyActive) {
-        // Remove data-slide so the Deck controller doesn't count this slide
         el.removeAttribute('data-slide');
         el.setAttribute('aria-hidden', 'true');
         el.setAttribute('inert', '');
@@ -343,19 +285,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
     });
 
-    // Hide nav links + home roadmap cards pointing to gated sections
-    // (data-nav-solution: navigational, not a slide — just hide it).
     document.querySelectorAll('[data-nav-solution]').forEach(function(el) {
       var ids = (el.getAttribute('data-nav-solution') || '').split(',').map(function(s) { return s.trim(); });
       var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
-      if (!anyActive) {
-        el.setAttribute('aria-hidden', 'true');
-        el.style.display = 'none';
-      }
+      if (!anyActive) { el.setAttribute('aria-hidden', 'true'); el.style.display = 'none'; }
     });
 
-    // Rewrite the deck's "next section" target so arrow navigation SKIPS
-    // gated sections (runs before deck.ts reads data-deck-next).
     var deckRoot = document.querySelector('[data-deck-next]');
     if (deckRoot) {
       var curNext = deckRoot.getAttribute('data-deck-next');
@@ -365,8 +300,15 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
     }
 
-    // If this page itself is gated → jump to the next enabled section
-    // (forward), not home — so a shared/bookmarked link lands somewhere useful.
+    var deckRootP = document.querySelector('[data-deck-prev-href]');
+    if (deckRootP) {
+      var curPrev = deckRootP.getAttribute('data-deck-prev-href');
+      var prevEntry = prevEnabledBefore(currentSlug());
+      if (curPrev && prevEntry !== undefined) {
+        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : homeFrom(curPrev));
+      }
+    }
+
     if (pageSolutions && pageSolutions.length > 0) {
       var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
       if (!pageActive) {
@@ -381,18 +323,16 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     var incoming = JSON.stringify(activeIds);
     var current = null;
     try { current = localStorage.getItem(STORAGE_KEY); } catch (_) {}
-    if (current === incoming) return; // already synced — no reload, prevents iframe loop
+    if (current === incoming) return;
     try { localStorage.setItem(STORAGE_KEY, incoming); } catch (_) {}
     location.reload();
   }
 
-  // postMessage from preview iframe wrapper
   window.addEventListener('message', function(e) {
     if (!e.data || e.data.type !== 'edf:solutions-changed' || e.data.project !== PROJECT_SLUG) return;
     applyIncoming(e.data.activeIds);
   });
 
-  // BroadcastChannel from Admin Console (same-origin, cross-tab)
   try {
     var bc = new BroadcastChannel('edf-console');
     bc.addEventListener('message', function(e) {
@@ -403,11 +343,6 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 })();
 </script>
 
-<!--
-  Custom slides runtime: injects Admin-authored slides into the deck, styled
-  with the SAME Slide structure + tokens (100% coherent). Defined on window so
-  the deck's boot() calls it right before counting slides (first load + SPA nav).
--->
 <script is:inline define:vars={{ PROJECT_SLUG }}>
 (function () {
   var CS_KEY = 'edf:custom-slides:' + PROJECT_SLUG;
@@ -423,7 +358,6 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       var arr = JSON.parse(localStorage.getItem(CS_KEY) || '[]');
       if (arr && arr.length) return arr;
     } catch (_) {}
-    // Fallback: custom slides carried inside a shared media config (?cfg=)
     try {
       var m = JSON.parse(localStorage.getItem(MEDIA_KEY) || '{}');
       if (m.__customSlides) return m.__customSlides;
@@ -431,7 +365,6 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return [];
   }
 
-  // Allowlist sanitizer for authored rich text.
   var ALLOWED = { P:1, BR:1, STRONG:1, B:1, EM:1, I:1, U:1, H3:1, UL:1, OL:1, LI:1, A:1, SPAN:1 };
   function sanitize(html) {
     var t = document.createElement('template');
@@ -439,19 +372,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     (function walk(node) {
       Array.prototype.slice.call(node.childNodes).forEach(function (n) {
         if (n.nodeType === 1) {
-          if (!ALLOWED[n.tagName]) {
-            n.parentNode.replaceChild(document.createTextNode(n.textContent), n);
-            return;
-          }
+          if (!ALLOWED[n.tagName]) { n.parentNode.replaceChild(document.createTextNode(n.textContent), n); return; }
           Array.prototype.slice.call(n.attributes).forEach(function (a) {
             if (n.tagName === 'A' && a.name === 'href' && /^(https?:|mailto:)/i.test(a.value)) return;
             n.removeAttribute(a.name);
           });
           if (n.tagName === 'A') { n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener noreferrer'); }
           walk(n);
-        } else if (n.nodeType === 8) {
-          n.parentNode.removeChild(n);
-        }
+        } else if (n.nodeType === 8) { n.parentNode.removeChild(n); }
       });
     })(t.content);
     return t.innerHTML;
@@ -461,9 +389,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     var yt = String(url).match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     if (yt) {
       var id = yt[1];
-      var p = mode === 'manual'
-        ? '?rel=0&playsinline=1'
-        : '?autoplay=1&mute=1&loop=1&playlist=' + id + '&controls=0&rel=0&playsinline=1';
+      var p = mode === 'manual' ? '?rel=0&playsinline=1' : '?autoplay=1&mute=1&loop=1&playlist=' + id + '&controls=0&rel=0&playsinline=1';
       return '<iframe src="https://www.youtube.com/embed/' + id + p + '" allow="autoplay;encrypted-media" title="Video"></iframe>';
     }
     var attrs = mode === 'manual' ? 'controls playsinline' : 'autoplay muted loop playsinline';
@@ -476,14 +402,13 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   };
 
   function build(slide) {
-    var tone = (slide.bg === 'inverse' || slide.bg === 'brand') ? 'dark' : 'light';
+    var tone = (slide.bg === 'inverse' || slide.bg === 'brand') ? 'light' : 'dark';
     var section = document.createElement('section');
     section.id = slide.id;
     section.setAttribute('data-slide', '');
     section.setAttribute('data-edf-custom', '');
     section.setAttribute('data-cs-tone', tone);
     section.className = 'slide cs-slide relative w-full h-[100dvh] overflow-hidden ' + (BG[slide.bg] || BG.primary);
-
     var safe = document.createElement('div');
     safe.className = 'absolute inset-0 flex items-center justify-center';
     safe.style.paddingInline = 'max(var(--slide-safe-inset), 6vw)';
@@ -492,50 +417,26 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     inner.style.maxHeight = 'calc(100dvh - 2 * max(var(--deck-chrome-safe), 7vh))';
     var content = document.createElement('div');
     content.className = 'cs-content';
-
     if (slide.eyebrow) {
-      var eb = document.createElement('p');
-      eb.className = 'slide-eyebrow cs-eyebrow';
-      eb.textContent = slide.eyebrow;
-      content.appendChild(eb);
+      var eb = document.createElement('p'); eb.className = 'slide-eyebrow cs-eyebrow'; eb.textContent = slide.eyebrow; content.appendChild(eb);
     }
     if (slide.title) {
-      var h = document.createElement('h2');
-      h.className = 'cs-title';
-      h.textContent = slide.title;
-      content.appendChild(h);
+      var h = document.createElement('h2'); h.className = 'cs-title'; h.textContent = slide.title; content.appendChild(h);
     }
     (slide.blocks || []).forEach(function (b) {
       if (b.type === 'text' && b.html) {
-        var d = document.createElement('div');
-        d.className = 'cs-prose';
-        d.innerHTML = sanitize(b.html);
-        content.appendChild(d);
+        var d = document.createElement('div'); d.className = 'cs-prose'; d.innerHTML = sanitize(b.html); content.appendChild(d);
       } else if ((b.type === 'image' || b.type === 'video') && b.url) {
-        var fig = document.createElement('figure');
-        fig.style.margin = '0';
-        var m = document.createElement('div');
-        m.className = 'cs-media';
-        if (b.type === 'image') {
-          var img = document.createElement('img');
-          img.src = b.url; img.alt = b.alt || ''; img.loading = 'lazy';
-          m.appendChild(img);
-        } else {
-          m.innerHTML = videoHtml(b.url, b.autoplay);
-        }
+        var fig = document.createElement('figure'); fig.style.margin = '0';
+        var m = document.createElement('div'); m.className = 'cs-media';
+        if (b.type === 'image') { var img = document.createElement('img'); img.src = b.url; img.alt = b.alt || ''; img.loading = 'lazy'; m.appendChild(img); }
+        else { m.innerHTML = videoHtml(b.url, b.autoplay); }
         fig.appendChild(m);
-        if (b.caption) {
-          var c = document.createElement('figcaption');
-          c.className = 'cs-caption'; c.textContent = b.caption;
-          fig.appendChild(c);
-        }
+        if (b.caption) { var c = document.createElement('figcaption'); c.className = 'cs-caption'; c.textContent = b.caption; fig.appendChild(c); }
         content.appendChild(fig);
       }
     });
-
-    inner.appendChild(content);
-    safe.appendChild(inner);
-    section.appendChild(safe);
+    inner.appendChild(content); safe.appendChild(inner); section.appendChild(safe);
     return section;
   }
 
@@ -552,17 +453,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       var ref = (slide.after && slide.after.indexOf('__') !== 0)
         ? deck.querySelector('#' + (window.CSS && CSS.escape ? CSS.escape(slide.after) : slide.after))
         : null;
-      if (slide.after === '__start') {
-        deck.insertBefore(el, deck.querySelector('[data-slide]'));
-      } else if (ref) {
-        deck.insertBefore(el, ref.nextSibling);
-      } else {
-        deck.insertBefore(el, chrome); // append at end of section
-      }
+      if (slide.after === '__start') { deck.insertBefore(el, deck.querySelector('[data-slide]')); }
+      else if (ref) { deck.insertBefore(el, ref.nextSibling); }
+      else { deck.insertBefore(el, chrome); }
     });
   };
 
-  // Live update from the Admin Console (same browser): re-inject + re-init.
   try {
     var bc2 = new BroadcastChannel('edf-console');
     bc2.addEventListener('message', function (e) {

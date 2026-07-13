@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'scenario', label: 'Scenario (01)', slides: [
+    { id: 'slide-cover',       label: 'Cover — Il viaggio del cliente oggi' },
+    { id: 'slide-marco',       label: 'Marco — profilo persona' },
+    { id: 'slide-touchpoints', label: 'I touchpoint isolati' },
+    { id: 'slide-email-gap',   label: 'Oracle Responsys — gap comunicativo' },
+    { id: 'slide-opportunity', label: 'L\'opportunità integrata' },
+  ]},
+  { slug: 'fondazione', label: 'Foundation (02)', slides: [
+    { id: 'slide-cover',       label: 'Cover — La foundation' },
+    { id: 'slide-ecosystem',   label: 'Ecosistema a strati' },
+    { id: 'slide-salesforce',  label: 'Salesforce Foundation Q1 2026' },
+    { id: 'slide-choice',      label: 'Non sostituire. Connettere.' },
+  ]},
+  { slug: 'convergenza', label: 'CJA — Convergenza (03)', slides: [
+    { id: 'slide-cover',             label: 'Cover — CJA il layer di convergenza' },
+    { id: 'slide-convergenza',       label: 'Tutte le fonti. Un\'unica vista.' },
+    { id: 'slide-demo-cja',          label: 'Demo CJA Workspace — Marco' },
+    { id: 'slide-content-analytics', label: 'Content Analytics su AEM' },
+    { id: 'slide-fasi',              label: 'Le 3 fasi — approccio graduale' },
+  ]},
+  { slug: 'connessioni', label: 'Connessioni FS Park (04)', slides: [
+    { id: 'slide-cover',       label: 'Cover — FS Park × Trenitalia' },
+    { id: 'slide-gap',         label: 'Il gap attuale' },
+    { id: 'slide-usecases',    label: 'I 3 use case ad impatto' },
+    { id: 'slide-data-collab', label: 'Data Collaboration — clean room' },
+    { id: 'slide-value',       label: 'Il valore end-to-end' },
+  ]},
+  { slug: 'roadmap', label: 'Roadmap Adobe (05)', slides: [
+    { id: 'slide-cover',       label: 'Cover — Roadmap' },
+    { id: 'slide-3fasi',       label: 'Le 3 fasi evolutive' },
+    { id: 'slide-rtcdp-ajo',   label: 'Real-Time CDP + AJO' },
+    { id: 'slide-mix-modeler', label: 'Adobe Mix Modeler' },
+    { id: 'slide-genstudio',   label: 'GenStudio for Performance Marketing' },
+  ]},
+  { slug: 'prossimo-passo', label: 'Prossimo Passo (06)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Un workshop. Tre use case.' },
+    { id: 'slide-workshop', label: 'Workshop half-day — agenda' },
+    { id: 'slide-6mesi',    label: '3 use case in 6 mesi' },
+    { id: 'slide-cta',      label: 'CTA finale' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'cja',
+    name: 'Customer Journey Analytics',
+    shortName: 'CJA',
+    pillar: 'analytics',
+    description: 'Layer di convergenza cross-sistema: unifica AA ×2, App, Responsys, Salesforce e FS Park in un\'unica vista del journey cliente.',
+    appearsIn: ['CJA — Convergenza', 'Connessioni FS Park', 'Roadmap Adobe'],
+  },
+  {
+    id: 'rtcdp',
+    name: 'Adobe Real-Time CDP',
+    shortName: 'RT-CDP',
+    pillar: 'activation',
+    description: 'Profili cliente unificati in real-time: risoluzione identità cross-sistema e segmentazione streaming per AJO.',
+    appearsIn: ['Roadmap Adobe'],
+  },
+  {
+    id: 'ajo',
+    name: 'Adobe Journey Optimizer',
+    shortName: 'AJO',
+    pillar: 'activation',
+    description: 'Orchestrazione journey omnicanale con AI: trigger CJA → decisione canale → esecuzione su Responsys/push/AEM.',
+    appearsIn: ['Roadmap Adobe'],
+  },
+  {
+    id: 'mix-modeler',
+    name: 'Adobe Mix Modeler',
+    shortName: 'Mix Modeler',
+    pillar: 'intelligence',
+    description: 'Media Mix Modeling con Causal AI: misura il contributo incrementale di ogni canale e ottimizza il budget media cross-canale.',
+    appearsIn: ['Roadmap Adobe'],
+  },
+  {
+    id: 'data-collab',
+    name: 'Adobe Data Collaboration',
+    shortName: 'Data Collab',
+    pillar: 'collaboration',
+    description: 'Clean room privacy-first per FS Park × Trenitalia: audience matching GDPR-compliant senza condividere PII.',
+    appearsIn: ['Connessioni FS Park', 'Roadmap Adobe'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  analytics:     'Analytics & Intelligence',
+  activation:    'Attivazione',
+  intelligence:  'Media Intelligence',
+  collaboration: 'Data Collaboration',
+};
+const PILLAR_ORDER = ['analytics', 'activation', 'intelligence', 'collaboration'];
+const PILLAR_COLORS: Record<string, string> = {
+  analytics:     '#E2001A',
+  activation:    '#7c3aed',
+  intelligence:  '#0891b2',
+  collaboration: '#0d9488',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Connessioni Intelligenti · FS Group">
+  <AdminConsole
+    projectSlug="trenitalia-connessioni"
+    projectName="Connessioni Intelligenti"
+    clientLabel="FS Group × Adobe"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

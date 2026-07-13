@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TreniNavigation from '../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const strati = [
+  {
+    layer: 'Content & Experience',
+    color: 'var(--accent-primary)',
+    prodotti: [
+      { nome: 'AEM Sites / Edge Delivery', stato: 'Attivo', desc: 'trenitalia.com + ~33 siti del Gruppo · cloud, edge, fast' },
+    ],
+  },
+  {
+    layer: 'Analytics & Behavioral Data',
+    color: 'var(--color-ambra)',
+    prodotti: [
+      { nome: 'Adobe Analytics (×2)', stato: 'Attivo', desc: 'Due istanze separate su domini distinti — sito istituzionale + funnel acquisto' },
+      { nome: 'Adobe Target',          stato: 'Parziale', desc: 'Attivo solo sull\'homepage · nessuna presenza su funnel o app' },
+    ],
+  },
+  {
+    layer: 'CRM & Marketing Automation',
+    color: 'var(--color-grigio-300)',
+    prodotti: [
+      { nome: 'Oracle Responsys',    stato: 'Attivo', desc: 'CartaFreccia · X-GO · FrecciaFun · 611+ email/anno per cliente' },
+      { nome: 'Salesforce CRM',      stato: 'Foundation 2026', desc: 'Nuovo backbone operativo Q1 2026 · MuleSoft integration · Data Cloud' },
+    ],
+  },
+  {
+    layer: 'Intelligence Layer',
+    color: 'var(--color-grigio-500)',
+    prodotti: [
+      { nome: 'Customer Journey Analytics', stato: 'Opportunità', desc: 'Il layer mancante — converge tutti i segnali in una vista unica del journey' },
+    ],
+  },
+];
+---
+<BaseLayout
+  title="La foundation che avete già"
+  description="AEM, Adobe Analytics, Target, Oracle Responsys, Salesforce: una foundation ricca. CJA è il layer che la completa."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/convergenza')}
+    prevHref={href(base, '/scenario')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <CoverHero
+        eyebrow="02 · Foundation"
+        numeral="02"
+        title="La foundation che avete già"
+        lead="Non si tratta di sostituire ciò che funziona. Si tratta di connettere ciò che già esiste — e aggiungere lo strato mancante."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Ecosistema a strati ──────────────────────────── -->
+    <Slide id="slide-ecosystem" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+        L'ECOSISTEMA ATTUALE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Un ecosistema ricco. Un layer da completare.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(0.95rem, 1.25vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Gli investimenti già fatti sono punti di forza — AEM come foundation contenutistica,
+        Analytics come raccolta dati, Responsys come esecuzione CRM, Salesforce come
+        backbone operativo. CJA non compete con nessuno di questi: si aggiunge sopra.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto flex flex-col gap-3"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        {strati.map((strato) => (
+          <div class="p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-2 h-2 rounded-full flex-shrink-0" style={`background: ${strato.color};`} aria-hidden="true"/>
+              <p class="text-xs font-bold tracking-widest uppercase" style={`color: ${strato.color};`}>
+                {strato.layer}
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              {strato.prodotti.map((p) => (
+                <div class="flex-1 min-w-[240px] flex items-start gap-3 p-3 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap mb-0.5">
+                      <p class="text-sm font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">
+                        {p.nome}
+                      </p>
+                      <span class={[
+                        'text-[0.6rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0',
+                        p.stato === 'Attivo'            ? 'bg-emerald-500/15 text-emerald-400' :
+                        p.stato === 'Parziale'          ? 'bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)]' :
+                        p.stato === 'Opportunità'       ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' :
+                                                          'bg-[var(--color-binario)] text-[var(--ink-tertiary)]',
+                      ].join(' ')}>
+                        {p.stato}
+                      </span>
+                    </div>
+                    <p class="text-xs text-[var(--ink-tertiary)] leading-snug">{p.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Salesforce Foundation — il nuovo backbone ─────── -->
+    <Slide id="slide-salesforce" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dati')}
+        imageClass="opacity-08"
+        scrim="bg-[var(--surface-secondary)]/94"
+      />
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-5" data-reveal>
+        FS TECHNOLOGY + SALESFORCE · Q1 2026
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        La foundation agentica è partita.<br/>Adobe si innesta su di essa.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-8"
+        style="font-size: clamp(0.95rem, 1.25vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        A marzo 2026 FS Technology ha lanciato, con Salesforce, una piattaforma agentica integrata
+        che unisce Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM con
+        MuleSoft come integration engine e Data Cloud come layer dati centrale.
+        Il passo successivo è naturale: Adobe CJA ingerisce da Data Cloud via connettore nativo
+        e aggiunge l'intelligenza del journey che nessun CRM può generare da solo.
+      </p>
+
+      <div
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-4 mb-6"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {[
+          {
+            prodotto: 'Salesforce CRM',
+            ruolo: 'Backbone operativo',
+            adobe: 'Adobe CJA legge i profili CRM e li arricchisce con behavioral journey data',
+            icon: '☁️',
+          },
+          {
+            prodotto: 'MuleSoft',
+            ruolo: 'Integration engine',
+            adobe: 'Già in campo → feed dati verso AEP/CJA senza nuova infrastruttura',
+            icon: '🔗',
+          },
+          {
+            prodotto: 'Salesforce Data Cloud',
+            ruolo: 'Layer dati centralizzato',
+            adobe: 'Connettore nativo AEP: data flow da Data Cloud verso CJA e RTCDP',
+            icon: '🗄️',
+          },
+        ].map((item) => (
+          <div class="p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <div class="text-2xl mb-3" aria-hidden="true">{item.icon}</div>
+            <p class="text-sm font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5">{item.prodotto}</p>
+            <p class="text-xs text-[var(--accent-secondary)] font-semibold uppercase tracking-wide mb-3">{item.ruolo}</p>
+            <p class="text-xs text-[var(--ink-secondary)] leading-relaxed">
+              <strong class="text-[var(--accent-primary)]">Adobe:</strong> {item.adobe}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-secondary)]/40" data-reveal data-reveal-delay="0.3">
+        Fonte:&nbsp;
+        <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-80">
+          fsnews.it — FS Technology + Salesforce Foundation Digitale (mar 2026)
+        </a>
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: La scelta · non disruption, connessione ──────── -->
+    <Slide id="slide-choice" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-binari')}
+        imageClass="opacity-08"
+        scrim="bg-[var(--accent-primary)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--color-ghiaccio)]/70 mb-8" data-reveal>
+        IL PRINCIPIO GUIDA
+      </p>
+      <h2
+        class="text-[var(--color-ghiaccio)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Non sostituire.<br/>Connettere.
+      </h2>
+      <p
+        class="text-[var(--color-ghiaccio)]/80 leading-relaxed max-w-xl mx-auto mb-10"
+        style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
+        data-reveal
+        data-reveal-delay="0.16"
+      >
+        Oracle Responsys continua a eseguire le campagne. Salesforce continua a gestire i profili.
+        AEM continua a consegnare i contenuti. CJA si aggiunge come layer di intelligenza
+        che li legge tutti — e per la prima volta restituisce una vista del journey completa,
+        azionabile, incrementale.
+      </p>
+
+      <div
+        class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto"
+        data-reveal
+        data-reveal-delay="0.24"
+      >
+        <a
+          href={href(base, '/convergenza')}
+          class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ghiaccio)] text-[var(--color-carbonio)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          CJA: il layer di convergenza
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
