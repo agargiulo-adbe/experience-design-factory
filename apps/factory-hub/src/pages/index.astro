@@ -1,0 +1,335 @@
+---
+const base = import.meta.env.BASE_URL;
+const b = base.replace(/\/?$/, '/');
+const fav = `${b}favicon.svg`;
+
+const experiences = [
+  {
+    name: 'Generazioni',
+    client: 'Max Mara',
+    accent: '#C19A6B',
+    tagline: 'Un viaggio generazionale quiet-luxury. La prima istanza della Factory.',
+    href: `${b}generazioni-maxmara/`,
+  },
+  {
+    name: 'Engagement Unlimited',
+    client: 'UniCredit',
+    accent: '#BE2027',
+    tagline: 'Una storia Adobe CX completa, intrecciata con personas reali. Il modello più maturo.',
+    href: `${b}unicredit-engagement/`,
+  },
+  {
+    name: 'Pole Position',
+    client: 'Ferrari Racing × Adobe',
+    accent: '#FF2800',
+    tagline: 'Data-collaboration da Maranello a ogni tifoso. Bilingue, con mockup di prodotto live.',
+    href: `${b}ferrari-racing/`,
+  },
+  {
+    name: 'Connessioni Intelligenti',
+    client: 'FS Group',
+    accent: '#E2001A',
+    tagline: 'Il dato che connette treni, viaggiatori e servizi in un unico journey misurabile.',
+    href: `${b}trenitalia-connessioni/`,
+  },
+];
+
+const secondary = [
+  {
+    name: 'Factory Showcase',
+    desc: 'Il racconto della Factory stessa',
+    href: `${b}showcase/`,
+  },
+  {
+    name: 'Super Admin Console',
+    desc: 'Governance · auth · registry',
+    href: `${b}console/`,
+  },
+];
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Experience Design Factory — un motore, molte esperienze. Ogni Experience Design è una skin su un core condiviso."
+    />
+    <meta name="robots" content="noindex" />
+    <title>Experience Design Factory</title>
+    <link rel="icon" type="image/svg+xml" href={fav} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#experiences">Vai alle esperienze</a>
+    <div class="ambient" aria-hidden="true"></div>
+    <main class="wrap">
+      <header class="masthead">
+        <p class="eyebrow">Adobe · Experience Design</p>
+        <h1 class="title">Experience Design Factory</h1>
+        <p class="subtitle">
+          Un motore, molte esperienze. Ogni Experience Design è una skin su un core condiviso.
+        </p>
+      </header>
+
+      <section id="experiences" aria-label="Esperienze">
+        <ul class="grid" role="list">
+          {experiences.map((e) => (
+            <li>
+              <a class="card" href={e.href} style={`--accent:${e.accent}`}>
+                <span class="chip" aria-hidden="true"></span>
+                <h2 class="card-name">{e.name}</h2>
+                <p class="card-client">{e.client}</p>
+                <p class="card-tag">{e.tagline}</p>
+                <span class="card-open">Apri l’esperienza <span aria-hidden="true">→</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <nav class="secondary" aria-label="Strumenti">
+        {secondary.map((s) => (
+          <a class="link" href={s.href}>
+            <span class="link-name">{s.name}</span>
+            <span class="link-desc">{s.desc}</span>
+            <span class="link-arrow" aria-hidden="true">↗</span>
+          </a>
+        ))}
+      </nav>
+
+      <footer class="footer">
+        <p>Solo capability Adobe pubbliche · contenuti dimostrativi</p>
+      </footer>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --ground: #0e0e10;
+    --ground-2: #151517;
+    --ink: #f4f4f2;
+    --ink-dim: #a7a7a4;
+    --ink-faint: #6f6f6d;
+    --accent-neutral: #e8e6e1;
+    --line: rgba(244, 244, 242, 0.1);
+    --line-strong: rgba(244, 244, 242, 0.2);
+    --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0;
+    background: var(--ink);
+    color: var(--ground);
+    padding: 0.6rem 1rem;
+    border-radius: 0 0 8px 0;
+    font-weight: 600;
+    z-index: 10;
+  }
+  .skip-link:focus { left: 0; }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 50% at 78% -5%, rgba(232, 230, 225, 0.06), transparent 62%),
+      radial-gradient(50% 45% at 10% 105%, rgba(232, 230, 225, 0.04), transparent 66%);
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: clamp(3.5rem, 9vh, 7rem) clamp(1.25rem, 5vw, 3rem) clamp(2.5rem, 6vh, 4rem);
+  }
+
+  /* ── Masthead ── */
+  .masthead { max-width: 46rem; }
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .title {
+    margin: 1rem 0 0;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  .subtitle {
+    margin: 1.1rem 0 0;
+    max-width: 38ch;
+    font-size: clamp(1rem, 2.2vw, 1.18rem);
+    color: var(--ink-dim);
+  }
+
+  /* ── Experience grid ── */
+  .grid {
+    list-style: none;
+    margin: clamp(2.5rem, 6vh, 4rem) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 1.15rem; }
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.6rem 1.6rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: border-color 0.22s ease, transform 0.22s ease, background 0.22s ease;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0.85;
+  }
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  }
+
+  .chip {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 4px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .card-name {
+    margin: 1rem 0 0;
+    font-size: 1.32rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .card-client {
+    margin: 0.3rem 0 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--accent) 55%, var(--ink));
+  }
+  .card-tag {
+    margin: 0.85rem 0 0;
+    font-size: 0.92rem;
+    color: var(--ink-dim);
+    flex: 1;
+  }
+  .card-open {
+    margin-top: 1.15rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition: gap 0.2s ease;
+  }
+  .card-open span { transition: transform 0.2s ease; display: inline-block; }
+  .card:hover .card-open span,
+  .card:focus-visible .card-open span { transform: translateX(3px); }
+
+  /* ── Secondary row ── */
+  .secondary {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .secondary { grid-template-columns: repeat(2, 1fr); }
+  }
+  .link {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.9rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--ink-dim);
+    background: rgba(255, 255, 255, 0.015);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .link:hover,
+  .link:focus-visible {
+    border-color: var(--line-strong);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .link-name { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+  .link-desc { font-size: 0.82rem; color: var(--ink-faint); }
+  .link-arrow { margin-left: auto; font-size: 1rem; align-self: center; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: clamp(2.5rem, 7vh, 4.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .footer p {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+  }
+
+  /* ── Focus ── */
+  a:focus-visible {
+    outline: 2px solid var(--accent-neutral);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card-open span, .link { transition: none; }
+    .card:hover, .card:focus-visible { transform: none; }
+  }
+</style>

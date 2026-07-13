@@ -1,0 +1,50 @@
+---
+// Shared redirect stub for old Max Mara deep links that used to live at the
+// site root. Max Mara now lives under /generazioni-maxmara/, so we forward each
+// old path there, preserving the query string. JS redirect + <meta refresh>
+// fallback + a visible link for no-JS.
+interface Props {
+  /** Path segment under the maxmara base, e.g. 'acquisizione' (no slashes). */
+  slug: string;
+}
+const { slug } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const b = base.replace(/\/?$/, '/');
+const target = `${b}generazioni-maxmara/${slug}/`;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Reindirizzamento…</title>
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <script is:inline define:vars={{ target }}>
+      // Preserve the query string on the way to the new subpath.
+      location.replace(target + location.search);
+    </script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #0e0e10;
+        color: #f4f4f2;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        text-align: center;
+        padding: 2rem;
+      }
+      p { color: #a7a7a4; margin: 0 0 1rem; }
+      a { color: #f4f4f2; font-weight: 600; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>Questa pagina si è spostata.</p>
+      <a href={target}>Continua verso l’esperienza →</a>
+    </main>
+  </body>
+</html>
