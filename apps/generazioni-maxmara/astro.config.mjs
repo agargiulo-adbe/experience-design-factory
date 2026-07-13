@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 export default defineConfig({
   site: 'https://agargiulo-adbe.github.io',
-  base: '/experience-design-factory',
+  base: '/experience-design-factory/generazioni-maxmara',
   output: 'static',
   trailingSlash: 'always',
   vite: {

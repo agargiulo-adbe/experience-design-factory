@@ -45,7 +45,9 @@ export interface DeckVideoConfig {
  */
 export const deckVideo: DeckVideoConfig = {
   src: 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/Adobe_x_Max_Mara.mp4',
-  poster: '/experience-design-factory/deck-poster.jpg',
+  // Served from public/ under the app base — kept base-relative so the deck
+  // survives a base change (e.g. root → /generazioni-maxmara/).
+  poster: `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}deck-poster.jpg`,
   embedUrl: null,
   captionsSrc: null,
   durationHint: 190,
