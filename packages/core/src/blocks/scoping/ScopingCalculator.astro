@@ -1,11 +1,38 @@
 ---
+interface FieldDef {
+  key: string;
+  group: 'collab' | 'cja';
+  section: { en: string; it: string };
+  label: { en: string; it: string };
+  format: 'int' | 'decimal' | 'percent' | 'currency';
+  mode?: 'activity' | 'direct';
+  toConfirm?: boolean;
+  source: { en: string; it: string };
+  calc: { en: string; it: string };
+  assumption: { en: string; it: string };
+}
 interface Props {
   projectSlug: string;
   supabaseUrl: string;
   supabaseAnonKey: string;
   experienceUrl: string; // absolute URL of the /scoping/ page for share links
+  fields: FieldDef[];
 }
-const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props;
+const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl, fields } = Astro.props;
+
+// Group fields by column, preserving registry order, into { section, items[] }.
+function grouped(g: 'collab' | 'cja') {
+  const out: { section: { en: string; it: string }; items: FieldDef[] }[] = [];
+  for (const f of fields.filter((x) => x.group === g)) {
+    let bucket = out.find((b) => b.section.en === f.section.en);
+    if (!bucket) { bucket = { section: f.section, items: [] }; out.push(bucket); }
+    bucket.items.push(f);
+  }
+  return out;
+}
+const collabGroups = grouped('collab');
+const cjaGroups = grouped('cja');
+const currencyPrefix = '€';
 ---
 <div class="scoping" data-scoping
      data-project={projectSlug}
@@ -13,69 +40,121 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
      data-supabase-key={supabaseAnonKey}
      data-experience-url={experienceUrl}>
 
+  <header class="scoping-header">
+    <div>
+      <h2 class="scoping-title"><span data-lang-en>License scoping calculator</span><span data-lang-it>Calcolatore di licensing</span></h2>
+      <p class="scoping-sub">
+        <span data-lang-en>Two independent products, two metrics. Every field is a stated assumption — hover <span class="scoping-i-demo">i</span> for its source, calculation and reasoning.</span>
+        <span data-lang-it>Due prodotti indipendenti, due metriche. Ogni campo è un'assunzione dichiarata — passa su <span class="scoping-i-demo">i</span> per fonte, calcolo e ragionamento.</span>
+      </p>
+    </div>
+    <span class="scoping-legend"><span class="scoping-legend-dot"></span><span data-lang-en>Illustrative / client to confirm</span><span data-lang-it>Illustrativo / da confermare</span></span>
+  </header>
+
+  <!-- ── Results bar (sticky, always visible) ─────────────────── -->
+  <aside class="scoping-results" aria-live="polite">
+    <div class="scoping-total-block">
+      <span class="scoping-total-label"><span data-lang-en>Total — indicative / year</span><span data-lang-it>Totale — indicativo / anno</span></span>
+      <b class="scoping-total-val" data-out="totalCost">—</b>
+      <span class="scoping-total-note"><span data-lang-en>Illustrative prices — replace with the Sales Order.</span><span data-lang-it>Prezzi illustrativi — sostituire con il Sales Order.</span></span>
+    </div>
+    <div class="scoping-res-groups">
+      <div class="scoping-res-group">
+        <p class="scoping-res-h">Real-Time CDP Collaboration</p>
+        <div class="scoping-metric"><span data-lang-en>Est. credits / yr</span><span data-lang-it>Credits stimati / anno</span><b data-out="collabCreditsEstimated">—</b></div>
+        <div class="scoping-metric"><span data-lang-en>Billable credits / yr</span><span data-lang-it>Credits fatturabili / anno</span><b data-out="collabBillableCredits">—</b></div>
+        <div class="scoping-metric"><span data-lang-en>Collaboration cost</span><span data-lang-it>Costo Collaboration</span><b data-out="collabCost">—</b></div>
+      </div>
+      <div class="scoping-res-group">
+        <p class="scoping-res-h">Customer Journey Analytics</p>
+        <div class="scoping-metric"><span data-lang-en>Licensed rows / yr</span><span data-lang-it>Righe licenziate / anno</span><b data-out="cjaRowsPerYear">—</b></div>
+        <div class="scoping-metric scoping-guard"><span data-lang-en>Ingestion limit (3×)</span><span data-lang-it>Limite ingestion (3×)</span><b data-out="cjaAnnualIngestionLimit">—</b></div>
+        <div class="scoping-metric"><span data-lang-en>CJA cost</span><span data-lang-it>Costo CJA</span><b data-out="cjaCost">—</b></div>
+      </div>
+    </div>
+  </aside>
+
   <div class="scoping-cols">
     <!-- ── Collaboration column ─────────────────────────────── -->
     <section class="scoping-card" aria-labelledby="sc-collab-h">
       <h3 id="sc-collab-h" class="scoping-card-h">
-        <span data-lang-en>Real-Time CDP Collaboration</span><span data-lang-it>Real-Time CDP Collaboration</span>
+        <span>Real-Time CDP Collaboration</span>
+        <span class="scoping-card-metric">Collaboration Credits</span>
       </h3>
-      <label class="scoping-field">
-        <span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span>
-        <select data-k="collabPackage">
-          <option value="none">None (0)</option>
-          <option value="prime">Prime (2,500)</option>
-          <option value="ultimate">Ultimate (5,000)</option>
-        </select>
-      </label>
-      <label class="scoping-field">
-        <span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span>
-        <select data-k="collabMode">
-          <option value="activity">Stima da attività · Estimate from activity</option>
-          <option value="direct">Crediti diretti · Direct credits</option>
-        </select>
-      </label>
-      <label class="scoping-field" data-when="direct">
-        <span data-lang-en>Annual Collaboration Credits</span><span data-lang-it>Collaboration Credits annui</span>
-        <input type="number" min="0" data-k="directCredits" />
-      </label>
-      <div data-when="activity">
-        <label class="scoping-field"><span data-lang-en>Data-collaboration partners</span><span data-lang-it>Partner in data collaboration</span><input type="number" min="0" data-k="partners" /></label>
-        <label class="scoping-field"><span data-lang-en>Distinct addressable audience</span><span data-lang-it>Audience distinta indirizzabile</span><input type="number" min="0" data-k="audienceSize" /></label>
-        <label class="scoping-field"><span data-lang-en>Activations / year</span><span data-lang-it>Attivazioni / anno</span><input type="number" min="0" data-k="activationsPerYear" /></label>
-        <label class="scoping-field scoping-so"><span data-lang-en>Credits per activation</span><span data-lang-it>Credits per attivazione</span><input type="number" min="0" step="0.01" data-k="creditPerActivation" /></label>
-        <label class="scoping-field scoping-so"><span data-lang-en>Credits per partner audience mgmt</span><span data-lang-it>Credits per audience mgmt partner</span><input type="number" min="0" step="0.01" data-k="creditPerAudienceMgmt" /></label>
-        <label class="scoping-field scoping-so"><span data-lang-en>Credits per measurement</span><span data-lang-it>Credits per measurement</span><input type="number" min="0" step="0.01" data-k="creditPerMeasurement" /></label>
+
+      <div class="scoping-controls">
+        <label class="scoping-field">
+          <span class="scoping-label"><span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span></span>
+          <select data-k="collabPackage">
+            <option value="none">None (0)</option>
+            <option value="prime">Prime (2,500)</option>
+            <option value="ultimate">Ultimate (5,000)</option>
+          </select>
+        </label>
+        <label class="scoping-field">
+          <span class="scoping-label"><span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span></span>
+          <select data-k="collabMode">
+            <option value="activity">Stima da attività · Estimate from activity</option>
+            <option value="direct">Crediti diretti · Direct credits</option>
+          </select>
+        </label>
       </div>
-      <label class="scoping-field scoping-so"><span data-lang-en>Price per credit (Sales Order)</span><span data-lang-it>Prezzo per credito (Sales Order)</span><input type="number" min="0" step="0.01" data-k="pricePerCredit" placeholder="—" /></label>
+
+      {collabGroups.map((grp) => (
+        <div class="scoping-group" data-group-modes={grp.items.map((i) => i.mode ?? 'both').join(',')}>
+          <p class="scoping-group-h"><span data-lang-en>{grp.section.en}</span><span data-lang-it>{grp.section.it}</span></p>
+          {grp.items.map((f) => (
+            <label class={`scoping-field${f.toConfirm ? ' scoping-so' : ''}`} data-when={f.mode ?? undefined}>
+              <span class="scoping-label">
+                <span class="scoping-label-txt"><span data-lang-en>{f.label.en}</span><span data-lang-it>{f.label.it}</span></span>
+                {f.toConfirm && <span class="scoping-badge"><span data-lang-en>to confirm</span><span data-lang-it>da confermare</span></span>}
+                <button type="button" class="scoping-info" aria-label="Audit" tabindex="0">i</button>
+                <span class="scoping-tip" role="tooltip">
+                  <span class="scoping-tip-row"><b>SOURCE</b><span data-lang-en>{f.source.en}</span><span data-lang-it>{f.source.it}</span></span>
+                  <span class="scoping-tip-row"><b>CALC</b><span data-lang-en>{f.calc.en}</span><span data-lang-it>{f.calc.it}</span></span>
+                  <span class="scoping-tip-row"><b data-lang-en>ASSUMPTION</b><b data-lang-it>ASSUNZIONE</b><span data-lang-en>{f.assumption.en}</span><span data-lang-it>{f.assumption.it}</span></span>
+                </span>
+              </span>
+              <span class="scoping-input-wrap">
+                {f.format === 'currency' && <span class="scoping-prefix">{currencyPrefix}</span>}
+                <input type="text" inputmode="decimal" data-k={f.key} data-format={f.format} />
+              </span>
+            </label>
+          ))}
+        </div>
+      ))}
     </section>
 
     <!-- ── CJA column ───────────────────────────────────────── -->
     <section class="scoping-card" aria-labelledby="sc-cja-h">
       <h3 id="sc-cja-h" class="scoping-card-h">
-        <span data-lang-en>Customer Journey Analytics</span><span data-lang-it>Customer Journey Analytics</span>
+        <span>Customer Journey Analytics</span>
+        <span class="scoping-card-metric">Rows of Data</span>
       </h3>
-      <label class="scoping-field"><span data-lang-en>Web visits / year</span><span data-lang-it>Visite web / anno</span><input type="number" min="0" data-k="webVisitsPerYear" /></label>
-      <label class="scoping-field"><span data-lang-en>Hits per visit</span><span data-lang-it>Hit per visita</span><input type="number" min="0" data-k="webHitsPerVisit" /></label>
-      <label class="scoping-field scoping-so"><span data-lang-en>App MAU (client to confirm)</span><span data-lang-it>App MAU (da confermare)</span><input type="number" min="0" data-k="appMau" /></label>
-      <label class="scoping-field"><span data-lang-en>App events / MAU / month</span><span data-lang-it>Eventi app / MAU / mese</span><input type="number" min="0" data-k="appEventsPerMauPerMonth" /></label>
-      <label class="scoping-field"><span data-lang-en>Social audience</span><span data-lang-it>Audience social</span><input type="number" min="0" data-k="socialAudience" /></label>
-      <label class="scoping-field"><span data-lang-en>Active share (0–1)</span><span data-lang-it>Quota attiva (0–1)</span><input type="number" min="0" max="1" step="0.01" data-k="socialActivePct" /></label>
-      <label class="scoping-field"><span data-lang-en>Social actions / active / month</span><span data-lang-it>Azioni social / attivo / mese</span><input type="number" min="0" data-k="socialActionsPerActivePerMonth" /></label>
-      <label class="scoping-field scoping-so"><span data-lang-en>CRM profiles (client to confirm)</span><span data-lang-it>Profili CRM (da confermare)</span><input type="number" min="0" data-k="crmProfiles" /></label>
-      <label class="scoping-field"><span data-lang-en>CRM events / profile / year</span><span data-lang-it>Eventi CRM / profilo / anno</span><input type="number" min="0" data-k="crmEventsPerProfilePerYear" /></label>
-      <label class="scoping-field"><span data-lang-en>Events / eSports rows / year</span><span data-lang-it>Righe eventi / eSports / anno</span><input type="number" min="0" data-k="eventsRowsPerYear" /></label>
-      <label class="scoping-field scoping-so"><span data-lang-en>Price per 1M rows (Sales Order)</span><span data-lang-it>Prezzo per 1M righe (Sales Order)</span><input type="number" min="0" step="0.01" data-k="pricePerMillionRows" placeholder="—" /></label>
+      {cjaGroups.map((grp) => (
+        <div class="scoping-group">
+          <p class="scoping-group-h"><span data-lang-en>{grp.section.en}</span><span data-lang-it>{grp.section.it}</span></p>
+          {grp.items.map((f) => (
+            <label class={`scoping-field${f.toConfirm ? ' scoping-so' : ''}`}>
+              <span class="scoping-label">
+                <span class="scoping-label-txt"><span data-lang-en>{f.label.en}</span><span data-lang-it>{f.label.it}</span></span>
+                {f.toConfirm && <span class="scoping-badge"><span data-lang-en>to confirm</span><span data-lang-it>da confermare</span></span>}
+                <button type="button" class="scoping-info" aria-label="Audit" tabindex="0">i</button>
+                <span class="scoping-tip" role="tooltip">
+                  <span class="scoping-tip-row"><b>SOURCE</b><span data-lang-en>{f.source.en}</span><span data-lang-it>{f.source.it}</span></span>
+                  <span class="scoping-tip-row"><b>CALC</b><span data-lang-en>{f.calc.en}</span><span data-lang-it>{f.calc.it}</span></span>
+                  <span class="scoping-tip-row"><b data-lang-en>ASSUMPTION</b><b data-lang-it>ASSUNZIONE</b><span data-lang-en>{f.assumption.en}</span><span data-lang-it>{f.assumption.it}</span></span>
+                </span>
+              </span>
+              <span class="scoping-input-wrap">
+                {f.format === 'currency' && <span class="scoping-prefix">{currencyPrefix}</span>}
+                <input type="text" inputmode="decimal" data-k={f.key} data-format={f.format} />
+              </span>
+            </label>
+          ))}
+        </div>
+      ))}
     </section>
-
-    <!-- ── Results panel ────────────────────────────────────── -->
-    <aside class="scoping-results" aria-live="polite">
-      <div class="scoping-metric"><span data-lang-en>Billable credits / yr</span><span data-lang-it>Credits fatturabili / anno</span><b data-out="collabBillableCredits">—</b></div>
-      <div class="scoping-metric"><span data-lang-en>Collaboration cost</span><span data-lang-it>Costo Collaboration</span><b data-out="collabCost">—</b></div>
-      <div class="scoping-metric"><span data-lang-en>CJA Rows / yr</span><span data-lang-it>Righe CJA / anno</span><b data-out="cjaRowsPerYear">—</b></div>
-      <div class="scoping-metric"><span data-lang-en>Annual ingestion limit (3×)</span><span data-lang-it>Limite ingestion annuo (3×)</span><b data-out="cjaAnnualIngestionLimit">—</b></div>
-      <div class="scoping-metric"><span data-lang-en>CJA cost</span><span data-lang-it>Costo CJA</span><b data-out="cjaCost">—</b></div>
-      <div class="scoping-metric scoping-total"><span data-lang-en>Total (indicative)</span><span data-lang-it>Totale (indicativo)</span><b data-out="totalCost">—</b></div>
-    </aside>
   </div>
 
   <!-- ── Action bar ─────────────────────────────────────────── -->
@@ -109,12 +188,8 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     isLoggedIn, loadLocal, saveLocal, saveRemote, fetchRemoteById, listMine, type StoreCtx,
   } from './scenario-store';
 
-  const NUM_KEYS = new Set([
-    'directCredits','partners','audienceSize','activationsPerYear','creditPerActivation',
-    'creditPerAudienceMgmt','creditPerMeasurement','webVisitsPerYear','webHitsPerVisit',
-    'appMau','appEventsPerMauPerMonth','socialAudience','socialActivePct',
-    'socialActionsPerActivePerMonth','crmProfiles','crmEventsPerProfilePerYear','eventsRowsPerYear',
-  ]);
+  const PRICE_KEYS = new Set(['pricePerCredit', 'pricePerMillionRows']);
+  const CONTROL_KEYS = new Set(['collabMode', 'collabPackage']);
 
   function initScoping(root: HTMLElement) {
     const ctx: StoreCtx = {
@@ -130,33 +205,57 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     let baseline: any = {};
     try { baseline = JSON.parse(localStorage.getItem('edf:scoping-baseline:' + ctx.projectSlug) || '{}'); } catch { baseline = {}; }
     function applyBaselinePrices() {
-      if (prices.pricePerCredit == null && baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
-      if (prices.pricePerMillionRows == null && baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
+      if (baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
+      if (baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
     }
 
-    const fmt = (n: number) => new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n);
+    // ── formatting ──────────────────────────────────────────
+    const grp = (n: number, min = 0, max = 0) =>
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: min, maximumFractionDigits: max }).format(n);
+    const fmt = (n: number) => grp(n);
     const fmtMoney = (n: number | null) =>
-      n == null ? '—' : new Intl.NumberFormat('en-US', { style: 'currency', currency: prices.currency, maximumFractionDigits: 0 }).format(n);
+      n == null ? '—' : '€' + grp(n, 0, 0);
     const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+
+    function fmtField(format: string, v: number): string {
+      if (format === 'percent') return grp(v, 0, 2);          // 0–1 decimal
+      if (format === 'currency') return grp(v, 2, 2);         // 3.00
+      if (format === 'decimal') return grp(v, 0, 2);          // 1.5
+      return grp(v, 0, 0);                                    // int with thousands
+    }
+    const parseField = (s: string) => Number(String(s).replace(/,/g, '').trim());
+
+    function valueFor(k: string): number {
+      if (k === 'pricePerCredit') return prices.pricePerCredit ?? 0;
+      if (k === 'pricePerMillionRows') return prices.pricePerMillionRows ?? 0;
+      return (assumptions as any)[k] ?? 0;
+    }
 
     function writeInputs() {
       root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
         const k = el.dataset.k!;
-        if (k === 'pricePerCredit') el.value = prices.pricePerCredit == null ? '' : String(prices.pricePerCredit);
-        else if (k === 'pricePerMillionRows') el.value = prices.pricePerMillionRows == null ? '' : String(prices.pricePerMillionRows);
-        else el.value = String((assumptions as any)[k]);
+        if (CONTROL_KEYS.has(k)) { el.value = (assumptions as any)[k]; return; }
+        (el as HTMLInputElement).value = fmtField(el.dataset.format || 'int', valueFor(k));
       });
-      root.querySelectorAll<HTMLElement>('[data-when]').forEach((el) => {
-        el.style.display = el.dataset.when === assumptions.collabMode ? '' : 'none';
+      // show/hide activity vs direct fields
+      root.querySelectorAll<HTMLElement>('.scoping-field[data-when]').forEach((el) => {
+        el.style.display = (el.getAttribute('data-when') === assumptions.collabMode) ? '' : 'none';
+      });
+      root.querySelectorAll<HTMLElement>('.scoping-group[data-group-modes]').forEach((el) => {
+        const modes = (el.getAttribute('data-group-modes') || '').split(',');
+        const visible = modes.some((m) => m === 'both' || m === assumptions.collabMode);
+        el.style.display = visible ? '' : 'none';
       });
     }
 
     function readInput(el: HTMLInputElement | HTMLSelectElement) {
       const k = el.dataset.k!;
-      if (k === 'pricePerCredit') prices.pricePerCredit = el.value === '' ? null : Number(el.value);
-      else if (k === 'pricePerMillionRows') prices.pricePerMillionRows = el.value === '' ? null : Number(el.value);
-      else if (NUM_KEYS.has(k)) (assumptions as any)[k] = Number(el.value) || 0;
-      else (assumptions as any)[k] = el.value; // collabMode / collabPackage
+      if (CONTROL_KEYS.has(k)) { (assumptions as any)[k] = el.value; return; }
+      const n = parseField((el as HTMLInputElement).value);
+      const val = Number.isFinite(n) ? n : 0;
+      if (k === 'pricePerCredit') prices.pricePerCredit = val;
+      else if (k === 'pricePerMillionRows') prices.pricePerMillionRows = val;
+      else (assumptions as any)[k] = val;
     }
 
     function render() {
@@ -165,6 +264,7 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
         const el = root.querySelector(`[data-out="${name}"]`);
         if (el) el.textContent = v;
       };
+      out('collabCreditsEstimated', fmt(s.collabCreditsEstimated));
       out('collabBillableCredits', fmt(s.collabBillableCredits));
       out('collabCost', fmtMoney(s.collabCost));
       out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
@@ -175,6 +275,10 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
 
     root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
       el.addEventListener('input', () => { readInput(el); if (el.dataset.k === 'collabMode') writeInputs(); render(); });
+      // reformat on blur (don't fight the caret while typing)
+      if (el.tagName === 'INPUT') el.addEventListener('blur', () => {
+        (el as HTMLInputElement).value = fmtField(el.dataset.format || 'int', valueFor(el.dataset.k!));
+      });
     });
 
     // ── Scenario picker ────────────────────────────────────
@@ -229,8 +333,6 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
       const sc: Scenario = { title, assumptions: { ...assumptions }, prices: { ...prices }, visibility: 'link' };
       try {
         const id = await saveRemote(ctx, sc);
-        // Absolute URL from the live origin (Astro `site` may be unset) — the
-        // passed experienceUrl is the fallback when opened off-origin.
         const path = location.pathname.replace(/\?.*$/, '');
         const url = (location.origin ? location.origin + path : experienceUrl) + '?scenario=' + id;
         await navigator.clipboard?.writeText(url).catch(() => {});
@@ -238,9 +340,10 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
       } catch { note.textContent = 'Could not create share link.'; }
     });
 
+    // Reset re-applies the first scenario (keeps every field populated, never 0/blank).
     root.querySelector('[data-scoping-reset]')!.addEventListener('click', () => {
-      assumptions = { ...DEFAULT_ASSUMPTIONS }; prices = { ...DEFAULT_PRICES };
-      writeInputs(); render(); note.textContent = '';
+      if (scenarios[0]) applyScenario(scenarios[0]);
+      note.textContent = '';
     });
 
     const comparePanel = root.querySelector<HTMLElement>('[data-scoping-compare-panel]')!;
@@ -267,7 +370,7 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
       comparePanel.hidden = false;
     });
 
-    // ── Boot: seed list from data attribute-injected globals, load shared/local ──
+    // ── Boot ────────────────────────────────────────────────
     const seeded = (window as any).__edfScopingSeeds as Scenario[] | undefined;
     scenarios = (seeded ? seeded.slice() : []).concat(loadLocal(ctx.projectSlug));
     refreshPicker();
@@ -280,18 +383,12 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
     } else if (scenarios[0]) {
       applyScenario(scenarios[0]);
     } else {
-      if (baseline.partners != null) assumptions.partners = baseline.partners;
-      if (baseline.audienceSize != null) assumptions.audienceSize = baseline.audienceSize;
-      if (baseline.activationsPerYear != null) assumptions.activationsPerYear = baseline.activationsPerYear;
       applyBaselinePrices();
       writeInputs(); render();
     }
     if (isLoggedIn()) listMine(ctx).then((mine) => { if (mine.length) { scenarios = mine.concat(scenarios); refreshPicker(); } });
   }
 
-  // Init on first load AND on SPA nav (the deck uses ClientRouter — a module
-  // script evaluates once; astro:page-load re-fires per SPA navigation). Guard
-  // against double-init with a dataset flag (see mockup-navigation patterns).
   function bootAll() {
     document.querySelectorAll<HTMLElement>('[data-scoping]').forEach((el) => {
       if (el.dataset.scopingReady === '1') return;
@@ -304,27 +401,65 @@ const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl } = Astro.props
 </script>
 
 <style>
-  .scoping { display: flex; flex-direction: column; gap: 1rem; width: 100%; height: 100%; overflow-y: auto; padding: 1rem; }
-  .scoping-cols { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-  @media (min-width: 900px) { .scoping-cols { grid-template-columns: 1fr 1fr 0.8fr; } }
-  .scoping-card { background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 82%, #fff 4%); border: 1px solid var(--line-subtle, rgba(255,255,255,0.1)); border-radius: 6px; padding: 1rem; }
-  .scoping-card-h { font-family: var(--font-display); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; color: var(--ink-inverse, #F4F4F2); }
-  .scoping-field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
-  .scoping-field input, .scoping-field select { background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 4px; padding: 0.4rem 0.5rem; font-size: 0.85rem; }
-  .scoping-so { border-left: 2px solid var(--accent-secondary, #FFF200); padding-left: 0.5rem; }
-  .scoping-results { display: flex; flex-direction: column; gap: 0.5rem; background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 70%, #fff 6%); border-radius: 6px; padding: 1rem; align-self: start; }
-  .scoping-metric { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
-  .scoping-metric b { font-family: var(--font-display); font-size: 1.05rem; color: var(--ink-inverse, #F4F4F2); }
-  .scoping-total { border-top: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); padding-top: 0.5rem; }
-  .scoping-total b { color: var(--accent-primary, #FF2800); font-size: 1.35rem; }
-  .scoping-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
-  .scoping-actions input, .scoping-actions select, .scoping-actions button { background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 4px; padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+  .scoping { display: flex; flex-direction: column; gap: 1.1rem; width: 100%; max-width: 1600px; margin: 0 auto; height: 100%; overflow-y: auto; padding: 1.25rem 1.5rem; box-sizing: border-box; }
+  .scoping *, .scoping *::before, .scoping *::after { box-sizing: border-box; }
+  .scoping-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+  .scoping-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink-inverse, #F4F4F2); letter-spacing: -0.01em; }
+  .scoping-sub { font-size: 0.78rem; color: var(--color-grigio-400, #9a9a9a); max-width: 46rem; margin-top: 0.25rem; line-height: 1.5; }
+  .scoping-i-demo, .scoping-info { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--accent-secondary, #FFF200); color: var(--accent-secondary, #FFF200); font-size: 9px; font-style: italic; font-weight: 700; line-height: 1; }
+  .scoping-legend { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; color: var(--color-grigio-400, #9a9a9a); }
+  .scoping-legend-dot { width: 10px; height: 10px; border-radius: 2px; border-left: 3px solid var(--accent-secondary, #FFF200); background: rgba(255,242,0,0.08); }
+
+  .scoping-cols { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
+  @media (min-width: 820px) { .scoping-cols { grid-template-columns: 1fr 1fr; align-items: start; } }
+  .scoping-card { min-width: 0; background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 80%, #fff 5%); border: 1px solid var(--line-subtle, rgba(255,255,255,0.1)); border-radius: 8px; padding: 1.1rem 1.2rem; }
+  .scoping-card-h { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem 0.75rem; flex-wrap: wrap; font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-inverse, #F4F4F2); padding-bottom: 0.7rem; margin-bottom: 0.7rem; border-bottom: 1px solid var(--line-subtle, rgba(255,255,255,0.1)); }
+  .scoping-card-metric { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; color: var(--accent-secondary, #FFF200); flex-shrink: 0; }
+  .scoping-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
+  @media (max-width: 520px) { .scoping-controls { grid-template-columns: 1fr; } }
+
+  .scoping-group { margin-bottom: 0.85rem; }
+  .scoping-group-h { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; color: var(--accent-primary, #FF2800); margin-bottom: 0.5rem; }
+  .scoping-field { display: flex; flex-direction: column; gap: 0.22rem; margin-bottom: 0.55rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-so { border-left: 2px solid var(--accent-secondary, #FFF200); padding-left: 0.55rem; margin-left: -0.05rem; }
+  .scoping-label { display: flex; align-items: center; gap: 0.35rem; position: relative; }
+  .scoping-label-txt { flex-shrink: 1; }
+  .scoping-badge { font-size: 0.52rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-secondary, #FFF200); border: 1px solid color-mix(in srgb, var(--accent-secondary, #FFF200) 45%, transparent); border-radius: 3px; padding: 0.05rem 0.28rem; white-space: nowrap; }
+  .scoping-info { cursor: help; flex-shrink: 0; background: transparent; }
+  .scoping-input-wrap { position: relative; display: flex; align-items: center; }
+  .scoping-prefix { position: absolute; left: 0.55rem; font-size: 0.85rem; color: var(--color-grigio-400, #9a9a9a); pointer-events: none; }
+  .scoping-field input, .scoping-field select { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 5px; padding: 0.42rem 0.55rem; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+  .scoping-input-wrap:has(.scoping-prefix) input { padding-left: 1.3rem; }
+  .scoping-field input:focus, .scoping-field select:focus { outline: none; border-color: var(--accent-primary, #FF2800); }
+
+  /* audit tooltip */
+  .scoping-tip { position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); width: min(20rem, 78vw); display: none; flex-direction: column; gap: 0.4rem; padding: 0.65rem 0.75rem; background: #16161a; border: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .scoping-info:hover ~ .scoping-tip, .scoping-info:focus ~ .scoping-tip, .scoping-info:focus-visible ~ .scoping-tip { display: flex; }
+  .scoping-tip-row { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.72rem; line-height: 1.4; color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-tip-row b { font-size: 0.55rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary, #FFF200); }
+
+  /* results bar (horizontal, sticky, full-width) */
+  .scoping-results { z-index: 20; display: flex; flex-wrap: wrap; align-items: stretch; gap: 1.25rem 2rem; background: color-mix(in srgb, var(--surface-inverse, #0B0B0D) 66%, #fff 8%); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); border-radius: 8px; padding: 1rem 1.4rem; position: sticky; top: 0; }
+  .scoping-total-block { display: flex; flex-direction: column; gap: 0.1rem; padding-right: 2rem; border-right: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); min-width: 12rem; }
+  @media (max-width: 720px) { .scoping-total-block { border-right: none; border-bottom: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); padding-right: 0; padding-bottom: 0.75rem; width: 100%; } }
+  .scoping-total-label { font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-400, #9a9a9a); }
+  .scoping-total-val { font-family: var(--font-display); font-weight: 800; font-size: 2.3rem; line-height: 1.05; color: var(--accent-primary, #FF2800); font-variant-numeric: tabular-nums; }
+  .scoping-total-note { font-size: 0.62rem; color: var(--color-grigio-500, #6E6E77); line-height: 1.35; max-width: 16rem; }
+  .scoping-res-groups { display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem; flex: 1 1 auto; min-width: 0; }
+  .scoping-res-group { display: flex; flex-direction: column; gap: 0.35rem; min-width: 13rem; flex: 1 1 13rem; }
+  .scoping-res-h { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-secondary, #FFF200); margin-bottom: 0.15rem; }
+  .scoping-metric { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; font-size: 0.72rem; color: var(--color-grigio-400, #9a9a9a); }
+  .scoping-metric b { font-family: var(--font-display); font-size: 0.98rem; color: var(--ink-inverse, #F4F4F2); font-variant-numeric: tabular-nums; }
+  .scoping-guard b { color: var(--color-grigio-300, #cfcfcf); }
+
+  .scoping-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding-top: 0.4rem; border-top: 1px solid var(--line-subtle, rgba(255,255,255,0.1)); }
+  .scoping-actions input, .scoping-actions select, .scoping-actions button { background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 5px; padding: 0.42rem 0.7rem; font-size: 0.8rem; }
   .scoping-actions button { cursor: pointer; font-weight: 600; }
   .scoping-actions button:hover { border-color: var(--accent-primary, #FF2800); color: var(--accent-primary, #FF2800); }
   .scoping-note { font-size: 0.72rem; color: var(--color-grigio-400, #9a9a9a); flex-basis: 100%; }
   .scoping-compare { overflow-x: auto; }
   .scoping-compare-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; color: var(--color-grigio-300, #cfcfcf); }
-  .scoping-compare-table th, .scoping-compare-table td { border: 1px solid var(--line-subtle, rgba(255,255,255,0.12)); padding: 0.4rem 0.6rem; text-align: right; }
+  .scoping-compare-table th, .scoping-compare-table td { border: 1px solid var(--line-subtle, rgba(255,255,255,0.12)); padding: 0.4rem 0.6rem; text-align: right; font-variant-numeric: tabular-nums; }
   .scoping-compare-table th:first-child, .scoping-compare-table td:first-child { text-align: left; color: var(--ink-inverse, #F4F4F2); }
   .scoping-compare-table thead th { color: var(--accent-secondary, #FFF200); }
 </style>

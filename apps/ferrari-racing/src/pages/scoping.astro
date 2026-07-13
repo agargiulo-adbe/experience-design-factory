@@ -6,7 +6,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import ScopingCalculator from '@edf/core/blocks/scoping/ScopingCalculator.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import { SEED_SCENARIOS, ASSUMPTION_META, RIGOR_LABELS, DISCLAIMER } from '../data/scoping.ts';
+import { SEED_SCENARIOS, ASSUMPTION_META, RIGOR_LABELS, DISCLAIMER, METRICS, FIELD_AUDIT } from '../data/scoping';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -35,7 +35,37 @@ const experienceUrl = site + href(base, '/scoping');
         it={`Terminologia: “Data Collaboration” qui indica Adobe Real-Time CDP Collaboration.`} />
     </Slide>
 
-    <!-- SLIDE 1: Assumptions & rigor -->
+    <!-- SLIDE 1: The two licensing metrics, explained with examples -->
+    <Slide id="slide-metrics" bg="inverse" align="center">
+      <T en="LICENSING METRICS" it="METRICHE DI LICENSING" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-7" style="font-size: clamp(1.7rem, 3.4vw, 2.9rem);"
+        en="Two products. Two metrics. How each is measured." it="Due prodotti. Due metriche. Come si misura ciascuno." />
+      <div class="sc-metrics">
+        {METRICS.map((m, i) => (
+          <article class="sc-metric-card">
+            <header class="sc-metric-head">
+              <span class="sc-metric-idx">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <p class="sc-metric-product"><span data-lang-en>{m.product.en}</span><span data-lang-it>{m.product.it}</span></p>
+                <p class="sc-metric-metric"><span data-lang-en>{m.metric.en}</span><span data-lang-it>{m.metric.it}</span></p>
+              </div>
+            </header>
+            <p class="sc-metric-what"><span data-lang-en>{m.what.en}</span><span data-lang-it>{m.what.it}</span></p>
+            <ul class="sc-metric-list">
+              {m.consumes.map((c) => (
+                <li><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></li>
+              ))}
+            </ul>
+            <div class="sc-metric-example">
+              <span class="sc-metric-example-tag"><span data-lang-en>EXAMPLE</span><span data-lang-it>ESEMPIO</span></span>
+              <p><span data-lang-en>{m.example.en}</span><span data-lang-it>{m.example.it}</span></p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- SLIDE 2: Assumptions & rigor -->
     <Slide id="slide-assumptions" bg="inverse" align="left">
       <T en="ASSUMPTIONS" it="ASSUNZIONI" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
       <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(1.8rem, 3.6vw, 3rem);"
@@ -51,12 +81,13 @@ const experienceUrl = site + href(base, '/scoping');
     </Slide>
 
     <!-- SLIDE 2: The calculator (full-bleed interactive; exempt from audit:deck) -->
-    <Slide id="slide-calculator" bg="inverse" align="center" data-demo-flex>
+    <Slide id="slide-calculator" bg="inverse" align="center">
       <ScopingCalculator
         projectSlug="ferrari-racing"
         supabaseUrl={SUPABASE_URL}
         supabaseAnonKey={SUPABASE_ANON_KEY}
         experienceUrl={experienceUrl}
+        fields={FIELD_AUDIT}
       />
     </Slide>
 
@@ -82,5 +113,21 @@ const experienceUrl = site + href(base, '/scoping');
     .sc-inference .sc-tag { color: var(--accent-secondary); }
     .sc-sales-order .sc-tag { color: var(--accent-primary); }
     .sc-txt { font-size: 0.8rem; color: var(--color-grigio-300); }
+
+    /* Licensing-metrics teaching slide */
+    .sc-metrics { display: grid; grid-template-columns: 1fr; gap: 1.25rem; max-width: 68rem; width: 100%; margin: 0 auto; text-align: left; }
+    @media (min-width: 860px) { .sc-metrics { grid-template-columns: 1fr 1fr; } }
+    .sc-metric-card { display: flex; flex-direction: column; gap: 0.85rem; padding: 1.4rem 1.5rem; border: 1px solid var(--line-subtle); border-radius: 8px; background: color-mix(in srgb, var(--surface-inverse) 82%, #fff 5%); }
+    .sc-metric-head { display: flex; align-items: baseline; gap: 0.9rem; }
+    .sc-metric-idx { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--accent-primary); line-height: 1; }
+    .sc-metric-product { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink-inverse); }
+    .sc-metric-metric { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-secondary); font-weight: 700; margin-top: 0.15rem; }
+    .sc-metric-what { font-size: 0.86rem; line-height: 1.5; color: var(--color-grigio-300); }
+    .sc-metric-list { display: flex; flex-direction: column; gap: 0.4rem; padding-left: 0; list-style: none; }
+    .sc-metric-list li { position: relative; padding-left: 1.05rem; font-size: 0.78rem; line-height: 1.45; color: var(--color-grigio-300); }
+    .sc-metric-list li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-primary); }
+    .sc-metric-example { border-left: 3px solid var(--accent-secondary); padding: 0.5rem 0 0.5rem 0.85rem; background: rgba(255,242,0,0.04); border-radius: 0 4px 4px 0; }
+    .sc-metric-example-tag { display: inline-block; font-size: 0.6rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary); margin-bottom: 0.3rem; }
+    .sc-metric-example p { font-size: 0.8rem; line-height: 1.5; color: var(--ink-inverse); }
   </style>
 </BaseLayout>
