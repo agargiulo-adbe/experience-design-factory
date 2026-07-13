@@ -58,7 +58,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-marco',
     type: 'stock',
-    query: 'professional man 35-40 business travel train commuter portrait confident',
+    query: 'smiling businessman suit portrait train station platform face confident',
     aspect: '4:5',
     width: 900,
     grade: 'editorial',
