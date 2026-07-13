@@ -326,6 +326,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     }
     return null; // nothing enabled forward → home
   }
+  function prevEnabledBefore(slug) {
+    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
+    if (i === -1) return undefined;
+    for (var j = i - 1; j >= 0; j--) {
+      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
+    }
+    return null; // nothing enabled backward → home
+  }
 
   // If restrictions set, apply them before deck.ts runs
   if (activeIds) {
@@ -362,6 +370,17 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       var nextEntry = nextEnabledAfter(currentSlug());
       if (curNext && nextEntry !== undefined) {
         deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : homeFrom(curNext));
+      }
+    }
+
+    // Same for the "previous section" target (← past the first slide) so back
+    // navigation SKIPS gated sections and never lands on a hidden one.
+    var deckRootP = document.querySelector('[data-deck-prev-href]');
+    if (deckRootP) {
+      var curPrev = deckRootP.getAttribute('data-deck-prev-href');
+      var prevEntry = prevEnabledBefore(currentSlug());
+      if (curPrev && prevEntry !== undefined) {
+        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : homeFrom(curPrev));
       }
     }
 
