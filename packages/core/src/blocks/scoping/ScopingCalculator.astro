@@ -66,8 +66,8 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     <div>
       <h2 class="scoping-title"><span data-lang-en>License scoping calculator</span><span data-lang-it>Calcolatore di licensing</span></h2>
       <p class="scoping-sub">
-        <span data-lang-en>Two independent products, two metrics. Every field is a stated assumption — hover <span class="scoping-i-demo">i</span> for its source, calculation and reasoning.</span>
-        <span data-lang-it>Due prodotti indipendenti, due metriche. Ogni campo è un'assunzione dichiarata — passa su <span class="scoping-i-demo">i</span> per fonte, calcolo e ragionamento.</span>
+        <span data-lang-en>Two independent products, two metrics. Every field is a stated assumption — click <span class="scoping-i-demo">i</span> for its source, calculation and reasoning.</span>
+        <span data-lang-it>Due prodotti indipendenti, due metriche. Ogni campo è un'assunzione dichiarata — clicca su <span class="scoping-i-demo">i</span> per fonte, calcolo e ragionamento.</span>
       </p>
     </div>
     <span class="scoping-legend"><span class="scoping-legend-dot"></span><span data-lang-en>Illustrative / client to confirm</span><span data-lang-it>Illustrativo / da confermare</span></span>
@@ -406,6 +406,27 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       comparePanel.hidden = false;
     });
 
+    // ── Info tooltips: click to open (never on hover, so they can't block
+    //    the field). Click-away or Esc closes; only one open at a time. ──
+    const infoButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('.scoping-info'));
+    function closeTips(except?: Element | null) {
+      infoButtons.forEach((b) => { if (b !== except) b.setAttribute('aria-expanded', 'false'); });
+    }
+    infoButtons.forEach((btn) => {
+      btn.setAttribute('aria-expanded', 'false');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        closeTips(btn);
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+    });
+    root.addEventListener('click', (e) => {
+      const t = e.target as Element;
+      if (!t.closest('.scoping-info') && !t.closest('.scoping-tip')) closeTips();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeTips(); });
+
     // ── Boot ────────────────────────────────────────────────
     const seeded = (window as any).__edfScopingSeeds as Scenario[] | undefined;
     scenarios = (seeded ? seeded.slice() : []).concat(loadLocal(ctx.projectSlug));
@@ -461,16 +482,17 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
   .scoping-label { display: flex; align-items: center; gap: 0.35rem; position: relative; }
   .scoping-label-txt { flex-shrink: 1; }
   .scoping-badge { font-size: 0.52rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-secondary, #FFF200); border: 1px solid color-mix(in srgb, var(--accent-secondary, #FFF200) 45%, transparent); border-radius: 3px; padding: 0.05rem 0.28rem; white-space: nowrap; }
-  .scoping-info { cursor: help; flex-shrink: 0; background: transparent; }
+  .scoping-info { cursor: pointer; flex-shrink: 0; background: transparent; }
   .scoping-input-wrap { position: relative; display: flex; align-items: center; }
   .scoping-prefix { position: absolute; left: 0.55rem; font-size: 0.85rem; color: var(--color-grigio-400, #9a9a9a); pointer-events: none; }
   .scoping-field input, .scoping-field select { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); color: var(--ink-inverse, #F4F4F2); border-radius: 5px; padding: 0.42rem 0.55rem; font-size: 0.85rem; font-variant-numeric: tabular-nums; }
   .scoping-input-wrap:has(.scoping-prefix) input { padding-left: 1.3rem; }
   .scoping-field input:focus, .scoping-field select:focus { outline: none; border-color: var(--accent-primary, #FF2800); }
 
-  /* audit tooltip */
-  .scoping-tip { position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); width: min(20rem, 78vw); display: none; flex-direction: column; gap: 0.4rem; padding: 0.65rem 0.75rem; background: #16161a; border: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: none; }
-  .scoping-info:hover ~ .scoping-tip, .scoping-info:focus ~ .scoping-tip, .scoping-info:focus-visible ~ .scoping-tip { display: flex; }
+  /* audit tooltip — click to open (never on hover, so it can't block the field) */
+  .scoping-tip { position: absolute; z-index: 40; left: 0; top: calc(100% + 6px); width: min(20rem, 78vw); display: none; flex-direction: column; gap: 0.4rem; padding: 0.65rem 0.75rem; background: #16161a; border: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); pointer-events: auto; }
+  .scoping-info[aria-expanded="true"] ~ .scoping-tip { display: flex; }
+  .scoping-info[aria-expanded="true"] { background: var(--accent-secondary, #FFF200); color: #16161a; }
   .scoping-tip-row { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.72rem; line-height: 1.4; color: var(--color-grigio-300, #cfcfcf); }
   .scoping-tip-row b { font-size: 0.55rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary, #FFF200); }
   .scoping-tip--metric { font-size: 0.72rem; line-height: 1.45; color: var(--color-grigio-300, #cfcfcf); font-weight: 400; letter-spacing: 0; text-transform: none; }
