@@ -107,6 +107,7 @@ ClientRouter SPA navigation (`window.__edfNavigate`), not a full reload.
 
 ## Quality Bar
 - WCAG 2.2 AA, Lighthouse ≥ 95. **Auto‑responsive mobile → desktop → giant TV** (deck handles safe‑area + scroll); `prefers-reduced-motion` respected.
+- **Legibility is a hard requirement, not just audit‑pass** — every deck slide must follow the **Type & legibility contract** (see Deck visual contract): generous type (body ≥ 0.95rem), readable ink, balanced composition, verified by *reading a 1920 screenshot*, not only by `audit:deck`.
 - Real copy (EN/IT where the experience is bilingual). Adobe revealed progressively; co‑brand discreet.
 - **No wrong‑brand imagery**: Pexels stock has no client cars/logos; NEVER show a non‑client car (e.g. a competitor F1 car) or foreign logo. Use abstract/atmospheric imagery (carbon, asphalt, floodlight bokeh, crowd, podium, telemetry). If official client assets are provided, use those.
 - Config‑driven: every page = ordered slides; solutions/media/custom‑slides toggle at runtime.
@@ -162,6 +163,35 @@ Contract details:
 - **Layering:** the base reset MUST be in `@layer base` — an unlayered `*{margin:0}` / `a{color}` beats Tailwind utilities.
 - **Custom‑slide styling:** `.cs-*` classes in `global.css` are shared by the deck injection AND the admin live preview → keep them in sync per experience.
 - **`data-no-text="t,l,w,h"`** (% face/subject zone), **`data-scrim`** behind text‑over‑image.
+
+### Type & legibility contract (BINDING — every slide, every experience, present & future)
+> **`audit:deck` PASS ≠ legible.** The audit only measures text **≥16px** for the band/coverage checks and WCAG contrast — it does NOT enforce generous type or balanced composition. A slide can pass all 12 checks and still be unreadable when projected. These rules are separate, mandatory, and apply to **every** experience going forward. (Learned the hard way on Trenitalia: a prior pass shrank body copy to 0.5–0.75rem to satisfy the audit → illegible in the boardroom.)
+
+**Minimum type @1920 projection** (root font ≈18px at these viewports, so 1rem ≈ 18px):
+- Body / description / bullet text: **≥ 0.95rem** (aim ~1rem), `line-height` **≥ 1.5**.
+- List lead‑in (bold) & card/column titles: **≥ 1rem**; entity/product names: **≥ 1.05rem**.
+- Kicker / in‑card eyebrow / status label: **≥ 0.75rem**. Footnotes / source lines: **≥ 0.75rem**.
+
+**Ink (readability, not just contrast):**
+- Body text uses the experience's **readable** secondary ink (grigio/slate‑**200/300** tier), never a faint tier.
+- **No opacity‑dimming of already‑grey inks** for body/notes — `text-[var(--ink-x)]/40|/50`, `/35` reads as invisible on dark. Use a full‑strength readable grey.
+- The audit's contrast parser **cannot read `oklab()` / `color-mix()`** (treats them as white → false PASS on check h). For deck chrome, buttons and tinted cards use **explicit `rgba()`** so contrast is real and measured.
+
+**Composition (balanced fill, not floating):**
+- The content block (eyebrow → title → body/cards) fills the **central ~55–70% of usable height, vertically centred** — never tiny content pinned low with a huge empty top.
+- **Use the width**: containers up to **~72rem** (`max-w-6xl/7xl`) so type can grow without adding height. **≤ 2 columns** for comparative/dense content; card padding **≥ 1.25rem**.
+- For "inventory/status" slides, **stacked full‑width rows** (category label left · item card(s) right) read better than cramped multi‑column grids.
+
+**When generous type doesn't fit the height bound → in priority order:**
+1. **Cut copy** — tighten to essentials, meaning preserved.
+2. **Split the slide** into two (register the new `<Slide id>` in the experience's admin `PAGE_REGISTRY`, keep nav flow).
+3. **NEVER** shrink type below the minimums above.
+
+**Mandatory verification (BOTH, in this order — the audit alone is insufficient):**
+1. `pnpm --filter <app> audit:deck` against a **static PREVIEW** (dev server's HMR keeps a socket open → the audit's `waitUntil:'networkidle'` hangs). Loop: `build` → `preview --port N` → `DECK_URL=http://localhost:N pnpm --filter <app> audit:deck`. Target **0 failures**.
+2. **Screenshot every changed slide at 1920 and READ it** (Playwright against the preview, or the playwright MCP). Confirm generous type + balanced fill with your eyes — the audit will not catch small/faint type.
+
+**Cross‑section navigation (UX parity — uniform on all decks):** every deck page sets **both** `nextHref` and `prevHref` on `<DeckContainer>` (forward past the last slide → next section; back before the first slide → previous section's last slide). The solution‑gating runtime rewrites **both** `data-deck-next` and `data-deck-prev-href` to skip disabled sections (`nextEnabledAfter()` / `prevEnabledBefore()`). All four decks comply; new experiences MUST too.
 
 ### Aesthetic per experience
 - **Max Mara** quiet‑luxury: cammello `#C19A6B` / avorio / testa‑di‑moro; Cormorant Garamond + Inter.
