@@ -13,12 +13,11 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const fontiDati = [
-  { label: 'Adobe Analytics #1',   icon: '📊', desc: 'Homepage · navigazione sito istituzionale' },
-  { label: 'Adobe Analytics #2',   icon: '📊', desc: 'Funnel acquisto Frecce · comportamento booking' },
+  { label: 'Adobe Analytics ×2',    icon: '📊', desc: 'Sito istituzionale + funnel acquisto Frecce' },
   { label: 'App Trenitalia',        icon: '📱', desc: 'Streaming events · notifiche · uso in-app' },
-  { label: 'Oracle Responsys',      icon: '📧', desc: 'Risposta email · open rate · campagne CRM' },
-  { label: 'Salesforce Data Cloud', icon: '☁️', desc: 'Profili CRM · storico clienti · Data Cloud' },
-  { label: 'FS Park',               icon: '🅿️', desc: 'Prenotazioni parcheggio · accessi hub · segnali mobilità' },
+  { label: 'Oracle Responsys',      icon: '📧', desc: 'Open rate · risposta email · campagne CRM' },
+  { label: 'Salesforce Data Cloud', icon: '☁️', desc: 'Profili CRM · storico clienti' },
+  { label: 'FS Park',               icon: '🅿️', desc: 'Parcheggio · accessi hub · segnali mobilità' },
 ];
 
 const fasiFase1 = [
@@ -62,99 +61,104 @@ const fasiFase1 = [
         imageClass="opacity-10"
         scrim="bg-[var(--surface-primary)]/92"
       />
-      <!-- Prose (left) + diagram (right), side by side to keep the block short -->
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-[0.82fr_1.18fr] gap-8 items-center">
-        <div class="text-left">
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>
-            COME FUNZIONA
-          </p>
-          <h2
-            class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-            style="font-size: clamp(1.6rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-            data-reveal
-            data-reveal-delay="0.08"
-          >
-            Tutte le fonti. Un'unica vista. Zero disruption.
-          </h2>
-          <p
-            class="text-[var(--ink-secondary)] leading-snug"
-            style="font-size: clamp(0.85rem, 1.05vw, 1rem);"
-            data-reveal
-            data-reveal-delay="0.14"
-          >
-            CJA ingerisce dati da ogni touchpoint via Adobe Experience Platform — connettori nativi
-            per Oracle Responsys, Salesforce Data Cloud e gli Analytics esistenti. I dati non si
-            spostano mai verso sistemi esterni: rimangono in AEP, sotto governance GDPR.
-          </p>
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        COME FUNZIONA · CONNETTORI NATIVI, DATI SEMPRE IN AEP
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Tutte le fonti. Un'unica vista. Zero disruption.
+      </h2>
+
+      <div
+        class="w-full max-w-6xl mx-auto grid grid-cols-[1fr_64px_1.15fr] gap-4 items-center"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        <!-- Fonti dati -->
+        <div class="flex flex-col gap-1.5">
+          {fontiDati.map((f) => (
+            <div class="flex items-center gap-3 px-3.5 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+              <span class="text-lg flex-shrink-0" aria-hidden="true">{f.icon}</span>
+              <div class="min-w-0 flex-1 text-left">
+                <p class="text-[0.92rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
+                <p class="text-[0.78rem] text-[var(--color-grigio-300)] leading-tight">{f.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div
-          class="w-full grid grid-cols-[0.92fr_52px_1.28fr] gap-3 items-center"
-          data-reveal
-          data-reveal-delay="0.2"
-        >
-          <!-- Fonti dati -->
-          <div class="flex flex-col gap-1.5">
-            {fontiDati.map((f) => (
-              <div class="flex items-center gap-2.5 px-2.5 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-sm text-[var(--ink-secondary)] text-left">
-                <span class="text-base flex-shrink-0" aria-hidden="true">{f.icon}</span>
-                <div class="min-w-0 flex-1 text-left">
-                  <p class="text-[0.72rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
-                  <p class="text-[0.6rem] text-[var(--ink-tertiary)] leading-tight">{f.desc}</p>
-                </div>
-              </div>
-            ))}
+        <!-- CJA hub -->
+        <div class="flex flex-col items-center gap-2 h-full">
+          <div class="w-px flex-1 bg-gradient-to-b from-transparent to-[var(--accent-primary)]" aria-hidden="true"/>
+          <div class="w-14 h-14 rounded-full bg-[var(--accent-primary)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[var(--accent-primary)]/30">
+            <span class="text-[0.72rem] font-bold text-white text-center leading-tight uppercase tracking-wider">CJA</span>
           </div>
+          <div class="w-px flex-1 bg-gradient-to-b from-[var(--accent-primary)] to-transparent" aria-hidden="true"/>
+        </div>
 
-          <!-- CJA hub -->
-          <div class="flex flex-col items-center gap-2 h-full">
-            <div class="w-px flex-1 bg-gradient-to-b from-transparent to-[var(--accent-primary)]" aria-hidden="true"/>
-            <div class="w-12 h-12 rounded-full bg-[var(--accent-primary)] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[var(--accent-primary)]/30">
-              <span class="text-[0.5rem] font-bold text-white text-center leading-tight uppercase tracking-wider">CJA</span>
+        <!-- Output: journey unificato -->
+        <div class="px-5 py-4 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm h-full flex flex-col justify-center">
+          <p class="text-[0.8rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-3">
+            Vista Unificata del Journey
+          </p>
+          {[
+            { label: 'Identità stitched', value: 'Davide Ferretti · CartaFreccia 4892-XX' },
+            { label: 'Touchpoint risolti', value: '6 sistemi → 1 profilo journey' },
+            { label: 'Journey completezza', value: 'Ricerca → Booking → App → Parcheggio' },
+            { label: 'Cross-sell signal', value: 'Parcheggio ricorrente + abbonamento in scadenza' },
+          ].map((a) => (
+            <div class="mb-3 last:mb-0">
+              <span class="block text-[0.7rem] text-[var(--color-grigio-300)] uppercase tracking-wide leading-tight mb-0.5">{a.label}</span>
+              <span class="block text-[0.95rem] text-[var(--ink-primary)] leading-tight">{a.value}</span>
             </div>
-            <div class="w-px flex-1 bg-gradient-to-b from-[var(--accent-primary)] to-transparent" aria-hidden="true"/>
-          </div>
-
-          <!-- Output: journey unificato -->
-          <div class="px-4 py-3 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm h-full flex flex-col justify-center">
-            <p class="text-[0.72rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-2.5">
-              Vista Unificata del Journey
-            </p>
-            {[
-              { label: 'Identità stitched', value: 'Davide Ferretti · CartaFreccia 4892-XX · app_user_9812' },
-              { label: 'Touchpoint risolti', value: '6 sistemi → 1 profilo journey' },
-              { label: 'Journey completezza', value: 'Ricerca sito → Booking → App → Parcheggio → Post-viaggio' },
-              { label: 'Content performance', value: 'Quale contenuto AEM guida la conversione' },
-              { label: 'Cross-sell signal', value: 'Parcheggio ricorrente + abbonamento in scadenza → opportunità' },
-            ].map((a) => (
-              <div class="mb-2 last:mb-0">
-                <span class="block text-[0.58rem] text-[var(--ink-tertiary)] uppercase tracking-wide leading-tight mb-0.5">{a.label}</span>
-                <span class="block text-base text-[var(--ink-primary)] leading-tight">{a.value}</span>
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
+    </Slide>
 
-      <!-- CJA ≠ CDP — disambiguazione proattiva -->
-      <div class="mt-3 w-full max-w-6xl mx-auto px-3 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] border-l-2 border-l-[var(--accent-secondary)] rounded-sm" data-reveal data-reveal-delay="0.3">
-        <div class="grid md:grid-cols-2 gap-x-6 gap-y-1">
-          <div class="text-left">
-            <p class="text-[0.55rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-0.5">CJA È · Analytics</p>
-            <ul class="space-y-0 text-[0.62rem] text-[var(--ink-secondary)] leading-tight">
-              <li class="flex gap-1.5"><span class="text-emerald-400 flex-shrink-0">✓</span>Legge e analizza il journey cross-sistema</li>
-              <li class="flex gap-1.5"><span class="text-emerald-400 flex-shrink-0">✓</span>Connette segnali da fonti diverse in un'unica timeline</li>
-              <li class="flex gap-1.5"><span class="text-emerald-400 flex-shrink-0">✓</span>Produce insight, segmenti, attribution</li>
-            </ul>
-          </div>
-          <div class="text-left">
-            <p class="text-[0.55rem] font-bold tracking-widest uppercase text-[var(--ink-tertiary)] mb-0.5">CJA NON È · non sostituisce una CDP</p>
-            <ul class="space-y-0 text-[0.62rem] text-[var(--ink-secondary)] leading-tight">
-              <li class="flex gap-1.5"><span class="text-[var(--accent-primary)] flex-shrink-0">✗</span>Non raccoglie profili operativi real-time (quello è RTCDP)</li>
-              <li class="flex gap-1.5"><span class="text-[var(--accent-primary)] flex-shrink-0">✗</span>Non invia campagne né messaggi (quello è AJO + Responsys)</li>
-              <li class="flex gap-1.5"><span class="text-[var(--accent-primary)] flex-shrink-0">✗</span>Non sostituisce Oracle Responsys né Salesforce CRM</li>
-            </ul>
-          </div>
+    <!-- ── SLIDE 1b: CJA è / non è — disambiguazione ─────────────── -->
+    <Slide id="slide-cja-vs-cdp" bg="secondary" align="center" data-solution="cja">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
+        DISAMBIGUAZIONE · CJA ≠ CDP
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Cosa fa CJA — e cosa no.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
+        data-reveal
+        data-reveal-delay="0.12"
+      >
+        Chiarire il perimetro evita mesi di equivoci: CJA è il layer di analytics del journey,
+        non la CDP operativa. Sono complementari.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
+        <div class="px-6 py-6 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-emerald-400 rounded-sm text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-4">CJA È · Analytics</p>
+          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Legge e analizza il journey cross-sistema</li>
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Connette segnali da fonti diverse in un'unica timeline</li>
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Produce insight, segmenti e attribution</li>
+          </ul>
+        </div>
+        <div class="px-6 py-6 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-[var(--accent-primary)] rounded-sm text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-4">CJA NON È · non sostituisce una CDP</p>
+          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non raccoglie profili operativi real-time (è RTCDP)</li>
+            <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non invia campagne né messaggi (è AJO + Responsys)</li>
+            <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non sostituisce Oracle Responsys né Salesforce CRM</li>
+          </ul>
         </div>
       </div>
     </Slide>
@@ -196,14 +200,14 @@ const fasiFase1 = [
               { metric: '360°', label: 'vista del journey cliente', sub: 'dal primo click all\'uscita dal parcheggio' },
               { metric: '< 1h', label: 'time-to-insight', sub: 'query su miliardi di eventi in tempo reale' },
             ].map((m) => (
-              <div class="text-center px-3 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
-                <p class="data-number text-[var(--accent-primary)] mb-1">{m.metric}</p>
-                <p class="text-xs font-medium text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5">{m.label}</p>
-                <p class="text-[0.65rem] text-[var(--ink-tertiary)]">{m.sub}</p>
+              <div class="text-center px-3 py-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+                <p class="data-number text-[var(--accent-primary)] mb-1.5">{m.metric}</p>
+                <p class="text-[0.9rem] font-medium text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1 leading-snug">{m.label}</p>
+                <p class="text-[0.78rem] text-[var(--color-grigio-300)] leading-snug">{m.sub}</p>
               </div>
             ))}
           </div>
-          <p class="text-center text-[0.62rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+          <p class="text-center text-[0.72rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
             Fonte: Adobe Customer Journey Analytics · benchmark Adobe 2024
           </p>
         </div>
@@ -315,20 +319,20 @@ const fasiFase1 = [
                 <div class="w-px flex-1" style={`background: ${f.colore}; opacity: 0.25;`} aria-hidden="true"/>
               </div>
               <div class="flex-1 min-w-0 text-left">
-                <div class="flex items-center gap-3 mb-1 flex-wrap">
-                  <span class="text-[0.6rem] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm" style={`color: ${f.colore}; background: color-mix(in srgb, ${f.colore} 12%, transparent);`}>
+                <div class="flex items-center gap-3 mb-1.5 flex-wrap">
+                  <span class="text-[0.72rem] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm" style={`color: ${f.colore}; background: color-mix(in srgb, ${f.colore} 14%, transparent);`}>
                     {f.fase}
                   </span>
-                  <p class="text-base font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{f.label}</p>
+                  <p class="text-[1.05rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{f.label}</p>
                 </div>
-                <p class="text-[0.82rem] text-[var(--ink-secondary)] leading-snug">{f.desc}</p>
+                <p class="text-[0.9rem] text-[var(--color-grigio-200)] leading-snug">{f.desc}</p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <p class="mt-3 text-center text-[0.6rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.3">
+      <p class="mt-4 text-center text-[0.72rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.3">
         Ipotesi di percorso per discussione — tempistiche da definire con FS Technology
       </p>
 
