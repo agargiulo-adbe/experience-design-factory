@@ -21,8 +21,8 @@ const useCases = [
     scenario: 'Davide ha un abbonamento mensile Frecce Milano–Roma. Negli ultimi 14 giorni ha ridotto i viaggi del 40%. CJA rileva l\'anomalia comportamentale 18 giorni prima della scadenza — molto prima che Oracle Responsys invii la classica email di rinnovo.',
     segnale: 'Frequenza viaggi –40% in 14 gg + apertura email CartaFreccia caduta a 12% (vs 35% media)',
     azione: 'Oracle Responsys invia un\'offerta di rinnovo personalizzata — non generica. AJO orchestra il canale ottimale (push app se mobile, email se desktop) nel momento di maggiore propensione all\'acquisto.',
-    impatto: '+22% rinnovo abbonamenti su early trigger vs campagne batch',
-    recap: 'Viaggi –40% in 14 giorni: CJA coglie l\'anomalia 18 giorni prima della scadenza. Responsys e AJO attivano il rinnovo al momento giusto.',
+    impatto: '+22% rinnovi su early trigger',
+    recap: 'Viaggi –40% in 14 giorni: CJA coglie l\'anomalia 18 giorni prima della scadenza. Responsys e AJO attivano il rinnovo puntuale.',
     colore: 'var(--accent-primary)',
   },
   {
@@ -33,7 +33,7 @@ const useCases = [
     scenario: 'Davide prenota un Frecciarossa e, 3 ore dopo, CJA rileva che ha cercato "parcheggio Milano Centrale" su trenitalia.com senza convertire. FS Park e Trenitalia non comunicano: Davide va su un\'app terza e paga parcheggio concorrente.',
     segnale: 'Ricerca parcheggio post-booking + 0 conversioni su FS Park nel 90-day window',
     azione: 'Data Collaboration clean room: FS Park riceve il segnale di interesse senza mai vedere l\'identità di Davide. Campagna mirata: offerta parcheggio+biglietto bundled in-app, 20% sconto primo utilizzo.',
-    impatto: '€ 8–15 di ricavo accessorio per viaggio · GDPR-compliant',
+    impatto: '€ 8–15 di ricavo accessorio/viaggio',
     recap: 'Cerca parcheggio dopo il booking, ma FS Park e Trenitalia non si parlano. Clean room Data Collaboration: bundle parcheggio + biglietto.',
     colore: 'var(--accent-secondary)',
   },
@@ -45,7 +45,7 @@ const useCases = [
     scenario: 'Elena prenota sempre in business class, 3 volte al mese. Non ha un abbonamento, non ha CartaFreccia. CJA classifica Elena come "cliente ad alto LTV latente" basandosi su frequenza × ticket medio × canale — ma nessun sistema la conosce come tale.',
     segnale: 'Frequenza ≥ 3 viaggi/mese × ticket medio >€80 × 0 loyalty card registrata',
     azione: 'Campagna di onboarding CartaFreccia personalizzata: "Ti viaggi regolarmente — i tuoi punti non stanno aspettando." Offerta: accumulo punti retroattivo sugli ultimi 3 acquisti.',
-    impatto: 'Clienti alto-valore oggi non tracciati diventano loyalty member',
+    impatto: 'Clienti alto-valore diventano loyalty member',
     recap: 'Business 3×/mese senza loyalty card: CJA la legge come "alto LTV latente". Onboarding CartaFreccia con accumulo retroattivo.',
     colore: 'var(--color-grigio-300)',
   },
@@ -91,14 +91,14 @@ const useCases = [
       </p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
       >
         Dati che non si parlano. Revenue sul tavolo.
       </h2>
       <p
-        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-8"
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
         style="font-size: clamp(0.95rem, 1.15vw, 1.1rem);"
         data-reveal
         data-reveal-delay="0.13"
@@ -135,18 +135,18 @@ const useCases = [
             gap: 'Campagne a calendario, non contestuali. Disiscrizioni alte.',
           },
         ].map((item) => (
-          <div class="px-5 py-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-2.5">
+          <div class="px-5 py-3.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-2">
             <div class="flex items-center gap-2.5">
-              <span class="text-xl" aria-hidden="true">{item.icon}</span>
-              <p class="text-[1.15rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{item.brand}</p>
+              <span class="text-2xl" aria-hidden="true">{item.icon}</span>
+              <p class="text-[1.25rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{item.brand}</p>
             </div>
-            <p class="text-[0.9rem] text-[var(--color-grigio-200)] leading-snug">
-              <span class="font-bold tracking-wider uppercase text-emerald-400 text-[0.72rem]">SA · </span>{item.sa}
+            <p class="text-[0.98rem] text-[var(--color-grigio-200)] leading-snug">
+              <span class="font-bold tracking-wider uppercase text-emerald-400 text-[0.76rem]">SA · </span>{item.sa}
             </p>
-            <p class="text-[0.9rem] text-[var(--color-grigio-200)] leading-snug">
-              <span class="font-bold tracking-wider uppercase text-[var(--accent-primary)] text-[0.72rem]">NON SA · </span>{item.nonSa}
+            <p class="text-[0.98rem] text-[var(--color-grigio-200)] leading-snug">
+              <span class="font-bold tracking-wider uppercase text-[var(--accent-primary)] text-[0.76rem]">NON SA · </span>{item.nonSa}
             </p>
-            <p class="text-[0.85rem] text-[var(--color-grigio-300)] italic leading-snug pt-2.5 mt-auto border-t border-[var(--line-subtle)]">{item.gap}</p>
+            <p class="text-[0.92rem] text-[var(--color-grigio-300)] italic leading-snug pt-3 mt-auto border-t border-[var(--line-subtle)]">{item.gap}</p>
           </div>
         ))}
       </div>
@@ -186,7 +186,7 @@ const useCases = [
       </p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.7vw, 2.2rem); line-height: 1.05;"
+        style="font-size: clamp(1.55rem, 2.5vw, 2rem); line-height: 1.05;"
         data-reveal
         data-reveal-delay="0.08"
       >
@@ -194,25 +194,22 @@ const useCases = [
       </h2>
 
       <div
-        class="w-full max-w-6xl mx-auto flex flex-col gap-1.5"
+        class="w-full max-w-6xl mx-auto flex flex-col gap-2.5"
         data-reveal
         data-reveal-delay="0.18"
       >
         {useCases.map((uc) => (
-          <div class="px-5 py-1.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-md text-left" style={`border-left: 3px solid ${uc.colore};`}>
-            <div class="flex items-center gap-6">
-              <div class="flex-shrink-0 w-[14rem]">
-                <p class="text-[0.72rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
-                <h3 class="text-[1.02rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{uc.title}</h3>
+          <div class="px-6 py-2 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-md text-left" style={`border-left: 4px solid ${uc.colore};`}>
+            <div class="flex items-center gap-8">
+              <div class="flex-shrink-0 w-[16rem]">
+                <p class="text-[0.76rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
+                <h3 class="text-[1.15rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{uc.title}</h3>
               </div>
-              <div class="flex-1 grid md:grid-cols-[2.1fr_1fr] gap-x-7 gap-y-1 items-start">
+              <div class="flex-1 grid md:grid-cols-[2.2fr_1fr] gap-x-8 items-center">
+                <p class="text-[0.98rem] leading-snug text-[var(--color-grigio-200)]">{uc.recap}</p>
                 <div>
-                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Scenario &amp; azione Adobe</p>
-                  <p class="text-[0.86rem] leading-snug text-[var(--color-grigio-200)]">{uc.recap}</p>
-                </div>
-                <div>
-                  <p class="text-[0.7rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Impatto atteso</p>
-                  <p class="text-[0.9rem] leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
+                  <p class="text-[0.74rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">Impatto</p>
+                  <p class="text-[1rem] leading-snug font-semibold text-[var(--ink-primary)]">{uc.impatto}</p>
                 </div>
               </div>
             </div>
@@ -273,9 +270,9 @@ const useCases = [
                 <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)] flex items-center justify-center text-xs font-bold font-[family-name:var(--font-display)]">
                   {s.step}
                 </span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[1.05rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5 leading-tight">{s.label}</p>
-                  <p class="text-[0.85rem] text-[var(--color-grigio-300)] leading-snug">{s.desc}</p>
+                <div class="flex-1 min-w-0 border-l border-[var(--line-subtle)] pl-3.5">
+                  <p class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5 leading-tight">{s.label}</p>
+                  <p class="text-[0.96rem] text-[var(--color-grigio-200)] leading-snug">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -299,7 +296,7 @@ const useCases = [
         Un'unica piattaforma governata. Un solo perimetro.
       </h2>
       <p
-        class="text-center text-[var(--ink-secondary)] leading-snug max-w-4xl mx-auto mb-5"
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-4xl mx-auto mb-4"
         style="font-size: clamp(0.92rem, 1.05vw, 1rem);"
         data-reveal
         data-reveal-delay="0.14"
@@ -309,7 +306,7 @@ const useCases = [
       </p>
 
       <div
-        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"
+        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-3"
         data-reveal
         data-reveal-delay="0.2"
       >
@@ -320,8 +317,8 @@ const useCases = [
           { icon: '🔒', label: 'Pseudonimizzazione', desc: 'Identità su hash — mai PII in chiaro fuori perimetro.' },
         ].map((p) => (
           <div class="px-4 py-3 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-1">
-            <p class="text-[1rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{p.label}</p>
-            <p class="text-[0.85rem] text-[var(--color-grigio-300)] leading-snug">{p.desc}</p>
+            <p class="text-[1.05rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{p.label}</p>
+            <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug">{p.desc}</p>
           </div>
         ))}
       </div>
@@ -355,15 +352,15 @@ const useCases = [
         IL VALORE COMPLESSIVO
       </p>
       <h2
-        class="font-[family-name:var(--font-display)] text-[var(--color-ghiaccio)] mb-6"
-        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        class="font-[family-name:var(--font-display)] text-[var(--color-ghiaccio)] mb-4"
+        style="font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
       >
         Ogni viaggio. Ogni parcheggio. Una relazione.
       </h2>
       <p
-        class="text-[var(--color-ghiaccio)]/85 leading-snug max-w-2xl mx-auto mb-6"
+        class="text-[var(--color-ghiaccio)]/85 leading-snug max-w-2xl mx-auto mb-4"
         style="font-size: clamp(0.92rem, 1.1vw, 1.05rem);"
         data-reveal
         data-reveal-delay="0.15"
@@ -373,7 +370,7 @@ const useCases = [
       </p>
 
       <div
-        class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"
+        class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"
         data-reveal
         data-reveal-delay="0.22"
       >
@@ -383,15 +380,15 @@ const useCases = [
           { value: '€12–18', label: 'Revenue accessorio/viaggio (stima)', sub: 'Bundle parcheggio + servizi correlati' },
           { value: '100%', label: 'GDPR-compliant', sub: 'Zero PII condivisi tra FS Park e Trenitalia' },
         ].map((m) => (
-          <div class="text-center px-3 py-4 bg-[var(--color-ghiaccio)]/10 border border-[var(--color-ghiaccio)]/20 rounded-sm">
+          <div class="text-center px-3 py-3 bg-[var(--color-ghiaccio)]/10 border border-[var(--color-ghiaccio)]/20 rounded-sm">
             <p
-              class="font-[family-name:var(--font-display)] font-bold text-[var(--color-ghiaccio)] leading-none mb-2"
-              style="font-size: clamp(1.8rem, 2.8vw, 2.6rem);"
+              class="font-[family-name:var(--font-display)] font-bold text-[var(--color-ghiaccio)] leading-none mb-1.5"
+              style="font-size: clamp(1.8rem, 2.8vw, 2.4rem);"
             >
               {m.value}
             </p>
-            <p class="text-[0.88rem] font-medium text-[var(--color-ghiaccio)]/90 mb-1 leading-snug">{m.label}</p>
-            <p class="text-[0.75rem] text-[var(--color-ghiaccio)]/65 leading-snug">{m.sub}</p>
+            <p class="text-[0.98rem] font-medium text-[var(--color-ghiaccio)]/90 mb-1 leading-snug">{m.label}</p>
+            <p class="text-[0.78rem] text-[var(--color-ghiaccio)]/70 leading-snug">{m.sub}</p>
           </div>
         ))}
       </div>
