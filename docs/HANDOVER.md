@@ -66,7 +66,7 @@ pnpm lint · pnpm typecheck
 pnpm --filter <app> dev|build|preview      # per app: generazioni-maxmara | unicredit-engagement | ferrari-racing | trenitalia-connessioni | console | factory-showcase | factory-hub
 pnpm dev:showcase                          # alias per il solo showcase (root package.json)
 pnpm --filter <app> audit:deck             # gate DOM su 3 viewport (1920/1440/1280) — lanciare contro un PREVIEW statico (vedi §8)
-pnpm --filter @agargiulo-adbe/experience-core test   # 12 test del cost-model scoping (Vitest)
+pnpm --filter @agargiulo-adbe/experience-core test   # 30 test del cost-model/scenario scoping (Vitest)
 pnpm --filter <app> assets:build           # fetch/grade asset Pexels → src/assets/generated/ (+ PEXELS_API_KEY in .env)
 ```
 Nota: **factory-showcase non ha `audit:deck`** (non è un deck) né `assets:build` (asset statici in `public/`).
@@ -83,7 +83,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 |---|---|---|
 | **Trait d'Union (Agos)** | **Nuova** (14 lug 2026): 7 sezioni + home, live pitch per Agos (credito al consumo, gruppo CA/BPM). `audit:deck` 0 su 3 viewport; tutte le slide verificate a 1920. | Vedi §16. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (prospect→cliente). |
 | **Connessioni Intelligenti (Trenitalia/FS)** | **Attivamente rilavorata** (lug 2026): personas rinominate, foto persona rigenerata, **passata di leggibilità completa** (type generoso, ecosistema impilato). `audit:deck` 0. | Vedi §15. Ultimo focus di lavoro. Personas: **Davide** (pendolare) + **Elena** (business) — NON Marco/Sofia (=UniCredit). |
-| **Ferrari Racing** | Stabile + **sezione /scoping** (calcolatore licensing, vedi §14). Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (74→0). | Bilingue EN default. `prevHref` su tutte le pagine. |
+| **Ferrari Racing** | Stabile + **sezione /scoping** (calcolatore licensing **evoluto**: funnel audience, 5 variabili decisionali, breakdown con formule, warnings, preset, export — vedi §14; 30 test). Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (74→0). | Bilingue EN default. `prevHref` su tutte le pagine. |
 | **UniCredit Engagement** | Stabile; modello di contenuto più maturo (5 round feedback). Vedi §5. | `nextHref`+`prevHref` completi (gold standard). |
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
 | **Factory Hub** (root) | **Nuovo** (lug 2026): landing della Factory a `/experience-design-factory/`. | Vedi §15. Stub redirect per i vecchi deep-link maxmara. |
@@ -211,6 +211,7 @@ Dal più recente:
 Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `audit:deck` con confronto baseline via stash; commit + push.
 
 ### Change log — Hub · Parity · Ferrari scoping · Trenitalia (13–14 lug 2026, dal più recente)
+- **Ferrari /scoping — evoluzione motore (DoD-complete)** (14 lug 2026, vedi §14): il calcolatore diventa strumento trasparente/configurabile/auditabile. Nuovo motore con **funnel audience** (distinct→overlap→activated/measured) + 5 variabili decisionali (**overlap/match rate, refresh cadence, managed base, activation mode, measurement model**); **guardrail anti doppio-conteggio** on-demand vs recurring; `computeBreakdown()` con formula+numeri sostituiti per riga + sorgenti CJA con peso% + warnings. `FIELD_AUDIT` esteso (dataType semantico→badge, select+options, `appliesWhen` condizionale, `advancedOnly`, `impacts`). UI: preset chip, strip warnings, breakdown drawer per prodotto, disclosure "Assunzioni avanzate", dot changed-vs-preset, export JSON/CSV, tooltip audit **click-only**. Nuovo sub-componente `ScopingField.astro` (GOTCHA scoping stili → `<style is:global>`). **30 test Vitest** (da 12); README del blocco `packages/core/src/blocks/scoping/README.md`. Backward-compatible (scenari vecchi ereditano i default). Prima (fix separato): tooltip audit resi **click-only** invece che hover.
 - **Trenitalia — 21+ correzioni messaging, struttura & slide nuove** (14 lug 2026, vedi §15.4): round di qualità post-screenshot: `slide-cja-vs-cdp` (convergenza, CJA≠CDP standalone) + `slide-fase1-cja` (roadmap, deep-dive Fase 1 CJA+AEP Governance) aggiunte; IBM/Accenture/Pico rimossi per nome; Oracle Responsys locked come "complementato, non sostituito"; AJO framing locked "sopra Oracle Responsys"; KPI numerici → tutti "stima illustrativa / da validare sul campo"; casi d'uso → "da validare sul campo"; GDPR rationale inline Data Collaboration; breach Trenitalia giu 2026 → driver AEP Governance; 611 email/anno → fonte citata (Google Takeout, 1 account, luglio 2026, solo illustrativa); use-case ristrutturati 4 colonne (Scenario/Segnale CJA/Azione/Impatto). Build 0 errori.
 - **Type & legibility contract** codificato in `CLAUDE.md` (vincolante per tutte le esperienze future) + questo handover aggiornato. Regole: type minimo (body ≥0.95rem), ink leggibile, composizione bilanciata, split-non-shrink, verifica leggendo screenshot 1920, frecce bidirezionali. Vedi §8.
 - **Trenitalia — redesign leggibilità completo** (vedi §15): personas Marco/Sofia → **Davide/Elena** (Marco/Sofia sono di UniCredit); foto persona rigenerata (era duplicata da UniCredit); doppia passata su ogni slide con type generoso; ecosistema **ripristinato impilato** (più leggibile del grid); use-case/roadmap ristrutturati; `audit:deck` **165→0**.
@@ -283,15 +284,45 @@ Hero → **what** → **why** → **proof** → **architecture** → **flow** �
 
 ## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
 
-`apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche.
+`apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche. È uno **strumento** (island interattiva full-bleed), NON una slide-keynote: **esente da `audit:deck`** (`/scoping/` non è nel ROUTE_SET di `scripts/deck-audit.ts`). Doc di riferimento del blocco: **`packages/core/src/blocks/scoping/README.md`** (architettura + come estendere).
 
-- **Motore puro (testato, Vitest)** in `packages/core/src/blocks/scoping/`: `cost-model.ts` (compute), `scenario.ts` (serialize + `?scenario=`), `scenario-store.ts` (Supabase REST + fallback localStorage), + il blocco UI `ScopingCalculator.astro`. 12 test (`pnpm --filter @agargiulo-adbe/experience-core test`). **Vitest è stato aggiunto al repo per questo.**
-- **Dati Ferrari** in `apps/ferrari-racing/src/data/scoping.ts`: `FIELD_AUDIT` (ogni campo ha default **non-zero, con fonte** + tooltip audit SOURCE/CALC/ASSUMPTION), `METRICS` (spiegazione con esempi), 3 scenari seed, `DISCLAIMER`.
-- **Prezzi = input utente** (entrambi i prodotti sono *quote-only*): il costo è null finché non si inseriscono i prezzi (illustrativi, chiaramente etichettati). Formattazione migliaia ovunque; tooltip metrica su ogni voce di licensing.
-- **Persistenza** Supabase `scenarios` (`0004_scenarios.sql`, RLS **private/link/team**, `created_by default auth.uid()`); auth = token `edf:sb-session` come `media_configs`. Condivisione `?scenario=<uuid>`.
-- **Admin**: tab opt-in "Modello di licensing" in `AdminConsole.astro` (`showScopingTab`, default false) per baseline prezzi.
-- **GOTCHA**: la slide del calcolatore **non** deve usare `data-demo-flex` (hook che riserva il 48% destro a un pannello media → spinge il calcolatore fuori viewport); grid/flex children servono `min-width:0`; clic dentro il calcolatore vanno neutralizzati con `data-deck-nochrome` (il deck naviga sul click delle metà slide). Memoria `ferrari-scoping-calculator`.
-- Spec/plan: `docs/superpowers/{specs,plans}/2026-07-13-ferrari-licensing-scoping-calculator*`.
+### 14.1 Architettura (layer separati)
+Tutto in `packages/core/src/blocks/scoping/` salvo i contenuti client:
+- **`cost-model.ts`** — motore puro, deterministico, framework-free (30 test Vitest).
+- **`scenario.ts`** — `DEFAULT_ASSUMPTIONS`, `DEFAULT_PRICES`, preset id/label, serialize/deserialize **forward-compatible** (payload vecchi ereditano i default dei campi nuovi → scenari salvati pre-evoluzione continuano a funzionare).
+- **`scenario-store.ts`** — persistenza localStorage (anon) + Supabase REST.
+- **`ScopingCalculator.astro`** — shell UI + presenter (island TS vanilla).
+- **`ScopingField.astro`** — sub-componente: una riga di input (label + badge semantico + tooltip audit + number/select).
+- **`apps/ferrari-racing/src/data/scoping.ts`** — **contenuti Ferrari**: `FIELD_AUDIT`, `SEED_SCENARIOS` (preset), `METRICS`, `DISCLAIMER`. È l'unico file che la maggior parte delle modifiche tocca.
+
+### 14.2 Modello di calcolo — RTCDP Collaboration
+**Funnel audience** (rate clampati 0–1): `distinct → overlap = distinct × partnerOverlapRate → activated = overlap × activatedOverlapRate` (per run) `→ measured = overlap × measuredOverlapRate`. Base gestita selezionabile: `full | overlap | custom`.
+Parti di credito (modalità *activity*; *direct* usa `directCredits` verbatim):
+- `management = managedAudiences × (managedIDs ÷ 1M) × refresh/anno × creditPerMgmtPerMillionRefresh`
+- `activation = activationRuns × (activated ÷ 1M) × creditPerActivationPerMillion`
+- `measurement = records | reports | hybrid | none` (ciascuno su una base volumetrica diversa)
+- `estimated = management + insights + activation + measurement` · `billable = max(0, estimated − allotment)` (Prime 2.500 / Ultimate 5.000) · `cost = billable × pricePerCredit`.
+- **Guardrail anti doppio-conteggio**: `activationRuns` dipende da `activationMode` — on-demand / recurring **non** vengono sommate salvo modalità `mixed`; se entrambe >0 fuori da mixed, `buildWarnings` emette `activation-double-count`.
+
+### 14.3 Modello di calcolo — CJA
+`rows = Σ(web, app, social, crm, events)` · `ingestionLimit = rows × cjaIngestionMultiplier` (guardrail ufficiale ×3) · `cost = (rows ÷ 1M) × pricePerMillionRows`. Breakdown per-sorgente con **peso %**.
+
+### 14.4 Trasparenza & auditabilità
+`computeBreakdown(assumptions, prices)` restituisce, per ogni riga: **formula simbolica + numeri sostituiti + input usati**, le sorgenti CJA con peso%, e i `warnings`. La UI espone 3 livelli: results bar (summary) → drawer "Show calculation" (breakdown con formule) → tooltip audit per campo. Ogni variabile ha un **dataType semantico** → badge colorato: `official` (verde) · `default-assumption` (grigio) · `customer-assumption` (blu) · `price`/quote-only (giallo). Badge resi con `rgba()` esplicito (il parser di contrasto dell'audit non legge `oklab()`/`color-mix()`).
+
+### 14.5 UX
+Preset chip (Conservativo/Base/Ambizioso/**Custom** = stato modificato) → applicano gli scenari seed; strip **warnings** guardrail; **breakdown drawer** per prodotto; disclosure **"Assunzioni avanzate"** (burn-rate & rate secondari); **visibilità condizionale** dei campi (`appliesWhen`, es. *report/anno* solo se measurement report-based; *volume custom* solo se base gestita = custom; campi *direct* vs *activity*); **dot "changed vs preset"**; export **JSON/CSV**. Tooltip audit **si aprono al click** (non hover, così non coprono il campo), chiudibili con click-fuori/Esc. Prezzi/burn-rate = *quote-only* (input utente, illustrativi): il costo è null finché non prezzati.
+
+### 14.6 Estendere (vedi README del blocco)
+Aggiungere una variabile: campo in `ScopingAssumptions` + default in `DEFAULT_ASSUMPTIONS` → usarla in `collabParts`/`cjaSourceRows` + `LineItem` in `computeBreakdown` → registrarla in `FIELD_AUDIT` (`dataType`, `category`, `appliesWhen`/`advancedOnly`, `source/calc/assumption` bilingui) → test. Select enum: `input:'select'` + `options` (ogni `<select>` è trattato come controllo stringa). Nuova sorgente CJA: estendi `CjaSourceRows['id']` + `cjaSourceRows` + `CJA_SOURCE_FORMULA`/`cjaSourceSubstituted` + `FIELD_AUDIT`. Nuovo warning: push in `buildWarnings`. Localizzazione: tutte le stringhe sono `{en,it}`.
+
+### 14.7 Persistenza & Admin
+Supabase `scenarios` (`0004_scenarios.sql`, RLS **private/link/team**, `created_by default auth.uid()`); auth = token `edf:sb-session` come `media_configs`. Condivisione `?scenario=<uuid>`. Admin: tab opt-in "Modello di licensing" in `AdminConsole.astro` (`showScopingTab`, default false) per baseline prezzi (applicata in `applyScenario` come fallback null).
+
+### 14.8 GOTCHA (dolori appresi)
+- **Astro scoping degli stili**: estraendo il markup dei campi in `ScopingField.astro`, il `<style>` scoped di `ScopingCalculator.astro` **non** matchava più i suoi elementi (tooltip/badge/input renderizzati non stilizzati / tooltip inline sopra il campo). Fix: il blocco `.scoping-*` è ora **`<style is:global>`** (selettori tutti `.scoping-`-prefissati, caricati solo su `/scoping/` → nessun leak).
+- La slide del calcolatore **non** deve usare `data-demo-flex` (riserva il 48% destro a un pannello media → spinge fuori viewport); grid/flex children servono `min-width:0`; clic dentro il calcolatore neutralizzati con `data-deck-nochrome`.
+- Memoria `ferrari-scoping-calculator`. Spec/plan iniziali: `docs/superpowers/{specs,plans}/2026-07-13-ferrari-licensing-scoping-calculator*`.
 
 ---
 
