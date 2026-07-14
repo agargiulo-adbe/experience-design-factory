@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'scenario', label: 'Scenario (01)', slides: [
+    { id: 'slide-cover',       label: 'Cover — Il paradosso dei due mondi' },
+    { id: 'slide-elisa',       label: 'Elisa — profilo persona' },
+    { id: 'slide-due-mondi',   label: 'Due mondi che funzionano. Separatamente.' },
+    { id: 'slide-paradosso',   label: 'Il paradosso + pressione di mercato' },
+    { id: 'slide-opportunity', label: 'L\'opportunità — tre mosse' },
+  ]},
+  { slug: 'fondamenta', label: 'Fondamenta (02)', slides: [
+    { id: 'slide-cover',          label: 'Cover — Le fondamenta ci sono già' },
+    { id: 'slide-stack',          label: 'Lo stack di oggi (Campaign v7, Analytics, log)' },
+    { id: 'slide-trasformazione', label: 'La trasformazione in corso' },
+    { id: 'slide-finestra',       label: 'La finestra 2026 → 2027' },
+    { id: 'slide-choice',         label: 'Non sostituire. Connettere.' },
+  ]},
+  { slug: 'evoluzione', label: 'Evoluzione (03)', slides: [
+    { id: 'slide-cover',                 label: 'Cover — Quello che fate oggi. Meglio.' },
+    { id: 'slide-form-abbandonato',      label: 'Use case 1 — Form abbandonato → journey' },
+    { id: 'slide-use-case-orchestrati',  label: 'Use case 2 — Use case orchestrati' },
+    { id: 'slide-conversione',           label: 'Use case 3 — Il dato di ritorno in piattaforma' },
+    { id: 'slide-experimentation',       label: 'Use case 4 — Experimentation (Target)' },
+    { id: 'slide-genai',                 label: 'Use case 5 — Contenuti GenAI on-brand' },
+  ]},
+  { slug: 'trait-dunion', label: "Trait d'union — CJA (04)", slides: [
+    { id: 'slide-cover',        label: 'Cover — I due mondi, una vista' },
+    { id: 'slide-convergenza',  label: 'Tutte le fonti. Un\'unica timeline.' },
+    { id: 'slide-cja-e-non-e',  label: 'CJA è / non è' },
+    { id: 'slide-demo-cja',     label: 'Demo CJA Workspace — fallout Elisa' },
+    { id: 'slide-overlap',      label: 'L\'overlap, finalmente misurato' },
+    { id: 'slide-governance',   label: 'Data governance — le regole del DPO' },
+  ]},
+  { slug: 'orizzonti', label: 'Orizzonti (05)', slides: [
+    { id: 'slide-cover',         label: 'Cover — Quello che ancora non fate' },
+    { id: 'slide-prequalified',  label: 'Orizzonte 1 — Offerta pre-qualificata' },
+    { id: 'slide-life-nbo',      label: 'Orizzonte 2 — Life events + NBO' },
+    { id: 'slide-collaboration', label: 'Orizzonte 3 — Collaboration coi partner' },
+    { id: 'slide-anonymous',     label: 'Orizzonte 4 — Prospect anonimi + GEO' },
+    { id: 'slide-panorama',      label: 'Panorama — un funnel, dodici possibilità' },
+  ]},
+  { slug: 'valore', label: 'Valore (06)', slides: [
+    { id: 'slide-cover',          label: 'Cover — Misurato alla vostra maniera' },
+    { id: 'slide-metodo',         label: 'Il metodo — ipotesi, test, decisione' },
+    { id: 'slide-kpi',            label: 'Quattro ipotesi di valore' },
+    { id: 'slide-sostenibilita',  label: 'Sostenibilità — nessun big bang' },
+  ]},
+  { slug: 'roadmap', label: 'Roadmap (07)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Il terreno si prepara adesso' },
+    { id: 'slide-3fasi',  label: 'Le tre fasi 2026–2028' },
+    { id: 'slide-fase1',  label: 'Fase 1 deep-dive — senza pesare sull\'IT' },
+    { id: 'slide-fase2',  label: 'Fase 2 deep-dive — migrazione evolutiva' },
+    { id: 'slide-invito', label: 'Invito — i prossimi tre passi' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'cja',
+    name: 'Customer Journey Analytics',
+    shortName: 'CJA',
+    pillar: 'analytics',
+    description: 'Il trait d\'union: log tecnico, Analytics, CRM, call center e filiali in un\'unica vista del journey — overlap e conversione inclusi.',
+    appearsIn: ["Trait d'union — CJA", 'Evoluzione'],
+  },
+  {
+    id: 'ajo',
+    name: 'Adobe Journey Optimizer',
+    shortName: 'AJO',
+    pillar: 'activation',
+    description: 'L\'evoluzione del campaign management: Orchestrated Campaigns per il batch, journey real-time per form abbandonato e trigger, capping e priorità.',
+    appearsIn: ['Evoluzione', 'Roadmap'],
+  },
+  {
+    id: 'target',
+    name: 'Adobe Target',
+    shortName: 'Target',
+    pillar: 'activation',
+    description: 'Experimentation industrializzata: A/B sulle landing per canale, misura riconciliata con il log tecnico.',
+    appearsIn: ['Evoluzione', 'Orizzonti'],
+  },
+  {
+    id: 'genstudio',
+    name: 'GenStudio + AI Assistant',
+    shortName: 'GenStudio',
+    pillar: 'content',
+    description: 'DEM e varianti on-brand generate in minuti, con brand score semantico e vincoli di compliance come knowledge base.',
+    appearsIn: ['Evoluzione'],
+  },
+  {
+    id: 'rtcdp',
+    name: 'Adobe Real-Time CDP',
+    shortName: 'RT-CDP',
+    pillar: 'growth',
+    description: 'Il profilo unificato per l\'open market: offerte pre-qualificate, life-event triggers, next best offer, prospect anonimi.',
+    appearsIn: ['Orizzonti', 'Roadmap'],
+  },
+  {
+    id: 'data-collab',
+    name: 'RT-CDP Collaboration',
+    shortName: 'Collaboration',
+    pillar: 'growth',
+    description: 'Clean room privacy-first con banche partner, dealer e retailer: suppression, audience congiunte e customer match misurabile.',
+    appearsIn: ['Orizzonti'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  analytics:  'Analytics & Intelligence',
+  activation: 'Attivazione & Journey',
+  content:    'Contenuti & GenAI',
+  growth:     'Growth & Partner',
+};
+const PILLAR_ORDER = ['analytics', 'activation', 'content', 'growth'];
+const PILLAR_COLORS: Record<string, string> = {
+  analytics:  '#06ABB8',
+  activation: '#7c3aed',
+  content:    '#F57C00',
+  growth:     '#0d9488',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Trait d'Union · Agos">
+  <AdminConsole
+    projectSlug="agos-trait-dunion"
+    projectName="Trait d'Union"
+    clientLabel="Agos × Adobe"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

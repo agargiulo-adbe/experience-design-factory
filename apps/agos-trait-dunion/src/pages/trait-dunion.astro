@@ -1,0 +1,303 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AgosNavigation from '../components/AgosNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const fonti = [
+  { label: 'Log tecnico',       icon: '🧭', nota: 'La fonte di verità: 100% delle richieste, ogni step del form — ingerito, non aggirato' },
+  { label: 'Adobe Analytics',   icon: '📊', nota: 'Il tracciamento ricco già mappato: pagine, click, funnel — si riusa, non si rifà' },
+  { label: 'CRM',               icon: '☁️', nota: 'Anagrafiche, prodotti, consensi — connettore out-of-the-box, delta ogni 15 minuti' },
+  { label: 'Call center',       icon: '📞', nota: 'Chiamate, esiti, appuntamenti — il canale umano entra nella timeline' },
+  { label: 'Rete filiali',      icon: '🏛️', nota: 'Pratiche caricate e gestite sul territorio — il mondo «mailing» diventa visibile' },
+  { label: 'Venduto',           icon: '✍️', nota: 'Caricata e liquidata per ogni pratica — il metro finale di ogni analisi' },
+];
+
+const eNonE = {
+  e: [
+    'Legge e analizza il journey cross-sistema, online e offline',
+    'Riconcilia le fonti con join deterministiche — qualsiasi chiave comune',
+    'Produce insight, fallout, attribution multi-modello e segmenti',
+  ],
+  nonE: [
+    'Non è una CDP: non gestisce profili operativi real-time',
+    'Non invia campagne né messaggi (quello è il campaign management)',
+    'Non sostituisce CRM né data warehouse: li legge, li rispetta',
+  ],
+};
+---
+<BaseLayout
+  title="Trait d'union — CJA"
+  description="Customer Journey Analytics connette log tecnico, Analytics, CRM, call center e filiali in un'unica vista del journey — overlap e conversione inclusi."
+  pageSolutions={['cja']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AgosNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/orizzonti')}
+    prevHref={href(base, '/evoluzione')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-due-mondi')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <CoverHero
+        eyebrow="04 · Trait d'union"
+        numeral="04"
+        title="I due mondi, una vista"
+        lead="Customer Journey Analytics è il trait d'union: la BI verticale del marketing che unisce log tecnico, Analytics, CRM, call center e filiali sulla stessa timeline — alla velocità del marketing, non dell'IT."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Tutte le fonti, una timeline ──────────────────── -->
+    <Slide id="slide-convergenza" bg="primary" align="center" data-solution="cja">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        CUSTOMER JOURNEY ANALYTICS
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Tutte le fonti. Un'unica timeline.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-3"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Nessun data layer intermedio obbligatorio, nessun re-platform: connettori
+        diretti, SFTP, streaming — e join deterministiche su qualsiasi chiave comune.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-2.5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {fonti.map((f) => (
+          <div class="flex items-start gap-3.5 px-4 py-2 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{f.icon}</span>
+            <div class="min-w-0 flex-1 text-left">
+              <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
+              <p class="text-[0.88rem] text-[var(--color-grigio-300)] mt-0.5 leading-snug">{f.nota}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+        150+ connettori out-of-the-box · schema illustrativo, non descrive l'architettura interna di Agos
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: CJA è / non è ─────────────────────────────────── -->
+    <Slide id="slide-cja-e-non-e" bg="secondary" align="center" data-solution="cja">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
+        PERIMETRO CHIARO, SCELTE SERENE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        CJA è. CJA non è.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-4"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.1rem);"
+        data-reveal
+        data-reveal-delay="0.12"
+      >
+        La domanda «serve una CDP?» merita una risposta onesta: non oggi, non per questo.
+        CJA è il layer di analisi del journey — e si adotta senza aprire il capitolo CDP.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
+        <div class="px-6 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-emerald-400 rounded-sm text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-3">CJA È · Analytics del journey</p>
+          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            {eNonE.e.map((item) => (
+              <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>{item}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="px-6 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-[var(--accent-secondary)] rounded-sm text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-3">CJA NON È · niente equivoci</p>
+          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            {eNonE.nonE.map((item) => (
+              <li class="flex gap-3"><span class="text-[var(--accent-secondary)] flex-shrink-0 mt-px">✗</span>{item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Demo — il journey di Elisa ────────────────────── -->
+    <Slide id="slide-demo-cja" bg="primary" align="center" data-solution="cja">
+      <div data-demo-flex class="w-full flex items-start gap-8">
+        <div class="flex-1 min-w-0 flex flex-col items-center">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>
+            CJA WORKSPACE · FALLOUT ANALYSIS
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.65rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Il viaggio di Elisa,<br/>visto per la prima volta.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-normal max-w-2xl mb-4"
+            style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
+            data-reveal
+            data-reveal-delay="0.14"
+          >
+            Annuncio → simulatore → form abbandonato → DEM di recall → filiale →
+            caricata → liquidata. Un'unica sequenza, con i punti di caduta evidenziati —
+            e da ogni caduta, tasto destro: il segmento è pronto per l'attivazione.
+          </p>
+
+          <div
+            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-3 mb-3"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            {[
+              { metric: '2', label: 'mondi riconciliati', sub: 'digitale e rete fisica sulla stessa timeline' },
+              { metric: '5', label: 'step di funnel misurati', sub: 'dal primo click fino a pratica liquidata' },
+              { metric: 'min', label: 'time-to-insight', sub: 'domande in linguaggio naturale, risposte subito' },
+            ].map((m) => (
+              <div class="text-center px-3 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+                <p class="data-number text-[var(--accent-primary)] mb-1.5">{m.metric}</p>
+                <p class="text-[0.98rem] font-medium text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1 leading-snug">{m.label}</p>
+                <p class="text-[0.82rem] text-[var(--color-grigio-300)] leading-snug">{m.sub}</p>
+              </div>
+            ))}
+          </div>
+          <p class="text-center text-[0.72rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+            Scenario dimostrativo su dati illustrativi · Adobe Customer Journey Analytics
+          </p>
+        </div>
+        <MediaDemoSlot id="cja-fallout-demo" label="CJA Workspace — Fallout del funnel prestito" />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: L'overlap, finalmente misurato ────────────────── -->
+    <Slide id="slide-overlap" bg="primary" align="center" data-solution="cja">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        IL PARADOSSO, RISOLTO
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        L'overlap smette di essere<br/>una sensazione
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
+        style="font-size: clamp(0.98rem, 1.15vw, 1.1rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Quando click e anagrafiche vivono nella stessa vista, le domande rimaste
+        aperte per anni trovano una risposta misurata — in casa vostra, non nella
+        piattaforma di un partner.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.22">
+        {[
+          { q: 'Quanta spesa digitale insegue chi è già cliente?', a: 'Segmenti advertising incrociati con la customer base: l\'overlap diventa un numero, e poi una regola di esclusione.' },
+          { q: 'Quanto vale davvero ogni canale?', a: 'Attribution multi-modello — first, last, algoritmica — che include la rete fisica, non solo l\'online.' },
+          { q: 'Chi convince il digitale e firma in filiale?', a: 'Il percorso di Elisa ricostruito end-to-end: il merito va a chi l\'ha generato, il consulente sa chi sta accogliendo.' },
+          { q: 'Dove cade il funnel, e perché?', a: 'Fallout per step, per canale, per segmento — con l\'AI che indica dove intervenire prima.' },
+        ].map((item) => (
+          <div class="px-5 py-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-[1rem] font-semibold text-[var(--accent-primary)] mb-2 font-[family-name:var(--font-display)] leading-snug">{item.q}</p>
+            <p class="text-[0.93rem] text-[var(--color-grigio-200)] leading-snug">{item.a}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Data governance ───────────────────────────────── -->
+    <Slide id="slide-governance" bg="inverse" align="center" data-solution="cja">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-filiale')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--color-perla)]/93"
+      />
+      <p class="slide-eyebrow text-center text-[var(--color-petrolio)] mb-4" data-reveal>
+        PRIVACY BY DESIGN
+      </p>
+      <h2
+        class="text-[var(--color-abisso)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Le regole del DPO,<br/>rese esecutive dalla piattaforma
+      </h2>
+      <p
+        class="text-[var(--color-grigio-500)] leading-relaxed max-w-3xl mx-auto mb-5"
+        style="font-size: clamp(1rem, 1.2vw, 1.15rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        In un settore regolato la governance non è un freno: è il requisito che decide
+        cosa si può fare. La data governance nativa trasforma le policy in etichette
+        e regole applicate dal sistema — non affidate alla memoria delle persone.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.22">
+        {[
+          { title: 'Etichette sul dato', desc: 'Ogni campo porta con sé finalità e restrizioni d\'uso: l\'analisi resta possibile, l\'attivazione rispetta il consenso.' },
+          { title: 'Consenso applicato all\'export', desc: 'Un segmento si analizza per intero — ma chi non ha il consenso commerciale non esce mai verso i canali.' },
+          { title: 'Finestre e regole di contatto', desc: 'I vincoli sul ricontatto diventano regole di journey: applicate sempre, documentabili sempre.' },
+        ].map((g) => (
+          <div class="px-5 py-4 border border-[var(--color-grigio-200)] rounded-sm text-left" style="background:#FFFFFF;">
+            <p class="text-[1.02rem] font-semibold text-[var(--color-petrolio)] mb-2 font-[family-name:var(--font-display)]">{g.title}</p>
+            <p class="text-[0.92rem] text-[var(--color-grigio-500)] leading-snug">{g.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-4" data-reveal data-reveal-delay="0.32">
+        <a
+          href={href(base, '/orizzonti')}
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-abisso)] text-[var(--color-perla)] hover:bg-[var(--color-lavagna)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          I nuovi orizzonti
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

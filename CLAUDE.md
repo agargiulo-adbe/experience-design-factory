@@ -16,6 +16,7 @@ Experiences today:
 - **Engagement Unlimited** — UniCredit (IT, 11 sections).
 - **Pole Position** — Ferrari Racing × Adobe (EN/IT bilingual, motorsport, 7 sections).
 - **Connessioni Intelligenti** — FS Group (IT, 6 sezioni + casi d'uso).
+- **Trait d'Union** — Agos (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
 
 Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, and the shareable **intake skill** `skills/experience-brief/`. Full detail in `docs/HANDOVER.md` §13.
 
@@ -24,13 +25,13 @@ wrong‑brand imagery** (see Quality Bar).
 
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
-- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `console`, `factory-showcase`, `factory-hub`)
+- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `console`, `factory-showcase`, `factory-hub`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports)
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
 ## Apps & structure
 - `packages/core` — shared engine (`@agargiulo-adbe/experience-core`, alias `@edf/core`): experience blocks, the **immersive deck** (`blocks/immersive/*`), the **shared Admin Console** (`blocks/admin/AdminConsole.astro`), **i18n** (`blocks/i18n/T.astro` + `LangToggle.astro`), design‑token contract, motion.
-- `apps/generazioni-maxmara` · `apps/unicredit-engagement` · `apps/ferrari-racing` · `apps/trenitalia-connessioni` — client experiences (Astro static, per‑app `global.css` tokens + `assets.manifest.ts` + `BaseLayout.astro` + `/admin/` wrapper).
+- `apps/generazioni-maxmara` · `apps/unicredit-engagement` · `apps/ferrari-racing` · `apps/trenitalia-connessioni` · `apps/agos-trait-dunion` — client experiences (Astro static, per‑app `global.css` tokens + `assets.manifest.ts` + `BaseLayout.astro` + `/admin/` wrapper).
 - `apps/factory-hub` — the site **root/landing hub** (`/experience-design-factory/`). Minimal standalone Astro app (no tailwind, no `@edf/core`; own dark‑neutral scoped styles) linking directly to each experience + showcase + console. Also serves redirect stubs for the old root‑level maxmara deep links.
 - `apps/console` — **Super Admin Console** (auth, users, experiences registry).
 - `apps/factory-showcase` — internal **scroll‑site** showcasing the Factory (NOT a deck; no `audit:deck`). Reuses only `@edf/core` i18n (`T`/`LangToggle`) + `href`; own Adobe‑red `global.css`. See `docs/HANDOVER.md` §13.
@@ -38,7 +39,7 @@ wrong‑brand imagery** (see Quality Bar).
 
 ## Deployment
 - Public repo `agargiulo-adbe/experience-design-factory`; GitHub Pages source = **GitHub Actions** (`.github/workflows/deploy.yml`, Node 22).
-- Build merges every app's `dist` into one artifact: root = **factory-hub** (the Factory landing/hub); `/generazioni-maxmara/`, `/unicredit-engagement/`, `/ferrari-racing/`, `/trenitalia-connessioni/`, `/console/`, `/showcase/`. Each app: Astro `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`. Max Mara moved from root to `/generazioni-maxmara/`; the hub ships redirect stubs for the old root-level maxmara deep links (`/acquisizione/`, `/engagement/`, `/conversione/`, `/loyalty/`, `/motore-adobe/`, `/persona/`, `/chiusura/`, `/maxmara-adobe/`).
+- Build merges every app's `dist` into one artifact: root = **factory-hub** (the Factory landing/hub); `/generazioni-maxmara/`, `/unicredit-engagement/`, `/ferrari-racing/`, `/trenitalia-connessioni/`, `/agos-trait-dunion/`, `/console/`, `/showcase/`. Each app: Astro `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`. Max Mara moved from root to `/generazioni-maxmara/`; the hub ships redirect stubs for the old root-level maxmara deep links (`/acquisizione/`, `/engagement/`, `/conversione/`, `/loyalty/`, `/motore-adobe/`, `/persona/`, `/chiusura/`, `/maxmara-adobe/`).
 - Live e.g. `https://agargiulo-adbe.github.io/experience-design-factory/ferrari-racing/`.
 - Push to `main` auto‑deploys. The **deploy job retries** on transient GitHub Pages `syncing_files` failures (backend can be flaky) and skips stale commits.
 - Build env: `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` from **GitHub Actions secrets** (never in repo).
@@ -197,3 +198,4 @@ Contract details:
 - **Max Mara** quiet‑luxury: cammello `#C19A6B` / avorio / testa‑di‑moro; Cormorant Garamond + Inter.
 - **UniCredit**: rosso `#BE2027` / crema / blu notte; Playfair Display + Inter.
 - **Ferrari Racing**: Rosso Corsa `#FF2800` / carbonio `#0B0B0D` / giallo Modena `#FFF200`; Archivo + Inter; dark‑dominant, motorsport. Terms: Cavallino Rampante, Rosso Corsa, Maranello, Tifosi, Scuderia Ferrari HP.
+- **Agos (Trait d'Union)**: petrolio `#05636B` / acqua `#06ABB8` / arancio `#F57C00` (palette reale da agos.it — NON blu+rosso); Montserrat + Inter; dark‑dominant finance. Vocabolario cliente: pratica, caricata/liquidata, "mailing" (=rete fisica), log tecnico, use case, lead light.

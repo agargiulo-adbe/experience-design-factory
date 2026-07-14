@@ -65,6 +65,16 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'roadmap',     route: '/experience-design-factory/trenitalia-connessioni/roadmap/' },
     { name: 'casi-duso',   route: '/experience-design-factory/trenitalia-connessioni/casi-duso/' },
   ],
+  agos: [
+    { name: 'home',         route: '/experience-design-factory/agos-trait-dunion/' },
+    { name: 'scenario',     route: '/experience-design-factory/agos-trait-dunion/scenario/' },
+    { name: 'fondamenta',   route: '/experience-design-factory/agos-trait-dunion/fondamenta/' },
+    { name: 'evoluzione',   route: '/experience-design-factory/agos-trait-dunion/evoluzione/' },
+    { name: 'trait-dunion', route: '/experience-design-factory/agos-trait-dunion/trait-dunion/' },
+    { name: 'orizzonti',    route: '/experience-design-factory/agos-trait-dunion/orizzonti/' },
+    { name: 'valore',       route: '/experience-design-factory/agos-trait-dunion/valore/' },
+    { name: 'roadmap',      route: '/experience-design-factory/agos-trait-dunion/roadmap/' },
+  ],
 };
 
 // Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
@@ -73,6 +83,7 @@ const CWD_ALIAS: Record<string, string> = {
   'unicredit-engagement': 'unicredit',
   'ferrari-racing': 'ferrari',
   'trenitalia-connessioni': 'trenitalia',
+  'agos-trait-dunion': 'agos',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {

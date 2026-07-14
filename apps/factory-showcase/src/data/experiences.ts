@@ -109,6 +109,24 @@ export const EXPERIENCES: Experience[] = [
       it: 'Il dato che connette treni, viaggiatori e servizi in un unico journey misurabile — convergenza CJA e collaboration privacy-first per FS Group.',
     },
   },
+  {
+    slug: 'agos-trait-dunion',
+    name: "Trait d'Union",
+    client: 'Agos',
+    brandLabel: 'Agos',
+    url: `${LIVE}/agos-trait-dunion/`,
+    shot: 'shots/agos.webp',
+    accent: '#06ABB8',
+    sections: 7,
+    tag: {
+      en: '7 sections · IT · consumer credit',
+      it: '7 sezioni · IT · credito al consumo',
+    },
+    desc: {
+      en: 'Two worlds — digital and branch, acquisition and customer base — connected into one measurable customer intelligence, sequenced with the core transformation.',
+      it: "Due mondi — digitale e filiale, acquisition e customer base — connessi in un'unica intelligenza del cliente, in sequenza con la trasformazione dei sistemi core.",
+    },
+  },
 ];
 
 /** Number of live, deployed experiences. */

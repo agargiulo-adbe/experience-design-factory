@@ -1,0 +1,276 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AgosNavigation from '../components/AgosNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const fasi = [
+  {
+    anno: '2026',
+    verbo: 'Preparare',
+    desc: 'Il layer di analisi sopra lo stack attuale: CJA su log tecnico, Analytics e venduto. Assessment dei tracciamenti. Experimentation sulle landing.',
+    tags: ['CJA', 'Target', 'Assessment'],
+    accent: true,
+  },
+  {
+    anno: '2027',
+    verbo: 'Migrare evolvendo',
+    desc: 'La migrazione del campaign management diventa evoluzione: continuità batch, journey real-time dove il valore è dimostrato — in sequenza con il go-live.',
+    tags: ['AJO', 'Orchestrated Campaigns'],
+    accent: false,
+  },
+  {
+    anno: '2028',
+    verbo: 'Scalare',
+    desc: 'Il profilo unificato apre l\'open market: prospect anonimi, collaboration con i partner, next best offer su tutto il portafoglio.',
+    tags: ['RT-CDP', 'Collaboration'],
+    accent: false,
+  },
+];
+
+const nextSteps = [
+  { num: '01', title: 'Assessment dei tracciamenti', desc: 'Mappare insieme ciò che Analytics già raccoglie: cosa c\'è, cosa manca, cosa serve alle campagne. Due settimane, zero impatti.' },
+  { num: '02', title: 'Il funnel end-to-end su dati reali', desc: 'Un proof-of-value di CJA sul funnel prestito personale: log tecnico + venduto, overlap e fallout misurati per la prima volta.' },
+  { num: '03', title: 'Il primo test controllato', desc: 'Un A/B sulle landing social — form completo vs leggero — misurato e riconciliato con il log: il metodo, dimostrato.' },
+];
+---
+<BaseLayout
+  title="Roadmap"
+  description="2026 preparare, 2027 migrare evolvendo, 2028 scalare: la roadmap Adobe sequenziata con la trasformazione tecnologica — e i primi tre passi concreti."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AgosNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/')}
+    prevHref={href(base, '/valore')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-orizzonte')}
+        imageClass="opacity-18"
+        scrim="bg-[var(--surface-primary)]/88"
+      />
+      <CoverHero
+        eyebrow="07 · Roadmap"
+        numeral="07"
+        title="Il terreno si prepara adesso"
+        lead="La trasformazione detta i tempi delle piattaforme core — e va rispettata. Ma l'evoluzione dell'esperienza cliente ha una corsia propria: parte dai dati che esistono già e arriva puntuale all'appuntamento del 2027."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Le tre fasi ───────────────────────────────────── -->
+    <Slide id="slide-3fasi" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        TRE FASI, UNA SEQUENZA
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        In sequenza con la trasformazione, mai in competizione
+      </h2>
+
+      <div class="w-full max-w-6xl mx-auto flex flex-col gap-2" data-reveal data-reveal-delay="0.18">
+        {fasi.map((f) => (
+          <div class="grid md:grid-cols-[220px_1fr] gap-3 items-stretch">
+            <div class={[
+              'flex flex-col justify-center px-4 py-1.5 rounded-r-sm border-l-2',
+              f.accent
+                ? 'bg-[var(--accent-primary)]/10 border-[var(--accent-primary)]'
+                : 'bg-[var(--surface-secondary)] border-[var(--color-grigio-400)]',
+            ].join(' ')}>
+              <p class={[
+                'font-[family-name:var(--font-display)] font-bold leading-none',
+                f.accent ? 'text-[var(--accent-primary)]' : 'text-[var(--ink-primary)]',
+              ].join(' ')} style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">{f.anno}</p>
+              <p class="text-[0.85rem] font-semibold tracking-wide uppercase text-[var(--color-grigio-300)] mt-1">{f.verbo}</p>
+            </div>
+            <div class="flex items-center justify-between gap-4 px-5 py-2 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
+              <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug min-w-0">{f.desc}</p>
+              <div class="flex gap-1.5 flex-shrink-0 items-center flex-wrap justify-end" style="max-width: 16rem;">
+                {f.tags.map((t) => (
+                  <span class="badge bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">{t}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+        Sequenza indicativa · da allineare ai milestone del programma di trasformazione
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: Perché la fase 1 non pesa sull'IT ─────────────── -->
+    <Slide id="slide-fase1" bg="secondary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
+        FASE 1 · DEEP-DIVE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Perché il 2026 non pesa sull'IT
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
+        style="font-size: clamp(0.98rem, 1.15vw, 1.1rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        La fase 1 è progettata attorno a un vincolo dichiarato: la capacità di delivery
+        è tutta sulla migrazione. Tre scelte tecniche la rendono possibile comunque.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.22">
+        {[
+          { title: 'I dati non si spostano', desc: 'Connettori out-of-the-box, SFTP e flussi già esistenti. Le audience si compongono federate sul data lake: si legge, non si duplica.' },
+          { title: 'Nessun nuovo tracciamento', desc: 'Il log tecnico e i tag Analytics già mappati sono le fonti. L\'assessment fa ordine — non aggiunge cantieri.' },
+          { title: 'Autonomia del marketing', desc: 'Query, viste e segmenti si costruiscono da interfaccia. La BI del journey corre alla velocità del marketing.' },
+        ].map((c) => (
+          <div class="px-5 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
+            <p class="text-[1.02rem] font-semibold text-[var(--accent-primary)] mb-1.5 font-[family-name:var(--font-display)]">{c.title}</p>
+            <p class="text-[0.92rem] text-[var(--color-grigio-200)] leading-snug">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: 2027 — migrare evolvendo ──────────────────────── -->
+    <Slide id="slide-fase2" bg="primary" align="center">
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        FASE 2 · DEEP-DIVE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        La stessa migrazione. Due destinazioni possibili.
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-4"
+        style="font-size: clamp(0.98rem, 1.15vw, 1.1rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Nel 2027 il campaign management si sposta comunque. La differenza è dove atterra —
+        e la preparazione del 2026 è ciò che rende la seconda strada realistica.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.22">
+        <div class="px-5 py-3 oggi-card border border-[var(--line-subtle)] rounded-sm text-left">
+          <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-2">Lift & shift</p>
+          <ul class="space-y-1.5">
+            {[
+              'Stessi use case, stessa logica, nuova casa',
+              'L\'evoluzione resta un progetto futuro, da giustificare di nuovo',
+              'Il debito funzionale trasloca insieme alla piattaforma',
+            ].map((item) => (
+              <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-200)]">
+                <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-grigio-400)]" aria-hidden="true"/>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="px-5 py-3 domani-card border border-[var(--accent-primary)]/30 rounded-sm text-left">
+          <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-2">Migrazione evolutiva</p>
+          <ul class="space-y-1.5">
+            {[
+              'Orchestrated Campaigns: continuità piena per chi opera ogni giorno',
+              'I use case validati in fase 1 salgono già orchestrati e misurati',
+              'Il real-time si accende caso per caso, dove il test lo giustifica',
+            ].map((item) => (
+              <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-200)]">
+                <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <p class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.32">
+        Stesso sforzo di migrazione, valore diverso all'arrivo
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 4: Invito ────────────────────────────────────────── -->
+    <Slide id="slide-invito" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-due-mondi')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--color-petrolio)]/90"
+      />
+      <p class="slide-eyebrow text-center text-[var(--color-perla)]/70 mb-4" data-reveal>
+        I PROSSIMI TRE PASSI
+      </p>
+      <h2
+        class="font-[family-name:var(--font-display)] text-[var(--color-perla)] mb-4 max-w-3xl"
+        style="font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Due mondi. Un trait d'union.<br/>Si comincia da qui.
+      </h2>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-3 mb-4"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {nextSteps.map((s) => (
+          <div class="journey-card px-5 py-4 border border-[var(--color-perla)]/25 rounded-sm text-left text-[var(--color-perla)]">
+            <p class="text-xs font-semibold text-[var(--color-perla)]/50 mb-1 font-[family-name:var(--font-display)] tabular-nums">{s.num}</p>
+            <p class="text-[1.05rem] font-semibold mb-1.5 font-[family-name:var(--font-display)]">{s.title}</p>
+            <p class="text-[0.9rem] text-[var(--color-perla)]/75 leading-snug">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <p
+        class="text-[clamp(0.95rem,1.1vw,1.05rem)] text-[var(--color-perla)]/80 max-w-2xl mb-4"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        Nessuna decisione di piattaforma oggi: tre passi piccoli, misurabili,
+        reversibili — perfettamente nello stile della casa.
+      </p>
+
+      <div data-reveal data-reveal-delay="0.36">
+        <a
+          href={href(base, '/')}
+          class="inline-flex items-center gap-3 px-9 py-2.5 text-[clamp(1rem,1.2vw,1.15rem)] font-semibold tracking-wide bg-[var(--color-perla)] text-[var(--color-abisso)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          Torna alla cover
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

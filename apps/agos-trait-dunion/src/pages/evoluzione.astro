@@ -1,0 +1,203 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AgosNavigation from '../components/AgosNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+interface Evo {
+  id: string;
+  solution: string;
+  eyebrow: string;
+  product: string;
+  title: string;
+  oggi: string[];
+  domani: string[];
+  nota: string;
+}
+
+const evoluzioni: Evo[] = [
+  {
+    id: 'slide-form-abbandonato',
+    solution: 'ajo',
+    eyebrow: 'USE CASE 1 · GIÀ VOSTRO',
+    product: 'Adobe Journey Optimizer',
+    title: 'Il form abbandonato diventa un journey',
+    oggi: [
+      'Il log tecnico intercetta l\'abbandono, parte un recall entro la finestra consentita',
+      'Prima comunicazione uguale per tutti — poi si può insistere solo sui già clienti',
+      'Nessuna vista su cosa succede dopo: risposta, pratica, canale',
+    ],
+    domani: [
+      'L\'evento di abbandono attiva in tempo reale un journey multicanale — email, SMS, push',
+      'Chi è già cliente viene riconosciuto e arricchito: tono, offerta e canale su misura',
+      'Il journey ascolta: se la pratica riparte si ferma da solo, se converte genera il follow-up',
+    ],
+    nota: 'Stesso trigger di oggi — il vostro log tecnico — ingerito nativamente: nessun nuovo tracciamento richiesto.',
+  },
+  {
+    id: 'slide-use-case-orchestrati',
+    solution: 'ajo',
+    eyebrow: 'USE CASE 2 · GIÀ VOSTRO',
+    product: 'AJO · Orchestrated Campaigns',
+    title: 'Gli use case si parlano tra loro',
+    oggi: [
+      'Ogni use case è un blocco a sé: filtri + canale, esclusioni impostate a mano',
+      'Capping «chi prima arriva»: può fermarsi la campagna di maggior valore',
+      'Le simulazioni non lasciano traccia: ogni run riparte da zero',
+    ],
+    domani: [
+      'Le campagne batch restano batch — stessa logica operativa, query on-demand in secondi',
+      'Capping + priorità di journey: la pressione si governa per valore, non per ordine di arrivo',
+      'Un profilo unico decide la next best experience tra tutti gli use case attivi',
+    ],
+    nota: 'Orchestrated Campaigns è l\'ambiente più simile al vostro modo di lavorare: continuità per chi opera, salto evolutivo per chi decide.',
+  },
+  {
+    id: 'slide-conversione',
+    solution: 'ajo,cja',
+    eyebrow: 'USE CASE 3 · IL PIÙ ATTESO',
+    product: 'AJO + Customer Journey Analytics',
+    title: 'Il dato di ritorno entra in piattaforma',
+    oggi: [
+      'Delivery e click si vedono; caricata e liquidata arrivano dopo, da report esterni',
+      'Il venduto è in piattaforma solo come filtro di esclusione',
+      'Migliorare una campagna richiede settimane di andata e ritorno tra uffici',
+    ],
+    domani: [
+      'Due colonne bastano per cominciare: codice cliente + esito — il loop si chiude',
+      'Fallout completo in un\'unica vista: aperture → click → pratica → liquidata',
+      'L\'AI suggerisce dove intervenire: «open rate alto, cadute al caricamento: ecco perché»',
+    ],
+    nota: 'Approccio a onde: si parte minimale, si arricchisce quando il valore è dimostrato. Evidence-based, come piace a voi.',
+  },
+  {
+    id: 'slide-experimentation',
+    solution: 'target',
+    eyebrow: 'USE CASE 4 · DA RIACCENDERE',
+    product: 'Adobe Target · Experimentation',
+    title: 'L\'A/B test oltre lo split del webmaster',
+    oggi: [
+      'Split 50/50 fatto a mano su due atterraggi alternativi',
+      'Misura sul log di sistema, esperimenti lenti da montare e smontare',
+      'Form completo vs form leggero: un dilemma mai chiuso per canale',
+    ],
+    domani: [
+      'Esperimenti attivabili dal marketing: varianti, segmenti, stop automatico al vincitore',
+      'La misura si riconcilia col log tecnico — ingerito come fonte, non ignorato',
+      'Test per canale: il social vede la variante leggera, il search quella completa',
+    ],
+    nota: 'Experimentation, non iper-personalizzazione: ipotesi → test controllato → decisione. Il metodo che già usate, industrializzato.',
+  },
+  {
+    id: 'slide-genai',
+    solution: 'genstudio',
+    eyebrow: 'USE CASE 5 · IL PIÙ VELOCE',
+    product: 'GenStudio + AI Assistant',
+    title: 'Contenuti on-brand, compliance by design',
+    oggi: [
+      'DEM costruite a mano, tempi lunghi tra brief, grafica e controlli',
+      'Il copy di un prodotto creditizio ha vincoli precisi: ogni parola va pesata',
+      'Centinaia di campagne l\'anno, una manutenzione che non scala',
+    ],
+    domani: [
+      'La DEM nasce da un prompt, dentro i template e i colori del brand',
+      'Brand score anche semantico: le guideline di compliance diventano una knowledge base che valuta il copy',
+      'Varianti per segmento generate in minuti — e misurate sul risultato storico',
+    ],
+    nota: 'Il controllo resta umano: l\'AI propone dentro i vincoli, il team approva. Più velocità, stessa responsabilità.',
+  },
+];
+---
+<BaseLayout
+  title="I vostri use case, evoluti"
+  description="Form abbandonato, use case, dato di ritorno, A/B test, DEM: quello che Agos fa già oggi — evoluto con Adobe Journey Optimizer, Target e GenStudio."
+  pageSolutions={['ajo', 'target', 'genstudio']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AgosNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/trait-dunion')}
+    prevHref={href(base, '/fondamenta')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dashboard')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <CoverHero
+        eyebrow="03 · Evoluzione"
+        numeral="03"
+        title="Quello che fate oggi. Meglio."
+        lead="Cinque use case che esistono già nelle vostre giornate — il form abbandonato, gli use case, il dato di ritorno, l'A/B test, le DEM. Ognuno ha un'evoluzione naturale, senza stravolgere chi ci lavora."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1..5: Evoluzioni oggi → domani ───────────────────── -->
+    {evoluzioni.map((evo) => (
+      <Slide id={evo.id} bg="primary" align="center" data-solution={evo.solution}>
+        <div class="w-full max-w-6xl mx-auto">
+          <div class="flex items-center justify-center gap-3 mb-3 flex-wrap" data-reveal>
+            <p class="slide-eyebrow text-[var(--accent-primary)]">{evo.eyebrow}</p>
+            <span class="badge bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">{evo.product}</span>
+          </div>
+          <h2
+            class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.7rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            {evo.title}
+          </h2>
+
+          <div class="grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.18">
+            <div class="px-5 py-4 oggi-card border border-[var(--line-subtle)] rounded-sm text-left">
+              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-2.5">Oggi</p>
+              <ul class="space-y-2">
+                {evo.oggi.map((item) => (
+                  <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-200)]">
+                    <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--color-grigio-400)]" aria-hidden="true"/>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="px-5 py-4 domani-card border border-[var(--accent-primary)]/30 rounded-sm text-left">
+              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-2.5">Domani</p>
+              <ul class="space-y-2">
+                {evo.domani.map((item) => (
+                  <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-200)]">
+                    <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div class="mt-4 max-w-4xl mx-auto px-5 py-2.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm" data-reveal data-reveal-delay="0.3">
+            <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug text-center">
+              <strong class="text-[var(--accent-secondary)]">Perché funziona da voi:</strong> {evo.nota}
+            </p>
+          </div>
+        </div>
+      </Slide>
+    ))}
+
+  </DeckContainer>
+</BaseLayout>
