@@ -1,0 +1,71 @@
+---
+// One scoping input row: label + semantic badge + rich audit tooltip +
+// number input OR select. Conditional visibility (mode / appliesWhen) and the
+// "advanced" flag are expressed as data-attributes the presenter reads.
+type Bi = { en: string; it: string };
+type DataType = 'official' | 'default-assumption' | 'customer-assumption' | 'price';
+interface FieldOption { value: string; label: Bi }
+export interface FieldDef {
+  key: string;
+  group: 'collab' | 'cja';
+  section: Bi;
+  label: Bi;
+  format: 'int' | 'decimal' | 'percent' | 'currency';
+  input?: 'number' | 'select';
+  options?: FieldOption[];
+  mode?: 'activity' | 'direct';
+  category?: string;
+  dataType?: DataType;
+  advancedOnly?: boolean;
+  appliesWhen?: string;
+  impacts?: Bi;
+  toConfirm?: boolean;
+  source: Bi;
+  calc: Bi;
+  assumption: Bi;
+}
+interface Props { f: FieldDef }
+const { f } = Astro.props;
+
+const DATA_TYPE_LABELS: Record<DataType, Bi> = {
+  official: { en: 'Official', it: 'Ufficiale' },
+  'default-assumption': { en: 'Assumption', it: 'Assunzione' },
+  'customer-assumption': { en: 'Customer input', it: 'Input cliente' },
+  price: { en: 'Quote-only', it: 'Da preventivo' },
+};
+const dt = f.dataType ?? 'default-assumption';
+const cls = [
+  'scoping-field',
+  `scoping-dt-${dt}`,
+  f.advancedOnly ? 'scoping-adv' : '',
+  f.toConfirm ? 'scoping-so' : '',
+].filter(Boolean).join(' ');
+---
+<label class={cls} data-field={f.key} data-when={f.mode ?? undefined} data-applies={f.appliesWhen ?? undefined}>
+  <span class="scoping-label">
+    <span class="scoping-label-txt"><span data-lang-en>{f.label.en}</span><span data-lang-it>{f.label.it}</span></span>
+    <span class={`scoping-badge scoping-badge-${dt}`}><span data-lang-en>{DATA_TYPE_LABELS[dt].en}</span><span data-lang-it>{DATA_TYPE_LABELS[dt].it}</span></span>
+    <span class="scoping-changed" data-changed-dot hidden title="Changed vs preset"></span>
+    <button type="button" class="scoping-info" aria-label="Audit" tabindex="0">i</button>
+    <span class="scoping-tip" role="tooltip">
+      <span class="scoping-tip-row"><b>SOURCE</b><span data-lang-en>{f.source.en}</span><span data-lang-it>{f.source.it}</span></span>
+      <span class="scoping-tip-row"><b>CALC</b><span data-lang-en>{f.calc.en}</span><span data-lang-it>{f.calc.it}</span></span>
+      <span class="scoping-tip-row"><b data-lang-en>ASSUMPTION</b><b data-lang-it>ASSUNZIONE</b><span data-lang-en>{f.assumption.en}</span><span data-lang-it>{f.assumption.it}</span></span>
+      {f.impacts && (
+        <span class="scoping-tip-row"><b data-lang-en>IMPACTS</b><b data-lang-it>IMPATTA</b><span data-lang-en>{f.impacts.en}</span><span data-lang-it>{f.impacts.it}</span></span>
+      )}
+    </span>
+  </span>
+  {f.input === 'select' ? (
+    <select data-k={f.key} data-control="1">
+      {(f.options ?? []).map((o) => (
+        <option value={o.value}><Fragment set:html={`${o.label.en} · ${o.label.it}`} /></option>
+      ))}
+    </select>
+  ) : (
+    <span class="scoping-input-wrap">
+      {f.format === 'currency' && <span class="scoping-prefix">€</span>}
+      <input type="text" inputmode="decimal" data-k={f.key} data-format={f.format} />
+    </span>
+  )}
+</label>

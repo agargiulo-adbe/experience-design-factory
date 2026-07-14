@@ -1,15 +1,25 @@
 ---
+type Bi = { en: string; it: string };
+type DataType = 'official' | 'default-assumption' | 'customer-assumption' | 'price';
+interface FieldOption { value: string; label: Bi }
 interface FieldDef {
   key: string;
   group: 'collab' | 'cja';
-  section: { en: string; it: string };
-  label: { en: string; it: string };
+  section: Bi;
+  label: Bi;
   format: 'int' | 'decimal' | 'percent' | 'currency';
+  input?: 'number' | 'select';
+  options?: FieldOption[];
   mode?: 'activity' | 'direct';
+  category?: string;
+  dataType?: DataType;
+  advancedOnly?: boolean;
+  appliesWhen?: string; // 'key=v1|v2'
+  impacts?: Bi;
   toConfirm?: boolean;
-  source: { en: string; it: string };
-  calc: { en: string; it: string };
-  assumption: { en: string; it: string };
+  source: Bi;
+  calc: Bi;
+  assumption: Bi;
 }
 interface Props {
   projectSlug: string;
@@ -19,6 +29,14 @@ interface Props {
   fields: FieldDef[];
 }
 const { projectSlug, supabaseUrl, supabaseAnonKey, experienceUrl, fields } = Astro.props;
+import ScopingField from './ScopingField.astro';
+
+const PRESET_CHIPS: { id: string; label: Bi }[] = [
+  { id: 'conservative', label: { en: 'Conservative', it: 'Conservativo' } },
+  { id: 'base', label: { en: 'Base', it: 'Base' } },
+  { id: 'aggressive', label: { en: 'Aggressive', it: 'Ambizioso' } },
+  { id: 'custom', label: { en: 'Custom', it: 'Personalizzato' } },
+];
 
 // Group fields by column, preserving registry order, into { section, items[] }.
 function grouped(g: 'collab' | 'cja') {
@@ -32,7 +50,6 @@ function grouped(g: 'collab' | 'cja') {
 }
 const collabGroups = grouped('collab');
 const cjaGroups = grouped('cja');
-const currencyPrefix = '€';
 
 // Metric-explanation tooltips for every licensing concept (generic to the
 // Adobe products, hence hardcoded bilingual here — not Ferrari-specific).
@@ -73,6 +90,16 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     <span class="scoping-legend"><span class="scoping-legend-dot"></span><span data-lang-en>Illustrative / client to confirm</span><span data-lang-it>Illustrativo / da confermare</span></span>
   </header>
 
+  <!-- ── Scenario presets ─────────────────────────────────────── -->
+  <div class="scoping-presets" role="group" aria-label="Scenario presets">
+    <span class="scoping-presets-label"><span data-lang-en>Scenario</span><span data-lang-it>Scenario</span></span>
+    {PRESET_CHIPS.map((c) => (
+      <button type="button" class="scoping-chip" data-preset={c.id} aria-pressed="false">
+        <span data-lang-en>{c.label.en}</span><span data-lang-it>{c.label.it}</span>
+      </button>
+    ))}
+  </div>
+
   <!-- ── Results bar (sticky, always visible) ─────────────────── -->
   <aside class="scoping-results" aria-live="polite">
     <div class="scoping-total-block">
@@ -110,9 +137,12 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     </div>
   </aside>
 
+  <!-- ── Guardrail warnings (populated at runtime) ────────────── -->
+  <div class="scoping-warnings" data-warnings role="status" aria-live="polite" hidden></div>
+
   <div class="scoping-cols">
     <!-- ── Collaboration column ─────────────────────────────── -->
-    <section class="scoping-card" aria-labelledby="sc-collab-h">
+    <section class="scoping-card" data-col="collab" aria-labelledby="sc-collab-h">
       <h3 id="sc-collab-h" class="scoping-card-h">
         <span>Real-Time CDP Collaboration</span>
         <span class="scoping-card-metric scoping-badge-tip">Collaboration Credits<button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric scoping-tip--right"><span data-lang-en>{badgeCollab.en}</span><span data-lang-it>{badgeCollab.it}</span></span></span>
@@ -139,30 +169,23 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       {collabGroups.map((grp) => (
         <div class="scoping-group" data-group-modes={grp.items.map((i) => i.mode ?? 'both').join(',')}>
           <p class="scoping-group-h"><span data-lang-en>{grp.section.en}</span><span data-lang-it>{grp.section.it}</span></p>
-          {grp.items.map((f) => (
-            <label class={`scoping-field${f.toConfirm ? ' scoping-so' : ''}`} data-when={f.mode ?? undefined}>
-              <span class="scoping-label">
-                <span class="scoping-label-txt"><span data-lang-en>{f.label.en}</span><span data-lang-it>{f.label.it}</span></span>
-                {f.toConfirm && <span class="scoping-badge"><span data-lang-en>to confirm</span><span data-lang-it>da confermare</span></span>}
-                <button type="button" class="scoping-info" aria-label="Audit" tabindex="0">i</button>
-                <span class="scoping-tip" role="tooltip">
-                  <span class="scoping-tip-row"><b>SOURCE</b><span data-lang-en>{f.source.en}</span><span data-lang-it>{f.source.it}</span></span>
-                  <span class="scoping-tip-row"><b>CALC</b><span data-lang-en>{f.calc.en}</span><span data-lang-it>{f.calc.it}</span></span>
-                  <span class="scoping-tip-row"><b data-lang-en>ASSUMPTION</b><b data-lang-it>ASSUNZIONE</b><span data-lang-en>{f.assumption.en}</span><span data-lang-it>{f.assumption.it}</span></span>
-                </span>
-              </span>
-              <span class="scoping-input-wrap">
-                {f.format === 'currency' && <span class="scoping-prefix">{currencyPrefix}</span>}
-                <input type="text" inputmode="decimal" data-k={f.key} data-format={f.format} />
-              </span>
-            </label>
-          ))}
+          {grp.items.map((f) => <ScopingField f={f} />)}
         </div>
       ))}
+
+      <label class="scoping-adv-toggle">
+        <input type="checkbox" data-advanced-toggle="collab" />
+        <span data-lang-en>Advanced assumptions</span><span data-lang-it>Assunzioni avanzate</span>
+      </label>
+
+      <button type="button" class="scoping-breakdown-toggle" data-breakdown-toggle="collab" aria-expanded="false">
+        <span data-lang-en>Show calculation</span><span data-lang-it>Mostra il calcolo</span>
+      </button>
+      <div class="scoping-breakdown" data-breakdown="collab" hidden></div>
     </section>
 
     <!-- ── CJA column ───────────────────────────────────────── -->
-    <section class="scoping-card" aria-labelledby="sc-cja-h">
+    <section class="scoping-card" data-col="cja" aria-labelledby="sc-cja-h">
       <h3 id="sc-cja-h" class="scoping-card-h">
         <span>Customer Journey Analytics</span>
         <span class="scoping-card-metric scoping-badge-tip">Rows of Data<button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric scoping-tip--right"><span data-lang-en>{badgeCja.en}</span><span data-lang-it>{badgeCja.it}</span></span></span>
@@ -170,26 +193,19 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       {cjaGroups.map((grp) => (
         <div class="scoping-group">
           <p class="scoping-group-h"><span data-lang-en>{grp.section.en}</span><span data-lang-it>{grp.section.it}</span></p>
-          {grp.items.map((f) => (
-            <label class={`scoping-field${f.toConfirm ? ' scoping-so' : ''}`}>
-              <span class="scoping-label">
-                <span class="scoping-label-txt"><span data-lang-en>{f.label.en}</span><span data-lang-it>{f.label.it}</span></span>
-                {f.toConfirm && <span class="scoping-badge"><span data-lang-en>to confirm</span><span data-lang-it>da confermare</span></span>}
-                <button type="button" class="scoping-info" aria-label="Audit" tabindex="0">i</button>
-                <span class="scoping-tip" role="tooltip">
-                  <span class="scoping-tip-row"><b>SOURCE</b><span data-lang-en>{f.source.en}</span><span data-lang-it>{f.source.it}</span></span>
-                  <span class="scoping-tip-row"><b>CALC</b><span data-lang-en>{f.calc.en}</span><span data-lang-it>{f.calc.it}</span></span>
-                  <span class="scoping-tip-row"><b data-lang-en>ASSUMPTION</b><b data-lang-it>ASSUNZIONE</b><span data-lang-en>{f.assumption.en}</span><span data-lang-it>{f.assumption.it}</span></span>
-                </span>
-              </span>
-              <span class="scoping-input-wrap">
-                {f.format === 'currency' && <span class="scoping-prefix">{currencyPrefix}</span>}
-                <input type="text" inputmode="decimal" data-k={f.key} data-format={f.format} />
-              </span>
-            </label>
-          ))}
+          {grp.items.map((f) => <ScopingField f={f} />)}
         </div>
       ))}
+
+      <label class="scoping-adv-toggle">
+        <input type="checkbox" data-advanced-toggle="cja" />
+        <span data-lang-en>Advanced assumptions</span><span data-lang-it>Assunzioni avanzate</span>
+      </label>
+
+      <button type="button" class="scoping-breakdown-toggle" data-breakdown-toggle="cja" aria-expanded="false">
+        <span data-lang-en>Show calculation</span><span data-lang-it>Mostra il calcolo</span>
+      </button>
+      <div class="scoping-breakdown" data-breakdown="cja" hidden></div>
     </section>
   </div>
 
@@ -206,6 +222,8 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     <button data-scoping-share><span data-lang-en>Share</span><span data-lang-it>Condividi</span></button>
     <button data-scoping-reset><span data-lang-en>Reset</span><span data-lang-it>Reset</span></button>
     <button data-scoping-compare><span data-lang-en>Compare</span><span data-lang-it>Confronta</span></button>
+    <button data-scoping-export="json"><span data-lang-en>Export JSON</span><span data-lang-it>Esporta JSON</span></button>
+    <button data-scoping-export="csv"><span data-lang-en>Export CSV</span><span data-lang-it>Esporta CSV</span></button>
     <span data-scoping-note class="scoping-note"></span>
   </div>
   <div class="scoping-compare" data-scoping-compare-panel hidden>
@@ -215,7 +233,8 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
 
 <script>
   import {
-    computeSnapshot, type ScopingAssumptions, type UnitPrices,
+    computeSnapshot, computeBreakdown,
+    type ScopingAssumptions, type UnitPrices, type LineItem, type Warning,
   } from './cost-model';
   import {
     DEFAULT_ASSUMPTIONS, DEFAULT_PRICES, scenarioIdFromSearch, type Scenario,
@@ -224,8 +243,7 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     isLoggedIn, loadLocal, saveLocal, saveRemote, fetchRemoteById, listMine, type StoreCtx,
   } from './scenario-store';
 
-  const PRICE_KEYS = new Set(['pricePerCredit', 'pricePerMillionRows']);
-  const CONTROL_KEYS = new Set(['collabMode', 'collabPackage']);
+  const langOf = () => (document.documentElement.getAttribute('data-lang') === 'it' ? 'it' : 'en');
 
   function initScoping(root: HTMLElement) {
     const ctx: StoreCtx = {
@@ -261,37 +279,115 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     }
     const parseField = (s: string) => Number(String(s).replace(/,/g, '').trim());
 
+    const PRICE_KEYS = new Set(['pricePerCredit', 'pricePerMillionRows']);
+    const isControl = (el: Element) => el.tagName === 'SELECT'; // selects hold string values
+
     function valueFor(k: string): number {
       if (k === 'pricePerCredit') return prices.pricePerCredit ?? 0;
       if (k === 'pricePerMillionRows') return prices.pricePerMillionRows ?? 0;
       return (assumptions as any)[k] ?? 0;
     }
 
+    // Per-column "Advanced assumptions" state.
+    const advState: Record<string, boolean> = { collab: false, cja: false };
+    // Which preset (if any) the current state matches; null = custom.
+    let activePreset: string | null = null;
+    // Baseline used for the "changed vs preset" dots (assumptions + prices).
+    let changedBaseline: ScopingAssumptions = { ...DEFAULT_ASSUMPTIONS };
+    let changedBaselinePrices: UnitPrices = { ...DEFAULT_PRICES };
+
+    // Evaluate a field's `data-applies` guard: 'key=v1|v2'.
+    function appliesOk(el: HTMLElement): boolean {
+      const expr = el.getAttribute('data-applies');
+      if (!expr) return true;
+      const [k, vs] = expr.split('=');
+      const allowed = (vs || '').split('|');
+      return allowed.includes(String((assumptions as any)[k]));
+    }
+    function colOf(el: HTMLElement): string {
+      return el.closest('[data-col]')?.getAttribute('data-col') || 'collab';
+    }
+
     function writeInputs() {
       root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
         const k = el.dataset.k!;
-        if (CONTROL_KEYS.has(k)) { el.value = (assumptions as any)[k]; return; }
+        if (isControl(el)) { (el as HTMLSelectElement).value = String((assumptions as any)[k]); return; }
         (el as HTMLInputElement).value = fmtField(el.dataset.format || 'int', valueFor(k));
       });
-      // show/hide activity vs direct fields
-      root.querySelectorAll<HTMLElement>('.scoping-field[data-when]').forEach((el) => {
-        el.style.display = (el.getAttribute('data-when') === assumptions.collabMode) ? '' : 'none';
-      });
+      // group-level mode gate (hides whole sections in direct mode)
       root.querySelectorAll<HTMLElement>('.scoping-group[data-group-modes]').forEach((el) => {
         const modes = (el.getAttribute('data-group-modes') || '').split(',');
-        const visible = modes.some((m) => m === 'both' || m === assumptions.collabMode);
-        el.style.display = visible ? '' : 'none';
+        el.style.display = modes.some((m) => m === 'both' || m === assumptions.collabMode) ? '' : 'none';
+      });
+      // per-field visibility = mode ∧ appliesWhen ∧ (advanced ⇒ column advanced on)
+      root.querySelectorAll<HTMLElement>('.scoping-field[data-field]').forEach((el) => {
+        const modeOk = !el.getAttribute('data-when') || el.getAttribute('data-when') === assumptions.collabMode;
+        const advOk = !el.classList.contains('scoping-adv') || advState[colOf(el)];
+        el.style.display = (modeOk && appliesOk(el) && advOk) ? '' : 'none';
+      });
+      updateChangedDots();
+    }
+
+    function updateChangedDots() {
+      root.querySelectorAll<HTMLElement>('.scoping-field[data-field]').forEach((el) => {
+        const k = el.getAttribute('data-field')!;
+        const dot = el.querySelector<HTMLElement>('[data-changed-dot]');
+        if (!dot) return;
+        const cur = PRICE_KEYS.has(k) ? (prices as any)[k] : (assumptions as any)[k];
+        const baseVal = PRICE_KEYS.has(k) ? (changedBaselinePrices as any)[k] : (changedBaseline as any)[k];
+        dot.hidden = String(cur) === String(baseVal);
       });
     }
 
     function readInput(el: HTMLInputElement | HTMLSelectElement) {
       const k = el.dataset.k!;
-      if (CONTROL_KEYS.has(k)) { (assumptions as any)[k] = el.value; return; }
+      if (isControl(el)) { (assumptions as any)[k] = (el as HTMLSelectElement).value; return; }
       const n = parseField((el as HTMLInputElement).value);
       const val = Number.isFinite(n) ? n : 0;
       if (k === 'pricePerCredit') prices.pricePerCredit = val;
       else if (k === 'pricePerMillionRows') prices.pricePerMillionRows = val;
       else (assumptions as any)[k] = val;
+    }
+
+    // ── Breakdown drawers + warnings ───────────────────────
+    const warnBox = root.querySelector<HTMLElement>('[data-warnings]')!;
+    function biSpan(bi: { en: string; it: string }): string {
+      return `<span data-lang-en>${esc(bi.en)}</span><span data-lang-it>${esc(bi.it)}</span>`;
+    }
+    const UNIT_SUFFIX: Record<string, string> = { credits: ' cr', rows: '', ids: '', eur: '', x: '×', runs: '' };
+    function lineHtml(li: LineItem): string {
+      const v = li.unit === 'eur' ? fmtMoney(li.value) : fmt(Math.round(li.value * 100) / 100) + UNIT_SUFFIX[li.unit];
+      return `<div class="scoping-bd-row${li.kind === 'output' ? ' scoping-bd-out' : ''}">`
+        + `<div class="scoping-bd-head"><span class="scoping-bd-label">${biSpan(li.label)}</span><b class="scoping-bd-val">${esc(v)}</b></div>`
+        + `<code class="scoping-bd-formula">${esc(li.formula)}</code>`
+        + `<code class="scoping-bd-sub">${esc(li.substituted)}</code>`
+        + `</div>`;
+    }
+    function renderBreakdowns(bd: ReturnType<typeof computeBreakdown>) {
+      const collabEl = root.querySelector<HTMLElement>('[data-breakdown="collab"]')!;
+      if (!collabEl.hidden) collabEl.innerHTML = bd.collab.map(lineHtml).join('');
+      const cjaEl = root.querySelector<HTMLElement>('[data-breakdown="cja"]')!;
+      if (!cjaEl.hidden) {
+        const src = bd.cjaSources.map((sc) =>
+          `<div class="scoping-bd-src"><span class="scoping-bd-srcname">${sc.id}</span>`
+          + `<span class="scoping-bd-srcbar"><span style="width:${sc.weightPct.toFixed(1)}%"></span></span>`
+          + `<span class="scoping-bd-srcpct">${sc.weightPct.toFixed(1)}%</span>`
+          + `<code class="scoping-bd-sub">${esc(sc.substituted)}</code></div>`).join('');
+        cjaEl.innerHTML = `<div class="scoping-bd-sources">${src}</div>` + bd.cja.map(lineHtml).join('');
+      }
+    }
+    function renderWarnings(warns: Warning[]) {
+      if (!warns.length) { warnBox.hidden = true; warnBox.innerHTML = ''; return; }
+      warnBox.hidden = false;
+      warnBox.innerHTML = warns.map((w) =>
+        `<p class="scoping-warn scoping-warn-${w.level}"><span class="scoping-warn-ico" aria-hidden="true">${w.level === 'warn' ? '!' : 'i'}</span>${biSpan(w.text)}</p>`).join('');
+    }
+
+    function updateChips() {
+      root.querySelectorAll<HTMLElement>('[data-preset]').forEach((chip) => {
+        const on = chip.getAttribute('data-preset') === (activePreset ?? 'custom');
+        chip.setAttribute('aria-pressed', String(on));
+      });
     }
 
     function render() {
@@ -300,20 +396,55 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
         const el = root.querySelector(`[data-out="${name}"]`);
         if (el) el.textContent = v;
       };
-      out('collabCreditsEstimated', fmt(s.collabCreditsEstimated));
-      out('collabBillableCredits', fmt(s.collabBillableCredits));
+      out('collabCreditsEstimated', fmt(Math.round(s.collabCreditsEstimated)));
+      out('collabBillableCredits', fmt(Math.round(s.collabBillableCredits)));
       out('collabCost', fmtMoney(s.collabCost));
       out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
       out('cjaAnnualIngestionLimit', fmt(s.cjaAnnualIngestionLimit));
       out('cjaCost', fmtMoney(s.cjaCost));
       out('totalCost', fmtMoney(s.totalCost));
+      const bd = computeBreakdown(assumptions, prices);
+      renderWarnings(bd.warnings);
+      renderBreakdowns(bd);
+      updateChangedDots();
+      updateChips();
     }
 
     root.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-k]').forEach((el) => {
-      el.addEventListener('input', () => { readInput(el); if (el.dataset.k === 'collabMode') writeInputs(); render(); });
-      // reformat on blur (don't fight the caret while typing)
+      el.addEventListener('input', () => {
+        readInput(el);
+        activePreset = null;                 // any manual edit → custom
+        if (isControl(el)) writeInputs();    // selects can gate other fields
+        render();
+      });
       if (el.tagName === 'INPUT') el.addEventListener('blur', () => {
         (el as HTMLInputElement).value = fmtField(el.dataset.format || 'int', valueFor(el.dataset.k!));
+      });
+    });
+
+    // ── Advanced-assumptions toggles ───────────────────────
+    root.querySelectorAll<HTMLInputElement>('[data-advanced-toggle]').forEach((cb) => {
+      cb.addEventListener('change', () => { advState[cb.dataset.advancedToggle!] = cb.checked; writeInputs(); });
+    });
+
+    // ── Breakdown drawer toggles ───────────────────────────
+    root.querySelectorAll<HTMLButtonElement>('[data-breakdown-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const panel = root.querySelector<HTMLElement>(`[data-breakdown="${btn.dataset.breakdownToggle}"]`)!;
+        const open = panel.hidden;
+        panel.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+        render();
+      });
+    });
+
+    // ── Scenario preset chips ──────────────────────────────
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const id = chip.getAttribute('data-preset')!;
+        if (id === 'custom') return; // reflects state; not directly selectable
+        const sc = scenarios.find((x) => x.preset === id);
+        if (sc) applyScenario(sc);
       });
     });
 
@@ -335,6 +466,9 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       assumptions = { ...DEFAULT_ASSUMPTIONS, ...sc.assumptions };
       prices = { ...DEFAULT_PRICES, ...sc.prices };
       applyBaselinePrices();
+      activePreset = sc.preset ?? null;
+      changedBaseline = { ...assumptions };
+      changedBaselinePrices = { ...prices };
       (root.querySelector('[data-scoping-title]') as HTMLInputElement).value = sc.title;
       (root.querySelector('[data-scoping-visibility]') as HTMLSelectElement).value = sc.visibility;
       writeInputs(); render();
@@ -406,6 +540,38 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       comparePanel.hidden = false;
     });
 
+    // ── Export (JSON / CSV) ────────────────────────────────
+    function download(name: string, mime: string, text: string) {
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = name; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    function scenarioTitle() {
+      return (root.querySelector('[data-scoping-title]') as HTMLInputElement).value || 'scenario';
+    }
+    root.querySelectorAll<HTMLButtonElement>('[data-scoping-export]')!.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const lang = langOf();
+        const snap = computeSnapshot(assumptions, prices);
+        const bd = computeBreakdown(assumptions, prices);
+        const safe = scenarioTitle().replace(/[^\w.-]+/g, '_');
+        if (btn.dataset.scopingExport === 'json') {
+          download(`${safe}.scoping.json`, 'application/json',
+            JSON.stringify({ title: scenarioTitle(), project: ctx.projectSlug, assumptions, prices, snapshot: snap, breakdown: bd }, null, 2));
+        } else {
+          const rows: string[][] = [['section', 'line', 'value', 'unit', 'formula', 'substituted']];
+          bd.collab.forEach((l) => rows.push(['collaboration', l.label[lang], String(Math.round(l.value * 100) / 100), l.unit, l.formula, l.substituted]));
+          bd.cjaSources.forEach((sc) => rows.push(['cja-source', sc.id, String(Math.round(sc.rows)), 'rows', sc.formula, sc.substituted]));
+          bd.cja.forEach((l) => rows.push(['cja', l.label[lang], String(Math.round(l.value * 100) / 100), l.unit, l.formula, l.substituted]));
+          const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+          download(`${safe}.scoping.csv`, 'text/csv', csv);
+        }
+        note.textContent = lang === 'it' ? 'Esportato.' : 'Exported.';
+      });
+    });
+
     // ── Info tooltips: click to open (never on hover, so they can't block
     //    the field). Click-away or Esc closes; only one open at a time. ──
     const infoButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('.scoping-info'));
@@ -457,7 +623,10 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
   document.addEventListener('astro:page-load', bootAll);
 </script>
 
-<style>
+<!-- is:global — the .scoping-* rules are shared with the ScopingField sub-component
+     (Astro scopes <style> per component; the fields live in a different file). All
+     selectors are .scoping-prefixed and this component only loads on /scoping/. -->
+<style is:global>
   .scoping { display: flex; flex-direction: column; gap: 1.1rem; width: 100%; max-width: 1600px; margin: 0 auto; height: 100%; overflow-y: auto; padding: 1.25rem 1.5rem; box-sizing: border-box; }
   .scoping *, .scoping *::before, .scoping *::after { box-sizing: border-box; }
   .scoping-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
@@ -481,7 +650,13 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
   .scoping-so { border-left: 2px solid var(--accent-secondary, #FFF200); padding-left: 0.55rem; margin-left: -0.05rem; }
   .scoping-label { display: flex; align-items: center; gap: 0.35rem; position: relative; }
   .scoping-label-txt { flex-shrink: 1; }
-  .scoping-badge { font-size: 0.52rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent-secondary, #FFF200); border: 1px solid color-mix(in srgb, var(--accent-secondary, #FFF200) 45%, transparent); border-radius: 3px; padding: 0.05rem 0.28rem; white-space: nowrap; }
+  .scoping-badge { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px; padding: 0.05rem 0.28rem; white-space: nowrap; border: 1px solid transparent; }
+  /* semantic data-type badges — explicit rgba so the audit contrast parser reads them */
+  .scoping-badge-official { color: #7ee0a0; border-color: rgba(126,224,160,0.5); background: rgba(126,224,160,0.08); }
+  .scoping-badge-default-assumption { color: #cfcfcf; border-color: rgba(207,207,207,0.35); background: rgba(207,207,207,0.06); }
+  .scoping-badge-customer-assumption { color: #8fb8ff; border-color: rgba(143,184,255,0.5); background: rgba(143,184,255,0.08); }
+  .scoping-badge-price { color: #FFF200; border-color: rgba(255,242,0,0.5); background: rgba(255,242,0,0.08); }
+  .scoping-changed { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-primary, #FF2800); flex-shrink: 0; box-shadow: 0 0 0 2px rgba(255,40,0,0.18); }
   .scoping-info { cursor: pointer; flex-shrink: 0; background: transparent; }
   .scoping-input-wrap { position: relative; display: flex; align-items: center; }
   .scoping-prefix { position: absolute; left: 0.55rem; font-size: 0.85rem; color: var(--color-grigio-400, #9a9a9a); pointer-events: none; }
@@ -497,6 +672,46 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
   .scoping-tip-row b { font-size: 0.55rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary, #FFF200); }
   .scoping-tip--metric { font-size: 0.72rem; line-height: 1.45; color: var(--color-grigio-300, #cfcfcf); font-weight: 400; letter-spacing: 0; text-transform: none; }
   .scoping-tip--right { left: auto; right: 0; }
+
+  /* ── Scenario preset chips ── */
+  .scoping-presets { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+  .scoping-presets-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; color: var(--color-grigio-400, #9a9a9a); margin-right: 0.2rem; }
+  .scoping-chip { cursor: pointer; font-size: 0.72rem; font-weight: 600; color: var(--color-grigio-300, #cfcfcf); background: rgba(255,255,255,0.05); border: 1px solid var(--line-subtle, rgba(255,255,255,0.14)); border-radius: 999px; padding: 0.28rem 0.8rem; }
+  .scoping-chip:hover { border-color: var(--accent-primary, #FF2800); color: var(--ink-inverse, #F4F4F2); }
+  .scoping-chip[aria-pressed="true"] { background: var(--accent-primary, #FF2800); border-color: var(--accent-primary, #FF2800); color: #fff; }
+  .scoping-chip[data-preset="custom"] { border-style: dashed; }
+
+  /* ── Guardrail warnings ── */
+  .scoping-warnings { display: flex; flex-direction: column; gap: 0.4rem; }
+  .scoping-warn { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.76rem; line-height: 1.45; border-radius: 6px; padding: 0.5rem 0.7rem; border: 1px solid transparent; }
+  .scoping-warn-ico { flex-shrink: 0; width: 15px; height: 15px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; font-style: italic; margin-top: 1px; }
+  .scoping-warn-warn { background: rgba(255,40,0,0.10); border-color: rgba(255,40,0,0.4); color: #ffb3a3; }
+  .scoping-warn-warn .scoping-warn-ico { background: var(--accent-primary, #FF2800); color: #fff; font-style: normal; }
+  .scoping-warn-info { background: rgba(143,184,255,0.08); border-color: rgba(143,184,255,0.35); color: #b9cdf5; }
+  .scoping-warn-info .scoping-warn-ico { background: #8fb8ff; color: #10131a; }
+
+  /* ── Advanced-assumptions toggle ── */
+  .scoping-adv-toggle { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); cursor: pointer; margin: 0.35rem 0 0.2rem; }
+  .scoping-adv-toggle input { width: auto; }
+
+  /* ── Breakdown drawer ── */
+  .scoping-breakdown-toggle { cursor: pointer; font-size: 0.72rem; font-weight: 600; color: var(--accent-secondary, #FFF200); background: transparent; border: 1px solid rgba(255,242,0,0.4); border-radius: 5px; padding: 0.35rem 0.7rem; margin-top: 0.5rem; }
+  .scoping-breakdown-toggle:hover { background: rgba(255,242,0,0.08); }
+  .scoping-breakdown { margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.55rem; }
+  .scoping-bd-row { border-left: 2px solid var(--line-subtle, rgba(255,255,255,0.16)); padding-left: 0.6rem; display: flex; flex-direction: column; gap: 0.15rem; }
+  .scoping-bd-out { border-left-color: var(--accent-primary, #FF2800); }
+  .scoping-bd-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .scoping-bd-label { font-size: 0.76rem; color: var(--color-grigio-200, #e2e2e2); font-weight: 600; }
+  .scoping-bd-val { font-family: var(--font-display); font-size: 0.85rem; color: var(--ink-inverse, #F4F4F2); font-variant-numeric: tabular-nums; }
+  .scoping-bd-formula, .scoping-bd-sub { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.66rem; line-height: 1.4; color: var(--color-grigio-400, #9a9a9a); white-space: pre-wrap; word-break: break-word; }
+  .scoping-bd-sub { color: var(--color-grigio-300, #cfcfcf); }
+  .scoping-bd-sources { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.3rem; }
+  .scoping-bd-src { display: grid; grid-template-columns: 3.5rem 1fr 2.6rem; align-items: center; gap: 0.4rem 0.5rem; }
+  .scoping-bd-srcname { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-secondary, #FFF200); font-weight: 700; }
+  .scoping-bd-srcbar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .scoping-bd-srcbar > span { display: block; height: 100%; background: var(--accent-primary, #FF2800); }
+  .scoping-bd-srcpct { font-size: 0.7rem; text-align: right; color: var(--color-grigio-300, #cfcfcf); font-variant-numeric: tabular-nums; }
+  .scoping-bd-src .scoping-bd-sub { grid-column: 1 / -1; }
 
   /* metric-tip anchors (results labels + card badges) */
   .scoping-mlabel { position: relative; display: inline-flex; align-items: center; gap: 0.35rem; }
