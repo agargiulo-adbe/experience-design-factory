@@ -1,6 +1,6 @@
 ---
-description: Aggiorna la documentazione di handover in modo dettagliato, garantisce che ogni file resti leggibile in una singola Read da una nuova sessione (split per sezione se serve) e verifica la leggibilità. Uso, /handover [check]
-argument-hint: [check]
+description: "Aggiorna la doc di handover in dettaglio, impone il contratto di dimensione (righe/byte/riga), splitta per sezione con manifest e verifica che una nuova sessione riesca a leggerla. Uso: /handover [check]"
+argument-hint: "[check]"
 ---
 
 Sei incaricato di mantenere la documentazione di **handover** del monorepo Experience Design
