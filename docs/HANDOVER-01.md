@@ -221,7 +221,7 @@ Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `aud
 - `docs/AUDIT.md` — diagnosi (Fase 1) di Max Mara Acquisizione.
 - `docs/storyboard.md` — storyboard.
 - `skills/experience-brief/` — skill di intake (SKILL.md + INSTALL.md); `skills/experience-design/SKILL.md` — skill di costruzione.
-- `.claude/commands/handover.md` — comando **`/handover`**: aggiorna questo doc in modalità dettagliata, impone il contratto di dimensione (≤1500 righe / ≤48KB / riga ≤1800 char), splitta per sezione in `HANDOVER-NN.md` con questo file come manifest, e **verifica con una Read completa** che una nuova sessione riesca a leggere tutto. `/handover check` = solo misura+verifica. Spec: `docs/superpowers/specs/2026-07-15-handover-command-design.md`.
+- `.claude/commands/handover.md` (di progetto, versionato) **+ `~/.claude/commands/handover.md` (user-level → tutte le sessioni/progetti)** — comando **`/handover`**: aggiorna questo doc in modalità dettagliata, impone il contratto di dimensione (≤1500 righe / ≤48KB / riga ≤1800 char), splitta per sezione in `HANDOVER-NN.md` con questo file come manifest, e **verifica con una Read completa** che una nuova sessione riesca a leggere tutto. `/handover check` = solo misura+verifica. Frontmatter con stringhe quotate (vedi §17.5). Spec: `docs/superpowers/specs/2026-07-15-handover-command-design.md`.
 - Memorie (`~/.claude/projects/.../memory/`): `factory-showcase-site` (la vetrina + gotcha Astro), `unicredit-personas-credibility` (il riferimento più aggiornato per UniCredit), `deck-responsive-fullscreen`, `mockup-navigation-patterns`, `custom-slides-authoring`, `super-admin-console`, `ferrari-racing-experience`, `round-2-status`.
 
 ---
