@@ -1,4 +1,5 @@
-import type { ScopingAssumptions, UnitPrices, CollabPackage } from './cost-model';
+import type { ScopingAssumptions, UnitPrices } from './cost-model';
+import { CREDIT_LIST_PRICE } from './cost-model';
 
 /** Preset identity for the scenario chips (Conservative / Base / Aggressive). */
 export type PresetId = 'conservative' | 'base' | 'aggressive';
@@ -18,40 +19,31 @@ export interface Scenario {
   preset?: PresetId; // set on seeded presets; absent on user-saved / custom scenarios
 }
 
+// Defaults mirror the Adobe "Real-Time CDP Collaboration Scoping Calculator"
+// (Detailed Scoping block + the workbook's default assumptions).
 export const DEFAULT_ASSUMPTIONS: ScopingAssumptions = {
-  // mode & package
-  collabMode: 'activity',
-  collabPackage: 'prime' as CollabPackage,
+  // mode
+  collabMode: 'detailed',
   directCredits: 5_000,
-  // footprint
-  partners: 5,
-  // audience funnel
-  audienceSize: 15_000_000,
-  partnerOverlapRate: 0.35,
-  activatedOverlapRate: 1,
-  measuredOverlapRate: 1,
-  // management
-  managedBase: 'overlap',
-  customManagedVolume: 5_000_000,
-  managedAudiences: 5,
-  refreshCadence: 'weekly',
-  refreshCustomPerYear: 52,
-  creditPerMgmtPerMillionRefresh: 0.1,
-  // insights
-  insightsRunsPerYear: 0,
-  creditPerInsight: 0,
-  // activation
-  activationMode: 'recurring',
-  onDemandRuns: 6,
-  recurringRunsPerYear: 24,
-  creditPerActivationPerMillion: 0.1,
-  // measurement
-  measurementModel: 'records',
-  measurementRunsPerYear: 12,
-  reportsPerYear: 12,
-  creditPerMeasurementPerMillion: 0.05,
-  creditPerReport: 0.5,
-  // CJA sources
+  // shared audience & funnel (workbook defaults)
+  onboardedIds: 10_000_000,
+  avgAudienceSize: 1_000_000,
+  matchRate: 0.3,
+  frequencyMultiple: 10,
+  reachPct: 0.5,
+  conversionRate: 0.05,
+  measurementEnabled: true,
+  // detailed scoping
+  refreshEveryXDays: 6,
+  adHocCampaignsPerYear: 1,
+  audiencesPerCampaign: 1,
+  measurementCampaignsPerYear: 1,
+  summaryReportsPerCampaign: 1,
+  attributionReportsPerCampaign: 1,
+  alwaysOnRunsPerYear: 0,
+  // simple scoping
+  simpleCampaignsPerYear: 1,
+  // CJA sources (independent product — unchanged)
   webVisitsPerYear: 32_000_000,
   webHitsPerVisit: 8,
   appMau: 1_500_000,
@@ -67,7 +59,7 @@ export const DEFAULT_ASSUMPTIONS: ScopingAssumptions = {
 
 export const DEFAULT_PRICES: UnitPrices = {
   currency: 'EUR',
-  pricePerCredit: null,
+  pricePerCredit: CREDIT_LIST_PRICE, // $5 list (workbook H13); quote-only in practice
   pricePerMillionRows: null,
 };
 

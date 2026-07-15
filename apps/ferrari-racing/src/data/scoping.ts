@@ -2,19 +2,21 @@ import type { Scenario } from '@edf/core/blocks/scoping/scenario';
 import { DEFAULT_ASSUMPTIONS } from '@edf/core/blocks/scoping/scenario';
 
 // ─────────────────────────────────────────────────────────────────────
-//  Every number here is a STATED assumption with an audit trail (see
-//  FIELD_AUDIT below): where it comes from, how it's computed, its semantic
-//  data-type (official constant vs internal default vs customer assumption
-//  vs quote-only price) and the reasoning. Volume figures are reasoned
-//  inferences from public footprint research (F1 826.5M fans · Scuderia
-//  social ~35M · ferrari.com ~2.7M/mo · ~5 data-relevant partners). Adobe
-//  unit prices and credit burn-rates are quote-only: the values shipped
-//  here are clearly-labelled illustrative placeholders — replace with the
-//  Sales Order. No field is ever left at 0 or blank.
+//  RT-CDP Collaboration inputs mirror Adobe's official "Real-Time CDP
+//  Collaboration Scoping Calculator" (Sales Calculator + hidden burn/assump
+//  sheet). Burn rates (mgmt 2 · activation 500 · always-on 100 · measurement
+//  50 credits per 1M) and the default assumptions (match 30% · reach 50% ·
+//  frequency 10× · conversion 5% · $5/credit) are OFFICIAL constants baked
+//  into the engine (see cost-model.ts BURN / ASSUMPTION_DEFAULTS), not tunable
+//  placeholders. Ferrari volume figures are reasoned inferences from public
+//  footprint research (F1 826.5M fans · Scuderia social ~35M · ferrari.com
+//  ~2.7M/mo). CJA (Rows of Data) is a second, independent product and is NOT
+//  part of the Adobe workbook.
 // ─────────────────────────────────────────────────────────────────────
 
-// Illustrative unit prices (quote-only — see FIELD_AUDIT for provenance).
-const ILLUSTRATIVE_PRICES = { currency: 'EUR', pricePerCredit: 3, pricePerMillionRows: 2 };
+// Unit prices — collab credit list price is the workbook's $5 (H13); CJA per-row
+// price is a quote-only illustrative placeholder.
+const ILLUSTRATIVE_PRICES = { currency: 'EUR', pricePerCredit: 5, pricePerMillionRows: 2 };
 
 // ── Scenario presets (Conservative / Base / Aggressive). Each is a delta
 //    over DEFAULT_ASSUMPTIONS; the calculator surfaces them as chips. ──
@@ -24,11 +26,12 @@ export const SEED_SCENARIOS: Scenario[] = [
     prices: { ...ILLUSTRATIVE_PRICES },
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
-      collabPackage: 'prime',
-      partners: 2, audienceSize: 5_000_000, partnerOverlapRate: 0.25,
-      managedBase: 'overlap', managedAudiences: 2, refreshCadence: 'monthly',
-      activationMode: 'recurring', onDemandRuns: 0, recurringRunsPerYear: 12,
-      measurementModel: 'records', measurementRunsPerYear: 4, reportsPerYear: 4,
+      collabMode: 'detailed',
+      onboardedIds: 5_000_000, avgAudienceSize: 500_000, matchRate: 0.25,
+      refreshEveryXDays: 6, adHocCampaignsPerYear: 3, audiencesPerCampaign: 1,
+      alwaysOnRunsPerYear: 0,
+      measurementEnabled: true, measurementCampaignsPerYear: 2,
+      summaryReportsPerCampaign: 1, attributionReportsPerCampaign: 1,
       webVisitsPerYear: 32_000_000, webHitsPerVisit: 5,
       appMau: 800_000, appEventsPerMauPerMonth: 20,
       socialAudience: 35_000_000, socialActivePct: 0.05, socialActionsPerActivePerMonth: 5,
@@ -39,18 +42,19 @@ export const SEED_SCENARIOS: Scenario[] = [
   {
     title: 'Base', preset: 'base', visibility: 'private',
     prices: { ...ILLUSTRATIVE_PRICES },
-    assumptions: { ...DEFAULT_ASSUMPTIONS }, // 5 partner / 15M distinct / 35% overlap / weekly
+    assumptions: { ...DEFAULT_ASSUMPTIONS }, // 10M onboarded / 1M audience / 30% match / every 6 days / 1 campaign
   },
   {
     title: 'Ambizioso / Aggressive', preset: 'aggressive', visibility: 'private',
     prices: { ...ILLUSTRATIVE_PRICES },
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
-      collabPackage: 'ultimate',
-      partners: 10, audienceSize: 40_000_000, partnerOverlapRate: 0.6,
-      managedBase: 'overlap', managedAudiences: 10, refreshCadence: 'daily',
-      activationMode: 'mixed', onDemandRuns: 12, recurringRunsPerYear: 52,
-      measurementModel: 'hybrid', measurementRunsPerYear: 24, reportsPerYear: 24,
+      collabMode: 'detailed',
+      onboardedIds: 40_000_000, avgAudienceSize: 4_000_000, matchRate: 0.4,
+      refreshEveryXDays: 3, adHocCampaignsPerYear: 12, audiencesPerCampaign: 2,
+      alwaysOnRunsPerYear: 52,
+      measurementEnabled: true, measurementCampaignsPerYear: 12,
+      summaryReportsPerCampaign: 2, attributionReportsPerCampaign: 2,
       webVisitsPerYear: 32_000_000, webHitsPerVisit: 12,
       appMau: 4_000_000, appEventsPerMauPerMonth: 40,
       socialAudience: 48_000_000, socialActivePct: 0.2, socialActionsPerActivePerMonth: 9,
@@ -82,7 +86,7 @@ export interface FieldAudit {
   format: FieldFormat;
   input?: FieldInput;           // default 'number'; 'select' → renders a dropdown
   options?: FieldOption[];      // when input === 'select'
-  mode?: 'activity' | 'direct'; // Collaboration-only: which estimation mode shows it
+  mode?: string;                // Collaboration-only: which estimation mode(s) show it (pipe-separated)
   category?: FieldCategory;
   dataType?: DataType;          // default 'default-assumption'
   advancedOnly?: boolean;       // hidden until "Advanced assumptions" is opened
@@ -94,31 +98,7 @@ export interface FieldAudit {
   assumption: { en: string; it: string };
 }
 
-// Shared option sets
-const CADENCE_OPTIONS: FieldOption[] = [
-  { value: 'daily', label: { en: 'Daily (365/yr)', it: 'Giornaliera (365/anno)' } },
-  { value: 'every3days', label: { en: 'Every 3 days (122/yr)', it: 'Ogni 3 giorni (122/anno)' } },
-  { value: 'weekly', label: { en: 'Weekly (52/yr)', it: 'Settimanale (52/anno)' } },
-  { value: 'biweekly', label: { en: 'Every 2 weeks (26/yr)', it: 'Ogni 2 settimane (26/anno)' } },
-  { value: 'monthly', label: { en: 'Monthly (12/yr)', it: 'Mensile (12/anno)' } },
-  { value: 'custom', label: { en: 'Custom…', it: 'Personalizzato…' } },
-];
-const MANAGED_BASE_OPTIONS: FieldOption[] = [
-  { value: 'full', label: { en: 'Full addressable audience', it: 'Audience indirizzabile piena' } },
-  { value: 'overlap', label: { en: 'Overlap audience only', it: 'Solo audience in overlap' } },
-  { value: 'custom', label: { en: 'Custom managed volume', it: 'Volume gestito personalizzato' } },
-];
-const ACTIVATION_MODE_OPTIONS: FieldOption[] = [
-  { value: 'on-demand', label: { en: 'On-demand (one-off)', it: 'On-demand (one-off)' } },
-  { value: 'recurring', label: { en: 'Recurring (always-on)', it: 'Ricorrente (always-on)' } },
-  { value: 'mixed', label: { en: 'Mixed (sum both)', it: 'Mista (somma entrambe)' } },
-];
-const MEASUREMENT_MODEL_OPTIONS: FieldOption[] = [
-  { value: 'records', label: { en: 'Records-based', it: 'Su base record' } },
-  { value: 'reports', label: { en: 'External report-based', it: 'Su base report esterni' } },
-  { value: 'hybrid', label: { en: 'Hybrid (both)', it: 'Ibrido (entrambi)' } },
-  { value: 'none', label: { en: 'None', it: 'Nessuno' } },
-];
+const SIMPLE_DETAILED = 'simple|detailed';
 
 export const FIELD_AUDIT: FieldAudit[] = [
   // ══════════════ COLLABORATION ══════════════
@@ -128,235 +108,156 @@ export const FIELD_AUDIT: FieldAudit[] = [
     category: 'package', dataType: 'customer-assumption',
     section: { en: 'Direct scoping', it: 'Scoping diretto' },
     label: { en: 'Annual Collaboration Credits', it: 'Collaboration Credits annui' },
-    impacts: { en: 'Estimated credits (bypasses the activity model)', it: 'Credits stimati (salta il modello ad attività)' },
+    impacts: { en: 'Estimated credits & recommended pack (bypasses the activity model)', it: 'Credits stimati e pacchetto consigliato (salta il modello ad attività)' },
     source: { en: 'Scoping estimate / Sales Order', it: 'Stima di scoping / Sales Order' },
     calc: { en: 'Credits scoped directly, bypassing the activity estimate', it: 'Credits scopati direttamente, senza stima da attività' },
-    assumption: { en: '5,000 credits (≈ Ultimate allotment) — placeholder to replace with the Sales Order', it: '5.000 credits (≈ allotment Ultimate) — segnaposto da sostituire con il Sales Order' },
+    assumption: { en: '5,000 credits — placeholder to replace with the Sales Order', it: '5.000 credits — segnaposto da sostituire con il Sales Order' },
   },
-  // ── Audience & funnel (activity mode) ──
+  // ── Audience & funnel (simple + detailed) ──
   {
-    key: 'partners', group: 'collab', mode: 'activity', format: 'int',
-    category: 'footprint', dataType: 'customer-assumption',
-    section: { en: 'Audience & funnel', it: 'Audience e funnel' },
-    label: { en: 'Data-collaboration partners', it: 'Partner in data collaboration' },
-    impacts: { en: 'Footprint context (not a direct credit driver)', it: 'Contesto footprint (non driver diretto di credits)' },
-    source: { en: 'Scuderia Ferrari HP premium partner roster (HP, Shell, UniCredit, IBM/AWS, PUMA)', it: 'Roster premium partner Scuderia Ferrari HP (HP, Shell, UniCredit, IBM/AWS, PUMA)' },
-    calc: { en: 'Count of data-collaboration-relevant partners', it: 'Conteggio dei partner rilevanti per la data collaboration' },
-    assumption: { en: '5 of ~40 total partners are data-collaboration-relevant', it: '5 su ~40 partner totali sono rilevanti per la data collaboration' },
-  },
-  {
-    key: 'audienceSize', group: 'collab', mode: 'activity', format: 'int',
+    key: 'onboardedIds', group: 'collab', mode: SIMPLE_DETAILED, format: 'int',
     category: 'audience', dataType: 'customer-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
-    label: { en: 'Distinct addressable audience', it: 'Audience distinta indirizzabile' },
-    impacts: { en: 'Top of the funnel → overlap, management (full base)', it: 'Cima del funnel → overlap, gestione (base piena)' },
+    label: { en: 'IDs onboarded into Collaboration / yr', it: 'ID onboardati in Collaboration / anno' },
+    impacts: { en: 'Audience transformation & management credits', it: 'Credits di trasformazione e gestione audience' },
     source: { en: 'Scuderia social ~35M + web + CRM, de-duplicated (Motorsport Week 2025 · Similarweb)', it: 'Social Scuderia ~35M + web + CRM, de-duplicati (Motorsport Week 2025 · Similarweb)' },
-    calc: { en: 'Distinct 1st-party identities, deduplicated, matchable and realistically addressable', it: 'Identità 1st-party distinte, deduplicate, matchabili e realisticamente indirizzabili' },
-    assumption: { en: '~15M after cross-platform de-dup — followers are not all matchable identities', it: '~15M dopo de-dup cross-platform — i follower non sono tutti identità matchabili' },
+    calc: { en: 'Distinct hashed identities (email / phone / IP) onboarded per year', it: 'Identità hashate distinte (email / telefono / IP) onboardate per anno' },
+    assumption: { en: '~10M after cross-platform de-dup — followers are not all matchable identities', it: '~10M dopo de-dup cross-platform — i follower non sono tutti identità matchabili' },
   },
   {
-    key: 'partnerOverlapRate', group: 'collab', mode: 'activity', format: 'percent',
-    category: 'overlap', dataType: 'customer-assumption',
+    key: 'avgAudienceSize', group: 'collab', mode: SIMPLE_DETAILED, format: 'int',
+    category: 'audience', dataType: 'customer-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
-    label: { en: 'Partner overlap / match rate', it: 'Overlap / match rate partner' },
-    impacts: { en: 'Overlap audience → activation, measurement, (overlap) management', it: 'Audience in overlap → attivazione, measurement, gestione (overlap)' },
-    source: { en: 'Data-collaboration match-rate benchmark (clean-room)', it: 'Benchmark match-rate in data collaboration (clean-room)' },
-    calc: { en: 'Share of the addressable audience that matches partner data', it: 'Quota di audience indirizzabile che matcha con i dati del partner' },
-    assumption: { en: '35% average overlap — varies materially by partner', it: '35% overlap medio — varia molto per partner' },
+    label: { en: 'Average audience size', it: 'Dimensione media audience' },
+    impacts: { en: 'Matched audience → activation & measurement volumes', it: 'Audience matchata → volumi di attivazione e measurement' },
+    source: { en: 'Campaign-planning assumption (≈10% of onboarded by default)', it: 'Assunzione di pianificazione campagne (≈10% degli onboardati di default)' },
+    calc: { en: 'Average size of an activated / measured audience', it: 'Dimensione media di un’audience attivata / misurata' },
+    assumption: { en: '~1M per audience', it: '~1M per audience' },
   },
   {
-    key: 'activatedOverlapRate', group: 'collab', mode: 'activity', format: 'percent', advancedOnly: true,
+    key: 'matchRate', group: 'collab', mode: SIMPLE_DETAILED, format: 'percent',
     category: 'overlap', dataType: 'default-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
-    label: { en: 'Activated share of overlap', it: 'Quota di overlap attivata' },
-    impacts: { en: 'Activated volume per run', it: 'Volume attivato per run' },
-    source: { en: 'Campaign-planning assumption', it: 'Assunzione di pianificazione campagne' },
-    calc: { en: 'Share of the matched overlap actually pushed to activation', it: 'Quota dell’overlap matchato effettivamente attivata' },
-    assumption: { en: '100% by default — lower it to model partial activation', it: '100% di default — abbassalo per modellare attivazione parziale' },
+    label: { en: 'Match rate', it: 'Match rate' },
+    impacts: { en: 'Matched audience = average audience × match rate', it: 'Audience matchata = audience media × match rate' },
+    source: { en: 'Adobe calculator default — 30% recommendation', it: 'Default del calcolatore Adobe — raccomandazione 30%' },
+    calc: { en: 'Share of the audience that matches partner data (clean-room)', it: 'Quota di audience che matcha con i dati partner (clean-room)' },
+    assumption: { en: '30% — the workbook default; varies materially by partner', it: '30% — il default del workbook; varia molto per partner' },
   },
+  // ── Funnel rates (advanced — used by measurement) ──
   {
-    key: 'measuredOverlapRate', group: 'collab', mode: 'activity', format: 'percent', advancedOnly: true,
+    key: 'frequencyMultiple', group: 'collab', mode: SIMPLE_DETAILED, format: 'decimal', advancedOnly: true,
     category: 'overlap', dataType: 'default-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
-    label: { en: 'Measured share of overlap', it: 'Quota di overlap misurata' },
-    impacts: { en: 'Measured volume (records-based measurement)', it: 'Volume misurato (measurement su record)' },
-    source: { en: 'Measurement-design assumption', it: 'Assunzione di measurement design' },
-    calc: { en: 'Share of the matched overlap included in records-based measurement', it: 'Quota dell’overlap matchato inclusa nel measurement su record' },
-    assumption: { en: '100% by default', it: '100% di default' },
+    label: { en: 'Frequency multiple', it: 'Moltiplicatore di frequenza' },
+    impacts: { en: 'Impressions per campaign (drives measurement)', it: 'Impression per campagna (guida il measurement)' },
+    source: { en: 'Adobe calculator default — 10× recommendation', it: 'Default del calcolatore Adobe — raccomandazione 10×' },
+    calc: { en: 'Impressions = matched × frequency × reach', it: 'Impression = matchata × frequenza × reach' },
+    assumption: { en: '10× by default', it: '10× di default' },
   },
-  // ── Management ──
   {
-    key: 'managedBase', group: 'collab', mode: 'activity', format: 'int', input: 'select', options: MANAGED_BASE_OPTIONS,
+    key: 'reachPct', group: 'collab', mode: SIMPLE_DETAILED, format: 'percent', advancedOnly: true,
+    category: 'overlap', dataType: 'default-assumption',
+    section: { en: 'Audience & funnel', it: 'Audience e funnel' },
+    label: { en: 'Reach', it: 'Reach' },
+    impacts: { en: 'Impressions & conversions per campaign', it: 'Impression e conversioni per campagna' },
+    source: { en: 'Adobe calculator default — 50% recommendation', it: 'Default del calcolatore Adobe — raccomandazione 50%' },
+    calc: { en: 'Share of the matched audience reached', it: 'Quota di audience matchata raggiunta' },
+    assumption: { en: '50% by default', it: '50% di default' },
+  },
+  {
+    key: 'conversionRate', group: 'collab', mode: SIMPLE_DETAILED, format: 'percent', advancedOnly: true,
+    category: 'overlap', dataType: 'default-assumption',
+    section: { en: 'Audience & funnel', it: 'Audience e funnel' },
+    label: { en: 'Conversion rate', it: 'Tasso di conversione' },
+    impacts: { en: 'Conversions per campaign (drives attribution measurement)', it: 'Conversioni per campagna (guida il measurement di attribution)' },
+    source: { en: 'Adobe calculator default — 5% recommendation', it: 'Default del calcolatore Adobe — raccomandazione 5%' },
+    calc: { en: 'Conversions = matched × reach × conversion rate', it: 'Conversioni = matchata × reach × tasso di conversione' },
+    assumption: { en: '5% by default', it: '5% di default' },
+  },
+  // ── Audience management (detailed) ──
+  {
+    key: 'refreshEveryXDays', group: 'collab', mode: 'detailed', format: 'int',
     category: 'management', dataType: 'default-assumption',
     section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Managed volume base', it: 'Base del volume gestito' },
-    impacts: { en: 'Which IDs the management activity is sized on', it: 'Su quali ID è dimensionata la gestione' },
-    source: { en: 'Modelling choice', it: 'Scelta di modellazione' },
-    calc: { en: 'Full addressable · overlap only · or a custom managed volume', it: 'Audience piena · solo overlap · o volume gestito custom' },
-    assumption: { en: 'Overlap only — you typically manage the matched subset', it: 'Solo overlap — di norma gestisci il sottoinsieme matchato' },
+    label: { en: 'Refresh every X days (1–6)', it: 'Refresh ogni X giorni (1–6)' },
+    impacts: { en: 'Refreshes/yr = 365 ÷ X → management credits', it: 'Refresh/anno = 365 ÷ X → credits di gestione' },
+    source: { en: 'Adobe calculator input (range 1–6 days)', it: 'Input del calcolatore Adobe (range 1–6 giorni)' },
+    calc: { en: 'How often the onboarded audience is transformed / re-indexed', it: 'Con che frequenza l’audience onboardata viene trasformata / re-indicizzata' },
+    assumption: { en: 'Every 6 days (≈61 refreshes/yr) — the workbook default', it: 'Ogni 6 giorni (≈61 refresh/anno) — il default del workbook' },
+  },
+  // ── Activation (detailed) ──
+  {
+    key: 'adHocCampaignsPerYear', group: 'collab', mode: 'detailed', format: 'int',
+    category: 'activation', dataType: 'customer-assumption',
+    section: { en: 'Activation', it: 'Attivazione' },
+    label: { en: 'Ad-hoc campaigns / year', it: 'Campagne ad-hoc / anno' },
+    impacts: { en: 'Ad-hoc activation credits', it: 'Credits di attivazione ad-hoc' },
+    source: { en: '2026 F1 calendar / tent-pole moments', it: 'Calendario F1 2026 / momenti tent-pole' },
+    calc: { en: 'One-time (ad hoc) activation campaigns per year', it: 'Campagne di attivazione one-time (ad hoc) per anno' },
+    assumption: { en: '1 by default — raise for a fuller activation plan', it: '1 di default — alzalo per un piano di attivazione più ricco' },
   },
   {
-    key: 'customManagedVolume', group: 'collab', mode: 'activity', format: 'int', advancedOnly: true, appliesWhen: 'managedBase=custom',
-    category: 'management', dataType: 'customer-assumption',
-    section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Custom managed volume (IDs)', it: 'Volume gestito custom (ID)' },
-    impacts: { en: 'Managed IDs when base = custom', it: 'ID gestiti quando base = custom' },
-    source: { en: 'Client-provided', it: 'Fornito dal cliente' },
-    calc: { en: 'Explicit count of IDs under management', it: 'Conteggio esplicito di ID in gestione' },
-    assumption: { en: '5M — used only when managed base = custom', it: '5M — usato solo quando la base gestita = custom' },
-  },
-  {
-    key: 'managedAudiences', group: 'collab', mode: 'activity', format: 'int',
-    category: 'management', dataType: 'default-assumption',
-    section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Managed audiences', it: 'Audience gestite' },
-    impacts: { en: 'Multiplies management credits (per-partner audiences)', it: 'Moltiplica i credits di gestione (audience per partner)' },
-    source: { en: 'Data-strategy assumption', it: 'Assunzione di data strategy' },
-    calc: { en: 'Distinct managed audiences (e.g. one per partner)', it: 'Audience gestite distinte (es. una per partner)' },
-    assumption: { en: '5 — one managed audience per data partner', it: '5 — una audience gestita per partner dati' },
-  },
-  {
-    key: 'refreshCadence', group: 'collab', mode: 'activity', format: 'int', input: 'select', options: CADENCE_OPTIONS,
-    category: 'management', dataType: 'default-assumption',
-    section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Refresh cadence', it: 'Cadenza di refresh' },
-    impacts: { en: 'Refreshes/yr → linear multiplier on management credits', it: 'Refresh/anno → moltiplicatore lineare sui credits di gestione' },
-    source: { en: 'Indexing-cadence assumption', it: 'Assunzione sulla cadenza di indicizzazione' },
-    calc: { en: 'How often the managed audience is re-indexed per year', it: 'Con che frequenza l’audience gestita viene re-indicizzata/anno' },
-    assumption: { en: 'Weekly (52/yr) — daily would be ~30× monthly', it: 'Settimanale (52/anno) — il giornaliero sarebbe ~30× il mensile' },
-  },
-  {
-    key: 'refreshCustomPerYear', group: 'collab', mode: 'activity', format: 'int', advancedOnly: true, appliesWhen: 'refreshCadence=custom',
-    category: 'management', dataType: 'customer-assumption',
-    section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Custom refreshes / year', it: 'Refresh custom / anno' },
-    impacts: { en: 'Refreshes/yr when cadence = custom', it: 'Refresh/anno quando cadenza = custom' },
-    source: { en: 'Client-provided', it: 'Fornito dal cliente' },
-    calc: { en: 'Explicit refresh count', it: 'Conteggio esplicito dei refresh' },
-    assumption: { en: '52 — used only when cadence = custom', it: '52 — usato solo quando cadenza = custom' },
-  },
-  {
-    key: 'creditPerMgmtPerMillionRefresh', group: 'collab', mode: 'activity', format: 'decimal', advancedOnly: true, toConfirm: true,
-    category: 'management', dataType: 'price',
-    section: { en: 'Audience management', it: 'Gestione audience' },
-    label: { en: 'Credits per 1M IDs / refresh', it: 'Credits per 1M ID / refresh' },
-    impacts: { en: 'Management credit burn-rate', it: 'Burn-rate credits di gestione' },
-    source: { en: 'Illustrative — Adobe Credit Consumption Table (quote-only)', it: 'Illustrativo — Credit Consumption Table Adobe (quote-only)' },
-    calc: { en: 'Credits consumed per 1M managed IDs per refresh', it: 'Credits consumati per 1M ID gestiti per refresh' },
-    assumption: { en: '0.1 credit / 1M IDs / refresh — placeholder', it: '0,1 credit / 1M ID / refresh — segnaposto' },
-  },
-  // ── Insights (advanced) ──
-  {
-    key: 'insightsRunsPerYear', group: 'collab', mode: 'activity', format: 'int', advancedOnly: true,
-    category: 'insights', dataType: 'default-assumption',
-    section: { en: 'Audience insights', it: 'Audience insights' },
-    label: { en: 'Insights runs / year', it: 'Run insights / anno' },
-    impacts: { en: 'Insights credits (often 0)', it: 'Credits insights (spesso 0)' },
-    source: { en: 'Workflow assumption', it: 'Assunzione di workflow' },
-    calc: { en: 'Overlap / insight reports generated per year', it: 'Report di overlap / insight generati/anno' },
-    assumption: { en: '0 by default — insights can be zero-cost but stay visible', it: '0 di default — gli insights possono essere a costo zero ma restano visibili' },
-  },
-  {
-    key: 'creditPerInsight', group: 'collab', mode: 'activity', format: 'decimal', advancedOnly: true, toConfirm: true,
-    category: 'insights', dataType: 'price',
-    section: { en: 'Audience insights', it: 'Audience insights' },
-    label: { en: 'Credits per insight run', it: 'Credits per run insight' },
-    impacts: { en: 'Insights credit burn-rate', it: 'Burn-rate credits insights' },
-    source: { en: 'Illustrative (quote-only)', it: 'Illustrativo (quote-only)' },
-    calc: { en: 'Credits per insight run', it: 'Credits per run di insight' },
-    assumption: { en: '0 — placeholder', it: '0 — segnaposto' },
-  },
-  // ── Activation ──
-  {
-    key: 'activationMode', group: 'collab', mode: 'activity', format: 'int', input: 'select', options: ACTIVATION_MODE_OPTIONS,
+    key: 'audiencesPerCampaign', group: 'collab', mode: 'detailed', format: 'int', advancedOnly: true,
     category: 'activation', dataType: 'default-assumption',
     section: { en: 'Activation', it: 'Attivazione' },
-    label: { en: 'Activation mode', it: 'Modalità di attivazione' },
-    impacts: { en: 'Which runs count. On-demand & recurring are summed ONLY in Mixed.', it: 'Quali run contano. On-demand e recurring si sommano SOLO in Mista.' },
-    source: { en: 'Campaign-model choice', it: 'Scelta del modello di campagna' },
-    calc: { en: 'On-demand · recurring · or mixed (explicit sum)', it: 'On-demand · ricorrente · o mista (somma esplicita)' },
-    assumption: { en: 'Recurring — always-on, race-calendar aligned', it: 'Ricorrente — always-on, allineata al calendario gare' },
+    label: { en: 'Audiences per campaign', it: 'Audience per campagna' },
+    impacts: { en: 'Multiplies ad-hoc activation credits', it: 'Moltiplica i credits di attivazione ad-hoc' },
+    source: { en: 'Campaign-plan assumption', it: 'Assunzione di piano campagne' },
+    calc: { en: 'Audiences targeted per campaign (excluding always-on)', it: 'Audience targettizzate per campagna (escluse le always-on)' },
+    assumption: { en: '1 by default', it: '1 di default' },
   },
   {
-    key: 'onDemandRuns', group: 'collab', mode: 'activity', format: 'int', appliesWhen: 'activationMode=on-demand|mixed',
-    category: 'activation', dataType: 'customer-assumption',
+    key: 'alwaysOnRunsPerYear', group: 'collab', mode: 'detailed', format: 'int', advancedOnly: true,
+    category: 'activation', dataType: 'default-assumption',
     section: { en: 'Activation', it: 'Attivazione' },
-    label: { en: 'On-demand runs / year', it: 'Run on-demand / anno' },
-    impacts: { en: 'Activation runs (on-demand / mixed)', it: 'Run di attivazione (on-demand / mista)' },
-    source: { en: 'Campaign plan', it: 'Piano campagne' },
-    calc: { en: 'One-off activation pushes per year', it: 'Attivazioni one-off per anno' },
-    assumption: { en: '6 — tent-pole moments', it: '6 — momenti tent-pole' },
+    label: { en: 'Always-on activation runs / year', it: 'Run di attivazione always-on / anno' },
+    impacts: { en: 'Always-on (weekly) activation credits', it: 'Credits di attivazione always-on (settimanale)' },
+    source: { en: 'Adobe calculator burn rate (100 / 1M / run)', it: 'Burn rate del calcolatore Adobe (100 / 1M / run)' },
+    calc: { en: 'Always-on activation cadence per year (e.g. 52 = weekly)', it: 'Cadenza di attivazione always-on per anno (es. 52 = settimanale)' },
+    assumption: { en: '0 by default — set 52 for a weekly always-on programme', it: '0 di default — imposta 52 per un programma always-on settimanale' },
+  },
+  // ── Measurement (detailed) ──
+  {
+    key: 'measurementCampaignsPerYear', group: 'collab', mode: 'detailed', format: 'int', appliesWhen: 'measurementEnabled=true',
+    category: 'measurement', dataType: 'customer-assumption',
+    section: { en: 'Measurement', it: 'Measurement' },
+    label: { en: 'Measured campaigns / year', it: 'Campagne misurate / anno' },
+    impacts: { en: 'Summary-statistics & attribution measurement credits', it: 'Credits di measurement summary-statistics e attribution' },
+    source: { en: 'Reporting plan', it: 'Piano di reporting' },
+    calc: { en: 'Campaigns the customer runs measurement on per year', it: 'Campagne su cui il cliente esegue measurement per anno' },
+    assumption: { en: '1 by default', it: '1 di default' },
   },
   {
-    key: 'recurringRunsPerYear', group: 'collab', mode: 'activity', format: 'int', appliesWhen: 'activationMode=recurring|mixed',
-    category: 'activation', dataType: 'customer-assumption',
-    section: { en: 'Activation', it: 'Attivazione' },
-    label: { en: 'Recurring runs / year', it: 'Run ricorrenti / anno' },
-    impacts: { en: 'Activation runs (recurring / mixed)', it: 'Run di attivazione (ricorrente / mista)' },
-    source: { en: '2026 F1 calendar (24 GP) / always-on cadence', it: 'Calendario F1 2026 (24 GP) / cadenza always-on' },
-    calc: { en: 'Always-on activation cadence per year', it: 'Cadenza di attivazione always-on per anno' },
-    assumption: { en: '24 — ≈ 2 / month, race-aligned', it: '24 — ≈ 2 / mese, allineata alle gare' },
-  },
-  {
-    key: 'creditPerActivationPerMillion', group: 'collab', mode: 'activity', format: 'decimal', advancedOnly: true, toConfirm: true,
-    category: 'activation', dataType: 'price',
-    section: { en: 'Activation', it: 'Attivazione' },
-    label: { en: 'Credits per 1M activated / run', it: 'Credits per 1M attivati / run' },
-    impacts: { en: 'Activation credit burn-rate', it: 'Burn-rate credits di attivazione' },
-    source: { en: 'Illustrative — Access + Egress (quote-only)', it: 'Illustrativo — Access + Egress (quote-only)' },
-    calc: { en: 'Credits per 1M activated IDs per run', it: 'Credits per 1M ID attivati per run' },
-    assumption: { en: '0.1 credit / 1M / run — placeholder', it: '0,1 credit / 1M / run — segnaposto' },
-  },
-  // ── Measurement ──
-  {
-    key: 'measurementModel', group: 'collab', mode: 'activity', format: 'int', input: 'select', options: MEASUREMENT_MODEL_OPTIONS,
+    key: 'summaryReportsPerCampaign', group: 'collab', mode: 'detailed', format: 'int', advancedOnly: true, appliesWhen: 'measurementEnabled=true',
     category: 'measurement', dataType: 'default-assumption',
     section: { en: 'Measurement', it: 'Measurement' },
-    label: { en: 'Measurement model', it: 'Modello di measurement' },
-    impacts: { en: 'Records-based, report-based, hybrid or none', it: 'Su record, su report, ibrido o nessuno' },
-    source: { en: 'Measurement-design choice', it: 'Scelta di measurement design' },
-    calc: { en: 'How measurement credits are computed', it: 'Come si calcolano i credits di measurement' },
-    assumption: { en: 'Records-based — measured on the overlap', it: 'Su base record — misurato sull’overlap' },
-  },
-  {
-    key: 'measurementRunsPerYear', group: 'collab', mode: 'activity', format: 'int', appliesWhen: 'measurementModel=records|hybrid',
-    category: 'measurement', dataType: 'customer-assumption',
-    section: { en: 'Measurement', it: 'Measurement' },
-    label: { en: 'Measurement runs / year', it: 'Run di measurement / anno' },
-    impacts: { en: 'Records-based measurement credits', it: 'Credits measurement su record' },
-    source: { en: 'Reporting cadence', it: 'Cadenza di reporting' },
-    calc: { en: 'Records-based measurement runs per year', it: 'Run di measurement su record per anno' },
-    assumption: { en: '12 — monthly', it: '12 — mensile' },
-  },
-  {
-    key: 'reportsPerYear', group: 'collab', mode: 'activity', format: 'int', appliesWhen: 'measurementModel=reports|hybrid',
-    category: 'measurement', dataType: 'customer-assumption',
-    section: { en: 'Measurement', it: 'Measurement' },
-    label: { en: 'External reports / year', it: 'Report esterni / anno' },
-    impacts: { en: 'Report-based measurement credits', it: 'Credits measurement su report' },
+    label: { en: 'Summary-statistics reports / campaign', it: 'Report summary-statistics / campagna' },
+    impacts: { en: 'Summary-statistics measurement credits', it: 'Credits di measurement summary-statistics' },
     source: { en: 'Reporting plan', it: 'Piano di reporting' },
-    calc: { en: 'External measurement reports per year', it: 'Report di measurement esterni per anno' },
-    assumption: { en: '12 — monthly', it: '12 — mensile' },
+    calc: { en: 'Standalone summary-statistics reports per campaign', it: 'Report summary-statistics standalone per campagna' },
+    assumption: { en: '1 by default', it: '1 di default' },
   },
   {
-    key: 'creditPerMeasurementPerMillion', group: 'collab', mode: 'activity', format: 'decimal', advancedOnly: true, toConfirm: true, appliesWhen: 'measurementModel=records|hybrid',
-    category: 'measurement', dataType: 'price',
+    key: 'attributionReportsPerCampaign', group: 'collab', mode: 'detailed', format: 'int', advancedOnly: true, appliesWhen: 'measurementEnabled=true',
+    category: 'measurement', dataType: 'default-assumption',
     section: { en: 'Measurement', it: 'Measurement' },
-    label: { en: 'Credits per 1M measured / run', it: 'Credits per 1M misurati / run' },
-    impacts: { en: 'Records-based measurement burn-rate', it: 'Burn-rate measurement su record' },
-    source: { en: 'Illustrative (quote-only)', it: 'Illustrativo (quote-only)' },
-    calc: { en: 'Credits per 1M measured IDs per run', it: 'Credits per 1M ID misurati per run' },
-    assumption: { en: '0.05 credit / 1M / run — placeholder', it: '0,05 credit / 1M / run — segnaposto' },
+    label: { en: 'Attribution reports / campaign', it: 'Report di attribution / campagna' },
+    impacts: { en: 'Attribution measurement credits', it: 'Credits di measurement di attribution' },
+    source: { en: 'Reporting plan', it: 'Piano di reporting' },
+    calc: { en: 'Attribution reports per campaign (include summary statistics)', it: 'Report di attribution per campagna (includono summary statistics)' },
+    assumption: { en: '1 by default', it: '1 di default' },
   },
+  // ── Simple scoping ──
   {
-    key: 'creditPerReport', group: 'collab', mode: 'activity', format: 'decimal', advancedOnly: true, toConfirm: true, appliesWhen: 'measurementModel=reports|hybrid',
-    category: 'measurement', dataType: 'price',
-    section: { en: 'Measurement', it: 'Measurement' },
-    label: { en: 'Credits per external report', it: 'Credits per report esterno' },
-    impacts: { en: 'Report-based measurement burn-rate', it: 'Burn-rate measurement su report' },
-    source: { en: 'Illustrative (quote-only)', it: 'Illustrativo (quote-only)' },
-    calc: { en: 'Credits per external measurement report', it: 'Credits per report di measurement esterno' },
-    assumption: { en: '0.5 credit / report — placeholder', it: '0,5 credit / report — segnaposto' },
+    key: 'simpleCampaignsPerYear', group: 'collab', mode: 'simple', format: 'int',
+    category: 'activation', dataType: 'customer-assumption',
+    section: { en: 'Activation', it: 'Attivazione' },
+    label: { en: 'Total campaigns / year', it: 'Campagne totali / anno' },
+    impacts: { en: 'Activation & measurement (simple scoping)', it: 'Attivazione e measurement (scoping rapido)' },
+    source: { en: 'Adobe calculator campaign tiers (1 · 3 · 6 · 12 · 24 · 36)', it: 'Fasce campagne del calcolatore Adobe (1 · 3 · 6 · 12 · 24 · 36)' },
+    calc: { en: 'Estimated annual total campaigns', it: 'Totale campagne annue stimate' },
+    assumption: { en: '1 by default', it: '1 di default' },
   },
   // ── Unit price ──
   {
@@ -365,12 +266,12 @@ export const FIELD_AUDIT: FieldAudit[] = [
     section: { en: 'Unit price', it: 'Prezzo unitario' },
     label: { en: 'Price per credit', it: 'Prezzo per credito' },
     impacts: { en: 'Collaboration cost', it: 'Costo Collaboration' },
-    source: { en: 'Illustrative analyst estimate — Adobe pricing is quote-only', it: 'Stima illustrativa — il prezzo Adobe è solo da preventivo' },
-    calc: { en: '€ per Collaboration Credit', it: '€ per Collaboration Credit' },
-    assumption: { en: '€3.00 / credit placeholder — replace with the Sales Order value', it: '€3,00 / credit segnaposto — sostituire con il valore del Sales Order' },
+    source: { en: 'Adobe calculator list price ($5) — quote-only in practice', it: 'Prezzo di listino del calcolatore Adobe ($5) — nella pratica solo da preventivo' },
+    calc: { en: '€ (≈$) per Collaboration Credit', it: '€ (≈$) per Collaboration Credit' },
+    assumption: { en: '$5.00 / credit list — replace with the Sales Order value', it: '$5,00 / credit di listino — sostituire con il valore del Sales Order' },
   },
 
-  // ══════════════ CJA ══════════════
+  // ══════════════ CJA (independent product — unchanged) ══════════════
   {
     key: 'cjaIngestionMultiplier', group: 'cja', format: 'decimal', advancedOnly: true,
     category: 'row-conversion', dataType: 'official',
@@ -520,25 +421,25 @@ export const METRICS: MetricExplainer[] = [
     product: { en: 'Real-Time CDP Collaboration', it: 'Real-Time CDP Collaboration' },
     metric: { en: 'Collaboration Credits', it: 'Collaboration Credits' },
     what: {
-      en: 'The license metric for Real-Time CDP Collaboration. A finite pool of credits is consumed as you run collaboration activities with partners.',
-      it: 'La metrica di licenza di Real-Time CDP Collaboration. Un pool finito di credits viene consumato man mano che esegui attività di collaboration con i partner.',
+      en: 'The license metric for Real-Time CDP Collaboration. A finite pool of credits is consumed as you run collaboration activities. The model mirrors Adobe’s official Scoping Calculator: no annual allotment is netted — the estimate is rounded up to a recommended credit pack.',
+      it: 'La metrica di licenza di Real-Time CDP Collaboration. Un pool finito di credits viene consumato eseguendo attività di collaboration. Il modello rispecchia lo Scoping Calculator ufficiale Adobe: nessun allotment annuo viene sottratto — la stima è arrotondata a un pacchetto di crediti consigliato.',
     },
     consumes: [
-      { en: 'Audience management — managed IDs × refresh cadence (daily / every 3 days / weekly)', it: 'Gestione audience — ID gestiti × cadenza di refresh (giornaliera / ogni 3 giorni / settimanale)' },
-      { en: 'Activation — activated volume × runs, one-time or recurring (never summed unless Mixed)', it: 'Attivazione — volume attivato × run, one-time o ricorrente (mai sommate salvo Mista)' },
-      { en: 'Measurement — records-based, report-based or hybrid', it: 'Measurement — su record, su report o ibrido' },
+      { en: 'Audience transformation & management — onboarded IDs × refresh cadence (365 ÷ every-X-days) × 2 credits/1M', it: 'Trasformazione e gestione audience — ID onboardati × cadenza refresh (365 ÷ ogni-X-giorni) × 2 credits/1M' },
+      { en: 'Activation — matched audience × campaigns × 500 credits/1M (ad hoc); always-on at 100/1M/run', it: 'Attivazione — audience matchata × campagne × 500 credits/1M (ad hoc); always-on a 100/1M/run' },
+      { en: 'Measurement — summary statistics on impressions + attribution on (impressions + conversions), at 50 credits/1M', it: 'Measurement — summary statistics su impression + attribution su (impression + conversioni), a 50 credits/1M' },
     ],
     example: {
-      en: 'e.g. management 5×(5.25M÷1M)×52×0.1 ≈ 137 + activation 24×(5.25M÷1M)×0.1 ≈ 13 + measurement ≈ 3 → ~152 credits/yr. Minus the Prime allotment (2,500) → 0 billable this year.',
-      it: 'es. gestione 5×(5,25M÷1M)×52×0,1 ≈ 137 + attivazione 24×(5,25M÷1M)×0,1 ≈ 13 + measurement ≈ 3 → ~152 credit/anno. Meno l’allotment Prime (2.500) → 0 fatturabili quest’anno.',
+      en: 'e.g. management (10M÷1M)×(365÷6)×2 ≈ 1,217 + activation (0.3M÷1M)×1×500 = 150 + measurement 75 + 75.375 → ~1,517 credits/yr → recommended pack 2,000 × $5 = $10,000.',
+      it: 'es. gestione (10M÷1M)×(365÷6)×2 ≈ 1.217 + attivazione (0,3M÷1M)×1×500 = 150 + measurement 75 + 75,375 → ~1.517 credit/anno → pacchetto consigliato 2.000 × $5 = $10.000.',
     },
   },
   {
     product: { en: 'Customer Journey Analytics', it: 'Customer Journey Analytics' },
     metric: { en: 'Rows of Data', it: 'Rows of Data' },
     what: {
-      en: 'The license metric for CJA: the rows of data available for analysis, where 1 row = 0.25 KB. Every customer event — web, app, social, CRM — becomes rows.',
-      it: 'La metrica di licenza di CJA: le righe di dati disponibili per l’analisi, dove 1 riga = 0,25 KB. Ogni evento cliente — web, app, social, CRM — diventa righe.',
+      en: 'The license metric for CJA: the rows of data available for analysis, where 1 row = 0.25 KB. Every customer event — web, app, social, CRM — becomes rows. Independent of Collaboration.',
+      it: 'La metrica di licenza di CJA: le righe di dati disponibili per l’analisi, dove 1 riga = 0,25 KB. Ogni evento cliente — web, app, social, CRM — diventa righe. Indipendente da Collaboration.',
     },
     consumes: [
       { en: 'Licensed rows = the contracted Rows of Data available to report on (rolling 13-month Core Data window)', it: 'Righe licenziate = le Rows of Data contrattualizzate disponibili per il reporting (finestra Core Data a 13 mesi mobile)' },
@@ -571,17 +472,18 @@ export interface AssumptionMeta {
 
 export const ASSUMPTION_META: AssumptionMeta[] = [
   { key: 'metric-collab', tag: 'fact', en: 'Collaboration metric = Collaboration Credits', it: 'Metrica Collaboration = Collaboration Credits', sourceEn: 'Adobe Product Description', sourceIt: 'Product Description Adobe' },
-  { key: 'allotment', tag: 'fact', en: 'Bundled one-time allotment: 2,500 (Prime) / 5,000 (Ultimate)', it: 'Allotment one-time incluso: 2.500 (Prime) / 5.000 (Ultimate)', sourceEn: 'RT-CDP Prime/Ultimate PD', sourceIt: 'PD RT-CDP Prime/Ultimate' },
+  { key: 'burn-rates', tag: 'fact', en: 'Burn rates: management 2 · activation 500 · always-on 100 · measurement 50 (credits / 1M)', it: 'Burn rate: gestione 2 · attivazione 500 · always-on 100 · measurement 50 (credits / 1M)', sourceEn: 'Adobe RT-CDP Collaboration Scoping Calculator', sourceIt: 'Adobe RT-CDP Collaboration Scoping Calculator' },
+  { key: 'assumptions', tag: 'fact', en: 'Default assumptions: match 30% · reach 50% · frequency 10× · conversion 5% · $5/credit', it: 'Assunzioni di default: match 30% · reach 50% · frequenza 10× · conversione 5% · $5/credit', sourceEn: 'Adobe Scoping Calculator (defaults)', sourceIt: 'Adobe Scoping Calculator (default)' },
+  { key: 'pack-sizing', tag: 'fact', en: 'Deliverable = a recommended credit pack (no annual allotment subtraction)', it: 'Deliverable = un pacchetto di crediti consigliato (nessuna sottrazione di allotment annuo)', sourceEn: 'Adobe Scoping Calculator (Sales Calc row 31)', sourceIt: 'Adobe Scoping Calculator (Sales Calc riga 31)' },
   { key: 'metric-cja', tag: 'fact', en: 'CJA metric = Rows of Data (1 row = 0.25 KB)', it: 'Metrica CJA = Rows of Data (1 riga = 0,25 KB)', sourceEn: 'CJA Product Description', sourceIt: 'Product Description CJA' },
   { key: 'ingestion', tag: 'fact', en: 'Annual Ingestion Limit ≤ 3× licensed rows', it: 'Annual Ingestion Limit ≤ 3× righe licenziate', sourceEn: 'CJA Guardrails', sourceIt: 'CJA Guardrails' },
   { key: 'independence', tag: 'inference', en: 'Independent licensing — no dependency between the two', it: 'Licensing indipendente — nessuna dipendenza tra i due', sourceEn: 'Two separate Product Descriptions', sourceIt: 'Due Product Description separate' },
-  { key: 'funnel', tag: 'inference', en: 'Audience funnel: distinct → overlap → activated / measured', it: 'Funnel audience: distinta → overlap → attivata / misurata', sourceEn: 'Clean-room match-rate benchmarks', sourceIt: 'Benchmark match-rate clean-room' },
   { key: 'volumes', tag: 'inference', en: 'Ferrari volumes derived from public footprint', it: 'Volumi Ferrari derivati dal footprint pubblico', sourceEn: 'Nielsen / Similarweb / partner list', sourceIt: 'Nielsen / Similarweb / lista partner' },
-  { key: 'burn-rate', tag: 'sales-order', en: 'Credit burn-rates & unit prices are quote-only', it: 'Burn-rate credito e prezzi unitari solo da preventivo', sourceEn: 'Sales Order / Credit Consumption Table', sourceIt: 'Sales Order / Credit Consumption Table' },
+  { key: 'price', tag: 'sales-order', en: 'Unit prices are quote-only ($5 credit list price is illustrative)', it: 'I prezzi unitari sono solo da preventivo ($5 di listino per credito è illustrativo)', sourceEn: 'Sales Order', sourceIt: 'Sales Order' },
   { key: 'app-crm', tag: 'sales-order', en: 'App MAU & CRM size: client to confirm', it: 'App MAU e dimensione CRM: da confermare col cliente' },
 ];
 
 export const DISCLAIMER = {
-  it: 'Stima illustrativa basata su assunzioni dichiarate e su capability pubbliche Adobe. Non sostituisce un Sales Order o i PSLT applicabili. Prezzi unitari e burn-rate dei crediti da definire contrattualmente.',
-  en: 'Illustrative estimate based on stated assumptions and public Adobe capabilities. It does not replace a Sales Order or applicable PSLT. Unit prices and credit burn-rates to be defined contractually.',
+  it: 'Stima illustrativa che replica la logica dello Scoping Calculator Adobe per RT-CDP Collaboration più un modello indipendente per CJA. Non sostituisce un Sales Order o i PSLT applicabili. Prezzi unitari da definire contrattualmente.',
+  en: 'Illustrative estimate replicating the Adobe Scoping Calculator logic for RT-CDP Collaboration plus an independent model for CJA. It does not replace a Sales Order or applicable PSLT. Unit prices to be defined contractually.',
 };
