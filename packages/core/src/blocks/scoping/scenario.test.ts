@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
   serializeScenario, deserializeScenario, scenarioIdFromSearch,
-  DEFAULT_ASSUMPTIONS, PRESET_ORDER, type Scenario,
+  DEFAULT_ASSUMPTIONS, DEFAULT_PRICES, PRESET_ORDER, type Scenario,
 } from './scenario';
 import type { UnitPrices } from './cost-model';
 
-const prices: UnitPrices = { currency: 'EUR', pricePerCredit: null, pricePerMillionRows: null };
+const prices: UnitPrices = { currency: 'EUR', ferrariInstanceCost: null, partnerInstanceCost: null };
 const scenario: Scenario = {
   title: 'Base',
   assumptions: { ...DEFAULT_ASSUMPTIONS, collabMode: 'direct', directCredits: 9000 },
@@ -32,8 +32,9 @@ describe('serialize/deserialize round-trip', () => {
     expect(back.assumptions.refreshEveryXDays).toBe(DEFAULT_ASSUMPTIONS.refreshEveryXDays);
     expect(back.assumptions.onboardedIds).toBe(DEFAULT_ASSUMPTIONS.onboardedIds);
     expect(back.assumptions.webHitsPerVisit).toBeTypeOf('number');
-    // prices default to the workbook list price ($5) when the payload omits them:
-    expect(back.prices.pricePerCredit).toBe(5);
+    // instance costs default (Ferrari editable hypothesis, partner 0) when omitted:
+    expect(back.prices.ferrariInstanceCost).toBe(DEFAULT_PRICES.ferrariInstanceCost);
+    expect(back.prices.partnerInstanceCost).toBe(0);
   });
 });
 

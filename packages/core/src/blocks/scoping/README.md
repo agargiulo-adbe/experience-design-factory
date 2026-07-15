@@ -68,12 +68,14 @@ measurement = CEILING( (impressions + conversions) ÷ 1M × 50 × measurementEna
 
 **`direct`** — `estimated = max(0, directCredits)`.
 
-**No annual allotment.** The deliverable is a **recommended credit pack** — the total
-rounded UP by tier (workbook Sales Calc row 31), and the cost sells that pack:
+**No annual allotment, no list prices.** The deliverable is a **recommended credit
+pack** — the total rounded UP by tier (workbook Sales Calc row 31) — as a VOLUME.
+Perimeter = 1 Ferrari instance + N partner instances (all standalone). The monetary
+cost is a user-set hypothesis, not derived from Adobe prices:
 
 ```
 recommendedPack = total → CEILING(100|500|1,000|5,000 by magnitude)
-cost            = recommendedPack × pricePerCredit
+totalCost       = ferrariInstanceCost + partnerInstances × partnerInstanceCost   (editable)
 ```
 
 ## Calculation model (CJA)
@@ -86,8 +88,8 @@ crm    = crmProfiles × crmEventsPerProfilePerYear
 events = eventsRowsPerYear
 rows   = Σ(web, app, social, crm, events)
 ingestionLimit = rows × cjaIngestionMultiplier      (official guardrail = 3)
-cost   = (rows ÷ 1M) × pricePerMillionRows
 ```
+CJA is a VOLUME only (Rows of Data) — no separate cost is modelled.
 
 `computeBreakdown` also returns `cjaSources[]` with each source's rows, weight %
 and substituted formula (the per-source bars in the drawer).

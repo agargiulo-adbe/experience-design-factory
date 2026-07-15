@@ -6,17 +6,19 @@ import { DEFAULT_ASSUMPTIONS } from '@edf/core/blocks/scoping/scenario';
 //  Collaboration Scoping Calculator" (Sales Calculator + hidden burn/assump
 //  sheet). Burn rates (mgmt 2 · activation 500 · always-on 100 · measurement
 //  50 credits per 1M) and the default assumptions (match 30% · reach 50% ·
-//  frequency 10× · conversion 5% · $5/credit) are OFFICIAL constants baked
-//  into the engine (see cost-model.ts BURN / ASSUMPTION_DEFAULTS), not tunable
-//  placeholders. Ferrari volume figures are reasoned inferences from public
+//  frequency 10× · conversion 5%) are OFFICIAL constants baked into the engine
+//  (see cost-model.ts BURN / ASSUMPTION_DEFAULTS), not tunable placeholders.
+//  The model computes licence VOLUMES only (credits / rows) — no Adobe list
+//  prices; the cost per instance is a user-set hypothesis (standalone scenario).
+//  Ferrari volume figures are reasoned inferences from public
 //  footprint research (F1 826.5M fans · Scuderia social ~35M · ferrari.com
 //  ~2.7M/mo). CJA (Rows of Data) is a second, independent product and is NOT
 //  part of the Adobe workbook.
 // ─────────────────────────────────────────────────────────────────────
 
-// Unit prices — collab credit list price is the workbook's $5 (H13); CJA per-row
-// price is a quote-only illustrative placeholder.
-const ILLUSTRATIVE_PRICES = { currency: 'EUR', pricePerCredit: 5, pricePerMillionRows: 2 };
+// Instance costs are user-set hypotheses (no Adobe list prices modelled):
+// a cost for the Ferrari instance (editable) and 0 per partner instance (editable).
+const ILLUSTRATIVE_PRICES = { currency: 'EUR', ferrariInstanceCost: 100_000, partnerInstanceCost: 0 };
 
 // ── Scenario presets (Conservative / Base / Aggressive). Each is a delta
 //    over DEFAULT_ASSUMPTIONS; the calculator surfaces them as chips. ──
@@ -27,8 +29,7 @@ export const SEED_SCENARIOS: Scenario[] = [
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
       collabMode: 'detailed',
-      ferrariPackage: 'rtcdp-ultimate',
-      partnerInstances: 1, partnerPackage: 'standalone',
+      partnerInstances: 1,
       partnerOnboardedIds: 1_000_000, partnerAvgAudienceSize: 150_000, partnerAdHocCampaignsPerYear: 2,
       refreshMode: 'campaign-linked', refreshesPerCampaign: 1,
       onboardedIds: 5_000_000, avgAudienceSize: 500_000, matchRate: 0.25,
@@ -54,8 +55,7 @@ export const SEED_SCENARIOS: Scenario[] = [
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
       collabMode: 'detailed',
-      ferrariPackage: 'rtcdp-ultimate',
-      partnerInstances: 8, partnerPackage: 'standalone',
+      partnerInstances: 8,
       partnerOnboardedIds: 4_000_000, partnerAvgAudienceSize: 600_000, partnerAdHocCampaignsPerYear: 6,
       refreshMode: 'continuous', refreshesPerCampaign: 1,
       onboardedIds: 40_000_000, avgAudienceSize: 4_000_000, matchRate: 0.4,
@@ -110,12 +110,6 @@ export interface FieldAudit {
 
 const SIMPLE_DETAILED = 'simple|detailed';
 
-// Package selector options (RT-CDP Collaboration SKU packaging).
-const PACKAGE_OPTIONS: FieldOption[] = [
-  { value: 'standalone', label: { en: 'Standalone — Base + Credits', it: 'Standalone — Base + Credits' } },
-  { value: 'rtcdp-prime', label: { en: 'RTCDP Prime — Base incl. + 2,500 cr', it: 'RTCDP Prime — Base incl. + 2.500 cr' } },
-  { value: 'rtcdp-ultimate', label: { en: 'RTCDP Ultimate — Base incl. + 5,000 cr', it: 'RTCDP Ultimate — Base incl. + 5.000 cr' } },
-];
 const REFRESH_MODE_OPTIONS: FieldOption[] = [
   { value: 'continuous', label: { en: 'Continuous (always-on)', it: 'Continuo (always-on)' } },
   { value: 'campaign-linked', label: { en: 'Around campaigns only', it: 'Solo a ridosso delle campagne' } },
@@ -125,63 +119,43 @@ const PERIMETER = { en: 'Perimeter & instances', it: 'Perimetro & istanze' };
 
 export const FIELD_AUDIT: FieldAudit[] = [
   // ══════════════ PERIMETER & INSTANCES ══════════════
-  // 1 Ferrari Racing instance + N partner instances (one Collaboration instance
-  // per sponsor). Package selectors drive the Base SKU flat fee and the bundled
-  // credit entitlement that is netted before pricing.
+  // 1 Ferrari Racing instance + N partner instances (all standalone). Volumes drive
+  // the credit estimate; the per-instance cost is a user-set hypothesis (editable).
   {
-    key: 'ferrariPackage', group: 'collab', input: 'select', options: PACKAGE_OPTIONS, format: 'int',
+    key: 'ferrariInstanceCost', group: 'collab', format: 'currency',
     category: 'party', dataType: 'customer-assumption',
     section: PERIMETER,
-    label: { en: 'Ferrari package', it: 'Pacchetto Ferrari' },
-    hint: { en: 'RTCDP customer → Base included + bundled credits netted before you pay.', it: 'Cliente RTCDP → Base inclusa + crediti inclusi nettati prima di pagare.' },
-    impacts: { en: 'Ferrari Base fee (0 if included) & credits netted from the estimate', it: 'Base fee Ferrari (0 se inclusa) e crediti nettati dalla stima' },
-    source: { en: 'Adobe RT-CDP Collaboration SKUs — entitlements', it: 'SKU Adobe RT-CDP Collaboration — entitlement' },
-    calc: { en: 'Ultimate 5,000 · Prime 2,500 included credits; standalone 0 + Base fee', it: 'Ultimate 5.000 · Prime 2.500 crediti inclusi; standalone 0 + Base fee' },
-    assumption: { en: 'RTCDP Ultimate — Ferrari is the CDP customer aggregating all partners', it: 'RTCDP Ultimate — Ferrari è il cliente CDP che aggrega tutti i partner' },
-  },
-  {
-    key: 'ferrariBaseSkuPrice', group: 'collab', format: 'currency', toConfirm: true, advancedOnly: true, appliesWhen: 'ferrariPackage=standalone',
-    category: 'party', dataType: 'price',
-    section: PERIMETER,
-    label: { en: 'Ferrari Base SKU / yr', it: 'SKU Base Ferrari / anno' },
-    impacts: { en: 'Ferrari Collaboration cost (only if standalone)', it: 'Costo Collaboration Ferrari (solo se standalone)' },
-    source: { en: 'Adobe SKU sheet — Base list $20k / floor $5k', it: 'Listino SKU Adobe — Base $20k listino / $5k floor' },
-    calc: { en: 'Flat annual fee for the Collaboration Base SKU', it: 'Canone annuo flat per lo SKU Base Collaboration' },
-    assumption: { en: '$20,000 list — quote-only; not charged when Base is included', it: '$20.000 listino — da preventivo; non addebitato se la Base è inclusa' },
+    label: { en: 'Ferrari instance cost / yr', it: 'Costo istanza Ferrari / anno' },
+    hint: { en: 'Your cost hypothesis for the Ferrari instance — set it as you like.', it: 'La tua ipotesi di costo per l’istanza Ferrari — impostala come preferisci.' },
+    impacts: { en: 'Total cost (Ferrari instance)', it: 'Costo totale (istanza Ferrari)' },
+    source: { en: 'Your assumption — no Adobe list price', it: 'Tua assunzione — nessun prezzo di listino Adobe' },
+    calc: { en: 'Flat annual cost you attribute to the Ferrari instance', it: 'Costo annuo flat che attribuisci all’istanza Ferrari' },
+    assumption: { en: 'A round placeholder — replace with your own figure', it: 'Un valore segnaposto — sostituiscilo con la tua cifra' },
   },
   {
     key: 'partnerInstances', group: 'collab', format: 'int',
     category: 'perimeter', dataType: 'customer-assumption',
     section: PERIMETER,
     label: { en: 'Partner instances', it: 'Istanze partner' },
-    hint: { en: 'One Collaboration instance per sponsor — multiplies the partner-tipo cost below.', it: 'Una istanza Collaboration per sponsor — moltiplica il costo del partner-tipo qui sotto.' },
-    impacts: { en: 'Multiplies the partner-tipo cost (Base + credits) by N', it: 'Moltiplica il costo del partner-tipo (Base + crediti) per N' },
+    hint: { en: 'One Collaboration instance per sponsor — multiplies the partner cost below.', it: 'Una istanza Collaboration per sponsor — moltiplica il costo partner qui sotto.' },
+    impacts: { en: 'Multiplies the per-partner cost by N', it: 'Moltiplica il costo per-partner per N' },
     source: { en: 'Scuderia Ferrari HP partner roster', it: 'Roster partner Scuderia Ferrari HP' },
     calc: { en: 'Number of partner sponsors each running their own instance', it: 'Numero di partner sponsor, ciascuno con la propria istanza' },
     assumption: { en: '3 partners by default — set to your sponsor count', it: '3 partner di default — imposta il tuo numero di sponsor' },
   },
   {
-    key: 'partnerPackage', group: 'collab', input: 'select', options: PACKAGE_OPTIONS, format: 'int',
+    key: 'partnerInstanceCost', group: 'collab', format: 'currency',
     category: 'party', dataType: 'customer-assumption',
     section: PERIMETER,
-    label: { en: 'Partner-tipo package', it: 'Pacchetto partner-tipo' },
-    impacts: { en: 'Partner Base fee & credits netted, per instance', it: 'Base fee partner e crediti nettati, per istanza' },
-    source: { en: 'Adobe RT-CDP Collaboration SKUs — entitlements', it: 'SKU Adobe RT-CDP Collaboration — entitlement' },
-    calc: { en: 'Most sponsors are not RTCDP customers → Base + Credits', it: 'La maggior parte degli sponsor non è cliente RTCDP → Base + Credits' },
-    assumption: { en: 'Standalone — sponsors buy both Base and Credits', it: 'Standalone — gli sponsor acquistano Base e Credits' },
+    label: { en: 'Cost per partner instance / yr', it: 'Costo per istanza partner / anno' },
+    hint: { en: 'Cost per partner instance — 0 by default; edit if partners are charged.', it: 'Costo per istanza partner — 0 di default; modificalo se i partner hanno un costo.' },
+    impacts: { en: 'Total cost = Ferrari + (this × partner instances)', it: 'Costo totale = Ferrari + (questo × istanze partner)' },
+    source: { en: 'Your assumption — no Adobe list price', it: 'Tua assunzione — nessun prezzo di listino Adobe' },
+    calc: { en: 'Flat annual cost per partner instance', it: 'Costo annuo flat per istanza partner' },
+    assumption: { en: '0 by default — editable', it: '0 di default — modificabile' },
   },
   {
-    key: 'partnerBaseSkuPrice', group: 'collab', format: 'currency', toConfirm: true, advancedOnly: true, appliesWhen: 'partnerPackage=standalone',
-    category: 'party', dataType: 'price',
-    section: PERIMETER,
-    label: { en: 'Partner Base SKU / yr', it: 'SKU Base partner / anno' },
-    impacts: { en: 'Partner Collaboration cost, per instance', it: 'Costo Collaboration partner, per istanza' },
-    source: { en: 'Adobe SKU sheet — Base list $20k / floor $5k', it: 'Listino SKU Adobe — Base $20k listino / $5k floor' },
-    calc: { en: 'Flat annual fee for each standalone partner instance', it: 'Canone annuo flat per ogni istanza partner standalone' },
-    assumption: { en: '$20,000 list — quote-only', it: '$20.000 listino — da preventivo' },
-  },
-  {
-    key: 'partnerAdHocCampaignsPerYear', group: 'collab', format: 'int',
+    key: 'partnerAdHocCampaignsPerYear', group: 'collab', format: 'int', advancedOnly: true,
     category: 'perimeter', dataType: 'customer-assumption',
     section: PERIMETER,
     label: { en: 'Campaigns / partner / yr', it: 'Campagne / partner / anno' },
@@ -394,17 +368,6 @@ export const FIELD_AUDIT: FieldAudit[] = [
     calc: { en: 'Estimated annual total campaigns', it: 'Totale campagne annue stimate' },
     assumption: { en: '1 by default', it: '1 di default' },
   },
-  // ── Unit price ──
-  {
-    key: 'pricePerCredit', group: 'collab', format: 'currency', toConfirm: true,
-    category: 'pricing', dataType: 'price',
-    section: { en: 'Unit price', it: 'Prezzo unitario' },
-    label: { en: 'Price per credit', it: 'Prezzo per credito' },
-    impacts: { en: 'Collaboration cost', it: 'Costo Collaboration' },
-    source: { en: 'Adobe calculator list price ($5) — quote-only in practice', it: 'Prezzo di listino del calcolatore Adobe ($5) — nella pratica solo da preventivo' },
-    calc: { en: '€ (≈$) per Collaboration Credit', it: '€ (≈$) per Collaboration Credit' },
-    assumption: { en: '$5.00 / credit list — replace with the Sales Order value', it: '$5,00 / credit di listino — sostituire con il valore del Sales Order' },
-  },
 
   // ══════════════ CJA (independent product — unchanged) ══════════════
   {
@@ -522,16 +485,6 @@ export const FIELD_AUDIT: FieldAudit[] = [
     calc: { en: 'On-site / eSports events per year', it: 'Eventi on-site / eSports per anno' },
     assumption: { en: '30M events / year', it: '30M eventi / anno' },
   },
-  {
-    key: 'pricePerMillionRows', group: 'cja', format: 'currency', toConfirm: true,
-    category: 'pricing', dataType: 'price',
-    section: { en: 'Unit price', it: 'Prezzo unitario' },
-    label: { en: 'Price per 1M rows', it: 'Prezzo per 1M righe' },
-    impacts: { en: 'CJA cost', it: 'Costo CJA' },
-    source: { en: 'Illustrative analyst estimate — CJA pricing is quote-only', it: 'Stima illustrativa — il prezzo CJA è solo da preventivo' },
-    calc: { en: '€ per 1M Rows of Data', it: '€ per 1M Rows of Data' },
-    assumption: { en: '€2.00 / 1M rows placeholder — replace with the Sales Order value', it: '€2,00 / 1M righe segnaposto — sostituire con il valore del Sales Order' },
-  },
 ];
 
 // Semantic badge labels (shown next to each field) — bilingual.
@@ -565,8 +518,8 @@ export const METRICS: MetricExplainer[] = [
       { en: 'Measurement — summary statistics on impressions + attribution on (impressions + conversions), at 50 credits/1M.', it: 'Measurement — summary statistics su impression + attribution su (impression + conversioni), a 50 credits/1M.' },
     ],
     example: {
-      en: 'e.g. management (10M÷1M)×(365÷6)×2 ≈ 1,217 + activation (0.3M÷1M)×1×500 = 150 + measurement 75 + 75.375 → ~1,517 credits/yr → recommended pack 2,000 × $5 = $10,000.',
-      it: 'es. gestione (10M÷1M)×(365÷6)×2 ≈ 1.217 + attivazione (0,3M÷1M)×1×500 = 150 + measurement 75 + 75,375 → ~1.517 credit/anno → pacchetto consigliato 2.000 × $5 = $10.000.',
+      en: 'e.g. management (10M÷1M)×(365÷6)×2 ≈ 1,217 + activation (0.3M÷1M)×1×500 = 150 + measurement 75 + 75.375 → ~1,517 credits/yr → recommended pack 2,000.',
+      it: 'es. gestione (10M÷1M)×(365÷6)×2 ≈ 1.217 + attivazione (0,3M÷1M)×1×500 = 150 + measurement 75 + 75,375 → ~1.517 credit/anno → pacchetto consigliato 2.000.',
     },
   },
   {
@@ -598,58 +551,58 @@ export interface CostDriver {
 
 export const COST_DRIVERS: CostDriver[] = [
   {
-    tag: { en: 'Base SKU · flat fee', it: 'SKU Base · canone flat' },
-    title: { en: 'A Base fee per instance', it: 'Una Base fee per istanza' },
+    tag: { en: 'Instances · perimeter', it: 'Istanze · perimetro' },
+    title: { en: 'One instance per party', it: 'Una istanza per party' },
     body: {
-      en: 'Every standalone Collaboration instance carries a flat annual Base SKU ($20k list, $5k floor). It is included for existing Real-Time CDP customers.',
-      it: 'Ogni istanza Collaboration standalone porta uno SKU Base annuo flat ($20k listino, $5k floor). È inclusa per i clienti Real-Time CDP esistenti.',
+      en: 'Ferrari runs its own Collaboration instance; each partner runs its own. Every instance is standalone.',
+      it: 'Ferrari ha la propria istanza Collaboration; ogni partner la propria. Ogni istanza è standalone.',
     },
     ferrari: {
-      en: 'Ferrari is an RTCDP Ultimate customer → Base included (€0). Each standalone partner instance pays its own Base fee.',
-      it: 'Ferrari è cliente RTCDP Ultimate → Base inclusa (€0). Ogni istanza partner standalone paga la propria Base fee.',
+      en: 'With N partners the perimeter is 1 Ferrari instance + N partner instances.',
+      it: 'Con N partner il perimetro è 1 istanza Ferrari + N istanze partner.',
     },
   },
   {
     tag: { en: 'Collaboration Credits', it: 'Collaboration Credits' },
-    title: { en: 'A credit pool, entitlement netted', it: 'Un pool di crediti, al netto dell’entitlement' },
+    title: { en: 'A credit pool per instance', it: 'Un pool di crediti per istanza' },
     body: {
-      en: 'Activities burn credits (management + activation + measurement). Bundled credits from the package are netted first; only the surplus is bought as a pack.',
-      it: 'Le attività consumano credits (gestione + attivazione + measurement). I crediti inclusi nel pacchetto si nettano prima; solo il surplus si acquista come pacchetto.',
+      en: 'Management + activation + measurement consume Collaboration Credits. It is the licence volume, not a price.',
+      it: 'Gestione + attivazione + measurement consumano Collaboration Credits. È il volume di licenza, non un prezzo.',
     },
     ferrari: {
-      en: 'Ferrari’s ~1,500 credits/yr fall inside the 5,000 included with Ultimate → €0. A typical partner (~500 credits) buys a small pack.',
-      it: 'I ~1.500 credits/anno di Ferrari rientrano nei 5.000 inclusi con Ultimate → €0. Un partner tipo (~500 credits) compra un piccolo pacchetto.',
-    },
-  },
-  {
-    tag: { en: 'Partner instances × N', it: 'Istanze partner × N' },
-    title: { en: 'One instance per sponsor', it: 'Una istanza per sponsor' },
-    body: {
-      en: 'Ferrari runs one instance; each partner runs its own. The partner-tipo cost (Base + credits) multiplies by the number of sponsors.',
-      it: 'Ferrari ha una istanza; ogni partner ha la propria. Il costo del partner-tipo (Base + crediti) si moltiplica per il numero di sponsor.',
-    },
-    ferrari: {
-      en: 'With 3 partners: 3 × (Base fee + credit pack). This is where most of the incremental Collaboration cost sits.',
-      it: 'Con 3 partner: 3 × (Base fee + pacchetto crediti). È qui che sta gran parte del costo incrementale di Collaboration.',
+      en: 'Estimated credits round up to a recommended pack — a quantity you can read and compare.',
+      it: 'I crediti stimati si arrotondano a un pacchetto consigliato — una quantità che puoi leggere e confrontare.',
     },
   },
   {
     tag: { en: 'CJA · Rows of Data', it: 'CJA · Rows of Data' },
     title: { en: 'One analytics instance, all partners', it: 'Un’unica istanza analytics, tutti i partner' },
     body: {
-      en: 'A single Ferrari CJA instance aggregates every partner’s results. It licenses on a separate metric — Rows of Data — independent of Collaboration.',
-      it: 'Un’unica istanza CJA Ferrari aggrega i risultati di ogni partner. Si licenzia su una metrica separata — Rows of Data — indipendente da Collaboration.',
+      en: 'A single Ferrari CJA instance aggregates every partner’s results. It sizes on a separate metric — Rows of Data — independent of Collaboration.',
+      it: 'Un’unica istanza CJA Ferrari aggrega i risultati di ogni partner. Si dimensiona su una metrica separata — Rows of Data — indipendente da Collaboration.',
     },
     ferrari: {
       en: 'Not multiplied by partners: one instance covers the whole grid. Sized on total web + app + social + CRM + events rows.',
       it: 'Non si moltiplica per i partner: una istanza copre tutta la griglia. Dimensionata sulle righe totali web + app + social + CRM + eventi.',
     },
   },
+  {
+    tag: { en: 'Cost · you set it', it: 'Costo · lo imposti tu' },
+    title: { en: 'The cost is your hypothesis', it: 'Il costo è una tua ipotesi' },
+    body: {
+      en: 'No list prices are baked in. You set the cost per instance in the calculator; the total follows from the perimeter.',
+      it: 'Nessun prezzo di listino è incorporato. Imposti tu il costo per istanza nel configuratore; il totale segue dal perimetro.',
+    },
+    ferrari: {
+      en: 'Ferrari instance cost is yours to set; partner instances default to 0 and are editable.',
+      it: 'Il costo dell’istanza Ferrari lo imposti tu; le istanze partner sono a 0 di default e modificabili.',
+    },
+  },
 ];
 
 export const COST_MODEL_SUMMARY = {
-  en: 'Annual cost = Ferrari instance (Base + credits, mostly covered by its entitlement) + N partner instances (Base + credits each) + one Ferrari CJA instance. Prices illustrative — confirm on the Sales Order.',
-  it: 'Costo annuo = istanza Ferrari (Base + crediti, per lo più coperti dall’entitlement) + N istanze partner (Base + crediti ciascuna) + un’unica istanza CJA Ferrari. Prezzi illustrativi — da confermare sul Sales Order.',
+  en: 'Perimeter = one Ferrari instance + N partner instances (all standalone) + one Ferrari CJA instance. Volumes (Collaboration Credits and Rows of Data) are estimated; the cost per instance is yours to set in the calculator.',
+  it: 'Perimetro = un’istanza Ferrari + N istanze partner (tutte standalone) + un’unica istanza CJA Ferrari. I volumi (Collaboration Credits e Rows of Data) sono stimati; il costo per istanza lo imposti tu nel configuratore.',
 };
 
 // ── End-to-end use cases spanning the whole product perimeter. ──
@@ -705,13 +658,13 @@ export const USE_CASES: UseCase[] = [
     },
     products: ['RT-CDP Collaboration', 'GenStudio', 'Adobe Express', 'CJA'],
     steps: [
-      { en: 'Provision the partner instance — its Base SKU + a starter credit pack.', it: 'Attiva l’istanza partner — il suo SKU Base + un pacchetto crediti iniziale.' },
+      { en: 'Provision the partner instance — a standalone Collaboration instance with its own credit pool.', it: 'Attiva l’istanza partner — un’istanza Collaboration standalone con il proprio pool di crediti.' },
       { en: 'Match audiences, then create the first campaign in GenStudio + Express.', it: 'Match delle audience, poi crea la prima campagna in GenStudio + Express.' },
       { en: 'Activate and measure; the results roll into Ferrari’s single CJA view.', it: 'Attiva e misura; i risultati confluiscono nell’unica vista CJA di Ferrari.' },
     ],
     consumes: {
-      en: 'A new partner instance → one more Base fee + credit pack; nothing extra on CJA (one shared instance).',
-      it: 'Una nuova istanza partner → una Base fee + pacchetto crediti in più; nulla di extra su CJA (istanza unica condivisa).',
+      en: 'A new partner instance → its own credit pack; nothing extra on CJA (one shared Ferrari instance).',
+      it: 'Una nuova istanza partner → il suo pacchetto crediti; nulla di extra su CJA (istanza Ferrari unica condivisa).',
     },
   },
   {
@@ -753,20 +706,18 @@ export interface AssumptionMeta {
 export const ASSUMPTION_META: AssumptionMeta[] = [
   { key: 'metric-collab', tag: 'fact', en: 'Collaboration metric = Collaboration Credits', it: 'Metrica Collaboration = Collaboration Credits', sourceEn: 'Adobe Product Description', sourceIt: 'Product Description Adobe' },
   { key: 'burn-rates', tag: 'fact', en: 'Burn rates: management 2 · activation 500 · always-on 100 · measurement 50 (credits / 1M)', it: 'Burn rate: gestione 2 · attivazione 500 · always-on 100 · measurement 50 (credits / 1M)', sourceEn: 'Adobe RT-CDP Collaboration Scoping Calculator', sourceIt: 'Adobe RT-CDP Collaboration Scoping Calculator' },
-  { key: 'assumptions', tag: 'fact', en: 'Default assumptions: match 30% · reach 50% · frequency 10× · conversion 5% · $5/credit', it: 'Assunzioni di default: match 30% · reach 50% · frequenza 10× · conversione 5% · $5/credit', sourceEn: 'Adobe Scoping Calculator (defaults)', sourceIt: 'Adobe Scoping Calculator (default)' },
-  { key: 'pack-sizing', tag: 'fact', en: 'Deliverable = a recommended credit pack (chargeable = estimate − included credits)', it: 'Deliverable = un pacchetto di crediti consigliato (a pagamento = stima − crediti inclusi)', sourceEn: 'Adobe Scoping Calculator (Sales Calc row 31)', sourceIt: 'Adobe Scoping Calculator (Sales Calc riga 31)' },
-  { key: 'base-sku', tag: 'fact', en: 'Base SKU flat fee: $20k list / $5k floor per year, per standalone instance', it: 'SKU Base canone flat: $20k listino / $5k floor l’anno, per istanza standalone', sourceEn: 'Adobe RT-CDP Collaboration SKUs', sourceIt: 'SKU Adobe RT-CDP Collaboration' },
-  { key: 'entitlements', tag: 'fact', en: 'RTCDP customers: Base included + credits bundled (Ultimate 5,000 · Prime 2,500)', it: 'Clienti RTCDP: Base inclusa + crediti inclusi (Ultimate 5.000 · Prime 2.500)', sourceEn: 'Adobe RT-CDP Collaboration SKUs', sourceIt: 'SKU Adobe RT-CDP Collaboration' },
-  { key: 'instances', tag: 'inference', en: 'One Collaboration instance per party: 1 Ferrari + N partner instances', it: 'Una istanza Collaboration per party: 1 Ferrari + N istanze partner', sourceEn: 'Perimeter model', sourceIt: 'Modello di perimetro' },
+  { key: 'assumptions', tag: 'fact', en: 'Default assumptions: match 30% · reach 50% · frequency 10× · conversion 5%', it: 'Assunzioni di default: match 30% · reach 50% · frequenza 10× · conversione 5%', sourceEn: 'Adobe Scoping Calculator (defaults)', sourceIt: 'Adobe Scoping Calculator (default)' },
+  { key: 'pack-sizing', tag: 'fact', en: 'Deliverable = a recommended credit pack (estimate rounded to a tier)', it: 'Deliverable = un pacchetto di crediti consigliato (stima arrotondata a scaglione)', sourceEn: 'Adobe Scoping Calculator (Sales Calc row 31)', sourceIt: 'Adobe Scoping Calculator (Sales Calc riga 31)' },
+  { key: 'standalone', tag: 'inference', en: 'Standalone scenario only — one Collaboration instance per party (1 Ferrari + N partners)', it: 'Solo scenario standalone — una istanza Collaboration per party (1 Ferrari + N partner)', sourceEn: 'Perimeter model', sourceIt: 'Modello di perimetro' },
+  { key: 'instance-cost', tag: 'sales-order', en: 'Instance cost is a user-set hypothesis (no Adobe list price modelled)', it: 'Il costo per istanza è un’ipotesi impostata dall’utente (nessun prezzo di listino Adobe)', sourceEn: 'Your input', sourceIt: 'Tuo input' },
   { key: 'metric-cja', tag: 'fact', en: 'CJA metric = Rows of Data (1 row = 0.25 KB)', it: 'Metrica CJA = Rows of Data (1 riga = 0,25 KB)', sourceEn: 'CJA Product Description', sourceIt: 'Product Description CJA' },
   { key: 'ingestion', tag: 'fact', en: 'Annual Ingestion Limit ≤ 3× licensed rows', it: 'Annual Ingestion Limit ≤ 3× righe licenziate', sourceEn: 'CJA Guardrails', sourceIt: 'CJA Guardrails' },
   { key: 'independence', tag: 'inference', en: 'Independent licensing — no dependency between the two', it: 'Licensing indipendente — nessuna dipendenza tra i due', sourceEn: 'Two separate Product Descriptions', sourceIt: 'Due Product Description separate' },
   { key: 'volumes', tag: 'inference', en: 'Ferrari volumes derived from public footprint', it: 'Volumi Ferrari derivati dal footprint pubblico', sourceEn: 'Nielsen / Similarweb / partner list', sourceIt: 'Nielsen / Similarweb / lista partner' },
-  { key: 'price', tag: 'sales-order', en: 'Unit prices are quote-only ($5 credit list price is illustrative)', it: 'I prezzi unitari sono solo da preventivo ($5 di listino per credito è illustrativo)', sourceEn: 'Sales Order', sourceIt: 'Sales Order' },
   { key: 'app-crm', tag: 'sales-order', en: 'App MAU & CRM size: client to confirm', it: 'App MAU e dimensione CRM: da confermare col cliente' },
 ];
 
 export const DISCLAIMER = {
-  it: 'Stima illustrativa che replica la logica dello Scoping Calculator Adobe per RT-CDP Collaboration più un modello indipendente per CJA. Non sostituisce un Sales Order o i PSLT applicabili. Prezzi unitari da definire contrattualmente.',
-  en: 'Illustrative estimate replicating the Adobe Scoping Calculator logic for RT-CDP Collaboration plus an independent model for CJA. It does not replace a Sales Order or applicable PSLT. Unit prices to be defined contractually.',
+  it: 'Stima illustrativa dei volumi di licenza (Collaboration Credits e CJA Rows of Data) per lo scenario standalone. I costi per istanza sono ipotesi impostate dall’utente. Non sostituisce un Sales Order o i PSLT applicabili.',
+  en: 'Illustrative estimate of the licence volumes (Collaboration Credits and CJA Rows of Data) for the standalone scenario. Per-instance costs are user-set hypotheses. It does not replace a Sales Order or applicable PSLT.',
 };

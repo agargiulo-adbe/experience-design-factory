@@ -55,22 +55,24 @@ const cjaGroups = grouped('cja');
 // Metric-explanation tooltips for every licensing concept (generic to the
 // Adobe products, hence hardcoded bilingual here — not Ferrari-specific).
 const collabResults = [
-  { out: 'collabFerrariCost', en: 'Ferrari instance', it: 'Istanza Ferrari',
-    tip: { en: 'Ferrari’s own Collaboration instance: Base fee (0 when included) + chargeable credit pack after the package’s bundled credits are netted. On RTCDP Ultimate its ~1,500 credits fall inside the 5,000 included → €0.', it: 'L’istanza Collaboration di Ferrari: Base fee (0 se inclusa) + pacchetto crediti a pagamento dopo aver nettato i crediti inclusi nel pacchetto. Con RTCDP Ultimate i suoi ~1.500 crediti rientrano nei 5.000 inclusi → €0.' } },
-  { out: 'collabPartnerCostTotal', en: 'Partner instances', it: 'Istanze partner',
-    tip: { en: 'One Collaboration instance per partner sponsor. Per-instance cost (Base fee + credit pack) × the number of partner instances.', it: 'Una istanza Collaboration per partner sponsor. Costo per istanza (Base fee + pacchetto crediti) × il numero di istanze partner.' } },
-  { out: 'collabBaseFeeTotal', en: 'Base SKU fees', it: 'Canoni SKU Base',
-    tip: { en: 'Sum of the flat annual Base SKU fees across all standalone instances ($20k list each). Included instances (RTCDP customers) contribute €0.', it: 'Somma dei canoni annui flat dello SKU Base su tutte le istanze standalone ($20k listino ciascuna). Le istanze incluse (clienti RTCDP) contribuiscono €0.' } },
-  { out: 'collabCost', en: 'Collaboration total', it: 'Totale Collaboration',
-    tip: { en: 'Ferrari instance + all partner instances (Base fees + credit packs). Prices are quote-only (illustrative here).', it: 'Istanza Ferrari + tutte le istanze partner (Base fee + pacchetti crediti). I prezzi sono solo da preventivo (qui illustrativi).' } },
+  { out: 'collabCreditsEstimated', en: 'Est. credits / yr', it: 'Credits stimati / anno',
+    tip: { en: 'Estimated Collaboration Credits the Ferrari instance consumes per year (audience management + activation + measurement). A licence VOLUME, not a price.', it: 'Collaboration Credits stimati che l’istanza Ferrari consuma in un anno (gestione audience + attivazione + measurement). Un VOLUME di licenza, non un prezzo.' } },
+  { out: 'collabRecommendedPack', en: 'Recommended pack', it: 'Pacchetto consigliato',
+    tip: { en: 'The estimated credits rounded up to a purchasable pack tier (100 / 500 / 1,000 / 5,000). A quantity you can read and compare.', it: 'I credits stimati arrotondati al pacchetto acquistabile (100 / 500 / 1.000 / 5.000). Una quantità che puoi leggere e confrontare.' } },
+  { out: 'partnerInstances', en: 'Partner instances', it: 'Istanze partner',
+    tip: { en: 'Number of partner Collaboration instances (one per sponsor), each estimated on its own volumes.', it: 'Numero di istanze Collaboration partner (una per sponsor), ognuna stimata sui propri volumi.' } },
 ];
 const cjaResults = [
   { out: 'cjaRowsPerYear', en: 'Licensed rows / yr', it: 'Righe licenziate / anno',
     tip: { en: 'Rows of Data licensed = the contracted analytical capacity (rolling 13-month Core Data window). 1 row = 0.25 KB — CJA’s license metric.', it: 'Rows of Data licenziate = la capacità analitica contrattualizzata (finestra Core Data 13 mesi mobile). 1 riga = 0,25 KB — la metrica di licenza di CJA.' } },
   { out: 'cjaAnnualIngestionLimit', en: 'Ingestion limit (3×)', it: 'Limite ingestion (3×)', guard: true,
     tip: { en: 'Annual Ingestion Limit: you may ingest up to 3× the licensed rows per year. A guardrail on flow, not reporting capacity.', it: 'Annual Ingestion Limit: puoi ingerire fino a 3× le righe licenziate all’anno. Un guardrail sul flusso, non capacità di reporting.' } },
-  { out: 'cjaCost', en: 'CJA cost', it: 'Costo CJA',
-    tip: { en: 'Licensed rows × price per 1M rows. The price is quote-only (illustrative here).', it: 'Righe licenziate × prezzo per 1M righe. Il prezzo è solo da preventivo (qui illustrativo).' } },
+];
+const costResults = [
+  { out: 'ferrariInstanceCost', en: 'Ferrari instance', it: 'Istanza Ferrari',
+    tip: { en: 'Your cost hypothesis for the Ferrari instance (editable in the form). No Adobe list price is modelled.', it: 'La tua ipotesi di costo per l’istanza Ferrari (modificabile nel form). Nessun prezzo di listino Adobe.' } },
+  { out: 'partnerCostTotal', en: 'Partner instances', it: 'Istanze partner',
+    tip: { en: 'Per-partner instance cost × the number of partner instances. Defaults to 0 (editable).', it: 'Costo per istanza partner × il numero di istanze partner. Default 0 (modificabile).' } },
 ];
 const badgeCollab = { en: 'The license metric for Real-Time CDP Collaboration — a finite pool of credits consumed by collaboration activities.', it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits consumato dalle attività di collaboration.' };
 const badgeCja = { en: 'The license metric for CJA — the daily-average rows of data available for analysis (1 row = 0.25 KB).', it: 'La metrica di licenza di CJA — la media giornaliera di righe di dati disponibili per l’analisi (1 riga = 0,25 KB).' };
@@ -106,9 +108,9 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
   <!-- ── Results bar (sticky, always visible) ─────────────────── -->
   <aside class="scoping-results" aria-live="polite">
     <div class="scoping-total-block">
-      <span class="scoping-total-label"><span data-lang-en>Total — indicative / year</span><span data-lang-it>Totale — indicativo / anno</span></span>
+      <span class="scoping-total-label"><span data-lang-en>Total cost — indicative / year</span><span data-lang-it>Costo totale — indicativo / anno</span></span>
       <b class="scoping-total-val" data-out="totalCost">—</b>
-      <span class="scoping-total-note"><span data-lang-en>Illustrative prices — replace with the Sales Order.</span><span data-lang-it>Prezzi illustrativi — sostituire con il Sales Order.</span></span>
+      <span class="scoping-total-note"><span data-lang-en>Per-instance costs are yours to set — no list prices modelled.</span><span data-lang-it>I costi per istanza li imposti tu — nessun prezzo di listino.</span></span>
     </div>
     <div class="scoping-res-groups">
       <div class="scoping-res-group">
@@ -128,6 +130,19 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
         <p class="scoping-res-h">Customer Journey Analytics</p>
         {cjaResults.map((r) => (
           <div class={`scoping-metric${r.guard ? ' scoping-guard' : ''}`}>
+            <span class="scoping-mlabel">
+              <span data-lang-en>{r.en}</span><span data-lang-it>{r.it}</span>
+              <button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button>
+              <span class="scoping-tip scoping-tip--metric"><span data-lang-en>{r.tip.en}</span><span data-lang-it>{r.tip.it}</span></span>
+            </span>
+            <b data-out={r.out}>—</b>
+          </div>
+        ))}
+      </div>
+      <div class="scoping-res-group">
+        <p class="scoping-res-h"><span data-lang-en>Cost (your hypothesis)</span><span data-lang-it>Costo (tua ipotesi)</span></p>
+        {costResults.map((r) => (
+          <div class="scoping-metric">
             <span class="scoping-mlabel">
               <span data-lang-en>{r.en}</span><span data-lang-it>{r.it}</span>
               <button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button>
@@ -263,8 +278,8 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
     let baseline: any = {};
     try { baseline = JSON.parse(localStorage.getItem('edf:scoping-baseline:' + ctx.projectSlug) || '{}'); } catch { baseline = {}; }
     function applyBaselinePrices() {
-      if (baseline.pricePerCredit != null) prices.pricePerCredit = baseline.pricePerCredit;
-      if (baseline.pricePerMillionRows != null) prices.pricePerMillionRows = baseline.pricePerMillionRows;
+      if (baseline.ferrariInstanceCost != null) prices.ferrariInstanceCost = baseline.ferrariInstanceCost;
+      if (baseline.partnerInstanceCost != null) prices.partnerInstanceCost = baseline.partnerInstanceCost;
     }
 
     // ── formatting ──────────────────────────────────────────
@@ -283,12 +298,12 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
     }
     const parseField = (s: string) => Number(String(s).replace(/,/g, '').trim());
 
-    const PRICE_KEYS = new Set(['pricePerCredit', 'pricePerMillionRows']);
+    const PRICE_KEYS = new Set(['ferrariInstanceCost', 'partnerInstanceCost']);
     const isControl = (el: Element) => el.tagName === 'SELECT'; // selects hold string values
 
     function valueFor(k: string): number {
-      if (k === 'pricePerCredit') return prices.pricePerCredit ?? 0;
-      if (k === 'pricePerMillionRows') return prices.pricePerMillionRows ?? 0;
+      if (k === 'ferrariInstanceCost') return prices.ferrariInstanceCost ?? 0;
+      if (k === 'partnerInstanceCost') return prices.partnerInstanceCost ?? 0;
       return (assumptions as any)[k] ?? 0;
     }
 
@@ -353,8 +368,8 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
       }
       const n = parseField((el as HTMLInputElement).value);
       const val = Number.isFinite(n) ? n : 0;
-      if (k === 'pricePerCredit') prices.pricePerCredit = val;
-      else if (k === 'pricePerMillionRows') prices.pricePerMillionRows = val;
+      if (k === 'ferrariInstanceCost') prices.ferrariInstanceCost = val;
+      else if (k === 'partnerInstanceCost') prices.partnerInstanceCost = val;
       else (assumptions as any)[k] = val;
     }
 
@@ -407,13 +422,11 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
       };
       out('collabCreditsEstimated', fmt(Math.round(s.collabCreditsEstimated)));
       out('collabRecommendedPack', fmt(Math.round(s.collabRecommendedPack)));
-      out('collabFerrariCost', fmtMoney(s.collabFerrariCost));
-      out('collabPartnerCostTotal', fmtMoney(s.collabPartnerCostTotal));
-      out('collabBaseFeeTotal', fmtMoney(s.collabBaseFeeTotal));
-      out('collabCost', fmtMoney(s.collabCost));
+      out('partnerInstances', fmt(s.partnerInstances));
       out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
       out('cjaAnnualIngestionLimit', fmt(s.cjaAnnualIngestionLimit));
-      out('cjaCost', fmtMoney(s.cjaCost));
+      out('ferrariInstanceCost', fmtMoney(s.ferrariInstanceCost));
+      out('partnerCostTotal', fmtMoney(s.partnerCostTotal));
       out('totalCost', fmtMoney(s.totalCost));
       const bd = computeBreakdown(assumptions, prices);
       renderWarnings(bd.warnings);
@@ -569,11 +582,11 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
       const rows: Array<[string, (s: ReturnType<typeof computeSnapshot>) => string]> = [
         ['Est. credits / yr', (s) => fmt(Math.round(s.collabCreditsEstimated))],
         ['Recommended pack', (s) => fmt(s.collabRecommendedPack)],
-        ['Collab cost', (s) => fmtMoney(s.collabCost)],
+        ['Partner instances', (s) => fmt(s.partnerInstances)],
         ['CJA rows / yr', (s) => fmt(s.cjaRowsPerYear)],
         ['Ingestion limit (3×)', (s) => fmt(s.cjaAnnualIngestionLimit)],
-        ['CJA cost', (s) => fmtMoney(s.cjaCost)],
-        ['Total', (s) => fmtMoney(s.totalCost)],
+        ['Ferrari instance cost', (s) => fmtMoney(s.ferrariInstanceCost)],
+        ['Total cost', (s) => fmtMoney(s.totalCost)],
       ];
       const snaps = scenarios.map((sc) => ({
         title: sc.title,

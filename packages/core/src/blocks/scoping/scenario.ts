@@ -1,5 +1,4 @@
 import type { ScopingAssumptions, UnitPrices } from './cost-model';
-import { CREDIT_LIST_PRICE } from './cost-model';
 
 /** Preset identity for the scenario chips (Conservative / Base / Aggressive). */
 export type PresetId = 'conservative' | 'base' | 'aggressive';
@@ -25,13 +24,9 @@ export const DEFAULT_ASSUMPTIONS: ScopingAssumptions = {
   // mode
   collabMode: 'detailed',
   directCredits: 5_000,
-  // perimeter & instances — Ferrari (RTCDP Ultimate: base + 5,000 credits included)
-  // plus a "partner-tipo" instance replicated across N sponsors (standalone).
-  ferrariPackage: 'rtcdp-ultimate',
-  ferrariBaseSkuPrice: 20_000,
+  // perimeter & instances — 1 Ferrari instance + N standalone partner instances.
+  // Volumes drive the credit estimate; the per-instance cost is user-set (prices).
   partnerInstances: 3,
-  partnerPackage: 'standalone',
-  partnerBaseSkuPrice: 20_000,
   partnerOnboardedIds: 2_000_000,
   partnerAvgAudienceSize: 300_000,
   partnerAdHocCampaignsPerYear: 3,
@@ -72,8 +67,8 @@ export const DEFAULT_ASSUMPTIONS: ScopingAssumptions = {
 
 export const DEFAULT_PRICES: UnitPrices = {
   currency: 'EUR',
-  pricePerCredit: CREDIT_LIST_PRICE, // $5 list (workbook H13); quote-only in practice
-  pricePerMillionRows: null,
+  ferrariInstanceCost: 100_000, // editable hypothesis for the Ferrari instance / yr
+  partnerInstanceCost: 0,       // editable; partner instances default to 0
 };
 
 export interface ScenarioPayload {

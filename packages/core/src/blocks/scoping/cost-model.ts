@@ -26,11 +26,6 @@
 export type CollabMode = 'simple' | 'detailed' | 'direct';
 export type MeasurementToggle = boolean;
 
-/** Commercial package of a collaborating party (Adobe RT-CDP Collaboration SKUs).
- *  • standalone      → non-RTCDP customer: buys Base SKU (flat fee) + Credits SKU.
- *  • rtcdp-prime     → RTCDP Prime customer: Base entitlement included + 2,500 credits.
- *  • rtcdp-ultimate  → RTCDP Ultimate customer: Base entitlement included + 5,000 credits. */
-export type PartyPackage = 'standalone' | 'rtcdp-prime' | 'rtcdp-ultimate';
 /** How the onboarded audience refresh cadence is modelled. */
 export type RefreshMode = 'continuous' | 'campaign-linked';
 
@@ -39,12 +34,10 @@ export interface ScopingAssumptions {
   collabMode: CollabMode;
   directCredits: number;         // 'direct' mode: credits scoped directly
 
-  // ── perimeter & instances (1 Ferrari instance + N partner-tipo instances) ──
-  ferrariPackage: PartyPackage;  // Ferrari's own Collaboration package (default RTCDP Ultimate)
-  ferrariBaseSkuPrice: number;   // Base SKU flat fee for Ferrari (only charged if standalone)
+  // ── perimeter & instances (1 Ferrari instance + N partner instances) ──
+  // All parties are standalone. Volumes below drive the credit VOLUME estimate;
+  // the monetary cost per instance is a user-set hypothesis (see UnitPrices).
   partnerInstances: number;      // number of partner Collaboration instances (one per partner)
-  partnerPackage: PartyPackage;  // partner-tipo package (default standalone)
-  partnerBaseSkuPrice: number;   // Base SKU flat fee per partner instance
   partnerOnboardedIds: number;   // IDs onboarded per partner-tipo instance / yr
   partnerAvgAudienceSize: number;// average audience per partner-tipo instance
   partnerAdHocCampaignsPerYear: number; // ad-hoc campaigns per partner-tipo instance / yr
@@ -88,10 +81,12 @@ export interface ScopingAssumptions {
   cjaIngestionMultiplier: number; // Annual Ingestion Limit = licensed rows × this (official guardrail = 3)
 }
 
+/** Editable, user-set cost hypotheses per Collaboration instance (no Adobe list
+ *  prices are modelled). Total cost = ferrariInstanceCost + N × partnerInstanceCost. */
 export interface UnitPrices {
   currency: string;
-  pricePerCredit: number | null;
-  pricePerMillionRows: number | null;
+  ferrariInstanceCost: number | null;   // cost of the Ferrari instance / yr (editable)
+  partnerInstanceCost: number | null;   // cost of each partner instance / yr (editable, default 0)
 }
 
 // ── Official constants — Adobe Scoping Calculator (hidden "Burn, Assump" sheet)
@@ -110,17 +105,6 @@ export const ASSUMPTION_DEFAULTS = {
   conversion: 0.05,       // H12
   creditListPrice: 5,     // H13 — $ per credit (list)
 } as const;
-export const CREDIT_LIST_PRICE = ASSUMPTION_DEFAULTS.creditListPrice;
-/** Base SKU flat fee (RTCDP Collaboration: Base). List / floor per year, USD.
- *  Source: Adobe "Real-Time CDP Collaboration SKUs" price sheet (Q1 2026). */
-export const COLLAB_BASE_SKU = { list: 20_000, floor: 5_000 } as const;
-/** Per-package entitlements. RTCDP customers get the Base included plus a bundled
- *  credit allotment (Ultimate 5,000 · Prime 2,500); standalone customers buy both. */
-export const PACKAGE_ENTITLEMENTS: Record<PartyPackage, { baseIncluded: boolean; includedCredits: number }> = {
-  standalone: { baseIncluded: false, includedCredits: 0 },
-  'rtcdp-prime': { baseIncluded: true, includedCredits: 2_500 },
-  'rtcdp-ultimate': { baseIncluded: true, includedCredits: 5_000 },
-};
 /** Simple scoping fixes the refresh at every 6 days → 365/6 refreshes/yr (C23). */
 export const SIMPLE_REFRESH_DAYS = 6;
 /** The campaign-count columns of the Simple Scoping matrix (C22…M22). */
@@ -246,35 +230,6 @@ export function estimateCollabCredits(a: ScopingAssumptions): number {
   return collabParts(a).estimated;
 }
 
-// ── Party cost: base SKU + entitlement netting → billable Collaboration cost ──
-export interface PartyCost {
-  estimatedCredits: number;      // credits the party's activities consume
-  includedCredits: number;       // credits bundled with its package (Ultimate 5,000 / Prime 2,500)
-  chargeableCredits: number;     // max(0, estimated − included)
-  recommendedPack: number;       // chargeable rounded up to a purchasable pack (0 if fully covered)
-  baseFee: number;               // Base SKU flat fee (0 when the package includes it)
-  creditCost: number | null;     // pack × price per credit (null when unpriced)
-  totalCost: number | null;      // base fee + credit cost (null when unpriced)
-}
-
-/** Cost of one collaborating party given its estimated credits and package. */
-export function partyCost(
-  estimatedCredits: number,
-  pkg: PartyPackage,
-  baseSkuPrice: number,
-  pricePerCredit: number | null,
-): PartyCost {
-  const ent = PACKAGE_ENTITLEMENTS[pkg] ?? PACKAGE_ENTITLEMENTS.standalone;
-  const estimated = nn(estimatedCredits);
-  const includedCredits = ent.includedCredits;
-  const chargeableCredits = Math.max(0, estimated - includedCredits);
-  const recommendedPack = chargeableCredits > 0 ? recommendedCreditPack(chargeableCredits) : 0;
-  const baseFee = ent.baseIncluded ? 0 : nn(baseSkuPrice);
-  const creditCost = pricePerCredit == null ? null : recommendedPack * pricePerCredit;
-  const totalCost = creditCost == null ? null : baseFee + creditCost;
-  return { estimatedCredits: estimated, includedCredits, chargeableCredits, recommendedPack, baseFee, creditCost, totalCost };
-}
-
 /** Partner-tipo assumptions: Ferrari's funnel/measurement rates, partner volumes. */
 export function partnerAssumptions(a: ScopingAssumptions): ScopingAssumptions {
   return {
@@ -335,57 +290,42 @@ export interface ScopingSnapshot {
   impressionsPerCampaign: number;
   conversionsPerCampaign: number;
   refreshesPerYear: number;
-  // collab parts (Ferrari instance)
+  // ── licence VOLUMES (no money) — Ferrari instance ──
   collabManagementCredits: number;
   collabActivationCredits: number;
   collabMeasurementCredits: number;      // summary + attribution
   collabCreditsEstimated: number;        // Ferrari instance estimated credits / yr
-  collabRecommendedPack: number;         // Ferrari chargeable pack (post-entitlement)
-  // ── Ferrari party ──
-  collabFerrariChargeableCredits: number;
-  collabFerrariPack: number;
-  collabFerrariBaseFee: number;
-  collabFerrariCost: number | null;
-  // ── partner-tipo party (× N instances) ──
+  collabRecommendedPack: number;         // Ferrari credits rounded to a pack (volume)
+  // ── partner-tipo instance (× N) ──
   partnerInstances: number;
   collabPartnerCreditsEach: number;
   collabPartnerPackEach: number;
-  collabPartnerBaseFeeEach: number;
-  collabPartnerCostEach: number | null;
-  collabPartnerCostTotal: number | null; // per-instance × N
-  // ── aggregate ──
-  collabBaseFeeTotal: number;            // Ferrari base + N × partner base
-  collabCost: number | null;             // Ferrari + partners (base + credits)
-  // cja
+  // ── cja volumes ──
   cjaRowsPerYear: number;
   cjaAnnualIngestionLimit: number;
-  cjaCost: number | null;
-  // total
-  totalCost: number | null;
+  // ── COST (user-set hypotheses, no Adobe prices) ──
+  ferrariInstanceCost: number | null;    // editable Ferrari instance cost
+  partnerInstanceCost: number | null;    // editable per-partner instance cost
+  partnerCostTotal: number | null;       // per-partner × N
+  totalCost: number | null;              // Ferrari + N × partner
 }
 
 export function computeSnapshot(a: ScopingAssumptions, prices: UnitPrices): ScopingSnapshot {
   const f = audienceFunnel(a);
   const parts = collabParts(a); // Ferrari instance
+  const partnerParts = collabParts(partnerAssumptions(a)); // one partner-tipo instance
   const cjaRowsPerYear = estimateCjaRows(a);
   const multiplier = a.cjaIngestionMultiplier || DEFAULT_INGESTION_MULTIPLIER;
-
-  // Ferrari party: its own package (Base + credit entitlement netting).
-  const ferrari = partyCost(parts.estimated, a.ferrariPackage, a.ferrariBaseSkuPrice, prices.pricePerCredit);
-
-  // Partner-tipo party × N instances (one Collaboration instance per partner).
-  const partnerParts = collabParts(partnerAssumptions(a));
-  const partner = partyCost(partnerParts.estimated, a.partnerPackage, a.partnerBaseSkuPrice, prices.pricePerCredit);
   const N = Math.max(0, Math.floor(nn(a.partnerInstances)));
-  const partnerCostTotal = partner.totalCost == null ? null : partner.totalCost * N;
 
-  // Collaboration total = Ferrari instance + all partner instances (base + credits).
-  const collabCost =
-    ferrari.totalCost == null && partnerCostTotal == null ? null : (ferrari.totalCost ?? 0) + (partnerCostTotal ?? 0);
-  const collabBaseFeeTotal = ferrari.baseFee + partner.baseFee * N;
-
-  const cjaCost = prices.pricePerMillionRows == null ? null : (cjaRowsPerYear / 1_000_000) * prices.pricePerMillionRows;
-  const totalCost = collabCost == null && cjaCost == null ? null : (collabCost ?? 0) + (cjaCost ?? 0);
+  // Cost is purely the user-set per-instance hypotheses (no Adobe list prices).
+  const ferrariInstanceCost = prices.ferrariInstanceCost;
+  const partnerInstanceCost = prices.partnerInstanceCost;
+  const partnerCostTotal = partnerInstanceCost == null ? null : partnerInstanceCost * N;
+  const totalCost =
+    ferrariInstanceCost == null && partnerCostTotal == null
+      ? null
+      : (ferrariInstanceCost ?? 0) + (partnerCostTotal ?? 0);
 
   return {
     matchedAudience: f.matched,
@@ -396,22 +336,15 @@ export function computeSnapshot(a: ScopingAssumptions, prices: UnitPrices): Scop
     collabActivationCredits: parts.activation + parts.activationAlwaysOn,
     collabMeasurementCredits: parts.measurementSummary + parts.measurementAttribution,
     collabCreditsEstimated: parts.estimated,
-    collabRecommendedPack: ferrari.recommendedPack,
-    collabFerrariChargeableCredits: ferrari.chargeableCredits,
-    collabFerrariPack: ferrari.recommendedPack,
-    collabFerrariBaseFee: ferrari.baseFee,
-    collabFerrariCost: ferrari.totalCost,
+    collabRecommendedPack: parts.recommendedPack,
     partnerInstances: N,
     collabPartnerCreditsEach: partnerParts.estimated,
-    collabPartnerPackEach: partner.recommendedPack,
-    collabPartnerBaseFeeEach: partner.baseFee,
-    collabPartnerCostEach: partner.totalCost,
-    collabPartnerCostTotal: partnerCostTotal,
-    collabBaseFeeTotal,
-    collabCost,
+    collabPartnerPackEach: partnerParts.recommendedPack,
     cjaRowsPerYear,
     cjaAnnualIngestionLimit: cjaRowsPerYear * multiplier,
-    cjaCost,
+    ferrariInstanceCost,
+    partnerInstanceCost,
+    partnerCostTotal,
     totalCost,
   };
 }
@@ -553,35 +486,45 @@ export function computeBreakdown(a: ScopingAssumptions, prices: UnitPrices): Sco
     });
   }
 
-  // ── Ferrari party: entitlement netting → chargeable pack ──
-  const fInc = PACKAGE_ENTITLEMENTS[a.ferrariPackage]?.includedCredits ?? 0;
+  // ── Ferrari instance credit pack (VOLUME, no money) ──
   push({
-    id: 'collabRecommendedPack', label: { en: 'Ferrari — chargeable pack', it: 'Ferrari — pacchetto a pagamento' },
-    value: s.collabFerrariPack, unit: 'credits',
-    formula: 'max(0, estimated − included credits) → pack tier',
-    substituted: `max(0, ${dec(parts.estimated)} − ${n(fInc)}) = ${dec(s.collabFerrariChargeableCredits)} → ${n(s.collabFerrariPack)}`,
-    inputsUsed: ['ferrariPackage'], kind: 'output',
+    id: 'collabRecommendedPack', label: { en: 'Recommended credit pack', it: 'Pacchetto crediti consigliato' },
+    value: s.collabRecommendedPack, unit: 'credits',
+    formula: 'estimated credits → pack tier (100 / 500 / 1,000 / 5,000)',
+    substituted: `${dec(parts.estimated)} → ${n(s.collabRecommendedPack)}`,
+    inputsUsed: [], kind: 'output',
   });
-  if (prices.pricePerCredit != null) {
+  if (s.partnerInstances > 0) {
     push({
-      id: 'collabFerrariCost', label: { en: 'Ferrari instance', it: 'Istanza Ferrari' },
-      value: s.collabFerrariCost ?? 0, unit: 'eur',
-      formula: 'base fee + chargeable pack × price per credit',
-      substituted: `${money(s.collabFerrariBaseFee)} + ${n(s.collabFerrariPack)} × ${money(prices.pricePerCredit)} = ${money(s.collabFerrariCost ?? 0)}`,
-      inputsUsed: ['ferrariPackage', 'ferrariBaseSkuPrice', 'pricePerCredit'], kind: 'output',
+      id: 'collabPartnerCredits', label: { en: 'Per-partner credits / yr', it: 'Credits per partner / anno' },
+      value: s.collabPartnerCreditsEach, unit: 'credits',
+      formula: 'partner instance estimated credits (× N instances)',
+      substituted: `${dec(s.collabPartnerCreditsEach)} × ${n(s.partnerInstances)} instances`,
+      inputsUsed: ['partnerInstances', 'partnerOnboardedIds', 'partnerAvgAudienceSize', 'partnerAdHocCampaignsPerYear'], kind: 'output',
+    });
+  }
+
+  // ── Cost: user-set per-instance hypotheses (no Adobe prices) ──
+  if (s.totalCost != null) {
+    push({
+      id: 'ferrariInstanceCost', label: { en: 'Ferrari instance cost', it: 'Costo istanza Ferrari' },
+      value: s.ferrariInstanceCost ?? 0, unit: 'eur',
+      formula: 'your Ferrari instance cost',
+      substituted: `${money(s.ferrariInstanceCost ?? 0)}`,
+      inputsUsed: ['ferrariInstanceCost'], kind: 'output',
     });
     push({
       id: 'collabPartnerCost', label: { en: 'Partner instances', it: 'Istanze partner' },
-      value: s.collabPartnerCostTotal ?? 0, unit: 'eur',
-      formula: '(base fee + pack × price) × partner instances',
-      substituted: `(${money(s.collabPartnerBaseFeeEach)} + ${n(s.collabPartnerPackEach)} × ${money(prices.pricePerCredit)}) × ${n(s.partnerInstances)} = ${money(s.collabPartnerCostTotal ?? 0)}`,
-      inputsUsed: ['partnerInstances', 'partnerPackage', 'partnerBaseSkuPrice', 'partnerOnboardedIds', 'partnerAvgAudienceSize', 'partnerAdHocCampaignsPerYear'], kind: 'output',
+      value: s.partnerCostTotal ?? 0, unit: 'eur',
+      formula: 'per-partner instance cost × partner instances',
+      substituted: `${money(s.partnerInstanceCost ?? 0)} × ${n(s.partnerInstances)} = ${money(s.partnerCostTotal ?? 0)}`,
+      inputsUsed: ['partnerInstanceCost', 'partnerInstances'], kind: 'output',
     });
     push({
-      id: 'collabTotalCost', label: { en: 'Collaboration cost', it: 'Costo Collaboration' },
-      value: s.collabCost ?? 0, unit: 'eur',
-      formula: 'Ferrari instance + partner instances',
-      substituted: `${money(s.collabFerrariCost ?? 0)} + ${money(s.collabPartnerCostTotal ?? 0)} = ${money(s.collabCost ?? 0)}`,
+      id: 'collabTotalCost', label: { en: 'Total cost / yr', it: 'Costo totale / anno' },
+      value: s.totalCost ?? 0, unit: 'eur',
+      formula: 'Ferrari instance + N × partner instance',
+      substituted: `${money(s.ferrariInstanceCost ?? 0)} + ${money(s.partnerCostTotal ?? 0)} = ${money(s.totalCost ?? 0)}`,
       inputsUsed: [], kind: 'output',
     });
   }
@@ -613,15 +556,6 @@ export function computeBreakdown(a: ScopingAssumptions, prices: UnitPrices): Sco
       inputsUsed: ['cjaIngestionMultiplier'], kind: 'output',
     },
   ];
-  if (prices.pricePerMillionRows != null) {
-    cja.push({
-      id: 'cjaCost', label: { en: 'CJA cost', it: 'Costo CJA' },
-      value: s.cjaCost ?? 0, unit: 'eur',
-      formula: '(licensed rows ÷ 1M) × price per 1M rows',
-      substituted: `(${n(s.cjaRowsPerYear)} ÷ 1M) × ${money(prices.pricePerMillionRows)} = ${money(s.cjaCost ?? 0)}`,
-      inputsUsed: ['pricePerMillionRows'], kind: 'output',
-    });
-  }
 
   return { collab, cja, cjaSources, warnings: buildWarnings(a) };
 }
