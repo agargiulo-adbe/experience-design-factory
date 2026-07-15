@@ -47,7 +47,7 @@ Hero → **what** → **why** → **proof** → **architecture** → **flow** �
 
 > **AGGIORNAMENTO 15 lug 2026 — riscrittura del modello Collaboration.** Il motore RTCDP Collaboration ora **replica 1:1 il calcolatore ufficiale Adobe** «Real-Time CDP Collaboration Scoping Calculator» (workbook interno). Sotto il modello aggiornato; il change log dettagliato è in §18. **CJA è invariato** (non fa parte del workbook).
 >
-> **AGGIORNAMENTO 15 lug 2026 (pomeriggio) — modello v2 (SKU base + entitlement + istanze partner + refresh mode) e nuova sezione «Casi d'uso».** Il motore ora aggiunge, **sopra** la matematica dei crediti (invariata): SKU Base flat, entitlement per pacchetto (crediti inclusi nettati), **1 istanza Ferrari + N istanze partner**, e una **modalità di refresh legata alle campagne**. Aggiunta la nuova sezione deck **Casi d'uso**. Dettaglio in **§14.9**; change log in **§19**. ⚠️ **Stato: completato e verificato in locale, NON ancora committato** (in attesa dell'ok utente al commit/push — deploy live).
+> **AGGIORNAMENTO 15 lug 2026 (pomeriggio) — modello v2 (SKU base + entitlement + istanze partner + refresh mode) e nuova sezione «Casi d'uso».** Il motore ora aggiunge, **sopra** la matematica dei crediti (invariata): SKU Base flat, entitlement per pacchetto (crediti inclusi nettati), **1 istanza Ferrari + N istanze partner**, e una **modalità di refresh legata alle campagne**. Aggiunta la nuova sezione deck **Casi d'uso**. Dettaglio in **§14.9**; change log in **§19**. **Stato: committato e pushato** (commit `a3fc86a`, 15 lug 2026).
 
 ### 14.1 Architettura (layer separati)
 Tutto in `packages/core/src/blocks/scoping/` salvo i contenuti client:
@@ -92,7 +92,7 @@ Supabase `scenarios` (`0004_scenarios.sql`, RLS **private/link/team**, `created_
 - La slide del calcolatore **non** usa `data-demo-flex` (riserva il 48% destro → fuori viewport); grid/flex children servono `min-width:0`; clic neutralizzati con `data-deck-nochrome`.
 - Memoria `ferrari-scoping-calculator` (aggiornata alla riscrittura xlsx). Dump del workbook: unzip → parse `xl/worksheets/*.xml` (`<c>/<f>/<v>`) + `sharedStrings.xml` (nessuna libreria xlsx nel repo).
 
-### 14.9 Modello v2 — SKU base, entitlement, istanze partner, refresh mode (15 lug 2026, ⚠️ da committare)
+### 14.9 Modello v2 — SKU base, entitlement, istanze partner, refresh mode (15 lug 2026, commit `a3fc86a`)
 Estensione che risponde a 6 dubbi del cliente sul configuratore. **La matematica dei crediti da funnel (`collabParts`, §14.2) è invariata** — i test di riconciliazione Adobe restano verdi; v2 aggiunge layer *sopra*.
 - **SKU Base + entitlement per party** (fedele alla slide Adobe «RT-CDP Collaboration SKUs»): tipo `PartyPackage = standalone | rtcdp-prime | rtcdp-ultimate`; costanti `COLLAB_BASE_SKU` ($20k listino / $5k floor) e `PACKAGE_ENTITLEMENTS` (Ultimate: Base inclusa + 5.000 crediti · Prime: Base inclusa + 2.500 · standalone: Base a pagamento + 0). Helper **`partyCost(estimated, pkg, baseSkuPrice, pricePerCredit)`**: `chargeable = max(0, estimated − inclusi)` → pacchetto sul solo surplus; `baseFee = 0` se inclusa. I crediti inclusi si **nettano** (evoluzione del "no allotment" di §14.2, che valeva per il solo Credits SKU).
 - **Istanze partner** (1 Ferrari + N partner): profilo **"partner-tipo"** (campi `partner*` in `ScopingAssumptions`: package, onboardedIds, avgAudienceSize, adHocCampaigns) via `partnerAssumptions(a)` (riusa i rate di Ferrari, varia i volumi) × `partnerInstances`. **CJA resta un'unica istanza Ferrari** (aggrega tutti). Totale Collaboration = Ferrari + N × partner-tipo (Base + crediti ciascuno).
@@ -261,9 +261,9 @@ Root cause: lo store leggeva `edf:sb-session.access_token` grezzo e **non lo rin
 - **Altre funzioni verificate corrette** e non impattate: Confronta, Esporta JSON/CSV, Reset, preset, load `?scenario=`.
 
 ---
-## 19. Ferrari /scoping v2 + sezione «Casi d'uso» (15 lug 2026 pomeriggio) — ⚠️ DA COMMITTARE
+## 19. Ferrari /scoping v2 + sezione «Casi d'uso» (15 lug 2026 pomeriggio) — commit `a3fc86a`
 
-Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "aggiungi casi d'uso con tutti i prodotti a perimetro"). **Completato e verificato in locale, NON ancora committato/pushato** (in attesa dell'ok utente: il push su `main` fa deploy live). Dettaglio tecnico in **§14.9**.
+Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "aggiungi casi d'uso con tutti i prodotti a perimetro"). **Committato e pushato** (`a3fc86a`, deploy live). Dettaglio tecnico in **§14.9**.
 - **Chiarezza campi** (dubbi 1–3): hint inline su Dimensione audience × Match rate (= audience matchata), Campagne ad-hoc (one-off vs always-on); non più sepolti nel tooltip.
 - **Refresh mode** (dubbio 4): modalità `campaign-linked` (refresh legato alle campagne) oltre a `continuous`.
 - **Istanze partner** (dubbio 5): 1 Ferrari + N partner-tipo (profilo leggero × N); CJA singola.
@@ -272,4 +272,4 @@ Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "a
 - **Sezione nuova «Casi d'uso»** (`casi-duso.astro`): 4 scenari E2E su tutto il perimetro (Collaboration → GenStudio + Express → Attivazione → CJA) + mappa prodotti; nav+admin+cross-nav+deck-audit aggiornati.
 - **TDD sul motore**: 13 nuovi test (party-cost, entitlement, refresh mode, istanze) → **53/53 core verdi**; build monorepo 0 errori; `audit:deck` ferrari (incl. casi-duso) **0 fallimenti**; screenshot 1920 letti.
 - **Metodo**: brainstorming (4 decisioni confermate dall'utente: partner-tipo×N · selettore pacchetto per party · refresh legato alle campagne · sezione dedicata in nav) → TDD → build/audit finale.
-- **Prossimo step**: ottenere l'ok utente → commit conventional (es. `feat(scoping): base SKU + partner instances + campaign-linked refresh + use-cases section`) + push; poi aggiornare la memoria `ferrari-scoping-calculator` a v2.
+- **Fatto**: commit `a3fc86a` (`feat(scoping): base SKU + entitlement, partner instances, campaign-linked refresh + Use Cases section`) + push su `main`; il commit ignora anche `docs/Ferrovie/` (materiale FS riservato, repo pubblico). Memoria `ferrari-scoping-calculator` aggiornata a v2.
