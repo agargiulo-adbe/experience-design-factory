@@ -113,6 +113,33 @@ ClientRouter SPA navigation (`window.__edfNavigate`), not a full reload.
 - **No wrong‑brand imagery**: Pexels stock has no client cars/logos; NEVER show a non‑client car (e.g. a competitor F1 car) or foreign logo. Use abstract/atmospheric imagery (carbon, asphalt, floodlight bokeh, crowd, podium, telemetry). If official client assets are provided, use those.
 - Config‑driven: every page = ordered slides; solutions/media/custom‑slides toggle at runtime.
 
+## Working rules — codified from production (BINDING, every experience present & future)
+
+### Copy voice — 100% human, not AI (IT + EN)
+Copy must read like a sharp human wrote it, never "AI‑generated". Kill the tells:
+- em‑dash used as a rhetorical crutch (`X — non solo Y`, "era lì — per design");
+- staccato fragments / tricolons ("Ogni giorno. Ogni query.", "In real time.");
+- symmetrical `non solo X, ma Y` / "not just X — but Y";
+- empty value‑speak & superlatives ("crea valore", "un'unica visione", "the speed decides who stays");
+- buzzword stacking, over‑parallel bullets, AI connectors ("Inoltre", "In a world where", "It's not just about…").
+Rewrite into natural, concrete sentences with varied rhythm. **Never touch** product/persona names, numbers, sources, claims; **keep each string within ±10% of its length** so the deck audit (height/legibility) doesn't break. Bilingual (Ferrari): EN and IT each idiomatic, never a literal echo; `<T en it>` ALWAYS keeps BOTH languages. Memory: `copy-must-be-human`.
+
+### Audit discipline — hard vs soft; never shrink type to pass
+`audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
+- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `f` slide‑over · `h` contrast · `j` clipping outside viewport · `k` hidden scroll.
+- **SOFT (aspirational):** `a` reading band 30–70% · `i` space usage ≥45% · `g` vertical rhythm. Acceptable on intentionally airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the Type & legibility minimums. If a soft check bothers you: **cut copy or split the slide**, never shrink.
+- The parser does not count visual mocks (a terminal/image beside a split slide) as text mass → an `i`/`comX` imbalance on a visually balanced split slide is a **known parser limit, not a defect**.
+- Recurring meaning‑preserving fixes for HARD: keep `absolute` decorations inside the box (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
+
+### Cross‑experience propagation
+A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
+
+### Parallel work on a shared app → isolated worktrees
+Independent tasks on the **same** app (different files but one shared `dist/`) must NOT run concurrent build/preview — they race and corrupt `dist/`. Use **subagents in isolated git worktrees** (`isolation: "worktree"`), one per section/area, each building + auditing in its own worktree; then bring the changed files into the main tree and run **one final build + audit** to confirm. Separate experiences (distinct `dist/`) can use plain parallel subagents.
+
+### Handover docs stay readable at session start
+Keep the docs a new session reads at startup **readable in a single `Read`**. Use **`/handover`** (`.claude/commands/handover.md`): it updates the handover in detail, enforces the size contract (≤1500 lines / ≤48KB / ≤1800‑char lines), splits by section with `HANDOVER.md` as a manifest/router, and verifies readability with a full `Read`. `/handover check` = verify only.
+
 ## Error Recovery
 If you encounter errors, diagnose, fix, and continue. Do not stop.
 
