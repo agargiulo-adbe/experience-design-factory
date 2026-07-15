@@ -38,6 +38,7 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'coworker',     route: '/experience-design-factory/unicredit-engagement/coworker/' },
     { name: 'motore-adobe', route: '/experience-design-factory/unicredit-engagement/motore-adobe/' },
     { name: 'scenario',     route: '/experience-design-factory/unicredit-engagement/scenario/' },
+    { name: 'visibilita',   route: '/experience-design-factory/unicredit-engagement/visibilita/' },
     { name: 'acquisisci',   route: '/experience-design-factory/unicredit-engagement/acquisisci/' },
     { name: 'analizza',     route: '/experience-design-factory/unicredit-engagement/analizza/' },
     { name: 'coinvolgi',    route: '/experience-design-factory/unicredit-engagement/coinvolgi/' },
