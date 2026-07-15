@@ -24,48 +24,56 @@ data-type (official constant vs assumption vs quote-only price).
 > (Astro scopes `<style>` per component). All selectors are `.scoping-`-prefixed
 > and only load on `/scoping/`, so there is no global leakage.
 
-## Calculation model (RTCDP Collaboration)
+## Calculation model (RTCDP Collaboration) — faithful to the Adobe workbook
+
+This is a 1:1 re-implementation of Adobe's official **Real-Time CDP Collaboration
+Scoping Calculator** (the "Sales Calculator" sheet + the hidden "Drop Downs, Burn,
+Assump" sheet). Official constants live in `cost-model.ts` as `BURN` /
+`ASSUMPTION_DEFAULTS`:
+
+```
+BURN: management 2 · activation (ad hoc) 500 · always-on 100 · measurement 50   (credits / 1M)
+ASSUMPTION_DEFAULTS: match 30% · reach 50% · frequency 10× · conversion 5% · $5/credit
+```
 
 Audience funnel (rates clamped to [0,1]):
 
 ```
-distinct  = audienceSize
-overlap   = distinct × partnerOverlapRate
-activated = overlap  × activatedOverlapRate     (per run)
-measured  = overlap  × measuredOverlapRate
+matched      = avgAudienceSize × matchRate
+impressions  = matched × frequencyMultiple × reachPct        (per campaign)
+conversions  = matched × reachPct × conversionRate           (per campaign)
 ```
 
-Managed volume base is selectable:
+Three estimation modes (`collabMode`):
+
+**`detailed`** (default) — granular, unrounded:
 
 ```
-managedVolume = full ? distinct : overlap ? overlap : customManagedVolume
+management            = (onboardedIds ÷ 1M) × (365 ÷ refreshEveryXDays) × 2
+activation (ad hoc)   = (matched × adHocCampaignsPerYear × audiencesPerCampaign × 500) ÷ 1M
+activation (always-on)= (matched ÷ 1M) × alwaysOnRunsPerYear × 100          (0 by default)
+measurement summary   = (impressions ÷ 1M) × summaryReportsPerCampaign × measuredCampaigns × 50
+measurement attribut. = ((conversions + impressions) ÷ 1M) × measuredCampaigns × attributionReports × 50
+estimated             = Σ the above          (measurement gated by measurementEnabled)
 ```
 
-Credit parts (activity mode; `direct` mode uses `directCredits` verbatim):
+**`simple`** — the workbook's campaign-count matrix (`1·3·6·12·24·36`), refresh fixed at
+every 6 days (365/6), each activity **CEILING-ed to 10** credits:
 
 ```
-management  = managedAudiences × (managedVolume ÷ 1M) × refreshes/yr × creditPerMgmtPerMillionRefresh
-insights    = insightsRunsPerYear × creditPerInsight
-activation  = activationRuns × (activated ÷ 1M) × creditPerActivationPerMillion
-measurement = records-based | report-based | hybrid | none        (see below)
-
-estimated   = management + insights + activation + measurement
-billable    = max(0, estimated − packageAllotment)               (Prime 2,500 · Ultimate 5,000)
-cost        = billable × pricePerCredit
+management  = CEILING( (onboardedIds ÷ 1M) × 2 × (365/6), 10 )
+activation  = CEILING( (matched ÷ 1M) × campaigns × 500, 10 )
+measurement = CEILING( (impressions + conversions) ÷ 1M × 50 × measurementEnabled, 10 )
 ```
 
-**Anti double-count guardrail** — `activationRuns` depends on `activationMode`:
-`on-demand` → `onDemandRuns`; `recurring` → `recurringRunsPerYear`;
-`mixed` → their **sum** (the only case they are added). If both are set but the
-mode is not `mixed`, `buildWarnings` emits `activation-double-count`.
+**`direct`** — `estimated = max(0, directCredits)`.
 
-Measurement:
+**No annual allotment.** The deliverable is a **recommended credit pack** — the total
+rounded UP by tier (workbook Sales Calc row 31), and the cost sells that pack:
 
 ```
-records → measurementRunsPerYear × (measured ÷ 1M) × creditPerMeasurementPerMillion
-reports → reportsPerYear × creditPerReport
-hybrid  → records + reports
-none    → 0
+recommendedPack = total → CEILING(100|500|1,000|5,000 by magnitude)
+cost            = recommendedPack × pricePerCredit
 ```
 
 ## Calculation model (CJA)
@@ -125,17 +133,18 @@ coloured badges and used to communicate confidence at a glance.
 
 ## Tests
 `pnpm --filter @agargiulo-adbe/experience-core exec vitest run src/blocks/scoping`
-covers the funnel, refresh-cadence scaling, the double-count guardrail, each
-measurement model, per-source rows, breakdown substitution, warnings and the
-serialize/deserialize round-trip.
+**reconciles cell-by-cell to the Adobe workbook**: the burn/assumption constants,
+`ceilingTo`/`recommendedCreditPack`, the funnel, the DETAILED line items
+(1216.67 / 150 / 75 / 75.375 → 1517.04, workbook C67–C72), the SIMPLE matrix totals
+(`[1450, 1900, 2580, 3930, 6630, 9340]`, row 30) and pack tiers
+(`[1500, 2000, 3000, 4000, 7000, 9500]`, row 31), plus CJA per-source rows,
+snapshot/cost, breakdown substitution, warnings and the (de)serialize round-trip.
 
 ## Known limitations / next steps
-- **Per-partner matrix**: partners are modelled as a global average
-  (`partnerOverlapRate`, `managedAudiences`). A per-partner overlap/activation
-  matrix is the natural next step (registry + engine already support it via a
-  partner loop).
-- **Sensitivity / tornado**: the breakdown exposes each driver's contribution;
-  a tornado chart of cost drivers is a UI-only addition.
-- **Credit burn-rates & unit prices are illustrative** (quote-only) — replace
-  with the Sales Order. They are flagged `price` / “Quote-only” in the UI.
+- **Per-partner matrix**: the audience is a single global average (`matchRate`,
+  `avgAudienceSize`). A per-partner overlap/activation matrix is the natural next step.
+- **Always-on activation** (`alwaysOnRunsPerYear`, burn 100) is wired but latent
+  in the workbook (defaults to 0) — set it for a weekly always-on programme.
+- **Unit price** is the workbook's $5 list price; still quote-only in practice —
+  replace with the Sales Order. Flagged `price` / “Quote-only” in the UI.
 - **PDF export**: JSON + CSV ship today; PDF is best handled via browser print.

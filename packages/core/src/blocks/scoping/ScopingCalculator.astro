@@ -10,7 +10,7 @@ interface FieldDef {
   format: 'int' | 'decimal' | 'percent' | 'currency';
   input?: 'number' | 'select';
   options?: FieldOption[];
-  mode?: 'activity' | 'direct';
+  mode?: string; // one or more collab modes, pipe-separated (e.g. 'simple|detailed')
   category?: string;
   dataType?: DataType;
   advancedOnly?: boolean;
@@ -55,11 +55,11 @@ const cjaGroups = grouped('cja');
 // Adobe products, hence hardcoded bilingual here — not Ferrari-specific).
 const collabResults = [
   { out: 'collabCreditsEstimated', en: 'Est. credits / yr', it: 'Credits stimati / anno',
-    tip: { en: 'Estimated Collaboration Credits consumed per year across audience management, activation and measurement — RT-CDP Collaboration’s license metric.', it: 'Collaboration Credits stimati consumati in un anno tra audience management, activation e measurement — la metrica di licenza di RT-CDP Collaboration.' } },
-  { out: 'collabBillableCredits', en: 'Billable credits / yr', it: 'Credits fatturabili / anno',
-    tip: { en: 'Estimated credits minus the bundled allotment (2,500 Prime / 5,000 Ultimate). Only the excess is billable, via a separate Sales Order.', it: 'Credits stimati meno l’allotment incluso (2.500 Prime / 5.000 Ultimate). Solo l’eccedenza è fatturabile, con un Sales Order separato.' } },
+    tip: { en: 'Estimated Collaboration Credits consumed per year across audience transformation & management, activation and measurement — RT-CDP Collaboration’s license metric. Mirrors the Adobe Scoping Calculator.', it: 'Collaboration Credits stimati consumati in un anno tra trasformazione & gestione audience, activation e measurement — la metrica di licenza di RT-CDP Collaboration. Rispecchia lo Scoping Calculator Adobe.' } },
+  { out: 'collabRecommendedPack', en: 'Recommended pack', it: 'Pacchetto consigliato',
+    tip: { en: 'The estimated credits rounded up to a purchasable credit pack tier (100 / 500 / 1,000 / 5,000 by magnitude), exactly as the Adobe calculator recommends. There is no annual allotment subtraction.', it: 'I credits stimati arrotondati al pacchetto di crediti acquistabile (a scaglioni 100 / 500 / 1.000 / 5.000), esattamente come consiglia il calcolatore Adobe. Nessuna sottrazione di allotment annuo.' } },
   { out: 'collabCost', en: 'Collaboration cost', it: 'Costo Collaboration',
-    tip: { en: 'Billable credits × price per credit. The per-credit price is quote-only (illustrative here).', it: 'Credits fatturabili × prezzo per credito. Il prezzo per credito è solo da preventivo (qui illustrativo).' } },
+    tip: { en: 'Recommended pack × price per credit ($5 list). The per-credit price is quote-only (illustrative here).', it: 'Pacchetto consigliato × prezzo per credito ($5 di listino). Il prezzo per credito è solo da preventivo (qui illustrativo).' } },
 ];
 const cjaResults = [
   { out: 'cjaRowsPerYear', en: 'Licensed rows / yr', it: 'Righe licenziate / anno',
@@ -71,7 +71,7 @@ const cjaResults = [
 ];
 const badgeCollab = { en: 'The license metric for Real-Time CDP Collaboration — a finite pool of credits consumed by collaboration activities.', it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits consumato dalle attività di collaboration.' };
 const badgeCja = { en: 'The license metric for CJA — the daily-average rows of data available for analysis (1 row = 0.25 KB).', it: 'La metrica di licenza di CJA — la media giornaliera di righe di dati disponibili per l’analisi (1 riga = 0,25 KB).' };
-const allotmentTip = { en: 'One-time allotment of Collaboration Credits included in some RT-CDP packages (2,500 Prime / 5,000 Ultimate). It is subtracted from the estimated credits.', it: 'Allotment one-time di Collaboration Credits incluso in alcuni package RT-CDP (2.500 Prime / 5.000 Ultimate). Si sottrae ai credits stimati.' };
+const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded to 10, then to a pack). Detailed = granular per-activity model. Direct = enter a scoped credit total. Mirrors the two Adobe workbook paths.', it: 'Simple = stima rapida per numero di campagne (crediti arrotondati a 10, poi a pacchetto). Detailed = modello granulare per attività. Direct = inserisci un totale crediti già scopato. Rispecchia i due percorsi del workbook Adobe.' };
 ---
 <div class="scoping" data-scoping data-deck-nochrome
      data-project={projectSlug}
@@ -150,18 +150,18 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
 
       <div class="scoping-controls">
         <label class="scoping-field">
-          <span class="scoping-label"><span class="scoping-label-txt"><span data-lang-en>Bundled package allotment</span><span data-lang-it>Allotment del package</span></span><button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric"><span data-lang-en>{allotmentTip.en}</span><span data-lang-it>{allotmentTip.it}</span></span></span>
-          <select data-k="collabPackage">
-            <option value="none">None (0)</option>
-            <option value="prime">Prime (2,500)</option>
-            <option value="ultimate">Ultimate (5,000)</option>
+          <span class="scoping-label"><span class="scoping-label-txt"><span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span></span><button type="button" class="scoping-info" aria-label="Metric" tabindex="0">i</button><span class="scoping-tip scoping-tip--metric"><span data-lang-en>{modeTip.en}</span><span data-lang-it>{modeTip.it}</span></span></span>
+          <select data-k="collabMode">
+            <option value="detailed">Dettagliata · Detailed scoping</option>
+            <option value="simple">Rapida · Simple scoping</option>
+            <option value="direct">Crediti diretti · Direct credits</option>
           </select>
         </label>
         <label class="scoping-field">
-          <span class="scoping-label"><span data-lang-en>Estimation mode</span><span data-lang-it>Modalità di stima</span></span>
-          <select data-k="collabMode">
-            <option value="activity">Stima da attività · Estimate from activity</option>
-            <option value="direct">Crediti diretti · Direct credits</option>
+          <span class="scoping-label"><span data-lang-en>Measurement use-cases</span><span data-lang-it>Casi d'uso measurement</span></span>
+          <select data-k="measurementEnabled">
+            <option value="true">Sì · Yes</option>
+            <option value="false">No</option>
           </select>
         </label>
       </div>
@@ -317,11 +317,12 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
       // group-level mode gate (hides whole sections in direct mode)
       root.querySelectorAll<HTMLElement>('.scoping-group[data-group-modes]').forEach((el) => {
         const modes = (el.getAttribute('data-group-modes') || '').split(',');
-        el.style.display = modes.some((m) => m === 'both' || m === assumptions.collabMode) ? '' : 'none';
+        el.style.display = modes.some((m) => m === 'both' || m.split('|').includes(assumptions.collabMode)) ? '' : 'none';
       });
       // per-field visibility = mode ∧ appliesWhen ∧ (advanced ⇒ column advanced on)
       root.querySelectorAll<HTMLElement>('.scoping-field[data-field]').forEach((el) => {
-        const modeOk = !el.getAttribute('data-when') || el.getAttribute('data-when') === assumptions.collabMode;
+        const when = el.getAttribute('data-when');
+        const modeOk = !when || when.split('|').includes(assumptions.collabMode);
         const advOk = !el.classList.contains('scoping-adv') || advState[colOf(el)];
         el.style.display = (modeOk && appliesOk(el) && advOk) ? '' : 'none';
       });
@@ -341,7 +342,11 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
 
     function readInput(el: HTMLInputElement | HTMLSelectElement) {
       const k = el.dataset.k!;
-      if (isControl(el)) { (assumptions as any)[k] = (el as HTMLSelectElement).value; return; }
+      if (isControl(el)) {
+        const raw = (el as HTMLSelectElement).value;
+        (assumptions as any)[k] = k === 'measurementEnabled' ? raw === 'true' : raw;
+        return;
+      }
       const n = parseField((el as HTMLInputElement).value);
       const val = Number.isFinite(n) ? n : 0;
       if (k === 'pricePerCredit') prices.pricePerCredit = val;
@@ -397,7 +402,7 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
         if (el) el.textContent = v;
       };
       out('collabCreditsEstimated', fmt(Math.round(s.collabCreditsEstimated)));
-      out('collabBillableCredits', fmt(Math.round(s.collabBillableCredits)));
+      out('collabRecommendedPack', fmt(Math.round(s.collabRecommendedPack)));
       out('collabCost', fmtMoney(s.collabCost));
       out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
       out('cjaAnnualIngestionLimit', fmt(s.cjaAnnualIngestionLimit));
@@ -520,7 +525,8 @@ const allotmentTip = { en: 'One-time allotment of Collaboration Credits included
     root.querySelector('[data-scoping-compare]')!.addEventListener('click', () => {
       if (!scenarios.length) { note.textContent = 'No scenarios to compare yet.'; return; }
       const rows: Array<[string, (s: ReturnType<typeof computeSnapshot>) => string]> = [
-        ['Billable credits', (s) => fmt(s.collabBillableCredits)],
+        ['Est. credits / yr', (s) => fmt(Math.round(s.collabCreditsEstimated))],
+        ['Recommended pack', (s) => fmt(s.collabRecommendedPack)],
         ['Collab cost', (s) => fmtMoney(s.collabCost)],
         ['CJA rows / yr', (s) => fmt(s.cjaRowsPerYear)],
         ['Ingestion limit (3×)', (s) => fmt(s.cjaAnnualIngestionLimit)],

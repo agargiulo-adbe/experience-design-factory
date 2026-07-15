@@ -1,70 +1,58 @@
 // ─────────────────────────────────────────────────────────────────────────
 //  Scoping calculation engine — pure, deterministic, framework-free.
 //
-//  Two independent Adobe products, two licence metrics:
-//    • Real-Time CDP Collaboration → Collaboration Credits (activity-based)
-//    • Customer Journey Analytics   → Rows of Data
+//  The Collaboration model is a faithful re-implementation of Adobe's official
+//  "Real-Time CDP Collaboration Scoping Calculator" (Sales Calculator +
+//  hidden "Drop Downs, Burn, Assump" sheet). It ships BOTH of the workbook's
+//  scoping paths:
+//    • SIMPLE  scoping — the campaign-count matrix (1·3·6·12·24·36), each
+//      activity CEILING-ed to 10 credits, then a recommended credit PACK sized
+//      by tier. Refresh is fixed at every 6 days (365/6 ≈ 60.83 refreshes/yr).
+//    • DETAILED scoping — the granular per-input model (management + ad-hoc
+//      activation + measurement summary-stats + measurement attribution),
+//      unrounded, summed to a total credit volume.
+//  Both consume the workbook's official BURN RATES and default ASSUMPTIONS
+//  (match rate 30% · reach 50% · frequency 10× · conversion 5% · $5/credit).
+//  There is NO annual allotment subtraction: the deliverable is a recommended
+//  credit pack, exactly as the workbook computes it.
 //
-//  The engine models an explicit AUDIENCE FUNNEL for Collaboration
-//    distinct → overlap → activated / measured
-//  and separates the three credit-consuming activities (management,
-//  activation, measurement) so each can size on a DIFFERENT volume base and
-//  cadence. Nothing is a magic number: computeBreakdown() emits, for every
-//  derived value, the symbolic formula, the substituted numbers and the
-//  inputs used, plus guardrail warnings (e.g. on-demand vs recurring double
-//  counting). The UI renders those directly — see ScopingCalculator.astro.
+//  Customer Journey Analytics (Rows of Data) is a second, independent product
+//  and is NOT part of the Adobe workbook — its model is unchanged.
+//
+//  Nothing is a magic number: computeBreakdown() emits, for every derived
+//  value, the symbolic formula, the substituted numbers and the inputs used.
 // ─────────────────────────────────────────────────────────────────────────
 
-export type CollabPackage = 'none' | 'prime' | 'ultimate';
-export type CollabMode = 'direct' | 'activity';
-/** Which volume base the audience-management activity is sized on. */
-export type ManagedBase = 'full' | 'overlap' | 'custom';
-export type RefreshCadence = 'daily' | 'every3days' | 'weekly' | 'biweekly' | 'monthly' | 'custom';
-/** on-demand and recurring are NEVER summed unless the user picks `mixed`. */
-export type ActivationMode = 'on-demand' | 'recurring' | 'mixed';
-export type MeasurementModel = 'none' | 'records' | 'reports' | 'hybrid';
+export type CollabMode = 'simple' | 'detailed' | 'direct';
+export type MeasurementToggle = boolean;
 
 export interface ScopingAssumptions {
-  // ── mode & package ──
+  // ── mode ──
   collabMode: CollabMode;
-  collabPackage: CollabPackage;
-  directCredits: number;
+  directCredits: number;         // 'direct' mode: credits scoped directly
 
-  // ── collaboration footprint ──
-  partners: number;
+  // ── shared audience & funnel (workbook defaults) ──
+  onboardedIds: number;          // IDs onboarded into Collaboration / yr (Sales Calc E15 / C41)
+  avgAudienceSize: number;       // average audience size (C17 / C42)
+  matchRate: number;             // match / overlap rate — default 0.30 (H9 / C43)
+  frequencyMultiple: number;     // impressions frequency multiple — default 10 (H11 / C54)
+  reachPct: number;              // reach — default 0.50 (H10 / C55)
+  conversionRate: number;        // conversion rate — default 0.05 (H12 / C58)
+  measurementEnabled: MeasurementToggle; // measurement use-cases yes/no (E16 / C16)
 
-  // ── audience funnel (all rates are 0–1) ──
-  audienceSize: number;          // distinct addressable audience (deduped · matchable · usable)
-  partnerOverlapRate: number;    // match / overlap rate with partner data
-  activatedOverlapRate: number;  // share of the overlap actually activated
-  measuredOverlapRate: number;   // share of the overlap measured
+  // ── detailed scoping only ──
+  refreshEveryXDays: number;     // audience refresh cadence, every X days (1–6) (C47)
+  adHocCampaignsPerYear: number; // one-time (ad hoc) activation campaigns / yr (C50)
+  audiencesPerCampaign: number;  // audiences targeted per campaign (C51)
+  measurementCampaignsPerYear: number;   // campaigns measured / yr (C61)
+  summaryReportsPerCampaign: number;     // summary-statistics reports / campaign (C62)
+  attributionReportsPerCampaign: number; // attribution reports / campaign (C63)
+  alwaysOnRunsPerYear: number;   // always-on (weekly) activation runs / yr — J4 (default 0, latent in workbook)
 
-  // ── audience management ──
-  managedBase: ManagedBase;
-  customManagedVolume: number;   // IDs under management when managedBase = 'custom'
-  managedAudiences: number;      // distinct managed audiences (e.g. per partner) — multiplier, default 1
-  refreshCadence: RefreshCadence;
-  refreshCustomPerYear: number;  // refreshes/yr when refreshCadence = 'custom'
-  creditPerMgmtPerMillionRefresh: number; // credits per 1M managed IDs per refresh
+  // ── simple scoping only ──
+  simpleCampaignsPerYear: number; // headline campaign count for the summary (one of the tiers)
 
-  // ── audience insights (often 0 but part of the workflow) ──
-  insightsRunsPerYear: number;
-  creditPerInsight: number;
-
-  // ── activation ──
-  activationMode: ActivationMode;
-  onDemandRuns: number;          // one-off activation pushes / yr
-  recurringRunsPerYear: number;  // always-on activation cadence / yr
-  creditPerActivationPerMillion: number; // credits per 1M activated IDs per run
-
-  // ── measurement (may use a model distinct from activation) ──
-  measurementModel: MeasurementModel;
-  measurementRunsPerYear: number;
-  reportsPerYear: number;
-  creditPerMeasurementPerMillion: number; // records-based: credits per 1M measured IDs per run
-  creditPerReport: number;                // report-based: credits per external report
-
-  // ── CJA sources ──
+  // ── CJA sources (independent product — unchanged) ──
   webVisitsPerYear: number;
   webHitsPerVisit: number;
   appMau: number;
@@ -84,102 +72,164 @@ export interface UnitPrices {
   pricePerMillionRows: number | null;
 }
 
-// ── Official constants (Adobe Product Descriptions) ──────────────────────
-const ALLOTMENTS: Record<CollabPackage, number> = { none: 0, prime: 2500, ultimate: 5000 };
-const REFRESH_PER_YEAR: Record<Exclude<RefreshCadence, 'custom'>, number> = {
-  daily: 365, every3days: 122, weekly: 52, biweekly: 26, monthly: 12,
-};
+// ── Official constants — Adobe Scoping Calculator (hidden "Burn, Assump" sheet)
+/** Credit burn rates (credits per 1,000,000, per the workbook's I:J table). */
+export const BURN = {
+  management: 2,          // J2 — Audience Transformation & Management, per 1M IDs per refresh
+  activationAdHoc: 500,   // J3 — Activation (ad hoc), per 1M per campaign
+  activationAlwaysOn: 100,// J4 — Always-on Activation (weekly), per 1M per run
+  measurement: 50,        // J5 — Measurement (Summary Statistics & Attribution), per 1M
+} as const;
+/** Default modelling assumptions (workbook "Simple Scoping" G:H block). */
+export const ASSUMPTION_DEFAULTS = {
+  matchRate: 0.3,         // H9
+  reach: 0.5,             // H10
+  frequency: 10,          // H11
+  conversion: 0.05,       // H12
+  creditListPrice: 5,     // H13 — $ per credit (list)
+} as const;
+export const CREDIT_LIST_PRICE = ASSUMPTION_DEFAULTS.creditListPrice;
+/** Simple scoping fixes the refresh at every 6 days → 365/6 refreshes/yr (C23). */
+export const SIMPLE_REFRESH_DAYS = 6;
+/** The campaign-count columns of the Simple Scoping matrix (C22…M22). */
+export const SIMPLE_CAMPAIGN_TIERS = [1, 3, 6, 12, 24, 36] as const;
+export const DAYS_PER_YEAR = 365;
+
+// ── CJA constants (unchanged) ──
 export const CJA_ROW_KB = 0.25;            // 1 Row of Data = 0.25 KB
 export const DEFAULT_INGESTION_MULTIPLIER = 3;
 
-export function allotmentCredits(pkg: CollabPackage): number {
-  return ALLOTMENTS[pkg] ?? 0;
+// ── helpers ───────────────────────────────────────────────────────────────
+function clamp01(x: number): number {
+  if (!Number.isFinite(x)) return 0;
+  return Math.min(1, Math.max(0, x));
+}
+function nn(x: number): number { return Number.isFinite(x) ? Math.max(0, x) : 0; }
+/** Excel CEILING(x, step) — round UP to the nearest multiple of step. */
+export function ceilingTo(x: number, step: number): number {
+  if (step <= 0) return x;
+  return Math.ceil(x / step) * step;
 }
 
-export function refreshesPerYear(a: ScopingAssumptions): number {
-  return a.refreshCadence === 'custom'
-    ? Math.max(0, a.refreshCustomPerYear || 0)
-    : REFRESH_PER_YEAR[a.refreshCadence] ?? 0;
-}
-
-// ── Audience funnel ──────────────────────────────────────────────────────
+// ── Audience funnel (workbook: matched → impressions / conversions) ─────────
 export interface AudienceFunnel {
-  distinct: number;   // distinct addressable audience
-  overlap: number;    // matchable overlap with partner data
-  activated: number;  // records actually activated (per run)
-  measured: number;   // records measured (per run)
+  matched: number;                // avg audience × match rate (C44 / C20)
+  impressionsPerCampaign: number; // matched × frequency × reach (C56)
+  conversionsPerCampaign: number; // matched × reach × conversion (C59)
 }
 
 export function audienceFunnel(a: ScopingAssumptions): AudienceFunnel {
-  const distinct = Math.max(0, a.audienceSize);
-  const overlap = distinct * clamp01(a.partnerOverlapRate);
+  const matched = nn(a.avgAudienceSize) * clamp01(a.matchRate);
   return {
-    distinct,
-    overlap,
-    activated: overlap * clamp01(a.activatedOverlapRate),
-    measured: overlap * clamp01(a.measuredOverlapRate),
+    matched,
+    impressionsPerCampaign: matched * nn(a.frequencyMultiple) * clamp01(a.reachPct),
+    conversionsPerCampaign: matched * clamp01(a.reachPct) * clamp01(a.conversionRate),
   };
 }
 
-export function managedBaseVolume(a: ScopingAssumptions): number {
-  const f = audienceFunnel(a);
-  if (a.managedBase === 'overlap') return f.overlap;
-  if (a.managedBase === 'custom') return Math.max(0, a.customManagedVolume);
-  return f.distinct; // 'full'
+/** Refresh cadence → refreshes per year. Detailed: 365 / everyXDays (1–6). */
+export function refreshesPerYear(a: ScopingAssumptions): number {
+  const days = Math.min(6, Math.max(1, Math.floor(a.refreshEveryXDays || SIMPLE_REFRESH_DAYS)));
+  return DAYS_PER_YEAR / days;
 }
 
-// ── Collaboration credit parts (the auditable breakdown of the estimate) ──
+// ── Collaboration credit parts (auditable breakdown of the estimate) ────────
 export interface CollabParts {
   management: number;
-  insights: number;
-  activation: number;
-  measurement: number;
-  estimated: number;    // sum of the four (activity mode) or directCredits (direct mode)
-  activationRuns: number;
+  activation: number;             // ad-hoc activation
+  activationAlwaysOn: number;     // always-on (weekly) — 0 by default
+  measurementSummary: number;
+  measurementAttribution: number;
+  estimated: number;              // total credits (sum, or directCredits)
+  recommendedPack: number;        // total rounded up to a credit-pack tier
+}
+
+/** Tiered pack sizing — workbook Sales Calc row 31 (nested CEILING by magnitude). */
+export function recommendedCreditPack(total: number): number {
+  const t = nn(total);
+  if (t < 1000) return ceilingTo(t, 100);
+  if (t < 10000) return ceilingTo(t, 500);
+  if (t < 50000) return ceilingTo(t, 1000);
+  return ceilingTo(t, 5000);
 }
 
 export function collabParts(a: ScopingAssumptions): CollabParts {
   if (a.collabMode === 'direct') {
-    const estimated = Math.max(0, a.directCredits);
-    return { management: 0, insights: 0, activation: 0, measurement: 0, estimated, activationRuns: 0 };
+    const estimated = nn(a.directCredits);
+    return {
+      management: 0, activation: 0, activationAlwaysOn: 0,
+      measurementSummary: 0, measurementAttribution: 0,
+      estimated, recommendedPack: recommendedCreditPack(estimated),
+    };
   }
+
   const f = audienceFunnel(a);
+  const measOn = a.measurementEnabled ? 1 : 0;
+
+  if (a.collabMode === 'simple') {
+    // Simple Scoping: fixed refresh (365/6), campaign-count driven, CEILING to 10.
+    const campaigns = nn(a.simpleCampaignsPerYear) || 1;
+    const refreshes = DAYS_PER_YEAR / SIMPLE_REFRESH_DAYS;
+    const management = ceilingTo((nn(a.onboardedIds) / 1_000_000) * BURN.management * refreshes, 10);
+    const activation = ceilingTo((f.matched / 1_000_000) * campaigns * BURN.activationAdHoc, 10);
+    // impressions & conversions scale with campaign count in the matrix
+    const impressions = f.matched * nn(a.frequencyMultiple) * campaigns * clamp01(a.reachPct);
+    const conversions = f.matched * campaigns * clamp01(a.reachPct) * clamp01(a.conversionRate);
+    const measurement = ceilingTo(((impressions + conversions) / 1_000_000) * BURN.measurement * measOn, 10);
+    const estimated = management + activation + measurement;
+    return {
+      management, activation, activationAlwaysOn: 0,
+      measurementSummary: measurement, measurementAttribution: 0,
+      estimated, recommendedPack: recommendedCreditPack(estimated),
+    };
+  }
+
+  // Detailed Scoping (default): granular, unrounded.
   const refreshes = refreshesPerYear(a);
-
-  const management =
-    Math.max(1, a.managedAudiences) * (managedBaseVolume(a) / 1_000_000) * refreshes * a.creditPerMgmtPerMillionRefresh;
-
-  const insights = Math.max(0, a.insightsRunsPerYear) * Math.max(0, a.creditPerInsight);
-
-  // on-demand and recurring are only summed in 'mixed' — this is the guardrail
-  // against accidental double counting.
-  const activationRuns =
-    a.activationMode === 'on-demand' ? Math.max(0, a.onDemandRuns)
-      : a.activationMode === 'recurring' ? Math.max(0, a.recurringRunsPerYear)
-        : Math.max(0, a.onDemandRuns) + Math.max(0, a.recurringRunsPerYear); // mixed
-  const activation = activationRuns * (f.activated / 1_000_000) * a.creditPerActivationPerMillion;
-
-  const recordsCredits = Math.max(0, a.measurementRunsPerYear) * (f.measured / 1_000_000) * a.creditPerMeasurementPerMillion;
-  const reportsCredits = Math.max(0, a.reportsPerYear) * Math.max(0, a.creditPerReport);
-  const measurement =
-    a.measurementModel === 'records' ? recordsCredits
-      : a.measurementModel === 'reports' ? reportsCredits
-        : a.measurementModel === 'hybrid' ? recordsCredits + reportsCredits
-          : 0; // 'none'
-
-  const estimated = management + insights + activation + measurement;
-  return { management, insights, activation, measurement, estimated, activationRuns };
+  const management = (nn(a.onboardedIds) / 1_000_000) * refreshes * BURN.management;
+  const activation =
+    (f.matched * nn(a.adHocCampaignsPerYear) * nn(a.audiencesPerCampaign) * BURN.activationAdHoc) / 1_000_000;
+  const activationAlwaysOn = (f.matched / 1_000_000) * nn(a.alwaysOnRunsPerYear) * BURN.activationAlwaysOn;
+  const measurementSummary =
+    (f.impressionsPerCampaign / 1_000_000) * nn(a.summaryReportsPerCampaign) * nn(a.measurementCampaignsPerYear) * BURN.measurement * measOn;
+  const measurementAttribution =
+    ((f.conversionsPerCampaign + f.impressionsPerCampaign) / 1_000_000) * nn(a.measurementCampaignsPerYear) * nn(a.attributionReportsPerCampaign) * BURN.measurement * measOn;
+  const estimated = management + activation + activationAlwaysOn + measurementSummary + measurementAttribution;
+  return {
+    management, activation, activationAlwaysOn,
+    measurementSummary, measurementAttribution,
+    estimated, recommendedPack: recommendedCreditPack(estimated),
+  };
 }
 
 export function estimateCollabCredits(a: ScopingAssumptions): number {
   return collabParts(a).estimated;
 }
 
-export function billableCredits(estimated: number, allotment: number): number {
-  return Math.max(0, estimated - allotment);
+// ── Simple Scoping matrix — one column per campaign tier (for the compare view)
+export interface SimpleMatrixColumn {
+  campaigns: number;
+  management: number;
+  activation: number;
+  measurement: number;
+  total: number;
+  recommendedPack: number;
+}
+export function simpleScopingMatrix(a: ScopingAssumptions): SimpleMatrixColumn[] {
+  return SIMPLE_CAMPAIGN_TIERS.map((campaigns) => {
+    const p = collabParts({ ...a, collabMode: 'simple', simpleCampaignsPerYear: campaigns });
+    return {
+      campaigns,
+      management: p.management,
+      activation: p.activation,
+      measurement: p.measurementSummary,
+      total: p.estimated,
+      recommendedPack: p.recommendedPack,
+    };
+  });
 }
 
-// ── CJA rows, per source ─────────────────────────────────────────────────
+// ── CJA rows, per source (independent product — unchanged) ──────────────────
 export interface CjaSourceRows {
   id: 'web' | 'app' | 'social' | 'crm' | 'events';
   rows: number;
@@ -199,24 +249,20 @@ export function estimateCjaRows(a: ScopingAssumptions): number {
   return cjaSourceRows(a).reduce((sum, s) => sum + s.rows, 0);
 }
 
-// ── Snapshot: flat numbers the sticky results bar reads directly ─────────
+// ── Snapshot: flat numbers the sticky results bar reads directly ────────────
 export interface ScopingSnapshot {
   // funnel
-  distinctAudience: number;
-  overlapAudience: number;
-  activatedAudience: number;
-  measuredAudience: number;
-  managedVolume: number;
+  matchedAudience: number;
+  impressionsPerCampaign: number;
+  conversionsPerCampaign: number;
   refreshesPerYear: number;
   // collab parts
   collabManagementCredits: number;
-  collabInsightsCredits: number;
   collabActivationCredits: number;
-  collabMeasurementCredits: number;
+  collabMeasurementCredits: number;      // summary + attribution
   collabCreditsEstimated: number;
-  collabAllotment: number;
-  collabBillableCredits: number;
-  collabCost: number | null;
+  collabRecommendedPack: number;
+  collabCost: number | null;             // recommended pack × price per credit
   // cja
   cjaRowsPerYear: number;
   cjaAnnualIngestionLimit: number;
@@ -228,29 +274,24 @@ export interface ScopingSnapshot {
 export function computeSnapshot(a: ScopingAssumptions, prices: UnitPrices): ScopingSnapshot {
   const f = audienceFunnel(a);
   const parts = collabParts(a);
-  const collabAllotment = allotmentCredits(a.collabPackage);
-  const collabBillableCredits = billableCredits(parts.estimated, collabAllotment);
   const cjaRowsPerYear = estimateCjaRows(a);
   const multiplier = a.cjaIngestionMultiplier || DEFAULT_INGESTION_MULTIPLIER;
 
-  const collabCost = prices.pricePerCredit == null ? null : collabBillableCredits * prices.pricePerCredit;
+  // Cost sells the recommended pack at the per-credit price (no allotment).
+  const collabCost = prices.pricePerCredit == null ? null : parts.recommendedPack * prices.pricePerCredit;
   const cjaCost = prices.pricePerMillionRows == null ? null : (cjaRowsPerYear / 1_000_000) * prices.pricePerMillionRows;
   const totalCost = collabCost == null && cjaCost == null ? null : (collabCost ?? 0) + (cjaCost ?? 0);
 
   return {
-    distinctAudience: f.distinct,
-    overlapAudience: f.overlap,
-    activatedAudience: f.activated,
-    measuredAudience: f.measured,
-    managedVolume: managedBaseVolume(a),
+    matchedAudience: f.matched,
+    impressionsPerCampaign: f.impressionsPerCampaign,
+    conversionsPerCampaign: f.conversionsPerCampaign,
     refreshesPerYear: refreshesPerYear(a),
     collabManagementCredits: parts.management,
-    collabInsightsCredits: parts.insights,
-    collabActivationCredits: parts.activation,
-    collabMeasurementCredits: parts.measurement,
+    collabActivationCredits: parts.activation + parts.activationAlwaysOn,
+    collabMeasurementCredits: parts.measurementSummary + parts.measurementAttribution,
     collabCreditsEstimated: parts.estimated,
-    collabAllotment,
-    collabBillableCredits,
+    collabRecommendedPack: parts.recommendedPack,
     collabCost,
     cjaRowsPerYear,
     cjaAnnualIngestionLimit: cjaRowsPerYear * multiplier,
@@ -259,7 +300,7 @@ export function computeSnapshot(a: ScopingAssumptions, prices: UnitPrices): Scop
   };
 }
 
-// ── Breakdown: every derived value with formula + substituted numbers ────
+// ── Breakdown: every derived value with formula + substituted numbers ───────
 export type LineKind = 'derived' | 'output';
 export interface Bilingual { en: string; it: string }
 
@@ -293,87 +334,123 @@ export function computeBreakdown(a: ScopingAssumptions, prices: UnitPrices): Sco
   const f = audienceFunnel(a);
   const parts = collabParts(a);
   const s = computeSnapshot(a, prices);
-  const refreshes = refreshesPerYear(a);
-  const managedVol = managedBaseVolume(a);
   const collab: LineItem[] = [];
   const push = (li: LineItem) => collab.push(li);
 
-  if (a.collabMode === 'activity') {
+  if (a.collabMode === 'direct') {
     push({
-      id: 'overlapAudience', label: { en: 'Overlap audience', it: 'Audience in overlap' },
-      value: f.overlap, unit: 'ids',
-      formula: 'distinct addressable × partner overlap rate',
-      substituted: `${n(f.distinct)} × ${pct(a.partnerOverlapRate)} = ${n(f.overlap)}`,
-      inputsUsed: ['audienceSize', 'partnerOverlapRate'], kind: 'derived',
+      id: 'collabCreditsEstimated', label: { en: 'Scoped credits / yr', it: 'Credits scopati / anno' },
+      value: parts.estimated, unit: 'credits',
+      formula: 'direct credits', substituted: `${dec(parts.estimated)}`,
+      inputsUsed: ['directCredits'], kind: 'output',
     });
+  } else {
+    const measOn = a.measurementEnabled ? 1 : 0;
     push({
-      id: 'activatedAudience', label: { en: 'Activated volume / run', it: 'Volume attivato / run' },
-      value: f.activated, unit: 'ids',
-      formula: 'overlap audience × activated overlap rate',
-      substituted: `${n(f.overlap)} × ${pct(a.activatedOverlapRate)} = ${n(f.activated)}`,
-      inputsUsed: ['partnerOverlapRate', 'activatedOverlapRate'], kind: 'derived',
+      id: 'matchedAudience', label: { en: 'Matched audience', it: 'Audience matchata' },
+      value: f.matched, unit: 'ids',
+      formula: 'average audience × match rate',
+      substituted: `${n(a.avgAudienceSize)} × ${pct(a.matchRate)} = ${n(f.matched)}`,
+      inputsUsed: ['avgAudienceSize', 'matchRate'], kind: 'derived',
     });
-    push({
-      id: 'managementCredits', label: { en: 'Management credits', it: 'Credits gestione' },
-      value: parts.management, unit: 'credits',
-      formula: 'managed audiences × (managed IDs ÷ 1M) × refreshes/yr × credits per 1M per refresh',
-      substituted: `${n(Math.max(1, a.managedAudiences))} × (${n(managedVol)} ÷ 1M) × ${n(refreshes)} × ${dec(a.creditPerMgmtPerMillionRefresh)} = ${dec(parts.management)}`,
-      inputsUsed: ['managedAudiences', 'managedBase', 'refreshCadence', 'creditPerMgmtPerMillionRefresh'], kind: 'derived',
-    });
-    if (parts.insights > 0) {
+
+    if (a.collabMode === 'simple') {
+      const campaigns = nn(a.simpleCampaignsPerYear) || 1;
+      const refreshes = DAYS_PER_YEAR / SIMPLE_REFRESH_DAYS;
+      const impressions = f.matched * nn(a.frequencyMultiple) * campaigns * clamp01(a.reachPct);
+      const conversions = f.matched * campaigns * clamp01(a.reachPct) * clamp01(a.conversionRate);
       push({
-        id: 'insightsCredits', label: { en: 'Insights credits', it: 'Credits insights' },
-        value: parts.insights, unit: 'credits',
-        formula: 'insights runs/yr × credits per insight',
-        substituted: `${n(a.insightsRunsPerYear)} × ${dec(a.creditPerInsight)} = ${dec(parts.insights)}`,
-        inputsUsed: ['insightsRunsPerYear', 'creditPerInsight'], kind: 'derived',
+        id: 'managementCredits', label: { en: 'Audience management', it: 'Gestione audience' },
+        value: parts.management, unit: 'credits',
+        formula: 'CEILING( (onboarded IDs ÷ 1M) × mgmt burn × (365 ÷ 6), 10 )',
+        substituted: `CEIL( (${n(a.onboardedIds)} ÷ 1M) × ${BURN.management} × ${dec(refreshes)} ) = ${dec(parts.management)}`,
+        inputsUsed: ['onboardedIds'], kind: 'derived',
       });
-    }
-    push({
-      id: 'activationCredits', label: { en: 'Activation credits', it: 'Credits attivazione' },
-      value: parts.activation, unit: 'credits',
-      formula: `activation runs (${a.activationMode}) × (activated volume ÷ 1M) × credits per 1M per run`,
-      substituted: `${n(parts.activationRuns)} × (${n(f.activated)} ÷ 1M) × ${dec(a.creditPerActivationPerMillion)} = ${dec(parts.activation)}`,
-      inputsUsed: ['activationMode', 'onDemandRuns', 'recurringRunsPerYear', 'creditPerActivationPerMillion'], kind: 'derived',
-    });
-    if (a.measurementModel !== 'none') {
       push({
-        id: 'measurementCredits', label: { en: 'Measurement credits', it: 'Credits measurement' },
-        value: parts.measurement, unit: 'credits',
-        formula: measurementFormula(a.measurementModel),
-        substituted: measurementSubstituted(a, f, parts.measurement),
-        inputsUsed: ['measurementModel', 'measurementRunsPerYear', 'reportsPerYear', 'creditPerMeasurementPerMillion', 'creditPerReport'], kind: 'derived',
+        id: 'activationCredits', label: { en: 'Activation', it: 'Attivazione' },
+        value: parts.activation, unit: 'credits',
+        formula: 'CEILING( (matched ÷ 1M) × campaigns × activation burn, 10 )',
+        substituted: `CEIL( (${n(f.matched)} ÷ 1M) × ${n(campaigns)} × ${BURN.activationAdHoc} ) = ${dec(parts.activation)}`,
+        inputsUsed: ['simpleCampaignsPerYear', 'avgAudienceSize', 'matchRate'], kind: 'derived',
       });
+      push({
+        id: 'measurementCredits', label: { en: 'Measurement', it: 'Measurement' },
+        value: parts.measurementSummary, unit: 'credits',
+        formula: 'CEILING( (impressions + conversions) ÷ 1M × measurement burn × measurement?, 10 )',
+        substituted: `CEIL( (${n(impressions)} + ${n(conversions)}) ÷ 1M × ${BURN.measurement} × ${measOn} ) = ${dec(parts.measurementSummary)}`,
+        inputsUsed: ['measurementEnabled', 'frequencyMultiple', 'reachPct', 'conversionRate'], kind: 'derived',
+      });
+    } else {
+      // detailed
+      const refreshes = refreshesPerYear(a);
+      push({
+        id: 'managementCredits', label: { en: 'Audience transformation & management', it: 'Trasformazione e gestione audience' },
+        value: parts.management, unit: 'credits',
+        formula: '(onboarded IDs ÷ 1M) × (365 ÷ refresh days) × mgmt burn',
+        substituted: `(${n(a.onboardedIds)} ÷ 1M) × (365 ÷ ${n(a.refreshEveryXDays)}) × ${BURN.management} = ${dec(parts.management)}`,
+        inputsUsed: ['onboardedIds', 'refreshEveryXDays'], kind: 'derived',
+      });
+      push({
+        id: 'activationCredits', label: { en: 'Activation — ad hoc', it: 'Attivazione — ad hoc' },
+        value: parts.activation, unit: 'credits',
+        formula: '(matched × campaigns × audiences/campaign × activation burn) ÷ 1M',
+        substituted: `(${n(f.matched)} × ${n(a.adHocCampaignsPerYear)} × ${n(a.audiencesPerCampaign)} × ${BURN.activationAdHoc}) ÷ 1M = ${dec(parts.activation)}`,
+        inputsUsed: ['adHocCampaignsPerYear', 'audiencesPerCampaign'], kind: 'derived',
+      });
+      if (parts.activationAlwaysOn > 0) {
+        push({
+          id: 'activationAlwaysOnCredits', label: { en: 'Activation — always-on', it: 'Attivazione — always-on' },
+          value: parts.activationAlwaysOn, unit: 'credits',
+          formula: '(matched ÷ 1M) × always-on runs/yr × always-on burn',
+          substituted: `(${n(f.matched)} ÷ 1M) × ${n(a.alwaysOnRunsPerYear)} × ${BURN.activationAlwaysOn} = ${dec(parts.activationAlwaysOn)}`,
+          inputsUsed: ['alwaysOnRunsPerYear'], kind: 'derived',
+        });
+      }
+      if (a.measurementEnabled) {
+        push({
+          id: 'measurementSummaryCredits', label: { en: 'Measurement — summary statistics', it: 'Measurement — summary statistics' },
+          value: parts.measurementSummary, unit: 'credits',
+          formula: '(impressions ÷ 1M) × summary reports × measured campaigns × measurement burn',
+          substituted: `(${n(f.impressionsPerCampaign)} ÷ 1M) × ${n(a.summaryReportsPerCampaign)} × ${n(a.measurementCampaignsPerYear)} × ${BURN.measurement} = ${dec(parts.measurementSummary)}`,
+          inputsUsed: ['summaryReportsPerCampaign', 'measurementCampaignsPerYear', 'measurementEnabled'], kind: 'derived',
+        });
+        push({
+          id: 'measurementAttributionCredits', label: { en: 'Measurement — attribution', it: 'Measurement — attribution' },
+          value: parts.measurementAttribution, unit: 'credits',
+          formula: '((conversions + impressions) ÷ 1M) × measured campaigns × attribution reports × measurement burn',
+          substituted: `((${n(f.conversionsPerCampaign)} + ${n(f.impressionsPerCampaign)}) ÷ 1M) × ${n(a.measurementCampaignsPerYear)} × ${n(a.attributionReportsPerCampaign)} × ${BURN.measurement} = ${dec(parts.measurementAttribution)}`,
+          inputsUsed: ['measurementCampaignsPerYear', 'attributionReportsPerCampaign', 'measurementEnabled'], kind: 'derived',
+        });
+      }
     }
+
+    push({
+      id: 'collabCreditsEstimated', label: { en: 'Total credits / yr', it: 'Credits totali / anno' },
+      value: parts.estimated, unit: 'credits',
+      formula: a.collabMode === 'simple' ? 'management + activation + measurement' : 'management + activation + measurement (summary + attribution)',
+      substituted: `${dec(parts.estimated)}`,
+      inputsUsed: [], kind: 'output',
+    });
   }
 
   push({
-    id: 'collabCreditsEstimated', label: { en: 'Estimated credits / yr', it: 'Credits stimati / anno' },
-    value: parts.estimated, unit: 'credits',
-    formula: a.collabMode === 'direct' ? 'direct credits' : 'management + insights + activation + measurement',
-    substituted: a.collabMode === 'direct'
-      ? `${dec(parts.estimated)}`
-      : `${dec(parts.management)} + ${dec(parts.insights)} + ${dec(parts.activation)} + ${dec(parts.measurement)} = ${dec(parts.estimated)}`,
+    id: 'collabRecommendedPack', label: { en: 'Recommended credit pack', it: 'Pacchetto crediti consigliato' },
+    value: parts.recommendedPack, unit: 'credits',
+    formula: 'total rounded up to the pack tier (100 / 500 / 1,000 / 5,000)',
+    substituted: `${dec(parts.estimated)} → ${n(parts.recommendedPack)}`,
     inputsUsed: [], kind: 'output',
-  });
-  push({
-    id: 'collabBillableCredits', label: { en: 'Billable credits / yr', it: 'Credits fatturabili / anno' },
-    value: s.collabBillableCredits, unit: 'credits',
-    formula: 'max(0, estimated − package allotment)',
-    substituted: `max(0, ${dec(parts.estimated)} − ${n(s.collabAllotment)}) = ${dec(s.collabBillableCredits)}`,
-    inputsUsed: ['collabPackage'], kind: 'output',
   });
   if (prices.pricePerCredit != null) {
     push({
       id: 'collabCost', label: { en: 'Collaboration cost', it: 'Costo Collaboration' },
       value: s.collabCost ?? 0, unit: 'eur',
-      formula: 'billable credits × price per credit',
-      substituted: `${dec(s.collabBillableCredits)} × ${money(prices.pricePerCredit)} = ${money(s.collabCost ?? 0)}`,
+      formula: 'recommended pack × price per credit',
+      substituted: `${n(parts.recommendedPack)} × ${money(prices.pricePerCredit)} = ${money(s.collabCost ?? 0)}`,
       inputsUsed: ['pricePerCredit'], kind: 'output',
     });
   }
 
-  // CJA per source
+  // CJA per source (unchanged)
   const srcRows = cjaSourceRows(a);
   const total = srcRows.reduce((x, r) => x + r.rows, 0) || 1;
   const cjaSources = srcRows.map((r) => ({
@@ -413,95 +490,57 @@ export function computeBreakdown(a: ScopingAssumptions, prices: UnitPrices): Sco
   return { collab, cja, cjaSources, warnings: buildWarnings(a) };
 }
 
-// ── Guardrail warnings (error prevention, §6 of the brief) ───────────────
+// ── Guardrail warnings ──────────────────────────────────────────────────────
 export function buildWarnings(a: ScopingAssumptions): Warning[] {
   const w: Warning[] = [];
-  if (a.collabMode !== 'activity') return w;
+  if (a.collabMode === 'direct') return w;
 
-  if (a.activationMode !== 'mixed' && a.onDemandRuns > 0 && a.recurringRunsPerYear > 0) {
-    const counted = a.activationMode === 'on-demand' ? 'on-demand' : 'recurring';
+  if (clamp01(a.matchRate) === 0) {
     w.push({
-      id: 'activation-double-count', level: 'warn', inputsUsed: ['activationMode', 'onDemandRuns', 'recurringRunsPerYear'],
+      id: 'no-match', level: 'warn', inputsUsed: ['matchRate'],
       text: {
-        en: `Both on-demand and recurring runs are set, but mode is “${a.activationMode}”. Only ${counted} runs are counted — switch to Mixed to sum them.`,
-        it: `Sono impostati sia run on-demand sia recurring, ma la modalità è “${a.activationMode}”. Vengono contate solo le run ${counted} — passa a Mixed per sommarle.`,
+        en: 'Match rate is 0 — matched audience, activation and measurement volumes collapse to 0. Provide a match/overlap rate.',
+        it: 'Il match rate è 0 — audience matchata, attivazione e measurement diventano 0. Inserisci un tasso di match/overlap.',
       },
     });
   }
-  if (clamp01(a.partnerOverlapRate) === 0) {
+  if (a.collabMode === 'detailed' && (a.refreshEveryXDays < 1 || a.refreshEveryXDays > 6)) {
     w.push({
-      id: 'no-overlap', level: 'warn', inputsUsed: ['partnerOverlapRate'],
+      id: 'refresh-range', level: 'warn', inputsUsed: ['refreshEveryXDays'],
       text: {
-        en: 'Partner overlap rate is 0 — activation and measurement volumes collapse to 0. Provide an overlap/match rate.',
-        it: 'Il match/overlap rate con i partner è 0 — i volumi di attivazione e measurement diventano 0. Inserisci un tasso di overlap.',
+        en: 'Refresh cadence should be every 1–6 days (the workbook clamps it to that range). Values outside 1–6 are clamped.',
+        it: 'La cadenza di refresh dovrebbe essere ogni 1–6 giorni (il modello la vincola a questo range). Valori fuori 1–6 vengono clampati.',
       },
     });
   }
-  if (a.managedBase === 'full' && clamp01(a.partnerOverlapRate) < 1) {
+  if (a.collabMode === 'detailed' && a.refreshEveryXDays <= 1) {
     w.push({
-      id: 'managed-full', level: 'info', inputsUsed: ['managedBase', 'partnerOverlapRate'],
+      id: 'refresh-daily', level: 'info', inputsUsed: ['refreshEveryXDays'],
       text: {
-        en: 'Management is sized on the FULL addressable audience, not just the partner overlap. Switch the managed base to “Overlap only” to size on the matched subset.',
-        it: 'La gestione è dimensionata sull’audience indirizzabile PIENA, non solo sull’overlap con il partner. Imposta la base gestita su “Solo overlap” per dimensionare sul sottoinsieme matchato.',
+        en: 'Daily refresh (every 1 day) applies a 365× multiplier to management credits vs a single yearly refresh. Confirm the cadence.',
+        it: 'Il refresh giornaliero (ogni 1 giorno) applica un moltiplicatore 365× ai credits di gestione. Verifica la cadenza.',
       },
     });
   }
-  if (a.refreshCadence === 'daily') {
+  if (!a.measurementEnabled) {
     w.push({
-      id: 'daily-refresh', level: 'info', inputsUsed: ['refreshCadence'],
+      id: 'measurement-off', level: 'info', inputsUsed: ['measurementEnabled'],
       text: {
-        en: 'Daily refresh applies a ~30× multiplier to management credits vs monthly. Confirm the indexing cadence is really daily.',
-        it: 'Il refresh giornaliero applica un moltiplicatore ~30× ai credits di gestione rispetto al mensile. Verifica che la cadenza di indicizzazione sia davvero giornaliera.',
-      },
-    });
-  }
-  if (a.measurementModel === 'reports' && a.reportsPerYear === 0) {
-    w.push({
-      id: 'reports-zero', level: 'warn', inputsUsed: ['measurementModel', 'reportsPerYear'],
-      text: {
-        en: 'Measurement model is report-based but reports/yr is 0 → measurement credits are 0.',
-        it: 'Il modello di measurement è report-based ma i report/anno sono 0 → i credits di measurement sono 0.',
-      },
-    });
-  }
-  if ((a.measurementModel === 'records' || a.measurementModel === 'hybrid') && clamp01(a.measuredOverlapRate) === 0) {
-    w.push({
-      id: 'measured-zero', level: 'warn', inputsUsed: ['measurementModel', 'measuredOverlapRate'],
-      text: {
-        en: 'Records-based measurement is selected but measured overlap rate is 0 → records measurement credits are 0.',
-        it: 'È selezionato il measurement su base record ma il measured overlap rate è 0 → i credits di measurement su record sono 0.',
+        en: 'Measurement use-cases are off → measurement credits are 0.',
+        it: 'I casi d’uso di measurement sono disattivati → i credits di measurement sono 0.',
       },
     });
   }
   return w;
 }
 
-// ── helpers ──────────────────────────────────────────────────────────────
-function clamp01(x: number): number {
-  if (!Number.isFinite(x)) return 0;
-  return Math.min(1, Math.max(0, x));
-}
+// ── format helpers ──────────────────────────────────────────────────────────
 const NF = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
 const NF2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 const n = (x: number) => NF.format(Math.round(x));
 const dec = (x: number) => NF2.format(x);
 const pct = (x: number) => `${NF2.format(clamp01(x) * 100)}%`;
 const money = (x: number) => `€${NF2.format(x)}`;
-
-function measurementFormula(m: MeasurementModel): string {
-  if (m === 'records') return 'measurement runs/yr × (measured volume ÷ 1M) × credits per 1M per run';
-  if (m === 'reports') return 'reports/yr × credits per report';
-  if (m === 'hybrid') return '(records-based) + (report-based)';
-  return '0';
-}
-function measurementSubstituted(a: ScopingAssumptions, f: AudienceFunnel, result: number): string {
-  const rec = `${n(a.measurementRunsPerYear)} × (${n(f.measured)} ÷ 1M) × ${dec(a.creditPerMeasurementPerMillion)}`;
-  const rep = `${n(a.reportsPerYear)} × ${dec(a.creditPerReport)}`;
-  if (a.measurementModel === 'records') return `${rec} = ${dec(result)}`;
-  if (a.measurementModel === 'reports') return `${rep} = ${dec(result)}`;
-  if (a.measurementModel === 'hybrid') return `[${rec}] + [${rep}] = ${dec(result)}`;
-  return `${dec(result)}`;
-}
 
 const CJA_SOURCE_FORMULA: Record<CjaSourceRows['id'], string> = {
   web: 'web visits/yr × hits per visit',

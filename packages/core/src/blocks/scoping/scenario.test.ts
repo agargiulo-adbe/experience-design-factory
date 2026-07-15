@@ -20,7 +20,7 @@ describe('serialize/deserialize round-trip', () => {
     const back = deserializeScenario(payload);
     expect(back.title).toBe('Base');
     expect(back.assumptions.directCredits).toBe(9000);
-    expect(back.assumptions.partnerOverlapRate).toBe(DEFAULT_ASSUMPTIONS.partnerOverlapRate);
+    expect(back.assumptions.matchRate).toBe(DEFAULT_ASSUMPTIONS.matchRate);
     expect(back.preset).toBe('base');
     expect(back.visibility).toBe('private');
   });
@@ -29,10 +29,11 @@ describe('serialize/deserialize round-trip', () => {
     const back = deserializeScenario({ title: 'X', assumptions: { collabMode: 'direct' } });
     expect(back.title).toBe('X');
     // A legacy payload has none of the new funnel/cadence fields — they default:
-    expect(back.assumptions.refreshCadence).toBe(DEFAULT_ASSUMPTIONS.refreshCadence);
-    expect(back.assumptions.activationMode).toBe(DEFAULT_ASSUMPTIONS.activationMode);
+    expect(back.assumptions.refreshEveryXDays).toBe(DEFAULT_ASSUMPTIONS.refreshEveryXDays);
+    expect(back.assumptions.onboardedIds).toBe(DEFAULT_ASSUMPTIONS.onboardedIds);
     expect(back.assumptions.webHitsPerVisit).toBeTypeOf('number');
-    expect(back.prices.pricePerCredit).toBeNull();
+    // prices default to the workbook list price ($5) when the payload omits them:
+    expect(back.prices.pricePerCredit).toBe(5);
   });
 });
 
