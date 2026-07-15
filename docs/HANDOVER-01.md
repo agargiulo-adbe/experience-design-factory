@@ -72,7 +72,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 | **Trait d'Union (Agos)** | **Nuova** (14 lug 2026): 7 sezioni + home, live pitch per Agos (credito al consumo, gruppo CA/BPM). `audit:deck` 0 su 3 viewport; tutte le slide verificate a 1920. | Vedi §16. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (prospect→cliente). |
 | **Connessioni Intelligenti (Trenitalia/FS)** | **Attivamente rilavorata** (lug 2026): personas rinominate, foto persona rigenerata, **passata di leggibilità completa** (type generoso, ecosistema impilato). `audit:deck` 0. | Vedi §15. Ultimo focus di lavoro. Personas: **Davide** (pendolare) + **Elena** (business) — NON Marco/Sofia (=UniCredit). |
 | **Ferrari Racing** | Stabile + **sezione /scoping** (licensing 1:1 col workbook Adobe; **15 lug pomeriggio: modello v2** — SKU base + entitlement + istanze partner + refresh mode, §14.9) + **nuova sezione «Casi d'uso»** (§19, commit `a3fc86a`). Save resiliente. **53 test**. Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (incl. casi-duso). | Bilingue EN default. `prevHref` su tutte le pagine. |
-| **UniCredit Engagement** | Stabile; modello di contenuto più maturo (5 round feedback). **15 lug 2026**: LLMO+Semrush consolidati in **Adobe Brand Visibility** (§17); de-AI copy. Vedi §5. | `nextHref`+`prevHref` completi (gold standard). |
+| **UniCredit Engagement** | Stabile; modello di contenuto più maturo (5 round feedback). **15 lug 2026**: LLMO+Semrush consolidati in **Adobe Brand Visibility** (§17); de-AI copy; **passata copy morbido/credibilità** (§17.6: cifre→qualitativo, KPI→direzione ↑/↓, Next-Best-Experience, obiezione acquisition, fix doppio-quote). Vedi §5. | `nextHref`+`prevHref` completi (gold standard). |
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
 | **Factory Hub** (root) | **Nuovo** (lug 2026): landing della Factory a `/experience-design-factory/`. | Vedi §15. Stub redirect per i vecchi deep-link maxmara. |
 | **Factory Showcase** | **Live + data-driven** (`src/data/experiences.ts`). Aggiungere un'esperienza lì propaga card/conteggi/KPI ovunque. | Vedi §13. |
@@ -89,7 +89,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 - **Adriana Conti** → **unica** persona **B2B**, CFO PMI manifatturiera. Introdotta **solo** in `b2b.astro`, che è **auto-consistente** (nessuna dipendenza da Marco/Sofia).
 
 ### 5.2 Convenzioni copy / credibilità (LOCKED)
-- Base clienti = **14M clienti retail** (non 7M). Cifre reali FY24 non più usate come "obiettivi": la home mostra **obiettivi di piano** UniCredit Unlimited (>€5,5B in tech/digitale/dati, €11B+ utile, >20% RoTE) — il €5,5B è il nesso logico con "tech & AI abilitatori". Fonte con **link** (press UniCredit Unlimited, feb 2026).
+- Base clienti: **nessuna cifra precisa nel deck** (passata 15 lug, §17.6) — *"milioni di clienti / i milioni di profili"* invece di "14M" (numero non verificabile senza fonte → tono più morbido, es. *"il profilo… spesso resta parziale"* invece di *"…ancora non esiste"*). Restano gli **obiettivi di piano** UniCredit Unlimited nella home (>€5,5B in tech/digitale/dati, €11B+ utile, >20% RoTE — target pubblici con **link**, press UniCredit Unlimited feb 2026; il €5,5B è il nesso con "tech & AI abilitatori").
 - Sempre "**reel ads**", mai "reel".
 - Fonti con **data + link** dove flaggato; **rimosse** citazioni inventate (niente "UCX Programme", niente "Banca d'Italia" su slide non pertinenti, niente "6+ sistemi separati"). Numeri modellati etichettati onestamente come *"proiezione/scenario illustrativo"*.
 - Niente specifici roboanti/non verificabili (no "approvato in 3 giorni", no "8 minuti" di durata, no ripetizioni di +34%/40%). Imperativi rivolti allo spettatore ammorbiditi (es. "Segui la loro storia" → dichiarativo); i **verbi-sezione** (Conosci/Acquisisci/…) e i CTA a bottone restano.
@@ -186,6 +186,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 ## 11. Change log recente (UniCredit, lug 2026)
 
 Dal più recente:
+- `aabd2d1` **Passata copy morbido/credibilità** (§17.6): cifre non verificabili → qualitativo (14M→"milioni", 289M→"milioni di prompt"); **numeri di risultato inventati → direzione ↑/↓** in tutte le sezioni (tenuti i benchmark di banche reali citate, le ricerche esterne linkate, i target pubblici e le meccaniche di scenario); **Next-Best-Action → Next-Best-Experience**; copy obiezione "acquisition vs clienti noti" sulla slide di Marco; fix doppio `""` in Coinvolgi. Build + `audit:deck` 0 hard + screenshot 1920 verificati.
 - `310e045` fix analytics naming + Coworker semplificato (verificato vs MEGA DECK): MCA↔Mix Modeler, DIA attuale, Customer&Group Journeys chiarito, Coworker senza moduli finti; Motore rigenerato (AEM Sites Optimizer, Brand Concierge, MCA, AI Platform) + fix clipping.
 - `b8bd78c` Contenuti: AEM Sites nello stack + nuove slide **AI Agents in AEM** e **Firefly enterprise** (ricerca online); fix contrasto WCAG link su slide inverse.
 - `aa26cd1` Round 2: numeri-obiettivo di piano; "6+ sistemi" → qualitativo; imperativi ammorbiditi; Social Ads + layout simmetrico; "why Adobe" su Acquisisci; **rinumerazione dinamica card**; chip allineati; **nav frecce bidirezionale**; Brand Concierge in Admin.
@@ -226,3 +227,40 @@ Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `aud
 - Memorie (`~/.claude/projects/.../memory/`): `factory-showcase-site` (la vetrina + gotcha Astro), `unicredit-personas-credibility` (il riferimento più aggiornato per UniCredit), `deck-responsive-fullscreen`, `mockup-navigation-patterns`, `custom-slides-authoring`, `super-admin-console`, `ferrari-racing-experience`, `round-2-status`.
 
 ---
+
+## 13. Factory Showcase — sito vetrina (iperdettaglio)
+
+`apps/factory-showcase` · **live**: `https://agargiulo-adbe.github.io/experience-design-factory/showcase/`.
+**Scopo**: presentare la Experience Design Factory a **leadership e colleghi Adobe** (valorizzare il lavoro di Antonio + visibilità internazionale). **Pubblico misto** (leadership strategica + practitioner/eng). `<meta robots="noindex">` (uso interno).
+
+### 13.1 Formato & stack
+- **Scroll-site, NON un deck** (nessun `DeckContainer`/`audit:deck`). Astro 6 statico, Tailwind v4, `trailingSlash:'always'`, `base = /experience-design-factory/showcase`.
+- Riusa dal core **solo** `blocks/i18n/T.astro`, `LangToggle.astro`, `utils/url.ts` (`href`). Nessuna dipendenza da deck/admin/supabase.
+- **Token contract proprio** in `src/styles/global.css` (mantiene i nomi semantici del core così `T`/`LangToggle` funzionano): accent = **Adobe red `#EB1000`**, gradiente firma `--grad-adobe` (rosso→magenta `#E1077B`→violet `#6236FF`); font Inter (display+body) + Source Serif 4 (accenti corsivi); mono di sistema.
+- **Bilingue EN default + toggle IT** (via `T`/`LangToggle`, anti-flash init in `BaseLayout`). *Tutto* il testo è EN+IT reale.
+- **2 pagine**: `src/pages/index.astro` (la narrativa) e `src/pages/blueprint.astro` (deep-dive tecnico). Componenti: `layouts/BaseLayout.astro`, `components/SiteNav.astro`, `components/SiteFooter.astro`.
+
+### 13.2 Struttura `index` (ordine sezioni) + comportamenti
+Hero → **what** → **why** → **proof** → **architecture** → **flow** → **skill** → **grow** (roadmap) → **author**. Nav sticky con anchor + **scrollspy** + **barra di progresso** (gradiente, in `SiteNav`). `blueprint.astro`: TOC sticky + 9 sezioni + elenco dei 12 check a–l.
+- **Hero**: gradiente animato (`heroDrift`, reduced-motion off), 4 **KPI** con count-up (`[data-count]`), CTA **primaria "Guardalo dal vivo"** (`#proof`), **secondaria "Ottieni la skill"** (dot verde → `#skill`), link testuale al blueprint.
+- **Proof**: 3 card con **screenshot reali** delle esperienze live (badge "LIVE" pulsante) + strip Console.
+- **Motion**: reveal-on-scroll (`[data-reveal]` + IntersectionObserver in `BaseLayout`), count-up, progress bar, copy-to-clipboard — **tutti reduced-motion safe**.
+
+### 13.3 Decisioni di contenuto (LOCKED — non regredire)
+- **Autore = Antonio Gargiulo** (NON "Argiulo"), titolo **"Senior Product Sales Specialist · Adobe Italia"**. Contatto = **deep-link Teams** `https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com` (CTA "Scrivimi su Teams"). Coerente con email `agargiulo@adobe.com`.
+- **Reframe tempo (importante)**: il "~1h / < 1h" è **solo lo step di scaffold del motore**, non l'intera esperienza. Headline flusso **"Il pensiero è tuo. L'ora è del motore."**; ogni step del flusso ha un **tag actor** (Adobian ×4 · Il motore ×1 · KB Factory ×1) per **valorizzare il lavoro dell'Adobian** (ricerca/concezione) e l'ottimizzazione a valle. KPI hero = *"dal brief a una build funzionante"*. **Non trivializzare il lavoro umano.**
+- **Nota KB = solo locale**: la KB vive **solo sul computer di Antonio**, **mai** su sistemi terzi/cloud/esterni (tutela dati Adobe). Tenere esplicito.
+- **Nota "Da segnalare"**: copre **sia** i tool della catena **sia** ogni componente dell'architettura/runtime della Factory — tutti su account `@adobe.com` via login Google, **nessuna licenza aggiuntiva**, non bloccati da Adobe.
+- **KPI "12"** = i 12 check del contratto deck (a–l); etichetta precisa *"controlli di layout e accessibilità, per slide"*, **linkata a `blueprint#deck`** (verificabile, no overselling).
+- **Roadmap**: Firefly (imagery/video) è **"In valutazione"**; la skill di intake è **"Disponibile"**. Griglia **simmetrica 3×2**.
+- **Mark distintivo**: chip gradiente + **due piani (core+skin)** — NON la "A" Adobe (leggeva come logo Adobe rotto). In `public/favicon.svg` + SVG inline in `SiteNav`/`SiteFooter` (id gradiente distinti: `edf-fav`/`edf-grad-nav`/`edf-grad-foot`).
+
+### 13.4 La skill di intake (`experience-brief`)
+- **Source of truth**: `skills/experience-brief/` → `SKILL.md` (frontmatter + istruzioni: intervista guidata che ricerca il brand e produce il **brief iperdettagliato**) + `INSTALL.md` (Claude / ChatGPT Custom GPT / Microsoft Copilot).
+- **Copie servite** per il sito in `apps/factory-showcase/public/skill/`: `experience-brief-SKILL.md`, `experience-brief-INSTALL.md`, `experience-brief-skill.zip`. La sezione **Skill** offre **Download (.zip)**, **Copia istruzioni** (fetch della `SKILL.md` + strip frontmatter → clipboard) e **Vedi su GitHub**.
+- ⚠️ **Sync manuale**: se cambi `skills/experience-brief/`, ri-copia in `public/skill/` e rigenera lo zip: `cp skills/experience-brief/*.md apps/factory-showcase/public/skill/` (rinominando con prefisso `experience-brief-`) e `(cd skills && zip -qr ../apps/factory-showcase/public/skill/experience-brief-skill.zip experience-brief)`.
+
+### 13.5 Asset & gotcha
+- **Screenshot proof** in `public/shots/{maxmara,unicredit,ferrari}.webp` (1200×750). Rigenerazione: playwright naviga gli URL **live** delle esperienze → sharp `resize(1200,750, fit:cover, top)` → webp q82. (Script usa-e-getta dalla root; `playwright` + `sharp` sono già devDep.)
+- **Committare** `public/shots/*` e `public/skill/*` (serviti staticamente; NON gitignored). `dist/` è gitignored.
+- **Gotcha Astro (CRITICO, riusabile)**: le classi passate al componente **`<T>`** (child) **NON ricevono gli stili *scoped*** della pagina (l'elemento reso da `T` non ha l'attributo di scope). Fix: usare **`:global(.classe)`** oppure **wrappare `<T>` in un elemento nativo** con la classe. Ha rotto titolo hero + molti paragrafi finché non corretto. Vale per qualunque componente che renda markup proprio.
