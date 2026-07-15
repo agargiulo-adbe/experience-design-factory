@@ -6,7 +6,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import ScopingCalculator from '@edf/core/blocks/scoping/ScopingCalculator.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import { SEED_SCENARIOS, ASSUMPTION_META, RIGOR_LABELS, DISCLAIMER, METRICS, FIELD_AUDIT } from '../data/scoping';
+import { SEED_SCENARIOS, ASSUMPTION_META, RIGOR_LABELS, DISCLAIMER, METRICS, FIELD_AUDIT, COST_DRIVERS, COST_MODEL_SUMMARY } from '../data/scoping';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -20,7 +20,7 @@ const experienceUrl = site + href(base, '/scoping');
     <FerrariNav currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/loop')}>
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/casi-duso')}>
 
     <!-- SLIDE 0: Cover -->
     <Slide id="slide-cover" bg="inverse" align="center">
@@ -63,6 +63,24 @@ const experienceUrl = site + href(base, '/scoping');
           </article>
         ))}
       </div>
+    </Slide>
+
+    <!-- SLIDE: How the annual cost is built (4 drivers + Ferrari read) -->
+    <Slide id="slide-model" bg="inverse" align="center">
+      <T en="HOW THE COST IS BUILT" it="COME SI COMPONE IL COSTO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(1.7rem, 3.4vw, 2.9rem);"
+        en="Four things drive the number." it="Quattro voci guidano il numero." />
+      <div class="sc-drivers">
+        {COST_DRIVERS.map((d) => (
+          <article class="sc-driver-card">
+            <span class="sc-driver-tag"><span data-lang-en>{d.tag.en}</span><span data-lang-it>{d.tag.it}</span></span>
+            <p class="sc-driver-title"><span data-lang-en>{d.title.en}</span><span data-lang-it>{d.title.it}</span></p>
+            <p class="sc-driver-body"><span data-lang-en>{d.body.en}</span><span data-lang-it>{d.body.it}</span></p>
+            <p class="sc-driver-ferrari"><span data-lang-en>{d.ferrari.en}</span><span data-lang-it>{d.ferrari.it}</span></p>
+          </article>
+        ))}
+      </div>
+      <T as="p" class="sc-model-summary" en={COST_MODEL_SUMMARY.en} it={COST_MODEL_SUMMARY.it} />
     </Slide>
 
     <!-- SLIDE 2: Assumptions & rigor -->
@@ -129,5 +147,15 @@ const experienceUrl = site + href(base, '/scoping');
     .sc-metric-example { border-left: 3px solid var(--accent-secondary); padding: 0.5rem 0 0.5rem 0.85rem; background: rgba(255,242,0,0.04); border-radius: 0 4px 4px 0; }
     .sc-metric-example-tag { display: inline-block; font-size: 0.6rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-secondary); margin-bottom: 0.3rem; }
     .sc-metric-example p { font-size: 0.8rem; line-height: 1.5; color: var(--ink-inverse); }
+
+    /* Cost-composition slide */
+    .sc-drivers { display: grid; grid-template-columns: 1fr; gap: 1rem; max-width: 70rem; width: 100%; margin: 0 auto; text-align: left; }
+    @media (min-width: 860px) { .sc-drivers { grid-template-columns: 1fr 1fr; } }
+    .sc-driver-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.15rem 1.3rem; border: 1px solid var(--line-subtle); border-radius: 8px; background: color-mix(in srgb, var(--surface-inverse) 82%, #fff 5%); }
+    .sc-driver-tag { display: inline-block; align-self: flex-start; font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 800; color: var(--accent-secondary); border: 1px solid rgba(255,242,0,0.4); border-radius: 4px; padding: 0.12rem 0.45rem; }
+    .sc-driver-title { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink-inverse); }
+    .sc-driver-body { font-size: 0.9rem; line-height: 1.5; color: var(--color-grigio-300); }
+    .sc-driver-ferrari { font-size: 0.9rem; line-height: 1.5; color: var(--ink-inverse); border-left: 3px solid var(--accent-primary); padding-left: 0.7rem; }
+    .sc-model-summary { max-width: 62rem; margin: 1.1rem auto 0; font-size: 0.88rem; line-height: 1.55; color: var(--color-grigio-300); text-align: center; }
   </style>
 </BaseLayout>

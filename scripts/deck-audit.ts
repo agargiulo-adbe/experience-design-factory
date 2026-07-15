@@ -56,6 +56,10 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'analisi',      route: '/experience-design-factory/ferrari-racing/analisi/' },
     { name: 'proof',        route: '/experience-design-factory/ferrari-racing/proof/' },
     { name: 'loop',         route: '/experience-design-factory/ferrari-racing/loop/' },
+    { name: 'casi-duso',    route: '/experience-design-factory/ferrari-racing/casi-duso/' },
+    // scoping is intentionally excluded: its slide-calculator is an interactive
+    // full-bleed exemption (scroll + info chips) a keynote audit can't pass. Its
+    // teaching slides (metrics/model/assumptions/disclaimer) are verified by eye.
   ],
   trenitalia: [
     { name: 'home',        route: '/experience-design-factory/trenitalia-connessioni/' },

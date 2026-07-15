@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   BURN,
   ASSUMPTION_DEFAULTS,
+  PACKAGE_ENTITLEMENTS,
+  COLLAB_BASE_SKU,
   ceilingTo,
   recommendedCreditPack,
   audienceFunnel,
@@ -11,6 +13,8 @@ import {
   simpleScopingMatrix,
   estimateCjaRows,
   cjaSourceRows,
+  partyCost,
+  partnerAssumptions,
   computeSnapshot,
   computeBreakdown,
   buildWarnings,
@@ -162,22 +166,111 @@ describe('CJA rows', () => {
   });
 });
 
-// ─── Snapshot & cost ───
-describe('computeSnapshot', () => {
-  it('hides cost when prices are null; exposes credits + pack', () => {
+// ─── v2: base SKU + entitlement (per party) ───
+describe('official constants — base SKU & entitlements (Adobe SKU slide)', () => {
+  it('base SKU flat fee: $20k list / $5k floor', () => {
+    expect(COLLAB_BASE_SKU.list).toBe(20_000);
+    expect(COLLAB_BASE_SKU.floor).toBe(5_000);
+  });
+  it('entitlements: standalone 0 / Prime 2,500 / Ultimate 5,000 included credits', () => {
+    expect(PACKAGE_ENTITLEMENTS.standalone).toEqual({ baseIncluded: false, includedCredits: 0 });
+    expect(PACKAGE_ENTITLEMENTS['rtcdp-prime']).toEqual({ baseIncluded: true, includedCredits: 2_500 });
+    expect(PACKAGE_ENTITLEMENTS['rtcdp-ultimate']).toEqual({ baseIncluded: true, includedCredits: 5_000 });
+  });
+});
+
+describe('partyCost — base SKU + entitlement netting', () => {
+  it('standalone: base fee charged, no included credits, pack on full estimate', () => {
+    const c = partyCost(1450, 'standalone', 20_000, 5);
+    expect(c.includedCredits).toBe(0);
+    expect(c.chargeableCredits).toBe(1450);
+    expect(c.recommendedPack).toBe(1500);
+    expect(c.baseFee).toBe(20_000);
+    expect(c.creditCost).toBe(7_500);   // 1500 × 5
+    expect(c.totalCost).toBe(27_500);
+  });
+  it('rtcdp-ultimate: base included, 5,000 credits netted → nothing chargeable', () => {
+    const c = partyCost(1517.0417, 'rtcdp-ultimate', 20_000, 5);
+    expect(c.baseFee).toBe(0);
+    expect(c.includedCredits).toBe(5_000);
+    expect(c.chargeableCredits).toBe(0);
+    expect(c.recommendedPack).toBe(0);
+    expect(c.totalCost).toBe(0);
+  });
+  it('rtcdp-prime: base included, 2,500 netted, surplus billed', () => {
+    const c = partyCost(3000, 'rtcdp-prime', 20_000, 5);
+    expect(c.baseFee).toBe(0);
+    expect(c.chargeableCredits).toBe(500);
+    expect(c.recommendedPack).toBe(500);
+    expect(c.totalCost).toBe(2_500);
+  });
+  it('null price → credit cost & total null', () => {
+    const c = partyCost(1450, 'standalone', 20_000, null);
+    expect(c.creditCost).toBeNull();
+    expect(c.totalCost).toBeNull();
+  });
+});
+
+// ─── v2: campaign-linked refresh mode (customer critique) ───
+describe('refreshesPerYear — campaign-linked mode', () => {
+  it('continuous (default) = 365 / days', () => {
+    expect(refreshesPerYear(base)).toBeCloseTo(365 / 6, 6);
+  });
+  it('campaign-linked = campaigns × refreshes per campaign', () => {
+    const a: ScopingAssumptions = { ...base, refreshMode: 'campaign-linked', adHocCampaignsPerYear: 3, refreshesPerCampaign: 1 };
+    expect(refreshesPerYear(a)).toBe(3);
+  });
+  it('campaign-linked collapses management credits vs always-on', () => {
+    const cont = collabParts(base).management;
+    const linked = collabParts({ ...base, refreshMode: 'campaign-linked', adHocCampaignsPerYear: 3, refreshesPerCampaign: 1 }).management;
+    expect(linked).toBeLessThan(cont);
+    expect(linked).toBeCloseTo((10_000_000 / 1_000_000) * 3 * 2, 6); // 60, not ~1217
+  });
+});
+
+// ─── v2: partner instances (1 Ferrari + N partner-tipo) ───
+describe('partnerAssumptions', () => {
+  it('overrides only the volume inputs with the partner figures', () => {
+    const p = partnerAssumptions(base);
+    expect(p.onboardedIds).toBe(base.partnerOnboardedIds);
+    expect(p.avgAudienceSize).toBe(base.partnerAvgAudienceSize);
+    expect(p.adHocCampaignsPerYear).toBe(base.partnerAdHocCampaignsPerYear);
+    expect(p.matchRate).toBe(base.matchRate); // funnel rates shared with Ferrari
+  });
+});
+
+// ─── Snapshot & cost (v2 aggregate: Ferrari + N partners + base fees + CJA) ───
+describe('computeSnapshot — v2', () => {
+  it('exposes rows & credits; hides cost when prices are null', () => {
     const s = computeSnapshot(base, noPrices);
-    expect(s.collabCreditsEstimated).toBeCloseTo(1517.0417, 3);
-    expect(s.collabRecommendedPack).toBe(2000); // 1517 → CEILING 500
+    expect(s.collabCreditsEstimated).toBeCloseTo(1517.0417, 3); // Ferrari instance estimate
     expect(s.cjaRowsPerYear).toBe(1_150_000_000);
     expect(s.cjaAnnualIngestionLimit).toBe(3_450_000_000);
     expect(s.collabCost).toBeNull();
     expect(s.totalCost).toBeNull();
   });
-  it('collab cost = recommended pack × price per credit (no allotment)', () => {
+  it('Ferrari on RTCDP Ultimate: estimate covered by entitlement → €0 collab', () => {
     const s = computeSnapshot(base, prices);
-    expect(s.collabCost).toBe(2000 * 5); // 10,000
-    expect(s.cjaCost).toBe(2_300);       // (1.15B/1M)×2
-    expect(s.totalCost).toBe(10_000 + 2_300);
+    expect(s.collabFerrariChargeableCredits).toBe(0);
+    expect(s.collabFerrariPack).toBe(0);
+    expect(s.collabFerrariBaseFee).toBe(0);
+    expect(s.collabFerrariCost).toBe(0);
+  });
+  it('partner-tipo standalone: base fee + credit pack, × N instances', () => {
+    const s = computeSnapshot(base, prices);
+    expect(s.collabPartnerCreditsEach).toBeCloseTo(423.4458, 3);
+    expect(s.collabPartnerPackEach).toBe(500);
+    expect(s.collabPartnerBaseFeeEach).toBe(20_000);
+    expect(s.collabPartnerCostEach).toBe(22_500);  // 20,000 + 500×5
+    expect(s.partnerInstances).toBe(3);
+    expect(s.collabPartnerCostTotal).toBe(67_500);
+  });
+  it('collab cost = Ferrari + partners; base fees summed; total adds CJA', () => {
+    const s = computeSnapshot(base, prices);
+    expect(s.collabCost).toBe(67_500);
+    expect(s.collabBaseFeeTotal).toBe(60_000); // 0 (Ferrari) + 3 × 20,000
+    expect(s.cjaCost).toBe(2_300);             // (1.15B/1M)×2
+    expect(s.totalCost).toBe(69_800);
   });
   it('management scales linearly with refresh cadence', () => {
     const every6 = computeSnapshot({ ...base, refreshEveryXDays: 6 }, noPrices).collabManagementCredits;
@@ -196,6 +289,11 @@ describe('computeBreakdown', () => {
     expect(b.cjaSources).toHaveLength(5);
     const totalWeight = b.cjaSources.reduce((x, s) => x + s.weightPct, 0);
     expect(totalWeight).toBeCloseTo(100, 5);
+  });
+  it('includes the partner-instances collab cost line when priced', () => {
+    const b = computeBreakdown(base, prices);
+    expect(b.collab.some((l) => l.id === 'collabPartnerCost')).toBe(true);
+    expect(b.collab.some((l) => l.id === 'collabTotalCost')).toBe(true);
   });
 });
 

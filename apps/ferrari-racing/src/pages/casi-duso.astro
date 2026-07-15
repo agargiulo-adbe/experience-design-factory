@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FerrariNav from '../components/FerrariNav.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { USE_CASES } from '../data/scoping';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Products in the perimeter — for the closing map slide.
+const PERIMETER = [
+  { name: 'Adobe Experience Platform', role: { en: 'The data foundation every product sits on.', it: 'La fondazione dati su cui poggia ogni prodotto.' } },
+  { name: 'Real-Time CDP Collaboration', role: { en: 'Privacy-safe audience match between Ferrari and each partner.', it: 'Match di audience privacy-safe tra Ferrari e ogni partner.' } },
+  { name: 'GenStudio for Performance Marketing', role: { en: 'On-brand creative variants at scale, with campaign results.', it: 'Varianti creative on-brand su scala, con i risultati di campagna.' } },
+  { name: 'Adobe Express', role: { en: 'Fast, brand-safe edits for the partner teams.', it: 'Modifiche rapide e brand-safe per i team dei partner.' } },
+  { name: 'Customer Journey Analytics', role: { en: 'One Ferrari instance aggregating every partner’s results.', it: 'Un’unica istanza Ferrari che aggrega i risultati di ogni partner.' } },
+];
+---
+<BaseLayout title="Use Cases">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <FerrariNav currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/scoping')} prevHref={href(base, '/loop')}>
+
+    <!-- SLIDE 0: Cover -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <T en="USE CASES" it="CASI D’USO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
+      <T as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(2.6rem, 6vw, 5.2rem);"
+        en="The whole stack,<br/>one story at a time." it="Tutto lo stack,<br/>una storia alla volta." />
+      <T as="p" class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        en="Four end-to-end moments — from a privacy-safe audience match to measured results — each running across the full product perimeter."
+        it="Quattro momenti end-to-end — dal match di audience privacy-safe ai risultati misurati — ognuno attraversa l’intero perimetro prodotti." />
+      <T as="p" class="slide-caption text-[var(--color-grigio-400)] mt-6 text-sm max-w-2xl mx-auto"
+        en="Collaboration → GenStudio + Express → Activation → CJA — the same four products, applied four ways."
+        it="Collaboration → GenStudio + Express → Attivazione → CJA — gli stessi quattro prodotti, applicati in quattro modi." />
+    </Slide>
+
+    {USE_CASES.map((uc, i) => (
+      <Slide id={`slide-uc-${i + 1}`} bg="inverse" align="center">
+        <T en={`USE CASE ${String(i + 1).padStart(2, '0')}`} it={`CASO D’USO ${String(i + 1).padStart(2, '0')}`} as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-3" />
+        <h2 class="uc-title"><span data-lang-en>{uc.title.en}</span><span data-lang-it>{uc.title.it}</span></h2>
+        <div class="uc-grid">
+          <div class="uc-left">
+            <p class="uc-scenario"><span data-lang-en>{uc.scenario.en}</span><span data-lang-it>{uc.scenario.it}</span></p>
+            <div class="uc-products">
+              {uc.products.map((p) => (<span class="uc-chip">{p}</span>))}
+            </div>
+            <div class="uc-consumes">
+              <span class="uc-consumes-tag"><span data-lang-en>WHAT IT CONSUMES</span><span data-lang-it>COSA CONSUMA</span></span>
+              <p><span data-lang-en>{uc.consumes.en}</span><span data-lang-it>{uc.consumes.it}</span></p>
+            </div>
+          </div>
+          <ol class="uc-steps">
+            {uc.steps.map((s) => (
+              <li><span data-lang-en>{s.en}</span><span data-lang-it>{s.it}</span></li>
+            ))}
+          </ol>
+        </div>
+      </Slide>
+    ))}
+
+    <!-- CLOSING: products in the perimeter -->
+    <Slide id="slide-uc-map" bg="inverse" align="center">
+      <T en="THE PERIMETER" it="IL PERIMETRO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(1.7rem, 3.4vw, 2.9rem);"
+        en="Every product, one job each." it="Ogni prodotto, un compito ciascuno." />
+      <ul class="uc-map">
+        {PERIMETER.map((p) => (
+          <li class="uc-map-row">
+            <span class="uc-map-name">{p.name}</span>
+            <span class="uc-map-role"><span data-lang-en>{p.role.en}</span><span data-lang-it>{p.role.it}</span></span>
+          </li>
+        ))}
+      </ul>
+    </Slide>
+
+  </DeckContainer>
+
+  <style>
+    .uc-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; color: var(--ink-inverse); font-size: clamp(1.6rem, 3.2vw, 2.6rem); margin-bottom: 1.4rem; }
+    .uc-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem 2.5rem; max-width: 72rem; width: 100%; margin: 0 auto; text-align: left; }
+    @media (min-width: 900px) { .uc-grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+    .uc-scenario { font-size: 1.02rem; line-height: 1.55; color: var(--color-grigio-200, #e2e2e2); }
+    .uc-products { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.1rem; }
+    .uc-chip { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-secondary); border: 1px solid rgba(255,242,0,0.4); background: rgba(255,242,0,0.06); border-radius: 999px; padding: 0.22rem 0.7rem; }
+    .uc-consumes { margin-top: 1.3rem; border-left: 3px solid var(--accent-primary); padding: 0.5rem 0 0.5rem 0.9rem; background: rgba(255,40,0,0.05); border-radius: 0 4px 4px 0; }
+    .uc-consumes-tag { display: inline-block; font-size: 0.64rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem; }
+    .uc-consumes p { font-size: 0.92rem; line-height: 1.5; color: var(--ink-inverse); }
+    .uc-steps { display: flex; flex-direction: column; gap: 0.85rem; counter-reset: uc; list-style: none; padding: 0; margin: 0; }
+    .uc-steps li { position: relative; padding-left: 2.4rem; font-size: 0.98rem; line-height: 1.5; color: var(--color-grigio-200, #e2e2e2); }
+    .uc-steps li::before { counter-increment: uc; content: counter(uc, decimal-leading-zero); position: absolute; left: 0; top: -0.05rem; font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--accent-primary); }
+
+    .uc-map { display: grid; grid-template-columns: 1fr; gap: 0.6rem; max-width: 62rem; width: 100%; margin: 0 auto; text-align: left; list-style: none; padding: 0; }
+    .uc-map-row { display: grid; grid-template-columns: 1fr; gap: 0.15rem; padding: 0.72rem 1.1rem; border: 1px solid var(--line-subtle); border-radius: 8px; background: color-mix(in srgb, var(--surface-inverse) 82%, #fff 5%); }
+    @media (min-width: 760px) { .uc-map-row { grid-template-columns: 20rem 1fr; align-items: baseline; gap: 1.5rem; } }
+    .uc-map-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink-inverse); }
+    .uc-map-role { font-size: 0.95rem; line-height: 1.5; color: var(--color-grigio-300); }
+  </style>
+</BaseLayout>

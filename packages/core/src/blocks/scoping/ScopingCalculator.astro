@@ -16,6 +16,7 @@ interface FieldDef {
   advancedOnly?: boolean;
   appliesWhen?: string; // 'key=v1|v2'
   impacts?: Bi;
+  hint?: Bi;
   toConfirm?: boolean;
   source: Bi;
   calc: Bi;
@@ -54,12 +55,14 @@ const cjaGroups = grouped('cja');
 // Metric-explanation tooltips for every licensing concept (generic to the
 // Adobe products, hence hardcoded bilingual here — not Ferrari-specific).
 const collabResults = [
-  { out: 'collabCreditsEstimated', en: 'Est. credits / yr', it: 'Credits stimati / anno',
-    tip: { en: 'Estimated Collaboration Credits consumed per year across audience transformation & management, activation and measurement — RT-CDP Collaboration’s license metric. Mirrors the Adobe Scoping Calculator.', it: 'Collaboration Credits stimati consumati in un anno tra trasformazione & gestione audience, activation e measurement — la metrica di licenza di RT-CDP Collaboration. Rispecchia lo Scoping Calculator Adobe.' } },
-  { out: 'collabRecommendedPack', en: 'Recommended pack', it: 'Pacchetto consigliato',
-    tip: { en: 'The estimated credits rounded up to a purchasable credit pack tier (100 / 500 / 1,000 / 5,000 by magnitude), exactly as the Adobe calculator recommends. There is no annual allotment subtraction.', it: 'I credits stimati arrotondati al pacchetto di crediti acquistabile (a scaglioni 100 / 500 / 1.000 / 5.000), esattamente come consiglia il calcolatore Adobe. Nessuna sottrazione di allotment annuo.' } },
-  { out: 'collabCost', en: 'Collaboration cost', it: 'Costo Collaboration',
-    tip: { en: 'Recommended pack × price per credit ($5 list). The per-credit price is quote-only (illustrative here).', it: 'Pacchetto consigliato × prezzo per credito ($5 di listino). Il prezzo per credito è solo da preventivo (qui illustrativo).' } },
+  { out: 'collabFerrariCost', en: 'Ferrari instance', it: 'Istanza Ferrari',
+    tip: { en: 'Ferrari’s own Collaboration instance: Base fee (0 when included) + chargeable credit pack after the package’s bundled credits are netted. On RTCDP Ultimate its ~1,500 credits fall inside the 5,000 included → €0.', it: 'L’istanza Collaboration di Ferrari: Base fee (0 se inclusa) + pacchetto crediti a pagamento dopo aver nettato i crediti inclusi nel pacchetto. Con RTCDP Ultimate i suoi ~1.500 crediti rientrano nei 5.000 inclusi → €0.' } },
+  { out: 'collabPartnerCostTotal', en: 'Partner instances', it: 'Istanze partner',
+    tip: { en: 'One Collaboration instance per partner sponsor. Per-instance cost (Base fee + credit pack) × the number of partner instances.', it: 'Una istanza Collaboration per partner sponsor. Costo per istanza (Base fee + pacchetto crediti) × il numero di istanze partner.' } },
+  { out: 'collabBaseFeeTotal', en: 'Base SKU fees', it: 'Canoni SKU Base',
+    tip: { en: 'Sum of the flat annual Base SKU fees across all standalone instances ($20k list each). Included instances (RTCDP customers) contribute €0.', it: 'Somma dei canoni annui flat dello SKU Base su tutte le istanze standalone ($20k listino ciascuna). Le istanze incluse (clienti RTCDP) contribuiscono €0.' } },
+  { out: 'collabCost', en: 'Collaboration total', it: 'Totale Collaboration',
+    tip: { en: 'Ferrari instance + all partner instances (Base fees + credit packs). Prices are quote-only (illustrative here).', it: 'Istanza Ferrari + tutte le istanze partner (Base fee + pacchetti crediti). I prezzi sono solo da preventivo (qui illustrativi).' } },
 ];
 const cjaResults = [
   { out: 'cjaRowsPerYear', en: 'Licensed rows / yr', it: 'Righe licenziate / anno',
@@ -404,6 +407,9 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
       };
       out('collabCreditsEstimated', fmt(Math.round(s.collabCreditsEstimated)));
       out('collabRecommendedPack', fmt(Math.round(s.collabRecommendedPack)));
+      out('collabFerrariCost', fmtMoney(s.collabFerrariCost));
+      out('collabPartnerCostTotal', fmtMoney(s.collabPartnerCostTotal));
+      out('collabBaseFeeTotal', fmtMoney(s.collabBaseFeeTotal));
       out('collabCost', fmtMoney(s.collabCost));
       out('cjaRowsPerYear', fmt(s.cjaRowsPerYear));
       out('cjaAnnualIngestionLimit', fmt(s.cjaAnnualIngestionLimit));
@@ -690,6 +696,8 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
   .scoping-group-h { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; color: var(--accent-primary, #FF2800); margin-bottom: 0.5rem; }
   .scoping-field { display: flex; flex-direction: column; gap: 0.22rem; margin-bottom: 0.55rem; font-size: 0.72rem; color: var(--color-grigio-300, #cfcfcf); }
   .scoping-so { border-left: 2px solid var(--accent-secondary, #FFF200); padding-left: 0.55rem; margin-left: -0.05rem; }
+  /* inline impact caption — always visible, so the "why" isn't buried in the tooltip */
+  .scoping-hint { display: block; margin-top: 0.28rem; font-size: 0.7rem; line-height: 1.45; color: var(--color-grigio-300, #cfcfcf); }
   .scoping-label { display: flex; align-items: center; gap: 0.35rem; position: relative; }
   .scoping-label-txt { flex-shrink: 1; }
   .scoping-badge { font-size: 0.5rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px; padding: 0.05rem 0.28rem; white-space: nowrap; border: 1px solid transparent; }

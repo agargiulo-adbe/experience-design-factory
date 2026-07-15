@@ -27,6 +27,10 @@ export const SEED_SCENARIOS: Scenario[] = [
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
       collabMode: 'detailed',
+      ferrariPackage: 'rtcdp-ultimate',
+      partnerInstances: 1, partnerPackage: 'standalone',
+      partnerOnboardedIds: 1_000_000, partnerAvgAudienceSize: 150_000, partnerAdHocCampaignsPerYear: 2,
+      refreshMode: 'campaign-linked', refreshesPerCampaign: 1,
       onboardedIds: 5_000_000, avgAudienceSize: 500_000, matchRate: 0.25,
       refreshEveryXDays: 6, adHocCampaignsPerYear: 3, audiencesPerCampaign: 1,
       alwaysOnRunsPerYear: 0,
@@ -50,6 +54,10 @@ export const SEED_SCENARIOS: Scenario[] = [
     assumptions: {
       ...DEFAULT_ASSUMPTIONS,
       collabMode: 'detailed',
+      ferrariPackage: 'rtcdp-ultimate',
+      partnerInstances: 8, partnerPackage: 'standalone',
+      partnerOnboardedIds: 4_000_000, partnerAvgAudienceSize: 600_000, partnerAdHocCampaignsPerYear: 6,
+      refreshMode: 'continuous', refreshesPerCampaign: 1,
       onboardedIds: 40_000_000, avgAudienceSize: 4_000_000, matchRate: 0.4,
       refreshEveryXDays: 3, adHocCampaignsPerYear: 12, audiencesPerCampaign: 2,
       alwaysOnRunsPerYear: 52,
@@ -74,7 +82,8 @@ export type DataType = 'official' | 'default-assumption' | 'customer-assumption'
 export type FieldCategory =
   | 'package' | 'pricing' | 'footprint' | 'audience' | 'overlap'
   | 'management' | 'activation' | 'measurement' | 'insights'
-  | 'source-volume' | 'row-conversion' | 'governance';
+  | 'source-volume' | 'row-conversion' | 'governance'
+  | 'perimeter' | 'party';
 
 export interface FieldOption { value: string; label: { en: string; it: string } }
 
@@ -92,6 +101,7 @@ export interface FieldAudit {
   advancedOnly?: boolean;       // hidden until "Advanced assumptions" is opened
   appliesWhen?: string;         // 'key=v1|v2' — show only when assumptions[key] ∈ {v…}
   impacts?: { en: string; it: string }; // which outputs this variable drives
+  hint?: { en: string; it: string };    // one-line impact shown INLINE under the input
   toConfirm?: boolean;          // illustrative / client-to-confirm → amber marker
   source: { en: string; it: string };
   calc: { en: string; it: string };
@@ -100,7 +110,107 @@ export interface FieldAudit {
 
 const SIMPLE_DETAILED = 'simple|detailed';
 
+// Package selector options (RT-CDP Collaboration SKU packaging).
+const PACKAGE_OPTIONS: FieldOption[] = [
+  { value: 'standalone', label: { en: 'Standalone — Base + Credits', it: 'Standalone — Base + Credits' } },
+  { value: 'rtcdp-prime', label: { en: 'RTCDP Prime — Base incl. + 2,500 cr', it: 'RTCDP Prime — Base incl. + 2.500 cr' } },
+  { value: 'rtcdp-ultimate', label: { en: 'RTCDP Ultimate — Base incl. + 5,000 cr', it: 'RTCDP Ultimate — Base incl. + 5.000 cr' } },
+];
+const REFRESH_MODE_OPTIONS: FieldOption[] = [
+  { value: 'continuous', label: { en: 'Continuous (always-on)', it: 'Continuo (always-on)' } },
+  { value: 'campaign-linked', label: { en: 'Around campaigns only', it: 'Solo a ridosso delle campagne' } },
+];
+
+const PERIMETER = { en: 'Perimeter & instances', it: 'Perimetro & istanze' };
+
 export const FIELD_AUDIT: FieldAudit[] = [
+  // ══════════════ PERIMETER & INSTANCES ══════════════
+  // 1 Ferrari Racing instance + N partner instances (one Collaboration instance
+  // per sponsor). Package selectors drive the Base SKU flat fee and the bundled
+  // credit entitlement that is netted before pricing.
+  {
+    key: 'ferrariPackage', group: 'collab', input: 'select', options: PACKAGE_OPTIONS, format: 'int',
+    category: 'party', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'Ferrari package', it: 'Pacchetto Ferrari' },
+    hint: { en: 'RTCDP customer → Base included + bundled credits netted before you pay.', it: 'Cliente RTCDP → Base inclusa + crediti inclusi nettati prima di pagare.' },
+    impacts: { en: 'Ferrari Base fee (0 if included) & credits netted from the estimate', it: 'Base fee Ferrari (0 se inclusa) e crediti nettati dalla stima' },
+    source: { en: 'Adobe RT-CDP Collaboration SKUs — entitlements', it: 'SKU Adobe RT-CDP Collaboration — entitlement' },
+    calc: { en: 'Ultimate 5,000 · Prime 2,500 included credits; standalone 0 + Base fee', it: 'Ultimate 5.000 · Prime 2.500 crediti inclusi; standalone 0 + Base fee' },
+    assumption: { en: 'RTCDP Ultimate — Ferrari is the CDP customer aggregating all partners', it: 'RTCDP Ultimate — Ferrari è il cliente CDP che aggrega tutti i partner' },
+  },
+  {
+    key: 'ferrariBaseSkuPrice', group: 'collab', format: 'currency', toConfirm: true, advancedOnly: true, appliesWhen: 'ferrariPackage=standalone',
+    category: 'party', dataType: 'price',
+    section: PERIMETER,
+    label: { en: 'Ferrari Base SKU / yr', it: 'SKU Base Ferrari / anno' },
+    impacts: { en: 'Ferrari Collaboration cost (only if standalone)', it: 'Costo Collaboration Ferrari (solo se standalone)' },
+    source: { en: 'Adobe SKU sheet — Base list $20k / floor $5k', it: 'Listino SKU Adobe — Base $20k listino / $5k floor' },
+    calc: { en: 'Flat annual fee for the Collaboration Base SKU', it: 'Canone annuo flat per lo SKU Base Collaboration' },
+    assumption: { en: '$20,000 list — quote-only; not charged when Base is included', it: '$20.000 listino — da preventivo; non addebitato se la Base è inclusa' },
+  },
+  {
+    key: 'partnerInstances', group: 'collab', format: 'int',
+    category: 'perimeter', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'Partner instances', it: 'Istanze partner' },
+    hint: { en: 'One Collaboration instance per sponsor — multiplies the partner-tipo cost below.', it: 'Una istanza Collaboration per sponsor — moltiplica il costo del partner-tipo qui sotto.' },
+    impacts: { en: 'Multiplies the partner-tipo cost (Base + credits) by N', it: 'Moltiplica il costo del partner-tipo (Base + crediti) per N' },
+    source: { en: 'Scuderia Ferrari HP partner roster', it: 'Roster partner Scuderia Ferrari HP' },
+    calc: { en: 'Number of partner sponsors each running their own instance', it: 'Numero di partner sponsor, ciascuno con la propria istanza' },
+    assumption: { en: '3 partners by default — set to your sponsor count', it: '3 partner di default — imposta il tuo numero di sponsor' },
+  },
+  {
+    key: 'partnerPackage', group: 'collab', input: 'select', options: PACKAGE_OPTIONS, format: 'int',
+    category: 'party', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'Partner-tipo package', it: 'Pacchetto partner-tipo' },
+    impacts: { en: 'Partner Base fee & credits netted, per instance', it: 'Base fee partner e crediti nettati, per istanza' },
+    source: { en: 'Adobe RT-CDP Collaboration SKUs — entitlements', it: 'SKU Adobe RT-CDP Collaboration — entitlement' },
+    calc: { en: 'Most sponsors are not RTCDP customers → Base + Credits', it: 'La maggior parte degli sponsor non è cliente RTCDP → Base + Credits' },
+    assumption: { en: 'Standalone — sponsors buy both Base and Credits', it: 'Standalone — gli sponsor acquistano Base e Credits' },
+  },
+  {
+    key: 'partnerBaseSkuPrice', group: 'collab', format: 'currency', toConfirm: true, advancedOnly: true, appliesWhen: 'partnerPackage=standalone',
+    category: 'party', dataType: 'price',
+    section: PERIMETER,
+    label: { en: 'Partner Base SKU / yr', it: 'SKU Base partner / anno' },
+    impacts: { en: 'Partner Collaboration cost, per instance', it: 'Costo Collaboration partner, per istanza' },
+    source: { en: 'Adobe SKU sheet — Base list $20k / floor $5k', it: 'Listino SKU Adobe — Base $20k listino / $5k floor' },
+    calc: { en: 'Flat annual fee for each standalone partner instance', it: 'Canone annuo flat per ogni istanza partner standalone' },
+    assumption: { en: '$20,000 list — quote-only', it: '$20.000 listino — da preventivo' },
+  },
+  {
+    key: 'partnerAdHocCampaignsPerYear', group: 'collab', format: 'int',
+    category: 'perimeter', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'Campaigns / partner / yr', it: 'Campagne / partner / anno' },
+    impacts: { en: 'Partner activation credits (per instance)', it: 'Credits di attivazione partner (per istanza)' },
+    source: { en: 'Sponsor activation plan', it: 'Piano di attivazione sponsor' },
+    calc: { en: 'Ad-hoc campaigns a typical partner runs per year', it: 'Campagne ad-hoc che un partner tipo lancia in un anno' },
+    assumption: { en: '3 per partner by default', it: '3 per partner di default' },
+  },
+  {
+    key: 'partnerOnboardedIds', group: 'collab', format: 'int', advancedOnly: true,
+    category: 'perimeter', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'IDs onboarded / partner / yr', it: 'ID onboardati / partner / anno' },
+    impacts: { en: 'Partner audience-management credits (per instance)', it: 'Credits di gestione audience partner (per istanza)' },
+    source: { en: 'Typical sponsor 1st-party base', it: 'Base 1st-party di uno sponsor tipo' },
+    calc: { en: 'Distinct identities a typical partner onboards', it: 'Identità distinte onboardate da un partner tipo' },
+    assumption: { en: '2M per partner — lighter than Ferrari', it: '2M per partner — più leggera di Ferrari' },
+  },
+  {
+    key: 'partnerAvgAudienceSize', group: 'collab', format: 'int', advancedOnly: true,
+    category: 'perimeter', dataType: 'customer-assumption',
+    section: PERIMETER,
+    label: { en: 'Partner audience size', it: 'Dimensione audience partner' },
+    impacts: { en: 'Partner activation & measurement volumes (per instance)', it: 'Volumi di attivazione e measurement partner (per istanza)' },
+    source: { en: 'Campaign-planning assumption', it: 'Assunzione di pianificazione campagne' },
+    calc: { en: 'Average activated audience per partner campaign', it: 'Audience media attivata per campagna partner' },
+    assumption: { en: '300k per partner audience', it: '300k per audience partner' },
+  },
+
   // ══════════════ COLLABORATION ══════════════
   // ── Direct scoping (direct mode only) ──
   {
@@ -129,6 +239,7 @@ export const FIELD_AUDIT: FieldAudit[] = [
     category: 'audience', dataType: 'customer-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
     label: { en: 'Average audience size', it: 'Dimensione media audience' },
+    hint: { en: 'Audience size × match rate = matched audience — the base that activation & measurement credits are counted on.', it: 'Dimensione audience × match rate = audience matchata — la base su cui si contano i credits di attivazione e measurement.' },
     impacts: { en: 'Matched audience → activation & measurement volumes', it: 'Audience matchata → volumi di attivazione e measurement' },
     source: { en: 'Campaign-planning assumption (≈10% of onboarded by default)', it: 'Assunzione di pianificazione campagne (≈10% degli onboardati di default)' },
     calc: { en: 'Average size of an activated / measured audience', it: 'Dimensione media di un’audience attivata / misurata' },
@@ -139,6 +250,7 @@ export const FIELD_AUDIT: FieldAudit[] = [
     category: 'overlap', dataType: 'default-assumption',
     section: { en: 'Audience & funnel', it: 'Audience e funnel' },
     label: { en: 'Match rate', it: 'Match rate' },
+    hint: { en: 'Share of the audience that overlaps the partner’s data in the clean room. Lower match → fewer matched users → lower activation/measurement credits.', it: 'Quota di audience che si sovrappone ai dati del partner nella clean room. Match più basso → meno utenti matchati → meno credits di attivazione/measurement.' },
     impacts: { en: 'Matched audience = average audience × match rate', it: 'Audience matchata = audience media × match rate' },
     source: { en: 'Adobe calculator default — 30% recommendation', it: 'Default del calcolatore Adobe — raccomandazione 30%' },
     calc: { en: 'Share of the audience that matches partner data (clean-room)', it: 'Quota di audience che matcha con i dati partner (clean-room)' },
@@ -177,7 +289,18 @@ export const FIELD_AUDIT: FieldAudit[] = [
   },
   // ── Audience management (detailed) ──
   {
-    key: 'refreshEveryXDays', group: 'collab', mode: 'detailed', format: 'int',
+    key: 'refreshMode', group: 'collab', mode: 'detailed', input: 'select', options: REFRESH_MODE_OPTIONS, format: 'int',
+    category: 'management', dataType: 'customer-assumption',
+    section: { en: 'Audience management', it: 'Gestione audience' },
+    label: { en: 'Refresh mode', it: 'Modalità di refresh' },
+    hint: { en: 'Continuous keeps audiences match-ready all year (Adobe default). Around-campaigns refreshes only near each campaign — fewer credits when you run just a handful.', it: 'Continuo tiene le audience sempre pronte al match (default Adobe). A ridosso delle campagne fa il refresh solo vicino a ogni campagna — meno credits se ne fai poche.' },
+    impacts: { en: 'How many refreshes/yr drive the management credits', it: 'Quanti refresh/anno guidano i credits di gestione' },
+    source: { en: 'Modelling choice on top of the Adobe cadence input', it: 'Scelta di modellazione sopra l’input di cadenza Adobe' },
+    calc: { en: 'Continuous = 365 ÷ days; around-campaigns = campaigns × refreshes/campaign', it: 'Continuo = 365 ÷ giorni; a ridosso = campagne × refresh/campagna' },
+    assumption: { en: 'Continuous by default — mirrors the Adobe workbook', it: 'Continuo di default — rispecchia il workbook Adobe' },
+  },
+  {
+    key: 'refreshEveryXDays', group: 'collab', mode: 'detailed', format: 'int', appliesWhen: 'refreshMode=continuous',
     category: 'management', dataType: 'default-assumption',
     section: { en: 'Audience management', it: 'Gestione audience' },
     label: { en: 'Refresh every X days (1–6)', it: 'Refresh ogni X giorni (1–6)' },
@@ -186,12 +309,24 @@ export const FIELD_AUDIT: FieldAudit[] = [
     calc: { en: 'How often the onboarded audience is transformed / re-indexed', it: 'Con che frequenza l’audience onboardata viene trasformata / re-indicizzata' },
     assumption: { en: 'Every 6 days (≈61 refreshes/yr) — the workbook default', it: 'Ogni 6 giorni (≈61 refresh/anno) — il default del workbook' },
   },
+  {
+    key: 'refreshesPerCampaign', group: 'collab', mode: 'detailed', format: 'int', appliesWhen: 'refreshMode=campaign-linked',
+    category: 'management', dataType: 'customer-assumption',
+    section: { en: 'Audience management', it: 'Gestione audience' },
+    label: { en: 'Refreshes per campaign', it: 'Refresh per campagna' },
+    hint: { en: 'How many times you refresh the audience around each campaign. Refreshes/yr = campaigns × this.', it: 'Quante volte aggiorni l’audience a ridosso di ogni campagna. Refresh/anno = campagne × questo.' },
+    impacts: { en: 'Refreshes/yr (campaign-linked) → management credits', it: 'Refresh/anno (legato alle campagne) → credits di gestione' },
+    source: { en: 'Campaign-preparation assumption', it: 'Assunzione di preparazione campagna' },
+    calc: { en: 'Refreshes fired in the run-up to each campaign', it: 'Refresh eseguiti a ridosso di ogni campagna' },
+    assumption: { en: '1 refresh per campaign', it: '1 refresh per campagna' },
+  },
   // ── Activation (detailed) ──
   {
     key: 'adHocCampaignsPerYear', group: 'collab', mode: 'detailed', format: 'int',
     category: 'activation', dataType: 'customer-assumption',
     section: { en: 'Activation', it: 'Attivazione' },
     label: { en: 'Ad-hoc campaigns / year', it: 'Campagne ad-hoc / anno' },
+    hint: { en: 'One-off activations — a livery launch, a home-GP push. (Continuous “always-on” programmes are the separate field below.)', it: 'Attivazioni one-off — un lancio livrea, una spinta per il GP di casa. (I programmi continui “always-on” sono il campo separato più sotto.)' },
     impacts: { en: 'Ad-hoc activation credits', it: 'Credits di attivazione ad-hoc' },
     source: { en: '2026 F1 calendar / tent-pole moments', it: 'Calendario F1 2026 / momenti tent-pole' },
     calc: { en: 'One-time (ad hoc) activation campaigns per year', it: 'Campagne di attivazione one-time (ad hoc) per anno' },
@@ -421,13 +556,13 @@ export const METRICS: MetricExplainer[] = [
     product: { en: 'Real-Time CDP Collaboration', it: 'Real-Time CDP Collaboration' },
     metric: { en: 'Collaboration Credits', it: 'Collaboration Credits' },
     what: {
-      en: 'The license metric for Real-Time CDP Collaboration. A finite pool of credits is consumed as you run collaboration activities. The model mirrors Adobe’s official Scoping Calculator: no annual allotment is netted — the estimate is rounded up to a recommended credit pack.',
-      it: 'La metrica di licenza di Real-Time CDP Collaboration. Un pool finito di credits viene consumato eseguendo attività di collaboration. Il modello rispecchia lo Scoping Calculator ufficiale Adobe: nessun allotment annuo viene sottratto — la stima è arrotondata a un pacchetto di crediti consigliato.',
+      en: 'The license metric for Real-Time CDP Collaboration — a finite pool of credits burned by collaboration activities. It starts from a funnel: your audience × match rate = the matched audience, the base every activation and measurement is counted on. The estimate then rounds up to a recommended credit pack.',
+      it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits consumato dalle attività di collaboration. Parte da un funnel: la tua audience × match rate = l’audience matchata, la base su cui si contano attivazione e measurement. La stima si arrotonda poi a un pacchetto di crediti consigliato.',
     },
     consumes: [
-      { en: 'Audience transformation & management — onboarded IDs × refresh cadence (365 ÷ every-X-days) × 2 credits/1M', it: 'Trasformazione e gestione audience — ID onboardati × cadenza refresh (365 ÷ ogni-X-giorni) × 2 credits/1M' },
-      { en: 'Activation — matched audience × campaigns × 500 credits/1M (ad hoc); always-on at 100/1M/run', it: 'Attivazione — audience matchata × campagne × 500 credits/1M (ad hoc); always-on a 100/1M/run' },
-      { en: 'Measurement — summary statistics on impressions + attribution on (impressions + conversions), at 50 credits/1M', it: 'Measurement — summary statistics su impression + attribution su (impression + conversioni), a 50 credits/1M' },
+      { en: 'Audience management — onboarded IDs × refreshes/yr × 2 credits/1M. Refresh can be continuous (always-on) or only around campaigns.', it: 'Gestione audience — ID onboardati × refresh/anno × 2 credits/1M. Il refresh può essere continuo (always-on) o solo a ridosso delle campagne.' },
+      { en: 'Activation — matched audience × 500 credits/1M for ad-hoc campaigns (a launch, a home GP); always-on runs at 100/1M/run.', it: 'Attivazione — audience matchata × 500 credits/1M per le campagne ad-hoc (un lancio, il GP di casa); le run always-on a 100/1M/run.' },
+      { en: 'Measurement — summary statistics on impressions + attribution on (impressions + conversions), at 50 credits/1M.', it: 'Measurement — summary statistics su impression + attribution su (impression + conversioni), a 50 credits/1M.' },
     ],
     example: {
       en: 'e.g. management (10M÷1M)×(365÷6)×2 ≈ 1,217 + activation (0.3M÷1M)×1×500 = 150 + measurement 75 + 75.375 → ~1,517 credits/yr → recommended pack 2,000 × $5 = $10,000.',
@@ -453,6 +588,151 @@ export const METRICS: MetricExplainer[] = [
   },
 ];
 
+// ── The four things that make up the annual cost — with a worked Ferrari read. ──
+export interface CostDriver {
+  tag: { en: string; it: string };      // SKU / metric label
+  title: { en: string; it: string };
+  body: { en: string; it: string };
+  ferrari: { en: string; it: string };  // how it reads for the Ferrari perimeter
+}
+
+export const COST_DRIVERS: CostDriver[] = [
+  {
+    tag: { en: 'Base SKU · flat fee', it: 'SKU Base · canone flat' },
+    title: { en: 'A Base fee per instance', it: 'Una Base fee per istanza' },
+    body: {
+      en: 'Every standalone Collaboration instance carries a flat annual Base SKU ($20k list, $5k floor). It is included for existing Real-Time CDP customers.',
+      it: 'Ogni istanza Collaboration standalone porta uno SKU Base annuo flat ($20k listino, $5k floor). È inclusa per i clienti Real-Time CDP esistenti.',
+    },
+    ferrari: {
+      en: 'Ferrari is an RTCDP Ultimate customer → Base included (€0). Each standalone partner instance pays its own Base fee.',
+      it: 'Ferrari è cliente RTCDP Ultimate → Base inclusa (€0). Ogni istanza partner standalone paga la propria Base fee.',
+    },
+  },
+  {
+    tag: { en: 'Collaboration Credits', it: 'Collaboration Credits' },
+    title: { en: 'A credit pool, entitlement netted', it: 'Un pool di crediti, al netto dell’entitlement' },
+    body: {
+      en: 'Activities burn credits (management + activation + measurement). Bundled credits from the package are netted first; only the surplus is bought as a pack.',
+      it: 'Le attività consumano credits (gestione + attivazione + measurement). I crediti inclusi nel pacchetto si nettano prima; solo il surplus si acquista come pacchetto.',
+    },
+    ferrari: {
+      en: 'Ferrari’s ~1,500 credits/yr fall inside the 5,000 included with Ultimate → €0. A typical partner (~500 credits) buys a small pack.',
+      it: 'I ~1.500 credits/anno di Ferrari rientrano nei 5.000 inclusi con Ultimate → €0. Un partner tipo (~500 credits) compra un piccolo pacchetto.',
+    },
+  },
+  {
+    tag: { en: 'Partner instances × N', it: 'Istanze partner × N' },
+    title: { en: 'One instance per sponsor', it: 'Una istanza per sponsor' },
+    body: {
+      en: 'Ferrari runs one instance; each partner runs its own. The partner-tipo cost (Base + credits) multiplies by the number of sponsors.',
+      it: 'Ferrari ha una istanza; ogni partner ha la propria. Il costo del partner-tipo (Base + crediti) si moltiplica per il numero di sponsor.',
+    },
+    ferrari: {
+      en: 'With 3 partners: 3 × (Base fee + credit pack). This is where most of the incremental Collaboration cost sits.',
+      it: 'Con 3 partner: 3 × (Base fee + pacchetto crediti). È qui che sta gran parte del costo incrementale di Collaboration.',
+    },
+  },
+  {
+    tag: { en: 'CJA · Rows of Data', it: 'CJA · Rows of Data' },
+    title: { en: 'One analytics instance, all partners', it: 'Un’unica istanza analytics, tutti i partner' },
+    body: {
+      en: 'A single Ferrari CJA instance aggregates every partner’s results. It licenses on a separate metric — Rows of Data — independent of Collaboration.',
+      it: 'Un’unica istanza CJA Ferrari aggrega i risultati di ogni partner. Si licenzia su una metrica separata — Rows of Data — indipendente da Collaboration.',
+    },
+    ferrari: {
+      en: 'Not multiplied by partners: one instance covers the whole grid. Sized on total web + app + social + CRM + events rows.',
+      it: 'Non si moltiplica per i partner: una istanza copre tutta la griglia. Dimensionata sulle righe totali web + app + social + CRM + eventi.',
+    },
+  },
+];
+
+export const COST_MODEL_SUMMARY = {
+  en: 'Annual cost = Ferrari instance (Base + credits, mostly covered by its entitlement) + N partner instances (Base + credits each) + one Ferrari CJA instance. Prices illustrative — confirm on the Sales Order.',
+  it: 'Costo annuo = istanza Ferrari (Base + crediti, per lo più coperti dall’entitlement) + N istanze partner (Base + crediti ciascuna) + un’unica istanza CJA Ferrari. Prezzi illustrativi — da confermare sul Sales Order.',
+};
+
+// ── End-to-end use cases spanning the whole product perimeter. ──
+export interface UseCase {
+  title: { en: string; it: string };
+  scenario: { en: string; it: string };
+  products: string[];                        // short product tags in flow order
+  steps: { en: string; it: string }[];
+  consumes: { en: string; it: string };      // indicative credits / rows read
+}
+
+export const USE_CASES: UseCase[] = [
+  {
+    title: { en: 'Season launch — the 2026 livery', it: 'Lancio di stagione — la livrea 2026' },
+    scenario: {
+      en: 'Ferrari and its title partner reveal the new car and turn the moment into a co-marketed campaign, without either side handing over raw customer data.',
+      it: 'Ferrari e il title partner svelano la nuova monoposto e trasformano il momento in una campagna co-marketing, senza che nessuno ceda dati grezzi dei clienti.',
+    },
+    products: ['RT-CDP Collaboration', 'GenStudio', 'Adobe Express', 'CJA'],
+    steps: [
+      { en: 'Match Ferrari and partner audiences in the clean room → a shared, privacy-safe launch segment.', it: 'Match tra audience Ferrari e partner nella clean room → un segmento di lancio condiviso e privacy-safe.' },
+      { en: 'GenStudio generates on-brand variants at scale; Express handles the quick partner edits.', it: 'GenStudio genera varianti on-brand su scala; Express gestisce le modifiche rapide del partner.' },
+      { en: 'Activate the matched segment on the partner’s owned and paid channels.', it: 'Attiva il segmento matchato sui canali owned e paid del partner.' },
+      { en: 'CJA reads the aggregate lift — reach, engagement, conversions — across both brands.', it: 'CJA legge il lift aggregato — reach, engagement, conversioni — su entrambi i brand.' },
+    ],
+    consumes: {
+      en: 'One ad-hoc activation + a refresh around the launch → Collaboration credits; launch traffic → CJA rows.',
+      it: 'Una attivazione ad-hoc + un refresh a ridosso del lancio → Collaboration credits; il traffico del lancio → righe CJA.',
+    },
+  },
+  {
+    title: { en: 'Race weekend — the home GP', it: 'Weekend di gara — il GP di casa' },
+    scenario: {
+      en: 'A real-time moment at Monza: capitalise on the surge in fan attention with a fast, co-branded activation that goes live within the weekend.',
+      it: 'Un momento real-time a Monza: sfrutta il picco di attenzione dei tifosi con un’attivazione co-branded veloce, live nell’arco del weekend.',
+    },
+    products: ['RT-CDP Collaboration', 'GenStudio', 'CJA'],
+    steps: [
+      { en: 'Build a race-weekend audience from live fan signals, matched with the partner.', it: 'Costruisci un’audience race-weekend dai segnali live dei tifosi, matchata col partner.' },
+      { en: 'Spin up creative variants in GenStudio for each channel and market.', it: 'Genera varianti creative in GenStudio per ogni canale e mercato.' },
+      { en: 'Activate immediately; measure against the weekend’s conversions in CJA.', it: 'Attiva subito; misura sulle conversioni del weekend in CJA.' },
+    ],
+    consumes: {
+      en: 'A single high-intensity ad-hoc campaign → activation + measurement credits; event traffic → CJA rows.',
+      it: 'Una singola campagna ad-hoc ad alta intensità → credits di attivazione + measurement; il traffico dell’evento → righe CJA.',
+    },
+  },
+  {
+    title: { en: 'Onboarding a new sponsor', it: 'Onboarding di un nuovo sponsor' },
+    scenario: {
+      en: 'A new partner joins the grid. You stand up their Collaboration instance, run a first joint campaign, and fold the results into Ferrari’s season view.',
+      it: 'Un nuovo partner entra in griglia. Accendi la sua istanza Collaboration, lanci una prima campagna congiunta e integri i risultati nella vista di stagione Ferrari.',
+    },
+    products: ['RT-CDP Collaboration', 'GenStudio', 'Adobe Express', 'CJA'],
+    steps: [
+      { en: 'Provision the partner instance — its Base SKU + a starter credit pack.', it: 'Attiva l’istanza partner — il suo SKU Base + un pacchetto crediti iniziale.' },
+      { en: 'Match audiences, then create the first campaign in GenStudio + Express.', it: 'Match delle audience, poi crea la prima campagna in GenStudio + Express.' },
+      { en: 'Activate and measure; the results roll into Ferrari’s single CJA view.', it: 'Attiva e misura; i risultati confluiscono nell’unica vista CJA di Ferrari.' },
+    ],
+    consumes: {
+      en: 'A new partner instance → one more Base fee + credit pack; nothing extra on CJA (one shared instance).',
+      it: 'Una nuova istanza partner → una Base fee + pacchetto crediti in più; nulla di extra su CJA (istanza unica condivisa).',
+    },
+  },
+  {
+    title: { en: 'Always-on tifosi programme', it: 'Programma always-on per i tifosi' },
+    scenario: {
+      en: 'Beyond the peaks, a season-long nurture keeps the fan relationship warm — continuous audiences, weekly activations, measured end to end.',
+      it: 'Oltre i picchi, un nurture lungo tutta la stagione tiene calda la relazione col tifoso — audience continue, attivazioni settimanali, misurate end to end.',
+    },
+    products: ['RT-CDP Collaboration', 'GenStudio', 'CJA'],
+    steps: [
+      { en: 'Keep audiences continuously refreshed so they stay match-ready all year.', it: 'Tieni le audience aggiornate in continuo così restano pronte al match tutto l’anno.' },
+      { en: 'Run weekly always-on activations with rotating GenStudio creative.', it: 'Esegui attivazioni always-on settimanali con creatività GenStudio a rotazione.' },
+      { en: 'Track the season-long trend in CJA — retention, not just spikes.', it: 'Segui il trend di stagione in CJA — retention, non solo picchi.' },
+    ],
+    consumes: {
+      en: 'Continuous refresh + always-on runs → steady Collaboration credits; year-round traffic → the bulk of CJA rows.',
+      it: 'Refresh continuo + run always-on → credits Collaboration costanti; il traffico tutto l’anno → il grosso delle righe CJA.',
+    },
+  },
+];
+
 export type RigorTag = 'fact' | 'inference' | 'sales-order';
 
 export const RIGOR_LABELS: Record<RigorTag, { en: string; it: string }> = {
@@ -474,7 +754,10 @@ export const ASSUMPTION_META: AssumptionMeta[] = [
   { key: 'metric-collab', tag: 'fact', en: 'Collaboration metric = Collaboration Credits', it: 'Metrica Collaboration = Collaboration Credits', sourceEn: 'Adobe Product Description', sourceIt: 'Product Description Adobe' },
   { key: 'burn-rates', tag: 'fact', en: 'Burn rates: management 2 · activation 500 · always-on 100 · measurement 50 (credits / 1M)', it: 'Burn rate: gestione 2 · attivazione 500 · always-on 100 · measurement 50 (credits / 1M)', sourceEn: 'Adobe RT-CDP Collaboration Scoping Calculator', sourceIt: 'Adobe RT-CDP Collaboration Scoping Calculator' },
   { key: 'assumptions', tag: 'fact', en: 'Default assumptions: match 30% · reach 50% · frequency 10× · conversion 5% · $5/credit', it: 'Assunzioni di default: match 30% · reach 50% · frequenza 10× · conversione 5% · $5/credit', sourceEn: 'Adobe Scoping Calculator (defaults)', sourceIt: 'Adobe Scoping Calculator (default)' },
-  { key: 'pack-sizing', tag: 'fact', en: 'Deliverable = a recommended credit pack (no annual allotment subtraction)', it: 'Deliverable = un pacchetto di crediti consigliato (nessuna sottrazione di allotment annuo)', sourceEn: 'Adobe Scoping Calculator (Sales Calc row 31)', sourceIt: 'Adobe Scoping Calculator (Sales Calc riga 31)' },
+  { key: 'pack-sizing', tag: 'fact', en: 'Deliverable = a recommended credit pack (chargeable = estimate − included credits)', it: 'Deliverable = un pacchetto di crediti consigliato (a pagamento = stima − crediti inclusi)', sourceEn: 'Adobe Scoping Calculator (Sales Calc row 31)', sourceIt: 'Adobe Scoping Calculator (Sales Calc riga 31)' },
+  { key: 'base-sku', tag: 'fact', en: 'Base SKU flat fee: $20k list / $5k floor per year, per standalone instance', it: 'SKU Base canone flat: $20k listino / $5k floor l’anno, per istanza standalone', sourceEn: 'Adobe RT-CDP Collaboration SKUs', sourceIt: 'SKU Adobe RT-CDP Collaboration' },
+  { key: 'entitlements', tag: 'fact', en: 'RTCDP customers: Base included + credits bundled (Ultimate 5,000 · Prime 2,500)', it: 'Clienti RTCDP: Base inclusa + crediti inclusi (Ultimate 5.000 · Prime 2.500)', sourceEn: 'Adobe RT-CDP Collaboration SKUs', sourceIt: 'SKU Adobe RT-CDP Collaboration' },
+  { key: 'instances', tag: 'inference', en: 'One Collaboration instance per party: 1 Ferrari + N partner instances', it: 'Una istanza Collaboration per party: 1 Ferrari + N istanze partner', sourceEn: 'Perimeter model', sourceIt: 'Modello di perimetro' },
   { key: 'metric-cja', tag: 'fact', en: 'CJA metric = Rows of Data (1 row = 0.25 KB)', it: 'Metrica CJA = Rows of Data (1 riga = 0,25 KB)', sourceEn: 'CJA Product Description', sourceIt: 'Product Description CJA' },
   { key: 'ingestion', tag: 'fact', en: 'Annual Ingestion Limit ≤ 3× licensed rows', it: 'Annual Ingestion Limit ≤ 3× righe licenziate', sourceEn: 'CJA Guardrails', sourceIt: 'CJA Guardrails' },
   { key: 'independence', tag: 'inference', en: 'Independent licensing — no dependency between the two', it: 'Licensing indipendente — nessuna dipendenza tra i due', sourceEn: 'Two separate Product Descriptions', sourceIt: 'Due Product Description separate' },

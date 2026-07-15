@@ -25,6 +25,19 @@ export const DEFAULT_ASSUMPTIONS: ScopingAssumptions = {
   // mode
   collabMode: 'detailed',
   directCredits: 5_000,
+  // perimeter & instances — Ferrari (RTCDP Ultimate: base + 5,000 credits included)
+  // plus a "partner-tipo" instance replicated across N sponsors (standalone).
+  ferrariPackage: 'rtcdp-ultimate',
+  ferrariBaseSkuPrice: 20_000,
+  partnerInstances: 3,
+  partnerPackage: 'standalone',
+  partnerBaseSkuPrice: 20_000,
+  partnerOnboardedIds: 2_000_000,
+  partnerAvgAudienceSize: 300_000,
+  partnerAdHocCampaignsPerYear: 3,
+  // refresh mode
+  refreshMode: 'continuous',
+  refreshesPerCampaign: 1,
   // shared audience & funnel (workbook defaults)
   onboardedIds: 10_000_000,
   avgAudienceSize: 1_000_000,
