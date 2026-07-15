@@ -124,6 +124,11 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
   LTV → Motista 2018 — NOT Harvard/Bain). Verify before citing.
 - **Products discreet & contextual** — light attributions while the platform *acts*, max
   2–3 per slide; the full stack reveal belongs ONLY to the "engine" page.
+- **Copy voice — 100% human, not AI (IT + EN).** No em‑dash used as a crutch (`X — non solo Y`),
+  no staccato tricolons ("Ogni giorno. Ogni query."), no symmetrical `non solo X, ma Y`, no empty
+  value‑speak ("crea valore", "un'unica visione"), no buzzword stacking or over‑parallel bullets.
+  Natural, concrete sentences, varied rhythm. Bilingual: EN and IT each idiomatic (never a literal
+  echo); `<T en it>` ALWAYS keeps both. Keep length ~±10% so the audit doesn't break. (CLAUDE.md → Working rules.)
 
 ## The 9 underlying blocks (library)
 Hero, NarrativeSection, FrontBackStageSplit, JourneyPhase, PersonaCard,
@@ -202,6 +207,18 @@ to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). Runs at
 **Auto-correction loop:** run the audit → for each FAIL read the screenshot, fix the
 **component/page source** (not inline patches), re-run → iterate until 0 FAIL.
 
+**Hard vs soft — never shrink type to pass (BINDING).** Treat the checks in two tiers:
+- **HARD (real rendering bugs → drive to 0 at all 3 viewports):** `b`, `c`, `d`, `e`, `f`, `h`, `j`, `k`.
+- **SOFT (aspirational):** `a` (reading band), `i` (space usage), `g` (rhythm). Acceptable on intentionally
+  airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the legibility minimums —
+  **cut copy or split the slide** instead. A visual mock (terminal/image) beside a split slide is not counted
+  as text mass → an `i`/`comX` imbalance there is a **known parser limit, not a defect**.
+- **Recurring meaning‑preserving HARD fixes:** keep `absolute` decorations inside the box
+  (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density
+  to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
+- **Parallelising hard-fixes on ONE app:** don't run concurrent build/preview (they race on `dist/`). Use
+  subagents in **isolated git worktrees**, then one final build + audit on the merged tree.
+
 Conventions & hard-won lessons:
 - **Layering is the #1 trap.** Keep the base reset in `@layer base`. An unlayered
   `* { margin:0 }` or `a { color }` BEATS Tailwind utilities (`mb-*`, `text-*`) and silently
@@ -235,3 +252,7 @@ Conventions & hard-won lessons:
 5. Source/create brand-appropriate imagery (or placeholders).
 6. Update `astro.config.mjs` (`site`, `base`, `trailingSlash`) and `global.css` `@source`.
 7. Verify: `pnpm dev`, `pnpm build`, `pnpm typecheck`; check 360px + reduced-motion; then deploy.
+8. **Copy pass — human, not AI** (IT + EN): scrub the AI tells (see Content rules / CLAUDE.md → Copy voice); keep names/numbers/sources; `<T>` keeps both languages.
+9. **Audit gate:** `audit:deck` HARD checks (`b/c/d/e/f/h/j/k`) = **0** at 1920/1440/1280; resolve SOFT (`a/i/g`) only by cutting copy or splitting slides, **never by shrinking type**. Then read a 1920 screenshot of every slide.
+10. **Register everywhere:** `admin.astro` (PAGE_REGISTRY + SOLUTIONS), `deploy.yml` (merge + verify), `factory-hub` card, showcase `src/data/experiences.ts` (+ `public/shots/<slug>.webp`), console registry / Supabase seed. A product/naming change propagates to **every** experience that cites it — verify each (build + audit).
+11. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.
