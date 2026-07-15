@@ -48,10 +48,10 @@ soglia superata → split).
 ## Step 5 — Partiziona (solo se necessario)
 - **Sotto soglia** → scrivi tutto in `docs/HANDOVER.md`; **elimina** eventuali `docs/HANDOVER-NN.md`
   stantii; assicurati che NON contenga il marker `<!-- HANDOVER-SPLIT -->`.
-- **Oltre soglia** → partiziona **greedy ai confini `##`**: accumula sezioni intere in una parte finché
-  aggiungerne un'altra sforerebbe una soglia, poi apri una nuova parte. **Mai** spezzare a metà una
-  sezione. Se una **singola** sezione `##` da sola supera una soglia, spezzala ai `###` e aggiungi una
-  nota `<!-- sezione spezzata a sotto-livello -->`.
+- **Oltre soglia** → conta le parti necessarie `nParti = ceil(byte_totali / MAX_BYTE)` e mira a parti
+  **bilanciate** (~`byte_totali / nParti` ciascuna) accumulando **sezioni intere ai confini `##`**, senza
+  mai superare le soglie hard. **Mai** spezzare a metà una sezione. Se una **singola** sezione `##` da
+  sola supera una soglia, spezzala ai `###` e aggiungi una nota `<!-- sezione spezzata a sotto-livello -->`.
   - Scrivi `docs/HANDOVER-01.md`, `-02.md`, … Ogni parte inizia con:
     ```
     # Handover — Parte N di M
