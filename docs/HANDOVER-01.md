@@ -12,7 +12,7 @@ Monorepo di una **Experience Design Factory**: un motore condiviso (`packages/co
 Esperienze (cliente) — **quattro**:
 - **Generazioni — Max Mara** (`apps/generazioni-maxmara`, ora su `/generazioni-maxmara/`) · IT, quiet-luxury. Prima istanza. **Ora config-driven** (Admin Console + runtimes + `.cs-*`) come le altre (lug 2026).
 - **Engagement Unlimited — UniCredit** (`apps/unicredit-engagement`) · IT · modello di contenuto più maturo (vedi §5).
-- **Pole Position — Ferrari × Adobe** (`apps/ferrari-racing`) · EN/IT bilingue, motorsport. Include la sezione **/scoping** (calcolatore di licensing RTCDP Collaboration + CJA, **modello v2** con SKU base/entitlement/istanze partner/refresh mode — §14.9) e la nuova sezione **Casi d'uso** (scenari E2E su tutto il perimetro prodotti). v2 §19 (commit `a3fc86a`).
+- **Pole Position — Ferrari × Adobe** (`apps/ferrari-racing`) · EN/IT bilingue, motorsport. Include la sezione **/scoping** (calcolatore di licensing RTCDP Collaboration + CJA; **modello v3 §20** — solo standalone, **volumi senza prezzi** + costo per istanza editabile; niente più SKU base/entitlement) e la nuova sezione **Casi d'uso** (scenari E2E su tutto il perimetro prodotti). Commit `ff03a71`.
 - **Connessioni Intelligenti — FS Group / Ferrovie** (`apps/trenitalia-connessioni`) · IT · 6 sezioni + Casi d'uso. **Oggetto del lavoro recente** (vedi §15).
 
 App interne (non-cliente):
@@ -55,7 +55,7 @@ pnpm lint · pnpm typecheck
 pnpm --filter <app> dev|build|preview      # per app: generazioni-maxmara | unicredit-engagement | ferrari-racing | trenitalia-connessioni | console | factory-showcase | factory-hub
 pnpm dev:showcase                          # alias per il solo showcase (root package.json)
 pnpm --filter <app> audit:deck             # gate DOM su 3 viewport (1920/1440/1280) — lanciare contro un PREVIEW statico (vedi §8)
-pnpm --filter @agargiulo-adbe/experience-core test   # 53 test del blocco scoping (cost-model/scenario/scenario-store, Vitest)
+pnpm --filter @agargiulo-adbe/experience-core test   # 47 test del blocco scoping (cost-model/scenario/scenario-store, Vitest)
 pnpm --filter <app> assets:build           # fetch/grade asset Pexels → src/assets/generated/ (+ PEXELS_API_KEY in .env)
 ```
 Nota: **factory-showcase non ha `audit:deck`** (non è un deck) né `assets:build` (asset statici in `public/`).
@@ -71,7 +71,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 |---|---|---|
 | **Trait d'Union (Agos)** | **Nuova** (14 lug 2026): 7 sezioni + home, live pitch per Agos (credito al consumo, gruppo CA/BPM). `audit:deck` 0 su 3 viewport; tutte le slide verificate a 1920. | Vedi §16. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (prospect→cliente). |
 | **Connessioni Intelligenti (Trenitalia/FS)** | **Attivamente rilavorata** (lug 2026): personas rinominate, foto persona rigenerata, **passata di leggibilità completa** (type generoso, ecosistema impilato). `audit:deck` 0. | Vedi §15. Ultimo focus di lavoro. Personas: **Davide** (pendolare) + **Elena** (business) — NON Marco/Sofia (=UniCredit). |
-| **Ferrari Racing** | Stabile + **sezione /scoping** (licensing 1:1 col workbook Adobe; **15 lug pomeriggio: modello v2** — SKU base + entitlement + istanze partner + refresh mode, §14.9) + **nuova sezione «Casi d'uso»** (§19, commit `a3fc86a`). Save resiliente. **53 test**. Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (incl. casi-duso). | Bilingue EN default. `prevHref` su tutte le pagine. |
+| **Ferrari Racing** | Stabile + **sezione /scoping** (licensing 1:1 col workbook Adobe; **modello v3 §20** — solo standalone, volumi senza prezzi + costo per istanza editabile; niente SKU base/entitlement) + **sezione «Casi d'uso»** (§19). Save resiliente. **47 test core**. Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (incl. casi-duso). | Bilingue EN default. `prevHref` su tutte le pagine. |
 | **UniCredit Engagement** | Stabile; modello di contenuto più maturo (5 round feedback). **15 lug 2026**: LLMO+Semrush consolidati in **Adobe Brand Visibility** (§17); de-AI copy; **passata copy morbido/credibilità** (§17.6: cifre→qualitativo, KPI→direzione ↑/↓, Next-Best-Experience, obiezione acquisition, fix doppio-quote). Vedi §5. | `nextHref`+`prevHref` completi (gold standard). |
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
 | **Factory Hub** (root) | **Nuovo** (lug 2026): landing della Factory a `/experience-design-factory/`. | Vedi §15. Stub redirect per i vecchi deep-link maxmara. |
@@ -180,7 +180,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 8. **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (per download+copia on-site). La **source of truth è `skills/experience-brief/`**; se la modifichi, ri-copia i file e rigenera lo `.zip` (vedi §13.4).
 9. **Showcase — a11y/Lighthouse pass** (consigliato, non fatto): verificare contrasto dei testi grigi su fondo chiaro, focus order, `prefers-reduced-motion` — per certificare lo standard che la pagina *dichiara*.
 10. **Showcase — Firefly "in valutazione"**: la card roadmap Firefly è marcata *Under evaluation*, non un impegno. Non promettere date.
-11. **Ferrari /scoping v2 + «Casi d'uso»** — committato e pushato (commit `a3fc86a`, §14.9 + §19); memoria `ferrari-scoping-calculator` aggiornata a v2. `docs/Ferrovie/` (materiale FS riservato) ora in `.gitignore` (repo pubblico) — coerente con `docs/Ferrari/` e `docs/Agos/`.
+11. **Ferrari /scoping** — v2 (`a3fc86a`) poi **v3 standalone-only/costo-per-istanza** (`ff03a71`, §20) committati e pushati. **Memoria `ferrari-scoping-calculator` da aggiornare a v3** (attualmente descrive v2 con SKU base/entitlement, ora rimossi). `docs/Ferrovie/` (materiale FS riservato) in `.gitignore` (repo pubblico) — coerente con `docs/Ferrari/` e `docs/Agos/`.
 
 ---
 ## 11. Change log recente (UniCredit, lug 2026)
