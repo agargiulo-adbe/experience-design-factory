@@ -240,7 +240,8 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
     DEFAULT_ASSUMPTIONS, DEFAULT_PRICES, scenarioIdFromSearch, type Scenario,
   } from './scenario';
   import {
-    isLoggedIn, loadLocal, saveLocal, saveRemote, fetchRemoteById, listMine, type StoreCtx,
+    isLoggedIn, remoteEnabled, clearSession, RemoteError,
+    loadLocal, saveLocal, saveRemote, fetchRemoteById, listMine, type StoreCtx,
   } from './scenario-store';
 
   const langOf = () => (document.documentElement.getAttribute('data-lang') === 'it' ? 'it' : 'en');
@@ -485,25 +486,51 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
     });
 
     // ── Save / Share / Reset ───────────────────────────────
+    const setNote = (en: string, it: string) => { note.textContent = langOf() === 'it' ? it : en; };
+    // Always persist to localStorage so a scenario is NEVER lost, even when the
+    // remote write fails (expired session, RLS, offline, unconfigured backend).
+    const persistLocal = (sc: Scenario) => {
+      scenarios.unshift(sc); saveLocal(ctx.projectSlug, scenarios.filter((x) => !x.id)); refreshPicker();
+    };
+
     root.querySelector('[data-scoping-save]')!.addEventListener('click', async () => {
       const title = (root.querySelector('[data-scoping-title]') as HTMLInputElement).value || 'Scenario';
       const visibility = (root.querySelector('[data-scoping-visibility]') as HTMLSelectElement).value as Scenario['visibility'];
       const sc: Scenario = { title, assumptions: { ...assumptions }, prices: { ...prices }, visibility };
-      if (isLoggedIn()) {
+
+      if (isLoggedIn() && remoteEnabled(ctx)) {
         try {
-          const id = await saveRemote(ctx, sc);
-          sc.id = id;
+          sc.id = await saveRemote(ctx, sc);
           scenarios.unshift(sc); refreshPicker();
-          note.textContent = 'Saved to your account.';
-        } catch { note.textContent = 'Save failed — check your connection.'; }
+          setNote('Saved to your account.', 'Salvato sul tuo account.');
+          return;
+        } catch (e) {
+          const status = e instanceof RemoteError ? e.status : -1;
+          persistLocal(sc); // never lose the work
+          if (status === 401 || status === 403) {
+            clearSession(); // the token is dead — reflect logged-out state
+            setNote('Session expired — saved locally. Log in again from the Console to sync & share.',
+                    'Sessione scaduta — salvato in locale. Rientra dalla Console per sincronizzare e condividere.');
+          } else {
+            setNote('Cloud save unavailable — saved locally.', 'Salvataggio cloud non disponibile — salvato in locale.');
+          }
+          return;
+        }
+      }
+
+      // Anonymous or backend not configured → local save (expected path).
+      persistLocal(sc);
+      if (isLoggedIn() && !remoteEnabled(ctx)) {
+        setNote('Cloud storage not configured — saved locally.', 'Storage cloud non configurato — salvato in locale.');
       } else {
-        scenarios.unshift(sc); saveLocal(ctx.projectSlug, scenarios.filter((x) => !x.id)); refreshPicker();
-        note.textContent = 'Saved locally. Log in from the Console to persist & share.';
+        setNote('Saved locally. Log in from the Console to sync & share.',
+                'Salvato in locale. Accedi dalla Console per sincronizzare e condividere.');
       }
     });
 
     root.querySelector('[data-scoping-share]')!.addEventListener('click', async () => {
-      if (!isLoggedIn()) { note.textContent = 'Log in from the Console (/console/) to create a share link.'; return; }
+      if (!remoteEnabled(ctx)) { setNote('Sharing needs the cloud backend (not configured here).', 'La condivisione richiede il backend cloud (qui non configurato).'); return; }
+      if (!isLoggedIn()) { setNote('Log in from the Console (/console/) to create a share link.', 'Accedi dalla Console (/console/) per creare un link di condivisione.'); return; }
       const title = (root.querySelector('[data-scoping-title]') as HTMLInputElement).value || 'Scenario';
       const sc: Scenario = { title, assumptions: { ...assumptions }, prices: { ...prices }, visibility: 'link' };
       try {
@@ -511,8 +538,17 @@ const modeTip = { en: 'Simple = quick campaign-count estimate (credits rounded t
         const path = location.pathname.replace(/\?.*$/, '');
         const url = (location.origin ? location.origin + path : experienceUrl) + '?scenario=' + id;
         await navigator.clipboard?.writeText(url).catch(() => {});
-        note.textContent = 'Share link copied: ' + url;
-      } catch { note.textContent = 'Could not create share link.'; }
+        setNote('Share link copied: ' + url, 'Link di condivisione copiato: ' + url);
+      } catch (e) {
+        const status = e instanceof RemoteError ? e.status : -1;
+        if (status === 401 || status === 403) {
+          clearSession();
+          setNote('Session expired — log in again from the Console to create a share link.',
+                  'Sessione scaduta — rientra dalla Console per creare un link di condivisione.');
+        } else {
+          setNote('Could not create share link (cloud unavailable).', 'Impossibile creare il link (cloud non disponibile).');
+        }
+      }
     });
 
     // Reset re-applies the first scenario (keeps every field populated, never 0/blank).
