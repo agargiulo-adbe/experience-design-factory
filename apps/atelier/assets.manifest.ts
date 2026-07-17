@@ -22,7 +22,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'bg-blueprint',
     type: 'stock',
-    query: 'architectural drawing dark table warm lamp light minimal',
+    query: 'tailor pattern paper chalk fabric dark atelier',
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
@@ -40,7 +40,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'bg-stage',
     type: 'stock',
-    query: 'empty stage warm spotlight dark auditorium atmosphere',
+    query: 'theatre stage spotlight light beam haze dark',
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
