@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'method', label: 'The method (01)', slides: [
+    { id: 'slide-cover',      label: 'Cover — Built in the open' },
+    { id: 'slide-genesis',    label: 'Timeline — five experiences' },
+    { id: 'slide-method',     label: 'The working method (4 steps)' },
+    { id: 'slide-compliance', label: 'Compliant by construction (evidence)' },
+  ]},
+  { slug: 'capability', label: 'The capability (02)', slides: [
+    { id: 'slide-cover',       label: 'Cover — One engine. Any story.' },
+    { id: 'slide-anatomy',     label: 'Anatomy diagram (skins/engine/foundation)' },
+    { id: 'slide-toggle-demo', label: 'Live solution-toggle demo' },
+    { id: 'slide-console',     label: 'Admin Console features' },
+  ]},
+  { slug: 'multiplication', label: 'The multiplication (03)', slides: [
+    { id: 'slide-cover',     label: 'Cover — What if fifty people could do this?' },
+    { id: 'slide-market',    label: 'Market evidence (Consensus/Reprise)' },
+    { id: 'slide-precedent', label: 'Precedents (SAP, Moderna)' },
+    { id: 'slide-model',     label: 'How one becomes fifty' },
+  ]},
+  { slug: 'frontiers', label: 'New frontiers (04)', slides: [
+    { id: 'slide-cover',         label: 'Cover — The experience becomes the demo' },
+    { id: 'slide-live-products', label: 'Adobe products live inside the story' },
+    { id: 'slide-quest',         label: 'Boardroom Quest spotlight' },
+    { id: 'slide-quest-plan',    label: 'Quest roadmap + brand/legal gate' },
+  ]},
+  { slug: 'plan', label: 'The plan (05)', slides: [
+    { id: 'slide-cover', label: 'Cover — Nine months, three milestones' },
+    { id: 'slide-m1',    label: 'M1 Foundations (mid-Sep 2026)' },
+    { id: 'slide-m2',    label: 'M2 Scale & open (mid-Jan 2027)' },
+    { id: 'slide-m3',    label: 'M3 Enterprise & lighthouse (mid-Apr 2027)' },
+    { id: 'slide-kpi',   label: 'KPI framework (4 families)' },
+  ]},
+  { slug: 'asks', label: 'What it takes (06)', slides: [
+    { id: 'slide-cover',     label: 'Cover — A small stack of asks' },
+    { id: 'slide-resources', label: 'Resources (relative envelope)' },
+    { id: 'slide-moments',   label: 'Two funded moments' },
+    { id: 'slide-sponsor',   label: 'The executive-sponsor ask' },
+  ]},
+  { slug: 'closing', label: 'Closing (07)', slides: [
+    { id: 'slide-thesis', label: 'In one breath' },
+    { id: 'slide-next',   label: 'Green-light the pilot' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'asks',
+    name: 'What it takes (sponsorship section)',
+    shortName: 'Asks',
+    pillar: 'audience',
+    description: 'The sponsorship section: resources, the two funded moments and the executive-sponsor ask. Turn off for audiences that should not see the asks.',
+    appearsIn: ['What it takes'],
+  },
+  {
+    id: 'quest',
+    name: 'Boardroom Quest spotlight',
+    shortName: 'Quest',
+    pillar: 'audience',
+    description: 'The Boardroom Quest spotlight and its roadmap + brand/legal gate inside New frontiers. Turn off to keep the frontiers section product-only.',
+    appearsIn: ['New frontiers'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  audience: 'Audience gating',
+};
+const PILLAR_ORDER = ['audience'];
+const PILLAR_COLORS: Record<string, string> = {
+  audience: '#C9A96A',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Experience Atelier">
+  <AdminConsole
+    projectSlug="atelier"
+    projectName="Experience Atelier"
+    clientLabel="Adobe — internal"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>
