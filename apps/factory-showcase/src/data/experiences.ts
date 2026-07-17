@@ -127,6 +127,24 @@ export const EXPERIENCES: Experience[] = [
       it: "Due mondi — digitale e filiale, acquisition e customer base — connessi in un'unica intelligenza del cliente, in sequenza con la trasformazione dei sistemi core.",
     },
   },
+  {
+    slug: 'atelier',
+    name: 'Experience Atelier',
+    client: 'Adobe',
+    brandLabel: 'Adobe',
+    url: `${LIVE}/atelier/`,
+    shot: 'shots/atelier.webp',
+    accent: '#C9A96A',
+    sections: 8,
+    tag: {
+      en: '8 sections · EN/IT/FR · internal growth plan',
+      it: '8 sezioni · EN/IT/FR · piano di crescita interno',
+    },
+    desc: {
+      en: 'The Factory’s own growth plan told as an experience — three milestones from one maker working with AI to a workforce-wide capability, in three languages.',
+      it: "Il piano di crescita della Factory raccontato come esperienza — tre traguardi da un maker che lavora con l'AI a una capability di tutta la workforce, in tre lingue.",
+    },
+  },
 ];
 
 /** Number of live, deployed experiences. */
