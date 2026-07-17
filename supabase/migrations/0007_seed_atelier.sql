@@ -12,7 +12,7 @@ values (
   'Adobe — internal',
   'The Factory growth plan: three milestones to an enterprise-grade, workforce-wide capability. Trilingual EN/IT/FR.',
   '/experience-design-factory/atelier/',
-  'draft'
+  'live'
 )
 on conflict (slug) do update
    set base_url   = excluded.base_url,
