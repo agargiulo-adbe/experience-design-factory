@@ -8,8 +8,9 @@ public deliverable itself will show.
 ## 1. What we are building
 
 A new experience app in the monorepo — **`apps/atelier`**, served at
-`/experience-design-factory/atelier/` — an immersive bilingual deck (**EN default, IT
-toggle**) that presents:
+`/experience-design-factory/atelier/` — an immersive **trilingual** deck (**EN default,
+IT and FR toggle** — the first three-language experience; FR is deliberate for a
+Paris-based audience and itself demonstrates the multilingual capability) that presents:
 
 1. the Experience Design Factory project itself (origin, method, compliance evidence);
 2. a 3‑milestone growth plan (2 / 6 / 9 months → mid‑Sep 2026, mid‑Jan 2027, mid‑Apr 2027);
@@ -172,6 +173,11 @@ that feeds sections 4–6 of the deck.
 
 ## 11. Technical scope
 
+- **i18n engine extension (`packages/core`, backward-compatible):** `T.astro` gains an
+  optional `fr` prop; `LangToggle` gains a prop-driven three-language variant. Existing
+  experiences keep their two-language behaviour untouched (verify each still builds).
+  Copy rule: EN, IT and FR each idiomatic, never literal echoes; FR runs ~15–20% longer —
+  keep all three variants within the layout the audit validates.
 - New Astro app `apps/atelier` mirroring the structure of the latest experience
   (`agos-trait-dunion` as reference): `BaseLayout.astro`, `global.css` tokens,
   `assets.manifest.ts` (Pexels pipeline, abstract atelier/craft/light imagery),
