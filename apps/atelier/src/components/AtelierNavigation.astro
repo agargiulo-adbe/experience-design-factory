@@ -1,0 +1,90 @@
+---
+import { href } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+
+interface Props {
+  currentPath: string;
+  base: string;
+}
+
+const { currentPath, base } = Astro.props;
+
+const sections = [
+  { slug: '',               en: 'Overture',           it: 'Ouverture',          fr: 'Ouverture',              solution: null },
+  { slug: 'method',         en: 'The method',         it: 'Il metodo',          fr: 'La méthode',             solution: null },
+  { slug: 'capability',     en: 'The capability',     it: 'La capability',      fr: 'La capacité',            solution: null },
+  { slug: 'multiplication', en: 'The multiplication', it: 'La moltiplicazione', fr: 'La multiplication',      solution: null },
+  { slug: 'frontiers',      en: 'New frontiers',      it: 'Nuove frontiere',    fr: 'Nouvelles frontières',   solution: null },
+  { slug: 'plan',           en: 'The plan',           it: 'Il piano',           fr: 'Le plan',                solution: null },
+  { slug: 'asks',           en: 'What it takes',      it: 'Cosa serve',         fr: "Ce qu'il faut",          solution: 'asks' },
+  { slug: 'closing',        en: 'Closing',            it: 'Chiusura',           fr: 'Conclusion',             solution: null },
+];
+
+function isActive(slug: string) {
+  const norm = currentPath.replace(/\/+$/, '');
+  if (slug === '') return norm.endsWith('/atelier') || norm.endsWith('/index');
+  return norm.endsWith('/' + slug);
+}
+---
+<nav
+  class="flex items-center justify-between px-6 py-3 bg-[var(--color-carbone)]/95 backdrop-blur-sm border-b border-[var(--color-cenere)]"
+  aria-label="Experience navigation"
+>
+  <a
+    href={href(base, '/')}
+    class="flex items-center gap-2.5 no-underline group"
+    aria-label="Home — Experience Atelier"
+  >
+    <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[var(--color-cenere)] flex-shrink-0" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
+        <path d="M16 5l8.5 21h-3.8l-1.9-4.8h-5.6L11.3 26H7.5L16 5zm0 8.4l-2 5h4l-2-5z" fill="#C9A96A"/>
+      </svg>
+    </span>
+    <span class="text-sm font-semibold text-[var(--color-avorio)] group-hover:text-white transition-colors font-[family-name:var(--font-display)]">
+      Experience Atelier
+    </span>
+    <span class="hidden sm:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--color-avorio)]/40 ml-1">
+      Adobe
+    </span>
+  </a>
+
+  <ol class="hidden md:flex items-center gap-1" role="list">
+    {sections.filter(s => s.slug !== '').map((s, i) => (
+      <li
+        data-nav-solution={s.solution ?? undefined}
+        role="listitem"
+      >
+        <a
+          href={href(base, '/' + s.slug)}
+          class={[
+            'px-3 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline',
+            isActive(s.slug)
+              ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] border border-[var(--accent-primary)]/30'
+              : 'text-[var(--color-sabbia-300)] hover:text-[var(--color-avorio)] hover:bg-[var(--color-cenere)]',
+          ].join(' ')}
+          aria-current={isActive(s.slug) ? 'page' : undefined}
+        >
+          <span class="text-[var(--color-sabbia-400)] mr-1 tabular-nums">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <T en={s.en} it={s.it} fr={s.fr} />
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3">
+    <span class="hidden sm:inline text-[0.65rem] tracking-widest uppercase text-[var(--color-sabbia-400)]">
+      Live Pitch
+    </span>
+    <LangToggle langs={['en', 'it', 'fr']} />
+    <a
+      href={href(base, '/admin')}
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[var(--color-cenere)] text-[var(--color-sabbia-400)] hover:text-[var(--color-avorio)] hover:border-[var(--color-sabbia-400)] rounded-sm transition-colors no-underline"
+      data-admin-only
+    >
+      Admin
+    </a>
+  </div>
+</nav>
