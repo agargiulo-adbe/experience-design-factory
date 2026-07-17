@@ -1,0 +1,406 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AtelierNavigation from '../components/AtelierNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Three milestones, nine months. Work and targets are declared in advance:
+// the KPI story is "we measure ourselves" — no external productivity benchmarks.
+const milestones = [
+  {
+    id: 'slide-m1',
+    bg: 'secondary' as const,
+    card: 'bg-[var(--surface-tertiary)]',
+    kicker: {
+      en: 'Milestone 1 · by mid-September 2026',
+      it: 'Milestone 1 · entro metà settembre 2026',
+      fr: 'Jalon 1 · d’ici mi-septembre 2026',
+    },
+    title: { en: 'Foundations', it: 'Fondamenta', fr: 'Fondations' },
+    intro: {
+      en: 'From one person’s project to a pilot-ready platform.',
+      it: 'Dal progetto di una persona a una piattaforma pronta per la fase pilota.',
+      fr: 'Du projet d’une personne à une plateforme prête pour le pilote.',
+    },
+    work: [
+      {
+        en: 'Pilot: five to ten Adobe Italia BDR and AE build their first experience through the guided intake',
+        it: 'Pilota: da cinque a dieci BDR e AE di Adobe Italia costruiscono la loro prima esperienza con l’intake guidato',
+        fr: 'Pilote&nbsp;: cinq à dix BDR et AE d’Adobe Italia construisent leur première expérience via l’intake guidé',
+      },
+      {
+        en: 'Adobe Context Layer v1: product catalog, positioning and limits, validated by Solution Consultants',
+        it: 'Adobe Context Layer v1: catalogo prodotti, posizionamento e limiti, validati dai Solution Consultant',
+        fr: 'Adobe Context Layer v1&nbsp;: catalogue produits, positionnement et limites, validés par les Solution Consultants',
+      },
+      {
+        en: 'Multi-user hardening and CI quality gates',
+        it: 'Hardening multi-utente e quality gate in CI',
+        fr: 'Durcissement multi-utilisateur et quality gates en CI',
+      },
+      {
+        en: 'Boardroom Quest walking skeleton; KPI telemetry baseline',
+        it: 'Walking skeleton di Boardroom Quest; baseline della telemetria KPI',
+        fr: 'Walking skeleton de Boardroom Quest&nbsp;; baseline de télémétrie KPI',
+      },
+    ],
+    targets: {
+      en: 'Time to first experience under one week per pilot user · at least three experiences created by pilots · KPI baseline instrumented',
+      it: 'Prima esperienza in meno di una settimana per ogni utente pilota · almeno tre esperienze create dagli utenti pilota · baseline KPI strumentata',
+      fr: 'Première expérience en moins d’une semaine par utilisateur pilote · au moins trois expériences créées par les pilotes · baseline KPI instrumentée',
+    },
+  },
+  {
+    id: 'slide-m2',
+    bg: 'primary' as const,
+    card: 'bg-[var(--surface-secondary)]',
+    kicker: {
+      en: 'Milestone 2 · by mid-January 2027',
+      it: 'Milestone 2 · entro metà gennaio 2027',
+      fr: 'Jalon 2 · d’ici mi-janvier 2027',
+    },
+    title: { en: 'Scale and open', it: 'Scalare e aprire', fr: 'Monter en échelle et ouvrir' },
+    intro: {
+      en: 'The Atelier stops being one person’s tool.',
+      it: 'L’Atelier smette di essere lo strumento di una persona sola.',
+      fr: 'L’Atelier cesse d’être l’outil d’une seule personne.',
+    },
+    work: [
+      {
+        en: 'Two to three Adobe partners co-build joint experiences, with hardened external access',
+        it: 'Due o tre partner Adobe co-costruiscono esperienze congiunte, con accessi esterni rafforzati',
+        fr: 'Deux à trois partenaires Adobe co-construisent des expériences conjointes, avec des accès externes durcis',
+      },
+      {
+        en: 'Template gallery and self-service wizard; 25 to 40 active users',
+        it: 'Galleria di template e wizard self-service; da 25 a 40 utenti attivi',
+        fr: 'Galerie de templates et assistant self-service&nbsp;; 25 à 40 utilisateurs actifs',
+      },
+      {
+        en: 'Firefly and GenStudio demos embedded in live experiences',
+        it: 'Demo di Firefly e GenStudio integrate nelle esperienze live',
+        fr: 'Démos Firefly et GenStudio intégrées dans les expériences live',
+      },
+      {
+        en: 'Boardroom Quest facilitated beta and first real workshop · Hackathon day for Adobians, partners and clients',
+        it: 'Beta facilitata di Boardroom Quest e primo workshop reale · giornata hackathon per Adobiani, partner e clienti',
+        fr: 'Bêta accompagnée de Boardroom Quest et premier atelier réel · journée hackathon pour Adobiens, partenaires et clients',
+      },
+    ],
+    targets: {
+      en: 'Ten or more experiences used in active deals · at least two partner co-signed experiences · one Boardroom Quest workshop delivered with debrief',
+      it: 'Dieci o più esperienze usate in trattative attive · almeno due esperienze co-firmate con i partner · un workshop Boardroom Quest erogato con debrief',
+      fr: 'Dix expériences ou plus utilisées dans des deals actifs · au moins deux expériences co-signées avec des partenaires · un atelier Boardroom Quest animé avec débrief',
+    },
+  },
+  {
+    id: 'slide-m3',
+    bg: 'secondary' as const,
+    card: 'bg-[var(--surface-tertiary)]',
+    kicker: {
+      en: 'Milestone 3 · by mid-April 2027',
+      it: 'Milestone 3 · entro metà aprile 2027',
+      fr: 'Jalon 3 · d’ici mi-avril 2027',
+    },
+    title: { en: 'Enterprise and lighthouse', it: 'Enterprise e faro', fr: 'Enterprise et phare' },
+    intro: {
+      en: 'The capability becomes infrastructure, and gets its stage.',
+      it: 'La capability diventa infrastruttura e sale sul suo palco.',
+      fr: 'La capacité devient infrastructure et trouve sa scène.',
+    },
+    work: [
+      {
+        en: 'Federated SSO, audit logs, security review, data governance',
+        it: 'SSO federato, audit log, security review, data governance',
+        fr: 'SSO fédéré, journaux d’audit, revue de sécurité, gouvernance des données',
+      },
+      {
+        en: 'Expansion beyond Italy across EMEA',
+        it: 'Espansione oltre l’Italia, in tutta l’area EMEA',
+        fr: 'Expansion au-delà de l’Italie, dans toute la zone EMEA',
+      },
+      {
+        en: 'Boardroom Quest multiplayer and a second industry pack',
+        it: 'Boardroom Quest multiplayer e un secondo pacchetto di settore',
+        fr: 'Boardroom Quest multijoueur et un deuxième pack sectoriel',
+      },
+      {
+        en: 'Adobe Summit 2027, Las Vegas, March 22–25: demo pod and speaking submission',
+        it: 'Adobe Summit 2027, Las Vegas, 22–25 marzo: demo pod e candidatura per uno speech',
+        fr: 'Adobe Summit 2027, Las Vegas, 22–25 mars&nbsp;: pod de démo et candidature pour une prise de parole',
+      },
+    ],
+    targets: {
+      en: 'One hundred or more enabled users · influenced pipeline tracked in euros · Summit presence confirmed · the project institutionalized with a team and a budget line',
+      it: 'Cento o più utenti abilitati · pipeline influenzata tracciata in euro · presenza al Summit confermata · progetto istituzionalizzato con un team e una voce di budget',
+      fr: 'Cent utilisateurs habilités ou plus · pipeline influencé suivi en euros · présence au Summit confirmée · projet institutionnalisé avec une équipe et une ligne budgétaire',
+    },
+  },
+];
+
+const kpiFamilies = [
+  {
+    name: { en: 'GTM velocity', it: 'Velocità GTM', fr: 'Vélocité GTM' },
+    metrics: {
+      en: 'Brief-to-experience time · experiences in active deals · influenced pipeline · win-rate and deal-size delta where an experience was used',
+      it: 'Tempo dal brief all’esperienza · esperienze in trattative attive · pipeline influenzata · delta di win rate e deal size dove un’esperienza è stata usata',
+      fr: 'Temps du brief à l’expérience · expériences dans des deals actifs · pipeline influencé · delta de win rate et de taille de deal là où une expérience a servi',
+    },
+  },
+  {
+    name: { en: 'Workforce enablement', it: 'Abilitazione delle persone', fr: 'Montée en compétence' },
+    metrics: {
+      en: 'Enabled Adobians · share creating fully autonomously · time to first experience · internal satisfaction',
+      it: 'Adobiani abilitati · quota che crea in piena autonomia · tempo alla prima esperienza · soddisfazione interna',
+      fr: 'Adobiens habilités · part créant en pleine autonomie · temps jusqu’à la première expérience · satisfaction interne',
+    },
+  },
+  {
+    name: { en: 'Ecosystem', it: 'Ecosistema', fr: 'Écosystème' },
+    metrics: {
+      en: 'Partners onboarded · joint experiences · partner-sourced pipeline',
+      it: 'Partner attivati · esperienze congiunte · pipeline generata dai partner',
+      fr: 'Partenaires embarqués · expériences conjointes · pipeline généré par les partenaires',
+    },
+  },
+  {
+    name: { en: 'Platform health and trust', it: 'Salute e fiducia della piattaforma', fr: 'Santé et confiance de la plateforme' },
+    metrics: {
+      en: 'Uptime · audit pass rate · accessibility AA · freshness of the Adobe Context Layer · compliance incidents, which must stay at zero',
+      it: 'Uptime · tasso di superamento degli audit · accessibilità AA · freschezza dell’Adobe Context Layer · incidenti di compliance, che devono restare a zero',
+      fr: 'Uptime · taux de réussite des audits · accessibilité AA · fraîcheur de l’Adobe Context Layer · incidents de conformité, qui doivent rester à zéro',
+    },
+  },
+];
+---
+<BaseLayout
+  title="The plan"
+  description="The plan — nine months, three milestones: foundations, scale and open, enterprise and lighthouse, with declared targets and four families of KPIs."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AtelierNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/asks')}
+    prevHref={href(base, '/frontiers')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-blueprint')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-primary)]/88"
+      />
+      <T
+        as="p"
+        en="The plan"
+        it="Il piano"
+        fr="Le plan"
+        class="text-center font-semibold uppercase text-[var(--accent-primary)] mb-5"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em;"
+        data-reveal
+      />
+      <p
+        class="text-center font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-5"
+        style="font-size: clamp(2.5rem, 5vw, 5.5rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+        data-display
+        aria-hidden="true"
+      >05</p>
+      <T
+        as="h1"
+        en="Nine months, three milestones."
+        it="Nove mesi, tre milestone."
+        fr="Neuf mois, trois jalons."
+        class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-5"
+        style="font-size: clamp(2.2rem, 4vw, 3.9rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      />
+      <T
+        as="p"
+        en="Each one ends with results you can measure, not promises to revisit."
+        it="Ognuna si chiude con risultati misurabili, non con promesse da rivedere."
+        fr="Chacun se termine sur des résultats mesurables, pas sur des promesses à revoir."
+        class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55;"
+        data-reveal
+        data-reveal-delay="0.22"
+      />
+      <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.3">
+        <T
+          en="Foundations"
+          it="Fondamenta"
+          fr="Fondations"
+          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+          style="font-size: 0.9rem;"
+        />
+        <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+        <T
+          en="Scale &amp; open"
+          it="Scala e apertura"
+          fr="Échelle et ouverture"
+          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+          style="font-size: 0.9rem;"
+        />
+        <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+        <T
+          en="Enterprise &amp; lighthouse"
+          it="Enterprise e faro"
+          fr="Enterprise et phare"
+          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+          style="font-size: 0.9rem;"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDES 1–3: Milestones ─────────────────────────────────── -->
+    {milestones.map((m) => (
+      <Slide id={m.id} bg={m.bg} align="left">
+        <div class="w-full max-w-6xl mx-auto">
+          <T
+            as="p"
+            en={m.kicker.en}
+            it={m.kicker.it}
+            fr={m.kicker.fr}
+            class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+            data-reveal
+          />
+          <T
+            as="h2"
+            en={m.title.en}
+            it={m.title.it}
+            fr={m.title.fr}
+            class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1.5"
+            style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          />
+          <T
+            as="p"
+            en={m.intro.en}
+            it={m.intro.it}
+            fr={m.intro.fr}
+            class="text-[var(--color-sabbia-200)] mb-3"
+            style="font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.5; max-width: none;"
+            data-reveal
+            data-reveal-delay="0.14"
+          />
+
+          <div class="w-full grid md:grid-cols-2 gap-2.5" data-reveal data-reveal-delay="0.2">
+            {m.work.map((w) => (
+              <div class={`min-w-0 px-5 py-3 border border-[var(--line-subtle)] rounded-sm ${m.card}`}>
+                <T
+                  as="p"
+                  en={w.en}
+                  it={w.it}
+                  fr={w.fr}
+                  class="text-[var(--color-sabbia-200)]"
+                  style="font-size: 0.97rem; line-height: 1.5; max-width: none;"
+                />
+              </div>
+            ))}
+          </div>
+
+          <div
+            class={`w-full mt-3 px-5 py-3 border border-[var(--line-subtle)] border-l-2 border-l-[var(--accent-primary)] rounded-sm ${m.card}`}
+            data-reveal
+            data-reveal-delay="0.28"
+          >
+            <T
+              as="p"
+              en="Targets"
+              it="Obiettivi"
+              fr="Objectifs"
+              class="font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-1"
+              style="font-size: 0.78rem;"
+            />
+            <T
+              as="p"
+              en={m.targets.en}
+              it={m.targets.it}
+              fr={m.targets.fr}
+              class="text-[var(--color-avorio)]"
+              style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+            />
+          </div>
+        </div>
+      </Slide>
+    ))}
+
+    <!-- ── SLIDE 4: KPI framework ─────────────────────────────────── -->
+    <Slide id="slide-kpi" bg="primary" align="left">
+      <div class="w-full max-w-6xl mx-auto">
+        <T
+          as="p"
+          en="How we keep score"
+          it="Come teniamo il punteggio"
+          fr="Comment nous comptons les points"
+          class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="Four families of KPIs, targets at every milestone"
+          it="Quattro famiglie di KPI, obiettivi a ogni milestone"
+          fr="Quatre familles de KPI, des objectifs à chaque jalon"
+          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-3"
+          style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="w-full" data-reveal data-reveal-delay="0.16">
+          {kpiFamilies.map((f, i) => (
+            <div
+              class:list={[
+                'grid md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] items-baseline gap-x-8 py-2.5',
+                i > 0 && 'border-t border-[var(--line-subtle)]',
+              ]}
+            >
+              <T
+                as="p"
+                en={f.name.en}
+                it={f.name.it}
+                fr={f.name.fr}
+                class="min-w-0 text-[var(--ink-primary)] font-semibold font-[family-name:var(--font-display)]"
+                style="font-size: 1.1rem; line-height: 1.3;"
+              />
+              <T
+                as="p"
+                en={f.metrics.en}
+                it={f.metrics.it}
+                fr={f.metrics.fr}
+                class="min-w-0 text-[var(--color-sabbia-200)]"
+                style="font-size: 0.96rem; line-height: 1.55; max-width: none;"
+              />
+            </div>
+          ))}
+        </div>
+
+        <T
+          as="p"
+          en="Every milestone declares its targets in advance. The plan is falsifiable, on purpose."
+          it="Ogni milestone dichiara i suoi obiettivi in anticipo. Il piano è falsificabile, per scelta."
+          fr="Chaque jalon annonce ses objectifs à l’avance. Le plan est falsifiable, à dessein."
+          class="mt-4 text-[var(--color-avorio)] font-[family-name:var(--font-display)] border-l-2 border-[var(--accent-primary)] pl-4"
+          style="font-size: clamp(1.15rem, 1.5vw, 1.4rem); font-weight: 500; line-height: 1.35; max-width: none;"
+          data-reveal
+          data-reveal-delay="0.28"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

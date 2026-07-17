@@ -1,0 +1,413 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AtelierNavigation from '../components/AtelierNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// ── Pixel teaser (Boardroom Quest) ─────────────────────────────────
+// A CSS-only retro frame: dark room, a locked door in the top wall, a
+// table, five division tokens (the five skin accents used on the
+// opening wall) and one golden key. No images, tokens only.
+const PIXEL_MAP = [
+  'WWWWWWWWDDWWWWWWWW',
+  'W................W',
+  'W.11..........22.W',
+  'W.11..........22.W',
+  'W.......TT.......W',
+  'W.55....TT....33.W',
+  'W.55....TT....33.W',
+  'W........KK......W',
+  'W.......44.......W',
+  'W.......44.......W',
+  'W................W',
+  'WWWWWWWWWWWWWWWWWW',
+];
+const PIXEL_COLORS: Record<string, string> = {
+  W: 'rgba(142,133,112,0.52)',   // walls — sabbia-400 tint
+  D: 'rgba(201,169,106,0.55)',   // locked door — champagne
+  T: 'rgba(154,123,69,0.55)',    // table — bronzo tint
+  K: '#C9A96A',                  // the golden key
+  '1': '#C9A272',                // division tokens — the five wall tints
+  '2': '#E8858B',
+  '3': '#FF7A5C',
+  '4': '#F2777D',
+  '5': '#2BC2CE',
+};
+function pixelColor(ch: string, r: number, c: number): string {
+  if (ch === '.') return (r + c) % 2 === 0 ? 'rgba(27,24,19,1)' : 'rgba(33,29,23,1)';
+  return PIXEL_COLORS[ch] ?? 'rgba(27,24,19,1)';
+}
+---
+<BaseLayout
+  title="New frontiers"
+  description="New frontiers — live Adobe products inside every experience, and Boardroom Quest: a facilitated serious game for C-level workshops."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AtelierNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/plan')}
+    prevHref={href(base, '/multiplication')}
+  >
+
+    <!-- ── SLIDE 0: Cover — typographic ───────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <T
+        as="p"
+        en="New frontiers"
+        it="Nuove frontiere"
+        fr="Nouvelles frontières"
+        class="text-center font-semibold uppercase text-[var(--accent-primary)] mb-5"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em;"
+        data-reveal
+      />
+      <p
+        class="text-center font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-5"
+        style="font-size: clamp(2.5rem, 5vw, 5.5rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+        data-display
+        aria-hidden="true"
+      >04</p>
+      <T
+        as="h1"
+        en="The experience becomes the demo."
+        it="L'esperienza diventa la demo."
+        fr="L'expérience devient la démo."
+        class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-5"
+        style="font-size: clamp(2.2rem, 4vw, 3.9rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      />
+      <T
+        as="p"
+        en="Two evolutions take the Atelier beyond storytelling: real product interaction inside every experience, and a serious game for the boardroom."
+        it="Due evoluzioni portano l'Atelier oltre lo storytelling: interazione reale con i prodotti in ogni esperienza e un serious game per il board."
+        fr="Deux évolutions mènent l'Atelier au-delà du récit&nbsp;: interaction directe avec les produits dans chaque expérience, et un serious game pour le comité de direction."
+        class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55;"
+        data-reveal
+        data-reveal-delay="0.22"
+      />
+      <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.3">
+        <T
+          en="Live products"
+          it="Prodotti live"
+          fr="Produits en direct"
+          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+          style="font-size: 0.9rem;"
+        />
+        <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+        <T
+          en="Boardroom Quest"
+          it="Boardroom Quest"
+          fr="Boardroom Quest"
+          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+          style="font-size: 0.9rem;"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: Live products ─────────────────────────────────── -->
+    <Slide id="slide-live-products" bg="secondary" align="left">
+      <T
+        as="p"
+        en="Frontier one"
+        it="Prima frontiera"
+        fr="Première frontière"
+        class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
+        data-reveal
+      />
+      <T
+        as="h2"
+        en="Adobe products, live inside the story"
+        it="I prodotti Adobe, live dentro la storia"
+        fr="Les produits Adobe, en direct dans le récit"
+        class="text-[var(--ink-primary)] mb-4"
+        style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      />
+
+      <div class="w-full max-w-6xl flex flex-col gap-3" data-reveal data-reveal-delay="0.16">
+        <div class="min-w-0 grid md:grid-cols-[15rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <T
+            as="p"
+            en="Product mockups, today"
+            it="Mockup di prodotto, oggi"
+            fr="Maquettes produit, déjà là"
+            class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)] min-w-0"
+            style="font-size: 1.1rem; line-height: 1.3;"
+          />
+          <T
+            as="p"
+            en="The engine already ships working GenStudio and Real-Time CDP mockups: full-screen, phased, presenter-driven. They look and behave like the product."
+            it="Il motore include già mockup funzionanti di GenStudio e Real-Time CDP: a tutto schermo, a fasi, guidati dal presenter. Aspetto e comportamento sono quelli del prodotto."
+            fr="Le moteur embarque déjà des maquettes opérationnelles de GenStudio et de Real-Time CDP&nbsp;: plein écran, par phases, pilotées par le présentateur. L'aspect et le comportement sont ceux du produit."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+
+        <div class="min-w-0 grid md:grid-cols-[15rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <T
+            as="p"
+            en="Personalized demos, next"
+            it="Demo personalizzate, a seguire"
+            fr="Démos personnalisées, ensuite"
+            class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)] min-w-0"
+            style="font-size: 1.1rem; line-height: 1.3;"
+          />
+          <T
+            as="p"
+            en="Media slots let a seller attach a client-specific demo video or embedded walkthrough to any slide, shared as a link."
+            it="Gli slot media permettono al seller di agganciare a qualsiasi slide un video demo o un walkthrough incorporato pensato per quel cliente, condiviso via link."
+            fr="Les emplacements média permettent au vendeur d'associer à chaque slide une vidéo de démo ou un walkthrough embarqué propre au client, partagé par lien."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+
+        <div class="min-w-0 grid md:grid-cols-[15rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <T
+            as="p"
+            en="Generative media, on the horizon"
+            it="Media generativi, all'orizzonte"
+            fr="Médias génératifs, à l'horizon"
+            class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)] min-w-0"
+            style="font-size: 1.1rem; line-height: 1.3;"
+          />
+          <T
+            as="p"
+            en="Firefly image and video generation composed into the experience itself, so a workshop can create assets on the client's brief, live."
+            it="La generazione di immagini e video Firefly entra nell'esperienza stessa: un workshop può creare asset sul brief del cliente, in diretta."
+            fr="La génération d'images et de vidéos Firefly s'intègre à l'expérience même&nbsp;: un atelier peut créer des assets sur le brief du client, en direct."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+      </div>
+
+      <div class="w-full max-w-6xl mt-4 border-l-2 border-[var(--accent-primary)] pl-5" data-reveal data-reveal-delay="0.24">
+        <T
+          as="p"
+          en="Seeing the product beats hearing about it. Touching it beats both."
+          it="Vedere il prodotto è meglio che sentirne parlare. Toccarlo è meglio ancora."
+          fr="Voir le produit vaut mieux que d'en entendre parler. Le manipuler vaut mieux encore."
+          class="font-[family-name:var(--font-display)] text-[var(--color-avorio)]"
+          style="font-size: clamp(1.2rem, 1.5vw, 1.5rem); line-height: 1.3; font-weight: 500; max-width: none;"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Boardroom Quest — the spotlight ───────────────── -->
+    <Slide id="slide-quest" bg="primary" align="left" data-solution="quest">
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center min-w-0">
+        <!-- Left: the pitch -->
+        <div class="min-w-0">
+          <T
+            as="p"
+            en="In design"
+            it="In progettazione"
+            fr="En conception"
+            class="slide-eyebrow text-[var(--accent-primary)] mb-3"
+            data-reveal
+          />
+          <T
+            as="h2"
+            en="Boardroom Quest"
+            it="Boardroom Quest"
+            fr="Boardroom Quest"
+            class="slide-title text-[var(--ink-primary)] mb-5"
+            style="font-size: clamp(1.9rem, 3.2vw, 2.9rem);"
+            data-reveal
+            data-reveal-delay="0.08"
+          />
+          <T
+            as="p"
+            en="A facilitated serious game for C-level workshops. Each executive team plays one division of a company in crisis; no puzzle can be solved by one division alone. Adobe products appear as the tools that unlock what silos cannot."
+            it="Un serious game facilitato per workshop C-level. Ogni team executive interpreta una divisione di un'azienda in crisi; nessun enigma si risolve con una sola divisione. I prodotti Adobe compaiono come gli strumenti che aprono ciò che i silos tengono chiuso."
+            fr="Un serious game animé par un facilitateur, pour des ateliers C-level. Chaque équipe dirigeante incarne une division d'une entreprise en crise&nbsp;; aucune énigme ne se résout avec une seule division. Les produits Adobe y sont les outils qui ouvrent ce que les silos laissent fermé."
+            class="text-[var(--color-sabbia-200)] mb-4"
+            style="font-size: clamp(0.98rem, 1.15vw, 1.15rem); line-height: 1.6; max-width: none;"
+            data-reveal
+            data-reveal-delay="0.14"
+          />
+          <T
+            as="p"
+            en="Every decision is logged, and the debrief shows where the silos cost time. The game demonstrates the thesis it teaches."
+            it="Ogni decisione viene registrata e il debrief mostra dove i silos fanno perdere tempo. Il gioco dimostra la tesi che insegna."
+            fr="Chaque décision est consignée, et le débrief montre où les silos font perdre du temps. Le jeu démontre la thèse qu'il enseigne."
+            class="text-[var(--color-avorio)] font-medium mb-5"
+            style="font-size: clamp(0.98rem, 1.15vw, 1.15rem); line-height: 1.55; max-width: none;"
+            data-reveal
+            data-reveal-delay="0.2"
+          />
+          <T
+            as="p"
+            en="Format precedent: SAP has run facilitator-led board games with customers since 2020 (S/4HANA board game, BTP Diamond Game). SAP News, 2020–2023."
+            it="Precedente di formato: dal 2020 SAP porta ai clienti board game guidati da facilitatori (board game S/4HANA, BTP Diamond Game). SAP News, 2020–2023."
+            fr="Précédent de format&nbsp;: depuis 2020, SAP anime avec ses clients des jeux de plateau (board game S/4HANA, BTP Diamond Game). SAP News, 2020–2023."
+            class="text-[0.78rem] text-[var(--color-sabbia-300)]"
+            style="line-height: 1.5; max-width: none;"
+            data-reveal
+            data-reveal-delay="0.26"
+          />
+        </div>
+
+        <!-- Right: CSS pixel-art teaser (no images) -->
+        <div class="min-w-0 rounded-sm border border-[rgba(201,169,106,0.45)] bg-[rgba(18,16,12,1)] p-4" data-reveal data-reveal-delay="0.2">
+          <div
+            class="grid w-full max-w-[26rem] mx-auto"
+            style="grid-template-columns: repeat(18, 1fr); gap: 2px;"
+            role="img"
+            aria-label="Pixel-art concept frame: a dark room with a locked door, five colored division tokens around a table, and a golden key."
+          >
+            {PIXEL_MAP.flatMap((row, r) =>
+              row.split('').map((ch, c) => (
+                <div
+                  class="aspect-square w-full"
+                  style={`background:${pixelColor(ch, r, c)};${ch === 'K' ? 'box-shadow:0 0 10px rgba(201,169,106,0.6);' : ''}`}
+                ></div>
+              ))
+            )}
+          </div>
+          <T
+            as="p"
+            en="Concept frame — in design"
+            it="Frame di concept — in progettazione"
+            fr="Vue concept — en conception"
+            class="text-center text-[0.75rem] font-semibold tracking-[0.14em] uppercase text-[var(--color-sabbia-300)] mt-3 mx-auto"
+          />
+          <div class="w-full max-w-[26rem] mx-auto mt-3 pt-3 border-t border-[var(--line-subtle)] flex flex-col gap-1.5">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="flex items-center gap-1 flex-shrink-0" aria-hidden="true">
+                <span class="w-2.5 h-2.5" style="background:#C9A272;"></span>
+                <span class="w-2.5 h-2.5" style="background:#E8858B;"></span>
+                <span class="w-2.5 h-2.5" style="background:#FF7A5C;"></span>
+                <span class="w-2.5 h-2.5" style="background:#F2777D;"></span>
+                <span class="w-2.5 h-2.5" style="background:#2BC2CE;"></span>
+              </span>
+              <T en="Five divisions at the table" it="Cinque divisioni al tavolo" fr="Cinq divisions autour de la table" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
+            </div>
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 flex-shrink-0" style="background:#C9A96A; box-shadow:0 0 6px rgba(201,169,106,0.6);" aria-hidden="true"></span>
+              <T en="One key no division holds alone" it="Una chiave che nessuna divisione ha da sola" fr="Une clé qu'aucune division ne détient seule" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
+            </div>
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 flex-shrink-0" style="background:rgba(201,169,106,0.55);" aria-hidden="true"></span>
+              <T en="The door out of the crisis" it="La porta d'uscita dalla crisi" fr="La porte de sortie de la crise" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Quest roadmap, properly gated ─────────────────── -->
+    <Slide id="slide-quest-plan" bg="secondary" align="left" data-solution="quest">
+      <T
+        as="p"
+        en="Frontier two, the road"
+        it="Seconda frontiera, il percorso"
+        fr="Deuxième frontière, le chemin"
+        class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
+        data-reveal
+      />
+      <T
+        as="h2"
+        en="From concept to platform, gated properly"
+        it="Dal concept alla piattaforma, con i gate giusti"
+        fr="Du concept à la plateforme, avec les bons jalons"
+        class="text-[var(--ink-primary)] mb-4"
+        style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      />
+
+      <div class="w-full max-w-6xl flex flex-col gap-2.5" data-reveal data-reveal-delay="0.16">
+        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <div class="flex items-baseline gap-2.5 min-w-0">
+            <T as="p" en="Phase 1" it="Fase 1" fr="Phase 1" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
+            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M1</span>
+          </div>
+          <T
+            as="p"
+            en="Walking skeleton: one scene, one puzzle, the event-sourced core."
+            it="Walking skeleton: una scena, un enigma, il core event-sourced."
+            fr="Squelette fonctionnel&nbsp;: une scène, une énigme, le cœur event-sourced."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+
+        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <div class="flex items-baseline gap-2.5 min-w-0">
+            <T as="p" en="Phase 2" it="Fase 2" fr="Phase 2" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
+            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M2</span>
+          </div>
+          <T
+            as="p"
+            en="Facilitated beta: 90 minutes, one banking scenario, first real workshop."
+            it="Beta facilitata: 90 minuti, uno scenario banking, primo workshop reale."
+            fr="Bêta animée&nbsp;: 90 minutes, un scénario bancaire, premier atelier réel."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+
+        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
+          <div class="flex items-baseline gap-2.5 min-w-0">
+            <T as="p" en="Phase 3" it="Fase 3" fr="Phase 3" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
+            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M3</span>
+          </div>
+          <T
+            as="p"
+            en="Multiplayer and a second industry pack: each division on its own device."
+            it="Multiplayer e un secondo pack di settore: ogni divisione sul proprio device."
+            fr="Multijoueur et un deuxième pack sectoriel&nbsp;: chaque division sur son propre appareil."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+
+        <!-- The gate — distinct, champagne-bordered -->
+        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[rgba(27,24,19,1)] border border-[rgba(201,169,106,0.55)] rounded-sm">
+          <T
+            as="p"
+            en="Gate"
+            it="Gate"
+            fr="Validation"
+            class="font-[family-name:var(--font-display)] font-semibold text-[var(--accent-primary)] min-w-0"
+            style="font-size: 1.1rem; line-height: 1.3;"
+          />
+          <T
+            as="p"
+            en="Adobe brand and trademark review before any official workshop use. The guidelines are strict about product-centric materials, so clearance comes first."
+            it="Revisione brand e trademark Adobe prima di ogni uso ufficiale in workshop. Le linee guida sono rigorose sui materiali incentrati sul prodotto: il via libera viene prima."
+            fr="Revue de la marque et des marques déposées Adobe avant tout usage officiel en atelier. Les directives encadrent strictement les supports centrés produit&nbsp;: la validation passe d'abord."
+            class="text-[var(--color-sabbia-200)]"
+            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
+          />
+        </div>
+      </div>
+
+      <div class="w-full max-w-6xl mt-4 border-l-2 border-[var(--accent-primary)] pl-5" data-reveal data-reveal-delay="0.24">
+        <T
+          as="p"
+          en="A game for the boardroom, built like a product."
+          it="Un gioco per il board, costruito come un prodotto."
+          fr="Un jeu pour le comité de direction, construit comme un produit."
+          class="font-[family-name:var(--font-display)] text-[var(--color-avorio)]"
+          style="font-size: clamp(1.2rem, 1.5vw, 1.5rem); line-height: 1.3; font-weight: 500; max-width: none;"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
