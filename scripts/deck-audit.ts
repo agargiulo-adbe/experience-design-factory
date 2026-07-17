@@ -80,6 +80,16 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'valore',       route: '/experience-design-factory/agos-trait-dunion/valore/' },
     { name: 'roadmap',      route: '/experience-design-factory/agos-trait-dunion/roadmap/' },
   ],
+  atelier: [
+    { name: 'home',           route: '/experience-design-factory/atelier/' },
+    { name: 'method',         route: '/experience-design-factory/atelier/method/' },
+    { name: 'capability',     route: '/experience-design-factory/atelier/capability/' },
+    { name: 'multiplication', route: '/experience-design-factory/atelier/multiplication/' },
+    { name: 'frontiers',      route: '/experience-design-factory/atelier/frontiers/' },
+    { name: 'plan',           route: '/experience-design-factory/atelier/plan/' },
+    { name: 'asks',           route: '/experience-design-factory/atelier/asks/' },
+    { name: 'closing',        route: '/experience-design-factory/atelier/closing/' },
+  ],
 };
 
 // Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
@@ -89,6 +99,7 @@ const CWD_ALIAS: Record<string, string> = {
   'ferrari-racing': 'ferrari',
   'trenitalia-connessioni': 'trenitalia',
   'agos-trait-dunion': 'agos',
+  'atelier': 'atelier',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {
