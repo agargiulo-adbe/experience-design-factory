@@ -3,38 +3,233 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AtelierNavigation from '../components/AtelierNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
+
+// Accent tints tuned for AA (≥4.5:1) on the dark card surface — the raw brand
+// hues (UniCredit #BE2027, Ferrari #FF2800, FS #E2001A) fall below 4.5:1 on
+// fuliggine, so each kicker uses a lightened tint of its brand accent.
+const wall = [
+  {
+    kicker: 'Max Mara',
+    accent: '#C9A272',
+    name: 'Generazioni',
+    url: `${LIVE}/generazioni-maxmara/`,
+    tag: {
+      en: 'A quiet-luxury generational journey',
+      it: 'Un viaggio generazionale quiet-luxury',
+      fr: 'Un voyage générationnel quiet-luxury',
+    },
+  },
+  {
+    kicker: 'UniCredit',
+    accent: '#E8858B',
+    name: 'Engagement Unlimited',
+    url: `${LIVE}/unicredit-engagement/`,
+    tag: {
+      en: 'A complete Adobe CX story with real personas',
+      it: 'Una storia Adobe CX completa, con personas reali',
+      fr: 'Un récit Adobe CX complet, avec de vrais personas',
+    },
+  },
+  {
+    kicker: 'Ferrari Racing × Adobe',
+    accent: '#FF7A5C',
+    name: 'Pole Position',
+    url: `${LIVE}/ferrari-racing/`,
+    tag: {
+      en: 'Data collaboration from Maranello to every fan',
+      it: 'Data collaboration da Maranello a ogni tifoso',
+      fr: 'La data collaboration, de Maranello à chaque fan',
+    },
+  },
+  {
+    kicker: 'FS Group',
+    accent: '#F2777D',
+    name: 'Connessioni Intelligenti',
+    url: `${LIVE}/trenitalia-connessioni/`,
+    tag: {
+      en: 'One measurable journey for trains and travellers',
+      it: 'Un journey misurabile dai treni ai viaggiatori',
+      fr: 'Un parcours mesurable, des trains aux voyageurs',
+    },
+  },
+  {
+    kicker: 'Agos',
+    accent: '#2BC2CE',
+    name: "Trait d'Union",
+    url: `${LIVE}/agos-trait-dunion/`,
+    tag: {
+      en: 'Digital and branch, joined in one client intelligence',
+      it: "Digitale e filiale, uniti in un'unica intelligenza cliente",
+      fr: 'Digital et agence, réunis dans une même intelligence client',
+    },
+  },
+  {
+    kicker: 'Console · Hub · Showcase',
+    accent: '#C9A96A',
+    name: { en: 'The Platform', it: 'La Piattaforma', fr: 'La Plateforme' },
+    url: `${LIVE}/`,
+    tag: {
+      en: 'The engine behind them all: one console, every experience',
+      it: 'Il motore dietro a tutte: una console, ogni esperienza',
+      fr: "Le moteur de l'ensemble : une console, chaque expérience",
+    },
+  },
+];
 ---
-<BaseLayout title="Experience Atelier">
+<BaseLayout title="Overture">
   <div class="fixed top-0 left-0 right-0 z-50">
     <AtelierNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, '/method')}>
 
-    <!-- ── SLIDE 0: Cover (placeholder — full Overture arrives with the index task) ── -->
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <T
-        as="h1"
-        en="Experience Atelier"
-        it="Experience Atelier"
-        fr="Experience Atelier"
-        class="slide-title text-center text-[var(--ink-primary)] mb-5"
-        style="font-size: clamp(2.5rem, 5vw, 4.5rem);"
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-atelier')}
+        imageClass="opacity-[0.18]"
+        scrim="bg-[var(--color-carbone)]/88"
       />
       <T
         as="p"
-        en="Six experiences. One person, paired with AI."
-        it="Sei esperienze. Una persona, in coppia con l'AI."
-        fr="Six expériences. Une personne, en binôme avec l'IA."
-        class="text-center text-[var(--ink-secondary)] mx-auto"
-        style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5;"
+        en="Experience Atelier"
+        it="Experience Atelier"
+        fr="Experience Atelier"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6"
+      />
+      <T
+        as="h1"
+        en="Six experiences. Five brands.<br/>One person, paired with AI."
+        it="Sei esperienze. Cinque brand.<br/>Una persona, in coppia con l'AI."
+        fr="Six expériences. Cinq marques.<br/>Une personne, en binôme avec l'IA."
+        data-display
+        class="slide-title text-center text-[var(--ink-primary)] mb-8 max-w-6xl mx-auto"
+        style="font-size: clamp(2.7rem, 4.9vw, 4.7rem);"
+      />
+      <T
+        as="p"
+        en="Enterprise-grade, live in production, built in weeks. This deck is one of them."
+        it="Qualità enterprise, live in produzione, nate in settimane. Questo deck è una di queste."
+        fr="Niveau entreprise, en production, montées en quelques semaines. Ce deck en fait partie."
+        class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
+        style="font-size: clamp(1.1rem, 1.4vw, 1.4rem); line-height: 1.55;"
+      />
+      <div class="mt-12 flex flex-col items-center gap-3">
+        <div class="w-10 h-px bg-[var(--accent-primary)]" aria-hidden="true"></div>
+        <T
+          as="p"
+          en="Adobe"
+          it="Adobe"
+          fr="Adobe"
+          class="text-center text-[0.78rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-sabbia-300)]"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: The wall — six live tiles ─────────────────────── -->
+    <Slide id="slide-wall" bg="secondary" align="center">
+      <T
+        as="p"
+        en="Six live deployments"
+        it="Sei esperienze live"
+        fr="Six déploiements en production"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-3"
+      />
+      <T
+        as="h2"
+        en="Every tile is live. Click any of them."
+        it="Ogni card è live. Aprine una qualsiasi."
+        fr="Tout est en ligne. Ouvrez une carte."
+        class="slide-title text-center text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(1.6rem, 2.6vw, 2.5rem);"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-[clamp(0.6rem,1vw,1rem)]">
+        {wall.map((card) => (
+          <a
+            target="_blank"
+            rel="noopener"
+            href={card.url}
+            class="wall-card group min-w-0 flex flex-col text-left no-underline rounded-sm transition-colors"
+            style={`padding: clamp(1rem, 1.4vw, 1.5rem); background: rgba(244,239,228,0.05); border: 1px solid rgba(244,239,228,0.14); --wall-accent: ${card.accent};`}
+          >
+            <p
+              class="font-semibold tracking-[0.14em] uppercase mb-2"
+              style={`font-size: 0.75rem; color: ${card.accent};`}
+            >
+              {card.kicker}
+            </p>
+            {typeof card.name === 'string' ? (
+              <p
+                class="font-semibold text-[var(--ink-primary)] mb-1.5 font-[family-name:var(--font-display)]"
+                style="font-size: clamp(1.05rem, 1.25vw, 1.3rem); line-height: 1.15;"
+              >
+                {card.name}
+              </p>
+            ) : (
+              <T
+                as="p"
+                en={card.name.en}
+                it={card.name.it}
+                fr={card.name.fr}
+                class="font-semibold text-[var(--ink-primary)] mb-1.5 font-[family-name:var(--font-display)]"
+                style="font-size: clamp(1.05rem, 1.25vw, 1.3rem); line-height: 1.15;"
+              />
+            )}
+            <T
+              as="p"
+              en={card.tag.en}
+              it={card.tag.it}
+              fr={card.tag.fr}
+              class="text-[var(--color-sabbia-200)]"
+              style="font-size: clamp(0.85rem, 0.95vw, 1rem); line-height: 1.5;"
+            />
+          </a>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Thesis ────────────────────────────────────────── -->
+    <Slide id="slide-thesis" bg="primary" align="center">
+      <T
+        as="p"
+        en="From one maker to a workforce"
+        it="Da un solo maker a una workforce"
+        fr="D'un seul artisan à toute une équipe"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-8"
+      />
+      <T
+        as="h2"
+        en="What follows is a plan to turn this way of working into a capability many people at Adobe can use."
+        it="Quello che segue è un piano per trasformare questo modo di lavorare in una capability diffusa in Adobe."
+        fr="La suite est un plan pour faire de cette façon de travailler une capacité partagée chez Adobe."
+        class="slide-title text-center text-[var(--ink-primary)] max-w-4xl mx-auto mb-12"
+        style="font-size: clamp(2rem, 3.3vw, 3.2rem); line-height: 1.22;"
+      />
+      <T
+        as="p"
+        en="Use ← → to move. EN, IT and FR live in the toggle above."
+        it="Frecce ← → per muoversi. EN, IT e FR nel selettore in alto."
+        fr="← → pour avancer. EN, IT et FR via le sélecteur en haut."
+        class="text-center text-[var(--color-sabbia-300)] mx-auto"
+        style="font-size: 0.875rem; letter-spacing: 0.02em;"
       />
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  .wall-card:hover {
+    border-color: var(--wall-accent) !important;
+  }
+</style>

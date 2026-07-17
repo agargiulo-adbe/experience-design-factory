@@ -1,0 +1,476 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AtelierNavigation from '../components/AtelierNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Skin chips — accents mirror the factory-hub experience cards.
+const skins = [
+  { name: 'Max Mara',  accent: '#C19A6B' },
+  { name: 'UniCredit', accent: '#BE2027' },
+  { name: 'Ferrari',   accent: '#FF2800' },
+  { name: 'FS',        accent: '#E2001A' },
+  { name: 'Agos',      accent: '#06ABB8' },
+];
+
+// Mini deck map for the live gating demo: 8 sections, 6 of them gated in pairs.
+const demoChips = [
+  { n: '01', en: 'Opening',    it: 'Apertura',   fr: 'Ouverture',  gate: null },
+  { n: '02', en: 'Journeys',   it: 'Journey',    fr: 'Parcours',   gate: 'ja' },
+  { n: '03', en: 'Insights',   it: 'Insight',    fr: 'Insights',   gate: 'ja' },
+  { n: '04', en: 'Creative',   it: 'Creatività', fr: 'Création',   gate: 'content' },
+  { n: '05', en: 'Delivery',   it: 'Delivery',   fr: 'Diffusion',  gate: 'content' },
+  { n: '06', en: 'Audiences',  it: 'Audience',   fr: 'Audiences',  gate: 'data' },
+  { n: '07', en: 'Clean room', it: 'Clean room', fr: 'Clean room', gate: 'data' },
+  { n: '08', en: 'Closing',    it: 'Chiusura',   fr: 'Conclusion', gate: null },
+];
+
+const demoToggles = [
+  { id: 'ja',      en: 'Journey Analytics',  it: 'Journey Analytics',     fr: 'Journey Analytics' },
+  { id: 'content', en: 'Content generation', it: 'Generazione contenuti', fr: 'Génération de contenu' },
+  { id: 'data',    en: 'Data collaboration', it: 'Data collaboration',    fr: 'Collaboration data' },
+];
+---
+<BaseLayout
+  title="The capability"
+  description="One engine under every experience: anatomy of the Atelier, live solution gating and the Admin Console that tunes each meeting without code."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AtelierNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/multiplication')}
+    prevHref={href(base, '/method')}
+  >
+
+    <!-- ── SLIDE 1: Cover — pure typographic ─────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div class="h-[2px] w-24 bg-[var(--accent-primary)] mx-auto mb-8" aria-hidden="true"></div>
+      <T
+        as="p"
+        en="The capability"
+        it="La capability"
+        fr="La capacité"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5"
+      />
+      <T
+        as="h1"
+        en="One engine. Any story."
+        it="Un motore. Ogni storia."
+        fr="Un moteur. Chaque récit."
+        class="slide-title text-center text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(2.5rem, 5vw, 4.5rem);"
+      />
+      <T
+        as="p"
+        en="Every experience you clicked in the opening wall runs on the same core."
+        it="Ogni esperienza aperta dalle card iniziali gira sullo stesso core."
+        fr="Chaque expérience ouverte sur le mur d'entrée tourne sur le même cœur."
+        class="text-center text-[var(--color-sabbia-200)] mx-auto"
+        style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5;"
+      />
+    </Slide>
+
+    <!-- ── SLIDE 2: Anatomy — layered CSS diagram ─────────────────── -->
+    <Slide id="slide-anatomy" bg="secondary" align="center">
+      <T
+        as="p"
+        en="One core, five skins"
+        it="Un core, cinque skin"
+        fr="Un cœur, cinq skins"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-2"
+      />
+      <T
+        as="h2"
+        en="Anatomy of the Atelier"
+        it="Anatomia dell'Atelier"
+        fr="Anatomie de l'Atelier"
+        class="slide-title text-center text-[var(--ink-primary)] mb-3"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+      />
+
+      <div class="w-full max-w-6xl mx-auto flex flex-col items-center min-w-0">
+        <!-- Layer: skins -->
+        <T
+          as="p"
+          en="Skins"
+          it="Skin"
+          fr="Skins"
+          class="text-[0.75rem] font-semibold tracking-[0.16em] uppercase text-[var(--color-sabbia-300)] mb-1.5"
+        />
+        <div class="flex flex-wrap justify-center gap-2 min-w-0">
+          {skins.map((s) => (
+            <span class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)]">
+              <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background:${s.accent}`} aria-hidden="true"></span>
+              <span class="text-[1.05rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] whitespace-nowrap">{s.name}</span>
+            </span>
+          ))}
+        </div>
+
+        <div class="w-[2px] h-2.5 bg-[var(--color-sabbia-400)] my-0.5" aria-hidden="true"></div>
+
+        <!-- Layer: engine -->
+        <div class="w-full max-w-5xl min-w-0 px-6 py-5 rounded-sm border border-[rgba(201,169,106,0.55)] bg-[rgba(18,16,12,1)] text-center">
+          <T
+            as="p"
+            en="Experience engine"
+            it="Experience engine"
+            fr="Experience engine"
+            class="text-[1.35rem] font-semibold text-[var(--accent-primary)] font-[family-name:var(--font-display)] leading-tight mb-1"
+          />
+          <T
+            as="p"
+            en="Immersive deck, trilingual i18n, quality gates and motion, shared by all five."
+            it="Deck immersivo, i18n trilingue, quality gate e motion, condivisi da tutte e cinque."
+            fr="Deck immersif, i18n trilingue, contrôles qualité et motion, partagés par les cinq."
+            class="text-[0.95rem] text-[var(--color-sabbia-200)] mx-auto"
+            style="line-height: 1.5;"
+          />
+        </div>
+
+        <div class="w-[2px] h-2.5 bg-[var(--color-sabbia-400)] my-0.5" aria-hidden="true"></div>
+
+        <!-- Layer: foundation -->
+        <T
+          as="p"
+          en="Foundation"
+          it="Fondazioni"
+          fr="Fondations"
+          class="text-[0.75rem] font-semibold tracking-[0.16em] uppercase text-[var(--color-sabbia-300)] mb-1.5"
+        />
+        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-3 min-w-0">
+          <div class="min-w-0 px-5 py-5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)] text-center">
+            <T
+              as="p"
+              en="Admin Console"
+              it="Admin Console"
+              fr="Admin Console"
+              class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight mb-1"
+            />
+            <T
+              as="p"
+              en="Configures each experience at runtime."
+              it="Configura ogni esperienza a runtime."
+              fr="Configure chaque expérience au runtime."
+              class="text-[0.95rem] text-[var(--color-sabbia-200)] mx-auto"
+              style="line-height: 1.5;"
+            />
+          </div>
+          <div class="min-w-0 px-5 py-5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)] text-center">
+            <T
+              as="p"
+              en="Design tokens &amp; assets"
+              it="Design token &amp; asset"
+              fr="Tokens de design &amp; assets"
+              class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight mb-1"
+            />
+            <T
+              as="p"
+              en="One contract maps each brand's palette, type and imagery."
+              it="Un contratto unico per palette, font e immagini di ogni brand."
+              fr="Un seul contrat pour palette, typo et images de chaque marque."
+              class="text-[0.95rem] text-[var(--color-sabbia-200)] mx-auto"
+              style="line-height: 1.5;"
+            />
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Live solution-gating demo ─────────────────────── -->
+    <Slide id="slide-toggle-demo" bg="primary" align="left">
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-10 items-center min-w-0">
+        <!-- Left: explanation -->
+        <div class="min-w-0">
+          <T
+            as="p"
+            en="Solution gating"
+            it="Solution gating"
+            fr="Solution gating"
+            class="slide-eyebrow text-[var(--accent-primary)] mb-3"
+          />
+          <T
+            as="h2"
+            en="Tailored to one meeting, live"
+            it="Su misura per il meeting, live"
+            fr="Sur mesure pour un meeting, live"
+            class="slide-title text-[var(--ink-primary)] mb-5"
+            style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+          />
+          <T
+            as="p"
+            en="A seller switches a capability off, and the experience reshapes itself: navigation, slides and links follow. No rebuild, no editing."
+            it="Un seller spegne una capability e l'esperienza si riconfigura da sola: navigazione, slide e link seguono. Nessuna rebuild, nessun editing."
+            fr="Un vendeur désactive une capacité et l'expérience se recompose&nbsp;: navigation, slides et liens suivent. Ni rebuild, ni retouche."
+            class="text-[var(--color-sabbia-200)] mb-5"
+            style="font-size: clamp(0.95rem, 1.1vw, 1.1rem); line-height: 1.6;"
+          />
+          <T
+            as="p"
+            en="Try it: this demo is real, right on this slide."
+            it="Provala: la demo è vera, proprio in questa slide."
+            fr="Essayez&nbsp;: la démo est réelle, sur cette slide."
+            class="text-[0.95rem] font-medium text-[var(--accent-primary)]"
+            style="line-height: 1.5;"
+          />
+        </div>
+
+        <!-- Right: framed live panel (clicks here never advance the deck) -->
+        <div
+          data-demo-panel
+          data-deck-nochrome
+          class="min-w-0 rounded-sm border border-[rgba(201,169,106,0.45)] bg-[rgba(27,24,19,1)] p-5"
+        >
+          <T
+            as="p"
+            en="Live demo: click the switches"
+            it="Demo live: clicca gli switch"
+            fr="Démo live&nbsp;: actionnez les interrupteurs"
+            class="text-[0.75rem] font-semibold tracking-[0.14em] uppercase text-[var(--accent-primary)] mb-3"
+          />
+
+          <div class="flex flex-col gap-2 mb-4" role="group" aria-label="Solutions">
+            {demoToggles.map((t) => (
+              <button
+                type="button"
+                role="switch"
+                aria-checked="true"
+                data-demo-toggle={t.id}
+                class="atl-toggle flex items-center justify-between gap-4 w-full min-h-[44px] px-4 py-2 rounded-sm border border-[var(--line-subtle)] bg-[rgba(38,33,26,1)] cursor-pointer transition-colors hover:border-[var(--color-sabbia-400)]"
+              >
+                <T en={t.en} it={t.it} fr={t.fr} class="text-[1rem] font-medium text-[var(--ink-primary)] text-left" />
+                <span class="atl-switch" aria-hidden="true"></span>
+              </button>
+            ))}
+          </div>
+
+          <T
+            as="p"
+            en="Deck map"
+            it="Mappa del deck"
+            fr="Plan du deck"
+            class="text-[0.75rem] font-semibold tracking-[0.14em] uppercase text-[var(--color-sabbia-300)] mb-2"
+          />
+          <div class="grid grid-cols-4 gap-1.5 mb-3 min-w-0">
+            {demoChips.map((c) => (
+              <div
+                data-demo-chip={c.gate ?? undefined}
+                class="atl-chip min-w-0 px-2 py-2 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)] text-center"
+              >
+                <p class="text-[0.75rem] tabular-nums text-[var(--color-sabbia-300)] leading-none mb-1">{c.n}</p>
+                <T en={c.en} it={c.it} fr={c.fr} as="p" class="text-[0.8rem] font-medium text-[var(--color-sabbia-200)] leading-tight" />
+              </div>
+            ))}
+          </div>
+
+          <p class="text-[0.95rem] text-[var(--color-sabbia-200)]" aria-live="polite" aria-atomic="true" style="line-height: 1.5;">
+            8 <T en="sections" it="sezioni" fr="sections" />
+            <span class="text-[var(--color-sabbia-300)] mx-1" aria-hidden="true">→</span>
+            <strong data-demo-count class="font-semibold text-[var(--accent-primary)] tabular-nums">8</strong>
+            <T en="sections" it="sezioni" fr="sections" />
+          </p>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Admin Console ─────────────────────────────────── -->
+    <Slide id="slide-console" bg="secondary" align="left">
+      <div class="w-full max-w-6xl mx-auto min-w-0">
+        <T
+          as="p"
+          en="Runtime control"
+          it="Controllo runtime"
+          fr="Contrôle runtime"
+          class="slide-eyebrow text-[var(--accent-primary)] mb-3"
+        />
+        <T
+          as="h2"
+          en="The Admin Console does the rest"
+          it="L'Admin Console fa il resto"
+          fr="L'Admin Console fait le reste"
+          class="slide-title text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+        />
+
+        <div class="flex flex-col gap-3 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-x-6 gap-y-1 items-center min-w-0 px-5 py-5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)]">
+            <T
+              as="p"
+              en="Sections on and off"
+              it="Sezioni accese o spente"
+              fr="Sections actives ou non"
+              class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug min-w-0"
+            />
+            <T
+              as="p"
+              en="One link shares a version of the experience tuned to a specific audience."
+              it="Un link condivide una versione dell'esperienza tarata su un pubblico preciso."
+              fr="Un lien partage une version de l'expérience réglée pour un public précis."
+              class="text-[0.95rem] text-[var(--color-sabbia-200)] min-w-0"
+              style="line-height: 1.5;"
+            />
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-x-6 gap-y-1 items-center min-w-0 px-5 py-5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)]">
+            <T
+              as="p"
+              en="Demo media per slide"
+              it="Media demo per slide"
+              fr="Médias démo par slide"
+              class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug min-w-0"
+            />
+            <T
+              as="p"
+              en="Attach a product demo video or image to any slide, and share it as a link."
+              it="Aggancia un video o un'immagine demo a qualsiasi slide, condivisibile via link."
+              fr="Ajoutez une vidéo ou une image démo à chaque slide, à partager par lien."
+              class="text-[0.95rem] text-[var(--color-sabbia-200)] min-w-0"
+              style="line-height: 1.5;"
+            />
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-[16rem_1fr] gap-x-6 gap-y-1 items-center min-w-0 px-5 py-5 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)]">
+            <T
+              as="p"
+              en="Custom slides"
+              it="Slide personalizzate"
+              fr="Slides personnalisées"
+              class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug min-w-0"
+            />
+            <T
+              as="p"
+              en="Author new, deck-coherent slides with live preview; they ride the same shared links."
+              it="Crea nuove slide coerenti col deck, con anteprima live; viaggiano sugli stessi link."
+              fr="Créez des slides cohérentes avec le deck, aperçu live&nbsp;; elles suivent les mêmes liens."
+              class="text-[0.95rem] text-[var(--color-sabbia-200)] min-w-0"
+              style="line-height: 1.5;"
+            />
+          </div>
+        </div>
+
+        <T
+          as="p"
+          en="Whoever owns the meeting owns the experience. Without touching code."
+          it="Chi guida il meeting governa l'esperienza. Senza toccare il codice."
+          fr="Qui mène le meeting pilote l'expérience. Sans toucher au code."
+          class="text-[1.05rem] font-medium text-[var(--ink-primary)]"
+          style="line-height: 1.5;"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
+
+<!-- Demo styles: global (JS-toggled classes escape Astro scoping), fenced to this slide. -->
+<style is:global>
+  #slide-toggle-demo .atl-switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: rgba(201, 169, 106, 1);
+    transition: background var(--duration-normal) var(--easing-default);
+  }
+  #slide-toggle-demo .atl-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 23px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(18, 16, 12, 1);
+    transition: left var(--duration-normal) var(--easing-default),
+                background var(--duration-normal) var(--easing-default);
+  }
+  #slide-toggle-demo [aria-checked='false'] .atl-switch {
+    background: rgba(38, 33, 26, 1);
+    box-shadow: inset 0 0 0 1.5px rgba(185, 175, 153, 0.9);
+  }
+  #slide-toggle-demo [aria-checked='false'] .atl-switch::after {
+    left: 3px;
+    background: rgba(185, 175, 153, 1);
+  }
+  #slide-toggle-demo .atl-chip {
+    transition: opacity var(--duration-normal) var(--easing-default),
+                transform var(--duration-normal) var(--easing-default);
+  }
+  #slide-toggle-demo .atl-chip.atl-chip-off {
+    opacity: 0.18;
+    transform: scale(0.96);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #slide-toggle-demo .atl-switch,
+    #slide-toggle-demo .atl-switch::after,
+    #slide-toggle-demo .atl-chip {
+      transition: none;
+    }
+  }
+</style>
+
+<!-- Self-contained demo runtime — page-scoped, independent from the real gating engine.
+     Without JS the panel degrades to a static labeled mock (all switches on, 8 chips). -->
+<script is:inline>
+(function () {
+  if (window.__atlToggleDemo) return;
+  window.__atlToggleDemo = true;
+
+  function refresh() {
+    var panel = document.querySelector('[data-demo-panel]');
+    if (!panel) return;
+    var off = {};
+    panel.querySelectorAll('[data-demo-toggle]').forEach(function (b) {
+      if (b.getAttribute('aria-checked') === 'false') off[b.getAttribute('data-demo-toggle')] = true;
+    });
+    var visible = 0;
+    panel.querySelectorAll('.atl-chip').forEach(function (chip) {
+      var gate = chip.getAttribute('data-demo-chip');
+      var hidden = !!(gate && off[gate]);
+      chip.classList.toggle('atl-chip-off', hidden);
+      if (!hidden) visible++;
+    });
+    panel.querySelectorAll('[data-demo-count]').forEach(function (el) {
+      el.textContent = String(visible);
+    });
+  }
+
+  function flip(btn) {
+    btn.setAttribute('aria-checked', btn.getAttribute('aria-checked') === 'false' ? 'true' : 'false');
+    refresh();
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var btn = t && t.closest ? t.closest('[data-demo-toggle]') : null;
+    if (!btn) return;
+    e.preventDefault();
+    flip(btn);
+  });
+
+  // Capture-phase so Space toggles the focused switch instead of advancing the deck
+  // (the deck controller listens for Space on window).
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    var btn = t && t.closest ? t.closest('[data-demo-toggle]') : null;
+    if (!btn) return;
+    if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      flip(btn);
+    }
+  }, true);
+
+  document.addEventListener('astro:page-load', refresh);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', refresh);
+  } else {
+    refresh();
+  }
+})();
+</script>

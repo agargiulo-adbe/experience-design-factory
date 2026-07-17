@@ -1,0 +1,445 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AtelierNavigation from '../components/AtelierNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// First-commit dates verified from git history (git log --reverse per app).
+const timeline = [
+  {
+    date: { en: '15 Jun 2026', it: '15 giu 2026', fr: '15 juin 2026' },
+    name: 'Generazioni', client: 'Max Mara',
+    fact: {
+      en: 'The first instance: eight sections in Italian, and the shared engine was born here.',
+      it: 'La prima istanza: otto sezioni in italiano, e qui è nato il motore condiviso.',
+      fr: 'La première instance : huit sections en italien, où le moteur partagé est né.',
+    },
+  },
+  {
+    date: { en: '1 Jul 2026', it: '1 lug 2026', fr: '1er juil. 2026' },
+    name: 'Engagement Unlimited', client: 'UniCredit',
+    fact: {
+      en: 'Eleven sections, the deepest content model in the family.',
+      it: 'Undici sezioni, il modello di contenuto più ricco della famiglia.',
+      fr: 'Onze sections, le modèle de contenu le plus riche de la famille.',
+    },
+  },
+  {
+    date: { en: '6 Jul 2026', it: '6 lug 2026', fr: '6 juil. 2026' },
+    name: 'Pole Position', client: 'Ferrari Racing',
+    fact: {
+      en: 'Seven sections, fully bilingual in English and Italian.',
+      it: 'Sette sezioni, interamente bilingue inglese e italiano.',
+      fr: 'Sept sections, entièrement bilingues anglais et italien.',
+    },
+  },
+  {
+    date: { en: '13 Jul 2026', it: '13 lug 2026', fr: '13 juil. 2026' },
+    name: 'Connessioni Intelligenti', client: 'FS Group',
+    fact: {
+      en: 'Six sections plus use cases, centred on Customer Journey Analytics.',
+      it: 'Sei sezioni più i casi d’uso, centrate su Customer Journey Analytics.',
+      fr: 'Six sections plus des cas d’usage, autour de Customer Journey Analytics.',
+    },
+  },
+  {
+    date: { en: '14 Jul 2026', it: '14 lug 2026', fr: '14 juil. 2026' },
+    name: 'Trait d’Union', client: 'Agos',
+    fact: {
+      en: 'Seven sections for consumer credit, live the day after FS.',
+      it: 'Sette sezioni per il credito al consumo, online il giorno dopo FS.',
+      fr: 'Sept sections pour le crédit conso, en ligne le lendemain de FS.',
+    },
+  },
+];
+
+const steps = [
+  {
+    num: '01',
+    name: { en: 'Brief', it: 'Brief', fr: 'Brief' },
+    desc: {
+      en: 'A guided intake turns “an experience for brand X” into a structured brief.',
+      it: 'Un intake guidato trasforma «un’esperienza per il brand X» in un brief strutturato.',
+      fr: 'Un intake guidé transforme « une expérience pour la marque X » en un brief structuré.',
+    },
+  },
+  {
+    num: '02',
+    name: { en: 'Engine', it: 'Motore', fr: 'Moteur' },
+    desc: {
+      en: 'A shared deck engine renders it; every client is a skin of tokens, copy and assets.',
+      it: 'Un motore di deck condiviso lo mette in scena; ogni cliente è una skin di token, copy e asset.',
+      fr: 'Un moteur de deck partagé le met en scène ; chaque client est une skin de tokens, textes et assets.',
+    },
+  },
+  {
+    num: '03',
+    name: { en: 'Craft', it: 'Mestiere', fr: 'Métier' },
+    desc: {
+      en: 'A human decides story, taste and claims; the AI pair accelerates build, audit and translation.',
+      it: 'Una persona decide storia, gusto e claim; l’AI in coppia accelera build, audit e traduzioni.',
+      fr: 'Un humain décide du récit, du goût et des claims ; l’IA en binôme accélère build, audit et traduction.',
+    },
+  },
+  {
+    num: '04',
+    name: { en: 'Gates', it: 'Controlli', fr: 'Contrôles' },
+    desc: {
+      en: 'Automated layout audit at three projection sizes, accessibility AA, screenshot review before anything ships.',
+      it: 'Audit di layout automatico su tre formati di proiezione, accessibilità AA, revisione degli screenshot prima di ogni rilascio.',
+      fr: 'Audit de layout automatisé à trois formats de projection, accessibilité AA, revue des captures avant toute mise en ligne.',
+    },
+  },
+];
+
+const evidence = [
+  {
+    claim: {
+      en: 'Only public Adobe capabilities and demo material',
+      it: 'Solo capability Adobe pubbliche e materiale demo',
+      fr: 'Capacités Adobe publiques et matériel démo, rien d’autre',
+    },
+    proof: {
+      en: 'No reserved client IP anywhere in the repo.',
+      it: 'Nessuna proprietà intellettuale riservata dei clienti nel repo.',
+      fr: 'Aucune PI client réservée nulle part dans le repo.',
+    },
+  },
+  {
+    claim: {
+      en: 'Licensed stock imagery, tracked provenance',
+      it: 'Immagini stock su licenza, provenienza tracciata',
+      fr: 'Photos de stock sous licence, provenance tracée',
+    },
+    proof: {
+      en: 'Every asset ships with author, source and license in provenance.json.',
+      it: 'Ogni asset arriva con autore, fonte e licenza in provenance.json.',
+      fr: 'Chaque asset embarque auteur, source et licence dans provenance.json.',
+    },
+  },
+  {
+    claim: {
+      en: 'No secrets in the codebase',
+      it: 'Nessun segreto nel codice',
+      fr: 'Aucun secret dans le code',
+    },
+    proof: {
+      en: 'Credentials live in CI secrets and gitignored env files.',
+      it: 'Le credenziali vivono nei secret di CI e in file env esclusi da git.',
+      fr: 'Les identifiants restent dans les secrets CI et des fichiers env ignorés par git.',
+    },
+  },
+  {
+    claim: {
+      en: 'WCAG 2.2 AA and a 12-check layout audit',
+      it: 'WCAG 2.2 AA e audit di layout a 12 controlli',
+      fr: 'WCAG 2.2 AA et audit de layout en 12 contrôles',
+    },
+    proof: {
+      en: 'The deterministic audit runs on every deck at three projection sizes.',
+      it: 'L’audit deterministico gira su ogni deck a tre formati di proiezione.',
+      fr: 'L’audit déterministe tourne sur chaque deck à trois formats de projection.',
+    },
+  },
+  {
+    claim: {
+      en: 'Built with Claude Enterprise',
+      it: 'Costruito con Claude Enterprise',
+      fr: 'Construit avec Claude Enterprise',
+    },
+    proof: {
+      en: 'An approved enterprise AI assistant, used within its approved data classes.',
+      it: 'Un assistente AI enterprise approvato, usato entro le classi di dati consentite.',
+      fr: 'Un assistant IA d’entreprise approuvé, utilisé dans ses classes de données autorisées.',
+    },
+  },
+  {
+    claim: {
+      en: 'The repository is public',
+      it: 'Il repository è pubblico',
+      fr: 'Le dépôt est public',
+    },
+    proof: {
+      en: 'Anyone at Adobe can audit any of this.',
+      it: 'Chiunque in Adobe può verificare ogni punto.',
+      fr: 'N’importe qui chez Adobe peut tout vérifier.',
+    },
+  },
+];
+
+const kickerStyle = 'font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600; font-family: var(--font-body);';
+---
+<BaseLayout
+  title="The method"
+  description="How the Experience Atelier was built: one Adobian paired with AI, a shared engine, human judgment and automated quality gates — with the evidence for every claim."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AtelierNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/capability')}
+    prevHref={href(base, '/')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-loom')}
+        imageClass="opacity-20"
+        scrim="bg-[var(--surface-primary)]/85"
+      />
+      <T
+        as="p"
+        en="How it was built"
+        it="Come è stato costruito"
+        fr="Comment il a été construit"
+        class="text-center text-[var(--accent-primary)] mb-6"
+        style={kickerStyle}
+        data-reveal
+      />
+      <T
+        as="h1"
+        en="Built in the open."
+        it="Costruito alla luce del sole."
+        fr="Construit au grand jour."
+        class="slide-title text-center text-[var(--ink-primary)] mb-8"
+        style="font-size: clamp(2.8rem, 5.2vw, 5rem); font-weight: 600;"
+        data-reveal
+        data-reveal-delay="0.08"
+      />
+      <T
+        as="p"
+        en="One Adobian and an AI pair, on public Adobe capabilities only. Every claim on the next slides carries its proof."
+        it="Un Adobiano in coppia con un’AI, usando solo capability Adobe pubbliche. Ogni affermazione nelle prossime slide porta con sé la sua prova."
+        fr="Un Adobien en binôme avec une IA, sur les seules capacités Adobe publiques. Chaque affirmation des slides qui suivent apporte sa preuve."
+        class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55;"
+        data-reveal
+        data-reveal-delay="0.16"
+      />
+      <div class="flex items-center justify-center gap-x-12 mt-12" data-reveal data-reveal-delay="0.24">
+        {[
+          { n: '5', en: 'client experiences', it: 'esperienze cliente', fr: 'expériences clients' },
+          { n: '3', en: 'languages, one deck', it: 'lingue, un solo deck', fr: 'langues, un seul deck' },
+          { n: '12', en: 'checks per slide', it: 'controlli per slide', fr: 'contrôles par slide' },
+        ].map((stat) => (
+          <div class="text-center">
+            <p class="text-[var(--accent-primary)] font-[family-name:var(--font-display)] font-semibold tabular-nums" style="font-size: clamp(1.5rem, 1.9vw, 1.9rem); line-height: 1.1;">{stat.n}</p>
+            <T
+              as="p"
+              en={stat.en}
+              it={stat.it}
+              fr={stat.fr}
+              class="text-[var(--color-sabbia-300)] uppercase mt-1"
+              style="font-size: 0.78rem; letter-spacing: 0.12em; font-weight: 600;"
+            />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: Genesis — the real timeline ───────────────────── -->
+    <Slide id="slide-genesis" bg="secondary" align="left">
+      <div class="w-full max-w-6xl mx-auto">
+        <T
+          as="p"
+          en="The genesis"
+          it="La genesi"
+          fr="La genèse"
+          class="text-[var(--accent-primary)] mb-2"
+          style={kickerStyle}
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="From one evening demo to five client experiences"
+          it="Da una demo serale a cinque esperienze cliente"
+          fr="D’une démo du soir à cinq expériences clients"
+          class="text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="w-full" data-reveal data-reveal-delay="0.16">
+          {timeline.map((row, i) => (
+            <div
+              class:list={[
+                'grid grid-cols-[8.5rem_minmax(0,17rem)_minmax(0,1fr)] items-baseline gap-x-6 py-1.5',
+                i > 0 && 'border-t border-[var(--line-subtle)]',
+              ]}
+            >
+              <p class="flex items-baseline gap-2.5 min-w-0">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] flex-shrink-0 translate-y-[-1px]" aria-hidden="true"></span>
+                <T
+                  en={row.date.en}
+                  it={row.date.it}
+                  fr={row.date.fr}
+                  class="text-[var(--accent-primary)] font-semibold tabular-nums whitespace-nowrap"
+                  style="font-size: 0.9rem; letter-spacing: 0.04em;"
+                />
+              </p>
+              <p class="min-w-0 text-[var(--ink-primary)] font-semibold font-[family-name:var(--font-display)]" style="font-size: 1.1rem; line-height: 1.3;">
+                <span class="whitespace-nowrap">{row.name} ·</span> {row.client}
+              </p>
+              <T
+                as="p"
+                en={row.fact.en}
+                it={row.fact.it}
+                fr={row.fact.fr}
+                class="min-w-0 text-[var(--color-sabbia-200)]"
+                style="font-size: 0.95rem; line-height: 1.5;"
+              />
+            </div>
+          ))}
+        </div>
+
+        <T
+          as="p"
+          en="Weeks per experience. Not quarters."
+          it="Settimane per esperienza. Non trimestri."
+          fr="Des semaines par expérience. Pas des trimestres."
+          class="mt-3 text-[var(--ink-primary)] font-[family-name:var(--font-display)] border-l-2 border-[var(--accent-primary)] pl-4"
+          style="font-size: clamp(1.15rem, 1.5vw, 1.4rem); font-weight: 500; line-height: 1.3;"
+          data-reveal
+          data-reveal-delay="0.28"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: The working method ────────────────────────────── -->
+    <Slide id="slide-method" bg="primary" align="left">
+      <div class="w-full max-w-6xl mx-auto">
+        <T
+          as="p"
+          en="The practice"
+          it="La pratica"
+          fr="La pratique"
+          class="text-[var(--accent-primary)] mb-2"
+          style={kickerStyle}
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="The working method"
+          it="Il metodo di lavoro"
+          fr="La méthode de travail"
+          class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="w-full grid md:grid-cols-2 gap-3" data-reveal data-reveal-delay="0.16">
+          {steps.map((s) => (
+            <div class="min-w-0 p-5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
+              <p class="flex items-baseline gap-3 mb-1.5">
+                <span class="text-[var(--accent-primary)] font-[family-name:var(--font-display)] font-semibold tabular-nums" style="font-size: 1.3rem; line-height: 1;">{s.num}</span>
+                <T
+                  en={s.name.en}
+                  it={s.name.it}
+                  fr={s.name.fr}
+                  class="text-[var(--ink-primary)] font-semibold font-[family-name:var(--font-display)]"
+                  style="font-size: 1.15rem; line-height: 1.2;"
+                />
+              </p>
+              <T
+                as="p"
+                en={s.desc.en}
+                it={s.desc.it}
+                fr={s.desc.fr}
+                class="text-[var(--color-sabbia-200)]"
+                style="font-size: 0.95rem; line-height: 1.5;"
+              />
+            </div>
+          ))}
+        </div>
+
+        <T
+          as="p"
+          en="The human owns the judgment. The AI compresses the time."
+          it="Il giudizio resta alla persona. L’AI comprime il tempo."
+          fr="Le jugement reste humain. L’IA comprime le temps."
+          class="mt-4 text-[var(--ink-primary)] font-[family-name:var(--font-display)] border-l-2 border-[var(--accent-primary)] pl-4"
+          style="font-size: clamp(1.15rem, 1.5vw, 1.4rem); font-weight: 500; line-height: 1.3;"
+          data-reveal
+          data-reveal-delay="0.28"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Compliant by construction ─────────────────────── -->
+    <Slide id="slide-compliance" bg="secondary" align="left">
+      <div class="w-full max-w-5xl mx-auto">
+        <T
+          as="p"
+          en="Every claim, its evidence"
+          it="Ogni affermazione, la sua prova"
+          fr="Chaque affirmation, sa preuve"
+          class="text-[var(--accent-primary)] mb-2"
+          style={kickerStyle}
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="Compliant by construction"
+          it="Conforme per costruzione"
+          fr="Conforme par construction"
+          class="text-[var(--ink-primary)] mb-2 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="w-full" data-reveal data-reveal-delay="0.16">
+          {evidence.map((row, i) => (
+            <div
+              class:list={[
+                'grid grid-cols-[minmax(0,21rem)_minmax(0,1fr)] items-baseline gap-x-8 py-1.5',
+                i > 0 && 'border-t border-[var(--line-subtle)]',
+              ]}
+            >
+              <T
+                as="p"
+                en={row.claim.en}
+                it={row.claim.it}
+                fr={row.claim.fr}
+                class="min-w-0 text-[var(--ink-primary)] font-semibold"
+                style="font-size: 1rem; line-height: 1.4;"
+              />
+              <T
+                as="p"
+                en={row.proof.en}
+                it={row.proof.it}
+                fr={row.proof.fr}
+                class="min-w-0 text-[var(--color-sabbia-200)]"
+                style="font-size: 0.95rem; line-height: 1.5;"
+              />
+            </div>
+          ))}
+        </div>
+
+        <T
+          as="p"
+          en="Evidence for the repo-verifiable claims lives in the repository: provenance.json per app, CI configuration, audit scripts."
+          it="Le prove delle affermazioni verificabili nel repository sono lì: provenance.json per ogni app, configurazione CI, script di audit."
+          fr="Les preuves des affirmations vérifiables dans le dépôt y résident : provenance.json par app, configuration CI, scripts d’audit."
+          class="mt-2 text-[var(--color-sabbia-300)]"
+          style="font-size: 0.8rem; line-height: 1.5; max-width: none;"
+          data-reveal
+          data-reveal-delay="0.28"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
