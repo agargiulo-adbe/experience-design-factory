@@ -16,7 +16,8 @@ Esperienze (cliente) — **quattro**:
 - **Connessioni Intelligenti — FS Group / Ferrovie** (`apps/trenitalia-connessioni`) · IT · 6 sezioni + Casi d'uso. **Oggetto del lavoro recente** (vedi §15).
 
 App interne (non-cliente):
-- **Factory Hub** (`apps/factory-hub`, **root del deploy** `/experience-design-factory/`) · landing neutra che linka direttamente le 4 esperienze + Showcase + Console; serve anche gli stub di redirect dei vecchi deep-link maxmara root-level. Vedi §15.
+- **Experience Atelier** (`apps/atelier`, `/atelier/`) · **primo deck trilingue EN/IT/FR**; è il **piano di crescita enterprise della Factory stessa** presentato come Exp Design (8 sezioni / 29 slide). Live 2026-07-17. Dettaglio completo in **§21**; estensione i18n core + fix gating in **§22**. Contesto sponsorship interno **implicito** (mai dichiarato nel deck).
+- **Factory Hub** (`apps/factory-hub`, **root del deploy** `/experience-design-factory/`) · landing neutra che linka direttamente le esperienze + Showcase + Console; serve anche gli stub di redirect dei vecchi deep-link maxmara root-level. Vedi §15.
 - **Experience Design Factory — Showcase** (`apps/factory-showcase`, `/showcase/`) · sito **vetrina** bilingue EN/IT. **Non è un deck**: scroll-site. **Ora data-driven** da `src/data/experiences.ts` (conteggi/KPI/card si aggiornano da soli). Dettaglio in §13.
 - **Super Admin Console** (`apps/console`, `/console/`) — vedi §7. Le 4 esperienze sono registrate (Trenitalia inclusa).
 
@@ -26,7 +27,7 @@ Solo capability Adobe pubbliche / materiale demo — **niente IP cliente riserva
 
 **Regola vincolante trasversale:** ogni slide-deck rispetta il **Type & legibility contract** in `CLAUDE.md` (type generoso, ink leggibile, composizione bilanciata, frecce avanti+indietro tra sezioni) — l'`audit:deck` NON garantisce la leggibilità, va verificata leggendo uno screenshot 1920. Vedi §8.
 
-Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **4 app** esperienza). `audit:deck` a **0 fallimenti** su tutti e 4 i deck. Deploy automatico su push a `main`.
+Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **5 app** esperienza incl. Atelier). `audit:deck` a **0 fallimenti hard** su tutti i deck (Atelier: solo soft `i` su slide volutamente ariose, whitelisted — §21). Deploy automatico su push a `main`.
 
 ---
 ## 2. Architettura
@@ -170,7 +171,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 ---
 ## 10. Pending / TODO / rischi noti
 
-1. **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` (calcolatore Ferrari) + `0005_hub_registry.sql` (maxmara subpath + Trenitalia registrata). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
+1. **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` (calcolatore Ferrari) + `0005_hub_registry.sql` (maxmara subpath + Trenitalia registrata) + `0006_seed_agos.sql` + `0007_seed_atelier.sql` (Atelier registrata, status `live`). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
 2. **Asset pipeline** — alcune esperienze necessitano un `pnpm --filter <app> assets:build` una-tantum con `PEXELS_API_KEY` + commit. Memoria `asset-pipeline-pending-generation`. **Attenzione ai duplicati di stock**: la foto persona Trenitalia era identica a quella UniCredit → rigenerata con query diversa (lug 2026); controlla i volti tra esperienze.
 3. **deck-audit** — tutti e 4 i deck a **0** (non più baseline soft). NON reintrodurre micro-type per "far tornare i conti": il Type & legibility contract vince sempre.
 4. **Max Mara `docs/AUDIT.md`** — refinement diagnosticati (copy datato 2025→2030, scala tipografica a token, doppio `<h1>`, ecc.) **non applicati**; attendono validazione copy.
@@ -185,6 +186,13 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 
 ---
 ## 11. Change log recente (UniCredit, lug 2026)
+
+### Change log — Experience Atelier (17 lug 2026, dal più recente) → dettaglio in §21–§22
+- `e296cb5` registry Atelier → `live` (seed migration `0007` allineata). URL deployati 200, hub linka atelier.
+- `56a7808` **fix gating SPA propagato a tutte le 6 esperienze**: il runtime di solution-gating ora si ri-applica su `astro:after-swap`, non solo al full load (prima le slide gated riapparivano dopo nav cross-sezione SPA). Vedi §22 + memoria `spa-gating-reapply`.
+- `e4e88ba` Atelier admin wrapper (PAGE_REGISTRY 27 slide, SOLUTIONS `asks`+`quest`); `d5bc6d0` pagine wave-2 (frontiers/plan/asks/closing); `c9fb186` **core `T` inoltra attributi extra (`data-reveal` ecc.)**; `1f9c018` pagine wave-1 (overture/method/capability/multiplication); `abbc71b` asset atmosferici; `13cb5e6` wiring monorepo; `d7854af` scaffold trilingue; `47bce98`+`2bbd988` **estensione i18n core `fr` opzionale** (retrocompatibile). Ricerca comparabili verificata: `79c5908` (`docs/superpowers/research/2026-07-17-atelier-comparables.md`). Spec+piano: `25ab7aa`/`6d3e8f7`/`717a453`.
+
+### Change log — UniCredit (lug 2026, dal più recente)
 
 Dal più recente:
 - `aabd2d1` **Passata copy morbido/credibilità** (§17.6): cifre non verificabili → qualitativo (14M→"milioni", 289M→"milioni di prompt"); **numeri di risultato inventati → direzione ↑/↓** in tutte le sezioni (tenuti i benchmark di banche reali citate, le ricerche esterne linkate, i target pubblici e le meccaniche di scenario); **Next-Best-Action → Next-Best-Experience**; copy obiezione "acquisition vs clienti noti" sulla slide di Marco; fix doppio `""` in Coinvolgi. Build + `audit:deck` 0 hard + screenshot 1920 verificati.
