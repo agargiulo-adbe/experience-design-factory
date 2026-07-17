@@ -7,8 +7,9 @@
  * Trilingual apps must: whitelist 'fr' in their layout anti-flash init AND add
  * html[data-lang="fr"] hide rules for [data-lang-en]/[data-lang-it] in their global.css
  * (core ships no display CSS).
+ * Extra attributes (data-*, aria-*, id) pass through to the wrapper tag.
  */
-interface Props {
+interface Props extends Record<string, any> {
   en: string;
   it: string;
   fr?: string;
@@ -16,7 +17,7 @@ interface Props {
   class?: string;
   style?: string;
 }
-const { en, it, fr, as = 'span', class: className, style } = Astro.props;
+const { en, it, fr, as = 'span', class: className, style, ...rest } = Astro.props;
 const Tag = as as any;
 ---
-<Tag class={className} style={style} data-i18n><span data-lang-en set:html={en} /><span data-lang-it set:html={it} />{fr !== undefined && <span data-lang-fr set:html={fr} />}</Tag>
+<Tag class={className} style={style} data-i18n {...rest}><span data-lang-en set:html={en} /><span data-lang-it set:html={it} />{fr !== undefined && <span data-lang-fr set:html={fr} />}</Tag>
