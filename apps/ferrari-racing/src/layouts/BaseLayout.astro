@@ -278,17 +278,20 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 (function () {
   var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
 
-  // Determine active solution IDs
-  var urlParam = new URLSearchParams(location.search).get('s');
-  var activeIds = null;
-  if (urlParam) {
-    activeIds = urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-  } else {
+  // Determine active solution IDs (re-read after every SPA swap too)
+  function readActiveIds() {
+    var urlParam = new URLSearchParams(location.search).get('s');
+    if (urlParam) {
+      return urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    }
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) activeIds = JSON.parse(stored);
+      if (stored) return JSON.parse(stored);
     } catch (_) {}
+    return null;
   }
+
+  var activeIds = readActiveIds();
 
   // Ordered section flow + per-section gate (mirrors pageSolutions).
   // A section is enabled when its gate is null OR any gate solution is active.
@@ -305,6 +308,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   ];
   function sectionEnabled(entry) {
     if (!entry || !entry.gate) return true;
+    if (!activeIds) return true;
     return entry.gate.some(function(id) { return activeIds.indexOf(id) !== -1; });
   }
   function currentSlug() {
@@ -335,8 +339,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return null; // nothing enabled backward → home
   }
 
-  // If restrictions set, apply them before deck.ts runs
-  if (activeIds) {
+  // If restrictions set, apply them before deck.ts runs (first load) and re-apply
+  // after every SPA swap — the swap replaces the body without re-running this script.
+  function applyGating() {
+    if (!activeIds) return;
+
     // Hide solution-gated slides/sections + inline product chips
     var gated = document.querySelectorAll('[data-solution]');
     gated.forEach(function(el) {
@@ -384,16 +391,34 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
     }
 
-    // If this page itself is gated → jump to the next enabled section
-    // (forward), not home — so a shared/bookmarked link lands somewhere useful.
-    if (pageSolutions && pageSolutions.length > 0) {
-      var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
-      if (!pageActive) {
-        var basePath = location.pathname.replace(/[^/]+\/?$/, '');
-        var target = nextEnabledAfter(currentSlug());
-        location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
-      }
+  }
+
+  applyGating();
+
+  // If this page itself is gated → jump to the next enabled section
+  // (forward), not home — so a shared/bookmarked link lands somewhere useful.
+  // Initial-load only: SPA swaps re-run applyGating(), never this redirect.
+  if (activeIds && pageSolutions && pageSolutions.length > 0) {
+    var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
+    if (!pageActive) {
+      var basePath = location.pathname.replace(/[^/]+\/?$/, '');
+      var target = nextEnabledAfter(currentSlug());
+      location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
     }
+  }
+
+  // SPA navigation (ClientRouter) swaps in a fresh body but does NOT re-execute this
+  // inline script, so gated slides would reappear after cross-section arrow nav.
+  // Re-apply on astro:after-swap: it fires before the deck's boot listener (this inline
+  // script registers during parse, DeckContainer's module script registers after parse),
+  // so the deck counts only visible slides. Guarded to avoid duplicate listeners when a
+  // page-specific variant of this script (different pageSolutions) executes after a swap.
+  if (!window.__edfSolGateBound) {
+    window.__edfSolGateBound = true;
+    document.addEventListener('astro:after-swap', function () {
+      activeIds = readActiveIds();
+      applyGating();
+    });
   }
 
   function applyIncoming(activeIds) {

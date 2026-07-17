@@ -225,16 +225,19 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 (function () {
   var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
 
-  var urlParam = new URLSearchParams(location.search).get('s');
-  var activeIds = null;
-  if (urlParam) {
-    activeIds = urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-  } else {
+  function readActiveIds() {
+    var urlParam = new URLSearchParams(location.search).get('s');
+    if (urlParam) {
+      return urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+    }
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) activeIds = JSON.parse(stored);
+      if (stored) return JSON.parse(stored);
     } catch (_) {}
+    return null;
   }
+
+  var activeIds = readActiveIds();
 
   var SECTION_FLOW = [
     { slug: 'scenario',       gate: null },
@@ -273,7 +276,9 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return null;
   }
 
-  if (activeIds) {
+  function applyGating() {
+    if (!activeIds) return;
+
     document.querySelectorAll('[data-solution]').forEach(function(el) {
       var ids = (el.getAttribute('data-solution') || '').split(',').map(function(s) { return s.trim(); });
       var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
@@ -309,14 +314,31 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       }
     }
 
-    if (pageSolutions && pageSolutions.length > 0) {
-      var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
-      if (!pageActive) {
-        var basePath = location.pathname.replace(/[^/]+\/?$/, '');
-        var target = nextEnabledAfter(currentSlug());
-        location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
-      }
+  }
+
+  applyGating();
+
+  if (activeIds && pageSolutions && pageSolutions.length > 0) {
+    var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
+    if (!pageActive) {
+      var basePath = location.pathname.replace(/[^/]+\/?$/, '');
+      var target = nextEnabledAfter(currentSlug());
+      location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
     }
+  }
+
+  // SPA navigation (ClientRouter) swaps in a fresh body but does NOT re-execute this
+  // inline script, so gated slides would reappear after cross-section arrow nav.
+  // Re-apply on astro:after-swap: it fires before the deck's boot listener (this inline
+  // script registers during parse, DeckContainer's module script registers after parse),
+  // so the deck counts only visible slides. Guarded to avoid duplicate listeners when a
+  // page-specific variant of this script (different pageSolutions) executes after a swap.
+  if (!window.__edfSolGateBound) {
+    window.__edfSolGateBound = true;
+    document.addEventListener('astro:after-swap', function () {
+      activeIds = readActiveIds();
+      applyGating();
+    });
   }
 
   function applyIncoming(activeIds) {
