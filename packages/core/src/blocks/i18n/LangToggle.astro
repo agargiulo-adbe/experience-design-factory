@@ -1,13 +1,19 @@
 ---
 /**
- * LangToggle — EN/IT switch. Sets <html data-lang> + persists to localStorage.
+ * LangToggle — language switch. Sets <html data-lang> + persists to localStorage.
  * The anti-flash init lives in the layout <head>; this only wires the buttons.
+ * `langs` defaults to ['en','it']; pass ['en','it','fr'] for trilingual experiences.
  */
+interface Props { langs?: string[] }
+const { langs = ['en', 'it'] } = Astro.props;
 ---
 <div class="lang-toggle" role="group" aria-label="Language">
-  <button type="button" data-lang-btn="en" class="lang-btn">EN</button>
-  <span class="lang-sep" aria-hidden="true">/</span>
-  <button type="button" data-lang-btn="it" class="lang-btn">IT</button>
+  {langs.map((l, i) => (
+    <>
+      {i > 0 && <span class="lang-sep" aria-hidden="true">/</span>}
+      <button type="button" data-lang-btn={l} class="lang-btn">{l.toUpperCase()}</button>
+    </>
+  ))}
 </div>
 
 <style>
@@ -21,6 +27,7 @@
   .lang-sep { color: var(--ink-tertiary); font-size: 0.7rem; opacity: 0.5; }
   html[data-lang="en"] [data-lang-btn="en"],
   html[data-lang="it"] [data-lang-btn="it"] { color: var(--accent-primary); }
+  html[data-lang="fr"] [data-lang-btn="fr"] { color: var(--accent-primary); }
 </style>
 
 <script is:inline>
