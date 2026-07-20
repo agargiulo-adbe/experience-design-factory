@@ -169,20 +169,32 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 - SQL remoto: `supabase db query --linked` (serve `supabase link` + login account agargiulo-adbe).
 
 ---
-## 10. Pending / TODO / rischi noti
+## 10. Pending / TODO / rischi noti (backlog prioritario)
 
-1. **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` (calcolatore Ferrari) + `0005_hub_registry.sql` (maxmara subpath + Trenitalia registrata) + `0006_seed_agos.sql` + `0007_seed_atelier.sql` (Atelier registrata, status `live`). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
-2. **Asset pipeline** — alcune esperienze necessitano un `pnpm --filter <app> assets:build` una-tantum con `PEXELS_API_KEY` + commit. Memoria `asset-pipeline-pending-generation`. **Attenzione ai duplicati di stock**: la foto persona Trenitalia era identica a quella UniCredit → rigenerata con query diversa (lug 2026); controlla i volti tra esperienze.
-3. **deck-audit** — tutti e 4 i deck a **0** (non più baseline soft). NON reintrodurre micro-type per "far tornare i conti": il Type & legibility contract vince sempre.
-4. **Max Mara `docs/AUDIT.md`** — refinement diagnosticati (copy datato 2025→2030, scala tipografica a token, doppio `<h1>`, ecc.) **non applicati**; attendono validazione copy.
-5. **Ferrari** — CJAMockup / ExpressMockup pending (memoria `product-mockup-engine`). Prima di toccare i mockup leggi `mockup-navigation-patterns`.
-6. **Cosmetico** — la `description` meta di `coworker.astro` cita ancora "CX Enterprise Coworker" (non visibile in slide; ok, ma allineabile a "Coworker").
-7. **Non rilavorate col nuovo standard**: le altre esperienze non hanno il pass credibilità/fonti fatto su UniCredit.
-8. **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (per download+copia on-site). La **source of truth è `skills/experience-brief/`**; se la modifichi, ri-copia i file e rigenera lo `.zip` (vedi §13.4).
-9. **Showcase — a11y/Lighthouse pass** (consigliato, non fatto): verificare contrasto dei testi grigi su fondo chiaro, focus order, `prefers-reduced-motion` — per certificare lo standard che la pagina *dichiara*.
-10. **Showcase — Firefly "in valutazione"**: la card roadmap Firefly è marcata *Under evaluation*, non un impegno. Non promettere date.
-11. **Ferrari /scoping** — v2 (`a3fc86a`) poi **v3 standalone-only/costo-per-istanza** (`ff03a71`, §20) committati e pushati; memoria `ferrari-scoping-calculator` aggiornata a v3. `docs/Ferrovie/` (materiale FS riservato) in `.gitignore` (repo pubblico) — coerente con `docs/Ferrari/` e `docs/Agos/`.
-12. **Accesso da VPN (operativo, NON un bug del codice)** — le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla **rete ufficio Adobe** ma **bloccate su VPN**, quasi certamente per categoria proxy/**Zscaler** su `*.github.io`. **Ticket IT aperto (17 lug 2026)** per allowlist dell'URL `agargiulo-adbe.github.io/experience-design-factory/` — **in attesa di riscontro**. Workaround per le demo = **screen-share**. Piano B (opt-in, non fatto) = redeploy gratuito su **Vercel** (`*.vercel.app`, spesso non filtrato come github.io; richiede rework dei `base` path + env Supabase). Se una nuova sessione trova gli URL "non raggiungibili" da VPN, è questo, non un difetto del build.
+> Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
+> fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato 2026-07-20.
+
+**P0 — nessuna voce aperta.** (build verde, `audit:deck` 0 hard su tutti i deck, deploy ok.)
+
+**P1 — prossimo**
+- **[P1] Accesso da VPN** — area: deploy/operativo · le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla rete ufficio Adobe ma **bloccate su VPN** (categoria proxy/**Zscaler** su `*.github.io`). **Ticket IT aperto (17 lug 2026), in attesa di riscontro** → follow-up sul ticket. Workaround demo = screen-share. Piano B (opt-in, non fatto) = redeploy su **Vercel** (`*.vercel.app`; richiede rework `base` path + env Supabase). NON è un bug del build.
+- **[P1] Showcase — a11y/Lighthouse pass** — area: `apps/factory-showcase` · verificare contrasto testi grigi su fondo chiaro, focus order, `prefers-reduced-motion`, per **certificare lo standard che la pagina dichiara** (oggi non certificato).
+
+**P2 — dopo / nice-to-have**
+- **[P2] Max Mara `docs/AUDIT.md`** — refinement diagnosticati (copy datato 2025→2030, scala tipografica a token, doppio `<h1>`, ecc.) **non applicati**; bloccato su validazione copy.
+- **[P2] Ferrari — CJAMockup / ExpressMockup** — mancano (memoria `product-mockup-engine`); prima di toccare i mockup leggi `mockup-navigation-patterns`.
+- **[P2] Pass credibilità/fonti sulle altre esperienze** — solo UniCredit ha il pass credibilità/fonti; estendere a maxmara/ferrari/trenitalia/agos/atelier dove serve.
+- **[P2] Asset — dedup volti tra esperienze** — al prossimo `assets:build` controllare che le foto persona non si ripetano tra app (la foto Trenitalia era identica a UniCredit → rigenerata, lug 2026). Memoria `asset-pipeline-pending-generation`.
+- **[P2] Cosmetico** — la `description` meta di `coworker.astro` cita ancora "CX Enterprise Coworker" (non visibile in slide; allineabile a "Coworker").
+- **[P2] Boardroom Quest (workstream futuro)** — nel deck Atelier è "in design" (teaser); il gioco vero (PixiJS+inkjs, multiplayer) non è costruito ed è fuori scope del deck. Gate brand/legal Adobe prima di qualsiasi workshop ufficiale. Vedi §21.5.
+
+**Note / rischi non azionabili (contesto, non todo)**
+- **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` + `0005_hub_registry.sql` + `0006_seed_agos.sql` + `0007_seed_atelier.sql` (Atelier `live`). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
+- **deck-audit** — tutti i deck a **0 hard**. NON reintrodurre micro-type per "far tornare i conti": il Type & legibility contract vince sempre.
+- **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (source of truth); se la modifichi, ri-copia i file e rigenera lo `.zip` (§13.4).
+- **Showcase — Firefly "in valutazione"**: la card roadmap Firefly è *Under evaluation*, non un impegno. Non promettere date.
+- **Ferrari /scoping** — v3 standalone-only/costo-per-istanza (`ff03a71`, §20) committato; memoria `ferrari-scoping-calculator` a v3. `docs/Ferrovie/`·`docs/Ferrari/`·`docs/Agos/` in `.gitignore` (repo pubblico).
 
 ---
 ## 11. Change log recente (UniCredit, lug 2026)
