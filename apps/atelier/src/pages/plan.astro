@@ -145,6 +145,72 @@ const milestones = [
   },
 ];
 
+// ── One-view roadmap (Gantt-style): five workstreams (rows) across the three
+// milestones (columns). Each active cell carries a short scope; an empty cell
+// means the workstream has not started yet (Ecosystem opens at M2). The detail
+// lives on the M1–M3 slides that follow; this slide is the synthesis.
+const roadmapCols = [
+  { m: 'M1', title: { en: 'Foundations', it: 'Fondamenta', fr: 'Fondations' },
+    date: { en: 'mid-Sep 2026', it: 'metà set 2026', fr: 'mi-sept. 2026' } },
+  { m: 'M2', title: { en: 'Scale & open', it: 'Scala e apertura', fr: 'Échelle & ouverture' },
+    date: { en: 'mid-Jan 2027', it: 'metà gen 2027', fr: 'mi-janv. 2027' } },
+  { m: 'M3', title: { en: 'Enterprise & lighthouse', it: 'Enterprise e faro', fr: 'Enterprise & phare' },
+    date: { en: 'mid-Apr 2027', it: 'metà apr 2027', fr: 'mi-avr. 2027' } },
+];
+
+const roadmapRows = [
+  {
+    lane: { en: 'Platform & trust', it: 'Piattaforma e fiducia', fr: 'Plateforme & confiance' },
+    cells: [
+      { en: 'Multi-user + CI gates', it: 'Multi-utente + gate CI', fr: 'Multi-utilisateur + CI' },
+      { en: 'Hardened external access', it: 'Accessi esterni rafforzati', fr: 'Accès externes durcis' },
+      { en: 'SSO, audit, governance', it: 'SSO, audit, governance', fr: 'SSO, audit, gouvernance' },
+    ],
+  },
+  {
+    lane: { en: 'Enablement', it: 'Abilitazione', fr: 'Montée en compétence' },
+    cells: [
+      { en: 'Pilot: 5–10 BDR/AE', it: 'Pilota: 5–10 BDR/AE', fr: 'Pilote : 5–10 BDR/AE' },
+      { en: 'Gallery + wizard · 25–40', it: 'Galleria + wizard · 25–40', fr: 'Galerie + assistant · 25–40' },
+      { en: '100+ users · EMEA', it: '100+ utenti · EMEA', fr: '100+ utilisateurs · EMEA' },
+    ],
+  },
+  {
+    lane: { en: 'Ecosystem', it: 'Ecosistema', fr: 'Écosystème' },
+    cells: [
+      null,
+      { en: '2–3 partners co-build', it: '2–3 partner co-costruiscono', fr: '2–3 partenaires co-construisent' },
+      { en: 'Partner-sourced pipeline', it: 'Pipeline generata dai partner', fr: 'Pipeline via partenaires' },
+    ],
+  },
+  {
+    lane: { en: 'Boardroom Quest', it: 'Boardroom Quest', fr: 'Boardroom Quest' },
+    cells: [
+      { en: 'Walking skeleton', it: 'Walking skeleton', fr: 'Squelette fonctionnel' },
+      { en: 'Beta + first workshop', it: 'Beta + primo workshop', fr: 'Bêta + premier atelier' },
+      { en: 'Multiplayer · 2nd pack', it: 'Multiplayer · 2° pack', fr: 'Multijoueur · 2e pack' },
+    ],
+  },
+  {
+    lane: { en: 'Adobe Context Layer', it: 'Adobe Context Layer', fr: 'Adobe Context Layer' },
+    cells: [
+      { en: 'v1, SC-validated', it: 'v1, validato dai SC', fr: 'v1, validé par les SC' },
+      { en: 'Kept fresh', it: 'Tenuto aggiornato', fr: 'Tenu à jour' },
+      { en: 'Governed', it: 'Sotto governance', fr: 'Sous gouvernance' },
+    ],
+  },
+];
+
+// Key moments pinned under a milestone column (0-indexed).
+const roadmapMoments = [
+  { col: 0, sym: '⊘',
+    en: 'Brand/legal gate before the first Quest workshop',
+    it: 'Gate brand/legal prima del primo workshop Quest',
+    fr: 'Validation marque/juridique avant le premier atelier Quest' },
+  { col: 1, sym: '◆', en: 'Hackathon day', it: 'Giornata hackathon', fr: 'Journée hackathon' },
+  { col: 2, sym: '◆', en: 'Adobe Summit 2027', it: 'Adobe Summit 2027', fr: 'Adobe Summit 2027' },
+];
+
 const kpiFamilies = [
   {
     name: { en: 'GTM velocity', it: 'Velocità GTM', fr: 'Vélocité GTM' },
@@ -265,7 +331,91 @@ const kpiFamilies = [
       </div>
     </Slide>
 
-    <!-- ── SLIDES 1–3: Milestones ─────────────────────────────────── -->
+    <!-- ── SLIDE 1: One-view roadmap (Gantt-style synthesis) ──────── -->
+    <Slide id="slide-roadmap" bg="secondary" align="left">
+      <div class="w-full max-w-6xl mx-auto">
+        <T
+          as="p"
+          en="The roadmap"
+          it="La roadmap"
+          fr="La feuille de route"
+          class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="Five workstreams, three milestones"
+          it="Cinque workstream, tre milestone"
+          fr="Cinq chantiers, trois jalons"
+          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-4"
+          style="font-size: clamp(1.6rem, 2.4vw, 2.25rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <!-- Gantt grid: label column + three milestone columns -->
+        <div class="atl-gantt w-full" data-reveal data-reveal-delay="0.16">
+          <!-- Header row -->
+          <div class="atl-gantt-row atl-gantt-head">
+            <div aria-hidden="true"></div>
+            {roadmapCols.map((c) => (
+              <div class="atl-gantt-h">
+                <p class="atl-gantt-h-top">
+                  <span class="atl-gantt-m">{c.m}</span>
+                  <T en={c.title.en} it={c.title.it} fr={c.title.fr} class="atl-gantt-h-title" />
+                </p>
+                <T as="p" en={c.date.en} it={c.date.it} fr={c.date.fr} class="atl-gantt-date" />
+              </div>
+            ))}
+          </div>
+
+          <!-- Workstream rows -->
+          {roadmapRows.map((row) => (
+            <div class="atl-gantt-row">
+              <T en={row.lane.en} it={row.lane.it} fr={row.lane.fr} class="atl-gantt-lane" />
+              {row.cells.map((cell) => (
+                cell ? (
+                  <div class="atl-gantt-cell">
+                    <T en={cell.en} it={cell.it} fr={cell.fr} class="atl-gantt-cell-t" />
+                  </div>
+                ) : (
+                  <div class="atl-gantt-empty" aria-hidden="true"></div>
+                )
+              ))}
+            </div>
+          ))}
+
+          <!-- Key moments, aligned under their milestone -->
+          <div class="atl-gantt-row atl-gantt-moments">
+            <T
+              en="Key moments"
+              it="Momenti chiave"
+              fr="Temps forts"
+              class="atl-gantt-moments-label"
+            />
+            {roadmapMoments.map((mm) => (
+              <p class="atl-gantt-moment">
+                <span class="atl-gantt-sym" aria-hidden="true">{mm.sym}</span>
+                <T en={mm.en} it={mm.it} fr={mm.fr} class="atl-gantt-moment-t" />
+              </p>
+            ))}
+          </div>
+        </div>
+
+        <T
+          as="p"
+          en="One view of the nine months. Each milestone is detailed on the next three slides."
+          it="I nove mesi in un colpo d'occhio. Ogni milestone è dettagliata nelle tre slide successive."
+          fr="Les neuf mois d'un coup d'œil. Chaque jalon est détaillé sur les trois slides suivantes."
+          class="mt-4 text-[var(--color-sabbia-300)]"
+          style="font-size: 0.82rem; line-height: 1.5; max-width: none;"
+          data-reveal
+          data-reveal-delay="0.24"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDES 2–4: Milestones ─────────────────────────────────── -->
     {milestones.map((m) => (
       <Slide id={m.id} bg={m.bg} align="left">
         <div class="w-full max-w-6xl mx-auto">
@@ -339,7 +489,7 @@ const kpiFamilies = [
       </Slide>
     ))}
 
-    <!-- ── SLIDE 4: KPI framework ─────────────────────────────────── -->
+    <!-- ── SLIDE 5: KPI scorecard ─────────────────────────────────── -->
     <Slide id="slide-kpi" bg="primary" align="left">
       <div class="w-full max-w-6xl mx-auto">
         <T
@@ -361,32 +511,40 @@ const kpiFamilies = [
           data-reveal-delay="0.08"
         />
 
-        <div class="w-full" data-reveal data-reveal-delay="0.16">
-          {kpiFamilies.map((f, i) => (
-            <div
-              class:list={[
-                'grid md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] items-baseline gap-x-8 py-2.5',
-                i > 0 && 'border-t border-[var(--line-subtle)]',
-              ]}
-            >
-              <T
-                as="p"
-                en={f.name.en}
-                it={f.name.it}
-                fr={f.name.fr}
-                class="min-w-0 text-[var(--ink-primary)] font-semibold font-[family-name:var(--font-display)]"
-                style="font-size: 1.1rem; line-height: 1.3;"
-              />
-              <T
-                as="p"
-                en={f.metrics.en}
-                it={f.metrics.it}
-                fr={f.metrics.fr}
-                class="min-w-0 text-[var(--color-sabbia-200)]"
-                style="font-size: 0.96rem; line-height: 1.55; max-width: none;"
-              />
-            </div>
-          ))}
+        <div class="grid md:grid-cols-2 gap-3" data-reveal data-reveal-delay="0.16">
+          {kpiFamilies.map((f, i) => {
+            const items = {
+              en: f.metrics.en.split(' · '),
+              it: f.metrics.it.split(' · '),
+              fr: f.metrics.fr.split(' · '),
+            };
+            return (
+              <div class="min-w-0 rounded-sm border border-[var(--line-subtle)] bg-[var(--surface-secondary)] px-5 py-3 flex flex-col">
+                <div class="flex items-baseline gap-3 mb-2.5">
+                  <span
+                    class="font-[family-name:var(--font-display)] font-semibold text-[var(--accent-primary)] tabular-nums"
+                    style="font-size: 1rem; line-height: 1;"
+                    aria-hidden="true"
+                  >{String(i + 1).padStart(2, '0')}</span>
+                  <T
+                    as="h3"
+                    en={f.name.en}
+                    it={f.name.it}
+                    fr={f.name.fr}
+                    class="min-w-0 text-[var(--ink-primary)] font-semibold font-[family-name:var(--font-display)]"
+                    style="font-size: 1.05rem; line-height: 1.2;"
+                  />
+                </div>
+                <ul class="flex flex-wrap gap-1.5">
+                  {items.en.map((_, k) => (
+                    <li class="atl-kpi-pill">
+                      <T as="span" en={items.en[k]} it={items.it[k]} fr={items.fr[k]} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </div>
 
         <T
@@ -404,3 +562,85 @@ const kpiFamilies = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- Roadmap (Gantt) + KPI scorecard styles — scoped to their slides. Explicit
+     rgba() so the audit contrast parser measures real values (not oklab). -->
+<style>
+  /* ── One-view roadmap (Gantt-style grid) ───────────────────────── */
+  #slide-roadmap .atl-gantt { display: flex; flex-direction: column; gap: 0.45rem; }
+  #slide-roadmap .atl-gantt-row {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  #slide-roadmap .atl-gantt-head { align-items: end; }
+  #slide-roadmap .atl-gantt-h {
+    border-top: 2px solid rgba(201, 169, 106, 0.5);
+    padding-top: 0.4rem;
+  }
+  #slide-roadmap .atl-gantt-h-top {
+    display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;
+  }
+  #slide-roadmap .atl-gantt-m {
+    color: var(--accent-primary);
+    font-family: var(--font-body);
+    font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em;
+  }
+  #slide-roadmap .atl-gantt-h-title {
+    color: var(--ink-primary); font-family: var(--font-display);
+    font-weight: 600; font-size: 0.95rem; line-height: 1.15;
+  }
+  #slide-roadmap .atl-gantt-date {
+    color: var(--color-sabbia-300); font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.15rem;
+  }
+  #slide-roadmap .atl-gantt-lane {
+    display: flex; align-items: center; min-width: 0;
+    color: var(--ink-primary); font-family: var(--font-display);
+    font-weight: 600; font-size: 0.95rem; line-height: 1.2;
+    padding-right: 0.5rem;
+  }
+  #slide-roadmap .atl-gantt-cell {
+    display: flex; align-items: center; min-width: 0;
+    border: 1px solid var(--line-subtle);
+    border-left: 2px solid var(--accent-primary);
+    background: rgba(201, 169, 106, 0.08);
+    border-radius: 3px;
+    padding: 0.5rem 0.7rem;
+  }
+  #slide-roadmap .atl-gantt-cell-t {
+    color: var(--color-sabbia-200); font-size: 0.85rem; line-height: 1.3;
+    max-width: none;
+  }
+  #slide-roadmap .atl-gantt-empty {
+    border: 1px dashed var(--line-subtle);
+    border-radius: 3px; opacity: 0.5;
+  }
+  #slide-roadmap .atl-gantt-moments { align-items: start; margin-top: 0.2rem; }
+  #slide-roadmap .atl-gantt-moments-label {
+    display: flex; align-items: center;
+    color: var(--color-sabbia-300); font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  #slide-roadmap .atl-gantt-moment {
+    display: flex; align-items: baseline; gap: 0.45rem; min-width: 0;
+  }
+  #slide-roadmap .atl-gantt-sym {
+    color: var(--accent-primary); font-size: 0.9rem; line-height: 1; flex-shrink: 0;
+  }
+  #slide-roadmap .atl-gantt-moment-t {
+    color: var(--color-sabbia-300); font-size: 0.78rem; line-height: 1.4; max-width: none;
+  }
+
+  /* ── KPI scorecard metric pills ────────────────────────────────── */
+  #slide-kpi .atl-kpi-pill {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--line-subtle);
+    border-radius: 999px;
+    padding: 0.22rem 0.7rem;
+    font-size: 0.82rem; line-height: 1.35;
+    color: var(--color-sabbia-200);
+    background: rgba(201, 169, 106, 0.05);
+  }
+</style>
