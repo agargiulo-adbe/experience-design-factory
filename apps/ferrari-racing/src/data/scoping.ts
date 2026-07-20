@@ -510,7 +510,7 @@ export const METRICS: MetricExplainer[] = [
     metric: { en: 'Collaboration Credits', it: 'Collaboration Credits' },
     what: {
       en: 'The license metric for Real-Time CDP Collaboration — a finite pool of credits burned by collaboration activities. It starts from a funnel: your audience × match rate = the matched audience, the base every activation and measurement is counted on. The estimate then rounds up to a recommended credit pack.',
-      it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits consumato dalle attività di collaboration. Parte da un funnel: la tua audience × match rate = l’audience matchata, la base su cui si contano attivazione e measurement. La stima si arrotonda poi a un pacchetto di crediti consigliato.',
+      it: 'La metrica di licenza di Real-Time CDP Collaboration — un pool finito di credits bruciato dalle attività di collaboration. Parte da un funnel: la tua audience × match rate = l’audience matchata, la base su cui si contano attivazione e measurement. La stima si arrotonda poi a un pacchetto di crediti consigliato.',
     },
     consumes: [
       { en: 'Audience management — onboarded IDs × refreshes/yr × 2 credits/1M. Refresh can be continuous (always-on) or only around campaigns.', it: 'Gestione audience — ID onboardati × refresh/anno × 2 credits/1M. Il refresh può essere continuo (always-on) o solo a ridosso delle campagne.' },
