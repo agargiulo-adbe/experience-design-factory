@@ -24,18 +24,18 @@ e `docs/superpowers/plans/2026-07-17-experience-atelier-growth-plan.md`.
 **Rebranding.** "Experience Atelier" è un nome **solo di presentazione** per QUESTO deck.
 Repo, slug delle app, `@edf/core`, URL, chiavi localStorage restano "experience-design-factory".
 
-### 21.1 Struttura — 8 sezioni / 29 slide (slug · slide ids)
+### 21.1 Struttura — 8 sezioni / 30 slide (slug · slide ids)
 1. **Overture** (`/`): `slide-cover` (wall di apertura non testuale) · `slide-wall` (6 card **live**, link ai 5 deck cliente + hub) · `slide-thesis`.
 2. **The method** (`/method/`): cover · `slide-genesis` (timeline con **mesi reali dai first-commit git**: Max Mara 15 giu, UniCredit 1 lug, Ferrari 6 lug, FS 13 lug, Agos 14 lug 2026) · `slide-method` (4 step) · `slide-compliance` (tabella claim→prova).
 3. **The capability** (`/capability/`): cover · `slide-anatomy` (diagramma CSS engine/skin/foundation) · **`slide-toggle-demo`** (demo interattiva self-contained di solution-gating, opera con tastiera SENZA far avanzare il deck; degrada a mock statico senza JS) · `slide-console`.
 4. **The multiplication** (`/multiplication/`): cover · `slide-market` · `slide-precedent` · `slide-model`. **Tutte le cifre dal fact sheet** (§21.3).
 5. **New frontiers** (`/frontiers/`): cover · `slide-live-products` · **`slide-quest`** (spotlight Boardroom Quest, teaser pixel-art in CSS, `data-solution="quest"`) · `slide-quest-plan` (`data-solution="quest"`, con gate brand/legal).
-6. **The plan** (`/plan/`): cover · `slide-m1`/`slide-m2`/`slide-m3` (milestone a mid-set 2026 / mid-gen 2027 / mid-apr 2027 con **Adobe Summit 2027, Las Vegas 22–25 mar** dentro M3) · `slide-kpi` (4 famiglie KPI).
+6. **The plan** (`/plan/`): cover · **`slide-roadmap`** (Gantt di sintesi: 5 workstream × 3 milestone, celle champagne, cella vuota dove l'Ecosistema parte a M2, riga "key moments" con gate brand/legal + Hackathon + Summit) · `slide-m1`/`slide-m2`/`slide-m3` (milestone a mid-set 2026 / mid-gen 2027 / mid-apr 2027 con **Adobe Summit 2027, Las Vegas 22–25 mar** dentro M3) · **`slide-kpi`** (scorecard 2×2: card numerate + metric-pill a wrap, non più 4 righe di testo).
 7. **What it takes** (`/asks/`): **sezione gated** (`pageSolutions={['asks']}`) · cover · `slide-resources` (barre relative, **zero €**) · `slide-moments` · `slide-sponsor`.
 8. **Closing** (`/closing/`): `slide-thesis` · `slide-next` (backdrop `bg-stage`: silhouette ballerina sotto spot come immagine di chiusura; `noText="54,38,30,44"`). `nextHref` fa loop → Overture.
 
 Catena nav: ogni pagina ha `prevHref`+`nextHref`; admin `PAGE_REGISTRY` registra tutte le
-27 slide non-index (index escluso, come per agos).
+28 slide non-index (index escluso, come per agos).
 
 ### 21.2 Gating come controllo d'audience
 Due solution id — **`asks`** (intera sezione sponsorship) e **`quest`** (le 2 slide
@@ -65,6 +65,21 @@ sponsor, closing thesis+next (NON si risolvono restringendo il type — Type & l
 contract). Visual sweep letto a 1920 (EN + FR/IT sulle slide più dense): type generoso,
 composizione bilanciata, nessun overflow, reveal visibile. Nav/gating/i18n verificati via
 Playwright. URL deployati (`/`, `/method/`, `/plan/`, `/asks/`) → 200; hub linka atelier.
+
+### 21.5b Pass de-celebrazione + sintesi grafica (20 lug 2026, commit `c49e7db`)
+Su richiesta owner ("mai autocelebrativo" + "slide chiare/sintetiche, elementi grafici e
+piani in formato Gantt"). **Copy de-celebrato** (EN/IT/FR, meaning-preserving, ±10%): tolti
+lo staccato-brag "Weeks per experience. Not quarters." (genesis), "Enterprise-grade… this
+deck is one of them" (overture cover), "deepest content model in the family" (UniCredit),
+"this demo is real" (toggle), "in Adobe hands" (market), il tricolon "Touching it beats
+both" (live-products) e il tetracolon "prove the craft" (closing). I fatti/URL portano la
+prova; niente più editorializzazioni. **Sintesi grafica del piano:** nuova `slide-roadmap`
+(Gantt 5×3, vedi §21.1) + `slide-kpi` da 4 righe → **scorecard 2×2** con metric-pill. Le
+stat del metodo ("5 / 3 lingue / 12 check") restano: evidenza fattuale, non vanto.
+**Audit** ancora 0 hard; nuovi soft accettati/whitelisted: `slide-roadmap` (`i` a
+1440/1280 = left-weight del layout editoriale + `a` a 1280 = titolo alto perché riempie
+l'89% dell'altezza) e `slide-kpi` (`a` a 1440/1280 = titolo ~27–29%, appena sopra banda).
+Parità altezza EN/IT/FR a 1280 verificata (nessuno scroll; FR +1px vs EN).
 
 ### 21.5 Pending / note
 - **Boardroom Quest** è **"in design"** nel deck (teaser concettuale, nessuna schermata
