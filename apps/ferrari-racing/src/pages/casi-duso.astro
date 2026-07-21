@@ -28,12 +28,18 @@ const PERIMETER = [
 
     <!-- SLIDE 0: Cover -->
     <Slide id="slide-cover" bg="inverse" align="center">
+      <div class="frl-depth" slot="backdrop" aria-hidden="true"></div>
       <T en="USE CASES" it="CASI D’USO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-5" />
       <T as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(2.6rem, 6vw, 5.2rem);"
         en="The whole stack,<br/>one story at a time." it="Tutto lo stack,<br/>una storia alla volta." />
       <T as="p" class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
         en="Four end-to-end moments — from a privacy-safe audience match to measured results — each running across the full product perimeter."
         it="Quattro momenti end-to-end — dal match di audience privacy-safe ai risultati misurati — ognuno attraversa l’intero perimetro prodotti." />
+      <div class="frl-line uc-cover-line" aria-hidden="true">
+        <span class="frl-node"></span>
+        <span class="frl-line-track"></span>
+        <span class="frl-node frl-node--giallo"></span>
+      </div>
       <T as="p" class="slide-caption text-[var(--color-grigio-400)] mt-6 text-sm max-w-2xl mx-auto"
         en="Collaboration → GenStudio + Express → Activation → CJA — the same four products, applied four ways."
         it="Collaboration → GenStudio + Express → Attivazione → CJA — gli stessi quattro prodotti, applicati in quattro modi." />
@@ -41,10 +47,12 @@ const PERIMETER = [
 
     {USE_CASES.map((uc, i) => (
       <Slide id={`slide-uc-${i + 1}`} bg="inverse" align="center">
+        <div class="frl-depth" slot="backdrop" aria-hidden="true"></div>
         <T en={`USE CASE ${String(i + 1).padStart(2, '0')}`} it={`CASO D’USO ${String(i + 1).padStart(2, '0')}`} as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-3" />
         <h2 class="uc-title"><span data-lang-en>{uc.title.en}</span><span data-lang-it>{uc.title.it}</span></h2>
         <div class="uc-grid">
-          <div class="uc-left">
+          <div class="uc-card uc-left">
+            <span class="frl-mark uc-mark">{String(i + 1).padStart(2, '0')}</span>
             <p class="uc-scenario"><span data-lang-en>{uc.scenario.en}</span><span data-lang-it>{uc.scenario.it}</span></p>
             <div class="uc-products">
               {uc.products.map((p) => (<span class="uc-chip">{p}</span>))}
@@ -65,12 +73,14 @@ const PERIMETER = [
 
     <!-- CLOSING: products in the perimeter -->
     <Slide id="slide-uc-map" bg="inverse" align="center">
+      <div class="frl-depth" slot="backdrop" aria-hidden="true"></div>
       <T en="THE PERIMETER" it="IL PERIMETRO" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
       <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(1.7rem, 3.4vw, 2.9rem);"
         en="Every product, one job each." it="Ogni prodotto, un compito ciascuno." />
       <ul class="uc-map">
         {PERIMETER.map((p) => (
           <li class="uc-map-row">
+            <span class="uc-map-node" aria-hidden="true"></span>
             <span class="uc-map-name">{p.name}</span>
             <span class="uc-map-role"><span data-lang-en>{p.role.en}</span><span data-lang-it>{p.role.it}</span></span>
           </li>
@@ -81,22 +91,53 @@ const PERIMETER = [
   </DeckContainer>
 
   <style>
+    /* Racing-line depth backdrop — carbon + Rosso wash, explicit rgba only */
+    .frl-depth {
+      position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 104px),
+        radial-gradient(120% 72% at 12% -6%, rgba(255,40,0,0.14), transparent 56%),
+        radial-gradient(90% 60% at 100% 108%, rgba(255,242,0,0.05), transparent 60%),
+        var(--surface-inverse);
+    }
+    .uc-cover-line { width: min(30rem, 62%); margin: 1.6rem auto 0; }
+
     .uc-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; color: var(--ink-inverse); font-size: clamp(1.6rem, 3.2vw, 2.6rem); margin-bottom: 1.4rem; }
-    .uc-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem 2.5rem; max-width: 72rem; width: 100%; margin: 0 auto; text-align: left; }
-    @media (min-width: 900px) { .uc-grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+    .uc-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem 2.5rem; max-width: 72rem; width: 100%; margin: 0 auto; text-align: left; align-items: stretch; }
+    @media (min-width: 900px) { .uc-grid { grid-template-columns: 1.05fr 0.95fr; align-items: stretch; } }
+
+    /* Use case = a scenario card on the racing line (dark-surface variant) */
+    .uc-card {
+      position: relative;
+      background: rgba(23, 23, 28, 0.72);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 2px 0 0 var(--color-rosso-corsa);
+      border-radius: 4px; padding: 1.35rem 1.4rem 1.3rem;
+      display: flex; flex-direction: column; min-width: 0;
+    }
+    .uc-mark { margin-bottom: 0.9rem; }
+
     .uc-scenario { font-size: 1.02rem; line-height: 1.55; color: var(--color-grigio-200, #e2e2e2); }
     .uc-products { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.1rem; }
     .uc-chip { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.02em; color: var(--accent-secondary); border: 1px solid rgba(255,242,0,0.4); background: rgba(255,242,0,0.06); border-radius: 999px; padding: 0.22rem 0.7rem; }
-    .uc-consumes { margin-top: 1.3rem; border-left: 3px solid var(--accent-primary); padding: 0.5rem 0 0.5rem 0.9rem; background: rgba(255,40,0,0.05); border-radius: 0 4px 4px 0; }
-    .uc-consumes-tag { display: inline-block; font-size: 0.64rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.3rem; }
-    .uc-consumes p { font-size: 0.92rem; line-height: 1.5; color: var(--ink-inverse); }
-    .uc-steps { display: flex; flex-direction: column; gap: 0.85rem; counter-reset: uc; list-style: none; padding: 0; margin: 0; }
-    .uc-steps li { position: relative; padding-left: 2.4rem; font-size: 0.98rem; line-height: 1.5; color: var(--color-grigio-200, #e2e2e2); }
-    .uc-steps li::before { counter-increment: uc; content: counter(uc, decimal-leading-zero); position: absolute; left: 0; top: -0.05rem; font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--accent-primary); }
 
+    /* WHAT IT CONSUMES — racing-line quote rule instead of a side-stripe */
+    .uc-consumes { margin-top: 1.3rem; padding-top: 0.95rem; border-top: 1px solid rgba(255,40,0,0.5); }
+    .uc-consumes-tag { display: inline-block; font-size: 0.64rem; letter-spacing: 0.1em; font-weight: 800; color: var(--accent-primary); margin-bottom: 0.35rem; }
+    .uc-consumes p { font-size: 0.92rem; line-height: 1.5; color: var(--ink-inverse); }
+
+    /* Steps = the ordered sequence along the line */
+    .uc-steps { position: relative; display: flex; flex-direction: column; gap: 0.85rem; counter-reset: uc; list-style: none; padding: 0.15rem 0 0 0; margin: 0; }
+    .uc-steps li { position: relative; padding-left: 2.5rem; font-size: 0.98rem; line-height: 1.5; color: var(--color-grigio-200, #e2e2e2); }
+    .uc-steps li::before { counter-increment: uc; content: counter(uc, decimal-leading-zero); position: absolute; left: 0; top: -0.05rem; font-family: var(--font-display); font-weight: 800; font-size: 1rem; color: var(--accent-primary); }
+    .uc-steps li::after { content: ""; position: absolute; left: 0.55rem; top: 1.5rem; bottom: -0.85rem; width: 1px; background: rgba(255,40,0,0.28); }
+    .uc-steps li:last-child::after { display: none; }
+
+    /* Perimeter map — nodes on the line, explicit rgba (no color-mix) */
     .uc-map { display: grid; grid-template-columns: 1fr; gap: 0.6rem; max-width: 62rem; width: 100%; margin: 0 auto; text-align: left; list-style: none; padding: 0; }
-    .uc-map-row { display: grid; grid-template-columns: 1fr; gap: 0.15rem; padding: 0.72rem 1.1rem; border: 1px solid var(--line-subtle); border-radius: 8px; background: color-mix(in srgb, var(--surface-inverse) 82%, #fff 5%); }
-    @media (min-width: 760px) { .uc-map-row { grid-template-columns: 20rem 1fr; align-items: baseline; gap: 1.5rem; } }
+    .uc-map-row { position: relative; display: grid; grid-template-columns: 1fr; gap: 0.15rem 1.5rem; padding: 0.72rem 1.1rem 0.72rem 1.7rem; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; background: rgba(23, 23, 28, 0.72); }
+    .uc-map-node { position: absolute; left: 0.8rem; top: 1.1rem; width: 9px; height: 9px; border-radius: 50%; background: var(--color-rosso-corsa); }
+    @media (min-width: 760px) { .uc-map-row { grid-template-columns: 20rem 1fr; align-items: baseline; } .uc-map-node { top: 1.15rem; } }
     .uc-map-name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink-inverse); }
     .uc-map-role { font-size: 0.95rem; line-height: 1.5; color: var(--color-grigio-300); }
   </style>
