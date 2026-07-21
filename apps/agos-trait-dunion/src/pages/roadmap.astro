@@ -75,11 +75,12 @@ const nextSteps = [
 
     <!-- ── SLIDE 1: Le tre fasi ───────────────────────────────────── -->
     <Slide id="slide-3fasi" bg="primary" align="center">
+      <div slot="backdrop" class="tdu-bg"></div>
       <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
         TRE FASI, UNA SEQUENZA
       </p>
       <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -87,33 +88,40 @@ const nextSteps = [
         In sequenza con la trasformazione, mai in competizione
       </h2>
 
-      <div class="w-full max-w-6xl mx-auto flex flex-col gap-2" data-reveal data-reveal-delay="0.18">
-        {fasi.map((f) => (
-          <div class="grid md:grid-cols-[220px_1fr] gap-3 items-stretch">
-            <div class={[
-              'flex flex-col justify-center px-4 py-1.5 rounded-r-sm border-l-2',
-              f.accent
-                ? 'bg-[var(--accent-primary)]/10 border-[var(--accent-primary)]'
-                : 'bg-[var(--surface-secondary)] border-[var(--color-grigio-400)]',
-            ].join(' ')}>
-              <p class={[
-                'font-[family-name:var(--font-display)] font-bold leading-none',
-                f.accent ? 'text-[var(--accent-primary)]' : 'text-[var(--ink-primary)]',
-              ].join(' ')} style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">{f.anno}</p>
-              <p class="text-[0.85rem] font-semibold tracking-wide uppercase text-[var(--color-grigio-300)] mt-1">{f.verbo}</p>
-            </div>
-            <div class="flex items-center justify-between gap-4 px-5 py-2 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-              <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug min-w-0">{f.desc}</p>
-              <div class="flex gap-1.5 flex-shrink-0 items-center flex-wrap justify-end" style="max-width: 16rem;">
+      <!-- Timeline device: the acqua current runs left→right through the three phases,
+           with milestone nodes woven at each phase. The trait d'union over time. -->
+      <div class="tl w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
+        <div class="tl-track" aria-hidden="true">
+          <span class="tl-current"></span>
+          {fasi.map((f, i) => (
+            <span
+              class={['tdu-node tl-node', f.accent ? 'tl-node--live' : ''].join(' ')}
+              style={`left: ${16.66 + i * 33.33}%;`}
+            ></span>
+          ))}
+          <span class="tdu-node tdu-node--arancio tl-node tl-node--end" style="left: 100%;"></span>
+        </div>
+        <div class="tl-phases">
+          {fasi.map((f) => (
+            <div class={['tl-phase', f.accent ? 'tl-phase--live' : ''].join(' ')}>
+              <div class="tl-year-row">
+                <p class={[
+                  'font-[family-name:var(--font-display)] font-bold leading-none',
+                  f.accent ? 'text-[var(--accent-primary)]' : 'text-[var(--ink-primary)]',
+                ].join(' ')} style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">{f.anno}</p>
+                <p class="text-[0.85rem] font-semibold tracking-wide uppercase text-[var(--color-grigio-300)] mt-1">{f.verbo}</p>
+              </div>
+              <p class="text-[0.95rem] text-[var(--color-grigio-200)] mb-3" style="line-height: 1.5;">{f.desc}</p>
+              <div class="flex gap-1.5 items-center flex-wrap">
                 {f.tags.map((t) => (
                   <span class="badge bg-[var(--accent-primary)]/12 text-[var(--accent-primary)]">{t}</span>
                 ))}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <p class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+      <p class="mt-5 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
         Sequenza indicativa · da allineare ai milestone del programma di trasformazione
       </p>
     </Slide>
@@ -273,4 +281,78 @@ const nextSteps = [
     </Slide>
 
   </DeckContainer>
+
+  <style>
+    /* Roadmap timeline device — the acqua current (trait d'union) runs left→right
+       through the phases, milestone nodes woven at each. Explicit rgba only. */
+    .tl { display: flex; flex-direction: column; }
+
+    .tl-track {
+      position: relative;
+      height: 15px;
+      margin-bottom: 1.1rem;
+    }
+    /* The connecting current — the acqua line running the full width */
+    .tl-current {
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: linear-gradient(
+        90deg,
+        rgba(6, 171, 184, 0.35) 0%,
+        rgba(6, 171, 184, 0.9) 45%,
+        rgba(245, 124, 0, 0.9) 100%
+      );
+      border-radius: 2px;
+    }
+    /* Milestone nodes sit on the current, one at each phase-column centre
+       (16.66% / 50% / 83.33%), plus the arancio connected end-state at 100%.
+       Each is absolutely positioned via an inline `left`. */
+    .tl-node {
+      position: absolute;
+      top: 50%;
+      z-index: 1;
+      width: 12px; height: 12px;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 3px var(--surface-primary);
+    }
+    .tl-node--live {
+      width: 15px; height: 15px;
+      box-shadow: 0 0 0 3px var(--surface-primary), 0 0 12px 0 rgba(6, 171, 184, 0.55);
+    }
+
+    .tl-phases {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      text-align: left;
+    }
+    .tl-phase {
+      background: rgba(10, 19, 21, 0.5);
+      border: 1px solid var(--line-subtle);
+      border-radius: 8px;
+      padding: 1.05rem 1.15rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .tl-phase--live {
+      background: rgba(6, 171, 184, 0.08);
+      border-color: rgba(6, 171, 184, 0.35);
+      box-shadow: inset 0 2px 0 0 var(--color-acqua);
+    }
+    .tl-year-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.65rem;
+    }
+
+    @media (max-width: 900px) {
+      .tl-track { display: none; }
+      .tl-phases { grid-template-columns: 1fr; }
+    }
+  </style>
 </BaseLayout>
