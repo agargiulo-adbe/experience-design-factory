@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AgosNavigation from '../components/AgosNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
@@ -40,6 +39,29 @@ const pressioni = [
   { value: '+4,9%', label: 'crescita del credito al consumo nel Q1 2026', src: 'Osservatorio Assofin–CRIF–Prometeia, giu 2026' },
   { value: 'CCD2', label: 'più trasparenza e merito creditizio: vince chi conosce meglio il cliente', src: 'Direttiva UE 2023/2225' },
 ];
+
+// Elisa's journey along the current — digital reach, then the branch.
+const elisaJourney = {
+  digitale: [
+    { t: 'Cerca «prestito 12.000 €»' },
+    { t: 'Clicca un annuncio' },
+    { t: 'Prova il simulatore di rata' },
+    { t: 'Inizia la richiesta online' },
+  ],
+  filiale: [
+    { t: 'Esita: è una firma importante' },
+    { t: 'Tre giorni dopo entra in filiale' },
+    { t: 'Completa la pratica col consulente' },
+  ],
+};
+
+// Depth background — two light sources (acqua = digital, arancio = human) over the
+// petrolio dark. Explicit rgba so the audit's contrast parser reads it (no oklab).
+const depth =
+  'background:' +
+  'radial-gradient(115% 75% at 18% 0%, rgba(6,171,184,0.14), transparent 52%),' +
+  'radial-gradient(115% 80% at 88% 105%, rgba(245,124,0,0.10), transparent 55%),' +
+  'var(--surface-primary);';
 ---
 <BaseLayout
   title="Il paradosso dei due mondi"
@@ -54,240 +76,528 @@ const pressioni = [
     prevHref={href(base, '/')}
   >
 
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
+    <!-- ── SLIDE 0: Cover — the broken current ─────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" class="scenario-slide">
+      <div slot="backdrop" class="absolute inset-0" style={depth} aria-hidden="true"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-due-mondi')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--surface-primary)]/90"
+        imageClass="opacity-10"
+        scrim="bg-transparent"
       />
-      <CoverHero
-        eyebrow="01 · Scenario"
-        numeral="01"
-        title="Il paradosso dei due mondi"
-        lead="Ogni giorno il digitale convince clienti che poi firmano in filiale. Ogni giorno la customer base riceve solleciti mentre l'advertising insegue le stesse persone. Oggi nessuno riesce a misurarlo."
-        size="phase"
-        tone="ink"
-        signature={false}
-      />
-    </Slide>
 
-    <!-- ── SLIDE 1: Elisa ─────────────────────────────────────────── -->
-    <Slide id="slide-elisa" bg="primary" align="split">
-      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-        <div class="flex items-center justify-center" data-reveal>
-          <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,420px); aspect-ratio:4/5; height:min(500px,58dvh);">
-            <MediaSlot {...mediaProps('persona-elisa')} fill objectPosition="50% 30%" />
-          </div>
+      <div class="w-full max-w-5xl mx-auto flex flex-col items-center">
+        <p class="slide-eyebrow text-[var(--accent-primary)] mb-6" data-reveal>01 · Scenario</p>
+        <h1
+          class="slide-title text-[var(--ink-primary)]"
+          style="font-size: clamp(2.6rem, 6vw, 5rem); font-weight: 300; letter-spacing: -0.03em;"
+          data-reveal data-reveal-delay="0.1"
+        >
+          Il paradosso dei due mondi
+        </h1>
+
+        <!-- The current, broken in the middle: digitale · | · filiale -->
+        <div class="tdu-current tdu-current--broken w-full max-w-3xl mt-9 mb-8" data-reveal data-reveal-delay="0.22" aria-hidden="true">
+          <span class="tdu-end tdu-end--acqua">Digitale</span>
+          <span class="tdu-line"></span>
+          <span class="tdu-gap"><span class="tdu-gap-mark">?</span></span>
+          <span class="tdu-line tdu-line--arancio"></span>
+          <span class="tdu-end tdu-end--arancio">Filiale</span>
         </div>
 
-        <div class="text-left">
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>
-            STORIA DI ELISA · IL VIAGGIO DI UNA PRATICA
-          </p>
+        <p
+          class="text-[var(--color-grigio-200)] leading-relaxed max-w-2xl mx-auto"
+          style="font-size: clamp(1.05rem, 1.5vw, 1.35rem);"
+          data-reveal data-reveal-delay="0.3"
+        >
+          Ogni giorno il digitale convince clienti che poi firmano in filiale. La customer
+          base riceve solleciti mentre l'advertising insegue le stesse persone. Oggi nessuno
+          riesce a misurarlo.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: Elisa — chi cade nel vuoto tra i due mondi ─────── -->
+    <Slide id="slide-elisa" bg="primary" align="split" class="scenario-slide">
+      <div slot="backdrop" class="absolute inset-0" style={depth} aria-hidden="true"></div>
+
+      <div class="w-full flex-1 min-h-0 flex flex-col justify-center">
+        <div class="text-center mb-7" data-reveal>
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-3">Storia di Elisa · il viaggio di una pratica</p>
           <h2
-            class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-            style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-            data-reveal
-            data-reveal-delay="0.1"
+            class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mx-auto"
+            style="font-size: clamp(1.7rem, 3.2vw, 2.9rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em; max-width: 20ch;"
           >
-            Elisa, 34 anni.<br />Un progetto da finanziare.
+            Elisa, 34 anni. Un progetto da finanziare, due mondi che non si parlano.
           </h2>
-          <p
-            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
-            style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
-            data-reveal
-            data-reveal-delay="0.2"
-          >
-            Cerca «prestito personale 12.000 euro», clicca un annuncio, prova il simulatore
-            di rata, inizia la richiesta online. All'ultimo passo esita: è una firma
-            importante. Tre giorni dopo entra nella filiale vicino casa e completa lì la
-            sua pratica, con un consulente.
-          </p>
-          <div
-            class="mt-8 flex items-start gap-4 p-4 bg-[var(--surface-secondary)] border-l-2 border-[var(--accent-secondary)] rounded-r-sm"
-            data-reveal
-            data-reveal-delay="0.4"
-          >
-            <div class="flex-shrink-0 size-9 rounded-full bg-[var(--accent-secondary)]/15 flex items-center justify-center font-bold text-[var(--accent-secondary)] font-[family-name:var(--font-display)]">
-              !
+        </div>
+
+        <!-- Journey rail: portrait anchor, then the current with a break where the -->
+        <!-- online path goes dark to the branch. -->
+        <div class="w-full max-w-6xl mx-auto grid md:grid-cols-[minmax(0,168px)_1fr] gap-8 md:gap-10 items-center">
+          <div class="mx-auto md:mx-0" data-reveal>
+            <div class="relative overflow-hidden rounded-sm" style="width:min(100%,168px); aspect-ratio:4/5;">
+              <MediaSlot {...mediaProps('persona-elisa')} fill objectPosition="50% 26%" />
+              <span class="absolute inset-x-0 bottom-0 h-1/3" style="background:linear-gradient(to top, rgba(10,19,21,0.85), transparent);"></span>
+              <span class="absolute left-2.5 bottom-2 text-[0.72rem] font-semibold tracking-wide uppercase text-[var(--color-perla)]">Elisa</span>
             </div>
-            <div>
-              <p class="text-xs font-semibold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">Nei sistemi, oggi</p>
-              <p class="text-sm text-[var(--ink-secondary)] leading-relaxed">
-                La pratica di Elisa nasce come <strong class="text-[var(--ink-primary)]">«rete fisica»</strong>.
-                La campagna digitale che l'ha convinta non riceverà mai il merito.
-                E il suo percorso online resta invisibile al consulente che l'ha accolta.
-              </p>
+          </div>
+
+          <div class="tdu-rail" data-reveal data-reveal-delay="0.12">
+            <div class="tdu-rail-world">
+              <span class="tdu-rail-tag tdu-rail-tag--acqua">Il mondo digitale</span>
+              <ol class="tdu-steps">
+                {elisaJourney.digitale.map((s) => (
+                  <li class="tdu-step tdu-step--acqua"><span class="tdu-node"></span>{s.t}</li>
+                ))}
+              </ol>
+            </div>
+            <div class="tdu-rail-break" role="presentation">
+              <span class="tdu-rail-break-line"></span>
+              <span class="tdu-rail-break-label">il segnale si perde</span>
+            </div>
+            <div class="tdu-rail-world">
+              <span class="tdu-rail-tag tdu-rail-tag--arancio">La filiale</span>
+              <ol class="tdu-steps">
+                {elisaJourney.filiale.map((s) => (
+                  <li class="tdu-step tdu-step--arancio"><span class="tdu-node"></span>{s.t}</li>
+                ))}
+              </ol>
             </div>
           </div>
         </div>
+
+        <p
+          class="mx-auto text-center mt-7 text-[var(--color-grigio-200)] leading-relaxed"
+          style="font-size: clamp(0.98rem, 1.2vw, 1.12rem); max-width: 62ch;"
+          data-reveal data-reveal-delay="0.3"
+        >
+          Nei sistemi la sua pratica nasce come <strong class="text-[var(--ink-primary)]">«rete fisica»</strong>:
+          la campagna digitale che l'ha convinta non riceve mai il merito, e il percorso online
+          resta invisibile al consulente che l'ha accolta.
+        </p>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: I due mondi ───────────────────────────────────── -->
-    <Slide id="slide-due-mondi" bg="primary" align="center">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        DUE ECCELLENZE, ZERO PONTI
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Due mondi che funzionano. Separatamente.
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-3.5"
-        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        Uno parla la lingua dei click, l'altro quella delle anagrafiche,
-        e tra i due manca il trait d'union.
-      </p>
+    <!-- ── SLIDE 2: I due mondi — due eccellenze, zero ponti ───────── -->
+    <Slide id="slide-due-mondi" bg="primary" align="center" class="scenario-slide">
+      <div slot="backdrop" class="absolute inset-0" style={depth} aria-hidden="true"></div>
 
-      <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {mondi.map((m) => (
-          <div class={[
-            'px-5 py-2.5 bg-[var(--surface-secondary)] border-t-2 rounded-sm text-left',
-            m.accent === 'acqua' ? 'border-[var(--accent-primary)]' : 'border-[var(--accent-secondary)]',
-          ].join(' ')}>
-            <div class="flex items-baseline justify-between gap-3 mb-1 flex-wrap">
-              <p class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{m.label}</p>
-              <p class={[
-                'text-[0.75rem] font-bold tracking-widest uppercase',
-                m.accent === 'acqua' ? 'text-[var(--accent-primary)]' : 'text-[var(--accent-secondary)]',
-              ].join(' ')}>{m.who}</p>
-            </div>
-            <ul class="space-y-1.5 mt-2.5">
-              {m.items.map((item) => (
-                <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-200)]">
-                  <span class={[
-                    'flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full',
-                    m.accent === 'acqua' ? 'bg-[var(--accent-primary)]' : 'bg-[var(--accent-secondary)]',
-                  ].join(' ')} aria-hidden="true"/>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+      <div class="w-full flex flex-col items-center">
+        <p class="slide-eyebrow text-center text-[var(--ink-tertiary)] mb-3" data-reveal>Due eccellenze, zero ponti</p>
+        <h2
+          class="text-center text-[var(--ink-primary)] mb-8 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          Due mondi che funzionano. <span class="text-[var(--color-grigio-300)]">Separatamente.</span>
+        </h2>
 
-      <div class="mt-2.5 max-w-3xl mx-auto px-5 py-1.5 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm" data-reveal data-reveal-delay="0.35">
-        <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug">
-          <strong class="text-[var(--ink-primary)]">Il costo dell'assenza di ponte:</strong> overlap invisibile tra
-          advertising e customer base, pressione commerciale non coordinata, attribution che si ferma
+        <!-- The spatial subject is the VOID between the two fields. -->
+        <div class="tdu-worlds w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
+          {[mondi[0], null, mondi[1]].map((m) => (
+            m === null ? (
+              <!-- the missing trait d'union, dead center between the two worlds -->
+              <div class="tdu-void" aria-hidden="true">
+                <span class="tdu-void-stub tdu-void-stub--l"></span>
+                <span class="tdu-void-mark">✕</span>
+                <span class="tdu-void-stub tdu-void-stub--r"></span>
+                <span class="tdu-void-label">nessun<br/>ponte</span>
+              </div>
+            ) : (
+              <div class={['tdu-world', m.accent === 'acqua' ? 'tdu-world--acqua' : 'tdu-world--arancio'].join(' ')}>
+                <div class="tdu-world-head">
+                  <span class="tdu-world-title">{m.label}</span>
+                  <span class="tdu-world-who">{m.who}</span>
+                </div>
+                <ul class="tdu-world-items">
+                  {m.items.map((item) => (
+                    <li><span class="tdu-node"></span>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          ))}
+        </div>
+
+        <p
+          class="mx-auto text-center mt-8 text-[var(--color-grigio-200)] leading-snug"
+          style="font-size: clamp(0.98rem, 1.15vw, 1.1rem); max-width: 74ch;"
+          data-reveal data-reveal-delay="0.32"
+        >
+          <strong class="text-[var(--ink-primary)]">Il costo dell'assenza di ponte:</strong> overlap invisibile
+          tra advertising e customer base, pressione commerciale non coordinata, attribution che si ferma
           al canale in cui la pratica viene caricata.
         </p>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 3: Il paradosso + la pressione del mercato ───────── -->
-    <Slide id="slide-paradosso" bg="secondary" align="center">
-      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
-        IL PARADOSSO
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Più investi online, più rischi di sollecitare chi è già cliente
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-4"
-        style="font-size: clamp(0.98rem, 1.15vw, 1.1rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        Senza una misura dell'overlap, parte della spesa insegue persone che la
-        customer base sta già sollecitando, mentre il mercato accelera sul digitale.
-      </p>
+    <!-- ── SLIDE 3: Il paradosso — l'overlap che nessuno misura ────── -->
+    <Slide id="slide-paradosso" bg="secondary" align="center" class="scenario-slide">
+      <div slot="backdrop" class="absolute inset-0" style="background:radial-gradient(120% 90% at 50% 0%, rgba(6,171,184,0.10), transparent 50%), var(--surface-secondary);" aria-hidden="true"></div>
 
-      <div
-        class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-4"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {pressioni.map((p) => (
-          <div class="text-center px-4 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm">
-            <p
-              class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2"
-              style="font-size: clamp(1.7rem, 3vw, 2.5rem);"
-            >
-              {p.value}
-            </p>
-            <p class="text-[0.95rem] text-[var(--ink-primary)] leading-snug mb-2">{p.label}</p>
-            <p class="text-[0.75rem] tracking-wide uppercase text-[var(--color-grigio-300)]">{p.src}</p>
-          </div>
-        ))}
+      <div class="w-full flex flex-col items-center">
+        <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-3" data-reveal>Il paradosso</p>
+        <h2
+          class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.6vw, 2.35rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em; max-width: 26ch;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          Più investi online, più rischi di sollecitare chi è già cliente
+        </h2>
+
+        <!-- Two streams converge on the same person: the overlap is the subject. -->
+        <div class="tdu-overlap w-full max-w-4xl mx-auto mb-7" data-reveal data-reveal-delay="0.16" aria-hidden="true">
+          <span class="tdu-overlap-src tdu-overlap-src--acqua"><b>Advertising</b><br/>insegue nel digitale</span>
+          <span class="tdu-overlap-core">
+            <span class="tdu-overlap-ring"></span>
+            <span class="tdu-overlap-who">stessa<br/>persona</span>
+          </span>
+          <span class="tdu-overlap-src tdu-overlap-src--arancio"><b>Solleciti</b><br/>dalla customer base</span>
+        </div>
+
+        <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-5" data-reveal data-reveal-delay="0.24">
+          {pressioni.map((p) => (
+            <div class="tdu-stat">
+              <p class="tdu-stat-value">{p.value}</p>
+              <p class="tdu-stat-label">{p.label}</p>
+              <p class="tdu-stat-src">{p.src}</p>
+            </div>
+          ))}
+        </div>
+
+        <p
+          class="mx-auto text-center mt-7 text-[var(--color-grigio-200)] leading-relaxed"
+          style="font-size: clamp(1rem, 1.2vw, 1.15rem); max-width: 60ch;"
+          data-reveal data-reveal-delay="0.34"
+        >
+          La domanda non è <em>se</em> i due mondi si sovrappongono.
+          È <strong class="text-[var(--ink-primary)]">quanto</strong>, e quanto vale scoprirlo.
+        </p>
       </div>
-
-      <p class="mt-4 text-center max-w-3xl mx-auto text-[clamp(1rem,1.2vw,1.15rem)] text-[var(--color-grigio-200)] leading-relaxed" data-reveal data-reveal-delay="0.32">
-        La domanda non è <em>se</em> i due mondi si sovrappongono.<br/>
-        È <strong class="text-[var(--ink-primary)]">quanto</strong>, e quanto vale scoprirlo.
-      </p>
     </Slide>
 
-    <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────── -->
-    <Slide id="slide-opportunity" bg="inverse" align="center">
+    <!-- ── SLIDE 4: L'opportunità — il trait d'union ricostruito ───── -->
+    <Slide id="slide-opportunity" bg="inverse" align="center" class="scenario-slide scenario-slide--light">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-filiale')}
-        imageClass="opacity-18"
+        imageClass="opacity-15"
         scrim="bg-[var(--color-perla)]/92"
       />
-      <p class="slide-eyebrow text-center text-[var(--color-petrolio)] mb-4" data-reveal>
-        L'OPPORTUNITÀ
-      </p>
-      <h2
-        class="text-[var(--color-abisso)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Tre mosse. Nessuna richiede<br/>di aspettare la trasformazione.
-      </h2>
 
-      <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-4 mb-4"
-        data-reveal
-        data-reveal-delay="0.18"
-      >
-        {[
-          { num: '1', title: 'Misurare', desc: 'Una vista unica di digitale, filiali e call center, overlap incluso, fino a caricata e liquidata.' },
-          { num: '2', title: 'Connettere', desc: 'Journey che seguono il cliente tra i due mondi: chi esita online arriva già informato in filiale.' },
-          { num: '3', title: 'Evolvere', desc: 'I use case di oggi diventano orchestrazione intelligente, sopra lo stack che già usate.' },
-        ].map((m) => (
-          <div class="px-5 py-4 bg-[var(--color-bianco,#FFFFFF)] border border-[var(--color-grigio-200)] rounded-sm text-left" style="background:#FFFFFF;">
-            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--color-petrolio)] text-[1.6rem] leading-none mb-2">{m.num}</p>
-            <p class="text-[1.05rem] font-semibold text-[var(--color-abisso)] mb-1.5 font-[family-name:var(--font-display)]">{m.title}</p>
-            <p class="text-[0.92rem] text-[var(--color-grigio-500)] leading-snug">{m.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <div class="mt-2" data-reveal data-reveal-delay="0.35">
-        <a
-          href={href(base, '/fondamenta')}
-          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-abisso)] text-[var(--color-perla)] hover:bg-[var(--color-lavagna)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+      <div class="w-full flex flex-col items-center">
+        <p class="slide-eyebrow text-center text-[var(--color-petrolio)] mb-3" data-reveal>L'opportunità</p>
+        <h2
+          class="text-center text-[var(--color-abisso)] mb-9 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.75rem, 3vw, 2.7rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
         >
-          Le fondamenta che avete già
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+          Tre mosse ricostruiscono il ponte
+        </h2>
+
+        <!-- The current, restored: three moves as a connected progression. -->
+        <div class="tdu-moves w-full max-w-5xl mx-auto mb-9" data-reveal data-reveal-delay="0.16">
+          {[
+            { num: '1', title: 'Misurare', desc: 'Una vista unica di digitale, filiali e call center, overlap incluso, fino a caricata e liquidata.' },
+            { num: '2', title: 'Connettere', desc: 'Journey che seguono il cliente tra i due mondi: chi esita online arriva già informato in filiale.' },
+            { num: '3', title: 'Evolvere', desc: 'I use case di oggi diventano orchestrazione intelligente, sopra lo stack che già usate.' },
+          ].map((m, i) => (
+            <div class="tdu-move">
+              <span class="tdu-move-num">{m.num}</span>
+              <p class="tdu-move-title">{m.title}</p>
+              <p class="tdu-move-desc">{m.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div data-reveal data-reveal-delay="0.34">
+          <a
+            href={href(base, '/fondamenta')}
+            class="inline-flex items-center gap-3 px-8 py-3 text-base font-semibold tracking-wide bg-[var(--color-abisso)] text-[var(--color-perla)] hover:bg-[var(--color-petrolio)] transition-colors duration-300 font-[family-name:var(--font-display)] rounded-sm"
+          >
+            Le fondamenta che avete già
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* ═══ "Two worlds, one current" — Scenario art direction ═══
+     All colours are explicit rgba / brand tokens (no oklab/color-mix on text
+     backgrounds) so the deck audit's contrast parser reads them correctly. */
+
+  /* — The current (cover): a line broken in the middle — */
+  .tdu-current {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  .tdu-end {
+    font-family: var(--font-display);
+    font-size: clamp(0.85rem, 1.1vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .tdu-end--acqua { color: var(--color-acqua-chiara); }
+  .tdu-end--arancio { color: var(--color-arancio-chiaro); }
+  .tdu-line {
+    flex: 1 1 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(to right, rgba(6,171,184,0.15), var(--color-acqua));
+    position: relative;
+  }
+  .tdu-line--arancio { background: linear-gradient(to left, rgba(245,124,0,0.15), var(--color-arancio)); }
+  .tdu-line::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 50%;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--color-acqua);
+    transform: translateY(-50%);
+  }
+  .tdu-line--arancio::after { right: auto; left: -3px; background: var(--color-arancio); }
+  .tdu-gap {
+    flex: 0 0 clamp(3rem, 8vw, 6rem);
+    height: 2px;
+    border-top: 2px dashed rgba(171,184,187,0.5);
+    position: relative;
+  }
+  .tdu-gap-mark {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1.9rem; height: 1.9rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: var(--surface-secondary);
+    border: 1px solid rgba(171,184,187,0.4);
+    color: var(--color-grigio-300);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  /* — Elisa journey rail — */
+  .tdu-rail {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: clamp(1rem, 2.5vw, 2.25rem);
+  }
+  @media (max-width: 767px) {
+    .tdu-rail { grid-template-columns: 1fr; gap: 1rem; }
+    .tdu-rail-break { flex-direction: row; }
+  }
+  .tdu-rail-world {
+    background: rgba(10,19,21,0.5);
+    border: 1px solid var(--line-subtle);
+    border-radius: 6px;
+    padding: 1rem 1.15rem 1.1rem;
+  }
+  .tdu-rail-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .tdu-rail-tag--acqua { color: var(--color-acqua-chiara); }
+  .tdu-rail-tag--arancio { color: var(--color-arancio-chiaro); }
+  .tdu-steps { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .tdu-step {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    font-size: clamp(0.9rem, 1.05vw, 1rem);
+    line-height: 1.3;
+    color: var(--color-grigio-200);
+  }
+  .tdu-node {
+    flex: 0 0 auto;
+    width: 8px; height: 8px; margin-top: 0.42em;
+    border-radius: 50%;
+    background: var(--color-acqua);
+  }
+  .tdu-step--arancio .tdu-node,
+  .tdu-world--arancio .tdu-node { background: var(--color-arancio); }
+  .tdu-rail-break {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem;
+  }
+  .tdu-rail-break-line {
+    flex: 1 1 auto;
+    width: 2px; min-height: 2.5rem;
+    border-left: 2px dashed rgba(171,184,187,0.45);
+  }
+  @media (max-width: 767px) {
+    .tdu-rail-break-line { width: 100%; min-height: 0; height: 2px; border-left: 0; border-top: 2px dashed rgba(171,184,187,0.45); }
+  }
+  .tdu-rail-break-label {
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-grigio-400);
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    white-space: nowrap;
+  }
+  @media (max-width: 767px) {
+    .tdu-rail-break-label { writing-mode: horizontal-tb; transform: none; }
+  }
+
+  /* — Two worlds with a charged void between them — */
+  .tdu-worlds {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+  }
+  @media (max-width: 767px) {
+    .tdu-worlds { grid-template-columns: 1fr; }
+    .tdu-void { flex-direction: row !important; padding: 0.75rem 0 !important; }
+    .tdu-void-stub { width: 2.5rem !important; height: 2px !important; }
+  }
+  .tdu-world {
+    background: rgba(10,19,21,0.5);
+    border: 1px solid var(--line-subtle);
+    border-radius: 8px;
+    padding: 1.15rem 1.35rem 1.25rem;
+    text-align: left;
+  }
+  .tdu-world--acqua { box-shadow: inset 0 2px 0 0 var(--color-acqua); }
+  .tdu-world--arancio { box-shadow: inset 0 2px 0 0 var(--color-arancio); }
+  .tdu-world-head { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.85rem; }
+  .tdu-world-title {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+    color: var(--ink-primary);
+  }
+  .tdu-world-who {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-grigio-400);
+  }
+  .tdu-world--acqua .tdu-world-who { color: var(--color-acqua-chiara); }
+  .tdu-world--arancio .tdu-world-who { color: var(--color-arancio-chiaro); }
+  .tdu-world-items { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+  .tdu-world-items li {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    font-size: clamp(0.9rem, 1.05vw, 1rem); line-height: 1.3;
+    color: var(--color-grigio-200);
+  }
+  .tdu-void {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.6rem; padding: 0 0.25rem;
+    position: relative;
+  }
+  .tdu-void-stub {
+    width: 2px; height: 2.5rem;
+    border-left: 2px dashed rgba(171,184,187,0.4);
+  }
+  .tdu-void-stub--r { align-self: flex-end; }
+  .tdu-void-mark {
+    width: 2rem; height: 2rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    border: 1px solid rgba(171,184,187,0.35);
+    color: var(--color-grigio-400);
+    font-size: 0.85rem;
+  }
+  .tdu-void-label {
+    font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-grigio-400); text-align: center; line-height: 1.25;
+  }
+
+  /* — Overlap (paradox): two sources onto one core — */
+  .tdu-overlap {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: clamp(0.75rem, 2.5vw, 2rem);
+  }
+  .tdu-overlap-src {
+    font-size: clamp(0.85rem, 1.05vw, 1rem);
+    line-height: 1.3;
+    color: var(--color-grigio-200);
+  }
+  .tdu-overlap-src b { display: block; font-family: var(--font-display); font-size: 1.05em; }
+  .tdu-overlap-src--acqua { text-align: right; }
+  .tdu-overlap-src--acqua b { color: var(--color-acqua-chiara); }
+  .tdu-overlap-src--arancio { text-align: left; }
+  .tdu-overlap-src--arancio b { color: var(--color-arancio-chiaro); }
+  .tdu-overlap-core {
+    position: relative;
+    width: clamp(5rem, 10vw, 7rem); height: clamp(5rem, 10vw, 7rem);
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .tdu-overlap-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--color-acqua);
+    box-shadow: 0 0 0 6px rgba(6,171,184,0.10), inset 0 0 24px rgba(245,124,0,0.18);
+  }
+  .tdu-overlap-who {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(0.8rem, 1vw, 0.95rem);
+    line-height: 1.1; text-align: center; color: var(--ink-primary);
+  }
+
+  /* — Stats (paradox data) — */
+  .tdu-stat {
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid var(--line-subtle);
+  }
+  .tdu-stat-value {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1; margin-bottom: 0.55rem;
+    color: var(--color-acqua-chiara);
+    letter-spacing: -0.02em;
+  }
+  .tdu-stat-label { font-size: clamp(0.9rem, 1.05vw, 1rem); line-height: 1.3; color: var(--ink-primary); margin-bottom: 0.5rem; }
+  .tdu-stat-src { font-size: 0.72rem; letter-spacing: 0.02em; color: var(--color-grigio-300); }
+
+  /* — Moves (opportunity, light slide): a connected progression — */
+  .tdu-moves {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  @media (max-width: 767px) { .tdu-moves { grid-template-columns: 1fr; gap: 1rem; } }
+  .tdu-move {
+    text-align: left;
+    padding: 0 clamp(1rem, 2vw, 1.75rem);
+    position: relative;
+  }
+  .tdu-move + .tdu-move { border-left: 1px solid var(--color-grigio-200); }
+  @media (max-width: 767px) { .tdu-move + .tdu-move { border-left: 0; border-top: 1px solid var(--color-grigio-200); padding-top: 1rem; } }
+  .tdu-move-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.1rem; height: 2.1rem; margin-bottom: 0.75rem;
+    border-radius: 50%;
+    background: var(--color-petrolio); color: var(--color-perla);
+    font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  }
+  .tdu-move-title {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+    color: var(--color-abisso); margin-bottom: 0.4rem;
+  }
+  .tdu-move-desc { font-size: clamp(0.9rem, 1.05vw, 1rem); line-height: 1.4; color: var(--color-grigio-500); }
+
+  /* — Flowing current animation (reduced-motion safe) — */
+  @media (prefers-reduced-motion: no-preference) {
+    .tdu-line { background-size: 200% 100%; animation: tdu-flow 3.2s linear infinite; }
+    @keyframes tdu-flow { from { background-position: 200% 0; } to { background-position: 0 0; } }
+  }
+</style>
