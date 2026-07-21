@@ -70,6 +70,14 @@ const privacyPoints = [
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('data-telemetry')} imageClass="opacity-25" scrim="bg-[var(--surface-inverse)]/82" />
+
+      <!-- Apex marker: Define is the first point on the racing line -->
+      <div class="dfn-apex" data-reveal data-reveal-delay="0.08" aria-hidden="true">
+        <span class="dfn-apex-track"></span>
+        <span class="frl-node frl-node--giallo dfn-apex-node"></span>
+        <span class="dfn-apex-track"></span>
+      </div>
+
       <T en="DEFINE" it="DEFINISCI" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-[clamp(1.5rem,4.2vh,3rem)]" />
       <T
         as="h1" class="slide-title text-[var(--ink-inverse)] mb-[clamp(1.75rem,5.2vh,3.75rem)]" style="font-size: clamp(2.5rem, 6vw, 5.5rem);"
@@ -98,11 +106,12 @@ const privacyPoints = [
         en="Ferrari's consented Tifosi data and the partner's customer data meet in a privacy-safe clean room. The raw data stays put; only the insight moves."
         it="I dati dei Tifosi con consenso di Ferrari e i dati clienti del partner si incontrano in una clean room privacy-safe. Il dato grezzo resta fermo; si muove solo l'insight."
       />
-      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
-        {pillars.map((p) => (
-          <div class="p-6 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
-            <p class="text-lg font-semibold text-[var(--ink-inverse)] mb-2"><span data-lang-en>{p.en}</span><span data-lang-it>{p.it}</span></p>
-            <T as="p" class="text-sm text-[var(--color-grigio-300)] leading-relaxed" en={p.bodyEn} it={p.bodyIt} />
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5 dfn-flow" data-reveal data-reveal-delay="0.22">
+        {pillars.map((p, i) => (
+          <div class="frl-card dfn-on-dark">
+            <span class="frl-mark">{i + 1}</span>
+            <p class="frl-card-title dfn-title-dark"><span data-lang-en>{p.en}</span><span data-lang-it>{p.it}</span></p>
+            <T as="p" class="frl-card-body" en={p.bodyEn} it={p.bodyIt} />
           </div>
         ))}
       </div>
@@ -124,11 +133,11 @@ const privacyPoints = [
             en="The overlap between the Tifosi and the partner's audience surfaces high-value segments, and look-alike expansion grows the reach. Illustrative example: HP × Ferrari → tech-forward Tifosi across EMEA."
             it="L'overlap tra i Tifosi e l'audience del partner fa emergere segmenti ad alto valore, e l'espansione look-alike aumenta la reach. Esempio illustrativo: HP × Ferrari → Tifosi tech-forward in EMEA."
           />
-          <div class="w-full max-w-3xl grid grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+          <div class="w-full max-w-3xl grid grid-cols-3 gap-5 dfn-flow" data-reveal data-reveal-delay="0.22">
             {audienceCards.map((c) => (
-              <div class="p-5 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
-                <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
-                <p class="text-sm text-[var(--color-grigio-400)]"><span data-lang-en>{c.subEn}</span><span data-lang-it>{c.subIt}</span></p>
+              <div class="frl-card dfn-on-dark">
+                <p class="frl-card-title dfn-title-dark text-[1.05rem] mb-1.5"><span data-lang-en>{c.en}</span><span data-lang-it>{c.it}</span></p>
+                <p class="text-[0.9rem] text-[var(--color-grigio-400)]"><span data-lang-en>{c.subEn}</span><span data-lang-it>{c.subIt}</span></p>
               </div>
             ))}
           </div>
@@ -150,11 +159,11 @@ const privacyPoints = [
         en="Clean sketches with noise, no identity movement, role-based governance, consent enforced. This is the standard a brand like Ferrari requires."
         it="Clean sketches con noise, nessun movimento di identità, governance basata sui ruoli, consenso applicato. È lo standard che un brand come Ferrari richiede."
       />
-      <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-2" data-reveal data-reveal-delay="0.22">
+      <div class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-2" data-reveal data-reveal-delay="0.22">
         {privacyPoints.map((p) => (
-          <div class="p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="text-base font-semibold text-[var(--ink-primary)] mb-1.5"><span data-lang-en>{p.en}</span><span data-lang-it>{p.it}</span></p>
-            <T as="p" class="text-sm text-[var(--ink-secondary)] leading-relaxed" en={p.bodyEn} it={p.bodyIt} />
+          <div class="frl-panel frl-panel--rosso text-left">
+            <p class="frl-card-title text-[1.05rem] mb-1.5"><span data-lang-en>{p.en}</span><span data-lang-it>{p.it}</span></p>
+            <T as="p" class="text-[0.95rem] text-[var(--ink-secondary)] leading-relaxed" en={p.bodyEn} it={p.bodyIt} />
           </div>
         ))}
       </div>
@@ -170,3 +179,41 @@ const privacyPoints = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* Define = an apex on the racing line. A small racing-line/apex motif marks
+     this phase; cards ride the shared .frl-* system. Explicit rgba only. */
+  .dfn-apex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    width: min(28rem, 60vw);
+    margin: 0 auto clamp(1.4rem, 3.4vh, 2.6rem);
+  }
+  .dfn-apex-track {
+    flex: 1 1 auto;
+    height: 2px;
+    border-radius: 2px;
+  }
+  .dfn-apex-track:first-child {
+    background: linear-gradient(to right, rgba(255,242,0,0.05), rgba(255,242,0,0.85));
+  }
+  .dfn-apex-track:last-child {
+    background: linear-gradient(to right, rgba(255,242,0,0.85), rgba(255,40,0,0.6));
+  }
+  .dfn-apex-node {
+    width: 13px;
+    height: 13px;
+    box-shadow: 0 0 0 5px rgba(255,242,0,0.14);
+  }
+
+  /* frl cards on the carbon (inverse) slides: keep contrast readable */
+  .dfn-on-dark { background: rgba(23, 23, 28, 0.72); border-color: rgba(255,255,255,0.12); }
+  .dfn-title-dark { color: var(--ink-inverse); }
+
+  /* Cards enter as if the lap sweeps left-to-right through the apex */
+  @media (prefers-reduced-motion: no-preference) {
+    .dfn-flow > * { transition-delay: calc(var(--dfn-i, 0) * 60ms); }
+  }
+</style>

@@ -34,6 +34,16 @@ const prizeStats = [
   { stat: STATS.growth.value, en: 'year-over-year growth — and compounding', it: 'crescita anno su anno — che si accumula' },
   { stat: STATS.tifosi.value, en: 'Tifosi in the loop', it: 'Tifosi nel loop' },
 ];
+
+/* Apex geometry for the closed racing-line loop (viewBox 0 0 200 200).
+   Five phases spaced around the circuit, define at the top, running clockwise. */
+const loopApexes = [
+  { x: 100, y: 26 },
+  { x: 162, y: 78 },
+  { x: 138, y: 158 },
+  { x: 62, y: 158 },
+  { x: 38, y: 78 },
+];
 ---
 <BaseLayout title="The Loop">
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -45,9 +55,22 @@ const prizeStats = [
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('podium')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/78" />
-      <T en="THE LOOP" it="IL LOOP" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-[clamp(1.5rem,4.2vh,3rem)]" />
+
+      <!-- Closed racing-line loop: the lap that repeats, faster each pass -->
+      <div class="loop-ring mb-[clamp(1.5rem,4.4vh,3rem)]" data-reveal data-reveal-delay="0.15" aria-hidden="true">
+        <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none">
+          <circle cx="100" cy="100" r="82" stroke="rgba(255,255,255,0.08)" stroke-width="1" fill="none" />
+          <circle class="loop-ring__flow" cx="100" cy="100" r="82" stroke="var(--color-rosso-corsa)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="404 111" stroke-dashoffset="0" />
+          {loopApexes.map((a, i) => (
+            <circle cx={a.x} cy={a.y} r={i === 0 ? 6 : 4.5} fill={i === 0 ? 'var(--color-giallo-modena)' : 'var(--color-rosso-corsa)'} stroke="var(--color-carbonio)" stroke-width="1.5" />
+          ))}
+          <path d="M100 20 l-6 9 h12 z" fill="var(--color-giallo-modena)" stroke="none" />
+        </svg>
+      </div>
+
+      <T en="THE LOOP" it="IL LOOP" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-[clamp(1rem,3vh,2rem)]" />
       <T
-        as="h1" class="slide-title text-[var(--ink-inverse)] mb-[clamp(1.75rem,5.2vh,3.75rem)]" style="font-size: clamp(3rem, 7vw, 6.5rem);"
+        as="h1" class="slide-title text-[var(--ink-inverse)] mb-[clamp(1.5rem,4.4vh,3rem)]" style="font-size: clamp(2.75rem, 6.4vw, 5.75rem);"
         en="The virtuous loop."
         it="Il loop virtuoso."
       />
@@ -62,24 +85,38 @@ const prizeStats = [
     <!-- ── SLIDE 1: The Loop ──────────────────────────────────────── -->
     <Slide id="slide-loop" bg="inverse" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-15" scrim="bg-[var(--surface-inverse)]/88" />
-      <T en="END-TO-END" it="END-TO-END" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" />
+      <T en="END-TO-END" it="END-TO-END" as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-3" />
       <T
-        as="h2" class="slide-title text-[var(--ink-inverse)] mb-8" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(1.85rem, 3.9vw, 3.25rem);"
         en="Every campaign makes the next one smarter"
         it="Ogni campagna rende la prossima più intelligente"
       />
-      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-4 mb-8" data-reveal data-reveal-delay="0.2">
-        {loopSteps.map((step) => (
-          <div class="p-5 bg-[var(--color-grafite)]/40 border border-white/10 rounded-sm text-left">
-            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] text-sm mb-1">{step.num}</p>
-            <p class="text-base font-semibold text-[var(--ink-inverse)] mb-1"><span data-lang-en>{step.en}</span><span data-lang-it>{step.it}</span></p>
-            <p class="text-xs font-semibold text-[var(--accent-secondary)] mb-1.5"><span data-lang-en>{step.toolEn}</span><span data-lang-it>{step.toolIt}</span></p>
-            <p class="text-xs text-[var(--color-grigio-400)] leading-relaxed"><span data-lang-en>{step.descEn}</span><span data-lang-it>{step.descIt}</span></p>
-          </div>
-        ))}
+
+      <!-- The lap as diagram: closed circuit with the five phase apexes on it -->
+      <div class="loop-circuit w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <div class="loop-circuit__track" aria-hidden="true">
+          <svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" preserveAspectRatio="xMidYMid meet">
+            <circle cx="100" cy="100" r="84" stroke="rgba(255,255,255,0.10)" stroke-width="1" fill="none" />
+            <circle class="loop-circuit__flow" cx="100" cy="100" r="84" stroke="var(--color-rosso-corsa)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="6 12" />
+            {loopApexes.map((a, i) => (
+              <circle cx={a.x} cy={a.y} r="5" fill={i === 0 ? 'var(--color-giallo-modena)' : 'var(--color-rosso-corsa)'} stroke="var(--color-carbonio)" stroke-width="1.5" />
+            ))}
+          </svg>
+        </div>
+        <div class="loop-circuit__nodes">
+          {loopSteps.map((step) => (
+            <div class="loop-node">
+              <p class="loop-node__num">{step.num}</p>
+              <p class="loop-node__phase"><span data-lang-en>{step.en}</span><span data-lang-it>{step.it}</span></p>
+              <p class="loop-node__tool"><span data-lang-en>{step.toolEn}</span><span data-lang-it>{step.toolIt}</span></p>
+              <p class="loop-node__desc"><span data-lang-en>{step.descEn}</span><span data-lang-it>{step.descIt}</span></p>
+            </div>
+          ))}
+        </div>
       </div>
+
       <T
-        as="p" class="text-[clamp(1rem,1.3vw,1.25rem)] text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        as="p" class="text-[clamp(1rem,1.3vw,1.25rem)] text-[var(--color-grigio-300)] max-w-3xl mx-auto mt-6"
         en="Then back to step 1. Season over season, the collaboration compounds."
         it="Poi di nuovo allo step 1. Stagione dopo stagione, la collaborazione si accumula."
       />
@@ -88,25 +125,28 @@ const prizeStats = [
     <!-- ── SLIDE 2: The Engine ────────────────────────────────────── -->
     <Slide id="slide-engine" bg="inverse" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('bg-carbon')} imageClass="opacity-20" scrim="bg-[var(--surface-inverse)]/85" />
-      <T en="THE ENGINE" it="IL MOTORE" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-4" />
+      <T en="THE ENGINE" it="IL MOTORE" as="p" class="slide-eyebrow text-[var(--accent-secondary)] mb-3" />
       <T
-        as="h2" class="slide-title text-[var(--ink-inverse)] mb-4" style="font-size: clamp(2rem, 4.2vw, 3.5rem);"
+        as="h2" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(1.85rem, 3.9vw, 3.25rem);"
         en="One connected system"
         it="Un unico sistema connesso"
       />
-      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-2.5 mb-3" data-reveal data-reveal-delay="0.2">
-        {engineStack.map((tool) => (
-          <div class="flex items-baseline gap-3 p-4 bg-[var(--color-grafite)]/35 border border-white/10 rounded-sm text-left">
-            <span class="shrink-0 w-1.5 h-1.5 mt-2 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-            <div>
-              <p class="text-sm font-semibold text-[var(--ink-inverse)]">{tool.name}</p>
-              <p class="text-xs text-[var(--color-grigio-400)] leading-relaxed"><span data-lang-en>{tool.en}</span><span data-lang-it>{tool.it}</span></p>
+      <div class="engine-stack w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.2">
+        {engineStack.map((tool, i) => (
+          <div class="engine-row">
+            <div class="engine-row__rail" aria-hidden="true">
+              <span class="engine-row__node"></span>
+              {i < engineStack.length - 1 && <span class="engine-row__line"></span>}
+            </div>
+            <div class="engine-row__body">
+              <p class="engine-row__name">{tool.name}</p>
+              <p class="engine-row__desc"><span data-lang-en>{tool.en}</span><span data-lang-it>{tool.it}</span></p>
             </div>
           </div>
         ))}
       </div>
       <T
-        as="p" class="text-[clamp(1.05rem,1.4vw,1.35rem)] font-semibold text-[var(--ink-inverse)] max-w-3xl mx-auto"
+        as="p" class="text-[clamp(1.05rem,1.4vw,1.35rem)] font-semibold text-[var(--ink-inverse)] max-w-3xl mx-auto mt-6"
         en="One engine, five products, no seams between them."
         it="Un motore, cinque prodotti, senza discontinuità tra loro."
       />
@@ -121,20 +161,20 @@ const prizeStats = [
         it="Trasforma il dato nella prossima pole position"
       />
       <T
-        as="p" class="text-[clamp(1rem,1.35vw,1.25rem)] text-white/85 max-w-3xl mx-auto mb-3"
+        as="p" class="text-[clamp(1rem,1.35vw,1.25rem)] text-white/85 max-w-3xl mx-auto mb-4"
         en="With proof of value, Ferrari keeps and grows its sponsors, commands a price premium and attracts net-new partners, and the result compounds season after season."
         it="Con la prova del valore, Ferrari trattiene e fa crescere i suoi sponsor, impone un premium di prezzo e attrae partner del tutto nuovi, e il risultato si accumula stagione dopo stagione."
       />
-      <div class="w-full max-w-3xl mx-auto grid grid-cols-3 gap-6 mb-3" data-reveal data-reveal-delay="0.22">
+      <div class="prize-stats w-full max-w-3xl mx-auto" data-reveal data-reveal-delay="0.22">
         {prizeStats.map((s) => (
-          <div class="text-center">
-            <p class="font-[family-name:var(--font-display)] font-bold text-white leading-none mb-1.5" style="font-size: clamp(1.5rem,3vw,2.5rem);">{s.stat}</p>
-            <T as="p" class="text-sm text-white/80" en={s.en} it={s.it} />
+          <div class="prize-stat">
+            <p class="prize-stat__value">{s.stat}</p>
+            <T as="p" class="prize-stat__label" en={s.en} it={s.it} />
           </div>
         ))}
       </div>
       <T
-        as="p" class="text-[clamp(0.95rem,1.15vw,1.15rem)] italic text-white/85 max-w-3xl mx-auto mb-3"
+        as="p" class="text-[clamp(0.95rem,1.15vw,1.15rem)] italic text-white/85 max-w-3xl mx-auto mt-4 mb-3"
         en="From Maranello to every fan, and back again as data."
         it="Da Maranello a ogni tifoso, e ritorno come dato."
       />
@@ -150,4 +190,112 @@ const prizeStats = [
     </Slide>
 
   </DeckContainer>
+
+  <style>
+    /* ── Cover: the racing line closed into a repeating lap ────────── */
+    .loop-ring {
+      width: clamp(9rem, 18vh, 15rem);
+      aspect-ratio: 1 / 1;
+      margin-inline: auto;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .loop-ring__flow { animation: loop-spin 6s linear infinite; transform-origin: 100px 100px; }
+      @keyframes loop-spin { to { stroke-dashoffset: -515; } }
+    }
+
+    /* ── Loop diagram: circuit ring with the five phase nodes on it ── */
+    .loop-circuit {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.9rem;
+      align-items: stretch;
+    }
+    .loop-circuit__track {
+      position: absolute;
+      inset: -0.75rem 0 -0.75rem 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.55;
+      display: flex; justify-content: center;
+    }
+    .loop-circuit__track svg { width: min(46vh, 30rem); height: 100%; }
+    @media (prefers-reduced-motion: no-preference) {
+      .loop-circuit__flow { animation: loop-dash 3.4s linear infinite; transform-origin: 100px 100px; }
+      @keyframes loop-dash { to { stroke-dashoffset: -108; } }
+    }
+    .loop-circuit__nodes {
+      position: relative;
+      z-index: 1;
+      display: contents;
+    }
+    .loop-node {
+      background: rgba(23, 23, 28, 0.72);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 4px;
+      padding: 1.1rem 1.05rem 1.15rem;
+      text-align: left;
+      display: flex; flex-direction: column;
+      min-width: 0;
+    }
+    .loop-node__num {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.95rem; color: var(--color-rosso-corsa);
+      letter-spacing: 0.02em; margin-bottom: 0.35rem;
+    }
+    .loop-node__phase {
+      font-size: 1.05rem; font-weight: 600; line-height: 1.2;
+      color: var(--ink-inverse); margin-bottom: 0.4rem;
+    }
+    .loop-node__tool {
+      font-size: 0.8rem; font-weight: 600; line-height: 1.35;
+      color: var(--accent-secondary); margin-bottom: 0.5rem;
+    }
+    .loop-node__desc {
+      font-size: 0.82rem; line-height: 1.5;
+      color: var(--color-grigio-300);
+    }
+
+    /* ── Engine: connected stack on a single running rail ──────────── */
+    .engine-stack { display: flex; flex-direction: column; gap: 0; }
+    .engine-row { display: flex; gap: 1.1rem; align-items: stretch; text-align: left; }
+    .engine-row__rail {
+      position: relative; flex: 0 0 auto; width: 1.1rem;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .engine-row__node {
+      width: 0.7rem; height: 0.7rem; border-radius: 50%;
+      background: var(--color-rosso-corsa);
+      box-shadow: 0 0 0 3px rgba(255,40,0,0.18);
+      margin-top: 0.55rem; flex: 0 0 auto;
+    }
+    .engine-row__line {
+      flex: 1 1 auto; width: 2px;
+      background: linear-gradient(to bottom, var(--color-rosso-corsa), rgba(255,40,0,0.25));
+      margin: 0.25rem 0 -0.1rem;
+    }
+    .engine-row__body {
+      padding: 0.55rem 0 0.85rem;
+      min-width: 0;
+    }
+    .engine-row:last-child .engine-row__body { padding-bottom: 0; }
+    .engine-row__name {
+      font-size: 1.02rem; font-weight: 600; line-height: 1.25;
+      color: var(--ink-inverse); margin-bottom: 0.2rem;
+    }
+    .engine-row__desc {
+      font-size: 0.9rem; line-height: 1.5;
+      color: var(--color-grigio-300);
+    }
+
+    /* ── Prize: metric row ─────────────────────────────────────────── */
+    .prize-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+    .prize-stat { text-align: center; min-width: 0; }
+    .prize-stat__value {
+      font-family: var(--font-display); font-weight: 700;
+      color: #fff; line-height: 1; margin-bottom: 0.4rem;
+      font-size: clamp(1.5rem, 3vw, 2.5rem); letter-spacing: -0.02em;
+    }
+    .prize-stat__label { font-size: 0.95rem; line-height: 1.4; color: rgba(255,255,255,0.85); }
+  </style>
 </BaseLayout>

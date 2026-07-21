@@ -36,24 +36,46 @@ const journey = [
 
   <DeckContainer nextHref={href(base, '/protagonisti')}>
 
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <!-- ── SLIDE 0: Cover (INTRO / hero — the racing line) ─────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('bg-track-night')} imageClass="opacity-45" scrim="bg-gradient-to-t from-[var(--surface-inverse)] via-[var(--surface-inverse)]/74 to-[var(--surface-inverse)]/50" />
-      <p class="slide-eyebrow text-[var(--accent-secondary)] mb-5" data-reveal>FERRARI RACING × ADOBE</p>
-      <T en="Pole Position" it="Pole Position" as="h1" class="slide-title text-[var(--ink-inverse)] mb-6" style="font-size: clamp(3.5rem, 9vw, 8rem); text-transform: uppercase;" />
+
+      <!-- Racing line: a Rosso telemetry sweep through the hero, apex nodes = the
+           connections data collaboration finds. Behind the title block, non-obscuring. -->
+      <svg class="hero-line" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMid slice" aria-hidden="true" data-reveal data-reveal-delay="0.15">
+        <defs>
+          <linearGradient id="heroLineGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="rgba(255,40,0,0.05)" />
+            <stop offset="0.55" stop-color="rgba(255,40,0,0.55)" />
+            <stop offset="1" stop-color="rgba(255,40,0,0.95)" />
+          </linearGradient>
+        </defs>
+        <path class="hero-line-path" d="M-40 388 C 260 388, 300 150, 560 150 S 900 388, 1120 300 S 1360 128, 1500 132"
+              fill="none" stroke="url(#heroLineGrad)" stroke-width="2.5" stroke-linecap="round" />
+        <g fill="none" stroke="rgba(255,40,0,0.85)" stroke-width="1.5">
+          <circle class="hero-node" cx="560" cy="150" r="6" />
+          <circle class="hero-node" cx="1120" cy="300" r="6" />
+        </g>
+        <g fill="rgba(255,242,0,0.95)" stroke="none">
+          <circle class="hero-node hero-node--giallo" cx="1500" cy="132" r="5.5" />
+        </g>
+      </svg>
+
+      <p class="slide-eyebrow text-[var(--accent-secondary)] mb-5 relative z-10" data-reveal>FERRARI RACING × ADOBE</p>
+      <T en="Pole Position" it="Pole Position" as="h1" class="slide-title text-[var(--ink-inverse)] mb-6 relative z-10" style="font-size: clamp(3.5rem, 9vw, 8rem); text-transform: uppercase;" />
       <T
         as="p"
-        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto"
+        class="slide-lead text-[var(--color-grigio-300)] max-w-3xl mx-auto relative z-10"
         en="Fan data that turns a sponsorship into a partnership you can measure all season, from Maranello to every fan."
         it="Il dato dei tifosi che trasforma una sponsorship in una partnership misurabile per tutta la stagione, da Maranello a ogni tifoso."
       />
-      <div class="flex items-center justify-center gap-3 mt-9" data-reveal data-reveal-delay="0.3">
+      <div class="flex items-center justify-center gap-3 mt-9 relative z-10" data-reveal data-reveal-delay="0.3">
         <span class="px-3 py-1.5 text-xs font-semibold tracking-widest uppercase rounded-sm bg-[var(--accent-primary)] text-white">Scuderia Ferrari HP</span>
         <span class="text-[var(--color-grigio-400)] text-sm">
           <span data-lang-en>powered by Adobe</span><span data-lang-it>con Adobe</span>
         </span>
       </div>
-      <p class="mt-7 text-center text-[0.58rem] tracking-widest uppercase text-[var(--color-grigio-500)] max-w-2xl mx-auto">
+      <p class="mt-7 text-center text-[0.58rem] tracking-widest uppercase text-[var(--color-grigio-500)] max-w-2xl mx-auto relative z-10">
         <span data-lang-en>Concept demo — illustrative scenario not commissioned by Ferrari · Public data cited at sources</span>
         <span data-lang-it>Demo concettuale — scenario illustrativo non commissionato da Ferrari · Dati pubblici citati alle fonti</span>
       </p>
@@ -150,3 +172,38 @@ const journey = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* Cover hero device — the racing line. Behind the title block (z-0),
+     never over the reading zone; colours are explicit rgba only. */
+  #slide-cover { position: relative; }
+  #slide-cover .hero-line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.9;
+  }
+  #slide-cover .hero-line-path {
+    stroke-dasharray: 2400;
+    stroke-dashoffset: 0;
+  }
+  #slide-cover .hero-node { filter: drop-shadow(0 0 6px rgba(255,40,0,0.55)); }
+  #slide-cover .hero-node--giallo { filter: drop-shadow(0 0 6px rgba(255,242,0,0.5)); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    #slide-cover .hero-line-path {
+      stroke-dashoffset: 2400;
+      animation: hero-draw 1.6s ease-out 0.2s forwards;
+    }
+    #slide-cover .hero-node {
+      opacity: 0;
+      animation: hero-node-in 0.5s ease-out 1.2s forwards;
+    }
+    #slide-cover .hero-node--giallo { animation-delay: 1.5s; }
+    @keyframes hero-draw { to { stroke-dashoffset: 0; } }
+    @keyframes hero-node-in { from { opacity: 0; } to { opacity: 1; } }
+  }
+</style>
