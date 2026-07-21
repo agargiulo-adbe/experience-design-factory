@@ -43,6 +43,12 @@ const strati = [
     ],
   },
 ];
+
+const statoTone = (stato) =>
+  stato === 'Attivo'          ? 'bg-emerald-500/15 text-emerald-400' :
+  stato === 'Parziale'        ? 'bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)]' :
+  stato === 'Opportunità'     ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' :
+                                'bg-[var(--color-binario)] text-[var(--color-grigio-200)]';
 ---
 <BaseLayout
   title="Le fondamenta che avete già"
@@ -59,6 +65,8 @@ const strati = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
         eyebrow="02 · Foundation"
         numeral="02"
@@ -70,59 +78,67 @@ const strati = [
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Ecosistema a strati (righe full-width impilate) ── -->
+    <!-- ── SLIDE 1: Ecosistema a strati (nodi sulla linea del segnale) ── -->
     <Slide id="slide-ecosystem" bg="primary" align="center">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        L'ECOSISTEMA ATTUALE · CJA SI AGGIUNGE SOPRA
-      </p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.55rem, 2.1vw, 1.9rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Un ecosistema ricco. Un layer da completare.
-      </h2>
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
 
-      <div
-        class="w-full max-w-6xl mx-auto flex flex-col gap-2"
-        data-reveal
-        data-reveal-delay="0.2"
-      >
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            L'ECOSISTEMA ATTUALE · CJA SI AGGIUNGE SOPRA
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.3vw, 2.1rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Un ecosistema ricco. Un layer da completare.
+          </h2>
+        </div>
+
         {/* strati: Oracle Responsys fonte campione email luglio 2026 · AEM fonte osservazione pubblica · Salesforce v. slide successiva */}
-        {strati.map((strato) => (
-          <div class="grid grid-cols-[14rem_1fr] items-center gap-4 px-5 py-1.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <div class="flex items-center gap-3 border-r border-[var(--line-subtle)] pr-5">
-              <div class="w-2.5 h-2.5 rounded-full flex-shrink-0" style={`background: ${strato.color};`} aria-hidden="true"/>
-              <p class="text-[0.82rem] font-bold tracking-widest uppercase leading-tight" style={`color: ${strato.color};`}>
-                {strato.layer}
-              </p>
-            </div>
-            <div class={`grid gap-3 ${strato.prodotti.length > 1 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-              {strato.prodotti.map((p) => (
-                <div class="flex items-center gap-4 px-4 py-1.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm">
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2.5 flex-wrap mb-0.5">
-                      <p class="text-[1.1rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">
-                        {p.nome}
-                      </p>
-                      <span class={[
-                        'text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0',
-                        p.stato === 'Attivo'            ? 'bg-emerald-500/15 text-emerald-400' :
-                        p.stato === 'Parziale'          ? 'bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)]' :
-                        p.stato === 'Opportunità'       ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' :
-                                                          'bg-[var(--color-binario)] text-[var(--color-grigio-200)]',
-                      ].join(' ')}>
-                        {p.stato}
-                      </span>
+        <div class="relative flex flex-col gap-3">
+          {/* la linea del segnale che infila i nodi-stazione */}
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+
+          {strati.map((strato, i) => (
+            <div
+              class="relative grid md:grid-cols-[15rem_1fr] items-center gap-4 md:pl-0"
+              data-reveal
+              data-reveal-delay={(0.16 + i * 0.07).toFixed(2)}
+            >
+              <div class="flex items-center gap-4">
+                <span
+                  class="fs-node flex-shrink-0 relative z-10"
+                  data-active
+                  style={`border-color: ${strato.color}; box-shadow: 0 0 18px ${strato.color}55;`}
+                  aria-hidden="true"
+                >{i + 1}</span>
+                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style={`color: ${strato.color}; font-size: 0.82rem;`}>
+                  {strato.layer}
+                </p>
+              </div>
+
+              <div class={`grid gap-3 ${strato.prodotti.length > 1 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                {strato.prodotti.map((p) => (
+                  <div class="fs-card flex items-center gap-4" style="padding: 0.85rem 1.1rem;">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                        <p class="fs-card-title" style="font-size: 1.1rem;">{p.nome}</p>
+                        <span class={['text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0', statoTone(p.stato)].join(' ')}>
+                          {p.stato}
+                        </span>
+                      </div>
+                      <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.4;">{p.desc}</p>
                     </div>
-                    <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-tight">{p.desc}</p>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Slide>
 
@@ -134,70 +150,69 @@ const strati = [
         imageClass="opacity-08"
         scrim="bg-[var(--surface-secondary)]/94"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
-        FS TECHNOLOGY + SALESFORCE · Q1 2026
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.3vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        La foundation agentica è partita.<br/>Adobe si innesta su di essa.
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
-        style="font-size: clamp(0.98rem, 1.15vw, 1.1rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        A marzo 2026 FS Technology ha lanciato con Salesforce una piattaforma agentica che unisce
-        Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM — MuleSoft come
-        integration engine, Data Cloud come layer dati. Adobe CJA ingerisce da Data Cloud via
-        connettore nativo e aggiunge l'intelligenza del journey che nessun CRM genera da solo.
-      </p>
+      <div slot="backdrop" class="fs-bg-soft"></div>
 
-      <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4 mb-2.5"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {[
-          {
-            prodotto: 'Salesforce CRM',
-            ruolo: 'Backbone operativo',
-            adobe: 'Adobe CJA legge i profili CRM e li arricchisce con behavioral journey data',
-            icon: '☁️',
-          },
-          {
-            prodotto: 'MuleSoft',
-            ruolo: 'Integration engine',
-            adobe: 'Già in campo → feed dati verso AEP/CJA senza nuova infrastruttura',
-            icon: '🔗',
-          },
-          {
-            prodotto: 'Salesforce Data Cloud',
-            ruolo: 'Layer dati centralizzato',
-            adobe: 'Connettore nativo AEP: data flow da Data Cloud verso CJA e RTCDP',
-            icon: '🗄️',
-          },
-        ].map((item) => (
-          <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="text-[1.1rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-0.5">{item.prodotto}</p>
-            <p class="text-[0.78rem] text-[var(--accent-secondary)] font-semibold uppercase tracking-wide mb-1">{item.ruolo}</p>
-            <p class="text-[0.95rem] text-[var(--ink-secondary)] leading-tight">
-              <strong class="text-[var(--accent-primary)]">Adobe:</strong> {item.adobe}
-            </p>
-          </div>
-        ))}
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="fs-panel fs-panel--rosso mb-5" data-reveal>
+          <p class="fs-panel-tag">FS TECHNOLOGY + SALESFORCE · Q1 2026</p>
+          <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
+            La foundation agentica è partita.<br/>Adobe si innesta su di essa.
+          </h2>
+          <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.62;">
+            A marzo 2026 FS Technology ha lanciato con Salesforce una piattaforma agentica che unisce
+            Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM — MuleSoft come
+            integration engine, Data Cloud come layer dati. Adobe CJA ingerisce da Data Cloud via
+            connettore nativo e aggiunge l'intelligenza del journey che nessun CRM genera da solo.
+          </p>
+        </div>
+
+        <div
+          class="grid md:grid-cols-3 gap-4 mb-4"
+          data-reveal
+          data-reveal-delay="0.14"
+        >
+          {[
+            {
+              n: '01',
+              prodotto: 'Salesforce CRM',
+              ruolo: 'Backbone operativo',
+              adobe: 'Adobe CJA legge i profili CRM e li arricchisce con behavioral journey data',
+            },
+            {
+              n: '02',
+              prodotto: 'MuleSoft',
+              ruolo: 'Integration engine',
+              adobe: 'Già in campo → feed dati verso AEP/CJA senza nuova infrastruttura',
+            },
+            {
+              n: '03',
+              prodotto: 'Salesforce Data Cloud',
+              ruolo: 'Layer dati centralizzato',
+              adobe: 'Connettore nativo AEP: data flow da Data Cloud verso CJA e RTCDP',
+            },
+          ].map((item) => (
+            <div class="fs-card flex flex-col">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="fs-mark" aria-hidden="true">{item.n}</span>
+                <div>
+                  <p class="fs-card-title" style="font-size: 1.1rem;">{item.prodotto}</p>
+                  <p class="text-[0.78rem] text-[var(--accent-secondary)] font-semibold uppercase tracking-wide">{item.ruolo}</p>
+                </div>
+              </div>
+              <p class="fs-card-body" style="font-size: 0.95rem;">
+                <strong class="text-[var(--accent-secondary)]">Adobe:</strong> {item.adobe}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p class="fs-panel-src text-center" data-reveal data-reveal-delay="0.24">
+          Fonte:&nbsp;
+          <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-80">
+            fsnews.it — FS Technology + Salesforce Foundation Digitale (mar 2026)
+          </a>
+        </p>
       </div>
-
-      <p class="text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.3">
-        Fonte:&nbsp;
-        <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-80">
-          fsnews.it — FS Technology + Salesforce Foundation Digitale (mar 2026)
-        </a>
-      </p>
     </Slide>
 
     <!-- ── SLIDE 3: La scelta · non disruption, connessione ──────── -->
@@ -208,42 +223,44 @@ const strati = [
         imageClass="opacity-08"
         scrim="bg-[var(--accent-primary)]/90"
       />
-      <p class="slide-eyebrow text-center text-[var(--color-ghiaccio)]/70 mb-8" data-reveal>
-        IL PRINCIPIO GUIDA
-      </p>
-      <h2
-        class="text-[var(--color-ghiaccio)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Non sostituire.<br/>Connettere.
-      </h2>
-      <p
-        class="text-[var(--color-ghiaccio)]/80 leading-relaxed max-w-xl mx-auto mb-10"
-        style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
-        data-reveal
-        data-reveal-delay="0.16"
-      >
-        Oracle Responsys continua a eseguire le campagne, Salesforce a gestire i profili,
-        AEM a consegnare i contenuti. CJA si aggiunge come layer che li legge tutti e restituisce,
-        per la prima volta, una vista del journey completa e pronta all'uso.
-      </p>
-
-      <div
-        class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto"
-        data-reveal
-        data-reveal-delay="0.24"
-      >
-        <a
-          href={href(base, '/convergenza')}
-          class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ghiaccio)] text-[var(--color-carbonio)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+      <div class="w-full max-w-3xl mx-auto text-left">
+        <p class="slide-eyebrow text-[var(--color-ghiaccio)]/70 mb-8" data-reveal>
+          IL PRINCIPIO GUIDA
+        </p>
+        <div class="fs-quote" data-reveal data-reveal-delay="0.08">
+          <h2
+            class="fs-quote-text text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)]"
+            style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
+          >
+            Non sostituire.<br/>Connettere.
+          </h2>
+        </div>
+        <p
+          class="text-[var(--color-ghiaccio)]/85 leading-relaxed max-w-2xl mt-6 mb-10"
+          style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
+          data-reveal
+          data-reveal-delay="0.16"
         >
-          CJA: il layer di convergenza
-          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
+          Oracle Responsys continua a eseguire le campagne, Salesforce a gestire i profili,
+          AEM a consegnare i contenuti. CJA si aggiunge come layer che li legge tutti e restituisce,
+          per la prima volta, una vista del journey completa e pronta all'uso.
+        </p>
+
+        <div
+          class="flex flex-col sm:flex-row gap-4 max-w-2xl"
+          data-reveal
+          data-reveal-delay="0.24"
+        >
+          <a
+            href={href(base, '/convergenza')}
+            class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ghiaccio)] text-[var(--color-carbonio)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+          >
+            CJA: il layer di convergenza
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
       </div>
     </Slide>
 

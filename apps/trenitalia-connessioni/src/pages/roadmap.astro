@@ -20,6 +20,7 @@ const roadmapPhases = [
     prodotti: ['Customer Journey Analytics', 'Adobe Analytics (×2)', 'Content Analytics'],
     deliverable: 'Prima vista end-to-end del journey. Identità stitching cross-domain. Workspace FS + Content Analytics su AEM.',
     kpi: 'Meno blind spot · vista journey completa · AEM data-driven',
+    attiva: true,
   },
   {
     fase: 'Fase 2',
@@ -29,6 +30,7 @@ const roadmapPhases = [
     prodotti: ['Adobe Real-Time CDP', 'Adobe Journey Optimizer', 'Adobe Target (extension)'],
     deliverable: 'RTCDP profili unificati real-time. AJO orchestra il journey omnicanale sopra Responsys. Target esteso a funnel e app.',
     kpi: 'Più rinnovi · meno abbandono funnel · più engagement app — da validare',
+    attiva: true,
   },
   {
     fase: 'Fase 3',
@@ -38,6 +40,7 @@ const roadmapPhases = [
     prodotti: ['Adobe Mix Modeler', 'Adobe Data Collaboration', 'Adobe GenStudio'],
     deliverable: 'Mix Modeler ottimizza il budget media cross-canale. Data Collaboration FS Park × Trenitalia a regime. GenStudio + Target per creative performance.',
     kpi: 'ROI media ottimizzato · Revenue bundle misurabile — da validare',
+    attiva: false,
   },
 ];
 
@@ -75,6 +78,8 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center" data-solution="rtcdp">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
         eyebrow="05 · Roadmap"
         numeral="05"
@@ -88,17 +93,19 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 1: Le 3 fasi ─────────────────────────────────────── -->
     <Slide id="slide-3fasi" bg="primary" align="center" data-solution="rtcdp">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-dashboard')}
         imageClass="opacity-10"
         scrim="bg-[var(--surface-primary)]/90"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
         L'ECOSISTEMA ADOBE PER FS · TRE FASI
       </p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-8 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -106,49 +113,58 @@ const mixModelerCapabilita = [
         Da analytics a intelligence. Passo dopo passo.
       </h2>
 
-      <div
-        class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-3.5"
-        data-reveal
-        data-reveal-delay="0.18"
-      >
-        {roadmapPhases.map((phase) => (
-          <div class="px-5 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex flex-col gap-2">
-            <div>
-              <div class="flex items-center gap-2 mb-1.5">
-                <span class="inline-block text-[0.78rem] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm" style={`color: ${phase.colore}; background: color-mix(in srgb, ${phase.colore} 14%, transparent);`}>
-                  {phase.fase}
-                </span>
-                <p class="text-[0.88rem] text-[var(--color-grigio-300)]">{phase.label}</p>
+      <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
+        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 16.6%; right: 16.6%;" aria-hidden="true"></span>
+        <div class="grid md:grid-cols-3 gap-5 relative items-stretch">
+          {roadmapPhases.map((phase, i) => (
+            <div class="flex flex-col items-center h-full">
+              <span
+                class="fs-node mb-4 relative z-10"
+                data-active={phase.attiva ? '' : undefined}
+                aria-hidden="true"
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div class="fs-panel w-full text-left flex flex-col gap-3 h-full">
+                <div>
+                  <div class="flex items-baseline gap-2.5 mb-1">
+                    <span class="fs-panel-tag" style={`color: ${phase.colore};`}>{phase.fase}</span>
+                    <span class="fs-node-label uppercase tracking-widest text-[0.72rem]">{phase.label}</span>
+                  </div>
+                  <p class="fs-panel-head" style="font-size: 1.28rem;">{phase.headline}</p>
+                </div>
+                <div>
+                  <p class="fs-panel-tag mb-1.5" style="color: rgba(242,244,248,0.55);">PRODOTTI</p>
+                  <ul class="space-y-1">
+                    {phase.prodotti.map((p) => (
+                      <li class="flex items-center gap-2.5 fs-card-body">
+                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={`background: ${phase.colore};`} aria-hidden="true"/>
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="pt-3 mt-auto border-t border-[var(--line-subtle)]">
+                  <p class="fs-panel-tag mb-1" style="color: rgba(242,244,248,0.55);">KPI TARGET</p>
+                  <p class="fs-card-body italic text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.95);">{phase.kpi}</p>
+                </div>
               </div>
-              <p class="text-[1.2rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{phase.headline}</p>
             </div>
-            <div>
-              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">PRODOTTI</p>
-              <ul class="space-y-0.5">
-                {phase.prodotti.map((p) => (
-                  <li class="flex items-center gap-2.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
-                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style={`background: ${phase.colore};`} aria-hidden="true"/>
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div class="pt-2 border-t border-[var(--line-subtle)] mt-auto">
-              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1">KPI TARGET</p>
-              <p class="text-[1rem] text-[var(--ink-primary)] font-semibold leading-snug italic">{phase.kpi}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Slide>
 
     <!-- ── SLIDE 1b: Fase 1 Deep-dive · CJA ──────────────────────── -->
     <Slide id="slide-fase1-cja" bg="secondary" align="center" data-solution="rtcdp">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        FASE 1 · CUSTOMER JOURNEY ANALYTICS · SUBITO
-      </p>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="flex items-center justify-center gap-3 mb-3" data-reveal>
+        <span class="fs-node" data-active aria-hidden="true">01</span>
+        <p class="fs-panel-tag">FASE 1 · CUSTOMER JOURNEY ANALYTICS · SUBITO</p>
+      </div>
       <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -157,14 +173,14 @@ const mixModelerCapabilita = [
       </h2>
 
       <div
-        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5"
+        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch"
         data-reveal
         data-reveal-delay="0.18"
       >
         <!-- Cosa consegna Fase 1 -->
-        <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-          <p class="text-[0.8rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-3">COSA CONSEGNA FASE 1</p>
-          <ul class="space-y-1.5">
+        <div class="fs-panel text-left flex flex-col h-full">
+          <p class="fs-panel-tag mb-3">COSA CONSEGNA FASE 1</p>
+          <ul class="space-y-2.5">
             {[
               { label: 'Convergenza Analytics ×2', desc: 'Le due istanze Adobe Analytics unificate in CJA: prima vista end-to-end dalla homepage al checkout.' },
               { label: 'Content Analytics su AEM', desc: 'Quali contenuti e CTA guidano il booking — ottimizzazione editoriale data-driven su trenitalia.com.' },
@@ -173,8 +189,8 @@ const mixModelerCapabilita = [
             ].map((item) => (
               <li class="flex items-start gap-3">
                 <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
-                <p class="leading-snug text-[0.96rem] text-[var(--color-grigio-200)]">
-                  <strong class="font-semibold text-[var(--ink-primary)]">{item.label}: </strong>{item.desc}
+                <p class="fs-panel-body">
+                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">{item.label}: </strong>{item.desc}
                 </p>
               </li>
             ))}
@@ -182,9 +198,9 @@ const mixModelerCapabilita = [
         </div>
 
         <!-- Perché ora -->
-        <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-          <p class="text-[0.8rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-3">PERCHÉ INIZIARE ADESSO</p>
-          <ul class="space-y-1.5">
+        <div class="fs-panel fs-panel--rosso text-left flex flex-col h-full">
+          <p class="fs-panel-tag mb-3" style="color: rgba(226,0,26,0.98);">PERCHÉ INIZIARE ADESSO</p>
+          <ul class="space-y-2.5">
             {[
               { label: 'Adobe Analytics già attivo ×2', desc: 'Il Gruppo ha già le due istanze: Fase 1 lavora su ciò che esiste, senza nuove raccolte.' },
               { label: 'AEM su Edge Delivery', desc: 'Content Analytics non richiede infrastruttura aggiuntiva — integrazione in-product.' },
@@ -193,8 +209,8 @@ const mixModelerCapabilita = [
             ].map((item) => (
               <li class="flex items-start gap-3">
                 <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="leading-snug text-[0.96rem] text-[var(--color-grigio-200)]">
-                  <strong class="font-semibold text-[var(--ink-primary)]">{item.label}: </strong>{item.desc}
+                <p class="fs-panel-body">
+                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">{item.label}: </strong>{item.desc}
                 </p>
               </li>
             ))}
@@ -205,11 +221,14 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 2: RTCDP + AJO ───────────────────────────────────── -->
     <Slide id="slide-rtcdp-ajo" bg="secondary" align="center" data-solution="rtcdp">
-      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
-        FASE 2 · REAL-TIME CDP + ADOBE JOURNEY OPTIMIZER
-      </p>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="flex items-center justify-center gap-3 mb-3" data-reveal>
+        <span class="fs-node" data-active aria-hidden="true">02</span>
+        <p class="fs-panel-tag" style="color: var(--accent-secondary);">FASE 2 · REAL-TIME CDP + ADOBE JOURNEY OPTIMIZER</p>
+      </div>
       <h2
-        class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -218,15 +237,15 @@ const mixModelerCapabilita = [
       </h2>
 
       <div
-        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5"
+        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch"
         data-reveal
         data-reveal-delay="0.18"
       >
         <!-- RTCDP -->
-        <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-          <p class="text-[0.8rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-2">ADOBE REAL-TIME CDP</p>
-          <h3 class="text-[1.2rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1.5">Profili unificati in tempo reale</h3>
-          <ul class="space-y-1.5">
+        <div class="fs-panel text-left flex flex-col h-full">
+          <p class="fs-panel-tag mb-1.5" style="color: var(--accent-secondary);">ADOBE REAL-TIME CDP</p>
+          <h3 class="fs-panel-head mb-3" style="font-size: 1.28rem;">Profili unificati in tempo reale</h3>
+          <ul class="space-y-2.5">
             {[
               { label: 'Profilo unificato', desc: 'Identità risolta tra CJA, Salesforce, Responsys, App e FS Park — aggiornata in <1s.' },
               { label: 'Segmenti streaming', desc: 'Segmento "in scadenza 30gg + attivo nei 14gg" → disponibile in real-time per AJO.' },
@@ -235,8 +254,8 @@ const mixModelerCapabilita = [
             ].map((item) => (
               <li class="flex items-start gap-3">
                 <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="leading-snug text-[0.96rem] text-[var(--color-grigio-200)]">
-                  <strong class="font-semibold text-[var(--ink-primary)]">{item.label}: </strong>{item.desc}
+                <p class="fs-panel-body">
+                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">{item.label}: </strong>{item.desc}
                 </p>
               </li>
             ))}
@@ -244,13 +263,13 @@ const mixModelerCapabilita = [
         </div>
 
         <!-- AJO -->
-        <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-          <p class="text-[0.8rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-2">ADOBE JOURNEY OPTIMIZER</p>
-          <h3 class="text-[1.2rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1.5">Il journey come esperienza</h3>
-          <p class="text-[0.95rem] text-emerald-400 font-semibold mb-2 leading-snug">
+        <div class="fs-panel text-left flex flex-col h-full">
+          <p class="fs-panel-tag mb-1.5" style="color: var(--accent-secondary);">ADOBE JOURNEY OPTIMIZER</p>
+          <h3 class="fs-panel-head mb-2" style="font-size: 1.28rem;">Il journey come esperienza</h3>
+          <p class="text-[0.95rem] text-emerald-400 font-semibold mb-3 leading-snug">
             AJO orchestra SOPRA Responsys, non lo sostituisce: è il layer di decisione e timing.
           </p>
-          <ul class="space-y-1.5">
+          <ul class="space-y-2.5">
             {[
               { label: 'Journey orchestration', desc: 'Canvas visuale: trigger CJA → canale → esecuzione su Responsys, push app o AEM.' },
               { label: 'Decisioni AI', desc: 'L\'AI seleziona messaggio, canale e timing ottimali per ogni profilo.' },
@@ -259,8 +278,8 @@ const mixModelerCapabilita = [
             ].map((item) => (
               <li class="flex items-start gap-3">
                 <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="leading-snug text-[0.96rem] text-[var(--color-grigio-200)]">
-                  <strong class="font-semibold text-[var(--ink-primary)]">{item.label}: </strong>{item.desc}
+                <p class="fs-panel-body">
+                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">{item.label}: </strong>{item.desc}
                 </p>
               </li>
             ))}
@@ -271,11 +290,14 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 3: Mix Modeler ───────────────────────────────────── -->
     <Slide id="slide-mix-modeler" bg="primary" align="center" data-solution="mix-modeler">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        FASE 3 · ADOBE MIX MODELER · CAUSAL AI SUL BUDGET MEDIA
-      </p>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="flex items-center justify-center gap-3 mb-3" data-reveal>
+        <span class="fs-node" aria-hidden="true">03</span>
+        <p class="fs-panel-tag">FASE 3 · ADOBE MIX MODELER · CAUSAL AI SUL BUDGET MEDIA</p>
+      </div>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -284,22 +306,23 @@ const mixModelerCapabilita = [
       </h2>
 
       <div
-        class="w-full max-w-6xl mx-auto flex flex-col gap-2.5"
+        class="w-full max-w-6xl mx-auto flex flex-col gap-3"
         data-reveal
         data-reveal-delay="0.2"
       >
-        {mixModelerCapabilita.map((cap) => (
-          <div class="px-6 py-2.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left grid md:grid-cols-[14rem_1fr_1fr] gap-6 items-center">
+        {mixModelerCapabilita.map((cap, i) => (
+          <div class="fs-panel text-left grid md:grid-cols-[auto_13rem_1fr_1fr] gap-x-6 gap-y-2 items-center" style="padding-top: 1.1rem; padding-bottom: 1.1rem;">
+            <span class="fs-mark hidden md:inline-flex" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <div>
-              <p class="text-[1.15rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{cap.label}</p>
+              <p class="fs-panel-head" style="font-size: 1.12rem;">{cap.label}</p>
             </div>
             <div>
-              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-0.5">COSA FA</p>
-              <p class="text-[0.96rem] text-[var(--color-grigio-200)] leading-snug">{cap.desc}</p>
+              <p class="fs-panel-tag mb-1" style="color: rgba(242,244,248,0.55);">COSA FA</p>
+              <p class="fs-card-body">{cap.desc}</p>
             </div>
             <div>
-              <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-0.5">DIMENSIONE UNICA</p>
-              <p class="text-[0.96rem] text-[var(--color-grigio-200)] leading-snug">{cap.differenza}</p>
+              <p class="fs-panel-tag mb-1">DIMENSIONE UNICA</p>
+              <p class="fs-card-body">{cap.differenza}</p>
             </div>
           </div>
         ))}
@@ -308,7 +331,9 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 3b: Mix Modeler · use case FS ───────────────────── -->
     <Slide id="slide-mix-usecase" bg="secondary" align="center" data-solution="mix-modeler">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
         MIX MODELER · USE CASE FS · SCENARIO ILLUSTRATIVO
       </p>
       <h2
@@ -319,14 +344,14 @@ const mixModelerCapabilita = [
       >
         €2M spostati da TV a digital.<br/>Misurati, non intuiti.
       </h2>
-      <div class="w-full max-w-4xl mx-auto space-y-5 text-left" data-reveal data-reveal-delay="0.16">
-        <p class="text-[1.05rem] text-[var(--color-grigio-200)] leading-relaxed">
+      <div class="w-full max-w-4xl mx-auto fs-panel text-left flex flex-col gap-4" data-reveal data-reveal-delay="0.16">
+        <p class="fs-panel-body" style="font-size: 1.05rem;">
           FS investe in una campagna TV estiva per X-GO e Frecciarossa, affiancata da paid digital
           ed email Oracle Responsys. Oggi il contributo reale di ciascun canale resta opaco.
         </p>
-        <p class="text-[1.05rem] text-[var(--color-grigio-200)] leading-relaxed">
+        <p class="fs-panel-body" style="font-size: 1.05rem;">
           Mix Modeler misura l'incremento prenotazioni attribuibile a ogni canale, l'effetto halo
-          TV→digital e la saturazione per canale. <strong class="text-[var(--ink-primary)]">Output: spostare
+          TV→digital e la saturazione per canale. <strong class="text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">Output: spostare
           €2M da TV a paid digital</strong> per massimizzare le prenotazioni Frecciarossa nel Q3.
         </p>
       </div>
@@ -334,11 +359,13 @@ const mixModelerCapabilita = [
 
     <!-- ── SLIDE 4: GenStudio ─────────────────────────────────────── -->
     <Slide id="slide-genstudio" bg="secondary" align="center" data-solution="mix-modeler">
-      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-3" style="color: var(--accent-secondary);" data-reveal>
         ACCELERATORE CREATIVO · ADOBE GENSTUDIO FOR PERFORMANCE MARKETING
       </p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -347,7 +374,7 @@ const mixModelerCapabilita = [
       </h2>
 
       <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4 mb-4"
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4 mb-4 items-stretch"
         data-reveal
         data-reveal-delay="0.2"
       >
@@ -368,16 +395,16 @@ const mixModelerCapabilita = [
             desc: 'Test scalabile: ipotesi → esperimento → vincitore in produzione. L\'AI suggerisce cosa testare.',
           },
         ].map((item) => (
-          <div class="px-5 py-2.5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="text-xl mb-1.5" aria-hidden="true">{item.icon}</p>
-            <p class="text-[1.1rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1 leading-snug">{item.label}</p>
-            <p class="text-[0.96rem] text-[var(--color-grigio-200)] leading-snug">{item.desc}</p>
+          <div class="fs-card text-left flex flex-col gap-1.5 h-full">
+            <span class="fs-mark mb-1" aria-hidden="true">{item.icon}</span>
+            <p class="fs-card-title">{item.label}</p>
+            <p class="fs-card-body">{item.desc}</p>
           </div>
         ))}
       </div>
-      <div class="w-full max-w-5xl mx-auto px-5 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm mb-4" data-reveal data-reveal-delay="0.26">
-        <p class="text-[0.98rem] text-[var(--color-grigio-200)] text-center leading-snug">
-          <strong class="text-[var(--ink-primary)]">Il loop creativo:</strong> CJA + Mix Modeler identificano → GenStudio genera → Target testa → Experimentation scala → Responsys distribuisce. Review umana a ogni step.
+      <div class="w-full max-w-5xl mx-auto fs-panel mb-6" data-reveal data-reveal-delay="0.26">
+        <p class="fs-panel-body text-center">
+          <strong class="text-[var(--ink-primary)]" style="color: rgba(242,244,248,0.99);">Il loop creativo:</strong> CJA + Mix Modeler identificano → GenStudio genera → Target testa → Experimentation scala → Responsys distribuisce. Review umana a ogni step.
         </p>
       </div>
 
