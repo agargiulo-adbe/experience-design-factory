@@ -9,11 +9,12 @@ Monorepo di una **Experience Design Factory**: un motore condiviso (`packages/co
 **Experience Design** cliente è una *skin* (design token + contenuti + asset + config). Sopra, una
 **Super Admin Console** (`apps/console`) per gestire esperienze e utenti.
 
-Esperienze (cliente) — **quattro**:
+Esperienze (cliente) — **cinque**:
 - **Generazioni — Max Mara** (`apps/generazioni-maxmara`, ora su `/generazioni-maxmara/`) · IT, quiet-luxury. Prima istanza. **Ora config-driven** (Admin Console + runtimes + `.cs-*`) come le altre (lug 2026).
 - **Engagement Unlimited — UniCredit** (`apps/unicredit-engagement`) · IT · modello di contenuto più maturo (vedi §5).
 - **Pole Position — Ferrari × Adobe** (`apps/ferrari-racing`) · EN/IT bilingue, motorsport. Include la sezione **/scoping** (calcolatore di licensing RTCDP Collaboration + CJA; **modello v3 §20** — solo standalone, **volumi senza prezzi** + costo per istanza editabile; niente più SKU base/entitlement) e la nuova sezione **Casi d'uso** (scenari E2E su tutto il perimetro prodotti). Commit `ff03a71`.
 - **Connessioni Intelligenti — FS Group / Ferrovie** (`apps/trenitalia-connessioni`) · IT · 6 sezioni + Casi d'uso. **Oggetto del lavoro recente** (vedi §15).
+- **Trait d'Union — Agos** (`apps/agos-trait-dunion`) · IT · credito al consumo (gruppo CA/BPM), 7 sezioni + home. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (vedi §16).
 
 App interne (non-cliente):
 - **Experience Atelier** (`apps/atelier`, `/atelier/`) · **primo deck trilingue EN/IT/FR**; è il **piano di crescita enterprise della Factory stessa** presentato come Exp Design (8 sezioni / 30 slide). Live 2026-07-17, ritoccato 2026-07-20 (de-celebrazione + Gantt roadmap + KPI scorecard, §21.5b). Dettaglio completo in **§21**; estensione i18n core + fix gating in **§22**. Contesto sponsorship interno **implicito** (mai dichiarato nel deck).
@@ -27,7 +28,9 @@ Solo capability Adobe pubbliche / materiale demo — **niente IP cliente riserva
 
 **Regola vincolante trasversale:** ogni slide-deck rispetta il **Type & legibility contract** in `CLAUDE.md` (type generoso, ink leggibile, composizione bilanciata, frecce avanti+indietro tra sezioni) — l'`audit:deck` NON garantisce la leggibilità, va verificata leggendo uno screenshot 1920. Vedi §8.
 
-Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **5 app** esperienza incl. Atelier). `audit:deck` a **0 fallimenti hard** su tutti i deck (Atelier: solo soft `i` su slide volutamente ariose, whitelisted — §21). Deploy automatico su push a `main`.
+Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **6 app** esperienza incl. Atelier — 9 pacchetti totali), `pnpm typecheck`+`pnpm lint` verdi, **CI verde**. `audit:deck` a **0 fallimenti hard** su tutti i deck (Atelier: solo soft `i` su slide volutamente ariose, whitelisted — §21) **ma NON rigirato dopo il redesign del 21 lug** (l'ambiente sandbox non lo permette — vedi backlog §10). Deploy automatico su push a `main`.
+
+**Redesign «eccellenza» E2E (21 lug 2026, live in `main`):** tutti e **6 i deck** (5 cliente + Atelier) hanno un design-system brand-native `.xx-*` nel loro `global.css` e sono stati ricostruiti sezione-per-sezione con **copy/claim/numeri/fonti/personas verbatim**. Dettaglio, concept per esperienza e fix tecnici in **§23**.
 
 ---
 ## 2. Architettura
@@ -173,11 +176,12 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato 2026-07-20.
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato 2026-07-21.
 
-**P0 — nessuna voce aperta.** (build verde, `audit:deck` 0 hard su tutti i deck, deploy ok.)
+**P0 — nessuna voce aperta.** (build+typecheck+lint verdi, CI verde, deploy ok.)
 
 **P1 — prossimo**
+- **[P1] Rigirare `audit:deck` + QC visivo 1920 sui 6 deck ridisegnati** — area: tutti i deck · il redesign del 21 lug (§23) ha rifatto il layout di ogni slide ma **`audit:deck` non è stato rieseguito** (l'ambiente sandbox non raggiunge i webfont → `networkidle` non si stabilizza) e il QC 1920 è stato fatto **solo a campione** (manifesto/persona/payoff maxmara; roadmap/cover/opportunity FS; slice per gli altri). Girare l'audit contro un preview statico su tutti e 6 + leggere uno screenshot 1920 di ogni slide, fixare eventuali overflow/soft introdotti (agg. 2026-07-21).
 - **[P1] Accesso da VPN** — area: deploy/operativo · le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla rete ufficio Adobe ma **bloccate su VPN** (categoria proxy/**Zscaler** su `*.github.io`). **Ticket IT aperto (17 lug 2026), in attesa di riscontro** → follow-up sul ticket. Workaround demo = screen-share. Piano B (opt-in, non fatto) = redeploy su **Vercel** (`*.vercel.app`; richiede rework `base` path + env Supabase). NON è un bug del build.
 - **[P1] Showcase — a11y/Lighthouse pass** — area: `apps/factory-showcase` · verificare contrasto testi grigi su fondo chiaro, focus order, `prefers-reduced-motion`, per **certificare lo standard che la pagina dichiara** (oggi non certificato).
 
@@ -192,7 +196,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 - **[P2] Lint warnings Agos BaseLayout** — area: `apps/agos-trait-dunion/src/layouts/BaseLayout.astro` · warning non bloccanti emersi in CI (`var`→`let/const` righe ~45/48/50, `_` unused righe ~58/59). La CI passa comunque (sono warning, non errori); pulizia cosmetica (agg. 2026-07-20).
 
 **Note / rischi non azionabili (contesto, non todo)**
-- **CI vs Deploy (due workflow distinti)** — ogni push lancia **`CI`** (`.github/workflows/ci.yml`: install→typecheck→lint→build→`content-audit.ts`) **e** **`Deploy to GitHub Pages`** (`deploy.yml`). Sono indipendenti: il deploy può essere verde mentre CI è rossa (fu il caso fino a `5fc362e`). **CI ora verde.** `content-audit.ts` applica 4 regole statiche (stat su >2 pagine; stessa stat con label diverse; **frase ≥8 parole ripetuta 2× per pagina**; mashup bilingue en==it) su tutti gli `apps/*/dist` — tienile a mente quando duplichi copy tra data app-specifici e componenti core.
+- **CI vs Deploy (due workflow distinti)** — ogni push lancia **`CI`** (`.github/workflows/ci.yml`: install→typecheck→lint→build→`content-audit.ts`) **e** **`Deploy to GitHub Pages`** (`deploy.yml`). Sono indipendenti: il deploy può essere verde mentre CI è rossa (fu il caso fino a `5fc362e`; ricapitato brevemente dopo il redesign — vedi §23.2). **CI ora verde.** ⚠️ **`pnpm build` NON è il gate del CI**: `astro build` non fa il type-check completo e non linta → un redesign può avere `build` verde ma `typecheck`/`lint` rossi. **Prima di pushare, girare `pnpm typecheck` E `pnpm lint`, non solo `pnpm build`** (§23.2). `content-audit.ts` applica 4 regole statiche (stat su >2 pagine; stessa stat con label diverse; **frase ≥8 parole ripetuta 2× per pagina**; mashup bilingue en==it) su tutti gli `apps/*/dist` — tienile a mente quando duplichi copy tra data app-specifici e componenti core.
 - **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` + `0005_hub_registry.sql` + `0006_seed_agos.sql` + `0007_seed_atelier.sql` (Atelier `live`). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
 - **deck-audit** — tutti i deck a **0 hard**. NON reintrodurre micro-type per "far tornare i conti": il Type & legibility contract vince sempre.
 - **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (source of truth); se la modifichi, ri-copia i file e rigenera lo `.zip` (§13.4).
@@ -201,6 +205,13 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 
 ---
 ## 11. Change log recente (UniCredit, lug 2026)
+
+### Change log — Redesign «eccellenza» E2E dei 6 deck + consolidamento CI (21 lug 2026) → dettaglio §23
+- **Redesign E2E** di tutti e 6 i deck (Agos `.tdu-*`, Atelier `.loom-*`, Ferrari `.frl-*`, UniCredit `.uc-*`, Max Mara `.mm-*`, FS `.fs-*`): concept brand-native centralizzato in `global.css`, sezioni ricostruite via subagent, **copy/claim/numeri/fonti/personas verbatim**. Rollout su 6 branch feature, poi **merge `--no-ff` in `main`** (`572ba5b`/`1563e9e`/`ca541a1`/`0b610e6`/`25e7927`/`37b6650`), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati **eliminati** (remoti + locali) dopo il merge.
+- `de81eaf` **fix flip-ink Max Mara** (inverse-only): lo `Slide` applica lo sfondo come classe Tailwind, non `data-bg` → i selettori di flip non scattavano (numeri invisibili su slide scure); ritargettati alla classe reale, brand cammello tiene ink scuro (§23.1, memoria `deck-ink-flip-selector`).
+- `b0106bc` **fix 2 errori typecheck FS** (param `any` in `fondazione.astro`, campo `badge` inesistente in `scenario.astro`) — `astro check` rosso pur con `build` verde.
+- `0298ccc` **fix lint parsing error Agos**: un commento `<!-- -->` dentro il `.map()` di `scenario.astro` contava come 2° elemento root (`JSX expressions must have one parent element`), unico *error* che teneva rosso il gate lint (build/deploy non impattati). Il commento a livello template resta valido.
+- `52e47df` handover §23 aggiunto. **Lezione:** `pnpm build` verde non basta — girare `typecheck`+`lint` prima di ogni push di redesign (§23.2, nota "CI vs Deploy" §10).
 
 ### Change log — Agos: deck «casi d'uso evolutivi AEP» (PPTX, fuori repo) (20 lug 2026)
 - Prodotto **`docs/Agos/Agos_x_Adobe_Casi_uso_evolutivi_AEP.pptx`** — deck **24 slide IT su template Adobe** (rosso Adobe + accenti petrolio/acqua Agos), generato con **python-pptx** (PowerPoint nativo/editabile), NON un'app del monorepo. Contenuto: recap "cosa Adobe ha compreso" (profilo Agos con numeri di discovery ~9M/~5M/~3,7M/~80 use case, as-is Campaign v7 + Analytics + DWH Oracle/SAS-Matrix, contesto trasformazione set–ott 2027, **5 attriti**: dato di ritorno assente, dato rigido, offerte fuori, misura frammentata, canali non parlanti) + **9 casi d'uso evolutivi su AEP** (AJO/RTCDP/CJA: chiudere il loop caricata/liquidata, recupero abbandoni form TIG, transazione negata→journey, next-best-offer, inbound/outbound orchestrati, churn proattivo, agenti conversazionali, FAC su Snowflake, contenuti on-brand + link SMS) + roadmap Crawl/Walk/Run + next steps. Fonti: doc di discovery in `docs/Agos/` (sessioni, CVM, architettura) + librerie casi d'uso Adobe (Journey Optimizer / FSI / Retail Banking POV) in `docs/Agos/*.pptx`. **Non committato** (`docs/Agos/` in `.gitignore`); reso in PNG e verificato slide-per-slide (0 overflow). Non tocca app/build. Generatore usa-e-getta in `/tmp` (non nel repo). Distinto dal deck web `apps/agos-trait-dunion` (§16).

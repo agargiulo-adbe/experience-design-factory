@@ -134,7 +134,9 @@ light-dominant); **Max Mara** `.mm-*` "il filo di seta" cammello quiet-luxury (l
 **FS/Connessioni** `.fs-*` "la linea" signal-line ambra su rete scura (dark-dominant).
 
 I 6 branch feature mergiati in `main` con `--no-ff` (zero conflitti: ogni branch tocca solo la
-sua app), build completo pulito (9 app), **deploy live 21 lug**.
+sua app), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati
+**eliminati** (remoti + locali) dopo il merge. **`audit:deck` non rigirato** dopo il redesign
+(ambiente sandbox) e QC 1920 fatto solo a campione → follow-up P1 nel backlog (§10).
 
 ### 23.1 Fix tecnico riutilizzabile — flip degli ink su slide inverse/brand
 Il componente `Slide` (`@edf/core`) **NON espone `data-bg`**: applica lo sfondo come **classe
@@ -146,8 +148,15 @@ mid-tone chiaro, tieni ink scuro; flippa solo `inverse`. (2) `bg="inverse"` non 
 davvero chiare (es. FS `#slide-opportunity`), non a tutte le `inverse`. Verifica sempre le
 slide inverse/brand con screenshot 1920. Memoria `deck-ink-flip-selector`.
 
-### 23.2 Nota CI — `astro build` ≠ `astro check`
-`pnpm build` passa anche con errori TypeScript (astro build non fa il type-check completo); il
-CI usa `pnpm typecheck` (`astro check`) e li blocca. Due errori TS introdotti dai subagent FS
-(param `any`, campo inesistente) hanno reso il primo CI rosso pur con build verde → sistemati
-in `b0106bc`. **Prima di pushare un redesign: girare `pnpm typecheck`, non solo `pnpm build`.**
+### 23.2 Nota CI — `pnpm build` ≠ gate del CI (typecheck **e** lint)
+`pnpm build` passa anche con errori TypeScript e con problemi di lint (astro build non fa il
+type-check completo né linta); il CI usa `pnpm typecheck` (`astro check`) **e** `pnpm lint`
+(eslint) e li blocca. Nel consolidamento del redesign sono emersi, con `build` verde, tre casi:
+- **typecheck** — 2 errori TS dai subagent FS (param `any` in `fondazione.astro`; campo `badge`
+  inesistente in `scenario.astro`) → `b0106bc`.
+- **lint** — 1 *parsing error* in Agos `scenario.astro`: un commento `<!-- -->` **dentro** il
+  `.map()` (espressione JSX) conta come secondo elemento root → "JSX expressions must have one
+  parent element". I commenti HTML a livello template sono ok; dentro `{...}` no. → `0298ccc`.
+**Regola: prima di pushare un redesign girare `pnpm typecheck` E `pnpm lint`, non solo
+`pnpm build`.** Nota: build/deploy NON dipendono dal CI (workflow distinti) — le pagine possono
+essere già live mentre il gate qualità è rosso.
