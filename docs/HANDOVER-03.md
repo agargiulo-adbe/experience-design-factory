@@ -118,3 +118,36 @@ doppio-bind. Il redirect `pageSolutions` resta **solo** nel path di full load (m
 after-swap, altrimenti forzerebbe un reload rompendo la SPA). Applicato a tutte e 6 le
 esperienze (atelier, agos, ferrari, unicredit, maxmara, trenitalia); ri-applicazione
 idempotente. Memoria `spa-gating-reapply`.
+
+## 23. Redesign «eccellenza» E2E dei 6 deck (`/impeccable`) — 21 lug 2026, live in `main`
+Ridisegno end-to-end del 100% dell'experience-design di **tutti e 6 i deck** a livello
+gallery-grade. Metodo invariante: un **concept brand-native** centralizzato come
+design-system `.xx-*` nel `global.css` di ogni app → ogni sezione ricostruita via **subagent**
+(un file ciascuno, senza build/worktree per non corrompere il `dist` condiviso) → build →
+QC screenshot a 1920 → fix → commit. **Copy/claim/numeri/fonti/personas preservati VERBATIM**:
+cambiati solo markup, layout e visual, mai il testo (rubrica `copy-must-be-human` rispettata).
+
+Concept per esperienza: **Agos** `.tdu-*` "two worlds, one current" (petrolio/acqua); **Atelier**
+`.loom-*` telaio/trama-e-ordito (carbonio/champagne); **Ferrari** `.frl-*` racing line
+(Rosso Corsa/carbonio/giallo); **UniCredit** `.uc-*` "il filo" d'oro (rosso #BE2027/blu-notte,
+light-dominant); **Max Mara** `.mm-*` "il filo di seta" cammello quiet-luxury (light-dominant);
+**FS/Connessioni** `.fs-*` "la linea" signal-line ambra su rete scura (dark-dominant).
+
+I 6 branch feature mergiati in `main` con `--no-ff` (zero conflitti: ogni branch tocca solo la
+sua app), build completo pulito (9 app), **deploy live 21 lug**.
+
+### 23.1 Fix tecnico riutilizzabile — flip degli ink su slide inverse/brand
+Il componente `Slide` (`@edf/core`) **NON espone `data-bg`**: applica lo sfondo come **classe
+Tailwind** (`bg-[var(--surface-inverse)]`, `bg-[var(--accent-primary)]`). Quindi i selettori
+di flip devono targettare la classe reale (`[data-slide].bg-\[var\(--surface-inverse\)\]`),
+non un attributo. Due regole: (1) `bg="brand"` non è sempre scuro — per Max Mara cammello è un
+mid-tone chiaro, tieni ink scuro; flippa solo `inverse`. (2) `bg="inverse"` non è sempre chiaro
+— una cover con backdrop scuro resta scura: scopa il flip per `#id` alle slide che rendono
+davvero chiare (es. FS `#slide-opportunity`), non a tutte le `inverse`. Verifica sempre le
+slide inverse/brand con screenshot 1920. Memoria `deck-ink-flip-selector`.
+
+### 23.2 Nota CI — `astro build` ≠ `astro check`
+`pnpm build` passa anche con errori TypeScript (astro build non fa il type-check completo); il
+CI usa `pnpm typecheck` (`astro check`) e li blocca. Due errori TS introdotti dai subagent FS
+(param `any`, campo inesistente) hanno reso il primo CI rosso pur con build verde → sistemati
+in `b0106bc`. **Prima di pushare un redesign: girare `pnpm typecheck`, non solo `pnpm build`.**
