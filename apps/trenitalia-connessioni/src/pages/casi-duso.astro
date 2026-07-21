@@ -145,115 +145,153 @@ const exploreSlides = [
 
     <!-- ── SLIDE 1: Recap dei 3 casi core ─────────────────────────── -->
     <Slide id="slide-recap" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-dati')}
         imageClass="opacity-10"
         scrim="bg-[var(--surface-primary)]/90"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>Tre journey, in dettaglio</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.05;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Tre scenari raccontati end-to-end.
-      </h2>
 
-      <div class="w-full max-w-6xl mx-auto flex flex-col gap-3" data-reveal data-reveal-delay="0.16">
-        {coreCases.map((uc) => (
-          <div class="px-6 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-md text-left" style={`border-left: 4px solid ${uc.colore};`}>
-            <div class="flex items-center gap-8">
-              <div class="flex-shrink-0 w-[17rem]">
-                <p class="text-[0.76rem] font-bold tracking-widest uppercase mb-1" style={`color: ${uc.colore};`}>{uc.tag}</p>
-                <h3 class="text-[1.2rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug">{uc.title}</h3>
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-7" data-reveal>
+          <p class="fs-panel-tag">Tre journey, in dettaglio</p>
+          <h2
+            class="fs-panel-head mt-1"
+            style="font-size: clamp(1.6rem, 2.6vw, 2.15rem);"
+          >
+            Tre scenari raccontati end-to-end.
+          </h2>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          {coreCases.map((uc, i) => (
+            <div
+              class={`fs-panel ${uc.colore === 'var(--accent-primary)' ? 'fs-panel--rosso' : ''} flex flex-col md:flex-row md:items-center gap-x-8 gap-y-3`}
+              data-reveal data-reveal-delay={(0.14 + i * 0.08).toFixed(2)}
+            >
+              <div class="flex-shrink-0 md:w-[19rem] min-w-0 flex items-start gap-4">
+                <span class={`fs-node flex-shrink-0 ${uc.colore === 'var(--accent-primary)' ? 'fs-node--rosso' : ''}`} data-active aria-hidden="true">{`0${i + 1}`}</span>
+                <div class="min-w-0">
+                  <p class="fs-panel-tag" style={uc.colore === 'var(--color-grigio-300)' ? 'color: var(--color-grigio-300);' : undefined}>{uc.tag}</p>
+                  <h3 class="fs-card-title mt-1" style="font-size: 1.24rem;">{uc.title}</h3>
+                </div>
               </div>
-              <div class="flex-1">
-                <p class="text-[0.98rem] leading-snug text-[var(--color-grigio-200)]">{uc.recap}</p>
-                <p class="text-[0.98rem] leading-snug font-semibold text-[var(--ink-primary)] mt-1">
-                  <span class="text-[var(--color-grigio-300)] font-bold uppercase tracking-wide text-[0.72rem]">Impatto · </span>{uc.impatto}
+              <div class="flex-1 min-w-0">
+                <p class="fs-panel-body">{uc.recap}</p>
+                <p class="fs-panel-body mt-2" style="color: rgba(242,244,248,0.96); font-weight: 600;">
+                  <span class="fs-panel-tag mr-1">Impatto ·</span>{uc.impatto}
                 </p>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </Slide>
 
     <!-- ── SLIDE 2-5: Da esplorare · 4 coppie tematiche (2 card each) ── -->
     {exploreSlides.map((s) => (
       <Slide id={s.id} bg="primary" align="center">
-        <p class="slide-eyebrow text-center mb-4" style={`color: ${s.eyebrowColor};`} data-reveal>{s.eyebrow}</p>
-        <h2
-          class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 600; letter-spacing: -0.02em;"
-          data-reveal data-reveal-delay="0.08"
-        >
-          {s.title}
-        </h2>
-        <div class="w-full max-w-6xl mx-auto flex flex-col gap-3.5">
-          {s.cards.map((c) => (
-            <div class="px-7 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left flex items-center">
-              <div class="flex items-center gap-8 w-full">
-                <div class="flex-shrink-0 w-[17rem]">
-                  <h3 class="text-[1.2rem] font-bold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-snug mb-2">{c.title}</h3>
-                  <div class="flex flex-wrap gap-1.5 mb-2">
+        <div slot="backdrop" class="fs-bg-soft"></div>
+        <div slot="backdrop" class="fs-grid"></div>
+
+        <div class="w-full max-w-6xl mx-auto">
+          <div class="text-center mb-7" data-reveal>
+            <p class="fs-panel-tag" style={`color: ${s.eyebrowColor === 'var(--color-grigio-300)' ? 'var(--color-grigio-300)' : s.eyebrowColor};`}>{s.eyebrow}</p>
+            <h2
+              class="fs-panel-head mt-1"
+              style="font-size: clamp(1.7rem, 2.7vw, 2.2rem);"
+            >
+              {s.title}
+            </h2>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            {s.cards.map((c, ci) => (
+              <div
+                class="fs-panel flex flex-col lg:flex-row lg:items-stretch gap-x-8 gap-y-4"
+                data-reveal data-reveal-delay={(0.14 + ci * 0.1).toFixed(2)}
+              >
+                <div class="flex-shrink-0 lg:w-[18rem] min-w-0 flex flex-col">
+                  <h3 class="fs-card-title" style="font-size: 1.24rem;">{c.title}</h3>
+                  <div class="flex flex-wrap gap-1.5 mt-3">
                     {c.capability.map((cap) => (
-                      <span class="text-[0.74rem] font-semibold px-2 py-0.5 rounded-sm bg-[var(--surface-tertiary)] text-[var(--color-grigio-200)]">{cap}</span>
+                      <span
+                        class="fs-panel-tag"
+                        style="letter-spacing: 0.06em; padding: 0.22rem 0.55rem; border-radius: 3px; background: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.32); color: rgba(242,244,248,0.92); text-transform: none;"
+                      >{cap}</span>
                     ))}
                   </div>
-                  <p class="text-[0.95rem] leading-snug font-semibold" style={`color: ${s.accent};`}>{c.impatto}</p>
+                  <p class="fs-panel-body mt-auto pt-3" style={`font-weight: 600; color: ${s.accent === 'var(--color-grigio-300)' ? 'rgba(242,244,248,0.92)' : s.accent};`}>{c.impatto}</p>
                 </div>
-                <div class="flex-1 grid md:grid-cols-2 gap-x-10 gap-y-1">
-                  <div>
-                    <p class="text-[0.76rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1.5">SITUAZIONE</p>
-                    <p class="text-[1rem] leading-snug text-[var(--color-grigio-200)]">{c.situazione}</p>
+
+                <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-x-8 gap-y-4">
+                  <div class="relative md:pr-8">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="fs-node" style="width: 1.9rem; height: 1.9rem; font-size: 0.7rem;" aria-hidden="true">1</span>
+                      <p class="fs-panel-tag" style="color: var(--color-grigio-300);">SITUAZIONE</p>
+                    </div>
+                    <p class="fs-panel-body">{c.situazione}</p>
+                    <span class="fs-line-h hidden md:block" style="top: 0.85rem; right: -0.4rem; width: 2.5rem;" aria-hidden="true"></span>
                   </div>
                   <div>
-                    <p class="text-[0.76rem] font-bold tracking-widest uppercase text-[var(--color-grigio-300)] mb-1.5">RISPOSTA ADOBE</p>
-                    <p class="text-[1rem] leading-snug text-[var(--color-grigio-200)]">{c.risposta}</p>
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="fs-node" data-active style="width: 1.9rem; height: 1.9rem; font-size: 0.7rem;" aria-hidden="true">2</span>
+                      <p class="fs-panel-tag">RISPOSTA ADOBE</p>
+                    </div>
+                    <p class="fs-panel-body">{c.risposta}</p>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </Slide>
     ))}
 
     <!-- ── SLIDE 5: Sintesi + invito ──────────────────────────────── -->
     <Slide id="slide-sintesi" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-binari')}
         imageClass="opacity-12"
         scrim="bg-[var(--surface-secondary)]/88"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>Una fondazione, molti casi d'uso</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.9rem, 3.6vw, 3rem); max-width: 60rem;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Undici scenari. Un'unica fondazione dati.
-      </h2>
-      <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-7" data-reveal data-reveal-delay="0.16">
-        {[
-          { n: '11', l: 'Scenari illustrativi', s: 'Ancorati al mondo FS: Frecce · CartaFreccia · FS Park · X-GO' },
-          { n: '4', l: 'Aree di valore', s: 'Retention · Growth · Ecosystem · Intelligence' },
-          { n: '1', l: 'Fondazione condivisa', s: 'Ogni scenario riusa CJA + RT-CDP' },
-          { n: '100%', l: 'GDPR-compliant', s: 'Clean room · governance dati' },
-        ].map((m) => (
-          <div class="p-5 bg-[var(--surface-primary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2" style="font-size: clamp(1.8rem, 2.8vw, 2.4rem);">{m.n}</p>
-            <p class="text-[0.95rem] font-bold text-[var(--ink-primary)] leading-snug mb-1">{m.l}</p>
-            <p class="text-[0.8rem] text-[var(--color-grigio-300)] leading-snug">{m.s}</p>
-          </div>
-        ))}
+
+      <div class="w-full max-w-5xl mx-auto text-center">
+        <p class="fs-panel-tag" data-reveal>Una fondazione, molti casi d'uso</p>
+        <h2
+          class="fs-panel-head mt-2 mb-8"
+          style="font-size: clamp(1.9rem, 3.6vw, 3rem); margin-inline: auto; max-width: 60rem;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          Undici scenari. Un'unica fondazione dati.
+        </h2>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" data-reveal data-reveal-delay="0.16">
+          {[
+            { n: '11', l: 'Scenari illustrativi', s: 'Ancorati al mondo FS: Frecce · CartaFreccia · FS Park · X-GO' },
+            { n: '4', l: 'Aree di valore', s: 'Retention · Growth · Ecosystem · Intelligence' },
+            { n: '1', l: 'Fondazione condivisa', s: 'Ogni scenario riusa CJA + RT-CDP' },
+            { n: '100%', l: 'GDPR-compliant', s: 'Clean room · governance dati' },
+          ].map((m, mi) => (
+            <div class="fs-card text-left">
+              <p class="fs-stat-value mb-2" style={`font-size: clamp(1.9rem, 3vw, 2.6rem); ${mi === 0 ? 'color: rgba(245,166,35,1);' : ''}`}>{m.n}</p>
+              <p class="fs-card-title mb-1" style="font-size: 1rem;">{m.l}</p>
+              <p class="fs-panel-src">{m.s}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="fs-quote inline-block text-left max-w-3xl mx-auto" data-reveal data-reveal-delay="0.24">
+          <p class="fs-panel-body" style="font-size: 1.02rem;">
+            Sono scenari di ispirazione calati sul Gruppo FS, non promesse di numeri. Scegliamo insieme quali prototipare per primi: la fondazione è la stessa, il valore si somma nel tempo.
+          </p>
+        </div>
       </div>
-      <p class="text-center text-base text-[var(--ink-secondary)] max-w-2xl mx-auto" data-reveal data-reveal-delay="0.24">
-        Sono scenari di ispirazione calati sul Gruppo FS, non promesse di numeri. Scegliamo insieme quali prototipare per primi: la fondazione è la stessa, il valore si somma nel tempo.
-      </p>
     </Slide>
 
   </DeckContainer>

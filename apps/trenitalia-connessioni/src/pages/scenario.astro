@@ -45,6 +45,8 @@ const touchpoints = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-viaggio')}
@@ -64,15 +66,22 @@ const touchpoints = [
 
     <!-- ── SLIDE 1: Davide, il pendolare ──────────────────────────── -->
     <Slide id="slide-marco" bg="primary" align="split">
-      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
         <div class="flex items-center justify-center" data-reveal>
           <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,420px); aspect-ratio:4/5; height:min(520px,64dvh);">
             <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="52% 32%" />
+            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
+            <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
+              <span class="fs-node !w-11 !h-11" data-active>D</span>
+              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">Passo 1 di 6</span>
+            </div>
           </div>
         </div>
 
-        <div class="text-left">
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>
+        <div class="text-left max-w-xl">
+          <p class="fs-panel-tag mb-3" data-reveal>
             STORIA DI DAVIDE · PASSO 1 DI 6
           </p>
           <h2
@@ -84,7 +93,7 @@ const touchpoints = [
             Davide, 38 anni.<br />Pendolare business.
           </h2>
           <p
-            class="text-[var(--ink-secondary)] leading-relaxed mb-6"
+            class="text-[var(--ink-secondary)] leading-relaxed mb-7"
             style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
             data-reveal
             data-reveal-delay="0.2"
@@ -94,17 +103,10 @@ const touchpoints = [
             con un abbonamento mensile A/R. Ogni settimana lui, la sua auto e il suo smartphone
             lasciano tracce su tre sistemi che non si parlano.
           </p>
-          <div
-            class="mt-8 flex items-start gap-4 p-4 bg-[var(--surface-secondary)] border-l-2 border-[var(--accent-primary)] rounded-r-sm"
-            data-reveal
-            data-reveal-delay="0.4"
-          >
-            <div class="flex-shrink-0 size-9 rounded-full bg-[var(--accent-primary)]/15 flex items-center justify-center font-bold text-[var(--accent-primary)] font-[family-name:var(--font-display)]">
-              D
-            </div>
-            <div>
-              <p class="text-xs font-semibold tracking-widest uppercase text-[var(--ink-tertiary)] mb-1">Davide, oggi</p>
-              <p class="text-sm text-[var(--ink-secondary)] leading-relaxed italic">
+          <div class="fs-panel" data-reveal data-reveal-delay="0.4">
+            <p class="fs-panel-tag mb-2.5">Davide, oggi</p>
+            <div class="fs-quote">
+              <p class="fs-quote-text" style="font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.4;">
                 «Ricevo email CartaFreccia ogni settimana — mai un'offerta per il parcheggio.
                 Ogni lunedì cerco dove lasciare l'auto. Nessuno me ne ha mai parlato.»
               </p>
@@ -116,7 +118,9 @@ const touchpoints = [
 
     <!-- ── SLIDE 2: I 6 touchpoint → dato frammentato ─────────────── -->
     <Slide id="slide-touchpoints" bg="primary" align="center">
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
         IL PROBLEMA
       </p>
       <h2
@@ -128,7 +132,7 @@ const touchpoints = [
         Davide usa 6 sistemi.<br/>Il Gruppo ne vede uno per volta.
       </h2>
       <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-4"
+        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
         style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
         data-reveal
         data-reveal-delay="0.15"
@@ -138,41 +142,49 @@ const touchpoints = [
         parziali, il cross-selling non parte e le comunicazioni arrivano fuori tempo.
       </p>
 
-      <div
-        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-3"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {touchpoints.map((tp) => (
-          <div class="flex items-start gap-3.5 px-4 py-2.5 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{tp.icon}</span>
-            <div class="min-w-0 flex-1 text-left">
-              <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{tp.label}</p>
-              <p class="text-[0.88rem] text-[var(--color-grigio-300)] mt-1 leading-snug">{tp.nota}</p>
+      {/* Six systems on one signal line — nodes lit, but the story between them is dark. */}
+      <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.22">
+        <span class="fs-line-h hidden md:block" style="top: 1.4rem; left: 8.3%; right: 8.3%;" aria-hidden="true"></span>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-6 relative">
+          {touchpoints.map((tp, i) => (
+            <div class="flex flex-col items-center">
+              <span class:list={["fs-node mb-4 relative z-10", tp.badge === 'Gap' && "fs-node--rosso"]} aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div class="fs-card w-full text-left flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{tp.icon}</span>
+                <div class="min-w-0 flex-1">
+                  <p class="fs-card-title mb-1">{tp.label}</p>
+                  <p class="fs-card-body">{tp.nota}</p>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <p class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase">
         Scenario illustrativo · non descrive l'architettura interna di FS Italiane
       </p>
     </Slide>
 
     <!-- ── SLIDE 3: Le email — Oracle Responsys in azione ─────────── -->
     <Slide id="slide-email-gap" bg="secondary" align="center">
-      <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
         ORACLE RESPONSYS · CRM EMAIL ATTIVO
       </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        611 email in un anno. Nessuna sull'arrivo di Davide.
-      </h2>
+
+      <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-baseline justify-center gap-x-6 gap-y-1 mb-2" data-reveal data-reveal-delay="0.08">
+        <span class="fs-stat-value" data-display style="font-size: clamp(2.6rem, 5vw, 4rem);">611</span>
+        <h2
+          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] text-center md:text-left"
+          style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+        >
+          email in un anno.<br class="hidden md:block"/> Nessuna sull'arrivo di Davide.
+        </h2>
+      </div>
       <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
+        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-6"
         style="font-size: clamp(0.95rem, 1.05vw, 1rem);"
         data-reveal
         data-reveal-delay="0.15"
@@ -181,40 +193,37 @@ const touchpoints = [
       </p>
 
       <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-1.5"
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-2.5"
         data-reveal
         data-reveal-delay="0.22"
       >
         {emailTipi.map((e) => (
-          <div class={[
-            'flex items-start gap-2.5 px-3.5 py-1.5 rounded-sm border',
-            e.badge === 'Gap'
-              ? 'bg-[var(--accent-primary)]/8 border-[var(--accent-primary)]/30'
-              : 'bg-[var(--surface-primary)] border-[var(--line-subtle)]',
-          ].join(' ')}>
-            <span class="text-base flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
+          <div class="fs-card flex items-start gap-3 !py-3 !px-4"
+               style={e.badge === 'Gap' ? "border-color: rgba(226,0,26,0.4); background: rgba(226,0,26,0.08);" : undefined}>
+            <span class="text-lg flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
             <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <p class="text-[0.98rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)]">{e.label}</p>
-                <span class={[
-                  'text-[0.62rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase',
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                <p class="fs-card-title !text-[1.02rem] leading-tight">{e.label}</p>
+                <span class:list={[
+                  "text-[0.62rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase",
                   e.badge === 'Gap'
-                    ? 'bg-[var(--accent-primary)]/20 text-[var(--accent-primary)]'
-                    : 'bg-[var(--line-subtle)] text-[var(--ink-tertiary)]',
-                ].join(' ')}>{e.badge}</span>
+                    ? "text-white"
+                    : "text-[rgba(242,244,248,0.75)]",
+                ]}
+                style={e.badge === 'Gap' ? "background: rgba(226,0,26,0.85);" : "background: rgba(242,244,248,0.12);"}>{e.badge}</span>
               </div>
-              <p class="text-[0.85rem] text-[var(--color-grigio-300)] leading-snug">{e.desc}</p>
+              <p class="fs-card-body !text-[0.9rem] leading-snug">{e.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div class="mt-4 flex items-center gap-3 max-w-3xl mx-auto px-4 py-2.5 bg-[var(--accent-primary)]/8 border border-[var(--accent-primary)]/25 rounded-sm" data-reveal data-reveal-delay="0.35">
-        <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug">
+      <div class="fs-panel fs-panel--rosso max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
+        <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> manca la lettura del <em>journey</em>, quella che collega i segnali sparsi e li usa al momento giusto.
         </p>
       </div>
-      <p class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.42">
+      <p class="mt-4 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
         Analisi campione email Trenitalia (Google Takeout, lug 2026 · 1 account) · illustrativo
       </p>
     </Slide>
@@ -227,11 +236,11 @@ const touchpoints = [
         imageClass="opacity-18"
         scrim="bg-[var(--color-ghiaccio)]/92"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
         L'OPPORTUNITÀ MANCATA
       </p>
       <h2
-        class="text-[var(--color-carbonio)] mb-4 font-[family-name:var(--font-display)]"
+        class="text-[var(--color-carbonio)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -240,7 +249,7 @@ const touchpoints = [
       </h2>
 
       <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-3"
+        class="relative w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-5"
         data-reveal
         data-reveal-delay="0.18"
       >
@@ -255,13 +264,16 @@ const touchpoints = [
             items: ['Davide ha CartaFreccia Oro', 'Abbonamento A/R Milano–Roma in corso', 'Acquista sempre in app, lunedì mattina'],
             tone: 'right',
           },
-        ].map((col) => (
-          <div class="px-5 py-3 bg-[var(--color-bianco)] border border-[var(--color-grigio-200)] rounded-sm">
-            <p class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--color-grigio-400)] mb-2.5">{col.label}</p>
-            <ul class="space-y-1.5">
+        ].map((col, ci) => (
+          <div class="fs-card">
+            <div class="flex items-center gap-2.5 mb-3">
+              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 1 && "fs-node--rosso !bg-[rgba(226,0,26,0.16)] !border-[rgba(226,0,26,0.55)]"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
+              <p class="fs-card-title !text-[1.05rem]">{col.label}</p>
+            </div>
+            <ul class="space-y-2">
               {col.items.map((item) => (
-                <li class="flex items-start gap-2.5 text-[0.95rem] leading-snug text-[var(--color-grigio-500)]">
-                  <span class="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
+                <li class="flex items-start gap-2.5 fs-card-body">
+                  <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
                   {item}
                 </li>
               ))}
@@ -271,23 +283,23 @@ const touchpoints = [
       </div>
 
       <div
-        class="max-w-3xl mx-auto px-5 py-2.5 bg-[var(--accent-primary)] text-white rounded-sm"
+        class="fs-panel max-w-3xl mx-auto !bg-[rgba(245,166,35,0.14)] !border-[rgba(245,166,35,0.4)]"
         data-reveal
         data-reveal-delay="0.3"
       >
-        <p class="text-xs font-bold tracking-widest uppercase text-[var(--color-ghiaccio)]/70 mb-1.5">
+        <p class="fs-panel-tag mb-2">
           Quello che un journey unificato renderebbe possibile
         </p>
-        <p class="text-[0.95rem] font-semibold font-[family-name:var(--font-display)] leading-snug">
+        <p class="fs-panel-head !text-[1.15rem] !leading-snug">
           «Ciao Davide, il tuo abbonamento parcheggio scade il 31. Rinnova insieme all'abbonamento
           Frecciarossa e risparmia il 15% su entrambi.»
         </p>
-        <p class="text-xs text-[var(--color-ghiaccio)]/60 mt-1.5">
+        <p class="fs-panel-src mt-2.5">
           Push il venerdì 3 settimane prima della scadenza · canale preferito: app
         </p>
       </div>
 
-      <div class="mt-3" data-reveal data-reveal-delay="0.4">
+      <div class="mt-6" data-reveal data-reveal-delay="0.4">
         <a
           href={href(base, '/fondazione')}
           class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
