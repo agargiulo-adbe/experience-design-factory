@@ -35,6 +35,9 @@ const recognition = [
   'Stile: minimal, materiali pregiati',
   'Invito trunk show: da proporre',
 ];
+
+// il filo di seta — i quattro momenti; la Loyalty è il nodo che chiude il percorso.
+const journey = ['Acquisizione', 'Engagement', 'Conversione', 'Restare'];
 ---
 <BaseLayout title="Loyalty" description="Dalla prima transazione al valore nel tempo: costruire fedeltà che dura generazioni.">
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -46,91 +49,117 @@ const recognition = [
     <!-- ── SLIDE 0: Apertura fase ────────────────────────────────── -->
     <Slide id="slide-apertura" bg="secondary" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('bg-wool')} imageClass="opacity-25" scrim="bg-[var(--surface-secondary)]/72" />
-      <CoverHero eyebrow="FASE 4 · LOYALTY" numeral="04" title="Dal primo acquisto al valore nel tempo" lead="La loyalty nel luxury non si compra con i punti: si costruisce con esperienze che fanno sentire riconosciute." signature={false} />
+      <div slot="backdrop" class="mm-weave" aria-hidden="true"></div>
+
+      <div class="flex flex-col items-center">
+        <CoverHero eyebrow="FASE 4 · LOYALTY" numeral="04" title="Dal primo acquisto al valore nel tempo" lead="La loyalty nel luxury non si compra con i punti: si costruisce con esperienze che fanno sentire riconosciute." signature={false} />
+
+        <!-- il filo di seta: il percorso completo, l'ultimo nodo attivo -->
+        <div class="mm-thread relative w-full max-w-4xl mt-12 flex items-center justify-between" data-reveal data-reveal-delay="0.4" aria-hidden="true">
+          <span class="mm-thread-line left-0 right-0 top-[1.375rem]"></span>
+          {journey.map((label, i) => (
+            <div class="relative flex flex-col items-center gap-3 px-4 bg-[var(--surface-secondary)]">
+              <span class="mm-node" data-active={i === 3 ? '' : undefined}>{i + 1}</span>
+              <span class="mm-node-label">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </Slide>
 
     <!-- ── SLIDE 1: Lifecycle (il meccanismo) ────────────────────── -->
-    <Slide id="slide-lifecycle" bg="primary" align="center">
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL MECCANISMO</p>
-      <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
-        Un ciclo che continua, non una linea
-      </h2>
-
-      <!-- Lifecycle ring (deck-animated): perimeter dots light up; names in a legend -->
-      <div class="relative w-full max-w-[11rem] mx-auto aspect-square" data-lifecycle>
-        <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-          <circle cx="100" cy="100" r="70" stroke="var(--line-subtle)" stroke-width="1"/>
-          <path class="cycle-track" d="M100,30 a70,70 0 1,1 -0.1,0" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round"/>
-          <circle class="cycle-dot" cx="100" cy="30" r="5" fill="var(--accent-primary)" data-cx="100" data-cy="100"/>
-        </svg>
-        {['top-[15%] left-1/2', 'top-1/2 left-[85%]', 'top-[85%] left-1/2', 'top-1/2 left-[15%]'].map((pos) => (
-          <div class:list={["cycle-node absolute -translate-x-1/2 -translate-y-1/2", pos]}>
-            <span class="block w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]"></span>
+    <Slide id="slide-lifecycle" bg="primary" align="split">
+      <div slot="backdrop" class="mm-bg" aria-hidden="true"></div>
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1fr_0.9fr] gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <div class="mm-panel max-w-xl" data-reveal data-reveal-delay="0.1">
+            <p class="mm-panel-tag" data-reveal>Il meccanismo</p>
+            <h2 class="mm-panel-head text-[var(--ink-primary)] mb-5" style="font-size: clamp(2rem, 3.6vw, 3.4rem); line-height:1.08;" data-reveal data-reveal-delay="0.1">
+              Un ciclo che continua, non una linea
+            </h2>
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-5" data-reveal data-reveal-delay="0.25">
+              {cycle.map((label) => (
+                <span class="text-[clamp(1rem,1.25vw,1.25rem)] font-medium text-[var(--ink-secondary)] whitespace-nowrap">{label}</span>
+              ))}
+            </div>
+            <p class="mm-panel-body" style="font-size: clamp(1.05rem, 1.4vw, 1.35rem);" data-reveal data-reveal-delay="0.35">
+              Ogni giro aumenta il valore: la seconda visita, il terzo acquisto, il momento in cui smette di confrontare.
+            </p>
           </div>
-        ))}
-      </div>
+        </div>
 
-      <div class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2 mt-6 max-w-2xl mx-auto" data-reveal data-reveal-delay="0.35">
-        {cycle.map((label) => (
-          <span class="text-[clamp(1rem,1.25vw,1.25rem)] font-medium text-[var(--ink-secondary)] whitespace-nowrap">{label}</span>
-        ))}
+        <!-- Lifecycle ring (deck-animated): perimeter dots light up; names in a legend -->
+        <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.3">
+          <div class="relative w-full max-w-[15rem] mx-auto aspect-square" data-lifecycle>
+            <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+              <circle cx="100" cy="100" r="70" stroke="var(--line-subtle)" stroke-width="1"/>
+              <path class="cycle-track" d="M100,30 a70,70 0 1,1 -0.1,0" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round"/>
+              <circle class="cycle-dot" cx="100" cy="30" r="5" fill="var(--accent-primary)" data-cx="100" data-cy="100"/>
+            </svg>
+            {['top-[15%] left-1/2', 'top-1/2 left-[85%]', 'top-[85%] left-1/2', 'top-1/2 left-[15%]'].map((pos) => (
+              <div class:list={["cycle-node absolute -translate-x-1/2 -translate-y-1/2", pos]}>
+                <span class="block w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]"></span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-
-      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-tertiary)] mt-4 max-w-xl mx-auto" data-reveal data-reveal-delay="0.45">
-        Ogni giro aumenta il valore: la seconda visita, il terzo acquisto, il momento in cui smette di confrontare.
-      </p>
     </Slide>
 
     <!-- ── SLIDE 2: Front stage — clienteling (riconoscimento) ───── -->
-    <Slide id="slide-frontstage" bg="primary" align="center">
+    <Slide id="slide-frontstage" bg="primary" align="split">
       <SlideBackdrop slot="backdrop" {...mediaProps('loyalty-boutique')} imageClass="opacity-20" scrim="bg-[var(--surface-primary)]/82" />
-      <div class="flex items-center gap-3 mb-4 justify-center" data-reveal>
-        <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-        <span class="slide-eyebrow text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
-      </div>
-      <h2 class="slide-title text-[var(--ink-primary)] mb-5" style="font-size: clamp(2.1rem, 4vw, 3.6rem);" data-reveal data-reveal-delay="0.1">
-        Essere riconosciute, ovunque
-      </h2>
-
-      <!-- Clienteling: recognition card with Giulia's avatar (reused portrait) -->
-      <div class="relative w-full max-w-md mx-auto flex-shrink-0 p-4 rounded-lg border border-[var(--line-default)] bg-[var(--surface-card)] shadow-xl overflow-hidden text-left" data-clienteling data-reveal data-reveal-delay="0.25">
-        <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
-        <div class="flex items-center gap-3 mb-3.5">
-          <div class="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)]">
-            <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div class="text-left">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+            <span class="slide-eyebrow text-[var(--ink-tertiary)]">Ciò che vive la cliente</span>
           </div>
-          <div>
-            <p class="text-[clamp(1.05rem,1.35vw,1.3rem)] font-semibold text-[var(--ink-primary)]">Giulia M.</p>
-            <p class="text-[clamp(0.88rem,1vw,1rem)] text-[var(--ink-tertiary)]">Boutique Montenapoleone · ore 16:20</p>
+          <h2 class="slide-title text-[var(--ink-primary)] mb-6" style="font-size: clamp(2.1rem, 4vw, 3.6rem);" data-reveal data-reveal-delay="0.1">
+            Essere riconosciute, ovunque
+          </h2>
+          <p class="mm-quote-text max-w-xl" style="font-size: clamp(1.4rem, 2.2vw, 2rem);" data-reveal data-reveal-delay="0.4">
+            La store advisor l'accoglie per nome. Non è magia: è un profilo unificato che attraversa i canali.
+          </p>
+        </div>
+
+        <!-- Clienteling: recognition card with Giulia's avatar (reused portrait) -->
+        <div class="h-full flex items-center justify-center" data-reveal data-reveal-delay="0.25">
+          <div class="relative w-full max-w-md mx-auto mm-panel overflow-hidden text-left" data-clienteling>
+            <div class="scan-line absolute left-0 right-0 h-12 pointer-events-none" style="background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--accent-primary) 22%, transparent), transparent); opacity: 0;"></div>
+            <div class="flex items-center gap-3.5 mb-4">
+              <div class="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-[var(--accent-primary)] ring-2 ring-[var(--surface-primary)]">
+                <MediaSlot {...mediaProps('persona-giulia')} fill noText="0,0,0,0" />
+              </div>
+              <div>
+                <p class="mm-panel-head" style="font-size: clamp(1.15rem,1.5vw,1.45rem); margin-top:0;">Giulia M.</p>
+                <p class="mm-panel-src" style="font-size: clamp(0.88rem,1vw,1rem);">Boutique Montenapoleone · ore 16:20</p>
+              </div>
+            </div>
+            <ul class="space-y-2 mm-panel-body" style="font-size: clamp(0.95rem,1.15vw,1.12rem);">
+              {recognition.map((r) => (
+                <li class="reveal-attr flex items-center gap-2.5"><span class="text-[var(--accent-primary)]">›</span> {r}</li>
+              ))}
+            </ul>
           </div>
         </div>
-        <ul class="space-y-1.5 text-[clamp(0.95rem,1.15vw,1.12rem)] text-[var(--ink-secondary)]">
-          {recognition.map((r) => (
-            <li class="reveal-attr flex items-center gap-2.5"><span class="text-[var(--accent-primary)]">›</span> {r}</li>
-          ))}
-        </ul>
       </div>
-
-      <p class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--ink-secondary)] mt-3 max-w-xl mx-auto" data-reveal data-reveal-delay="0.4">
-        La store advisor l'accoglie per nome. Non è magia: è un profilo unificato che attraversa i canali.
-      </p>
     </Slide>
 
     <!-- ── SLIDE 3: Front→Back impulse (l'aha) ───────────────────── -->
     <Slide id="slide-impulse" bg="secondary" align="center">
+      <div slot="backdrop" class="mm-bg-soft" aria-hidden="true"></div>
+      <div slot="backdrop" class="mm-weave" aria-hidden="true"></div>
       <h2 class="slide-title text-[var(--ink-primary)] mb-10" style="font-size: clamp(2rem, 3.8vw, 3.4rem);" data-reveal>
         Il digitale che potenzia l'umano
       </h2>
 
       <div class="relative w-full max-w-[1100px] mx-auto grid md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-0 items-stretch min-h-[30vh]" data-pulse-line>
-        <div class="bg-[var(--surface-primary)] rounded-lg p-8 md:p-10 border border-[var(--line-subtle)] flex flex-col justify-between" data-reveal>
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
-            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--ink-tertiary)]">In scena</span>
-          </div>
+        <div class="mm-panel flex flex-col justify-between" data-reveal>
+          <p class="mm-panel-tag mb-3">In scena</p>
           <div>
-            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] text-[var(--ink-primary)] font-medium leading-tight">La store advisor la conosce</p>
-            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--ink-secondary)] mt-1.5">Per nome, gusto, storia d'acquisto</p>
+            <p class="mm-panel-head" style="font-size: clamp(1.3rem,1.9vw,1.85rem); margin-top:0;">La store advisor la conosce</p>
+            <p class="mm-panel-body mt-2" style="font-size: clamp(1.05rem,1.3vw,1.3rem);">Per nome, gusto, storia d'acquisto</p>
           </div>
         </div>
 
@@ -147,14 +176,11 @@ const recognition = [
           </svg>
         </div>
 
-        <div class="bg-[var(--surface-inverse)] rounded-lg p-8 md:p-10 text-[var(--ink-inverse)] flex flex-col justify-between" data-reveal data-reveal-delay="0.3">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
-            <span class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--color-grigio-300)]">Dietro le quinte</span>
-          </div>
+        <div class="mm-panel mm-panel--acqua flex flex-col justify-between bg-[var(--surface-inverse)] text-[var(--ink-inverse)]" data-reveal data-reveal-delay="0.3">
+          <p class="mm-panel-tag mb-3" style="color: rgba(193,154,107,0.95);">Dietro le quinte</p>
           <div>
-            <p class="text-[clamp(1.3rem,1.9vw,1.85rem)] font-medium leading-tight">La piattaforma ricorda</p>
-            <p class="text-[clamp(1.05rem,1.3vw,1.3rem)] text-[var(--color-grigio-300)] mt-1.5">Profilo unificato, online e in store</p>
+            <p class="mm-panel-head" style="font-size: clamp(1.3rem,1.9vw,1.85rem); margin-top:0; color: rgba(245,240,230,0.98);">La piattaforma ricorda</p>
+            <p class="mm-panel-body mt-2" style="font-size: clamp(1.05rem,1.3vw,1.3rem); color: rgba(245,240,230,0.82);">Profilo unificato, online e in store</p>
           </div>
         </div>
       </div>
@@ -162,6 +188,7 @@ const recognition = [
 
     <!-- ── SLIDE 4: Back stage — i prodotti Adobe in "Scopri come" ── -->
     <Slide id="slide-backstage" bg="inverse" align="center">
+      <SlideBackdrop slot="backdrop" {...mediaProps('bg-wool')} imageClass="opacity-30" scrim="bg-[var(--surface-inverse)]/74" />
       <div class="flex items-center gap-3 mb-5" data-reveal>
         <span class="w-3.5 h-3.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"></span>
         <span class="slide-eyebrow text-[var(--color-grigio-300)]">CIÒ CHE FA LA PIATTAFORMA</span>
@@ -191,17 +218,17 @@ const recognition = [
     <!-- ── SLIDE 5: Payoff — metrica + CTA ───────────────────────── -->
     <Slide id="slide-payoff" bg="brand" align="center">
       <SlideBackdrop slot="backdrop" {...mediaProps('bg-cashmere')} imageClass="opacity-20" scrim="bg-[var(--accent-primary)]/78" />
-      <p data-display class="font-[family-name:var(--font-display)] font-light leading-none text-[var(--ink-primary)] mb-6" style="font-size: clamp(4.5rem, 12vw, 11rem);">
+      <p data-display class="mm-stat-value mb-6" style="font-size: clamp(4.5rem, 12vw, 11rem);">
         <span data-count-up="45" data-count-suffix="%">0%</span>
       </p>
-      <p class="text-[clamp(1.5rem,2.4vw,2.25rem)] font-[family-name:var(--font-display)] font-normal text-[var(--ink-primary)] leading-snug mb-5 max-w-3xl" data-reveal data-reveal-delay="0.2">
+      <p class="mm-quote-text mb-5 max-w-3xl mx-auto" style="font-size: clamp(1.5rem,2.4vw,2.25rem); font-style: normal;" data-reveal data-reveal-delay="0.2">
         Il 2% delle clienti guida il 45% degli acquisti di lusso — contro il 35% del 2021.
       </p>
-      <p class="text-[clamp(1.05rem,1.3vw,1.25rem)] text-[var(--ink-primary)]/70 mb-8 max-w-2xl" data-reveal data-reveal-delay="0.28">
+      <p class="mm-stat-src mb-8 max-w-2xl mx-auto" style="font-size: clamp(1.05rem,1.3vw,1.25rem); color: rgba(245,240,230,0.72);" data-reveal data-reveal-delay="0.28">
         Fonte: Bain &amp; Company – Altagamma, «Luxury Goods Worldwide Market Study», 2024
       </p>
 
-      <p class="text-[clamp(1.2rem,1.7vw,1.6rem)] text-[var(--ink-primary)] leading-snug max-w-3xl border-t border-[var(--ink-primary)]/25 pt-7 mb-10" data-reveal data-reveal-delay="0.36">
+      <p class="text-[clamp(1.2rem,1.7vw,1.6rem)] text-[var(--ink-primary)] leading-snug max-w-3xl mx-auto border-t border-[var(--ink-primary)]/25 pt-7 mb-10" data-reveal data-reveal-delay="0.36">
         Per Max Mara quel 2% ha già un nome: Francesca, vent'anni di relazione.
       </p>
 
