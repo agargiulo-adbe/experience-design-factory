@@ -302,6 +302,78 @@ img, picture, video, canvas, svg {
   letter-spacing: -0.02em;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   "IL FILO" — shared UniCredit art-direction system
+   Light-dominant (crema surfaces, blu-notte ink) + rosso + a continuous ORO
+   (gold) thread of the relationship. Panels are LIGHT with EXPLICIT dark ink
+   so they read on any slide (no semantic-flip pitfalls). All colours explicit
+   rgba / brand token (never oklab/color-mix on a text background) so the deck
+   audit's contrast parser reads them. Reuse these .uc-* classes.
+   ═══════════════════════════════════════════════════════════════════════ */
+.uc-bg {
+  background:
+    radial-gradient(120% 75% at 12% 0%, rgba(190,32,39,0.05), transparent 55%),
+    radial-gradient(115% 85% at 90% 100%, rgba(201,169,110,0.12), transparent 55%),
+    var(--surface-primary);
+}
+.uc-bg-soft {
+  background:
+    radial-gradient(120% 85% at 50% 0%, rgba(201,169,110,0.10), transparent 52%),
+    var(--surface-secondary);
+}
+/* the gold thread — a continuous oro line joining the relationship's moments */
+.uc-node { flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; background: var(--color-oro); }
+.uc-node--rosso { background: var(--color-rosso); }
+.uc-thread { display: flex; align-items: center; gap: 0.75rem; }
+.uc-thread-line { flex: 1 1 auto; height: 2px; border-radius: 2px; background: linear-gradient(to right, rgba(201,169,110,0.2), var(--color-oro)); position: relative; }
+@media (prefers-reduced-motion: no-preference) {
+  .uc-thread-line { background-size: 200% 100%; animation: uc-flow 3.4s linear infinite; }
+  @keyframes uc-flow { from { background-position: 200% 0; } to { background-position: 0 0; } }
+}
+
+/* Light panel — the default content container (dark ink, works on any slide). */
+.uc-panel {
+  background: var(--color-bianco);
+  border: 1px solid rgba(26,26,46,0.12);
+  border-radius: 4px; padding: 1.15rem 1.35rem 1.2rem;
+  display: flex; flex-direction: column; min-width: 0;
+  box-shadow: 0 8px 30px -18px rgba(26,26,46,0.35);
+}
+.uc-panel--rosso { box-shadow: inset 0 2px 0 0 var(--color-rosso), 0 8px 30px -18px rgba(26,26,46,0.35); }
+.uc-panel--oro { box-shadow: inset 0 2px 0 0 var(--color-oro), 0 8px 30px -18px rgba(26,26,46,0.35); }
+.uc-panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-bottom: 0.7rem; margin-bottom: 0.8rem; border-bottom: 1px solid rgba(26,26,46,0.1); }
+.uc-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-rosso); }
+.uc-figure { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 2.4vw, 2.1rem); color: var(--color-blu-notte); letter-spacing: -0.02em; line-height: 1; }
+.uc-panel-body { color: var(--color-blu-medio); font-size: 0.98rem; line-height: 1.55; max-width: none; margin-bottom: 0.7rem; }
+.uc-src { font-size: 0.72rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--color-grigio-400); }
+
+/* Numbered card — a Rosso "mark" disc + Playfair title + body. */
+.uc-card {
+  background: var(--color-bianco);
+  border: 1px solid rgba(26,26,46,0.12);
+  border-radius: 4px; padding: 1.35rem 1.4rem 1.2rem;
+  display: flex; flex-direction: column; min-width: 0;
+  box-shadow: 0 8px 30px -18px rgba(26,26,46,0.35);
+}
+.uc-mark {
+  font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+  color: var(--color-bianco); background: var(--color-rosso);
+  width: 2rem; height: 2rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; flex-shrink: 0;
+}
+.uc-card-title { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; color: var(--color-blu-notte); margin-bottom: 0.6rem; max-width: none; }
+.uc-card-body { color: var(--color-blu-medio); font-size: 0.96rem; line-height: 1.55; max-width: none; }
+
+/* Pull quote — a rosso hairline ABOVE (never a side-stripe). */
+.uc-quote { margin-top: 1.4rem; padding-top: 1rem; border-top: 1px solid rgba(190,32,39,0.45); max-width: none; }
+.uc-quote-text { font-family: var(--font-display); color: var(--color-blu-notte); font-size: clamp(1.2rem, 1.6vw, 1.55rem); line-height: 1.3; font-weight: 500; font-style: italic; max-width: 60ch; }
+
+/* Stat — a designed data figure (rosso numeral, dark label, source). */
+.uc-stat { text-align: center; padding: 0.5rem 0.75rem; border-top: 1px solid rgba(26,26,46,0.12); }
+.uc-stat-value { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.9rem, 3vw, 2.7rem); line-height: 1; margin-bottom: 0.5rem; color: var(--color-rosso); letter-spacing: -0.01em; }
+.uc-stat-label { font-size: clamp(0.9rem, 1.05vw, 1rem); line-height: 1.3; color: var(--color-blu-notte); margin-bottom: 0.45rem; }
+.uc-stat-src { font-size: 0.72rem; letter-spacing: 0.02em; color: var(--color-grigio-400); }
+
 .slide-lead {
   /* Allineato con DeckContainer: clamp(1.5rem, 2.4vw, 2.25rem) */
   /* Usato come override solo dove necessario — DeckContainer gestisce il default */

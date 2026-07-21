@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UniNavigation from '../components/UniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
@@ -49,27 +48,43 @@ const unicreditStats = [
         imageClass="opacity-18"
         scrim="bg-[var(--surface-inverse)]/84"
       />
-      <CoverHero
-        eyebrow="UniCredit × Adobe"
-        title="Engagement Unlimited"
-        lead="Due clienti reali, una sola piattaforma. Ogni sezione racconta un momento che conta."
-        size="hero"
-        tone="inverse"
-        primary="UniCredit"
-        secondary="Adobe"
-      />
-      <p class="mt-5 text-center text-[0.58rem] tracking-widest uppercase text-[var(--ink-inverse)]/40 max-w-2xl mx-auto">
-        Demo concettuale — scenario illustrativo non commissionato da UniCredit · Dati pubblici e illustrativi citati alle fonti
-      </p>
-      <div class="flex gap-8 mt-6 justify-center flex-wrap" data-reveal data-reveal-delay="0.3">
-        <div class="flex items-center gap-2.5 text-[var(--ink-inverse)]/70">
-          <div class="size-7 rounded-full bg-[var(--accent-primary)]/20 flex items-center justify-center text-sm font-bold text-[var(--accent-primary)]">M</div>
-          <p class="text-sm font-[family-name:var(--font-display)] italic">Marco: dal preventivo AI al mutuo casa</p>
+
+      <div class="uc-hero mx-auto flex flex-col items-center text-center">
+        <p class="uc-hero-eyebrow" data-reveal>UniCredit <span class="uc-hero-x">×</span> Adobe</p>
+
+        <h1 class="uc-hero-title" data-reveal data-reveal-delay="0.06">Engagement Unlimited</h1>
+
+        <p class="uc-hero-lead" data-reveal data-reveal-delay="0.12">
+          Due clienti reali, una sola piattaforma. Ogni sezione racconta un momento che conta.
+        </p>
+
+        <!-- IL FILO — il thread oro della relazione, con i due protagonisti come nodi -->
+        <div class="uc-hero-thread" data-reveal data-reveal-delay="0.2" aria-hidden="true">
+          <span class="uc-node"></span>
+          <span class="uc-thread-line"></span>
+          <span class="uc-node uc-node--rosso"></span>
+          <span class="uc-thread-line"></span>
+          <span class="uc-node"></span>
+          <span class="uc-thread-line"></span>
+          <span class="uc-node uc-node--rosso"></span>
+          <span class="uc-thread-line"></span>
+          <span class="uc-node"></span>
         </div>
-        <div class="flex items-center gap-2.5 text-[var(--ink-inverse)]/70">
-          <div class="size-7 rounded-full bg-[var(--color-oro)]/20 flex items-center justify-center text-sm font-bold text-[var(--color-oro)]">S</div>
-          <p class="text-sm font-[family-name:var(--font-display)] italic">Sofia: dal reel ads al primo conto</p>
+
+        <div class="uc-hero-people" data-reveal data-reveal-delay="0.28">
+          <div class="uc-person">
+            <span class="uc-person-mark uc-person-mark--rosso">M</span>
+            <p class="uc-person-line">Marco: dal preventivo AI al mutuo casa</p>
+          </div>
+          <div class="uc-person">
+            <span class="uc-person-mark uc-person-mark--oro">S</span>
+            <p class="uc-person-line">Sofia: dal reel ads al primo conto</p>
+          </div>
         </div>
+
+        <p class="uc-hero-note" data-reveal data-reveal-delay="0.36">
+          Demo concettuale — scenario illustrativo non commissionato da UniCredit · Dati pubblici e illustrativi citati alle fonti
+        </p>
       </div>
     </Slide>
 
@@ -240,4 +255,110 @@ const unicreditStats = [
     window.addEventListener('storage', function (e) { if (e.key === KEY) apply(); });
   })();
   </script>
+
+  <style>
+    /* ── INTRO / hero — "il filo" oro sweep over blu-notte ─────────── */
+    .uc-hero {
+      max-width: 58rem;
+      gap: 0;
+    }
+    .uc-hero-eyebrow {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: clamp(0.8rem, 1vw, 0.95rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(245, 242, 238, 0.72);
+      margin-bottom: 1.1rem;
+    }
+    .uc-hero-x { color: var(--color-oro); font-weight: 700; padding: 0 0.15em; }
+    .uc-hero-title {
+      font-family: var(--font-display);
+      font-weight: 300;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      font-size: clamp(2.9rem, 6.6vw, 5.6rem);
+      color: var(--color-crema);
+      margin-bottom: 1.4rem;
+      max-width: none;
+      text-wrap: balance;
+    }
+    .uc-hero-lead {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(1.2rem, 1.9vw, 1.75rem);
+      line-height: 1.4;
+      color: rgba(245, 242, 238, 0.86);
+      max-width: 44ch;
+      margin: 0 auto;
+    }
+    /* the gold thread across the hero — nodes = moments of the relationship */
+    .uc-hero-thread {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: min(30rem, 78%);
+      margin: 2.1rem auto 1.9rem;
+    }
+    .uc-hero-thread .uc-node {
+      width: 11px; height: 11px;
+      box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.14);
+    }
+    .uc-hero-thread .uc-node--rosso {
+      box-shadow: 0 0 0 4px rgba(190, 32, 39, 0.16);
+    }
+    .uc-hero-thread .uc-thread-line {
+      background: linear-gradient(to right, rgba(201, 169, 110, 0.25), rgba(201, 169, 110, 0.9));
+    }
+    .uc-hero-people {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.25rem 2.5rem;
+    }
+    .uc-person {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .uc-person-mark {
+      flex-shrink: 0;
+      width: 2.05rem; height: 2.05rem;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .uc-person-mark--rosso {
+      color: var(--color-crema);
+      background: rgba(190, 32, 39, 0.92);
+      box-shadow: 0 0 0 1px rgba(190, 32, 39, 0.5);
+    }
+    .uc-person-mark--oro {
+      color: var(--color-blu-notte);
+      background: rgba(201, 169, 110, 0.95);
+    }
+    .uc-person-line {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(0.98rem, 1.15vw, 1.12rem);
+      line-height: 1.4;
+      color: rgba(245, 242, 238, 0.82);
+      max-width: none;
+      text-align: left;
+    }
+    .uc-hero-note {
+      margin-top: 2.2rem;
+      font-family: var(--font-body);
+      font-size: clamp(0.72rem, 0.85vw, 0.8rem);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 1.6;
+      color: rgba(245, 242, 238, 0.5);
+      max-width: 46ch;
+      margin-inline: auto;
+    }
+  </style>
 </BaseLayout>
