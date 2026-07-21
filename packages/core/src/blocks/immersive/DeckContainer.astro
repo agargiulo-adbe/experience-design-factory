@@ -27,7 +27,7 @@ const { nextHref, prevHref, class: className } = Astro.props;
        fullscreen lives in the bottom bar so it never collides with the nav. -->
   <div class="deck-chrome">
     <!-- Bottom bar: prev · progress · next · fullscreen -->
-    <div class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 flex items-center gap-6">
+    <div data-deck-controls class="absolute bottom-[3vh] left-1/2 -translate-x-1/2 flex items-center gap-6">
       <button type="button" data-deck-prev aria-label="Slide precedente" class="deck-btn">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -114,18 +114,32 @@ const { nextHref, prevHref, class: className } = Astro.props;
   }
 
   /* ════════════════════════════════════════════════════════════════
-     Responsive: auto-optimise the SAME deck from mobile → desktop → giant TV.
-     Safe-area + chrome scale by viewport, scoped to [data-deck] so they
-     override each experience's :root tokens without any per-app edit.
-     Applies to ALL experiences that use DeckContainer.
+     Responsive envelope — ONE deck, auto-optimised across every real
+     projection context: laptop · fullscreen · mobile · large meeting-room
+     panel · giant 4K TV. Safe-area + chrome reserve scale by viewport,
+     scoped to [data-deck] so they override each experience's :root tokens
+     with zero per-app edits — the doubled attribute [data-deck][data-deck]
+     lifts specificity to (0,2,0) so the tiers always beat an app's :root.
+     Design rule: the three PROJECTION viewports the deck audit certifies
+     (1280×800, 1440×900, 1920×1080) are deliberately LEFT UNTOUCHED here —
+     each app's tuned :root values already own them. We adapt only the
+     contexts OUTSIDE that band, so a laptop / mobile / TV win can never
+     regress the boardroom projector. Applies to ALL DeckContainer decks.
      ════════════════════════════════════════════════════════════════ */
-  /* Phone (portrait) */
+
+  /* Keep the bottom controls clear of phone home-indicators / rounded corners
+     (needs viewport-fit=cover in the app's <meta viewport>). */
+  [data-deck] [data-deck-controls] {
+    bottom: max(3vh, env(safe-area-inset-bottom, 0px) + 0.75rem);
+  }
+
+  /* Phone (portrait) — tight gutters; dense slides scroll (safe-centered)
+     instead of clipping. */
   @media (max-width: 640px) {
-    [data-deck] { --slide-safe-inset: 18px; --deck-chrome-safe: 74px; }
+    [data-deck][data-deck] { --slide-safe-inset: 18px; --deck-chrome-safe: 74px; }
     [data-deck] .deck-btn { width: 2.75rem; height: 2.75rem; }
     [data-deck] .deck-btn svg { width: 22px; height: 22px; }
-    [data-deck] .absolute.bottom-\[3vh\] { gap: 1rem; }
-    /* Dense slides scroll (safe-centered) instead of clipping on small screens */
+    [data-deck] [data-deck-controls] { gap: 1rem; }
     [data-slide] .slide-inner {
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -133,18 +147,38 @@ const { nextHref, prevHref, class: className } = Astro.props;
       justify-content: safe center;
     }
   }
-  /* Tablet */
-  @media (min-width: 641px) and (max-width: 1024px) {
-    [data-deck] { --slide-safe-inset: 44px; --deck-chrome-safe: 120px; }
-  }
-  /* Short viewports (phone landscape) — reclaim vertical space */
+  /* Short viewports (phone landscape) — reclaim vertical space. */
   @media (max-height: 520px) {
-    [data-deck] { --slide-safe-inset: 16px; --deck-chrome-safe: 60px; }
+    [data-deck][data-deck] { --slide-safe-inset: 16px; --deck-chrome-safe: 60px; }
     [data-slide] .slide-inner { overflow-y: auto; justify-content: safe center; }
   }
-  /* Giant TV / 4K — more breathing room + bigger controls for 4–8 m viewing */
-  @media (min-width: 2200px) {
-    [data-deck] { --slide-safe-inset: 140px; --deck-chrome-safe: 220px; }
+  /* Cramped laptop band — a windowed browser (URL + bookmarks bar eat height)
+     or a 1366×768 panel leaves < 800px of viewport, below what the projector
+     tokens (168px reserve) were tuned for, so a dense slide clipped below the
+     fold (this is the exact case in the reported screenshot). Capped at 799px
+     so it never touches the 800/900/1080 audited viewports. Ease the reserve
+     (a modest, split-safe reclaim) and let any residual overflow scroll
+     gracefully — the laptop is a preview surface, never the projection target. */
+  @media (min-width: 641px) and (min-height: 521px) and (max-height: 799px) {
+    [data-deck][data-deck] {
+      --slide-safe-inset: clamp(32px, 4.5vw, 88px);
+      --deck-chrome-safe: clamp(112px, 17vh, 156px);
+    }
+    [data-slide] .slide-inner {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      justify-content: safe center;
+    }
+  }
+  /* Coarse pointer (touch laptop, tablet, interactive meeting-room panel) —
+     hold every control at a comfortable tap target. */
+  @media (pointer: coarse) {
+    [data-deck] .deck-btn { min-width: 2.75rem; min-height: 2.75rem; }
+  }
+  /* Giant TV / 4K wall (≥1440p CSS px), viewed at 4–8 m — a generous frame and
+     larger controls so the story reads across the room. */
+  @media (min-width: 2560px) {
+    [data-deck][data-deck] { --slide-safe-inset: 160px; --deck-chrome-safe: 224px; }
     [data-deck] .deck-btn { width: 4.5rem; height: 4.5rem; }
     [data-deck] .deck-btn svg { width: 34px; height: 34px; }
   }
