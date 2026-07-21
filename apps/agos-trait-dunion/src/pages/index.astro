@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AgosNavigation from '../components/AgosNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
@@ -39,32 +38,62 @@ const agosStats = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-due-mondi')}
-        imageClass="opacity-20"
-        scrim="bg-[var(--color-abisso)]/90"
-      />
-      <CoverHero
-        eyebrow="100% digitale · 100% umano · 100% connesso"
-        title="Trait d'Union"
-        lead="Il vostro cliente vive in due mondi: quello digitale dei click e quello umano delle filiali. Oggi si parlano poco. Connetterli con la tecnologia Adobe che già usate è il prossimo vantaggio competitivo."
-        size="hero"
-        tone="ink"
-        primary="Agos"
-        secondary="Adobe"
-      />
-      <p class="mt-5 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)] max-w-2xl mx-auto">
-        Scenario evolutivo · dati pubblici e illustrativi citati alle fonti · preparato dal team Adobe Italia
-      </p>
-      <div class="flex gap-8 mt-6 justify-center flex-wrap" data-reveal data-reveal-delay="0.3">
-        <div class="flex items-center gap-2.5">
-          <div class="size-7 rounded-full bg-[var(--accent-primary)]/20 flex items-center justify-center text-sm font-bold text-[var(--accent-primary)] font-[family-name:var(--font-display)]">E</div>
-          <p class="text-sm font-medium text-[var(--color-perla)]/65">Elisa — da prospect anonima a cliente fidelizzata</p>
+      <div slot="backdrop" class="tdu-bg tdu-cover-bg"></div>
+
+      <div class="tdu-cover" data-reveal>
+        <p class="tdu-cover-eyebrow">100% digitale · 100% umano · 100% connesso</p>
+
+        <!-- The broken current: acqua "Digitale" end · dashed gap with "?" · arancio "Filiale" end -->
+        <div class="tdu-worlds" aria-hidden="true" data-reveal data-reveal-delay="0.12">
+          <div class="tdu-world tdu-world--acqua">
+            <span class="tdu-node"></span>
+            <span class="tdu-world-label">Digitale</span>
+          </div>
+          <div class="tdu-current">
+            <svg class="tdu-current-svg" viewBox="0 0 240 24" preserveAspectRatio="none" aria-hidden="true">
+              <g stroke="var(--color-acqua)" stroke-width="2" stroke-linecap="round">
+                <line x1="4" y1="12" x2="96" y2="12"></line>
+              </g>
+              <g stroke="var(--color-grigio-400)" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 7">
+                <line x1="100" y1="12" x2="140" y2="12"></line>
+              </g>
+              <g stroke="var(--color-arancio)" stroke-width="2" stroke-linecap="round">
+                <line x1="144" y1="12" x2="236" y2="12"></line>
+              </g>
+            </svg>
+            <span class="tdu-gap">?</span>
+          </div>
+          <div class="tdu-world tdu-world--arancio">
+            <span class="tdu-node tdu-node--arancio"></span>
+            <span class="tdu-world-label">Filiale</span>
+          </div>
         </div>
-        <div class="flex items-center gap-2.5">
-          <div class="size-7 rounded-full bg-[var(--accent-secondary)]/20 flex items-center justify-center text-sm font-bold text-[var(--accent-secondary)] font-[family-name:var(--font-display)]">7</div>
-          <p class="text-sm font-medium text-[var(--color-perla)]/65">Sette capitoli — dai casi d'uso di oggi ai nuovi orizzonti</p>
+
+        <h1 class="tdu-cover-title" data-reveal data-reveal-delay="0.18">Trait d'Union</h1>
+
+        <p class="tdu-cover-lead" data-reveal data-reveal-delay="0.24">
+          Il vostro cliente vive in due mondi: quello digitale dei click e quello umano delle filiali. Oggi si parlano poco. Connetterli con la tecnologia Adobe che già usate è il prossimo vantaggio competitivo.
+        </p>
+
+        <div class="tdu-cobrand" data-reveal data-reveal-delay="0.3">
+          <span class="tdu-cobrand-a">Agos</span>
+          <span class="tdu-cobrand-x">×</span>
+          <span class="tdu-cobrand-b">Adobe</span>
+        </div>
+
+        <p class="tdu-cover-note" data-reveal data-reveal-delay="0.34">
+          Scenario evolutivo · dati pubblici e illustrativi citati alle fonti · preparato dal team Adobe Italia
+        </p>
+
+        <div class="tdu-cover-chips" data-reveal data-reveal-delay="0.4">
+          <div class="tdu-chip">
+            <span class="tdu-chip-badge tdu-chip-badge--acqua">E</span>
+            <p class="tdu-chip-text">Elisa — da prospect anonima a cliente fidelizzata</p>
+          </div>
+          <div class="tdu-chip">
+            <span class="tdu-chip-badge tdu-chip-badge--arancio">7</span>
+            <p class="tdu-chip-text">Sette capitoli — dai casi d'uso di oggi ai nuovi orizzonti</p>
+          </div>
         </div>
       </div>
     </Slide>
@@ -245,4 +274,179 @@ const agosStats = [
     window.addEventListener('storage', function(e) { if (e.key === KEY) apply(); });
   })();
   </script>
+
+  <style>
+    /* ── Cover hero device: "two worlds, one current" (broken) ─────── */
+    .tdu-cover-bg {
+      position: absolute;
+      inset: 0;
+    }
+    .tdu-cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.15rem;
+      width: 100%;
+      max-width: 60rem;
+      margin-inline: auto;
+    }
+    .tdu-cover-eyebrow {
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: clamp(0.75rem, 0.9vw, 0.9rem);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-acqua-chiara);
+      margin: 0;
+    }
+
+    /* The broken current */
+    .tdu-worlds {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      width: 100%;
+      max-width: 34rem;
+    }
+    .tdu-world {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex: 0 0 auto;
+    }
+    .tdu-world .tdu-node {
+      width: 11px;
+      height: 11px;
+      box-shadow: 0 0 14px 1px rgba(6, 171, 184, 0.55);
+    }
+    .tdu-world .tdu-node--arancio {
+      box-shadow: 0 0 14px 1px rgba(245, 124, 0, 0.5);
+    }
+    .tdu-world-label {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(0.8rem, 1vw, 0.95rem);
+      letter-spacing: 0.02em;
+    }
+    .tdu-world--acqua .tdu-world-label { color: var(--color-acqua-chiara); }
+    .tdu-world--arancio .tdu-world-label { color: var(--color-arancio-chiaro); }
+    .tdu-current {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 24px;
+      display: flex;
+      align-items: center;
+    }
+    .tdu-current-svg {
+      width: 100%;
+      height: 24px;
+      display: block;
+    }
+    .tdu-gap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      line-height: 1;
+      color: var(--color-grigio-200);
+      background: var(--color-lavagna);
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 50%;
+      border: 1px solid var(--color-grigio-500);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tdu-cover-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(3rem, 7vw, 6rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink-primary);
+      margin: 0.1rem 0 0;
+    }
+    .tdu-cover-lead {
+      font-size: clamp(1rem, 1.25vw, 1.2rem);
+      line-height: 1.55;
+      color: var(--color-grigio-200);
+      max-width: 46rem;
+      margin: 0 auto;
+    }
+
+    .tdu-cobrand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+      letter-spacing: 0.02em;
+      margin-top: 0.1rem;
+    }
+    .tdu-cobrand-a { color: var(--ink-primary); }
+    .tdu-cobrand-x { color: var(--color-acqua); font-weight: 400; }
+    .tdu-cobrand-b { color: var(--ink-primary); }
+
+    .tdu-cover-note {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-grigio-300);
+      max-width: 42rem;
+      margin: 0 auto;
+    }
+
+    .tdu-cover-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem 1rem;
+      justify-content: center;
+      margin-top: 0.3rem;
+    }
+    .tdu-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.9rem;
+      border: 1px solid var(--line-subtle);
+      border-radius: 999px;
+      background: rgba(10, 19, 21, 0.5);
+    }
+    .tdu-chip-badge {
+      flex-shrink: 0;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .tdu-chip-badge--acqua {
+      color: var(--color-acqua-chiara);
+      background: rgba(6, 171, 184, 0.18);
+    }
+    .tdu-chip-badge--arancio {
+      color: var(--color-arancio-chiaro);
+      background: rgba(245, 124, 0, 0.18);
+    }
+    .tdu-chip-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--color-grigio-200);
+      margin: 0;
+    }
+  </style>
 </BaseLayout>

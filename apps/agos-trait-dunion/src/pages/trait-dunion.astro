@@ -13,12 +13,12 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const fonti = [
-  { label: 'Log tecnico',       icon: '🧭', nota: 'La fonte di verità: 100% delle richieste, ogni step del form, ingerito e non aggirato' },
-  { label: 'Adobe Analytics',   icon: '📊', nota: 'Il tracciamento ricco già mappato: pagine, click, funnel. Si riusa, non si rifà' },
-  { label: 'CRM',               icon: '☁️', nota: 'Anagrafiche, prodotti, consensi via connettore out-of-the-box, con delta ogni 15 minuti' },
-  { label: 'Call center',       icon: '📞', nota: 'Chiamate, esiti, appuntamenti: il canale umano entra nella timeline' },
-  { label: 'Rete filiali',      icon: '🏛️', nota: 'Pratiche caricate e gestite sul territorio: il mondo «mailing» diventa visibile' },
-  { label: 'Venduto',           icon: '✍️', nota: 'Caricata e liquidata per ogni pratica: il metro finale di ogni analisi' },
+  { label: 'Log tecnico',       icon: '🧭', nota: 'La fonte di verità: 100% delle richieste, ogni step del form, ingerito e non aggirato', world: 'acqua' },
+  { label: 'Adobe Analytics',   icon: '📊', nota: 'Il tracciamento ricco già mappato: pagine, click, funnel. Si riusa, non si rifà', world: 'acqua' },
+  { label: 'CRM',               icon: '☁️', nota: 'Anagrafiche, prodotti, consensi via connettore out-of-the-box, con delta ogni 15 minuti', world: 'acqua' },
+  { label: 'Call center',       icon: '📞', nota: 'Chiamate, esiti, appuntamenti: il canale umano entra nella timeline', world: 'arancio' },
+  { label: 'Rete filiali',      icon: '🏛️', nota: 'Pratiche caricate e gestite sul territorio: il mondo «mailing» diventa visibile', world: 'arancio' },
+  { label: 'Venduto',           icon: '✍️', nota: 'Caricata e liquidata per ogni pratica: il metro finale di ogni analisi', world: 'arancio' },
 ];
 
 const eNonE = {
@@ -48,27 +48,50 @@ const eNonE = {
     prevHref={href(base, '/evoluzione')}
   >
 
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <!-- ── SLIDE 0: Cover — la corrente si richiude ───────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-due-mondi')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--surface-primary)]/90"
-      />
-      <CoverHero
-        eyebrow="04 · Trait d'union"
-        numeral="04"
-        title="I due mondi, una vista"
-        lead="Customer Journey Analytics è il trait d'union: la BI verticale del marketing che unisce log tecnico, Analytics, CRM, call center e filiali sulla stessa timeline, alla velocità del marketing e non dell'IT."
-        size="phase"
-        tone="ink"
-        signature={false}
-      />
+      <div slot="backdrop" class="tdu-bg"></div>
+      <div class="w-full max-w-6xl mx-auto flex flex-col items-center">
+        <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>
+          04 · Trait d'union
+        </p>
+
+        <!-- The current made whole: the two worlds finally joined -->
+        <div class="tdu-join w-full max-w-4xl" data-reveal data-reveal-delay="0.08" aria-hidden="true">
+          <span class="tdu-join-end tdu-join-end--acqua">Digitale</span>
+          <span class="tdu-join-line tdu-join-line--acqua"></span>
+          <span class="tdu-join-core">
+            <span class="tdu-join-ring"></span>
+            <span class="tdu-join-dot"></span>
+          </span>
+          <span class="tdu-join-line tdu-join-line--arancio"></span>
+          <span class="tdu-join-end tdu-join-end--arancio">Filiale</span>
+        </div>
+
+        <h1
+          class="text-[var(--ink-primary)] mt-8 mb-4 font-[family-name:var(--font-display)] text-center"
+          style="font-size: clamp(2.4rem, 5vw, 4.4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.02em;"
+          data-reveal
+          data-reveal-delay="0.14"
+        >
+          I due mondi, una vista
+        </h1>
+        <p
+          class="text-[var(--ink-secondary)] leading-relaxed max-w-3xl mx-auto text-center"
+          style="font-size: clamp(1rem, 1.25vw, 1.15rem);"
+          data-reveal
+          data-reveal-delay="0.2"
+        >
+          Customer Journey Analytics è il trait d'union: la BI verticale del marketing che
+          unisce log tecnico, Analytics, CRM, call center e filiali sulla stessa timeline,
+          alla velocità del marketing e non dell'IT.
+        </p>
+      </div>
     </Slide>
 
     <!-- ── SLIDE 1: Tutte le fonti, una timeline ──────────────────── -->
     <Slide id="slide-convergenza" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="tdu-bg"></div>
       <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
         CUSTOMER JOURNEY ANALYTICS
       </p>
@@ -81,7 +104,7 @@ const eNonE = {
         Tutte le fonti. Un'unica timeline.
       </h2>
       <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-3"
+        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-5"
         style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
         data-reveal
         data-reveal-delay="0.15"
@@ -90,28 +113,32 @@ const eNonE = {
         diretti, SFTP, streaming e join deterministiche su qualsiasi chiave comune.
       </p>
 
-      <div
-        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-2.5"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {fonti.map((f) => (
-          <div class="flex items-start gap-3.5 px-4 py-2 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{f.icon}</span>
-            <div class="min-w-0 flex-1 text-left">
-              <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
-              <p class="text-[0.88rem] text-[var(--color-grigio-300)] mt-0.5 leading-snug">{f.nota}</p>
+      <!-- Two worlds, one current: acqua sources above, arancio below,
+           strung on a single continuous spine down the centre. -->
+      <div class="tdu-spine w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.22">
+        <span class="tdu-spine-tag tdu-spine-tag--acqua" aria-hidden="true">Mondo digitale</span>
+        <div class="tdu-spine-grid">
+          {fonti.map((f) => (
+            <div class={['tdu-source', f.world === 'arancio' ? 'tdu-source--arancio' : 'tdu-source--acqua'].join(' ')}>
+              <span class="tdu-source-icon" aria-hidden="true">{f.icon}</span>
+              <div class="min-w-0 flex-1 text-left">
+                <p class="tdu-source-label">{f.label}</p>
+                <p class="tdu-source-nota">{f.nota}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <span class="tdu-spine-tag tdu-spine-tag--arancio" aria-hidden="true">Rete fisica</span>
       </div>
-      <p class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+
+      <p class="mt-4 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
         150+ connettori out-of-the-box · schema illustrativo, non descrive l'architettura interna di Agos
       </p>
     </Slide>
 
     <!-- ── SLIDE 2: CJA è / non è ─────────────────────────────────── -->
     <Slide id="slide-cja-e-non-e" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="tdu-bg-soft"></div>
       <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
         PERIMETRO CHIARO, SCELTE SERENE
       </p>
@@ -124,7 +151,7 @@ const eNonE = {
         CJA è. CJA non è.
       </h2>
       <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-4"
+        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-5"
         style="font-size: clamp(0.95rem, 1.15vw, 1.1rem);"
         data-reveal
         data-reveal-delay="0.12"
@@ -134,19 +161,23 @@ const eNonE = {
       </p>
 
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
-        <div class="px-6 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-emerald-400 rounded-sm text-left">
-          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-3">CJA È · Analytics del journey</p>
-          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+        <div class="tdu-panel tdu-panel--acqua text-left">
+          <div class="tdu-panel-head">
+            <span class="tdu-tag" style="color: var(--color-acqua-chiara);">CJA È · Analytics del journey</span>
+          </div>
+          <ul class="tdu-list">
             {eNonE.e.map((item) => (
-              <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>{item}</li>
+              <li><span class="tdu-list-mark tdu-list-mark--yes" aria-hidden="true">✓</span>{item}</li>
             ))}
           </ul>
         </div>
-        <div class="px-6 py-4 bg-[var(--surface-primary)] border border-[var(--line-subtle)] border-l-4 border-l-[var(--accent-secondary)] rounded-sm text-left">
-          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-[var(--accent-secondary)] mb-3">CJA NON È · niente equivoci</p>
-          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+        <div class="tdu-panel tdu-panel--arancio text-left">
+          <div class="tdu-panel-head">
+            <span class="tdu-tag" style="color: var(--color-arancio-chiaro);">CJA NON È · niente equivoci</span>
+          </div>
+          <ul class="tdu-list">
             {eNonE.nonE.map((item) => (
-              <li class="flex gap-3"><span class="text-[var(--accent-secondary)] flex-shrink-0 mt-px">✗</span>{item}</li>
+              <li><span class="tdu-list-mark tdu-list-mark--no" aria-hidden="true">✗</span>{item}</li>
             ))}
           </ul>
         </div>
@@ -155,6 +186,7 @@ const eNonE = {
 
     <!-- ── SLIDE 3: Demo — il journey di Elisa ────────────────────── -->
     <Slide id="slide-demo-cja" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="tdu-bg"></div>
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 flex flex-col items-center">
           <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>
@@ -169,7 +201,7 @@ const eNonE = {
             Il viaggio di Elisa,<br/>visto per la prima volta.
           </h2>
           <p
-            class="text-[var(--ink-secondary)] leading-normal max-w-2xl mb-4"
+            class="text-[var(--ink-secondary)] leading-normal max-w-2xl mb-5"
             style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
             data-reveal
             data-reveal-delay="0.14"
@@ -180,7 +212,7 @@ const eNonE = {
           </p>
 
           <div
-            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-3 mb-3"
+            class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-4 mb-3"
             data-reveal
             data-reveal-delay="0.2"
           >
@@ -189,10 +221,10 @@ const eNonE = {
               { metric: '5', label: 'step di funnel misurati', sub: 'dal primo click fino a pratica liquidata' },
               { metric: 'min', label: 'time-to-insight', sub: 'domande in linguaggio naturale, risposte subito' },
             ].map((m) => (
-              <div class="text-center px-3 py-3 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
-                <p class="data-number text-[var(--accent-primary)] mb-1.5">{m.metric}</p>
-                <p class="text-[0.98rem] font-medium text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-1 leading-snug">{m.label}</p>
-                <p class="text-[0.82rem] text-[var(--color-grigio-300)] leading-snug">{m.sub}</p>
+              <div class="tdu-stat">
+                <p class="tdu-stat-value">{m.metric}</p>
+                <p class="tdu-stat-label">{m.label}</p>
+                <p class="tdu-stat-src">{m.sub}</p>
               </div>
             ))}
           </div>
@@ -206,6 +238,7 @@ const eNonE = {
 
     <!-- ── SLIDE 4: L'overlap, finalmente misurato ────────────────── -->
     <Slide id="slide-overlap" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="tdu-bg"></div>
       <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
         IL PARADOSSO, RISOLTO
       </p>
@@ -235,9 +268,9 @@ const eNonE = {
           { q: 'Chi convince il digitale e firma in filiale?', a: 'Il percorso di Elisa ricostruito end-to-end: il merito va a chi l\'ha generato, il consulente sa chi sta accogliendo.' },
           { q: 'Dove cade il funnel, e perché?', a: 'Fallout per step, per canale, per segmento, con l\'AI che indica dove intervenire prima.' },
         ].map((item) => (
-          <div class="px-5 py-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm text-left">
-            <p class="text-[1rem] font-semibold text-[var(--accent-primary)] mb-2 font-[family-name:var(--font-display)] leading-snug">{item.q}</p>
-            <p class="text-[0.93rem] text-[var(--color-grigio-200)] leading-snug">{item.a}</p>
+          <div class="tdu-panel tdu-panel--acqua text-left">
+            <p class="tdu-ask">{item.q}</p>
+            <p class="tdu-ask-body">{item.a}</p>
           </div>
         ))}
       </div>
@@ -279,14 +312,14 @@ const eNonE = {
           { title: 'Consenso applicato all\'export', desc: 'Un segmento si analizza per intero, ma chi non ha il consenso commerciale non esce mai verso i canali.' },
           { title: 'Finestre e regole di contatto', desc: 'I vincoli sul ricontatto diventano regole di journey: applicate sempre, documentabili sempre.' },
         ].map((g) => (
-          <div class="px-5 py-4 border border-[var(--color-grigio-200)] rounded-sm text-left" style="background:#FFFFFF;">
-            <p class="text-[1.02rem] font-semibold text-[var(--color-petrolio)] mb-2 font-[family-name:var(--font-display)]">{g.title}</p>
-            <p class="text-[0.92rem] text-[var(--color-grigio-500)] leading-snug">{g.desc}</p>
+          <div class="tdu-gov text-left">
+            <p class="tdu-gov-title">{g.title}</p>
+            <p class="tdu-gov-desc">{g.desc}</p>
           </div>
         ))}
       </div>
 
-      <div class="mt-4" data-reveal data-reveal-delay="0.32">
+      <div class="mt-6" data-reveal data-reveal-delay="0.32">
         <a
           href={href(base, '/orizzonti')}
           class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-abisso)] text-[var(--color-perla)] hover:bg-[var(--color-lavagna)] transition-colors duration-300 font-[family-name:var(--font-display)]"
@@ -301,3 +334,172 @@ const eNonE = {
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* ═══ "Two worlds, one current" — Trait d'union centrepiece device ═══
+     This is where the broken current from Scenario becomes WHOLE: the acqua
+     trait d'union finally joins the digital world (acqua) and the branch world
+     (arancio). All colours are explicit rgba / brand tokens (no oklab/color-mix
+     on a text background) so the deck audit's contrast parser reads them. */
+
+  /* — Cover: the current re-closed (mirrors Scenario's broken tdu-current) — */
+  .tdu-join {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-inline: auto;
+  }
+  .tdu-join-end {
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 1.15vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .tdu-join-end--acqua { color: var(--color-acqua-chiara); }
+  .tdu-join-end--arancio { color: var(--color-arancio-chiaro); }
+  .tdu-join-line {
+    flex: 1 1 0;
+    height: 3px;
+    border-radius: 3px;
+  }
+  .tdu-join-line--acqua { background: linear-gradient(to right, rgba(6,171,184,0.25), var(--color-acqua)); }
+  .tdu-join-line--arancio { background: linear-gradient(to right, var(--color-acqua), var(--color-arancio)); }
+  .tdu-join-core {
+    flex: 0 0 auto;
+    position: relative;
+    width: 3.2rem; height: 3.2rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tdu-join-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(6,171,184,0.45);
+    box-shadow: 0 0 0 6px rgba(6,171,184,0.06);
+  }
+  .tdu-join-dot {
+    width: 0.9rem; height: 0.9rem;
+    border-radius: 50%;
+    background: var(--color-acqua-chiara);
+    box-shadow: 0 0 14px 2px rgba(6,171,184,0.45);
+  }
+  @media (max-width: 767px) {
+    .tdu-join { flex-wrap: wrap; }
+    .tdu-join-line { min-width: 2rem; }
+  }
+
+  /* — Convergenza: sources strung on one continuous acqua→arancio spine — */
+  .tdu-spine {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .tdu-spine::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 1.6rem; bottom: 1.6rem;
+    width: 3px;
+    transform: translateX(-50%);
+    border-radius: 3px;
+    background: linear-gradient(to bottom, var(--color-acqua), var(--color-arancio));
+  }
+  .tdu-spine-tag {
+    position: relative;
+    font-family: var(--font-body);
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .tdu-spine-tag--acqua { color: var(--color-acqua-chiara); }
+  .tdu-spine-tag--arancio { color: var(--color-arancio-chiaro); }
+  .tdu-spine-grid {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem 2.4rem;
+  }
+  @media (max-width: 767px) {
+    .tdu-spine::before { display: none; }
+    .tdu-spine-grid { grid-template-columns: 1fr; gap: 0.6rem; }
+  }
+  .tdu-source {
+    display: flex; align-items: flex-start; gap: 0.9rem;
+    padding: 0.7rem 1rem;
+    background: rgba(10, 19, 21, 0.55);
+    border: 1px solid var(--line-subtle);
+    border-radius: 6px;
+    position: relative;
+    min-width: 0;
+  }
+  .tdu-source--acqua { box-shadow: inset 2px 0 0 0 var(--color-acqua); }
+  .tdu-source--arancio { box-shadow: inset 2px 0 0 0 var(--color-arancio); }
+  /* connector nib linking each card toward the central spine */
+  .tdu-source::before {
+    content: '';
+    position: absolute; top: 50%;
+    width: 1.2rem; height: 2px;
+    background: var(--color-acqua);
+    transform: translateY(-50%);
+  }
+  .tdu-source--arancio::before { background: var(--color-arancio); }
+  .tdu-spine-grid > .tdu-source:nth-child(odd)::before { right: -1.2rem; }
+  .tdu-spine-grid > .tdu-source:nth-child(even)::before { left: -1.2rem; }
+  @media (max-width: 767px) {
+    .tdu-source::before { display: none; }
+  }
+  .tdu-source-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1.2; }
+  .tdu-source-label {
+    font-family: var(--font-display);
+    font-size: 1.02rem; font-weight: 600; line-height: 1.2;
+    color: var(--ink-primary);
+  }
+  .tdu-source-nota {
+    font-size: 0.86rem; line-height: 1.4;
+    color: var(--color-grigio-200);
+    margin-top: 0.2rem; max-width: none;
+  }
+
+  /* — CJA è / non è + overlap questions: shared list & ask styles — */
+  .tdu-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+  .tdu-list li {
+    display: flex; gap: 0.75rem;
+    font-size: 1rem; line-height: 1.4;
+    color: var(--color-grigio-200);
+  }
+  .tdu-list-mark { flex-shrink: 0; font-weight: 700; line-height: 1.4; }
+  .tdu-list-mark--yes { color: var(--color-acqua-chiara); }
+  .tdu-list-mark--no { color: var(--color-arancio-chiaro); }
+
+  .tdu-ask {
+    font-family: var(--font-display);
+    font-size: 1rem; font-weight: 600; line-height: 1.3;
+    color: var(--color-acqua-chiara);
+    margin-bottom: 0.5rem; max-width: none;
+  }
+  .tdu-ask-body {
+    font-size: 0.93rem; line-height: 1.45;
+    color: var(--color-grigio-200); max-width: none;
+  }
+
+  /* — Governance: light-surface cards on the perla slide — */
+  .tdu-gov {
+    padding: 1.1rem 1.25rem 1.15rem;
+    border: 1px solid var(--color-grigio-200);
+    border-radius: 6px;
+    background: #FFFFFF;
+    box-shadow: inset 0 2px 0 0 var(--color-petrolio);
+  }
+  .tdu-gov-title {
+    font-family: var(--font-display);
+    font-size: 1.02rem; font-weight: 600; line-height: 1.25;
+    color: var(--color-petrolio);
+    margin-bottom: 0.5rem;
+  }
+  .tdu-gov-desc {
+    font-size: 0.92rem; line-height: 1.45;
+    color: var(--color-grigio-500); max-width: none;
+  }
+</style>
