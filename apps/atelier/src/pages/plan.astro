@@ -3,10 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AtelierNavigation from '../components/AtelierNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -261,12 +259,7 @@ const kpiFamilies = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-blueprint')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--surface-primary)]/88"
-      />
+      <div slot="backdrop" class="loom-bg"></div>
       <T
         as="p"
         en="The plan"
@@ -304,7 +297,16 @@ const kpiFamilies = [
         data-reveal
         data-reveal-delay="0.22"
       />
-      <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.3">
+
+      <!-- Woven timeline warp: three milestone nodes on a champagne spine -->
+      <div class="pln-cover-warp" data-reveal data-reveal-delay="0.3" aria-hidden="true">
+        <span class="pln-cover-spine"></span>
+        <span class="pln-cover-node"></span>
+        <span class="pln-cover-node"></span>
+        <span class="pln-cover-node"></span>
+      </div>
+
+      <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-4" data-reveal data-reveal-delay="0.34">
         <T
           en="Foundations"
           it="Fondamenta"
@@ -331,8 +333,9 @@ const kpiFamilies = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1: One-view roadmap (Gantt-style synthesis) ──────── -->
+    <!-- ── SLIDE 1: One-view roadmap — woven timeline synthesis ───── -->
     <Slide id="slide-roadmap" bg="secondary" align="left">
+      <div slot="backdrop" class="loom-bg-soft"></div>
       <div class="w-full max-w-6xl mx-auto">
         <T
           as="p"
@@ -353,52 +356,63 @@ const kpiFamilies = [
           data-reveal-delay="0.08"
         />
 
-        <!-- Gantt grid: label column + three milestone columns -->
-        <div class="atl-gantt w-full" data-reveal data-reveal-delay="0.16">
-          <!-- Header row -->
-          <div class="atl-gantt-row atl-gantt-head">
-            <div aria-hidden="true"></div>
-            {roadmapCols.map((c) => (
-              <div class="atl-gantt-h">
-                <p class="atl-gantt-h-top">
-                  <span class="atl-gantt-m">{c.m}</span>
-                  <T en={c.title.en} it={c.title.it} fr={c.title.fr} class="atl-gantt-h-title" />
-                </p>
-                <T as="p" en={c.date.en} it={c.date.it} fr={c.date.fr} class="atl-gantt-date" />
-              </div>
-            ))}
+        <!-- Woven roadmap: a champagne warp runs left→right through three
+             milestone nodes; five weft workstreams thread across the columns. -->
+        <div class="pln-loomap" data-reveal data-reveal-delay="0.16">
+          <!-- The warp spine + milestone node headers -->
+          <div class="pln-loomap-row pln-loomap-head">
+            <div class="pln-loomap-lanehead" aria-hidden="true"></div>
+            <div class="pln-loomap-track">
+              <span class="pln-loomap-warp" aria-hidden="true"></span>
+              {roadmapCols.map((c) => (
+                <div class="pln-loomap-node">
+                  <span class="pln-loomap-dot" aria-hidden="true"></span>
+                  <p class="pln-loomap-node-top">
+                    <span class="pln-loomap-m">{c.m}</span>
+                    <T en={c.title.en} it={c.title.it} fr={c.title.fr} class="pln-loomap-node-title" />
+                  </p>
+                  <T as="p" en={c.date.en} it={c.date.it} fr={c.date.fr} class="pln-loomap-date" />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <!-- Workstream rows -->
+          <!-- Weft rows: each workstream threads across the milestone columns -->
           {roadmapRows.map((row) => (
-            <div class="atl-gantt-row">
-              <T en={row.lane.en} it={row.lane.it} fr={row.lane.fr} class="atl-gantt-lane" />
-              {row.cells.map((cell) => (
-                cell ? (
-                  <div class="atl-gantt-cell">
-                    <T en={cell.en} it={cell.it} fr={cell.fr} class="atl-gantt-cell-t" />
-                  </div>
-                ) : (
-                  <div class="atl-gantt-empty" aria-hidden="true"></div>
-                )
-              ))}
+            <div class="pln-loomap-row">
+              <T en={row.lane.en} it={row.lane.it} fr={row.lane.fr} class="pln-loomap-lane" />
+              <div class="pln-loomap-track pln-loomap-track--weft">
+                {row.cells.map((cell) => (
+                  cell ? (
+                    <div class="pln-loomap-cell">
+                      <T en={cell.en} it={cell.it} fr={cell.fr} class="pln-loomap-cell-t" />
+                    </div>
+                  ) : (
+                    <div class="pln-loomap-cell pln-loomap-cell--empty" aria-hidden="true">
+                      <span class="pln-loomap-thread-stub"></span>
+                    </div>
+                  )
+                ))}
+              </div>
             </div>
           ))}
 
-          <!-- Key moments, aligned under their milestone -->
-          <div class="atl-gantt-row atl-gantt-moments">
+          <!-- Key moments, pinned under their milestone node -->
+          <div class="pln-loomap-row pln-loomap-moments">
             <T
               en="Key moments"
               it="Momenti chiave"
               fr="Temps forts"
-              class="atl-gantt-moments-label"
+              class="pln-loomap-moments-label"
             />
-            {roadmapMoments.map((mm) => (
-              <p class="atl-gantt-moment">
-                <span class="atl-gantt-sym" aria-hidden="true">{mm.sym}</span>
-                <T en={mm.en} it={mm.it} fr={mm.fr} class="atl-gantt-moment-t" />
-              </p>
-            ))}
+            <div class="pln-loomap-track">
+              {roadmapMoments.map((mm) => (
+                <p class="pln-loomap-moment">
+                  <span class="pln-loomap-sym" aria-hidden="true">{mm.sym}</span>
+                  <T en={mm.en} it={mm.it} fr={mm.fr} class="pln-loomap-moment-t" />
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -416,9 +430,18 @@ const kpiFamilies = [
     </Slide>
 
     <!-- ── SLIDES 2–4: Milestones ─────────────────────────────────── -->
-    {milestones.map((m) => (
+    {milestones.map((m, mi) => (
       <Slide id={m.id} bg={m.bg} align="left">
+        <div slot="backdrop" class="loom-bg"></div>
         <div class="w-full max-w-6xl mx-auto">
+          <!-- Milestone position on the warp: node mi of 3 lit on the spine -->
+          <div class="pln-mstone-warp" data-reveal aria-hidden="true">
+            <span class="pln-mstone-spine"></span>
+            <span class={`pln-mstone-node ${mi === 0 ? 'is-here' : ''}`}></span>
+            <span class={`pln-mstone-node ${mi === 1 ? 'is-here' : ''}`}></span>
+            <span class={`pln-mstone-node ${mi === 2 ? 'is-here' : ''}`}></span>
+          </div>
+
           <T
             as="p"
             en={m.kicker.en}
@@ -448,26 +471,24 @@ const kpiFamilies = [
             data-reveal-delay="0.14"
           />
 
+          <!-- Work threads woven off the milestone node -->
           <div class="w-full grid md:grid-cols-2 gap-2.5" data-reveal data-reveal-delay="0.2">
             {m.work.map((w) => (
-              <div class={`min-w-0 px-5 py-3 border border-[var(--line-subtle)] rounded-sm ${m.card}`}>
+              <div class="pln-work">
+                <span class="pln-work-knot" aria-hidden="true"></span>
                 <T
                   as="p"
                   en={w.en}
                   it={w.it}
                   fr={w.fr}
-                  class="text-[var(--color-sabbia-200)]"
+                  class="text-[var(--color-sabbia-200)] min-w-0"
                   style="font-size: 0.97rem; line-height: 1.5; max-width: none;"
                 />
               </div>
             ))}
           </div>
 
-          <div
-            class={`w-full mt-3 px-5 py-3 border border-[var(--line-subtle)] border-l-2 border-l-[var(--accent-primary)] rounded-sm ${m.card}`}
-            data-reveal
-            data-reveal-delay="0.28"
-          >
+          <div class="loom-quote w-full" data-reveal data-reveal-delay="0.28">
             <T
               as="p"
               en="Targets"
@@ -491,6 +512,7 @@ const kpiFamilies = [
 
     <!-- ── SLIDE 5: KPI scorecard ─────────────────────────────────── -->
     <Slide id="slide-kpi" bg="primary" align="left">
+      <div slot="backdrop" class="loom-bg"></div>
       <div class="w-full max-w-6xl mx-auto">
         <T
           as="p"
@@ -519,13 +541,9 @@ const kpiFamilies = [
               fr: f.metrics.fr.split(' · '),
             };
             return (
-              <div class="min-w-0 rounded-sm border border-[var(--line-subtle)] bg-[var(--surface-secondary)] px-5 py-3 flex flex-col">
-                <div class="flex items-baseline gap-3 mb-2.5">
-                  <span
-                    class="font-[family-name:var(--font-display)] font-semibold text-[var(--accent-primary)] tabular-nums"
-                    style="font-size: 1rem; line-height: 1;"
-                    aria-hidden="true"
-                  >{String(i + 1).padStart(2, '0')}</span>
+              <div class="loom-panel">
+                <div class="flex items-center gap-3 mb-2.5">
+                  <span class="pln-kpi-mark" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                   <T
                     as="h3"
                     en={f.name.en}
@@ -547,93 +565,190 @@ const kpiFamilies = [
           })}
         </div>
 
-        <T
-          as="p"
-          en="Every milestone declares its targets in advance. The plan is falsifiable, on purpose."
-          it="Ogni milestone dichiara i suoi obiettivi in anticipo. Il piano è falsificabile, per scelta."
-          fr="Chaque jalon annonce ses objectifs à l’avance. Le plan est falsifiable, à dessein."
-          class="mt-4 text-[var(--color-avorio)] font-[family-name:var(--font-display)] border-l-2 border-[var(--accent-primary)] pl-4"
-          style="font-size: clamp(1.15rem, 1.5vw, 1.4rem); font-weight: 500; line-height: 1.35; max-width: none;"
-          data-reveal
-          data-reveal-delay="0.28"
-        />
+        <div class="loom-quote w-full" data-reveal data-reveal-delay="0.28">
+          <T
+            as="p"
+            en="Every milestone declares its targets in advance. The plan is falsifiable, on purpose."
+            it="Ogni milestone dichiara i suoi obiettivi in anticipo. Il piano è falsificabile, per scelta."
+            fr="Chaque jalon annonce ses objectifs à l’avance. Le plan est falsifiable, à dessein."
+            class="loom-quote-text"
+          />
+        </div>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
 
-<!-- Roadmap (Gantt) + KPI scorecard styles — scoped to their slides. Explicit
-     rgba() so the audit contrast parser measures real values (not oklab). -->
+<!-- Plan section device: the 9-month plan rendered as a LOOM over time — a
+     champagne warp spine running left→right through three milestone nodes, with
+     five weft workstreams threaded across the columns. Explicit rgba() only so
+     the audit contrast parser measures real values (never oklab/color-mix). -->
 <style>
-  /* ── One-view roadmap (Gantt-style grid) ───────────────────────── */
-  #slide-roadmap .atl-gantt { display: flex; flex-direction: column; gap: 0.45rem; }
-  #slide-roadmap .atl-gantt-row {
+  /* ── Cover: the warp with three woven milestone nodes ──────────── */
+  #slide-cover .pln-cover-warp {
+    position: relative;
+    width: min(34rem, 68vw);
+    height: 2px;
+    margin: 2.2rem auto 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #slide-cover .pln-cover-spine {
+    position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, rgba(201,169,106,0.15), rgba(201,169,106,0.85), rgba(201,169,106,0.15));
+    border-radius: 2px;
+  }
+  #slide-cover .pln-cover-node {
+    position: relative; z-index: 1;
+    width: 0.85rem; height: 0.85rem; border-radius: 50%;
+    background: var(--color-champagne);
+    box-shadow: 0 0 0 4px rgba(18,16,12,0.9), 0 0 0 6px rgba(201,169,106,0.35);
+  }
+
+  /* ── Roadmap: the woven timeline ───────────────────────────────── */
+  #slide-roadmap .pln-loomap { display: flex; flex-direction: column; gap: 0.5rem; }
+  #slide-roadmap .pln-loomap-row {
     display: grid;
-    grid-template-columns: minmax(0, 11rem) repeat(3, minmax(0, 1fr));
-    gap: 0.5rem;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+    gap: 1rem; align-items: stretch;
   }
-  #slide-roadmap .atl-gantt-head { align-items: end; }
-  #slide-roadmap .atl-gantt-h {
-    border-top: 2px solid rgba(201, 169, 106, 0.5);
-    padding-top: 0.4rem;
+  #slide-roadmap .pln-loomap-track {
+    position: relative;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem; align-items: stretch;
   }
-  #slide-roadmap .atl-gantt-h-top {
+
+  /* Head row: the champagne warp spine + milestone nodes */
+  #slide-roadmap .pln-loomap-head { align-items: end; margin-bottom: 0.1rem; }
+  #slide-roadmap .pln-loomap-head .pln-loomap-track { align-items: end; }
+  #slide-roadmap .pln-loomap-warp {
+    position: absolute; left: 0; right: 0; bottom: -0.28rem; height: 2px;
+    background: linear-gradient(to right, rgba(201,169,106,0.85), rgba(201,169,106,0.35));
+    border-radius: 2px;
+  }
+  #slide-roadmap .pln-loomap-node { position: relative; padding-bottom: 0.55rem; }
+  #slide-roadmap .pln-loomap-dot {
+    position: absolute; left: 0; bottom: -0.62rem;
+    width: 0.7rem; height: 0.7rem; border-radius: 50%;
+    background: var(--color-champagne);
+    box-shadow: 0 0 0 3px rgba(27,24,19,0.95);
+  }
+  #slide-roadmap .pln-loomap-node-top {
     display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap;
   }
-  #slide-roadmap .atl-gantt-m {
-    color: var(--accent-primary);
-    font-family: var(--font-body);
+  #slide-roadmap .pln-loomap-m {
+    color: var(--accent-primary); font-family: var(--font-body);
     font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em;
   }
-  #slide-roadmap .atl-gantt-h-title {
+  #slide-roadmap .pln-loomap-node-title {
     color: var(--ink-primary); font-family: var(--font-display);
-    font-weight: 600; font-size: 0.95rem; line-height: 1.15;
+    font-weight: 600; font-size: 0.95rem; line-height: 1.15; max-width: none;
   }
-  #slide-roadmap .atl-gantt-date {
+  #slide-roadmap .pln-loomap-date {
     color: var(--color-sabbia-300); font-size: 0.72rem;
-    text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.15rem;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.15rem; max-width: none;
   }
-  #slide-roadmap .atl-gantt-lane {
+
+  /* Weft rows: workstream lane label + woven cells */
+  #slide-roadmap .pln-loomap-lane {
     display: flex; align-items: center; min-width: 0;
     color: var(--ink-primary); font-family: var(--font-display);
     font-weight: 600; font-size: 0.95rem; line-height: 1.2;
-    padding-right: 0.5rem;
+    padding-right: 0.5rem; max-width: none;
   }
-  #slide-roadmap .atl-gantt-cell {
-    display: flex; align-items: center; min-width: 0;
+  #slide-roadmap .pln-loomap-cell {
+    position: relative; display: flex; align-items: center; min-width: 0;
     border: 1px solid var(--line-subtle);
-    border-left: 2px solid var(--accent-primary);
     background: rgba(201, 169, 106, 0.08);
-    border-radius: 3px;
-    padding: 0.5rem 0.7rem;
+    border-radius: 4px; padding: 0.5rem 0.7rem 0.5rem 1rem;
   }
-  #slide-roadmap .atl-gantt-cell-t {
-    color: var(--color-sabbia-200); font-size: 0.85rem; line-height: 1.3;
-    max-width: none;
+  /* the weft thread: a champagne knot dot woven at the cell's left edge */
+  #slide-roadmap .pln-loomap-cell::before {
+    content: ''; position: absolute; left: 0.42rem; top: 50%;
+    width: 0.32rem; height: 0.32rem; transform: translateY(-50%);
+    border-radius: 50%; background: var(--color-champagne);
   }
-  #slide-roadmap .atl-gantt-empty {
-    border: 1px dashed var(--line-subtle);
-    border-radius: 3px; opacity: 0.5;
+  #slide-roadmap .pln-loomap-cell-t {
+    color: var(--color-sabbia-200); font-size: 0.85rem; line-height: 1.3; max-width: none;
   }
-  #slide-roadmap .atl-gantt-moments { align-items: start; margin-top: 0.2rem; }
-  #slide-roadmap .atl-gantt-moments-label {
+  #slide-roadmap .pln-loomap-cell--empty {
+    background: transparent; border: 1px dashed var(--line-subtle);
+    opacity: 0.45; padding: 0.5rem 0.7rem;
+  }
+  #slide-roadmap .pln-loomap-cell--empty::before { display: none; }
+  #slide-roadmap .pln-loomap-thread-stub {
+    height: 1px; width: 100%;
+    background: repeating-linear-gradient(to right, rgba(201,169,106,0.3) 0 4px, transparent 4px 9px);
+  }
+
+  /* Key moments pinned under their milestone node */
+  #slide-roadmap .pln-loomap-moments { align-items: start; margin-top: 0.35rem; }
+  #slide-roadmap .pln-loomap-moments .pln-loomap-track { align-items: start; }
+  #slide-roadmap .pln-loomap-moments-label {
     display: flex; align-items: center;
     color: var(--color-sabbia-300); font-size: 0.75rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.1em;
+    text-transform: uppercase; letter-spacing: 0.1em; max-width: none;
   }
-  #slide-roadmap .atl-gantt-moment {
-    display: flex; align-items: baseline; gap: 0.45rem; min-width: 0;
+  #slide-roadmap .pln-loomap-moment {
+    display: flex; align-items: baseline; gap: 0.45rem; min-width: 0; max-width: none;
   }
-  #slide-roadmap .atl-gantt-sym {
+  #slide-roadmap .pln-loomap-sym {
     color: var(--accent-primary); font-size: 0.9rem; line-height: 1; flex-shrink: 0;
   }
-  #slide-roadmap .atl-gantt-moment-t {
+  #slide-roadmap .pln-loomap-moment-t {
     color: var(--color-sabbia-300); font-size: 0.78rem; line-height: 1.4; max-width: none;
   }
 
-  /* ── KPI scorecard metric pills ────────────────────────────────── */
+  /* ── Milestone slides: position on the warp + woven work threads ── */
+  .pln-mstone-warp {
+    position: relative; width: min(20rem, 46vw); height: 0.9rem;
+    margin-bottom: 1.1rem;
+    display: flex; align-items: center; gap: 0;
+  }
+  .pln-mstone-spine {
+    position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, rgba(201,169,106,0.7), rgba(201,169,106,0.2));
+    border-radius: 2px;
+  }
+  .pln-mstone-node {
+    position: relative; z-index: 1;
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    margin-right: auto;
+    background: rgba(201,169,106,0.3);
+    box-shadow: 0 0 0 3px rgba(18,16,12,0.9);
+  }
+  .pln-mstone-node:last-child { margin-right: 0; }
+  .pln-mstone-node.is-here {
+    width: 0.85rem; height: 0.85rem;
+    background: var(--color-champagne);
+    box-shadow: 0 0 0 3px rgba(18,16,12,0.9), 0 0 0 5px rgba(201,169,106,0.4);
+  }
+
+  .pln-work {
+    position: relative; display: flex; align-items: flex-start; gap: 0.7rem;
+    min-width: 0;
+    border: 1px solid var(--line-subtle);
+    background: rgba(27, 24, 19, 0.6);
+    border-radius: 6px; padding: 0.7rem 1rem 0.7rem 0.9rem;
+  }
+  .pln-work-knot {
+    flex: 0 0 auto; margin-top: 0.42rem;
+    width: 0.5rem; height: 0.5rem; border-radius: 50%;
+    background: var(--color-champagne);
+    box-shadow: 0 0 0 3px rgba(201,169,106,0.14);
+  }
+
+  /* ── KPI scorecard: mark disc + metric pills ───────────────────── */
+  #slide-kpi .pln-kpi-mark {
+    flex: 0 0 auto;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.85rem;
+    color: var(--color-carbone); background: var(--color-champagne);
+    width: 1.9rem; height: 1.9rem; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
   #slide-kpi .atl-kpi-pill {
     display: inline-flex; align-items: center;
     border: 1px solid var(--line-subtle);

@@ -229,6 +229,135 @@ html[data-lang="fr"] [data-lang-en], html[data-lang="fr"] [data-lang-it] { displ
   letter-spacing: -0.02em;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   THE LOOM — shared Atelier art-direction system
+   Warm carbon + champagne, warp threads, woven panels. Every colour is an
+   explicit rgba / brand token (never oklab/color-mix on a text background) so
+   the deck audit's contrast parser reads it. Reuse these across all sections.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Backdrops — put on a `<div slot="backdrop" class="loom-bg">` inside a Slide. */
+.loom-bg {
+  background:
+    repeating-linear-gradient(90deg, rgba(201,169,106,0.05) 0 1px, transparent 1px 88px),
+    radial-gradient(125% 80% at 50% -8%, rgba(201,169,106,0.09), transparent 56%),
+    var(--surface-primary);
+}
+.loom-bg-soft {
+  background:
+    repeating-linear-gradient(90deg, rgba(201,169,106,0.045) 0 1px, transparent 1px 88px),
+    var(--surface-secondary);
+}
+
+/* Woven panel — the default content container (replaces bare cards). */
+.loom-panel {
+  background: rgba(27, 24, 19, 0.7);
+  border: 1px solid var(--line-subtle);
+  border-radius: 8px;
+  padding: 1.25rem 1.4rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.loom-panel-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding-bottom: 0.75rem; margin-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line-subtle);
+}
+.loom-tag {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-primary);
+}
+.loom-figure {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+  color: var(--color-avorio); letter-spacing: -0.02em; line-height: 1;
+}
+.loom-panel-body {
+  color: var(--color-sabbia-200);
+  font-size: 0.98rem; line-height: 1.55; max-width: none; margin-bottom: 0.75rem;
+}
+.loom-src {
+  font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--color-sabbia-300);
+}
+
+/* Pull quote — a champagne hairline ABOVE (never a side-stripe). */
+.loom-quote { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px solid rgba(201,169,106,0.4); max-width: none; }
+.loom-quote-text {
+  font-family: var(--font-display); color: var(--color-avorio);
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  line-height: 1.32; font-weight: 500; font-style: italic; max-width: 68ch;
+}
+
+/* Numbered card — a champagne "mark" disc + serif title + body. */
+.loom-card {
+  background: rgba(27, 24, 19, 0.6);
+  border: 1px solid var(--line-subtle);
+  border-radius: 8px;
+  padding: 1.5rem 1.5rem 1.3rem;
+  display: flex; flex-direction: column; min-width: 0;
+}
+.loom-mark {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 0.95rem; color: var(--color-carbone);
+  background: var(--color-champagne);
+  width: 2rem; height: 2rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 0.9rem; flex-shrink: 0;
+}
+.loom-card-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 1.15rem; line-height: 1.25; color: var(--color-avorio);
+  margin-bottom: 0.7rem; max-width: none;
+}
+.loom-card-body {
+  color: var(--color-sabbia-200);
+  font-size: 0.97rem; line-height: 1.55; max-width: none; margin-bottom: 0.9rem;
+}
+
+/* Weave — accumulating threads whose champagne rail widens down the list.
+   Wrap rows in `.loom-weave`; give each `.loom-thread` a `--thread: <index>`. */
+.loom-weave { display: flex; flex-direction: column; gap: 0.85rem; }
+.loom-thread {
+  display: grid;
+  grid-template-columns: minmax(0, calc(9rem + var(--thread, 0) * 3.5rem)) minmax(0, 1fr);
+  gap: 1.5rem; align-items: center;
+  background: rgba(27, 24, 19, 0.55);
+  border: 1px solid var(--line-subtle);
+  border-radius: 8px; padding: 0.9rem 1.3rem;
+}
+@media (max-width: 767px) { .loom-thread { grid-template-columns: 1fr; gap: 0.5rem; } }
+.loom-thread-rail { display: flex; align-items: center; gap: 0.85rem; position: relative; }
+.loom-thread-rail::after {
+  content: ''; flex: 1 1 auto; height: 2px;
+  background: linear-gradient(to right, var(--color-champagne), rgba(201,169,106,0.15));
+  border-radius: 2px;
+}
+@media (max-width: 767px) { .loom-thread-rail::after { display: none; } }
+.loom-thread-num {
+  flex: 0 0 auto;
+  font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+  color: var(--color-carbone); background: var(--color-champagne);
+  width: 2rem; height: 2rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.loom-thread-copy { min-width: 0; }
+.loom-thread-title { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.3; color: var(--color-avorio); max-width: none; margin-bottom: 0.2rem; }
+.loom-thread-body { color: var(--color-sabbia-200); font-size: 0.98rem; line-height: 1.5; max-width: none; }
+
+/* The 1 → many fan (cover motif). */
+.loom-fan { display: flex; align-items: center; gap: 1rem; }
+.loom-fan-svg { flex: 1 1 auto; height: clamp(64px, 11vh, 108px); width: 100%; opacity: 0.6; }
+.loom-fan-svg line { opacity: 0.55; }
+.loom-fan-cap { flex: 0 0 auto; font-family: var(--font-display); font-weight: 600; color: var(--color-champagne); line-height: 1; }
+.loom-fan-cap--one { font-size: clamp(1.6rem, 2.4vw, 2.2rem); }
+.loom-fan-cap--many { font-size: clamp(2.4rem, 4vw, 3.4rem); }
+@media (prefers-reduced-motion: no-preference) {
+  .loom-fan-svg line { stroke-dasharray: 3 5; animation: loom-flow 2.6s linear infinite; }
+  @keyframes loom-flow { to { stroke-dashoffset: -16; } }
+}
+
 /* TV: boost small text minimums */
 [data-slide] .text-xs { font-size: 0.875rem !important; }
 [data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
