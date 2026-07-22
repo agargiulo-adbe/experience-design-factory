@@ -149,4 +149,15 @@ function isActive(path: string): boolean {
       nav.classList.toggle('hidden');
     });
   }
+  // With 12 sections the desktop rail can scroll horizontally on smaller laptops;
+  // bring the active section into view so it's never hidden off the right edge.
+  function centerActiveNav() {
+    const rail = document.querySelector<HTMLElement>('header nav ul.overflow-x-auto');
+    const active = rail && rail.querySelector('[aria-current="page"]');
+    if (!rail || !active) return;
+    const li = (active.closest('li') || active) as HTMLElement;
+    rail.scrollLeft = li.offsetLeft - (rail.clientWidth - li.offsetWidth) / 2;
+  }
+  centerActiveNav();
+  document.addEventListener('astro:page-load', centerActiveNav);
 </script>
