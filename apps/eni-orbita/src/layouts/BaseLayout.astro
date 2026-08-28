@@ -31,11 +31,14 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <title>{title} | Orbita</title>
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <script is:inline>
-      // Anti-flash: applica la lingua salvata prima del primo paint (il deck è
-      // IT puro; il dossier è trilingue EN/IT/FR).
+      // Anti-flash: applica la lingua salvata prima del primo paint. Il deck è
+      // bilingue EN/IT; il francese esiste SOLO sul dossier — altrove degrada a
+      // IT senza sovrascrivere la preferenza salvata.
       (function () {
         try {
           var l = localStorage.getItem('edf:lang');
+          var isDossier = /\/dossier\/?$/.test(location.pathname);
+          if (l === 'fr' && !isDossier) l = 'it';
           if (l === 'en' || l === 'it' || l === 'fr') document.documentElement.setAttribute('data-lang', l);
         } catch (e) {}
       })();
@@ -52,6 +55,24 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <slot />
   </body>
 </html>
+
+<script is:inline>
+// Guard lingua per la navigazione SPA: se si arriva su una pagina deck con
+// data-lang="fr" (impostato dal dossier), i <T en it> senza fr sparirebbero
+// tutti. Coercizione a IT fuori dal dossier, preferenza salvata intatta.
+(function () {
+  if (window.__eoLangGuard) return;
+  window.__eoLangGuard = true;
+  function coerce() {
+    var isDossier = /\/dossier\/?$/.test(location.pathname);
+    if (!isDossier && document.documentElement.getAttribute('data-lang') === 'fr') {
+      document.documentElement.setAttribute('data-lang', 'it');
+    }
+  }
+  coerce();
+  document.addEventListener('astro:after-swap', coerce);
+})();
+</script>
 
 <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
 (function() {

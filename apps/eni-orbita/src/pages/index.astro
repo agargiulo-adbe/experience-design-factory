@@ -3,24 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EniNavigation from '../components/EniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const journey = [
-  { num: '01', label: 'La domanda',     sub: 'Governance al centro, velocità in orbita',  href: '/domanda',     solution: null },
-  { num: '02', label: 'La piattaforma', sub: "L'esperienza come servizio di gruppo",      href: '/piattaforma', solution: null },
-  { num: '03', label: 'Le traiettorie', sub: 'Da ciò che è in corso al nuovo',            href: '/traiettorie', solution: 'visibility,journeys,concierge,creativity,documents,authenticity' },
-  { num: '04', label: 'La mappa',       sub: 'Tutte le società, ognuna con la sua mossa', href: '/mappa',       solution: null },
-  { num: '05', label: 'Le persone',     sub: 'Competenze prima degli strumenti',          href: '/persone',     solution: null },
-  { num: '06', label: 'La rotta',       sub: 'Tre orizzonti, quattro passi concreti',     href: '/rotta',       solution: null },
+  { num: '01', it: 'La domanda',     en: 'The question',     subIt: 'Governance al centro, velocità in orbita',  subEn: 'Governance at the centre, speed in orbit',  href: '/domanda',     solution: null },
+  { num: '02', it: 'La piattaforma', en: 'The platform',     subIt: "L'esperienza come servizio di gruppo",      subEn: 'Experience as a group service',             href: '/piattaforma', solution: null },
+  { num: '03', it: 'Le traiettorie', en: 'The trajectories', subIt: 'Da ciò che è in corso al nuovo',            subEn: "From what's underway to what's new",        href: '/traiettorie', solution: 'visibility,journeys,concierge,creativity,documents,authenticity' },
+  { num: '04', it: 'La mappa',       en: 'The map',          subIt: 'Tutte le società, ognuna con la sua mossa', subEn: 'Every company, each with its own move',     href: '/mappa',       solution: null },
+  { num: '05', it: 'Le persone',     en: 'The people',       subIt: 'Competenze prima degli strumenti',          subEn: 'Skills before tools',                       href: '/persone',     solution: null },
+  { num: '06', it: 'La rotta',       en: 'The route',        subIt: 'Tre orizzonti, quattro passi concreti',     subEn: 'Three horizons, four concrete steps',       href: '/rotta',       solution: null },
 ];
 
 const momento = [
-  { value: '6°',      label: 'HPC7 nella TOP500 mondiale',        sub: 'il supercomputer industriale più potente al mondo · giu 2026' },
-  { value: 'lug ’26', label: 'il Green Data Center apre a terzi', sub: 'capacità, competenze e servizi AI a imprese e ricerca' },
-  { value: '500 MW',  label: 'AI campus Eni–Khazna',              sub: 'Ferrera Erbognone · via libera UE, ago 2026' },
+  { vIt: '6°', vEn: '6th', lIt: 'HPC7 nella TOP500 mondiale', lEn: 'HPC7 in the global TOP500', sIt: 'il supercomputer industriale più potente al mondo · giu 2026', sEn: "the world's most powerful industrial supercomputer · Jun 2026" },
+  { vIt: 'lug ’26', vEn: 'Jul ’26', lIt: 'il Green Data Center apre a terzi', lEn: 'the Green Data Center opens to third parties', sIt: 'capacità, competenze e servizi AI a imprese e ricerca', sEn: 'compute, skills and AI services for companies and research' },
+  { vIt: '500 MW', vEn: '500 MW', lIt: 'AI campus Eni–Khazna', lEn: 'Eni–Khazna AI campus', sIt: 'Ferrera Erbognone · via libera UE, ago 2026', sEn: 'Ferrera Erbognone · EU clearance, Aug 2026' },
 ];
 ---
 <BaseLayout
@@ -38,7 +39,12 @@ const momento = [
       <div slot="backdrop" class="eo-bg"></div>
 
       <div class="eo-cover" data-reveal>
-        <p class="eo-cover-eyebrow">Un gruppo · tante realtà · una sola identità</p>
+        <T
+          as="p"
+          class="eo-cover-eyebrow"
+          it="Un gruppo · tante realtà · una sola identità"
+          en="One group · many realities · one identity"
+        />
 
         <!-- Orbita: nucleo giallo (la bussola) + satelliti in orbita -->
         <div class="eo-orbit" aria-hidden="true" data-reveal data-reveal-delay="0.12">
@@ -57,12 +63,14 @@ const momento = [
 
         <h1 class="eo-cover-title" data-reveal data-reveal-delay="0.18">Orbita</h1>
 
-        <p class="eo-cover-lead" data-reveal data-reveal-delay="0.24">
-          Ogni società del gruppo corre sulla propria traiettoria, con i suoi clienti e i suoi
-          mercati. La capogruppo tiene la rotta di tutti. Qui parliamo dell'infrastruttura che
-          permette le due cose insieme: governo dell'esperienza al centro, velocità di
-          esecuzione nei satelliti.
-        </p>
+        <T
+          as="p"
+          class="eo-cover-lead"
+          data-reveal
+          data-reveal-delay="0.24"
+          it="Ogni società del gruppo corre sulla propria traiettoria, con i suoi clienti e i suoi mercati. La capogruppo tiene la rotta di tutti. Qui parliamo dell'infrastruttura che permette le due cose insieme: governo dell'esperienza al centro, velocità di esecuzione nei satelliti."
+          en="Every company in the group runs on its own trajectory, with its own customers and markets. The parent company keeps everyone on course. This is a conversation about the infrastructure that allows both at once: experience governed at the centre, execution at speed in the satellites."
+        />
 
         <div class="eo-cobrand" data-reveal data-reveal-delay="0.3">
           <span class="eo-cobrand-a">Eni</span>
@@ -70,37 +78,45 @@ const momento = [
           <span class="eo-cobrand-b">Adobe</span>
         </div>
 
-        <p class="eo-cover-note" data-reveal data-reveal-delay="0.34">
-          Conversazione preparata dal team Adobe Italia · dati pubblici citati alle fonti
-        </p>
+        <T
+          as="p"
+          class="eo-cover-note"
+          data-reveal
+          data-reveal-delay="0.34"
+          it="Conversazione preparata dal team Adobe Italia · dati pubblici citati alle fonti"
+          en="Prepared by the Adobe Italy team · public data cited to source"
+        />
       </div>
     </Slide>
 
     <!-- ── SLIDE 1: Il momento ────────────────────────────────────── -->
     <Slide id="slide-momento" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg-soft"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        IL VOSTRO 2026, VISTO DA FUORI
-      </p>
-      <h2
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4"
+        data-reveal
+        it="IL VOSTRO 2026, VISTO DA FUORI"
+        en="YOUR 2026, SEEN FROM OUTSIDE"
+      />
+      <T
+        as="h2"
         class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
         style="font-size: clamp(2rem, 3.6vw, 3.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em; max-width: 22ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Il calcolo è diventato un servizio
-      </h2>
-      <p
+        it="Il calcolo è diventato un servizio"
+        en="Compute has become a service"
+      />
+      <T
+        as="p"
         class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-6"
         style="font-size: clamp(1rem, 1.25vw, 1.25rem);"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        In un'estate il vostro Digital &amp; IT ha cambiato mestiere: da funzione interna a
-        fornitore di infrastruttura AI per il Paese. Intanto, sul fronte clienti, Più Insieme e
-        l'Account Unico hanno dato alla famiglia Eni una identità condivisa tra Enilive e
-        Plenitude. Sono i due fatti da cui parte tutto quello che segue.
-      </p>
+        it="In un'estate il vostro Digital &amp; IT ha cambiato mestiere: da funzione interna a fornitore di infrastruttura AI per il Paese. Intanto, sul fronte clienti, Più Insieme e l'Account Unico hanno dato alla famiglia Eni una identità condivisa tra Enilive e Plenitude. Sono i due fatti da cui parte tutto quello che segue."
+        en="In a single summer your Digital &amp; IT changed trade: from internal function to AI infrastructure provider for the country. Meanwhile, on the customer side, Più Insieme and the Single Account gave the Eni family one shared identity across Enilive and Plenitude. These two facts are where everything that follows begins."
+      />
 
       <div
         class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-5"
@@ -109,29 +125,30 @@ const momento = [
       >
         {momento.map((m) => (
           <div class="text-center p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-sm">
-            <p
+            <T
+              as="p"
               class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2"
               style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);"
-            >
-              {m.value}
-            </p>
-            <p class="text-[1rem] font-medium text-[var(--ink-primary)] mb-1">{m.label}</p>
-            <p class="text-[0.82rem] text-[var(--color-grigio-300)]">{m.sub}</p>
+              it={m.vIt}
+              en={m.vEn}
+            />
+            <T as="p" class="text-[1rem] font-medium text-[var(--ink-primary)] mb-1" it={m.lIt} en={m.lEn} />
+            <T as="p" class="text-[0.82rem] text-[var(--color-grigio-300)]" it={m.sIt} en={m.sEn} />
           </div>
         ))}
       </div>
       <p class="mt-5 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
-        Fonti:&nbsp;
+        <T it="Fonti:" en="Sources:" />&nbsp;
         <a href="https://www.eni.com/en-IT/media/press-release/2026/06/eni-ranks-as-world-s-leading-company-top500-global-ranking.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">
-          Eni, TOP500 (giu 2026)
+          <T it="Eni, TOP500 (giu 2026)" en="Eni, TOP500 (Jun 2026)" />
         </a>
         &nbsp;·&nbsp;
         <a href="https://www.eni.com/en-IT/media/press-release/2026/07/pr-eni-opens-supercomputing-capabilities-innovation-ecosystem.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">
-          Eni, apertura del supercalcolo (lug 2026)
+          <T it="Eni, apertura del supercalcolo (lug 2026)" en="Eni, supercomputing opened up (Jul 2026)" />
         </a>
         &nbsp;·&nbsp;
         <a href="https://en.ilsole24ore.com/art/data-centre-eu-gives-green-light-to-eni-khazna-joint-venture-lombardy-hub-to-be-accelerated-AJl2Zcj" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">
-          Il Sole 24 Ore, JV Eni–Khazna (ago 2026)
+          <T it="Il Sole 24 Ore, JV Eni–Khazna (ago 2026)" en="Il Sole 24 Ore, Eni–Khazna JV (Aug 2026)" />
         </a>
       </p>
     </Slide>
@@ -139,26 +156,30 @@ const momento = [
     <!-- ── SLIDE 2: Il percorso ───────────────────────────────────── -->
     <Slide id="slide-percorso" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        IL PERCORSO
-      </p>
-      <h2
-        class="font-[family-name:var(--font-display)] text-[var(--ink-primary)] mb-4 max-w-3xl mx-auto text-center"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4"
+        data-reveal
+        it="IL PERCORSO"
+        en="THE JOURNEY"
+      />
+      <T
+        as="h2"
+        class="font-[family-name:var(--font-display)] text-[var(--ink-primary)] mb-4 max-w-3xl mx-auto text-center block"
         style="font-size: clamp(1.9rem, 3vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
-        data-edf-chapters
-      >
-        Sei capitoli. Una bussola. Tante orbite.
-      </h2>
-      <p
+        it="Sei capitoli. Una bussola. Tante orbite."
+        en="Six chapters. One compass. Many orbits."
+      />
+      <T
+        as="p"
         class="text-[clamp(0.9rem,1.05vw,1.05rem)] text-[var(--ink-secondary)] max-w-2xl mx-auto mb-4 text-center"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        Quarantacinque minuti pensati per ascoltare prima e proporre poi. Ogni capitolo regge da
-        solo: si può saltare, tagliare, approfondire.
-      </p>
+        it="Quarantacinque minuti pensati per ascoltare prima e proporre poi. Ogni capitolo regge da solo: si può saltare, tagliare, approfondire."
+        en="Forty-five minutes built to listen first and propose after. Each chapter stands on its own: skip it, trim it, or go deeper."
+      />
 
       <div
         class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-2 mb-3"
@@ -175,10 +196,8 @@ const momento = [
             <p class="text-xs font-semibold text-[var(--color-grigio-400)] mb-0.5 font-[family-name:var(--font-display)] tabular-nums" data-edf-cardnum>
               {step.num}
             </p>
-            <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] mb-0.5 font-[family-name:var(--font-display)]">
-              {step.label}
-            </p>
-            <p class="text-[0.84rem] text-[var(--color-grigio-300)]">{step.sub}</p>
+            <T as="p" class="text-[1.02rem] font-semibold text-[var(--ink-primary)] mb-0.5 font-[family-name:var(--font-display)] block" it={step.it} en={step.en} />
+            <T as="p" class="text-[0.84rem] text-[var(--color-grigio-300)] block" it={step.subIt} en={step.subEn} />
           </a>
         ))}
       </div>
@@ -188,7 +207,7 @@ const momento = [
           href={href(base, '/domanda')}
           class="inline-flex items-center gap-3 px-9 py-2 text-[clamp(1rem,1.2vw,1.15rem)] font-semibold tracking-wide bg-[var(--accent-primary)] text-[var(--color-notte)] hover:bg-[var(--color-giallo-caldo)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4 font-[family-name:var(--font-display)] no-underline"
         >
-          Inizia il percorso
+          <T it="Inizia il percorso" en="Start the journey" />
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -209,7 +228,7 @@ const momento = [
       max-width: 60rem;
       margin-inline: auto;
     }
-    .eo-cover-eyebrow {
+    .eo-cover :global(.eo-cover-eyebrow) {
       font-family: var(--font-body);
       font-weight: 600;
       font-size: clamp(0.75rem, 0.9vw, 0.9rem);
@@ -231,12 +250,13 @@ const momento = [
       color: var(--ink-primary);
       margin: 0.1rem 0 0;
     }
-    .eo-cover-lead {
+    .eo-cover :global(.eo-cover-lead) {
       font-size: clamp(1rem, 1.25vw, 1.2rem);
       line-height: 1.55;
       color: var(--color-grigio-200);
       max-width: 46rem;
       margin: 0 auto;
+      display: block;
     }
     .eo-cobrand {
       display: inline-flex;
@@ -251,13 +271,14 @@ const momento = [
     .eo-cobrand-a { color: var(--ink-primary); }
     .eo-cobrand-x { color: var(--color-giallo); font-weight: 400; }
     .eo-cobrand-b { color: var(--ink-primary); }
-    .eo-cover-note {
+    .eo-cover :global(.eo-cover-note) {
       font-size: 0.75rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--color-grigio-300);
       max-width: 42rem;
       margin: 0 auto;
+      display: block;
     }
   </style>
 </BaseLayout>

@@ -3,71 +3,86 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EniNavigation from '../components/EniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 type Mossa = 'espandere' | 'consolidare' | 'entrare' | 'presidiare';
+const MOSSA_LABEL: Record<Mossa, { it: string; en: string }> = {
+  espandere:   { it: 'espandere',   en: 'expand' },
+  consolidare: { it: 'consolidare', en: 'consolidate' },
+  entrare:     { it: 'entrare',     en: 'enter' },
+  presidiare:  { it: 'presidiare',  en: 'watch' },
+};
 
 interface Orbita {
   nome: string;
-  ambito: string;
+  aIt: string; aEn: string;
   mossa: Mossa;
-  play: string;
+  pIt: string; pEn: string;
 }
 
 const cuore: Orbita[] = [
   {
     nome: 'Eni SpA',
-    ambito: 'capogruppo · Eni.com',
+    aIt: 'capogruppo · Eni.com', aEn: 'parent company · Eni.com',
     mossa: 'consolidare',
-    play: 'La casa dei tre cantieri aperti: voce nei motori AI, concierge, fondazione tecnica del portale. Da qui si governa il resto.',
+    pIt: 'La casa dei tre cantieri aperti: voce nei motori AI, concierge, fondazione tecnica del portale. Da qui si governa il resto.',
+    pEn: 'Home of the three open streams: voice in the AI engines, concierge, the portal\'s technical foundation. The rest is governed from here.',
   },
   {
     nome: 'Plenitude',
-    ambito: 'energia retail · B2C',
+    aIt: 'energia retail · B2C', aEn: 'retail energy · B2C',
     mossa: 'espandere',
-    play: 'La società più avanti sull\'esperienza digitale: il passo naturale è misurare e orchestrare i journey sopra ciò che già usa.',
+    pIt: 'La società più avanti sull\'esperienza digitale: il passo naturale è misurare e orchestrare i journey sopra ciò che già usa.',
+    pEn: 'The company furthest ahead on digital experience: the natural step is measuring and orchestrating journeys on top of what it already uses.',
   },
   {
     nome: 'Enilive',
-    ambito: 'mobilità · B2C',
+    aIt: 'mobilità · B2C', aEn: 'mobility · B2C',
     mossa: 'entrare',
-    play: 'L\'ingresso passa dal programma fedeltà di famiglia e dall\'Account Unico, in convivenza con lo stack che la società ha scelto.',
+    pIt: 'L\'ingresso passa dal programma fedeltà di famiglia e dall\'Account Unico, in convivenza con lo stack che la società ha scelto.',
+    pEn: 'The way in runs through the family loyalty programme and the Single Account, living alongside the stack the company has chosen.',
   },
 ];
 
 const altre: Orbita[] = [
   {
     nome: 'Versalis',
-    ambito: 'chimica · B2B',
+    aIt: 'chimica · B2B', aEn: 'chemicals · B2B',
     mossa: 'entrare',
-    play: 'Cataloghi prodotto, schede tecniche, concierge per i buyer: l\'esperienza B2B dove il sito istituzionale già c\'è.',
+    pIt: 'Cataloghi prodotto, schede tecniche, concierge per i buyer: l\'esperienza B2B dove il sito istituzionale già c\'è.',
+    pEn: 'Product catalogues, technical sheets, a concierge for buyers: B2B experience where the corporate site already exists.',
   },
   {
     nome: 'Global Energy Markets · Trade & Biofuels',
-    ambito: 'trading · B2B',
+    aIt: 'trading · B2B', aEn: 'trading · B2B',
     mossa: 'entrare',
-    play: 'Onboarding controparti e documenti: firme e moduli intelligenti prima ancora del marketing.',
+    pIt: 'Onboarding controparti e documenti: firme e moduli intelligenti prima ancora del marketing.',
+    pEn: 'Counterparty onboarding and documents: smart signatures and forms before marketing even starts.',
   },
   {
     nome: 'AGI',
-    ambito: 'agenzia di stampa',
+    aIt: 'agenzia di stampa', aEn: 'press agency',
     mossa: 'entrare',
-    play: 'Credenziali di provenienza sui contenuti e strumenti di creazione per la redazione: il caso di punta della fiducia verificabile.',
+    pIt: 'Credenziali di provenienza sui contenuti e strumenti di creazione per la redazione: il caso di punta della fiducia verificabile.',
+    pEn: 'Provenance credentials on content and creation tools for the newsroom: the flagship case for verifiable trust.',
   },
   {
     nome: 'Corporate University · eniservizi · Banque Eni',
-    ambito: 'servizi interni e regolati',
+    aIt: 'servizi interni e regolati', aEn: 'internal and regulated services',
     mossa: 'entrare',
-    play: 'Creatività diffusa e documenti: bisogni concreti, ingressi rapidi, nessun grande progetto da giustificare.',
+    pIt: 'Creatività diffusa e documenti: bisogni concreti, ingressi rapidi, nessun grande progetto da giustificare.',
+    pEn: 'Everyday creativity and documents: concrete needs, quick entries, no big programme to justify.',
   },
   {
     nome: 'Vår Energi · Azule · Ithaca',
-    ambito: 'partecipate internazionali',
+    aIt: 'partecipate internazionali', aEn: 'international affiliates',
     mossa: 'presidiare',
-    play: 'Comunicazione corporate e strumenti comuni quando servono: nessuna forzatura, la porta resta aperta.',
+    pIt: 'Comunicazione corporate e strumenti comuni quando servono: nessuna forzatura, la porta resta aperta.',
+    pEn: 'Corporate communication and shared tools when needed: nothing forced, the door stays open.',
   },
 ];
 ---
@@ -84,58 +99,70 @@ const altre: Orbita[] = [
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        CAPITOLO 04 · LA MAPPA
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="CAPITOLO 04 · LA MAPPA"
+        en="CHAPTER 04 · THE MAP"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(2.1rem, 3.8vw, 3.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em; max-width: 18ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Un gruppo, tante orbite
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-6"
+        it="Un gruppo, tante orbite"
+        en="One group, many orbits"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-6 block"
         style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        Il perimetro è tutto il gruppo, ma non con la stessa mossa ovunque. Ogni società ha la
-        sua: quattro verbi, scelti in base a cosa c'è già e a cosa manca.
-      </p>
+        it="Il perimetro è tutto il gruppo, ma non con la stessa mossa ovunque. Ogni società ha la sua: quattro verbi, scelti in base a cosa c'è già e a cosa manca."
+        en="The perimeter is the whole group, but not with the same move everywhere. Each company has its own: four verbs, chosen by what already exists and what is missing."
+      />
       <div class="flex flex-wrap items-center justify-center gap-3" data-reveal data-reveal-delay="0.22">
-        <span class="eo-move eo-move--espandere">Espandere</span>
-        <span class="eo-move eo-move--consolidare">Consolidare</span>
-        <span class="eo-move eo-move--entrare">Entrare</span>
-        <span class="eo-move eo-move--presidiare">Presidiare</span>
+        <span class="eo-move eo-move--espandere"><T it="Espandere" en="Expand" /></span>
+        <span class="eo-move eo-move--consolidare"><T it="Consolidare" en="Consolidate" /></span>
+        <span class="eo-move eo-move--entrare"><T it="Entrare" en="Enter" /></span>
+        <span class="eo-move eo-move--presidiare"><T it="Presidiare" en="Watch" /></span>
       </div>
     </Slide>
 
     <!-- ── SLIDE 1: Il cuore ──────────────────────────────────────── -->
     <Slide id="slide-cuore" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg-soft"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        LE ORBITE INTERNE
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="LE ORBITE INTERNE"
+        en="THE INNER ORBITS"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Capogruppo e brand consumer
-      </h2>
+        it="Capogruppo e brand consumer"
+        en="Parent company and consumer brands"
+      />
 
       <div class="w-full max-w-5xl mx-auto flex flex-col" data-reveal data-reveal-delay="0.16">
         {cuore.map((o) => (
           <div class="eo-row" style="grid-template-columns: 16rem 1fr;">
             <div>
               <p class="eo-row-label">{o.nome}</p>
-              <p class="eo-row-sub">{o.ambito}</p>
-              <span class={`eo-move eo-move--${o.mossa} mt-2`}>{o.mossa}</span>
+              <T as="p" class="eo-row-sub block" it={o.aIt} en={o.aEn} />
+              <span class={`eo-move eo-move--${o.mossa} mt-2`}>
+                <T it={MOSSA_LABEL[o.mossa].it} en={MOSSA_LABEL[o.mossa].en} />
+              </span>
             </div>
-            <p class="eo-row-body self-center">{o.play}</p>
+            <T as="p" class="eo-row-body self-center block" it={o.pIt} en={o.pEn} />
           </div>
         ))}
       </div>
@@ -144,34 +171,44 @@ const altre: Orbita[] = [
     <!-- ── SLIDE 2: Le altre orbite ───────────────────────────────── -->
     <Slide id="slide-altre" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg-soft"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        LE ORBITE ESTERNE
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="LE ORBITE ESTERNE"
+        en="THE OUTER ORBITS"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Dove nessuno è mai entrato
-      </h2>
+        it="Dove nessuno è mai entrato"
+        en="Where no one has entered yet"
+      />
 
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-3" data-reveal data-reveal-delay="0.16">
         {altre.map((o) => (
           <div class="eo-card" style="padding: 1rem 1.25rem 0.95rem;">
             <div class="flex items-baseline justify-between gap-3 mb-0.5 min-w-0">
               <p class="eo-card-title" style="margin-bottom: 0;">{o.nome}</p>
-              <span class={`eo-move eo-move--${o.mossa}`}>{o.mossa}</span>
+              <span class={`eo-move eo-move--${o.mossa}`}>
+                <T it={MOSSA_LABEL[o.mossa].it} en={MOSSA_LABEL[o.mossa].en} />
+              </span>
             </div>
-            <p class="eo-row-sub mb-1.5">{o.ambito}</p>
-            <p class="eo-card-body">{o.play}</p>
+            <T as="p" class="eo-row-sub mb-1.5 block" it={o.aIt} en={o.aEn} />
+            <T as="p" class="eo-card-body block" it={o.pIt} en={o.pEn} />
           </div>
         ))}
         <div class="eo-card justify-center" style="padding: 1rem 1.25rem 0.95rem; background: rgba(255,206,0,0.07); border-color: rgba(255,206,0,0.35);">
-          <p class="eo-card-body" style="color: var(--color-grigio-100);">
-            Per molte di queste società il primo passo è piccolo: creatività o documenti, con
-            la capogruppo a fare da garante e da catalogo.
-          </p>
+          <T
+            as="p"
+            class="eo-card-body block"
+            style="color: var(--color-grigio-100);"
+            it="Per molte di queste società il primo passo è piccolo: creatività o documenti, con la capogruppo a fare da garante e da catalogo."
+            en="For many of these companies the first step is small: creativity or documents, with the parent acting as guarantor and catalogue."
+          />
         </div>
       </div>
     </Slide>

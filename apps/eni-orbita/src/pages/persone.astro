@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EniNavigation from '../components/EniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -11,18 +12,39 @@ const currentPath = Astro.url.pathname;
 const modello = [
   {
     num: '1',
-    title: 'Competenze prima delle licenze',
-    body: 'Ogni servizio del catalogo arriva con un percorso di abilitazione per chi lo userà: formazione sul caso reale, non sul manuale. L\'obiettivo è che i team del gruppo sappiano fare da soli.',
+    tIt: 'Competenze prima delle licenze', tEn: 'Skills before licences',
+    bIt: 'Ogni servizio del catalogo arriva con un percorso di abilitazione per chi lo userà: formazione sul caso reale, non sul manuale. L\'obiettivo è che i team del gruppo sappiano fare da soli.',
+    bEn: 'Every service in the catalogue ships with an enablement path for the people who will use it: training on the real case, not on the manual. The goal is group teams who can do it themselves.',
   },
   {
     num: '2',
-    title: 'Operating model prima della tecnologia',
-    body: 'Chi approva cosa, chi crea cosa, chi misura cosa: le regole del gioco tra centro e società si disegnano prima di accendere gli strumenti. È lavoro di organizzazione, e lo trattiamo come tale.',
+    tIt: 'Operating model prima della tecnologia', tEn: 'Operating model before technology',
+    bIt: 'Chi approva cosa, chi crea cosa, chi misura cosa: le regole del gioco tra centro e società si disegnano prima di accendere gli strumenti. È lavoro di organizzazione, e lo trattiamo come tale.',
+    bEn: 'Who approves what, who creates what, who measures what: the rules of the game between centre and companies get drawn before any tool is switched on. It is organisational work, and we treat it as such.',
   },
   {
     num: '3',
-    title: 'Valore misurato, sempre',
-    body: 'Ogni cantiere parte con un numero di riferimento e una data di verifica. Quello che non si riesce a misurare non si propone.',
+    tIt: 'Valore misurato, sempre', tEn: 'Value measured, always',
+    bIt: 'Ogni cantiere parte con un numero di riferimento e una data di verifica. Quello che non si riesce a misurare non si propone.',
+    bEn: 'Every stream starts with a reference number and a review date. What cannot be measured does not get proposed.',
+  },
+];
+
+const community = [
+  {
+    tIt: 'Un rito trimestrale', tEn: 'A quarterly ritual',
+    bIt: 'Mezza giornata, i team digitali delle società insieme: cosa ha funzionato, cosa no, cosa si riusa.',
+    bEn: 'Half a day, the companies\' digital teams together: what worked, what didn\'t, what gets reused.',
+  },
+  {
+    tIt: 'Un catalogo di casi interni', tEn: 'A catalogue of internal cases',
+    bIt: 'Ogni progetto chiuso lascia una scheda: contesto, numeri, contatto. La conoscenza smette di evaporare.',
+    bEn: 'Every closed project leaves a card: context, numbers, contact. Knowledge stops evaporating.',
+  },
+  {
+    tIt: 'Adobe come faculty', tEn: 'Adobe as faculty',
+    bIt: 'I nostri specialisti a disposizione della community, con la Corporate University come casa naturale.',
+    bEn: 'Our specialists at the community\'s disposal, with the Corporate University as its natural home.',
   },
 ];
 ---
@@ -39,45 +61,58 @@ const modello = [
     <!-- ── SLIDE 0: Cover — la citazione ──────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center" data-display>
       <div slot="backdrop" class="eo-bg"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal>
-        CAPITOLO 05 · LE PERSONE
-      </p>
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6 block"
+        data-reveal
+        it="CAPITOLO 05 · LE PERSONE"
+        en="CHAPTER 05 · THE PEOPLE"
+      />
       <blockquote class="max-w-4xl mx-auto text-center" data-reveal data-reveal-delay="0.08">
-        <p
-          class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]"
+        <T
+          as="p"
+          class="font-[family-name:var(--font-display)] text-[var(--ink-primary)] block"
           style="font-size: clamp(1.6rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.22; letter-spacing: -0.015em;"
-        >
-          «Il vantaggio nasce dall'investimento nelle competenze delle nostre persone,
-          non solo negli strumenti tecnologici.»
-        </p>
+          it="«Il vantaggio nasce dall'investimento nelle competenze delle nostre persone, non solo negli strumenti tecnologici.»"
+          en="“The advantage comes from investing in our people's skills, not only in technology tools.”"
+        />
         <footer class="mt-5 text-[0.85rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
-          Costantino Chessa · Head of Global Digital &amp; IT, Eni · PoliS-Lombardia, aprile 2026
+          <T
+            it="Costantino Chessa · Head of Global Digital &amp; IT, Eni · PoliS-Lombardia, aprile 2026"
+            en="Costantino Chessa · Head of Global Digital &amp; IT, Eni · PoliS-Lombardia, April 2026 (translated)"
+          />
         </footer>
       </blockquote>
-      <p
-        class="mt-7 text-center text-[var(--ink-secondary)] max-w-2xl mx-auto"
+      <T
+        as="p"
+        class="mt-7 text-center text-[var(--ink-secondary)] max-w-2xl mx-auto block"
         style="font-size: clamp(1rem, 1.2vw, 1.2rem);"
         data-reveal
         data-reveal-delay="0.18"
-      >
-        Siamo d'accordo. E vogliamo essere giudicati su questo, prima che sulla tecnologia.
-      </p>
+        it="Siamo d'accordo. E vogliamo essere giudicati su questo, prima che sulla tecnologia."
+        en="We agree. And we want to be judged on this before the technology."
+      />
     </Slide>
 
     <!-- ── SLIDE 1: Il modello ────────────────────────────────────── -->
     <Slide id="slide-modello" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg-soft"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        IL MODELLO DI ADOZIONE
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="IL MODELLO DI ADOZIONE"
+        en="THE ADOPTION MODEL"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Tre impegni, presi adesso
-      </h2>
+        it="Tre impegni, presi adesso"
+        en="Three commitments, made now"
+      />
 
       <div class="w-full max-w-4xl mx-auto flex flex-col" data-reveal data-reveal-delay="0.16">
         {modello.map((m) => (
@@ -86,10 +121,14 @@ const modello = [
               <span class="eo-mark" aria-hidden="true">{m.num}</span>
             </div>
             <div class="eo-row-body">
-              <p class="font-[family-name:var(--font-display)] font-semibold text-[var(--ink-primary)] mb-1" style="font-size: clamp(1.1rem, 1.5vw, 1.4rem); line-height: 1.25;">
-                {m.title}
-              </p>
-              <p class="text-[0.98rem] leading-normal text-[var(--color-grigio-200)]">{m.body}</p>
+              <T
+                as="p"
+                class="font-[family-name:var(--font-display)] font-semibold text-[var(--ink-primary)] mb-1 block"
+                style="font-size: clamp(1.1rem, 1.5vw, 1.4rem); line-height: 1.25;"
+                it={m.tIt}
+                en={m.tEn}
+              />
+              <T as="p" class="text-[0.98rem] leading-normal text-[var(--color-grigio-200)] block" it={m.bIt} en={m.bEn} />
             </div>
           </div>
         ))}
@@ -99,42 +138,39 @@ const modello = [
     <!-- ── SLIDE 2: La community ──────────────────────────────────── -->
     <Slide id="slide-community" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        UNA RICCHEZZA GIÀ IN CASA
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="UNA RICCHEZZA GIÀ IN CASA"
+        en="WEALTH ALREADY IN THE HOUSE"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        I team che sanno già fare esistono. Non si parlano.
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-6"
+        it="I team che sanno già fare esistono. Non si parlano."
+        en="The teams that already know how exist. They don't talk."
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-6 block"
         style="font-size: clamp(1rem, 1.2vw, 1.2rem);"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        In diverse società del gruppo lavorano persone che usano gli stessi strumenti, risolvono
-        gli stessi problemi e non si sono mai incontrate. Una community di pratica del gruppo
-        costa poco e rende molto: chi ha già sbagliato una volta insegna agli altri a non
-        sbagliare.
-      </p>
+        it="In diverse società del gruppo lavorano persone che usano gli stessi strumenti, risolvono gli stessi problemi e non si sono mai incontrate. Una community di pratica del gruppo costa poco e rende molto: chi ha già sbagliato una volta insegna agli altri a non sbagliare."
+        en="Across the group's companies there are people using the same tools, solving the same problems, who have never met. A group community of practice costs little and returns a lot: whoever already made a mistake once teaches the others not to."
+      />
 
       <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.22">
-        <div class="eo-card">
-          <p class="eo-card-title">Un rito trimestrale</p>
-          <p class="eo-card-body">Mezza giornata, i team digitali delle società insieme: cosa ha funzionato, cosa no, cosa si riusa.</p>
-        </div>
-        <div class="eo-card">
-          <p class="eo-card-title">Un catalogo di casi interni</p>
-          <p class="eo-card-body">Ogni progetto chiuso lascia una scheda: contesto, numeri, contatto. La conoscenza smette di evaporare.</p>
-        </div>
-        <div class="eo-card">
-          <p class="eo-card-title">Adobe come faculty</p>
-          <p class="eo-card-body">I nostri specialisti a disposizione della community, con la Corporate University come casa naturale.</p>
-        </div>
+        {community.map((c) => (
+          <div class="eo-card">
+            <T as="p" class="eo-card-title block" it={c.tIt} en={c.tEn} />
+            <T as="p" class="eo-card-body block" it={c.bIt} en={c.bEn} />
+          </div>
+        ))}
       </div>
     </Slide>
 

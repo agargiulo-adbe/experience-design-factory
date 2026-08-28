@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EniNavigation from '../components/EniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -12,111 +13,86 @@ const ALL_IDS = ['visibility', 'journeys', 'concierge', 'creativity', 'documents
 
 interface Traiettoria {
   id: string;
-  num: string;
-  stato: 'in corso → estensione' | 'nuovo';
-  eyebrow: string;
-  title: string;
-  partenza: { tag: string; body: string };
-  arrivo: { tag: string; body: string };
-  mossa: string;
+  nuovo: boolean;
+  eyIt: string; eyEn: string;
+  tIt: string; tEn: string;
+  daIt: string; daEn: string;
+  aIt: string; aEn: string;
+  mIt: string; mEn: string;
 }
 
 const traiettorie: Traiettoria[] = [
   {
     id: 'visibility',
-    num: '1',
-    stato: 'in corso → estensione',
-    eyebrow: 'TRAIETTORIA 1 · LA VOCE',
-    title: 'Chi racconta Eni ai motori AI?',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Sul tavolo c\'è già un proof of concept di visibilità nelle risposte AI per Eni.com: misurare se e come ChatGPT, Gemini e gli altri citano il gruppo, e correggere ciò che non leggono.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Un osservatorio di gruppo: la stessa misura per ogni società e per i suoi concorrenti. Il paradosso da evitare è chiaro: vendere servizi AI al Paese ed essere raccontati male proprio dai motori AI.',
-    },
-    mossa: 'Prima mossa: baseline di visibilità su tre brand del gruppo, con la Comunicazione al tavolo.',
+    nuovo: false,
+    eyIt: 'TRAIETTORIA 1 · LA VOCE', eyEn: 'TRAJECTORY 1 · THE VOICE',
+    tIt: 'Chi racconta Eni ai motori AI?', tEn: 'Who tells Eni\'s story to the AI engines?',
+    daIt: 'Sul tavolo c\'è già un proof of concept di visibilità nelle risposte AI per Eni.com: misurare se e come ChatGPT, Gemini e gli altri citano il gruppo, e correggere ciò che non leggono.',
+    daEn: 'A proof of concept on AI-answer visibility for Eni.com is already on the table: measuring whether and how ChatGPT, Gemini and the others cite the group, and fixing what they cannot read.',
+    aIt: 'Un osservatorio di gruppo: la stessa misura per ogni società e per i suoi concorrenti. Il paradosso da evitare è chiaro: vendere servizi AI al Paese ed essere raccontati male proprio dai motori AI.',
+    aEn: 'A group-wide observatory: the same measure for every company and its competitors. The paradox to avoid is plain: selling AI services to the country while being told badly by the AI engines themselves.',
+    mIt: 'Prima mossa: baseline di visibilità su tre brand del gruppo, con la Comunicazione al tavolo.',
+    mEn: 'First move: a visibility baseline across three group brands, with Communication at the table.',
   },
   {
     id: 'journeys',
-    num: '2',
-    stato: 'in corso → estensione',
-    eyebrow: 'TRAIETTORIA 2 · IL CLIENTE UNICO',
-    title: 'Più Insieme merita un\'orchestra',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Il gruppo ha già l\'asset raro: un programma fedeltà che unisce Enilive e Plenitude e un Account Unico che attraversa app e siti della famiglia. Oggi però ogni touchpoint suona per conto suo.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Un livello di orchestrazione dei journey a livello di gruppo, sopra gli stack che ogni società ha scelto. Convive con ciò che c\'è: si integra, non sostituisce.',
-    },
-    mossa: 'Prima mossa: un journey pilota del programma fedeltà orchestrato end-to-end, misurato.',
+    nuovo: false,
+    eyIt: 'TRAIETTORIA 2 · IL CLIENTE UNICO', eyEn: 'TRAJECTORY 2 · THE SINGLE CUSTOMER',
+    tIt: 'Più Insieme merita un\'orchestra', tEn: 'Più Insieme deserves an orchestra',
+    daIt: 'Il gruppo ha già l\'asset raro: un programma fedeltà che unisce Enilive e Plenitude e un Account Unico che attraversa app e siti della famiglia. Oggi però ogni touchpoint suona per conto suo.',
+    daEn: 'The group already owns the rare asset: a loyalty programme uniting Enilive and Plenitude, and a Single Account running across the family\'s apps and sites. Today, though, every touchpoint plays on its own.',
+    aIt: 'Un livello di orchestrazione dei journey a livello di gruppo, sopra gli stack che ogni società ha scelto. Convive con ciò che c\'è: si integra, non sostituisce.',
+    aEn: 'A group-level journey orchestration layer, on top of the stacks each company has chosen. It lives with what exists: it integrates, it does not replace.',
+    mIt: 'Prima mossa: un journey pilota del programma fedeltà orchestrato end-to-end, misurato.',
+    mEn: 'First move: one pilot loyalty journey orchestrated end-to-end, and measured.',
   },
   {
     id: 'concierge',
-    num: '3',
-    stato: 'in corso → estensione',
-    eyebrow: 'TRAIETTORIA 3 · IL CONCIERGE',
-    title: 'Da un assistente a una famiglia',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Il percorso su un concierge conversazionale per Eni.com è avviato: un assistente on-brand per chi arriva sul sito istituzionale.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Lo stesso motore, quattro ingressi: gli stakeholder su Eni.com, i fornitori sui portali di filiera, i buyer tecnici delle società B2B, le persone in formazione nella Corporate University.',
-    },
-    mossa: 'Prima mossa: dopo il sito istituzionale, il caso fornitori. È il terreno che il gruppo conosce meglio.',
+    nuovo: false,
+    eyIt: 'TRAIETTORIA 3 · IL CONCIERGE', eyEn: 'TRAJECTORY 3 · THE CONCIERGE',
+    tIt: 'Da un assistente a una famiglia', tEn: 'From one assistant to a family',
+    daIt: 'Il percorso su un concierge conversazionale per Eni.com è avviato: un assistente on-brand per chi arriva sul sito istituzionale.',
+    daEn: 'The work on a conversational concierge for Eni.com is underway: an on-brand assistant for whoever lands on the corporate site.',
+    aIt: 'Lo stesso motore, quattro ingressi: gli stakeholder su Eni.com, i fornitori sui portali di filiera, i buyer tecnici delle società B2B, le persone in formazione nella Corporate University.',
+    aEn: 'The same engine, four doors: stakeholders on Eni.com, suppliers on the supply-chain portals, technical buyers of the B2B companies, learners at the Corporate University.',
+    mIt: 'Prima mossa: dopo il sito istituzionale, il caso fornitori. È il terreno che il gruppo conosce meglio.',
+    mEn: 'First move: after the corporate site, the supplier case. It is the ground the group knows best.',
   },
   {
     id: 'creativity',
-    num: '4',
-    stato: 'nuovo',
-    eyebrow: 'TRAIETTORIA 4 · LA CREATIVITÀ FEDERATA',
-    title: 'Ogni società crea. Il brand resta uno.',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Oggi la creatività professionale vive al centro e nelle agenzie; i team delle società si arrangiano, e l\'identità visiva si diluisce a ogni passaggio.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Strumenti di creazione diffusi in ogni team, con modelli generativi addestrati sull\'identità visiva del gruppo. Immaginate un modello che ha imparato dal vostro archivio storico: nessun altro al mondo può averlo.',
-    },
-    mossa: 'Prima mossa: template e guardrail di brand per le società piccole, dove il bisogno è più acuto.',
+    nuovo: true,
+    eyIt: 'TRAIETTORIA 4 · LA CREATIVITÀ FEDERATA', eyEn: 'TRAJECTORY 4 · FEDERATED CREATIVITY',
+    tIt: 'Ogni società crea. Il brand resta uno.', tEn: 'Every company creates. The brand stays one.',
+    daIt: 'Oggi la creatività professionale vive al centro e nelle agenzie; i team delle società si arrangiano, e l\'identità visiva si diluisce a ogni passaggio.',
+    daEn: 'Today professional creative work lives at the centre and in agencies; company teams make do, and the visual identity dilutes at every step.',
+    aIt: 'Strumenti di creazione diffusi in ogni team, con modelli generativi addestrati sull\'identità visiva del gruppo. Immaginate un modello che ha imparato dal vostro archivio storico: nessun altro al mondo può averlo.',
+    aEn: 'Creation tools in every team\'s hands, with generative models trained on the group\'s visual identity. Imagine a model that learned from your historical archive: no one else in the world can have it.',
+    mIt: 'Prima mossa: template e guardrail di brand per le società piccole, dove il bisogno è più acuto.',
+    mEn: 'First move: brand templates and guardrails for the smaller companies, where the need bites hardest.',
   },
   {
     id: 'documents',
-    num: '5',
-    stato: 'nuovo',
-    eyebrow: 'TRAIETTORIA 5 · I DOCUMENTI INTELLIGENTI',
-    title: 'L\'esperienza passa anche dai PDF',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Contratti, gare, moduli, firme: il lato documentale del gruppo è enorme e quotidiano. Chi lo vive lo descrive raramente come un\'esperienza.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Documenti che si leggono da soli, moduli che si compilano in metà del tempo, firme che chiudono in ore ciò che oggi chiede giorni. I candidati naturali: filiera fornitori, società finanziarie e di trading.',
-    },
-    mossa: 'Prima mossa: un processo documentale ad alto volume, misurato prima e dopo.',
+    nuovo: true,
+    eyIt: 'TRAIETTORIA 5 · I DOCUMENTI INTELLIGENTI', eyEn: 'TRAJECTORY 5 · INTELLIGENT DOCUMENTS',
+    tIt: 'L\'esperienza passa anche dai PDF', tEn: 'Experience travels through PDFs too',
+    daIt: 'Contratti, gare, moduli, firme: il lato documentale del gruppo è enorme e quotidiano. Chi lo vive lo descrive raramente come un\'esperienza.',
+    daEn: 'Contracts, tenders, forms, signatures: the group\'s document side is huge and daily. The people living it rarely describe it as an experience.',
+    aIt: 'Documenti che si leggono da soli, moduli che si compilano in metà del tempo, firme che chiudono in ore ciò che oggi chiede giorni. I candidati naturali: filiera fornitori, società finanziarie e di trading.',
+    aEn: 'Documents that read themselves, forms filled in half the time, signatures closing in hours what takes days today. The natural candidates: the supplier chain, the financial and trading companies.',
+    mIt: 'Prima mossa: un processo documentale ad alto volume, misurato prima e dopo.',
+    mEn: 'First move: one high-volume document process, measured before and after.',
   },
   {
     id: 'authenticity',
-    num: '6',
-    stato: 'nuovo',
-    eyebrow: 'TRAIETTORIA 6 · LA FIDUCIA VERIFICABILE',
-    title: 'Provare che un contenuto è vostro',
-    partenza: {
-      tag: 'Da dove parte',
-      body: 'Un gruppo energetico è un bersaglio naturale per contenuti falsi e manipolati. E nel gruppo c\'è un\'agenzia di stampa, per cui l\'autenticità è materia prima.',
-    },
-    arrivo: {
-      tag: 'Dove può arrivare',
-      body: 'Credenziali di provenienza (Content Credentials) sui contenuti ufficiali del gruppo: chiunque può verificare origine e storia di una foto o di un video. Lo standard nasce dalla Content Authenticity Initiative, fondata da Adobe.',
-    },
-    mossa: 'Prima mossa: un pilota sulla comunicazione istituzionale, con l\'agenzia del gruppo come caso di punta.',
+    nuovo: true,
+    eyIt: 'TRAIETTORIA 6 · LA FIDUCIA VERIFICABILE', eyEn: 'TRAJECTORY 6 · VERIFIABLE TRUST',
+    tIt: 'Provare che un contenuto è vostro', tEn: 'Proving a piece of content is yours',
+    daIt: 'Un gruppo energetico è un bersaglio naturale per contenuti falsi e manipolati. E nel gruppo c\'è un\'agenzia di stampa, per cui l\'autenticità è materia prima.',
+    daEn: 'An energy group is a natural target for fake and manipulated content. And the group owns a press agency, for which authenticity is raw material.',
+    aIt: 'Credenziali di provenienza (Content Credentials) sui contenuti ufficiali del gruppo: chiunque può verificare origine e storia di una foto o di un video. Lo standard nasce dalla Content Authenticity Initiative, fondata da Adobe.',
+    aEn: 'Provenance credentials (Content Credentials) on the group\'s official content: anyone can verify the origin and history of a photo or a video. The standard comes from the Content Authenticity Initiative, founded by Adobe.',
+    mIt: 'Prima mossa: un pilota sulla comunicazione istituzionale, con l\'agenzia del gruppo come caso di punta.',
+    mEn: 'First move: a pilot on corporate communication, with the group\'s press agency as the flagship case.',
   },
 ];
 ---
@@ -134,31 +110,39 @@ const traiettorie: Traiettoria[] = [
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="eo-bg"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
-        CAPITOLO 03 · LE TRAIETTORIE
-      </p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+      <T
+        as="p"
+        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block"
+        data-reveal
+        it="CAPITOLO 03 · LE TRAIETTORIE"
+        en="CHAPTER 03 · THE TRAJECTORIES"
+      />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
         style="font-size: clamp(2.1rem, 3.8vw, 3.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em; max-width: 20ch;"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Quello che è in corso è solo l'inizio
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-4"
+        it="Quello che è in corso è solo l'inizio"
+        en="What's underway is only the start"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-4 block"
         style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        Tre cantieri sono già aperti con i vostri team: la visibilità nelle risposte dei motori
-        AI, l'orchestrazione dei journey, il concierge di brand. Li consideriamo punti di
-        partenza. Ognuno apre una traiettoria che attraversa il gruppo, e altre tre ne
-        aggiungiamo noi.
-      </p>
-      <p class="text-center text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.22">
-        Sei traiettorie · si percorrono solo quelle che il dialogo tocca
-      </p>
+        it="Tre cantieri sono già aperti con i vostri team: la visibilità nelle risposte dei motori AI, l'orchestrazione dei journey, il concierge di brand. Li consideriamo punti di partenza. Ognuno apre una traiettoria che attraversa il gruppo, e altre tre ne aggiungiamo noi."
+        en="Three streams are already open with your teams: visibility in AI-engine answers, journey orchestration, the brand concierge. We treat them as starting points. Each opens a trajectory that crosses the group, and we are adding three more."
+      />
+      <T
+        as="p"
+        class="text-center text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)] block"
+        data-reveal
+        data-reveal-delay="0.22"
+        it="Sei traiettorie · si percorrono solo quelle che il dialogo tocca"
+        en="Six trajectories · we walk only the ones the dialogue touches"
+      />
     </Slide>
 
     <!-- ── SLIDE 1..6: le traiettorie (gated) ─────────────────────── -->
@@ -166,41 +150,45 @@ const traiettorie: Traiettoria[] = [
       <Slide id={`slide-${t.id}`} bg="primary" align="center" data-solution={t.id}>
         <div slot="backdrop" class="eo-bg-soft"></div>
         <div class="flex items-center justify-center gap-3 mb-4" data-reveal>
-          <p class="slide-eyebrow text-center text-[var(--accent-primary)]">{t.eyebrow}</p>
-          <span class={`eo-move ${t.stato === 'nuovo' ? 'eo-move--entrare' : 'eo-move--consolidare'}`}>{t.stato}</span>
+          <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)]" it={t.eyIt} en={t.eyEn} />
+          <span class={`eo-move ${t.nuovo ? 'eo-move--entrare' : 'eo-move--consolidare'}`}>
+            <T it={t.nuovo ? 'nuovo' : 'in corso → estensione'} en={t.nuovo ? 'new' : 'underway → extension'} />
+          </span>
         </div>
-        <h2
-          class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+        <T
+          as="h2"
+          class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
           style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
           data-reveal
           data-reveal-delay="0.08"
-        >
-          {t.title}
-        </h2>
+          it={t.tIt}
+          en={t.tEn}
+        />
 
         <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.16">
           <div class="eo-panel eo-panel--giallo">
             <div class="eo-panel-head">
-              <span class="eo-tag">{t.partenza.tag}</span>
+              <T as="span" class="eo-tag" it="Da dove parte" en="Where it starts" />
             </div>
-            <p class="eo-panel-body">{t.partenza.body}</p>
+            <T as="p" class="eo-panel-body block" it={t.daIt} en={t.daEn} />
           </div>
           <div class="eo-panel eo-panel--orbita">
             <div class="eo-panel-head">
-              <span class="eo-tag eo-tag--orbita">{t.arrivo.tag}</span>
+              <T as="span" class="eo-tag eo-tag--orbita" it="Dove può arrivare" en="Where it can go" />
             </div>
-            <p class="eo-panel-body">{t.arrivo.body}</p>
+            <T as="p" class="eo-panel-body block" it={t.aIt} en={t.aEn} />
           </div>
         </div>
 
-        <p
-          class="mt-6 text-center text-[var(--ink-primary)] max-w-2xl mx-auto font-medium"
+        <T
+          as="p"
+          class="mt-6 text-center text-[var(--ink-primary)] max-w-2xl mx-auto font-medium block"
           style="font-size: clamp(0.98rem, 1.15vw, 1.15rem);"
           data-reveal
           data-reveal-delay="0.26"
-        >
-          {t.mossa}
-        </p>
+          it={t.mIt}
+          en={t.mEn}
+        />
       </Slide>
     ))}
 

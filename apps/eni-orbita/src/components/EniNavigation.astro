@@ -1,5 +1,7 @@
 ---
 import { href } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
 
 interface Props {
   currentPath: string;
@@ -9,12 +11,12 @@ interface Props {
 const { currentPath, base } = Astro.props;
 
 const sections = [
-  { slug: 'domanda',     label: 'La domanda',     solution: null },
-  { slug: 'piattaforma', label: 'La piattaforma', solution: null },
-  { slug: 'traiettorie', label: 'Le traiettorie', solution: 'visibility,journeys,concierge,creativity,documents,authenticity' },
-  { slug: 'mappa',       label: 'La mappa',       solution: null },
-  { slug: 'persone',     label: 'Le persone',     solution: null },
-  { slug: 'rotta',       label: 'La rotta',       solution: null },
+  { slug: 'domanda',     it: 'La domanda',     en: 'The question',     solution: null },
+  { slug: 'piattaforma', it: 'La piattaforma', en: 'The platform',     solution: null },
+  { slug: 'traiettorie', it: 'Le traiettorie', en: 'The trajectories', solution: 'visibility,journeys,concierge,creativity,documents,authenticity' },
+  { slug: 'mappa',       it: 'La mappa',       en: 'The map',          solution: null },
+  { slug: 'persone',     it: 'Le persone',     en: 'The people',       solution: null },
+  { slug: 'rotta',       it: 'La rotta',       en: 'The route',        solution: null },
 ];
 
 function isActive(slug: string) {
@@ -66,13 +68,14 @@ function isActive(slug: string) {
           <span class="text-[var(--color-grigio-500)] mr-1 tabular-nums">
             {String(i + 1).padStart(2, '0')}
           </span>
-          {s.label}
+          <T it={s.it} en={s.en} />
         </a>
       </li>
     ))}
   </ol>
 
   <div class="flex items-center gap-3 flex-shrink-0">
+    <LangToggle langs={['en', 'it']} />
     <span class="hidden 2xl:inline text-[0.65rem] tracking-widest uppercase text-[var(--color-grigio-500)] whitespace-nowrap">
       Live Pitch
     </span>
