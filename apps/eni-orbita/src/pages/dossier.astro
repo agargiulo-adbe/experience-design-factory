@@ -1,0 +1,581 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+
+type Tri = { en: string; it: string; fr: string };
+
+const summary: Tri[] = [
+  {
+    it: '<strong>Il meeting:</strong> 10 settembre 2026, 45 minuti con Costantino Chessa, Head of Global Digital & IT del gruppo Eni (in carica da gennaio 2026). Ex Head of Procurement per sette anni: un trasformatore di organizzazioni, non un tecnologo. Nessun partner esterno in stanza.',
+    en: '<strong>The meeting:</strong> September 10, 2026, 45 minutes with Costantino Chessa, Head of Global Digital & IT of the Eni group (in role since January 2026). Former Head of Procurement for seven years: an organisation transformer, not a technologist. No external partners in the room.',
+    fr: '<strong>La réunion :</strong> 10 septembre 2026, 45 minutes avec Costantino Chessa, Head of Global Digital & IT du groupe Eni (en poste depuis janvier 2026). Ancien directeur des achats pendant sept ans : un transformateur d\'organisations, pas un technologue. Aucun partenaire externe dans la salle.',
+  },
+  {
+    it: '<strong>La tesi:</strong> Eni ha appena trasformato il calcolo in un servizio (Green Data Center aperto a terzi, luglio 2026). Proponiamo lo stesso modello per esperienza e contenuti: un catalogo governato dal centro, consumato dalle società del gruppo.',
+    en: '<strong>The thesis:</strong> Eni has just turned compute into a service (Green Data Center opened to third parties, July 2026). We propose the same model for experience and content: a catalogue governed at the centre, consumed by the group companies.',
+    fr: '<strong>La thèse :</strong> Eni vient de transformer le calcul en service (Green Data Center ouvert aux tiers, juillet 2026). Nous proposons le même modèle pour l\'expérience et les contenus : un catalogue gouverné au centre, consommé par les sociétés du groupe.',
+  },
+  {
+    it: '<strong>Le idee:</strong> i tre cantieri già avviati (visibilità nei motori AI, journey, brand concierge) sono punti di partenza di sei traiettorie di gruppo. L\'offerta è UNA: experience, creatività e documenti insieme.',
+    en: '<strong>The ideas:</strong> the three streams already in flight (AI-engine visibility, journeys, brand concierge) are the starting points of six group-wide trajectories. The offer is ONE: experience, creativity and documents together.',
+    fr: '<strong>Les idées :</strong> les trois chantiers déjà lancés (visibilité dans les moteurs IA, journeys, brand concierge) sont les points de départ de six trajectoires de groupe. L\'offre est UNE : expérience, créativité et documents ensemble.',
+  },
+  {
+    it: '<strong>Il perimetro:</strong> tutto il gruppo. Espandere su Plenitude, consolidare su Eni SpA, entrare in Enilive, Versalis, trading, AGI e società di servizi; presidiare le partecipate internazionali.',
+    en: '<strong>The perimeter:</strong> the whole group. Expand on Plenitude, consolidate on Eni SpA, enter Enilive, Versalis, trading, AGI and the service companies; keep watch on the international affiliates.',
+    fr: '<strong>Le périmètre :</strong> tout le groupe. S\'étendre sur Plenitude, consolider Eni SpA, entrer chez Enilive, Versalis, le trading, AGI et les sociétés de services ; veiller sur les participations internationales.',
+  },
+  {
+    it: '<strong>Il regalo finale:</strong> «da megawatt a esperienze» — i servizi di esperienza Adobe nel catalogo AI del Green Data Center. Nessuno al mondo lo ha fatto; da esplorare con Adobe corporate, senza promesse in stanza.',
+    en: '<strong>The closing gift:</strong> "from megawatts to experiences" — Adobe experience services inside the Green Data Center\'s AI catalogue. No one in the world has done it; to be explored with Adobe corporate, no promises in the room.',
+    fr: '<strong>Le cadeau final :</strong> « des mégawatts aux expériences » — les services d\'expérience Adobe dans le catalogue IA du Green Data Center. Personne au monde ne l\'a fait ; à explorer avec Adobe corporate, sans promesses en salle.',
+  },
+];
+
+const missione = {
+  obiettivi: [
+    {
+      it: '<strong>Obiettivo minimo:</strong> uscire con le priorità di Chessa sulle sei traiettorie e almeno una presentazione promessa (il decision maker digitale di Enilive).',
+      en: '<strong>Minimum objective:</strong> leave with Chessa\'s priorities across the six trajectories and at least one promised introduction (Enilive\'s digital decision maker).',
+      fr: '<strong>Objectif minimum :</strong> repartir avec les priorités de Chessa sur les six trajectoires et au moins une mise en relation promise (le décideur digital d\'Enilive).',
+    },
+    {
+      it: '<strong>Obiettivo pieno:</strong> un working group su un caso concreto con data e KPI entro fine 2026, un tavolo con la Comunicazione sulla visibilità AI, e il mandato a costruire la vista "catalogo di gruppo".',
+      en: '<strong>Full objective:</strong> a working group on one concrete case with a date and KPI by end of 2026, a table with Communication on AI visibility, and the mandate to build the "group catalogue" view.',
+      fr: '<strong>Objectif complet :</strong> un groupe de travail sur un cas concret avec date et KPI d\'ici fin 2026, une table avec la Communication sur la visibilité IA, et le mandat de construire la vue « catalogue de groupe ».',
+    },
+    {
+      it: '<strong>Postura:</strong> ascoltare prima (capitolo 1 è fatto di domande), proporre poi. Chessa è in ruolo da otto mesi: cerca alleati che gli semplifichino il gruppo, non fornitori che gli vendano licenze.',
+      en: '<strong>Posture:</strong> listen first (chapter 1 is made of questions), propose after. Chessa is eight months into the role: he is looking for allies who simplify the group for him, not vendors selling licences.',
+      fr: '<strong>Posture :</strong> écouter d\'abord (le chapitre 1 est fait de questions), proposer ensuite. Chessa est en poste depuis huit mois : il cherche des alliés qui lui simplifient le groupe, pas des fournisseurs de licences.',
+    },
+  ] as Tri[],
+};
+
+const carriera = [
+  { anni: '1995–1999', ruolo: { it: 'Banco Ambrosiano Veneto — middle office, bond trading', en: 'Banco Ambrosiano Veneto — middle office, bond trading', fr: 'Banco Ambrosiano Veneto — middle office, trading obligataire' } },
+  { anni: '1996–2007', ruolo: { it: 'Saipem — 11 anni tra HR, organizzazione e change management post-merger', en: 'Saipem — 11 years across HR, organisation and post-merger change management', fr: 'Saipem — 11 ans entre RH, organisation et conduite du changement post-fusion' } },
+  { anni: '2008–2018', ruolo: { it: 'Eni — Organization SVP, poi Continuous Improvement SVP', en: 'Eni — Organization SVP, then Continuous Improvement SVP', fr: 'Eni — SVP Organisation, puis SVP Amélioration continue' } },
+  { anni: '2018–2025', ruolo: { it: 'Eni — Head of Procurement: sette anni a integrare procurement, business e filiera dell\'energia', en: 'Eni — Head of Procurement: seven years integrating procurement, business and the energy supply chain', fr: 'Eni — Directeur des achats : sept ans à intégrer achats, métiers et filière de l\'énergie' } },
+  { anni: 'gen 2026 →', ruolo: { it: 'Eni — Head of Global Digital & IT (succede a Dario Pagani, oggi CEO di Eniquantic)', en: 'Eni — Head of Global Digital & IT (succeeding Dario Pagani, now CEO of Eniquantic)', fr: 'Eni — Head of Global Digital & IT (succède à Dario Pagani, aujourd\'hui CEO d\'Eniquantic)' } },
+];
+
+const chessaCome = [
+  {
+    it: '<strong>Come pensa:</strong> in pubblico definisce l\'AI «un\'infrastruttura decisionale», non un fine. Attribuisce il vantaggio di Eni «all\'investimento nelle competenze delle persone, non solo negli strumenti tecnologici» (PoliS-Lombardia, aprile 2026, verificato sul video).',
+    en: '<strong>How he thinks:</strong> in public he calls AI "a decision-making infrastructure", not an end in itself. He credits Eni\'s edge to "investing in people\'s skills, not just in technology tools" (PoliS-Lombardia, April 2026, verified on video).',
+    fr: '<strong>Comment il pense :</strong> en public, il définit l\'IA comme « une infrastructure décisionnelle », pas une fin. Il attribue l\'avantage d\'Eni à « l\'investissement dans les compétences des personnes, pas seulement dans les outils » (PoliS-Lombardia, avril 2026, vérifié sur la vidéo).',
+  },
+  {
+    it: '<strong>Come parlargli:</strong> processi, governance, valore misurabile, competenze. Sette anni da capo del procurement: riconosce al volo il valore del consolidamento e diffida delle promesse senza numeri. Ogni proposta nel deck chiude con una misura e una data.',
+    en: '<strong>How to talk to him:</strong> processes, governance, measurable value, skills. Seven years as head of procurement: he instantly recognises the value of consolidation and distrusts promises without numbers. Every proposal in the deck closes with a measure and a date.',
+    fr: '<strong>Comment lui parler :</strong> processus, gouvernance, valeur mesurable, compétences. Sept ans à la tête des achats : il reconnaît d\'emblée la valeur de la consolidation et se méfie des promesses sans chiffres. Chaque proposition du deck se termine par une mesure et une date.',
+  },
+  {
+    it: '<strong>Cosa lo accende:</strong> il riposizionamento del suo Digital & IT da funzione interna a provider di infrastruttura AI (Green Data Center aperto, JV Khazna). L\'orizzonte 3 del deck («da megawatt a esperienze») è costruito per parlare a questa ambizione.',
+    en: '<strong>What lights him up:</strong> repositioning his Digital & IT from internal function to AI infrastructure provider (Green Data Center opened, Khazna JV). Horizon 3 of the deck ("from megawatts to experiences") is built to speak to that ambition.',
+    fr: '<strong>Ce qui l\'enthousiasme :</strong> le repositionnement de son Digital & IT de fonction interne à fournisseur d\'infrastructure IA (Green Data Center ouvert, JV Khazna). L\'horizon 3 du deck (« des mégawatts aux expériences ») est construit pour parler à cette ambition.',
+  },
+];
+
+const fatti = [
+  {
+    badge: 'verificato 3-0',
+    it: '<strong>HPC7</strong> è 6° nella TOP500 mondiale e 2° in Europa (giugno 2026). HPC6+HPC7 superano la soglia Exascale: Eni si dichiara la prima organizzazione industriale al mondo per capacità di calcolo.',
+    en: '<strong>HPC7</strong> ranks 6th in the global TOP500 and 2nd in Europe (June 2026). HPC6+HPC7 together pass the Exascale threshold: Eni claims to be the world\'s leading industrial organisation for computing capacity.',
+    fr: '<strong>HPC7</strong> est 6e au TOP500 mondial et 2e en Europe (juin 2026). HPC6+HPC7 dépassent ensemble le seuil Exascale : Eni se déclare première organisation industrielle au monde en capacité de calcul.',
+  },
+  {
+    badge: 'verificato 3-0',
+    it: '<strong>Green Data Center aperto a terzi</strong> (28 luglio 2026): non ore-GPU ma «servizi AI» su proposte progettuali di comune interesse, con framing di sovranità digitale. Primi interessati: Domyn, Mercuria, Dompé, Almawave, Reply, FBK. Reply è anche partner Adobe: il ponte per l\'orizzonte 3 esiste già.',
+    en: '<strong>Green Data Center opened to third parties</strong> (July 28, 2026): not GPU hours but "AI services" on jointly-defined project proposals, framed around digital sovereignty. First interested parties: Domyn, Mercuria, Dompé, Almawave, Reply, FBK. Reply is also an Adobe partner: the bridge for horizon 3 already exists.',
+    fr: '<strong>Green Data Center ouvert aux tiers</strong> (28 juillet 2026) : pas des heures GPU mais des « services IA » sur des projets d\'intérêt commun, avec un cadrage de souveraineté numérique. Premiers intéressés : Domyn, Mercuria, Dompé, Almawave, Reply, FBK. Reply est aussi partenaire Adobe : le pont vers l\'horizon 3 existe déjà.',
+  },
+  {
+    badge: 'verificato 3-0',
+    it: '<strong>JV Eni–Khazna</strong>: via libera della Commissione UE (~10 agosto 2026). AI campus da 500 MW a Ferrera Erbognone alimentato da «Blue Power» con cattura CO2; l\'intesa Italia–EAU punta fino a 1 GW. Chessa la presenta personalmente come primo caso di calcolo alimentato da energia decarbonizzata.',
+    en: '<strong>Eni–Khazna JV</strong>: cleared by the EU Commission (~August 10, 2026). A 500 MW AI campus in Ferrera Erbognone powered by "Blue Power" with CO2 capture; the Italy–UAE framework targets up to 1 GW. Chessa personally presents it as the first case of computing powered by decarbonised energy.',
+    fr: '<strong>JV Eni–Khazna</strong> : feu vert de la Commission européenne (~10 août 2026). Un campus IA de 500 MW à Ferrera Erbognone alimenté par « Blue Power » avec capture de CO2 ; l\'accord Italie–EAU vise jusqu\'à 1 GW. Chessa le présente personnellement comme le premier cas de calcul alimenté par une énergie décarbonée.',
+  },
+  {
+    badge: 'verificato 3-0',
+    it: '<strong>Più Insieme</strong> (25/05/2026 → 30/06/2028): il programma fedeltà della famiglia Eni che unisce Enilive e Plenitude, su app Enilive, app Plenitude e sito. In parallelo l\'<strong>Account Unico Eni</strong>: login unico su Enilive, Enjoy e Plenitude. È il substrato reale della traiettoria journey.',
+    en: '<strong>Più Insieme</strong> (25/05/2026 → 30/06/2028): the Eni family loyalty programme uniting Enilive and Plenitude, running on the Enilive app, Plenitude app and website. In parallel, the <strong>Eni Single Account</strong>: one login across Enilive, Enjoy and Plenitude. It is the real substrate of the journey trajectory.',
+    fr: '<strong>Più Insieme</strong> (25/05/2026 → 30/06/2028) : le programme de fidélité de la famille Eni qui unit Enilive et Plenitude, sur l\'app Enilive, l\'app Plenitude et le site. En parallèle, le <strong>Compte Unique Eni</strong> : un seul login pour Enilive, Enjoy et Plenitude. C\'est le substrat réel de la trajectoire journey.',
+  },
+  {
+    badge: 'contesto',
+    it: '<strong>Il predecessore:</strong> Dario Pagani ha lasciato Eni dopo 43 anni (fine 2025) e guida oggi Eniquantic, la JV quantum di Eni con ITQuanta. Chessa eredita una funzione già proiettata verso l\'esterno.',
+    en: '<strong>The predecessor:</strong> Dario Pagani left Eni after 43 years (end of 2025) and now leads Eniquantic, Eni\'s quantum JV with ITQuanta. Chessa inherits a function already projected outwards.',
+    fr: '<strong>Le prédécesseur :</strong> Dario Pagani a quitté Eni après 43 ans (fin 2025) et dirige aujourd\'hui Eniquantic, la JV quantique d\'Eni avec ITQuanta. Chessa hérite d\'une fonction déjà tournée vers l\'extérieur.',
+  },
+];
+
+const dire = [
+  { it: 'HPC7 al 6° posto TOP500 e la soglia Exascale superata (dati giugno 2026).', en: 'HPC7 at #6 in TOP500 and the Exascale threshold passed (June 2026 data).', fr: 'HPC7 au 6e rang du TOP500 et le seuil Exascale franchi (données juin 2026).' },
+  { it: '«Infrastruttura decisionale»: usare il suo frame, applicato all\'esperienza cliente.', en: '"Decision-making infrastructure": use his own frame, applied to customer experience.', fr: '« Infrastructure décisionnelle » : reprendre son cadre, appliqué à l\'expérience client.' },
+  { it: 'Il Green Data Center come precedente interno: «avete già fatto questo con il calcolo».', en: 'The Green Data Center as the internal precedent: "you already did this with compute".', fr: 'Le Green Data Center comme précédent interne : « vous l\'avez déjà fait avec le calcul ».' },
+  { it: 'Coesistenza esplicita con gli stack dei satelliti: integrare, mai sostituire.', en: 'Explicit coexistence with the satellites\' stacks: integrate, never replace.', fr: 'Coexistence explicite avec les stacks des satellites : intégrer, jamais remplacer.' },
+  { it: 'Persone e competenze prima degli strumenti: è la sua tesi, ed è nel deck come impegno.', en: 'People and skills before tools: it is his thesis, and it is in the deck as a commitment.', fr: 'Les personnes et les compétences avant les outils : c\'est sa thèse, et c\'est un engagement du deck.' },
+];
+
+const nonDire = [
+  { it: 'I vecchi dati di HPC6 (600 PFlop/s, 6° posto): superati dalla TOP500 di giugno 2026. Citare HPC7.', en: 'The old HPC6 figures (600 PFlop/s, 6th place): superseded by the June 2026 TOP500. Quote HPC7.', fr: 'Les anciens chiffres de HPC6 (600 PFlop/s, 6e place) : dépassés par le TOP500 de juin 2026. Citer HPC7.' },
+  { it: 'Cifre su crescita, valutazione o IPO di Plenitude: non hanno superato la verifica delle fonti. Nessun numero.', en: 'Figures on Plenitude growth, valuation or IPO: they did not survive source verification. No numbers.', fr: 'Les chiffres de croissance, valorisation ou IPO de Plenitude : ils n\'ont pas passé la vérification des sources. Aucun chiffre.' },
+  { it: 'Collegare Più Insieme a Milano-Cortina: il sito del programma non lo fa. Evitare l\'accostamento.', en: 'Linking Più Insieme to Milano-Cortina: the programme\'s own site does not. Avoid the association.', fr: 'Relier Più Insieme à Milano-Cortina : le site du programme ne le fait pas. Éviter le rapprochement.' },
+  { it: '«Adobe gira nel vostro data center»: oggi non esiste. La formula onesta: i mattoni esistono tutti, la combinazione non l\'ha ancora costruita nessuno.', en: '"Adobe runs in your data center": it does not exist today. The honest line: all the bricks exist, no one has built the combination yet.', fr: '« Adobe tourne dans votre data center » : cela n\'existe pas aujourd\'hui. La formule honnête : toutes les briques existent, personne n\'a encore construit la combinaison.' },
+  { it: 'Temi contrattuali e rinnovi: seguono su altri tavoli e sono in via di conclusione. In stanza non si toccano, e nessuna cifra economica va mai citata.', en: 'Contract and renewal topics: they run on other tables and are being finalised. Off limits in the room, and no financial figure is ever quoted.', fr: 'Les sujets contractuels et les renouvellements : ils suivent sur d\'autres tables et sont en cours de finalisation. À ne pas aborder en salle, et aucun chiffre financier n\'est jamais cité.' },
+];
+
+const persone = [
+  {
+    nome: 'Costantino Chessa',
+    ruolo: { it: 'Head of Global Digital & IT, Eni — il nostro interlocutore', en: 'Head of Global Digital & IT, Eni — our counterpart', fr: 'Head of Global Digital & IT, Eni — notre interlocuteur' },
+    nota: { it: 'Decide la cornice di gruppo. Da lui vogliamo priorità, presentazioni e il mandato a costruire.', en: 'He sets the group frame. From him we want priorities, introductions and the mandate to build.', fr: 'Il fixe le cadre du groupe. Nous attendons de lui des priorités, des mises en relation et le mandat de construire.' },
+  },
+  {
+    nome: 'Erika Mandraffino',
+    ruolo: { it: 'Director External Communication, Eni (dal novembre 2020)', en: 'Director External Communication, Eni (since November 2020)', fr: 'Directrice de la communication externe, Eni (depuis novembre 2020)' },
+    nota: { it: 'Custodisce Eni.com, brand e reputazione: sponsor naturale del tavolo sulla visibilità nei motori AI. Da chiedere come intro (richiesta 3 del deck).', en: 'Guardian of Eni.com, brand and reputation: the natural sponsor of the AI-visibility table. To be requested as an intro (ask 3 in the deck).', fr: 'Gardienne d\'Eni.com, de la marque et de la réputation : sponsor naturel de la table sur la visibilité IA. À demander en introduction (demande 3 du deck).' },
+  },
+  {
+    nome: 'Giorgia Molajoni',
+    ruolo: { it: 'Digital, Information Technology & Communication, Plenitude', en: 'Digital, Information Technology & Communication, Plenitude', fr: 'Digital, Information Technology & Communication, Plenitude' },
+    nota: { it: 'Unica executive di Plenitude con digital, IT e comunicazione insieme: la controparte del filone «espandere». Plenitude decide in autonomia: Chessa legittima, non impone.', en: 'The only Plenitude executive holding digital, IT and communication together: the counterpart of the "expand" thread. Plenitude decides autonomously: Chessa legitimises, he does not impose.', fr: 'Seule dirigeante de Plenitude réunissant digital, IT et communication : l\'interlocutrice du volet « étendre ». Plenitude décide en autonomie : Chessa légitime, il n\'impose pas.' },
+  },
+  {
+    nome: '?',
+    ruolo: { it: 'Decision maker digitale di Enilive — non identificato da fonti pubbliche', en: 'Enilive\'s digital decision maker — not identified from public sources', fr: 'Décideur digital d\'Enilive — non identifié dans les sources publiques' },
+    nota: { it: 'Il buco della mappa, ed è esattamente la presentazione da chiedere a Chessa (richiesta 2 del deck). L\'aggancio: il programma fedeltà di famiglia corre già su asset di entrambe le società.', en: 'The gap in the map, and exactly the introduction to ask Chessa for (ask 2 in the deck). The hook: the family loyalty programme already runs on assets of both companies.', fr: 'Le trou de la carte, et exactement la mise en relation à demander à Chessa (demande 2 du deck). L\'accroche : le programme de fidélité familial tourne déjà sur des actifs des deux sociétés.' },
+  },
+];
+
+const leve = [
+  {
+    it: '<strong>Forza — l\'installato:</strong> i siti della capogruppo e di Plenitude corrono già su tecnologia Adobe, con personalizzazione e produzione creativa accese dove serve. Non vendiamo un ingresso: proponiamo di governare ciò che c\'è e di estenderlo.',
+    en: '<strong>Strength — the installed base:</strong> the parent company\'s and Plenitude\'s sites already run on Adobe technology, with personalisation and creative production live where needed. We are not selling an entry: we propose governing what exists and extending it.',
+    fr: '<strong>Force — l\'existant :</strong> les sites de la maison mère et de Plenitude tournent déjà sur la technologie Adobe, avec personnalisation et production créative actives là où il faut. Nous ne vendons pas une entrée : nous proposons de gouverner l\'existant et de l\'étendre.',
+  },
+  {
+    it: '<strong>Forza — l\'unicità:</strong> nessun altro vendor copre insieme esperienza, creatività, documenti e provenienza dei contenuti. Per un gruppo con un\'agenzia di stampa e una filiera enorme, è una copertura che i concorrenti non possono replicare.',
+    en: '<strong>Strength — uniqueness:</strong> no other vendor covers experience, creativity, documents and content provenance together. For a group with a press agency and a huge supply chain, that is coverage competitors cannot replicate.',
+    fr: '<strong>Force — l\'unicité :</strong> aucun autre éditeur ne couvre à la fois expérience, créativité, documents et provenance des contenus. Pour un groupe avec une agence de presse et une immense filière, c\'est une couverture que les concurrents ne peuvent pas répliquer.',
+  },
+  {
+    it: '<strong>Debolezza — Enilive:</strong> forte presenza di un altro stack CRM e nessun accesso al CIO. Risposta: mai proporre sostituzioni; l\'ingresso è il layer di gruppo (fedeltà, identità) che per natura attraversa gli stack.',
+    en: '<strong>Weakness — Enilive:</strong> strong presence of another CRM stack and no access to the CIO. Response: never propose replacements; the entry is the group layer (loyalty, identity) which by nature crosses stacks.',
+    fr: '<strong>Faiblesse — Enilive :</strong> forte présence d\'un autre stack CRM et aucun accès au DSI. Réponse : ne jamais proposer de remplacement ; l\'entrée est la couche de groupe (fidélité, identité), qui traverse les stacks par nature.',
+  },
+  {
+    it: '<strong>Obiezione attesa — «abbiamo già Microsoft/Salesforce»:</strong> risposta breve: complementari, non alternativi. Adobe orchestra esperienza e contenuti sopra i sistemi di record; le integrazioni con Microsoft 365 e con i CRM sono parte dell\'offerta, non un\'eccezione.',
+    en: '<strong>Expected objection — "we already have Microsoft/Salesforce":</strong> short answer: complementary, not alternative. Adobe orchestrates experience and content on top of systems of record; integrations with Microsoft 365 and CRMs are part of the offer, not an exception.',
+    fr: '<strong>Objection attendue — « nous avons déjà Microsoft/Salesforce » :</strong> réponse courte : complémentaires, pas alternatifs. Adobe orchestre l\'expérience et les contenus au-dessus des systèmes de référence ; les intégrations avec Microsoft 365 et les CRM font partie de l\'offre, pas exception.',
+  },
+  {
+    it: '<strong>Obiezione attesa — «quanto costa?»:</strong> risposta: oggi nessuna cifra; prima le priorità, poi un caso con KPI, e i numeri arrivano su quel perimetro. Coerente con il suo metodo da procurement: il prezzo si discute su uno scope definito.',
+    en: '<strong>Expected objection — "how much does it cost?":</strong> answer: no figures today; priorities first, then one case with KPIs, and numbers follow on that perimeter. Consistent with his procurement method: price is discussed on a defined scope.',
+    fr: '<strong>Objection attendue — « combien ça coûte ? » :</strong> réponse : aucun chiffre aujourd\'hui ; d\'abord les priorités, puis un cas avec KPI, et les chiffres viennent sur ce périmètre. Cohérent avec sa méthode d\'acheteur : le prix se discute sur un périmètre défini.',
+  },
+];
+
+const runOfShow = [
+  { min: '0–5',   fase: { it: 'Apertura e specchio: il loro 2026 (cap. 0). Guadagnare credibilità in due slide.', en: 'Opening and mirror: their 2026 (ch. 0). Earn credibility in two slides.', fr: 'Ouverture et miroir : leur 2026 (chap. 0). Gagner en crédibilité en deux slides.' } },
+  { min: '5–15',  fase: { it: 'Ascolto guidato: le tre domande (cap. 1). Lasciarlo parlare; prendere appunti visibili.', en: 'Guided listening: the three questions (ch. 1). Let him talk; take visible notes.', fr: 'Écoute guidée : les trois questions (chap. 1). Le laisser parler ; prendre des notes visibles.' } },
+  { min: '15–30', fase: { it: 'La piattaforma e le traiettorie che il dialogo tocca (cap. 2–3). Non percorrerle tutte: il gating nasconde quelle non richieste.', en: 'The platform and the trajectories the dialogue touches (ch. 2–3). Do not walk through all of them: gating hides the ones not requested.', fr: 'La plateforme et les trajectoires que le dialogue touche (chap. 2–3). Ne pas toutes les parcourir : le gating masque celles non demandées.' } },
+  { min: '30–38', fase: { it: 'La mappa del gruppo e le persone (cap. 4–5). Qui vive la citazione: il momento personale.', en: 'The group map and people (ch. 4–5). The quote lives here: the personal moment.', fr: 'La carte du groupe et les personnes (chap. 4–5). La citation vit ici : le moment personnel.' } },
+  { min: '38–45', fase: { it: 'La rotta, «da megawatt a esperienze», le quattro richieste (cap. 6). Chiudere sulle richieste, non sulla visione.', en: 'The route, "from megawatts to experiences", the four asks (ch. 6). Close on the asks, not on the vision.', fr: 'La route, « des mégawatts aux expériences », les quatre demandes (chap. 6). Conclure sur les demandes, pas sur la vision.' } },
+];
+
+const pianoB = [
+  { it: '<strong>Se porta il discorso su contratti o rinnovi:</strong> «tema che sta già camminando sui tavoli giusti; oggi vorremmo usare i 45 minuti sulla rotta». Non aprire il tema, mai numeri.', en: '<strong>If he steers to contracts or renewals:</strong> "that is already moving on the right tables; today we would like to spend the 45 minutes on the route". Do not open the topic, never numbers.', fr: '<strong>S\'il oriente vers les contrats ou renouvellements :</strong> « le sujet avance déjà sur les bonnes tables ; aujourd\'hui nous voudrions consacrer les 45 minutes à la route ». Ne pas ouvrir le sujet, jamais de chiffres.' },
+  { it: '<strong>Se vuole parlare solo di infrastruttura AI:</strong> assecondarlo e saltare all\'orizzonte 3 (cap. 6, slide «da megawatt a esperienze»), poi tornare indietro: «per vendere esperienze fuori, servono governate dentro».', en: '<strong>If he only wants to talk AI infrastructure:</strong> go with it and jump to horizon 3 (ch. 6, "from megawatts to experiences" slide), then loop back: "to sell experiences outside, they must be governed inside".', fr: '<strong>S\'il ne veut parler que d\'infrastructure IA :</strong> le suivre et sauter à l\'horizon 3 (chap. 6, slide « des mégawatts aux expériences »), puis revenir : « pour vendre des expériences dehors, il faut les gouverner dedans ».' },
+  { it: '<strong>Se il tempo si dimezza:</strong> percorso minimo = cap. 0 (1 slide) → cap. 1 (domande) → cap. 6 (richieste). La mappa e le traiettorie si mandano dopo, come follow-up.', en: '<strong>If time is halved:</strong> minimum path = ch. 0 (1 slide) → ch. 1 (questions) → ch. 6 (asks). Map and trajectories go afterwards as follow-up.', fr: '<strong>Si le temps est réduit de moitié :</strong> parcours minimal = chap. 0 (1 slide) → chap. 1 (questions) → chap. 6 (demandes). La carte et les trajectoires partent ensuite en follow-up.' },
+];
+
+const biblioteca = [
+  { label: 'Eni — apertura del supercalcolo all\'ecosistema (PR, 28 lug 2026)', url: 'https://www.eni.com/en-IT/media/press-release/2026/07/pr-eni-opens-supercomputing-capabilities-innovation-ecosystem.html', tipo: 'primaria' },
+  { label: 'Eni — HPC7, scheda ufficiale', url: 'https://www.eni.com/en-IT/actions/energy-transition-technologies/supercomputing-artificial-intelligence/supercomputer.html', tipo: 'primaria' },
+  { label: 'Eni — TOP500, prima azienda al mondo (PR, giu 2026)', url: 'https://www.eni.com/en-IT/media/press-release/2026/06/eni-ranks-as-world-s-leading-company-top500-global-ranking.html', tipo: 'primaria' },
+  { label: 'Eni — JV Khazna, Heads of Terms (PR, 14 lug 2025)', url: 'https://www.eni.com/en-IT/media/press-release/2025/07/pr-khazna-data-centers-eni-partner-develop-i-data-center-campus.html', tipo: 'primaria' },
+  { label: 'Il Sole 24 Ore — via libera UE alla JV Eni–Khazna (10 ago 2026)', url: 'https://en.ilsole24ore.com/art/data-centre-eu-gives-green-light-to-eni-khazna-joint-venture-lombardy-hub-to-be-accelerated-AJl2Zcj', tipo: 'stampa' },
+  { label: 'Linkiesta — sovranità digitale e apertura del supercalcolo (lug 2026)', url: 'https://www.linkiesta.it/2026/07/eni-supercomputer-imprese-ricerca/', tipo: 'stampa' },
+  { label: 'HPCwire — HPC7 debuts at No. 6, exascale combinato (giu 2026)', url: 'https://www.hpcwire.com/off-the-wire/enis-hpc7-debuts-at-no-6-on-top500-as-hpc6-and-hpc7-combined-surpass-exascale/', tipo: 'stampa' },
+  { label: 'Video — Chessa a PoliS-Lombardia (apr 2026): «infrastruttura decisionale» ~07:10', url: 'https://www.youtube.com/watch?v=2qyIQJMpml0', tipo: 'video' },
+  { label: 'Più Insieme — sito ufficiale del programma', url: 'https://piuinsieme.eni.com/home.html', tipo: 'primaria' },
+  { label: 'Enilive — Account Unico Eni', url: 'https://www.enilive.it/app-enilive/cliente-unico', tipo: 'primaria' },
+  { label: 'Eni — bio ufficiale Erika Mandraffino', url: 'https://www.eni.com/en-IT/company/biographies/erika-mandraffino.html', tipo: 'primaria' },
+  { label: 'Plenitude — management (Goberti, Marino, Molajoni)', url: 'https://corporate.eniplenitude.com/en/about/management', tipo: 'primaria' },
+  { label: 'Eni — piano strategico 2026–2030 (target Enilive e Plenitude)', url: 'https://www.eni.com/en-IT/investors/strategy/strategic-plan.html', tipo: 'primaria' },
+  { label: 'LinkedIn — Costantino Chessa', url: 'https://it.linkedin.com/in/costantino-chessa-324bb822', tipo: 'profilo' },
+];
+---
+<BaseLayout
+  title="Dossier — War Room"
+  description="Adobe internal — meeting preparation dossier."
+  noindex={true}
+>
+  <div class="dw-shell">
+    <header class="dw-header">
+      <div class="dw-header-inner">
+        <div class="dw-header-left">
+          <span class="dw-badge">Adobe internal</span>
+          <h1 class="dw-title">
+            <T en="War Room — Eni, September 10" it="War Room — Eni, 10 settembre" fr="War Room — Eni, 10 septembre" as="span" />
+          </h1>
+        </div>
+        <div class="dw-header-right">
+          <LangToggle langs={['en', 'it', 'fr']} />
+          <a class="dw-deck-link" href={href(base, '/')}>
+            <T en="Open the deck →" it="Apri il deck →" fr="Ouvrir le deck →" as="span" />
+          </a>
+        </div>
+      </div>
+      <p class="dw-disclaimer">
+        <T
+          en="Working document for the Adobe team. Public sources cited throughout; no contractual or financial data. Please do not circulate outside Adobe."
+          it="Documento di lavoro per il team Adobe. Fonti pubbliche citate; nessun dato contrattuale o economico. Da non far circolare fuori da Adobe."
+          fr="Document de travail pour l'équipe Adobe. Sources publiques citées ; aucune donnée contractuelle ou financière. À ne pas diffuser hors d'Adobe."
+          as="span"
+        />
+      </p>
+    </header>
+
+    <main class="dw-main">
+
+      <!-- 1 · Executive summary -->
+      <section class="dw-section" aria-labelledby="dw-h-summary">
+        <h2 class="dw-h" id="dw-h-summary">
+          <span class="dw-h-num">01</span>
+          <T en="Executive summary" it="Executive summary" fr="Résumé exécutif" as="span" />
+        </h2>
+        <ul class="dw-list">
+          {summary.map((s) => (
+            <li class="dw-li"><T en={s.en} it={s.it} fr={s.fr} as="span" /></li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 2 · Mission brief -->
+      <section class="dw-section" aria-labelledby="dw-h-missione">
+        <h2 class="dw-h" id="dw-h-missione">
+          <span class="dw-h-num">02</span>
+          <T en="Mission brief" it="Mission brief" fr="Brief de mission" as="span" />
+        </h2>
+        <ul class="dw-list">
+          {missione.obiettivi.map((o) => (
+            <li class="dw-li"><T en={o.en} it={o.it} fr={o.fr} as="span" /></li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 3 · Chessa -->
+      <section class="dw-section" aria-labelledby="dw-h-chessa">
+        <h2 class="dw-h" id="dw-h-chessa">
+          <span class="dw-h-num">03</span>
+          <T en="Who is Costantino Chessa" it="Chi è Costantino Chessa" fr="Qui est Costantino Chessa" as="span" />
+        </h2>
+        <div class="dw-timeline">
+          {carriera.map((c) => (
+            <div class="dw-tl-row">
+              <span class="dw-tl-years">{c.anni}</span>
+              <span class="dw-tl-role"><T en={c.ruolo.en} it={c.ruolo.it} fr={c.ruolo.fr} as="span" /></span>
+            </div>
+          ))}
+        </div>
+        <ul class="dw-list">
+          {chessaCome.map((c) => (
+            <li class="dw-li"><T en={c.en} it={c.it} fr={c.fr} as="span" /></li>
+          ))}
+        </ul>
+        <div class="dw-video">
+          <iframe
+            src="https://www.youtube.com/embed/2qyIQJMpml0?start=420&rel=0"
+            title="Costantino Chessa — PoliS-Lombardia, aprile 2026"
+            allow="encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+          <p class="dw-caption">
+            <T
+              en="PoliS-Lombardia, April 29, 2026 — cued to ~07:00, just before the 'decision-making infrastructure' passage."
+              it="PoliS-Lombardia, 29 aprile 2026 — posizionato a ~07:00, poco prima del passaggio su «infrastruttura decisionale»."
+              fr="PoliS-Lombardia, 29 avril 2026 — calé à ~07:00, juste avant le passage sur « l'infrastructure décisionnelle »."
+              as="span"
+            />
+          </p>
+        </div>
+      </section>
+
+      <!-- 4 · I fatti -->
+      <section class="dw-section" aria-labelledby="dw-h-fatti">
+        <h2 class="dw-h" id="dw-h-fatti">
+          <span class="dw-h-num">04</span>
+          <T en="The verified facts" it="I fatti verificati" fr="Les faits vérifiés" as="span" />
+        </h2>
+        <p class="dw-note">
+          <T
+            en="Every claim below survived a 3-vote adversarial check against primary sources (research run: August 27, 2026). Refresh sources on September 8–9."
+            it="Ogni affermazione qui sotto ha superato una verifica adversariale a 3 voti su fonti primarie (ricerca del 27 agosto 2026). Rinfrescare le fonti l'8–9 settembre."
+            fr="Chaque affirmation ci-dessous a passé une vérification contradictoire à 3 votes sur sources primaires (recherche du 27 août 2026). Rafraîchir les sources les 8–9 septembre."
+            as="span"
+          />
+        </p>
+        <ul class="dw-list">
+          {fatti.map((f) => (
+            <li class="dw-li">
+              <span class="dw-chip">{f.badge}</span>
+              <T en={f.en} it={f.it} fr={f.fr} as="span" />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 5 · Dire / non dire -->
+      <section class="dw-section" aria-labelledby="dw-h-dire">
+        <h2 class="dw-h" id="dw-h-dire">
+          <span class="dw-h-num">05</span>
+          <T en="Say / don't say" it="Da dire / da non dire" fr="À dire / à ne pas dire" as="span" />
+        </h2>
+        <div class="dw-cols">
+          <div class="dw-col dw-col--ok">
+            <h3 class="dw-col-h"><T en="✓ Say" it="✓ Da dire" fr="✓ À dire" as="span" /></h3>
+            <ul class="dw-list">
+              {dire.map((d) => (
+                <li class="dw-li dw-li--tight"><T en={d.en} it={d.it} fr={d.fr} as="span" /></li>
+              ))}
+            </ul>
+          </div>
+          <div class="dw-col dw-col--no">
+            <h3 class="dw-col-h"><T en="✗ Don't say" it="✗ Da non dire" fr="✗ À ne pas dire" as="span" /></h3>
+            <ul class="dw-list">
+              {nonDire.map((d) => (
+                <li class="dw-li dw-li--tight"><T en={d.en} it={d.it} fr={d.fr} as="span" /></li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 · Le persone -->
+      <section class="dw-section" aria-labelledby="dw-h-persone">
+        <h2 class="dw-h" id="dw-h-persone">
+          <span class="dw-h-num">06</span>
+          <T en="People map" it="La mappa delle persone" fr="La carte des personnes" as="span" />
+        </h2>
+        <div class="dw-people">
+          {persone.map((p) => (
+            <div class="dw-person">
+              <p class="dw-person-name">{p.nome}</p>
+              <p class="dw-person-role"><T en={p.ruolo.en} it={p.ruolo.it} fr={p.ruolo.fr} as="span" /></p>
+              <p class="dw-person-note"><T en={p.nota.en} it={p.nota.it} fr={p.nota.fr} as="span" /></p>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">
+          <T
+            en="Operational contacts at Eni.com, Plenitude and Enilive are known to the account team from prior workshops; names stay off this page by design."
+            it="I referenti operativi di Eni.com, Plenitude ed Enilive sono noti al team account dai workshop precedenti; i nomi restano fuori da questa pagina, per scelta."
+            fr="Les contacts opérationnels d'Eni.com, Plenitude et Enilive sont connus de l'équipe compte via les ateliers précédents ; leurs noms restent hors de cette page, par choix."
+            as="span"
+          />
+        </p>
+      </section>
+
+      <!-- 7 · Leve e obiezioni -->
+      <section class="dw-section" aria-labelledby="dw-h-leve">
+        <h2 class="dw-h" id="dw-h-leve">
+          <span class="dw-h-num">07</span>
+          <T en="Levers, weaknesses, objections" it="Leve, debolezze, obiezioni" fr="Leviers, faiblesses, objections" as="span" />
+        </h2>
+        <ul class="dw-list">
+          {leve.map((l) => (
+            <li class="dw-li"><T en={l.en} it={l.it} fr={l.fr} as="span" /></li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 8 · Run of show -->
+      <section class="dw-section" aria-labelledby="dw-h-run">
+        <h2 class="dw-h" id="dw-h-run">
+          <span class="dw-h-num">08</span>
+          <T en="Run of show — 45 minutes" it="Run of show — 45 minuti" fr="Déroulé — 45 minutes" as="span" />
+        </h2>
+        <div class="dw-timeline">
+          {runOfShow.map((r) => (
+            <div class="dw-tl-row">
+              <span class="dw-tl-years">{r.min}′</span>
+              <span class="dw-tl-role"><T en={r.fase.en} it={r.fase.it} fr={r.fase.fr} as="span" /></span>
+            </div>
+          ))}
+        </div>
+        <h3 class="dw-sub"><T en="Plan B" it="Piano B" fr="Plan B" as="span" /></h3>
+        <ul class="dw-list">
+          {pianoB.map((p) => (
+            <li class="dw-li"><T en={p.en} it={p.it} fr={p.fr} as="span" /></li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 9 · Biblioteca -->
+      <section class="dw-section" aria-labelledby="dw-h-fonti">
+        <h2 class="dw-h" id="dw-h-fonti">
+          <span class="dw-h-num">09</span>
+          <T en="Library — sources & links" it="Biblioteca — fonti e link" fr="Bibliothèque — sources et liens" as="span" />
+        </h2>
+        <ul class="dw-sources">
+          {biblioteca.map((b) => (
+            <li class="dw-source">
+              <span class={`dw-chip dw-chip--${b.tipo}`}>{b.tipo}</span>
+              <a href={b.url} target="_blank" rel="noopener noreferrer">{b.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="dw-footer">
+        <T
+          en="Prepared by the Adobe Italy team with verified public sources · last updated August 28, 2026"
+          it="Preparato dal team Adobe Italia su fonti pubbliche verificate · ultimo aggiornamento 28 agosto 2026"
+          fr="Préparé par l'équipe Adobe Italie sur sources publiques vérifiées · dernière mise à jour le 28 août 2026"
+          as="span"
+        />
+      </footer>
+    </main>
+  </div>
+
+  <style>
+    .dw-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(110% 60% at 20% 0%, rgba(255,206,0,0.07), transparent 55%),
+        var(--color-notte);
+    }
+    .dw-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(10, 11, 13, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--color-carbone);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .dw-header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      max-width: 62rem; margin-inline: auto; flex-wrap: wrap;
+    }
+    .dw-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+    .dw-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--color-notte); background: var(--color-giallo);
+      padding: 0.25rem 0.6rem; border-radius: 3px;
+    }
+    .dw-title {
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em;
+      font-size: clamp(1.05rem, 2vw, 1.35rem); color: var(--color-avorio); line-height: 1.2;
+    }
+    .dw-header-right { display: flex; align-items: center; gap: 1.1rem; flex-shrink: 0; }
+    .dw-deck-link {
+      font-size: 0.8rem; font-weight: 600; color: var(--color-orbita-chiara);
+      text-decoration: none; white-space: nowrap;
+    }
+    .dw-deck-link:hover { text-decoration: underline; }
+    .dw-disclaimer {
+      max-width: 62rem; margin: 0.45rem auto 0;
+      font-size: 0.78rem; line-height: 1.45; color: var(--color-grigio-400);
+    }
+
+    .dw-main {
+      max-width: 62rem; margin-inline: auto;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem;
+      display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem);
+    }
+    .dw-section {
+      border-top: 1px solid var(--color-carbone);
+      padding-top: clamp(1.25rem, 2.5vw, 2rem);
+    }
+    .dw-h {
+      display: flex; align-items: baseline; gap: 0.8rem;
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em;
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: var(--color-avorio);
+      margin-bottom: 1.1rem;
+    }
+    .dw-h-num {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--color-giallo); font-family: var(--font-body);
+    }
+    .dw-sub {
+      font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+      color: var(--color-avorio); margin: 1.4rem 0 0.7rem;
+    }
+    .dw-note { font-size: 0.85rem; line-height: 1.5; color: var(--color-grigio-400); margin-bottom: 0.9rem; max-width: none; }
+
+    .dw-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .dw-li {
+      position: relative; padding-left: 1.15rem;
+      font-size: 0.95rem; line-height: 1.6; color: var(--color-grigio-200);
+    }
+    .dw-li::before {
+      content: ''; position: absolute; left: 0; top: 0.62em;
+      width: 7px; height: 7px; border-radius: 50%; background: var(--color-giallo);
+    }
+    .dw-li--tight { font-size: 0.9rem; }
+    .dw-li :global(strong) { color: var(--color-avorio); font-weight: 600; }
+
+    .dw-chip {
+      display: inline-flex; margin-right: 0.5rem; padding: 0.12rem 0.5rem; border-radius: 999px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--color-notte); background: var(--color-orbita); vertical-align: middle;
+    }
+    .dw-chip--primaria { background: var(--color-giallo); }
+    .dw-chip--stampa   { background: var(--color-orbita); }
+    .dw-chip--video    { background: var(--color-ambra); }
+    .dw-chip--profilo  { background: var(--color-grigio-300); }
+
+    .dw-timeline { display: flex; flex-direction: column; margin-bottom: 1.1rem; }
+    .dw-tl-row {
+      display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem;
+      padding: 0.55rem 0; border-top: 1px solid var(--color-carbone);
+    }
+    .dw-tl-years {
+      font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+      color: var(--color-giallo); letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .dw-tl-role { font-size: 0.92rem; line-height: 1.5; color: var(--color-grigio-200); }
+
+    .dw-video { margin-top: 1.3rem; }
+    .dw-video iframe {
+      width: 100%; aspect-ratio: 16 / 9; border: 1px solid var(--color-carbone);
+      border-radius: 8px; display: block; background: var(--color-fumo);
+    }
+    .dw-caption { font-size: 0.8rem; color: var(--color-grigio-400); margin-top: 0.5rem; }
+
+    .dw-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-cols { grid-template-columns: 1fr 1fr; } }
+    .dw-col { border: 1px solid var(--color-carbone); border-radius: 8px; padding: 1.1rem 1.2rem; background: rgba(16,17,20,0.6); }
+    .dw-col--ok { box-shadow: inset 0 2px 0 0 rgba(255,206,0,0.8); }
+    .dw-col--no { box-shadow: inset 0 2px 0 0 rgba(255,120,90,0.75); }
+    .dw-col-h { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--color-avorio); margin-bottom: 0.8rem; }
+    .dw-col--no .dw-li::before { background: #FF785A; }
+
+    .dw-people { display: grid; gap: 1rem; grid-template-columns: 1fr; margin-bottom: 0.9rem; }
+    @media (min-width: 760px) { .dw-people { grid-template-columns: 1fr 1fr; } }
+    .dw-person { border: 1px solid var(--color-carbone); border-radius: 8px; padding: 1rem 1.1rem; background: rgba(16,17,20,0.6); }
+    .dw-person-name { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; color: var(--color-avorio); }
+    .dw-person-role { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-orbita-chiara); margin: 0.2rem 0 0.5rem; max-width: none; }
+    .dw-person-note { font-size: 0.9rem; line-height: 1.55; color: var(--color-grigio-200); max-width: none; }
+
+    .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+    .dw-source { font-size: 0.9rem; line-height: 1.5; }
+    .dw-source a { color: var(--color-grigio-200); }
+    .dw-source a:hover { color: var(--color-orbita-chiara); }
+
+    .dw-footer {
+      border-top: 1px solid var(--color-carbone); padding-top: 1.2rem;
+      font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--color-grigio-400);
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,87 @@
+---
+import { href } from '@edf/core/utils/url.js';
+
+interface Props {
+  currentPath: string;
+  base: string;
+}
+
+const { currentPath, base } = Astro.props;
+
+const sections = [
+  { slug: 'domanda',     label: 'La domanda',     solution: null },
+  { slug: 'piattaforma', label: 'La piattaforma', solution: null },
+  { slug: 'traiettorie', label: 'Le traiettorie', solution: 'visibility,journeys,concierge,creativity,documents,authenticity' },
+  { slug: 'mappa',       label: 'La mappa',       solution: null },
+  { slug: 'persone',     label: 'Le persone',     solution: null },
+  { slug: 'rotta',       label: 'La rotta',       solution: null },
+];
+
+function isActive(slug: string) {
+  const norm = currentPath.replace(/\/+$/, '');
+  if (slug === '') return norm.endsWith('/eni-orbita') || norm.endsWith('/index');
+  return norm.endsWith('/' + slug);
+}
+---
+<nav
+  class="flex items-center justify-between px-6 py-3 bg-[var(--color-notte)]/95 backdrop-blur-sm border-b border-[var(--color-carbone)]"
+  aria-label="Navigazione esperienza"
+>
+  <a
+    href={href(base, '/')}
+    class="flex items-center gap-2.5 no-underline group flex-shrink-0"
+    aria-label="Home — Orbita"
+  >
+    <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[var(--color-grafite)] flex-shrink-0" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+        <ellipse cx="16" cy="16" rx="11" ry="5.5" stroke="#5AC8E1" stroke-width="1.6" transform="rotate(-18 16 16)"/>
+        <circle cx="16" cy="16" r="4" fill="#FFCE00"/>
+      </svg>
+    </span>
+    <span class="text-sm font-semibold text-[var(--color-avorio)] group-hover:text-white transition-colors font-[family-name:var(--font-display)] whitespace-nowrap">
+      Orbita
+    </span>
+    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--color-grigio-400)] ml-1 whitespace-nowrap">
+      Eni × Adobe
+    </span>
+  </a>
+
+  <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
+    {sections.map((s, i) => (
+      <li
+        data-nav-solution={s.solution ?? undefined}
+        role="listitem"
+        class="flex-shrink-0"
+      >
+        <a
+          href={href(base, '/' + s.slug)}
+          class={[
+            'block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline',
+            isActive(s.slug)
+              ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] border border-[var(--accent-primary)]/30'
+              : 'text-[var(--color-grigio-300)] hover:text-[var(--color-avorio)] hover:bg-[var(--color-carbone)]',
+          ].join(' ')}
+          aria-current={isActive(s.slug) ? 'page' : undefined}
+        >
+          <span class="text-[var(--color-grigio-500)] mr-1 tabular-nums">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          {s.label}
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <span class="hidden 2xl:inline text-[0.65rem] tracking-widest uppercase text-[var(--color-grigio-500)] whitespace-nowrap">
+      Live Pitch
+    </span>
+    <a
+      href={href(base, '/admin')}
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[var(--color-carbone)] text-[var(--color-grigio-400)] hover:text-[var(--color-avorio)] hover:border-[var(--color-grigio-500)] rounded-sm transition-colors no-underline"
+      data-admin-only
+    >
+      Admin
+    </a>
+  </div>
+</nav>

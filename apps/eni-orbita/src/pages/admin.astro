@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Orbita (00)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Orbita' },
+    { id: 'slide-momento',  label: 'Il vostro 2026, visto da fuori' },
+    { id: 'slide-percorso', label: 'Il percorso — sei capitoli' },
+  ]},
+  { slug: 'domanda', label: 'La domanda (01)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Prima di proporre, ascoltare' },
+    { id: 'slide-tensione', label: 'La bussola e le orbite' },
+    { id: 'slide-domande',  label: 'Le tre domande aperte' },
+  ]},
+  { slug: 'piattaforma', label: 'La piattaforma (02)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Avete fatto del calcolo un servizio' },
+    { id: 'slide-specchio',  label: 'Lo specchio — Experience & Content as a Service' },
+    { id: 'slide-catalogo',  label: 'Sei famiglie di servizi, un catalogo' },
+    { id: 'slide-principio', label: 'Governo al centro, consumo in orbita' },
+  ]},
+  { slug: 'traiettorie', label: 'Le traiettorie (03)', slides: [
+    { id: 'slide-cover',        label: 'Cover — Quello che è in corso è solo l\'inizio' },
+    { id: 'slide-visibility',   label: 'T1 — La voce (motori AI)' },
+    { id: 'slide-journeys',     label: 'T2 — Il cliente unico (Più Insieme)' },
+    { id: 'slide-concierge',    label: 'T3 — Il concierge' },
+    { id: 'slide-creativity',   label: 'T4 — La creatività federata' },
+    { id: 'slide-documents',    label: 'T5 — I documenti intelligenti' },
+    { id: 'slide-authenticity', label: 'T6 — La fiducia verificabile' },
+  ]},
+  { slug: 'mappa', label: 'La mappa (04)', slides: [
+    { id: 'slide-cover', label: 'Cover — Un gruppo, tante orbite' },
+    { id: 'slide-cuore', label: 'Capogruppo e brand consumer' },
+    { id: 'slide-altre', label: 'Le orbite esterne (B2B e servizi)' },
+  ]},
+  { slug: 'persone', label: 'Le persone (05)', slides: [
+    { id: 'slide-cover',     label: 'Cover — La citazione' },
+    { id: 'slide-modello',   label: 'Tre impegni, presi adesso' },
+    { id: 'slide-community', label: 'La community di pratica del gruppo' },
+  ]},
+  { slug: 'rotta', label: 'La rotta (06)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Tre orizzonti' },
+    { id: 'slide-orizzonti', label: 'La sequenza O1 · O2 · O3' },
+    { id: 'slide-megawatt',  label: 'Da megawatt a esperienze' },
+    { id: 'slide-richieste', label: 'Quattro richieste, nessuna firma' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'visibility',
+    name: 'La voce — AI Presence',
+    shortName: 'Voce',
+    pillar: 'presence',
+    description: 'Osservatorio di gruppo sulla visibilità nelle risposte dei motori AI (Brand Visibility): baseline, benchmark e correzioni sul portale.',
+    appearsIn: ['Le traiettorie'],
+  },
+  {
+    id: 'authenticity',
+    name: 'La fiducia verificabile — Content Credentials',
+    shortName: 'Fiducia',
+    pillar: 'presence',
+    description: 'Credenziali di provenienza sui contenuti ufficiali del gruppo; l\'agenzia di stampa come caso di punta.',
+    appearsIn: ['Le traiettorie'],
+  },
+  {
+    id: 'journeys',
+    name: 'Il cliente unico — Journey di gruppo',
+    shortName: 'Journey',
+    pillar: 'activation',
+    description: 'Orchestrazione dei journey sopra Più Insieme e Account Unico, in coesistenza con gli stack dei satelliti.',
+    appearsIn: ['Le traiettorie'],
+  },
+  {
+    id: 'concierge',
+    name: 'Il concierge — Agenti conversazionali',
+    shortName: 'Concierge',
+    pillar: 'activation',
+    description: 'Dal concierge di Eni.com alla famiglia: stakeholder, fornitori, B2B tecnico, formazione.',
+    appearsIn: ['Le traiettorie'],
+  },
+  {
+    id: 'creativity',
+    name: 'La creatività federata — Express & Firefly',
+    shortName: 'Creatività',
+    pillar: 'content',
+    description: 'Creazione diffusa nei team con guardrail di brand e modelli generativi addestrati sull\'identità del gruppo.',
+    appearsIn: ['Le traiettorie'],
+  },
+  {
+    id: 'documents',
+    name: 'I documenti intelligenti — Acrobat & firme',
+    shortName: 'Documenti',
+    pillar: 'content',
+    description: 'Contratti, moduli e firme come esperienza: filiera fornitori, società finanziarie e di trading.',
+    appearsIn: ['Le traiettorie'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  presence:   'Presenza & Fiducia',
+  activation: 'Journey & Agenti',
+  content:    'Creatività & Documenti',
+};
+const PILLAR_ORDER = ['presence', 'activation', 'content'];
+const PILLAR_COLORS: Record<string, string> = {
+  presence:   '#FFCE00',
+  activation: '#5AC8E1',
+  content:    '#FF9E2C',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Orbita · Eni">
+  <AdminConsole
+    projectSlug="eni-orbita"
+    projectName="Orbita"
+    clientLabel="Eni × Adobe"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

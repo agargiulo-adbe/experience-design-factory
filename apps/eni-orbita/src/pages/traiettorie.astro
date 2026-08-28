@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EniNavigation from '../components/EniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const ALL_IDS = ['visibility', 'journeys', 'concierge', 'creativity', 'documents', 'authenticity'];
+
+interface Traiettoria {
+  id: string;
+  num: string;
+  stato: 'in corso → estensione' | 'nuovo';
+  eyebrow: string;
+  title: string;
+  partenza: { tag: string; body: string };
+  arrivo: { tag: string; body: string };
+  mossa: string;
+}
+
+const traiettorie: Traiettoria[] = [
+  {
+    id: 'visibility',
+    num: '1',
+    stato: 'in corso → estensione',
+    eyebrow: 'TRAIETTORIA 1 · LA VOCE',
+    title: 'Chi racconta Eni ai motori AI?',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Sul tavolo c\'è già un proof of concept di visibilità nelle risposte AI per Eni.com: misurare se e come ChatGPT, Gemini e gli altri citano il gruppo, e correggere ciò che non leggono.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Un osservatorio di gruppo: la stessa misura per ogni società e per i suoi concorrenti. Il paradosso da evitare è chiaro: vendere servizi AI al Paese ed essere raccontati male proprio dai motori AI.',
+    },
+    mossa: 'Prima mossa: baseline di visibilità su tre brand del gruppo, con la Comunicazione al tavolo.',
+  },
+  {
+    id: 'journeys',
+    num: '2',
+    stato: 'in corso → estensione',
+    eyebrow: 'TRAIETTORIA 2 · IL CLIENTE UNICO',
+    title: 'Più Insieme merita un\'orchestra',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Il gruppo ha già l\'asset raro: un programma fedeltà che unisce Enilive e Plenitude e un Account Unico che attraversa app e siti della famiglia. Oggi però ogni touchpoint suona per conto suo.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Un livello di orchestrazione dei journey a livello di gruppo, sopra gli stack che ogni società ha scelto. Convive con ciò che c\'è: si integra, non sostituisce.',
+    },
+    mossa: 'Prima mossa: un journey pilota del programma fedeltà orchestrato end-to-end, misurato.',
+  },
+  {
+    id: 'concierge',
+    num: '3',
+    stato: 'in corso → estensione',
+    eyebrow: 'TRAIETTORIA 3 · IL CONCIERGE',
+    title: 'Da un assistente a una famiglia',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Il percorso su un concierge conversazionale per Eni.com è avviato: un assistente on-brand per chi arriva sul sito istituzionale.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Lo stesso motore, quattro ingressi: gli stakeholder su Eni.com, i fornitori sui portali di filiera, i buyer tecnici delle società B2B, le persone in formazione nella Corporate University.',
+    },
+    mossa: 'Prima mossa: dopo il sito istituzionale, il caso fornitori. È il terreno che il gruppo conosce meglio.',
+  },
+  {
+    id: 'creativity',
+    num: '4',
+    stato: 'nuovo',
+    eyebrow: 'TRAIETTORIA 4 · LA CREATIVITÀ FEDERATA',
+    title: 'Ogni società crea. Il brand resta uno.',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Oggi la creatività professionale vive al centro e nelle agenzie; i team delle società si arrangiano, e l\'identità visiva si diluisce a ogni passaggio.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Strumenti di creazione diffusi in ogni team, con modelli generativi addestrati sull\'identità visiva del gruppo. Immaginate un modello che ha imparato dal vostro archivio storico: nessun altro al mondo può averlo.',
+    },
+    mossa: 'Prima mossa: template e guardrail di brand per le società piccole, dove il bisogno è più acuto.',
+  },
+  {
+    id: 'documents',
+    num: '5',
+    stato: 'nuovo',
+    eyebrow: 'TRAIETTORIA 5 · I DOCUMENTI INTELLIGENTI',
+    title: 'L\'esperienza passa anche dai PDF',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Contratti, gare, moduli, firme: il lato documentale del gruppo è enorme e quotidiano. Chi lo vive lo descrive raramente come un\'esperienza.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Documenti che si leggono da soli, moduli che si compilano in metà del tempo, firme che chiudono in ore ciò che oggi chiede giorni. I candidati naturali: filiera fornitori, società finanziarie e di trading.',
+    },
+    mossa: 'Prima mossa: un processo documentale ad alto volume, misurato prima e dopo.',
+  },
+  {
+    id: 'authenticity',
+    num: '6',
+    stato: 'nuovo',
+    eyebrow: 'TRAIETTORIA 6 · LA FIDUCIA VERIFICABILE',
+    title: 'Provare che un contenuto è vostro',
+    partenza: {
+      tag: 'Da dove parte',
+      body: 'Un gruppo energetico è un bersaglio naturale per contenuti falsi e manipolati. E nel gruppo c\'è un\'agenzia di stampa, per cui l\'autenticità è materia prima.',
+    },
+    arrivo: {
+      tag: 'Dove può arrivare',
+      body: 'Credenziali di provenienza (Content Credentials) sui contenuti ufficiali del gruppo: chiunque può verificare origine e storia di una foto o di un video. Lo standard nasce dalla Content Authenticity Initiative, fondata da Adobe.',
+    },
+    mossa: 'Prima mossa: un pilota sulla comunicazione istituzionale, con l\'agenzia del gruppo come caso di punta.',
+  },
+];
+---
+<BaseLayout
+  title="Le traiettorie"
+  description="Sei traiettorie dall'installato di oggi alle possibilità del gruppo: voce, cliente unico, concierge, creatività, documenti, fiducia. Eni × Adobe."
+  pageSolutions={ALL_IDS}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <EniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/mappa')} prevHref={href(base, '/piattaforma')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="eo-bg"></div>
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>
+        CAPITOLO 03 · LE TRAIETTORIE
+      </p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+        style="font-size: clamp(2.1rem, 3.8vw, 3.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em; max-width: 20ch;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Quello che è in corso è solo l'inizio
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-4"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Tre cantieri sono già aperti con i vostri team: la visibilità nelle risposte dei motori
+        AI, l'orchestrazione dei journey, il concierge di brand. Li consideriamo punti di
+        partenza. Ognuno apre una traiettoria che attraversa il gruppo, e altre tre ne
+        aggiungiamo noi.
+      </p>
+      <p class="text-center text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)]" data-reveal data-reveal-delay="0.22">
+        Sei traiettorie · si percorrono solo quelle che il dialogo tocca
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 1..6: le traiettorie (gated) ─────────────────────── -->
+    {traiettorie.map((t) => (
+      <Slide id={`slide-${t.id}`} bg="primary" align="center" data-solution={t.id}>
+        <div slot="backdrop" class="eo-bg-soft"></div>
+        <div class="flex items-center justify-center gap-3 mb-4" data-reveal>
+          <p class="slide-eyebrow text-center text-[var(--accent-primary)]">{t.eyebrow}</p>
+          <span class={`eo-move ${t.stato === 'nuovo' ? 'eo-move--entrare' : 'eo-move--consolidare'}`}>{t.stato}</span>
+        </div>
+        <h2
+          class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
+          style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+          data-reveal
+          data-reveal-delay="0.08"
+        >
+          {t.title}
+        </h2>
+
+        <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.16">
+          <div class="eo-panel eo-panel--giallo">
+            <div class="eo-panel-head">
+              <span class="eo-tag">{t.partenza.tag}</span>
+            </div>
+            <p class="eo-panel-body">{t.partenza.body}</p>
+          </div>
+          <div class="eo-panel eo-panel--orbita">
+            <div class="eo-panel-head">
+              <span class="eo-tag eo-tag--orbita">{t.arrivo.tag}</span>
+            </div>
+            <p class="eo-panel-body">{t.arrivo.body}</p>
+          </div>
+        </div>
+
+        <p
+          class="mt-6 text-center text-[var(--ink-primary)] max-w-2xl mx-auto font-medium"
+          style="font-size: clamp(0.98rem, 1.15vw, 1.15rem);"
+          data-reveal
+          data-reveal-delay="0.26"
+        >
+          {t.mossa}
+        </p>
+      </Slide>
+    ))}
+
+  </DeckContainer>
+</BaseLayout>

@@ -80,6 +80,15 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'valore',       route: '/experience-design-factory/agos-trait-dunion/valore/' },
     { name: 'roadmap',      route: '/experience-design-factory/agos-trait-dunion/roadmap/' },
   ],
+  'eni-orbita': [
+    { name: 'home',        route: '/experience-design-factory/eni-orbita/' },
+    { name: 'domanda',     route: '/experience-design-factory/eni-orbita/domanda/' },
+    { name: 'piattaforma', route: '/experience-design-factory/eni-orbita/piattaforma/' },
+    { name: 'traiettorie', route: '/experience-design-factory/eni-orbita/traiettorie/' },
+    { name: 'mappa',       route: '/experience-design-factory/eni-orbita/mappa/' },
+    { name: 'persone',     route: '/experience-design-factory/eni-orbita/persone/' },
+    { name: 'rotta',       route: '/experience-design-factory/eni-orbita/rotta/' },
+  ],
   atelier: [
     { name: 'home',           route: '/experience-design-factory/atelier/' },
     { name: 'method',         route: '/experience-design-factory/atelier/method/' },
@@ -100,6 +109,7 @@ const CWD_ALIAS: Record<string, string> = {
   'trenitalia-connessioni': 'trenitalia',
   'agos-trait-dunion': 'agos',
   'atelier': 'atelier',
+  'eni-orbita': 'eni-orbita',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {
