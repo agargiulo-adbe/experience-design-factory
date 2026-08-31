@@ -6,12 +6,15 @@ interface Props {
   title: string;
   description?: string;
   pageSolutions?: string[];
+  /** Ramo della biforcazione: colora l'esperienza (accent) e scopa slug/gating. */
+  branch?: 'fs-park' | 'trenitalia';
 }
 
 const {
   title,
   description = 'Connessioni Intelligenti — FS Group × Adobe',
   pageSolutions,
+  branch,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -20,7 +23,7 @@ const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
 <!doctype html>
-<html lang="it">
+<html lang="it" data-branch={branch}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -65,7 +68,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   function getCurrentPageSlug() {
     var parts = location.pathname.replace(/\/+$/, '').split('/');
-    return parts[parts.length - 1] || 'index';
+    var last = parts[parts.length - 1] || 'index';
+    var parent = parts[parts.length - 2];
+    // I due rami condividono i nomi capitolo: lo slug resta univoco col prefisso.
+    if (parent === 'fs-park' || parent === 'trenitalia') return parent + '/' + last;
+    return last;
   }
 
   function isSafeUrl(u) { return /^https:\/\//i.test(String(u || '')); }
@@ -221,9 +228,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 })();
 </script>
 
-<script is:inline define:vars={{ PROJECT_SLUG, pageSolutions }}>
+<script is:inline define:vars={{ PROJECT_SLUG, pageSolutions, BASE: base }}>
 (function () {
   var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
+  var b = BASE.replace(/\/?$/, '/');
 
   function readActiveIds() {
     var urlParam = new URLSearchParams(location.search).get('s');
@@ -239,40 +247,52 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   var activeIds = readActiveIds();
 
-  var SECTION_FLOW = [
-    { slug: 'scenario',       gate: null },
-    { slug: 'fondazione',     gate: null },
-    { slug: 'convergenza',    gate: ['cja'] },
-    { slug: 'connessioni',    gate: ['data-collab'] },
-    { slug: 'roadmap',        gate: ['rtcdp', 'ajo', 'mix-modeler'] },
-    { slug: 'casi-duso',      gate: null },
-  ];
-
-  function sectionEnabled(entry) {
+  // La biforcazione ha tre catene di navigazione: il tronco (home → scenario
+  // → bivio → primo ramo) e una per ramo (bivio → 5 capitoli → bivio). Il
+  // rewrite next/prev lavora sempre dentro la catena della pagina corrente,
+  // con path assoluti — gli slug capitolo sono condivisi tra i rami.
+  var CHAPTERS = ['partenza', 'fondamenta', 'convergenza', 'meta-invisibile', 'percorso'];
+  function gateFor(branch, ch) {
+    if (ch === 'convergenza') return ['cja'];
+    if (ch === 'meta-invisibile') return ['data-collab'];
+    if (ch === 'percorso' && branch === 'trenitalia') return ['rtcdp', 'ajo', 'mix-modeler'];
+    return null;
+  }
+  function normPath() { return location.pathname.replace(/\/+$/, '') + '/'; }
+  function chainFor(path) {
+    var m = path.match(/\/(fs-park|trenitalia)\/[^/]+\/$/);
+    if (m) {
+      var br = m[1];
+      var chain = [{ path: b + 'bivio/', gate: null }];
+      CHAPTERS.forEach(function (ch) { chain.push({ path: b + br + '/' + ch + '/', gate: gateFor(br, ch) }); });
+      chain.push({ path: b + 'bivio/', gate: null });
+      return chain;
+    }
+    return [
+      { path: b, gate: null },
+      { path: b + 'scenario/', gate: null },
+      { path: b + 'bivio/', gate: null },
+      { path: b + 'fs-park/partenza/', gate: null },
+    ];
+  }
+  function entryEnabled(entry) {
     if (!entry || !entry.gate) return true;
     if (!activeIds) return true;
     return entry.gate.some(function(id) { return activeIds.indexOf(id) !== -1; });
   }
-  function currentSlug() {
-    var parts = location.pathname.replace(/\/+$/, '').split('/');
-    return parts[parts.length - 1] || 'index';
+  function chainIndex(chain, path) {
+    // Nelle catene di ramo il bivio apre E chiude: preferisci un match interno.
+    for (var i = 1; i < chain.length - 1; i++) { if (chain[i].path === path) return i; }
+    if (chain[0].path === path) return 0;
+    if (chain[chain.length - 1].path === path) return chain.length - 1;
+    return -1;
   }
-  function swapSlug(href, slug) { return href.replace(/[^/]+\/?$/, slug + '/'); }
-  function homeFrom(href) { return href.replace(/[^/]+\/?$/, ''); }
-  function nextEnabledAfter(slug) {
-    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
-    if (i === -1) return undefined;
-    for (var j = i + 1; j < SECTION_FLOW.length; j++) {
-      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
-    }
+  function nextEnabledEntry(chain, idx) {
+    for (var j = idx + 1; j < chain.length; j++) { if (entryEnabled(chain[j])) return chain[j]; }
     return null;
   }
-  function prevEnabledBefore(slug) {
-    var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
-    if (i === -1) return undefined;
-    for (var j = i - 1; j >= 0; j--) {
-      if (sectionEnabled(SECTION_FLOW[j])) return SECTION_FLOW[j];
-    }
+  function prevEnabledEntry(chain, idx) {
+    for (var j = idx - 1; j >= 0; j--) { if (entryEnabled(chain[j])) return chain[j]; }
     return null;
   }
 
@@ -296,24 +316,28 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       if (!anyActive) { el.setAttribute('aria-hidden', 'true'); el.style.display = 'none'; }
     });
 
+    var path = normPath();
+    var chain = chainFor(path);
+    var idx = chainIndex(chain, path);
+    if (idx === -1) return;
+
     var deckRoot = document.querySelector('[data-deck-next]');
     if (deckRoot) {
       var curNext = deckRoot.getAttribute('data-deck-next');
-      var nextEntry = nextEnabledAfter(currentSlug());
-      if (curNext && nextEntry !== undefined) {
-        deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : homeFrom(curNext));
+      if (curNext) {
+        var ne = nextEnabledEntry(chain, idx);
+        deckRoot.setAttribute('data-deck-next', ne ? ne.path : b);
       }
     }
 
     var deckRootP = document.querySelector('[data-deck-prev-href]');
     if (deckRootP) {
       var curPrev = deckRootP.getAttribute('data-deck-prev-href');
-      var prevEntry = prevEnabledBefore(currentSlug());
-      if (curPrev && prevEntry !== undefined) {
-        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : homeFrom(curPrev));
+      if (curPrev) {
+        var pe = prevEnabledEntry(chain, idx);
+        deckRootP.setAttribute('data-deck-prev-href', pe ? pe.path : b);
       }
     }
-
   }
 
   applyGating();
@@ -321,9 +345,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   if (activeIds && pageSolutions && pageSolutions.length > 0) {
     var pageActive = pageSolutions.some(function(id) { return activeIds.indexOf(id) !== -1; });
     if (!pageActive) {
-      var basePath = location.pathname.replace(/[^/]+\/?$/, '');
-      var target = nextEnabledAfter(currentSlug());
-      location.replace(location.origin + basePath + (target ? target.slug + '/' : ''));
+      var path = normPath();
+      var chain = chainFor(path);
+      var idx = chainIndex(chain, path);
+      var target = idx !== -1 ? nextEnabledEntry(chain, idx) : null;
+      location.replace(location.origin + (target ? target.path : b));
     }
   }
 
@@ -372,7 +398,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   function currentSlug() {
     var parts = location.pathname.replace(/\/+$/, '').split('/');
-    return parts[parts.length - 1] || 'index';
+    var last = parts[parts.length - 1] || 'index';
+    var parent = parts[parts.length - 2];
+    if (parent === 'fs-park' || parent === 'trenitalia') return parent + '/' + last;
+    return last;
   }
 
   function load() {

@@ -12,12 +12,10 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const journey = [
-  { num: '01', label: 'Scenario',     sub: 'Il viaggio del cliente oggi',        href: '/scenario',       solution: null },
-  { num: '02', label: 'Foundation',   sub: 'Le fondamenta che avete già',        href: '/fondazione',     solution: null },
-  { num: '03', label: 'CJA',          sub: 'Il layer di convergenza',            href: '/convergenza',    solution: 'cja' },
-  { num: '04', label: 'Connessioni',  sub: 'FS Park × Trenitalia · Data Collab', href: '/connessioni',    solution: 'data-collab' },
-  { num: '05', label: 'Roadmap',      sub: 'Mix Modeler · RTCDP · AJO',         href: '/roadmap',        solution: 'rtcdp,ajo,mix-modeler' },
-  { num: '06', label: 'Casi d\'uso',   sub: 'Recap dei casi core · e da esplorare', href: '/casi-duso',      solution: null },
+  { num: '01', label: 'Scenario',        sub: 'Il viaggio di Davide, intero: dall\'auto alla destinazione', href: '/scenario' },
+  { num: '02', label: 'Il bivio',        sub: 'Due società, due sguardi sullo stesso percorso',             href: '/bivio' },
+  { num: 'P',  label: 'Ramo FS Park',    sub: 'La metà su asfalto — 5 capitoli autoconsistenti',            href: '/fs-park/partenza' },
+  { num: 'T',  label: 'Ramo Trenitalia', sub: 'La metà su rotaia — 5 capitoli autoconsistenti',             href: '/trenitalia/partenza' },
 ];
 
 const fsStats = [
@@ -155,32 +153,30 @@ const fsStats = [
           style="font-size: clamp(2.05rem, 3.5vw, 3.1rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
           data-reveal
           data-reveal-delay="0.08"
-          data-edf-chapters
         >
-          Sei capitoli. Due viaggiatori. Un'intelligenza.
+          Un viaggio. Due sguardi. Un'intelligenza.
         </h2>
         <p
           class="text-[clamp(0.9rem,1.05vw,1.05rem)] leading-[1.55] text-[var(--color-ghiaccio)]/80 max-w-2xl mx-auto text-center mb-8"
           data-reveal
           data-reveal-delay="0.15"
         >
-          Si parte da dati che esistono ma non si parlano e si arriva a una piattaforma
-          dove ogni connessione conta, per il cliente come per il Gruppo.
+          Un tronco comune racconta il viaggio intero, poi l'esperienza si divide:
+          ogni società parte dal suo mondo e arriva agli stessi concetti.
         </p>
 
-        <!-- La linea che collega i sei capitoli, come una mappa schematica -->
+        <!-- La linea del percorso: tronco comune, poi i due rami -->
         <div class="relative pt-6" data-reveal data-reveal-delay="0.22">
           <div class="fs-line-h" style="top: 0.5rem; left: 5%; right: 5%; background: linear-gradient(90deg, rgba(242,244,248,0) 0%, rgba(242,244,248,0.9) 12%, rgba(242,244,248,0.9) 88%, rgba(242,244,248,0) 100%); box-shadow: 0 0 12px rgba(242,244,248,0.35);"></div>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             {journey.map((step) => (
               <a
                 href={href(base, step.href)}
-                data-nav-solution={step.solution ?? undefined}
                 data-edf-journey-card
                 class="journey-card relative px-4 pt-5 pb-3.5 border border-[var(--color-ghiaccio)]/25 rounded-md text-left text-[var(--color-ghiaccio)] transition-colors no-underline group"
               >
                 <span class="absolute -top-[1.65rem] left-1/2 -translate-x-1/2 size-3 rounded-full bg-[var(--color-ghiaccio)] ring-4 ring-[var(--accent-primary)] group-hover:bg-white transition-colors"></span>
-                <p class="text-xs font-semibold text-[var(--color-ghiaccio)]/55 mb-1 font-[family-name:var(--font-display)] tabular-nums" data-edf-cardnum>
+                <p class="text-xs font-semibold text-[var(--color-ghiaccio)]/55 mb-1 font-[family-name:var(--font-display)] tabular-nums">
                   {step.num}
                 </p>
                 <p class="text-[1.05rem] font-semibold text-[var(--color-ghiaccio)] mb-1 font-[family-name:var(--font-display)]">
@@ -207,50 +203,4 @@ const fsStats = [
     </Slide>
 
   </DeckContainer>
-
-  <script is:inline>
-  (function () {
-    var KEY = 'edf-solutions-trenitalia-connessioni';
-    var GATES = [null, null, ['cja'], ['data-collab'], ['rtcdp', 'ajo', 'mix-modeler'], null];
-    var WORDS = ['zero', 'uno', 'due', 'tre', 'quattro', 'cinque', 'sei'];
-
-    function activeIds() {
-      var p = new URLSearchParams(location.search).get('s');
-      if (p) return p.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-      try { var st = localStorage.getItem(KEY); if (st) return JSON.parse(st); } catch (_) {}
-      return null;
-    }
-    function count() {
-      var ids = activeIds();
-      if (!ids) return GATES.length;
-      var n = 0;
-      GATES.forEach(function(g) {
-        if (!g || g.some(function(id) { return ids.indexOf(id) !== -1; })) n++;
-      });
-      return n;
-    }
-    function label(n) {
-      var w = WORDS[n] || String(n);
-      return w.charAt(0).toUpperCase() + w.slice(1) + ' capitoli';
-    }
-    function renumber() {
-      var n = 1;
-      document.querySelectorAll('[data-edf-journey-card]').forEach(function(card) {
-        var hidden = card.offsetParent === null || getComputedStyle(card).display === 'none';
-        if (hidden) return;
-        var numEl = card.querySelector('[data-edf-cardnum]');
-        if (numEl) numEl.textContent = ('0' + n).slice(-2);
-        n++;
-      });
-    }
-    function apply() {
-      var txt = label(count()) + '. Due viaggiatori. Un\'intelligenza.';
-      document.querySelectorAll('[data-edf-chapters]').forEach(function(el) { el.textContent = txt; });
-      renumber();
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply); else apply();
-    document.addEventListener('astro:page-load', apply);
-    window.addEventListener('storage', function(e) { if (e.key === KEY) apply(); });
-  })();
-  </script>
 </BaseLayout>

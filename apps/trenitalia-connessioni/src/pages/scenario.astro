@@ -12,22 +12,13 @@ import { mediaProps } from '../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const emailTipi = [
-  { label: 'CartaFreccia Responsys', icon: '🏅', desc: 'Punti, offerte partner, premi', freq: '~2×/sett.', badge: 'Loyalty' },
-  { label: 'X-GO Responsys',         icon: '🎟️', desc: 'Sconti Regionale, carnet, cashback', freq: '~1×/sett.', badge: 'Youth' },
-  { label: 'Biglietti webmaster',     icon: '🎫', desc: 'Conferme, cambi, rimborsi', freq: 'Transazionale', badge: 'Transact' },
-  { label: 'Feedback & NPS',          icon: '📋', desc: 'Sondaggi soddisfazione', freq: '2×/mese', badge: 'Survey' },
-  { label: 'Infomobilità',            icon: '🚨', desc: 'Ritardi e disservizi', freq: 'On event', badge: 'Alert' },
-  { label: 'FS Park',                 icon: '🅿️', desc: 'Nessuna comunicazione con Trenitalia', freq: 'Gap', badge: 'Gap' },
-];
-
 const touchpoints = [
-  { label: 'trenitalia.com',  icon: '🌐', nota: 'Adobe Analytics istanza 1 · sito istituzionale · navigazione anonima' },
-  { label: 'Frecce booking',  icon: '🎫', nota: 'Adobe Analytics istanza 2 · funnel acquisto · comportamento booking' },
-  { label: 'App Trenitalia', icon: '📱', nota: 'Streaming events · comportamento in-app · notifiche push' },
-  { label: 'Oracle Responsys', icon: '📧', nota: 'Campagne CRM · CartaFreccia · X-GO' },
-  { label: 'Salesforce CRM',  icon: '☁️', nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
-  { label: 'FS Park app/web', icon: '🅿️', nota: 'EasyPark · prenotazione parcheggio · hub mobilità' },
+  { label: 'trenitalia.com',  icon: '🌐', owner: 'Trenitalia', nota: 'Adobe Analytics istanza 1 · sito istituzionale · navigazione anonima' },
+  { label: 'Frecce booking',  icon: '🎫', owner: 'Trenitalia', nota: 'Adobe Analytics istanza 2 · funnel acquisto · comportamento booking' },
+  { label: 'App Trenitalia', icon: '📱', owner: 'Trenitalia', nota: 'Streaming events · comportamento in-app · notifiche push' },
+  { label: 'Oracle Responsys', icon: '📧', owner: 'Trenitalia', nota: 'Campagne CRM · CartaFreccia · X-GO' },
+  { label: 'Salesforce CRM',  icon: '☁️', owner: 'FS Technology', nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
+  { label: 'FS Park app/web', icon: '🅿️', owner: 'FS Park', nota: 'EasyPark · prenotazione parcheggio · hub mobilità' },
 ];
 ---
 <BaseLayout
@@ -39,7 +30,7 @@ const touchpoints = [
   </div>
 
   <DeckContainer
-    nextHref={href(base, '/fondazione')}
+    nextHref={href(base, '/bivio')}
     prevHref={href(base, '/')}
   >
 
@@ -75,14 +66,14 @@ const touchpoints = [
             <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
             <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
               <span class="fs-node !w-11 !h-11" data-active>D</span>
-              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">Passo 1 di 6</span>
+              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">Il viaggio intero</span>
             </div>
           </div>
         </div>
 
         <div class="text-left max-w-xl">
           <p class="fs-panel-tag mb-3" data-reveal>
-            STORIA DI DAVIDE · PASSO 1 DI 6
+            STORIA DI DAVIDE · IL VIAGGIO INTERO
           </p>
           <h2
             class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
@@ -154,7 +145,17 @@ const touchpoints = [
               <div class="fs-card w-full text-left flex items-start gap-3">
                 <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{tp.icon}</span>
                 <div class="min-w-0 flex-1">
-                  <p class="fs-card-title mb-1">{tp.label}</p>
+                  <div class="flex items-center gap-2 flex-wrap mb-1">
+                    <p class="fs-card-title">{tp.label}</p>
+                    <span
+                      class="text-[0.62rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase"
+                      style={tp.owner === 'FS Park'
+                        ? 'background: rgba(245,166,35,0.18); color: rgba(255,201,77,0.95);'
+                        : tp.owner === 'FS Technology'
+                          ? 'background: rgba(242,244,248,0.12); color: rgba(242,244,248,0.75);'
+                          : 'background: rgba(226,0,26,0.2); color: rgba(255,122,134,0.95);'}
+                    >{tp.owner}</span>
+                  </div>
                   <p class="fs-card-body">{tp.nota}</p>
                 </div>
               </div>
@@ -163,72 +164,11 @@ const touchpoints = [
         </div>
       </div>
       <p class="mt-6 text-center fs-panel-src tracking-widest uppercase">
-        Scenario illustrativo · non descrive l'architettura interna di FS Italiane
+        Nessuna delle due società vede il viaggio intero · scenario illustrativo, non descrive l'architettura interna di FS Italiane
       </p>
     </Slide>
 
-    <!-- ── SLIDE 3: Le email — Oracle Responsys in azione ─────────── -->
-    <Slide id="slide-email-gap" bg="secondary" align="center">
-      <div slot="backdrop" class="fs-bg-soft"></div>
-      <p class="fs-panel-tag text-center mb-4" data-reveal>
-        ORACLE RESPONSYS · CRM EMAIL ATTIVO
-      </p>
-
-      <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-baseline justify-center gap-x-6 gap-y-1 mb-2" data-reveal data-reveal-delay="0.08">
-        <span class="fs-stat-value" data-display style="font-size: clamp(2.6rem, 5vw, 4rem);">611</span>
-        <h2
-          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] text-center md:text-left"
-          style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
-        >
-          email in un anno.<br class="hidden md:block"/> Nessuna sull'arrivo di Davide.
-        </h2>
-      </div>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-6"
-        style="font-size: clamp(0.95rem, 1.05vw, 1rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        Un CRM attivo e ad alta frequenza, eppure nessuna email sfrutta il momento del viaggio. E FS Park non compare mai.
-      </p>
-
-      <div
-        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-2.5"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {emailTipi.map((e) => (
-          <div class="fs-card flex items-start gap-3 !py-3 !px-4"
-               style={e.badge === 'Gap' ? "border-color: rgba(226,0,26,0.4); background: rgba(226,0,26,0.08);" : undefined}>
-            <span class="text-lg flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2 flex-wrap mb-1">
-                <p class="fs-card-title !text-[1.02rem] leading-tight">{e.label}</p>
-                <span class:list={[
-                  "text-[0.62rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase",
-                  e.badge === 'Gap'
-                    ? "text-white"
-                    : "text-[rgba(242,244,248,0.75)]",
-                ]}
-                style={e.badge === 'Gap' ? "background: rgba(226,0,26,0.85);" : "background: rgba(242,244,248,0.12);"}>{e.badge}</span>
-              </div>
-              <p class="fs-card-body !text-[0.9rem] leading-snug">{e.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div class="fs-panel fs-panel--rosso max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
-        <p class="fs-panel-body">
-          <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> manca la lettura del <em>journey</em>, quella che collega i segnali sparsi e li usa al momento giusto.
-        </p>
-      </div>
-      <p class="mt-4 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
-        Analisi campione email Trenitalia (Google Takeout, lug 2026 · 1 account) · illustrativo
-      </p>
-    </Slide>
-
-    <!-- ── SLIDE 4: Il momento dell'opportunità ───────────────────── -->
+    <!-- ── SLIDE 3: Il momento dell'opportunità ───────────────────── -->
     <Slide id="slide-opportunity" bg="inverse" align="center">
       <SlideBackdrop
         slot="backdrop"
@@ -301,10 +241,10 @@ const touchpoints = [
 
       <div class="mt-6" data-reveal data-reveal-delay="0.4">
         <a
-          href={href(base, '/fondazione')}
+          href={href(base, '/bivio')}
           class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
-          Le fondamenta che avete già
+          Al bivio: scegli il punto di vista
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

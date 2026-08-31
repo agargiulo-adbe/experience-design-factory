@@ -4,19 +4,32 @@ import { href } from '@edf/core/utils/url.js';
 interface Props {
   currentPath: string;
   base: string;
+  /** Ramo corrente: cambia rail e sottotitolo. Assente = tronco. */
+  branch?: 'fs-park' | 'trenitalia';
 }
 
-const { currentPath, base } = Astro.props;
+const { currentPath, base, branch } = Astro.props;
 
-const sections = [
-  { slug: '',              label: 'Cover',         solution: null },
-  { slug: 'scenario',     label: 'Scenario',       solution: null },
-  { slug: 'fondazione',   label: 'Foundation',     solution: null },
-  { slug: 'convergenza',  label: 'CJA',            solution: 'cja' },
-  { slug: 'connessioni',  label: 'Connessioni',    solution: 'data-collab' },
-  { slug: 'roadmap',      label: 'Roadmap',        solution: 'rtcdp,ajo,mix-modeler' },
-  { slug: 'casi-duso',    label: 'Casi d\'uso',     solution: null },
+interface NavEntry { slug: string; label: string; solution: string | null }
+
+// Rail del tronco: le due tappe comuni. Le porte-ramo sono rese a parte.
+const trunkSections: NavEntry[] = [
+  { slug: 'scenario', label: 'Scenario', solution: null },
+  { slug: 'bivio',    label: 'Bivio',    solution: null },
 ];
+
+// Rail di ramo: i 5 capitoli speculari. Il gating di percorso vale solo per
+// Trenitalia (RTCDP/AJO/Mix Modeler); il percorso FS Park è POC/adozione.
+const chapterSections = (br: 'fs-park' | 'trenitalia'): NavEntry[] => [
+  { slug: `${br}/partenza`,        label: 'Partenza',        solution: null },
+  { slug: `${br}/fondamenta`,      label: 'Fondamenta',      solution: null },
+  { slug: `${br}/convergenza`,     label: 'Convergenza',     solution: 'cja' },
+  { slug: `${br}/meta-invisibile`, label: 'Metà invisibile', solution: 'data-collab' },
+  { slug: `${br}/percorso`,        label: 'Percorso',        solution: br === 'trenitalia' ? 'rtcdp,ajo,mix-modeler' : null },
+];
+
+const sections = branch ? chapterSections(branch) : trunkSections;
+const subLabel = branch ? (branch === 'fs-park' ? 'FS Park' : 'Trenitalia') : 'FS × Adobe';
 
 function isActive(slug: string) {
   const norm = currentPath.replace(/\/+$/, '');
@@ -35,28 +48,38 @@ function isActive(slug: string) {
   >
     <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[var(--accent-primary)] flex-shrink-0" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <rect x="1" y="6" width="12" height="1.5" rx="0.75" fill="white"/>
-        <rect x="1" y="3" width="12" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
-        <rect x="1" y="9" width="12" height="1.5" rx="0.75" fill="white" opacity="0.6"/>
+        <rect x="1" y="6" width="12" height="1.5" rx="0.75" fill={branch === 'fs-park' ? '#0D0D14' : 'white'}/>
+        <rect x="1" y="3" width="12" height="1.5" rx="0.75" fill={branch === 'fs-park' ? '#0D0D14' : 'white'} opacity="0.6"/>
+        <rect x="1" y="9" width="12" height="1.5" rx="0.75" fill={branch === 'fs-park' ? '#0D0D14' : 'white'} opacity="0.6"/>
       </svg>
     </span>
     <span class="text-sm font-semibold text-[var(--color-ghiaccio)] group-hover:text-white transition-colors font-[family-name:var(--font-display)] whitespace-nowrap">
       Connessioni Intelligenti
     </span>
     <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--color-ghiaccio)]/40 ml-1 whitespace-nowrap">
-      FS × Adobe
+      {subLabel}
     </span>
   </a>
 
   <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
-    {sections.filter(s => s.slug !== '').map((s, i) => (
+    {branch && (
+      <li role="listitem" class="flex-shrink-0">
+        <a
+          href={href(base, '/bivio')}
+          class="block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline text-[var(--color-grigio-300)] hover:text-[var(--color-ghiaccio)] hover:bg-[var(--color-binario)]"
+        >
+          <span aria-hidden="true" class="mr-1">⇤</span>Bivio
+        </a>
+      </li>
+    )}
+    {sections.map((s, i) => (
       <li
         data-nav-solution={s.solution ?? undefined}
         role="listitem"
         class="flex-shrink-0"
       >
         <a
-          href={href(base, s.slug ? '/' + s.slug : '/')}
+          href={href(base, '/' + s.slug)}
           class={[
             'block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline',
             isActive(s.slug)
@@ -72,6 +95,39 @@ function isActive(slug: string) {
         </a>
       </li>
     ))}
+    {!branch && (
+      <>
+        <li role="listitem" class="flex-shrink-0" aria-hidden="true">
+          <span class="block px-1.5 text-[var(--color-grigio-500)]">·</span>
+        </li>
+        <li role="listitem" class="flex-shrink-0">
+          <a
+            href={href(base, '/fs-park/partenza')}
+            class={[
+              'block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm transition-colors no-underline border',
+              currentPath.includes('/fs-park/')
+                ? 'bg-[rgba(245,166,35,0.15)] text-[rgba(245,166,35,1)] border-[rgba(245,166,35,0.4)]'
+                : 'text-[rgba(245,166,35,0.85)] border-[rgba(245,166,35,0.28)] hover:bg-[rgba(245,166,35,0.1)] hover:text-[rgba(255,201,77,1)]',
+            ].join(' ')}
+          >
+            FS Park
+          </a>
+        </li>
+        <li role="listitem" class="flex-shrink-0">
+          <a
+            href={href(base, '/trenitalia/partenza')}
+            class={[
+              'block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm transition-colors no-underline border',
+              currentPath.includes('/trenitalia/')
+                ? 'bg-[rgba(226,0,26,0.18)] text-[rgba(255,122,134,1)] border-[rgba(226,0,26,0.5)]'
+                : 'text-[rgba(255,122,134,0.9)] border-[rgba(226,0,26,0.35)] hover:bg-[rgba(226,0,26,0.12)] hover:text-[rgba(255,150,160,1)]',
+            ].join(' ')}
+          >
+            Trenitalia
+          </a>
+        </li>
+      </>
+    )}
   </ol>
 
   <div class="flex items-center gap-3 flex-shrink-0">
