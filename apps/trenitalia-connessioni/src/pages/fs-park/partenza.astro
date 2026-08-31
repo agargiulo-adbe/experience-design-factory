@@ -1,0 +1,314 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const ecosistema = [
+  {
+    nome: 'Sito istituzionale',
+    stato: 'Tracciamenti limitati',
+    tone: 'ambra',
+    desc: 'Oggi raccoglie poco del comportamento di navigazione. Una revisione è possibile, ma non è un prerequisito.',
+  },
+  {
+    nome: 'Area riservata web',
+    stato: 'In arrivo',
+    tone: 'neutro',
+    desc: 'Il punto in cui il cliente si autenticherà anche da browser. Nasce già pensata per essere misurata.',
+  },
+  {
+    nome: 'App iOS e Android',
+    stato: 'Già tracciate',
+    tone: 'verde',
+    desc: 'Il canale più maturo: eventi di comportamento in-app già raccolti e pronti a confluire nella piattaforma.',
+  },
+  {
+    nome: 'CRM Salesforce',
+    stato: 'Fonte customer-centric',
+    tone: 'ambra',
+    desc: 'Anagrafiche, contratti e assistenza: la vista sul cliente conosciuto, da unire a quella comportamentale.',
+  },
+];
+
+const badgeStyle = (tone: string) =>
+  tone === 'verde'
+    ? 'background: rgba(16,185,129,0.16); color: rgba(82,222,166,0.98);'
+    : tone === 'ambra'
+      ? 'background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);'
+      : 'background: rgba(242,244,248,0.12); color: rgba(221,224,232,0.9);';
+
+const versioni = [
+  { mark: '01', nome: "L'anonimo sul sito", desc: 'Visita le pagine, guarda le tariffe, magari fa un preventivo. Nessun nome, nessun profilo.' },
+  { mark: '02', nome: "L'utente in app", desc: 'Autenticato, prenota e paga la sosta. È il cliente più riconoscibile che FS Park abbia.' },
+  { mark: '03', nome: 'Il record CRM', desc: 'Anagrafica, contratti, abbonamenti dentro Salesforce. Sa chi è il cliente, non cosa fa online.' },
+  { mark: '04', nome: 'Il ticket assistenza', desc: 'Richieste e reclami gestiti nel CRM. Un segnale prezioso che oggi resta scollegato dal resto.' },
+];
+---
+<BaseLayout
+  branch="fs-park"
+  title="La metà su asfalto"
+  description="Il punto di partenza del ramo FS Park: dall'auto alla sbarra, un ecosistema da leggere come un solo cliente."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/fs-park/fondamenta')}
+    prevHref={href(base, '/bivio')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--color-carbonio)]/92"
+      />
+      <CoverHero
+        eyebrow="Ramo FS Park · Il punto di partenza"
+        numeral="01"
+        title="La metà su asfalto"
+        lead="Dall'auto alla sbarra, FS Park vede tutto: l'arrivo, la sosta, il pagamento. Poi il cliente esce di scena e il suo viaggio continua altrove."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Davide visto da FS Park ───────────────────────── -->
+    <Slide id="slide-davide" bg="primary" align="split">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,0.78fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
+        <div class="flex items-center justify-center" data-reveal>
+          <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,400px); aspect-ratio:4/5; height:min(500px,62dvh);">
+            <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="52% 32%" />
+            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
+            <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
+              <span class="fs-node fs-node--ambra !w-11 !h-11" data-active>D</span>
+              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">La metà che FS Park vede</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-left max-w-xl">
+          <p class="fs-panel-tag mb-3" data-reveal>
+            STORIA DI DAVIDE · VISTO DA FS PARK
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.9rem, 3.4vw, 3.1rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Alle 6:40 Davide<br />è già un cliente.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-8"
+            style="font-size: clamp(1rem, 1.35vw, 1.2rem);"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            Ogni lunedì arriva in auto a Milano Centrale, entra nell'hub e paga la sosta lunga
+            dall'app FS Park. Fin qui la sua storia è nitida: orari, ricorrenza, abbonamento.
+            Quello che succede dopo la sbarra, per FS Park, semplicemente non esiste.
+          </p>
+
+          <div class="relative w-full" data-reveal data-reveal-delay="0.32">
+            <span class="fs-line-h" style="top: 1.4rem; left: 3%; width: 44%;" aria-hidden="true"></span>
+            <span class="absolute" style="top: 1.32rem; right: 3%; width: 44%; height: 2px; background: repeating-linear-gradient(90deg, rgba(242,244,248,0.35) 0 14px, transparent 14px 26px);" aria-hidden="true"></span>
+            <div class="grid grid-cols-4 gap-3">
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node fs-node--ambra" data-active>🚗</span>
+                <span class="fs-node-label">In auto, ore 6:40</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node fs-node--ambra" data-active>🅿️</span>
+                <span class="fs-node-label">Sosta lunga, in app</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node" style="border-style: dashed;">🚆</span>
+                <span class="fs-node-label">Il treno · fuori campo</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node" style="border-style: dashed;">🏁</span>
+                <span class="fs-node-label">Il ritorno · fuori campo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: L'ecosistema FS Park oggi ─────────────────────── -->
+    <Slide id="slide-ecosistema" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            L'ECOSISTEMA FS PARK OGGI
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Quattro fonti, ognuna a uno stadio diverso.
+          </h2>
+        </div>
+
+        <div class="relative flex flex-col gap-3">
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+
+          {ecosistema.map((fonte, i) => (
+            <div
+              class="relative grid md:grid-cols-[13rem_1fr] items-center gap-4"
+              data-reveal
+              data-reveal-delay={(0.14 + i * 0.06).toFixed(2)}
+            >
+              <div class="flex items-center gap-4">
+                <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style="color: rgba(245,166,35,0.95); font-size: 0.8rem;">
+                  {fonte.nome}
+                </p>
+              </div>
+
+              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.85rem 1.1rem;">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                    <p class="fs-card-title" style="font-size: 1.08rem; margin-inline: 0;">{fonte.nome}</p>
+                    <span class="text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style={badgeStyle(fonte.tone)}>
+                      {fonte.stato}
+                    </span>
+                  </div>
+                  <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{fonte.desc}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.4">
+          Fonte: dal confronto di lavoro, luglio 2026
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Quattro versioni dello stesso cliente ─────────── -->
+    <Slide id="slide-identita" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        IL PROBLEMA DI IDENTITÀ
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Quattro fonti, quattro versioni di Davide.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Ogni sistema custodisce un pezzo vero del cliente. Il punto è che oggi
+        nessuno di questi pezzi sa di appartenere alla stessa persona.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.2">
+        {versioni.map((v) => (
+          <div class="fs-card flex items-start gap-4 text-left">
+            <span class="fs-mark flex-shrink-0" aria-hidden="true">{v.mark}</span>
+            <div class="min-w-0 flex-1">
+              <p class="fs-card-title mb-1" style="font-size: 1.1rem;">{v.nome}</p>
+              <p class="fs-card-body" style="font-size: 0.95rem;">{v.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.32">
+        Quattro profili separati · nessuna riconciliazione · scenario descritto nel confronto di lavoro, luglio 2026
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────── -->
+    <Slide id="slide-opportunity" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-18"
+        scrim="bg-[var(--color-ghiaccio)]/92"
+      />
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        L'OPPORTUNITÀ
+      </p>
+      <h2
+        class="text-[var(--color-carbonio)] mb-6 text-center font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Leggere il percorso intero,<br/>dal primo accesso anonimo in poi.
+      </h2>
+      <p
+        class="text-[var(--color-grigio-500)] leading-relaxed max-w-3xl mx-auto text-center mb-8"
+        style="font-size: clamp(1rem, 1.3vw, 1.2rem);"
+        data-reveal
+        data-reveal-delay="0.16"
+      >
+        Quando le quattro fonti diventano un solo cliente, il percorso si legge da capo a fondo:
+        la prima visita senza nome, il login, l'acquisto della sosta e quello successivo.
+        È la base per capire dove il funnel perde le persone e cosa spinge davvero all'acquisto.
+      </p>
+
+      <div
+        class="fs-panel max-w-3xl mx-auto text-left"
+        data-reveal
+        data-reveal-delay="0.26"
+      >
+        <p class="fs-panel-tag mb-2">Come cambierebbe la lettura di Davide</p>
+        <p class="fs-panel-head !text-[1.15rem] !leading-snug">
+          Tre visite anonime al sito a novembre, login in app a dicembre, prima sosta lunga
+          a gennaio, poi ogni lunedì. Un solo profilo, una storia che finalmente torna.
+        </p>
+        <p class="fs-panel-src mt-2.5">
+          Scenario illustrativo · da validare sul campo
+        </p>
+      </div>
+
+      <div class="mt-7 text-center" data-reveal data-reveal-delay="0.36">
+        <a
+          href={href(base, '/fs-park/fondamenta')}
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          Le fondamenta: una sola identità
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

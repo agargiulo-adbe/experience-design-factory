@@ -1,0 +1,335 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const puntiCiechi = [
+  { mark: '01', nome: 'Il treno', desc: 'Quale prende, a che ora, con che frequenza. La sosta ha sempre una destinazione, e FS Park non la vede.' },
+  { mark: '02', nome: 'Il motivo della sosta', desc: 'Pendolarismo, trasferta, aeroporto: contesti diversi che chiederebbero offerte diverse.' },
+  { mark: '03', nome: 'Il ritorno', desc: 'Quando Davide riprende l\'auto e se il ritardo del treno gli ha fatto sforare la tariffa.' },
+  { mark: '04', nome: 'Il valore oltre il parcheggio', desc: 'Quanto vale quel cliente per il Gruppo, oltre la sosta che paga a FS Park.' },
+];
+
+const cleanRoomCards = [
+  {
+    n: '01',
+    nome: 'Nessun trasferimento di PII',
+    desc: 'I dati personali non passano da una società all\'altra: restano ciascuno a casa propria.',
+  },
+  {
+    n: '02',
+    nome: 'Matching in ambiente neutro',
+    desc: 'Le audience si incontrano in una clean room: si vede la sovrapposizione, non i singoli record.',
+  },
+  {
+    n: '03',
+    nome: 'Consenso e finalità rispettati',
+    desc: 'Ogni analisi avviene dentro il perimetro dei consensi raccolti e delle finalità dichiarate.',
+  },
+];
+
+const scenari = [
+  {
+    nome: 'Ritardo treno → benefit sosta',
+    desc: 'Il treno di Davide arriva tardi e la sua sosta si estende senza penale. Il disservizio di uno diventa attenzione dell\'altro.',
+  },
+  {
+    nome: 'Cross-selling sosta + viaggio',
+    desc: 'Chi viaggia spesso in treno e parcheggia sempre in zona stazione riceve una proposta che tiene insieme le due cose.',
+  },
+  {
+    nome: 'Churn e retention letti insieme',
+    desc: 'Un cliente che smette di parcheggiare sta forse smettendo di viaggiare. Letto insieme, il segnale arriva prima.',
+  },
+];
+
+const governanceCards = [
+  {
+    n: '01',
+    nome: 'Etichette d\'uso',
+    desc: 'Ogni dato entra in piattaforma con un\'etichetta che dichiara come può essere usato e per quali finalità.',
+  },
+  {
+    n: '02',
+    nome: 'Policy enforcement',
+    desc: 'Le regole non sono un documento: la piattaforma le applica da sola e blocca gli usi non consentiti.',
+  },
+  {
+    n: '03',
+    nome: 'Consenso che viaggia col dato',
+    desc: 'Le scelte del cliente accompagnano ogni record, in ogni analisi, anche quando le società collaborano.',
+  },
+];
+---
+<BaseLayout
+  branch="fs-park"
+  title="Alla sbarra, Davide scompare"
+  description="La metà che FS Park non vede e la clean room che permette di leggerla insieme a Trenitalia, nel rispetto del GDPR."
+  pageSolutions={['data-collab']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/fs-park/percorso')}
+    prevHref={href(base, '/fs-park/convergenza')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-stazione')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--color-carbonio)]/92"
+      />
+      <CoverHero
+        eyebrow="04 · La metà invisibile"
+        numeral="04"
+        title="Alla sbarra,<br/>Davide scompare"
+        lead="La lettura del cliente FS Park si interrompe dove inizia il viaggio. Quello che succede dopo esiste, ma appartiene a un'altra società del Gruppo."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Cosa FS Park non vede ─────────────────────────── -->
+    <Slide id="slide-punto-cieco" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        IL PUNTO CIECO
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Quattro cose che FS Park non vede.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Anche con le proprie fonti riconciliate, la storia resta a metà.
+        L'altra metà del cliente vive sui binari.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.2">
+        {puntiCiechi.map((p) => (
+          <div class="fs-card flex items-start gap-4 text-left" style="border-style: dashed; border-color: rgba(242,244,248,0.22);">
+            <span class="fs-mark flex-shrink-0" style="border-style: dashed; background: rgba(26,26,40,0.6); border-color: rgba(242,244,248,0.4);" aria-hidden="true">{p.mark}</span>
+            <div class="min-w-0 flex-1">
+              <p class="fs-card-title mb-1" style="font-size: 1.1rem;">{p.nome}</p>
+              <p class="fs-card-body" style="font-size: 0.95rem;">{p.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.32">
+        La metà su rotaia esiste · serve un modo lecito e sicuro per leggerla
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: Perché una clean room ─────────────────────────── -->
+    <Slide id="slide-why-collab" bg="secondary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dati')}
+        imageClass="opacity-08"
+        scrim="bg-[var(--surface-secondary)]/94"
+      />
+      <div slot="backdrop" class="fs-bg-soft"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="fs-panel mb-5" data-reveal>
+          <p class="fs-panel-tag">PERCHÉ UNA CLEAN ROOM · ADOBE DATA COLLABORATION</p>
+          <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
+            Stesso Gruppo, entità legali distinte.
+          </h2>
+          <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.6;">
+            FS Park e Trenitalia appartengono allo stesso Gruppo, ma sono società diverse,
+            ognuna titolare dei propri dati. Il GDPR vale anche tra società sorelle: i dati
+            personali dell'una non possono semplicemente passare all'altra. Adobe Data
+            Collaboration esiste esattamente per questo caso.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-4" data-reveal data-reveal-delay="0.14">
+          {cleanRoomCards.map((c) => (
+            <div class="fs-card flex flex-col text-left">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="fs-mark" aria-hidden="true">{c.n}</span>
+                <p class="fs-card-title" style="font-size: 1.06rem;">{c.nome}</p>
+              </div>
+              <p class="fs-card-body" style="font-size: 0.95rem;">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="fs-panel-src text-center" data-reveal data-reveal-delay="0.24">
+          Vincolo emerso nel confronto di lavoro, luglio 2026 · la collaborazione tra società richiede una clean room anche intra-gruppo
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Scenari intersocietari ────────────────────────── -->
+    <Slide id="slide-usecases-gruppo" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            SCENARI INTERSOCIETARI · VISTI DA FS PARK
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Cosa diventa possibile quando le due metà si parlano.
+          </h2>
+        </div>
+
+        <div class="relative flex flex-col gap-3">
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+
+          {scenari.map((s, i) => (
+            <div
+              class="relative flex items-center gap-4"
+              data-reveal
+              data-reveal-delay={(0.14 + i * 0.07).toFixed(2)}
+            >
+              <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+              <div class="fs-card flex-1 min-w-0 text-left" style="padding: 1rem 1.25rem;">
+                <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                  <p class="fs-card-title" style="font-size: 1.1rem; margin-inline: 0;">{s.nome}</p>
+                  <span class="text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style="background: rgba(242,244,248,0.12); color: rgba(221,224,232,0.9);">
+                    Da esplorare · da validare sul campo
+                  </span>
+                </div>
+                <p class="fs-card-body" style="font-size: 0.96rem; line-height: 1.55; margin-inline: 0;">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.36">
+          Evoluzione possibile, non punto di partenza · dal confronto di lavoro, luglio 2026
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: AEP Data Governance ───────────────────────────── -->
+    <Slide id="slide-governance" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        ADOBE EXPERIENCE PLATFORM · DATA GOVERNANCE
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        La condizione tecnica per parlarsi tra società.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        La governance non è un adempimento che frena: è quello che rende possibile la
+        collaborazione. Regole chiare sul dato, applicate dalla piattaforma, sempre.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.2">
+        {governanceCards.map((c) => (
+          <div class="fs-card flex flex-col text-left" style="padding: 1.5rem 1.5rem;">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="fs-mark" aria-hidden="true">{c.n}</span>
+              <p class="fs-card-title" style="font-size: 1.08rem;">{c.nome}</p>
+            </div>
+            <p class="fs-card-body" style="font-size: 0.98rem; line-height: 1.62;">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="fs-panel max-w-4xl mx-auto text-left mt-6" data-reveal data-reveal-delay="0.28">
+        <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
+          Etichette, policy e consenso sono nativi in Adobe Experience Platform: valgono per
+          l'uso interno dei dati FS Park e, quando servirà, per la collaborazione tra società.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Partire da FS Park, estendere al Gruppo ───────── -->
+    <Slide id="slide-strategia" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        LA STRATEGIA
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Partire da FS Park.<br/>Estendere al Gruppo.
+      </h2>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5 mb-6" data-reveal data-reveal-delay="0.16">
+        <div class="fs-panel text-left">
+          <p class="fs-panel-tag mb-2">Oggi · il caso concreto</p>
+          <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
+            FS Park riconcilia le proprie fonti e impara a leggere il proprio cliente:
+            identità, journey, funnel. Il valore arriva qui, con i dati di casa,
+            senza dipendere da nessun altro.
+          </p>
+        </div>
+        <div class="fs-panel text-left">
+          <p class="fs-panel-tag mb-2" style="color: rgba(221,224,232,0.85);">Domani · l'orizzonte</p>
+          <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
+            La stessa piattaforma apre gli scenari di Gruppo attraverso la clean room:
+            benefit sulla sosta, cross-selling, retention letta insieme. Quando le due
+            società decideranno di farlo.
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center" data-reveal data-reveal-delay="0.28">
+        <a
+          href={href(base, '/fs-park/percorso')}
+          class="inline-flex items-center gap-3 px-8 py-3 text-base font-semibold tracking-wide bg-[var(--color-ambra)] text-[var(--color-carbonio)] hover:bg-[var(--color-ambra-chiara)] transition-colors duration-300 font-[family-name:var(--font-display)] rounded-sm"
+        >
+          Il percorso: da dove si comincia
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

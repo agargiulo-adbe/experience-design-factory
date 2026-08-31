@@ -1,0 +1,298 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const chiavi = [
+  {
+    nome: 'Email, anche hashata',
+    ruolo: 'Identificativo candidato',
+    desc: 'È il dato che app, area riservata e CRM hanno in comune. Hashata, permette il riconoscimento senza esporre il dato in chiaro.',
+  },
+  {
+    nome: 'Identity Graph',
+    ruolo: 'La mappa delle identità',
+    desc: 'Collega tra loro gli identificativi dello stesso cliente: cookie del sito, ID dell\'app, record del CRM.',
+  },
+  {
+    nome: 'Stitching',
+    ruolo: 'Il ricucito dei percorsi',
+    desc: 'Le sessioni anonime e quelle autenticate della stessa persona diventano un unico percorso leggibile.',
+  },
+  {
+    nome: 'Backfill',
+    ruolo: 'Il recupero del prima',
+    desc: 'A riconoscimento avvenuto, anche la storia precedente al login si riattacca al profilo del cliente.',
+  },
+];
+
+const xdmCards = [
+  {
+    n: '01',
+    nome: 'Schema XDM',
+    ruolo: 'La lingua comune',
+    desc: 'Ogni fonte entra in Adobe Experience Platform parlando lo stesso vocabolario: eventi, profili, transazioni.',
+  },
+  {
+    n: '02',
+    nome: 'Source connector',
+    ruolo: 'Lo storico entra',
+    desc: 'I dati già raccolti si portano dentro con connettori dedicati, senza rifare la raccolta da zero.',
+  },
+  {
+    n: '03',
+    nome: 'Tagging esistente',
+    ruolo: 'In parte riutilizzabile',
+    desc: 'Quello che l\'app già traccia si valuta e, dove ha senso, si riusa. Si butta via il meno possibile.',
+  },
+];
+---
+<BaseLayout
+  branch="fs-park"
+  title="Le fondamenta: una sola identità"
+  description="Riconciliare l'anonimo e l'autenticato: email hashata, Identity Graph, stitching e backfill per un solo cliente FS Park."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/fs-park/convergenza')}
+    prevHref={href(base, '/fs-park/partenza')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <CoverHero
+        eyebrow="02 · Fondamenta"
+        numeral="02"
+        title="Le fondamenta:<br/>una sola identità"
+        lead="Prima dei dashboard viene l'identità. Il lavoro vero è far riconoscere alla piattaforma che l'anonimo sul sito, l'utente in app e il record CRM sono la stessa persona."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il confine anonimo / autenticato ──────────────── -->
+    <Slide id="slide-anonimo" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        IL CONFINE ANONIMO / AUTENTICATO
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Al login, il cliente si accende.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Fino a quel momento è un visitatore qualunque. Il valore però non sta solo nel dopo:
+        sta nel poter ricostruire anche tutto quello che è successo prima.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.2">
+        <div class="fs-panel text-left">
+          <p class="fs-panel-tag mb-3" style="color: rgba(221,224,232,0.85);">Prima del login · anonimo</p>
+          <ul class="space-y-2.5 text-[0.98rem] text-[var(--color-grigio-200)]" style="line-height: 1.55;">
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(242,244,248,0.5)]" aria-hidden="true"/>
+              Pagine viste, tariffe confrontate, ricerche di disponibilità
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(242,244,248,0.5)]" aria-hidden="true"/>
+              Nessun nome: solo un identificativo tecnico di sessione
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(242,244,248,0.5)]" aria-hidden="true"/>
+              È qui che matura la decisione di acquisto, invisibile al CRM
+            </li>
+          </ul>
+        </div>
+        <div class="fs-panel text-left">
+          <p class="fs-panel-tag mb-3">Dal login in poi · autenticato</p>
+          <ul class="space-y-2.5 text-[0.98rem] text-[var(--color-grigio-200)]" style="line-height: 1.55;">
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(245,166,35,0.95)]" aria-hidden="true"/>
+              Profilo noto: prenotazioni, pagamenti, abbonamenti
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(245,166,35,0.95)]" aria-hidden="true"/>
+              Comportamento in app già tracciato e attribuibile
+            </li>
+            <li class="flex items-start gap-2.5">
+              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(245,166,35,0.95)]" aria-hidden="true"/>
+              La riconciliazione riattacca a questo profilo anche il prima
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
+        Ricostruire il prima è il cuore della riconciliazione · dal confronto di lavoro, luglio 2026
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 2: La chiave di riconciliazione ──────────────────── -->
+    <Slide id="slide-chiave" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            LA CHIAVE DI RICONCILIAZIONE
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Una chiave comune, tre meccanismi che la usano.
+          </h2>
+        </div>
+
+        <div class="relative flex flex-col gap-3">
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+
+          {chiavi.map((c, i) => (
+            <div
+              class="relative grid md:grid-cols-[13rem_1fr] items-center gap-4"
+              data-reveal
+              data-reveal-delay={(0.14 + i * 0.06).toFixed(2)}
+            >
+              <div class="flex items-center gap-4">
+                <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style="color: rgba(245,166,35,0.95); font-size: 0.78rem;">
+                  {c.ruolo}
+                </p>
+              </div>
+
+              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.85rem 1.1rem;">
+                <div class="flex-1 min-w-0">
+                  <p class="fs-card-title mb-1" style="font-size: 1.08rem; margin-inline: 0;">{c.nome}</p>
+                  <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{c.desc}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
+          Gli aspetti tecnici restano da approfondire insieme · dal confronto di lavoro, luglio 2026
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Da fonti a schema — XDM ───────────────────────── -->
+    <Slide id="slide-xdm" bg="primary" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dati')}
+        imageClass="opacity-08"
+        scrim="bg-[var(--surface-primary)]/94"
+      />
+      <div slot="backdrop" class="fs-bg-soft"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="fs-panel mb-5" data-reveal>
+          <p class="fs-panel-tag">DA FONTI A SCHEMA · ADOBE EXPERIENCE PLATFORM</p>
+          <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
+            Le fonti restano dove sono.<br/>Cambia la lingua in cui si parlano.
+          </h2>
+          <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.6;">
+            Sito, app e CRM continuano a lavorare come oggi. Adobe Experience Platform li accoglie
+            in uno schema comune, il flusso alimenta Customer Journey Analytics e lo storico
+            entra dai connettori. Nessuna fonte viene sostituita per strada.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-4" data-reveal data-reveal-delay="0.14">
+          {xdmCards.map((item) => (
+            <div class="fs-card flex flex-col">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="fs-mark" aria-hidden="true">{item.n}</span>
+                <div>
+                  <p class="fs-card-title" style="font-size: 1.08rem;">{item.nome}</p>
+                  <p class="text-[0.78rem] font-semibold uppercase tracking-wide" style="color: rgba(255,201,77,0.95);">{item.ruolo}</p>
+                </div>
+              </div>
+              <p class="fs-card-body" style="font-size: 0.95rem;">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="fs-panel-src text-center" data-reveal data-reveal-delay="0.24">
+          La quantità di dati storici da portare dentro è da valutare insieme · dal confronto di lavoro, luglio 2026
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Non rifare. Riconciliare. ─────────────────────── -->
+    <Slide id="slide-choice" bg="inverse" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fsp-stalli"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--color-carbonio)]/93"
+      />
+      <div class="w-full max-w-3xl mx-auto text-left">
+        <p class="slide-eyebrow text-[rgba(245,166,35,0.95)] mb-8" data-reveal>
+          IL PRINCIPIO GUIDA
+        </p>
+        <div class="fs-quote" data-reveal data-reveal-delay="0.08">
+          <h2
+            class="fs-quote-text text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)]"
+            style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
+          >
+            Non rifare.<br/>Riconciliare.
+          </h2>
+        </div>
+        <p
+          class="text-[var(--color-grigio-200)] leading-relaxed max-w-2xl mt-6 mb-10"
+          style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
+          data-reveal
+          data-reveal-delay="0.16"
+        >
+          Il sito può evolvere coi suoi tempi, l'app è già tracciata, l'area riservata arriverà.
+          La piattaforma riconcilia ciò che esiste e accoglie ciò che verrà. A nessuno viene
+          chiesto di ripartire da zero.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 max-w-2xl" data-reveal data-reveal-delay="0.24">
+          <a
+            href={href(base, '/fs-park/convergenza')}
+            class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ambra)] text-[var(--color-carbonio)] hover:bg-[var(--color-ambra-chiara)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+          >
+            CJA: tutte le fonti, un'unica lettura
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

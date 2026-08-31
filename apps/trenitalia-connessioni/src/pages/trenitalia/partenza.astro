@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const emailTipi = [
+  { label: 'CartaFreccia Responsys', icon: '🏅', desc: 'Punti, offerte partner, premi', freq: '~2×/sett.', badge: 'Loyalty' },
+  { label: 'X-GO Responsys',         icon: '🎟️', desc: 'Sconti Regionale, carnet, cashback', freq: '~1×/sett.', badge: 'Youth' },
+  { label: 'Biglietti webmaster',     icon: '🎫', desc: 'Conferme, cambi, rimborsi', freq: 'Transazionale', badge: 'Transact' },
+  { label: 'Feedback & NPS',          icon: '📋', desc: 'Sondaggi soddisfazione', freq: '2×/mese', badge: 'Survey' },
+  { label: 'Infomobilità',            icon: '🚨', desc: 'Ritardi e disservizi', freq: 'On event', badge: 'Alert' },
+  { label: 'FS Park',                 icon: '🅿️', desc: 'Nessuna comunicazione con Trenitalia', freq: 'Gap', badge: 'Gap' },
+];
+
+// Il punto cieco di Trenitalia: quello che succede prima del binario.
+const puntiCiechi = [
+  { n: '01', label: 'Come arriva', desc: 'In auto, in metro, accompagnato: il tragitto verso la stazione non lascia traccia nei sistemi Trenitalia.' },
+  { n: '02', label: 'Dove sosta', desc: 'Davide parcheggia ogni lunedì in un hub FS Park. Per i dati Trenitalia quel parcheggio non esiste.' },
+  { n: '03', label: 'Quanto prima', desc: 'Arriva 40 minuti prima o all\'ultimo? Il tempo passato in stazione, e come lo usa, resta invisibile.' },
+];
+---
+<BaseLayout
+  title="La metà su rotaia · Ramo Trenitalia"
+  description="Il ramo Trenitalia: dal binario in poi il viaggio si legge tutto. Prima della stazione, Davide non si vede."
+  branch="trenitalia"
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/trenitalia/fondamenta')}
+    prevHref={href(base, '/bivio')}
+  >
+
+    <!-- ── SLIDE 0: Cover — La metà su rotaia ─────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-binari')}
+        imageClass="opacity-15"
+        scrim="bg-[var(--surface-primary)]/90"
+      />
+      <CoverHero
+        eyebrow="Ramo Trenitalia · Il punto di partenza"
+        numeral="01"
+        title="La metà su rotaia"
+        lead="Dal binario in poi Trenitalia vede tutto: la ricerca, il biglietto, il viaggio, il ritorno. Prima della stazione, però, Davide non esiste ancora."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+
+      <!-- La linea del ramo: la parte fuori campo e il mondo-binario -->
+      <div class="relative w-full max-w-3xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
+        <span class="absolute hidden md:block" style="top: 1.45rem; left: 8%; width: 26%; height: 2px; background: repeating-linear-gradient(90deg, rgba(122,129,150,0.6) 0 9px, transparent 9px 17px);" aria-hidden="true"></span>
+        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 38%; right: 8%; background: linear-gradient(90deg, rgba(226,0,26,0.95) 0%, rgba(226,0,26,0.95) 88%, rgba(226,0,26,0) 100%); box-shadow: 0 0 12px rgba(226,0,26,0.45);" aria-hidden="true"></span>
+        <div class="relative flex justify-between items-start px-[4%]">
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node" style="border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgba(26,26,40,0.55);" aria-hidden="true">🚗</span>
+            <span class="fs-node-label">Prima della stazione · fuori campo</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🚆</span>
+            <span class="fs-node-label">Il binario · il mondo Trenitalia</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🏁</span>
+            <span class="fs-node-label">Il viaggio, la destinazione</span>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: Davide, visto da Trenitalia ───────────────────── -->
+    <Slide id="slide-davide" bg="primary" align="split">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
+        <div class="flex items-center justify-center" data-reveal>
+          <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,420px); aspect-ratio:4/5; height:min(520px,64dvh);">
+            <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="52% 32%" />
+            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
+            <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
+              <span class="fs-node fs-node--rosso !w-11 !h-11" data-active>D</span>
+              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">La metà su rotaia</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-left max-w-xl">
+          <p class="fs-panel-tag mb-3" data-reveal>
+            STORIA DI DAVIDE · VISTO DA TRENITALIA
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(2rem, 3.8vw, 3.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.1"
+          >
+            Davide, 38 anni.<br />Pendolare business.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-8"
+            style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
+            data-reveal
+            data-reveal-delay="0.2"
+          >
+            Ogni lunedì mattina Davide sale su un Frecciarossa per Roma e acquista il biglietto
+            direttamente in app. È un cliente CartaFreccia Oro da 4 anni, con un abbonamento
+            mensile A/R. Per Trenitalia la sua storia comincia al binario: quello che succede
+            prima, dall'auto alla sbarra del parcheggio, resta fuori campo.
+          </p>
+
+          <!-- La riga del viaggio: metà sinistra fuori campo, metà destra piena -->
+          <div class="relative w-full" data-reveal data-reveal-delay="0.35">
+            <span class="absolute hidden md:block" style="top: 1.45rem; left: 5%; width: 42%; height: 2px; background: repeating-linear-gradient(90deg, rgba(122,129,150,0.6) 0 9px, transparent 9px 17px);" aria-hidden="true"></span>
+            <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 53%; right: 5%; background: linear-gradient(90deg, rgba(226,0,26,0.95) 0%, rgba(226,0,26,0.95) 82%, rgba(226,0,26,0) 100%); box-shadow: 0 0 12px rgba(226,0,26,0.45);" aria-hidden="true"></span>
+            <div class="grid grid-cols-4 gap-3">
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node" style="border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgba(26,26,40,0.55);" aria-hidden="true">🚗</span>
+                <span class="fs-node-label">L'auto · fuori campo</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node" style="border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgba(26,26,40,0.55);" aria-hidden="true">🅿️</span>
+                <span class="fs-node-label">La sosta · fuori campo</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🚆</span>
+                <span class="fs-node-label">Il binario · da qui si vede</span>
+              </div>
+              <div class="flex flex-col items-center gap-2.5 text-center">
+                <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🏁</span>
+                <span class="fs-node-label">Il viaggio, l'arrivo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Le email — Oracle Responsys in azione ─────────── -->
+    <Slide id="slide-email-gap" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        ORACLE RESPONSYS · CRM EMAIL ATTIVO
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-baseline justify-center gap-x-6 gap-y-1 mb-2" data-reveal data-reveal-delay="0.08">
+        <span class="fs-stat-value" data-display style="font-size: clamp(2.6rem, 5vw, 4rem);">611</span>
+        <h2
+          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] text-center md:text-left"
+          style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+        >
+          email in un anno.<br class="hidden md:block"/> Nessuna sull'arrivo di Davide.
+        </h2>
+      </div>
+      <p
+        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-6"
+        style="font-size: clamp(0.95rem, 1.05vw, 1rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Un CRM attivo e ad alta frequenza, eppure nessuna email sfrutta il momento del viaggio. E FS Park non compare mai.
+      </p>
+
+      <div
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-2.5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {emailTipi.map((e) => (
+          <div class="fs-card flex items-start gap-3 !py-3 !px-4"
+               style={e.badge === 'Gap' ? "border-color: rgba(226,0,26,0.4); background: rgba(226,0,26,0.08);" : undefined}>
+            <span class="text-lg flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                <p class="fs-card-title !text-[1.02rem] leading-tight">{e.label}</p>
+                <span class:list={[
+                  "text-[0.62rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase",
+                  e.badge === 'Gap'
+                    ? "text-white"
+                    : "text-[rgba(242,244,248,0.75)]",
+                ]}
+                style={e.badge === 'Gap' ? "background: rgba(226,0,26,0.85);" : "background: rgba(242,244,248,0.12);"}>{e.badge}</span>
+              </div>
+              <p class="fs-card-body !text-[0.9rem] leading-snug">{e.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="fs-panel fs-panel--rosso max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> manca la lettura del <em>journey</em>, quella che collega i segnali sparsi e li usa al momento giusto.
+        </p>
+      </div>
+      <p class="mt-4 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
+        Analisi campione email Trenitalia (Google Takeout, lug 2026 · 1 account) · illustrativo
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 3: Il punto cieco — prima del binario ────────────── -->
+    <Slide id="slide-punto-cieco" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-stazione')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-primary)]/92"
+      />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
+        IL PUNTO CIECO
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Per Trenitalia, Davide appare in stazione.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.1rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        Il biglietto, l'app e la CartaFreccia raccontano il viaggio dal binario in poi.
+        Tutto quello che succede prima resta fuori dal quadro.
+      </p>
+
+      <div class="w-full max-w-4xl mx-auto flex flex-col gap-2.5 mb-5" data-reveal data-reveal-delay="0.2">
+        {puntiCiechi.map((p) => (
+          <div class="fs-card w-full text-left flex items-center gap-5" style="padding: 0.85rem 1.2rem;">
+            <span class="fs-node flex-shrink-0" style="width: 2.5rem; height: 2.5rem; font-size: 0.95rem; border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgba(26,26,40,0.5);" aria-hidden="true">{p.n}</span>
+            <div class="min-w-0 flex-1">
+              <p class="fs-card-title mb-0.5" style="font-size: 1.08rem;">{p.label}</p>
+              <p class="fs-card-body">{p.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="fs-panel fs-panel--rosso max-w-4xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">Perché conta:</strong> per Davide l'esperienza è
+          porta-a-porta, non binario-a-binario. Ogni pezzo di viaggio che Trenitalia non vede
+          è un'occasione di servizio che non parte.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Il momento dell'opportunità ───────────────────── -->
+    <Slide id="slide-opportunity" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-parcheggio')}
+        imageClass="opacity-18"
+        scrim="bg-[var(--color-ghiaccio)]/92"
+      />
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        L'OPPORTUNITÀ · VISTA DA TRENITALIA
+      </p>
+      <h2
+        class="text-[var(--color-carbonio)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Trenitalia conosce il viaggio.<br/>L'offerta giusta non parte mai.
+      </h2>
+
+      <div
+        class="relative w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-5"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        {[
+          {
+            label: 'Quello che FS Park sa',
+            items: ['Davide parcheggia ogni lunedì', 'Stazione Milano Centrale, Hub P1', 'Abbonamento mensile parcheggio in scadenza'],
+            tone: 'left',
+          },
+          {
+            label: 'Quello che Trenitalia sa',
+            items: ['Davide ha CartaFreccia Oro', 'Abbonamento A/R Milano–Roma in corso', 'Acquista sempre in app, lunedì mattina'],
+            tone: 'right',
+          },
+        ].map((col, ci) => (
+          <div class="fs-card">
+            <div class="flex items-center gap-2.5 mb-3">
+              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 1 && "fs-node--rosso !bg-[rgba(226,0,26,0.16)] !border-[rgba(226,0,26,0.55)]"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
+              <p class="fs-card-title !text-[1.05rem]">{col.label}</p>
+            </div>
+            <ul class="space-y-2">
+              {col.items.map((item) => (
+                <li class="flex items-start gap-2.5 fs-card-body">
+                  <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div
+        class="fs-panel max-w-3xl mx-auto !bg-[rgba(245,166,35,0.14)] !border-[rgba(245,166,35,0.4)]"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        <p class="fs-panel-tag mb-2">
+          Quello che un journey unificato renderebbe possibile
+        </p>
+        <p class="fs-panel-head !text-[1.15rem] !leading-snug">
+          «Ciao Davide, il tuo abbonamento parcheggio scade il 31. Rinnova insieme all'abbonamento
+          Frecciarossa e risparmia il 15% su entrambi.»
+        </p>
+        <p class="fs-panel-src mt-2.5">
+          Push il venerdì 3 settimane prima della scadenza · canale preferito: app
+        </p>
+      </div>
+
+      <div class="mt-6" data-reveal data-reveal-delay="0.4">
+        <a
+          href={href(base, '/trenitalia/fondamenta')}
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+        >
+          Le fondamenta che avete già
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

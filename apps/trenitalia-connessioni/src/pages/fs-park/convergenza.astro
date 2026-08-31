@@ -1,0 +1,382 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const fontiDati = [
+  { label: 'Sito istituzionale',  node: 'SI', desc: 'Navigazione e ricerche · oggi con tracciamenti limitati' },
+  { label: 'Area riservata web',  node: 'AR', desc: 'Autenticazione da browser · in arrivo, già misurabile' },
+  { label: 'App iOS e Android',   node: 'AP', desc: 'Prenotazioni e pagamenti · eventi già tracciati' },
+  { label: 'CRM Salesforce',      node: 'SF', desc: 'Anagrafiche, contratti, assistenza e reclami' },
+];
+
+const useCases = [
+  {
+    nome: 'Customer journey end-to-end',
+    desc: 'Dal primo accesso anonimo all\'acquisto, anche quando il cliente cambia dispositivo a metà strada.',
+  },
+  {
+    nome: 'Drop-off analysis nel funnel',
+    desc: 'Dove si fermano le persone che iniziano una prenotazione e non la finiscono, passo per passo.',
+  },
+  {
+    nome: 'Conversion analysis cross-canale',
+    desc: 'Quale combinazione di sito, app e comunicazioni porta davvero all\'acquisto della sosta.',
+  },
+];
+
+const funnelSteps = [
+  { label: 'Ricerca disponibilità', pct: 100 },
+  { label: 'Selezione tariffa',     pct: 62 },
+  { label: 'Login o registrazione', pct: 41 },
+  { label: 'Pagamento della sosta', pct: 27 },
+];
+
+const adozioneCards = [
+  {
+    n: '01',
+    nome: 'Affiancamento',
+    desc: 'Le prime analisi si costruiscono insieme, su domande vere del business, non su dashboard preconfezionati.',
+  },
+  {
+    n: '02',
+    nome: 'Formazione',
+    desc: 'Il team acquisisce il metodo di lettura: cosa chiedere ai dati, come interpretare le risposte.',
+  },
+  {
+    n: '03',
+    nome: 'AI Assistant',
+    desc: 'Le domande si fanno in linguaggio naturale, direttamente nella piattaforma. La risposta arriva sui dati veri.',
+  },
+];
+---
+<BaseLayout
+  branch="fs-park"
+  title="CJA: tutte le fonti, un'unica lettura"
+  description="Customer Journey Analytics unifica sito, area riservata, app e CRM FS Park in una sola vista del journey."
+  pageSolutions={['cja']}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/fs-park/meta-invisibile')}
+    prevHref={href(base, '/fs-park/fondamenta')}
+  >
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <CoverHero
+        eyebrow="03 · Customer Journey Analytics"
+        numeral="03"
+        title="Tutte le fonti,<br/>un'unica lettura"
+        lead="Customer Journey Analytics lavora sopra i sistemi FS Park e li legge come un racconto solo: la stessa persona, dallo schermo anonimo al pagamento della sosta."
+        size="phase"
+        tone="ink"
+        signature={false}
+      />
+
+      <div class="relative w-full max-w-3xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
+        <div class="fs-line-h" style="top: 1.45rem; left: 8%; right: 8%;"></div>
+        <div class="relative flex justify-between items-start px-[4%]">
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node fs-node--ambra" data-active>4</span>
+            <span class="fs-node-label">Fonti separate</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node fs-node--ambra" data-active>CJA</span>
+            <span class="fs-node-label">Il layer di lettura</span>
+          </div>
+          <div class="flex flex-col items-center gap-2.5 text-center">
+            <span class="fs-node fs-node--ambra" data-active>1</span>
+            <span class="fs-node-label">Un journey leggibile</span>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: La convergenza ────────────────────────────────── -->
+    <Slide id="slide-convergenza" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-dati')}
+        imageClass="opacity-10"
+        scrim="bg-[var(--surface-primary)]/92"
+      />
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        COME FUNZIONA · CONNETTORI NATIVI, DATI IN ADOBE EXPERIENCE PLATFORM
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Sito, area riservata, app e CRM. Una vista sola.
+      </h2>
+
+      <div
+        class="w-full max-w-6xl mx-auto grid grid-cols-[1fr_92px_1.15fr] gap-4 items-center"
+        data-reveal
+        data-reveal-delay="0.2"
+      >
+        <div class="flex flex-col gap-2.5">
+          {fontiDati.map((f) => (
+            <div class="flex items-center gap-3.5">
+              <span class="fs-node fs-node--ambra flex-shrink-0" data-active style="width:2.5rem;height:2.5rem;font-size:0.82rem;">{f.node}</span>
+              <div class="min-w-0 flex-1 text-left">
+                <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
+                <p class="text-[0.88rem] text-[var(--color-grigio-200)] leading-snug">{f.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="relative flex flex-col items-center justify-center h-full">
+          <div class="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(245,166,35,0.55)] to-transparent" aria-hidden="true"/>
+          <span class="fs-node fs-node--ambra relative z-10" data-active style="width:3.6rem;height:3.6rem;font-size:0.78rem;font-weight:600;letter-spacing:0.04em;">CJA</span>
+        </div>
+
+        <div class="fs-panel h-full flex flex-col justify-center">
+          <p class="fs-panel-tag mb-4">
+            Vista unificata della sosta
+          </p>
+          {[
+            { label: 'Identità riconciliata', value: 'Un solo Davide, dal cookie al record CRM' },
+            { label: 'Journey completo', value: 'Accesso anonimo → login → acquisto → ritorno' },
+            { label: 'Funnel leggibile', value: 'Ogni passo della prenotazione, con i suoi abbandoni' },
+            { label: 'Assistenza collegata', value: 'Reclami e richieste accanto al comportamento' },
+          ].map((a) => (
+            <div class="mb-3 last:mb-0">
+              <span class="block text-[0.76rem] text-[var(--color-grigio-300)] uppercase tracking-wide leading-tight mb-0.5">{a.label}</span>
+              <span class="block text-[1.02rem] text-[var(--ink-primary)] leading-snug">{a.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: CJA è / non è ─────────────────────────────────── -->
+    <Slide id="slide-cja-vs-cdp" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        DISAMBIGUAZIONE · CJA ≠ CDP
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Cosa fa CJA — e cosa no.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
+        data-reveal
+        data-reveal-delay="0.12"
+      >
+        Chiarire il perimetro subito evita equivoci dopo: CJA è il layer di analytics del
+        journey, non la CDP operativa. Sono strumenti complementari.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
+        <div class="fs-panel text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-4">CJA È · Analytics</p>
+          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Legge il journey della sosta attraverso sito, app e CRM</li>
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Collega la visita anonima all'acquisto autenticato</li>
+            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Produce insight, segmenti e analisi del funnel</li>
+          </ul>
+        </div>
+        <div class="fs-panel text-left">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase mb-4" style="color: rgba(255,201,77,0.98);">CJA NON È · non sostituisce una CDP</p>
+          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non gestisce profili operativi real-time (è Real-Time CDP)</li>
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non invia comunicazioni né campagne ai clienti</li>
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non sostituisce il CRM Salesforce: lo legge</li>
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: I 3 use case prioritari ───────────────────────── -->
+    <Slide id="slide-usecases-core" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            LE PRIME DOMANDE A CUI RISPONDERE
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Tre use case prioritari.
+          </h2>
+        </div>
+
+        <div class="relative flex flex-col gap-3">
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+
+          {useCases.map((uc, i) => (
+            <div
+              class="relative flex items-center gap-4"
+              data-reveal
+              data-reveal-delay={(0.14 + i * 0.07).toFixed(2)}
+            >
+              <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+              <div class="fs-card flex-1 min-w-0 text-left" style="padding: 1rem 1.25rem;">
+                <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                  <p class="fs-card-title" style="font-size: 1.1rem; margin-inline: 0;">{uc.nome}</p>
+                  <span class="text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style="background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);">
+                    Priorità alta · da validare sul campo
+                  </span>
+                </div>
+                <p class="fs-card-body" style="font-size: 0.96rem; line-height: 1.55; margin-inline: 0;">{uc.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.36">
+          Priorità emerse dal confronto di lavoro, luglio 2026
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Demo / POC su dati simulati ───────────────────── -->
+    <Slide id="slide-demo-poc" bg="secondary" align="split">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] gap-10 md:gap-12 items-center">
+        <div class="text-left">
+          <p class="fs-panel-tag mb-4" data-reveal>
+            DEMO / POC · SU DATI REALISTICI O SIMULATI
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.7rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            La prova, prima che tutto sia in produzione.
+          </h2>
+          <p
+            class="text-[var(--ink-secondary)] leading-relaxed mb-5"
+            style="font-size: clamp(0.98rem, 1.2vw, 1.12rem);"
+            data-reveal
+            data-reveal-delay="0.16"
+          >
+            Non serve aspettare che l'ecosistema sia completo. Una demo o un POC su dati
+            realistici o simulati mostra da subito la riconciliazione tra sito, app, CRM
+            e assistenza: si tocca con mano il journey unificato e si decide con cognizione.
+          </p>
+          <div class="fs-panel text-left" data-reveal data-reveal-delay="0.24">
+            <p class="fs-panel-tag mb-2">Cosa si vede nel POC</p>
+            <p class="fs-panel-body" style="font-size: 0.98rem;">
+              Il funnel di Davide che prenota la sosta: dove entra, dove esita, dove
+              abbandona e cosa lo riporta dentro. Con l'identità già ricucita tra le fonti.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mock CJA Workspace: funnel sosta su dati simulati -->
+        <div class="fs-panel !p-0 overflow-hidden" data-reveal data-reveal-delay="0.2">
+          <div class="flex items-center justify-between px-5 py-3" style="background: rgba(13,13,20,0.75); border-bottom: 1px solid rgba(242,244,248,0.1);">
+            <p class="text-[0.82rem] font-semibold tracking-wide text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)]">
+              CJA Workspace · Funnel prenotazione sosta
+            </p>
+            <span class="text-[0.68rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase" style="background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);">
+              Dati simulati
+            </span>
+          </div>
+          <div class="px-5 py-5 flex flex-col gap-4">
+            {funnelSteps.map((step, i) => (
+              <div>
+                <div class="flex items-baseline justify-between mb-1.5">
+                  <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug">{i + 1}. {step.label}</p>
+                  <p class="text-[1rem] font-semibold text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)] tabular-nums">{step.pct}%</p>
+                </div>
+                <div class="h-2.5 rounded-sm overflow-hidden" style="background: rgba(242,244,248,0.08);">
+                  <div class="h-full rounded-sm" style={`width: ${step.pct}%; background: linear-gradient(90deg, rgba(245,166,35,0.95), rgba(255,201,77,0.75));`}></div>
+                </div>
+              </div>
+            ))}
+            <p class="fs-panel-src mt-1">
+              Valori di esempio, stima illustrativa · il POC lavora su dati realistici o simulati
+            </p>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: La lettura del dato come servizio ─────────────── -->
+    <Slide id="slide-adozione" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        ADOZIONE · NON SOLO TECNOLOGIA
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        La lettura del dato come servizio.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        La piattaforma vale quanto le persone che la interrogano. Per questo il percorso
+        prevede un accompagnamento vero, con l'obiettivo dichiarato di rendere il team autonomo.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-4 mb-6" data-reveal data-reveal-delay="0.2">
+        {adozioneCards.map((c) => (
+          <div class="fs-card flex flex-col text-left">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="fs-mark" aria-hidden="true">{c.n}</span>
+              <p class="fs-card-title" style="font-size: 1.1rem;">{c.nome}</p>
+            </div>
+            <p class="fs-card-body" style="font-size: 0.95rem;">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="fs-panel max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.3">
+        <p class="fs-panel-tag mb-2">Esempio con AI Assistant</p>
+        <p class="fs-panel-head !text-[1.1rem] !leading-snug">
+          «Quante prenotazioni di sosta lunga arrivano da utenti che avevano visitato
+          il sito da anonimi nella settimana precedente?»
+        </p>
+        <p class="fs-panel-src mt-2.5">
+          Domanda in linguaggio naturale, risposta sui dati della piattaforma
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
