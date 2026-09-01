@@ -3,7 +3,17 @@ import tseslint from 'typescript-eslint';
 import pluginAstro from 'eslint-plugin-astro';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/.astro/**', '**/src/assets/generated/**', '**/node_modules/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/.astro/**',
+      '**/src/assets/generated/**',
+      '**/node_modules/**',
+      // Vendored Claude Code tooling (impeccable skill) — third-party scripts and a
+      // minified UMD bundle, not project source. Both the .claude and .github copies.
+      '**/skills/impeccable/scripts/**',
+    ],
+  },
   ...tseslint.configs.recommended,
   ...pluginAstro.configs.recommended,
   {
