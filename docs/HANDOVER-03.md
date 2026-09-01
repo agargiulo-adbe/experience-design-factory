@@ -60,8 +60,10 @@ Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato
 **Cos'è.** `apps/atelier` (`/experience-design-factory/atelier/`) — il **piano di crescita
 enterprise della Factory stessa**, presentato come Exp Design immersivo. **Primo deck
 trilingue EN/IT/FR** (default EN; il lettore primario è una dirigente Adobe con base in
-Francia). Registrato in hub, showcase (`experiences.ts`) e Super Admin Console (migration
-`0007_seed_atelier.sql`, status **`live`**). Estetica propria: **dark editorial**, carbone
+Francia). **Depubblicata dai listing pubblici il 2026-09-01** (`4cca945`): **non più** in hub
+né showcase (`experiences.ts`); resta nel Super Admin Console (migration `0007_seed_atelier.sql`,
+status **`live`** — non toccata) e la route `/atelier/` è ancora buildata/raggiungibile (solo
+unlinked; vedi backlog §10 per l'eventuale rimozione dal deploy). Estetica propria: **dark editorial**, carbone
 caldo + champagne, **Fraunces + Inter** (coppia non usata da nessun'altra esperienza).
 
 **Contesto (IMPLICITO, mai nel deck).** L'intento reale è un **pitch di sponsorship**
