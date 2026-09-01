@@ -9,12 +9,13 @@ Monorepo di una **Experience Design Factory**: un motore condiviso (`packages/co
 **Experience Design** cliente è una *skin* (design token + contenuti + asset + config). Sopra, una
 **Super Admin Console** (`apps/console`) per gestire esperienze e utenti.
 
-Esperienze (cliente) — **cinque**:
+Esperienze (cliente) — **sei**:
 - **Generazioni — Max Mara** (`apps/generazioni-maxmara`, ora su `/generazioni-maxmara/`) · IT, quiet-luxury. Prima istanza. **Ora config-driven** (Admin Console + runtimes + `.cs-*`) come le altre (lug 2026).
 - **Engagement Unlimited — UniCredit** (`apps/unicredit-engagement`) · IT · modello di contenuto più maturo (vedi §5).
 - **Pole Position — Ferrari × Adobe** (`apps/ferrari-racing`) · EN/IT bilingue, motorsport. Include la sezione **/scoping** (calcolatore di licensing RTCDP Collaboration + CJA; **modello v3 §20** — solo standalone, **volumi senza prezzi** + costo per istanza editabile; niente più SKU base/entitlement) e la nuova sezione **Casi d'uso** (scenari E2E su tutto il perimetro prodotti). Commit `ff03a71`.
-- **Connessioni Intelligenti — FS Group / Ferrovie** (`apps/trenitalia-connessioni`) · IT · 6 sezioni + Casi d'uso. **Oggetto del lavoro recente** (vedi §15).
+- **Connessioni Intelligenti — FS Group / Ferrovie** (`apps/trenitalia-connessioni`) · IT · **BIFORCATA il 31 ago 2026**: tronco (cover+scenario+bivio) + **due rami autoconsistenti** `/fs-park/*` e `/trenitalia/*` (5 capitoli speculari ciascuno, stesso viaggiatore Davide visto da due metà). Vedi **§26**; vincoli LOCKED in §15.4 (ancora validi).
 - **Trait d'Union — Agos** (`apps/agos-trait-dunion`) · IT · credito al consumo (gruppo CA/BPM), 7 sezioni + home. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (vedi §16).
+- **Orbita — Eni** (`apps/eni-orbita`, **28 ago 2026**) · deck bilingue EN/IT (7 pagine) + **dossier war-room trilingue** `/dossier/` (noindex, fuori nav). Per il meeting col CIO Chessa del **10 set 2026**. Vedi **§24**.
 
 App interne (non-cliente):
 - **Experience Atelier** (`apps/atelier`, `/atelier/`) · **primo deck trilingue EN/IT/FR**; è il **piano di crescita enterprise della Factory stessa** presentato come Exp Design (8 sezioni / 30 slide). Live 2026-07-17, ritoccato 2026-07-20 (de-celebrazione + Gantt roadmap + KPI scorecard, §21.5b). Dettaglio completo in **§21**; estensione i18n core + fix gating in **§22**. Contesto sponsorship interno **implicito** (mai dichiarato nel deck).
@@ -28,7 +29,7 @@ Solo capability Adobe pubbliche / materiale demo — **niente IP cliente riserva
 
 **Regola vincolante trasversale:** ogni slide-deck rispetta il **Type & legibility contract** in `CLAUDE.md` (type generoso, ink leggibile, composizione bilanciata, frecce avanti+indietro tra sezioni) — l'`audit:deck` NON garantisce la leggibilità, va verificata leggendo uno screenshot 1920. Vedi §8.
 
-Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **6 app** esperienza incl. Atelier — 9 pacchetti totali), `pnpm typecheck`+`pnpm lint` verdi, **CI verde**. `audit:deck` a **0 fallimenti hard** su tutti i deck (Atelier: solo soft `i` su slide volutamente ariose, whitelisted — §21) **ma NON rigirato dopo il redesign del 21 lug** (l'ambiente sandbox non lo permette — vedi backlog §10). Deploy automatico su push a `main`.
+Stato build: `pnpm build` verde su tutto (core, console, hub, showcase, **7 app** esperienza incl. Atelier ed Eni — 10 pacchetti totali), `pnpm typecheck` verde. ⚠️ **CI rossa su `pnpm lint` dal 28 ago** (~156 errori in file di **tooling** pre-esistenti: `.claude/skills/impeccable/scripts/*`, copia `.github/skills/…`, `scripts/content-audit.ts` — NON nelle app; Deploy resta verde e indipendente) → voce P0 nel backlog §10. `audit:deck` a **0 fallimenti hard** su tutti i deck (parity verificata sui 6 deck il 21–22 lug §25; Eni 0 hard alla creazione §24; Trenitalia rigirato full il 31 ago §26). Deploy automatico su push a `main`.
 
 **Redesign «eccellenza» E2E (21 lug 2026, live in `main`):** tutti e **6 i deck** (5 cliente + Atelier) hanno un design-system brand-native `.xx-*` nel loro `global.css` e sono stati ricostruiti sezione-per-sezione con **copy/claim/numeri/fonti/personas verbatim**. Dettaglio, concept per esperienza e fix tecnici in **§23**.
 
@@ -73,8 +74,9 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 
 | Esperienza | Stato | Note |
 |---|---|---|
+| **Orbita (Eni)** | **Nuova** (28 ago 2026): deck bilingue EN/IT 7 pagine + dossier war-room trilingue `/dossier/`. `audit:deck` 0 hard. **Meeting CIO Chessa 10 set 2026.** | Vedi §24. Design `.eo-*` giallo Eni/fumo/azzurro; Archivo+Inter. Console Supabase NON ancora seedata (P2). |
 | **Trait d'Union (Agos)** | **Nuova** (14 lug 2026): 7 sezioni + home, live pitch per Agos (credito al consumo, gruppo CA/BPM). `audit:deck` 0 su 3 viewport; tutte le slide verificate a 1920. | Vedi §16. Palette petrolio/acqua dal brand agos.it + Montserrat. Persona: **Elisa** (prospect→cliente). |
-| **Connessioni Intelligenti (Trenitalia/FS)** | **Attivamente rilavorata** (lug 2026): personas rinominate, foto persona rigenerata, **passata di leggibilità completa** (type generoso, ecosistema impilato). `audit:deck` 0. | Vedi §15. Ultimo focus di lavoro. Personas: **Davide** (pendolare) + **Elena** (business) — NON Marco/Sofia (=UniCredit). |
+| **Connessioni Intelligenti (Trenitalia/FS)** | **BIFORCATA** (31 ago 2026, §26): tronco+`/bivio/` + rami autoconsistenti `/fs-park/*` (ambra, dal confronto 14/07) e `/trenitalia/*` (rosso, contenuti ereditati); vecchie route = redirect. `audit:deck` **0 hard** su 13 route × 3 viewport. | Vincoli LOCKED §15.4 sempre validi. Personas: **Davide** + **Elena** — NON Marco/Sofia (=UniCredit). |
 | **Ferrari Racing** | Stabile + **sezione /scoping** (licensing 1:1 col workbook Adobe; **modello v3 §20** — solo standalone, volumi senza prezzi + costo per istanza editabile; niente SKU base/entitlement) + **sezione «Casi d'uso»** (§19). Save resiliente. **47 test core**. Product Mockup (Genstudio/Rtcdp/MockupSlide); CJAMockup/ExpressMockup pending. `audit:deck` 0 (incl. casi-duso). | Bilingue EN default. `prevHref` su tutte le pagine. |
 | **UniCredit Engagement** | Stabile; modello di contenuto più maturo (5 round feedback). **15 lug 2026**: LLMO+Semrush consolidati in **Adobe Brand Visibility** (§17); de-AI copy; **passata copy morbido/credibilità** (§17.6: cifre→qualitativo, KPI→direzione ↑/↓, Next-Best-Experience, obiezione acquisition, fix doppio-quote). Vedi §5. | `nextHref`+`prevHref` completi (gold standard). |
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
@@ -176,16 +178,19 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato 2026-07-21.
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato 2026-09-01.
 
-**P0 — nessuna voce aperta.** (build+typecheck+lint verdi, CI verde, deploy ok.)
+**P0 — adesso**
+- **[P0] CI rossa su `pnpm lint` (dal 28 ago)** — area: tooling · ~156 errori eslint in file di tooling committati (`.claude/skills/impeccable/scripts/live-wrap.mjs` + `modern-screenshot.umd.js` bundle, la copia `.github/skills/impeccable/…`, `scripts/content-audit.ts`), **NON nelle app** (le app sono a 0 errori, typecheck verde, Deploy verde). Il gate qualità rosso maschera regressioni vere → sanare i file o escluderli in `eslint.config` (il bundle UMD va escluso, non fixato) (agg. 2026-09-01).
 
 **P1 — prossimo**
-- **[P1] Rigirare `audit:deck` + QC visivo 1920 sui 6 deck ridisegnati** — area: tutti i deck · il redesign del 21 lug (§23) ha rifatto il layout di ogni slide ma **`audit:deck` non è stato rieseguito** (l'ambiente sandbox non raggiunge i webfont → `networkidle` non si stabilizza) e il QC 1920 è stato fatto **solo a campione** (manifesto/persona/payoff maxmara; roadmap/cover/opportunity FS; slice per gli altri). Girare l'audit contro un preview statico su tutti e 6 + leggere uno screenshot 1920 di ogni slide, fixare eventuali overflow/soft introdotti (agg. 2026-07-21).
-- **[P1] Accesso da VPN** — area: deploy/operativo · le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla rete ufficio Adobe ma **bloccate su VPN** (categoria proxy/**Zscaler** su `*.github.io`). **Ticket IT aperto (17 lug 2026), in attesa di riscontro** → follow-up sul ticket. Workaround demo = screen-share. Piano B (opt-in, non fatto) = redeploy su **Vercel** (`*.vercel.app`; richiede rework `base` path + env Supabase). NON è un bug del build.
+- **[P1] Eni Orbita — prova finale pre-meeting Chessa (10 set 2026)** — area: `apps/eni-orbita` · run-through del deck + dossier prima del meeting; nel dossier resta aperta l'**intro a Elvira Fabrizio da chiedere a Chessa**; brief confidenziale in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` (git-ignored, NON committare) (agg. 2026-09-01).
+- **[P1] Accesso da VPN** — area: deploy/operativo · le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla rete ufficio Adobe ma **bloccate su VPN** (categoria proxy/**Zscaler** su `*.github.io`). Ticket IT aperto (17 lug 2026); **stato riscontro da verificare** → follow-up sul ticket. Workaround demo = screen-share. Piano B (opt-in, non fatto) = redeploy su **Vercel** (agg. 2026-09-01).
 - **[P1] Showcase — a11y/Lighthouse pass** — area: `apps/factory-showcase` · verificare contrasto testi grigi su fondo chiaro, focus order, `prefers-reduced-motion`, per **certificare lo standard che la pagina dichiara** (oggi non certificato).
 
 **P2 — dopo / nice-to-have**
+- **[P2] Eni Orbita — seed console Supabase** — area: `supabase/` · manca la migration `0008_seed_eni.sql` (registry `experiences` per la card in Super Admin) + applicazione al DB remoto (`supabase db query --linked`) (agg. 2026-09-01).
+- **[P2] Trenitalia — verifica funzionale Admin sui rami** — area: `apps/trenitalia-connessioni` · dopo la biforcazione gli slug pagina sono composti (`fs-park/partenza`…): verificati per ispezione (slotKey/attributi AdminConsole ok) ma **non testati in browser** media-slot/custom-slides su una pagina di ramo (da verificare) (agg. 2026-09-01).
 - **[P2] Max Mara `docs/AUDIT.md`** — refinement diagnosticati (copy datato 2025→2030, scala tipografica a token, doppio `<h1>`, ecc.) **non applicati**; bloccato su validazione copy.
 - **[P2] Ferrari — CJAMockup / ExpressMockup** — mancano (memoria `product-mockup-engine`); prima di toccare i mockup leggi `mockup-navigation-patterns`.
 - **[P2] Pass credibilità/fonti sulle altre esperienze** — solo UniCredit ha il pass credibilità/fonti; estendere a maxmara/ferrari/trenitalia/agos/atelier dove serve.
@@ -196,7 +201,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 - **[P2] Lint warnings Agos BaseLayout** — area: `apps/agos-trait-dunion/src/layouts/BaseLayout.astro` · warning non bloccanti emersi in CI (`var`→`let/const` righe ~45/48/50, `_` unused righe ~58/59). La CI passa comunque (sono warning, non errori); pulizia cosmetica (agg. 2026-07-20).
 
 **Note / rischi non azionabili (contesto, non todo)**
-- **CI vs Deploy (due workflow distinti)** — ogni push lancia **`CI`** (`.github/workflows/ci.yml`: install→typecheck→lint→build→`content-audit.ts`) **e** **`Deploy to GitHub Pages`** (`deploy.yml`). Sono indipendenti: il deploy può essere verde mentre CI è rossa (fu il caso fino a `5fc362e`; ricapitato brevemente dopo il redesign — vedi §23.2). **CI ora verde.** ⚠️ **`pnpm build` NON è il gate del CI**: `astro build` non fa il type-check completo e non linta → un redesign può avere `build` verde ma `typecheck`/`lint` rossi. **Prima di pushare, girare `pnpm typecheck` E `pnpm lint`, non solo `pnpm build`** (§23.2). `content-audit.ts` applica 4 regole statiche (stat su >2 pagine; stessa stat con label diverse; **frase ≥8 parole ripetuta 2× per pagina**; mashup bilingue en==it) su tutti gli `apps/*/dist` — tienile a mente quando duplichi copy tra data app-specifici e componenti core.
+- **CI vs Deploy (due workflow distinti)** — ogni push lancia **`CI`** (`.github/workflows/ci.yml`: install→typecheck→lint→build→`content-audit.ts`) **e** **`Deploy to GitHub Pages`** (`deploy.yml`). Sono indipendenti: il deploy può essere verde mentre CI è rossa (fu il caso fino a `5fc362e`; ricapitato dopo il redesign — §23.2 — e **di nuovo dal 28 ago su lint tooling → P0 in questo backlog**). ⚠️ **`pnpm build` NON è il gate del CI**: `astro build` non fa il type-check completo e non linta → un redesign può avere `build` verde ma `typecheck`/`lint` rossi. **Prima di pushare, girare `pnpm typecheck` E `pnpm lint`, non solo `pnpm build`** (§23.2). `content-audit.ts` applica 4 regole statiche (stat su >2 pagine; stessa stat con label diverse; **frase ≥8 parole ripetuta 2× per pagina**; mashup bilingue en==it) su tutti gli `apps/*/dist` — tienile a mente quando duplichi copy tra data app-specifici e componenti core.
 - **Supabase** — migrations applicate al DB remoto: `0001`–`0003` + `0004_scenarios.sql` + `0005_hub_registry.sql` + `0006_seed_agos.sql` + `0007_seed_atelier.sql` (Atelier `live`). Se ricrei il progetto, riesegui in ordine (`supabase/README.md`). Memoria `super-admin-console`.
 - **deck-audit** — tutti i deck a **0 hard**. NON reintrodurre micro-type per "far tornare i conti": il Type & legibility contract vince sempre.
 - **Showcase — sync copie skill**: `apps/factory-showcase/public/skill/*` sono **copie** di `skills/experience-brief/` (source of truth); se la modifichi, ri-copia i file e rigenera lo `.zip` (§13.4).
@@ -204,7 +209,12 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 - **Ferrari /scoping** — v3 standalone-only/costo-per-istanza (`ff03a71`, §20) committato; memoria `ferrari-scoping-calculator` a v3. `docs/Ferrovie/`·`docs/Ferrari/`·`docs/Agos/` in `.gitignore` (repo pubblico).
 
 ---
-## 11. Change log recente (UniCredit, lug 2026)
+## 11. Change log recente
+
+### Change log — Biforcazione Trenitalia · Eni Orbita · core responsive/nav (21 lug – 1 set 2026) → dettaglio §§24–26
+- `5aaa5b0`+`954dde1`+`0ec1259` (**31 ago 2026**) **biforcazione `trenitalia-connessioni`**: tronco neutralizzato + `/bivio/` + rami autoconsistenti `/fs-park/*` (ambra) e `/trenitalia/*` (rosso), 5 capitoli speculari; vecchie route → stub redirect; slug/gating branch-aware in BaseLayout; `audit:deck` 0 hard su 13 route. Dettaglio **§26**.
+- `31c8e13`+`0c42beb`+`48e3e63` (**28 ago 2026**) **nuova experience Eni «Orbita»**: deck 7 pagine (poi bilingue EN/IT) + dossier war-room trilingue; Elvira Fabrizio identificata (Head of Digital & IT Enilive). Dettaglio **§24**. ⚠️ Da questi push la **CI è rossa su lint** (tooling pre-esistente → P0 §10).
+- `f09fca1`+`7bd7511` (**21 lug**) + `d042105` (**22 lug**) **core responsive envelope** (tier cramped-laptop/giant-TV, viewport proiezione intoccati) + **nav single-line su tutte le esperienze** + **sweep visivo esaustivo 536 screenshot** con 3 fix di leggibilità. Dettaglio **§25**. → chiusa la voce P1 «rigirare audit + QC 1920 sui 6 deck» (parity audit + sweep completo).
 
 ### Change log — Redesign «eccellenza» E2E dei 6 deck + consolidamento CI (21 lug 2026) → dettaglio §23
 - **Redesign E2E** di tutti e 6 i deck (Agos `.tdu-*`, Atelier `.loom-*`, Ferrari `.frl-*`, UniCredit `.uc-*`, Max Mara `.mm-*`, FS `.fs-*`): concept brand-native centralizzato in `global.css`, sezioni ricostruite via subagent, **copy/claim/numeri/fonti/personas verbatim**. Rollout su 6 branch feature, poi **merge `--no-ff` in `main`** (`572ba5b`/`1563e9e`/`ca541a1`/`0b610e6`/`25e7927`/`37b6650`), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati **eliminati** (remoti + locali) dopo il merge.
@@ -258,51 +268,3 @@ Metodo seguito ogni round: fonti reali via ricerca web / MEGA DECK; build + `aud
 - Prima versione del sito + wiring nel workflow di deploy (`/showcase/`).
 
 ---
-## 12. Puntatori
-
-- `CLAUDE.md` — guida agente + Quality Bar + contratto deck + aesthetics per esperienza.
-- `docs/new-client-in-30-min.md` — creare una nuova esperienza + gotchas (Tailwind v4 + monorepo, trailing slash, base URL, GSAP scroller, reduced-motion, chiavi TS con trattino, translucency in CSS raw).
-- `docs/AUDIT.md` — diagnosi (Fase 1) di Max Mara Acquisizione.
-- `docs/storyboard.md` — storyboard.
-- `skills/experience-brief/` — skill di intake (SKILL.md + INSTALL.md); `skills/experience-design/SKILL.md` — skill di costruzione.
-- `.claude/commands/handover.md` (di progetto, versionato) **+ `~/.claude/commands/handover.md` (user-level → tutte le sessioni/progetti)** — comando **`/handover`**: aggiorna questo doc in modalità dettagliata, impone il contratto di dimensione (≤1500 righe / ≤48KB / riga ≤1800 char), splitta per sezione in `HANDOVER-NN.md` con questo file come manifest, e **verifica con una Read completa** che una nuova sessione riesca a leggere tutto. `/handover check` = solo misura+verifica. Frontmatter con stringhe quotate (vedi §17.5). Spec: `docs/superpowers/specs/2026-07-15-handover-command-design.md`.
-- Memorie (`~/.claude/projects/.../memory/`): `factory-showcase-site` (la vetrina + gotcha Astro), `unicredit-personas-credibility` (il riferimento più aggiornato per UniCredit), `deck-responsive-fullscreen`, `mockup-navigation-patterns`, `custom-slides-authoring`, `super-admin-console`, `ferrari-racing-experience`, `round-2-status`.
-
----
-
-## 13. Factory Showcase — sito vetrina (iperdettaglio)
-
-`apps/factory-showcase` · **live**: `https://agargiulo-adbe.github.io/experience-design-factory/showcase/`.
-**Scopo**: presentare la Experience Design Factory a **leadership e colleghi Adobe** (valorizzare il lavoro di Antonio + visibilità internazionale). **Pubblico misto** (leadership strategica + practitioner/eng). `<meta robots="noindex">` (uso interno).
-
-### 13.1 Formato & stack
-- **Scroll-site, NON un deck** (nessun `DeckContainer`/`audit:deck`). Astro 6 statico, Tailwind v4, `trailingSlash:'always'`, `base = /experience-design-factory/showcase`.
-- Riusa dal core **solo** `blocks/i18n/T.astro`, `LangToggle.astro`, `utils/url.ts` (`href`). Nessuna dipendenza da deck/admin/supabase.
-- **Token contract proprio** in `src/styles/global.css` (mantiene i nomi semantici del core così `T`/`LangToggle` funzionano): accent = **Adobe red `#EB1000`**, gradiente firma `--grad-adobe` (rosso→magenta `#E1077B`→violet `#6236FF`); font Inter (display+body) + Source Serif 4 (accenti corsivi); mono di sistema.
-- **Bilingue EN default + toggle IT** (via `T`/`LangToggle`, anti-flash init in `BaseLayout`). *Tutto* il testo è EN+IT reale.
-- **2 pagine**: `src/pages/index.astro` (la narrativa) e `src/pages/blueprint.astro` (deep-dive tecnico). Componenti: `layouts/BaseLayout.astro`, `components/SiteNav.astro`, `components/SiteFooter.astro`.
-
-### 13.2 Struttura `index` (ordine sezioni) + comportamenti
-Hero → **what** → **why** → **proof** → **architecture** → **flow** → **skill** → **grow** (roadmap) → **author**. Nav sticky con anchor + **scrollspy** + **barra di progresso** (gradiente, in `SiteNav`). `blueprint.astro`: TOC sticky + 9 sezioni + elenco dei 12 check a–l.
-- **Hero**: gradiente animato (`heroDrift`, reduced-motion off), 4 **KPI** con count-up (`[data-count]`), CTA **primaria "Guardalo dal vivo"** (`#proof`), **secondaria "Ottieni la skill"** (dot verde → `#skill`), link testuale al blueprint.
-- **Proof**: 3 card con **screenshot reali** delle esperienze live (badge "LIVE" pulsante) + strip Console.
-- **Motion**: reveal-on-scroll (`[data-reveal]` + IntersectionObserver in `BaseLayout`), count-up, progress bar, copy-to-clipboard — **tutti reduced-motion safe**.
-
-### 13.3 Decisioni di contenuto (LOCKED — non regredire)
-- **Autore = Antonio Gargiulo** (NON "Argiulo"), titolo **"Senior Product Sales Specialist · Adobe Italia"**. Contatto = **deep-link Teams** `https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com` (CTA "Scrivimi su Teams"). Coerente con email `agargiulo@adobe.com`.
-- **Reframe tempo (importante)**: il "~1h / < 1h" è **solo lo step di scaffold del motore**, non l'intera esperienza. Headline flusso **"Il pensiero è tuo. L'ora è del motore."**; ogni step del flusso ha un **tag actor** (Adobian ×4 · Il motore ×1 · KB Factory ×1) per **valorizzare il lavoro dell'Adobian** (ricerca/concezione) e l'ottimizzazione a valle. KPI hero = *"dal brief a una build funzionante"*. **Non trivializzare il lavoro umano.**
-- **Nota KB = solo locale**: la KB vive **solo sul computer di Antonio**, **mai** su sistemi terzi/cloud/esterni (tutela dati Adobe). Tenere esplicito.
-- **Nota "Da segnalare"**: copre **sia** i tool della catena **sia** ogni componente dell'architettura/runtime della Factory — tutti su account `@adobe.com` via login Google, **nessuna licenza aggiuntiva**, non bloccati da Adobe.
-- **KPI "12"** = i 12 check del contratto deck (a–l); etichetta precisa *"controlli di layout e accessibilità, per slide"*, **linkata a `blueprint#deck`** (verificabile, no overselling).
-- **Roadmap**: Firefly (imagery/video) è **"In valutazione"**; la skill di intake è **"Disponibile"**. Griglia **simmetrica 3×2**.
-- **Mark distintivo**: chip gradiente + **due piani (core+skin)** — NON la "A" Adobe (leggeva come logo Adobe rotto). In `public/favicon.svg` + SVG inline in `SiteNav`/`SiteFooter` (id gradiente distinti: `edf-fav`/`edf-grad-nav`/`edf-grad-foot`).
-
-### 13.4 La skill di intake (`experience-brief`)
-- **Source of truth**: `skills/experience-brief/` → `SKILL.md` (frontmatter + istruzioni: intervista guidata che ricerca il brand e produce il **brief iperdettagliato**) + `INSTALL.md` (Claude / ChatGPT Custom GPT / Microsoft Copilot).
-- **Copie servite** per il sito in `apps/factory-showcase/public/skill/`: `experience-brief-SKILL.md`, `experience-brief-INSTALL.md`, `experience-brief-skill.zip`. La sezione **Skill** offre **Download (.zip)**, **Copia istruzioni** (fetch della `SKILL.md` + strip frontmatter → clipboard) e **Vedi su GitHub**.
-- ⚠️ **Sync manuale**: se cambi `skills/experience-brief/`, ri-copia in `public/skill/` e rigenera lo zip: `cp skills/experience-brief/*.md apps/factory-showcase/public/skill/` (rinominando con prefisso `experience-brief-`) e `(cd skills && zip -qr ../apps/factory-showcase/public/skill/experience-brief-skill.zip experience-brief)`.
-
-### 13.5 Asset & gotcha
-- **Screenshot proof** in `public/shots/{maxmara,unicredit,ferrari}.webp` (1200×750). Rigenerazione: playwright naviga gli URL **live** delle esperienze → sharp `resize(1200,750, fit:cover, top)` → webp q82. (Script usa-e-getta dalla root; `playwright` + `sharp` sono già devDep.)
-- **Committare** `public/shots/*` e `public/skill/*` (serviti staticamente; NON gitignored). `dist/` è gitignored.
-- **Gotcha Astro (CRITICO, riusabile)**: le classi passate al componente **`<T>`** (child) **NON ricevono gli stili *scoped*** della pagina (l'elemento reso da `T` non ha l'attributo di scope). Fix: usare **`:global(.classe)`** oppure **wrappare `<T>` in un elemento nativo** con la classe. Ha rotto titolo hero + molti paragrafi finché non corretto. Vale per qualunque componente che renda markup proprio.

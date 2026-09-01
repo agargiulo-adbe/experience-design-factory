@@ -3,6 +3,58 @@
 
 ---
 
+## 18. Ferrari /scoping — modello Adobe-fedele, CI verde & Save resiliente (15 lug 2026)
+
+Tre interventi sequenziali (tutti su `main`, CI verde end-to-end). Riferimento sintetico in §14 (riscritta), memorie `ferrari-scoping-calculator` e `git-push-after-every-commit`.
+
+### 18.1 Riscrittura del motore Collaboration = 1:1 col workbook Adobe (commit `4592c58`, merge `c1184f9`)
+Richiesta: replicare in produzione la logica del file **`docs/Ferrari/Real-Time CDP Collaboration Scoping Calculator.xlsx`** (Adobe "Sales Calculator" di dvest@adobe.com; foglio visibile + sheet nascosta `Drop Downs, Burn, Assump`). Il workbook modella **solo** RTCDP Collaboration → **CJA invariato**.
+- **Reverse-engineering**: estratte tutte le formule via unzip + parse XML (nessuna lib xlsx). Burn rate (mgmt 2 · activation ad-hoc 500 · always-on 100 · measurement 50 credits/1M), assunzioni (match 30% · reach 50% · freq 10× · conv 5%), prezzo listino $5 (H13), pack-tiering (riga 31), funnel matched→impressions/conversions.
+- **Motore riscritto** (`cost-model.ts`): `ScopingAssumptions` Collaboration completamente sostituito (onboardedIds, avgAudienceSize, matchRate, frequencyMultiple, reachPct, conversionRate, measurementEnabled, refreshEveryXDays, adHocCampaignsPerYear, audiencesPerCampaign, measurementCampaignsPerYear, summaryReportsPerCampaign, attributionReportsPerCampaign, alwaysOnRunsPerYear, simpleCampaignsPerYear). Tre modalità **detailed/simple/direct**; **nessun allotment** → `recommendedCreditPack`. Dettaglio formule in §14.2.
+- **Propagazione**: `scenario.ts` (default+prezzo $5), `data/scoping.ts` (FIELD_AUDIT/SEED_SCENARIOS/METRICS/ASSUMPTION_META riscritti; burn ora *ufficiali*), presenter (select mode + measurement boolean, results bar con pacchetto, gating `mode` pipe-separato), README del blocco.
+- **30→28 test cost-model riscritti** per riconciliare cella-per-cella (1.517,04; matrice simple; pack tiers). Build + typecheck ferrari 0 errori. Verificato live: preset Conservative → **921 crediti / pacchetto 1.000 / €5.000** collab; CJA 508M righe / €1.016; totale €6.016.
+- **`.gitignore`**: aggiunta `docs/Ferrari/` (workbook Adobe interno; repo **pubblico** → mai committare). Il **PDF dossier** in quella cartella documenta il vecchio modello ed è ora **obsoleto** (non rigenerato, per scelta).
+
+### 18.2 Fix CI — `tsconfig.json` mancante (commit `6b58b80`, merge `2eb6be7`)
+Sintomo: per ogni push comparivano **due workflow** — `Deploy to GitHub Pages` (verde) e `CI` (rosso). Root cause: `agos-trait-dunion` e `trenitalia-connessioni` erano state create **senza `tsconfig.json`** → `pnpm typecheck` (`astro check`) non ereditava `astro/tsconfigs/strict` → ~1.979 errori fittizi `ts(7026) JSX.IntrinsicElements`. Il Deploy non fa typecheck → restava verde (coppia ingannevole). Fix: aggiunto ad entrambe il `tsconfig.json` standard (`extends astro/tsconfigs/strict` + alias `@edf/core`). Ora **8/8 app** typecheck 0 errori; CI verde. **Regola** (vedi §14.8): ogni nuova app DEVE avere `tsconfig.json`.
+
+### 18.3 Fix Save "check your connection" — persistenza resiliente (commit `77e6b3f`, merge `c4ed338`)
+Root cause: lo store leggeva `edf:sb-session.access_token` grezzo e **non lo rinnovava mai** → JWT Supabase scaduto (utente loggato in Console tempo prima) → insert **401** → `catch` cieco con messaggio generico **e nessun fallback** → scenario perso. Backend (tabella/RLS 0004) ed env deployato **corretti** (build ha l'URL `spwoeihrrr…`).
+- **`scenario-store.ts`**: legge la sessione completa (access/refresh/expires_at); **refresh del token** proattivo (vicino a scadenza) + reattivo su 401 con **retry singolo** (rispecchia `apps/console`); su refresh fallito pulisce la sessione morta. Nuovo `RemoteError` (status HTTP reale), `remoteEnabled()` (niente fetch a URL relativo senza backend), `clearSession()`.
+- **`ScopingCalculator.astro`**: Save **sempre** con fallback localStorage (lavoro mai perso) + messaggi bilingui accurati (sessione scaduta / cloud non disponibile / non configurato / anonimo); Share degrada allo stesso modo.
+- **+7 test store** (`scenario-store.test.ts`, `fetch`/`localStorage` mockati): save fresco, refresh proattivo, retry reattivo su 401, refresh fallito→clear+401, non-configurato, sessione solo-refresh. Totale blocco scoping = **40 test**.
+- **Altre funzioni verificate corrette** e non impattate: Confronta, Esporta JSON/CSV, Reset, preset, load `?scenario=`.
+
+---
+## 19. Ferrari /scoping v2 + sezione «Casi d'uso» (15 lug 2026 pomeriggio) — commit `a3fc86a`
+
+Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "aggiungi casi d'uso con tutti i prodotti a perimetro"). **Committato e pushato** (`a3fc86a`, deploy live). Dettaglio tecnico in **§14.9**.
+- **Chiarezza campi** (dubbi 1–3): hint inline su Dimensione audience × Match rate (= audience matchata), Campagne ad-hoc (one-off vs always-on); non più sepolti nel tooltip.
+- **Refresh mode** (dubbio 4): modalità `campaign-linked` (refresh legato alle campagne) oltre a `continuous`.
+- **Istanze partner** (dubbio 5): 1 Ferrari + N partner-tipo (profilo leggero × N); CJA singola.
+- **SKU Base + entitlement** (dubbio 6): selettore pacchetto per party (standalone/Prime/Ultimate), Base flat $20k, crediti inclusi nettati. Ferrari Ultimate → Collaboration €0; costo guidato dai partner.
+- **Slide nuova** `slide-model` («Come si compone il costo») + metriche arricchite.
+- **Sezione nuova «Casi d'uso»** (`casi-duso.astro`): 4 scenari E2E su tutto il perimetro (Collaboration → GenStudio + Express → Attivazione → CJA) + mappa prodotti; nav+admin+cross-nav+deck-audit aggiornati.
+- **TDD sul motore**: 13 nuovi test (party-cost, entitlement, refresh mode, istanze) → **53/53 core verdi**; build monorepo 0 errori; `audit:deck` ferrari (incl. casi-duso) **0 fallimenti**; screenshot 1920 letti.
+- **Metodo**: brainstorming (4 decisioni confermate dall'utente: partner-tipo×N · selettore pacchetto per party · refresh legato alle campagne · sezione dedicata in nav) → TDD → build/audit finale.
+- **Fatto**: commit `a3fc86a` (`feat(scoping): base SKU + entitlement, partner instances, campaign-linked refresh + Use Cases section`) + push su `main`; il commit ignora anche `docs/Ferrovie/` (materiale FS riservato, repo pubblico). Memoria `ferrari-scoping-calculator` aggiornata a v2.
+
+---
+## 20. Ferrari /scoping v3 — standalone-only, costo per istanza editabile, niente prezzi (15 lug 2026, commit `ff03a71`)
+
+Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato troppo "prezzato"). **Committato e pushato** (`ff03a71`). Sostituisce la parte commerciale di §14.9/§19; la matematica dei crediti (funnel/`collabParts`) e le istanze partner **restano**.
+- **Niente riferimenti economici**: rimossi SKU Base ($20k/$5k), `pricePerCredit` ($5), `pricePerMillionRows`, entitlement (crediti inclusi Prime 2.500 / Ultimate 5.000), netting. Rimossi tipo `PartyPackage`, costanti `COLLAB_BASE_SKU`/`PACKAGE_ENTITLEMENTS`, funzione `partyCost`, campi `ferrariPackage`/`partnerPackage`/`*BaseSkuPrice`.
+- **Solo scenario standalone**: nessun selettore pacchetto, nessuna ipotesi RT-CDP.
+- **Costo = ipotesi editabile per istanza** (`UnitPrices` ridefinita): `ferrariInstanceCost` (default 100.000, editabile) + `partnerInstances × partnerInstanceCost` (default 0, editabile). `totalCost = Ferrari + N × partner`. **Niente costo CJA**.
+- **Volumi come metrica (senza €)**: Collaboration Credits stimati + pacchetto consigliato, CJA Rows of Data + ingestion 3× — mostrati come quantità, nessun prezzo.
+- **UI**: results bar = *Collaboration (volumi) · CJA (volumi) · Costo (tua ipotesi: istanza Ferrari + istanze partner)*; sezione form «Perimetro & istanze» = costo istanza Ferrari + n. istanze + costo per istanza partner (volumi partner in advanced). `slide-model` → «Perimetro e costo / Quattro voci, un perimetro» (4 card ridisegnate: istanze · crediti-volume · CJA · costo-lo-imposti-tu). METRICS/ASSUMPTION_META/DISCLAIMER/USE_CASES de-monetizzati. Admin baseline tab → costo istanza Ferrari/partner.
+- **Motore**: `computeSnapshot`/`computeBreakdown` riscritti (volumi + costo per istanza). `partyCost`/entitlement eliminati. Test: rimossi i test party-cost/entitlement, aggiornati snapshot → **47 test core verdi** (35 cost-model + 5 scenario + 7 store).
+- **Bug rapida↔dettagliata**: verificato che lo switch modalità **ri-gate il form e ricalcola** (es. Est. credits 343→720 passando a Rapida) — funziona; il rework del form ha risolto il sintomo riportato.
+- **Verifica**: build monorepo 0 errori, core typecheck 0, `audit:deck` ferrari (8 sez + casi-duso) **0 fallimenti** a 1920/1440/1280, screenshot 1920 letti (calculator detailed+simple, slide-model). Memoria `ferrari-scoping-calculator` aggiornata a v3.
+- **Contesto commerciale (perché standalone + partner a €0)** — non nel deck, guida le scelte del modello: l'intento è **1 istanza Ferrari + ~40 istanze partner/sponsor**, offrendo ai partner **licenze Starter a costo 0** (da cui il default `partnerInstanceCost = 0` e il costo Ferrari editabile). Audience **~5M outside-in, NON confermata dal cliente**. Validazione GTM pianificata con **Lory Mishra** (Principal PMM, Media & Advertising Solutions, Adobe — collega interna che approva/nega): validare il caso d'uso, ottenere le licenze Starter partner a costo 0, definire onboarding + enablement leggero per i partner; presentazione al cliente solo dopo le verifiche con lei. **NON reintrodurre prezzi di listino nel modello** (scelta esplicita del cliente/interna, §20).
+
+---
+
 ## 21. Experience Atelier — deck trilingue del piano di crescita (17 lug 2026)
 
 **Cos'è.** `apps/atelier` (`/experience-design-factory/atelier/`) — il **piano di crescita
@@ -160,3 +212,73 @@ type-check completo né linta); il CI usa `pnpm typecheck` (`astro check`) **e**
 **Regola: prima di pushare un redesign girare `pnpm typecheck` E `pnpm lint`, non solo
 `pnpm build`.** Nota: build/deploy NON dipendono dal CI (workflow distinti) — le pagine possono
 essere già live mentre il gate qualità è rosso.
+
+---
+
+## 24. Orbita — Eni (28 ago 2026)
+
+**App**: `apps/eni-orbita` · live a `/experience-design-factory/eni-orbita/` · commit `31c8e13` → `0c42beb` → `48e3e63`. **Scopo**: meeting col **CIO Chessa il 10 set 2026** (rinnovo Eni SpA al 30/09). Brief verificato in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` — **confidenziale, git-ignored, MAI committare** (con `31c8e13` sono entrate in `.gitignore` anche `docs/Eni/`, `docs/Credit Agricole/`, `docs/UniCredit/`, `docs/Adobe Material/`). Memorie: `eni-orbita-prep`, `firefly-deck-motion-exploration`.
+
+### 24.1 Deck (7 pagine, bilingue EN/IT)
+`index` (Orbita) · `domanda` · `piattaforma` · `traiettorie` (6 traiettorie, **gated**) · `mappa` (gruppo) · `persone` · `rotta` (tre orizzonti). Design system **`.eo-*`**: giallo Eni / fumo / azzurro orbita; **Archivo + Inter**. Admin con PAGE_REGISTRY + **6 solutions su 3 pilastri**; gating su slide traiettorie e nav. Con `48e3e63` tutte le pagine deck sono passate a `<T en it>` (EN idiomatico, non calco; lunghezze nel contratto audit) + **LangToggle EN/IT in nav**.
+
+### 24.2 Dossier war-room `/dossier/` (trilingue EN/IT/FR, noindex, fuori nav)
+Executive summary · profilo CIO con video · fatti verificati · say/don't-say · **mappa persone** · obiezioni · run of show · biblioteca fonti. **Nessun dato contrattuale nel build.** Con `0c42beb` chiuso il buco della mappa persone: **Elvira Fabrizio = Head of Digital & IT Enilive** (verificata LinkedIn + bio The Innovation Group; 25+ anni ICT nel gruppo, board EGEM dal 2020 → tocca anche l'orbita trading). **Resta aperta l'intro da chiedere a Chessa** (P1 §10). Gotcha i18n: il **FR è confinato al dossier** — guard anti-flash + `astro:after-swap` degradano `fr→it` sulle pagine deck **senza sovrascrivere la preferenza salvata**.
+
+### 24.3 Registrazioni & verifica
+Registrata in: `deploy.yml` (merge + verify), factory-hub, showcase `experiences.ts`, `scripts/deck-audit.ts` (ROUTE_SET `eni-orbita`, 7 route). **NON seedata nella console Supabase** (manca `0008_seed_eni.sql` → P2 §10). `audit:deck` **0 hard** a 1920/1440/1280 (soft residue su cover ariose); verifica visiva screenshot in entrambe le lingue. Nota pro-futuro (NON implementato): esplorazione motion/Firefly per i deck in `docs/Eni/FIREFLY-DECK-EXPLORATION.md` (5 livelli L1–L5).
+
+---
+
+## 25. Core: responsive envelope, nav single-line & sweep visivo (21–22 lug 2026)
+
+Tre interventi trasversali post-redesign, tutti a livello Factory (ereditati da ogni esperienza presente e futura).
+
+### 25.1 Responsive envelope (`f09fca1`, core `DeckContainer`)
+- **Tier cramped-laptop** (min-width 641, height 521–799px — browser in finestra o pannello 1366×768): reserve chrome alleggerita + l'overflow residuo **scrolla** invece di clippare (bug segnalato: timeline `/method/` Atelier tagliata sotto la piega). Il laptop è superficie di **preview**, mai target di proiezione.
+- **Giant-TV/4K** alzato a **≥2560px** (frame più generoso, controlli più grandi, lettura a 4–8 m); controlli bottom con `env(safe-area-inset)` (home-indicator phone); floor tap-target per coarse pointer. Tutte le app deck: `viewport-fit=cover` nel meta viewport.
+- **Regola in-code (vincolante)**: i **3 viewport di proiezione** certificati dall'audit (1280×800, 1440×900, 1920×1080) sono **deliberatamente intoccati** — li possiedono i `:root` per-app — così un miglioramento laptop/mobile/TV non può mai regredire il proiettore. Verifica: **audit parity identica before/after sui 6 deck** (atelier 39 · maxmara 35 · unicredit 173 · trenitalia 75 · ferrari 37 · agos 43 — totali incl. soft), typecheck 0, screenshot letti a 1366×768/1920/390×844/2560×1440.
+
+### 25.2 Nav single-line su ogni esperienza (`7bd7511` + `d042105`)
+Le pill di sezione andavano a capo ("01 The"/"method"). Fix su **tutte** le nav (6 deck + showcase + core Navigation Max Mara): pill `whitespace-nowrap`, rail `flex-nowrap + min-w-0 + overflow-x-auto` (scrollbar nascosta, scroll orizzontale grazioso), item `flex-shrink-0`. Con `d042105` anche il **right-cluster**: nowrap + `flex-shrink-0` su cluster e logo, label decorative "Live Pitch"/co-brand **nascoste sotto 2xl (1536px)**. Contratto in memoria `nav-single-line-contract` (verificare TUTTA la barra, non solo il rail). La nav Trenitalia è poi diventata **a 3 stati** con la biforcazione (§26).
+
+### 25.3 Sweep visivo esaustivo (`d042105`, 22 lug)
+**536 screenshot** — ogni slide dei 6 deck a 1920 e 1366 — letti uno a uno; ha trovato 3 bug di leggibilità che l'audit DOM non vede: card Max Mara loyalty "Dietro le quinte" **invisibile** (avorio su card chiara: `.mm-panel` batteva l'utility `bg-inverse` → surface scura forzata inline); pannelli Ferrari activate slavati su slide inverse (dato sfondo carbon + glow Rosso Corsa a `.act-frame`/`.act-results`); rail UniCredit a 12 voci con l'attivo fuori dal bordo destro sui laptop (ora auto-centra l'attivo). → Questo sweep + la parity di §25.1 **chiudono la voce P1** «rigirare audit + QC 1920 sui 6 deck» del 21 lug.
+
+---
+
+## 26. Biforcazione Connessioni Intelligenti — FS Park × Trenitalia (31 ago 2026)
+
+Commit `0ec1259` (spec) → `954dde1` (fondamenta) → `5aaa5b0` (rami). Spec slide-per-slide: `docs/superpowers/specs/2026-08-31-biforcazione-fspark-trenitalia-design.md`. Memoria `trenitalia-connessioni` aggiornata. **I 13 vincoli LOCKED di §15.4 restano tutti validi** (contenuti migrati, mai regrediti).
+
+### 26.1 Decisioni di design (dalle domande all'owner)
+Audience = **stakeholder separati** (ogni ramo è un pitch a sé; l'intro è cornice di gruppo) · una sola app, **due sotto-alberi** · tronco = solo cover+scenario+bivio · dispositivo narrativo = **stesso viaggiatore, due metà** (Davide: FS Park lo vede dall'auto alla sbarra, Trenitalia dal binario in poi; ogni ramo racconta la sua metà + il suo punto cieco) · stessa pelle con **accent per ramo** (FS Park ambra "mondo-asfalto", Trenitalia rosso "mondo-binario") · **scheletro speculare a 5 capitoli con profondità asimmetrica** (slug identici nei due rami: `partenza · fondamenta · convergenza · meta-invisibile · percorso`).
+
+### 26.2 Information architecture
+```
+/            cover (ritoccata: prefigurazione bivio; journey a 4 card)
+/scenario/   NEUTRALIZZATO: email-gap RIMOSSA (→ ramo Trenitalia), touchpoint con
+             chip proprietà (Trenitalia ×4 · FS Technology · FS Park), chiusa → /bivio/
+/bivio/      NUOVA (2 slide): linea di Davide spezzata al centro + due porte-card
+/fs-park/{partenza,fondamenta,convergenza,meta-invisibile,percorso}/
+/trenitalia/{stessi 5 slug}/
+vecchie route → stub redirect (_redirect.astro): fondazione→trenitalia/fondamenta,
+convergenza→trenitalia/convergenza, connessioni→trenitalia/meta-invisibile,
+roadmap|casi-duso→trenitalia/percorso (deep link preservati, query inclusa)
+```
+Catene frecce: tronco → bivio → fs-park (default, strategia "partire da FS Park" dal confronto 14/07); dentro ogni ramo lineare; prima/ultima pagina di ramo ↔ `/bivio/` (mai traboccare nell'altro ramo).
+
+### 26.3 Ramo FS Park (27 slide, in gran parte nuove — fonte: trascrizione riunione 14/07 in docs/Ferrovie, git-ignored)
+F1 Partenza (cover "La metà su asfalto" · Davide fino alla sbarra · ecosistema a righe impilate: sito con tracking limitato / area riservata in arrivo SENZA date / app già tracciate / CRM Salesforce, fonte "dal confronto di lavoro, luglio 2026" · identità frammentata · opportunità) · F2 Fondamenta = **identity reconciliation** (anonimo/autenticato · chiave: email hashata, Identity Graph, stitching, backfill, chiusa "da approfondire insieme" · XDM + source connector + riuso tagging · "Non rifare. Riconciliare.") · F3 Convergenza (gated `cja`: convergenza · CJA≠CDP · 3 use case prioritari: journey e2e, drop-off, conversion — "da validare sul campo" · demo/POC su dati simulati · adozione come servizio + AI Assistant) · F4 Metà invisibile (gated `data-collab`: punto cieco · clean room GDPR POV sosta · scenari intersocietari: ritardo→estensione sosta, cross-sell, churn condiviso · governance SENZA breach angle · "partire da FS Park, estendere al Gruppo") · F5 Percorso (POC · radar: rinnovi, ricorrenze→abbonamento, segmentazione auto/moto/bici, sorgenti, transazioni↔reclami · accompagnamento · orizzonte · sintesi). **Divieti specifici**: mai giudizi sull'autonomia del team FS Park (solo frame positivo); breach angle SOLO nel ramo Trenitalia; mai `bg="brand"` nel ramo (ambra come sfondo rompe il contrasto).
+
+### 26.4 Ramo Trenitalia (30 slide, ereditate dalle vecchie sezioni + 3 nuove)
+T1 Partenza (cover "La metà su rotaia" · Davide dal binario, metà sinistra tratteggiata "fuori campo" · **email-gap trasloccata INVARIATA** dal tronco con footnote Takeout · punto-cieco NUOVA · opportunità) · T2 Fondamenta (= fondazione.astro: ecosistema impilato, Salesforce, "Non sostituire. Connettere.") · T3 Convergenza (= convergenza.astro intera) · T4 Metà invisibile (= connessioni.astro: **GDPR e breach angle INVARIATI**) · T5 Percorso (= roadmap.astro con framing AJO verbatim + NUOVA slide-esplorare che condensa i 4 "Da esplorare" di casi-duso in righe full-width + sintesi con FS Park come **orizzonte, non prerequisito**).
+
+### 26.5 Runtime branch-aware (BaseLayout) — 3 bug latenti fixati
+1. **Slug composti**: `getCurrentPageSlug()`/`currentSlug()` ora tornano `fs-park/partenza` (prefisso ramo) — senza, i due rami collidevano su media-slot (`slotKey = slug:slideId`), custom slides e gating. AdminConsole regge slug con `/` (slotKey e attribute selector quotati).
+2. **Gating a 3 catene** con path assoluti (la `base` è passata allo script): tronco `[home, scenario, bivio, fs-park/partenza]`; ramo `[bivio, 5 capitoli, bivio]` con gate `convergenza→cja`, `meta-invisibile→data-collab`, `percorso→rtcdp+ajo+mix-modeler` SOLO trenitalia (fs-park/percorso non gated). Sostituisce lo swap dell'ultimo segmento (rompeva sui path annidati).
+3. **Redirect `pageSolutions`** riscritto sugli stessi path assoluti.
+Prop `branch` → `data-branch` su `<html>`: `[data-branch="fs-park"]` override `--accent-primary`→ambra + texture `.fsp-stalli`/`.fsp-carreggiata`; porte del bivio `.fs-porta*`. **TreniNavigation a 3 stati**: tronco (rail Scenario·Bivio + porte ambra/rossa), ramo (chip "⇤ Bivio" + 5 capitoli, MAI l'altro ramo in barra). Admin: PAGE_REGISTRY a 3 gruppi (Tronco / F1–F5 / T1–T5), `appearsIn` aggiornati.
+
+### 26.6 Verifica & gotcha
+`scripts/deck-audit.ts` → **13 route** trenitalia; **0 failure HARD × 3 viewport** (~97 soft residui `a`/`i` motivati + 2 `g` pre-esistenti su home/fs-context e data-collab; storico era 165). `astro check` 0 errori. Screenshot 1920 letti di ogni slide nuova/cambiata (i 2 rami li hanno letti i subagent nei worktree; tronco+bivio letti nel main). **Gotcha preso**: in quest'app `bg="inverse"` è **CHIARO** — una slide scura richiede `SlideBackdrop` con scrim carbonio (bug su `slide-porte`: titolo bianco su fondo chiaro, fixato). Metodo: P1 fondamenta in main tree → **2 subagent in worktree isolati** (uno per ramo, porte preview diverse, audit ridotto alle proprie route) → integrazione + audit full nel main. I fix del tronco a 1280 (touchpoints `c`/`j`) sono stati risolti compattando spazi e note card, MAI riducendo il type.
