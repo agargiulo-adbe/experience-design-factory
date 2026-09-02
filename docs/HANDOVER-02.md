@@ -1,8 +1,68 @@
-# Handover — Parte 2 di 3
+# Handover — Parte 2 di 4
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
+## 11. Change log recente
+
+### Change log — UniCredit bilingue IT/EN + Dossier shareable-link (2 set 2026, dal più recente) → dettaglio §27.7
+- `ccd0373` **Dossier — shared-link apre in EN di default**: il path token (`?t=`) usa **EN** come lingua iniziale (colleghi internazionali); login/deck restano IT; override esplicito `?lang=en|it`. Verificato live.
+- `c17d37d` **Dossier — unlisted secret-link (no login)**: migration **`0009_restricted_doc_share.sql`** (applicata al DB remoto) — colonna `restricted_docs.share_token uuid` + RPC **`get_shared_doc(p_token)` SECURITY DEFINER** (anon-callable, ritorna solo `content` per il token esatto; RLS invariata). La pagina legge `?t=<uuid>`: presente → fetch via RPC **senza login**; assente → gate login. Resta `noindex` + fuori dal bundle → link-only, non su Google. Revoca/rotazione via `share_token` (`gen_random_uuid()`/`null`). **Verificato E2E live** (render col token in browser pulito senza sessione; gate login senza token; RPC ritorna null su token errato). Chiude il P1 «QC dossier render» (render/i18n provati via shared-link). ⚠️ Il token è un **segreto** (mai in repo/handover): leggerlo con `supabase db query --linked "select share_token from restricted_docs where slug='unicredit-attribution'"`.
+- `0cd4848` **Deck UniCredit bilingue IT/EN** (Ferrari-parity, **IT default**): retrofit di **tutte le 13 sezioni + nav** a `<T en it>` (+ LangToggle in nav desktop/mobile), IT **verbatim** + EN idiomatico umano (±10%), nomi prodotto/persona/numeri/fonti **invariati**. Infra: `data-lang` + anti-flash init in `BaseLayout`, regole display in `global.css`, **headline dinamica home** resa bilingue nel suo JS (entrambi gli span riempiti). Cover via **dual-CoverHero `.contents`** (CoverHero non-`T`-aware). Audit: **FINAL IT HARD == baseline** (0 nuovi hard, 158 tot), **EN HARD ⊆ baseline** (152 tot); 5 tip marginali `c`/`b` (home-journey, conosci nba+persona, analizza costpersale+llm-mix) risolti con spacing/`min-w-0`/`break-words`, **mai type shrink**. `deck-audit.ts` +opz. **`DECK_LANG`** per auditare una lingua forzata. 6 slide EN lette a 1920. Spec `docs/superpowers/specs/2026-09-02-unicredit-bilingual-en-design.md`. Memoria `unicredit-bilingual`.
+
+### Change log — VPN: follow-up ticket Zscaler (2 set 2026)
+- **Ticket VPN INC3719631** — postato il follow-up (commento customer-visible) sul ticket ServiceNow: sblocco/allowlist Zscaler per `*.github.io` (URL live Factory). Stato **In Progress**, assigned a **GOC ITP Integration** (SD-Global, EMEA). In attesa di riscontro IT. Vedi §10 P1.
+
+### Change log — UniCredit attribution + Dossier login-gated · Alfabeti MIM (2 set 2026, dal più recente) → dettaglio §27–28
+- `f03c343`+`a19516f` **Dossier Attribution UniCredit — ruoli LinkedIn + rifiniture**: §4 mappa org con ruoli verificati (Giancarlini Head of Digital Sales, Ramler Group MarComs Data/Research/Intelligence Lead, Lombardo Head of Data Platform & Architecture, Ricciotti Head of Data & Statistical Reporting, Porro Group CFO, Cristina D'Ambrosio Head of Retail Digital Channels) + link LinkedIn; Cristina spostata in mappa org; rimosso blocco team Adobe/ACN da §6; «CJA B2B Edition» → CJA Attribution IQ (contesto retail); rimossa §10 «Domande aperte»; tolto «(deep-research)» dal titolo §9. Seed `restricted_docs` aggiornato (ri-applicato al DB).
+- `45cfcdf` **fix stili dossier `is:global`**: il contenuto è iniettato via JS (nodi senza `data-astro-cid`) → gli stili scoped `.ur-*` non lo colpivano (testo scuro su fondo scuro, illeggibile). Reso `<style is:global>`. Gotcha nota (scoped-style su nodi non-Astro).
+- `d2f67ba` **Dossier Attribution login-gated, bilingue IT/EN + PDF**: `/dossier/` diventa la pagina unica (merge dossier+war-room); contenuto riservato NON nel bundle statico ma in **Supabase `restricted_docs` (RLS)**, caricato solo dopo login (super admin o ruolo su unicredit-engagement, da `/console/users/`); toggle IT/EN + download PDF (window.print). Migration `0008_restricted_docs.sql`. Supporto `noindex` aggiunto al BaseLayout. Vedi §27.
+- `9d308de` **attribution al centro di «Analizza»**: +2 slide (`slide-lasttouch`, `slide-costpersale`) + riordino + card Attribution in testa al use-case bancario; sezione «Analizza» **HARD-clean** su 1920/1440/1280 (bonificate cxa-brand/agent/banking/llm-mix). Fonte: meeting Giancarlini (riservato, `docs/UniCredit/`) + deep-research 2/09. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Vedi §27.
+- `fadb1e3` **nuova experience «Alfabeti» — MIM × Adobe**: `apps/mim-alfabeti`, deck 8 sezioni, IT+EN, palette light carta/blu + Titillium Web; sezione «realtà» gated da soluzione *interno* (doppio uso client/interno); `audit:deck` 0 hard; base `/mim-alfabeti/`; registrata in deploy.yml/factory-hub/deck-audit/root scripts; dossier strategico bilingue in `docs/` (git-ignored). Vedi §28.
+
+### Change log — CI lint · «Selling to Executives» · a11y showcase (1–2 set 2026, dal più recente)
+- `3ddefb4` **fix content-audit → CI di nuovo verde su HEAD** (2 set): la citazione "Grounded in Adobe's Selling to Executives method (Jacques Sciammas)" compariva **identica** in `#flow` e `#skill` del showcase → violava la regola (c) di `content-audit.ts` (nessuna frase ≥8 parole ripetuta 2× nella stessa pagina), tenendo **rossa la CI** su `850e94a`/`1d71620`/`f469123` (solo il gate CI; il Deploy era verde). Riformulata la nota in `#skill` ("The intake follows… / L'intake segue…"), distinta da quella in `#flow`; entrambe citano ancora il metodo. `content-audit PASS` + lint/typecheck 0; **CI verde su `3ddefb4`** (l'unico warning residuo è il P2 cosmetico `var` in Agos BaseLayout). ⚠️ Nota per chi legge il git: i run CI di `1d71620`/`f469123` risultano *failure* perché precedono questo fix — HEAD è verde.
+- `1d71620` **a11y showcase — contrasto AA sui testi accento** (chiusa la voce P1 «showcase a11y pass»): il testo accento piccolo su fondo chiaro non arrivava a 4.5:1 — rosso Adobe #EB1000 come testo = 4.08–4.41 → eyebrow/`.value-n`/`.flow-principles-eyebrow`/chip attore "Adobian" ora usano `--color-adobe-red-dark` #C50E00 (5.5–5.9; 4.63 sul chip col tint 12%→10%); chip "Factory KB" violetto 4.48 → nuovo token `--color-adobe-violet-dark` #4E22CC (6.7) + tint 10%. Riempimenti/linee decorative restano brand-red pieno. Grey inks già a norma (ink-secondary 7.1, ink-tertiary 4.9); slate-400 solo su fondi scuri (banda proof/skill/grow sono `--surface-inverse`). Già presenti: reduced-motion, focus-visible, skip-link. lint/typecheck 0, screenshot 1920 EN+IT letti.
+- `850e94a` **principi «Selling to Executives» (Jacques Sciammas) nell'intake e in vetrina** (chiusa la voce P1): **SKILL.md ristrutturato** — 5 principi in testa (lead-to-solution · lingua dell'executive · prova revenue/cost/risk · before→after · trusted advisor), Part 1 ricerca industry/company/executive (cosa misura il CXO), Part 2 executive rilevante + 3 lenti (Financial/Operational/Growth), Part 3 obiettivo/pain prima del prodotto, Part 4 ROI rule + figure illustrative, **output = value-proposition brief** (12 heading). **Showcase (solo weaving + citazione esplicita)**: `#flow` strip 4 principi "Every experience is built to convince a C-suite" + citazione, step Research/Brief riformulati; `#skill` lead executive-grade + nota "Grounded in Selling to Executives". Artefatti scaricabili rigenerati (`public/skill/*.md` + `.zip`). Fonte: `docs/Adobe Material/Selling to Executives/*.pptx` (git-ignored). Screenshot 1920 EN+IT letti.
+- `6c37210` **CI lint di nuovo verde** (chiusa la voce P0): le 156 errors `no-unused-expressions` erano tutte nei due bundle minificati `modern-screenshot.umd.js` (tooling vendored impeccable, `.claude` + `.github` copie) → aggiunto `'**/skills/impeccable/scripts/**'` agli ignores di `eslint.config.js`. `pnpm lint` 0 errors (restano warning non bloccanti); `scripts/*.ts` restano lintati; typecheck 0.
+
+### Change log — Depubblicazione Experience Atelier (1 set 2026)
+- `4cca945` **Atelier depubblicata dai listing pubblici**: rimossa la card dal showcase (`apps/factory-showcase/src/data/experiences.ts`) e la tile dal factory-hub (`apps/factory-hub/src/pages/index.astro`). I conteggi data-driven del showcase tornano **6→5 esperienze** in automatico (hero stat, prose, griglia proof, diagramma architettura). **Codice `apps/atelier` invariato**; la route `/atelier/` resta buildata e raggiungibile (solo unlinked) → P2 in §10 se serve un 404 vero. Nota: il seed console `0007_seed_atelier.sql` (status `live`) NON è stato toccato. Build showcase+hub verdi, 0 ref «Atelier» negli output.
+
+### Change log — Revisioni post-biforcazione Trenitalia (1 set 2026, dal più recente) → dettaglio §26.7
+- `d99254c`+`56a391f` closer FS Park iterato → **"Ogni sosta, un cliente riconosciuto."** (prima "Un cliente intero, a partire da casa": goffo + duplicava il titolo della sintesi).
+- `754de62` **obiezione CDP + connettori verificati + closer**: gestita l'obiezione "abbiamo già Data Cloud CDP" nelle slide CJA≠CDP; **linea `z-index:-1` dietro i nodi** (fix definitivo overlap linea/emoji); **connettori AEP corretti su fonti Adobe** (Data Cloud niente source nativo; Responsys è destination non source; nativo solo Salesforce CRM); tolto "611 email/anno a un singolo cliente" dalla card sistema + "rollout graduale per superfici"; **2 slide di chiusura solo visual** a fine di entrambi i rami.
+- `d4a90d7` **revisione iper-approfondita** (3 revisori paralleli): **Elena rimossa** (persona orfana); "Nessuno sistema"→"Nessun sistema"; de-AI tricolon/slogan; tono ROI Trenitalia ammorbidito; tolta l'accusa a Responsys; a11y (nav /40→/70, badge 11px→13px, `color-mix()`→`rgba()`).
+- `4c0493e` **copy/UI**: disclaimer cover "firmato Adobe"; "tronco comune" → **due racconti distinti convergenti**; piattaforma agentica attribuita (FS Technology × Salesforce, link fsnews); "confronto di lavoro"→"tavolo di lavoro FS Park × Adobe"; **Mix Modeler → Marketing Campaign Analytics (ex Mix Modeler)** (id `mix-modeler` invariato); slide adozione **AI Assistant vs CX Enterprise Coworker**; nodi opachi; touchpoint altezza uniforme.
+- Nuova memoria **`adobe-product-naming-2026`** (naming Adobe verificati: MCA, CX Enterprise Coworker GA giu 2026, clean room = Real-Time CDP Collaboration *da confermare*).
+
+### Change log — Biforcazione Trenitalia · Eni Orbita · core responsive/nav (21 lug – 1 set 2026) → dettaglio §§24–26
+- `5aaa5b0`+`954dde1`+`0ec1259` (**31 ago 2026**) **biforcazione `trenitalia-connessioni`**: tronco neutralizzato + `/bivio/` + rami autoconsistenti `/fs-park/*` (ambra) e `/trenitalia/*` (rosso), 5 capitoli speculari; vecchie route → stub redirect; slug/gating branch-aware in BaseLayout; `audit:deck` 0 hard su 13 route. Dettaglio **§26**.
+- `31c8e13`+`0c42beb`+`48e3e63` (**28 ago 2026**) **nuova experience Eni «Orbita»**: deck 7 pagine (poi bilingue EN/IT) + dossier war-room trilingue; Elvira Fabrizio identificata (Head of Digital & IT Enilive). Dettaglio **§24**. ⚠️ Da questi push la **CI è rossa su lint** (tooling pre-esistente → P0 §10).
+- `f09fca1`+`7bd7511` (**21 lug**) + `d042105` (**22 lug**) **core responsive envelope** (tier cramped-laptop/giant-TV, viewport proiezione intoccati) + **nav single-line su tutte le esperienze** + **sweep visivo esaustivo 536 screenshot** con 3 fix di leggibilità. Dettaglio **§25**. → chiusa la voce P1 «rigirare audit + QC 1920 sui 6 deck» (parity audit + sweep completo).
+
+### Change log — Redesign «eccellenza» E2E dei 6 deck + consolidamento CI (21 lug 2026) → dettaglio §23
+- **Redesign E2E** di tutti e 6 i deck (Agos `.tdu-*`, Atelier `.loom-*`, Ferrari `.frl-*`, UniCredit `.uc-*`, Max Mara `.mm-*`, FS `.fs-*`): concept brand-native centralizzato in `global.css`, sezioni ricostruite via subagent, **copy/claim/numeri/fonti/personas verbatim**. Rollout su 6 branch feature, poi **merge `--no-ff` in `main`** (`572ba5b`/`1563e9e`/`ca541a1`/`0b610e6`/`25e7927`/`37b6650`), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati **eliminati** (remoti + locali) dopo il merge.
+- `de81eaf` **fix flip-ink Max Mara** (inverse-only): lo `Slide` applica lo sfondo come classe Tailwind, non `data-bg` → i selettori di flip non scattavano (numeri invisibili su slide scure); ritargettati alla classe reale, brand cammello tiene ink scuro (§23.1, memoria `deck-ink-flip-selector`).
+- `b0106bc` **fix 2 errori typecheck FS** (param `any` in `fondazione.astro`, campo `badge` inesistente in `scenario.astro`) — `astro check` rosso pur con `build` verde.
+- `0298ccc` **fix lint parsing error Agos**: un commento `<!-- -->` dentro il `.map()` di `scenario.astro` contava come 2° elemento root (`JSX expressions must have one parent element`), unico *error* che teneva rosso il gate lint (build/deploy non impattati). Il commento a livello template resta valido.
+- `52e47df` handover §23 aggiunto. **Lezione:** `pnpm build` verde non basta — girare `typecheck`+`lint` prima di ogni push di redesign (§23.2, nota "CI vs Deploy" §10).
+
+### Change log — Agos: deck «casi d'uso evolutivi AEP» (PPTX, fuori repo) (20 lug 2026)
+- Prodotto **`docs/Agos/Agos_x_Adobe_Casi_uso_evolutivi_AEP.pptx`** — deck **24 slide IT su template Adobe** (rosso Adobe + accenti petrolio/acqua Agos), generato con **python-pptx** (PowerPoint nativo/editabile), NON un'app del monorepo. Contenuto: recap "cosa Adobe ha compreso" (profilo Agos con numeri di discovery ~9M/~5M/~3,7M/~80 use case, as-is Campaign v7 + Analytics + DWH Oracle/SAS-Matrix, contesto trasformazione set–ott 2027, **5 attriti**: dato di ritorno assente, dato rigido, offerte fuori, misura frammentata, canali non parlanti) + **9 casi d'uso evolutivi su AEP** (AJO/RTCDP/CJA: chiudere il loop caricata/liquidata, recupero abbandoni form TIG, transazione negata→journey, next-best-offer, inbound/outbound orchestrati, churn proattivo, agenti conversazionali, FAC su Snowflake, contenuti on-brand + link SMS) + roadmap Crawl/Walk/Run + next steps. Fonti: doc di discovery in `docs/Agos/` (sessioni, CVM, architettura) + librerie casi d'uso Adobe (Journey Optimizer / FSI / Retail Banking POV) in `docs/Agos/*.pptx`. **Non committato** (`docs/Agos/` in `.gitignore`); reso in PNG e verificato slide-per-slide (0 overflow). Non tocca app/build. Generatore usa-e-getta in `/tmp` (non nel repo). Distinto dal deck web `apps/agos-trait-dunion` (§16).
+
+### Change log — Atelier redesign + fix CI (20 lug 2026, dal più recente)
+- `5fc362e` **fix CI cronico** (non era in backlog: scoperto ora). Il workflow **`CI`** (separato da `Deploy to GitHub Pages`) falliva da CI #90 sullo step `npx tsx scripts/content-audit.ts`, **regola (c)** (nessuna frase ≥8 parole ripetuta 2× nella stessa pagina buildata). Root cause su Ferrari `/scoping/`: `METRICS[0].what.it` (`apps/ferrari-racing/src/data/scoping.ts`) e `badgeCollab.it` (`packages/core/.../ScopingCalculator.astro`) rendevano la **stessa prima frase IT verbatim**, mentre in EN divergevano (`what.en` "burned" vs `badge.en` "consumed"); `what.it` era anche **incoerente col proprio EN**. Fix alla sorgente: `what.it` "consumato" → **"bruciato"** (mirror di "burned") — rompe la ripetizione **e** corregge la deriva EN/IT; nessun tocco al core condiviso. Verificato: typecheck+lint+build+`content-audit PASS`; **run CI di `5fc362e` = success (verde)**. (c49e7db/f4caf92 restano rossi in storia perché pushati prima del fix.)
+- `f4caf92`+`c49e7db` **Atelier — passata de-celebrazione + sintesi grafica** (dettaglio §21.5b). Copy de-celebrato trilingue (meaning-preserving, ±10%): tolti brag/staccato/tricolon/tetracolon ("Weeks per experience. Not quarters.", "Enterprise-grade… this deck is one of them", "deepest content model in the family", "this demo is real", "in Adobe hands", "Touching it beats both", "prove the craft"). **Nuova `slide-roadmap`** (Gantt: 5 workstream × 3 milestone + riga key-moments) + **`slide-kpi`** da 4 righe → **scorecard 2×2** con metric-pill. Registrata in `PAGE_REGISTRY` (plan ora 6 slide / deck 30). Audit **0 hard**; nuovi soft `a`/`i` su roadmap+kpi **whitelisted** (screenshot 1920 letti: type generoso, composizione bilanciata; parità altezza EN/IT/FR a 1280).
+
+### Change log — lug 2026 (condensato a puntatori; dettaglio completo nelle sezioni §)
+> Le voci di luglio sono collassate: il racconto per esteso vive nelle sezioni indicate — qui restano hash + una riga.
+- **Experience Atelier** (17 lug, `e296cb5`/`56a7808`/`e4e88ba`/`d5bc6d0`/`c9fb186`/`1f9c018`/`abbc71b`/`13cb5e6`/`d7854af`/`47bce98`+`2bbd988`): scaffold trilingue + admin wrapper; **fix gating SPA su tutte le 6 esperienze** (`astro:after-swap`, memoria `spa-gating-reapply`); **i18n core `fr`** opzionale; core `T` inoltra attributi extra; registry→`live` (`0007`). → **§21–§22**.
+- **UniCredit** (lug, `aabd2d1`/`310e045`/`b8bd78c`/`aa26cd1`/`c6385e4`/`2da455b`): personas Marco B2C/Adriana B2B; pass copy morbido/credibilità (14M→"milioni", risultati→direzione ↑/↓, Next-Best-Experience); naming analytics vs MEGA DECK (MCA/DIA/Coworker); slide AI Agents in AEM + Firefly; rinumerazione dinamica card + nav frecce bidirezionale; Brand Concierge in Admin. → **§5, §17**.
+- **Hub · Parity · Ferrari scoping · Trenitalia** (13–14 lug): hub root = `factory-hub` + Max Mara→`/generazioni-maxmara/` (stub redirect, `0005_hub_registry.sql`); `prevHref`/gating bidirezionale ovunque + Max Mara config-driven; **Type & legibility contract** codificato in `CLAUDE.md`; Trenitalia redesign leggibilità (`audit:deck` 165→0, personas Davide/Elena); showcase data-driven (`experiences.ts`); Ferrari /scoping v1 (**superato** il 15 lug dal modello Adobe-fedele §18). → **§8, §14, §15**.
+- **Factory Showcase** (lug): prima versione + wiring deploy `/showcase/`; skill **`experience-brief`** creata; WOW pass (screenshot Proof, sezione Skill, hero animato); sezione "Come nasce un'esperienza"; mark distintivo; KPI "12" reso verificabile. → **§13**.
+
+---
 ## 12. Puntatori
 
 - `CLAUDE.md` — guida agente + Quality Bar + contratto deck + aesthetics per esperienza.
@@ -117,151 +177,5 @@ Estensione che risponde a 6 dubbi del cliente sul configuratore. **La matematica
 - **Nuova slide** `slide-model` in `/scoping/` («Come si compone il costo» — 4 driver + lettura Ferrari worked, dati `COST_DRIVERS`/`COST_MODEL_SUMMARY` in `data/scoping.ts`); metriche di licensing arricchite (funnel + tipi campagna).
 - **Nuova sezione deck «Casi d'uso»** (`apps/ferrari-racing/src/pages/casi-duso.astro`, nav tra Il Loop e Scoping, **non gated**): cover + 4 scenari end-to-end sull'intero perimetro prodotti (RT-CDP Collaboration → GenStudio + Express → Attivazione → CJA) + slide mappa prodotti. Dati `USE_CASES` in `data/scoping.ts`. Cross-nav: loop → casi-duso → scoping. Registrata in `admin.astro` (PAGE_REGISTRY, scoping ora "09") e in `FerrariNav.astro`. **Aggiunta a `deck-audit.ts`** (route set ferrari) → `audit:deck` **0 su 3 viewport**; `scoping` resta **fuori** dal route set (slide-calculator = esenzione interattiva).
 - **Verifica**: 53/53 test core verdi; build monorepo 0 errori; sweep `audit:deck` ferrari (8 sezioni + casi-duso) **PASS pulito**; screenshot 1920 letti (slide-model, calculator, use-case, mappa) → type generoso, composizione bilanciata. File toccati: `cost-model.ts` (+178) e `.test.ts` (+116), `scenario.ts`, `data/scoping.ts` (+299), `ScopingCalculator.astro`, `ScopingField.astro`, `scoping.astro`, `casi-duso.astro` (nuovo), `FerrariNav.astro`, `admin.astro`, `loop.astro`, `deck-audit.ts`. Memoria `ferrari-scoping-calculator` (da aggiornare a v2 dopo il commit).
-
----
-## 15. Root hub, feature parity & Connessioni Intelligenti (13–14 lug 2026)
-
-### 15.1 Factory Hub (root)
-`apps/factory-hub` è la **landing** a `/experience-design-factory/` (prima la root era Max Mara → link "generico"). App Astro minimale, **senza tailwind né `@edf/core`**, stile scoped scuro-neutro (NON un brand cliente). Contiene: 4 card esperienza brand-accented con link diretti + Showcase + Console. Serve anche gli **stub di redirect** (`src/pages/<slug>.astro` via `_redirect.astro`) per i vecchi deep-link maxmara root-level (`/acquisizione/`, `/engagement/`, `/conversione/`, `/loyalty/`, `/motore-adobe/`, `/persona/`, `/chiusura/`, `/maxmara-adobe/`) → redirect a `/generazioni-maxmara/<path>/` preservando `location.search`. Max Mara ha cambiato `base` in `astro.config.mjs`. Deploy.yml: root ← factory-hub, maxmara → sottodir.
-
-### 15.2 Feature parity (uniforme su tutti i deck)
-- **Frecce bidirezionali tra sezioni**: ogni pagina-deck ha `nextHref` **e** `prevHref`; il runtime di gating riscrive **sia** `data-deck-next` **sia** `data-deck-prev-href` (`nextEnabledAfter()` / `prevEnabledBefore()`) per saltare le sezioni disattivate. Regola nel Type & legibility contract (`CLAUDE.md`).
-- **Max Mara resa config-driven** (predava il sistema): `admin.astro` (PAGE_REGISTRY dai veri slide id, 12 SOLUTIONS dai prodotti presenti), runtimes ferrari-style (media slot + gating + custom slides), `.cs-*` retinted quiet-luxury. Pagine funnel volutamente **non** gated (narrativa persona continua).
-
-### 15.3 Connessioni Intelligenti — stato & lock
-> ⚠️ **STRUTTURA SUPERATA il 31 ago 2026 dalla BIFORCAZIONE (vedi §26):** la nav qui sotto e la mappa slide di §15.4 descrivono l'esperienza monolitica pre-biforcazione. Oggi: tronco (cover+scenario+bivio) + rami `/fs-park/*` e `/trenitalia/*`. **I 13 vincoli LOCKED di §15.4 e le fonti restano PIENAMENTE VALIDI** (i contenuti sono migrati nei rami); la mappa slide corrente è in `admin.astro` e in §26.
-
-`apps/trenitalia-connessioni` · IT · cliente **FS Group / Ferrovie** (Trenitalia + FS Park + FS Technology). Nav (storica): SCENARIO · FOUNDATION · CJA (convergenza) · CONNESSIONI (data-collab) · ROADMAP · CASI D'USO.
-- **Personas (LOCKED)**: **Davide** (pendolare business Milano–Roma) + **Elena** (business/frequent traveler). **MAI Marco/Sofia** (=UniCredit) né Giulia/Francesca (=Max Mara) né Adriana (=UniCredit B2B). Foto persona rigenerata e **distinta** da UniCredit (era duplicata).
-- **Leggibilità (LOCKED)**: type generoso per proiezione (vedi §8 / Type contract). L'ecosistema Foundation va tenuto **impilato full-width** (righe categoria), non a grid — richiesta esplicita cliente. `audit:deck` a **0**.
-- **Sezione governance dedicata** (`slide-governance` in connessioni): scudo privacy & security per tutte le app AEP (non solo Data Collaboration).
-- **Casi d'uso**: framing unificato "scenari di ispirazione ancorati al mondo FS" — NON "3 provati + 8 da esplorare". Structure 4-col: Scenario · Segnale CJA · Azione · Impatto Atteso — uniforme su core cases E "Da esplorare". Tutti etichettati "da validare sul campo".
-- Memorie: `trenitalia-connessioni`, `hub-root-and-parity`.
-
-### 15.4 Connessioni Intelligenti — mappa slide & vincoli contenuto (LOCKED)
-
-**Struttura slide corrente** (da `admin.astro`):
-
-| Sezione | Slide id | Label |
-|---|---|---|
-| scenario | `slide-cover` | Cover — Il viaggio del cliente oggi |
-| scenario | `slide-marco` | Davide — profilo persona |
-| scenario | `slide-touchpoints` | I touchpoint isolati |
-| scenario | `slide-email-gap` | Oracle Responsys — gap comunicativo |
-| scenario | `slide-opportunity` | L'opportunità integrata |
-| fondazione | `slide-cover` | Cover — La foundation |
-| fondazione | `slide-ecosystem` | Ecosistema a strati |
-| fondazione | `slide-salesforce` | Salesforce Foundation Q1 2026 |
-| fondazione | `slide-choice` | Non sostituire. Connettere. |
-| convergenza | `slide-cover` | Cover — CJA il layer di convergenza |
-| convergenza | `slide-convergenza` | Tutte le fonti. Un'unica vista. |
-| convergenza | `slide-cja-vs-cdp` | CJA è / non è — disambiguazione (**nuova**, lug 2026) |
-| convergenza | `slide-demo-cja` | Demo CJA Workspace — Davide |
-| convergenza | `slide-content-analytics` | Content Analytics su AEM |
-| convergenza | `slide-fasi` | Le 3 fasi — approccio graduale |
-| connessioni | `slide-cover` | Cover — FS Park × Trenitalia |
-| connessioni | `slide-gap` | Il gap attuale |
-| connessioni | `slide-why-collab` | Perché serve Data Collaboration |
-| connessioni | `slide-usecases` | I 3 use case ad impatto |
-| connessioni | `slide-data-collab` | Data Collaboration — clean room |
-| connessioni | `slide-governance` | AEP — Data Governance & Security |
-| connessioni | `slide-value` | Il valore end-to-end |
-| roadmap | `slide-cover` | Cover — Roadmap |
-| roadmap | `slide-3fasi` | Le 3 fasi evolutive |
-| roadmap | `slide-fase1-cja` | Fase 1 deep-dive — CJA + Governance (**nuova**, lug 2026) |
-| roadmap | `slide-rtcdp-ajo` | Fase 2 deep-dive — Real-Time CDP + AJO |
-| roadmap | `slide-mix-modeler` | Fase 3 — Adobe Mix Modeler |
-| roadmap | `slide-mix-usecase` | Fase 3 — Mix Modeler use case FS |
-| roadmap | `slide-genstudio` | Fase 3 — GenStudio + Target + Exp. Accelerator |
-| casi-duso | `slide-cover` | Cover — recap e da esplorare |
-| casi-duso | `slide-recap` | I 3 casi core, in sintesi |
-| casi-duso | `slide-explore-retention` | Da esplorare · Retention & Loyalty |
-| casi-duso | `slide-explore-loyalty` | Da esplorare · Loyalty & Acquisition |
-| casi-duso | `slide-explore-growth` | Da esplorare · Acquisition & Ecosystem |
-| casi-duso | `slide-explore-intelligence` | Da esplorare · Intelligence & Optimization |
-| casi-duso | `slide-sintesi` | Sintesi + invito |
-
-**Vincoli contenuto (LOCKED — non regredire in nessuna sessione):**
-
-1. **Nessun nome di integratore/consulente** — non nominare mai IBM, Accenture o Pico. Usare "system integrator" se necessario; non attribuire decisioni architetturali interne al cliente.
-2. **Nessuna "lottizzazione"** — non riportare mai le decisioni di assegnazione interna tra vendor/team FS. Nell'Experience riportare **solo i benefici e il valore** di un'integrazione con CJA.
-3. **Oracle Responsys = CRM B2C che CJA complementa, NON sostituisce.** Trenitalia gestisce l'intera base clienti con Oracle CDP + Eloqua; CJA (e qualsiasi altro componente Adobe) va valorizzato **in combinata** con Oracle, non in sostituzione né in opposizione.
-4. **AJO framing locked**: "AJO orchestra SOPRA Oracle Responsys — non lo sostituisce. Responsys rimane il motore di esecuzione email". Usare questo framing esatto in roadmap e in qualsiasi slide che menzioni AJO.
-5. **CJA ≠ CDP** (slide `slide-cja-vs-cdp` in convergenza): CJA è un **layer di analytics e convergenza**, non un CDP. La disambiguazione ha una slide dedicata; non rimuoverla.
-6. **KPI numerici** — ogni metrica numerica deve recare l'etichetta **"stima illustrativa"** o **"KPI da validare sul campo"**. Nessuna promessa precisa senza una fonte verificabile.
-7. **Casi d'uso** — tutti i casi (core 3 + da esplorare 8) sono etichettati **"da validare sul campo"**, mai "dimostrati". La sintesi dice "3 casi core da validare · 8 da esplorare insieme".
-8. **GDPR Data Collaboration** — FS Park e Trenitalia sono **entità legali distinte** anche all'interno del Gruppo FS. Il GDPR richiede una clean room (Data Collaboration) anche per condivisione audience intra-gruppo. Questa rationale è inline in `slide-why-collab` e non va mai rimossa.
-9. **AEP Governance / breach angle** — il cyberattacco a Trenitalia (giugno 2026, sky.it/cronaca/2026/06/26) è il driver di credibilità per la sezione Data Governance in `slide-governance`. Non rimuoverlo, ma non collegarlo a numeri o danni specifici (dati non pubblici).
-10. **Email 611/anno** — fonte: analisi campione email Trenitalia tramite Google Takeout personale (luglio 2026, 1 account cliente). **Solo illustrativa**, non pubblicare come dato ufficiale. Il footnote nella slide va tenuto.
-11. **"Le fondamenta"** (NON "La foundation") — titolo della sezione fondazione in italiano corretto. Tenere coerente in header, nav, CTA, meta title.
-12. **Nessuna timeline sulle fasi** — le date/mesi per le fasi roadmap erano state rimosse. Le fasi sono etichettate "Fase 1/2/3" senza suffissi temporali. Il disclaimer "Scenario evolutivo a titolo illustrativo — fasi e tempistiche da definire con FS Technology" va mantenuto.
-13. **Touchpoint scenario** — 4 touchpoint puliti (trenitalia.com, Frecce booking, App Trenitalia, FS Park app/web). Nessun riferimento a loyalty program esterno, AI-powered, o sistemi di terze parti non Adobe nel touchpoint layer.
-
-**Fonti verificate citate nell'experience:**
-- Salesforce Foundation FS Technology: `fsnews.it` — FS Technology + Salesforce Foundation Digitale (mar 2026).
-- Oracle Responsys / email count: campione email personale (Google Takeout, luglio 2026, 1 account, solo illustrativo).
-- AEM su trenitalia.com: osservazione pubblica.
-- Breach Trenitalia: `sky.it/cronaca/2026/06/26` (giugno 2026).
-
-**Solution gating corrente**: `convergenza → cja` · `connessioni → data-collab` · `roadmap → rtcdp + ajo + mix-modeler`.
-
----
-## 16. Trait d'Union — Agos (14 lug 2026)
-
-**App**: `apps/agos-trait-dunion` · live a `/experience-design-factory/agos-trait-dunion/` · slug admin `agos-trait-dunion`.
-
-**Contesto commerciale (da discovery, luglio 2026 — fonti interne al team Adobe, non nel deck):**
-- Agos usa **Adobe Campaign v7 on-prem + Adobe Analytics** da anni (impianto Deloitte); contratti fino a mar 2027.
-- Programma di trasformazione interno: CRM→Salesforce, data lake→Snowflake, telefonia→AWS, go-live set–ott 2027. L'IT prevede **solo lift & shift** del campaign management; il Marketing vuole "preparare il terreno". Decisione aperta **Campaign v8 vs AJO**.
-- Pain point chiave dalle sessioni: overlap open market/customer base non misurabile (attribuzione binaria Internet/"Mailing"), dato di conversione (caricata/liquidata) fuori piattaforma, log tecnico server-side = fonte di verità (100% richieste), DPO ultra-restrittivo, DMP dismessa, Target abbandonato anni fa per discrepanza col log, customer match Google = uplift zero (cultura evidence-based).
-- **Riservatezza**: il deck è pubblico → niente nomi di persone Agos, niente citazioni attribuite, niente numeri contrattuali; nomi interni di programma non citati (si dice "la trasformazione"). Dati pubblici citati con fonte (CS FY2024, ACT 2028, Osservatorio Assofin–CRIF–Prometeia).
-
-**Narrativa (7 sezioni)**: scenario (il paradosso dei due mondi: digitale vs filiale/customer base, persona Elisa) → fondamenta (stack attuale + trasformazione + "Non sostituire. Connettere.") → evoluzione (5 use case attuali → evoluti: form abbandonato→AJO journeys, use case→Orchestrated Campaigns+NBO, dato di ritorno→wave in piattaforma, A/B→Target experimentation, DEM→GenStudio con brand score compliance) → trait-dunion (CJA: fonti, è/non è, demo fallout Elisa con MediaDemoSlot `cja-fallout-demo`, overlap risolto, data governance DPO) → orizzonti (playbook FSI: offerta pre-qualificata +120% illustrativo, life events+NBO+payment denial, RT-CDP Collaboration coi partner, prospect anonimi+LLM Optimizer, panorama 12 use case) → valore (metodo evidence-based: ipotesi/controllo/log come giudice; KPI dichiarati illustrativi) → roadmap (2026 Preparare · 2027 Migrare evolvendo · 2028 Scalare, sequenziata con la trasformazione; 3 next step).
-
-**Design**: palette **petrolio/acqua reale del brand agos.it** (verificata dal CSS live: #05636B, #008590, #06ABB8, #10CAD8) + arancio #F57C00; **Montserrat** display + Inter. Logo/favicon = due cerchi (acqua+arancio) uniti da un tratto — il trait d'union. Dark-dominant (lavagna #121E21).
-
-**Solution gating**: `evoluzione → ajo+target+genstudio` · `trait-dunion → cja` · `orizzonti → rtcdp+data-collab`. 6 soluzioni in 4 pillar (analytics/activation/content/growth). `nextHref`+`prevHref` su tutte le pagine.
-
-**Audit**: registrato in `scripts/deck-audit.ts` (route set `agos`); 0 failure sui 3 viewport. Lezioni: (1) i titoli con blocchi contenuto alti cadono sopra la banda 30% → compattare sotto il titolo, non sopra; (2) `mb-3` (13.5px) tra h2 e lead viola il check g (≥16px) → usare `mb-4`; (3) per gli "inventory" 4 voci, griglia 2×2 con categoria in-card batte le righe impilate quando il titolo cade alto.
-
-**Registrazioni**: deploy.yml (merge + verifica), factory-hub card, showcase `experiences.ts` (+`shots/agos.webp`), migrazione `0006_seed_agos.sql` (**da applicare al DB remoto**: `supabase db query --linked`).
-
-**Pending**: media demo per `trait-dunion:slide-demo-cja` da configurare in admin (video CJA fallout); eventuale bilingue se servisse per il gruppo CA; applicare 0006 al DB remoto.
-
----
-## 17. Adobe Brand Visibility, de-AI copy & comando /handover (15 lug 2026)
-
-### 17.1 Adobe Brand Visibility (consolidamento prodotto)
-LLM Optimizer + Semrush **non sono più due prodotti**: sono confluiti in **Adobe Brand Visibility** (piattaforma end-to-end Adobe + Semrush per la AI/GEO visibility). Fonte: `docs/Adobe Brand Visibility Pitch Deck - Long Version.pptx`. Memoria: `brand-visibility-product`.
-- 4 pilastri: **Visibilità AI completa** (10 famiglie LLM, agentic traffic da log CDN) · **Intelligence guidata dalla SEO** (289M+ prompt reali dell'offerta Adobe+Semrush — ma **nel deck UniCredit il numero è stato ammorbidito a "milioni di prompt reali"**, §17.6, perché privo di fonte on-slide, query fan-out) · **Ottimizzazioni su ogni superficie** (edge CDN + at-source + off-site) · **Misurazione ad anello chiuso** (Adobe Analytics + CJA). KPI: brand mentions, citations, agentic traffic, referral traffic.
-- **UniCredit `visibilita.astro`**: le due slide (`slide-llm-optimizer` + `slide-semrush`) **fuse** in un'unica `slide-brand-visibility` (layout split, gated `data-solution="brand-visibility"`). Edit puntuali: chip persona Marco → *Adobe Brand Visibility: UniCredit GEO*; CTA scenario → *Dalla storia alla tecnologia*; stat *referral traffic*/*bounce rate*; eyebrow+bullet "momento di Marco"; footer EDS (edge/BYO CDN/standard web); AEM Sites Optimizer (titolo non-overselling + SEO/contenuti/accessibilità/performance).
-- **Admin**: `PAGE_REGISTRY` aggiornato (slide fusa) + nuova soluzione attivabile `brand-visibility` (pillar «AI Visibility»). `index.astro` journey sub-label aggiornato.
-- **Agos `orizzonti.astro`**: rename «Adobe LLM Optimizer» → «Adobe Brand Visibility». Semrush resta citato *dentro* Brand Visibility (motore di intelligence), non come prodotto a sé. Ferrari/Trenitalia/Max Mara non citavano il prodotto.
-- Commit `c306f4a`.
-
-### 17.2 Passata de-AI (copy 100% human, IT+EN)
-Riscrittura chirurgica del copy su **tutte e 5 le experience** (45 file, 348+/351−) per suonare umano: em-dash retorici → virgole/due-punti, frasi spezzate/tricolon → periodi naturali, `non solo X ma Y` e value-speak vuoto rimossi. **Invariati**: nomi prodotto/persona, numeri, fonti, claim, codice; lunghezze preservate (±10%) per non rompere l'audit. Ferrari: EN e IT resi entrambi idiomatici (i `<T>` mantengono sempre entrambe le lingue). Build completo OK; **nessuna nuova failure d'audit** (maxmara/ferrari/trenitalia/agos restano 0; unicredit invariato). Memoria: `copy-must-be-human`. Commit `e2b3d8c`.
-
-### 17.3 Comando `/handover`
-Nuovo slash command di progetto `.claude/commands/handover.md` (vedi §12): aggiorna questo handover, impone il contratto di dimensione file, splitta per sezione e verifica la leggibilità per una nuova sessione con una `Read` completa. **Questo file è stato splittato la prima volta proprio da questo comando** (>48KB). Commit `c489f9b`. Fix frontmatter + install user-level: vedi §17.5.
-
-### 17.4 Bonifica audit UniCredit (hard → 0)
-Passata dedicata sui check **HARD** dell'`audit:deck` unicredit (che aveva ~200 fallimenti, mai stato a 0): `c` (overflow orizzontale / box oltre la safe-inset) 22→0, `e` (text-on-text) 1→0, `j` (clipping fuori viewport) 7→0. 14 slide su 8 sezioni (acquisisci/analizza/b2b/coinvolgi/contenuti/coworker/motore-adobe/risultati), fix in worktree paralleli isolati. Pattern ricorrenti: frecce `absolute -right-2` che sporgono dalle card → tenute dentro (`right-1` + `overflow-hidden`); `min-w-0` su flex/grid children; riduzione gap/padding/densità per far rientrare le slide dense a 1440/1280; numerale display che va a capo. **Vincolo rispettato**: nessun body text < 0.95rem, nessuna slide splittata, nessun nome prodotto/numero/fonte rimosso. Restano **solo soft** `a`/`i`/`g` (totale 170), che il Type & legibility contract vieta di forzare. Metodo di lavoro riusabile: worktree isolati per app condivisa (evita race su `dist/`) + audit full con confronto per-check hard/soft.
-
-### 17.5 Regole vincolanti codificate + /handover globale (commit `ab3fb8b`, `5ed9764`, `b900ca7`)
-Le lezioni di questa sessione sono state **generalizzate in istruzioni vincolanti** per tutte le experience future:
-- **`CLAUDE.md` → nuova sezione «Working rules — codified from production (BINDING, every experience present & future)»** (auto-caricata ogni sessione, quindi seguita da ogni Exp Design): (1) **Copy voice — 100% human, not AI** (tell da evitare, IT+EN, lunghezza ±10%; memoria `copy-must-be-human`); (2) **Audit discipline — hard vs soft** (HARD `b/c/d/e/f/h/j/k` → 0; SOFT `a/i/g` aspirazionali, **mai** forzati rimpicciolendo il type → cut/split; fix ricorrenti; il parser non conta i mock visivi come massa-testo = limite noto); (3) **Cross-experience propagation** (un cambio prodotto/naming o del motore condiviso si propaga a experience + admin `PAGE_REGISTRY`/`SOLUTIONS` + hub/showcase; verifica vs `docs/*.pptx`; memoria `brand-visibility-product`); (4) **Parallel work su app condivisa → worktree isolati** (build/preview concorrenti corrompono lo stesso `dist/`); (5) **Handover docs leggibili a inizio sessione** via `/handover`.
-- **`skills/experience-design/SKILL.md`**: le stesse regole come **checklist attiva** — voce copy in *Content rules (substance)*, disciplina hard/soft + worktree in *Visual self-audit*, e 4 nuovi gate nella *New Client Checklist* (8 copy pass · 9 audit gate · 10 register everywhere · 11 /handover).
-- **`/handover` reso robusto e globale** (commit `b900ca7`): risolto il bug del frontmatter (`argument-hint: [check]` era una **lista YAML** → il comando veniva scartato, «No commands match»; ora `argument-hint`/`description` sono stringhe quotate) e comando **installato anche a livello utente** in `~/.claude/commands/handover.md` → disponibile in **ogni sessione e ogni progetto** (oltre alla copia di progetto versionata; in questo repo vince quella di progetto). **Nota operativa**: gli slash command si caricano **all'avvio della sessione** → serve una **nuova sessione** perché `/handover` compaia.
-
-### 17.6 UniCredit — passata copy morbido/credibilità (commit `aabd2d1`)
-Round di feedback su Engagement Unlimited (7 richieste puntuali su screenshot). Principio: **più morbido e più credibile**, senza toccare struttura/personas/gating. **Solo gli 11 file `apps/unicredit-engagement/src/pages/*` committati** (i file Ferrari/`packages/core` in working tree erano di §19, lasciati fuori).
-- **Cifre non verificabili → qualitativo**: rimosso **"14M clienti"** ovunque (scenario, conosci ×3, risultati footnote, motore-adobe) → *"milioni di clienti / i milioni di profili"*; ammorbidita l'affermazione assoluta *"il profilo completo… ancora non esiste"* → *"…spesso resta parziale"*. Rimosso **"289 milioni di prompt"** (visibilita, 2 occorrenze) → *"milioni di prompt reali"*. Conseguenza: **§5.2 (14M) e §17.1 (289M) aggiornati**.
-- **Numeri di risultato inventati → direzione (↑/↓)**, mantenendo l'etichetta del KPI («applica i KPI, non i risultati specifici»): convertiti in **tutte** le sezioni (acquisisci −90%/3×/−40% + Experimentation +34%CTR; coinvolgi 5×/–68%/+41%; b2b 3.2×/+58%/–40%; coworker 3×/−72% + campaigns +34%CTR; analizza €2,3M/15–35%/3.4×; risultati proiezione UniCredit +€45M/–55%/–85% + card −68%/+40%/3× + Sofia +34%CTR/NPS78; visibilita EDS +40%). **Tenuti** perché credibili: benchmark di **banche reali citate** (US Bank 19× ecc. in risultati, con footnote), ricerche esterne **linkate** (Gartner −25%, Adobe Analytics +1200%/−33%), **target pubblici** UniCredit (RoTE >20%) e **meccaniche di scenario** (0,3s, 87/100 propensity, 200ms, "3 prodotti in 6 mesi"). Le card KPI ora mostrano una **freccia display (↓/↑)** + etichetta + sub qualitativo.
-- **Next-Best-Action → Next-Best-Experience** in tutta l'experience (conosci ×2 + commento, coinvolgi, b2b, admin `PAGE_REGISTRY`). Scelta la forma **inglese** per coerenza col termine tecnico e col precedente "Next-Best-Action"; l'utente potrebbe preferire l'italianizzato *"Next-Best-Esperienza"* — **(da confermare)**.
-- **Obiezione «abbiamo già Salesforce Data Cloud, ma solo per i clienti noti, non per l'acquisition»**: rafforzato il copy della slide di Marco (`slide-storia-conosci`) — RT-CDP parte dal **click anonimo**, ricompone l'identità in tempo reale ed è *"lo stesso motore che serve i clienti storici e che, in acquisition, intercetta chi la banca ancora non conosce"*; rinforzata la card "Acquisizione" della slide Collaboration (prospect net-new/sconosciuti). **Nessun competitor nominato** nel deck.
-- **Fix doppio `""`** sul sample push-notification di Coinvolgi (le virgolette erano sia nel dato sia nel template che le riaggiungeva).
-- **Bullet Visibilità bilanciati** (`slide-marco-moment`): i 3 bullet resi di lunghezza simile (uno era molto più lungo).
-- **Verifica**: build OK; `audit:deck` contro **preview statico** → **0 fallimenti hard** su tutto il deck (restano i soft a/i/g pre-esistenti, non forzati); **screenshot 1920 letti** su tutte le slide toccate (frecce KPI leggibili/coerenti, copy obiezione senza overflow, bullet bilanciati).
 
 ---
