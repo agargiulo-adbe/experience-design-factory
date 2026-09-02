@@ -299,3 +299,49 @@ Quattro round di feedback owner su screenshot (commit `4c0493e` → `d4a90d7` �
   - **CX Enterprise Coworker**: annuncio Adobe Summit 20/04/2026, **GA 10/06/2026**; è l'evoluzione agent-first di AI Assistant (esegue flussi su RTCDP/CJA/AJO, humans-in-the-loop). AI Assistant oggi risponde solo in inglese.
 
 Verifica di tutti i round: `pnpm --filter trenitalia-connessioni build` verde; `audit:deck` **0 fallimenti HARD × 3 viewport** (soft `a`/`i` = baseline + le 2 nuove slide airy; un overflow transitorio su `slide-adozione` dopo l'aggiunta del pannello Coworker è stato corretto compattando i margini, MAI il type); screenshot 1920 letti di ogni slide toccata (linea, closer, obiezione CDP, connettori). Deck ora a **15 route** in `deck-audit.ts`? — no: le 2 slide di chiusura sono **slide interne** ai `percorso` esistenti (non nuove route), quindi le route restano 13.
+
+---
+
+## 27. UniCredit — Attribution al centro di «Analizza» + Dossier Attribution login-gated (2 set 2026)
+
+Commit `9d308de` → `d2f67ba` → `45cfcdf` → `a19516f` → `f03c343` (tutti su `main`). **Fonti riservate**: meeting **Giancarlini** 24/07 (`docs/UniCredit/`, git-ignored) + deep-research 2/09; dossier MD completo `docs/UniCredit/DOSSIER-UNICREDIT-ADOBE.md`. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Memoria `unicredit-attribution-adobe-day`.
+
+### 27.1 Tesi (dal meeting Giancarlini)
+- **Attribution ufficiale = last-touch**, di **Group Data Office** (sistema **COR**), blindata → CJA non la sostituisce, la **affianca** (vista complementare).
+- **Gap**: il **lead-to-sale non è misurato** (peso di app/filiale/contact-center/agenti su una vendita attribuita a un solo canale).
+- **Finestra**: la **riconciliazione** (dati Adobe → **Palantir Foundry**, chiude 2026, owner **Giancarlini**) abilita l'**attribution marketing multitouch MTA+MMM** di **Christoph Ramler** (pluriennale; scelta tech **aperta**: CJA / Marketing Campaign Analytics vs build custom). *«The time is now».* Leva commerciale: **cost-per-click → cost-per-sale**.
+
+### 27.2 Deck «Analizza» — 2 slide nuove + riordino + bonifica audit
+- `slide-lasttouch` («Il last-touch dice chi. Non dice come.»): report ufficiale (un canale, last-touch) **vs** vista complementare CJA (barre-peso app/contact center/filiale).
+- `slide-costpersale` («Pagare il marketing sulle vendite, non sui click.»): **MTA vs MMM** complementari, causali con l'incrementalità, «diventa un contratto, non una disputa».
+- Riordino sezione; card **Attribution** in testa al use-case bancario; ritocco lead della cover. Registrate nel `PAGE_REGISTRY` di `admin.astro`.
+- **Audit**: sezione «Analizza» resa **HARD-clean** su 1920/1440/1280. Baseline pre-esistente = **38 failure con HARD** su cxa-brand/banking/llm-mix (verificato con `git stash`); bonificate riducendo copy/densità (tolto pannello CMO da cxa-brand, footnote da llm-mix, card compatte banking, ecc.), **mai il type sotto i minimi**. Residui = 35, tutti **soft** (`a`/`g`/`i`). Screenshot 1920 letti. **Taglio scelto dall'utente: «esplicito e pubblico»** (deck pubblico con la direzione UniCredit esplicita).
+
+### 27.3 Dossier Attribution `/dossier/` — login-gated, bilingue IT/EN, PDF
+- Pagina **unica** (merge dossier+war-room): **orfana** (non in nav) + **`noindex`**.
+- **Sicurezza (scelta dall'utente: «contenuti in Supabase con RLS»)**: il contenuto riservato (nomi, roster, strategia) **NON è nel bundle statico** → vive in **Supabase `restricted_docs`** (jsonb) protetto da **RLS** (read = super admin **OR** ruolo su `unicredit-engagement`; write = super admin), caricato via `fetch` con **Bearer token** dopo login. Sessione **condivisa same-origin** col Console (`localStorage['edf:sb-session']`). Migration **`0008_restricted_docs.sql`** (applicata al DB remoto 2 set via SQL editor). L'accesso si **«attiva» da `/console/users/`** assegnando il ruolo `unicredit-engagement` (o super admin).
+- **Bilingue IT/EN** (toggle; contenuto renderizzato client-side dal JSON, ogni campo `{it,en}`) + **download PDF** (`window.print()` con print stylesheet: fondo bianco, ink scuro, niente chrome).
+- Contenuto: **10 sezioni** (tesi · modello as-is · le 2 tracce · mappa org con link LinkedIn · big ideas · Adobe Day · CJA vs Foundry · dire/non-dire · evidenze · fonti).
+- **Verifica**: build ok; **zero segreti nel bundle** (nomi + LinkedIn = 0 occorrenze nell'HTML statico); sintassi JS del gate ok; `noindex` presente. **Render autenticato NON verificato in browser** (tool bloccato) → **P1 §10**.
+
+### 27.4 Gotcha tecnici
+- **Stili `is:global` obbligatori**: il contenuto è **iniettato via JS** (`createElement`), quindi i nodi **non hanno `data-astro-cid`** → gli stili `<style>` **scoped** di Astro (compilati in `.ur-*[data-astro-cid]`) **non li colpiscono** → testo scuro su fondo scuro, invisibile. Fix: `<style is:global>` (classi prefissate `.ur-*`). Stessa famiglia di gotcha già vista sullo showcase (scoped-style su nodi non-Astro).
+- **`noindex`** aggiunto come prop al `BaseLayout.astro` di UniCredit (prima non c'era; ora `{noindex && <meta name="robots" content="noindex, nofollow">}`).
+
+### 27.5 Adobe Day (dal thread «[UniCredit] Adobe & ACN next steps», girato dall'owner)
+Workshop UniCredit **co-Adobe + Accenture**, target **settimana del 14/09/2026**, **on-site** dal cliente, **dry-run 7/09**, mezza giornata; sponsor **Cristina D'Ambrosio** (Head of Retail Digital Channels) **+ IT**; agenda oggi **demo-led** → spingere l'attribution a filo conduttore. Roster completo (Adobe: Vegliante lead, Pellerei, Pagnanelli, Gordiani, Lapiccirella, Gargiulo; ACN: Negri, Magnani, Parri, +Cerutti) **nel dossier MD riservato**, non sulla pagina. Bloccato sul **MYP** del cliente. La casella `agargiulo@adobe.com` **non è collegata** a questa sessione (Gmail connesso = personale) → la ricerca posta l'ha fatta l'owner girando il thread.
+
+### 27.6 Aperti
+- **QC live del dossier** (render, IT/EN, PDF, LinkedIn) dopo login super admin — **P1 §10**.
+- **Loretta Del Monte** — omonimia da confermare (profilo LinkedIn Risk/P&L ≠ ruolo riconciliazione) — **P2 §10**.
+- **Reference bancarie Adobe EMEA/Italia** — la deep-research non ne ha confermate di pubbliche → chiudere con Industry team.
+
+---
+
+## 28. Alfabeti — Ministero dell'Istruzione e del Merito (MIM) (2 set 2026)
+
+**App**: `apps/mim-alfabeti` · base `/mim-alfabeti/` · commit `fadb1e3` (prodotta da una sessione precedente, non in questa). Deck immersivo per il **MIM**: la **comunicazione al personale** (AEP/AJO/CJA), le **competenze / IA sicura**, l'**accesso** come esperienza istituzionale. **IT default + toggle EN**; palette **light istituzionale** (carta/blu, display **Titillium Web**).
+- **8 sezioni**: `index` + `accesso`, `competenze`, `domanda`, `persone`, `realta`, `rotta`, `voce` (+ `admin`).
+- **Doppio uso client/interno**: la sezione **«realtà»** è **gated dalla soluzione `interno`** — spenta di default per la versione cliente, accesa per la lettura interna.
+- **Registrazioni**: `deploy.yml` (merge+verify), `factory-hub`, `scripts/deck-audit.ts` (ROUTE_SET), root scripts. **NON** seedata nella console Supabase (**P2 §10**, come Eni).
+- `audit:deck` **0 fallimenti hard**. **Dossier strategico bilingue** in `docs/` (git-ignored, non nel repo — cfr. dossier MIM già citato nella memoria `mim-adobe-prep`).
