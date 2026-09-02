@@ -58,23 +58,31 @@ const llmInsightsPoints = [
 
 const bankingUseCases = [
   {
+    tag: 'Attribution',
+    title: 'Full-funnel attribution causale',
+    body: 'Collega i dati pubblicitari ai segnali comportamentali e ottimizza il budget con AI causale Adobe, non col last-click.',
+    solution: 'Marketing Campaign Analytics',
+  },
+  {
     tag: 'Retail Banking',
     title: 'Offline data ingestion',
-    body: 'Connetti i dati di filiale e call center ai journey digitali e leggi il percorso completo del cliente, anche quando passa dall\'app allo sportello.',
+    body: 'Unisci i dati di filiale e call center ai journey digitali: il percorso completo del cliente, anche quando passa dall\'app allo sportello.',
     solution: 'CJA',
   },
   {
     tag: 'Churn Prevention',
     title: 'Segnali precoci di abbandono',
-    body: 'CJA identifica pattern di engagement che precedono il churn 14-30 giorni prima. AJO attiva automaticamente journey di retention personalizzate.',
+    body: 'CJA riconosce i segnali di abbandono 14-30 giorni prima; AJO attiva journey di retention personalizzate.',
     solution: 'CJA + AJO',
   },
-  {
-    tag: 'Attribution',
-    title: 'Full-funnel attribution causale',
-    body: 'Collega i dati pubblicitari ai segnali comportamentali per ottimizzare budget campagna con AI causale proprietaria Adobe — non last-click.',
-    solution: 'Marketing Campaign Analytics',
-  },
+];
+
+// Slide «last-touch» — pesi illustrativi dei canali su una singola vendita
+// che il report ufficiale attribuisce a un solo canale (last-touch).
+const channelWeights = [
+  { name: 'App', pct: 45 },
+  { name: 'Contact center', pct: 30 },
+  { name: 'Filiale', pct: 25 },
 ];
 
 const funnelSteps = [
@@ -108,7 +116,7 @@ const funnelSteps = [
         eyebrow="06 · ADOBE CX ANALYTICS"
         numeral="06"
         title="L'intelligenza<br/>che decide"
-        lead="Non più reportistica, ma insight azionabili ovunque lavori il team: dall'analista al CEO, dall'app a Microsoft Copilot."
+        lead="Sapere quali canali portano davvero le vendite e agire dove lavora il team: dall'analista al CEO, dall'app a Microsoft Copilot."
         size="phase"
         tone="inverse"
         signature={false}
@@ -133,7 +141,7 @@ const funnelSteps = [
         Announcing
       </h2>
       <p
-        class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-5"
+        class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-4"
         style="font-size: clamp(2.6rem, 4.4vw, 4.4rem);"
         data-reveal
         data-reveal-delay="0.1"
@@ -141,15 +149,15 @@ const funnelSteps = [
         Adobe CX Analytics
       </p>
       <p
-        class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-6 leading-relaxed"
+        class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-5 leading-relaxed"
         data-reveal
         data-reveal-delay="0.2"
       >
-        La piattaforma di intelligence unificata che unisce analytics digitali, journey analytics, marketing ROI e content intelligence su un'unica fondazione, alimentata da Adobe Experience Platform.
+        La piattaforma di intelligence unificata che unisce analytics digitali, journey, marketing ROI e content intelligence su un'unica fondazione Adobe Experience Platform.
       </p>
 
       <div
-        class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-4"
+        class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-3"
         data-reveal
         data-reveal-delay="0.3"
       >
@@ -162,14 +170,66 @@ const funnelSteps = [
           </div>
         ))}
       </div>
+    </Slide>
 
-      <div class="uc-panel uc-panel--rosso text-left max-w-3xl mx-auto mt-5" data-reveal data-reveal-delay="0.45">
-        <div class="uc-panel-head">
-          <p class="uc-tag">Il CMO, in questo momento</p>
-          <span class="uc-node uc-node--rosso"></span>
+    <!-- ── SLIDE 2: Last-touch → vista complementare (ATTRIBUTION) ─ -->
+    <Slide id="slide-lasttouch" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>ATTRIBUTION · LA VISTA CHE MANCA</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-4"
+        style="font-size: clamp(2rem, 4vw, 3.5rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Il last-touch dice chi.<br/>Non dice come.
+      </h2>
+      <p
+        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-6 leading-relaxed"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Il report vendite ufficiale attribuisce ogni vendita a un solo canale, l'ultimo che l'ha registrata. È il modello di governance, e resta così.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4 items-stretch" data-reveal data-reveal-delay="0.22">
+        <div class="uc-panel uc-panel--rosso text-left">
+          <div class="uc-panel-head">
+            <p class="uc-tag">Report ufficiale · last-touch</p>
+          </div>
+          <div class="flex items-center gap-3 mt-1">
+            <span class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]" style="font-size: clamp(1.4rem,2vw,1.9rem);">1 prestito</span>
+            <span class="text-[var(--accent-primary)] text-xl">→</span>
+            <span class="font-semibold text-[var(--ink-primary)]" style="font-size: 1.05rem;">Filiale</span>
+          </div>
+          <p class="uc-panel-body mt-2" style="margin-bottom: 0;">L'ultimo canale prende tutto il merito; gli altri spariscono dal conto.</p>
         </div>
-        <p class="uc-quote-text" style="margin-top: 0;">«Ha chiesto al Data Insights Agent: "Perché il tasso di conversione mutui è calato del 12% questa settimana?" Ha ottenuto la risposta in 30 secondi, con root cause e next action.»</p>
+
+        <div class="uc-panel uc-panel--oro text-left">
+          <div class="uc-panel-head">
+            <p class="uc-tag" style="color: var(--color-oro);">Vista complementare · CJA</p>
+          </div>
+          <div class="flex flex-col gap-2 mt-1 min-w-0">
+            {channelWeights.map((c) => (
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="w-28 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.9rem;">{c.name}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="h-6 bg-[var(--accent-primary)] rounded-sm" style={`width: ${c.pct}%;`}></div>
+                </div>
+                <span class="flex-shrink-0 font-semibold text-[var(--ink-primary)]" style="font-family: var(--font-display); font-size: 0.95rem;">{c.pct}%</span>
+              </div>
+            ))}
+          </div>
+          <p class="uc-panel-body mt-2" style="margin-bottom: 0;">Lo stesso venduto, con il peso reale di ogni canale. Senza toccare il modello ufficiale.</p>
+        </div>
       </div>
+
+      <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left mt-4" data-reveal data-reveal-delay="0.35">
+        <p class="uc-panel-body" style="margin-bottom: 0;">
+          <span class="font-semibold text-[var(--ink-primary)]">Per UniCredit:</span> capire quanto app, filiale, contact center e agenti pesano su una vendita attribuita a uno solo, per orchestrare i lead e dare ai team obiettivi quantitativi.
+        </p>
+      </div>
+      <p class="mt-3 text-center text-[0.62rem] tracking-widest uppercase opacity-40">Pesi illustrativi · vista complementare, non sostitutiva del modello ufficiale</p>
     </Slide>
 
     <!-- ── SLIDE 2: Data Insights Agent ──────────────────────────── -->
@@ -203,9 +263,9 @@ const funnelSteps = [
             </div>
           </div>
 
-          <div class="flex flex-col gap-3.5" data-reveal data-reveal-delay="0.3">
+          <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.3">
             {agentCapabilities.map((cap) => (
-              <div class="uc-panel flex-row items-start gap-4" style="flex-direction: row; padding: 0.95rem 1.2rem;">
+              <div class="uc-panel flex-row items-start gap-4" style="flex-direction: row; padding: 0.8rem 1.1rem;">
                 <span class="text-[var(--accent-primary)] text-xl flex-shrink-0 mt-0.5">{cap.icon}</span>
                 <div class="min-w-0">
                   <p class="font-semibold text-[var(--ink-primary)] mb-1" style="font-size: 1rem;">{cap.title}</p>
@@ -219,7 +279,7 @@ const funnelSteps = [
                 <p class="uc-tag" style="color: var(--color-oro);">Marco, in questo momento</p>
                 <span class="uc-node"></span>
               </div>
-              <p class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);">«Il consulente ha notato che Marco non aveva aperto l'email del mutuo. Il Data Insights Agent lo aveva già segnalato come at-risk e aveva suggerito un reminder SMS per mercoledì mattina.»</p>
+              <p class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);">«Marco non aveva aperto l'email del mutuo. Il Data Insights Agent lo aveva già segnalato come at-risk e suggerito un reminder SMS per mercoledì mattina.»</p>
             </div>
           </div>
         </div>
@@ -325,25 +385,25 @@ const funnelSteps = [
     <Slide id="slide-banking" bg="secondary" align="split">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
       <div data-demo-flex class="w-full flex items-start gap-8">
-        <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
+        <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
           <div class="text-left">
-            <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>USE CASE · RETAIL BANKING</p>
+            <p class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal>USE CASE · RETAIL BANKING</p>
             <h2
-              class="slide-title text-[var(--ink-primary)] mb-4"
-              style="font-size: clamp(2rem, 4vw, 3.75rem);"
+              class="slide-title text-[var(--ink-primary)] mb-3"
+              style="font-size: clamp(1.9rem, 3vw, 2.7rem);"
               data-reveal
               data-reveal-delay="0.08"
             >
-              Dove si perde<br/>il valore — e perché
+              Dove si perde<br/>il valore, e perché
             </h2>
-            <div class="flex flex-col gap-3" data-reveal data-reveal-delay="0.15">
+            <div class="flex flex-col gap-2" data-reveal data-reveal-delay="0.15">
               {bankingUseCases.map((uc) => (
-                <div class="uc-panel uc-panel--rosso">
+                <div class="uc-panel uc-panel--rosso" style="padding: 0.85rem 1.05rem;">
                   <div class="uc-panel-head">
                     <p class="uc-tag">{uc.tag}</p>
                     <span class="uc-src" style="font-weight: 600; color: var(--color-blu-medio);">{uc.solution}</span>
                   </div>
-                  <p class="font-semibold text-[var(--ink-primary)] mb-1.5" style="font-size: 1rem; font-family: var(--font-display);">{uc.title}</p>
+                  <p class="font-semibold text-[var(--ink-primary)] mb-1" style="font-size: 1rem; font-family: var(--font-display);">{uc.title}</p>
                   <p class="uc-panel-body" style="margin-bottom: 0;">{uc.body}</p>
                 </div>
               ))}
@@ -352,7 +412,7 @@ const funnelSteps = [
 
           <div class="uc-panel uc-panel--oro min-w-0" data-reveal data-reveal-delay="0.3">
             <div class="uc-panel-head">
-              <p class="uc-tag" style="color: var(--color-oro);">Funnel mutuo — pattern illustrativo</p>
+              <p class="uc-tag" style="color: var(--color-oro);">Funnel mutuo · pattern illustrativo</p>
             </div>
             <div class="flex flex-col gap-2 min-w-0">
               {funnelSteps.map((step) => (
@@ -378,6 +438,53 @@ const funnelSteps = [
       </div>
     </Slide>
 
+    <!-- ── SLIDE: Cost-per-click → cost-per-sale (ATTRIBUTION) ───── -->
+    <Slide id="slide-costpersale" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
+      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal>ATTRIBUTION · DAL CLICK ALLA VENDITA</p>
+      <h2
+        class="slide-title text-[var(--ink-primary)] mb-4"
+        style="font-size: clamp(2rem, 4vw, 3.4rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Pagare il marketing sulle vendite,<br/>non sui click.
+      </h2>
+      <p
+        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-6 leading-relaxed"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Riconciliare la navigazione con il venduto vuol dire remunerare le agenzie sul risultato reale. Ma il cost-per-sale regge solo su un'attribution solida e condivisa.
+      </p>
+
+      <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-4" data-reveal data-reveal-delay="0.22">
+        <div class="uc-panel uc-panel--oro text-left">
+          <div class="uc-panel-head">
+            <p class="uc-tag" style="color: var(--color-oro);">MTA · multi-touch</p>
+          </div>
+          <p class="uc-panel-body" style="margin-bottom: 0;">Livello persona. Racconta chi ha toccato quali canali e guida le decisioni tattiche di canale, settimana per settimana.</p>
+        </div>
+        <div class="uc-panel uc-panel--rosso text-left">
+          <div class="uc-panel-head">
+            <p class="uc-tag">MMM · marketing mix</p>
+          </div>
+          <p class="uc-panel-body" style="margin-bottom: 0;">Livello aggregato. Guida il budget di trimestre e regge dove cookie e identità non arrivano, perché non traccia il singolo utente.</p>
+        </div>
+      </div>
+
+      <div class="uc-panel max-w-3xl mx-auto mb-3" data-reveal data-reveal-delay="0.3" style="align-items: center;">
+        <p class="uc-panel-body" style="margin-bottom: 0; text-align: center;"><span class="font-semibold text-[var(--ink-primary)]">Complementari, non alternativi.</span> Diventano causali con l'incrementalità, e <span class="font-semibold text-[var(--ink-primary)]">Marketing Campaign Analytics</span> li unifica in un modello solo.</p>
+      </div>
+
+      <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.4">
+        <div class="uc-panel-head">
+          <p class="uc-tag">Il punto</p>
+        </div>
+        <p class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem,1.35vw,1.35rem);">«Senza una base di attribution condivisa il cost-per-sale diventa una disputa. Con CJA e Marketing Campaign Analytics diventa un contratto.»</p>
+      </div>
+    </Slide>
+
     <!-- ── SLIDE 5b: LLM Insights + Marketing Campaign Analytics ─── -->
     <Slide id="slide-llm-mix" bg="secondary" align="center">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
@@ -391,15 +498,15 @@ const funnelSteps = [
         Da dove vengono davvero i tuoi clienti migliori
       </h2>
       <p
-        class="text-[clamp(1rem,1.35vw,1.25rem)] text-[var(--ink-secondary)] max-w-3xl mb-4"
+        class="text-[clamp(1rem,1.35vw,1.25rem)] text-[var(--ink-secondary)] max-w-3xl mb-3"
         data-reveal
         data-reveal-delay="0.15"
       >
-        Sempre più clienti UniCredit iniziano il percorso finanziario da un LLM, e LLM Insights lo misura: è il primo strumento al mondo a tracciare il tragitto da una conversazione AI a una conversione bancaria.
+        Sempre più clienti UniCredit iniziano il percorso finanziario da un LLM, e LLM Insights lo misura: traccia il tragitto da una conversazione AI a una conversione bancaria.
       </p>
 
       <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-4"
+        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-3"
         data-reveal
         data-reveal-delay="0.22"
       >
@@ -413,12 +520,12 @@ const funnelSteps = [
           <div class="uc-panel-head">
             <p class="uc-tag">Marketing Campaign Analytics</p>
           </div>
-          <p class="uc-panel-body" style="margin-bottom: 0;">Causal AI + full-funnel attribution. La campagna Instagram di acquisizione conti, di cui il reel ads di Sofia è un esempio, genera pipeline reale: Marketing Campaign Analytics la attribuisce con AI causale, non con il last-click.</p>
+          <p class="uc-panel-body" style="margin-bottom: 0;">Causal AI + full-funnel attribution. La campagna Instagram di acquisizione conti (il reel di Sofia ne è un esempio) genera pipeline reale, attribuita con AI causale, non col last-click.</p>
         </div>
       </div>
 
       <div
-        class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-4 mb-4"
+        class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-4 mb-3"
         data-reveal
         data-reveal-delay="0.3"
       >
@@ -427,7 +534,7 @@ const funnelSteps = [
           { stat: "↑", label: "pipeline attribuita alla campagna, non solo stimata" },
           { stat: "↑", label: "ROI marketing, misurato in modo causale" },
         ].map((m) => (
-          <div class="uc-panel" style="align-items: center; padding-top: 1rem; padding-bottom: 1rem;">
+          <div class="uc-panel" style="align-items: center; padding-top: 0.8rem; padding-bottom: 0.8rem;">
             <p class="uc-stat-value" style="border: 0;">{m.stat}</p>
             <p class="uc-stat-label" style="margin-bottom: 0;">{m.label}</p>
           </div>
@@ -439,9 +546,8 @@ const funnelSteps = [
           <p class="uc-tag">Il CMO, in questo momento</p>
           <span class="uc-node uc-node--rosso"></span>
         </div>
-        <p class="uc-quote-text" style="margin-top: 0;">«Per la prima volta riesce a rispondere a: "Qual è il ritorno sull'investimento della nostra presenza su ChatGPT?" E la risposta è un numero misurato, non una stima.»</p>
+        <p class="uc-quote-text" style="margin-top: 0;">«Per la prima volta riesce a rispondere: "Qual è il ROI della nostra presenza su ChatGPT?" Un numero misurato, non una stima.»</p>
       </div>
-      <p class="mt-4 text-center text-[0.62rem] tracking-widest uppercase opacity-40">Adobe Marketing Campaign Analytics · benchmark settore banking · proiezione illustrativa su campagne UniCredit</p>
     </Slide>
 
     <!-- ── SLIDE 6: Marketing Campaign Analytics ─────────────────── -->

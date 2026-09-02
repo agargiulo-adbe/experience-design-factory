@@ -1,0 +1,294 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+
+// ── Pagina ORFANA e RISERVATA (Adobe internal) ─────────────────────────────
+// Non è linkata dalla navigazione dell'experience né dalla home: si raggiunge
+// solo via URL diretto (/dossier/). noindex → fuori dai motori di ricerca.
+// Contenuto SANIFICATO: nomi di persone interni/clienti, email e dettagli del
+// meeting riservato restano FUORI da questa pagina, per scelta (come per Eni).
+// Il dossier completo vive in docs/UniCredit/ (git-ignorato), non online.
+
+const summary = [
+  '<strong>La tesi:</strong> l\'attribution ufficiale delle vendite in UniCredit è last-touch, di proprietà del data office e blindata a livello manageriale. Non cambia, e Adobe non prova a cambiarla: la affianca con una vista complementare.',
+  '<strong>Il vuoto:</strong> oggi nessuno strumento misura il contributo lead-to-sale — quanto app, filiale, contact center e agenti pesano su una vendita che il sistema attribuisce a un solo canale. È lì che entra CJA.',
+  '<strong>La finestra:</strong> è già in corso un progetto di riconciliazione delle vendite che abilita un programma pluriennale di attribution marketing multitouch (MTA+MMM). La scelta tecnologica non è chiusa: è il momento per far pesare Adobe.',
+  '<strong>La leva commerciale:</strong> passare la remunerazione delle agenzie media da cost-per-click a cost-per-sale — possibile solo su una base di attribution solida e condivisa.',
+];
+
+const tracce = [
+  '<strong>Traccia A — Riconciliazione (in corso, si chiude nel 2026):</strong> i dati comportamentali e di marketing channel di Adobe vengono riconciliati con il venduto per abilitare il cost-per-sale sui prodotti acquisitivi (conti, carte, prestiti; poi carte di credito e mutui).',
+  '<strong>Traccia B — Attribution marketing multitouch (pluriennale):</strong> un modello mixed/multitouch (MTA + MMM), non deterministico, per le campagne media e l\'ottimizzazione del budget. Qui la scelta tecnologica è aperta: modello Adobe out-of-the-box vs build custom.',
+  '<strong>Il ponte:</strong> la Traccia A abilita la Traccia B. Partire dal core marketing/performance (dove c\'è roadmap e budget) e poi estendere al mondo interno lead-to-sale.',
+];
+
+const bigIdeas = [
+  '<strong>La vista complementare, non il sostituto.</strong> CJA come layer di viste cross-channel sopra l\'attribution ufficiale: zero conflitto con il data office, finalmente la lettura lead-to-sale che oggi manca.',
+  '<strong>Cost-per-sale, davvero.</strong> Riconciliare navigazione → vendita e pagare il budget media sul valore reale, non sul click.',
+  '<strong>MTA + MMM nativi.</strong> Marketing Campaign Analytics (ex Mix Modeler): Causal AI, full-funnel attribution, incrementalità e budget optimization con raccomandazioni agentiche — alternativa al build "a mano".',
+  '<strong>Dal monitoring all\'orchestrazione.</strong> Misurare il contributo dei canali per instradare i lead, definire il next-best-channel e dare ai team target quantitativi e sistema incentivante.',
+];
+
+const adobeDay = [
+  '<strong>Cos\'è:</strong> workshop con il cliente, co-condotto Adobe + Accenture — storia end-to-end su slide più demo dei prodotti.',
+  '<strong>Quando:</strong> target settimana del 14 settembre 2026; formato mezza giornata (una mattina o un pomeriggio). Dry-run Adobe+Accenture nella settimana del 7 settembre.',
+  '<strong>Dove:</strong> on-site dal cliente (riduce il rischio di no-show rispetto a una sede esterna).',
+  '<strong>Partecipazione obiettivo:</strong> lo sponsor dei canali digitali lato cliente e l\'IT.',
+  '<strong>Blocco aperto:</strong> in attesa della conferma del piano pluriennale del cliente per il fine-tuning dei contenuti; le date le sblocca il cliente.',
+  '<strong>Mossa strategica:</strong> l\'agenda oggi è product/demo-led. Il tema attribution (lead-to-sale + MTA/MMM, "the time is now") è il candidato più forte per darle un filo conduttore. Da spingere al dry-run.',
+];
+
+const risorse = [
+  { ruolo: 'Regia narrativa / account', nota: 'Filo conduttore attribution e relazione cliente.' },
+  { ruolo: 'Coordinamento & product sales', nota: 'Agenda, stakeholder, chiusura.' },
+  { ruolo: 'Solution Consultant — CJA', nota: 'Demo vista cross-channel e lead-to-sale.' },
+  { ruolo: 'Specialist — Marketing Campaign Analytics', nota: 'Causal AI, MTA+MMM, incrementalità, budget optimization: il cuore della Traccia B.' },
+  { ruolo: 'Data Architect (AEP ↔ data platform)', nota: 'Risponde al tema "CJA vs build custom" e al dato transazionale di vendita.' },
+  { ruolo: 'Customer reference / Industry banking', nota: 'Casi attribution/CJA in banking (da validare con l\'Industry team).' },
+];
+
+const dire = [
+  'CJA è una vista complementare: arricchisce il modello ufficiale, non lo tocca.',
+  'Il cost-per-sale ha senso solo su un\'attribution condivisa: "diventa un contratto, non una disputa".',
+  'MTA e MMM sono complementari (tattico settimanale vs strategico trimestrale), causali con l\'incrementalità.',
+  'MMM è privacy-safe: non traccia il singolo utente — vantaggio nel contesto GDPR.',
+  'Marketing Campaign Analytics unifica MMM+MTA in un prodotto e si integra con CJA.',
+];
+
+const nonDire = [
+  'Che CJA sostituisca o cambi l\'attribution ufficiale del data office: è escluso.',
+  'Che Adobe sia un\'alternativa alla data platform del cliente: è un layer di analytics integrabile, non un rip & replace.',
+  'Reference bancarie Adobe come fatti verificati finché l\'Industry team non le conferma pubbliche.',
+  'Nessuna cifra economica o dettaglio contrattuale in stanza.',
+];
+
+const evidenze = [
+  '<strong>Il last-touch è debole nel banking:</strong> è correlazionale, non causale, non vede i touchpoint offline (filiale, contact center, agenti) e sovra-accredita l\'ultimo tocco digitale (+30% e oltre).',
+  '<strong>MMM è il metodo adatto</strong> quando la spesa offline è alta, i cicli di vendita sono lunghi e l\'identità è parziale — la realtà lead-to-sale di una banca — ed è resiliente a privacy e cookie.',
+  '<strong>MTA + MMM sono complementari, non alternativi;</strong> nessuno dei due è causale senza esperimenti di incrementalità.',
+  '<strong>Il cost-per-sale puro è raro</strong> e regge solo con un\'infrastruttura di attribution robusta: le dispute su "cosa conta" sono il rischio che rompe questi contratti.',
+];
+
+const biblioteca = [
+  { label: 'The Financial Brand — the marketing/sales attribution dilemma in banking', url: 'https://thefinancialbrand.com/news/bank-cross-selling/solving-the-marketing-sales-attribution-dilemma-in-banking-145732', tipo: 'settore' },
+  { label: 'Improvado — MMM vs multi-touch attribution (soglie e criteri)', url: 'https://improvado.io/blog/mmm-vs-multi-touch-attribution', tipo: 'analisi' },
+  { label: 'Haus.io — MTA vs MMM: scegliere il metodo', url: 'https://www.haus.io/blog/mta-vs-mmm-choosing-between-multi-touch-attribution-and-marketing-mix-modeling', tipo: 'analisi' },
+  { label: 'Funnel.io — MTA vs MMM (privacy, granularità)', url: 'https://funnel.io/blog/mta-vs-mmm', tipo: 'analisi' },
+  { label: 'TapClicks — perché MTA e MMM devono lavorare insieme (2026)', url: 'https://www.tapclicks.com/blog/marketing-attribution-in-2026-why-multi-touch-and-marketing-mix-modeling-have-to-work-together', tipo: 'analisi' },
+  { label: 'Adobe — CJA B2B Edition, multi-touch attribution (prodotto)', url: 'https://business.adobe.com/products/adobe-analytics/customer-journey-analytics-b2b-edition/b2b-multi-touch-attribution.html', tipo: 'Adobe' },
+  { label: 'Adobe Experience League — blueprint B2B analytics', url: 'https://experienceleague.adobe.com/en/docs/blueprints-learn/architecture/use-case-patterns/analysis-patterns/b2b-analytics', tipo: 'Adobe' },
+  { label: 'Adobe — Mix Modeler / Marketing Campaign Analytics', url: 'https://business.adobe.com/products/mix-modeler.html', tipo: 'Adobe' },
+  { label: 'EY × Adobe Mix Modeler (alliance)', url: 'https://www.ey.com/en_us/alliances/adobe-mix-modeler', tipo: 'SI' },
+  { label: 'TrinityP3 — modelli di remunerazione agenzie (guida)', url: 'https://www.trinityp3.com/advertising-agency-fees-comprehensive-guide-marketing/', tipo: 'analisi' },
+  { label: 'SevenFigureAgency — modelli pay-per-performance (rischi CPS)', url: 'https://sevenfigureagency.com/15-pay-per-performance-agency-models-explained/', tipo: 'analisi' },
+];
+---
+<BaseLayout
+  title="Dossier — War Room UniCredit"
+  description="Adobe internal — dossier di preparazione (attribution & Adobe Day)."
+  noindex={true}
+>
+  <div class="ur-shell">
+    <header class="ur-header">
+      <div class="ur-header-inner">
+        <div class="ur-header-left">
+          <span class="ur-badge">Adobe internal</span>
+          <h1 class="ur-title">War Room — UniCredit · Attribution</h1>
+        </div>
+        <div class="ur-header-right">
+          <a class="ur-deck-link" href={href(base, '/')}>Apri il deck →</a>
+          <a class="ur-deck-link ur-deck-link--soft" href={href(base, '/analizza/')}>Sezione «Analizza» →</a>
+        </div>
+      </div>
+      <p class="ur-disclaimer">
+        Documento di lavoro per il team Adobe. Contenuto sanificato: nomi di persone, email e dettagli del meeting riservato restano fuori da questa pagina, per scelta. Fonti pubbliche citate; nessun dato contrattuale o economico. Da non far circolare fuori da Adobe.
+      </p>
+    </header>
+
+    <main class="ur-main">
+      <!-- 1 · Executive summary -->
+      <section class="ur-section" aria-labelledby="ur-h-sum">
+        <h2 class="ur-h" id="ur-h-sum"><span class="ur-h-num">01</span>Executive summary</h2>
+        <ul class="ur-list">
+          {summary.map((s) => (<li class="ur-li" set:html={s} />))}
+        </ul>
+      </section>
+
+      <!-- 2 · La finestra -->
+      <section class="ur-section" aria-labelledby="ur-h-tracce">
+        <h2 class="ur-h" id="ur-h-tracce"><span class="ur-h-num">02</span>La finestra — le due tracce</h2>
+        <ul class="ur-list">
+          {tracce.map((s) => (<li class="ur-li" set:html={s} />))}
+        </ul>
+      </section>
+
+      <!-- 3 · Big ideas -->
+      <section class="ur-section" aria-labelledby="ur-h-ideas">
+        <h2 class="ur-h" id="ur-h-ideas"><span class="ur-h-num">03</span>Le big ideas Adobe × attribution</h2>
+        <ul class="ur-list">
+          {bigIdeas.map((s) => (<li class="ur-li" set:html={s} />))}
+        </ul>
+      </section>
+
+      <!-- 4 · Adobe Day -->
+      <section class="ur-section" aria-labelledby="ur-h-day">
+        <h2 class="ur-h" id="ur-h-day"><span class="ur-h-num">04</span>Adobe Day — il workshop</h2>
+        <ul class="ur-list">
+          {adobeDay.map((s) => (<li class="ur-li" set:html={s} />))}
+        </ul>
+        <h3 class="ur-sub">Risorse Adobe da attivare (ruoli)</h3>
+        <div class="ur-people">
+          {risorse.map((r) => (
+            <div class="ur-person">
+              <p class="ur-person-name">{r.ruolo}</p>
+              <p class="ur-person-note">{r.nota}</p>
+            </div>
+          ))}
+        </div>
+        <p class="ur-note">Roster nominale (Adobe + Accenture) e stakeholder cliente: nel dossier completo riservato, non in questa pagina.</p>
+      </section>
+
+      <!-- 5 · Evidenze -->
+      <section class="ur-section" aria-labelledby="ur-h-ev">
+        <h2 class="ur-h" id="ur-h-ev"><span class="ur-h-num">05</span>Evidenze (deep-research)</h2>
+        <p class="ur-note">Sintesi verificata con voto avversariale a 3 voti (ricerca del 2 settembre 2026). Le affermazioni pro-Adobe sono vendor-positioning, non benchmark indipendenti.</p>
+        <ul class="ur-list">
+          {evidenze.map((s) => (<li class="ur-li" set:html={s} />))}
+        </ul>
+      </section>
+
+      <!-- 6 · Dire / non dire -->
+      <section class="ur-section" aria-labelledby="ur-h-dire">
+        <h2 class="ur-h" id="ur-h-dire"><span class="ur-h-num">06</span>Da dire / da non dire</h2>
+        <div class="ur-cols">
+          <div class="ur-col ur-col--ok">
+            <h3 class="ur-col-h">✓ Da dire</h3>
+            <ul class="ur-list">
+              {dire.map((d) => (<li class="ur-li ur-li--tight">{d}</li>))}
+            </ul>
+          </div>
+          <div class="ur-col ur-col--no">
+            <h3 class="ur-col-h">✗ Da non dire</h3>
+            <ul class="ur-list">
+              {nonDire.map((d) => (<li class="ur-li ur-li--tight">{d}</li>))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 · Biblioteca -->
+      <section class="ur-section" aria-labelledby="ur-h-fonti">
+        <h2 class="ur-h" id="ur-h-fonti"><span class="ur-h-num">07</span>Biblioteca — fonti e link</h2>
+        <ul class="ur-sources">
+          {biblioteca.map((b) => (
+            <li class="ur-source">
+              <span class={`ur-chip ur-chip--${b.tipo}`}>{b.tipo}</span>
+              <a href={b.url} target="_blank" rel="noopener noreferrer">{b.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="ur-footer">
+        Preparato dal team Adobe Italia · dossier completo riservato in docs/UniCredit/ · ultimo aggiornamento 2 settembre 2026
+      </footer>
+    </main>
+  </div>
+
+  <style>
+    .ur-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 60% at 15% 0%, rgba(190,32,39,0.10), transparent 55%),
+        var(--color-blu-notte);
+    }
+    .ur-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(20, 20, 34, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .ur-header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      max-width: 62rem; margin-inline: auto; flex-wrap: wrap;
+    }
+    .ur-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+    .ur-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--color-crema); background: var(--color-rosso);
+      padding: 0.25rem 0.6rem; border-radius: 3px;
+    }
+    .ur-title {
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em;
+      font-size: clamp(1.05rem, 2vw, 1.35rem); color: var(--color-crema); line-height: 1.2;
+    }
+    .ur-header-right { display: flex; align-items: center; gap: 1.1rem; flex-shrink: 0; flex-wrap: wrap; }
+    .ur-deck-link {
+      font-size: 0.8rem; font-weight: 600; color: var(--color-oro);
+      text-decoration: none; white-space: nowrap;
+    }
+    .ur-deck-link--soft { color: var(--color-grigio-300); }
+    .ur-deck-link:hover { text-decoration: underline; }
+    .ur-disclaimer {
+      max-width: 62rem; margin: 0.45rem auto 0;
+      font-size: 0.78rem; line-height: 1.45; color: var(--color-grigio-400);
+    }
+
+    .ur-main {
+      max-width: 62rem; margin-inline: auto;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem;
+      display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem);
+    }
+    .ur-section { border-top: 1px solid rgba(255,255,255,0.08); padding-top: clamp(1.25rem, 2.5vw, 2rem); }
+    .ur-h {
+      display: flex; align-items: baseline; gap: 0.8rem;
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em;
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: var(--color-crema); margin-bottom: 1.1rem;
+    }
+    .ur-h-num { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-oro); font-family: var(--font-body); }
+    .ur-sub { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--color-crema); margin: 1.4rem 0 0.8rem; }
+    .ur-note { font-size: 0.85rem; line-height: 1.5; color: var(--color-grigio-400); margin: 0.9rem 0 0; max-width: none; }
+
+    .ur-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin: 0; padding: 0; }
+    .ur-li { position: relative; padding-left: 1.15rem; font-size: 0.95rem; line-height: 1.6; color: var(--color-grigio-200); }
+    .ur-li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 50%; background: var(--color-oro); }
+    .ur-li--tight { font-size: 0.9rem; }
+    .ur-li :global(strong) { color: var(--color-crema); font-weight: 600; }
+
+    .ur-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .ur-cols { grid-template-columns: 1fr 1fr; } }
+    .ur-col { border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 1.1rem 1.2rem; background: rgba(255,255,255,0.03); }
+    .ur-col--ok { box-shadow: inset 0 2px 0 0 var(--color-oro); }
+    .ur-col--no { box-shadow: inset 0 2px 0 0 var(--color-rosso); }
+    .ur-col-h { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--color-crema); margin-bottom: 0.8rem; }
+    .ur-col--no .ur-li::before { background: var(--color-rosso); }
+
+    .ur-people { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .ur-people { grid-template-columns: 1fr 1fr; } }
+    .ur-person { border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 1rem 1.1rem; background: rgba(255,255,255,0.03); }
+    .ur-person-name { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--color-crema); }
+    .ur-person-note { font-size: 0.9rem; line-height: 1.55; color: var(--color-grigio-200); margin-top: 0.35rem; max-width: none; }
+
+    .ur-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin: 0; padding: 0; }
+    .ur-source { font-size: 0.9rem; line-height: 1.5; }
+    .ur-source a { color: var(--color-grigio-200); }
+    .ur-source a:hover { color: var(--color-oro); }
+    .ur-chip {
+      display: inline-flex; margin-right: 0.5rem; padding: 0.12rem 0.5rem; border-radius: 999px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--color-blu-notte); background: var(--color-grigio-300); vertical-align: middle;
+    }
+    .ur-chip--Adobe { background: var(--color-rosso); color: var(--color-crema); }
+    .ur-chip--settore { background: var(--color-oro); }
+    .ur-chip--SI { background: var(--color-grigio-200); }
+
+    .ur-footer {
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.2rem;
+      font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-400);
+    }
+  </style>
+</BaseLayout>
