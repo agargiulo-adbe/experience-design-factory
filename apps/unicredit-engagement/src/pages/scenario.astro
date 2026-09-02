@@ -3,39 +3,82 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UniNavigation from '../components/UniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const macroTrends = [
   {
-    trend: 'AI Search',
-    desc: 'Le ricerche passano dai motori agli assistenti AI: Gartner stima −25% di volume sui motori tradizionali entro il 2026. Se ChatGPT, Gemini o Perplexity non ti citano, per il cliente non ci sei.',
+    trend: { en: 'AI Search', it: 'AI Search' },
+    desc: {
+      en: 'Search is moving from engines to AI assistants: Gartner expects −25% of traditional engine volume by 2026. If ChatGPT, Gemini or Perplexity skip you, the customer never sees you.',
+      it: 'Le ricerche passano dai motori agli assistenti AI: Gartner stima −25% di volume sui motori tradizionali entro il 2026. Se ChatGPT, Gemini o Perplexity non ti citano, per il cliente non ci sei.',
+    },
   },
   {
-    trend: 'Hyper-personalizzazione',
-    desc: 'Le FinTech offrono esperienze su misura con pochi dati. Le banche hanno dati infiniti ma faticano a usarli in tempo reale.',
+    trend: { en: 'Hyper-personalisation', it: 'Hyper-personalizzazione' },
+    desc: {
+      en: 'FinTechs tailor experiences with very little data. Banks sit on endless data but struggle to put it to work in real time.',
+      it: 'Le FinTech offrono esperienze su misura con pochi dati. Le banche hanno dati infiniti ma faticano a usarli in tempo reale.',
+    },
   },
   {
-    trend: 'Zero-latency intelligence',
-    desc: 'Il churn non si previene guardando indietro: servono segnali precoci e azioni automatiche in pochi minuti, non in giorni.',
+    trend: { en: 'Zero-latency intelligence', it: 'Zero-latency intelligence' },
+    desc: {
+      en: 'You cannot stop churn by looking backwards: it takes early signals and automatic action in minutes, not days.',
+      it: 'Il churn non si previene guardando indietro: servono segnali precoci e azioni automatiche in pochi minuti, non in giorni.',
+    },
   },
 ];
 
 const gaps = [
-  { problem: 'Dati frammentati', desc: 'Milioni di clienti e dati sparsi tra sistemi che si parlano poco. Il profilo che mette insieme app, filiale e call center spesso resta parziale.' },
-  { problem: 'Interazioni generiche', desc: "L'app risponde alla transazione, ma non sa a che punto è il cliente: un figlio che nasce, una casa da comprare, la pensione che si avvicina." },
-  { problem: 'Intelligence silenziosa', desc: 'I dati ci sono, ma trasformarli in decisioni richiede giorni, non minuti. E i segnali di churn si notano solo quando è tardi.' },
-  { problem: 'Contenuti lenti', desc: "Le campagne arrivano tre settimane dopo l'evento che le ha ispirate, quando il momento è ormai passato." },
+  {
+    problem: { en: 'Fragmented data', it: 'Dati frammentati' },
+    desc: {
+      en: 'Millions of customers, data scattered across systems that barely talk. The profile joining app, branch and call centre often stays half-built.',
+      it: 'Milioni di clienti e dati sparsi tra sistemi che si parlano poco. Il profilo che mette insieme app, filiale e call center spesso resta parziale.',
+    },
+  },
+  {
+    problem: { en: 'Generic interactions', it: 'Interazioni generiche' },
+    desc: {
+      en: "The app answers the transaction, but has no idea where the customer stands: a child on the way, a house to buy, retirement drawing near.",
+      it: "L'app risponde alla transazione, ma non sa a che punto è il cliente: un figlio che nasce, una casa da comprare, la pensione che si avvicina.",
+    },
+  },
+  {
+    problem: { en: 'Silent intelligence', it: 'Intelligence silenziosa' },
+    desc: {
+      en: 'The data is there, but turning it into decisions takes days, not minutes. And churn signals surface only once it is too late.',
+      it: 'I dati ci sono, ma trasformarli in decisioni richiede giorni, non minuti. E i segnali di churn si notano solo quando è tardi.',
+    },
+  },
+  {
+    problem: { en: 'Slow content', it: 'Contenuti lenti' },
+    desc: {
+      en: "Campaigns land three weeks after the event that sparked them, when the moment has already gone.",
+      it: "Le campagne arrivano tre settimane dopo l'evento che le ha ispirate, quando il momento è ormai passato.",
+    },
+  },
 ];
 
-const marcoPills = ['Adobe Brand Visibility: UniCredit GEO', 'AEM EDS: 0,3s', 'RT-CDP: profilo unico', 'Mutuo prima casa'];
-const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile', 'Funnel ottimizzato', '3 prodotti in 6 mesi'];
+const marcoPills = [
+  { en: 'Adobe Brand Visibility: UniCredit GEO', it: 'Adobe Brand Visibility: UniCredit GEO' },
+  { en: 'AEM EDS: 0,3s', it: 'AEM EDS: 0,3s' },
+  { en: 'RT-CDP: single profile', it: 'RT-CDP: profilo unico' },
+  { en: 'First-home mortgage', it: 'Mutuo prima casa' },
+];
+const sofiaPills = [
+  { en: 'Instagram → Reel ads GenStudio', it: 'Instagram → Reel ads GenStudio' },
+  { en: 'Account opened on mobile', it: 'Conto aperto da mobile' },
+  { en: 'Optimised funnel', it: 'Funnel ottimizzato' },
+  { en: '3 products in 6 months', it: '3 prodotti in 6 mesi' },
+];
 ---
 <BaseLayout
   title="Il cliente del futuro è già qui"
@@ -55,14 +98,34 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
         imageClass="opacity-18"
         scrim="bg-[var(--surface-inverse)]/84"
       />
-      <CoverHero
-        eyebrow="00 · SCENARIO"
-        title="Il cliente del futuro è già qui"
-        lead="Due storie vere e una sola piattaforma: il viaggio che UniCredit può già offrire a ogni cliente italiano."
-        size="phase"
-        tone="inverse"
-        signature={false}
-      />
+      <div data-cover class="w-full flex flex-col items-center text-center">
+        <T
+          as="p"
+          class="font-medium uppercase mb-7"
+          style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em; color: var(--ink-inverse);"
+          data-reveal
+          en="00 · SCENARIO"
+          it="00 · SCENARIO"
+        />
+        <T
+          as="h1"
+          class="font-[family-name:var(--font-display)] font-light tracking-tight max-w-4xl"
+          style="font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.04; color: var(--ink-inverse);"
+          data-reveal
+          data-reveal-delay="0.2"
+          en="The customer of the future is already here"
+          it="Il cliente del futuro è già qui"
+        />
+        <T
+          as="p"
+          class="leading-relaxed max-w-2xl mx-auto mt-7"
+          style="font-size: clamp(1.2rem, 1.7vw, 1.6rem); color: var(--ink-inverse);"
+          data-reveal
+          data-reveal-delay="0.3"
+          en="Two real stories, one platform: the journey UniCredit can already give every customer in Italy."
+          it="Due storie vere e una sola piattaforma: il viaggio che UniCredit può già offrire a ogni cliente italiano."
+        />
+      </div>
     </Slide>
 
     <!-- ── SLIDE 1: Macro trends ──────────────────────────────────── -->
@@ -74,15 +137,16 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
         imageClass="opacity-15"
         scrim="bg-[var(--surface-primary)]/86"
       />
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IL CONTESTO</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="THE CONTEXT" it="IL CONTESTO" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-8"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Il banking sta cambiando. Di nuovo.
-      </h2>
+        en="Banking is shifting. Again."
+        it="Il banking sta cambiando. Di nuovo."
+      />
 
       <!-- il filo: tre movimenti del mercato, cuciti dall'oro -->
       <div class="uc-thread w-full max-w-5xl mx-auto mb-6" data-reveal data-reveal-delay="0.16" aria-hidden="true">
@@ -97,13 +161,13 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
         {macroTrends.map((t, i) => (
           <div class="uc-card">
             <span class="uc-mark">{String(i + 1).padStart(2, "0")}</span>
-            <p class="uc-card-title">{t.trend}</p>
-            <p class="uc-card-body">{t.desc}</p>
+            <T as="p" class="uc-card-title" en={t.trend.en} it={t.trend.it} />
+            <T as="p" class="uc-card-body" en={t.desc.en} it={t.desc.it} />
           </div>
         ))}
       </div>
       <p class="uc-src mt-6 text-center">
-        Fonte:
+        <T en="Source:" it="Fonte:" />
         <a href="https://www.gartner.com/en/newsroom/press-releases/2024-02-19-gartner-predicts-search-engine-volume-will-drop-25-percent-by-2026-due-to-ai-chatbots-and-other-virtual-agents" target="_blank" rel="noopener noreferrer" class="uc-src-link">Gartner, feb 2024</a>
         ·
         <a href="https://blog.adobe.com/en/publish/2025/03/17/adobe-analytics-traffic-to-us-retail-websites-from-generative-ai-sources-jumps-1200-percent" target="_blank" rel="noopener noreferrer" class="uc-src-link">Adobe Analytics, 2025</a>
@@ -113,25 +177,26 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
     <!-- ── SLIDE 2: Il gap oggi ───────────────────────────────────── -->
     <Slide id="slide-gap" bg="secondary" align="center">
       <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IL GAP ATTUALE</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="TODAY'S GAP" it="IL GAP ATTUALE" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-8"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Quattro problemi che ogni giorno costano relazione
-      </h2>
+        en="Four problems that cost you the relationship every day"
+        it="Quattro problemi che ogni giorno costano relazione"
+      />
       <div class="w-full max-w-5xl mx-auto grid grid-cols-2 gap-5 text-left" data-reveal data-reveal-delay="0.2">
         {gaps.map((g, i) => (
           <div class="uc-card">
             <span class="uc-mark">{String(i + 1).padStart(2, "0")}</span>
-            <p class="uc-card-title">{g.problem}</p>
-            <p class="uc-card-body">{g.desc}</p>
+            <T as="p" class="uc-card-title" en={g.problem.en} it={g.problem.it} />
+            <T as="p" class="uc-card-body" en={g.desc.en} it={g.desc.it} />
           </div>
         ))}
       </div>
-      <p class="uc-src mt-6 text-center" data-reveal data-reveal-delay="0.28">Sfide ricorrenti del retail banking · scenario illustrativo</p>
+      <T as="p" class="uc-src mt-6 text-center" data-reveal data-reveal-delay="0.28" en="Recurring retail banking challenges · illustrative scenario" it="Sfide ricorrenti del retail banking · scenario illustrativo" />
     </Slide>
 
     <!-- ── SLIDE 3: Marco Ferretti ────────────────────────────────── -->
@@ -151,7 +216,7 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
         </div>
         <div class="uc-panel uc-panel--rosso text-left">
           <div class="uc-panel-head">
-            <span class="uc-tag" data-reveal>Protagonista 01</span>
+            <T as="span" class="uc-tag" data-reveal en="Lead character 01" it="Protagonista 01" />
             <span class="uc-thread" aria-hidden="true" data-reveal data-reveal-delay="0.06">
               <span class="uc-node uc-node--rosso"></span>
               <span class="uc-node"></span>
@@ -163,16 +228,17 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
             data-reveal
             data-reveal-delay="0.08"
           >Marco Ferretti</h2>
-          <p class="uc-src mb-4" data-reveal data-reveal-delay="0.12">38 anni · cliente UniCredit da 12 anni · Brescia</p>
-          <p class="uc-panel-body" data-reveal data-reveal-delay="0.22">
-            UniCredit è il primo risultato. Il sito carica in 0,3 secondi. Il profilo RT-CDP lo riconosce come cliente storico con alta propensione al mutuo casa e gli apre un percorso già su misura, non un modulo qualsiasi.
-          </p>
+          <T as="p" class="uc-src mb-4" data-reveal data-reveal-delay="0.12" en="38 · UniCredit customer for 12 years · Brescia" it="38 anni · cliente UniCredit da 12 anni · Brescia" />
+          <T as="p" class="uc-panel-body" data-reveal data-reveal-delay="0.22"
+            en="UniCredit tops the results. The site loads in 0,3 seconds. His RT-CDP profile reads him as a long-standing customer with a strong home-loan intent and opens a path already shaped for him, not a stock form."
+            it="UniCredit è il primo risultato. Il sito carica in 0,3 secondi. Il profilo RT-CDP lo riconosce come cliente storico con alta propensione al mutuo casa e gli apre un percorso già su misura, non un modulo qualsiasi."
+          />
           <div class="uc-quote" data-reveal data-reveal-delay="0.18">
-            <p class="uc-quote-text">Ha appena chiesto a ChatGPT quale banca scegliere per il mutuo della prima casa.</p>
+            <T as="p" class="uc-quote-text" en="He just asked ChatGPT which bank to pick for his first-home mortgage." it="Ha appena chiesto a ChatGPT quale banca scegliere per il mutuo della prima casa." />
           </div>
           <div class="flex gap-2 flex-wrap mt-5" data-reveal data-reveal-delay="0.28">
             {marcoPills.map((p) => (
-              <span class="uc-pill uc-pill--rosso">{p}</span>
+              <T as="span" class="uc-pill uc-pill--rosso" en={p.en} it={p.it} />
             ))}
           </div>
         </div>
@@ -185,7 +251,7 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
       <div class="w-full flex-1 min-h-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         <div class="uc-panel uc-panel--oro text-left">
           <div class="uc-panel-head">
-            <span class="uc-tag uc-tag--oro" data-reveal>Protagonista 02</span>
+            <T as="span" class="uc-tag uc-tag--oro" data-reveal en="Lead character 02" it="Protagonista 02" />
             <span class="uc-thread" aria-hidden="true" data-reveal data-reveal-delay="0.06">
               <span class="uc-node"></span>
               <span class="uc-node uc-node--rosso"></span>
@@ -197,16 +263,17 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
             data-reveal
             data-reveal-delay="0.08"
           >Sofia Ricci</h2>
-          <p class="uc-src mb-4" data-reveal data-reveal-delay="0.12">27 anni · UX Designer freelance · Milano</p>
-          <p class="uc-panel-body" data-reveal data-reveal-delay="0.22">
-            GenStudio ha creato il reel ads che l'ha catturata, Journey Optimizer ha guidato l'onboarding e Experimentation Accelerator ha affinato il funnel che l'ha convinta ad attivare anche carta e piano di risparmio. In 6 mesi: 3 prodotti e una relazione appena iniziata.
-          </p>
+          <T as="p" class="uc-src mb-4" data-reveal data-reveal-delay="0.12" en="27 · freelance UX Designer · Milan" it="27 anni · UX Designer freelance · Milano" />
+          <T as="p" class="uc-panel-body" data-reveal data-reveal-delay="0.22"
+            en="GenStudio made the reel ads that caught her, Journey Optimizer ran the onboarding, and Experimentation Accelerator tuned the funnel that got her to add a card and a savings plan too. Six months in: 3 products and a relationship just getting started."
+            it="GenStudio ha creato il reel ads che l'ha catturata, Journey Optimizer ha guidato l'onboarding e Experimentation Accelerator ha affinato il funnel che l'ha convinta ad attivare anche carta e piano di risparmio. In 6 mesi: 3 prodotti e una relazione appena iniziata."
+          />
           <div class="uc-quote uc-quote--oro" data-reveal data-reveal-delay="0.18">
-            <p class="uc-quote-text">Ha visto un reel ads UniCredit su Instagram. Stasera apre il suo primo conto, direttamente da iPhone.</p>
+            <T as="p" class="uc-quote-text" en="She saw a UniCredit reel ads on Instagram. Tonight she opens her first account, straight from her iPhone." it="Ha visto un reel ads UniCredit su Instagram. Stasera apre il suo primo conto, direttamente da iPhone." />
           </div>
           <div class="flex gap-2 flex-wrap mt-5" data-reveal data-reveal-delay="0.28">
             {sofiaPills.map((p) => (
-              <span class="uc-pill uc-pill--oro">{p}</span>
+              <T as="span" class="uc-pill uc-pill--oro" en={p.en} it={p.it} />
             ))}
           </div>
         </div>
@@ -226,22 +293,24 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
         imageClass="opacity-12"
         scrim="bg-[var(--accent-primary)]/85"
       />
-      <p class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-5" data-reveal>IL PERCORSO</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-5" data-reveal en="THE JOURNEY" it="IL PERCORSO" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-inverse)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Per Marco e Sofia, ogni capitolo è un momento che conta
-      </h2>
-      <p
+        en="For Marco and Sofia, every chapter is a moment that matters"
+        it="Per Marco e Sofia, ogni capitolo è un momento che conta"
+      />
+      <T
+        as="p"
         class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-inverse)]/80 max-w-2xl mb-8"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        La loro storia continua sezione dopo sezione, dalla scoperta al ROI.
-      </p>
+        en="Their story runs on section after section, from discovery through to ROI."
+        it="La loro storia continua sezione dopo sezione, dalla scoperta al ROI."
+      />
 
       <!-- il filo prosegue: dalla storia alla piattaforma -->
       <div class="uc-thread uc-thread--inverse w-full max-w-md mb-8" data-reveal data-reveal-delay="0.2" aria-hidden="true">
@@ -255,7 +324,7 @@ const sofiaPills = ['Instagram → Reel ads GenStudio', 'Conto aperto da mobile'
           href={href(base, '/visibilita')}
           class="inline-flex items-center gap-3 px-10 py-5 bg-[var(--ink-inverse)] text-[var(--ink-primary)] text-lg font-medium tracking-wide hover:bg-[var(--color-crema)] transition-colors"
         >
-          Dalla storia alla tecnologia →
+          <T en="From the story to the technology →" it="Dalla storia alla tecnologia →" />
         </a>
       </div>
     </Slide>

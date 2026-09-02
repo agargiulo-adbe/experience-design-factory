@@ -8,29 +8,30 @@ import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const nbaSignals = [
-  { icon: '🔍', label: 'Ricerca in-app', detail: '"mutuo casa" × 3 in 7 giorni' },
-  { icon: '💳', label: 'Comportamento', detail: 'Accrediti +18% ultimi 3 mesi' },
-  { icon: '📊', label: 'Propensity CDP', detail: 'Score mutuo: 87/100' },
-  { icon: '📅', label: 'Momento di vita', detail: 'Età media acquisto casa: 36-40a' },
+  { icon: '🔍', label: { en: 'In-app search', it: 'Ricerca in-app' }, detail: { en: '"mutuo casa" × 3 in 7 days', it: '"mutuo casa" × 3 in 7 giorni' } },
+  { icon: '💳', label: { en: 'Behaviour', it: 'Comportamento' }, detail: { en: 'Inflows +18% last 3 months', it: 'Accrediti +18% ultimi 3 mesi' } },
+  { icon: '📊', label: { en: 'Propensity CDP', it: 'Propensity CDP' }, detail: { en: 'Mortgage score: 87/100', it: 'Score mutuo: 87/100' } },
+  { icon: '📅', label: { en: 'Life moment', it: 'Momento di vita' }, detail: { en: 'Avg. home-buying age: 36-40', it: 'Età media acquisto casa: 36-40a' } },
 ];
 
 const channels = [
-  { label: 'Push notification', timing: 'sabato mattina', message: 'Hai pensato al mutuo? Scopri il tasso dedicato a te.' },
-  { label: 'In-app banner', timing: 'accesso successivo', message: 'Offerta con rata stimata per Marco.' },
-  { label: 'Social Ads', timing: 'in parallelo', message: 'Retargeting su Meta e Instagram, sincronizzato via RT-CDP.' },
-  { label: 'Email personalizzata', timing: '+2 giorni se non apre', message: 'Contenuto GenStudio: tono professionale, dati reali.' },
-  { label: 'Consulente proattivo', timing: '+5 giorni', message: 'Il RM riceve il segnale AJO e richiama con offerta pronta.' },
+  { label: { en: 'Push notification', it: 'Push notification' }, timing: { en: 'Saturday morning', it: 'sabato mattina' }, message: { en: 'Thinking about a mortgage? See the rate we set aside for you.', it: 'Hai pensato al mutuo? Scopri il tasso dedicato a te.' } },
+  { label: { en: 'In-app banner', it: 'In-app banner' }, timing: { en: 'next log-in', it: 'accesso successivo' }, message: { en: 'Offer with an estimated instalment for Marco.', it: 'Offerta con rata stimata per Marco.' } },
+  { label: { en: 'Social Ads', it: 'Social Ads' }, timing: { en: 'in parallel', it: 'in parallelo' }, message: { en: 'Retargeting on Meta and Instagram, synced via RT-CDP.', it: 'Retargeting su Meta e Instagram, sincronizzato via RT-CDP.' } },
+  { label: { en: 'Personalised email', it: 'Email personalizzata' }, timing: { en: '+2 days if unopened', it: '+2 giorni se non apre' }, message: { en: 'GenStudio content: professional tone, real figures.', it: 'Contenuto GenStudio: tono professionale, dati reali.' } },
+  { label: { en: 'Proactive advisor', it: 'Consulente proattivo' }, timing: { en: '+5 days', it: '+5 giorni' }, message: { en: 'The RM gets the AJO signal and calls back with a ready offer.', it: 'Il RM riceve il segnale AJO e richiama con offerta pronta.' } },
 ];
 
 const results = [
-  { stat: '↑', label: 'tasso di conversione sui mutui', sub: 'offerta rilevante vs. campagne broadcast' },
-  { stat: '↓', label: 'costo di acquisizione prodotto', sub: 'grazie al timing preciso' },
-  { stat: '↑', label: 'NPS post-offerta personalizzata', sub: 'vs. offerta generica' },
+  { stat: '↑', label: { en: 'mortgage conversion rate', it: 'tasso di conversione sui mutui' }, sub: { en: 'relevant offer vs. broadcast campaigns', it: 'offerta rilevante vs. campagne broadcast' } },
+  { stat: '↓', label: { en: 'product acquisition cost', it: 'costo di acquisizione prodotto' }, sub: { en: 'thanks to precise timing', it: 'grazie al timing preciso' } },
+  { stat: '↑', label: { en: 'NPS after a personalised offer', it: 'NPS post-offerta personalizzata' }, sub: { en: 'vs. a generic offer', it: 'vs. offerta generica' } },
 ];
 ---
 <BaseLayout
@@ -52,15 +53,28 @@ const results = [
         imageClass="opacity-20"
         scrim="bg-[var(--surface-secondary)]/82"
       />
-      <CoverHero
-        eyebrow="04 · ENGAGEMENT"
-        numeral="04"
-        title="Coinvolgi in tempo reale"
-        lead="Il mutuo giusto proprio quando Marco ci sta pensando, non settimane più tardi."
-        size="phase"
-        tone="ink"
-        signature={false}
-      />
+      <span data-lang-it class="contents">
+        <CoverHero
+          eyebrow="04 · ENGAGEMENT"
+          numeral="04"
+          title="Coinvolgi in tempo reale"
+          lead="Il mutuo giusto proprio quando Marco ci sta pensando, non settimane più tardi."
+          size="phase"
+          tone="ink"
+          signature={false}
+        />
+      </span>
+      <span data-lang-en class="contents">
+        <CoverHero
+          eyebrow="04 · ENGAGEMENT"
+          numeral="04"
+          title="Engage in real time"
+          lead="The right mortgage exactly when Marco is thinking about it, not weeks later."
+          size="phase"
+          tone="ink"
+          signature={false}
+        />
+      </span>
     </Slide>
 
     <!-- ── SLIDE 1: Il momento di Marco ──────────────────────────── -->
@@ -68,31 +82,38 @@ const results = [
       <div class="cnv-momento uc-bg-inline w-full">
         <div class="w-full grid md:grid-cols-2 gap-8 md:gap-14 items-center">
           <div class="text-left">
-            <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>IL MOMENTO DI VITA</p>
-            <h2
+            <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal en="THE LIFE MOMENT" it="IL MOMENTO DI VITA" />
+            <T
+              as="h2"
               class="slide-title text-[var(--ink-primary)] mb-6"
               style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
               data-reveal
               data-reveal-delay="0.1"
-            >
-              Marco pensa a comprare casa
-            </h2>
-            <p
+              en="Marco is thinking about buying a home"
+              it="Marco pensa a comprare casa"
+            />
+            <T
+              as="p"
               class="text-[var(--ink-secondary)] leading-relaxed mb-6"
               style="font-size: clamp(1.05rem, 1.5vw, 1.3rem);"
               data-reveal
               data-reveal-delay="0.2"
-            >
-              38 anni, cliente UniCredit da 12 anni, con una famiglia in crescita. Questa settimana ha cercato "mutuo casa" tre volte nell'app e il suo profilo Real-Time CDP segna un propensity score di 87/100. La banca lo sa già, ma finora non ha agito.
-            </p>
-            <p class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3">
-              <strong class="text-[var(--ink-primary)]">Journey Optimizer B2C</strong> coglie questi segnali e mette in campo l'azione omnicanale nel momento in cui conta di più.
-            </p>
+              en={`38, a UniCredit customer for 12 years, with a growing family. This week he searched "mutuo casa" three times in the app and his Real-Time CDP profile shows a propensity score of 87/100. The bank already knows, yet it hasn't acted.`}
+              it={`38 anni, cliente UniCredit da 12 anni, con una famiglia in crescita. Questa settimana ha cercato "mutuo casa" tre volte nell'app e il suo profilo Real-Time CDP segna un propensity score di 87/100. La banca lo sa già, ma finora non ha agito.`}
+            />
+            <T
+              as="p"
+              class="text-[var(--ink-secondary)] text-sm leading-relaxed"
+              data-reveal
+              data-reveal-delay="0.3"
+              en='<strong class="text-[var(--ink-primary)]">Journey Optimizer B2C</strong> reads these signals and puts the omnichannel action in motion right when it counts most.'
+              it='<strong class="text-[var(--ink-primary)]">Journey Optimizer B2C</strong> coglie questi segnali e mette in campo l&apos;azione omnicanale nel momento in cui conta di più.'
+            />
           </div>
 
           <div class="uc-panel uc-panel--oro" data-reveal data-reveal-delay="0.35">
             <div class="uc-panel-head">
-              <span class="uc-tag">Segnali rilevati da Real-Time CDP</span>
+              <T as="span" class="uc-tag" en="Signals detected by Real-Time CDP" it="Segnali rilevati da Real-Time CDP" />
             </div>
             <div class="flex flex-col gap-2.5">
               {nbaSignals.map((s, i) => (
@@ -103,8 +124,8 @@ const results = [
                   </span>
                   <span class="text-2xl flex-shrink-0 leading-none" aria-hidden="true">{s.icon}</span>
                   <div class="min-w-0">
-                    <p class="text-[0.98rem] font-semibold text-[var(--color-blu-notte)] leading-tight">{s.label}</p>
-                    <p class="text-[0.9rem] text-[var(--color-blu-medio)] leading-snug">{s.detail}</p>
+                    <T as="p" class="text-[0.98rem] font-semibold text-[var(--color-blu-notte)] leading-tight" en={s.label.en} it={s.label.it} />
+                    <T as="p" class="text-[0.9rem] text-[var(--color-blu-medio)] leading-snug" en={s.detail.en} it={s.detail.it} />
                   </div>
                 </div>
               ))}
@@ -112,8 +133,8 @@ const results = [
             <div class="cnv-nbx">
               <span class="uc-node" aria-hidden="true"></span>
               <div class="min-w-0">
-                <p class="text-[0.95rem] font-semibold text-[var(--color-oro)] mb-1">Next-Best-Experience calcolata</p>
-                <p class="text-[0.95rem] text-[var(--color-blu-medio)] leading-snug">Proposta mutuo 20 anni · tasso personalizzato · canale: app push + email</p>
+                <T as="p" class="text-[0.95rem] font-semibold text-[var(--color-oro)] mb-1" en="Next-Best-Experience computed" it="Next-Best-Experience calcolata" />
+                <T as="p" class="text-[0.95rem] text-[var(--color-blu-medio)] leading-snug" en="20-year mortgage offer · personalised rate · channel: app push + email" it="Proposta mutuo 20 anni · tasso personalizzato · canale: app push + email" />
               </div>
             </div>
           </div>
@@ -125,8 +146,8 @@ const results = [
               <span class="text-xs font-bold text-[var(--color-oro)]">S</span>
             </div>
             <div>
-              <p class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-500)] mb-1">Sofia, in questo momento</p>
-              <p class="uc-quote-text">«Tre mesi dopo aver aperto il conto, l'app le propone: "Sofia, hai messo da parte €1.240, vuoi farli crescere con un piano di risparmio?" Il momento l'aveva scelto Target.»</p>
+              <T as="p" class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-500)] mb-1" en="Sofia, right now" it="Sofia, in questo momento" />
+              <T as="p" class="uc-quote-text" en={`«Three months after opening her account, the app tells her: "Sofia, you've set aside €1.240. Want to grow it with a savings plan?" Target picked the moment.»`} it={`«Tre mesi dopo aver aperto il conto, l'app le propone: "Sofia, hai messo da parte €1.240, vuoi farli crescere con un piano di risparmio?" Il momento l'aveva scelto Target.»`} />
             </div>
           </div>
         </div>
@@ -143,15 +164,16 @@ const results = [
       />
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 flex flex-col items-center">
-          <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>JOURNEY OPTIMIZER B2C</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal en="JOURNEY OPTIMIZER B2C" it="JOURNEY OPTIMIZER B2C" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-inverse)] mb-10"
             style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-            Il messaggio giusto,<br/>sul canale giusto
-          </h2>
+            en="The right message,<br/>on the right channel"
+            it="Il messaggio giusto,<br/>sul canale giusto"
+          />
 
           <div
             class="cnv-channels w-full max-w-6xl mx-auto"
@@ -167,21 +189,22 @@ const results = [
               {channels.map((ch, i) => (
                 <div class="uc-panel cnv-channel">
                   <span class="cnv-channel-dot" aria-hidden="true"></span>
-                  <p class="uc-tag mb-2">{ch.label}</p>
-                  <p class="text-[0.9rem] text-[var(--color-grigio-500)] mb-3 leading-snug">{ch.timing}</p>
-                  <p class="text-[0.92rem] text-[var(--color-blu-medio)] leading-relaxed italic">"{ch.message}"</p>
+                  <T as="p" class="uc-tag mb-2" en={ch.label.en} it={ch.label.it} />
+                  <T as="p" class="text-[0.9rem] text-[var(--color-grigio-500)] mb-3 leading-snug" en={ch.timing.en} it={ch.timing.it} />
+                  <T as="p" class="text-[0.92rem] text-[var(--color-blu-medio)] leading-relaxed italic" en={`"${ch.message.en}"`} it={`"${ch.message.it}"`} />
                 </div>
               ))}
             </div>
           </div>
 
-          <p
+          <T
+            as="p"
             class="mt-8 text-[var(--color-grigio-300)] text-[0.98rem] leading-relaxed max-w-2xl"
             data-reveal
             data-reveal-delay="0.4"
-          >
-            Adobe Target personalizza ogni touchpoint in tempo reale, dalla headline all'immagine all'offerta, in base al profilo CDP di Marco.
-          </p>
+            en="Adobe Target personalises every touchpoint in real time, from the headline to the image to the offer, based on Marco's CDP profile."
+            it="Adobe Target personalizza ogni touchpoint in tempo reale, dalla headline all'immagine all'offerta, in base al profilo CDP di Marco."
+          />
 
           <div class="uc-panel uc-panel--rosso mt-8 max-w-3xl mx-auto" data-reveal data-reveal-delay="0.5">
             <div class="flex items-start gap-4">
@@ -189,8 +212,8 @@ const results = [
                 <span class="text-xs font-bold text-[var(--accent-primary)]">M</span>
               </div>
               <div>
-                <p class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-500)] mb-1">Marco, in questo momento</p>
-                <p class="uc-quote-text">«La email è arrivata un mercoledì mattina, l'orario in cui Marco apre più spesso le comunicazioni della banca. A sceglierlo è stata la send-time optimization di Journey Optimizer, non il caso.»</p>
+                <T as="p" class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-500)] mb-1" en="Marco, right now" it="Marco, in questo momento" />
+                <T as="p" class="uc-quote-text" en="«The email landed on a Wednesday morning, when Marco opens the bank's messages most often. Journey Optimizer's send-time optimization chose the slot, not chance.»" it="«La email è arrivata un mercoledì mattina, l'orario in cui Marco apre più spesso le comunicazioni della banca. A sceglierlo è stata la send-time optimization di Journey Optimizer, non il caso.»" />
               </div>
             </div>
           </div>
@@ -202,15 +225,16 @@ const results = [
     <!-- ── SLIDE 3: Risultati ─────────────────────────────────────── -->
     <Slide id="slide-results" bg="primary" align="center">
       <div class="cnv-results uc-bg-inline w-full">
-        <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IMPATTO BUSINESS</p>
-        <h2
+        <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="BUSINESS IMPACT" it="IMPATTO BUSINESS" />
+        <T
+          as="h2"
           class="slide-title text-[var(--ink-primary)] mb-8"
           style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
           data-reveal
           data-reveal-delay="0.1"
-        >
-          Scala + rilevanza = risultati
-        </h2>
+          en="Scale + relevance = results"
+          it="Scala + rilevanza = risultati"
+        />
 
         <div class="uc-thread cnv-results-thread" data-reveal data-reveal-delay="0.15" aria-hidden="true">
           <span class="uc-node uc-node--rosso"></span>
@@ -231,19 +255,19 @@ const results = [
               >
                 {r.stat}
               </p>
-              <p class="text-[0.98rem] font-medium text-[var(--color-blu-notte)] mb-1.5 leading-snug">{r.label}</p>
-              <p class="text-[0.85rem] text-[var(--color-grigio-500)] leading-snug">{r.sub}</p>
+              <T as="p" class="text-[0.98rem] font-medium text-[var(--color-blu-notte)] mb-1.5 leading-snug" en={r.label.en} it={r.label.it} />
+              <T as="p" class="text-[0.85rem] text-[var(--color-grigio-500)] leading-snug" en={r.sub.en} it={r.sub.it} />
             </div>
           ))}
         </div>
-        <p class="mb-6 text-center text-[0.62rem] tracking-widest uppercase opacity-30">Fonte: Basato su Adobe Real-Time CDP impact study, settore bancario europeo · Forrester TEI, Adobe Experience Cloud, 2023</p>
+        <T as="p" class="mb-6 text-center text-[0.62rem] tracking-widest uppercase opacity-30" en="Source: Based on Adobe Real-Time CDP impact study, European banking sector · Forrester TEI, Adobe Experience Cloud, 2023" it="Fonte: Basato su Adobe Real-Time CDP impact study, settore bancario europeo · Forrester TEI, Adobe Experience Cloud, 2023" />
 
         <div class="text-center" data-reveal data-reveal-delay="0.4">
           <a
             href={href(base, '/contenuti')}
             class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
           >
-            Contenuti senza limiti
+            <T en="Content without limits" it="Contenuti senza limiti" />
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

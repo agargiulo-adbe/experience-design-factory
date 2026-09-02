@@ -3,46 +3,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UniNavigation from '../components/UniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const bottlenecks = [
-  { problem: 'Ciclo creativo lento', detail: 'Servono 6–8 settimane dal brief alla campagna live, e intanto il momento buono è già passato.' },
-  { problem: 'Varianti insufficienti', detail: 'Una campagna vuol dire un formato, una lingua, un tono: Marco e Sofia vedono lo stesso identico messaggio.' },
-  { problem: 'Brand governance fragile', detail: 'Agenzie esterne, versioni non approvate e immagini out-of-brand che finiscono sui canali regionali.' },
+  { problem: { it: 'Ciclo creativo lento', en: 'A slow creative cycle' }, detail: { it: 'Servono 6–8 settimane dal brief alla campagna live, e intanto il momento buono è già passato.', en: 'It takes 6–8 weeks from brief to live campaign, and by then the right moment has already gone.' } },
+  { problem: { it: 'Varianti insufficienti', en: 'Too few variants' }, detail: { it: 'Una campagna vuol dire un formato, una lingua, un tono: Marco e Sofia vedono lo stesso identico messaggio.', en: 'One campaign means one format, one language, one tone: Marco and Sofia see the exact same message.' } },
+  { problem: { it: 'Brand governance fragile', en: 'Fragile brand governance' }, detail: { it: 'Agenzie esterne, versioni non approvate e immagini out-of-brand che finiscono sui canali regionali.', en: 'Outside agencies, unapproved versions and out-of-brand images ending up on regional channels.' } },
 ];
 
 const variants = [
-  { segment: 'Famiglie 35–45', headline: 'Il mutuo che cresce con la tua famiglia', tone: 'Concreto, rassicurante', cta: 'Calcola la rata →' },
-  { segment: 'Neolaureati / freelance', headline: 'La tua prima casa, alla tua portata', tone: 'Empatico, ottimista', cta: 'Scopri quanto puoi mutuare →' },
-  { segment: 'Pensionati 65+', headline: 'Mutuo per donare sicurezza ai tuoi figli', tone: 'Rassicurante, istituzionale', cta: 'Parla con un consulente →' },
-  { segment: 'Giovani coppie 30–40', headline: 'Costruite insieme il vostro nido', tone: 'Caldo, visuale', cta: 'Inizia la simulazione →' },
+  { segment: { it: 'Famiglie 35–45', en: 'Families 35–45' }, headline: { it: 'Il mutuo che cresce con la tua famiglia', en: 'A mortgage that grows with your family' }, tone: { it: 'Concreto, rassicurante', en: 'Grounded, reassuring' }, cta: { it: 'Calcola la rata →', en: 'Work out your payment →' } },
+  { segment: { it: 'Neolaureati / freelance', en: 'Graduates / freelancers' }, headline: { it: 'La tua prima casa, alla tua portata', en: 'Your first home, within reach' }, tone: { it: 'Empatico, ottimista', en: 'Empathetic, upbeat' }, cta: { it: 'Scopri quanto puoi mutuare →', en: 'See how much you can borrow →' } },
+  { segment: { it: 'Pensionati 65+', en: 'Retirees 65+' }, headline: { it: 'Mutuo per donare sicurezza ai tuoi figli', en: 'A mortgage that gives your children security' }, tone: { it: 'Rassicurante, istituzionale', en: 'Reassuring, institutional' }, cta: { it: 'Parla con un consulente →', en: 'Talk to an advisor →' } },
+  { segment: { it: 'Giovani coppie 30–40', en: 'Young couples 30–40' }, headline: { it: 'Costruite insieme il vostro nido', en: 'Build your nest together' }, tone: { it: 'Caldo, visuale', en: 'Warm, visual' }, cta: { it: 'Inizia la simulazione →', en: 'Start your simulation →' } },
 ];
 
 const tools = [
-  { name: 'GenStudio for Performance Marketing', role: 'Varianti di copy e layout in pochi minuti, con le brand guidelines già integrate.', tag: 'GenStudio' },
-  { name: 'Adobe Firefly', role: 'Immagini brand-safe generate su licenza commerciale, senza rischi sull\'IP.', tag: 'Firefly' },
-  { name: 'AEM Assets', role: 'DAM unificato: ogni asset approvato, versionato e distribuito in automatico su tutti i canali.', tag: 'AEM Assets' },
-  { name: 'AEM Sites (Edge Delivery)', role: "Pubblica su web e app alla velocità dell'edge: contenuti live in minuti, Core Web Vitals nativi.", tag: 'AEM Sites' },
+  { name: { it: 'GenStudio for Performance Marketing', en: 'GenStudio for Performance Marketing' }, role: { it: 'Varianti di copy e layout in pochi minuti, con le brand guidelines già integrate.', en: 'Copy and layout variants in minutes, with the brand guidelines already built in.' }, tag: 'GenStudio' },
+  { name: { it: 'Adobe Firefly', en: 'Adobe Firefly' }, role: { it: 'Immagini brand-safe generate su licenza commerciale, senza rischi sull\'IP.', en: 'Brand-safe images generated under a commercial licence, with no IP risk.' }, tag: 'Firefly' },
+  { name: { it: 'AEM Assets', en: 'AEM Assets' }, role: { it: 'DAM unificato: ogni asset approvato, versionato e distribuito in automatico su tutti i canali.', en: 'A unified DAM: every asset approved, versioned and pushed automatically to every channel.' }, tag: 'AEM Assets' },
+  { name: { it: 'AEM Sites (Edge Delivery)', en: 'AEM Sites (Edge Delivery)' }, role: { it: "Pubblica su web e app alla velocità dell'edge: contenuti live in minuti, Core Web Vitals nativi.", en: 'Publish to web and app at edge speed: content live in minutes, Core Web Vitals built in.' }, tag: 'AEM Sites' },
 ];
 
 const aemAgents = [
-  { name: 'Content Advisor Agent', body: 'Scopre asset, content fragment e form in linguaggio naturale e ne crea varianti pronte per ogni canale.' },
-  { name: 'Site Optimization Agent', body: 'Diagnostica automaticamente i problemi del sito e suggerisce varianti di contenuto brand-compliant per acquisire più traffico.' },
-  { name: 'Governance Agent', body: 'Presidia integrità di brand e compliance: policy di sicurezza, normative e di brand applicate su tutto AEM.' },
-  { name: 'Brand Experience Agent', body: 'Assorbe il lavoro operativo di aggiornamento e modernizzazione delle esperienze — rilasci più rapidi.' },
+  { name: { it: 'Content Advisor Agent', en: 'Content Advisor Agent' }, body: { it: 'Scopre asset, content fragment e form in linguaggio naturale e ne crea varianti pronte per ogni canale.', en: 'Finds assets, content fragments and forms in natural language and builds variants ready for every channel.' } },
+  { name: { it: 'Site Optimization Agent', en: 'Site Optimization Agent' }, body: { it: 'Diagnostica automaticamente i problemi del sito e suggerisce varianti di contenuto brand-compliant per acquisire più traffico.', en: 'Diagnoses site issues automatically and suggests brand-compliant content variants to win more traffic.' } },
+  { name: { it: 'Governance Agent', en: 'Governance Agent' }, body: { it: 'Presidia integrità di brand e compliance: policy di sicurezza, normative e di brand applicate su tutto AEM.', en: 'Guards brand integrity and compliance: security, regulatory and brand policies enforced across all of AEM.' } },
+  { name: { it: 'Brand Experience Agent', en: 'Brand Experience Agent' }, body: { it: 'Assorbe il lavoro operativo di aggiornamento e modernizzazione delle esperienze — rilasci più rapidi.', en: 'Takes on the operational work of updating and modernising experiences, so releases ship faster.' } },
 ];
 
 const fireflyLayers = [
-  { tag: 'Firefly Services (API)', body: 'API per automatizzare e scalare i workflow creativi — generazione, editing, reframe video — con Content Authenticity integrata.' },
-  { tag: 'Firefly Custom Models', body: 'Addestrato sugli asset di brand UniCredit: visual on-brand on demand, coerenti su ogni campagna.' },
-  { tag: 'Firefly Foundry', body: 'Modelli proprietari, deeply-tuned da Adobe sui contenuti UniCredit e multimodali: immagine, video, audio, vettoriale, 3D.' },
+  { tag: 'Firefly Services (API)', body: { it: 'API per automatizzare e scalare i workflow creativi — generazione, editing, reframe video — con Content Authenticity integrata.', en: 'APIs to automate and scale creative workflows — generation, editing, video reframe — with Content Authenticity built in.' } },
+  { tag: 'Firefly Custom Models', body: { it: 'Addestrato sugli asset di brand UniCredit: visual on-brand on demand, coerenti su ogni campagna.', en: 'Trained on UniCredit brand assets: on-brand visuals on demand, consistent across every campaign.' } },
+  { tag: 'Firefly Foundry', body: { it: 'Modelli proprietari, deeply-tuned da Adobe sui contenuti UniCredit e multimodali: immagine, video, audio, vettoriale, 3D.', en: 'Proprietary models, deeply tuned by Adobe on UniCredit content and multimodal: image, video, audio, vector, 3D.' } },
 ];
 ---
 <BaseLayout
@@ -64,29 +64,45 @@ const fireflyLayers = [
         imageClass="opacity-15"
         scrim="bg-[var(--surface-secondary)]/82"
       />
-      <CoverHero
-        eyebrow="05 · CONTENUTI"
-        numeral="05"
-        title="Contenuti senza limiti"
-        lead="12 varianti di campagna, 4 segmenti, 3 lingue, in una frazione del tempo di prima. GenStudio, AEM Sites, AEM Assets e Firefly sono la content supply chain enterprise di UniCredit."
-        size="phase"
-        tone="ink"
-        signature={false}
-      />
+      <div data-cover class="w-full flex flex-col items-center text-center">
+        <T
+          as="p" class="font-medium uppercase mb-7"
+          style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em; color: var(--accent-primary);"
+          data-reveal
+          en="05 · CONTENT"
+          it="05 · CONTENUTI"
+        />
+        <p class="font-[family-name:var(--font-display)] font-light text-[var(--accent-primary)] leading-none mb-7" style="font-size: clamp(2.75rem, 5.5vw, 5.5rem);" data-reveal data-reveal-delay="0.1" aria-hidden="true">05</p>
+        <T
+          as="h1" class="font-[family-name:var(--font-display)] font-light tracking-tight max-w-4xl"
+          style="font-size: clamp(2.3rem, 5vw, 4.6rem); line-height: 1.04; color: var(--ink-primary);"
+          data-reveal data-reveal-delay="0.2"
+          en="Content without limits"
+          it="Contenuti senza limiti"
+        />
+        <T
+          as="p" class="leading-relaxed max-w-2xl mx-auto mt-7"
+          style="font-size: clamp(1.2rem, 1.7vw, 1.6rem); color: var(--ink-secondary);"
+          data-reveal data-reveal-delay="0.3"
+          en="12 campaign variants, 4 segments, 3 languages, in a fraction of the time it used to take. GenStudio, AEM Sites, AEM Assets and Firefly are UniCredit's enterprise content supply chain."
+          it="12 varianti di campagna, 4 segmenti, 3 lingue, in una frazione del tempo di prima. GenStudio, AEM Sites, AEM Assets e Firefly sono la content supply chain enterprise di UniCredit."
+        />
+      </div>
     </Slide>
 
     <!-- ── SLIDE 1: Il collo di bottiglia attuale ─────────────────── -->
     <Slide id="slide-problem" bg="primary" align="center">
       <div slot="backdrop" class="uc-bg absolute inset-0"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IL PROBLEMA DI SCALA</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="THE SCALE PROBLEM" it="IL PROBLEMA DI SCALA" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-9"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Campagne lente per un mondo veloce
-      </h2>
+        en="Slow campaigns for a fast world"
+        it="Campagne lente per un mondo veloce"
+      />
 
       <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.2">
         <div class="uc-thread mb-5" aria-hidden="true">
@@ -100,39 +116,42 @@ const fireflyLayers = [
           {bottlenecks.map((b) => (
             <div class="uc-panel uc-panel--rosso text-left">
               <div class="uc-panel-head">
-                <span class="uc-tag">Vincolo</span>
+                <T as="span" class="uc-tag" en="Constraint" it="Vincolo" />
               </div>
-              <p class="text-[1.05rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)]">{b.problem}</p>
-              <p class="uc-panel-body" style="margin-bottom:0;">{b.detail}</p>
+              <T as="p" class="text-[1.05rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)]" en={b.problem.en} it={b.problem.it} />
+              <T as="p" class="uc-panel-body" style="margin-bottom:0;" en={b.detail.en} it={b.detail.it} />
             </div>
           ))}
         </div>
       </div>
 
-      <p
+      <T
+        as="p"
         class="text-[clamp(1.1rem,1.6vw,1.5rem)] font-[family-name:var(--font-display)] text-[var(--ink-secondary)] max-w-3xl mt-9"
         data-reveal
         data-reveal-delay="0.35"
-      >
-        Ora che AJO individua i momenti giusti, il vincolo non è più il dato ma la velocità con cui si producono i contenuti. La prima risposta di AEM sono agenti AI che lavorano accanto al team.
-      </p>
+        en="Now that AJO spots the right moments, the bottleneck is no longer the data but the speed at which content gets produced. AEM's first answer is AI agents working alongside the team."
+        it="Ora che AJO individua i momenti giusti, il vincolo non è più il dato ma la velocità con cui si producono i contenuti. La prima risposta di AEM sono agenti AI che lavorano accanto al team."
+      />
     </Slide>
 
     <!-- ── SLIDE: AI Agents in AEM ────────────────────────────────── -->
     <Slide id="slide-aem-agents" bg="secondary" align="center" data-solution="aem-sites,aem-assets">
       <div slot="backdrop" class="uc-bg-soft absolute inset-0"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>AI AGENTS IN AEM</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="AI AGENTS IN AEM" it="AI AGENTS IN AEM" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-6"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Gli agenti AI dentro AEM
-      </h2>
-      <p class="text-[var(--ink-secondary)] leading-relaxed max-w-3xl mx-auto mb-8 text-base" data-reveal data-reveal-delay="0.15">
-        AEM integra agenti AI specializzati che collaborano nel workflow di contenuto, su AEM as a Cloud Service ed Edge Delivery: scoprono e adattano gli asset, ottimizzano le pagine e presidiano il brand, senza rallentare il team.
-      </p>
+        en="The AI agents inside AEM"
+        it="Gli agenti AI dentro AEM"
+      />
+      <T as="p" class="text-[var(--ink-secondary)] leading-relaxed max-w-3xl mx-auto mb-8 text-base" data-reveal data-reveal-delay="0.15"
+        en="AEM ships specialised AI agents that work together across the content workflow, on AEM as a Cloud Service and Edge Delivery: they find and adapt assets, optimise pages and guard the brand, without slowing the team down."
+        it="AEM integra agenti AI specializzati che collaborano nel workflow di contenuto, su AEM as a Cloud Service ed Edge Delivery: scoprono e adattano gli asset, ottimizzano le pagine e presidiano il brand, senza rallentare il team."
+      />
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5 mb-7" data-reveal data-reveal-delay="0.2">
         {aemAgents.map((a) => (
           <div class="uc-panel uc-panel--oro text-left">
@@ -140,16 +159,17 @@ const fireflyLayers = [
               <span class="uc-tag">Agent</span>
               <span class="uc-node" aria-hidden="true"></span>
             </div>
-            <p class="text-[1.05rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)]">{a.name}</p>
-            <p class="uc-panel-body" style="margin-bottom:0;">{a.body}</p>
+            <T as="p" class="text-[1.05rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)]" en={a.name.en} it={a.name.it} />
+            <T as="p" class="uc-panel-body" style="margin-bottom:0;" en={a.body.en} it={a.body.it} />
           </div>
         ))}
       </div>
-      <p class="text-sm text-[var(--ink-tertiary)] max-w-2xl mx-auto text-center" data-reveal data-reveal-delay="0.3">
-        Per UniCredit la content operation passa da coda di richieste a flusso continuo, con la governance di brand sempre attiva.
-      </p>
+      <T as="p" class="text-sm text-[var(--ink-tertiary)] max-w-2xl mx-auto text-center" data-reveal data-reveal-delay="0.3"
+        en="For UniCredit the content operation moves from a queue of requests to a steady flow, with brand governance always on."
+        it="Per UniCredit la content operation passa da coda di richieste a flusso continuo, con la governance di brand sempre attiva."
+      />
       <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase opacity-40">
-        Fonte:
+        <T en="Source:" it="Fonte:" />
         <a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/ai-in-aem/agents/overview" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">Adobe — Agents in AEM (2025)</a>
       </p>
     </Slide>
@@ -164,23 +184,25 @@ const fireflyLayers = [
       />
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 text-center">
-          <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-[17px]" data-reveal>GENSTUDIO FOR PERFORMANCE MARKETING</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-[17px]" data-reveal en="GENSTUDIO FOR PERFORMANCE MARKETING" it="GENSTUDIO FOR PERFORMANCE MARKETING" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-inverse)] mb-[17px]"
             style="font-size: clamp(2rem, 3.8vw, 3.5rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-Da un brief a 12 varianti in minuti
-          </h2>
-          <p
+            en="From one brief to 12 variants in minutes"
+            it="Da un brief a 12 varianti in minuti"
+          />
+          <T
+            as="p"
             class="text-[var(--color-grigio-300)] mb-2 max-w-2xl mx-auto"
             style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
             data-reveal
             data-reveal-delay="0.15"
-          >
-            GenStudio genera copy + layout per ogni segmento, rispettando automaticamente le brand guidelines di UniCredit.
-          </p>
+            en="GenStudio generates copy + layout for each segment, automatically respecting UniCredit's brand guidelines."
+            it="GenStudio genera copy + layout per ogni segmento, rispettando automaticamente le brand guidelines di UniCredit."
+          />
 
           <div
             class="w-full max-w-5xl mx-auto grid grid-cols-2 gap-4"
@@ -189,10 +211,10 @@ Da un brief a 12 varianti in minuti
           >
             {variants.map((v) => (
               <div class="p-4 bg-[var(--color-grigio-500)]/12 border border-[var(--color-grigio-500)]/25 rounded-sm text-left">
-                <p class="text-sm font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-1.5">{v.segment}</p>
-                <p class="text-sm font-medium text-[var(--ink-inverse)] mb-1.5 leading-snug">{v.headline}</p>
-                <p class="text-sm text-[var(--color-grigio-400)] mb-2.5">Tono: {v.tone}</p>
-                <span class="inline-block text-sm font-medium text-[var(--accent-primary)] bg-[var(--accent-primary)]/15 px-2 py-0.5 rounded-full">{v.cta}</span>
+                <T as="p" class="text-sm font-semibold text-[var(--accent-secondary)] uppercase tracking-wide mb-1.5" en={v.segment.en} it={v.segment.it} />
+                <T as="p" class="text-sm font-medium text-[var(--ink-inverse)] mb-1.5 leading-snug" en={v.headline.en} it={v.headline.it} />
+                <p class="text-sm text-[var(--color-grigio-400)] mb-2.5"><T en="Tone:" it="Tono:" /> <T en={v.tone.en} it={v.tone.it} /></p>
+                <T as="span" class="inline-block text-sm font-medium text-[var(--accent-primary)] bg-[var(--accent-primary)]/15 px-2 py-0.5 rounded-full" en={v.cta.en} it={v.cta.it} />
               </div>
             ))}
           </div>
@@ -203,8 +225,8 @@ Da un brief a 12 varianti in minuti
                 <span class="text-xs font-bold text-[var(--color-oro)]">S</span>
               </div>
               <div>
-                <p class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-400)] mb-1">Sofia, in questo momento</p>
-                <p class="font-[family-name:var(--font-display)] text-base text-[var(--color-grigio-300)] italic leading-snug">«Il reel ads che l'ha fatta cliccare l'ha generato GenStudio in 4 minuti, non un team creativo di 3 persone in 3 giorni.»</p>
+                <T as="p" class="text-sm font-semibold tracking-wider uppercase text-[var(--color-grigio-400)] mb-1" en="Sofia, right now" it="Sofia, in questo momento" />
+                <T as="p" class="font-[family-name:var(--font-display)] text-base text-[var(--color-grigio-300)] italic leading-snug" en="“The reel ad that got her to click was generated by GenStudio in 4 minutes, not by a 3-person creative team over 3 days.”" it="«Il reel ads che l'ha fatta cliccare l'ha generato GenStudio in 4 minuti, non un team creativo di 3 persone in 3 giorni.»" />
               </div>
             </div>
           </div>
@@ -217,23 +239,25 @@ Da un brief a 12 varianti in minuti
     <Slide id="slide-brand-concierge" bg="secondary" align="center" data-solution="brand-concierge">
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 text-center">
-          <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-[17px]" data-reveal>ADOBE BRAND CONCIERGE</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-[17px]" data-reveal en="ADOBE BRAND CONCIERGE" it="ADOBE BRAND CONCIERGE" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-primary)] mb-[17px]"
             style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-            Dal menu alla conversazione
-          </h2>
-          <p
+            en="From menu to conversation"
+            it="Dal menu alla conversazione"
+          />
+          <T
+            as="p"
             class="text-[var(--ink-secondary)] mb-3 max-w-3xl mx-auto"
             style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
             data-reveal
             data-reveal-delay="0.15"
-          >
-            Brand Concierge rende app e sito UniCredit conversazionali: il cliente dialoga in linguaggio naturale, non cerca tra menu e FAQ. Powered by Adobe Experience Platform Agent Orchestrator, con risposte ancorate ai dati first-party.
-          </p>
+            en="Brand Concierge makes the UniCredit app and site conversational: the customer talks in natural language instead of hunting through menus and FAQs. Powered by Adobe Experience Platform Agent Orchestrator, with answers grounded in first-party data."
+            it="Brand Concierge rende app e sito UniCredit conversazionali: il cliente dialoga in linguaggio naturale, non cerca tra menu e FAQ. Powered by Adobe Experience Platform Agent Orchestrator, con risposte ancorate ai dati first-party."
+          />
 
           <div
             class="grid grid-cols-2 gap-4 max-w-3xl mx-auto mb-3"
@@ -242,23 +266,23 @@ Da un brief a 12 varianti in minuti
           >
             <div class="uc-card text-left">
               <span class="uc-mark" style="margin-bottom:0.6rem;">1</span>
-              <p class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;">Dialogo, non menu</p>
-              <p class="uc-card-body" style="font-size:0.9rem;line-height:1.45;">Il cliente chiede "quale mutuo fa per me?" e riceve risposte guidate, non una lista di link.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;" en="Dialogue, not a menu" it="Dialogo, non menu" />
+              <T as="p" class="uc-card-body" style="font-size:0.9rem;line-height:1.45;" en='The customer asks "which mortgage is right for me?" and gets guided answers, not a list of links.' it={'Il cliente chiede "quale mutuo fa per me?" e riceve risposte guidate, non una lista di link.'} />
             </div>
             <div class="uc-card text-left">
               <span class="uc-mark" style="margin-bottom:0.6rem;">2</span>
-              <p class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;">Grounded &amp; brand-safe</p>
-              <p class="uc-card-body" style="font-size:0.9rem;line-height:1.45;">Risposte ancorate ai dati first-party e ai contenuti approvati UniCredit: niente allucinazioni, sempre on-brand.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;" en="Grounded &amp; brand-safe" it="Grounded &amp; brand-safe" />
+              <T as="p" class="uc-card-body" style="font-size:0.9rem;line-height:1.45;" en="Answers grounded in first-party data and approved UniCredit content: no hallucinations, always on-brand." it="Risposte ancorate ai dati first-party e ai contenuti approvati UniCredit: niente allucinazioni, sempre on-brand." />
             </div>
             <div class="uc-card text-left">
               <span class="uc-mark" style="margin-bottom:0.6rem;">3</span>
-              <p class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;">Architettura multi-agente</p>
-              <p class="uc-card-body" style="font-size:0.9rem;line-height:1.45;">Agenti specializzati — product advisor, site advisory — collaborano dietro le quinte per un'unica esperienza.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;" en="Multi-agent architecture" it="Architettura multi-agente" />
+              <T as="p" class="uc-card-body" style="font-size:0.9rem;line-height:1.45;" en="Specialised agents — product advisor, site advisory — work together behind the scenes for a single experience." it="Agenti specializzati — product advisor, site advisory — collaborano dietro le quinte per un'unica esperienza." />
             </div>
             <div class="uc-card text-left">
               <span class="uc-mark" style="margin-bottom:0.6rem;">4</span>
-              <p class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;">Esperienza multimodale</p>
-              <p class="uc-card-body" style="font-size:0.9rem;line-height:1.45;">Testo, immagini e video insieme: la conversazione mostra prodotti e simulazioni, non solo parole.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem;margin-bottom:0.4rem;" en="Multimodal experience" it="Esperienza multimodale" />
+              <T as="p" class="uc-card-body" style="font-size:0.9rem;line-height:1.45;" en="Text, images and video together: the conversation shows products and simulations, not just words." it="Testo, immagini e video insieme: la conversazione mostra prodotti e simulazioni, non solo parole." />
             </div>
           </div>
 
@@ -268,8 +292,8 @@ Da un brief a 12 varianti in minuti
                 <span class="text-xs font-bold text-[var(--accent-primary)]">M</span>
               </div>
               <div>
-                <p class="text-sm font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-1">Marco, in questo momento</p>
-                <p class="uc-quote-text text-base leading-snug">«Ha chiesto al concierge: "Quanto posso permettermi per la prima casa?" In pochi scambi aveva simulazione, rata e prossimo passo.»</p>
+                <T as="p" class="text-sm font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-1" en="Marco, right now" it="Marco, in questo momento" />
+                <T as="p" class="uc-quote-text text-base leading-snug" en='He asked the concierge: "How much can I afford for a first home?" In a few exchanges he had a simulation, a monthly payment and a next step.' it={'«Ha chiesto al concierge: "Quanto posso permettermi per la prima casa?" In pochi scambi aveva simulazione, rata e prossimo passo.»'} />
               </div>
             </div>
           </div>
@@ -281,15 +305,16 @@ Da un brief a 12 varianti in minuti
     <!-- ── SLIDE 3: Stack contenuti (Firefly + AEM) ───────────────── -->
     <Slide id="slide-stack" bg="primary" align="center">
       <div slot="backdrop" class="uc-bg absolute inset-0"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IL SISTEMA DI CONTENUTO</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="THE CONTENT SYSTEM" it="IL SISTEMA DI CONTENUTO" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-9"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Crea, approva, distribuisci
-      </h2>
+        en="Create, approve, distribute"
+        it="Crea, approva, distribuisci"
+      />
 
       <div class="w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
         <div class="uc-thread mb-5" aria-hidden="true">
@@ -308,8 +333,8 @@ Da un brief a 12 varianti in minuti
                 <span class="uc-tag">{t.tag}</span>
                 <span class="uc-figure" style="font-size:clamp(1.2rem,1.6vw,1.5rem);">{String(i + 1).padStart(2, '0')}</span>
               </div>
-              <p class="text-[1rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)] leading-snug">{t.name}</p>
-              <p class="uc-panel-body" style="margin-bottom:0;font-size:0.92rem;">{t.role}</p>
+              <T as="p" class="text-[1rem] font-semibold text-[var(--color-blu-notte)] mb-2 font-[family-name:var(--font-display)] leading-snug" en={t.name.en} it={t.name.it} />
+              <T as="p" class="uc-panel-body" style="margin-bottom:0;font-size:0.92rem;" en={t.role.en} it={t.role.it} />
             </div>
           ))}
         </div>
@@ -324,18 +349,20 @@ Da un brief a 12 varianti in minuti
         imageClass="opacity-12"
         scrim="bg-[var(--surface-inverse)]/88"
       />
-      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-5" data-reveal>ADOBE FIREFLY · ENTERPRISE</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-5" data-reveal en="ADOBE FIREFLY · ENTERPRISE" it="ADOBE FIREFLY · ENTERPRISE" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-inverse)] mb-6"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Il generativo diventa il tuo
-      </h2>
-      <p class="text-[var(--color-grigio-300)] leading-relaxed max-w-3xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15">
-        Immagini, video e contenuti generati con un modello commercialmente sicuro, che diventa sempre più quello di UniCredit: dall'API al modello proprietario deeply-tuned.
-      </p>
+        en="Generative AI becomes your own"
+        it="Il generativo diventa il tuo"
+      />
+      <T as="p" class="text-[var(--color-grigio-300)] leading-relaxed max-w-3xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15"
+        en="Images, video and content generated with a commercially safe model that becomes more and more UniCredit's own: from the API to a deeply-tuned proprietary model."
+        it="Immagini, video e contenuti generati con un modello commercialmente sicuro, che diventa sempre più quello di UniCredit: dall'API al modello proprietario deeply-tuned."
+      />
       <div class="w-full max-w-5xl mx-auto mb-10" data-reveal data-reveal-delay="0.2">
         <div class="uc-thread mb-5" aria-hidden="true">
           <span class="uc-node"></span>
@@ -351,7 +378,7 @@ Da un brief a 12 varianti in minuti
                 <p class="text-sm font-semibold text-[var(--accent-secondary)]">{f.tag}</p>
                 <span class="font-[family-name:var(--font-display)] text-[var(--color-grigio-400)] leading-none" style="font-size:1.15rem;">{String(i + 1).padStart(2, '0')}</span>
               </div>
-              <p class="text-sm text-[var(--color-grigio-300)] leading-relaxed">{f.body}</p>
+              <T as="p" class="text-sm text-[var(--color-grigio-300)] leading-relaxed" en={f.body.en} it={f.body.it} />
             </div>
           ))}
         </div>
@@ -361,14 +388,14 @@ Da un brief a 12 varianti in minuti
           href={href(base, '/analizza')}
           class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300"
         >
-          L'intelligenza dei dati
+          <T en="The intelligence in the data" it="L'intelligenza dei dati" />
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
       </div>
       <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/40">
-        <span class="opacity-70">Fonte:</span>
+        <T as="span" class="opacity-70" en="Source:" it="Fonte:" />
         <a href="https://business.adobe.com/products/firefly-business/firefly-foundry.html" target="_blank" rel="noopener noreferrer" class="text-[var(--color-grigio-300)] underline underline-offset-2 hover:text-[var(--ink-inverse)]">Adobe Firefly — Foundry, Custom Models, Firefly Services (2025)</a>
       </p>
     </Slide>

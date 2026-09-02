@@ -1,8 +1,10 @@
 ---
 import { href as buildHref } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
 
 interface NavItem {
-  label: string;
+  en: string;
+  it: string;
   href: string;
   solution?: string;
 }
@@ -15,18 +17,18 @@ interface Props {
 const { currentPath, base } = Astro.props;
 
 const navItems: NavItem[] = [
-  { label: 'Home', href: '/' },
-  { label: 'Scenario', href: '/scenario' },
-  { label: 'Visibilità', href: '/visibilita' },
-  { label: 'Conosci', href: '/conosci', solution: 'rtcdp' },
-  { label: 'Acquisisci', href: '/acquisisci', solution: 'ajo-b2c,aem-sites' },
-  { label: 'Coinvolgi', href: '/coinvolgi', solution: 'ajo-b2c,target' },
-  { label: 'Contenuti', href: '/contenuti', solution: 'genstudio,aem-assets' },
-  { label: 'Analizza', href: '/analizza', solution: 'cja' },
-  { label: 'Coworker', href: '/coworker' },
-  { label: 'B2B', href: '/b2b', solution: 'ajo-b2b,marketo' },
-  { label: 'Motore', href: '/motore-adobe' },
-  { label: 'Risultati', href: '/risultati' },
+  { en: 'Home', it: 'Home', href: '/' },
+  { en: 'Scenario', it: 'Scenario', href: '/scenario' },
+  { en: 'Visibility', it: 'Visibilità', href: '/visibilita' },
+  { en: 'Know', it: 'Conosci', href: '/conosci', solution: 'rtcdp' },
+  { en: 'Acquire', it: 'Acquisisci', href: '/acquisisci', solution: 'ajo-b2c,aem-sites' },
+  { en: 'Engage', it: 'Coinvolgi', href: '/coinvolgi', solution: 'ajo-b2c,target' },
+  { en: 'Content', it: 'Contenuti', href: '/contenuti', solution: 'genstudio,aem-assets' },
+  { en: 'Analyze', it: 'Analizza', href: '/analizza', solution: 'cja' },
+  { en: 'Coworker', it: 'Coworker', href: '/coworker' },
+  { en: 'B2B', it: 'B2B', href: '/b2b', solution: 'ajo-b2b,marketo' },
+  { en: 'Engine', it: 'Motore', href: '/motore-adobe' },
+  { en: 'Results', it: 'Risultati', href: '/risultati' },
 ];
 
 function resolveHref(path: string): string {
@@ -75,16 +77,18 @@ function isActive(path: string): boolean {
               ]}
               aria-current={active ? 'page' : undefined}
             >
-              {item.label}
+              <span data-lang-en>{item.en}</span><span data-lang-it>{item.it}</span>
             </a>
           </li>
         );
       })}
     </ul>
 
+    <div class="hidden lg:flex items-center gap-3 flex-shrink-0">
+    <LangToggle />
     <a
       href={buildHref(base.replace('/unicredit-engagement', ''), '/console/unicredit-engagement')}
-      class="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide border border-[var(--line-default)] text-[var(--ink-tertiary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors no-underline rounded-sm"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium tracking-wide border border-[var(--line-default)] text-[var(--ink-tertiary)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary)] transition-colors no-underline rounded-sm"
       title="Experience Design Factory Console"
       data-admin-only
     >
@@ -96,6 +100,7 @@ function isActive(path: string): boolean {
       </svg>
       Console
     </a>
+    </div>
 
     <button
       class="lg:hidden p-2 -mr-2 text-[var(--ink-primary)] hover:text-[var(--accent-primary)] transition-colors"
@@ -130,12 +135,15 @@ function isActive(path: string): boolean {
               ]}
               aria-current={active ? 'page' : undefined}
             >
-              {item.label}
+              <span data-lang-en>{item.en}</span><span data-lang-it>{item.it}</span>
             </a>
           </li>
         );
       })}
     </ul>
+    <div class="px-6 pb-3 pt-1 border-t border-[var(--line-subtle)]">
+      <LangToggle />
+    </div>
   </div>
 </header>
 

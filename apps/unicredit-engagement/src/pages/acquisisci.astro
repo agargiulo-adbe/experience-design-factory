@@ -9,6 +9,7 @@ import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -16,38 +17,50 @@ const currentPath = Astro.url.pathname;
 const journeySteps = [
   {
     phase: '1',
-    label: 'Scoperta',
-    channel: 'App / Web',
-    action: 'Sofia cerca "aprire conto corrente". AEM Sites mostra una landing personalizzata; Adobe Target sceglie in tempo reale la variante migliore per lei.',
-    product: 'AEM Sites + Adobe Target',
+    label: { en: 'Discovery', it: 'Scoperta' },
+    channel: { en: 'App / Web', it: 'App / Web' },
+    action: {
+      en: 'Sofia searches for "open a current account". AEM Sites serves a personalized landing; Adobe Target picks the best variant for her in real time.',
+      it: 'Sofia cerca "aprire conto corrente". AEM Sites mostra una landing personalizzata; Adobe Target sceglie in tempo reale la variante migliore per lei.',
+    },
+    product: { en: 'AEM Sites + Adobe Target', it: 'AEM Sites + Adobe Target' },
   },
   {
     phase: '2',
-    label: 'Richiesta',
-    channel: 'App mobile',
-    action: 'Modulo compilato in-app, documento d\'identità letto con AI OCR. Niente filiale, niente carta.',
-    product: 'AJO B2C',
+    label: { en: 'Application', it: 'Richiesta' },
+    channel: { en: 'Mobile app', it: 'App mobile' },
+    action: {
+      en: 'Form filled in-app, ID document read with AI OCR. No branch, no paper.',
+      it: 'Modulo compilato in-app, documento d\'identità letto con AI OCR. Niente filiale, niente carta.',
+    },
+    product: { en: 'AJO B2C', it: 'AJO B2C' },
   },
   {
     phase: '3',
-    label: 'Verifica',
-    channel: 'Digital',
-    action: 'Verifica identità e firma digitale in-app. AJO orchestra il follow-up se il flusso si interrompe.',
-    product: 'AJO B2C',
+    label: { en: 'Verification', it: 'Verifica' },
+    channel: { en: 'Digital', it: 'Digital' },
+    action: {
+      en: 'Identity check and digital signature in-app. AJO orchestrates the follow-up if the flow stalls.',
+      it: 'Verifica identità e firma digitale in-app. AJO orchestra il follow-up se il flusso si interrompe.',
+    },
+    product: { en: 'AJO B2C', it: 'AJO B2C' },
   },
   {
     phase: '4',
-    label: 'Attivazione',
-    channel: 'App + Email',
-    action: 'Conto attivo. Sequenza onboarding personalizzata: prima transazione, carta digitale, Apple Pay.',
-    product: 'AJO B2C',
+    label: { en: 'Activation', it: 'Attivazione' },
+    channel: { en: 'App + Email', it: 'App + Email' },
+    action: {
+      en: 'Account live. Tailored onboarding sequence: first transaction, digital card, Apple Pay.',
+      it: 'Conto attivo. Sequenza onboarding personalizzata: prima transazione, carta digitale, Apple Pay.',
+    },
+    product: { en: 'AJO B2C', it: 'AJO B2C' },
   },
 ];
 
 const kpis = [
-  { stat: '↓', label: 'tempo di apertura conto', sub: 'da giorni a minuti · 100% digitale' },
-  { stat: '↑', label: 'tasso di completamento', sub: 'vs. modulo cartaceo in filiale' },
-  { stat: '↓', label: 'abbandoni nel funnel', sub: 'con journey orchestrati vs. form statico' },
+  { stat: '↓', label: { en: 'account opening time', it: 'tempo di apertura conto' }, sub: { en: 'from days to minutes · 100% digital', it: 'da giorni a minuti · 100% digitale' } },
+  { stat: '↑', label: { en: 'completion rate', it: 'tasso di completamento' }, sub: { en: 'vs. paper form at the branch', it: 'vs. modulo cartaceo in filiale' } },
+  { stat: '↓', label: { en: 'funnel drop-offs', it: 'abbandoni nel funnel' }, sub: { en: 'with orchestrated journeys vs. static form', it: 'con journey orchestrati vs. form statico' } },
 ];
 ---
 <BaseLayout
@@ -69,15 +82,28 @@ const kpis = [
         imageClass="opacity-20"
         scrim="bg-[var(--surface-secondary)]/80"
       />
-      <CoverHero
-        eyebrow="03 · ACQUISIZIONE"
-        numeral="03"
-        title="Acquisisci digitale"
-        lead="Sofia apre il suo primo conto interamente da mobile, senza mai entrare in filiale. È così che si fa onboarding nel 2026."
-        size="phase"
-        tone="ink"
-        signature={false}
-      />
+      <span data-lang-it class="contents">
+        <CoverHero
+          eyebrow="03 · ACQUISIZIONE"
+          numeral="03"
+          title="Acquisisci digitale"
+          lead="Sofia apre il suo primo conto interamente da mobile, senza mai entrare in filiale. È così che si fa onboarding nel 2026."
+          size="phase"
+          tone="ink"
+          signature={false}
+        />
+      </span>
+      <span data-lang-en class="contents">
+        <CoverHero
+          eyebrow="03 · ACQUIRE"
+          numeral="03"
+          title="Acquire, digitally"
+          lead="Sofia opens her first account entirely from her phone, without ever setting foot in a branch. That's onboarding in 2026."
+          size="phase"
+          tone="ink"
+          signature={false}
+        />
+      </span>
     </Slide>
 
     <!-- ── SLIDE 1: Storia Sofia ─────────────────────────────────── -->
@@ -90,26 +116,28 @@ const kpis = [
             <span class="uc-thread-line"></span>
             <span class="uc-node uc-node--rosso"></span>
           </div>
-          <p class="slide-eyebrow text-[var(--color-oro)] mb-4" data-reveal data-reveal-delay="0.06">STORIA DI SOFIA · PASSO 3 DI 10</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-[var(--color-oro)] mb-4" data-reveal data-reveal-delay="0.06" en="SOFIA'S STORY · STEP 3 OF 10" it="STORIA DI SOFIA · PASSO 3 DI 10" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-primary)] mb-6"
             style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-Sono le 22:15. In metro,<br/>non allo sportello.
-          </h2>
-          <p
+            en="It's 10:15 pm. On the metro,<br/>not at the counter."
+            it="Sono le 22:15. In metro,<br/>non allo sportello."
+          />
+          <T
+            as="p"
             class="text-[var(--ink-secondary)] leading-relaxed mb-6"
             style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
             data-reveal
             data-reveal-delay="0.2"
-          >
-            Sofia ha visto il reel ads alle 19:30 e alle 22:15 ha aperto l'app UniCredit, in metro. Journey Optimizer aveva già pronta la sequenza di onboarding: push notification → landing page personalizzata → form semplificato → firma digitale → conferma.
-          </p>
+            en="Sofia saw the reel ads at 7:30 pm, and by 10:15 pm she opened the UniCredit app on the metro. Journey Optimizer already had the onboarding sequence ready: push notification → personalized landing page → simplified form → digital signature → confirmation."
+            it="Sofia ha visto il reel ads alle 19:30 e alle 22:15 ha aperto l'app UniCredit, in metro. Journey Optimizer aveva già pronta la sequenza di onboarding: push notification → landing page personalizzata → form semplificato → firma digitale → conferma."
+          />
           <div class="uc-quote" data-reveal data-reveal-delay="0.45">
-            <p class="text-sm font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-2">Sofia, in questo momento</p>
-            <p class="uc-quote-text">«Le tre banche con cui stava confrontando richiedevano appuntamento in filiale. UniCredit le ha detto: fallo ora, da qui.»</p>
+            <T as="p" class="text-sm font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-2" en="Sofia, right now" it="Sofia, in questo momento" />
+            <T as="p" class="uc-quote-text" en="«The three banks she was comparing all wanted a branch appointment. UniCredit told her: do it now, from here.»" it="«Le tre banche con cui stava confrontando richiedevano appuntamento in filiale. UniCredit le ha detto: fallo ora, da qui.»" />
           </div>
         </div>
 
@@ -131,42 +159,44 @@ Sono le 22:15. In metro,<br/>non allo sportello.
             <span class="uc-thread-line"></span>
             <span class="uc-node"></span>
           </div>
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.06">IL CLIENTE DI DOMANI</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal data-reveal-delay="0.06" en="TOMORROW'S CUSTOMER" it="IL CLIENTE DI DOMANI" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-primary)] mb-6"
             style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-            Sofia non verrà mai in filiale
-          </h2>
+            en="Sofia will never walk into a branch"
+            it="Sofia non verrà mai in filiale"
+          />
           <div class="uc-panel uc-panel--rosso mb-5" data-reveal data-reveal-delay="0.2">
-            <p class="text-sm font-semibold text-[var(--color-blu-notte)] mb-1">Sofia Ricci · 27 anni · Milano</p>
-            <p class="uc-panel-body" style="margin-bottom:0;">UX Designer freelance, primo conto corrente. Si aspetta un processo 100% digitale, da mobile, senza filiale. Se l'esperienza è lenta o macchinosa, in pochi minuti passa alla concorrenza.</p>
+            <T as="p" class="text-sm font-semibold text-[var(--color-blu-notte)] mb-1" en="Sofia Ricci · 27 years old · Milan" it="Sofia Ricci · 27 anni · Milano" />
+            <T as="p" class="uc-panel-body" style="margin-bottom:0;" en="Freelance UX designer, first current account. She expects a 100% digital, mobile-first process, no branch. If the experience is slow or clunky, she's off to a competitor in minutes." it="UX Designer freelance, primo conto corrente. Si aspetta un processo 100% digitale, da mobile, senza filiale. Se l'esperienza è lenta o macchinosa, in pochi minuti passa alla concorrenza." />
           </div>
-          <p class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3">
-            Sofia è il <strong class="text-[var(--ink-primary)]">canale di acquisizione primario</strong> di UniCredit per i prossimi dieci anni. La qualità dell'onboarding decide la relazione di lungo periodo.
-          </p>
+          <T as="p" class="text-[var(--ink-secondary)] text-sm leading-relaxed" data-reveal data-reveal-delay="0.3"
+            en={`Sofia is UniCredit's <strong class="text-[var(--ink-primary)]">primary acquisition channel</strong> for the next ten years. Onboarding quality decides the long-term relationship.`}
+            it={`Sofia è il <strong class="text-[var(--ink-primary)]">canale di acquisizione primario</strong> di UniCredit per i prossimi dieci anni. La qualità dell'onboarding decide la relazione di lungo periodo.`}
+          />
         </div>
 
         <div class="flex flex-col gap-4" data-reveal data-reveal-delay="0.35">
           <div class="uc-panel uc-panel--oro">
-            <p class="uc-tag" style="color:var(--color-oro);">Aspettative Gen Z/Millennial</p>
+            <T as="p" class="uc-tag" style="color:var(--color-oro);" en="Gen Z/Millennial expectations" it="Aspettative Gen Z/Millennial" />
             <div class="mt-3">
               {[
-                ['Apertura conto', 'senza appuntamento'],
-                ['Tutto da mobile', 'no PDF, no stampe'],
-                ['Firma digitale', 'no filiale obbligatoria'],
-                ['Supporto', 'chat in-app, non call center'],
+                [{ en: 'Account opening', it: 'Apertura conto' }, { en: 'no appointment', it: 'senza appuntamento' }],
+                [{ en: 'All from mobile', it: 'Tutto da mobile' }, { en: 'no PDFs, no printing', it: 'no PDF, no stampe' }],
+                [{ en: 'Digital signature', it: 'Firma digitale' }, { en: 'no mandatory branch', it: 'no filiale obbligatoria' }],
+                [{ en: 'Support', it: 'Supporto' }, { en: 'in-app chat, not call center', it: 'chat in-app, non call center' }],
               ].map(([k, v]) => (
                 <div class="flex justify-between items-center gap-4 py-2 border-b border-[rgba(26,26,46,0.1)] last:border-0">
-                  <span class="text-sm text-[var(--color-blu-medio)]">{k}</span>
-                  <span class="text-sm font-medium text-[var(--color-blu-notte)] text-right">{v}</span>
+                  <T en={k.en} it={k.it} class="text-sm text-[var(--color-blu-medio)]" />
+                  <T en={v.en} it={v.it} class="text-sm font-medium text-[var(--color-blu-notte)] text-right" />
                 </div>
               ))}
             </div>
           </div>
-          <p class="uc-src">Aspettative Gen Z/Millennial · scenario illustrativo</p>
+          <T as="p" class="uc-src" en="Gen Z/Millennial expectations · illustrative scenario" it="Aspettative Gen Z/Millennial · scenario illustrativo" />
         </div>
       </div>
     </Slide>
@@ -181,15 +211,16 @@ Sono le 22:15. In metro,<br/>non allo sportello.
       />
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 flex flex-col items-center">
-          <p class="slide-eyebrow text-[var(--color-oro)] mb-5" data-reveal>IL PERCORSO ORCHESTRATO DA AJO</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-[var(--color-oro)] mb-5" data-reveal en="THE JOURNEY ORCHESTRATED BY AJO" it="IL PERCORSO ORCHESTRATO DA AJO" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-inverse)] mb-8"
             style="font-size: clamp(2rem, 3.8vw, 3.5rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-            Da lead a cliente attivo, in un solo flusso
-          </h2>
+            en="From lead to active customer, in one flow"
+            it="Da lead a cliente attivo, in un solo flusso"
+          />
 
           <!-- il filo: 4 nodi ORO uniti dal thread, uno per fase -->
           <div class="w-full max-w-5xl mx-auto mb-6 px-8" data-reveal data-reveal-delay="0.15" aria-hidden="true">
@@ -216,11 +247,11 @@ Sono le 22:15. In metro,<br/>non allo sportello.
                 )}
                 <div class="flex items-center gap-2 mb-3">
                   <span class="uc-step-mark">{step.phase}</span>
-                  <span class="text-xs font-semibold text-[var(--color-oro)] uppercase tracking-wide">{step.label}</span>
+                  <T en={step.label.en} it={step.label.it} class="text-xs font-semibold text-[var(--color-oro)] uppercase tracking-wide" />
                 </div>
-                <p class="text-sm text-[var(--color-grigio-300)] uppercase tracking-wide mb-2">{step.channel}</p>
-                <p class="text-sm text-[var(--color-grigio-200)] leading-relaxed mb-3">{step.action}</p>
-                <span class="uc-step-tag mt-auto self-start">{step.product}</span>
+                <T as="p" en={step.channel.en} it={step.channel.it} class="text-sm text-[var(--color-grigio-300)] uppercase tracking-wide mb-2" />
+                <T as="p" en={step.action.en} it={step.action.it} class="text-sm text-[var(--color-grigio-200)] leading-relaxed mb-3" />
+                <T en={step.product.en} it={step.product.it} class="uc-step-tag mt-auto self-start" />
               </div>
             ))}
           </div>
@@ -234,23 +265,25 @@ Sono le 22:15. In metro,<br/>non allo sportello.
       <div class="uc-bg absolute inset-0 -z-10" aria-hidden="true"></div>
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 flex flex-col items-center">
-          <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>ADOBE EXPERIMENTATION ACCELERATOR</p>
-          <h2
+          <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal en="ADOBE EXPERIMENTATION ACCELERATOR" it="ADOBE EXPERIMENTATION ACCELERATOR" />
+          <T
+            as="h2"
             class="slide-title text-[var(--ink-primary)] mb-6"
             style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
             data-reveal
             data-reveal-delay="0.1"
-          >
-            12 varianti. 1 vincitore.
-          </h2>
-          <p
+            en="12 variants. 1 winner."
+            it="12 varianti. 1 vincitore."
+          />
+          <T
+            as="p"
             class="text-[var(--ink-secondary)] mb-9 max-w-3xl"
             style="font-size: clamp(1rem, 1.4vw, 1.25rem);"
             data-reveal
             data-reveal-delay="0.15"
-          >
-            Il team non tira più a indovinare: testa. Con Experimentation Accelerator lancia 5× più esperimenti a parità di persone, dal CTA alla landing page all'offerta.
-          </p>
+            en="The team stops guessing and starts testing. With Experimentation Accelerator it runs 5× more experiments with the same headcount, from the CTA to the landing page to the offer."
+            it="Il team non tira più a indovinare: testa. Con Experimentation Accelerator lancia 5× più esperimenti a parità di persone, dal CTA alla landing page all'offerta."
+          />
 
           <div
             class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-6 mb-9"
@@ -259,26 +292,26 @@ Sono le 22:15. In metro,<br/>non allo sportello.
           >
             <div class="uc-card">
               <span class="uc-figure mb-2">5×</span>
-              <p class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;">più esperimenti</p>
-              <p class="uc-card-body">Con lo stesso team. Automazione AI suggerisce ipotesi e configura i test.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;" en="more experiments" it="più esperimenti" />
+              <T as="p" class="uc-card-body" en="With the same team. AI automation suggests hypotheses and sets up the tests." it="Con lo stesso team. Automazione AI suggerisce ipotesi e configura i test." />
             </div>
             <div class="uc-card">
               <span class="uc-figure mb-2">CTR ↑</span>
-              <p class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;">sulla variante vincente</p>
-              <p class="uc-card-body">Il test sulla CTA "Apri il tuo primo conto" per Sofia: 12 varianti in 48 ore.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;" en="on the winning variant" it="sulla variante vincente" />
+              <T as="p" class="uc-card-body" en={`The test on Sofia's "Open your first account" CTA: 12 variants in 48 hours.`} it={`Il test sulla CTA "Apri il tuo primo conto" per Sofia: 12 varianti in 48 ore.`} />
             </div>
             <div class="uc-card">
               <span class="uc-figure mb-2">3 giorni</span>
-              <p class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;">→ live</p>
-              <p class="uc-card-body">Dal setup del test ai risultati statisticamente significativi. Non 3 settimane.</p>
+              <T as="p" class="uc-card-title" style="font-size:1.05rem; margin-bottom:0.4rem;" en="→ live" it="→ live" />
+              <T as="p" class="uc-card-body" en="From test setup to statistically significant results. Not 3 weeks." it="Dal setup del test ai risultati statisticamente significativi. Non 3 settimane." />
             </div>
           </div>
 
           <div class="uc-panel uc-panel--oro max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.45">
-            <p class="text-xs font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-2">Sofia, in questo momento</p>
-            <p class="font-[family-name:var(--font-display)] text-base text-[var(--color-blu-notte)] italic leading-relaxed" style="max-width:none;">«Ha cliccato "Apri il conto" sulla variante B, senza sapere che aveva battuto altre 11 versioni e che la conversione era appena salita.»</p>
+            <T as="p" class="text-xs font-semibold tracking-wider uppercase text-[var(--ink-tertiary)] mb-2" en="Sofia, right now" it="Sofia, in questo momento" />
+            <T as="p" class="font-[family-name:var(--font-display)] text-base text-[var(--color-blu-notte)] italic leading-relaxed" style="max-width:none;" en={`«She tapped "Open the account" on variant B, never knowing it had beaten 11 other versions and that conversion had just ticked up.»`} it={`«Ha cliccato "Apri il conto" sulla variante B, senza sapere che aveva battuto altre 11 versioni e che la conversione era appena salita.»`} />
           </div>
-          <p class="mt-5 text-center text-[0.7rem] tracking-widest uppercase text-[var(--color-grigio-400)]">Adobe Experimentation Accelerator · schema illustrativo · A/B test su campagna acquisizione conto</p>
+          <T as="p" class="mt-5 text-center text-[0.7rem] tracking-widest uppercase text-[var(--color-grigio-400)]" en="Adobe Experimentation Accelerator · illustrative schema · A/B test on account-acquisition campaign" it="Adobe Experimentation Accelerator · schema illustrativo · A/B test su campagna acquisizione conto" />
         </div>
         <MediaDemoSlot id="acquisisci-experimentation-demo" label="Experimentation Accelerator — Demo" />
       </div>
@@ -287,23 +320,25 @@ Sono le 22:15. In metro,<br/>non allo sportello.
     <!-- ── SLIDE 5: KPI risultati ─────────────────────────────────── -->
     <Slide id="slide-kpi" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10" aria-hidden="true"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>RISULTATI ATTESI</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="EXPECTED RESULTS" it="RISULTATI ATTESI" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        L'onboarding diventa un vantaggio competitivo
-      </h2>
+        en="Onboarding becomes a competitive edge"
+        it="L'onboarding diventa un vantaggio competitivo"
+      />
 
-      <p
+      <T
+        as="p"
         class="text-[var(--ink-secondary)] leading-relaxed max-w-3xl mx-auto mb-9 text-[clamp(0.95rem,1.15vw,1.1rem)]"
         data-reveal
         data-reveal-delay="0.15"
-      >
-        UniCredit può già avere un onboarding digitale end-to-end. La differenza la fanno <strong class="text-[var(--ink-primary)]">AEM Sites</strong> (landing veloce e personalizzata), <strong class="text-[var(--ink-primary)]">Adobe Target</strong> (la variante giusta in tempo reale) e <strong class="text-[var(--ink-primary)]">AJO</strong> (che guida ogni passo e recupera chi abbandona). Il risultato è un processo che converte di più a ogni iterazione.
-      </p>
+        en={`UniCredit can already run end-to-end digital onboarding. The difference comes from <strong class="text-[var(--ink-primary)]">AEM Sites</strong> (fast, personalized landing), <strong class="text-[var(--ink-primary)]">Adobe Target</strong> (the right variant in real time) and <strong class="text-[var(--ink-primary)]">AJO</strong> (guiding every step and winning back those who drop off). The result is a process that converts more with every iteration.`}
+        it={`UniCredit può già avere un onboarding digitale end-to-end. La differenza la fanno <strong class="text-[var(--ink-primary)]">AEM Sites</strong> (landing veloce e personalizzata), <strong class="text-[var(--ink-primary)]">Adobe Target</strong> (la variante giusta in tempo reale) e <strong class="text-[var(--ink-primary)]">AJO</strong> (che guida ogni passo e recupera chi abbandona). Il risultato è un processo che converte di più a ogni iterazione.`}
+      />
 
       <div
         class="w-full max-w-3xl mx-auto grid md:grid-cols-3 gap-6 mb-9"
@@ -313,19 +348,19 @@ Sono le 22:15. In metro,<br/>non allo sportello.
         {kpis.map((k) => (
           <div class="uc-card items-center text-center">
             <p class="uc-stat-value" style="font-size:clamp(2.25rem,4vw,3.5rem);">{k.stat}</p>
-            <p class="text-sm font-medium text-[var(--color-blu-notte)] mb-1">{k.label}</p>
-            <p class="uc-stat-src">{k.sub}</p>
+            <T as="p" en={k.label.en} it={k.label.it} class="text-sm font-medium text-[var(--color-blu-notte)] mb-1" />
+            <T as="p" en={k.sub.en} it={k.sub.it} class="uc-stat-src" />
           </div>
         ))}
       </div>
-      <p class="mb-6 text-center text-[0.7rem] tracking-widest uppercase text-[var(--color-grigio-400)]">Proiezione illustrativa · modello su benchmark Adobe Experience Cloud · non sono risultati ufficiali UniCredit</p>
+      <T as="p" class="mb-6 text-center text-[0.7rem] tracking-widest uppercase text-[var(--color-grigio-400)]" en="Illustrative projection · model on Adobe Experience Cloud benchmarks · not official UniCredit results" it="Proiezione illustrativa · modello su benchmark Adobe Experience Cloud · non sono risultati ufficiali UniCredit" />
 
       <div data-reveal data-reveal-delay="0.4">
         <a
           href={href(base, '/coinvolgi')}
           class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--accent-primary)] text-[var(--ink-inverse)] hover:opacity-90 transition-opacity duration-300"
         >
-          Coinvolgi in tempo reale
+          <T en="Engage in real time" it="Coinvolgi in tempo reale" />
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

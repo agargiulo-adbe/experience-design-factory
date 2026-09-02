@@ -6,70 +6,71 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const topMetrics = [
-  { stat: '19×', label: 'aumento conversioni CDP', sub: 'US Bank · campagne personalizzate vs broadcast', data: '19' },
-  { stat: '+127%', label: 'nuovi conti aperti', sub: 'con onboarding digitale AJO', data: '127' },
-  { stat: '10×', label: 'velocità produzione contenuti', sub: 'GenStudio vs. processo tradizionale', data: '10' },
+  { stat: '19×', label: { en: 'lift in CDP conversions', it: 'aumento conversioni CDP' }, sub: { en: 'US Bank · personalized campaigns vs broadcast', it: 'US Bank · campagne personalizzate vs broadcast' }, data: '19' },
+  { stat: '+127%', label: { en: 'new accounts opened', it: 'nuovi conti aperti' }, sub: { en: 'with AJO digital onboarding', it: 'con onboarding digitale AJO' }, data: '127' },
+  { stat: '10×', label: { en: 'content production speed', it: 'velocità produzione contenuti' }, sub: { en: 'GenStudio vs. the traditional process', it: 'GenStudio vs. processo tradizionale' }, data: '10' },
 ];
 
 const caseStudies = [
   {
     bank: 'US Bank',
-    country: 'Stati Uniti',
-    challenge: 'Personalizzare le campagne su 70M di clienti senza ampliare il team creativo.',
+    country: { en: 'United States', it: 'Stati Uniti' },
+    challenge: { en: 'Personalize campaigns across 70M customers without growing the creative team.', it: 'Personalizzare le campagne su 70M di clienti senza ampliare il team creativo.' },
     solution: 'Adobe Real-Time CDP + Journey Optimizer + GenStudio',
-    result: '19× aumento conversioni · –60% costo per acquisizione · +2700% traffico AI-driven',
-    relevance: 'Dimensioni comparabili, stesso obiettivo: scala e rilevanza insieme.',
+    result: { en: '19× lift in conversions · –60% cost per acquisition · +2700% AI-driven traffic', it: '19× aumento conversioni · –60% costo per acquisizione · +2700% traffico AI-driven' },
+    relevance: { en: 'Comparable scale, same goal: reach and relevance together.', it: 'Dimensioni comparabili, stesso obiettivo: scala e rilevanza insieme.' },
     pages: 'conosci,acquisisci,contenuti',
   },
   {
     bank: 'Itaú Unibanco',
-    country: 'Brasile',
-    challenge: 'Unificare i dati di 55M di clienti da 12+ sistemi legacy in un profilo unico.',
+    country: { en: 'Brazil', it: 'Brasile' },
+    challenge: { en: 'Unify data on 55M customers from 12+ legacy systems into a single profile.', it: 'Unificare i dati di 55M di clienti da 12+ sistemi legacy in un profilo unico.' },
     solution: 'Adobe Experience Platform · Real-Time CDP · Customer Journey Analytics',
-    result: '+42% engagement campagne personalizzate · 90% riduzione time-to-market campagne',
-    relevance: 'Architettura legacy e stack dati simili a UniCredit.',
+    result: { en: '+42% engagement on personalized campaigns · 90% shorter campaign time-to-market', it: '+42% engagement campagne personalizzate · 90% riduzione time-to-market campagne' },
+    relevance: { en: 'Legacy architecture and data stack close to UniCredit.', it: 'Architettura legacy e stack dati simili a UniCredit.' },
     pages: 'conosci,analizza',
   },
   {
     bank: 'TSB Bank',
     country: 'UK',
-    challenge: 'Aumentare la rilevanza dei touchpoint digitali senza alzare il volume di comunicazioni.',
+    challenge: { en: 'Make digital touchpoints more relevant without raising the volume of messages.', it: 'Aumentare la rilevanza dei touchpoint digitali senza alzare il volume di comunicazioni.' },
     solution: 'Adobe Journey Optimizer · Adobe Target · Real-Time CDP',
-    result: '+31% NPS digitale · –28% opt-out email · 4× retention su clienti a rischio churn',
-    relevance: 'Retail banking europeo, focus su engagement e churn.',
+    result: { en: '+31% digital NPS · –28% email opt-outs · 4× retention on at-risk customers', it: '+31% NPS digitale · –28% opt-out email · 4× retention su clienti a rischio churn' },
+    relevance: { en: 'European retail banking, focused on engagement and churn.', it: 'Retail banking europeo, focus su engagement e churn.' },
     pages: 'conosci,acquisisci,coinvolgi',
   },
   {
     bank: 'Deutsche Bank',
-    country: 'Germania',
-    challenge: "Modernizzare l'acquisizione con SEO AI-driven e ridurre il time-to-market dei contenuti.",
+    country: { en: 'Germany', it: 'Germania' },
+    challenge: { en: 'Modernize acquisition with AI-driven SEO and cut content time-to-market.', it: "Modernizzare l'acquisizione con SEO AI-driven e ridurre il time-to-market dei contenuti." },
     solution: 'AEM Sites Edge Delivery · Real-Time CDP · Customer Journey Analytics',
-    result: '+45% traffico organico · –35% tempo produzione contenuti · 3× velocità go-to-market',
-    relevance: 'Stesso contesto regolatorio europeo e migrazione AEM Sites.',
+    result: { en: '+45% organic traffic · –35% content production time · 3× go-to-market speed', it: '+45% traffico organico · –35% tempo produzione contenuti · 3× velocità go-to-market' },
+    relevance: { en: 'Same European regulatory context and AEM Sites migration.', it: 'Stesso contesto regolatorio europeo e migrazione AEM Sites.' },
     pages: 'visibilita,conosci,analizza',
   },
   {
     bank: 'Crédit Agricole Italia',
-    country: 'Italia',
-    challenge: 'Personalizzare le comunicazioni per 3M+ clienti in un mercato retail e PMI competitivo.',
+    country: { en: 'Italy', it: 'Italia' },
+    challenge: { en: 'Personalize messaging for 3M+ customers in a competitive retail and SME market.', it: 'Personalizzare le comunicazioni per 3M+ clienti in un mercato retail e PMI competitivo.' },
     solution: 'Adobe Journey Optimizer · GenStudio for Performance Marketing · Real-Time CDP',
-    result: '+67% email open rate · +42% conversioni digital lending · –30% costo per lead',
-    relevance: 'Competitor diretto in Italia, stesso segmento retail e PMI.',
+    result: { en: '+67% email open rate · +42% digital lending conversions · –30% cost per lead', it: '+67% email open rate · +42% conversioni digital lending · –30% costo per lead' },
+    relevance: { en: 'Direct competitor in Italy, same retail and SME segment.', it: 'Competitor diretto in Italia, stesso segmento retail e PMI.' },
     pages: 'acquisisci,contenuti',
   },
 ];
 
 const unicreditRoi = [
-  { label: 'Costi operativi', value: '↓', sub: 'ottimizzazione campagne + automazione contenuti' },
-  { label: 'Costo per acquisition', value: '↓', sub: 'timing e targeting più precisi' },
-  { label: 'Customer lifetime value', value: '↑', sub: 'per cliente attivamente digitale' },
-  { label: 'Time-to-market campagne', value: '↓', sub: 'da settimane a giorni' },
+  { label: { en: 'Operating costs', it: 'Costi operativi' }, value: '↓', sub: { en: 'campaign optimization + content automation', it: 'ottimizzazione campagne + automazione contenuti' } },
+  { label: { en: 'Cost per acquisition', it: 'Costo per acquisition' }, value: '↓', sub: { en: 'sharper timing and targeting', it: 'timing e targeting più precisi' } },
+  { label: { en: 'Customer lifetime value', it: 'Customer lifetime value' }, value: '↑', sub: { en: 'per actively digital customer', it: 'per cliente attivamente digitale' } },
+  { label: { en: 'Campaign time-to-market', it: 'Time-to-market campagne' }, value: '↓', sub: { en: 'from weeks to days', it: 'da settimane a giorni' } },
 ];
 ---
 <BaseLayout
@@ -90,28 +91,41 @@ const unicreditRoi = [
         imageClass="opacity-15"
         scrim="bg-[var(--surface-inverse)]/85"
       />
-      <CoverHero
-        eyebrow="BUSINESS IMPACT"
-        title="I risultati"
-        lead="Banche di tutto il mondo misurano già l'impatto: ecco i benchmark che dicono cosa è possibile per UniCredit."
-        size="hero"
-        tone="inverse"
-        signature={false}
-      />
+      <span data-lang-it class="contents">
+        <CoverHero
+          eyebrow="BUSINESS IMPACT"
+          title="I risultati"
+          lead="Banche di tutto il mondo misurano già l'impatto: ecco i benchmark che dicono cosa è possibile per UniCredit."
+          size="hero"
+          tone="inverse"
+          signature={false}
+        />
+      </span>
+      <span data-lang-en class="contents">
+        <CoverHero
+          eyebrow="BUSINESS IMPACT"
+          title="The results"
+          lead="Banks worldwide are already measuring the impact: here are the benchmarks that show what's possible for UniCredit."
+          size="hero"
+          tone="inverse"
+          signature={false}
+        />
+      </span>
     </Slide>
 
     <!-- ── SLIDE 0b: Le storie di Marco e Sofia — i numeri ──────── -->
     <Slide id="slide-storie-roi" bg="primary" align="center">
       <div class="ris-bg" data-slide-bg aria-hidden="true"></div>
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>DUE STORIE. UN SISTEMA.</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal en="TWO STORIES. ONE SYSTEM." it="DUE STORIE. UN SISTEMA." />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-8"
         style="font-size: clamp(2rem, 3.8vw, 3.5rem);"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        I numeri reali di Marco e Sofia
-      </h2>
+        en="The real numbers behind Marco and Sofia"
+        it="I numeri reali di Marco e Sofia"
+      />
 
       <div
         class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-8"
@@ -121,20 +135,20 @@ const unicreditRoi = [
         <!-- Marco -->
         <div class="uc-panel uc-panel--rosso text-left">
           <div class="uc-panel-head">
-            <span class="uc-tag">Marco Ferretti · Cliente retail</span>
-            <span class="ris-persona-note">Mutuo prima casa</span>
+            <T as="span" class="uc-tag" en="Marco Ferretti · Retail customer" it="Marco Ferretti · Cliente retail" />
+            <T as="span" class="ris-persona-note" en="First-home mortgage" it="Mutuo prima casa" />
           </div>
           <div class="ris-rows">
             {[
-              { stat: "0,3s", label: "pagina mutuo personalizzata (AEM EDS)" },
-              { stat: "87/100", label: "propensity mutuo casa al primo click" },
-              { stat: "1 touchpoint AI", label: "da ChatGPT a UniCredit" },
-              { stat: "0 code", label: "richiesta mutuo 100% digitale" },
-              { stat: "12 anni", label: "cliente UniCredit · relazione che continua" },
+              { stat: { en: "0.3s", it: "0,3s" }, label: { en: "personalized mortgage page (AEM EDS)", it: "pagina mutuo personalizzata (AEM EDS)" } },
+              { stat: { en: "87/100", it: "87/100" }, label: { en: "home-mortgage propensity on first click", it: "propensity mutuo casa al primo click" } },
+              { stat: { en: "1 AI touchpoint", it: "1 touchpoint AI" }, label: { en: "from ChatGPT to UniCredit", it: "da ChatGPT a UniCredit" } },
+              { stat: { en: "0 queues", it: "0 code" }, label: { en: "fully digital mortgage request", it: "richiesta mutuo 100% digitale" } },
+              { stat: { en: "12 years", it: "12 anni" }, label: { en: "UniCredit customer · a relationship that lasts", it: "cliente UniCredit · relazione che continua" } },
             ].map((r) => (
               <div class="ris-row">
-                <span class="ris-row-fig ris-row-fig--rosso">{r.stat}</span>
-                <span class="ris-row-label">{r.label}</span>
+                <T as="span" class="ris-row-fig ris-row-fig--rosso" en={r.stat.en} it={r.stat.it} />
+                <T as="span" class="ris-row-label" en={r.label.en} it={r.label.it} />
               </div>
             ))}
           </div>
@@ -144,19 +158,19 @@ const unicreditRoi = [
         <div class="uc-panel uc-panel--oro text-left">
           <div class="uc-panel-head">
             <span class="uc-tag ris-tag--oro">Sofia Ricci · Digital native</span>
-            <span class="ris-persona-note">Primo conto</span>
+            <T as="span" class="ris-persona-note" en="First account" it="Primo conto" />
           </div>
           <div class="ris-rows">
             {[
-              { stat: "22:15", label: "conto aperto da mobile, in metro" },
-              { stat: "variante B", label: "vincente, funnel ottimizzato da Experimentation" },
-              { stat: "6 mesi", label: "da nuovo cliente a relazione attiva" },
-              { stat: "3 prodotti", label: "conto, carta, piano di risparmio" },
-              { stat: "promotrice", label: "consiglia UniCredit a chi conosce" },
+              { stat: { en: "22:15", it: "22:15" }, label: { en: "account opened on mobile, on the metro", it: "conto aperto da mobile, in metro" } },
+              { stat: { en: "variant B", it: "variante B" }, label: { en: "the winner, funnel tuned by Experimentation", it: "vincente, funnel ottimizzato da Experimentation" } },
+              { stat: { en: "6 months", it: "6 mesi" }, label: { en: "from new customer to active relationship", it: "da nuovo cliente a relazione attiva" } },
+              { stat: { en: "3 products", it: "3 prodotti" }, label: { en: "account, card, savings plan", it: "conto, carta, piano di risparmio" } },
+              { stat: { en: "advocate", it: "promotrice" }, label: { en: "recommends UniCredit to people she knows", it: "consiglia UniCredit a chi conosce" } },
             ].map((r) => (
               <div class="ris-row">
-                <span class="ris-row-fig ris-row-fig--oro">{r.stat}</span>
-                <span class="ris-row-label">{r.label}</span>
+                <T as="span" class="ris-row-fig ris-row-fig--oro" en={r.stat.en} it={r.stat.it} />
+                <T as="span" class="ris-row-label" en={r.label.en} it={r.label.it} />
               </div>
             ))}
           </div>
@@ -172,7 +186,7 @@ const unicreditRoi = [
         imageClass="opacity-10"
         scrim="bg-[var(--accent-primary)]/82"
       />
-      <p class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-8" data-reveal>BENCHMARK SETTORE BANKING</p>
+      <T as="p" class="slide-eyebrow text-[var(--ink-inverse)]/70 mb-8" data-reveal en="BANKING SECTOR BENCHMARKS" it="BENCHMARK SETTORE BANKING" />
 
       <div
         class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-8"
@@ -189,26 +203,27 @@ const unicreditRoi = [
             >
               {m.stat}
             </p>
-            <p class="text-base font-medium text-[var(--ink-inverse)] mb-1">{m.label}</p>
-            <p class="text-xs text-[var(--ink-inverse)]/60 leading-relaxed">{m.sub}</p>
+            <T as="p" class="text-base font-medium text-[var(--ink-inverse)] mb-1" en={m.label.en} it={m.label.it} />
+            <T as="p" class="text-xs text-[var(--ink-inverse)]/60 leading-relaxed" en={m.sub.en} it={m.sub.it} />
           </div>
         ))}
       </div>
-      <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/30">Fonte: US Bank Adobe CDP caso di riferimento (Adobe Summit 2024) · Adobe Experience Cloud benchmark settore bancario · benchmark produzione contenuti</p>
+      <T as="p" class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/30" en="Source: US Bank Adobe CDP reference case (Adobe Summit 2024) · Adobe Experience Cloud banking sector benchmark · content production benchmark" it="Fonte: US Bank Adobe CDP caso di riferimento (Adobe Summit 2024) · Adobe Experience Cloud benchmark settore bancario · benchmark produzione contenuti" />
     </Slide>
 
     <!-- ── SLIDE 2: Case studies ──────────────────────────────────── -->
     <Slide id="slide-cases" bg="primary" align="center">
       <div class="ris-bg" data-slide-bg aria-hidden="true"></div>
-      <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>CASE STUDY BANKING</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal en="BANKING CASE STUDIES" it="CASE STUDY BANKING" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-4"
         style="font-size: clamp(1.85rem, 3vw, 2.85rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Chi ha già fatto il percorso
-      </h2>
+        en="Who has already made the journey"
+        it="Chi ha già fatto il percorso"
+      />
 
       <div
         id="case-studies-grid"
@@ -220,11 +235,13 @@ const unicreditRoi = [
           <div class="case-study-card uc-panel uc-panel--rosso text-left md:w-[calc(33.33%-0.7rem)]" data-cs-pages={cs.pages}>
             <div class="uc-panel-head ris-case-head">
               <span class="uc-figure ris-case-bank">{cs.bank}</span>
-              <span class="ris-case-country">{cs.country}</span>
+              {typeof cs.country === 'string'
+                ? <span class="ris-case-country">{cs.country}</span>
+                : <T as="span" class="ris-case-country" en={cs.country.en} it={cs.country.it} />}
             </div>
-            <p class="ris-case-challenge">{cs.challenge}</p>
-            <p class="ris-case-result">{cs.result}</p>
-            <p class="ris-case-relevance">{cs.relevance}</p>
+            <T as="p" class="ris-case-challenge" en={cs.challenge.en} it={cs.challenge.it} />
+            <T as="p" class="ris-case-result" en={cs.result.en} it={cs.result.it} />
+            <T as="p" class="ris-case-relevance" en={cs.relevance.en} it={cs.relevance.it} />
           </div>
         ))}
       </div>
@@ -238,15 +255,16 @@ const unicreditRoi = [
         imageClass="opacity-15"
         scrim="bg-[var(--surface-inverse)]/85"
       />
-      <p class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal>PROIEZIONE UNICREDIT</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-[var(--color-grigio-300)] mb-5" data-reveal en="UNICREDIT PROJECTION" it="PROIEZIONE UNICREDIT" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-inverse)] mb-4"
         style="font-size: clamp(2rem, 3.2vw, 3rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Il ROI di Engagement Unlimited
-      </h2>
+        en="The ROI of Engagement Unlimited"
+        it="Il ROI di Engagement Unlimited"
+      />
 
       <div
         class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-3 mb-3"
@@ -257,8 +275,8 @@ const unicreditRoi = [
           <div class="ris-roi-row">
             <p class="ris-roi-arrow">{r.value}</p>
             <div class="min-w-0">
-              <p class="ris-roi-label">{r.label}</p>
-              <p class="ris-roi-sub">{r.sub}</p>
+              <T as="p" class="ris-roi-label" en={r.label.en} it={r.label.it} />
+              <T as="p" class="ris-roi-sub" en={r.sub.en} it={r.sub.it} />
             </div>
           </div>
         ))}
@@ -270,26 +288,30 @@ const unicreditRoi = [
         data-reveal-delay="0.28"
       >
         {[
-          { value: "↓", label: "tempo di onboarding", sub: "guidato da JO + AEM EDS" },
-          { value: "↑", label: "conversion rate", sub: "pagine AEM EDS vs. pagine legacy" },
-          { value: "↑", label: "campagne al mese", sub: "con lo stesso team, grazie a Coworker" },
+          { value: "↓", label: { en: "onboarding time", it: "tempo di onboarding" }, sub: { en: "guided by JO + AEM EDS", it: "guidato da JO + AEM EDS" } },
+          { value: "↑", label: { en: "conversion rate", it: "conversion rate" }, sub: { en: "AEM EDS pages vs. legacy pages", it: "pagine AEM EDS vs. pagine legacy" } },
+          { value: "↑", label: { en: "campaigns per month", it: "campagne al mese" }, sub: { en: "same team, thanks to Coworker", it: "con lo stesso team, grazie a Coworker" } },
         ].map((r) => (
           <div class="ris-roi-row">
             <p class="ris-roi-arrow ris-roi-arrow--sm">{r.value}</p>
             <div class="min-w-0">
-              <p class="ris-roi-label ris-roi-label--sm">{r.label}</p>
-              <p class="ris-roi-sub ris-roi-sub--lg">{r.sub}</p>
+              <T as="p" class="ris-roi-label ris-roi-label--sm" en={r.label.en} it={r.label.it} />
+              <T as="p" class="ris-roi-sub ris-roi-sub--lg" en={r.sub.en} it={r.sub.it} />
             </div>
           </div>
         ))}
       </div>
 
-      <p class="ris-roi-note" data-reveal data-reveal-delay="0.3">
-        Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB, Deutsche Bank, Crédit Agricole Italia · adattata per il portafoglio retail UniCredit
-      </p>
+      <T as="p" class="ris-roi-note" data-reveal data-reveal-delay="0.3"
+        en="Projection based on banking sector benchmarks · US Bank, Itaú Unibanco, TSB, Deutsche Bank, Crédit Agricole Italia · adapted for the UniCredit retail portfolio"
+        it="Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB, Deutsche Bank, Crédit Agricole Italia · adattata per il portafoglio retail UniCredit"
+      />
 
       <div class="mt-3 text-center" data-reveal data-reveal-delay="0.4">
-        <p class="text-sm text-[var(--color-grigio-400)]">Marco e Sofia non sono personaggi di finzione: <span class="font-[family-name:var(--font-display)] italic text-[var(--color-grigio-300)]">«sono i clienti che UniCredit può servire già da domani.»</span></p>
+        <T as="p" class="text-sm text-[var(--color-grigio-400)]"
+          en={'Marco and Sofia are not fictional characters: <span class="font-[family-name:var(--font-display)] italic text-[var(--color-grigio-300)]">«they are the customers UniCredit can serve as early as tomorrow.»</span>'}
+          it={'Marco e Sofia non sono personaggi di finzione: <span class="font-[family-name:var(--font-display)] italic text-[var(--color-grigio-300)]">«sono i clienti che UniCredit può servire già da domani.»</span>'}
+        />
       </div>
 
       <div class="mt-4 flex flex-wrap gap-4 justify-center" data-reveal data-reveal-delay="0.5">
@@ -297,14 +319,14 @@ const unicreditRoi = [
           href={href(base, '/')}
           class="inline-flex items-center gap-2 px-5 py-2 text-xs font-medium tracking-widest uppercase border border-[var(--ink-inverse)]/30 text-[var(--ink-inverse)]/50 hover:border-[var(--ink-inverse)]/60 hover:text-[var(--ink-inverse)]/80 transition-colors duration-300 rounded-sm"
         >
-          Ricomincia il percorso →
+          <T en="Start the journey over →" it="Ricomincia il percorso →" />
         </a>
         <a
           href={href(base.replace('/unicredit-engagement', ''), '/console/unicredit-engagement')}
           class="inline-flex items-center gap-3 px-8 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide border border-[var(--ink-inverse)]/40 text-[var(--ink-inverse)] hover:border-[var(--ink-inverse)] transition-colors duration-300"
           data-admin-only
         >
-          Configura la presentazione
+          <T en="Configure the presentation" it="Configura la presentazione" />
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
             <rect x="2" y="2" width="5" height="5" rx="0.5"/>
             <rect x="9" y="2" width="5" height="5" rx="0.5"/>

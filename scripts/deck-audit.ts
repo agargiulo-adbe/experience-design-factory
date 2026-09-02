@@ -341,6 +341,11 @@ async function auditViewport(browser: import('playwright').Browser, base: string
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   await page.addInitScript(() => { (window as unknown as { __name: (f: unknown) => unknown }).__name = (f) => f; });
+  // Optional: force a UI language (bilingual decks) before any page script runs.
+  const deckLang = process.env.DECK_LANG;
+  if (deckLang === 'en' || deckLang === 'it' || deckLang === 'fr') {
+    await page.addInitScript((l) => { try { localStorage.setItem('edf:lang', l as string); } catch (e) {} }, deckLang);
+  }
   await page.goto(base + route, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => (window as unknown as { __edfDeck?: unknown }).__edfDeck !== undefined, { timeout: 8000 });
 

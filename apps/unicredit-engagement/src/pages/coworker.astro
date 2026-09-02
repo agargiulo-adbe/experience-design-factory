@@ -8,54 +8,56 @@ import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const painPoints = [
-  { num: '40%', label: 'del tempo dei team CX su task manuali, handoff, approvazioni, report' },
-  { num: '6 settimane', label: 'dalla brief di campagna al go-live, quando il momento buono è già passato.' },
-  { num: '1 campagna / mese', label: 'la velocità media di un team CX senza automazione AI' },
+  { num: '40%', label: { it: 'del tempo dei team CX su task manuali, handoff, approvazioni, report', en: 'of CX team time spent on manual tasks, handoffs, approvals, reports' } },
+  { num: '6 settimane', label: { it: 'dalla brief di campagna al go-live, quando il momento buono è già passato.', en: 'from campaign brief to go-live, by which point the right moment has passed.' } },
+  { num: '1 campagna / mese', label: { it: 'la velocità media di un team CX senza automazione AI', en: 'the average pace of a CX team without AI automation' } },
 ];
 
 // Capacità di Coworker (Adobe CX Enterprise Coworker, annunciato Adobe Summit).
 const modules = [
   {
-    name: 'Task in linguaggio naturale',
-    desc: "Automatizza i task CX descritti a parole: dall'idea all'azione in minuti, con skill personalizzabili e planning flessibile.",
+    name: { it: 'Task in linguaggio naturale', en: 'Natural-language tasks' },
+    desc: { it: "Automatizza i task CX descritti a parole: dall'idea all'azione in minuti, con skill personalizzabili e planning flessibile.", en: 'Automate CX tasks described in words: from idea to action in minutes, with customizable skills and flexible planning.' },
     variant: 'rosso',
   },
   {
-    name: 'Campagne agili',
-    desc: 'Dalla brief al lancio in ore invece di settimane, con contenuti e approvazioni orchestrati.',
+    name: { it: 'Campagne agili', en: 'Agile campaigns' },
+    desc: { it: 'Dalla brief al lancio in ore invece di settimane, con contenuti e approvazioni orchestrati.', en: 'From brief to launch in hours instead of weeks, with content and approvals orchestrated together.' },
     variant: 'oro',
   },
   {
-    name: 'Workflow end-to-end',
-    desc: 'Task, approvazioni ed esecuzione CX in un unico posto, con governance e supervisione umana.',
+    name: { it: 'Workflow end-to-end', en: 'End-to-end workflow' },
+    desc: { it: 'Task, approvazioni ed esecuzione CX in un unico posto, con governance e supervisione umana.', en: 'Tasks, approvals and CX execution in one place, with governance and human oversight.' },
     variant: 'neutro',
   },
 ];
 
 const governancePillars = [
-  { title: 'Brand policy enforcement', body: 'Conformità di brand verificata su ogni output' },
-  { title: 'Progettato per DORA / PSD3 / GDPR', body: 'Human-in-the-loop e audit trail supportano i requisiti regolatori (validazione legale necessaria)' },
-  { title: 'Human-in-the-loop', body: 'Ogni azione critica richiede approvazione' },
-  { title: 'Audit trail completo', body: 'Ogni decisione AI è tracciata e spiegabile' },
+  { title: { it: 'Brand policy enforcement', en: 'Brand policy enforcement' }, body: { it: 'Conformità di brand verificata su ogni output', en: 'Brand compliance verified on every output' } },
+  { title: { it: 'Progettato per DORA / PSD3 / GDPR', en: 'Designed for DORA / PSD3 / GDPR' }, body: { it: 'Human-in-the-loop e audit trail supportano i requisiti regolatori (validazione legale necessaria)', en: 'Human-in-the-loop and audit trail support regulatory requirements (legal validation needed)' } },
+  { title: { it: 'Human-in-the-loop', en: 'Human-in-the-loop' }, body: { it: 'Ogni azione critica richiede approvazione', en: 'Every critical action requires approval' } },
+  { title: { it: 'Audit trail completo', en: 'Complete audit trail' }, body: { it: 'Ogni decisione AI è tracciata e spiegabile', en: 'Every AI decision is tracked and explainable' } },
 ];
 
 const finalMetrics = [
-  { num: '↑', label: 'più campagne con lo stesso team' },
-  { num: '↓', label: 'tempo di approvazione più breve' },
-  { num: '✓', label: 'conformità di brand verificata su ogni output' },
+  { num: '↑', label: { it: 'più campagne con lo stesso team', en: 'more campaigns with the same team' } },
+  { num: '↓', label: { it: 'tempo di approvazione più breve', en: 'shorter approval time' } },
+  { num: '✓', label: { it: 'conformità di brand verificata su ogni output', en: 'brand compliance verified on every output' } },
 ];
 
 const campaignTimeline = [
-  { time: '08:00', label: 'Brief → AI' },
-  { time: '08:20', label: 'Contenuti GenStudio' },
-  { time: '08:45', label: 'Approvazione 1-click' },
-  { time: '09:00', label: 'Live su Meta' },
+  { time: '08:00', label: { it: 'Brief → AI', en: 'Brief → AI' } },
+  { time: '08:20', label: { it: 'Contenuti GenStudio', en: 'GenStudio content' } },
+  { time: '08:45', label: { it: 'Approvazione 1-click', en: '1-click approval' } },
+  { time: '09:00', label: { it: 'Live su Meta', en: 'Live on Meta' } },
 ];
+
 ---
 <BaseLayout
   title="Il Coworker AI — da intenzione a esecuzione"
@@ -75,63 +77,79 @@ const campaignTimeline = [
         imageClass="opacity-18"
         scrim="bg-[var(--surface-inverse)]/84"
       />
-      <CoverHero
-        eyebrow="07 · COWORKER AI"
-        numeral="07"
-        title="Il Coworker AI — da intenzione a esecuzione"
-        lead="Il team marketing rende tre volte tanto, senza lavorare tre volte di più."
-        size="phase"
-        tone="inverse"
-        signature={false}
-      />
+      <span data-lang-it class="contents">
+        <CoverHero
+          eyebrow="07 · COWORKER AI"
+          numeral="07"
+          title="Il Coworker AI — da intenzione a esecuzione"
+          lead="Il team marketing rende tre volte tanto, senza lavorare tre volte di più."
+          size="phase"
+          tone="inverse"
+          signature={false}
+        />
+      </span>
+      <span data-lang-en class="contents">
+        <CoverHero
+          eyebrow="07 · COWORKER AI"
+          numeral="07"
+          title="The AI Coworker: from intent to execution"
+          lead="The marketing team does three times as much, without working three times harder."
+          size="phase"
+          tone="inverse"
+          signature={false}
+        />
+      </span>
     </Slide>
 
     <!-- ── SLIDE 1: Il problema ───────────────────────────────────── -->
     <Slide id="slide-problem" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>IL PROBLEMA DI OGNI CMO</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="EVERY CMO'S PROBLEM" it="IL PROBLEMA DI OGNI CMO" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-10"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Il tempo del team non dovrebbe andare qui
-      </h2>
+        en="This isn't where the team's time should go"
+        it="Il tempo del team non dovrebbe andare qui"
+      />
       <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-6 mb-10" data-reveal data-reveal-delay="0.2">
         {painPoints.map((p) => (
           <div class="uc-panel uc-panel--rosso items-center text-center">
             <p class="uc-figure mb-3 break-words">{p.num}</p>
-            <p class="uc-panel-body" style="margin-bottom: 0;">{p.label}</p>
+            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={p.label.en} it={p.label.it} />
           </div>
         ))}
       </div>
       <div class="w-full max-w-2xl mx-auto uc-quote text-center" data-reveal data-reveal-delay="0.35" style="margin-top: 0;">
-        <p class="uc-quote-text mx-auto">Il CMO può scegliere: strumenti che assistono, o un sistema che esegue.</p>
+        <T as="p" class="uc-quote-text mx-auto" en="The CMO has a choice: tools that assist, or a system that executes." it="Il CMO può scegliere: strumenti che assistono, o un sistema che esegue." />
       </div>
-      <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase opacity-30">Fonte: Adobe Content Supply Chain Benchmark Report, 2024 · settore banking</p>
+      <T as="p" class="mt-6 text-center text-[0.62rem] tracking-widest uppercase opacity-30" en="Source: Adobe Content Supply Chain Benchmark Report, 2024 · banking sector" it="Fonte: Adobe Content Supply Chain Benchmark Report, 2024 · settore banking" />
     </Slide>
 
     <!-- ── SLIDE 2: Cos'è Coworker ────────────────────────────────── -->
     <Slide id="slide-coworker-intro" bg="secondary" align="center">
       <div class="uc-bg-soft absolute inset-0 -z-10"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>ADOBE CX ENTERPRISE · COWORKER</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="ADOBE CX ENTERPRISE · COWORKER" it="ADOBE CX ENTERPRISE · COWORKER" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Non un assistente. Un collega AI.
-      </h2>
-      <p class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15">
-        Coworker è l'engine AI di Adobe CX Enterprise per automatizzare i processi CX. Trasforma obiettivi di alto livello in esecuzione coordinata end-to-end, con governance, supervisione umana e contesto enterprise.
-      </p>
+        en="Not an assistant. An AI colleague."
+        it="Non un assistente. Un collega AI."
+      />
+      <T as="p" class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15"
+        en="Coworker is the Adobe CX Enterprise AI engine for automating CX processes. It turns high-level goals into coordinated end-to-end execution, with governance, human oversight and enterprise context."
+        it="Coworker è l'engine AI di Adobe CX Enterprise per automatizzare i processi CX. Trasforma obiettivi di alto livello in esecuzione coordinata end-to-end, con governance, supervisione umana e contesto enterprise."
+      />
       <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-6" data-reveal data-reveal-delay="0.2">
         {modules.map((m) => (
           <div class:list={["uc-panel text-left", m.variant === 'rosso' && 'uc-panel--rosso', m.variant === 'oro' && 'uc-panel--oro']}>
-            <p class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;">{m.name}</p>
-            <p class="uc-panel-body" style="margin-bottom: 0;">{m.desc}</p>
+            <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;" en={m.name.en} it={m.name.it} />
+            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={m.desc.en} it={m.desc.it} />
           </div>
         ))}
       </div>
@@ -148,39 +166,41 @@ const campaignTimeline = [
                 <span class="uc-tag">Coworker · 10:05</span>
               </div>
               <div class="bg-[var(--surface-primary)] rounded p-3 mb-3">
-                <p class="uc-panel-body" style="margin-bottom: 0;">Prepara il brief per Marco Ferretti, appuntamento ore 14:00</p>
+                <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en="Prepare the brief for Marco Ferretti, meeting at 2:00 PM" it="Prepara il brief per Marco Ferretti, appuntamento ore 14:00" />
               </div>
               <div class="bg-[var(--accent-primary)]/8 rounded p-3" style="margin-bottom: 0; border-top: 1px solid rgba(190,32,39,0.45);">
-                <p class="uc-tag mb-2">Coworker · Brief generato</p>
-                <p class="uc-panel-body" style="margin-bottom: 0;">Marco Ferretti · Propensity mutuo casa 87/100 · cliente retail alto-valore · 3 interazioni nell'ultima settimana · Proposta personalizzata: mutuo prima casa 20Y, tasso dedicato ai clienti storici...</p>
+                <T as="p" class="uc-tag mb-2" en="Coworker · Brief generated" it="Coworker · Brief generato" />
+                <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en="Marco Ferretti · Home mortgage propensity 87/100 · high-value retail client · 3 interactions in the past week · Personalized offer: first-home mortgage 20Y, rate reserved for long-standing clients..." it="Marco Ferretti · Propensity mutuo casa 87/100 · cliente retail alto-valore · 3 interazioni nell'ultima settimana · Proposta personalizzata: mutuo prima casa 20Y, tasso dedicato ai clienti storici..." />
               </div>
             </div>
           </div>
           <div class="text-left">
-            <p class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal>COWORKER · STORIA DI MARCO</p>
-            <h3
+            <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal en="COWORKER · MARCO'S STORY" it="COWORKER · STORIA DI MARCO" />
+            <T
+              as="h3"
               class="text-[var(--ink-primary)] mb-5"
               style="font-size: clamp(1.6rem, 2.8vw, 2.6rem);"
               data-reveal
               data-reveal-delay="0.1"
-            >
-              Il consulente arriva preparato
-            </h3>
-            <p class="text-[var(--ink-secondary)] leading-relaxed mb-6 text-base" data-reveal data-reveal-delay="0.15">
-              Coworker ha letto il profilo RT-CDP di Marco, analizzato il suo storico e preparato la proposta, tutto prima che il consulente aprisse il laptop.
-            </p>
+              en="The advisor walks in prepared"
+              it="Il consulente arriva preparato"
+            />
+            <T as="p" class="text-[var(--ink-secondary)] leading-relaxed mb-6 text-base" data-reveal data-reveal-delay="0.15"
+              en="Coworker read Marco's RT-CDP profile, analyzed his history and prepared the offer, all before the advisor opened the laptop."
+              it="Coworker ha letto il profilo RT-CDP di Marco, analizzato il suo storico e preparato la proposta, tutto prima che il consulente aprisse il laptop."
+            />
             <div class="cw-thread" data-reveal data-reveal-delay="0.2">
               <div class="uc-thread">
                 <span class="uc-node uc-node--rosso"></span>
-                <p class="cw-thread-item">Brief AI-generated in 30 secondi</p>
+                <T as="p" class="cw-thread-item" en="AI-generated brief in 30 seconds" it="Brief AI-generated in 30 secondi" />
               </div>
               <div class="uc-thread">
                 <span class="uc-node uc-node--rosso"></span>
-                <p class="cw-thread-item">Proposta personalizzata allegata</p>
+                <T as="p" class="cw-thread-item" en="Personalized offer attached" it="Proposta personalizzata allegata" />
               </div>
               <div class="uc-thread">
                 <span class="uc-node uc-node--rosso"></span>
-                <p class="cw-thread-item">Storico cross-canale incluso</p>
+                <T as="p" class="cw-thread-item" en="Cross-channel history included" it="Storico cross-canale incluso" />
               </div>
             </div>
           </div>
@@ -195,24 +215,26 @@ const campaignTimeline = [
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
           <div class="text-left">
-            <p class="slide-eyebrow text-[var(--color-oro)] mb-5" data-reveal>COWORKER · STORIA DI SOFIA</p>
-            <h3
+            <T as="p" class="slide-eyebrow text-[var(--color-oro)] mb-5" data-reveal en="COWORKER · SOFIA'S STORY" it="COWORKER · STORIA DI SOFIA" />
+            <T
+              as="h3"
               class="text-[var(--ink-primary)] mb-5"
               style="font-size: clamp(1.5rem, 2.6vw, 2.4rem);"
               data-reveal
               data-reveal-delay="0.1"
-            >
-              La campagna era live alle 9:00. Sofia ha visto il reel ads alle 19:30.
-            </h3>
-            <p class="text-[var(--ink-secondary)] leading-relaxed mb-6 text-sm" data-reveal data-reveal-delay="0.15">
-              Il team di digital marketing ha usato Coworker per gestire l'intera campagna Instagram: dalla brief al lancio in 2 ore invece di 6 settimane.
-            </p>
+              en="The campaign went live at 9:00. Sofia saw the reel ads at 19:30."
+              it="La campagna era live alle 9:00. Sofia ha visto il reel ads alle 19:30."
+            />
+            <T as="p" class="text-[var(--ink-secondary)] leading-relaxed mb-6 text-sm" data-reveal data-reveal-delay="0.15"
+              en="The digital marketing team used Coworker to run the entire Instagram campaign: from brief to launch in 2 hours instead of 6 weeks."
+              it="Il team di digital marketing ha usato Coworker per gestire l'intera campagna Instagram: dalla brief al lancio in 2 ore invece di 6 settimane."
+            />
             <div class="cw-timeline mb-6" data-reveal data-reveal-delay="0.2">
               {campaignTimeline.map((t) => (
                 <div class="uc-thread">
                   <span class="text-sm font-mono text-[var(--ink-tertiary)] w-12 flex-shrink-0">{t.time}</span>
                   <span class="uc-node flex-shrink-0"></span>
-                  <span class="text-[var(--ink-secondary)]" style="font-size: 0.95rem;">{t.label}</span>
+                  <T class="text-[var(--ink-secondary)]" style="font-size: 0.95rem;" en={t.label.en} it={t.label.it} />
                 </div>
               ))}
             </div>
@@ -222,28 +244,28 @@ const campaignTimeline = [
                   <span class="text-xs font-bold text-[var(--color-oro)]">S</span>
                 </div>
                 <div>
-                  <p class="uc-src mb-1">Sofia, in questo momento</p>
-                  <p class="uc-quote-text" style="font-size: clamp(1rem, 1.2vw, 1.15rem);">«Ha visto il reel ads alle 19:30. Alle 22:15, in metro, aveva già aperto il conto.»</p>
+                  <T as="p" class="uc-src mb-1" en="Sofia, right now" it="Sofia, in questo momento" />
+                  <T as="p" class="uc-quote-text" style="font-size: clamp(1rem, 1.2vw, 1.15rem);" en="“She saw the reel ads at 19:30. By 22:15, on the metro, she'd already opened the account.”" it="«Ha visto il reel ads alle 19:30. Alle 22:15, in metro, aveva già aperto il conto.»" />
                 </div>
               </div>
             </div>
           </div>
           <div class="flex flex-col gap-4">
             <div class="uc-panel uc-panel--oro">
-              <p class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;">2 ore</p>
-              <p class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;">dal brief al live (vs. 6 settimane)</p>
+              <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;" en="2 hours" it="2 ore" />
+              <T as="p" class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;" en="from brief to live (vs. 6 weeks)" it="dal brief al live (vs. 6 settimane)" />
             </div>
             <div class="uc-panel uc-panel--oro">
-              <p class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;">12 varianti creative</p>
-              <p class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;">testate (Experimentation Accelerator)</p>
+              <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;" en="12 creative variants" it="12 varianti creative" />
+              <T as="p" class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;" en="tested (Experimentation Accelerator)" it="testate (Experimentation Accelerator)" />
             </div>
             <div class="uc-panel uc-panel--oro">
-              <p class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;">CTR in crescita</p>
-              <p class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;">rispetto alla versione manuale</p>
+              <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;" en="CTR climbing" it="CTR in crescita" />
+              <T as="p" class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;" en="compared with the manual version" it="rispetto alla versione manuale" />
             </div>
             <div class="uc-panel uc-panel--oro">
-              <p class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;">Sofia ha aperto il conto alle 22:15</p>
-              <p class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;">la sera stessa · 3 prodotti in 6 mesi</p>
+              <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.3rem;" en="Sofia opened the account at 22:15" it="Sofia ha aperto il conto alle 22:15" />
+              <T as="p" class="uc-panel-body" style="margin-bottom: 0; font-size: 0.9rem;" en="that same evening · 3 products in 6 months" it="la sera stessa · 3 prodotti in 6 mesi" />
             </div>
           </div>
         </div>
@@ -254,29 +276,32 @@ const campaignTimeline = [
     <!-- ── SLIDE 5: Governance ────────────────────────────────────── -->
     <Slide id="slide-governance" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal>ENTERPRISE GOVERNANCE</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5" data-reveal en="ENTERPRISE GOVERNANCE" it="ENTERPRISE GOVERNANCE" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-primary)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.1"
-      >
-        Velocità senza perdere il controllo
-      </h2>
-      <p class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15">
-        Coworker non agisce mai senza contesto aziendale, policy di brand e supervisione umana: il responsabile può approvare o bloccare prima del lancio.
-      </p>
+        en="Speed without losing control"
+        it="Velocità senza perdere il controllo"
+      />
+      <T as="p" class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15"
+        en="Coworker never acts without company context, brand policy and human oversight: the manager can approve or block before launch."
+        it="Coworker non agisce mai senza contesto aziendale, policy di brand e supervisione umana: il responsabile può approvare o bloccare prima del lancio."
+      />
       <div class="w-full max-w-5xl mx-auto grid grid-cols-2 gap-6 mb-8" data-reveal data-reveal-delay="0.2">
         {governancePillars.map((p) => (
           <div class="uc-panel uc-panel--rosso text-left">
-            <p class="uc-card-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;">{p.title}</p>
-            <p class="uc-panel-body" style="margin-bottom: 0;">{p.body}</p>
+            <T as="p" class="uc-card-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;" en={p.title.en} it={p.title.it} />
+            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={p.body.en} it={p.body.it} />
           </div>
         ))}
       </div>
-      <p class="text-xs text-[var(--ink-tertiary)] text-center" data-reveal data-reveal-delay="0.35">
-        Interface-agnostic: MCP + A2A — Coworker si integra con i sistemi già in uso da UniCredit. · La conformità ai requisiti regolatori specifici (DORA, PSD3, GDPR) richiede validazione legale per ogni implementazione.
-      </p>
+      <T as="p" class="text-xs text-[var(--ink-tertiary)] text-center" data-reveal data-reveal-delay="0.35"
+        en="Interface-agnostic: MCP + A2A — Coworker plugs into the systems UniCredit already runs. · Compliance with specific regulatory requirements (DORA, PSD3, GDPR) requires legal validation for each implementation."
+        it="Interface-agnostic: MCP + A2A — Coworker si integra con i sistemi già in uso da UniCredit. · La conformità ai requisiti regolatori specifici (DORA, PSD3, GDPR) richiede validazione legale per ogni implementazione."
+      />
     </Slide>
 
     <!-- ── SLIDE 6: Risultato del Team ──────────────────────────── -->
@@ -287,18 +312,20 @@ const campaignTimeline = [
         imageClass="opacity-12"
         scrim="bg-[var(--accent-primary)]/85"
       />
-      <p class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-5" data-reveal>IL VALORE PER IL TEAM</p>
-      <h2
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-5" data-reveal en="THE VALUE FOR THE TEAM" it="IL VALORE PER IL TEAM" />
+      <T
+        as="h2"
         class="slide-title text-[var(--ink-inverse)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
         data-reveal
         data-reveal-delay="0.08"
-      >
-        Più campagne, senza più ore
-      </h2>
-      <p class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-inverse)]/80 max-w-2xl mb-10" data-reveal data-reveal-delay="0.15">
-        Il team non lavora di più: Coworker si prende il lavoro ripetitivo che ne divora le giornate.
-      </p>
+        en="More campaigns, without more hours"
+        it="Più campagne, senza più ore"
+      />
+      <T as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-inverse)]/80 max-w-2xl mb-10" data-reveal data-reveal-delay="0.15"
+        en="The team doesn't work more: Coworker takes on the repetitive work that eats up their days."
+        it="Il team non lavora di più: Coworker si prende il lavoro ripetitivo che ne divora le giornate."
+      />
       <div class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-6 mb-10" data-reveal data-reveal-delay="0.22">
         {finalMetrics.map((m) => (
           <div class="p-6 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-center">
@@ -306,7 +333,7 @@ const campaignTimeline = [
               class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-2"
               style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
             >{m.num}</p>
-            <p class="text-xs text-[var(--ink-inverse)]/70">{m.label}</p>
+            <T as="p" class="text-xs text-[var(--ink-inverse)]/70" en={m.label.en} it={m.label.it} />
           </div>
         ))}
       </div>
@@ -315,10 +342,10 @@ const campaignTimeline = [
           href={href(base, '/b2b')}
           class="inline-flex items-center gap-3 px-10 py-5 bg-[var(--ink-inverse)] text-[var(--ink-primary)] text-lg font-medium tracking-wide hover:bg-[var(--color-crema)] transition-colors"
         >
-          Prossimo: B2B →
+          <T en="Next: B2B →" it="Prossimo: B2B →" />
         </a>
       </div>
-      <p class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/30">Fonte: Adobe GenStudio for Performance Marketing (GA) · proiezione illustrativa su benchmark campagne bancarie</p>
+      <T as="p" class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/30" en="Source: Adobe GenStudio for Performance Marketing (GA) · illustrative projection on banking-campaign benchmarks" it="Fonte: Adobe GenStudio for Performance Marketing (GA) · proiezione illustrativa su benchmark campagne bancarie" />
     </Slide>
 
   </DeckContainer>
