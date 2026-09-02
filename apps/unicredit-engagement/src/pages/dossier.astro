@@ -62,7 +62,19 @@ const DOC_SLUG = 'unicredit-attribution';
     var toolsEl = document.getElementById('ur-tools');
     var footerEl = document.getElementById('ur-footer');
     var content = null;
-    var lang = (function () { try { return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'it'; } catch (_) { return 'it'; } })();
+    // Initial language priority:
+    //   1) explicit ?lang=en|it  →  wins
+    //   2) shared secret-link (?t=…)  →  English by default (international colleagues)
+    //   3) otherwise  →  saved preference, default IT (unchanged login/deck flow)
+    var lang = (function () {
+      try {
+        var q = new URLSearchParams(location.search);
+        var l = q.get('lang');
+        if (l === 'en' || l === 'it') return l;
+        if (q.get('t')) return 'en';
+        return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'it';
+      } catch (_) { return 'it'; }
+    })();
 
     var T = {
       it: { checking: 'Verifica accesso…', needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
