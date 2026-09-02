@@ -1,0 +1,347 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
+const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Orfana (fuori nav) + noindex. Il contenuto confidenziale NON è nel bundle
+// statico: vive in Supabase (tabella restricted_docs, RLS) e si carica solo
+//   1) dopo login (super admin o utente con accesso a mim-alfabeti), oppure
+//   2) via secret-link ?t=<uuid> (RPC get_shared_doc, senza login).
+// Bilingue IT/EN + PDF.
+const DOC_SLUG = 'mim-adobe';
+---
+<BaseLayout
+  title="Dossier — Alfabeti · MIM"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <div class="mim-shell" data-lang="it">
+    <header class="mim-header mim-noprint">
+      <div class="mim-header-inner">
+        <div class="mim-header-left">
+          <span class="mim-badge" id="mim-badge">Adobe internal · Riservato</span>
+          <h1 class="mim-title" id="mim-title">Dossier — Alfabeti · MIM</h1>
+        </div>
+        <div class="mim-header-right" id="mim-tools" hidden>
+          <div class="mim-lang" role="group" aria-label="Lingua / Language">
+            <button type="button" class="mim-lang-btn is-active" data-set-lang="it">IT</button>
+            <button type="button" class="mim-lang-btn" data-set-lang="en">EN</button>
+          </div>
+          <button type="button" class="mim-pdf" id="mim-pdf">↓ PDF</button>
+          <a class="mim-deck-link" href={`${base}`}>Deck →</a>
+        </div>
+      </div>
+      <p class="mim-disclaimer" id="mim-disclaimer"></p>
+    </header>
+
+    <main class="mim-main">
+      <!-- Stato: caricamento / gate / no-access. Nessun contenuto riservato qui. -->
+      <div id="mim-state" class="mim-state">
+        <p class="mim-state-msg" id="mim-state-msg">Verifica accesso…</p>
+        <div id="mim-state-actions" class="mim-state-actions" hidden></div>
+      </div>
+
+      <!-- Contenuto iniettato dopo l'accesso (da Supabase) -->
+      <div id="mim-doc" hidden></div>
+
+      <footer class="mim-footer mim-noprint" id="mim-footer" hidden></footer>
+    </main>
+  </div>
+
+  <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON, DOC_SLUG, base }}>
+  (function () {
+    var SESSION_KEY = 'edf:sb-session';
+    var LANG_KEY = 'edf:lang';
+    var shell = document.querySelector('.mim-shell');
+    var stateEl = document.getElementById('mim-state');
+    var stateMsg = document.getElementById('mim-state-msg');
+    var stateActions = document.getElementById('mim-state-actions');
+    var docEl = document.getElementById('mim-doc');
+    var toolsEl = document.getElementById('mim-tools');
+    var footerEl = document.getElementById('mim-footer');
+    var content = null;
+    // Initial language priority:
+    //   1) explicit ?lang=en|it  →  wins
+    //   2) shared secret-link (?t=…)  →  English by default (international colleagues)
+    //   3) otherwise  →  saved preference, default IT
+    var lang = (function () {
+      try {
+        var q = new URLSearchParams(location.search);
+        var l = q.get('lang');
+        if (l === 'en' || l === 'it') return l;
+        if (q.get('t')) return 'en';
+        return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'it';
+      } catch (_) { return 'it'; }
+    })();
+
+    var T = {
+      it: { checking: 'Verifica accesso…', needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
+            login: 'Accedi dal Console', noAccess: 'Il tuo account non ha accesso a questo dossier. L’accesso si attiva dal Console (Utenti).',
+            expired: 'Sessione scaduta. Riaccedi per continuare.', backend: 'Backend non configurato.',
+            error: 'Errore nel caricamento del dossier. Riprova.', openConsole: 'Apri il Console' },
+      en: { checking: 'Checking access…', needLogin: 'Restricted content. Sign in with your Adobe account to continue.',
+            login: 'Sign in from the Console', noAccess: 'Your account has no access to this dossier. Access is granted from the Console (Users).',
+            expired: 'Session expired. Sign in again to continue.', backend: 'Backend not configured.',
+            error: 'Failed to load the dossier. Please retry.', openConsole: 'Open the Console' },
+    };
+    function t(k) { return (T[lang] || T.it)[k]; }
+
+    function consoleLoginUrl() {
+      var b = String(base || '/');
+      if (b.indexOf('mim-alfabeti') !== -1) return b.replace(/mim-alfabeti\/?$/, 'console/') + 'login/';
+      return b.replace(/[^/]+\/?$/, 'console/') + 'login/';
+    }
+    function readSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } }
+    function nowSec() { return Math.floor(Date.now() / 1000); }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+    // Content is authored by super admins (trusted) and RLS-gated; still, only
+    // <strong>/<em> are allowed through — everything else is escaped.
+    function richText(s) {
+      var safe = esc(s);
+      return safe
+        .replace(/&lt;strong&gt;/g, '<strong>').replace(/&lt;\/strong&gt;/g, '</strong>')
+        .replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
+    }
+    function L(obj) { return obj ? (obj[lang] != null ? obj[lang] : obj.it) : ''; }
+
+    function showState(msg, actionsHtml) {
+      docEl.hidden = true; toolsEl.hidden = true; footerEl.hidden = true;
+      stateEl.hidden = false;
+      stateMsg.textContent = msg;
+      if (actionsHtml) { stateActions.hidden = false; stateActions.innerHTML = actionsHtml; }
+      else { stateActions.hidden = true; stateActions.innerHTML = ''; }
+    }
+    function loginButton() {
+      return '<a class="mim-btn" href="' + esc(consoleLoginUrl()) + '">' + esc(t('login')) + '</a>';
+    }
+
+    function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+    function render() {
+      if (!content) return;
+      shell.setAttribute('data-lang', lang);
+      document.getElementById('mim-badge').textContent = L(content.badge) || 'Adobe internal';
+      document.getElementById('mim-title').textContent = L(content.title) || 'Dossier';
+      document.getElementById('mim-disclaimer').textContent = L(content.disclaimer) || '';
+      docEl.innerHTML = '';
+
+      (content.sections || []).forEach(function (sec) {
+        var s = el('section', 'mim-section');
+        var h = el('h2', 'mim-h');
+        h.innerHTML = '<span class="mim-h-num">' + esc(sec.n || '') + '</span>' + esc(L(sec.h));
+        s.appendChild(h);
+        if (sec.note) s.appendChild(el('p', 'mim-note', esc(L(sec.note))));
+
+        if (sec.items && sec.items.length) {
+          var ul = el('ul', 'mim-list');
+          sec.items.forEach(function (it) { ul.appendChild(el('li', 'mim-li', richText(L(it)))); });
+          s.appendChild(ul);
+        }
+        if (sec.people && sec.people.length) {
+          var grid = el('div', 'mim-people');
+          sec.people.forEach(function (p) {
+            var card = el('div', 'mim-person');
+            card.appendChild(el('p', 'mim-person-name', esc(p.name || '')));
+            card.appendChild(el('p', 'mim-person-role', esc(L(p.role))));
+            if (p.note) card.appendChild(el('p', 'mim-person-note', esc(L(p.note))));
+            if (p.li) { var pa = document.createElement('a'); pa.className = 'mim-person-li'; pa.href = p.li; pa.target = '_blank'; pa.rel = 'noopener noreferrer'; pa.textContent = 'LinkedIn ↗'; card.appendChild(pa); }
+            grid.appendChild(card);
+          });
+          s.appendChild(grid);
+        }
+        // say/don't: render only the columns that actually have items.
+        var hasSay = sec.say && sec.say.length, hasDont = sec.dont && sec.dont.length;
+        if (hasSay || hasDont) {
+          var cols = el('div', 'mim-cols');
+          var mk = function (title, arr, mod) {
+            var c = el('div', 'mim-col ' + mod);
+            c.appendChild(el('h3', 'mim-col-h', esc(title)));
+            var ul = el('ul', 'mim-list');
+            (arr || []).forEach(function (it) { ul.appendChild(el('li', 'mim-li mim-li--tight', esc(L(it)))); });
+            c.appendChild(ul); return c;
+          };
+          if (hasSay) cols.appendChild(mk(lang === 'en' ? '✓ Say' : '✓ Da dire', sec.say, 'mim-col--ok'));
+          if (hasDont) cols.appendChild(mk(lang === 'en' ? '✗ Don’t say' : '✗ Da non dire', sec.dont, 'mim-col--no'));
+          if (!hasSay || !hasDont) cols.style.gridTemplateColumns = '1fr';
+          s.appendChild(cols);
+        }
+        if (sec.sources && sec.sources.length) {
+          var sl = el('ul', 'mim-sources');
+          sec.sources.forEach(function (b) {
+            var li = el('li', 'mim-source');
+            li.innerHTML = '<span class="mim-chip mim-chip--' + esc(b.tipo || 'ref') + '">' + esc(b.tipo || '') + '</span>';
+            var a = el('a'); a.href = b.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = b.label || b.url;
+            li.appendChild(a); sl.appendChild(li);
+          });
+          s.appendChild(sl);
+        }
+        docEl.appendChild(s);
+      });
+
+      footerEl.textContent = (L(content.updated) || '') + ' · Adobe internal';
+      stateEl.hidden = true; docEl.hidden = false; toolsEl.hidden = false; footerEl.hidden = false;
+      Array.prototype.forEach.call(document.querySelectorAll('[data-set-lang]'), function (btn) {
+        btn.classList.toggle('is-active', btn.getAttribute('data-set-lang') === lang);
+      });
+    }
+
+    // lang toggle
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-set-lang]');
+      if (b) { lang = b.getAttribute('data-set-lang'); try { localStorage.setItem(LANG_KEY, lang); } catch (_) {} render(); }
+    });
+    var pdfBtn = document.getElementById('mim-pdf');
+    if (pdfBtn) pdfBtn.addEventListener('click', function () { window.print(); });
+
+    function shareToken() {
+      try {
+        var v = new URLSearchParams(location.search).get('t');
+        return (v && /^[0-9a-f-]{32,40}$/i.test(v)) ? v : null;
+      } catch (_) { return null; }
+    }
+
+    // Unlisted secret-link path: fetch content by token via SECURITY DEFINER
+    // RPC, no login required.
+    function bootFromToken(token) {
+      showState(t('checking'));
+      fetch(SUPABASE_URL + '/rest/v1/rpc/get_shared_doc', {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ p_token: token }),
+      }).then(function (r) {
+        if (!r.ok) { showState(t('error')); return null; }
+        return r.json();
+      }).then(function (data) {
+        if (data == null) return;
+        if (!data || typeof data !== 'object' || !data.sections) { showState(t('needLogin'), loginButton()); return; }
+        content = data; render();
+      }).catch(function () { showState(t('error')); });
+    }
+
+    // ── access + fetch ──────────────────────────────────────────────
+    function boot() {
+      if (!SUPABASE_URL || !SUPABASE_ANON) { showState(t('backend')); return; }
+      var token = shareToken();
+      if (token) { bootFromToken(token); return; }
+      var sess = readSession();
+      if (!sess || !sess.access_token) { showState(t('needLogin'), loginButton()); return; }
+      if (sess.expires_at && sess.expires_at < nowSec()) { showState(t('expired'), loginButton()); return; }
+      showState(t('checking'));
+      fetch(SUPABASE_URL + '/rest/v1/restricted_docs?slug=eq.' + encodeURIComponent(DOC_SLUG) + '&select=content', {
+        headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + sess.access_token, Accept: 'application/json' },
+      }).then(function (r) {
+        if (r.status === 401 || r.status === 403) { showState(t('expired'), loginButton()); return null; }
+        if (!r.ok) { showState(t('error')); return null; }
+        return r.json();
+      }).then(function (rows) {
+        if (rows == null) return;
+        if (!rows.length || !rows[0].content) { showState(t('noAccess')); return; }
+        content = rows[0].content; render();
+      }).catch(function () { showState(t('error')); });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+  </script>
+
+  <style is:global>
+    .mim-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 60% at 12% 0%, rgba(46,111,214,0.16), transparent 55%),
+        var(--color-blu-notte);
+    }
+    .mim-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(8, 20, 40, 0.94); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .mim-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 62rem; margin-inline: auto; flex-wrap: wrap; }
+    .mim-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; }
+    .mim-badge { flex-shrink: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-carta); background: var(--color-blu); padding: 0.25rem 0.6rem; border-radius: 3px; }
+    .mim-title { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em; font-size: clamp(1.05rem, 2vw, 1.35rem); color: var(--color-carta); line-height: 1.2; }
+    .mim-header-right { display: flex; align-items: center; gap: 0.9rem; flex-shrink: 0; flex-wrap: wrap; }
+    .mim-lang { display: inline-flex; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; overflow: hidden; }
+    .mim-lang-btn { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--color-carta-tenue); background: transparent; border: 0; padding: 0.25rem 0.7rem; cursor: pointer; }
+    .mim-lang-btn.is-active { background: var(--color-azzurro-chiaro); color: var(--color-blu-notte); }
+    .mim-pdf { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; color: var(--color-blu-notte); background: var(--color-carta); border: 0; border-radius: 4px; padding: 0.3rem 0.75rem; cursor: pointer; }
+    .mim-pdf:hover { background: #fff; }
+    .mim-deck-link { font-size: 0.8rem; font-weight: 600; color: var(--color-azzurro-chiaro); text-decoration: none; white-space: nowrap; }
+    .mim-deck-link:hover { text-decoration: underline; }
+    .mim-disclaimer { max-width: 62rem; margin: 0.45rem auto 0; font-size: 0.78rem; line-height: 1.45; color: #9FB2CF; }
+
+    .mim-main { max-width: 62rem; margin-inline: auto; padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem; display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); }
+
+    .mim-state { min-height: 40vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; }
+    .mim-state-msg { font-size: 1.02rem; line-height: 1.6; color: var(--color-carta-tenue); max-width: 34rem; }
+    .mim-btn { display: inline-block; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; color: var(--color-carta); background: var(--color-blu); border-radius: 5px; padding: 0.6rem 1.2rem; text-decoration: none; }
+    .mim-btn:hover { background: var(--color-blu-scuro); }
+
+    .mim-section { border-top: 1px solid rgba(255,255,255,0.08); padding-top: clamp(1.25rem, 2.5vw, 2rem); }
+    .mim-h { display: flex; align-items: baseline; gap: 0.8rem; font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em; font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: var(--color-carta); margin-bottom: 1.1rem; }
+    .mim-h-num { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-azzurro-chiaro); font-family: var(--font-body); }
+    .mim-note { font-size: 0.85rem; line-height: 1.5; color: #9FB2CF; margin: 0 0 0.9rem; max-width: none; }
+
+    .mim-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin: 0; padding: 0; }
+    .mim-li { position: relative; padding-left: 1.15rem; font-size: 0.95rem; line-height: 1.6; color: var(--color-carta-tenue); }
+    .mim-li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 50%; background: var(--color-azzurro-chiaro); }
+    .mim-li--tight { font-size: 0.9rem; }
+    .mim-li strong { color: var(--color-carta); font-weight: 600; }
+    .mim-li em { color: var(--color-carta-tenue); font-style: italic; }
+
+    .mim-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .mim-cols { grid-template-columns: 1fr 1fr; } }
+    .mim-col { border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 1.1rem 1.2rem; background: rgba(255,255,255,0.03); }
+    .mim-col--ok { box-shadow: inset 0 2px 0 0 var(--color-azzurro); }
+    .mim-col--no { box-shadow: inset 0 2px 0 0 var(--color-ocra); }
+    .mim-col-h { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--color-carta); margin-bottom: 0.8rem; }
+    .mim-col--no .mim-li::before { background: var(--color-ocra); }
+
+    .mim-people { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .mim-people { grid-template-columns: 1fr 1fr; } }
+    .mim-person { border: 1px solid rgba(255,255,255,0.10); border-radius: 8px; padding: 1rem 1.1rem; background: rgba(255,255,255,0.03); }
+    .mim-person-name { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--color-carta); }
+    .mim-person-role { font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-azzurro-chiaro); margin: 0.25rem 0 0.4rem; max-width: none; }
+    .mim-person-note { font-size: 0.9rem; line-height: 1.55; color: var(--color-carta-tenue); max-width: none; }
+    .mim-person-li { display: inline-block; margin-top: 0.55rem; font-size: 0.78rem; font-weight: 600; color: var(--color-azzurro-chiaro); text-decoration: none; }
+    .mim-person-li:hover { text-decoration: underline; }
+
+    .mim-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin: 0; padding: 0; }
+    .mim-source { font-size: 0.9rem; line-height: 1.5; }
+    .mim-source a { color: var(--color-carta-tenue); }
+    .mim-source a:hover { color: var(--color-azzurro-chiaro); }
+    .mim-chip { display: inline-flex; margin-right: 0.5rem; padding: 0.12rem 0.5rem; border-radius: 999px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-blu-notte); background: var(--color-carta-tenue); vertical-align: middle; }
+    .mim-chip--Adobe { background: var(--color-blu); color: var(--color-carta); }
+    .mim-chip--primaria { background: var(--color-azzurro-chiaro); }
+    .mim-chip--analisi { background: var(--color-carta-tenue); }
+    .mim-chip--dato { background: #B8CBE6; }
+    .mim-chip--competitor { background: var(--color-ocra); color: var(--color-carta); }
+    .mim-chip--SI { background: #C9D6EA; }
+
+    .mim-footer { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.2rem; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: #9FB2CF; }
+    /* NB: is:global — il contenuto è iniettato via JS (nodi senza data-astro-cid),
+       quindi gli stili NON possono essere scoped. Classi prefissate .mim-*. */
+
+    /* ── Print / PDF: white paper, dark ink, no chrome ── */
+    @media print {
+      .mim-noprint { display: none !important; }
+      .mim-shell { background: #fff !important; }
+      .mim-main { max-width: none; padding: 0 1.5rem; gap: 1.4rem; }
+      .mim-section { border-top: 1px solid #ccc; break-inside: avoid; }
+      .mim-h, .mim-title, .mim-person-name, .mim-col-h, .mim-li strong { color: #111 !important; }
+      .mim-h-num, .mim-person-role, .mim-deck-link { color: #0B4DA2 !important; }
+      .mim-li, .mim-person-note, .mim-note, .mim-source a, .mim-li em { color: #222 !important; }
+      .mim-col, .mim-person { border: 1px solid #ccc; background: #fff; }
+      .mim-chip { color: #fff !important; background: #0B4DA2 !important; }
+      .mim-li::before { background: #0B4DA2; }
+      a { text-decoration: none; }
+    }
+  </style>
+</BaseLayout>

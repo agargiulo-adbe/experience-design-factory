@@ -112,7 +112,6 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'competenze',  route: '/experience-design-factory/mim-alfabeti/competenze/' },
     { name: 'accesso',     route: '/experience-design-factory/mim-alfabeti/accesso/' },
     { name: 'persone',     route: '/experience-design-factory/mim-alfabeti/persone/' },
-    { name: 'realta',      route: '/experience-design-factory/mim-alfabeti/realta/' },
     { name: 'rotta',       route: '/experience-design-factory/mim-alfabeti/rotta/' },
   ],
 };
