@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const why = [
+  {
+    tag: { en: 'Already procurable', it: 'Già acquistabile' },
+    title: { en: 'Qualified in the ACN cloud catalog', it: 'Qualificati nel catalogo cloud ACN' },
+    en: 'Journey Optimizer (SA-3795), Customer Journey Analytics (SA-3799), Real-Time CDP (SA-3973) and Target (SA-3798) are all qualified for Italian PA in the ACN cloud catalog — valid to Aug 2028. The enabling prerequisite is already met.',
+    it: 'Journey Optimizer (SA-3795), Customer Journey Analytics (SA-3799), Real-Time CDP (SA-3973) e Target (SA-3798) sono tutti qualificati per la PA italiana nel catalogo cloud ACN — validi fino ad ago 2028. Il prerequisito abilitante è già soddisfatto.',
+  },
+  {
+    tag: { en: 'Open space', it: 'Spazio libero' },
+    title: { en: 'No one covers the staff channel', it: 'Nessuno presidia il canale del personale' },
+    en: 'ComUnica (Piattaforma Unica) is school-to-family. SEND (PagoPA) is legal notifications. Neither reaches teachers, principals and ATA on process communication.',
+    it: "ComUnica (Piattaforma Unica) è scuola-famiglia. SEND (PagoPA) sono notifiche legali. Nessuno raggiunge docenti, dirigenti e ATA sulla comunicazione di processo.",
+  },
+  {
+    tag: { en: 'Coexistence', it: 'Coesistenza' },
+    title: { en: 'Alongside Unica, not instead of it', it: 'Accanto a Unica, non al posto' },
+    en: 'Adobe sits as an orchestration and analytics layer next to Piattaforma Unica — which defuses the “it already exists” objection before it is raised.',
+    it: "Adobe è un layer di orchestrazione e analytics accanto a Piattaforma Unica — così l'obiezione «esiste già» è disinnescata prima di nascere.",
+  },
+];
+
+const flow = [
+  { n: 'CDP', en: 'Staff profiles unified — role, region, standing, entitlements.', it: 'Profili del personale unificati — ruolo, regione, posizione, titoli.' },
+  { n: 'AJO', en: 'Personalized journeys on tenure, mobility, substitutes, deadlines.', it: 'Journey personalizzati su immissioni, mobilità, supplenze, scadenze.' },
+  { n: 'CJA', en: 'Measure the outcome: delivered, opened, understood, acted on.', it: "Misura dell'esito: recapitato, aperto, capito, seguito da un'azione." },
+];
+---
+<BaseLayout title="La voce del Ministero">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/competenze')} prevHref={href(base, '/domanda')}>
+
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
+        <T as="p" en="Idea 1 · The proposal" it="Idea 1 · La proposta" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
+        <T
+          as="h1"
+          en="The Ministry's voice"
+          it="La voce del Ministero"
+          class="slide-title text-center text-[var(--color-carta)] mb-6"
+          style="font-size: clamp(2.4rem, 4.6vw, 4.4rem);"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <T
+          as="p"
+          en="Orchestrate and measure the communication to teachers, principals and ATA — with Adobe Experience Platform, Journey Optimizer and Customer Journey Analytics."
+          it="Orchestrare e misurare la comunicazione a docenti, dirigenti e ATA — con Adobe Experience Platform, Journey Optimizer e Customer Journey Analytics."
+          class="text-center text-[var(--color-carta-tenue)] mx-auto max-w-3xl"
+          style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.55;"
+          data-reveal data-reveal-delay="0.16"
+        />
+      </div>
+    </Slide>
+
+    <Slide id="slide-why" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="Why it wins" it="Perché vince" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="The lowest-friction lever Adobe has here"
+          it="La leva a minor attrito che Adobe ha qui"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {why.map((w) => (
+            <article class="alf-card">
+              <p class="alf-tag mb-2"><T en={w.tag.en} it={w.tag.it} /></p>
+              <T as="h3" en={w.title.en} it={w.title.it} class="alf-card-title" />
+              <T as="p" en={w.en} it={w.it} class="alf-card-body" />
+            </article>
+          ))}
+        </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+          Fonti · acn.gov.it/sa-3795 · acn.gov.it/sa-3799 · mim.gov.it (ComUnica) · pagopa.it (SEND)
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-how" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="How it works" it="Come funziona" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="From staff data to a measured outcome"
+          it="Dal dato del personale a un esito misurato"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {flow.map((f) => (
+            <article class="alf-card">
+              <span class="alf-mark">{f.n}</span>
+              <T as="p" en={f.en} it={f.it} class="alf-card-body" />
+            </article>
+          ))}
+        </div>
+        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.24">
+          <T
+            as="p"
+            en="Honest caveat — internal: AJO was born marketing-oriented. Institutional use must be argued (legal basis, staff-data privacy), not assumed."
+            it="Nota onesta — interna: AJO nasce marketing-oriented. L'uso istituzionale va argomentato (base giuridica, privacy del dato del personale), non dato per scontato."
+            class="alf-quote-text"
+            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
+          />
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

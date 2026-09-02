@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const programs = [
+  { n: '30M', en: 'Adobe Digital Academy — a stated target of 30M learners and educators by 2030 (AI literacy, content creation, digital marketing).', it: 'Adobe Digital Academy — target dichiarato di 30M tra learner ed educatori entro il 2030 (alfabetizzazione IA, creazione di contenuti, marketing digitale).' },
+  { n: '∞', en: 'Creative Campuses and Adobe Certified Professionals — university partnerships and a credential that travels with the person.', it: 'Creative Campuses e Adobe Certified Professionals — partnership con le università e una certificazione che resta alla persona.' },
+];
+---
+<BaseLayout title="Le persone">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/realta')} prevHref={href(base, '/accesso')}>
+
+    <Slide id="slide-cover" bg="secondary" align="center">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
+        <T as="p" en="The people" it="Le persone" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+        <T
+          as="h1"
+          en="People before tools"
+          it="Le persone prima degli strumenti"
+          class="slide-title text-center text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(2.2rem, 4vw, 3.6rem);"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <T
+          as="p"
+          en="A licence changes nothing on its own. What changes teaching is adoption: an enablement path, an operating model, a credential that gives competence a shape."
+          it="Una licenza da sola non cambia nulla. Ciò che cambia la didattica è l'adozione: un percorso di enablement, un operating model, una certificazione che dà forma alla competenza."
+          class="text-center text-[var(--ink-secondary)] mx-auto max-w-3xl"
+          style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.55;"
+          data-reveal data-reveal-delay="0.16"
+        />
+      </div>
+    </Slide>
+
+    <Slide id="slide-programs" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="Programs that exist" it="Programmi che esistono" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Deployable skilling, to be localized for Italy"
+          it="Formazione schierabile, da localizzare per l'Italia"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {programs.map((p) => (
+            <article class="alf-card">
+              <p class="data-number mb-2" style="font-size:clamp(2.2rem,4vw,3.4rem);">{p.n}</p>
+              <T as="p" en={p.en} it={p.it} class="alf-card-body" />
+            </article>
+          ))}
+        </div>
+        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.24">
+          <T
+            as="p"
+            en="Honest caveat — internal: these are US pledges and targets, not audited or Italy-localized figures. The EU/Italy delivery footprint must be confirmed."
+            it="Nota onesta — interna: sono pledge e target USA, non cifre auditate né localizzate in Italia. La footprint di delivery IT/EU va confermata."
+            class="alf-quote-text"
+            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
+          />
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

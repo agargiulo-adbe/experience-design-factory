@@ -105,6 +105,16 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'asks',           route: '/experience-design-factory/atelier/asks/' },
     { name: 'closing',        route: '/experience-design-factory/atelier/closing/' },
   ],
+  'mim-alfabeti': [
+    { name: 'home',        route: '/experience-design-factory/mim-alfabeti/' },
+    { name: 'domanda',     route: '/experience-design-factory/mim-alfabeti/domanda/' },
+    { name: 'voce',        route: '/experience-design-factory/mim-alfabeti/voce/' },
+    { name: 'competenze',  route: '/experience-design-factory/mim-alfabeti/competenze/' },
+    { name: 'accesso',     route: '/experience-design-factory/mim-alfabeti/accesso/' },
+    { name: 'persone',     route: '/experience-design-factory/mim-alfabeti/persone/' },
+    { name: 'realta',      route: '/experience-design-factory/mim-alfabeti/realta/' },
+    { name: 'rotta',       route: '/experience-design-factory/mim-alfabeti/rotta/' },
+  ],
 };
 
 // Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
@@ -116,6 +126,7 @@ const CWD_ALIAS: Record<string, string> = {
   'agos-trait-dunion': 'agos',
   'atelier': 'atelier',
   'eni-orbita': 'eni-orbita',
+  'mim-alfabeti': 'mim-alfabeti',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {

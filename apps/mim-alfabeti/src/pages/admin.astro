@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'mim-alfabeti', label: 'Apertura (00)', slides: [
+    { id: 'slide-cover',   label: 'Cover — Alfabeti' },
+    { id: 'slide-moment',  label: 'Il momento (PNRR, IA, decreto €100M)' },
+    { id: 'slide-thesis',  label: 'La tesi' },
+  ]},
+  { slug: 'domanda', label: 'La domanda (01)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Come parla il Ministero' },
+    { id: 'slide-processes', label: 'Tre processi, un problema' },
+    { id: 'slide-questions', label: 'Tre domande' },
+  ]},
+  { slug: 'voce', label: 'La voce (02)', slides: [
+    { id: 'slide-cover', label: 'Cover — La voce del Ministero' },
+    { id: 'slide-why',   label: 'Perché vince (ACN, spazio libero, coesistenza)' },
+    { id: 'slide-how',   label: 'Come funziona (CDP → AJO → CJA)' },
+  ]},
+  { slug: 'competenze', label: 'Competenze e IA (03)', slides: [
+    { id: 'slide-cover',  label: 'Cover — IA sicura, competenze' },
+    { id: 'slide-safe',   label: 'A1 — Express/Firefly passano la checklist' },
+    { id: 'slide-skills', label: 'A2 — Certificazione su DigCompEdu/DigComp 3.0' },
+  ]},
+  { slug: 'accesso', label: 'Accesso e documenti (04)', slides: [
+    { id: 'slide-cover',          label: 'Cover — Dove la norma è il committente' },
+    { id: 'slide-accessibility',  label: 'A4 — Acrobat/Sign + EAA' },
+    { id: 'slide-reposition',     label: 'B2-B3 — AEM e LMS riposizionati' },
+  ]},
+  { slug: 'persone', label: 'Le persone (05)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Le persone prima degli strumenti' },
+    { id: 'slide-programs', label: 'Digital Academy / Certified' },
+  ]},
+  { slug: 'realta', label: 'Realtà — interno (06)', slides: [
+    { id: 'slide-cover',        label: 'Cover — Realtà (uso interno)' },
+    { id: 'slide-competitors',  label: 'Chi è già dentro (Microsoft, Google)' },
+    { id: 'slide-notsay',       label: 'Cose da non dire (claim smentiti)' },
+  ]},
+  { slug: 'rotta', label: 'La rotta (07)', slides: [
+    { id: 'slide-route', label: 'Quattro mosse in ordine' },
+    { id: 'slide-who',   label: 'Chi intercettare' },
+    { id: 'slide-close', label: 'In un respiro' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'interno',
+    name: 'Appendice interna (Realtà)',
+    shortName: 'Interno',
+    pillar: 'audience',
+    description: "La sezione «Realtà»: concorrenza (Microsoft, Google), ostacoli di procurement e i claim da non usare. Tienila ACCESA per il team Adobe; SPEGNILA per il pubblico client (MIM).",
+    appearsIn: ['Realtà'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  audience: 'Gating pubblico',
+};
+const PILLAR_ORDER = ['audience'];
+const PILLAR_COLORS: Record<string, string> = {
+  audience: '#0B4DA2',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Alfabeti">
+  <AdminConsole
+    projectSlug="mim-alfabeti"
+    projectName="Alfabeti — MIM × Adobe"
+    clientLabel="Adobe — interno"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

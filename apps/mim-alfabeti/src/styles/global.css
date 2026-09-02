@@ -1,0 +1,492 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* Tailwind v4 theme — Alfabeti (MIM): light institutional, warm paper + blu Italia.
+   LIGHT-dominant: paper/ivory surfaces, deep-navy ink, institutional blue accent.
+   Display face = Titillium Web (the Italian public-administration typeface). */
+@theme {
+  --color-carta: #F6F1E7;          /* primary surface, warm paper */
+  --color-avorio: #FCF9F2;         /* secondary surface, lighter ivory */
+  --color-carta-scura: #ECE4D3;    /* tertiary surface / hairline paper */
+  --color-blu: #0B4DA2;            /* accent primary — institutional blue */
+  --color-azzurro: #2E6FD6;        /* accent secondary / on-navy accent */
+  --color-blu-scuro: #08376E;      /* deeper blue */
+  --color-blu-notte: #0A1A33;      /* inverse surface, near-black navy */
+  --color-inchiostro: #14213A;     /* primary ink on paper (deep navy-ink) */
+  --color-ardesia-700: #33405A;    /* readable secondary ink (body) */
+  --color-ardesia-500: #55617A;    /* readable tertiary ink (labels/notes) */
+  --color-ocra: #A65A00;           /* warm highlight, used sparingly */
+
+  --font-display: 'Titillium Web', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  /* Primitivi — Alfabeti: carta + blu istituzionale */
+  --color-carta: #F6F1E7;
+  --color-avorio: #FCF9F2;
+  --color-carta-scura: #ECE4D3;
+  --color-blu: #0B4DA2;
+  --color-azzurro: #2E6FD6;
+  --color-blu-scuro: #08376E;
+  --color-blu-notte: #0A1A33;
+  --color-inchiostro: #14213A;
+  --color-ardesia-700: #33405A;
+  --color-ardesia-500: #55617A;
+  --color-ocra: #A65A00;
+
+  /* On-navy readable inks (for inverse/brand slides) */
+  --color-carta-tenue: #DCE4F0;    /* light slate for body on navy */
+  --color-azzurro-chiaro: #7FA8E6; /* light blue accent readable on navy */
+
+  /* Tipografia */
+  --font-display: 'Titillium Web', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+
+  --text-display-xl: clamp(2.75rem, 5vw + 1rem, 5rem);
+  --text-display-lg: clamp(2.25rem, 4vw + 0.75rem, 4rem);
+  --text-display-md: clamp(1.875rem, 3vw + 0.5rem, 3rem);
+  --text-heading-lg: clamp(1.5rem, 2.5vw + 0.5rem, 2.25rem);
+  --text-heading-md: clamp(1.25rem, 2vw + 0.25rem, 1.75rem);
+  --text-body-lg: clamp(1.0625rem, 0.5vw + 0.9rem, 1.1875rem);
+  --text-body-md: clamp(0.9375rem, 0.25vw + 0.875rem, 1.0625rem);
+
+  --fontWeight-light: 300;
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+
+  --lineHeight-tight: 1.1;
+  --lineHeight-snug: 1.25;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  --letterSpacing-tight: -0.015em;
+  --letterSpacing-wide: 0.025em;
+  --letterSpacing-wider: 0.05em;
+  --letterSpacing-widest: 0.1em;
+
+  /* Spaziatura */
+  --spacing-px: 1px;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+
+  /* Semantici — Surface (LIGHT-dominant, warm paper) */
+  --surface-primary: var(--color-carta);
+  --surface-secondary: var(--color-avorio);
+  --surface-tertiary: var(--color-carta-scura);
+  --surface-inverse: var(--color-blu-notte);
+  --surface-brand: var(--color-blu);
+
+  /* Semantici — Ink */
+  --ink-primary: var(--color-inchiostro);
+  --ink-secondary: var(--color-ardesia-700);
+  --ink-tertiary: var(--color-ardesia-500);
+  --ink-inverse: var(--color-carta);
+  --ink-brand: var(--color-blu);
+  --ink-link: var(--color-blu);
+
+  /* Semantici — Accent */
+  --accent-primary: var(--color-blu);
+  --accent-secondary: var(--color-azzurro);
+  --accent-hover: var(--color-blu-scuro);
+
+  /* Semantici — Line */
+  --line-subtle: rgba(20, 33, 58, 0.12);
+  --line-default: rgba(20, 33, 58, 0.22);
+  --line-strong: rgba(20, 33, 58, 0.34);
+
+  /* Semantici — Focus */
+  --focus-ring: var(--color-blu);
+
+  /* Deck safe-area contract */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  /* Durata */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    font-weight: var(--fontWeight-regular);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-semibold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+    max-width: 72ch;
+  }
+
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+
+  a:hover { color: var(--accent-hover); }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* ── Bilingual visibility — <T en it> renders both spans; the html data-lang
+   attribute decides which shows (instant toggle, no reload). */
+html[data-lang="en"] [data-lang-it], html[data-lang="en"] [data-lang-fr] { display: none !important; }
+html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { display: none !important; }
+
+/* Solution-gated elements */
+.solution-hidden { display: none !important; }
+
+/* Utility */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+/* View transitions */
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
+}
+
+/* Centred slide: centre the <p> block itself */
+.slide-inner.text-center p { margin-inline: auto; }
+
+/* Slide utility classes */
+.slide-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem, 0.9vw, 0.9rem);
+}
+
+.slide-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ALFABETI — shared art-direction system (light institutional)
+   Warm paper + blu Italia. Panels are light cards with a hairline border and a
+   soft shadow; ink is deep-navy; the accent is institutional blue. Every colour
+   is an explicit rgba / hex (never oklab/color-mix on a text surface) so the
+   deck audit's contrast parser reads it. Reuse these across all sections.
+   Use panels/cards ONLY on light slides (bg primary|secondary). Navy slides
+   (bg inverse|brand) stay text-only (hero / pull-quote).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Backdrops — put on a `<div slot="backdrop" class="alf-bg">` inside a Slide. */
+.alf-bg {
+  background:
+    repeating-linear-gradient(90deg, rgba(11,77,162,0.045) 0 1px, transparent 1px 96px),
+    radial-gradient(120% 80% at 50% -10%, rgba(11,77,162,0.06), transparent 58%),
+    var(--surface-primary);
+}
+.alf-bg-soft {
+  background:
+    repeating-linear-gradient(90deg, rgba(11,77,162,0.04) 0 1px, transparent 1px 96px),
+    var(--surface-secondary);
+}
+/* Navy backdrop for hero/quote slides (bg inverse). */
+.alf-bg-navy {
+  background:
+    repeating-linear-gradient(90deg, rgba(127,168,230,0.06) 0 1px, transparent 1px 96px),
+    radial-gradient(120% 80% at 50% -10%, rgba(46,111,214,0.18), transparent 60%),
+    var(--surface-inverse);
+}
+
+/* Card — the default content container on light slides. */
+.alf-panel {
+  background: #FFFFFF;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  padding: 1.3rem 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  box-shadow: 0 10px 30px -18px rgba(20, 33, 58, 0.35);
+}
+.alf-panel-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding-bottom: 0.75rem; margin-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line-subtle);
+}
+.alf-tag {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent-primary);
+}
+.alf-figure {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+  color: var(--color-blu); letter-spacing: -0.02em; line-height: 1;
+}
+.alf-panel-body {
+  color: var(--color-ardesia-700);
+  font-size: 0.98rem; line-height: 1.55; max-width: none; margin-bottom: 0.4rem;
+}
+.alf-src {
+  font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--color-ardesia-500);
+}
+
+/* Pull quote — a blue hairline ABOVE (never a side-stripe). On light slides. */
+.alf-quote { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 2px solid rgba(11,77,162,0.35); max-width: none; }
+.alf-quote-text {
+  font-family: var(--font-display); color: var(--color-inchiostro);
+  font-size: clamp(1.2rem, 1.6vw, 1.5rem);
+  line-height: 1.34; font-weight: 600; max-width: 68ch;
+}
+/* Pull quote on navy slides */
+.alf-quote-navy { border-top-color: rgba(127,168,230,0.5); }
+.alf-quote-navy .alf-quote-text { color: var(--color-carta); }
+
+/* Numbered card — a blue "mark" disc + display title + body. */
+.alf-card {
+  background: #FFFFFF;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  padding: 1.4rem 1.4rem 1.2rem;
+  display: flex; flex-direction: column; min-width: 0;
+  box-shadow: 0 10px 30px -18px rgba(20, 33, 58, 0.35);
+}
+.alf-mark {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.95rem; color: #FFFFFF;
+  background: var(--color-blu);
+  width: 2rem; height: 2rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 0.9rem; flex-shrink: 0;
+}
+.alf-card-title {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 1.15rem; line-height: 1.25; color: var(--color-inchiostro);
+  margin-bottom: 0.6rem; max-width: none;
+}
+.alf-card-body {
+  color: var(--color-ardesia-700);
+  font-size: 0.97rem; line-height: 1.55; max-width: none; margin-bottom: 0;
+}
+
+/* Stacked rows (inventory/status) — category label left · card(s) right. */
+.alf-rows { display: flex; flex-direction: column; gap: 0.85rem; }
+.alf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: 1.4rem; align-items: center;
+  background: #FFFFFF;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px; padding: 1rem 1.3rem;
+  box-shadow: 0 8px 24px -18px rgba(20, 33, 58, 0.3);
+}
+@media (max-width: 767px) { .alf-row { grid-template-columns: 1fr; gap: 0.5rem; } }
+.alf-row-label {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.02rem;
+  color: var(--color-blu); letter-spacing: 0.01em; max-width: none;
+}
+.alf-row-body { color: var(--color-ardesia-700); font-size: 0.97rem; line-height: 1.5; max-width: none; min-width: 0; }
+
+/* Verification chip — [VER] / [INF] / [TBC] badges */
+.alf-chip {
+  display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+  padding: 0.1rem 0.45rem; border-radius: 4px; vertical-align: middle;
+}
+.alf-chip--ver { background: rgba(11,77,162,0.12); color: var(--color-blu-scuro); }
+.alf-chip--inf { background: rgba(166,90,0,0.14); color: var(--color-ocra); }
+.alf-chip--tbc { background: rgba(20,33,58,0.10); color: var(--color-ardesia-700); }
+
+/* TV: boost small text minimums */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 62ch; }
+
+/* Data number display */
+.data-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+  color: var(--color-blu);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+/* Admin-only hidden by default */
+[data-admin-only] { display: none !important; }
+
+/* Progress bar */
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* Page reveal */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter { animation: page-in 400ms var(--easing-out) both; }
+
+/* ── Custom slides (Admin Console authored) ─────────────────────────────
+   tone 'light' = light paper slide → dark text (primary/secondary)
+   tone 'dark'  = navy slide → light text (inverse/brand)
+   The BaseLayout injection maps bg→tone; keep these in sync with the admin
+   live preview. */
+.cs-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(1rem, 2.2vh, 2rem);
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+}
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  font-size: clamp(2rem, 4.4vw, 4rem);
+}
+.cs-prose {
+  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+  line-height: 1.6;
+  max-width: 54ch;
+}
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  line-height: 1.2;
+}
+.cs-prose strong { font-weight: 700; }
+.cs-prose em { font-style: italic; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; text-underline-offset: 0.15em; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose li + li { margin-top: 0.35em; }
+.cs-prose ul { list-style: disc; }
+.cs-prose ol { list-style: decimal; }
+.cs-media {
+  width: 100%; max-width: 56rem;
+  border-radius: 10px; overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: rgba(20, 33, 58, 0.06);
+  box-shadow: 0 12px 40px -14px rgba(20,33,58,0.35);
+}
+.cs-media img, .cs-media video, .cs-media iframe {
+  width: 100%; height: 100%; object-fit: cover; border: 0; display: block;
+}
+.cs-caption {
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  color: var(--ink-tertiary);
+  margin-top: 0.5rem;
+}
+.cs-slide[data-cs-tone="light"] .cs-title { color: var(--color-inchiostro); }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-ardesia-700); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-blu); }
+.cs-slide[data-cs-tone="light"] .cs-caption { color: var(--color-ardesia-500); }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--color-carta); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--color-carta-tenue); }
+.cs-slide[data-cs-tone="dark"] .slide-eyebrow { color: var(--color-azzurro-chiaro); }
+.cs-slide[data-cs-tone="dark"] .cs-caption { color: var(--color-carta-tenue); }
+
+/* Deck chrome contrast (WCAG AA) — Alfabeti runs on a LIGHT surface, so scope a
+   near-opaque white button with a deep-navy icon + blue border so
+   prev/next/fullscreen hit ≥3:1 (large/graphical). Explicit rgba — the audit
+   parser can't read oklab()/color-mix(). */
+[data-deck] .deck-btn {
+  color: var(--color-inchiostro);
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(11, 77, 162, 0.35);
+}
+[data-deck] .deck-btn:hover { color: var(--color-blu); border-color: var(--color-blu); }
+[data-deck] .deck-progress { color: var(--color-ardesia-700); }
+
+/* Backdrop parallax clip — the shared SlideBackdrop over-scales its image so the
+   drift never reveals an edge. overflow:clip clips identically but creates no
+   scroll container (scrollHeight === clientHeight → passes audit c/j/k). */
+[data-deck] .slide-backdrop { overflow: clip; }
+[data-deck] .slide-backdrop [data-parallax] { transform-origin: 50% 100%; }

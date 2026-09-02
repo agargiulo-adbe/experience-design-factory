@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const moves = [
+  { en: 'Lead with the staff-communication play — it is already ACN-procurable and the space is open.', it: 'Aprire con la comunicazione al personale — è già acquistabile via ACN e lo spazio è libero.' },
+  { en: 'Build the business case on INVALSI / ICILS 2023 evidence of the digital-skills gap.', it: 'Costruire il business case sui dati INVALSI / ICILS 2023 del gap di competenza digitale.' },
+  { en: 'Use classroom-safe AI as the door-opener on Priority 8 / the DM 166/2025 checklist.', it: "Usare l'IA sicura come apri-porta sulla Priorità 8 / la checklist DM 166/2025." },
+  { en: 'Secure a channel (ANP and/or a vertical SI) before Microsoft and Google close it.', it: 'Procurarsi un canale (ANP e/o un SI verticale) prima che Microsoft e Google lo chiudano.' },
+];
+
+const who = [
+  { role: { en: 'Digital & data owner', it: 'Owner digitale e dati' }, name: 'DGSIS — DG Gianna Barbieri' },
+  { role: { en: 'Owner of staff processes', it: 'Owner dei processi sul personale' }, name: 'Dip. risorse umane, finanziarie e strumentali' },
+  { role: { en: 'PNRR spend decision-maker', it: 'Decisore spesa PNRR' }, name: 'Unità di Missione PNRR — DG Simona Montesarchio' },
+  { role: { en: 'Training & evidence', it: 'Formazione ed evidenza' }, name: 'INDIRE · INVALSI (Pres. Roberto Ricci)' },
+];
+---
+<BaseLayout title="La rotta">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/realta')}>
+
+    <Slide id="slide-route" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="The route" it="La rotta" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Four moves, in order"
+          it="Quattro mosse, in ordine"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.8rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <ol class="flex flex-col gap-3" data-reveal data-reveal-delay="0.16">
+          {moves.map((m, i) => (
+            <li class="alf-row" style="grid-template-columns: 2.5rem minmax(0,1fr); gap:1.2rem;">
+              <span class="alf-mark" style="margin-bottom:0;">{i + 1}</span>
+              <T as="p" en={m.en} it={m.it} class="alf-row-body" style="font-size:1.02rem;" />
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+    <Slide id="slide-who" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="Who to intercept" it="Chi intercettare" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="The interlocutors that open the door"
+          it="Gli interlocutori che aprono la porta"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {who.map((w) => (
+            <article class="alf-panel">
+              <p class="alf-tag mb-2"><T en={w.role.en} it={w.role.it} /></p>
+              <p class="alf-card-title" style="margin-bottom:0;">{w.name}</p>
+            </article>
+          ))}
+        </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+          <span class="alf-chip alf-chip--ver">VER</span> nomi da fonti primarie mim.gov.it · <span class="alf-chip alf-chip--tbc">TBC</span> verificare ruoli subito prima del contatto
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-close" bg="inverse" align="center">
+      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div class="w-full max-w-4xl mx-auto flex flex-col items-center">
+        <T as="p" en="In one breath" it="In un respiro" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
+        <T
+          as="h2"
+          en="Give the Ministry a voice to its own people — measured, governed, and safe by design. Everything else follows from there."
+          it="Dare al Ministero una voce verso le sue persone — misurata, governata e sicura per costruzione. Tutto il resto viene da lì."
+          class="slide-title text-center text-[var(--color-carta)] max-w-4xl mx-auto"
+          style="font-size: clamp(1.8rem, 3.1vw, 3rem); line-height: 1.22;"
+          data-reveal data-reveal-delay="0.08"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

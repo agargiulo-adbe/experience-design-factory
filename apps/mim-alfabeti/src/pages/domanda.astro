@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const processes = [
+  {
+    label: { en: 'Tenure & hiring', it: 'Immissioni in ruolo' },
+    en: 'Every summer, appointments move tens of thousands of teachers. The news arrives late, through many channels, and rarely reaches everyone at once.',
+    it: 'Ogni estate le immissioni muovono decine di migliaia di docenti. La notizia arriva tardi, su molti canali, e quasi mai a tutti nello stesso momento.',
+  },
+  {
+    label: { en: 'Mobility & transfers', it: 'Mobilità e cambio sede' },
+    en: 'Transfer requests, deadlines, outcomes: a high-stakes, time-boxed process where a missed message means a missed year.',
+    it: 'Domande di trasferimento, scadenze, esiti: un processo ad alta posta e a tempo, dove una comunicazione persa è un anno perso.',
+  },
+  {
+    label: { en: 'Substitutes & rankings', it: 'Supplenze e graduatorie GPS/GaE' },
+    en: 'The GPS/GaE rankings drive daily assignments — the most frequent, most error-prone communication the system runs.',
+    it: 'Le graduatorie GPS/GaE guidano gli incarichi ogni giorno — la comunicazione più frequente e più esposta a errori di tutto il sistema.',
+  },
+];
+
+const questions = [
+  { en: 'How many staff communications go out each year — and with what outcome? Does anyone measure whether they arrive, and are understood?', it: 'Quante comunicazioni al personale partono ogni anno — e con quale esito? Qualcuno misura se arrivano, e se vengono capite?' },
+  { en: 'How much time does a school office spend answering the same questions, over and over?', it: 'Quanto tempo perde una segreteria a rispondere sempre agli stessi dubbi?' },
+  { en: 'What happens when a teacher misses — or misreads — a message about a deadline that decides their year?', it: 'Cosa succede quando un docente non riceve, o fraintende, una comunicazione su una scadenza che decide il suo anno?' },
+];
+---
+<BaseLayout title="La domanda">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/voce')} prevHref={href(base, '/')}>
+
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
+        <T as="p" en="The question" it="La domanda" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+        <T
+          as="h1"
+          en="How does the Ministry speak, today, to the people who run the schools?"
+          it="Come parla oggi il Ministero alle persone che fanno funzionare la scuola?"
+          class="slide-title text-center text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <T
+          as="p"
+          en="Not to families — that channel exists. To its own staff: teachers, principals, administrative staff."
+          it="Non alle famiglie — quel canale esiste. Al proprio personale: docenti, dirigenti, personale ATA."
+          class="text-center text-[var(--ink-secondary)] mx-auto max-w-2xl"
+          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
+          data-reveal data-reveal-delay="0.16"
+        />
+      </div>
+    </Slide>
+
+    <Slide id="slide-processes" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="Three processes, one problem" it="Tre processi, un problema" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="The moments that move a career are the worst-communicated"
+          it="I momenti che muovono una carriera sono i peggio comunicati"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="alf-rows" data-reveal data-reveal-delay="0.16">
+          {processes.map((p) => (
+            <div class="alf-row">
+              <T as="p" en={p.label.en} it={p.label.it} class="alf-row-label" />
+              <T as="p" en={p.en} it={p.it} class="alf-row-body" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-questions" bg="inverse" align="left">
+      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div class="w-full max-w-5xl mx-auto">
+        <T as="p" en="Three questions" it="Tre domande" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
+        <ol class="flex flex-col gap-5" data-reveal data-reveal-delay="0.1">
+          {questions.map((q, i) => (
+            <li class="flex gap-4 items-start">
+              <span class="alf-mark" style="background:var(--color-azzurro);flex-shrink:0;">{i + 1}</span>
+              <T
+                as="p"
+                en={q.en}
+                it={q.it}
+                class="text-[var(--color-carta)]"
+                style="font-size: clamp(1.15rem, 1.7vw, 1.55rem); line-height: 1.4; max-width: 62ch; margin:0;"
+              />
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

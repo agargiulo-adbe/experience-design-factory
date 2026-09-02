@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const safe = [
+  { en: 'Prompt guardrails and filters, built for the classroom.', it: 'Guardrail e filtri sui prompt, pensati per la classe.' },
+  { en: '“Your data is your data”: no training on student or teacher work.', it: '«Your data is your data»: nessun training sui lavori di studenti o docenti.' },
+  { en: 'Admin on/off control over generative AI, per school.', it: "Controllo admin on/off dell'IA generativa, per ogni scuola." },
+  { en: 'By design, it does not write the essay — writing is preserved.', it: 'Per scelta, non scrive il tema — la scrittura è preservata.' },
+];
+---
+<BaseLayout title="Competenze e IA">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/accesso')} prevHref={href(base, '/voce')}>
+
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
+        <T as="p" en="Ideas 2 · Skills and safe AI" it="Idee 2 · Le competenze e l'IA" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+        <T
+          as="h1"
+          en="Classroom-safe AI, competences that count"
+          it="IA sicura in classe, competenze che contano"
+          class="slide-title text-center text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <T
+          as="p"
+          en="The tool that passes the DM 166/2025 checklist — and the credential that turns training into reportable EU-framework progress."
+          it="Lo strumento che passa la checklist DM 166/2025 — e la certificazione che trasforma la formazione in progressione rendicontabile sui quadri UE."
+          class="text-center text-[var(--ink-secondary)] mx-auto max-w-3xl"
+          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
+          data-reveal data-reveal-delay="0.16"
+        />
+      </div>
+    </Slide>
+
+    <Slide id="slide-safe" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="A1 · Safe by design" it="A1 · Sicura per costruzione" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Adobe Express for Education & Firefly pass the checklist"
+          it="Adobe Express for Education e Firefly passano la checklist"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {safe.map((s) => (
+            <article class="alf-panel">
+              <T as="p" en={s.en} it={s.it} class="alf-panel-body" style="margin-bottom:0;font-size:1.02rem;" />
+            </article>
+          ))}
+        </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+          Fonte · news.adobe.com (Express for Education AI, ago 2024 — policy verificata valida 2026) · <span class="alf-chip alf-chip--inf">INF</span> mappa 1:1 su Priorità 8 / checklist UNICA
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-skills" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="A2 · Certified competences" it="A2 · Competenze certificate" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Mapped onto the EU frameworks the Ministry must report"
+          it="Mappate sui quadri UE che il Ministero deve rendicontare"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="alf-rows" data-reveal data-reveal-delay="0.16">
+          <div class="alf-row">
+            <T as="p" en="Teachers → DigCompEdu" it="Docenti → DigCompEdu" class="alf-row-label" />
+            <T as="p" en="Adobe Certified Professional and professional development, mapped to levels A1 Novice → C2 Pioneer via ScuolaFutura." it="Adobe Certified Professional e formazione professionale, mappati sui livelli A1 Novizio → C2 Pioniere via ScuolaFutura." class="alf-row-body" />
+          </div>
+          <div class="alf-row">
+            <T as="p" en="Students → DigComp 3.0" it="Studenti → DigComp 3.0" class="alf-row-label" />
+            <T as="p" en="The Nov 2025 JRC version adds AI competences — the exact ground the €100M AI decree and Investment 2.1 fund." it="La versione JRC di nov 2025 aggiunge le competenze sull'IA — esattamente il terreno che finanziano il decreto IA €100M e l'Investimento 2.1." class="alf-row-body" />
+          </div>
+        </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+          Fonti · scuolafutura.pubblica.istruzione.it · JRC DigComp 3.0 · <span class="alf-chip alf-chip--inf">INF</span> programmi Adobe (Digital Academy 30M) US-centrici, da localizzare IT/EU
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
