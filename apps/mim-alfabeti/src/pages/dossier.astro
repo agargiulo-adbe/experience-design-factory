@@ -63,16 +63,14 @@ const DOC_SLUG = 'mim-adobe';
     var toolsEl = document.getElementById('mim-tools');
     var footerEl = document.getElementById('mim-footer');
     var content = null;
-    // Initial language priority:
+    // Initial language priority (MIM defaults to Italian, like the deck):
     //   1) explicit ?lang=en|it  →  wins
-    //   2) shared secret-link (?t=…)  →  English by default (international colleagues)
-    //   3) otherwise  →  saved preference, default IT
+    //   2) otherwise  →  saved preference, default IT (also for ?t= secret links)
     var lang = (function () {
       try {
         var q = new URLSearchParams(location.search);
         var l = q.get('lang');
         if (l === 'en' || l === 'it') return l;
-        if (q.get('t')) return 'en';
         return localStorage.getItem(LANG_KEY) === 'en' ? 'en' : 'it';
       } catch (_) { return 'it'; }
     })();
