@@ -80,14 +80,15 @@ values (
     {
       "n": "04",
       "h": { "it": "Mappa organizzativa", "en": "Org map" },
-      "note": { "it": "Ruoli verificati su LinkedIn (set 2026); Loreto del Monte e Big Bang/Bit Bang ancora da confermare.", "en": "Roles verified on LinkedIn (Sep 2026); Loreto del Monte and Big Bang/Bit Bang still to confirm." },
+      "note": { "it": "Ruoli verificati su LinkedIn (set 2026). Loretta Del Monte: profilo Risk/P&L — da confermare se è la persona del progetto riconciliazione. Big Bang/Bit Bang da confermare.", "en": "Roles verified on LinkedIn (Sep 2026). Loretta Del Monte: a Risk/P&L profile — to confirm whether she is the person on the reconciliation project. Big Bang/Bit Bang to confirm." },
       "people": [
-        { "name": "Davide Giancarlini", "role": { "it": "UniCredit — Head of Digital Sales; Head of Customer Engagement & Acquisition (buddy)", "en": "UniCredit — Head of Digital Sales; Head of Customer Engagement & Acquisition (buddy)" }, "note": { "it": "Owner della riconciliazione vendite (Traccia A) e nostro sponsor. Punto d'ingresso al mondo attribution.", "en": "Sales-reconciliation owner (Track A) and our sponsor. Entry point to the attribution world." } },
-        { "name": "Christoph Ramler", "role": { "it": "UniCredit — Group MarComs Data, Research & Intelligence Lead", "en": "UniCredit — Group MarComs Data, Research & Intelligence Lead" }, "note": { "it": "Orchestra l'investimento marketing di gruppo su 13 paesi; pilota MROI e MTA (Traccia B). Qui è la finestra tecnologica; deve restare agnostico.", "en": "Orchestrates group marketing investment across 13 countries; pilots MROI and MTA (Track B). The tech window sits here; he must stay technology-agnostic." } },
-        { "name": "Giovanni Lombardo", "role": { "it": "UniCredit — Head of Data Platform & Architecture", "en": "UniCredit — Head of Data Platform & Architecture" }, "note": { "it": "Governance, ingestion e data quality (Foundry). Decide se portare il dato transazionale su un sistema esterno.", "en": "Governance, ingestion and data quality (Foundry). Decides whether to move transactional data to an external system." } },
-        { "name": "Alberto Ricciotti", "role": { "it": "UniCredit — Head of Data & Statistical Reporting (ex Chief Data Officer Italy)", "en": "UniCredit — Head of Data & Statistical Reporting (former Chief Data Officer Italy)" }, "note": { "it": "Governa la produzione dati e l'analytics commerciale; costruisce i modelli di riconciliazione e attribution.", "en": "Owns data production and commercial analytics; builds the reconciliation and attribution models." } },
-        { "name": "Stefano Porro", "role": { "it": "UniCredit — Group Chief Financial Officer", "en": "UniCredit — Group Chief Financial Officer" }, "note": { "it": "Area CFO, a monte della catena dati vendite. Contesto di governance.", "en": "CFO area, upstream of the sales-data chain. Governance context." } },
-        { "name": "Loreto del Monte", "role": { "it": "UniCredit — costruzione mondo riconciliazione/attribution (da confermare)", "en": "UniCredit — building the reconciliation/attribution world (to confirm)" }, "note": { "it": "Lavora con il partner esterno Big Bang / Bit Bang.", "en": "Works with the external partner Big Bang / Bit Bang." } },
+        { "name": "Davide Giancarlini", "li": "https://www.linkedin.com/in/davide-giancarlini/", "role": { "it": "UniCredit — Head of Digital Sales; Head of Customer Engagement & Acquisition (buddy)", "en": "UniCredit — Head of Digital Sales; Head of Customer Engagement & Acquisition (buddy)" }, "note": { "it": "Owner della riconciliazione vendite (Traccia A) e nostro sponsor. Punto d'ingresso al mondo attribution.", "en": "Sales-reconciliation owner (Track A) and our sponsor. Entry point to the attribution world." } },
+        { "name": "Christoph Ramler", "li": "https://www.linkedin.com/in/christoph-ramler/", "role": { "it": "UniCredit — Group MarComs Data, Research & Intelligence Lead", "en": "UniCredit — Group MarComs Data, Research & Intelligence Lead" }, "note": { "it": "Orchestra l'investimento marketing di gruppo su 13 paesi; pilota MROI e MTA (Traccia B). Qui è la finestra tecnologica; deve restare agnostico.", "en": "Orchestrates group marketing investment across 13 countries; pilots MROI and MTA (Track B). The tech window sits here; he must stay technology-agnostic." } },
+        { "name": "Giovanni Lombardo", "li": "https://www.linkedin.com/in/giovanni-lombardo-9865aa77/", "role": { "it": "UniCredit — Head of Data Platform & Architecture", "en": "UniCredit — Head of Data Platform & Architecture" }, "note": { "it": "Governance, ingestion e data quality (Foundry). Decide se portare il dato transazionale su un sistema esterno.", "en": "Governance, ingestion and data quality (Foundry). Decides whether to move transactional data to an external system." } },
+        { "name": "Alberto Ricciotti", "li": "https://www.linkedin.com/in/albertoricciotti/", "role": { "it": "UniCredit — Head of Data & Statistical Reporting (ex Chief Data Officer Italy)", "en": "UniCredit — Head of Data & Statistical Reporting (former Chief Data Officer Italy)" }, "note": { "it": "Governa la produzione dati e l'analytics commerciale; costruisce i modelli di riconciliazione e attribution.", "en": "Owns data production and commercial analytics; builds the reconciliation and attribution models." } },
+        { "name": "Stefano Porro", "li": "https://www.linkedin.com/in/stefano-p-92296513/", "role": { "it": "UniCredit — Group Chief Financial Officer", "en": "UniCredit — Group Chief Financial Officer" }, "note": { "it": "Area CFO, a monte della catena dati vendite. Contesto di governance.", "en": "CFO area, upstream of the sales-data chain. Governance context." } },
+        { "name": "Cristina D'Ambrosio", "li": "https://www.linkedin.com/in/cristina-d-ambrosio-86a64483/", "role": { "it": "UniCredit — Head of Retail Digital Channels", "en": "UniCredit — Head of Retail Digital Channels" }, "note": { "it": "Sponsor dei canali digitali che disegna l'iniziativa dell'Adobe Day; obiettivo di partecipazione: lei + IT.", "en": "Digital-channels sponsor shaping the Adobe Day initiative; participation goal: her + IT." } },
+        { "name": "Loretta Del Monte", "role": { "it": "UniCredit — Risk and full P&L analysis and support", "en": "UniCredit — Risk and full P&L analysis and support" }, "note": { "it": "Nel meeting indicata come chi costruisce il mondo riconciliazione con Big Bang; il profilo LinkedIn (Risk/P&L) non combacia — da confermare (possibile omonimia).", "en": "In the meeting named as building the reconciliation world with Big Bang; the LinkedIn profile (Risk/P&L) does not match — to confirm (possible namesake)." } },
         { "name": "Big Bang / Bit Bang", "role": { "it": "Partner esterno del cliente", "en": "Client's external partner" }, "note": { "it": "Implementa i modelli con la struttura dati interna. Possibile resistenza al cambio verso un modello Adobe: gestire, non ignorare.", "en": "Implements the models with the internal data unit. Possible resistance to switching to an Adobe model: manage it, do not ignore it." } }
       ]
     },
@@ -111,12 +112,6 @@ values (
         { "it": "<strong>Dove:</strong> on-site dal cliente (riduce il rischio di no-show).", "en": "<strong>Where:</strong> on-site at the client (lowers the no-show risk)." },
         { "it": "<strong>Blocco aperto:</strong> in attesa della conferma del piano pluriennale del cliente per il fine-tuning; le date le sblocca il cliente.", "en": "<strong>Open blocker:</strong> awaiting the client's multi-year plan confirmation for fine-tuning; the client unlocks the dates." },
         { "it": "<strong>Mossa strategica:</strong> l'agenda oggi è demo-led. Elevare l'attribution (lead-to-sale + MTA/MMM) a filo conduttore, da spingere al dry-run.", "en": "<strong>Strategic move:</strong> the agenda is demo-led today. Elevate attribution (lead-to-sale + MTA/MMM) to the through-line, to push at the dry-run." }
-      ],
-      "people": [
-        { "name": "Myriam Vegliante", "role": { "it": "Adobe — Strategic Customers, Product Sales (lead coordinamento)", "en": "Adobe — Strategic Customers, Product Sales (coordination lead)" }, "note": { "it": "Regia lato Adobe: agenda, stakeholder, chiusura.", "en": "Adobe-side lead: agenda, stakeholders, closing." } },
-        { "name": "Antonio Gargiulo", "role": { "it": "Adobe — owner account UniCredit", "en": "Adobe — UniCredit account owner" }, "note": { "it": "Regia narrativa attribution e relazione.", "en": "Attribution narrative and relationship lead." } },
-        { "name": "Cristina D'Ambrosio + IT", "role": { "it": "UniCredit — Digital Channels, Mobile Banking (+ IT)", "en": "UniCredit — Digital Channels, Mobile Banking (+ IT)" }, "note": { "it": "Sponsor che disegna l'iniziativa; obiettivo: presenza di sponsor e IT.", "en": "Sponsor shaping the initiative; goal: sponsor and IT in the room." } },
-        { "name": "Ruoli Adobe da assegnare", "role": { "it": "3 competenze chiave per il taglio attribution", "en": "3 key skills for the attribution cut" }, "note": { "it": "SC per demo CJA; specialist Marketing Campaign Analytics (MTA+MMM); data architect AEP ↔ Foundry (tema CJA vs build custom).", "en": "SC for the CJA demo; Marketing Campaign Analytics specialist (MTA+MMM); AEP ↔ Foundry data architect (CJA vs custom-build topic)." } }
       ]
     },
     {
@@ -124,7 +119,7 @@ values (
       "h": { "it": "CJA vs build custom su Foundry", "en": "CJA vs a custom Foundry build" },
       "items": [
         { "it": "<strong>Prodotto pacchettizzato vs build a mano.</strong> Marketing Campaign Analytics unifica MMM + MTA in un prodotto (AI bidirectional-transfer, dati summary- e touchpoint-level) e si integra con CJA (common channel definitions).", "en": "<strong>Packaged product vs hand-built.</strong> Marketing Campaign Analytics unifies MMM + MTA in one product (bidirectional-transfer AI, summary- and touchpoint-level data) and integrates with CJA (common channel definitions)." },
-        { "it": "<strong>CJA fa già attribution lead-to-revenue</strong> person-level (B2B Edition: modelli linear/U-shaped/time-decay/last-touch, lookback 13 mesi).", "en": "<strong>CJA already does person-level lead-to-revenue attribution</strong> (B2B Edition: linear/U-shaped/time-decay/last-touch models, 13-month lookback)." },
+        { "it": "<strong>CJA fa già attribution cross-channel a livello di persona</strong> (Attribution IQ): modelli multipli — last-touch, lineare, U-shaped, time-decay e algoritmica — su finestre di lookback configurabili.", "en": "<strong>CJA already does person-level cross-channel attribution</strong> (Attribution IQ): multiple models — last-touch, linear, U-shaped, time-decay and algorithmic — over configurable lookback windows." },
         { "it": "<strong>Il dato transazionale.</strong> Oggi su Foundry: va portato (o esposto) al layer di analytics, altrimenti si è ciechi. Mitigazione: minimizzare (venduto/non-venduto booleano) — sub-ottimale ma percorribile.", "en": "<strong>Transactional data.</strong> Today on Foundry: it must be brought (or exposed) to the analytics layer, otherwise you are blind. Mitigation: minimise (sold/not-sold boolean) — sub-optimal but workable." },
         { "it": "<strong>Onestà intellettuale.</strong> L'integrazione più profonda incrementalità↔dashboard CJA è data come «in development»; non esiste un confronto pubblico feature-by-feature Adobe vs Foundry. Meglio dichiararlo che gonfiarlo.", "en": "<strong>Intellectual honesty.</strong> The deepest incrementality↔CJA-dashboard integration is stated as «in development»; there is no public feature-by-feature Adobe-vs-Foundry comparison. Better to state it than to inflate it." }
       ]
@@ -147,7 +142,7 @@ values (
     },
     {
       "n": "09",
-      "h": { "it": "Evidenze (deep-research)", "en": "Evidence (deep-research)" },
+      "h": { "it": "Evidenze", "en": "Evidence" },
       "note": { "it": "Sintesi verificata con voto avversariale a 3 voti (2/09). Le affermazioni pro-Adobe sono vendor-positioning, non benchmark indipendenti.", "en": "Synthesis verified with 3-vote adversarial checks (Sep 2). Pro-Adobe claims are vendor-positioning, not independent benchmarks." },
       "items": [
         { "it": "<strong>Il last-touch è debole nel banking:</strong> correlazionale non causale, non vede i touchpoint offline (filiale, contact center, agenti), sovra-accredita l'ultimo tocco digitale (+30% e oltre).", "en": "<strong>Last-touch is weak in banking:</strong> correlational not causal, blind to offline touchpoints (branch, contact centre, agents), over-credits the last digital touch (+30% and more)." },
@@ -158,16 +153,6 @@ values (
     },
     {
       "n": "10",
-      "h": { "it": "Domande aperte", "en": "Open questions" },
-      "items": [
-        { "it": "Data confermata dell'Adobe Day (dipende dal cliente) e decisione se elevare l'attribution a filo conduttore.", "en": "Confirmed Adobe Day date (client-dependent) and the decision whether to make attribution the through-line." },
-        { "it": "Verifica nomi/ruoli §4 (trascrizione AI) prima di ogni contatto.", "en": "Verify names/roles in §4 (AI transcript) before any contact." },
-        { "it": "Reference bancarie Adobe citabili in EMEA/Italia: la ricerca non ne ha confermate di pubbliche — chiudere con Industry team.", "en": "Adobe banking references usable in EMEA/Italy: research confirmed none public — close with the Industry team." },
-        { "it": "Ruolo SI di Accenture nei programmi di attribution/measurement: definirlo internamente col team ACN.", "en": "Accenture's SI role in attribution/measurement programmes: define it internally with the ACN team." }
-      ]
-    },
-    {
-      "n": "11",
       "h": { "it": "Fonti", "en": "Sources" },
       "sources": [
         { "label": "The Financial Brand — attribution dilemma in banking", "url": "https://thefinancialbrand.com/news/bank-cross-selling/solving-the-marketing-sales-attribution-dilemma-in-banking-145732", "tipo": "settore" },
@@ -175,7 +160,7 @@ values (
         { "label": "Haus.io — MTA vs MMM", "url": "https://www.haus.io/blog/mta-vs-mmm-choosing-between-multi-touch-attribution-and-marketing-mix-modeling", "tipo": "analisi" },
         { "label": "Funnel.io — MTA vs MMM (privacy, granularità)", "url": "https://funnel.io/blog/mta-vs-mmm", "tipo": "analisi" },
         { "label": "TapClicks — MTA e MMM insieme (2026)", "url": "https://www.tapclicks.com/blog/marketing-attribution-in-2026-why-multi-touch-and-marketing-mix-modeling-have-to-work-together", "tipo": "analisi" },
-        { "label": "Adobe — CJA B2B Edition, multi-touch attribution", "url": "https://business.adobe.com/products/adobe-analytics/customer-journey-analytics-b2b-edition/b2b-multi-touch-attribution.html", "tipo": "Adobe" },
+        { "label": "Adobe — Customer Journey Analytics · Attribution (Attribution IQ)", "url": "https://business.adobe.com/products/adobe-analytics/customer-journey-analytics/attribution.html", "tipo": "Adobe" },
         { "label": "Adobe — Mix Modeler / Marketing Campaign Analytics", "url": "https://business.adobe.com/products/mix-modeler.html", "tipo": "Adobe" },
         { "label": "EY × Adobe Mix Modeler (alliance)", "url": "https://www.ey.com/en_us/alliances/adobe-mix-modeler", "tipo": "SI" },
         { "label": "SevenFigureAgency — modelli pay-per-performance (rischi CPS)", "url": "https://sevenfigureagency.com/15-pay-per-performance-agency-models-explained/", "tipo": "analisi" }
