@@ -58,7 +58,7 @@ export const assets: AssetSlot[] = [
   {
     id: 'persona-elisa',
     type: 'stock',
-    query: 'young woman smartphone cafe natural light thoughtful portrait',
+    query: 'italian woman brunette portrait smartphone cafe warm natural light thoughtful mediterranean',
     aspect: '4:5',
     width: 900,
     grade: 'editorial',
