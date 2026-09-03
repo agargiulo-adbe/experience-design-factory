@@ -22,10 +22,17 @@ import { pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 import {
   aspectDimensions,
+  fireflySizeFor,
   pexelsOrientation,
   type AssetSlot,
   type Grade,
 } from '../packages/core/src/assets/types';
+import {
+  fireflyCredentialsFromEnv,
+  generateImage,
+  getAccessToken,
+  type FireflyCredentials,
+} from './lib/firefly';
 
 const cwd = process.cwd();
 
@@ -40,6 +47,9 @@ const outDir = path.resolve(cwd, arg('out', 'src/assets/generated'));
 // ── env (.env in the client app dir; never committed) ──────────────
 try { process.loadEnvFile(path.join(cwd, '.env')); } catch { /* no .env — rely on shell */ }
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+const FIREFLY_CREDS = fireflyCredentialsFromEnv();
+// Reuse one IMS token across all firefly slots in a run.
+let fireflyToken: string | null = null;
 
 // ── logging ────────────────────────────────────────────────────────
 const c = {
@@ -60,6 +70,9 @@ interface Provenance {
   license?: string;
   query?: string;
   prompt?: string;
+  model?: string;
+  seed?: number;
+  contentCredentials?: boolean;
   aspect: string;
   grade: string;
   output: string;
@@ -156,13 +169,57 @@ function fromMflux(slot: AssetSlot): Fetched | null {
   return { buffer: fs.readFileSync(tmp), prov: { source: 'mflux/flux', license: 'FLUX (locally generated)', prompt: slot.prompt } };
 }
 
+async function fromFirefly(slot: AssetSlot, creds: FireflyCredentials): Promise<Fetched | null> {
+  if (!slot.prompt) {
+    console.log(c.warn(`  ⚠ firefly "${slot.id}" has no prompt — skipping`));
+    return null;
+  }
+  const size = slot.fireflySize ?? fireflySizeFor(slot.aspect);
+  try {
+    if (!fireflyToken) fireflyToken = await getAccessToken(creds);
+    const r = await generateImage(
+      creds,
+      {
+        prompt: slot.prompt,
+        negativePrompt: slot.negativePrompt,
+        contentClass: slot.contentClass,
+        size,
+        seed: slot.seed,
+      },
+      fireflyToken,
+    );
+    return {
+      buffer: r.buffer,
+      prov: {
+        source: 'adobe/firefly',
+        license: 'Adobe Firefly — commercially safe, Content Credentials (C2PA)',
+        prompt: slot.prompt,
+        model: r.model,
+        seed: r.seed ?? slot.seed,
+        contentCredentials: r.contentCredentials,
+      },
+    };
+  } catch (e) {
+    console.log(c.err(`  ✗ firefly "${slot.id}": ${String((e as Error)?.message ?? e)}`));
+    return null;
+  }
+}
+
 // ── per-slot pipeline ──────────────────────────────────────────────
 async function processSlot(slot: AssetSlot, provenance: Provenance[]) {
   if (slot.type === 'code') {
     console.log(c.dim(`  · ${slot.id} — code visual, skip`));
     return;
   }
-  const fetched = slot.type === 'aigen' ? fromMflux(slot) : await fromPexels(slot);
+  let fetched: Fetched | null;
+  if (slot.type === 'firefly') {
+    if (!FIREFLY_CREDS) { console.log(c.warn(`  ⚠ firefly "${slot.id}" needs FIREFLY_CLIENT_ID/SECRET — left as placeholder`)); return; }
+    fetched = await fromFirefly(slot, FIREFLY_CREDS);
+  } else if (slot.type === 'aigen') {
+    fetched = fromMflux(slot);
+  } else {
+    fetched = await fromPexels(slot);
+  }
   if (!fetched) return;
 
   const { width, height } = aspectDimensions(slot.aspect, 2400);
@@ -184,6 +241,9 @@ async function processSlot(slot: AssetSlot, provenance: Provenance[]) {
     license: fetched.prov.license,
     query: fetched.prov.query,
     prompt: fetched.prov.prompt,
+    model: fetched.prov.model,
+    seed: fetched.prov.seed,
+    contentCredentials: fetched.prov.contentCredentials,
     aspect: slot.aspect,
     grade: slot.grade ?? 'none',
     output: `${slot.id}.webp`,
@@ -206,6 +266,14 @@ async function main() {
     console.log(`  Then add it to ${c.bold(path.join(cwd, '.env'))} (PEXELS_API_KEY=...) and re-run.`);
     console.log(c.dim(`  The key is build-time only — it never ships to the site or CI.\n`));
     process.exit(1);
+  }
+
+  const fireflyCount = assets.filter((s) => s.type === 'firefly').length;
+  if (fireflyCount > 0 && !FIREFLY_CREDS) {
+    console.log(c.warn(`\n  Missing FIREFLY_CLIENT_ID / FIREFLY_CLIENT_SECRET.`));
+    console.log(`  ${fireflyCount} firefly slot(s) will be left as placeholders.`);
+    console.log(`  Add them to ${c.bold(path.join(cwd, '.env'))} and re-run to generate.`);
+    console.log(c.dim(`  Build-time only — the keys never ship to the site or CI.\n`));
   }
 
   await mkdir(outDir, { recursive: true });

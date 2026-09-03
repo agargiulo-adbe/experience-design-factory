@@ -4,19 +4,32 @@
  * reusable build-assets script.
  */
 
-export type AssetType = 'stock' | 'aigen' | 'code';
+export type AssetType = 'stock' | 'aigen' | 'firefly' | 'code';
 export type Aspect = '16:9' | '9:16' | '1:1' | '4:5';
 export type Grade = 'editorial' | 'duotone' | 'none';
 
 export interface AssetSlot {
   /** Stable id — also the output filename (`<id>.webp`). */
   id: string;
-  /** stock = fetch from Pexels · aigen = local FLUX · code = visual already in code. */
+  /** stock = fetch from Pexels · aigen = local FLUX · firefly = Adobe Firefly Services · code = visual already in code. */
   type: AssetType;
   /** Search query for `stock`. */
   query?: string;
-  /** Generation prompt for `aigen`. */
+  /** Generation prompt for `aigen` and `firefly`. */
   prompt?: string;
+  /** `firefly` only — steer the model away from unwanted content. */
+  negativePrompt?: string;
+  /** `firefly` only — 'photo' (photographic) or 'art' (illustrative/abstract). */
+  contentClass?: 'photo' | 'art';
+  /** `firefly` only — fixed seed for reproducibility; vary to explore candidates. */
+  seed?: number;
+  /**
+   * `firefly` only — size requested from the model (a v3-supported size close to
+   * `aspect`). The pipeline still crops to `aspect` at 2400px afterwards, so this
+   * only needs to be a supported size in the right orientation. Override per slot
+   * if the default size is rejected by the account's model.
+   */
+  fireflySize?: { width: number; height: number };
   aspect: Aspect;
   /** Intended display width (px) — drives responsive `widths`. */
   width: number;
@@ -53,4 +66,24 @@ export function pexelsOrientation(aspect: Aspect): 'landscape' | 'portrait' | 's
   const r = ASPECT_RATIO[aspect];
   if (Math.abs(r - 1) < 0.01) return 'square';
   return r > 1 ? 'landscape' : 'portrait';
+}
+
+/**
+ * A Firefly Images v3 `size` in the right orientation for an aspect. Firefly
+ * accepts a limited set of sizes, so we request a large supported one and let
+ * the pipeline crop to the exact `aspect` at 2400px afterwards. Override per
+ * slot via `AssetSlot.fireflySize` if an account's model rejects the default.
+ */
+export function fireflySizeFor(aspect: Aspect): { width: number; height: number } {
+  switch (aspect) {
+    case '1:1':
+      return { width: 2048, height: 2048 };
+    case '9:16':
+      return { width: 1152, height: 2048 };
+    case '4:5':
+      return { width: 1632, height: 2048 };
+    case '16:9':
+    default:
+      return { width: 2048, height: 1152 };
+  }
 }
