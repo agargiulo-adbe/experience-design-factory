@@ -182,10 +182,25 @@ Workshop UniCredit **co-Adobe + Accenture**, target **settimana del 14/09/2026**
 
 ---
 
-## 28. Alfabeti — Ministero dell'Istruzione e del Merito (MIM) (2 set 2026)
+## 28. Alfabeti — Ministero dell'Istruzione e del Merito (MIM) (agg. 2026-09-03)
 
-**App**: `apps/mim-alfabeti` · base `/mim-alfabeti/` · commit `fadb1e3` (prodotta da una sessione precedente, non in questa). Deck immersivo per il **MIM**: la **comunicazione al personale** (AEP/AJO/CJA), le **competenze / IA sicura**, l'**accesso** come esperienza istituzionale. **IT default + toggle EN**; palette **light istituzionale** (carta/blu, display **Titillium Web**).
-- **8 sezioni**: `index` + `accesso`, `competenze`, `domanda`, `persone`, `realta`, `rotta`, `voce` (+ `admin`).
-- **Doppio uso client/interno**: la sezione **«realtà»** è **gated dalla soluzione `interno`** — spenta di default per la versione cliente, accesa per la lettura interna.
-- **Registrazioni**: `deploy.yml` (merge+verify), `factory-hub`, `scripts/deck-audit.ts` (ROUTE_SET), root scripts. **NON** seedata nella console Supabase (**P2 §10**, come Eni).
-- `audit:deck` **0 fallimenti hard**. **Dossier strategico bilingue** in `docs/` (git-ignored, non nel repo — cfr. dossier MIM già citato nella memoria `mim-adobe-prep`).
+**App**: `apps/mim-alfabeti` · base `/mim-alfabeti/` · deck immersivo per il **MIM**: la **comunicazione al personale** (AEP/RT-CDP/AJO/CJA, idea-spina **B1**), le **competenze / IA sicura**, l'**accesso e i documenti** come esperienza istituzionale governata al centro. **IT default + toggle EN**; palette **light istituzionale** (carta/blu, display **Titillium Web** + Inter).
+
+### 28.1 Ri-architettura customer-facing (2 set 2026, commit `acab255`)
+Il deck originale (`fadb1e3`, sessione precedente) era di fatto il **memo go-to-market interno** di Adobe reso in slide: caveat prodotto («AJO nasce marketing-oriented», «pledge USA non auditati»), chip `INF`, linguaggio «riposizionare / AEM non vince», competitor Microsoft/Google, «chi intercettare» (dirigenti MIM) e un'intera sezione **«realtà»** (competitor + «cose da non dire») gated dalla soluzione `interno` **ma comunque nel bundle statico pubblico**. Bonificato E2E:
+- **7 route customer** (era 8): `index` · `domanda` · `voce` [B1 hero] · `competenze` · `accesso` · `persone` · `rotta`. Ogni slide riscritta dal **POV del cliente** (racconto **al** Ministero), zero contenuto interno.
+- **`realta` eliminata** (`git rm`); soluzione di gating **`interno` rimossa** da `AlfabetiNavigation` + `admin.astro` (`SOLUTIONS` ora vuoto) + `SECTION_FLOW` (BaseLayout) + `scripts/deck-audit.ts`; label «Dossier» orfana tolta dalla nav.
+- `accesso` riscritta in chiave **valore-per-il-Ministero** («dove Adobe si aggiunge ai mattoni pubblici»: DAM/hub governato, ALM sotto ente accreditato) — via il vecchio «riposizionare/non vince». `rotta` chiusa come **percorso in 4 passi PER il MIM** (era «quattro mosse per vendere» + «chi intercettare», ora eliminate).
+- `voce` slide «come funziona»: la nota interna su AJO sostituita da una **nota governance** customer (profilo governato, privacy-first, l'istituzione controlla cosa si invia/misura).
+- **Fonti cliccabili** (`4a93b27`): tutte le righe `.alf-src` (index/voce/competenze/accesso) ora con link ai domini reali (gov.it, ACN, Adobe, JRC…), stile `.alf-src a`.
+- `audit:deck` **0 hard** su 1920/1440/1280 (29 soft `a`/`i` su hero/cover ariose, accettati per contratto); ogni slide cambiata **letta a 1920**; grep di sicurezza sul bundle → **zero contenuti interni/competitor**.
+
+### 28.2 Dossier interno `/dossier/?t=<token>` (2–3 set 2026, commit `acab255`/`dd6eadf`/`4a93b27`)
+Tutto il materiale interno è stato spostato in un **dossier riservato** (stesso pattern UniCredit §27.7): `apps/mim-alfabeti/src/pages/dossier.astro`, **orfana + `noindex`**, palette Alfabeti navy/blu (classi `.mim-*`, `<style is:global>`), **bilingue IT/EN** (**IT default anche via `?t=`**, `dd6eadf`) **+ PDF** (`window.print`).
+- Accesso: **RLS via login** (super admin o ruolo su `mim-alfabeti`, da `/console/users/`) **OPPURE** unlisted **secret-link `?t=<uuid>`** senza login (RPC `get_shared_doc`, migration `0009`). Contenuto **solo su Supabase**, mai nel bundle.
+- Contenuto = **16 sezioni** (tutto il `DOSSIER-MIM-ADOBE.md`: tesi · fatti PNRR/quadri UE/finestra IA/procurement/competitor · big idea A+B con i caveat estratti dal deck · interlocutori · partner · sequenza · rischi · open question · cose-da-non-dire · update 3° ciclo · fonti) con **fonti linkate per-sezione** (§02–06,10) + biblioteca §16 (**32 link** totali).
+- **⚠️ Seed riservato FUORI dal repo pubblico**: il classifier auto-mode ha (correttamente) bloccato il commit del seed col contenuto (nomi/telefoni funzionari, «cose da non dire», intel competitiva). La SQL vive git-ignored in **`docs/Ministero dell'Istruzione/0011_seed_mim_dossier.sql`** (applicata al DB remoto out-of-band); una **nota tracciata** `supabase/migrations/0011_mim_dossier.README.md` spiega dov'è. Il **token è un segreto** (mai in repo/handover): leggerlo con `supabase db query --linked "select share_token from restricted_docs where slug='mim-adobe'"`.
+
+### 28.3 Console + fatti verificati
+- **Seed console** `0010_seed_mim.sql` (applicata al DB, **tracciata** — solo naming/URL pubblici): registra **`mim-alfabeti` + `eni-orbita`** in `experiences` → **card ora visibili in `/console/`** (chiude i due P2 «seed console»).
+- Fatti verificati e regole (naming ACN, art.68 CAD, Modello Scuole gratuito, S.O.F.I.A., decreto IA €100M, DigComp 3.0/DigCompEdu) restano nel dossier + memoria **`mim-adobe-prep`**. Spec: `docs/superpowers/specs/2026-09-02-mim-alfabeti-customer-rearch-e-dossier-design.md` (sanificata dai nomi riservati).
