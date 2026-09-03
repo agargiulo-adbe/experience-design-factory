@@ -5,6 +5,11 @@
 
 ## 11. Change log recente
 
+### Change log — Agos Trait d'Union: refresh contenuti + design check (2026-09-03, dal più recente) → dettaglio §16 (addendum)
+- `8cd3cf4` **Orizzonte 5 — Firefly + GenStudio al posto del generico "AI Assistant"**: la slide `slide-agentic` "L'era agentica" riscritta con naming/capability Adobe verificati via `/deep-research` (fonti newsroom) → **Adobe Firefly** (commercially-safe + Custom Models/Firefly Foundry, MAX 2025) · **Adobe GenStudio** for Performance Marketing (on-brand a scala + brand score) · **Agent Orchestrator → CX Enterprise Coworker** (data governance nativa). **Caveat in nota**: «commercially safe» = sicurezza IP/copyright, **non** compliance del credito. `audit:deck` 0 hard.
+- `cd37cc8` **Orizzonte 5 agentic (v1) + allineamenti + rework roadmap**: nuova slide `slide-agentic` (poi rivista in `8cd3cf4`); `text-left` sugli elenchi che ereditavano il center in `fondamenta/finestra`, `orizzonti/prequalified`, `roadmap/fase2`; «Next best offer» → **Next Best Experience** (orizzonti/roadmap/valore/admin); roadmap: rimosso tag **Assessment**, 2027 solo **AJO**, **Scalare a "2027 · fine anno"** (era 2028), tag allineati in fondo (`mt-auto`); cover Orizzonti → "Cinque"; slide registrata in admin.
+- `eae473b` **scenario competitivo nell'intro + fix allineamenti + Elisa IT**: nuova slide `slide-competitori` (Findomestic vs Compass, mosse 2025–26 verificate via `/deep-research`, 4 fonti linkate, no logo concorrente); fix del bug ricorrente **testo bullet centrato** (eredita `text-align:center` da `Slide align="center"`) su `.evo-item`; **2 overflow HARD** risolti (nib `trait-dunion/convergenza`, nodo finale `roadmap/3fasi`); immagine **persona Elisa** rigenerata (Pexels "…in Rome, Italy" → legge come italiana).
+
 ### Change log — Alfabeti (MIM): re-architettura customer-facing + dossier token (2–3 set 2026, dal più recente) → dettaglio §28
 - `4a93b27` **fonti cliccabili su ogni slide del deck** + fonti linkate per-sezione nel dossier (§02–06,10; 32 link tot). Righe `.alf-src` con `<a>` ai domini reali (gov.it/ACN/Adobe/JRC); stile `.alf-src a`. `audit:deck` 0 hard invariato; index/momento letto a 1920.
 - `dd6eadf` **dossier MIM default IT** (come il deck): il secret-link `?t=` non forza più EN; `?lang=en` e toggle EN restano.
