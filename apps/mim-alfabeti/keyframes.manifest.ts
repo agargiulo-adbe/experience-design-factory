@@ -1,17 +1,23 @@
 import type { AssetSlot } from '@edf/core/assets/types';
 
 /**
- * Alfabeti (MIM) — 4 keyframes for the "alfabeto → competenza" scroll page.
- * Crossfaded on scroll (a smooth, lightweight stand-in for a Firefly Video clip
- * while the Video API isn't enabled on the key). Each frame = one transformation
- * stage. Same visual family as the hero (navy + blu Italia + ivory), abstract:
- * no people, no faces, no legible text, no logos. Firefly-generated + C2PA.
+ * Alfabeti (MIM) — 4 keyframes for the "frammentazione → una voce" scroll page.
+ * Crossfaded/scrubbed on scroll, one frame per transformation stage.
  *
- * Generate:  pnpm --filter mim-alfabeti assets:build --manifest keyframes.manifest.ts
+ * CONCEPT (rev. 2026-09-04): a LIGHT-ORDERING arc, NOT letterforms. The prior
+ * pass asked Firefly for "Italian letterforms" and got a wall of garbled 3D
+ * pseudo-glyphs — classic AI slop. We keep the same four-beat narrative
+ * (scattered → gathering → governed grid → composed) but tell it with points and
+ * threads of institutional-blue light on deep navy: clean, cinematic, abstract,
+ * on-brand, and impossible to read as fake alphabet. Same palette family as the
+ * hero (navy + blu Italia + ivory). No people, faces, text, logos. Firefly + C2PA.
+ *
+ * Generate:  pnpm --filter mim-alfabeti assets:build --manifest keyframes.manifest.ts --out src/assets/generated/keyframes
  */
 const COMMON_NEG =
-  'people, faces, hands, workers, brand logos, watermarks, legible words, captions, ' +
-  'red, orange, garish colors, busy clutter, low quality';
+  'letters, letterforms, alphabet, glyphs, characters, typography, printed type, words, ' +
+  'runes, symbols, numbers, captions, legible text, watermarks, signatures, ' +
+  'people, faces, hands, workers, brand logos, red, orange, garish colors, busy clutter, low quality';
 
 export const assets: AssetSlot[] = [
   {
@@ -19,42 +25,43 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Deep navy field (#0A1A33): scattered, dim Italian letterforms drifting apart in disorder, faint and ' +
-      'fragmented, sparse cold institutional blue glow, lots of empty dark space, quiet, cinematic, high detail',
+      'Deep navy void (#0A1A33): sparse, dim points and embers of cold institutional-blue light scattered in ' +
+      'disorder across a vast dark field, faint drifting particles and thin broken threads of light, ' +
+      'lots of empty dark space, quiet, cinematic, high detail, abstract, no text',
     negativePrompt: COMMON_NEG,
-    aspect: '16:9', width: 2400, grade: 'none', seed: 11, alt: '',
+    aspect: '16:9', width: 2400, grade: 'none', seed: 21, alt: '',
   },
   {
     id: 'kf-transform-2',
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Deep navy field (#0A1A33): luminous Italian letterforms drifting together, some beginning to align into ' +
-      'short words, growing institutional blue light (#0B4DA2, #2E6FD6), a sense of gathering order, cinematic ' +
-      'soft light, high detail',
+      'Deep navy field (#0A1A33): points of luminous institutional-blue light (#0B4DA2, #2E6FD6) drifting ' +
+      'together, converging streams of particles and connecting threads of light beginning to link up, ' +
+      'a sense of gathering order emerging from the dark, cinematic soft light, high detail, abstract, no text',
     negativePrompt: COMMON_NEG,
-    aspect: '16:9', width: 2400, grade: 'none', seed: 12, alt: '',
+    aspect: '16:9', width: 2400, grade: 'none', seed: 22, alt: '',
   },
   {
     id: 'kf-transform-3',
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Deep navy field (#0A1A33): Italian letterforms organized into a clear, coherent geometric grid structure, ' +
-      'ordered and institutional, bright institutional blue light (#0B4DA2, #2E6FD6), calm and governed, ' +
-      'architectural composition, cinematic, high detail',
+      'Deep navy field (#0A1A33): points of light resolved into a clear, coherent luminous geometric grid, ' +
+      'ordered nodes connected by bright institutional-blue lines (#0B4DA2, #2E6FD6), calm and governed, ' +
+      'architectural network composition, cinematic, high detail, abstract, no text',
     negativePrompt: COMMON_NEG,
-    aspect: '16:9', width: 2400, grade: 'none', seed: 13, alt: '',
+    aspect: '16:9', width: 2400, grade: 'none', seed: 23, alt: '',
   },
   {
     id: 'kf-transform-4',
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Deep navy field (#0A1A33): a fully composed, luminous ordered structure of Italian letterforms resolved ' +
-      'into a single coherent form, radiant warm ivory and institutional blue highlights (#F6F1E7, #0B4DA2), ' +
-      'accomplished and serene, elegant institutional, cinematic soft light, high detail',
+      'Deep navy field (#0A1A33): a single fully composed, radiant architecture of light — an ordered luminous ' +
+      'structure of connected nodes and beams glowing in warm ivory and institutional blue (#F6F1E7, #0B4DA2), ' +
+      'accomplished and serene, elegant and institutional, cinematic soft light, high detail, abstract, no text',
     negativePrompt: COMMON_NEG,
-    aspect: '16:9', width: 2400, grade: 'none', seed: 14, alt: '',
+    aspect: '16:9', width: 2400, grade: 'none', seed: 24, alt: '',
   },
 ];

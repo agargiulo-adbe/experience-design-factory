@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import bgSoft from '../assets/generated/bg/soft-5.webp';
+import bgNavy from '../assets/generated/bg/navy-5.webp';
+import bgCarta from '../assets/generated/bg/carta-5.webp';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// «La notte delle immissioni», com'è oggi — la realtà frammentata in tre battute.
+const oggi = [
+  {
+    label: { en: 'Ranking in the dark', it: 'La domanda al buio' },
+    en: '150 preferences to submit on Istanze OnLine, while transfers and provisional assignments are still under way — she ranks posts without knowing which will still be free.',
+    it: '150 preferenze da inviare su Istanze OnLine, mentre trasferimenti e assegnazioni provvisorie sono ancora in corso — ordina le cattedre senza sapere quali resteranno libere.',
+  },
+  {
+    label: { en: 'The result lands elsewhere', it: 'Il bollettino altrove' },
+    en: "The outcome doesn't come back where she applied: it appears in the provincial office bulletins. She hunts for it there, and in the Facebook groups.",
+    it: "L'esito non torna dove ha fatto domanda: compare nei bollettini dell'Ufficio provinciale. Lo cerca lì, e nei gruppi Facebook.",
+  },
+  {
+    label: { en: 'The revocation', it: 'La revoca' },
+    en: 'A second bulletin can correct or revoke the assignment. The continuity with her pupils — the whole point of support teaching — breaks.',
+    it: 'Un secondo bollettino può rettificare o revocare l’incarico. La continuità con i suoi alunni — il senso stesso del sostegno — salta.',
+  },
+];
+
+// «Come cambia» — la stessa estate, dentro un journey governato e misurato.
+const journey = [
+  {
+    title: { en: 'GPS standing updated', it: 'Posizione GPS aggiornata' },
+    sub: { en: 'personalized notice', it: 'avviso personalizzato' },
+    state: { en: 'Delivered', it: 'Recapitato' },
+  },
+  {
+    title: { en: '150-preference window', it: 'Finestra 150 preferenze' },
+    sub: { en: 'deadline reminder', it: 'promemoria con scadenza' },
+    state: { en: 'Opened', it: 'Aperto' },
+  },
+  {
+    title: { en: 'Post assigned', it: 'Sede assegnata' },
+    sub: { en: 'confirmation with the details', it: 'conferma con i dettagli' },
+    state: { en: 'Acted on', it: 'Azione' },
+  },
+];
+---
+<BaseLayout title="La storia di Giulia">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AlfabetiNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/accesso')} prevHref={href(base, '/competenze')}>
+
+    <!-- ── SLIDE 0: Giulia, oggi ─────────────────────────────────────── -->
+    <Slide id="slide-ritratto" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="Giulia's story" it="La storia di Giulia" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Giulia has taught for nine years. No contract has ever lasted her more than one."
+          it="Giulia insegna da nove anni. Nessun contratto le è mai durato più di uno."
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.14; letter-spacing: -0.02em; max-width: 22ch;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-[clamp(1rem,2vw,2rem)] items-center">
+          <T
+            as="p"
+            en="A support teacher, on her province's GPS ranking. Every year a different post, a different school, often far from home. And every summer the same question, decided by an office she never speaks to: where will I be in September?"
+            it="Docente di sostegno, iscritta alle GPS della sua provincia. Ogni anno un incarico diverso, una scuola diversa, spesso lontana da casa. E ogni estate la stessa domanda, decisa da un ufficio con cui non parla mai: dove sarò a settembre?"
+            class="text-[var(--ink-secondary)]"
+            style="font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.6; max-width: 40ch;"
+            data-reveal data-reveal-delay="0.16"
+          />
+          <div class="alf-stat" data-reveal data-reveal-delay="0.24">
+            <p class="alf-stat-num tabular-nums">234.576</p>
+            <T
+              as="p"
+              en="substitute teachers in 2022/23 — 26.9% of all posts. Giulia is one of them."
+              it="supplenti nel 2022/23 — il 26,9% delle cattedre. Giulia è una di loro."
+              class="alf-stat-label"
+            />
+            <p class="alf-stat-src">
+              <T en="Source · MIM Portale Unico del reclutamento (via Tuttoscuola)" it="Fonte · Portale Unico del reclutamento MIM (via Tuttoscuola)" />
+            </p>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: La notte delle immissioni (com'è oggi) ───────────── -->
+    <Slide id="slide-notte" bg="inverse" align="left">
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="How it works today" it="Com'è oggi" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="July. She ranks 150 preferences without knowing which posts will still be free."
+          it="Luglio. Compila 150 preferenze senza sapere quali cattedre resteranno libere."
+          class="text-[var(--color-carta)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.16; letter-spacing: -0.02em; max-width: 26ch;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.1">
+          {oggi.map((o) => (
+            <article class="alf-card">
+              <T as="h3" en={o.label.en} it={o.label.it} class="alf-card-title" />
+              <T as="p" en={o.en} it={o.it} class="alf-card-body" />
+            </article>
+          ))}
+        </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+          <T
+            en="Sources · precarious-teacher groups on “choosing in the dark” (scuolainforma, miuristruzione, 2025–26) · USP revocation/correction bulletins."
+            it="Fonti · coordinamenti precari sulle «scelte al buio» (scuolainforma, miuristruzione, 2025–26) · bollettini di revoca/rettifica USP."
+          />
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Come cambia ──────────────────────────────────────── -->
+    <Slide id="slide-evolve" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="How it changes" it="Come cambia" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="The same July — one voice that reaches her, and knows that it did."
+          it="Lo stesso luglio, con una voce che la raggiunge — e sa di averla raggiunta."
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.16; letter-spacing: -0.02em; max-width: 26ch;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-[clamp(1rem,2.2vw,2.2rem)] items-center">
+          <T
+            as="p"
+            en="A role-based governed profile brings together her GPS standing, her province and her qualifications. Each step becomes a personalized message at the right moment — and every message is measured: delivered, opened, acted on."
+            it="Un profilo governato per ruolo unisce la sua posizione in GPS, la provincia e i titoli. Ogni passaggio diventa un messaggio personalizzato al momento giusto — e ogni messaggio è misurato: recapitato, aperto, seguito da un'azione."
+            class="text-[var(--ink-secondary)]"
+            style="font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.6; max-width: 42ch;"
+            data-reveal data-reveal-delay="0.16"
+          />
+          <div class="alf-profile" data-clienteling data-reveal data-reveal-delay="0.2">
+            <div class="scan-line" aria-hidden="true"></div>
+            <div class="alf-profile-head">
+              <span class="alf-avatar" aria-hidden="true">GR</span>
+              <div class="min-w-0">
+                <p class="alf-profile-name">Giulia R.</p>
+                <p class="alf-profile-meta"><T en="Support teacher · GPS · Campania" it="Docente di sostegno · GPS · Campania" /></p>
+                <div class="alf-profile-chips">
+                  <span class="alf-chip alf-chip--ver"><T en="role-based" it="profilo per ruolo" /></span>
+                  <span class="alf-chip alf-chip--tbc">privacy-first</span>
+                </div>
+              </div>
+            </div>
+            <div class="alf-journey">
+              {journey.map((j) => (
+                <div class="alf-jstep reveal-attr">
+                  <span class="alf-jdot" aria-hidden="true"></span>
+                  <div class="alf-jbody">
+                    <T as="p" en={j.title.en} it={j.title.it} class="alf-jtitle" />
+                    <T as="p" en={j.sub.en} it={j.sub.it} class="alf-jsub" />
+                  </div>
+                  <span class="alf-jstate"><T en={j.state.en} it={j.state.it} /></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.3">
+          <T
+            as="p"
+            en="Not a new portal to check. The same journey Giulia lives every summer — this time reaching her on purpose, and leaving a trace the Ministry can read."
+            it="Non un portale in più da controllare. Lo stesso percorso che Giulia vive ogni estate — stavolta la raggiunge apposta, e lascia una traccia che il Ministero può leggere."
+            class="alf-quote-text"
+            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
+          />
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

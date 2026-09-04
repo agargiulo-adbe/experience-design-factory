@@ -5,6 +5,9 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
+import bgCarta from '../assets/generated/bg/carta-6.webp';
+import bgSoft from '../assets/generated/bg/soft-6.webp';
+import bgNavy from '../assets/generated/bg/navy-6.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -31,22 +34,19 @@ const routes = [
 
 const trust = [
   {
-    chip: 'ver', chipText: 'VERIFICATO',
     label: { en: 'Data perimeter', it: 'Perimetro dati' },
-    en: 'The ACN qualification is Level 1 — ordinary data. For sensitive staff data, the data perimeter and legal basis must be defined up front, before any journey goes live.',
-    it: 'La qualificazione ACN è di Livello 1 — dati ordinari. Per i dati sensibili del personale, il perimetro-dati e la base giuridica vanno definiti a monte, prima di attivare qualsiasi journey.',
+    en: 'Perimeter and legal basis defined up front. The ACN qualification covers ordinary data; for sensitive staff data the perimeter is agreed before any journey goes live.',
+    it: 'Perimetro e base giuridica definiti a monte. La qualificazione ACN copre i dati ordinari; per i dati sensibili del personale il perimetro è concordato prima di attivare qualsiasi journey.',
   },
   {
-    chip: 'inf', chipText: 'DA FONDARE',
     label: { en: 'Institutional use', it: 'Uso istituzionale' },
-    en: 'Journey Optimizer is marketing-born. Its use for institutional, administrative communication is a positioning choice to be grounded — legal basis, staff-data privacy, non-marketing purpose.',
-    it: 'Journey Optimizer nasce nel marketing. L’uso per comunicazione istituzionale e amministrativa è una scelta di posizionamento da fondare — base giuridica, privacy del dato del personale, finalità non-marketing.',
+    en: 'Institutional communication, not marketing. The same orchestration engine serving administrative purposes — on a clear legal basis, with staff privacy at the centre.',
+    it: 'Comunicazione istituzionale, non marketing. Lo stesso motore di orchestrazione al servizio di finalità amministrative, su base giuridica e con la privacy del personale al centro.',
   },
   {
-    chip: 'ver', chipText: 'VERIFICATO',
     label: { en: 'Privacy by design', it: 'Privacy by design' },
-    en: '“Your data is your data”, role-based profiles, and the institution in control of what is sent and measured — aligned to GDPR, the Garante and the EU AI Act.',
-    it: '«Your data is your data», profili basati sul ruolo, e l’istituzione in controllo di ciò che si invia e si misura — in linea con GDPR, Garante ed EU AI Act.',
+    en: '“Your data is your data”: role-based profiles, and the institution in control of what is sent and measured — aligned with GDPR, the Garante and the EU AI Act.',
+    it: '«I tuoi dati sono i tuoi dati»: profili basati sul ruolo, e l’istituzione in controllo di ciò che si invia e si misura — in linea con GDPR, Garante ed EU AI Act.',
   },
 ];
 ---
@@ -55,10 +55,10 @@ const trust = [
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/persone')} prevHref={href(base, '/competenze')}>
+  <DeckContainer nextHref={href(base, '/persone')} prevHref={href(base, '/storia')}>
 
     <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="alf-bg"></div>
+      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
       <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
         <T as="p" en="Governance & procurement" it="Governance e acquisto" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
         <T
@@ -81,7 +81,7 @@ const trust = [
     </Slide>
 
     <Slide id="slide-procurement" bg="secondary" align="left">
-      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
         <T as="p" en="Procurable today" it="Acquistabile oggi" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
@@ -92,7 +92,7 @@ const trust = [
           style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-[clamp(0.7rem,1vw,1rem)] mb-5" data-reveal data-reveal-delay="0.14">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-[clamp(0.7rem,1vw,1rem)] mb-5" data-stagger="0.08">
           {stack.map((s) => (
             <article class="alf-card" style="padding:1.1rem 1.1rem 1rem;">
               <h3 class="alf-card-title" style="font-size:1.02rem;margin-bottom:0.5rem;">{s.name}</h3>
@@ -115,21 +115,20 @@ const trust = [
     </Slide>
 
     <Slide id="slide-trust" bg="inverse" align="left">
-      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="Trust, said honestly" it="La fiducia, detta con onestà" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
+        <T as="p" en="Trust, by design" it="La fiducia, per costruzione" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
         <T
           as="h2"
-          en="Three points to settle before anything goes live"
-          it="Tre punti da chiudere prima di andare in produzione"
+          en="Three assurances on staff data"
+          it="Tre garanzie sul dato del personale"
           class="text-[var(--color-carta)] mb-6 font-[family-name:var(--font-display)]"
           style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
           {trust.map((t) => (
             <article class="alf-card">
-              <p class="mb-2"><span class={`alf-chip alf-chip--${t.chip}`}>{t.chipText}</span></p>
               <T as="h3" en={t.label.en} it={t.label.it} class="alf-card-title" />
               <T as="p" en={t.en} it={t.it} class="alf-card-body" />
             </article>

@@ -207,11 +207,13 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
-/* View transitions */
-::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
-::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
-@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+/* View transitions — cross-section (SPA) change: a sober fade with a whisper of
+   scale + rise, so moving between chapters feels like a considered cut, not a
+   flat blink. Only opacity/transform; reduced-motion falls back to no motion. */
+::view-transition-old(root) { animation: 240ms cubic-bezier(0.4, 0, 0.2, 1) both vt-out; }
+::view-transition-new(root) { animation: 380ms cubic-bezier(0.215, 0.61, 0.355, 1) both vt-in; }
+@keyframes vt-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(1.012); } }
+@keyframes vt-in  { from { opacity: 0; transform: scale(1.02) translateY(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none; }
@@ -250,6 +252,9 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
    Bespoke Firefly imagery (concept A+C) sits UNDER a strong same-tone scrim so
    it reads as atmospheric texture while body text stays fully legible. The scrim
    opacity is the legibility knob — verified by reading a 1920 screenshot. */
+/* The image layer is a per-slide override (`--bg-src`), so every slide can carry
+   a distinct backdrop while sharing one scrim + drift treatment. Falls back to
+   the shared default when a slide sets nothing. */
 .alf-bg {
   position: absolute;
   inset: 0;
@@ -257,7 +262,7 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
     repeating-linear-gradient(90deg, rgba(11,77,162,0.045) 0 1px, transparent 1px 96px),
     radial-gradient(120% 80% at 50% -10%, rgba(11,77,162,0.06), transparent 58%),
     linear-gradient(rgba(246,241,231,0.80), rgba(246,241,231,0.86)),
-    url('../assets/generated/bg-carta.webp') center / cover no-repeat,
+    var(--bg-src, url('../assets/generated/bg-carta.webp')) center / cover no-repeat,
     var(--surface-primary);
 }
 .alf-bg-soft {
@@ -266,7 +271,7 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   background:
     repeating-linear-gradient(90deg, rgba(11,77,162,0.04) 0 1px, transparent 1px 96px),
     linear-gradient(rgba(252,249,242,0.78), rgba(252,249,242,0.84)),
-    url('../assets/generated/bg-carta-soft.webp') center / cover no-repeat,
+    var(--bg-src, url('../assets/generated/bg-carta-soft.webp')) center / cover no-repeat,
     var(--surface-secondary);
 }
 /* Navy backdrop for hero/quote slides (bg inverse). */
@@ -275,10 +280,31 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   inset: 0;
   background:
     repeating-linear-gradient(90deg, rgba(127,168,230,0.06) 0 1px, transparent 1px 96px),
-    radial-gradient(120% 80% at 50% -10%, rgba(46,111,214,0.18), transparent 60%),
-    linear-gradient(rgba(10,26,51,0.52), rgba(10,26,51,0.66)),
-    url('../assets/generated/bg-navy.webp') center / cover no-repeat,
+    radial-gradient(120% 95% at 50% 46%, rgba(8,20,42,0.42), transparent 62%),
+    linear-gradient(rgba(10,26,51,0.60), rgba(10,26,51,0.74)),
+    var(--bg-src, url('../assets/generated/bg-navy.webp')) center / cover no-repeat,
     var(--surface-inverse);
+}
+
+/* ── Living backdrops ────────────────────────────────────────────────
+   A very slow, low-amplitude drift gives each slide quiet life without
+   pulling focus from the copy. Transform-only (composited), over-scaled so
+   the motion never reveals a slide edge (the [data-slide] wrapper clips).
+   Three staggered variants so adjacent slides don't move in lockstep.
+   Fully disabled under reduced-motion. */
+.alf-bg, .alf-bg-soft, .alf-bg-navy {
+  transform-origin: 50% 50%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.alf-bg      { animation: alf-drift-a 42s ease-in-out infinite alternate; }
+.alf-bg-soft { animation: alf-drift-b 50s ease-in-out infinite alternate; }
+.alf-bg-navy { animation: alf-drift-c 46s ease-in-out infinite alternate; }
+@keyframes alf-drift-a { from { transform: scale(1.04) translate3d(-0.7%, -0.5%, 0); } to { transform: scale(1.08) translate3d(0.8%, 0.6%, 0); } }
+@keyframes alf-drift-b { from { transform: scale(1.06) translate3d(0.7%, 0.4%, 0); } to { transform: scale(1.03) translate3d(-0.6%, -0.5%, 0); } }
+@keyframes alf-drift-c { from { transform: scale(1.05) translate3d(-0.6%, 0.5%, 0); } to { transform: scale(1.09) translate3d(0.7%, -0.4%, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .alf-bg, .alf-bg-soft, .alf-bg-navy { animation: none; transform: scale(1.02); }
 }
 
 /* Card — the default content container on light slides. */
@@ -494,6 +520,67 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 .cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--color-carta-tenue); }
 .cs-slide[data-cs-tone="dark"] .slide-eyebrow { color: var(--color-azzurro-chiaro); }
 .cs-slide[data-cs-tone="dark"] .cs-caption { color: var(--color-carta-tenue); }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   STORIA — persona (Giulia) : a portrait stat + a governed RT-CDP profile with
+   an AJO journey timeline, told as a real UI card (NOT an image → no AI faces,
+   no slop, and it anchors the story to the product). The profile card reuses the
+   deck's `clienteling` reveal handler (a scan sweep populates the journey steps),
+   so the markup carries `data-clienteling` + `.scan-line` + `.reveal-attr`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Portrait stat card (slide-ritratto / slide-notte) */
+.alf-stat {
+  background: #FFFFFF; border: 1px solid var(--line-subtle); border-radius: 12px;
+  padding: 1.5rem 1.6rem; box-shadow: 0 12px 34px -18px rgba(20, 33, 58, 0.38);
+}
+.alf-stat-num {
+  font-family: var(--font-display); font-weight: 700; line-height: 1;
+  font-size: clamp(2.6rem, 4.6vw, 4rem); color: var(--color-blu);
+  letter-spacing: -0.02em; font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.alf-stat-label { color: var(--color-ardesia-700); font-size: 1rem; line-height: 1.5; margin-top: 0.55rem; max-width: none; }
+.alf-stat-src { color: var(--color-ardesia-500); font-size: 0.78rem; letter-spacing: 0.02em; margin-top: 0.7rem; }
+
+/* Governed profile + journey card (slide-evolve) */
+.alf-profile {
+  background: #FFFFFF; border: 1px solid var(--line-subtle); border-radius: 14px;
+  padding: 1.35rem 1.45rem 1.5rem; position: relative; overflow: hidden;
+  box-shadow: 0 16px 46px -22px rgba(20, 33, 58, 0.42);
+}
+.alf-profile-head {
+  display: flex; align-items: center; gap: 0.9rem;
+  padding-bottom: 1rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--line-subtle);
+}
+.alf-avatar {
+  width: 3rem; height: 3rem; border-radius: 50%; flex-shrink: 0;
+  background: var(--color-blu); color: #FFFFFF;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.alf-profile-name { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; color: var(--color-inchiostro); line-height: 1.2; }
+.alf-profile-meta { color: var(--color-ardesia-500); font-size: 0.86rem; margin-top: 0.15rem; max-width: none; }
+.alf-profile-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.55rem; }
+
+.alf-journey { display: flex; flex-direction: column; gap: 0.85rem; }
+.alf-jstep { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.85rem; align-items: center; }
+.alf-jdot {
+  width: 0.85rem; height: 0.85rem; border-radius: 50%; flex-shrink: 0;
+  background: var(--color-azzurro); box-shadow: 0 0 0 4px rgba(46, 111, 214, 0.15);
+}
+.alf-jbody { min-width: 0; }
+.alf-jtitle { font-weight: 600; font-size: 1rem; color: var(--color-inchiostro); line-height: 1.25; max-width: none; }
+.alf-jsub { color: var(--color-ardesia-500); font-size: 0.84rem; margin-top: 0.12rem; max-width: none; }
+.alf-jstate {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 0.2rem 0.55rem; border-radius: 5px; white-space: nowrap;
+  background: rgba(11, 77, 162, 0.12); color: var(--color-blu-scuro);
+}
+/* Scan sweep used by the clienteling reveal (styled to the Alfabeti blu). */
+.alf-profile .scan-line {
+  position: absolute; left: 0; right: 0; top: 0; height: 42%; pointer-events: none;
+  background: linear-gradient(rgba(46, 111, 214, 0) 0%, rgba(46, 111, 214, 0.10) 68%, rgba(46, 111, 214, 0.26) 100%);
+}
 
 /* Deck chrome contrast (WCAG AA) — Alfabeti runs on a LIGHT surface, so scope a
    near-opaque white button with a deep-navy icon + blue border so

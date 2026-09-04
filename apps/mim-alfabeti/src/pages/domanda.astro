@@ -5,6 +5,9 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
+import bgCarta from '../assets/generated/bg/carta-2.webp';
+import bgSoft from '../assets/generated/bg/soft-2.webp';
+import bgNavy from '../assets/generated/bg/navy-2.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -12,8 +15,8 @@ const currentPath = Astro.url.pathname;
 const processes = [
   {
     label: { en: 'Tenure & hiring', it: 'Immissioni in ruolo' },
-    en: 'Every summer, appointments move tens of thousands of teachers. The news arrives late, through many channels, and rarely reaches everyone at once.',
-    it: 'Ogni estate le immissioni muovono decine di migliaia di docenti. La notizia arriva tardi, su molti canali, e quasi mai a tutti nello stesso momento.',
+    en: 'Every summer, appointments move tens of thousands of teachers — 41,901 in 2025/26. The news arrives late, through many channels, rarely reaching everyone at once.',
+    it: 'Ogni estate le immissioni muovono decine di migliaia di docenti — 41.901 nel 2025/26. La notizia arriva tardi, su molti canali, quasi mai a tutti insieme.',
   },
   {
     label: { en: 'Mobility & transfers', it: 'Mobilità e cambio sede' },
@@ -41,7 +44,7 @@ const questions = [
   <DeckContainer nextHref={href(base, '/voce')} prevHref={href(base, '/')}>
 
     <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="alf-bg"></div>
+      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
       <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
         <T as="p" en="The question" it="La domanda" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
         <T
@@ -64,7 +67,7 @@ const questions = [
     </Slide>
 
     <Slide id="slide-processes" bg="secondary" align="left">
-      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
         <T as="p" en="Three processes, one problem" it="Tre processi, un problema" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
@@ -75,7 +78,7 @@ const questions = [
           style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="alf-rows" data-reveal data-reveal-delay="0.16">
+        <div class="alf-rows" data-stagger="0.1">
           {processes.map((p) => (
             <div class="alf-row">
               <T as="p" en={p.label.en} it={p.label.it} class="alf-row-label" />
@@ -83,14 +86,20 @@ const questions = [
             </div>
           ))}
         </div>
+        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.26">
+          <T
+            en="Sources · MIM: 41,901 tenure appointments 2025/26 (76.8% of available posts) · the GPS application caps at 150 preferences · outcomes are published in the provincial-office bulletins, not where teachers applied."
+            it="Fonti · MIM: 41.901 immissioni in ruolo 2025/26 (76,8% dei posti disponibili) · la domanda GPS arriva a 150 preferenze · gli esiti escono nei bollettini degli Uffici provinciali, non dove si è fatta domanda."
+          />
+        </p>
       </div>
     </Slide>
 
     <Slide id="slide-questions" bg="inverse" align="left">
-      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
       <div class="w-full max-w-5xl mx-auto">
         <T as="p" en="Three questions" it="Tre domande" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
-        <ol class="flex flex-col gap-5" data-reveal data-reveal-delay="0.1">
+        <ol class="flex flex-col gap-5" data-stagger="0.12">
           {questions.map((q, i) => (
             <li class="flex gap-4 items-start">
               <span class="alf-mark" style="background:var(--color-azzurro);flex-shrink:0;">{i + 1}</span>
