@@ -58,6 +58,6 @@ export const assets: AssetSlot[] = [
   paper('soft-3', 'the soft curved edge of a single ivory sheet casting a gentle shadow', 143),
   paper('soft-4', 'layered translucent ivory vellum sheets, soft light, airy and quiet', 144),
   paper('soft-5', 'a soft-focus surface of warm ivory paper, blurred, calm and minimal', 145),
-  paper('soft-6', 'a gently fanned edge of warm ivory pages, shallow depth of field, soft warm light', 146),
+  paper('soft-6', 'a calm minimal wash of warm ivory tones with a soft diagonal shadow gradient, abstract and quiet', 246),
   paper('soft-7', 'two ivory cards overlapping on an ivory surface with a soft shadow', 147),
 ];
