@@ -21,7 +21,7 @@ import * as path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import {
-  fireflyCredentialsFromEnv,
+  fireflyVideoCredentialsFromEnv,
   generateVideo,
   getAccessToken,
 } from './lib/firefly';
@@ -35,7 +35,7 @@ const manifestPath = path.resolve(cwd, arg('manifest', 'video.manifest.ts'));
 const outDir = path.resolve(cwd, arg('out', 'public/media'));
 
 try { process.loadEnvFile(path.join(cwd, '.env')); } catch { /* rely on shell */ }
-const CREDS = fireflyCredentialsFromEnv();
+const CREDS = fireflyVideoCredentialsFromEnv();
 
 const c = {
   dim: (s: string) => `\x1b[2m${s}\x1b[0m`,
@@ -94,7 +94,7 @@ async function main() {
   if (!Array.isArray(videos)) throw new Error(`Manifest must export a "videos" array: ${manifestPath}`);
 
   if (!CREDS) {
-    console.log(c.warn(`\n  Missing FIREFLY_CLIENT_ID / FIREFLY_CLIENT_SECRET.`));
+    console.log(c.warn(`\n  Missing FIREFLY_VIDEO_AUDIO_CLIENT_ID / _SECRET (or FIREFLY_CLIENT_ID / _SECRET).`));
     console.log(`  ${videos.length} video slot(s) need them. Add to ${c.bold(path.join(cwd, '.env'))} and re-run.`);
     console.log(c.dim(`  Build-time only — the keys never ship to the site or CI.\n`));
     process.exit(1);

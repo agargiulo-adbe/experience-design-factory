@@ -54,12 +54,23 @@ export interface FireflyResult {
   model?: string;
 }
 
-/** Read Firefly credentials from the environment, or throw a clear error. */
+/** Read Firefly (image) credentials from the environment. */
 export function fireflyCredentialsFromEnv(): FireflyCredentials | null {
   const clientId = process.env.FIREFLY_CLIENT_ID;
   const clientSecret = process.env.FIREFLY_CLIENT_SECRET;
   if (!clientId || !clientSecret) return null;
   return { clientId, clientSecret };
+}
+
+/**
+ * Read the Audio & Video API credentials (a distinct Firefly Services project).
+ * Prefers the video-specific pair, falling back to the generic Firefly creds.
+ */
+export function fireflyVideoCredentialsFromEnv(): FireflyCredentials | null {
+  const clientId = process.env.FIREFLY_VIDEO_AUDIO_CLIENT_ID;
+  const clientSecret = process.env.FIREFLY_VIDEO_AUDIO_CLIENT_SECRET;
+  if (clientId && clientSecret) return { clientId, clientSecret };
+  return fireflyCredentialsFromEnv();
 }
 
 /** Exchange client credentials for a short-lived IMS access token. */
@@ -169,7 +180,9 @@ export async function generateImage(
 }
 
 // ── video (Firefly Video Model, async) ──────────────────────────────
-const VIDEO_PATH = process.env.FIREFLY_VIDEO_PATH || '/v3/videos/generate-async';
+// Discovered on this tenant: the reachable route is `/v3/videos/generate`
+// (the `-async` variant 404s). Override with FIREFLY_VIDEO_PATH if yours differs.
+const VIDEO_PATH = process.env.FIREFLY_VIDEO_PATH || '/v3/videos/generate';
 
 export interface FireflyVideoOptions {
   prompt: string;
