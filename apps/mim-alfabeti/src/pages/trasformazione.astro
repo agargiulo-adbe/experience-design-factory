@@ -13,6 +13,12 @@ const currentPath = Astro.url.pathname;
 
 const frames = [kf1, kf2, kf3, kf4];
 
+// Real Firefly-generated flythrough (image-to-video from the hero frame), hosted
+// on the GitHub Release "media" tag to keep the repo lean. Scrubbed on scroll;
+// the four keyframes above remain the graceful fallback + reduced-motion source.
+const videoSrc = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/alfabeto-competenza.mp4';
+const videoPoster = `${base}media/alfabeto-competenza.poster.jpg`;
+
 // The four milestones of the transformation, revealed as the sequence scrubs.
 const stages = [
   {
@@ -63,6 +69,16 @@ const stages = [
     <!-- Scroll-scrub stage: crossfades four Firefly-generated keyframes as you scroll. -->
     <section class="trasf-wrap" data-scrub-wrap>
       <div class="trasf-stage" data-scrub-stage>
+        <video
+          class="trasf-video"
+          data-scrub-video
+          muted
+          playsinline
+          preload="auto"
+          poster={videoPoster}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
         <div class="trasf-frames">
           {frames.map((f, i) => (
             <div class="trasf-frame" data-frame={i}>
@@ -126,8 +142,8 @@ const stages = [
       </a>
       <T
         as="p" class="trasf-credit"
-        en="Imagery generated with Adobe Firefly — signed with Content Credentials (C2PA)."
-        it="Immagini generate con Adobe Firefly — firmate con Content Credentials (C2PA)."
+        en="Video and imagery generated with Adobe Firefly — signed with Content Credentials (C2PA)."
+        it="Video e immagini generati con Adobe Firefly — firmati con Content Credentials (C2PA)."
       />
     </section>
   </main>
@@ -179,7 +195,16 @@ const stages = [
     position: sticky; top: 0; height: 100vh; overflow: hidden;
     background: var(--color-blu-notte);
   }
-  .trasf-frames { position: absolute; inset: 0; }
+  /* Real Firefly video (scrubbed). Hidden until it can play, then it fades in
+     and the keyframe crossfade is switched off. */
+  .trasf-video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0; transition: opacity 0.6s ease;
+  }
+  .trasf-stage.video-ready .trasf-video { opacity: 1; }
+  .trasf-stage.video-ready .trasf-frames { opacity: 0; }
+
+  .trasf-frames { position: absolute; inset: 0; transition: opacity 0.6s ease; }
   /* Outer layer: scroll-driven opacity + push-in scale (set from JS). */
   .trasf-frame {
     position: absolute; inset: 0; overflow: hidden;
@@ -297,6 +322,7 @@ const stages = [
     const frames = Array.from(stage.querySelectorAll<HTMLElement>('.trasf-frame'));
     const captions = Array.from(stage.querySelectorAll<HTMLElement>('.trasf-caption'));
     const fill = stage.querySelector<HTMLElement>('[data-scrub-fill]');
+    const video = stage.querySelector<HTMLVideoElement>('[data-scrub-video]');
     const n = frames.length;
     if (!n) return;
 
@@ -309,6 +335,24 @@ const stages = [
       return;
     }
 
+    // Prefer the real Firefly video when it can play; the keyframe crossfade is
+    // the fallback if it errors (offline / release unreachable).
+    let videoReady = false;
+    if (video) {
+      const onReady = () => {
+        if (videoReady) return;
+        videoReady = true;
+        stage!.classList.add('video-ready');
+        // Prime iOS/Safari so seeked frames render on a paused video.
+        video.play().then(() => video.pause()).catch(() => {});
+        render();
+      };
+      video.addEventListener('loadeddata', onReady);
+      video.addEventListener('canplay', onReady);
+      video.addEventListener('error', () => { videoReady = false; stage!.classList.remove('video-ready'); });
+      if (video.readyState >= 2) onReady();
+    }
+
     let ticking = false;
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
@@ -318,8 +362,14 @@ const stages = [
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
 
+      // Real video: scrub currentTime by scroll progress.
+      if (videoReady && video && video.duration) {
+        video.currentTime = clamp(p * video.duration, 0, video.duration - 0.05);
+      }
+
       // segment in [0, n-1]; crossfade neighbours with a tent function and add a
-      // push-in: the fading frame scales up slightly (camera dolly feel).
+      // push-in: the fading frame scales up slightly (camera dolly feel). This
+      // runs as the fallback; when the video is ready the frames are hidden by CSS.
       const seg = p * (n - 1);
       for (let i = 0; i < n; i++) {
         const o = clamp(1 - Math.abs(seg - i), 0, 1);
