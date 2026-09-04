@@ -65,18 +65,21 @@ const stages = [
       <div class="trasf-stage" data-scrub-stage>
         <div class="trasf-frames">
           {frames.map((f, i) => (
-            <img
-              class="trasf-frame"
-              data-frame={i}
-              src={f.src}
-              width={f.width}
-              height={f.height}
-              alt=""
-              loading={i === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
+            <div class="trasf-frame" data-frame={i}>
+              <img
+                class="trasf-frame-img"
+                src={f.src}
+                width={f.width}
+                height={f.height}
+                alt=""
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            </div>
           ))}
         </div>
+        <div class="trasf-grain" aria-hidden="true"></div>
+        <div class="trasf-vignette" aria-hidden="true"></div>
         <div class="trasf-scrim" aria-hidden="true"></div>
 
         <div class="trasf-captions">
@@ -177,11 +180,42 @@ const stages = [
     background: var(--color-blu-notte);
   }
   .trasf-frames { position: absolute; inset: 0; }
+  /* Outer layer: scroll-driven opacity + push-in scale (set from JS). */
   .trasf-frame {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    opacity: 0; will-change: opacity;
+    position: absolute; inset: 0; overflow: hidden;
+    opacity: 0; will-change: opacity, transform;
   }
   .trasf-frame[data-frame="0"] { opacity: 1; }
+  /* Inner layer: continuous "Ken Burns" drift so the scene is alive even at rest. */
+  .trasf-frame-img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    will-change: transform; transform-origin: center;
+    animation: kb-a 30s ease-in-out infinite alternate;
+  }
+  .trasf-frame[data-frame="1"] .trasf-frame-img { animation-name: kb-b; animation-duration: 34s; }
+  .trasf-frame[data-frame="2"] .trasf-frame-img { animation-name: kb-c; animation-duration: 32s; }
+  .trasf-frame[data-frame="3"] .trasf-frame-img { animation-name: kb-d; animation-duration: 36s; }
+
+  @keyframes kb-a { from { transform: scale(1.08) translate3d(-1.6%, -1.2%, 0); } to { transform: scale(1.18) translate3d(1.6%, 1.2%, 0); } }
+  @keyframes kb-b { from { transform: scale(1.16) translate3d(1.8%, 1%, 0); } to { transform: scale(1.08) translate3d(-1.4%, -1.4%, 0); } }
+  @keyframes kb-c { from { transform: scale(1.10) translate3d(-1.2%, 1.4%, 0); } to { transform: scale(1.2) translate3d(1.2%, -1.2%, 0); } }
+  @keyframes kb-d { from { transform: scale(1.2) translate3d(1.4%, -1%, 0); } to { transform: scale(1.1) translate3d(-1.6%, 1%, 0); } }
+
+  /* Cinematic overlays */
+  .trasf-vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 100% at 50% 46%, transparent 52%, rgba(4,10,22,0.6) 100%);
+  }
+  .trasf-grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    animation: grain-shift 5s steps(4) infinite;
+  }
+  @keyframes grain-shift {
+    0% { background-position: 0 0; } 25% { background-position: -60px 40px; }
+    50% { background-position: 40px -60px; } 75% { background-position: -40px -40px; } 100% { background-position: 0 0; }
+  }
   /* Scrim: keeps captions legible over the imagery (explicit rgba for real contrast). */
   .trasf-scrim {
     position: absolute; inset: 0;
@@ -246,6 +280,11 @@ const stages = [
     .trasf-caption { max-width: 88vw; bottom: 6rem; }
     .trasf-static-row { grid-template-columns: 1fr; }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trasf-frame-img { animation: none !important; transform: scale(1.04) !important; }
+    .trasf-grain { animation: none !important; display: none; }
+  }
 </style>
 
 <script>
@@ -279,17 +318,20 @@ const stages = [
       const total = rect.height - window.innerHeight;
       const p = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
 
-      // segment in [0, n-1]; crossfade neighbours with a tent function.
+      // segment in [0, n-1]; crossfade neighbours with a tent function and add a
+      // push-in: the fading frame scales up slightly (camera dolly feel).
       const seg = p * (n - 1);
       for (let i = 0; i < n; i++) {
-        frames[i].style.opacity = String(clamp(1 - Math.abs(seg - i), 0, 1));
+        const o = clamp(1 - Math.abs(seg - i), 0, 1);
+        frames[i].style.opacity = String(o);
+        frames[i].style.transform = `scale(${1 + (1 - o) * 0.06})`;
       }
-      // Captions: visible near their stage, with a small plateau.
+      // Captions: visible near their stage (plateau), with a parallax rise.
       for (let i = 0; i < captions.length; i++) {
         const d = Math.abs(seg - i);
         const o = clamp(1 - (d - 0.28) / 0.42, 0, 1); // plateau ±0.28, fade over 0.42
         captions[i].style.opacity = String(o);
-        captions[i].style.transform = `translateY(${(1 - o) * 14}px)`;
+        captions[i].style.transform = `translateY(${(1 - o) * 22}px)`;
       }
       if (fill) fill.style.transform = `scaleX(${p})`;
     }
