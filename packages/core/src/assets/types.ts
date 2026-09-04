@@ -70,20 +70,23 @@ export function pexelsOrientation(aspect: Aspect): 'landscape' | 'portrait' | 's
 
 /**
  * A Firefly Images v3 `size` in the right orientation for an aspect. Firefly
- * accepts a limited set of sizes, so we request a large supported one and let
- * the pipeline crop to the exact `aspect` at 2400px afterwards. Override per
- * slot via `AssetSlot.fireflySize` if an account's model rejects the default.
+ * accepts only a fixed set of sizes; we request the largest supported one in the
+ * right orientation and let the pipeline crop to the exact `aspect` at 2400px
+ * afterwards (so a slight ratio mismatch is fine — sharp covers it). Override per
+ * slot via `AssetSlot.fireflySize` if an account's model exposes different sizes.
+ *
+ * Supported (v3, observed): (2688,1536) (1344,756) (896,1152) (1344,768)
+ * (2688,1512) (2304,1792) (1152,896) (2048,2048) (1792,2304) (1024,1024).
  */
 export function fireflySizeFor(aspect: Aspect): { width: number; height: number } {
   switch (aspect) {
     case '1:1':
       return { width: 2048, height: 2048 };
     case '9:16':
-      return { width: 1152, height: 2048 };
     case '4:5':
-      return { width: 1632, height: 2048 };
+      return { width: 1792, height: 2304 }; // tallest supported portrait
     case '16:9':
     default:
-      return { width: 2048, height: 1152 };
+      return { width: 2688, height: 1536 }; // largest supported landscape
   }
 }

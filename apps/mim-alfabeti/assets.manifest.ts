@@ -43,17 +43,18 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Warm ivory paper field (#F6F1E7) with faint embossed Italian letterforms and delicate ink strokes, ' +
-      'layered archival paper textures with soft folds and gentle raking light, very subtle institutional blue ' +
-      'accents (#0B4DA2), minimal, airy and refined, abundant negative space, quiet and institutional, high ' +
-      'detail, no text, no legible writing',
+      'Warm ivory paper field (#F6F1E7) covered with faint embossed Italian letterforms of a printed alphabet and ' +
+      'delicate ink strokes, subtle archival document lines and typographic marginalia, gentle folds and soft ' +
+      'raking light, very subtle institutional blue accents (#0B4DA2), minimal, airy, sober and institutional, ' +
+      'abundant empty space in the centre, high detail, no legible words',
     negativePrompt:
+      'flowers, leaves, plants, foliage, vines, botanical, floral ornament, decorative scrollwork, ' +
       'people, faces, hands, brand logos, watermarks, legible words, dark background, red, orange, garish colors, ' +
       'busy clutter, low quality',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
-    seed: 1,
+    seed: 7,
     alt: '',
   },
   {
@@ -61,16 +62,18 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'photo',
     prompt:
-      'Soft luminous macro of layered paper and light, edges and folds of official documents abstracted into a ' +
-      'calm minimal field, warm ivory (#F6F1E7) with pale institutional blue light, gentle gradient, very quiet ' +
-      'and elegant, lots of empty space, shallow depth of field, no text, no legible writing, no logos',
+      'Stacked sheets of warm ivory archival paper seen at a soft angle, edges of documents and ledgers layered ' +
+      'in a calm minimal field, warm cream and ivory tones dominant (#F6F1E7) with only a faint hint of pale ' +
+      'institutional blue, quiet raking light, matte paper texture, elegant and sober, lots of empty space, ' +
+      'shallow depth of field, no legible writing',
     negativePrompt:
+      'blue wave, glossy plastic, 3d render wallpaper, water, liquid, saturated blue, teal, cold tones, ' +
       'people, faces, hands, brand logos, watermarks, legible words, dark background, red, orange, garish colors, ' +
       'busy clutter, low quality',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
-    seed: 1,
+    seed: 7,
     alt: '',
   },
 ];
