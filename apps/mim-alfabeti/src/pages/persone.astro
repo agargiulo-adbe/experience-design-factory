@@ -9,66 +9,118 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const programs = [
-  { n: '30M', en: 'Adobe Digital Academy — a stated target of 30M learners and educators by 2030 (AI literacy, content creation, digital marketing).', it: 'Adobe Digital Academy — target dichiarato di 30M tra learner ed educatori entro il 2030 (alfabetizzazione IA, creazione di contenuti, marketing digitale).' },
-  { n: '∞', en: 'Creative Campuses and Adobe Certified Professionals — university partnerships and a credential that travels with the person.', it: 'Creative Campuses e Adobe Certified Professionals — partnership con le università e una certificazione che resta alla persona.' },
+const metrics = [
+  {
+    label: { en: 'Reach', it: 'Recapito' },
+    en: 'Who was actually reached — by role, region and process — instead of "we sent it".',
+    it: 'Chi è stato davvero raggiunto — per ruolo, regione e processo — invece di «l’abbiamo mandato».',
+  },
+  {
+    label: { en: 'Comprehension', it: 'Comprensione' },
+    en: 'Opened, read, clicked, completed: whether the message was understood, not just delivered.',
+    it: 'Aperto, letto, cliccato, completato: se il messaggio è stato capito, non solo recapitato.',
+  },
+  {
+    label: { en: 'Action', it: 'Azione' },
+    en: 'Deadline met, request submitted, step done — the outcome the communication existed to produce.',
+    it: 'Scadenza rispettata, domanda inviata, adempimento fatto — l’esito per cui la comunicazione esisteva.',
+  },
+  {
+    label: { en: 'Help-desk load', it: 'Carico help-desk' },
+    en: 'The repeated questions a clear, timely journey removes from school offices and call centres.',
+    it: 'Le domande ripetute che un journey chiaro e tempestivo toglie a segreterie e call center.',
+  },
+  {
+    label: { en: 'Territorial equity', it: 'Equità territoriale' },
+    en: 'Whether access to information is even across regions — a gap you can finally see, and close.',
+    it: 'Se l’accesso all’informazione è omogeneo tra territori — un divario che finalmente si vede, e si chiude.',
+  },
+];
+
+const segments = [
+  { label: { en: 'Teachers', it: 'Docenti' }, en: 'Tenure, mobility, substitutes, training — the highest-volume, highest-stakes audience.', it: 'Immissioni, mobilità, supplenze, formazione — l’audience più numerosa e ad alta posta.' },
+  { label: { en: 'Principals', it: 'Dirigenti' }, en: 'Leadership communications and duties — the channel competitors reached first.', it: 'Comunicazioni di leadership e adempimenti — il canale che i concorrenti hanno raggiunto per primi.' },
+  { label: { en: 'ATA staff', it: 'Personale ATA' }, en: 'Administrative and technical staff — often the least served, most in need of clarity.', it: 'Personale amministrativo e tecnico — spesso il meno servito, il più bisognoso di chiarezza.' },
 ];
 ---
-<BaseLayout title="Le persone">
+<BaseLayout title="La misura">
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, '/rotta')} prevHref={href(base, '/accesso')}>
 
-    <Slide id="slide-cover" bg="secondary" align="center">
-      <div slot="backdrop" class="alf-bg-soft"></div>
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="alf-bg-navy"></div>
       <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="The people" it="Le persone" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+        <T as="p" en="Measurement" it="La misura" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
         <T
           as="h1"
-          en="People before tools"
-          it="Le persone prima degli strumenti"
-          class="slide-title text-center text-[var(--ink-primary)] mb-6"
-          style="font-size: clamp(2.2rem, 4vw, 3.6rem);"
+          en="What the staff channel has never measured"
+          it="Ciò che il canale del personale non ha mai misurato"
+          class="slide-title text-center text-[var(--color-carta)] mb-6"
+          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
           data-reveal data-reveal-delay="0.08"
         />
         <T
           as="p"
-          en="A licence changes nothing on its own. What changes teaching is adoption: an enablement path, an operating model, a credential that gives competence a shape."
-          it="Una licenza da sola non cambia nulla. Ciò che cambia la didattica è l'adozione: un percorso di enablement, un operating model, una certificazione che dà forma alla competenza."
-          class="text-center text-[var(--ink-secondary)] mx-auto max-w-3xl"
-          style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.55;"
+          en="Turn institutional communication from a black box into evidence — the language a data-and-statistics office can act on."
+          it="Trasformare la comunicazione istituzionale da scatola nera in evidenza — la lingua su cui un ufficio dati e statistica può agire."
+          class="text-center text-[var(--color-carta-tenue)] mx-auto max-w-3xl"
+          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
           data-reveal data-reveal-delay="0.16"
         />
       </div>
     </Slide>
 
-    <Slide id="slide-programs" bg="primary" align="left">
+    <Slide id="slide-metrics" bg="primary" align="left">
       <div slot="backdrop" class="alf-bg"></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="Programs that exist" it="Programmi che esistono" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T as="p" en="With Customer Journey Analytics" it="Con Customer Journey Analytics" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
-          en="Deployable skilling, to be localized for Italy"
-          it="Formazione schierabile, da localizzare per l'Italia"
+          en="Five measures the Ministry gains on day one"
+          it="Cinque misure che il Ministero ottiene dal primo giorno"
           class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
-          {programs.map((p) => (
+        <div class="alf-rows" data-reveal data-reveal-delay="0.16">
+          {metrics.map((m) => (
+            <div class="alf-row">
+              <T as="p" en={m.label.en} it={m.label.it} class="alf-row-label" />
+              <T as="p" en={m.en} it={m.it} class="alf-row-body" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-segments" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="One data model, three audiences" it="Un modello dati, tre audience" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="The people behind the profiles"
+          it="Le persone dietro i profili"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {segments.map((s) => (
             <article class="alf-card">
-              <p class="data-number mb-2" style="font-size:clamp(2.2rem,4vw,3.4rem);">{p.n}</p>
-              <T as="p" en={p.en} it={p.it} class="alf-card-body" />
+              <T as="h3" en={s.label.en} it={s.label.it} class="alf-card-title" />
+              <T as="p" en={s.en} it={s.it} class="alf-card-body" />
             </article>
           ))}
         </div>
         <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.24">
           <T
             as="p"
-            en="The step with the Ministry is to bring these to Italy: Italian-language paths and credentials mapped to the EU frameworks the schools already report on."
-            it="Il passo con il Ministero è portarli in Italia: percorsi in italiano e certificazioni mappate sui quadri UE che le scuole già rendicontano."
+            en="Three distinct audiences on one governed, role-based profile in Real-Time CDP — measured with the same yardstick, served each in their own language."
+            it="Tre audience distinte su un unico profilo governato e basato sul ruolo in Real-Time CDP — misurate con lo stesso metro, servite ciascuna nella propria lingua."
             class="alf-quote-text"
             style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
           />

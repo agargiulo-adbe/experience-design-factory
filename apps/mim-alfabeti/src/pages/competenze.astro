@@ -9,14 +9,41 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const safe = [
-  { en: 'Prompt guardrails and filters, built for the classroom.', it: 'Guardrail e filtri sui prompt, pensati per la classe.' },
-  { en: '“Your data is your data”: no training on student or teacher work.', it: '«Your data is your data»: nessun training sui lavori di studenti o docenti.' },
-  { en: 'Admin on/off control over generative AI, per school.', it: "Controllo admin on/off dell'IA generativa, per ogni scuola." },
-  { en: 'By design, it does not write the essay — writing is preserved.', it: 'Per scelta, non scrive il tema — la scrittura è preservata.' },
+const journeys = [
+  {
+    label: { en: 'Tenure appointments', it: 'Immissioni in ruolo' },
+    en: 'Trigger on the updated ranking; personalize by role and region; confirm the assignment — and know who was actually reached.',
+    it: 'Si attiva sulla graduatoria aggiornata; personalizza per ruolo e regione; conferma la sede — e sa chi è stato davvero raggiunto.',
+  },
+  {
+    label: { en: 'Mobility & transfers', it: 'Mobilità e cambio sede' },
+    en: 'Window opening, deadline reminders, outcome: a time-boxed journey where a missed message is a missed year.',
+    it: 'Apertura finestra, promemoria scadenze, esito: un journey a tempo dove un messaggio perso è un anno perso.',
+  },
+  {
+    label: { en: 'Substitute assignments', it: 'Supplenze' },
+    en: 'The highest-frequency, most error-prone communication the system runs — the one that gains most from automation and measurement.',
+    it: 'La comunicazione più frequente e più esposta a errori di tutto il sistema — quella che guadagna di più da automazione e misura.',
+  },
+  {
+    label: { en: 'GPS / GaE rankings', it: 'Graduatorie GPS/GaE' },
+    en: 'Updates, corrections, standing changes — reaching the right person at the moment their position moves.',
+    it: 'Aggiornamenti, rettifiche, variazioni di posizione — raggiungere la persona giusta nel momento in cui la sua posizione cambia.',
+  },
+  {
+    label: { en: 'Training & duties', it: 'Formazione e adempimenti' },
+    en: 'Deadlines, entitlements, mandatory steps — nudged in time, tracked to completion.',
+    it: 'Scadenze, titoli, adempimenti obbligatori — sollecitati per tempo, tracciati fino al completamento.',
+  },
+];
+
+const steps = [
+  { n: '1', label: { en: 'Trigger', it: 'Innesco' }, en: 'The ranking is published or updated.', it: 'La graduatoria è pubblicata o aggiornata.' },
+  { n: '2', label: { en: 'Journey', it: 'Journey' }, en: 'A personalized notice, a deadline reminder, the assignment confirmation — by role and region.', it: 'Un avviso personalizzato, un promemoria scadenza, la conferma della sede — per ruolo e regione.' },
+  { n: '3', label: { en: 'Outcome', it: 'Esito' }, en: 'Delivered, opened, understood, acted on — measured, not assumed.', it: 'Recapitato, aperto, capito, seguito da un’azione — misurato, non supposto.' },
 ];
 ---
-<BaseLayout title="Competenze e IA">
+<BaseLayout title="I processi">
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
@@ -26,19 +53,19 @@ const safe = [
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="alf-bg"></div>
       <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="Ideas 2 · Skills and safe AI" it="Idee 2 · Le competenze e l'IA" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+        <T as="p" en="The processes" it="I processi" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
         <T
           as="h1"
-          en="Classroom-safe AI, competences that count"
-          it="IA sicura in classe, competenze che contano"
+          en="Every process is a journey"
+          it="Ogni processo è un journey"
           class="slide-title text-center text-[var(--ink-primary)] mb-6"
           style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
           data-reveal data-reveal-delay="0.08"
         />
         <T
           as="p"
-          en="The tool that passes the DM 166/2025 checklist — and the credential that turns training into reportable EU-framework progress."
-          it="Lo strumento che passa la checklist DM 166/2025 — e la certificazione che trasforma la formazione in progressione rendicontabile sui quadri UE."
+          en="The moments that decide a professional life — made personal, timely and measurable, one process at a time."
+          it="I momenti che decidono una vita professionale — resi personali, tempestivi e misurabili, un processo alla volta."
           class="text-center text-[var(--ink-secondary)] mx-auto max-w-3xl"
           style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
           data-reveal data-reveal-delay="0.16"
@@ -46,56 +73,59 @@ const safe = [
       </div>
     </Slide>
 
-    <Slide id="slide-safe" bg="secondary" align="left">
+    <Slide id="slide-journeys" bg="secondary" align="left">
       <div slot="backdrop" class="alf-bg-soft"></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="A1 · Safe by design" it="A1 · Sicura per costruzione" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T as="p" en="Five processes, one model" it="Cinque processi, un modello" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
-          en="Adobe Express for Education & Firefly pass the checklist"
-          it="Adobe Express for Education e Firefly passano la checklist"
+          en="The staff processes that most need a governed voice"
+          it="I processi del personale che più hanno bisogno di una voce governata"
           class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
-          {safe.map((s) => (
-            <article class="alf-panel">
-              <T as="p" en={s.en} it={s.it} class="alf-panel-body" style="margin-bottom:0;font-size:1.02rem;" />
-            </article>
-          ))}
-        </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
-          Fonte · <a href="https://news.adobe.com" target="_blank" rel="noopener noreferrer">news.adobe.com</a> (Express for Education AI, 2024, policy valida 2026) · <a href="https://unica.istruzione.gov.it" target="_blank" rel="noopener noreferrer">checklist UNICA</a> (mappatura su Priorità 8)
-        </p>
-      </div>
-    </Slide>
-
-    <Slide id="slide-skills" bg="primary" align="left">
-      <div slot="backdrop" class="alf-bg"></div>
-      <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="A2 · Certified competences" it="A2 · Competenze certificate" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
-        <T
-          as="h2"
-          en="Mapped onto the EU frameworks the Ministry must report"
-          it="Mappate sui quadri UE che il Ministero deve rendicontare"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
         <div class="alf-rows" data-reveal data-reveal-delay="0.16">
-          <div class="alf-row">
-            <T as="p" en="Teachers → DigCompEdu" it="Docenti → DigCompEdu" class="alf-row-label" />
-            <T as="p" en="Adobe Certified Professional and professional development, mapped to levels A1 Novice → C2 Pioneer via ScuolaFutura." it="Adobe Certified Professional e formazione professionale, mappati sui livelli A1 Novizio → C2 Pioniere via ScuolaFutura." class="alf-row-body" />
-          </div>
-          <div class="alf-row">
-            <T as="p" en="Students → DigComp 3.0" it="Studenti → DigComp 3.0" class="alf-row-label" />
-            <T as="p" en="The Nov 2025 JRC version adds AI competences — the exact ground the €100M AI decree and Investment 2.1 fund." it="La versione JRC di nov 2025 aggiunge le competenze sull'IA — esattamente il terreno che finanziano il decreto IA €100M e l'Investimento 2.1." class="alf-row-body" />
-          </div>
+          {journeys.map((j) => (
+            <div class="alf-row">
+              <T as="p" en={j.label.en} it={j.label.it} class="alf-row-label" />
+              <T as="p" en={j.en} it={j.it} class="alf-row-body" />
+            </div>
+          ))}
         </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
-          Fonti · <a href="https://scuolafutura.pubblica.istruzione.it" target="_blank" rel="noopener noreferrer">scuolafutura.pubblica.istruzione.it</a> · <a href="https://joint-research-centre.ec.europa.eu" target="_blank" rel="noopener noreferrer">JRC DigComp 3.0</a> (nov 2025)
-        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-example" bg="inverse" align="left">
+      <div slot="backdrop" class="alf-bg-navy"></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="A worked journey — tenure appointment" it="Un journey concreto — immissione in ruolo" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="From a ranking update to a confirmed seat"
+          it="Dalla graduatoria aggiornata alla sede confermata"
+          class="text-[var(--color-carta)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-reveal data-reveal-delay="0.16">
+          {steps.map((s) => (
+            <article class="alf-card">
+              <span class="alf-mark">{s.n}</span>
+              <T as="h3" en={s.label.en} it={s.label.it} class="alf-card-title" />
+              <T as="p" en={s.en} it={s.it} class="alf-card-body" />
+            </article>
+          ))}
+        </div>
+        <div class="alf-quote alf-quote-navy mt-6" data-reveal data-reveal-delay="0.24">
+          <T
+            as="p"
+            en="Same engine, every process. Build the journey once; reuse it across mobility, substitutes, rankings and training."
+            it="Stesso motore, ogni processo. Il journey si costruisce una volta; si riusa su mobilità, supplenze, graduatorie e formazione."
+            class="alf-quote-text"
+            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
+          />
+        </div>
       </div>
     </Slide>
 
