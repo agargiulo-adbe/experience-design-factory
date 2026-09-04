@@ -1,0 +1,315 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AlfabetiNavigation from '../components/AlfabetiNavigation.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import kf1 from '../assets/generated/keyframes/kf-transform-1.webp';
+import kf2 from '../assets/generated/keyframes/kf-transform-2.webp';
+import kf3 from '../assets/generated/keyframes/kf-transform-3.webp';
+import kf4 from '../assets/generated/keyframes/kf-transform-4.webp';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const frames = [kf1, kf2, kf3, kf4];
+
+// The four milestones of the transformation, revealed as the sequence scrubs.
+const stages = [
+  {
+    num: '01',
+    kickerEn: 'Fragmentation', kickerIt: 'Frammentazione',
+    en: 'Today the Ministry reaches its own people in pieces — a different tool for every message.',
+    it: 'Oggi il Ministero raggiunge le proprie persone a pezzi: uno strumento diverso per ogni messaggio.',
+  },
+  {
+    num: '02',
+    kickerEn: 'A shared language', kickerIt: 'Un linguaggio comune',
+    en: 'Digital skills become a language everyone in the school shares.',
+    it: 'Le competenze digitali diventano un linguaggio che tutta la scuola condivide.',
+  },
+  {
+    num: '03',
+    kickerEn: 'Governed at the centre', kickerIt: 'Governo al centro',
+    en: 'One experience, orchestrated centrally on Experience Platform, Journey Optimizer and Customer Journey Analytics.',
+    it: 'Un’unica esperienza, orchestrata al centro su Experience Platform, Journey Optimizer e Customer Journey Analytics.',
+  },
+  {
+    num: '04',
+    kickerEn: 'Safe AI, in class', kickerIt: 'IA sicura, in classe',
+    en: 'And AI reaches the classroom the way a public institution needs it to: safely.',
+    it: 'E l’IA arriva in classe come serve a un’istituzione pubblica: in sicurezza.',
+  },
+];
+---
+<BaseLayout title="La trasformazione">
+  <AlfabetiNavigation currentPath={currentPath} base={base} />
+
+  <main class="trasf">
+    <!-- Intro -->
+    <section class="trasf-intro">
+      <T as="p" class="trasf-kicker" en="The transformation" it="La trasformazione" />
+      <T as="h1" class="trasf-h1" en="From the alphabet to competence" it="Dall’alfabeto alla competenza" />
+      <T
+        as="p" class="trasf-lead"
+        en="Scattered letters become a shared language, an orchestrated experience, and safe AI in the classroom. Scroll to see it take shape."
+        it="Lettere sparse diventano un linguaggio comune, un’esperienza orchestrata e un’IA sicura in classe. Scorri per vederla prendere forma."
+      />
+      <div class="trasf-scrollcue" aria-hidden="true">
+        <span class="trasf-scrollcue-line"></span>
+        <T as="span" en="Scroll" it="Scorri" />
+      </div>
+    </section>
+
+    <!-- Scroll-scrub stage: crossfades four Firefly-generated keyframes as you scroll. -->
+    <section class="trasf-wrap" data-scrub-wrap>
+      <div class="trasf-stage" data-scrub-stage>
+        <div class="trasf-frames">
+          {frames.map((f, i) => (
+            <img
+              class="trasf-frame"
+              data-frame={i}
+              src={f.src}
+              width={f.width}
+              height={f.height}
+              alt=""
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          ))}
+        </div>
+        <div class="trasf-scrim" aria-hidden="true"></div>
+
+        <div class="trasf-captions">
+          {stages.map((s, i) => (
+            <figure class="trasf-caption" data-caption={i}>
+              <figcaption>
+                <span class="trasf-caption-num">{s.num}</span>
+                <T as="span" class="trasf-caption-kicker" en={s.kickerEn} it={s.kickerIt} />
+                <T as="p" class="trasf-caption-body" en={s.en} it={s.it} />
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <div class="trasf-progress" aria-hidden="true">
+          <span class="trasf-progress-fill" data-scrub-fill></span>
+        </div>
+      </div>
+      <!-- Reduced-motion fallback: a static stacked list (no scrub). -->
+      <div class="trasf-static" data-scrub-static hidden>
+        {stages.map((s, i) => (
+          <div class="trasf-static-row">
+            <img src={frames[i].src} width={frames[i].width} height={frames[i].height} alt="" loading="lazy" />
+            <div>
+              <span class="trasf-caption-num">{s.num}</span>
+              <T as="span" class="trasf-caption-kicker" en={s.kickerEn} it={s.kickerIt} />
+              <T as="p" class="trasf-caption-body" en={s.en} it={s.it} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Outro -->
+    <section class="trasf-outro">
+      <T as="h2" class="trasf-h2" en="One alphabet, one institution." it="Un solo alfabeto, un’istituzione sola." />
+      <T
+        as="p" class="trasf-lead"
+        en="The same governed platform that speaks to the people who run the schools brings AI into the classroom safely."
+        it="La stessa piattaforma governata che parla alle persone che fanno funzionare le scuole porta l’IA in classe in sicurezza."
+      />
+      <a class="trasf-cta" href={href(base, '/')}>
+        <T en="Back to the experience" it="Torna all’esperienza" />
+      </a>
+      <T
+        as="p" class="trasf-credit"
+        en="Imagery generated with Adobe Firefly — signed with Content Credentials (C2PA)."
+        it="Immagini generate con Adobe Firefly — firmate con Content Credentials (C2PA)."
+      />
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .trasf { display: block; }
+
+  /* Intro / outro */
+  .trasf-intro, .trasf-outro {
+    min-height: 62vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: clamp(4rem, 10vh, 8rem) max(var(--slide-safe-inset, 60px), 6vw);
+    background: var(--surface-inverse);
+  }
+  .trasf-outro { min-height: 70vh; gap: 0.4rem; }
+  .trasf-kicker {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-azzurro-chiaro); margin-bottom: 1rem;
+  }
+  .trasf-h1 {
+    font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.05;
+    font-size: clamp(2.25rem, 4.5vw, 4rem); color: var(--color-carta); margin-bottom: 1.25rem;
+  }
+  .trasf-h2 {
+    font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    font-size: clamp(1.9rem, 3.4vw, 3rem); color: var(--color-carta); margin-bottom: 0.75rem;
+  }
+  .trasf-lead {
+    max-width: 46rem; color: var(--color-carta-tenue);
+    font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.6;
+  }
+  .trasf-scrollcue {
+    margin-top: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
+    color: var(--color-azzurro-chiaro); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .trasf-scrollcue-line {
+    width: 1px; height: 44px; background: linear-gradient(var(--color-azzurro-chiaro), transparent);
+  }
+
+  /* Scrub stage */
+  .trasf-wrap { position: relative; height: 400vh; background: var(--surface-inverse); }
+  .trasf-stage {
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    background: var(--color-blu-notte);
+  }
+  .trasf-frames { position: absolute; inset: 0; }
+  .trasf-frame {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    opacity: 0; will-change: opacity;
+  }
+  .trasf-frame[data-frame="0"] { opacity: 1; }
+  /* Scrim: keeps captions legible over the imagery (explicit rgba for real contrast). */
+  .trasf-scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(10,26,51,0.82) 0%, rgba(10,26,51,0.45) 42%, rgba(10,26,51,0.12) 68%),
+      linear-gradient(0deg, rgba(10,26,51,0.55), rgba(10,26,51,0.15) 40%);
+  }
+
+  .trasf-captions { position: absolute; inset: 0; }
+  .trasf-caption {
+    position: absolute; margin: 0;
+    left: max(var(--slide-safe-inset, 60px), 6vw);
+    bottom: clamp(5rem, 16vh, 9rem);
+    max-width: min(40rem, 52vw);
+    opacity: 0; transform: translateY(14px); will-change: opacity, transform;
+  }
+  .trasf-caption-num {
+    display: block; font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; color: var(--color-azzurro-chiaro);
+    opacity: 0.55; margin-bottom: 0.5rem;
+  }
+  .trasf-caption-kicker {
+    display: block; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-azzurro-chiaro); margin-bottom: 0.75rem;
+  }
+  .trasf-caption-body {
+    color: var(--color-carta); font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 600; line-height: 1.3; letter-spacing: -0.01em;
+  }
+
+  /* Progress bar */
+  .trasf-progress {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 4px;
+    background: rgba(127,168,230,0.18);
+  }
+  .trasf-progress-fill {
+    display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left center;
+    background: var(--color-azzurro); will-change: transform;
+  }
+
+  /* Reduced-motion static fallback */
+  .trasf-static { max-width: 68rem; margin: 0 auto; padding: 4rem max(var(--slide-safe-inset, 60px), 6vw); background: var(--surface-inverse); }
+  .trasf-static-row {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2rem; align-items: center;
+    padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .trasf-static-row img { width: 100%; height: auto; border-radius: 8px; }
+
+  .trasf-cta {
+    margin-top: 1.5rem; display: inline-block;
+    background: var(--color-blu); color: var(--color-carta);
+    padding: 0.85rem 1.6rem; border-radius: 999px; font-weight: 600; letter-spacing: 0.01em;
+    text-decoration: none; transition: background 0.2s ease;
+  }
+  .trasf-cta:hover { background: var(--color-azzurro); }
+  .trasf-credit {
+    margin-top: 1.75rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--color-azzurro-chiaro);
+  }
+
+  @media (max-width: 640px) {
+    .trasf-caption { max-width: 88vw; bottom: 6rem; }
+    .trasf-static-row { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  function initScrub() {
+    const wrap = document.querySelector<HTMLElement>('[data-scrub-wrap]');
+    const stage = document.querySelector<HTMLElement>('[data-scrub-stage]');
+    const staticEl = document.querySelector<HTMLElement>('[data-scrub-static]');
+    if (!wrap || !stage) return;
+
+    const frames = Array.from(stage.querySelectorAll<HTMLElement>('.trasf-frame'));
+    const captions = Array.from(stage.querySelectorAll<HTMLElement>('.trasf-caption'));
+    const fill = stage.querySelector<HTMLElement>('[data-scrub-fill]');
+    const n = frames.length;
+    if (!n) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      // No scrub: collapse the tall wrapper, show the static stacked list.
+      wrap.style.height = 'auto';
+      stage.style.display = 'none';
+      if (staticEl) staticEl.hidden = false;
+      return;
+    }
+
+    let ticking = false;
+    const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+
+    function render() {
+      ticking = false;
+      const rect = wrap!.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const p = total > 0 ? clamp(-rect.top / total, 0, 1) : 0;
+
+      // segment in [0, n-1]; crossfade neighbours with a tent function.
+      const seg = p * (n - 1);
+      for (let i = 0; i < n; i++) {
+        frames[i].style.opacity = String(clamp(1 - Math.abs(seg - i), 0, 1));
+      }
+      // Captions: visible near their stage, with a small plateau.
+      for (let i = 0; i < captions.length; i++) {
+        const d = Math.abs(seg - i);
+        const o = clamp(1 - (d - 0.28) / 0.42, 0, 1); // plateau ±0.28, fade over 0.42
+        captions[i].style.opacity = String(o);
+        captions[i].style.transform = `translateY(${(1 - o) * 14}px)`;
+      }
+      if (fill) fill.style.transform = `scaleX(${p})`;
+    }
+
+    function onScroll() {
+      if (!ticking) { ticking = true; requestAnimationFrame(render); }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    render();
+
+    // Clean up on SPA navigation away.
+    document.addEventListener('astro:before-swap', function off() {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      document.removeEventListener('astro:before-swap', off);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrub);
+  } else {
+    initScrub();
+  }
+  document.addEventListener('astro:page-load', initScrub);
+</script>

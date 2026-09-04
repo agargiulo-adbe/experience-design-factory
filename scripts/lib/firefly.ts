@@ -167,3 +167,99 @@ export async function generateImage(
     model: 'Adobe Firefly Image Model (v3)',
   };
 }
+
+// ── video (Firefly Video Model, async) ──────────────────────────────
+const VIDEO_PATH = process.env.FIREFLY_VIDEO_PATH || '/v3/videos/generate-async';
+
+export interface FireflyVideoOptions {
+  prompt: string;
+  /** Output size (a v3-supported video size, e.g. 1920x1080). */
+  size?: { width: number; height: number };
+  /** Clip length in seconds (model caps apply; ~5s on v3). */
+  seconds?: number;
+  seed?: number;
+  /** Optional negative prompt. */
+  negativePrompt?: string;
+}
+
+export interface FireflyVideoResult {
+  buffer: Buffer;
+  contentCredentials: boolean;
+  model: string;
+}
+
+interface VideoJobResponse {
+  jobId?: string;
+  statusUrl?: string;
+  status?: string;
+  outputs?: Array<{ video?: { url?: string; presignedUrl?: string } }>;
+  result?: VideoJobResponse;
+}
+
+function firstVideoUrl(data: VideoJobResponse): string | undefined {
+  const out = (data.outputs ?? data.result?.outputs ?? [])[0];
+  return out?.video?.url ?? out?.video?.presignedUrl;
+}
+
+/**
+ * Generate a single video clip (text-to-video). Firefly video is ALWAYS async:
+ * POST returns a job with a `statusUrl` we poll until an output URL appears
+ * (bounded to ~5 min). The endpoint path is env-overridable. Returns the
+ * downloaded MP4 bytes. Structured to later accept an image-conditioning ref
+ * (image-to-video) without changing callers.
+ */
+export async function generateVideo(
+  creds: FireflyCredentials,
+  opts: FireflyVideoOptions,
+  token?: string,
+): Promise<FireflyVideoResult> {
+  const accessToken = token ?? (await getAccessToken(creds));
+  const headers = {
+    'x-api-key': creds.clientId,
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  const payload: Record<string, unknown> = { prompt: opts.prompt };
+  if (opts.size) payload.sizes = [opts.size];
+  if (typeof opts.seconds === 'number') payload.videoSettings = { duration: opts.seconds };
+  if (typeof opts.seed === 'number') payload.seeds = [opts.seed];
+  if (opts.negativePrompt) payload.negativePrompt = opts.negativePrompt;
+
+  const res = await fetch(`${API_URL}${VIDEO_PATH}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Firefly video generate failed (${res.status}): ${text.slice(0, 500)}`);
+  }
+  let data = (await res.json()) as VideoJobResponse;
+
+  // Poll the job until a video URL appears (video renders take minutes).
+  let poll = data.statusUrl;
+  for (let i = 0; i < 90 && !firstVideoUrl(data) && poll; i++) {
+    await new Promise((r) => setTimeout(r, 4000));
+    const p = await fetch(poll, { headers });
+    if (!p.ok) {
+      const t = await p.text().catch(() => '');
+      throw new Error(`Firefly video status failed (${p.status}): ${t.slice(0, 300)}`);
+    }
+    data = (await p.json()) as VideoJobResponse;
+    poll = data.statusUrl ?? poll;
+    if (data.status && /fail|error|cancel/i.test(data.status)) {
+      throw new Error(`Firefly video job ${data.status}`);
+    }
+  }
+
+  const url = firstVideoUrl(data);
+  if (!url) throw new Error('Firefly video: no output URL (timed out or unexpected response shape)');
+
+  const dl = await fetch(url);
+  if (!dl.ok) throw new Error(`Firefly video download failed (${dl.status})`);
+  const buffer = Buffer.from(await dl.arrayBuffer());
+
+  return { buffer, contentCredentials: true, model: 'Adobe Firefly Video Model (v3)' };
+}
