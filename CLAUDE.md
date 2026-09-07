@@ -134,6 +134,12 @@ Rewrite into natural, concrete sentences with varied rhythm. **Never touch** pro
 ### Cross‑experience propagation
 A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
 
+### Home roadmap — equal‑size blocks in a balanced grid (BINDING, every experience)
+The home "il percorso"/chapter roadmap cards MUST be **equal‑size blocks** (equal width AND height) in a **balanced grid**: 6 chapters → **2 righe da 3**; other counts → the balanced equivalent (8 → 2×4). Implement with `auto-rows-fr` on the grid + `h-full` on each card so rows never differ in height, and cap columns so you never get a lopsided last row (e.g. NOT `md:grid-cols-4` for 6 → 4+2). Bespoke non‑card paradigms are exempt (maxmara's numbered stepper timeline, trenitalia's connected‑node timeline) — but a plain card roadmap always follows this rule.
+
+### Document `<title>` — no self‑duplication (BINDING, every experience)
+Each `BaseLayout.astro` builds `<title>{title} | <SiteName></title>`. The **home** page passes `title` = the site name, which renders "SiteName | SiteName" (also poisons link‑preview scrapers, which read `<title>`). Guard it: `<title>{title === '<SiteName>' ? title : \`${title} | <SiteName>\`}</title>`. Applies to every experience layout + showcase.
+
 ### Parallel work on a shared app → isolated worktrees
 Independent tasks on the **same** app (different files but one shared `dist/`) must NOT run concurrent build/preview — they race and corrupt `dist/`. Use **subagents in isolated git worktrees** (`isolation: "worktree"`), one per section/area, each building + auditing in its own worktree; then bring the changed files into the main tree and run **one final build + audit** to confirm. Separate experiences (distinct `dist/`) can use plain parallel subagents.
 
