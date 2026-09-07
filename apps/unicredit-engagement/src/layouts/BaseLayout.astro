@@ -335,8 +335,12 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     // href ends with "…/<slug>/" — replace the last path segment
     return href.replace(/[^/]+\/?$/, slug + '/');
   }
-  function homeFrom(href) {
-    return href.replace(/[^/]+\/?$/, '');
+  // The deck "home" (app index / cover) = the CURRENT path with its section
+  // slug stripped. Derive it from location, NOT from curPrev/curNext: for the
+  // first/last section those are already the app home, and stripping a segment
+  // again overshoots to the parent hub (back-arrow regression).
+  function deckHome() {
+    return location.pathname.replace(/[^/]+\/?$/, '');
   }
   function nextEnabledAfter(slug) {
     var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
@@ -392,7 +396,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       var curNext = deckRoot.getAttribute('data-deck-next');
       var nextEntry = nextEnabledAfter(currentSlug());
       if (curNext && nextEntry !== undefined) {
-        deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : homeFrom(curNext));
+        deckRoot.setAttribute('data-deck-next', nextEntry ? swapSlug(curNext, nextEntry.slug) : deckHome());
       }
     }
 
@@ -403,7 +407,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       var curPrev = deckRootP.getAttribute('data-deck-prev-href');
       var prevEntry = prevEnabledBefore(currentSlug());
       if (curPrev && prevEntry !== undefined) {
-        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : homeFrom(curPrev));
+        deckRootP.setAttribute('data-deck-prev-href', prevEntry ? swapSlug(curPrev, prevEntry.slug) : deckHome());
       }
     }
 

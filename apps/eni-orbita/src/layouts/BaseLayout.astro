@@ -292,7 +292,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return parts[parts.length - 1] || 'index';
   }
   function swapSlug(href, slug) { return href.replace(/[^/]+\/?$/, slug + '/'); }
-  function homeFrom(href) { return href.replace(/[^/]+\/?$/, ''); }
+  // App home (index/cover) from the CURRENT path — NOT from curPrev/curNext,
+  // which for the first/last section are already the app home (stripping again
+  // overshoots to the parent hub). Fixes the back-arrow-to-hub regression.
+  function homeFrom() { return location.pathname.replace(/[^/]+\/?$/, ''); }
   function nextEnabledAfter(slug) {
     var i = SECTION_FLOW.findIndex(function(s) { return s.slug === slug; });
     if (i === -1) return undefined;
