@@ -48,6 +48,49 @@ export const assets: AssetSlot[] = [
     alt: '',
   },
 
+  // ── Firefly backdrops (workshop cut) — Adobe Firefly Services, on-brand ──
+  // Generated build-time via `assets:build` (FIREFLY_CLIENT_ID/SECRET in .env).
+  // Abstract, no letterforms/logos/wrong-brand; carry C2PA Content Credentials.
+  {
+    id: 'ff-engine-map',
+    type: 'firefly',
+    contentClass: 'art',
+    prompt:
+      'Abstract elegant visualization of six glowing interconnected engines of light, deep crimson and warm gold energy threads flowing between hexagonal nodes, deep midnight-blue background, premium financial-technology aesthetic, dark, sophisticated, cinematic depth, subtle bokeh, minimal',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-il-sito',
+    type: 'firefly',
+    contentClass: 'art',
+    prompt:
+      'Abstract premium visualization of a single warm-gold beam of light discovered among countless deep-crimson data streams converging to one bright point over a deep midnight-blue background, the feeling of being found, financial-technology elegance, dark, cinematic, minimal',
+    negativePrompt:
+      'teal, cyan, turquoise, green, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-contenuti',
+    type: 'firefly',
+    contentClass: 'art',
+    prompt:
+      'Abstract flowing ribbons of warm gold and deep crimson light weaving into ordered parallel streams over a deep midnight-blue background, the sense of content composed at speed, premium editorial, dark, cinematic, minimal',
+    negativePrompt:
+      'teal, cyan, turquoise, green, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+
   {
     id: 'bg-visibilita',
     type: 'stock',
