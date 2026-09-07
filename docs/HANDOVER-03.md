@@ -1,5 +1,71 @@
-# Handover — Parte 3 di 4
+# Handover — Parte 3 di 5
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
+
+---
+
+## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
+
+`apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche. È uno **strumento** (island interattiva full-bleed), NON una slide-keynote: **esente da `audit:deck`** (`/scoping/` non è nel ROUTE_SET di `scripts/deck-audit.ts`). Doc di riferimento del blocco: **`packages/core/src/blocks/scoping/README.md`** (architettura + come estendere).
+
+> **AGGIORNAMENTO 15 lug 2026 — riscrittura del modello Collaboration.** Il motore RTCDP Collaboration ora **replica 1:1 il calcolatore ufficiale Adobe** «Real-Time CDP Collaboration Scoping Calculator» (workbook interno). Sotto il modello aggiornato; il change log dettagliato è in §18. **CJA è invariato** (non fa parte del workbook).
+>
+> **AGGIORNAMENTO 15 lug 2026 (pomeriggio) — modello v2 (SKU base + entitlement + istanze partner + refresh mode) e nuova sezione «Casi d'uso».** Il motore ora aggiunge, **sopra** la matematica dei crediti (invariata): SKU Base flat, entitlement per pacchetto (crediti inclusi nettati), **1 istanza Ferrari + N istanze partner**, e una **modalità di refresh legata alle campagne**. Aggiunta la nuova sezione deck **Casi d'uso**. Dettaglio in **§14.9**; change log in **§19**. **Stato: committato e pushato** (commit `a3fc86a`, 15 lug 2026).
+
+### 14.1 Architettura (layer separati)
+Tutto in `packages/core/src/blocks/scoping/` salvo i contenuti client:
+- **`cost-model.ts`** — motore puro, deterministico, framework-free. **Replica 1:1** il workbook Adobe (`Sales Calculator` + sheet nascosta `Drop Downs, Burn, Assump`). Espone `BURN`/`ASSUMPTION_DEFAULTS` (costanti ufficiali), `audienceFunnel`, `collabParts`, `simpleScopingMatrix`, `recommendedCreditPack`, `ceilingTo`, `computeSnapshot`, `computeBreakdown`, `buildWarnings` + la parte CJA invariata.
+- **`scenario.ts`** — `DEFAULT_ASSUMPTIONS` (= default del workbook), `DEFAULT_PRICES` (`pricePerCredit = 5`, prezzo di listino H13), preset id/label, serialize/deserialize **forward-compatible**.
+- **`scenario-store.ts`** — persistenza localStorage (anon) + Supabase REST **con refresh automatico del token** (proattivo su scadenza, reattivo su 401 + retry singolo). Espone `remoteEnabled`, `clearSession`, `RemoteError`.
+- **`ScopingCalculator.astro`** — shell UI + presenter (island TS vanilla).
+- **`ScopingField.astro`** — sub-componente riga input; `data-when` supporta **modalità multiple** pipe-separate (es. `simple|detailed`).
+- **`apps/ferrari-racing/src/data/scoping.ts`** — contenuti Ferrari: `FIELD_AUDIT`, `SEED_SCENARIOS`, `METRICS`, `ASSUMPTION_META`, `DISCLAIMER`.
+- **Fonte di verità del modello Collaboration**: `docs/Ferrari/Real-Time CDP Collaboration Scoping Calculator.xlsx` (materiale Adobe interno, **git-ignorato** — repo pubblico). Il **PDF dossier** in `docs/Ferrari/` documenta il *vecchio* modello ed è **obsoleto**.
+- **Test**: **53 Vitest** (41 cost-model + 5 scenario + 7 scenario-store), che **riconciliano cella-per-cella** al foglio (i 13 nuovi coprono party-cost/entitlement, refresh mode campaign-linked, istanze partner — vedi §14.9).
+
+### 14.2 Modello di calcolo — RTCDP Collaboration (fedele al workbook Adobe)
+**Costanti ufficiali** (`cost-model.ts`): `BURN` = management **2** · activation ad-hoc **500** · always-on **100** · measurement **50** (credits per 1M); `ASSUMPTION_DEFAULTS` = match **30%** · reach **50%** · frequency **10×** · conversion **5%** · **$5/credit** (H13).
+**Funnel** (rate clamp 0–1): `matched = avgAudienceSize × matchRate` → `impressions = matched × frequency × reach` (per campagna) · `conversions = matched × reach × conversion`.
+**Tre modalità** (`collabMode`):
+- **detailed** (default): `management = (onboardedIds ÷ 1M) × (365 ÷ refreshEveryXDays) × 2` · `activation ad-hoc = (matched × campaigns × audiences/campaign × 500) ÷ 1M` · `always-on = (matched ÷ 1M) × runs × 100` (runs 0 di default, `alwaysOnRunsPerYear`) · `measurement summary = (impressions ÷ 1M) × summaryReports × campaigns × 50` · `attribution = ((conversions + impressions) ÷ 1M) × campaigns × attrReports × 50`.
+- **simple**: matrice campagne `1·3·6·12·24·36`, refresh fisso 365/6 (ogni 6 giorni), ogni voce **CEILING a 10** crediti.
+- **direct**: `estimated = max(0, directCredits)`.
+- **Nessun allotment annuo** (rimosso il vecchio Prime 2.500 / Ultimate 5.000): il deliverable è il **pacchetto crediti consigliato** `recommendedCreditPack` = totale arrotondato a scaglione **100/500/1.000/5.000** (riga 31 del foglio); `cost = pacchetto × pricePerCredit`.
+**Riconciliazione**: detailed default → **1.517,04** crediti (C72: mgmt 1.216,67 + activation 150 + summary 75 + attribution 75,375); simple totali `[1450,1900,2580,3930,6630,9340]` (riga 30); pacchetti `[1500,2000,3000,4000,7000,9500]` (riga 31).
+
+### 14.3 Modello di calcolo — CJA (invariato · prodotto indipendente)
+`rows = Σ(web, app, social, crm, events)` · `ingestionLimit = rows × cjaIngestionMultiplier` (guardrail ufficiale ×3) · `cost = (rows ÷ 1M) × pricePerMillionRows`. Breakdown per-sorgente con **peso %**. **Non** fa parte del workbook Adobe.
+
+### 14.4 Trasparenza & auditabilità
+`computeBreakdown(assumptions, prices)` restituisce, per ogni riga: **formula simbolica + numeri sostituiti + input usati**, le sorgenti CJA con peso%, e i `warnings`. La UI espone 3 livelli: results bar (summary) → drawer "Mostra il calcolo" (breakdown con formule) → tooltip audit per campo. Ogni variabile ha un **dataType semantico** → badge colorato: `official` (verde) · `default-assumption` (grigio) · `customer-assumption` (blu) · `price`/quote-only (giallo). I burn-rate Adobe sono ora rappresentati come **costanti ufficiali** (`BURN`), non come input tunable. Badge resi con `rgba()` esplicito.
+
+### 14.5 UX
+Preset chip (Conservativo/Base/Ambizioso/**Custom** = stato modificato); **select "Modalità di stima"** (Dettagliata/Rapida/Diretta) + **select "Casi d'uso measurement"** (Sì/No — boolean, gestito con special-case in `readInput`); results bar = **Credits stimati · Pacchetto consigliato · Costo** (rimossi billable/allotment); strip **warnings**; **breakdown drawer**; disclosure **"Assunzioni avanzate"** (frequency/reach/conversion, audiences/campaign, report, always-on); **visibilità condizionale** (`appliesWhen`, es. campi measurement solo se `measurementEnabled=true`; `mode` multi per campi simple∧detailed); dot **changed-vs-preset**; export **JSON/CSV**; **Confronta**. Tooltip audit **click-only**. Prezzi = *quote-only* ($5 di listino illustrativo).
+
+### 14.6 Estendere (vedi README del blocco)
+Nuova variabile: campo in `ScopingAssumptions` + default in `DEFAULT_ASSUMPTIONS` → usarla in `collabParts`/`cjaSourceRows` + `LineItem` in `computeBreakdown` → registrarla in `FIELD_AUDIT` (`dataType`, `category`, `mode` pipe-separato, `appliesWhen`/`advancedOnly`, `source/calc/assumption` bilingui) → test di riconciliazione. Burn-rate/assunzioni ufficiali = costanti in `BURN`/`ASSUMPTION_DEFAULTS` (non input). Select enum: `input:'select'` + `options`; i boolean (es. `measurementEnabled`) vanno special-cased in `readInput`. Nuova sorgente CJA: estendi `CjaSourceRows['id']` + `cjaSourceRows` + formula/substituted + `FIELD_AUDIT`.
+
+### 14.7 Persistenza, resilienza & Admin
+Supabase `scenarios` (`0004_scenarios.sql`, RLS **private/link/team**, `created_by default auth.uid()`); condivisione `?scenario=<uuid>`. **Auth resiliente** (fix 15 lug): lo store legge la sessione completa `edf:sb-session` (`access_token`/`refresh_token`/`expires_at`) e **rinnova il token** — proattivo se vicino a scadenza, reattivo su 401 con **retry singolo** (rispecchia `apps/console`); su refresh fallito **pulisce la sessione morta** e lancia `RemoteError(401)`. Il **Save fa SEMPRE fallback su localStorage** (lavoro mai perso) con messaggi accurati bilingui (sessione scaduta / cloud non disponibile / non configurato / anonimo); **Share** degrada allo stesso modo. `remoteEnabled()` evita una fetch a URL relativo verso l'origin quando il backend non è configurato. Admin: tab opt-in "Modello di licensing" (`showScopingTab`, default false) per baseline prezzi.
+
+### 14.8 GOTCHA (dolori appresi)
+- **CI typecheck — `tsconfig.json` obbligatorio per ogni app** (fix 15 lug): senza `tsconfig.json` `astro check` non eredita `astro/tsconfigs/strict` → ~2.000 errori fittizi `ts(7026) JSX.IntrinsicElements`, che facevano fallire il workflow **CI** (mentre **Deploy** restava verde → coppia verde/rosso ingannevole per ogni commit). Ogni nuova app DEVE avere `tsconfig.json` (`extends astro/tsconfigs/strict` + alias `@edf/core`). Aggiunto a `agos-trait-dunion` e `trenitalia-connessioni`.
+- **Save "check your connection"** (fix 15 lug): causa = **token JWT scaduto non rinnovato** (lo store leggeva `access_token` grezzo). Il `catch` cieco mostrava l'errore generico **senza fallback** → scenario perso. Vedi 14.7.
+- **Astro scoping degli stili**: il blocco `.scoping-*` è `<style is:global>` (selettori `.scoping-`-prefissati, solo su `/scoping/`), perché estraendo il markup in `ScopingField.astro` lo scoped non matchava più.
+- La slide del calcolatore **non** usa `data-demo-flex` (riserva il 48% destro → fuori viewport); grid/flex children servono `min-width:0`; clic neutralizzati con `data-deck-nochrome`.
+- Memoria `ferrari-scoping-calculator` (aggiornata alla riscrittura xlsx). Dump del workbook: unzip → parse `xl/worksheets/*.xml` (`<c>/<f>/<v>`) + `sharedStrings.xml` (nessuna libreria xlsx nel repo).
+
+### 14.9 Modello v2 — SKU base, entitlement, istanze partner, refresh mode (15 lug 2026, commit `a3fc86a`)
+> ⚠️ **PARZIALMENTE SUPERATO da §20 (v3, commit `ff03a71`):** SKU Base, entitlement RT-CDP (Prime/Ultimate), `partyCost`, `PACKAGE_ENTITLEMENTS`, `pricePerCredit`/`pricePerMillionRows` e il netting crediti **sono stati RIMOSSI**. Restano validi: istanze partner (1 Ferrari + N), `refreshMode` continuous/campaign-linked, il funnel, la sezione «Casi d'uso». Leggi §20 per il modello in produzione.
+
+Estensione che risponde a 6 dubbi del cliente sul configuratore. **La matematica dei crediti da funnel (`collabParts`, §14.2) è invariata** — i test di riconciliazione Adobe restano verdi; v2 aggiunge layer *sopra*.
+- **SKU Base + entitlement per party** (fedele alla slide Adobe «RT-CDP Collaboration SKUs»): tipo `PartyPackage = standalone | rtcdp-prime | rtcdp-ultimate`; costanti `COLLAB_BASE_SKU` ($20k listino / $5k floor) e `PACKAGE_ENTITLEMENTS` (Ultimate: Base inclusa + 5.000 crediti · Prime: Base inclusa + 2.500 · standalone: Base a pagamento + 0). Helper **`partyCost(estimated, pkg, baseSkuPrice, pricePerCredit)`**: `chargeable = max(0, estimated − inclusi)` → pacchetto sul solo surplus; `baseFee = 0` se inclusa. I crediti inclusi si **nettano** (evoluzione del "no allotment" di §14.2, che valeva per il solo Credits SKU).
+- **Istanze partner** (1 Ferrari + N partner): profilo **"partner-tipo"** (campi `partner*` in `ScopingAssumptions`: package, onboardedIds, avgAudienceSize, adHocCampaigns) via `partnerAssumptions(a)` (riusa i rate di Ferrari, varia i volumi) × `partnerInstances`. **CJA resta un'unica istanza Ferrari** (aggrega tutti). Totale Collaboration = Ferrari + N × partner-tipo (Base + crediti ciascuno).
+- **Refresh mode** (`refreshMode: continuous | campaign-linked` + `refreshesPerCampaign`): `campaign-linked` → refresh/anno = campagne × refresh/campagna (es. 3 invece di 61 → crediti gestione ~20× più bassi). Risolve il dubbio "perché refresh always-on con 3 campagne/anno". `refreshesPerYear(a)` aggiornato; default `continuous` (base fixture → 365/6 invariato).
+- **Default v2** (`DEFAULT_ASSUMPTIONS`): Ferrari = **RTCDP Ultimate** (i suoi ~1.517 crediti coperti dai 5.000 inclusi → Collaboration Ferrari **€0**); partner = **standalone** (Base $20k + pacchetto). Il costo incrementale è guidato dalle istanze partner. Preset: Conservativo (1 partner, refresh campaign-linked) · Base (3 partner) · Ambizioso (8 partner).
+- **Chiarezza UI**: nuovo campo `hint` (in `FieldAudit`/`ScopingField.astro`, classe `.scoping-hint`) = caption **inline sempre visibile** sotto l'input (non più solo nel tooltip `i`), su Dimensione audience, Match rate, Campagne ad-hoc, Refresh mode, ecc. Nuova sezione form **"Perimetro & istanze"** in cima alla card Collaboration. Results bar Collaboration riorganizzata: *Istanza Ferrari · Istanze partner · Canoni SKU Base · Totale Collaboration* (nuovi output snapshot `collabFerrari*`, `collabPartner*`, `collabBaseFeeTotal`).
+- **Nuova slide** `slide-model` in `/scoping/` («Come si compone il costo» — 4 driver + lettura Ferrari worked, dati `COST_DRIVERS`/`COST_MODEL_SUMMARY` in `data/scoping.ts`); metriche di licensing arricchite (funnel + tipi campagna).
+- **Nuova sezione deck «Casi d'uso»** (`apps/ferrari-racing/src/pages/casi-duso.astro`, nav tra Il Loop e Scoping, **non gated**): cover + 4 scenari end-to-end sull'intero perimetro prodotti (RT-CDP Collaboration → GenStudio + Express → Attivazione → CJA) + slide mappa prodotti. Dati `USE_CASES` in `data/scoping.ts`. Cross-nav: loop → casi-duso → scoping. Registrata in `admin.astro` (PAGE_REGISTRY, scoping ora "09") e in `FerrariNav.astro`. **Aggiunta a `deck-audit.ts`** (route set ferrari) → `audit:deck` **0 su 3 viewport**; `scoping` resta **fuori** dal route set (slide-calculator = esenzione interattiva).
+- **Verifica**: 53/53 test core verdi; build monorepo 0 errori; sweep `audit:deck` ferrari (8 sezioni + casi-duso) **PASS pulito**; screenshot 1920 letti (slide-model, calculator, use-case, mappa) → type generoso, composizione bilanciata. File toccati: `cost-model.ts` (+178) e `.test.ts` (+116), `scenario.ts`, `data/scoping.ts` (+299), `ScopingCalculator.astro`, `ScopingField.astro`, `scoping.astro`, `casi-duso.astro` (nuovo), `FerrariNav.astro`, `admin.astro`, `loop.astro`, `deck-audit.ts`. Memoria `ferrari-scoping-calculator` (da aggiornare a v2 dopo il commit).
 
 ---
 
@@ -159,173 +225,3 @@ Round di feedback su Engagement Unlimited (7 richieste puntuali su screenshot). 
 - **Verifica**: build OK; `audit:deck` contro **preview statico** → **0 fallimenti hard** su tutto il deck (restano i soft a/i/g pre-esistenti, non forzati); **screenshot 1920 letti** su tutte le slide toccate (frecce KPI leggibili/coerenti, copy obiezione senza overflow, bullet bilanciati).
 
 ---
-## 18. Ferrari /scoping — modello Adobe-fedele, CI verde & Save resiliente (15 lug 2026)
-
-Tre interventi sequenziali (tutti su `main`, CI verde end-to-end). Riferimento sintetico in §14 (riscritta), memorie `ferrari-scoping-calculator` e `git-push-after-every-commit`.
-
-### 18.1 Riscrittura del motore Collaboration = 1:1 col workbook Adobe (commit `4592c58`, merge `c1184f9`)
-Richiesta: replicare in produzione la logica del file **`docs/Ferrari/Real-Time CDP Collaboration Scoping Calculator.xlsx`** (Adobe "Sales Calculator" di dvest@adobe.com; foglio visibile + sheet nascosta `Drop Downs, Burn, Assump`). Il workbook modella **solo** RTCDP Collaboration → **CJA invariato**.
-- **Reverse-engineering**: estratte tutte le formule via unzip + parse XML (nessuna lib xlsx). Burn rate (mgmt 2 · activation ad-hoc 500 · always-on 100 · measurement 50 credits/1M), assunzioni (match 30% · reach 50% · freq 10× · conv 5%), prezzo listino $5 (H13), pack-tiering (riga 31), funnel matched→impressions/conversions.
-- **Motore riscritto** (`cost-model.ts`): `ScopingAssumptions` Collaboration completamente sostituito (onboardedIds, avgAudienceSize, matchRate, frequencyMultiple, reachPct, conversionRate, measurementEnabled, refreshEveryXDays, adHocCampaignsPerYear, audiencesPerCampaign, measurementCampaignsPerYear, summaryReportsPerCampaign, attributionReportsPerCampaign, alwaysOnRunsPerYear, simpleCampaignsPerYear). Tre modalità **detailed/simple/direct**; **nessun allotment** → `recommendedCreditPack`. Dettaglio formule in §14.2.
-- **Propagazione**: `scenario.ts` (default+prezzo $5), `data/scoping.ts` (FIELD_AUDIT/SEED_SCENARIOS/METRICS/ASSUMPTION_META riscritti; burn ora *ufficiali*), presenter (select mode + measurement boolean, results bar con pacchetto, gating `mode` pipe-separato), README del blocco.
-- **30→28 test cost-model riscritti** per riconciliare cella-per-cella (1.517,04; matrice simple; pack tiers). Build + typecheck ferrari 0 errori. Verificato live: preset Conservative → **921 crediti / pacchetto 1.000 / €5.000** collab; CJA 508M righe / €1.016; totale €6.016.
-- **`.gitignore`**: aggiunta `docs/Ferrari/` (workbook Adobe interno; repo **pubblico** → mai committare). Il **PDF dossier** in quella cartella documenta il vecchio modello ed è ora **obsoleto** (non rigenerato, per scelta).
-
-### 18.2 Fix CI — `tsconfig.json` mancante (commit `6b58b80`, merge `2eb6be7`)
-Sintomo: per ogni push comparivano **due workflow** — `Deploy to GitHub Pages` (verde) e `CI` (rosso). Root cause: `agos-trait-dunion` e `trenitalia-connessioni` erano state create **senza `tsconfig.json`** → `pnpm typecheck` (`astro check`) non ereditava `astro/tsconfigs/strict` → ~1.979 errori fittizi `ts(7026) JSX.IntrinsicElements`. Il Deploy non fa typecheck → restava verde (coppia ingannevole). Fix: aggiunto ad entrambe il `tsconfig.json` standard (`extends astro/tsconfigs/strict` + alias `@edf/core`). Ora **8/8 app** typecheck 0 errori; CI verde. **Regola** (vedi §14.8): ogni nuova app DEVE avere `tsconfig.json`.
-
-### 18.3 Fix Save "check your connection" — persistenza resiliente (commit `77e6b3f`, merge `c4ed338`)
-Root cause: lo store leggeva `edf:sb-session.access_token` grezzo e **non lo rinnovava mai** → JWT Supabase scaduto (utente loggato in Console tempo prima) → insert **401** → `catch` cieco con messaggio generico **e nessun fallback** → scenario perso. Backend (tabella/RLS 0004) ed env deployato **corretti** (build ha l'URL `spwoeihrrr…`).
-- **`scenario-store.ts`**: legge la sessione completa (access/refresh/expires_at); **refresh del token** proattivo (vicino a scadenza) + reattivo su 401 con **retry singolo** (rispecchia `apps/console`); su refresh fallito pulisce la sessione morta. Nuovo `RemoteError` (status HTTP reale), `remoteEnabled()` (niente fetch a URL relativo senza backend), `clearSession()`.
-- **`ScopingCalculator.astro`**: Save **sempre** con fallback localStorage (lavoro mai perso) + messaggi bilingui accurati (sessione scaduta / cloud non disponibile / non configurato / anonimo); Share degrada allo stesso modo.
-- **+7 test store** (`scenario-store.test.ts`, `fetch`/`localStorage` mockati): save fresco, refresh proattivo, retry reattivo su 401, refresh fallito→clear+401, non-configurato, sessione solo-refresh. Totale blocco scoping = **40 test**.
-- **Altre funzioni verificate corrette** e non impattate: Confronta, Esporta JSON/CSV, Reset, preset, load `?scenario=`.
-
----
-## 19. Ferrari /scoping v2 + sezione «Casi d'uso» (15 lug 2026 pomeriggio) — commit `a3fc86a`
-
-Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "aggiungi casi d'uso con tutti i prodotti a perimetro"). **Committato e pushato** (`a3fc86a`, deploy live). Dettaglio tecnico in **§14.9**.
-- **Chiarezza campi** (dubbi 1–3): hint inline su Dimensione audience × Match rate (= audience matchata), Campagne ad-hoc (one-off vs always-on); non più sepolti nel tooltip.
-- **Refresh mode** (dubbio 4): modalità `campaign-linked` (refresh legato alle campagne) oltre a `continuous`.
-- **Istanze partner** (dubbio 5): 1 Ferrari + N partner-tipo (profilo leggero × N); CJA singola.
-- **SKU Base + entitlement** (dubbio 6): selettore pacchetto per party (standalone/Prime/Ultimate), Base flat $20k, crediti inclusi nettati. Ferrari Ultimate → Collaboration €0; costo guidato dai partner.
-- **Slide nuova** `slide-model` («Come si compone il costo») + metriche arricchite.
-- **Sezione nuova «Casi d'uso»** (`casi-duso.astro`): 4 scenari E2E su tutto il perimetro (Collaboration → GenStudio + Express → Attivazione → CJA) + mappa prodotti; nav+admin+cross-nav+deck-audit aggiornati.
-- **TDD sul motore**: 13 nuovi test (party-cost, entitlement, refresh mode, istanze) → **53/53 core verdi**; build monorepo 0 errori; `audit:deck` ferrari (incl. casi-duso) **0 fallimenti**; screenshot 1920 letti.
-- **Metodo**: brainstorming (4 decisioni confermate dall'utente: partner-tipo×N · selettore pacchetto per party · refresh legato alle campagne · sezione dedicata in nav) → TDD → build/audit finale.
-- **Fatto**: commit `a3fc86a` (`feat(scoping): base SKU + entitlement, partner instances, campaign-linked refresh + Use Cases section`) + push su `main`; il commit ignora anche `docs/Ferrovie/` (materiale FS riservato, repo pubblico). Memoria `ferrari-scoping-calculator` aggiornata a v2.
-
----
-## 20. Ferrari /scoping v3 — standalone-only, costo per istanza editabile, niente prezzi (15 lug 2026, commit `ff03a71`)
-
-Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato troppo "prezzato"). **Committato e pushato** (`ff03a71`). Sostituisce la parte commerciale di §14.9/§19; la matematica dei crediti (funnel/`collabParts`) e le istanze partner **restano**.
-- **Niente riferimenti economici**: rimossi SKU Base ($20k/$5k), `pricePerCredit` ($5), `pricePerMillionRows`, entitlement (crediti inclusi Prime 2.500 / Ultimate 5.000), netting. Rimossi tipo `PartyPackage`, costanti `COLLAB_BASE_SKU`/`PACKAGE_ENTITLEMENTS`, funzione `partyCost`, campi `ferrariPackage`/`partnerPackage`/`*BaseSkuPrice`.
-- **Solo scenario standalone**: nessun selettore pacchetto, nessuna ipotesi RT-CDP.
-- **Costo = ipotesi editabile per istanza** (`UnitPrices` ridefinita): `ferrariInstanceCost` (default 100.000, editabile) + `partnerInstances × partnerInstanceCost` (default 0, editabile). `totalCost = Ferrari + N × partner`. **Niente costo CJA**.
-- **Volumi come metrica (senza €)**: Collaboration Credits stimati + pacchetto consigliato, CJA Rows of Data + ingestion 3× — mostrati come quantità, nessun prezzo.
-- **UI**: results bar = *Collaboration (volumi) · CJA (volumi) · Costo (tua ipotesi: istanza Ferrari + istanze partner)*; sezione form «Perimetro & istanze» = costo istanza Ferrari + n. istanze + costo per istanza partner (volumi partner in advanced). `slide-model` → «Perimetro e costo / Quattro voci, un perimetro» (4 card ridisegnate: istanze · crediti-volume · CJA · costo-lo-imposti-tu). METRICS/ASSUMPTION_META/DISCLAIMER/USE_CASES de-monetizzati. Admin baseline tab → costo istanza Ferrari/partner.
-- **Motore**: `computeSnapshot`/`computeBreakdown` riscritti (volumi + costo per istanza). `partyCost`/entitlement eliminati. Test: rimossi i test party-cost/entitlement, aggiornati snapshot → **47 test core verdi** (35 cost-model + 5 scenario + 7 store).
-- **Bug rapida↔dettagliata**: verificato che lo switch modalità **ri-gate il form e ricalcola** (es. Est. credits 343→720 passando a Rapida) — funziona; il rework del form ha risolto il sintomo riportato.
-- **Verifica**: build monorepo 0 errori, core typecheck 0, `audit:deck` ferrari (8 sez + casi-duso) **0 fallimenti** a 1920/1440/1280, screenshot 1920 letti (calculator detailed+simple, slide-model). Memoria `ferrari-scoping-calculator` aggiornata a v3.
-- **Contesto commerciale (perché standalone + partner a €0)** — non nel deck, guida le scelte del modello: l'intento è **1 istanza Ferrari + ~40 istanze partner/sponsor**, offrendo ai partner **licenze Starter a costo 0** (da cui il default `partnerInstanceCost = 0` e il costo Ferrari editabile). Audience **~5M outside-in, NON confermata dal cliente**. Validazione GTM pianificata con **Lory Mishra** (Principal PMM, Media & Advertising Solutions, Adobe — collega interna che approva/nega): validare il caso d'uso, ottenere le licenze Starter partner a costo 0, definire onboarding + enablement leggero per i partner; presentazione al cliente solo dopo le verifiche con lei. **NON reintrodurre prezzi di listino nel modello** (scelta esplicita del cliente/interna, §20).
-
----
-
-## 21. Experience Atelier — deck trilingue del piano di crescita (17 lug 2026)
-
-**Cos'è.** `apps/atelier` (`/experience-design-factory/atelier/`) — il **piano di crescita
-enterprise della Factory stessa**, presentato come Exp Design immersivo. **Primo deck
-trilingue EN/IT/FR** (default EN; il lettore primario è una dirigente Adobe con base in
-Francia). **Depubblicata dai listing pubblici il 2026-09-01** (`4cca945`): **non più** in hub
-né showcase (`experiences.ts`); resta nel Super Admin Console (migration `0007_seed_atelier.sql`,
-status **`live`** — non toccata) e la route `/atelier/` è ancora buildata/raggiungibile (solo
-unlinked; vedi backlog §10 per l'eventuale rimozione dal deploy). Estetica propria: **dark editorial**, carbone
-caldo + champagne, **Fraunces + Inter** (coppia non usata da nessun'altra esperienza).
-
-**Contesto (IMPLICITO, mai nel deck).** L'intento reale è un **pitch di sponsorship**
-instradato a una specifica dirigente per un obiettivo di **AI-enablement della workforce
-Adobe**. Nel deck questo NON è mai dichiarato: si legge come un piano di crescita neutro.
-Vincolo di confidenzialità (repo + URL **pubblici**): **nessun nome di persona/org interna**,
-**nessun listino interno**, **nessuna cifra € sulla pagina asks** (solo barre di
-"envelope" relative 100/55/35/15; le cifre stanno in un annex privato). Memoria
-`experience-atelier-deck`. Spec/piano: `docs/superpowers/specs/2026-07-17-experience-atelier-growth-plan-design.md`
-e `docs/superpowers/plans/2026-07-17-experience-atelier-growth-plan.md`.
-
-**Rebranding.** "Experience Atelier" è un nome **solo di presentazione** per QUESTO deck.
-Repo, slug delle app, `@edf/core`, URL, chiavi localStorage restano "experience-design-factory".
-
-### 21.1 Struttura — 8 sezioni / 30 slide (slug · slide ids)
-1. **Overture** (`/`): `slide-cover` (wall di apertura non testuale) · `slide-wall` (6 card **live**, link ai 5 deck cliente + hub) · `slide-thesis`.
-2. **The method** (`/method/`): cover · `slide-genesis` (timeline con **mesi reali dai first-commit git**: Max Mara 15 giu, UniCredit 1 lug, Ferrari 6 lug, FS 13 lug, Agos 14 lug 2026) · `slide-method` (4 step) · `slide-compliance` (tabella claim→prova).
-3. **The capability** (`/capability/`): cover · `slide-anatomy` (diagramma CSS engine/skin/foundation) · **`slide-toggle-demo`** (demo interattiva self-contained di solution-gating, opera con tastiera SENZA far avanzare il deck; degrada a mock statico senza JS) · `slide-console`.
-4. **The multiplication** (`/multiplication/`): cover · `slide-market` · `slide-precedent` · `slide-model`. **Tutte le cifre dal fact sheet** (§21.3).
-5. **New frontiers** (`/frontiers/`): cover · `slide-live-products` · **`slide-quest`** (spotlight Boardroom Quest, teaser pixel-art in CSS, `data-solution="quest"`) · `slide-quest-plan` (`data-solution="quest"`, con gate brand/legal).
-6. **The plan** (`/plan/`): cover · **`slide-roadmap`** (Gantt di sintesi: 5 workstream × 3 milestone, celle champagne, cella vuota dove l'Ecosistema parte a M2, riga "key moments" con gate brand/legal + Hackathon + Summit) · `slide-m1`/`slide-m2`/`slide-m3` (milestone a mid-set 2026 / mid-gen 2027 / mid-apr 2027 con **Adobe Summit 2027, Las Vegas 22–25 mar** dentro M3) · **`slide-kpi`** (scorecard 2×2: card numerate + metric-pill a wrap, non più 4 righe di testo).
-7. **What it takes** (`/asks/`): **sezione gated** (`pageSolutions={['asks']}`) · cover · `slide-resources` (barre relative, **zero €**) · `slide-moments` · `slide-sponsor`.
-8. **Closing** (`/closing/`): `slide-thesis` · `slide-next` (backdrop `bg-stage`: silhouette ballerina sotto spot come immagine di chiusura; `noText="54,38,30,44"`). `nextHref` fa loop → Overture.
-
-Catena nav: ogni pagina ha `prevHref`+`nextHref`; admin `PAGE_REGISTRY` registra tutte le
-28 slide non-index (index escluso, come per agos).
-
-### 21.2 Gating come controllo d'audience
-Due solution id — **`asks`** (intera sezione sponsorship) e **`quest`** (le 2 slide
-Boardroom Quest in frontiers). Servono a **condividere il deck con o senza la richiesta di
-sponsorship**. Con `asks` off: visita diretta a `/asks/` redirige, e la freccia da `/plan/`
-salta ad `/closing/` (in entrambe le direzioni). Con `quest` off: frontiers mostra 2 slide.
-Verificato end-to-end (T16).
-
-### 21.3 Disciplina dei fatti (fact sheet)
-`docs/superpowers/research/2026-07-17-atelier-comparables.md` (24 claim verificati in modo
-adversarial, lista refuted). Regole vincolanti applicate nel copy:
-- **Cifre vendor con attribuzione esplicita** ("Consensus dichiara…", "studio Forrester
-  commissionato da Reprise", "Moderna riferisce / dato del vendor"): Consensus $110M da
-  Sumeru (2023), acquisizioni Peel+Saleo (2026), cicli −29–68%; Reprise Forrester TEI +60%
-  pipeline (feb 2022); Moderna 750 GPT / 40% WAU (OpenAI, apr 2024); SAP serious game
-  (S/4HANA board game 2020, BTP Diamond Game) **senza numeri di outcome**.
-- **VIETATI** (lista refuted): "Consensus 15 of 30", qualsiasi deal Consensus/**SPI**
-  (inesistente), numeri Walnut/Demostack/Klarna/Accenture/Microsoft-copilot, percentuali
-  Learning-Pyramid. **Nessun benchmark BDR/SDR esterno** è sopravvissuto alla verifica →
-  la storia KPI è **auto-misurata** (ci misuriamo noi), non presa in prestito.
-
-### 21.4 Verifica (T16) — esito
-`pnpm build` (tutte le app) verde; `pnpm --filter atelier typecheck` 0 errori. `audit:deck`
-full 8 rotte × 3 viewport: **0 fallimenti hard**; gli unici soft `i` (space-usage) sono
-sulle slide volutamente ariose e **whitelisted**: home cover+thesis, capability cover, asks
-sponsor, closing thesis+next (NON si risolvono restringendo il type — Type & legibility
-contract). Visual sweep letto a 1920 (EN + FR/IT sulle slide più dense): type generoso,
-composizione bilanciata, nessun overflow, reveal visibile. Nav/gating/i18n verificati via
-Playwright. URL deployati (`/`, `/method/`, `/plan/`, `/asks/`) → 200; hub linka atelier.
-
-### 21.5b Pass de-celebrazione + sintesi grafica (20 lug 2026, commit `c49e7db`)
-Su richiesta owner ("mai autocelebrativo" + "slide chiare/sintetiche, elementi grafici e
-piani in formato Gantt"). **Copy de-celebrato** (EN/IT/FR, meaning-preserving, ±10%): tolti
-lo staccato-brag "Weeks per experience. Not quarters." (genesis), "Enterprise-grade… this
-deck is one of them" (overture cover), "deepest content model in the family" (UniCredit),
-"this demo is real" (toggle), "in Adobe hands" (market), il tricolon "Touching it beats
-both" (live-products) e il tetracolon "prove the craft" (closing). I fatti/URL portano la
-prova; niente più editorializzazioni. **Sintesi grafica del piano:** nuova `slide-roadmap`
-(Gantt 5×3, vedi §21.1) + `slide-kpi` da 4 righe → **scorecard 2×2** con metric-pill. Le
-stat del metodo ("5 / 3 lingue / 12 check") restano: evidenza fattuale, non vanto.
-**Audit** ancora 0 hard; nuovi soft accettati/whitelisted: `slide-roadmap` (`i` a
-1440/1280 = left-weight del layout editoriale + `a` a 1280 = titolo alto perché riempie
-l'89% dell'altezza) e `slide-kpi` (`a` a 1440/1280 = titolo ~27–29%, appena sopra banda).
-Parità altezza EN/IT/FR a 1280 verificata (nessuno scroll; FR +1px vs EN).
-
-### 21.5 Pending / note
-- **Boardroom Quest** è **"in design"** nel deck (teaser concettuale, nessuna schermata
-  finta): il gioco vero (motore PixiJS+inkjs, multiplayer) NON è costruito — è un
-  workstream del piano. Materiale di ricerca del gioco: `~/Downloads/Boardroom Quest_….md`
-  (non nel repo). Gate **brand/legal Adobe** prima di qualsiasi uso in workshop ufficiale.
-- Il deck **presenta** il piano M1–M3; **non** implementa le sue feature (pilot, SSO,
-  partner access, Quest) — quelle sono fuori scope di questo deliverable.
-
----
-
-## 22. Modifiche core trasversali introdotte da Atelier (verificate su tutte le esperienze)
-
-Due cambi in `packages/core` fatti per Atelier ma **propagati/verificati su tutte** (regola
-di propagazione cross-experience in `CLAUDE.md`).
-
-### 22.1 i18n trilingue (retrocompatibile) — `47bce98`, `2bbd988`, `c9fb186`
-- **`blocks/i18n/T.astro`**: prop **`fr` opzionale** (lo span `data-lang-fr` si renderizza
-  solo se passato); inoltre **inoltra attributi extra** (`data-reveal`, `aria-*`, `id`) al
-  tag wrapper via `...rest` (prima li ingoiava → rompeva silenziosamente le reveal quando
-  messe su `<T>`).
-- **`blocks/i18n/LangToggle.astro`**: prop **`langs`** guidata (default `['en','it']`,
-  tipata `Array<'en'|'it'|'fr'>`). Atelier passa `['en','it','fr']`.
-- Le app bilingui esistenti sono **invariate** (nessuna passa `fr`/`langs`). Contratto
-  consumer trilingue documentato nel docblock di `T`: un'app FR deve (a) whitelistare `'fr'`
-  nell'anti-flash init del suo layout e (b) aggiungere le regole `html[data-lang="fr"]` di
-  hide in `global.css` (il core non spedisce CSS di visibilità per `T`).
-
-### 22.2 Fix gating dopo nav SPA — `e4e88ba` (atelier) + `56a7808` (le altre 5)
-Il runtime inline di solution-gating in ogni `BaseLayout.astro` (nasconde slide gated,
-riscrive `data-deck-next`/`data-deck-prev-href`) **girava solo al full load**: dopo nav
-cross-sezione SPA (ClientRouter / `__edfNavigate`) le slide gated riapparivano e le
-riscritture nav si perdevano. **Fix**: estratti `readActiveIds()` + `applyGating()`, chiamati
-al load **e** su `astro:after-swap`, con guard `window.__edfSolGateBound` contro il
-doppio-bind. Il redirect `pageSolutions` resta **solo** nel path di full load (mai dentro
-after-swap, altrimenti forzerebbe un reload rompendo la SPA). Applicato a tutte e 6 le
-esperienze (atelier, agos, ferrari, unicredit, maxmara, trenitalia); ri-applicazione
-idempotente. Memoria `spa-gating-reapply`.
-

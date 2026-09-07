@@ -1,7 +1,200 @@
-# Handover — Parte 4 di 4
+# Handover — Parte 4 di 5
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
+
+## 18. Ferrari /scoping — modello Adobe-fedele, CI verde & Save resiliente (15 lug 2026)
+
+Tre interventi sequenziali (tutti su `main`, CI verde end-to-end). Riferimento sintetico in §14 (riscritta), memorie `ferrari-scoping-calculator` e `git-push-after-every-commit`.
+
+### 18.1 Riscrittura del motore Collaboration = 1:1 col workbook Adobe (commit `4592c58`, merge `c1184f9`)
+Richiesta: replicare in produzione la logica del file **`docs/Ferrari/Real-Time CDP Collaboration Scoping Calculator.xlsx`** (Adobe "Sales Calculator" di dvest@adobe.com; foglio visibile + sheet nascosta `Drop Downs, Burn, Assump`). Il workbook modella **solo** RTCDP Collaboration → **CJA invariato**.
+- **Reverse-engineering**: estratte tutte le formule via unzip + parse XML (nessuna lib xlsx). Burn rate (mgmt 2 · activation ad-hoc 500 · always-on 100 · measurement 50 credits/1M), assunzioni (match 30% · reach 50% · freq 10× · conv 5%), prezzo listino $5 (H13), pack-tiering (riga 31), funnel matched→impressions/conversions.
+- **Motore riscritto** (`cost-model.ts`): `ScopingAssumptions` Collaboration completamente sostituito (onboardedIds, avgAudienceSize, matchRate, frequencyMultiple, reachPct, conversionRate, measurementEnabled, refreshEveryXDays, adHocCampaignsPerYear, audiencesPerCampaign, measurementCampaignsPerYear, summaryReportsPerCampaign, attributionReportsPerCampaign, alwaysOnRunsPerYear, simpleCampaignsPerYear). Tre modalità **detailed/simple/direct**; **nessun allotment** → `recommendedCreditPack`. Dettaglio formule in §14.2.
+- **Propagazione**: `scenario.ts` (default+prezzo $5), `data/scoping.ts` (FIELD_AUDIT/SEED_SCENARIOS/METRICS/ASSUMPTION_META riscritti; burn ora *ufficiali*), presenter (select mode + measurement boolean, results bar con pacchetto, gating `mode` pipe-separato), README del blocco.
+- **30→28 test cost-model riscritti** per riconciliare cella-per-cella (1.517,04; matrice simple; pack tiers). Build + typecheck ferrari 0 errori. Verificato live: preset Conservative → **921 crediti / pacchetto 1.000 / €5.000** collab; CJA 508M righe / €1.016; totale €6.016.
+- **`.gitignore`**: aggiunta `docs/Ferrari/` (workbook Adobe interno; repo **pubblico** → mai committare). Il **PDF dossier** in quella cartella documenta il vecchio modello ed è ora **obsoleto** (non rigenerato, per scelta).
+
+### 18.2 Fix CI — `tsconfig.json` mancante (commit `6b58b80`, merge `2eb6be7`)
+Sintomo: per ogni push comparivano **due workflow** — `Deploy to GitHub Pages` (verde) e `CI` (rosso). Root cause: `agos-trait-dunion` e `trenitalia-connessioni` erano state create **senza `tsconfig.json`** → `pnpm typecheck` (`astro check`) non ereditava `astro/tsconfigs/strict` → ~1.979 errori fittizi `ts(7026) JSX.IntrinsicElements`. Il Deploy non fa typecheck → restava verde (coppia ingannevole). Fix: aggiunto ad entrambe il `tsconfig.json` standard (`extends astro/tsconfigs/strict` + alias `@edf/core`). Ora **8/8 app** typecheck 0 errori; CI verde. **Regola** (vedi §14.8): ogni nuova app DEVE avere `tsconfig.json`.
+
+### 18.3 Fix Save "check your connection" — persistenza resiliente (commit `77e6b3f`, merge `c4ed338`)
+Root cause: lo store leggeva `edf:sb-session.access_token` grezzo e **non lo rinnovava mai** → JWT Supabase scaduto (utente loggato in Console tempo prima) → insert **401** → `catch` cieco con messaggio generico **e nessun fallback** → scenario perso. Backend (tabella/RLS 0004) ed env deployato **corretti** (build ha l'URL `spwoeihrrr…`).
+- **`scenario-store.ts`**: legge la sessione completa (access/refresh/expires_at); **refresh del token** proattivo (vicino a scadenza) + reattivo su 401 con **retry singolo** (rispecchia `apps/console`); su refresh fallito pulisce la sessione morta. Nuovo `RemoteError` (status HTTP reale), `remoteEnabled()` (niente fetch a URL relativo senza backend), `clearSession()`.
+- **`ScopingCalculator.astro`**: Save **sempre** con fallback localStorage (lavoro mai perso) + messaggi bilingui accurati (sessione scaduta / cloud non disponibile / non configurato / anonimo); Share degrada allo stesso modo.
+- **+7 test store** (`scenario-store.test.ts`, `fetch`/`localStorage` mockati): save fresco, refresh proattivo, retry reattivo su 401, refresh fallito→clear+401, non-configurato, sessione solo-refresh. Totale blocco scoping = **40 test**.
+- **Altre funzioni verificate corrette** e non impattate: Confronta, Esporta JSON/CSV, Reset, preset, load `?scenario=`.
+
+---
+## 19. Ferrari /scoping v2 + sezione «Casi d'uso» (15 lug 2026 pomeriggio) — commit `a3fc86a`
+
+Sessione successiva a §18. Su richiesta cliente (6 dubbi sul configuratore + "aggiungi casi d'uso con tutti i prodotti a perimetro"). **Committato e pushato** (`a3fc86a`, deploy live). Dettaglio tecnico in **§14.9**.
+- **Chiarezza campi** (dubbi 1–3): hint inline su Dimensione audience × Match rate (= audience matchata), Campagne ad-hoc (one-off vs always-on); non più sepolti nel tooltip.
+- **Refresh mode** (dubbio 4): modalità `campaign-linked` (refresh legato alle campagne) oltre a `continuous`.
+- **Istanze partner** (dubbio 5): 1 Ferrari + N partner-tipo (profilo leggero × N); CJA singola.
+- **SKU Base + entitlement** (dubbio 6): selettore pacchetto per party (standalone/Prime/Ultimate), Base flat $20k, crediti inclusi nettati. Ferrari Ultimate → Collaboration €0; costo guidato dai partner.
+- **Slide nuova** `slide-model` («Come si compone il costo») + metriche arricchite.
+- **Sezione nuova «Casi d'uso»** (`casi-duso.astro`): 4 scenari E2E su tutto il perimetro (Collaboration → GenStudio + Express → Attivazione → CJA) + mappa prodotti; nav+admin+cross-nav+deck-audit aggiornati.
+- **TDD sul motore**: 13 nuovi test (party-cost, entitlement, refresh mode, istanze) → **53/53 core verdi**; build monorepo 0 errori; `audit:deck` ferrari (incl. casi-duso) **0 fallimenti**; screenshot 1920 letti.
+- **Metodo**: brainstorming (4 decisioni confermate dall'utente: partner-tipo×N · selettore pacchetto per party · refresh legato alle campagne · sezione dedicata in nav) → TDD → build/audit finale.
+- **Fatto**: commit `a3fc86a` (`feat(scoping): base SKU + entitlement, partner instances, campaign-linked refresh + Use Cases section`) + push su `main`; il commit ignora anche `docs/Ferrovie/` (materiale FS riservato, repo pubblico). Memoria `ferrari-scoping-calculator` aggiornata a v2.
+
+---
+## 20. Ferrari /scoping v3 — standalone-only, costo per istanza editabile, niente prezzi (15 lug 2026, commit `ff03a71`)
+
+Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato troppo "prezzato"). **Committato e pushato** (`ff03a71`). Sostituisce la parte commerciale di §14.9/§19; la matematica dei crediti (funnel/`collabParts`) e le istanze partner **restano**.
+- **Niente riferimenti economici**: rimossi SKU Base ($20k/$5k), `pricePerCredit` ($5), `pricePerMillionRows`, entitlement (crediti inclusi Prime 2.500 / Ultimate 5.000), netting. Rimossi tipo `PartyPackage`, costanti `COLLAB_BASE_SKU`/`PACKAGE_ENTITLEMENTS`, funzione `partyCost`, campi `ferrariPackage`/`partnerPackage`/`*BaseSkuPrice`.
+- **Solo scenario standalone**: nessun selettore pacchetto, nessuna ipotesi RT-CDP.
+- **Costo = ipotesi editabile per istanza** (`UnitPrices` ridefinita): `ferrariInstanceCost` (default 100.000, editabile) + `partnerInstances × partnerInstanceCost` (default 0, editabile). `totalCost = Ferrari + N × partner`. **Niente costo CJA**.
+- **Volumi come metrica (senza €)**: Collaboration Credits stimati + pacchetto consigliato, CJA Rows of Data + ingestion 3× — mostrati come quantità, nessun prezzo.
+- **UI**: results bar = *Collaboration (volumi) · CJA (volumi) · Costo (tua ipotesi: istanza Ferrari + istanze partner)*; sezione form «Perimetro & istanze» = costo istanza Ferrari + n. istanze + costo per istanza partner (volumi partner in advanced). `slide-model` → «Perimetro e costo / Quattro voci, un perimetro» (4 card ridisegnate: istanze · crediti-volume · CJA · costo-lo-imposti-tu). METRICS/ASSUMPTION_META/DISCLAIMER/USE_CASES de-monetizzati. Admin baseline tab → costo istanza Ferrari/partner.
+- **Motore**: `computeSnapshot`/`computeBreakdown` riscritti (volumi + costo per istanza). `partyCost`/entitlement eliminati. Test: rimossi i test party-cost/entitlement, aggiornati snapshot → **47 test core verdi** (35 cost-model + 5 scenario + 7 store).
+- **Bug rapida↔dettagliata**: verificato che lo switch modalità **ri-gate il form e ricalcola** (es. Est. credits 343→720 passando a Rapida) — funziona; il rework del form ha risolto il sintomo riportato.
+- **Verifica**: build monorepo 0 errori, core typecheck 0, `audit:deck` ferrari (8 sez + casi-duso) **0 fallimenti** a 1920/1440/1280, screenshot 1920 letti (calculator detailed+simple, slide-model). Memoria `ferrari-scoping-calculator` aggiornata a v3.
+- **Contesto commerciale (perché standalone + partner a €0)** — non nel deck, guida le scelte del modello: l'intento è **1 istanza Ferrari + ~40 istanze partner/sponsor**, offrendo ai partner **licenze Starter a costo 0** (da cui il default `partnerInstanceCost = 0` e il costo Ferrari editabile). Audience **~5M outside-in, NON confermata dal cliente**. Validazione GTM pianificata con **Lory Mishra** (Principal PMM, Media & Advertising Solutions, Adobe — collega interna che approva/nega): validare il caso d'uso, ottenere le licenze Starter partner a costo 0, definire onboarding + enablement leggero per i partner; presentazione al cliente solo dopo le verifiche con lei. **NON reintrodurre prezzi di listino nel modello** (scelta esplicita del cliente/interna, §20).
+
+---
+
+## 21. Experience Atelier — deck trilingue del piano di crescita (17 lug 2026)
+
+**Cos'è.** `apps/atelier` (`/experience-design-factory/atelier/`) — il **piano di crescita
+enterprise della Factory stessa**, presentato come Exp Design immersivo. **Primo deck
+trilingue EN/IT/FR** (default EN; il lettore primario è una dirigente Adobe con base in
+Francia). **Depubblicata dai listing pubblici il 2026-09-01** (`4cca945`): **non più** in hub
+né showcase (`experiences.ts`); resta nel Super Admin Console (migration `0007_seed_atelier.sql`,
+status **`live`** — non toccata) e la route `/atelier/` è ancora buildata/raggiungibile (solo
+unlinked; vedi backlog §10 per l'eventuale rimozione dal deploy). Estetica propria: **dark editorial**, carbone
+caldo + champagne, **Fraunces + Inter** (coppia non usata da nessun'altra esperienza).
+
+**Contesto (IMPLICITO, mai nel deck).** L'intento reale è un **pitch di sponsorship**
+instradato a una specifica dirigente per un obiettivo di **AI-enablement della workforce
+Adobe**. Nel deck questo NON è mai dichiarato: si legge come un piano di crescita neutro.
+Vincolo di confidenzialità (repo + URL **pubblici**): **nessun nome di persona/org interna**,
+**nessun listino interno**, **nessuna cifra € sulla pagina asks** (solo barre di
+"envelope" relative 100/55/35/15; le cifre stanno in un annex privato). Memoria
+`experience-atelier-deck`. Spec/piano: `docs/superpowers/specs/2026-07-17-experience-atelier-growth-plan-design.md`
+e `docs/superpowers/plans/2026-07-17-experience-atelier-growth-plan.md`.
+
+**Rebranding.** "Experience Atelier" è un nome **solo di presentazione** per QUESTO deck.
+Repo, slug delle app, `@edf/core`, URL, chiavi localStorage restano "experience-design-factory".
+
+### 21.1 Struttura — 8 sezioni / 30 slide (slug · slide ids)
+1. **Overture** (`/`): `slide-cover` (wall di apertura non testuale) · `slide-wall` (6 card **live**, link ai 5 deck cliente + hub) · `slide-thesis`.
+2. **The method** (`/method/`): cover · `slide-genesis` (timeline con **mesi reali dai first-commit git**: Max Mara 15 giu, UniCredit 1 lug, Ferrari 6 lug, FS 13 lug, Agos 14 lug 2026) · `slide-method` (4 step) · `slide-compliance` (tabella claim→prova).
+3. **The capability** (`/capability/`): cover · `slide-anatomy` (diagramma CSS engine/skin/foundation) · **`slide-toggle-demo`** (demo interattiva self-contained di solution-gating, opera con tastiera SENZA far avanzare il deck; degrada a mock statico senza JS) · `slide-console`.
+4. **The multiplication** (`/multiplication/`): cover · `slide-market` · `slide-precedent` · `slide-model`. **Tutte le cifre dal fact sheet** (§21.3).
+5. **New frontiers** (`/frontiers/`): cover · `slide-live-products` · **`slide-quest`** (spotlight Boardroom Quest, teaser pixel-art in CSS, `data-solution="quest"`) · `slide-quest-plan` (`data-solution="quest"`, con gate brand/legal).
+6. **The plan** (`/plan/`): cover · **`slide-roadmap`** (Gantt di sintesi: 5 workstream × 3 milestone, celle champagne, cella vuota dove l'Ecosistema parte a M2, riga "key moments" con gate brand/legal + Hackathon + Summit) · `slide-m1`/`slide-m2`/`slide-m3` (milestone a mid-set 2026 / mid-gen 2027 / mid-apr 2027 con **Adobe Summit 2027, Las Vegas 22–25 mar** dentro M3) · **`slide-kpi`** (scorecard 2×2: card numerate + metric-pill a wrap, non più 4 righe di testo).
+7. **What it takes** (`/asks/`): **sezione gated** (`pageSolutions={['asks']}`) · cover · `slide-resources` (barre relative, **zero €**) · `slide-moments` · `slide-sponsor`.
+8. **Closing** (`/closing/`): `slide-thesis` · `slide-next` (backdrop `bg-stage`: silhouette ballerina sotto spot come immagine di chiusura; `noText="54,38,30,44"`). `nextHref` fa loop → Overture.
+
+Catena nav: ogni pagina ha `prevHref`+`nextHref`; admin `PAGE_REGISTRY` registra tutte le
+28 slide non-index (index escluso, come per agos).
+
+### 21.2 Gating come controllo d'audience
+Due solution id — **`asks`** (intera sezione sponsorship) e **`quest`** (le 2 slide
+Boardroom Quest in frontiers). Servono a **condividere il deck con o senza la richiesta di
+sponsorship**. Con `asks` off: visita diretta a `/asks/` redirige, e la freccia da `/plan/`
+salta ad `/closing/` (in entrambe le direzioni). Con `quest` off: frontiers mostra 2 slide.
+Verificato end-to-end (T16).
+
+### 21.3 Disciplina dei fatti (fact sheet)
+`docs/superpowers/research/2026-07-17-atelier-comparables.md` (24 claim verificati in modo
+adversarial, lista refuted). Regole vincolanti applicate nel copy:
+- **Cifre vendor con attribuzione esplicita** ("Consensus dichiara…", "studio Forrester
+  commissionato da Reprise", "Moderna riferisce / dato del vendor"): Consensus $110M da
+  Sumeru (2023), acquisizioni Peel+Saleo (2026), cicli −29–68%; Reprise Forrester TEI +60%
+  pipeline (feb 2022); Moderna 750 GPT / 40% WAU (OpenAI, apr 2024); SAP serious game
+  (S/4HANA board game 2020, BTP Diamond Game) **senza numeri di outcome**.
+- **VIETATI** (lista refuted): "Consensus 15 of 30", qualsiasi deal Consensus/**SPI**
+  (inesistente), numeri Walnut/Demostack/Klarna/Accenture/Microsoft-copilot, percentuali
+  Learning-Pyramid. **Nessun benchmark BDR/SDR esterno** è sopravvissuto alla verifica →
+  la storia KPI è **auto-misurata** (ci misuriamo noi), non presa in prestito.
+
+### 21.4 Verifica (T16) — esito
+`pnpm build` (tutte le app) verde; `pnpm --filter atelier typecheck` 0 errori. `audit:deck`
+full 8 rotte × 3 viewport: **0 fallimenti hard**; gli unici soft `i` (space-usage) sono
+sulle slide volutamente ariose e **whitelisted**: home cover+thesis, capability cover, asks
+sponsor, closing thesis+next (NON si risolvono restringendo il type — Type & legibility
+contract). Visual sweep letto a 1920 (EN + FR/IT sulle slide più dense): type generoso,
+composizione bilanciata, nessun overflow, reveal visibile. Nav/gating/i18n verificati via
+Playwright. URL deployati (`/`, `/method/`, `/plan/`, `/asks/`) → 200; hub linka atelier.
+
+### 21.5b Pass de-celebrazione + sintesi grafica (20 lug 2026, commit `c49e7db`)
+Su richiesta owner ("mai autocelebrativo" + "slide chiare/sintetiche, elementi grafici e
+piani in formato Gantt"). **Copy de-celebrato** (EN/IT/FR, meaning-preserving, ±10%): tolti
+lo staccato-brag "Weeks per experience. Not quarters." (genesis), "Enterprise-grade… this
+deck is one of them" (overture cover), "deepest content model in the family" (UniCredit),
+"this demo is real" (toggle), "in Adobe hands" (market), il tricolon "Touching it beats
+both" (live-products) e il tetracolon "prove the craft" (closing). I fatti/URL portano la
+prova; niente più editorializzazioni. **Sintesi grafica del piano:** nuova `slide-roadmap`
+(Gantt 5×3, vedi §21.1) + `slide-kpi` da 4 righe → **scorecard 2×2** con metric-pill. Le
+stat del metodo ("5 / 3 lingue / 12 check") restano: evidenza fattuale, non vanto.
+**Audit** ancora 0 hard; nuovi soft accettati/whitelisted: `slide-roadmap` (`i` a
+1440/1280 = left-weight del layout editoriale + `a` a 1280 = titolo alto perché riempie
+l'89% dell'altezza) e `slide-kpi` (`a` a 1440/1280 = titolo ~27–29%, appena sopra banda).
+Parità altezza EN/IT/FR a 1280 verificata (nessuno scroll; FR +1px vs EN).
+
+### 21.5 Pending / note
+- **Boardroom Quest** è **"in design"** nel deck (teaser concettuale, nessuna schermata
+  finta): il gioco vero (motore PixiJS+inkjs, multiplayer) NON è costruito — è un
+  workstream del piano. Materiale di ricerca del gioco: `~/Downloads/Boardroom Quest_….md`
+  (non nel repo). Gate **brand/legal Adobe** prima di qualsiasi uso in workshop ufficiale.
+- Il deck **presenta** il piano M1–M3; **non** implementa le sue feature (pilot, SSO,
+  partner access, Quest) — quelle sono fuori scope di questo deliverable.
+
+---
+
+## 22. Modifiche core trasversali introdotte da Atelier (verificate su tutte le esperienze)
+
+Due cambi in `packages/core` fatti per Atelier ma **propagati/verificati su tutte** (regola
+di propagazione cross-experience in `CLAUDE.md`).
+
+### 22.1 i18n trilingue (retrocompatibile) — `47bce98`, `2bbd988`, `c9fb186`
+- **`blocks/i18n/T.astro`**: prop **`fr` opzionale** (lo span `data-lang-fr` si renderizza
+  solo se passato); inoltre **inoltra attributi extra** (`data-reveal`, `aria-*`, `id`) al
+  tag wrapper via `...rest` (prima li ingoiava → rompeva silenziosamente le reveal quando
+  messe su `<T>`).
+- **`blocks/i18n/LangToggle.astro`**: prop **`langs`** guidata (default `['en','it']`,
+  tipata `Array<'en'|'it'|'fr'>`). Atelier passa `['en','it','fr']`.
+- Le app bilingui esistenti sono **invariate** (nessuna passa `fr`/`langs`). Contratto
+  consumer trilingue documentato nel docblock di `T`: un'app FR deve (a) whitelistare `'fr'`
+  nell'anti-flash init del suo layout e (b) aggiungere le regole `html[data-lang="fr"]` di
+  hide in `global.css` (il core non spedisce CSS di visibilità per `T`).
+
+### 22.2 Fix gating dopo nav SPA — `e4e88ba` (atelier) + `56a7808` (le altre 5)
+Il runtime inline di solution-gating in ogni `BaseLayout.astro` (nasconde slide gated,
+riscrive `data-deck-next`/`data-deck-prev-href`) **girava solo al full load**: dopo nav
+cross-sezione SPA (ClientRouter / `__edfNavigate`) le slide gated riapparivano e le
+riscritture nav si perdevano. **Fix**: estratti `readActiveIds()` + `applyGating()`, chiamati
+al load **e** su `astro:after-swap`, con guard `window.__edfSolGateBound` contro il
+doppio-bind. Il redirect `pageSolutions` resta **solo** nel path di full load (mai dentro
+after-swap, altrimenti forzerebbe un reload rompendo la SPA). Applicato a tutte e 6 le
+esperienze (atelier, agos, ferrari, unicredit, maxmara, trenitalia); ri-applicazione
+idempotente. Memoria `spa-gating-reapply`.
+
+### 22.3 Fix freccia indietro non esce dal deck verso l'hub — `9c3bd24` (7 set 2026)
+Bug: con `localStorage['edf-solutions-*']` valorizzato (tipico dopo l'Admin), la **freccia
+indietro** sulla prima sezione portava alla root dell'**hub** `/experience-design-factory/`.
+Root cause nel runtime di gating: sulla prima/ultima sezione, senza sezione prev/next
+abilitata, il target era `homeFrom(curPrev|curNext)`; ma per la prima/ultima sezione quel
+valore è **già** la home dell'app, e `homeFrom` (rimuove l'ultimo segmento di path) ne toglieva
+uno di troppo → un livello sopra (l'hub). **Fix**: `homeFrom()` deriva ora la home dal **path
+corrente** (`location.pathname` senza lo slug di sezione), che contiene sempre lo slug → mai
+overshoot. Propagato alle **7** experience con questo pattern (unicredit/agos/atelier/eni/
+maxmara/ferrari/mim); **trenitalia era già corretto** (fallback `b = BASE`). Verificato live.
+
+### 22.4 Due regole BINDING nuove in `CLAUDE.md` — `e45d5e5` (7 set 2026)
+Codificate nella sezione «Working rules» di `CLAUDE.md` (ogni experience presente+futura):
+- **Home roadmap = blocchi della stessa grandezza in griglia bilanciata**: le card capitolo
+  della home devono essere equal-size (largh.+altezza) — 6 capitoli → **2 righe da 3** — via
+  `auto-rows-fr` sulla griglia + `h-full` sulle card, senza colonne che lascino l'ultima riga
+  sbilenca (NO `md:grid-cols-4` per 6). Esenti i paradigmi non-card: stepper numerato maxmara,
+  timeline a nodi trenitalia, pillars mim. Applicato a unicredit/eni/agos/ferrari.
+- **`<title>` senza self-duplication**: `BaseLayout` fa `{title} | <SiteName>` e la home passa
+  `title`=nome sito → "SiteName | SiteName" (inquina il link-preview, che legge `<title>` in
+  assenza di tag OG). Guard: `title === SiteName ? title : \`${title} | SiteName\``, su tutte le
+  layout + showcase. Correggeva unicredit/maxmara/agos/trenitalia/eni.
 
 ## 23. Redesign «eccellenza» E2E dei 6 deck (`/impeccable`) — 21 lug 2026, live in `main`
 Ridisegno end-to-end del 100% dell'experience-design di **tutti e 6 i deck** a livello
@@ -131,115 +324,3 @@ Quattro round di feedback owner su screenshot (commit `4c0493e` → `d4a90d7` �
 Verifica di tutti i round: `pnpm --filter trenitalia-connessioni build` verde; `audit:deck` **0 fallimenti HARD × 3 viewport** (soft `a`/`i` = baseline + le 2 nuove slide airy; un overflow transitorio su `slide-adozione` dopo l'aggiunta del pannello Coworker è stato corretto compattando i margini, MAI il type); screenshot 1920 letti di ogni slide toccata (linea, closer, obiezione CDP, connettori). Deck ora a **15 route** in `deck-audit.ts`? — no: le 2 slide di chiusura sono **slide interne** ai `percorso` esistenti (non nuove route), quindi le route restano 13.
 
 ---
-
-## 27. UniCredit — Attribution al centro di «Analizza» + Dossier Attribution login-gated (2 set 2026)
-
-Commit `9d308de` → `d2f67ba` → `45cfcdf` → `a19516f` → `f03c343` (tutti su `main`). **Fonti riservate**: meeting **Giancarlini** 24/07 (`docs/UniCredit/`, git-ignored) + deep-research 2/09; dossier MD completo `docs/UniCredit/DOSSIER-UNICREDIT-ADOBE.md`. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Memoria `unicredit-attribution-adobe-day`.
-
-### 27.1 Tesi (dal meeting Giancarlini)
-- **Attribution ufficiale = last-touch**, di **Group Data Office** (sistema **COR**), blindata → CJA non la sostituisce, la **affianca** (vista complementare).
-- **Gap**: il **lead-to-sale non è misurato** (peso di app/filiale/contact-center/agenti su una vendita attribuita a un solo canale).
-- **Finestra**: la **riconciliazione** (dati Adobe → **Palantir Foundry**, chiude 2026, owner **Giancarlini**) abilita l'**attribution marketing multitouch MTA+MMM** di **Christoph Ramler** (pluriennale; scelta tech **aperta**: CJA / Marketing Campaign Analytics vs build custom). *«The time is now».* Leva commerciale: **cost-per-click → cost-per-sale**.
-
-### 27.2 Deck «Analizza» — 2 slide nuove + riordino + bonifica audit
-- `slide-lasttouch` («Il last-touch dice chi. Non dice come.»): report ufficiale (un canale, last-touch) **vs** vista complementare CJA (barre-peso app/contact center/filiale).
-- `slide-costpersale` («Pagare il marketing sulle vendite, non sui click.»): **MTA vs MMM** complementari, causali con l'incrementalità, «diventa un contratto, non una disputa».
-- Riordino sezione; card **Attribution** in testa al use-case bancario; ritocco lead della cover. Registrate nel `PAGE_REGISTRY` di `admin.astro`.
-- **Audit**: sezione «Analizza» resa **HARD-clean** su 1920/1440/1280. Baseline pre-esistente = **38 failure con HARD** su cxa-brand/banking/llm-mix (verificato con `git stash`); bonificate riducendo copy/densità (tolto pannello CMO da cxa-brand, footnote da llm-mix, card compatte banking, ecc.), **mai il type sotto i minimi**. Residui = 35, tutti **soft** (`a`/`g`/`i`). Screenshot 1920 letti. **Taglio scelto dall'utente: «esplicito e pubblico»** (deck pubblico con la direzione UniCredit esplicita).
-
-### 27.3 Dossier Attribution `/dossier/` — login-gated, bilingue IT/EN, PDF
-- Pagina **unica** (merge dossier+war-room): **orfana** (non in nav) + **`noindex`**.
-- **Sicurezza (scelta dall'utente: «contenuti in Supabase con RLS»)**: il contenuto riservato (nomi, roster, strategia) **NON è nel bundle statico** → vive in **Supabase `restricted_docs`** (jsonb) protetto da **RLS** (read = super admin **OR** ruolo su `unicredit-engagement`; write = super admin), caricato via `fetch` con **Bearer token** dopo login. Sessione **condivisa same-origin** col Console (`localStorage['edf:sb-session']`). Migration **`0008_restricted_docs.sql`** (applicata al DB remoto 2 set via SQL editor). L'accesso si **«attiva» da `/console/users/`** assegnando il ruolo `unicredit-engagement` (o super admin).
-- **Bilingue IT/EN** (toggle; contenuto renderizzato client-side dal JSON, ogni campo `{it,en}`) + **download PDF** (`window.print()` con print stylesheet: fondo bianco, ink scuro, niente chrome).
-- Contenuto: **10 sezioni** (tesi · modello as-is · le 2 tracce · mappa org con link LinkedIn · big ideas · Adobe Day · CJA vs Foundry · dire/non-dire · evidenze · fonti).
-- **Verifica**: build ok; **zero segreti nel bundle** (nomi + LinkedIn = 0 occorrenze nell'HTML statico); sintassi JS del gate ok; `noindex` presente. Il **render è poi stato provato live** via lo shared-link (§27.7); resta solo il QC dello specifico path login super-admin → **P2 §10**.
-
-### 27.4 Gotcha tecnici
-- **Stili `is:global` obbligatori**: il contenuto è **iniettato via JS** (`createElement`), quindi i nodi **non hanno `data-astro-cid`** → gli stili `<style>` **scoped** di Astro (compilati in `.ur-*[data-astro-cid]`) **non li colpiscono** → testo scuro su fondo scuro, invisibile. Fix: `<style is:global>` (classi prefissate `.ur-*`). Stessa famiglia di gotcha già vista sullo showcase (scoped-style su nodi non-Astro).
-- **`noindex`** aggiunto come prop al `BaseLayout.astro` di UniCredit (prima non c'era; ora `{noindex && <meta name="robots" content="noindex, nofollow">}`).
-
-### 27.5 Adobe Day (dal thread «[UniCredit] Adobe & ACN next steps», girato dall'owner)
-Workshop UniCredit **co-Adobe + Accenture**, target **settimana del 14/09/2026**, **on-site** dal cliente, **dry-run 7/09**, mezza giornata; sponsor **Cristina D'Ambrosio** (Head of Retail Digital Channels) **+ IT**; agenda oggi **demo-led** → spingere l'attribution a filo conduttore. Roster completo (Adobe: Vegliante lead, Pellerei, Pagnanelli, Gordiani, Lapiccirella, Gargiulo; ACN: Negri, Magnani, Parri, +Cerutti) **nel dossier MD riservato**, non sulla pagina. Bloccato sul **MYP** del cliente. La casella `agargiulo@adobe.com` **non è collegata** a questa sessione (Gmail connesso = personale) → la ricerca posta l'ha fatta l'owner girando il thread.
-
-### 27.6 Aperti
-- **QC login super-admin specifico** (click PDF/LinkedIn) — il **render + i18n + contenuto** sono **già provati live** via lo shared-link (§27.7, stesso `render()`); resta solo lo specifico path login — **P2 §10**.
-- **Loretta Del Monte** — omonimia da confermare (profilo LinkedIn Risk/P&L ≠ ruolo riconciliazione) — **P2 §10**.
-- **Reference bancarie Adobe EMEA/Italia** — la deep-research non ne ha confermate di pubbliche → chiudere con Industry team.
-
-### 27.7 Deck bilingue IT/EN + Dossier unlisted secret-link (agg. 2026-09-02, dal più recente)
-**Deck UniCredit ora bilingue IT/EN** (Ferrari-parity, **IT default**; commit `0cd4848`). Retrofit di **tutte le 13 sezioni + `UniNavigation`** a `<T en it>` con **LangToggle** in nav (desktop + mobile). IT tenuto **verbatim**; EN idiomatico umano (rubrica `copy-must-be-human`), lunghezze ±10%; **nomi prodotto/persona (Marco/Sofia/Adriana)/numeri/fonti invariati** in entrambe le lingue.
-- **Infra** (le stesse per qualunque retrofit bilingue): `<html data-lang="it">` + anti-flash init in `BaseLayout` (default IT, EN opt-in), regole display `html[data-lang]` in `global.css`, persistenza su `localStorage['edf:lang']` (chiave condivisa col dossier).
-- **Gotcha `CoverHero`**: NON è `<T>`-aware (`title` via `set:html`, ma `eyebrow`/`lead` sono testo escaped). Cover rese bilingui con **due `<CoverHero>` in `<span data-lang-it|en class="contents">`** (l'i18n CSS nasconde l'inattivo; `.contents` non altera il layout) — oppure markup inline `<T>`. 5 cover erano rimaste IT-only dai subagent → uniformate.
-- **Testo JS-injected**: la headline dinamica della home (`data-edf-chapters`, conteggio capitoli) va resa bilingue **nel suo script** (entrambi gli span `data-lang-en|it` nel DOM, riempiti con i number-word EN + IT), non con `<T>` (il `textContent` la clobbererebbe).
-- **Audit bilingue**: `<T>` rende entrambe le lingue ma l'inattiva è `display:none` → l'audit misura solo l'attiva. Aggiunta opzione **`DECK_LANG=en|it`** a `scripts/deck-audit.ts` (setta `edf:lang` prima del load) per auditare la vista EN. Metodo: **baseline-compare** (stash→build→audit originale, poi diff HARD). Esito: **FINAL IT HARD == baseline** (0 nuovi hard; 158 tot vs 170), **EN HARD ⊆ baseline** (152 tot). I 5 tip marginali introdotti in EN/IT (`c` past-inset su home-journey/nba/costpersale/llm-mix; `b`+`c` su persona) risolti con spacing/`min-w-0`/`break-words`, **mai** type sotto i minimi. 6 slide EN lette a 1920. Spec `docs/superpowers/specs/2026-09-02-unicredit-bilingual-en-design.md`. Memoria `unicredit-bilingual`.
-
-**Dossier `/dossier/` — unlisted secret-link (no login)** (commit `c17d37d`+`ccd0373`). Per condividere il dossier riservato coi colleghi **senza login** ma **senza renderlo pubblico** (scelta utente: "rischio minimo, attrito alto"). Migration **`0009_restricted_doc_share.sql`** (applicata al DB remoto via `supabase db query --linked`):
-- colonna `restricted_docs.share_token uuid` (unique quando valorizzata) + RPC **`get_shared_doc(p_token uuid)` `SECURITY DEFINER`** (`grant execute to anon`) che ritorna **solo `content`** per il token esatto (`null` token non matcha mai). **RLS invariata** — la RPC è l'unico escape hatch stretto e auditabile.
-- La pagina legge **`?t=<uuid>`**: presente → `POST /rest/v1/rpc/get_shared_doc` con l'anon key, **nessun login**; assente → gate login/RLS classico (§27.3). Resta **`noindex`** e il contenuto **non è nel bundle** → link-only, non indicizzabile.
-- **EN di default** sul path token (`ccd0373`): colleghi internazionali; login/deck restano IT; override `?lang=en|it`.
-- **Revoca/rotazione**: `update restricted_docs set share_token = gen_random_uuid()` (nuovo link, vecchio morto) o `= null` (disabilita) `where slug='unicredit-attribution'`. Il **token è un segreto** (mai in repo/handover): leggerlo con `supabase db query --linked "select share_token …"`.
-- **Verificato E2E live**: render col token in browser pulito (nessuna sessione), gate login senza token, RPC → null su token errato, `noindex` presente. Caveat accettato dall'utente: chi ha il link può inoltrarlo (trust link-based); il doc si auto-dichiara «non far circolare fuori da Adobe».
-
----
-
-## 28. «La voce del Ministero» (ex Alfabeti) — Ministero dell'Istruzione e del Merito (MIM) (agg. 2026-09-07)
-
-**App**: `apps/mim-alfabeti` · base `/mim-alfabeti/` · deck immersivo per il **MIM**. **IT default + toggle EN**; palette **light istituzionale** (carta/blu, display **Titillium Web** + Inter). **§28.1–3 = storia** (prima customer re-arch + dossier token, 2–3 set). **§28.4–5 = redesign 100% B1 + imagery Firefly (4 set).** **§28.6 = STATO ATTUALE (7 set): arricchimento contenuti + persona Giulia + imagery non-letterform + `/trasformazione` rimossa.**
-
-### 28.1 Ri-architettura customer-facing (2 set 2026, commit `acab255`)
-Il deck originale (`fadb1e3`, sessione precedente) era di fatto il **memo go-to-market interno** di Adobe reso in slide: caveat prodotto («AJO nasce marketing-oriented», «pledge USA non auditati»), chip `INF`, linguaggio «riposizionare / AEM non vince», competitor Microsoft/Google, «chi intercettare» (dirigenti MIM) e un'intera sezione **«realtà»** (competitor + «cose da non dire») gated dalla soluzione `interno` **ma comunque nel bundle statico pubblico**. Bonificato E2E:
-- **7 route customer** (era 8): `index` · `domanda` · `voce` [B1 hero] · `competenze` · `accesso` · `persone` · `rotta`. Ogni slide riscritta dal **POV del cliente** (racconto **al** Ministero), zero contenuto interno.
-- **`realta` eliminata** (`git rm`); soluzione di gating **`interno` rimossa** da `AlfabetiNavigation` + `admin.astro` (`SOLUTIONS` ora vuoto) + `SECTION_FLOW` (BaseLayout) + `scripts/deck-audit.ts`; label «Dossier» orfana tolta dalla nav.
-- `accesso` riscritta in chiave **valore-per-il-Ministero** («dove Adobe si aggiunge ai mattoni pubblici»: DAM/hub governato, ALM sotto ente accreditato) — via il vecchio «riposizionare/non vince». `rotta` chiusa come **percorso in 4 passi PER il MIM** (era «quattro mosse per vendere» + «chi intercettare», ora eliminate).
-- `voce` slide «come funziona»: la nota interna su AJO sostituita da una **nota governance** customer (profilo governato, privacy-first, l'istituzione controlla cosa si invia/misura).
-- **Fonti cliccabili** (`4a93b27`): tutte le righe `.alf-src` (index/voce/competenze/accesso) ora con link ai domini reali (gov.it, ACN, Adobe, JRC…), stile `.alf-src a`.
-- `audit:deck` **0 hard** su 1920/1440/1280 (29 soft `a`/`i` su hero/cover ariose, accettati per contratto); ogni slide cambiata **letta a 1920**; grep di sicurezza sul bundle → **zero contenuti interni/competitor**.
-
-### 28.2 Dossier interno `/dossier/?t=<token>` (2–3 set 2026, commit `acab255`/`dd6eadf`/`4a93b27`)
-Tutto il materiale interno è stato spostato in un **dossier riservato** (stesso pattern UniCredit §27.7): `apps/mim-alfabeti/src/pages/dossier.astro`, **orfana + `noindex`**, palette Alfabeti navy/blu (classi `.mim-*`, `<style is:global>`), **bilingue IT/EN** (**IT default anche via `?t=`**, `dd6eadf`) **+ PDF** (`window.print`).
-- Accesso: **RLS via login** (super admin o ruolo su `mim-alfabeti`, da `/console/users/`) **OPPURE** unlisted **secret-link `?t=<uuid>`** senza login (RPC `get_shared_doc`, migration `0009`). Contenuto **solo su Supabase**, mai nel bundle.
-- Contenuto = **16 sezioni** (tutto il `DOSSIER-MIM-ADOBE.md`: tesi · fatti PNRR/quadri UE/finestra IA/procurement/competitor · big idea A+B con i caveat estratti dal deck · interlocutori · partner · sequenza · rischi · open question · cose-da-non-dire · update 3° ciclo · fonti) con **fonti linkate per-sezione** (§02–06,10) + biblioteca §16 (**32 link** totali).
-- **⚠️ Seed riservato FUORI dal repo pubblico**: il classifier auto-mode ha (correttamente) bloccato il commit del seed col contenuto (nomi/telefoni funzionari, «cose da non dire», intel competitiva). La SQL vive git-ignored in **`docs/Ministero dell'Istruzione/0011_seed_mim_dossier.sql`** (applicata al DB remoto out-of-band); una **nota tracciata** `supabase/migrations/0011_mim_dossier.README.md` spiega dov'è. Il **token è un segreto** (mai in repo/handover): leggerlo con `supabase db query --linked "select share_token from restricted_docs where slug='mim-adobe'"`.
-
-### 28.3 Console + fatti verificati
-- **Seed console** `0010_seed_mim.sql` (applicata al DB, **tracciata** — solo naming/URL pubblici): registra **`mim-alfabeti` + `eni-orbita`** in `experiences` → **card ora visibili in `/console/`** (chiude i due P2 «seed console»).
-- Fatti verificati e regole (naming ACN, art.68 CAD, Modello Scuole gratuito, S.O.F.I.A., decreto IA €100M, DigComp 3.0/DigCompEdu) restano nel dossier + memoria **`mim-adobe-prep`**. Spec: `docs/superpowers/specs/2026-09-02-mim-alfabeti-customer-rearch-e-dossier-design.md` (sanificata dai nomi riservati).
-
-### 28.4 Redesign 100% sulla big idea B1 — «La voce del Ministero» (4 set 2026, commit `533ff5b`)
-Su richiesta utente il deck è stato **rifocalizzato esclusivamente sulla PRIORITÀ 1 del dossier** (B1: la comunicazione del MIM al personale — docenti/dirigenti/ATA — via **AEP·RT-CDP·AJO·CJA**) e **rinominato «La voce del Ministero»**. Tarato sull'interlocutrice **DG Gianna Barbieri (DGSIS)** — statistica, owner digitale/dati → tono **dati/governance/compliance**, caveat onesti con chip **[VER]/[INF]**. **Rimosse le A-idee** (IA sicura, competenze, docs, Digital Academy): niente più fuori-fuoco.
-- **Slug interni invariati** (domanda/voce/competenze/accesso/persone/rotta — nessun redirect da rifare) ma **etichette nav + contenuti rimappati** sull'arco: **Apertura** (orchestrare·misurare·governare) → **La domanda** (canale-personale = punto cieco, frammentato/non misurato) → **La proposta** [voce] (spazio libero: ComUnica=famiglie, SEND=notifiche legali, nessuno copre il personale + layer CDP→AJO→CJA **accanto** a Piattaforma Unica) → **I processi** [competenze] (5 processi come journey: immissioni/mobilità/supplenze/GPS-GaE/formazione + immissione in ruolo lavorata) → **Governance** [accesso] (stack ACN-qualificato SA-3795/3799/3973/3798, veicoli Consip/Cloud-PA, **perimetro-dati Livello 1**, uso istituzionale di AJO da fondare, privacy by design) → **La misura** [persone] (5 KPI CJA: recapito/comprensione/azione/carico help-desk/**equità territoriale** + segmenti docente/dirigente/ATA come audience RT-CDP) → **La rotta** (sequenza d'ingaggio B1 + chiusura).
-- Aggiornati **`AlfabetiNavigation`** (brand «La voce» + label), **`admin.astro` PAGE_REGISTRY** (id slide nuovi), **`BaseLayout`** (title/description), pagina scroll **`/trasformazione/`** ri-temata su B1.
-- **UAT leggibilità = SOLO programmatica** (⚠️ in quella sessione il **budget-immagini** della conversazione rifiutava la lettura di ogni screenshot): misura via Playwright → font ≥ minimi a **1920/1280** (body 16–17px, titoli 18–21px, eyebrow 23px), colori tier leggibili (inchiostro/carta, ardesia-700/carta-tenue) su backdrop scrimati, **zero overflow/scroll nascosto** (altezze contenuto ≤~680px ≪ 1080). Unico fix: **chip `.alf-chip` 0.68→0.78rem** (leggibilità big-screen). typecheck 0, build verde (10 pagine). → **P2 §10: rifare la UAT VISIVA a vista** quando le immagini sono disponibili. **Font-hook «Inter» = falso positivo** (display = Titillium Web, typeface PA).
-
-### 28.5 Imagery Firefly + pagina scroll-video (4 set 2026, commit `c90e0a7`/`c3994a0`/`e0a1292`)
-> ⚠️ **Parzialmente SUPERATA da §28.6 (7 set):** l'imagery letterform è stata sostituita con concept **non-letterform** (i 3 backdrop → **23 backdrop distinti per-slide** + 4 keyframe «di luce»), e la **pagina `/trasformazione/` è stata RIMOSSA** insieme al video e ai keyframe. Resta valida la descrizione dell'engine Firefly (§29). Storico:
-
-Motore/dettaglio in **§29**. Applicazione su MIM:
-- **3 backdrop bespoke** generati con Firefly (concept **A+C**: `bg-navy` alfabeto luminoso su navy · `bg-carta` manoscritto/registro d'archivio a inchiostro blu · `bg-carta-soft` pile di carta calda), palette **blu Italia + carta** bloccata **via prompt** (`grade:'none'`; il `duotone` condiviso è marrone). **Gotcha**: le `.alf-bg*` erano `<div>` ad **altezza 0** (mancava `position:absolute;inset:0`) → i backdrop non si erano MAI visti; ora full-bleed con immagine sotto **scrim in-tinta** per la leggibilità. Credito **C2PA** discreto e bilingue.
-- **Pagina scroll `/trasformazione/`** (non-deck; usa BaseLayout senza DeckContainer): sticky 400vh, **video Firefly scrubbato** sullo scroll (`currentTime`+priming iOS) con **motion cinematografico** di riserva (Ken Burns + push-in + grana), **4 milestone** B1 (frammentazione→profilo governato→journey→voce misurata), progress bar, fallback `prefers-reduced-motion` (lista statica). CTA dalla slide di chiusura di `rotta`. I **4 keyframe** Firefly restano poster/fallback.
-- ⚠️ **Il clip video è quasi «AI-slop»** (giudizio utente) → all'epoca P1 «rigenerare». **RISOLTO diversamente in §28.6 (7 set): la pagina `/trasformazione/` e il video sono stati RIMOSSI** (non più nel flusso dopo la nuova chiusura). Storico: sorgente 72MB in `docs/Ministero dell'Istruzione/` (git-ignored); scrub-encoded 16MB sul GitHub Release tag `media` (`alfabeto-competenza.mp4`) — il Release e il poster in `public/media/` possono essere ripuliti quando comodo.
-
----
-
-### 28.6 Arricchimento contenuti + persona Giulia + imagery non-letterform + rimozione /trasformazione (7 set 2026, commit `3fd2d9a`/`81d244e`/`af499f7`)
-Tre round su feedback utente + un **`/deep-research`** (108 agenti, 24 claim verificati: personale scolastico IT, immissioni/supplenze/GPS/mobilità, canali di comunicazione MIM e loro lacune). Il deck passa a **8 sezioni pubbliche** (aggiunta **La storia**).
-- **Nuova sezione `/storia` «La storia di Giulia»** (persona = docente precaria di sostegno), inserita **tra `competenze` e `accesso`**. 3 slide: `slide-ritratto` (chi è + dato verificato **234.576 supplenti 2022/23, 26,9%**), `slide-notte` («com'è oggi»: 150 preferenze «al buio», bollettini USP, revoche), `slide-evolve` («come cambia»: profilo governato RT-CDP + journey AJO reso come **card UI HTML** — non immagine → niente volti/slop; riusa il reveal `clienteling` scan). Registrata in `AlfabetiNavigation`, deck chain, `admin.astro` PAGE_REGISTRY, `SECTION_FLOW` (BaseLayout), `scripts/deck-audit.ts` ROUTE_SETS.
-- **Casi d'uso documentati** con numeri verificati+datati+attribuiti: `41.901 immissioni 2025/26` (domanda), scala audience (persone). **Ogni fonte citata ha un link diretto** (`.alf-src a` / `.alf-stat-src a`), su **tutte** le slide (Sky TG24/MIM, Scuola Informa, MiurIstruzione, Orizzonte Scuola, Tuttoscuola, FLC CGIL, ACN, Consip, PagoPA). Personas dirigenti/ATA **senza cifre inventate** (nessun conteggio unico pubblicato — segnalato come parte del gap).
-- **Imagery non-letterform** (il concept a lettere generate era AI-slop): 4 keyframe «arco di luce» + **23 backdrop distinti per-slide** (navy/carta/soft) via CSS var `--bg-src` sui div `.alf-bg*` (prima 3 immagini ripetute su 23 slide). Manifest **`backdrops.manifest.ts`**. Gotcha ripreso: un paper generato come «libro aperto» letterale → rigenerato astratto.
-- **Motion** (transform/opacity, reduced-motion safe): drift continuo dei backdrop, view-transition fade+scale tra sezioni, cascade `data-stagger` su card/righe.
-- **Correzioni customer-facing / credibilità**: slide-trust (`accesso`) da audit interno a **asserzioni sicure** (rimossi chip VERIFICATO/DA FONDARE → «Tre garanzie sul dato del personale»); **journey di Giulia reso difendibile su privacy** (rimosso «Posizione GPS aggiornata» = push del punteggio/dato sensibile → avvisi **procedurali** non sensibili che rimandano al canale ufficiale, «non un database di marketing»); claim assoluto «non ha mai misurato» **ammorbidito** (persone cover «oggi non misura» + sottotitolo grounded; thesis «misurate da nessuno» → «quasi mai misurate»).
-- **Chiusura ridisegnata** (`rotta` slide-close): rimossa la CTA al flythrough; sign-off con reprise «Orchestrare·Misurare·Governare» (bookend con l'apertura) + co-brand.
-- **`/trasformazione` RIMOSSA** (`af499f7`): pagina test flythrough, orfana dopo la nuova chiusura. Cancellati `trasformazione.astro`, `keyframes.manifest.ts`, `video.manifest.ts`, i 4 keyframe `kf-transform-*`. **Deck ora 10 pagine build** (8 sezioni + admin + dossier). `scripts/build-video.ts` (tooling generico) resta.
-- **Verifica**: `audit:deck` **0 HARD** a 1920/1440/1280 (soft `a`/`i` = baseline, non toccati); typecheck 0; **UAT VISIVA completa** (chiude il P2 «UAT visiva MIM»): ogni slide letta a 1920 (journey card, misura cover, tutte le source-line, i 23 backdrop). Memoria **`mim-alfabeti-enrichment`**. Spec `docs/superpowers/specs/2026-09-04-mim-alfabeti-enrichment-design.md`.
-
----
-
-## 29. Firefly asset + video pipeline (engine build-time riusabile) (agg. 2026-09-07)
-
-Nata su MIM (§28.5) ma **riusabile da tutte le esperienze**. Tutto **build-time**, chiavi in `.env` dell'app (gitignored, mai in CI/repo).
-
-- **`scripts/lib/firefly.ts`** — client isolato dependency-free (`fetch`): `getAccessToken()` (OAuth IMS `client_credentials`), `generateImage()` (Images v3, sync+poll), `generateVideo()` (job async, poll `statusUrl`, download MP4), `fireflyCredentialsFromEnv()` + `fireflyVideoCredentialsFromEnv()`. Endpoint/scope **env-overridable**: `FIREFLY_IMS_URL`, `FIREFLY_API_URL` (def. `https://firefly-api.adobe.io`), `FIREFLY_SCOPES` (def. `openid,AdobeID,firefly_api,ff_apis`), `FIREFLY_VIDEO_PATH` (def. `/v3/videos/generate`). Riusato tal quale dal futuro proxy runtime (Fase 2).
-- **Immagini** — tipo slot **`firefly`** in `scripts/build-assets.ts` (accanto a `stock`=Pexels, `aigen`=FLUX locale, `code`); `packages/core/src/assets/types.ts` esteso (`AssetType`+`'firefly'`, campi `negativePrompt/contentClass/seed/fireflySize`, helper `fireflySizeFor()`). ⚠️ **Firefly Images v3 accetta solo size fisse** (16:9 → richiedi `2688×1536` poi crop a 2400; `2048×1152` dà 400 `Unsupported aspect ratio`). Provenienza in `provenance.json` con `model/seed/contentCredentials`. Comando `pnpm --filter <app> assets:build` (subset via `--manifest`/`--out`). **Funziona** (chiave immagini valida).
-- **Video** — `scripts/build-video.ts` + script `video:build` (⚠️ il manifest MIM `apps/mim-alfabeti/video.manifest.ts` è stato **rimosso** col ritiro di `/trasformazione`, §28.6; l'engine resta riusabile creando un nuovo manifest): genera con `generateVideo()`, poi **ffmpeg scrub-encode** (`-g 1` keyframe densi + `+faststart`) + poster. ⚠️ **Generate Video API = ENTERPRISE-only, oggi NON accessibile**: l'«Audio & Video API - Firefly Services» self-serve include solo Reframe/Translate-LipSync/TTS/Avatar/Dynamic-Graphics-Render, **non il text-to-video**. Il generativo è **`generateVideoV3`** (via Adobe Sales, no self-serve). Diagnosi chiavi: `403003 "Api Key is invalid"` = credenziale non agganciata a un prodotto Firefly (risolto condividendo il progetto con la key immagini) → poi `/v3/videos/generate` dà **404 corpo-vuoto** = backend raggiunto ma modello non provisionato. **Accesso enterprise richiesto (P1 §10)**. Anche il connettore MCP «Adobe for creativity» **non** fa video generativo. Workaround usato = **Firefly web app** («Piano A»): genera il clip a mano → droppa l'MP4 → `video:build`/Release.
-- **Delivery MP4** (pattern maxmara): clip su **GitHub Release tag `media`** (repo leggero; `gh release upload media <file> --clobber`), poster committato in `public/media/`. `.gitignore` blocca solo `docs/*.mp4` (gli MP4 in `public/` sarebbero committabili, ma preferiamo il Release).
-- Fasi: **Fase 1 (imagery)** fatta · **Fase 3 (video/motion)** avviata su MIM · **Fase 2 (proxy runtime demo live)** da fare (P2 §10). Memoria **`firefly-asset-pipeline`**.
