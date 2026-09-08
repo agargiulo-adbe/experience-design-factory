@@ -180,9 +180,13 @@ export async function generateImage(
 }
 
 // ── video (Firefly Video Model, async) ──────────────────────────────
-// Discovered on this tenant: the reachable route is `/v3/videos/generate`
-// (the `-async` variant 404s). Override with FIREFLY_VIDEO_PATH if yours differs.
+// Route: `/v3/videos/generate` (the `-async` variant 404s). The Video API also
+// REQUIRES an `x-model-version` header: without it the gateway answers an
+// EMPTY 404 (easily misread as "model not provisioned" — that was the 2026-09-04
+// diagnosis; verified 2026-09-08 that the same credential returns 202 once the
+// header is sent). Override both via env if your tenant differs.
 const VIDEO_PATH = process.env.FIREFLY_VIDEO_PATH || '/v3/videos/generate';
+const VIDEO_MODEL = process.env.FIREFLY_VIDEO_MODEL || 'video1_standard';
 
 export interface FireflyVideoOptions {
   prompt: string;
@@ -232,6 +236,7 @@ export async function generateVideo(
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    'x-model-version': VIDEO_MODEL,
   };
 
   const payload: Record<string, unknown> = { prompt: opts.prompt };
