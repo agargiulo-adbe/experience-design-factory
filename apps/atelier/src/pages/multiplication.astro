@@ -11,17 +11,36 @@ import { mediaProps } from '../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// "The loom" — a warp of champagne threads over warm carbon, plus a top glow for
-// depth. Explicit rgba so the deck audit's contrast parser reads it (no oklab).
-const loom =
-  'background:' +
-  'repeating-linear-gradient(90deg, rgba(201,169,106,0.05) 0 1px, transparent 1px 88px),' +
-  'radial-gradient(125% 80% at 50% -8%, rgba(201,169,106,0.09), transparent 56%),' +
-  'var(--surface-primary);';
-const loomSoft =
-  'background:' +
-  'repeating-linear-gradient(90deg, rgba(201,169,106,0.045) 0 1px, transparent 1px 88px),' +
-  'var(--surface-secondary);';
+// The model — three threads, each widening the weave from one toward fifty.
+const modelThreads = [
+  {
+    n: '1',
+    title: { en: 'Guided intake', it: 'Brief guidato', fr: 'Brief guidé' },
+    body: {
+      en: "A shareable brief skill interviews the seller and produces a structured brief the engine can build from. It exists today.",
+      it: "Un brief guidato condivisibile intervista il venditore e produce un brief strutturato da cui il motore costruisce. Esiste già.",
+      fr: "Un questionnaire de brief partageable interroge le vendeur et produit un brief structuré dont le moteur peut partir. Il existe déjà.",
+    },
+  },
+  {
+    n: '2',
+    title: { en: 'Templates and self-service', it: 'Template e self-service', fr: 'Modèles et self-service' },
+    body: {
+      en: "A template gallery and a guided wizard let a BDR or AE assemble an experience without touching code.",
+      it: "Galleria di template e procedura guidata: un BDR o un AE monta un'esperienza senza toccare codice.",
+      fr: "Galerie de modèles et assistant guidé : un BDR ou un AE assemble une expérience sans toucher au code.",
+    },
+  },
+  {
+    n: '3',
+    title: { en: 'Partners', it: 'Partner', fr: 'Partenaires' },
+    body: {
+      en: "Adobe partners co-build joint experience designs with their own brand next to ours, on the same engine.",
+      it: "I partner Adobe co-firmano experience design congiunti, il loro brand accanto al nostro, sullo stesso motore.",
+      fr: "Les partenaires Adobe co-signent des expériences conjointes, leur marque à côté de la nôtre, sur le même moteur.",
+    },
+  },
+];
 ---
 <BaseLayout
   title="The multiplication"
@@ -36,9 +55,9 @@ const loomSoft =
     prevHref={href(base, '/capability')}
   >
 
-    <!-- ── SLIDE 0: Cover — one thread, fifty ─────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" class="mult-slide">
-      <div slot="backdrop" class="absolute inset-0" style={loom} aria-hidden="true"></div>
+    <!-- ── SLIDE 0: Cover — one thread, fifty (detail cut) ───────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="detail">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-loom')}
@@ -46,14 +65,14 @@ const loomSoft =
         scrim="bg-transparent"
       />
 
-      <div class="w-full max-w-5xl mx-auto flex flex-col items-center">
+      <div class="atl-frame flex flex-col items-center">
+        <p class="atl-cover-num mb-3" aria-hidden="true" data-display data-reveal>03</p>
         <T
           as="p"
           en="The multiplication"
           it="La moltiplicazione"
           fr="La multiplication"
-          class="text-center font-semibold uppercase text-[var(--accent-primary)] mb-5"
-          style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em;"
+          class="atl-cover-kicker mb-5"
           data-reveal
         />
         <T
@@ -68,9 +87,9 @@ const loomSoft =
         />
 
         <!-- the loom fan: one thread on the left, fifty on the right -->
-        <div class="mult-fan w-full max-w-3xl mb-8" data-reveal data-reveal-delay="0.24" aria-hidden="true">
-          <span class="mult-fan-cap mult-fan-cap--one">1</span>
-          <svg class="mult-fan-svg" viewBox="0 0 560 132" preserveAspectRatio="none" fill="none">
+        <div class="loom-fan w-full max-w-3xl mb-8" data-reveal data-reveal-delay="0.24" aria-hidden="true">
+          <span class="loom-fan-cap loom-fan-cap--one">1</span>
+          <svg class="loom-fan-svg" viewBox="0 0 560 132" preserveAspectRatio="none" fill="none">
             <g stroke="var(--color-champagne)" stroke-width="1">
               <line x1="16" y1="66" x2="544" y2="10"/>
               <line x1="16" y1="66" x2="544" y2="30"/>
@@ -82,16 +101,15 @@ const loomSoft =
             </g>
             <circle cx="16" cy="66" r="5" fill="var(--color-champagne)"/>
           </svg>
-          <span class="mult-fan-cap mult-fan-cap--many">50</span>
+          <span class="loom-fan-cap loom-fan-cap--many">50</span>
         </div>
 
         <T
           as="p"
           en="Today this is one person's craft. The next nine months turn it into a shared capability."
-          it="Oggi è il mestiere di una persona. Nei prossimi nove mesi diventa una capability condivisa."
+          it="Oggi è il mestiere di una persona. Nei prossimi nove mesi diventa una capacità condivisa."
           fr="Aujourd'hui, c'est le métier d'une personne. Les neuf prochains mois en font une capacité partagée."
-          class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
-          style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55;"
+          class="atl-lede"
           data-reveal
           data-reveal-delay="0.32"
         />
@@ -105,136 +123,136 @@ const loomSoft =
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1: Market evidence ───────────────────────────────── -->
-    <Slide id="slide-market" bg="secondary" align="left" class="mult-slide">
-      <div slot="backdrop" class="absolute inset-0" style={loomSoft} aria-hidden="true"></div>
+    <!-- ── SLIDE 1: Market evidence (detail cut) ─────────────────── -->
+    <Slide id="slide-market" bg="secondary" align="left" data-solution="detail">
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl">
-        <T
-          as="p"
-          en="Market evidence"
-          it="Evidenze di mercato"
-          fr="Preuves de marché"
-          class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
-          data-reveal
-        />
+      <div class="atl-frame">
         <T
           as="h2"
           en="Buyers already pay for experience-led selling"
           it="C'è già chi paga per l'experience-led selling"
-          fr="L'experience-led selling a déjà des acheteurs"
-          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-6"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          fr="La vente par l'expérience a déjà ses acheteurs"
+          class="slide-title text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem);"
           data-reveal
-          data-reveal-delay="0.08"
         />
 
-        <div class="grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.16">
-          <div class="mult-panel">
-            <div class="mult-panel-head">
-              <T as="span" en="The category" it="La categoria" fr="La catégorie" class="mult-tag" />
-              <span class="mult-figure">$110M</span>
+        <div class="grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.1">
+          <div class="loom-panel">
+            <div class="loom-panel-head mult-head">
+              <T as="span" en="The category" it="La categoria" fr="La catégorie" class="loom-tag mult-tag" />
+              <span class="mult-figure-block">
+                <span class="loom-figure">$110M</span>
+                <T
+                  as="span"
+                  en="Sumeru round, Business Wire, Mar 2023"
+                  it="Round Sumeru, Business Wire, mar 2023"
+                  fr="Tour Sumeru, Business Wire, mars 2023"
+                  class="mult-figure-src"
+                />
+              </span>
             </div>
             <T
               as="p"
               en="Demo-experience platforms are a funded product category: Consensus raised $110M from Sumeru Equity Partners in 2023 and consolidated the space in 2026 by acquiring Peel and Saleo."
               it="Le piattaforme di demo experience sono una categoria finanziata: nel 2023 Consensus ha raccolto 110M$ da Sumeru Equity Partners e nel 2026 ha consolidato il settore acquisendo Peel e Saleo."
-              fr="Les plateformes de démo sont une catégorie financée&nbsp;: Consensus a levé 110&nbsp;M$ auprès de Sumeru Equity Partners en 2023, puis consolidé le secteur en 2026 en rachetant Peel et Saleo."
-              class="mult-panel-body"
+              fr="Les plateformes de démo sont un marché déjà financé&nbsp;: Consensus a levé 110&nbsp;M$ auprès de Sumeru Equity Partners en 2023, puis consolidé le secteur en 2026 en rachetant Peel et Saleo."
+              class="loom-panel-body"
             />
             <T
               as="p"
               en="Business Wire, Mar 2023 · PR Newswire, Apr–Jun 2026"
               it="Business Wire, mar 2023 · PR Newswire, apr–giu 2026"
-              fr="Business Wire, mars 2023 · PR Newswire, avr–juin 2026"
-              class="mult-src"
+              fr="Business Wire, mars 2023 · PR Newswire, avr.–juin 2026"
+              class="mult-src mt-auto"
             />
           </div>
 
-          <div class="mult-panel">
-            <div class="mult-panel-head">
-              <T as="span" en="Claimed impact" it="Impatto dichiarato" fr="Impact déclaré" class="mult-tag" />
-              <span class="mult-figure">+60%</span>
+          <div class="loom-panel">
+            <div class="loom-panel-head mult-head">
+              <T as="span" en="Claimed impact" it="Impatto dichiarato" fr="Impact déclaré" class="loom-tag mult-tag" />
+              <span class="mult-figure-block">
+                <span class="loom-figure">+60%</span>
+                <T
+                  as="span"
+                  en="Forrester TEI commissioned by Reprise, Feb 2022"
+                  it="Forrester TEI commissionato da Reprise, feb 2022"
+                  fr="TEI Forrester commandé par Reprise, févr. 2022"
+                  class="mult-figure-src"
+                />
+              </span>
             </div>
             <T
               as="p"
               en="The category sells on speed: Consensus itself reports sales cycles shortened by 29–68%; a Reprise-commissioned Forrester study reports a 60% lift in pipeline conversion."
               it="La categoria vende velocità: Consensus dichiara cicli di vendita ridotti del 29–68%; uno studio Forrester commissionato da Reprise riporta +60% di conversione in pipeline."
               fr="La catégorie se vend sur la vitesse&nbsp;: Consensus annonce des cycles de vente réduits de 29–68&nbsp;%&nbsp;; une étude Forrester commandée par Reprise rapporte +60&nbsp;% de conversion du pipeline."
-              class="mult-panel-body"
+              class="loom-panel-body"
             />
             <T
               as="p"
               en="Vendor-reported figures: Consensus releases 2023–2026; Forrester TEI for Reprise, Feb 2022"
               it="Dati dichiarati dai vendor: comunicati Consensus 2023–2026; Forrester TEI per Reprise, feb 2022"
               fr="Chiffres déclarés par les éditeurs&nbsp;: communiqués Consensus 2023–2026&nbsp;; TEI Forrester pour Reprise, févr. 2022"
-              class="mult-src"
+              class="mult-src mt-auto"
             />
           </div>
         </div>
 
-        <div class="mult-quote" data-reveal data-reveal-delay="0.26">
-          <T
-            as="p"
-            en="Those are demo products, bought by sales teams. This is the same need, met inside Adobe."
-            it="Quelli sono prodotti per demo, comprati dai team di vendita. Qui c'è lo stesso bisogno, coperto dentro Adobe."
-            fr="Ce sont des produits de démo, achetés par les équipes commerciales. Ici, le même besoin, couvert chez Adobe."
-            class="mult-quote-text"
-          />
-        </div>
+        <T
+          as="p"
+          en="Sales teams already pay for demo tools. The Atelier covers a neighbouring need in-house."
+          it="I team di vendita pagano già strumenti per le demo. L'Atelier copre un bisogno vicino, fatto in casa."
+          fr="Les équipes commerciales paient déjà des outils de démo. L'Atelier couvre un besoin voisin, en interne."
+          class="mult-close"
+          data-reveal
+          data-reveal-delay="0.2"
+        />
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: Precedents ────────────────────────────────────── -->
-    <Slide id="slide-precedent" bg="primary" align="left" class="mult-slide">
-      <div slot="backdrop" class="absolute inset-0" style={loom} aria-hidden="true"></div>
+    <!-- ── SLIDE 2: Precedents (detail cut) ──────────────────────── -->
+    <Slide id="slide-precedent" bg="primary" align="left" data-solution="detail">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl">
-        <T
-          as="p"
-          en="Precedents"
-          it="Precedenti"
-          fr="Précédents"
-          class="slide-eyebrow text-[var(--accent-primary)] mb-3"
-          data-reveal
-        />
+      <div class="atl-frame">
         <T
           as="h2"
           en="The playbook has precedents"
           it="Il playbook ha dei precedenti"
-          fr="Le playbook a des précédents"
-          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-3"
-          style="font-size: clamp(1.7rem, 2.7vw, 2.5rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          fr="Le modèle a des précédents"
+          class="slide-title text-[var(--ink-primary)] mb-3"
+          style="font-size: clamp(1.7rem, 2.7vw, 2.5rem);"
           data-reveal
-          data-reveal-delay="0.08"
         />
         <T
           as="p"
-          en="One enterprise vendor and one biotech already run the two halves of this play."
-          it="Un vendor enterprise e una biotech giocano già le due metà di questa partita."
-          fr="Un éditeur enterprise et une biotech jouent déjà les deux volets de ce playbook."
+          en="SAP and Moderna each show one half of the model: games in pre-sales, employees building their own AI."
+          it="SAP e Moderna mostrano una metà ciascuna del modello: il gioco nel pre-vendita, i dipendenti che si costruiscono l'AI."
+          fr="SAP et Moderna illustrent chacun une moitié du modèle&nbsp;: le jeu en avant-vente, les employés qui construisent leur propre IA."
           class="text-[var(--color-sabbia-200)] mb-6"
-          style="font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.55;"
+          style="font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.55; max-width: none;"
           data-reveal
-          data-reveal-delay="0.14"
+          data-reveal-delay="0.08"
         />
 
-        <div class="grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.2">
-          <div class="mult-precedent">
-            <span class="mult-precedent-mark" aria-hidden="true">01</span>
+        <div class="grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.16">
+          <div class="loom-card">
+            <span class="loom-mark" aria-hidden="true">01</span>
             <T
               as="p"
               en="SAP institutionalized pre-sales play"
-              it="SAP: il gioco pre-sales è un'istituzione"
+              it="SAP: il gioco pre-vendita è un'istituzione"
               fr="SAP a fait du jeu un outil d'avant-vente"
-              class="mult-precedent-title"
+              class="loom-card-title"
             />
             <T
               as="p"
               en="Since 2020 SAP runs facilitator-led board games with customers, from the S/4HANA virtual board game to the BTP Diamond Game, positioned in the discovery phase of the sales cycle, with partners selling facilitated workshops."
               it="Dal 2020 SAP gioca con i clienti board game guidati da facilitatori, dal board game virtuale S/4HANA al BTP Diamond Game, collocati nella fase di discovery del ciclo di vendita, con partner che vendono workshop facilitati."
               fr="Depuis 2020, SAP anime avec ses clients des jeux de plateau facilités, du board game virtuel S/4HANA au BTP Diamond Game, placés en phase de discovery du cycle de vente, avec des partenaires qui vendent des ateliers animés."
-              class="mult-precedent-body"
+              class="loom-card-body"
             />
             <T
               as="p"
@@ -245,27 +263,27 @@ const loomSoft =
             />
           </div>
 
-          <div class="mult-precedent">
-            <span class="mult-precedent-mark" aria-hidden="true">02</span>
+          <div class="loom-card">
+            <span class="loom-mark" aria-hidden="true">02</span>
             <T
               as="p"
               en="Workforces build their own AI"
               it="La forza lavoro si costruisce l'AI"
               fr="Les équipes se fabriquent leur IA"
-              class="mult-precedent-title"
+              class="loom-card-title"
             />
             <T
               as="p"
               en="Moderna reports that within two months of adopting ChatGPT Enterprise, employees had built 750 custom GPTs, with 40% of weekly active users creating their own."
-              it="Moderna riferisce che due mesi dopo l'adozione di ChatGPT Enterprise i dipendenti avevano creato 750 GPT custom; il 40% degli utenti attivi settimanali ne costruiva di propri."
-              fr="Moderna rapporte que deux mois après l'adoption de ChatGPT Enterprise, ses employés avaient créé 750 GPT custom&nbsp;; 40&nbsp;% des actifs hebdomadaires bâtissaient les leurs."
-              class="mult-precedent-body"
+              it="Moderna riferisce che due mesi dopo l'adozione di ChatGPT Enterprise i dipendenti avevano creato 750 GPT personalizzati; il 40% degli utenti attivi settimanali ne costruiva di propri."
+              fr="Moderna rapporte que deux mois après l'adoption de ChatGPT Enterprise, ses employés avaient créé 750 GPT sur mesure&nbsp;; 40&nbsp;% des utilisateurs actifs chaque semaine bâtissaient les leurs."
+              class="loom-card-body"
             />
             <T
               as="p"
               en="OpenAI customer story, Apr 2024 (vendor-reported)"
               it="Customer story OpenAI, apr 2024 (dato del vendor)"
-              fr="Customer story OpenAI, avr 2024 (chiffres de l'éditeur)"
+              fr="Customer story OpenAI, avr. 2024 (chiffres de l'éditeur)"
               class="mult-src mt-auto"
             />
           </div>
@@ -274,79 +292,42 @@ const loomSoft =
     </Slide>
 
     <!-- ── SLIDE 3: The model — the weave that widens ─────────────── -->
-    <Slide id="slide-model" bg="secondary" align="left" class="mult-slide">
-      <div slot="backdrop" class="absolute inset-0" style={loomSoft} aria-hidden="true"></div>
+    <Slide id="slide-model" bg="secondary" align="left">
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl">
-        <T
-          as="p"
-          en="The model"
-          it="Il modello"
-          fr="Le modèle"
-          class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
-          data-reveal
-        />
+      <div class="atl-frame">
         <T
           as="h2"
           en="How one becomes fifty"
           it="Come uno diventa cinquanta"
           fr="Comment un devient cinquante"
-          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-6"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          class="slide-title text-[var(--ink-primary)] mb-6"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem);"
           data-reveal
-          data-reveal-delay="0.08"
         />
 
         <!-- Three threads, each widening the weave from one toward fifty -->
-        <div class="mult-weave" data-reveal data-reveal-delay="0.16">
-          {[
-            {
-              n: '1',
-              title: { en: 'Guided intake', it: 'Intake guidato', fr: 'Intake guidé' },
-              body: {
-                en: "A shareable brief skill interviews the seller and produces a structured brief the engine can build from. It exists today.",
-                it: "Una skill di brief condivisibile intervista il seller e produce un brief strutturato da cui il motore costruisce. Esiste già.",
-                fr: "Une skill de brief partageable interroge le vendeur et produit un brief structuré dont le moteur peut partir. Elle existe déjà.",
-              },
-            },
-            {
-              n: '2',
-              title: { en: 'Templates and self-service', it: 'Template e self-service', fr: 'Templates et self-service' },
-              body: {
-                en: "A template gallery and a guided wizard let a BDR or AE assemble an experience without touching code.",
-                it: "Galleria di template e wizard guidato: un BDR o un AE monta un'esperienza senza toccare codice.",
-                fr: "Galerie de templates et assistant guidé : un BDR ou un AE assemble une expérience sans toucher au code.",
-              },
-            },
-            {
-              n: '3',
-              title: { en: 'Partners', it: 'Partner', fr: 'Partenaires' },
-              body: {
-                en: "Adobe partners co-build joint experience designs with their own brand next to ours, on the same engine.",
-                it: "I partner Adobe co-firmano experience design congiunti, il loro brand accanto al nostro, sullo stesso motore.",
-                fr: "Les partenaires Adobe co-signent des experience designs, leur marque à côté de la nôtre, sur le même moteur.",
-              },
-            },
-          ].map((step, i) => (
-            <div class="mult-thread" style={`--thread: ${i};`}>
-              <div class="mult-thread-rail" aria-hidden="true">
-                <span class="mult-thread-num">{step.n}</span>
+        <div class="loom-weave" data-reveal data-reveal-delay="0.1">
+          {modelThreads.map((step, i) => (
+            <div class="loom-thread" style={`--thread: ${i};`}>
+              <div class="loom-thread-rail" aria-hidden="true">
+                <span class="loom-thread-num">{step.n}</span>
               </div>
-              <div class="mult-thread-copy">
-                <T as="p" en={step.title.en} it={step.title.it} fr={step.title.fr} class="mult-thread-title" />
-                <T as="p" en={step.body.en} it={step.body.it} fr={step.body.fr} class="mult-thread-body" />
+              <div class="loom-thread-copy">
+                <T as="p" en={step.title.en} it={step.title.it} fr={step.title.fr} class="loom-thread-title" />
+                <T as="p" en={step.body.en} it={step.body.it} fr={step.body.fr} class="loom-thread-body" />
               </div>
             </div>
           ))}
         </div>
 
-        <div class="mult-quote" data-reveal data-reveal-delay="0.28">
+        <div class="loom-quote" data-reveal data-reveal-delay="0.22">
           <T
             as="p"
             en="The plan ahead is sized on exactly this: enable people, measure what they ship."
             it="Il piano è tarato proprio su questo: abilitare le persone, misurare ciò che rilasciano."
             fr="Le plan qui suit est calibré là-dessus&nbsp;: outiller les équipes, mesurer ce qu'elles livrent."
-            class="mult-quote-text"
+            class="loom-quote-text"
           />
         </div>
       </div>
@@ -356,139 +337,32 @@ const loomSoft =
 </BaseLayout>
 
 <style>
-  /* ═══ "The loom" — Atelier / Multiplication art direction ═══
-     Explicit rgba / brand tokens only (no oklab on text backgrounds) so the
-     deck audit's contrast parser reads them. */
+  /* Page-specific refinements over the shared loom system (global.css).
+     Explicit rgba / brand tokens only so the deck audit's contrast parser reads them. */
 
-  /* — Cover: the 1 → 50 fan — */
-  .mult-fan { display: flex; align-items: center; gap: 1rem; }
-  .mult-fan-svg { flex: 1 1 auto; height: clamp(64px, 11vh, 108px); width: 100%; opacity: 0.6; }
-  .mult-fan-svg line { opacity: 0.55; }
-  .mult-fan-cap {
-    flex: 0 0 auto;
-    font-family: var(--font-display);
-    font-weight: 600;
-    color: var(--color-champagne);
-    line-height: 1;
+  /* Market panel head: tag on the left, display figure + its attribution stacked right. */
+  .mult-head { align-items: flex-start; }
+  .mult-tag { font-size: 0.8rem; padding-top: 0.35rem; }
+  .mult-figure-block {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem;
+    min-width: 0; text-align: right;
   }
-  .mult-fan-cap--one { font-size: clamp(1.6rem, 2.4vw, 2.2rem); }
-  .mult-fan-cap--many { font-size: clamp(2.4rem, 4vw, 3.4rem); }
-
-  /* — Market panels — */
-  .mult-panel {
-    background: rgba(27, 24, 19, 0.7);
-    border: 1px solid var(--line-subtle);
-    border-radius: 8px;
-    padding: 1.25rem 1.4rem 1.15rem;
-    display: flex;
-    flex-direction: column;
-  }
-  .mult-panel-head {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
-    padding-bottom: 0.75rem; margin-bottom: 0.85rem;
-    border-bottom: 1px solid var(--line-subtle);
-  }
-  .mult-tag {
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--accent-primary);
-  }
-  .mult-figure {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
-    color: var(--color-avorio); letter-spacing: -0.02em; line-height: 1;
-  }
-  .mult-panel-body {
-    color: var(--color-sabbia-200);
-    font-size: 0.98rem; line-height: 1.55; max-width: none; margin-bottom: 0.75rem;
-  }
-  .mult-src {
-    font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase;
+  .mult-figure-src {
+    font-size: 0.8rem; line-height: 1.4; letter-spacing: 0.02em;
     color: var(--color-sabbia-300);
   }
 
-  /* — pull quote (no side-stripe): a champagne hairline above — */
-  .mult-quote { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px solid rgba(201,169,106,0.4); max-width: none; }
-  .mult-quote-text {
-    font-family: var(--font-display);
+  /* Source lines: sentence case, never below the label minimum. */
+  .mult-src {
+    font-size: 0.8rem; line-height: 1.45; letter-spacing: 0.02em;
+    color: var(--color-sabbia-300); max-width: none;
+  }
+
+  /* Market: plain closing sentence (no pull-quote device on this slide). */
+  .mult-close {
+    margin-top: 1.5rem;
+    font-family: var(--font-display); font-weight: 500;
     color: var(--color-avorio);
-    font-size: clamp(1.2rem, 1.6vw, 1.5rem);
-    line-height: 1.32; font-weight: 500; font-style: italic;
-    max-width: 68ch;
-  }
-
-  /* — Precedents — */
-  .mult-precedent {
-    background: rgba(27, 24, 19, 0.6);
-    border: 1px solid var(--line-subtle);
-    border-radius: 8px;
-    padding: 1.5rem 1.5rem 1.3rem;
-    display: flex; flex-direction: column;
-    position: relative;
-  }
-  .mult-precedent-mark {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: 0.95rem; color: var(--color-carbone);
-    background: var(--color-champagne);
-    width: 2rem; height: 2rem; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    margin-bottom: 0.9rem;
-  }
-  .mult-precedent-title {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: 1.15rem; line-height: 1.25; color: var(--color-avorio);
-    margin-bottom: 0.7rem; max-width: none;
-  }
-  .mult-precedent-body {
-    color: var(--color-sabbia-200);
-    font-size: 0.97rem; line-height: 1.55; max-width: none; margin-bottom: 0.9rem;
-  }
-
-  /* — The model: a weave that widens (thread rails get longer 1→3) — */
-  .mult-weave { display: flex; flex-direction: column; gap: 0.85rem; }
-  .mult-thread {
-    display: grid;
-    grid-template-columns: minmax(0, calc(9rem + var(--thread) * 3.5rem)) minmax(0, 1fr);
-    gap: 1.5rem;
-    align-items: center;
-    background: rgba(27, 24, 19, 0.55);
-    border: 1px solid var(--line-subtle);
-    border-radius: 8px;
-    padding: 0.9rem 1.3rem;
-  }
-  @media (max-width: 767px) { .mult-thread { grid-template-columns: 1fr; gap: 0.5rem; } }
-  .mult-thread-rail {
-    display: flex; align-items: center; gap: 0.85rem;
-    position: relative;
-  }
-  .mult-thread-rail::after {
-    content: ''; flex: 1 1 auto; height: 2px;
-    background: linear-gradient(to right, var(--color-champagne), rgba(201,169,106,0.15));
-    border-radius: 2px;
-  }
-  @media (max-width: 767px) { .mult-thread-rail::after { display: none; } }
-  .mult-thread-num {
-    flex: 0 0 auto;
-    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
-    color: var(--color-carbone); background: var(--color-champagne);
-    width: 2rem; height: 2rem; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .mult-thread-title {
-    font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; line-height: 1.3;
-    color: var(--color-avorio); max-width: none;
-    display: none;
-  }
-  .mult-thread-rail { position: relative; }
-  /* title sits in the rail column, above the widening line */
-  .mult-thread { position: relative; }
-  .mult-thread-copy { min-width: 0; }
-  .mult-thread-body { color: var(--color-sabbia-200); font-size: 0.98rem; line-height: 1.5; max-width: none; }
-  /* show the title inside the copy column head on wide, before body */
-  .mult-thread-copy .mult-thread-title { display: block; margin-bottom: 0.2rem; font-size: 1.05rem; }
-
-  /* — Flowing warp shimmer (reduced-motion safe) — */
-  @media (prefers-reduced-motion: no-preference) {
-    .mult-fan-svg line { stroke-dasharray: 3 5; animation: mult-weave-flow 2.6s linear infinite; }
-    @keyframes mult-weave-flow { to { stroke-dashoffset: -16; } }
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.45; max-width: 60ch;
   }
 </style>

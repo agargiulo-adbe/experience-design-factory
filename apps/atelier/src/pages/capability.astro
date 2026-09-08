@@ -9,31 +9,38 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Skin chips — accents mirror the factory-hub experience cards.
+// The seven skins. Accents are the brand hues lightened for AA (≥4.5:1) on the
+// dark loom surface, the same tints the opening wall uses (raw UniCredit /
+// Ferrari / FS reds and the MIM institutional blue fall below 4.5:1 on fuliggine).
 const skins = [
-  { name: 'Max Mara',  accent: '#C19A6B' },
-  { name: 'UniCredit', accent: '#BE2027' },
-  { name: 'Ferrari',   accent: '#FF2800' },
-  { name: 'FS',        accent: '#E2001A' },
-  { name: 'Agos',      accent: '#06ABB8' },
+  { name: 'Max Mara',  accent: '#C9A272' },
+  { name: 'UniCredit', accent: '#E8858B' },
+  { name: 'Ferrari',   accent: '#FF7A5C' },
+  { name: 'FS Group',  accent: '#F2777D' },
+  { name: 'Agos',      accent: '#2BC2CE' },
+  { name: 'Eni',       accent: '#FFCE00' },
+  { name: 'MIM',       accent: '#6FA8FF' },
 ];
+// Fan geometry: one warp on the left fanning into one weft per skin.
+const fanY = skins.map((_, i) => 8 + i * (84 / (skins.length - 1)));
 
 // Mini deck map for the live gating demo: 8 sections, 6 of them gated in pairs.
 const demoChips = [
-  { n: '01', en: 'Opening',    it: 'Apertura',   fr: 'Ouverture',  gate: null },
-  { n: '02', en: 'Journeys',   it: 'Journey',    fr: 'Parcours',   gate: 'ja' },
-  { n: '03', en: 'Insights',   it: 'Insight',    fr: 'Insights',   gate: 'ja' },
-  { n: '04', en: 'Creative',   it: 'Creatività', fr: 'Création',   gate: 'content' },
-  { n: '05', en: 'Delivery',   it: 'Delivery',   fr: 'Diffusion',  gate: 'content' },
-  { n: '06', en: 'Audiences',  it: 'Audience',   fr: 'Audiences',  gate: 'data' },
-  { n: '07', en: 'Clean room', it: 'Clean room', fr: 'Clean room', gate: 'data' },
-  { n: '08', en: 'Closing',    it: 'Chiusura',   fr: 'Conclusion', gate: null },
+  { n: '01', en: 'Opening',       it: 'Apertura',       fr: 'Ouverture',     gate: null },
+  { n: '02', en: 'Journeys',      it: 'Journey',        fr: 'Parcours',      gate: 'cja' },
+  { n: '03', en: 'Insights',      it: 'Insight',        fr: 'Insights',      gate: 'cja' },
+  { n: '04', en: 'Creative',      it: 'Creatività',     fr: 'Création',      gate: 'content' },
+  { n: '05', en: 'Delivery',      it: 'Delivery',       fr: 'Diffusion',     gate: 'content' },
+  { n: '06', en: 'Audiences',     it: 'Audience',       fr: 'Audiences',     gate: 'collab' },
+  { n: '07', en: 'Collaboration', it: 'Collaborazione', fr: 'Collaboration', gate: 'collab' },
+  { n: '08', en: 'Closing',       it: 'Chiusura',       fr: 'Conclusion',    gate: null },
 ];
 
+// Product names as verified in 2026 (never the bare short forms).
 const demoToggles = [
-  { id: 'ja',      en: 'Journey Analytics',  it: 'Journey Analytics',     fr: 'Journey Analytics' },
-  { id: 'content', en: 'Content generation', it: 'Generazione contenuti', fr: 'Génération de contenu' },
-  { id: 'data',    en: 'Data collaboration', it: 'Data collaboration',    fr: 'Collaboration data' },
+  { id: 'cja',     en: 'Customer Journey Analytics',          it: 'Customer Journey Analytics',          fr: 'Customer Journey Analytics' },
+  { id: 'content', en: 'GenStudio for Performance Marketing', it: 'GenStudio for Performance Marketing', fr: 'GenStudio for Performance Marketing' },
+  { id: 'collab',  en: 'Real-Time CDP Collaboration',         it: 'Real-Time CDP Collaboration',         fr: 'Real-Time CDP Collaboration' },
 ];
 
 // The Admin Console rows — authored as woven "threads": one engine, three controls.
@@ -54,7 +61,7 @@ const consoleThreads = [
     en: 'Custom slides', it: 'Slide personalizzate', fr: 'Slides personnalisées',
     body_en: 'Author new, deck-coherent slides with live preview; they ride the same shared links.',
     body_it: 'Crea nuove slide coerenti col deck, con anteprima live; viaggiano sugli stessi link.',
-    body_fr: 'Créez des slides cohérentes avec le deck, aperçu live ; elles suivent les mêmes liens.',
+    body_fr: 'Créez des slides cohérentes avec le deck, aperçu live ; elles suivent les mêmes liens.',
   },
 ];
 ---
@@ -71,17 +78,18 @@ const consoleThreads = [
     prevHref={href(base, '/method')}
   >
 
-    <!-- ── SLIDE 1: Cover — one warp → many wefts ────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
+    <!-- ── SLIDE 1: Cover — one warp → many wefts (detail cut) ─────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="detail">
       <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
 
-      <div class="cap-cover mx-auto min-w-0 flex flex-col items-center">
+      <div class="atl-frame flex flex-col items-center">
+        <p class="atl-cover-num mb-3" aria-hidden="true" data-display>02</p>
         <T
           as="p"
           en="The capability"
-          it="La capability"
-          fr="La capacité"
-          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5"
+          it="La capacità"
+          fr="Le socle"
+          class="atl-cover-kicker mb-5"
         />
         <T
           as="h1"
@@ -92,17 +100,15 @@ const consoleThreads = [
           style="font-size: clamp(2.5rem, 5vw, 4.5rem);"
         />
 
-        <!-- One → many device: a single warp fanning into the five weft threads. -->
+        <!-- One → many device: a single warp fanning into the seven weft threads. -->
         <div class="loom-fan cap-fan w-full max-w-3xl mb-7" aria-hidden="true">
           <span class="loom-fan-cap loom-fan-cap--one">1</span>
           <svg class="loom-fan-svg" viewBox="0 0 320 100" preserveAspectRatio="none" role="presentation">
-            <line x1="4" y1="50" x2="316" y2="12" stroke="#C19A6B" stroke-width="2" />
-            <line x1="4" y1="50" x2="316" y2="31" stroke="#BE2027" stroke-width="2" />
-            <line x1="4" y1="50" x2="316" y2="50" stroke="#FF2800" stroke-width="2" />
-            <line x1="4" y1="50" x2="316" y2="69" stroke="#E2001A" stroke-width="2" />
-            <line x1="4" y1="50" x2="316" y2="88" stroke="#06ABB8" stroke-width="2" />
+            {skins.map((s, i) => (
+              <line x1="4" y1="50" x2="316" y2={fanY[i]} stroke={s.accent} stroke-width="2" />
+            ))}
           </svg>
-          <span class="loom-fan-cap loom-fan-cap--many">5</span>
+          <span class="loom-fan-cap loom-fan-cap--many">{skins.length}</span>
         </div>
 
         <T
@@ -110,42 +116,41 @@ const consoleThreads = [
           en="Every experience you clicked in the opening wall runs on the same core."
           it="Ogni esperienza aperta dalle card iniziali gira sullo stesso core."
           fr="Chaque expérience ouverte sur le mur d'entrée tourne sur le même cœur."
-          class="text-center text-[var(--color-sabbia-200)] mx-auto"
-          style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5;"
+          class="atl-lede"
         />
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: Anatomy — one warp (engine) → five wefts (skins) ── -->
+    <!-- ── SLIDE 2: Anatomy — one warp (engine) → seven wefts (skins) ── -->
     <Slide id="slide-anatomy" bg="secondary" align="center">
       <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <T
-        as="p"
-        en="One core, five skins"
-        it="Un core, cinque skin"
-        fr="Un cœur, cinq skins"
-        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-2"
-      />
-      <T
-        as="h2"
-        en="Anatomy of the Atelier"
-        it="Anatomia dell'Atelier"
-        fr="Anatomie de l'Atelier"
-        class="slide-title text-center text-[var(--ink-primary)] mb-5"
-        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
-      />
+      <div class="atl-frame flex flex-col items-center">
+        <T
+          as="p"
+          en="One core, seven skins"
+          it="Un cuore, sette skin"
+          fr="Un cœur, sept habillages"
+          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-2"
+        />
+        <T
+          as="h2"
+          en="Anatomy of the Atelier"
+          it="Anatomia dell'Atelier"
+          fr="Anatomie de l'Atelier"
+          class="slide-title text-center text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+        />
 
-      <div class="w-full max-w-6xl mx-auto flex flex-col items-center min-w-0">
-        <!-- Wefts: the five brand skins, each a coloured band woven off the one warp -->
+        <!-- Wefts: the seven brand skins, each a coloured band woven off the one warp -->
         <T
           as="p"
           en="Skins"
           it="Skin"
-          fr="Skins"
-          class="cap-layer-label mb-2"
+          fr="Habillages"
+          class="atl-label cap-layer-label mb-2"
         />
-        <div class="cap-wefts w-full max-w-5xl min-w-0 mb-3">
+        <div class="cap-wefts w-full min-w-0 mb-3">
           {skins.map((s) => (
             <span class="cap-weft" style={`--weft:${s.accent}`}>
               <span class="cap-weft-dot" aria-hidden="true"></span>
@@ -154,8 +159,8 @@ const consoleThreads = [
           ))}
         </div>
 
-        <!-- The warp: one shared engine feeding all five -->
-        <div class="loom-panel cap-engine w-full max-w-5xl min-w-0 text-center">
+        <!-- The warp: one shared engine feeding all seven -->
+        <div class="loom-panel cap-engine w-full text-center">
           <T
             as="p"
             en="Experience engine"
@@ -166,9 +171,9 @@ const consoleThreads = [
           />
           <T
             as="p"
-            en="Immersive deck, trilingual i18n, quality gates and motion, shared by all five."
-            it="Deck immersivo, i18n trilingue, quality gate e motion, condivisi da tutte e cinque."
-            fr="Deck immersif, i18n trilingue, contrôles qualité et motion, partagés par les cinq."
+            en="Immersive deck, trilingual i18n, quality gates and motion, shared by all seven."
+            it="Deck immersivo, i18n trilingue, quality gate e motion, condivisi da tutte e sette."
+            fr="Deck immersif, i18n trilingue, contrôles qualité et motion, partagés par les sept."
             class="loom-panel-body mx-auto mb-0"
             style="text-align: center;"
           />
@@ -180,9 +185,9 @@ const consoleThreads = [
           en="Foundation"
           it="Fondazioni"
           fr="Fondations"
-          class="cap-layer-label mt-4 mb-2"
+          class="atl-label cap-layer-label mt-4 mb-2"
         />
-        <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-3 min-w-0">
+        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-3 min-w-0">
           <div class="loom-panel min-w-0 text-center">
             <T
               as="p"
@@ -227,29 +232,22 @@ const consoleThreads = [
     <Slide id="slide-toggle-demo" bg="primary" align="left">
       <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-10 items-center min-w-0">
+      <div class="atl-frame grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-10 items-center">
         <!-- Left: explanation -->
         <div class="min-w-0">
-          <T
-            as="p"
-            en="Solution gating"
-            it="Solution gating"
-            fr="Solution gating"
-            class="slide-eyebrow text-[var(--accent-primary)] mb-3"
-          />
           <T
             as="h2"
             en="Tailored to one meeting, live"
             it="Su misura per il meeting, live"
-            fr="Sur mesure pour un meeting, live"
+            fr="Sur mesure pour une réunion, en direct"
             class="slide-title text-[var(--ink-primary)] mb-5"
             style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
           />
           <T
             as="p"
             en="A seller switches a capability off, and the experience reshapes itself: navigation, slides and links follow. No rebuild, no editing."
-            it="Un seller spegne una capability e l'esperienza si riconfigura da sola: navigazione, slide e link seguono. Nessuna rebuild, nessun editing."
-            fr="Un vendeur désactive une capacité et l'expérience se recompose&nbsp;: navigation, slides et liens suivent. Ni rebuild, ni retouche."
+            it="Un venditore spegne una capability e l'esperienza si riconfigura da sola: navigazione, slide e link seguono. Senza ricompilare, senza modificare nulla."
+            fr="Un vendeur désactive une capacité et l'expérience se recompose&nbsp;: navigation, slides et liens suivent. Ni recompilation, ni retouche."
             class="text-[var(--color-sabbia-200)] mb-5"
             style="font-size: clamp(0.95rem, 1.1vw, 1.1rem); line-height: 1.6;"
           />
@@ -258,7 +256,7 @@ const consoleThreads = [
               as="p"
               en="Try it — the switches on this slide are live."
               it="Provala: gli switch su questa slide sono attivi."
-              fr="Essayez&nbsp;: les interrupteurs de cette slide sont actifs."
+              fr="Essayez&nbsp;: les commutateurs de cette slide sont actifs."
               class="loom-quote-text"
               style="font-style: normal; font-size: clamp(1.05rem, 1.5vw, 1.3rem); color: var(--accent-primary);"
             />
@@ -276,8 +274,8 @@ const consoleThreads = [
               as="p"
               en="Live demo: click the switches"
               it="Demo live: clicca gli switch"
-              fr="Démo live&nbsp;: actionnez les interrupteurs"
-              class="loom-tag"
+              fr="Démo live&nbsp;: actionnez les commutateurs"
+              class="loom-tag cap-tag"
             />
           </div>
 
@@ -301,16 +299,16 @@ const consoleThreads = [
             en="Deck map"
             it="Mappa del deck"
             fr="Plan du deck"
-            class="text-[0.75rem] font-semibold tracking-[0.14em] uppercase text-[var(--color-sabbia-300)] mb-2"
+            class="atl-label mb-2"
           />
-          <div class="grid grid-cols-4 gap-1.5 mb-3 min-w-0">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mb-3 min-w-0">
             {demoChips.map((c) => (
               <div
                 data-demo-chip={c.gate ?? undefined}
                 class="atl-chip min-w-0 px-2 py-2 rounded-sm border border-[var(--line-subtle)] bg-[rgba(18,16,12,1)] text-center"
               >
-                <p class="text-[0.75rem] tabular-nums text-[var(--color-sabbia-300)] leading-none mb-1">{c.n}</p>
-                <T en={c.en} it={c.it} fr={c.fr} as="p" class="text-[0.8rem] font-medium text-[var(--color-sabbia-200)] leading-tight" />
+                <p class="text-[0.8rem] tabular-nums text-[var(--color-sabbia-300)] leading-none mb-1">{c.n}</p>
+                <T en={c.en} it={c.it} fr={c.fr} as="p" class="text-[0.8rem] font-medium text-[var(--color-sabbia-200)] leading-tight break-words" />
               </div>
             ))}
           </div>
@@ -325,18 +323,11 @@ const consoleThreads = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 4: Admin Console — one engine, three woven controls ── -->
-    <Slide id="slide-console" bg="secondary" align="left">
+    <!-- ── SLIDE 4: Admin Console — one engine, three woven controls (detail cut) ── -->
+    <Slide id="slide-console" bg="secondary" align="left" data-solution="detail">
       <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl mx-auto min-w-0">
-        <T
-          as="p"
-          en="Runtime control"
-          it="Controllo runtime"
-          fr="Contrôle runtime"
-          class="slide-eyebrow text-[var(--accent-primary)] mb-3"
-        />
+      <div class="atl-frame">
         <T
           as="h2"
           en="The Admin Console does the rest"
@@ -372,15 +363,13 @@ const consoleThreads = [
           ))}
         </div>
 
-        <div class="loom-quote">
-          <T
-            as="p"
-            en="Whoever owns the meeting owns the experience. Without touching code."
-            it="Chi guida il meeting governa l'esperienza. Senza toccare il codice."
-            fr="Qui mène le meeting pilote l'expérience. Sans toucher au code."
-            class="loom-quote-text"
-          />
-        </div>
+        <T
+          as="p"
+          en="The person running the meeting controls the experience, without touching code."
+          it="Chi guida il meeting governa l'esperienza, senza toccare il codice."
+          fr="Qui mène la réunion pilote l'expérience, sans toucher au code."
+          class="cap-close text-[var(--color-avorio)]"
+        />
       </div>
     </Slide>
 
@@ -391,15 +380,11 @@ const consoleThreads = [
      styles: global because JS-toggled classes escape Astro scoping, fenced to
      this slide. Explicit rgba only (champagne=201,169,106 · cenere=27,24,19). -->
 <style is:global>
-  /* Cover: keep the fan and prose above the deck controls, comfortably narrow. */
-  #slide-cover .cap-cover { max-width: 58rem; }
+  /* Cover: the fan sits centred under the title. */
   #slide-cover .cap-fan { justify-content: center; }
 
   /* Anatomy: layer labels + the woven weft bands off the one engine warp. */
-  #slide-anatomy .cap-layer-label {
-    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--color-sabbia-300); text-align: center;
-  }
+  #slide-anatomy .cap-layer-label { letter-spacing: 0.16em; text-align: center; }
   #slide-anatomy .cap-wefts {
     display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
   }
@@ -432,7 +417,14 @@ const consoleThreads = [
 
   /* Demo panel: champagne hairline frame so the live area reads as "the tool". */
   #slide-toggle-demo .cap-demo { border-color: rgba(201, 169, 106, 0.45); }
+  #slide-toggle-demo .cap-tag { font-size: 0.8rem; }
   #slide-toggle-demo .cap-try { margin-top: 1.25rem; padding-top: 0.9rem; }
+
+  /* Console: plain closing sentence (no pull-quote device on this slide). */
+  #slide-console .cap-close {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.45; max-width: 60ch;
+  }
 
   /* ── Live gating demo controls ───────────────────────────────── */
   #slide-toggle-demo .atl-switch {
