@@ -10,9 +10,12 @@ interface Props {
   nextHref?: string;
   /** URL of the previous phase — reached by going back past the first slide (lands on its last slide). */
   prevHref?: string;
+  /** Show a small "← →" keyboard hint next to the progress counter on a cold
+   *  visit (until the first slide advance). Off by default — opt-in per app. */
+  hint?: boolean;
   class?: string;
 }
-const { nextHref, prevHref, class: className } = Astro.props;
+const { nextHref, prevHref, hint = false, class: className } = Astro.props;
 ---
 
 <div
@@ -34,6 +37,7 @@ const { nextHref, prevHref, class: className } = Astro.props;
         </svg>
       </button>
       <span data-deck-progress class="deck-progress tabular-nums">01 / 01</span>
+      {hint && <span data-deck-hint class="deck-hint" aria-hidden="true">← →</span>}
       <button type="button" data-deck-next aria-label="Slide successiva" class="deck-btn">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -83,7 +87,23 @@ const { nextHref, prevHref, class: className } = Astro.props;
     transition: opacity 0.3s ease;
   }
   .deck-idle .deck-chrome { opacity: 0; }
-  .deck-idle { cursor: none; }
+  /* Hide the cursor only where there is one to hide (touch devices never idle-hide). */
+  @media (hover: hover) { .deck-idle { cursor: none; } }
+  /* Cold visit: a first-time viewer has no way to know the chrome exists, so it
+     stays visible (and the cursor stays) until the first slide advance. The
+     [data-deck] inline script toggles .deck-first-visit via localStorage. */
+  .deck-first-visit.deck-idle .deck-chrome { opacity: 1; }
+  .deck-first-visit.deck-idle { cursor: auto; }
+  .deck-hint {
+    display: none;
+    font-size: clamp(0.85rem, 1vw, 1rem);
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    color: var(--ink-tertiary);
+    pointer-events: none;
+    user-select: none;
+  }
+  .deck-first-visit .deck-hint { display: inline-block; }
   /* Hide deck chrome while a slide-over (HowItWorks) is open */
   .deck[data-deck-lock] .deck-chrome { opacity: 0; pointer-events: none; }
   .deck-btn {
@@ -108,6 +128,7 @@ const { nextHref, prevHref, class: className } = Astro.props;
     font-weight: 600;     /* era 500 → più leggibile su TV */
     color: var(--ink-tertiary);
     pointer-events: auto;
+    white-space: nowrap;  /* "01 / 03" must never wrap (it did, at 390px) */
   }
   @media (prefers-reduced-motion: reduce) {
     .deck-chrome { transition: none; }
@@ -140,6 +161,8 @@ const { nextHref, prevHref, class: className } = Astro.props;
     [data-deck] .deck-btn { width: 2.75rem; height: 2.75rem; }
     [data-deck] .deck-btn svg { width: 22px; height: 22px; }
     [data-deck] [data-deck-controls] { gap: 1rem; }
+    [data-deck] .deck-progress { letter-spacing: 0.08em; }
+    [data-deck] .deck-hint { display: none; }   /* phones swipe — no arrow keys to hint */
     [data-slide] .slide-inner {
       overflow-y: auto;
       overscroll-behavior: contain;
@@ -183,6 +206,71 @@ const { nextHref, prevHref, class: className } = Astro.props;
     [data-deck] .deck-btn svg { width: 34px; height: 34px; }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    if (window.__edfDeckChromeBound) return;   // body inline scripts re-run after every SPA swap
+    window.__edfDeckChromeBound = true;
+
+    /* ── Localized chrome aria-labels — follow html[data-lang] (fallback: html lang, then IT). */
+    var LABELS = {
+      it: { prev: 'Slide precedente', next: 'Slide successiva', fs: 'Schermo intero' },
+      en: { prev: 'Previous slide',   next: 'Next slide',       fs: 'Full screen' },
+      fr: { prev: 'Diapositive précédente', next: 'Diapositive suivante', fs: 'Plein écran' }
+    };
+    function lang() {
+      var h = document.documentElement;
+      var l = h.getAttribute('data-lang') || h.lang || 'it';
+      return LABELS[l] ? l : 'it';
+    }
+    function label(sel, text) {
+      var els = document.querySelectorAll(sel);
+      for (var i = 0; i < els.length; i++) els[i].setAttribute('aria-label', text);
+    }
+    function applyLabels() {
+      var t = LABELS[lang()];
+      label('[data-deck-prev]', t.prev);
+      label('[data-deck-next]', t.next);
+      label('[data-deck-fs]', t.fs);
+    }
+    applyLabels();
+    document.addEventListener('astro:page-load', applyLabels);
+    document.addEventListener('astro:after-swap', applyLabels);
+    try {
+      new MutationObserver(applyLabels).observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang', 'lang'] });
+    } catch (e) {}
+
+    /* ── Cold visit: keep chrome + cursor until the first slide advance. Keyed per
+       app (2nd path segment under the Factory root) so each experience gets its
+       own first impression. Marked seen on the first progress change or on
+       leaving the section (both mean the viewer has found the controls). */
+    var SEEN_KEY = 'edf:deck-seen:' + ((location.pathname.split('/')[2]) || 'root');
+    function seen() { try { return localStorage.getItem(SEEN_KEY) === '1'; } catch (e) { return true; } }
+    function markSeen() {
+      try { localStorage.setItem(SEEN_KEY, '1'); } catch (e) {}
+      var decks = document.querySelectorAll('[data-deck].deck-first-visit');
+      for (var i = 0; i < decks.length; i++) decks[i].classList.remove('deck-first-visit');
+    }
+    function armFirstVisit() {
+      var deck = document.querySelector('[data-deck]');
+      if (!deck || seen()) return;
+      deck.classList.add('deck-first-visit');
+      var prog = deck.querySelector('[data-deck-progress]');
+      if (!prog) return;
+      var initial = null;
+      try {
+        new MutationObserver(function () {
+          var txt = (prog.textContent || '').trim();
+          if (initial === null) { initial = txt; return; }   // first paint by the controller
+          if (txt !== initial) markSeen();
+        }).observe(prog, { childList: true, characterData: true, subtree: true });
+      } catch (e) {}
+    }
+    armFirstVisit();
+    document.addEventListener('astro:after-swap', armFirstVisit);
+    document.addEventListener('astro:before-swap', function () { if (document.querySelector('[data-deck]')) markSeen(); });
+  })();
+</script>
 
 <script>
   import { initDeck } from '@edf/core/blocks/immersive/deck';

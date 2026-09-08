@@ -1,7 +1,9 @@
 ---
 /**
- * LangToggle — language switch. Sets <html data-lang> + persists to localStorage.
- * The anti-flash init lives in the layout <head>; this only wires the buttons.
+ * LangToggle — language switch. Sets <html data-lang> AND <html lang> + persists
+ * to localStorage. The anti-flash init lives in the layout <head>; this wires the
+ * buttons, keeps `aria-pressed` in sync and re-applies the saved language after a
+ * ClientRouter swap (the router resets <html> attributes to the server defaults).
  * `langs` defaults to ['en','it']; pass ['en','it','fr'] for trilingual experiences.
  */
 interface Props { langs?: Array<'en' | 'it' | 'fr'> }
@@ -11,7 +13,7 @@ const { langs = ['en', 'it'] } = Astro.props;
   {langs.map((l, i) => (
     <>
       {i > 0 && <span class="lang-sep" aria-hidden="true">/</span>}
-      <button type="button" data-lang-btn={l} class="lang-btn">{l.toUpperCase()}</button>
+      <button type="button" data-lang-btn={l} aria-pressed="false" class="lang-btn">{l.toUpperCase()}</button>
     </>
   ))}
 </div>
@@ -32,13 +34,51 @@ const { langs = ['en', 'it'] } = Astro.props;
 
 <script is:inline>
   (function () {
-    function setLang(l) {
+    var KNOWN = { en: 1, it: 1, fr: 1 };
+    // Languages this page's toggle offers — a saved 'fr' on a bilingual page
+    // would hide every <T en it> span, so only re-apply what the page supports.
+    function offered() {
+      var out = {};
+      var btns = document.querySelectorAll('[data-lang-btn]');
+      for (var i = 0; i < btns.length; i++) out[btns[i].getAttribute('data-lang-btn')] = 1;
+      return out;
+    }
+    function current() {
+      var l = document.documentElement.getAttribute('data-lang');
+      return KNOWN[l] ? l : (KNOWN[document.documentElement.lang] ? document.documentElement.lang : 'en');
+    }
+    function syncPressed() {
+      var l = current();
+      var btns = document.querySelectorAll('[data-lang-btn]');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-lang-btn') === l ? 'true' : 'false');
+      }
+    }
+    function apply(l) {
       document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.lang = l;
+      syncPressed();
+    }
+    function setLang(l) {
+      if (!KNOWN[l]) return;
+      apply(l);
       try { localStorage.setItem('edf:lang', l); } catch (e) {}
     }
+    // Initial state: mirror data-lang (set by the anti-flash init) into <html lang>.
+    apply(current());
+    if (window.__edfLangToggleBound) return;   // body inline scripts re-run after every swap
+    window.__edfLangToggleBound = true;
     document.addEventListener('click', function (e) {
       var b = e.target.closest && e.target.closest('[data-lang-btn]');
       if (b) setLang(b.getAttribute('data-lang-btn'));
+    });
+    // ClientRouter swaps <html> attributes back to the server defaults on every
+    // SPA navigation: restore the saved preference (if the new page offers it).
+    document.addEventListener('astro:after-swap', function () {
+      var saved = null;
+      try { saved = localStorage.getItem('edf:lang'); } catch (e) {}
+      var has = offered();
+      apply(saved && KNOWN[saved] && has[saved] ? saved : current());
     });
   })();
 </script>

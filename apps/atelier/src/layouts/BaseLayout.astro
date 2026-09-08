@@ -33,10 +33,17 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Anti-flash language init (before paint) — sets BOTH data-lang (copy
+         visibility) and <html lang> (assistive tech / hyphenation). -->
     <script is:inline>
       (function () {
-        var l = localStorage.getItem('edf:lang');
-        if (l === 'en' || l === 'it' || l === 'fr') document.documentElement.setAttribute('data-lang', l);
+        try {
+          var l = localStorage.getItem('edf:lang');
+          if (l === 'en' || l === 'it' || l === 'fr') {
+            document.documentElement.setAttribute('data-lang', l);
+            document.documentElement.lang = l;
+          }
+        } catch (e) {}
       })();
     </script>
     <ClientRouter />
@@ -224,6 +231,24 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   }
   document.addEventListener('astro:page-load', applyConsoleMode);
   applyConsoleMode();
+
+  // Cold-visit keyboard hint "← →" in the deck chrome (shown while the deck is
+  // .deck-first-visit — see DeckContainer). The shared DeckContainer renders it
+  // via its `hint` prop; until every atelier page passes that prop, inject the
+  // identical element here (no-op when the prop is present).
+  function injectDeckHint() {
+    var controls = document.querySelector('[data-deck] [data-deck-controls]');
+    if (!controls || controls.querySelector('[data-deck-hint]')) return;
+    var prog = controls.querySelector('[data-deck-progress]');
+    var hint = document.createElement('span');
+    hint.setAttribute('data-deck-hint', '');
+    hint.setAttribute('aria-hidden', 'true');
+    hint.className = 'deck-hint';
+    hint.textContent = '← →';
+    if (prog && prog.nextSibling) controls.insertBefore(hint, prog.nextSibling); else controls.appendChild(hint);
+  }
+  injectDeckHint();
+  document.addEventListener('astro:after-swap', injectDeckHint);
 })();
 </script>
 
@@ -303,7 +328,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     document.querySelectorAll('[data-nav-solution]').forEach(function(el) {
       var ids = (el.getAttribute('data-nav-solution') || '').split(',').map(function(s) { return s.trim(); });
       var anyActive = ids.some(function(id) { return activeIds.indexOf(id) !== -1; });
-      if (!anyActive) { el.setAttribute('aria-hidden', 'true'); el.style.display = 'none'; }
+      if (!anyActive) {
+        // <option> ignores display:none in most engines — use hidden + disabled.
+        if (el.tagName === 'OPTION') { el.hidden = true; el.disabled = true; if (el.selected) el.selected = false; return; }
+        el.setAttribute('aria-hidden', 'true'); el.style.display = 'none';
+      }
     });
 
     var deckRoot = document.querySelector('[data-deck-next]');
