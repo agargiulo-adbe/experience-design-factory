@@ -11,8 +11,9 @@ const currentPath = Astro.url.pathname;
 
 // ── Pixel teaser (Boardroom Quest) ─────────────────────────────────
 // A CSS-only retro frame: dark room, a locked door in the top wall, a
-// table, five division tokens (the five skin accents used on the
-// opening wall) and one golden key. No images, tokens only.
+// table, five division tokens and one golden key. No images.
+// The palette lives as CSS custom properties scoped to the art container
+// (`.quest-art`, see the scoped style below); the map only names them.
 const PIXEL_MAP = [
   'WWWWWWWWDDWWWWWWWW',
   'W................W',
@@ -27,21 +28,83 @@ const PIXEL_MAP = [
   'W................W',
   'WWWWWWWWWWWWWWWWWW',
 ];
-const PIXEL_COLORS: Record<string, string> = {
-  W: 'rgba(142,133,112,0.52)',   // walls — sabbia-400 tint
-  D: 'rgba(201,169,106,0.55)',   // locked door — champagne
-  T: 'rgba(154,123,69,0.55)',    // table — bronzo tint
-  K: '#C9A96A',                  // the golden key
-  '1': '#C9A272',                // division tokens — the five wall tints
-  '2': '#E8858B',
-  '3': '#FF7A5C',
-  '4': '#F2777D',
-  '5': '#2BC2CE',
+const PIXEL_VARS: Record<string, string> = {
+  W: 'var(--px-wall)',
+  D: 'var(--px-door)',
+  T: 'var(--px-table)',
+  K: 'var(--px-key)',
+  '1': 'var(--px-1)',
+  '2': 'var(--px-2)',
+  '3': 'var(--px-3)',
+  '4': 'var(--px-4)',
+  '5': 'var(--px-5)',
 };
 function pixelColor(ch: string, r: number, c: number): string {
-  if (ch === '.') return (r + c) % 2 === 0 ? 'rgba(27,24,19,1)' : 'rgba(33,29,23,1)';
-  return PIXEL_COLORS[ch] ?? 'rgba(27,24,19,1)';
+  if (ch === '.') return (r + c) % 2 === 0 ? 'var(--px-floor-a)' : 'var(--px-floor-b)';
+  return PIXEL_VARS[ch] ?? 'var(--px-floor-a)';
 }
+
+// Live-products roadmap: horizon labels carry the milestone timing.
+const horizons = [
+  {
+    n: '01',
+    tag:   { en: 'Today', it: 'Oggi', fr: 'Déjà là' },
+    title: { en: 'Product mockups, today', it: 'Mockup di prodotto, oggi', fr: 'Maquettes produit, déjà là' },
+    body: {
+      en: "The engine already ships working GenStudio for Performance Marketing and Real-Time CDP mockups: full-screen, phased, presenter-driven. They look and behave like the product.",
+      it: "Il motore include già mockup funzionanti di GenStudio for Performance Marketing e Real-Time CDP: a tutto schermo, a fasi, guidati dal presenter. Aspetto e comportamento sono quelli del prodotto.",
+      fr: "Le moteur embarque déjà des maquettes opérationnelles de GenStudio for Performance Marketing et de Real-Time CDP&nbsp;: plein écran, par phases, pilotées par le présentateur. L'aspect et le comportement sont ceux du produit.",
+    },
+  },
+  {
+    n: '02',
+    tag:   { en: 'Next · M2, by March 2027', it: 'A seguire · M2, entro marzo 2027', fr: 'Ensuite · M2, d’ici mars 2027' },
+    title: { en: 'Personalized demos, next', it: 'Demo personalizzate, a seguire', fr: 'Démos personnalisées, ensuite' },
+    body: {
+      en: "Media slots let a seller attach a client-specific demo video or embedded walkthrough to any slide, shared as a link.",
+      it: "Gli slot media permettono al venditore di agganciare a qualsiasi slide un video demo o un walkthrough incorporato pensato per quel cliente, condiviso via link.",
+      fr: "Les emplacements média permettent au vendeur d'associer à chaque slide une vidéo de démo ou un walkthrough embarqué propre au client, partagé par lien.",
+    },
+  },
+  {
+    n: '03',
+    tag:   { en: 'On the horizon · M3, by June 2027', it: "All'orizzonte · M3, entro giugno 2027", fr: 'À l’horizon · M3, d’ici juin 2027' },
+    title: { en: 'Generative media, on the horizon', it: 'Media generativi, all\'orizzonte', fr: 'Médias génératifs, à l\'horizon' },
+    body: {
+      en: "Firefly image and video generation composed into the experience itself, so a workshop can create assets on the client's brief, live.",
+      it: "La generazione di immagini e video Firefly entra nell'esperienza stessa: un workshop può creare asset sul brief del cliente, in diretta.",
+      fr: "La génération d'images et de vidéos Firefly s'intègre à l'expérience même&nbsp;: un atelier peut créer des assets sur le brief du client, en direct.",
+    },
+  },
+];
+
+// Quest roadmap rows.
+const questPhases = [
+  {
+    label: { en: 'Phase 1', it: 'Fase 1', fr: 'Phase 1' }, m: 'M1',
+    body: {
+      en: 'Walking skeleton: one scene, one puzzle, the event-sourced core.',
+      it: 'Scheletro funzionante: una scena, un enigma, il core a registro di eventi.',
+      fr: 'Squelette fonctionnel&nbsp;: une scène, une énigme, un cœur à journal d’événements.',
+    },
+  },
+  {
+    label: { en: 'Phase 2', it: 'Fase 2', fr: 'Phase 2' }, m: 'M2',
+    body: {
+      en: 'Facilitated beta: 90 minutes, one banking scenario, first real workshop.',
+      it: 'Beta facilitata: 90 minuti, uno scenario banking, primo workshop reale.',
+      fr: 'Bêta animée&nbsp;: 90 minutes, un scénario bancaire, premier atelier réel.',
+    },
+  },
+  {
+    label: { en: 'Phase 3', it: 'Fase 3', fr: 'Phase 3' }, m: 'M3',
+    body: {
+      en: 'Multiplayer and a second industry pack: each division on its own device.',
+      it: 'Multiplayer e un secondo pack di settore: ogni divisione sul proprio dispositivo.',
+      fr: 'Multijoueur et un deuxième pack sectoriel&nbsp;: chaque division sur son propre appareil.',
+    },
+  },
+];
 ---
 <BaseLayout
   title="New frontiers"
@@ -56,186 +119,116 @@ function pixelColor(ch: string, r: number, c: number): string {
     prevHref={href(base, '/multiplication')}
   >
 
-    <!-- ── SLIDE 0: Cover — forward-reaching warp ─────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="loom-bg" aria-hidden="true"></div>
+    <!-- ── SLIDE 0: Cover — forward-reaching warp (detail cut) ────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="detail">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
 
-      <T
-        as="p"
-        en="New frontiers"
-        it="Nuove frontiere"
-        fr="Nouvelles frontières"
-        class="text-center font-semibold uppercase text-[var(--accent-primary)] mb-5"
-        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); letter-spacing: 0.14em;"
-        data-reveal
-      />
-      <T
-        as="h1"
-        en="The experience becomes the demo."
-        it="L'esperienza diventa la demo."
-        fr="L'expérience devient la démo."
-        class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-5"
-        style="font-size: clamp(2.2rem, 4vw, 3.9rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      />
-
-      <!-- forward-reaching warp — threads extending into new frontiers -->
-      <div class="loom-fan max-w-3xl mx-auto mt-3 mb-8" data-reveal data-reveal-delay="0.2" aria-hidden="true">
-        <svg class="loom-fan-svg" viewBox="0 0 480 120" preserveAspectRatio="none" role="presentation">
-          <g stroke="var(--color-champagne)" stroke-width="1">
-            <line x1="8" y1="60" x2="472" y2="12" />
-            <line x1="8" y1="60" x2="472" y2="40" />
-            <line x1="8" y1="60" x2="472" y2="68" />
-            <line x1="8" y1="60" x2="472" y2="96" />
-            <line x1="8" y1="60" x2="472" y2="120" />
-          </g>
-          <circle cx="8" cy="60" r="5" fill="var(--color-champagne)" />
-        </svg>
-      </div>
-
-      <T
-        as="p"
-        en="Two evolutions take the Atelier beyond storytelling: real product interaction inside every experience, and a serious game for the boardroom."
-        it="Due evoluzioni portano l'Atelier oltre lo storytelling: interazione reale con i prodotti in ogni esperienza e un serious game per il board."
-        fr="Deux évolutions mènent l'Atelier au-delà du récit&nbsp;: interaction directe avec les produits dans chaque expérience, et un serious game pour le comité de direction."
-        class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl"
-        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55;"
-        data-reveal
-        data-reveal-delay="0.22"
-      />
-      <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.3">
+      <div class="atl-frame flex flex-col items-center">
+        <p class="atl-cover-num mb-3" aria-hidden="true" data-display data-reveal>04</p>
         <T
-          en="Live products"
-          it="Prodotti live"
-          fr="Produits en direct"
-          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
-          style="font-size: 0.9rem;"
+          as="p"
+          en="New frontiers"
+          it="Nuove frontiere"
+          fr="Nouvelles frontières"
+          class="atl-cover-kicker mb-5"
+          data-reveal
         />
-        <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
         <T
-          en="Boardroom Quest"
-          it="Boardroom Quest"
-          fr="Boardroom Quest"
-          class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
-          style="font-size: 0.9rem;"
+          as="h1"
+          en="The experience becomes the demo."
+          it="L'esperienza diventa la demo."
+          fr="L'expérience devient la démo."
+          class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-5"
+          style="font-size: clamp(2.2rem, 4vw, 3.9rem);"
+          data-reveal
+          data-reveal-delay="0.15"
         />
+
+        <!-- forward-reaching warp — threads extending into new frontiers -->
+        <div class="loom-fan w-full max-w-3xl mx-auto mt-3 mb-8" data-reveal data-reveal-delay="0.2" aria-hidden="true">
+          <svg class="loom-fan-svg" viewBox="0 0 480 120" preserveAspectRatio="none" role="presentation">
+            <g stroke="var(--color-champagne)" stroke-width="1">
+              <line x1="8" y1="60" x2="472" y2="12" />
+              <line x1="8" y1="60" x2="472" y2="40" />
+              <line x1="8" y1="60" x2="472" y2="68" />
+              <line x1="8" y1="60" x2="472" y2="96" />
+              <line x1="8" y1="60" x2="472" y2="120" />
+            </g>
+            <circle cx="8" cy="60" r="5" fill="var(--color-champagne)" />
+          </svg>
+        </div>
+
+        <T
+          as="p"
+          en="Two next steps put real product interaction inside the story: live Adobe products in every experience, and a serious game for the boardroom."
+          it="Due passi avanti portano l'interazione reale con i prodotti dentro la storia: prodotti Adobe live in ogni esperienza e un serious game per il board."
+          fr="Deux étapes à venir font entrer l'interaction réelle avec les produits dans le récit&nbsp;: des produits Adobe en direct dans chaque expérience, et un serious game pour le comité de direction."
+          class="atl-lede"
+          data-reveal
+          data-reveal-delay="0.22"
+        />
+        <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.3">
+          <T
+            en="Live products"
+            it="Prodotti live"
+            fr="Produits en direct"
+            class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+            style="font-size: 0.9rem;"
+          />
+          <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <T
+            en="Boardroom Quest"
+            it="Boardroom Quest"
+            fr="Boardroom Quest"
+            class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]"
+            style="font-size: 0.9rem;"
+          />
+        </div>
       </div>
     </Slide>
 
     <!-- ── SLIDE 1: Live products ─────────────────────────────────── -->
     <Slide id="slide-live-products" bg="secondary" align="left">
-      <T
-        as="p"
-        en="Frontier one"
-        it="Prima frontiera"
-        fr="Première frontière"
-        class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
-        data-reveal
-      />
-      <T
-        as="h2"
-        en="Adobe products, live inside the story"
-        it="I prodotti Adobe, live dentro la storia"
-        fr="Les produits Adobe, en direct dans le récit"
-        class="text-[var(--ink-primary)] mb-4"
-        style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      />
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-3.5" data-reveal data-reveal-delay="0.16">
-        <div class="loom-card">
-          <span class="loom-mark" aria-hidden="true">01</span>
-          <T
-            en="Today"
-            it="Oggi"
-            fr="Déjà là"
-            as="p"
-            class="loom-tag mb-2"
-          />
-          <T
-            as="h3"
-            en="Product mockups, today"
-            it="Mockup di prodotto, oggi"
-            fr="Maquettes produit, déjà là"
-            class="loom-card-title"
-          />
-          <T
-            as="p"
-            en="The engine already ships working GenStudio and Real-Time CDP mockups: full-screen, phased, presenter-driven. They look and behave like the product."
-            it="Il motore include già mockup funzionanti di GenStudio e Real-Time CDP: a tutto schermo, a fasi, guidati dal presenter. Aspetto e comportamento sono quelli del prodotto."
-            fr="Le moteur embarque déjà des maquettes opérationnelles de GenStudio et de Real-Time CDP&nbsp;: plein écran, par phases, pilotées par le présentateur. L'aspect et le comportement sont ceux du produit."
-            class="loom-card-body"
-          />
+      <div class="atl-frame">
+        <T
+          as="h2"
+          en="Adobe products, live inside the story"
+          it="I prodotti Adobe, live dentro la storia"
+          fr="Les produits Adobe, en direct dans le récit"
+          class="slide-title text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.65rem, 2.5vw, 2.3rem);"
+          data-reveal
+        />
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5" data-reveal data-reveal-delay="0.1">
+          {horizons.map((h) => (
+            <div class="loom-card">
+              <span class="loom-mark" aria-hidden="true">{h.n}</span>
+              <T en={h.tag.en} it={h.tag.it} fr={h.tag.fr} as="p" class="loom-tag fr-tag mb-2" />
+              <T as="h3" en={h.title.en} it={h.title.it} fr={h.title.fr} class="loom-card-title" />
+              <T as="p" en={h.body.en} it={h.body.it} fr={h.body.fr} class="loom-card-body" />
+            </div>
+          ))}
         </div>
 
-        <div class="loom-card">
-          <span class="loom-mark" aria-hidden="true">02</span>
-          <T
-            en="Next"
-            it="A seguire"
-            fr="Ensuite"
-            as="p"
-            class="loom-tag mb-2"
-          />
-          <T
-            as="h3"
-            en="Personalized demos, next"
-            it="Demo personalizzate, a seguire"
-            fr="Démos personnalisées, ensuite"
-            class="loom-card-title"
-          />
-          <T
-            as="p"
-            en="Media slots let a seller attach a client-specific demo video or embedded walkthrough to any slide, shared as a link."
-            it="Gli slot media permettono al seller di agganciare a qualsiasi slide un video demo o un walkthrough incorporato pensato per quel cliente, condiviso via link."
-            fr="Les emplacements média permettent au vendeur d'associer à chaque slide une vidéo de démo ou un walkthrough embarqué propre au client, partagé par lien."
-            class="loom-card-body"
-          />
-        </div>
-
-        <div class="loom-card">
-          <span class="loom-mark" aria-hidden="true">03</span>
-          <T
-            en="On the horizon"
-            it="All'orizzonte"
-            fr="À l'horizon"
-            as="p"
-            class="loom-tag mb-2"
-          />
-          <T
-            as="h3"
-            en="Generative media, on the horizon"
-            it="Media generativi, all'orizzonte"
-            fr="Médias génératifs, à l'horizon"
-            class="loom-card-title"
-          />
-          <T
-            as="p"
-            en="Firefly image and video generation composed into the experience itself, so a workshop can create assets on the client's brief, live."
-            it="La generazione di immagini e video Firefly entra nell'esperienza stessa: un workshop può creare asset sul brief del cliente, in diretta."
-            fr="La génération d'images et de vidéos Firefly s'intègre à l'expérience même&nbsp;: un atelier peut créer des assets sur le brief du client, en direct."
-            class="loom-card-body"
-          />
-        </div>
-      </div>
-
-      <div class="loom-quote w-full max-w-6xl" data-reveal data-reveal-delay="0.24">
         <T
           as="p"
-          en="A product the room can touch lands harder than one it only hears described."
-          it="Un prodotto che la sala può toccare convince più di uno soltanto raccontato."
-          fr="Un produit que la salle peut manipuler convainc plus qu'un produit seulement décrit."
-          class="loom-quote-text"
+          en="A product the room can try convinces more than one it hears about."
+          it="Un prodotto che la sala può provare convince più di uno di cui sente solo parlare."
+          fr="Un produit que la salle peut essayer convainc plus qu'un produit dont elle entend seulement parler."
+          class="fr-close"
+          data-reveal
+          data-reveal-delay="0.2"
         />
       </div>
     </Slide>
 
     <!-- ── SLIDE 2: Boardroom Quest — the spotlight ───────────────── -->
     <Slide id="slide-quest" bg="primary" align="left" data-solution="quest">
-      <div slot="backdrop" class="loom-bg" aria-hidden="true"></div>
-      <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center min-w-0">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+      <div class="atl-frame grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
         <!-- Left: the pitch -->
         <div class="min-w-0">
           <T
@@ -258,9 +251,9 @@ function pixelColor(ch: string, r: number, c: number): string {
           />
           <T
             as="p"
-            en="A facilitated serious game for C-level workshops. Each executive team plays one division of a company in crisis; no puzzle can be solved by one division alone. Adobe products appear as the tools that unlock what silos cannot."
-            it="Un serious game facilitato per workshop C-level. Ogni team executive interpreta una divisione di un'azienda in crisi; nessun enigma si risolve con una sola divisione. I prodotti Adobe compaiono come gli strumenti che aprono ciò che i silos tengono chiuso."
-            fr="Un serious game animé par un facilitateur, pour des ateliers C-level. Chaque équipe dirigeante incarne une division d'une entreprise en crise&nbsp;; aucune énigme ne se résout avec une seule division. Les produits Adobe y sont les outils qui ouvrent ce que les silos laissent fermé."
+            en="A facilitated serious game for C-level workshops. Each executive team plays one division of a company in crisis; no puzzle can be solved by one division alone. Adobe products are the tools that open what a single division can't."
+            it="Un serious game facilitato per workshop C-level. Ogni team executive interpreta una divisione di un'azienda in crisi; nessun enigma si risolve con una sola divisione. I prodotti Adobe sono gli strumenti che aprono ciò che una divisione da sola non può."
+            fr="Un serious game animé par un facilitateur, pour des ateliers C-level. Chaque équipe dirigeante incarne une division d'une entreprise en crise&nbsp;; aucune énigme ne se résout avec une seule division. Les produits Adobe sont les outils qui ouvrent ce qu'une division seule ne peut pas."
             class="text-[var(--color-sabbia-200)] mb-4"
             style="font-size: clamp(0.98rem, 1.15vw, 1.15rem); line-height: 1.6; max-width: none;"
             data-reveal
@@ -268,9 +261,9 @@ function pixelColor(ch: string, r: number, c: number): string {
           />
           <T
             as="p"
-            en="Every decision is logged, and the debrief shows where the silos cost time. The game demonstrates the thesis it teaches."
-            it="Ogni decisione viene registrata e il debrief mostra dove i silos fanno perdere tempo. Il gioco dimostra la tesi che insegna."
-            fr="Chaque décision est consignée, et le débrief montre où les silos font perdre du temps. Le jeu démontre la thèse qu'il enseigne."
+            en="Every decision is logged. The debrief then shows, with the team's own choices, what the silos cost."
+            it="Ogni decisione viene registrata. Il debrief mostra poi, con le scelte del team, quanto sono costati i silos."
+            fr="Chaque décision est consignée. Le débrief montre ensuite, avec les choix de l'équipe, ce que les silos ont coûté."
             class="text-[var(--color-avorio)] font-medium mb-5"
             style="font-size: clamp(0.98rem, 1.15vw, 1.15rem); line-height: 1.55; max-width: none;"
             data-reveal
@@ -281,15 +274,15 @@ function pixelColor(ch: string, r: number, c: number): string {
             en="Format precedent: SAP has run facilitator-led board games with customers since 2020 (S/4HANA board game, BTP Diamond Game). SAP News, 2020–2023."
             it="Precedente di formato: dal 2020 SAP porta ai clienti board game guidati da facilitatori (board game S/4HANA, BTP Diamond Game). SAP News, 2020–2023."
             fr="Précédent de format&nbsp;: depuis 2020, SAP anime avec ses clients des jeux de plateau (board game S/4HANA, BTP Diamond Game). SAP News, 2020–2023."
-            class="text-[0.78rem] text-[var(--color-sabbia-300)]"
+            class="text-[0.8rem] text-[var(--color-sabbia-300)]"
             style="line-height: 1.5; max-width: none;"
             data-reveal
             data-reveal-delay="0.26"
           />
         </div>
 
-        <!-- Right: CSS pixel-art teaser (no images) -->
-        <div class="loom-panel min-w-0" style="border-color: rgba(201,169,106,0.45);" data-reveal data-reveal-delay="0.2">
+        <!-- Right: CSS pixel-art teaser (no images, no fake screens) -->
+        <div class="loom-panel quest-art min-w-0" data-reveal data-reveal-delay="0.2">
           <div
             class="grid w-full max-w-[26rem] mx-auto"
             style="grid-template-columns: repeat(18, 1fr); gap: 2px;"
@@ -299,8 +292,8 @@ function pixelColor(ch: string, r: number, c: number): string {
             {PIXEL_MAP.flatMap((row, r) =>
               row.split('').map((ch, c) => (
                 <div
-                  class="aspect-square w-full"
-                  style={`background:${pixelColor(ch, r, c)};${ch === 'K' ? 'box-shadow:0 0 10px rgba(201,169,106,0.6);' : ''}`}
+                  class={`aspect-square w-full${ch === 'K' ? ' quest-key' : ''}`}
+                  style={`background:${pixelColor(ch, r, c)};`}
                 ></div>
               ))
             )}
@@ -310,25 +303,26 @@ function pixelColor(ch: string, r: number, c: number): string {
             en="Concept frame — in design"
             it="Frame di concept — in progettazione"
             fr="Vue concept — en conception"
-            class="text-center text-[0.75rem] font-semibold tracking-[0.14em] uppercase text-[var(--color-sabbia-300)] mt-3 mx-auto"
+            class="atl-label text-center mt-3 mx-auto"
+            style="letter-spacing: 0.14em;"
           />
           <div class="w-full max-w-[26rem] mx-auto mt-3 pt-3 border-t border-[var(--line-subtle)] flex flex-col gap-1.5">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="flex items-center gap-1 flex-shrink-0" aria-hidden="true">
-                <span class="w-2.5 h-2.5" style="background:#C9A272;"></span>
-                <span class="w-2.5 h-2.5" style="background:#E8858B;"></span>
-                <span class="w-2.5 h-2.5" style="background:#FF7A5C;"></span>
-                <span class="w-2.5 h-2.5" style="background:#F2777D;"></span>
-                <span class="w-2.5 h-2.5" style="background:#2BC2CE;"></span>
+                <span class="w-2.5 h-2.5" style="background: var(--px-1);"></span>
+                <span class="w-2.5 h-2.5" style="background: var(--px-2);"></span>
+                <span class="w-2.5 h-2.5" style="background: var(--px-3);"></span>
+                <span class="w-2.5 h-2.5" style="background: var(--px-4);"></span>
+                <span class="w-2.5 h-2.5" style="background: var(--px-5);"></span>
               </span>
               <T en="Five divisions at the table" it="Cinque divisioni al tavolo" fr="Cinq divisions autour de la table" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
             </div>
             <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-2.5 h-2.5 flex-shrink-0" style="background:#C9A96A; box-shadow:0 0 6px rgba(201,169,106,0.6);" aria-hidden="true"></span>
+              <span class="w-2.5 h-2.5 flex-shrink-0 quest-key" style="background: var(--px-key);" aria-hidden="true"></span>
               <T en="One key no division holds alone" it="Una chiave che nessuna divisione ha da sola" fr="Une clé qu'aucune division ne détient seule" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
             </div>
             <div class="flex items-center gap-2.5 min-w-0">
-              <span class="w-2.5 h-2.5 flex-shrink-0" style="background:rgba(201,169,106,0.55);" aria-hidden="true"></span>
+              <span class="w-2.5 h-2.5 flex-shrink-0" style="background: var(--px-door);" aria-hidden="true"></span>
               <T en="The door out of the crisis" it="La porta d'uscita dalla crisi" fr="La porte de sortie de la crise" as="p" class="text-[0.95rem] text-[var(--color-sabbia-200)]" style="line-height: 1.5; max-width: none;" />
             </div>
           </div>
@@ -336,105 +330,113 @@ function pixelColor(ch: string, r: number, c: number): string {
       </div>
     </Slide>
 
-    <!-- ── SLIDE 3: Quest roadmap, properly gated ─────────────────── -->
+    <!-- ── SLIDE 3: Quest roadmap, with its checkpoints ───────────── -->
     <Slide id="slide-quest-plan" bg="secondary" align="left" data-solution="quest">
-      <T
-        as="p"
-        en="Frontier two, the road"
-        it="Seconda frontiera, il percorso"
-        fr="Deuxième frontière, le chemin"
-        class="slide-eyebrow text-[var(--accent-primary)] mb-2.5"
-        data-reveal
-      />
-      <T
-        as="h2"
-        en="From concept to platform, gated properly"
-        it="Dal concept alla piattaforma, con i gate giusti"
-        fr="Du concept à la plateforme, avec les bons jalons"
-        class="text-[var(--ink-primary)] mb-4"
-        style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      />
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl flex flex-col gap-2.5" data-reveal data-reveal-delay="0.16">
-        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
-          <div class="flex items-baseline gap-2.5 min-w-0">
-            <T as="p" en="Phase 1" it="Fase 1" fr="Phase 1" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
-            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M1</span>
-          </div>
-          <T
-            as="p"
-            en="Walking skeleton: one scene, one puzzle, the event-sourced core."
-            it="Walking skeleton: una scena, un enigma, il core event-sourced."
-            fr="Squelette fonctionnel&nbsp;: une scène, une énigme, le cœur event-sourced."
-            class="text-[var(--color-sabbia-200)]"
-            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
-          />
-        </div>
-
-        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
-          <div class="flex items-baseline gap-2.5 min-w-0">
-            <T as="p" en="Phase 2" it="Fase 2" fr="Phase 2" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
-            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M2</span>
-          </div>
-          <T
-            as="p"
-            en="Facilitated beta: 90 minutes, one banking scenario, first real workshop."
-            it="Beta facilitata: 90 minuti, uno scenario banking, primo workshop reale."
-            fr="Bêta animée&nbsp;: 90 minutes, un scénario bancaire, premier atelier réel."
-            class="text-[var(--color-sabbia-200)]"
-            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
-          />
-        </div>
-
-        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[var(--surface-tertiary)] border border-[var(--line-subtle)] rounded-sm">
-          <div class="flex items-baseline gap-2.5 min-w-0">
-            <T as="p" en="Phase 3" it="Fase 3" fr="Phase 3" class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-avorio)]" style="font-size: 1.1rem; line-height: 1.3;" />
-            <span class="text-[0.78rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] flex-shrink-0">M3</span>
-          </div>
-          <T
-            as="p"
-            en="Multiplayer and a second industry pack: each division on its own device."
-            it="Multiplayer e un secondo pack di settore: ogni divisione sul proprio device."
-            fr="Multijoueur et un deuxième pack sectoriel&nbsp;: chaque division sur son propre appareil."
-            class="text-[var(--color-sabbia-200)]"
-            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
-          />
-        </div>
-
-        <!-- The gate — distinct, champagne-bordered -->
-        <div class="min-w-0 grid md:grid-cols-[11rem_minmax(0,1fr)] gap-x-6 gap-y-1 items-center px-5 py-3 bg-[rgba(27,24,19,1)] border border-[rgba(201,169,106,0.55)] rounded-sm">
-          <T
-            as="p"
-            en="Gate"
-            it="Gate"
-            fr="Validation"
-            class="font-[family-name:var(--font-display)] font-semibold text-[var(--accent-primary)] min-w-0"
-            style="font-size: 1.1rem; line-height: 1.3;"
-          />
-          <T
-            as="p"
-            en="Adobe brand and trademark review before any official workshop use. The guidelines are strict about product-centric materials, so clearance comes first."
-            it="Revisione brand e trademark Adobe prima di ogni uso ufficiale in workshop. Le linee guida sono rigorose sui materiali incentrati sul prodotto: il via libera viene prima."
-            fr="Revue de la marque et des marques déposées Adobe avant tout usage officiel en atelier. Les directives encadrent strictement les supports centrés produit&nbsp;: la validation passe d'abord."
-            class="text-[var(--color-sabbia-200)]"
-            style="font-size: 0.98rem; line-height: 1.55; max-width: none;"
-          />
-        </div>
-      </div>
-
-      <div class="w-full max-w-6xl mt-4 border-l-2 border-[var(--accent-primary)] pl-5" data-reveal data-reveal-delay="0.24">
+      <div class="atl-frame">
         <T
-          as="p"
-          en="A game for the boardroom, built like a product."
-          it="Un gioco per il board, costruito come un prodotto."
-          fr="Un jeu pour le comité de direction, construit comme un produit."
-          class="font-[family-name:var(--font-display)] text-[var(--color-avorio)]"
-          style="font-size: clamp(1.2rem, 1.5vw, 1.5rem); line-height: 1.3; font-weight: 500; max-width: none;"
+          as="h2"
+          en="From concept to platform, with the right checkpoints"
+          it="Dal concept alla piattaforma, con i giusti punti di controllo"
+          fr="Du concept à la plateforme, avec les bons garde-fous"
+          class="slide-title text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.65rem, 2.5vw, 2.3rem);"
+          data-reveal
         />
+
+        <div class="flex flex-col gap-2.5" data-reveal data-reveal-delay="0.1">
+          {questPhases.map((ph) => (
+            <div class="quest-row">
+              <div class="flex items-baseline gap-2.5 min-w-0">
+                <T as="p" en={ph.label.en} it={ph.label.it} fr={ph.label.fr} class="quest-row-label text-[var(--color-avorio)]" />
+                <span class="atl-label text-[var(--accent-primary)] flex-shrink-0" style="letter-spacing: 0.1em;">{ph.m}</span>
+              </div>
+              <T as="p" en={ph.body.en} it={ph.body.it} fr={ph.body.fr} class="quest-row-body" />
+            </div>
+          ))}
+
+          <!-- The checkpoint — distinct, champagne-bordered panel -->
+          <div class="quest-row quest-row--gate">
+            <T
+              as="p"
+              en="Checkpoint"
+              it="Verifica"
+              fr="Validation"
+              class="quest-row-label text-[var(--accent-primary)] min-w-0"
+            />
+            <T
+              as="p"
+              en="Adobe brand and trademark review before any official workshop use. The guidelines are strict about product-centric materials, so clearance comes first."
+              it="Revisione brand e trademark Adobe prima di ogni uso ufficiale in workshop. Le linee guida sono rigorose sui materiali incentrati sul prodotto: il via libera viene prima."
+              fr="Revue de la marque et des marques déposées Adobe avant tout usage officiel en atelier. Les directives encadrent strictement les supports centrés produit&nbsp;: la validation passe d'abord."
+              class="quest-row-body"
+            />
+          </div>
+        </div>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<style>
+  /* Page-specific refinements over the shared loom system (global.css).
+     Explicit rgba / brand tokens only so the deck audit's contrast parser reads them. */
+
+  /* Horizon tags carry the milestone timing: keep them at the label minimum. */
+  .fr-tag { font-size: 0.8rem; }
+
+  /* Plain closing sentence under the three horizons (no pull-quote device here). */
+  .fr-close {
+    margin-top: 1.5rem;
+    font-family: var(--font-display); font-weight: 500;
+    color: var(--color-avorio);
+    font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.45; max-width: 60ch;
+  }
+
+  /* Pixel-art palette, scoped to the art. Walls/door/table are tints of
+     sabbia-400 / champagne / bronzo; the five division tokens reuse the
+     opening wall's AA-lightened brand tints; the key is champagne. */
+  .quest-art {
+    border-color: rgba(201, 169, 106, 0.45);
+    --px-wall: rgba(142, 133, 112, 0.52);
+    --px-door: rgba(201, 169, 106, 0.55);
+    --px-table: rgba(154, 123, 69, 0.55);
+    --px-key: var(--color-champagne);
+    --px-floor-a: rgba(27, 24, 19, 1);
+    --px-floor-b: rgba(33, 29, 23, 1);
+    --px-1: #C9A272;
+    --px-2: #E8858B;
+    --px-3: #FF7A5C;
+    --px-4: #F2777D;
+    --px-5: #2BC2CE;
+  }
+  .quest-art .quest-key { box-shadow: 0 0 10px rgba(201, 169, 106, 0.6); }
+
+  /* Roadmap rows: full hairline panels (never a side-stripe). */
+  .quest-row {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 1.5rem; row-gap: 0.25rem;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface-tertiary);
+    border: 1px solid var(--line-subtle);
+    border-radius: 2px;
+  }
+  @media (min-width: 768px) { .quest-row { grid-template-columns: 11rem minmax(0, 1fr); } }
+  .quest-row--gate {
+    background: rgba(27, 24, 19, 1);
+    border-color: rgba(201, 169, 106, 0.55);
+  }
+  .quest-row-label {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.1rem; line-height: 1.3;
+  }
+  .quest-row-body {
+    color: var(--color-sabbia-200);
+    font-size: 0.98rem; line-height: 1.55; max-width: none;
+  }
+</style>
