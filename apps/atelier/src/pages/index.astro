@@ -6,22 +6,49 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
+import { Picture } from 'astro:assets';
 import { mediaProps } from '../../assets.index';
+
+// Real 1280×720 cover screenshots of the live experiences (src/assets/wall/*.webp).
+import shotMaxmara from '../assets/wall/generazioni-maxmara.webp';
+import shotUnicredit from '../assets/wall/unicredit-engagement.webp';
+import shotFerrari from '../assets/wall/ferrari-racing.webp';
+import shotFs from '../assets/wall/trenitalia-connessioni.webp';
+import shotAgos from '../assets/wall/agos-trait-dunion.webp';
+import shotEni from '../assets/wall/eni-orbita.webp';
+import shotMim from '../assets/wall/mim-alfabeti.webp';
+import shotHub from '../assets/wall/hub.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
 
-// Accent tints tuned for AA (≥4.5:1) on the dark card surface — the raw brand
-// hues (UniCredit #BE2027, Ferrari #FF2800, FS #E2001A) fall below 4.5:1 on
-// fuliggine, so each kicker uses a lightened tint of its brand accent.
-const wall = [
+interface Tri { en: string; it: string; fr: string }
+interface WallTile {
+  kicker: string;
+  accent: string;           // per-tile brand accent → --wall-accent on the tile
+  name: string | Tri;
+  url: string;
+  shot: ImageMetadata;
+  focus: string;            // object-position of the cover crop
+  alt: string;              // plain string, in the brand's own voice
+  tag: Tri;                 // one-line descriptor (≤ 2 lines at 1280)
+}
+
+// Accent tints tuned for AA (≥4.5:1) on the dark tile surface — the raw brand
+// hues (UniCredit #BE2027, Ferrari #FF2800, FS #E2001A, MIM #2A6DD9) fall below
+// 4.5:1 on fuliggine, so each kicker uses a lightened tint of its brand accent.
+// The accent is inherently per tile, so it lives on the tile as --wall-accent.
+const wall: WallTile[] = [
   {
     kicker: 'Max Mara',
     accent: '#C9A272',
     name: 'Generazioni',
     url: `${LIVE}/generazioni-maxmara/`,
+    shot: shotMaxmara,
+    focus: '50% 42%',
+    alt: 'Generazioni, Max Mara × Adobe: the cover, ivory and camel, with the title in a serif over a soft wool texture.',
     tag: {
       en: 'A quiet-luxury generational journey',
       it: 'Un viaggio generazionale quiet-luxury',
@@ -33,21 +60,27 @@ const wall = [
     accent: '#E8858B',
     name: 'Engagement Unlimited',
     url: `${LIVE}/unicredit-engagement/`,
+    shot: shotUnicredit,
+    focus: '50% 40%',
+    alt: 'Engagement Unlimited, UniCredit × Adobe: the cover on midnight blue, the title in Playfair Display and the six-chapter timeline.',
     tag: {
-      en: 'A complete Adobe CX story with real personas',
-      it: 'Una storia Adobe CX completa, con personas reali',
-      fr: 'Un récit Adobe CX complet, avec de vrais personas',
+      en: 'Six chapters, one customer story',
+      it: 'Sei capitoli, una sola storia cliente',
+      fr: 'Six chapitres, une seule histoire client',
     },
   },
   {
-    kicker: 'Ferrari Racing × Adobe',
+    kicker: 'Ferrari Racing',
     accent: '#FF7A5C',
     name: 'Pole Position',
     url: `${LIVE}/ferrari-racing/`,
+    shot: shotFerrari,
+    focus: '50% 42%',
+    alt: 'Pole Position, Ferrari Racing × Adobe: the cover on carbon black with floodlight bokeh, the title in bold capitals and a Rosso Corsa telemetry line.',
     tag: {
-      en: 'Data collaboration from Maranello to every fan',
-      it: 'Data collaboration da Maranello a ogni tifoso',
-      fr: 'La data collaboration, de Maranello à chaque fan',
+      en: 'Data collaboration, Maranello to the fans',
+      it: 'Data collaboration da Maranello ai tifosi',
+      fr: 'Data collaboration, de Maranello aux fans',
     },
   },
   {
@@ -55,32 +88,69 @@ const wall = [
     accent: '#F2777D',
     name: 'Connessioni Intelligenti',
     url: `${LIVE}/trenitalia-connessioni/`,
+    shot: shotFs,
+    focus: '50% 36%',
+    alt: 'Connessioni Intelligenti, FS Group × Adobe: the cover on graphite, the title in a geometric sans and the FS Park and Trenitalia branches in the nav.',
     tag: {
-      en: 'One measurable journey for trains and travellers',
-      it: 'Un journey misurabile dai treni ai viaggiatori',
-      fr: 'Un parcours mesurable, des trains aux voyageurs',
+      en: 'Two branches: FS Park and Trenitalia',
+      it: 'Due rami: FS Park e Trenitalia',
+      fr: 'Deux branches&nbsp;: FS Park et Trenitalia',
     },
   },
   {
     kicker: 'Agos',
     accent: '#2BC2CE',
-    name: "Trait d'Union",
+    name: 'Trait d’Union',
     url: `${LIVE}/agos-trait-dunion/`,
+    shot: shotAgos,
+    focus: '50% 42%',
+    alt: 'Trait d’Union, Agos × Adobe: the cover on petrol blue, the title in Montserrat and the digital-to-branch line in aqua and orange.',
     tag: {
-      en: 'Digital and branch, joined in one client intelligence',
-      it: "Digitale e filiale, uniti in un'unica intelligenza cliente",
-      fr: 'Digital et agence, réunis dans une même intelligence client',
+      en: 'Digital and branch, one client intelligence',
+      it: 'Digitale e filiale, un’unica intelligenza',
+      fr: 'Digital et agence, une seule intelligence',
     },
   },
   {
-    kicker: 'Console · Hub · Showcase',
-    accent: '#C9A96A',
+    kicker: 'Eni',
+    accent: '#F2D45A',
+    name: 'Orbita',
+    url: `${LIVE}/eni-orbita/`,
+    shot: shotEni,
+    focus: '50% 46%',
+    alt: 'Orbita, Eni × Adobe: the cover on near-black with a yellow sun and satellite orbits above the title.',
+    tag: {
+      en: 'One group, many orbits, one identity',
+      it: 'Un gruppo, tante orbite, una identità',
+      fr: 'Un groupe, tant d’orbites, une identité',
+    },
+  },
+  {
+    kicker: 'MIM',
+    accent: '#6FA3F0',
+    name: 'La voce del Ministero',
+    url: `${LIVE}/mim-alfabeti/`,
+    shot: shotMim,
+    focus: '50% 42%',
+    alt: 'La voce del Ministero, Ministero dell’Istruzione e del Merito × Adobe: the cover on deep blue with radiating light lines, generated with Adobe Firefly and signed with Content Credentials.',
+    tag: {
+      en: 'How the Ministry speaks to its staff',
+      it: 'Come il Ministero parla al personale',
+      fr: 'Comment le Ministère parle à son personnel',
+    },
+  },
+  {
+    kicker: 'Factory',
+    accent: 'var(--color-champagne)',
     name: { en: 'The Platform', it: 'La Piattaforma', fr: 'La Plateforme' },
     url: `${LIVE}/`,
+    shot: shotHub,
+    focus: '50% 30%',
+    alt: 'The Experience Design Factory hub: a dark landing page listing every live experience as a card.',
     tag: {
-      en: 'The engine behind them all: one console, every experience',
-      it: 'Il motore dietro a tutte: una console, ogni esperienza',
-      fr: "Le moteur de l'ensemble : une console, chaque expérience",
+      en: 'Console, hub and showcase in one engine',
+      it: 'Console, hub e showcase, un solo motore',
+      fr: 'Console, hub et showcase, un seul moteur',
     },
   },
 ];
@@ -102,7 +172,7 @@ const wall = [
         />
       </div>
 
-      <div class="overture-cover mx-auto w-full max-w-6xl" data-reveal>
+      <div class="overture-cover atl-frame" data-reveal>
         <T
           as="p"
           en="Experience Atelier"
@@ -112,157 +182,156 @@ const wall = [
         />
         <T
           as="h1"
-          en="Six experiences. Five brands.<br/>One person, paired with AI."
-          it="Sei esperienze. Cinque brand.<br/>Una persona, in coppia con l'AI."
-          fr="Six expériences. Cinq marques.<br/>Une personne, en binôme avec l'IA."
+          en="Seven experiences for seven organisations,<br/>built by one person working with AI."
+          it="Sette esperienze per sette organizzazioni,<br/>costruite da una persona che lavora con l’AI."
+          fr="Sept expériences pour sept organisations,<br/>construites par une personne qui travaille avec l’IA."
           data-display
-          class="slide-title text-center text-[var(--ink-primary)] mb-8 mx-auto"
-          style="font-size: clamp(2.7rem, 4.9vw, 4.7rem);"
+          class="overture-title slide-title text-center text-[var(--ink-primary)] mb-7 mx-auto"
         />
-
-        <!-- Concept device: one warp fanning into six woven experiences (1 → 6). -->
-        <div class="overture-loom" data-reveal data-reveal-delay="0.12" aria-hidden="true">
-          <span class="overture-loom-cap overture-loom-cap--one">1</span>
-          <svg class="overture-loom-svg" viewBox="0 0 480 120" preserveAspectRatio="none" role="presentation">
-            <line x1="6" y1="60" x2="474" y2="10" />
-            <line x1="6" y1="60" x2="474" y2="30" />
-            <line x1="6" y1="60" x2="474" y2="50" />
-            <line x1="6" y1="60" x2="474" y2="70" />
-            <line x1="6" y1="60" x2="474" y2="90" />
-            <line x1="6" y1="60" x2="474" y2="110" />
-          </svg>
-          <span class="overture-loom-cap overture-loom-cap--many">6</span>
-        </div>
 
         <T
           as="p"
           en="Live in production, each built in weeks. This deck runs on the same engine."
           it="In produzione, ognuna costruita in poche settimane. Anche questo deck gira sullo stesso motore."
           fr="En production, chacune montée en quelques semaines. Ce deck aussi tourne sur le même moteur."
-          class="text-center text-[var(--color-sabbia-200)] mx-auto max-w-3xl mt-8"
-          style="font-size: clamp(1.1rem, 1.4vw, 1.4rem); line-height: 1.55;"
+          class="atl-lede"
           data-reveal
-          data-reveal-delay="0.22"
+          data-reveal-delay="0.12"
         />
 
-        <div class="mt-10 flex flex-col items-center gap-3" data-reveal data-reveal-delay="0.3">
+        <!-- Concept device: one warp fanning into the seven woven experiences (1 → 7). -->
+        <div class="overture-loom mt-8" data-reveal data-reveal-delay="0.2" aria-hidden="true">
+          <span class="overture-loom-cap overture-loom-cap--one">1</span>
+          <svg class="overture-loom-svg" viewBox="0 0 480 120" preserveAspectRatio="none" role="presentation">
+            <line x1="6" y1="60" x2="474" y2="8" />
+            <line x1="6" y1="60" x2="474" y2="25" />
+            <line x1="6" y1="60" x2="474" y2="42" />
+            <line x1="6" y1="60" x2="474" y2="60" />
+            <line x1="6" y1="60" x2="474" y2="78" />
+            <line x1="6" y1="60" x2="474" y2="95" />
+            <line x1="6" y1="60" x2="474" y2="112" />
+          </svg>
+          <span class="overture-loom-cap overture-loom-cap--many">7</span>
+        </div>
+
+        <T
+          as="p"
+          en="← → to move · EN, IT and FR in the toggle above"
+          it="← → per muoversi · EN, IT e FR nel selettore in alto"
+          fr="← → pour avancer · EN, IT et FR via le sélecteur en haut"
+          class="atl-label text-center mt-4"
+          data-reveal
+          data-reveal-delay="0.26"
+        />
+
+        <div class="mt-8 flex flex-col items-center gap-3" data-reveal data-reveal-delay="0.3">
           <div class="w-10 h-px bg-[var(--accent-primary)]" aria-hidden="true"></div>
           <T
             as="p"
             en="Adobe"
             it="Adobe"
             fr="Adobe"
-            class="text-center text-[0.78rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-sabbia-300)]"
+            class="atl-label text-center tracking-[0.22em]"
           />
         </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1: The wall — six live tiles ─────────────────────── -->
-    <Slide id="slide-wall" bg="secondary" align="center">
+    <!-- ── SLIDE 1: The wall — seven live experiences + the platform ── -->
+    <Slide id="slide-wall" bg="secondary" align="left">
       <div slot="backdrop" class="loom-bg-soft"></div>
 
-      <T
-        as="p"
-        en="Six live deployments"
-        it="Sei esperienze live"
-        fr="Six déploiements en production"
-        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-3"
-        data-reveal
-      />
-      <T
-        as="h2"
-        en="Every tile is live. Click any of them."
-        it="Ogni card è live. Aprine una qualsiasi."
-        fr="Tout est en ligne. Ouvrez une carte."
-        class="slide-title text-center text-[var(--ink-primary)] mb-7"
-        style="font-size: clamp(1.6rem, 2.6vw, 2.5rem);"
-        data-reveal
-        data-reveal-delay="0.08"
-      />
-      <div
-        class="w-full max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-[clamp(0.7rem,1vw,1.1rem)]"
-        data-reveal
-        data-reveal-delay="0.16"
-      >
-        {wall.map((card) => (
-          <a
-            target="_blank"
-            rel="noopener"
-            href={card.url}
-            class="loom-panel wall-card group no-underline"
-            style={`--wall-accent: ${card.accent};`}
-          >
-            <span class="wall-accent-cap" aria-hidden="true" style={`background: ${card.accent};`}></span>
-            <p
-              class="loom-tag mb-2"
-              style={`color: ${card.accent};`}
+      <div class="atl-frame wall-layout" data-reveal>
+        <div class="wall-heading">
+          <T
+            as="p"
+            en="Seven live experiences"
+            it="Sette esperienze in produzione"
+            fr="Sept expériences en production"
+            class="slide-eyebrow text-[var(--accent-primary)] mb-4"
+          />
+          <T
+            as="h2"
+            en="Every tile is live: this is the proof, one click away."
+            it="Ogni card è in produzione: la prova è a un clic."
+            fr="Chaque carte est en ligne&nbsp;: la preuve, à un clic."
+            class="wall-title slide-title text-[var(--ink-primary)]"
+            data-reveal
+            data-reveal-delay="0.08"
+          />
+        </div>
+
+        <div class="wall-grid" data-reveal data-reveal-delay="0.16">
+          {wall.map((card) => (
+            <a
+              target="_blank"
+              rel="noopener"
+              href={card.url}
+              class="wall-card no-underline"
+              style={`--wall-accent: ${card.accent};`}
             >
-              {card.kicker}
-            </p>
-            {typeof card.name === 'string' ? (
-              <p
-                class="font-semibold text-[var(--ink-primary)] mb-1.5 font-[family-name:var(--font-display)]"
-                style="font-size: clamp(1.05rem, 1.25vw, 1.3rem); line-height: 1.15;"
-              >
-                {card.name}
-              </p>
-            ) : (
-              <T
-                as="p"
-                en={card.name.en}
-                it={card.name.it}
-                fr={card.name.fr}
-                class="font-semibold text-[var(--ink-primary)] mb-1.5 font-[family-name:var(--font-display)]"
-                style="font-size: clamp(1.05rem, 1.25vw, 1.3rem); line-height: 1.15;"
+              <span class="wall-accent-cap" aria-hidden="true"></span>
+              <Picture
+                src={card.shot}
+                formats={['webp']}
+                fallbackFormat="webp"
+                widths={[640, 960]}
+                sizes="(max-width: 640px) 50vw, 320px"
+                alt={card.alt}
+                loading="eager"
+                decoding="async"
+                pictureAttributes={{ class: 'wall-shot' }}
+                class="wall-shot-img"
+                style={`object-position: ${card.focus};`}
               />
-            )}
-            <T
-              as="p"
-              en={card.tag.en}
-              it={card.tag.it}
-              fr={card.tag.fr}
-              class="text-[var(--color-sabbia-200)]"
-              style="font-size: clamp(0.85rem, 0.95vw, 1rem); line-height: 1.5;"
-            />
-          </a>
-        ))}
+              <span class="wall-body">
+                <p class="loom-tag wall-kicker">
+                  {card.kicker}
+                  <span class="wall-ext" aria-hidden="true">↗</span>
+                </p>
+                {typeof card.name === 'string' ? (
+                  <p class="wall-name">{card.name}</p>
+                ) : (
+                  <T as="p" en={card.name.en} it={card.name.it} fr={card.name.fr} class="wall-name" />
+                )}
+                <T as="p" en={card.tag.en} it={card.tag.it} fr={card.tag.fr} class="wall-desc" />
+                <T
+                  as="span"
+                  en=" (opens in a new tab)"
+                  it=" (si apre in una nuova scheda)"
+                  fr=" (s’ouvre dans un nouvel onglet)"
+                  class="sr-only"
+                />
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 2: Thesis ────────────────────────────────────────── -->
-    <Slide id="slide-thesis" bg="primary" align="center">
+    <!-- ── SLIDE 2: Thesis (detail cut only) ──────────────────────── -->
+    <Slide id="slide-thesis" bg="primary" align="center" data-solution="detail">
       <div slot="backdrop" class="loom-bg"></div>
 
-      <T
-        as="p"
-        en="From one maker to a workforce"
-        it="Da un solo maker a una workforce"
-        fr="D'un seul artisan à toute une équipe"
-        class="slide-eyebrow text-center text-[var(--accent-primary)] mb-8"
-        data-reveal
-      />
-      <T
-        as="h2"
-        en="What follows is a plan to turn this way of working into a capability many people at Adobe can use."
-        it="Quello che segue è un piano per trasformare questo modo di lavorare in una capability diffusa in Adobe."
-        fr="La suite est un plan pour faire de cette façon de travailler une capacité partagée chez Adobe."
-        class="slide-title text-center text-[var(--ink-primary)] max-w-4xl mx-auto mb-10"
-        style="font-size: clamp(2rem, 3.3vw, 3.2rem); line-height: 1.22;"
-        data-reveal
-        data-reveal-delay="0.08"
-      />
-      <div class="loom-thesis-rule mx-auto mb-10" aria-hidden="true" data-reveal data-reveal-delay="0.16"></div>
-      <T
-        as="p"
-        en="Use ← → to move. EN, IT and FR live in the toggle above."
-        it="Frecce ← → per muoversi. EN, IT e FR nel selettore in alto."
-        fr="← → pour avancer. EN, IT et FR via le sélecteur en haut."
-        class="text-center text-[var(--color-sabbia-300)] mx-auto"
-        style="font-size: 0.875rem; letter-spacing: 0.02em;"
-        data-reveal
-        data-reveal-delay="0.2"
-      />
+      <div class="atl-frame flex flex-col items-center">
+        <T
+          as="p"
+          en="From one person to the whole sales force"
+          it="Da una persona sola a tutta la rete vendita"
+          fr="D’une seule personne à toute la force de vente"
+          class="thesis-lead text-center"
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="One person, working with AI, shipped seven client experiences in twelve weeks. This plan turns that way of working into a capability for fifty sellers, then a hundred."
+          it="Una persona, lavorando con l’AI, ha messo in produzione sette esperienze cliente in dodici settimane. Questo piano trasforma quel modo di lavorare in una capacità per cinquanta venditori, poi cento."
+          fr="Une personne, travaillant avec l’IA, a mis en production sept expériences client en douze semaines. Ce plan fait de cette façon de travailler un savoir-faire pour cinquante commerciaux, puis cent."
+          class="thesis-title slide-title text-center text-[var(--ink-primary)] mx-auto"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+      </div>
     </Slide>
 
   </DeckContainer>
@@ -274,20 +343,32 @@ const wall = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 80rem;   /* the cover is not a content slide: the title may run wider than the 72rem frame */
+  }
+  /* Two lines in every language at 1920/1440/1280 (the <br/> sits after the
+     comma); sized so the long FR second line (≈52 chars) never orphans. */
+  .overture-title {
+    font-size: clamp(2.1rem, 3.2vw, 3.1rem);
+    line-height: 1.1;
+    max-width: none;
+    text-wrap: balance;
+  }
+  @media (max-width: 640px) {
+    .overture-title br { display: none; }
   }
 
-  /* Concept device — one warp thread (1) fanning into the six woven cloths (6). */
+  /* Concept device — one warp thread (1) fanning into the seven woven cloths (7). */
   .overture-loom {
     display: flex;
     align-items: center;
     gap: clamp(1rem, 2.4vw, 2.2rem);
     width: min(100%, 42rem);
-    margin: 0.5rem auto 0;
+    margin-inline: auto;
   }
   .overture-loom-svg {
     flex: 1 1 auto;
     width: 100%;
-    height: clamp(58px, 8vh, 96px);
+    height: clamp(56px, 7.5vh, 92px);
   }
   .overture-loom-svg line {
     stroke: rgba(201, 169, 106, 0.55);
@@ -312,34 +393,148 @@ const wall = [
     @keyframes overture-flow { to { stroke-dashoffset: -18; } }
   }
 
-  /* ── Wall tiles as woven panels — full hairline border, top accent cap
-     (never a coloured side-stripe). ─────────────────────────────────── */
+  /* ── The wall: heading column + 2×4 tile grid ─────────────────────
+     Vertical budget at 1280×800 is 464px, so the heading sits BESIDE the
+     grid (a heading above would steal the rows' height) and each tile keeps
+     the real cover screenshot as its top half. ────────────────────── */
+  .wall-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: center;
+  }
+  .wall-heading { min-width: 0; }
+  .wall-title {
+    font-size: clamp(1.45rem, 1.9vw, 1.9rem);
+    line-height: 1.15;
+    max-width: none;
+  }
+  @media (min-width: 1024px) {
+    .wall-layout { grid-template-columns: 9rem minmax(0, 1fr); gap: 1.3rem; }
+  }
+  @media (min-width: 1400px) {
+    .wall-layout { grid-template-columns: 12rem minmax(0, 1fr); gap: 1.6rem; }
+  }
+
+  .wall-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 1fr;              /* equal tiles, always */
+    gap: 0.75rem;
+    min-width: 0;
+  }
+  @media (min-width: 900px) {
+    .wall-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  /* Tile — woven panel with the screenshot on top, full hairline border, a
+     top accent cap in the brand colour (never a coloured side-stripe). */
   .wall-card {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
     overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--line-subtle);
+    background: rgba(27, 24, 19, 0.7);
+    color: inherit;
     text-align: left;
     transition: border-color var(--duration-fast) var(--easing-default),
                 transform var(--duration-fast) var(--easing-out);
   }
   .wall-accent-cap {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
-    opacity: 0.55;
+    z-index: 1;
+    background: var(--wall-accent);
+    opacity: 0.7;
     transition: opacity var(--duration-fast) var(--easing-default);
   }
-  .wall-card:hover {
-    border-color: var(--wall-accent) !important;
+  .wall-card:hover,
+  .wall-card:focus-visible {
+    border-color: var(--wall-accent);
     transform: translateY(-2px);
   }
   .wall-card:hover .wall-accent-cap { opacity: 1; }
+  .wall-card:hover .wall-ext { transform: translate(2px, -2px); }
 
-  /* ── Thesis: champagne hairline separating the statement from the hint. */
-  .loom-thesis-rule {
-    width: clamp(3rem, 6vw, 5rem);
-    height: 1px;
-    background: rgba(201, 169, 106, 0.4);
+  /* The screenshot strip: a 2.2:1 crop of the 16:9 cover, focused on the title. */
+  :global(.wall-shot) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2.2 / 1;
+    overflow: hidden;
+    flex: 0 0 auto;
+    border-bottom: 1px solid var(--line-subtle);
+    background: var(--surface-tertiary);
+  }
+  :global(.wall-shot-img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .wall-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0.6rem 0.75rem 0.7rem;
+  }
+  /* Text always wraps (a nowrap name overflowed the 1280 tile → audit c). */
+  .wall-kicker {
+    color: var(--wall-accent);
+    padding-right: 1.4rem;         /* room for the ↗ affordance */
+    max-width: none;
+    margin-bottom: 0.15rem;
+  }
+  .wall-ext {
+    position: absolute;
+    top: 0.55rem;
+    right: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    letter-spacing: 0;
+    color: var(--wall-accent);
+    transition: transform var(--duration-fast) var(--easing-out);
+  }
+  .wall-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    color: var(--ink-primary);
+    max-width: none;
+    margin-bottom: 0.2rem;
+  }
+  .wall-desc {
+    color: var(--color-sabbia-200);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: none;
+  }
+  /* Tablet portrait (641–1023 wide, ≥800 tall) gets no scroll from the shared
+     tokens; four rows of tiles do not fit, so let this one slide scroll. */
+  @media (min-width: 641px) and (max-width: 899px) and (min-height: 800px) {
+    #slide-wall :global(.slide-inner) { overflow-y: auto; justify-content: safe center; }
+  }
+
+  /* ── Thesis: a serif lead-in (not an uppercase eyebrow) above the statement. */
+  .thesis-lead {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+    color: var(--accent-primary);
+    margin-bottom: 2rem;
+  }
+  .thesis-title {
+    font-size: clamp(1.9rem, 2.9vw, 2.9rem);
+    line-height: 1.34;
+    max-width: 54rem;
   }
 </style>
