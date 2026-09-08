@@ -11,7 +11,7 @@ interface Props {
 const { currentPath, base } = Astro.props;
 
 const sections = [
-  { slug: '',               en: 'Overture',           it: 'Ouverture',          fr: 'Ouverture',              solution: null },
+  { slug: '',               en: 'Overture',           it: 'Apertura',           fr: 'Ouverture',              solution: null },
   { slug: 'method',         en: 'The method',         it: 'Il metodo',          fr: 'La méthode',             solution: null },
   { slug: 'capability',     en: 'The capability',     it: 'La capability',      fr: 'La capacité',            solution: null },
   { slug: 'multiplication', en: 'The multiplication', it: 'La moltiplicazione', fr: 'La multiplication',      solution: null },
@@ -26,9 +26,13 @@ function isActive(slug: string) {
   if (slug === '') return norm.endsWith('/atelier') || norm.endsWith('/index');
   return norm.endsWith('/' + slug);
 }
+// Mobile <select> labels — <option> can't host the <T> spans, so each option
+// carries all three labels as data attributes and a tiny script picks the active one.
+const optionLabel = (s: typeof sections[number], i: number, l: 'en' | 'it' | 'fr') =>
+  (s.slug === '' ? '' : String(i).padStart(2, '0') + '  ') + s[l];
 ---
 <nav
-  class="flex items-center justify-between px-6 py-3 bg-[var(--color-carbone)]/95 backdrop-blur-sm border-b border-[var(--color-cenere)]"
+  class="flex items-center justify-between px-4 md:px-6 py-3 bg-[var(--color-carbone)]/95 backdrop-blur-sm border-b border-[var(--color-cenere)]"
   aria-label="Experience navigation"
 >
   <a
@@ -49,7 +53,7 @@ function isActive(slug: string) {
     </span>
   </a>
 
-  <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
+  <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 py-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
     {sections.filter(s => s.slug !== '').map((s, i) => (
       <li
         data-nav-solution={s.solution ?? undefined}
@@ -59,7 +63,7 @@ function isActive(slug: string) {
         <a
           href={href(base, '/' + s.slug)}
           class={[
-            'block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline',
+            'block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline focus-visible:-outline-offset-2',
             isActive(s.slug)
               ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)] border border-[var(--accent-primary)]/30'
               : 'text-[var(--color-sabbia-300)] hover:text-[var(--color-avorio)] hover:bg-[var(--color-cenere)]',
@@ -75,6 +79,25 @@ function isActive(slug: string) {
     ))}
   </ol>
 
+  <!-- Phone: the section list above is hidden below md, so a compact native
+       <select> gives every section a reachable entry point. Same gating
+       contract as the links (data-nav-solution on each option). -->
+  <div class="md:hidden flex-1 min-w-0 mx-2">
+    <label for="atl-section-select" class="sr-only"><T en="Section" it="Sezione" fr="Section" /></label>
+    <select id="atl-section-select" data-section-select class="atl-section-select">
+      {sections.map((s, i) => (
+        <option
+          value={href(base, s.slug === '' ? '/' : '/' + s.slug)}
+          data-nav-solution={s.solution ?? undefined}
+          data-label-en={optionLabel(s, i, 'en')}
+          data-label-it={optionLabel(s, i, 'it')}
+          data-label-fr={optionLabel(s, i, 'fr')}
+          selected={isActive(s.slug)}
+        >{optionLabel(s, i, 'en')}</option>
+      ))}
+    </select>
+  </div>
+
   <div class="flex items-center gap-3 flex-shrink-0">
     <span class="hidden 2xl:inline text-[0.65rem] tracking-widest uppercase text-[var(--color-sabbia-400)] whitespace-nowrap">
       Live Pitch
@@ -89,3 +112,33 @@ function isActive(slug: string) {
     </a>
   </div>
 </nav>
+
+<script is:inline>
+  (function () {
+    function lang() {
+      var l = document.documentElement.getAttribute('data-lang');
+      return (l === 'it' || l === 'fr') ? l : 'en';
+    }
+    function syncLabels() {
+      var l = lang();
+      var opts = document.querySelectorAll('[data-section-select] option');
+      for (var i = 0; i < opts.length; i++) {
+        var t = opts[i].getAttribute('data-label-' + l) || opts[i].getAttribute('data-label-en');
+        if (t && opts[i].textContent !== t) opts[i].textContent = t;
+      }
+    }
+    syncLabels();
+    if (window.__atlSectionSelectBound) return;   // body inline scripts re-run after every SPA swap
+    window.__atlSectionSelectBound = true;
+    document.addEventListener('change', function (e) {
+      var sel = e.target && e.target.closest && e.target.closest('[data-section-select]');
+      if (!sel || !sel.value) return;
+      var go = window.__edfNavigate;
+      if (go) go(sel.value); else location.href = sel.value;
+    });
+    document.addEventListener('astro:after-swap', syncLabels);
+    try {
+      new MutationObserver(syncLabels).observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang'] });
+    } catch (e) {}
+  })();
+</script>
