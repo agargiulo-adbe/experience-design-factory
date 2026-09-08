@@ -256,11 +256,22 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 (function () {
   var STORAGE_KEY = 'edf-solutions-' + PROJECT_SLUG;
 
+  // A shared link carries `?s=id1,id2`. Section navigation (SPA or full load) drops
+  // the query, so the cut is pinned to THIS TAB in sessionStorage: the sponsor link
+  // keeps its cut for the whole visit without poisoning the presenter's saved
+  // localStorage config (which the Admin Console writes).
+  var LINK_KEY = STORAGE_KEY + ':link';
   function readActiveIds() {
     var urlParam = new URLSearchParams(location.search).get('s');
     if (urlParam) {
-      return urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+      var fromUrl = urlParam.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+      try { sessionStorage.setItem(LINK_KEY, JSON.stringify(fromUrl)); } catch (_) {}
+      return fromUrl;
     }
+    try {
+      var pinned = sessionStorage.getItem(LINK_KEY);
+      if (pinned) return JSON.parse(pinned);
+    } catch (_) {}
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
       if (stored) return JSON.parse(stored);
