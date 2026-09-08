@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApNavigation from '../components/ApNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const dataset = [
+  { v: '27.273', lIt: 'messaggi nell\'archivio', lEn: 'messages in the archive', sIt: 'export Gmail Takeout, 8 GB, 2013 → 7 settembre 2026', sEn: 'Gmail Takeout export, 8 GB, 2013 → 7 September 2026' },
+  { v: '11.339', lIt: 'email di brand analizzate', lEn: 'brand emails analysed', sIt: 'da 554 mittenti; 256 brand con almeno tre email', sEn: 'from 554 senders; 256 brands with at least three emails' },
+  { v: '5.993', lIt: 'email nella finestra di analisi', lEn: 'emails in the analysis window', sIt: 'gennaio 2024 → settembre 2026, 104 brand con almeno cinque email', sEn: 'January 2024 → September 2026, 104 brands with at least five emails' },
+  { v: '96%', lIt: 'delle email con settore e paese rivisti a mano', lEn: 'of emails with sector and country reviewed by hand', sIt: '304 mittenti classificati uno per uno', sEn: '304 senders classified one by one' },
+];
+
+const pipeline = [
+  { n: '1', tIt: 'Lettura in streaming', tEn: 'Streaming read', bIt: 'Il file mbox viene letto una volta, riga per riga, senza caricarlo in memoria. Ogni messaggio viene classificato: personale, transazionale, notifica, brand. Solo le email di brand entrano nell\'analisi; la corrispondenza personale resta fuori da qualunque risultato.', bEn: 'The mbox file is read once, line by line, never loaded in memory. Each message is classified: personal, transactional, notification, brand. Only brand emails enter the analysis; personal correspondence stays out of every result.' },
+  { n: '2', tIt: 'Segnali per ogni email', tEn: 'Signals for every email', bIt: 'Pixel di apertura (immagini da 1 a 3 pixel o su host e percorsi di tracking noti), link tracciati, header List-Unsubscribe e variante one-click RFC 8058, link a un centro preferenze, frasi che parlano di tracciamento, categoria del messaggio.', bEn: 'Open pixel (1 to 3 pixel images or known tracking hosts and paths), tracked links, List-Unsubscribe header and its RFC 8058 one-click variant, preference-centre link, sentences that talk about tracking, message category.' },
+  { n: '3', tIt: 'Brand, settore, paese', tEn: 'Brand, sector, country', bIt: 'Il mittente viene ricondotto a un brand, con settore e paese della sede. Le prime 304 sorgenti, che coprono il 96% delle email, le ho riviste a mano; il resto segue regole automatiche.', bEn: 'Each sender is mapped to a brand, with sector and HQ country. The top 304 sources, covering 96% of emails, I reviewed by hand; the rest follows automatic rules.' },
+  { n: '4', tIt: 'Verifica email per email', tEn: 'Email-by-email check', bIt: 'Ogni cambiamento segnalato dallo script è stato riletto sulle singole email. Serve: i flussi di servizio e quelli commerciali di uno stesso brand si comportano in modo diverso e creano falsi cambiamenti.', bEn: 'Every change flagged by the script was re-read on the individual emails. It matters: a brand\'s service and marketing streams behave differently and create false changes.' },
+];
+
+const limiti = [
+  { lIt: 'Una sola casella', lEn: 'One inbox', bIt: 'La mia: un professionista italiano del marketing e della tecnologia. Il mix di settori non rappresenta il mercato. Le percentuali valgono per questo campione e per nessun altro.', bEn: 'Mine: an Italian marketing and technology professional. The sector mix does not represent the market. Percentages hold for this sample and no other.' },
+  { lIt: 'Paese, non lingua', lEn: 'Country, not language', bIt: 'Il paese è quello della sede del brand. I brand francesi del campione scrivono in italiano o in inglese: il confronto Italia-Francia è tra aziende, non tra lingue.', bEn: 'Country is the brand\'s HQ. The French brands in the sample write in Italian or English: the Italy-France comparison is between companies, not languages.' },
+  { lIt: 'Il pixel è una stima', lEn: 'The pixel is an estimate', bIt: 'Rilevo immagini minuscole e host di tracking noti. Il tracciamento fatto con immagini normali e URL personalizzati non lo vedo. Ho verificato su un campione che i brand "senza pixel" usano davvero immagini statiche.', bEn: 'I detect tiny images and known tracking hosts. Tracking done through ordinary images with personalised URLs I cannot see. I checked on a sample that the "no pixel" brands really use static images.' },
+  { lIt: 'Cosa non c\'è', lEn: 'What is not here', bIt: 'Nessuna lettura giuridica dei documenti citati, nessun dato personale, nessun giudizio su chi fa bene o male. Solo comportamenti osservati, con la data.', bEn: 'No legal reading of the cited documents, no personal data, no verdict on who does well or badly. Only observed behaviours, with a date.' },
+];
+---
+<BaseLayout
+  title="Il metodo"
+  description="Come ho letto 27.273 messaggi: pipeline in streaming, segnali estratti, revisione manuale, limiti dichiarati."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <ApNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/numeri')} prevHref={href(base, '/')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CAPITOLO 01 · IL METODO" en="CHAPTER 01 · THE METHOD" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; max-width: 16ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Prima i dati, poi le opinioni"
+        en="Data first, opinions later"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal data-reveal-delay="0.15"
+        it="Un archivio di posta è un campione imperfetto ma onesto: nessuno ha scelto cosa mostrarmi. Qui spiego cosa ho letto, come, e cosa non posso vedere."
+        en="A mail archive is an imperfect but honest sample: nobody chose what to show me. Here I explain what I read, how, and what I cannot see."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Il dataset ────────────────────────────────────── -->
+    <Slide id="slide-dataset" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="IL DATASET" en="THE DATASET" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Tredici anni di posta, cinque mesi che contano"
+        en="Thirteen years of mail, five months that matter"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4" data-reveal data-reveal-delay="0.16">
+        {dataset.map((d) => (
+          <div class="ap-stat">
+            <p class="ap-stat-value">{d.v}</p>
+            <T as="p" class="ap-stat-label block" it={d.lIt} en={d.lEn} />
+            <T as="p" class="ap-stat-src block" it={d.sIt} en={d.sEn} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="mt-6 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="L'archivio parte dal 2013, ma è denso solo dal 2021. Le statistiche usano la finestra da gennaio 2024; il confronto prima-dopo usa i cinque mesi prima e i cinque mesi dopo il 17 aprile 2026."
+        en="The archive starts in 2013 but is only dense from 2021. Statistics use the window from January 2024; the before-and-after comparison uses the five months before and the five months after 17 April 2026."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 2: La pipeline ───────────────────────────────────── -->
+    <Slide id="slide-pipeline" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="LA PIPELINE" en="THE PIPELINE" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Quattro passi, tutti ripetibili"
+        en="Four steps, all repeatable"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.16">
+        {pipeline.map((p) => (
+          <div class="ap-card">
+            <span class="ap-mark" aria-hidden="true">{p.n}</span>
+            <T as="p" class="ap-card-title block" it={p.tIt} en={p.tEn} />
+            <T as="p" class="ap-card-body block" it={p.bIt} en={p.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: I limiti ──────────────────────────────────────── -->
+    <Slide id="slide-limiti" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="I LIMITI, DETTI PRIMA" en="THE LIMITS, STATED UPFRONT" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Cosa questo osservatorio non può dire"
+        en="What this observatory cannot say"
+      />
+      <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.16">
+        {limiti.map((l) => (
+          <div class="ap-row">
+            <div>
+              <T as="p" class="ap-row-label block" it={l.lIt} en={l.lEn} />
+            </div>
+            <T as="p" class="ap-row-body block" it={l.bIt} en={l.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

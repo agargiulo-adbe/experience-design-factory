@@ -1,0 +1,195 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApNavigation from '../components/ApNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const pageSolutions = ['fsi'];
+
+// Finestra gennaio 2024 → settembre 2026. Il credito al consumo italiano con tre
+// piattaforme in parallelo è descritto senza nome: è un comportamento di stack, non di marca.
+const tab1 = [
+  { b: 'FinecoBank', c: 'IT', n: '183', px: '98%', lu: 'one-click', pref: 'no', nIt: 'informativa aggiornata lug 2026, nulla cambia', nEn: 'notice updated Jul 2026, nothing changes', pxc: '' },
+  { b: 'Intesa Sanpaolo', c: 'IT', n: '55', px: '100%', lu: 'one-click', pref: 'no', nIt: 'stabile in tutto il periodo', nEn: 'stable throughout', pxc: '' },
+  { b: 'Credito al consumo (IT)', bEn: 'Consumer credit (IT)', c: 'IT', n: '52', px: '46%', lu: 'one-click', pref: 'no', nIt: 'tre piattaforme di invio, quota pixel in calo nel 2026', nEn: 'three sending platforms, pixel share falling in 2026', pxc: 'lo' },
+  { b: 'American Express', c: 'US', n: '44', px: '100%', lu: 'one-click', pref: 'no', nIt: 'stabile', nEn: 'stable', pxc: '' },
+  { b: 'Allianz', c: 'DE', n: '44', px: '95%', lu: 'one-click', pref: 'no', nIt: 'stabile', nEn: 'stable', pxc: '' },
+  { b: 'Santander Consumer Bank', c: 'ES', n: '34', px: '0%', lu: 'one-click', pref: 'no', nIt: 'nessun pixel; informativa aggiornata mag 2025', nEn: 'no pixel at all; notice updated May 2025', pxc: 'hi' },
+];
+const tab2 = [
+  { b: 'Poste Italiane', c: 'IT', n: '22', px: '95%', lu: 'assente', luEn: 'absent', pref: 'no', nIt: 'marketing e servizio senza header di disiscrizione', nEn: 'marketing and service without an unsubscribe header', pxc: '' },
+  { b: 'Trade Republic', c: 'DE', n: '21', px: '0%', lu: 'one-click', pref: 'no', nIt: 'nessun pixel in nessuna email', nEn: 'no pixel in any email', pxc: 'hi' },
+  { b: 'Revolut', c: 'UK', n: '18', px: '89%', lu: 'one-click / assente', luEn: 'one-click / absent', pref: 'no', nIt: 'le notifiche di pagamento hanno il pixel e nessun header', nEn: 'payment notifications carry the pixel and no header', pxc: '' },
+  { b: 'Crédit Agricole Italia', c: 'FR', n: '10', px: '100%', lu: 'one-click', pref: 'no', nIt: 'stabile', nEn: 'stable', pxc: '' },
+  { b: 'BNL BNP Paribas', c: 'FR', n: '9', px: '67%', lu: 'one-click', pref: 'no', nIt: 'flussi survey e partner con comportamenti diversi', nEn: 'survey and partner streams behave differently', pxc: '' },
+  { b: 'PayPal', c: 'US', n: '8', px: '100%', lu: 'assente', luEn: 'absent', pref: 'no', nIt: 'email di servizio con pixel', nEn: 'service emails with pixel', pxc: '' },
+];
+
+const tre = [
+  { n: 'A', mark: 'ap-mark ap-mark--ambra', tIt: 'Tracciamento pieno, uscita a un clic, nessuna scelta intermedia', tEn: 'Full tracking, one-click exit, no middle choice', bIt: 'Il caso più frequente: pixel in ogni invio, header one-click corretto, nessun centro preferenze. Chi non vuole essere misurato ha una sola strada: non ricevere più nulla.', bEn: 'The most frequent case: pixel on every send, correct one-click header, no preference centre. Whoever does not want to be measured has one road only: stop receiving anything.' },
+  { n: 'B', mark: 'ap-mark', tIt: 'Nessun pixel, per scelta', tEn: 'No pixel, by choice', bIt: 'Due istituti su dodici inviano campagne complete senza alcun pixel di apertura, da sempre. Non lo dichiarano e non lo pubblicizzano: si vede solo guardando il codice dell\'email.', bEn: 'Two institutions out of twelve send full campaigns with no open pixel at all, and always have. They neither declare nor advertise it: you only see it by looking at the email code.' },
+  { n: 'C', mark: 'ap-mark ap-mark--corallo', tIt: 'Il servizio traccia come il marketing', tEn: 'Service tracks like marketing', bIt: 'Avvisi su depositi, notifiche di pagamento, comunicazioni di conto: stesso pixel delle promozioni e, spesso, nessun header di disiscrizione. Il flusso di servizio è quello che nessuno ha ancora ridisegnato.', bEn: 'Deposit notices, payment notifications, account communications: same pixel as promotions and, often, no unsubscribe header. The service stream is the one nobody has redesigned yet.' },
+];
+---
+<BaseLayout
+  title="Financial services"
+  description="Dodici banche, assicurazioni e operatori di pagamento visti dalla casella: pixel, header di disiscrizione, centro preferenze."
+  pageSolutions={pageSolutions}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <ApNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/implicazioni')} prevHref={href(base, '/prima-dopo')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="fsi">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CAPITOLO 05 · FINANCIAL SERVICES" en="CHAPTER 05 · FINANCIAL SERVICES" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; max-width: 16ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Le banche, viste dalla casella"
+        en="Banks, seen from the inbox"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal data-reveal-delay="0.15"
+        it="Dodici tra banche, assicurazioni e operatori di pagamento con almeno otto email dal 2024. Nessuna ha inviato un rinnovo del consenso, nessuna spiega il tracciamento, nessuna espone un centro preferenze nelle email. Eppure non si comportano tutte allo stesso modo."
+        en="Twelve banks, insurers and payment providers with at least eight emails since 2024. None sent a consent re-prompt, none explains tracking, none exposes a preference centre in its emails. And yet they do not all behave the same way."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Tabella 1/2 ───────────────────────────────────── -->
+    <Slide id="slide-tab1" bg="primary" align="center" data-solution="fsi">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="GENNAIO 2024 → SETTEMBRE 2026 · 1 DI 2" en="JANUARY 2024 → SEPTEMBER 2026 · 1 OF 2" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Sei istituti, sei comportamenti"
+        en="Six institutions, six behaviours"
+      />
+      <div class="w-full max-w-6xl mx-auto overflow-hidden" data-reveal data-reveal-delay="0.16">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th><T it="Sede" en="HQ" /></th>
+              <th class="num"><T it="Email" en="Emails" /></th>
+              <th class="num">Pixel</th>
+              <th>List-Unsubscribe</th>
+              <th><T it="Pref." en="Pref." /></th>
+              <th><T it="Note" en="Notes" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {tab1.map((r) => (
+              <tr>
+                <td>{r.bEn ? <T it={r.b} en={r.bEn} /> : r.b}</td>
+                <td>{r.c}</td>
+                <td class="num">{r.n}</td>
+                <td class={`num ${r.pxc}`}>{r.px}</td>
+                <td>{r.lu}</td>
+                <td>{r.pref}</td>
+                <td><T it={r.nIt} en={r.nEn} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Tabella 2/2 ───────────────────────────────────── -->
+    <Slide id="slide-tab2" bg="primary" align="center" data-solution="fsi">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="GENNAIO 2024 → SETTEMBRE 2026 · 2 DI 2" en="JANUARY 2024 → SEPTEMBER 2026 · 2 OF 2" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Altri sei, tra servizio e marketing"
+        en="Six more, between service and marketing"
+      />
+      <div class="w-full max-w-6xl mx-auto overflow-hidden" data-reveal data-reveal-delay="0.16">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th>Brand</th>
+              <th><T it="Sede" en="HQ" /></th>
+              <th class="num"><T it="Email" en="Emails" /></th>
+              <th class="num">Pixel</th>
+              <th>List-Unsubscribe</th>
+              <th><T it="Pref." en="Pref." /></th>
+              <th><T it="Note" en="Notes" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {tab2.map((r) => (
+              <tr>
+                <td>{r.b}</td>
+                <td>{r.c}</td>
+                <td class="num">{r.n}</td>
+                <td class={`num ${r.pxc}`}>{r.px}</td>
+                <td>{r.luEn ? <T it={r.lu} en={r.luEn} /> : r.lu}</td>
+                <td>{r.pref}</td>
+                <td><T it={r.nIt} en={r.nEn} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <T
+        as="p"
+        class="mt-4 text-center ap-src block"
+        data-reveal data-reveal-delay="0.26"
+        it="Pixel = quota di email con pixel di apertura · Pref. = link a un centro preferenze nel corpo · dati del mio campione, non del mercato"
+        en="Pixel = share of emails with an open pixel · Pref. = preference-centre link in the body · data from my sample, not the market"
+      />
+    </Slide>
+
+    <!-- ── SLIDE 3: Tre comportamenti ─────────────────────────────── -->
+    <Slide id="slide-tre" bg="primary" align="center" data-solution="fsi">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="TRE COMPORTAMENTI" en="THREE BEHAVIOURS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Quello che distingue gli istituti osservati"
+        en="What sets the observed institutions apart"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.16">
+        {tre.map((t) => (
+          <div class="ap-card">
+            <span class={t.mark} aria-hidden="true">{t.n}</span>
+            <T as="p" class="ap-card-title block" it={t.tIt} en={t.tEn} />
+            <T as="p" class="ap-card-body block" it={t.bIt} en={t.bEn} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="mt-6 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Il centro preferenze nelle email è a zero in tutto il settore del campione, contro il 34% del retail e l'84% delle newsletter editoriali. È la differenza più netta che ho trovato."
+        en="Preference centres in emails sit at zero across the whole sector in the sample, against 34% in retail and 84% in editorial newsletters. It is the sharpest difference I found."
+      />
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

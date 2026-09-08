@@ -18,7 +18,7 @@ Experiences today:
 - **Connessioni Intelligenti** — FS Group (IT, 6 sezioni + casi d'uso).
 - **Trait d'Union** — Agos (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
 
-Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, and the shareable **intake skill** `skills/experience-brief/`. Full detail in `docs/HANDOVER.md` §13.
+Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, and the shareable **intake skill** `skills/experience-brief/`. Full detail in `docs/HANDOVER.md` §13.
 
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no
 wrong‑brand imagery** (see Quality Bar).
@@ -231,4 +231,5 @@ Contract details:
 - **Max Mara** quiet‑luxury: cammello `#C19A6B` / avorio / testa‑di‑moro; Cormorant Garamond + Inter.
 - **UniCredit**: rosso `#BE2027` / crema / blu notte; Playfair Display + Inter.
 - **Ferrari Racing**: Rosso Corsa `#FF2800` / carbonio `#0B0B0D` / giallo Modena `#FFF200`; Archivo + Inter; dark‑dominant, motorsport. Terms: Cavallino Rampante, Rosso Corsa, Maranello, Tifosi, Scuderia Ferrari HP.
+- **Aperture (osservatorio email)**: grafite `#12151C` / avorio `#F3EFE6` / verde segnale `#2EE6A6` / ambra `#FFB547`; Space Grotesk + Inter; dark, dati-centrico, classi `.ap-*`. Regole: fonti citate non interpretate, niente prodotti Adobe, nessun dato personale.
 - **Agos (Trait d'Union)**: petrolio `#05636B` / acqua `#06ABB8` / arancio `#F57C00` (palette reale da agos.it — NON blu+rosso); Montserrat + Inter; dark‑dominant finance. Vocabolario cliente: pratica, caricata/liquidata, "mailing" (=rete fisica), log tecnico, use case, lead light.

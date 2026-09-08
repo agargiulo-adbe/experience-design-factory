@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApNavigation from '../components/ApNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const headline = [
+  { v: '79,7%', vEn: '79.7%', lIt: 'delle email di brand contiene un pixel di apertura', lEn: 'of brand emails carry an open pixel', sIt: '78 brand su 104 lo usano in almeno il 90% degli invii', sEn: '78 of 104 brands use it in at least 90% of sends', tone: '' },
+  { v: '79,8%', vEn: '79.8%', lIt: 'ha l\'header di disiscrizione one-click (RFC 8058)', lEn: 'carry the one-click unsubscribe header (RFC 8058)', sIt: '25 brand su 104 non hanno alcun header List-Unsubscribe', sEn: '25 of 104 brands have no List-Unsubscribe header at all', tone: '' },
+  { v: '26,2%', vEn: '26.2%', lIt: 'contiene un link a un centro preferenze', lEn: 'contain a link to a preference centre', sIt: '41 brand su 104 almeno una volta; 21 in modo stabile', sEn: '41 of 104 brands at least once; 21 consistently', tone: '' },
+  { v: '1', vEn: '1', lIt: 'email che dichiara il tracciamento nel corpo del messaggio', lEn: 'email that discloses tracking in the body of the message', sIt: 'su 8.070 messaggi non personali ricevuti dal 2023', sEn: 'out of 8,070 non-personal messages received since 2023', tone: 'ap-stat-value--ambra' },
+];
+
+const paesi = [
+  { c: 'Italia',      cEn: 'Italy',   n: '3.851', b: '129', px: '71,9%', pxEn: '71.9%', oc: '83%', pref: '27%', nop: '10 su 49', nopEn: '10 of 49', lo: true },
+  { c: 'Francia',     cEn: 'France',  n: '267',   b: '15',  px: '93,6%', pxEn: '93.6%', oc: '76%', pref: '2%',  nop: '0 su 12',  nopEn: '0 of 12',  lo: false },
+  { c: 'Stati Uniti', cEn: 'United States', n: '1.106', b: '29', px: '99,4%', pxEn: '99.4%', oc: '81%', pref: '33%', nop: '0 su 18', nopEn: '0 of 18', lo: false },
+  { c: 'Regno Unito', cEn: 'United Kingdom', n: '76', b: '9', px: '93,4%', pxEn: '93.4%', oc: '72%', pref: '41%', nop: '0 su 5', nopEn: '0 of 5', lo: false },
+  { c: 'Germania',    cEn: 'Germany', n: '130',   b: '5',   px: '82,3%', pxEn: '82.3%', oc: '42%', pref: '2%',  nop: '1 su 4',   nopEn: '1 of 4',   lo: false },
+];
+
+const settori = [
+  { s: 'Banche e pagamenti', sEn: 'Banking and payments', n: '468', b: '18', px: '79,9%', pxEn: '79.9%', oc: '87%', pref: '0,2%', prefEn: '0.2%' },
+  { s: 'Assicurazioni', sEn: 'Insurance', n: '57', b: '8', px: '93,0%', pxEn: '93.0%', oc: '70%', pref: '3,5%', prefEn: '3.5%' },
+  { s: 'Viaggi e ospitalità', sEn: 'Travel and hospitality', n: '730', b: '23', px: '63,7%', pxEn: '63.7%', oc: '59%', pref: '4,7%', prefEn: '4.7%' },
+  { s: 'Compagnie aeree', sEn: 'Airlines', n: '132', b: '7', px: '91,7%', pxEn: '91.7%', oc: '82%', pref: '12%', prefEn: '12%' },
+  { s: 'Retail ed e-commerce', sEn: 'Retail and e-commerce', n: '310', b: '42', px: '91,9%', pxEn: '91.9%', oc: '62%', pref: '34%', prefEn: '34%' },
+  { s: 'Energia e utility', sEn: 'Energy and utilities', n: '262', b: '10', px: '85,1%', pxEn: '85.1%', oc: '78%', pref: '41%', prefEn: '41%' },
+  { s: 'Software e servizi digitali', sEn: 'Software and digital services', n: '256', b: '23', px: '96,5%', pxEn: '96.5%', oc: '84%', pref: '37%', prefEn: '37%' },
+  { s: 'Editoria e newsletter', sEn: 'Media and newsletters', n: '779', b: '7', px: '91,9%', pxEn: '91.9%', oc: '91%', pref: '84%', prefEn: '84%' },
+];
+
+const curva = [
+  { y: '2023', v: 40 },
+  { y: '2024', v: 77.5 },
+  { y: '2025', v: 80.7 },
+  { y: '2026', v: 80.1 },
+];
+---
+<BaseLayout
+  title="I numeri"
+  description="Pixel di apertura, header one-click e centro preferenze nelle email di brand, per paese e settore. Finestra gennaio 2024 → settembre 2026."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <ApNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/pattern')} prevHref={href(base, '/metodo')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CAPITOLO 02 · I NUMERI" en="CHAPTER 02 · THE NUMBERS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; max-width: 16ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Quattro email su cinque hanno un pixel"
+        en="Four emails in five carry a pixel"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal data-reveal-delay="0.15"
+        it="Nel mio campione il pixel di apertura è ancora la norma. La disiscrizione one-click è diventata quasi universale in due anni. Il centro preferenze resta l'eccezione, e nessuno spiega il tracciamento dentro l'email."
+        en="In my sample the open pixel is still the norm. One-click unsubscribe became nearly universal in two years. The preference centre remains the exception, and nobody explains tracking inside the email."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: I quattro numeri ──────────────────────────────── -->
+    <Slide id="slide-headline" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="GENNAIO 2024 → SETTEMBRE 2026 · 5.993 EMAIL · 104 BRAND" en="JANUARY 2024 → SEPTEMBER 2026 · 5,993 EMAILS · 104 BRANDS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="I quattro numeri da cui parte tutto"
+        en="The four numbers everything starts from"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4" data-reveal data-reveal-delay="0.16">
+        {headline.map((h) => (
+          <div class="ap-stat">
+            <T as="p" class={`ap-stat-value block ${h.tone}`} it={h.v} en={h.vEn} />
+            <T as="p" class="ap-stat-label block" it={h.lIt} en={h.lEn} />
+            <T as="p" class="ap-stat-src block" it={h.sIt} en={h.sEn} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="mt-6 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Le percentuali sono a livello di email; tra parentesi il conteggio a livello di brand, che pesa allo stesso modo chi manda un'email al mese e chi ne manda una al giorno."
+        en="Percentages are at email level; the brand-level count, which weighs a monthly sender the same as a daily one, is given underneath."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 2: Per paese ─────────────────────────────────────── -->
+    <Slide id="slide-paesi" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="PER PAESE DELLA SEDE" en="BY HQ COUNTRY" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Solo tra i brand italiani c'è chi non traccia le aperture"
+        en="Only among Italian brands do some not track opens at all"
+      />
+      <div class="w-full max-w-5xl mx-auto overflow-hidden" data-reveal data-reveal-delay="0.16">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th><T it="Paese" en="Country" /></th>
+              <th class="num"><T it="Email" en="Emails" /></th>
+              <th class="num">Brand</th>
+              <th class="num"><T it="Con pixel" en="With pixel" /></th>
+              <th class="num">One-click</th>
+              <th class="num"><T it="Centro pref." en="Pref. centre" /></th>
+              <th class="num"><T it="Brand senza pixel" en="Brands without pixel" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {paesi.map((p) => (
+              <tr>
+                <td><T it={p.c} en={p.cEn} /></td>
+                <td class="num">{p.n}</td>
+                <td class="num">{p.b}</td>
+                <td class={`num ${p.lo ? 'lo' : ''}`}><T it={p.px} en={p.pxEn} /></td>
+                <td class="num">{p.oc}</td>
+                <td class="num">{p.pref}</td>
+                <td class={`num ${p.lo ? 'hi' : ''}`}><T it={p.nop} en={p.nopEn} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <T
+        as="p"
+        class="mt-5 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Dieci brand italiani su quarantanove inviano campagne HTML complete senza alcun pixel; tra i francesi, gli americani e i britannici del campione non ne ho trovato nessuno."
+        en="Ten Italian brands out of forty-nine send full HTML campaigns without any pixel; among the French, American and British brands in the sample I found none."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 3: Per settore ───────────────────────────────────── -->
+    <Slide id="slide-settori" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="PER SETTORE · 2024 → 2026" en="BY SECTOR · 2024 → 2026" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Le banche tracciano quasi tutte, nessuna espone preferenze"
+        en="Banks almost all track, none exposes preferences"
+      />
+      <div class="w-full max-w-5xl mx-auto overflow-hidden" data-reveal data-reveal-delay="0.16">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th><T it="Settore" en="Sector" /></th>
+              <th class="num"><T it="Email" en="Emails" /></th>
+              <th class="num">Brand</th>
+              <th class="num"><T it="Con pixel" en="With pixel" /></th>
+              <th class="num">One-click</th>
+              <th class="num"><T it="Centro pref." en="Pref. centre" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {settori.map((s) => (
+              <tr>
+                <td><T it={s.s} en={s.sEn} /></td>
+                <td class="num">{s.n}</td>
+                <td class="num">{s.b}</td>
+                <td class="num"><T it={s.px} en={s.pxEn} /></td>
+                <td class="num">{s.oc}</td>
+                <td class="num"><T it={s.pref} en={s.prefEn} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: One-click ─────────────────────────────────────── -->
+    <Slide id="slide-oneclick" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="LA DISISCRIZIONE ONE-CLICK" en="ONE-CLICK UNSUBSCRIBE" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Dal 40% all'80% in un anno"
+        en="From 40% to 80% in a year"
+      />
+      <div class="w-full max-w-4xl mx-auto grid grid-cols-4 gap-5" data-reveal data-reveal-delay="0.16">
+        {curva.map((c) => (
+          <div class="text-center">
+            <p class="font-[family-name:var(--font-display)] font-bold text-[var(--accent-primary)] leading-none mb-2" style="font-size: clamp(1.8rem, 3vw, 2.6rem);">{c.v.toLocaleString('it-IT')}%</p>
+            <div class="ap-bar mb-2"><span style={`width:${c.v}%`}></span></div>
+            <p class="text-[0.95rem] text-[var(--ink-primary)]">{c.y}</p>
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="mt-6 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Quota di email di brand con header List-Unsubscribe-Post nel mio campione. Il salto coincide con i requisiti per i grandi mittenti che Google e Yahoo hanno applicato da febbraio 2024. Nessun documento delle autorità europee c'entra: è la dimostrazione che il settore sa cambiare in fretta quando il vincolo tocca la consegna."
+        en="Share of brand emails with a List-Unsubscribe-Post header in my sample. The jump coincides with the bulk sender requirements Google and Yahoo applied from February 2024. No European authority document is involved: it shows the industry can change fast when the constraint touches delivery."
+      />
+      <p class="mt-4 text-center ap-src">
+        <T it="Fonte requisiti:" en="Requirements source:" />&nbsp;
+        <a href="https://support.google.com/a/answer/81126" target="_blank" rel="noopener noreferrer">Google, Email sender guidelines</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.rfc-editor.org/rfc/rfc8058" target="_blank" rel="noopener noreferrer">RFC 8058</a>
+      </p>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

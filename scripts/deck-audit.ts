@@ -86,6 +86,15 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'valore',       route: '/experience-design-factory/agos-trait-dunion/valore/' },
     { name: 'roadmap',      route: '/experience-design-factory/agos-trait-dunion/roadmap/' },
   ],
+  'aperture-email': [
+    { name: 'home',         route: '/experience-design-factory/aperture-email/' },
+    { name: 'metodo',       route: '/experience-design-factory/aperture-email/metodo/' },
+    { name: 'numeri',       route: '/experience-design-factory/aperture-email/numeri/' },
+    { name: 'pattern',      route: '/experience-design-factory/aperture-email/pattern/' },
+    { name: 'prima-dopo',   route: '/experience-design-factory/aperture-email/prima-dopo/' },
+    { name: 'banche',       route: '/experience-design-factory/aperture-email/banche/' },
+    { name: 'implicazioni', route: '/experience-design-factory/aperture-email/implicazioni/' },
+  ],
   'eni-orbita': [
     { name: 'home',        route: '/experience-design-factory/eni-orbita/' },
     { name: 'domanda',     route: '/experience-design-factory/eni-orbita/domanda/' },
@@ -127,6 +136,7 @@ const CWD_ALIAS: Record<string, string> = {
   'atelier': 'atelier',
   'eni-orbita': 'eni-orbita',
   'mim-alfabeti': 'mim-alfabeti',
+  'aperture-email': 'aperture-email',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {

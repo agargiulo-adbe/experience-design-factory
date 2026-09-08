@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApNavigation from '../components/ApNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const metrics = [
+  { lIt: 'Email di brand', lEn: 'Brand emails', a: '1.339', b: '1.210', aEn: '1,339', bEn: '1,210', bar: false },
+  { lIt: 'Con pixel di apertura', lEn: 'With open pixel', a: '83%', b: '84%', aEn: '83%', bEn: '84%', bar: true, av: 83, bv: 84 },
+  { lIt: 'Con header one-click', lEn: 'With one-click header', a: '80%', b: '79%', aEn: '80%', bEn: '79%', bar: true, av: 80, bv: 79 },
+  { lIt: 'Con centro preferenze', lEn: 'With preference centre', a: '28%', b: '27%', aEn: '28%', bEn: '27%', bar: true, av: 28, bv: 27 },
+  { lIt: 'Email di aggiornamento informativa', lEn: 'Privacy-notice update emails', a: '4 (3 brand)', b: '13 (10 brand)', aEn: '4 (3 brands)', bEn: '13 (10 brands)', bar: false },
+  { lIt: 'Email che spiegano il tracciamento', lEn: 'Emails explaining tracking', a: '0', b: '1', aEn: '0', bEn: '1', bar: false },
+];
+
+const brands = [
+  { k: '30', kIt: 'brand con pixel in oltre il 90% degli invii sia prima sia dopo', kEn: 'brands with a pixel in over 90% of sends both before and after', tone: 'ap-stat-value--ambra' },
+  { k: '4', kIt: 'brand senza pixel sia prima sia dopo', kEn: 'brands with no pixel both before and after', tone: '' },
+  { k: '3', kIt: 'brand con un calo netto del pixel (due sono flussi misti; uno lo ha rimesso ad aprile)', kEn: 'brands with a net drop in pixel share (two are mixed streams; one restored it in April)', tone: 'ap-stat-value--ambra' },
+  { k: '1', kIt: 'comunicazione dedicata al tracciamento, senza cambiamento operativo (tra i 30)', kEn: 'dedicated communication on tracking, with no operational change (among the 30)', tone: '' },
+];
+
+const lettura = [
+  { tag: 'ap-tag', tIt: 'Cosa dice', tEn: 'What it says', bIt: 'Nei cinque mesi successivi al 17 aprile, nel mio campione, il comportamento operativo non è cambiato: stessa quota di pixel, stessi header, stesse preferenze. Le email che aggiornano l\'informativa sono passate da 4 a 13, ma parlano di trattamento dei dati in generale, non di email.', bEn: 'In the five months after 17 April, in my sample, operational behaviour did not change: same pixel share, same headers, same preferences. Notice-update emails went from 4 to 13, but they talk about data processing in general, not about email.' },
+  { tag: 'ap-tag ap-tag--ambra', tIt: 'Cosa non dice', tEn: 'What it does not say', bIt: 'Cosa faranno i brand entro il 29 ottobre: i sei mesi non sono finiti. Se hanno cambiato altrove, per esempio nei moduli web o nei centri preferenze fuori dall\'email. Se i brand assenti dalla mia casella si comportano diversamente.', bEn: 'What brands will do by 29 October: the six months are not over. Whether they changed elsewhere, for instance in web forms or preference centres outside email. Whether brands absent from my inbox behave differently.' },
+  { tag: 'ap-tag ap-tag--corallo', tIt: 'Cosa guardare', tEn: 'What to watch', bIt: 'Ottobre e novembre 2026. Se il modello che emerge è quello osservato finora, aspettatevi informative aggiornate e pochi pixel rimossi. Se cambia, lo si vedrà prima negli header e nei centri preferenze che nelle email di annuncio. Aggiornerò questo osservatorio.', bEn: 'October and November 2026. If the model that emerges is the one observed so far, expect updated notices and few pixels removed. If it changes, it will show first in headers and preference centres rather than in announcement emails. I will update this observatory.' },
+];
+---
+<BaseLayout
+  title="Prima e dopo"
+  description="Cinque mesi prima e cinque mesi dopo il 17 aprile 2026: cosa è cambiato nelle email di brand del mio campione."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <ApNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/banche')} prevHref={href(base, '/pattern')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CAPITOLO 04 · PRIMA E DOPO" en="CHAPTER 04 · BEFORE AND AFTER" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; max-width: 16ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Cinque mesi dopo il 17 aprile"
+        en="Five months after 17 April"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal data-reveal-delay="0.15"
+        it="Ho confrontato le email ricevute nei cinque mesi prima della pubblicazione delle Linee Guida con quelle dei cinque mesi dopo. Stessa casella, stessi criteri. La domanda è semplice: si vede qualcosa?"
+        en="I compared the emails received in the five months before the Guidelines were published with those of the five months after. Same inbox, same criteria. The question is simple: can you see anything?"
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: Le due finestre ───────────────────────────────── -->
+    <Slide id="slide-confronto" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="17 NOV 2025 → 16 APR 2026  ·  17 APR → 7 SET 2026" en="17 NOV 2025 → 16 APR 2026  ·  17 APR → 7 SEP 2026" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Le percentuali non si sono mosse"
+        en="The percentages have not moved"
+      />
+      <div class="w-full max-w-5xl mx-auto overflow-hidden" data-reveal data-reveal-delay="0.16">
+        <table class="ap-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="num"><T it="Prima" en="Before" /></th>
+              <th class="num"><T it="Dopo" en="After" /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {metrics.map((m) => (
+              <tr>
+                <td><T it={m.lIt} en={m.lEn} /></td>
+                <td class="num"><T it={m.a} en={m.aEn} /></td>
+                <td class="num"><T it={m.b} en={m.bEn} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <T
+        as="p"
+        class="mt-5 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Solo brand con sede in Italia: pixel al 79% prima e al 79% dopo, su 905 e 696 email."
+        en="Italian-headquartered brands only: pixel at 79% before and 79% after, on 905 and 696 emails."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 2: 43 brand ──────────────────────────────────────── -->
+    <Slide id="slide-brand" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="43 BRAND CON ALMENO TRE EMAIL IN ENTRAMBE LE FINESTRE" en="43 BRANDS WITH AT LEAST THREE EMAILS IN BOTH WINDOWS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Brand per brand, la fotografia è la stessa"
+        en="Brand by brand, the picture is the same"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4" data-reveal data-reveal-delay="0.16">
+        {brands.map((b) => (
+          <div class="ap-stat">
+            <p class={`ap-stat-value ${b.tone}`}>{b.k}</p>
+            <T as="p" class="ap-stat-label block" it={b.kIt} en={b.kEn} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="mt-6 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Gli altri sei si muovono in ordine sparso: uno ha rimesso il pixel dopo averlo tolto, uno ha adottato l'header one-click, uno lo ha ridotto al solo mailto, uno ha tolto il link alle preferenze da metà degli invii, due hanno solo aggiornato l'informativa. Nessuno di questi movimenti è stato annunciato con un'email."
+        en="The other six move in no particular direction: one restored the pixel after removing it, one adopted the one-click header, one cut it back to mailto only, one dropped the preference link from half its sends, two only updated their notice. None of these moves was announced with an email."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 3: Cosa dice e cosa non dice ─────────────────────── -->
+    <Slide id="slide-lettura" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="LA LETTURA" en="THE READING" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Cosa dice, cosa non dice, cosa guardare"
+        en="What it says, what it does not, what to watch"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.16">
+        {lettura.map((l) => (
+          <div class="ap-panel">
+            <div class="ap-panel-head">
+              <T as="span" class={l.tag} it={l.tIt} en={l.tEn} />
+            </div>
+            <T as="p" class="ap-panel-body block" it={l.bIt} en={l.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

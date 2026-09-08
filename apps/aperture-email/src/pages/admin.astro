@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Aperture (00)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Aperture' },
+    { id: 'slide-momento',  label: 'Il momento — tre date' },
+    { id: 'slide-percorso', label: 'Il percorso — sei capitoli' },
+  ]},
+  { slug: 'metodo', label: 'Il metodo (01)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Prima i dati, poi le opinioni' },
+    { id: 'slide-dataset',  label: 'Il dataset' },
+    { id: 'slide-pipeline', label: 'La pipeline in quattro passi' },
+    { id: 'slide-limiti',   label: 'I limiti, detti prima' },
+  ]},
+  { slug: 'numeri', label: 'I numeri (02)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Quattro email su cinque' },
+    { id: 'slide-headline', label: 'I quattro numeri' },
+    { id: 'slide-paesi',    label: 'Per paese della sede' },
+    { id: 'slide-settori',  label: 'Per settore' },
+    { id: 'slide-oneclick', label: 'One-click: la curva 2023 → 2026' },
+  ]},
+  { slug: 'pattern', label: 'I pattern (03)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Nove comportamenti' },
+    { id: 'slide-p012',     label: 'P0 · P1 · P2' },
+    { id: 'slide-p346',     label: 'P3 · P4 · P6' },
+    { id: 'slide-p789',     label: 'P7 · P8 · P9' },
+    { id: 'slide-quote',    label: 'L\'unica email che lo dice' },
+  ]},
+  { slug: 'prima-dopo', label: 'Prima e dopo (04)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Cinque mesi dopo' },
+    { id: 'slide-confronto', label: 'Le due finestre' },
+    { id: 'slide-brand',     label: '43 brand, prima e dopo' },
+    { id: 'slide-lettura',   label: 'Cosa dice e cosa non dice' },
+  ]},
+  { slug: 'banche', label: 'Financial services (05)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Le banche, viste dalla casella' },
+    { id: 'slide-tab1',     label: 'Tabella 1/2' },
+    { id: 'slide-tab2',     label: 'Tabella 2/2' },
+    { id: 'slide-tre',      label: 'Tre comportamenti' },
+  ]},
+  { slug: 'implicazioni', label: 'Cosa ne ricavo (06)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Tre decisioni, non una' },
+    { id: 'slide-decisioni', label: 'Le tre decisioni' },
+    { id: 'slide-checklist', label: 'Cinque cose da guardare' },
+    { id: 'slide-fonti',     label: 'Fonti 1/2 — documenti delle autorità' },
+    { id: 'slide-fonti-2',   label: 'Fonti 2/2 — riferimenti tecnici' },
+    { id: 'slide-invito',    label: 'Invito' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  {
+    id: 'fsi',
+    name: 'Capitolo Financial services',
+    shortName: 'FSI',
+    pillar: 'capitoli',
+    description: 'Il capitolo dedicato a banche, assicurazioni e pagamenti (tabella e tre comportamenti). Spegnilo per un pubblico non finanziario.',
+    appearsIn: ['Financial services'],
+  },
+  {
+    id: 'design',
+    name: 'Capitolo Cosa ne ricavo',
+    shortName: 'Design',
+    pillar: 'capitoli',
+    description: 'Le tre decisioni di design, la checklist, le fonti e l\'invito. Spegnilo per una versione solo osservativa.',
+    appearsIn: ['Cosa ne ricavo'],
+  },
+];
+
+const PILLAR_LABELS: Record<string, string> = { capitoli: 'Capitoli opzionali' };
+const PILLAR_ORDER = ['capitoli'];
+const PILLAR_COLORS: Record<string, string> = { capitoli: '#2EE6A6' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Aperture">
+  <AdminConsole
+    projectSlug="aperture-email"
+    projectName="Aperture"
+    clientLabel="Osservatorio · ricerca individuale"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

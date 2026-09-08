@@ -1,0 +1,161 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApNavigation from '../components/ApNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const g1 = [
+  { n: 'P0', mark: 'ap-mark', tIt: 'Nessun tracciamento, per scelta', tEn: 'No tracking, by choice', kIt: '12 brand su 104 · 10 italiani', kEn: '12 of 104 brands · 10 Italian', bIt: 'Campagne HTML complete, immagini statiche, nessun pixel in tutto il periodo. Il programma fedeltà di Trenitalia (280 email), Santander Consumer Bank (34 su 34), Trade Republic (21 su 21).', bEn: 'Full HTML campaigns, static images, no pixel throughout. Trenitalia\'s loyalty programme (280 emails), Santander Consumer Bank (34 of 34), Trade Republic (21 of 21).' },
+  { n: 'P1', mark: 'ap-mark ap-mark--ambra', tIt: 'Tracciamento pieno, nessun cambiamento', tEn: 'Full tracking, no change', kIt: '67 brand su 96 con storia sufficiente', kEn: '67 of 96 brands with enough history', bIt: 'Pixel in ogni invio, header one-click, quasi mai un centro preferenze. È la maggioranza silenziosa: FinecoBank, Intesa Sanpaolo, American Express, Allianz, e altri sessanta.', bEn: 'Pixel on every send, one-click header, almost never a preference centre. The silent majority: FinecoBank, Intesa Sanpaolo, American Express, Allianz, and sixty more.' },
+  { n: 'P2', mark: 'ap-mark ap-mark--corallo', tIt: 'Rimozione silenziosa', tEn: 'Silent removal', kIt: '5 brand + 2 intermittenti', kEn: '5 brands + 2 intermittent', bIt: 'Air France e Flying Blue: pixel fino a luglio 2026, assente in tutte le email di agosto e settembre. Enel X: assente da luglio 2026. Nessuna comunicazione ha accompagnato il cambiamento. Due brand lo tolgono e lo rimettono a fasi.', bEn: 'Air France and Flying Blue: pixel until July 2026, absent from every August and September email. Enel X: absent from July 2026. No communication accompanied the change. Two brands remove and restore it in phases.' },
+];
+
+const g2 = [
+  { n: 'P3', mark: 'ap-mark ap-mark--muted', tIt: 'Cambiamento annunciato', tEn: 'Announced change', kIt: '0 brand', kEn: '0 brands', bIt: 'Nessun brand ha inviato una comunicazione seguita, entro novanta giorni, da un cambiamento nel tracciamento o nei meccanismi di uscita. Il pattern che mi aspettavo di trovare non c\'è.', bEn: 'No brand sent a communication followed, within ninety days, by a change in tracking or opt-out mechanisms. The pattern I expected to find is not there.' },
+  { n: 'P3b', mark: 'ap-mark', tIt: 'Trasparenza senza cambiamento', tEn: 'Transparency without change', kIt: '1 brand', kEn: '1 brand', bIt: 'Juventus, 3 agosto 2026: un\'email dedicata che spiega quali tecnologie usano le sue email e dove gestire le preferenze. Pixel (100%) e link alle preferenze (99%) identici prima e dopo. È l\'unico messaggio del campione che parla di pixel.', bEn: 'Juventus, 3 August 2026: a dedicated email explaining which technologies its emails use and where to manage preferences. Pixel (100%) and preference link (99%) identical before and after. The only message in the sample that talks about pixels.' },
+  { n: 'P4', mark: 'ap-mark ap-mark--ambra', tIt: 'Centro preferenze introdotto', tEn: 'Preference centre introduced', kIt: '3 brand nella finestra', kEn: '3 brands in the window', bIt: 'Technogym da luglio 2025 (dal 19% al 95% degli invii), OpenAI da luglio 2026, Google da maggio 2026 insieme all\'header one-click. Nessuno dei tre lo ha annunciato con un\'email.', bEn: 'Technogym from July 2025 (from 19% to 95% of sends), OpenAI from July 2026, Google from May 2026 together with the one-click header. None of the three announced it with an email.' },
+];
+
+const g3 = [
+  { n: 'P6', mark: 'ap-mark ap-mark--muted', tIt: 'Rinnovo del consenso', tEn: 'Consent re-prompt', kIt: '0 dal 2022', kEn: '0 since 2022', bIt: 'Nessuna email "vuoi continuare a ricevere?" nella finestra. Gli ultimi casi veri sono del 2018-2021, nell\'onda del GDPR. Il modello "riconferma" non è stato riesumato.', bEn: 'No "do you still want to hear from us?" email in the window. The last genuine cases date from 2018-2021, in the GDPR wave. The re-confirmation model has not been revived.' },
+  { n: 'P7', mark: 'ap-mark ap-mark--ambra', tIt: 'Informativa aggiornata, nulla cambia', tEn: 'Notice updated, nothing changes', kIt: '14 brand su 104', kEn: '14 of 104 brands', bIt: 'FinecoBank, Plenitude, Santander Consumer, ITA Airways, ENGIE Italia, MilleMiglia, Milano Cortina 2026, Verisure e altri. Nessuna di queste email menziona il tracciamento delle email; il pixel resta dov\'era.', bEn: 'FinecoBank, Plenitude, Santander Consumer, ITA Airways, ENGIE Italia, MilleMiglia, Milano Cortina 2026, Verisure and others. None of these emails mentions email tracking; the pixel stays where it was.' },
+  { n: 'P8 · P9', mark: 'ap-mark ap-mark--corallo', tIt: 'Header che cambiano, servizio che traccia', tEn: 'Headers that change, service that tracks', kIt: '5 brand · 133 brand', kEn: '5 brands · 133 brands', bIt: 'One-click adottato da Verisure, Lynk &amp; Co, Google; un passo indietro a Costa Crociere (da marzo 2026 solo mailto). E 878 email di servizio con lo stesso pixel del marketing: Poste Italiane, PayPal, Revolut; Booking.com traccia le conferme, non le promozioni.', bEn: 'One-click adopted by Verisure, Lynk &amp; Co, Google; a step back at Costa Crociere (mailto only from March 2026). And 878 service emails with the same pixel as marketing: Poste Italiane, PayPal, Revolut; Booking.com tracks confirmations, not promotions.' },
+];
+---
+<BaseLayout
+  title="I pattern"
+  description="Nove comportamenti osservati sul tracciamento e sul consenso nelle email di brand, con esempi e date."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <ApNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/prima-dopo')} prevHref={href(base, '/numeri')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CAPITOLO 03 · I PATTERN" en="CHAPTER 03 · THE PATTERNS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; max-width: 16ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Nove comportamenti, non uno"
+        en="Nine behaviours, not one"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal data-reveal-delay="0.15"
+        it="Ero partito da sette pattern ipotetici. I dati ne hanno confermati alcuni, cancellati altri e aggiunto due che non avevo previsto: chi non traccia per scelta e chi spiega senza cambiare."
+        en="I started from seven hypothetical patterns. The data confirmed some, erased others and added two I had not foreseen: those who never track by choice, and those who explain without changing."
+      />
+    </Slide>
+
+    <!-- ── SLIDE 1: P0 P1 P2 ──────────────────────────────────────── -->
+    <Slide id="slide-p012" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="IL PIXEL: MAI, SEMPRE, TOLTO" en="THE PIXEL: NEVER, ALWAYS, REMOVED" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Tre modi di stare nella casella"
+        en="Three ways of sitting in the inbox"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.16">
+        {g1.map((p) => (
+          <div class="ap-card">
+            <span class={p.mark} aria-hidden="true">{p.n}</span>
+            <T as="p" class="ap-card-title block" it={p.tIt} en={p.tEn} />
+            <T as="p" class="ap-tag ap-tag--muted block mb-2" it={p.kIt} en={p.kEn} />
+            <T as="p" class="ap-card-body block" it={p.bIt} en={p.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: P3 P3b P4 ─────────────────────────────────────── -->
+    <Slide id="slide-p346" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="ANNUNCIARE, SPIEGARE, APRIRE" en="ANNOUNCE, EXPLAIN, OPEN UP" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Il cambiamento annunciato non esiste ancora"
+        en="The announced change does not exist yet"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.16">
+        {g2.map((p) => (
+          <div class="ap-card">
+            <span class={p.mark} aria-hidden="true">{p.n}</span>
+            <T as="p" class="ap-card-title block" it={p.tIt} en={p.tEn} />
+            <T as="p" class="ap-tag ap-tag--muted block mb-2" it={p.kIt} en={p.kEn} />
+            <T as="p" class="ap-card-body block" it={p.bIt} en={p.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: P6 P7 P8-9 ────────────────────────────────────── -->
+    <Slide id="slide-p789" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg-soft"></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="CONSENSO, INFORMATIVE, HEADER" en="CONSENT, NOTICES, HEADERS" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.07; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="Si aggiorna l'informativa, non il comportamento"
+        en="The notice gets updated, the behaviour does not"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-4" data-reveal data-reveal-delay="0.16">
+        {g3.map((p) => (
+          <div class="ap-card">
+            <span class={p.mark} aria-hidden="true">{p.n}</span>
+            <T as="p" class="ap-card-title block" it={p.tIt} en={p.tEn} />
+            <T as="p" class="ap-tag ap-tag--muted block mb-2" it={p.kIt} en={p.kEn} />
+            <T as="p" class="ap-card-body block" it={p.bIt} en={p.bEn} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: La citazione ──────────────────────────────────── -->
+    <Slide id="slide-quote" bg="primary" align="center">
+      <div slot="backdrop" class="ap-bg"><div class="ap-grid"></div></div>
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4 block" data-reveal it="L'UNICA EMAIL CHE LO DICE · 3 AGOSTO 2026" en="THE ONLY EMAIL THAT SAYS IT · 3 AUGUST 2026" />
+      <T
+        as="h2"
+        class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.8rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em; max-width: 26ch;"
+        data-reveal data-reveal-delay="0.08"
+        it="«Informazioni sulle tecnologie utilizzate nelle email»"
+        en="“Information on the technologies used in our emails”"
+      />
+      <div class="w-full max-w-4xl mx-auto ap-quote" data-reveal data-reveal-delay="0.16">
+        <p class="ap-quote-text mx-auto">«Vogliamo informarti che alcune email inviate da Juventus possono utilizzare tecnologie di tracciamento, come i pixel, che consentono di rilevare l'apertura del messaggio e raccogliere alcune informazioni tecniche associate alla comunicazione, come la data e l'ora di apertura o il tipo di dispositivo utilizzato. […] Puoi modificare in qualsiasi momento le tue preferenze relative alle comunicazioni marketing e commerciali tramite il link presente nelle nostre email o dalla tua area personale.»</p>
+        <T as="p" class="ap-quote-src block text-center" it="Juventus Football Club, email ai registrati, 3 agosto 2026 · testo originale in italiano, omissis miei" en="Juventus Football Club, email to registered users, 3 August 2026 · original Italian text, omissions mine" />
+      </div>
+      <T
+        as="p"
+        class="mt-5 text-center text-[var(--ink-secondary)] max-w-3xl mx-auto block"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.1rem);"
+        data-reveal data-reveal-delay="0.26"
+        it="Un invio unico, senza promozioni, che nomina la tecnologia, elenca le finalità e indica dove gestire le scelte. Nelle 34 email successive niente è cambiato: stesso pixel, stesso link alle preferenze. La trasparenza è arrivata; la scelta granulare sulla misurazione, per ora, no."
+        en="A single send, no promotions, naming the technology, listing the purposes and pointing to where choices are managed. In the 34 emails that followed nothing changed: same pixel, same preference link. Transparency arrived; the granular choice on measurement, for now, did not."
+      />
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
