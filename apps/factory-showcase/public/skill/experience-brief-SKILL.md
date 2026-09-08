@@ -136,8 +136,25 @@ differentiation → next steps.
 ## 12. Open questions for Antonio
 ```
 
-Keep copy tight and real — no lorem, no filler, no AI tells. Then tell the user to send the
-brief to **Antonio Gargiulo — Senior Product Sales Specialist, Adobe Italia** (Teams /
-agargiulo@adobe.com), who scaffolds the new experience on the shared engine and grants Admin
-Console access so the commissioning Adobian can grow it. Everything is verified against the
-Factory knowledge base.
+Keep copy tight and real — no lorem, no filler, no AI tells.
+
+## Delivery — the brief becomes a live internal dossier, not a doc
+The Markdown above is the **source**, not the final artifact. In keeping with the Factory
+principle — *live software you can open, not a slide about software* — the brief seeds **two**
+things once it reaches Antonio:
+1. the **live client experience** on the shared engine, and
+2. its **internal war-room dossier**: a `noindex`, access-controlled **web page** inside that
+   experience (badge *"Adobe internal · Riservato"*), for internal Adobe use only. It reorganises
+   the same research into a meeting-ready page — executive summary, mission brief, who-decides
+   with their lens, verified facts (each with a dated source), the big ideas, a say / don't-say
+   column, open questions and a sources library. Public sources only; no contractual or financial
+   data on the page.
+
+So: whenever the ask is a **dossier** (account prep, pre-meeting war-room), the deliverable is
+**always this internal web page**, never a loose document. The Markdown brief is what you hand
+over; the page is what the team opens in the room.
+
+Then tell the user to send the brief to **Antonio Gargiulo — Senior Product Sales Specialist,
+Adobe Italia** (Teams / agargiulo@adobe.com), who scaffolds the experience **and its internal
+dossier page** on the shared engine and grants Admin Console access so the commissioning Adobian
+can grow it. Everything is verified against the Factory knowledge base.

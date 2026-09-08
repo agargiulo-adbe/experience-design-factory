@@ -1,0 +1,534 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Dossier di preparazione per l'Adobe Day con FSTechnology (Gruppo FS).
+// Orfana (fuori nav) + noindex. Fonti pubbliche verificate (deep-research,
+// 24 claim su 25, verifica avversariale a 3 voti). Nessun dato contrattuale.
+
+const summary: string[] = [
+  '<strong>Chi è.</strong> Maurizio Giampaolo è <strong>Digital Business Partner Trasporto</strong> nel Management di <strong>FSTechnology</strong> (FST), la società ICT in-house del Gruppo FS (nata 31/07/2019). È il raccordo tra l\'IT e il business delle società <em>di trasporto</em> del Gruppo. Referente dell\'Adobe Day.',
+  '<strong>Cosa segue.</strong> Il perimetro Trasporto del Gruppo (Piano 2025-2029): tre Business Unit — <strong>Passeggeri</strong> (capofila Trenitalia, + Busitalia + FS Park), <strong>Passeggeri Internazionale</strong> (FS International) e <strong>Merci/Logistica</strong> (<strong>FS Logistix</strong>, ex Mercitalia Logistics: Mercitalia Rail, TX Logistik, Mercitalia Intermodal, Terminali Italia).',
+  '<strong>Il fatto che cambia tutto.</strong> A marzo 2026 il Gruppo FS ha annunciato con <strong>Salesforce</strong> una "foundation digitale agentica" — <strong>coordinata proprio da FSTechnology</strong> — su Data Cloud + MuleSoft, per unificare la CX di 840M+ passeggeri/anno e della logistica merci. Salesforce presidia già lo strato CDP/CX che un pitch Adobe toccherebbe.',
+  '<strong>La mossa.</strong> L\'Adobe Day non può essere un pitch CDP greenfield: va posizionato come <em>complementare</em> (content & experience layer, analytics, journey) o come <em>sfidante mirato</em> dove Adobe è oggettivamente più forte. Il tema <strong>merci/B2B</strong> è il vero ampliamento di orizzonte richiesto.',
+  '<strong>Dove abbiamo già asset.</strong> Use case Trenitalia + FS Park in sviluppo nella Factory, proposta CJA FS Park e template Adobe Target per FS Tech (apr 2026) già in casa. La big idea multimodale è il ponte naturale verso lo scope allargato.',
+];
+
+const missione: string[] = [
+  '<strong>Obiettivo minimo:</strong> uscire con le priorità di business di Giampaolo (booking? loyalty? MaaS? acquisizione cargo?) e una lettura chiara di cosa della foundation Salesforce è già live vs roadmap — cioè dove Adobe si innesta senza sovrapporsi.',
+  '<strong>Obiettivo pieno:</strong> un working group su un caso concreto con KPI e data, la conferma del perimetro (se il ramo Merci/FS Logistix ricade sotto di lui) e il mandato ad estendere l\'use case Trenitalia+FS Park verso il B2B/merci e l\'analytics di filiera.',
+  '<strong>Postura:</strong> ascoltare prima l\'architettura in piedi, proporre dopo. Giampaolo è un uomo di piattaforma e portfolio (transizione data center, razionalizzazione applicativa): ragiona per <em>capability riusabili su più società</em>, non per feature isolata. Ogni big idea va confezionata così.',
+];
+
+const carriera = [
+  { anni: 'anni \'90', ruolo: 'EDS, UNIM (Unione Immobiliare), Pirelli Informatica — ruoli IT / project management' },
+  { anni: '2002–2019', ruolo: 'Ferservizi S.p.A. — Dirigente Area Sistemi Tecnologici, Immobiliari e Controllo di Gestione' },
+  { anni: '2019 →', ruolo: 'FSTechnology — Sourcing Transition & Integration (434 app), poi Transition Program verso nuovo Data Center (~650 app, ~4.500 server)' },
+  { anni: '2024–2026', ruolo: 'FSTechnology — Service Management Commerciale & CRM Loyalty e Digital Care (team ~45 AMS su ~160 applicazioni delle società di Trasporto)' },
+  { anni: 'giu 2026 →', ruolo: 'FSTechnology — Digital Business Partner Trasporto (ruolo attuale)' },
+];
+
+const comePensa = [
+  '<strong>Come pensa:</strong> oltre 24 anni nel Gruppo FS su sistemi IT complessi. Ha guidato transizioni di portafoglio applicativo e data center: <em>pensa per consolidamento di piattaforma e time-to-market</em>, non per punto-soluzione. Le big idea vanno presentate come capability di gruppo, non come tool.',
+  '<strong>Come parlargli:</strong> architettura, governance del dato, riuso cross-società, valore misurabile. Da capo del Service Management CRM Loyalty & Digital Care conosce già il terreno CartaFRECCIA/customer care — è un vantaggio: parliamo la sua lingua.',
+  '<strong>Cosa lo accende:</strong> superare la frammentazione delle applicazioni verticali con un layer unico di gruppo. È esattamente il frame della foundation FS×Salesforce che coordina — da usare a nostro favore, mostrando dove Adobe estende quel valore invece di rifarlo.',
+];
+
+const fatti = [
+  {
+    badge: 'verificato 3-0',
+    t: '<strong>FSTechnology</strong> è la società hi-tech in-house del Gruppo FS (nata 31/07/2019) con missione "potenziare e supportare l\'innovazione digitale delle società del Gruppo". Giampaolo compare nel Management come Digital Business Partner Trasporto, accanto ai DBP Corporate (Cofini) e Infrastructure (Noto); Presidente Garri, AD Iacomussi.',
+  },
+  {
+    badge: 'verificato 3-0',
+    t: '<strong>Perimetro Trasporto (Piano 2025-2029, ~100 Mld€, AD Donnarumma):</strong> Gruppo in 5 Business Unit — 2 infrastruttura (RFI/Italferr; ANAS) + 3 trasporto: Passeggeri (capofila Trenitalia), Passeggeri Internazionale (FS International), Merci (FS Logistix).',
+  },
+  {
+    badge: 'verificato 3-0',
+    t: '<strong>FS Logistix</strong> (ex Mercitalia Logistics, rebrand 26/05/2025) è la sub-holding merci come "unico interlocutore per il cliente", ambizione European Freight Forwarder: coordina Mercitalia Rail (leader in Italia, ~38-39% quota), TX Logistik (pan-europeo, 100% dal gen 2017), Mercitalia Intermodal (150+ porti/terminal, ~500k UTI/anno), Terminali Italia.',
+  },
+  {
+    badge: 'verificato 3-0',
+    t: '<strong>Touchpoint cargo già attivi:</strong> la piattaforma FS Logistix (26/05/2025) col "Widget" one-click per le richieste di trasporto, gestione integrata ferro-gomma-mare con tracciabilità end-to-end; e la <strong>MIR APP</strong> di Mercitalia Rail (stato spedizioni in corso + programma 2 settimane, notifiche push). Sono lo strato portale-cargo/journey/tracking per i casi d\'uso merci Adobe.',
+  },
+  {
+    badge: 'verificato 3-0',
+    t: '<strong>Touchpoint passeggeri già attivo:</strong> <strong>CartaFRECCIA</strong> — programma loyalty gratuito (punti viaggiando su Frecce/Eurocity/Euronight + partner) con promozioni "su misura" previo consenso al trattamento dati. Motore loyalty + gate di consenso già presenti: materia prima per RTCDP + AJO + Target.',
+  },
+  {
+    badge: 'competitivo · leggere prima',
+    t: '<strong>Foundation FS × Salesforce (mar 2026):</strong> "foundation digitale agentica" coordinata da FSTechnology, su Salesforce Data Cloud + MuleSoft + AI generativa/agentica (incl. acquisto biglietti via AI-agent, rollout 2026), per unificare la CX di 840M+ passeggeri (Trenitalia, Busitalia, 100+ FS Park) e della logistica merci (FS Logistix, 50M+ ton/anno). Fonte FS + 8 testate indipendenti.',
+  },
+];
+
+const dire = [
+  'Parlare la sua lingua: capability di gruppo riusabili su più società, non feature isolate.',
+  'Riconoscere l\'installato: "estendiamo il valore del dato già unificato", non "rifacciamo la CDP".',
+  'CartaFRECCIA e il Widget di FS Logistix come punti di partenza reali, non slide teoriche.',
+  'Multimodale (treno → bus → sosta FS Park) come un unico journey: è l\'ambizione già dichiarata dal Gruppo.',
+  'Chiudere ogni big idea con una misura e una data; agganciare la proposta CJA FS Park già in casa.',
+];
+
+const nonDire = [
+  'Nominare Salesforce o attaccarlo: mostrare capability e outcome, far emergere la complementarità.',
+  'Proporre un rip-and-replace della CDP/CRM: la scelta è fatta da 6 mesi, un pitch greenfield cade.',
+  'Usare "Mercitalia Logistics": il brand ombrello è oggi <strong>FS Logistix</strong> (Mercitalia Rail resta operativo).',
+  'Spacciare le cifre di carriera (~45 AMS, ~160 app) come dato Adobe: sono claim cliente, da confermare a voce.',
+  'Presentare il blueprint travel/hospitality come "case ferroviario": è un blueprint adattato, va detto.',
+];
+
+const bigIdeasPax = [
+  {
+    tag: 'P0 · Passeggeri',
+    nome: 'CartaFRECCIA che ti riconosce',
+    societa: 'Trenitalia (+ estendibile Busitalia)',
+    aggancio: 'CartaFRECCIA è già consent-based (punti + partner; promozioni su consenso). Motore loyalty e gate di consenso già presenti.',
+    cosa: 'Audience per tier / saldo punti / propensione; home e offerte personalizzate per geo e comportamento; recupero prenotazione abbandonata; next-best-offer sui servizi ancillari (posto, lounge, ristorazione, FS Park).',
+    adobe: 'RTCDP + AJO + Target (+ CJA per misurare)',
+  },
+  {
+    tag: 'P0 · Passeggeri',
+    nome: 'Un solo viaggio, molti mezzi (MaaS)',
+    societa: 'Trenitalia + Busitalia + FS Park',
+    aggancio: 'È esattamente l\'ambizione multimodale del Gruppo; FS Park (100+ location) è l\'ultimo miglio già in perimetro e già nel nostro use case.',
+    cosa: 'Journey orchestrato che, comprato il Frecciarossa, propone il parcheggio FS Park a destinazione e il bus di adduzione, con comunicazioni contestuali in tempo reale (ritardo, cambio binario).',
+    adobe: 'RTCDP + AJO + CJA — il ponte tra l\'use case esistente e lo scope allargato',
+  },
+];
+
+const bigIdeasMerci = [
+  {
+    tag: 'P0 · Merci / B2B',
+    nome: 'Portale cargo che converte',
+    societa: 'FS Logistix (+ Mercitalia Rail / Intermodal / TX Logistik)',
+    aggancio: 'Il "Widget" di richiesta trasporto e la gestione ferro-gomma-mare esistono già: portale B2B + journey account su cui innestare CDP B2B + AEM.',
+    cosa: 'Profilazione account (settore, volumi, filiera), contenuti/quotazioni personalizzati sul portale, lead scoring e journey di acquisizione/retention dello spedizioniere. Qui l\'analytics diventa più specifica.',
+    adobe: 'AEM Sites + RTCDP B2B + AJO + CJA',
+  },
+  {
+    tag: 'P1 · Merci',
+    nome: 'Dove è il mio carico',
+    societa: 'Mercitalia Rail (MIR APP), Intermodal, TX Logistik',
+    aggancio: 'La MIR APP mostra già stato spedizioni + programma 2 settimane con push: touchpoint di proactive care pronto per la journey orchestration.',
+    cosa: 'Notifiche proattive event-driven (ETA, eccezioni, milestone di filiera), esperienza di tracking uniforme cross-vettore, analytics di filiera end-to-end.',
+    adobe: 'AJO + CJA + AEP (profilo cliente B2B)',
+  },
+  {
+    tag: 'P0 · Trasversale',
+    nome: 'Analytics di filiera + attribuzione multimodale',
+    societa: 'Tutto il perimetro',
+    aggancio: 'Il "secondo parere" analitico accanto a Data Cloud, dove Adobe è forte e poco contestato. Aggancio diretto alla proposta CJA FS Park già in casa.',
+    cosa: 'Un layer CJA che unisce misura del journey passeggeri (fisico + digitale) e KPI di filiera merci.',
+    adobe: 'Customer Journey Analytics',
+  },
+];
+
+const perimetroPax = [
+  { soc: 'Trenitalia', modello: 'Passeggeri nazionale (AV Frecce, Intercity, Regionale)', touch: 'Sito/App, CartaFRECCIA, e-commerce biglietti, Trenitalia SmartBI' },
+  { soc: 'Trenitalia Tper', modello: 'JV regionale Emilia-Romagna', touch: 'Canali regionali, abbonamenti' },
+  { soc: 'Busitalia', modello: 'TPL e trasporto su gomma passeggeri', touch: 'App/canali TPL locali, titoli di viaggio' },
+  { soc: 'FS Park', modello: 'Sosta / parcheggi (100+ location)', touch: 'App parcheggi, prenotazione sosta, integrazione col viaggio' },
+];
+
+const perimetroMerci = [
+  { soc: 'Mercitalia Rail', modello: 'Merci su ferro — leader in Italia (~38-39%)', touch: 'MIR APP: stato spedizioni + programma 2 settimane, push' },
+  { soc: 'TX Logistik', modello: 'Operatore ferroviario merci pan-europeo (100% dal 2017)', touch: 'Portali/tracking di rete, pilot smart freight wagon' },
+  { soc: 'Mercitalia Intermodal', modello: 'Combinato non accompagnato — 150+ porti/terminal', touch: 'Booking intermodale, tracking unità di carico' },
+  { soc: 'Terminali Italia', modello: 'Gestione terminal intermodali', touch: 'Sistemi terminalistici' },
+];
+
+const priorita = [
+  { idea: '#1 CartaFRECCIA personalization', impatto: 'Alto', overlap: 'Media', riuso: 'Alto', p: 'P0' },
+  { idea: '#2 Multimodale (Trenitalia+FS Park+Busitalia)', impatto: 'Alto', overlap: 'Media', riuso: 'Alto', p: 'P0' },
+  { idea: '#3 Portale cargo FS Logistix', impatto: 'Alto', overlap: 'Bassa-Media', riuso: 'Medio', p: 'P0' },
+  { idea: '#4 Tracking / care MIR APP', impatto: 'Medio', overlap: 'Bassa', riuso: 'Basso', p: 'P1' },
+  { idea: '#5 CJA filiera + attribuzione', impatto: 'Medio-Alto', overlap: 'Bassa', riuso: 'Alto', p: 'P0' },
+];
+
+const domande = [
+  '<strong>Perimetro reale:</strong> il tuo mandato DBP Trasporto copre anche Merci/FS Logistix, o è un presidio distinto? (decide a chi indirizzare le big idea cargo).',
+  '<strong>Architettura in piedi:</strong> stato di adozione della foundation Salesforce Data Cloud/MuleSoft — cosa è già live vs roadmap → dove Adobe si innesta senza sovrapporsi.',
+  '<strong>Priorità business 2026-27:</strong> conversione booking? loyalty? MaaS? acquisizione clienti cargo?',
+  '<strong>Analytics gap:</strong> cosa oggi non riuscite a misurare sul journey (fisico↔digitale, multimodale, filiera merci) → gancio per CJA.',
+];
+
+const caveat = [
+  '<strong>Carriera e cifre non verificate</strong> (~45 AMS, ~160 app, ~650 app/~4.500 server, tappe Ferservizi/Pirelli/UNIM/EDS): dal profilo LinkedIn, non confermate da fonte primaria. Contesto cliente, non dato Adobe.',
+  '<strong>Mapping società→DBP non documentato:</strong> la pagina "clienti" FST citata era 404 (claim rifiutato). Il perimetro è ricostruito dalla struttura BU del Gruppo. Il ramo merci potrebbe non essere suo.',
+  '<strong>Naming:</strong> usare FS Logistix (non "Mercitalia Logistics"); Mercitalia Rail resta brand operativo.',
+  '<strong>Fit Adobe = blueprint travel/hospitality</strong> (Experience League, apr 2026), non case ferroviario: transfer ragionevole ma analogico; CJA/AEM non nel blueprint citato.',
+  '<strong>Time-sensitivity Salesforce:</strong> annuncio ~mar 2026, in rollout attivo → tarare il pitch su un incumbent già scelto.',
+];
+
+const biblioteca = [
+  { label: 'FSTechnology — Organi sociali e Management (ruolo DBP Trasporto)', url: 'https://www.fstechnology.it/it/chi-siamo/organi-sociali-e-management.html', tipo: 'primaria' },
+  { label: 'FS Italiane — «Nasce FS Technology» (31 lug 2019)', url: 'https://www.fsitaliane.it/content/fsitaliane/it/media/comunicati-stampa/2019/7/31/nasce-fs-technology-la-societa-hi-tech-del-gruppo-fs-italiane.html', tipo: 'primaria' },
+  { label: 'FS Italiane — Società del Gruppo / Piano 2025-2029 (5 BU, 3 trasporto)', url: 'https://www.fsitaliane.it/it/il-gruppo-fs/societa-del-gruppo.html', tipo: 'primaria' },
+  { label: 'FS Logistix — «Nasce FS Logistix» 26/05/2025 (Widget, ferro-gomma-mare)', url: 'https://www.fslogistix.com/it/media/nasce-fs-logistix--parte-la-rivoluzione-digitale-della-logistica.html', tipo: 'primaria' },
+  { label: 'FS Logistix — Mercitalia Rail (perimetro, quote di mercato)', url: 'https://www.fslogistix.com/en/about-us/our-companies/mercitalia-rail.html', tipo: 'primaria' },
+  { label: 'TX Logistik — pilot smart freight wagon con Mercitalia Intermodal', url: 'https://www.txlogistik.eu/en/press-releases/tx-logistik-and-mercitalia-intermodal-launch-pilot-test-for-smart-freight-wagon-in-combined-transport/', tipo: 'primaria' },
+  { label: 'Mercitalia Rail — MIR APP (tracking spedizioni)', url: 'https://www.ferrovie.it/portale/articoli/6886', tipo: 'stampa' },
+  { label: 'Trenitalia — CartaFRECCIA «Il Programma» (loyalty consent-based)', url: 'https://www.trenitalia.com/it/cartafreccia/il-programma.html', tipo: 'primaria' },
+  { label: 'FSNews — foundation Gruppo FS × Salesforce (5 mar 2026)', url: 'https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html', tipo: 'stampa' },
+  { label: 'Adobe Experience League — Travel & Hospitality blueprint (RTCDP/AJO)', url: 'https://experienceleague.adobe.com/en/docs/blueprints-learn/architecture/industry-use-cases/travel-hospitality-overview', tipo: 'primaria' },
+  { label: 'LinkedIn — Maurizio Giampaolo (profilo, carriera da verificare)', url: 'https://www.linkedin.com/in/maurizio-giampaolo-bb5a31235/', tipo: 'profilo' },
+];
+---
+<BaseLayout
+  title="Dossier — FSTechnology · Adobe Day"
+  description="Adobe internal — dossier di preparazione riservato."
+  noindex={true}
+>
+  <div class="dw-shell">
+    <header class="dw-header">
+      <div class="dw-header-inner">
+        <div class="dw-header-left">
+          <span class="dw-badge">Adobe internal · Riservato</span>
+          <h1 class="dw-title">War Room — FSTechnology · Adobe Day</h1>
+        </div>
+        <div class="dw-header-right">
+          <a class="dw-deck-link" href={href(base, '/')}>Apri l'esperienza →</a>
+        </div>
+      </div>
+      <p class="dw-disclaimer">
+        Documento di lavoro per il team Adobe. Fonti pubbliche citate; nessun dato contrattuale o
+        economico. Referente cliente: Maurizio Giampaolo (Digital Business Partner Trasporto, FSTechnology).
+        Incontro previsto entro fine settembre 2026. Da non far circolare fuori da Adobe.
+      </p>
+    </header>
+
+    <main class="dw-main">
+
+      <!-- 01 · Executive summary -->
+      <section class="dw-section" aria-labelledby="dw-h-summary">
+        <h2 class="dw-h" id="dw-h-summary"><span class="dw-h-num">01</span>Executive summary</h2>
+        <ul class="dw-list">
+          {summary.map((s) => <li class="dw-li" set:html={s} />)}
+        </ul>
+      </section>
+
+      <!-- 02 · Mission brief -->
+      <section class="dw-section" aria-labelledby="dw-h-missione">
+        <h2 class="dw-h" id="dw-h-missione"><span class="dw-h-num">02</span>Mission brief</h2>
+        <ul class="dw-list">
+          {missione.map((o) => <li class="dw-li" set:html={o} />)}
+        </ul>
+      </section>
+
+      <!-- 03 · Chi è Maurizio Giampaolo -->
+      <section class="dw-section" aria-labelledby="dw-h-persona">
+        <h2 class="dw-h" id="dw-h-persona"><span class="dw-h-num">03</span>Chi è Maurizio Giampaolo</h2>
+        <div class="dw-timeline">
+          {carriera.map((c) => (
+            <div class="dw-tl-row">
+              <span class="dw-tl-years">{c.anni}</span>
+              <span class="dw-tl-role">{c.ruolo}</span>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">Percorso oltre <strong>24 anni nel Gruppo FS</strong>. Tappe e cifre di dettaglio dal profilo LinkedIn, <strong>non confermate da fonte primaria</strong>: usare come contesto, non come dato Adobe (vedi §09).</p>
+        <ul class="dw-list">
+          {comePensa.map((c) => <li class="dw-li" set:html={c} />)}
+        </ul>
+      </section>
+
+      <!-- 04 · Il perimetro societario -->
+      <section class="dw-section" aria-labelledby="dw-h-perimetro">
+        <h2 class="dw-h" id="dw-h-perimetro"><span class="dw-h-num">04</span>Il perimetro che segue</h2>
+        <h3 class="dw-sub">A · Trasporto Passeggeri — capofila Trenitalia</h3>
+        <div class="dw-grid">
+          {perimetroPax.map((r) => (
+            <div class="dw-card">
+              <p class="dw-card-name">{r.soc}</p>
+              <p class="dw-card-model">{r.modello}</p>
+              <p class="dw-card-touch"><span class="dw-touch-label">Touchpoint</span> {r.touch}</p>
+            </div>
+          ))}
+        </div>
+        <h3 class="dw-sub">C · Trasporto Merci / Logistica — capofila FS Logistix</h3>
+        <div class="dw-grid">
+          {perimetroMerci.map((r) => (
+            <div class="dw-card">
+              <p class="dw-card-name">{r.soc}</p>
+              <p class="dw-card-model">{r.modello}</p>
+              <p class="dw-card-touch"><span class="dw-touch-label">Touchpoint</span> {r.touch}</p>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">La BU <strong>Passeggeri Internazionale</strong> (FS International: Netinera, Trenitalia c2c, ecc.) potrebbe far capo a un presidio distinto — da confermare. La lista esatta società→DBP non è documentata da fonte primaria.</p>
+      </section>
+
+      <!-- 05 · I fatti verificati -->
+      <section class="dw-section" aria-labelledby="dw-h-fatti">
+        <h2 class="dw-h" id="dw-h-fatti"><span class="dw-h-num">05</span>I fatti verificati</h2>
+        <p class="dw-note">Ogni affermazione ha superato una verifica avversariale a 3 voti su fonti primarie (deep-research, 8 set 2026). Rinfrescare le fonti prima dell'incontro.</p>
+        <ul class="dw-list">
+          {fatti.map((f) => (
+            <li class="dw-li">
+              <span class={`dw-chip ${f.badge.startsWith('competitivo') ? 'dw-chip--warn' : ''}`}>{f.badge}</span>
+              <span set:html={f.t} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 06 · Le big idea -->
+      <section class="dw-section" aria-labelledby="dw-h-idee">
+        <h2 class="dw-h" id="dw-h-idee"><span class="dw-h-num">06</span>Le big idea da proporre</h2>
+        <h3 class="dw-sub">Passeggeri</h3>
+        <div class="dw-ideas">
+          {bigIdeasPax.map((b) => (
+            <article class="dw-idea">
+              <span class="dw-chip">{b.tag}</span>
+              <h4 class="dw-idea-name">{b.nome}</h4>
+              <p class="dw-idea-soc">{b.societa}</p>
+              <p class="dw-idea-line"><span class="dw-idea-k">Aggancio reale</span> {b.aggancio}</p>
+              <p class="dw-idea-line"><span class="dw-idea-k">Cosa mostriamo</span> {b.cosa}</p>
+              <p class="dw-idea-adobe">{b.adobe}</p>
+            </article>
+          ))}
+        </div>
+        <h3 class="dw-sub">Merci / B2B — l'ampliamento di orizzonte</h3>
+        <div class="dw-ideas">
+          {bigIdeasMerci.map((b) => (
+            <article class="dw-idea">
+              <span class="dw-chip">{b.tag}</span>
+              <h4 class="dw-idea-name">{b.nome}</h4>
+              <p class="dw-idea-soc">{b.societa}</p>
+              <p class="dw-idea-line"><span class="dw-idea-k">Aggancio reale</span> {b.aggancio}</p>
+              <p class="dw-idea-line"><span class="dw-idea-k">Cosa mostriamo</span> {b.cosa}</p>
+              <p class="dw-idea-adobe">{b.adobe}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <!-- 07 · Matrice di priorità -->
+      <section class="dw-section" aria-labelledby="dw-h-matrice">
+        <h2 class="dw-h" id="dw-h-matrice"><span class="dw-h-num">07</span>Matrice di priorità</h2>
+        <div class="dw-table" role="table" aria-label="Matrice di priorità delle big idea">
+          <div class="dw-tr dw-tr--head" role="row">
+            <span role="columnheader">Big idea</span>
+            <span role="columnheader">Impatto demo</span>
+            <span role="columnheader">Overlap Salesforce</span>
+            <span role="columnheader">Riuso asset</span>
+            <span role="columnheader">Priorità</span>
+          </div>
+          {priorita.map((r) => (
+            <div class="dw-tr" role="row">
+              <span role="cell" class="dw-td-idea">{r.idea}</span>
+              <span role="cell">{r.impatto}</span>
+              <span role="cell">{r.overlap}</span>
+              <span role="cell">{r.riuso}</span>
+              <span role="cell"><span class={`dw-p dw-p--${r.p.toLowerCase()}`}>{r.p}</span></span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- 08 · Da dire / da non dire -->
+      <section class="dw-section" aria-labelledby="dw-h-dire">
+        <h2 class="dw-h" id="dw-h-dire"><span class="dw-h-num">08</span>Da dire / da non dire</h2>
+        <div class="dw-cols">
+          <div class="dw-col dw-col--ok">
+            <h3 class="dw-col-h">✓ Da dire</h3>
+            <ul class="dw-list">
+              {dire.map((d) => <li class="dw-li dw-li--tight" set:html={d} />)}
+            </ul>
+          </div>
+          <div class="dw-col dw-col--no">
+            <h3 class="dw-col-h">✗ Da non dire</h3>
+            <ul class="dw-list">
+              {nonDire.map((d) => <li class="dw-li dw-li--tight" set:html={d} />)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09 · Domande da fare + caveat -->
+      <section class="dw-section" aria-labelledby="dw-h-domande">
+        <h2 class="dw-h" id="dw-h-domande"><span class="dw-h-num">09</span>Cosa chiedere · Caveat</h2>
+        <h3 class="dw-sub">Domande per de-rischiare</h3>
+        <ul class="dw-list">
+          {domande.map((d) => <li class="dw-li" set:html={d} />)}
+        </ul>
+        <h3 class="dw-sub">Caveat &amp; onestà intellettuale</h3>
+        <ul class="dw-list">
+          {caveat.map((c) => <li class="dw-li dw-li--tight" set:html={c} />)}
+        </ul>
+      </section>
+
+      <!-- 10 · Biblioteca -->
+      <section class="dw-section" aria-labelledby="dw-h-fonti">
+        <h2 class="dw-h" id="dw-h-fonti"><span class="dw-h-num">10</span>Biblioteca — fonti e link</h2>
+        <ul class="dw-sources">
+          {biblioteca.map((b) => (
+            <li class="dw-source">
+              <span class={`dw-chip dw-chip--${b.tipo}`}>{b.tipo}</span>
+              <a href={b.url} target="_blank" rel="noopener noreferrer">{b.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="dw-footer">
+        Preparato dal team Adobe Italia su fonti pubbliche verificate (deep-research: 5 angoli, 23 fonti,
+        83 claim → 24 verificati a 3 voti) · ultimo aggiornamento 8 settembre 2026
+      </footer>
+    </main>
+  </div>
+
+  <style>
+    .dw-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 60% at 18% 0%, rgba(226, 0, 26, 0.10), transparent 55%),
+        var(--color-carbonio);
+    }
+    .dw-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(13, 13, 20, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--color-acciaio);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .dw-header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      max-width: 64rem; margin-inline: auto; flex-wrap: wrap;
+    }
+    .dw-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex-wrap: wrap; }
+    .dw-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--color-bianco); background: var(--color-rosso-fs);
+      padding: 0.25rem 0.6rem; border-radius: 3px;
+    }
+    .dw-title {
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.01em;
+      font-size: clamp(1.05rem, 2vw, 1.35rem); color: var(--color-ghiaccio); line-height: 1.2;
+    }
+    .dw-header-right { display: flex; align-items: center; gap: 1.1rem; flex-shrink: 0; }
+    .dw-deck-link {
+      font-size: 0.8rem; font-weight: 600; color: var(--color-ambra-chiara);
+      text-decoration: none; white-space: nowrap;
+    }
+    .dw-deck-link:hover { text-decoration: underline; }
+    .dw-disclaimer {
+      max-width: 64rem; margin: 0.5rem auto 0;
+      font-size: 0.8rem; line-height: 1.5; color: var(--color-grigio-300);
+    }
+
+    .dw-main {
+      max-width: 64rem; margin-inline: auto;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem;
+      display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem);
+    }
+    .dw-section {
+      border-top: 1px solid var(--color-acciaio);
+      padding-top: clamp(1.25rem, 2.5vw, 2rem);
+    }
+    .dw-h {
+      display: flex; align-items: baseline; gap: 0.8rem;
+      font-family: var(--font-display); font-weight: 600; letter-spacing: -0.015em;
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: var(--color-ghiaccio);
+      margin-bottom: 1.1rem;
+    }
+    .dw-h-num {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--color-ambra); font-family: var(--font-body);
+    }
+    .dw-sub {
+      font-family: var(--font-display); font-weight: 600; font-size: 1.05rem;
+      color: var(--color-ghiaccio); margin: 1.6rem 0 0.9rem;
+    }
+    .dw-note { font-size: 0.85rem; line-height: 1.55; color: var(--color-grigio-300); margin-top: 0.9rem; }
+    .dw-note :global(strong) { color: var(--color-ghiaccio); font-weight: 600; }
+
+    .dw-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin: 0; padding: 0; }
+    .dw-li {
+      position: relative; padding-left: 1.15rem;
+      font-size: 0.96rem; line-height: 1.6; color: var(--color-grigio-200);
+    }
+    .dw-li::before {
+      content: ''; position: absolute; left: 0; top: 0.62em;
+      width: 7px; height: 7px; border-radius: 50%; background: var(--color-ambra);
+    }
+    .dw-li--tight { font-size: 0.9rem; }
+    .dw-li :global(strong) { color: var(--color-ghiaccio); font-weight: 600; }
+    .dw-li :global(em) { color: var(--color-ambra-chiara); font-style: normal; }
+
+    .dw-chip {
+      display: inline-flex; margin-right: 0.5rem; padding: 0.14rem 0.5rem; border-radius: 999px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--color-carbonio); background: var(--color-ambra); vertical-align: middle;
+    }
+    .dw-chip--warn { background: var(--color-rosso-fs); color: var(--color-bianco); }
+    .dw-chip--primaria { background: var(--color-ambra); }
+    .dw-chip--stampa   { background: var(--color-ambra-chiara); }
+    .dw-chip--profilo  { background: var(--color-grigio-300); }
+
+    .dw-timeline { display: flex; flex-direction: column; }
+    .dw-tl-row {
+      display: grid; grid-template-columns: 8rem 1fr; gap: 1rem;
+      padding: 0.6rem 0; border-top: 1px solid var(--color-acciaio);
+    }
+    .dw-tl-years {
+      font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+      color: var(--color-ambra); letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .dw-tl-role { font-size: 0.92rem; line-height: 1.5; color: var(--color-grigio-200); }
+
+    .dw-grid { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .dw-grid { grid-template-columns: 1fr 1fr; } }
+    .dw-card { border: 1px solid var(--color-acciaio); border-radius: 8px; padding: 1rem 1.1rem; background: rgba(37, 37, 56, 0.4); }
+    .dw-card-name { font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; color: var(--color-ghiaccio); }
+    .dw-card-model { font-size: 0.88rem; line-height: 1.45; color: var(--color-grigio-200); margin-top: 0.25rem; }
+    .dw-card-touch { font-size: 0.85rem; line-height: 1.5; color: var(--color-grigio-300); margin-top: 0.5rem; }
+    .dw-touch-label { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ambra-chiara); margin-right: 0.35rem; }
+
+    .dw-ideas { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-ideas { grid-template-columns: 1fr 1fr; } }
+    .dw-idea { border: 1px solid var(--color-acciaio); border-radius: 10px; padding: 1.15rem 1.25rem; background: rgba(37, 37, 56, 0.4); display: flex; flex-direction: column; gap: 0.5rem; }
+    .dw-idea-name { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; color: var(--color-ghiaccio); margin-top: 0.15rem; }
+    .dw-idea-soc { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-ambra-chiara); }
+    .dw-idea-line { font-size: 0.9rem; line-height: 1.55; color: var(--color-grigio-200); }
+    .dw-idea-k { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-400); margin-bottom: 0.1rem; }
+    .dw-idea-adobe { margin-top: auto; padding-top: 0.6rem; border-top: 1px dashed var(--color-acciaio); font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; color: var(--color-ambra); }
+
+    .dw-table { display: flex; flex-direction: column; border: 1px solid var(--color-acciaio); border-radius: 8px; overflow: hidden; }
+    .dw-tr { display: grid; grid-template-columns: 2.4fr 1fr 1.3fr 1fr 0.8fr; gap: 0.75rem; padding: 0.7rem 1rem; border-top: 1px solid var(--color-acciaio); font-size: 0.85rem; color: var(--color-grigio-200); align-items: center; }
+    .dw-tr:first-child { border-top: 0; }
+    .dw-tr--head { background: rgba(37, 37, 56, 0.55); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-300); }
+    .dw-td-idea { font-weight: 600; color: var(--color-ghiaccio); }
+    .dw-p { display: inline-flex; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+    .dw-p--p0 { background: var(--color-rosso-fs); color: var(--color-bianco); }
+    .dw-p--p1 { background: var(--color-binario); color: var(--color-grigio-200); }
+    @media (max-width: 640px) {
+      .dw-tr { grid-template-columns: 1fr; gap: 0.25rem; }
+      .dw-tr--head { display: none; }
+      .dw-td-idea { font-size: 0.95rem; }
+    }
+
+    .dw-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-cols { grid-template-columns: 1fr 1fr; } }
+    .dw-col { border: 1px solid var(--color-acciaio); border-radius: 8px; padding: 1.1rem 1.2rem; background: rgba(37, 37, 56, 0.4); }
+    .dw-col--ok { box-shadow: inset 0 2px 0 0 var(--color-ambra); }
+    .dw-col--no { box-shadow: inset 0 2px 0 0 var(--color-rosso-fs); }
+    .dw-col-h { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; color: var(--color-ghiaccio); margin-bottom: 0.8rem; }
+    .dw-col--no .dw-li::before { background: var(--color-rosso-fs); }
+
+    .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin: 0; padding: 0; }
+    .dw-source { font-size: 0.9rem; line-height: 1.5; }
+    .dw-source a { color: var(--color-grigio-200); }
+    .dw-source a:hover { color: var(--color-ambra-chiara); }
+
+    .dw-footer {
+      border-top: 1px solid var(--color-acciaio); padding-top: 1.2rem;
+      font-size: 0.78rem; letter-spacing: 0.04em;
+      color: var(--color-grigio-400);
+    }
+  </style>
+</BaseLayout>

@@ -8,6 +8,8 @@ interface Props {
   pageSolutions?: string[];
   /** Ramo della biforcazione: colora l'esperienza (accent) e scopa slug/gating. */
   branch?: 'fs-park' | 'trenitalia';
+  /** Pagina riservata (dossier interni): esclusa dai motori di ricerca. */
+  noindex?: boolean;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = 'Connessioni Intelligenti — FS Group × Adobe',
   pageSolutions,
   branch,
+  noindex = false,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -28,6 +31,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title === 'Connessioni Intelligenti' ? title : `${title} | Connessioni Intelligenti`}</title>
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
