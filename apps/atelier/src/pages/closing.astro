@@ -10,10 +10,34 @@ import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+// Deck home path; the share buttons append `?s=` to it at click time (origin is only known in the browser).
+const deckHome = href(base, '/');
+
+// What the viewer actually saw, in three lines. A callback, not a restated thesis.
+const recap = [
+  {
+    label: { en: '01 · The method', it: '01 · Il metodo', fr: '01 · La méthode' },
+    en: 'Seven live experiences, each built the same way.',
+    it: 'Sette esperienze live, costruite tutte allo stesso modo.',
+    fr: 'Sept expériences en production, toutes construites de la même façon.',
+  },
+  {
+    label: { en: '02 · The capability', it: '02 · La capability', fr: '02 · La capacité' },
+    en: 'One engine, toggled live in front of you.',
+    it: 'Un solo motore, acceso e spento dal vivo davanti a voi.',
+    fr: 'Un seul moteur, activé en direct devant vous.',
+  },
+  {
+    label: { en: '05 · The plan', it: '05 · Il piano', fr: '05 · Le plan' },
+    en: 'A nine-month plan with a number at each milestone.',
+    it: 'Un piano di nove mesi con un numero a ogni milestone.',
+    fr: 'Un plan sur neuf mois, avec un chiffre à chaque jalon.',
+  },
+];
 ---
 <BaseLayout
   title="Closing"
-  description="Closing — the thesis in one breath and the next step: green-light an eight-week pilot with five to ten sellers."
+  description="Closing — what you saw, and the next step: green-light a twelve-week pilot with five to ten sellers."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <AtelierNavigation currentPath={currentPath} base={base} />
@@ -24,32 +48,42 @@ const currentPath = Astro.url.pathname;
     prevHref={href(base, '/asks')}
   >
 
-    <!-- ── SLIDE 0: Thesis, restated in one breath ────────────────── -->
-    <!-- The cloth finished: the loom warp fully woven. A restrained closing
-         statement over the warp backdrop, resolved by a completed champagne
-         weave line that echoes the deck's loom metaphor closing. -->
-    <Slide id="slide-thesis" bg="primary" align="center">
+    <!-- ── SLIDE 0: Callback — what you saw (detail cut) ──────────── -->
+    <!-- The cloth finished: three short lines recalling the deck, resolved by a
+         completed champagne weave line that closes the loom metaphor. -->
+    <Slide id="slide-thesis" bg="primary" align="center" data-solution="detail">
       <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
 
       <div class="close-wrap w-full flex flex-col items-center">
         <T
           as="p"
-          en="In one breath"
-          it="In un respiro"
-          fr="En un souffle"
-          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-9"
+          en="What you saw"
+          it="Quello che avete visto"
+          fr="Ce que vous avez vu"
+          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-8"
           data-reveal
         />
-        <T
-          as="p"
-          en="The six live experiences show it works. The engine makes it repeatable, the plan makes it a capability, the KPIs keep it honest."
-          it="Le sei esperienze live mostrano che funziona. Il motore lo rende ripetibile, il piano ne fa una capability, i KPI lo tengono onesto."
-          fr="Les six expériences en production montrent que ça marche. Le moteur le rend reproductible, le plan en fait une capacité, les KPI le gardent honnête."
-          class="close-thesis text-center font-[family-name:var(--font-display)] text-[var(--color-avorio)] mx-auto"
-          data-reveal
-          data-reveal-delay="0.1"
-        />
-        <div class="close-weave mt-14" data-reveal data-reveal-delay="0.2" aria-hidden="true">
+        <ul class="close-recap" role="list">
+          {recap.map((line, i) => (
+            <li class="close-recap-item" data-reveal data-reveal-delay={String(0.1 + i * 0.08)}>
+              <T
+                as="p"
+                en={line.label.en}
+                it={line.label.it}
+                fr={line.label.fr}
+                class="atl-label close-recap-label text-center mx-auto"
+              />
+              <T
+                as="p"
+                en={line.en}
+                it={line.it}
+                fr={line.fr}
+                class="close-recap-text text-center font-[family-name:var(--font-display)] text-[var(--color-avorio)] mx-auto"
+              />
+            </li>
+          ))}
+        </ul>
+        <div class="close-weave mt-12" data-reveal data-reveal-delay="0.4" aria-hidden="true">
           <span class="close-weave-line"></span>
           <span class="close-weave-knot"></span>
           <span class="close-weave-line"></span>
@@ -61,51 +95,73 @@ const currentPath = Astro.url.pathname;
     <!-- Backdrop composed inline (same markup as SlideBackdrop) because the
          no-text zone over the dancer must ride on the MediaSlot figure for
          audit check (d). Zone = dancer + spotlight pool, measured on the
-         source image: x 38–68%, y 52–96%. The silhouette stays visible under
-         the scrim: one person, a stage, the beginning. -->
-    <Slide id="slide-next" bg="primary" align="center">
+         source image: x 38–68%, y 54–98%. The text sits in a LEFT column inside
+         the shared frame, so the figure keeps her spotlight on the right at
+         every projection size (no lift, no overlap with her head). On 16:10
+         screens the cover crop is anchored left so she moves right, not left. -->
+    <Slide id="slide-next" bg="primary" align="left">
       <div slot="backdrop" class="slide-backdrop absolute inset-0 overflow-hidden" aria-hidden="true">
         <div data-parallax class="absolute inset-0 will-change-transform">
-          <MediaSlot {...mediaProps('bg-stage')} fill noText="54,38,30,44" class="opacity-[0.45]" />
+          <MediaSlot {...mediaProps('bg-stage')} fill noText="54,38,30,44" objectPosition="left center" class="opacity-[0.45]" />
         </div>
         <div data-scrim class="absolute inset-0 bg-[var(--color-carbone)]/80"></div>
       </div>
 
-      <div class="next-lift w-full flex flex-col items-center">
-        <T
-          as="p"
-          en="The next step"
-          it="Il prossimo passo"
-          fr="La prochaine étape"
-          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5"
-          data-reveal
-        />
-        <T
-          as="h1"
-          en="Green-light the pilot."
-          it="Via libera al pilota."
-          fr="Donnez le feu vert au pilote."
-          class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-6"
-          style="font-size: clamp(2.2rem, 3.6vw, 3.4rem);"
-          data-reveal
-          data-reveal-delay="0.08"
-        />
-        <div class="close-next-panel loom-panel mx-auto" data-reveal data-reveal-delay="0.16">
+      <div class="atl-frame">
+        <div class="close-next-col">
           <T
             as="p"
-            en="Five to ten sellers, one guided intake, eight weeks. By mid-September there are new experiences in the field and a baseline to judge everything that follows."
-            it="Da cinque a dieci seller, un intake guidato, otto settimane. A metà settembre ci sono nuove esperienze sul campo e una baseline per giudicare tutto quello che viene dopo."
-            fr="Cinq à dix vendeurs, un intake guidé, huit semaines. À la mi-septembre, de nouvelles expériences sont sur le terrain, avec une base de référence pour juger la suite."
-            class="close-next-body text-center text-[var(--color-sabbia-200)] mx-auto"
+            en="The next step"
+            it="Il prossimo passo"
+            fr="La prochaine étape"
+            class="slide-eyebrow text-[var(--accent-primary)] mb-4"
+            data-reveal
           />
-          <div class="close-next-rule" aria-hidden="true"></div>
           <T
-            as="p"
-            en="This deck is live at its own address, in three languages. Forward it."
-            it="Questo deck è online al suo indirizzo, in tre lingue. Fatelo girare."
-            fr="Ce deck est en ligne à sa propre adresse, en trois langues. Faites-le circuler."
-            class="close-next-note text-center text-[var(--color-sabbia-300)] mx-auto"
+            as="h1"
+            en="Green-light the pilot."
+            it="Via libera al pilota."
+            fr="Donnez le feu vert au projet pilote."
+            class="slide-title text-[var(--ink-primary)] mb-5"
+            style="font-size: clamp(2.2rem, 3.4vw, 3.3rem);"
+            data-reveal
+            data-reveal-delay="0.08"
           />
+          <div class="close-next-panel loom-panel" data-reveal data-reveal-delay="0.16">
+            <T
+              as="p"
+              en="Five to ten sellers, one guided intake, twelve weeks. By mid-December there are new experiences in the field and a baseline to judge everything that follows."
+              it="Da cinque a dieci venditori, un brief guidato, dodici settimane. A metà dicembre ci sono nuove esperienze sul campo e una baseline per giudicare tutto quello che viene dopo."
+              fr="Cinq à dix commerciaux, un brief guidé, douze semaines. À la mi-décembre, de nouvelles expériences sont sur le terrain, avec une base de référence pour juger la suite."
+              class="close-next-body text-[var(--color-sabbia-200)]"
+            />
+            <div class="close-next-rule" aria-hidden="true"></div>
+            <T
+              as="p"
+              en="This deck is live at its own address, in three languages. Forward it."
+              it="Questo deck è online al suo indirizzo, in tre lingue. Fatelo girare."
+              fr="Ce deck est en ligne à sa propre adresse, en trois langues. Faites-le circuler."
+              class="close-next-note text-[var(--color-sabbia-300)]"
+            />
+            <div class="close-share" data-share-row>
+              <button type="button" class="close-share-btn" data-share="asks,quest,detail" data-share-home={deckHome}>
+                <T en="Copy full link" it="Copia il link completo" fr="Copier le lien complet" />
+              </button>
+              <button type="button" class="close-share-btn" data-share="asks" data-share-home={deckHome}>
+                <T en="Copy sponsor link" it="Copia il link per lo sponsor" fr="Copier le lien pour le sponsor" />
+              </button>
+              <span class="close-share-live" role="status" aria-live="polite">
+                <T as="span" en="Copied." it="Copiato." fr="Copié." data-share-live hidden />
+              </span>
+            </div>
+            <T
+              as="p"
+              en="Full deck · Sponsor cut, without the detail slides"
+              it="Deck completo · Versione sponsor, senza le slide di dettaglio"
+              fr="Deck complet · Version sponsor, sans les slides de détail"
+              class="atl-label close-share-label"
+            />
+          </div>
         </div>
       </div>
     </Slide>
@@ -113,15 +169,51 @@ const currentPath = Astro.url.pathname;
   </DeckContainer>
 </BaseLayout>
 
+<script>
+  // Copy one of the two share links (full deck / sponsor cut) to the clipboard.
+  // Delegated on document + guarded, so it survives ClientRouter swaps and
+  // never binds twice. The origin is only known here, in the browser.
+  const w = window as Window & { __atlShareBound?: boolean };
+  if (!w.__atlShareBound) {
+    w.__atlShareBound = true;
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-share]');
+      if (!btn) return;
+      const home = btn.getAttribute('data-share-home') || location.pathname;
+      const url = location.origin + home + '?s=' + (btn.getAttribute('data-share') || '');
+      const done = () => {
+        const live = btn.closest('[data-share-row]')?.querySelector<HTMLElement>('[data-share-live]');
+        if (!live) return;
+        live.hidden = false;
+        window.setTimeout(() => { live.hidden = true; }, 2200);
+      };
+      const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch { /* clipboard unavailable */ }
+        ta.remove();
+        done();
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(url).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+  }
+</script>
+
 <style>
   /* ── SLIDE 0 — the finished cloth ──────────────────────────────── */
   .close-wrap { max-width: 62rem; }
-  .close-thesis {
-    font-size: clamp(1.8rem, 2.5vw, 2.35rem);
-    line-height: 1.48;
+  .close-recap { list-style: none; display: flex; flex-direction: column; gap: 1.4rem; max-width: 56rem; }
+  .close-recap-label { color: var(--color-champagne); margin-bottom: 0.35rem; max-width: none; }
+  .close-recap-text {
+    font-size: clamp(1.6rem, 2.3vw, 2.2rem);
+    line-height: 1.38;
     font-weight: 500;
     letter-spacing: -0.01em;
-    max-width: 58rem;
   }
   /* The warp fully woven: a completed champagne weave line, resolved with a
      single knot at centre — the loom metaphor closing (never a side-stripe). */
@@ -150,33 +242,58 @@ const currentPath = Astro.url.pathname;
   }
 
   /* ── SLIDE 1 — the next step ────────────────────────────────────── */
-  /* Lift the text block into the upper-centre band so it clears the dancer's
-     no-text zone (which starts at ~52% of the backdrop) at all three
-     projection sizes, while keeping significant text inside the 30–70% band. */
-  .next-lift {
-    transform: translateY(clamp(-8rem, -12vh, -6rem));
-  }
+  /* A left column, 34rem wide: at 1280/1440/1920 it ends before the dancer's
+     raised hand (x ≈ 50% of the frame), so nothing sits over her head. */
+  .close-next-col { max-width: 34rem; }
   .close-next-panel {
-    max-width: 40rem;
     background: rgba(18, 16, 12, 0.72);
-    align-items: center;
-    padding: 1.5rem 1.75rem 1.4rem;
+    align-items: flex-start;
+    padding: 1.4rem 1.6rem 1.3rem;
     gap: 0;
   }
   .close-next-body {
     font-size: clamp(1.05rem, 1.25vw, 1.25rem);
     line-height: 1.55;
-    max-width: 34rem;
+    max-width: none;
   }
   .close-next-rule {
     width: 3rem;
     height: 1px;
-    margin: 1.1rem auto;
+    margin: 1rem 0;
     background: rgba(201, 169, 106, 0.45);
   }
   .close-next-note {
     font-size: 0.95rem;
+    line-height: 1.5;
     letter-spacing: 0.02em;
-    max-width: 34rem;
+    max-width: none;
+    margin-bottom: 0.8rem;
+  }
+  .close-share { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+  /* Explicit rgba so the audit's contrast parser measures it: avorio on the
+     composited dark stack reads ≈ 13:1. */
+  .close-share-btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em;
+    color: var(--color-avorio);
+    background: rgba(201, 169, 106, 0.16);
+    border: 1px solid rgba(201, 169, 106, 0.55);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--easing-default), border-color var(--duration-fast) var(--easing-default);
+  }
+  .close-share-btn:hover { background: rgba(201, 169, 106, 0.28); border-color: var(--color-champagne); }
+  .close-share-btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  .close-share-live { font-size: 0.9rem; font-weight: 600; color: var(--color-champagne); min-width: 0; }
+  .close-share-label { max-width: none; }
+  /* Short projection viewports (1280×800 → 464px usable; 1280×720 → ~460px):
+     FR wraps the h1 to two lines, so tighten SPACING only, never type. */
+  @media (max-height: 820px) and (min-width: 641px) {
+    .close-next-col .slide-eyebrow { margin-bottom: 0.6rem; }
+    .close-next-col .slide-title { margin-bottom: 0.8rem; }
+    .close-next-panel { padding: 1.1rem 1.4rem 1rem; }
+    .close-next-rule { display: none; }
+    .close-next-body { margin-bottom: 0.7rem; }
+    .close-next-note { margin-bottom: 0.6rem; }
   }
 </style>
