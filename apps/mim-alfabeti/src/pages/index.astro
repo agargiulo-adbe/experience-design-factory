@@ -7,45 +7,59 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import bgNavy from '../assets/generated/bg/navy-1.webp';
 import bgCarta from '../assets/generated/bg/carta-1.webp';
-import bgSoft from '../assets/generated/bg/soft-1.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const pillars = [
+// Firefly clip (GitHub Release `media`, git-ignored locally) + its poster in /public/media.
+const COVER_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/mim-voce-cover.mp4';
+const coverPoster = href(base, '/media/mim-voce-cover-poster.jpg');
+
+const verbs = [
   {
     word: { en: 'Orchestrate', it: 'Orchestrare' },
-    en: 'The right message, at the right moment, on the right channel — across the processes that move a career.',
-    it: 'Il messaggio giusto, al momento giusto, sul canale giusto — lungo i processi che muovono una carriera.',
+    en: 'The right message, at the right moment, on the right channel.',
+    it: 'Il messaggio giusto, al momento giusto, sul canale giusto.',
   },
   {
     word: { en: 'Measure', it: 'Misurare' },
-    en: 'Delivered, opened, understood, acted on. For the first time the staff channel produces evidence, not guesswork.',
-    it: 'Recapitato, aperto, capito, seguito da un’azione. Per la prima volta il canale del personale produce evidenze, non stime.',
+    en: 'Delivered, opened, understood, acted on: evidence instead of guesswork.',
+    it: 'Recapitato, aperto, capito, seguito da un’azione: evidenze al posto delle stime.',
   },
   {
     word: { en: 'Govern', it: 'Governare' },
-    en: 'Every journey runs on a role-based, privacy-first staff profile — with the institution in control of what is sent and what is measured.',
-    it: 'Ogni journey poggia su un profilo del personale basato sul ruolo e privacy-first — con l’istituzione che controlla cosa si invia e cosa si misura.',
+    en: 'A role-based, privacy-first staff profile, with the Ministry deciding what is sent and measured.',
+    it: 'Un profilo del personale per ruolo, privacy-first, con il Ministero che decide cosa si invia e cosa si misura.',
   },
 ];
 ---
-<BaseLayout title="La voce del Ministero">
+<BaseLayout title="La voce del Ministero · MIM × Adobe" preloadImage={bgNavy.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, '/domanda')}>
 
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
+    <!-- ── SLIDE 0: Cover — Firefly clip under the navy scrim ─────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center" data-dark>
+      <Fragment slot="backdrop">
+        <!-- Still fallback (reduced-motion hides the video; legibility mode too). -->
+        <div class="absolute inset-0" style={`background: url(${bgNavy.src}) center / cover no-repeat var(--surface-inverse);`} aria-hidden="true"></div>
+        <video class="alf-video" autoplay muted loop playsinline preload="metadata" poster={coverPoster} aria-hidden="true">
+          <source src={COVER_VIDEO} type="video/mp4" />
+        </video>
+        <!-- Scrim: the same gradients as every navy slide, with the image layer off AND the
+             shorthand's opaque navy background-color cleared, so the clip / still show through.
+             z-index 0 inline: the global `.alf-video ~ .alf-bg-navy { z-index:1 }` would otherwise
+             lift the scrim above the Slide content wrapper (which has no z-index). -->
+        <div class="alf-bg-navy" style="--bg-src: none; background-color: transparent; z-index: 0;"></div>
+      </Fragment>
       <div class="mx-auto w-full max-w-5xl flex flex-col items-center" data-reveal>
         <T
           as="p"
           en="Adobe × Ministry of Education and Merit"
           it="Adobe × Ministero dell'Istruzione e del Merito"
-          class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6"
+          class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-8"
         />
         <T
           as="h1"
@@ -55,92 +69,109 @@ const pillars = [
           class="slide-title text-center text-[var(--color-carta)] mb-6"
           style="font-size: clamp(2.8rem, 6vw, 5.6rem); line-height: 1.02;"
         />
+        <hr class="alf-rule-tricolore mb-8" aria-hidden="true" />
         <T
           as="p"
-          en="Orchestrate and measure how the Ministry speaks to the people who make the schools run — teachers, principals and administrative staff."
-          it="Orchestrare e misurare come il Ministero parla alle persone che fanno funzionare la scuola — docenti, dirigenti e personale ATA."
+          en="Orchestrate and measure how the Ministry speaks to the people who make the schools run: teachers, principals and administrative staff."
+          it="Orchestrare e misurare come il Ministero parla alle persone che fanno funzionare la scuola: docenti, dirigenti e personale ATA."
           class="text-center text-[var(--color-carta-tenue)] mx-auto max-w-3xl"
           style="font-size: clamp(1.1rem, 1.45vw, 1.4rem); line-height: 1.55;"
           data-reveal
           data-reveal-delay="0.16"
         />
-        <div class="mt-10 flex flex-col items-center gap-3" data-reveal data-reveal-delay="0.28">
-          <div class="w-10 h-px bg-[var(--color-azzurro-chiaro)]" aria-hidden="true"></div>
+        <div class="mt-12 flex flex-col items-center gap-2" data-reveal data-reveal-delay="0.28">
           <T
             as="p"
-            en="Use ← → to move. IT and EN in the toggle above."
-            it="Frecce ← → per muoversi. IT ed EN nel selettore in alto."
+            en="Seven chapters, fifteen minutes · arrows ← → to move, ↓ for the steps, IT/EN at the top"
+            it="Sette capitoli, quindici minuti · frecce ← → per muoversi, ↓ per i passaggi, IT/EN in alto"
             class="text-center text-[var(--color-carta-tenue)]"
-            style="font-size: 0.85rem; letter-spacing: 0.02em;"
+            style="font-size: 0.9rem; letter-spacing: 0.01em; line-height: 1.5; max-width: none;"
           />
           <T
             as="p"
-            en="Imagery generated with Adobe Firefly — signed with Content Credentials (C2PA)."
-            it="Immagini generate con Adobe Firefly — firmate con Content Credentials (C2PA)."
+            en="Images and video generated with Adobe Firefly, signed with Content Credentials"
+            it="Immagini e video generati con Adobe Firefly, firmati con Content Credentials"
             class="text-center text-[var(--color-azzurro-chiaro)]"
-            style="font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;"
+            style="font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.5; max-width: none;"
           />
         </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1: Thesis ────────────────────────────────────────── -->
+    <!-- ── SLIDE 1: Thesis + the three verbs ──────────────────────────── -->
     <Slide id="slide-thesis" bg="primary" align="center">
       <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
-      <div class="w-full max-w-4xl mx-auto flex flex-col items-center">
+      <div class="w-full max-w-6xl mx-auto flex flex-col items-center">
         <T
           as="p"
           en="The thesis"
           it="La tesi"
-          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6"
+          class="slide-eyebrow text-center text-[var(--accent-primary)] mb-5"
           data-reveal
         />
         <T
           as="h2"
           en="The first door isn't the classroom. It's how the Ministry speaks to the people who make the schools run."
           it="La prima porta non è la classe. È come il Ministero parla alle persone che fanno funzionare le scuole."
-          class="slide-title text-center text-[var(--ink-primary)] max-w-4xl mx-auto mb-8"
+          class="slide-title text-center text-[var(--ink-primary)] max-w-4xl mx-auto"
           style="font-size: clamp(1.7rem, 2.9vw, 2.8rem); line-height: 1.2;"
           data-reveal
           data-reveal-delay="0.08"
         />
-        <div class="alf-quote w-full max-w-3xl" data-reveal data-reveal-delay="0.16">
-          <T
-            as="p"
-            en="Teachers, principals, ATA: hundreds of thousands of people, moved by tenure appointments, mobility and rankings — reached today with fragmented tools, and almost never measured."
-            it="Docenti, dirigenti, ATA: centinaia di migliaia di persone, mosse da immissioni, mobilità e graduatorie — raggiunte oggi con strumenti frammentati, e quasi mai misurate."
-            class="alf-quote-text text-center mx-auto"
-          />
-        </div>
-      </div>
-    </Slide>
 
-    <!-- ── SLIDE 2: Three words ───────────────────────────────────── -->
-    <Slide id="slide-pillars" bg="secondary" align="left">
-      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="One voice, in three words" it="Una voce sola, in tre parole" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
-        <T
-          as="h2"
-          en="Orchestrate, measure, govern"
-          it="Orchestrare, misurare, governare"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.8rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
-          {pillars.map((p) => (
-            <article class="alf-card">
-              <T as="h3" en={p.word.en} it={p.word.it} class="alf-card-title" />
-              <T as="p" en={p.en} it={p.it} class="alf-card-body" />
-            </article>
+        <div class="alf-verbs w-full" data-reveal data-reveal-delay="0.16">
+          {verbs.map((v) => (
+            <div class="alf-verb">
+              <T as="h3" en={v.word.en} it={v.word.it} class="alf-verb-word" />
+              <T as="p" en={v.en} it={v.it} class="alf-verb-gloss" />
+            </div>
           ))}
         </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
-          <T en="Adobe Experience Platform · Real-Time CDP · Journey Optimizer · Customer Journey Analytics" it="Adobe Experience Platform · Real-Time CDP · Journey Optimizer · Customer Journey Analytics" />
-        </p>
+
+        <T
+          as="p"
+          en="Teachers, principals, ATA staff: hundreds of thousands of people, moved by tenure rounds, mobility and rankings. Reached today with fragmented tools, and almost never measured."
+          it="Docenti, dirigenti, ATA: centinaia di migliaia di persone, mosse da immissioni, mobilità e graduatorie. Raggiunte oggi con strumenti frammentati, e quasi mai misurate."
+          class="alf-quote-text alf-thesis-close text-center mx-auto"
+          data-reveal
+          data-reveal-delay="0.26"
+        />
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* Thesis — the three verbs as ONE inline rhythm line (Titillium 700, 1.4rem,
+     blue dot between the words), each with its one-line gloss underneath.
+     No cards: a hairline above, three equal columns, text only. */
+  .alf-verbs {
+    margin-top: clamp(1.4rem, 2.4vh, 2rem);
+    padding-top: clamp(1.1rem, 2vh, 1.5rem);
+    border-top: 1px solid rgba(0, 102, 204, 0.35);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 2.4rem;
+    row-gap: 1rem;
+  }
+  .alf-verb { position: relative; min-width: 0; }
+  .alf-verb + .alf-verb::before {
+    content: '·';
+    position: absolute; left: -1.2rem; top: 0; transform: translateX(-50%);
+    font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; line-height: 1.2;
+    color: var(--color-blu);
+  }
+  .alf-verb-word {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; line-height: 1.2;
+    letter-spacing: -0.01em; color: var(--color-inchiostro); margin: 0 0 0.35rem; max-width: none;
+  }
+  .alf-verb-gloss { font-size: 0.95rem; line-height: 1.5; color: var(--color-ardesia-700); margin: 0; max-width: none; }
+  /* line-height ≥ Titillium's ascent+descent (~1.42em): at 1.34 the last line's
+     inline box pokes 2px past .slide-inner and the laptop tier shows a scrollbar. */
+  .alf-thesis-close { margin-top: clamp(1.4rem, 2.6vh, 2.2rem); max-width: 60ch; line-height: 1.45; }
+  @media (max-width: 767px) {
+    .alf-verbs { grid-template-columns: 1fr; row-gap: 0.9rem; }
+    .alf-verb + .alf-verb::before { display: none; }
+  }
+</style>
