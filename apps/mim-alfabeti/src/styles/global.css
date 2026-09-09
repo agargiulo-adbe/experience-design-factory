@@ -4,20 +4,30 @@
 @source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
 @source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
 
-/* Tailwind v4 theme — Alfabeti (MIM): light institutional, warm paper + blu Italia.
-   LIGHT-dominant: paper/ivory surfaces, deep-navy ink, institutional blue accent.
-   Display face = Titillium Web (the Italian public-administration typeface). */
+/* Tailwind v4 theme — «La voce del Ministero» (MIM): identity «Repubblica, non crema».
+   LIGHT-dominant on a COOL near-white (never cream), deep-navy ink, blu Italia
+   (#0066CC, Designers Italia primary) as the accent, white flat cards.
+   Display face = Titillium Web (the Italian public-administration typeface).
+   Legacy token names (carta / avorio / carta-scura) are KEPT as aliases so the
+   pages keep compiling; their values are now the cool greys. */
 @theme {
-  --color-carta: #F6F1E7;          /* primary surface, warm paper */
-  --color-avorio: #FCF9F2;         /* secondary surface, lighter ivory */
-  --color-carta-scura: #ECE4D3;    /* tertiary surface / hairline paper */
-  --color-blu: #0B4DA2;            /* accent primary — institutional blue */
+  --color-carta: #F4F6F9;          /* primary surface, cool near-white (alias of grigio-100) */
+  --color-avorio: #EBEFF4;         /* secondary surface, cool light grey */
+  --color-carta-scura: #DFE5EC;    /* tertiary surface / hairline */
+  --color-bianco: #FFFFFF;         /* cards */
+  --color-blu: #0066CC;            /* accent primary — blu Italia */
+  --color-blu-italia: #0066CC;
   --color-azzurro: #2E6FD6;        /* accent secondary / on-navy accent */
-  --color-blu-scuro: #08376E;      /* deeper blue */
+  --color-blu-scuro: #004D99;      /* deeper blue (hover / chip ink) */
   --color-blu-notte: #0A1A33;      /* inverse surface, near-black navy */
-  --color-inchiostro: #14213A;     /* primary ink on paper (deep navy-ink) */
-  --color-ardesia-700: #33405A;    /* readable secondary ink (body) */
-  --color-ardesia-500: #55617A;    /* readable tertiary ink (labels/notes) */
+  --color-inchiostro: #14213A;     /* primary ink (deep navy-ink) */
+  --color-ardesia-700: #2F3D52;    /* readable secondary ink (body) — cool */
+  --color-ardesia-500: #5A6879;    /* readable tertiary ink (labels/notes) — cool */
+  --color-grigio-100: #F4F6F9;
+  --color-grigio-200: #E1E6ED;
+  --color-grigio-300: #C5CDD8;
+  --color-grigio-500: #5C6B7F;
+  --color-grigio-700: #2F3D52;
   --color-ocra: #A65A00;           /* warm highlight, used sparingly */
 
   --font-display: 'Titillium Web', 'Helvetica Neue', Arial, sans-serif;
@@ -25,22 +35,34 @@
 }
 
 :root {
-  /* Primitivi — Alfabeti: carta + blu istituzionale */
-  --color-carta: #F6F1E7;
-  --color-avorio: #FCF9F2;
-  --color-carta-scura: #ECE4D3;
-  --color-blu: #0B4DA2;
+  /* Primitivi — cool greys + blu Italia (every value explicit hex/rgba: the deck
+     audit's contrast parser cannot read oklab()/color-mix()). */
+  --color-carta: #F4F6F9;
+  --color-avorio: #EBEFF4;
+  --color-carta-scura: #DFE5EC;
+  --color-bianco: #FFFFFF;
+  --color-blu: #0066CC;
+  --color-blu-italia: #0066CC;
   --color-azzurro: #2E6FD6;
-  --color-blu-scuro: #08376E;
+  --color-blu-scuro: #004D99;
   --color-blu-notte: #0A1A33;
   --color-inchiostro: #14213A;
-  --color-ardesia-700: #33405A;
-  --color-ardesia-500: #55617A;
+  --color-ardesia-700: #2F3D52;
+  --color-ardesia-500: #5A6879;
+  --color-grigio-100: #F4F6F9;
+  --color-grigio-200: #E1E6ED;
+  --color-grigio-300: #C5CDD8;
+  --color-grigio-500: #5C6B7F;
+  --color-grigio-700: #2F3D52;
   --color-ocra: #A65A00;
 
   /* On-navy readable inks (for inverse/brand slides) */
-  --color-carta-tenue: #DCE4F0;    /* light slate for body on navy */
-  --color-azzurro-chiaro: #7FA8E6; /* light blue accent readable on navy */
+  --color-carta-tenue: #DCE4F0;    /* light slate for body on navy (13.6:1) */
+  --color-azzurro-chiaro: #7FA8E6; /* light blue accent readable on navy (7.1:1) */
+
+  /* Tricolore (only .alf-rule-tricolore uses these) */
+  --color-verde-it: #009246;
+  --color-rosso-it: #CE2B37;
 
   /* Tipografia */
   --font-display: 'Titillium Web', 'Helvetica Neue', Arial, sans-serif;
@@ -84,12 +106,13 @@
   --spacing-16: 4rem;
   --spacing-20: 5rem;
 
-  /* Semantici — Surface (LIGHT-dominant, warm paper) */
+  /* Semantici — Surface (LIGHT-dominant, cool near-white) */
   --surface-primary: var(--color-carta);
   --surface-secondary: var(--color-avorio);
   --surface-tertiary: var(--color-carta-scura);
   --surface-inverse: var(--color-blu-notte);
   --surface-brand: var(--color-blu);
+  --surface-card: var(--color-bianco);
 
   /* Semantici — Ink */
   --ink-primary: var(--color-inchiostro);
@@ -99,15 +122,16 @@
   --ink-brand: var(--color-blu);
   --ink-link: var(--color-blu);
 
-  /* Semantici — Accent */
-  --accent-primary: var(--color-blu);
+  /* Semantici — Accent (blu Italia: 5.6:1 on white, 5.1:1 on the page surface) */
+  --accent-primary: var(--color-blu-italia);
   --accent-secondary: var(--color-azzurro);
   --accent-hover: var(--color-blu-scuro);
 
-  /* Semantici — Line */
-  --line-subtle: rgba(20, 33, 58, 0.12);
-  --line-default: rgba(20, 33, 58, 0.22);
-  --line-strong: rgba(20, 33, 58, 0.34);
+  /* Semantici — Line (flat cards: 1px hairline, no shadow) */
+  --line-subtle: rgba(10, 26, 51, 0.14);
+  --line-default: rgba(10, 26, 51, 0.22);
+  --line-strong: rgba(10, 26, 51, 0.34);
+  --line-on-dark: rgba(255, 255, 255, 0.18);
 
   /* Semantici — Focus */
   --focus-ring: var(--color-blu);
@@ -115,6 +139,9 @@
   /* Deck safe-area contract */
   --slide-safe-inset: 80px;
   --deck-chrome-safe: 168px;
+
+  /* Scroll-affordance fade (cramped laptop tier, see DeckContainer) */
+  --deck-scroll-fade: rgba(244, 246, 249, 0.92);
 
   /* Durata */
   --duration-fast: 150ms;
@@ -207,6 +234,20 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
 }
 
+/* Skip-link — first focusable element of every page (BaseLayout). Visually
+   hidden until focused, then a navy pill under the nav. */
+.alf-skip {
+  position: fixed; top: 0.6rem; left: 0.6rem; z-index: 100;
+  transform: translateY(-160%);
+  background: var(--color-blu-notte); color: #FFFFFF;
+  font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+  padding: 0.55rem 0.95rem; border-radius: 4px; text-decoration: none;
+  transition: transform 150ms var(--easing-out);
+}
+.alf-skip:focus, .alf-skip:focus-visible {
+  transform: none; color: #FFFFFF; outline: 3px solid #FFB547; outline-offset: 2px;
+}
+
 /* View transitions — cross-section (SPA) change: a sober fade with a whisper of
    scale + rise, so moving between chapters feels like a considered cut, not a
    flat blink. Only opacity/transform; reduced-motion falls back to no motion. */
@@ -228,8 +269,11 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-family: var(--font-body);
-  font-size: clamp(0.72rem, 0.9vw, 0.9rem);
+  font-size: 0.85rem;
 }
+/* ONE eyebrow size in the deck (the core sets clamp(1.05rem…1.3rem); the
+   (0,1,1) selector below wins regardless of stylesheet order). */
+[data-deck] .slide-eyebrow { font-size: 0.85rem; letter-spacing: 0.14em; font-weight: 600; }
 
 .slide-title {
   font-family: var(--font-display);
@@ -239,29 +283,35 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   ALFABETI — shared art-direction system (light institutional)
-   Warm paper + blu Italia. Panels are light cards with a hairline border and a
-   soft shadow; ink is deep-navy; the accent is institutional blue. Every colour
-   is an explicit rgba / hex (never oklab/color-mix on a text surface) so the
-   deck audit's contrast parser reads it. Reuse these across all sections.
-   Use panels/cards ONLY on light slides (bg primary|secondary). Navy slides
-   (bg inverse|brand) stay text-only (hero / pull-quote).
+   LA VOCE DEL MINISTERO — shared art-direction system («Repubblica, non crema»)
+   Cool near-white page, WHITE FLAT cards (1px hairline, 4px radius, NO shadow),
+   deep-navy ink, blu Italia accent. Every colour is an explicit rgba / hex
+   (never oklab/color-mix on a text surface) so the deck audit's contrast parser
+   reads it. Reuse these across all sections.
+
+   DARK CONTEXT — any of these makes the `.alf-*` components switch to their
+   on-navy variant (rgba(255,255,255,0.06) fill, rgba(255,255,255,0.18) border,
+   carta ink):
+     · a Slide with bg="inverse"  → class contains "surface-inverse"
+     · a Slide with bg="brand"    → class contains "accent-primary"
+     · any element with [data-dark] (slide or wrapper)
+     · a wrapper with class .alf-dark
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Backdrops — put on a `<div slot="backdrop" class="alf-bg">` inside a Slide.
-   Bespoke Firefly imagery (concept A+C) sits UNDER a strong same-tone scrim so
-   it reads as atmospheric texture while body text stays fully legible. The scrim
-   opacity is the legibility knob — verified by reading a 1920 screenshot. */
-/* The image layer is a per-slide override (`--bg-src`), so every slide can carry
-   a distinct backdrop while sharing one scrim + drift treatment. Falls back to
-   the shared default when a slide sets nothing. */
+   Bespoke Firefly imagery sits UNDER a strong same-tone scrim so it reads as
+   atmospheric texture while body text stays fully legible. The scrim opacity is
+   the legibility knob — verified by reading a 1920 screenshot.
+   The image layer is a per-slide override (`--bg-src`). Static: the old
+   40–50 s drift was imperceptible and cost a composited layer per slide — it is
+   REMOVED (not gated by viewport). */
 .alf-bg {
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(90deg, rgba(11,77,162,0.045) 0 1px, transparent 1px 96px),
-    radial-gradient(120% 80% at 50% -10%, rgba(11,77,162,0.06), transparent 58%),
-    linear-gradient(rgba(246,241,231,0.80), rgba(246,241,231,0.86)),
+    repeating-linear-gradient(90deg, rgba(0,102,204,0.045) 0 1px, transparent 1px 96px),
+    radial-gradient(120% 80% at 50% -10%, rgba(0,102,204,0.06), transparent 58%),
+    linear-gradient(rgba(244,246,249,0.82), rgba(244,246,249,0.88)),
     var(--bg-src, url('../assets/generated/bg-carta.webp')) center / cover no-repeat,
     var(--surface-primary);
 }
@@ -269,8 +319,8 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   position: absolute;
   inset: 0;
   background:
-    repeating-linear-gradient(90deg, rgba(11,77,162,0.04) 0 1px, transparent 1px 96px),
-    linear-gradient(rgba(252,249,242,0.78), rgba(252,249,242,0.84)),
+    repeating-linear-gradient(90deg, rgba(0,102,204,0.04) 0 1px, transparent 1px 96px),
+    linear-gradient(rgba(235,239,244,0.80), rgba(235,239,244,0.86)),
     var(--bg-src, url('../assets/generated/bg-carta-soft.webp')) center / cover no-repeat,
     var(--surface-secondary);
 }
@@ -286,45 +336,45 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
     var(--surface-inverse);
 }
 
-/* ── Living backdrops ────────────────────────────────────────────────
-   A very slow, low-amplitude drift gives each slide quiet life without
-   pulling focus from the copy. Transform-only (composited), over-scaled so
-   the motion never reveals a slide edge (the [data-slide] wrapper clips).
-   Three staggered variants so adjacent slides don't move in lockstep.
-   Fully disabled under reduced-motion. */
-.alf-bg, .alf-bg-soft, .alf-bg-navy {
-  transform-origin: 50% 50%;
-  will-change: transform;
-  backface-visibility: hidden;
+/* ── Video backdrop ──────────────────────────────────────────────────
+   `<video class="alf-video" autoplay muted loop playsinline poster=…>` placed
+   in the backdrop slot BEFORE the .alf-bg* scrim div (so the scrim sits above).
+   Hidden under reduced-motion (the poster / scrim image stays).
+   `.alf-video--once` = play once, no loop (pair with the `loop` attr omitted). */
+.alf-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0.9; z-index: 0; pointer-events: none;
 }
-.alf-bg      { animation: alf-drift-a 42s ease-in-out infinite alternate; }
-.alf-bg-soft { animation: alf-drift-b 50s ease-in-out infinite alternate; }
-.alf-bg-navy { animation: alf-drift-c 46s ease-in-out infinite alternate; }
-@keyframes alf-drift-a { from { transform: scale(1.04) translate3d(-0.7%, -0.5%, 0); } to { transform: scale(1.08) translate3d(0.8%, 0.6%, 0); } }
-@keyframes alf-drift-b { from { transform: scale(1.06) translate3d(0.7%, 0.4%, 0); } to { transform: scale(1.03) translate3d(-0.6%, -0.5%, 0); } }
-@keyframes alf-drift-c { from { transform: scale(1.05) translate3d(-0.6%, 0.5%, 0); } to { transform: scale(1.09) translate3d(0.7%, -0.4%, 0); } }
-@media (prefers-reduced-motion: reduce) {
-  .alf-bg, .alf-bg-soft, .alf-bg-navy { animation: none; transform: scale(1.02); }
+.alf-video ~ .alf-bg, .alf-video ~ .alf-bg-soft, .alf-video ~ .alf-bg-navy { z-index: 1; }
+.alf-video--once { }
+@media (prefers-reduced-motion: reduce) { .alf-video { display: none; } }
+
+/* ── Tricolore rule ──────────────────────────────────────────────────
+   `<hr class="alf-rule-tricolore">` — a 2px green/white/red rule. Reserved for
+   the cover and the close (max 2 uses in the whole deck). */
+.alf-rule-tricolore {
+  display: block; width: 100%; max-width: 18rem; height: 2px; border: 0;
+  background: linear-gradient(90deg, #009246 33%, #F1F2F1 33% 66%, #CE2B37 66%);
 }
 
-/* Card — the default content container on light slides. */
+/* Card — the default content container on light slides (flat). */
 .alf-panel {
-  background: #FFFFFF;
-  border: 1px solid var(--line-subtle);
-  border-radius: 10px;
+  background: var(--surface-card);
+  border: 1px solid rgba(10, 26, 51, 0.14);
+  border-radius: 4px;
   padding: 1.3rem 1.4rem 1.2rem;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  box-shadow: 0 10px 30px -18px rgba(20, 33, 58, 0.35);
+  box-shadow: none;
 }
 .alf-panel-head {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
   padding-bottom: 0.75rem; margin-bottom: 0.85rem;
-  border-bottom: 1px solid var(--line-subtle);
+  border-bottom: 1px solid rgba(10, 26, 51, 0.14);
 }
 .alf-tag {
-  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--accent-primary);
 }
 .alf-figure {
@@ -336,20 +386,18 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   color: var(--color-ardesia-700);
   font-size: 0.98rem; line-height: 1.55; max-width: none; margin-bottom: 0.4rem;
 }
+/* Source line — sentence-case, 0.82rem, ≥4.5:1 on BOTH surfaces. */
 .alf-src {
-  font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase;
+  font-size: 0.82rem; letter-spacing: 0; text-transform: none; line-height: 1.45;
   color: var(--color-ardesia-500);
 }
 .alf-src a {
   color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em;
 }
 .alf-src a:hover { color: var(--color-blu-scuro); }
-/* on inverse/navy slides the source line sits on dark → readable light-blue link */
-.alf-bg-navy ~ * .alf-src a,
-[data-slide].bg-inverse .alf-src a { color: var(--color-azzurro-chiaro); }
 
 /* Pull quote — a blue hairline ABOVE (never a side-stripe). On light slides. */
-.alf-quote { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 2px solid rgba(11,77,162,0.35); max-width: none; }
+.alf-quote { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 2px solid rgba(0,102,204,0.35); max-width: none; }
 .alf-quote-text {
   font-family: var(--font-display); color: var(--color-inchiostro);
   font-size: clamp(1.2rem, 1.6vw, 1.5rem);
@@ -359,14 +407,14 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 .alf-quote-navy { border-top-color: rgba(127,168,230,0.5); }
 .alf-quote-navy .alf-quote-text { color: var(--color-carta); }
 
-/* Numbered card — a blue "mark" disc + display title + body. */
+/* Numbered card — a blue "mark" disc + display title + body (flat). */
 .alf-card {
-  background: #FFFFFF;
-  border: 1px solid var(--line-subtle);
-  border-radius: 10px;
+  background: var(--surface-card);
+  border: 1px solid rgba(10, 26, 51, 0.14);
+  border-radius: 4px;
   padding: 1.4rem 1.4rem 1.2rem;
   display: flex; flex-direction: column; min-width: 0;
-  box-shadow: 0 10px 30px -18px rgba(20, 33, 58, 0.35);
+  box-shadow: none;
 }
 .alf-mark {
   font-family: var(--font-display); font-weight: 700;
@@ -386,16 +434,16 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   font-size: 0.97rem; line-height: 1.55; max-width: none; margin-bottom: 0;
 }
 
-/* Stacked rows (inventory/status) — category label left · card(s) right. */
+/* Stacked rows (inventory/status) — category label left · card(s) right (flat). */
 .alf-rows { display: flex; flex-direction: column; gap: 0.85rem; }
 .alf-row {
   display: grid;
   grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
   gap: 1.4rem; align-items: center;
-  background: #FFFFFF;
-  border: 1px solid var(--line-subtle);
-  border-radius: 10px; padding: 1rem 1.3rem;
-  box-shadow: 0 8px 24px -18px rgba(20, 33, 58, 0.3);
+  background: var(--surface-card);
+  border: 1px solid rgba(10, 26, 51, 0.14);
+  border-radius: 4px; padding: 1rem 1.3rem;
+  box-shadow: none;
 }
 @media (max-width: 767px) { .alf-row { grid-template-columns: 1fr; gap: 0.5rem; } }
 .alf-row-label {
@@ -409,9 +457,344 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   display: inline-block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em;
   padding: 0.12rem 0.5rem; border-radius: 4px; vertical-align: middle;
 }
-.alf-chip--ver { background: rgba(11,77,162,0.12); color: var(--color-blu-scuro); }
+.alf-chip--ver { background: rgba(0,102,204,0.12); color: var(--color-blu-scuro); }
 .alf-chip--inf { background: rgba(166,90,0,0.14); color: var(--color-ocra); }
-.alf-chip--tbc { background: rgba(20,33,58,0.10); color: var(--color-ardesia-700); }
+.alf-chip--tbc { background: rgba(10,26,51,0.10); color: var(--color-ardesia-700); }
+
+/* ── Source card ─────────────────────────────────────────────────────
+   `<dl class="alf-source-card">` — a small data card for one verified figure:
+     <div class="alf-source-card-value">234.576</div>
+     <dt>Anno</dt><dd>2022/23</dd>
+     <dt>Fonte</dt><dd><a href=…>MIM, Focus…</a></dd>
+     <dt>Consultato il</dt><dd>7 set 2026</dd>
+     <dt>Cosa non copre</dt><dd>…</dd>
+   Grid dt/dd, 0.85rem; flat white (on-navy variant via the dark context). */
+.alf-source-card {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.9rem; row-gap: 0.3rem;
+  align-items: baseline; font-size: 0.85rem; line-height: 1.45;
+  background: var(--surface-card); border: 1px solid rgba(10, 26, 51, 0.14); border-radius: 4px;
+  padding: 0.95rem 1.1rem; color: var(--color-ardesia-700); min-width: 0;
+}
+.alf-source-card-value {
+  grid-column: 1 / -1; font-family: var(--font-display); font-weight: 700;
+  font-size: 1.6rem; line-height: 1; color: var(--color-blu); letter-spacing: -0.02em;
+  margin-bottom: 0.45rem; font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.alf-source-card dt { font-weight: 600; color: var(--color-ardesia-500); white-space: nowrap; }
+.alf-source-card dd { min-width: 0; margin: 0; }
+.alf-source-card a { color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em; }
+
+/* ── Charts ──────────────────────────────────────────────────────────
+   `<div class="alf-chart">` (block; put [data-reveal] on it or on the slide)
+     <div class="alf-bar-label">Supplenti 2022/23</div>
+     <div class="alf-bar"><div class="alf-bar-fill" style="--w: 27%"></div><span class="alf-tick" style="--x: 41%" data-label="41.901"></span></div>
+     <div class="alf-bar-value">234.576</div>
+   .alf-bar          track, 28px, cool grey
+   .alf-bar-fill     blu Italia; width via inline --w; animates scaleX 0→1 when
+                     the slide is ACTIVE (deck removes aria-hidden) or when its
+                     [data-substep] gets data-substep-active; static under
+                     reduced-motion / no-JS.
+   .alf-bar-fill--muted   grey fill (comparison series)
+   .alf-bar-dashed   dashed outline track = «nessun conteggio pubblicato»
+   .alf-bar-label    0.95rem · .alf-bar-value Titillium 700 1.6rem
+   .alf-tick         vertical tick at --x (%) with data-label above it
+   .alf-chart-src    source line under the chart (same ink as .alf-src) */
+.alf-chart { display: flex; flex-direction: column; gap: 0.55rem; min-width: 0; width: 100%; }
+.alf-chart-row { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr) auto; gap: 0.9rem; align-items: center; }
+@media (max-width: 767px) { .alf-chart-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+.alf-bar {
+  position: relative; height: 28px; width: 100%; border-radius: 2px;
+  background: var(--color-grigio-200); overflow: visible;
+}
+.alf-bar-fill {
+  position: absolute; left: 0; top: 0; bottom: 0; width: var(--w, 0%);
+  background: var(--color-blu); border-radius: 2px;
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 180ms;
+}
+[data-slide]:not([aria-hidden]) .alf-bar-fill,
+[data-substep][data-substep-active] .alf-bar-fill,
+[data-substep-active] .alf-bar-fill { transform: scaleX(1); }
+[data-substep]:not([data-substep-active]) .alf-bar-fill { transform: scaleX(0); }
+.alf-bar-fill--muted { background: var(--color-grigio-300); }
+.alf-bar-dashed {
+  position: relative; height: 28px; width: 100%; border-radius: 2px;
+  border: 1.5px dashed rgba(10, 26, 51, 0.38); background: transparent;
+}
+.alf-bar-dashed::after {
+  content: attr(data-label); position: absolute; inset: 0;
+  display: flex; align-items: center; padding-left: 0.6rem;
+  font-size: 0.82rem; font-style: italic; color: var(--color-ardesia-500);
+}
+.alf-bar-label { font-size: 0.95rem; line-height: 1.35; color: var(--color-ardesia-700); max-width: none; min-width: 0; }
+.alf-bar-value {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1;
+  color: var(--color-inchiostro); letter-spacing: -0.02em; white-space: nowrap;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.alf-tick {
+  position: absolute; top: -6px; bottom: -6px; left: var(--x, 50%); width: 2px;
+  background: var(--color-inchiostro); pointer-events: none;
+}
+.alf-tick::after {
+  content: attr(data-label); position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, -4px);
+  font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; line-height: 1;
+  color: var(--color-inchiostro); white-space: nowrap;
+}
+.alf-chart-src { font-size: 0.82rem; line-height: 1.45; color: var(--color-ardesia-500); margin-top: 0.25rem; max-width: none; }
+.alf-chart-src a { color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em; }
+@media (prefers-reduced-motion: reduce) {
+  .alf-bar-fill, [data-substep]:not([data-substep-active]) .alf-bar-fill { transform: scaleX(1); transition: none; }
+}
+html:not(.js) .alf-bar-fill { transform: scaleX(1); transition: none; }
+
+/* ── Phone mock ──────────────────────────────────────────────────────
+   <div class="alf-phone"><div class="alf-phone-bar">9:41 · MIM</div> …screen… </div>
+   .alf-phone      360×640 frame, radius 28px, navy bezel, white inner screen
+                   (scales down with `--phone-scale` on short viewports)
+   .alf-phone-bar  status bar strip (0.78rem, navy ink)
+   .alf-bulletin   the «bollettino USP» — monospace table look on ivory paper
+   .alf-chat       bubble list; .alf-chat-msg (+ --me for the outgoing side)
+   .alf-clock      Titillium 700 2rem time stamp (e.g. «23:47») */
+.alf-phone {
+  --phone-scale: 1;
+  width: 360px; height: 640px; flex-shrink: 0;
+  border-radius: 28px; padding: 12px;
+  background: var(--color-blu-notte); border: 1px solid rgba(255, 255, 255, 0.18);
+  transform: scale(var(--phone-scale)); transform-origin: 50% 50%;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.alf-phone-screen {
+  flex: 1 1 auto; min-height: 0; background: #FFFFFF; border-radius: 18px;
+  display: flex; flex-direction: column; overflow: hidden; color: var(--color-inchiostro);
+}
+.alf-phone-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.55rem 0.9rem; font-size: 0.78rem; font-weight: 600;
+  color: var(--color-inchiostro); background: var(--color-grigio-100);
+  border-bottom: 1px solid rgba(10, 26, 51, 0.14); letter-spacing: 0.02em;
+}
+.alf-phone-body { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem; }
+@media (max-height: 899px) { .alf-phone { --phone-scale: 0.82; } }
+@media (max-height: 799px) { .alf-phone { --phone-scale: 0.72; } }
+
+.alf-bulletin {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8rem; line-height: 1.5; color: #1F2A3A;
+  background: #FBF8F0; border: 1px solid rgba(10, 26, 51, 0.18); border-radius: 2px;
+  padding: 0.7rem 0.8rem; width: 100%; border-collapse: collapse;
+}
+.alf-bulletin table { width: 100%; border-collapse: collapse; }
+.alf-bulletin th, .alf-bulletin td { text-align: left; padding: 0.18rem 0.35rem; border-bottom: 1px dotted rgba(10, 26, 51, 0.3); vertical-align: top; }
+.alf-bulletin th { font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.72rem; }
+.alf-bulletin-head { font-weight: 700; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+
+.alf-chat { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; padding: 0; margin: 0; }
+.alf-chat-msg {
+  max-width: 86%; padding: 0.55rem 0.75rem; border-radius: 14px 14px 14px 4px;
+  background: var(--color-grigio-200); color: var(--color-inchiostro);
+  font-size: 0.86rem; line-height: 1.4; align-self: flex-start;
+}
+.alf-chat-msg--me {
+  align-self: flex-end; border-radius: 14px 14px 4px 14px;
+  background: var(--color-blu); color: #FFFFFF;
+}
+.alf-chat-msg--official {
+  background: rgba(0, 102, 204, 0.10); border: 1px solid rgba(0, 102, 204, 0.35); color: var(--color-inchiostro);
+}
+.alf-chat-meta { font-size: 0.7rem; color: var(--color-ardesia-500); margin-top: 0.15rem; }
+
+.alf-clock {
+  font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1;
+  letter-spacing: -0.02em; color: var(--color-inchiostro); font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* ── Substeps (deck.ts) ──────────────────────────────────────────────
+   Mark progressive-disclosure blocks with [data-substep]. ↓ / PageDown / Space
+   reveal the next one (deck sets data-substep-active on it and
+   data-substep-index="n" on the slide), ↑ hides the last one, → / ← skip to
+   the adjacent slide. Reduced-motion and no-JS: everything visible. */
+[data-substep] {
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 320ms var(--easing-out), transform 320ms var(--easing-out);
+}
+[data-substep][data-substep-active] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-substep] { opacity: 1; transform: none; transition: none; }
+}
+html:not(.js) [data-substep] { opacity: 1; transform: none; }
+
+/* ── Journey builder (simulation) ────────────────────────────────────
+   <div class="alf-sim"> two panels: controls (left) · result (right)
+   .alf-sim-chips     chip buttons — <button role="radio" aria-checked>
+   .alf-sim-timeline  vertical list of journey steps (li)
+   .alf-sim-kpi       KPI tile (value + label)
+   .alf-sim-range     styled <input type="range">
+   .alf-watermark     diagonal «SIMULAZIONE · parametri modificabili» label,
+                      absolute in the slide corner, 0.8rem, ≥3:1 but quiet */
+.alf-sim {
+  display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 1.4rem;
+  align-items: stretch; width: 100%; min-width: 0;
+}
+@media (max-width: 1023px) { .alf-sim { grid-template-columns: 1fr; } }
+.alf-sim-panel {
+  background: var(--surface-card); border: 1px solid rgba(10, 26, 51, 0.14); border-radius: 4px;
+  padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.9rem; min-width: 0;
+}
+.alf-sim-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-ardesia-500); }
+.alf-sim-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.alf-sim-chips [role="radio"] {
+  font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; line-height: 1.2;
+  padding: 0.45rem 0.8rem; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(10, 26, 51, 0.22); background: #FFFFFF; color: var(--color-ardesia-700);
+  transition: background 150ms, color 150ms, border-color 150ms;
+}
+.alf-sim-chips [role="radio"]:hover { border-color: var(--color-blu); color: var(--color-blu); }
+.alf-sim-chips [role="radio"][aria-checked="true"] { background: var(--color-blu); color: #FFFFFF; border-color: var(--color-blu); }
+.alf-sim-timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.alf-sim-timeline li {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.7rem; align-items: start;
+  font-size: 0.95rem; line-height: 1.45; color: var(--color-ardesia-700);
+}
+.alf-sim-timeline li::before {
+  content: ''; width: 0.75rem; height: 0.75rem; border-radius: 50%; margin-top: 0.35rem;
+  background: var(--color-azzurro); box-shadow: 0 0 0 4px rgba(46, 111, 214, 0.15);
+}
+.alf-sim-timeline li strong { color: var(--color-inchiostro); }
+.alf-sim-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 0.7rem; }
+.alf-sim-kpi {
+  border: 1px solid rgba(10, 26, 51, 0.14); border-radius: 4px; padding: 0.7rem 0.85rem; background: var(--color-grigio-100);
+}
+.alf-sim-kpi-value {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1;
+  color: var(--color-blu); letter-spacing: -0.02em; font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+.alf-sim-kpi-label { font-size: 0.82rem; line-height: 1.35; color: var(--color-ardesia-700); margin-top: 0.3rem; }
+.alf-sim-range { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--color-grigio-300); outline: none; }
+.alf-sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 1.25rem; height: 1.25rem; border-radius: 50%;
+  background: var(--color-blu); border: 2px solid #FFFFFF; box-shadow: 0 0 0 1px rgba(10, 26, 51, 0.22); cursor: pointer;
+}
+.alf-sim-range::-moz-range-thumb {
+  width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--color-blu);
+  border: 2px solid #FFFFFF; box-shadow: 0 0 0 1px rgba(10, 26, 51, 0.22); cursor: pointer;
+}
+.alf-sim-range:focus-visible { outline: 2px solid var(--color-blu); outline-offset: 6px; }
+.alf-watermark {
+  position: absolute; right: 2.5rem; bottom: 6rem; z-index: 3; pointer-events: none;
+  transform: rotate(-12deg); transform-origin: 100% 100%;
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+  color: #6B7A8F; border: 1.5px solid #6B7A8F; border-radius: 2px; padding: 0.3rem 0.6rem;
+}
+
+/* ── Keyboard legend dialog (nav «?») ────────────────────────────────
+   <dialog class="alf-legend"> — a small navy card; <kbd> keys; closed by Esc
+   or the close button. The nav sets data-deck-lock on [data-deck] while open. */
+.alf-legend {
+  border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 4px; padding: 0;
+  background: var(--color-blu-notte); color: var(--color-carta);
+  width: min(26rem, calc(100vw - 2rem)); font-family: var(--font-body);
+}
+.alf-legend::backdrop { background: rgba(10, 26, 51, 0.55); }
+.alf-legend-inner { padding: 1.25rem 1.4rem 1.3rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.alf-legend-title { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; line-height: 1.2; color: #FFFFFF; }
+.alf-legend dl { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 1rem; row-gap: 0.55rem; align-items: center; font-size: 0.92rem; line-height: 1.4; color: var(--color-carta-tenue); }
+.alf-legend dt { display: flex; gap: 0.3rem; }
+.alf-legend dd { margin: 0; }
+.alf-legend kbd {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 1.9rem; height: 1.7rem; padding: 0 0.45rem;
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 700;
+  color: var(--color-inchiostro); background: #FFFFFF; border-radius: 4px; border: 1px solid rgba(10, 26, 51, 0.3);
+}
+.alf-legend-close {
+  align-self: flex-end; font-family: var(--font-body); font-weight: 600; font-size: 0.85rem;
+  padding: 0.45rem 0.9rem; border-radius: 4px; cursor: pointer;
+  color: var(--color-inchiostro); background: #FFFFFF; border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.alf-legend-close:focus-visible, .alf-legend button:focus-visible { outline: 3px solid #FFB547; outline-offset: 2px; }
+
+/* ── Nav utility buttons (Aa · ?) ────────────────────────────────────── */
+.alf-navbtn {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 2.1rem; height: 2rem;
+  padding: 0 0.55rem; border-radius: 4px; cursor: pointer;
+  font-family: var(--font-body); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--color-ardesia-700); background: #FFFFFF; border: 1px solid rgba(10, 26, 51, 0.22);
+  transition: color 150ms, border-color 150ms, background 150ms;
+}
+.alf-navbtn:hover { color: var(--color-blu); border-color: var(--color-blu); }
+.alf-navbtn[aria-pressed="true"] { color: #FFFFFF; background: var(--color-blu); border-color: var(--color-blu); }
+.alf-section-select {
+  width: 100%; max-width: 14rem; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600;
+  color: var(--color-inchiostro); background: #FFFFFF; border: 1px solid rgba(10, 26, 51, 0.22);
+  border-radius: 4px; padding: 0.4rem 0.6rem; min-height: 2.1rem;
+}
+
+/* ── DARK CONTEXT variants (see the block comment above) ─────────────── */
+[data-slide][class*="surface-inverse"] .alf-panel,  [data-slide][class*="accent-primary"] .alf-panel,  [data-dark] .alf-panel,  .alf-dark .alf-panel,
+[data-slide][class*="surface-inverse"] .alf-card,   [data-slide][class*="accent-primary"] .alf-card,   [data-dark] .alf-card,   .alf-dark .alf-card,
+[data-slide][class*="surface-inverse"] .alf-row,    [data-slide][class*="accent-primary"] .alf-row,    [data-dark] .alf-row,    .alf-dark .alf-row,
+[data-slide][class*="surface-inverse"] .alf-profile,[data-slide][class*="accent-primary"] .alf-profile,[data-dark] .alf-profile,.alf-dark .alf-profile,
+[data-slide][class*="surface-inverse"] .alf-stat,   [data-slide][class*="accent-primary"] .alf-stat,   [data-dark] .alf-stat,   .alf-dark .alf-stat,
+[data-slide][class*="surface-inverse"] .alf-source-card, [data-slide][class*="accent-primary"] .alf-source-card, [data-dark] .alf-source-card, .alf-dark .alf-source-card,
+[data-slide][class*="surface-inverse"] .alf-sim-panel, [data-slide][class*="accent-primary"] .alf-sim-panel, [data-dark] .alf-sim-panel, .alf-dark .alf-sim-panel {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--color-carta);
+}
+[data-slide][class*="surface-inverse"] .alf-panel-head, [data-slide][class*="accent-primary"] .alf-panel-head, [data-dark] .alf-panel-head, .alf-dark .alf-panel-head,
+[data-slide][class*="surface-inverse"] .alf-profile-head, [data-slide][class*="accent-primary"] .alf-profile-head, [data-dark] .alf-profile-head, .alf-dark .alf-profile-head {
+  border-bottom-color: rgba(255, 255, 255, 0.18);
+}
+[data-slide][class*="surface-inverse"] .alf-card-title, [data-slide][class*="accent-primary"] .alf-card-title, [data-dark] .alf-card-title, .alf-dark .alf-card-title,
+[data-slide][class*="surface-inverse"] .alf-profile-name, [data-slide][class*="accent-primary"] .alf-profile-name, [data-dark] .alf-profile-name, .alf-dark .alf-profile-name,
+[data-slide][class*="surface-inverse"] .alf-jtitle, [data-slide][class*="accent-primary"] .alf-jtitle, [data-dark] .alf-jtitle, .alf-dark .alf-jtitle,
+[data-slide][class*="surface-inverse"] .alf-quote-text, [data-slide][class*="accent-primary"] .alf-quote-text, [data-dark] .alf-quote-text, .alf-dark .alf-quote-text,
+[data-slide][class*="surface-inverse"] .alf-bar-value, [data-slide][class*="accent-primary"] .alf-bar-value, [data-dark] .alf-bar-value, .alf-dark .alf-bar-value,
+[data-slide][class*="surface-inverse"] .alf-clock, [data-slide][class*="accent-primary"] .alf-clock, [data-dark] .alf-clock, .alf-dark .alf-clock {
+  color: var(--color-carta);
+}
+[data-slide][class*="surface-inverse"] .alf-card-body, [data-slide][class*="accent-primary"] .alf-card-body, [data-dark] .alf-card-body, .alf-dark .alf-card-body,
+[data-slide][class*="surface-inverse"] .alf-panel-body, [data-slide][class*="accent-primary"] .alf-panel-body, [data-dark] .alf-panel-body, .alf-dark .alf-panel-body,
+[data-slide][class*="surface-inverse"] .alf-row-body, [data-slide][class*="accent-primary"] .alf-row-body, [data-dark] .alf-row-body, .alf-dark .alf-row-body,
+[data-slide][class*="surface-inverse"] .alf-stat-label, [data-slide][class*="accent-primary"] .alf-stat-label, [data-dark] .alf-stat-label, .alf-dark .alf-stat-label,
+[data-slide][class*="surface-inverse"] .alf-bar-label, [data-slide][class*="accent-primary"] .alf-bar-label, [data-dark] .alf-bar-label, .alf-dark .alf-bar-label,
+[data-slide][class*="surface-inverse"] .alf-source-card, [data-slide][class*="accent-primary"] .alf-source-card, [data-dark] .alf-source-card, .alf-dark .alf-source-card,
+[data-slide][class*="surface-inverse"] .alf-sim-timeline li, [data-slide][class*="accent-primary"] .alf-sim-timeline li, [data-dark] .alf-sim-timeline li, .alf-dark .alf-sim-timeline li {
+  color: var(--color-carta-tenue);
+}
+/* Source lines + meta on navy: rgba(220,228,240,0.92) text AND links (11.6:1). */
+[data-slide][class*="surface-inverse"] .alf-src, [data-slide][class*="accent-primary"] .alf-src, [data-dark] .alf-src, .alf-dark .alf-src, .alf-bg-navy ~ * .alf-src,
+[data-slide][class*="surface-inverse"] .alf-src a, [data-slide][class*="accent-primary"] .alf-src a, [data-dark] .alf-src a, .alf-dark .alf-src a, .alf-bg-navy ~ * .alf-src a,
+[data-slide][class*="surface-inverse"] .alf-chart-src, [data-slide][class*="accent-primary"] .alf-chart-src, [data-dark] .alf-chart-src, .alf-dark .alf-chart-src,
+[data-slide][class*="surface-inverse"] .alf-chart-src a, [data-slide][class*="accent-primary"] .alf-chart-src a, [data-dark] .alf-chart-src a, .alf-dark .alf-chart-src a,
+[data-slide][class*="surface-inverse"] .alf-stat-src, [data-slide][class*="accent-primary"] .alf-stat-src, [data-dark] .alf-stat-src, .alf-dark .alf-stat-src,
+[data-slide][class*="surface-inverse"] .alf-stat-src a, [data-slide][class*="accent-primary"] .alf-stat-src a, [data-dark] .alf-stat-src a, .alf-dark .alf-stat-src a,
+[data-slide][class*="surface-inverse"] .alf-profile-meta, [data-slide][class*="accent-primary"] .alf-profile-meta, [data-dark] .alf-profile-meta, .alf-dark .alf-profile-meta,
+[data-slide][class*="surface-inverse"] .alf-jsub, [data-slide][class*="accent-primary"] .alf-jsub, [data-dark] .alf-jsub, .alf-dark .alf-jsub,
+[data-slide][class*="surface-inverse"] .alf-source-card dt, [data-slide][class*="accent-primary"] .alf-source-card dt, [data-dark] .alf-source-card dt, .alf-dark .alf-source-card dt,
+[data-slide][class*="surface-inverse"] .alf-source-card a, [data-slide][class*="accent-primary"] .alf-source-card a, [data-dark] .alf-source-card a, .alf-dark .alf-source-card a {
+  color: rgba(220, 228, 240, 0.92);
+}
+[data-slide][class*="surface-inverse"] .alf-tag, [data-slide][class*="accent-primary"] .alf-tag, [data-dark] .alf-tag, .alf-dark .alf-tag,
+[data-slide][class*="surface-inverse"] .alf-figure, [data-slide][class*="accent-primary"] .alf-figure, [data-dark] .alf-figure, .alf-dark .alf-figure,
+[data-slide][class*="surface-inverse"] .alf-row-label, [data-slide][class*="accent-primary"] .alf-row-label, [data-dark] .alf-row-label, .alf-dark .alf-row-label,
+[data-slide][class*="surface-inverse"] .alf-stat-num, [data-slide][class*="accent-primary"] .alf-stat-num, [data-dark] .alf-stat-num, .alf-dark .alf-stat-num,
+[data-slide][class*="surface-inverse"] .alf-source-card-value, [data-slide][class*="accent-primary"] .alf-source-card-value, [data-dark] .alf-source-card-value, .alf-dark .alf-source-card-value,
+[data-slide][class*="surface-inverse"] .alf-sim-kpi-value, [data-slide][class*="accent-primary"] .alf-sim-kpi-value, [data-dark] .alf-sim-kpi-value, .alf-dark .alf-sim-kpi-value {
+  color: var(--color-azzurro-chiaro);
+}
+[data-slide][class*="surface-inverse"] .alf-bar, [data-slide][class*="accent-primary"] .alf-bar, [data-dark] .alf-bar, .alf-dark .alf-bar { background: rgba(255, 255, 255, 0.14); }
+[data-slide][class*="surface-inverse"] .alf-bar-fill, [data-slide][class*="accent-primary"] .alf-bar-fill, [data-dark] .alf-bar-fill, .alf-dark .alf-bar-fill { background: var(--color-azzurro-chiaro); }
+[data-slide][class*="surface-inverse"] .alf-bar-fill--muted, [data-slide][class*="accent-primary"] .alf-bar-fill--muted, [data-dark] .alf-bar-fill--muted, .alf-dark .alf-bar-fill--muted { background: rgba(255, 255, 255, 0.32); }
+[data-slide][class*="surface-inverse"] .alf-bar-dashed, [data-slide][class*="accent-primary"] .alf-bar-dashed, [data-dark] .alf-bar-dashed, .alf-dark .alf-bar-dashed { border-color: rgba(255, 255, 255, 0.45); }
+[data-slide][class*="surface-inverse"] .alf-bar-dashed::after, [data-slide][class*="accent-primary"] .alf-bar-dashed::after, [data-dark] .alf-bar-dashed::after, .alf-dark .alf-bar-dashed::after { color: rgba(220, 228, 240, 0.92); }
+[data-slide][class*="surface-inverse"] .alf-tick, [data-slide][class*="accent-primary"] .alf-tick, [data-dark] .alf-tick, .alf-dark .alf-tick { background: var(--color-carta); }
+[data-slide][class*="surface-inverse"] .alf-tick::after, [data-slide][class*="accent-primary"] .alf-tick::after, [data-dark] .alf-tick::after, .alf-dark .alf-tick::after { color: var(--color-carta); }
+[data-slide][class*="surface-inverse"] .alf-watermark, [data-slide][class*="accent-primary"] .alf-watermark, [data-dark] .alf-watermark, .alf-dark .alf-watermark { color: #8A97AB; border-color: #8A97AB; }
+[data-slide][class*="surface-inverse"] .alf-jstate, [data-slide][class*="accent-primary"] .alf-jstate, [data-dark] .alf-jstate, .alf-dark .alf-jstate { background: rgba(127, 168, 230, 0.2); color: var(--color-carta); }
+[data-slide][class*="surface-inverse"] .alf-sim-kpi, [data-slide][class*="accent-primary"] .alf-sim-kpi, [data-dark] .alf-sim-kpi, .alf-dark .alf-sim-kpi { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.18); }
+[data-slide][class*="surface-inverse"] .alf-sim-kpi-label, [data-slide][class*="accent-primary"] .alf-sim-kpi-label, [data-dark] .alf-sim-kpi-label, .alf-dark .alf-sim-kpi-label { color: var(--color-carta-tenue); }
 
 /* TV: boost small text minimums */
 [data-slide] .text-xs { font-size: 0.875rem !important; }
@@ -456,7 +839,7 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 .page-enter { animation: page-in 400ms var(--easing-out) both; }
 
 /* ── Custom slides (Admin Console authored) ─────────────────────────────
-   tone 'light' = light paper slide → dark text (primary/secondary)
+   tone 'light' = light slide → dark text (primary/secondary)
    tone 'dark'  = navy slide → light text (inverse/brand)
    The BaseLayout injection maps bg→tone; keep these in sync with the admin
    live preview. */
@@ -499,10 +882,10 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 .cs-prose ol { list-style: decimal; }
 .cs-media {
   width: 100%; max-width: 56rem;
-  border-radius: 10px; overflow: hidden;
+  border-radius: 4px; overflow: hidden;
   aspect-ratio: 16 / 9;
-  background: rgba(20, 33, 58, 0.06);
-  box-shadow: 0 12px 40px -14px rgba(20,33,58,0.35);
+  background: rgba(10, 26, 51, 0.06);
+  border: 1px solid rgba(10, 26, 51, 0.14);
 }
 .cs-media img, .cs-media video, .cs-media iframe {
   width: 100%; height: 100%; object-fit: cover; border: 0; display: block;
@@ -529,10 +912,10 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
    so the markup carries `data-clienteling` + `.scan-line` + `.reveal-attr`.
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* Portrait stat card (slide-ritratto / slide-notte) */
+/* Portrait stat card (slide-ritratto / slide-notte) — flat */
 .alf-stat {
-  background: #FFFFFF; border: 1px solid var(--line-subtle); border-radius: 12px;
-  padding: 1.5rem 1.6rem; box-shadow: 0 12px 34px -18px rgba(20, 33, 58, 0.38);
+  background: var(--surface-card); border: 1px solid rgba(10, 26, 51, 0.14); border-radius: 4px;
+  padding: 1.5rem 1.6rem; box-shadow: none;
 }
 .alf-stat-num {
   font-family: var(--font-display); font-weight: 700; line-height: 1;
@@ -540,17 +923,18 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   letter-spacing: -0.02em; font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 .alf-stat-label { color: var(--color-ardesia-700); font-size: 1rem; line-height: 1.5; margin-top: 0.55rem; max-width: none; }
-.alf-stat-src { color: var(--color-ardesia-500); font-size: 0.78rem; letter-spacing: 0.02em; margin-top: 0.7rem; }
+.alf-stat-src { color: var(--color-ardesia-500); font-size: 0.82rem; line-height: 1.45; letter-spacing: 0; margin-top: 0.7rem; }
+.alf-stat-src a { color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em; }
 
-/* Governed profile + journey card (slide-evolve) */
+/* Governed profile + journey card (slide-evolve) — flat */
 .alf-profile {
-  background: #FFFFFF; border: 1px solid var(--line-subtle); border-radius: 14px;
+  background: var(--surface-card); border: 1px solid rgba(10, 26, 51, 0.14); border-radius: 4px;
   padding: 1.35rem 1.45rem 1.5rem; position: relative; overflow: hidden;
-  box-shadow: 0 16px 46px -22px rgba(20, 33, 58, 0.42);
+  box-shadow: none;
 }
 .alf-profile-head {
   display: flex; align-items: center; gap: 0.9rem;
-  padding-bottom: 1rem; margin-bottom: 1.1rem; border-bottom: 1px solid var(--line-subtle);
+  padding-bottom: 1rem; margin-bottom: 1.1rem; border-bottom: 1px solid rgba(10, 26, 51, 0.14);
 }
 .alf-avatar {
   width: 3rem; height: 3rem; border-radius: 50%; flex-shrink: 0;
@@ -559,7 +943,7 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   display: inline-flex; align-items: center; justify-content: center;
 }
 .alf-profile-name { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; color: var(--color-inchiostro); line-height: 1.2; }
-.alf-profile-meta { color: var(--color-ardesia-500); font-size: 0.86rem; margin-top: 0.15rem; max-width: none; }
+.alf-profile-meta { color: var(--color-ardesia-500); font-size: 0.9rem; line-height: 1.4; margin-top: 0.15rem; max-width: none; }
 .alf-profile-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.55rem; }
 
 .alf-journey { display: flex; flex-direction: column; gap: 0.85rem; }
@@ -570,26 +954,27 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 }
 .alf-jbody { min-width: 0; }
 .alf-jtitle { font-weight: 600; font-size: 1rem; color: var(--color-inchiostro); line-height: 1.25; max-width: none; }
-.alf-jsub { color: var(--color-ardesia-500); font-size: 0.84rem; margin-top: 0.12rem; max-width: none; }
+.alf-jsub { color: var(--color-ardesia-500); font-size: 0.86rem; margin-top: 0.12rem; max-width: none; }
 .alf-jstate {
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-  padding: 0.2rem 0.55rem; border-radius: 5px; white-space: nowrap;
-  background: rgba(11, 77, 162, 0.12); color: var(--color-blu-scuro);
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 0.2rem 0.55rem; border-radius: 4px; white-space: nowrap;
+  background: rgba(0, 102, 204, 0.12); color: var(--color-blu-scuro);
 }
-/* Scan sweep used by the clienteling reveal (styled to the Alfabeti blu). */
+/* Scan sweep used by the clienteling reveal (styled to the blu Italia). */
 .alf-profile .scan-line {
   position: absolute; left: 0; right: 0; top: 0; height: 42%; pointer-events: none;
   background: linear-gradient(rgba(46, 111, 214, 0) 0%, rgba(46, 111, 214, 0.10) 68%, rgba(46, 111, 214, 0.26) 100%);
 }
 
-/* Deck chrome contrast (WCAG AA) — Alfabeti runs on a LIGHT surface, so scope a
-   near-opaque white button with a deep-navy icon + blue border so
-   prev/next/fullscreen hit ≥3:1 (large/graphical). Explicit rgba — the audit
-   parser can't read oklab()/color-mix(). */
+/* Deck chrome contrast (WCAG AA) — a LIGHT surface, so a near-opaque white
+   button with a deep-navy icon + blue border so prev/next/fullscreen hit ≥3:1
+   (large/graphical) on light AND navy slides. Explicit rgba — the audit parser
+   can't read oklab()/color-mix(). The counter flips to a light ink on dark
+   slides via the core rule [data-deck][data-on-dark] .deck-progress. */
 [data-deck] .deck-btn {
   color: var(--color-inchiostro);
   background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(11, 77, 162, 0.35);
+  border-color: rgba(0, 102, 204, 0.35);
 }
 [data-deck] .deck-btn:hover { color: var(--color-blu); border-color: var(--color-blu); }
 [data-deck] .deck-progress { color: var(--color-ardesia-700); }
@@ -599,3 +984,28 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
    scroll container (scrollHeight === clientHeight → passes audit c/j/k). */
 [data-deck] .slide-backdrop { overflow: clip; }
 [data-deck] .slide-backdrop [data-parallax] { transform-origin: 50% 100%; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LEGIBILITY MODE — html[data-legibility="on"] (nav «Aa», persisted in
+   localStorage['edf:legibility']). Root type ×1.15, looser leading, quieter
+   backdrops, bigger source lines, stronger focus ring. Cards are already flat.
+   ═══════════════════════════════════════════════════════════════════════ */
+html[data-legibility="on"] { font-size: clamp(1.15rem, 0.575vw + 1.006rem, 1.294rem); }
+html[data-legibility="on"] [data-deck] .slide-inner { line-height: 1.7; }
+html[data-legibility="on"] [data-deck] .slide-inner p,
+html[data-legibility="on"] [data-deck] .slide-inner li { line-height: 1.7; }
+html[data-legibility="on"] [data-deck] .alf-src,
+html[data-legibility="on"] [data-deck] .alf-chart-src,
+html[data-legibility="on"] [data-deck] .alf-stat-src { font-size: 0.95rem; }
+html[data-legibility="on"] [data-deck] .alf-bg,
+html[data-legibility="on"] [data-deck] .alf-bg-soft,
+html[data-legibility="on"] [data-deck] .alf-bg-navy { opacity: 0.25; animation: none; }
+html[data-legibility="on"] [data-deck] .alf-video { display: none; }
+html[data-legibility="on"] [data-deck] .alf-panel,
+html[data-legibility="on"] [data-deck] .alf-card,
+html[data-legibility="on"] [data-deck] .alf-row,
+html[data-legibility="on"] [data-deck] .alf-profile,
+html[data-legibility="on"] [data-deck] .alf-stat { box-shadow: none; }
+html[data-legibility="on"] :focus-visible { outline: 3px solid var(--color-blu-notte); outline-offset: 3px; }
+html[data-legibility="on"] [data-deck][data-on-dark] :focus-visible,
+html[data-legibility="on"] .alf-legend :focus-visible { outline-color: #FFB547; }

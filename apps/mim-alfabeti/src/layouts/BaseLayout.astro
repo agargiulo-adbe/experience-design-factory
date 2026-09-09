@@ -2,24 +2,48 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 
+/**
+ * BaseLayout — «La voce del Ministero · MIM × Adobe».
+ * Props:
+ *  - title          page title. The home passes the SITE name (or is detected by
+ *                   path) and renders just «La voce del Ministero · MIM × Adobe»;
+ *                   every other page renders «{title} | La voce del Ministero · MIM × Adobe».
+ *  - description    meta + og:description.
+ *  - preloadImage   URL (string, e.g. `bgNavy.src`) of the FIRST backdrop of the
+ *                   page → `<link rel="preload" as="image">` so the cover paints
+ *                   with its image on first load. Optional.
+ *  - pageSolutions  solution ids this page depends on (gating redirect).
+ *  - noindex        robots noindex.
+ * Runtime: html.js (JS available) · html[data-lang] (edf:lang) ·
+ * html[data-legibility="on"] (edf:legibility) — all anti-flash in <head> and
+ * re-applied after every ClientRouter swap (the router resets <html> attributes).
+ */
 interface Props {
   title: string;
   description?: string;
   pageSolutions?: string[];
   noindex?: boolean;
+  preloadImage?: string;
 }
+
+const SITE_NAME = 'La voce del Ministero · MIM × Adobe';
 
 const {
   title,
   description = "La voce del Ministero — Adobe × Ministero dell'Istruzione e del Merito. Orchestrare e misurare la comunicazione istituzionale a docenti, dirigenti e ATA, con AEP, Journey Optimizer e Customer Journey Analytics.",
   pageSolutions,
   noindex = false,
+  preloadImage,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 const PROJECT_SLUG = 'mim-alfabeti';
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+// Home = the app root (base path). Guard against «SiteName | SiteName».
+const isHome = Astro.url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '');
+const docTitle = (isHome || title === SITE_NAME) ? SITE_NAME : `${title} | ${SITE_NAME}`;
+const ogTitle = isHome ? SITE_NAME : `${title} · La voce del Ministero`;
 ---
 <!doctype html>
 <html lang="it" data-lang="it">
@@ -28,7 +52,11 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <title>{title === 'Alfabeti · MIM × Adobe' ? title : `${title} | Alfabeti · MIM × Adobe`}</title>
+    <title>{docTitle}</title>
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,16 +64,40 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Titillium+Web:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
     <script is:inline>
       (function () {
-        var l = localStorage.getItem('edf:lang');
-        if (l === 'en' || l === 'it') document.documentElement.setAttribute('data-lang', l);
+        var h = document.documentElement;
+        h.classList.add('js');
+        try {
+          var l = localStorage.getItem('edf:lang');
+          if (l === 'en' || l === 'it') h.setAttribute('data-lang', l);
+          if (localStorage.getItem('edf:legibility') === 'on') h.setAttribute('data-legibility', 'on');
+        } catch (e) {}
+        // ClientRouter swaps <html> attributes/classes back to the server defaults
+        // on every SPA navigation: restore html.js + the legibility preference.
+        // (This <head> script runs once per full load; the listener persists.)
+        if (!window.__alfHtmlStateBound) {
+          window.__alfHtmlStateBound = true;
+          document.addEventListener('astro:after-swap', function () {
+            var d = document.documentElement;
+            d.classList.add('js');
+            var on = false;
+            try { on = localStorage.getItem('edf:legibility') === 'on'; } catch (e) {}
+            if (on) d.setAttribute('data-legibility', 'on'); else d.removeAttribute('data-legibility');
+          });
+        }
       })();
     </script>
     <ClientRouter />
   </head>
   <body>
-    <slot />
+    <a href="#main" class="alf-skip" data-skip-link>
+      <span data-lang-it>Vai alla slide</span><span data-lang-en>Skip to slide</span>
+    </a>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
   </body>
 </html>
 
@@ -248,11 +300,15 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   var activeIds = readActiveIds();
 
+  // Chapter chain (story BEFORE the proposal). Keep in sync with
+  // AlfabetiNavigation, each page's prevHref/nextHref, admin PAGE_REGISTRY and
+  // scripts/deck-audit.ts ROUTE_SETS:
+  //   index → domanda → storia → voce → competenze → accesso → persone → rotta
   var SECTION_FLOW = [
     { slug: 'domanda',    gate: null },
+    { slug: 'storia',     gate: null },
     { slug: 'voce',       gate: null },
     { slug: 'competenze', gate: null },
-    { slug: 'storia',     gate: null },
     { slug: 'accesso',    gate: null },
     { slug: 'persone',    gate: null },
     { slug: 'rotta',      gate: null },

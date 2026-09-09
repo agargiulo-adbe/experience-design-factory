@@ -54,10 +54,17 @@ const { langs = ['en', 'it'] } = Astro.props;
         btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-lang-btn') === l ? 'true' : 'false');
       }
     }
+    // The group's accessible name follows the active language.
+    var GROUP_LABEL = { it: 'Lingua', en: 'Language', fr: 'Langue' };
+    function syncGroupLabel(l) {
+      var groups = document.querySelectorAll('.lang-toggle[role="group"]');
+      for (var i = 0; i < groups.length; i++) groups[i].setAttribute('aria-label', GROUP_LABEL[l] || GROUP_LABEL.en);
+    }
     function apply(l) {
       document.documentElement.setAttribute('data-lang', l);
       document.documentElement.lang = l;
       syncPressed();
+      syncGroupLabel(l);
     }
     function setLang(l) {
       if (!KNOWN[l]) return;

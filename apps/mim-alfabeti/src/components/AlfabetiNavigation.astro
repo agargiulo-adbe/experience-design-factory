@@ -1,4 +1,12 @@
 ---
+/**
+ * AlfabetiNavigation — top bar of «La voce del Ministero».
+ * Chapter rail (md+) · «Capitoli» <select> (phone) · language toggle ·
+ * «Aa» legibility toggle (html[data-legibility], persisted in
+ * localStorage['edf:legibility']) · «?» keyboard legend <dialog> (sets
+ * data-deck-lock on [data-deck] while open so the deck ignores keys).
+ * Chapter order = SECTION_FLOW in BaseLayout (story BEFORE the proposal).
+ */
 import { href } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
 import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
@@ -13,9 +21,9 @@ const { currentPath, base } = Astro.props;
 const sections = [
   { slug: '',           en: 'Opening',      it: 'Apertura',     solution: null },
   { slug: 'domanda',    en: 'The question', it: 'La domanda',   solution: null },
+  { slug: 'storia',     en: 'The story',    it: 'La storia',    solution: null },
   { slug: 'voce',       en: 'The proposal', it: 'La proposta',  solution: null },
   { slug: 'competenze', en: 'Processes',    it: 'I processi',   solution: null },
-  { slug: 'storia',     en: 'The story',    it: 'La storia',    solution: null },
   { slug: 'accesso',    en: 'Governance',   it: 'Governance',   solution: null },
   { slug: 'persone',    en: 'Measurement',  it: 'La misura',    solution: null },
   { slug: 'rotta',      en: 'The path',     it: 'La rotta',     solution: null },
@@ -26,10 +34,15 @@ function isActive(slug: string) {
   if (slug === '') return norm.endsWith('/mim-alfabeti') || norm.endsWith('/index');
   return norm.endsWith('/' + slug);
 }
+// Mobile <select> labels — <option> can't host the <T> spans, so each option
+// carries both labels as data attributes and a tiny script picks the active one.
+const optionLabel = (s: typeof sections[number], i: number, l: 'en' | 'it') =>
+  (s.slug === '' ? '' : String(i).padStart(2, '0') + '  ') + s[l];
 ---
 <nav
-  class="flex items-center justify-between px-6 py-3 bg-[rgba(246,241,231,0.95)] backdrop-blur-sm border-b border-[rgba(20,33,58,0.12)]"
+  class="flex items-center justify-between gap-3 px-4 md:px-6 py-3 bg-[rgba(244,246,249,0.95)] backdrop-blur-sm border-b border-[rgba(10,26,51,0.14)]"
   aria-label="Navigazione esperienza"
+  data-alf-nav
 >
   <a
     href={href(base, '/')}
@@ -61,7 +74,7 @@ function isActive(slug: string) {
           class={[
             'block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline',
             isActive(s.slug)
-              ? 'bg-[rgba(11,77,162,0.12)] text-[var(--color-blu)] border border-[rgba(11,77,162,0.3)]'
+              ? 'bg-[rgba(0,102,204,0.12)] text-[var(--color-blu)] border border-[rgba(0,102,204,0.3)]'
               : 'text-[var(--color-ardesia-700)] hover:text-[var(--color-inchiostro)] hover:bg-[var(--color-carta-scura)]',
           ].join(' ')}
           aria-current={isActive(s.slug) ? 'page' : undefined}
@@ -75,14 +88,164 @@ function isActive(slug: string) {
     ))}
   </ol>
 
-  <div class="flex items-center gap-3 flex-shrink-0">
+  <!-- Phone: the chapter rail above is hidden below md, so a compact native
+       <select> gives every chapter a reachable entry point. Same gating
+       contract as the links (data-nav-solution on each option). -->
+  <div class="md:hidden flex-1 min-w-0">
+    <label for="alf-section-select" class="sr-only"><T en="Chapters" it="Capitoli" /></label>
+    <select id="alf-section-select" data-section-select class="alf-section-select" aria-label="Capitoli">
+      {sections.map((s, i) => (
+        <option
+          value={href(base, s.slug === '' ? '/' : '/' + s.slug)}
+          data-nav-solution={s.solution ?? undefined}
+          data-label-en={optionLabel(s, i, 'en')}
+          data-label-it={optionLabel(s, i, 'it')}
+          selected={isActive(s.slug)}
+        >{optionLabel(s, i, 'it')}</option>
+      ))}
+    </select>
+  </div>
+
+  <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
     <LangToggle langs={['it', 'en']} />
+    <button
+      type="button"
+      class="alf-navbtn"
+      data-legibility-toggle
+      aria-pressed="false"
+      data-label-it="Leggibilità"
+      data-label-en="Legibility"
+      aria-label="Leggibilità"
+      title="Leggibilità"
+    >Aa</button>
+    <button
+      type="button"
+      class="alf-navbtn"
+      data-legend-open
+      aria-haspopup="dialog"
+      aria-controls="alf-legend"
+      data-label-it="Tasti"
+      data-label-en="Keyboard"
+      aria-label="Tasti"
+      title="Tasti"
+    >?</button>
     <a
       href={href(base, '/admin')}
-      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[rgba(20,33,58,0.18)] text-[var(--color-ardesia-500)] hover:text-[var(--color-inchiostro)] hover:border-[var(--color-ardesia-500)] rounded-sm transition-colors no-underline"
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[rgba(10,26,51,0.22)] text-[var(--color-ardesia-500)] hover:text-[var(--color-inchiostro)] hover:border-[var(--color-ardesia-500)] rounded-sm transition-colors no-underline"
       data-admin-only
     >
       Admin
     </a>
   </div>
 </nav>
+
+<!-- Keyboard legend. Native <dialog> (top layer, Esc closes, focus trapped by
+     the UA); the script mirrors data-deck-lock on the deck while it is open. -->
+<dialog id="alf-legend" class="alf-legend" data-legend aria-labelledby="alf-legend-title">
+  <div class="alf-legend-inner">
+    <h2 id="alf-legend-title" class="alf-legend-title"><T en="Keyboard" it="Tastiera" /></h2>
+    <dl>
+      <dt><kbd>←</kbd><kbd>→</kbd></dt><dd><T en="Previous / next slide" it="Slide precedente / successiva" /></dd>
+      <dt><kbd>↓</kbd><kbd>↑</kbd></dt><dd><T en="Next / previous step" it="Passo successivo / precedente" /></dd>
+      <dt><kbd>F</kbd></dt><dd><T en="Full screen" it="Schermo intero" /></dd>
+      <dt><kbd>Esc</kbd></dt><dd><T en="Close" it="Chiudi" /></dd>
+    </dl>
+    <button type="button" class="alf-legend-close" data-legend-close><T en="Close" it="Chiudi" /></button>
+  </div>
+</dialog>
+
+<script is:inline>
+  (function () {
+    var LEG_KEY = 'edf:legibility';
+    function lang() {
+      var l = document.documentElement.getAttribute('data-lang');
+      return l === 'en' ? 'en' : 'it';
+    }
+    /* ── Localized labels: <select> options + the Aa / ? buttons. */
+    function syncLabels() {
+      var l = lang();
+      var opts = document.querySelectorAll('[data-section-select] option');
+      for (var i = 0; i < opts.length; i++) {
+        var t = opts[i].getAttribute('data-label-' + l) || opts[i].getAttribute('data-label-it');
+        if (t && opts[i].textContent !== t) opts[i].textContent = t;
+      }
+      var sel = document.querySelector('[data-section-select]');
+      if (sel) sel.setAttribute('aria-label', l === 'en' ? 'Chapters' : 'Capitoli');
+      var btns = document.querySelectorAll('[data-legibility-toggle], [data-legend-open]');
+      for (var j = 0; j < btns.length; j++) {
+        var lb = btns[j].getAttribute('data-label-' + l) || btns[j].getAttribute('data-label-it');
+        if (lb) { btns[j].setAttribute('aria-label', lb); btns[j].setAttribute('title', lb); }
+      }
+    }
+    /* ── Legibility: mirror html[data-legibility] into aria-pressed. */
+    function syncLegibility() {
+      var on = document.documentElement.getAttribute('data-legibility') === 'on';
+      var btns = document.querySelectorAll('[data-legibility-toggle]');
+      for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    function setLegibility(on) {
+      if (on) document.documentElement.setAttribute('data-legibility', 'on');
+      else document.documentElement.removeAttribute('data-legibility');
+      try { localStorage.setItem(LEG_KEY, on ? 'on' : 'off'); } catch (e) {}
+      syncLegibility();
+    }
+    /* ── Legend dialog ↔ deck lock. */
+    function lockDeck(on) {
+      var decks = document.querySelectorAll('[data-deck]');
+      for (var i = 0; i < decks.length; i++) {
+        if (on) decks[i].setAttribute('data-deck-lock', ''); else decks[i].removeAttribute('data-deck-lock');
+      }
+    }
+    function openLegend() {
+      var d = document.querySelector('[data-legend]');
+      if (!d) return;
+      lockDeck(true);
+      try { d.showModal(); } catch (e) { d.setAttribute('open', ''); }
+      var close = d.querySelector('[data-legend-close]');
+      if (close) close.focus();
+    }
+    function closeLegend() {
+      var d = document.querySelector('[data-legend]');
+      if (d && d.open) { try { d.close(); } catch (e) { d.removeAttribute('open'); } }
+      lockDeck(false);
+      var opener = document.querySelector('[data-legend-open]');
+      if (opener) opener.focus();
+    }
+
+    syncLabels();
+    syncLegibility();
+    if (window.__alfNavBound) return;   // body inline scripts re-run after every SPA swap
+    window.__alfNavBound = true;
+
+    document.addEventListener('change', function (e) {
+      var sel = e.target && e.target.closest && e.target.closest('[data-section-select]');
+      if (!sel || !sel.value) return;
+      var go = window.__edfNavigate;
+      if (go) go(sel.value); else location.href = sel.value;
+    });
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (!t || !t.closest) return;
+      if (t.closest('[data-legibility-toggle]')) {
+        setLegibility(document.documentElement.getAttribute('data-legibility') !== 'on');
+      } else if (t.closest('[data-legend-open]')) {
+        openLegend();
+      } else if (t.closest('[data-legend-close]')) {
+        closeLegend();
+      } else {
+        // click on the ::backdrop (outside the dialog box) closes it
+        var d = t.closest && t.closest('[data-legend]');
+        if (d && d.open && t === d) closeLegend();
+      }
+    });
+    // Esc → native cancel → close event: release the deck lock.
+    document.addEventListener('close', function (e) {
+      if (e.target && e.target.matches && e.target.matches('[data-legend]')) lockDeck(false);
+    }, true);
+    document.addEventListener('astro:after-swap', function () { syncLabels(); syncLegibility(); lockDeck(false); });
+    try {
+      new MutationObserver(function () { syncLabels(); syncLegibility(); })
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang', 'data-legibility'] });
+    } catch (e) {}
+  })();
+</script>
