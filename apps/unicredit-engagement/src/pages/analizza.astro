@@ -20,6 +20,18 @@ const cxaPillars = [
   { id: 'content', label: 'Content Intelligence', body: { it: 'Misura quale contenuto porta a risultati — per segmento, canale e momento del journey.', en: 'Measure which content drives results, by segment, channel and journey moment.' } },
 ];
 
+// Slide «journey» — Marco's touchpoints as CJA stitches them, in the order the deck told them.
+const journeyTouchpoints = [
+  { label: 'ChatGPT', sub: { it: 'risposta AI', en: 'AI answer' } },
+  { label: { it: 'Sito', en: 'Site' }, sub: { it: 'pagina mutuo · 0,3 s', en: 'mortgage page · 0.3 s' } },
+  { label: 'Brand Concierge', sub: { it: 'simulazione e rata', en: 'simulation, payment' } },
+  { label: 'App', sub: { it: 'sezione mutui', en: 'loans section' } },
+  { label: 'Email', sub: { it: 'non aperta', en: 'not opened' } },
+  { label: 'SMS', sub: { it: 'reminder mercoledì', en: 'Wednesday reminder' } },
+  { label: { it: 'Appuntamento', en: 'Appointment' }, sub: { it: 'consulente, ore 14', en: 'advisor, 2 PM' } },
+  { label: { it: 'Filiale', en: 'Branch' }, sub: { it: 'contratto firmato', en: 'contract signed' } },
+];
+
 const agentCapabilities = [
   {
     icon: '◉',
@@ -52,51 +64,22 @@ const everywhereChannels = [
 ];
 
 const llmInsightsPoints = [
-  { label: { it: 'Conversazione', en: 'Conversation' }, body: { it: 'Analizza come i clienti interagiscono con il Brand Concierge UniCredit — quali domande fanno, dove si bloccano.', en: 'See how customers interact with the UniCredit Brand Concierge: what they ask, where they get stuck.' } },
-  { label: { it: 'Scoperta AI-driven', en: 'AI-driven discovery' }, body: { it: 'Misura quanto traffico arriva da LLM (Gemini, ChatGPT) e come si comporta rispetto ai canali tradizionali.', en: 'Measure how much traffic comes from LLMs (Gemini, ChatGPT) and how it behaves against traditional channels.' } },
-  { label: { it: 'AI Journey', en: 'AI Journey' }, body: { it: 'Traccia il percorso di clienti che iniziano da un assistente AI esterno e completano una transazione nel digital banking.', en: 'Track customers who start from an external AI assistant and complete a transaction in digital banking.' } },
+  { label: { it: 'Scoperta AI-driven', en: 'AI-driven discovery' }, body: { it: 'Misura quanti come Marco arrivano da ChatGPT, Gemini o Perplexity e come si comportano rispetto ai canali tradizionali.', en: 'Measure how many like Marco arrive from ChatGPT, Gemini or Perplexity, and how they behave against traditional channels.' } },
+  { label: { it: 'AI Journey', en: 'AI Journey' }, body: { it: 'Traccia il percorso di chi inizia da un assistente AI esterno e completa una transazione nel digital banking: dalla mention al mutuo.', en: 'Track customers who start from an external AI assistant and complete a transaction in digital banking: from mention to mortgage.' } },
+  { label: { it: 'Conversazione', en: 'Conversation' }, body: { it: 'Analizza come i clienti interagiscono con il Brand Concierge UniCredit — quali domande fanno, dove si bloccano, quante conversazioni diventano transazioni.', en: 'See how customers interact with the UniCredit Brand Concierge: what they ask, where they get stuck, how many dialogues become transactions.' } },
 ];
 
-const bankingUseCases = [
-  {
-    tag: 'Attribution',
-    title: { it: 'Full-funnel attribution causale', en: 'Full-funnel causal attribution' },
-    body: { it: 'Collega i dati pubblicitari ai segnali comportamentali e ottimizza il budget con AI causale Adobe, non col last-click.', en: 'Link ad data to behavioral signals and optimize budget with Adobe causal AI, not last-click.' },
-    solution: 'Marketing Campaign Analytics',
-  },
-  {
-    tag: 'Retail Banking',
-    title: { it: 'Offline data ingestion', en: 'Offline data ingestion' },
-    body: { it: 'Unisci i dati di filiale e call center ai journey digitali: il percorso completo del cliente, anche quando passa dall\'app allo sportello.', en: 'Merge branch and call-center data into digital journeys: the full customer path, even when it moves from app to counter.' },
-    solution: 'CJA',
-  },
-  {
-    tag: 'Churn Prevention',
-    title: { it: 'Segnali precoci di abbandono', en: 'Early churn signals' },
-    body: { it: 'CJA riconosce i segnali di abbandono 14-30 giorni prima; AJO attiva journey di retention personalizzate.', en: 'CJA spots churn signals 14-30 days ahead; AJO fires personalized retention journeys.' },
-    solution: 'CJA + AJO',
-  },
-];
-
-// Slide «last-touch» — pesi illustrativi dei canali su una singola vendita
+// Slide «last-touch» — pesi illustrativi dei canali sul mutuo di Marco,
 // che il report ufficiale attribuisce a un solo canale (last-touch).
 const channelWeights = [
-  { name: 'App', pct: 45 },
+  { name: { it: 'Digitale (AI · sito · app)', en: 'Digital (AI · site · app)' }, pct: 45 },
   { name: 'Contact center', pct: 30 },
   { name: { it: 'Filiale', en: 'Branch' }, pct: 25 },
-];
-
-const funnelSteps = [
-  { event: { it: 'Accesso app', en: 'App login' }, users: '4.000.000', pct: 100 },
-  { event: { it: 'Sezione Prestiti', en: 'Loans section' }, users: '820.000', pct: 20.5 },
-  { event: { it: 'Simulazione mutuo', en: 'Mortgage simulation' }, users: '144.000', pct: 3.6 },
-  { event: { it: 'Appuntamento', en: 'Appointment' }, users: '28.000', pct: 0.7 },
-  { event: { it: 'Contratto firmato', en: 'Contract signed' }, users: '9.200', pct: 0.23 },
 ];
 ---
 <BaseLayout
   title="Adobe CX Analytics"
-  description="Per UniCredit, l'intelligenza dati che guida ogni decisione: Data Insights Agent, LLM Insights, Marketing Campaign Analytics."
+  description="Chi ha portato Marco al mutuo? La sua storia vista da dentro UniCredit: CJA, attribution, Data Insights Agent, LLM Insights, Marketing Campaign Analytics."
   pageSolutions={['cja']}
 >
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -115,10 +98,10 @@ const funnelSteps = [
       />
       <span data-lang-it class="contents">
         <CoverHero
-          eyebrow="03 · ADOBE CX ANALYTICS"
+          eyebrow="03 · ANALIZZA"
           numeral="03"
-          title="L'intelligenza<br/>che decide"
-          lead="Sapere quali canali portano davvero le vendite e agire dove lavora il team: dall'analista al CEO, dall'app a Microsoft Copilot."
+          title="Chi ha portato Marco<br/>al mutuo?"
+          lead="La storia di Marco vista da dentro UniCredit: ogni passaggio misurato, e il merito a chi lo ha davvero guadagnato."
           size="phase"
           tone="inverse"
           signature={false}
@@ -126,10 +109,10 @@ const funnelSteps = [
       </span>
       <span data-lang-en class="contents">
         <CoverHero
-          eyebrow="03 · ADOBE CX ANALYTICS"
+          eyebrow="03 · ANALYZE"
           numeral="03"
-          title="The intelligence<br/>that decides"
-          lead="Knowing which channels really drive sales, and acting where the team works: from analyst to CEO, from the app to Microsoft Copilot."
+          title="Who brought Marco<br/>to his mortgage?"
+          lead="Marco's story seen from inside UniCredit: every step measured, and the credit going to whoever really earned it."
           size="phase"
           tone="inverse"
           signature={false}
@@ -137,52 +120,50 @@ const funnelSteps = [
       </span>
     </Slide>
 
-    <!-- ── SLIDE 1: Annuncio Adobe CX Analytics ───────────────────── -->
-    <Slide id="slide-cxa-brand" bg="brand" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-digital-blue')}
-        imageClass="opacity-8"
-        scrim="bg-[var(--accent-primary)]/85"
-      />
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-2.5" data-reveal it="SUMMIT 2026 · ANNUNCIO CHIAVE" en="SUMMIT 2026 · KEY ANNOUNCEMENT" />
-      <h2
-        class="text-[var(--ink-inverse)] mb-2"
-        style="font-size: clamp(1rem, 1.4vw, 1.3rem); font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase;"
-        data-reveal
-        data-reveal-delay="0.05"
-      >
-        Announcing
-      </h2>
-      <p
-        class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-4"
-        style="font-size: clamp(2.6rem, 4.4vw, 4.4rem);"
-        data-reveal
-        data-reveal-delay="0.1"
-      >
-        Adobe CX Analytics
-      </p>
-      <T as="p"
-        class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-5 leading-relaxed"
-        data-reveal
-        data-reveal-delay="0.2"
-        it="La piattaforma di intelligence unificata che unisce analytics digitali, journey, marketing ROI e content intelligence su un'unica fondazione Adobe Experience Platform."
-        en="The unified intelligence platform that brings digital analytics, journeys, marketing ROI and content intelligence together on a single Adobe Experience Platform foundation."
-      />
+    <!-- ── SLIDE 1: Il viaggio di Marco, misurato (CJA) ──────────── -->
+    <Slide id="slide-journey" bg="primary" align="center">
+      <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
+      <div data-demo-flex class="w-full flex items-start gap-8">
+        <div class="flex-1 min-w-0 text-center">
+          <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal it="CUSTOMER JOURNEY ANALYTICS · IL PERCORSO INTERO" en="CUSTOMER JOURNEY ANALYTICS · THE WHOLE JOURNEY" />
+          <T as="h2"
+            class="slide-title text-[var(--ink-primary)] mb-4"
+            style="font-size: clamp(2rem, 4vw, 3.5rem);"
+            data-reveal
+            data-reveal-delay="0.08"
+            it="Una persona, otto touchpoint,<br/>tre sistemi. Un solo percorso."
+            en="One person, eight touchpoints,<br/>three systems. One journey."
+          />
+          <T as="p"
+            class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mx-auto mb-7 leading-relaxed"
+            data-reveal
+            data-reveal-delay="0.15"
+            it="Quello che Marco ha vissuto capitolo per capitolo, CJA lo vede come un'unica sequenza: assistente AI, sito, contact center e filiale cuciti sulla stessa identità, anche dove il dato nasce offline."
+            en="What Marco lived chapter by chapter, CJA sees as a single sequence: AI assistant, site, contact center and branch stitched onto the same identity, even where the data is born offline."
+          />
 
-      <div
-        class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-3"
-        data-reveal
-        data-reveal-delay="0.3"
-      >
-        {cxaPillars.map((p) => (
-          <div class="uc-panel uc-panel--oro text-left">
+          <ol class="uc-tl w-full max-w-6xl mx-auto mb-10" data-reveal data-reveal-delay="0.22">
+            {journeyTouchpoints.map((t, i) => (
+              <li class="uc-tl-step">
+                <span class={`uc-tl-dot ${i === 0 || i === journeyTouchpoints.length - 1 ? 'uc-tl-dot--rosso' : ''}`} aria-hidden="true"></span>
+                {typeof t.label === 'string'
+                  ? <p class="uc-tl-label">{t.label}</p>
+                  : <T as="p" class="uc-tl-label" it={t.label.it} en={t.label.en} />}
+                <T as="p" class="uc-tl-sub" it={t.sub.it} en={t.sub.en} />
+              </li>
+            ))}
+          </ol>
+
+          <div class="uc-panel uc-panel--oro max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.35">
             <div class="uc-panel-head">
-              <p class="uc-tag" style="color: var(--color-oro);">{p.label}</p>
+              <T as="p" class="uc-tag" style="color: var(--color-oro);" it="Dentro UniCredit · l'analista" en="Inside UniCredit · the analyst" />
+              <span class="uc-node"></span>
             </div>
-            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it={p.body.it} en={p.body.en} />
+            <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it={'«Per la prima volta la domanda "chi ha portato Marco al mutuo?" ha una risposta nei dati, non nell\'ultimo canale che l\'ha registrato. È da qui che parte l\'attribution.»'} en={'«For the first time the question "who brought Marco to his mortgage?" is answered by the data, not by the last channel that logged it. This is where attribution starts.»'} />
           </div>
-        ))}
+          <T as="p" class="mt-3 text-center text-[0.72rem] tracking-widest uppercase text-[var(--color-grigio-400)]" it="Percorso illustrativo · identity stitching e ingestion offline (filiale, contact center) in CJA" en="Illustrative journey · identity stitching and offline ingestion (branch, contact center) in CJA" />
+        </div>
+        <MediaDemoSlot id="analizza-cxa-demo" label="CJA — Journey / Dashboard Screenshot" />
       </div>
     </Slide>
 
@@ -191,19 +172,19 @@ const funnelSteps = [
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
       <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal it="ATTRIBUTION · LA VISTA CHE MANCA" en="ATTRIBUTION · THE MISSING VIEW" />
       <T as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-4"
-        style="font-size: clamp(2rem, 4vw, 3.5rem);"
+        class="slide-title text-[var(--ink-primary)] mb-3"
+        style="font-size: clamp(1.9rem, 3.6vw, 3.4rem);"
         data-reveal
         data-reveal-delay="0.08"
         it="Il last-touch dice chi.<br/>Non dice come."
         en="Last-touch tells you who.<br/>Not how."
       />
       <T as="p"
-        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-6 leading-relaxed"
+        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-4 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Il report vendite ufficiale attribuisce ogni vendita a un solo canale, l'ultimo che l'ha registrata. È il modello di governance, e resta così."
-        en="The official sales report credits each sale to a single channel, the last one that logged it. That is the governance model, and it stays that way."
+        it="Il report ufficiale dà ogni vendita a un solo canale, l'ultimo che l'ha registrata: il mutuo di Marco risulta «Filiale». È il modello di governance, e resta così."
+        en="The official report credits each sale to one channel, the last that logged it: Marco's mortgage reads «Branch». That is the governance model, and it stays that way."
       />
 
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4 items-stretch" data-reveal data-reveal-delay="0.22">
@@ -212,11 +193,11 @@ const funnelSteps = [
             <T as="p" class="uc-tag" it="Report ufficiale · last-touch" en="Official report · last-touch" />
           </div>
           <div class="flex items-center gap-3 mt-1">
-            <T as="span" class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]" style="font-size: clamp(1.4rem,2vw,1.9rem);" it="1 prestito" en="1 loan" />
+            <T as="span" class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]" style="font-size: clamp(1.4rem,2vw,1.9rem);" it="1 mutuo" en="1 mortgage" />
             <span class="text-[var(--accent-primary)] text-xl">→</span>
             <T as="span" class="font-semibold text-[var(--ink-primary)]" style="font-size: 1.05rem;" it="Filiale" en="Branch" />
           </div>
-          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="L'ultimo canale prende tutto il merito; gli altri spariscono dal conto." en="The last channel takes all the credit; the others vanish from the count." />
+          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="L'ultimo canale prende tutto il merito; ChatGPT, il sito, il concierge e l'SMS spariscono dal conto." en="The last channel takes all the credit; ChatGPT, the site, the concierge and the SMS vanish from the count." />
         </div>
 
         <div class="uc-panel uc-panel--oro text-left">
@@ -227,8 +208,8 @@ const funnelSteps = [
             {channelWeights.map((c) => (
               <div class="flex items-center gap-3 min-w-0">
                 {typeof c.name === 'string'
-                  ? <span class="w-28 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.9rem;">{c.name}</span>
-                  : <T as="span" class="w-28 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.9rem;" it={c.name.it} en={c.name.en} />}
+                  ? <span class="w-44 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.9rem;">{c.name}</span>
+                  : <T as="span" class="w-44 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.9rem;" it={c.name.it} en={c.name.en} />}
                 <div class="flex-1 min-w-0">
                   <div class="h-6 bg-[var(--accent-primary)] rounded-sm" style={`width: ${c.pct}%;`}></div>
                 </div>
@@ -236,24 +217,24 @@ const funnelSteps = [
               </div>
             ))}
           </div>
-          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="Lo stesso venduto, con il peso reale di ogni canale. Senza toccare il modello ufficiale." en="The same sales, with the real weight of each channel. Without touching the official model." />
+          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="Lo stesso mutuo, con il peso reale di ogni canale. Senza toccare il modello ufficiale." en="The same mortgage, with the real weight of each channel. Without touching the official model." />
         </div>
       </div>
 
-      <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left mt-4" data-reveal data-reveal-delay="0.35">
+      <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left mt-3" data-reveal data-reveal-delay="0.35">
         <p class="uc-panel-body" style="margin-bottom: 0;">
-          <T it='<span class="font-semibold text-[var(--ink-primary)]">Per UniCredit:</span> capire quanto app, filiale, contact center e agenti pesano su una vendita attribuita a uno solo, per orchestrare i lead e dare ai team obiettivi quantitativi.' en='<span class="font-semibold text-[var(--ink-primary)]">For UniCredit:</span> seeing how much app, branch, contact center and agents weigh on a sale credited to just one, to orchestrate leads and give teams quantitative targets.' />
+          <T it='<span class="font-semibold text-[var(--ink-primary)]">Per UniCredit:</span> capire quanto app, filiale, contact center e agenti pesano su una vendita attribuita a uno solo, per orchestrare i lead e dare obiettivi ai team.' en='<span class="font-semibold text-[var(--ink-primary)]">For UniCredit:</span> seeing how much app, branch, contact center and agents weigh on a sale credited to just one, to orchestrate leads and set team targets.' />
         </p>
       </div>
-      <T as="p" class="mt-3 text-center text-[0.62rem] tracking-widest uppercase opacity-40" it="Pesi illustrativi · vista complementare, non sostitutiva del modello ufficiale" en="Illustrative weights · complementary view, not a replacement for the official model" />
+      <T as="p" class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-500)]" it="Pesi illustrativi · vista complementare, non sostitutiva del modello ufficiale" en="Illustrative weights · complementary view, not a replacement for the official model" />
     </Slide>
 
-    <!-- ── SLIDE 2: Data Insights Agent ──────────────────────────── -->
+    <!-- ── SLIDE 3: Data Insights Agent ──────────────────────────── -->
     <Slide id="slide-agent" bg="primary" align="split">
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
           <div class="text-left">
-            <p class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal>DATA INSIGHTS AGENT</p>
+            <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-4" data-reveal it="DATA INSIGHTS AGENT · IL PERCHÉ" en="DATA INSIGHTS AGENT · THE WHY" />
             <T as="h2"
               class="slide-title text-[var(--ink-primary)] mb-5"
               style="font-size: clamp(2rem, 4vw, 3.75rem);"
@@ -303,80 +284,28 @@ const funnelSteps = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 3: Analytics Everywhere + MCP ───────────────────── -->
-    <Slide id="slide-everywhere" bg="inverse" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-data-dark')}
-        imageClass="opacity-12"
-        scrim="bg-[var(--surface-inverse)]/88"
-      />
-      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" data-reveal>ANALYTICS EVERYWHERE</p>
-      <T as="h2"
-        class="slide-title text-[var(--ink-inverse)] mb-5"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.08"
-        it="L'intelligence<br/>ovunque lavori il team"
-        en="Intelligence<br/>wherever the team works"
-      />
-      <T as="p"
-        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
-        data-reveal
-        data-reveal-delay="0.15"
-        it="Tramite MCP (Model Context Protocol), Adobe CX Analytics espone i dati di CJA e Adobe Analytics a qualsiasi AI assistant, senza export e senza integrazione custom."
-        en="Through MCP (Model Context Protocol), Adobe CX Analytics exposes CJA and Adobe Analytics data to any AI assistant, with no export and no custom integration."
-      />
-
-      <div class="w-full max-w-3xl mx-auto uc-thread mb-6" data-reveal data-reveal-delay="0.18" aria-hidden="true">
-        <span class="uc-node uc-node--rosso"></span>
-        <span class="uc-thread-line"></span>
-        <span class="uc-node"></span>
-      </div>
-
-      <div
-        class="w-full max-w-3xl mx-auto grid grid-cols-3 md:grid-cols-5 gap-3 mb-10"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        {everywhereChannels.map((ch, i) => (
-          <div class="uc-panel text-center" style="padding: 0.85rem 0.9rem; align-items: center;">
-            <p class="font-semibold text-[var(--ink-primary)] mb-0.5" style="font-size: 0.95rem;">{ch.name}</p>
-            <T as="p" class="text-[var(--ink-secondary)]" style="font-size: 0.85rem;" it={ch.sub.it} en={ch.sub.en} />
-          </div>
-        ))}
-      </div>
-
-      <div class="uc-panel uc-panel--oro max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.3">
-        <div class="uc-panel-head">
-          <T as="p" class="uc-tag" style="color: var(--color-oro);" it="Il team Digital Channels — UniCredit" en="The Digital Channels team — UniCredit" />
-        </div>
-        <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it="Il team di Digital Channels può interrogare i dati di performance dell'app UniCredit direttamente da Microsoft Copilot nel loro workflow quotidiano — senza aprire un tool di analytics separato." en="The Digital Channels team can query UniCredit app performance data straight from Microsoft Copilot in their daily workflow, without opening a separate analytics tool." />
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 4: LLM Insights ──────────────────────────────────── -->
+    <!-- ── SLIDE 4: LLM Insights (il primo touchpoint di Marco) ──────────────────────────────────── -->
     <Slide id="slide-llm" bg="primary" align="center">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal it="LLM INSIGHTS · NUOVA CAPABILITY" en="LLM INSIGHTS · NEW CAPABILITY" />
+      <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal it="LLM INSIGHTS · IL PRIMO TOUCHPOINT" en="LLM INSIGHTS · THE FIRST TOUCHPOINT" />
       <T as="h2"
         class="slide-title text-[var(--ink-primary)] mb-5"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
+        style="font-size: clamp(2rem, 3.8vw, 3.4rem);"
         data-reveal
         data-reveal-delay="0.08"
-        it="Misurare l'era dell'AI conversazionale"
-        en="Measuring the conversational AI era"
+        it="Il primo touchpoint di Marco è stato ChatGPT. Ora si misura."
+        en="Marco's first touchpoint was ChatGPT. Now it gets measured."
       />
       <T as="p"
-        class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-secondary)] max-w-2xl mb-10"
+        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-7 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Sempre più clienti iniziano il percorso finanziario chiedendo a Gemini o ChatGPT. Per la prima volta, LLM Insights rende misurabile quel traffico."
-        en="More and more customers start their financial journey by asking Gemini or ChatGPT. For the first time, LLM Insights makes that traffic measurable."
+        it="Sempre più clienti iniziano il percorso finanziario da un assistente AI. LLM Insights rende misurabile quel traffico, dalla mention alla conversione, e lo mette nell'attribution accanto agli altri canali."
+        en="More and more customers start their financial journey from an AI assistant. LLM Insights makes that traffic measurable, from mention to conversion, and puts it into attribution alongside every other channel."
       />
 
       <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-5 mb-10"
+        class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5 mb-5"
         data-reveal
         data-reveal-delay="0.22"
       >
@@ -391,70 +320,15 @@ const funnelSteps = [
       </div>
 
       <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.3">
-        <p class="uc-panel-body" style="margin-bottom: 0;">
-          <T it='<span class="font-semibold text-[var(--ink-primary)]">UniCredit relevance:</span> con l&#39;espansione del Brand Concierge nel mobile banking, LLM Insights misura l&#39;efficacia delle conversazioni AI — tasso di completamento task, satisfaction score, conversioni da dialogo a transazione.' en='<span class="font-semibold text-[var(--ink-primary)]">UniCredit relevance:</span> as the Brand Concierge expands into mobile banking, LLM Insights measures how effective AI conversations are: task completion rate, satisfaction score, dialogue-to-transaction conversions.' />
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 5: Banking use cases + funnel ────────────────────── -->
-    <Slide id="slide-banking" bg="secondary" align="split">
-      <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
-      <div data-demo-flex class="w-full flex items-start gap-8">
-        <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
-          <div class="text-left">
-            <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal it="USE CASE · RETAIL BANKING" en="USE CASE · RETAIL BANKING" />
-            <T as="h2"
-              class="slide-title text-[var(--ink-primary)] mb-3"
-              style="font-size: clamp(1.9rem, 3vw, 2.7rem);"
-              data-reveal
-              data-reveal-delay="0.08"
-              it="Dove si perde<br/>il valore, e perché"
-              en="Where value<br/>leaks, and why"
-            />
-            <div class="flex flex-col gap-2" data-reveal data-reveal-delay="0.15">
-              {bankingUseCases.map((uc) => (
-                <div class="uc-panel uc-panel--rosso" style="padding: 0.85rem 1.05rem;">
-                  <div class="uc-panel-head">
-                    <p class="uc-tag">{uc.tag}</p>
-                    <span class="uc-src" style="font-weight: 600; color: var(--color-blu-medio);">{uc.solution}</span>
-                  </div>
-                  <T as="p" class="font-semibold text-[var(--ink-primary)] mb-1" style="font-size: 1rem; font-family: var(--font-display);" it={uc.title.it} en={uc.title.en} />
-                  <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it={uc.body.it} en={uc.body.en} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div class="uc-panel uc-panel--oro min-w-0" data-reveal data-reveal-delay="0.3">
-            <div class="uc-panel-head">
-              <T as="p" class="uc-tag" style="color: var(--color-oro);" it="Funnel mutuo · pattern illustrativo" en="Mortgage funnel · illustrative pattern" />
-            </div>
-            <div class="flex flex-col gap-2 min-w-0">
-              {funnelSteps.map((step) => (
-                <div class="flex items-center gap-3 min-w-0">
-                  <T as="span" class="w-32 flex-shrink-0 font-medium text-[var(--ink-primary)]" style="font-size: 0.85rem;" it={step.event.it} en={step.event.en} />
-                  <div class="flex-1 min-w-0">
-                    <div
-                      class="h-8 bg-[var(--accent-primary)] rounded-sm transition-all"
-                      style={`width: clamp(6px, ${step.pct * 0.85 + 15}%, 100%);`}
-                    ></div>
-                  </div>
-                  <div class="flex-shrink-0 text-right whitespace-nowrap">
-                    <span class="font-semibold text-[var(--ink-primary)]" style="font-family: var(--font-display); font-size: 0.95rem;">{step.users}</span>
-                    <span class="text-[var(--ink-secondary)] ml-1" style="font-size: 0.85rem;">({step.pct}%)</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <T as="p" class="uc-src mt-3" it="Struttura tipica di un funnel mutuo Retail Banking" en="Typical structure of a Retail Banking mortgage funnel" />
-          </div>
+        <div class="uc-panel-head">
+          <T as="p" class="uc-tag" it="Il CMO, in questo momento" en="The CMO, right now" />
+          <span class="uc-node uc-node--rosso"></span>
         </div>
-        <MediaDemoSlot id="analizza-cxa-demo" label="CX Analytics — Dashboard Screenshot" />
+        <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it={'«Per la prima volta riesce a rispondere: "Qual è il ROI della nostra presenza su ChatGPT?" Un numero misurato, non una stima.»'} en={'«For the first time she can answer: "What is the ROI of our presence on ChatGPT?" A measured number, not a guess.»'} />
       </div>
     </Slide>
 
-    <!-- ── SLIDE: Cost-per-click → cost-per-sale (ATTRIBUTION) ───── -->
+    <!-- ── SLIDE 5: Cost-per-click → cost-per-sale (ATTRIBUTION) ───── -->
     <Slide id="slide-costpersale" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
       <T as="p" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-4" data-reveal it="ATTRIBUTION · DAL CLICK ALLA VENDITA" en="ATTRIBUTION · FROM CLICK TO SALE" />
@@ -470,8 +344,8 @@ const funnelSteps = [
         class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-4 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Riconciliare la navigazione con il venduto vuol dire remunerare le agenzie sul risultato reale. Ma il cost-per-sale regge solo su un'attribution solida e condivisa."
-        en="Reconciling browsing with sales means paying agencies on the real result. But cost-per-sale only holds up on solid, shared attribution."
+        it="Riconciliare la navigazione con il venduto vuol dire pagare la campagna che ha raggiunto Marco sul mutuo firmato, non sul click. Ma il cost-per-sale regge solo su un'attribution solida e condivisa."
+        en="Reconciling browsing with sales means paying the campaign that reached Marco on the signed mortgage, not on the click. But cost-per-sale only holds up on solid, shared attribution."
       />
 
       <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-3" data-reveal data-reveal-delay="0.22">
@@ -501,71 +375,6 @@ const funnelSteps = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 5b: LLM Insights + Marketing Campaign Analytics ─── -->
-    <Slide id="slide-llm-mix" bg="secondary" align="center">
-      <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
-      <p class="slide-eyebrow text-center text-[var(--accent-primary)] mb-3" data-reveal>LLM INSIGHTS + MARKETING CAMPAIGN ANALYTICS</p>
-      <T as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-3"
-        style="font-size: clamp(2rem, 4vw, 3.4rem);"
-        data-reveal
-        data-reveal-delay="0.08"
-        it="Da dove vengono davvero i tuoi clienti migliori"
-        en="Where your best customers really come from"
-      />
-      <T as="p"
-        class="text-[clamp(1rem,1.35vw,1.25rem)] text-[var(--ink-secondary)] max-w-3xl mb-3"
-        data-reveal
-        data-reveal-delay="0.15"
-        it="Sempre più clienti UniCredit iniziano il percorso finanziario da un LLM, e LLM Insights lo misura: traccia il tragitto da una conversazione AI a una conversione bancaria."
-        en="More and more UniCredit customers start their financial journey from an LLM, and LLM Insights measures it: tracing the path from an AI conversation to a banking conversion."
-      />
-
-      <div
-        class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-3"
-        data-reveal
-        data-reveal-delay="0.22"
-      >
-        <div class="uc-panel uc-panel--oro text-left">
-          <div class="uc-panel-head">
-            <p class="uc-tag" style="color: var(--color-oro);">LLM Insights</p>
-          </div>
-          <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it="Misura quanti come Marco iniziano da ChatGPT, Copilot o Perplexity, ottimizza la presenza AI e attribuisce il valore, dalla mention al mutuo." en="It measures how many like Marco start from ChatGPT, Copilot or Perplexity, optimizes AI presence and attributes value, from mention to mortgage." />
-        </div>
-        <div class="uc-panel uc-panel--rosso text-left">
-          <div class="uc-panel-head">
-            <p class="uc-tag">Marketing Campaign Analytics</p>
-          </div>
-          <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it="Causal AI + full-funnel attribution. La campagna Instagram di acquisizione conti (il reel di Sofia ne è un esempio) genera pipeline reale, attribuita con AI causale, non col last-click." en="Causal AI + full-funnel attribution. The Instagram account-acquisition campaign (Sofia's reel is one example) generates real pipeline, attributed with causal AI, not last-click." />
-        </div>
-      </div>
-
-      <div
-        class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-4 mb-3"
-        data-reveal
-        data-reveal-delay="0.3"
-      >
-        {[
-          { stat: "1 su 4", statEn: "1 in 4", label: "nuovi clienti parte da un assistente AI", labelEn: "new customers starts from an AI assistant" },
-          { stat: "↑", statEn: "↑", label: "pipeline attribuita alla campagna, non solo stimata", labelEn: "pipeline attributed to the campaign, not just estimated" },
-          { stat: "↑", statEn: "↑", label: "ROI marketing, misurato in modo causale", labelEn: "marketing ROI, measured causally" },
-        ].map((m) => (
-          <div class="uc-panel" style="align-items: center; padding-top: 0.8rem; padding-bottom: 0.8rem;">
-            <p class="uc-stat-value" style="border: 0;">{m.stat}</p>
-            <T as="p" class="uc-stat-label" style="margin-bottom: 0;" it={m.label} en={m.labelEn} />
-          </div>
-        ))}
-      </div>
-
-      <div class="uc-panel uc-panel--rosso max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.45">
-        <div class="uc-panel-head">
-          <T as="p" class="uc-tag" it="Il CMO, in questo momento" en="The CMO, right now" />
-          <span class="uc-node uc-node--rosso"></span>
-        </div>
-        <T as="p" class="uc-quote-text" style="margin-top: 0;" it={'«Per la prima volta riesce a rispondere: "Qual è il ROI della nostra presenza su ChatGPT?" Un numero misurato, non una stima.»'} en={'«For the first time she can answer: "What is the ROI of our presence on ChatGPT?" A measured number, not a guess.»'} />
-      </div>
-    </Slide>
-
     <!-- ── SLIDE 6: Marketing Campaign Analytics ─────────────────── -->
     <Slide id="slide-campaign" bg="inverse" align="center">
       <SlideBackdrop
@@ -587,8 +396,8 @@ const funnelSteps = [
         class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
         data-reveal
         data-reveal-delay="0.15"
-        it="Una visione unificata dell'efficacia di ogni campagna, dalla prima impression al contratto firmato. Powered by causal AI proprietaria Adobe."
-        en="A unified view of how effective each campaign is, from first impression to signed contract. Powered by Adobe's proprietary causal AI."
+        it="Una visione unificata dell'efficacia di ogni campagna, dalla prima impression che Marco ha visto al contratto firmato in filiale. Powered by causal AI proprietaria Adobe."
+        en="A unified view of how effective each campaign is, from the first impression Marco saw to the contract signed in the branch. Powered by Adobe's proprietary causal AI."
       />
 
       <div
@@ -610,12 +419,108 @@ const funnelSteps = [
         ))}
       </div>
 
-      <div class="mt-10" data-reveal data-reveal-delay="0.35">
+    </Slide>
+
+    <!-- ── SLIDE 7: Adobe CX Analytics — la piattaforma dietro tutto questo ───────────────────── -->
+    <Slide id="slide-cxa-brand" bg="brand" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-digital-blue')}
+        imageClass="opacity-8"
+        scrim="bg-[var(--accent-primary)]/85"
+      />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-2.5" data-reveal it="SUMMIT 2026 · UN'UNICA PIATTAFORMA" en="SUMMIT 2026 · ONE PLATFORM" />
+      <h2
+        class="text-[var(--ink-inverse)] mb-2"
+        style="font-size: clamp(1rem, 1.4vw, 1.3rem); font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase;"
+        data-reveal
+        data-reveal-delay="0.05"
+      >
+        <T it="Tutto questo è" en="All of this is" />
+      </h2>
+      <p
+        class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-4"
+        style="font-size: clamp(2.6rem, 4.4vw, 4.4rem);"
+        data-reveal
+        data-reveal-delay="0.1"
+      >
+        Adobe CX Analytics
+      </p>
+      <T as="p"
+        class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--ink-inverse)]/80 max-w-3xl mb-5 leading-relaxed"
+        data-reveal
+        data-reveal-delay="0.2"
+        it="Il percorso cucito, l'attribution, il perché in minuti, il ROI di ChatGPT: tutto quello che avete visto su Marco vive su un'unica piattaforma di intelligence, sulla fondazione Adobe Experience Platform."
+        en="The stitched journey, attribution, the why in minutes, the ROI of ChatGPT: everything you saw about Marco lives on one intelligence platform, on the Adobe Experience Platform foundation."
+      />
+
+      <div
+        class="w-full max-w-4xl mx-auto grid grid-cols-2 gap-3"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        {cxaPillars.map((p) => (
+          <div class="uc-panel uc-panel--oro text-left">
+            <div class="uc-panel-head">
+              <p class="uc-tag" style="color: var(--color-oro);">{p.label}</p>
+            </div>
+            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it={p.body.it} en={p.body.en} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 8: Analytics Everywhere + MCP → ponte verso Coworker ───────────────────── -->
+    <Slide id="slide-everywhere" bg="inverse" align="center">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-data-dark')}
+        imageClass="opacity-12"
+        scrim="bg-[var(--surface-inverse)]/88"
+      />
+      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" data-reveal>ANALYTICS EVERYWHERE</p>
+      <T as="h2"
+        class="slide-title text-[var(--ink-inverse)] mb-4"
+        style="font-size: clamp(2rem, 3.8vw, 3.6rem);"
+        data-reveal
+        data-reveal-delay="0.08"
+        it="L'intelligence<br/>ovunque lavori il team"
+        en="Intelligence<br/>wherever the team works"
+      />
+      <T as="p"
+        class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--color-grigio-300)] max-w-3xl mb-5 leading-relaxed"
+        data-reveal
+        data-reveal-delay="0.15"
+        it="Tramite MCP (Model Context Protocol), Adobe CX Analytics espone i dati di CJA e Adobe Analytics a qualsiasi AI assistant, senza export e senza integrazione custom."
+        en="Through MCP (Model Context Protocol), Adobe CX Analytics exposes CJA and Adobe Analytics data to any AI assistant, with no export and no custom integration."
+      />
+
+      <div
+        class="w-full max-w-4xl mx-auto grid grid-cols-3 md:grid-cols-5 gap-3 mb-5"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        {everywhereChannels.map((ch, i) => (
+          <div class="uc-panel text-center" style="padding: 0.85rem 0.9rem; align-items: center;">
+            <p class="font-semibold text-[var(--ink-primary)] mb-0.5" style="font-size: 0.95rem;">{ch.name}</p>
+            <T as="p" class="text-[var(--ink-secondary)]" style="font-size: 0.85rem;" it={ch.sub.it} en={ch.sub.en} />
+          </div>
+        ))}
+      </div>
+
+      <div class="uc-panel uc-panel--oro max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.3">
+        <div class="uc-panel-head">
+          <T as="p" class="uc-tag" style="color: var(--color-oro);" it="Il team Digital Channels — UniCredit" en="The Digital Channels team — UniCredit" />
+        </div>
+        <T as="p" class="uc-panel-body" style="margin-bottom: 0;" it="«Quanto ha pesato il Brand Concierge sui mutui di questo mese?» Il team lo chiede da Microsoft Copilot, nel workflow di tutti i giorni, senza aprire un tool separato. La risposta arriva; il passo dopo è farla diventare un'azione." en="«How much did the Brand Concierge weigh on this month's mortgages?» The team asks from Microsoft Copilot, inside the daily workflow, with no separate tool. The answer comes back; the next step is turning it into action." />
+      </div>
+
+      <div class="mt-5" data-reveal data-reveal-delay="0.38">
         <a
           href={href(base, '/coworker')}
-          class="inline-flex items-center gap-3 px-10 py-5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
+          class="inline-flex items-center gap-3 px-9 py-3.5 text-[clamp(1.05rem,1.3vw,1.3rem)] font-medium tracking-wide bg-[var(--ink-inverse)] text-[var(--ink-primary)] hover:bg-[var(--color-crema)] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--ink-inverse)] focus-visible:outline-offset-4"
         >
-          <T it="Il Coworker AI" en="The AI Coworker" />
+          <T it="Dall'insight all'azione: il Coworker AI" en="From insight to action: the AI Coworker" />
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -624,4 +529,22 @@ const funnelSteps = [
     </Slide>
 
   </DeckContainer>
+
+<style>
+  /* Il percorso di Marco in CJA — timeline orizzontale, otto touchpoint */
+  .uc-tl { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.5rem; position: relative; }
+  .uc-tl::before {
+    content: ''; position: absolute; left: 6%; right: 6%; top: 0.5rem; height: 2px;
+    background: linear-gradient(to right, var(--color-rosso), var(--color-oro) 50%, var(--color-rosso));
+  }
+  .uc-tl-step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 1.5rem; min-width: 0; }
+  .uc-tl-dot {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 1.05rem; height: 1.05rem; border-radius: 9999px; background: var(--color-oro);
+    box-shadow: 0 0 0 4px var(--surface-primary);
+  }
+  .uc-tl-dot--rosso { background: var(--color-rosso); }
+  .uc-tl-label { font-family: var(--font-display); font-weight: 600; font-size: 1rem; line-height: 1.2; color: var(--color-blu-notte); margin-bottom: 0.2rem; max-width: none; overflow-wrap: anywhere; }
+  .uc-tl-sub { font-size: 0.82rem; line-height: 1.35; color: var(--color-blu-medio); max-width: none; }
+</style>
 </BaseLayout>
