@@ -1,0 +1,213 @@
+---
+/**
+ * PresenterBridge — deck-side half of the presenter view (`/presenter/`).
+ * Include ONCE in BaseLayout, AFTER the `<slot />` (the cut must run while the
+ * slides are already parsed, before DeckContainer's module script counts them):
+ *
+ *   <PresenterBridge />
+ *
+ * Talks to the presenter window over `BroadcastChannel(PRESENTER_CHANNEL)`.
+ *  deck → presenter  { type:'state', section, path, index, total, id, substep,
+ *                      substeps, title, lang, cut }   on every deck:change /
+ *                      deck:substep, on `hello`, and after lang / cut changes.
+ *  presenter → deck  { type:'hello' }
+ *                    { type:'goTo', index }              → __edfDeck.goTo(i)
+ *                    { type:'nav', href }                → __edfNavigate(href)
+ *                    { type:'step', dir:'next'|'prev' }  → stepForward / stepBack
+ *                    { type:'slide', dir:'next'|'prev' } → next / prev
+ *                    { type:'key', key:'f' }             → synthetic keydown (F)
+ *                    { type:'cut', mode:'short'|'full', ids? } → hide/restore slides
+ *                    { type:'lang', lang:'it'|'en' }     → html[data-lang]
+ *
+ * «Versione 15 minuti»: `localStorage['edf:cut']==='short'` hides the ids in
+ * CUT_SHORT (`<section>:<slide-id>`; the presenter may send its own list, stored
+ * in `edf:cut-ids`) by dropping `data-slide` + display:none BEFORE the deck counts
+ * slides — on parse, on `astro:after-swap` (this inline listener registers before
+ * the deck's boot listener) and via a MutationObserver fallback. Idempotent
+ * (`window.__edfPresenterBridge`), inert when BroadcastChannel is unavailable.
+ */
+import {
+  PRESENTER_CHANNEL, CUT_SHORT, CUT_STORAGE_KEY, CUT_IDS_STORAGE_KEY,
+} from '../data/presenter.config';
+---
+<script is:inline define:vars={{ PRESENTER_CHANNEL, CUT_SHORT, CUT_STORAGE_KEY, CUT_IDS_STORAGE_KEY }}>
+(function () {
+  if (window.__edfPresenterBridge) { window.__edfPresenterBridge.applyCut(); return; }
+
+  function sectionSlug() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || 'index';
+  }
+  function lang() {
+    var l = document.documentElement.getAttribute('data-lang') || document.documentElement.lang || 'it';
+    return l === 'en' ? 'en' : 'it';
+  }
+  function deckRoot() { return document.querySelector('[data-deck]'); }
+  /** The live Deck instance for THIS page's [data-deck] (null on pages without a deck,
+   *  or while DeckContainer is still constructing it — __edfDeck is assigned after). */
+  function deck() {
+    var d = window.__edfDeck || null;
+    var root = deckRoot();
+    return d && root && d.root === root ? d : null;
+  }
+
+  /* ── Cut («Versione 15 minuti») ─────────────────────────────── */
+  function cutMode() {
+    try { return localStorage.getItem(CUT_STORAGE_KEY) === 'short' ? 'short' : 'full'; } catch (e) { return 'full'; }
+  }
+  function cutIds() {
+    try {
+      var raw = localStorage.getItem(CUT_IDS_STORAGE_KEY);
+      if (raw) { var arr = JSON.parse(raw); if (Array.isArray(arr) && arr.length) return arr; }
+    } catch (e) {}
+    return CUT_SHORT;
+  }
+  function hiddenIdsHere() {
+    var slug = sectionSlug();
+    var out = {};
+    cutIds().forEach(function (key) {
+      var i = key.indexOf(':');
+      if (i === -1) return;
+      var sec = key.slice(0, i), id = key.slice(i + 1);
+      // the home is `mim-alfabeti` for the deck; tolerate `index`
+      if (sec === slug || (sec === 'index' && slug === 'mim-alfabeti')) out[id] = 1;
+    });
+    return out;
+  }
+  function applyCut() {
+    var short = cutMode() === 'short';
+    var hide = short ? hiddenIdsHere() : {};
+    var changed = false;
+    var els = document.querySelectorAll('[data-slide], [data-edf-cut]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var shouldHide = !!(el.id && hide[el.id]);
+      var isHidden = el.hasAttribute('data-edf-cut');
+      if (shouldHide && !isHidden) {
+        el.setAttribute('data-edf-cut', '');
+        el.removeAttribute('data-slide');
+        el.setAttribute('aria-hidden', 'true');
+        el.setAttribute('inert', '');
+        el.style.display = 'none';
+        changed = true;
+      } else if (!shouldHide && isHidden) {
+        el.removeAttribute('data-edf-cut');
+        el.setAttribute('data-slide', '');
+        el.removeAttribute('aria-hidden');
+        el.removeAttribute('inert');
+        el.style.display = '';
+        changed = true;
+      }
+    }
+    return changed;
+  }
+
+  /* ── State broadcast ────────────────────────────────────────── */
+  var bc = null;
+  try { bc = new BroadcastChannel(PRESENTER_CHANNEL); } catch (e) { bc = null; }
+
+  function activeText(el) {
+    if (!el) return '';
+    var l = lang();
+    var span = el.querySelector('[data-lang-' + l + ']');
+    var t = (span || el).textContent || '';
+    return t.replace(/\s+/g, ' ').trim();
+  }
+  function state() {
+    var d = deck();
+    var slide = d && d.slides ? d.slides[d.index] : null;
+    var steps = slide ? slide.querySelectorAll('[data-substep]') : [];
+    var shown = 0;
+    for (var i = 0; i < steps.length; i++) if (steps[i].hasAttribute('data-substep-active')) shown++;
+    return {
+      type: 'state',
+      section: sectionSlug(),
+      path: location.pathname,
+      index: d ? d.index : 0,
+      total: d && d.slides ? d.slides.length : 0,
+      id: slide ? slide.id : '',
+      substep: shown,
+      substeps: steps.length,
+      title: activeText(slide ? slide.querySelector('h1, h2') : null),
+      lang: lang(),
+      cut: cutMode(),
+    };
+  }
+  // Inert on pages without a deck (the presenter itself, /admin/, /dossier/ share
+  // BaseLayout). The first deck:change fires inside the Deck constructor, before
+  // window.__edfDeck is assigned: retry once on the next tick instead of sending
+  // an empty state.
+  function broadcast(retried) {
+    if (!bc || !deckRoot()) return;
+    if (!deck()) { if (!retried) setTimeout(function () { broadcast(true); }, 0); return; }
+    try { bc.postMessage(state()); } catch (e) {}
+  }
+  function onDeckEvent() { broadcast(false); }
+  document.addEventListener('deck:change', onDeckEvent);
+  document.addEventListener('deck:substep', onDeckEvent);
+  document.addEventListener('astro:page-load', onDeckEvent);
+
+  /* ── Commands ───────────────────────────────────────────────── */
+  function reinitKeepingPosition() {
+    var d = deck();
+    var id = d && d.slides && d.slides[d.index] ? d.slides[d.index].id : '';
+    if (typeof window.__edfInitDeck === 'function') window.__edfInitDeck();
+    var nd = deck();
+    if (nd && id) {
+      for (var i = 0; i < nd.slides.length; i++) {
+        if (nd.slides[i].id === id) { if (i !== nd.index) nd.goTo(i); break; }
+      }
+    }
+    broadcast(false);
+  }
+  function setCut(mode, ids) {
+    try {
+      if (mode === 'short') localStorage.setItem(CUT_STORAGE_KEY, 'short');
+      else localStorage.removeItem(CUT_STORAGE_KEY);
+      if (Array.isArray(ids) && ids.length) localStorage.setItem(CUT_IDS_STORAGE_KEY, JSON.stringify(ids));
+    } catch (e) {}
+    if (applyCut()) reinitKeepingPosition(); else broadcast(false);
+  }
+  function setLang(l) {
+    if (l !== 'it' && l !== 'en') return;
+    document.documentElement.setAttribute('data-lang', l);
+    document.documentElement.lang = l;
+    try { localStorage.setItem('edf:lang', l); } catch (e) {}
+    var btns = document.querySelectorAll('[data-lang-btn]');
+    for (var i = 0; i < btns.length; i++) btns[i].setAttribute('aria-pressed', btns[i].getAttribute('data-lang-btn') === l ? 'true' : 'false');
+    broadcast(false);
+  }
+  function onMessage(e) {
+    var m = e && e.data; if (!m || !m.type) return;
+    if (!deckRoot()) return;   // not a deck page — never answer, never navigate
+    var d = deck();
+    switch (m.type) {
+      case 'hello': broadcast(false); break;
+      case 'goTo': if (d && typeof m.index === 'number') d.goTo(m.index); break;
+      case 'nav':
+        if (typeof m.href === 'string' && /^\//.test(m.href)) {
+          if (typeof window.__edfNavigate === 'function') window.__edfNavigate(m.href); else location.assign(m.href);
+        }
+        break;
+      case 'step': if (d) { if (m.dir === 'prev') d.stepBack(); else d.stepForward(); } break;
+      case 'slide': if (d) { if (m.dir === 'prev') d.prev(); else d.next(); } break;
+      case 'key':
+        try { window.dispatchEvent(new KeyboardEvent('keydown', { key: String(m.key || 'f'), bubbles: true, cancelable: true })); } catch (e2) {}
+        break;
+      case 'cut': setCut(m.mode === 'short' ? 'short' : 'full', m.ids); break;
+      case 'lang': setLang(m.lang); break;
+    }
+  }
+  if (bc) bc.addEventListener('message', onMessage);
+
+  /* ── Cut timing: parse-time, after every SPA swap, mutation fallback ── */
+  applyCut();
+  document.addEventListener('astro:after-swap', applyCut);
+  try {
+    new MutationObserver(function () { if (cutMode() === 'short') applyCut(); })
+      .observe(document, { childList: true, subtree: true });
+  } catch (e) {}
+
+  window.__edfPresenterBridge = { applyCut: applyCut, broadcast: function () { broadcast(false); }, state: state, setCut: setCut, channel: PRESENTER_CHANNEL };
+})();
+</script>
