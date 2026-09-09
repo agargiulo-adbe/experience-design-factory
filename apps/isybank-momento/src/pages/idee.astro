@@ -4,6 +4,14 @@ import IsyNavigation from '../components/IsyNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import { href } from '@edf/core/utils/url.js';
+import bgCover from '../assets/generated/bg/ink-4.webp';
+import bgOnboarding from '../assets/generated/bg/soft-4.webp';
+import bgGestore from '../assets/generated/bg/soft-5.webp';
+import bgMomento from '../assets/generated/bg/soft-6.webp';
+import bgPremialita from '../assets/generated/bg/soft-7.webp';
+import bgJourney from '../assets/generated/bg/soft-8.webp';
+import bgContenuti from '../assets/generated/bg/soft-9.webp';
+const BG: Record<string, string> = { onboarding: bgOnboarding.src, gestore: bgGestore.src, momento: bgMomento.src, premialita: bgPremialita.src, journey: bgJourney.src, contenuti: bgContenuti.src };
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -19,6 +27,7 @@ interface Idea {
   a: string;
   mossa: string;
   adobe: string;
+  fonti: { l: string; u: string }[];
 }
 
 const idee: Idea[] = [
@@ -27,10 +36,14 @@ const idee: Idea[] = [
     stato: 'estende',
     ey: 'Idea 1 · I primi novanta giorni',
     t: 'I primi novanta giorni decidono la banca principale',
-    da: 'L\'apertura del conto è il gesto più curato di Isybank, premiato a Berlino. Poi il cliente resta solo: la carta arriva, le notifiche sono uguali per tutti, e la scelta di accreditare lo stipendio si gioca nelle prime settimane, spesso senza che nessuno la accompagni.',
+    da: 'L\'esperienza digitale di Isybank, apertura del conto compresa, è stata premiata a Berlino con l\'iF Design Award. Poi il cliente resta solo: la carta arriva, le notifiche sono uguali per tutti, e la scelta di accreditare lo stipendio si gioca nelle prime settimane, spesso senza che nessuno la accompagni.',
     a: 'Un percorso di novanta giorni che legge i segnali reali (prima spesa con la carta, primo bonifico ricevuto, utenza domiciliata, app aperta tre volte in una settimana) e propone il passo successivo giusto: in app, con una notifica, o per mano di un gestore. Ogni passo misurato sulla primacy, non sui click.',
     mossa: 'Prima mossa: disegnare insieme il journey dei primi novanta giorni su una coorte di nuovi clienti, con un solo indicatore: quanti accreditano lo stipendio entro tre mesi.',
     adobe: 'Adobe Real-Time CDP · Adobe Journey Optimizer',
+    fonti: [
+      { l: 'iF Design Award, 5 mag 2026', u: 'https://www.isybank.com/it/news-e-media/news/isybank-vince-if-design-award-2026.html' },
+      { l: 'isybank.com, 3 ago 2026', u: 'https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html' },
+    ],
   },
   {
     id: 'gestore',
@@ -41,16 +54,25 @@ const idee: Idea[] = [
     a: 'Un assistente in app, con il tono di Isybank, che risolve le richieste semplici e passa al gestore quelle complesse portandosi dietro il contesto: cosa ha fatto il cliente, cosa ha provato, dove si è fermato. Il gestore parte dal punto giusto. L\'80% automatico diventa un\'esperienza, non un filtro.',
     mossa: 'Prima mossa: un caso d\'uso solo, la richiesta di carta di credito che si interrompe. Assistente in app, poi consegna al gestore con il contesto.',
     adobe: 'Adobe Brand Concierge · Adobe Experience Platform · Adobe Journey Optimizer',
+    fonti: [
+      { l: 'isybank.com, 3 ago 2026', u: 'https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html' },
+      { l: 'Piano di Impresa 2026-2029 (2 feb 2026)', u: 'https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/02/20260202-business-plan-uk' },
+      { l: 'Trustpilot, set 2026', u: 'https://it.trustpilot.com/review/isybank.com' },
+    ],
   },
   {
     id: 'momento',
     stato: 'nuovo',
     ey: 'Idea 3 · I momenti che cambiano il conto',
     t: 'Il compleanno dei 35 anni, e gli altri momenti che contano',
-    da: 'L\'offerta è già disegnata per momenti di vita: isyPrime a canone zero fino ai 35 anni, SpensieRata per la spesa da rateizzare, isyProtezione, i fondi sostenibili, isySalvadanaio. Oggi la proposta arriva quando il cliente la cerca, non quando la vive. E dopo la sanzione di marzo, ogni proposta deve poggiare su un consenso che il cliente ricorda di aver dato.',
+    da: 'L\'offerta è già disegnata per momenti di vita: isyPrime a canone zero fino ai 35 anni, SpensieRata per la spesa da rateizzare, isyProtezione, i fondi sostenibili, isySalvadanaio. Oggi la proposta arriva quando il cliente la cerca, non quando la vive. E dopo il provvedimento del Garante di marzo, ogni proposta deve poggiare su un consenso che il cliente ricorda di aver dato.',
     a: 'Contenuti di app e sito che cambiano con il momento: chi si avvicina ai 35 anni vede in tempo cosa cambia e perché conviene restare; chi riceve il primo stipendio vede il risparmio a obiettivi; chi paga una spesa grande trova SpensieRata prima di cercarla. Con due limiti chiari: mai più di una proposta alla volta, e solo dentro le preferenze che il cliente ha scelto.',
     mossa: 'Prima mossa: tre momenti, tre varianti ciascuno, un test controllato su sito e app. Si misura cosa cambia davvero prima di estendere.',
     adobe: 'Adobe Target · Adobe Journey Optimizer (decisioning) · Real-Time CDP con consenso e governance del dato',
+    fonti: [
+      { l: 'Intesa Sanpaolo, 22 lug 2026', u: 'https://group.intesasanpaolo.com/it/newsroom/comunicati-stampa/2026/07/isybank--le-giacenze-superano-3-miliardi-di-euro--la-banca-digit' },
+      { l: 'Garante Privacy, provv. 163 del 12 mar 2026', u: 'https://www.gpdp.it/web/guest/home/docweb/-/docweb-display/docweb/10230412' },
+    ],
   },
   {
     id: 'premialita',
@@ -61,6 +83,10 @@ const idee: Idea[] = [
     a: 'Un programma che riconosce i comportamenti che contano per Isybank (lo stipendio accreditato, l\'obiettivo di risparmio raggiunto, l\'utenza domiciliata, la scelta di un fondo sostenibile) e li premia nel momento in cui accadono, con un messaggio nella lingua della community. Il programma impara: chi risponde a cosa, e cosa non serve più mandare.',
     mossa: 'Prima mossa: prendere due comportamenti che già premiate e trasformarli in un journey continuo, con la misura dell\'effetto sulla retention a sei mesi.',
     adobe: 'Adobe Journey Optimizer · Real-Time CDP · Customer Journey Analytics',
+    fonti: [
+      { l: 'isybank.com, 3 ago 2026', u: 'https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html' },
+      { l: 'isybank.com, isyReward', u: 'https://www.isybank.com/it/isyreward.html' },
+    ],
   },
   {
     id: 'journey',
@@ -71,6 +97,10 @@ const idee: Idea[] = [
     a: 'Un\'analisi del journey che unisce app, sito, Filiale Digitale e contact center in una sola sequenza per cliente: dove si interrompe la richiesta di carta, quanto pesa un gestore sulla conversione, quali momenti anticipano l\'abbandono. Le risposte diventano l\'input per le idee precedenti e per i numeri del Piano.',
     mossa: 'Prima mossa: un\'analisi guidata su un solo journey, con i dati che avete già. La richiesta di carta di credito, dall\'app alla consegna.',
     adobe: 'Adobe Customer Journey Analytics, sopra il web analytics già in uso',
+    fonti: [
+      { l: 'Italpress, 9 giu 2025', u: 'https://www.italpress.com/isybank-valitutti-canale-di-sviluppo-e-cuore-tecnologico-del-gruppo-2/' },
+      { l: 'isybank.com, 3 ago 2026', u: 'https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html' },
+    ],
   },
   {
     id: 'contenuti',
@@ -81,6 +111,10 @@ const idee: Idea[] = [
     a: 'Una filiera dei contenuti che produce le varianti di ogni promo per segmento e canale, con i guardrail di brand, e un osservatorio che misura come i motori AI raccontano Isybank rispetto a Revolut, HYPE o BBVA, con le correzioni da fare sul sito che già avete.',
     mossa: 'Prima mossa: una baseline di visibilità AI su dieci domande tipiche di un under 35, e una promo prodotta in varianti con approvazione di brand.',
     adobe: 'Adobe GenStudio for Performance Marketing · Adobe Firefly · Adobe Experience Manager (già in casa) · Adobe Brand Visibility',
+    fonti: [
+      { l: 'isybank.com, home (set 2026)', u: 'https://www.isybank.com/' },
+      { l: 'Milano Finanza, 28 mag 2026', u: 'https://www.milanofinanza.it/news/revolut-supera-i-5-milioni-di-clienti-in-italia-e-diventa-la-quinta-banca-del-paese-202605281412375471' },
+    ],
   },
 ];
 ---
@@ -97,7 +131,7 @@ const idee: Idea[] = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="im-bg"></div>
+      <div slot="backdrop" class="im-bg" style={`--bg-src: url(${bgCover.src})`}></div>
       <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4 block" data-reveal>Capitolo 02 · Le idee</p>
       <h2
         class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
@@ -113,21 +147,21 @@ const idee: Idea[] = [
         data-reveal
         data-reveal-delay="0.15"
       >
-        Ogni idea parte da qualcosa che Isybank ha già in casa e la porta al momento in cui serve al cliente. Nessuna aggiunge un passaggio all'esperienza: tutte ne tolgono uno. Le percorriamo solo quelle che il dialogo tocca.
+        Ogni idea parte da qualcosa che Isybank ha già in casa e la porta al momento in cui serve al cliente. Nessuna aggiunge un passaggio all'esperienza: tutte ne tolgono uno. Ne percorriamo solo quelle che il dialogo tocca.
       </p>
       <p class="text-center text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)] block" data-reveal data-reveal-delay="0.22">
-        Sei idee · si percorrono quelle che il dialogo tocca
+        Per ogni idea: da dove parte, dove può arrivare, la prima mossa
       </p>
     </Slide>
 
     <!-- ── SLIDE 1..6: le idee (gated) ────────────────────────────── -->
     {idee.map((t) => (
       <Slide id={`slide-${t.id}`} bg="primary" align="center" data-solution={t.id}>
-        <div slot="backdrop" class="im-bg-soft"></div>
+        <div slot="backdrop" class="im-bg-soft" style={`--bg-src: url(${BG[t.id]})`}></div>
         <div class="flex items-center justify-center gap-3 mb-4" data-reveal>
           <p class="slide-eyebrow text-center text-[var(--color-menta)]">{t.ey}</p>
           <span class={`im-badge ${t.stato === 'nuovo' ? 'im-badge--nuovo' : 'im-badge--estende'}`}>
-            {t.stato === 'nuovo' ? 'nuovo' : 'in casa → estensione'}
+            {t.stato === 'nuovo' ? 'nuovo' : 'estende l\'esistente'}
           </span>
         </div>
         <h2
@@ -160,6 +194,15 @@ const idee: Idea[] = [
         </p>
         <p class="mt-2 text-center text-[0.78rem] tracking-widest uppercase text-[var(--color-blu-chiaro)] block" data-reveal data-reveal-delay="0.3">
           {t.adobe}
+        </p>
+        <p class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)] block">
+          Fonti:&nbsp;
+          {t.fonti.map((f, i) => (
+            <>
+              {i > 0 && <span>&nbsp;·&nbsp;</span>}
+              <a href={f.u} target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">{f.l}</a>
+            </>
+          ))}
         </p>
       </Slide>
     ))}

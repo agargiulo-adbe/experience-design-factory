@@ -4,9 +4,15 @@ import IsyNavigation from '../components/IsyNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import { href } from '@edf/core/utils/url.js';
+import bgMomento from '../assets/generated/bg/soft-1.webp';
+import bgPercorso from '../assets/generated/bg/ink-2.webp';
+
+// Clip Firefly (GitHub Release `media`, git-ignored in locale) + poster in /public/media.
+const COVER_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/momento-cover.mp4';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+const coverPoster = href(base, '/media/momento-cover.poster.jpg');
 
 const journey = [
   { num: '01', label: 'La domanda', sub: 'Semplice da aprire. E dopo?', href: '/domanda', solution: null },
@@ -15,7 +21,7 @@ const journey = [
 ];
 
 const momento = [
-  { v: '1,2 mln', l: 'clienti', s: 'tre su quattro sotto i 35 anni · lug 2026', tone: 'menta' },
+  { v: '1,2 mln', l: 'clienti', s: 'tre su quattro sotto i 35 anni · lug-ago 2026', tone: 'menta' },
   { v: '€3 mld', l: 'di giacenze', s: '170 mila stipendi accreditati · ago 2026', tone: 'blu' },
   { v: '2 mln', l: 'clienti entro il 2029', s: 'Piano di Impresa 2026-2029 · €100 mln di utile', tone: 'arancio' },
 ];
@@ -32,7 +38,14 @@ const momento = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="im-bg"></div>
+      <Fragment slot="backdrop">
+        <!-- Still Firefly di fallback (reduced-motion nasconde il video), poi il clip, poi lo scrim. -->
+        <div class="absolute inset-0" style={`background: url(${coverPoster}) center / cover no-repeat var(--surface-primary);`} aria-hidden="true"></div>
+        <video class="im-video" autoplay muted loop playsinline preload="metadata" poster={coverPoster} aria-hidden="true">
+          <source src={COVER_VIDEO} type="video/mp4" />
+        </video>
+        <div class="im-bg"></div>
+      </Fragment>
 
       <div class="im-cover" data-reveal>
         <p class="im-cover-eyebrow">Quello che ti serve · quando ti serve · per un milione di persone</p>
@@ -49,7 +62,7 @@ const momento = [
         <h1 class="im-cover-title" data-reveal data-reveal-delay="0.18">Il momento giusto</h1>
 
         <p class="im-cover-lead" data-reveal data-reveal-delay="0.24">
-          Avete costruito la banca che dà quello che serve, quando serve, e più di un milione di persone l'hanno scelta. La prossima sfida non è aprire il conto in pochi minuti: quello è risolto. È restare la banca giusta nei mille momenti che vengono dopo. Qui parliamo di come leggere quei momenti e rispondere, uno alla volta, senza perdere la semplicità.
+          Avete costruito la banca che dà quello che serve, quando serve, e più di un milione di persone l'hanno scelta. Aprire il conto in pochi minuti è un problema risolto. La sfida che viene dopo è restare la banca giusta nei mille momenti successivi. Qui parliamo di come leggere quei momenti e rispondere, uno alla volta, senza perdere la semplicità.
         </p>
 
         <div class="im-cobrand" data-reveal data-reveal-delay="0.3">
@@ -61,12 +74,16 @@ const momento = [
         <p class="im-cover-note" data-reveal data-reveal-delay="0.34">
           Conversazione preparata dal team Adobe Italia · dati pubblici citati alle fonti
         </p>
+        <p class="im-firefly" data-reveal data-reveal-delay="0.38">
+          <span class="im-firefly-mark" aria-hidden="true"></span>
+          Sfondi e video generati con Adobe Firefly, firmati con Content Credentials
+        </p>
       </div>
     </Slide>
 
     <!-- ── SLIDE 1: Il momento ────────────────────────────────────── -->
     <Slide id="slide-momento" bg="primary" align="center">
-      <div slot="backdrop" class="im-bg-soft"></div>
+      <div slot="backdrop" class="im-bg-soft" style={`--bg-src: url(${bgMomento.src})`}></div>
       <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4" data-reveal>Il vostro 2026, visto da fuori</p>
       <h2
         class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
@@ -82,7 +99,7 @@ const momento = [
         data-reveal
         data-reveal-delay="0.15"
       >
-        In tre anni Isybank è arrivata a 1,2 milioni di clienti e oltre tre miliardi di giacenze, con tre clienti su quattro sotto i 35 anni. L'iF Design Award ha premiato proprio il gesto più semplice, aprire il conto. Il Piano di Impresa 2026-2029 alza l'asticella: due milioni di clienti e cento milioni di utile entro il 2029. Da qui parte tutto quello che segue.
+        In tre anni Isybank è arrivata a 1,2 milioni di clienti e oltre tre miliardi di giacenze, con tre clienti su quattro sotto i 35 anni. L'iF Design Award 2026 ha premiato l'intero ecosistema digitale, dall'app al sito, per l'esperienza d'uso. Il Piano di Impresa 2026-2029 alza l'asticella: due milioni di clienti e cento milioni di utile entro il 2029. Da qui parte tutto quello che segue.
       </p>
 
       <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
@@ -101,12 +118,14 @@ const momento = [
         <a href="https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">isybank.com, 3 ago 2026</a>
         &nbsp;·&nbsp;
         <a href="https://www.isybank.com/it/news-e-media/news/isybank-vince-if-design-award-2026.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">iF Design Award, 5 mag 2026</a>
+        &nbsp;·&nbsp;
+        <a href="https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/02/20260202-business-plan-uk" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Piano di Impresa 2026-2029 (2 feb 2026)</a>
       </p>
     </Slide>
 
     <!-- ── SLIDE 2: Il percorso ───────────────────────────────────── -->
     <Slide id="slide-percorso" bg="primary" align="center">
-      <div slot="backdrop" class="im-bg"></div>
+      <div slot="backdrop" class="im-bg" style={`--bg-src: url(${bgPercorso.src})`}></div>
       <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4" data-reveal>Il percorso</p>
       <h2
         class="font-[family-name:var(--font-display)] text-[var(--ink-primary)] mb-4 max-w-3xl mx-auto text-center block"
@@ -114,14 +133,14 @@ const momento = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Tre capitoli, un'ora scarsa
+        Tre capitoli, da percorrere insieme
       </h2>
       <p
         class="text-[clamp(0.9rem,1.05vw,1.05rem)] text-[var(--ink-secondary)] max-w-2xl mx-auto mb-4 text-center"
         data-reveal
         data-reveal-delay="0.15"
       >
-        Prima ascoltiamo, poi proponiamo. Ogni capitolo regge da solo e si può saltare o approfondire. Le idee non sono un catalogo: si aprono solo quelle che il dialogo tocca.
+        Cominciamo ascoltando voi. Poi la domanda che ci ha portati qui, le idee che ne nascono e la rotta per provarle. Si entra dove porta la conversazione e ci si ferma dove vale la pena.
       </p>
 
       <div class="w-full max-w-5xl mx-auto grid grid-cols-3 auto-rows-fr gap-3 mb-4" data-reveal data-reveal-delay="0.22">

@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### Change log — Isybank: fonti verificate + copy «da costruire insieme» + sfondi/video Adobe Firefly (2026-09-09 pom.) → dettaglio §31.4 (HANDOVER-05)
+- Fonti online verificate e citate su ogni slide (2 correzioni di fatto: iF Award = ecosistema digitale; nuovi clienti 900k/150k al posto di 480k/350k); slide richieste riscritta come 4 domande aperte; 17 backdrop + 2 clip Firefly (Release `media`) con credit esplicito; `audit:deck` 0 HARD, 17 slide lette a 1920.
+
 ### Change log — Isybank «Il momento giusto»: nuova esperienza + dossier war-room per l'AD Valitutti (2026-09-09) → dettaglio §31 (HANDOVER-05)
 - `113c579` `apps/isybank-momento` nuova (deck IT 3 capitoli + 6 idee gated, design `.im-*`, Manrope+Inter); registrata in deploy/hub/audit/root; `docs/Intesa Sanpaolo/` git-ignored (unico posto con dati contrattuali). `audit:deck` 0 HARD. Memoria `isybank-momento-valitutti`.
 - `0ce4287` + `7b8bbc0` **dossier gated come MIM** (utente: «come sempre, fallo sempre»): contenuto in Supabase `restricted_docs` (`isybank-valitutti`), login/RLS o secret-link `?t=`, nulla nel bundle; `0012_seed_isybank.sql` (registry) + README per il seed privato; DB remoto seedato, token letto. **Regola resa BINDING** in memoria `dossier-as-internal-web-page` (pattern inline Eni/FST = superato).

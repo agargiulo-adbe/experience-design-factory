@@ -87,7 +87,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
 | **Factory Hub** (root) | **Nuovo** (lug 2026): landing della Factory a `/experience-design-factory/`. | Vedi §15. Stub redirect per i vecchi deep-link maxmara. |
 | **Factory Showcase** | **Live + data-driven** (`src/data/experiences.ts`). Aggiungere un'esperienza lì propaga card/conteggi/KPI ovunque. | Vedi §13. |
-| **«Il momento giusto» (Isybank)** | **Nuova 9 set** (§31): deck IT 3 capitoli + 6 idee gated + `/dossier/?t=` gated (Supabase); `.im-*` blu/menta/arancio; `audit:deck` 0 HARD (16 soft accettate); screenshot letti 1920/1280. | Base `/isybank-momento/`. **Seedata in console** (`0012`) + dossier gated (secret-link) seedato out-of-band. Brief riservato git-ignored. |
+| **«Il momento giusto» (Isybank)** | **Nuova 9 set** (§31): deck IT 3 capitoli + 6 idee gated + `/dossier/?t=` gated (Supabase); `.im-*` blu/menta/arancio; **pom. 9 set: fonti verificate su ogni slide, richieste → 4 domande aperte, 17 sfondi + 2 clip Firefly (§31.4)**; `audit:deck` 0 HARD (23 soft accettate); 17 slide lette a 1920. | Base `/isybank-momento/`. **Seedata in console** (`0012`) + dossier gated (secret-link) seedato out-of-band. Brief riservato git-ignored. |
 | **Console (Super Admin)** | Codice pronto; registry `experiences` popolato (Trenitalia via `0005`, Agos `0006`, Atelier `0007`, **mim-alfabeti + eni-orbita `0010`** 2 set) → tutte le card visibili. | Auth + registry. |
 
 ---

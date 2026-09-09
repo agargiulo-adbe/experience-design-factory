@@ -233,23 +233,67 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    dell'audit non li legge). Riusare le classi .im-* in tutte le sezioni.
    ═══════════════════════════════════════════════════════════════════════ */
 
-/* Backdrop di profondità: blu in alto a sx, menta in basso a dx. */
+/* Backdrop — `<div slot="backdrop" class="im-bg" style="--bg-src:url(...)">`.
+   Sfondo bespoke Adobe Firefly (Content Credentials) SOTTO uno scrim inchiostro
+   dello stesso tono: legge come atmosfera, il testo resta pienamente leggibile.
+   L'opacità dello scrim è la manopola di leggibilità (verificata leggendo uno
+   screenshot a 1920). `--bg-src` è l'override per slide; senza immagine restano
+   i soli gradienti. Tutto rgba esplicito (il parser contrasto non legge oklab). */
 .im-bg {
+  position: absolute; inset: 0;
   background:
-    radial-gradient(115% 75% at 12% 0%, rgba(27,153,251,0.14), transparent 52%),
-    radial-gradient(110% 80% at 92% 108%, rgba(38,229,174,0.11), transparent 55%),
+    radial-gradient(115% 75% at 12% 0%, rgba(27,153,251,0.10), transparent 52%),
+    radial-gradient(110% 80% at 92% 108%, rgba(38,229,174,0.08), transparent 55%),
+    radial-gradient(72% 62% at 50% 50%, rgba(16,19,24,0.55), transparent 78%),
+    linear-gradient(rgba(16,19,24,0.70), rgba(16,19,24,0.84)),
+    var(--bg-src, none) center / cover no-repeat,
     var(--surface-primary);
 }
 .im-bg-soft {
+  position: absolute; inset: 0;
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(27,153,251,0.07), transparent 50%),
+    radial-gradient(120% 90% at 50% 0%, rgba(27,153,251,0.05), transparent 50%),
+    linear-gradient(rgba(23,27,33,0.78), rgba(23,27,33,0.86)),
+    var(--bg-src, none) center / cover no-repeat,
     var(--surface-secondary);
 }
 .im-bg-arancio {
+  position: absolute; inset: 0;
   background:
-    radial-gradient(110% 70% at 88% 0%, rgba(255,98,0,0.14), transparent 50%),
-    radial-gradient(100% 80% at 10% 110%, rgba(27,153,251,0.10), transparent 55%),
+    radial-gradient(110% 70% at 88% 0%, rgba(255,98,0,0.10), transparent 50%),
+    radial-gradient(100% 80% at 10% 110%, rgba(27,153,251,0.08), transparent 55%),
+    radial-gradient(72% 62% at 50% 50%, rgba(16,19,24,0.55), transparent 78%),
+    linear-gradient(rgba(16,19,24,0.70), rgba(16,19,24,0.84)),
+    var(--bg-src, none) center / cover no-repeat,
     var(--surface-primary);
+}
+
+/* ── Video backdrop (clip Firefly) ──────────────────────────────────
+   `<video class="im-video" autoplay muted loop playsinline poster=…>` messo nel
+   backdrop slot PRIMA del div .im-bg* (lo scrim resta sopra). Sotto reduced-motion
+   il video sparisce e resta lo still. Sopra un video lo scrim tiene i gradienti ma
+   perde immagine e colore opaco; il wrapper contenuti della Slide sale sopra a tutto. */
+.im-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0.92; z-index: 0; pointer-events: none;
+}
+.im-video ~ .im-bg, .im-video ~ .im-bg-soft, .im-video ~ .im-bg-arancio {
+  z-index: 1; --bg-src: none; background-color: transparent;
+}
+[data-slide]:has(.im-video) > .inset-0 { z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .im-video { display: none; } }
+
+/* Credit Firefly — riga discreta ma esplicita (cover + chiusura). */
+[data-slide] p.im-firefly { max-width: none; }
+.im-firefly {
+  display: inline-flex; align-items: center; gap: 0.55rem; margin-inline: auto;
+  font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--color-menta); max-width: none;
+}
+.im-firefly-mark {
+  width: 0.55rem; height: 0.55rem; flex: 0 0 auto; transform: rotate(45deg);
+  background: linear-gradient(135deg, var(--color-blu) 0%, var(--color-menta) 55%, var(--color-arancio) 100%);
+  border-radius: 1px;
 }
 
 /* Puntino "momento": il dot arancio del sistema. */
@@ -319,6 +363,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   align-items: start; padding: 0.65rem 0; border-top: 1px solid var(--line-subtle);
   min-width: 0;
 }
+.im-row > p, .im-row > div > p { margin-inline: 0; }
 .im-row-label { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; color: var(--ink-primary); line-height: 1.3; }
 .im-row-sub { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-400); margin-top: 0.2rem; }
 .im-row-body { color: var(--color-grigio-200); font-size: 0.96rem; line-height: 1.5; max-width: none; min-width: 0; }
