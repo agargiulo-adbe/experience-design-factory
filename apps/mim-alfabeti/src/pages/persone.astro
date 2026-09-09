@@ -5,7 +5,6 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import bgNavy from '../assets/generated/bg/navy-7.webp';
 import bgCarta from '../assets/generated/bg/carta-7.webp';
 import bgSoft from '../assets/generated/bg/soft-7.webp';
 
@@ -15,8 +14,8 @@ const currentPath = Astro.url.pathname;
 const metrics = [
   {
     label: { en: 'Reach', it: 'Recapito' },
-    en: 'Who was actually reached — by role, region and process — instead of "we sent it".',
-    it: 'Chi è stato davvero raggiunto — per ruolo, regione e processo — invece di «l’abbiamo mandato».',
+    en: 'Who was actually reached, by role, region and process, instead of “we sent it”.',
+    it: 'Chi è stato davvero raggiunto, per ruolo, regione e processo, invece di «l’abbiamo mandato».',
   },
   {
     label: { en: 'Comprehension', it: 'Comprensione' },
@@ -25,115 +24,145 @@ const metrics = [
   },
   {
     label: { en: 'Action', it: 'Azione' },
-    en: 'Deadline met, request submitted, step done — the outcome the communication existed to produce.',
-    it: 'Scadenza rispettata, domanda inviata, adempimento fatto — l’esito per cui la comunicazione esisteva.',
+    en: 'Deadline met, request submitted, step done: the outcome the communication existed to produce.',
+    it: 'Scadenza rispettata, domanda inviata, adempimento fatto: l’esito per cui la comunicazione esisteva.',
   },
   {
     label: { en: 'Help-desk load', it: 'Carico help-desk' },
     en: 'The repeated questions a clear, timely journey removes from school offices and call centres.',
     it: 'Le domande ripetute che un journey chiaro e tempestivo toglie a segreterie e call center.',
   },
-  {
-    label: { en: 'Territorial equity', it: 'Equità territoriale' },
-    en: 'Whether access to information is even across regions — a gap you can finally see, and close.',
-    it: 'Se l’accesso all’informazione è omogeneo tra territori — un divario che finalmente si vede, e si chiude.',
-  },
 ];
+const equity = {
+  label: { en: 'Territorial equity', it: 'Equità territoriale' },
+  en: 'Whether access to information is even across regions.',
+  it: 'Se l’accesso all’informazione è omogeneo tra territori.',
+  why: { en: 'The gap you can finally see, and close.', it: 'Il divario che finalmente si vede, e si chiude.' },
+};
 
 const segments = [
-  { label: { en: 'Teachers', it: 'Docenti' }, en: 'Tenure, mobility, substitutes, training — the highest-volume, highest-stakes audience.', it: 'Immissioni, mobilità, supplenze, formazione — l’audience più numerosa e ad alta posta.' },
-  { label: { en: 'Principals', it: 'Dirigenti' }, en: 'Leadership communications and duties — the channel competitors reached first.', it: 'Comunicazioni di leadership e adempimenti — il canale che i concorrenti hanno raggiunto per primi.' },
-  { label: { en: 'ATA staff', it: 'Personale ATA' }, en: 'Administrative and technical staff — often the least served, most in need of clarity.', it: 'Personale amministrativo e tecnico — spesso il meno servito, il più bisognoso di chiarezza.' },
+  { label: { en: 'Teachers', it: 'Docenti' }, en: 'Tenure, mobility, substitutes, training: the largest audience, with the most at stake.', it: 'Immissioni, mobilità, supplenze, formazione: l’audience più numerosa e con la posta più alta.' },
+  { label: { en: 'Principals', it: 'Dirigenti' }, en: 'Leadership communications and duties: the channel competitors reached first.', it: 'Comunicazioni di leadership e adempimenti: il canale che i concorrenti hanno raggiunto per primi.' },
+  { label: { en: 'ATA staff', it: 'Personale ATA' }, en: 'Administrative and technical staff: often the least served, the most in need of clarity.', it: 'Personale amministrativo e tecnico: spesso il meno servito, il più bisognoso di chiarezza.' },
 ];
+
+const SRC_FLC = 'https://www.flcgil.it/scuola/organici-scuola-2025-2026-docenti-confermato-taglio-5660-posti.flc';
+const SRC_TUTTOSCUOLA = 'https://www.tuttoscuola.com/perecari-della-scuola-numeri/';
+
+const h2Style = 'font-size: clamp(1.55rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;';
+const hairline = '1px solid rgba(10, 26, 51, 0.14)';
+const dlCols = 'grid grid-cols-1 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] items-baseline gap-x-6 gap-y-0.5';
 ---
-<BaseLayout title="La misura">
+<BaseLayout title="La misura" preloadImage={bgCarta.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, '/rotta')} prevHref={href(base, '/accesso')}>
 
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
-      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="Measurement" it="La misura" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
-        <T
-          as="h1"
-          en="What the staff channel doesn't measure today"
-          it="Ciò che il canale del personale, oggi, non misura"
-          class="slide-title text-center text-[var(--color-carta)] mb-6"
-          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <T
-          as="p"
-          en="Staff communication runs mostly through provincial offices, unions and the trade press — with no evidence it arrived, or was understood. This turns it into measurable evidence."
-          it="La comunicazione al personale passa oggi soprattutto da uffici provinciali, sindacati e stampa di settore — senza prova che sia arrivata, o capita. Qui diventa evidenza misurabile."
-          class="text-center text-[var(--color-carta-tenue)] mx-auto max-w-3xl"
-          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
-          data-reveal data-reveal-delay="0.16"
-        />
-      </div>
-    </Slide>
-
     <Slide id="slide-metrics" bg="primary" align="left">
       <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
+      <div class="w-full max-w-6xl mx-auto min-w-0">
         <T as="p" en="With Customer Journey Analytics" it="Con Customer Journey Analytics" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
           en="Five measures the Ministry gains on day one"
           it="Cinque misure che il Ministero ottiene dal primo giorno"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+          style={h2Style}
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="alf-rows" data-stagger="0.09">
+        <T
+          as="p"
+          en="Staff communication runs mostly through provincial offices, unions and the trade press, with no evidence it arrived or was understood. Here it becomes measurable evidence."
+          it="La comunicazione al personale passa oggi soprattutto da uffici provinciali, sindacati e stampa di settore, senza prova che sia arrivata o capita. Qui diventa evidenza misurabile."
+          class="text-[var(--color-ardesia-700)] mb-4"
+          style="font-size: clamp(1rem, 1.15vw, 1.1rem); line-height: 1.5; max-width: 64rem;"
+          data-reveal data-reveal-delay="0.14"
+        />
+
+        <!-- Compact two-column definition list: all five rows visible at 1366×768 -->
+        <dl class="w-full min-w-0 m-0" data-reveal data-reveal-delay="0.2">
           {metrics.map((m) => (
-            <div class="alf-row">
-              <T as="p" en={m.label.en} it={m.label.it} class="alf-row-label" />
-              <T as="p" en={m.en} it={m.it} class="alf-row-body" />
+            <div class={`${dlCols} py-2.5`} style={`border-top: ${hairline};`}>
+              <T as="dt" en={m.label.en} it={m.label.it} class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-inchiostro)]" style="font-size: 1.05rem; line-height: 1.35; max-width: none;" />
+              <T as="dd" en={m.en} it={m.it} class="m-0 text-[var(--color-ardesia-700)]" style="font-size: 0.95rem; line-height: 1.5; max-width: none; min-width: 0;" />
             </div>
           ))}
-        </div>
+          <div class={`${dlCols} py-3`} style="border-top: 2px solid var(--color-blu); border-bottom: 2px solid var(--color-blu);">
+            <T as="dt" en={equity.label.en} it={equity.label.it} class="font-[family-name:var(--font-display)] font-bold text-[var(--color-blu)]" style="font-size: 1.15rem; line-height: 1.3; max-width: none;" />
+            <dd class="m-0 min-w-0" style="max-width: none;">
+              <T as="span" en={equity.en} it={equity.it} class="block text-[var(--color-ardesia-700)]" style="font-size: 0.95rem; line-height: 1.5;" />
+              <T as="span" en={equity.why.en} it={equity.why.it} class="block font-[family-name:var(--font-display)] font-semibold text-[var(--color-blu)] mt-0.5" style="font-size: 1.05rem; line-height: 1.35;" />
+            </dd>
+          </div>
+        </dl>
       </div>
     </Slide>
 
     <Slide id="slide-segments" bg="secondary" align="left">
       <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
+      <div class="w-full max-w-6xl mx-auto min-w-0">
         <T as="p" en="One data model, three audiences" it="Un modello dati, tre audience" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
           en="The people behind the profiles"
           it="Le persone dietro i profili"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+          style={h2Style}
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
+        <T
+          as="p"
+          en="Three distinct audiences on one governed, role-based profile in Real-Time CDP: the same yardstick for all, each served in its own language."
+          it="Tre audience distinte su un unico profilo governato, basato sul ruolo, in Real-Time CDP: lo stesso metro per tutte, ciascuna servita nella propria lingua."
+          class="text-[var(--color-ardesia-700)] mb-5"
+          style="font-size: clamp(1rem, 1.15vw, 1.1rem); line-height: 1.5; max-width: 64rem;"
+          data-reveal data-reveal-delay="0.14"
+        />
+
+        <!-- Three columns, no card chrome: a blue hairline above each -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-4 mb-5" data-stagger="0.09">
           {segments.map((s) => (
-            <article class="alf-card">
-              <T as="h3" en={s.label.en} it={s.label.it} class="alf-card-title" />
-              <T as="p" en={s.en} it={s.it} class="alf-card-body" />
-            </article>
+            <div class="min-w-0 pt-3" style="border-top: 2px solid rgba(0, 102, 204, 0.45);">
+              <T as="h3" en={s.label.en} it={s.label.it} class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-inchiostro)] mb-1.5" style="font-size: 1.15rem; line-height: 1.25; max-width: none;" />
+              <T as="p" en={s.en} it={s.it} class="text-[var(--color-ardesia-700)]" style="font-size: 0.97rem; line-height: 1.5; max-width: none;" />
+            </div>
           ))}
         </div>
-        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.24">
-          <T
-            as="p"
-            en="Three distinct audiences on one governed, role-based profile in Real-Time CDP — measured with the same yardstick, served each in their own language."
-            it="Tre audience distinte su un unico profilo governato e basato sul ruolo in Real-Time CDP — misurate con lo stesso metro, servite ciascuna nella propria lingua."
-            class="alf-quote-text"
-            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
-          />
+
+        <!-- Scale: three source cards (value · year · source · accessed · what it does not cover) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.7rem,1vw,1rem)]" data-reveal data-reveal-delay="0.24">
+          <dl class="alf-source-card">
+            <T as="div" en="~665,000" it="~665.000" class="alf-source-card-value" />
+            <T as="dt" en="What" it="Cosa" /><T as="dd" en="teaching posts in the official staffing plan" it="posti docenti in organico" />
+            <T as="dt" en="Year" it="Anno" /><dd>2025/26</dd>
+            <T as="dt" en="Source" it="Fonte" /><dd><a href={SRC_FLC} target="_blank" rel="noopener noreferrer">FLC CGIL</a></dd>
+            <T as="dt" en="Accessed" it="Consultato il" /><T as="dd" en="4 Sep 2026" it="4 set 2026" />
+            <T as="dt" en="Not covered" it="Cosa non copre" /><T as="dd" en="substitutes outside the plan, principals and ATA staff" it="supplenti fuori organico, dirigenti e personale ATA" />
+          </dl>
+          <dl class="alf-source-card">
+            <T
+              as="div"
+              en={'234,576 <span style="font-size: 1rem; font-weight: 600; letter-spacing: 0;">· 26.9%</span>'}
+              it={'234.576 <span style="font-size: 1rem; font-weight: 600; letter-spacing: 0;">· 26,9%</span>'}
+              class="alf-source-card-value"
+            />
+            <T as="dt" en="What" it="Cosa" /><T as="dd" en="substitute teachers, share of all teachers" it="supplenti, quota sul totale docenti" />
+            <T as="dt" en="Year" it="Anno" /><dd>2022/23</dd>
+            <T as="dt" en="Source" it="Fonte" /><dd><a href={SRC_TUTTOSCUOLA} target="_blank" rel="noopener noreferrer">Tuttoscuola</a></dd>
+            <T as="dt" en="Accessed" it="Consultato il" /><T as="dd" en="4 Sep 2026" it="4 set 2026" />
+            <T as="dt" en="Not covered" it="Cosa non copre" /><T as="dd" en="later years: no newer public count" it="gli anni successivi: nessun dato pubblico più recente" />
+          </dl>
+          <dl class="alf-source-card" style="border-style: dashed; border-color: rgba(10, 26, 51, 0.32); background: transparent;">
+            <T as="div" en="No single count" it="Nessun conteggio" class="alf-source-card-value" style="color: var(--color-ardesia-500); font-size: 1.35rem;" />
+            <T as="dt" en="What" it="Cosa" /><T as="dd" en="principals and ATA staff" it="dirigenti e personale ATA" />
+            <T as="dt" en="Year" it="Anno" /><T as="dd" en="none published" it="nessuno pubblicato" />
+            <T as="dt" en="Source" it="Fonte" /><T as="dd" en="no single published head-count" it="nessun conteggio unico pubblicato" />
+            <T as="dt" en="Accessed" it="Consultato il" /><T as="dd" en="4 Sep 2026" it="4 set 2026" />
+            <T as="dt" en="Not covered" it="Cosa non copre" /><T as="dd" en="the count itself: this is part of the gap" it="il conteggio stesso: è parte del divario" />
+          </dl>
         </div>
-        <p class="alf-src mt-3" data-reveal data-reveal-delay="0.3">
-          <T
-            en="Scale · teachers ~665,000 organic posts (2025/26), 234,576 of them substitutes in 2022/23 (26.9%). No single published head-count for principals and ATA — itself part of the gap. "
-            it="Scala · docenti ~665.000 posti in organico (2025/26), di cui 234.576 supplenti nel 2022/23 (26,9%). Per dirigenti e ATA nessun conteggio unico pubblicato — anch'esso parte del divario. "
-          /><a href="https://www.flcgil.it/scuola/organici-scuola-2025-2026-docenti-confermato-taglio-5660-posti.flc" target="_blank" rel="noopener noreferrer">FLC&nbsp;CGIL</a> · <a href="https://www.tuttoscuola.com/perecari-della-scuola-numeri/" target="_blank" rel="noopener noreferrer">Tuttoscuola</a>
-        </p>
       </div>
     </Slide>
 
