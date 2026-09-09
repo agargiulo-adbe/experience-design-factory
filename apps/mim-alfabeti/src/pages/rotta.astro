@@ -10,15 +10,22 @@ import bgNavy from '../assets/generated/bg/navy-8.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+const VIDEO_CLOSE = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/mim-voce-close.mp4';
 
 const moves = [
-  { en: 'Start where it is ready: one measured voice on the staff channel, on tools already procurable through ACN — alongside Piattaforma Unica, not instead of it.', it: 'Partire da dove è pronto: una voce unica e misurata sul canale del personale, su strumenti già acquistabili via ACN — accanto a Piattaforma Unica, non al posto.' },
+  { en: 'Start where it is ready: one measured voice on the staff channel, on tools already procurable through ACN, alongside Piattaforma Unica rather than instead of it.', it: 'Partire da dove è pronto: una voce unica e misurata sul canale del personale, su strumenti già acquistabili via ACN, accanto a Piattaforma Unica e non al posto suo.' },
   { en: 'Settle governance first: define the data perimeter and legal basis for staff data, with privacy and the Garante in the room from day one.', it: 'Chiudere prima la governance: definire il perimetro-dati e la base giuridica per i dati del personale, con privacy e Garante al tavolo dal primo giorno.' },
-  { en: 'Run one pilot journey — tenure appointments, end to end: built once, measured against a clear outcome.', it: 'Un journey pilota su un processo — le immissioni in ruolo, dall’inizio alla fine: costruito una volta, misurato su un esito chiaro.' },
-  { en: 'Measure, then scale: extend the same engine to mobility, substitutes, rankings and training — and read the reach across every region.', it: 'Misurare, poi scalare: estendere lo stesso motore a mobilità, supplenze, graduatorie e formazione — e leggere il recapito su ogni territorio.' },
+  { en: 'Run one pilot journey on one process, tenure appointments end to end: built once, measured against a clear outcome.', it: 'Un journey pilota su un processo, le immissioni in ruolo dall’inizio alla fine: costruito una volta, misurato su un esito chiaro.' },
+  { en: 'Measure, then scale: extend the same engine to mobility, substitutes, rankings and training, and read the reach across every region.', it: 'Misurare, poi scalare: estendere lo stesso motore a mobilità, supplenze, graduatorie e formazione, e leggere il recapito su ogni territorio.' },
 ];
+
+// Step 5 — the concrete next action, styled apart («prossimo passo»).
+const nextStep = {
+  en: 'Tuesday: a 90-minute working session with DGSIS to fix the data perimeter and pick the pilot journey (tenure appointments).',
+  it: 'Martedì: un tavolo di 90 minuti con DGSIS per fissare il perimetro-dati e scegliere il journey pilota (immissioni in ruolo).',
+};
 ---
-<BaseLayout title="La rotta">
+<BaseLayout title="La rotta" preloadImage={bgCarta.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
@@ -31,24 +38,34 @@ const moves = [
         <T as="p" en="The path" it="La rotta" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
-          en="One path, four steps"
-          it="Un percorso, quattro passi"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.8rem, 2.8vw, 2.6rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          en="One path, four steps. And a fifth for Tuesday."
+          it="Un percorso, quattro passi. E un quinto per martedì."
+          class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <ol class="flex flex-col gap-3" data-stagger="0.1">
+        <ol class="rotta-steps flex flex-col" data-stagger="0.08">
           {moves.map((m, i) => (
-            <li class="alf-row" style="grid-template-columns: 2.5rem minmax(0,1fr); gap:1.2rem;">
+            <li class="alf-row rotta-step">
               <span class="alf-mark" style="margin-bottom:0;">{i + 1}</span>
-              <T as="p" en={m.en} it={m.it} class="alf-row-body" style="font-size:1.02rem;" />
+              <T as="p" en={m.en} it={m.it} class="alf-row-body" style="font-size:1rem;" />
             </li>
           ))}
+          <li class="alf-row rotta-step rotta-step--next">
+            <span class="alf-mark rotta-mark--next" style="margin-bottom:0;">5</span>
+            <div class="min-w-0">
+              <T as="p" en="Next step" it="Prossimo passo" class="rotta-next-kicker" />
+              <T as="p" en={nextStep.en} it={nextStep.it} class="alf-row-body rotta-next-body" />
+            </div>
+          </li>
         </ol>
       </div>
     </Slide>
 
-    <Slide id="slide-close" bg="inverse" align="center">
+    <Slide id="slide-close" bg="inverse" align="center" data-dark>
+      <video slot="backdrop" class="alf-video alf-video--once" autoplay muted playsinline preload="metadata" poster={href(base, '/media/mim-voce-close-poster.jpg')} aria-hidden="true">
+        <source src={VIDEO_CLOSE} type="video/mp4" />
+      </video>
       <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
       <div class="w-full max-w-4xl mx-auto flex flex-col items-center">
         <T as="p" en="In one breath" it="In un respiro" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
@@ -61,7 +78,6 @@ const moves = [
           data-reveal data-reveal-delay="0.08"
         />
         <div class="mt-10 flex flex-col items-center gap-4" data-reveal data-reveal-delay="0.18">
-          <div class="w-12 h-px" style="background: var(--color-azzurro-chiaro);" aria-hidden="true"></div>
           <T
             as="p"
             en="Orchestrate · Measure · Govern"
@@ -69,12 +85,13 @@ const moves = [
             class="text-center"
             style="font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.5vw, 1.35rem); letter-spacing: 0.02em; color: var(--color-carta);"
           />
+          <hr class="alf-rule-tricolore" aria-hidden="true" />
           <T
             as="p"
             en="Adobe × Ministry of Education and Merit"
             it="Adobe × Ministero dell'Istruzione e del Merito"
             class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)]"
-            style="margin-top: 0.4rem;"
+            style="margin-top: 0.2rem;"
           />
         </div>
       </div>
@@ -82,3 +99,59 @@ const moves = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* slide-close: the scrim div gets z-index:1 (global `.alf-video ~ .alf-bg-navy`),
+     so the slide's content wrapper must sit above the video+scrim stack. */
+  #slide-close > div.inset-0 { z-index: 2; }
+
+  /* slide-route: five stacked rows; the fifth is the concrete next action,
+     set apart with a blu Italia frame (no side stripe: the deck's rule). */
+  #slide-route .rotta-steps { gap: 0.65rem; }
+  #slide-route .rotta-step { grid-template-columns: 2.25rem minmax(0, 1fr); gap: 1.1rem; padding: 0.8rem 1.2rem; }
+  #slide-route .rotta-step--next {
+    border: 2px solid var(--color-blu); background: rgba(0, 102, 204, 0.06);
+    margin-top: 0.35rem;
+  }
+  #slide-route .rotta-mark--next { background: var(--color-blu-scuro); }
+  #slide-route .rotta-next-kicker {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-blu-scuro); max-width: none; margin-bottom: 0.15rem;
+  }
+  #slide-route .rotta-next-body { font-size: 1.05rem; font-weight: 600; color: var(--color-inchiostro); }
+  @media (max-height: 799px) {
+    #slide-route .rotta-step { padding: 0.65rem 1.1rem; }
+    #slide-route .rotta-steps { gap: 0.5rem; }
+  }
+</style>
+
+<script is:inline>
+  // Play-once backdrop videos (.alf-video--once): restart when their slide
+  // becomes active, pause when leaving. One document-level listener that
+  // survives ClientRouter swaps; identical in storia.astro and rotta.astro.
+  (function () {
+    if (window.__alfVideoOnceBound) return;
+    window.__alfVideoOnceBound = true;
+    function sync(activeId) {
+      document.querySelectorAll('.alf-video--once').forEach(function (v) {
+        var slide = v.closest('[data-slide]');
+        var active = !!(slide && activeId && slide.id === activeId);
+        if (active) {
+          try { v.currentTime = 0; } catch (e) {}
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else if (!v.paused) {
+          v.pause();
+        }
+      });
+    }
+    document.addEventListener('deck:change', function (e) {
+      sync(e && e.detail ? e.detail.id : '');
+    });
+    document.addEventListener('astro:page-load', function () {
+      var deck = window.__edfDeck;
+      var s = deck && deck.slides && deck.slides[deck.index];
+      if (s && s.id) sync(s.id);
+    });
+  })();
+</script>
