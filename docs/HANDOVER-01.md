@@ -133,7 +133,7 @@ Il deck è stato riconfigurato come la **«Customer story» che apre il workshop
 - **Backdrop Adobe Firefly** on-brand (art, C2PA): `ff-engine-map` (engine-map), `ff-il-sito` (cover visibilita), `ff-contenuti` (slide genstudio) — generati via pipeline repo `scripts/lib/firefly.ts` con **`FIREFLY_CLIENT_ID/SECRET` in `apps/unicredit-engagement/.env`** (gitignored, copiate da `mim-alfabeti`). Gotcha: l'MCP Adobe **non genera** immagini; ogni `assets:build --manifest <subset>` **riscrive `provenance.json`** coi soli slot processati → fare merge (`git show HEAD:…provenance.json` + jq). Memoria `unicredit-workshop-cut`.
 - Verifica: `audit:deck` **0 nuovi HARD** (residui c/j a 1280/1440 su aem-agents/brand-concierge pre-esistenti; puliti a 1920). Merge #1, deploiato, nav live = 6 capitoli.
 
-### 5.7 «La storia di Marco» — flusso di 5 slide-momento (9 set 2026, `3c1a555` → rifatto in serata) — stato attuale del racconto
+### 5.7 «La storia di Marco» — flusso di 5 slide-momento (9 set 2026, `20d6558`)
 - Prima versione (5 beat in un pannello) **bocciata dall'utente**; **rifatta come flusso**: `slide-marco` (persona pulita) → **`slide-story-01…05`** (un momento per capitolo) → `slide-engine-map` → `slide-promise`. Scenario = **11 slide**.
 - **Template slide-momento** (`align="split"`, bg inverse): backdrop Firefly sotto scrim `:global(.uc-story-scrim)`; sinistra kicker + titolo + narrativa + link al capitolo; destra mock UI (`.uc-mock*`). Dati in `marcoMoments[]`.
 - **5 backdrop Firefly** `ff-story-01…05` (slot in `assets.manifest.ts`, senza volti né letterform: cucina/salotto/filo a 8 nodi/ufficio consulente/casa nuova), generati via `assets:build --manifest <subset>` + merge `provenance.json`.
