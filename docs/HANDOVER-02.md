@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### Change log — Isybank «Il momento giusto»: nuova esperienza + dossier war-room per l'AD Valitutti (2026-09-09) → dettaglio §31 (HANDOVER-05)
+- `apps/isybank-momento` nuova (deck IT 3 capitoli + 6 idee gated + `/dossier/` noindex, design `.im-*`, Manrope+Inter); registrata in deploy/hub/audit/root; `docs/Intesa Sanpaolo/` git-ignored (unico posto con dati contrattuali). `audit:deck` 0 HARD. Memoria `isybank-momento-valitutti`.
+
 ### Change log — MIM «La voce del Ministero»: evoluzione UI/UX post-critique + Firefly Video sbloccato (2026-09-09, dal più recente) → dettaglio §28.7, §29
 - `00147ab` **feat(mim): phase 3** — bridge presenter nel layout, registry admin/presenter sui 18 id, contratto video nel CSS (scrim senza immagine/colore sopra il clip, contenuto sollevato solo con z-index — un `position:relative` sul wrapper assoluto aveva prodotto 3 HARD, corretti), resync fade-scroll a 1,4 s, quote lh 1.45. Build 12 app, typecheck/lint 0, audit 0 HARD, 18 slide lette a 1920+1366.
 - `87f83a7` (merge P2a–P2e) **pagine**: `index` (cover video+tricolore, tesi+3 verbi), `domanda` (processi · **`slide-scala`** · domande a passi), `storia` (**ponte video** · ritratto · **notte a 3 battute** · evolve), `voce` (ha già/manca · **`slide-unica`**), `competenze` (**journey builder** + simulatore), `accesso` (link diretti ACN/Consip · garanzie a passi), `persone` (5 misure · schede-dato), `rotta` (5° passo DGSIS · chiusura video).

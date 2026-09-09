@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsyNavigation from '../components/IsyNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const ALL_IDS = ['onboarding', 'gestore', 'momento', 'premialita', 'journey', 'contenuti'];
+
+interface Idea {
+  id: string;
+  stato: 'estende' | 'nuovo';
+  ey: string;
+  t: string;
+  da: string;
+  a: string;
+  mossa: string;
+  adobe: string;
+}
+
+const idee: Idea[] = [
+  {
+    id: 'onboarding',
+    stato: 'estende',
+    ey: 'Idea 1 · I primi novanta giorni',
+    t: 'I primi novanta giorni decidono la banca principale',
+    da: 'L\'apertura del conto è il gesto più curato di Isybank, premiato a Berlino. Poi il cliente resta solo: la carta arriva, le notifiche sono uguali per tutti, e la scelta di accreditare lo stipendio si gioca nelle prime settimane, spesso senza che nessuno la accompagni.',
+    a: 'Un percorso di novanta giorni che legge i segnali reali (prima spesa con la carta, primo bonifico ricevuto, utenza domiciliata, app aperta tre volte in una settimana) e propone il passo successivo giusto: in app, con una notifica, o per mano di un gestore. Ogni passo misurato sulla primacy, non sui click.',
+    mossa: 'Prima mossa: disegnare insieme il journey dei primi novanta giorni su una coorte di nuovi clienti, con un solo indicatore: quanti accreditano lo stipendio entro tre mesi.',
+    adobe: 'Adobe Real-Time CDP · Adobe Journey Optimizer',
+  },
+  {
+    id: 'gestore',
+    stato: 'estende',
+    ey: 'Idea 2 · Il gestore che sa già',
+    t: 'Il gestore che sa già cosa è successo',
+    da: 'Il modello di servizio unisce app e tocco umano: oltre 2.300 gestori della Filiale Digitale, anche nel weekend. Il Piano vuole l\'80% delle richieste risolte in automatico nel 2029, dal 30% di oggi. Il rischio è che l\'automatico diventi un muro: il cliente racconta due volte la stessa cosa, e un blocco di sicurezza arriva senza spiegazione.',
+    a: 'Un assistente in app, con il tono di Isybank, che risolve le richieste semplici e passa al gestore quelle complesse portandosi dietro il contesto: cosa ha fatto il cliente, cosa ha provato, dove si è fermato. Il gestore parte dal punto giusto. L\'80% automatico diventa un\'esperienza, non un filtro.',
+    mossa: 'Prima mossa: un caso d\'uso solo, la richiesta di carta di credito che si interrompe. Assistente in app, poi consegna al gestore con il contesto.',
+    adobe: 'Adobe Brand Concierge · Adobe Experience Platform · Adobe Journey Optimizer',
+  },
+  {
+    id: 'momento',
+    stato: 'nuovo',
+    ey: 'Idea 3 · I momenti che cambiano il conto',
+    t: 'Il compleanno dei 35 anni, e gli altri momenti che contano',
+    da: 'L\'offerta è già disegnata per momenti di vita: isyPrime a canone zero fino ai 35 anni, SpensieRata per la spesa da rateizzare, isyProtezione, i fondi sostenibili, isySalvadanaio. Oggi la proposta arriva quando il cliente la cerca, non quando la vive. E dopo la sanzione di marzo, ogni proposta deve poggiare su un consenso che il cliente ricorda di aver dato.',
+    a: 'Contenuti di app e sito che cambiano con il momento: chi si avvicina ai 35 anni vede in tempo cosa cambia e perché conviene restare; chi riceve il primo stipendio vede il risparmio a obiettivi; chi paga una spesa grande trova SpensieRata prima di cercarla. Con due limiti chiari: mai più di una proposta alla volta, e solo dentro le preferenze che il cliente ha scelto.',
+    mossa: 'Prima mossa: tre momenti, tre varianti ciascuno, un test controllato su sito e app. Si misura cosa cambia davvero prima di estendere.',
+    adobe: 'Adobe Target · Adobe Journey Optimizer (decisioning) · Real-Time CDP con consenso e governance del dato',
+  },
+  {
+    id: 'premialita',
+    stato: 'estende',
+    ey: 'Idea 4 · Premiare i comportamenti',
+    t: 'Premiare i comportamenti, non i click',
+    da: 'isyToken premia i clienti più attivi, isyReward apre esperienze come gli I-Days o il pranzo con Pogačar, Porta un Amico porta clienti nuovi. I vostri stessi dati raccontano giovani attenti al risparmio e alla sostenibilità. La premialità esiste; oggi vive a campagne, una alla volta.',
+    a: 'Un programma che riconosce i comportamenti che contano per Isybank (lo stipendio accreditato, l\'obiettivo di risparmio raggiunto, l\'utenza domiciliata, la scelta di un fondo sostenibile) e li premia nel momento in cui accadono, con un messaggio nella lingua della community. Il programma impara: chi risponde a cosa, e cosa non serve più mandare.',
+    mossa: 'Prima mossa: prendere due comportamenti che già premiate e trasformarli in un journey continuo, con la misura dell\'effetto sulla retention a sei mesi.',
+    adobe: 'Adobe Journey Optimizer · Real-Time CDP · Customer Journey Analytics',
+  },
+  {
+    id: 'journey',
+    stato: 'estende',
+    ey: 'Idea 5 · Vedere il viaggio intero',
+    t: 'Vedere il viaggio intero, da un canale all\'altro',
+    da: 'isytech permette di iniziare un\'operazione su un canale e finirla su un altro: app, sito, gestore. Il web analytics già in uso racconta bene ogni canale preso da solo. Quello che manca è la vista del viaggio completo per cliente, con il passaggio all\'umano dentro.',
+    a: 'Un\'analisi del journey che unisce app, sito, Filiale Digitale e contact center in una sola sequenza per cliente: dove si interrompe la richiesta di carta, quanto pesa un gestore sulla conversione, quali momenti anticipano l\'abbandono. Le risposte diventano l\'input per le idee precedenti e per i numeri del Piano.',
+    mossa: 'Prima mossa: un\'analisi guidata su un solo journey, con i dati che avete già. La richiesta di carta di credito, dall\'app alla consegna.',
+    adobe: 'Adobe Customer Journey Analytics, sopra il web analytics già in uso',
+  },
+  {
+    id: 'contenuti',
+    stato: 'estende',
+    ey: 'Idea 6 · Contenuti alla velocità delle promo',
+    t: 'Contenuti alla velocità delle promo, visibili anche ai motori AI',
+    da: 'Il sito Isybank vive su Adobe Experience Manager e le promo cambiano ogni mese: canone azzerato, carta di credito, I-Days, i nuovi atleti. In home lo dichiarate già: uno sfondo generato con l\'AI. Intanto un ventenne chiede a ChatGPT quale banca aprire, e la risposta la scrive qualcun altro.',
+    a: 'Una filiera dei contenuti che produce le varianti di ogni promo per segmento e canale, con i guardrail di brand, e un osservatorio che misura come i motori AI raccontano Isybank rispetto a Revolut, HYPE o BBVA, con le correzioni da fare sul sito che già avete.',
+    mossa: 'Prima mossa: una baseline di visibilità AI su dieci domande tipiche di un under 35, e una promo prodotta in varianti con approvazione di brand.',
+    adobe: 'Adobe GenStudio for Performance Marketing · Adobe Firefly · Adobe Experience Manager (già in casa) · Adobe Brand Visibility',
+  },
+];
+---
+<BaseLayout
+  title="Le idee"
+  description="Sei idee per diventare la banca del momento giusto: dai primi novanta giorni al viaggio intero. Isybank × Adobe."
+  pageSolutions={ALL_IDS}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsyNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/rotta')} prevHref={href(base, '/domanda')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="im-bg"></div>
+      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4 block" data-reveal>Capitolo 02 · Le idee</p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.1rem, 3.8vw, 3.6rem); font-weight: 700; line-height: 1.06; letter-spacing: -0.02em; max-width: 20ch;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Sei idee, una regola: la semplicità non si tocca
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-4 block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Ogni idea parte da qualcosa che Isybank ha già in casa e la porta al momento in cui serve al cliente. Nessuna aggiunge un passaggio all'esperienza: tutte ne tolgono uno. Le percorriamo solo quelle che il dialogo tocca.
+      </p>
+      <p class="text-center text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)] block" data-reveal data-reveal-delay="0.22">
+        Sei idee · si percorrono quelle che il dialogo tocca
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 1..6: le idee (gated) ────────────────────────────── -->
+    {idee.map((t) => (
+      <Slide id={`slide-${t.id}`} bg="primary" align="center" data-solution={t.id}>
+        <div slot="backdrop" class="im-bg-soft"></div>
+        <div class="flex items-center justify-center gap-3 mb-4" data-reveal>
+          <p class="slide-eyebrow text-center text-[var(--color-menta)]">{t.ey}</p>
+          <span class={`im-badge ${t.stato === 'nuovo' ? 'im-badge--nuovo' : 'im-badge--estende'}`}>
+            {t.stato === 'nuovo' ? 'nuovo' : 'in casa → estensione'}
+          </span>
+        </div>
+        <h2
+          class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
+          style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+          data-reveal
+          data-reveal-delay="0.08"
+        >
+          {t.t}
+        </h2>
+
+        <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.16">
+          <div class="im-panel im-panel--blu">
+            <div class="im-panel-head"><span class="im-tag">Da dove parte</span></div>
+            <p class="im-panel-body block">{t.da}</p>
+          </div>
+          <div class="im-panel im-panel--menta">
+            <div class="im-panel-head"><span class="im-tag im-tag--menta">Dove può arrivare</span></div>
+            <p class="im-panel-body block">{t.a}</p>
+          </div>
+        </div>
+
+        <p
+          class="mt-5 text-center text-[var(--ink-primary)] max-w-3xl mx-auto font-medium block"
+          style="font-size: clamp(0.98rem, 1.15vw, 1.15rem);"
+          data-reveal
+          data-reveal-delay="0.26"
+        >
+          {t.mossa}
+        </p>
+        <p class="mt-2 text-center text-[0.78rem] tracking-widest uppercase text-[var(--color-blu-chiaro)] block" data-reveal data-reveal-delay="0.3">
+          {t.adobe}
+        </p>
+      </Slide>
+    ))}
+
+  </DeckContainer>
+</BaseLayout>

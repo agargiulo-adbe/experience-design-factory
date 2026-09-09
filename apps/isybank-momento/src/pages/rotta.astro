@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsyNavigation from '../components/IsyNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const orizzonti = [
+  {
+    n: 'O1', when: 'Entro fine 2026', t: 'Leggere',
+    body: 'Un journey solo, analizzato con i dati che avete già: la richiesta di carta di credito dall\'app alla consegna. In parallelo, il disegno dei primi novanta giorni con il vostro team prodotto. Nessuna piattaforma nuova, nessuna firma.',
+    tone: 'blu',
+  },
+  {
+    n: 'O2', when: '2027', t: 'Rispondere',
+    body: 'Il pilota dei primi novanta giorni su una coorte di nuovi clienti e il test dei tre momenti sul sito e in app. Un caso di consegna al gestore con il contesto. Ogni pilota con un indicatore solo e una data per leggerlo.',
+    tone: 'menta',
+  },
+  {
+    n: 'O3', when: '2028 → 2029', t: 'Scalare',
+    body: 'Il motore di relazione per due milioni di clienti: premialità che impara, contenuti prodotti in filiera, l\'assistente che sa quando fermarsi. Misurato sugli stessi numeri del Piano: clienti, attività finanziarie, utile.',
+    tone: 'arancio',
+  },
+];
+
+const richieste = [
+  { k: 'Mezza giornata', v: 'con il team prodotto e dati per scegliere il journey da leggere per primo e il segnale che vale di più nei novanta giorni.' },
+  { k: 'Un referente', v: 'della Filiale Digitale per disegnare insieme il passaggio dall\'assistente al gestore su un caso reale.' },
+  { k: 'I dati che avete', v: 'del web analytics già in uso, senza integrazioni nuove, per la prima analisi del viaggio intero.' },
+  { k: 'Una data', v: 'entro l\'anno per tornare con i numeri, non con le slide.' },
+];
+---
+<BaseLayout
+  title="La rotta"
+  description="Tre orizzonti misurati sull'obiettivo 2029 e quattro richieste senza firma. Isybank × Adobe."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsyNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/idee')}>
+
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="im-bg-arancio"></div>
+      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4 block" data-reveal>Capitolo 03 · La rotta</p>
+      <h2
+        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(2.1rem, 3.8vw, 3.6rem); font-weight: 700; line-height: 1.06; letter-spacing: -0.02em; max-width: 20ch;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Tre orizzonti, misurati sul 2029
+      </h2>
+      <p
+        class="text-[var(--ink-secondary)] leading-normal max-w-2xl mx-auto text-center mb-4 block"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem);"
+        data-reveal
+        data-reveal-delay="0.15"
+      >
+        Il Piano fissa i numeri: due milioni di clienti, otto miliardi di attività finanziarie, cento milioni di utile. Le idee servono se spostano quei numeri. Per questo la rotta parte dal leggere, non dal comprare.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 1: Orizzonti ─────────────────────────────────────── -->
+    <Slide id="slide-orizzonti" bg="primary" align="center">
+      <div slot="backdrop" class="im-bg-soft"></div>
+      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4" data-reveal>La sequenza</p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Leggere, rispondere, scalare
+      </h2>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 auto-rows-fr gap-5" data-reveal data-reveal-delay="0.16">
+        {orizzonti.map((o) => (
+          <div class={`im-card h-full ${o.tone === 'blu' ? 'im-panel--blu' : o.tone === 'menta' ? 'im-panel--menta' : 'im-panel--arancio'}`}>
+            <span class={`im-mark ${o.tone === 'blu' ? 'im-mark--blu' : o.tone === 'arancio' ? 'im-mark--arancio' : ''}`}>{o.n}</span>
+            <p class="im-tag" style={o.tone === 'menta' ? 'color: var(--color-menta);' : o.tone === 'arancio' ? 'color: var(--color-arancio-chiaro);' : ''}>{o.when}</p>
+            <p class="im-card-title mt-1">{o.t}</p>
+            <p class="im-card-body">{o.body}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Richieste ─────────────────────────────────────── -->
+    <Slide id="slide-richieste" bg="primary" align="center">
+      <div slot="backdrop" class="im-bg"></div>
+      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4" data-reveal>Cosa vi chiediamo</p>
+      <h2
+        class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)] text-center mx-auto block"
+        style="font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 700; line-height: 1.07; letter-spacing: -0.02em; max-width: 24ch;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Quattro richieste, nessuna firma
+      </h2>
+      <div class="w-full max-w-5xl mx-auto flex flex-col" data-reveal data-reveal-delay="0.16">
+        {richieste.map((r, i) => (
+          <div class="im-row">
+            <p class="im-row-label"><span class="text-[var(--color-arancio)] mr-2 tabular-nums">0{i + 1}</span>{r.k}</p>
+            <p class="im-row-body">{r.v}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Chiusura ──────────────────────────────────────── -->
+    <Slide id="slide-chiusura" bg="primary" align="center">
+      <div slot="backdrop" class="im-bg-arancio"></div>
+      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-5" data-reveal>Per chiudere</p>
+      <blockquote class="text-center mx-auto" style="max-width: 44rem;" data-reveal data-reveal-delay="0.08">
+        <p class="text-[var(--ink-primary)] font-[family-name:var(--font-display)]" style="font-size: clamp(1.7rem, 2.8vw, 2.6rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; max-width: none;">
+          «Semplificare non è mai facile.»
+        </p>
+        <footer class="mt-4 text-[0.8rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+          Antonio Valitutti · isybank.com, 11 giugno 2026
+        </footer>
+      </blockquote>
+      <p
+        class="mt-8 text-center text-[var(--ink-secondary)] mx-auto"
+        style="font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.5; max-width: 40rem;"
+        data-reveal
+        data-reveal-delay="0.18"
+      >
+        Nemmeno restare semplici mentre si cresce a due milioni. È il lavoro che vi proponiamo di fare insieme: un momento alla volta, e misurato.
+      </p>
+      <div class="im-cobrand-close mt-6" data-reveal data-reveal-delay="0.26">
+        <span>Isybank</span><span class="text-[var(--color-arancio)] font-normal">×</span><span>Adobe</span>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+
+  <style>
+    .im-cobrand-close {
+      display: inline-flex; align-items: center; gap: 0.7rem; margin-inline: auto;
+      font-family: var(--font-display); font-weight: 700; font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+      color: var(--ink-primary); letter-spacing: 0.02em;
+    }
+  </style>
+</BaseLayout>

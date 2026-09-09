@@ -114,6 +114,12 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'asks',           route: '/experience-design-factory/atelier/asks/' },
     { name: 'closing',        route: '/experience-design-factory/atelier/closing/' },
   ],
+  'isybank-momento': [
+    { name: 'home',    route: '/experience-design-factory/isybank-momento/' },
+    { name: 'domanda', route: '/experience-design-factory/isybank-momento/domanda/' },
+    { name: 'idee',    route: '/experience-design-factory/isybank-momento/idee/' },
+    { name: 'rotta',   route: '/experience-design-factory/isybank-momento/rotta/' },
+  ],
   'mim-alfabeti': [
     { name: 'home',        route: '/experience-design-factory/mim-alfabeti/' },
     { name: 'domanda',     route: '/experience-design-factory/mim-alfabeti/domanda/' },
@@ -136,6 +142,7 @@ const CWD_ALIAS: Record<string, string> = {
   'atelier': 'atelier',
   'eni-orbita': 'eni-orbita',
   'mim-alfabeti': 'mim-alfabeti',
+  'isybank-momento': 'isybank-momento',
   'aperture-email': 'aperture-email',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';

@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Il momento giusto (00)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Il momento giusto' },
+    { id: 'slide-momento',  label: 'Il vostro 2026, visto da fuori' },
+    { id: 'slide-percorso', label: 'Il percorso — tre capitoli' },
+  ]},
+  { slug: 'domanda', label: 'La domanda (01)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Semplice da aprire. E dopo?' },
+    { id: 'slide-tensione', label: 'Quello che avete già · quello che manca a scala' },
+    { id: 'slide-domande',  label: 'Le tre domande aperte' },
+  ]},
+  { slug: 'idee', label: 'Le idee (02)', slides: [
+    { id: 'slide-cover',      label: 'Cover — Sei idee, una regola' },
+    { id: 'slide-onboarding', label: 'I1 — I primi novanta giorni' },
+    { id: 'slide-gestore',    label: 'I2 — Il gestore che sa già' },
+    { id: 'slide-momento',    label: 'I3 — I momenti che cambiano il conto' },
+    { id: 'slide-premialita', label: 'I4 — Premiare i comportamenti' },
+    { id: 'slide-journey',    label: 'I5 — Vedere il viaggio intero' },
+    { id: 'slide-contenuti',  label: 'I6 — Contenuti alla velocità delle promo' },
+  ]},
+  { slug: 'rotta', label: 'La rotta (03)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Tre orizzonti' },
+    { id: 'slide-orizzonti', label: 'La sequenza O1 · O2 · O3' },
+    { id: 'slide-richieste', label: 'Quattro richieste, nessuna firma' },
+    { id: 'slide-chiusura',  label: 'Chiusura — Semplificare non è mai facile' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'onboarding', name: 'I primi novanta giorni — Journey di attivazione', shortName: 'Novanta giorni', pillar: 'relazione',
+    description: 'Dal conto aperto alla banca principale: journey event-driven sui segnali reali dei primi tre mesi (Real-Time CDP + Journey Optimizer).', appearsIn: ['Le idee'] },
+  { id: 'gestore', name: 'Il gestore che sa già — Assistente + Filiale Digitale', shortName: 'Gestore', pillar: 'relazione',
+    description: 'Assistente in app sul tono Isybank che risolve il semplice e consegna al gestore il complesso, con il contesto (Brand Concierge + AEP + AJO).', appearsIn: ['Le idee'] },
+  { id: 'momento', name: 'I momenti che cambiano il conto — Personalizzazione', shortName: 'Momenti', pillar: 'rilevanza',
+    description: 'Contenuti di app e sito che cambiano con il momento di vita: i 35 anni, il primo stipendio, la spesa grande (Target + AJO decisioning + RTCDP).', appearsIn: ['Le idee'] },
+  { id: 'premialita', name: 'Premiare i comportamenti — isyToken che impara', shortName: 'Premialità', pillar: 'rilevanza',
+    description: 'La premialità che riconosce i comportamenti nel momento in cui accadono e misura l\'effetto sulla retention (AJO + RTCDP + CJA).', appearsIn: ['Le idee'] },
+  { id: 'journey', name: 'Vedere il viaggio intero — Customer Journey Analytics', shortName: 'Journey', pillar: 'misura',
+    description: 'App, sito, Filiale Digitale e contact center in una sola sequenza per cliente, sopra il web analytics già in uso.', appearsIn: ['Le idee'] },
+  { id: 'contenuti', name: 'Contenuti alla velocità delle promo — GenStudio + Brand Visibility', shortName: 'Contenuti', pillar: 'misura',
+    description: 'Varianti di ogni promo per segmento e canale con guardrail di brand, e osservatorio su come i motori AI raccontano Isybank.', appearsIn: ['Le idee'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = {
+  relazione: 'Relazione',
+  rilevanza: 'Rilevanza',
+  misura:    'Misura & Contenuti',
+};
+const PILLAR_ORDER = ['relazione', 'rilevanza', 'misura'];
+const PILLAR_COLORS: Record<string, string> = {
+  relazione: '#26E5AE',
+  rilevanza: '#FF6200',
+  misura:    '#1B99FB',
+};
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({
+    pillar,
+    label: PILLAR_LABELS[pillar],
+    color: PILLAR_COLORS[pillar],
+    solutions: SOLUTIONS.filter((s) => s.pillar === pillar),
+  }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Il momento giusto · Isybank">
+  <AdminConsole
+    projectSlug="isybank-momento"
+    projectName="Il momento giusto"
+    clientLabel="Isybank × Adobe"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

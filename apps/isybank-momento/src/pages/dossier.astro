@@ -1,0 +1,520 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// War room per l'incontro con Antonio Valitutti (AD Isybank), 10 set 2026.
+// Orfana (fuori nav) + noindex. Fonti pubbliche verificate (tre filoni di
+// deep-research, 9 set 2026: azienda, persona, contesto Intesa/mercato/Adobe).
+// NESSUN dato contrattuale o economico nel build: l'installato Adobe è citato
+// solo per famiglia di prodotto; cifre e scadenze stanno nel brief locale
+// (docs/Intesa Sanpaolo/, git-ignorato).
+
+const summary: string[] = [
+  '<strong>Chi è.</strong> Antonio Valitutti, ingegnere elettronico salernitano (Politecnico di Torino, MSE University of Illinois Chicago), ha ideato e guidato <strong>HYPE</strong> nel Gruppo Sella dal 2014 al 2022 (oltre 1,5 milioni di clienti) e dal 1° aprile 2022 costruisce <strong>Isybank</strong>, la banca digitale di Intesa Sanpaolo, dentro la <strong>Banca dei Territori</strong> di Stefano Barrese. Confermato AD nel maggio 2024 con Francesco Profumo presidente.',
+  '<strong>Dove sta Isybank.</strong> Lanciata il 15 giugno 2023 su core cloud-native Thought Machine (isytech, Google Cloud + TIM). A metà 2026: <strong>~1,2 milioni di clienti</strong>, oltre 3 miliardi di giacenze, 75% under 35, 170 mila stipendi accreditati, cost/income sotto il 30%, utile 2025 di 18,8 milioni. iF Design Award 2026 per la UX. Il <strong>Piano di Impresa 2026-2029</strong> le chiede 2 milioni di clienti, 8 miliardi di attività finanziarie e 100 milioni di utile.',
+  '<strong>Il fatto che cambia la conversazione.</strong> Valitutti definisce Isybank «laboratorio di trasformazione per l\'intero Gruppo»: ciò che si prova qui va a scala su Intesa Sanpaolo. È il frame migliore per Adobe: <em>pilota misurato su Isybank, scala su 24 milioni di clienti del Gruppo</em>. Ma i sistemi (IT, Filiale Digitale, back office) sono in outsourcing dalla Capogruppo: <strong>Isybank ha 41 dipendenti</strong>. La decisione su piattaforme passa da Banca dei Territori (Vassena, marketing digitale) e dal Chief Data, AI &amp; Technology Officer (Proverbio).',
+  '<strong>Due vincoli da rispettare.</strong> A marzo 2026 il <strong>Garante Privacy ha sanzionato Intesa Sanpaolo (17,6 milioni)</strong> per la profilazione senza base giuridica dei 2,4 milioni di clienti candidati alla migrazione: la parola «profilazione» è bruciata, ogni idea va detta con «consenso» e «governance del dato». E Valitutti è <strong>scettico sull\'AI spinta dall\'alto</strong>: usa l\'agentic AI solo per «cose di basso valore aggiunto», vuole un\'adozione «consapevole». Niente pitch AI-first.',
+  '<strong>La mossa.</strong> Portare una domanda (dalla semplicità dell\'apertura conto alla rilevanza nel tempo: primacy, tocco umano, misura) e sei idee che partono da ciò che Isybank ha già: onboarding premiato, Filiale Digitale con 2.300 gestori, premialità isyToken, sito su Experience Manager, web analytics già in uso. Chiudere con tre orizzonti e quattro richieste senza firma. L\'esperienza <em>Il momento giusto</em> è pronta nella Factory.',
+];
+
+const missione: string[] = [
+  '<strong>Obiettivo minimo:</strong> uscire con la sua lettura delle priorità 2026-2027 (primacy? retention? crescita nuovi clienti? costo del servizio?), con la mappa di chi decide sulle piattaforme di marketing e dati (Isybank vs Banca dei Territori vs C-DAITO) e con il permesso di tornare con un\'analisi su un journey reale.',
+  '<strong>Obiettivo pieno:</strong> un working group per l\'analisi del journey «richiesta carta di credito» sui dati di web analytics che esistono già, il disegno congiunto del pilota «primi novanta giorni» e un\'introduzione a Claudia Vassena (marketing digitale Banca dei Territori, consigliera Isybank) per portare il tema anche al livello di Gruppo.',
+  '<strong>Postura:</strong> ascoltare prima, proporre dopo. Valitutti «guarda costantemente i dati», premia l\'errore dichiarato, si annoia con le slide riusate. Ragionare con lui per esperimenti misurabili, non per piattaforme. Ogni idea con un indicatore, una coorte e una data.',
+];
+
+const carriera = [
+  { anno: '2000-2005', t: 'Politecnico di Torino, Ingegneria Elettronica (con lode). Tesi con l\'Agenzia Spaziale Europea su antenne satellitari multi-beam. Poi MSE alla University of Illinois at Chicago: «ho studiato antenne aerospaziali e poi son finito in banca».' },
+  { anno: '2005-2014', t: 'Gruppo Banca Sella: analista, poi Operational Risk Manager (mappatura processi e risk assessment Basilea 2), poi Executive Assistant dell\'AD. «Quando sono entrato in banca non sapevo la differenza tra un assegno e un bonifico».' },
+  { anno: '2014-2022', t: 'Ideatore e CEO di HYPE, la prima challenger bank italiana: il selfie come identificazione a distanza, modello freemium «tipo Spotify», customer care tenuto in casa, marketing per comportamenti e non per età. JV illimity-Fabrick nel 2020. Oltre 1,5 milioni di clienti alla sua uscita.' },
+  { anno: '2022-oggi', t: 'Chiamato da Carlo Messina dopo il Piano 2022-2025 («è squillato il telefono»). Concepisce Isybank in dieci mesi, lancia il 15 giugno 2023, gestisce la polemica sulla migrazione (autunno 2023, AGCM), porta la banca in utile dal primo esercizio e a 1,2 milioni di clienti nel 2026.' },
+];
+
+const comePensa = [
+  '<strong>Dati prima di tutto.</strong> «I dati non mentono mai»: legge i numeri ogni giorno, e i numeri che cita da solo sono primacy (stipendi, un miliardo transato al mese), attività (oltre il 90% di clienti attivi) e cost/income al 30%. Ogni idea va agganciata a uno di questi.',
+  '<strong>Semplicità come identità.</strong> «Semplificare è stata la missione fin dal primo giorno, a partire dal nome». Ama il design essenziale (il Giappone, l\'iF Award). Un\'idea che aggiunge un passaggio all\'esperienza è già bocciata: ogni proposta deve toglierne uno.',
+  '<strong>Human touch come USP.</strong> Lo ha scelto come fattore distintivo nel 2023 («il tastino parla con noi») e lo ripete nel 2026. Le due paure del cliente digitale sono «non ho il controllo di quello che spendo» e «se ho un problema con chi parlo?». La Filiale Digitale è la risposta, e il terreno per l\'idea del gestore che sa già.',
+  '<strong>AI con prudenza.</strong> Non si fa leggere né scrivere le email dall\'AI, «sto provando a resistere», vuole capire come cambieranno le abitudini dei clienti. Ma sa che «sarà pervasiva» e che l\'adozione «arriva in modo naturale». Con lui l\'AI si mostra dentro un caso concreto e misurato, mai come tema.',
+  '<strong>Laboratorio del Gruppo.</strong> «In Isybank testiamo in anteprima le soluzioni che poi portiamo a scala su Intesa Sanpaolo». È la porta per Adobe: piccolo, veloce, misurabile qui; replicabile su 24 milioni di clienti là.',
+  '<strong>Leader-allenatore.</strong> «Non quello che prende le decisioni, ma quello che aiuta gli altri a prenderle»; premiava «il miglior errore del mese»; da ingegnere «tendevo a non ascoltare, l\'ho corretto». Apprezza chi porta un\'analisi onesta, anche scomoda.',
+];
+
+const numeri = [
+  { v: '~1,2 mln', l: 'clienti al 30 giugno 2026', s: 'Intesa Sanpaolo, 1H26' },
+  { v: '€3,07 mld', l: 'raccolta diretta a fine 2025, «oltre 3 mld» a luglio 2026', s: 'Bilancio 2025 · ISP 22 lug 2026' },
+  { v: '75%', l: 'clienti under 35 (50% tra 18 e 25 anni)', s: 'ISP 22 lug 2026' },
+  { v: '170k / 260k', l: 'stipendi accreditati / domiciliazioni utenze', s: 'ISP 22 lug 2026' },
+  { v: '480k → 350k', l: 'nuovi clienti nel 2024 → nel 2025 (150k nel 1H26)', s: 'Bilanci 2024-25 · ISP 1H26' },
+  { v: '€18,8 mln', l: 'utile netto 2025 · cost/income 28,6% · 41 dipendenti', s: 'Bilancio 2025' },
+  { v: '2 mln · €8 mld · €100 mln', l: 'clienti · attività finanziarie · utile attesi nel 2029', s: 'Piano di Impresa, 2 feb 2026' },
+  { v: '4,6 / 5 · 1,8 / 5', l: 'App Store (32k voti) · Trustpilot (814 recensioni, 78% a una stella)', s: 'letti il 9 set 2026' },
+];
+
+const persone = [
+  { nome: 'Stefano Barrese', ruolo: 'Responsabile Divisione Banca dei Territori (dal 2016, confermato lug 2026)', nota: 'Il capo di Valitutti. Isybank è «un progetto integrato nella Banca dei Territori».' },
+  { nome: 'Claudia Vassena', ruolo: 'Executive Director Sales & Marketing Digital Retail, Banca dei Territori · consigliera Isybank', nota: 'Ex Head of Buddybank (UniCredit). A luglio 2026 parla di GenAI per contenuti e personalizzazione, di GEO (visibilità nelle ricerche conversazionali) e di 80% di richieste risolte in automatico nel 2029. È la sponsor naturale del marketing: chiedere un\'introduzione.' },
+  { nome: 'Massimo Proverbio', ruolo: 'Chief Data, AI, Innovation & Technology Officer, Intesa Sanpaolo', nota: 'Responsabile di isytech e della migrazione core su Google Cloud (chiusa il 2 lug 2026). Decide sulle piattaforme dati.' },
+  { nome: 'Francesco Profumo', ruolo: 'Presidente Isybank (dal mag 2024)', nota: 'Ex ministro, ex Compagnia di San Paolo. «Il professore che ha firmato la mia laurea» al Politecnico. Nella lista Interessi di Valitutti su LinkedIn.' },
+  { nome: 'Paola Papanicolaou', ruolo: 'Chief of International Banks Division · già consigliera Isybank', nota: 'Il rollout di isytech alle banche estere del Gruppo passa da lei. Suggerita come profilo affine su LinkedIn.' },
+  { nome: 'Gianluca Scola', ruolo: 'Isybank S.p.A. (ruolo esatto non confermato: marketing/brand su LinkedIn)', nota: 'Nessuna fonte stampa. Da verificare a voce.' },
+];
+
+const fatti = [
+  { badge: 'verificato', t: '<strong>Isybank</strong> è controllata al 100% da Intesa Sanpaolo e siede nella Divisione Banca dei Territori; veicolo giuridico l\'ex Banca 5. Lancio 15 giu 2023; core banking Thought Machine Vault (ISP è anche investitore, 40 mln £ nel 2022); piattaforma isytech su Google Cloud e TIM. Isybank opera anche nell\'instant banking con <strong>Mooney</strong> (50%, con Enel X).' },
+  { badge: 'verificato', t: '<strong>Modello di servizio:</strong> app + «tocco umano» dei 2.300+ gestori della <strong>Filiale Digitale</strong> di Intesa Sanpaolo (orari estesi, weekend). Tre piani: isyLight 0 €, isySmart 3,90 €, isyPrime 9,90 € (gratis under 35, bollo pagato). Offerta di Gruppo: prestiti, SpensieRata, mutuo omnicanale, isySalvadanaio, fondi ESG, isyProtezione.' },
+  { badge: 'verificato', t: '<strong>Premialità e community:</strong> isyToken (punti per comportamenti virtuosi), isyReward (I-Days Milano, pranzo con Pogačar), Porta un Amico (fino a 100 inviti), Gaming Tour, testimonial under 25 con titolo mondiale (Curtis, Furlani, Sabatini) accanto a Sinner. Agenzia creativa Accenture Song, media Wavemaker.' },
+  { badge: 'verificato', t: '<strong>Piano di Impresa 2026-2029</strong> (2 feb 2026): 4,6 mld di investimenti in tecnologia e crescita; Isybank a oltre 2 mln di clienti (+1 mln nuovi), 8 mld di attività finanziarie, 100 mln di utile; isytech al 100% in cloud; processi «Agent-first»; Filiale Digitale con oltre l\'80% di richieste risolte in automatico (dal 30%); progetto <strong>isywealth Europe</strong> (Francia, Germania, Spagna dal 2027).' },
+  { badge: 'verificato', t: '<strong>Tecnologia sul sito pubblico:</strong> isybank.com è servito da <strong>Adobe Experience Manager</strong> (clientlib e DAM di AEM, con librerie condivise «intesa-common»), font Inter, tag management <strong>Tealium</strong>. In home il claim «Sfondo dell\'immagine generato con AI»: l\'immagine generativa è già in produzione.' },
+  { badge: 'attenzione', t: '<strong>Garante Privacy, 12 mar 2026:</strong> sanzione di 17,6 milioni a Intesa Sanpaolo per il trattamento illecito dei dati dei ~2,4 milioni di clienti candidati alla migrazione verso Isybank (profilazione senza base giuridica, informativa «sepolta» in app). Prima ancora, l\'AGCM (nov 2023) aveva imposto il consenso espresso: alla fine i trasferiti sono stati ~350 mila su 2,4 milioni. Il tema dati è sensibile: parlare di consenso, preferenze dichiarate, governance.' },
+  { badge: 'competitivo', t: '<strong>Incumbent di marketing nel retail Intesa Sanpaolo:</strong> l\'unico dato pubblico (2017) racconta <strong>SAS Marketing Automation</strong> come motore del «data driven customer journey» (300+ journey, 2,8 mln opportunità/giorno). Salesforce Sales Cloud è nel Corporate & Investment Banking. Nessuna fonte pubblica cita Adobe come piattaforma di Isybank. Da capire a voce cosa usa Isybank per CRM e comunicazioni in app.' },
+  { badge: 'competitivo', t: '<strong>Mercato:</strong> Revolut ha superato i 5 milioni di clienti in Italia (quinta banca per clienti, mag 2026); HYPE è a 1,9 milioni ed è entrata in Banca Sella (apr 2026); BBVA Italia punta a 1 milione entro il 2026; Trade Republic oltre 1 milione. Sei risparmiatori su dieci vogliono «una banca digitale con un consulente dedicato», solo il 12% una banca del tutto digitale (FINER per ING, giu 2026).' },
+];
+
+const installato = [
+  { fam: 'Experience Manager', dove: 'Intesa Sanpaolo S.p.A. · Intesa Sanpaolo Assicurazioni', nota: 'Sites, Assets (con Smart Content Services), Forms. Il sito isybank.com gira su AEM: la filiera contenuti (idea 6) parte da qui.' },
+  { fam: 'Adobe Analytics', dove: 'Intesa Sanpaolo S.p.A. (anche Isybank, fonte interna) · Intesa Sanpaolo Vita', nota: 'Il web analytics «già in uso» citato nel deck. Il passo naturale è Customer Journey Analytics (idea 5). La scadenza del perimetro è vicina: dettaglio nel brief locale.' },
+  { fam: 'Non presenti', dove: 'Experience Platform, Real-Time CDP, Journey Optimizer, Target, CJA, GenStudio, Brand Visibility', nota: 'Tutto il resto delle idee è greenfield per Adobe. Il pilota su Isybank (41 persone, laboratorio del Gruppo) è il modo di entrare.' },
+];
+
+const bigIdeas = [
+  { tag: 'P0 · Relazione', nome: 'I primi novanta giorni', parte: 'L\'onboarding è premiato, poi il cliente resta solo. Gli stipendi accreditati sono 170 mila su 1,2 milioni.', cosa: 'Journey event-driven sui segnali reali (prima spesa, primo bonifico, utenza) che propone il passo giusto in app, con notifica o con un gestore. Un indicatore: quanti accreditano lo stipendio entro tre mesi.', adobe: 'Real-Time CDP + Journey Optimizer' },
+  { tag: 'P0 · Relazione', nome: 'Il gestore che sa già', parte: 'Il Piano vuole l\'80% delle richieste risolte in automatico nel 2029, dal 30%. Trustpilot racconta blocchi senza spiegazione e chat che si chiudono.', cosa: 'Assistente in app sul tono Isybank che risolve il semplice e consegna al gestore il complesso con il contesto. L\'80% automatico diventa esperienza, non filtro.', adobe: 'Brand Concierge + Experience Platform + Journey Optimizer' },
+  { tag: 'P1 · Rilevanza', nome: 'I momenti che cambiano il conto', parte: 'isyPrime gratis fino ai 35 anni, SpensieRata, isySalvadanaio: offerta già per momenti di vita, proposta quando il cliente la cerca.', cosa: 'Contenuti di app e sito che cambiano con il momento (i 35 anni, il primo stipendio, la spesa grande), una proposta alla volta, solo dentro le preferenze scelte. Test controllato su tre momenti.', adobe: 'Target + Journey Optimizer (decisioning) + RTCDP con consenso' },
+  { tag: 'P1 · Rilevanza', nome: 'Premiare i comportamenti', parte: 'isyToken, isyReward e Porta un Amico esistono, ma vivono a campagne.', cosa: 'Premialità che riconosce i comportamenti nel momento in cui accadono (stipendio, obiettivo di risparmio, fondo sostenibile) e impara. Misura sulla retention a sei mesi.', adobe: 'Journey Optimizer + RTCDP + Customer Journey Analytics' },
+  { tag: 'P0 · Misura', nome: 'Vedere il viaggio intero', parte: 'isytech permette di iniziare su un canale e finire su un altro; il web analytics già in uso vede un canale alla volta.', cosa: 'App, sito, Filiale Digitale e contact center in una sequenza per cliente. Prima analisi guidata sul journey «richiesta carta di credito» con i dati che esistono già. Aggancio diretto al rinnovo del perimetro analytics.', adobe: 'Customer Journey Analytics' },
+  { tag: 'P0 · Contenuti', nome: 'Contenuti alla velocità delle promo', parte: 'Sito su AEM, promo mensili, sfondi generati con AI già in home. Vassena parla di GEO. Un ventenne chiede a ChatGPT quale banca aprire.', cosa: 'Filiera che produce le varianti di ogni promo con guardrail di brand, e osservatorio su come i motori AI raccontano Isybank rispetto a Revolut, HYPE, BBVA. Baseline su dieci domande tipiche di un under 35.', adobe: 'GenStudio for Performance Marketing + Firefly + AEM + Brand Visibility' },
+];
+
+const priorita = [
+  { idea: '#1 Primi novanta giorni', impatto: 'Alto', overlap: 'Media (SAS journey?)', rischio: 'Medio', riuso: 'Alto (Agos, UniCredit)', p: 'P0' },
+  { idea: '#2 Gestore che sa già', impatto: 'Alto', overlap: 'Bassa', rischio: 'Basso', riuso: 'Medio (MIM concierge)', p: 'P0' },
+  { idea: '#3 Momenti che cambiano il conto', impatto: 'Medio-Alto', overlap: 'Bassa (Target su AEM)', rischio: 'Alto (Garante)', riuso: 'Alto', p: 'P1' },
+  { idea: '#4 Premiare i comportamenti', impatto: 'Medio', overlap: 'Media', rischio: 'Medio', riuso: 'Medio', p: 'P1' },
+  { idea: '#5 Vedere il viaggio intero (CJA)', impatto: 'Alto', overlap: 'Bassa', rischio: 'Basso', riuso: 'Alto (UniCredit Analizza)', p: 'P0' },
+  { idea: '#6 Contenuti + Brand Visibility', impatto: 'Medio-Alto', overlap: 'Bassa', rischio: 'Basso', riuso: 'Alto (Eni, Brand Visibility)', p: 'P0' },
+];
+
+const proof = [
+  { chi: 'Crédit Agricole Italia', cosa: 'Adobe Experience Platform: +15% conversione al primo acquisto, +20% efficacia cross-sell, +30% produttività dei team (lug 2025). L\'unica banca italiana su adobe.com: citarla con cautela, è un concorrente diretto.' },
+  { chi: 'TSB (UK)', cosa: 'AEP, Real-Time CDP, CJA, Target, Journey Optimizer: +300% vendite prestiti da mobile, quota prestiti in app dal 24% al 75%, 3.000 addebiti diretti attivati in una settimana contro 10 nei sei mesi precedenti.' },
+  { chi: 'U.S. Bank', cosa: 'Real-Time CDP + Journey Optimizer decisioning: conversioni 19x in un anno, +127% conti aperti da acquisizione digitale. Sessione Summit 2026 sull\'AI decisioning.' },
+  { chi: 'Banco Sabadell', cosa: 'Messaggi per fase del journey: +30% open rate, +45% CTR, +25% lead.' },
+  { chi: 'Adobe, Financial Services (mag 2026)', cosa: '16 pattern documentati su Experience League: next-best-offer, recupero abbandono carta, offerte per life-stage, churn prevention, Brand Concierge come «AI Financial Product Guide» su contenuti approvati dalla compliance.' },
+];
+
+const dire = [
+  'Partire dalla sua frase: «semplificare non è mai facile»; la nostra proposta toglie passaggi, non ne aggiunge.',
+  'Isybank come laboratorio del Gruppo: pilota qui, scala su Intesa Sanpaolo. È il suo frame, non il nostro.',
+  '«Consenso», «preferenze che il cliente ha scelto», «governance del dato». Mai «profilazione».',
+  'Ogni idea con un indicatore suo: stipendi accreditati, clienti attivi, richieste risolte, cost/income.',
+  'Partire da ciò che c\'è: Experience Manager, web analytics, Filiale Digitale, isyToken. «Estendiamo, non rifacciamo».',
+  'Un caso concreto per l\'AI (la carta di credito che si interrompe), mai l\'AI come argomento.',
+  'HYPE con rispetto: è la sua creatura, oggi in Banca Sella con 1,9 milioni di clienti. Usarla come benchmark, non come bersaglio.',
+];
+
+const nonDire = [
+  'Pitch AI-first o «agentic»: si dichiara prudente sull\'AI e si annoia con l\'hype. Cade.',
+  'Rip-and-replace di CRM o marketing automation: l\'incumbent (SAS, dato 2017) è del Gruppo, non suo.',
+  'Cifre contrattuali, scadenze o ARR: sono nel brief locale, non vanno in sala.',
+  'La sanzione del Garante come argomento di vendita: citarla solo per mostrare che il disegno rispetta il consenso.',
+  'Promettere numeri di risultato: portare i proof point altrui, misurare i suoi con un pilota.',
+  'Chiamarlo «challenger»: al lancio ha corretto, «non siamo challenger, siamo una human digital bank».',
+];
+
+const domande = [
+  '<strong>Priorità 2026-2027:</strong> primacy dei clienti che avete, crescita dei nuovi, o costo del servizio? Quale dei numeri del Piano vi preoccupa di più?',
+  '<strong>Chi decide sulle piattaforme:</strong> CRM, comunicazioni in app, analytics: quanto è in mano a Isybank e quanto a Banca dei Territori e a C-DAITO? Chi va coinvolto per un pilota?',
+  '<strong>Cosa usate oggi</strong> per le comunicazioni in app e i journey (SAS del Gruppo? altro?) e cosa non riuscite a misurare tra app, sito e gestore.',
+  '<strong>Filiale Digitale:</strong> il passaggio dall\'app al gestore porta con sé il contesto? Cosa succede a una richiesta di carta che si interrompe?',
+  '<strong>Dopo il Garante:</strong> come è cambiato il modo in cui raccogliete e usate il consenso per la personalizzazione? Cosa è permesso e cosa no.',
+  '<strong>isywealth Europe e isytech all\'estero:</strong> Isybank sarà il modello anche fuori dall\'Italia? Con quali tempi.',
+];
+
+const caveat = [
+  '<strong>Ruolo di Gianluca Scola</strong> e struttura interna Isybank: solo LinkedIn, nessuna fonte stampa.',
+  '<strong>Stack martech di Isybank:</strong> nessuna evidenza pubblica. SAS (2017) è un dato del Gruppo, potrebbe non valere per Isybank.',
+  '<strong>Analytics su Isybank:</strong> fonte interna (contratto Intesa Sanpaolo); non confermata pubblicamente. Farlo confermare a voce.',
+  '<strong>Trascrizioni video:</strong> molte citazioni vengono da sottotitoli automatici YouTube (CEO Insights nov 2025, Hotpot 2024, Caffettino 2023-24): senso verificato, parola per parola no.',
+  '<strong>Numeri clienti:</strong> isybank.com dice «oltre 1 milione» (ago 2026), Intesa Sanpaolo «~1,2 milioni» (1H26). Nel deck usiamo 1,2 con fonte ISP.',
+  '<strong>Esito del ricorso</strong> contro la sanzione del Garante: non trovato.',
+];
+
+const runOfShow = [
+  { t: '0-10\'', k: 'Ascolto', v: 'Come sta andando il 2026, cosa lo tiene sveglio, priorità del Piano viste da Isybank. Nessuna slide.' },
+  { t: '10-20\'', k: 'La domanda', v: 'Cover + «Avete molto in mano» + tre domande aperte. Fermarsi su ogni domanda: le risposte sono sue.' },
+  { t: '20-40\'', k: 'Le idee', v: 'Aprire solo le idee che il dialogo tocca (gating dall\'admin). Default consigliato: #5 CJA, #1 novanta giorni, #2 gestore. Le altre se emergono.' },
+  { t: '40-50\'', k: 'La rotta', v: 'Tre orizzonti e quattro richieste senza firma. Proporre la mezza giornata e il referente Filiale Digitale.' },
+  { t: '50-60\'', k: 'Chiusura', v: '«Semplificare non è mai facile». Chiedere l\'introduzione a Vassena e una data per tornare con i numeri.' },
+];
+
+const biblioteca = [
+  { label: 'Intesa Sanpaolo — Piano di Impresa 2026-2029 (2 feb 2026)', url: 'https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/02/20260202-business-plan-uk', tipo: 'primaria' },
+  { label: 'Intesa Sanpaolo — risultati 1H26 (29 lug 2026): ~1,2 mln clienti Isybank', url: 'https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/07/20260729-ris-1h26-uk', tipo: 'primaria' },
+  { label: 'Intesa Sanpaolo — Isybank, giacenze oltre 3 miliardi (22 lug 2026)', url: 'https://group.intesasanpaolo.com/it/newsroom/comunicati-stampa/2026/07/isybank--le-giacenze-superano-3-miliardi-di-euro--la-banca-digit', tipo: 'primaria' },
+  { label: 'isybank.com — intervista a Valitutti «Semplificare non è mai facile» (11 giu 2026)', url: 'https://www.isybank.com/it/news-e-media/news/if-design-award-2026-intervista-a-valitutti.html', tipo: 'primaria' },
+  { label: 'isybank.com — iF Design Award 2026 (5 mag 2026)', url: 'https://www.isybank.com/it/news-e-media/news/isybank-vince-if-design-award-2026.html', tipo: 'primaria' },
+  { label: 'isybank.com — pilota Euro Digitale (16 lug 2026)', url: 'https://www.isybank.com/it/news-e-media/news/isybank-progetto-pilota-euro-digitale.html', tipo: 'primaria' },
+  { label: 'isybank.com — governance (CdA, presidente Profumo)', url: 'https://www.isybank.com/it/governance.html', tipo: 'primaria' },
+  { label: 'Bilancio Isybank 2025 (PDF, Intesa Sanpaolo)', url: 'https://group.intesasanpaolo.com/content/dam/portalgroup/repository-documenti/investor-relations/Contenuti/RISORSE/Documenti%20PDF/pdf_bilanci_controllate_25/Isybank-Bilancio_31_12_2025.pdf', tipo: 'primaria' },
+  { label: 'Garante Privacy — provvedimento su Intesa Sanpaolo / Isybank (12 mar 2026)', url: 'https://www.gpdp.it/web/guest/home/docweb/-/docweb-display/docweb/10230412', tipo: 'primaria' },
+  { label: 'AGCM — provvedimento cautelare PS12660 (28 nov 2023)', url: 'https://www.agcm.it/media/comunicati-stampa/2023/11/PS12660-', tipo: 'primaria' },
+  { label: 'Milano Finanza — Valitutti su euro digitale, giovani, cost/income (22 lug 2026)', url: 'https://www.milanofinanza.it/news/valitutti-isybank-bene-euro-digitale-e-clienti-giovani-202607220704006550', tipo: 'stampa' },
+  { label: 'ANSA — Valitutti: «Isybank laboratorio di innovazione per l\'intero Gruppo» (11 nov 2025)', url: 'https://www.ansa.it/ansacom/notizie/economia/crif/2025/11/11/valitutti-isybank-e-laboratorio-innovazione-per-intero-gruppo_b2bd4eae-382a-4e82-8791-be3f480768c4.html', tipo: 'stampa' },
+  { label: 'CEO Insights / Will Media — podcast con Valitutti (5 nov 2025, trascrizione automatica)', url: 'https://www.youtube.com/watch?v=O5fppjz6lUU', tipo: 'profilo' },
+  { label: 'Italpress — Valitutti: «canale di sviluppo e cuore tecnologico del Gruppo» (9 giu 2025)', url: 'https://www.italpress.com/isybank-valitutti-canale-di-sviluppo-e-cuore-tecnologico-del-gruppo-2/', tipo: 'stampa' },
+  { label: 'Engage — Claudia Vassena su AI, GEO e Digital Retail (3 lug 2026)', url: 'https://www.engage.it/brand-e-aziende/intesa-sanpaolo--ai-e-trasformazione-digitale-nella-direzione-retail-della-banca-dei-territori-secondo-claudia-vassena.aspx', tipo: 'stampa' },
+  { label: 'Digital4 — SAS marketing automation in Intesa Sanpaolo (10 nov 2017)', url: 'https://www.digital4.biz/marketing/big-data-e-analytics/intesa-sanpaolo-la-marketing-automation-e-la-base-del-data-driven-customer-journey/', tipo: 'stampa' },
+  { label: 'Milano Finanza — Revolut oltre 5 milioni di clienti in Italia (28 mag 2026)', url: 'https://www.milanofinanza.it/news/revolut-supera-i-5-milioni-di-clienti-in-italia-e-diventa-la-quinta-banca-del-paese-202605281412375471', tipo: 'stampa' },
+  { label: 'Borsa e Finanza — ricerca FINER per ING: banca digitale + consulente (22 giu 2026)', url: 'https://borsaefinanza.it/ricerca-finer-ing-consulenza-finanziaria-multicanale/', tipo: 'stampa' },
+  { label: 'Adobe — Crédit Agricole Italia customer story', url: 'https://business.adobe.com/uk/customer-success-stories/credit-agricole-italia.html', tipo: 'primaria' },
+  { label: 'Adobe — TSB customer story', url: 'https://business.adobe.com/customer-success-stories/tsb-case-study.html', tipo: 'primaria' },
+  { label: 'Adobe Experience League — Financial Services use cases (21 mag 2026)', url: 'https://experienceleague.adobe.com/en/docs/blueprints-learn/architecture/industry-use-cases/financial-services-overview', tipo: 'primaria' },
+  { label: 'Trustpilot — recensioni Isybank (letto 9 set 2026)', url: 'https://it.trustpilot.com/review/isybank.com', tipo: 'profilo' },
+  { label: 'LinkedIn — Antonio Valitutti', url: 'https://www.linkedin.com/in/antonio-valitutti-0b84503', tipo: 'profilo' },
+];
+---
+<BaseLayout
+  title="Dossier — Isybank · Antonio Valitutti"
+  description="Adobe internal — dossier di preparazione riservato."
+  noindex={true}
+>
+  <div class="dw-shell">
+    <header class="dw-header">
+      <div class="dw-header-inner">
+        <div class="dw-header-left">
+          <span class="dw-badge">Adobe internal · Riservato</span>
+          <h1 class="dw-title">War Room — Isybank · Antonio Valitutti</h1>
+        </div>
+        <div class="dw-header-right">
+          <a class="dw-deck-link" href={href(base, '/')}>Apri l'esperienza →</a>
+        </div>
+      </div>
+      <p class="dw-disclaimer">
+        Documento di lavoro per il team Adobe. Fonti pubbliche citate; nessun dato contrattuale o economico
+        (cifre e scadenze dell'installato stanno nel brief locale). Referente cliente: Antonio Valitutti
+        (Amministratore Delegato Isybank, Responsabile Direzione Isybank in Intesa Sanpaolo). Incontro: 10 settembre 2026.
+        Da non far circolare fuori da Adobe.
+      </p>
+    </header>
+
+    <main class="dw-main">
+
+      <section class="dw-section" aria-labelledby="dw-h-summary">
+        <h2 class="dw-h" id="dw-h-summary"><span class="dw-h-num">01</span>Executive summary</h2>
+        <ul class="dw-list">{summary.map((s) => <li class="dw-li" set:html={s} />)}</ul>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-missione">
+        <h2 class="dw-h" id="dw-h-missione"><span class="dw-h-num">02</span>Mission brief</h2>
+        <ul class="dw-list">{missione.map((o) => <li class="dw-li" set:html={o} />)}</ul>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-persona">
+        <h2 class="dw-h" id="dw-h-persona"><span class="dw-h-num">03</span>Chi è Antonio Valitutti</h2>
+        <h3 class="dw-sub">Percorso</h3>
+        <div class="dw-timeline">
+          {carriera.map((c) => (
+            <div class="dw-tl-row">
+              <span class="dw-tl-year">{c.anno}</span>
+              <p class="dw-tl-text">{c.t}</p>
+            </div>
+          ))}
+        </div>
+        <h3 class="dw-sub">Come pensa, come parlargli</h3>
+        <ul class="dw-list">{comePensa.map((c) => <li class="dw-li" set:html={c} />)}</ul>
+        <p class="dw-note">Dettagli utili: sveglia alle 5:55, vive a Biella, moglie e figlia Elettra, ama il Giappone per «un design pulito ed essenziale», porta un anello per i pagamenti wearable, dice che lo smartphone «non ha vita troppo lunga». Insegna volentieri: incontra classi e università, e «se uso più di due volte le stesse slide mi annoio».</p>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-numeri">
+        <h2 class="dw-h" id="dw-h-numeri"><span class="dw-h-num">04</span>Isybank in numeri</h2>
+        <div class="dw-grid dw-grid--4">
+          {numeri.map((n) => (
+            <div class="dw-card dw-card--stat">
+              <p class="dw-stat-v">{n.v}</p>
+              <p class="dw-stat-l">{n.l}</p>
+              <p class="dw-stat-s">{n.s}</p>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">Lettura: la base cresce ma l'acquisizione rallenta (480k → 350k nuovi clienti l'anno). Il Piano chiede +1 milione entro il 2029: circa 250 mila l'anno. La crescita del valore si sposta sulla relazione con chi c'è già: primacy, attività finanziarie (da 2,9 a 8 miliardi), retention. È esattamente il terreno delle idee.</p>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-persone">
+        <h2 class="dw-h" id="dw-h-persone"><span class="dw-h-num">05</span>La mappa delle persone</h2>
+        <div class="dw-grid">
+          {persone.map((p) => (
+            <div class="dw-card">
+              <p class="dw-card-name">{p.nome}</p>
+              <p class="dw-card-model">{p.ruolo}</p>
+              <p class="dw-card-touch">{p.nota}</p>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">Isybank ha 41 dipendenti: IT, Filiale Digitale e back office sono servizi della Capogruppo. Valitutti è lo sponsor e il proprietario dei casi d'uso; la scelta di piattaforma passa da Banca dei Territori (Vassena) e da C-DAITO (Proverbio). Usare l'incontro per farsi aprire quelle porte.</p>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-fatti">
+        <h2 class="dw-h" id="dw-h-fatti"><span class="dw-h-num">06</span>I fatti verificati</h2>
+        <p class="dw-note">Tre filoni di deep-research (9 set 2026): azienda (30+ ricerche, bilanci 2024-25), persona (sei trascrizioni video 2019-2025), contesto Intesa/mercato/Adobe. Rinfrescare le fonti prima dell'incontro.</p>
+        <ul class="dw-list">
+          {fatti.map((f) => (
+            <li class="dw-li">
+              <span class={`dw-chip ${f.badge === 'attenzione' ? 'dw-chip--warn' : f.badge === 'competitivo' ? 'dw-chip--comp' : ''}`}>{f.badge}</span>
+              <span set:html={f.t} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-installato">
+        <h2 class="dw-h" id="dw-h-installato"><span class="dw-h-num">07</span>Adobe nel perimetro (qualitativo)</h2>
+        <div class="dw-rows">
+          {installato.map((i) => (
+            <div class="dw-row">
+              <div>
+                <p class="dw-row-k">{i.fam}</p>
+                <p class="dw-row-sub">{i.dove}</p>
+              </div>
+              <p class="dw-row-v">{i.nota}</p>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">Il dettaglio economico e le scadenze sono nel brief locale (`docs/Intesa Sanpaolo/`, git-ignorato). Non citare cifre in sala; il rinnovo del perimetro analytics va gestito con l'account team di Intesa Sanpaolo, non con Valitutti.</p>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-idee">
+        <h2 class="dw-h" id="dw-h-idee"><span class="dw-h-num">08</span>Le sei idee</h2>
+        <div class="dw-ideas">
+          {bigIdeas.map((b) => (
+            <article class="dw-idea">
+              <span class="dw-chip">{b.tag}</span>
+              <h4 class="dw-idea-name">{b.nome}</h4>
+              <p class="dw-idea-line"><span class="dw-idea-k">Da dove parte</span> {b.parte}</p>
+              <p class="dw-idea-line"><span class="dw-idea-k">Cosa mostriamo</span> {b.cosa}</p>
+              <p class="dw-idea-adobe">{b.adobe}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-matrice">
+        <h2 class="dw-h" id="dw-h-matrice"><span class="dw-h-num">09</span>Matrice di priorità</h2>
+        <div class="dw-table" role="table" aria-label="Matrice di priorità delle idee">
+          <div class="dw-tr dw-tr--head" role="row">
+            <span role="columnheader">Idea</span>
+            <span role="columnheader">Impatto</span>
+            <span role="columnheader">Overlap incumbent</span>
+            <span role="columnheader">Rischio dati</span>
+            <span role="columnheader">Riuso Factory</span>
+            <span role="columnheader">Priorità</span>
+          </div>
+          {priorita.map((r) => (
+            <div class="dw-tr" role="row">
+              <span role="cell" class="dw-td-idea">{r.idea}</span>
+              <span role="cell">{r.impatto}</span>
+              <span role="cell">{r.overlap}</span>
+              <span role="cell">{r.rischio}</span>
+              <span role="cell">{r.riuso}</span>
+              <span role="cell"><span class={`dw-p dw-p--${r.p.toLowerCase()}`}>{r.p}</span></span>
+            </div>
+          ))}
+        </div>
+        <p class="dw-note">Ordine consigliato in sala: #5 (analytics, terreno Adobe, nessun overlap), #1 (primacy, il suo numero), #2 (tocco umano, la sua USP). #6 se emerge il tema acquisizione o GEO. #3 e #4 solo se lui apre sulla personalizzazione, con il consenso in prima riga.</p>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-proof">
+        <h2 class="dw-h" id="dw-h-proof"><span class="dw-h-num">10</span>Proof point Adobe da avere in tasca</h2>
+        <div class="dw-rows">
+          {proof.map((p) => (
+            <div class="dw-row">
+              <p class="dw-row-k">{p.chi}</p>
+              <p class="dw-row-v">{p.cosa}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-dire">
+        <h2 class="dw-h" id="dw-h-dire"><span class="dw-h-num">11</span>Da dire / da non dire</h2>
+        <div class="dw-cols">
+          <div class="dw-col dw-col--ok">
+            <h3 class="dw-col-h">✓ Da dire</h3>
+            <ul class="dw-list">{dire.map((d) => <li class="dw-li dw-li--tight" set:html={d} />)}</ul>
+          </div>
+          <div class="dw-col dw-col--no">
+            <h3 class="dw-col-h">✗ Da non dire</h3>
+            <ul class="dw-list">{nonDire.map((d) => <li class="dw-li dw-li--tight" set:html={d} />)}</ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-domande">
+        <h2 class="dw-h" id="dw-h-domande"><span class="dw-h-num">12</span>Cosa chiedere · Caveat</h2>
+        <h3 class="dw-sub">Domande per de-rischiare</h3>
+        <ul class="dw-list">{domande.map((d) => <li class="dw-li" set:html={d} />)}</ul>
+        <h3 class="dw-sub">Caveat e onestà intellettuale</h3>
+        <ul class="dw-list">{caveat.map((c) => <li class="dw-li dw-li--tight" set:html={c} />)}</ul>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-run">
+        <h2 class="dw-h" id="dw-h-run"><span class="dw-h-num">13</span>Run of show (60 minuti)</h2>
+        <div class="dw-rows">
+          {runOfShow.map((r) => (
+            <div class="dw-row dw-row--run">
+              <p class="dw-row-k"><span class="dw-run-t">{r.t}</span>{r.k}</p>
+              <p class="dw-row-v">{r.v}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="dw-section" aria-labelledby="dw-h-fonti">
+        <h2 class="dw-h" id="dw-h-fonti"><span class="dw-h-num">14</span>Biblioteca — fonti e link</h2>
+        <ul class="dw-sources">
+          {biblioteca.map((b) => (
+            <li class="dw-source">
+              <span class={`dw-chip dw-chip--${b.tipo}`}>{b.tipo}</span>
+              <a href={b.url} target="_blank" rel="noopener noreferrer">{b.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <footer class="dw-footer">
+        Preparato dal team Adobe Italia su fonti pubbliche verificate (tre filoni di deep-research, ~110 fetch, bilanci
+        Isybank 2024-25, sei trascrizioni video) · ultimo aggiornamento 9 settembre 2026
+      </footer>
+    </main>
+  </div>
+
+  <style>
+    .dw-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 60% at 18% 0%, rgba(27, 153, 251, 0.12), transparent 55%),
+        var(--color-notte);
+    }
+    .dw-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(11, 13, 16, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--color-carbone);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .dw-header-inner {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      max-width: 64rem; margin-inline: auto; flex-wrap: wrap;
+    }
+    .dw-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex-wrap: wrap; }
+    .dw-badge {
+      flex-shrink: 0;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: #fff; background: var(--color-arancio);
+      padding: 0.25rem 0.6rem; border-radius: 3px;
+    }
+    .dw-title {
+      font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em;
+      font-size: clamp(1.05rem, 2vw, 1.35rem); color: #fff; line-height: 1.2;
+    }
+    .dw-header-right { display: flex; align-items: center; gap: 1.1rem; flex-shrink: 0; }
+    .dw-deck-link { font-size: 0.8rem; font-weight: 600; color: var(--color-menta); text-decoration: none; white-space: nowrap; }
+    .dw-deck-link:hover { text-decoration: underline; }
+    .dw-disclaimer { max-width: 64rem; margin: 0.5rem auto 0; font-size: 0.8rem; line-height: 1.5; color: var(--color-grigio-300); }
+
+    .dw-main {
+      max-width: 64rem; margin-inline: auto;
+      padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem;
+      display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem);
+    }
+    .dw-section { border-top: 1px solid var(--color-carbone); padding-top: clamp(1.25rem, 2.5vw, 2rem); }
+    .dw-h {
+      display: flex; align-items: baseline; gap: 0.8rem;
+      font-family: var(--font-display); font-weight: 700; letter-spacing: -0.015em;
+      font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: #fff; margin-bottom: 1.1rem;
+    }
+    .dw-h-num { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-menta); font-family: var(--font-body); }
+    .dw-sub { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: #fff; margin: 1.6rem 0 0.9rem; }
+    .dw-note { font-size: 0.88rem; line-height: 1.55; color: var(--color-grigio-300); margin-top: 0.9rem; max-width: none; }
+    .dw-note :global(strong) { color: #fff; font-weight: 600; }
+
+    .dw-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin: 0; padding: 0; }
+    .dw-li { position: relative; padding-left: 1.15rem; font-size: 0.96rem; line-height: 1.6; color: var(--color-grigio-200); }
+    .dw-li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 50%; background: var(--color-menta); }
+    .dw-li--tight { font-size: 0.9rem; }
+    .dw-li :global(strong) { color: #fff; font-weight: 600; }
+    .dw-li :global(em) { color: var(--color-blu-chiaro); font-style: normal; }
+
+    .dw-chip {
+      display: inline-flex; margin-right: 0.5rem; padding: 0.14rem 0.5rem; border-radius: 999px;
+      font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--color-notte); background: var(--color-menta); vertical-align: middle;
+    }
+    .dw-chip--warn { background: var(--color-arancio); color: #fff; }
+    .dw-chip--comp { background: var(--color-blu); color: #fff; }
+    .dw-chip--primaria { background: var(--color-menta); }
+    .dw-chip--stampa { background: var(--color-blu-chiaro); }
+    .dw-chip--profilo { background: var(--color-grigio-300); }
+
+    .dw-timeline { display: flex; flex-direction: column; }
+    .dw-tl-row { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: 0.7rem 0; border-top: 1px solid var(--color-carbone); }
+    .dw-tl-year { font-family: var(--font-display); font-weight: 700; color: var(--color-menta); font-size: 0.9rem; letter-spacing: 0.02em; }
+    .dw-tl-text { font-size: 0.93rem; line-height: 1.55; color: var(--color-grigio-200); max-width: none; }
+    @media (max-width: 640px) { .dw-tl-row { grid-template-columns: 1fr; gap: 0.2rem; } }
+
+    .dw-grid { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .dw-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 900px) { .dw-grid--4 { grid-template-columns: repeat(4, 1fr); } }
+    .dw-card { border: 1px solid var(--color-carbone); border-radius: 10px; padding: 1rem 1.1rem; background: rgba(23, 27, 33, 0.6); }
+    .dw-card-name { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; color: #fff; }
+    .dw-card-model { font-size: 0.85rem; line-height: 1.45; color: var(--color-blu-chiaro); margin-top: 0.25rem; }
+    .dw-card-touch { font-size: 0.88rem; line-height: 1.5; color: var(--color-grigio-200); margin-top: 0.5rem; }
+    .dw-card--stat { text-align: center; }
+    .dw-stat-v { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; color: var(--color-menta); letter-spacing: -0.02em; line-height: 1.1; }
+    .dw-stat-l { font-size: 0.86rem; line-height: 1.4; color: var(--color-grigio-200); margin-top: 0.4rem; }
+    .dw-stat-s { font-size: 0.72rem; color: var(--color-grigio-400); margin-top: 0.4rem; letter-spacing: 0.02em; }
+
+    .dw-rows { display: flex; flex-direction: column; }
+    .dw-row { display: grid; grid-template-columns: 13rem 1fr; gap: 1rem; padding: 0.75rem 0; border-top: 1px solid var(--color-carbone); align-items: start; }
+    .dw-row-k { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; color: #fff; line-height: 1.3; }
+    .dw-row-sub { font-size: 0.78rem; line-height: 1.4; color: var(--color-blu-chiaro); margin-top: 0.2rem; }
+    .dw-row-v { font-size: 0.92rem; line-height: 1.55; color: var(--color-grigio-200); max-width: none; }
+    .dw-run-t { display: inline-block; min-width: 3.6rem; color: var(--color-arancio-chiaro); font-family: var(--font-body); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.04em; margin-right: 0.4rem; }
+    @media (max-width: 640px) { .dw-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+    .dw-ideas { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-ideas { grid-template-columns: 1fr 1fr; } }
+    .dw-idea { border: 1px solid var(--color-carbone); border-radius: 12px; padding: 1.15rem 1.25rem; background: rgba(23, 27, 33, 0.6); display: flex; flex-direction: column; gap: 0.5rem; }
+    .dw-idea-name { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: #fff; margin-top: 0.15rem; }
+    .dw-idea-line { font-size: 0.9rem; line-height: 1.55; color: var(--color-grigio-200); max-width: none; }
+    .dw-idea-k { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-400); margin-bottom: 0.1rem; }
+    .dw-idea-adobe { margin-top: auto; padding-top: 0.6rem; border-top: 1px dashed var(--color-carbone); font-family: var(--font-display); font-weight: 700; font-size: 0.9rem; color: var(--color-blu-chiaro); }
+
+    .dw-table { display: flex; flex-direction: column; border: 1px solid var(--color-carbone); border-radius: 10px; overflow: hidden; }
+    .dw-tr { display: grid; grid-template-columns: 2.2fr 0.9fr 1.3fr 1fr 1.4fr 0.7fr; gap: 0.75rem; padding: 0.7rem 1rem; border-top: 1px solid var(--color-carbone); font-size: 0.85rem; color: var(--color-grigio-200); align-items: center; }
+    .dw-tr:first-child { border-top: 0; }
+    .dw-tr--head { background: rgba(23, 27, 33, 0.8); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-300); }
+    .dw-td-idea { font-weight: 600; color: #fff; }
+    .dw-p { display: inline-flex; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+    .dw-p--p0 { background: var(--color-arancio); color: #fff; }
+    .dw-p--p1 { background: var(--color-carbone); color: var(--color-grigio-200); }
+    @media (max-width: 760px) { .dw-tr { grid-template-columns: 1fr; gap: 0.25rem; } .dw-tr--head { display: none; } .dw-td-idea { font-size: 0.95rem; } }
+
+    .dw-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-cols { grid-template-columns: 1fr 1fr; } }
+    .dw-col { border: 1px solid var(--color-carbone); border-radius: 10px; padding: 1.1rem 1.2rem; background: rgba(23, 27, 33, 0.6); }
+    .dw-col--ok { box-shadow: inset 0 2px 0 0 var(--color-menta); }
+    .dw-col--no { box-shadow: inset 0 2px 0 0 var(--color-arancio); }
+    .dw-col-h { font-family: var(--font-display); font-weight: 700; font-size: 0.98rem; color: #fff; margin-bottom: 0.8rem; }
+    .dw-col--no .dw-li::before { background: var(--color-arancio); }
+
+    .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin: 0; padding: 0; }
+    .dw-source { font-size: 0.9rem; line-height: 1.5; }
+    .dw-source a { color: var(--color-grigio-200); }
+    .dw-source a:hover { color: var(--color-menta); }
+
+    .dw-footer { border-top: 1px solid var(--color-carbone); padding-top: 1.2rem; font-size: 0.78rem; letter-spacing: 0.04em; color: var(--color-grigio-400); }
+  </style>
+</BaseLayout>
