@@ -133,14 +133,13 @@ Il deck è stato riconfigurato come la **«Customer story» che apre il workshop
 - **Backdrop Adobe Firefly** on-brand (art, C2PA): `ff-engine-map` (engine-map), `ff-il-sito` (cover visibilita), `ff-contenuti` (slide genstudio) — generati via pipeline repo `scripts/lib/firefly.ts` con **`FIREFLY_CLIENT_ID/SECRET` in `apps/unicredit-engagement/.env`** (gitignored, copiate da `mim-alfabeti`). Gotcha: l'MCP Adobe **non genera** immagini; ogni `assets:build --manifest <subset>` **riscrive `provenance.json`** coi soli slot processati → fare merge (`git show HEAD:…provenance.json` + jq). Memoria `unicredit-workshop-cut`.
 - Verifica: `audit:deck` **0 nuovi HARD** (residui c/j a 1280/1440 su aem-agents/brand-concierge pre-esistenti; puliti a 1920). Merge #1, deploiato, nav live = 6 capitoli.
 
-### 5.7 «La storia di Marco» — flusso di 5 slide-momento (9 set 2026, `20d6558`)
-- Prima versione (5 beat in un pannello) **bocciata dall'utente**; **rifatta come flusso**: `slide-marco` (persona pulita) → **`slide-story-01…05`** (un momento per capitolo) → `slide-engine-map` → `slide-promise`. Scenario = **11 slide**.
-- **Template slide-momento** (`align="split"`, bg inverse): backdrop Firefly sotto scrim `:global(.uc-story-scrim)`; sinistra kicker + titolo + narrativa + link al capitolo; destra mock UI (`.uc-mock*`). Dati in `marcoMoments[]`.
-- **5 backdrop Firefly** `ff-story-01…05` (slot in `assets.manifest.ts`, senza volti né letterform: cucina/salotto/filo a 8 nodi/ufficio consulente/casa nuova), generati via `assets:build --manifest <subset>` + merge `provenance.json`.
-- `slide-engine-map`: ogni card ha «Per Marco»; 05/06 anche «Dentro UniCredit».
-- **Il Sito** = 7 slide: `cover → data → marco-moment → brand-visibility (gated) → eds → aem-agents → optimizer`. **Contenuti** = 4 (§5.4). **Analizza** = 9 (§5.5).
-- Coerenza cross-sezione (LOCKED): il touchpoint «Email non aperta → SMS mercoledì» della journey slide riprende la quote DIA; «appuntamento ore 14 / brief Coworker» riprende Coworker; «Filiale · contratto firmato» è il last-touch ufficiale che la vista CJA scompone (Digitale 45 · Contact center 30 · Filiale 25, pesi illustrativi).
-- Gotcha audit: l'audit legge `--slide-safe-inset` da `:root` (80px) e non l'override `[data-deck]` per breakpoint → a 1280×800 il contenuto deve stare in **640px** utili. Residui pre-esistenti a 1280 (aem-agents, brand-visibility, brand-concierge) bonificati con spacing/copy, mai type sotto i minimi.
+### 5.7 Deck 9 set sera — storia di Marco a 6 momenti, cover uniformi, video Firefly, chiusura (commit dopo `20d6558`)
+- **Scenario = 11 slide**: cover (UcCover + backdrop Firefly `ff-scenario-cover`, skyline Porta Nuova) → trend → gap (4 card **uguali**, `auto-rows-fr`+`h-full`) → persona → **`slide-story-01…06`** (Il Sito · Contenuti·GenStudio · Contenuti·Brand Concierge · Analizza · Coworker · Risultati; backdrop Firefly `ff-story-*` senza volti + mock UI `.uc-mock*`; dati `marcoMoments[]`) → engine-map (6 card **uniformi**: «Per Marco» + «Dentro UniCredit» su tutte, link al cap. 01). **Slide «promessa» rimossa** (ridondante dopo la mappa).
+- **`UcCover.astro`** (+ `src/data/chapters.ts`): copertina unica per i 6 capitoli — rail 00–05 (dove siamo), eyebrow, titolo, lead, chip «In questo capitolo». Stili `.uc-cover-*` in `global.css`. Sostituisce `CoverHero` in tutte le sezioni.
+- **Video Firefly** (`video.manifest.ts`, `pnpm --filter unicredit-engagement video:build`): `uc-cover` (home, filo oro + nodo rosso su blu notte) e `uc-close` (chiusura, 6 nodi). MP4 sul Release **`media`** (git-ignored), poster in `public/media/`. Pattern `.uc-video-poster` + `<video class="uc-video">` + `.uc-video-scrim` (CSS in `global.css`, reduced-motion nasconde il clip).
+- **Risultati**: nuova **`slide-close`** («Un cliente. Sei motori. Una piattaforma.» + i 6 motori in ordine demo + co-brand + credit Firefly + ricomincia); da `slide-roi` tolta la riga «Marco non è un personaggio» (ora in chiusura). Coworker cover riscritta come ponte da Analizza («Dall'insight all'azione»).
+- Copy: «UniCredit lo vede intero» → «vede tutto il percorso» (utente: «intero suona di un cliente fatto a fette»).
+- Gotcha audit: l'audit legge `--slide-safe-inset` da `:root` (80px) → a 1280×800 il contenuto deve stare in 640px.
 
 ---
 ## 6. Feature runtime del deck (tutte in UniCredit; molte in core)

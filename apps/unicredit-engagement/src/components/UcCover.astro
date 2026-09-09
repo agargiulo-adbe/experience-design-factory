@@ -1,0 +1,42 @@
+---
+/**
+ * UcCover — the ONE cover grammar for every chapter of the UniCredit deck.
+ * Rail of the six chapters (where we are) · eyebrow "0n · NAME" · display title ·
+ * lead · row of "in this chapter" chips. Bilingual via <T>. Backdrop is the page's.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+import { CHAPTERS } from '../data/chapters';
+
+interface L { en: string; it: string }
+interface Props {
+  slug: string;
+  title: L;          // may contain <br/>
+  lead: L;
+  chips?: (L | string)[];
+  tone?: 'inverse' | 'ink';
+}
+const { slug, title, lead, chips = [], tone = 'inverse' } = Astro.props;
+const idx = CHAPTERS.findIndex((c) => c.slug === slug);
+const me = CHAPTERS[idx];
+---
+<div data-cover class:list={["uc-cover w-full flex flex-col items-center text-center", tone === 'ink' && 'uc-cover--ink']}>
+  <ol class="uc-cover-rail" aria-label="Capitoli" data-reveal>
+    {CHAPTERS.map((c, i) => (
+      <li class:list={["uc-cover-rail-item", i < idx && 'is-past', i === idx && 'is-current']}>
+        <span class="uc-cover-rail-n">{c.n}</span>
+        <T as="span" class="uc-cover-rail-label" en={c.label.en} it={c.label.it} />
+      </li>
+    ))}
+  </ol>
+  <T as="p" class="uc-cover-eyebrow" data-reveal data-reveal-delay="0.06" en={`${me.n} · ${me.label.en}`} it={`${me.n} · ${me.label.it}`} />
+  <T as="h1" class="uc-cover-title" data-reveal data-reveal-delay="0.14" en={title.en} it={title.it} />
+  <T as="p" class="uc-cover-lead" data-reveal data-reveal-delay="0.22" en={lead.en} it={lead.it} />
+  {chips.length > 0 && (
+    <div class="uc-cover-chips" data-reveal data-reveal-delay="0.3">
+      <T as="span" class="uc-cover-chips-label" en="In this chapter" it="In questo capitolo" />
+      {chips.map((c) => typeof c === 'string'
+        ? <span class="uc-cover-chip">{c}</span>
+        : <T as="span" class="uc-cover-chip" en={c.en} it={c.it} />)}
+    </div>
+  )}
+</div>

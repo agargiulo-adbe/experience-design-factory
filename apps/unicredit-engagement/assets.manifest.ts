@@ -307,4 +307,31 @@ export const assets: AssetSlot[] = [
     grade: 'none',
     alt: '',
   },
+
+  {
+    id: 'ff-story-genstudio',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Morning at a Milan café terrace, a smartphone lying on a marble table next to a cappuccino with a soft glowing screen showing an abstract colourful social feed, a folded newspaper, warm sunlight, tram blurred in the background, editorial photography, shallow depth of field, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, hands, readable screen, user interface, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-scenario-cover',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Milan Porta Nuova financial district at blue hour seen from above, a tall slender modern glass skyscraper with a spire dominating the skyline, warm city lights, deep midnight-blue sky, thin threads of warm gold light tracing the streets below, cinematic, premium, editorial photography, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, cars close-up, cluttered, cartoon',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
 ];

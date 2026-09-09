@@ -3,13 +3,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UniNavigation from '../components/UniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
+import UcCover from '../components/UcCover.astro';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
+// Clip Firefly di chiusura (GitHub Release `media`, git-ignored in locale) + poster in /public/media.
+const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/uc-close.mp4';
+const closePoster = `${base.replace(/\/?$/, '/')}media/uc-close.poster.jpg`;
+const demoOrder = [
+  { n: '01', name: { en: 'Content management', it: 'Gestione contenuti' } },
+  { n: '02', name: { en: 'Content optimization', it: 'Ottimizzazione contenuti' } },
+  { n: '03', name: { en: 'Brand Concierge', it: 'Brand Concierge' } },
+  { n: '04', name: { en: 'Performance marketing', it: 'Performance marketing' } },
+  { n: '05', name: { en: 'Journey analytics', it: 'Journey analytics' } },
+  { n: '06', name: { en: 'Agentic workflows', it: 'Workflow agentici' } },
+];
 const currentPath = Astro.url.pathname;
 
 const topMetrics = [
@@ -88,29 +99,15 @@ const unicreditRoi = [
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('results-growth')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--surface-inverse)]/85"
+        imageClass="opacity-30"
+        scrim="bg-[var(--surface-inverse)]/78"
       />
-      <span data-lang-it class="contents">
-        <CoverHero
-          eyebrow="BUSINESS IMPACT"
-          title="I risultati"
-          lead="Banche di tutto il mondo misurano già l'impatto: ecco i benchmark che dicono cosa è possibile per UniCredit."
-          size="hero"
-          tone="inverse"
-          signature={false}
-        />
-      </span>
-      <span data-lang-en class="contents">
-        <CoverHero
-          eyebrow="BUSINESS IMPACT"
-          title="The results"
-          lead="Banks worldwide are already measuring the impact: here are the benchmarks that show what's possible for UniCredit."
-          size="hero"
-          tone="inverse"
-          signature={false}
-        />
-      </span>
+      <UcCover
+        slug="risultati"
+        title={{ en: 'What it earns', it: 'Quanto rende' }}
+        lead={{ en: "Marco's numbers, the banks that already measure the impact, and the projection for UniCredit.", it: "I numeri di Marco, le banche che già misurano l'impatto e la proiezione per UniCredit." }}
+        chips={[{ en: "Marco's journey in numbers", it: 'Il percorso di Marco in numeri' }, { en: 'Banking benchmarks', it: 'Benchmark banking' }, { en: 'UniCredit projection', it: 'Proiezione UniCredit' }]}
+      />
     </Slide>
 
     <!-- ── SLIDE 0b: La storia di Marco — i numeri ──────── -->
@@ -214,11 +211,11 @@ const unicreditRoi = [
     <!-- ── SLIDE 2: Case studies ──────────────────────────────────── -->
     <Slide id="slide-cases" bg="primary" align="center">
       <div class="ris-bg" data-slide-bg aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-5" data-reveal en="BANKING CASE STUDIES" it="CASE STUDY BANKING" />
+      <T as="p" class="slide-eyebrow text-[var(--accent-primary)] mb-3" data-reveal en="BANKING CASE STUDIES" it="CASE STUDY BANKING" />
       <T
         as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-4"
-        style="font-size: clamp(1.85rem, 3vw, 2.85rem);"
+        class="slide-title text-[var(--ink-primary)] mb-3"
+        style="font-size: clamp(1.8rem, 2.6vw, 2.85rem);"
         data-reveal
         data-reveal-delay="0.1"
         en="Who has already made the journey"
@@ -227,12 +224,12 @@ const unicreditRoi = [
 
       <div
         id="case-studies-grid"
-        class="w-full max-w-6xl mx-auto flex flex-wrap justify-center gap-4"
+        class="w-full max-w-6xl mx-auto flex flex-wrap justify-center gap-2.5"
         data-reveal
         data-reveal-delay="0.2"
       >
         {caseStudies.map((cs) => (
-          <div class="case-study-card uc-panel uc-panel--rosso text-left md:w-[calc(33.33%-0.7rem)]" data-cs-pages={cs.pages}>
+          <div class="case-study-card uc-panel uc-panel--rosso text-left md:w-[calc(33.33%-0.6rem)] !py-3" data-cs-pages={cs.pages}>
             <div class="uc-panel-head ris-case-head">
               <span class="uc-figure ris-case-bank">{cs.bank}</span>
               {typeof cs.country === 'string'
@@ -307,13 +304,6 @@ const unicreditRoi = [
         it="Proiezione basata su benchmark settore banking · US Bank, Itaú Unibanco, TSB, Deutsche Bank, Crédit Agricole Italia · adattata per il portafoglio retail UniCredit"
       />
 
-      <div class="mt-3 text-center" data-reveal data-reveal-delay="0.4">
-        <T as="p" class="text-sm text-[var(--color-grigio-400)]"
-          en={'Marco is not a fictional character: <span class="font-[family-name:var(--font-display)] italic text-[var(--color-grigio-300)]">«he is the customer UniCredit can serve as early as tomorrow.»</span>'}
-          it={'Marco non è un personaggio di finzione: <span class="font-[family-name:var(--font-display)] italic text-[var(--color-grigio-300)]">«è il cliente che UniCredit può servire già da domani.»</span>'}
-        />
-      </div>
-
       <div class="mt-4 flex flex-wrap gap-4 justify-center" data-reveal data-reveal-delay="0.5">
         <a
           href={href(base, '/')}
@@ -333,6 +323,38 @@ const unicreditRoi = [
             <rect x="2" y="9" width="5" height="5" rx="0.5"/>
             <rect x="9" y="9" width="5" height="5" rx="0.5"/>
           </svg>
+        </a>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: Chiusura ──────────────────────────────────────── -->
+    <Slide id="slide-close" bg="inverse" align="center">
+      <Fragment slot="backdrop">
+        <div class="uc-video-poster" style={`background-image: url(${closePoster});`} aria-hidden="true"></div>
+        <video class="uc-video" autoplay muted loop playsinline preload="metadata" poster={closePoster} aria-hidden="true">
+          <source src={CLOSE_VIDEO} type="video/mp4" />
+        </video>
+        <div class="uc-video-scrim" data-scrim aria-hidden="true"></div>
+      </Fragment>
+      <div class="w-full max-w-5xl mx-auto flex flex-col items-center text-center">
+        <T as="p" class="slide-eyebrow text-center text-[var(--color-oro)] mb-5" data-reveal en="CLOSING" it="CHIUSURA" />
+        <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.4rem, 4.8vw, 4.4rem);" data-reveal data-reveal-delay="0.08"
+          en="One customer. Six engines. One platform."
+          it="Un cliente. Sei motori. Una piattaforma."
+        />
+        <T as="p" class="text-[clamp(1.1rem,1.5vw,1.45rem)] text-[var(--color-grigio-200)] max-w-3xl mb-8 leading-relaxed" data-reveal data-reveal-delay="0.15"
+          en="Marco is not a fictional character: he is the customer UniCredit can serve as early as tomorrow. Everything he lived runs on Adobe Experience Platform. Now you see it live, in this order."
+          it="Marco non è un personaggio di finzione: è il cliente che UniCredit può servire già da domani. Tutto quello che ha vissuto gira su Adobe Experience Platform. Adesso lo vedete dal vivo, in quest'ordine."
+        />
+        <ol class="uc-close-list" data-reveal data-reveal-delay="0.22">
+          {demoOrder.map((d) => (
+            <li class="uc-close-item"><span class="uc-close-n">{d.n}</span><T as="span" class="uc-close-name" en={d.name.en} it={d.name.it} /></li>
+          ))}
+        </ol>
+        <p class="uc-cobrand mt-9" data-reveal data-reveal-delay="0.3"><span>UniCredit</span><span class="uc-cobrand-x">×</span><span>Adobe</span></p>
+        <T as="p" class="uc-firefly mt-4" data-reveal data-reveal-delay="0.34" en="Backdrops and clips of this deck generated with Adobe Firefly, signed with Content Credentials" it="Sfondi e clip di questo deck generati con Adobe Firefly, firmati con Content Credentials" />
+        <a href={href(base, '/')} class="mt-5 inline-flex items-center gap-2 px-5 py-2 text-xs font-medium tracking-widest uppercase border border-[var(--ink-inverse)]/30 text-[var(--ink-inverse)]/60 hover:border-[var(--ink-inverse)]/70 hover:text-[var(--ink-inverse)] transition-colors duration-300 rounded-sm" data-reveal data-reveal-delay="0.4">
+          <T en="Start the journey over →" it="Ricomincia il percorso →" />
         </a>
       </div>
     </Slide>
@@ -417,6 +439,14 @@ const unicreditRoi = [
   .ris-roi-sub { font-size: 0.85rem; line-height: 1.4; color: var(--color-grigio-300); margin-top: 0.15rem; }
   .ris-roi-sub--lg { font-size: 0.95rem; }
   .ris-roi-note { font-size: 0.8rem; line-height: 1.45; color: var(--color-grigio-300); max-width: none; }
+  /* Chiusura — i sei motori nell'ordine delle demo */
+  .uc-close-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; width: 100%; max-width: 52rem; }
+  .uc-close-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0.9rem; border-radius: 4px; background: rgba(245,242,238,0.06); border-top: 2px solid var(--color-oro); text-align: left; }
+  .uc-close-n { font-family: var(--font-display); font-weight: 300; font-size: 1.35rem; color: var(--color-oro); line-height: 1; }
+  .uc-close-name { font-size: 0.98rem; font-weight: 600; color: var(--ink-inverse); line-height: 1.3; }
+  .uc-cobrand { font-family: var(--font-display); font-size: 1.35rem; color: var(--ink-inverse); letter-spacing: 0.02em; }
+  .uc-cobrand-x { color: var(--color-oro); padding: 0 0.5rem; }
+  .case-study-card .uc-panel-head { padding-bottom: 0.4rem; margin-bottom: 0.5rem; }
 </style>
 
 <script is:inline>
