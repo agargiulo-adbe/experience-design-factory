@@ -16,7 +16,7 @@ you don't need all of it for most tasks.
    **`HANDOVER-03.md`** (§11: **change log datato**, dal più recente) ·
    **`HANDOVER-04.md`** (§12–17: puntatori, **Factory Showcase §13**, **Ferrari /scoping §14**, hub/parity/Connessioni §15 — vincoli LOCKED —, **Agos §16**, Brand Visibility + de-AI + /handover §17) ·
    **`HANDOVER-05.md`** (§18–26: Ferrari scoping §18–20, **Experience Atelier §21**, **core trasversali §22** incl. regole BINDING §22.4, redesign E2E §23, **Eni Orbita §24**, responsive/nav §25, **biforcazione FS Park × Trenitalia §26** + dossier FSTechnology §26.8) ·
-   **`HANDOVER-06.md`** (§27–31: **UniCredit attribution + dossier §27**, **MIM «La voce del Ministero» §28**, **Firefly asset+video pipeline §29**, **Aperture §30**, **Isybank «Il momento giusto» §31**).
+   **`HANDOVER-06.md`** (§27–31: **UniCredit attribution + dossier §27**, **MIM «La voce del Ministero» §28**, **Firefly asset+video pipeline §29**, **Aperture §30**, **Isybank «Il momento giusto» §31** incl. **§31.5 deck PowerPoint per Valitutti**).
 2. **`docs/new-client-in-30-min.md`** (~0.9k tok) — read **only if** creating a new experience (steps + gotchas: Tailwind v4 + monorepo, trailing slash, base URL, GSAP scroller, reduced-motion, hyphenated TS keys, CSS translucency).
 3. **`docs/AUDIT.md`** (~4.9k tok) — read **only if** working on **Max Mara / Acquisizione**. Phase‑1 diagnosis (dated 2026‑06‑16); proposals **not yet applied** — validate before acting.
 4. **`docs/storyboard.md`** (~1.6k tok) — narrative storyboard; read if you need the story arc.
