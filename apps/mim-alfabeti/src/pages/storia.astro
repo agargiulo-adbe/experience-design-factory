@@ -11,31 +11,57 @@ import bgCarta from '../assets/generated/bg/carta-5.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+const VIDEO_PONTE = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/mim-voce-ponte.mp4';
 
-// «La notte delle immissioni», com'è oggi — la realtà frammentata in tre battute.
-const oggi = [
+// «La notte di luglio» — three beats. Each beat = one [data-substep] line in the
+// left column; the phone screen on the right follows the slide's
+// data-substep-index (set by deck.ts) via the CSS at the bottom of this page.
+// Every name, province, code and figure on the phone is an illustrative
+// example, labelled as such in the phone bar. No real people.
+const beats = [
   {
+    n: 1,
     label: { en: 'Ranking in the dark', it: 'La domanda al buio' },
-    en: '150 preferences to submit on Istanze OnLine, while transfers and provisional assignments are still under way — she ranks posts without knowing which will still be free.',
-    it: '150 preferenze da inviare su Istanze OnLine, mentre trasferimenti e assegnazioni provvisorie sono ancora in corso — ordina le cattedre senza sapere quali resteranno libere.',
+    en: '150 preferences, and no way to know which posts will still be free.',
+    it: '150 preferenze, senza sapere quali cattedre resteranno libere.',
   },
   {
+    n: 2,
     label: { en: 'The result lands elsewhere', it: 'Il bollettino altrove' },
-    en: "The outcome doesn't come back where she applied: it appears in the provincial office bulletins. She hunts for it there, and in the Facebook groups.",
-    it: "L'esito non torna dove ha fatto domanda: compare nei bollettini dell'Ufficio provinciale. Lo cerca lì, e nei gruppi Facebook.",
+    en: "The outcome doesn't come back where she applied. It appears in the USP bulletins, so she hunts for it in the groups.",
+    it: "L'esito non torna dove ha fatto domanda. Esce nei bollettini dell'USP, e lei lo cerca nei gruppi.",
   },
   {
+    n: 3,
     label: { en: 'The revocation', it: 'La revoca' },
-    en: 'A second bulletin can correct or revoke the assignment. The continuity with her pupils — the whole point of support teaching — breaks.',
-    it: 'Un secondo bollettino può rettificare o revocare l’incarico. La continuità con i suoi alunni — il senso stesso del sostegno — salta.',
+    en: 'A second bulletin can correct or revoke the assignment. The continuity with her pupils breaks.',
+    it: "Un secondo bollettino può rettificare o revocare l'incarico. La continuità con i suoi alunni salta.",
   },
 ];
 
-// «Come cambia» — la stessa estate, dentro un journey governato e misurato.
-// Touchpoint volutamente PROCEDURALI e non sensibili: avvisi che il Ministero
-// già deve al personale (apertura finestra, scadenza, esito pubblicato), sui
-// canali istituzionali, che rimandano al canale ufficiale senza esporre dati
-// sensibili (posizione/punteggio) nel messaggio.
+// Illustrative USP bulletin rows (beat 1). Codes are public class-of-competition
+// labels; provinces and counts are invented for the example.
+// Province as the two-letter sigla, the way USP bulletins print it.
+const bollettino = [
+  { prov: 'CE', cdc: 'ADSS', posti: '2', stato: { it: 'pubblicato', en: 'published' } },
+  { prov: 'CE', cdc: 'ADMM', posti: '0', stato: { it: 'in aggiorn.', en: 'updating' } },
+  { prov: 'NA', cdc: 'ADSS', posti: '5', stato: { it: 'pubblicato', en: 'published' } },
+  { prov: 'SA', cdc: 'ADEE', posti: '1', stato: { it: 'rettifica', en: 'correction' } },
+];
+
+// Group chat (beat 2). Anonymous first names only.
+const chat = [
+  { who: 'Marta', me: false, it: 'qualcuno ha novità per Caserta?', en: 'any news for Caserta?' },
+  { who: 'Luca', me: false, it: 'il bollettino dice 2 posti ma sul sito ne vedo 0', en: 'the bulletin says 2 posts but the site shows 0' },
+  { who: 'Sara', me: false, it: 'mia cugina ha avuto la revoca ieri', en: 'my cousin got a revocation yesterday' },
+  { who: 'Giulia', me: true, it: 'boh, riprovo domattina', en: 'no idea, I will try again in the morning' },
+];
+
+// «Come cambia» — the same summer inside a governed, measured journey.
+// Touchpoints are deliberately PROCEDURAL and not sensitive: notices the
+// Ministry already owes its staff (window open, deadline, outcome published),
+// on institutional channels, pointing to the official channel without exposing
+// sensitive data (position/score) in the message.
 const journey = [
   {
     title: { en: 'Application window open', it: 'Finestra domanda aperta' },
@@ -54,14 +80,30 @@ const journey = [
   },
 ];
 ---
-<BaseLayout title="La storia di Giulia">
+<BaseLayout title="La storia di Giulia" preloadImage={bgNavy.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/accesso')} prevHref={href(base, '/competenze')}>
+  <DeckContainer nextHref={href(base, '/voce')} prevHref={href(base, '/domanda')}>
 
-    <!-- ── SLIDE 0: Giulia, oggi ─────────────────────────────────────── -->
+    <!-- ── SLIDE 0: Ponte (text-free bridge, video plays once) ────────── -->
+    <Slide id="slide-ponte" bg="inverse" align="left" data-dark data-display>
+      <video slot="backdrop" class="alf-video alf-video--once" autoplay muted playsinline preload="metadata" poster={href(base, '/media/mim-voce-ponte-poster.jpg')} aria-hidden="true">
+        <source src={VIDEO_PONTE} type="video/mp4" />
+      </video>
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
+      <h2 class="sr-only"><T en="Giulia's story" it="La storia di Giulia" /></h2>
+      <p
+        class="alf-src absolute text-[var(--color-carta-tenue)]"
+        style="left: max(var(--slide-safe-inset), 6vw); bottom: max(var(--deck-chrome-safe), 7vh); letter-spacing: 0.04em;"
+        data-reveal data-reveal-delay="0.4"
+      >
+        <T en="One teacher among 234,576" it="Una docente tra 234.576" />
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 1: Giulia, oggi ─────────────────────────────────────── -->
     <Slide id="slide-ritratto" bg="secondary" align="left">
       <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
@@ -83,74 +125,172 @@ const journey = [
             style="font-size: clamp(1.05rem, 1.4vw, 1.3rem); line-height: 1.6; max-width: 40ch;"
             data-reveal data-reveal-delay="0.16"
           />
-          <div class="alf-stat" data-reveal data-reveal-delay="0.24">
-            <p class="alf-stat-num tabular-nums">234.576</p>
+          <dl class="alf-source-card" data-reveal data-reveal-delay="0.24">
+            <div class="alf-source-card-value tabular-nums">234.576</div>
+            <dt><T en="What it counts" it="Cosa conta" /></dt>
+            <dd><T en="substitute teachers, 26.9% of all posts. Giulia is one of them." it="supplenti, il 26,9% delle cattedre. Giulia è una di loro." /></dd>
+            <dt><T en="Year" it="Anno" /></dt>
+            <dd>2022/23</dd>
+            <dt><T en="Source" it="Fonte" /></dt>
+            <dd><a href="https://www.tuttoscuola.com/perecari-della-scuola-numeri/" target="_blank" rel="noopener noreferrer">Tuttoscuola</a><T en=", on MIM Portale Unico del reclutamento data" it=", su dati del Portale Unico del reclutamento MIM" /></dd>
+            <dt><T en="Accessed" it="Consultato il" /></dt>
+            <dd><T en="4 Sep 2026" it="4 set 2026" /></dd>
+            <dt><T en="Not covered" it="Cosa non copre" /></dt>
+            <dd><T en="ATA staff and principals" it="ATA e dirigenti" /></dd>
+          </dl>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: La notte di luglio (three beats, sub-steps) ───────── -->
+    <Slide id="slide-notte" bg="inverse" align="left" data-dark>
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] gap-[clamp(1.2rem,3vw,3.5rem)] items-center">
+        <div class="min-w-0">
+          <T as="p" en="The July night" it="La notte di luglio" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
+          <T
+            as="h2"
+            en="July. She ranks 150 preferences without knowing which posts will still be free."
+            it="Luglio. Compila 150 preferenze senza sapere quali cattedre resteranno libere."
+            class="text-[var(--color-carta)] mb-4 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.16; letter-spacing: -0.02em; max-width: 24ch;"
+            data-reveal data-reveal-delay="0.08"
+          />
+          <T
+            as="p"
+            en="The Istanze OnLine form closes while transfers and provisional assignments are still running. Giulia ranks her posts blind, and waits for a bulletin that will appear somewhere else."
+            it="Il modulo su Istanze OnLine si chiude mentre trasferimenti e assegnazioni provvisorie sono ancora in corso. Giulia ordina le cattedre alla cieca, e aspetta un bollettino che uscirà da un'altra parte."
+            class="notte-lead text-[var(--color-carta-tenue)] mb-5"
+            style="font-size: clamp(0.98rem, 1.2vw, 1.15rem); line-height: 1.55; max-width: 48ch;"
+            data-reveal data-reveal-delay="0.16"
+          />
+          <ol class="notte-beats flex flex-col gap-3">
+            {beats.map((b) => (
+              <li class="notte-beat" data-substep data-beat={b.n}>
+                <span class="notte-beat-n" aria-hidden="true">{b.n}</span>
+                <div class="min-w-0">
+                  <T as="p" en={b.label.en} it={b.label.it} class="notte-beat-label" />
+                  <T as="p" en={b.en} it={b.it} class="notte-beat-body" />
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p class="alf-src notte-src mt-5" data-reveal data-reveal-delay="0.24">
             <T
-              as="p"
-              en="substitute teachers in 2022/23 — 26.9% of all posts. Giulia is one of them."
-              it="supplenti nel 2022/23 — il 26,9% delle cattedre. Giulia è una di loro."
-              class="alf-stat-label"
-            />
-            <p class="alf-stat-src">
-              <T en="Source · MIM Portale Unico del reclutamento, via " it="Fonte · Portale Unico del reclutamento MIM, via " /><a href="https://www.tuttoscuola.com/perecari-della-scuola-numeri/" target="_blank" rel="noopener noreferrer">Tuttoscuola</a>
-            </p>
+              en="Sources · teacher groups on “choosing in the dark” · USP revocation/correction bulletins — "
+              it="Fonti · coordinamenti precari sulle «scelte al buio» · bollettini di revoca/rettifica USP — "
+            /><a href="https://www.scuolainforma.news/domanda-150-preferenze-supplenze-gps-i-docenti-precari-denunciano-scelte-al-buio-sui-posti-disponibili/" target="_blank" rel="noopener noreferrer">Scuola&nbsp;Informa</a> · <a href="https://www.miuristruzione.com/2026/06/15/150-preferenze-gps-domanda-anticipata-con-ancora-in-corso-assegnazioni-provvisorie-e-altri-movimenti-comportera-scelte-al-buio/" target="_blank" rel="noopener noreferrer">MiurIstruzione</a> · <a href="https://www.orizzontescuola.it/supplenze-gps-docenti-2025-dal-primo-al-secondo-bollettino-revoche-rettifiche-e-nuove-disponibilita-risposte-ai-quesiti/" target="_blank" rel="noopener noreferrer">Orizzonte&nbsp;Scuola</a>
+          </p>
+        </div>
+
+        <div class="notte-phone-wrap justify-self-center" data-reveal="left" data-reveal-delay="0.2">
+          <div class="alf-phone" role="img" aria-label="Il telefono di Giulia, esempio illustrativo: il bollettino, la chat del gruppo, la rettifica.">
+            <div class="alf-phone-screen">
+              <div class="alf-phone-bar">
+                <span class="notte-bar-app"><span data-lang-it>Esempio illustrativo</span><span data-lang-en>Illustrative example</span></span>
+                <span class="notte-bar-time" aria-hidden="true">
+                  <span class="notte-screen-only" data-beat="1">23:40</span>
+                  <span class="notte-screen-only" data-beat="2">00:12</span>
+                  <span class="notte-screen-only" data-beat="3">07:30</span>
+                </span>
+              </div>
+              <div class="alf-phone-body">
+
+                <!-- Beat 1 · 23:40 · USP bulletin -->
+                <div class="notte-screen" data-beat="1">
+                  <p class="alf-clock">23:40</p>
+                  <p class="notte-screen-kicker"><span data-lang-it>USP · Bollettino supplenze</span><span data-lang-en>USP · Substitute posts bulletin</span></p>
+                  <div class="alf-bulletin">
+                    <p class="alf-bulletin-head"><span data-lang-it>Bollettino n. 1 · GPS 2026/27</span><span data-lang-en>Bulletin no. 1 · GPS 2026/27</span></p>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th><span data-lang-it>Prov</span><span data-lang-en>Prov</span></th>
+                          <th><span data-lang-it>Classe</span><span data-lang-en>Class</span></th>
+                          <th><span data-lang-it>Posti</span><span data-lang-en>Posts</span></th>
+                          <th><span data-lang-it>Stato</span><span data-lang-en>Status</span></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bollettino.map((r) => (
+                          <tr>
+                            <td>{r.prov}</td>
+                            <td>{r.cdc}</td>
+                            <td>{r.posti}</td>
+                            <td><span data-lang-it>{r.stato.it}</span><span data-lang-en>{r.stato.en}</span></td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <!-- Beat 2 · 00:12 · group chat -->
+                <div class="notte-screen" data-beat="2">
+                  <p class="alf-clock">00:12</p>
+                  <p class="notte-screen-kicker"><span data-lang-it>Gruppo · Supplenze Campania</span><span data-lang-en>Group · Campania substitutes</span></p>
+                  <ul class="alf-chat">
+                    {chat.map((m) => (
+                      <li class:list={['alf-chat-msg', { 'alf-chat-msg--me': m.me }]}>
+                        <span data-lang-it>{m.it}</span><span data-lang-en>{m.en}</span>
+                        <span class:list={['alf-chat-meta', 'block', { 'notte-chat-meta-me': m.me }]}>{m.who}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <!-- Beat 3 · 07:30 · correction notice -->
+                <div class="notte-screen" data-beat="3">
+                  <p class="alf-clock">07:30</p>
+                  <p class="notte-screen-kicker"><span data-lang-it>USP · Avviso</span><span data-lang-en>USP · Notice</span></p>
+                  <div class="notte-notice">
+                    <p class="notte-notice-title"><span data-lang-it>Rettifica bollettino n. 2 · posti aggiornati</span><span data-lang-en>Correction to bulletin no. 2 · posts updated</span></p>
+                    <p class="notte-notice-row"><span>Caserta · ADSS</span><span class="tabular-nums">2 → 0</span></p>
+                    <p class="notte-notice-row"><span data-lang-it>Incarico</span><span data-lang-en>Assignment</span><span class="alf-jstate notte-jstate-revoca"><span data-lang-it>Revoca</span><span data-lang-en>Revoked</span></span></p>
+                    <p class="notte-notice-foot"><span data-lang-it>Nuova disponibilità dal prossimo bollettino.</span><span data-lang-en>New availability from the next bulletin.</span></p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1: La notte delle immissioni (com'è oggi) ───────────── -->
-    <Slide id="slide-notte" bg="inverse" align="left">
-      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="How it works today" it="Com'è oggi" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
-        <T
-          as="h2"
-          en="July. She ranks 150 preferences without knowing which posts will still be free."
-          it="Luglio. Compila 150 preferenze senza sapere quali cattedre resteranno libere."
-          class="text-[var(--color-carta)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.16; letter-spacing: -0.02em; max-width: 26ch;"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.1">
-          {oggi.map((o) => (
-            <article class="alf-card">
-              <T as="h3" en={o.label.en} it={o.label.it} class="alf-card-title" />
-              <T as="p" en={o.en} it={o.it} class="alf-card-body" />
-            </article>
-          ))}
-        </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
-          <T
-            en="Sources · teacher groups on “choosing in the dark” · USP revocation/correction bulletins — "
-            it="Fonti · coordinamenti precari sulle «scelte al buio» · bollettini di revoca/rettifica USP — "
-          /><a href="https://www.scuolainforma.news/domanda-150-preferenze-supplenze-gps-i-docenti-precari-denunciano-scelte-al-buio-sui-posti-disponibili/" target="_blank" rel="noopener noreferrer">Scuola&nbsp;Informa</a> · <a href="https://www.miuristruzione.com/2026/06/15/150-preferenze-gps-domanda-anticipata-con-ancora-in-corso-assegnazioni-provvisorie-e-altri-movimenti-comportera-scelte-al-buio/" target="_blank" rel="noopener noreferrer">MiurIstruzione</a> · <a href="https://www.orizzontescuola.it/supplenze-gps-docenti-2025-dal-primo-al-secondo-bollettino-revoche-rettifiche-e-nuove-disponibilita-risposte-ai-quesiti/" target="_blank" rel="noopener noreferrer">Orizzonte&nbsp;Scuola</a>
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 2: Come cambia ──────────────────────────────────────── -->
+    <!-- ── SLIDE 3: Come cambia ──────────────────────────────────────── -->
     <Slide id="slide-evolve" bg="primary" align="left">
       <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
         <T as="p" en="How it changes" it="Come cambia" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
-          en="The same July — one voice that reaches her, and knows that it did."
-          it="Lo stesso luglio, con una voce che la raggiunge — e sa di averla raggiunta."
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          en="The same July, with one voice that reaches her and knows that it did."
+          it="Lo stesso luglio, con una voce che la raggiunge e sa di averla raggiunta."
+          class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
           style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.16; letter-spacing: -0.02em; max-width: 26ch;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-[clamp(1rem,2.2vw,2.2rem)] items-center">
-          <T
-            as="p"
-            en="A role-based governed profile — not a marketing database — recognizes her by province and subject class. The procedural notices the Ministry already owes her arrive at the right moment, on institutional channels, without exposing sensitive data: each one points to the official channel. And for the first time every notice is measured — delivered, opened, acted on."
-            it="Un profilo governato per ruolo — non un database di marketing — la riconosce per provincia e classe di concorso. Gli avvisi di procedura che il Ministero già le deve arrivano al momento giusto, sui canali istituzionali, senza esporre dati sensibili: ogni avviso rimanda al canale ufficiale. E per la prima volta ogni invio è misurato — recapitato, aperto, seguito da un'azione."
-            class="text-[var(--ink-secondary)]"
-            style="font-size: clamp(1.02rem, 1.35vw, 1.25rem); line-height: 1.58; max-width: 44ch;"
-            data-reveal data-reveal-delay="0.16"
-          />
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.95fr] gap-[clamp(1rem,2.2vw,2.2rem)] items-center">
+          <div class="min-w-0">
+            <T
+              as="p"
+              en="A role-based governed profile, not a marketing database, recognizes her by province and subject class. The procedural notices the Ministry already owes her arrive at the right moment, on institutional channels, without exposing sensitive data: each one points to the official channel. And for the first time every notice is measured: delivered, opened, acted on."
+              it="Un profilo governato per ruolo, non un database di marketing, la riconosce per provincia e classe di concorso. Gli avvisi di procedura che il Ministero già le deve arrivano al momento giusto, sui canali istituzionali, senza esporre dati sensibili: ogni avviso rimanda al canale ufficiale. E per la prima volta ogni invio è misurato: recapitato, aperto, seguito da un'azione."
+              class="text-[var(--ink-secondary)]"
+              style="font-size: clamp(0.98rem, 1.25vw, 1.15rem); line-height: 1.55; max-width: 46ch;"
+              data-reveal data-reveal-delay="0.16"
+            />
+            <div class="alf-quote mt-5" data-reveal data-reveal-delay="0.3">
+              <T
+                as="p"
+                en="Not a new portal to check. The same journey Giulia lives every summer, this time reaching her on purpose and leaving a trace the Ministry can read."
+                it="Non un portale in più da controllare. Lo stesso percorso che Giulia vive ogni estate, stavolta la raggiunge apposta e lascia una traccia che il Ministero può leggere."
+                class="alf-quote-text"
+                style="font-size: clamp(1rem, 1.25vw, 1.15rem); font-weight: 500; max-width: 46ch;"
+              />
+            </div>
+          </div>
           <div class="alf-profile" data-clienteling data-reveal data-reveal-delay="0.2">
             <div class="scan-line" aria-hidden="true"></div>
             <div class="alf-profile-head">
@@ -166,7 +306,7 @@ const journey = [
             </div>
             <div class="alf-journey">
               {journey.map((j) => (
-                <div class="alf-jstep reveal-attr">
+                <div class="alf-jstep" data-substep>
                   <span class="alf-jdot" aria-hidden="true"></span>
                   <div class="alf-jbody">
                     <T as="p" en={j.title.en} it={j.title.it} class="alf-jtitle" />
@@ -178,17 +318,135 @@ const journey = [
             </div>
           </div>
         </div>
-        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.3">
-          <T
-            as="p"
-            en="Not a new portal to check. The same journey Giulia lives every summer — this time reaching her on purpose, and leaving a trace the Ministry can read."
-            it="Non un portale in più da controllare. Lo stesso percorso che Giulia vive ogni estate — stavolta la raggiunge apposta, e lascia una traccia che il Ministero può leggere."
-            class="alf-quote-text"
-            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
-          />
-        </div>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* Video slides: the scrim div gets z-index:1 (global `.alf-video ~ .alf-bg-navy`),
+     so the slide's content wrapper must sit above the video+scrim stack. */
+  #slide-ponte > div.inset-0 { z-index: 2; }
+
+  /* ── slide-notte: beat lines (left) + phone screens (right) ─────────
+     The three beat lines are the deck's [data-substep]s. The phone screen
+     follows the slide's data-substep-index (0 = opening state = beat 1;
+     n = beat n). Reduced-motion / no-JS: all three lines visible, screen 1
+     shown (the deck never steps there, so no overlapping screens). */
+  #slide-notte .notte-beat {
+    display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.75rem; align-items: start;
+  }
+  #slide-notte .notte-beat-n {
+    width: 2rem; height: 2rem; border-radius: 50%; flex-shrink: 0;
+    background: rgba(127, 168, 230, 0.2); color: var(--color-carta);
+    font-family: var(--font-display); font-weight: 700; font-size: 0.95rem;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  #slide-notte .notte-beat-label {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.25;
+    color: var(--color-carta); max-width: none;
+  }
+  #slide-notte .notte-beat-body {
+    font-size: 0.95rem; line-height: 1.5; color: var(--color-carta-tenue); max-width: 48ch; margin-top: 0.1rem;
+  }
+  /* Wrapper takes the SCALED box of the phone so the layout (and the
+     .slide-inner height bound) sees the real on-screen size. */
+  #slide-notte .notte-phone-wrap { width: 360px; height: 640px; flex-shrink: 0; }
+  #slide-notte .notte-phone-wrap .alf-phone { transform-origin: 0 0; }
+  @media (max-height: 899px) { #slide-notte .notte-phone-wrap { width: calc(360px * 0.82); height: calc(640px * 0.82); } }
+  @media (max-height: 799px) { #slide-notte .notte-phone-wrap { width: calc(360px * 0.72); height: calc(640px * 0.72); } }
+  #slide-notte .alf-phone-body { position: relative; }
+  #slide-notte .notte-screen {
+    position: absolute; inset: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem;
+    opacity: 0; visibility: hidden; transform: translateY(6px);
+    transition: opacity 320ms var(--easing-out), transform 320ms var(--easing-out), visibility 0s linear 320ms;
+  }
+  #slide-notte .notte-screen-only { display: none; }
+  #slide-notte .notte-bar-app { font-weight: 600; color: var(--color-ardesia-500); text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.7rem; }
+  #slide-notte .notte-bar-time { font-variant-numeric: tabular-nums; }
+  #slide-notte .alf-phone .alf-clock { color: var(--color-inchiostro); }
+  /* The bulletin must never widen the phone: fixed layout, cells wrap. */
+  #slide-notte .alf-bulletin { overflow: hidden; }
+  #slide-notte .alf-bulletin table { table-layout: fixed; }
+  #slide-notte .alf-bulletin th, #slide-notte .alf-bulletin td { padding-inline: 0.25rem; }
+  #slide-notte .alf-bulletin th { white-space: nowrap; letter-spacing: 0.02em; }
+  #slide-notte .alf-bulletin td { overflow-wrap: normal; white-space: nowrap; }
+  #slide-notte .alf-bulletin th:nth-child(1), #slide-notte .alf-bulletin td:nth-child(1) { width: 16%; }
+  #slide-notte .alf-bulletin th:nth-child(2), #slide-notte .alf-bulletin td:nth-child(2) { width: 22%; }
+  #slide-notte .alf-bulletin th:nth-child(3), #slide-notte .alf-bulletin td:nth-child(3) { width: 18%; }
+  /* Cramped laptop band (1366×768): tighter rhythm so the column fits the bound. */
+  @media (max-height: 799px) {
+    #slide-notte .notte-beats { gap: 0.5rem; }
+    #slide-notte .notte-lead { margin-bottom: 0.85rem; }
+    #slide-notte .notte-src { margin-top: 0.7rem; }
+    #slide-notte h2 { margin-bottom: 0.7rem; }
+  }
+  #slide-notte .notte-screen-kicker {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--color-ardesia-500); max-width: none;
+  }
+  /* Opening state / beat 1 */
+  #slide-notte:not([data-substep-index]) .notte-screen[data-beat="1"],
+  #slide-notte[data-substep-index="0"] .notte-screen[data-beat="1"],
+  #slide-notte[data-substep-index="1"] .notte-screen[data-beat="1"],
+  #slide-notte[data-substep-index="2"] .notte-screen[data-beat="2"],
+  #slide-notte[data-substep-index="3"] .notte-screen[data-beat="3"] {
+    opacity: 1; visibility: visible; transform: none; transition-delay: 0s;
+  }
+  #slide-notte:not([data-substep-index]) .notte-screen-only[data-beat="1"],
+  #slide-notte[data-substep-index="0"] .notte-screen-only[data-beat="1"],
+  #slide-notte[data-substep-index="1"] .notte-screen-only[data-beat="1"],
+  #slide-notte[data-substep-index="2"] .notte-screen-only[data-beat="2"],
+  #slide-notte[data-substep-index="3"] .notte-screen-only[data-beat="3"] { display: inline; }
+  @media (prefers-reduced-motion: reduce) {
+    #slide-notte .notte-screen { transition: none; }
+  }
+  /* Chat: sender line, and the outgoing bubble's meta stays readable on blue. */
+  #slide-notte .alf-chat-msg .alf-chat-meta { display: block; }
+  #slide-notte .notte-chat-meta-me { color: rgba(255, 255, 255, 0.82); }
+  /* Beat 3: the correction notice (a phone card, always light). */
+  #slide-notte .notte-notice {
+    background: #FBF8F0; border: 1px solid rgba(10, 26, 51, 0.18); border-top: 2px solid var(--color-ocra);
+    border-radius: 4px; padding: 0.8rem 0.9rem; display: flex; flex-direction: column; gap: 0.45rem;
+    color: var(--color-inchiostro); font-size: 0.86rem; line-height: 1.4;
+  }
+  #slide-notte .notte-notice-title { font-weight: 700; font-size: 0.9rem; line-height: 1.3; max-width: none; }
+  #slide-notte .notte-notice-row { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; max-width: none; }
+  #slide-notte .notte-notice-foot { color: var(--color-ardesia-500); font-size: 0.8rem; max-width: none; }
+  #slide-notte .notte-jstate-revoca { background: rgba(166, 90, 0, 0.16); color: var(--color-ocra); }
+  /* The slide is dark (navy) but the phone screen is a white device: keep the
+     phone's own inks regardless of the dark-context rules. */
+  #slide-notte .alf-phone .alf-jstate.notte-jstate-revoca { background: rgba(166, 90, 0, 0.16); color: var(--color-ocra); }
+</style>
+
+<script is:inline>
+  // Play-once backdrop videos (.alf-video--once): restart when their slide
+  // becomes active, pause when leaving. One document-level listener that
+  // survives ClientRouter swaps; identical in storia.astro and rotta.astro.
+  (function () {
+    if (window.__alfVideoOnceBound) return;
+    window.__alfVideoOnceBound = true;
+    function sync(activeId) {
+      document.querySelectorAll('.alf-video--once').forEach(function (v) {
+        var slide = v.closest('[data-slide]');
+        var active = !!(slide && activeId && slide.id === activeId);
+        if (active) {
+          try { v.currentTime = 0; } catch (e) {}
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else if (!v.paused) {
+          v.pause();
+        }
+      });
+    }
+    document.addEventListener('deck:change', function (e) {
+      sync(e && e.detail ? e.detail.id : '');
+    });
+    document.addEventListener('astro:page-load', function () {
+      var deck = window.__edfDeck;
+      var s = deck && deck.slides && deck.slides[deck.index];
+      if (s && s.id) sync(s.id);
+    });
+  })();
+</script>
