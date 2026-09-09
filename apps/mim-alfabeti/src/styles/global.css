@@ -345,7 +345,17 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; opacity: 0.9; z-index: 0; pointer-events: none;
 }
+/* Over a video the scrim keeps its gradients but drops the still image and the
+   opaque surface colour, so the clip shows through; the slide's content wrapper
+   is lifted above both (Phase 2 pages also do this inline, belt and braces). */
 .alf-video ~ .alf-bg, .alf-video ~ .alf-bg-soft, .alf-video ~ .alf-bg-navy { z-index: 1; }
+.alf-video ~ .alf-bg-navy {
+  background:
+    repeating-linear-gradient(90deg, rgba(127,168,230,0.06) 0 1px, transparent 1px 96px),
+    radial-gradient(120% 95% at 50% 46%, rgba(8,20,42,0.42), transparent 62%),
+    linear-gradient(rgba(10,26,51,0.60), rgba(10,26,51,0.74));
+}
+[data-slide]:has(.alf-video) > .inset-0 { z-index: 2; } /* keeps its own absolute positioning; only the stacking order changes */
 .alf-video--once { }
 @media (prefers-reduced-motion: reduce) { .alf-video { display: none; } }
 
@@ -401,7 +411,7 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 .alf-quote-text {
   font-family: var(--font-display); color: var(--color-inchiostro);
   font-size: clamp(1.2rem, 1.6vw, 1.5rem);
-  line-height: 1.34; font-weight: 600; max-width: 68ch;
+  line-height: 1.45; font-weight: 600; max-width: 68ch; /* 1.34 let Titillium's inline box poke ~2px past .slide-inner (phantom scroll at the laptop tier) */
 }
 /* Pull quote on navy slides */
 .alf-quote-navy { border-top-color: rgba(127,168,230,0.5); }

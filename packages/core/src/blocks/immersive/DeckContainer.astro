@@ -347,8 +347,14 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
         if (inner) markScrollable(inner);
       }
     }
-    var scrollTimer;
-    function scheduleSync() { clearTimeout(scrollTimer); scrollTimer = setTimeout(syncScrollable, 120); }
+    var scrollTimer, scrollTimer2;
+    // Two passes: a quick one, and one after the reveal animations settle (~1.2 s):
+    // during the reveal transformed children inflate scrollHeight by a few px and
+    // the affordance would latch on a slide that does not really overflow.
+    function scheduleSync() {
+      clearTimeout(scrollTimer); scrollTimer = setTimeout(syncScrollable, 120);
+      clearTimeout(scrollTimer2); scrollTimer2 = setTimeout(syncScrollable, 1400);
+    }
     scheduleSync();
     window.addEventListener('resize', scheduleSync);
     window.addEventListener('load', scheduleSync);
