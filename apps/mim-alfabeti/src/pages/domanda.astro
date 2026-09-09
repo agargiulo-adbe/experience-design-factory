@@ -14,102 +14,179 @@ const currentPath = Astro.url.pathname;
 
 const processes = [
   {
-    label: { en: 'Tenure & hiring', it: 'Immissioni in ruolo' },
-    en: 'Every summer, appointments move tens of thousands of teachers — 41,901 in 2025/26. The news arrives late, through many channels, rarely reaching everyone at once.',
-    it: 'Ogni estate le immissioni muovono decine di migliaia di docenti — 41.901 nel 2025/26. La notizia arriva tardi, su molti canali, quasi mai a tutti insieme.',
+    label: { en: 'Tenure round', it: 'Immissioni in ruolo' },
+    en: 'Every summer the tenure round moves tens of thousands of teachers: 41,901 in 2025/26. The news arrives late, on many channels, and rarely to everyone at once.',
+    it: 'Ogni estate le immissioni muovono decine di migliaia di docenti: 41.901 nel 2025/26. La notizia arriva tardi, su molti canali, quasi mai a tutti insieme.',
   },
   {
     label: { en: 'Mobility & transfers', it: 'Mobilità e cambio sede' },
-    en: 'Transfer requests, deadlines, outcomes: a high-stakes, time-boxed process where a missed message means a missed year.',
-    it: 'Domande di trasferimento, scadenze, esiti: un processo ad alta posta e a tempo, dove una comunicazione persa è un anno perso.',
+    en: 'Transfer requests, deadlines, outcomes: a time-boxed, high-stakes process where a missed message is a missed year.',
+    it: 'Domande di trasferimento, scadenze, esiti: un processo a tempo e ad alta posta, dove una comunicazione persa è un anno perso.',
   },
   {
-    label: { en: 'Substitutes & rankings', it: 'Supplenze e graduatorie GPS/GaE' },
-    en: 'The GPS/GaE rankings drive daily assignments — the most frequent, most error-prone communication the system runs.',
-    it: 'Le graduatorie GPS/GaE guidano gli incarichi ogni giorno — la comunicazione più frequente e più esposta a errori di tutto il sistema.',
+    label: { en: 'Substitutes & GPS rankings', it: 'Supplenze e graduatorie GPS/GaE' },
+    en: 'The GPS/GaE rankings assign posts every day: the most frequent communication the system runs, and the most error-prone.',
+    it: 'Le graduatorie GPS/GaE assegnano incarichi ogni giorno: la comunicazione più frequente del sistema, e la più esposta a errori.',
   },
 ];
 
 const questions = [
-  { en: 'How many staff communications go out each year — and with what outcome? Does anyone measure whether they arrive, and are understood?', it: 'Quante comunicazioni al personale partono ogni anno — e con quale esito? Qualcuno misura se arrivano, e se vengono capite?' },
-  { en: 'How much time does a school office spend answering the same questions, over and over?', it: 'Quanto tempo perde una segreteria a rispondere sempre agli stessi dubbi?' },
-  { en: 'What happens when a teacher misses — or misreads — a message about a deadline that decides their year?', it: 'Cosa succede quando un docente non riceve, o fraintende, una comunicazione su una scadenza che decide il suo anno?' },
+  {
+    en: 'How many staff communications go out each year, and with what outcome? Does anyone measure whether they arrive and are understood?',
+    it: 'Quante comunicazioni al personale partono ogni anno, e con quale esito? Qualcuno misura se arrivano e se vengono capite?',
+    data: { en: 'The number we need: staff communications sent, per year.', it: 'Il numero che serve: comunicazioni al personale inviate, per anno.' },
+  },
+  {
+    en: 'How much time does a school office spend answering the same questions, over and over?',
+    it: 'Quanto tempo perde una segreteria a rispondere sempre agli stessi dubbi?',
+    data: { en: 'The number we need: help-desk tickets and requests, per process.', it: 'Il numero che serve: ticket e richieste all’help desk, per processo.' },
+  },
+  {
+    en: 'What happens when a teacher misses, or misreads, a message about a deadline that decides their year?',
+    it: 'Cosa succede quando un docente non riceve, o fraintende, una comunicazione su una scadenza che decide il suo anno?',
+    data: { en: 'The number we need: revocations and corrections, per year.', it: 'Il numero che serve: revoche e rettifiche, per anno.' },
+  },
 ];
 ---
-<BaseLayout title="La domanda">
+<BaseLayout
+  title="La domanda"
+  description="Come parla oggi il Ministero al proprio personale? Tre processi (immissioni, mobilità, supplenze GPS), la scala reale in numeri e le tre domande che chiediamo al Ministero."
+  preloadImage={bgSoft.src}
+>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/voce')} prevHref={href(base, '/')}>
+  <DeckContainer nextHref={href(base, '/storia')} prevHref={href(base, '/')}>
 
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
-      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="The question" it="La domanda" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
-        <T
-          as="h1"
-          en="How does the Ministry speak, today, to the people who run the schools?"
-          it="Come parla oggi il Ministero alle persone che fanno funzionare la scuola?"
-          class="slide-title text-center text-[var(--ink-primary)] mb-6"
-          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <T
-          as="p"
-          en="Not to families — that channel exists. To its own staff: teachers, principals, administrative staff."
-          it="Non alle famiglie — quel canale esiste. Al proprio personale: docenti, dirigenti, personale ATA."
-          class="text-center text-[var(--ink-secondary)] mx-auto max-w-2xl"
-          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
-          data-reveal data-reveal-delay="0.16"
-        />
-      </div>
-    </Slide>
-
+    <!-- ── SLIDE 0: The question + the three processes ────────────────── -->
     <Slide id="slide-processes" bg="secondary" align="left">
       <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="Three processes, one problem" it="Tre processi, un problema" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="p"
+          en="How does the Ministry speak, today, to the people who make the schools run?"
+          it="Come parla oggi il Ministero alle persone che fanno funzionare la scuola?"
+          class="alf-lead text-[var(--accent-primary)] mb-3"
+          data-reveal
+        />
         <T
           as="h2"
           en="The moments that move a career are the worst-communicated"
           it="I momenti che muovono una carriera sono i peggio comunicati"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; max-width: 26ch;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="alf-rows" data-stagger="0.1">
-          {processes.map((p) => (
-            <div class="alf-row">
+        <div class="alf-rows">
+          {processes.map((p, i) => (
+            <div class="alf-row" data-reveal data-reveal-delay={String(0.14 + i * 0.08)}>
               <T as="p" en={p.label.en} it={p.label.it} class="alf-row-label" />
               <T as="p" en={p.en} it={p.it} class="alf-row-body" />
             </div>
           ))}
         </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.26">
+        <p class="alf-src mt-4" style="max-width: none;" data-reveal data-reveal-delay="0.26">
           <T
-            en="Sources · 41,901 tenure appointments 2025/26 (76.8% of posts); the GPS form caps at 150 preferences; outcomes appear in provincial bulletins, not where you applied — "
-            it="Fonti · 41.901 immissioni in ruolo 2025/26 (76,8% dei posti); la domanda GPS a 150 preferenze; gli esiti nei bollettini provinciali, non dove si è fatta domanda — "
+            en="Sources: 41,901 tenure appointments in 2025/26 (76.8% of posts); the GPS form caps at 150 preferences; outcomes appear in provincial bulletins, not where you applied. "
+            it="Fonti: 41.901 immissioni in ruolo nel 2025/26 (76,8% dei posti); la domanda GPS si ferma a 150 preferenze; gli esiti escono nei bollettini provinciali, non dove si è fatta domanda. "
           /><a href="https://tg24.sky.it/economia/2025/09/02/anno-scolastico-2025-2026-docenti-assunti-mim" target="_blank" rel="noopener noreferrer">Sky&nbsp;TG24 (MIM)</a> · <a href="https://www.scuolainforma.news/domanda-150-preferenze-supplenze-gps-i-docenti-precari-denunciano-scelte-al-buio-sui-posti-disponibili/" target="_blank" rel="noopener noreferrer">Scuola&nbsp;Informa</a> · <a href="https://www.orizzontescuola.it/supplenze-gps-docenti-2025-dal-primo-al-secondo-bollettino-revoche-rettifiche-e-nuove-disponibilita-risposte-ai-quesiti/" target="_blank" rel="noopener noreferrer">Orizzonte&nbsp;Scuola</a>
         </p>
       </div>
     </Slide>
 
-    <Slide id="slide-questions" bg="inverse" align="left">
+    <!-- ── SLIDE 1: The scale — a real chart ──────────────────────────── -->
+    <Slide id="slide-scala" bg="primary" align="left">
+      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto">
+        <T as="p" en="The scale" it="La scala" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="How many people, really"
+          it="Quante persone, davvero"
+          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        />
+
+        <div class="alf-chart alf-scala" data-reveal data-reveal-delay="0.14" role="img" aria-label="Posti docenti in organico 2025/26 circa 665.000; immissioni in ruolo 2025/26 41.901; supplenti 2022/23 234.576, il 26,9% delle cattedre; dirigenti scolastici e personale ATA senza un conteggio unico pubblicato.">
+          <!-- Row 1: posti in organico + tick immissioni -->
+          <div class="alf-chart-row">
+            <T as="div" en="Teaching posts in the staffing plan <span class='alf-scala-year'>2025/26</span>" it="Posti docenti in organico <span class='alf-scala-year'>2025/26</span>" class="alf-bar-label" />
+            <div class="alf-bar alf-scala-bar-tick">
+              <div class="alf-bar-fill" style="--w: 100%"></div>
+              <span class="alf-tick" style="--x: 6.3%" data-lang-it data-label="41.901 immissioni in ruolo 2025/26"></span>
+              <span class="alf-tick" style="--x: 6.3%" data-lang-en data-label="41,901 tenure appointments 2025/26"></span>
+            </div>
+            <T as="div" en="~665,000" it="~665.000" class="alf-bar-value" />
+          </div>
+          <!-- Row 2: supplenti -->
+          <div class="alf-chart-row">
+            <T as="div" en="Substitute teachers <span class='alf-scala-year'>2022/23</span>" it="Supplenti <span class='alf-scala-year'>2022/23</span>" class="alf-bar-label" />
+            <div class="alf-bar">
+              <div class="alf-bar-fill" style="--w: 26.9%"></div>
+              <T as="span" en="26.9% of teaching posts" it="26,9% delle cattedre" class="alf-scala-note" style="--x: 26.9%" />
+            </div>
+            <T as="div" en="234,576" it="234.576" class="alf-bar-value" />
+          </div>
+          <!-- Row 3: dirigenti -->
+          <div class="alf-chart-row">
+            <T as="div" en="School principals" it="Dirigenti scolastici" class="alf-bar-label" />
+            <div class="alf-scala-dashed">
+              <div class="alf-bar-dashed" data-lang-it data-label="nessun conteggio unico pubblicato"></div>
+              <div class="alf-bar-dashed" data-lang-en data-label="no single published headcount"></div>
+            </div>
+            <T as="div" en="n/a" it="n.d." class="alf-bar-value alf-scala-nd" />
+          </div>
+          <!-- Row 4: ATA -->
+          <div class="alf-chart-row">
+            <T as="div" en="Administrative (ATA) staff" it="Personale ATA" class="alf-bar-label" />
+            <div class="alf-scala-dashed">
+              <div class="alf-bar-dashed" data-lang-it data-label="nessun conteggio unico pubblicato"></div>
+              <div class="alf-bar-dashed" data-lang-en data-label="no single published headcount"></div>
+            </div>
+            <T as="div" en="n/a" it="n.d." class="alf-bar-value alf-scala-nd" />
+          </div>
+        </div>
+
+        <p class="alf-chart-src mt-3" style="max-width: none;" data-reveal data-reveal-delay="0.2">
+          <T
+            en="Different years, one scale: every bar carries its own year. Sources: "
+            it="Anni diversi, stessa scala: ogni barra riporta il suo anno. Fonti: "
+          /><a href="https://www.flcgil.it/scuola/organici-scuola-2025-2026-docenti-confermato-taglio-5660-posti.flc" target="_blank" rel="noopener noreferrer">FLC&nbsp;CGIL</a> (<T en="staffing plan" it="organico" />) · <a href="https://www.tuttoscuola.com/perecari-della-scuola-numeri/" target="_blank" rel="noopener noreferrer">Tuttoscuola</a> (<T en="substitutes" it="supplenti" />) · <a href="https://tg24.sky.it/economia/2025/09/02/anno-scolastico-2025-2026-docenti-assunti-mim" target="_blank" rel="noopener noreferrer">Sky&nbsp;TG24 (MIM)</a> (<T en="tenure appointments" it="immissioni" />)
+        </p>
+
+        <T
+          as="p"
+          en="Giulia is one of those 234,576."
+          it="Giulia è una di quei 234.576."
+          class="alf-quote-text alf-scala-close"
+          data-reveal data-reveal-delay="0.3"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Three questions, three numbers (sub-steps) ────────── -->
+    <Slide id="slide-questions" bg="inverse" align="left" data-dark>
       <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
       <div class="w-full max-w-5xl mx-auto">
-        <T as="p" en="Three questions" it="Tre domande" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
-        <ol class="flex flex-col gap-5" data-stagger="0.12">
+        <T as="p" en="Three questions" it="Tre domande" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
+        <T
+          as="h2"
+          en="Three questions, three numbers we ask the Ministry for"
+          it="Tre domande, tre numeri che chiediamo al Ministero"
+          class="text-[var(--color-carta)] mb-7 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; max-width: 24ch;"
+          data-reveal data-reveal-delay="0.08"
+        />
+        <ol class="alf-qs">
           {questions.map((q, i) => (
-            <li class="flex gap-4 items-start">
-              <span class="alf-mark" style="background:var(--color-azzurro);flex-shrink:0;">{i + 1}</span>
-              <T
-                as="p"
-                en={q.en}
-                it={q.it}
-                class="text-[var(--color-carta)]"
-                style="font-size: clamp(1.15rem, 1.7vw, 1.55rem); line-height: 1.4; max-width: 62ch; margin:0;"
-              />
+            <li class="alf-q" data-substep>
+              <span class="alf-mark" style="background:var(--color-azzurro);margin-bottom:0;" aria-hidden="true">{i + 1}</span>
+              <div class="min-w-0">
+                <T as="p" en={q.en} it={q.it} class="alf-q-text" />
+                <T as="p" en={q.data.en} it={q.data.it} class="alf-q-data" />
+              </div>
             </li>
           ))}
         </ol>
@@ -118,3 +195,48 @@ const questions = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* Lead question above the H2 (eyebrow position, sentence case, readable). */
+  .alf-lead {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.4;
+    letter-spacing: 0; text-transform: none; max-width: 60ch;
+  }
+
+  /* «La scala» chart: tick label anchored to the RIGHT of the tick (a centred
+     label at 6.3% would run into the row label), room above the first bar for
+     it, and the in-bar note after the short fill. */
+  .alf-scala { padding-top: 1.35rem; gap: 0.85rem; }
+  .alf-scala .alf-tick::after { left: 0.35rem; transform: translate(0, -5px); }
+  .alf-scala-year { font-weight: 700; color: var(--color-inchiostro); white-space: nowrap; }
+  .alf-scala-note {
+    position: absolute; top: 0; bottom: 0; left: calc(var(--x, 0%) + 0.6rem);
+    display: inline-flex; align-items: center; white-space: nowrap;
+    font-size: 0.85rem; line-height: 1; color: var(--color-ardesia-700);
+  }
+  .alf-scala-dashed { position: relative; min-width: 0; }
+  /* Phone: the chart stacks label / bar / value, so the tick label above the
+     first bar needs its own headroom (it would sit on the row label). */
+  @media (max-width: 767px) { .alf-scala-bar-tick { margin-top: 1.4rem; } }
+  /* Laptop tier (≤800px tall): keep real headroom under the three rows so the
+     reveal animation never trips the deck's scroll-fade affordance. */
+  @media (max-height: 800px) {
+    #slide-processes .alf-row { padding: 0.8rem 1.2rem; }
+    #slide-processes .alf-rows { gap: 0.6rem; }
+    #slide-processes .alf-src { margin-top: 0.75rem; }
+  }
+  .alf-scala-nd { color: var(--color-ardesia-500); font-size: 1.1rem; }
+  .alf-scala-close { margin-top: clamp(1.1rem, 2.2vh, 1.8rem); max-width: none; line-height: 1.45; }
+
+  /* Three questions (navy, sub-steps) */
+  .alf-qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.5rem); }
+  .alf-q { display: flex; gap: 1rem; align-items: flex-start; }
+  .alf-q-text {
+    color: var(--color-carta); font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.15rem, 1.6vw, 1.45rem); line-height: 1.35; max-width: 58ch; margin: 0;
+  }
+  .alf-q-data {
+    color: var(--color-carta-tenue); font-size: 0.95rem; line-height: 1.5; margin: 0.35rem 0 0; max-width: 60ch;
+    padding-left: 0.85rem; border-left: 2px solid rgba(127, 168, 230, 0.6);
+  }
+</style>
