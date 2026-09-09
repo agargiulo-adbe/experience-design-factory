@@ -134,7 +134,7 @@ Il deck è stato riconfigurato come la **«Customer story» che apre il workshop
 - Verifica: `audit:deck` **0 nuovi HARD** (residui c/j a 1280/1440 su aem-agents/brand-concierge pre-esistenti; puliti a 1920). Merge #1, deploiato, nav live = 6 capitoli.
 
 ### 5.7 «La storia di Marco» — flusso di 5 slide-momento (9 set 2026, `3c1a555` → rifatto in serata) — stato attuale del racconto
-- Prima versione (5 beat in un pannello) **bocciata dall'utente**; **rifatta come flusso**: `slide-marco` (persona pulita: ritratto, chi è, quote-trigger, 5 puntini) → **`slide-story-01…05`** (una slide per momento = capitolo: Il Sito · Contenuti · Analizza · Coworker · Risultati) → `slide-engine-map` → `slide-promise`. Scenario = **11 slide**.
+- Prima versione (5 beat in un pannello) **bocciata dall'utente**; **rifatta come flusso**: `slide-marco` (persona pulita) → **`slide-story-01…05`** (un momento per capitolo) → `slide-engine-map` → `slide-promise`. Scenario = **11 slide**.
 - **Template slide-momento** (`align="split"`, bg inverse): backdrop Firefly sotto scrim `:global(.uc-story-scrim)`; sinistra kicker + titolo + narrativa + link al capitolo; destra mock UI (`.uc-mock*`). Dati in `marcoMoments[]`.
 - **5 backdrop Firefly** `ff-story-01…05` (slot in `assets.manifest.ts`, senza volti né letterform: cucina/salotto/filo a 8 nodi/ufficio consulente/casa nuova), generati via `assets:build --manifest <subset>` + merge `provenance.json`.
 - `slide-engine-map`: ogni card ha «Per Marco»; 05/06 anche «Dentro UniCredit».
