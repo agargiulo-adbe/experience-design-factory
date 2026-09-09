@@ -5,6 +5,23 @@
  * prefers-reduced-motion. Presenter controls: arrows, space, PageUp/Down,
  * Home/End, click halves, swipe, fullscreen (F). Animations fire when a slide
  * becomes active (and replay on revisit).
+ *
+ * Contract exposed to apps (all optional, backwards compatible):
+ *  - `deck:change` CustomEvent on `document` on every slide activation
+ *    (initial + goTo) — detail `{ index, total, id, sectionSlug }`.
+ *  - `deck:substep` CustomEvent on `document` when a sub-step is revealed/hidden
+ *    — detail `{ index, substep, substeps, id, sectionSlug }`.
+ *  - Sub-steps: children of the active slide marked `[data-substep]` are
+ *    revealed one at a time by ↓ / PageDown / Space / next-button / click-right
+ *    (the deck sets `data-substep-active` on the step and `data-substep-index="n"`
+ *    on the slide = number revealed); ↑ / PageUp / prev hides the last one before
+ *    going back. → / ← always move between slides (presenter escape hatch).
+ *    Steps reset whenever a slide is (re)prepared. Under reduced-motion the CSS
+ *    shows every step and the controller skips stepping.
+ *  - `data-on-dark` on the deck root while the active slide is dark: the slide
+ *    carries `[data-dark]` (or `data-dark="false"` to force light), the Slide
+ *    bg class `bg-[var(--surface-inverse)]` / `bg-[var(--accent-primary)]`, or a
+ *    computed background whose relative luminance is < 0.45.
  */
 import { prepareSlide, playSlide } from './animations';
 
@@ -12,6 +29,34 @@ const SLIDE_MS = 500;
 
 const reduced = typeof window !== 'undefined'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const DARK_CLASSES = ['bg-[var(--surface-inverse)]', 'bg-[var(--accent-primary)]'];
+
+function relLuminance(color: string): number | null {
+  const m = color.match(/rgba?\(([^)]+)\)/);
+  if (!m) return null;
+  const p = m[1].split(',').map(s => parseFloat(s));
+  if (p.length < 3 || p.some(v => Number.isNaN(v))) return null;
+  if (p[3] !== undefined && p[3] === 0) return null; // transparent → unknown
+  const f = (v: number) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(p[0]) + 0.7152 * f(p[1]) + 0.0722 * f(p[2]);
+}
+
+/** Is this slide visually dark (light chrome needed)? See the header contract. */
+export function isDarkSlide(slide: HTMLElement): boolean {
+  const flag = slide.getAttribute('data-dark');
+  if (flag !== null) return flag !== 'false';
+  if (DARK_CLASSES.some(c => slide.classList.contains(c))) return true;
+  try {
+    const l = relLuminance(getComputedStyle(slide).backgroundColor);
+    return l !== null && l < 0.45;
+  } catch { return false; }
+}
+
+function sectionSlug(): string {
+  const parts = window.location.pathname.replace(/\/+$/, '').split('/');
+  return parts[parts.length - 1] || 'index';
+}
 
 export class Deck {
   root: HTMLElement;
@@ -49,7 +94,7 @@ export class Deck {
       s.style.position = 'absolute';
       s.style.inset = '0';
       s.style.willChange = 'transform, opacity';
-      prepareSlide(s);
+      this.prepare(s);
     });
 
     this.render(true);            // initial layout, no transition
@@ -66,6 +111,7 @@ export class Deck {
     // Build the first slide in shortly after load.
     this.scheduleActivate(160);
     this.wake();
+    this.emitChange();
   }
 
   private bind() {
@@ -76,8 +122,8 @@ export class Deck {
     this.root.addEventListener('touchstart', this.onTouchStart, { passive: true });
     this.root.addEventListener('touchend', this.onTouchEnd, { passive: true });
 
-    this.root.querySelector('[data-deck-prev]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.prev(); });
-    this.root.querySelector('[data-deck-next]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.next(); });
+    this.root.querySelector('[data-deck-prev]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.stepBack(); });
+    this.root.querySelector('[data-deck-next]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.stepForward(); });
     this.root.querySelector('[data-deck-fs]')?.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleFullscreen(); });
   }
 
@@ -98,17 +144,98 @@ export class Deck {
     return this.root.hasAttribute('data-deck-lock');
   }
 
+  // ── Slide preparation (animations + sub-steps) ──────────────────
+  private prepare(slide: HTMLElement) {
+    prepareSlide(slide);
+    this.resetSubsteps(slide);
+  }
+
+  private substepsOf(slide: HTMLElement): HTMLElement[] {
+    return Array.from(slide.querySelectorAll<HTMLElement>('[data-substep]'));
+  }
+
+  private resetSubsteps(slide: HTMLElement) {
+    const steps = this.substepsOf(slide);
+    steps.forEach(s => s.removeAttribute('data-substep-active'));
+    if (steps.length) slide.setAttribute('data-substep-index', '0');
+    else slide.removeAttribute('data-substep-index');
+  }
+
+  /** Reveal the next sub-step of the active slide. Returns false when none is left. */
+  revealSubstep(): boolean {
+    if (reduced) return false; // CSS shows every step — nothing to reveal
+    const slide = this.slides[this.index];
+    if (!slide) return false;
+    const steps = this.substepsOf(slide);
+    const shown = steps.filter(s => s.hasAttribute('data-substep-active')).length;
+    if (shown >= steps.length) return false;
+    steps[shown].setAttribute('data-substep-active', '');
+    slide.setAttribute('data-substep-index', String(shown + 1));
+    this.emitSubstep(shown + 1, steps.length);
+    this.wake();
+    return true;
+  }
+
+  /** Hide the last revealed sub-step of the active slide. Returns false when none is shown. */
+  hideSubstep(): boolean {
+    if (reduced) return false;
+    const slide = this.slides[this.index];
+    if (!slide) return false;
+    const shown = this.substepsOf(slide).filter(s => s.hasAttribute('data-substep-active'));
+    if (!shown.length) return false;
+    shown[shown.length - 1].removeAttribute('data-substep-active');
+    slide.setAttribute('data-substep-index', String(shown.length - 1));
+    this.emitSubstep(shown.length - 1, this.substepsOf(slide).length);
+    this.wake();
+    return true;
+  }
+
+  /** Step-aware advance: reveal a sub-step if any is pending, else next slide. */
+  stepForward() {
+    if (this.locked) return;
+    if (!this.revealSubstep()) this.next();
+  }
+
+  /** Step-aware retreat: hide a sub-step if any is shown, else previous slide. */
+  stepBack() {
+    if (this.locked) return;
+    if (!this.hideSubstep()) this.prev();
+  }
+
+  // ── Events ──────────────────────────────────────────────────────
+  private detail() {
+    const slide = this.slides[this.index];
+    return { index: this.index, total: this.slides.length, id: slide?.id || '', sectionSlug: sectionSlug() };
+  }
+
+  private emitChange() {
+    this.syncDark();
+    try { document.dispatchEvent(new CustomEvent('deck:change', { detail: this.detail() })); } catch { /* ignore */ }
+  }
+
+  private emitSubstep(substep: number, substeps: number) {
+    try { document.dispatchEvent(new CustomEvent('deck:substep', { detail: { ...this.detail(), substep, substeps } })); } catch { /* ignore */ }
+  }
+
+  /** Keep `data-on-dark` on the deck root in sync with the active slide. */
+  syncDark() {
+    const slide = this.slides[this.index];
+    if (slide && isDarkSlide(slide)) this.root.setAttribute('data-on-dark', '');
+    else this.root.removeAttribute('data-on-dark');
+  }
+
   // ── Navigation ──────────────────────────────────────────────────
   goTo(i: number) {
     const clamped = Math.max(0, Math.min(this.slides.length - 1, i));
     if (clamped === this.index) return;
     this.index = clamped;
     // Re-hide the incoming slide while it is still off-screen, then replay.
-    prepareSlide(this.slides[this.index]);
+    this.prepare(this.slides[this.index]);
     this.render();
     this.updateChrome();
     this.scheduleActivate(reduced ? 0 : SLIDE_MS + 20);
     this.wake();
+    this.emitChange();
   }
 
   next() {
@@ -198,10 +325,14 @@ export class Deck {
   private handleKey(e: KeyboardEvent) {
     if (this.locked) return; // a slide-over owns the keyboard (Esc handled there)
     switch (e.key) {
-      case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Spacebar':
-        e.preventDefault(); this.next(); break;
-      case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
-        e.preventDefault(); this.prev(); break;
+      // Step-aware keys: reveal/hide a sub-step before changing slide.
+      case 'ArrowDown': case 'PageDown': case ' ': case 'Spacebar':
+        e.preventDefault(); this.stepForward(); break;
+      case 'ArrowUp': case 'PageUp':
+        e.preventDefault(); this.stepBack(); break;
+      // Presenter escape hatch: always move between slides.
+      case 'ArrowRight': e.preventDefault(); this.next(); break;
+      case 'ArrowLeft': e.preventDefault(); this.prev(); break;
       case 'Home': e.preventDefault(); this.goTo(0); break;
       case 'End': e.preventDefault(); this.goTo(this.slides.length - 1); break;
       case 'f': case 'F': e.preventDefault(); this.toggleFullscreen(); break;
@@ -214,7 +345,7 @@ export class Deck {
     if (window.getSelection()?.toString()) return;
     if (!e.clientX && !e.clientY) return; // ignore synthetic/coordinateless clicks
     const x = e.clientX;
-    if (x > window.innerWidth / 2) this.next(); else this.prev();
+    if (x > window.innerWidth / 2) this.stepForward(); else this.stepBack();
   };
 
   private onTouchStart = (e: TouchEvent) => {
@@ -226,7 +357,7 @@ export class Deck {
     const dx = e.changedTouches[0].clientX - this.touchX;
     const dy = e.changedTouches[0].clientY - this.touchY;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-      if (dx < 0) this.next(); else this.prev();
+      if (dx < 0) this.stepForward(); else this.stepBack();
     }
   };
 

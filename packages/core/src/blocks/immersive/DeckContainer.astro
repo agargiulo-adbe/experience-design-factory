@@ -36,7 +36,7 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
           <path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <span data-deck-progress class="deck-progress tabular-nums">01 / 01</span>
+      <span data-deck-progress class="deck-progress tabular-nums" aria-live="polite">01 / 01</span>
       {hint && <span data-deck-hint class="deck-hint" aria-hidden="true">← →</span>}
       <button type="button" data-deck-next aria-label="Slide successiva" class="deck-btn">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -130,6 +130,11 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
     pointer-events: auto;
     white-space: nowrap;  /* "01 / 03" must never wrap (it did, at 390px) */
   }
+  /* Active slide is dark (deck.ts keeps [data-on-dark] in sync): a light counter
+     regardless of the app's light-surface ink. Explicit rgba — the audit's
+     contrast parser cannot read oklab()/color-mix(). (0,3,0) beats any app's
+     `[data-deck] .deck-progress` override. */
+  [data-deck][data-on-dark] .deck-progress { color: rgba(246, 241, 231, 0.92); }
   @media (prefers-reduced-motion: reduce) {
     .deck-chrome { transition: none; }
   }
@@ -193,6 +198,54 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
       justify-content: safe center;
     }
   }
+  /* Cramped LAPTOP tier — 1366×768 / 1440×760 panels and windowed browsers at
+     desktop width but < 800px tall: a tighter reserve (chrome 96px, inset 48px)
+     so dense slides fit; whatever still overflows scrolls WITH a visible
+     affordance (bottom fade + chevron, see [data-scrollable] below). Capped at
+     799px, so 1280×800 / 1440×900 / 1920×1080 stay untouched. */
+  @media (min-width: 1281px) and (max-height: 799px) {
+    [data-deck][data-deck] {
+      --slide-safe-inset: 48px;
+      --deck-chrome-safe: 96px;
+    }
+    [data-slide] .slide-inner {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      justify-content: safe center;
+      scrollbar-width: thin;
+    }
+  }
+  /* Scroll affordance — the inline script below marks a `.slide-inner` that
+     actually overflows its scroll box with [data-scrollable] (and
+     [data-scroll-end] once scrolled to the bottom). Only scroll-enabled tiers
+     ever get the attribute (the script checks overflow-y:auto), so the audited
+     projection viewports never change. Fade colour: `--deck-scroll-fade`
+     (apps may override; a dark default applies on [data-on-dark]). */
+  [data-slide] .slide-inner[data-scrollable] { --_fade: var(--deck-scroll-fade, rgba(255, 255, 255, 0.9)); }
+  [data-deck][data-on-dark] [data-slide] .slide-inner[data-scrollable] { --_fade: var(--deck-scroll-fade-dark, rgba(10, 14, 22, 0.85)); }
+  [data-slide] .slide-inner[data-scrollable]::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    flex: none;
+    display: block;
+    width: 100%;
+    height: 44px;
+    margin-top: -44px;
+    pointer-events: none;
+    background:
+      no-repeat center bottom 8px / 18px 18px
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-opacity='.75' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--_fade));
+    transition: opacity 200ms ease;
+  }
+  [data-deck][data-on-dark] [data-slide] .slide-inner[data-scrollable]::after {
+    background:
+      no-repeat center bottom 8px / 18px 18px
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-opacity='.85' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0), var(--_fade));
+  }
+  [data-slide] .slide-inner[data-scrollable][data-scroll-end]::after { opacity: 0; }
   /* Coarse pointer (touch laptop, tablet, interactive meeting-room panel) —
      hold every control at a comfortable tap target. */
   @media (pointer: coarse) {
@@ -269,13 +322,50 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
     armFirstVisit();
     document.addEventListener('astro:after-swap', armFirstVisit);
     document.addEventListener('astro:before-swap', function () { if (document.querySelector('[data-deck]')) markSeen(); });
+
+    /* ── Scroll affordance: flag a `.slide-inner` that overflows its scroll box.
+       Only when the tier made it a scroll container (overflow-y:auto) — at the
+       audited projection viewports overflow is `visible`, so nothing changes. */
+    function markScrollable(inner) {
+      var cs = getComputedStyle(inner);
+      var scrolls = (cs.overflowY === 'auto' || cs.overflowY === 'scroll') && inner.scrollHeight - inner.clientHeight > 4;
+      if (scrolls) {
+        inner.setAttribute('data-scrollable', '');
+        if (inner.scrollTop + inner.clientHeight >= inner.scrollHeight - 4) inner.setAttribute('data-scroll-end', '');
+        else inner.removeAttribute('data-scroll-end');
+      } else {
+        inner.removeAttribute('data-scrollable');
+        inner.removeAttribute('data-scroll-end');
+      }
+    }
+    function syncScrollable() {
+      var deck = document.querySelector('[data-deck]');
+      if (!deck) return;
+      var slides = deck.querySelectorAll('[data-slide]');
+      for (var i = 0; i < slides.length; i++) {
+        var inner = slides[i].querySelector('.slide-inner');
+        if (inner) markScrollable(inner);
+      }
+    }
+    var scrollTimer;
+    function scheduleSync() { clearTimeout(scrollTimer); scrollTimer = setTimeout(syncScrollable, 120); }
+    scheduleSync();
+    window.addEventListener('resize', scheduleSync);
+    window.addEventListener('load', scheduleSync);
+    document.addEventListener('astro:page-load', scheduleSync);
+    document.addEventListener('deck:change', scheduleSync);
+    document.addEventListener('deck:substep', scheduleSync);
+    document.addEventListener('scroll', function (e) {
+      var t = e.target;
+      if (t && t.nodeType === 1 && t.classList && t.classList.contains('slide-inner')) markScrollable(t);
+    }, true);
   })();
 </script>
 
 <script>
   import { initDeck } from '@edf/core/blocks/immersive/deck';
   import { navigate } from 'astro:transitions/client';
-  const w = window as Window & { __edfDeck?: { destroy: () => void }; __edfInitDeck?: () => void; __edfNavigate?: (h: string) => void };
+  const w = window as Window & { __edfDeck?: { destroy: () => void; syncDark?: () => void }; __edfInitDeck?: () => void; __edfNavigate?: (h: string) => void };
   // SPA navigation for cross-section transitions — preserves fullscreen.
   w.__edfNavigate = (href: string) => { try { navigate(href); } catch { window.location.assign(href); } };
   function boot() {
@@ -288,4 +378,7 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
   boot();
   document.addEventListener('astro:after-swap', boot);
   document.addEventListener('astro:before-swap', teardown);
+  // Re-sync [data-on-dark] once the page (styles included) has fully loaded —
+  // the luminance fallback reads the computed background.
+  document.addEventListener('astro:page-load', () => w.__edfDeck?.syncDark?.());
 </script>
