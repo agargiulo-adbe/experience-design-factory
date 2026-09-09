@@ -1,0 +1,597 @@
+---
+/**
+ * /presenter/ — presenter view of «La voce del Ministero».
+ * Open in a second window next to the deck: current + next slide, speaker
+ * notes (IT/EN), timer with per-section budgets, remote controls and the
+ * «Versione 15 minuti» cut. Talks to the deck over BroadcastChannel
+ * (see components/PresenterBridge.astro for the protocol). Not in the nav,
+ * noindex, no `pageSolutions` (the gating runtime never redirects it).
+ *
+ * Speaker notes: `src/data/notes/<section>.ts` exporting
+ * `default { 'slide-id': { it, en } }` — loaded with import.meta.glob, every
+ * file optional. A note whose first line is `# …` uses it as the slide title.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '@edf/core/utils/url.js';
+import {
+  PRESENTER_CHANNEL, SECTIONS, CUT_SHORT, TOTAL_BUDGET_MIN, TOTAL_BUDGET_SHORT_MIN,
+  CUT_STORAGE_KEY, CUT_IDS_STORAGE_KEY,
+} from '../data/presenter.config';
+
+const base = import.meta.env.BASE_URL;
+
+type Note = { it: string; en: string };
+type NotesModule = { default?: Record<string, Partial<Note>> };
+const noteModules = import.meta.glob<NotesModule>('../data/notes/*.ts', { eager: true });
+
+const notesBySection: Record<string, Record<string, Note>> = {};
+for (const [path, mod] of Object.entries(noteModules)) {
+  const file = path.split('/').pop()?.replace(/\.ts$/, '') ?? '';
+  const slug = file === 'index' ? 'mim-alfabeti' : file;
+  const table = (mod && mod.default) || {};
+  notesBySection[slug] = {};
+  for (const [id, n] of Object.entries(table)) {
+    if (!n) continue;
+    notesBySection[slug][id] = { it: String(n.it ?? ''), en: String(n.en ?? n.it ?? '') };
+  }
+}
+
+function splitTitle(text: string): { title: string | null; body: string } {
+  const m = text.match(/^\s*#\s+(.+?)\s*\n?([\s\S]*)$/);
+  return m ? { title: m[1], body: m[2] } : { title: null, body: text };
+}
+
+const sections = SECTIONS.map((s) => {
+  const known = new Set(s.slides.map((x) => x.id));
+  const extra = Object.keys(notesBySection[s.slug] ?? {}).filter((id) => !known.has(id));
+  const slides = [...s.slides, ...extra.map((id) => ({ id, label: { it: id, en: id } }))].map((sl) => {
+    const raw = notesBySection[s.slug]?.[sl.id] ?? null;
+    if (!raw) return { id: sl.id, label: sl.label, note: null };
+    const it = splitTitle(raw.it);
+    const en = splitTitle(raw.en);
+    return {
+      id: sl.id,
+      label: { it: it.title ?? sl.label.it, en: en.title ?? sl.label.en },
+      note: { it: it.body, en: en.body },
+    };
+  });
+  return {
+    slug: s.slug,
+    href: href(base, s.path ? `/${s.path}` : '/'),
+    label: s.label,
+    budgetMin: s.budgetMin,
+    budgetShortMin: s.budgetShortMin,
+    slides,
+  };
+});
+
+const data = {
+  channel: PRESENTER_CHANNEL,
+  cutKey: CUT_STORAGE_KEY,
+  cutIdsKey: CUT_IDS_STORAGE_KEY,
+  cutShort: CUT_SHORT,
+  totalBudgetMin: TOTAL_BUDGET_MIN,
+  totalBudgetShortMin: TOTAL_BUDGET_SHORT_MIN,
+  sections,
+};
+const notesCount = sections.reduce((n, s) => n + s.slides.filter((x) => x.note).length, 0);
+---
+<BaseLayout title="Presenter" noindex={true}>
+  <div class="pv" data-presenter>
+    <header class="pv-top">
+      <div class="pv-brand">
+        <span class="pv-brand-mark" aria-hidden="true">A</span>
+        <span class="pv-brand-name">Presenter · La voce del Ministero</span>
+        <span class="pv-conn" data-pv-conn data-state="waiting">
+          <span class="pv-conn-waiting"><span data-lang-it>In attesa del deck</span><span data-lang-en>Waiting for the deck</span></span>
+          <span class="pv-conn-live"><span data-lang-it>Deck collegato</span><span data-lang-en>Deck connected</span></span>
+        </span>
+      </div>
+      <div class="pv-top-actions">
+        <label class="pv-cut">
+          <input type="checkbox" data-pv-cut />
+          <span><span data-lang-it>Versione 15 minuti</span><span data-lang-en>15-minute version</span></span>
+        </label>
+        <div class="pv-lang" role="group" aria-label="Lingua note">
+          <button type="button" class="pv-langbtn" data-pv-lang="it" aria-pressed="true">IT</button>
+          <button type="button" class="pv-langbtn" data-pv-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="pv-open" href={href(base, '/')} target="_blank" rel="noopener">
+          <span data-lang-it>Apri il deck</span><span data-lang-en>Open the deck</span> ↗
+        </a>
+      </div>
+    </header>
+
+    <div class="pv-grid">
+      <section class="pv-main" aria-labelledby="pv-now-label">
+        <div class="pv-now">
+          <p class="pv-kicker" id="pv-now-label">
+            <span data-lang-it>Slide corrente</span><span data-lang-en>Current slide</span>
+            <span class="pv-counter" data-pv-counter>— / —</span>
+            <span class="pv-section" data-pv-section-name></span>
+          </p>
+          <h1 class="pv-title" data-pv-title>—</h1>
+          <p class="pv-substep" data-pv-substep hidden></p>
+        </div>
+
+        <div class="pv-notes" data-pv-notes>
+          <p class="pv-notes-empty">
+            <span data-lang-it>Nessuna nota per questa slide.</span><span data-lang-en>No notes for this slide.</span>
+          </p>
+        </div>
+
+        <div class="pv-next">
+          <p class="pv-kicker">
+            <span data-lang-it>Prossima slide</span><span data-lang-en>Next slide</span>
+            <span class="pv-section" data-pv-next-section></span>
+          </p>
+          <p class="pv-next-title" data-pv-next-title>—</p>
+        </div>
+      </section>
+
+      <aside class="pv-side">
+        <section class="pv-card pv-timer" aria-label="Timer">
+          <div class="pv-timer-row">
+            <div>
+              <p class="pv-kicker"><span data-lang-it>Tempo totale</span><span data-lang-en>Total time</span></p>
+              <p class="pv-clock" data-pv-total>0:00</p>
+              <p class="pv-budget"><span data-lang-it>Budget</span><span data-lang-en>Budget</span> <span data-pv-total-budget>{TOTAL_BUDGET_MIN}'00</span></p>
+            </div>
+            <div>
+              <p class="pv-kicker"><span data-lang-it>Sezione</span><span data-lang-en>Section</span></p>
+              <p class="pv-clock pv-clock--sm" data-pv-sec-time>0:00</p>
+              <p class="pv-budget"><span data-lang-it>Budget</span><span data-lang-en>Budget</span> <span data-pv-sec-budget>—</span></p>
+            </div>
+          </div>
+          <div class="pv-timer-actions">
+            <button type="button" class="pv-btn pv-btn--primary" data-pv-timer-toggle>
+              <span data-lang-it>Avvia</span><span data-lang-en>Start</span> <kbd>T</kbd>
+            </button>
+            <button type="button" class="pv-btn" data-pv-timer-reset>
+              <span data-lang-it>Azzera</span><span data-lang-en>Reset</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="pv-card" aria-label="Controlli">
+          <p class="pv-kicker"><span data-lang-it>Controlli</span><span data-lang-en>Controls</span></p>
+          <div class="pv-controls">
+            <button type="button" class="pv-btn" data-pv-cmd="slide-prev"><kbd>←</kbd> <span data-lang-it>Precedente</span><span data-lang-en>Previous</span></button>
+            <button type="button" class="pv-btn pv-btn--primary" data-pv-cmd="slide-next"><span data-lang-it>Successiva</span><span data-lang-en>Next</span> <kbd>→</kbd></button>
+            <button type="button" class="pv-btn" data-pv-cmd="step-prev"><kbd>↑</kbd> <span data-lang-it>Passo</span><span data-lang-en>Step</span></button>
+            <button type="button" class="pv-btn" data-pv-cmd="step-next"><span data-lang-it>Passo</span><span data-lang-en>Step</span> <kbd>↓</kbd></button>
+            <button type="button" class="pv-btn pv-btn--wide" data-pv-cmd="fullscreen"><span data-lang-it>Schermo intero deck</span><span data-lang-en>Deck full screen</span> <kbd>F</kbd></button>
+          </div>
+        </section>
+
+        <section class="pv-card" aria-label="Sezioni">
+          <p class="pv-kicker"><span data-lang-it>Vai alla sezione</span><span data-lang-en>Jump to section</span></p>
+          <ol class="pv-jump" data-pv-jump></ol>
+          <ol class="pv-slides" data-pv-slides></ol>
+        </section>
+
+        <p class="pv-hint">
+          <kbd>←</kbd><kbd>→</kbd> <span data-lang-it>slide</span><span data-lang-en>slide</span> ·
+          <kbd>↓</kbd><kbd>↑</kbd><kbd>Spazio</kbd> <span data-lang-it>passi</span><span data-lang-en>steps</span> ·
+          <kbd>T</kbd> timer · <kbd>F</kbd> <span data-lang-it>schermo intero</span><span data-lang-en>full screen</span>
+          · {notesCount} <span data-lang-it>note caricate</span><span data-lang-en>notes loaded</span>
+        </p>
+      </aside>
+    </div>
+  </div>
+
+  <script is:inline type="application/json" id="pv-data" set:html={JSON.stringify(data)} />
+</BaseLayout>
+
+<style is:global>
+  /* Presenter view — light, high contrast, no deck chrome. Global (namespaced
+     .pv-*) because most of the DOM is built at runtime, which Astro-scoped
+     styles would not reach. */
+  .pv {
+    min-height: 100dvh;
+    background: var(--surface-primary);
+    color: var(--ink-primary);
+    font-family: var(--font-body);
+    padding: 1.25rem clamp(1rem, 2.5vw, 2.5rem) 2rem;
+    display: flex; flex-direction: column; gap: 1.25rem;
+  }
+  .pv-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-default);
+  }
+  .pv-brand { display: flex; align-items: center; gap: 0.7rem; min-width: 0; }
+  .pv-brand-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.75rem; height: 1.75rem; border-radius: 0.25rem; background: var(--color-blu);
+    color: #FFFFFF; font-family: var(--font-display); font-weight: 700; flex-shrink: 0;
+  }
+  .pv-brand-name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; white-space: nowrap; }
+  .pv-conn {
+    display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600;
+    padding: 0.2rem 0.6rem; border-radius: 9999px; color: var(--color-ardesia-700);
+    background: var(--color-grigio-200); white-space: nowrap;
+  }
+  .pv-conn::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-ardesia-500); }
+  .pv-conn[data-state="live"] { color: #0B5A2B; background: #DDF3E4; }
+  .pv-conn[data-state="live"]::before { background: #1B8A46; }
+  .pv-conn .pv-conn-live, .pv-conn[data-state="live"] .pv-conn-waiting { display: none; }
+  .pv-conn[data-state="live"] .pv-conn-live { display: inline; }
+  .pv-top-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .pv-cut { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.95rem; cursor: pointer; }
+  .pv-cut input { width: 1.1rem; height: 1.1rem; accent-color: var(--color-blu); cursor: pointer; }
+  .pv-lang { display: inline-flex; border: 1px solid var(--line-default); border-radius: 0.3rem; overflow: hidden; }
+  .pv-langbtn {
+    background: #FFFFFF; border: 0; padding: 0.35rem 0.7rem; font: inherit; font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--color-ardesia-700); cursor: pointer;
+  }
+  .pv-langbtn + .pv-langbtn { border-left: 1px solid var(--line-default); }
+  .pv-langbtn[aria-pressed="true"] { background: var(--color-blu); color: #FFFFFF; }
+  .pv-open { font-size: 0.9rem; font-weight: 600; color: var(--color-blu); text-decoration: none; white-space: nowrap; }
+  .pv-open:hover { text-decoration: underline; }
+
+  .pv-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem); gap: 1.5rem; align-items: start; flex: 1; }
+  @media (max-width: 900px) { .pv-grid { grid-template-columns: 1fr; } }
+
+  .pv-main { display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; }
+  .pv-now, .pv-next, .pv-card {
+    background: #FFFFFF; border: 1px solid var(--line-subtle); border-radius: 0.5rem; padding: 1.25rem 1.5rem;
+  }
+  .pv-card { padding: 1rem 1.25rem; }
+  .pv-kicker {
+    display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-ardesia-500);
+    margin-bottom: 0.5rem;
+  }
+  .pv-counter {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: 0.08em;
+    color: var(--color-blu); font-feature-settings: 'tnum' 1;
+  }
+  .pv-section { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--color-ardesia-700); }
+  .pv-section:empty { display: none; }
+  .pv-title {
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 2.4vw, 2.3rem);
+    line-height: 1.15; letter-spacing: -0.01em; color: var(--ink-primary); overflow-wrap: anywhere;
+  }
+  .pv-substep { margin-top: 0.6rem; font-size: 0.95rem; font-weight: 600; color: var(--color-blu); }
+  .pv-substep .pv-dots { display: inline-flex; gap: 0.3rem; margin-left: 0.5rem; vertical-align: middle; }
+  .pv-substep .pv-dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-grigio-300); }
+  .pv-substep .pv-dots i.on { background: var(--color-blu); }
+
+  .pv-notes {
+    background: #FFFFFF; border: 1px solid var(--line-default);
+    border-radius: 0.5rem; padding: 1.4rem 1.6rem; font-size: clamp(1.15rem, 1.4vw, 1.4rem); line-height: 1.6;
+    color: var(--ink-primary); min-height: 12rem;
+  }
+  .pv-notes p { margin: 0 0 0.9em; }
+  .pv-notes p:last-child { margin-bottom: 0; }
+  .pv-notes ul { margin: 0 0 0.9em 1.2em; padding: 0; }
+  .pv-notes li { margin: 0.25em 0; }
+  .pv-notes strong { color: var(--color-blu-scuro); font-weight: 700; }
+  .pv-notes-empty { color: var(--color-ardesia-500); font-size: 1rem; }
+
+  .pv-next { border-style: dashed; }
+  .pv-next-title { font-family: var(--font-display); font-weight: 600; font-size: 1.3rem; line-height: 1.25; color: var(--color-ardesia-700); }
+
+  .pv-side { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+  .pv-timer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .pv-clock {
+    font-family: var(--font-display); font-weight: 700; font-size: 2.6rem; line-height: 1; letter-spacing: -0.02em;
+    color: var(--ink-primary); font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+  .pv-clock--sm { font-size: 2rem; }
+  .pv-clock.over { color: var(--color-rosso-it); }
+  .pv-budget { font-size: 0.85rem; color: var(--color-ardesia-700); margin-top: 0.35rem; }
+  .pv-budget.over { color: var(--color-rosso-it); font-weight: 700; }
+  .pv-timer-actions { display: flex; gap: 0.6rem; margin-top: 0.85rem; }
+  .pv-timer[data-running="true"] .pv-clock:not(.over) { color: var(--color-blu-scuro); }
+
+  .pv-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+    min-height: 2.6rem; padding: 0.5rem 0.9rem; border-radius: 0.35rem;
+    border: 1px solid var(--line-default); background: #FFFFFF; color: var(--ink-primary);
+    font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .pv-btn:hover { border-color: var(--color-blu); background: rgba(0, 102, 204, 0.06); }
+  .pv-btn:focus-visible { outline: 2px solid var(--color-blu); outline-offset: 2px; }
+  .pv-btn--primary { background: var(--color-blu); border-color: var(--color-blu); color: #FFFFFF; }
+  .pv-btn--primary:hover { background: var(--color-blu-scuro); border-color: var(--color-blu-scuro); }
+  .pv-btn--wide { grid-column: 1 / -1; }
+  .pv-btn kbd, .pv-hint kbd {
+    font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem; border: 1px solid currentColor; opacity: 0.85;
+  }
+  .pv-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+  .pv-jump { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem 0.5rem; }
+  .pv-jump button {
+    width: 100%; display: flex; align-items: center; gap: 0.45rem; text-align: left; min-width: 0;
+    padding: 0.4rem 0.5rem; border-radius: 0.3rem; border: 1px solid transparent; background: transparent;
+    font: inherit; font-size: 0.9rem; color: var(--color-ardesia-700); cursor: pointer;
+  }
+  .pv-jump button > span:nth-child(2) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pv-jump button:hover { background: var(--color-grigio-100); border-color: var(--line-subtle); }
+  .pv-jump button[aria-current="true"] { background: rgba(0, 102, 204, 0.1); border-color: rgba(0, 102, 204, 0.35); color: var(--color-blu-scuro); font-weight: 600; }
+  .pv-jump .pv-num { font-feature-settings: 'tnum' 1; color: var(--color-ardesia-500); width: 1.4rem; flex-shrink: 0; }
+  .pv-jump .pv-min { margin-left: auto; font-size: 0.75rem; color: var(--color-ardesia-500); font-feature-settings: 'tnum' 1; white-space: nowrap; flex-shrink: 0; }
+  .pv-jump .pv-min.over { color: var(--color-rosso-it); font-weight: 700; }
+  .pv-slides { list-style: none; display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); }
+  .pv-slides:empty { display: none; }
+  .pv-slides button {
+    font: inherit; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.55rem; border-radius: 9999px;
+    border: 1px solid var(--line-default); background: #FFFFFF; color: var(--color-ardesia-700); cursor: pointer;
+  }
+  .pv-slides button[aria-current="true"] { background: var(--color-blu); border-color: var(--color-blu); color: #FFFFFF; }
+  .pv-slides button.cut { text-decoration: line-through; opacity: 0.55; }
+  .pv-hint { font-size: 0.8rem; color: var(--color-ardesia-700); line-height: 1.8; }
+</style>
+
+<script>
+  type Lang = 'it' | 'en';
+  interface PSlide { id: string; label: Record<Lang, string>; note: Record<Lang, string> | null }
+  interface PSection { slug: string; href: string; label: Record<Lang, string>; budgetMin: number; budgetShortMin: number; slides: PSlide[] }
+  interface PData {
+    channel: string; cutKey: string; cutIdsKey: string; cutShort: string[];
+    totalBudgetMin: number; totalBudgetShortMin: number; sections: PSection[];
+  }
+  interface DeckState {
+    type: 'state'; section: string; path: string; index: number; total: number; id: string;
+    substep: number; substeps: number; title: string; lang: string; cut: string;
+  }
+
+  function init() {
+    const root = document.querySelector<HTMLElement>('[data-presenter]');
+    const dataEl = document.getElementById('pv-data');
+    if (!root || !dataEl || root.hasAttribute('data-pv-ready')) return;
+    root.setAttribute('data-pv-ready', '');
+    const data = JSON.parse(dataEl.textContent || '{}') as PData;
+
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel);
+    const el = {
+      conn: $('[data-pv-conn]')!, counter: $('[data-pv-counter]')!, secName: $('[data-pv-section-name]')!,
+      title: $('[data-pv-title]')!, substep: $('[data-pv-substep]')!, notes: $('[data-pv-notes]')!,
+      nextSec: $('[data-pv-next-section]')!, nextTitle: $('[data-pv-next-title]')!,
+      total: $('[data-pv-total]')!, totalBudget: $('[data-pv-total-budget]')!,
+      secTime: $('[data-pv-sec-time]')!, secBudget: $('[data-pv-sec-budget]')!,
+      timer: $('.pv-timer')!, timerToggle: $('[data-pv-timer-toggle]')!, timerReset: $('[data-pv-timer-reset]')!,
+      cut: $<HTMLInputElement>('[data-pv-cut]')!, jump: $('[data-pv-jump]')!, slides: $('[data-pv-slides]')!,
+    };
+
+    // ── Language (notes follow edf:lang; the toggle also flips the deck) ──
+    const readLang = (): Lang => {
+      try { return localStorage.getItem('edf:lang') === 'en' ? 'en' : 'it'; } catch { return 'it'; }
+    };
+    let lang: Lang = readLang();
+    const applyLang = (l: Lang, notifyDeck: boolean) => {
+      lang = l;
+      document.documentElement.setAttribute('data-lang', l);
+      document.documentElement.lang = l;
+      try { localStorage.setItem('edf:lang', l); } catch { /* ignore */ }
+      root.querySelectorAll<HTMLButtonElement>('[data-pv-lang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.pvLang === l ? 'true' : 'false'));
+      if (notifyDeck) send({ type: 'lang', lang: l });
+      render();
+    };
+
+    // ── Channel ──
+    let bc: BroadcastChannel | null = null;
+    try { bc = new BroadcastChannel(data.channel); } catch { bc = null; }
+    const send = (msg: Record<string, unknown>) => { try { bc?.postMessage(msg); } catch { /* ignore */ } };
+
+    // ── Cut («Versione 15 minuti») ──
+    const readCut = (): boolean => { try { return localStorage.getItem(data.cutKey) === 'short'; } catch { return false; } };
+    let short = readCut();
+    el.cut.checked = short;
+    const cutSet = new Set(data.cutShort);
+    const isCut = (slug: string, id: string) => short && cutSet.has(`${slug}:${id}`);
+    const visibleSlides = (s: PSection) => s.slides.filter(x => !isCut(s.slug, x.id));
+    el.cut.addEventListener('change', () => {
+      short = el.cut.checked;
+      try {
+        if (short) localStorage.setItem(data.cutKey, 'short'); else localStorage.removeItem(data.cutKey);
+        localStorage.setItem(data.cutIdsKey, JSON.stringify(data.cutShort));
+      } catch { /* ignore */ }
+      send({ type: 'cut', mode: short ? 'short' : 'full', ids: data.cutShort });
+      render();
+    });
+
+    // ── Deck state ──
+    let state: DeckState | null = null;
+    let lastSeen = 0;
+    const sectionOf = (slug: string) => data.sections.find(s => s.slug === slug || (slug === 'index' && s.slug === 'mim-alfabeti')) ?? null;
+    const budgetOf = (s: PSection) => short ? s.budgetShortMin : s.budgetMin;
+    const totalBudget = () => short ? data.totalBudgetShortMin : data.totalBudgetMin;
+
+    // ── Timer ──
+    let running = false;
+    let totalBefore = 0;   // ms accumulated before the current run
+    let runSince = 0;      // ts when the current run started
+    const secAcc: Record<string, number> = {};
+    let secCur: string | null = null;
+    let secSince = 0;
+    const now = () => Date.now();
+    const totalMs = () => totalBefore + (running ? now() - runSince : 0);
+    const secMs = (slug: string) => (secAcc[slug] ?? 0) + (running && secCur === slug ? now() - secSince : 0);
+    const enterSection = (slug: string) => {
+      if (secCur === slug) return;
+      if (running && secCur) secAcc[secCur] = (secAcc[secCur] ?? 0) + (now() - secSince);
+      secCur = slug; secSince = now();
+    };
+    const timerToggle = () => {
+      if (running) {
+        totalBefore += now() - runSince;
+        if (secCur) secAcc[secCur] = (secAcc[secCur] ?? 0) + (now() - secSince);
+        running = false;
+      } else {
+        runSince = now(); secSince = now(); running = true;
+      }
+      renderTimer();
+    };
+    const timerReset = () => {
+      running = false; totalBefore = 0; runSince = 0; secSince = 0;
+      Object.keys(secAcc).forEach(k => delete secAcc[k]);
+      renderTimer();
+    };
+    const fmt = (ms: number) => {
+      const s = Math.max(0, Math.floor(ms / 1000));
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    };
+    const fmtBudget = (min: number) => `${min}'00`;
+    const overTotal = () => totalMs() > totalBudget() * 60000;
+    const overSec = (s: PSection) => budgetOf(s) > 0 && secMs(s.slug) > budgetOf(s) * 60000;
+
+    function renderTimer() {
+      el.timer.setAttribute('data-running', String(running));
+      el.total.textContent = fmt(totalMs());
+      el.total.classList.toggle('over', overTotal());
+      el.totalBudget.textContent = fmtBudget(totalBudget());
+      el.totalBudget.parentElement?.classList.toggle('over', overTotal());
+      const sec = state ? sectionOf(state.section) : null;
+      if (sec) {
+        el.secTime.textContent = fmt(secMs(sec.slug));
+        el.secTime.classList.toggle('over', overSec(sec));
+        el.secBudget.textContent = budgetOf(sec) > 0 ? fmtBudget(budgetOf(sec)) : '—';
+        el.secBudget.parentElement?.classList.toggle('over', overSec(sec));
+      } else {
+        el.secTime.textContent = '0:00'; el.secBudget.textContent = '—';
+      }
+      el.timerToggle.innerHTML = running
+        ? '<span data-lang-it>Pausa</span><span data-lang-en>Pause</span> <kbd>T</kbd>'
+        : '<span data-lang-it>Avvia</span><span data-lang-en>Start</span> <kbd>T</kbd>';
+      // per-section minutes in the jump list
+      el.jump.querySelectorAll<HTMLElement>('[data-pv-min]').forEach(m => {
+        const s = sectionOf(m.dataset.pvMin || '');
+        if (!s) return;
+        const b = budgetOf(s);
+        m.textContent = b > 0 ? `${fmt(secMs(s.slug))} / ${b}'` : fmt(secMs(s.slug));
+        m.classList.toggle('over', overSec(s));
+      });
+    }
+    window.setInterval(() => {
+      if (running) renderTimer();
+      el.conn.setAttribute('data-state', lastSeen && now() - lastSeen < 15000 ? 'live' : 'waiting');
+    }, 250);
+
+    // ── Notes: markdown-lite (paragraphs, line breaks, **bold**, "- " bullets) ──
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const inline = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    function notesHtml(text: string): string {
+      const blocks = text.replace(/\r\n?/g, '\n').trim().split(/\n{2,}/);
+      return blocks.map(b => {
+        const lines = b.split('\n');
+        if (lines.every(l => /^\s*[-•]\s+/.test(l))) {
+          return '<ul>' + lines.map(l => `<li>${inline(l.replace(/^\s*[-•]\s+/, ''))}</li>`).join('') + '</ul>';
+        }
+        return `<p>${lines.map(inline).join('<br>')}</p>`;
+      }).join('');
+    }
+
+    // ── Render ──
+    function nextOf(sec: PSection, id: string, index: number): { sec: PSection; slide: PSlide } | null {
+      const vis = visibleSlides(sec);
+      let pos = vis.findIndex(x => x.id === id);
+      if (pos === -1) pos = Math.min(index, vis.length - 1);
+      if (pos + 1 < vis.length) return { sec, slide: vis[pos + 1] };
+      let i = data.sections.indexOf(sec) + 1;
+      while (i < data.sections.length) {
+        const v = visibleSlides(data.sections[i]);
+        if (v.length) return { sec: data.sections[i], slide: v[0] };
+        i++;
+      }
+      return null;
+    }
+
+    function render() {
+      const sec = state ? sectionOf(state.section) : null;
+      const slide = sec && state ? (sec.slides.find(x => x.id === state!.id) ?? visibleSlides(sec)[state.index] ?? null) : null;
+      const pad = (v: number) => String(v).padStart(2, '0');
+      el.counter.textContent = state ? `${pad(state.index + 1)} / ${pad(state.total)}` : '— / —';
+      el.secName.textContent = sec ? sec.label[lang] : '';
+      el.title.textContent = state?.title || (slide ? slide.label[lang] : '—');
+      if (state && state.substeps > 0) {
+        el.substep.hidden = false;
+        const dots = Array.from({ length: state.substeps }, (_, i) => `<i class="${i < state!.substep ? 'on' : ''}"></i>`).join('');
+        el.substep.innerHTML = `${lang === 'it' ? 'Passo' : 'Step'} ${state.substep} / ${state.substeps}<span class="pv-dots">${dots}</span>`;
+      } else { el.substep.hidden = true; el.substep.textContent = ''; }
+      const note = slide?.note?.[lang];
+      el.notes.innerHTML = note && note.trim()
+        ? notesHtml(note)
+        : `<p class="pv-notes-empty">${lang === 'it' ? 'Nessuna nota per questa slide.' : 'No notes for this slide.'}${slide ? ` <code>${esc(slide.id)}</code>` : ''}</p>`;
+      const nx = sec && state ? nextOf(sec, state.id, state.index) : null;
+      el.nextSec.textContent = nx && nx.sec !== sec ? nx.sec.label[lang] : '';
+      el.nextTitle.textContent = nx ? nx.slide.label[lang] : (state ? (lang === 'it' ? 'Fine del deck' : 'End of deck') : '—');
+      renderJump(sec, slide);
+      renderTimer();
+    }
+
+    function renderJump(active: PSection | null, activeSlide: PSlide | null) {
+      el.jump.innerHTML = data.sections.map((s, i) => {
+        const b = budgetOf(s);
+        return `<li><button type="button" data-pv-nav="${esc(s.href)}" aria-current="${s === active}">` +
+          `<span class="pv-num">${String(i).padStart(2, '0')}</span><span>${esc(s.label[lang])}</span>` +
+          `<span class="pv-min" data-pv-min="${esc(s.slug)}">${b > 0 ? `0:00 / ${b}'` : '0:00'}</span></button></li>`;
+      }).join('');
+      if (!active) { el.slides.innerHTML = ''; return; }
+      const vis = visibleSlides(active);
+      el.slides.innerHTML = active.slides.map(sl => {
+        const cut = isCut(active.slug, sl.id);
+        const vi = vis.indexOf(sl);
+        return `<li><button type="button" data-pv-goto="${vi}" class="${cut ? 'cut' : ''}" aria-current="${sl === activeSlide}" ${cut ? 'disabled' : ''}>${esc(sl.label[lang])}</button></li>`;
+      }).join('');
+    }
+
+    // ── Commands ──
+    const cmd = (name: string) => {
+      switch (name) {
+        case 'slide-next': send({ type: 'slide', dir: 'next' }); break;
+        case 'slide-prev': send({ type: 'slide', dir: 'prev' }); break;
+        case 'step-next': send({ type: 'step', dir: 'next' }); break;
+        case 'step-prev': send({ type: 'step', dir: 'prev' }); break;
+        case 'fullscreen': send({ type: 'key', key: 'f' }); break;
+      }
+    };
+    root.addEventListener('click', (e) => {
+      const t = (e.target as HTMLElement).closest<HTMLElement>('[data-pv-cmd], [data-pv-nav], [data-pv-goto], [data-pv-lang], [data-pv-timer-toggle], [data-pv-timer-reset]');
+      if (!t) return;
+      if (t.dataset.pvCmd) cmd(t.dataset.pvCmd);
+      else if (t.dataset.pvNav) send({ type: 'nav', href: t.dataset.pvNav });
+      else if (t.dataset.pvGoto !== undefined) send({ type: 'goTo', index: Number(t.dataset.pvGoto) });
+      else if (t.dataset.pvLang) applyLang(t.dataset.pvLang as Lang, true);
+      else if (t.hasAttribute('data-pv-timer-toggle')) timerToggle();
+      else if (t.hasAttribute('data-pv-timer-reset')) timerReset();
+    });
+    window.addEventListener('keydown', (e) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || e.metaKey || e.ctrlKey || e.altKey) return;
+      switch (e.key) {
+        case 'ArrowRight': e.preventDefault(); cmd('slide-next'); break;
+        case 'ArrowLeft': e.preventDefault(); cmd('slide-prev'); break;
+        case 'ArrowDown': case ' ': case 'Spacebar': case 'PageDown': e.preventDefault(); cmd('step-next'); break;
+        case 'ArrowUp': case 'PageUp': e.preventDefault(); cmd('step-prev'); break;
+        case 't': case 'T': e.preventDefault(); timerToggle(); break;
+        case 'f': case 'F': e.preventDefault(); cmd('fullscreen'); break;
+      }
+    });
+
+    bc?.addEventListener('message', (e: MessageEvent) => {
+      const m = e.data as DeckState | undefined;
+      if (!m || m.type !== 'state') return;
+      state = m; lastSeen = now();
+      if (m.lang === 'it' || m.lang === 'en') {
+        if (m.lang !== lang) { applyLang(m.lang, false); }
+      }
+      const isShort = m.cut === 'short';
+      if (isShort !== short) { short = isShort; el.cut.checked = isShort; }
+      enterSection(m.section);
+      render();
+    });
+
+    // Handshake: ask the deck for its state until it answers.
+    send({ type: 'hello' });
+    const hello = window.setInterval(() => { if (lastSeen) window.clearInterval(hello); else send({ type: 'hello' }); }, 2000);
+    window.addEventListener('storage', (ev) => { if (ev.key === 'edf:lang') { const l = readLang(); if (l !== lang) applyLang(l, false); } });
+
+    applyLang(lang, false);
+  }
+
+  init();
+  document.addEventListener('astro:page-load', init);
+</script>
