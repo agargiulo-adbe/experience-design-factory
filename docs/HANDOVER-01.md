@@ -117,13 +117,12 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 - **AEM Agents** (Contenuti): Content Advisor, Site Optimization (Sites Optimizer), Governance, Brand Experience — AEM CS + Edge Delivery.
 - **Firefly enterprise** (Contenuti): Firefly **Services (API)**, **Custom Models**, **Foundry** (modelli proprietari deeply-tuned, multimodali).
 
-### 5.4 Struttura sezione **Contenuti** (7 slide, ordine)
-`cover → problem → AI Agents in AEM → GenStudio → Brand Concierge → stack ("Crea, approva, distribuisci": GenStudio/Firefly/AEM Assets/**AEM Sites**) → **Adobe Firefly enterprise**` (chiude con il CTA → Analizza).
-Gating: slide Firefly `data-solution="firefly"`; slide AEM Agents `data-solution="aem-sites,aem-assets"`; slide Brand Concierge `data-solution="brand-concierge"`.
+### 5.4 Struttura sezione **Contenuti** (4 slide, dal 9 set 2026)
+`cover → problem → GenStudio → Brand Concierge`. La slide **AI Agents in AEM** vive ora in **Il Sito** (dopo Edge Delivery, `data-solution="aem-sites,aem-assets"`); Firefly-as-product fuori dal 7 set. Gating: slide Brand Concierge `data-solution="brand-concierge"`. Nessuna citazione di Sofia (single-persona Marco).
 
 ### 5.5 Note per-sezione utili
 - **Motore** (`motore-adobe.astro`) è **height-sensitive**: aggiungere chip/pill fa clippare il titolo centrato a 1280. Tieni **≤4 chip per layer** nello stack e la nuvola di pill **curata (~16)**.
-- **Analizza** — la slide "LLM Insights + MCA" (id interno ancora `slide-llm-mix`). **Dal 2 set (§27)** l'attribution è il filo della sezione: +2 slide `slide-lasttouch` (last-touch cieco → vista complementare CJA) e `slide-costpersale` (cost-per-sale + MTA/MMM), registrate nel `PAGE_REGISTRY`; sezione ora **HARD-clean** su 1920/1440/1280 (bonificate anche cxa-brand/agent/banking/llm-mix — copy/densità, mai type sotto i minimi).
+- **Analizza** — **dal 9 set 2026 un solo racconto** «Chi ha portato Marco al mutuo?» (9 slide): `cover → slide-journey (CJA, 8 touchpoint) → slide-lasttouch → slide-agent (DIA) → slide-llm (LLM Insights, fusa con la vecchia llm-mix) → slide-costpersale → slide-campaign (MCA) → slide-cxa-brand («Tutto questo è Adobe CX Analytics») → slide-everywhere (MCP/Copilot + CTA Coworker)`. Rimosse `slide-banking` e `slide-llm-mix`. Sezione **HARD-clean** su 1920/1440/1280. MediaDemoSlot: `analizza-cxa-demo` (journey) e `analizza-dia-demo` (agent).
 - **Risultati** — cifre presentate come proiezioni illustrative con label onesta.
 
 ### 5.6 «Workshop cut» (7 set 2026, `ddb3650` + fix `9c3bd24`/`e45d5e5`) — STATO ATTUALE del deck
@@ -133,6 +132,12 @@ Il deck è stato riconfigurato come la **«Customer story» che apre il workshop
 - Nuova slide **`slide-engine-map`** in Scenario = mappa dei 6 motori con puntatore al capitolo di demo. Handoff cross-sezione e naming allineati **verbatim** al deck; numerazione cover coerente **00–05**. `PAGE_REGISTRY` (admin) sfrondato ai 6.
 - **Backdrop Adobe Firefly** on-brand (art, C2PA): `ff-engine-map` (engine-map), `ff-il-sito` (cover visibilita), `ff-contenuti` (slide genstudio) — generati via pipeline repo `scripts/lib/firefly.ts` con **`FIREFLY_CLIENT_ID/SECRET` in `apps/unicredit-engagement/.env`** (gitignored, copiate da `mim-alfabeti`). Gotcha: l'MCP Adobe **non genera** immagini; ogni `assets:build --manifest <subset>` **riscrive `provenance.json`** coi soli slot processati → fare merge (`git show HEAD:…provenance.json` + jq). Memoria `unicredit-workshop-cut`.
 - Verifica: `audit:deck` **0 nuovi HARD** (residui c/j a 1280/1440 su aem-agents/brand-concierge pre-esistenti; puliti a 1920). Merge #1, deploiato, nav live = 6 capitoli.
+
+### 5.7 «Il viaggio intero di Marco» (9 set 2026, `3c1a555`) — stato attuale del racconto
+- **Scenario/slide-marco**: niente pill prodotto; il pannello racconta i **5 beat** del flusso (Il Sito → Contenuti → Analizza → Coworker → Risultati) con lo stepper `.uc-journey`. **Scenario/slide-engine-map**: ogni card ha «Per Marco»; 05 Journey analytics e 06 Workflow agentici anche «Dentro UniCredit» (prospettiva interna: marketing/analista/consulente). Lead della promise aggiornata (due prospettive).
+- **Il Sito** = 7 slide: `cover → data → marco-moment → brand-visibility (gated) → eds → aem-agents → optimizer`. **Contenuti** = 4 (§5.4). **Analizza** = 9 (§5.5).
+- Coerenza cross-sezione (LOCKED): il touchpoint «Email non aperta → SMS mercoledì» della journey slide riprende la quote DIA; «appuntamento ore 14 / brief Coworker» riprende Coworker; «Filiale · contratto firmato» è il last-touch ufficiale che la vista CJA scompone (Digitale 45 · Contact center 30 · Filiale 25, pesi illustrativi).
+- Gotcha audit: l'audit legge `--slide-safe-inset` da `:root` (80px) e non l'override `[data-deck]` per breakpoint → a 1280×800 il contenuto deve stare in **640px** utili. Residui pre-esistenti a 1280 (aem-agents, brand-visibility, brand-concierge) bonificati con spacing/copy, mai type sotto i minimi.
 
 ---
 ## 6. Feature runtime del deck (tutte in UniCredit; molte in core)
