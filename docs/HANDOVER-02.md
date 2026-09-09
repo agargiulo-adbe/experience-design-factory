@@ -6,7 +6,8 @@
 ## 11. Change log recente
 
 ### Change log — Isybank: fonti verificate + copy «da costruire insieme» + sfondi/video Adobe Firefly (2026-09-09 pom.) → dettaglio §31.4 (HANDOVER-05)
-- Fonti online verificate e citate su ogni slide (2 correzioni di fatto: iF Award = ecosistema digitale; nuovi clienti 900k/150k al posto di 480k/350k); slide richieste riscritta come 4 domande aperte; 17 backdrop + 2 clip Firefly (Release `media`) con credit esplicito; `audit:deck` 0 HARD, 17 slide lette a 1920.
+- `94e5a57` Fonti online verificate e citate su ogni slide (2 correzioni di fatto: iF Award = ecosistema digitale; nuovi clienti 900k/150k al posto di 480k/350k); slide richieste riscritta come 4 domande aperte; 17 backdrop + 2 clip Firefly (Release `media`) con credit esplicito; `audit:deck` 0 HARD, 17 slide lette a 1920.
+- `cea02f9` **fix poster dei clip Firefly (Isybank + MIM)**: `href()` forza la slash finale → `x.jpg/` = **404 su Pages** (i poster MIM erano rotti dal 8 set senza che si notasse perché il clip parte comunque). Path dei file in `public/media` ora costruito da `BASE_URL` senza slash; verificato 200 sul live.
 
 ### Change log — Isybank «Il momento giusto»: nuova esperienza + dossier war-room per l'AD Valitutti (2026-09-09) → dettaglio §31 (HANDOVER-05)
 - `113c579` `apps/isybank-momento` nuova (deck IT 3 capitoli + 6 idee gated, design `.im-*`, Manrope+Inter); registrata in deploy/hub/audit/root; `docs/Intesa Sanpaolo/` git-ignored (unico posto con dati contrattuali). `audit:deck` 0 HARD. Memoria `isybank-momento-valitutti`.
