@@ -240,6 +240,71 @@ export const assets: AssetSlot[] = [
     grade: 'editorial',
     alt: 'Crescita finanziaria',
   },
-];
 
-export default assets;
+  // ── La storia di Marco — 5 momenti (Scenario). Scene senza volti, no letterform. ──
+  {
+    id: 'ff-story-01',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Evening in a warm Italian family kitchen, a smartphone lying on a wooden table with a soft glowing screen, ceramic espresso cup, house keys, folded property brochure, warm lamp light, shallow depth of field, cinematic, editorial photography, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, hands, user interface, readable screen, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-story-02',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Bright living room in the morning, laptop open on a low table with a soft glowing screen, children drawings pinned on the wall out of focus, plants, natural window light, calm family home atmosphere, editorial photography, shallow depth of field, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, hands, readable screen, user interface, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-story-03',
+    type: 'firefly',
+    contentClass: 'art',
+    prompt:
+      'Abstract visualization of a single customer journey as one continuous luminous thread of crimson and warm gold light passing through eight glowing nodes, deep midnight-blue background, glass reflections, premium financial-technology aesthetic, cinematic depth, minimal',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, dashboard screenshot, charts with numbers, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-story-04',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Modern bank branch advisor office in the morning, elegant desk with a tablet, a closed notebook and a pen, two empty chairs ready for an appointment, soft light through vertical blinds, warm wood and glass, calm and premium, editorial photography, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, hands, readable screen, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+  {
+    id: 'ff-story-05',
+    type: 'firefly',
+    contentClass: 'photo',
+    prompt:
+      'Front door of a new apartment slightly open with keys in the lock, warm late-afternoon sunlight spilling into an empty freshly painted hallway, a couple of moving boxes, sense of a new beginning, editorial photography, shallow depth of field, no people',
+    negativePrompt:
+      'text, words, letters, typography, logos, watermark, brand names, people, faces, hands, cluttered',
+    aspect: '16:9',
+    width: 2400,
+    grade: 'none',
+    alt: '',
+  },
+];

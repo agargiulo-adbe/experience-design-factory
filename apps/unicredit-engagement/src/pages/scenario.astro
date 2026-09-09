@@ -67,16 +67,25 @@ const gaps = [
   },
 ];
 
-// Marco's whole journey, told in five beats that mirror the chapters that follow.
-const marcoJourney = [
-  { n: '01', where: { en: 'The Site', it: 'Il Sito' }, text: { en: 'UniCredit is the first answer ChatGPT gives him, and the page opens in 0.3 seconds.', it: 'UniCredit è la prima risposta che ChatGPT gli dà, e la pagina si apre in 0,3 secondi.' } },
-  { n: '02', where: { en: 'Content', it: 'Contenuti' }, text: { en: 'The page speaks to families like his. The Brand Concierge gives him a simulation, a payment and a next step.', it: 'La pagina parla a famiglie come la sua. Il Brand Concierge gli dà simulazione, rata e prossimo passo.' } },
-  { n: '03', where: { en: 'Analyze', it: 'Analizza' }, text: { en: 'Every step is measured, from ChatGPT to the branch: UniCredit sees who really brought him to the mortgage.', it: 'Ogni passaggio è misurato, da ChatGPT alla filiale: UniCredit vede chi lo ha davvero portato al mutuo.' } },
-  { n: '04', where: { en: 'Coworker', it: 'Coworker' }, text: { en: 'Before the 2 PM appointment, Coworker has already briefed his advisor and drafted the offer.', it: "Prima dell'appuntamento delle 14, Coworker ha già preparato brief e proposta al consulente." } },
-  { n: '05', where: { en: 'Results', it: 'Risultati' }, text: { en: 'A mortgage signed with no queues, and a 12-year relationship that keeps going.', it: 'Un mutuo firmato senza code, e una relazione di 12 anni che continua.' } },
+// La storia di Marco — cinque momenti, uno per capitolo, raccontati una slide ciascuno.
+const marcoMoments = [
+  { n: '01', where: { en: 'The Site', it: 'Il Sito' }, href: '/visibilita', bg: 'ff-story-01',
+    title: { en: '9:40 PM. Marco asks ChatGPT.', it: 'Ore 21:40. Marco chiede a ChatGPT.' },
+    body: { en: '"Best bank for a first-home mortgage." UniCredit is the first answer, and not by luck: its content is readable and quotable by AI assistants. He taps, and the page opens in 0.3 seconds while the other two banks are still loading.', it: '«Miglior banca per il mutuo della prima casa.» UniCredit è la prima risposta, e non per fortuna: i contenuti sono leggibili e citabili dagli assistenti AI. Tocca il link, e la pagina si apre in 0,3 secondi mentre le altre due banche stanno ancora caricando.' } },
+  { n: '02', where: { en: 'Content', it: 'Contenuti' }, href: '/contenuti', bg: 'ff-story-02',
+    title: { en: 'The page speaks to him, not to everyone.', it: 'La pagina parla a lui, non a tutti.' },
+    body: { en: 'Family, 35 to 45, first home: the variant he sees was written by GenStudio for people like him, in minutes. He has a doubt and types it to the Brand Concierge: "How much can I afford?" A few exchanges later he has a simulation, a monthly payment and a next step.', it: 'Famiglia, 35–45 anni, prima casa: la variante che vede l\'ha scritta GenStudio per gente come lui, in minuti. Ha un dubbio e lo scrive al Brand Concierge: «Quanto posso permettermi?». In pochi scambi ha simulazione, rata e prossimo passo.' } },
+  { n: '03', where: { en: 'Analyze', it: 'Analizza' }, href: '/analizza', bg: 'ff-story-03',
+    title: { en: 'Behind the scenes, UniCredit sees the whole path.', it: 'Dietro le quinte, UniCredit lo vede intero.' },
+    body: { en: 'Every step lands in the same journey: the AI answer, the site, the concierge, the app. When Marco leaves the mortgage email unopened, the Data Insights Agent flags him and suggests an SMS for Wednesday. And the credit for this sale will not stay with one channel.', it: 'Ogni passaggio finisce nello stesso percorso: la risposta AI, il sito, il concierge, l\'app. Quando Marco non apre l\'email del mutuo, il Data Insights Agent lo segnala e propone un SMS per mercoledì. E il merito di questa vendita non resterà a un solo canale.' } },
+  { n: '04', where: { en: 'Coworker', it: 'Coworker' }, href: '/coworker', bg: 'ff-story-04',
+    title: { en: '2 PM. The advisor already knows everything.', it: 'Ore 14. Il consulente sa già tutto.' },
+    body: { en: 'Coworker prepared the brief for the appointment: profile, propensity, the three interactions of the week, an offer already shaped for him. The advisor walks in to talk with Marco, not to hunt for his data.', it: 'Il brief per l\'appuntamento l\'ha preparato Coworker: profilo, propensione, le tre interazioni della settimana, una proposta già su misura. Il consulente entra in stanza per parlare con Marco, non per cercare i suoi dati.' } },
+  { n: '05', where: { en: 'Results', it: 'Risultati' }, href: '/risultati', bg: 'ff-story-05',
+    title: { en: 'The keys. And a relationship that goes on.', it: 'Le chiavi. E una relazione che continua.' },
+    body: { en: 'A mortgage signed with no queues, a fully digital application, one profile that app, branch and call centre read the same way. Next year the home insurance, then the salary account: the right offer at the right moment, not spam.', it: 'Mutuo firmato senza code, richiesta interamente digitale, un profilo unico che app, filiale e call center leggono allo stesso modo. Tra un anno la polizza casa, poi il conto stipendio: l\'offerta giusta al momento giusto, non spam.' } },
 ];
 
-// The six engines demoed live after the story — same order as the workshop agenda.
 const engines = [
   { n: '01', name: { en: 'Content management', it: 'Gestione contenuti' }, tools: 'AEM Sites · Edge Delivery · AEM Agents', where: { en: 'The Site', it: 'Il Sito' },
     marco: { en: 'The mortgage page opens in 0.3 seconds, kept fresh by agents inside AEM.', it: 'La pagina del mutuo si apre in 0,3 secondi, tenuta aggiornata dagli agenti dentro AEM.' } },
@@ -243,20 +252,204 @@ const engines = [
             data-reveal-delay="0.08"
           >Marco Ferretti</h2>
           <T as="p" class="uc-src mb-3" data-reveal data-reveal-delay="0.12" en="38 · UniCredit customer for 12 years · Brescia" it="38 anni · cliente UniCredit da 12 anni · Brescia" />
-          <div class="uc-quote !mt-0 !pt-0 !border-t-0 mb-2.5" data-reveal data-reveal-delay="0.18">
-            <T as="p" class="uc-quote-text !text-[clamp(1.05rem,1.35vw,1.3rem)]" en="He just asked ChatGPT which bank to pick for his first home. Here is what happens next." it="Ha appena chiesto a ChatGPT quale banca scegliere per la prima casa. Ecco cosa succede dopo." />
+          <T as="p" class="uc-panel-body" data-reveal data-reveal-delay="0.2"
+            en="A customer for twelve years, a family, a home to buy. He knows none of the engines you are about to see: he only lives what they do."
+            it="Cliente da dodici anni, una famiglia, una casa da comprare. Non conosce nessuno dei motori che state per vedere: vive solo quello che fanno."
+          />
+          <div class="uc-quote" data-reveal data-reveal-delay="0.26">
+            <T as="p" class="uc-quote-text" en="He just asked ChatGPT which bank to pick for his first-home mortgage. Let's follow his five moments." it="Ha appena chiesto a ChatGPT quale banca scegliere per il mutuo della prima casa. Seguiamo i suoi cinque momenti." />
           </div>
-          <ol class="uc-journey" data-reveal data-reveal-delay="0.26">
-            {marcoJourney.map((b) => (
-              <li class="uc-journey-step">
-                <span class="uc-journey-n">{b.n}</span>
-                <div class="min-w-0">
-                  <T as="span" class="uc-journey-where" en={b.where.en} it={b.where.it} />
-                  <T as="p" class="uc-journey-text" en={b.text.en} it={b.text.it} />
-                </div>
-              </li>
+          <ol class="uc-dots mt-5" aria-hidden="true" data-reveal data-reveal-delay="0.32">
+            {marcoMoments.map((m) => (
+              <li class="uc-dot-item"><span class="uc-dot-n">{m.n}</span><T as="span" class="uc-dot-label" en={m.where.en} it={m.where.it} /></li>
             ))}
           </ol>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── STORIA DI MARCO · momento 01 ─────────────────────────────── -->
+    <Slide id="slide-story-01" bg="inverse" align="split">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps(marcoMoments[0].bg)}
+        imageClass="opacity-55"
+        scrim="uc-story-scrim"
+      />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-16 items-center">
+        <div class="text-left uc-story-text">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <T as="span" class="uc-story-kicker" en={`Moment ${marcoMoments[0].n} of 05 · ${marcoMoments[0].where.en}`} it={`Momento ${marcoMoments[0].n} di 05 · ${marcoMoments[0].where.it}`} />
+          </div>
+          <T as="h2" class="uc-story-title" data-reveal data-reveal-delay="0.08" en={marcoMoments[0].title.en} it={marcoMoments[0].title.it} />
+          <T as="p" class="uc-story-body" data-reveal data-reveal-delay="0.16" en={marcoMoments[0].body.en} it={marcoMoments[0].body.it} />
+          <a href={href(base, marcoMoments[0].href)} class="uc-story-link" data-reveal data-reveal-delay="0.24">
+            <T en={`↳ Live in a moment, chapter ${marcoMoments[0].n} · ${marcoMoments[0].where.en}`} it={`↳ Tra poco dal vivo, capitolo ${marcoMoments[0].n} · ${marcoMoments[0].where.it}`} />
+          </a>
+        </div>
+        <div class="flex items-center justify-center md:justify-end" data-reveal data-reveal-delay="0.2">
+            <div class="uc-mock uc-mock--dark">
+              <p class="uc-mock-meta">ChatGPT · 21:40</p>
+              <T as="p" class="uc-mock-query" en={'🔍 "best bank first-home mortgage italy"'} it={'🔍 "miglior banca mutuo prima casa italia"'} />
+              <div class="uc-mock-answer">
+                <p class="uc-mock-brand">UniCredit</p>
+                <T as="p" class="uc-mock-text" en="A strong choice for a first-home mortgage: competitive rates, a dedicated advisor and a 100% digital application." it="Ottima scelta per il mutuo prima casa: tassi competitivi, consulenza dedicata e richiesta 100% digitale." />
+              </div>
+              <div class="uc-mock-foot">
+                <span class="uc-mock-chip">unicredit.it</span>
+                <T as="span" class="uc-mock-chip uc-mock-chip--rosso" en="page loaded · 0.3 s" it="pagina caricata · 0,3 s" />
+              </div>
+            </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── STORIA DI MARCO · momento 02 ─────────────────────────────── -->
+    <Slide id="slide-story-02" bg="inverse" align="split">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps(marcoMoments[1].bg)}
+        imageClass="opacity-55"
+        scrim="uc-story-scrim"
+      />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-16 items-center">
+        <div class="text-left uc-story-text">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <T as="span" class="uc-story-kicker" en={`Moment ${marcoMoments[1].n} of 05 · ${marcoMoments[1].where.en}`} it={`Momento ${marcoMoments[1].n} di 05 · ${marcoMoments[1].where.it}`} />
+          </div>
+          <T as="h2" class="uc-story-title" data-reveal data-reveal-delay="0.08" en={marcoMoments[1].title.en} it={marcoMoments[1].title.it} />
+          <T as="p" class="uc-story-body" data-reveal data-reveal-delay="0.16" en={marcoMoments[1].body.en} it={marcoMoments[1].body.it} />
+          <a href={href(base, marcoMoments[1].href)} class="uc-story-link" data-reveal data-reveal-delay="0.24">
+            <T en={`↳ Live in a moment, chapter ${marcoMoments[1].n} · ${marcoMoments[1].where.en}`} it={`↳ Tra poco dal vivo, capitolo ${marcoMoments[1].n} · ${marcoMoments[1].where.it}`} />
+          </a>
+        </div>
+        <div class="flex items-center justify-center md:justify-end" data-reveal data-reveal-delay="0.2">
+            <div class="uc-mock">
+              <p class="uc-mock-meta">unicredit.it · <T en="Mortgages" it="Mutui" /></p>
+              <T as="p" class="uc-mock-h" en="A mortgage that grows with your family" it="Il mutuo che cresce con la tua famiglia" />
+              <T as="span" class="uc-mock-chip uc-mock-chip--rosso" en="Work out your payment →" it="Calcola la rata →" />
+              <div class="uc-mock-chat">
+                <T as="p" class="uc-mock-bubble uc-mock-bubble--me" en="How much can I afford for a first home?" it="Quanto posso permettermi per la prima casa?" />
+                <T as="p" class="uc-mock-bubble" en="With your profile, roughly 780 € a month over 20 years. Want the full simulation, or an appointment with an advisor?" it="Con il tuo profilo, circa 780 € al mese su 20 anni. Vuoi la simulazione completa o un appuntamento con un consulente?" />
+              </div>
+              <T as="p" class="uc-mock-note" en="Brand Concierge · illustrative simulation" it="Brand Concierge · simulazione illustrativa" />
+            </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── STORIA DI MARCO · momento 03 ─────────────────────────────── -->
+    <Slide id="slide-story-03" bg="inverse" align="split">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps(marcoMoments[2].bg)}
+        imageClass="opacity-55"
+        scrim="uc-story-scrim"
+      />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-16 items-center">
+        <div class="text-left uc-story-text">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <T as="span" class="uc-story-kicker" en={`Moment ${marcoMoments[2].n} of 05 · ${marcoMoments[2].where.en}`} it={`Momento ${marcoMoments[2].n} di 05 · ${marcoMoments[2].where.it}`} />
+          </div>
+          <T as="h2" class="uc-story-title" data-reveal data-reveal-delay="0.08" en={marcoMoments[2].title.en} it={marcoMoments[2].title.it} />
+          <T as="p" class="uc-story-body" data-reveal data-reveal-delay="0.16" en={marcoMoments[2].body.en} it={marcoMoments[2].body.it} />
+          <a href={href(base, marcoMoments[2].href)} class="uc-story-link" data-reveal data-reveal-delay="0.24">
+            <T en={`↳ Live in a moment, chapter ${marcoMoments[2].n} · ${marcoMoments[2].where.en}`} it={`↳ Tra poco dal vivo, capitolo ${marcoMoments[2].n} · ${marcoMoments[2].where.it}`} />
+          </a>
+        </div>
+        <div class="flex items-center justify-center md:justify-end" data-reveal data-reveal-delay="0.2">
+            <div class="uc-mock uc-mock--dark">
+              <p class="uc-mock-meta">Customer Journey Analytics · Marco F.</p>
+              <div class="uc-mock-path">
+                <span class="uc-mock-step">ChatGPT</span><span class="uc-mock-step"><T en="Site" it="Sito" /></span><span class="uc-mock-step">Concierge</span><span class="uc-mock-step">App</span><span class="uc-mock-step uc-mock-step--off">Email ✕</span><span class="uc-mock-step uc-mock-step--gold">SMS</span>
+              </div>
+              <div class="uc-mock-alert">
+                <span class="uc-mock-alert-tag">Data Insights Agent</span>
+                <T as="p" class="uc-mock-text" en="At-risk: mortgage email not opened in 4 days. Suggested: SMS reminder, Wednesday 9:00." it="At-risk: email del mutuo non aperta da 4 giorni. Suggerito: reminder SMS, mercoledì ore 9:00." />
+              </div>
+              <div class="uc-mock-rows">
+                <div class="uc-mock-row"><T as="span" en="Official credit (last-touch)" it="Attribuzione ufficiale (last-touch)" /><span class="uc-mock-val"><T en="Branch" it="Filiale" /></span></div>
+                <div class="uc-mock-row"><T as="span" en="Real weight · complementary view" it="Peso reale · vista complementare" /><span class="uc-mock-val"><T en="Digital 45%" it="Digitale 45%" /></span></div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── STORIA DI MARCO · momento 04 ─────────────────────────────── -->
+    <Slide id="slide-story-04" bg="inverse" align="split">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps(marcoMoments[3].bg)}
+        imageClass="opacity-55"
+        scrim="uc-story-scrim"
+      />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-16 items-center">
+        <div class="text-left uc-story-text">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <T as="span" class="uc-story-kicker" en={`Moment ${marcoMoments[3].n} of 05 · ${marcoMoments[3].where.en}`} it={`Momento ${marcoMoments[3].n} di 05 · ${marcoMoments[3].where.it}`} />
+          </div>
+          <T as="h2" class="uc-story-title" data-reveal data-reveal-delay="0.08" en={marcoMoments[3].title.en} it={marcoMoments[3].title.it} />
+          <T as="p" class="uc-story-body" data-reveal data-reveal-delay="0.16" en={marcoMoments[3].body.en} it={marcoMoments[3].body.it} />
+          <a href={href(base, marcoMoments[3].href)} class="uc-story-link" data-reveal data-reveal-delay="0.24">
+            <T en={`↳ Live in a moment, chapter ${marcoMoments[3].n} · ${marcoMoments[3].where.en}`} it={`↳ Tra poco dal vivo, capitolo ${marcoMoments[3].n} · ${marcoMoments[3].where.it}`} />
+          </a>
+        </div>
+        <div class="flex items-center justify-center md:justify-end" data-reveal data-reveal-delay="0.2">
+            <div class="uc-mock">
+              <p class="uc-mock-meta">Adobe CX Enterprise Coworker</p>
+              <T as="p" class="uc-mock-bubble uc-mock-bubble--me" en="Prepare the brief for Marco Ferretti, 2:00 PM appointment" it="Prepara il brief per Marco Ferretti, appuntamento ore 14:00" />
+              <div class="uc-mock-brief">
+                <T as="p" class="uc-mock-brief-tag" en="Brief generated · 30 s" it="Brief generato · 30 s" />
+                <ul class="uc-mock-list">
+                  <T as="li" en="Home-mortgage propensity 87/100" it="Propensity mutuo casa 87/100" />
+                  <T as="li" en="Customer for 12 years · high-value retail" it="Cliente da 12 anni · retail alto valore" />
+                  <T as="li" en="3 interactions in the past week (AI, concierge, app)" it="3 interazioni nell'ultima settimana (AI, concierge, app)" />
+                  <T as="li" en="Offer: first-home mortgage 20Y, rate for long-standing clients" it="Proposta: mutuo prima casa 20Y, tasso dedicato ai clienti storici" />
+                </ul>
+              </div>
+              <div class="uc-mock-foot">
+                <T as="span" class="uc-mock-chip uc-mock-chip--rosso" en="Approve ✓" it="Approva ✓" />
+                <T as="span" class="uc-mock-note" en="human-in-the-loop" it="human-in-the-loop" />
+              </div>
+            </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── STORIA DI MARCO · momento 05 ─────────────────────────────── -->
+    <Slide id="slide-story-05" bg="inverse" align="split">
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps(marcoMoments[4].bg)}
+        imageClass="opacity-55"
+        scrim="uc-story-scrim"
+      />
+      <div class="w-full flex-1 min-h-0 grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-16 items-center">
+        <div class="text-left uc-story-text">
+          <div class="flex items-center gap-3 mb-4" data-reveal>
+            <T as="span" class="uc-story-kicker" en={`Moment ${marcoMoments[4].n} of 05 · ${marcoMoments[4].where.en}`} it={`Momento ${marcoMoments[4].n} di 05 · ${marcoMoments[4].where.it}`} />
+          </div>
+          <T as="h2" class="uc-story-title" data-reveal data-reveal-delay="0.08" en={marcoMoments[4].title.en} it={marcoMoments[4].title.it} />
+          <T as="p" class="uc-story-body" data-reveal data-reveal-delay="0.16" en={marcoMoments[4].body.en} it={marcoMoments[4].body.it} />
+          <a href={href(base, marcoMoments[4].href)} class="uc-story-link" data-reveal data-reveal-delay="0.24">
+            <T en={`↳ Live in a moment, chapter ${marcoMoments[4].n} · ${marcoMoments[4].where.en}`} it={`↳ Tra poco dal vivo, capitolo ${marcoMoments[4].n} · ${marcoMoments[4].where.it}`} />
+          </a>
+        </div>
+        <div class="flex items-center justify-center md:justify-end" data-reveal data-reveal-delay="0.2">
+            <div class="uc-mock">
+              <p class="uc-mock-meta">UniCredit · Marco Ferretti</p>
+              <T as="p" class="uc-mock-h" en="First-home mortgage · signed" it="Mutuo prima casa · firmato" />
+              <div class="uc-mock-rows uc-mock-rows--stats">
+                <div class="uc-mock-row"><span class="uc-mock-fig">0</span><T as="span" en="queues · fully digital application" it="code · richiesta 100% digitale" /></div>
+                <div class="uc-mock-row"><span class="uc-mock-fig">1</span><T as="span" en="profile · app, branch and call centre aligned" it="profilo · app, filiale e call center allineati" /></div>
+                <div class="uc-mock-row"><span class="uc-mock-fig">12</span><T as="span" en="years · a relationship that goes on" it="anni · una relazione che continua" /></div>
+              </div>
+              <div class="uc-mock-foot">
+                <T as="span" class="uc-mock-chip" en="Next: home insurance" it="Prossimo: polizza casa" />
+                <T as="span" class="uc-mock-chip" en="then: salary account" it="poi: conto stipendio" />
+              </div>
+            </div>
         </div>
       </div>
     </Slide>
@@ -281,8 +474,8 @@ const engines = [
           it="Sei motori fanno funzionare il viaggio di Marco"
         />
         <T as="p" class="text-[clamp(1rem,1.3vw,1.2rem)] text-[var(--color-grigio-200)] max-w-4xl mx-auto mb-4 leading-relaxed" data-reveal data-reveal-delay="0.15"
-          en="Four engines Marco lives as a customer; the last two the UniCredit team sees from inside. Live in a moment, in this order."
-          it="Quattro motori Marco li vive da cliente; gli ultimi due li vede il team UniCredit da dentro. Tra poco dal vivo, in quest'ordine."
+          en="Marco's five moments run on six engines: four he lives as a customer, two the UniCredit team sees from inside. Live in a moment, in this order."
+          it="I cinque momenti di Marco girano su sei motori: quattro li vive da cliente, due li vede il team UniCredit da dentro. Tra poco dal vivo, in quest'ordine."
         />
         <div class="grid md:grid-cols-3 gap-3.5 text-left" data-reveal data-reveal-delay="0.2">
           {engines.map((e) => (
@@ -373,20 +566,56 @@ const engines = [
   /* Pull quote in variante oro — hairline oro invece che rosso */
   .uc-quote--oro { border-top-color: rgba(201, 169, 110, 0.55); }
 
-  /* Il percorso di Marco — stepper verticale, un beat per capitolo */
-  .uc-journey { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
-  .uc-journey-step { display: flex; align-items: flex-start; gap: 0.8rem; position: relative; }
-  .uc-journey-step + .uc-journey-step::before {
-    content: ''; position: absolute; left: 0.85rem; top: -0.45rem; height: 0.45rem; width: 2px;
-    background: linear-gradient(to bottom, rgba(201,169,110,0.25), var(--color-oro));
-  }
-  .uc-journey-n {
-    flex: 0 0 auto; width: 1.75rem; height: 1.75rem; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center;
-    font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; color: var(--color-rosso);
-    background: rgba(190, 32, 39, 0.08); border: 1px solid rgba(190, 32, 39, 0.3); margin-top: 0.1rem;
-  }
-  .uc-journey-where { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9a7c42; margin-bottom: 0.1rem; }
-  .uc-journey-text { color: var(--color-blu-medio); font-size: 0.95rem; line-height: 1.45; max-width: none; }
+  /* Persona: i cinque momenti come puntini numerati */
+  .uc-dots { list-style: none; margin: 1.1rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; }
+  .uc-dot-item { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .uc-dot-n { width: 1.5rem; height: 1.5rem; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; font-size: 0.72rem; color: var(--color-rosso); background: rgba(190,32,39,0.08); border: 1px solid rgba(190,32,39,0.3); }
+  .uc-dot-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9a7c42; }
+
+  /* La storia di Marco — slide-momento: testo a sinistra su scrim, mock UI a destra */
+  :global(.uc-story-scrim) { background: linear-gradient(100deg, rgba(26,26,46,0.92) 0%, rgba(26,26,46,0.8) 48%, rgba(26,26,46,0.55) 100%); }
+  .uc-story-kicker { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-oro); }
+  .uc-story-title { font-family: var(--font-display); font-weight: 300; font-size: clamp(2rem, 3.4vw, 3.3rem); line-height: 1.08; color: var(--ink-inverse); margin-bottom: 1.1rem; max-width: 22ch; letter-spacing: -0.01em; }
+  .uc-story-body { font-size: clamp(1.02rem, 1.3vw, 1.2rem); line-height: 1.6; color: var(--color-grigio-200); max-width: 34rem; margin-bottom: 1.4rem; }
+  .uc-story-link { display: inline-block; font-size: 0.95rem; font-weight: 600; color: var(--color-oro); text-decoration: none; border-bottom: 1px solid rgba(201,169,110,0.45); padding-bottom: 0.15rem; }
+  .uc-story-link:hover { color: var(--ink-inverse); border-bottom-color: var(--ink-inverse); }
+
+  /* Mock UI — card chiara (o scura) che mostra il touchpoint del momento */
+  .uc-mock { width: 100%; max-width: 30rem; background: rgba(250,248,244,0.97); color: var(--color-blu-notte); border-radius: 0.6rem; padding: 1.1rem 1.25rem; box-shadow: 0 30px 70px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(26,26,46,0.06); text-align: left; }
+  .uc-mock--dark { background: rgba(20,20,36,0.96); color: var(--ink-inverse); box-shadow: 0 30px 70px -30px rgba(0,0,0,0.9), 0 0 0 1px rgba(245,242,238,0.12); }
+  .uc-mock-meta { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-400); margin-bottom: 0.7rem; }
+  .uc-mock--dark .uc-mock-meta { color: var(--color-grigio-300); }
+  .uc-mock-query { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9rem; color: var(--color-grigio-200); margin-bottom: 0.7rem; }
+  .uc-mock-answer { border-left: 2px solid var(--color-oro); background: rgba(245,242,238,0.06); border-radius: 0 0.4rem 0.4rem 0; padding: 0.7rem 0.9rem; margin-bottom: 0.8rem; }
+  .uc-mock-brand { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; color: var(--color-oro); margin-bottom: 0.25rem; }
+  .uc-mock-text { font-size: 0.92rem; line-height: 1.5; max-width: none; }
+  .uc-mock--dark .uc-mock-text { color: var(--color-grigio-200); }
+  .uc-mock-h { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.2; color: var(--color-blu-notte); margin-bottom: 0.6rem; max-width: none; }
+  .uc-mock-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+  .uc-mock-chip { display: inline-block; font-size: 0.8rem; font-weight: 600; padding: 0.3rem 0.7rem; border-radius: 9999px; background: rgba(26,26,46,0.07); color: var(--color-blu-notte); }
+  .uc-mock--dark .uc-mock-chip { background: rgba(245,242,238,0.1); color: var(--ink-inverse); }
+  .uc-mock-chip--rosso { background: rgba(190,32,39,0.12); color: var(--color-rosso); }
+  .uc-mock--dark .uc-mock-chip--rosso { background: rgba(190,32,39,0.25); color: #ffb3b6; }
+  .uc-mock-chat { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.9rem; }
+  .uc-mock-bubble { font-size: 0.92rem; line-height: 1.5; padding: 0.6rem 0.85rem; border-radius: 0.8rem; background: rgba(26,26,46,0.06); color: var(--color-blu-notte); max-width: 92%; }
+  .uc-mock-bubble--me { align-self: flex-end; background: var(--color-rosso); color: var(--ink-inverse); border-bottom-right-radius: 0.2rem; margin-bottom: 0.5rem; }
+  .uc-mock-note { display: block; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-500); margin-top: 0.7rem; }
+  .uc-mock-path { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; margin-bottom: 0.8rem; }
+  .uc-mock-step { font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 0.3rem; background: rgba(245,242,238,0.1); color: var(--ink-inverse); }
+  .uc-mock-step + .uc-mock-step::before { content: '→ '; color: var(--color-oro); margin-right: 0.15rem; margin-left: -0.5rem; }
+  .uc-mock-step--off { color: var(--color-grigio-400); text-decoration: line-through; }
+  .uc-mock-step--gold { background: rgba(201,169,110,0.25); color: var(--color-oro); }
+  .uc-mock-alert { border-left: 2px solid var(--color-rosso); background: rgba(190,32,39,0.12); border-radius: 0 0.4rem 0.4rem 0; padding: 0.6rem 0.85rem; margin-bottom: 0.8rem; }
+  .uc-mock-alert-tag { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #ffb3b6; margin-bottom: 0.25rem; }
+  .uc-mock-rows { display: flex; flex-direction: column; gap: 0.35rem; }
+  .uc-mock-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; font-size: 0.9rem; line-height: 1.4; padding: 0.35rem 0; border-top: 1px solid rgba(128,128,150,0.25); }
+  .uc-mock-rows--stats .uc-mock-row { justify-content: flex-start; }
+  .uc-mock-val { font-weight: 700; white-space: nowrap; color: var(--color-oro); }
+  .uc-mock-fig { font-family: var(--font-display); font-weight: 600; font-size: 1.5rem; line-height: 1; color: var(--color-rosso); min-width: 2.2rem; }
+  .uc-mock-brief { background: rgba(26,26,46,0.05); border-radius: 0.5rem; padding: 0.7rem 0.9rem; margin-bottom: 0.6rem; }
+  .uc-mock-brief-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9a7c42; margin-bottom: 0.4rem; }
+  .uc-mock-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.9rem; line-height: 1.45; }
+  .uc-mock-list li::before { content: '· '; color: var(--color-rosso); font-weight: 700; }
 
   /* La mappa dei motori — la riga «Per Marco» / «Dentro UniCredit» */
   .uc-engine-story { padding-top: 0.45rem; margin-top: auto; border-top: 1px solid rgba(245,242,238,0.12); font-size: 0.95rem; line-height: 1.45; color: var(--color-grigio-200); max-width: none; }
