@@ -7,122 +7,161 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import bgNavy from '../assets/generated/bg/navy-3.webp';
 import bgCarta from '../assets/generated/bg/carta-3.webp';
-import bgSoft from '../assets/generated/bg/soft-3.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const why = [
+// «Cosa il Ministero ha già» — verified facts only (sources in .alf-src).
+const has = [
   {
-    tag: { en: 'Already procurable', it: 'Già acquistabile' },
-    title: { en: 'Qualified in the ACN cloud catalog', it: 'Qualificati nel catalogo cloud ACN' },
-    en: 'Journey Optimizer (SA-3795), Customer Journey Analytics (SA-3799), Real-Time CDP (SA-3973) and Target (SA-3798) are all qualified for Italian PA in the ACN cloud catalog — valid to Aug 2028. The enabling prerequisite is already met.',
-    it: 'Journey Optimizer (SA-3795), Customer Journey Analytics (SA-3799), Real-Time CDP (SA-3973) e Target (SA-3798) sono tutti qualificati per la PA italiana nel catalogo cloud ACN — validi fino ad ago 2028. Il prerequisito abilitante è già soddisfatto.',
+    name: { en: 'Piattaforma Unica / ComUnica', it: 'Piattaforma Unica / ComUnica' },
+    en: 'The school-to-family channel, already in service.',
+    it: 'Il canale scuola-famiglia, già in esercizio.',
   },
   {
-    tag: { en: 'Open space', it: 'Spazio libero' },
-    title: { en: 'No one covers the staff channel', it: 'Nessuno presidia il canale del personale' },
-    en: 'ComUnica (Piattaforma Unica) is school-to-family. SEND (PagoPA) is legal notifications. Neither reaches teachers, principals and ATA on process communication.',
-    it: "ComUnica (Piattaforma Unica) è scuola-famiglia. SEND (PagoPA) sono notifiche legali. Nessuno raggiunge docenti, dirigenti e ATA sulla comunicazione di processo.",
+    name: { en: 'SEND (PagoPA)', it: 'SEND (PagoPA)' },
+    en: 'Notifications with legal value, one national service.',
+    it: 'Le notifiche con valore legale, un servizio nazionale.',
   },
   {
-    tag: { en: 'Coexistence', it: 'Coesistenza' },
-    title: { en: 'Alongside Unica, not instead of it', it: 'Accanto a Unica, non al posto' },
-    en: 'Adobe sits as an orchestration and analytics layer next to Piattaforma Unica: it adds measurement and personalization to the staff channel without replacing what already works.',
-    it: "Adobe è un layer di orchestrazione e analytics accanto a Piattaforma Unica: aggiunge misura e personalizzazione al canale del personale senza sostituire ciò che già funziona.",
+    name: { en: 'ACN-qualified Adobe stack', it: 'Stack Adobe qualificato ACN' },
+    en: 'Journey Optimizer, Customer Journey Analytics, Real-Time CDP and Target: in the ACN cloud catalog, procurable to Aug 2028.',
+    it: 'Journey Optimizer, Customer Journey Analytics, Real-Time CDP e Target: in catalogo cloud ACN, acquistabili fino ad ago 2028.',
   },
 ];
 
-const flow = [
-  { n: 'CDP', en: 'Staff profiles unified — role, region, standing, entitlements.', it: 'Profili del personale unificati — ruolo, regione, posizione, titoli.' },
-  { n: 'AJO', en: 'Personalized journeys on tenure, mobility, substitutes, deadlines.', it: 'Journey personalizzati su immissioni, mobilità, supplenze, scadenze.' },
-  { n: 'CJA', en: 'Measure the outcome: delivered, opened, understood, acted on.', it: "Misura dell'esito: recapitato, aperto, capito, seguito da un'azione." },
+// «Cosa manca» — the gap the deck proposes to cover.
+const missing = [
+  {
+    name: { en: 'No one covers the staff channel', it: 'Nessuno presidia il canale del personale' },
+    en: 'Teachers, principals and ATA get process communication through circulars, bulletins and word of mouth.',
+    it: 'Docenti, dirigenti e ATA ricevono la comunicazione di processo da circolari, bollettini e passaparola.',
+  },
+  {
+    name: { en: 'No measure', it: 'Nessuna misura' },
+    en: 'Nobody knows who received a notice, who understood it and who acted on it.',
+    it: 'Nessuno sa chi ha ricevuto un avviso, chi l’ha capito e chi ha fatto quello che chiedeva.',
+  },
+];
+
+// «Accanto a Unica» — four rows, two columns.
+const unicaRows = [
+  {
+    label: { en: 'Audience', it: 'Pubblico' },
+    inside: { en: 'Families and students', it: 'Famiglie e studenti' },
+    beside: { en: 'Teachers, principals and ATA staff', it: 'Docenti, dirigenti e ATA' },
+  },
+  {
+    label: { en: 'Purpose', it: 'Scopo' },
+    inside: { en: 'Digital services for families', it: 'Servizi digitali alle famiglie' },
+    beside: { en: 'Process communication to staff', it: 'Comunicazione di processo al personale' },
+  },
+  {
+    label: { en: 'Measure', it: 'Misura' },
+    inside: { en: 'None for staff: the channel is not there', it: 'Assente: il canale del personale non c’è' },
+    beside: { en: 'Delivered, understood, acted on, in Customer Journey Analytics', it: 'Recapito, comprensione, azione, in Customer Journey Analytics' },
+  },
+  {
+    label: { en: 'Governance', it: 'Governance' },
+    inside: { en: 'Unchanged: Unica stays as it is', it: 'Invariata: Unica resta com’è' },
+    beside: { en: 'A dedicated data perimeter, run by the Ministry', it: 'Perimetro-dati dedicato, governato dal Ministero' },
+  },
 ];
 ---
-<BaseLayout title="La voce del Ministero">
+<BaseLayout title="La proposta" preloadImage={bgCarta.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/competenze')} prevHref={href(base, '/domanda')}>
-
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
-      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="The proposal" it="La proposta" class="slide-eyebrow text-center text-[var(--color-azzurro-chiaro)] mb-6" data-reveal />
-        <T
-          as="h1"
-          en="The space is open, the stack is ready"
-          it="Lo spazio è libero, lo stack è pronto"
-          class="slide-title text-center text-[var(--color-carta)] mb-6"
-          style="font-size: clamp(2.1rem, 4vw, 3.8rem); line-height: 1.05;"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <T
-          as="p"
-          en="An orchestration and analytics layer for the staff channel — Adobe Experience Platform, Journey Optimizer and Customer Journey Analytics, alongside Piattaforma Unica."
-          it="Un layer di orchestrazione e analytics per il canale del personale — Adobe Experience Platform, Journey Optimizer e Customer Journey Analytics, accanto a Piattaforma Unica."
-          class="text-center text-[var(--color-carta-tenue)] mx-auto max-w-3xl"
-          style="font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.55;"
-          data-reveal data-reveal-delay="0.16"
-        />
-      </div>
-    </Slide>
+  <DeckContainer nextHref={href(base, '/competenze')} prevHref={href(base, '/storia')}>
 
     <Slide id="slide-why" bg="primary" align="left">
       <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="Why it fits here" it="Perché funziona qui" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T as="p" en="The proposal" it="La proposta" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
           as="h2"
-          en="Ready to build on what the Ministry already has"
-          it="Pronto, sopra ciò che il Ministero ha già"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          en="The space is open, the stack is ready"
+          it="Lo spazio è libero, lo stack è pronto"
+          class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
           style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
-          {why.map((w) => (
-            <article class="alf-card">
-              <p class="alf-tag mb-2"><T en={w.tag.en} it={w.tag.it} /></p>
-              <T as="h3" en={w.title.en} it={w.title.it} class="alf-card-title" />
-              <T as="p" en={w.en} it={w.it} class="alf-card-body" />
-            </article>
-          ))}
+        <T
+          as="p"
+          en="An orchestration and analytics layer for the staff channel, alongside Piattaforma Unica."
+          it="Un layer di orchestrazione e analytics per il canale del personale, accanto a Piattaforma Unica."
+          class="text-[var(--color-ardesia-700)] mb-4"
+          style="font-size: clamp(1.02rem, 1.3vw, 1.25rem); line-height: 1.5; max-width: none;"
+          data-reveal data-reveal-delay="0.14"
+        />
+
+        <div class="voce-cmp" data-stagger="0.08">
+          <section class="voce-col voce-col--has" aria-labelledby="voce-has-h">
+            <T as="h3" id="voce-has-h" en="What the Ministry already has" it="Cosa il Ministero ha già" class="voce-col-title" />
+            <ul class="voce-list">
+              {has.map((h) => (
+                <li>
+                  <T as="strong" en={h.name.en} it={h.name.it} class="voce-item-name" />
+                  <T as="span" en={h.en} it={h.it} class="voce-item-body" />
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section class="voce-col voce-col--missing" aria-labelledby="voce-missing-h">
+            <T as="h3" id="voce-missing-h" en="What is missing" it="Cosa manca" class="voce-col-title" />
+            <ul class="voce-list">
+              {missing.map((m) => (
+                <li>
+                  <T as="strong" en={m.name.en} it={m.name.it} class="voce-item-name" />
+                  <T as="span" en={m.en} it={m.it} class="voce-item-body" />
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.24">
+
+        <p class="alf-src mt-4" style="max-width: none;" data-reveal data-reveal-delay="0.24">
           <T en="Sources · ACN cloud catalog (SA-3795 · SA-3799 · SA-3973 · SA-3798) · Unica/ComUnica serves families, not staff · SEND (PagoPA): " it="Fonti · catalogo cloud ACN (SA-3795 · SA-3799 · SA-3973 · SA-3798) · Unica/ComUnica serve le famiglie, non il personale · SEND (PagoPA): " /><a href="https://www.acn.gov.it" target="_blank" rel="noopener noreferrer">ACN</a> · <a href="https://www.mim.gov.it/en/-/piattaforma-unica-disponibilita-del-servizio-comunica-per-l-avvio-dell-anno-scolastico-2025-2026" target="_blank" rel="noopener noreferrer">MIM&nbsp;·&nbsp;Unica</a> · <a href="https://www.pagopa.it" target="_blank" rel="noopener noreferrer">PagoPA</a>
         </p>
       </div>
     </Slide>
 
-    <Slide id="slide-how" bg="secondary" align="left">
-      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
+    <Slide id="slide-unica" bg="inverse" align="left">
+      <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
       <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="How it works" it="Come funziona" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
+        <T as="p" en="The objection, answered" it="L’obiezione, con risposta" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
         <T
           as="h2"
-          en="From staff data to a measured outcome"
-          it="Dal dato del personale a un esito misurato"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+          en="Beside Piattaforma Unica, not instead of it"
+          it="Accanto a Piattaforma Unica, non al posto"
+          class="text-[var(--color-carta)] mb-4 font-[family-name:var(--font-display)]"
           style="font-size: clamp(1.7rem, 2.6vw, 2.4rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
-          {flow.map((f) => (
-            <article class="alf-card">
-              <span class="alf-mark">{f.n}</span>
-              <T as="p" en={f.en} it={f.it} class="alf-card-body" />
-            </article>
+
+        <div class="unica-cmp" role="table" aria-label="Dentro Unica vs accanto a Unica" data-reveal data-reveal-delay="0.14">
+          <div class="unica-row unica-row--head" role="row">
+            <span class="unica-cell unica-cell--label" role="columnheader" aria-label="Dimensione"></span>
+            <T as="span" en="Inside Unica" it="Dentro Unica" class="unica-cell unica-cell--head" role="columnheader" />
+            <T as="span" en="Beside Unica" it="Accanto a Unica" class="unica-cell unica-cell--head unica-cell--head-accent" role="columnheader" />
+          </div>
+          {unicaRows.map((r) => (
+            <div class="unica-row" role="row">
+              <T as="span" en={r.label.en} it={r.label.it} class="unica-cell unica-cell--label" role="rowheader" />
+              <T as="span" en={r.inside.en} it={r.inside.it} class="unica-cell" role="cell" />
+              <T as="span" en={r.beside.en} it={r.beside.it} class="unica-cell unica-cell--accent" role="cell" />
+            </div>
           ))}
         </div>
-        <div class="alf-quote mt-6" data-reveal data-reveal-delay="0.24">
+
+        <div class="alf-quote alf-quote-navy" style="margin-top: 1rem;" data-reveal data-reveal-delay="0.24">
           <T
             as="p"
-            en="Every journey runs on a governed profile: role-based, privacy-first, with the institution in control of what is sent and what is measured."
-            it="Ogni journey poggia su un profilo governato: basato sul ruolo, privacy-first, con l'istituzione che controlla cosa viene inviato e cosa viene misurato."
+            en="Unica stays the families’ front door. The staff voice is a channel beside it, with its own data perimeter and its own measure."
+            it="Unica resta la porta delle famiglie. La voce del personale è un canale accanto, con il suo perimetro-dati e la sua misura."
             class="alf-quote-text"
-            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500;"
+            style="font-size: clamp(1rem, 1.3vw, 1.2rem); font-weight: 500; max-width: none;"
           />
         </div>
       </div>
@@ -130,3 +169,62 @@ const flow = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* ── slide-why: two-column «ha già / manca» comparison (flat, no .alf-card) ── */
+  #slide-why .voce-cmp {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem;
+    align-items: stretch; width: 100%; min-width: 0;
+  }
+  @media (max-width: 767px) { #slide-why .voce-cmp { grid-template-columns: 1fr; gap: 1rem 0; } }
+  #slide-why .voce-col { min-width: 0; padding-top: 0.6rem; border-top: 2px solid rgba(0, 102, 204, 0.55); }
+  #slide-why .voce-col--missing { border-top-color: rgba(166, 90, 0, 0.7); }
+  #slide-why .voce-col-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; line-height: 1.3;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-blu); margin-bottom: 0.7rem; max-width: none;
+  }
+  #slide-why .voce-col--missing .voce-col-title { color: var(--color-ocra); }
+  #slide-why .voce-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  #slide-why .voce-list li {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.65rem; align-items: start;
+    min-width: 0;
+  }
+  #slide-why .voce-list li::before {
+    content: ''; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-top: 0.5rem;
+    background: var(--color-blu); grid-row: 1 / span 2;
+  }
+  #slide-why .voce-col--missing .voce-list li::before { background: transparent; border: 2px solid var(--color-ocra); }
+  #slide-why .voce-item-name {
+    display: block; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.3;
+    color: var(--color-inchiostro); max-width: none;
+  }
+  #slide-why .voce-item-body {
+    display: block; font-size: 0.97rem; line-height: 1.5; color: var(--color-ardesia-700); max-width: none; min-width: 0;
+  }
+
+  /* ── slide-unica: «Dentro Unica» vs «Accanto a Unica», four rows (navy) ── */
+  #slide-unica .unica-cmp { display: flex; flex-direction: column; gap: 0.45rem; width: 100%; min-width: 0; }
+  #slide-unica .unica-row {
+    display: grid; grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; min-width: 0;
+  }
+  @media (max-width: 767px) {
+    #slide-unica .unica-row { grid-template-columns: 1fr; gap: 0.25rem; }
+    #slide-unica .unica-row--head { display: none; }
+  }
+  #slide-unica .unica-cell {
+    display: block; min-width: 0; padding: 0.6rem 0.85rem; border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--color-carta); font-size: 0.97rem; line-height: 1.45; max-width: none;
+  }
+  #slide-unica .unica-cell--accent { background: rgba(127, 168, 230, 0.16); border-color: rgba(127, 168, 230, 0.45); }
+  #slide-unica .unica-cell--label {
+    background: transparent; border-color: transparent; padding-left: 0;
+    font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: rgba(220, 228, 240, 0.92); align-self: center;
+  }
+  #slide-unica .unica-row--head .unica-cell { background: transparent; border-color: transparent; padding-top: 0; padding-bottom: 0.15rem; }
+  #slide-unica .unica-cell--head {
+    font-family: var(--font-display); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; color: rgba(220, 228, 240, 0.92);
+  }
+  #slide-unica .unica-cell--head-accent { color: var(--color-azzurro-chiaro); }
+</style>
