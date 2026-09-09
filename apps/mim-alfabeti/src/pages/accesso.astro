@@ -5,28 +5,33 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import bgCarta from '../assets/generated/bg/carta-6.webp';
 import bgSoft from '../assets/generated/bg/soft-6.webp';
 import bgNavy from '../assets/generated/bg/navy-6.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// ACN catalogue entries — one page per qualified service (verified 9 set 2026,
+// all valid 22/08/2025 → 22/08/2028, qualification level 1, vendor-submitted).
+const ACN_ENTRY = 'https://www.acn.gov.it/portale/w/';
 const stack = [
-  { name: 'Journey Optimizer', sa: 'SA-3795' },
-  { name: 'Customer Journey Analytics', sa: 'SA-3799' },
-  { name: 'Real-Time CDP', sa: 'SA-3973' },
-  { name: 'Adobe Target', sa: 'SA-3798' },
+  { short: 'AJO', name: 'Journey Optimizer', sa: 'SA-3795' },
+  { short: 'CJA', name: 'Customer Journey Analytics', sa: 'SA-3799' },
+  { short: 'RT-CDP', name: 'Real-Time CDP', sa: 'SA-3973' },
+  { short: 'Target', name: 'Adobe Target', sa: 'SA-3798' },
 ];
+// Consip — «Licenze software multibrand (ed.7)», ID Sigef 2738: Lotto 7
+// «Prodotti Adobe e servizi connessi», €30M, aggiudicato (efficace 13/06/2025).
+const CONSIP_ED7 = 'https://www.consip.it/bandi/gara-licenze-software-multibrand-ed7';
 
 const routes = [
   {
     label: { en: 'Cloud services', it: 'Servizi cloud' },
-    en: 'AEP / AJO / CJA / RT-CDP route through Cloud-PA, the ACN-qualified catalog / MEPA, or PNRR M4C1 tenders.',
+    en: 'AEP / AJO / CJA / RT-CDP route through Cloud-PA, the ACN-qualified catalogue / MEPA, or the PNRR M4C1 tenders.',
     it: 'AEP / AJO / CJA / RT-CDP passano da Cloud-PA, dal catalogo ACN-qualificato / MEPA, oppure dalle gare PNRR M4C1.',
   },
   {
-    label: { en: 'Licenses', it: 'Licenze' },
+    label: { en: 'Licences', it: 'Licenze' },
     en: 'Creative Cloud / Acrobat / Express via the Consip multibrand ed.7 agreement, Lot 7 “Adobe products and related services” (€30M).',
     it: 'Creative Cloud / Acrobat / Express via la Convenzione Consip multibrand ed.7, Lotto 7 «Prodotti Adobe e servizi connessi» (€30M).',
   },
@@ -34,106 +39,146 @@ const routes = [
 
 const trust = [
   {
+    n: '01',
     label: { en: 'Data perimeter', it: 'Perimetro dati' },
-    en: 'Perimeter and legal basis defined up front. The ACN qualification covers ordinary data; for sensitive staff data the perimeter is agreed before any journey goes live.',
+    en: 'Perimeter and legal basis are set up front. The ACN qualification covers ordinary data; for sensitive staff data the perimeter is agreed before any journey goes live.',
     it: 'Perimetro e base giuridica definiti a monte. La qualificazione ACN copre i dati ordinari; per i dati sensibili del personale il perimetro è concordato prima di attivare qualsiasi journey.',
   },
   {
+    n: '02',
     label: { en: 'Institutional use', it: 'Uso istituzionale' },
-    en: 'Institutional communication, not marketing. The same orchestration engine serving administrative purposes — on a clear legal basis, with staff privacy at the centre.',
+    en: 'Institutional communication, not marketing. The same orchestration engine serves administrative purposes, on a clear legal basis and with staff privacy at the centre.',
     it: 'Comunicazione istituzionale, non marketing. Lo stesso motore di orchestrazione al servizio di finalità amministrative, su base giuridica e con la privacy del personale al centro.',
   },
   {
+    n: '03',
     label: { en: 'Privacy by design', it: 'Privacy by design' },
-    en: '“Your data is your data”: role-based profiles, and the institution in control of what is sent and measured — aligned with GDPR, the Garante and the EU AI Act.',
-    it: '«I tuoi dati sono i tuoi dati»: profili basati sul ruolo, e l’istituzione in controllo di ciò che si invia e si misura — in linea con GDPR, Garante ed EU AI Act.',
+    en: '“Your data is your data”: role-based profiles, and the institution in control of what is sent and what is measured, in line with GDPR, the Garante and the EU AI Act.',
+    it: '«I tuoi dati sono i tuoi dati»: profili basati sul ruolo, e l’istituzione in controllo di ciò che si invia e si misura, in linea con GDPR, Garante ed EU AI Act.',
   },
 ];
+
+const h2Style = 'font-size: clamp(1.55rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;';
+const hairline = '1px solid rgba(10, 26, 51, 0.14)';
 ---
-<BaseLayout title="Governance e acquisto">
+<BaseLayout title="Governance" preloadImage={bgSoft.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/persone')} prevHref={href(base, '/storia')}>
+  <DeckContainer nextHref={href(base, '/persone')} prevHref={href(base, '/competenze')}>
 
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="alf-bg" style={`--bg-src: url(${bgCarta.src})`}></div>
-      <div class="mx-auto w-full max-w-4xl flex flex-col items-center">
-        <T as="p" en="Governance & procurement" it="Governance e acquisto" class="slide-eyebrow text-center text-[var(--accent-primary)] mb-6" data-reveal />
+    <Slide id="slide-procurement" bg="secondary" align="left">
+      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
+      <div class="w-full max-w-6xl mx-auto min-w-0">
+        <T as="p" en="Governance & procurement" it="Governance e acquisto" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
         <T
-          as="h1"
+          as="h2"
           en="Already procurable, governed by design"
           it="Già acquistabile, governato per costruzione"
-          class="slide-title text-center text-[var(--ink-primary)] mb-6"
-          style="font-size: clamp(2rem, 3.6vw, 3.4rem);"
+          class="text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+          style={h2Style}
           data-reveal data-reveal-delay="0.08"
         />
         <T
           as="p"
           en="The two questions a digital-and-data owner asks first: can we buy it through the right vehicle, and can we trust it with staff data?"
           it="Le due domande che l’owner del digitale e dei dati fa per prime: possiamo acquistarlo con il veicolo giusto, e possiamo affidargli i dati del personale?"
-          class="text-center text-[var(--ink-secondary)] mx-auto max-w-3xl"
-          style="font-size: clamp(1.05rem, 1.35vw, 1.3rem); line-height: 1.55;"
-          data-reveal data-reveal-delay="0.16"
+          class="text-[var(--color-ardesia-700)] mb-5"
+          style="font-size: clamp(1rem, 1.15vw, 1.1rem); line-height: 1.5; max-width: 64rem;"
+          data-reveal data-reveal-delay="0.14"
         />
-      </div>
-    </Slide>
 
-    <Slide id="slide-procurement" bg="secondary" align="left">
-      <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
-        <T as="p" en="Procurable today" it="Acquistabile oggi" class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal />
-        <T
-          as="h2"
-          en="The whole stack is ACN-qualified for Italian PA"
-          it="L’intero stack è qualificato ACN per la PA italiana"
-          class="text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
-          data-reveal data-reveal-delay="0.08"
-        />
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-[clamp(0.7rem,1vw,1rem)] mb-5" data-stagger="0.08">
-          {stack.map((s) => (
-            <article class="alf-card" style="padding:1.1rem 1.1rem 1rem;">
-              <h3 class="alf-card-title" style="font-size:1.02rem;margin-bottom:0.5rem;">{s.name}</h3>
-              <p class="alf-card-body" style="font-size:0.9rem;"><span class="alf-chip alf-chip--ver">ACN</span> <span class="tabular-nums">{s.sa}</span></p>
-            </article>
-          ))}
-        </div>
-        <div class="alf-rows" data-reveal data-reveal-delay="0.2">
+        <!-- ONE flat table-like block: ACN header row + two procurement rows -->
+        <div
+          class="w-full min-w-0 mb-4"
+          style={`background: var(--surface-card); border: ${hairline}; border-radius: 4px;`}
+          data-reveal data-reveal-delay="0.2"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] items-center gap-x-5 gap-y-2 px-5 py-3">
+            <T as="p" en="ACN-qualified" it="Qualificato ACN" class="alf-row-label" />
+            <ul class="flex flex-wrap items-center gap-x-5 gap-y-1.5 min-w-0 list-none m-0 p-0" aria-label="Servizi qualificati ACN">
+              {stack.map((s) => (
+                <li class="flex items-center gap-2 whitespace-nowrap">
+                  <span class="alf-chip alf-chip--ver">ACN</span>
+                  <a
+                    href={`${ACN_ENTRY}${s.sa.toLowerCase()}`}
+                    target="_blank" rel="noopener noreferrer"
+                    class="text-[var(--color-inchiostro)] underline decoration-[rgba(0,102,204,0.45)] underline-offset-4 hover:text-[var(--color-blu)]"
+                    style="font-size: 0.97rem; line-height: 1.4;"
+                    title={s.name}
+                  ><span class="font-[family-name:var(--font-display)] font-semibold">{s.short}</span> <span class="tabular-nums">{s.sa}</span></a>
+                </li>
+              ))}
+            </ul>
+          </div>
           {routes.map((r) => (
-            <div class="alf-row">
+            <div class="grid grid-cols-1 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)] items-center gap-x-5 gap-y-1 px-5 py-3" style={`border-top: ${hairline};`}>
               <T as="p" en={r.label.en} it={r.label.it} class="alf-row-label" />
               <T as="p" en={r.en} it={r.it} class="alf-row-body" />
             </div>
           ))}
         </div>
-        <p class="alf-src mt-4" data-reveal data-reveal-delay="0.26">
-          <T en="Sources · ACN catalog (SA-3795 · SA-3799 · SA-3973 · SA-3798, valid to 22/08/2028) · Consip multibrand ed.7, Lot 7: " it="Fonti · catalogo ACN (SA-3795 · SA-3799 · SA-3973 · SA-3798, validi al 22/08/2028) · Consip multibrand ed.7, Lotto 7: " /><a href="https://www.acn.gov.it" target="_blank" rel="noopener noreferrer">ACN</a> · <a href="https://www.consip.it" target="_blank" rel="noopener noreferrer">Consip</a>. <T en="The ACN cards are vendor-submitted, not an independent ACN security assessment." it="Le schede ACN sono vendor-submitted, non un assessment di sicurezza indipendente ACN." />
-        </p>
+
+        <!-- Sources strip — the two direct links + the honest note -->
+        <dl
+          class="alf-source-card"
+          style="grid-template-columns: auto minmax(0, 1fr); padding: 0.8rem 1.1rem;"
+          data-reveal data-reveal-delay="0.26"
+        >
+          <T as="dt" en="ACN catalogue" it="Catalogo ACN" />
+          <dd>
+            {stack.map((s, i) => (
+              <>
+                <a href={`${ACN_ENTRY}${s.sa.toLowerCase()}`} target="_blank" rel="noopener noreferrer">{s.sa}</a>{i < stack.length - 1 ? ' · ' : ''}
+              </>
+            ))}
+            <T en=" · valid 22/08/2025 → 22/08/2028 · accessed 9 Sep 2026" it=" · validi 22/08/2025 → 22/08/2028 · consultato il 9 set 2026" />
+          </dd>
+          <dt>Consip</dt>
+          <dd>
+            <a href={CONSIP_ED7} target="_blank" rel="noopener noreferrer"><T en="Multibrand software licences ed.7, Lot 7 “Adobe products and related services”" it="Licenze software multibrand ed.7, Lotto 7 «Prodotti Adobe e servizi connessi»" /></a>
+            <T en=" · €30M · awarded, effective 13/06/2025 · accessed 9 Sep 2026" it=" · €30M · aggiudicato, efficace 13/06/2025 · consultato il 9 set 2026" />
+          </dd>
+          <T as="dt" en="Note" it="Nota" />
+          <T as="dd" en="The ACN cards are vendor-submitted, not an independent security assessment." it="Le schede ACN sono vendor-submitted, non un assessment di sicurezza indipendente." />
+        </dl>
       </div>
     </Slide>
 
-    <Slide id="slide-trust" bg="inverse" align="left">
+    <Slide id="slide-trust" bg="inverse" align="left" data-dark>
       <div slot="backdrop" class="alf-bg-navy" style={`--bg-src: url(${bgNavy.src})`}></div>
-      <div class="w-full max-w-6xl mx-auto">
+      <div class="w-full max-w-6xl mx-auto min-w-0">
         <T as="p" en="Trust, by design" it="La fiducia, per costruzione" class="slide-eyebrow text-[var(--color-azzurro-chiaro)] mb-2" data-reveal />
         <T
           as="h2"
           en="Three assurances on staff data"
           it="Tre garanzie sul dato del personale"
-          class="text-[var(--color-carta)] mb-6 font-[family-name:var(--font-display)]"
-          style="font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
+          class="text-[var(--color-carta)] mb-4 font-[family-name:var(--font-display)]"
+          style={h2Style}
           data-reveal data-reveal-delay="0.08"
         />
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-[clamp(0.8rem,1.1vw,1.1rem)]" data-stagger="0.09">
+        <ol class="list-none m-0 p-0 w-full min-w-0" aria-label="Tre garanzie">
           {trust.map((t) => (
-            <article class="alf-card">
-              <T as="h3" en={t.label.en} it={t.label.it} class="alf-card-title" />
-              <T as="p" en={t.en} it={t.it} class="alf-card-body" />
-            </article>
+            <li
+              class="grid grid-cols-[3rem_minmax(0,1fr)] md:grid-cols-[3rem_minmax(0,14rem)_minmax(0,1fr)] items-start gap-x-5 gap-y-1.5 py-4"
+              style="border-top: 1px solid rgba(255, 255, 255, 0.18);"
+              data-substep
+            >
+              <span class="font-[family-name:var(--font-display)] font-bold tabular-nums text-[var(--color-azzurro-chiaro)]" style="font-size: 1.35rem; line-height: 1.2;" aria-hidden="true">{t.n}</span>
+              <T as="h3" en={t.label.en} it={t.label.it} class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-carta)]" style="font-size: 1.15rem; line-height: 1.3; max-width: none;" />
+              <T as="p" en={t.en} it={t.it} class="text-[var(--color-carta-tenue)] col-start-2 md:col-start-auto" style="font-size: 0.97rem; line-height: 1.55; max-width: none; min-width: 0;" />
+            </li>
           ))}
-        </div>
+        </ol>
+        <T
+          as="p"
+          en="The data stays the Ministry’s: the institution decides what gets sent and what gets measured."
+          it="Chi possiede il dato resta il Ministero: l’istituzione controlla cosa si invia e cosa si misura."
+          class="font-[family-name:var(--font-display)] font-semibold text-[var(--color-carta)] pt-4"
+          style="font-size: clamp(1.1rem, 1.35vw, 1.3rem); line-height: 1.35; max-width: none; border-top: 2px solid rgba(127, 168, 230, 0.5);"
+          data-substep
+        />
       </div>
     </Slide>
 
