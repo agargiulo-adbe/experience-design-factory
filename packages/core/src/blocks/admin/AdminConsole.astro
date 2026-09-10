@@ -76,6 +76,10 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
             <span class="admin-tab-num" data-count-sezioni></span>
             Sezioni dell'esperienza
           </button>
+          <button class="admin-tab" type="button" role="tab" data-tab="capitoli" aria-selected="false">
+            <span class="admin-tab-num" data-count-capitoli></span>
+            Capitoli e slide
+          </button>
           <button class="admin-tab" type="button" role="tab" data-tab="media" aria-selected="false">
             <span class="admin-tab-num">{PAGE_REGISTRY.reduce((n, p) => n + p.slides.length, 0)}</span>
             Media demo per slide
@@ -174,6 +178,90 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
             <div class="admin-share-url-row">
               <input type="text" id="sol-share-url" readonly class="share-url-input" placeholder="Tutte le sezioni attive — nessun parametro necessario" />
               <button id="sol-copy-url" class="btn-copy-share" title="Copia URL">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                  <rect x="4" y="4" width="9" height="9" rx="1"/>
+                  <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
+                </svg>
+                Copia link
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════ TAB: CAPITOLI (chapter / slide on-off) ══════════ -->
+        <section class="admin-tabpanel" data-tabpanel="capitoli" hidden>
+          <div class="admin-info-box" role="note">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;">
+              <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 7v5M8 5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>
+              Spegni un capitolo intero, oppure entra e tieni accese solo le slide che ti servono —
+              per esempio <em>Risultati</em> spento ma la sua slide di chiusura accesa. Il deck salta
+              i capitoli senza slide visibili, anche con le frecce, e nasconde i link che ci puntano.
+              Le modifiche si applicano <strong>in tempo reale</strong> a ogni deck aperto in questo browser.
+            </span>
+          </div>
+
+          <div class="admin-block-header">
+            <div>
+              <h2 class="admin-block-title">Capitoli dell'experience</h2>
+              <p class="admin-block-sub">L'ordine è quello del deck. Un capitolo spento tiene comunque le slide che accendi a mano.</p>
+            </div>
+            <div class="admin-bulk-actions">
+              <button id="ch-enable-all" type="button" class="btn-ghost">Accendi tutto</button>
+              <button id="ch-disable-all" type="button" class="btn-ghost">Spegni tutto</button>
+            </div>
+          </div>
+
+          <div class="chapter-list">
+            {PAGE_REGISTRY.map((page) => (
+              <div class="chapter-card" data-chapter-row={page.slug}>
+                <div class="chapter-head">
+                  <button type="button" class="chapter-expand" data-chapter-expand={page.slug} aria-expanded="false">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <div class="chapter-main">
+                    <span class="chapter-name">{page.label}</span>
+                    <span class="chapter-slug">/{page.slug}</span>
+                  </div>
+                  <span class="chapter-badge" data-chapter-badge={page.slug}>{page.slides.length}/{page.slides.length} slide</span>
+                  <label class="toggle-switch" title="Accendi il capitolo">
+                    <input type="checkbox" data-chapter-toggle={page.slug} checked />
+                    <span class="toggle-thumb"></span>
+                  </label>
+                </div>
+                <div class="chapter-slides" data-chapter-slides={page.slug} hidden>
+                  {page.slides.map((sl, i) => (
+                    <label class="chapter-slide-row">
+                      <input type="checkbox" data-slide-toggle={page.slug + '::' + sl.id} checked />
+                      <span class="chapter-slide-n">{String(i + 1).padStart(2, '0')}</span>
+                      <span class="chapter-slide-label">{sl.label}</span>
+                      <code class="chapter-slide-id">{sl.id}</code>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="admin-share-panel" id="ch-share-panel">
+            <div class="admin-share-header">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:2px;color:#BE2027;">
+                <path d="M14 6a2 2 0 100-4 2 2 0 000 4zM6 10a2 2 0 100-4 2 2 0 000 4zM14 14a2 2 0 100 4 2 2 0 000-4z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8.17 8.88l3.66-2.76M8.17 11.12l3.66 2.76" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <h2 class="admin-share-title">Link con questo taglio di capitoli</h2>
+                <p class="admin-share-desc">
+                  Il link pre-carica capitoli e slide accese tramite <code>?c=</code>, senza toccare il browser di chi lo apre.
+                  Si aggiorna a ogni modifica qui sopra.
+                </p>
+              </div>
+            </div>
+            <div class="admin-share-url-row">
+              <input type="text" id="ch-share-url" readonly class="share-url-input" placeholder="Tutti i capitoli accesi — nessun parametro necessario" />
+              <button id="ch-copy-url" class="btn-copy-share" title="Copia URL">
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
                   <rect x="4" y="4" width="9" height="9" rx="1"/>
                   <path d="M3 3H2a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-1"/>
@@ -772,6 +860,44 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
   .slide-card-label { font-size: 0.875rem; font-weight: 500; color: #374151; }
 
   /* ---- Toggle switch ---- */
+  /* ── Capitoli e slide ─────────────────────────────────────────── */
+  .chapter-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .chapter-card {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px;
+    transition: opacity 0.15s, border-color 0.15s;
+  }
+  .chapter-card[data-state="off"] { opacity: 0.55; border-style: dashed; }
+  .chapter-card[data-state="partial"] { border-color: #f59e0b; }
+  .chapter-head { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; }
+  .chapter-expand {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.5rem; height: 1.5rem; flex-shrink: 0; border: 1px solid #e5e7eb;
+    border-radius: 6px; background: #fff; color: #6b7280; cursor: pointer;
+  }
+  .chapter-expand:hover { background: #f9fafb; color: #111827; }
+  .chapter-expand[aria-expanded="true"] svg { transform: rotate(90deg); }
+  .chapter-expand svg { transition: transform 0.15s; }
+  .chapter-main { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+  .chapter-name { font-size: 0.875rem; font-weight: 600; color: #111827; }
+  .chapter-slug { font-size: 0.6875rem; color: #9ca3af; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .chapter-badge {
+    font-size: 0.6875rem; font-weight: 600; color: #6b7280; background: #f3f4f6;
+    padding: 2px 8px; border-radius: 9999px; white-space: nowrap; flex-shrink: 0;
+  }
+  .chapter-card[data-state="partial"] .chapter-badge { background: #fef3c7; color: #92400e; }
+  .chapter-card[data-state="off"] .chapter-badge { background: #fee2e2; color: #991b1b; }
+  .chapter-slides { border-top: 1px solid #f3f4f6; padding: 0.5rem 1rem 0.75rem 3.25rem; display: flex; flex-direction: column; gap: 1px; }
+  .chapter-slide-row {
+    display: flex; align-items: center; gap: 0.6rem; padding: 0.35rem 0.5rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.8125rem; color: #374151;
+  }
+  .chapter-slide-row:hover { background: #f9fafb; }
+  .chapter-slide-row input { width: 15px; height: 15px; flex-shrink: 0; accent-color: #111827; cursor: pointer; }
+  .chapter-slide-n { font-size: 0.6875rem; color: #9ca3af; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .chapter-slide-label { flex: 1; min-width: 0; }
+  .chapter-slide-id { font-size: 0.6875rem; color: #9ca3af; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .chapter-slide-row input:not(:checked) ~ .chapter-slide-label { text-decoration: line-through; color: #9ca3af; }
+
   .toggle-switch {
     position: relative;
     display: inline-block;
@@ -1275,6 +1401,170 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
           solCopyBtn.textContent = '✓ Copiato!';
           setTimeout(function() { solCopyBtn.innerHTML = orig; }, 2000);
         }).catch(function() { solShareInput.select(); document.execCommand('copy'); });
+      });
+    }
+
+    // ── Capitoli e slide ────────────────────────────────────────────────
+    // Modello: si salvano solo gli SCOSTAMENTI dal "tutto acceso".
+    //   capitolo acceso  → slide accesa salvo eccezione esplicita
+    //   capitolo spento  → slide spenta salvo eccezione esplicita
+    // Così «spegni Risultati ma tieni la chiusura» è una riga sola, e un deck
+    // senza configurazione resta identico a com'è sempre stato.
+    var CH_KEY = 'edf:chapters:' + projectSlug;
+
+    function chapterState(slug) {
+      var chapterOn = document.querySelector('[data-chapter-toggle="' + slug + '"]').checked;
+      var boxes = Array.prototype.slice.call(
+        document.querySelectorAll('[data-slide-toggle^="' + slug + '::"]'));
+      var on = boxes.filter(function(b) { return b.checked; }).length;
+      return { chapterOn: chapterOn, on: on, total: boxes.length, boxes: boxes };
+    }
+
+    function buildChapterConfig() {
+      var order = [];
+      var chapters = {};
+      pagesMap.forEach(function(page) {
+        order.push(page.slug);
+        var st = chapterState(page.slug);
+        var slides = {};
+        st.boxes.forEach(function(b) {
+          var id = b.getAttribute('data-slide-toggle').split('::')[1];
+          // registro solo le eccezioni rispetto allo stato del capitolo
+          if (b.checked !== st.chapterOn) slides[id] = b.checked;
+        });
+        var isDefault = st.chapterOn && Object.keys(slides).length === 0;
+        // `n` = quante slide ha il capitolo: serve al runtime per sapere se ne
+        // resta almeno una accesa in un capitolo che non sta visitando.
+        if (!isDefault) chapters[page.slug] = { on: st.chapterOn, n: st.total, slides: slides };
+      });
+      return { v: 1, order: order, chapters: chapters };
+    }
+
+    function encodeChapterConfig(cfg) {
+      // base64url dell'JSON minimo: entra in un QR e non si rompe in una mail
+      var json = JSON.stringify({ v: 1, order: cfg.order, chapters: cfg.chapters });
+      var b64 = btoa(unescape(encodeURIComponent(json)));
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function paintChapters() {
+      var anyDeviation = false;
+      pagesMap.forEach(function(page) {
+        var st = chapterState(page.slug);
+        var card = document.querySelector('[data-chapter-row="' + page.slug + '"]');
+        var badge = document.querySelector('[data-chapter-badge="' + page.slug + '"]');
+        var state = st.on === 0 ? 'off' : (st.on === st.total && st.chapterOn ? 'on' : 'partial');
+        if (card) card.setAttribute('data-state', state);
+        if (badge) badge.textContent = st.on === 0
+          ? 'capitolo spento'
+          : st.on + '/' + st.total + ' slide';
+        if (state !== 'on') anyDeviation = true;
+      });
+      var live = pagesMap.filter(function(page) { return chapterState(page.slug).on > 0; }).length;
+      var badge = document.querySelector('[data-count-capitoli]');
+      if (badge) badge.textContent = live + '/' + pagesMap.length;
+      return anyDeviation;
+    }
+
+    function saveChapters() {
+      var cfg = buildChapterConfig();
+      var deviates = Object.keys(cfg.chapters).length > 0;
+      try {
+        if (deviates) localStorage.setItem(CH_KEY, JSON.stringify(cfg));
+        else localStorage.removeItem(CH_KEY);
+      } catch (e) {}
+
+      var input = document.getElementById('ch-share-url');
+      if (input) input.value = deviates ? EXPERIENCE_URL + '?c=' + encodeChapterConfig(cfg) : '';
+
+      try {
+        new BroadcastChannel('edf-console').postMessage({
+          type: 'edf:chapters-changed', project: projectSlug, config: deviates ? cfg : null
+        });
+      } catch (e) {}
+      paintChapters();
+    }
+
+    // stato iniziale dal localStorage
+    (function restoreChapters() {
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem(CH_KEY) || 'null'); } catch (e) {}
+      if (saved && saved.chapters) {
+        pagesMap.forEach(function(page) {
+          var entry = saved.chapters[page.slug];
+          var chapterOn = entry ? entry.on !== false : true;
+          var t = document.querySelector('[data-chapter-toggle="' + page.slug + '"]');
+          if (t) t.checked = chapterOn;
+          page.slides.forEach(function(sl) {
+            var box = document.querySelector('[data-slide-toggle="' + page.slug + '::' + sl.id + '"]');
+            if (!box) return;
+            var ex = entry && entry.slides ? entry.slides[sl.id] : undefined;
+            box.checked = ex === undefined ? chapterOn : ex;
+          });
+        });
+      }
+      paintChapters();
+      var input = document.getElementById('ch-share-url');
+      var cfg = buildChapterConfig();
+      if (input) input.value = Object.keys(cfg.chapters).length
+        ? EXPERIENCE_URL + '?c=' + encodeChapterConfig(cfg) : '';
+    })();
+
+    // il toggle del capitolo trascina le sue slide; una slide spenta a mano
+    // dentro un capitolo acceso resta un'eccezione.
+    document.querySelectorAll('[data-chapter-toggle]').forEach(function(t) {
+      t.addEventListener('change', function() {
+        var slug = t.getAttribute('data-chapter-toggle');
+        document.querySelectorAll('[data-slide-toggle^="' + slug + '::"]').forEach(function(b) {
+          b.checked = t.checked;
+        });
+        saveChapters();
+      });
+    });
+    document.querySelectorAll('[data-slide-toggle]').forEach(function(b) {
+      b.addEventListener('change', function() {
+        var slug = b.getAttribute('data-slide-toggle').split('::')[0];
+        var st = chapterState(slug);
+        // riaccendere una slide in un capitolo spento non riaccende il capitolo:
+        // è esattamente il caso «Risultati spento, chiusura accesa».
+        if (st.on === st.total) {
+          var t = document.querySelector('[data-chapter-toggle="' + slug + '"]');
+          if (t) t.checked = true;
+        }
+        saveChapters();
+      });
+    });
+
+    document.querySelectorAll('[data-chapter-expand]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var slug = btn.getAttribute('data-chapter-expand');
+        var panel = document.querySelector('[data-chapter-slides="' + slug + '"]');
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if (panel) { if (open) panel.setAttribute('hidden', ''); else panel.removeAttribute('hidden'); }
+      });
+    });
+
+    function setAllChapters(on) {
+      document.querySelectorAll('[data-chapter-toggle]').forEach(function(t) { t.checked = on; });
+      document.querySelectorAll('[data-slide-toggle]').forEach(function(b) { b.checked = on; });
+      saveChapters();
+    }
+    var chEnable = document.getElementById('ch-enable-all');
+    if (chEnable) chEnable.addEventListener('click', function() { setAllChapters(true); });
+    var chDisable = document.getElementById('ch-disable-all');
+    if (chDisable) chDisable.addEventListener('click', function() { setAllChapters(false); });
+
+    var chCopy = document.getElementById('ch-copy-url');
+    var chInput = document.getElementById('ch-share-url');
+    if (chCopy && chInput) {
+      chCopy.addEventListener('click', function() {
+        var url = chInput.value || EXPERIENCE_URL;
+        navigator.clipboard.writeText(url).then(function() {
+          var orig = chCopy.innerHTML;
+          chCopy.textContent = '✓ Copiato!';
+          setTimeout(function() { chCopy.innerHTML = orig; }, 2000);
+        }).catch(function() { chInput.select(); document.execCommand('copy'); });
       });
     }
 

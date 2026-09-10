@@ -56,10 +56,11 @@ Multi‑user, real auth. Light "admin" theme.
 `@edf/core/blocks/admin/AdminConsole.astro` is ONE engine; each experience's
 `src/pages/admin.astro` is a **thin wrapper** passing `projectSlug`, `projectName`,
 `pages` (PAGE_REGISTRY), `solutionGroups`, `deckHref`, Supabase env. **Improve the engine
-once → every experience gets it.** Three tabs:
+once → every experience gets it.** Four tabs:
 1. **Sezioni dell'esperienza** — turn Adobe *solutions* on/off.
-2. **Media demo per slide** — attach image/video to any slide + shareable link.
-3. **Slide personalizzate** — author new deck‑coherent slides (see below).
+2. **Capitoli e slide** — turn *chapters* and single *slides* on/off (see below).
+3. **Media demo per slide** — attach image/video to any slide + shareable link.
+4. **Slide personalizzate** — author new deck‑coherent slides (see below).
 
 ### Solution gating
 Each solution controls where it appears. State in `localStorage['edf-solutions-<slug>']`
@@ -68,6 +69,23 @@ slides/chips, `data-nav-solution` on nav links; `pageSolutions` per page. The Ba
 runtime hides inactive ones, hides their nav entries, and **rewrites `data-deck-next` to
 skip gated sections** (so arrow nav never lands on a hidden section). Multi‑solution
 section = hidden only when ALL its solutions are off.
+
+### Chapter / slide gating (ogni experience, presente e futura)
+Il tab **Capitoli e slide** legge il `PAGE_REGISTRY` che ogni `admin.astro` già passa: zero
+lavoro per app. Si salvano solo gli **scostamenti** dal "tutto acceso" in
+`localStorage['edf:chapters:<slug>']` (`{v,order,chapters:{<slug>:{on,n,slides:{<id>:bool}}}}`);
+un deck senza configurazione si comporta esattamente come prima. Regola: **capitolo acceso →
+slide accesa salvo eccezione; capitolo spento → slide spenta salvo eccezione** — così
+«spegni Risultati ma tieni la slide di chiusura» è una riga sola. Un capitolo resta nel flusso
+finché ha ≥1 slide visibile; a zero sparisce da frecce e link.
+Il runtime vive in **`DeckContainer.astro`** (non nei BaseLayout): ricava lo slug di progetto
+da `import.meta.env.BASE_URL` — l'ultimo segmento di `base` coincide con `projectSlug` in tutte
+le app — quindi **ogni deck nuovo lo eredita senza wiring**. Nasconde le slide spente togliendo
+`data-slide` (come il gating soluzioni, prima che `initDeck()` conti), nasconde gli `<a>` verso
+capitoli vuoti, riscrive `data-deck-next`/`data-deck-prev-href` scavalcandoli, e redirige in
+avanti se si apre un capitolo rimasto vuoto. Link condivisibile `?c=<base64url>`: si deposita in
+**sessionStorage**, non in localStorage — chi riceve il link non se lo ritrova appiccicato al
+browser. Anteprima dal vivo via BroadcastChannel `edf-console` (`edf:chapters-changed`).
 
 ### Media demo slots
 `MediaDemoSlot` inside a `data-demo-flex` slide. Config in

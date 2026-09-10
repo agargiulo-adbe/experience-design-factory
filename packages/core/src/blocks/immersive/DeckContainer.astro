@@ -16,6 +16,10 @@ interface Props {
   class?: string;
 }
 const { nextHref, prevHref, hint = false, class: className } = Astro.props;
+// Lo slug di progetto usato dall'Admin coincide con l'ultimo segmento di `base`
+// in ogni app (verificato su tutte). Ricavarlo qui evita di cablare una prop in
+// ogni BaseLayout: ogni deck, presente e futuro, eredita il gating dei capitoli.
+const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split('/').pop() || '';
 ---
 
 <div
@@ -259,6 +263,162 @@ const { nextHref, prevHref, hint = false, class: className } = Astro.props;
     [data-deck] .deck-btn svg { width: 34px; height: 34px; }
   }
 </style>
+
+<!--
+  Gating di capitoli e slide — configurato dalla Admin Console ("Capitoli e slide").
+  Nasconde le slide spente, salta i capitoli rimasti senza slide (anche con le frecce)
+  e nasconde i link che ci puntano. Senza configurazione non fa assolutamente nulla.
+-->
+<script is:inline define:vars={{ EDF_PROJECT }}>
+(function () {
+  var LS_KEY = 'edf:chapters:' + EDF_PROJECT;
+  var SS_KEY = 'edf:chapters-link:' + EDF_PROJECT;
+
+  function decodeParam(v) {
+    try {
+      var b64 = v.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      return JSON.parse(decodeURIComponent(escape(atob(b64))));
+    } catch (e) { return null; }
+  }
+
+  // Un link ?c= vive nella SESSIONE, non nel localStorage: chi lo apre non si
+  // ritrova la configurazione appiccicata al browser dopo aver chiuso la scheda.
+  function readConfig() {
+    var param = new URLSearchParams(location.search).get('c');
+    if (param) {
+      var fromLink = decodeParam(param);
+      if (fromLink) {
+        try { sessionStorage.setItem(SS_KEY, JSON.stringify(fromLink)); } catch (e) {}
+        return fromLink;
+      }
+    }
+    try {
+      var sess = sessionStorage.getItem(SS_KEY);
+      if (sess) return JSON.parse(sess);
+    } catch (e) {}
+    try {
+      var local = localStorage.getItem(LS_KEY);
+      if (local) return JSON.parse(local);
+    } catch (e) {}
+    return null;
+  }
+
+  var cfg = readConfig();
+
+  function entryFor(slug) { return cfg && cfg.chapters ? cfg.chapters[slug] : undefined; }
+
+  // Un capitolo senza eccezioni è acceso; con `on:false` le slide sono spente
+  // salvo quelle riaccese a mano (il caso «Risultati spento, chiusura accesa»).
+  function slideVisible(slug, slideId) {
+    var e = entryFor(slug);
+    if (!e) return true;
+    var ex = e.slides ? e.slides[slideId] : undefined;
+    return ex === undefined ? e.on !== false : ex === true;
+  }
+  function visibleCount(slug) {
+    var e = entryFor(slug);
+    if (!e) return Infinity;
+    var ex = e.slides || {};
+    var keys = Object.keys(ex);
+    // capitolo spento → contano solo le slide riaccese a mano
+    if (e.on === false) return keys.filter(function(k) { return ex[k] === true; }).length;
+    // capitolo acceso → tutte meno quelle spente a mano
+    return Math.max(0, (e.n || 0) - keys.filter(function(k) { return ex[k] === false; }).length);
+  }
+  function chapterLive(slug) { return visibleCount(slug) > 0; }
+
+  function slugOf(pathname) {
+    var parts = pathname.replace(/\/+$/, '').split('/');
+    return parts[parts.length - 1] || '';
+  }
+  function currentSlug() { return slugOf(location.pathname); }
+  function deckHome() { return location.pathname.replace(/[^/]+\/?$/, ''); }
+  function swapSlug(href, slug) { return href.replace(/[^/]+\/?$/, slug + '/'); }
+
+  // Dal capitolo `from`, il primo capitolo con almeno una slide accesa nella
+  // direzione data. `order` arriva dalla configurazione: è l'ordine del deck.
+  function nextLive(from, dir) {
+    var order = (cfg && cfg.order) || [];
+    var i = order.indexOf(from);
+    if (i === -1) return undefined;
+    for (var j = i + dir; j >= 0 && j < order.length; j += dir) {
+      if (chapterLive(order[j])) return order[j];
+    }
+    return null;
+  }
+
+  function apply() {
+    if (!cfg || !cfg.chapters) return;
+    var here = currentSlug();
+
+    // 1 · le slide spente escono dal conteggio del deck, come per il gating soluzioni
+    if (entryFor(here)) {
+      document.querySelectorAll('[data-slide]').forEach(function(el) {
+        if (el.id && !slideVisible(here, el.id)) {
+          el.removeAttribute('data-slide');
+          el.setAttribute('aria-hidden', 'true');
+          el.setAttribute('inert', '');
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    // 2 · nessun link deve portare a un capitolo senza slide (nav, roadmap, CTA)
+    var order = (cfg && cfg.order) || [];
+    document.querySelectorAll('a[href]').forEach(function(a) {
+      var href = a.getAttribute('href') || '';
+      if (!href || href.charAt(0) === '#') return;
+      var target;
+      try { target = slugOf(new URL(href, location.href).pathname); } catch (e) { return; }
+      if (order.indexOf(target) === -1 || target === here) return;
+      if (!chapterLive(target)) {
+        a.setAttribute('aria-hidden', 'true');
+        a.style.display = 'none';
+      }
+    });
+
+    // 3 · le frecce fra capitoli scavalcano i capitoli spenti, avanti e indietro
+    [['data-deck-next', 1], ['data-deck-prev-href', -1]].forEach(function(pair) {
+      var attr = pair[0], dir = pair[1];
+      var root = document.querySelector('[' + attr + ']');
+      if (!root) return;
+      var cur = root.getAttribute(attr);
+      if (!cur) return;
+      var target = slugOf(new URL(cur, location.href).pathname);
+      if (order.indexOf(target) === -1 || chapterLive(target)) return;
+      var live = nextLive(target, dir);
+      // `undefined` = il target non è nel flusso: non tocco nulla.
+      if (live === undefined) return;
+      root.setAttribute(attr, live ? swapSlug(cur, live) : deckHome());
+    });
+  }
+
+  apply();
+
+  // Capitolo senza più slide: si va avanti al primo vivo, non a casa — così un
+  // link salvato atterra su qualcosa. Solo al primo caricamento, mai dopo uno swap.
+  if (cfg && entryFor(currentSlug()) && !chapterLive(currentSlug())) {
+    var fwd = nextLive(currentSlug(), 1);
+    var dest = fwd ? deckHome() + fwd + '/' : deckHome();
+    if (dest !== location.pathname) location.replace(location.origin + dest);
+  }
+
+  if (!window.__edfChapterGateBound) {
+    window.__edfChapterGateBound = true;
+    document.addEventListener('astro:after-swap', function () { cfg = readConfig(); apply(); });
+    // Anteprima dal vivo mentre si lavora nella Console, in un'altra scheda.
+    try {
+      new BroadcastChannel('edf-console').addEventListener('message', function (ev) {
+        var d = ev.data;
+        if (!d || d.type !== 'edf:chapters-changed' || d.project !== EDF_PROJECT) return;
+        try { sessionStorage.removeItem(SS_KEY); } catch (e) {}
+        location.reload();
+      });
+    } catch (e) {}
+  }
+})();
+</script>
 
 <script is:inline>
   (function () {
