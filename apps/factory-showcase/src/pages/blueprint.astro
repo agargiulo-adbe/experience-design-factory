@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { href as buildHref } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
-import { EXPERIENCES } from '../data/experiences';
+import { DEFAULT_PUBLISHED as EXPERIENCES } from '../data/experiences';
 
 const base = import.meta.env.BASE_URL;
 const home = buildHref(base, '/');
@@ -25,14 +25,14 @@ const checks = [
   { k: 'c', en: 'Margins respected, no overflow', it: 'Margini rispettati, nessun overflow' },
   { k: 'd', en: 'No text over faces / subjects', it: 'Nessun testo sopra volti / soggetti' },
   { k: 'e', en: 'No text-on-text overlap', it: 'Nessuna sovrapposizione testo-su-testo' },
-  { k: 'f', en: 'Clean, contained slide-over dialogs', it: 'Slide-over puliti e contenuti' },
   { k: 'g', en: 'Vertical rhythm between blocks', it: 'Ritmo verticale tra i blocchi' },
   { k: 'h', en: 'Buttons meet WCAG AA contrast', it: 'I bottoni rispettano il contrasto WCAG AA' },
   { k: 'i', en: 'Content uses enough of the canvas', it: 'Il contenuto usa abbastanza canvas' },
   { k: 'j', en: 'Nothing clipped outside the viewport', it: 'Niente tagliato fuori dal viewport' },
   { k: 'k', en: 'No hidden scroll at projection sizes', it: 'Nessuno scroll nascosto in proiezione' },
-  { k: 'l', en: 'Triggers never obstructed by panels', it: 'I trigger mai ostruiti dai pannelli' },
+  { k: 'exp', en: 'Every disclosure re-measured while open', it: 'Ogni espansione ri-misurata da aperta' },
 ];
+
 ---
 <BaseLayout title="Blueprint">
   <!-- Header -->
@@ -75,11 +75,17 @@ const checks = [
 │     blocks/admin/         <span class="c">AdminConsole.astro (one engine)</span>
 │     blocks/i18n/          <span class="c">T.astro · LangToggle.astro</span>
 ├─ apps/
+│  ├─ factory-hub/          <span class="c">the site root — landing hub</span>
+│  ├─ factory-showcase/     <span class="c">this site</span>
+│  ├─ console/              <span class="c">Super Admin Console</span>
 │  ├─ generazioni-maxmara/  <span class="c">skin · Max Mara</span>
 │  ├─ unicredit-engagement/ <span class="c">skin · UniCredit</span>
-│  ├─ ferrari-racing/       <span class="c">skin · Ferrari × Adobe</span>
-│  ├─ factory-showcase/     <span class="c">this site</span>
-│  └─ console/              <span class="c">Super Admin Console</span>
+│  ├─ ferrari-racing/       <span class="c">skin · Ferrari Racing</span>
+│  ├─ trenitalia-connessioni/ <span class="c">skin · FS Group</span>
+│  ├─ agos-trait-dunion/    <span class="c">skin · Agos</span>
+│  └─ … <span class="c">one folder per experience — twelve apps today</span>
+├─ scripts/                 <span class="c">deck-audit · build-assets · build-video</span>
+├─ skills/experience-brief/ <span class="c">the installable intake skill</span>
 ├─ supabase/                <span class="c">auth · migrations · Edge Function</span>
 └─ .github/workflows/       <span class="c">build + deploy to Pages</span></code></pre>
       </section>
@@ -109,8 +115,8 @@ const checks = [
       <section id="deck" class="bp-section" aria-labelledby="deck-h">
         <span class="bp-kicker">03</span>
         <h2 id="deck-h" class="bp-h" data-reveal><T en="The immersive deck & its visual contract" it="Il deck immersivo e il suo contratto visivo" /></h2>
-        <T en="Keynote-grade slides projected at 1920×1080, now auto-responsive down to mobile and up to giant TV. Every slide must pass a deterministic 12-point audit measured on the real DOM at three projection sizes — 1920×1080, 1440×900 and 1280×800. Screenshots only confirm failures; the bounding-box measurements are the gate."
-           it="Slide keynote proiettate a 1920×1080, ora auto-responsive fino al mobile e su fino ai maxi-schermi. Ogni slide deve superare un audit deterministico a 12 punti misurato sul DOM reale a tre risoluzioni di proiezione — 1920×1080, 1440×900 e 1280×800. Gli screenshot confermano solo i fallimenti; le misure dei bounding box sono il gate."
+        <T en="Keynote-grade slides projected at 1920×1080, now auto-responsive down to mobile and up to giant TV. Every slide must pass a deterministic eleven-point audit measured on the real DOM at three projection sizes — 1920×1080, 1440×900 and 1280×800. Screenshots only confirm failures; the bounding-box measurements are the gate."
+           it="Slide keynote proiettate a 1920×1080, ora auto-responsive fino al mobile e su fino ai maxi-schermi. Ogni slide deve superare un audit deterministico a undici punti misurato sul DOM reale a tre risoluzioni di proiezione — 1920×1080, 1440×900 e 1280×800. Gli screenshot confermano solo i fallimenti; le misure dei bounding box sono il gate."
            as="p" class="bp-p" data-reveal />
         <ul class="bp-checks" data-reveal role="list">
           {checks.map((c) => (
@@ -124,8 +130,8 @@ const checks = [
       <section id="runtime" class="bp-section" aria-labelledby="runtime-h">
         <span class="bp-kicker">04</span>
         <h2 id="runtime-h" class="bp-h" data-reveal><T en="Configurable at runtime, shareable by link" it="Configurabile a runtime, condivisibile via link" /></h2>
-        <T en="The same deployed deck reshapes itself per audience — no rebuild. Three mechanisms, all driven from the shared Admin Console:"
-           it="Lo stesso deck deployato si rimodella per pubblico — senza rebuild. Tre meccanismi, tutti guidati dalla Admin Console condivisa:"
+        <T en="The same deployed deck reshapes itself per audience — no rebuild. Four mechanisms, all driven from the shared Admin Console:"
+           it="Lo stesso deck deployato si rimodella per pubblico — senza rebuild. Quattro meccanismi, tutti guidati dalla Admin Console condivisa:"
            as="p" class="bp-p" data-reveal />
         <div class="bp-feature-grid">
           <article class="bp-feature" data-reveal>
@@ -134,11 +140,16 @@ const checks = [
                it="Attiva o disattiva le solution Adobe. Le slide gated perdono il marcatore così il deck smette di contarle, le voci di nav si nascondono e la navigazione a frecce viene riscritta per saltare le sezioni nascoste. Lo stato persiste in locale e viaggia su un link ?s=." as="p" />
           </article>
           <article class="bp-feature" data-reveal data-reveal-delay="1">
+            <h3><T en="Chapter & slide gating" it="Gating di capitoli e slide" /></h3>
+            <T en="Turn a whole chapter off, or go inside and keep only the slides you need — a chapter switched off while one closing slide stays on. Only deviations from all-on are stored, so an unconfigured deck behaves exactly as before. A chapter stays in the flow while it has at least one visible slide; at zero it disappears from the arrows and from every link pointing at it."
+               it="Spegni un capitolo intero, oppure entra e tieni solo le slide che servono — un capitolo spento con la sola slide di chiusura accesa. Si salvano solo gli scostamenti dal tutto-acceso, così un deck non configurato si comporta esattamente come prima. Un capitolo resta nel flusso finché ha almeno una slide visibile; a zero sparisce dalle frecce e da ogni link che ci punta." as="p" />
+          </article>
+          <article class="bp-feature" data-reveal data-reveal-delay="2">
             <h3><T en="Media demo slots" it="Slot media demo" /></h3>
             <T en="Attach an image or video to any slide; content reflows to make room. Configuration is shared through the backend as a ?cfg= link, so a colleague opens exactly the demo you set up."
                it="Allega un’immagine o un video a qualsiasi slide; il contenuto rifluisce per fare spazio. La configurazione si condivide via backend come link ?cfg=, così un collega apre esattamente la demo che hai preparato." as="p" />
           </article>
-          <article class="bp-feature" data-reveal data-reveal-delay="2">
+          <article class="bp-feature" data-reveal data-reveal-delay="3">
             <h3><T en="Custom slides" it="Slide personalizzate" /></h3>
             <T en="Author new slides (formatted text, image or video) that adopt the deck’s exact structure and tokens — sanitised, injected before the deck counts slides, and carried inside a shared link. Fully deck-coherent."
                it="Crea nuove slide (testo formattato, immagine o video) che adottano struttura e token esatti del deck — sanitizzate, iniettate prima che il deck conti le slide e trasportate dentro un link condiviso. Totalmente coerenti col deck." as="p" />
@@ -173,6 +184,9 @@ html[data-lang="it"] [data-lang-en] &#123; display: none &#125;</code></pre>
         <T en="A real multi-user layer: Supabase authentication (email/password + magic link), a global super-admin flag plus per-experience roles (admin / viewer), and an experiences registry that is the system of record for the dashboard. Invites run through a server-side Edge Function so privileged keys never reach the browser."
            it="Un vero layer multi-utente: autenticazione Supabase (email/password + magic link), un flag globale super-admin più ruoli per-esperienza (admin / viewer) e un registry delle esperienze che è il sistema di riferimento della dashboard. Gli inviti passano da una Edge Function lato server così le chiavi privilegiate non arrivano mai al browser."
            as="p" class="bp-p" data-reveal />
+        <T en="The registry also decides what this very site shows: a per-experience switch publishes or unpublishes an Experience Design on the showcase, in real time and without a rebuild. The public page reads only the rows marked published — and if it cannot read them at all, it falls back to its default set rather than revealing anything."
+           it="Il registry decide anche cosa mostra questo sito: un interruttore per experience la pubblica o la depubblica sulla vetrina, in tempo reale e senza rebuild. La pagina pubblica legge solo le righe marcate come pubblicate — e se non riesce a leggerle affatto ripiega sul suo set di default invece di rivelare qualcosa."
+           as="p" class="bp-p" data-reveal />
         <T en="Crucially, the Admin Console is one engine: each experience’s admin page is a thin wrapper passing its slug, page registry and solution groups. Improve the engine once — every experience inherits it."
            it="Punto chiave: la Admin Console è un solo motore: la pagina admin di ogni esperienza è un wrapper sottile che passa slug, registry delle pagine e gruppi di solution. Migliora il motore una volta — ogni esperienza lo eredita."
            as="p" class="bp-p" data-reveal />
@@ -182,8 +196,8 @@ html[data-lang="it"] [data-lang-en] &#123; display: none &#125;</code></pre>
       <section id="delivery" class="bp-section" aria-labelledby="del-h">
         <span class="bp-kicker">08</span>
         <h2 id="del-h" class="bp-h" data-reveal><T en="Delivery" it="Delivery" /></h2>
-        <T en="A push to main triggers GitHub Actions (Node 22): it builds every app, merges each dist into one artifact — root plus /unicredit-engagement/, /ferrari-racing/, /showcase/, /console/ — verifies the structure, and publishes to GitHub Pages. The deploy job retries transient Pages backend failures and skips stale commits. Build secrets come from Actions secrets and never live in the repo."
-           it="Un push su main innesca GitHub Actions (Node 22): builda ogni app, unisce ogni dist in un unico artifact — root più /unicredit-engagement/, /ferrari-racing/, /showcase/, /console/ — verifica la struttura e pubblica su GitHub Pages. Il job di deploy ritenta i fallimenti transitori del backend Pages e salta i commit obsoleti. I segreti di build vengono dagli Actions secrets e non stanno mai nel repo."
+        <T en="A push to main triggers GitHub Actions (Node 22): it builds every app and merges each dist into one artifact — the hub at the root, then a sub-path per experience plus /showcase/ and /console/ — verifies the structure, and publishes to GitHub Pages. The deploy job retries transient Pages backend failures and skips stale commits. Build secrets come from Actions secrets and never live in the repo."
+           it="Un push su main innesca GitHub Actions (Node 22): builda ogni app e unisce ogni dist in un unico artifact — l'hub alla radice, poi un sotto-percorso per experience più /showcase/ e /console/ — verifica la struttura e pubblica su GitHub Pages. Il job di deploy ritenta i fallimenti transitori del backend Pages e salta i commit obsoleti. I segreti di build vengono dagli Actions secrets e non stanno mai nel repo."
            as="p" class="bp-p" data-reveal />
       </section>
 

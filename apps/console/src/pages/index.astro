@@ -73,9 +73,45 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <option value="archived" ${exp.status==='archived'?'selected':''}>Archiviata</option>
             </select>` : ''}
           </div>
+          ${canManage ? `
+          <label class="exp-showcase" title="Mostra questa experience sulla vetrina pubblica">
+            <input type="checkbox" data-showcase-toggle ${exp.show_in_showcase ? 'checked' : ''} />
+            <span class="exp-showcase-track"><span class="exp-showcase-thumb"></span></span>
+            <span class="exp-showcase-label">Pubblica su <a href="/experience-design-factory/showcase/" target="_blank" rel="noopener">showcase</a></span>
+          </label>` : ''}
           <span class="exp-saved" data-saved hidden>✓ Aggiornata</span>
         </article>`;
       }).join('');
+
+      // Pubblicazione sulla vetrina: è l'unico campo di questa tabella che il
+      // ruolo anon può leggere, quindi il toggle è a tutti gli effetti un atto
+      // di pubblicazione verso l'esterno. Solo super admin.
+      if (profile.is_super_admin) {
+        grid.querySelectorAll<HTMLInputElement>('[data-showcase-toggle]').forEach((box) => {
+          box.addEventListener('change', async () => {
+            const card = box.closest<HTMLElement>('.exp-card');
+            if (!card) return;
+            const slug = card.getAttribute('data-slug');
+            const on = box.checked;
+            try {
+              await rest(`experiences?slug=eq.${slug}`, {
+                method: 'PATCH',
+                headers: { Prefer: 'return=minimal' },
+                body: JSON.stringify({ show_in_showcase: on, updated_at: new Date().toISOString() }),
+              }, session);
+              const saved = card.querySelector<HTMLElement>('[data-saved]');
+              if (saved) {
+                saved.textContent = on ? '✓ Pubblicata sullo showcase' : '✓ Rimossa dallo showcase';
+                saved.hidden = false;
+                setTimeout(() => { saved.hidden = true; saved.textContent = '✓ Aggiornata'; }, 2200);
+              }
+            } catch {
+              box.checked = !on;
+              alert('Pubblicazione non riuscita.');
+            }
+          });
+        });
+      }
 
       // Wire status changes (super admin only)
       if (profile.is_super_admin) {
@@ -117,6 +153,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .exp-status { font-size: 0.6875rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
     .exp-desc { font-size: 0.8125rem; color: var(--ink-secondary); line-height: 1.55; margin-bottom: 1.1rem; flex: 1; }
     .exp-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .exp-showcase { display: inline-flex; align-items: center; gap: 0.55rem; margin-top: 0.85rem; cursor: pointer; font-size: 0.8125rem; color: var(--ink-secondary); }
+    .exp-showcase input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .exp-showcase-track { position: relative; width: 34px; height: 20px; border-radius: 999px; background: #d1d5db; flex-shrink: 0; transition: background 0.15s; }
+    .exp-showcase-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transition: transform 0.15s; }
+    .exp-showcase input:checked + .exp-showcase-track { background: #16a34a; }
+    .exp-showcase input:checked + .exp-showcase-track .exp-showcase-thumb { transform: translateX(14px); }
+    .exp-showcase input:focus-visible + .exp-showcase-track { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+    .exp-showcase-label a { text-decoration: underline; }
     .exp-status-select { margin-left: auto; font-size: 0.8125rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-strong); border-radius: 6px; background: #fff; color: var(--ink-secondary); cursor: pointer; }
     .exp-saved { font-size: 0.75rem; color: var(--accent-green); margin-top: 0.6rem; }
   </style>

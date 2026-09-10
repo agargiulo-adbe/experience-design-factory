@@ -32,6 +32,8 @@ export interface Experience {
   description: string | null;
   base_url: string;
   status: 'live' | 'draft' | 'archived';
+  /** Visibile su /showcase/ — letta anche dal ruolo anon (vedi 0013). */
+  show_in_showcase?: boolean;
   updated_at?: string;
 }
 

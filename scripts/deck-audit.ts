@@ -2,7 +2,7 @@
  * deck-audit — deterministic layout audit for the Acquisizione deck at 1920×1080.
  *
  * Measures bounding boxes in the DOM (don't trust the eye). Screenshots are saved
- * ONLY for failing slides, as confirmation. 9 checks per slide:
+ * ONLY for failing slides, as confirmation. 10 checks per slide, plus (exp):
  *   (a) text too high      — significant text centre in the central band [30%,70%].
  *   (b) chrome collision    — no content text intersects the deck controls.
  *   (c) margins / overflow  — no box past --slide-safe-inset; no horizontal overflow.
@@ -12,6 +12,8 @@
  *   (h) button contrast      — every button/CTA meets WCAG AA (4.5:1, or 3:1 for large).
  *   (i) space usage / balance — content covers ≥45% of usable height and its centre of
  *                              mass sits in the central horizontal band.
+ *   (j) nothing clipped      — every significant element fully inside the viewport.
+ *   (k) no hidden scroll     — no container scrolls at projection sizes.
  *   (exp) inline expansion   — each "Scopri come" expands IN PLACE; the slide is then
  *                              re-measured (a–k) in its expanded state and must still pass.
  *

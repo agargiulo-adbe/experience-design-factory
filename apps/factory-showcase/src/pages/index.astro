@@ -17,6 +17,10 @@ const SKILL_MD = `${b}skill/experience-brief-SKILL.md`;
 // all update automatically. LIVE URL lives on each entry; shots are resolved
 // against the app base here.
 const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
+// Stato di pubblicazione: lo decide il toggle in Super Admin, non questo file.
+// Senza chiavi o senza risposta la pagina resta sul set di default (fail-closed).
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 const experiences = EXPERIENCES.map((e) => ({
   ...e,
   href: e.url,
@@ -94,9 +98,9 @@ const values = [
         <T en="or read the architecture blueprint" it="o leggi il blueprint dell’architettura" /> <span aria-hidden="true">→</span>
       </a>
       <dl class="hero-stats" data-reveal data-reveal-delay="3">
-        <div><dt><span data-count={String(EXPERIENCE_COUNT)}>{EXPERIENCE_COUNT}</span></dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
+        <div><dt><span data-count={String(EXPERIENCE_COUNT)} data-live-count>{EXPERIENCE_COUNT}</span></dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
         <div><dt><span class="hero-stat-lt">&lt;</span>&nbsp;1<span class="hero-stat-u">h</span></dt><dd><T en="from brief to a working build" it="dal brief a una build funzionante" /></dd></div>
-        <div><dt><span data-count="12">12</span></dt><dd><a class="hero-stat-ref" href={`${blueprint}#deck`}><T en="layout & accessibility checks, per slide" it="controlli di layout e accessibilità, per slide" /></a></dd></div>
+        <div><dt><span data-count="11">11</span></dt><dd><a class="hero-stat-ref" href={`${blueprint}#deck`}><T en="layout & accessibility checks, per slide" it="controlli di layout e accessibilità, per slide" /></a></dd></div>
         <div><dt><span data-count="2">2</span></dt><dd><T en="languages, instant switch" it="lingue, switch istantaneo" /></dd></div>
       </dl>
     </div>
@@ -166,14 +170,15 @@ const values = [
       <h2 id="proof-title" class="h-section proof-title" data-reveal>
         <T en="Not slides. Live, running software." it="Non slide. Software vivo, in esecuzione." />
       </h2>
-      <T
-        en={`${countWords.en} experiences are deployed and interactive right now — each a different brand, all the same engine. Open any of them.`}
-        it={`${countWords.it} esperienze sono già online e interattive — ognuna un brand diverso, tutte lo stesso motore. Aprine una qualsiasi.`}
-        as="p" class="lead proof-lead" data-reveal />
+      <p class="lead proof-lead" data-reveal>
+        <span data-lang-en><span data-live-word>{countWords.en}</span> experiences are deployed and interactive right now — each a different brand, all the same engine. Open any of them.</span>
+        <span data-lang-it><span data-live-word>{countWords.it}</span> esperienze sono già online e interattive — ognuna un brand diverso, tutte lo stesso motore. Aprine una qualsiasi.</span>
+      </p>
 
       <div class="exp-grid">
         {experiences.map((e, i) => (
-          <a class="exp-card" href={e.href} target="_blank" rel="noopener" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)} style={`--exp-accent:${e.accent}`}>
+          <a class="exp-card" href={e.href} target="_blank" rel="noopener" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)}
+             style={`--exp-accent:${e.accent}`} data-exp={e.slug} data-sections={String(e.sections)} hidden={!e.defaultPublished}>
             <div class="exp-visual">
               <img class="exp-shot" src={e.shot} alt={`${e.name} — ${e.client}, live experience`} loading="lazy" width="1200" height="750" />
               <span class="exp-chip">{e.client}</span>
@@ -239,7 +244,7 @@ const values = [
           <span class="arch-layer-label"><T en="Client skins — apps/*" it="Skin cliente — apps/*" /></span>
           <div class="arch-skins-row">
             {EXPERIENCES.map((e) => (
-              <div class="arch-skin" style={`--k:${e.accent}`}><strong>{e.brandLabel}</strong><span>{e.name}</span></div>
+              <div class="arch-skin" style={`--k:${e.accent}`} data-exp-skin={e.slug} hidden={!e.defaultPublished}><strong>{e.brandLabel}</strong><span>{e.name}</span></div>
             ))}
             <div class="arch-skin arch-skin--next"><strong>+</strong><span><T en="the next brand" it="il prossimo brand" /></span></div>
           </div>
@@ -411,6 +416,78 @@ const values = [
     </div>
   </section>
 
+  <!-- ══ FIREFLY ══ -->
+  <section id="firefly" class="section band-firefly" aria-labelledby="ff-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="Adobe Firefly Services, in the build chain" it="Adobe Firefly Services, dentro la catena di build" /></p>
+      <h2 id="ff-title" class="h-section" data-reveal>
+        <T en="Art direction that ships with the code." it="Art direction che viaggia col codice." />
+      </h2>
+      <p class="lead" data-reveal>
+        <T en="No stock hunt, no licence to chase, nothing to re-cut by hand. Every backdrop and every motion clip is described in a manifest next to the deck — prompt, negative prompt, seed, brand colours — and generated at build time by Firefly Services. Change the palette, re-run one command, and the art direction follows the brand instead of trailing behind it."
+           it="Nessuna caccia allo stock, nessuna licenza da inseguire, niente da ritagliare a mano. Ogni sfondo e ogni clip in movimento è descritto in un manifest accanto al deck — prompt, negative prompt, seed, colori di marca — e generato a build time da Firefly Services. Cambi la palette, rilanci un comando, e l\u2019art direction segue il brand invece di rincorrerlo." />
+      </p>
+
+      <div class="ff-grid">
+        <article class="ff-card" data-reveal>
+          <p class="ff-api"><code>POST /v3/images/generate</code></p>
+          <h3 class="ff-name"><T en="Firefly Image Model" it="Firefly Image Model" /></h3>
+          <T en="Backdrops and abstract scenes. Each slot declares contentClass (photo or art), a negative prompt that keeps out faces, logos and legible text, and a fixed seed so a re-run is reproducible. The output is cropped and colour-graded to the brand before it reaches the deck."
+             it="Sfondi e scene astratte. Ogni slot dichiara contentClass (photo o art), un negative prompt che tiene fuori volti, loghi e testo leggibile, e un seed fisso perché il rilancio sia riproducibile. L\u2019output viene ritagliato e virato sul brand prima di arrivare nel deck." as="p" class="ff-desc" />
+        </article>
+        <article class="ff-card" data-reveal data-reveal-delay="1">
+          <p class="ff-api"><code>POST /v3/videos/generate</code></p>
+          <h3 class="ff-name"><T en="Firefly Video Model" it="Firefly Video Model" /></h3>
+          <T en="Five-second 1080p clips for covers and closings — text-to-video, asynchronous: the call returns a job and the pipeline polls it until the clip is ready, then re-encodes it for the web and grabs a poster frame for reduced-motion."
+             it="Clip di cinque secondi in 1080p per cover e chiusure — text-to-video, asincrono: la chiamata restituisce un job e la pipeline lo interroga finché la clip è pronta, poi la ricodifica per il web e ne estrae un poster per il reduced-motion." as="p" class="ff-desc" />
+        </article>
+        <article class="ff-card" data-reveal data-reveal-delay="2">
+          <p class="ff-api"><code>ims/token/v3 · client_credentials</code></p>
+          <h3 class="ff-name"><T en="Adobe IMS, server-to-server" it="Adobe IMS, server-to-server" /></h3>
+          <T en="Credentials live in the build environment and never reach the browser or the repository. One token is minted per run and reused across every slot."
+             it="Le credenziali stanno nell\u2019ambiente di build e non arrivano mai al browser né al repository. Si conia un token per esecuzione e lo si riusa per tutti gli slot." as="p" class="ff-desc" />
+        </article>
+      </div>
+
+      <div class="ff-note" data-reveal>
+        <T en="Firefly is trained on licensed and public-domain content and attaches Content Credentials (C2PA) to what it generates — which is why generated visuals are credited on the slide itself. Every asset is written to a provenance file next to the images: prompt, model, seed and licence, so months later it is still clear where a picture came from."
+           it="Firefly è addestrato su contenuti licenziati e di pubblico dominio e appone le Content Credentials (C2PA) a ciò che genera — per questo i visual generati sono creditati sulla slide stessa. Ogni asset finisce in un file di provenance accanto alle immagini: prompt, modello, seed e licenza, così a distanza di mesi si sa ancora da dove viene un\u2019immagine." as="p" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ DOSSIER ══ -->
+  <section id="dossier" class="section band-dossier" aria-labelledby="dos-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--dark" data-reveal><T en="Before the experience — internal only" it="Prima dell\u2019esperienza — solo uso interno" /></p>
+      <h2 id="dos-title" class="h-section" data-reveal>
+        <T en="The dossier: the homework, written down." it="Il dossier: il lavoro di preparazione, messo per iscritto." />
+      </h2>
+      <p class="lead" data-reveal>
+        <T en="An experience is only as good as what you knew before building it. So the research that precedes it — the account, who decides and what they are measured on, the competitive picture, the open questions, what not to say — is written as an internal web page rather than a document. Same engine, same bilingual rendering, one link that is always the current version."
+           it="Un\u2019esperienza vale quanto ciò che sapevi prima di costruirla. Perciò la ricerca che la precede — l\u2019account, chi decide e su cosa è misurato, il quadro competitivo, le domande aperte, le cose da non dire — si scrive come pagina web interna invece che come documento. Stesso motore, stesso rendering bilingue, un link che è sempre la versione corrente." />
+      </p>
+
+      <div class="dos-grid">
+        <article class="dos-card" data-reveal>
+          <h3 class="dos-h"><T en="A page, not a PDF" it="Una pagina, non un PDF" /></h3>
+          <T en="A document gets forwarded and goes stale the same afternoon. A page has one address: it is corrected when a fact changes, and whoever opens it reads today\u2019s version — with sources linked next to each claim."
+             it="Un documento viene inoltrato e invecchia il pomeriggio stesso. Una pagina ha un solo indirizzo: si corregge quando cambia un fatto, e chi la apre legge la versione di oggi — con le fonti linkate accanto a ogni affermazione." as="p" class="dos-p" />
+        </article>
+        <article class="dos-card" data-reveal data-reveal-delay="1">
+          <h3 class="dos-h"><T en="Closed by construction" it="Chiuso per costruzione" /></h3>
+          <T en="Dossiers are noindex, never linked from any public page, and the confidential material they are built from stays out of the repository entirely — it never leaves the machine it was written on, and never reaches a third-party or cloud system."
+             it="I dossier sono noindex, non linkati da nessuna pagina pubblica, e il materiale riservato da cui nascono resta del tutto fuori dal repository — non lascia la macchina su cui è stato scritto e non arriva mai su un sistema terzo o cloud." as="p" class="dos-p" />
+        </article>
+        <article class="dos-card" data-reveal data-reveal-delay="2">
+          <h3 class="dos-h"><T en="It sets the brief straight" it="Raddrizza il brief" /></h3>
+          <T en="The dossier is what keeps an experience from being generic: it decides which chapters exist, which claims can be made, which product names are accurate, and where an assumption still needs confirming before it is said out loud in front of a client."
+             it="Il dossier è ciò che impedisce a un\u2019esperienza di essere generica: decide quali capitoli esistono, quali affermazioni si possono fare, quali nomi di prodotto sono accurati e dove un\u2019assunzione va ancora confermata prima di dirla ad alta voce davanti a un cliente." as="p" class="dos-p" />
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ══ THE SKILL ══ -->
   <section id="skill" class="section band-skill" aria-labelledby="skill-title">
     <div class="skill-glow" aria-hidden="true"></div>
@@ -538,6 +615,60 @@ const values = [
       </div>
     </div>
   </section>
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+/*
+  Quali Experience Design compaiono qui lo decide il toggle in Super Admin, in
+  tempo reale: nessun rebuild. La pagina parte dal set di default già renderizzato
+  e lo corregge con lo stato remoto.
+
+  FAIL-CLOSED per scelta: se manca la chiave, se la rete cade o se la risposta non
+  si legge, non si tocca nulla e restano visibili solo le experience marcate
+  pubbliche nel codice. Un guasto non può far comparire qualcosa che era stato
+  depubblicato. La policy anon lato database restituisce comunque SOLO le righe
+  con show_in_showcase = true.
+*/
+(function () {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+
+  function applyPublished(slugs) {
+    var live = 0, sections = 0;
+    document.querySelectorAll('[data-exp]').forEach(function (card) {
+      var on = slugs.indexOf(card.getAttribute('data-exp')) !== -1;
+      card.hidden = !on;
+      if (on) { live++; sections += parseInt(card.getAttribute('data-sections') || '0', 10); }
+    });
+    document.querySelectorAll('[data-exp-skin]').forEach(function (skin) {
+      skin.hidden = slugs.indexOf(skin.getAttribute('data-exp-skin')) === -1;
+    });
+    document.querySelectorAll('[data-live-count]').forEach(function (el) {
+      el.setAttribute('data-count', String(live));
+      el.textContent = String(live);
+      // Il contatore animato marca l'elemento come già contato e ne riscrive il
+      // testo: se lo stato remoto arriva dopo, va ri-animato sul nuovo valore.
+      // (Con reduced-motion countUp esce subito e resta il testo appena scritto.)
+      el.removeAttribute('data-counted');
+      if (window.__edfCountUp) window.__edfCountUp(el);
+    });
+    var EN = ['zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve'];
+    var IT = ['zero','Una','Due','Tre','Quattro','Cinque','Sei','Sette','Otto','Nove','Dieci','Undici','Dodici'];
+    document.querySelectorAll('[data-live-word]').forEach(function (el) {
+      var it = !!el.closest('[data-lang-it]');
+      var words = it ? IT : EN;
+      el.textContent = live < words.length ? words[live] : String(live);
+    });
+  }
+
+  fetch(SUPABASE_URL + '/rest/v1/experiences?select=slug&show_in_showcase=eq.true', {
+    headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
+  })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (rows) {
+      if (!Array.isArray(rows) || rows.length === 0) return;   // fail-closed
+      applyPublished(rows.map(function (r) { return r.slug; }));
+    })
+    .catch(function () { /* fail-closed: resta il set di default */ });
+})();
+</script>
 </BaseLayout>
 
 <style>
@@ -715,6 +846,25 @@ const values = [
   :global(.flow-principles-cite em) { font-style: italic; }
 
   /* ── SKILL (dark, showpiece) ── */
+  .band-firefly { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .band-firefly .lead { color: var(--ink-inverse); opacity: 0.86; }
+  .ff-grid { display: grid; gap: 1rem; margin-top: clamp(2rem, 4vh, 3rem); grid-template-columns: 1fr; }
+  @media (min-width: 800px) { .ff-grid { grid-template-columns: repeat(3, 1fr); } }
+  .ff-card { border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; padding: 1.4rem; background: rgba(255,255,255,0.04); }
+  .ff-api { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.02em; margin-bottom: 0.7rem; }
+  .ff-api code { color: var(--accent-primary); background: rgba(255,255,255,0.07); padding: 3px 7px; border-radius: 5px; }
+  .ff-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
+  :global(.ff-desc) { font-size: 0.93rem; line-height: 1.6; color: var(--ink-inverse); opacity: 0.8; }
+  .ff-note { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.14); }
+  :global(.ff-note p) { font-size: 0.9rem; line-height: 1.65; color: var(--ink-inverse); opacity: 0.72; max-width: 78ch; }
+
+  .band-dossier { background: var(--surface-secondary); }
+  .dos-grid { display: grid; gap: 1rem; margin-top: clamp(2rem, 4vh, 3rem); grid-template-columns: 1fr; }
+  @media (min-width: 800px) { .dos-grid { grid-template-columns: repeat(3, 1fr); } }
+  .dos-card { border: 1px solid var(--line-subtle); border-radius: 12px; padding: 1.4rem; background: var(--surface-primary); }
+  .dos-h { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.55rem; }
+  :global(.dos-p) { font-size: 0.93rem; line-height: 1.62; color: var(--ink-secondary); }
+
   .band-skill { position: relative; background: var(--surface-inverse); color: var(--ink-inverse); overflow: hidden; }
   .skill-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
       radial-gradient(50% 60% at 85% 0%, color-mix(in srgb, var(--color-adobe-red) 26%, transparent), transparent 62%),
@@ -785,6 +935,7 @@ const values = [
       requestAnimationFrame(step);
     }
     function initCount() {
+      window.__edfCountUp = countUp;
       var els = document.querySelectorAll('[data-count]:not([data-counted])');
       if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.setAttribute('data-counted',''); }); return; }
       var io = new IntersectionObserver(function (entries) {

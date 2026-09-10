@@ -48,8 +48,9 @@ wrong‑brand imagery** (see Quality Bar).
 Multi‑user, real auth. Light "admin" theme.
 - **Auth**: Supabase Auth (email/password + magic link), dependency‑free `fetch` client in `src/lib/supabase.ts`; client‑side guard `src/lib/guard.ts` (login redirect + super‑only gate).
 - **Roles**: global `is_super_admin` flag + per‑experience `user_experience_roles` (`admin`|`viewer`).
-- **Views**: `index` (experiences: status live/draft/archived, open Console), `users` (super‑only: invite by email, toggle super admin, suspend, per‑experience access). `[project]/` redirects to that experience's `/admin/`.
+- **Views**: `index` (experiences: status live/draft/archived, **toggle «Pubblica su showcase»**, open Console), `users` (super‑only: invite by email, toggle super admin, suspend, per‑experience access). `[project]/` redirects to that experience's `/admin/`.
 - **Backend** (run once, see `supabase/README.md`): `0001_super_admin.sql` (tables + RLS + signup trigger; bootstraps `agargiulo@adobe.com` as super admin) and `0002_seed_ferrari.sql`. Invites use the `invite-user` Edge Function (service_role lives ONLY there). `experiences` is the registry of record for the dashboard.
+- **Pubblicazione sullo showcase**: `experiences.show_in_showcase` (migrazione `0013`) + policy **anon** che espone SOLO le righe pubblicate. `/showcase/` legge quello stato a runtime (nessun rebuild) ed è **fail-closed**: senza chiavi, senza rete o con risposta vuota resta il set `defaultPublished` di `apps/factory-showcase/src/data/experiences.ts`. Le experience nate da materiale riservato (Eni, MIM, Isybank, Aperture) e l'Atelier partono **spente**: accenderle le rende pubbliche su una pagina senza login.
 - Run remote SQL via `supabase db query --linked` (Management API, needs `supabase link` + the agargiulo‑adbe account login).
 
 ## Shared Admin Console engine (config‑driven — CR/evo propagate to ALL)
@@ -144,7 +145,7 @@ Rewrite into natural, concrete sentences with varied rhythm. **Never touch** pro
 
 ### Audit discipline — hard vs soft; never shrink type to pass
 `audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
-- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `f` slide‑over · `h` contrast · `j` clipping outside viewport · `k` hidden scroll.
+- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `exp` ogni disclosure ri‑misurata da aperta.
 - **SOFT (aspirational):** `a` reading band 30–70% · `i` space usage ≥45% · `g` vertical rhythm. Acceptable on intentionally airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the Type & legibility minimums. If a soft check bothers you: **cut copy or split the slide**, never shrink.
 - The parser does not count visual mocks (a terminal/image beside a split slide) as text mass → an `i`/`comX` imbalance on a visually balanced split slide is a **known parser limit, not a defect**.
 - Recurring meaning‑preserving fixes for HARD: keep `absolute` decorations inside the box (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
@@ -204,7 +205,8 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.
 - `blocks/admin/AdminConsole.astro` — the shared config‑driven Admin Console.
 
-### The 12 checks every slide must pass — at 1920×1080, 1440×900 AND 1280×800 (`audit:deck`)
+### Gli 11 check che ogni slide deve passare — a 1920×1080, 1440×900 E 1280×800 (`audit:deck`)
+> Nel codice i check sono `a b c d e g h i j k` + `exp` (nessun `f`, nessun `l`).
 > `audit:deck` runs all three projection viewports (mobile is handled separately by the
 > responsive tokens, where dense slides may scroll). A **display hero** (giant metric numeral)
 > is tagged `data-display` and excluded from the prose band check (a).
@@ -213,13 +215,11 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
 3. **(c) margins / no overflow** — no box past `--slide-safe-inset`; no horizontal overflow.
 4. **(d) no text over faces** — no text over an image's `[data-no-text]` zone; text over an image needs a `[data-scrim]`.
 5. **(e) no text-on-text** — no two (non‑nested) text blocks overlap.
-6. **(f) clean slide-over** — an OPEN slide‑over is a top‑level fixed dialog within the viewport, no scroll/clip, full‑viewport scrim, width ≤ min(720px,60vw).
 7. **(g) vertical rhythm** — adjacent stacked text blocks (outside cards) have ≥ 16px gap.
 8. **(h) button contrast** — every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon).
 9. **(i) space usage** — content covers ≥ 45% of usable height, centre of mass in the central band.
 10. **(j) nothing clipped** — every significant element lies fully inside `[0,0,1920,1080]` (±1px).
 11. **(k) no hidden scroll** — no container has `scrollHeight > clientHeight` at projection sizes (a keynote never scrolls there: shorten or split).
-12. **(l) trigger not obstructed** — while a panel is open, interactive elements are EITHER fully under the scrim OR fully visible.
 
 Contract details:
 - **Safe‑area tokens** in `global.css` (px): `--slide-safe-inset`, `--deck-chrome-safe`. `Slide`
@@ -230,7 +230,7 @@ Contract details:
 - **`data-no-text="t,l,w,h"`** (% face/subject zone), **`data-scrim`** behind text‑over‑image.
 
 ### Type & legibility contract (BINDING — every slide, every experience, present & future)
-> **`audit:deck` PASS ≠ legible.** The audit only measures text **≥16px** for the band/coverage checks and WCAG contrast — it does NOT enforce generous type or balanced composition. A slide can pass all 12 checks and still be unreadable when projected. These rules are separate, mandatory, and apply to **every** experience going forward. (Learned the hard way on Trenitalia: a prior pass shrank body copy to 0.5–0.75rem to satisfy the audit → illegible in the boardroom.)
+> **`audit:deck` PASS ≠ legible.** The audit only measures text **≥16px** for the band/coverage checks and WCAG contrast — it does NOT enforce generous type or balanced composition. A slide can pass all 11 checks and still be unreadable when projected. These rules are separate, mandatory, and apply to **every** experience going forward. (Learned the hard way on Trenitalia: a prior pass shrank body copy to 0.5–0.75rem to satisfy the audit → illegible in the boardroom.)
 
 **Minimum type @1920 projection** (root font ≈18px at these viewports, so 1rem ≈ 18px):
 - Body / description / bullet text: **≥ 0.95rem** (aim ~1rem), `line-height` **≥ 1.5**.
