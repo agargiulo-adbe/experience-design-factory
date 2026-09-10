@@ -1,7 +1,7 @@
 # Design — UniCredit «Analizza»: centralità all'attribution
 
 > **Data:** 2 settembre 2026 · **App:** `apps/unicredit-engagement` · **Sezione:** `analizza` (06)
-> **Origine:** meeting Giancarlini (24/07, `docs/UniCredit/`) + deep-research 2/09 + dossier `docs/UniCredit/DOSSIER-UNICREDIT-ADOBE.md`.
+> **Origine:** meeting Giancarlini (24/07, `docs/UniCredit/`) + deep-research 2/09 + dossier `docs/UniCredit/DOSSIER-ADOBE-UNICREDIT.md`.
 > **Scopo:** dare centralità al tema attribution (last-touch cieco → vista complementare → cost-per-sale → MTA+MMM) e servire da base per l'Adobe Day/workshop del 14/09.
 
 ## Decisioni approvate

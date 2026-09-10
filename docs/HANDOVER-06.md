@@ -5,7 +5,7 @@
 
 ## 27. UniCredit — Attribution al centro di «Analizza» + Dossier Attribution login-gated (2 set 2026)
 
-Commit `9d308de` → `d2f67ba` → `45cfcdf` → `a19516f` → `f03c343` (tutti su `main`). **Fonti riservate**: meeting **Giancarlini** 24/07 (`docs/UniCredit/`, git-ignored) + deep-research 2/09; dossier MD completo `docs/UniCredit/DOSSIER-UNICREDIT-ADOBE.md`. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Memoria `unicredit-attribution-adobe-day`.
+Commit `9d308de` → `d2f67ba` → `45cfcdf` → `a19516f` → `f03c343` (tutti su `main`). **Fonti riservate**: meeting **Giancarlini** 24/07 (`docs/UniCredit/`, git-ignored) + deep-research 2/09; dossier MD completo `docs/UniCredit/DOSSIER-ADOBE-UNICREDIT.md`. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Memoria `unicredit-attribution-adobe-day`.
 
 ### 27.1 Tesi (dal meeting Giancarlini)
 - **Attribution ufficiale = last-touch**, di **Group Data Office** (sistema **COR**), blindata → CJA non la sostituisce, la **affianca** (vista complementare).
