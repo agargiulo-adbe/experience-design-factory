@@ -153,7 +153,19 @@ const appFlag = (() => {
   if (prefixed) return prefixed.split('=')[1];
   return appFromCwd;
 })();
-const ROUTES = ROUTE_SETS[appFlag] ?? ROUTE_SETS.maxmara;
+const ROUTE_SET = ROUTE_SETS[appFlag] ?? ROUTE_SETS.maxmara;
+// --only <name[,name]> restringe il giro a una o più rotte: iterare su una sola
+// pagina mentre la si sistema costa secondi invece di minuti.
+const onlyFlag = (() => {
+  const idx = process.argv.indexOf('--only');
+  if (idx !== -1 && process.argv[idx + 1]) return process.argv[idx + 1];
+  const prefixed = process.argv.find((a) => a.startsWith('--only='));
+  return prefixed ? prefixed.split('=')[1] : undefined;
+})();
+const ROUTES = onlyFlag
+  ? ROUTE_SET.filter((r) => onlyFlag.split(',').includes(r.name))
+  : ROUTE_SET;
+if (!ROUTES.length) throw new Error(`--only ${onlyFlag}: nessuna rotta con questo nome in ${appFlag}`);
 
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
 const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
@@ -365,6 +377,9 @@ async function auditViewport(browser: import('playwright').Browser, base: string
   }
   await page.goto(base + route, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => (window as unknown as { __edfDeck?: unknown }).__edfDeck !== undefined, { timeout: 8000 });
+  // I webfont cambiano le metriche del testo: misurare prima che siano pronti
+  // rende l'audit non deterministico (stessa pagina, esiti diversi).
+  await page.evaluate(() => document.fonts.ready.then(() => undefined)).catch(() => undefined);
 
   const tokens = await page.evaluate(() => {
     const cs = getComputedStyle(document.documentElement);

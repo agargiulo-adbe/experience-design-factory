@@ -26,7 +26,7 @@ wrong‑brand imagery** (see Quality Bar).
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
 - `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `console`, `factory-showcase`, `factory-hub`)
-- `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports)
+- `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
 ## Apps & structure
@@ -229,7 +229,7 @@ Contract details:
 
 ### Aesthetic per experience
 - **Max Mara** quiet‑luxury: cammello `#C19A6B` / avorio / testa‑di‑moro; Cormorant Garamond + Inter.
-- **UniCredit**: rosso `#BE2027` / crema / blu notte; Playfair Display + Inter.
+- **UniCredit**: **petrolio `#007A91`** è il colore di sistema (link, stati attivi, tab, focus, blocchi brand); il **rosso `#E2001A`** è il marchio (logo, barra header, CTA rossa, errori); ciano `#00AED0`, inchiostro `#262626`, grigi `#F5F5F5`→`#585858`, e **petrolio notte `#04252D`** per le slide scure (estensione: il sito non ha un tema scuro). **Manrope + Inter** — il carattere proprietario UniCredit non è distribuibile, Manrope ne è la sostituta più vicina. Valori verificati sul CSS di produzione di unicredit.it (`content.ucgstatic.eu/.../main.min.css`), non a memoria. NIENTE oro e niente serif: non appartengono a questo brand.
 - **Ferrari Racing**: Rosso Corsa `#FF2800` / carbonio `#0B0B0D` / giallo Modena `#FFF200`; Archivo + Inter; dark‑dominant, motorsport. Terms: Cavallino Rampante, Rosso Corsa, Maranello, Tifosi, Scuderia Ferrari HP.
 - **Aperture (osservatorio email)**: grafite `#12151C` / avorio `#F3EFE6` / verde segnale `#2EE6A6` / ambra `#FFB547`; Space Grotesk + Inter; dark, dati-centrico, classi `.ap-*`. Regole: fonti citate non interpretate, niente prodotti Adobe, nessun dato personale.
 - **Agos (Trait d'Union)**: petrolio `#05636B` / acqua `#06ABB8` / arancio `#F57C00` (palette reale da agos.it — NON blu+rosso); Montserrat + Inter; dark‑dominant finance. Vocabolario cliente: pratica, caricata/liquidata, "mailing" (=rete fisica), log tecnico, use case, lead light.
