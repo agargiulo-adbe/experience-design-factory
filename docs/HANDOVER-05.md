@@ -1,8 +1,44 @@
-# Handover — Parte 5 di 6
+# Handover — Parte 5 di 7
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
+## 17. Adobe Brand Visibility, de-AI copy & comando /handover (15 lug 2026)
+
+### 17.1 Adobe Brand Visibility (consolidamento prodotto)
+LLM Optimizer + Semrush **non sono più due prodotti**: sono confluiti in **Adobe Brand Visibility** (piattaforma end-to-end Adobe + Semrush per la AI/GEO visibility). Fonte: `docs/Adobe Brand Visibility Pitch Deck - Long Version.pptx`. Memoria: `brand-visibility-product`.
+- 4 pilastri: **Visibilità AI completa** (10 famiglie LLM, agentic traffic da log CDN) · **Intelligence guidata dalla SEO** (289M+ prompt reali dell'offerta Adobe+Semrush — ma **nel deck UniCredit il numero è stato ammorbidito a "milioni di prompt reali"**, §17.6, perché privo di fonte on-slide, query fan-out) · **Ottimizzazioni su ogni superficie** (edge CDN + at-source + off-site) · **Misurazione ad anello chiuso** (Adobe Analytics + CJA). KPI: brand mentions, citations, agentic traffic, referral traffic.
+- **UniCredit `visibilita.astro`**: le due slide (`slide-llm-optimizer` + `slide-semrush`) **fuse** in un'unica `slide-brand-visibility` (layout split, gated `data-solution="brand-visibility"`). Edit puntuali: chip persona Marco → *Adobe Brand Visibility: UniCredit GEO*; CTA scenario → *Dalla storia alla tecnologia*; stat *referral traffic*/*bounce rate*; eyebrow+bullet "momento di Marco"; footer EDS (edge/BYO CDN/standard web); AEM Sites Optimizer (titolo non-overselling + SEO/contenuti/accessibilità/performance).
+- **Admin**: `PAGE_REGISTRY` aggiornato (slide fusa) + nuova soluzione attivabile `brand-visibility` (pillar «AI Visibility»). `index.astro` journey sub-label aggiornato.
+- **Agos `orizzonti.astro`**: rename «Adobe LLM Optimizer» → «Adobe Brand Visibility». Semrush resta citato *dentro* Brand Visibility (motore di intelligence), non come prodotto a sé. Ferrari/Trenitalia/Max Mara non citavano il prodotto.
+- Commit `c306f4a`.
+
+### 17.2 Passata de-AI (copy 100% human, IT+EN)
+Riscrittura chirurgica del copy su **tutte e 5 le experience** (45 file, 348+/351−) per suonare umano: em-dash retorici → virgole/due-punti, frasi spezzate/tricolon → periodi naturali, `non solo X ma Y` e value-speak vuoto rimossi. **Invariati**: nomi prodotto/persona, numeri, fonti, claim, codice; lunghezze preservate (±10%) per non rompere l'audit. Ferrari: EN e IT resi entrambi idiomatici (i `<T>` mantengono sempre entrambe le lingue). Build completo OK; **nessuna nuova failure d'audit** (maxmara/ferrari/trenitalia/agos restano 0; unicredit invariato). Memoria: `copy-must-be-human`. Commit `e2b3d8c`.
+
+### 17.3 Comando `/handover`
+Nuovo slash command di progetto `.claude/commands/handover.md` (vedi §12): aggiorna questo handover, impone il contratto di dimensione file, splitta per sezione e verifica la leggibilità per una nuova sessione con una `Read` completa. **Questo file è stato splittato la prima volta proprio da questo comando** (>48KB). Commit `c489f9b`. Fix frontmatter + install user-level: vedi §17.5.
+
+### 17.4 Bonifica audit UniCredit (hard → 0)
+Passata dedicata sui check **HARD** dell'`audit:deck` unicredit (che aveva ~200 fallimenti, mai stato a 0): `c` (overflow orizzontale / box oltre la safe-inset) 22→0, `e` (text-on-text) 1→0, `j` (clipping fuori viewport) 7→0. 14 slide su 8 sezioni (acquisisci/analizza/b2b/coinvolgi/contenuti/coworker/motore-adobe/risultati), fix in worktree paralleli isolati. Pattern ricorrenti: frecce `absolute -right-2` che sporgono dalle card → tenute dentro (`right-1` + `overflow-hidden`); `min-w-0` su flex/grid children; riduzione gap/padding/densità per far rientrare le slide dense a 1440/1280; numerale display che va a capo. **Vincolo rispettato**: nessun body text < 0.95rem, nessuna slide splittata, nessun nome prodotto/numero/fonte rimosso. Restano **solo soft** `a`/`i`/`g` (totale 170), che il Type & legibility contract vieta di forzare. Metodo di lavoro riusabile: worktree isolati per app condivisa (evita race su `dist/`) + audit full con confronto per-check hard/soft.
+
+### 17.5 Regole vincolanti codificate + /handover globale (commit `ab3fb8b`, `5ed9764`, `b900ca7`)
+Le lezioni di questa sessione sono state **generalizzate in istruzioni vincolanti** per tutte le experience future:
+- **`CLAUDE.md` → nuova sezione «Working rules — codified from production (BINDING, every experience present & future)»** (auto-caricata ogni sessione, quindi seguita da ogni Exp Design): (1) **Copy voice — 100% human, not AI** (tell da evitare, IT+EN, lunghezza ±10%; memoria `copy-must-be-human`); (2) **Audit discipline — hard vs soft** (HARD `b/c/d/e/f/h/j/k` → 0; SOFT `a/i/g` aspirazionali, **mai** forzati rimpicciolendo il type → cut/split; fix ricorrenti; il parser non conta i mock visivi come massa-testo = limite noto); (3) **Cross-experience propagation** (un cambio prodotto/naming o del motore condiviso si propaga a experience + admin `PAGE_REGISTRY`/`SOLUTIONS` + hub/showcase; verifica vs `docs/*.pptx`; memoria `brand-visibility-product`); (4) **Parallel work su app condivisa → worktree isolati** (build/preview concorrenti corrompono lo stesso `dist/`); (5) **Handover docs leggibili a inizio sessione** via `/handover`.
+- **`skills/experience-design/SKILL.md`**: le stesse regole come **checklist attiva** — voce copy in *Content rules (substance)*, disciplina hard/soft + worktree in *Visual self-audit*, e 4 nuovi gate nella *New Client Checklist* (8 copy pass · 9 audit gate · 10 register everywhere · 11 /handover).
+- **`/handover` reso robusto e globale** (commit `b900ca7`): risolto il bug del frontmatter (`argument-hint: [check]` era una **lista YAML** → il comando veniva scartato, «No commands match»; ora `argument-hint`/`description` sono stringhe quotate) e comando **installato anche a livello utente** in `~/.claude/commands/handover.md` → disponibile in **ogni sessione e ogni progetto** (oltre alla copia di progetto versionata; in questo repo vince quella di progetto). **Nota operativa**: gli slash command si caricano **all'avvio della sessione** → serve una **nuova sessione** perché `/handover` compaia.
+
+### 17.6 UniCredit — passata copy morbido/credibilità (commit `aabd2d1`)
+Round di feedback su Engagement Unlimited (7 richieste puntuali su screenshot). Principio: **più morbido e più credibile**, senza toccare struttura/personas/gating. **Solo gli 11 file `apps/unicredit-engagement/src/pages/*` committati** (i file Ferrari/`packages/core` in working tree erano di §19, lasciati fuori).
+- **Cifre non verificabili → qualitativo**: rimosso **"14M clienti"** ovunque (scenario, conosci ×3, risultati footnote, motore-adobe) → *"milioni di clienti / i milioni di profili"*; ammorbidita l'affermazione assoluta *"il profilo completo… ancora non esiste"* → *"…spesso resta parziale"*. Rimosso **"289 milioni di prompt"** (visibilita, 2 occorrenze) → *"milioni di prompt reali"*. Conseguenza: **§5.2 (14M) e §17.1 (289M) aggiornati**.
+- **Numeri di risultato inventati → direzione (↑/↓)**, mantenendo l'etichetta del KPI («applica i KPI, non i risultati specifici»): convertiti in **tutte** le sezioni (acquisisci −90%/3×/−40% + Experimentation +34%CTR; coinvolgi 5×/–68%/+41%; b2b 3.2×/+58%/–40%; coworker 3×/−72% + campaigns +34%CTR; analizza €2,3M/15–35%/3.4×; risultati proiezione UniCredit +€45M/–55%/–85% + card −68%/+40%/3× + Sofia +34%CTR/NPS78; visibilita EDS +40%). **Tenuti** perché credibili: benchmark di **banche reali citate** (US Bank 19× ecc. in risultati, con footnote), ricerche esterne **linkate** (Gartner −25%, Adobe Analytics +1200%/−33%), **target pubblici** UniCredit (RoTE >20%) e **meccaniche di scenario** (0,3s, 87/100 propensity, 200ms, "3 prodotti in 6 mesi"). Le card KPI ora mostrano una **freccia display (↓/↑)** + etichetta + sub qualitativo.
+- **Next-Best-Action → Next-Best-Experience** in tutta l'experience (conosci ×2 + commento, coinvolgi, b2b, admin `PAGE_REGISTRY`). Scelta la forma **inglese** per coerenza col termine tecnico e col precedente "Next-Best-Action"; l'utente potrebbe preferire l'italianizzato *"Next-Best-Esperienza"* — **(da confermare)**.
+- **Obiezione «abbiamo già Salesforce Data Cloud, ma solo per i clienti noti, non per l'acquisition»**: rafforzato il copy della slide di Marco (`slide-storia-conosci`) — RT-CDP parte dal **click anonimo**, ricompone l'identità in tempo reale ed è *"lo stesso motore che serve i clienti storici e che, in acquisition, intercetta chi la banca ancora non conosce"*; rinforzata la card "Acquisizione" della slide Collaboration (prospect net-new/sconosciuti). **Nessun competitor nominato** nel deck.
+- **Fix doppio `""`** sul sample push-notification di Coinvolgi (le virgolette erano sia nel dato sia nel template che le riaggiungeva).
+- **Bullet Visibilità bilanciati** (`slide-marco-moment`): i 3 bullet resi di lunghezza simile (uno era molto più lungo).
+- **Verifica**: build OK; `audit:deck` contro **preview statico** → **0 fallimenti hard** su tutto il deck (restano i soft a/i/g pre-esistenti, non forzati); **screenshot 1920 letti** su tutte le slide toccate (frecce KPI leggibili/coerenti, copy obiezione senza overflow, bullet bilanciati).
+
+---
 ## 18. Ferrari /scoping — modello Adobe-fedele, CI verde & Save resiliente (15 lug 2026)
 
 Tre interventi sequenziali (tutti su `main`, CI verde end-to-end). Riferimento sintetico in §14 (riscritta), memorie `ferrari-scoping-calculator` e `git-push-after-every-commit`.
@@ -54,7 +90,6 @@ Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato
 - **Contesto commerciale (perché standalone + partner a €0)** — non nel deck, guida le scelte del modello: l'intento è **1 istanza Ferrari + ~40 istanze partner/sponsor**, offrendo ai partner **licenze Starter a costo 0** (da cui il default `partnerInstanceCost = 0` e il costo Ferrari editabile). Audience **~5M outside-in, NON confermata dal cliente**. Validazione GTM pianificata con **Lory Mishra** (Principal PMM, Media & Advertising Solutions, Adobe — collega interna che approva/nega): validare il caso d'uso, ottenere le licenze Starter partner a costo 0, definire onboarding + enablement leggero per i partner; presentazione al cliente solo dopo le verifiche con lei. **NON reintrodurre prezzi di listino nel modello** (scelta esplicita del cliente/interna, §20).
 
 ---
-
 ## 21. Experience Atelier — deck trilingue del piano di crescita (17 lug 2026)
 
 **Cos'è.** `apps/atelier` (`/experience-design-factory/atelier/`) — il **piano di crescita
@@ -157,7 +192,6 @@ Critique impeccable a 3 agenti (design/detector/contenuto): score **23/40**, 3 P
   partner access, Quest) — quelle sono fuori scope di questo deliverable.
 
 ---
-
 ## 22. Modifiche core trasversali introdotte da Atelier (verificate su tutte le esperienze)
 
 Due cambi in `packages/core` fatti per Atelier ma **propagati/verificati su tutte** (regola
@@ -208,7 +242,6 @@ Codificate nella sezione «Working rules» di `CLAUDE.md` (ogni experience prese
   `title`=nome sito → "SiteName | SiteName" (inquina il link-preview, che legge `<title>` in
   assenza di tag OG). Guard: `title === SiteName ? title : \`${title} | SiteName\``, su tutte le
   layout + showcase. Correggeva unicredit/maxmara/agos/trenitalia/eni.
-
 ## 23. Redesign «eccellenza» E2E dei 6 deck (`/impeccable`) — 21 lug 2026, live in `main`
 Ridisegno end-to-end del 100% dell'experience-design di **tutti e 6 i deck** a livello
 gallery-grade. Metodo invariante: un **concept brand-native** centralizzato come
@@ -252,7 +285,6 @@ type-check completo né linta); il CI usa `pnpm typecheck` (`astro check`) **e**
 essere già live mentre il gate qualità è rosso.
 
 ---
-
 ## 24. Orbita — Eni (28 ago 2026)
 
 **App**: `apps/eni-orbita` · live a `/experience-design-factory/eni-orbita/` · commit `31c8e13` → `0c42beb` → `48e3e63`. **Scopo**: meeting col **CIO Chessa il 10 set 2026** (rinnovo Eni SpA al 30/09). Brief verificato in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` — **confidenziale, git-ignored, MAI committare** (con `31c8e13` sono entrate in `.gitignore` anche `docs/Eni/`, `docs/Credit Agricole/`, `docs/UniCredit/`, `docs/Adobe Material/`). Memorie: `eni-orbita-prep`, `firefly-deck-motion-exploration`.
@@ -267,7 +299,6 @@ Executive summary · profilo CIO con video · fatti verificati · say/don't-say 
 Registrata in: `deploy.yml` (merge + verify), factory-hub, showcase `experiences.ts`, `scripts/deck-audit.ts` (ROUTE_SET `eni-orbita`, 7 route). **NON seedata nella console Supabase** (manca `0008_seed_eni.sql` → P2 §10). `audit:deck` **0 hard** a 1920/1440/1280 (soft residue su cover ariose); verifica visiva screenshot in entrambe le lingue. Nota pro-futuro (NON implementato): esplorazione motion/Firefly per i deck in `docs/Eni/FIREFLY-DECK-EXPLORATION.md` (5 livelli L1–L5).
 
 ---
-
 ## 25. Core: responsive envelope, nav single-line & sweep visivo (21–22 lug 2026)
 
 Tre interventi trasversali post-redesign, tutti a livello Factory (ereditati da ogni esperienza presente e futura).
@@ -282,65 +313,5 @@ Le pill di sezione andavano a capo ("01 The"/"method"). Fix su **tutte** le nav 
 
 ### 25.3 Sweep visivo esaustivo (`d042105`, 22 lug)
 **536 screenshot** — ogni slide dei 6 deck a 1920 e 1366 — letti uno a uno; ha trovato 3 bug di leggibilità che l'audit DOM non vede: card Max Mara loyalty "Dietro le quinte" **invisibile** (avorio su card chiara: `.mm-panel` batteva l'utility `bg-inverse` → surface scura forzata inline); pannelli Ferrari activate slavati su slide inverse (dato sfondo carbon + glow Rosso Corsa a `.act-frame`/`.act-results`); rail UniCredit a 12 voci con l'attivo fuori dal bordo destro sui laptop (ora auto-centra l'attivo). → Questo sweep + la parity di §25.1 **chiudono la voce P1** «rigirare audit + QC 1920 sui 6 deck» del 21 lug.
-
----
-
-## 26. Biforcazione Connessioni Intelligenti — FS Park × Trenitalia (31 ago 2026)
-
-Commit `0ec1259` (spec) → `954dde1` (fondamenta) → `5aaa5b0` (rami). Spec slide-per-slide: `docs/superpowers/specs/2026-08-31-biforcazione-fspark-trenitalia-design.md`. Memoria `trenitalia-connessioni` aggiornata. **I 13 vincoli LOCKED di §15.4 restano tutti validi** (contenuti migrati, mai regrediti).
-
-### 26.1 Decisioni di design (dalle domande all'owner)
-Audience = **stakeholder separati** (ogni ramo è un pitch a sé; l'intro è cornice di gruppo) · una sola app, **due sotto-alberi** · tronco = solo cover+scenario+bivio · dispositivo narrativo = **stesso viaggiatore, due metà** (Davide: FS Park lo vede dall'auto alla sbarra, Trenitalia dal binario in poi; ogni ramo racconta la sua metà + il suo punto cieco) · stessa pelle con **accent per ramo** (FS Park ambra "mondo-asfalto", Trenitalia rosso "mondo-binario") · **scheletro speculare a 5 capitoli con profondità asimmetrica** (slug identici nei due rami: `partenza · fondamenta · convergenza · meta-invisibile · percorso`).
-
-### 26.2 Information architecture
-```
-/            cover (ritoccata: prefigurazione bivio; journey a 4 card)
-/scenario/   NEUTRALIZZATO: email-gap RIMOSSA (→ ramo Trenitalia), touchpoint con
-             chip proprietà (Trenitalia ×4 · FS Technology · FS Park), chiusa → /bivio/
-/bivio/      NUOVA (2 slide): linea di Davide spezzata al centro + due porte-card
-/fs-park/{partenza,fondamenta,convergenza,meta-invisibile,percorso}/
-/trenitalia/{stessi 5 slug}/
-vecchie route → stub redirect (_redirect.astro): fondazione→trenitalia/fondamenta,
-convergenza→trenitalia/convergenza, connessioni→trenitalia/meta-invisibile,
-roadmap|casi-duso→trenitalia/percorso (deep link preservati, query inclusa)
-```
-Catene frecce: tronco → bivio → fs-park (default, strategia "partire da FS Park" dal confronto 14/07); dentro ogni ramo lineare; prima/ultima pagina di ramo ↔ `/bivio/` (mai traboccare nell'altro ramo).
-
-### 26.3 Ramo FS Park (27 slide, in gran parte nuove — fonte: trascrizione riunione 14/07 in docs/Ferrovie, git-ignored)
-F1 Partenza (cover "La metà su asfalto" · Davide fino alla sbarra · ecosistema a righe impilate: sito con tracking limitato / area riservata in arrivo SENZA date / app già tracciate / CRM Salesforce, fonte "dal confronto di lavoro, luglio 2026" · identità frammentata · opportunità) · F2 Fondamenta = **identity reconciliation** (anonimo/autenticato · chiave: email hashata, Identity Graph, stitching, backfill, chiusa "da approfondire insieme" · XDM + source connector + riuso tagging · "Non rifare. Riconciliare.") · F3 Convergenza (gated `cja`: convergenza · CJA≠CDP · 3 use case prioritari: journey e2e, drop-off, conversion — "da validare sul campo" · demo/POC su dati simulati · adozione come servizio + AI Assistant) · F4 Metà invisibile (gated `data-collab`: punto cieco · clean room GDPR POV sosta · scenari intersocietari: ritardo→estensione sosta, cross-sell, churn condiviso · governance SENZA breach angle · "partire da FS Park, estendere al Gruppo") · F5 Percorso (POC · radar: rinnovi, ricorrenze→abbonamento, segmentazione auto/moto/bici, sorgenti, transazioni↔reclami · accompagnamento · orizzonte · sintesi). **Divieti specifici**: mai giudizi sull'autonomia del team FS Park (solo frame positivo); breach angle SOLO nel ramo Trenitalia; mai `bg="brand"` nel ramo (ambra come sfondo rompe il contrasto).
-
-### 26.4 Ramo Trenitalia (30 slide, ereditate dalle vecchie sezioni + 3 nuove)
-T1 Partenza (cover "La metà su rotaia" · Davide dal binario, metà sinistra tratteggiata "fuori campo" · **email-gap trasloccata INVARIATA** dal tronco con footnote Takeout · punto-cieco NUOVA · opportunità) · T2 Fondamenta (= fondazione.astro: ecosistema impilato, Salesforce, "Non sostituire. Connettere.") · T3 Convergenza (= convergenza.astro intera) · T4 Metà invisibile (= connessioni.astro: **GDPR e breach angle INVARIATI**) · T5 Percorso (= roadmap.astro con framing AJO verbatim + NUOVA slide-esplorare che condensa i 4 "Da esplorare" di casi-duso in righe full-width + sintesi con FS Park come **orizzonte, non prerequisito**).
-
-### 26.5 Runtime branch-aware (BaseLayout) — 3 bug latenti fixati
-1. **Slug composti**: `getCurrentPageSlug()`/`currentSlug()` ora tornano `fs-park/partenza` (prefisso ramo) — senza, i due rami collidevano su media-slot (`slotKey = slug:slideId`), custom slides e gating. AdminConsole regge slug con `/` (slotKey e attribute selector quotati).
-2. **Gating a 3 catene** con path assoluti (la `base` è passata allo script): tronco `[home, scenario, bivio, fs-park/partenza]`; ramo `[bivio, 5 capitoli, bivio]` con gate `convergenza→cja`, `meta-invisibile→data-collab`, `percorso→rtcdp+ajo+mix-modeler` SOLO trenitalia (fs-park/percorso non gated). Sostituisce lo swap dell'ultimo segmento (rompeva sui path annidati).
-3. **Redirect `pageSolutions`** riscritto sugli stessi path assoluti.
-Prop `branch` → `data-branch` su `<html>`: `[data-branch="fs-park"]` override `--accent-primary`→ambra + texture `.fsp-stalli`/`.fsp-carreggiata`; porte del bivio `.fs-porta*`. **TreniNavigation a 3 stati**: tronco (rail Scenario·Bivio + porte ambra/rossa), ramo (chip "⇤ Bivio" + 5 capitoli, MAI l'altro ramo in barra). Admin: PAGE_REGISTRY a 3 gruppi (Tronco / F1–F5 / T1–T5), `appearsIn` aggiornati.
-
-### 26.6 Verifica & gotcha
-`scripts/deck-audit.ts` → **13 route** trenitalia; **0 failure HARD × 3 viewport** (~97 soft residui `a`/`i` motivati + 2 `g` pre-esistenti su home/fs-context e data-collab; storico era 165). `astro check` 0 errori. Screenshot 1920 letti di ogni slide nuova/cambiata (i 2 rami li hanno letti i subagent nei worktree; tronco+bivio letti nel main). **Gotcha preso**: in quest'app `bg="inverse"` è **CHIARO** — una slide scura richiede `SlideBackdrop` con scrim carbonio (bug su `slide-porte`: titolo bianco su fondo chiaro, fixato). Metodo: P1 fondamenta in main tree → **2 subagent in worktree isolati** (uno per ramo, porte preview diverse, audit ridotto alle proprie route) → integrazione + audit full nel main. I fix del tronco a 1280 (touchpoints `c`/`j`) sono stati risolti compattando spazi e note card, MAI riducendo il type.
-
-### 26.7 Revisioni post-biforcazione (1 set 2026) — copy, obiezioni, connettori verificati, closer
-Quattro round di feedback owner su screenshot (commit `4c0493e` → `d4a90d7` → `754de62` → `56a391f` → `d99254c`, tutti su `main`). Nuova memoria **`adobe-product-naming-2026`** (naming Adobe verificati via deep-research su fonti ufficiali).
-- **Round 1 copy/UI (`4c0493e`)**: disclaimer cover "non commissionato da FS" → **"Un esercizio di visione firmato Adobe"** (rivendica la paternità Adobe invece di scusarsi); il racconto **NON è un "tronco comune"** ma **due racconti distinti e autoconsistenti che convergono sulla piattaforma** (riformulati cover/bivio/sintesi — FS non ha chiesto un racconto comune, è Adobe a proporne due convergenti); "piattaforma agentica Q1 2026" **attribuita** (FS Technology × Salesforce mar 2026 + link fsnews); "confronto di lavoro" → **"tavolo di lavoro FS Park × Adobe"** (parti esplicite); "dashboard" femminile; tolto il framing "buttare via" (spaventa il cliente); numeri inventati attenuati (+22%/€8-15 → esiti qualitativi "da misurare"); nodi `.fs-node` resi **opachi** (la linea non trapassa il glifo); griglia 6 touchpoint ad altezza uniforme.
-- **Round 2 revisione iper-approfondita (`d4a90d7`, 3 revisori paralleli in sola lettura: copy/de-AI · narrativa+naming · a11y/token)**: **Elena RIMOSSA** ovunque — era **persona orfana** (in cover ma mai usata nella storia biforcata, tutta su Davide); cover ora solo Davide con linea che sfuma ambra→rosso. Errore grammaticale "Nessuno sistema"→**"Nessun sistema"**. De-AI: sciolti i tricolon/slogan più marcati ("Un viaggio. Due sguardi. Un'intelligenza." · "Ogni viaggio. Ogni parcheggio. Una relazione." · "Zero disruption" · "Privacy-first. Revenue-positive." · "day one/big bang"→italiano) e ridotta a 1 (sul bivio) la formula ripetuta ×4 "orizzonte, non un prerequisito". Tono ROI del ramo Trenitalia allineato al registro prudente di FS Park ("ROI MISURABILE"→"IMPATTO DA VALIDARE", revenue→ricavo/valore); **tolta l'accusa a Oracle Responsys** ("disiscrizioni alte" — mai sminuire il sistema del cliente). A11y: nav sub-label `/40`→`/70` e 0.6→0.72rem; badge owner 0.62rem(11px)→0.72rem; `color-mix()` su testo custom-slide → `rgba()` (contrasto misurabile dall'audit).
-- **Round 3 obiezioni + connettori (`754de62`)**: **obiezione "abbiamo già Salesforce Data Cloud CDP, non serve CJA"** gestita esplicitamente nelle due slide di disambiguazione **CJA≠CDP** (la CDP attiva i profili, CJA legge il viaggio — complementari). **Linea che passava sopra cerchi/emoji risolta alla radice**: `.fs-line-h { z-index:-1 }` → la linea (position:absolute) sta **dietro** i nodi statici opachi, visibile solo negli spazi; verificato che resta visibile su linee orizzontali (cover, bivio, strip) e verticali (ecosistema). **Connettori AEP VERIFICATI su fonti Adobe** (non più supposti — vedi Fatti verificati sotto): corretti i claim "connettore nativo da Data Cloud" e "Responsys connettore AEP nativo (in ingestione)"; "connettore nativo" tenuto **solo per Salesforce CRM**. Tolto "fino a 611 email/anno a un singolo cliente" dalla card sistema in Fondamenta (non aveva senso lì; il 611 resta sulla slide email-gap con contesto Takeout/illustrativo) e rimosso "rollout graduale per superfici" (gergo) dalla card Coworker. **Due slide di chiusura "solo visual"** aggiunte a fine di **entrambi** i rami (closer atmosferico + lockup co-brand collegato dalla linea: ambra FS Park / rosso Trenitalia; `data-display`, airy → nuovi soft `a`/`i` intenzionali). Registrate in admin PAGE_REGISTRY (`slide-chiusura`).
-- **Round 4 closer copy (`56a391f`→`d99254c`)**: il closer FS Park "Un cliente intero, a partire da casa" (goffo + ripeteva il titolo della sintesi precedente) → **"Ogni sosta, un cliente riconosciuto."** (lega il mondo sosta al payoff della riconciliazione identità). Trenitalia resta "Il viaggio, finalmente per intero." (coppia asimmetrica: cliente riconosciuto vs viaggio leggibile).
-- **Naming prodotti aggiornati nel ramo Trenitalia**: **Adobe Mix Modeler → Adobe Marketing Campaign Analytics (ex Mix Modeler)** (id soluzione interno resta `mix-modeler` per non rompere gating/localStorage) — allineato a §5.3; slide adozione distingue **AI Assistant** (risponde) da **Adobe CX Enterprise Coworker** (esegue, GA giu 2026).
-- **Fatti verificati (fonti Adobe ufficiali, 1 set 2026)** — memoria `adobe-product-naming-2026`:
-  - **Salesforce Data Cloud → AEP**: **nessun connettore source nativo documentato**. AEP ha source nativi per Salesforce **CRM** e **Service Cloud**, non per Data Cloud → nel deck ora "i dati di Data Cloud confluiscono in AEP" (via MuleSoft/storage), non "connettore nativo".
-  - **Oracle Responsys**: in AEP è una **destination** (ci si mandano le audience), **non** un source nativo; l'ingestione da Responsys è via **SFTP**. Il framing "AJO/RTCDP attiva SOPRA Responsys" (destination) resta corretto; erano sbagliati solo i claim di *ingestione* nativa.
-  - **Clean room**: il deck usa "Adobe Data Collaboration"; le fonti Adobe 2025 puntano a **"Adobe Real-Time CDP Collaboration"** — claim rimasto *abstain* in ricerca (rate limit) → **NON rinominato**, da confermare sulla pagina live (P2 §10).
-  - **CX Enterprise Coworker**: annuncio Adobe Summit 20/04/2026, **GA 10/06/2026**; è l'evoluzione agent-first di AI Assistant (esegue flussi su RTCDP/CJA/AJO, humans-in-the-loop). AI Assistant oggi risponde solo in inglese.
-
-Verifica di tutti i round: `pnpm --filter trenitalia-connessioni build` verde; `audit:deck` **0 fallimenti HARD × 3 viewport** (soft `a`/`i` = baseline + le 2 nuove slide airy; un overflow transitorio su `slide-adozione` dopo l'aggiunta del pannello Coworker è stato corretto compattando i margini, MAI il type); screenshot 1920 letti di ogni slide toccata (linea, closer, obiezione CDP, connettori). Deck ora a **15 route** in `deck-audit.ts`? — no: le 2 slide di chiusura sono **slide interne** ai `percorso` esistenti (non nuove route), quindi le route restano 13.
-
-### 26.8 Dossier war-room FSTechnology — Adobe Day (8 set 2026, `1e7079d`)
-Nuova opportunità Gruppo FS (mail Dario 8 set): Adobe Day con **Maurizio Giampaolo — Digital Business Partner Trasporto di FSTechnology** (società ICT in-house del Gruppo FS), incontro cliente **entro fine set 2026**, con ascolto della loro architettura digitale. Perimetro **multimodale passeggeri + merci** → amplia l'use case Trenitalia+FS Park verso **B2B/merci e analytics**. Backlog P1 in §10.
-- **Pagina `apps/trenitalia-connessioni/src/pages/dossier.astro`** (route `/trenitalia-connessioni/dossier/`): war-room **interna** riservata, **orfana/fuori nav**, `noindex`, badge "Adobe internal · Riservato". Riusa il `BaseLayout` + token FS (carbonio/rosso-fs/ambra), classi **`.dw-*`** (stile locale nella pagina). 10 sezioni: executive summary · mission brief · chi-è (come pensa/parlargli, senza carriera) · perimetro societario (BU Passeggeri: Trenitalia/Tper/Busitalia/FS Park — BU Merci: **FS Logistix** ex-Mercitalia Logistics, Mercitalia Rail/TX Logistik/Intermodal/Terminali Italia) · fatti verificati (badge) · big idea (Passeggeri: CartaFRECCIA personalization, MaaS multimodale — Merci/B2B: portale cargo FS Logistix, tracking MIR APP, CJA filiera) · matrice priorità P0/P1 · say/don't-say · domande+caveat · biblioteca fonti.
-- **Ricerca**: `/deep-research` (5 angoli, 23 fonti, 83 claim → **24 verificati a 3 voti**). Sorgente `.md` in `docs/Ferrovie/DOSSIER-Maurizio-Giampaolo-FST-2026-09-08.md` (git-ignored). Solo fonti pubbliche; nessun dato contrattuale nella pagina.
-- ⚠️ **Caveat competitivo (LOCKED, il fatto più importante)**: mar 2026 il Gruppo FS ha annunciato con **Salesforce** una *foundation agentica* (Data Cloud + MuleSoft), **coordinata dalla stessa FSTechnology**, su 840M+ passeggeri + logistica merci → Salesforce presidia già lo strato CDP/CX. **Niente pitch CDP greenfield**: posizionare Adobe come complementare (AEM/GenStudio/Firefly content layer, CJA analytics, Target) o sfidante mirato. Naming: usare **FS Logistix** (non "Mercitalia Logistics"). **Dall'8 set pomeriggio la pagina NON contiene più** carriera/cifre LinkedIn né il caveat mapping società→DBP (rimossi su richiesta owner: fonte non primaria); se il ramo Merci è nel mandato DBP resta una domanda da fare a voce (sez. domande).
-- **Infra**: aggiunto prop **`noindex`** al `BaseLayout` di trenitalia (mancava; ora come Eni §24.2 / MIM §28). Primo caso della convenzione trasversale **«dossier = pagina web interna»** (§10, memoria `dossier-as-internal-web-page`). Build (20 pagine) verde; `noindex` confermato nell'HTML; pagina letta a 1920/1440 (type generoso, layout bilanciato). Memoria `fst-giampaolo-adobe-day`.
 
 ---

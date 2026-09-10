@@ -10,13 +10,14 @@ you don't need all of it for most tasks.
 - **memory `MEMORY.md`** (~0.6k tok) — index of auto-memories. Individual memory files load on recall (not all at once; ~9k total across 15 files).
 
 ## Read order (on demand, via the Read tool)
-1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (2026-09-09). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe per file, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **6 parti**, da leggere in ordine (≈24k tok totali; ognuna sta in una singola `Read`):
-   **`HANDOVER-01.md`** (§1–5: stato generale — **8 esperienze cliente** + Aperture —, architettura, comandi, stato per esperienza, **UniCredit content model §5** con **§5.6 workshop cut** e **§5.7 passata 9 set sera: storia di Marco a 6 momenti, cover uniformi, clip Firefly Video, chiusura**) ·
-   **`HANDOVER-02.md`** (§6–10: feature runtime deck, Admin, **audit-vs-legibility §8**, deploy, **backlog prioritario §10** — P1 Isybank Valitutti 10 set / **dry-run UniCredit 14/09** / FSTechnology Adobe Day / Eni / VPN / Atelier / dossier UniCredit seed pubblico; poi P2) ·
+1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-09-10**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe per file, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **7 parti**, da leggere in ordine (≈27k tok totali; ognuna sta in una singola `Read`):
+   **`HANDOVER-01.md`** (§1–9: stato generale, architettura, comandi, stato per esperienza, **UniCredit content model §5** incl. **§5.8 design system vero + loghi + chiusura come capitolo**, feature runtime §6, **Admin Console §7 a 4 tab**, **audit §8 — 11 check**, deploy §9) ·
+   **`HANDOVER-02.md`** (§10: **backlog prioritario** — leggila per prima se devi decidere cosa fare) ·
    **`HANDOVER-03.md`** (§11: **change log datato**, dal più recente) ·
-   **`HANDOVER-04.md`** (§12–17: puntatori, **Factory Showcase §13**, **Ferrari /scoping §14**, hub/parity/Connessioni §15 — vincoli LOCKED —, **Agos §16**, Brand Visibility + de-AI + /handover §17) ·
-   **`HANDOVER-05.md`** (§18–26: Ferrari scoping §18–20, **Experience Atelier §21**, **core trasversali §22** incl. regole BINDING §22.4, redesign E2E §23, **Eni Orbita §24**, responsive/nav §25, **biforcazione FS Park × Trenitalia §26** + dossier FSTechnology §26.8) ·
-   **`HANDOVER-06.md`** (§27–31: **UniCredit attribution + dossier §27**, **MIM «La voce del Ministero» §28**, **Firefly asset+video pipeline §29**, **Aperture §30**, **Isybank «Il momento giusto» §31** incl. **§31.5 deck PowerPoint per Valitutti**).
+   **`HANDOVER-04.md`** (§12–16: puntatori, **Factory Showcase §13** incl. **§13.6 toggle di pubblicazione**, **Ferrari /scoping §14**, hub/parity/Connessioni §15 — vincoli LOCKED —, **Agos §16**) ·
+   **`HANDOVER-05.md`** (§17–25: Brand Visibility/de-AI/handover §17, Ferrari scoping §18–20, **Experience Atelier §21**, **core trasversali §22**, redesign E2E §23, **Eni Orbita §24**, responsive/nav §25) ·
+   **`HANDOVER-06.md`** (§26–28: **biforcazione FS Park × Trenitalia §26**, **UniCredit attribution + dossier §27**, **MIM «La voce del Ministero» §28**) ·
+   **`HANDOVER-07.md`** (§29–31: **Firefly asset+video pipeline §29**, **Aperture §30**, **Isybank «Il momento giusto» §31**).
 2. **`docs/new-client-in-30-min.md`** (~0.9k tok) — read **only if** creating a new experience (steps + gotchas: Tailwind v4 + monorepo, trailing slash, base URL, GSAP scroller, reduced-motion, hyphenated TS keys, CSS translucency).
 3. **`docs/AUDIT.md`** (~4.9k tok) — read **only if** working on **Max Mara / Acquisizione**. Phase‑1 diagnosis (dated 2026‑06‑16); proposals **not yet applied** — validate before acting.
 4. **`docs/storyboard.md`** (~1.6k tok) — narrative storyboard; read if you need the story arc.
