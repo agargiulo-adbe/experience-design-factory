@@ -18,6 +18,7 @@ export const assets: AssetSlot[] = [
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
+    duotone: ['#04252D', '#CCECEA'],
     alt: '',
   },
   {
@@ -45,6 +46,7 @@ export const assets: AssetSlot[] = [
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
+    duotone: ['#04252D', '#CCECEA'],
     alt: '',
   },
 
@@ -56,9 +58,9 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Abstract elegant visualization of six glowing interconnected engines of light, deep crimson and warm gold energy threads flowing between hexagonal nodes, deep midnight-blue background, premium financial-technology aesthetic, dark, sophisticated, cinematic depth, subtle bokeh, minimal',
+      'Abstract elegant visualization of six glowing interconnected engines of light, petrol-teal (#007A91) and bright cyan (#00AED0) energy threads flowing between hexagonal nodes, one single node glowing red (#E2001A), very dark teal-black background (#04252D), premium financial-technology aesthetic, dark, sophisticated, cinematic depth, subtle bokeh, minimal',
     negativePrompt:
-      'text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot, cluttered',
+      'gold, amber, warm orange, yellow, brown, beige, crimson red dominance, purple, pink, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot, cluttered',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
@@ -69,9 +71,9 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Abstract premium visualization of a single warm-gold beam of light discovered among countless deep-crimson data streams converging to one bright point over a deep midnight-blue background, the feeling of being found, financial-technology elegance, dark, cinematic, minimal',
+      'Abstract premium visualization of a single bright cyan (#00AED0) beam of light discovered among countless petrol-teal (#007A91) data streams converging to one bright point over a very dark teal-black background (#04252D), the feeling of being found, financial-technology elegance, dark, cinematic, minimal',
     negativePrompt:
-      'teal, cyan, turquoise, green, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot',
+      'gold, amber, warm orange, yellow, brown, beige, crimson red dominance, purple, pink, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot, cluttered',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
@@ -82,9 +84,9 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Abstract flowing ribbons of warm gold and deep crimson light weaving into ordered parallel streams over a deep midnight-blue background, the sense of content composed at speed, premium editorial, dark, cinematic, minimal',
+      'Abstract flowing ribbons of petrol-teal (#007A91) and bright cyan (#00AED0) light weaving into ordered parallel streams over a very dark teal-black background (#04252D), one single red (#E2001A) filament running among them, the sense of content composed at speed, premium editorial, dark, cinematic, minimal',
     negativePrompt:
-      'teal, cyan, turquoise, green, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot',
+      'gold, amber, warm orange, yellow, brown, beige, crimson red dominance, purple, pink, text, words, letters, typography, logos, watermark, brand names, people, faces, car, automobile, user interface, dashboard screenshot, cluttered',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
@@ -98,6 +100,7 @@ export const assets: AssetSlot[] = [
     aspect: '16:9',
     width: 2400,
     grade: 'duotone',
+    duotone: ['#04252D', '#CCECEA'],
     alt: '',
   },
   {
@@ -185,6 +188,7 @@ export const assets: AssetSlot[] = [
     aspect: '16:9',
     width: 1800,
     grade: 'duotone',
+    duotone: ['#04252D', '#CCECEA'],
     alt: 'Piattaforma AI astratta',
   },
 
@@ -273,9 +277,9 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'art',
     prompt:
-      'Abstract visualization of a single customer journey as one continuous luminous thread of crimson and warm gold light passing through eight glowing nodes, deep midnight-blue background, glass reflections, premium financial-technology aesthetic, cinematic depth, minimal',
+      'Abstract visualization of a single customer journey as one continuous luminous thread of petrol-teal (#007A91) and cyan (#00AED0) light passing through eight glowing nodes, the last node glowing red (#E2001A), very dark teal-black background (#04252D), glass reflections, premium financial-technology aesthetic, cinematic depth, minimal',
     negativePrompt:
-      'text, words, letters, typography, logos, watermark, brand names, people, faces, dashboard screenshot, charts with numbers, cluttered',
+      'gold, amber, warm orange, yellow, brown, beige, purple, pink, text, words, letters, typography, logos, watermark, brand names, people, faces, dashboard screenshot, charts with numbers, cluttered',
     aspect: '16:9',
     width: 2400,
     grade: 'none',
@@ -326,9 +330,9 @@ export const assets: AssetSlot[] = [
     type: 'firefly',
     contentClass: 'photo',
     prompt:
-      'Milan Porta Nuova financial district at blue hour seen from above, a tall slender modern glass skyscraper with a spire dominating the skyline, warm city lights, deep midnight-blue sky, thin threads of warm gold light tracing the streets below, cinematic, premium, editorial photography, no people',
+      'Milan Porta Nuova financial district at blue hour seen from above, a tall slender modern glass skyscraper with a spire dominating the skyline, deep teal-blue sky, cool cyan city lights, thin threads of petrol-teal light tracing the streets below, cinematic, premium, editorial photography, no people',
     negativePrompt:
-      'text, words, letters, typography, logos, watermark, brand names, people, faces, cars close-up, cluttered, cartoon',
+      'gold, amber, warm orange sunset, yellow street lights, brown, beige, text, words, letters, typography, logos, watermark, brand names, people, faces, cars close-up, cluttered, cartoon',
     aspect: '16:9',
     width: 2400,
     grade: 'none',

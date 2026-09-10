@@ -59,13 +59,18 @@ function hasCommand(cmd: string): boolean {
   return spawnSync(process.platform === 'win32' ? 'where' : 'which', [cmd]).status === 0;
 }
 
-/** Re-encode for smooth scrubbing: every frame a keyframe (-g 1) + faststart. */
-function scrubEncode(inPath: string, outPath: string): boolean {
+/**
+ * Re-encode per il web. Con `scrub` (default) ogni frame è un keyframe: serve allo
+ * scroll-scrubbing, ma pesa 4-5 volte tanto. Una clip che va solo in autoplay+loop
+ * come backdrop non si scrubba mai: lì `scrub: false` tiene un GOP normale e la
+ * pagina non si porta dietro megabyte inutili.
+ */
+function scrubEncode(inPath: string, outPath: string, scrub = true): boolean {
   const r = spawnSync('ffmpeg', [
     '-y', '-i', inPath,
     '-an',                         // no audio (web scrub)
     '-c:v', 'libx264', '-pix_fmt', 'yuv420p',
-    '-g', '1', '-keyint_min', '1', // all keyframes → seekable
+    ...(scrub ? ['-g', '1', '-keyint_min', '1'] : ['-g', '48']),
     '-crf', '20', '-preset', 'slow',
     '-movflags', '+faststart',
     outPath,
@@ -117,7 +122,7 @@ async function main() {
 
       const outMp4 = path.join(outDir, `${slot.id}.mp4`);
       const outPoster = path.join(outDir, `${slot.id}.poster.jpg`);
-      if (!scrubEncode(raw, outMp4)) { console.log(c.err(`  ✗ ffmpeg scrub-encode failed for "${slot.id}"`)); continue; }
+      if (!scrubEncode(raw, outMp4, slot.scrub !== false)) { console.log(c.err(`  ✗ ffmpeg scrub-encode failed for "${slot.id}"`)); continue; }
       posterFrame(outMp4, outPoster);
 
       const sizeMB = (fs.statSync(outMp4).size / 1e6).toFixed(1);

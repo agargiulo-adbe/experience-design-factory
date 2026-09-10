@@ -131,6 +131,19 @@ Rewrite into natural, concrete sentences with varied rhythm. **Never touch** pro
 - The parser does not count visual mocks (a terminal/image beside a split slide) as text mass → an `i`/`comX` imbalance on a visually balanced split slide is a **known parser limit, not a defect**.
 - Recurring meaning‑preserving fixes for HARD: keep `absolute` decorations inside the box (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
 
+### Inchiostri che si ribaltano con la superficie (UniCredit, e da riusare)
+Un colore di accento non è un inchiostro: lo stesso ruolo ha bisogno di **due valori**, uno
+per le superfici chiare e uno per quelle scure (il ciano regge sul petrolio notte e sparisce
+sul bianco; il rosso pieno fa il contrario). In `apps/unicredit-engagement/global.css` ci sono
+`--ink-accent`, `--ink-brand-text`, `--ink-note`: default = versione per fondo CHIARO, ribaltati
+da `[data-slide].bg-[var(--surface-inverse)]`, `.uc-mock--dark`, `.uc-shot--dark`, `.uc-on-dark`,
+e **ripresi** dai componenti che si portano una superficie chiara dentro una slide scura
+(`.uc-panel`, `.uc-card`, `.uc-mock`, `.motore-layer`, `.cnv-channel`, `.uc-on-light`).
+Per il testo usare SEMPRE questi, mai `--color-ciano` / `--color-rosso` / `--accent-*`.
+Le varianti scure vanno **dopo** quelle chiare nel file: stessa specificità, vince l'ultima.
+Una slide che *dichiara* `bg="secondary"` ma rende scura per via del backdrop va marcata a
+mano con `.uc-on-dark`. Verificare misurando i pixel, non leggendo il CSS.
+
 ### Cross‑experience propagation
 A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
 

@@ -35,6 +35,12 @@ export interface AssetSlot {
   width: number;
   /** Brand color-grade preset applied to the generated source. */
   grade?: Grade;
+  /**
+   * `grade: 'duotone'` only — la coppia [ombra, luce] su cui rimappare la luminanza,
+   * in esadecimale. Senza questo campo resta il default storico (Max Mara:
+   * testa-di-moro → avorio), che su un altro brand stona.
+   */
+  duotone?: [string, string];
   /** Accessible description (also the placeholder aria-label). */
   alt: string;
 }

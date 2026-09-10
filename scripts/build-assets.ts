@@ -80,7 +80,7 @@ interface Provenance {
 }
 
 // ── color grade ────────────────────────────────────────────────────
-function applyGrade(img: sharp.Sharp, grade: Grade): sharp.Sharp {
+function applyGrade(img: sharp.Sharp, grade: Grade, slot?: AssetSlot): sharp.Sharp {
   if (grade === 'editorial') {
     // Slight desaturation + warm balance toward cammello + soft contrast.
     return img
@@ -93,8 +93,13 @@ function applyGrade(img: sharp.Sharp, grade: Grade): sharp.Sharp {
     // modulate(saturation:0) desaturates while KEEPING 3 bands, so the
     // per-channel linear can remap to the two brand colours (grayscale()
     // collapses to 1 band and linear can't expand it).
-    const dark = [62, 44, 32];
-    const light = [245, 240, 230];
+    const hex = (h: string): number[] => {
+      const v = h.replace('#', '');
+      return [0, 2, 4].map((i) => parseInt(v.slice(i, i + 2), 16));
+    };
+    const [dark, light] = slot?.duotone
+      ? (slot.duotone.map(hex) as [number[], number[]])
+      : [[62, 44, 32], [245, 240, 230]];
     const mul = light.map((l, i) => (l - dark[i]) / 255) as [number, number, number];
     return img.modulate({ saturation: 0 }).linear(mul, dark as [number, number, number]);
   }
@@ -227,7 +232,7 @@ async function processSlot(slot: AssetSlot, provenance: Provenance[]) {
   const base = sharp(fetched.buffer, { failOn: 'none' })
     .rotate()
     .resize(width, height, { fit: 'cover', position: 'attention' });
-  await applyGrade(base, slot.grade ?? 'none')
+  await applyGrade(base, slot.grade ?? 'none', slot)
     .webp({ quality: 82 })
     .toFile(outPath);
 
