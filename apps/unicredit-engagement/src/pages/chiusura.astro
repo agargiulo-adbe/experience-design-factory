@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UniNavigation from '../components/UniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import { href } from '@edf/core/utils/url.js';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Clip Firefly di chiusura (GitHub Release `media`, git-ignored in locale) + poster in /public/media.
+const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/uc-close.mp4';
+const closePoster = `${base.replace(/\/?$/, '/')}media/uc-close.poster.jpg`;
+
+const marcoSteps = [
+  { n: '01', label: { en: 'ChatGPT', it: 'ChatGPT' } },
+  { n: '02', label: { en: 'Reel ad', it: 'Reel ads' } },
+  { n: '03', label: { en: 'Concierge', it: 'Concierge' } },
+  { n: '04', label: { en: 'Measured', it: 'Misurato' } },
+  { n: '05', label: { en: 'Advisor', it: 'Consulente' } },
+  { n: '06', label: { en: 'The keys', it: 'Le chiavi' } },
+];
+
+const demoOrder = [
+  { n: '01', name: { en: 'Content management', it: 'Gestione contenuti' } },
+  { n: '02', name: { en: 'Content optimization', it: 'Ottimizzazione contenuti' } },
+  { n: '03', name: { en: 'Brand Concierge', it: 'Brand Concierge' } },
+  { n: '04', name: { en: 'Performance marketing', it: 'Performance marketing' } },
+  { n: '05', name: { en: 'Journey analytics', it: 'Journey analytics' } },
+  { n: '06', name: { en: 'Agentic workflows', it: 'Workflow agentici' } },
+];
+---
+<BaseLayout
+  title="Chiusura"
+  description="Un cliente, sei motori, una piattaforma: la chiusura del viaggio di Marco."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <UniNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/risultati')}>
+
+    <Slide id="slide-close" bg="inverse" align="center">
+      <Fragment slot="backdrop">
+        <div class="uc-video-poster" style={`background-image: url(${closePoster});`} aria-hidden="true"></div>
+        <video class="uc-video" autoplay muted loop playsinline preload="metadata" poster={closePoster} aria-hidden="true">
+          <source src={CLOSE_VIDEO} type="video/mp4" />
+        </video>
+        <div class="uc-video-scrim" data-scrim aria-hidden="true"></div>
+      </Fragment>
+      <div class="w-full max-w-5xl mx-auto flex flex-col items-center text-center">
+        <T as="p" class="slide-eyebrow text-center text-[var(--ink-accent)] mb-5" data-reveal en="CLOSING" it="CHIUSURA" />
+        <T as="h2" class="slide-title text-[var(--ink-inverse)] mb-5" style="font-size: clamp(2.4rem, 4.8vw, 4.4rem);" data-reveal data-reveal-delay="0.08"
+          en="One customer. Six engines. One platform."
+          it="Un cliente. Sei motori. Una piattaforma."
+        />
+        <T as="p" class="text-[clamp(1.05rem,1.4vw,1.35rem)] text-[var(--color-grigio-200)] max-w-3xl mb-8 leading-relaxed" data-reveal data-reveal-delay="0.15"
+          en="Marco is not a fictional character: he is the customer UniCredit can serve as early as tomorrow. Six moments for him, six engines behind them, one platform."
+          it="Marco non è un personaggio di finzione: è il cliente che UniCredit può servire già da domani. Sei momenti per lui, sei motori dietro, una piattaforma."
+        />
+        <div class="uc-close-band" data-reveal data-reveal-delay="0.22">
+          <T as="p" class="uc-close-band-label" en="Marco's journey" it="Il viaggio di Marco" />
+          <ol class="uc-steps uc-steps--dark">
+            {marcoSteps.map((m, i) => (
+              <li class:list={["uc-steps-item", i === marcoSteps.length - 1 && 'is-last']}><span class="uc-steps-n">{m.n}</span><T as="span" class="uc-steps-label" en={m.label.en} it={m.label.it} /></li>
+            ))}
+          </ol>
+        </div>
+        <div class="uc-close-band mt-6" data-reveal data-reveal-delay="0.3">
+          <T as="p" class="uc-close-band-label" en="The six engines · live now, in this order" it="I sei motori · adesso dal vivo, in quest'ordine" />
+          <ol class="uc-close-list">
+            {demoOrder.map((d) => (
+              <li class="uc-close-item"><span class="uc-close-n">{d.n}</span><T as="span" class="uc-close-name" en={d.name.en} it={d.name.it} /></li>
+            ))}
+          </ol>
+        </div>
+        <div class="mt-8" data-reveal data-reveal-delay="0.36"><CoBrand variant="lockup" /></div>
+        <T as="p" class="uc-firefly mt-4" data-reveal data-reveal-delay="0.34" en="Backdrops and clips of this deck generated with Adobe Firefly, signed with Content Credentials" it="Sfondi e clip di questo deck generati con Adobe Firefly, firmati con Content Credentials" />
+        <a href={href(base, '/')} class="mt-5 inline-flex items-center gap-2 px-5 py-2 text-xs font-medium tracking-widest uppercase border border-[var(--ink-inverse)]/30 text-[var(--ink-inverse)]/60 hover:border-[var(--ink-inverse)]/70 hover:text-[var(--ink-inverse)] transition-colors duration-300 rounded-sm" data-reveal data-reveal-delay="0.4">
+          <T en="Start the journey over →" it="Ricomincia il percorso →" />
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
+
+<style>
+  .uc-close-band { width: 100%; max-width: 56rem; }
+  .uc-close-band-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: 0.9rem; max-width: none; }
+  .uc-close-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.5rem; width: 100%; }
+  .uc-close-item { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; padding: 0.6rem 0.4rem; border-radius: 4px; background: rgba(245,245,245,0.06); border-top: 2px solid var(--color-ciano); text-align: center; min-width: 0; }
+  .uc-close-n { font-family: var(--font-display); font-weight: 300; font-size: 1.35rem; color: var(--ink-accent); line-height: 1; }
+  .uc-close-name { font-size: 0.9rem; font-weight: 600; color: var(--ink-inverse); line-height: 1.25; }
+</style>

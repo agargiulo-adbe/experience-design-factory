@@ -13,7 +13,7 @@ who can configure them.
 
 Experiences today:
 - **Generazioni** — Max Mara (IT, quiet‑luxury). First instance.
-- **Engagement Unlimited** — UniCredit (IT, 11 sections).
+- **Engagement Unlimited** — UniCredit (IT/EN, 7 capitoli: Scenario · Il Sito · Contenuti · Analizza · Coworker · Risultati · **Chiusura**; la chiusura è un capitolo a sé, così si può spegnere Risultati e tenerla).
 - **Pole Position** — Ferrari Racing × Adobe (EN/IT bilingual, motorsport, 7 sections).
 - **Connessioni Intelligenti** — FS Group (IT, 6 sezioni + casi d'uso).
 - **Trait d'Union** — Agos (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).

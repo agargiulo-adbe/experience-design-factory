@@ -48,6 +48,7 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'contenuti',    route: '/experience-design-factory/unicredit-engagement/contenuti/' },
     { name: 'b2b',          route: '/experience-design-factory/unicredit-engagement/b2b/' },
     { name: 'risultati',    route: '/experience-design-factory/unicredit-engagement/risultati/' },
+    { name: 'chiusura',     route: '/experience-design-factory/unicredit-engagement/chiusura/' },
   ],
   ferrari: [
     { name: 'home',         route: '/experience-design-factory/ferrari-racing/' },
