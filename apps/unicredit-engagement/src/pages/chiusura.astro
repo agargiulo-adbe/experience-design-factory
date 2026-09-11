@@ -83,19 +83,30 @@ const demoOrder = [
     -->
     <Slide id="slide-close-signature" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="clip">
       <LoopVideo slot="backdrop" src={CLOSE_VIDEO} poster={closePoster} scrim="uc-video-scrim" />
-      <div class="w-full max-w-3xl mx-auto flex flex-col items-center text-center">
-        <T as="p" class="uc-close-sign-line" data-reveal
-          en="Six moments for Marco. Six engines behind them. One platform."
-          it="Sei momenti per Marco. Sei motori dietro. Una piattaforma."
-        />
-        <CoBrand variant="hero" class="mt-9" data-reveal data-reveal-delay="0.12" />
-        <T as="p" class="uc-firefly mt-8" data-reveal data-reveal-delay="0.2"
-          en="Backdrops and clips of this deck generated with Adobe Firefly, signed with Content Credentials"
-          it="Sfondi e clip di questo deck generati con Adobe Firefly, firmati con Content Credentials"
-        />
-        <a href={href(base, '/')} class="mt-7 inline-flex items-center gap-2 px-5 py-2 text-xs font-medium tracking-widest uppercase border border-[var(--ink-inverse)]/30 text-[var(--ink-inverse)]/60 hover:border-[var(--ink-inverse)]/70 hover:text-[var(--ink-inverse)] transition-colors duration-300 rounded-sm" data-reveal data-reveal-delay="0.28">
-          <T en="Start the journey over →" it="Ricomincia il percorso →" />
-        </a>
+      <!--
+        La slide precedente fa arrivare blocchi uno dopo l'altro (stagger di fade).
+        Qui il gesto è un altro: una sola passata di luce che SCRIVE la firma.
+        Niente `data-reveal` su questi elementi — ci pensa la firma, e senza
+        animazione restano comunque visibili (il contenuto non è mai appeso a
+        una transizione che potrebbe non partire).
+      -->
+      <div class="uc-sign w-full max-w-3xl mx-auto flex flex-col items-center text-center" data-uc-sign>
+        <span class="uc-sign-beam" aria-hidden="true"></span>
+        <div class="uc-sign-body flex flex-col items-center">
+          <T as="p" class="uc-close-sign-line"
+            en="Six moments for Marco. Six engines behind them. One platform."
+            it="Sei momenti per Marco. Sei motori dietro. Una piattaforma."
+          />
+          <CoBrand variant="hero" class="mt-9" />
+          <span class="uc-sign-rule" aria-hidden="true"></span>
+          <T as="p" class="uc-firefly mt-7"
+            en="Backdrops and clips of this deck generated with Adobe Firefly, signed with Content Credentials"
+            it="Sfondi e clip di questo deck generati con Adobe Firefly, firmati con Content Credentials"
+          />
+          <a href={href(base, '/')} class="uc-sign-cta mt-7 inline-flex items-center gap-2 px-5 py-2 text-xs font-medium tracking-widest uppercase border border-[var(--ink-inverse)]/30 text-[var(--ink-inverse)]/60 hover:border-[var(--ink-inverse)]/70 hover:text-[var(--ink-inverse)] transition-colors duration-300 rounded-sm">
+            <T en="Start the journey over →" it="Ricomincia il percorso →" />
+          </a>
+        </div>
       </div>
     </Slide>
 
@@ -103,6 +114,104 @@ const demoOrder = [
 </BaseLayout>
 
 <style>
+  /* ── «La firma» — l'animazione dell'ultima slide ───────────────────────────
+     La slide prima fa arrivare blocchi in sequenza. Qui il gesto è opposto e
+     unico: un raggio di luce ciano attraversa la composizione una volta sola e,
+     dove passa, la firma compare — come se la stesse scrivendo. Quando il raggio
+     esce, il marchio Adobe si accende e sotto si tira la riga della firma.
+
+     Regola rispettata: **il contenuto è visibile di default**. La maschera esiste
+     solo mentre `data-signing` è presente, quindi se l'animazione non parte mai
+     (scheda in background, renderer headless, reduced-motion) la slide è
+     comunque completa — non si appende la visibilità a una transizione.
+
+     Maschera e raggio sono guidati dalla STESSA animazione di posizione: il
+     bagliore viaggia esattamente sul bordo della rivelazione. Niente proprietà
+     di layout animate, solo mask/background-position e transform. */
+  .uc-sign { position: relative; }
+
+  .uc-sign-beam {
+    position: absolute;
+    /* Debordo solo in verticale: sui lati allargherebbe lo scrollWidth della
+       colonna e farebbe fallire il check `c` dell'audit (sborda dalla safe-area).
+       Il raggio non ha bisogno di uscire: la maschera copre già tutta la colonna. */
+    inset: -9% 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(100deg,
+      transparent 46.4%,
+      rgba(0,174,208,0.10) 48.4%,
+      rgba(126,231,255,0.95) 49.7%,
+      rgba(255,255,255,0.98) 50%,
+      rgba(126,231,255,0.95) 50.3%,
+      rgba(0,174,208,0.10) 51.6%,
+      transparent 53.6%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    filter: blur(0.5px);
+    /* Senza questa sfumatura il raggio ha due estremità nette e legge come un
+       rettangolo illuminato invece che come un fascio di luce. */
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
+  }
+
+  .uc-sign-rule {
+    display: block;
+    width: min(20rem, 62%);
+    height: 2px;
+    margin-top: 1.5rem;
+    border-radius: 2px;
+    background: linear-gradient(to right, transparent, var(--color-ciano) 22%, #7EE7FF 50%, var(--color-ciano) 78%, transparent);
+    box-shadow: 0 0 12px rgba(0, 174, 208, 0.45);
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Lo stato animato vive solo sotto [data-signing]: fuori, tutto è visibile. */
+    .uc-sign[data-signing] .uc-sign-body {
+      -webkit-mask-image: linear-gradient(100deg, #000 0 46%, transparent 54%);
+      mask-image: linear-gradient(100deg, #000 0 46%, transparent 54%);
+      -webkit-mask-size: 300% 100%;
+      mask-size: 300% 100%;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      animation: uc-sign-write 1500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .uc-sign[data-signing] .uc-sign-beam {
+      animation: uc-sign-beam 1500ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .uc-sign[data-signing] .uc-sign-rule {
+      transform: scaleX(0);
+      animation: uc-sign-rule 900ms cubic-bezier(0.22, 1, 0.36, 1) 1020ms forwards;
+    }
+    /* Il marchio Adobe si accende quando il raggio lo ha appena superato. */
+    .uc-sign[data-signing] :global(.edf-cobrand-adobe) {
+      animation: uc-sign-ignite 1100ms cubic-bezier(0.4, 0, 0.2, 1) 860ms both;
+    }
+  }
+
+  @keyframes uc-sign-write {
+    from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+    to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
+  }
+  @keyframes uc-sign-beam {
+    0%   { background-position: 100% 0; opacity: 0; }
+    8%   { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { background-position: 0% 0;   opacity: 0; }
+  }
+  @keyframes uc-sign-rule {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  @keyframes uc-sign-ignite {
+    0%   { filter: drop-shadow(0 0 0 rgba(226,0,26,0)); }
+    35%  { filter: drop-shadow(0 0 26px rgba(226,0,26,0.75)); }
+    100% { filter: drop-shadow(0 0 10px rgba(226,0,26,0.22)); }
+  }
+
   .uc-close-band { width: 100%; max-width: 56rem; }
   .uc-close-sign-line { font-family: var(--font-display); font-weight: 300; font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.25; color: var(--ink-inverse); max-width: 24ch; }
   .uc-close-band-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: clamp(0.55rem, 1.1vh, 0.9rem); max-width: none; }
@@ -111,3 +220,39 @@ const demoOrder = [
   .uc-close-n { font-family: var(--font-display); font-weight: 300; font-size: 1.35rem; color: var(--ink-accent); line-height: 1; }
   .uc-close-name { font-size: 0.9rem; font-weight: 600; color: var(--ink-inverse); line-height: 1.25; }
 </style>
+
+<!--
+  La firma si scrive quando la slide diventa attiva, e si riscrive a ogni
+  ritorno: il deck rigioca le animazioni sulla slide che si attiva, e questa
+  deve comportarsi come le altre. Riavvio classico: togli l'attributo, forza un
+  reflow, rimettilo.
+-->
+<script is:inline>
+  (function () {
+    if (window.__ucSignBound) return;
+    window.__ucSignBound = true;
+    var SLIDE = 'slide-close-signature';
+
+    var timer;
+    function play(id) {
+      var sign = document.querySelector('[data-uc-sign]');
+      if (!sign) return;
+      clearTimeout(timer);
+      sign.removeAttribute('data-signing');
+      if (id !== SLIDE) return;
+      // Il deck fa scorrere le slide orizzontalmente (~500ms): far partire la
+      // firma su `deck:change` significa scriverla fuori campo, e a schermo
+      // arriva già finita. Si aspetta che la slide sia davvero arrivata.
+      timer = setTimeout(function () {
+        void sign.offsetWidth;        // reflow: senza, l'animazione non riparte
+        sign.setAttribute('data-signing', '');
+      }, 560);
+    }
+
+    document.addEventListener('deck:change', function (e) { play(e && e.detail && e.detail.id); });
+    document.addEventListener('astro:page-load', function () {
+      var s = document.querySelector('[data-slide]:not([aria-hidden])');
+      play(s && s.id);
+    });
+  })();
+</script>
