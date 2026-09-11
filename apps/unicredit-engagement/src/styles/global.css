@@ -670,3 +670,46 @@ img, picture, video, canvas, svg {
 .uc-steps--dark .uc-steps-n { color: var(--ink-accent); background: rgba(4,37,45,0.9); border-color: rgba(0,174,208,0.55); box-shadow: 0 0 0 4px rgba(4,37,45,0.9); }
 .uc-steps--dark .uc-steps-label { color: var(--color-grigio-200); }
 .uc-steps--dark .uc-steps-item.is-last .uc-steps-n { color: var(--ink-inverse); background: var(--color-rosso); border-color: var(--color-rosso); }
+
+/* ── Ritratto scontornato su superficie di brand ──────────────────────────────
+   Una foto stock dentro un rettangolo si vede che è una foto stock. Scontornato
+   con la Remove Background API e appoggiato su un campo petrolio, lo stesso
+   ritratto entra nel mondo del brand invece di restarne fuori. Il soggetto
+   sborda il campo in alto: è quello che separa un ritratto composto da una
+   figurina incollata. */
+.uc-portrait {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: min(480px, 52vh);
+  isolation: isolate;
+}
+/* Una banda, non una macchia: Marco ci sta SOPRA, la testa e le spalle salgono
+   sopra il bordo. È quello che distingue un ritratto composto da un ritaglio
+   appoggiato. La banda è più larga del soggetto, se no sembra un errore. */
+.uc-portrait-field {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(30rem, 100%);
+  height: 62%;
+  border-radius: 4px;
+  background:
+    radial-gradient(90% 120% at 50% 100%, rgba(0,174,208,0.22), transparent 68%),
+    linear-gradient(180deg, var(--color-petrolio) 0%, #04252D 100%);
+  z-index: 0;
+}
+.uc-portrait-img {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  /* l'ombra riattacca il soggetto al campo: senza, galleggia */
+  filter: drop-shadow(0 18px 28px rgba(4, 37, 45, 0.55));
+}
