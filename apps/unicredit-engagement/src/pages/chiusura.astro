@@ -11,7 +11,8 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 // Clip Firefly di chiusura (GitHub Release `media`, git-ignored in locale) + poster in /public/media.
-const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/uc-close.mp4';
+// `.loop.mp4`: coda dissolta sulla testa, così il `loop` nativo non fa stacco.
+const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/uc-close.loop.mp4';
 const closePoster = `${base.replace(/\/?$/, '/')}media/uc-close.poster.jpg`;
 
 const marcoSteps = [
@@ -42,10 +43,10 @@ const demoOrder = [
 
   <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/risultati')}>
 
-    <Slide id="slide-close" bg="inverse" align="center">
+    <Slide id="slide-close" bg="inverse" align="center" data-no-cobrand>
       <Fragment slot="backdrop">
         <div class="uc-video-poster" style={`background-image: url(${closePoster});`} aria-hidden="true"></div>
-        <video class="uc-video" autoplay muted loop playsinline preload="metadata" poster={closePoster} aria-hidden="true">
+        <video class="uc-video" autoplay muted loop playsinline preload="auto" poster={closePoster} aria-hidden="true">
           <source src={CLOSE_VIDEO} type="video/mp4" />
         </video>
         <div class="uc-video-scrim" data-scrim aria-hidden="true"></div>

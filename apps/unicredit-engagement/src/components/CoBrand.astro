@@ -12,13 +12,28 @@
  * due aziende è già nel titolo del documento e nella nav.
  */
 interface Props {
-  /** 'chrome' (default) = firma discreta fissa in basso; 'lockup' = versione grande, in flusso. */
-  variant?: 'chrome' | 'lockup';
+  /**
+   * 'chrome' (default) = firma discreta fissa in basso a sinistra;
+   * 'lockup'           = versione grande, in flusso (chiusura);
+   * 'hero'             = lockup di copertina, il marchio come titolo del deck.
+   */
+  variant?: 'chrome' | 'lockup' | 'hero';
   class?: string;
+  [key: string]: unknown;
 }
-const { variant = 'chrome', class: className } = Astro.props;
+const { variant = 'chrome', class: className, ...rest } = Astro.props;
+// Nella cover il lockup SOSTITUISCE il testo "Adobe × UniCredit": lì è contenuto,
+// non decorazione, quindi va letto dagli screen reader. Altrove resta decorazione.
+const isHero = variant === 'hero';
 ---
-<div class:list={["uc-cobrand-mark", variant === 'lockup' && 'uc-cobrand-mark--lockup', className]} aria-hidden="true" data-cobrand>
+<div
+  class:list={["uc-cobrand-mark", variant === 'lockup' && 'uc-cobrand-mark--lockup', isHero && 'uc-cobrand-mark--hero', className]}
+  role={isHero ? 'img' : undefined}
+  aria-label={isHero ? 'Adobe × UniCredit' : undefined}
+  aria-hidden={isHero ? undefined : 'true'}
+  {...rest}
+  data-cobrand
+>
   <svg class="uc-cobrand-adobe" viewBox="0 0 24 24" role="img" focusable="false">
     <path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" />
   </svg>
@@ -95,9 +110,72 @@ const { variant = 'chrome', class: className } = Astro.props;
   .uc-cobrand-mark--lockup .uc-cobrand-uni { height: 1.55rem; }
   .uc-cobrand-mark--lockup .uc-cobrand-x { font-size: 1.2rem; opacity: 0.5; }
 
-  /* La firma è chrome del deck: fuori dal deck (admin, dossier) non ha senso. */
-  body:not(:has([data-deck])) .uc-cobrand-mark:not(.uc-cobrand-mark--lockup) { display: none; }
+  /* Copertina: il marchio prende il posto dell'occhiello di testo. Più grande,
+     centrato, con l'× che resta un segno sottile fra i due loghi. */
+  .uc-cobrand-mark--hero {
+    position: static;
+    opacity: 1;
+    gap: clamp(0.9rem, 1.6vw, 1.5rem);
+    color: var(--color-chiaro);
+    justify-content: center;
+    margin-bottom: clamp(1.5rem, 2.4vw, 2.4rem);
+  }
+  .uc-cobrand-mark--hero .uc-cobrand-adobe {
+    width: clamp(2.4rem, 3.6vw, 3.6rem);
+    height: clamp(2.4rem, 3.6vw, 3.6rem);
+    fill: rgba(235,16,0,1);
+  }
+  .uc-cobrand-mark--hero .uc-cobrand-uni { height: clamp(1.7rem, 2.6vw, 2.6rem); }
+  .uc-cobrand-mark--hero .uc-cobrand-x {
+    font-size: clamp(1rem, 1.4vw, 1.4rem);
+    font-weight: 300;
+    opacity: 0.45;
+    color: var(--color-chiaro);
+  }
 
-  @media (max-width: 640px) { .uc-cobrand-mark:not(.uc-cobrand-mark--lockup) { display: none; } }
+  /* Le slide che portano già il marchio al centro (copertina, chiusura) spengono
+     la firma fissa: due volte lo stesso lockup è rumore. Il runtime qui sotto
+     marca <html> quando la slide attiva ha [data-no-cobrand]. */
+  html[data-cobrand-off] .uc-cobrand-mark:not(.uc-cobrand-mark--lockup):not(.uc-cobrand-mark--hero) {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* La firma è chrome del deck: fuori dal deck (admin, dossier) non ha senso. */
+  body:not(:has([data-deck])) .uc-cobrand-mark:not(.uc-cobrand-mark--lockup):not(.uc-cobrand-mark--hero) { display: none; }
+
+  @media (max-width: 640px) { .uc-cobrand-mark:not(.uc-cobrand-mark--lockup):not(.uc-cobrand-mark--hero) { display: none; } }
   @media (prefers-reduced-motion: reduce) { .uc-cobrand-mark { transition: none; } }
 </style>
+
+<!--
+  Spegne la firma fissa mentre è attiva una slide marcata [data-no-cobrand]
+  (copertina e chiusura, che il marchio ce l'hanno già grande al centro).
+  Si aggancia a `deck:change`, che il deck emette anche all'init, e si ripete
+  dopo ogni navigazione SPA. Registrato su `document`: sopravvive agli swap
+  di ClientRouter, che non ri-eseguono gli script inline identici.
+-->
+<script is:inline>
+  (function () {
+    if (window.__ucCoBrandBound) return;
+    window.__ucCoBrandBound = true;
+
+    function sync(id) {
+      var slide = id ? document.getElementById(id) : null;
+      if (!slide) {
+        // Nessun evento del deck (reduced motion, pagina senza deck): guarda la prima slide.
+        slide = document.querySelector('[data-deck] [data-slide]');
+      }
+      var off = !!(slide && slide.hasAttribute('data-no-cobrand'));
+      if (off) document.documentElement.setAttribute('data-cobrand-off', '');
+      else document.documentElement.removeAttribute('data-cobrand-off');
+    }
+
+    document.addEventListener('deck:change', function (e) {
+      sync(e && e.detail && e.detail.id);
+    });
+    document.addEventListener('astro:page-load', function () { sync(null); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { sync(null); });
+    else sync(null);
+  })();
+</script>
