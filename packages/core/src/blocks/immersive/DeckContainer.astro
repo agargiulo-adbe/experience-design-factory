@@ -472,6 +472,36 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
     document.addEventListener('deck:change', function (e) { syncCoBrand(e && e.detail && e.detail.id); });
     document.addEventListener('astro:page-load', function () { syncCoBrand(null); });
     syncCoBrand(null);
+    /* ── «Creato con»: i prodotti Adobe usati per fare gli asset di QUESTA slide.
+       Stesso schema della firma: il componente si monta una volta nel BaseLayout,
+       ogni slide dichiara `data-made-with` (e opzionalmente `data-made-with-for`),
+       e senza dichiarazione vale il fallback del deck. Vale per ogni deck futuro
+       senza wiring: il credito è un fatto, quindi va mostrato dove il fatto è. */
+    function syncMadeWith(id) {
+      var box = document.querySelector('[data-madewith]');
+      if (!box) return;
+      var slide = activeSlide(id);
+      var declared = slide && slide.hasAttribute('data-made-with')
+        ? slide.getAttribute('data-made-with')
+        : box.getAttribute('data-fallback');
+      var forWhat = slide && slide.hasAttribute('data-made-with-for')
+        ? slide.getAttribute('data-made-with-for')
+        : box.getAttribute('data-fallback-for');
+
+      var list = (declared || '').split(',').map(function (t) { return t.trim(); }).filter(Boolean);
+      if (!list.length) { box.hidden = true; return; }
+
+      // «Firefly» si scrive «Adobe Firefly»: è così che Adobe nomina i suoi prodotti.
+      var named = list.map(function (t) { return /^adobe\b/i.test(t) ? t : 'Adobe ' + t; });
+      var products = box.querySelector('[data-madewith-products]');
+      var forEl = box.querySelector('[data-madewith-for]');
+      if (products) products.textContent = named.join(' · ');
+      if (forEl) forEl.textContent = forWhat || '';
+      box.hidden = false;
+    }
+    document.addEventListener('deck:change', function (e) { syncMadeWith(e && e.detail && e.detail.id); });
+    document.addEventListener('astro:page-load', function () { syncMadeWith(null); });
+    syncMadeWith(null);
 
     /* ── Cold visit: keep chrome + cursor until the first slide advance. Keyed per
        app (2nd path segment under the Factory root) so each experience gets its

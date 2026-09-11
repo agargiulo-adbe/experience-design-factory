@@ -161,7 +161,7 @@ silenziose:
 
 ### Audit discipline — hard vs soft; never shrink type to pass
 `audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
-- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `exp` ogni disclosure ri‑misurata da aperta.
+- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `m` blocchi a bandiera fuori riga · `exp` ogni disclosure ri‑misurata da aperta.
 - **SOFT (aspirational):** `a` reading band 30–70% · `i` space usage ≥45% · `g` vertical rhythm. Acceptable on intentionally airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the Type & legibility minimums. If a soft check bothers you: **cut copy or split the slide**, never shrink.
 - The parser does not count visual mocks (a terminal/image beside a split slide) as text mass → an `i`/`comX` imbalance on a visually balanced split slide is a **known parser limit, not a defect**.
 - Recurring meaning‑preserving fixes for HARD: keep `absolute` decorations inside the box (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
@@ -223,6 +223,48 @@ Inchiostro: il lockup si ribalta con la superficie via `data-on-dark`; una slide
 Inchiostri che si ribaltano). **Experience senza brand cliente** (Atelier = la Factory
 stessa, Aperture = ricerca vendor‑neutral) sono **fuori regola**: non c'è una × da fare.
 
+### Credito «creato con» — con che cosa è fatta la slide (BINDING, ogni experience)
+Ogni slide dichiara i **prodotti Adobe usati per creare i suoi asset** — lo sfondo
+generato, la clip, il ritocco. Non è la lista dei prodotti che l'experience *propone*
+al cliente: quella vive nel contenuto della slide.
+- `@edf/core/blocks/MadeWith.astro`, montato **una volta** nel BaseLayout, sta in basso
+  a destra, speculare alla firma co‑brand a sinistra. È chrome: fuori dal flusso della
+  slide, quindi fuori dal conteggio e dalle misure dell'audit.
+- La slide dichiara `data-made-with="Firefly"` (+ `data-made-with-for="clip|sfondo"`).
+  Senza dichiarazione vale il `fallback` del deck, così una experience dove tutti gli
+  sfondi vengono dallo stesso strumento lo dice in una riga. Il runtime vive in
+  `DeckContainer` (come il co‑brand): **ogni deck nuovo lo eredita senza wiring**.
+- **Il credito è un fatto, non una decorazione.** Si dichiara solo ciò che è stato
+  davvero usato, verificabile nei `provenance.json` degli asset. Un'experience con
+  asset misti (UniCredit: Firefly + stock) **non mette un fallback**: marca le singole
+  slide. Mettere «Adobe Firefly» su una slide con una foto stock è una dichiarazione
+  falsa, non una scorciatoia grafica.
+- Marchio **corporate Adobe + nome prodotto per esteso** («Adobe Firefly»), come Adobe
+  scrive i suoi prodotti. Le icone dei singoli prodotti **non si ricostruiscono**:
+  sarebbe la wrong‑brand imagery che la Quality Bar vieta.
+- Forma del credito: `▲ Adobe Firefly · sfondo`. **Senza verbo**: «clip creato con» non
+  accorda, e un credito non è una frase.
+
+### Un credito sta dove sta il fatto, non nella nav (BINDING)
+La navigazione è per andare da qualche parte: ogni voce è una destinazione. Un credito
+infilato lì è fuori posto, vago («Visual · Adobe Firefly»: visual *che cosa*?), e sparisce
+ai viewport dove la nav si stringe — un credito che si nasconde non è un credito. Il posto
+giusto sono due: la **nota di copertina** (una volta, con le Content Credentials) e il
+**credito per slide** qui sopra, che è preciso perché sa di quale asset parla.
+
+### Blocchi a bandiera: stesso bordo (BINDING, check `m` dell'audit)
+Una composizione **centrata** è legittima: blocchi di larghezze diverse sullo stesso asse.
+Ma due blocchi che allineano il **testo a sinistra** e partono da ascisse diverse sono un
+difetto che si vede subito e che a occhio sfugge.
+- La trappola tipica: il reset di base cappa la larghezza dei `<p>` dentro una slide
+  (`[data-slide] p { max-width: … }`); si libera un blocco con `max-width: none` per farlo
+  respirare e quello **si allarga a tutta la safe‑area** mentre i suoi fratelli restano
+  nella colonna. Successo su isybank: le fonti partivano 197px più a sinistra dei numeri.
+  «Liberare» non è «togliere il limite»: si rimette **la stessa** `max-width` della colonna.
+- Lo verifica il check **`m`** di `audit:deck`: misura il bordo sinistro di tutti i blocchi
+  di primo livello con `text-align: left|start` e fallisce se non condividono l'ascissa
+  (tolleranza 4px). È un check **HARD**: non è questione di gusto, è una riga storta.
+
 ### Clip in loop — il giro non si deve vedere (BINDING, ogni experience)
 Una clip generata (Firefly o altro) finisce su un fotogramma che con il frame 0 non
 c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un difetto del
@@ -282,13 +324,15 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
 - `MediaDemoSlot.astro` — admin‑fed media box inside a `data-demo-flex` slide.
 - `immersive/LoopVideo.astro` — clip di sfondo in loop nello slot `backdrop` (poster + `loop` +
   `preload="auto"` + scrim). Il `src` deve essere una clip **ricucita** (`pnpm loop:seamless`).
+- `blocks/MadeWith.astro` — il credito «creato con»: i prodotti Adobe usati per creare
+  gli asset della slide attiva. Una riga nel BaseLayout, `data-made-with` sulla slide.
 - `blocks/CoBrand.astro` — la firma «Adobe × Brand». `chrome` su ogni slide (una riga nel
   BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.
 - `blocks/admin/AdminConsole.astro` — the shared config‑driven Admin Console.
 
 ### Gli 11 check che ogni slide deve passare — a 1920×1080, 1440×900 E 1280×800 (`audit:deck`)
-> Nel codice i check sono `a b c d e g h i j k` + `exp` (nessun `f`, nessun `l`).
+> Nel codice i check sono `a b c d e g h i j k m` + `exp` (nessun `f`, nessun `l`).
 > `audit:deck` runs all three projection viewports (mobile is handled separately by the
 > responsive tokens, where dense slides may scroll). A **display hero** (giant metric numeral)
 > is tagged `data-display` and excluded from the prose band check (a).
@@ -301,7 +345,8 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
 8. **(h) button contrast** — every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon).
 9. **(i) space usage** — content covers ≥ 45% of usable height, centre of mass in the central band.
 10. **(j) nothing clipped** — every significant element lies fully inside `[0,0,1920,1080]` (±1px).
-11. **(k) no hidden scroll** — no container has `scrollHeight > clientHeight` at projection sizes (a keynote never scrolls there: shorten or split).
+11. **(m) allineamento** — i blocchi di primo livello con testo a bandiera condividono il bordo sinistro (±4px). Le composizioni centrate sono esenti.
+12. **(k) no hidden scroll** — no container has `scrollHeight > clientHeight` at projection sizes (a keynote never scrolls there: shorten or split).
 
 Contract details:
 - **Safe‑area tokens** in `global.css` (px): `--slide-safe-inset`, `--deck-chrome-safe`. `Slide`

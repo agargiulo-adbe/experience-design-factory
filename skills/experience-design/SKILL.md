@@ -100,6 +100,8 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
   the two wordmarks (`Max Mara` primary, `Adobe` discreet); tagline hero + co-brand eyebrow.
   Driven by `[data-cover]` in `animations.ts`; reduced-motion safe; plays on activation.
   Optional atmospheric backdrop via `bgMedia`/`bgSrc` (always under a brand scrim).
+- `packages/core/src/blocks/MadeWith.astro` — the «made with» credit: the Adobe products
+  that created the active slide's assets. One line in the BaseLayout, `data-made-with` per slide.
 - `packages/core/src/blocks/CoBrand.astro` — the «Adobe × Brand» signature (see the binding
   rule below): `chrome` on every slide, `hero` on the first and last. Per-app thin wrapper.
 - `packages/core/src/blocks/immersive/LoopVideo.astro` — looping backdrop clip for the
@@ -141,6 +143,48 @@ The co-brand is **one rule in the engine**, not a per-slide decision.
   dark is marked `class="edf-cobrand--on-dark"`.
 - **Out of scope:** experiences with no client brand (the Factory's own Atelier deck,
   vendor-neutral research like Aperture) — there is no × to make.
+
+### The «made with» credit — what built this slide (BINDING, every experience)
+Every slide declares the **Adobe products used to create its assets** — the generated
+backdrop, the clip, the retouch. Not the products the experience *pitches* to the client:
+those live in the slide's content.
+- `@edf/core/blocks/MadeWith.astro`, mounted **once** in the BaseLayout, sits bottom-right,
+  mirroring the co-brand signature bottom-left. It is chrome: outside the slide flow, so
+  outside the slide count and the audit's measurements.
+- A slide declares `data-made-with="Firefly"` (+ `data-made-with-for="clip|sfondo"`). With
+  no declaration the deck's `fallback` applies, so an experience whose backdrops all come
+  from one tool says it in a single line. The runtime lives in `DeckContainer` (like the
+  co-brand one): **every new deck inherits it with no wiring**.
+- **A credit is a fact, not a decoration.** Declare only what was actually used, verifiable
+  in the assets' `provenance.json`. An experience with mixed assets (UniCredit: Firefly +
+  stock) sets **no fallback** and marks the individual slides. Putting "Adobe Firefly" on a
+  slide carrying a stock photo is a false statement, not a graphic shortcut.
+- **Corporate Adobe mark + full product name** ("Adobe Firefly"), the way Adobe writes its
+  own products. Individual product icons are **never** reconstructed — that is exactly the
+  wrong-brand imagery the Quality Bar forbids.
+- Shape: `▲ Adobe Firefly · sfondo`. **No verb**: a credit is not a sentence, and a verb
+  drags agreement problems behind it in any inflected language.
+
+### A credit belongs where the fact is, not in the nav (BINDING)
+Navigation is for going somewhere: every entry is a destination. A credit parked there is
+out of place, vague ("Visual · Adobe Firefly" — visual *what*?), and disappears at the
+viewports where the nav tightens — a credit that hides is not a credit. Two right places:
+the **cover note** (once, with Content Credentials) and the **per-slide credit** above,
+which is precise because it knows which asset it is talking about.
+
+### Flush-left blocks share the edge (BINDING — audit check `m`)
+A **centred** composition is legitimate: blocks of different widths on one axis. But two
+blocks that align their **text left** and start at different x are a defect that reads
+instantly and that the eye misses while scanning.
+- The classic trap: the base reset caps paragraph width inside a slide
+  (`[data-slide] p { max-width: … }`); you free one block with `max-width: none` to let it
+  breathe and it **spreads to the whole safe area** while its siblings stay in the column.
+  Happened on isybank: the sources line started 197px left of the figures. "Freeing" is not
+  "removing the limit" — put back **the same** `max-width` the column uses.
+- Check **`m`** of `audit:deck` measures the left edge of every top-level block with
+  `text-align: left|start` (skipping out-of-flow decoration and text-less blocks) and fails
+  when they don't share the x (4px tolerance). It is a **HARD** check: not a matter of
+  taste, it's a crooked line.
 
 ### Looping backdrop clips — the wrap must not show (BINDING)
 A generated clip (Firefly or otherwise) ends on a frame that has nothing to do with frame 0:
@@ -242,6 +286,7 @@ to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). Runs at
 - **(i)** content covers ≥ 45% of usable height and its centre of mass is in the central band.
 - **(j)** nothing clipped — every significant element fully inside `[0,0,W,H]`.
 - **(k)** no hidden scroll — no container with `scrollHeight > clientHeight` (a keynote never scrolls).
+- **(m)** alignment — top-level flush-left blocks share the same left edge (±4px). Centred compositions are exempt.
 - **(l)** while a panel is open, interactive elements are EITHER fully under the scrim OR fully visible (trigger not obstructed).
 - **(exp)** each `HowItWorks` is **expanded INLINE** and the slide is re-measured in the expanded
   state — it must still pass b, c, d, e, g, h, j, k. (a) band-position and (i) space-balance do NOT
@@ -252,7 +297,7 @@ to `audit/<deck>/<slide-id>.png`, and exits ≠0 on any fail (CI-ready). Runs at
 **component/page source** (not inline patches), re-run → iterate until 0 FAIL.
 
 **Hard vs soft — never shrink type to pass (BINDING).** Treat the checks in two tiers:
-- **HARD (real rendering bugs → drive to 0 at all 3 viewports):** `b`, `c`, `d`, `e`, `f`, `h`, `j`, `k`.
+- **HARD (real rendering bugs → drive to 0 at all 3 viewports):** `b`, `c`, `d`, `e`, `f`, `h`, `j`, `k`, `m`.
 - **SOFT (aspirational):** `a` (reading band), `i` (space usage), `g` (rhythm). Acceptable on intentionally
   airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the legibility minimums —
   **cut copy or split the slide** instead. A visual mock (terminal/image) beside a split slide is not counted
@@ -302,5 +347,7 @@ Conventions & hard-won lessons:
     the wordmark fallback), one `<CoBrand />` in `BaseLayout`, and `<CoBrand variant="hero" />`
     on the first and last slide in place of the text eyebrow. Order is Adobe × Brand, always.
 11. **Backdrop clips:** every clip through `pnpm loop:seamless … --poster`; render with `LoopVideo`.
+    Mount `<MadeWith>` in the BaseLayout and declare `data-made-with` where an Adobe tool
+    actually made the asset — check `provenance.json`, never assume.
 12. **Register everywhere:** `admin.astro` (PAGE_REGISTRY + SOLUTIONS), `deploy.yml` (merge + verify), `factory-hub` card, showcase `src/data/experiences.ts` (+ `public/shots/<slug>.webp`), console registry / Supabase seed. A product/naming change propagates to **every** experience that cites it — verify each (build + audit).
 13. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.

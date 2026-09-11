@@ -355,6 +355,26 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     .filter((el) => !inPanel(el) && vis(el) && (el as HTMLElement).scrollHeight - (el as HTMLElement).clientHeight > 2 && getComputedStyle(el as HTMLElement).overflowY !== 'visible')
     .slice(0, 5).map((el) => ({ tag: (el.className || el.tagName).toString().slice(0, 22), sh: (el as HTMLElement).scrollHeight, ch: (el as HTMLElement).clientHeight }));
 
+  // (m) allineamento — i blocchi «a bandiera» condividono il bordo sinistro.
+  // Una composizione centrata è legittima: lì i blocchi hanno larghezze diverse e
+  // lo stesso asse. Ma due blocchi che allineano il TESTO a sinistra e partono da
+  // ascisse diverse sono un difetto che si vede subito e che a occhio sfugge — il
+  // caso tipico è un `max-width` tolto a un solo blocco, che così si allarga a
+  // tutta la safe-area mentre i suoi fratelli restano nella colonna.
+  const flush = Array.from(inner.children)
+    .filter((el) => vis(el) && el.getBoundingClientRect().height > 2)
+    // fuori flusso = decorazione full-bleed (un backdrop finito dentro il wrapper):
+    // non fa parte della colonna, e confrontarne il bordo è un falso positivo
+    .filter((el) => { const ps = getComputedStyle(el as HTMLElement).position; return ps !== 'absolute' && ps !== 'fixed'; })
+    // un blocco senza testo non ha un bordo di lettura da rispettare
+    .filter((el) => (el.textContent || '').trim().length > 0)
+    .filter((el) => { const ta = getComputedStyle(el as HTMLElement).textAlign; return ta === 'left' || ta === 'start'; });
+  const lefts = flush.map((el) => Math.round(el.getBoundingClientRect().left));
+  const mSpread = lefts.length > 1 ? Math.max(...lefts) - Math.min(...lefts) : 0;
+  const m = mSpread > 4
+    ? flush.map((el) => ({ what: (el.className || el.tagName).toString().slice(0, 24), left: Math.round(el.getBoundingClientRect().left) }))
+    : [];
+
   return {
     a: { pass: a.length === 0, fails: a },
     b: { pass: b.length === 0, fails: b },
@@ -366,6 +386,7 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
     i: { pass: cover.pass, info: cover },
     j: { pass: j.length === 0, fails: j },
     k: { pass: k.length === 0, fails: k },
+    m: { pass: m.length === 0, fails: m, spread: mSpread },
   };
 }
 
@@ -411,15 +432,15 @@ async function auditViewport(browser: import('playwright').Browser, base: string
       // and (i) space-balance do NOT apply to the expanded state. The real expansion
       // invariants do: chrome (b), margins/overflow (c), faces (d), text-on-text (e),
       // rhythm (g), contrast (h), nothing clipped (j), no hidden scroll (k).
-      const bad = ['b', 'c', 'd', 'e', 'g', 'h', 'j', 'k'].filter((key) => !re[key].pass);
+      const bad = ['b', 'c', 'd', 'e', 'g', 'h', 'j', 'k', 'm'].filter((key) => !re[key].pass);
       if (bad.length) expFails.push({ trigger: t, checks: bad.map((key) => `${key}:${JSON.stringify(re[key].fails ?? re[key].info)}`) });
       await page.evaluate(([sid, idx]) => (document.getElementById(sid as string)!.querySelectorAll('[data-hiw-open]')[idx as number] as HTMLElement).click(), [id, t]);
       await page.waitForTimeout(500);
     }
     const exp = { pass: expFails.length === 0, fails: expFails };
 
-    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, exp };
-    const order = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'exp'];
+    const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, m: r.m, exp };
+    const order = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'm', 'exp'];
     const failed = order.filter((key) => !results[key].pass);
     if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(outDir, `${W}x${H}-${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +

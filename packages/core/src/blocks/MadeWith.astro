@@ -1,0 +1,103 @@
+---
+/**
+ * MadeWith — «con che cosa è stata fatta questa slide».
+ *
+ * Credito discreto e VERO dei prodotti Adobe usati per **creare** gli asset della
+ * slide attiva: lo sfondo generato, la clip, il ritocco. Non è la lista dei
+ * prodotti che l'experience propone al cliente — quella vive nel contenuto.
+ *
+ * Sta in basso a destra, speculare alla firma co-brand che sta a sinistra: è
+ * chrome, fuori dal flusso della slide, quindi non entra nel conteggio slide né
+ * nelle misure dell'audit. Si monta **una volta** nel BaseLayout.
+ *
+ * Ogni slide dichiara che cosa ha usato:
+ *   <Slide data-made-with="Firefly" data-made-with-for="clip">
+ * Senza dichiarazione vale il `fallback` del deck, così una experience dove tutti
+ * gli sfondi vengono dallo stesso strumento lo dichiara in una riga sola.
+ * Una slide che non deve creditare niente scrive `data-made-with=""`.
+ *
+ * Il marchio è quello **corporate Adobe** più il nome del prodotto per esteso
+ * («Adobe Firefly»), che è come Adobe stessa scrive i suoi prodotti. Non si
+ * ricostruiscono le icone dei singoli prodotti: sarebbe esattamente la
+ * wrong-brand imagery che la Quality Bar vieta.
+ *
+ * Il credito è un fatto, non una decorazione: si dichiara solo ciò che è stato
+ * davvero usato, verificabile nei `provenance.json` degli asset.
+ */
+interface Props {
+  /** Prodotti usati quando la slide non dichiara nulla, separati da virgola. */
+  fallback?: string;
+  /** Che cosa è stato creato, quando la slide non lo dichiara ('sfondo', 'clip'…). */
+  fallbackFor?: string;
+  /**
+   * Etichetta opzionale davanti ai prodotti (es. «creato con»). Vuota per
+   * default: un credito si scrive «Adobe Firefly · sfondo», non con un verbo che
+   * poi deve accordarsi con il nome dell'asset («clip creato» è sbagliato).
+   */
+  label?: string;
+  class?: string;
+}
+const { fallback = '', fallbackFor = '', label = '', class: className } = Astro.props as Props;
+---
+<div
+  class:list={["edf-madewith", className]}
+  data-madewith
+  data-fallback={fallback}
+  data-fallback-for={fallbackFor}
+  aria-hidden="true"
+  hidden
+>
+  <svg class="edf-madewith-adobe" viewBox="0 0 24 24" role="img" focusable="false" aria-hidden="true">
+    <path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" />
+  </svg>
+  <span class="edf-madewith-text">
+    {label && <span class="edf-madewith-label">{label}</span>}
+    <span class="edf-madewith-products" data-madewith-products></span>
+    <span class="edf-madewith-for" data-madewith-for></span>
+  </span>
+</div>
+
+<style is:global>
+  /* Speculare alla firma co-brand: stessa quota, stesso peso, lato opposto. */
+  .edf-madewith {
+    position: fixed;
+    right: var(--slide-safe-inset, 80px);
+    bottom: calc(var(--deck-chrome-safe, 168px) / 3);
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 200ms ease;
+    /* Espliciti, non token: `--ink-inverse` è chiaro nelle experience a dominante
+       chiara e SCURO in quelle a dominante scura. Qui serve davvero chiaro/scuro,
+       e sono anche gli unici valori che il parser di contrasto dell'audit legge. */
+    color: rgba(38, 38, 38, 0.85);
+  }
+  [data-deck][data-on-dark] ~ .edf-madewith,
+  body:has([data-deck][data-on-dark]) .edf-madewith { color: rgba(245, 245, 245, 0.9); }
+
+  .edf-madewith-adobe { width: 0.8rem; height: 0.8rem; flex-shrink: 0; fill: #eb1000; }
+  .edf-madewith-text {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    color: currentColor;
+  }
+  .edf-madewith-label { opacity: 0.6; }
+  .edf-madewith-label:not(:empty)::after { content: ' '; }
+  .edf-madewith-products { font-weight: 600; }
+  /* Il tipo di asset qualifica il prodotto, non lo precede: niente verbo da accordare. */
+  .edf-madewith-for:not(:empty) { opacity: 0.62; }
+  .edf-madewith-for:not(:empty)::before { content: ' · '; }
+
+  /* Chrome del deck: fuori dal deck (admin, dossier) non ha senso. */
+  body:not(:has([data-deck])) .edf-madewith { display: none; }
+
+  /* Su telefono lo spazio è dei contenuti. */
+  @media (max-width: 900px) { .edf-madewith { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .edf-madewith { transition: none; } }
+</style>
