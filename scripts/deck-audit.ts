@@ -444,9 +444,24 @@ async function main() {
   const base = await findBaseUrl();
   const browser = await chromium.launch();
   let totalFails = 0;
-  // Optional route filter: `audit:deck engagement` audits only that route.
-  const filter = process.argv.slice(2).filter((a) => !a.startsWith('-'));
-  const routes = filter.length ? ROUTES.filter((r) => filter.includes(r.name)) : ROUTES;
+  // Filtro posizionale opzionale: `audit:deck engagement` gira solo quella rotta.
+  // ATTENZIONE: il VALORE di `--only`/`--app` non è un filtro posizionale. Senza
+  // escluderlo, `--only home,roadmap` finiva qui come la stringa "home,roadmap",
+  // non combaciava con nessun nome di rotta, e il giro si chiudeva con ZERO rotte
+  // auditate stampando «PASS — all decks clean»: un lasciapassare falso, il modo
+  // peggiore in cui un gate di qualità può rompersi. `--only` è già stato applicato
+  // a ROUTES più sopra.
+  const argv = process.argv.slice(2);
+  const FLAGS_WITH_VALUE = new Set(['--only', '--app']);
+  const positional = argv.filter((a, i) => !a.startsWith('-') && !(i > 0 && FLAGS_WITH_VALUE.has(argv[i - 1])));
+  const routes = positional.length ? ROUTES.filter((r) => positional.includes(r.name)) : ROUTES;
+
+  // Un giro che non audita niente non è un PASS: è un errore d'invocazione.
+  if (!routes.length) {
+    await browser.close();
+    console.error(`Nessuna rotta da auditare in ${appFlag}. Nomi validi: ${ROUTE_SET.map((r) => r.name).join(', ')}`);
+    process.exit(2);
+  }
 
   for (const { name, route } of routes) {
     const outDir = path.join(OUT_BASE, name);

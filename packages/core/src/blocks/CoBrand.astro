@@ -88,10 +88,14 @@ const isHero = variant === 'hero';
     transition: opacity 200ms ease, visibility 200ms ease;
   }
 
-  /* L'inchiostro segue la slide: chiaro su fondo scuro, scuro su fondo chiaro.
-     `data-on-dark` lo mette il deck (deck.ts → syncDark) sulla slide attiva. */
+  /* L'inchiostro della firma FISSA segue la slide attiva, e qui i token non
+     servono: `--ink-inverse` è chiaro nelle experience a dominante chiara e
+     SCURO in quelle a dominante scura (dove `--surface-inverse` è la superficie
+     chiara). Serve davvero «chiaro» o «scuro», quindi valori espliciti — che
+     sono anche gli unici che il parser di contrasto dell'audit sa leggere. */
+  .edf-cobrand--chrome { color: rgba(38,38,38,0.85); }
   [data-deck][data-on-dark] ~ .edf-cobrand--chrome,
-  body:has([data-deck][data-on-dark]) .edf-cobrand--chrome { color: var(--ink-inverse); }
+  body:has([data-deck][data-on-dark]) .edf-cobrand--chrome { color: rgba(245,245,245,0.92); }
 
   /* ── Lockup di copertina e di chiusura: i due marchi al centro, grandi. ── */
   .edf-cobrand--hero {
@@ -99,7 +103,9 @@ const isHero = variant === 'hero';
     opacity: 1;
     justify-content: center;
     gap: clamp(0.9rem, 1.6vw, 1.5rem);
-    margin-bottom: clamp(1.5rem, 2.4vw, 2.4rem);
+    /* Nessun margine di default: su una slide densa (la chiusura tipica) uno
+       spazio imposto dal componente fa sbordare il contenuto dalla sua scatola.
+       La spaziatura la decide la pagina, dove si conosce cosa c'è intorno. */
   }
   .edf-cobrand--hero .edf-cobrand-adobe {
     width: clamp(2.4rem, 3.6vw, 3.6rem);
@@ -108,20 +114,55 @@ const isHero = variant === 'hero';
   .edf-cobrand--hero .edf-cobrand-brand svg { height: clamp(1.7rem, 2.6vw, 2.6rem); }
   .edf-cobrand--hero .edf-cobrand-word { font-size: clamp(1.6rem, 2.5vw, 2.5rem); font-weight: 300; letter-spacing: -0.01em; }
   .edf-cobrand--hero .edf-cobrand-x { font-size: clamp(1rem, 1.4vw, 1.4rem); font-weight: 300; opacity: 0.45; }
-  /* Anche il lockup grande ribalta l'inchiostro con la superficie, con lo stesso
-     segnale della firma fissa: `data-on-dark`, che il deck calcola sulla slide
-     attiva. Ereditare non basta — il lockup vive dentro contenitori che non
-     dichiarano un colore e finirebbe con l'inchiostro del body.
-     Una slide che DICHIARA una superficie chiara ma rende scura per via del
-     backdrop va marcata a mano: `class="edf-cobrand--on-dark"` (e viceversa). */
-  .edf-cobrand--hero { color: var(--ink-primary); }
-  [data-deck][data-on-dark] .edf-cobrand--hero { color: var(--ink-inverse); }
-  .edf-cobrand--hero.edf-cobrand--on-dark { color: var(--ink-inverse); }
-  .edf-cobrand--hero.edf-cobrand--on-light { color: var(--ink-primary); }
+  /* Il lockup grande vive DENTRO la slide, quindi il suo inchiostro è quello
+     della superficie che la slide dichiara: `ink-X` sta su `surface-X`, e questa
+     coppia è l'unica cosa che vale in tutte le experience (quale delle due sia
+     scura cambia da brand a brand). Lo Slide rende la superficie come classe
+     Tailwind, non come data-attribute: vedi memoria deck-ink-flip-selector.
+     Ereditare non basterebbe — il lockup sta in contenitori che non dichiarano
+     un colore e finirebbe con l'inchiostro del body.
+     Una slide che DICHIARA una superficie ma ne rende un'altra per via del
+     backdrop si marca a mano: `class="edf-cobrand--on-dark"` (e viceversa). */
+  .edf-cobrand--hero,
+  .edf-sig-cta { color: var(--ink-primary); }
+  [data-slide].bg-\[var\(--surface-inverse\)\] .edf-cobrand--hero,
+  [data-slide].bg-\[var\(--surface-inverse\)\] .edf-sig-cta,
+  [data-slide].bg-\[var\(--accent-primary\)\] .edf-cobrand--hero,
+  [data-slide].bg-\[var\(--accent-primary\)\] .edf-sig-cta { color: var(--ink-inverse); }
+  .edf-cobrand--hero.edf-cobrand--on-dark { color: rgba(245,245,245,0.95); }
+  .edf-cobrand--hero.edf-cobrand--on-light { color: rgba(38,38,38,0.9); }
+
+  /* Marchio Adobe monocromo. Il rosso Adobe sparisce su una superficie di brand
+     satura — il caso tipico è una slide `bg="brand"` di un cliente col rosso
+     (Ferrari, UniCredit). Lì il marchio va in `currentColor`, che è il
+     trattamento monocromo previsto dalle linee guida Adobe.
+     Automatico sulle slide `bg="brand"` (lo Slide rende la classe Tailwind, non
+     un data-attribute: vedi memoria deck-ink-flip-selector), più una via
+     d'uscita esplicita `edf-cobrand--mono` per i casi che il selettore non vede
+     (superficie dipinta dal backdrop). */
+  [data-slide].bg-\[var\(--accent-primary\)\] .edf-cobrand-adobe,
+  .edf-cobrand--mono .edf-cobrand-adobe { fill: currentColor; }
 
   /* Dove una slide porta già il lockup grande, la firma fissa si toglie di mezzo.
      Il flag lo mette il runtime in DeckContainer sulla root. */
   html[data-cobrand-off] .edf-cobrand--chrome { opacity: 0; visibility: hidden; }
+
+  /* CTA della slide-firma: stessa grammatica in tutte le experience, definita
+     una volta qui. Colore in `rgba()` esplicito e non in `color-mix()`: il parser
+     di contrasto dell'audit non sa leggere `oklab()`/`color-mix()` e darebbe un
+     PASS falso sul check h (vedi Type & legibility contract). Il colore lo prende
+     dalla superficie della slide come il lockup, quindi regge su entrambe le
+     dominanti; il bordo è `currentColor`, così non c'è un bianco da indovinare. */
+  .edf-sig-cta {
+    margin-top: clamp(2rem, 4vh, 3rem);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.55rem 1.3rem; border-radius: 3px;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    border: 1px solid currentColor;
+    text-decoration: none; transition: opacity 200ms ease;
+    opacity: 0.85;
+  }
+  .edf-sig-cta:hover { opacity: 1; }
 
   /* La firma fissa è chrome del deck: fuori dal deck (admin, dossier) non ha senso. */
   body:not(:has([data-deck])) .edf-cobrand--chrome { display: none; }

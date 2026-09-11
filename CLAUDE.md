@@ -144,6 +144,21 @@ Copy must read like a sharp human wrote it, never "AI‑generated". Kill the tel
 - buzzword stacking, over‑parallel bullets, AI connectors ("Inoltre", "In a world where", "It's not just about…").
 Rewrite into natural, concrete sentences with varied rhythm. **Never touch** product/persona names, numbers, sources, claims; **keep each string within ±10% of its length** so the deck audit (height/legibility) doesn't break. Bilingual (Ferrari): EN and IT each idiomatic, never a literal echo; `<T en it>` ALWAYS keeps BOTH languages. Memory: `copy-must-be-human`.
 
+### `audit:deck` — leggere davvero l'esito, non solo la riga finale
+Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe
+silenziose:
+- **`DECK_URL` è l'ORIGIN, non il path.** Le rotte nel route set sono già percorsi
+  completi: `DECK_URL=http://localhost:4399`, non `…/unicredit-engagement`. Con il path
+  doppio ogni pagina è un 404 e l'audit va in timeout (che almeno si vede).
+- **Un giro che non audita niente non è un PASS.** `--only a,b` finiva in un secondo
+  filtro posizionale che lo trattava come il nome di rotta `"a,b"`: zero rotte auditate e
+  «PASS — all decks clean» stampato lo stesso. Corretto in `scripts/deck-audit.ts` (il
+  valore dei flag non è più un filtro posizionale) e ora zero rotte esce con codice 2.
+  Se un PASS arriva sospettosamente in fretta, contare le rotte stampate.
+- Nessun deck del monorepo è a zero fallimenti: il residuo fisiologico è tutto **soft**
+  (`a` banda di lettura, `i` uso dello spazio). Quello che deve restare a zero è l'insieme
+  **HARD** — e va verificato grepando le colonne, non leggendo il totale.
+
 ### Audit discipline — hard vs soft; never shrink type to pass
 `audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
 - **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `exp` ogni disclosure ri‑misurata da aperta.
@@ -180,6 +195,24 @@ brand e marchio (vedi `apps/unicredit-engagement/`). Quattro punti:
 4. **Dove c'è un `hero`, la firma fissa si spegne da sola.** Il runtime in `DeckContainer`
    guarda la slide attiva (`deck:change`) e marca `html[data-cobrand-off]` — **nessun
    attributo da mettere a mano, nessun wiring per app**: ogni deck nuovo lo eredita.
+
+**L'ultima slide del percorso è una slide‑firma a sé.** La chiusura tipica è già densa
+(bande, numeri, CTA) e il lockup grande la fa sbordare: per contratto si divide, non si
+comprime. La slide‑firma è il lockup + una riga breve presa dal deck + la CTA di ritorno
+(`.edf-sig-cta`, definita nel motore). Fallisce il check **soft `i`** (copre poco: il
+lockup è un SVG, il parser non lo conta come massa di testo): è la classica slide
+volutamente ariosa, e **non si aggiusta rimpicciolendo il tipo**. Va registrata nel
+`PAGE_REGISTRY` dell'admin come ogni slide nuova.
+
+**Inchiostro — attenzione alla dominante.** `--ink-X` è l'inchiostro che sta su
+`--surface-X`, e questa coppia vale ovunque; quale delle due sia scura invece **cambia**:
+nelle experience a dominante scura (Agos, Eni, Isybank, Trenitalia) `--surface-inverse` è
+la superficie **chiara**. Quindi: il lockup `hero`, che vive dentro la slide, prende
+l'inchiostro dalla **superficie dichiarata dalla slide**; la firma `chrome`, che vive
+fuori, usa **valori espliciti** chiaro/scuro pilotati da `data-on-dark`. E la slide‑firma
+va messa sul fondo scuro *di quella* experience: `bg="primary"` dove la dominante è scura,
+`bg="inverse"` dove è chiara. Su una slide `bg="brand"` satura il marchio Adobe passa in
+monocromo da solo (rosso su rosso sparirebbe).
 
 Il marchio del cliente va nello slot `brand`: **solo l'SVG ufficiale** che il cliente
 distribuisce, a `currentColor`. Senza asset ufficiale si usa il **ripiego automatico** —

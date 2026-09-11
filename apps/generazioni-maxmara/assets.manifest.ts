@@ -154,7 +154,7 @@ export const assets: AssetSlot[] = [
     alt: '',
   },
 
-  // ── LP cliente Max Mara × Adobe (/maxmara-adobe/) ─────────────────
+  // ── LP cliente Adobe × Max Mara (/maxmara-adobe/) ─────────────────
   {
     id: 'deck-poster',
     // Poster 16:9 on-brand dietro al player video finché l'MP4 non è caricato
@@ -164,7 +164,7 @@ export const assets: AssetSlot[] = [
     aspect: '16:9',
     width: 2400,
     grade: 'editorial',
-    alt: 'Anteprima della presentazione Max Mara × Adobe',
+    alt: 'Anteprima della presentazione Adobe × Max Mara',
   },
 
   // ── Estendi qui con la stessa struttura ──

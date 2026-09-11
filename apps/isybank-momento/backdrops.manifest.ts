@@ -1,7 +1,7 @@
 import type { AssetSlot } from '@edf/core/assets/types';
 
 /**
- * «Il momento giusto» (Isybank × Adobe) — a DISTINCT Firefly backdrop per slide.
+ * «Il momento giusto» (Adobe × Isybank) — a DISTINCT Firefly backdrop per slide.
  * Palette locked in the prompt: nero inchiostro (#101318) + blu (#1B99FB) +
  * menta (#26E5AE) + a single warm arancio (#FF6200) point = "il momento".
  * Three tonal families:
