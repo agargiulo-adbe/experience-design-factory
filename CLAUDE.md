@@ -27,6 +27,7 @@ wrong‑brand imagery** (see Quality Bar).
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
 - `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `console`, `factory-showcase`, `factory-hub`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema.
+- `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente).
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
 ## Apps & structure
@@ -163,6 +164,50 @@ Le varianti scure vanno **dopo** quelle chiare nel file: stessa specificità, vi
 Una slide che *dichiara* `bg="secondary"` ma rende scura per via del backdrop va marcata a
 mano con `.uc-on-dark`. Verificare misurando i pixel, non leggendo il CSS.
 
+### Firma co‑brand «Adobe × Brand» (BINDING, ogni experience presente e futura)
+Il co‑brand non è una decorazione per slide: è **una regola sola**, nel motore.
+`@edf/core/blocks/CoBrand.astro` + il runtime in `DeckContainer.astro` la portano; ogni
+app ha solo un **wrapper sottile** `src/components/CoBrand.astro` che dichiara nome del
+brand e marchio (vedi `apps/unicredit-engagement/`). Quattro punti:
+1. **L'ordine è sempre Adobe × Brand**, mai Brand × Adobe. Non esiste una prop per
+   invertirlo: l'ordine è scritto nel markup del componente condiviso.
+2. **`variant="chrome"` sta su OGNI slide di OGNI capitolo** — una riga nel `BaseLayout`,
+   fuori dal flusso della slide (fixed, in basso a sinistra, dentro la safe‑area), quindi
+   non entra nel conteggio slide né nelle misure dell'audit. Su telefono sparisce.
+3. **`variant="hero"` sulla PRIMA e sull'ULTIMA slide del percorso**: i due marchi grandi
+   e centrati, **al posto dell'occhiello di testo «Adobe × Brand»**. Lì il lockup è
+   contenuto, non chrome: porta `role="img"` + `aria-label`.
+4. **Dove c'è un `hero`, la firma fissa si spegne da sola.** Il runtime in `DeckContainer`
+   guarda la slide attiva (`deck:change`) e marca `html[data-cobrand-off]` — **nessun
+   attributo da mettere a mano, nessun wiring per app**: ogni deck nuovo lo eredita.
+
+Il marchio del cliente va nello slot `brand`: **solo l'SVG ufficiale** che il cliente
+distribuisce, a `currentColor`. Senza asset ufficiale si usa il **ripiego automatico** —
+il nome in carattere display — mai un logo ricostruito a mano o preso da fonte non
+ufficiale (è esattamente la wrong‑brand imagery che la Quality Bar vieta).
+Inchiostro: il lockup si ribalta con la superficie via `data-on-dark`; una slide che
+*dichiara* chiaro ma rende scura va marcata `class="edf-cobrand--on-dark"` (vedi
+Inchiostri che si ribaltano). **Experience senza brand cliente** (Atelier = la Factory
+stessa, Aperture = ricerca vendor‑neutral) sono **fuori regola**: non c'è una × da fare.
+
+### Clip in loop — il giro non si deve vedere (BINDING, ogni experience)
+Una clip generata (Firefly o altro) finisce su un fotogramma che con il frame 0 non
+c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un difetto del
+**contenuto**, non della riproduzione — si risolve sull'asset, non con JavaScript.
+- Ogni clip di sfondo passa da **`pnpm loop:seamless <clip.mp4> --poster`**: dissolve la
+  coda di 0,75 s sulla testa (ffmpeg xfade), scrive `<clip>.loop.mp4` **e il poster come
+  primo fotogramma della clip ricucita**, e stampa la misura prima/dopo.
+- La misura è un numero, non un'impressione: **PSNR ultimo→primo fotogramma** confrontato
+  col PSNR di due fotogrammi adiacenti. Se il giro sta entro 6 dB dal riferimento, passa.
+  `pnpm loop:seamless --check <clip.mp4>` verifica una clip esistente ed esce ≠0 se salta.
+- In pagina si usa **`@edf/core/blocks/immersive/LoopVideo.astro`** nello slot `backdrop`
+  (poster + clip `loop` + `preload="auto"` + scrim di brand). `preload="auto"` serve: così
+  la clip è tutta in buffer prima del wrap e il giro non aspetta la rete.
+- Sul Release `media` si carica la **clip ricucita** con un nome nuovo (`*.loop.mp4`),
+  lasciando l'originale come sorgente; `provenance.video.json` registra il rimontaggio.
+- Residuo noto e accettato: il `loop` nativo costa **un tick di compositor (~17 ms, un
+  fotogramma)** sul giro. È il restart del decoder, non un salto di contenuto.
+
 ### Cross‑experience propagation
 A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
 
@@ -202,6 +247,10 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
 - `SlideBackdrop.astro` — atmospheric backdrop in the `backdrop` slot, under a scrim (WCAG‑AA). `imageClass` opacity, `scrim` class.
 - `MediaSlot.astro` — `<Picture>` (WebP) or palette placeholder; `fill`, `noText="t,l,w,h"` (% face/subject zone).
 - `MediaDemoSlot.astro` — admin‑fed media box inside a `data-demo-flex` slide.
+- `immersive/LoopVideo.astro` — clip di sfondo in loop nello slot `backdrop` (poster + `loop` +
+  `preload="auto"` + scrim). Il `src` deve essere una clip **ricucita** (`pnpm loop:seamless`).
+- `blocks/CoBrand.astro` — la firma «Adobe × Brand». `chrome` su ogni slide (una riga nel
+  BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.
 - `blocks/admin/AdminConsole.astro` — the shared config‑driven Admin Console.
 

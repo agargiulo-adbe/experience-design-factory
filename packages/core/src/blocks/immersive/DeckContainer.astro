@@ -453,6 +453,26 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
       new MutationObserver(applyLabels).observe(document.documentElement, { attributes: true, attributeFilter: ['data-lang', 'lang'] });
     } catch (e) {}
 
+    /* ── Firma co-brand: la fissa si spegne dove la slide ha già il lockup grande.
+       Vale per OGNI deck, presente e futuro, senza wiring per pagina: basta che
+       la slide contenga un <CoBrand variant="hero"> (che rende [data-cobrand="hero"]).
+       Prima e ultima slide del percorso lo hanno per contratto (CLAUDE.md). */
+    function activeSlide(id) {
+      var el = id ? document.getElementById(id) : null;
+      if (el && el.hasAttribute('data-slide')) return el;
+      // Nessun evento del deck ancora (primo paint, reduced-motion): la prima slide.
+      return document.querySelector('[data-deck] [data-slide]');
+    }
+    function syncCoBrand(id) {
+      var slide = activeSlide(id);
+      var hasHero = !!(slide && slide.querySelector('[data-cobrand="hero"]'));
+      if (hasHero) document.documentElement.setAttribute('data-cobrand-off', '');
+      else document.documentElement.removeAttribute('data-cobrand-off');
+    }
+    document.addEventListener('deck:change', function (e) { syncCoBrand(e && e.detail && e.detail.id); });
+    document.addEventListener('astro:page-load', function () { syncCoBrand(null); });
+    syncCoBrand(null);
+
     /* ── Cold visit: keep chrome + cursor until the first slide advance. Keyed per
        app (2nd path segment under the Factory root) so each experience gets its
        own first impression. Marked seen on the first progress change or on

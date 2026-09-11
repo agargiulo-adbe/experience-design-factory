@@ -1,0 +1,132 @@
+---
+/**
+ * CoBrand — la firma «Adobe × <Brand>» del deck. UNA regola, tutte le experience.
+ *
+ * Regola vincolante (CLAUDE.md → Firma co-brand):
+ *  · l'ordine è SEMPRE Adobe × Brand, mai Brand × Adobe. Non c'è una prop per
+ *    invertirlo: l'ordine è scritto nel markup, così non si può sbagliare;
+ *  · `chrome` sta su OGNI slide di OGNI capitolo — una volta nel BaseLayout,
+ *    zero lavoro per pagina;
+ *  · `hero` è il lockup grande e centrato della PRIMA e dell'ULTIMA slide del
+ *    percorso, dove i due marchi prendono il posto dell'occhiello di testo.
+ *    Dove c'è un `hero`, la firma fissa si spegne da sola (runtime in
+ *    DeckContainer): due volte lo stesso lockup è rumore.
+ *
+ * Il marchio Adobe è inline e uguale per tutti. Il marchio del cliente arriva
+ * dallo slot `brand`: passa l'SVG ufficiale quando il cliente lo distribuisce
+ * (a `currentColor`, così la stessa risorsa regge su fondo chiaro e su scuro).
+ * Senza slot ripiega sul nome in carattere display — mai un logo ricostruito a
+ * mano o preso da una fonte non ufficiale.
+ *
+ * L'inchiostro segue la superficie: il deck marca `data-on-dark` sulla root
+ * quando la slide attiva è scura, e la firma si ribalta di conseguenza.
+ */
+interface Props {
+  /** Nome del brand cliente. Finisce nell'aria-label e nel wordmark di ripiego. */
+  brand: string;
+  /**
+   * 'chrome' (default) = firma discreta fissa in basso a sinistra, su ogni slide.
+   * 'hero'             = lockup grande e centrato, prima e ultima slide.
+   */
+  variant?: 'chrome' | 'hero';
+  class?: string;
+  [key: string]: unknown;
+}
+const { brand, variant = 'chrome', class: className, ...rest } = Astro.props as Props;
+const isHero = variant === 'hero';
+// Nell'hero il lockup SOSTITUISCE il testo «Adobe × Brand»: lì è contenuto, va
+// letto dagli screen reader. La firma fissa è invece chrome, quindi decorativa.
+---
+<div
+  class:list={["edf-cobrand", isHero ? 'edf-cobrand--hero' : 'edf-cobrand--chrome', className]}
+  data-cobrand={variant}
+  role={isHero ? 'img' : undefined}
+  aria-label={isHero ? `Adobe × ${brand}` : undefined}
+  aria-hidden={isHero ? undefined : 'true'}
+  {...rest}
+>
+  <svg class="edf-cobrand-adobe" viewBox="0 0 24 24" role="img" focusable="false" aria-hidden="true">
+    <path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" />
+  </svg>
+  <span class="edf-cobrand-x" aria-hidden="true">×</span>
+  <span class="edf-cobrand-brand">
+    <slot name="brand"><span class="edf-cobrand-word">{brand}</span></slot>
+  </span>
+</div>
+
+<style is:global>
+  /* ── Firma fissa: resta ferma mentre le slide scorrono, dentro la safe-area,
+     senza toccare né la nav (in alto) né i controlli del deck (in basso). ── */
+  .edf-cobrand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    pointer-events: none;
+    color: var(--ink-primary);
+  }
+  .edf-cobrand-adobe { width: 1.05rem; height: 1.05rem; flex-shrink: 0; fill: #eb1000; }
+  .edf-cobrand-x { font-size: 0.7rem; line-height: 1; color: currentColor; opacity: 0.55; }
+  .edf-cobrand-brand { display: inline-flex; align-items: center; color: currentColor; }
+  /* Il marchio del cliente arriva dallo slot: qualunque SVG passi, lo riportiamo
+     a un'altezza sola, così il lockup ha la stessa misura in tutte le experience. */
+  .edf-cobrand-brand svg { height: 0.8rem; width: auto; flex-shrink: 0; color: currentColor; display: block; }
+  .edf-cobrand-word {
+    font-family: var(--font-display, inherit);
+    font-weight: 500;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .edf-cobrand--chrome {
+    position: fixed;
+    left: var(--slide-safe-inset, 80px);
+    bottom: calc(var(--deck-chrome-safe, 168px) / 3);
+    z-index: 30;
+    opacity: 0.62;
+    transition: opacity 200ms ease, visibility 200ms ease;
+  }
+
+  /* L'inchiostro segue la slide: chiaro su fondo scuro, scuro su fondo chiaro.
+     `data-on-dark` lo mette il deck (deck.ts → syncDark) sulla slide attiva. */
+  [data-deck][data-on-dark] ~ .edf-cobrand--chrome,
+  body:has([data-deck][data-on-dark]) .edf-cobrand--chrome { color: var(--ink-inverse); }
+
+  /* ── Lockup di copertina e di chiusura: i due marchi al centro, grandi. ── */
+  .edf-cobrand--hero {
+    position: static;
+    opacity: 1;
+    justify-content: center;
+    gap: clamp(0.9rem, 1.6vw, 1.5rem);
+    margin-bottom: clamp(1.5rem, 2.4vw, 2.4rem);
+  }
+  .edf-cobrand--hero .edf-cobrand-adobe {
+    width: clamp(2.4rem, 3.6vw, 3.6rem);
+    height: clamp(2.4rem, 3.6vw, 3.6rem);
+  }
+  .edf-cobrand--hero .edf-cobrand-brand svg { height: clamp(1.7rem, 2.6vw, 2.6rem); }
+  .edf-cobrand--hero .edf-cobrand-word { font-size: clamp(1.6rem, 2.5vw, 2.5rem); font-weight: 300; letter-spacing: -0.01em; }
+  .edf-cobrand--hero .edf-cobrand-x { font-size: clamp(1rem, 1.4vw, 1.4rem); font-weight: 300; opacity: 0.45; }
+  /* Anche il lockup grande ribalta l'inchiostro con la superficie, con lo stesso
+     segnale della firma fissa: `data-on-dark`, che il deck calcola sulla slide
+     attiva. Ereditare non basta — il lockup vive dentro contenitori che non
+     dichiarano un colore e finirebbe con l'inchiostro del body.
+     Una slide che DICHIARA una superficie chiara ma rende scura per via del
+     backdrop va marcata a mano: `class="edf-cobrand--on-dark"` (e viceversa). */
+  .edf-cobrand--hero { color: var(--ink-primary); }
+  [data-deck][data-on-dark] .edf-cobrand--hero { color: var(--ink-inverse); }
+  .edf-cobrand--hero.edf-cobrand--on-dark { color: var(--ink-inverse); }
+  .edf-cobrand--hero.edf-cobrand--on-light { color: var(--ink-primary); }
+
+  /* Dove una slide porta già il lockup grande, la firma fissa si toglie di mezzo.
+     Il flag lo mette il runtime in DeckContainer sulla root. */
+  html[data-cobrand-off] .edf-cobrand--chrome { opacity: 0; visibility: hidden; }
+
+  /* La firma fissa è chrome del deck: fuori dal deck (admin, dossier) non ha senso. */
+  body:not(:has([data-deck])) .edf-cobrand--chrome { display: none; }
+
+  /* Su telefono lo spazio è dei contenuti: resta solo il lockup grande. */
+  @media (max-width: 640px) { .edf-cobrand--chrome { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .edf-cobrand--chrome { transition: none; } }
+</style>

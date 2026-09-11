@@ -111,6 +111,16 @@ the homework. Establish, with the user and via research:
 
 ## Part 7 — Visual direction & assets
 - **Mood & imagery type**, brand colour/type cues, do's & don'ts, any official assets available.
+- **The client's official logo (SVG).** Ask for it explicitly, and ask *where it comes from* —
+  the brand's own press/brand kit, or a file the client gave you. Every experience carries an
+  **«Adobe × Brand» signature on every slide**, with the two marks shown large and centred on
+  the opening and closing slides. With an official SVG we set it in the real mark; without one
+  the engine falls back to the brand name in the experience's display type. We never rebuild a
+  logo by hand or lift one from an unofficial source — that is wrong-brand imagery.
+- **The order is fixed: Adobe × Brand**, never Brand × Adobe. It is not a design choice per
+  experience; it is how the Factory signs its work. Flag it if a stakeholder asks to flip it.
+- **Motion, if any.** Looping backdrop clips are welcome, but say so in the brief: each one is
+  re-cut so the loop has no visible jump, and the cut is measured, not eyeballed.
 
 ## Output — the value-proposition brief
 When enough is known, produce **one Markdown document** with these headings, ready to hand off.
@@ -131,7 +141,8 @@ differentiation → next steps.
 ## 7. Differentiation           (what Adobe has that competitors don't, relevant to this customer)
 ## 8. Narrative arc & personas  (the story spine, start to payoff; named personas)
 ## 9. Section-by-section outline (per section: purpose, key message, Adobe capabilities in context)
-## 10. Visual direction & assets
+## 10. Visual direction & assets  (mood, imagery, do's & don'ts, official logo SVG + its
+                                source; the Adobe × Brand signature is standard on every slide)
 ## 11. Sources                  (links + dates)
 ## 12. Open questions for Antonio
 ```

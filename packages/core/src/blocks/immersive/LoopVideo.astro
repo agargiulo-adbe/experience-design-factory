@@ -1,0 +1,65 @@
+---
+/**
+ * LoopVideo — la clip di sfondo che gira in loop dietro una slide.
+ *
+ * Va nello slot `backdrop` di uno `Slide`, come `SlideBackdrop` per le immagini.
+ *
+ * Regola vincolante (CLAUDE.md → Clip in loop): il `src` deve essere una clip
+ * **già ricucita sul giro** — la coda dissolta sulla testa — prodotta con
+ * `pnpm loop:seamless <clip.mp4>`. Una clip generata (Firefly o altro) finisce
+ * su un fotogramma che con il frame 0 non c'entra niente: il `loop` nativo la
+ * riavvolge e si vede lo stacco. Non è un problema di riproduzione, è di
+ * contenuto, e si risolve sull'asset, non con JavaScript.
+ * `pnpm loop:seamless --check <clip.mp4>` verifica il giro di una clip esistente.
+ *
+ * `preload="auto"`: la clip è tutta in buffer prima del giro, così il wrap non
+ * aspetta la rete. Sotto `prefers-reduced-motion` il video sparisce e resta il
+ * poster, che per questo deve essere il PRIMO FOTOGRAMMA della clip ricucita
+ * (lo scrive lo script insieme al .loop.mp4).
+ */
+interface Props {
+  /** URL della clip ricucita (`*.loop.mp4`). */
+  src: string;
+  /** Poster = primo fotogramma della clip ricucita. Regge reduced-motion e il primo paint. */
+  poster: string;
+  /** Classe dello scrim di brand sopra la clip (WCAG-AA per il testo che ci sta sopra). */
+  scrim?: string;
+  /** Opacità della clip sotto lo scrim. */
+  opacity?: number;
+  class?: string;
+}
+const { src, poster, scrim, opacity = 0.9, class: className } = Astro.props as Props;
+---
+<div class:list={["edf-loopvideo", className]} aria-hidden="true">
+  <div class="edf-loopvideo-poster" style={`background-image: url(${poster});`}></div>
+  <video
+    class="edf-loopvideo-clip"
+    style={`opacity: ${opacity};`}
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster={poster}
+  >
+    <source src={src} type="video/mp4" />
+  </video>
+  {scrim && <div class:list={["edf-loopvideo-scrim", scrim]} data-scrim></div>}
+</div>
+
+<style is:global>
+  .edf-loopvideo { position: absolute; inset: 0; z-index: 0; }
+  .edf-loopvideo-poster {
+    position: absolute; inset: 0; z-index: 0;
+    background-position: center; background-size: cover; background-repeat: no-repeat;
+    background-color: var(--surface-inverse);
+  }
+  .edf-loopvideo-clip {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+  }
+  .edf-loopvideo-scrim { position: absolute; inset: 0; z-index: 1; }
+  /* Il contenuto della slide sta sopra il backdrop. */
+  [data-slide]:has(.edf-loopvideo) > .inset-0 { z-index: 2; }
+  @media (prefers-reduced-motion: reduce) { .edf-loopvideo-clip { display: none; } }
+</style>

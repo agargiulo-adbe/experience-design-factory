@@ -100,6 +100,10 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
   the two wordmarks (`Max Mara` primary, `Adobe` discreet); tagline hero + co-brand eyebrow.
   Driven by `[data-cover]` in `animations.ts`; reduced-motion safe; plays on activation.
   Optional atmospheric backdrop via `bgMedia`/`bgSrc` (always under a brand scrim).
+- `packages/core/src/blocks/CoBrand.astro` — the «Adobe × Brand» signature (see the binding
+  rule below): `chrome` on every slide, `hero` on the first and last. Per-app thin wrapper.
+- `packages/core/src/blocks/immersive/LoopVideo.astro` — looping backdrop clip for the
+  `backdrop` slot; its `src` must be a stitched `*.loop.mp4`.
 - `packages/core/src/blocks/SlideBackdrop.astro` — atmospheric textile background for an
   otherwise-flat slide. Goes in Slide's `backdrop` slot (BEHIND content, **outside
   `.slide-inner` so the audit does not measure it**). ALWAYS under a `scrim` strong enough
@@ -113,6 +117,46 @@ while the platform acts (e.g. "the team creates with **GenStudio** and **Firefly
   rhythm, AA contrast). reduced-motion = instant toggle. On a dark slide pass on-dark colours
   to the body. The deck must read fine WITHOUT expanding it (self-sufficient for the live telling).
   Body content via the default slot.
+
+### Co-brand signature «Adobe × Brand» (BINDING — every experience, present & future)
+The co-brand is **one rule in the engine**, not a per-slide decision.
+`@edf/core/blocks/CoBrand.astro` carries it; each app only has a **thin wrapper**
+`src/components/CoBrand.astro` declaring the brand name and its mark.
+- **The order is always Adobe × Brand**, never Brand × Adobe. There is no prop to flip it —
+  the order is written into the shared component's markup, so it cannot be got wrong.
+- **`variant="chrome"` on EVERY slide of EVERY chapter** — one line in `BaseLayout`, fixed
+  bottom-left inside the safe area, outside the slide flow (so it never enters the slide
+  count nor the audit's measurements). Hidden on phones.
+- **`variant="hero"` on the FIRST and the LAST slide of the journey**: the two marks large
+  and centred, **replacing the "Adobe × Brand" text eyebrow**. There the lockup is content,
+  not chrome — it carries `role="img"` + `aria-label`.
+- **Where a `hero` sits, the fixed signature switches itself off.** The runtime lives in
+  `DeckContainer.astro`, watches `deck:change` and flags `html[data-cobrand-off]` — **no
+  per-slide attribute, no per-app wiring**: every new deck inherits it.
+- The client mark goes in the `brand` slot and must be the **official SVG the client
+  distributes**, at `currentColor`. With no official asset, the component falls back to the
+  brand name in the display font — **never** a hand-rebuilt or unofficially sourced logo
+  (that is exactly the wrong-brand imagery the Quality Bar forbids).
+- Ink flips with the surface via `data-on-dark`; a slide that *declares* light but renders
+  dark is marked `class="edf-cobrand--on-dark"`.
+- **Out of scope:** experiences with no client brand (the Factory's own Atelier deck,
+  vendor-neutral research like Aperture) — there is no × to make.
+
+### Looping backdrop clips — the wrap must not show (BINDING)
+A generated clip (Firefly or otherwise) ends on a frame that has nothing to do with frame 0:
+the native `loop` rewinds it and **the cut is visible**. That is a **content** defect, not a
+playback one — fix the asset, not with JavaScript.
+- Every backdrop clip goes through **`pnpm loop:seamless <clip.mp4> --poster`**: it dissolves
+  the 0.75 s tail onto the head (ffmpeg xfade), writes `<clip>.loop.mp4` **and the poster as
+  the first frame of the stitched clip**, and prints the before/after measurement.
+- The measurement is a number, not an impression: **PSNR last→first frame** against the PSNR
+  of two adjacent frames. Within 6 dB of that reference = pass. `--check` verifies an existing
+  clip and exits ≠0 when the wrap jumps.
+- In the page use **`@edf/core/blocks/immersive/LoopVideo.astro`** in the `backdrop` slot
+  (poster + `loop` + `preload="auto"` + brand scrim). `preload="auto"` matters: the clip is
+  fully buffered before the wrap, so the loop never waits on the network.
+- Known, accepted residue: the native `loop` costs **one compositor tick (~17 ms, one frame)**
+  at the wrap — the decoder restart, not a content jump.
 
 ### Content rules (substance)
 - **Persona-led, on-brand language** — name the theme from the brand's world, not jargon
@@ -254,5 +298,9 @@ Conventions & hard-won lessons:
 7. Verify: `pnpm dev`, `pnpm build`, `pnpm typecheck`; check 360px + reduced-motion; then deploy.
 8. **Copy pass — human, not AI** (IT + EN): scrub the AI tells (see Content rules / CLAUDE.md → Copy voice); keep names/numbers/sources; `<T>` keeps both languages.
 9. **Audit gate:** `audit:deck` HARD checks (`b/c/d/e/f/h/j/k`) = **0** at 1920/1440/1280; resolve SOFT (`a/i/g`) only by cutting copy or splitting slides, **never by shrinking type**. Then read a 1920 screenshot of every slide.
-10. **Register everywhere:** `admin.astro` (PAGE_REGISTRY + SOLUTIONS), `deploy.yml` (merge + verify), `factory-hub` card, showcase `src/data/experiences.ts` (+ `public/shots/<slug>.webp`), console registry / Supabase seed. A product/naming change propagates to **every** experience that cites it — verify each (build + audit).
-11. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.
+10. **Co-brand:** add the app's thin `CoBrand.astro` wrapper (brand name + official mark, or
+    the wordmark fallback), one `<CoBrand />` in `BaseLayout`, and `<CoBrand variant="hero" />`
+    on the first and last slide in place of the text eyebrow. Order is Adobe × Brand, always.
+11. **Backdrop clips:** every clip through `pnpm loop:seamless … --poster`; render with `LoopVideo`.
+12. **Register everywhere:** `admin.astro` (PAGE_REGISTRY + SOLUTIONS), `deploy.yml` (merge + verify), `factory-hub` card, showcase `src/data/experiences.ts` (+ `public/shots/<slug>.webp`), console registry / Supabase seed. A product/naming change propagates to **every** experience that cites it — verify each (build + audit).
+13. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.

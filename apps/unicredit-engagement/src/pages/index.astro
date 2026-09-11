@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import UniNavigation from '../components/UniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import CoBrand from '../components/CoBrand.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
@@ -51,15 +52,8 @@ const unicreditStats = [
   <DeckContainer nextHref={href(base, '/scenario')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center" data-no-cobrand>
-      <Fragment slot="backdrop">
-        <!-- Poster Firefly di fallback (reduced-motion nasconde il clip), poi il clip in loop, poi lo scrim. -->
-        <div class="uc-video-poster" style={`background-image: url(${coverPoster});`} aria-hidden="true"></div>
-        <video class="uc-video" autoplay muted loop playsinline preload="auto" poster={coverPoster} aria-hidden="true">
-          <source src={COVER_VIDEO} type="video/mp4" />
-        </video>
-        <div class="uc-video-scrim" data-scrim aria-hidden="true"></div>
-      </Fragment>
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <LoopVideo slot="backdrop" src={COVER_VIDEO} poster={coverPoster} scrim="uc-video-scrim" />
 
       <div class="uc-hero mx-auto flex flex-col items-center text-center">
         <CoBrand variant="hero" data-reveal />
