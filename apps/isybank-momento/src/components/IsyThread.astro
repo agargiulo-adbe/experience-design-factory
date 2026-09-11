@@ -1,0 +1,257 @@
+---
+/**
+ * IsyThread — il filo dei momenti: la spina dorsale continua del deck.
+ *
+ * È UN SOLO elemento, montato una volta nel BaseLayout con `transition:persist`,
+ * quindi **non viene ricreato dalla navigazione SPA**: passando da un capitolo
+ * all'altro il filo non riparte, scorre. È la differenza fra quindici slide e
+ * un oggetto solo — ed è letteralmente la tesi del deck («il momento giusto»):
+ * il tempo non ricomincia a ogni schermata, continua.
+ *
+ * Come funziona: il filo è largo molto più del viewport e vive in una fascia
+ * bassa **garantita libera dal contratto del deck** (il contenuto non scende mai
+ * sotto `--deck-chrome-safe`), quindi non può mai coprire del testo. A ogni
+ * `deck:change` la guida trasla perché il momento corrente finisca esattamente
+ * al centro, dove sta la chrome del deck: i controlli diventano la testina di
+ * lettura sul filo.
+ *
+ * Due tipi di nodo: i quattro **capitoli** (il percorso) e le sei **idee**
+ * dentro il capitolo «Le idee» (i momenti veri). Un nodo passato resta acceso,
+ * quello corrente pulsa, quelli futuri sono appena accennati: a colpo d'occhio
+ * si vede quanta storia è stata raccontata.
+ */
+
+/** Le quattro sezioni del deck, in ordine di racconto. L'ultimo segmento dello
+ *  slug di ogni rotta è la chiave con cui il runtime si riconosce. */
+const SECTIONS = [
+  { key: 'isybank-momento', label: 'Il momento giusto' },
+  { key: 'domanda', label: 'La domanda' },
+  { key: 'idee', label: 'Le idee' },
+  { key: 'rotta', label: 'La rotta' },
+];
+
+/** Geometria della guida, in px. Un capitolo = un segmento. */
+const SPAN = 880;          // larghezza di un capitolo sul filo
+const LEAD = 420;          // aria prima del primo nodo e dopo l'ultimo
+const H = 72;              // altezza: sta tutta nella fascia che il contenuto non usa
+const MID = H / 2;
+const AMP = 10;            // quanto ondeggia il filo
+const WIDTH = LEAD * 2 + SPAN * (SECTIONS.length - 1);
+
+/** Quota del filo a una data x: una sinusoide lenta, così la linea respira. */
+const yAt = (x: number) => MID + Math.sin((x / WIDTH) * Math.PI * 3.1) * AMP;
+
+/** Path cubico che passa per la sinusoide — campionato fitto, curve morbide. */
+const STEP = 40;
+let d = `M 0 ${yAt(0).toFixed(2)}`;
+for (let x = STEP; x <= WIDTH; x += STEP) {
+  const px = x - STEP;
+  const cx1 = px + STEP / 3;
+  const cx2 = px + (STEP * 2) / 3;
+  d += ` C ${cx1.toFixed(2)} ${yAt(cx1).toFixed(2)}, ${cx2.toFixed(2)} ${yAt(cx2).toFixed(2)}, ${x.toFixed(2)} ${yAt(x).toFixed(2)}`;
+}
+
+/** Nodi capitolo: uno per sezione. */
+const chapters = SECTIONS.map((s, i) => {
+  const x = LEAD + i * SPAN;
+  return { ...s, x, y: yAt(x) };
+});
+
+/** Nodi momento: le sei idee, distribuite dentro il segmento «Le idee». */
+const IDEE_INDEX = SECTIONS.findIndex((s) => s.key === 'idee');
+const moments = Array.from({ length: 6 }, (_, i) => {
+  // sei momenti fra il nodo «Le idee» e il nodo «La rotta», estremi esclusi
+  const x = LEAD + IDEE_INDEX * SPAN + ((i + 1) / 7) * SPAN;
+  return { n: i + 1, x, y: yAt(x) };
+});
+---
+<div class="isy-thread" aria-hidden="true" data-isy-thread data-width={WIDTH} data-span={SPAN} data-lead={LEAD}>
+  <div class="isy-thread-rail" data-isy-rail style={`width:${WIDTH}px`}>
+    <svg width={WIDTH} height={H} viewBox={`0 0 ${WIDTH} ${H}`} class="isy-thread-svg" focusable="false">
+      <defs>
+        <linearGradient id="isy-thread-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#1B99FB" stop-opacity="0" />
+          <stop offset="0.18" stop-color="#1B99FB" stop-opacity="0.55" />
+          <stop offset="0.62" stop-color="#26E5AE" stop-opacity="0.55" />
+          <stop offset="1" stop-color="#26E5AE" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+
+      <!-- la traccia: sempre presente, appena accennata -->
+      <path d={d} class="isy-thread-track" />
+      <!-- il percorso già raccontato: si allunga a ogni slide (stroke-dasharray) -->
+      <path d={d} class="isy-thread-done" data-isy-done stroke="url(#isy-thread-grad)" />
+
+      {chapters.map((c, i) => (
+        <g class="isy-node isy-node--chapter" data-isy-node="chapter" data-isy-i={i} data-isy-x={c.x}>
+          <circle cx={c.x} cy={c.y} r="13" class="isy-node-halo" />
+          <circle cx={c.x} cy={c.y} r="5" class="isy-node-dot" />
+        </g>
+      ))}
+
+      {moments.map((m) => (
+        <g class="isy-node isy-node--moment" data-isy-node="moment" data-isy-i={m.n} data-isy-x={m.x}>
+          <circle cx={m.x} cy={m.y} r="10" class="isy-node-halo" />
+          <circle cx={m.x} cy={m.y} r="3.5" class="isy-node-dot" />
+        </g>
+      ))}
+    </svg>
+  </div>
+</div>
+
+<style is:global>
+  /* La fascia vive sotto la soglia che il contenuto non supera mai
+     (`--deck-chrome-safe`): per contratto non può coprire del testo. */
+  .isy-thread {
+    position: fixed;
+    left: 0; right: 0;
+    bottom: calc(var(--deck-chrome-safe, 168px) * 0.57);
+    height: 72px;
+    z-index: 12;
+    pointer-events: none;
+    overflow: hidden;
+    /* screen: il filo si appoggia sul nero come luce, non come vernice */
+    mix-blend-mode: screen;
+    opacity: 0;
+    transition: opacity 700ms ease;
+  }
+  .isy-thread[data-isy-ready] { opacity: 1; }
+  /* Ai lati sfuma nel nulla: la linea non ha un inizio e una fine visibili. */
+  .isy-thread {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+
+  .isy-thread-rail {
+    position: absolute;
+    top: 0; left: 50%;
+    height: 72px;
+    will-change: transform;
+    transform: translate3d(var(--isy-offset, 0px), 0, 0);
+    /* ease-out-expo lunga: il filo si posa, non scatta */
+    transition: transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .isy-thread-svg { display: block; overflow: visible; }
+
+  .isy-thread-track {
+    fill: none;
+    stroke: rgba(133, 153, 176, 0.22);
+    stroke-width: 1.25;
+  }
+  .isy-thread-done {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: var(--isy-len, 0) 99999;
+    transition: stroke-dasharray 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .isy-node-halo { fill: none; stroke-width: 1.25; }
+  .isy-node-dot { fill: rgba(133, 153, 176, 0.45); transition: fill 600ms ease, r 600ms ease; }
+  .isy-node-halo { stroke: rgba(133, 153, 176, 0.14); transition: stroke 600ms ease, opacity 600ms ease; opacity: 0.5; }
+
+  /* passato: acceso, ma quieto */
+  .isy-node[data-isy-state="past"] .isy-node-dot { fill: rgba(38, 229, 174, 0.62); }
+  .isy-node[data-isy-state="past"] .isy-node-halo { stroke: rgba(38, 229, 174, 0.18); opacity: 0.7; }
+
+  /* corrente: il momento che stiamo raccontando */
+  .isy-node[data-isy-state="now"] .isy-node-dot { fill: #FF6200; }
+  .isy-node[data-isy-state="now"] .isy-node-halo {
+    stroke: rgba(255, 98, 0, 0.55);
+    opacity: 1;
+    animation: isy-pulse 2600ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes isy-pulse {
+    0%   { transform: scale(1);    stroke-opacity: 0.55; }
+    55%  { transform: scale(2.1);  stroke-opacity: 0; }
+    100% { transform: scale(2.1);  stroke-opacity: 0; }
+  }
+
+  .isy-node--chapter[data-isy-state="now"] .isy-node-dot { r: 6.5; }
+
+  /* Il filo è dell'esperienza, non dell'admin o del dossier. */
+  body:not(:has([data-deck])) .isy-thread { display: none; }
+
+  /* Su schermi bassi (1280×800 tipico) il contenuto arriva più giù: il filo
+     scende a sua volta, così non passa mai sotto una riga di testo. */
+  @media (max-height: 860px) {
+    .isy-thread { bottom: calc(var(--deck-chrome-safe, 168px) * 0.34); }
+  }
+
+  @media (max-width: 640px) { .isy-thread { display: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .isy-thread-rail,
+    .isy-thread-done { transition: none; }
+    .isy-node[data-isy-state="now"] .isy-node-halo { animation: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    if (window.__isyThreadBound) return;
+    window.__isyThreadBound = true;
+
+    var SECTIONS = ['isybank-momento', 'domanda', 'idee', 'rotta'];
+
+    function slug() {
+      var parts = location.pathname.replace(/\/+$/, '').split('/');
+      return parts[parts.length - 1] || 'isybank-momento';
+    }
+
+    /**
+     * Il nodo di questa slide. Non si indovina per vicinanza: si sa.
+     * Dentro «Le idee» la slide 0 è la copertina del capitolo e le slide 1-6
+     * sono i sei momenti; altrove il nodo è quello del capitolo. Così il gating
+     * (capitoli o slide spenti) non può mai lasciare il filo senza un presente.
+     */
+    function stopFor(detail) {
+      var sec = slug();
+      var i = SECTIONS.indexOf(sec);
+      if (i === -1) i = 0;
+      var index = (detail && detail.index) || 0;
+      if (sec === 'idee' && index > 0) {
+        return document.querySelector('[data-isy-node="moment"][data-isy-i="' + Math.min(index, 6) + '"]');
+      }
+      return document.querySelector('[data-isy-node="chapter"][data-isy-i="' + i + '"]');
+    }
+
+    function apply(detail) {
+      var root = document.querySelector('[data-isy-thread]');
+      var rail = document.querySelector('[data-isy-rail]');
+      var done = document.querySelector('[data-isy-done]');
+      if (!root || !rail) return;
+
+      var node = stopFor(detail);
+      if (!node) return;
+      var x = parseFloat(node.getAttribute('data-isy-x'));
+
+      // Deriva interna al capitolo: anche fra due slide dello stesso nodo il
+      // filo si muove un poco, così l'avanzamento si sente sempre.
+      var total = (detail && detail.total) || 1;
+      var index = (detail && detail.index) || 0;
+      var drift = total > 1 ? (index / (total - 1) - 0.5) * 46 : 0;
+      var at = x + drift;
+
+      rail.style.setProperty('--isy-offset', (-at) + 'px');
+      if (done) done.style.setProperty('--isy-len', at.toFixed(1) + 'px');
+
+      var nodes = root.querySelectorAll('[data-isy-node]');
+      for (var k = 0; k < nodes.length; k++) {
+        var n = nodes[k];
+        var nx = parseFloat(n.getAttribute('data-isy-x'));
+        n.setAttribute('data-isy-state', n === node ? 'now' : (nx < x ? 'past' : 'future'));
+      }
+
+      root.setAttribute('data-isy-ready', '');
+    }
+
+    document.addEventListener('deck:change', function (e) { apply(e && e.detail); });
+    // Primo paint e ogni navigazione SPA: il filo non riparte, si riposiziona.
+    document.addEventListener('astro:page-load', function () { apply(null); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { apply(null); });
+    else apply(null);
+  })();
+</script>

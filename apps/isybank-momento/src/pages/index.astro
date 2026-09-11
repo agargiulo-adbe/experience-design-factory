@@ -4,12 +4,13 @@ import IsyNavigation from '../components/IsyNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoBrand from '../components/CoBrand.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import { href } from '@edf/core/utils/url.js';
 import bgMomento from '../assets/generated/bg/soft-1.webp';
 import bgPercorso from '../assets/generated/bg/ink-2.webp';
 
 // Clip Firefly (GitHub Release `media`, git-ignored in locale) + poster in /public/media.
-const COVER_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/momento-cover.mp4';
+const COVER_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/momento-cover.loop.mp4';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -39,46 +40,23 @@ const momento = [
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
-      <Fragment slot="backdrop">
-        <!-- Still Firefly di fallback (reduced-motion nasconde il video), poi il clip, poi lo scrim. -->
-        <div class="absolute inset-0" style={`background: url(${coverPoster}) center / cover no-repeat var(--surface-primary);`} aria-hidden="true"></div>
-        <video class="im-video" autoplay muted loop playsinline preload="metadata" poster={coverPoster} aria-hidden="true">
-          <source src={COVER_VIDEO} type="video/mp4" />
-        </video>
-        <div class="im-bg"></div>
-      </Fragment>
+      <LoopVideo slot="backdrop" src={COVER_VIDEO} poster={coverPoster} scrim="im-cover-bg" opacity={1} />
 
       <div class="im-cover" data-reveal>
-        <CoBrand variant="hero" class="edf-cover-lockup" data-reveal />
-        <p class="im-cover-eyebrow">Quello che ti serve · quando ti serve · per un milione di persone</p>
+        <CoBrand variant="hero" class="im-cover-lockup" data-reveal />
 
-        <div class="im-orbs" aria-hidden="true" data-reveal data-reveal-delay="0.12">
-          <svg viewBox="0 0 320 110" preserveAspectRatio="xMidYMid meet" class="im-orbs-svg">
-            <circle cx="118" cy="55" r="38" fill="rgba(27,153,251,0.85)"/>
-            <circle cx="202" cy="55" r="38" fill="rgba(38,229,174,0.85)"/>
-            <circle cx="160" cy="55" r="11" fill="#FF6200"/>
-            <circle cx="160" cy="55" r="19" stroke="rgba(255,98,0,0.45)" stroke-width="1.2" fill="none"/>
-          </svg>
-        </div>
+        <h1 class="im-cover-title" data-reveal data-reveal-delay="0.1">Il momento giusto</h1>
 
-        <h1 class="im-cover-title" data-reveal data-reveal-delay="0.18">Il momento giusto</h1>
-
-        <p class="im-cover-lead" data-reveal data-reveal-delay="0.24">
-          Avete costruito la banca che dà quello che serve, quando serve, e più di un milione di persone l'hanno scelta. Aprire il conto in pochi minuti è un problema risolto. La sfida che viene dopo è restare la banca giusta nei mille momenti successivi. Qui parliamo di come leggere quei momenti e rispondere, uno alla volta, senza perdere la semplicità.
+        <p class="im-cover-tag" data-reveal data-reveal-delay="0.16">
+          Quello che ti serve, quando ti serve, per un milione di persone.
         </p>
 
-        <div class="im-cobrand" data-reveal data-reveal-delay="0.3">
-          <span class="im-cobrand-a">Isybank</span>
-          <span class="im-cobrand-x">×</span>
-          <span class="im-cobrand-b">Adobe</span>
-        </div>
-
-        <p class="im-cover-note" data-reveal data-reveal-delay="0.34">
-          Conversazione preparata dal team Adobe Italia · dati pubblici citati alle fonti
+        <p class="im-cover-lead" data-reveal data-reveal-delay="0.22">
+          Avete costruito la banca che dà quello che serve, quando serve, e più di un milione di persone l'hanno scelta. Aprire il conto in pochi minuti è un problema risolto. La sfida che viene dopo è restare la banca giusta nei mille momenti successivi: leggerli, e rispondere uno alla volta, senza perdere la semplicità.
         </p>
-        <p class="im-firefly" data-reveal data-reveal-delay="0.38">
-          <span class="im-firefly-mark" aria-hidden="true"></span>
-          Sfondi e video generati con Adobe Firefly, firmati con Content Credentials
+
+        <p class="im-cover-note" data-reveal data-reveal-delay="0.3">
+          Conversazione preparata dal team Adobe Italia · dati pubblici citati alle fonti · sfondi e video generati con Adobe Firefly, firmati con Content Credentials
         </p>
       </div>
     </Slide>
@@ -86,42 +64,28 @@ const momento = [
     <!-- ── SLIDE 1: Il momento ────────────────────────────────────── -->
     <Slide id="slide-momento" bg="primary" align="center">
       <div slot="backdrop" class="im-bg-soft" style={`--bg-src: url(${bgMomento.src})`}></div>
-      <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-4" data-reveal>Il vostro 2026, visto da fuori</p>
-      <h2
-        class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)] text-center mx-auto"
-        style="font-size: clamp(2rem, 3.6vw, 3.4rem); font-weight: 700; line-height: 1.06; letter-spacing: -0.02em; max-width: 22ch;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Un milione di persone ha scelto la semplicità
-      </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-6 text-center"
-        style="font-size: clamp(1rem, 1.25vw, 1.25rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        In tre anni Isybank è arrivata a 1,2 milioni di clienti e oltre tre miliardi di giacenze, con tre clienti su quattro sotto i 35 anni. L'iF Design Award 2026 ha premiato l'intero ecosistema digitale, dall'app al sito, per l'esperienza d'uso. Il Piano di Impresa 2026-2029 alza l'asticella: due milioni di clienti e cento milioni di utile entro il 2029. Da qui parte tutto quello che segue.
-      </p>
+      <div class="im-figures-head" data-reveal>
+        <h2 class="im-figures-title">Un milione di persone<br />ha scelto la semplicità</h2>
+        <p class="im-figures-lead">
+          In tre anni Isybank è arrivata a 1,2 milioni di clienti e oltre tre miliardi di giacenze, con tre clienti su quattro sotto i 35 anni. L'iF Design Award 2026 ha premiato l'intero ecosistema digitale, dall'app al sito. Il Piano di Impresa 2026-2029 alza l'asticella. Da qui parte tutto quello che segue.
+        </p>
+      </div>
 
-      <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-5" data-reveal data-reveal-delay="0.22">
+      <!-- I numeri non stanno in tre scatole uguali: stanno su una riga, separati
+           da un filo, come tre momenti sulla stessa linea. -->
+      <div class="im-figures" data-reveal data-reveal-delay="0.18">
         {momento.map((m) => (
-          <div class="text-center p-4 bg-[var(--surface-secondary)] border border-[var(--line-subtle)] rounded-lg">
-            <p class={`font-[family-name:var(--font-display)] font-extrabold leading-none mb-2 ${m.tone === 'menta' ? 'text-[var(--color-menta)]' : m.tone === 'blu' ? 'text-[var(--color-blu-chiaro)]' : 'text-[var(--color-arancio-chiaro)]'}`} style="font-size: clamp(1.7rem, 3.2vw, 2.7rem);">{m.v}</p>
-            <p class="text-[1rem] font-medium text-[var(--ink-primary)] mb-1">{m.l}</p>
-            <p class="text-[0.82rem] text-[var(--color-grigio-300)]">{m.s}</p>
+          <div class="im-figure">
+            <p class={`im-figure-v im-figure-v--${m.tone}`}>{m.v}</p>
+            <p class="im-figure-l">{m.l}</p>
+            <p class="im-figure-s">{m.s}</p>
           </div>
         ))}
       </div>
-      <p class="mt-5 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)]">
+
+      <p class="im-figures-fonti" data-reveal data-reveal-delay="0.28">
         Fonti:&nbsp;
-        <a href="https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/07/20260729-ris-1h26-uk" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Intesa Sanpaolo, 1H26 (29 lug 2026)</a>
-        &nbsp;·&nbsp;
-        <a href="https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">isybank.com, 3 ago 2026</a>
-        &nbsp;·&nbsp;
-        <a href="https://www.isybank.com/it/news-e-media/news/isybank-vince-if-design-award-2026.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">iF Design Award, 5 mag 2026</a>
-        &nbsp;·&nbsp;
-        <a href="https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/02/20260202-business-plan-uk" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Piano di Impresa 2026-2029 (2 feb 2026)</a>
+        <a href="https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/07/20260729-ris-1h26-uk" target="_blank" rel="noopener noreferrer">Intesa Sanpaolo, 1H26 (29 lug 2026)</a>&nbsp;·&nbsp;<a href="https://www.isybank.com/it/news-e-media/news/isybank-3miliardi-giacenze-finanza-giovani.html" target="_blank" rel="noopener noreferrer">isybank.com, 3 ago 2026</a>&nbsp;·&nbsp;<a href="https://www.isybank.com/it/news-e-media/news/isybank-vince-if-design-award-2026.html" target="_blank" rel="noopener noreferrer">iF Design Award, 5 mag 2026</a>&nbsp;·&nbsp;<a href="https://group.intesasanpaolo.com/en/investor-relations/press-releases/2026/02/20260202-business-plan-uk" target="_blank" rel="noopener noreferrer">Piano di Impresa 2026-2029 (2 feb 2026)</a>
       </p>
     </Slide>
 
@@ -180,29 +144,33 @@ const momento = [
       display: flex; flex-direction: column; align-items: center; text-align: center;
       gap: 1.1rem; width: 100%; max-width: 60rem; margin-inline: auto;
     }
-    .im-cover-eyebrow {
-      font-family: var(--font-body); font-weight: 600; font-size: clamp(0.75rem, 0.9vw, 0.9rem);
-      letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-menta); margin: 0;
+    /* Il marchio è il lockup: gli respira intorno, non ha bisogno di un segno in più. */
+    .im-cover-lockup { margin-bottom: clamp(1.6rem, 3.4vh, 2.8rem); }
+    /* La promessa della banca, detta come si direbbe a voce: non un occhiello
+       maiuscolo in più. Il verde la lega alla palette senza gridare. */
+    .im-cover-tag {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(1.15rem, 1.65vw, 1.6rem);
+      line-height: 1.35;
+      letter-spacing: -0.005em;
+      color: var(--color-menta);
+      max-width: 34ch; margin: 0 auto; display: block;
     }
-    .im-orbs { width: min(18rem, 50vw); }
-    .im-orbs-svg { width: 100%; height: auto; display: block; }
     .im-cover-title {
       font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6rem);
       line-height: 1; letter-spacing: -0.035em; color: var(--ink-primary); margin: 0.1rem 0 0;
     }
     .im-cover-lead {
-      font-size: clamp(1rem, 1.25vw, 1.2rem); line-height: 1.55; color: var(--color-grigio-200);
-      max-width: 46rem; margin: 0 auto; display: block;
+      font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grigio-200);
+      max-width: 62ch; margin: 0 auto; display: block;
     }
-    .im-cobrand {
-      display: inline-flex; align-items: center; gap: 0.7rem; font-family: var(--font-display);
-      font-weight: 700; font-size: clamp(1.05rem, 1.4vw, 1.3rem); letter-spacing: 0.02em; margin-top: 0.1rem;
-    }
-    .im-cobrand-a, .im-cobrand-b { color: var(--ink-primary); }
-    .im-cobrand-x { color: var(--color-arancio); font-weight: 400; }
+    /* La nota stava su un fondo che il video schiarisce: a grigio-300 spariva.
+       Grigio-200 pieno, tracking più corto, e lo scrim sotto fa il resto. */
     .im-cover-note {
-      font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-grigio-300);
-      max-width: 42rem; margin: 0 auto; display: block;
+      font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7;
+      color: var(--color-grigio-200);
+      max-width: 64ch; margin: 0 auto; display: block;
     }
   </style>
 </BaseLayout>

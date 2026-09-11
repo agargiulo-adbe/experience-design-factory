@@ -244,8 +244,8 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   background:
     radial-gradient(115% 75% at 12% 0%, rgba(27,153,251,0.10), transparent 52%),
     radial-gradient(110% 80% at 92% 108%, rgba(38,229,174,0.08), transparent 55%),
-    radial-gradient(72% 62% at 50% 50%, rgba(16,19,24,0.55), transparent 78%),
-    linear-gradient(rgba(16,19,24,0.70), rgba(16,19,24,0.84)),
+    radial-gradient(66% 58% at 50% 46%, rgba(11,13,16,0.82), transparent 80%),
+    linear-gradient(rgba(16,19,24,0.72), rgba(16,19,24,0.88)),
     var(--bg-src, none) center / cover no-repeat,
     var(--surface-primary);
 }
@@ -266,6 +266,23 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
     linear-gradient(rgba(16,19,24,0.70), rgba(16,19,24,0.84)),
     var(--bg-src, none) center / cover no-repeat,
     var(--surface-primary);
+}
+
+.im-cover-bg {
+  position: absolute; inset: 0;
+  background:
+    /* Un solo velo, che cresce dove cresce il testo piccolo: le onde restano
+       vive in alto, il fondo si chiude sotto la lead e le note. Le soglie sono
+       misurate leggendo il contrasto reale, non stimate a occhio. */
+    linear-gradient(to bottom,
+      rgba(11,13,16,0.16) 0%,
+      rgba(11,13,16,0.20) 26%,
+      rgba(11,13,16,0.50) 48%,
+      rgba(11,13,16,0.86) 64%,
+      rgba(11,13,16,0.95) 76%,
+      rgba(11,13,16,0.96) 100%),
+    radial-gradient(115% 75% at 12% 0%, rgba(27,153,251,0.12), transparent 52%),
+    radial-gradient(110% 80% at 92% 108%, rgba(38,229,174,0.10), transparent 55%);
 }
 
 /* ── Video backdrop (clip Firefly) ──────────────────────────────────
@@ -493,3 +510,219 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 [data-deck] .slide-backdrop [data-parallax] { transform-origin: 50% 100%; }
 
 
+
+/* ── Le sei idee — composizione asimmetrica, niente card ──────────────────────
+   Le card erano sei volte la stessa scatola. Qui il confronto «oggi → il momento
+   giusto» è un vero passaggio su un filo, la stessa grammatica del filo dei
+   momenti che attraversa il deck: due stati, uno spento e uno acceso, con la
+   linea che li unisce. Il numero d'ordine fa da segnaposto, non da decorazione. */
+/* Blocco centrato, testo allineato a sinistra: la composizione resta
+   bilanciata sul viewport senza rinunciare alla lettura a bandiera. */
+.im-idea { width: 100%; max-width: 72rem; margin-inline: auto; }
+
+.im-idea-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+.im-idea-n {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 2.1vw, 2rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-arancio);
+  flex-shrink: 0;
+}
+.im-idea-name {
+  font-size: clamp(0.8rem, 0.95vw, 0.92rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-menta);
+  max-width: none;
+}
+.im-idea-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.85rem, 2.9vw, 2.7rem);
+  line-height: 1.07;
+  letter-spacing: -0.022em;
+  color: var(--ink-primary);
+  max-width: 26ch;
+  text-wrap: balance;
+  margin-bottom: clamp(1rem, 2.2vh, 1.7rem);
+}
+
+/* Il passaggio. La linea parte spenta e arriva accesa: si legge prima di leggere. */
+.im-shift { width: 100%; }
+.im-shift-track {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+}
+.im-shift-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.im-shift-dot--oggi { background: rgba(133, 153, 176, 0.75); }
+.im-shift-dot--poi {
+  background: var(--color-arancio);
+  box-shadow: 0 0 0 4px rgba(255, 98, 0, 0.16);
+}
+.im-shift-line {
+  height: 1px;
+  background: linear-gradient(to right, rgba(133, 153, 176, 0.45), var(--color-menta));
+}
+.im-shift-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+.im-shift-col { min-width: 0; }
+.im-shift-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-grigio-300);
+  margin-bottom: 0.45rem;
+  max-width: none;
+}
+.im-shift-label--poi { color: var(--color-menta); }
+.im-shift-text {
+  font-size: clamp(0.95rem, 1.02vw, 1.02rem);
+  /* 1.5 è il pavimento del contratto di leggibilità: ci si arriva solo dove il
+     budget verticale lo impone, non per far passare un check. */
+  line-height: 1.58;
+  color: var(--color-grigio-200);
+  max-width: none;
+}
+
+/* La prima mossa è l'unica cosa che il cliente deve portarsi via: si stacca. */
+.im-mossa {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  margin-top: clamp(1rem, 2.2vh, 1.6rem);
+  padding-top: clamp(0.8rem, 1.8vh, 1.2rem);
+  border-top: 1px solid rgba(133, 153, 176, 0.2);
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--ink-primary);
+  max-width: none;
+}
+.im-mossa > span:last-child { max-width: 76ch; }
+.im-mossa-mark { color: var(--color-arancio); font-weight: 700; flex-shrink: 0; }
+.im-mossa-label {
+  font-weight: 700;
+  color: var(--color-arancio);
+  letter-spacing: 0.02em;
+}
+.im-mossa-label::after { content: ' — '; color: rgba(133,153,176,0.7); font-weight: 400; }
+
+.im-idea-foot {
+  margin-top: clamp(0.6rem, 1.4vh, 0.95rem);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  max-width: none;
+}
+.im-idea-foot > span { display: inline; }
+.im-idea-sep { padding: 0 0.55rem; }
+.im-idea-adobe { color: var(--color-blu-chiaro); font-weight: 600; }
+.im-idea-sep { color: rgba(133, 153, 176, 0.5); }
+.im-idea-fonti { color: var(--color-grigio-300); }
+.im-idea-fonti a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.im-idea-fonti a:hover { color: var(--ink-primary); }
+
+@media (max-height: 860px) {
+  .im-shift-text { line-height: 1.5; }
+}
+
+@media (max-width: 900px) {
+  .im-shift-cols { grid-template-columns: 1fr; gap: 1.1rem; }
+}
+
+/* ── I numeri di Isybank — una riga, non tre scatole ──────────────────────────
+   Tre card identiche sono la risposta pigra: qui i numeri stanno affiancati su
+   una riga sola, separati da un filo sottile, con la stessa grammatica del filo
+   dei momenti. Il titolo e la lead salgono in una testata a due colonne, così la
+   slide smette di essere una colonna centrata lunga. */
+.im-figures-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.9rem, 2vh, 1.4rem);
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  text-align: left;
+}
+@media (min-width: 1100px) {
+  .im-figures-head { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 4rem); align-items: end; }
+}
+.im-figures-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 3.5vw, 3.3rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--ink-primary);
+  max-width: none;
+  text-wrap: balance;
+}
+.im-figures-lead {
+  font-size: clamp(0.98rem, 1.1vw, 1.1rem);
+  line-height: 1.6;
+  color: var(--color-grigio-200);
+  max-width: 62ch;
+}
+
+.im-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: 72rem;
+  margin: clamp(1.4rem, 3.4vh, 2.6rem) auto 0;
+  border-top: 1px solid rgba(133, 153, 176, 0.22);
+}
+.im-figure {
+  padding: clamp(1rem, 2.4vh, 1.6rem) clamp(0.9rem, 2vw, 1.8rem);
+  text-align: left;
+  min-width: 0;
+}
+.im-figure + .im-figure { border-left: 1px solid rgba(133, 153, 176, 0.22); }
+.im-figure-v {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  max-width: none;
+}
+.im-figure-v--menta   { color: var(--color-menta); }
+.im-figure-v--blu     { color: var(--color-blu-chiaro); }
+.im-figure-v--arancio { color: var(--color-arancio-chiaro); }
+.im-figure-l { font-size: clamp(0.98rem, 1.1vw, 1.1rem); font-weight: 600; color: var(--ink-primary); margin-bottom: 0.3rem; max-width: none; }
+.im-figure-s { font-size: 0.84rem; line-height: 1.45; color: var(--color-grigio-300); max-width: none; }
+
+.im-figures-fonti {
+  width: 100%; max-width: 72rem; margin: clamp(0.8rem, 1.8vh, 1.2rem) auto 0;
+  font-size: 0.74rem; letter-spacing: 0.09em; text-transform: uppercase; line-height: 1.6;
+  color: var(--color-grigio-300); text-align: left;
+}
+.im-figures-fonti a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.im-figures-fonti a:hover { color: var(--ink-primary); }
+
+/* Il reset di base cappa la larghezza di ogni <p> dentro una slide: questi
+   blocchi la governano da sé, quindi vanno liberati con pari specificità. */
+[data-slide] p.im-figures-fonti,
+[data-slide] p.im-idea-foot,
+[data-slide] p.im-shift-text,
+[data-slide] p.im-mossa { max-width: none; }

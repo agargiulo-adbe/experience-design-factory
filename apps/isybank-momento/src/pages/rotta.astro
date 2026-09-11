@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import IsyNavigation from '../components/IsyNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import bgCover from '../assets/generated/bg/warm-1.webp';
@@ -10,7 +11,7 @@ import bgOrizzonti from '../assets/generated/bg/soft-10.webp';
 import bgRichieste from '../assets/generated/bg/soft-11.webp';
 
 // Clip Firefly di chiusura (GitHub Release `media`) + poster in /public/media.
-const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/momento-close.mp4';
+const CLOSE_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/momento-close.loop.mp4';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -127,13 +128,7 @@ const richieste = [
 
     <!-- ── SLIDE 3: Chiusura ──────────────────────────────────────── -->
     <Slide id="slide-chiusura" bg="primary" align="center">
-      <Fragment slot="backdrop">
-        <div class="absolute inset-0" style={`background: url(${closePoster}) center / cover no-repeat var(--surface-primary);`} aria-hidden="true"></div>
-        <video class="im-video" autoplay muted loop playsinline preload="metadata" poster={closePoster} aria-hidden="true">
-          <source src={CLOSE_VIDEO} type="video/mp4" />
-        </video>
-        <div class="im-bg-arancio"></div>
-      </Fragment>
+<LoopVideo slot="backdrop" src={CLOSE_VIDEO} poster={closePoster} scrim="im-cover-bg" opacity={1} />
       <p class="slide-eyebrow text-center text-[var(--color-menta)] mb-5" data-reveal>Per chiudere</p>
       <blockquote class="text-center mx-auto" style="max-width: 44rem;" data-reveal data-reveal-delay="0.08">
         <p class="text-[var(--ink-primary)] font-[family-name:var(--font-display)]" style="font-size: clamp(1.7rem, 2.8vw, 2.6rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; max-width: none;">
@@ -151,9 +146,6 @@ const richieste = [
       >
         Nemmeno restare semplici mentre si cresce a due milioni. È il lavoro che vi proponiamo di fare insieme: un momento alla volta, e misurato.
       </p>
-      <div class="im-cobrand-close mt-6" data-reveal data-reveal-delay="0.26">
-        <span>Isybank</span><span class="text-[var(--color-arancio)] font-normal">×</span><span>Adobe</span>
-      </div>
       <p class="im-firefly mt-4" data-reveal data-reveal-delay="0.3">
         <span class="im-firefly-mark" aria-hidden="true"></span>
         Sfondi e video di questo deck generati con Adobe Firefly, firmati con Content Credentials
@@ -169,17 +161,11 @@ const richieste = [
     -->
     <!-- experience a dominante scura: qui il fondo scuro è `primary`, non `inverse`. -->
     <Slide id="slide-signature" bg="primary" align="center">
+      <LoopVideo slot="backdrop" src={CLOSE_VIDEO} poster={closePoster} scrim="im-cover-bg" opacity={1} />
       <CoBrand variant="hero" data-reveal />
       <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.15">Torna all'inizio →</a>
     </Slide>
 
   </DeckContainer>
 
-  <style>
-    .im-cobrand-close {
-      display: inline-flex; align-items: center; gap: 0.7rem; margin-inline: auto;
-      font-family: var(--font-display); font-weight: 700; font-size: clamp(1.05rem, 1.4vw, 1.3rem);
-      color: var(--ink-primary); letter-spacing: 0.02em;
-    }
-  </style>
 </BaseLayout>
