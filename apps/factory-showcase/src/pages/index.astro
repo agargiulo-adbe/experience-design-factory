@@ -77,43 +77,43 @@ const values = [
  * Le API Adobe per cui la Factory ha credenziali server-to-server, con l'uso
  * concreto dentro un'experience design. Elenco tenuto sul `.env` di progetto:
  * se una riga è qui, il token IMS per quel servizio è stato verificato.
- * `live` = già in produzione in almeno un deck; `ready` = credenziale attiva,
- * ancora senza un lavoro che la giustifichi (dirlo è più utile che gonfiare).
+ * Non c'è un campo «stato»: sono tutte disponibili, e dividerle in chi lavora e
+ * chi aspetta non dice niente di utile a chi legge. Conta che cosa fanno.
  */
 const adobeApis = [
-  { fam: 'firefly', state: 'live',  api: '/v3/images/generate',
+  { fam: 'firefly', api: '/v3/images/generate',
     name: 'Firefly Image Model',
     en: 'Every backdrop and scene, described in a manifest next to the deck: prompt, negative prompt, seed, brand colours. 17 images on Isybank, 10 on UniCredit.',
     it: 'Ogni sfondo e ogni scena, descritti in un manifest accanto al deck: prompt, negative prompt, seed, colori di marca. 17 immagini su Isybank, 10 su UniCredit.' },
-  { fam: 'firefly', state: 'live',  api: '/v3/videos/generate',
+  { fam: 'firefly', api: '/v3/videos/generate',
     name: 'Firefly Video Model',
     en: 'Text-to-video clips for covers and closings. Asynchronous: the call returns a job, the pipeline polls it, then re-cuts the clip so it loops without a visible jump.',
     it: 'Clip text-to-video per copertine e chiusure. Asincrona: la chiamata torna un job, la pipeline lo interroga, poi la clip viene rimontata perché giri senza stacco.' },
-  { fam: 'cc', state: 'live',  api: 'cutout · select subject',
+  { fam: 'cc', api: 'cutout · select subject',
     name: 'Remove Background',
-    en: 'Cuts a subject out of a stock photo so it can sit on the brand surface instead of in a generic scene. Used on the UniCredit persona portrait.',
-    it: 'Scontorna un soggetto da una foto stock perché stia sulla superficie del brand invece che in una scena qualunque. Usata sul ritratto della persona UniCredit.' },
-  { fam: 'cc', state: 'ready', api: 'generative expand · select subject',
+    en: 'Cuts a subject out of its original background so it can sit on the brand surface instead of in a scene that belongs to someone else. Used on the UniCredit persona portrait.',
+    it: 'Scontorna un soggetto dal suo sfondo originale perché stia sulla superficie del brand invece che in una scena che non gli appartiene. Usata sul ritratto della persona UniCredit.' },
+  { fam: 'cc', api: 'generative expand · select subject',
     name: 'Photoshop',
     en: 'Generative expand to reframe one asset to every projection size without cropping the subject, and subject selection to derive the no-text zones the layout audit checks.',
     it: 'Generative expand per riquadrare un asset a ogni formato di proiezione senza tagliare il soggetto, e selezione del soggetto per ricavare le zone senza testo che l\u2019audit verifica.' },
-  { fam: 'cc', state: 'ready', api: 'presets · auto-tone',
+  { fam: 'cc', api: 'presets · auto-tone',
     name: 'Lightroom',
     en: 'One photographic grade applied across every image of an experience, so forty backdrops read as one film instead of forty sources.',
     it: 'Una sola viratura fotografica su tutte le immagini di un\u2019experience, così quaranta sfondi leggono come una pellicola sola invece che come quaranta fonti.' },
-  { fam: 'cc', state: 'ready', api: '3D render · materiali',
+  { fam: 'cc', api: '3D render · materials',
     name: 'Substance 3D',
     en: 'Renders abstract objects whose materials carry the exact brand colours — imagery that can never be wrong-brand, at any resolution, consistent across a whole deck.',
     it: 'Rende oggetti astratti con materiali nei colori esatti del brand — imagery che non può essere del brand sbagliato, a qualunque risoluzione, coerente su tutto un deck.' },
-  { fam: 'doc', state: 'ready', api: 'data merge · rendition',
+  { fam: 'doc', api: 'data merge · rendition',
     name: 'InDesign',
     en: 'The leave-behind: a branded PDF generated from the same content model that feeds the deck. One source, two artifacts.',
     it: 'Il lascito: un PDF di brand generato dallo stesso modello di contenuto che alimenta il deck. Una sorgente, due artefatti.' },
-  { fam: 'doc', state: 'ready', api: 'vector rendition · data merge',
+  { fam: 'doc', api: 'vector rendition · data merge',
     name: 'Illustrator',
     en: 'Vector rendition and data merge: diagram and icon sets produced in the brand palette as SVG, instead of drawn by hand per experience.',
     it: 'Rendition vettoriale e data merge: diagrammi e set di icone prodotti nella palette del brand come SVG, invece che disegnati a mano per ogni experience.' },
-  { fam: 'auth', state: 'live', api: 'ims/token/v3 · client_credentials',
+  { fam: 'auth', api: 'ims/token/v3 · client_credentials',
     name: 'Adobe IMS',
     en: 'Server-to-server auth. Credentials live in the build environment and never reach the browser or the repository; one token per run, reused across every call.',
     it: 'Autenticazione server-to-server. Le credenziali stanno nell\u2019ambiente di build e non arrivano mai al browser né al repository; un token per esecuzione, riusato su tutte le chiamate.' },
@@ -274,8 +274,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="One monorepo, cleanly layered." it="Un monorepo, a strati puliti." />
       </h2>
       <T
-        en="A shared engine at the bottom, client skins in the middle, a governance console on top, a backend for auth and sharing, and a build that merges everything into one deploy."
-        it="Un motore condiviso alla base, le skin cliente al centro, una console di governance in cima, un backend per auth e condivisione, e una build che unisce tutto in un unico deploy."
+        en="A shared engine at the bottom, client skins in the middle, a governance console on top, a backend for auth and sharing. Between engine and skins sits the build chain, where the Adobe APIs turn a brief into the tokens and assets a skin is made of."
+        it="Un motore condiviso alla base, le skin cliente al centro, una console di governance in cima, un backend per auth e condivisione. Fra motore e skin sta la catena di build, dove le API Adobe trasformano un brief nei token e negli asset di cui una skin è fatta."
         as="p" class="lead prose-max" data-reveal />
 
       <div class="arch-diagram" data-reveal role="img"
@@ -291,6 +291,29 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
             <strong>Backend</strong>
             <em><T en="Auth · Postgres/RLS · Edge Function" it="Auth · Postgres/RLS · Edge Function" /></em>
           </div>
+        </div>
+
+        <div class="arch-layer arch-build">
+          <span class="arch-layer-label"><T en="Build chain — scripts/ · Adobe APIs" it="Catena di build — scripts/ · API Adobe" /></span>
+          <div class="arch-build-row">
+            <div class="arch-build-step">
+              <code>brand:tokens</code>
+              <span><T en="reads the client's design system from their production CSS" it="legge il design system del cliente dal suo CSS di produzione" /></span>
+            </div>
+            <div class="arch-build-step">
+              <code>assets:build</code>
+              <span><T en="Firefly Image · backdrops and scenes from a typed manifest" it="Firefly Image · sfondi e scene da un manifest tipizzato" /></span>
+            </div>
+            <div class="arch-build-step">
+              <code>video:build</code>
+              <span><T en="Firefly Video · cover and closing clips" it="Firefly Video · clip di copertina e chiusura" /></span>
+            </div>
+            <div class="arch-build-step">
+              <code>Photoshop · Lightroom</code>
+              <span><T en="cut-outs, reframing and one grade across an experience" it="scontorni, riquadrature e una viratura sola per experience" /></span>
+            </div>
+          </div>
+          <span class="arch-build-out"><T en="tokens + assets + provenance ↓" it="token + asset + provenance ↓" /></span>
         </div>
 
         <div class="arch-layer arch-skins">
@@ -309,6 +332,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
           <div class="arch-core-chips">
             <span>Immersive deck</span><span>Admin engine</span><span>i18n</span>
             <span>Design tokens</span><span>Motion</span><span>Responsive + fullscreen</span>
+            <span>Co-brand signature</span><span>«Made with» credit</span><span>Loop video</span>
           </div>
         </div>
 
@@ -321,8 +345,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       <div class="arch-cta" data-reveal>
         <div>
           <h3 class="arch-cta-title"><T en="Want the engineering detail?" it="Vuoi il dettaglio ingegneristico?" /></h3>
-          <T en="The blueprint covers the deck visual contract, runtime configurability, i18n, governance, delivery and the quality method."
-             it="Il blueprint copre il contratto visivo del deck, la configurabilità a runtime, l’i18n, la governance, la delivery e il metodo di qualità."
+          <T en="The blueprint covers the deck visual contract, how a client's design system is read, the build chain and its Adobe APIs, runtime configurability, i18n, governance, delivery and the quality method."
+             it="Il blueprint copre il contratto visivo del deck, come si legge il design system di un cliente, la catena di build con le sue API Adobe, la configurabilità a runtime, l’i18n, la governance, la delivery e il metodo di qualità."
              as="p" class="arch-cta-desc" />
         </div>
         <a href={blueprint} class="btn btn-primary">
@@ -525,11 +549,6 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
               <code class="apis-endpoint">{a.api}</code>
             </div>
             <T as="p" class="apis-use" en={a.en} it={a.it} />
-            <span class={`apis-state apis-state--${a.state}`}>
-              {a.state === 'live'
-                ? <T en="in production" it="in produzione" />
-                : <T en="credential live" it="credenziale attiva" />}
-            </span>
           </li>
         ))}
       </ol>
@@ -826,10 +845,31 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .eyebrow--dark { color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
   .proof-title { color: #fff; }
   :global(.proof-lead) { color: var(--color-slate-300); margin-top: 1.2rem; }
-  .exp-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-top: 3rem; }
+  /* La griglia delle experience non può avere colonne fisse: quante card sono
+     visibili lo decide la Console a runtime (toggle di pubblicazione), quindi
+     qualunque numero fisso prima o poi lascia una riga orfana — con cinque card
+     dava 4+1 su desktop e 2+2+1 su tablet.
+     Due mosse: il numero di colonne lo sceglie uno script in base alle card
+     DAVVERO visibili (evitando sempre di lasciarne una sola in ultima riga), e
+     il flex con `justify-content: center` centra comunque il resto. Così ogni
+     conteggio, a ogni viewport, legge come una scelta e non come un avanzo. */
+  .exp-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 1.25rem;
+    margin-top: 3rem;
+    --exp-cols: 1;
+  }
+  .exp-grid > .exp-card {
+    flex: 0 1 calc((100% - (var(--exp-cols) - 1) * 1.25rem) / var(--exp-cols));
+    min-width: 0;
+  }
   /* Symmetric at every breakpoint: 2×2 on tablet/laptop, one 4-across row on wide. */
-  @media (min-width: 720px) { .exp-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1240px) { .exp-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 720px)  { .exp-grid { --exp-cols: 2; } }
+  @media (min-width: 940px)  { .exp-grid { --exp-cols: 3; } }
+  @media (min-width: 1240px) { .exp-grid { --exp-cols: 4; } }
   .exp-card { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
   .exp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
   .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #101014; }
@@ -868,8 +908,15 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .arch-box em { font-style: normal; font-size: 0.8rem; opacity: 0.8; }
   .arch-skins { background: var(--surface-secondary); }
   .arch-layer-label, .arch-core-kicker { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-tertiary); }
-  .arch-skins-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-top: 0.75rem; }
-  @media (min-width: 720px) { .arch-skins-row { grid-template-columns: repeat(4, 1fr); } }
+  .arch-skins-row {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch;
+    gap: 0.6rem; margin-top: 0.75rem; --exp-cols: 2;
+  }
+  .arch-skins-row > .arch-skin {
+    flex: 0 1 calc((100% - (var(--exp-cols) - 1) * 0.6rem) / var(--exp-cols));
+    min-width: 0;
+  }
+  @media (min-width: 720px) { .arch-skins-row { --exp-cols: 4; } }
   .arch-skin { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-left: 3px solid var(--k, var(--accent-primary)); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; }
   .arch-skin strong { font-size: 0.95rem; }
   .arch-skin span { font-size: 0.72rem; color: var(--ink-tertiary); }
@@ -877,6 +924,29 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .arch-core { background: var(--surface-inverse); color: var(--ink-inverse); border-color: transparent; text-align: center; padding: 1.75rem 1.25rem; }
   .arch-core-kicker { color: color-mix(in srgb, #fff 55%, transparent); }
   .arch-core-title { display: block; font-family: var(--font-display); font-size: 1.5rem; margin: 0.3rem 0 1rem; }
+  /* La catena di build: è lo strato dove lavorano le API Adobe, fra il motore e
+     le skin. Senza, il diagramma raccontava un'architettura a runtime e taceva
+     il pezzo che produce metà di quello che si vede. */
+  .arch-build { border-style: dashed; }
+  .arch-build-row { display: grid; grid-template-columns: 1fr; gap: 0.55rem; }
+  @media (min-width: 760px) { .arch-build-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .arch-build-row { grid-template-columns: repeat(4, 1fr); } }
+  .arch-build-step {
+    display: flex; flex-direction: column; gap: 0.3rem;
+    padding: 0.7rem 0.8rem; border-radius: 10px;
+    background: color-mix(in srgb, var(--color-adobe-red) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-adobe-red) 22%, transparent);
+    text-align: left; min-width: 0;
+  }
+  .arch-build-step code {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--color-adobe-red-dark); overflow-wrap: anywhere;
+  }
+  .arch-build-step span { font-size: 0.8rem; line-height: 1.45; color: var(--ink-secondary); }
+  .arch-build-out {
+    display: block; margin-top: 0.7rem; text-align: center;
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-tertiary);
+  }
   .arch-core-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
   .arch-core-chips span { font-size: 0.8rem; padding: 0.35rem 0.8rem; border-radius: 999px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); }
   .arch-deliver { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
@@ -999,7 +1069,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .apis-index { list-style: none; margin: 0; padding: 0; position: relative; border-top: 1px solid rgba(255,255,255,0.14); }
   .apis-row {
     display: grid;
-    grid-template-columns: 10px minmax(0, 16.5rem) minmax(0, 1fr) auto;
+    grid-template-columns: 10px minmax(0, 16.5rem) minmax(0, 1fr);
     gap: clamp(0.8rem, 2vw, 1.6rem);
     align-items: baseline;
     padding: clamp(0.95rem, 2vh, 1.35rem) 0;
@@ -1007,7 +1077,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   }
   @media (max-width: 880px) {
     .apis-row { grid-template-columns: 10px minmax(0, 1fr); }
-    .apis-row .apis-use, .apis-row .apis-state { grid-column: 2; }
+    .apis-row .apis-use { grid-column: 2; }
   }
   .apis-dot { width: 7px; height: 7px; border-radius: 50%; align-self: center; }
   .apis-row--firefly .apis-dot { background: var(--color-adobe-red); }
@@ -1017,18 +1087,6 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .apis-name { font-size: 1.02rem; font-weight: 600; line-height: 1.25; margin: 0 0 0.2rem; }
   .apis-endpoint { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-inverse); opacity: 0.55; }
   :global(.apis-use) { font-size: 0.92rem; line-height: 1.6; color: var(--ink-inverse); opacity: 0.82; margin: 0; }
-  .apis-state {
-    font-family: var(--font-mono);
-    font-size: 0.64rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    padding: 0.24rem 0.55rem;
-    border-radius: 999px;
-    border: 1px solid currentColor;
-  }
-  .apis-state--live  { color: #6BE6A8; }
-  .apis-state--ready { color: rgba(255,255,255,0.5); }
 
   .apis-note { margin-top: clamp(1.5rem, 3vh, 2.25rem); }
   :global(.apis-note p) { font-size: 0.9rem; line-height: 1.65; color: var(--ink-inverse); opacity: 0.72; max-width: 82ch; }
@@ -1144,5 +1202,67 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     function init() { initCount(); initCopy(); }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
     document.addEventListener('astro:page-load', init);
+  })();
+</script>
+
+<!--
+  Colonne della griglia experience, scelte sul numero di card VISIBILI.
+  Regola: si prende il numero di colonne più alto che il viewport consente e che
+  NON lascia una sola card in ultima riga (una card sola in fondo è l'avanzo che
+  si nota). Gira dopo il filtro di pubblicazione, che scopre o nasconde le card,
+  e a ogni resize.
+-->
+<script is:inline>
+  (function () {
+    if (window.__expColsBound) return;
+    window.__expColsBound = true;
+
+    function maxColsFor(width) {
+      if (width >= 1240) return 4;
+      if (width >= 940) return 3;
+      if (width >= 720) return 2;
+      return 1;
+    }
+
+    function best(n, max) {
+      if (n <= 1 || max === 1) return 1;
+      var top = Math.min(max, n);
+      // 1) righe tutte piene, senza però stringere troppo le colonne
+      for (var c = top; c >= Math.max(2, top - 1); c--) if (n % c === 0) return c;
+      // 2) altrimenti: mai una card sola in ultima riga
+      for (var c2 = top; c2 >= 2; c2--) if (n % c2 !== 1) return c2;
+      return top;
+    }
+
+    // Le due griglie che dipendono dal numero di experience pubblicate: le card
+    // nella vetrina e le skin nel diagramma di architettura.
+    var GRIDS = [
+      { sel: '.exp-grid', item: '.exp-card' },
+      { sel: '.arch-skins-row', item: '.arch-skin' },
+    ];
+
+    function apply() {
+      var max = maxColsFor(window.innerWidth);
+      GRIDS.forEach(function (g) {
+        var grid = document.querySelector(g.sel);
+        if (!grid) return;
+        var visible = [].slice.call(grid.querySelectorAll(g.item))
+          .filter(function (el) { return !el.hasAttribute('hidden'); }).length;
+        grid.style.setProperty('--exp-cols', String(best(visible, max)));
+      });
+    }
+
+    var t;
+    function schedule() { clearTimeout(t); t = setTimeout(apply, 60); }
+    apply();
+    window.addEventListener('resize', schedule);
+    document.addEventListener('astro:page-load', apply);
+    // il filtro di pubblicazione scopre/nasconde card dopo la risposta di Supabase
+    try {
+      GRIDS.forEach(function (g) {
+        var el = document.querySelector(g.sel);
+        if (el) new MutationObserver(schedule).observe(el, { attributes: true, subtree: true, attributeFilter: ['hidden'] });
+      });
+    } catch (e) {}
   })();
 </script>
