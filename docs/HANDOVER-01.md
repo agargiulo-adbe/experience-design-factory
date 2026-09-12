@@ -1,4 +1,4 @@
-# Handover — Parte 1 di 7
+# Handover — Parte 1 di 8
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -67,6 +67,8 @@ pnpm --filter <app> audit:deck --only <rotta>  # una sola rotta: secondi invece 
 pnpm --filter @agargiulo-adbe/experience-core test   # 47 test del blocco scoping (cost-model/scenario/scenario-store, Vitest)
 pnpm --filter <app> assets:build           # immagini → src/assets/generated/: tipo slot stock=Pexels · firefly=Adobe Firefly (FIREFLY_CLIENT_ID/SECRET in .env) · aigen=FLUX locale (§29)
 pnpm --filter mim-alfabeti video:build      # clip Firefly Video → public/media/ (ffmpeg scrub-encode) — FUNZIONA dal 8 set (header x-model-version; serve un video.manifest.ts) (§29)
+pnpm brand:tokens <url-del-cliente>        # PRIMO comando di ogni nuova experience: legge il design system dal CSS di produzione (colori per frequenza, custom property, caratteri) — dall'11 set (§29.3)
+pnpm loop:seamless <clip.mp4> --poster     # ricuce una clip perché il `loop` non faccia stacco + poster dal primo fotogramma; `--check` verifica e esce ≠0 — dall'11 set (§29.3)
 ```
 Nota: **factory-showcase non ha `audit:deck`** (non è un deck) né `assets:build` (asset statici in `public/`).
 
@@ -87,7 +89,7 @@ Convenzione di lavoro (memoria `git-push-after-every-commit`): **commit + push d
 | **UniCredit Engagement** | **«Workshop cut» 7 set** (§5.6) + passata 9 set (§5.7) + **10 set (§5.8): design system del brand vero, loghi su ogni slide, chiusura come capitolo** → **7 capitoli** in flow (Scenario 11 · Il Sito 7 · Contenuti 4 · Analizza 9 · Coworker 6 · Risultati **5** · **Chiusura 1**), single-persona **Marco**, cover uniformi `UcCover`, clip Firefly Video, backdrop rigenerati sul petrolio. Sezioni funnel fuori-flow ma su disco. `audit:deck` **1 HARD residuo** (`b2b/slide-adriana` a 1280×800, backlog §10); contrasto **0/1099 sotto AA** misurato sui pixel. **Live/deploiato** (`704b888`). | `nextHref`+`prevHref` completi. Deck bilingue `<T en it>`. Firefly: `ff-engine-map`/`ff-il-sito`/`ff-contenuti`/`ff-scenario-cover`/`ff-story-01…05`/`ff-story-genstudio` + video `uc-cover`/`uc-close`. |
 | **Generazioni Max Mara** | **Ora config-driven** (Admin Console + runtimes + `.cs-*` retinted, lug 2026). Spostata su `/generazioni-maxmara/`. `audit:deck` 0. | `docs/AUDIT.md` elenca refinement copy non ancora applicati. Pagine funnel volutamente non gated (narrativa continua). |
 | **Factory Hub** (root) | **Nuovo** (lug 2026): landing della Factory a `/experience-design-factory/`. | Vedi §15. Stub redirect per i vecchi deep-link maxmara. |
-| **Factory Showcase** | **Live + data-driven** (`src/data/experiences.ts`, ora **10 experience**). **Dal 10 set**: cosa si vede lo decide il **toggle in Super Admin** (runtime, fail-closed); sezioni **Firefly** e **dossier**; **blueprint riallineato** (11 check, 12 app). | Vedi §13 e §13.6. |
+| **Factory Showcase** | **Live + data-driven** (`src/data/experiences.ts`, **10 experience**). Dal 10 set: **toggle di pubblicazione** in Super Admin (runtime, fail-closed); sezioni Firefly e dossier. **Dal 12 set**: blocco API **completo (9 voci)** con l'uso di ognuna, **catena di build nell'architettura**, passo «Leggi il brand» nel flusso, griglie **sempre bilanciate** a ogni conteggio e viewport. | Vedi §13, §13.6, §13.7. |
 | **«Il momento giusto» (Isybank)** | **Nuova 9 set** (§31): deck IT 3 capitoli + 6 idee gated + `/dossier/?t=` gated (Supabase); `.im-*` blu/menta/arancio; **pom. 9 set: fonti verificate su ogni slide, richieste → 4 domande aperte, 17 sfondi + 2 clip Firefly (§31.4)**; `audit:deck` 0 HARD (23 soft accettate); 17 slide lette a 1920. | Base `/isybank-momento/`. **Seedata in console** (`0012`) + dossier gated (secret-link) seedato out-of-band. Brief riservato git-ignored. |
 | **Console (Super Admin)** | Codice pronto; registry `experiences` con **tutte e 10** (Trenitalia `0005`, Agos `0006`+`0013`, Atelier `0007`, mim-alfabeti + eni-orbita `0010`, isybank `0012`, aperture `0013`). **Dal 10 set: toggle «Pubblica su showcase»** per experience (§13.6). | Auth + registry + pubblicazione vetrina. |
 
@@ -188,7 +190,11 @@ In UniCredit `admin.astro`: `PAGE_REGISTRY` elenca le slide dei **6 capitoli in 
 ---
 ## 8. Deck visual contract & audit
 
-Contratto e **11 check** (`a b c d e g h i j k` + `exp`; **non** esistono `f` e `l` — la dicitura «12 check a–l» era sbagliata in `CLAUDE.md`, nel blueprint e nell'header dello script, corretta il 10 set) **+ il Type & legibility contract (vincolante)** in `CLAUDE.md`. `pnpm --filter <app> audit:deck` gira su **1920/1440/1280** e misura bounding box → pass/fail.
+Contratto e **12 check** (`a b c d e g h i j k m` + `exp`; **non** esistono `f` e `l` — la dicitura «12 check a–l» era sbagliata e fu corretta a 11 il 10 set; il dodicesimo, **`m`**, è stato **aggiunto il 12 set**, non recuperato) **+ il Type & legibility contract (vincolante)** in `CLAUDE.md`. `pnpm --filter <app> audit:deck` gira su **1920/1440/1280** e misura bounding box → pass/fail.
+
+> **`m` — allineamento (HARD, dal 12 set):** i blocchi di primo livello con `text-align: left|start` devono condividere il bordo sinistro (±4px). Le composizioni **centrate** sono esenti; sono esclusi anche la decorazione fuori flusso (`position:absolute` — un backdrop finito dentro `.slide-inner` dava un falso positivo) e i blocchi senza testo. La trappola che l'ha generato: il reset di base cappa i `<p>` dentro una slide, si «libera» un blocco con `max-width:none` e quello **si allarga a tutta la safe-area** mentre i fratelli restano nella colonna (su isybank: fonti 197px fuori riga).
+
+> ⚠️ **IL GATE HA MENTITO (scoperto 11 set).** `audit:deck --only a,b` finiva in un **secondo** filtro posizionale in `main()` che leggeva il valore del flag come il nome di rotta letterale `"a,b"`: **zero rotte auditate**, e «PASS — all decks clean» stampato lo stesso. Corretto (il valore dei flag non è più un filtro posizionale; zero rotte esce con **codice 2**). Due conseguenze pratiche: **`DECK_URL` è l'ORIGIN**, non il path dell'app (le rotte nel set sono già percorsi completi — con il path doppio ogni pagina è un 404); e **ogni «0 failures» dichiarato prima dell'11 set va considerato non verificato**. Se un PASS arriva sospettosamente in fretta, **contare le rotte stampate**.
 
 > ⚠️ **LEZIONE CHIAVE (lug 2026):** `audit:deck` PASS **≠ leggibile**. L'audit misura solo testo **≥16px** (per band/coverage) e il contrasto — non la *generosità* del type né l'equilibrio della composizione. Su Trenitalia una remediation aveva rimpicciolito il body a 0.5–0.75rem *per far passare l'audit* → illeggibile in proiezione. Regola: dopo che l'audit è a 0, **leggi uno screenshot 1920 di ogni slide** e verifica type generoso (body ≥0.95rem) + composizione bilanciata. Dettaglio completo nel **Type & legibility contract** di `CLAUDE.md`.
 >
