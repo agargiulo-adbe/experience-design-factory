@@ -111,6 +111,11 @@ the homework. Establish, with the user and via research:
 
 ## Part 7 — Visual direction & assets
 - **Mood & imagery type**, brand colour/type cues, do's & don'ts, any official assets available.
+- **The client's live site URL.** Ask for it even when it seems obvious. The Factory reads
+  the brand's **public design system straight from that site's production CSS** — the colours
+  by frequency, the declared typefaces, any design tokens the site exposes — instead of
+  working from a brand book or from memory. Both times a palette was taken from memory it was
+  wrong. If the brand has a public design-system site or a Figma community file, name it too.
 - **The client's official logo (SVG).** Ask for it explicitly, and ask *where it comes from* —
   the brand's own press/brand kit, or a file the client gave you. Every experience carries an
   **«Adobe × Brand» signature on every slide**, with the two marks shown large and centred on
@@ -142,7 +147,8 @@ differentiation → next steps.
 ## 8. Narrative arc & personas  (the story spine, start to payoff; named personas)
 ## 9. Section-by-section outline (per section: purpose, key message, Adobe capabilities in context)
 ## 10. Visual direction & assets  (mood, imagery, do's & don'ts, official logo SVG + its
-                                source; the Adobe × Brand signature is standard on every slide)
+                                source, the live site URL the design system is read from;
+                                the Adobe × Brand signature is standard on every slide)
 ## 11. Sources                  (links + dates)
 ## 12. Open questions for Antonio
 ```

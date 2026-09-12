@@ -3,6 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { href as buildHref } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { EXPERIENCES, EXPERIENCE_COUNT, spellCount } from '../data/experiences';
+import out01 from '../assets/apis/out-01.webp';
+import out02 from '../assets/apis/out-02.webp';
+import out03 from '../assets/apis/out-03.webp';
+import out04 from '../assets/apis/out-04.webp';
+import out05 from '../assets/apis/out-05.webp';
+import out06 from '../assets/apis/out-06.webp';
 
 const base = import.meta.env.BASE_URL;
 const b = base.replace(/\/?$/, '/');
@@ -67,6 +73,53 @@ const values = [
     bodyIt: 'In cima c’è una Super Admin Console con autenticazione reale e ruoli per-esperienza — il sistema di riferimento su chi può configurare cosa.',
   },
 ];
+/**
+ * Le API Adobe per cui la Factory ha credenziali server-to-server, con l'uso
+ * concreto dentro un'experience design. Elenco tenuto sul `.env` di progetto:
+ * se una riga è qui, il token IMS per quel servizio è stato verificato.
+ * `live` = già in produzione in almeno un deck; `ready` = credenziale attiva,
+ * ancora senza un lavoro che la giustifichi (dirlo è più utile che gonfiare).
+ */
+const adobeApis = [
+  { fam: 'firefly', state: 'live',  api: '/v3/images/generate',
+    name: 'Firefly Image Model',
+    en: 'Every backdrop and scene, described in a manifest next to the deck: prompt, negative prompt, seed, brand colours. 17 images on Isybank, 10 on UniCredit.',
+    it: 'Ogni sfondo e ogni scena, descritti in un manifest accanto al deck: prompt, negative prompt, seed, colori di marca. 17 immagini su Isybank, 10 su UniCredit.' },
+  { fam: 'firefly', state: 'live',  api: '/v3/videos/generate',
+    name: 'Firefly Video Model',
+    en: 'Text-to-video clips for covers and closings. Asynchronous: the call returns a job, the pipeline polls it, then re-cuts the clip so it loops without a visible jump.',
+    it: 'Clip text-to-video per copertine e chiusure. Asincrona: la chiamata torna un job, la pipeline lo interroga, poi la clip viene rimontata perché giri senza stacco.' },
+  { fam: 'cc', state: 'live',  api: 'cutout · select subject',
+    name: 'Remove Background',
+    en: 'Cuts a subject out of a stock photo so it can sit on the brand surface instead of in a generic scene. Used on the UniCredit persona portrait.',
+    it: 'Scontorna un soggetto da una foto stock perché stia sulla superficie del brand invece che in una scena qualunque. Usata sul ritratto della persona UniCredit.' },
+  { fam: 'cc', state: 'ready', api: 'generative expand · select subject',
+    name: 'Photoshop',
+    en: 'Generative expand to reframe one asset to every projection size without cropping the subject, and subject selection to derive the no-text zones the layout audit checks.',
+    it: 'Generative expand per riquadrare un asset a ogni formato di proiezione senza tagliare il soggetto, e selezione del soggetto per ricavare le zone senza testo che l\u2019audit verifica.' },
+  { fam: 'cc', state: 'ready', api: 'presets · auto-tone',
+    name: 'Lightroom',
+    en: 'One photographic grade applied across every image of an experience, so forty backdrops read as one film instead of forty sources.',
+    it: 'Una sola viratura fotografica su tutte le immagini di un\u2019experience, così quaranta sfondi leggono come una pellicola sola invece che come quaranta fonti.' },
+  { fam: 'cc', state: 'ready', api: '3D render · materiali',
+    name: 'Substance 3D',
+    en: 'Renders abstract objects whose materials carry the exact brand colours — imagery that can never be wrong-brand, at any resolution, consistent across a whole deck.',
+    it: 'Rende oggetti astratti con materiali nei colori esatti del brand — imagery che non può essere del brand sbagliato, a qualunque risoluzione, coerente su tutto un deck.' },
+  { fam: 'doc', state: 'ready', api: 'data merge · rendition',
+    name: 'InDesign',
+    en: 'The leave-behind: a branded PDF generated from the same content model that feeds the deck. One source, two artifacts.',
+    it: 'Il lascito: un PDF di brand generato dallo stesso modello di contenuto che alimenta il deck. Una sorgente, due artefatti.' },
+  { fam: 'doc', state: 'ready', api: 'vector rendition · data merge',
+    name: 'Illustrator',
+    en: 'Vector rendition and data merge: diagram and icon sets produced in the brand palette as SVG, instead of drawn by hand per experience.',
+    it: 'Rendition vettoriale e data merge: diagrammi e set di icone prodotti nella palette del brand come SVG, invece che disegnati a mano per ogni experience.' },
+  { fam: 'auth', state: 'live', api: 'ims/token/v3 · client_credentials',
+    name: 'Adobe IMS',
+    en: 'Server-to-server auth. Credentials live in the build environment and never reach the browser or the repository; one token per run, reused across every call.',
+    it: 'Autenticazione server-to-server. Le credenziali stanno nell\u2019ambiente di build e non arrivano mai al browser né al repository; un token per esecuzione, riusato su tutte le chiamate.' },
+];
+const apiOutputs = [out01, out02, out03, out04, out05, out06];
+
 ---
 <BaseLayout title="Home">
   <!-- ══ HERO ══ -->
@@ -374,6 +427,17 @@ const values = [
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">04</span>
           <div class="flow-step-body">
+            <span class="flow-step-actor" data-actor="engine"><T en="Engine" it="Motore" /></span>
+            <h3 class="flow-step-title"><T en="Read the brand" it="Leggi il brand" /></h3>
+            <p class="flow-step-desc">
+              <T en="One command reads the client's design system straight from their live site: it pulls the production CSS and counts, because the colours that recur most <em>are</em> the design system, whatever a brand book says. It separates framework defaults, surfaces any design tokens the site publishes, and lists the real typefaces. On UniCredit it returns petrol at 271 occurrences against red at 13 — so the system colour and the mark stop being confused. Twice a palette was taken from memory, and twice it was wrong; now it is read."
+                 it="Un comando legge il design system del cliente direttamente dal suo sito: scarica il CSS di produzione e conta, perché i colori che ricorrono di più <em>sono</em> il design system, qualunque cosa dica un brand book. Separa i default dei framework, mostra i token che il sito pubblica ed elenca i caratteri veri. Su UniCredit restituisce petrolio a 271 occorrenze contro rosso a 13 — così colore di sistema e marchio smettono di confondersi. Due volte una palette è stata presa a memoria, e due volte era sbagliata: adesso si legge." />
+            </p>
+          </div>
+        </li>
+        <li class="flow-step" data-reveal>
+          <span class="flow-step-n" aria-hidden="true">05</span>
+          <div class="flow-step-body">
             <span class="flow-step-actor" data-actor="engine"><T en="The engine · ~1h" it="Il motore · ~1h" /></span>
             <h3 class="flow-step-title"><T en="Scaffold" it="Scaffold" /></h3>
             <p class="flow-step-desc">
@@ -383,7 +447,7 @@ const values = [
           </div>
         </li>
         <li class="flow-step" data-reveal>
-          <span class="flow-step-n" aria-hidden="true">05</span>
+          <span class="flow-step-n" aria-hidden="true">06</span>
           <div class="flow-step-body">
             <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="Grow" it="Crescita" /></h3>
@@ -394,7 +458,7 @@ const values = [
           </div>
         </li>
         <li class="flow-step" data-reveal>
-          <span class="flow-step-n" aria-hidden="true">06</span>
+          <span class="flow-step-n" aria-hidden="true">07</span>
           <div class="flow-step-body">
             <span class="flow-step-actor" data-actor="factory"><T en="Factory KB" it="KB Factory" /></span>
             <h3 class="flow-step-title"><T en="Verified" it="Verifica" /></h3>
@@ -417,41 +481,62 @@ const values = [
   </section>
 
   <!-- ══ FIREFLY ══ -->
-  <section id="firefly" class="section band-firefly" aria-labelledby="ff-title">
-    <div class="wrap">
-      <p class="eyebrow" data-reveal><T en="Adobe Firefly Services, in the build chain" it="Adobe Firefly Services, dentro la catena di build" /></p>
+  <section id="firefly" class="section band-apis" aria-labelledby="ff-title">
+    <!-- Aurora nei colori Adobe: è l'unica fascia satura della pagina, e deve
+         esserlo — qui si parla di visual, quindi il blocco lo dimostra. -->
+    <div class="apis-aurora" aria-hidden="true"></div>
+
+    <div class="wrap apis-head">
+      <p class="eyebrow" data-reveal><T en="Adobe APIs, in the build chain" it="API Adobe, dentro la catena di build" /></p>
       <h2 id="ff-title" class="h-section" data-reveal>
         <T en="Art direction that ships with the code." it="Art direction che viaggia col codice." />
       </h2>
       <p class="lead" data-reveal>
-        <T en="No stock hunt, no licence to chase, nothing to re-cut by hand. Every backdrop and every motion clip is described in a manifest next to the deck — prompt, negative prompt, seed, brand colours — and generated at build time by Firefly Services. Change the palette, re-run one command, and the art direction follows the brand instead of trailing behind it."
-           it="Nessuna caccia allo stock, nessuna licenza da inseguire, niente da ritagliare a mano. Ogni sfondo e ogni clip in movimento è descritto in un manifest accanto al deck — prompt, negative prompt, seed, colori di marca — e generato a build time da Firefly Services. Cambi la palette, rilanci un comando, e l\u2019art direction segue il brand invece di rincorrerlo." />
+        <T en="No stock hunt, no licence to chase, nothing to re-cut by hand. Every backdrop and every motion clip is described in a manifest next to the deck — prompt, negative prompt, seed, brand colours — and generated at build time. Change the palette, re-run one command, and the art direction follows the brand instead of trailing behind it."
+           it="Nessuna caccia allo stock, nessuna licenza da inseguire, niente da ritagliare a mano. Ogni sfondo e ogni clip in movimento è descritto in un manifest accanto al deck — prompt, negative prompt, seed, colori di marca — e generato a build time. Cambi la palette, rilanci un comando, e l&rsquo;art direction segue il brand invece di rincorrerlo." />
       </p>
+    </div>
 
-      <div class="ff-grid">
-        <article class="ff-card" data-reveal>
-          <p class="ff-api"><code>POST /v3/images/generate</code></p>
-          <h3 class="ff-name"><T en="Firefly Image Model" it="Firefly Image Model" /></h3>
-          <T en="Backdrops and abstract scenes. Each slot declares contentClass (photo or art), a negative prompt that keeps out faces, logos and legible text, and a fixed seed so a re-run is reproducible. The output is cropped and colour-graded to the brand before it reaches the deck."
-             it="Sfondi e scene astratte. Ogni slot dichiara contentClass (photo o art), un negative prompt che tiene fuori volti, loghi e testo leggibile, e un seed fisso perché il rilancio sia riproducibile. L\u2019output viene ritagliato e virato sul brand prima di arrivare nel deck." as="p" class="ff-desc" />
-        </article>
-        <article class="ff-card" data-reveal data-reveal-delay="1">
-          <p class="ff-api"><code>POST /v3/videos/generate</code></p>
-          <h3 class="ff-name"><T en="Firefly Video Model" it="Firefly Video Model" /></h3>
-          <T en="Five-second 1080p clips for covers and closings — text-to-video, asynchronous: the call returns a job and the pipeline polls it until the clip is ready, then re-encodes it for the web and grabs a poster frame for reduced-motion."
-             it="Clip di cinque secondi in 1080p per cover e chiusure — text-to-video, asincrono: la chiamata restituisce un job e la pipeline lo interroga finché la clip è pronta, poi la ricodifica per il web e ne estrae un poster per il reduced-motion." as="p" class="ff-desc" />
-        </article>
-        <article class="ff-card" data-reveal data-reveal-delay="2">
-          <p class="ff-api"><code>ims/token/v3 · client_credentials</code></p>
-          <h3 class="ff-name"><T en="Adobe IMS, server-to-server" it="Adobe IMS, server-to-server" /></h3>
-          <T en="Credentials live in the build environment and never reach the browser or the repository. One token is minted per run and reused across every slot."
-             it="Le credenziali stanno nell\u2019ambiente di build e non arrivano mai al browser né al repository. Si conia un token per esecuzione e lo si riusa per tutti gli slot." as="p" class="ff-desc" />
-        </article>
+    <!-- La prova prima della spiegazione: questi sono output veri, presi dai
+         deck qui sopra. Nessun mockup, nessuna immagine di repertorio. -->
+    <figure class="apis-proof" data-reveal>
+      <div class="apis-strip" role="img"
+           aria-label="Sei sfondi generati con Adobe Firefly per le experience UniCredit e Isybank">
+        <div class="apis-track">
+          {[...apiOutputs, ...apiOutputs].map((img, i) => (
+            <img src={img.src} width={img.width} height={img.height} alt=""
+                 loading="lazy" decoding="async" aria-hidden={i >= apiOutputs.length ? 'true' : undefined} />
+          ))}
+        </div>
       </div>
+      <figcaption class="apis-cap">
+        <T en="Real output, from the decks above — Firefly Image Model v3, brand palette written into the prompt."
+           it="Output veri, dai deck qui sopra — Firefly Image Model v3, palette di marca scritta dentro il prompt." />
+      </figcaption>
+    </figure>
 
-      <div class="ff-note" data-reveal>
-        <T en="Firefly is trained on licensed and public-domain content and attaches Content Credentials (C2PA) to what it generates — which is why generated visuals are credited on the slide itself. Every asset is written to a provenance file next to the images: prompt, model, seed and licence, so months later it is still clear where a picture came from."
-           it="Firefly è addestrato su contenuti licenziati e di pubblico dominio e appone le Content Credentials (C2PA) a ciò che genera — per questo i visual generati sono creditati sulla slide stessa. Ogni asset finisce in un file di provenance accanto alle immagini: prompt, modello, seed e licenza, così a distanza di mesi si sa ancora da dove viene un\u2019immagine." as="p" />
+    <div class="wrap">
+      <ol class="apis-index" data-reveal>
+        {adobeApis.map((a) => (
+          <li class={`apis-row apis-row--${a.fam}`}>
+            <span class="apis-dot" aria-hidden="true"></span>
+            <div class="apis-id">
+              <h3 class="apis-name">{a.name}</h3>
+              <code class="apis-endpoint">{a.api}</code>
+            </div>
+            <T as="p" class="apis-use" en={a.en} it={a.it} />
+            <span class={`apis-state apis-state--${a.state}`}>
+              {a.state === 'live'
+                ? <T en="in production" it="in produzione" />
+                : <T en="credential live" it="credenziale attiva" />}
+            </span>
+          </li>
+        ))}
+      </ol>
+
+      <div class="apis-note" data-reveal>
+        <T en="Everything above runs server-to-server against firefly-api.adobe.io and image.adobe.io. Firefly is trained on licensed and public-domain content and signs what it generates with Content Credentials (C2PA). The files shipped in the decks are re-cropped and re-encoded for the web, so they no longer carry the manifest — which is why every asset is also written to a provenance file next to the images: prompt, model, seed, licence and, for derived assets, what they came from. Months later it is still clear where a picture came from."
+           it="Tutto quanto sopra gira server-to-server su firefly-api.adobe.io e image.adobe.io. Firefly è addestrato su contenuti licenziati e di pubblico dominio e firma ciò che genera con le Content Credentials (C2PA). I file spediti nei deck vengono ri-ritagliati e riconvertiti per il web, quindi non portano più il manifest — per questo ogni asset finisce anche in un file di provenance accanto alle immagini: prompt, modello, seed, licenza e, per i derivati, da che cosa vengono. A distanza di mesi si sa ancora da dove viene un&rsquo;immagine." as="p" />
       </div>
     </div>
   </section>
@@ -846,17 +931,111 @@ const values = [
   :global(.flow-principles-cite em) { font-style: italic; }
 
   /* ── SKILL (dark, showpiece) ── */
-  .band-firefly { background: var(--surface-inverse); color: var(--ink-inverse); }
-  .band-firefly .lead { color: var(--ink-inverse); opacity: 0.86; }
-  .ff-grid { display: grid; gap: 1rem; margin-top: clamp(2rem, 4vh, 3rem); grid-template-columns: 1fr; }
-  @media (min-width: 800px) { .ff-grid { grid-template-columns: repeat(3, 1fr); } }
-  .ff-card { border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; padding: 1.4rem; background: rgba(255,255,255,0.04); }
-  .ff-api { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.02em; margin-bottom: 0.7rem; }
-  .ff-api code { color: var(--accent-primary); background: rgba(255,255,255,0.07); padding: 3px 7px; border-radius: 5px; }
-  .ff-name { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.5rem; }
-  :global(.ff-desc) { font-size: 0.93rem; line-height: 1.6; color: var(--ink-inverse); opacity: 0.8; }
-  .ff-note { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.14); }
-  :global(.ff-note p) { font-size: 0.9rem; line-height: 1.65; color: var(--ink-inverse); opacity: 0.72; max-width: 78ch; }
+  /* ══ API ADOBE — la fascia che deve risaltare ═══════════════════════════════
+     Il resto della pagina alterna chiaro e scuro neutri. Qui si parla di visual,
+     quindi il blocco lo dimostra invece di raccontarlo: fondo quasi nero con
+     un'aurora nei colori Adobe (rosso · magenta · violetto), una striscia a
+     tutta pagina di output VERI presi dai deck, e l'elenco delle API come indice
+     tipografico — non l'ennesima griglia di card, che in questa pagina c'è già. */
+  .band-apis {
+    position: relative;
+    background: #08080B;
+    color: var(--ink-inverse);
+    overflow: hidden;
+    padding-block: clamp(4.5rem, 10vh, 8rem);
+  }
+  .apis-aurora {
+    position: absolute;
+    inset: -20% -10% auto -10%;
+    height: 78%;
+    pointer-events: none;
+    background:
+      radial-gradient(38% 52% at 14% 22%, rgba(235, 16, 0, 0.30), transparent 68%),
+      radial-gradient(34% 46% at 52% 4%,  rgba(225, 7, 123, 0.26), transparent 70%),
+      radial-gradient(42% 58% at 86% 26%, rgba(98, 54, 255, 0.30), transparent 70%);
+    filter: blur(18px);
+    opacity: 0.9;
+  }
+  .apis-head { position: relative; }
+  .band-apis .lead { color: var(--ink-inverse); opacity: 0.88; }
+
+  /* — la prova: striscia a tutta pagina, sfumata ai lati, che scorre piano */
+  .apis-proof { position: relative; margin: clamp(2.25rem, 5vh, 3.5rem) 0 clamp(2rem, 4vh, 3rem); }
+  .apis-strip {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  }
+  .apis-track {
+    display: flex;
+    gap: clamp(0.6rem, 1.4vw, 1.1rem);
+    width: max-content;
+    animation: apis-drift 64s linear infinite;
+  }
+  .apis-track img {
+    height: clamp(150px, 21vw, 260px);
+    width: auto;
+    border-radius: 10px;
+    display: block;
+    /* il bordo chiaro stacca l'immagine dal nero senza incorniciarla */
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10), 0 18px 40px rgba(0, 0, 0, 0.5);
+  }
+  /* Due copie in fila: a metà animazione la sequenza si ripete identica, quindi
+     il salto a zero è invisibile. Stesso principio delle clip ricucite. */
+  @keyframes apis-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+  .apis-strip:hover .apis-track { animation-play-state: paused; }
+  .apis-cap {
+    max-width: var(--page-max);
+    margin: 1rem auto 0;
+    padding-inline: clamp(1.25rem, 5vw, 3rem);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+    color: var(--ink-inverse);
+    opacity: 0.6;
+  }
+
+  /* — l'indice delle API: righe, non card */
+  .apis-index { list-style: none; margin: 0; padding: 0; position: relative; border-top: 1px solid rgba(255,255,255,0.14); }
+  .apis-row {
+    display: grid;
+    grid-template-columns: 10px minmax(0, 16.5rem) minmax(0, 1fr) auto;
+    gap: clamp(0.8rem, 2vw, 1.6rem);
+    align-items: baseline;
+    padding: clamp(0.95rem, 2vh, 1.35rem) 0;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+  }
+  @media (max-width: 880px) {
+    .apis-row { grid-template-columns: 10px minmax(0, 1fr); }
+    .apis-row .apis-use, .apis-row .apis-state { grid-column: 2; }
+  }
+  .apis-dot { width: 7px; height: 7px; border-radius: 50%; align-self: center; }
+  .apis-row--firefly .apis-dot { background: var(--color-adobe-red); }
+  .apis-row--cc      .apis-dot { background: var(--color-adobe-magenta); }
+  .apis-row--doc     .apis-dot { background: var(--color-adobe-violet); }
+  .apis-row--auth    .apis-dot { background: rgba(255,255,255,0.5); }
+  .apis-name { font-size: 1.02rem; font-weight: 600; line-height: 1.25; margin: 0 0 0.2rem; }
+  .apis-endpoint { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-inverse); opacity: 0.55; }
+  :global(.apis-use) { font-size: 0.92rem; line-height: 1.6; color: var(--ink-inverse); opacity: 0.82; margin: 0; }
+  .apis-state {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0.24rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+  }
+  .apis-state--live  { color: #6BE6A8; }
+  .apis-state--ready { color: rgba(255,255,255,0.5); }
+
+  .apis-note { margin-top: clamp(1.5rem, 3vh, 2.25rem); }
+  :global(.apis-note p) { font-size: 0.9rem; line-height: 1.65; color: var(--ink-inverse); opacity: 0.72; max-width: 82ch; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .apis-track { animation: none; }
+  }
 
   .band-dossier { background: var(--surface-secondary); }
   .dos-grid { display: grid; gap: 1rem; margin-top: clamp(2rem, 4vh, 3rem); grid-template-columns: 1fr; }

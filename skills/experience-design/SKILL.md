@@ -144,6 +144,28 @@ The co-brand is **one rule in the engine**, not a per-slide decision.
 - **Out of scope:** experiences with no client brand (the Factory's own Atelier deck,
   vendor-neutral research like Aperture) — there is no × to make.
 
+### Read the client's design system, never recall it (BINDING, every experience)
+An experience is a skin over the engine: if the skin isn't the client's real one, nothing
+else matters. Recalling it from memory has already cost twice — "UniCredit is red" (the
+system colour is **petrol #007A91**; red #E2001A is only the mark) and "Agos is blue and
+red" (it is **petrol and aqua**).
+- **First command of every new experience:** `pnpm brand:tokens <client-url>`. It pulls the
+  production CSS and counts: the most frequent colours **are** the design system, whatever a
+  brand book says. It separates framework defaults (Bootstrap/Tailwind), surfaces the custom
+  properties the site exposes (when present, they win outright) and the declared typefaces.
+  On UniCredit it prints petrol at **271 occurrences** against red at **13** — the hierarchy
+  shows itself.
+- **The most frequent colour is the SYSTEM colour** (links, states, tabs, focus), not the
+  mark. The mark is often rare and unmistakable. Confusing the two is the classic error.
+- The script brings **evidence, not decisions**: mapping onto the semantic tokens
+  (`--surface-*`, `--ink-*`, `--accent-*`) stays a design choice, made by looking at *where*
+  each colour is used on the site. Keep primary/secondary light and inverse dark, or the
+  shared blocks break.
+- **Type:** the client's proprietary face is almost never distributable. Pick the closest
+  substitute and write **why** in the `global.css`, so nobody swaps it on taste.
+- No headless browser for this: several banking sites block it but serve the CSS to a plain
+  GET. The script uses `fetch` on purpose.
+
 ### The «made with» credit — what built this slide (BINDING, every experience)
 Every slide declares the **Adobe products used to create its assets** — the generated
 backdrop, the clip, the retouch. Not the products the experience *pitches* to the client:
@@ -334,7 +356,8 @@ Conventions & hard-won lessons:
 - TS object keys with hyphens (`grigio-100`) MUST be quoted; esbuild tolerates unquoted, `tsc` does not.
 
 ## New Client Checklist
-1. Create `*.tokens.json` with brand colors/fonts (primitive tokens).
+1. **Run `pnpm brand:tokens <client-url>` first**, then create `*.tokens.json` from what it
+   found — verified against production CSS, never from memory.
 2. Define pages as immersive sequences; reuse `StepContainer`/`Step`/`animations.ts`.
 3. Add new metaphor primitives if the brand needs them (one per phase value).
 4. Write minimal original copy per step (target language).

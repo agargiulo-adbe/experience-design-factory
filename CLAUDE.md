@@ -27,6 +27,7 @@ wrong‑brand imagery** (see Quality Bar).
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
 - `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `console`, `factory-showcase`, `factory-hub`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema.
+- `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
 - `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente).
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
@@ -178,6 +179,31 @@ Per il testo usare SEMPRE questi, mai `--color-ciano` / `--color-rosso` / `--acc
 Le varianti scure vanno **dopo** quelle chiare nel file: stessa specificità, vince l'ultima.
 Una slide che *dichiara* `bg="secondary"` ma rende scura per via del backdrop va marcata a
 mano con `.uc-on-dark`. Verificare misurando i pixel, non leggendo il CSS.
+
+### Il design system del cliente si LEGGE, non si ricorda (BINDING, ogni experience)
+Una experience è una skin sopra il motore: se la skin non è quella vera del cliente,
+niente altro conta. E il modo sbagliato di ricavarla è andare a memoria — è già costato
+due volte: «UniCredit è rossa» (il colore di sistema è il **petrolio #007A91**; il rosso
+#E2001A è solo il marchio) e «Agos è blu e rosso» (è **petrolio e acqua**).
+- **Primo comando di ogni nuova experience:** `pnpm brand:tokens <url-del-cliente>`.
+  Scarica il CSS di produzione e conta: i colori più frequenti **sono** il design system,
+  qualunque cosa dica un brand book. Separa i default di framework (Bootstrap/Tailwind),
+  mostra le custom property che il sito espone (se ci sono, vincono su tutto) e i caratteri
+  dichiarati. Sul caso UniCredit stampa petrolio **271 occorrenze** contro rosso **13**:
+  la gerarchia si vede da sola.
+- **Il più frequente è il colore di SISTEMA** (link, stati, tab, focus), non il marchio.
+  Il marchio è spesso raro e inconfondibile. Confonderli è l'errore tipico.
+- Lo script porta **evidenza, non decisioni**: la mappatura sui token semantici
+  (`--surface-*`, `--ink-*`, `--accent-*`) resta una scelta di design e va fatta guardando
+  **dove** ogni colore è usato sul sito. Tenere primary/secondary chiari e inverse scuro,
+  se no i blocchi condivisi si rompono.
+- **Caratteri:** quello proprietario del cliente quasi mai è distribuibile (UniCredit ha
+  `unicredit-regular/medium/bold`). Si sceglie la sostituta più vicina e si scrive **nel
+  `global.css` perché** è stata scelta, così nessuno la cambia per gusto.
+- Niente headless per questo: diversi siti bancari lo bloccano ma servono il CSS a una GET
+  semplice. Lo script usa `fetch` apposta.
+- Il `global.css` di ogni experience deve poter citare la fonte: valori verificati sul CSS
+  di produzione, non a memoria. Se un valore non viene da lì, va detto perché.
 
 ### Firma co‑brand «Adobe × Brand» (BINDING, ogni experience presente e futura)
 Il co‑brand non è una decorazione per slide: è **una regola sola**, nel motore.
