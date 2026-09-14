@@ -67,12 +67,16 @@ const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boole
 <script>
   type Row = { route: string; slide_id: string; cut: string; lang: string; views: number; sessions: number; median_dwell_ms: number };
 
-  // Three sample rows for `?telemetry=mock`: the panel demonstrates itself even
-  // where the RPC is unreachable, and the status line says the data is a sample.
+  // Sample rows for `?telemetry=mock`: the panel demonstrates itself even where the
+  // RPC is unreachable, and the status line says the data is a sample. The last two
+  // rows carry a long multi-solution cut and a fourth one, so the mock also shows
+  // the capped tally («+2») instead of only the easy three-row case.
   const MOCK: Row[] = [
     { route: 'atelier', slide_id: 'slide-cover', cut: 'full', lang: 'en', views: 40, sessions: 28, median_dwell_ms: 9000 },
     { route: 'capability', slide_id: 'slide-toggle-demo', cut: 'full', lang: 'en', views: 31, sessions: 24, median_dwell_ms: 42000 },
     { route: 'plan', slide_id: 'slide-roadmap', cut: 'asks', lang: 'fr', views: 12, sessions: 9, median_dwell_ms: 38000 },
+    { route: 'capability', slide_id: 'slide-proof-mcp', cut: 'asks,detail,simulation', lang: 'it', views: 9, sessions: 7, median_dwell_ms: 26000 },
+    { route: 'method', slide_id: 'slide-method', cut: 'detail', lang: 'en', views: 7, sessions: 6, median_dwell_ms: 31000 },
   ];
 
   const panel = () => document.querySelector<HTMLElement>('[data-telemetry-panel]');
@@ -95,14 +99,18 @@ const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boole
     }
   }
 
-  // views summed per key, rendered as «full 71 · asks 12» — biggest first.
+  // views summed per key, rendered as «full 71 · asks 12 · +2» — biggest first.
+  // A cut is the sorted list of active solution ids, so it can be long and there
+  // can be many: the line is capped at two entries plus a count, and the CSS wraps
+  // what is left, or a real deck would push the panel past the slide's safe area.
+  const TALLY_TOP = 2;
   function tally(rows: Row[], pick: (r: Row) => string): string {
     const by = new Map<string, number>();
     for (const r of rows) by.set(pick(r), (by.get(pick(r)) ?? 0) + r.views);
-    return [...by.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(([k, v]) => `${k} ${v}`)
-      .join(' · ');
+    const ranked = [...by.entries()].sort((a, b) => b[1] - a[1]);
+    const head = ranked.slice(0, TALLY_TOP).map(([k, v]) => `${k} ${v}`);
+    const rest = ranked.length - head.length;
+    return (rest > 0 ? [...head, `+${rest}`] : head).join(' · ');
   }
 
   function render(el: HTMLElement, rows: Row[] | null) {

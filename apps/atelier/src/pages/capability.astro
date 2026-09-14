@@ -24,12 +24,16 @@ const PROOF_KICKER = {
 // The transcript is captured verbatim (src/data/mcp-transcript.ts). On a slide it
 // is folded the way a terminal folds it — the first lines, clipped to the column
 // width, and a count of what is folded away. Nothing is rewritten.
+// A one-line payload is NEVER clipped: `open_experience` returns a single line and
+// the proof is at its end (`?lang=it`, "Pole Position") — exactly what the copy on
+// the left promises. `.proof-mono` wraps it (pre-wrap + overflow-wrap: anywhere).
 const FOLD_LINES = 3;
 const FOLD_CHARS = 58;
 const transcript = MCP_TRANSCRIPT.map((line) => {
   const all = line.text.split('\n');
+  const clip = line.role === 'tool' && all.length > 1;
   const shown = (line.role === 'tool' ? all.slice(0, FOLD_LINES) : all).map((l) =>
-    l.length > FOLD_CHARS ? l.slice(0, FOLD_CHARS - 1) + '…' : l,
+    clip && l.length > FOLD_CHARS ? l.slice(0, FOLD_CHARS - 1) + '…' : l,
   );
   return { ...line, shown, folded: all.length - shown.length };
 });
