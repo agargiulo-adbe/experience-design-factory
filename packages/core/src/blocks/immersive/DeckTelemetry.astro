@@ -31,7 +31,7 @@ const { project, url, anonKey } = Astro.props as Props;
     try { sessionId = sessionStorage.getItem('edf:telemetry:sid') || ''; } catch { /* ignore */ }
     if (!sessionId) { sessionId = makeSessionId(); try { sessionStorage.setItem('edf:telemetry:sid', sessionId); } catch { /* ignore */ } }
 
-    let current: { id: string; index: number; since: number } | null = null;
+    let current: { id: string; index: number; since: number; pathname: string } | null = null;
 
     // On the first full load the deck has already booted (window.__edfDeck) and fired its
     // initial `deck:change` before this script attached its listener — seed `current` from
@@ -42,13 +42,13 @@ const { project, url, anonKey } = Astro.props as Props;
       if (current) return;
       const d = (window as Window & { __edfDeck?: { index: number; slides: HTMLElement[] } }).__edfDeck;
       const s = d?.slides?.[d.index];
-      if (d && s) current = { id: s.id || 'slide-' + d.index, index: d.index, since: performance.now() };
+      if (d && s) current = { id: s.id || 'slide-' + d.index, index: d.index, since: performance.now(), pathname: location.pathname };
     };
 
     const send = (dwellMs: number) => {
       if (!current || mode !== 'on' || !key || !endpoint.startsWith('https://')) return;
       const lang = document.documentElement.getAttribute('data-lang') || 'en';
-      const ev = buildEvent({ project, pathname: location.pathname, search: location.search, slideId: current.id, slideIndex: current.index, lang, sessionId, dwellMs });
+      const ev = buildEvent({ project, pathname: current.pathname, search: location.search, slideId: current.id, slideIndex: current.index, lang, sessionId, dwellMs });
       try {
         fetch(endpoint, {
           method: 'POST', keepalive: true,
@@ -58,16 +58,20 @@ const { project, url, anonKey } = Astro.props as Props;
       } catch { /* ignore */ }
     };
 
+    // `flush`: mid-page visibility change — send and keep measuring the same slide.
     const flush = () => { if (current) { send(performance.now() - current.since); current = { ...current, since: performance.now() }; } };
+    // `end`: leaving the page (SPA swap or real unload) — send and drop `current`, so a
+    // stale slide from the OLD page can never be attributed to the NEW page's route.
+    const end = () => { if (current) { send(performance.now() - current.since); current = null; } };
 
     document.addEventListener('deck:change', (e: Event) => {
       const d = (e as CustomEvent).detail as { index: number; id: string };
       if (current) send(performance.now() - current.since);
-      current = { id: d.id || 'slide-' + d.index, index: d.index, since: performance.now() };
+      current = { id: d.id || 'slide-' + d.index, index: d.index, since: performance.now(), pathname: location.pathname };
     });
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
-    window.addEventListener('pagehide', flush);
-    document.addEventListener('astro:before-swap', flush);
+    window.addEventListener('pagehide', end);
+    document.addEventListener('astro:before-swap', end);
 
     // Seed now (deck may have already booted on this full load) and again after every
     // SPA swap (astro:page-load), in case the new page's deck boots before deck:change
