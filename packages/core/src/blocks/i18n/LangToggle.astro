@@ -71,6 +71,12 @@ const { langs = ['en', 'it'] } = Astro.props;
       apply(l);
       try { localStorage.setItem('edf:lang', l); } catch (e) {}
     }
+    // Un link può portare la lingua: ?lang=it. Vale solo se questa pagina la offre,
+    // e viene persistita come una scelta dal toggle.
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      if (q && KNOWN[q] && offered()[q]) setLang(q);
+    } catch (e) {}
     // Initial state: mirror data-lang (set by the anti-flash init) into <html lang>.
     apply(current());
     if (window.__edfLangToggleBound) return;   // body inline scripts re-run after every swap
