@@ -192,7 +192,7 @@ export const PROJECTS: ConsoleProject[] = [
     slug: 'generazioni-maxmara',
     name: 'Generazioni',
     client: 'Max Mara',
-    description: "L'eredità generazionale del guardaroba Max Mara — come Adobe Experience Cloud alimenta la relazione con le clienti.",
+    description: "L'eredità generazionale del guardaroba Max Mara — come Adobe CX Enterprise alimenta la relazione con le clienti.",
     baseUrl: '/experience-design-factory/generazioni-maxmara/',
     solutions: [],
   },
