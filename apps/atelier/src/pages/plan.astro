@@ -9,53 +9,59 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Plan as of September 2026 (decision requested by 30 September 2026).
-// Three milestones, nine months (October 2026 → June 2027). Work and targets are
+// Plan as of September 2026 (decision requested by 31 October 2026).
+// Three milestones, eight months (November 2026 → June 2027). Work and targets are
 // declared in advance: the KPI story is "we measure ourselves".
-//   M1 · by mid-December 2026 — Foundations
+//   M1 · by end of January 2027 — Foundations
 //   M2 · by Adobe Summit, Las Vegas, 22–25 March 2027 — Scale and open
+//        (Summit dates to be confirmed on summit.adobe.com)
 //   M3 · by end of June 2027 — Enterprise and lighthouse
 const milestones = [
   {
     id: 'slide-m1',
     bg: 'secondary' as const,
     kicker: {
-      en: 'Milestone 1 · by mid-December 2026',
-      it: 'Milestone 1 · entro metà dicembre 2026',
-      fr: 'Jalon 1 · d’ici mi-décembre 2026',
+      en: 'Milestone 1 · by end of January 2027',
+      it: 'Milestone 1 · entro fine gennaio 2027',
+      fr: 'Jalon 1 · d’ici fin janvier 2027',
     },
     title: { en: 'Foundations', it: 'Fondamenta', fr: 'Fondations' },
     intro: {
-      en: 'From one person’s project to a pilot-ready platform.',
-      it: 'Dal progetto di una persona a una piattaforma pronta per la fase pilota.',
-      fr: 'Du projet d’une personne à une plateforme prête pour le pilote.',
+      en: 'From one person’s project to a measured, compliant, callable platform.',
+      it: 'Dal progetto personale a una piattaforma misurata, conforme, richiamabile.',
+      fr: 'Du projet personnel à une plateforme mesurée, conforme et appelable.',
     },
     work: [
       {
-        en: 'Pilot: five to ten Adobe Italia BDR and AE build their first experience through the guided intake',
-        it: 'Pilota: da cinque a dieci BDR e AE di Adobe Italia costruiscono la loro prima esperienza con il brief guidato',
-        fr: 'Pilote&nbsp;: cinq à dix BDR et AE d’Adobe Italia construisent leur première expérience grâce au brief guidé',
+        en: 'Pilot: five to ten Adobe Italia sellers build their first experience through the guided intake',
+        it: 'Pilota: da cinque a dieci commerciali di Adobe Italia costruiscono la loro prima esperienza con il brief guidato',
+        fr: 'Pilote&nbsp;: cinq à dix commerciaux d’Adobe Italia construisent leur première expérience grâce au brief guidé',
       },
       {
-        en: 'Adobe Context Layer v1: product catalog, positioning and limits, validated by Solution Consultants',
-        it: 'Adobe Context Layer v1: catalogo prodotti, posizionamento e limiti, validati dai Solution Consultant',
-        fr: 'Adobe Context Layer v1&nbsp;: catalogue produits, positionnement et limites, validés par les Solution Consultants',
+        en: 'Telemetry live on three experiences; art. 50 disclosure record exported from provenance; C2PA manifest kept through the build',
+        it: 'Telemetria attiva su tre esperienze; registro di trasparenza dell’art. 50 esportato dalla provenance; manifest C2PA intatto per tutta la build',
+        fr: 'Télémétrie active sur trois expériences&nbsp;; registre de transparence de l’art. 50 exporté depuis la provenance&nbsp;; manifeste C2PA conservé tout au long du build',
       },
       {
-        en: 'Multi-user hardening and CI quality gates',
-        it: 'Irrobustimento multi-utente e quality gate in CI',
-        fr: 'Durcissement multi-utilisateur et contrôles qualité en CI',
+        en: 'MCP server v1 with three Agent Skills, used by the pilot from Claude Enterprise',
+        it: 'Server MCP v1 con tre Agent Skills, usato dal pilota dentro Claude Enterprise',
+        fr: 'Serveur MCP v1 avec trois Agent Skills, utilisé par le pilote depuis Claude Enterprise',
       },
       {
-        en: 'Boardroom Quest walking skeleton; KPI telemetry baseline',
-        it: 'Scheletro funzionante di Boardroom Quest; baseline della telemetria KPI',
-        fr: 'Squelette fonctionnel de Boardroom Quest&nbsp;; baseline de télémétrie KPI',
+        en: 'One private Firefly Custom Model for one client brand (beta)',
+        it: 'Un Firefly Custom Model privato sul brand di un cliente (beta)',
+        fr: 'Un Firefly Custom Model privé sur la marque d’un client (bêta)',
+      },
+      {
+        en: 'Simulation: multiplayer skeleton on real funnel data',
+        it: 'Simulazione: scheletro multiplayer sui dati veri di un funnel',
+        fr: 'Simulation&nbsp;: squelette multijoueur sur de vraies données de funnel',
       },
     ],
     targets: {
-      en: 'Time to first experience under one week per pilot user · at least three experiences created by pilots · KPI baseline instrumented',
-      it: 'Prima esperienza in meno di una settimana per ogni utente pilota · almeno tre esperienze create dagli utenti pilota · baseline KPI strumentata',
-      fr: 'Première expérience en moins d’une semaine par utilisateur pilote · au moins trois expériences créées par les pilotes · baseline KPI instrumentée',
+      en: 'Brief to experience under one week · at least three pilot experiences in deals, with engagement data · zero art. 50 incidents · MCP server used by every pilot seller',
+      it: 'Dal brief all’esperienza in meno di una settimana · almeno tre esperienze pilota in trattativa, con i dati di utilizzo · zero incidenti sull’art. 50 · server MCP usato da tutti i commerciali del pilota',
+      fr: 'Du brief à l’expérience en moins d’une semaine · au moins trois expériences pilotes dans des deals, avec les données d’engagement · zéro incident art. 50 · serveur MCP utilisé par tous les commerciaux du pilote',
     },
   },
   {
@@ -68,41 +74,46 @@ const milestones = [
     },
     title: { en: 'Scale and open', it: 'Scalare e aprire', fr: 'Monter en échelle et ouvrir' },
     intro: {
-      en: 'The Atelier stops being one person’s tool, and takes its public stage at Summit.',
-      it: 'L’Atelier smette di essere lo strumento di una persona sola e sale sul palco pubblico del Summit.',
-      fr: 'L’Atelier cesse d’être l’outil d’une seule personne et prend la scène publique du Summit.',
+      en: 'The buying surface gets its agent, and the Atelier takes its public stage.',
+      it: 'La superficie d’acquisto ha il suo agente e l’Atelier sale sul palco pubblico.',
+      fr: 'La surface d’achat reçoit son agent et l’Atelier monte sur la scène publique.',
     },
     work: [
       {
-        en: 'Two to three Adobe partners co-build joint experiences, with hardened external access',
-        it: 'Due o tre partner Adobe co-costruiscono esperienze congiunte, con accessi esterni rafforzati',
-        fr: 'Deux à trois partenaires Adobe co-construisent des expériences conjointes, avec des accès externes durcis',
+        en: 'Buyer-facing agent (Brand Concierge) on three live experiences',
+        it: 'Agente rivolto al buyer (Brand Concierge) su tre esperienze già online',
+        fr: 'Agent face à l’acheteur (Brand Concierge) sur trois expériences en ligne',
       },
       {
-        en: 'Template gallery and self-service wizard; 25 to 40 active users',
-        it: 'Galleria di template e procedura guidata self-service; da 25 a 40 utenti attivi',
-        fr: 'Galerie de templates et assistant self-service&nbsp;; 25 à 40 utilisateurs actifs',
+        en: 'Atelier in the Agent Skills Catalog; scoping and configuration as MCP Apps',
+        it: 'Atelier nell’Agent Skills Catalog; scoping e configurazione come MCP App',
+        fr: 'Atelier dans l’Agent Skills Catalog&nbsp;; cadrage et configuration en MCP Apps',
       },
       {
-        en: 'Firefly generation moved from build time into the meeting room; GenStudio demo embedded',
-        it: 'Generazione Firefly spostata dalla build alla sala riunioni; demo GenStudio integrata',
-        fr: 'Génération Firefly déplacée de la construction vers la salle de réunion&nbsp;; démo GenStudio intégrée',
+        en: 'Template gallery and guided flow; 25 to 40 active users',
+        it: 'Galleria di template e percorso guidato; da 25 a 40 utenti attivi',
+        fr: 'Galerie de templates et parcours guidé&nbsp;; 25 à 40 utilisateurs actifs',
       },
       {
-        en: 'Boardroom Quest facilitated beta and first real workshop',
-        it: 'Beta facilitata di Boardroom Quest e primo workshop reale',
-        fr: 'Bêta accompagnée de Boardroom Quest et premier atelier réel',
+        en: 'Two to three Adobe partners co-build joint experiences',
+        it: 'Due o tre partner Adobe co-costruiscono esperienze congiunte',
+        fr: 'Deux à trois partenaires Adobe co-construisent des expériences conjointes',
       },
       {
-        en: 'Hackathon day for Adobians, partners and clients, February 2027 · Adobe Summit 2027, Las Vegas, March 22–25: demo pod and speaking submission',
-        it: 'Giornata hackathon per Adobiani, partner e clienti, febbraio 2027 · Adobe Summit 2027, Las Vegas, 22–25 marzo: demo pod e candidatura per uno speech',
-        fr: 'Journée hackathon pour Adobiens, partenaires et clients, février 2027 · Adobe Summit 2027, Las Vegas, 22–25 mars&nbsp;: pod de démo et candidature pour une prise de parole',
+        en: 'Simulation: facilitated beta and first real workshop',
+        it: 'Simulazione: beta facilitata e primo workshop vero',
+        fr: 'Simulation&nbsp;: bêta accompagnée et premier atelier réel',
+      },
+      {
+        en: 'Hackathon day, February 2027 · Summit demo pod and speaking submission',
+        it: 'Giornata hackathon, febbraio 2027 · demo pod al Summit e candidatura per uno speech',
+        fr: 'Journée hackathon, février 2027 · pod de démo au Summit et candidature pour une prise de parole',
       },
     ],
     targets: {
-      en: 'Ten or more experiences used in active deals · at least two partner co-signed experiences · one Boardroom Quest workshop delivered with debrief · Summit demo pod confirmed',
-      it: 'Dieci o più esperienze usate in trattative attive · almeno due esperienze co-firmate con i partner · un workshop Boardroom Quest erogato con debrief · demo pod al Summit confermato',
-      fr: 'Dix expériences ou plus utilisées dans des deals actifs · au moins deux expériences co-signées avec des partenaires · un atelier Boardroom Quest animé avec débrief · pod de démo au Summit confirmé',
+      en: 'Ten or more experiences in active deals, measured · influenced pipeline reported per deal · at least two partner co-signed experiences · Summit demo pod confirmed',
+      it: 'Dieci o più esperienze in trattative attive, misurate · pipeline influenzata riportata per trattativa · almeno due esperienze co-firmate con i partner · demo pod al Summit confermato',
+      fr: 'Dix expériences ou plus dans des deals actifs, mesurées · pipeline influencé rapporté par deal · au moins deux expériences co-signées avec des partenaires · pod de démo au Summit confirmé',
     },
   },
   {
@@ -115,48 +126,52 @@ const milestones = [
     },
     title: { en: 'Enterprise and lighthouse', it: 'Enterprise e faro', fr: 'Entreprise et vitrine' },
     intro: {
-      en: 'The capability becomes infrastructure, with a first client to show for it.',
-      it: 'La capability diventa infrastruttura, con un primo cliente da mostrare.',
-      fr: 'La capacité devient infrastructure, avec un premier client à montrer.',
+      en: 'The capability becomes infrastructure, with a first EMEA client to show for it.',
+      it: 'La capability diventa infrastruttura, con un primo cliente EMEA da mostrare.',
+      fr: 'La capacité devient infrastructure, avec un premier client EMEA à montrer.',
     },
     work: [
       {
-        en: 'Federated SSO, audit logs, security review, data governance',
-        it: 'SSO federato, audit log, security review, data governance',
-        fr: 'SSO fédéré, journaux d’audit, revue de sécurité, gouvernance des données',
+        en: 'Enterprise-managed authorization via MCP, audit logs, security review',
+        it: 'Autorizzazione gestita dall’azienda via MCP, audit log, security review',
+        fr: 'Autorisation gérée par l’entreprise via MCP, journaux d’audit, revue de sécurité',
       },
       {
-        en: 'Expansion beyond Italy across EMEA',
-        it: 'Espansione oltre l’Italia, in tutta l’area EMEA',
-        fr: 'Expansion au-delà de l’Italie, dans toute la zone EMEA',
+        en: 'Brief to experience in under 24 hours; agent on every experience',
+        it: 'Dal brief all’esperienza in meno di 24 ore; agente su ogni esperienza',
+        fr: 'Du brief à l’expérience en moins de 24 heures&nbsp;; agent sur chaque expérience',
       },
       {
-        en: 'Boardroom Quest multiplayer and a second industry pack',
-        it: 'Boardroom Quest multiplayer e un secondo pacchetto di settore',
-        fr: 'Boardroom Quest multijoueur et un deuxième pack sectoriel',
+        en: 'Expansion across EMEA with live translation in the room',
+        it: 'Espansione in tutta l’area EMEA, con traduzione dal vivo in sala',
+        fr: 'Expansion dans toute la zone EMEA, avec traduction en direct dans la salle',
       },
       {
-        en: 'Lighthouse: the first partner co-built experience published for an EMEA client',
-        it: 'Faro: la prima esperienza co-costruita con un partner pubblicata per un cliente EMEA',
-        fr: 'Vitrine&nbsp;: la première expérience co-construite avec un partenaire publiée pour un client EMEA',
+        en: 'Lighthouse: the first partner co-built experience live for an EMEA client',
+        it: 'Faro: la prima esperienza co-costruita con un partner, attiva per un cliente EMEA',
+        fr: 'Vitrine&nbsp;: la première expérience co-construite avec un partenaire, en production chez un client EMEA',
+      },
+      {
+        en: 'Simulation: second industry pack',
+        it: 'Simulazione: secondo pacchetto di settore',
+        fr: 'Simulation&nbsp;: deuxième pack sectoriel',
       },
     ],
     targets: {
-      en: 'One hundred or more enabled users · one lighthouse experience live with an EMEA client · influenced pipeline tracked per deal · the project institutionalized with a team and a budget line',
-      it: 'Cento o più utenti abilitati · un’esperienza faro attiva con un cliente EMEA · pipeline influenzata tracciata per trattativa · progetto istituzionalizzato con un team e una voce di budget',
-      fr: 'Cent utilisateurs formés et outillés ou plus · une expérience vitrine en production chez un client EMEA · pipeline influencé suivi par deal · projet institutionnalisé avec une équipe et une ligne budgétaire',
+      en: 'One hundred or more enabled users · one lighthouse experience live with an EMEA client · 100% of shipped assets with provenance and C2PA · the project institutionalised with a team and a budget line',
+      it: 'Cento o più utenti abilitati · un’esperienza faro attiva con un cliente EMEA · il 100% degli asset pubblicati con provenance e C2PA · il progetto istituzionalizzato con un team e una voce di budget',
+      fr: 'Cent utilisateurs formés et outillés ou plus · une expérience vitrine en production chez un client EMEA · 100&nbsp;% des assets livrés avec provenance et C2PA · le projet institutionnalisé avec une équipe et une ligne budgétaire',
     },
   },
 ];
 
-// ── Roadmap as a Gantt: five workstreams (rows) on a time axis from October 2026
-// to June 2027. The grid has 18 half-month columns (col 2 = 1–15 Oct … col 19 =
+// ── Roadmap as a Gantt: six workstreams (rows) on a time axis from November 2026
+// to June 2027. The grid has 16 half-month columns (col 2 = 1–15 Nov … col 17 =
 // 16–30 Jun) after the lane column, so bars can end exactly on the milestone
-// lines: M1 mid-December (line 7), M2 end of March / Summit (line 14), M3 end of
-// June (line 20). The Boardroom Quest row is gated by the `quest` audience toggle.
+// lines: M1 end of January (line 8), M2 end of March / Summit (line 12), M3 end
+// of June (line 18). The Simulation row is gated by the `simulation` toggle.
 const ganttMonths = [
-  { en: 'Oct 2026', it: 'ott 2026', fr: 'oct. 2026' },
-  { en: 'Nov', it: 'nov', fr: 'nov.' },
+  { en: 'Nov 2026', it: 'nov 2026', fr: 'nov. 2026' },
   { en: 'Dec', it: 'dic', fr: 'déc.' },
   { en: 'Jan 2027', it: 'gen 2027', fr: 'janv. 2027' },
   { en: 'Feb', it: 'feb', fr: 'févr.' },
@@ -166,68 +181,79 @@ const ganttMonths = [
   { en: 'Jun', it: 'giu', fr: 'juin' },
 ];
 
-// Milestone labels (row 2) sit right above their vertical line (rows 3–7).
+// Milestone labels (row 2) sit right above their vertical line (rows 3–8).
 const ganttMilestoneLabels = [
-  { col: '1', align: 'right', en: 'Decision · 30 Sep', it: 'Decisione · 30 set', fr: 'Décision · 30 sept.' },
-  { col: '5 / 9', align: 'center', en: 'M1 · mid-Dec', it: 'M1 · metà dic', fr: 'J1 · mi-déc.' },
-  { col: '11 / 17', align: 'center', en: 'M2 · Summit · 22–25 Mar', it: 'M2 · Summit · 22–25 mar', fr: 'J2 · Summit · 22–25 mars' },
-  { col: '17 / 20', align: 'right', en: 'M3 · end Jun', it: 'M3 · fine giu', fr: 'J3 · fin juin' },
+  { col: '1', align: 'right', en: 'Decision · 31 Oct', it: 'Decisione · 31 ott', fr: 'Décision · 31 oct.' },
+  { col: '5 / 9', align: 'center', en: 'M1 · end Jan', it: 'M1 · fine gen', fr: 'J1 · fin janv.' },
+  { col: '10 / 14', align: 'center', en: 'M2 · Summit · 22–25 Mar', it: 'M2 · Summit · 22–25 mar', fr: 'J2 · Summit · 22–25 mars' },
+  { col: '14 / 18', align: 'right', en: 'M3 · end Jun', it: 'M3 · fine giu', fr: 'J3 · fin juin' },
 ];
 // Vertical lines: [grid column, at its start or its end edge].
 const ganttMarkers = [
   { col: '2', edge: 'start', today: true },
-  { col: '7', edge: 'start', today: false },
-  { col: '13', edge: 'end', today: false },
-  { col: '19', edge: 'end', today: false },
+  { col: '7', edge: 'end', today: false },
+  { col: '11', edge: 'end', today: false },
+  { col: '17', edge: 'end', today: false },
 ];
 
-const P1 = '2 / 7';   // Oct → mid-Dec
-const P2 = '7 / 14';  // mid-Dec → end Mar
-const P3 = '14 / 20'; // Apr → end Jun
-const whenP1 = { en: 'Oct → mid-Dec', it: 'ott → metà dic', fr: 'oct. → mi-déc.' };
-const whenP2 = { en: 'mid-Dec → Mar', it: 'metà dic → mar', fr: 'mi-déc. → mars' };
+const P1 = '2 / 8';   // Nov → end Jan
+const P2 = '8 / 12';  // Feb → end Mar
+const P3 = '12 / 18'; // Apr → end Jun
+const whenP1 = { en: 'Nov → end Jan', it: 'nov → fine gen', fr: 'nov. → fin janv.' };
+const whenP2 = { en: 'Feb → Mar', it: 'feb → mar', fr: 'févr. → mars' };
 const whenP3 = { en: 'Apr → Jun', it: 'apr → giu', fr: 'avr. → juin' };
 
 const ganttRows = [
   {
-    lane: { en: 'Platform & trust', it: 'Piattaforma e fiducia', fr: 'Plateforme & confiance' },
+    lane: { en: 'Trust & compliance', it: 'Fiducia e conformità', fr: 'Confiance & conformité' },
     segs: [
-      { col: P1, when: whenP1, en: 'Multi-user + CI gates', it: 'Multi-utente + gate CI', fr: 'Multi-utilisateur + CI' },
-      { col: P2, when: whenP2, en: 'Hardened external access', it: 'Accessi esterni rafforzati', fr: 'Accès externes durcis' },
-      { col: P3, when: whenP3, en: 'SSO, audit, governance', it: 'SSO, audit, governance', fr: 'SSO, audit, gouvernance' },
+      { col: P1, when: whenP1, en: 'Telemetry, art. 50 record, C2PA kept, secrets out of the repo',
+        it: 'Telemetria, registro art. 50, C2PA intatto, segreti fuori dal repo',
+        fr: 'Télémétrie, registre art. 50, C2PA conservé, secrets hors du dépôt' },
+      { col: P2, when: whenP2, en: 'Security review', it: 'Security review', fr: 'Revue de sécurité' },
+      { col: P3, when: whenP3, en: 'Enterprise-managed auth via MCP', it: 'Autorizzazione gestita dall’azienda via MCP', fr: 'Autorisation gérée par l’entreprise via MCP' },
+    ],
+  },
+  {
+    lane: { en: 'Buying surface', it: 'Superficie d’acquisto', fr: 'Surface d’achat' },
+    segs: [
+      { col: P1, when: whenP1, en: 'Telemetry live on 3 experiences', it: 'Telemetria attiva su 3 esperienze', fr: 'Télémétrie active sur 3 expériences' },
+      { col: P2, when: whenP2, en: 'Buyer agent (Brand Concierge) on 3', it: 'Agente per il buyer (Brand Concierge) su 3', fr: 'Agent acheteur (Brand Concierge) sur 3' },
+      { col: P3, when: whenP3, en: 'On every experience', it: 'Su ogni esperienza', fr: 'Sur chaque expérience' },
+    ],
+  },
+  {
+    lane: { en: 'Distribution', it: 'Distribuzione', fr: 'Distribution' },
+    segs: [
+      { col: P1, when: whenP1, en: 'MCP server v1 + 3 Agent Skills', it: 'Server MCP v1 + 3 Agent Skills', fr: 'Serveur MCP v1 + 3 Agent Skills' },
+      { col: P2, when: whenP2, en: 'In the Agent Skills Catalog · MCP Apps for scoping',
+        it: 'Nell’Agent Skills Catalog · MCP App per lo scoping',
+        fr: 'Dans l’Agent Skills Catalog · MCP Apps pour le cadrage' },
+      { col: P3, when: whenP3, en: 'Brief → experience in 24 h', it: 'Dal brief all’esperienza in 24 h', fr: 'Du brief à l’expérience en 24 h' },
     ],
   },
   {
     lane: { en: 'Enablement', it: 'Abilitazione', fr: 'Montée en compétence' },
     segs: [
-      { col: P1, when: whenP1, en: 'Pilot: 5–10 BDR/AE', it: 'Pilota: 5–10 BDR/AE', fr: 'Pilote&nbsp;: 5–10 BDR/AE' },
-      { col: P2, when: whenP2, en: 'Gallery + wizard · 25–40 users', it: 'Galleria + procedura guidata · 25–40', fr: 'Galerie + assistant · 25–40' },
-      { col: P3, when: whenP3, en: '100+ users · EMEA', it: '100+ utenti · EMEA', fr: '100+ utilisateurs · EMEA' },
+      { col: P1, when: whenP1, en: 'Pilot: 5–10 sellers', it: 'Pilota: 5–10 commerciali', fr: 'Pilote&nbsp;: 5–10 commerciaux' },
+      { col: P2, when: whenP2, en: 'Gallery + guided flow · 25–40', it: 'Galleria + percorso · 25–40', fr: 'Galerie + flux guidé · 25–40' },
+      { col: P3, when: whenP3, en: '100+ · EMEA, live translation', it: '100+ · EMEA, traduzione dal vivo', fr: '100+ · EMEA, traduction en direct' },
     ],
   },
   {
     lane: { en: 'Ecosystem', it: 'Ecosistema', fr: 'Écosystème' },
     segs: [
-      { col: P2, when: whenP2, en: '2–3 partners co-build', it: '2–3 partner co-costruiscono', fr: '2–3 partenaires co-construisent' },
+      { col: P2, when: whenP2, en: '2–3 partners co-build', it: '2–3 partner co-creano', fr: '2–3 partenaires co-créent' },
       { col: P3, when: whenP3, en: 'Partner pipeline · lighthouse client', it: 'Pipeline partner · cliente faro', fr: 'Pipeline partenaires · client vitrine' },
     ],
   },
   {
-    lane: { en: 'Boardroom Quest', it: 'Boardroom Quest', fr: 'Boardroom Quest' },
-    solution: 'quest',
+    lane: { en: 'Simulation', it: 'Simulazione', fr: 'Simulation' },
+    solution: 'simulation',
     segs: [
-      { col: '3 / 7', when: { en: 'mid-Oct → mid-Dec', it: 'metà ott → metà dic', fr: 'mi-oct. → mi-déc.' },
-        en: 'Walking skeleton', it: 'Scheletro funzionante', fr: 'Squelette fonctionnel' },
-      { col: P2, when: whenP2, en: 'Beta + first workshop', it: 'Beta + primo workshop', fr: 'Bêta + premier atelier' },
-      { col: P3, when: whenP3, en: 'Multiplayer · 2nd pack', it: 'Multiplayer · 2° pack', fr: 'Multijoueur · 2e pack' },
-    ],
-  },
-  {
-    lane: { en: 'Adobe Context Layer', it: 'Adobe Context Layer', fr: 'Adobe Context Layer' },
-    segs: [
-      { col: P1, when: whenP1, en: 'v1, SC-validated', it: 'v1, validato dai SC', fr: 'v1, validé par les SC' },
-      { col: '7 / 20', when: { en: 'mid-Dec → Jun', it: 'metà dic → giu', fr: 'mi-déc. → juin' },
-        en: 'Kept fresh, then governed', it: 'Aggiornato, poi sotto governance', fr: 'Tenu à jour, puis sous gouvernance' },
+      { col: P1, when: whenP1, en: 'Multiplayer skeleton on real funnel data', it: 'Scheletro multiplayer sul funnel vero', fr: 'Squelette multijoueur sur le vrai funnel' },
+      { col: P2, when: whenP2, en: 'Facilitated beta, first workshop', it: 'Beta facilitata, primo workshop', fr: 'Bêta accompagnée, premier atelier' },
+      { col: P3, when: whenP3, en: 'Second industry pack', it: 'Secondo pacchetto di settore', fr: 'Deuxième pack sectoriel' },
     ],
   },
 ];
@@ -235,17 +261,17 @@ const ganttRows = [
 // Key moments: three, in date order.
 const ganttMoments = [
   { name: { en: 'Decision', it: 'Decisione', fr: 'Décision' },
-    date: { en: '30 Sep 2026', it: '30 set 2026', fr: '30 sept. 2026' } },
-  { name: { en: 'Hackathon day', it: 'Giornata hackathon', fr: 'Journée hackathon' },
+    date: { en: '31 Oct 2026', it: '31 ott 2026', fr: '31 oct. 2026' } },
+  { name: { en: 'Hackathon day', it: 'Hackathon', fr: 'Hackathon' },
     date: { en: 'Feb 2027', it: 'feb 2027', fr: 'févr. 2027' } },
   { name: { en: 'Adobe Summit, Las Vegas', it: 'Adobe Summit, Las Vegas', fr: 'Adobe Summit, Las Vegas' },
     date: { en: '22–25 Mar 2027', it: '22–25 mar 2027', fr: '22–25 mars 2027' } },
 ];
 
-// ── KPI scorecard: four families, two or three metrics each, a target per
-// milestone. Split over two slides (two families each) so type stays generous.
+// ── KPI scorecard: four families, three metrics each, a target per milestone.
+// Split over two slides (two families each) so type stays generous.
 const kpiCols = [
-  { en: 'M1 · mid-Dec 2026', it: 'M1 · metà dic 2026', fr: 'J1 · mi-déc. 2026' },
+  { en: 'M1 · end Jan 2027', it: 'M1 · fine gen 2027', fr: 'J1 · fin janv. 2027' },
   { en: 'M2 · 22–25 Mar 2027', it: 'M2 · 22–25 mar 2027', fr: 'J2 · 22–25 mars 2027' },
   { en: 'M3 · end Jun 2027', it: 'M3 · fine giu 2027', fr: 'J3 · fin juin 2027' },
 ];
@@ -260,31 +286,35 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
     id: 'slide-kpi',
     label: { en: 'KPI scorecard · families 1–2 of 4', it: 'Scorecard KPI · famiglie 1–2 di 4', fr: 'Tableau de bord KPI · familles 1–2 sur 4' },
     title: {
-      en: 'Targets at every milestone: go-to-market and people',
-      it: 'Obiettivi a ogni milestone: go-to-market e persone',
-      fr: 'Des objectifs à chaque jalon&nbsp;: mise sur le marché et personnes',
+      en: 'Targets at every milestone: buying surface and speed',
+      it: 'Obiettivi a ogni milestone: superficie d’acquisto e velocità',
+      fr: 'Des objectifs à chaque jalon&nbsp;: surface d’achat et vitesse',
     },
     families: [
       {
-        name: { en: 'GTM velocity', it: 'Velocità GTM', fr: 'Vitesse de mise sur le marché' },
+        name: { en: 'Buying surface', it: 'Superficie d’acquisto', fr: 'Surface d’achat' },
         owner: ownerSponsor,
         metrics: [
-          { name: { en: 'Experiences in active deals', it: 'Esperienze in trattative attive', fr: 'Expériences dans des deals actifs' },
-            m: [{ en: '3 (pilot)', it: '3 (pilota)', fr: '3 (pilote)' }, { en: '10+', it: '10+', fr: '10+' }, { en: '25+', it: '25+', fr: '25+' }] },
-          { name: { en: 'Time to first experience', it: 'Tempo alla prima esperienza', fr: 'Temps jusqu’à la première expérience' },
-            m: [{ en: '< 1 week', it: '< 1 settimana', fr: '< 1 semaine' }, { en: '< 2 days', it: '< 2 giorni', fr: '< 2 jours' }, { en: '< 1 day', it: '< 1 giorno', fr: '< 1 jour' }] },
-          { name: { en: 'Win-rate and deal-size delta', it: 'Delta di tasso di chiusura e valore trattative', fr: 'Écart de taux de succès et de taille des deals' },
-            m: [{ en: 'baseline', it: 'baseline', fr: 'référence' }, { en: 'measured', it: 'misurato', fr: 'mesuré' }, { en: 'reported', it: 'riportato', fr: 'rapporté' }] },
+          { name: { en: 'Influenced pipeline, measured', it: 'Pipeline influenzata, misurata', fr: 'Pipeline influencé, mesuré' },
+            m: [{ en: 'baseline', it: 'baseline', fr: 'référence' },
+                { en: 'reported per deal', it: 'riportata per trattativa', fr: 'rapporté par deal' },
+                { en: 'reported per deal', it: 'riportata per trattativa', fr: 'rapporté par deal' }] },
+          { name: { en: 'Experiences reopened by the client after the meeting', it: 'Esperienze riaperte dal cliente dopo l’incontro', fr: 'Expériences rouvertes par le client après la réunion' },
+            m: [{ en: 'tracked', it: 'tracciate', fr: 'suivies' }, { en: '50%', it: '50%', fr: '50&nbsp;%' }, { en: '70%', it: '70%', fr: '70&nbsp;%' }] },
+          { name: { en: 'Buyer questions answered by the agent', it: 'Domande del buyer a cui risponde l’agente', fr: 'Questions de l’acheteur traitées par l’agent' },
+            m: [{ en: '—', it: '—', fr: '—' },
+                { en: 'on 3 experiences', it: 'su 3 esperienze', fr: 'sur 3 expériences' },
+                { en: 'on all', it: 'su tutte', fr: 'sur toutes' }] },
         ],
       },
       {
-        name: { en: 'Workforce enablement', it: 'Abilitazione delle persone', fr: 'Montée en compétence' },
+        name: { en: 'Speed', it: 'Velocità', fr: 'Vitesse' },
         owner: ownerLead,
         metrics: [
-          { name: { en: 'Enabled Adobians', it: 'Adobiani abilitati', fr: 'Adobiens formés et outillés' },
-            m: [{ en: '5–10', it: '5–10', fr: '5–10' }, { en: '25–40', it: '25–40', fr: '25–40' }, { en: '100+', it: '100+', fr: '100+' }] },
-          { name: { en: 'Reach', it: 'Perimetro', fr: 'Périmètre' },
-            m: [{ en: 'Adobe Italia', it: 'Adobe Italia', fr: 'Adobe Italia' }, { en: 'Italy + partners', it: 'Italia + partner', fr: 'Italie + partenaires' }, { en: 'EMEA', it: 'EMEA', fr: 'EMEA' }] },
+          { name: { en: 'Brief to first experience', it: 'Dal brief alla prima esperienza', fr: 'Du brief à la première expérience' },
+            m: [{ en: '< 1 week', it: '< 1 settimana', fr: '< 1 semaine' }, { en: '< 2 days', it: '< 2 giorni', fr: '< 2 jours' }, { en: '< 24 hours', it: '< 24 ore', fr: '< 24 heures' }] },
+          { name: { en: 'Experiences in active deals', it: 'Esperienze in trattative attive', fr: 'Expériences dans des deals actifs' },
+            m: [{ en: '3 (pilot)', it: '3 (pilota)', fr: '3 (pilote)' }, { en: '10+', it: '10+', fr: '10+' }, { en: '25+', it: '25+', fr: '25+' }] },
           { name: { en: 'How people create', it: 'Come creano le persone', fr: 'Comment les gens créent' },
             m: [{ en: 'guided', it: 'in modo guidato', fr: 'accompagnés' }, { en: 'self-service', it: 'in autonomia', fr: 'en autonomie' }, { en: 'self-service', it: 'in autonomia', fr: 'en autonomie' }] },
         ],
@@ -295,33 +325,35 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
     id: 'slide-kpi-2',
     label: { en: 'KPI scorecard · families 3–4 of 4', it: 'Scorecard KPI · famiglie 3–4 di 4', fr: 'Tableau de bord KPI · familles 3–4 sur 4' },
     title: {
-      en: 'Targets at every milestone: ecosystem and platform',
-      it: 'Obiettivi a ogni milestone: ecosistema e piattaforma',
-      fr: 'Des objectifs à chaque jalon&nbsp;: écosystème et plateforme',
+      en: 'Targets at every milestone: trust and people',
+      it: 'Obiettivi a ogni milestone: fiducia e persone',
+      fr: 'Des objectifs à chaque jalon&nbsp;: confiance et personnes',
     },
     families: [
       {
-        name: { en: 'Ecosystem', it: 'Ecosistema', fr: 'Écosystème' },
-        owner: ownerSponsor,
+        name: { en: 'Trust', it: 'Fiducia', fr: 'Confiance' },
+        owner: ownerLead,
         metrics: [
-          { name: { en: 'Partner co-signed experiences', it: 'Esperienze co-firmate con i partner', fr: 'Expériences co-signées avec des partenaires' },
-            m: [{ en: '0', it: '0', fr: '0' }, { en: '2', it: '2', fr: '2' }, { en: '5', it: '5', fr: '5' }] },
-          { name: { en: 'Partner-sourced pipeline', it: 'Pipeline generata dai partner', fr: 'Pipeline généré par les partenaires' },
-            m: [{ en: '—', it: '—', fr: '—' }, { en: 'tracked', it: 'tracciata', fr: 'suivi' }, { en: 'reported', it: 'riportata', fr: 'rapporté' }] },
-          { name: { en: 'Lighthouse client experience', it: 'Esperienza faro con un cliente', fr: 'Expérience vitrine chez un client' },
-            m: [{ en: '—', it: '—', fr: '—' }, { en: 'scoped', it: 'definita', fr: 'cadrée' }, { en: 'live, EMEA', it: 'live, EMEA', fr: 'en production, EMEA' }] },
+          { name: { en: 'Art. 50 incidents', it: 'Incidenti sull’art. 50', fr: 'Incidents art. 50' },
+            m: [{ en: '0', it: '0', fr: '0' }, { en: '0', it: '0', fr: '0' }, { en: '0', it: '0', fr: '0' }] },
+          { name: { en: 'Shipped assets with provenance and C2PA', it: 'Asset pubblicati con provenance e C2PA', fr: 'Assets livrés avec provenance et C2PA' },
+            m: [{ en: '50%', it: '50%', fr: '50&nbsp;%' }, { en: '100%', it: '100%', fr: '100&nbsp;%' }, { en: '100%', it: '100%', fr: '100&nbsp;%' }] },
+          { name: { en: 'Access and audit', it: 'Accessi e audit', fr: 'Accès et audit' },
+            m: [{ en: 'telemetry, secrets out of repo', it: 'telemetria, segreti fuori dal repo', fr: 'télémétrie, secrets hors du dépôt' },
+                { en: 'security review', it: 'security review', fr: 'revue de sécurité' },
+                { en: 'enterprise-managed auth + audit logs', it: 'autorizzazione aziendale + audit log', fr: 'autorisation entreprise + journaux d’audit' }] },
         ],
       },
       {
-        name: { en: 'Platform health and trust', it: 'Salute e fiducia della piattaforma', fr: 'Santé et confiance de la plateforme' },
-        owner: ownerLead,
+        name: { en: 'People & ecosystem', it: 'Persone ed ecosistema', fr: 'Personnes & écosystème' },
+        owner: ownerSponsor,
         metrics: [
-          { name: { en: 'Access and audit', it: 'Accessi e audit', fr: 'Accès et audit' },
-            m: [{ en: 'multi-user', it: 'multi-utente', fr: 'multi-utilisateur' }, { en: 'external access hardened', it: 'accessi esterni rafforzati', fr: 'accès externes durcis' }, { en: 'SSO + audit logs', it: 'SSO + audit log', fr: 'SSO + journaux d’audit' }] },
-          { name: { en: 'CI quality gates and accessibility AA', it: 'Quality gate in CI e accessibilità AA', fr: 'Contrôles qualité en CI et accessibilité AA' },
-            m: [{ en: 'in place', it: 'attivi', fr: 'en place' }, { en: 'green on every release', it: 'verdi a ogni rilascio', fr: 'au vert à chaque livraison' }, { en: 'green + security review', it: 'verdi + security review', fr: 'au vert + revue de sécurité' }] },
-          { name: { en: 'Compliance incidents', it: 'Incidenti di compliance', fr: 'Incidents de conformité' },
-            m: [{ en: '0', it: '0', fr: '0' }, { en: '0', it: '0', fr: '0' }, { en: '0', it: '0', fr: '0' }] },
+          { name: { en: 'Enabled Adobians', it: 'Adobiani abilitati', fr: 'Adobiens formés et outillés' },
+            m: [{ en: '5–10', it: '5–10', fr: '5–10' }, { en: '25–40', it: '25–40', fr: '25–40' }, { en: '100+', it: '100+', fr: '100+' }] },
+          { name: { en: 'Partner co-signed experiences', it: 'Esperienze co-firmate con i partner', fr: 'Expériences co-signées avec des partenaires' },
+            m: [{ en: '0', it: '0', fr: '0' }, { en: '2', it: '2', fr: '2' }, { en: '5', it: '5', fr: '5' }] },
+          { name: { en: 'Lighthouse client experience', it: 'Esperienza faro con un cliente', fr: 'Expérience vitrine chez un client' },
+            m: [{ en: '—', it: '—', fr: '—' }, { en: 'scoped', it: 'definita', fr: 'cadrée' }, { en: 'live, EMEA', it: 'live, EMEA', fr: 'en production, EMEA' }] },
         ],
       },
     ],
@@ -330,7 +362,7 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
 ---
 <BaseLayout
   title="The plan"
-  description="The plan as of September 2026 — nine months, three milestones: foundations by mid-December, scale and open by Adobe Summit in March, enterprise and lighthouse by end of June, with a target at every milestone."
+  description="The plan as of September 2026 — eight months, three milestones: foundations by end of January, scale and open by Adobe Summit in March, enterprise and lighthouse by end of June, with a target at every milestone."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <AtelierNavigation currentPath={currentPath} base={base} />
@@ -356,9 +388,9 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
       />
       <T
         as="h1"
-        en="Nine months, three milestones."
-        it="Nove mesi, tre milestone."
-        fr="Neuf mois, trois jalons."
+        en="Eight months, three milestones."
+        it="Otto mesi, tre milestone."
+        fr="Huit mois, trois jalons."
         class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-5"
         style="font-size: clamp(2.2rem, 4vw, 3.9rem);"
         data-reveal
@@ -410,24 +442,24 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
 
       <T
         as="p"
-        en="Plan as of September 2026"
-        it="Piano aggiornato a settembre 2026"
-        fr="Plan à jour en septembre 2026"
+        en="Plan as of September 2026 · decision by 31 October 2026"
+        it="Piano aggiornato a settembre 2026 · decisione entro il 31 ottobre 2026"
+        fr="Plan à jour en septembre 2026 · décision d’ici le 31&nbsp;octobre 2026"
         class="atl-label text-center mt-6"
         data-reveal
         data-reveal-delay="0.4"
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Roadmap — a Gantt over the nine months ─────────── -->
+    <!-- ── SLIDE 1: Roadmap — a Gantt over the eight months ────────── -->
     <Slide id="slide-roadmap" bg="secondary" align="left">
       <div slot="backdrop" class="loom-bg-soft"></div>
       <div class="atl-frame">
         <T
           as="h2"
-          en="The roadmap, October 2026 to June 2027"
-          it="La roadmap, da ottobre 2026 a giugno 2027"
-          fr="La feuille de route, d’octobre 2026 à juin 2027"
+          en="The roadmap, November 2026 to June 2027"
+          it="La roadmap, da novembre 2026 a giugno 2027"
+          fr="La feuille de route, de novembre 2026 à juin 2027"
           class="slide-title text-[var(--ink-primary)] mb-4"
           style="font-size: clamp(1.6rem, 2.4vw, 2.25rem); max-width: none;"
           data-reveal
@@ -446,11 +478,11 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
               <T as="p" en={l.en} it={l.it} fr={l.fr} class="pln-gantt-mlabel" data-align={l.align} style={`grid-column: ${l.col};`} />
             ))}
           </div>
-          <!-- Vertical lines (rows 3–7): today/decision, M1, M2, M3 -->
+          <!-- Vertical lines (rows 3–8): today/decision, M1, M2, M3 -->
           {ganttMarkers.map((mk) => (
             <span class="pln-gantt-line" data-edge={mk.edge} data-today={mk.today ? 'true' : undefined} style={`grid-column: ${mk.col};`} aria-hidden="true"></span>
           ))}
-          <!-- Rows 3–7: workstreams -->
+          <!-- Rows 3–8: workstreams -->
           {ganttRows.map((row, ri) => (
             <div class="pln-gantt-row" data-solution={row.solution}>
               <T en={row.lane.en} it={row.lane.it} fr={row.lane.fr} class="pln-gantt-lane" style={`grid-row: ${3 + ri};`} />
@@ -462,15 +494,15 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
               ))}
             </div>
           ))}
-          <!-- Row 8: key moments -->
+          <!-- Row 9: key moments -->
           <T
             en="Key moments"
             it="Momenti chiave"
             fr="Temps forts"
             class="pln-gantt-lane pln-gantt-lane--moments"
-            style="grid-row: 8;"
+            style="grid-row: 9;"
           />
-          <ul class="pln-gantt-moments" style="grid-row: 8;">
+          <ul class="pln-gantt-moments" style="grid-row: 9;">
             {ganttMoments.map((mm) => (
               <li class="pln-gantt-moment">
                 <span class="pln-gantt-diamond" aria-hidden="true"></span>
@@ -482,18 +514,18 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
           <!-- Phones only: the milestones as a list (the axis is hidden there) -->
           <T
             as="p"
-            en="Milestones: M1 mid-December 2026 · M2 22–25 March 2027 (Adobe Summit) · M3 end of June 2027"
-            it="Milestone: M1 metà dicembre 2026 · M2 22–25 marzo 2027 (Adobe Summit) · M3 fine giugno 2027"
-            fr="Jalons&nbsp;: J1 mi-décembre 2026 · J2 22–25 mars 2027 (Adobe Summit) · J3 fin juin 2027"
+            en="Milestones: M1 end of January 2027 · M2 22–25 March 2027 (Adobe Summit) · M3 end of June 2027"
+            it="Milestone: M1 fine gennaio 2027 · M2 22–25 marzo 2027 (Adobe Summit) · M3 fine giugno 2027"
+            fr="Jalons&nbsp;: J1 fin janvier 2027 · J2 22–25 mars 2027 (Adobe Summit) · J3 fin juin 2027"
             class="pln-gantt-mobile-ms"
           />
         </div>
 
         <T
           as="p"
-          en="One view of the nine months. Each milestone is detailed on the next three slides."
-          it="I nove mesi in un colpo d'occhio. Ogni milestone è dettagliata nelle tre slide successive."
-          fr="Les neuf mois d'un coup d'œil. Chaque jalon est détaillé sur les trois slides suivantes."
+          en="One view of the eight months. Each milestone is detailed on the next three slides."
+          it="Gli otto mesi in un colpo d'occhio. Ogni milestone è dettagliata nelle tre slide successive."
+          fr="Les huit mois d'un coup d'œil. Chaque jalon est détaillé sur les trois slides suivantes."
           class="mt-4 text-[var(--color-sabbia-300)]"
           style="font-size: 0.9rem; line-height: 1.5; max-width: none;"
           data-reveal
@@ -649,9 +681,9 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
   </DeckContainer>
 </BaseLayout>
 
-<!-- Plan section device: the 9-month plan rendered as a LOOM over time — a
+<!-- Plan section device: the 8-month plan rendered as a LOOM over time — a
      champagne warp spine through three milestone nodes on the cover, a real Gantt
-     on the roadmap (five weft workstreams on a month axis, vertical milestone
+     on the roadmap (six weft workstreams on a month axis, vertical milestone
      lines), and per-milestone target tables. Explicit rgba() only so the audit
      contrast parser measures real values (never oklab/color-mix). -->
 <style>
@@ -677,15 +709,15 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
   }
 
   /* ── Roadmap: the Gantt ────────────────────────────────────────────
-     Grid = lane column + 18 half-month columns (Oct 2026 → Jun 2027).
-     Rows: 1 months · 2 milestone labels · 3–7 workstreams · 8 key moments.
+     Grid = lane column + 16 half-month columns (Nov 2026 → Jun 2027).
+     Rows: 1 months · 2 milestone labels · 3–8 workstreams · 9 key moments.
      Row gaps are carried by the items' own margins (not row-gap) so a gated
-     row (Boardroom Quest off) collapses to nothing. */
+     row (Simulation off) collapses to nothing. */
   #slide-roadmap .pln-gantt {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 10.5rem) repeat(18, minmax(0, 1fr));
-    grid-template-rows: auto auto repeat(5, auto) auto;
+    grid-template-columns: minmax(0, 10.5rem) repeat(16, minmax(0, 1fr));
+    grid-template-rows: auto auto repeat(6, auto) auto;
     column-gap: 0; row-gap: 0;
     width: 100%; min-width: 0;
   }
@@ -715,7 +747,7 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
   /* Vertical lines: absolutely positioned grid children (they take no cell,
      so they never disturb the placement of the bars). */
   #slide-roadmap .pln-gantt-line {
-    position: absolute; grid-row: 3 / 8; top: 0; bottom: 0; width: 2px;
+    position: absolute; grid-row: 3 / 9; top: 0; bottom: 0; width: 2px;
     background: rgba(201,169,106,0.55); pointer-events: none; z-index: 2;
   }
   #slide-roadmap .pln-gantt-line[data-edge="start"] { left: 0; }
@@ -724,7 +756,7 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
     background: repeating-linear-gradient(to bottom, rgba(201,169,106,0.8) 0 5px, transparent 5px 9px);
   }
 
-  /* Rows 3–7: lane names + bar segments */
+  /* Rows 3–8: lane names + bar segments */
   #slide-roadmap .pln-gantt-lane {
     grid-column: 1; min-width: 0;
     display: flex; align-items: center;
@@ -735,10 +767,10 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
   #slide-roadmap .pln-gantt-seg {
     position: relative; z-index: 1; min-width: 0;
     display: flex; align-items: center;
-    margin: 0.28rem 2px;
+    margin: 0.22rem 2px;
     border: 1px solid rgba(201,169,106,0.35);
     background: rgba(201, 169, 106, 0.12);
-    border-radius: 4px; padding: 0.42rem 0.7rem 0.42rem 0.95rem;
+    border-radius: 4px; padding: 0.34rem 0.6rem 0.34rem 0.9rem;
   }
   /* the weft thread: a champagne knot at the bar's left edge */
   #slide-roadmap .pln-gantt-seg::before {
@@ -755,14 +787,14 @@ const kpiSlides: Array<{ id: string; label: Tri; title: Tri; families: KpiFamily
     font-size: 0.8rem; /* below the audit's 16px text threshold: an off-screen SR label must not skew centre-of-mass */
   }
 
-  /* Row 8: key moments */
+  /* Row 9: key moments */
   #slide-roadmap .pln-gantt-lane--moments {
-    grid-row: 8; margin-top: 0.55rem;
+    grid-row: 9; margin-top: 0.55rem;
     font-family: var(--font-body); font-size: 0.8rem; font-weight: 600;
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-sabbia-300);
   }
   #slide-roadmap .pln-gantt-moments {
-    grid-column: 2 / -1; grid-row: 8; min-width: 0;
+    grid-column: 2 / -1; grid-row: 9; min-width: 0;
     display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 2rem;
     margin-top: 0.55rem; padding-left: 0.5rem; list-style: none;
   }
