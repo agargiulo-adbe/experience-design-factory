@@ -1,0 +1,60 @@
+---
+/**
+ * DeckTelemetry — il deck misura se stesso, in modo anonimo.
+ * Montato UNA volta nel BaseLayout dell'app che opta. Ascolta `deck:change`,
+ * misura quanto una slide è rimasta attiva e scrive una riga per attivazione
+ * su Supabase (`deck_events`, anon insert-only). Niente cookie, niente dati
+ * personali: session id casuale per scheda in sessionStorage.
+ * Si spegne con `?telemetry=0` o `localStorage['edf:telemetry']='off'`;
+ * `?telemetry=mock` non scrive (serve all'audit e alle prove).
+ */
+interface Props { project: string; url: string; anonKey: string }
+const { project, url, anonKey } = Astro.props as Props;
+---
+<div data-edf-telemetry data-project={project} data-url={url} data-key={anonKey} hidden aria-hidden="true"></div>
+
+<script>
+  import { buildEvent, makeSessionId, trackingMode } from './telemetry';
+
+  const el = document.querySelector<HTMLElement>('[data-edf-telemetry]');
+  const w = window as Window & { __edfTelemetryBound?: boolean };
+  if (el && !w.__edfTelemetryBound) {
+    w.__edfTelemetryBound = true;
+    const project = el.dataset.project || '';
+    const endpoint = (el.dataset.url || '').replace(/\/$/, '') + '/rest/v1/deck_events';
+    const key = el.dataset.key || '';
+    let stored: string | null = null;
+    try { stored = localStorage.getItem('edf:telemetry'); } catch { /* storage bloccato */ }
+    const mode = trackingMode(location.search, stored);
+
+    let sessionId = '';
+    try { sessionId = sessionStorage.getItem('edf:telemetry:sid') || ''; } catch { /* ignore */ }
+    if (!sessionId) { sessionId = makeSessionId(); try { sessionStorage.setItem('edf:telemetry:sid', sessionId); } catch { /* ignore */ } }
+
+    let current: { id: string; index: number; since: number } | null = null;
+
+    const send = (dwellMs: number) => {
+      if (!current || mode !== 'on' || !key || !endpoint.startsWith('https://')) return;
+      const lang = document.documentElement.getAttribute('data-lang') || 'en';
+      const ev = buildEvent({ project, pathname: location.pathname, search: location.search, slideId: current.id, slideIndex: current.index, lang, sessionId, dwellMs });
+      try {
+        fetch(endpoint, {
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'application/json', apikey: key, Authorization: 'Bearer ' + key, Prefer: 'return=minimal' },
+          body: JSON.stringify(ev),
+        }).catch(() => { /* la telemetria non deve mai rompere il deck */ });
+      } catch { /* ignore */ }
+    };
+
+    const flush = () => { if (current) { send(performance.now() - current.since); current = { ...current, since: performance.now() }; } };
+
+    document.addEventListener('deck:change', (e: Event) => {
+      const d = (e as CustomEvent).detail as { index: number; id: string };
+      if (current) send(performance.now() - current.since);
+      current = { id: d.id || 'slide-' + d.index, index: d.index, since: performance.now() };
+    });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('astro:before-swap', flush);
+  }
+</script>
