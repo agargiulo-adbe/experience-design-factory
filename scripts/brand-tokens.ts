@@ -25,70 +25,7 @@
  * Nota: alcuni siti bancari bloccano gli headless browser ma servono il CSS a una
  * GET semplice. Per questo si usa fetch, non un browser.
  */
-
-interface Hit { value: string; count: number }
-
-/**
- * Palette di default dei framework CSS diffusi (Bootstrap 5, Tailwind). Compaiono
- * in quasi ogni sito e non dicono NIENTE del brand: vanno mostrate a parte, non
- * nascoste — se un cliente usa davvero il blu di Bootstrap è bene vederlo.
- */
-const FRAMEWORK_DEFAULTS = new Set([
-  '#0d6efd', '#6610f2', '#6f42c1', '#d63384', '#dc3545', '#fd7e14', '#ffc107',
-  '#198754', '#20c997', '#0dcaf0', '#6c757d', '#212529', '#0a58ca', '#157347',
-  '#3b71ca', '#14a44d', '#dc4c64', '#e4a11b', '#54b4d3',
-]);
-const FRAMEWORK_VAR_PREFIXES = ['--bs-', '--tw-', '--mdc-', '--mat-', '--ion-', '--wp-', '--chakra-'];
-
-const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
-
-async function get(url: string): Promise<string> {
-  const res = await fetch(url, { headers: { 'User-Agent': UA, Accept: '*/*' } });
-  if (!res.ok) throw new Error(`${res.status} su ${url}`);
-  return res.text();
-}
-
-/** I <link rel=stylesheet> della pagina, risolti in URL assoluti. */
-function stylesheetUrls(html: string, base: string): string[] {
-  const out = new Set<string>();
-  const linkRe = /<link\b[^>]*>/gi;
-  for (const tag of html.match(linkRe) ?? []) {
-    if (!/stylesheet/i.test(tag)) continue;
-    const href = /href\s*=\s*["']([^"']+)["']/i.exec(tag)?.[1];
-    if (href) {
-      try { out.add(new URL(href, base).href); } catch { /* href malformato */ }
-    }
-  }
-  return [...out];
-}
-
-/** Colori normalizzati a #rrggbb minuscolo, così #FFF e #ffffff contano insieme. */
-function normalizeHex(h: string): string {
-  let v = h.replace('#', '').toLowerCase();
-  if (v.length === 3) v = v.split('').map((c) => c + c).join('');
-  return `#${v}`;
-}
-
-/** Il bianco, il nero e i grigi puri non dicono niente di un brand. */
-function isNeutral(hex: string): boolean {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  return max - min < 12; // scarto di canale trascurabile = grigio
-}
-
-function tally(re: RegExp, css: string, map: (m: RegExpExecArray) => string | null): Hit[] {
-  const counts = new Map<string, number>();
-  let m: RegExpExecArray | null;
-  const rx = new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g');
-  while ((m = rx.exec(css))) {
-    const v = map(m);
-    if (v) counts.set(v, (counts.get(v) ?? 0) + 1);
-  }
-  return [...counts.entries()].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count);
-}
+import { readBrandTokens } from './lib/brand-tokens';
 
 /** Quadratino di colore nel terminale — vedere il colore vale più che leggerlo. */
 function swatch(hex: string): string {
@@ -108,54 +45,33 @@ async function main() {
   const url = /^https?:\/\//.test(site) ? site : `https://${site}`;
 
   console.log(`\nLeggo il design system pubblico di ${new URL(url).hostname}\n`);
-  const html = await get(url);
-  const sheets = stylesheetUrls(html, url);
-  console.log(`  ${sheets.length} fogli di stile collegati`);
-
-  let css = '';
-  const inline = html.match(/<style\b[^>]*>([\s\S]*?)<\/style>/gi) ?? [];
-  css += inline.join('\n');
-  let fetched = 0;
-  for (const s of sheets.slice(0, 12)) {
-    try { css += '\n' + (await get(s)); fetched++; } catch { /* un foglio in meno, non è un errore */ }
-  }
-  console.log(`  ${fetched} scaricati · ${(css.length / 1024).toFixed(0)} KB di CSS analizzati\n`);
-  if (css.length < 2000) {
+  const r = await readBrandTokens(url, { top: TOP });
+  console.log(`  ${r.sheets} fogli di stile scaricati · ${r.cssKb} KB di CSS analizzati\n`);
+  if (r.cssKb < 2) {
     console.log('  Poco CSS: il sito potrebbe servirlo via JS. Prova l\'URL di un CSS specifico.\n');
   }
 
   // — colori
-  const hexes = tally(/#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b/, css, (m) => normalizeHex(m[0]));
-  const chromatic = hexes.filter((h) => !isNeutral(h.value));
-  const brand = chromatic.filter((h) => !FRAMEWORK_DEFAULTS.has(h.value)).slice(0, TOP);
-  const framework = chromatic.filter((h) => FRAMEWORK_DEFAULTS.has(h.value)).slice(0, 6);
   console.log('COLORI DI MARCA — per frequenza nel CSS di produzione');
   console.log('  (il più frequente è quasi sempre il colore di SISTEMA, non il marchio)\n');
-  for (const h of brand) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
-  if (framework.length) {
+  for (const h of r.brand) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
+  if (r.framework.length) {
     console.log('\n  ↓ default di framework (Bootstrap/Tailwind): quasi mai scelte di brand');
-    for (const h of framework) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
+    for (const h of r.framework) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
   }
 
-  const neutrals = hexes.filter((h) => isNeutral(h.value)).slice(0, 6);
   console.log('\nNEUTRI\n');
-  for (const h of neutrals) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
+  for (const h of r.neutrals) console.log(`  ${swatch(h.value)}  ${h.value}   ${String(h.count).padStart(4)} occorrenze`);
 
   // — custom property: quando ci sono, sono il design system dichiarato
-  const vars = tally(/--([a-z0-9-]+)\s*:\s*(#[0-9a-fA-F]{3,6})/i, css, (m) => `--${m[1]}: ${normalizeHex(m[2])}`);
-  const ownVars = vars.filter((v) => !FRAMEWORK_VAR_PREFIXES.some((p) => v.value.startsWith(p)));
-  if (ownVars.length) {
+  if (r.customProperties.length) {
     console.log('\nCUSTOM PROPERTY DICHIARATE DAL SITO — se ci sono, vincono su tutto\n');
-    for (const v of ownVars.slice(0, 18)) console.log(`  ${swatch(v.value.split(': ')[1])}  ${v.value}`);
+    for (const v of r.customProperties) console.log(`  ${swatch(v.split(': ')[1])}  ${v}`);
   }
 
   // — tipografia
-  const fams = tally(/font-family\s*:\s*([^;}]+)/i, css, (m) => {
-    const first = m[1].split(',')[0].replace(/["']/g, '').trim();
-    return /^(inherit|initial|unset|var\()/i.test(first) || !first ? null : first;
-  });
   console.log('\nCARATTERI DICHIARATI\n');
-  for (const f of fams.slice(0, 10)) console.log(`  ${String(f.count).padStart(4)}×  ${f.value}`);
+  for (const f of r.fonts) console.log(`  ${String(f.count).padStart(4)}×  ${f.value}`);
 
   console.log(`
 COSA FARNE
