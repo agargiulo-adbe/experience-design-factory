@@ -112,6 +112,7 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'method',         route: '/experience-design-factory/atelier/method/' },
     { name: 'capability',     route: '/experience-design-factory/atelier/capability/' },
     { name: 'gap',            route: '/experience-design-factory/atelier/gap/' },
+    { name: 'moves',          route: '/experience-design-factory/atelier/moves/' },
     { name: 'multiplication', route: '/experience-design-factory/atelier/multiplication/' },
     { name: 'frontiers',      route: '/experience-design-factory/atelier/frontiers/' },
     { name: 'plan',           route: '/experience-design-factory/atelier/plan/' },

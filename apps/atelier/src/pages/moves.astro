@@ -1,0 +1,478 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AtelierNavigation from '../components/AtelierNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { mediaProps } from '../../assets.index';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// ── Move 01 — the mock: what a buyer sees between two meetings ──────────────
+// Pure CSS/HTML on the deck tokens. No screenshot, no product logo: the panel
+// is labelled «example» and the timeline «illustrative», because an invented
+// exchange shown as a real one would be a claim, not a mock-up.
+const askTurns = [
+  {
+    role: 'q',
+    en: 'Which slide covers the licensing?',
+    it: 'In quale slide si parla delle licenze?',
+    fr: 'Quelle slide parle des licences&nbsp;?',
+  },
+  {
+    role: 'a',
+    en: 'Slide 12, the scoping model. It prices your five markets live.',
+    it: 'La 12, il modello di scoping: calcola i vostri cinque mercati sul momento.',
+    fr: 'La 12, le modèle de cadrage&nbsp;: il chiffre vos cinq marchés à la volée.',
+  },
+  {
+    role: 'q',
+    en: 'Is the roadmap committed?',
+    it: 'La roadmap è un impegno preso?',
+    fr: 'La feuille de route est-elle un engagement&nbsp;?',
+  },
+  {
+    role: 'a',
+    en: 'No. The plan chapter is dated, and it is still a proposal.',
+    it: 'No. Il capitolo del piano è datato, e resta una proposta.',
+    fr: 'Non. Le chapitre du plan est daté, et reste une proposition.',
+  },
+];
+
+const lifeTicks = [
+  { en: 'Meeting', it: 'Il meeting', fr: 'La réunion' },
+  { en: 'Reopened by the CFO', it: 'Riaperta dal CFO', fr: 'Rouverte par le CFO' },
+  { en: 'Shared to 2 colleagues', it: 'Condivisa con 2 colleghi', fr: 'Partagée à 2 collègues' },
+];
+
+// ── Move 02 — four steps, from the brand's CSS to the seller's assistant ────
+const buildThreads = [
+  {
+    title: {
+      en: 'Read the brand from its production CSS',
+      it: 'Leggere il brand dal suo CSS di produzione',
+      fr: 'Lire la marque depuis son CSS de production',
+    },
+    body: {
+      en: 'pnpm brand:tokens — already in the engine, already used on five clients.',
+      it: 'pnpm brand:tokens: c’è già nel motore, e ha già vestito cinque clienti.',
+      fr: 'pnpm brand:tokens&nbsp;: déjà dans le moteur, déjà utilisé sur cinq clients.',
+    },
+  },
+  {
+    title: {
+      en: 'Brief with the guided intake',
+      it: 'Il brief con l’intake guidato',
+      fr: 'Le brief avec l’intake guidé',
+    },
+    body: {
+      en: 'A private Firefly Custom Model per client (beta) learns that one visual language.',
+      it: 'Un Firefly Custom Model privato per cliente (beta) impara quel linguaggio visivo.',
+      fr: 'Un Firefly Custom Model privé par client (bêta) apprend ce langage visuel.',
+    },
+  },
+  {
+    title: {
+      en: 'Build on the engine',
+      it: 'Costruire sul motore',
+      fr: 'Construire sur le moteur',
+    },
+    body: {
+      en: 'Images generated live in the room, video pre-warmed the night before.',
+      it: 'Immagini generate dal vivo in sala, video scaldato la sera prima.',
+      fr: 'Images générées en direct dans la salle, vidéo préchauffée la veille.',
+    },
+  },
+  {
+    title: {
+      en: 'Deliver from inside Claude, Copilot or ChatGPT',
+      it: 'Consegnare da dentro Claude, Copilot o ChatGPT',
+      fr: 'Livrer depuis Claude, Copilot ou ChatGPT',
+    },
+    body: {
+      en: 'The atelier MCP server and Agent Skills; scoping and configuration as MCP Apps in the client’s assistant.',
+      it: 'Il server MCP atelier e le Agent Skills; scoping e configurazione come MCP App nell’assistente del cliente.',
+      fr: 'Le serveur MCP atelier et les Agent Skills&nbsp;; cadrage et configuration en MCP Apps dans l’assistant du client.',
+    },
+  },
+];
+
+// ── Move 03 — provenance, and the disclosure the AI Act asks for ────────────
+const provenanceCards = [
+  {
+    title: {
+      en: 'Keep the C2PA manifest through the build',
+      it: 'Portare il manifesto C2PA fino in fondo alla build',
+      fr: 'Conserver le manifeste C2PA jusqu’au bout de la build',
+    },
+    body: {
+      en: 'Today it is lost in the crop and the convert, between Firefly and the deck.',
+      it: 'Oggi si perde nel ritaglio e nella conversione, fra Firefly e il deck.',
+      fr: 'Aujourd’hui il se perd au recadrage et à la conversion, entre Firefly et le deck.',
+    },
+    src: null,
+  },
+  {
+    title: {
+      en: 'Export an art. 50 disclosure record from provenance.json',
+      it: 'Esportare da provenance.json il registro di trasparenza dell’art. 50',
+      fr: 'Exporter depuis provenance.json le registre de transparence de l’art. 50',
+    },
+    body: {
+      en: 'For every deck shown to a bank or a ministry: the obligation applies since 2 August 2026.',
+      it: 'Per ogni deck mostrato a una banca o a un ministero: l’obbligo si applica dal 2 agosto 2026.',
+      fr: 'Pour chaque deck présenté à une banque ou à un ministère&nbsp;: l’obligation s’applique depuis le 2 août 2026.',
+    },
+    src: {
+      en: 'Regulation (EU) 2024/1689 art. 50; Reg. (EU) 2026/1744',
+      it: 'Regolamento (UE) 2024/1689 art. 50; Reg. (UE) 2026/1744',
+      fr: 'Règlement (UE) 2024/1689 art. 50&nbsp;; Règl. (UE) 2026/1744',
+    },
+  },
+  {
+    title: {
+      en: 'A credit on every slide, read from provenance',
+      it: 'Un credito su ogni slide, letto dalla provenienza',
+      fr: 'Un crédit sur chaque slide, lu depuis la provenance',
+    },
+    body: {
+      en: 'The line at the bottom right of this deck is already that, and nobody types it.',
+      it: 'La riga in basso a destra di questo deck è già quella, e nessuno la scrive a mano.',
+      fr: 'La ligne en bas à droite de ce deck, c’est déjà ça, et personne ne la saisit.',
+    },
+    src: null,
+  },
+];
+
+// ── The simulation — the board is the client's own funnel ───────────────────
+// Nine tiles, five pawns. The pawn tints are the AA-safe accents of the skins
+// this Factory already ships; the legend says which division holds which one.
+const boardTiles = [
+  { pawn: 'marketing', en: 'Traffic',   it: 'Traffico',  fr: 'Trafic' },
+  { pawn: null,        en: 'Leads',     it: 'Lead',      fr: 'Leads' },
+  { pawn: 'sales',     en: 'Meetings',  it: 'Incontri',  fr: 'Rendez-vous' },
+  { pawn: null,        en: 'Offers',    it: 'Offerte',   fr: 'Offres' },
+  { pawn: null,        en: 'Deals',     it: 'Contratti', fr: 'Contrats' },
+  { pawn: 'service',   en: 'Retention', it: 'Fidelizzazione', fr: 'Rétention' },
+  { pawn: null,        en: 'NPS',       it: 'NPS',       fr: 'NPS' },
+  { pawn: 'finance',   en: 'Cost',      it: 'Costo',     fr: 'Coût' },
+  { pawn: 'risk',      en: 'Risk',      it: 'Rischio',   fr: 'Risque' },
+];
+
+const boardLegend = [
+  { pawn: 'marketing', en: 'Marketing', it: 'Marketing', fr: 'Marketing' },
+  { pawn: 'sales',     en: 'Sales',     it: 'Vendite',   fr: 'Ventes' },
+  { pawn: 'service',   en: 'Service',   it: 'Assistenza', fr: 'Service client' },
+  { pawn: 'finance',   en: 'Finance',   it: 'Finanza',   fr: 'Finance' },
+  { pawn: 'risk',      en: 'Risk',      it: 'Rischio',   fr: 'Risque' },
+];
+---
+<BaseLayout
+  title="The three moves"
+  description="The three moves — an experience alive between meetings, one per opportunity where sellers already are, and provenance carried through to compliance. Plus the simulation."
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <AtelierNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer
+    nextHref={href(base, '/plan')}
+    prevHref={href(base, '/gap')}
+  >
+
+    <!-- ── SLIDE 0: Cover — three threads leaving the loom (detail cut) ── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="detail" data-made-with="Firefly" data-made-with-for="backdrop">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+      <SlideBackdrop
+        slot="backdrop"
+        {...mediaProps('bg-moves')}
+        imageClass="opacity-[0.22]"
+        scrim="bg-transparent"
+      />
+
+      <div class="atl-frame flex flex-col items-center">
+        <p class="atl-cover-num mb-3" aria-hidden="true" data-display data-reveal>04</p>
+        <T
+          as="p"
+          en="The three moves"
+          it="Le tre mosse"
+          fr="Les trois mouvements"
+          class="atl-cover-kicker mb-5"
+          data-reveal
+        />
+        <T
+          as="h1"
+          en="From pitch to buying surface."
+          it="Dal pitch alla superficie d’acquisto."
+          fr="Du pitch à la surface d’achat."
+          class="slide-title text-center text-[var(--ink-primary)] mx-auto max-w-5xl mb-8"
+          style="font-size: clamp(2.2rem, 4.4vw, 4rem);"
+          data-reveal
+          data-reveal-delay="0.12"
+        />
+        <T
+          as="p"
+          en="Three moves turn eight bespoke decks into a capability: alive between meetings, delivered where sellers already are, compliant by construction."
+          it="Tre mosse trasformano otto deck su misura in una capability: viva fra un meeting e l’altro, consegnata dove i venditori lavorano già, conforme per costruzione."
+          fr="Trois mouvements transforment huit decks sur mesure en une capacité&nbsp;: vivante entre les réunions, livrée là où les vendeurs travaillent déjà, conforme par construction."
+          class="atl-lede"
+          data-reveal
+          data-reveal-delay="0.2"
+        />
+        <div class="flex items-center justify-center flex-wrap gap-x-4 gap-y-2 mt-6" data-reveal data-reveal-delay="0.28">
+          <T en="Between meetings" it="Fra un meeting e l’altro" fr="Entre les réunions" class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]" style="font-size: 0.9rem;" />
+          <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <T en="Where sellers are" it="Dove sono i venditori" fr="Là où sont les vendeurs" class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]" style="font-size: 0.9rem;" />
+          <span class="w-1 h-1 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"></span>
+          <T en="By construction" it="Per costruzione" fr="Par construction" class="font-semibold tracking-widest uppercase text-[var(--color-sabbia-300)]" style="font-size: 0.9rem;" />
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 1: Move 01 — alive between meetings ─────────────────── -->
+    <Slide id="slide-move-1" bg="secondary" align="left">
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 items-center">
+        <div class="min-w-0">
+          <p class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal>01</p>
+          <T
+            as="h2"
+            en="Alive between meetings"
+            it="Viva fra un meeting e l’altro"
+            fr="Vivante entre les réunions"
+            class="slide-title text-[var(--ink-primary)] mb-4"
+            style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+            data-reveal
+            data-reveal-delay="0.08"
+          />
+          <T
+            as="p"
+            en="The same experience keeps working after the room empties: every slide and every stakeholder measured; a buyer-facing agent grounded only in that build, answering at two in the morning; the engagement back to the account team. The agent is Brand Concierge, so Adobe is its own customer zero."
+            it="La stessa esperienza continua a lavorare quando la sala si è svuotata: ogni slide e ogni stakeholder misurati; un agente rivolto al buyer che conosce soltanto quella build e risponde alle due di notte; l’engagement che torna all’account team. L’agente è Brand Concierge, così Adobe è cliente zero di se stessa."
+            fr="La même expérience continue de travailler une fois la salle vidée&nbsp;: chaque slide et chaque partie prenante mesurées&nbsp;; un agent face à l’acheteur, nourri de cette seule build, qui répond à deux heures du matin&nbsp;; l’engagement qui remonte à l’équipe commerciale. L’agent, c’est Brand Concierge&nbsp;: Adobe est donc son propre client zéro."
+            class="mv-lede mb-4"
+            data-reveal
+            data-reveal-delay="0.14"
+          />
+          <T
+            as="p"
+            en="Gated links per audience and the console already exist; telemetry v0 is live on this deck."
+            it="I link con il taglio giusto per ogni interlocutore e la console esistono già; la telemetria v0 gira su questo deck."
+            fr="Les liens filtrés par interlocuteur et la console existent déjà&nbsp;; la télémétrie v0 tourne sur ce deck."
+            class="gap-src"
+            data-reveal
+            data-reveal-delay="0.2"
+          />
+        </div>
+
+        <!-- The mock: a slide thumbnail, the agent panel, the life of the link -->
+        <div class="mv-mock loom-panel min-w-0" data-reveal data-reveal-delay="0.2">
+          <div class="loom-panel-head">
+            <T
+              as="p"
+              en="Ask this experience"
+              it="Chiedi a questa esperienza"
+              fr="Interroger cette expérience"
+              class="loom-tag"
+            />
+            <T as="p" en="example" it="esempio" fr="exemple" class="mv-badge" />
+          </div>
+
+          <div class="mv-mock-row">
+            <div class="mv-shot" aria-hidden="true">
+              <span class="mv-shot-bar mv-shot-bar--title"></span>
+              <span class="mv-shot-bar"></span>
+              <span class="mv-shot-bar mv-shot-bar--short"></span>
+              <span class="mv-shot-block"></span>
+            </div>
+            <div class="mv-ask">
+              {askTurns.map((turn) => (
+                <T
+                  as="p"
+                  en={turn.en}
+                  it={turn.it}
+                  fr={turn.fr}
+                  class={`mv-say mv-say--${turn.role}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div class="mv-timeline">
+            <T as="p" en="illustrative" it="illustrativo" fr="à titre indicatif" class="mv-badge mv-timeline-cap" />
+            <ol class="mv-ticks">
+              {lifeTicks.map((tick) => (
+                <li class="mv-tick">
+                  <span class="mv-tick-dot" aria-hidden="true"></span>
+                  <T as="span" en={tick.en} it={tick.it} fr={tick.fr} class="mv-tick-label" />
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2: Move 02 — one experience per opportunity ─────────── -->
+    <Slide id="slide-move-2" bg="primary" align="left">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame">
+        <p class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal>02</p>
+        <T
+          as="h2"
+          en="An experience per opportunity, in 24 hours, where sellers are"
+          it="Un’esperienza per ogni opportunità, in 24 ore, dove stanno i venditori"
+          fr="Une expérience par opportunité, en 24 heures, là où sont les vendeurs"
+          class="slide-title text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.65rem, 2.5vw, 2.3rem);"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="loom-weave" data-reveal data-reveal-delay="0.14">
+          {buildThreads.map((row, i) => (
+            <div class="loom-thread mv-thread" style={`--thread:${i}`}>
+              <div class="loom-thread-rail" aria-hidden="true">
+                <span class="loom-thread-num">{i + 1}</span>
+              </div>
+              <div class="loom-thread-copy">
+                <T as="p" en={row.title.en} it={row.title.it} fr={row.title.fr} class="loom-thread-title" />
+                <T as="p" en={row.body.en} it={row.body.it} fr={row.body.fr} class="loom-thread-body" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="loom-quote mv-quote" data-reveal data-reveal-delay="0.24">
+          <T
+            as="p"
+            en="Never “video generated in the room”: the honest promise is images live, clips ready before the meeting."
+            it="Mai «video generato in sala»: la promessa onesta è immagini dal vivo e clip pronte prima dell’incontro."
+            fr="Jamais de «&nbsp;vidéo générée en séance&nbsp;»&nbsp;: la promesse honnête, ce sont des images en direct et des clips prêts avant la réunion."
+            class="loom-quote-text"
+          />
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 3: Move 03 — provenance as compliance ───────────────── -->
+    <Slide id="slide-move-3" bg="secondary" align="left">
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame">
+        <p class="slide-eyebrow text-[var(--accent-primary)] mb-2" data-reveal>03</p>
+        <T
+          as="h2"
+          en="Provenance as compliance"
+          it="La provenienza come conformità"
+          fr="La provenance comme conformité"
+          class="slide-title text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.7rem, 2.6vw, 2.4rem);"
+          data-reveal
+          data-reveal-delay="0.08"
+        />
+
+        <div class="grid grid-cols-1 md:grid-cols-3 auto-rows-fr gap-4" data-reveal data-reveal-delay="0.16">
+          {provenanceCards.map((card, i) => (
+            <div class="loom-card mv-card h-full">
+              <span class="loom-mark" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" en={card.title.en} it={card.title.it} fr={card.title.fr} class="loom-card-title" />
+              <T as="p" en={card.body.en} it={card.body.it} fr={card.body.fr} class="loom-card-body" />
+              {card.src && (
+                <T as="p" en={card.src.en} it={card.src.it} fr={card.src.fr} class="gap-src mt-auto" />
+              )}
+            </div>
+          ))}
+        </div>
+
+        <T
+          as="p"
+          en="Adobe signs on the C2PA Interim Trust List; we say “provenance on record”, not “verified”."
+          it="Adobe firma sulla C2PA Interim Trust List; noi diciamo «provenienza a registro», non «verificata»."
+          fr="Adobe signe sur la C2PA Interim Trust List&nbsp;; nous disons «&nbsp;provenance consignée&nbsp;», pas «&nbsp;vérifiée&nbsp;»."
+          class="gap-src mv-foot"
+          data-reveal
+          data-reveal-delay="0.24"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 4: The simulation — the funnel as a board ───────────── -->
+    <Slide id="slide-simulation" bg="primary" align="left" data-solution="simulation">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-10 items-center">
+        <div class="min-w-0">
+          <T
+            as="p"
+            en="The buying surface becomes a game"
+            it="La superficie d’acquisto diventa un gioco"
+            fr="La surface d’achat devient un jeu"
+            class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+            data-reveal
+          />
+          <T
+            as="h2"
+            en="The simulation"
+            it="La simulazione"
+            fr="La simulation"
+            class="slide-title text-[var(--ink-primary)] mb-4"
+            style="font-size: clamp(1.9rem, 3vw, 2.7rem);"
+            data-reveal
+            data-reveal-delay="0.08"
+          />
+          <T
+            as="p"
+            en="The board is the client’s real funnel, from the scoping model already in the engine. Each executive plays one division on their own device; an AI facilitator runs the clock; Adobe products are the tools that unlock what one division cannot. The closing artefact is a costed roadmap they built themselves."
+            it="Il tabellone è il funnel vero del cliente, preso dal modello di scoping che sta già nel motore. Ogni manager gioca una divisione dal proprio dispositivo; un facilitatore AI tiene il tempo; i prodotti Adobe sono gli strumenti che sbloccano quello che una divisione da sola non riesce a sbloccare. Alla fine si portano via una roadmap con i costi, costruita da loro."
+            fr="Le plateau, c’est le funnel réel du client, repris du modèle de cadrage déjà présent dans le moteur. Chaque dirigeant joue une division depuis son propre appareil&nbsp;; un facilitateur IA tient le chrono&nbsp;; les produits Adobe sont les outils qui débloquent ce qu’une division seule ne peut pas. Ils repartent avec une feuille de route chiffrée qu’ils ont bâtie eux-mêmes."
+            class="mv-lede mb-4"
+            data-reveal
+            data-reveal-delay="0.14"
+          />
+          <T
+            as="p"
+            en="Facilitated board games in pre-sales are SAP’s format since 2018 (S/4HANA board game, BTP Diamond Game; SAP News 2020–2023). What is ours is what the board is made of."
+            it="I giochi da tavolo facilitati in pre-vendita sono un formato SAP dal 2018 (S/4HANA board game, BTP Diamond Game; SAP News 2020–2023). Nostro è di che cosa è fatto il tabellone."
+            fr="Les jeux de plateau facilités en avant-vente sont un format SAP depuis 2018 (S/4HANA board game, BTP Diamond Game&nbsp;; SAP News 2020–2023). Ce qui est à nous, c’est la matière du plateau."
+            class="gap-src"
+            data-reveal
+            data-reveal-delay="0.2"
+          />
+        </div>
+
+        <!-- The board: nine funnel tiles, five division pawns -->
+        <div class="mv-board loom-panel min-w-0" data-reveal data-reveal-delay="0.2">
+          <div class="loom-panel-head">
+            <T as="p" en="The board" it="Il tabellone" fr="Le plateau" class="loom-tag" />
+            <T as="p" en="example data" it="dati di esempio" fr="données d’exemple" class="mv-badge" />
+          </div>
+
+          <div class="mv-grid">
+            {boardTiles.map((tile) => (
+              <div class="mv-tile">
+                <T as="span" en={tile.en} it={tile.it} fr={tile.fr} class="mv-tile-label" />
+                {tile.pawn && <span class={`mv-pawn mv-pawn--${tile.pawn}`} aria-hidden="true"></span>}
+              </div>
+            ))}
+          </div>
+
+          <ul class="mv-legend">
+            {boardLegend.map((item) => (
+              <li class="mv-legend-item">
+                <span class={`mv-pawn mv-pawn--${item.pawn}`} aria-hidden="true"></span>
+                <T as="span" en={item.en} it={item.it} fr={item.fr} class="mv-legend-label" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
