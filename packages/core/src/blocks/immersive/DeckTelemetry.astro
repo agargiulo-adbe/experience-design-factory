@@ -33,6 +33,18 @@ const { project, url, anonKey } = Astro.props as Props;
 
     let current: { id: string; index: number; since: number } | null = null;
 
+    // On the first full load the deck has already booted (window.__edfDeck) and fired its
+    // initial `deck:change` before this script attached its listener — seed `current` from
+    // the deck's own public state so the cover slide's dwell isn't silently dropped. A
+    // later `deck:change` (real navigation) always overwrites `current` via the handler
+    // below, so this only ever fills the gap before the first transition.
+    const seed = () => {
+      if (current) return;
+      const d = (window as Window & { __edfDeck?: { index: number; slides: HTMLElement[] } }).__edfDeck;
+      const s = d?.slides?.[d.index];
+      if (d && s) current = { id: s.id || 'slide-' + d.index, index: d.index, since: performance.now() };
+    };
+
     const send = (dwellMs: number) => {
       if (!current || mode !== 'on' || !key || !endpoint.startsWith('https://')) return;
       const lang = document.documentElement.getAttribute('data-lang') || 'en';
@@ -56,5 +68,11 @@ const { project, url, anonKey } = Astro.props as Props;
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
     window.addEventListener('pagehide', flush);
     document.addEventListener('astro:before-swap', flush);
+
+    // Seed now (deck may have already booted on this full load) and again after every
+    // SPA swap (astro:page-load), in case the new page's deck boots before deck:change
+    // reaches this still-bound listener.
+    seed();
+    document.addEventListener('astro:page-load', seed);
   }
 </script>
