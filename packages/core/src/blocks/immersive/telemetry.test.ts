@@ -37,4 +37,10 @@ describe('buildEvent', () => {
     const e = buildEvent({ project: 'atelier', pathname: '/x/atelier/plan/', search: '?s=asks', slideId: 'slide-m1', slideIndex: 3, lang: 'fr', sessionId: 'abcdef0123456789', dwellMs: 4_000_000 });
     expect(e).toEqual({ project: 'atelier', route: 'plan', slide_id: 'slide-m1', slide_index: 3, cut: 'asks', lang: 'fr', session_id: 'abcdef0123456789', dwell_ms: 3_600_000 });
   });
+  it('sanitises non-finite and negative dwell to the range', () => {
+    const base = { project: 'atelier', pathname: '/x/atelier/', search: '', slideId: 'slide-cover', slideIndex: 0, lang: 'en', sessionId: 'abcdef0123456789' };
+    expect(buildEvent({ ...base, dwellMs: NaN }).dwell_ms).toBe(0);
+    expect(buildEvent({ ...base, dwellMs: Infinity }).dwell_ms).toBe(0);
+    expect(buildEvent({ ...base, dwellMs: -50 }).dwell_ms).toBe(0);
+  });
 });

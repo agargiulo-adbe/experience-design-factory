@@ -44,6 +44,7 @@ export function buildEvent(p: {
   project: string; pathname: string; search: string; slideId: string; slideIndex: number;
   lang: string; sessionId: string; dwellMs: number;
 }): TelemetryEvent {
+  const dwell = Number.isFinite(p.dwellMs) ? Math.round(p.dwellMs) : 0;
   return {
     project: p.project,
     route: routeFromPath(p.pathname),
@@ -52,6 +53,6 @@ export function buildEvent(p: {
     cut: cutFromSearch(p.search),
     lang: p.lang,
     session_id: p.sessionId,
-    dwell_ms: Math.max(0, Math.min(MAX_DWELL_MS, Math.round(p.dwellMs))),
+    dwell_ms: Math.max(0, Math.min(MAX_DWELL_MS, dwell)),
   };
 }
