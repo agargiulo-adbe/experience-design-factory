@@ -44,6 +44,12 @@ Costruisce l'URL per aprire una experience, opzionalmente nel taglio sponsor
 
 Slug sconosciuto o taglio sponsor fuori da `atelier` → `{ "error": "...", "known": [...] }`.
 
+**Limite v0.** Il tool apre sempre la **home** della experience: non conosce i capitoli
+e non accetta una sezione. Per aprire un capitolo si appende il suo slug all'URL
+restituito — `.../atelier/` + `gap/` → `https://…/atelier/gap/?lang=fr`. Gli slug dei
+capitoli sono quelli del `PAGE_REGISTRY` di ogni app; esporli come argomento del tool
+è un'evoluzione, non un difetto di questa versione.
+
 ### `brand_tokens`
 
 Legge il design system pubblico di un sito dal suo CSS di produzione: colori per
