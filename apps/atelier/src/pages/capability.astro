@@ -4,10 +4,35 @@ import AtelierNavigation from '../components/AtelierNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
+import TelemetryPanel from '../components/TelemetryPanel.astro';
+import { MCP_TRANSCRIPT, MCP_TRANSCRIPT_DATE } from '../data/mcp-transcript';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+// Both proofs — the self-measuring deck and the MCP server — were built on
+// 2026-09-14, the same day: one day of work, so the kicker says one day.
+const PROOF_KICKER = {
+  en: 'Proof · v0 built in 1 day',
+  it: 'Prova · v0 costruita in 1 giorno',
+  fr: 'Preuve · v0 construite en 1 jour',
+};
+
+// The transcript is captured verbatim (src/data/mcp-transcript.ts). On a slide it
+// is folded the way a terminal folds it — the first lines, clipped to the column
+// width, and a count of what is folded away. Nothing is rewritten.
+const FOLD_LINES = 3;
+const FOLD_CHARS = 58;
+const transcript = MCP_TRANSCRIPT.map((line) => {
+  const all = line.text.split('\n');
+  const shown = (line.role === 'tool' ? all.slice(0, FOLD_LINES) : all).map((l) =>
+    l.length > FOLD_CHARS ? l.slice(0, FOLD_CHARS - 1) + '…' : l,
+  );
+  return { ...line, shown, folded: all.length - shown.length };
+});
 
 // The eight skins. Accents are the brand hues lightened for AA (≥4.5:1) on the
 // dark loom surface, the same tints the opening wall uses (raw UniCredit /
@@ -28,15 +53,17 @@ const skins = [
 //   Firefly Image backdrops: MIM 23 · Isybank 17 · UniCredit 10 · this deck 3 = 53
 //   Firefly Video clips: MIM 3 · UniCredit 2 · Isybank 2 · this deck 1 = 8
 //   Photoshop API (Remove Background): UniCredit 1 (the only stock portrait in view)
+// Card 01 also names Firefly Custom Models: private per-brand model, public beta,
+// ~1 hour of training (Adobe Firefly public beta, as stated on 2026-09-14).
 const adobeStack = [
   {
     n: '01',
     product: 'Adobe Firefly Image',
     title: { en: 'Backdrops on the brand palette', it: 'Sfondi sulla palette del brand', fr: 'Fonds sur la palette de la marque' },
     body: {
-      en: '53 backdrops across four decks, this one included: prompt, model and seed recorded per image, one distinct image per slide, never a stock photo of the wrong brand.',
-      it: '53 sfondi in quattro deck, questo compreso: prompt, modello e seed registrati per ogni immagine, un’immagine diversa per slide, mai una foto stock del brand sbagliato.',
-      fr: '53 fonds sur quatre decks, celui-ci compris&nbsp;: prompt, modèle et seed consignés par image, une image distincte par slide, jamais une photo de stock de la mauvaise marque.',
+      en: '53 backdrops across four decks, this one included: prompt, model and seed recorded per image, one distinct image per slide. A private Custom Model per client brand is in public beta: about an hour of training.',
+      it: '53 sfondi in quattro deck, questo compreso: prompt, modello e seed registrati per ogni immagine, un’immagine diversa per slide. Un Custom Model privato sul brand del cliente è in beta pubblica: circa un’ora di training.',
+      fr: '53 fonds sur quatre decks, celui-ci compris&nbsp;: prompt, modèle et seed consignés par image, une image distincte par slide. Un Custom Model privé sur la marque du client est en bêta publique&nbsp;: environ une heure d’entraînement.',
     },
   },
   {
@@ -246,17 +273,17 @@ const consoleThreads = [
           <div class="loom-panel min-w-0 text-center">
             <T
               as="p"
-              en="Admin Console"
-              it="Admin Console"
-              fr="Admin Console"
+              en="Callable from Claude and Copilot"
+              it="Richiamabile da Claude e Copilot"
+              fr="Appelable depuis Claude et Copilot"
               class="loom-card-title mb-1.5"
               style="text-align: center;"
             />
             <T
               as="p"
-              en="Configures each experience at runtime, with no code."
-              it="Configura ogni esperienza a runtime, senza codice."
-              fr="Configure chaque expérience au runtime, sans code."
+              en="An MCP server and Agent Skills expose the engine where sellers already work; the Admin Console configures each experience at runtime."
+              it="Un server MCP e le Agent Skills espongono il motore dove i venditori già lavorano; l'Admin Console configura ogni esperienza a runtime."
+              fr="Un serveur MCP et les Agent Skills exposent le moteur là où les vendeurs travaillent déjà&nbsp;; l'Admin Console configure chaque expérience au runtime."
               class="loom-panel-body mx-auto mb-0"
               style="text-align: center;"
             />
@@ -482,6 +509,92 @@ const consoleThreads = [
           fr="Qui mène la réunion pilote l'expérience, sans toucher au code."
           class="cap-close text-[var(--color-avorio)]"
         />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: Proof — the deck measures itself (live telemetry) ── -->
+    <Slide id="slide-proof-telemetry" bg="primary" align="left" data-made-with="">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame">
+        <T
+          as="p"
+          en={PROOF_KICKER.en}
+          it={PROOF_KICKER.it}
+          fr={PROOF_KICKER.fr}
+          class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+        />
+        <T
+          as="h2"
+          en="This deck is watching itself"
+          it="Questo deck si guarda da solo"
+          fr="Ce deck s'observe lui-même"
+          class="slide-title text-[var(--ink-primary)] mb-4"
+          style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+        />
+        <T
+          as="p"
+          en="Every slide activation of this deck writes an anonymous event. Not a promise: the numbers below are from the deck you are looking at."
+          it="Ogni slide che si apre in questo deck scrive un evento anonimo. Non è una promessa: i numeri qui sotto arrivano dal deck che state guardando."
+          fr="Chaque slide ouverte dans ce deck écrit un événement anonyme. Ce n'est pas une promesse&nbsp;: les chiffres ci-dessous viennent du deck que vous regardez."
+          class="proof-lede mb-5"
+        />
+
+        <TelemetryPanel url={SUPABASE_URL} anonKey={SUPABASE_ANON_KEY} />
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 6: Proof — the engine called from inside Claude (MCP) ── -->
+    <Slide id="slide-proof-mcp" bg="secondary" align="left" data-made-with="">
+      <div slot="backdrop" class="loom-bg-soft absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-10 items-center">
+        <!-- Left: what the three tools do -->
+        <div class="min-w-0">
+          <T
+            as="p"
+            en={PROOF_KICKER.en}
+            it={PROOF_KICKER.it}
+            fr={PROOF_KICKER.fr}
+            class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+          />
+          <T
+            as="h2"
+            en="The engine, from inside Claude"
+            it="Il motore, da dentro Claude"
+            fr="Le moteur, depuis Claude"
+            class="slide-title text-[var(--ink-primary)] mb-4"
+            style="font-size: clamp(1.7rem, 2.8vw, 2.5rem);"
+          />
+          <T
+            as="p"
+            en="Three tools, one MCP server. A seller lists the live experiences, opens one in the right cut and language, or reads a client's design system from its production CSS, without leaving the assistant they already use."
+            it="Tre strumenti, un server MCP. Un venditore elenca le esperienze online, ne apre una nel taglio e nella lingua giusti, oppure legge il design system di un cliente dal suo CSS di produzione, senza uscire dall'assistente che usa già."
+            fr="Trois outils, un serveur MCP. Un vendeur liste les expériences en ligne, en ouvre une dans la coupe et la langue voulues, ou lit le design system d'un client depuis son CSS de production, sans quitter l'assistant qu'il utilise déjà."
+            class="proof-lede mb-5"
+          />
+          <p class="atl-label proof-cmd">claude mcp add atelier <span aria-hidden="true">—</span> packages/mcp-atelier</p>
+        </div>
+
+        <!-- Right: the captured session, folded like a terminal folds it -->
+        <div class="proof-transcript loom-panel min-w-0">
+          <div class="loom-panel-head">
+            <p class="loom-tag">Claude Code · MCP «atelier»</p>
+            <p class="atl-label">{MCP_TRANSCRIPT_DATE}</p>
+          </div>
+          <ol class="proof-lines">
+            {transcript.map((line) => (
+              <li class={`proof-line proof-line--${line.role}`}>
+                {line.role === 'tool' && <p class="proof-tool">{line.tool}</p>}
+                {line.role === 'tool' ? (
+                  <pre class="proof-mono">{line.shown.join('\n')}{line.folded > 0 ? `\n… (+${line.folded})` : ''}</pre>
+                ) : (
+                  <p class="proof-say">{line.text}</p>
+                )}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </Slide>
 

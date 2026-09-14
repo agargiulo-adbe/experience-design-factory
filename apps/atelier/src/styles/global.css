@@ -570,3 +570,74 @@ html[data-lang="fr"] [data-lang-en], html[data-lang="fr"] [data-lang-it] { displ
 }
 .atl-section-select:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 .atl-section-select option { background: var(--color-fuliggine); color: var(--color-avorio); }
+
+
+/* ═══ 2026-09-14 tre mosse ═══
+   Le due prove della sezione «The capability»: il pannello che legge la
+   telemetria del deck su se stesso e la trascrizione della sessione MCP.
+   Solo rgba/token espliciti (champagne=201,169,106): il parser di contrasto
+   dell'audit non legge oklab()/color-mix(). */
+
+.proof-lede {
+  color: var(--color-sabbia-200);
+  font-size: clamp(0.98rem, 1.1vw, 1.1rem);
+  line-height: 1.6;
+}
+
+/* — Telemetria: quattro tessere, poi lo spaccato per taglio e per lingua — */
+.proof-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+.proof-tile { text-align: center; padding: 1rem 0.7rem; min-width: 0; }
+/* Una riga di metriche: le tessere si separano con una filettatura, non con un vuoto. */
+.proof-tile + .proof-tile { border-left: 1px solid var(--line-subtle); }
+.proof-tile .loom-figure { font-size: clamp(1.9rem, 2.6vw, 2.5rem); margin-bottom: 0.4rem; }
+/* La tessera «slide più vista» porta un nome, non un numero: scende di corpo e va a capo. */
+.proof-tile--text .loom-figure { font-size: clamp(1.25rem, 1.7vw, 1.6rem); line-height: 1.2; overflow-wrap: anywhere; }
+.proof-tile .atl-label { color: var(--color-sabbia-200); }
+.proof-split {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem;
+  margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid var(--line-subtle);
+}
+.proof-split-row { display: flex; align-items: baseline; gap: 0.6rem; margin: 0; max-width: none; }
+.proof-split-value {
+  font-size: 0.95rem; line-height: 1.4; color: var(--color-avorio);
+  font-variant-numeric: tabular-nums;
+}
+.proof-foot { color: var(--color-sabbia-300); font-size: 0.85rem; line-height: 1.5; margin-top: 0.9rem; max-width: none; }
+@media (max-width: 767px) {
+  .proof-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .proof-tile:nth-child(odd) { border-left: 0; }
+  .proof-split { grid-template-columns: 1fr; }
+}
+
+/* — Trascrizione MCP: cornice champagne, come il pannello demo — */
+.proof-transcript { border-color: rgba(201, 169, 106, 0.45); }
+.proof-lines { display: flex; flex-direction: column; gap: 0.7rem; list-style: none; margin: 0; padding: 0; }
+.proof-line { min-width: 0; }
+.proof-line--user { border-left: 2px solid rgba(201, 169, 106, 0.55); padding-left: 0.7rem; }
+.proof-tool {
+  display: inline-block; margin: 0 0 0.3rem; max-width: none;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-carbone); background: var(--color-champagne);
+  padding: 0.1rem 0.5rem; border-radius: 2px;
+}
+.proof-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem; line-height: 1.5; color: var(--color-sabbia-200);
+  white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; max-width: none;
+}
+.proof-line .proof-say { font-size: 0.95rem; line-height: 1.5; margin: 0; max-width: none; }
+.proof-line--user .proof-say { color: var(--color-avorio); }
+.proof-line--assistant .proof-say { color: var(--color-sabbia-200); }
+/* Il comando di installazione: un'etichetta, ma in tondo e in mono — non si urla. */
+.proof-cmd {
+  text-transform: none; letter-spacing: 0.02em; font-weight: 500;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem; color: var(--color-sabbia-200);
+}
+/* 1280×800: si stringono gli spazi, mai il corpo del testo. */
+@media (max-height: 820px) and (min-width: 768px) {
+  .proof-lines { gap: 0.5rem; }
+  .proof-mono { line-height: 1.4; }
+  .proof-tile { padding: 0.6rem 0.6rem; }
+  .proof-split { margin-top: 0.7rem; padding-top: 0.6rem; }
+}

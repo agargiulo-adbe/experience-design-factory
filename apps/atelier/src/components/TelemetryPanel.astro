@@ -1,0 +1,147 @@
+---
+/**
+ * The deck reading its own telemetry: four tiles (sessions, slides seen, median
+ * dwell, most seen slide) plus the split by cut and by language, read live from
+ * the `atelier_slide_stats` RPC. `?telemetry=mock` swaps in three sample rows and
+ * says so in the status line, so the slide still demonstrates itself offline.
+ */
+interface Props { url: string; anonKey: string }
+const { url, anonKey } = Astro.props as Props;
+
+const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boolean }> = [
+  { k: 'sessions', en: 'Sessions',        it: 'Sessioni',            fr: 'Sessions' },
+  { k: 'slides',   en: 'Slides seen',     it: 'Slide viste',         fr: 'Slides vues' },
+  { k: 'dwell',    en: 'Median dwell',    it: 'Permanenza mediana',  fr: 'Temps médian' },
+  { k: 'top',      en: 'Most seen slide', it: 'Slide più vista',     fr: 'Slide la plus vue', text: true },
+];
+---
+<div class="proof-telemetry loom-panel" data-telemetry-panel data-url={url} data-key={anonKey} aria-live="polite">
+  <div class="loom-panel-head">
+    <p class="loom-tag">
+      <span data-lang-en>Live · this deck, right now</span>
+      <span data-lang-it>Dal vivo · questo deck, adesso</span>
+      <span data-lang-fr>En direct · ce deck, maintenant</span>
+    </p>
+    <p class="atl-label" data-telemetry-status>—</p>
+  </div>
+
+  <div class="proof-tiles">
+    {tiles.map((t) => (
+      <div class={t.text ? 'proof-tile proof-tile--text' : 'proof-tile'}>
+        <p class="loom-figure" data-telemetry={t.k}>—</p>
+        <p class="atl-label">
+          <span data-lang-en>{t.en}</span>
+          <span data-lang-it>{t.it}</span>
+          <span data-lang-fr>{t.fr}</span>
+        </p>
+      </div>
+    ))}
+  </div>
+
+  <div class="proof-split">
+    <p class="proof-split-row">
+      <span class="atl-label">
+        <span data-lang-en>By cut</span>
+        <span data-lang-it>Per taglio</span>
+        <span data-lang-fr>Par coupe</span>
+      </span>
+      <span class="proof-split-value" data-telemetry="bycut">—</span>
+    </p>
+    <p class="proof-split-row">
+      <span class="atl-label">
+        <span data-lang-en>By language</span>
+        <span data-lang-it>Per lingua</span>
+        <span data-lang-fr>Par langue</span>
+      </span>
+      <span class="proof-split-value" data-telemetry="bylang">—</span>
+    </p>
+  </div>
+
+  <p class="proof-foot">
+    <span data-lang-en>Anonymous: a random id per tab, no cookies, no personal data. Switch it off with ?telemetry=0.</span>
+    <span data-lang-it>Anonima: un id casuale per scheda, niente cookie, niente dati personali. Si spegne con ?telemetry=0.</span>
+    <span data-lang-fr>Anonyme&nbsp;: un identifiant aléatoire par onglet, ni cookie ni donnée personnelle. Désactivable avec ?telemetry=0.</span>
+  </p>
+</div>
+
+<script>
+  type Row = { route: string; slide_id: string; cut: string; lang: string; views: number; sessions: number; median_dwell_ms: number };
+
+  // Three sample rows for `?telemetry=mock`: the panel demonstrates itself even
+  // where the RPC is unreachable, and the status line says the data is a sample.
+  const MOCK: Row[] = [
+    { route: 'atelier', slide_id: 'slide-cover', cut: 'full', lang: 'en', views: 40, sessions: 28, median_dwell_ms: 9000 },
+    { route: 'capability', slide_id: 'slide-toggle-demo', cut: 'full', lang: 'en', views: 31, sessions: 24, median_dwell_ms: 42000 },
+    { route: 'plan', slide_id: 'slide-roadmap', cut: 'asks', lang: 'fr', views: 12, sessions: 9, median_dwell_ms: 38000 },
+  ];
+
+  const panel = () => document.querySelector<HTMLElement>('[data-telemetry-panel]');
+  const isMock = () => new URLSearchParams(location.search).get('telemetry') === 'mock';
+
+  async function load(el: HTMLElement): Promise<Row[] | null> {
+    if (isMock()) return MOCK;
+    const url = (el.dataset.url || '').replace(/\/$/, '');
+    const key = el.dataset.key || '';
+    if (!url || !key) return null;
+    try {
+      const r = await fetch(url + '/rest/v1/rpc/atelier_slide_stats', {
+        method: 'POST',
+        headers: { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+      return r.ok ? ((await r.json()) as Row[]) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // views summed per key, rendered as «full 71 · asks 12» — biggest first.
+  function tally(rows: Row[], pick: (r: Row) => string): string {
+    const by = new Map<string, number>();
+    for (const r of rows) by.set(pick(r), (by.get(pick(r)) ?? 0) + r.views);
+    return [...by.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `${k} ${v}`)
+      .join(' · ');
+  }
+
+  function render(el: HTMLElement, rows: Row[] | null) {
+    const set = (k: string, v: string) => {
+      const n = el.querySelector<HTMLElement>(`[data-telemetry="${k}"]`);
+      if (n) n.textContent = v;
+    };
+    const status = el.querySelector<HTMLElement>('[data-telemetry-status]');
+    if (!rows || !rows.length) {
+      if (status) status.textContent = rows ? 'no data yet' : 'offline';
+      return;
+    }
+    const bySlide = new Map<string, number>();
+    const dwell: number[] = [];
+    let maxSessions = 0;
+    for (const r of rows) {
+      const key = r.route + '/' + r.slide_id;
+      bySlide.set(key, (bySlide.get(key) ?? 0) + r.views);
+      dwell.push(r.median_dwell_ms);
+      // sessions are already distinct per row; the widest row approximates the deck total
+      maxSessions = Math.max(maxSessions, r.sessions);
+    }
+    dwell.sort((a, b) => a - b);
+    const top = [...bySlide.entries()].sort((a, b) => b[1] - a[1])[0];
+    set('sessions', String(maxSessions));
+    set('slides', String(bySlide.size));
+    set('dwell', Math.round(dwell[Math.floor(dwell.length / 2)] / 1000) + ' s');
+    set('top', top ? top[0].split('/')[1].replace('slide-', '') : '—');
+    set('bycut', tally(rows, (r) => r.cut));
+    set('bylang', tally(rows, (r) => r.lang));
+    if (status) status.textContent = isMock() ? 'sample data' : 'live';
+  }
+
+  function run() {
+    const el = panel();
+    if (!el) return;
+    load(el).then((rows) => render(el, rows));
+  }
+
+  run();
+  document.addEventListener('astro:page-load', run);
+</script>
