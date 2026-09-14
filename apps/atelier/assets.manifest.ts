@@ -48,4 +48,18 @@ export const assets: AssetSlot[] = [
     503,
     'A single pool of warm spotlight on an empty dark stage, haze in the beam.',
   ),
+  // «The gap» cover — the weave with one narrow gap: what buyers want and nobody weaves.
+  loom(
+    'bg-gap',
+    'a wide dark loom seen from above with one narrow gap where the golden threads stop and the warm darkness shows through, soft raking light, generous empty dark space',
+    504,
+    'A loom with one gap in the golden threads, warm darkness showing through.',
+  ),
+  // «Three moves» cover — the threads leaving the loom, together, toward the glow.
+  loom(
+    'bg-moves',
+    'three golden threads of light leaving a dark loom and moving forward together toward a distant warm glow, soft haze, generous empty dark space',
+    505,
+    'Three golden threads moving forward together toward a warm glow.',
+  ),
 ];
