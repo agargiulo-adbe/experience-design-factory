@@ -113,8 +113,6 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'capability',     route: '/experience-design-factory/atelier/capability/' },
     { name: 'gap',            route: '/experience-design-factory/atelier/gap/' },
     { name: 'moves',          route: '/experience-design-factory/atelier/moves/' },
-    { name: 'multiplication', route: '/experience-design-factory/atelier/multiplication/' },
-    { name: 'frontiers',      route: '/experience-design-factory/atelier/frontiers/' },
     { name: 'plan',           route: '/experience-design-factory/atelier/plan/' },
     { name: 'asks',           route: '/experience-design-factory/atelier/asks/' },
     { name: 'closing',        route: '/experience-design-factory/atelier/closing/' },
