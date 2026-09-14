@@ -45,10 +45,22 @@ const { project, url, anonKey } = Astro.props as Props;
       if (d && s) current = { id: s.id || 'slide-' + d.index, index: d.index, since: performance.now(), pathname: location.pathname };
     };
 
+    // Il taglio vive nell'URL solo finché non si cambia sezione: la navigazione SPA
+    // perde il `?s=`, ma il runtime del gating lo tiene appuntato alla scheda. Senza
+    // questo ripiego ogni riga dopo la prima sezione sarebbe marcata 'full'.
+    const searchForCut = () => {
+      if (new URLSearchParams(location.search).has('s')) return location.search;
+      try {
+        const pinned = sessionStorage.getItem('edf-solutions-' + project + ':link');
+        if (pinned) { const ids = JSON.parse(pinned); if (Array.isArray(ids) && ids.length) return '?s=' + ids.join(','); }
+      } catch { /* storage bloccato */ }
+      return '';
+    };
+
     const send = (dwellMs: number) => {
       if (!current || mode !== 'on' || !key || !endpoint.startsWith('https://')) return;
       const lang = document.documentElement.getAttribute('data-lang') || 'en';
-      const ev = buildEvent({ project, pathname: current.pathname, search: location.search, slideId: current.id, slideIndex: current.index, lang, sessionId, dwellMs });
+      const ev = buildEvent({ project, pathname: current.pathname, search: searchForCut(), slideId: current.id, slideIndex: current.index, lang, sessionId, dwellMs });
       try {
         fetch(endpoint, {
           method: 'POST', keepalive: true,

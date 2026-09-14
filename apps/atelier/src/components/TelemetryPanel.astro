@@ -82,6 +82,26 @@ const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boole
   const panel = () => document.querySelector<HTMLElement>('[data-telemetry-panel]');
   const isMock = () => new URLSearchParams(location.search).get('telemetry') === 'mock';
 
+  // Lo stato è testo visibile come il resto del pannello: si scrive nelle tre lingue
+  // e il CSS globale mostra quella attiva, così il chip cambia con il toggle senza
+  // che questo script debba sapere che lingua è in corso.
+  const STATUS = {
+    live:    { en: 'live',        it: 'dal vivo',           fr: 'en direct' },
+    offline: { en: 'offline',     it: 'offline',            fr: 'hors ligne' },
+    empty:   { en: 'no data yet', it: 'ancora nessun dato', fr: 'pas encore de données' },
+    sample:  { en: 'sample data', it: 'dati di esempio',    fr: 'données d’exemple' },
+  };
+
+  function setStatus(el: HTMLElement, k: keyof typeof STATUS) {
+    const node = el.querySelector<HTMLElement>('[data-telemetry-status]');
+    if (!node) return;
+    const s = STATUS[k];
+    node.innerHTML =
+      '<span data-lang-en>' + s.en + '</span>' +
+      '<span data-lang-it>' + s.it + '</span>' +
+      '<span data-lang-fr>' + s.fr + '</span>';
+  }
+
   async function load(el: HTMLElement): Promise<Row[] | null> {
     if (isMock()) return MOCK;
     const url = (el.dataset.url || '').replace(/\/$/, '');
@@ -118,9 +138,8 @@ const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boole
       const n = el.querySelector<HTMLElement>(`[data-telemetry="${k}"]`);
       if (n) n.textContent = v;
     };
-    const status = el.querySelector<HTMLElement>('[data-telemetry-status]');
     if (!rows || !rows.length) {
-      if (status) status.textContent = rows ? 'no data yet' : 'offline';
+      setStatus(el, rows ? 'empty' : 'offline');
       return;
     }
     const bySlide = new Map<string, number>();
@@ -141,7 +160,7 @@ const tiles: Array<{ k: string; en: string; it: string; fr: string; text?: boole
     set('top', top ? top[0].split('/')[1].replace('slide-', '') : '—');
     set('bycut', tally(rows, (r) => r.cut));
     set('bylang', tally(rows, (r) => r.lang));
-    if (status) status.textContent = isMock() ? 'sample data' : 'live';
+    setStatus(el, isMock() ? 'sample' : 'live');
   }
 
   function run() {
