@@ -194,11 +194,26 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
   const inner = (slide.querySelector('.slide-inner') as HTMLElement) || slide;
   const bandTop = 0.30 * H, bandBot = 0.70 * H;
 
+  // Visually-hidden text (the `.sr-only` pattern: 1×1 box + `clip: rect(0,0,0,0)`) is
+  // read by assistive tech but never painted. Its inline children still get a real
+  // layout rect (e.g. a 267px-wide FR "(s’ouvre dans un nouvel onglet)" crossing the
+  // ↗ glyph of a card), so without this guard check (e) reports a collision nobody
+  // can see. Anything under a zero-clip ancestor is out of every measurement.
+  const clippedAway = (el: Element) => {
+    let n: Element | null = el;
+    while (n && n !== inner) {
+      const cs = getComputedStyle(n as HTMLElement);
+      if (cs.clip === 'rect(0px, 0px, 0px, 0px)') return true;
+      n = n.parentElement;
+    }
+    return false;
+  };
   const vis = (el: Element) => {
     const cs = getComputedStyle(el as HTMLElement);
     if (cs.display === 'none' || cs.visibility === 'hidden' || parseFloat(cs.opacity) < 0.05) return false;
     const r = el.getBoundingClientRect();
-    return r.width > 2 && r.height > 2;
+    if (!(r.width > 2 && r.height > 2)) return false;
+    return !clippedAway(el);
   };
   // A HowItWorks region that is still collapsed (aria-hidden) is excluded; once the
   // trigger expands it (aria-hidden removed) its content IS measured like any other.

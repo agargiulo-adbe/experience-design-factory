@@ -9,7 +9,7 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// The seven skins. Accents are the brand hues lightened for AA (≥4.5:1) on the
+// The eight skins. Accents are the brand hues lightened for AA (≥4.5:1) on the
 // dark loom surface, the same tints the opening wall uses (raw UniCredit /
 // Ferrari / FS reds and the MIM institutional blue fall below 4.5:1 on fuliggine).
 const skins = [
@@ -20,6 +20,55 @@ const skins = [
   { name: 'Agos',      accent: '#2BC2CE' },
   { name: 'Eni',       accent: '#FFCE00' },
   { name: 'MIM',       accent: '#6FA8FF' },
+  { name: 'Isybank',   accent: '#26E5AE' },
+];
+
+// «Made with Adobe» — what actually builds the assets of every experience today.
+// Counts verified on 2026-09-14 in the provenance files of each app:
+//   Firefly Image backdrops: MIM 23 · Isybank 17 · UniCredit 10 · this deck 3 = 53
+//   Firefly Video clips: MIM 3 · UniCredit 2 · Isybank 2 · this deck 1 = 8
+//   Photoshop API (Remove Background): UniCredit 1 (the only stock portrait in view)
+const adobeStack = [
+  {
+    n: '01',
+    product: 'Adobe Firefly Image',
+    title: { en: 'Backdrops on the brand palette', it: 'Sfondi sulla palette del brand', fr: 'Fonds sur la palette de la marque' },
+    body: {
+      en: '53 backdrops across four decks, this one included: prompt, model and seed recorded per image, one distinct image per slide, never a stock photo of the wrong brand.',
+      it: '53 sfondi in quattro deck, questo compreso: prompt, modello e seed registrati per ogni immagine, un’immagine diversa per slide, mai una foto stock del brand sbagliato.',
+      fr: '53 fonds sur quatre decks, celui-ci compris&nbsp;: prompt, modèle et seed consignés par image, une image distincte par slide, jamais une photo de stock de la mauvaise marque.',
+    },
+  },
+  {
+    n: '02',
+    product: 'Adobe Firefly Video',
+    title: { en: 'Clips that loop without a seam', it: 'Clip che girano senza stacco', fr: 'Des clips qui bouclent sans raccord' },
+    body: {
+      en: 'Eight five-second clips for covers and closings. A script dissolves the tail into the head and measures the seam in decibels, so the loop never jumps.',
+      it: 'Otto clip da cinque secondi per copertine e chiusure. Uno script dissolve la coda sulla testa e misura il giro in decibel: il loop non salta.',
+      fr: 'Huit clips de cinq secondes pour couvertures et fins. Un script fond la fin dans le début et mesure le raccord en décibels&nbsp;: la boucle ne saute jamais.',
+    },
+  },
+  {
+    n: '03',
+    product: 'Adobe Photoshop API',
+    title: { en: 'Retouch where it shows', it: 'Ritocco dove si vede', fr: 'Retouche là où ça se voit' },
+    body: {
+      en: 'Remove Background cut out the one stock portrait that was actually in view and set it on a brand surface; provenance records it as a derivative of a licensed original.',
+      it: 'Remove Background ha scontornato l’unico ritratto stock davvero in vista e l’ha posato su una superficie di brand; la provenienza lo registra come derivato di un originale su licenza.',
+      fr: 'Remove Background a détouré le seul portrait de stock réellement visible et l’a posé sur une surface de marque&nbsp;; la provenance l’enregistre comme dérivé d’un original sous licence.',
+    },
+  },
+  {
+    n: '04',
+    product: 'Provenance · Content Credentials',
+    title: { en: 'A credit on every slide', it: 'Un credito su ogni slide', fr: 'Un crédit sur chaque slide' },
+    body: {
+      en: 'Bottom right, each slide names the Adobe product that made its asset, read from provenance, not typed by hand. Firefly signs its output; the build crops and converts, so the shipped file points to the record instead of carrying the signature.',
+      it: 'In basso a destra ogni slide dice quale prodotto Adobe ha fatto il suo asset, letto dalla provenienza, non scritto a mano. Firefly firma ciò che genera; la build ritaglia e converte, quindi il file spedito rimanda al registro invece di portare la firma.',
+      fr: 'En bas à droite, chaque slide nomme le produit Adobe qui a fait son asset, lu dans la provenance, pas saisi à la main. Firefly signe ce qu’il génère&nbsp;; la build recadre et convertit, le fichier livré renvoie donc au registre au lieu de porter la signature.',
+    },
+  },
 ];
 // Fan geometry: one warp on the left fanning into one weft per skin.
 const fanY = skins.map((_, i) => 8 + i * (84 / (skins.length - 1)));
@@ -43,13 +92,19 @@ const demoToggles = [
   { id: 'collab',  en: 'Real-Time CDP Collaboration',         it: 'Real-Time CDP Collaboration',         fr: 'Real-Time CDP Collaboration' },
 ];
 
-// The Admin Console rows — authored as woven "threads": one engine, three controls.
+// The Admin Console rows — authored as woven "threads": one engine, four controls.
 const consoleThreads = [
   {
     en: 'Sections on and off', it: 'Sezioni accese o spente', fr: 'Sections actives ou non',
     body_en: 'One link shares a version of the experience tuned to a specific audience.',
     body_it: "Un link condivide una versione dell'esperienza tarata su un pubblico preciso.",
     body_fr: "Un lien partage une version de l'expérience réglée pour un public précis.",
+  },
+  {
+    en: 'Chapters and single slides', it: 'Capitoli e singole slide', fr: 'Chapitres et slides isolées',
+    body_en: 'Switch a whole chapter off and keep one slide of it: arrows and links skip what is hidden.',
+    body_it: 'Spegni un intero capitolo e tieni una sua slide: frecce e link scavalcano ciò che è nascosto.',
+    body_fr: 'Éteignez un chapitre entier en gardant une de ses slides&nbsp;: flèches et liens sautent ce qui est masqué.',
   },
   {
     en: 'Demo media per slide', it: 'Media demo per slide', fr: 'Médias démo par slide',
@@ -128,9 +183,9 @@ const consoleThreads = [
       <div class="atl-frame flex flex-col items-center">
         <T
           as="p"
-          en="One core, seven skins"
-          it="Un cuore, sette skin"
-          fr="Un cœur, sept habillages"
+          en="One core, eight skins"
+          it="Un cuore, otto skin"
+          fr="Un cœur, huit habillages"
           class="slide-eyebrow text-center text-[var(--accent-primary)] mb-2"
         />
         <T
@@ -171,9 +226,9 @@ const consoleThreads = [
           />
           <T
             as="p"
-            en="Immersive deck, trilingual i18n, quality gates and motion, shared by all seven."
-            it="Deck immersivo, i18n trilingue, quality gate e motion, condivisi da tutte e sette."
-            fr="Deck immersif, i18n trilingue, contrôles qualité et motion, partagés par les sept."
+            en="Immersive deck, trilingual i18n, quality gates, the Adobe × brand signature and the made-with credit, shared by all eight."
+            it="Deck immersivo, i18n trilingue, quality gate, la firma Adobe × brand e il credito «creato con», condivisi da tutte e otto."
+            fr="Deck immersif, i18n trilingue, contrôles qualité, la signature Adobe × marque et le crédit «&nbsp;créé avec&nbsp;», partagés par les huit."
             class="loom-panel-body mx-auto mb-0"
             style="text-align: center;"
           />
@@ -187,7 +242,7 @@ const consoleThreads = [
           fr="Fondations"
           class="atl-label cap-layer-label mt-4 mb-2"
         />
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-3 min-w-0">
+        <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-3 min-w-0">
           <div class="loom-panel min-w-0 text-center">
             <T
               as="p"
@@ -199,9 +254,9 @@ const consoleThreads = [
             />
             <T
               as="p"
-              en="Configures each experience at runtime."
-              it="Configura ogni esperienza a runtime."
-              fr="Configure chaque expérience au runtime."
+              en="Configures each experience at runtime, with no code."
+              it="Configura ogni esperienza a runtime, senza codice."
+              fr="Configure chaque expérience au runtime, sans code."
               class="loom-panel-body mx-auto mb-0"
               style="text-align: center;"
             />
@@ -209,21 +264,78 @@ const consoleThreads = [
           <div class="loom-panel min-w-0 text-center">
             <T
               as="p"
-              en="Design tokens &amp; assets"
-              it="Design token &amp; asset"
-              fr="Tokens de design &amp; assets"
+              en="Design tokens, read from the site"
+              it="Design token, letti dal sito"
+              fr="Tokens de design, lus sur le site"
               class="loom-card-title mb-1.5"
               style="text-align: center;"
             />
             <T
               as="p"
-              en="One contract maps each brand's palette, type and imagery."
-              it="Un contratto unico per palette, font e immagini di ogni brand."
-              fr="Un seul contrat pour palette, typo et images de chaque marque."
+              en="One command reads the client's production CSS and counts: the colours it uses most are its design system."
+              it="Un comando legge il CSS di produzione del cliente e conta: i colori più usati sono il suo design system."
+              fr="Une commande lit le CSS de production du client et compte&nbsp;: ses couleurs les plus fréquentes sont son design system."
               class="loom-panel-body mx-auto mb-0"
               style="text-align: center;"
             />
           </div>
+          <div class="loom-panel min-w-0 text-center">
+            <T
+              as="p"
+              en="Build chain, with provenance"
+              it="Catena di build, con provenienza"
+              fr="Chaîne de build, avec provenance"
+              class="loom-card-title mb-1.5"
+              style="text-align: center;"
+            />
+            <T
+              as="p"
+              en="Firefly images and clips, licensed stock, Photoshop retouch: every asset lands with its record."
+              it="Immagini e clip Firefly, stock su licenza, ritocco Photoshop: ogni asset arriva con il suo registro."
+              fr="Images et clips Firefly, stock sous licence, retouche Photoshop&nbsp;: chaque asset arrive avec sa fiche."
+              class="loom-panel-body mx-auto mb-0"
+              style="text-align: center;"
+            />
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2b: Made with Adobe — the creative chain behind every asset ── -->
+    <Slide id="slide-adobe-stack" bg="primary" align="left">
+      <div slot="backdrop" class="loom-bg absolute inset-0" aria-hidden="true"></div>
+
+      <div class="atl-frame">
+        <T
+          as="p"
+          en="Made with Adobe"
+          it="Fatto con Adobe"
+          fr="Fait avec Adobe"
+          class="slide-eyebrow text-[var(--accent-primary)] mb-2"
+          data-reveal
+        />
+        <T
+          as="h2"
+          en="The assets are made with the products the story sells"
+          it="Gli asset sono fatti con i prodotti che la storia vende"
+          fr="Les assets sont faits avec les produits que le récit vend"
+          class="slide-title text-[var(--ink-primary)] mb-5"
+          style="font-size: clamp(1.65rem, 2.5vw, 2.3rem); max-width: none;"
+          data-reveal
+          data-reveal-delay="0.06"
+        />
+
+        <div class="cap-stack-grid w-full" data-reveal data-reveal-delay="0.14">
+          {adobeStack.map((s) => (
+            <article class="loom-card cap-stack-card">
+              <div class="cap-stack-head">
+                <span class="loom-mark" aria-hidden="true">{s.n}</span>
+                <p class="loom-tag cap-stack-product">{s.product}</p>
+              </div>
+              <T as="h3" en={s.title.en} it={s.title.it} fr={s.title.fr} class="loom-card-title" />
+              <T as="p" en={s.body.en} it={s.body.it} fr={s.body.fr} class="loom-card-body" style="margin-bottom: 0;" />
+            </article>
+          ))}
         </div>
       </div>
     </Slide>
@@ -413,6 +525,25 @@ const consoleThreads = [
     border-color: rgba(201, 169, 106, 0.55);
     align-items: center;
     padding-top: 1.15rem; padding-bottom: 1.15rem;
+  }
+
+  /* Made with Adobe: four product cards, two by two; the product name is the tag. */
+  #slide-adobe-stack .cap-stack-grid {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem;
+  }
+  @media (max-width: 767px) { #slide-adobe-stack .cap-stack-grid { grid-template-columns: 1fr; } }
+  #slide-adobe-stack .cap-stack-card { padding: 1.2rem 1.35rem 1.1rem; }
+  #slide-adobe-stack .cap-stack-head {
+    display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.75rem;
+  }
+  #slide-adobe-stack .cap-stack-head .loom-mark { margin-bottom: 0; }
+  #slide-adobe-stack .cap-stack-product { font-size: 0.8rem; max-width: none; }
+  #slide-adobe-stack .loom-card-title { margin-bottom: 0.45rem; }
+  /* 1280×800 leaves 464px: tighten spacing only, never type. */
+  @media (max-height: 820px) and (min-width: 768px) {
+    #slide-adobe-stack .cap-stack-card { padding: 0.9rem 1.1rem 0.85rem; }
+    #slide-adobe-stack .cap-stack-head { margin-bottom: 0.45rem; }
+    #slide-adobe-stack .cap-stack-grid { gap: 0.6rem; }
   }
 
   /* Demo panel: champagne hairline frame so the live area reads as "the tool". */

@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AtelierNavigation from '../components/AtelierNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { Picture } from 'astro:assets';
-import { mediaProps } from '../../assets.index';
 
-// Real 1280×720 cover screenshots of the live experiences (src/assets/wall/*.webp).
+// Real 1280×720 cover screenshots of the live experiences (src/assets/wall/*.webp),
+// captured 2026-09-14 from the built dist of every app.
 import shotMaxmara from '../assets/wall/generazioni-maxmara.webp';
 import shotUnicredit from '../assets/wall/unicredit-engagement.webp';
 import shotFerrari from '../assets/wall/ferrari-racing.webp';
@@ -17,12 +17,18 @@ import shotFs from '../assets/wall/trenitalia-connessioni.webp';
 import shotAgos from '../assets/wall/agos-trait-dunion.webp';
 import shotEni from '../assets/wall/eni-orbita.webp';
 import shotMim from '../assets/wall/mim-alfabeti.webp';
-import shotHub from '../assets/wall/hub.webp';
+import shotIsybank from '../assets/wall/isybank-momento.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
+
+// Cover clip: Adobe Firefly Video, stitched with `pnpm loop:seamless` so the loop has no
+// seam. The MP4 lives on the GitHub Release `media` (git-ignored locally); the poster —
+// the first frame of the stitched clip — ships in /public/media.
+const COVER_VIDEO = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/atelier-cover.loop.mp4';
+const coverPoster = `${base.replace(/\/?$/, '/')}media/atelier-cover.poster.jpg`;
 
 interface Tri { en: string; it: string; fr: string }
 interface WallTile {
@@ -64,9 +70,9 @@ const wall: WallTile[] = [
     focus: '50% 40%',
     alt: 'Engagement Unlimited, Adobe × UniCredit: the cover on midnight blue, the title in Playfair Display and the six-chapter timeline.',
     tag: {
-      en: 'Six chapters, one customer story',
-      it: 'Sei capitoli, una sola storia cliente',
-      fr: 'Six chapitres, une seule histoire client',
+      en: 'Seven chapters, one customer story',
+      it: 'Sette capitoli, una sola storia cliente',
+      fr: 'Sept chapitres, une seule histoire client',
     },
   },
   {
@@ -132,7 +138,7 @@ const wall: WallTile[] = [
     url: `${LIVE}/mim-alfabeti/`,
     shot: shotMim,
     focus: '50% 42%',
-    alt: 'La voce del Ministero, Adobe × Ministero dell’Istruzione e del Merito: the cover on deep blue with radiating light lines, generated with Adobe Firefly and signed with Content Credentials.',
+    alt: 'La voce del Ministero, Adobe × Ministero dell’Istruzione e del Merito: the cover on deep blue with radiating light lines, generated with Adobe Firefly.',
     tag: {
       en: 'How the Ministry speaks to its staff',
       it: 'Come il Ministero parla al personale',
@@ -140,17 +146,17 @@ const wall: WallTile[] = [
     },
   },
   {
-    kicker: 'Factory',
-    accent: 'var(--color-champagne)',
-    name: { en: 'The Platform', it: 'La Piattaforma', fr: 'La Plateforme' },
-    url: `${LIVE}/`,
-    shot: shotHub,
-    focus: '50% 30%',
-    alt: 'The Experience Design Factory hub: a dark landing page listing every live experience as a card.',
+    kicker: 'Isybank',
+    accent: '#26E5AE',
+    name: 'Il momento giusto',
+    url: `${LIVE}/isybank-momento/`,
+    shot: shotIsybank,
+    focus: '50% 40%',
+    alt: 'Il momento giusto, Adobe × Isybank: the cover on ink black with ribbons of blue and mint light, generated with Adobe Firefly.',
     tag: {
-      en: 'Console, hub and showcase in one engine',
-      it: 'Console, hub e showcase, un solo motore',
-      fr: 'Console, hub et showcase, un seul moteur',
+      en: 'The right moment, for a million people',
+      it: 'Il momento giusto, per un milione di persone',
+      fr: 'Le bon moment, pour un million de personnes',
     },
   },
 ];
@@ -163,14 +169,8 @@ const wall: WallTile[] = [
   <DeckContainer nextHref={href(base, '/method')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="loom-bg">
-        <SlideBackdrop
-          {...mediaProps('bg-atelier')}
-          imageClass="opacity-[0.14]"
-          scrim="bg-[var(--color-carbone)]/90"
-        />
-      </div>
+    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="clip">
+      <LoopVideo slot="backdrop" src={COVER_VIDEO} poster={coverPoster} scrim="loom-scrim" opacity={0.75} />
 
       <div class="overture-cover atl-frame" data-reveal>
         <T
@@ -182,36 +182,37 @@ const wall: WallTile[] = [
         />
         <T
           as="h1"
-          en="Seven experiences for seven organisations,<br/>built by one person working with AI."
-          it="Sette esperienze per sette organizzazioni,<br/>costruite da una persona che lavora con l’AI."
-          fr="Sept expériences pour sept organisations,<br/>construites par une personne qui travaille avec l’IA."
+          en="Eight experiences for eight organisations,<br/>built by one person working with AI."
+          it="Otto esperienze per otto organizzazioni,<br/>costruite da una persona che lavora con l’AI."
+          fr="Huit expériences pour huit organisations,<br/>construites par une personne qui travaille avec l’IA."
           data-display
           class="overture-title slide-title text-center text-[var(--ink-primary)] mb-7 mx-auto"
         />
 
         <T
           as="p"
-          en="Live in production, each built in weeks. This deck runs on the same engine."
-          it="In produzione, ognuna costruita in poche settimane. Anche questo deck gira sullo stesso motore."
-          fr="En production, chacune montée en quelques semaines. Ce deck aussi tourne sur le même moteur."
+          en="Live in production, each built in weeks. This deck runs on the same engine, and its backdrops come out of Adobe Firefly like theirs."
+          it="In produzione, ognuna costruita in poche settimane. Questo deck gira sullo stesso motore, e i suoi sfondi escono da Adobe Firefly come i loro."
+          fr="En production, chacune montée en quelques semaines. Ce deck tourne sur le même moteur, et ses fonds sortent d’Adobe Firefly comme les leurs."
           class="atl-lede"
           data-reveal
           data-reveal-delay="0.12"
         />
 
-        <!-- Concept device: one warp fanning into the seven woven experiences (1 → 7). -->
+        <!-- Concept device: one warp fanning into the eight woven experiences (1 → 8). -->
         <div class="overture-loom mt-8" data-reveal data-reveal-delay="0.2" aria-hidden="true">
           <span class="overture-loom-cap overture-loom-cap--one">1</span>
           <svg class="overture-loom-svg" viewBox="0 0 480 120" preserveAspectRatio="none" role="presentation">
-            <line x1="6" y1="60" x2="474" y2="8" />
-            <line x1="6" y1="60" x2="474" y2="25" />
-            <line x1="6" y1="60" x2="474" y2="42" />
-            <line x1="6" y1="60" x2="474" y2="60" />
-            <line x1="6" y1="60" x2="474" y2="78" />
-            <line x1="6" y1="60" x2="474" y2="95" />
-            <line x1="6" y1="60" x2="474" y2="112" />
+            <line x1="6" y1="60" x2="474" y2="6" />
+            <line x1="6" y1="60" x2="474" y2="21" />
+            <line x1="6" y1="60" x2="474" y2="36" />
+            <line x1="6" y1="60" x2="474" y2="52" />
+            <line x1="6" y1="60" x2="474" y2="68" />
+            <line x1="6" y1="60" x2="474" y2="84" />
+            <line x1="6" y1="60" x2="474" y2="99" />
+            <line x1="6" y1="60" x2="474" y2="114" />
           </svg>
-          <span class="overture-loom-cap overture-loom-cap--many">7</span>
+          <span class="overture-loom-cap overture-loom-cap--many">8</span>
         </div>
 
         <T
@@ -245,9 +246,9 @@ const wall: WallTile[] = [
         <div class="wall-heading">
           <T
             as="p"
-            en="Seven live experiences"
-            it="Sette esperienze in produzione"
-            fr="Sept expériences en production"
+            en="Eight live experiences"
+            it="Otto esperienze in produzione"
+            fr="Huit expériences en production"
             class="slide-eyebrow text-[var(--accent-primary)] mb-4"
           />
           <T
@@ -259,6 +260,11 @@ const wall: WallTile[] = [
             data-reveal
             data-reveal-delay="0.08"
           />
+          <a href={`${LIVE}/`} target="_blank" rel="noopener" class="wall-hub-link no-underline" data-reveal data-reveal-delay="0.12">
+            <T en="The platform: hub, console, showcase" it="La piattaforma: hub, console, showcase" fr="La plateforme&nbsp;: hub, console, showcase" />
+            <span class="wall-ext-inline" aria-hidden="true">↗</span>
+            <T as="span" en=" (opens in a new tab)" it=" (si apre in una nuova scheda)" fr=" (s’ouvre dans un nouvel onglet)" class="sr-only" />
+          </a>
         </div>
 
         <div class="wall-grid" data-reveal data-reveal-delay="0.16">
@@ -324,9 +330,9 @@ const wall: WallTile[] = [
         />
         <T
           as="h2"
-          en="One person, working with AI, shipped seven client experiences in twelve weeks. This plan turns that way of working into a capability for fifty sellers, then a hundred."
-          it="Una persona, lavorando con l’AI, ha messo in produzione sette esperienze cliente in dodici settimane. Questo piano trasforma quel modo di lavorare in una capacità per cinquanta venditori, poi cento."
-          fr="Une personne, travaillant avec l’IA, a mis en production sept expériences client en douze semaines. Ce plan fait de cette façon de travailler un savoir-faire pour cinquante commerciaux, puis cent."
+          en="One person, working with AI, shipped eight client experiences in three months. This plan turns that way of working into a capability for fifty sellers, then a hundred."
+          it="Una persona, lavorando con l’AI, ha messo in produzione otto esperienze cliente in tre mesi. Questo piano trasforma quel modo di lavorare in una capacità per cinquanta venditori, poi cento."
+          fr="Une personne, travaillant avec l’IA, a mis en production huit expériences client en trois mois. Ce plan fait de cette façon de travailler un savoir-faire pour cinquante commerciaux, puis cent."
           class="thesis-title slide-title text-center text-[var(--ink-primary)] mx-auto"
           data-reveal
           data-reveal-delay="0.08"
@@ -409,6 +415,21 @@ const wall: WallTile[] = [
     line-height: 1.15;
     max-width: none;
   }
+  /* The platform is not one of the eight: a small link under the heading, not a tile. */
+  .wall-hub-link {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-sabbia-200);
+    border-bottom: 1px solid rgba(201, 169, 106, 0.45);
+    padding-bottom: 0.15rem;
+    transition: color var(--duration-fast) var(--easing-default), border-color var(--duration-fast) var(--easing-default);
+  }
+  .wall-hub-link:hover, .wall-hub-link:focus-visible { color: var(--color-champagne); border-color: var(--color-champagne); }
+  .wall-ext-inline { margin-left: 0.3rem; color: var(--color-champagne); }
   @media (min-width: 1024px) {
     .wall-layout { grid-template-columns: 9rem minmax(0, 1fr); gap: 1.3rem; }
   }

@@ -10,7 +10,7 @@ you don't need all of it for most tasks.
 - **memory `MEMORY.md`** (~0.6k tok) — index of auto-memories. Individual memory files load on recall (not all at once; ~9k total across 15 files).
 
 ## Read order (on demand, via the Read tool)
-1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-09-12**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe per file, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **8 parti**, da leggere in ordine (≈28k tok totali; ognuna sta in una singola `Read`):
+1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-09-14**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe per file, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **8 parti**, da leggere in ordine (≈28k tok totali; ognuna sta in una singola `Read`):
    **`HANDOVER-01.md`** (§1–9: stato generale, architettura, **comandi** incl. `brand:tokens`/`loop:seamless`, stato per esperienza, **UniCredit content model §5**, feature runtime §6, **Admin Console §7 a 4 tab**, **audit §8 — 12 check, nuovo `m`, e la lezione sul gate che mentiva**, deploy §9) ·
    **`HANDOVER-02.md`** (§10: **backlog prioritario** — leggila per prima se devi decidere cosa fare) ·
    **`HANDOVER-03.md`** + **`HANDOVER-04.md`** (§11: **change log datato**, dal più recente — spezzato in due per dimensione) ·
