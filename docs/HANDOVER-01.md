@@ -171,6 +171,13 @@ La pagina pubblica `coworker.astro` è stata riallineata al passaggio **Analizza
 - Roadmap e disponibilità non sono presentate come impegni pubblici. Il caso di Marco esclude decisioni creditizie e attivazioni automatiche; i KPI finali sono misure da valutare, non risultati dichiarati. Le policy e i requisiti normativi richiedono verifica caso per caso.
 - Fonti prodotto Adobe linkate nella slide stack e centralizzate in `src/data/sources.ts`. `PAGE_REGISTRY` allineato agli otto id della pagina. Verifica 28 set: Coworker passa tutti i check (`a–k`, `m`, `exp`) a 1920×1080, 1440×900 e 1280×800; screenshot delle 8 slide letti a 1920 e scroll mobile verificato. L’audit delle altre rotte toccate è stato eseguito e conserva residui soft preesistenti, da non confondere con il gate Coworker.
 
+### 5.10 Scenario — journey illustrativo e passaggio a Coworker (2026-09-28)
+La storia di Marco è esplicitamente un **concept**, non una customer story reale né una descrizione dei sistemi UniCredit installati. I sei momenti distinguono touchpoint possibili, dati autorizzati, analisi, bozza Coworker e revisione umana; disponibilità, accessi e integrazioni restano condizionati alla configurazione effettiva.
+- Rimosse dal percorso le promesse simulate come fatti: ranking AI, caricamento in 0,3 s, 12 varianti in pochi minuti, stima rata/prenotazione già completata, alert automatico «at-risk», attribution al 45% e mutuo firmato. I mock ora li qualificano come illustrativi o mostrano possibili passaggi da verificare.
+- Un’email non aperta è un segnale da contestualizzare, non un’etichetta di rischio né un trigger automatico. Coworker prepara un handoff in bozza; il consulente rivede e ogni attivazione richiede processo, permessi e sistemi approvati.
+- La mappa dei sei motori è una mappa di capacità illustrativa, non dell’installato UniCredit. Copy bilingue e ID delle slide invariati; nessun aggiornamento al `PAGE_REGISTRY`.
+- Verifica: build e typecheck OK; screenshot delle sette slide modificate letti a 1920 e controlli responsive su 1280/mobile. `audit:deck --only scenario`: zero fallimenti HARD su tutti e tre i viewport; restano 11 soft `a`/`i` sulla rotta, da non correggere riducendo il corpo testo.
+
 ---
 ## 6. Feature runtime del deck (tutte in UniCredit; molte in core)
 
