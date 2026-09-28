@@ -20,28 +20,26 @@ const cxaPillars = [
   { id: 'content', label: 'Content Intelligence', body: { it: 'Misura quale contenuto porta a risultati — per segmento, canale e momento del journey.', en: 'Shows which content actually drives results, by segment, channel and journey moment.' } },
 ];
 
-// Slide «journey» — Marco's touchpoints as CJA stitches them, in the order the deck told them.
+// Slide «journey» — illustrative events, available only when sources and access are configured.
 const journeyTouchpoints = [
-  { label: 'ChatGPT', sub: { it: 'risposta AI', en: 'AI answer' } },
-  { label: { it: 'Sito', en: 'Site' }, sub: { it: 'pagina mutuo · 0,3 s', en: 'mortgage page · 0.3 s' } },
-  { label: 'Brand Concierge', sub: { it: 'simulazione e rata', en: 'simulation, payment' } },
-  { label: 'App', sub: { it: 'sezione mutui', en: 'loans section' } },
-  { label: 'Email', sub: { it: 'non aperta', en: 'not opened' } },
-  { label: 'SMS', sub: { it: 'reminder mercoledì', en: 'Wednesday reminder' } },
-  { label: { it: 'Appuntamento', en: 'Appointment' }, sub: { it: 'consulente, ore 14', en: 'advisor, 2 PM' } },
-  { label: { it: 'Filiale', en: 'Branch' }, sub: { it: 'contratto firmato', en: 'contract signed' } },
+  { label: 'ChatGPT', sub: { it: 'referral, se osservabile', en: 'referral, if observable' } },
+  { label: { it: 'Sito', en: 'Site' }, sub: { it: 'pagina mutuo', en: 'mortgage page' } },
+  { label: 'Brand Concierge', sub: { it: 'domanda sul simulatore', en: 'question about the simulator' } },
+  { label: { it: 'Simulatore', en: 'Simulator' }, sub: { it: 'apertura, se misurata', en: 'opened, if measured' } },
+  { label: 'App', sub: { it: 'visita alla sezione mutui', en: 'visit to mortgage section' } },
+  { label: 'Email', sub: { it: 'segnalata come non aperta', en: 'reported as unopened' } },
 ];
 
 const agentCapabilities = [
   {
     icon: '◉',
     title: { it: 'Parla la lingua del business', en: 'Speaks the language of the business' },
-    body: { it: 'Chiedi "perché le domande di mutuo sono calate questa settimana" e ottieni la risposta con root cause analysis in minuti, non giorni.', en: 'Ask "why did mortgage applications drop this week" and get the answer, with root cause analysis, in minutes rather than days.' },
+    body: { it: 'Una domanda in linguaggio naturale può avviare l’analisi di un’anomalia. Fonti, copertura e ipotesi vanno verificate prima di attribuirle una causa.', en: 'A natural-language question can start an anomaly investigation. Sources, coverage and hypotheses still need checking before assigning a cause.' },
   },
   {
     icon: '◈',
-    title: { it: 'Grounded in truth', en: 'Grounded in truth' },
-    body: { it: 'Ogni insight è verificato sul motore analitico di Adobe: ciò che emerge è un fatto, non solo qualcosa di plausibile.', en: "Every insight is verified against Adobe's analytics engine: what surfaces is a fact, not just something plausible." },
+    title: { it: 'Verificare le evidenze', en: 'Check the evidence' },
+    body: { it: 'Il team controlla le misure disponibili, la qualità dei dati e il contesto operativo prima di trattare un risultato come un fatto.', en: 'The team checks available measures, data quality and operating context before treating a result as fact.' },
   },
   {
     icon: '◇',
@@ -50,8 +48,8 @@ const agentCapabilities = [
   },
   {
     icon: '◆',
-    title: { it: 'Answers why in minutes', en: 'Answers why in minutes' },
-    body: { it: 'Root Cause Analysis individua le anomalie e ne spiega le cause in automatico, su 4 milioni di clienti e in tempo reale.', en: 'Root Cause Analysis spots anomalies and explains their causes automatically, across 4 million customers in real time.' },
+    title: { it: 'Esplora le anomalie', en: 'Explore anomalies' },
+    body: { it: 'Root Cause Analysis può aiutare a esplorare anomalie e possibili driver nei dati configurati; l’interpretazione resta da validare.', en: 'Root Cause Analysis can help explore anomalies and possible drivers in configured data; interpretation still needs validation.' },
   },
 ];
 
@@ -65,7 +63,7 @@ const everywhereChannels = [
 
 const llmInsightsPoints = [
   { label: { it: 'Scoperta AI-driven', en: 'AI-driven discovery' }, body: { it: 'Misura quanti come Marco arrivano da ChatGPT, Gemini o Perplexity e come si comportano rispetto ai canali tradizionali.', en: 'Measure how many like Marco arrive from ChatGPT, Gemini or Perplexity, and how they behave against traditional channels.' } },
-  { label: { it: 'AI Journey', en: 'AI Journey' }, body: { it: 'Traccia il percorso di chi inizia da un assistente AI esterno e completa una transazione nel digital banking: dalla mention al mutuo.', en: 'Track customers who start from an external AI assistant and complete a transaction in digital banking: from mention to mortgage.' } },
+  { label: { it: 'Referral AI', en: 'AI referrals' }, body: { it: 'Analizza i referral dagli assistenti AI quando sono osservabili e confrontali con gli altri ingressi, nel rispetto di consenso e copertura dei dati.', en: 'Analyze referrals from AI assistants where observable and compare them with other entry points, subject to consent and data coverage.' } },
   { label: { it: 'Conversazione', en: 'Conversation' }, body: { it: 'Analizza come i clienti interagiscono con il Brand Concierge UniCredit — quali domande fanno, dove si bloccano, quante conversazioni diventano transazioni.', en: 'See how customers interact with the UniCredit Brand Concierge: what they ask, where they get stuck, how many dialogues become transactions.' } },
 ];
 
@@ -79,7 +77,7 @@ const channelWeights = [
 ---
 <BaseLayout
 title="Attribution & journey analytics"
-description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: CJA, attribution e Data Insights Agent raccontano il percorso completo, senza sovrascrivere il modello ufficiale di UniCredit."
+description="CJA e attribution possono affiancare la vista last-touch con gli eventi osservabili del percorso, se fonti, accessi e modello sono configurati."
   pageSolutions={['cja']}
 >
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -98,8 +96,8 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
       />
       <UcCover
         slug="analizza"
-        title={{ en: 'Who really earned the mortgage?', it: 'Chi ha davvero guadagnato il mutuo?' }}
-        lead={{ en: "The official bank model still credits the last touch. CJA gives UniCredit the complementary view it needs: the real journey, the real contribution and the next-best action. Engine 05: journey analytics.", it: "Il modello ufficiale della banca attribuisce ancora l'ultimo touchpoint. CJA dà a UniCredit la vista complementare di cui ha bisogno: il viaggio reale, il contributo reale e la prossima azione giusta. Motore 05: journey analytics." }}
+        title={{ en: 'What can the journey data tell us?', it: 'Cosa raccontano i dati del percorso?' }}
+        lead={{ en: "Where sources, access and identity rules are configured, CJA can add a view of observed touchpoints alongside an agreed attribution model. A signal is not a conclusion or a customer decision.", it: "Con fonti, accessi e regole d’identità configurati, CJA può affiancare a un modello di attribution una vista dei touchpoint osservati. Un segnale non è una conclusione né una decisione sul cliente." }}
         chips={['Customer Journey Analytics', { en: 'Attribution', it: 'Attribution' }, 'Data Insights Agent', 'LLM Insights', 'Marketing Campaign Analytics']}
       />
     </Slide>
@@ -109,21 +107,21 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
       <div data-demo-flex class="w-full flex items-start gap-8">
         <div class="flex-1 min-w-0 text-center">
-          <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" data-reveal it="CUSTOMER JOURNEY ANALYTICS · IL PERCORSO INTERO" en="CUSTOMER JOURNEY ANALYTICS · THE WHOLE JOURNEY" />
+          <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" data-reveal it="CUSTOMER JOURNEY ANALYTICS · EVENTI OSSERVABILI" en="CUSTOMER JOURNEY ANALYTICS · OBSERVED EVENTS" />
           <T as="h2"
             class="slide-title text-[var(--ink-primary)] mb-4"
             style="font-size: clamp(2rem, 4vw, 3.5rem);"
             data-reveal
             data-reveal-delay="0.08"
-            it="Una persona, otto touchpoint,<br/>tre sistemi. Un solo percorso."
-            en="One person, eight touchpoints,<br/>three systems. One journey."
+            it="Sei touchpoint possibili.<br/>Un percorso da verificare."
+            en="Six possible touchpoints.<br/>One journey to examine."
           />
           <T as="p"
             class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mx-auto mb-7 leading-relaxed"
             data-reveal
             data-reveal-delay="0.15"
-            it="Quello che Marco ha vissuto capitolo per capitolo, CJA lo vede come un'unica sequenza: assistente AI, sito, contact center e filiale cuciti sulla stessa identità, anche dove il dato nasce offline."
-            en="What Marco lived chapter by chapter, CJA sees as a single sequence: AI assistant, site, contact center and branch stitched onto the same identity, even where the data is born offline."
+            it="Con fonti autorizzate e regole d’identità configurate, CJA può collegare gli eventi disponibili. Questa sequenza è illustrativa: non conferma un esito né dimostra l’intenzione di Marco."
+            en="With authorized sources and identity rules configured, CJA can connect available events. This sequence is illustrative: it confirms no outcome and does not establish Marco’s intent."
           />
 
           <ol class="uc-tl w-full max-w-6xl mx-auto mb-10" data-reveal data-reveal-delay="0.22">
@@ -140,12 +138,12 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
 
           <div class="uc-panel uc-panel--oro max-w-3xl mx-auto text-left" data-reveal data-reveal-delay="0.35">
             <div class="uc-panel-head">
-              <T as="p" class="uc-tag" style="color: var(--ink-accent);" it="Dentro UniCredit · l'analista" en="Inside UniCredit · the analyst" />
+              <T as="p" class="uc-tag" style="color: var(--ink-accent);" it="Segnale · non una conclusione" en="Signal · not a conclusion" />
               <span class="uc-node"></span>
             </div>
-            <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it={'«Per la prima volta la domanda "chi ha portato Marco al mutuo?" ha una risposta nei dati, non nell\'ultimo canale che l\'ha registrato. È da qui che parte l\'attribution.»'} en={'«For the first time the question "who brought Marco to his mortgage?" is answered by the data, not by the last channel that logged it. This is where attribution starts.»'} />
+            <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it="Un’email non aperta non dice perché né cosa desidera il cliente. Prima di proporre un contatto, il team verifica contesto, qualità del dato e preferenze." en="An unopened email does not explain why or what the customer wants. Before proposing contact, the team checks context, data quality and preferences." />
           </div>
-          <T as="p" class="mt-3 text-center text-[0.72rem] tracking-widest uppercase text-[var(--ink-note)]" it="Percorso illustrativo · identity stitching e ingestion offline (filiale, contact center) in CJA" en="Illustrative journey · identity stitching and offline ingestion (branch, contact center) in CJA" />
+          <T as="p" class="mt-3 text-center text-[0.75rem] tracking-widest uppercase text-[var(--ink-note)]" it="Esempio illustrativo · tracking, fonti e collegamenti tra canali da configurare" en="Illustrative example · tracking, sources and cross-channel connections require configuration" />
         </div>
         <MediaDemoSlot id="analizza-cxa-demo" label="CJA — Journey / Dashboard Screenshot" />
       </div>
@@ -160,28 +158,28 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
         style="font-size: clamp(1.9rem, 3.6vw, 3.4rem);"
         data-reveal
         data-reveal-delay="0.08"
-        it="Il last-touch dice chi.<br/>Non dice come."
-        en="Last-touch tells you who.<br/>Not how."
+        it="L’ultimo touchpoint prende il merito.<br/>Non racconta tutto il percorso."
+        en="Last-touch gets the credit.<br/>It does not tell the whole story."
       />
       <T as="p"
         class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-4 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Il report ufficiale dà ogni vendita a un solo canale, l'ultimo che l'ha registrata: il mutuo di Marco risulta «Filiale». È il modello di governance, e resta così."
-        en="The official report credits each sale to one channel, the last that logged it: Marco's mortgage reads «Branch». That is the governance model, and it stays that way."
+        it="Se una vendita è registrata e il modello adottato è last-touch, il report ufficiale accredita l’ultimo canale misurato. CJA può offrire una vista complementare, se dati e metodo la supportano."
+        en="If a sale is recorded and the adopted model is last-touch, the official report credits the last measured channel. CJA can offer a complementary view if the data and method support it."
       />
 
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4 items-stretch" data-reveal data-reveal-delay="0.22">
         <div class="uc-panel uc-panel--rosso text-left">
           <div class="uc-panel-head">
-            <T as="p" class="uc-tag" it="Report ufficiale · last-touch" en="Official report · last-touch" />
+            <T as="p" class="uc-tag" it="Esempio · last-touch" en="Illustrative · last-touch" />
           </div>
           <div class="flex items-center gap-3 mt-1">
-            <T as="span" class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]" style="font-size: clamp(1.4rem,2vw,1.9rem);" it="1 mutuo" en="1 mortgage" />
+            <T as="span" class="font-[family-name:var(--font-display)] text-[var(--ink-primary)]" style="font-size: clamp(1.4rem,2vw,1.9rem);" it="Esito registrato" en="Recorded outcome" />
             <span class="text-[var(--ink-brand-text)] text-xl">→</span>
             <T as="span" class="font-semibold text-[var(--ink-primary)]" style="font-size: 1.05rem;" it="Filiale" en="Branch" />
           </div>
-          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="L'ultimo canale prende tutto il merito; ChatGPT, il sito, il concierge e l'SMS spariscono dal conto." en="The last channel takes all the credit; ChatGPT, the site, the concierge and the SMS vanish from the count." />
+          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="In questo esempio, gli altri touchpoint non compaiono nell’attribuzione last-touch." en="In this example, the other touchpoints do not appear in the last-touch attribution." />
         </div>
 
         <div class="uc-panel uc-panel--oro text-left">
@@ -203,7 +201,7 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
               </div>
             ))}
           </div>
-          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="Lo stesso mutuo, con il peso reale di ogni canale. Senza toccare il modello ufficiale." en="The same mortgage, with the real weight of each channel. Without touching the official model." />
+          <T as="p" class="uc-panel-body mt-2" style="margin-bottom: 0;" it="Pesi puramente illustrativi: la distribuzione effettiva dipende dai dati e dal modello concordato." en="Illustrative weights only: the actual distribution depends on available data and the agreed model." />
         </div>
       </div>
 
@@ -212,7 +210,7 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
           <T it='<span class="font-semibold text-[var(--ink-primary)]">Per UniCredit:</span> capire quanto app, filiale, contact center e agenti pesano su una vendita attribuita a uno solo, per orchestrare i lead e dare obiettivi ai team.' en='<span class="font-semibold text-[var(--ink-primary)]">For UniCredit:</span> seeing how much app, branch, contact center and agents weigh on a sale credited to just one, to orchestrate leads and set team targets.' />
         </p>
       </div>
-      <T as="p" class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--ink-note)]" it="Pesi illustrativi · vista complementare, non sostitutiva del modello ufficiale" en="Illustrative weights · complementary view, not a replacement for the official model" />
+      <T as="p" class="mt-2 text-center text-[0.75rem] tracking-widest uppercase text-[var(--ink-note)]" it="Esempio illustrativo · vista complementare, non sostitutiva del modello ufficiale" en="Illustrative example · complementary view, not a replacement for the official model" />
     </Slide>
 
     <!-- ── SLIDE 3: Data Insights Agent ──────────────────────────── -->
@@ -226,23 +224,23 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
               style="font-size: clamp(2rem, 4vw, 3.75rem);"
               data-reveal
               data-reveal-delay="0.08"
-              it={'L\'analista AI che risponde al "perché"'}
-              en={'The AI analyst that answers "why"'}
+              it={'L’analista AI che aiuta a esplorare il "perché"'}
+              en={'An AI analyst to explore the "why"'}
             />
             <T as="p"
               class="text-[var(--ink-secondary)] leading-relaxed mb-6"
               style="font-size: clamp(1rem, 1.35vw, 1.25rem);"
               data-reveal
               data-reveal-delay="0.15"
-              it="Chiedi in linguaggio naturale e ottieni una root cause analysis in minuti, non in giorni. Verificata sul motore analitico Adobe, non generata."
-              en="Ask in plain language and get a root cause analysis in minutes, not days. Verified against the Adobe analytics engine, not generated."
+              it="Una domanda in linguaggio naturale può avviare l’indagine di un’anomalia. Fonti, copertura degli eventi e contesto operativo determinano cosa si può concludere."
+              en="A natural-language question can start an anomaly investigation. Sources, event coverage and operating context determine what can be concluded."
             />
             <div class="uc-panel uc-panel--rosso" data-reveal data-reveal-delay="0.22">
               <div class="uc-panel-head">
-                <T as="p" class="uc-tag" it="Esempio UniCredit" en="UniCredit example" />
+                <T as="p" class="uc-tag" it="Domanda illustrativa" en="Illustrative question" />
               </div>
-              <T as="p" class="text-[var(--ink-primary)] italic" style="font-size: 0.98rem; line-height: 1.55;" it={'"Perché le richieste di mutuo via app sono calate del 18% questa settimana rispetto alla media?"'} en={'"Why did in-app mortgage applications drop 18% this week versus the average?"'} />
-              <T as="p" class="text-[var(--ink-brand-text)] mt-2 font-medium" style="font-size: 0.9rem; line-height: 1.5;" it="→ Root Cause: step 3 del flow aumentato a 4.2s dopo deploy v2.3.1 · segmento 35–44 anni più impattato" en="→ Root Cause: flow step 3 rose to 4.2s after deploy v2.3.1 · 35–44 segment most impacted" />
+                <T as="p" class="text-[var(--ink-primary)] italic" style="font-size: 1rem; line-height: 1.55;" it={'"In quale passaggio del simulatore le persone interrompono più spesso il percorso?"'} en={'"At which step of the simulator do people most often leave the process?"'} />
+                <T as="p" class="text-[var(--ink-brand-text)] mt-2 font-medium" style="font-size: 0.95rem; line-height: 1.5;" it="→ Possibile punto da indagare: verificare copertura degli eventi, modifiche recenti e differenze tra segmenti prima di attribuire una causa." en="→ Possible area to investigate: check event coverage, recent changes and segment differences before assigning a cause." />
             </div>
           </div>
 
@@ -259,10 +257,10 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
 
             <div class="uc-panel uc-panel--oro mt-1" data-reveal data-reveal-delay="0.45">
               <div class="uc-panel-head">
-                <T as="p" class="uc-tag" style="color: var(--ink-accent);" it="Marco, in questo momento" en="Marco, right now" />
+                <T as="p" class="uc-tag" style="color: var(--ink-accent);" it="Email non aperta · cosa non sappiamo" en="Unopened email · what we do not know" />
                 <span class="uc-node"></span>
               </div>
-              <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it="«Marco non aveva aperto l'email del mutuo. Il Data Insights Agent lo aveva già segnalato come at-risk e suggerito un reminder SMS per mercoledì mattina.»" en="«Marco hadn't opened the mortgage email. The Data Insights Agent had already flagged him as at-risk and suggested an SMS reminder for Wednesday morning.»" />
+              <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it="Lo stato di apertura non spiega l’interesse né le preferenze di contatto. Verificare qualità del tracking e contesto prima di considerare un seguito." en="Open status does not explain interest or contact preferences. Check tracking quality and context before considering a follow-up." />
             </div>
           </div>
         </div>
@@ -273,21 +271,21 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
     <!-- ── SLIDE 4: LLM Insights (il primo touchpoint di Marco) ──────────────────────────────────── -->
     <Slide id="slide-llm" bg="primary" align="center">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" data-reveal it="LLM INSIGHTS · IL PRIMO TOUCHPOINT" en="LLM INSIGHTS · THE FIRST TOUCHPOINT" />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" data-reveal it="LLM INSIGHTS · REFERRAL OSSERVABILI" en="LLM INSIGHTS · OBSERVABLE REFERRALS" />
       <T as="h2"
         class="slide-title text-[var(--ink-primary)] mb-5"
         style="font-size: clamp(2rem, 3.8vw, 3.4rem);"
         data-reveal
         data-reveal-delay="0.08"
-        it="Il primo touchpoint di Marco è stato ChatGPT. Ora si misura."
-        en="Marco's first touchpoint was ChatGPT. Now it gets measured."
+        it="Un referral AI può essere misurato, se è osservabile."
+        en="An AI referral can be measured, when it is observable."
       />
       <T as="p"
         class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-7 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Sempre più clienti iniziano il percorso finanziario da un assistente AI. LLM Insights rende misurabile quel traffico, dalla mention alla conversione, e lo mette nell'attribution accanto agli altri canali."
-        en="More and more customers start their financial journey from an AI assistant. LLM Insights makes that traffic measurable, from mention to conversion, and puts it into attribution alongside every other channel."
+        it="Quando referral e consenso lo consentono, il team può confrontare il traffico proveniente dagli assistenti con altri ingressi. Non vede per questo le conversazioni né l’intero percorso di una persona."
+        en="Where referrals and consent allow, a team can compare traffic from assistants with other entry points. That does not reveal the conversations or a person’s full journey."
       />
 
       <div
@@ -310,28 +308,28 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
           <T as="p" class="uc-tag" it="Il CMO, in questo momento" en="The CMO, right now" />
           <span class="uc-node uc-node--rosso"></span>
         </div>
-        <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it={'«Per la prima volta riesce a rispondere: "Qual è il ROI della nostra presenza su ChatGPT?" Un numero misurato, non una stima.»'} en={'«For the first time she can answer: "What is the ROI of our presence on ChatGPT?" A measured number, not a guess.»'} />
+        <T as="p" class="uc-quote-text" style="margin-top: 0; font-size: clamp(1.05rem, 1.3vw, 1.3rem);" it="Possiamo misurare i referral dagli assistenti AI che riusciamo a osservare, senza confonderli con l’intero percorso?" en="Can we measure referrals from AI assistants where they are observable, without confusing them with the full journey?" />
       </div>
     </Slide>
 
-    <!-- ── SLIDE 5: Cost-per-click → cost-per-sale (ATTRIBUTION) ───── -->
+    <!-- ── SLIDE 5: Cost-per-click → outcome, when measurable ─────── -->
     <Slide id="slide-costpersale" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="uc-bg absolute inset-0" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-3" data-reveal it="ATTRIBUTION · DAL CLICK ALLA VENDITA" en="ATTRIBUTION · FROM CLICK TO SALE" />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-3" data-reveal it="ATTRIBUTION · DAL CLICK ALL’ESITO" en="ATTRIBUTION · FROM CLICK TO OUTCOME" />
       <T as="h2"
         class="slide-title text-[var(--ink-primary)] mb-3"
         style="font-size: clamp(1.9rem, 3.6vw, 3.2rem);"
         data-reveal
         data-reveal-delay="0.08"
-        it="Pagare il marketing sulle vendite,<br/>non sui click."
-        en="Pay marketing on sales,<br/>not on clicks."
+        it="Collegare il marketing agli esiti<br/>richiede dati e un modello condiviso."
+        en="Connecting marketing to outcomes<br/>takes data and an agreed model."
       />
       <T as="p"
         class="text-[clamp(1rem,1.35vw,1.2rem)] text-[var(--ink-secondary)] max-w-3xl mb-4 leading-relaxed"
         data-reveal
         data-reveal-delay="0.15"
-        it="Riconciliare la navigazione con il venduto vuol dire pagare la campagna che ha raggiunto Marco sul mutuo firmato, non sul click. Ma il cost-per-sale regge solo su un'attribution solida e condivisa."
-        en="Reconciling browsing with sales means paying the campaign that reached Marco on the signed mortgage, not on the click. But cost-per-sale only holds up on solid, shared attribution."
+        it="Nel percorso illustrativo di Marco non è registrata una vendita. Un modello cost-per-sale richiederebbe esiti acquisiti, fonti collegate e regole di attribution concordate."
+        en="Marco’s illustrative journey includes no recorded sale. A cost-per-sale model would require captured outcomes, connected sources and agreed attribution rules."
       />
 
       <div class="w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-4 mb-3" data-reveal data-reveal-delay="0.22">
@@ -369,7 +367,7 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
         imageClass="opacity-10"
         scrim="bg-[var(--surface-inverse)]/90"
       />
-      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" data-reveal>MARKETING CAMPAIGN ANALYTICS · GA H2 2026</p>
+      <p class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" data-reveal>MARKETING CAMPAIGN ANALYTICS</p>
       <T as="h2"
         class="slide-title text-[var(--ink-inverse)] mb-5"
         style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
@@ -382,8 +380,8 @@ description="Chi ha portato Marco al mutuo? La risposta non è un solo canale: C
         class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--color-grigio-300)] max-w-2xl mb-10"
         data-reveal
         data-reveal-delay="0.15"
-        it="Una visione unificata dell'efficacia di ogni campagna, dalla prima impression che Marco ha visto al contratto firmato in filiale. Powered by causal AI proprietaria Adobe."
-        en="A unified view of how effective each campaign is, from the first impression Marco saw to the contract signed in the branch. Powered by Adobe's proprietary causal AI."
+        it="Una vista dell’efficacia delle campagne lungo le fasi osservabili. Il contributo a un esito dipende dalla copertura dei dati e dal modello di attribution adottato."
+        en="A view of campaign effectiveness across observable stages. Contribution to an outcome depends on data coverage and the adopted attribution model."
       />
 
       <div
