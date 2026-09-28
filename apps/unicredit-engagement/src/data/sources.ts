@@ -24,6 +24,31 @@ export const SOURCES: Record<string, Source> = {
     label: 'Adobe CX Analytics — unified intelligence layer (Summit 2026)',
     url: 'https://news.adobe.com/news/2026/04/adobe-unveils-cx-enterprise-coworker',
   },
+  adobe_cja: {
+    id: 'adobe_cja',
+    label: 'Adobe Customer Journey Analytics',
+    url: 'https://business.adobe.com/products/analytics/customer-journey-analytics.html',
+  },
+  adobe_content_analytics: {
+    id: 'adobe_content_analytics',
+    label: 'Adobe Content Analytics',
+    url: 'https://business.adobe.com/products/analytics/content-analytics.html',
+  },
+  adobe_workfront: {
+    id: 'adobe_workfront',
+    label: 'Adobe Workfront',
+    url: 'https://business.adobe.com/products/workfront/main.html',
+  },
+  adobe_aem_sites: {
+    id: 'adobe_aem_sites',
+    label: 'Adobe Experience Manager Sites',
+    url: 'https://business.adobe.com/products/experience-manager/sites/aem-sites.html',
+  },
+  adobe_target: {
+    id: 'adobe_target',
+    label: 'Adobe Target',
+    url: 'https://business.adobe.com/products/target/adobe-target.html',
+  },
   adobe_rtcdp_collab: {
     id: 'adobe_rtcdp_collab',
     label: 'Adobe Real-Time CDP Collaboration',

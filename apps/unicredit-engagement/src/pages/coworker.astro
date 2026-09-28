@@ -6,63 +6,136 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
-import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import { SOURCES } from '../data/sources';
 import T from '@edf/core/blocks/i18n/T.astro';
 import UcCover from '../components/UcCover.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const painPoints = [
-  { num: '40%', label: { it: 'del tempo dei team CX su task manuali, handoff, approvazioni, report', en: 'of CX team time spent on manual tasks, handoffs, approvals, reports' } },
-  { num: '6 settimane', label: { it: 'dalla brief di campagna al go-live, quando il momento buono è già passato.', en: 'from campaign brief to go-live, by which point the right moment has passed.' } },
-  { num: '1 campagna / mese', label: { it: 'la velocità media di un team CX senza automazione AI', en: 'the average pace of a CX team without AI automation' } },
-];
-
-// Capacità di Coworker (Adobe CX Enterprise Coworker, annunciato Adobe Summit).
-const modules = [
+const friction = [
   {
-    name: { it: 'Task in linguaggio naturale', en: 'Natural-language tasks' },
-    desc: { it: "Automatizza i task CX descritti a parole: dall'idea all'azione in minuti, con skill personalizzabili e planning flessibile.", en: 'Automate CX tasks described in words: from idea to action in minutes, with customizable skills and flexible planning.' },
-    variant: 'rosso',
+    label: { it: 'Segnale', en: 'Signal' },
+    body: {
+      it: 'Un insight resta un report finché qualcuno non lo traduce in lavoro.',
+      en: 'An insight stays a report until someone turns it into work.',
+    },
   },
   {
-    name: { it: 'Campagne agili', en: 'Agile campaigns' },
-    desc: { it: 'Dalla brief al lancio in ore invece di settimane, con contenuti e approvazioni orchestrati.', en: 'From brief to launch in hours instead of weeks, with content and approvals orchestrated together.' },
-    variant: 'oro',
+    label: { it: 'Handoff', en: 'Handoff' },
+    body: {
+      it: 'Dati, decisioni, contenuti e workflow passano tra strumenti e team.',
+      en: 'Data, decisions, content and workflows move between tools and teams.',
+    },
   },
   {
-    name: { it: 'Workflow end-to-end', en: 'End-to-end workflow' },
-    desc: { it: 'Task, approvazioni ed esecuzione CX in un unico posto, con governance e supervisione umana.', en: 'Tasks, approvals and CX execution in one place, with governance and human oversight.' },
-    variant: 'neutro',
+    label: { it: 'Attivazione', en: 'Activation' },
+    body: {
+      it: 'Ogni passaggio richiede owner, permessi e verifiche esplicite.',
+      en: 'Every handoff needs a clear owner, permissions and checks.',
+    },
   },
 ];
 
-const governancePillars = [
-  { title: { it: 'Brand policy enforcement', en: 'Brand policy enforcement' }, body: { it: 'Conformità di brand verificata su ogni output', en: 'Brand compliance verified on every output' } },
-  { title: { it: 'Progettato per DORA / PSD3 / GDPR', en: 'Designed for DORA / PSD3 / GDPR' }, body: { it: 'Human-in-the-loop e audit trail supportano i requisiti regolatori (validazione legale necessaria)', en: 'Human-in-the-loop and audit trail support regulatory requirements (legal validation needed)' } },
-  { title: { it: 'Human-in-the-loop', en: 'Human-in-the-loop' }, body: { it: 'Ogni azione critica richiede approvazione', en: 'Every critical action requires approval' } },
-  { title: { it: 'Audit trail completo', en: 'Complete audit trail' }, body: { it: 'Ogni decisione AI è tracciata e spiegabile', en: 'Every AI decision is tracked and explainable' } },
+const stack = [
+  { name: 'CJA / Content Analytics', role: { it: 'legge percorso e contenuti', en: 'reads journeys and content' } },
+  { name: 'Coworker', role: { it: 'sintetizza e prepara', en: 'summarizes and drafts' } },
+  { name: 'Workfront / workflow', role: { it: 'coordina il lavoro', en: 'coordinates the work' } },
+  { name: 'AEM / Target', role: { it: 'porta il contenuto sul canale', en: 'delivers content to a channel' } },
+  { name: 'CJA / Analytics', role: { it: 'misura l’esito', en: 'measures the outcome' } },
 ];
 
-const finalMetrics = [
-  { num: '↑', label: { it: 'più campagne con lo stesso team', en: 'more campaigns with the same team' } },
-  { num: '↓', label: { it: 'tempo di approvazione più breve', en: 'shorter approval time' } },
-  { num: '✓', label: { it: 'conformità di brand verificata su ogni output', en: 'brand compliance verified on every output' } },
+const interactionModes = [
+  {
+    name: { it: 'Chat', en: 'Chat' },
+    kind: { it: 'Una richiesta', en: 'A single request' },
+    steps: [
+      { it: 'Fare una domanda sui dati accessibili', en: 'Ask about accessible data' },
+      { it: 'Ottenere una sintesi o una bozza', en: 'Get a summary or a draft' },
+      { it: 'Verificare prima di condividerla', en: 'Review before sharing' },
+    ],
+    outcome: { it: 'Risposta da verificare', en: 'An answer to verify' },
+  },
+  {
+    name: { it: 'Projects', en: 'Projects' },
+    kind: { it: 'Un obiettivo multi-step', en: 'A multi-step goal' },
+    steps: [
+      { it: 'Definire il risultato atteso', en: 'Define the intended outcome' },
+      { it: 'Organizzare fasi, owner e dipendenze', en: 'Organize stages, owners and dependencies' },
+      { it: 'Rivedere e approvare i passaggi', en: 'Review and approve each handoff' },
+    ],
+    outcome: { it: 'Un piano coordinato dal team', en: 'A plan coordinated by the team' },
+  },
 ];
 
+const executionSteps = [
+  {
+    number: '01',
+    label: { it: 'Insight', en: 'Insight' },
+    body: { it: 'CJA mostra un segnale; non prende una decisione sul cliente.', en: 'CJA surfaces a signal; it does not make a customer decision.' },
+  },
+  {
+    number: '02',
+    label: { it: 'Bozza', en: 'Draft' },
+    body: { it: 'Coworker prepara sintesi e prossimi passi sui dati autorizzati.', en: 'Coworker drafts a summary and next steps from authorized data.' },
+  },
+  {
+    number: '03',
+    label: { it: 'Revisione', en: 'Review' },
+    body: { it: 'Un owner modifica, approva o ferma la proposta.', en: 'An owner edits, approves or stops the proposal.' },
+  },
+  {
+    number: '04',
+    label: { it: 'Esecuzione', en: 'Execution' },
+    body: { it: 'Il team agisce nel workflow e nei sistemi configurati.', en: 'The team acts in its configured workflow and systems.' },
+  },
+  {
+    number: '05',
+    label: { it: 'Misura', en: 'Measurement' },
+    body: { it: 'L’esito torna in analytics per essere valutato.', en: 'The outcome returns to analytics for evaluation.' },
+  },
+];
+
+const governanceChecks = [
+  {
+    title: { it: 'Contesto curato', en: 'Curated context' },
+    body: { it: 'Definire KPI, tassonomia, tono e contenuti approvati prima di usarli come riferimento.', en: 'Define KPIs, taxonomy, tone and approved content before relying on them.' },
+  },
+  {
+    title: { it: 'Accessi e integrazioni', en: 'Access and integrations' },
+    body: { it: 'Verificare licenze, dati disponibili, permessi e connettori per ogni tenant.', en: 'Verify entitlements, available data, permissions and connectors for each tenant.' },
+  },
+  {
+    title: { it: 'Controllo umano', en: 'Human review' },
+    body: { it: 'Assegnare un responsabile per le decisioni e per ogni attivazione verso il cliente.', en: 'Assign an owner for decisions and every customer-facing activation.' },
+  },
+];
+
+const outcomeMeasures = [
+  { it: 'Tempo dall’insight alla revisione', en: 'Time from insight to review' },
+  { it: 'Tempo di approvazione', en: 'Time to approval' },
+  { it: 'Handoff completati senza rilavorazione', en: 'Handoffs completed without rework' },
+  { it: 'Esito misurato in analytics', en: 'Outcome measured in analytics' },
+];
+
+const references = [
+  SOURCES.adobe_cx_coworker,
+  SOURCES.adobe_cja,
+  SOURCES.adobe_content_analytics,
+  SOURCES.adobe_workfront,
+  SOURCES.adobe_aem_sites,
+  SOURCES.adobe_target,
+];
 ---
 <BaseLayout
-  title="Il Coworker AI — da intenzione a esecuzione"
-  description="CX Enterprise Coworker: il team marketing rende tre volte tanto, senza lavorare tre volte di più."
+  title="Coworker — dall’insight all’azione"
+  description="Un modello illustrativo per collegare insight, lavoro coordinato e attivazione governata con Adobe CX Enterprise Coworker."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <UniNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, '/risultati')} prevHref={href(base, '/analizza')}>
-
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <SlideBackdrop
         slot="backdrop"
@@ -72,210 +145,461 @@ const finalMetrics = [
       />
       <UcCover
         slug="coworker"
-        title={{ en: 'From insight to action:<br/>the AI Coworker', it: "Dall'insight all'azione:<br/>il Coworker AI" }}
-        lead={{ en: "Analytics told the team what to do. Coworker does it: the brief for Marco's 2 PM appointment, the campaign, the approvals, with people in the loop. Engine 06: agentic workflows.", it: "Gli analytics hanno detto al team cosa fare. Coworker lo fa: il brief per l'appuntamento di Marco alle 14, la campagna, le approvazioni, con le persone nel loop. Motore 06: workflow agentici." }}
-        chips={['Adobe CX Enterprise Coworker', { en: 'Human-in-the-loop', it: 'Human-in-the-loop' }, { en: 'Enterprise governance', it: 'Governance enterprise' }]}
+        title={{ en: 'From insight to governed action', it: 'Dall’insight all’azione governata' }}
+        lead={{
+          en: 'Coworker can help a team move from an analytics signal to a reviewed next step. The systems, permissions and people remain part of the decision.',
+          it: 'Coworker può aiutare il team a passare da un segnale analytics a un prossimo passo verificato. Sistemi, permessi e persone restano parte della decisione.',
+        }}
+        chips={[
+          { en: 'Insight to action', it: 'Dall’insight all’azione' },
+          { en: 'Human review', it: 'Revisione umana' },
+          { en: 'Illustrative workflow', it: 'Workflow illustrativo' },
+        ]}
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Il problema ───────────────────────────────────── -->
     <Slide id="slide-problem" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-5" data-reveal en="EVERY CMO'S PROBLEM" it="IL PROBLEMA DI OGNI CMO" />
+      <T as="p" class="uc-cw-preface" en="An accurate insight can still go nowhere. The handoff to someone who can act is often the missing step." it="Anche un insight corretto può restare fermo. Spesso manca il passaggio a chi può agire." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="WHERE WORK GETS STUCK" it="DOVE IL LAVORO SI FERMA" />
       <T
         as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-10"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.1"
-        en="This isn't where the team's time should go"
-        it="Il tempo del team non dovrebbe andare qui"
+        class="slide-title text-[var(--ink-primary)] mb-7"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="The signal is only the start"
+        it="Il segnale è solo l’inizio"
       />
-      <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-6 mb-10" data-reveal data-reveal-delay="0.2">
-        {painPoints.map((p) => (
-          <div class="uc-panel uc-panel--rosso items-center text-center">
-            <p class="uc-figure mb-3 break-words">{p.num}</p>
-            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={p.label.en} it={p.label.it} />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 text-left">
+        {friction.map((item, index) => (
+          <div class:list={['uc-panel', index === 1 ? 'uc-panel--oro' : 'uc-panel--rosso']}>
+            <T as="p" class="uc-tag mb-3" en={item.label.en} it={item.label.it} />
+            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={item.body.en} it={item.body.it} />
           </div>
         ))}
       </div>
-      <div class="w-full max-w-2xl mx-auto uc-quote text-center" data-reveal data-reveal-delay="0.35" style="margin-top: 0;">
-        <T as="p" class="uc-quote-text mx-auto" en="The CMO has a choice: tools that assist, or a system that executes." it="Il CMO può scegliere: strumenti che assistono, o un sistema che esegue." />
-      </div>
-      <T as="p" class="mt-6 text-center text-[0.62rem] tracking-widest uppercase opacity-30" en="Source: Adobe Content Supply Chain Benchmark Report, 2024 · banking sector" it="Fonte: Adobe Content Supply Chain Benchmark Report, 2024 · settore banking" />
+      <T
+        as="p"
+        class="mt-7 text-center text-[var(--ink-secondary)] text-base leading-relaxed max-w-3xl"
+        en="The opportunity is to connect the steps, not to remove the checks."
+        it="L’opportunità è collegare i passaggi, non eliminare le verifiche."
+      />
     </Slide>
 
-    <!-- ── SLIDE 2: Cos'è Coworker ────────────────────────────────── -->
-    <Slide id="slide-coworker-intro" bg="secondary" align="center">
+    <Slide id="slide-stack" bg="inverse" align="center">
+      <T as="p" class="uc-cw-preface uc-cw-preface--dark" en="The tools may already exist. The operating model connects the work, subject to access and configuration." it="Gli strumenti possono già esserci. Il modello operativo collega il lavoro, nel rispetto di accessi e configurazione." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" en="ONE OPERATING MODEL" it="UN MODELLO OPERATIVO" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-inverse)] mb-7"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Coworker connects the work around the stack"
+        it="Coworker collega il lavoro attorno allo stack"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-5 gap-3 text-left">
+        {stack.map((item, index) => (
+          <div class:list={['uc-cw-stack-step', index === 1 ? 'uc-cw-stack-step--focus' : '']}>
+            <span class="uc-cw-stack-index">{String(index + 1).padStart(2, '0')}</span>
+            <p class="uc-cw-stack-name">{item.name}</p>
+            <T as="p" class="uc-cw-stack-role" en={item.role.en} it={item.role.it} />
+          </div>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="uc-cw-caveat mt-6 max-w-4xl mx-auto"
+        en="Illustrative architecture, not a statement of UniCredit’s installed products. Availability, data access and integrations must be confirmed for the actual environment."
+        it="Architettura illustrativa, non descrive i prodotti installati in UniCredit. Disponibilità, accesso ai dati e integrazioni vanno verificati nell’ambiente effettivo."
+      />
+      <nav class="uc-cw-sources mt-4" aria-label="Product references">
+        <span><T en="Product references" it="Riferimenti prodotto" />:</span>
+        {references.map((reference) => (
+          <a href={reference.url} target="_blank" rel="noreferrer">{reference.label}</a>
+        ))}
+      </nav>
+    </Slide>
+
+    <Slide id="slide-chat-project" bg="secondary" align="center">
       <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-5" data-reveal en="ADOBE CX ENTERPRISE · COWORKER" it="ADOBE CX ENTERPRISE · COWORKER" />
+      <T as="p" class="uc-cw-preface" en="A quick answer and coordinated work solve different problems. Choose the interaction to fit the goal." it="Una risposta rapida e un lavoro coordinato risolvono problemi diversi. La modalità dipende dall’obiettivo." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="TWO SCALES OF WORK" it="DUE SCALE DI LAVORO" />
       <T
         as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-5"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.1"
-        en="Not an assistant. An AI colleague."
-        it="Non un assistente. Un collega AI."
+        class="slide-title text-[var(--ink-primary)] mb-7"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="A question is not a project"
+        it="Una domanda non è un progetto"
       />
-      <T as="p" class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15"
-        en="Coworker is the Adobe CX Enterprise AI engine for automating CX processes. It turns high-level goals into coordinated end-to-end execution, with governance, human oversight and enterprise context."
-        it="Coworker è l'engine AI di Adobe CX Enterprise per automatizzare i processi CX. Trasforma obiettivi di alto livello in esecuzione coordinata end-to-end, con governance, supervisione umana e contesto enterprise."
-      />
-      <div class="w-full max-w-5xl mx-auto grid grid-cols-3 gap-6" data-reveal data-reveal-delay="0.2">
-        {modules.map((m) => (
-          <div class:list={["uc-panel text-left", m.variant === 'rosso' && 'uc-panel--rosso', m.variant === 'oro' && 'uc-panel--oro']}>
-            <T as="p" class="uc-card-title" style="font-size: 1.05rem; margin-bottom: 0.5rem;" en={m.name.en} it={m.name.it} />
-            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={m.desc.en} it={m.desc.it} />
-          </div>
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5 text-left">
+        {interactionModes.map((mode, index) => (
+          <section class:list={['uc-panel uc-cw-mode', index === 1 ? 'uc-panel--oro' : 'uc-panel--rosso']}>
+            <div class="uc-panel-head">
+              <T as="p" class="uc-card-title" en={mode.name.en} it={mode.name.it} />
+              <T as="span" class="uc-tag" en={mode.kind.en} it={mode.kind.it} />
+            </div>
+            <ol class="uc-cw-mode-list">
+              {mode.steps.map((step) => <T as="li" en={step.en} it={step.it} />)}
+            </ol>
+            <div class="uc-cw-mode-outcome">
+              <T as="span" class="uc-tag" en="Outcome" it="Esito" />
+              <T as="span" en={mode.outcome.en} it={mode.outcome.it} />
+            </div>
+          </section>
         ))}
       </div>
+      <T
+        as="p"
+        class="uc-cw-caveat mt-5 max-w-4xl mx-auto text-center"
+        en="Chat and Projects describe interaction patterns in this concept. Product availability, release status and entitlements are not implied."
+        it="Chat e Projects descrivono modalità d’interazione in questo concept. Non implicano disponibilità, stato di rilascio o licenze."
+      />
     </Slide>
 
-    <!-- ── SLIDE 3: Marco's account manager ──────────────────────── -->
-    <Slide id="slide-marco-brief" bg="primary" align="split">
+    <Slide id="slide-marco-brief" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <div data-demo-flex class="w-full flex items-start gap-8">
-        <div class="flex-1 min-w-0 grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-          <div class="flex items-center justify-center">
-            <div class="uc-panel uc-panel--rosso max-w-sm w-full">
-              <div class="uc-panel-head">
-                <span class="uc-tag">Coworker · 10:05</span>
-              </div>
-              <div class="bg-[var(--surface-primary)] rounded p-3 mb-3">
-                <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en="Prepare the brief for Marco Ferretti, meeting at 2:00 PM" it="Prepara il brief per Marco Ferretti, appuntamento ore 14:00" />
-              </div>
-              <div class="bg-[var(--accent-primary)]/8 rounded p-3" style="margin-bottom: 0; border-top: 1px solid rgba(226,0,26,0.45);">
-                <T as="p" class="uc-tag mb-2" en="Coworker · Brief generated" it="Coworker · Brief generato" />
-                <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en="Marco Ferretti · Home mortgage propensity 87/100 · high-value retail client · 3 interactions in the past week · Personalized offer: first-home mortgage 20Y, rate reserved for long-standing clients..." it="Marco Ferretti · Propensity mutuo casa 87/100 · cliente retail alto-valore · 3 interazioni nell'ultima settimana · Proposta personalizzata: mutuo prima casa 20Y, tasso dedicato ai clienti storici..." />
-              </div>
-            </div>
+      <T as="p" class="uc-cw-preface" en="Use authorized journey evidence to prepare a handoff—not to make a customer decision." it="Usare evidenze autorizzate del journey per preparare un handoff, non per decidere sul cliente." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="MARCO · AN ILLUSTRATIVE HANDOFF" it="MARCO · UN HANDOFF ILLUSTRATIVO" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Turn journey evidence into a useful brief"
+        it="Dalle evidenze del journey a un brief utile"
+      />
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch text-left">
+        <div class="uc-panel uc-panel--rosso">
+          <div class="uc-panel-head">
+            <span class="uc-tag">Coworker · CJA view</span>
+            <T as="span" class="uc-cw-state" en="Draft" it="Bozza" />
           </div>
-          <div class="text-left">
-            <T as="p" class="slide-eyebrow text-[var(--ink-brand-text)] mb-5" data-reveal en="COWORKER · MARCO'S STORY" it="COWORKER · STORIA DI MARCO" />
-            <T
-              as="h3"
-              class="text-[var(--ink-primary)] mb-5"
-              style="font-size: clamp(1.6rem, 2.8vw, 2.6rem);"
-              data-reveal
-              data-reveal-delay="0.1"
-              en="The advisor walks in prepared"
-              it="Il consulente arriva preparato"
-            />
-            <T as="p" class="text-[var(--ink-secondary)] leading-relaxed mb-6 text-base" data-reveal data-reveal-delay="0.15"
-              en="Coworker read Marco's RT-CDP profile, analyzed his history and prepared the offer, all before the advisor opened the laptop."
-              it="Coworker ha letto il profilo RT-CDP di Marco, analizzato il suo storico e preparato la proposta, tutto prima che il consulente aprisse il laptop."
-            />
-            <div class="cw-thread" data-reveal data-reveal-delay="0.2">
-              <div class="uc-thread">
-                <span class="uc-node uc-node--rosso"></span>
-                <T as="p" class="cw-thread-item" en="AI-generated brief in 30 seconds" it="Brief AI-generated in 30 secondi" />
-              </div>
-              <div class="uc-thread">
-                <span class="uc-node uc-node--rosso"></span>
-                <T as="p" class="cw-thread-item" en="Personalized offer attached" it="Proposta personalizzata allegata" />
-              </div>
-              <div class="uc-thread">
-                <span class="uc-node uc-node--rosso"></span>
-                <T as="p" class="cw-thread-item" en="Cross-channel history included" it="Storico cross-canale incluso" />
-              </div>
-            </div>
+          <T as="p" class="uc-panel-body" en="Explain the journey and prepare context for the advisor." it="Spiegare il percorso e preparare il contesto per il consulente." />
+          <ul class="uc-cw-evidence">
+            <T as="li" en="Evidence: site, concierge and app interactions" it="Evidenze: interazioni su sito, concierge e app" />
+            <T as="li" en="Pattern: interest is high; the mortgage email stayed unopened" it="Pattern: interesse alto; l’email sul mutuo non è stata aperta" />
+          </ul>
+        </div>
+        <div class="uc-cw-handoff">
+          <T as="p" class="uc-cw-handoff-title" en="The advisor checks what is useful to share." it="Il consulente verifica cosa è utile condividere." />
+          <T as="p" class="uc-panel-body" en="This example assumes authorized access to the relevant CJA data; the answer remains a draft." it="L’esempio presuppone accesso autorizzato ai dati CJA pertinenti; la risposta resta una bozza." />
+          <div class="uc-cw-boundary">
+            <T as="span" class="uc-tag" en="Boundary" it="Confine" />
+            <T as="span" en="No credit decision or automatic customer activation." it="Nessuna decisione sul credito o attivazione automatica verso il cliente." />
           </div>
         </div>
-        <MediaDemoSlot id="coworker-chat-demo" label="Coworker — Demo Video" />
       </div>
-    </Slide>
-
-    <!-- ── SLIDE 5: Governance ────────────────────────────────────── -->
-    <Slide id="slide-governance" bg="primary" align="center">
-      <div class="uc-bg absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-5" data-reveal en="ENTERPRISE GOVERNANCE" it="ENTERPRISE GOVERNANCE" />
       <T
-        as="h2"
-        class="slide-title text-[var(--ink-primary)] mb-5"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.1"
-        en="Speed without losing control"
-        it="Velocità senza perdere il controllo"
-      />
-      <T as="p" class="text-[var(--ink-secondary)] leading-relaxed max-w-2xl mx-auto mb-10 text-base" data-reveal data-reveal-delay="0.15"
-        en="Coworker never acts without company context, brand policy and human oversight: the manager can approve or block before launch."
-        it="Coworker non agisce mai senza contesto aziendale, policy di brand e supervisione umana: il responsabile può approvare o bloccare prima del lancio."
-      />
-      <div class="w-full max-w-5xl mx-auto grid grid-cols-2 gap-6 mb-8" data-reveal data-reveal-delay="0.2">
-        {governancePillars.map((p) => (
-          <div class="uc-panel uc-panel--rosso text-left">
-            <T as="p" class="uc-card-title" style="font-size: 1.1rem; margin-bottom: 0.5rem;" en={p.title.en} it={p.title.it} />
-            <T as="p" class="uc-panel-body" style="margin-bottom: 0;" en={p.body.en} it={p.body.it} />
-          </div>
-        ))}
-      </div>
-      <T as="p" class="text-xs text-[var(--ink-tertiary)] text-center" data-reveal data-reveal-delay="0.35"
-        en="Interface-agnostic: MCP + A2A — Coworker plugs into the systems UniCredit already runs. · Compliance with specific regulatory requirements (DORA, PSD3, GDPR) requires legal validation for each implementation."
-        it="Interface-agnostic: MCP + A2A — Coworker si integra con i sistemi già in uso da UniCredit. · La conformità ai requisiti regolatori specifici (DORA, PSD3, GDPR) richiede validazione legale per ogni implementazione."
+        as="p"
+        class="uc-cw-caveat mt-5 max-w-4xl mx-auto text-center"
+        en="Illustrative scenario: data, profile attributes and access must be validated against the bank’s policies."
+        it="Scenario illustrativo: dati, attributi di profilo e accessi vanno verificati secondo le policy della banca."
       />
     </Slide>
 
-    <!-- ── SLIDE 6: Risultato del Team ──────────────────────────── -->
-    <Slide id="slide-coworker-result" bg="brand" align="center">
+    <Slide id="slide-execution" bg="brand" align="center">
       <SlideBackdrop
         slot="backdrop"
         {...mediaProps('bg-unlimited')}
-        imageClass="opacity-12"
-        scrim="bg-[var(--accent-primary)]/85"
+        imageClass="opacity-10"
+        scrim="bg-[var(--accent-primary)]/88"
       />
-      <T as="p" class="slide-eyebrow text-center text-[var(--ink-inverse)]/70 mb-5" data-reveal en="THE VALUE FOR THE TEAM" it="IL VALORE PER IL TEAM" />
+      <T as="p" class="uc-cw-preface uc-cw-preface--on-brand" en="Automation should make the next owner clear, not remove the review from consequential work." it="L’automazione deve chiarire chi interviene, non togliere la revisione dalle decisioni rilevanti." />
+      <T as="p" class="slide-eyebrow text-center text-white mb-4" en="REVIEW BEFORE ACTION" it="VERIFICA PRIMA DELL’AZIONE" />
       <T
         as="h2"
-        class="slide-title text-[var(--ink-inverse)] mb-5"
-        style="font-size: clamp(2.25rem, 4.4vw, 4rem);"
-        data-reveal
-        data-reveal-delay="0.08"
-        en="More campaigns, without more hours"
-        it="Più campagne, senza più ore"
+        class="slide-title text-[var(--ink-inverse)] mb-7"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Keep every handoff visible"
+        it="Rendere visibile ogni passaggio"
       />
-      <T as="p" class="text-[clamp(1.05rem,1.4vw,1.3rem)] text-[var(--ink-inverse)]/80 max-w-2xl mb-10" data-reveal data-reveal-delay="0.15"
-        en="The team doesn't work more: Coworker takes on the repetitive work that eats up their days."
-        it="Il team non lavora di più: Coworker si prende il lavoro ripetitivo che ne divora le giornate."
+      <ol class="uc-cw-execution">
+        {executionSteps.map((step) => (
+          <li>
+            <span class="uc-cw-execution-number">{step.number}</span>
+            <T as="p" class="uc-cw-execution-title" en={step.label.en} it={step.label.it} />
+            <T as="p" class="uc-cw-execution-body" en={step.body.en} it={step.body.it} />
+          </li>
+        ))}
+      </ol>
+      <T
+        as="p"
+        class="uc-cw-caveat uc-cw-caveat--on-brand mt-6 max-w-4xl mx-auto"
+        en="Workfront, AEM and Target are examples of possible execution surfaces—not assumed UniCredit integrations. Each connection and approval path must be configured."
+        it="Workfront, AEM e Target sono possibili superfici di esecuzione, non integrazioni UniCredit date per acquisite. Ogni collegamento e percorso di approvazione va configurato."
       />
-      <div class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-6 mb-10" data-reveal data-reveal-delay="0.22">
-        {finalMetrics.map((m) => (
-          <div class="p-6 bg-[var(--ink-inverse)]/10 border border-[var(--ink-inverse)]/20 rounded-sm text-center">
-            <p
-              class="font-[family-name:var(--font-display)] font-light text-[var(--ink-inverse)] leading-none mb-2"
-              style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
-            >{m.num}</p>
-            <T as="p" class="text-xs text-[var(--ink-inverse)]/70" en={m.label.en} it={m.label.it} />
+    </Slide>
+
+    <Slide id="slide-governance" bg="inverse" align="center">
+      <T as="p" class="uc-cw-preface uc-cw-preface--dark" en="Context needs an owner. Teams should know where it comes from, who can change it and when it applies." it="Il contesto ha bisogno di un owner. Il team deve sapere da dove arriva, chi lo aggiorna e quando si applica." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" en="GOVERNANCE BY DESIGN" it="GOVERNANCE NEL FLUSSO" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-inverse)] mb-7"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Context helps. Controls make it usable."
+        it="Il contesto aiuta. I controlli lo rendono utilizzabile."
+      />
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5 text-left">
+        {governanceChecks.map((check, index) => (
+          <div class:list={['uc-cw-governance', index === 1 ? 'uc-cw-governance--focus' : '']}>
+            <span class="uc-cw-governance-mark">{String(index + 1).padStart(2, '0')}</span>
+            <T as="p" class="uc-cw-governance-title" en={check.title.en} it={check.title.it} />
+            <T as="p" class="uc-cw-governance-body" en={check.body.en} it={check.body.it} />
           </div>
         ))}
       </div>
-      <div data-reveal data-reveal-delay="0.3">
+      <T
+        as="p"
+        class="uc-cw-caveat uc-cw-caveat--on-dark mt-6 max-w-4xl mx-auto text-center"
+        en="This is a design pattern, not a compliance certification. Legal, security and data-protection requirements must be validated for each implementation."
+        it="È un modello di progettazione, non una certificazione di conformità. Requisiti legali, di sicurezza e protezione dati vanno validati per ogni implementazione."
+      />
+    </Slide>
+
+    <Slide id="slide-coworker-result" bg="primary" align="center">
+      <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
+      <T as="p" class="uc-cw-preface" en="Shorten the path to a reviewed action, then measure its effect against a baseline." it="Accorciare il percorso fino all’azione verificata, poi misurarne l’effetto rispetto a una baseline." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="MEASURE THE OPERATING MODEL" it="MISURARE IL MODELLO OPERATIVO" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Measure the work through to the outcome"
+        it="Misurare il lavoro fino al risultato"
+      />
+      <T
+        as="p"
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-3xl mx-auto mb-6 text-base"
+        en="Start with operational measures, then connect them to the customer and business outcomes the bank already tracks."
+        it="Partire dalle misure operative e collegarle ai risultati cliente e business già monitorati dalla banca."
+      />
+      <ul class="uc-cw-measures">
+        {outcomeMeasures.map((measure) => <T as="li" en={measure.en} it={measure.it} />)}
+      </ul>
+      <div class="mt-6" data-reveal>
         <a
           href={href(base, '/risultati')}
-          class="inline-flex items-center gap-3 px-10 py-5 bg-[var(--ink-inverse)] text-[var(--ink-primary)] text-lg font-medium tracking-wide hover:bg-[var(--color-chiaro)] transition-colors"
+          class="inline-flex items-center gap-3 px-8 py-4 bg-[var(--color-rosso)] text-white text-lg font-medium tracking-wide hover:bg-[var(--color-rosso-scuro)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--color-petrolio)] focus-visible:outline-offset-4"
         >
           <T en="Next: the results →" it="Prossimo: i risultati →" />
         </a>
       </div>
-      <T as="p" class="mt-6 text-center text-[0.62rem] tracking-widest uppercase text-[var(--ink-inverse)]/30" en="Source: Adobe GenStudio for Performance Marketing (GA) · illustrative projection on banking-campaign benchmarks" it="Fonte: Adobe GenStudio for Performance Marketing (GA) · proiezione illustrativa su benchmark campagne bancarie" />
+      <T
+        as="p"
+        class="uc-cw-caveat mt-5 max-w-4xl mx-auto text-center"
+        en="These are suggested measures, not reported UniCredit results. Establish a baseline before setting targets."
+        it="Sono misure da valutare, non risultati UniCredit. Definire una baseline prima di fissare gli obiettivi."
+      />
     </Slide>
-
   </DeckContainer>
 
   <style>
-    /* Il filo interno → cliente: la squadra che tiene la relazione. */
-    .cw-thread { display: flex; flex-direction: column; gap: 0.85rem; }
-    .cw-thread .uc-thread { align-items: flex-start; gap: 0.75rem; }
-    .cw-thread .uc-node { margin-top: 0.5rem; }
-    .cw-thread-item {
-      color: var(--ink-note);
-      font-size: 0.96rem;
+    .uc-cw-preface {
+      max-width: 38rem;
+      margin: 0 auto 1rem;
+      color: var(--ink-secondary);
+      font-size: 1rem;
       line-height: 1.5;
-      max-width: none;
-      margin: 0;
+      text-wrap: pretty;
     }
-    .cw-timeline { display: flex; flex-direction: column; gap: 0.6rem; }
-    .cw-timeline .uc-thread { align-items: center; }
+    .uc-cw-preface--dark { color: var(--color-grigio-300); }
+    .uc-cw-preface--on-brand { color: #fff; }
+    .uc-cw-stack-step {
+      min-width: 0;
+      padding: 1.15rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .uc-cw-stack-step--focus {
+      background: rgba(226, 0, 26, 0.94);
+      border-color: rgba(255, 255, 255, 0.52);
+    }
+    .uc-cw-stack-index, .uc-cw-handoff-index, .uc-cw-governance-mark {
+      display: block;
+      margin-bottom: 0.6rem;
+      color: var(--color-ciano);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .uc-cw-stack-step--focus .uc-cw-stack-index { color: #fff; }
+    .uc-cw-stack-name {
+      margin: 0 0 0.45rem;
+      color: var(--ink-inverse);
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+    .uc-cw-stack-role {
+      margin: 0;
+      color: var(--color-grigio-300);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .uc-cw-stack-step--focus .uc-cw-stack-role { color: #fff; }
+    .uc-cw-caveat {
+      color: var(--color-grigio-300);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .uc-cw-caveat--on-brand { color: #fff; }
+    .uc-cw-caveat--on-dark { color: var(--color-grigio-300); }
+    .uc-cw-sources {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem 0.8rem;
+      color: var(--color-grigio-300);
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+    .uc-cw-sources a { color: #fff; text-decoration: underline; text-underline-offset: 0.18em; }
+    .uc-cw-sources a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    .uc-cw-mode { min-width: 0; padding: 1.4rem; }
+    .uc-cw-mode .uc-panel-head { align-items: flex-start; gap: 1rem; }
+    .uc-cw-mode-list {
+      display: grid;
+      gap: 0.8rem;
+      margin: 1rem 0;
+      padding-left: 1.4rem;
+      color: var(--ink-note);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .uc-cw-mode-outcome {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(38, 38, 38, 0.16);
+      color: var(--ink-primary);
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+    .uc-cw-handoff {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.8rem;
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.68);
+    }
+    .uc-cw-handoff-index { margin-bottom: 0.25rem; color: var(--ink-brand-text); }
+    .uc-cw-handoff-title {
+      margin: 0 0 0.35rem;
+      color: var(--ink-primary);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .uc-cw-handoff .uc-panel-body { margin-bottom: 0; }
+    .uc-cw-evidence {
+      display: grid;
+      gap: 0.65rem;
+      margin: 1.1rem 0 0;
+      padding-left: 1.3rem;
+      color: var(--ink-note);
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+    .uc-cw-boundary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.8rem;
+      padding: 0.85rem 1rem;
+      color: var(--ink-primary);
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .uc-cw-execution {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.8rem;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+    .uc-cw-execution li {
+      min-width: 0;
+      padding: 1rem;
+      color: var(--ink-primary);
+      background: var(--surface-primary);
+    }
+    .uc-cw-execution-number {
+      display: block;
+      margin-bottom: 0.6rem;
+      color: var(--ink-brand-text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .uc-cw-execution-title {
+      margin: 0 0 0.45rem;
+      font-size: 1.02rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .uc-cw-execution-body {
+      margin: 0;
+      color: var(--ink-note);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .uc-cw-governance {
+      min-width: 0;
+      padding: 1.35rem;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .uc-cw-governance--focus {
+      border-color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.13);
+    }
+    .uc-cw-governance-mark { color: var(--color-ciano); }
+    .uc-cw-governance-title {
+      margin: 0 0 0.55rem;
+      color: var(--ink-inverse);
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .uc-cw-governance-body {
+      margin: 0;
+      color: var(--color-grigio-300);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+    .uc-cw-measures {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem 1.5rem;
+      width: 100%;
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+    .uc-cw-measures li {
+      padding: 0.85rem 1rem;
+      color: var(--ink-primary);
+      background: rgba(255, 255, 255, 0.72);
+      border-bottom: 1px solid var(--color-petrolio);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+      .uc-cw-execution { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .uc-cw-execution li:last-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 640px) {
+      .uc-cw-execution, .uc-cw-measures { grid-template-columns: 1fr; }
+      .uc-cw-execution li:last-child { grid-column: auto; }
+      .uc-cw-sources { font-size: 0.75rem; }
+    }
   </style>
 </BaseLayout>
