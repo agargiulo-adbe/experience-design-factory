@@ -119,6 +119,11 @@ export const SOURCES: Record<string, Source> = {
     label: 'Forrester TEI — Adobe Real-Time CDP (composite organization)',
     url: 'https://business.adobe.com/resources/reports/forrester-total-economic-impact-of-adobe-real-time-cdp.html',
   },
+  adobe_customer_stories: {
+    id: 'adobe_customer_stories',
+    label: 'Adobe customer success stories (public)',
+    url: 'https://business.adobe.com/customer-success-stories/index.html',
+  },
   adobe_summit_alterra: {
     id: 'adobe_summit_alterra',
     label: 'Adobe Summit 2025 S507 — Alterra Mountain Co.',
