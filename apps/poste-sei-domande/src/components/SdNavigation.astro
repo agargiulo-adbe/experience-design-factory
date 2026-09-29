@@ -1,0 +1,58 @@
+---
+import { href } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+import { CHAPTERS } from '../data/chapters';
+
+interface Props {
+  currentPath: string;
+  base: string;
+}
+const { currentPath, base } = Astro.props;
+
+function isActive(slug: string) {
+  const norm = currentPath.replace(/\/+$/, '');
+  return norm.endsWith('/' + slug);
+}
+---
+<nav class="sd-nav flex items-center justify-between px-6 py-3" aria-label="Navigazione esperienza">
+  <a href={href(base, '/')} class="flex items-center gap-2.5 no-underline group flex-shrink-0" aria-label="Home — Sei domande">
+    <span class="inline-flex items-center justify-center w-7 h-7 rounded bg-[var(--color-blu)] flex-shrink-0" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+        <text x="16" y="21.5" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">?</text>
+        <circle cx="24" cy="8.5" r="3.2" fill="#eedc00"/>
+      </svg>
+    </span>
+    <span class="text-sm font-bold text-[var(--ink-primary)] group-hover:text-[var(--color-blu)] transition-colors whitespace-nowrap">
+      Sei domande
+    </span>
+    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--color-grigio-600)] ml-1 whitespace-nowrap">
+      Adobe × Poste Italiane
+    </span>
+  </a>
+
+  <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
+    {CHAPTERS.map((c) => (
+      <li role="listitem" class="flex-shrink-0">
+        <a
+          href={href(base, '/' + c.slug)}
+          class:list={['sd-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.slug) && 'sd-nav-link--active']}
+          aria-current={isActive(c.slug) ? 'page' : undefined}
+        >
+          <span class="text-[var(--color-grigio-500)] mr-1 tabular-nums">{c.num}</span>
+          <span data-lang-it>{c.label.it}</span><span data-lang-en>{c.label.en}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <LangToggle langs={['it', 'en']} />
+    <a
+      href={href(base, '/admin')}
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[var(--line-default)] text-[var(--color-grigio-600)] hover:text-[var(--color-blu)] hover:border-[var(--color-blu)] rounded-sm transition-colors no-underline"
+      data-admin-only
+    >
+      Admin
+    </a>
+  </div>
+</nav>

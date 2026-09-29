@@ -217,6 +217,25 @@ export const EXPERIENCES: Experience[] = [
     },
   },
   {
+    slug: 'poste-sei-domande',
+    name: 'Sei domande',
+    client: 'Poste Italiane',
+    brandLabel: 'Poste Italiane',
+    url: `${LIVE}/poste-sei-domande/`,
+    shot: 'shots/poste.webp',
+    accent: '#0047bb',
+    sections: 6,
+    defaultPublished: true,
+    tag: {
+      en: '6 chapters · IT/EN · technical-operational',
+      it: '6 capitoli · IT/EN · tecnico-operativa',
+    },
+    desc: {
+      en: 'Six questions a digital-analytics team gets every week, each answered today in Workspace and tomorrow in CX Enterprise Coworker \u2014 without touching the stack.',
+      it: 'Sei domande che un team di web analytics riceve ogni settimana, ognuna risposta oggi in Workspace e domani in CX Enterprise Coworker \u2014 senza toccare lo stack.',
+    },
+  },
+  {
     slug: 'aperture-email',
     name: 'Aperture',
     client: 'Osservatorio',

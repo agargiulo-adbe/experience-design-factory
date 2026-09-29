@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SdNavigation from '../components/SdNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/notte-3.webp';
+import bgOggi from '../assets/generated/bg/carta-2.webp';
+import bgChat from '../assets/generated/bg/carta-4.webp';
+import bgCanali from '../assets/generated/bg/carta-1.webp';
+import bgTake from '../assets/generated/bg/notte-5.webp';
+
+const SLUG = 'capire';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const oggi = [
+  { it: 'Il business segnala il calo. Si verifica: le Operazioni Veloci lunedì fanno −14% sul lunedì prima.', en: 'The business flags the drop. You verify: Quick Operations on Monday are −14% on the previous Monday.' },
+  { it: 'Si scompone per piattaforma: iOS, Android. Poi per versione dell’app. Poi per orario.', en: 'Break it down by platform: iOS, Android. Then by app version. Then by hour.' },
+  { it: 'Si scompone per operazione: bollettini, ricariche, bonifici. Ogni breakdown è un pannello nuovo.', en: 'Break it down by operation: payment slips, top-ups, transfers. Every breakdown is a new panel.' },
+  { it: 'Si scrive all’IT per sapere se c’è stato un rilascio. Si aspetta.', en: 'Write to IT to ask whether there was a release. Wait.' },
+  { it: 'Due giorni dopo si sa: la versione Android 8.4 dalle 9 alle 12. Il business lo sapeva da un reclamo.', en: 'Two days later you know: Android version 8.4 from 9 to 12. The business already knew from a complaint.' },
+];
+
+// Dati ILLUSTRATIVI per la root-cause.
+const contributi = [
+  { k: { it: 'Android · versione 8.4', en: 'Android · version 8.4' }, w: 78, v: '−11,2 pt', tone: '' },
+  { k: { it: 'Fascia 9–12', en: '9–12 time band' }, w: 61, v: '−8,7 pt', tone: '' },
+  { k: { it: 'Bollettini', en: 'Payment slips' }, w: 44, v: '−6,1 pt', tone: '' },
+  { k: { it: 'iOS · tutte le versioni', en: 'iOS · all versions' }, w: 8, v: '−0,9 pt', tone: 'grigio' },
+  { k: { it: 'Altre sezioni', en: 'Other sections' }, w: 4, v: '+0,4 pt', tone: 'grigio' },
+];
+
+const canali = [
+  { k: { it: 'Sito', en: 'Website' }, w: 9, v: '9%', tone: 'grigio' },
+  { k: { it: 'App · Android', en: 'App · Android' }, w: 52, v: '52%', tone: '' },
+  { k: { it: 'App · iOS', en: 'App · iOS' }, w: 39, v: '39%', tone: '' },
+];
+---
+<BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <SdNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover ─────────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="sd-q" data-reveal>
+        <p class="sd-q-num"><span data-lang-it>Domanda {ch.num} · {ch.label.it}</span><span data-lang-en>Question {ch.num} · {ch.label.en}</span></p>
+        <span class="sd-q-mark" aria-hidden="true"></span>
+        <T as="h2" class="sd-q-title" it={`«${ch.question.it}»`} en={`“${ch.question.en}”`} data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="sd-q-lead"
+          it="Il «cosa» lo dice una tabella. Il «perché» oggi è lavoro manuale: scomporre per piattaforma, versione, orario, operazione, finché il calo si isola. Dal 2 ottobre Coworker lo fa con una skill dedicata."
+          en="A table tells you the “what”. The “why” is manual work today: break down by platform, version, hour, operation, until the drop is isolated. From 2 October Coworker does it with a dedicated skill."
+          data-reveal data-reveal-delay="0.15"
+        />
+        <p class="sd-src sd-src--center sd-on-dark" data-reveal data-reveal-delay="0.22">
+          <span data-lang-it>Fonte:&nbsp;</span><span data-lang-en>Source:&nbsp;</span>
+          <a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Oggi ──────────────────────────────────────────────────────────── -->
+    <Slide id="slide-oggi" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgOggi.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Oggi, in Workspace" en="Today, in Workspace" />
+        <T as="h2" class="sd-head-title" it="Il perché si trova per esclusione" en="The why is found by elimination" />
+      </div>
+      <div class="sd-split" data-reveal data-reveal-delay="0.14">
+        <div class="sd-today">
+          <T as="p" class="sd-today-k" it="La sequenza, come la fa il team" en="The sequence, as the team does it" />
+          <ol class="sd-today-ol">
+            {oggi.map((o, i) => (
+              <li class="sd-today-li"><span class="sd-today-n">{i + 1}</span><T as="span" it={o.it} en={o.en} /></li>
+            ))}
+          </ol>
+        </div>
+        <div class="sd-panel sd-panel--grigio">
+          <div class="sd-panel-head"><T as="span" class="sd-tag sd-tag--grigio" it="Dove si perde tempo" en="Where the time goes" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>Nell’ordine dei breakdown.</strong> Si parte da quello che si sospetta, non da quello che pesa. Se il sospetto è sbagliato, si ricomincia." en="<strong>In the order of breakdowns.</strong> You start from what you suspect, not from what weighs most. If the suspicion is wrong, you start over." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>Nel confronto.</strong> Ogni dimensione va letta prima e dopo il cambiamento, a mano, pannello per pannello." en="<strong>In the comparison.</strong> Every dimension must be read before and after the change, by hand, panel by panel." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>Nell’attesa.</strong> Il pezzo che manca, il rilascio, sta fuori da Analytics. Si chiede e si aspetta." en="<strong>In the waiting.</strong> The missing piece, the release, sits outside Analytics. You ask and you wait." /></li>
+          </ul>
+          <T as="p" class="sd-today-sum mt-4" it="Due giorni per una risposta che il business aveva già ricevuto da un reclamo." en="Two days for an answer the business had already received from a complaint." />
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Con Coworker: root cause ──────────────────────────────────────── -->
+    <Slide id="slide-chat" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgChat.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Con Coworker · root-cause analysis" en="With Coworker · root-cause analysis" />
+        <T as="h2" class="sd-head-title" it="Prima il peso, poi il sospetto" en="Weight first, suspicion second" />
+      </div>
+      <div class="sd-split" data-reveal data-reveal-delay="0.14">
+        <div class="sd-panel sd-panel--blu">
+          <div class="sd-panel-head"><T as="span" class="sd-tag" it="Cosa fa la skill" en="What the skill does" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Trova il giorno del cambiamento</strong> sulla serie della metrica, non sul giorno in cui è arrivato il reclamo." en="<strong>Finds the day of the change</strong> on the metric’s series, not on the day the complaint arrived." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Confronta prima e dopo</strong> su tutte le dimensioni disponibili nella suite, insieme." en="<strong>Compares before and after</strong> across every dimension available in the suite, together." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Ordina per contributo</strong>: quanto ogni valore di dimensione pesa sul calo, in punti." en="<strong>Ranks by contribution</strong>: how much each dimension value weighs on the drop, in points." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="Spiega in tre righe e apre la stessa analisi in Workspace. <strong>Il rilascio</strong> lo confermate voi con l’IT: quello Analytics non lo sa." en="Explains in three lines and opens the same analysis in Workspace. <strong>The release</strong> you confirm with IT: Analytics does not know that." /></li>
+          </ul>
+        </div>
+        <div class="sd-chat" aria-label="Mock della chat Coworker">
+          <div class="sd-chat-bar"><span class="sd-chat-bar-dot"></span><span class="sd-chat-bar-title">Coworker Chat</span><span class="sd-chat-bar-scope">Adobe Analytics · superapp-prod</span></div>
+          <div class="sd-chat-body">
+            <div class="sd-msg sd-msg--user"><span class="sd-msg-avatar">GS</span>
+              <T as="p" class="sd-msg-text" it="Perché le Operazioni Veloci sono calate lunedì?" en="Why did Quick Operations drop on Monday?" />
+            </div>
+            <div class="sd-msg sd-msg--cw"><span class="sd-msg-avatar">CW</span>
+              <div class="min-w-0 flex-1">
+                <T as="p" class="sd-msg-text" it="Il calo inizia lunedì 28 alle 9:10 e rientra alle 12:40: <strong>−14%</strong> sul lunedì precedente. Quasi tutto il calo si concentra in un punto:" en="The drop starts Monday 28 at 9:10 and recovers at 12:40: <strong>−14%</strong> on the previous Monday. Almost all of it concentrates in one place:" />
+                <div class="sd-msg-block sd-bars">
+                  {contributi.map((c) => (
+                    <div class="sd-bar"><span><span data-lang-it>{c.k.it}</span><span data-lang-en>{c.k.en}</span></span><span class="sd-bar-track"><span class:list={['sd-bar-fill', c.tone === 'grigio' && 'sd-bar-fill--grigio']} style={`width:${c.w}%`}></span></span><span class="sd-bar-v">{c.v}</span></div>
+                  ))}
+                </div>
+                <T as="p" class="sd-msg-text mt-2" it="Su iOS e sulle altre sezioni non c’è variazione. È coerente con un problema della versione Android 8.4 nella fascia 9–12: verifica con l’IT se c’è stato un rilascio." en="iOS and the other sections show no change. This is consistent with an issue in Android version 8.4 in the 9–12 band: check with IT whether there was a release." />
+                <div class="sd-chips"><span class="sd-chip"><span data-lang-it>Apri in Analysis Workspace</span><span data-lang-en>Open in Analysis Workspace</span></span><span class="sd-chip"><span data-lang-it>Segui Android 8.4 per 7 giorni</span><span data-lang-en>Track Android 8.4 for 7 days</span></span></div>
+              </div>
+            </div>
+          </div>
+          <T as="p" class="sd-chat-note" it="Dati illustrativi · skill di root-cause disponibile dal 2 ottobre 2026" en="Illustrative data · root-cause skill available from 2 October 2026" />
+        </div>
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
+        <a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.coworkerRca.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerRca.label.it}</span><span data-lang-en>{SOURCES.coworkerRca.label.en}</span></a>
+      </p>
+    </Slide>
+
+    <!-- ── Sito e app ────────────────────────────────────────────────────── -->
+    <Slide id="slide-canali" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgCanali.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="La seconda domanda del capitolo" en="The chapter’s second question" />
+        <T as="h2" class="sd-head-title" it="«Quanto del servizio passa dal sito e quanto dall’app?»" en="“How much of the service goes through the site and how much through the app?”" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Era una delle due domande del vostro PoC del 2024. Con una sola report suite che raccoglie app e web, la risposta è un confronto per piattaforma, ripetibile per ogni servizio: bollettini, ricariche, spedizioni. Coworker la legge nella stessa suite, senza unire niente."
+          en="It was one of the two questions in your 2024 PoC. With one report suite that collects app and web, the answer is a comparison by platform, repeatable for every service: payment slips, top-ups, shipments. Coworker reads it in the same suite, without merging anything."
+        />
+      </div>
+      <div class="sd-split sd-split--even" data-reveal data-reveal-delay="0.14">
+        <div class="sd-chat" aria-label="Mock della chat Coworker">
+          <div class="sd-chat-bar"><span class="sd-chat-bar-dot"></span><span class="sd-chat-bar-title">Coworker Chat</span><span class="sd-chat-bar-scope">Adobe Analytics · superapp-prod</span></div>
+          <div class="sd-chat-body">
+            <div class="sd-msg sd-msg--user"><span class="sd-msg-avatar">GS</span>
+              <T as="p" class="sd-msg-text" it="Pagamento bollettini negli ultimi 30 giorni: quota per piattaforma." en="Payment slips in the last 30 days: share by platform." />
+            </div>
+            <div class="sd-msg sd-msg--cw"><span class="sd-msg-avatar">CW</span>
+              <div class="min-w-0 flex-1">
+                <div class="sd-msg-block sd-bars mt-0">
+                  {canali.map((c) => (
+                    <div class="sd-bar"><span><span data-lang-it>{c.k.it}</span><span data-lang-en>{c.k.en}</span></span><span class="sd-bar-track"><span class:list={['sd-bar-fill', c.tone === 'grigio' && 'sd-bar-fill--grigio']} style={`width:${c.w}%`}></span></span><span class="sd-bar-v">{c.v}</span></div>
+                  ))}
+                </div>
+                <T as="p" class="sd-msg-text mt-2" it="Nove bollettini su dieci partono dall’app. Il sito pesa il 9%, stabile rispetto al mese prima." en="Nine payment slips out of ten start from the app. The site weighs 9%, stable on the month before." />
+              </div>
+            </div>
+          </div>
+          <T as="p" class="sd-chat-note" it="Dati illustrativi" en="Illustrative data" />
+        </div>
+        <div class="sd-panel sd-panel--giallo">
+          <div class="sd-panel-head"><T as="span" class="sd-tag sd-tag--giallo" it="Perché conta per Poste" en="Why it matters for Poste" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot sd-dot--giallo"></span><T as="span" it="Nel 2026 il Gruppo si riorganizza in due aree e nasce il Financial Hub: <strong>chi governa un servizio vuole sapere dove lo usano</strong>." en="In 2026 the Group reorganises into two areas and the Financial Hub is born: <strong>whoever runs a service wants to know where it is used</strong>." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--giallo"></span><T as="span" it="La domanda oggi arriva al team una volta per servizio. <strong>Diventa una skill</strong> con il servizio come parametro." en="Today the question reaches the team once per service. <strong>It becomes a skill</strong> with the service as a parameter." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--giallo"></span><T as="span" it="Resta una lettura per piattaforma, non per persona: <strong>senza CJA non si unisce il cliente</strong> fra canali, e questo deck non lo promette." en="It remains a per-platform reading, not per person: <strong>without CJA the customer is not stitched</strong> across channels, and this deck does not promise that." /></li>
+          </ul>
+        </div>
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonte:&nbsp;</span><span data-lang-en>Source:&nbsp;</span>
+        <a href={SOURCES.posteStrategy.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.posteStrategy.label.it}</span><span data-lang-en>{SOURCES.posteStrategy.label.en}</span></a>
+      </p>
+    </Slide>
+
+    <!-- ── Take ──────────────────────────────────────────────────────────── -->
+    <Slide id="slide-take" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgTake.src})`}></div>
+      <div class="sd-take" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa ti porti a casa" en="What you take home" />
+        <T as="h2" class="sd-take-title" it="Il perché arriva prima del reclamo" en="The why arrives before the complaint" />
+        <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Tempo" en="Time" />
+            <T as="p" class="sd-take-t" it="Da due giorni a <strong>una conversazione</strong>: il breakdown su tutte le dimensioni si fa in una volta." en="From two days to <strong>one conversation</strong>: the breakdown across every dimension happens at once." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Metodo" en="Method" />
+            <T as="p" class="sd-take-t" it="Si parte da <strong>ciò che pesa</strong>, non da ciò che si sospetta. Il sospetto resta utile per la verifica." en="Start from <strong>what weighs</strong>, not from what you suspect. The suspicion stays useful for verification." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Credibilità" en="Credibility" />
+            <T as="p" class="sd-take-t" it="Il team porta al business <strong>una causa e un’ora</strong>, non una tabella da interpretare." en="The team brings the business <strong>a cause and a time</strong>, not a table to interpret." />
+          </div>
+        </div>
+        <T as="p" class="sd-caveat" it="<strong>Una cautela.</strong> La root cause di Analytics è statistica: dice dove il calo si concentra, non cosa l’ha causato. La conferma del rilascio resta un giro con l’IT." en="<strong>One caution.</strong> Analytics root cause is statistical: it says where the drop concentrates, not what caused it. Confirming the release is still a round with IT." data-reveal data-reveal-delay="0.24" />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

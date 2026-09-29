@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Sei domande (00)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Sei domande' },
+    { id: 'slide-numeri',   label: 'Un’app che è diventata il canale' },
+    { id: 'slide-pain',     label: 'Due domande del 2024, ancora aperte' },
+    { id: 'slide-percorso', label: 'Il percorso — sei capitoli' },
+  ]},
+  { slug: 'accendere', label: 'Accendere (01)', slides: [
+    { id: 'slide-cover', label: 'Cover — Come lo accendo, e per chi?' },
+    { id: 'slide-cosa',  label: 'Un collega che legge Adobe Analytics' },
+    { id: 'slide-passi', label: 'Quattro passi, nessun rilascio' },
+    { id: 'slide-chi',   label: 'Gli stessi permessi di Workspace' },
+    { id: 'slide-take',  label: 'Cosa ti porti a casa' },
+  ]},
+  { slug: 'rispondere', label: 'Rispondere (02)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Cos’è successo ieri sulla SuperApp?' },
+    { id: 'slide-oggi',      label: 'Oggi — cinque passaggi in Workspace' },
+    { id: 'slide-chat',      label: 'Con Coworker — la stessa domanda' },
+    { id: 'slide-settimana', label: 'Il riepilogo del lunedì (skill)' },
+    { id: 'slide-take',      label: 'Cosa ti porti a casa' },
+  ]},
+  { slug: 'capire', label: 'Capire (03)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Perché le Operazioni Veloci sono calate?' },
+    { id: 'slide-oggi',   label: 'Oggi — il perché per esclusione' },
+    { id: 'slide-chat',   label: 'Con Coworker — root-cause analysis' },
+    { id: 'slide-canali', label: 'Sito e app — quota per piattaforma' },
+    { id: 'slide-take',   label: 'Cosa ti porti a casa' },
+  ]},
+  { slug: 'governare', label: 'Governare (04)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Quali segmenti e suite non usa più nessuno?' },
+    { id: 'slide-oggi',      label: 'Oggi — sedici report suite' },
+    { id: 'slide-chat',      label: 'Con Coworker — uso e duplicati' },
+    { id: 'slide-workspace', label: 'Costruiscimi il Workspace del lunedì' },
+    { id: 'slide-take',      label: 'Cosa ti porti a casa' },
+  ]},
+  { slug: 'proteggere', label: 'Proteggere (05)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Dove finiscono i dati?' },
+    { id: 'slide-arch',   label: 'Tre pezzi, tutti Adobe, nessuna copia' },
+    { id: 'slide-nonfa',  label: 'Quattro cose che Coworker non fa' },
+    { id: 'slide-regole', label: 'Quattro regole per il primo mese' },
+    { id: 'slide-take',   label: 'Cosa ti porti a casa' },
+  ]},
+  { slug: 'evolvere', label: 'Evolvere (06)', slides: [
+    { id: 'slide-cover',     label: 'Cover — E domani?' },
+    { id: 'slide-evolutive', label: 'Quattro evolutive, ognuna con il suo padrone' },
+    { id: 'slide-pilota',    label: 'Il pilota — quattro settimane' },
+    { id: 'slide-chiusura',  label: 'Chiusura — Le risposte erano già lì' },
+    { id: 'slide-signature', label: 'La firma — Adobe × Poste Italiane' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Il deck non ha slide gated: il registro delle soluzioni serve al tab «Sezioni»
+// e alle etichette; i capitoli si accendono/spengono dal tab «Capitoli e slide».
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'coworker', name: 'Adobe CX Enterprise Coworker — Chat su Adobe Analytics', shortName: 'Coworker', pillar: 'analytics',
+    description: 'Domande in linguaggio naturale sulle report suite, root-cause, apertura in Workspace, skill del team.', appearsIn: ['Accendere', 'Rispondere', 'Capire', 'Governare'] },
+  { id: 'mcp', name: 'Server MCP Adobe Analytics — 23 strumenti', shortName: 'MCP Analytics', pillar: 'analytics',
+    description: 'Discovery, report, descrizione e uso dei componenti; quattro scritture con approvazione. Incluso nella licenza Analytics.', appearsIn: ['Accendere', 'Governare', 'Proteggere', 'Evolvere'] },
+  { id: 'target', name: 'Adobe Target in Coworker — evolutiva', shortName: 'Target', pillar: 'evolutive',
+    description: 'Audience, test A/B e verdetti via Coworker. Di interesse per il monitoraggio, decisione della Direzione Dati.', appearsIn: ['Evolvere'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { analytics: 'Adobe Analytics', evolutive: 'Evolutive' };
+const PILLAR_ORDER = ['analytics', 'evolutive'];
+const PILLAR_COLORS: Record<string, string> = { analytics: '#0047bb', evolutive: '#eedc00' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title="Console — Sei domande · Poste Italiane">
+  <AdminConsole
+    projectSlug="poste-sei-domande"
+    projectName="Sei domande"
+    clientLabel="Adobe × Poste Italiane"
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

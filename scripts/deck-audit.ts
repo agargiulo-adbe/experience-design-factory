@@ -123,6 +123,15 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'idee',    route: '/experience-design-factory/isybank-momento/idee/' },
     { name: 'rotta',   route: '/experience-design-factory/isybank-momento/rotta/' },
   ],
+  'poste-sei-domande': [
+    { name: 'home',       route: '/experience-design-factory/poste-sei-domande/' },
+    { name: 'accendere',  route: '/experience-design-factory/poste-sei-domande/accendere/' },
+    { name: 'rispondere', route: '/experience-design-factory/poste-sei-domande/rispondere/' },
+    { name: 'capire',     route: '/experience-design-factory/poste-sei-domande/capire/' },
+    { name: 'governare',  route: '/experience-design-factory/poste-sei-domande/governare/' },
+    { name: 'proteggere', route: '/experience-design-factory/poste-sei-domande/proteggere/' },
+    { name: 'evolvere',   route: '/experience-design-factory/poste-sei-domande/evolvere/' },
+  ],
   'mim-alfabeti': [
     { name: 'home',        route: '/experience-design-factory/mim-alfabeti/' },
     { name: 'domanda',     route: '/experience-design-factory/mim-alfabeti/domanda/' },
@@ -147,6 +156,7 @@ const CWD_ALIAS: Record<string, string> = {
   'mim-alfabeti': 'mim-alfabeti',
   'isybank-momento': 'isybank-momento',
   'aperture-email': 'aperture-email',
+  'poste-sei-domande': 'poste-sei-domande',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {

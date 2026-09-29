@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SdNavigation from '../components/SdNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/notte-4.webp';
+import bgOggi from '../assets/generated/bg/carta-3.webp';
+import bgChat from '../assets/generated/bg/carta-2.webp';
+import bgWorkspace from '../assets/generated/bg/carta-4.webp';
+import bgTake from '../assets/generated/bg/notte-5.webp';
+
+const SLUG = 'governare';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Dati del cliente: le report suite dalla dashboard di utilizzo (set 2026).
+const suite = [
+  { k: { it: 'La SuperApp', en: 'The SuperApp' }, b: { it: 'Una suite raccoglie il 99% delle chiamate: è il canale, ed è l’unica che conta davvero per il business.', en: 'One suite collects 99% of the calls: it is the channel, and the only one that really matters to the business.' } },
+  { k: { it: 'Sito, news, ristoratori', en: 'Site, news, restaurateurs' }, b: { it: 'Tre suite web attive con volumi di un altro ordine di grandezza. Vive anche una suite di sviluppo dell’app.', en: 'Three active web suites with volumes an order of magnitude smaller. An app development suite lives alongside them.' } },
+  { k: { it: 'Le suite ferme', en: 'The idle suites' }, b: { it: 'Sei report suite ricevono da una a qualche decina di chiamate al mese: vaccini Lombardia, vaccino Covid, app BancoPosta e PostePay iOS di vecchia generazione, Ufficio Postale, PosteID. Nessuno le guarda, ma restano nel menu di tutti.', en: 'Six report suites receive from one to a few dozen calls a month: Lombardy vaccines, Covid vaccine, previous-generation BancoPosta and PostePay iOS apps, Post Office, PosteID. Nobody looks at them, but they stay in everyone’s menu.' } },
+];
+
+// Dati ILLUSTRATIVI per il mock dei componenti.
+const duplicati = [
+  { s: { it: '«Utenti app» · 2023', en: '“App users” · 2023' }, v: '14', d: { it: 'usato in 14 progetti', en: 'used in 14 projects' } },
+  { s: { it: '«Traffico app (nuovo)»', en: '“App traffic (new)”' }, v: '9', d: { it: 'stessa definizione, 9 progetti', en: 'same definition, 9 projects' } },
+  { s: { it: '«App only – test»', en: '“App only – test”' }, v: '0', d: { it: 'mai usato, creato nel 2024', en: 'never used, created in 2024' } },
+];
+---
+<BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <SdNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover ─────────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="sd-q" data-reveal>
+        <p class="sd-q-num"><span data-lang-it>Domanda {ch.num} · {ch.label.it}</span><span data-lang-en>Question {ch.num} · {ch.label.en}</span></p>
+        <span class="sd-q-mark" aria-hidden="true"></span>
+        <T as="h2" class="sd-q-title" it={`«${ch.question.it}»`} en={`“${ch.question.en}”`} data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="sd-q-lead"
+          it="Quattordici anni di Analytics lasciano segmenti, metriche calcolate e progetti che nessuno ha più il coraggio di cancellare. La governance è la domanda che non fa mai nessuno, perché rispondere costa. Qui costa una conversazione."
+          en="Fourteen years of Analytics leave segments, calculated metrics and projects nobody dares delete any more. Governance is the question nobody asks, because answering costs. Here it costs one conversation."
+          data-reveal data-reveal-delay="0.15"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Oggi: l'inventario ────────────────────────────────────────────── -->
+    <Slide id="slide-oggi" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgOggi.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Oggi, nella vostra istanza" en="Today, in your instance" />
+        <T as="h2" class="sd-head-title" it="Sedici report suite, una che conta, sei che dormono" en="Sixteen report suites, one that counts, six asleep" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Lo dice la dashboard di utilizzo della vostra istanza, mese per mese dal 2023. Nessuno dei numeri sotto è una stima."
+          en="Your instance’s usage dashboard says so, month by month since 2023. None of the numbers below is an estimate."
+        />
+      </div>
+      <div class="w-full max-w-6xl mx-auto flex flex-col" data-reveal data-reveal-delay="0.14">
+        {suite.map((r, i) => (
+          <div class="sd-row">
+            <div>
+              <p class="sd-row-label"><span class="text-[var(--ink-mark)] mr-2 tabular-nums">0{i + 1}</span><span data-lang-it>{r.k.it}</span><span data-lang-en>{r.k.en}</span></p>
+            </div>
+            <T as="p" class="sd-row-body" it={r.b.it} en={r.b.en} />
+          </div>
+        ))}
+      </div>
+      <T as="p" class="sd-src" it="Fonte: dashboard di utilizzo della vostra istanza Adobe Analytics, gen 2023 – set 2026. Suite di sviluppo e di collaudo escluse dal conteggio delle «ferme»." en="Source: usage dashboard of your Adobe Analytics instance, Jan 2023 – Sep 2026. Development and test suites excluded from the “idle” count." data-reveal data-reveal-delay="0.24" />
+    </Slide>
+
+    <!-- ── Con Coworker: componenti ──────────────────────────────────────── -->
+    <Slide id="slide-chat" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgChat.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Con Coworker" en="With Coworker" />
+        <T as="h2" class="sd-head-title" it="Chi usa cosa, e cosa somiglia a cosa" en="Who uses what, and what looks like what" />
+      </div>
+      <div class="sd-split" data-reveal data-reveal-delay="0.14">
+        <div class="sd-panel sd-panel--blu">
+          <div class="sd-panel-head"><T as="span" class="sd-tag" it="Tre strumenti del server MCP" en="Three tools of the MCP server" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Uso dei componenti</strong>: quali segmenti, metriche e date sono più usati nei progetti, e quali mai." en="<strong>Component usage</strong>: which segments, metrics and date ranges are used most in projects, and which never." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Componenti simili</strong>: segmenti con la stessa definizione e nomi diversi, i duplicati che nascono ogni anno." en="<strong>Similar components</strong>: segments with the same definition and different names, the duplicates born every year." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>Usati insieme</strong>: cosa accompagna di solito un componente, per capire cosa si rompe se lo togli." en="<strong>Used together</strong>: what usually accompanies a component, to see what breaks if you remove it." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="Coworker <strong>propone</strong> la pulizia. Cancellare resta un gesto vostro, in Workspace, dopo aver letto l’elenco." en="Coworker <strong>proposes</strong> the clean-up. Deleting remains your gesture, in Workspace, after reading the list." /></li>
+          </ul>
+        </div>
+        <div class="sd-chat" aria-label="Mock della chat Coworker">
+          <div class="sd-chat-bar"><span class="sd-chat-bar-dot"></span><span class="sd-chat-bar-title">Coworker Chat</span><span class="sd-chat-bar-scope">Adobe Analytics · superapp-prod</span></div>
+          <div class="sd-chat-body">
+            <div class="sd-msg sd-msg--user"><span class="sd-msg-avatar">GS</span>
+              <T as="p" class="sd-msg-text" it="Quali segmenti sulla suite della SuperApp sono duplicati o non usati da un anno?" en="Which segments on the SuperApp suite are duplicated or unused for a year?" />
+            </div>
+            <div class="sd-msg sd-msg--cw"><span class="sd-msg-avatar">CW</span>
+              <div class="min-w-0 flex-1">
+                <T as="p" class="sd-msg-text" it="Ho letto 184 segmenti. Tre gruppi hanno la stessa definizione con nomi diversi; <strong>41</strong> non compaiono in nessun progetto da oltre dodici mesi. Il gruppo più usato:" en="I read 184 segments. Three groups share the same definition under different names; <strong>41</strong> appear in no project for over twelve months. The most-used group:" />
+                <div class="sd-msg-block">
+                  <table class="sd-table">
+                    <thead><tr><th><span data-lang-it>Segmento</span><span data-lang-en>Segment</span></th><th class="num"><span data-lang-it>Progetti</span><span data-lang-en>Projects</span></th><th><span data-lang-it>Nota</span><span data-lang-en>Note</span></th></tr></thead>
+                    <tbody>
+                      {duplicati.map((r) => (
+                        <tr><td><span data-lang-it>{r.s.it}</span><span data-lang-en>{r.s.en}</span></td><td class="num">{r.v}</td><td><span data-lang-it>{r.d.it}</span><span data-lang-en>{r.d.en}</span></td></tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <T as="p" class="sd-msg-text mt-2" it="Proposta: tenere «Utenti app», rinominarlo con la convenzione del team e segnare gli altri due come deprecati. Vuoi l’elenco completo dei 41 in un progetto Workspace?" en="Proposal: keep “App users”, rename it with the team convention and mark the other two as deprecated. Want the full list of 41 in a Workspace project?" />
+                <div class="sd-chips"><span class="sd-chip"><span data-lang-it>Crea il progetto «Pulizia segmenti»</span><span data-lang-en>Create the “Segment clean-up” project</span></span><span class="sd-chip sd-chip--wait"><span data-lang-it>Richiede approvazione</span><span data-lang-en>Requires approval</span></span></div>
+              </div>
+            </div>
+          </div>
+          <T as="p" class="sd-chat-note" it="Dati illustrativi · i conteggi veri arrivano dalla vostra suite" en="Illustrative data · the real counts come from your suite" />
+        </div>
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonte:&nbsp;</span><span data-lang-en>Source:&nbsp;</span>
+        <a href={SOURCES.mcpTools.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpTools.label.it}</span><span data-lang-en>{SOURCES.mcpTools.label.en}</span></a>
+      </p>
+    </Slide>
+
+    <!-- ── Il Workspace generato ─────────────────────────────────────────── -->
+    <Slide id="slide-workspace" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgWorkspace.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="La seconda domanda del capitolo" en="The chapter’s second question" />
+        <T as="h2" class="sd-head-title" it="«Costruiscimi il Workspace del lunedì»" en="“Build me the Monday Workspace”" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Le quattro scritture del server MCP servono a questo: un segmento nuovo, una metrica calcolata, un intervallo di date, un progetto Workspace. Coworker li prepara con i vostri nomi e le vostre convenzioni; voi approvate e il progetto compare in Workspace, pronto da aprire."
+          en="The four writes of the MCP server are for this: a new segment, a calculated metric, a date range, a Workspace project. Coworker prepares them with your names and conventions; you approve, and the project appears in Workspace, ready to open."
+        />
+      </div>
+      <div class="sd-steps" data-reveal data-reveal-delay="0.14">
+        <div class="sd-step">
+          <span class="sd-step-n sd-step-n--giallo">1</span>
+          <T as="p" class="sd-step-title" it="Cinque risposte" en="Five answers" />
+          <T as="p" class="sd-step-body" it="Suite, periodo, metriche, dimensione, segmenti. Le stesse che oggi si scelgono trascinando." en="Suite, period, metrics, dimension, segments. The same you pick today by dragging." />
+        </div>
+        <div class="sd-step">
+          <span class="sd-step-n sd-step-n--giallo">2</span>
+          <T as="p" class="sd-step-title" it="L’anteprima" en="The preview" />
+          <T as="p" class="sd-step-body" it="Coworker mostra pannelli e tabelle che creerà, con i componenti condivisi del team, prima di scrivere." en="Coworker shows the panels and tables it will create, with the team’s shared components, before writing." />
+        </div>
+        <div class="sd-step">
+          <span class="sd-step-n sd-step-n--giallo">3</span>
+          <T as="p" class="sd-step-title" it="L’approvazione" en="The approval" />
+          <T as="p" class="sd-step-body" it="Una scrittura in Analytics è un gesto vostro: il gate di approvazione è acceso per tutte e quattro." en="A write to Analytics is your gesture: the approval gate is on for all four." />
+        </div>
+        <div class="sd-step">
+          <span class="sd-step-n sd-step-n--giallo">4</span>
+          <T as="p" class="sd-step-title" it="Il link" en="The link" />
+          <T as="p" class="sd-step-body" it="Il progetto esiste in Workspace con proprietario e descrizione. Da lì si continua come sempre." en="The project exists in Workspace with owner and description. From there you continue as always." />
+        </div>
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
+        <a href={SOURCES.mcpTools.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpTools.label.it}</span><span data-lang-en>{SOURCES.mcpTools.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
+      </p>
+    </Slide>
+
+    <!-- ── Take ──────────────────────────────────────────────────────────── -->
+    <Slide id="slide-take" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgTake.src})`}></div>
+      <div class="sd-take" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa ti porti a casa" en="What you take home" />
+        <T as="h2" class="sd-take-title" it="La governance diventa una domanda al mese" en="Governance becomes one question a month" />
+        <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Ordine" en="Order" />
+            <T as="p" class="sd-take-t" it="Duplicati e componenti morti si vedono. <strong>Meno rumore nei menu</strong>, meno numeri che non tornano." en="Duplicates and dead components become visible. <strong>Less noise in the menus</strong>, fewer numbers that do not match." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Convenzioni" en="Conventions" />
+            <T as="p" class="sd-take-t" it="Le regole di naming del team stanno in una skill: <strong>ogni progetto nuovo nasce già in ordine</strong>." en="The team’s naming rules live in a skill: <strong>every new project is born tidy</strong>." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Controllo" en="Control" />
+            <T as="p" class="sd-take-t" it="Niente si scrive senza <strong>un vostro sì</strong>. La pulizia è proposta, mai eseguita da sola." en="Nothing gets written without <strong>your yes</strong>. Clean-up is proposed, never executed on its own." />
+          </div>
+        </div>
+        <T as="p" class="sd-caveat" it="<strong>Una cautela.</strong> Il server MCP oggi non fa amministrazione: niente data dictionary, niente modifiche al tracciamento, niente cancellazioni. Quelle restano in Workspace e in Launch." en="<strong>One caution.</strong> The MCP server does no administration today: no data dictionary, no tracking changes, no deletions. Those stay in Workspace and Launch." data-reveal data-reveal-delay="0.24" />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

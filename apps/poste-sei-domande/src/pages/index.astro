@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SdNavigation from '../components/SdNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/giallo-1.webp';
+import bgNumeri from '../assets/generated/bg/carta-1.webp';
+import bgPain from '../assets/generated/bg/carta-2.webp';
+import bgPercorso from '../assets/generated/bg/notte-4.webp';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Dati del cliente (dashboard di utilizzo Adobe Analytics, gen 2023 → set 2026):
+// nessun commit, nessun euro. Il pubblico è l'Admin: sono i suoi numeri.
+const numeri = [
+  { v: '18,2 mln', l: { it: 'utenti dell’App Poste Italiane', en: 'Poste Italiane App users' }, s: { it: 'un milione in più in un anno · set 2026', en: 'one million more in a year · Sep 2026' }, tone: '' },
+  { v: '99%', l: { it: 'delle chiamate da una sola report suite', en: 'of server calls from one report suite' }, s: { it: 'la SuperApp è il canale che misurate', en: 'the SuperApp is the channel you measure' }, tone: '' },
+  { v: '9 su 10', l: { it: 'chiamate dal mobile', en: 'calls from mobile' }, s: { it: 'il sito è una frazione del traffico', en: 'the website is a fraction of the traffic' }, tone: '' },
+  { v: '+50%', l: { it: 'di volume in tre anni', en: 'volume growth in three years' }, s: { it: 'media mensile 2023 → 2026', en: 'monthly average 2023 → 2026' }, tone: 'giallo' },
+];
+---
+<BaseLayout title="Sei domande · Adobe × Poste Italiane" preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <SdNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/' + CHAPTERS[0].slug)}>
+
+    <!-- ── 0 · Cover ─────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-giallo" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="sd-cover" data-reveal>
+        <CoBrand variant="hero" class="sd-cover-lockup" data-reveal />
+        <T as="h1" class="sd-cover-title" it="Sei domande" en="Six questions" data-reveal data-reveal-delay="0.1" />
+        <T
+          as="p"
+          class="sd-cover-tag"
+          it="Le domande che il monitoraggio dei canali digitali si sente fare ogni settimana. E come si risponde da oggi, dentro Adobe Analytics."
+          en="The questions digital-channel monitoring gets asked every week. And how they get answered from today, inside Adobe Analytics."
+          data-reveal data-reveal-delay="0.16"
+        />
+        <T
+          as="p"
+          class="sd-cover-lead"
+          it="Adobe CX Enterprise Coworker legge le vostre report suite con i permessi che avete già, risponde in italiano e apre il risultato in Analysis Workspace. Nessuna migrazione, nessun dato spostato, nessuna licenza nuova per Analytics. Sei domande, una per capitolo, ognuna con l’oggi e il dopo."
+          en="Adobe CX Enterprise Coworker reads your report suites with the permissions you already have, answers in plain language and opens the result in Analysis Workspace. No migration, no data moved, no new Analytics licence. Six questions, one per chapter, each with the before and the after."
+          data-reveal data-reveal-delay="0.22"
+        />
+        <T
+          as="p"
+          class="sd-cover-note"
+          it="Preparato dal team Adobe Italia · fonti pubbliche citate slide per slide · dati delle demo illustrativi · sfondi generati con Adobe Firefly, firmati con Content Credentials"
+          en="Prepared by the Adobe Italy team · public sources cited slide by slide · demo data illustrative · backdrops generated with Adobe Firefly, signed with Content Credentials"
+          data-reveal data-reveal-delay="0.3"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── 1 · Il vostro tracciamento ────────────────────────────────────── -->
+    <Slide id="slide-numeri" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgNumeri.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Il punto di partenza" en="Where we start" />
+        <T as="h2" class="sd-head-title" it="Un’app che è diventata il canale" en="An app that became the channel" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="L’App Poste Italiane ha superato i 18 milioni di utenti e la vostra istanza di Adobe Analytics lo racconta da sola: una report suite raccoglie quasi tutto, il mobile fa nove chiamate su dieci, il volume è cresciuto di metà in tre anni. Chi monitora questo canale riceve domande ogni giorno. La velocità con cui risponde è il valore del team."
+          en="The Poste Italiane App has passed 18 million users, and your Adobe Analytics instance tells the story on its own: one report suite collects almost everything, mobile makes nine calls out of ten, volume has grown by half in three years. Whoever monitors this channel gets questions every day. How fast they answer is the team’s value."
+        />
+      </div>
+      <div class="sd-figures" data-reveal data-reveal-delay="0.16">
+        {numeri.map((n) => (
+          <div class="sd-figure">
+            <p class:list={['sd-figure-v', n.tone === 'giallo' && 'sd-figure-v--giallo']}>{n.v}</p>
+            <T as="p" class="sd-figure-l" it={n.l.it} en={n.l.en} />
+            <T as="p" class="sd-figure-s" it={n.s.it} en={n.s.en} />
+          </div>
+        ))}
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.26">
+        <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
+        <a href={SOURCES.posteApp.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.posteApp.label.it}</span><span data-lang-en>{SOURCES.posteApp.label.en}</span></a>
+        &nbsp;·&nbsp;<span data-lang-it>volumi: dashboard di utilizzo della vostra istanza Adobe Analytics, gen 2023 – set 2026</span><span data-lang-en>volumes: usage dashboard of your Adobe Analytics instance, Jan 2023 – Sep 2026</span>
+      </p>
+    </Slide>
+
+    <!-- ── 2 · Le domande aperte ─────────────────────────────────────────── -->
+    <Slide id="slide-pain" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgPain.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Quello che ci avete detto" en="What you told us" />
+        <T as="h2" class="sd-head-title" it="Due domande del 2024, ancora aperte" en="Two questions from 2024, still open" />
+      </div>
+      <div class="sd-split sd-split--even" data-reveal data-reveal-delay="0.14">
+        <div class="sd-panel sd-panel--blu">
+          <div class="sd-panel-head"><T as="span" class="sd-tag" it="Nel 2024, in due frasi" en="In 2024, in two sentences" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>«Il tempo per arrivare a un insight è troppo lungo per il business.»</strong> Una domanda semplice passa da una richiesta, un progetto Workspace, una verifica, una slide." en="<strong>“Time to insight is too long for the business.”</strong> A simple question goes through a request, a Workspace project, a check, a slide." /></li>
+            <li class="sd-li"><span class="sd-dot"></span><T as="span" it="<strong>«Poca indipendenza.»</strong> Chi ha la domanda non è chi sa costruire la risposta: ogni analisi ha una coda." en="<strong>“Not enough independence.”</strong> The person with the question is not the one who can build the answer: every analysis has a queue." /></li>
+          </ul>
+        </div>
+        <div class="sd-panel sd-panel--grigio">
+          <div class="sd-panel-head"><T as="span" class="sd-tag sd-tag--grigio" it="Quello che pesa ogni giorno" en="What weighs every day" /></div>
+          <ul class="sd-ul">
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>Il tracciamento passa dall’IT.</strong> AppMeasurement e Launch funzionano, ma ogni modifica ha tempi lunghi e un rischio di errore." en="<strong>Tracking goes through IT.</strong> AppMeasurement and Launch work, but every change has long lead times and a risk of error." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>Le dashboard costano.</strong> Crearle e tenerle vive è lavoro di analista, non scala verso il business." en="<strong>Dashboards cost.</strong> Building and maintaining them is analyst work, it does not scale to the business." /></li>
+            <li class="sd-li"><span class="sd-dot sd-dot--grigio"></span><T as="span" it="<strong>I numeri arrivano, le decisioni meno.</strong> Fra la raccolta e l’azione c’è uno spazio che nessuno presidia." en="<strong>Numbers arrive, decisions less so.</strong> Between collection and action there is a gap nobody owns." /></li>
+          </ul>
+        </div>
+      </div>
+      <T as="p" class="sd-src sd-src--center" it="Dalle conversazioni Adobe × Poste Italiane, 2024–2026. Questo deck risponde a queste due frasi senza toccare lo stack." en="From the Adobe × Poste Italiane conversations, 2024–2026. This deck answers those two sentences without touching the stack." data-reveal data-reveal-delay="0.24" />
+    </Slide>
+
+    <!-- ── 3 · Il percorso ───────────────────────────────────────────────── -->
+    <Slide id="slide-percorso" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgPercorso.src})`}></div>
+      <T as="p" class="slide-eyebrow text-center mb-3 sd-on-dark" it="Il percorso" en="The path" data-reveal />
+      <T as="h2" class="sd-percorso-title" it="Sei capitoli, sei domande" en="Six chapters, six questions" data-reveal data-reveal-delay="0.08" data-edf-chapters />
+      <T
+        as="p"
+        class="sd-percorso-lead"
+        it="Ogni capitolo parte da una domanda che il team riceve davvero. Prima come si risponde oggi, in Workspace. Poi come risponde Coworker. In chiusura, cosa cambia per chi fa il lavoro."
+        en="Each chapter starts from a question the team really gets. First how it is answered today, in Workspace. Then how Coworker answers. At the end, what changes for the people doing the work."
+        data-reveal data-reveal-delay="0.15"
+      />
+      <div class="w-full max-w-6xl mx-auto grid grid-cols-3 auto-rows-fr gap-3 mb-5" data-reveal data-reveal-delay="0.22">
+        {CHAPTERS.map((c) => (
+          <a href={href(base, '/' + c.slug)} data-edf-journey-card class="sd-journey-card h-full px-5 py-4 text-left no-underline group">
+            <p class="text-xs font-semibold text-[var(--color-grigio-600)] mb-1 tabular-nums" data-edf-cardnum>{c.num}</p>
+            <p class="text-[1.1rem] font-bold text-[var(--ink-primary)] mb-1 block"><span data-lang-it>{c.label.it}</span><span data-lang-en>{c.label.en}</span></p>
+            <p class="text-[0.92rem] text-[var(--color-grigio-600)] block"><span data-lang-it>{c.question.it}</span><span data-lang-en>{c.question.en}</span></p>
+          </a>
+        ))}
+      </div>
+      <div data-reveal data-reveal-delay="0.35" class="text-center">
+        <a href={href(base, '/' + CHAPTERS[0].slug)} class="sd-cta">
+          <span data-lang-it>Prima domanda</span><span data-lang-en>First question</span>
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+
+  <style>
+    .sd-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
+    .sd-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
+    .sd-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+    :global(.sd-cover-tag) { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-giallo); max-width: 40ch; margin: 0 auto; display: block; }
+    :global(.sd-cover-lead) { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grigio-200); max-width: 66ch; margin: 0 auto; display: block; }
+    :global(.sd-cover-note) { font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grigio-400); max-width: 70ch; margin: 0 auto; display: block; }
+    :global(.sd-percorso-title) { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.03em; color: #fff; text-align: center; margin: 0 auto 0.8rem; display: block; }
+    :global(.sd-percorso-lead) { font-size: clamp(0.95rem, 1.1vw, 1.08rem); line-height: 1.55; color: var(--color-grigio-200); max-width: 64ch; margin: 0 auto 1.2rem; text-align: center; display: block; }
+    .sd-cta {
+      display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.7rem 2.1rem; border-radius: 6px;
+      font-size: clamp(1rem, 1.15vw, 1.12rem); font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+      background: var(--color-giallo); color: var(--color-inchiostro); transition: background 200ms ease;
+    }
+    .sd-cta:hover { background: #fff; color: var(--color-inchiostro); }
+  </style>
+</BaseLayout>

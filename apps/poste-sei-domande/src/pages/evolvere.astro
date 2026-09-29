@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SdNavigation from '../components/SdNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/notte-6.webp';
+import bgEvo from '../assets/generated/bg/carta-4.webp';
+import bgPilota from '../assets/generated/bg/carta-1.webp';
+import bgChiusura from '../assets/generated/bg/notte-2.webp';
+import bgFirma from '../assets/generated/bg/giallo-2.webp';
+
+const SLUG = 'evolvere';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const evolutive = [
+  {
+    k: { it: 'Il Workspace che si scrive da sé', en: 'The Workspace that writes itself' },
+    tag: { it: 'Tua · dal 2 ottobre', en: 'Yours · from 2 October' },
+    b: { it: 'Ogni analisi fatta in chat si apre in Analysis Workspace per continuare a mano. Le skill del team generano i progetti ricorrenti. È la parte di Coworker che cresce più in fretta, ed è tutta dentro Analytics.', en: 'Every analysis done in chat opens in Analysis Workspace to continue by hand. The team’s skills generate the recurring projects. It is the fastest-growing part of Coworker, and it all sits inside Analytics.' },
+    tone: 'giallo',
+  },
+  {
+    k: { it: 'Claude, con lo stesso server MCP', en: 'Claude, with the same MCP server' },
+    tag: { it: 'Tua · per gli analisti', en: 'Yours · for the analysts' },
+    b: { it: 'Lo stesso server MCP Analytics si collega a Claude, ChatGPT e Cursor. Per chi scrive analisi ogni giorno è una seconda porta sugli stessi dati, con gli stessi permessi. La governance dei dati nel client la valuta Poste.', en: 'The same Analytics MCP server connects to Claude, ChatGPT and Cursor. For those who write analyses every day it is a second door onto the same data, with the same permissions. Data governance in the client is Poste’s call.' },
+    tone: '',
+  },
+  {
+    k: { it: 'Adobe Target, dentro Coworker', en: 'Adobe Target, inside Coworker' },
+    tag: { it: 'Di interesse · non tua', en: 'Of interest · not yours' },
+    b: { it: 'Coworker parla già con Target: audience, test A/B, verdetti sulle attività. È il pezzo che Poste ha valutato nel 2024 e nel 2025 per le Operazioni Veloci e le card della SuperApp. La decisione sta alla Direzione Dati; il monitoraggio ne leggerebbe i risultati.', en: 'Coworker already talks to Target: audiences, A/B tests, activity verdicts. It is the piece Poste evaluated in 2024 and 2025 for Quick Operations and the SuperApp cards. The decision sits with the Data Office; monitoring would read its results.' },
+    tone: '',
+  },
+  {
+    k: { it: 'Web SDK e Content Analytics', en: 'Web SDK and Content Analytics' },
+    tag: { it: 'Fuori perimetro, oggi', en: 'Out of scope, today' },
+    b: { it: 'Le novità di Analytics che chiedono un cambio al tracciamento (regole bot, Content Analytics) passano dal Web SDK. Non è la domanda di oggi: si riapre quando la SuperApp avrà un rilascio del tracciamento in agenda.', en: 'The Analytics features that need a tracking change (bot rules, Content Analytics) go through the Web SDK. Not today’s question: it reopens when the SuperApp has a tracking release on the agenda.' },
+    tone: 'grigio',
+  },
+];
+
+const pilota = [
+  { t: { it: 'Settimana 1 · Accendere', en: 'Week 1 · Switch on' }, b: { it: 'Richiesta di attivazione, permesso MCP Access al team, prime domande sulla suite di sviluppo.', en: 'Enablement request, MCP Access permission for the team, first questions on the development suite.' } },
+  { t: { it: 'Settimane 2–3 · Le sei domande', en: 'Weeks 2–3 · The six questions' }, b: { it: 'Le tre domande del deck sulla suite di produzione, più tre vostre. Ogni risposta riaperta in Workspace.', en: 'The deck’s three questions on the production suite, plus three of yours. Every answer reopened in Workspace.' } },
+  { t: { it: 'Settimana 4 · Misurare', en: 'Week 4 · Measure' }, b: { it: 'Tempo alla risposta prima e dopo, numeri che tornano, domande che il team non ha più dovuto costruire.', en: 'Time to answer before and after, numbers that match, questions the team no longer had to build.' } },
+  { t: { it: 'Poi · Decidere', en: 'Then · Decide' }, b: { it: 'Aprire al business con due skill scritte da voi, o fermarsi. Con i numeri della settimana 4 sul tavolo.', en: 'Open up to the business with two skills you wrote, or stop. With week 4’s numbers on the table.' } },
+];
+---
+<BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <SdNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover ─────────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="sd-q" data-reveal>
+        <p class="sd-q-num"><span data-lang-it>Domanda {ch.num} · {ch.label.it}</span><span data-lang-en>Question {ch.num} · {ch.label.en}</span></p>
+        <span class="sd-q-mark" aria-hidden="true"></span>
+        <T as="h2" class="sd-q-title" it={`«${ch.question.it}»`} en={`“${ch.question.en}”`} data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="sd-q-lead"
+          it="Le prime cinque domande stanno nel perimetro del monitoraggio e si chiudono senza cambiare nulla. La sesta guarda avanti: due cose tue, una di interesse, una fuori perimetro. Dette per quello che sono."
+          en="The first five questions sit inside monitoring’s remit and close without changing anything. The sixth looks ahead: two things that are yours, one of interest, one out of scope. Said for what they are."
+          data-reveal data-reveal-delay="0.15"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Le quattro evolutive ──────────────────────────────────────────── -->
+    <Slide id="slide-evolutive" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgEvo.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="E domani" en="And tomorrow" />
+        <T as="h2" class="sd-head-title" it="Quattro evolutive, ognuna con il suo padrone" en="Four next steps, each with its owner" />
+      </div>
+      <div class="sd-steps sd-steps--2" data-reveal data-reveal-delay="0.14">
+        {evolutive.map((e) => (
+          <div class:list={['sd-panel', e.tone === 'giallo' ? 'sd-panel--giallo' : e.tone === 'grigio' ? 'sd-panel--grigio' : 'sd-panel--blu']}>
+            <div class="sd-panel-head">
+              <T as="span" class="sd-step-title mb-0" it={e.k.it} en={e.k.en} />
+              <T as="span" class:list={['sd-tag whitespace-nowrap', e.tone === 'giallo' && 'sd-tag--giallo', e.tone === 'grigio' && 'sd-tag--grigio']} it={e.tag.it} en={e.tag.en} />
+            </div>
+            <T as="p" class="sd-panel-body" it={e.b.it} en={e.b.en} />
+          </div>
+        ))}
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
+        <a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.mcpClaude.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpClaude.label.it}</span><span data-lang-en>{SOURCES.mcpClaude.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.targetMcp.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.targetMcp.label.it}</span><span data-lang-en>{SOURCES.targetMcp.label.en}</span></a>
+      </p>
+    </Slide>
+
+    <!-- ── Il pilota ─────────────────────────────────────────────────────── -->
+    <Slide id="slide-pilota" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgPilota.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Quello che proponiamo" en="What we propose" />
+        <T as="h2" class="sd-head-title" it="Quattro settimane, poi si decide" en="Four weeks, then you decide" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Nessuna firma, nessuna piattaforma nuova. Un pilota sul vostro Analytics, con il vostro team e le vostre domande, misurato su una cosa sola: quanto prima arriva la risposta."
+          en="No signature, no new platform. A pilot on your Analytics, with your team and your questions, measured on one thing only: how much sooner the answer arrives."
+        />
+      </div>
+      <div class="sd-steps" data-reveal data-reveal-delay="0.14">
+        {pilota.map((p, i) => (
+          <div class="sd-step">
+            <span class:list={['sd-step-n', i === 3 && 'sd-step-n--giallo']}>{i + 1}</span>
+            <T as="p" class="sd-step-title" it={p.t.it} en={p.t.en} />
+            <T as="p" class="sd-step-body" it={p.b.it} en={p.b.en} />
+          </div>
+        ))}
+      </div>
+      <T as="p" class="sd-src" it="Da parte nostra: la richiesta di attivazione ad Adobe, un pomeriggio insieme per le prime skill, la demo sull’organizzazione dimostrativa Adobe prima di toccare la vostra." en="On our side: the enablement request to Adobe, an afternoon together for the first skills, the demo on Adobe’s demo organisation before touching yours." data-reveal data-reveal-delay="0.24" />
+    </Slide>
+
+    <!-- ── Chiusura ──────────────────────────────────────────────────────── -->
+    <Slide id="slide-chiusura" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgChiusura.src})`}></div>
+      <div class="sd-take" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Per chiudere" en="To close" />
+        <T as="h2" class="sd-take-title" it="Le risposte erano già lì. Cambia chi le può chiedere." en="The answers were already there. What changes is who can ask." />
+        <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Le due frasi del 2024" en="The two 2024 sentences" />
+            <T as="p" class="sd-take-t" it="Il tempo alla risposta e l’indipendenza dal team: <strong>sono le due cose che questo cambia</strong>, senza toccare lo stack." en="Time to answer and independence from the team: <strong>those are the two things this changes</strong>, without touching the stack." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Il ruolo del team" en="The team’s role" />
+            <T as="p" class="sd-take-t" it="Da chi costruisce ogni risposta a chi <strong>scrive le regole</strong> con cui le risposte si costruiscono da sole." en="From building every answer to <strong>writing the rules</strong> by which answers build themselves." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Il prossimo passo" en="The next step" />
+            <T as="p" class="sd-take-t" it="Una data per accendere la suite di sviluppo. <strong>Il resto lo decidono i numeri</strong> della settimana quattro." en="A date to switch on the development suite. <strong>The numbers of week four</strong> decide the rest." />
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Firma ─────────────────────────────────────────────────────────── -->
+    <Slide id="slide-signature" bg="inverse" align="center">
+      <div slot="backdrop" class="sd-bg-giallo" style={`--bg-src: url(${bgFirma.src})`}></div>
+      <CoBrand variant="hero" data-reveal />
+      <T as="p" class="sd-sig-line" it="Sei domande. Le risposte, da oggi, dentro Adobe Analytics." en="Six questions. The answers, from today, inside Adobe Analytics." data-reveal data-reveal-delay="0.1" />
+      <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.18"><span data-lang-it>Torna all’inizio →</span><span data-lang-en>Back to the start →</span></a>
+    </Slide>
+
+  </DeckContainer>
+
+  <style>
+    :global(.sd-sig-line) { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grigio-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
+  </style>
+</BaseLayout>
