@@ -39,32 +39,102 @@ const friction = [
 
 const stack = [
   { name: 'CJA / Content Analytics', role: { it: 'legge percorso e contenuti', en: 'reads journeys and content' } },
-  { name: 'Coworker', role: { it: 'sintetizza e prepara', en: 'summarizes and drafts' } },
-  { name: 'Workfront / workflow', role: { it: 'coordina il lavoro', en: 'coordinates the work' } },
-  { name: 'AEM / Target', role: { it: 'porta il contenuto sul canale', en: 'delivers content to a channel' } },
-  { name: 'CJA / Analytics', role: { it: 'misura l’esito', en: 'measures the outcome' } },
+  { name: 'Coworker Chat', role: { it: 'skill, connettori MCP, memoria', en: 'skills, MCP connectors, memory' } },
+  { name: { it: 'Revisione umana', en: 'Human review' }, role: { it: 'plan mode e approvazione', en: 'plan mode and approval' } },
+  { name: 'AJO / AEM / Target', role: { it: 'eseguono con permessi ereditati', en: 'execute under inherited permissions' } },
+  { name: 'CJA / Analytics', role: { it: 'misura l’esito, audit trail', en: 'measures the outcome, audit trail' } },
 ];
+
+// Skill documentate su Experience League (set 2026) che contano per il caso UniCredit.
+const skillFamilies = [
+  {
+    app: 'Customer Journey Analytics',
+    status: { it: 'disponibile', en: 'available' },
+    items: [
+      { it: 'Interroga la data view: metriche, confronti, funnel, forecast', en: 'Query the data view: metrics, comparisons, funnels, forecasts' },
+      { it: 'Root cause: perché una metrica è cambiata', en: 'Root cause: why a metric changed' },
+      { it: 'Executive summary pronta per gli stakeholder', en: 'Stakeholder-ready executive summaries' },
+      { it: '«Analyze in CJA» apre il grafico in Analysis Workspace', en: '“Analyze in CJA” opens the chart in Analysis Workspace' },
+    ],
+  },
+  {
+    app: 'Journey Optimizer',
+    status: { it: 'disponibile', en: 'available' },
+    items: [
+      { it: 'Journey Create: un journey da una richiesta in linguaggio naturale', en: 'Journey Create: a journey from a natural-language request' },
+      { it: 'Journey Analyze: fallout, sovrapposizioni di pubblico e di calendario, anomalie', en: 'Journey Analyze: fallout, audience and schedule overlap, anomalies' },
+      { it: 'Journey Simulation: verifica la logica prima di attivare', en: 'Journey Simulation: check the logic before activating' },
+      { it: 'Channel Content Create: in disponibilità limitata', en: 'Channel Content Create: limited availability' },
+    ],
+  },
+  {
+    app: 'Real-Time CDP',
+    status: { it: 'disponibile', en: 'available' },
+    items: [
+      { it: 'Audience da una descrizione, con stima della dimensione', en: 'Audiences from a description, with size estimate' },
+      { it: 'Esplora audience e campi disponibili', en: 'Explore available audiences and fields' },
+    ],
+  },
+  {
+    app: 'AEM Sites',
+    status: { it: 'in rollout', en: 'rolling out' },
+    items: [
+      { it: 'Aggiorna una pagina o cento pagine insieme', en: 'Update one page or a hundred at once' },
+      { it: 'Controlla un contenuto sulle linee guida di brand', en: 'Check content against brand guidelines' },
+    ],
+  },
+  {
+    app: { it: 'Skill della banca', en: 'The bank’s own skills' },
+    status: { it: 'in Markdown', en: 'in Markdown' },
+    items: [
+      { it: 'Un playbook riusabile, scritto dal team: quali dati, quali controlli, quale tono', en: 'A reusable playbook the team writes: which data, which checks, which tone' },
+      { it: 'Gira sotto gli stessi permessi dell’app collegata', en: 'Runs under the same permissions as the connected app' },
+    ],
+  },
+];
+
+// Disponibilità pubblica al 24–28 settembre 2026 (Experience League + Adobe News).
+const availability = {
+  now: [
+    { it: 'Coworker Chat in general availability dal 10 giugno 2026', en: 'Coworker Chat generally available since 10 June 2026' },
+    { it: 'Esperienza immersiva per RTCDP, Journey Optimizer, CJA, AEM, Target, Marketo Engage, Workfront', en: 'Immersive experience for RTCDP, Journey Optimizer, CJA, AEM, Target, Marketo Engage, Workfront' },
+    { it: 'Target anche dentro l’app', en: 'Target also inside the app' },
+    { it: 'Coworker Gateway: un endpoint MCP per Claude, ChatGPT, Cursor', en: 'Coworker Gateway: one MCP endpoint for Claude, ChatGPT, Cursor' },
+    { it: 'Adobe Marketing Agent per Microsoft 365 Copilot', en: 'Adobe Marketing Agent for Microsoft 365 Copilot' },
+  ],
+  announced: [
+    { it: 'Coworker Projects: workspace con checkpoint di approvazione', en: 'Coworker Projects: a workspace with approval checkpoints' },
+    { it: 'Coworker dentro RTCDP, Journey Optimizer, CJA, AEM, Marketo', en: 'Coworker inside RTCDP, Journey Optimizer, CJA, AEM, Marketo' },
+    { it: 'Capacità agentiche AEM in rollout progressivo', en: 'AEM agentic capabilities rolling out progressively' },
+    { it: 'Edizioni B2B di RTCDP, Journey Optimizer, CJA', en: 'B2B editions of RTCDP, Journey Optimizer, CJA' },
+  ],
+  watch: [
+    { it: 'Workfront: Coworker non è oggi disponibile alle organizzazioni finance; resta AI Assistant', en: 'Workfront: Coworker is not yet available to finance organizations; AI Assistant remains' },
+    { it: 'Coworker Campaigns: per piccoli team agili, oggi solo Nord America. Fuori da questo concept', en: 'Coworker Campaigns: for small agile teams, North America only today. Outside this concept' },
+    { it: 'Lingua di risposta: la documentazione indica l’inglese; l’italiano va verificato in pilota', en: 'Response language: the documentation says English; Italian must be tested in the pilot' },
+  ],
+};
 
 const interactionModes = [
   {
-    name: { it: 'Chat', en: 'Chat' },
-    kind: { it: 'Una richiesta', en: 'A single request' },
+    name: { it: 'Coworker Chat', en: 'Coworker Chat' },
+    kind: { it: 'Disponibile · GA 10 giugno 2026', en: 'Available · GA 10 June 2026' },
     steps: [
-      { it: 'Fare una domanda sui dati accessibili', en: 'Ask about accessible data' },
-      { it: 'Ottenere una sintesi o una bozza', en: 'Get a summary or a draft' },
-      { it: 'Verificare prima di condividerla', en: 'Review before sharing' },
+      { it: 'Plan mode: propone i passi e aspetta l’approvazione', en: 'Plan mode: proposes the steps and waits for approval' },
+      { it: 'Skill in Markdown, connettori MCP, memoria per data view e preferenze', en: 'Skills in Markdown, MCP connectors, memory for data views and preferences' },
+      { it: 'Mostra il lavoro: skill caricate, query eseguite, artefatti', en: 'Shows its work: loaded skills, queries run, artifacts' },
     ],
-    outcome: { it: 'Risposta da verificare', en: 'An answer to verify' },
+    outcome: { it: 'Un artefatto da verificare, poi «Analyze in CJA»', en: 'An artifact to verify, then “Analyze in CJA”' },
   },
   {
-    name: { it: 'Projects', en: 'Projects' },
-    kind: { it: 'Un obiettivo multi-step', en: 'A multi-step goal' },
+    name: { it: 'Coworker Projects', en: 'Coworker Projects' },
+    kind: { it: 'Annunciato · «coming soon»', en: 'Announced · “coming soon”' },
     steps: [
-      { it: 'Definire il risultato atteso', en: 'Define the intended outcome' },
-      { it: 'Organizzare fasi, owner e dipendenze', en: 'Organize stages, owners and dependencies' },
-      { it: 'Rivedere e approvare i passaggi', en: 'Review and approve each handoff' },
+      { it: 'Un workspace per un obiettivo che attraversa più team', en: 'One workspace for a goal that spans several teams' },
+      { it: 'Checkpoint di approvazione e grado di autonomia per fase', en: 'Approval checkpoints and an autonomy level per stage' },
+      { it: 'Revisione e approvazione dentro il progetto', en: 'Review and approval inside the project' },
     ],
-    outcome: { it: 'Un piano coordinato dal team', en: 'A plan coordinated by the team' },
+    outcome: { it: 'Da valutare quando sarà disponibile', en: 'To assess once available' },
   },
 ];
 
@@ -72,42 +142,42 @@ const executionSteps = [
   {
     number: '01',
     label: { it: 'Insight', en: 'Insight' },
-    body: { it: 'CJA mostra un segnale; non prende una decisione sul cliente.', en: 'CJA surfaces a signal; it does not make a customer decision.' },
+    body: { it: 'La skill CJA legge la data view; il segnale non è una decisione sul cliente.', en: 'The CJA skill reads the data view; the signal is not a customer decision.' },
   },
   {
     number: '02',
     label: { it: 'Bozza', en: 'Draft' },
-    body: { it: 'Coworker prepara sintesi e prossimi passi sui dati autorizzati.', en: 'Coworker drafts a summary and next steps from authorized data.' },
+    body: { it: 'Coworker restituisce un artefatto: sintesi, prossimi passi, fonti usate.', en: 'Coworker returns an artifact: summary, next steps, sources used.' },
   },
   {
     number: '03',
     label: { it: 'Revisione', en: 'Review' },
-    body: { it: 'Un owner modifica, approva o ferma la proposta.', en: 'An owner edits, approves or stops the proposal.' },
+    body: { it: 'Plan mode e approval gate: un owner modifica, approva o ferma.', en: 'Plan mode and approval gate: an owner edits, approves or stops.' },
   },
   {
     number: '04',
     label: { it: 'Esecuzione', en: 'Execution' },
-    body: { it: 'Il team agisce nel workflow e nei sistemi configurati.', en: 'The team acts in its configured workflow and systems.' },
+    body: { it: 'Journey Optimizer, AEM o Target via connettori MCP, con i permessi di chi chiede.', en: 'Journey Optimizer, AEM or Target via MCP connectors, under the requester’s permissions.' },
   },
   {
     number: '05',
     label: { it: 'Misura', en: 'Measurement' },
-    body: { it: 'L’esito torna in analytics per essere valutato.', en: 'The outcome returns to analytics for evaluation.' },
+    body: { it: 'L’esito torna in CJA; l’audit trail dice chi ha approvato cosa.', en: 'The outcome returns to CJA; the audit trail says who approved what.' },
   },
 ];
 
 const governanceChecks = [
   {
-    title: { it: 'Contesto curato', en: 'Curated context' },
-    body: { it: 'Definire KPI, tassonomia, tono e contenuti approvati prima di usarli come riferimento.', en: 'Define KPIs, taxonomy, tone and approved content before relying on them.' },
+    title: { it: 'Permessi ereditati', en: 'Inherited permissions' },
+    body: { it: 'Coworker vede solo le data view, i journey e le pagine che l’utente può già vedere nell’app. Niente accessi nuovi da inventare.', en: 'Coworker sees only the data views, journeys and pages the user can already see in the app. No new access to invent.' },
   },
   {
-    title: { it: 'Accessi e integrazioni', en: 'Access and integrations' },
-    body: { it: 'Verificare licenze, dati disponibili, permessi e connettori per ogni tenant.', en: 'Verify entitlements, available data, permissions and connectors for each tenant.' },
+    title: { it: 'Approvazione prima dell’azione', en: 'Approval before action' },
+    body: { it: 'Plan mode, approval gate e controlli che girano prima di ogni azione. Un owner decide; la memoria è scoperta a livello di organizzazione e di persona.', en: 'Plan mode, approval gates and checks that run before any action. An owner decides; memory is scoped at organization and personal level.' },
   },
   {
-    title: { it: 'Controllo umano', en: 'Human review' },
-    body: { it: 'Assegnare un responsabile per le decisioni e per ogni attivazione verso il cliente.', en: 'Assign an owner for decisions and every customer-facing activation.' },
+    title: { it: 'Tracciabilità', en: 'Traceability' },
+    body: { it: 'Audit trail completo, transcript di ogni passaggio, dashboard di monitoraggio e crediti AI. Il team di governance vede adozione e feedback.', en: 'Full audit trail, a transcript of every step, monitoring dashboards and AI credits. The governance team sees adoption and feedback.' },
   },
 ];
 
@@ -118,13 +188,22 @@ const outcomeMeasures = [
   { it: 'Esito misurato in analytics', en: 'Outcome measured in analytics' },
 ];
 
+// Pratiche che la documentazione Adobe raccomanda per partire (analytics-chat, set 2026).
+const pilotPractices = [
+  { it: 'Un analista come «Coworker champion»', en: 'One analyst as the “Coworker champion”' },
+  { it: 'Una libreria di prompt e skill verificati', en: 'A library of vetted prompts and skills' },
+  { it: 'Plan mode acceso sui task che toccano i dati', en: 'Plan mode on for tasks that touch data' },
+  { it: 'Una baseline prima di fissare obiettivi', en: 'A baseline before setting targets' },
+];
+
 const references = [
-  SOURCES.adobe_cx_coworker,
-  SOURCES.adobe_cja,
-  SOURCES.adobe_content_analytics,
-  SOURCES.adobe_workfront,
-  SOURCES.adobe_aem_sites,
-  SOURCES.adobe_target,
+  SOURCES.adobe_cx_coworker_ga,
+  SOURCES.adobe_cx_coworker_blog,
+  SOURCES.el_coworker_chat,
+  SOURCES.el_coworker_cja,
+  SOURCES.el_coworker_ajo,
+  SOURCES.el_coworker_aem,
+  SOURCES.el_coworker_gateway,
 ];
 ---
 <BaseLayout
@@ -147,13 +226,13 @@ const references = [
         slug="coworker"
         title={{ en: 'From insight to governed action', it: 'Dall’insight all’azione governata' }}
         lead={{
-          en: 'Coworker can help a team move from an analytics signal to a reviewed next step. The systems, permissions and people remain part of the decision.',
-          it: 'Coworker può aiutare il team a passare da un segnale analytics a un prossimo passo verificato. Sistemi, permessi e persone restano parte della decisione.',
+          en: 'Adobe CX Enterprise Coworker takes a team from an analytics signal to a reviewed next step: skills, plan mode and inherited permissions. Systems, approvals and people stay part of the decision.',
+          it: 'Adobe CX Enterprise Coworker porta il team da un segnale analytics a un prossimo passo verificato: skill, plan mode, permessi ereditati. Sistemi, approvazioni e persone restano parte della decisione.',
         }}
         chips={[
           { en: 'Insight to action', it: 'Dall’insight all’azione' },
-          { en: 'Human review', it: 'Revisione umana' },
-          { en: 'Illustrative workflow', it: 'Workflow illustrativo' },
+          { en: 'Documented skills', it: 'Skill documentate' },
+          { en: 'Available today vs announced', it: 'Oggi e annunciato' },
         ]}
       />
     </Slide>
@@ -199,7 +278,9 @@ const references = [
         {stack.map((item, index) => (
           <div class:list={['uc-cw-stack-step', index === 1 ? 'uc-cw-stack-step--focus' : '']}>
             <span class="uc-cw-stack-index">{String(index + 1).padStart(2, '0')}</span>
-            <p class="uc-cw-stack-name">{item.name}</p>
+            {typeof item.name === 'string'
+              ? <p class="uc-cw-stack-name">{item.name}</p>
+              : <T as="p" class="uc-cw-stack-name" en={item.name.en} it={item.name.it} />}
             <T as="p" class="uc-cw-stack-role" en={item.role.en} it={item.role.it} />
           </div>
         ))}
@@ -207,8 +288,8 @@ const references = [
       <T
         as="p"
         class="uc-cw-caveat mt-6 max-w-4xl mx-auto"
-        en="Illustrative architecture, not a statement of UniCredit’s installed products. Availability, data access and integrations must be confirmed for the actual environment."
-        it="Architettura illustrativa, non descrive i prodotti installati in UniCredit. Disponibilità, accesso ai dati e integrazioni vanno verificati nell’ambiente effettivo."
+        en="Illustrative architecture, not a statement of UniCredit’s installed products. Workfront is left out on purpose: Adobe’s documentation says Coworker there is not yet available to finance organizations."
+        it="Architettura illustrativa, non descrive i prodotti installati in UniCredit. Workfront è fuori di proposito: la documentazione Adobe dice che lì Coworker non è ancora disponibile alle organizzazioni finance."
       />
       <nav class="uc-cw-sources mt-4" aria-label="Product references">
         <span><T en="Product references" it="Riferimenti prodotto" />:</span>
@@ -220,7 +301,7 @@ const references = [
 
     <Slide id="slide-chat-project" bg="secondary" align="center">
       <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="uc-cw-preface" en="A quick answer and coordinated work solve different problems. Choose the interaction to fit the goal." it="Una risposta rapida e un lavoro coordinato risolvono problemi diversi. La modalità dipende dall’obiettivo." />
+      <T as="p" class="uc-cw-preface" en="A single request and a cross-team goal are different jobs. Today one module is available and one is announced: the deck says which is which." it="Una richiesta singola e un obiettivo che attraversa più team sono lavori diversi. Oggi un modulo è disponibile e uno è annunciato: il deck dice quale." />
       <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="TWO SCALES OF WORK" it="DUE SCALE DI LAVORO" />
       <T
         as="h2"
@@ -249,14 +330,88 @@ const references = [
       <T
         as="p"
         class="uc-cw-caveat mt-5 max-w-4xl mx-auto text-center"
-        en="Chat and Projects describe interaction patterns in this concept. Product availability, release status and entitlements are not implied."
-        it="Chat e Projects descrivono modalità d’interazione in questo concept. Non implicano disponibilità, stato di rilascio o licenze."
+        en="Status as published by Adobe (Adobe News, 10 June 2026; Experience League, September 2026). Licences and enablement for UniCredit’s tenant are a separate check."
+        it="Stato come pubblicato da Adobe (Adobe News, 10 giugno 2026; Experience League, settembre 2026). Licenze e abilitazione sul tenant UniCredit sono una verifica a parte."
+      />
+    </Slide>
+
+
+    <Slide id="slide-skills" bg="primary" align="center">
+      <div class="uc-bg absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
+      <T as="p" class="uc-cw-preface uc-cw-preface--dense" en="A skill is a playbook in Markdown that Coworker loads when the task calls for it. Adobe ships the common ones; the bank can write its own." it="Una skill è un playbook in Markdown che Coworker carica quando il compito lo richiede. Adobe fornisce quelle comuni; la banca può scrivere le sue." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="THE SKILLS THAT MATTER HERE" it="LE SKILL CHE CONTANO QUI" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="What Coworker already knows how to do"
+        it="Cosa Coworker sa già fare"
+      />
+      <div class="uc-cw-skills">
+        {skillFamilies.map((family, index) => (
+          <section class:list={['uc-cw-skill', index === 4 ? 'uc-cw-skill--bank' : '']}>
+            <header class="uc-cw-skill-head">
+              {typeof family.app === 'string'
+                ? <p class="uc-cw-skill-app">{family.app}</p>
+                : <T as="p" class="uc-cw-skill-app" en={family.app.en} it={family.app.it} />}
+              <T as="span" class="uc-cw-skill-status" en={family.status.en} it={family.status.it} />
+            </header>
+            <ul class="uc-cw-skill-list">
+              {family.items.map((item) => <T as="li" en={item.en} it={item.it} />)}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <T
+        as="p"
+        class="uc-cw-caveat uc-cw-caveat--dense mt-5 max-w-4xl mx-auto text-center"
+        en="Skills as documented on Experience League, 24–28 September 2026. Each needs its licence and the user’s permissions in that app."
+        it="Skill come documentate su Experience League, 24–28 settembre 2026. Ognuna richiede licenza e permessi dell’utente in quell’app."
+      />
+    </Slide>
+
+    <Slide id="slide-availability" bg="secondary" align="center">
+      <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
+      <T as="p" class="uc-cw-preface uc-cw-preface--dense" en="What a bank can plan on today, what Adobe has announced, and two things to watch before a pilot." it="Su cosa una banca può contare oggi, cosa Adobe ha annunciato, e due cose da guardare prima di un pilota." />
+      <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="TODAY AND ANNOUNCED" it="OGGI E ANNUNCIATO" />
+      <T
+        as="h2"
+        class="slide-title text-[var(--ink-primary)] mb-6"
+        style="font-size: clamp(2rem, 3.5vw, 3.25rem);"
+        en="Where Coworker reaches, as of September 2026"
+        it="Dove arriva Coworker, a settembre 2026"
+      />
+      <div class="uc-cw-avail">
+        <section class="uc-panel uc-panel--oro uc-cw-avail-col">
+          <T as="p" class="uc-tag" en="Available today" it="Disponibile oggi" />
+          <ul class="uc-cw-avail-list">
+            {availability.now.map((item) => <T as="li" en={item.en} it={item.it} />)}
+          </ul>
+        </section>
+        <section class="uc-panel uc-cw-avail-col">
+          <T as="p" class="uc-tag" en="Announced by Adobe" it="Annunciato da Adobe" />
+          <ul class="uc-cw-avail-list">
+            {availability.announced.map((item) => <T as="li" en={item.en} it={item.it} />)}
+          </ul>
+        </section>
+        <section class="uc-panel uc-panel--rosso uc-cw-avail-col">
+          <T as="p" class="uc-tag" en="Watch before a pilot" it="Da guardare prima del pilota" />
+          <ul class="uc-cw-avail-list">
+            {availability.watch.map((item) => <T as="li" en={item.en} it={item.it} />)}
+          </ul>
+        </section>
+      </div>
+      <T
+        as="p"
+        class="uc-cw-caveat uc-cw-caveat--dense mt-5 max-w-4xl mx-auto text-center"
+        en="Sources: Adobe News (10 June 2026), Coworker Chat UI guide and Workfront guide on Experience League (September 2026). Announced items carry no date and no commitment."
+        it="Fonti: Adobe News (10 giugno 2026), guida UI di Coworker Chat e guida Workfront su Experience League (settembre 2026). Gli annunci non hanno data né impegno."
       />
     </Slide>
 
     <Slide id="slide-marco-brief" bg="primary" align="center">
       <div class="uc-bg absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="uc-cw-preface" en="Use authorized journey evidence to prepare a handoff—not to make a customer decision." it="Usare evidenze autorizzate del journey per preparare un handoff, non per decidere sul cliente." />
+      <T as="p" class="uc-cw-preface" en="A skill the bank writes, run in Coworker Chat with plan mode on: it prepares a handoff from authorized journey evidence. It does not decide for the customer." it="Una skill scritta dalla banca, eseguita in Coworker Chat con il plan mode attivo: prepara un handoff dalle evidenze autorizzate del journey. Non decide per il cliente." />
       <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="MARCO · AN ILLUSTRATIVE HANDOFF" it="MARCO · UN HANDOFF ILLUSTRATIVO" />
       <T
         as="h2"
@@ -268,18 +423,19 @@ const references = [
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch text-left">
         <div class="uc-panel uc-panel--rosso">
           <div class="uc-panel-head">
-            <span class="uc-tag">Coworker · CJA view</span>
-            <T as="span" class="uc-cw-state" en="Draft" it="Bozza" />
+            <span class="uc-tag">Coworker Chat · plan mode</span>
+            <T as="span" class="uc-cw-state" en="Plan approved · draft" it="Piano approvato · bozza" />
           </div>
-          <T as="p" class="uc-panel-body" en="Explain the journey and prepare context for the advisor." it="Spiegare il percorso e preparare il contesto per il consulente." />
+          <T as="p" class="uc-panel-body" en="/advisor-prep: explain the journey and prepare context for the advisor." it="/advisor-prep: spiegare il percorso e preparare il contesto per il consulente." />
           <ul class="uc-cw-evidence">
             <T as="li" en="Evidence: site, concierge and app interactions" it="Evidenze: interazioni su sito, concierge e app" />
             <T as="li" en="Open status: email reported as unopened; reason and intent are unknown" it="Stato apertura: email segnalata come non aperta; motivo e intenzione non sono noti" />
           </ul>
+          <T as="p" class="uc-cw-trace" en="Loaded skill: advisor-prep · Ran 1 query on the authorized data view · artifact ready" it="Loaded skill: advisor-prep · Ran 1 query sulla data view autorizzata · artefatto pronto" />
         </div>
         <div class="uc-cw-handoff">
           <T as="p" class="uc-cw-handoff-title" en="The advisor checks what is useful to share." it="Il consulente verifica cosa è utile condividere." />
-          <T as="p" class="uc-panel-body" en="This example assumes authorized access to the relevant CJA data; the answer remains a draft." it="L’esempio presuppone accesso autorizzato ai dati CJA pertinenti; la risposta resta una bozza." />
+          <T as="p" class="uc-panel-body" en="The skill runs under the advisor’s CJA permissions; the answer stays a draft until someone approves, edits or stops it." it="La skill gira con i permessi CJA del consulente; la risposta resta una bozza finché qualcuno la approva, la modifica o la ferma." />
           <div class="uc-cw-boundary">
             <T as="span" class="uc-tag" en="Boundary" it="Confine" />
             <T as="span" en="No credit decision or automatic customer activation." it="Nessuna decisione sul credito o attivazione automatica verso il cliente." />
@@ -322,13 +478,13 @@ const references = [
       <T
         as="p"
         class="uc-cw-caveat uc-cw-caveat--on-brand mt-6 max-w-4xl mx-auto"
-        en="Workfront, AEM and Target are examples of possible execution surfaces—not assumed UniCredit integrations. Each connection and approval path must be configured."
-        it="Workfront, AEM e Target sono possibili superfici di esecuzione, non integrazioni UniCredit date per acquisite. Ogni collegamento e percorso di approvazione va configurato."
+        en="Journey Optimizer, AEM and Target are the execution surfaces Adobe documents for Coworker Chat, not assumed UniCredit integrations. Each connector and approval path must be configured."
+        it="Journey Optimizer, AEM e Target sono le superfici di esecuzione che Adobe documenta per Coworker Chat, non integrazioni UniCredit date per acquisite. Ogni connettore e percorso di approvazione va configurato."
       />
     </Slide>
 
     <Slide id="slide-governance" bg="inverse" align="center">
-      <T as="p" class="uc-cw-preface uc-cw-preface--dark" en="Context needs an owner. Teams should know where it comes from, who can change it and when it applies." it="Il contesto ha bisogno di un owner. Il team deve sapere da dove arriva, chi lo aggiorna e quando si applica." />
+      <T as="p" class="uc-cw-preface uc-cw-preface--dark" en="Three controls Adobe documents for Coworker Chat, read with a bank’s eyes. The context still needs an owner who knows where it comes from and when it applies." it="Tre controlli che Adobe documenta per Coworker Chat, letti con gli occhi di una banca. Il contesto ha comunque bisogno di un owner che sappia da dove arriva e quando si applica." />
       <T as="p" class="slide-eyebrow text-center text-[var(--color-grigio-300)] mb-4" en="GOVERNANCE BY DESIGN" it="GOVERNANCE NEL FLUSSO" />
       <T
         as="h2"
@@ -349,14 +505,14 @@ const references = [
       <T
         as="p"
         class="uc-cw-caveat uc-cw-caveat--on-dark mt-6 max-w-4xl mx-auto text-center"
-        en="This is a design pattern, not a compliance certification. Legal, security and data-protection requirements must be validated for each implementation."
-        it="È un modello di progettazione, non una certificazione di conformità. Requisiti legali, di sicurezza e protezione dati vanno validati per ogni implementazione."
+        en="Documented controls, not a compliance certification. Legal, security and data-protection requirements must be validated for each implementation. Source: Coworker Chat overview, Experience League."
+        it="Controlli documentati, non una certificazione di conformità. Requisiti legali, di sicurezza e protezione dati vanno validati per ogni implementazione. Fonte: Coworker Chat overview, Experience League."
       />
     </Slide>
 
     <Slide id="slide-coworker-result" bg="primary" align="center">
       <div class="uc-bg-soft absolute inset-0 -z-10" slot="backdrop" aria-hidden="true"></div>
-      <T as="p" class="uc-cw-preface" en="Shorten the path to a reviewed action, then measure its effect against a baseline." it="Accorciare il percorso fino all’azione verificata, poi misurarne l’effetto rispetto a una baseline." />
+      <T as="p" class="uc-cw-preface uc-cw-preface--dense" en="Shorten the path to a reviewed action, then measure its effect against a baseline." it="Accorciare il percorso fino all’azione verificata, poi misurarne l’effetto rispetto a una baseline." />
       <T as="p" class="slide-eyebrow text-center text-[var(--ink-brand-text)] mb-4" en="MEASURE THE OPERATING MODEL" it="MISURARE IL MODELLO OPERATIVO" />
       <T
         as="h2"
@@ -371,9 +527,20 @@ const references = [
         en="Start with operational measures, then connect them to the customer and business outcomes the bank already tracks."
         it="Partire dalle misure operative e collegarle ai risultati cliente e business già monitorati dalla banca."
       />
-      <ul class="uc-cw-measures">
-        {outcomeMeasures.map((measure) => <T as="li" en={measure.en} it={measure.it} />)}
-      </ul>
+      <div class="uc-cw-result-grid">
+        <div>
+          <T as="p" class="uc-tag mb-3" en="What to measure" it="Cosa misurare" />
+          <ul class="uc-cw-measures">
+            {outcomeMeasures.map((measure) => <T as="li" en={measure.en} it={measure.it} />)}
+          </ul>
+        </div>
+        <div>
+          <T as="p" class="uc-tag mb-3" en="How Adobe suggests starting" it="Come Adobe suggerisce di partire" />
+          <ul class="uc-cw-measures uc-cw-measures--practice">
+            {pilotPractices.map((practice) => <T as="li" en={practice.en} it={practice.it} />)}
+          </ul>
+        </div>
+      </div>
       <div class="mt-6" data-reveal>
         <a
           href={href(base, '/risultati')}
@@ -384,9 +551,9 @@ const references = [
       </div>
       <T
         as="p"
-        class="uc-cw-caveat mt-5 max-w-4xl mx-auto text-center"
-        en="These are suggested measures, not reported UniCredit results. Establish a baseline before setting targets."
-        it="Sono misure da valutare, non risultati UniCredit. Definire una baseline prima di fissare gli obiettivi."
+        class="uc-cw-caveat uc-cw-caveat--dense mt-5 max-w-4xl mx-auto text-center"
+        en="Suggested measures, not UniCredit results. Adobe’s early customer programs report offer approval cycles 70% faster and campaign launches 60% faster (blog, June 2026): cross-industry, not banking."
+        it="Misure da valutare, non risultati UniCredit. I programmi early customer Adobe riportano approvazioni delle offerte più rapide del 70% e lanci campagna del 60% (blog, giugno 2026): cross-industry, non banking."
       />
     </Slide>
   </DeckContainer>
@@ -592,11 +759,91 @@ const references = [
       font-size: 1rem;
       line-height: 1.5;
     }
+    .uc-cw-trace {
+      margin: 0.75rem 0 0;
+      color: var(--ink-note);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      max-width: none;
+    }
+    /* Cinque tessere, griglia simmetrica: tre sopra (2/6 ciascuna), due sotto (3/6 ciascuna).
+       Niente riga finale sbilenca con una cella vuota. */
+    .uc-cw-skills {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0.9rem;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .uc-cw-skill { grid-column: span 2; }
+    .uc-cw-skill:nth-child(n + 4) { grid-column: span 3; }
+    .uc-cw-skill:nth-child(n + 4) .uc-cw-skill-list { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.2rem; }
+    .uc-cw-skill {
+      min-width: 0;
+      padding: 1.1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.9);
+      border-top: 2px solid var(--color-petrolio);
+      box-shadow: 0 8px 30px -18px rgba(38, 38, 38, 0.35);
+    }
+    .uc-cw-skill--bank { border-top-color: var(--color-rosso); background: rgba(255, 255, 255, 0.98); }
+    .uc-cw-skill-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.55rem; }
+    .uc-cw-skill-app { margin: 0; color: var(--ink-primary); font-size: 1.05rem; font-weight: 700; line-height: 1.3; max-width: none; }
+    .uc-cw-skill-status { flex: 0 0 auto; padding: 0.15rem 0.5rem; border-radius: 9999px; border: 1px solid rgba(0, 122, 145, 0.35); color: var(--ink-accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+    .uc-cw-skill--bank .uc-cw-skill-status { border-color: rgba(226, 0, 26, 0.35); color: var(--ink-brand-text); }
+    .uc-cw-skill-list { display: grid; gap: 0.35rem; margin: 0; padding-left: 1.1rem; color: var(--ink-note); font-size: 0.95rem; line-height: 1.5; }
+    .uc-cw-avail {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .uc-cw-avail-col { min-width: 0; padding: 1.25rem 1.3rem; }
+    .uc-cw-avail-col .uc-tag { display: block; margin-bottom: 0.7rem; }
+    .uc-cw-avail-list { display: grid; gap: 0.5rem; margin: 0; padding-left: 1.1rem; color: var(--ink-note); font-size: 0.95rem; line-height: 1.5; }
+    .uc-cw-avail-list li::marker { color: var(--ink-accent); }
+    .uc-cw-result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 66rem;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .uc-cw-result-grid .uc-cw-measures { grid-template-columns: 1fr; max-width: none; }
+    .uc-cw-measures--practice li { border-bottom-color: var(--color-rosso); }
+    /* Proiettori bassi (1440×900, 1280×800): sulle due slide dense la riga introduttiva
+       si taglia (è un lead-in, il titolo regge da solo) e le card perdono solo bianco.
+       Il tipo resta ≥ 0.95rem. */
+    @media (max-height: 960px) {
+      .uc-cw-preface--dense { display: none; }
+      .uc-cw-skills { gap: 0.7rem; }
+      .uc-cw-skill { padding: 0.8rem 0.95rem; }
+      .uc-cw-skill-head { margin-bottom: 0.4rem; }
+      .uc-cw-skill-list { gap: 0.2rem; }
+      .uc-cw-avail-col { padding: 0.95rem 1.05rem; }
+      .uc-cw-avail-col .uc-tag { margin-bottom: 0.5rem; }
+      .uc-cw-avail-list { gap: 0.3rem; }
+      .uc-cw-caveat--dense { margin-top: 0.6rem; }
+      .uc-cw-result-grid { gap: 1rem 1.5rem; }
+      .uc-cw-result-grid .uc-cw-measures { gap: 0.45rem; }
+      .uc-cw-result-grid .uc-cw-measures li { padding: 0.55rem 0.9rem; }
+    }
     @media (max-width: 900px) {
+      .uc-cw-skills, .uc-cw-avail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .uc-cw-skill, .uc-cw-skill:nth-child(n + 4) { grid-column: auto; }
+      .uc-cw-skill:nth-child(n + 4) .uc-cw-skill-list { grid-template-columns: 1fr; }
       .uc-cw-execution { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .uc-cw-execution li:last-child { grid-column: 1 / -1; }
     }
     @media (max-width: 640px) {
+      .uc-cw-skills, .uc-cw-avail, .uc-cw-result-grid { grid-template-columns: 1fr; }
       .uc-cw-execution, .uc-cw-measures { grid-template-columns: 1fr; }
       .uc-cw-execution li:last-child { grid-column: auto; }
       .uc-cw-sources { font-size: 0.75rem; }

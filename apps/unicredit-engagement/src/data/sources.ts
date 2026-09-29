@@ -19,6 +19,56 @@ export const SOURCES: Record<string, Source> = {
     label: 'Adobe CX Enterprise Coworker — Adobe Summit 2026 announcement',
     url: 'https://news.adobe.com/news/2026/04/adobe-unveils-cx-enterprise-coworker',
   },
+  adobe_cx_coworker_ga: {
+    id: 'adobe_cx_coworker_ga',
+    label: 'Adobe CX Enterprise Coworker — general availability (Adobe News, 10 June 2026)',
+    url: 'https://news.adobe.com/news/2026/06/adobe-announces-general-availability-of-cx-enterprise-coworker',
+  },
+  adobe_cx_coworker_blog: {
+    id: 'adobe_cx_coworker_blog',
+    label: 'Introducing CX Enterprise Coworker — Adobe blog (19 June 2026)',
+    url: 'https://business.adobe.com/blog/introducing-cx-enterprise-coworker',
+  },
+  el_coworker_chat: {
+    id: 'el_coworker_chat',
+    label: 'Coworker Chat overview — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/overview',
+  },
+  el_coworker_ui: {
+    id: 'el_coworker_ui',
+    label: 'Coworker Chat UI guide (plan mode, availability by application) — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/ui-guide',
+  },
+  el_coworker_cja: {
+    id: 'el_coworker_cja',
+    label: 'Analyze Customer Journey Analytics data with Coworker Chat — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/data-insights/analytics-chat',
+  },
+  el_coworker_ajo: {
+    id: 'el_coworker_ajo',
+    label: 'Coworker for journeys — Adobe Journey Optimizer guide',
+    url: 'https://experienceleague.adobe.com/en/docs/journey-optimizer/using/orchestrate-journeys/journeys-coworker-skills',
+  },
+  el_coworker_aem: {
+    id: 'el_coworker_aem',
+    label: 'Agentic capabilities in AEM through CX Enterprise Coworker — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/ai-in-aem/agentic-capabilities/overview',
+  },
+  el_coworker_gateway: {
+    id: 'el_coworker_gateway',
+    label: 'Adobe CX Coworker Gateway (unified MCP endpoint) — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/mcp/overview',
+  },
+  el_coworker_workfront: {
+    id: 'el_coworker_workfront',
+    label: 'CX Coworker in Workfront — availability note — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/workfront/using/basics/coworker-in-workfront/coworker-overview',
+  },
+  el_coworker_use_cases: {
+    id: 'el_coworker_use_cases',
+    label: 'Coworker Chat use cases and sample prompts — Experience League',
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/overview',
+  },
   adobe_cx_analytics: {
     id: 'adobe_cx_analytics',
     label: 'Adobe CX Analytics — unified intelligence layer (Summit 2026)',
