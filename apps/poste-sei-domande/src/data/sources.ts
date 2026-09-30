@@ -20,6 +20,11 @@ export const SOURCES: Record<string, Source> = {
     label: { it: 'Experience League, Coworker Chat: casi d’uso', en: 'Experience League, Coworker Chat use cases' },
     url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/overview',
   },
+  mcpFaq: {
+    id: 'mcpFaq',
+    label: { it: 'Adobe Developer, MCP Analytics: FAQ (licenza e limiti)', en: 'Adobe Developer, Analytics MCP: FAQ (licensing and limits)' },
+    url: 'https://developer.adobe.com/analytics-mcp/docs/support/faq',
+  },
   coworkerChat: {
     id: 'coworkerChat',
     label: { it: 'Experience League, Coworker Chat: panoramica e guida all’interfaccia', en: 'Experience League, Coworker Chat: overview and UI guide' },
