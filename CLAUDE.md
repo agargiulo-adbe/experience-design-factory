@@ -310,6 +310,19 @@ c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un dif
 - Residuo noto e accettato: il `loop` nativo costa **un tick di compositor (~17 ms, un
   fotogramma)** sul giro. È il restart del decoder, non un salto di contenuto.
 
+### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
+`audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
+**compri l'argomento**. Prima della consegna si lancia il **panel**: sub‑agent freschi e
+isolati, uno per stakeholder reale (personas **cieche**: sanno solo ciò che sa un cliente,
+ritratti pubblici in `docs/<Cliente>/PANEL-PERSONAS.md`), un **critico paranoico** che
+riverifica ogni claim, data, numero e link alla fonte (pubblica + Fluffy per il controllo
+interno: la verifica dei fatti Adobe avviene a monte E a valle), un **arbitro** che produce
+il backlog P0/P1/P2 con la correzione per ogni rilievo e la lista «non toccare». Si applicano
+P0 e P1, si riverifica (build, audit 0 HARD, screenshot) e si rilancia il panel per la delta;
+**due giri al massimo**. Il verdetto vive in chat, nel handover e nel **dossier interno**
+dell'experience. Dettaglio e forma fissa dei verbali: `skills/experience-design/SKILL.md`
+→ «Panel review». Memoria: `panel-review-mode`.
+
 ### Cross‑experience propagation
 A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
 

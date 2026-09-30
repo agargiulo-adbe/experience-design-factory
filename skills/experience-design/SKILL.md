@@ -240,6 +240,75 @@ playback one — fix the asset, not with JavaScript.
   Natural, concrete sentences, varied rhythm. Bilingual: EN and IT each idiomatic (never a literal
   echo); `<T en it>` ALWAYS keeps both. Keep length ~±10% so the audit doesn't break. (CLAUDE.md → Working rules.)
 
+## Panel review — the client's eyes (BINDING — before every handover)
+`audit:deck` and a screenshot pass prove the deck **renders**. They prove nothing about
+whether the client will **buy the argument**. Under time pressure the natural verification plan
+is rendering + audit + a copy-tell scan, and it skips two things entirely: how each person in
+the room will react, and whether every claim survives a check at its source. This phase exists
+to make those two things impossible to skip. It borrows the review rituals that hold up in
+agentic engineering (maker-checker, isolated multi-agent review with a challenger, evidence
+before judgment, "AI proposes, a human approves") and points them at the audience instead of
+the code.
+
+**Who reviews.** Never the context that built the deck. Spawn **fresh, isolated sub-agents**,
+in parallel, each with only: the live URL, one screenshot per slide at 1920 (`shots.mjs`), the
+page sources for exact copy, and its own brief. They must not see each other's output.
+- **One persona per real stakeholder** (4–6): the person in the room plus the colleagues the
+  deck will be forwarded to (their boss, the data/IT owner, the business owner, the adjacent
+  team). Each persona gets a **public portrait** (role, career, what makes them win, what
+  irritates them, what they already saw from us) written in the experience's dossier under
+  `docs/<Client>/PANEL-PERSONAS.md`. Personas are **blind**: they know only what a client
+  knows — no internal Adobe facts (rollout cohorts, internal FAQs, Slack). If a persona would
+  need an internal fact to be convinced, the deck has a gap, not the persona.
+- **One paranoid fact-checker**, not blind: re-verifies **every** product claim, date, number
+  and link at the source (Experience League, developer.adobe.com, news.adobe.com, the client's
+  own publications), and uses Fluffy for the internal cross-check. Verification of Adobe facts
+  therefore happens **twice**: upstream when researching, downstream here. A fact confirmed
+  only by internal sources cannot stand on a slide as if it were public.
+- **One arbiter**, fresh as well: merges panel + fact-check, discards false positives, keeps the
+  disagreements visible, and writes the backlog.
+
+**What each persona returns** (fixed shape, so nothing is negotiable):
+1. Five scores 1–5, one line each: **credibility of the facts · relevance for me · clarity ·
+   risk (5 = none perceived) · actionability (what I do on Monday)**.
+2. What convinces me (with slide id).
+3. What I would say out loud against it, in the room (5–8 objections, each with the slide and
+   the fix that would change my mind).
+4. The questions I would ask, with the answer I expect or that is missing.
+5. What I would cut (2–3) and add (2–3).
+6. Errors in my own domain (the analyst finds the wrong term, the CDO finds the risk, the
+   business owner finds the missing KPI).
+7. Copy that sounds like a vendor or an AI, and how a colleague would say it.
+8. Verdict in three lines: do I accept the next step, under which conditions.
+
+**What the arbiter returns.** A backlog **P0 / P1 / P2**, each item = slide id + the finding +
+the concrete change (copy, structure, data, source), plus a **«do not touch»** list of the
+strengths more than one persona named. Findings where the personas disagree are kept as
+disagreements, with the trade-off spelled out — the arbiter does not average them away.
+
+**The loop.** Apply P0 and P1 directly (the user asked for the deck, not for a report), rebuild,
+`audit:deck` to 0 HARD, re-read the changed slides at 1920, then **re-run the panel for the
+delta** with the same personas: did the scores move, which objections survived. **Two rounds
+maximum**; what survives round two goes into the handover as an open point, not a third round.
+
+**Where the verdict lives.** Three places, always: the chat (the user reads it there), the
+handover (the next session must know what the room will say), and the experience's internal
+**dossier** (the account team preps from it: objections, expected questions, say/don't‑say
+lines are worth as much as the deck). Personas' portraits and verbatim verdicts are internal
+material: they stay out of the build and out of git, with the rest of `docs/<Client>/`.
+
+**Degraded run, declared.** Under real time pressure the panel shrinks, it does not vanish:
+**one round, at least three personas (the person in the room, their manager, the data/IT
+owner) plus the fact-checker**, P0 only. The verdict's first line then reads
+`⚠️ DEGRADED: panel ridotto (<reason>)` and the handover carries the missing personas as an
+open point. A silent reduction, or zero panel, is the failure this phase was written against.
+
+**Red flags — you are about to skip this.** "The audit is green, it's ready" · "I read every
+slide myself" · "No time for a panel, the meeting is tomorrow" · "The facts were verified when I
+researched them" · "I know what the client will say". Each of these is the baseline failure
+this phase was written against. A panel of five personas plus a fact-checker runs in parallel
+and costs less than one wrong claim in front of an analytics manager.
+
 ## The 9 underlying blocks (library)
 Hero, NarrativeSection, FrontBackStageSplit, JourneyPhase, PersonaCard,
 ProductGateway, AdobeStackReveal, MetricCallout, Timeline. These remain available
@@ -373,4 +442,5 @@ Conventions & hard-won lessons:
     Mount `<MadeWith>` in the BaseLayout and declare `data-made-with` where an Adobe tool
     actually made the asset — check `provenance.json`, never assume.
 12. **Register everywhere:** `admin.astro` (PAGE_REGISTRY + SOLUTIONS), `deploy.yml` (merge + verify), `factory-hub` card, showcase `src/data/experiences.ts` (+ `public/shots/<slug>.webp`), console registry / Supabase seed. A product/naming change propagates to **every** experience that cites it — verify each (build + audit).
-13. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.
+13. **Panel review (client's eyes):** fresh isolated sub-agents — one blind persona per real stakeholder (portraits in `docs/<Client>/PANEL-PERSONAS.md`), one paranoid fact-checker at the sources, one arbiter → P0/P1/P2 backlog with fixes + «do not touch» list. Apply P0/P1, re-verify (build, audit 0 HARD, screenshots), re-run the panel for the delta; two rounds max. Verdict in chat + handover + the internal dossier. See «Panel review» above.
+14. **Handover:** run `/handover` to update the docs in detail, size-split, and verify a new session can read them.

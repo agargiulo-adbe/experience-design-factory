@@ -127,6 +127,21 @@ the homework. Establish, with the user and via research:
 - **Motion, if any.** Looping backdrop clips are welcome, but say so in the brief: each one is
   re-cut so the loop has no visible jump, and the cut is measured, not eyeballed.
 
+## Part 8 — The room, and who the deck gets forwarded to (panel personas)
+The experience will be reviewed, before handover, by a **panel of simulated stakeholders** who
+read it with the client's eyes. That review is only as good as the portraits it starts from, so
+collect them here, from **public sources only** (LinkedIn, press, the company's own pages):
+- **Who is in the room** (usually one or two people) and **who receives the deck afterwards**
+  (their manager, the data/IT owner, the business owner, the adjacent team): 4–6 people.
+- For each: role and reporting line, career in two lines, **what makes them win** (the KPI or
+  outcome they are measured on), **what irritates them** (words, promises, past proposals),
+  **what they already saw from Adobe** and how it ended, the lens they use (financial,
+  operational, growth, risk).
+- Any **forbidden vocabulary** for this account (a regulator's decision, a past incident, a
+  word the sponsor dislikes) — stated as a fact with its date, never as a judgement.
+These portraits become `docs/<Client>/PANEL-PERSONAS.md` in the Factory and drive the panel
+review; they never appear in the experience itself.
+
 ## Output — the value-proposition brief
 When enough is known, produce **one Markdown document** with these headings, ready to hand off.
 The shape mirrors an executive value proposition: objective → solution → proof → impact →
@@ -150,7 +165,9 @@ differentiation → next steps.
                                 source, the live site URL the design system is read from;
                                 the Adobe × Brand signature is standard on every slide)
 ## 11. Sources                  (links + dates)
-## 12. Open questions for Antonio
+## 12. Panel personas            (4–6 public portraits: role, what they are measured on, what
+                                irritates them, what they saw from Adobe, forbidden vocabulary)
+## 13. Open questions for Antonio
 ```
 
 Keep copy tight and real — no lorem, no filler, no AI tells.
