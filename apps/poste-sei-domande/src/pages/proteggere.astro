@@ -19,17 +19,17 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const nonFa = [
-  { k: { it: 'Non raccoglie', en: 'Does not collect' }, b: { it: 'Nessun tag nuovo, nessun evento in più sull’app o sul sito. Coworker legge ciò che Analytics riceve già da AppMeasurement e Launch, come lo legge Workspace.', en: 'No new tag, no extra event on the app or site. Coworker reads what Analytics already receives from AppMeasurement and Launch, the way Workspace reads it.' } },
-  { k: { it: 'Non vede persone', en: 'Does not see people' }, b: { it: 'Lavora sui report aggregati delle report suite: visite, sezioni, piattaforme, segmenti. Non interroga profili né dati personali, che in Analytics non vanno messi.', en: 'It works on the aggregated reports of the report suites: visits, sections, platforms, segments. It queries no profiles and no personal data, which do not belong in Analytics anyway.' } },
+  { k: { it: 'Non raccoglie', en: 'Does not collect' }, b: { it: 'Nessun tag nuovo, nessun evento in più sull’app o sul sito. Coworker legge ciò che Analytics riceve già da AppMeasurement e Tags (Launch), come lo legge Workspace.', en: 'No new tag, no extra event on the app or site. Coworker reads what Analytics already receives from AppMeasurement and Tags (Launch), the way Workspace reads it.' } },
+  { k: { it: 'Non vede persone', en: 'Does not see people' }, b: { it: 'Lavora sui report aggregati delle report suite: visite, sezioni, piattaforme, segmenti. Non unisce profili né decodifica identificativi; le variabili con identificativi pseudonimi si escludono dal profilo di prodotto prima del pilota.', en: 'It works on the aggregated reports of the report suites: visits, sections, platforms, segments. It stitches no profiles and decodes no identifiers; variables carrying pseudonymous identifiers are excluded from the product profile before the pilot.' } },
   { k: { it: 'Non decide', en: 'Does not decide' }, b: { it: 'Non attiva campagne, non tocca contenuti, non personalizza niente per il cliente finale. Risponde a chi chiede, dentro l’organizzazione.', en: 'It triggers no campaigns, touches no content, personalises nothing for the end customer. It answers whoever asks, inside the organisation.' } },
-  { k: { it: 'Non sorveglia', en: 'Does not monitor' }, b: { it: 'Niente alert automatici, niente anomalie cercate da solo: risponde alle domande che riceve. Le alert restano quelle di Analytics.', en: 'No automatic alerts, no anomalies hunted on its own: it answers the questions it receives. Alerts remain those of Analytics.' } },
+  { k: { it: 'Non sorveglia', en: 'Does not monitor' }, b: { it: 'Sulla vostra Analytics risponde alle domande che riceve: non gira alert per conto suo. Il primo segnale resta un alert di Analytics o un reclamo.', en: 'On your Analytics it answers the questions it receives: it runs no alerts of its own. The first signal is still an Analytics alert or a complaint.' } },
 ];
 
 const regole = [
-  { t: { it: 'Sola lettura, prima', en: 'Read-only, first' }, b: { it: 'Nel profilo MCP Access si parte con il team e in lettura. Le quattro scritture si accendono dopo, con il gate di approvazione.', en: 'In the MCP Access profile, start with the team and in read mode. The four writes go on later, with the approval gate.' } },
+  { t: { it: 'Prima chi non scrive', en: 'Non-writers first' }, b: { it: 'MCP Access segue i diritti Analytics già in mano a ciascuno: si parte con utenti senza diritti di authoring, o con l’approvazione obbligatoria sui quattro strumenti di scrittura. Le scritture in produzione, se servono, a quattro occhi.', en: 'MCP Access follows the Analytics rights each person already holds: start with users without authoring rights, or with mandatory approval on the four write tools. Writes in production, if needed, with a second pair of eyes.' } },
   { t: { it: 'Una suite di prova', en: 'A test suite' }, b: { it: 'Le prime due settimane sulla suite di sviluppo della SuperApp, che avete già. Poi quella di produzione.', en: 'The first two weeks on the SuperApp development suite you already have. Then the production one.' } },
   { t: { it: 'Validare contro Workspace', en: 'Validate against Workspace' }, b: { it: 'Ogni risposta usata per una decisione si riapre in Workspace il primo mese. Se i numeri tornano, il metodo regge.', en: 'Every answer used for a decision is reopened in Workspace during the first month. If the numbers match, the method holds.' } },
-  { t: { it: 'Nel perimetro del Comitato IA', en: 'Within the AI Committee’s remit' }, b: { it: 'Coworker è un uso interno di IA su dati aggregati già in casa. Va descritto così, con questa slide, a chi governa l’IA in Poste.', en: 'Coworker is an internal use of AI on aggregated data already in-house. Describe it that way, with this slide, to whoever governs AI at Poste.' } },
+  { t: { it: 'Settimana zero: Comitato IA e DPO', en: 'Week zero: AI Committee and DPO' }, b: { it: 'L’istruttoria la fa il Comitato IA, con il DPO e la sicurezza. Adobe compila la parte tecnica della scheda: modello, regione, conservazione, uso per addestramento, registro, uscita. Questo deck è un allegato, non l’istruttoria.', en: 'The assessment is the AI Committee’s, with the DPO and security. Adobe fills in the technical part of the file: model, region, retention, training use, log, exit. This deck is an attachment, not the assessment.' } },
 ];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
@@ -49,8 +49,8 @@ const regole = [
         <T
           as="p"
           class="sd-q-lead"
-          it="È la domanda che ti faranno per prima, e giustamente. La risposta è corta: i dati restano in Adobe Analytics. Coworker li legge con i permessi di chi chiede, non li copia, non li arricchisce, non li porta fuori."
-          en="It is the question you will be asked first, and rightly so. The answer is short: the data stays in Adobe Analytics. Coworker reads it with the permissions of whoever asks, does not copy it, does not enrich it, does not take it out."
+          it="È la domanda che ti faranno per prima, e giustamente. La risposta è corta: i dati grezzi restano in Adobe Analytics. Coworker legge i risultati aggregati con i permessi di chi chiede, e non ne fa copie, arricchimenti o esportazioni."
+          en="It is the question you will be asked first, and rightly so. The answer is short: the raw data stays in Adobe Analytics. Coworker reads aggregated results with the permissions of whoever asks, and makes no copy, adds nothing and exports nothing."
           data-reveal data-reveal-delay="0.15"
         />
       </div>
@@ -61,25 +61,25 @@ const regole = [
       <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgArch.src})`}></div>
       <div class="sd-head" data-reveal>
         <T as="p" class="slide-eyebrow mb-3" it="Dove finiscono i dati" en="Where the data goes" />
-        <T as="h2" class="sd-head-title" it="Tre pezzi, tutti Adobe, nessuna copia" en="Three pieces, all Adobe, no copy" />
+        <T as="h2" class="sd-head-title" it="Tre pezzi, tutti Adobe, nessuna copia dei dati grezzi" en="Three pieces, all Adobe, no copy of the raw data" />
       </div>
       <div class="sd-arch" data-reveal data-reveal-delay="0.14">
         <div class="sd-arch-node sd-arch-node--giallo">
           <T as="p" class="sd-arch-sub" it="Chi chiede" en="Who asks" />
           <T as="p" class="sd-arch-title" it="Coworker Chat" en="Coworker Chat" />
-          <T as="p" class="sd-arch-body" it="Su Adobe Experience Cloud, con l’Adobe ID e l’organizzazione Poste Italiane. Memoria e skill del team. Ogni azione è tracciata nel registro delle attività." en="On Adobe Experience Cloud, with the Adobe ID and the Poste Italiane organisation. Team memory and skills. Every action is tracked in the activity log." />
+          <T as="p" class="sd-arch-body" it="Su Adobe Experience Cloud, con la login aziendale e l’organizzazione Poste Italiane. Memoria, cronologia delle chat e skill del team restano qui: cosa si conserva e per quanto va chiesto ad Adobe per iscritto. Conversazioni e azioni sono tracciate." en="On Adobe Experience Cloud, with the company login and the Poste Italiane organisation. Memory, chat history and team skills live here: what is kept and for how long must be asked of Adobe in writing. Conversations and actions are tracked." />
         </div>
         <div class="sd-arch-link"><span class="sd-arch-link-line"></span><span data-lang-it>permessi dell’utente</span><span data-lang-en>user permissions</span></div>
         <div class="sd-arch-node sd-arch-node--blu">
           <T as="p" class="sd-arch-sub" it="Il passaggio" en="The passage" />
           <T as="p" class="sd-arch-title" it="Server MCP Analytics" en="Analytics MCP server" />
-          <T as="p" class="sd-arch-body" it="Ospitato da Adobe. Ventitré strumenti: cercare suite e componenti, eseguire report, descrivere, e quattro scritture con approvazione. Nessun dato attraversa un modello generativo per rispondere alle chiamate." en="Hosted by Adobe. Twenty-three tools: find suites and components, run reports, describe, and four writes with approval. No data passes through a generative model to serve the calls." />
+          <T as="p" class="sd-arch-body" it="Ospitato da Adobe. Ventitré strumenti: cercare suite e componenti, eseguire report, descrivere, e quattro scritture. Il server esegue le chiamate senza modelli generativi; i risultati aggregati li legge poi Coworker, il modello che risponde in chat, dentro l’organizzazione Adobe di Poste." en="Hosted by Adobe. Twenty-three tools: find suites and components, run reports, describe, and four writes. The server runs the calls with no generative model; the aggregated results are then read by Coworker, the model that answers in chat, inside Poste’s Adobe organisation." />
         </div>
-        <div class="sd-arch-link"><span class="sd-arch-link-line"></span><span data-lang-it>API Analytics 2.0</span><span data-lang-en>Analytics 2.0 API</span></div>
+        <div class="sd-arch-link"><span class="sd-arch-link-line"></span><span data-lang-it>API Analytics</span><span data-lang-en>Analytics API</span></div>
         <div class="sd-arch-node sd-arch-node--blu">
           <T as="p" class="sd-arch-sub" it="Dove stanno i dati" en="Where the data lives" />
           <T as="p" class="sd-arch-title" it="Adobe Analytics" en="Adobe Analytics" />
-          <T as="p" class="sd-arch-body" it="Le vostre report suite, come sono. AppMeasurement e Launch non cambiano. Le stesse API che usano Workspace e Report Builder: le 1.4 sono chiuse dal 31 agosto, le 2.0 con OAuth restano." en="Your report suites, as they are. AppMeasurement and Launch do not change. The same APIs Workspace and Report Builder use: 1.4 closed on 31 August, 2.0 with OAuth remains." />
+          <T as="p" class="sd-arch-body" it="Le vostre report suite, come sono. AppMeasurement, l’SDK mobile e le property in Tags non cambiano. Le stesse API che usano Workspace e il nuovo Report Builder: le 1.4 sono chiuse dal 31 agosto, le 2.0 con OAuth restano." en="Your report suites, as they are. AppMeasurement, the mobile SDK and the Tags properties do not change. The same APIs Workspace and the new Report Builder use: 1.4 closed on 31 August, 2.0 with OAuth remains." />
         </div>
       </div>
       <p class="sd-src" data-reveal data-reveal-delay="0.24">
@@ -119,12 +119,12 @@ const regole = [
       <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgRegole.src})`}></div>
       <div class="sd-head" data-reveal>
         <T as="p" class="slide-eyebrow mb-3" it="Le regole che proponiamo" en="The rules we propose" />
-        <T as="h2" class="sd-head-title" it="Quattro regole per il primo mese" en="Four rules for the first month" />
+        <T as="h2" class="sd-head-title" it="Quattro regole prima e durante il primo mese" en="Four rules before and during the first month" />
         <T
           as="p"
           class="sd-head-lead"
-          it="Poste ha un Manifesto per l’uso etico dell’IA e un Comitato che valuta ogni applicazione. Queste regole servono a presentare Coworker a quel tavolo per quello che è: uno strumento interno, in lettura, su dati aggregati, con un registro."
-          en="Poste has a Manifesto for the ethical use of AI and a Committee that reviews every application. These rules exist to present Coworker at that table for what it is: an internal tool, reading aggregated data, with a log."
+          it="Poste ha un Manifesto per l’uso etico dell’IA e un Comitato che valuta ogni applicazione. Queste regole servono ad arrivare a quel tavolo con le carte in ordine: uno strumento interno, su dati aggregati, con permessi per persona e una traccia delle azioni."
+          en="Poste has a Manifesto for the ethical use of AI and a Committee that reviews every application. These rules exist to reach that table with the paperwork in order: an internal tool, on aggregated data, with per-person permissions and a trace of the actions."
         />
       </div>
       <div class="sd-steps" data-reveal data-reveal-delay="0.14">
@@ -151,7 +151,7 @@ const regole = [
         <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Dati" en="Data" />
-            <T as="p" class="sd-take-t" it="Restano in Analytics. <strong>Nessuna copia, nessun dato nuovo</strong>, nessun profilo." en="They stay in Analytics. <strong>No copy, no new data</strong>, no profile." />
+            <T as="p" class="sd-take-t" it="Restano in Analytics, <strong>senza copie dei dati grezzi né dati nuovi</strong>, e senza profili." en="They stay in Analytics, <strong>with no copy of the raw data and no new data</strong>, and no profile built." />
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Accesso" en="Access" />
@@ -159,10 +159,10 @@ const regole = [
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Registro" en="Log" />
-            <T as="p" class="sd-take-t" it="Ogni domanda e ogni scrittura approvata lasciano <strong>una traccia</strong> che puoi mostrare." en="Every question and every approved write leave <strong>a trace</strong> you can show." />
+            <T as="p" class="sd-take-t" it="Conversazioni e scritture lasciano <strong>una traccia</strong>; il formato del registro per gli admin va chiesto ad Adobe prima del pilota." en="Conversations and writes leave <strong>a trace</strong>; the admin-facing log format must be asked of Adobe before the pilot." />
           </div>
         </div>
-        <T as="p" class="sd-caveat" it="<strong>Una cautela.</strong> Il perimetro di questo deck è Adobe Analytics. Se un giorno si volesse collegare Coworker ad altri sistemi, quella è una valutazione nuova, con il Comitato IA, non un’estensione di questa." en="<strong>One caution.</strong> The scope of this deck is Adobe Analytics. If one day you wanted to connect Coworker to other systems, that is a new assessment, with the AI Committee, not an extension of this one." data-reveal data-reveal-delay="0.24" />
+        <T as="p" class="sd-caveat" it="<strong>Il perimetro.</strong> Questo deck resta dentro Adobe Analytics. Se un giorno si volesse collegare Coworker ad altri sistemi, quella è una valutazione nuova, con il Comitato IA, non un’estensione di questa." en="<strong>The scope.</strong> This deck stays inside Adobe Analytics. If one day you wanted to connect Coworker to other systems, that is a new assessment, with the AI Committee, not an extension of this one." data-reveal data-reveal-delay="0.24" />
       </div>
     </Slide>
 

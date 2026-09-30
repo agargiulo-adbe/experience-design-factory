@@ -12,7 +12,7 @@ export interface Chapter {
 export const CHAPTERS: Chapter[] = [
   { slug: 'accendere',  num: '01', label: { it: 'Accendere',  en: 'Switch on' },  question: { it: 'Come lo accendo, e per chi?',                          en: 'How do I switch it on, and for whom?' } },
   { slug: 'rispondere', num: '02', label: { it: 'Rispondere', en: 'Answer' },     question: { it: 'Cos’è successo ieri sulla SuperApp?',              en: 'What happened on the SuperApp yesterday?' } },
-  { slug: 'capire',     num: '03', label: { it: 'Capire',     en: 'Understand' }, question: { it: 'Perché le Operazioni Veloci sono calate lunedì?',      en: 'Why did Quick Operations drop on Monday?' } },
+  { slug: 'capire',     num: '03', label: { it: 'Capire',     en: 'Understand' }, question: { it: 'Perché le Operazioni Veloci sono calate lunedì?',      en: 'Why did “Operazioni Veloci” drop on Monday?' } },
   { slug: 'governare',  num: '04', label: { it: 'Governare',  en: 'Govern' },     question: { it: 'Quali segmenti e suite non usa più nessuno?',          en: 'Which segments and suites does nobody use any more?' } },
   { slug: 'proteggere', num: '05', label: { it: 'Proteggere', en: 'Protect' },    question: { it: 'Dove finiscono i dati?',                               en: 'Where does the data go?' } },
   { slug: 'evolvere',   num: '06', label: { it: 'Evolvere',   en: 'Evolve' },     question: { it: 'E domani?',                                            en: 'And tomorrow?' } },

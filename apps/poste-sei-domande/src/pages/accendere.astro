@@ -19,16 +19,16 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const passi = [
-  { t: { it: 'Il permesso in Admin Console', en: 'The permission in Admin Console' }, b: { it: 'Nel profilo di prodotto Analytics, sotto <code>Analytics Tools</code>, si accende <code>MCP Access</code> per gli utenti che devono usare Coworker. È un permesso separato da Workspace: senza, le domande falliscono anche se Workspace funziona.', en: 'In the Analytics product profile, under <code>Analytics Tools</code>, switch on <code>MCP Access</code> for the people who will use Coworker. It is separate from Workspace: without it, questions fail even though Workspace works.' } },
-  { t: { it: 'L’attivazione della vostra org', en: 'Enabling your org' }, b: { it: 'Coworker si accende per organizzazione. La richiesta per la vostra IMS org la inoltriamo noi ad Adobe, con l’elenco delle applicazioni che avete in licenza. Per il settore finanziario esiste un percorso dedicato.', en: 'Coworker is enabled per organisation. We file the request for your IMS org with Adobe, listing the applications you license. Financial services have a dedicated path.' } },
-  { t: { it: 'L’accesso', en: 'Signing in' }, b: { it: 'Si entra da <code>coworker.experience.adobe.com</code> con l’Adobe ID di sempre e si sceglie l’organizzazione Poste Italiane. Niente da installare, niente da configurare sul tracciamento.', en: 'Open <code>coworker.experience.adobe.com</code> with the usual Adobe ID and pick the Poste Italiane organisation. Nothing to install, nothing to change in the tracking.' } },
-  { t: { it: 'La prima domanda', en: 'The first question' }, b: { it: 'Si indica la report suite e si chiede. La prima volta Coworker chiede il consenso a collegarsi ad Analytics; poi ricorda la suite preferita nella sua memoria.', en: 'Name the report suite and ask. The first time Coworker asks to connect to Analytics; then it keeps the preferred suite in its memory.' } },
+  { t: { it: 'L’attivazione della vostra org', en: 'Enabling your org' }, b: { it: 'Coworker si accende per organizzazione. La richiesta per la vostra IMS org la inoltriamo noi ad Adobe, con l’elenco delle applicazioni che avete in licenza. Per il settore finanziario l’attivazione passa da una richiesta di eccezione: è il primo passo, non l’ultimo.', en: 'Coworker is enabled per organisation. We file the request for your IMS org with Adobe, listing the applications you license. For financial services enablement goes through an exception request: it is the first step, not the last.' } },
+  { t: { it: 'Il permesso in Admin Console', en: 'The permission in Admin Console' }, b: { it: 'Nel profilo di prodotto Analytics si accende <code>MCP Access</code> per le persone che useranno Coworker, insieme alle report suite che possono vedere. È un permesso separato da Workspace: senza, le domande falliscono anche se Workspace funziona.', en: 'In the Analytics product profile switch on <code>MCP Access</code> for the people who will use Coworker, together with the report suites they may see. It is separate from Workspace: without it, questions fail even though Workspace works.' } },
+  { t: { it: 'L’accesso', en: 'Signing in' }, b: { it: 'Si entra da <code>experience.adobe.com/#/coworker</code> con la login aziendale e si sceglie l’organizzazione Poste Italiane. Niente da installare, niente da configurare sul tracciamento.', en: 'Open <code>experience.adobe.com/#/coworker</code> with the company login and pick the Poste Italiane organisation. Nothing to install, nothing to change in the tracking.' } },
+  { t: { it: 'La prima domanda', en: 'The first question' }, b: { it: 'Si indica la report suite e si chiede. Coworker tiene la suite preferita nella memoria dell’utente e ricorda le convenzioni del team.', en: 'Name the report suite and ask. Coworker keeps the preferred suite in the user’s memory and remembers the team’s conventions.' } },
 ];
 
 const chi = [
   { k: { it: 'I permessi', en: 'Permissions' }, b: { it: 'Coworker vede le report suite, i segmenti e le metriche che l’utente vede in Workspace. Non di più. Chi non ha accesso a una suite non la troverà nemmeno chiedendo.', en: 'Coworker sees the report suites, segments and metrics the user sees in Workspace. No more. Someone without access to a suite will not find it by asking.' } },
-  { k: { it: 'Lettura e scrittura', en: 'Read and write' }, b: { it: 'Dei ventitré strumenti del server MCP Analytics, diciannove leggono. Quattro scrivono: segmenti, metriche calcolate, intervalli di date, progetti Workspace. Le scritture passano da una vostra approvazione.', en: 'Of the twenty-three tools in the Analytics MCP server, nineteen read. Four write: segments, calculated metrics, date ranges, Workspace projects. Writes go through your approval.' } },
-  { k: { it: 'Chi dovrebbe iniziare', en: 'Who should start' }, b: { it: 'Il tuo team, in sola lettura, su una suite di sviluppo prima e su quella della SuperApp poi. Il business dopo, con le domande già provate da voi.', en: 'Your team, read-only, on a development suite first and on the SuperApp suite next. The business later, with questions you have already tested.' } },
+  { k: { it: 'Lettura e scrittura', en: 'Read and write' }, b: { it: 'Dei ventitré strumenti del server MCP Analytics, diciannove leggono. Quattro scrivono: segmenti, metriche calcolate, intervalli di date, progetti Workspace. Scrive solo chi ha già i diritti di authoring in Analytics, e ogni scrittura si può mettere dietro un’approvazione.', en: 'Of the twenty-three tools in the Analytics MCP server, nineteen read. Four write: segments, calculated metrics, date ranges, Workspace projects. Only users who already hold authoring rights in Analytics can write, and every write can sit behind an approval.' } },
+  { k: { it: 'Chi dovrebbe iniziare', en: 'Who should start' }, b: { it: 'Il tuo team, su una suite di sviluppo prima e su quella della SuperApp poi. Il business dalla settimana cinque, con un profilo Analytics, il permesso e le domande già provate da voi.', en: 'Your team, on a development suite first and on the SuperApp suite next. The business from week five, with an Analytics profile, the permission and questions you have already tested.' } },
 ];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
@@ -48,8 +48,8 @@ const chi = [
         <T
           as="p"
           class="sd-q-lead"
-          it="Coworker è disponibile da giugno 2026. Dal 29 settembre legge le report suite di Adobe Analytics. Accenderlo è un permesso, un’attivazione e un accesso. Nessun rilascio sull’app, nessun tag da toccare."
-          en="Coworker has been available since June 2026. Since 29 September it reads Adobe Analytics report suites. Switching it on is a permission, an enablement and a sign-in. No app release, no tag to touch."
+          it="Coworker è disponibile da giugno 2026. Dal 2 ottobre legge le report suite di Adobe Analytics. Accenderlo è un’attivazione, un permesso e un accesso. Nessun rilascio sull’app, nessun tag da toccare."
+          en="Coworker has been available since June 2026. From 2 October it reads Adobe Analytics report suites. Switching it on is an enablement, a permission and a sign-in. No app release, no tag to touch."
           data-reveal data-reveal-delay="0.15"
         />
         <p class="sd-src sd-src--center sd-on-dark" data-reveal data-reveal-delay="0.22">
@@ -65,34 +65,34 @@ const chi = [
       <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgCosa.src})`}></div>
       <div class="sd-head" data-reveal>
         <T as="p" class="slide-eyebrow mb-3" it="Prima di accenderlo" en="Before switching it on" />
-        <T as="h2" class="sd-head-title" it="Un collega che legge Adobe Analytics" en="A colleague who reads Adobe Analytics" />
+        <T as="h2" class="sd-head-title" it="Un assistente che legge Adobe Analytics" en="An assistant that reads Adobe Analytics" />
         <T
           as="p"
           class="sd-head-lead"
-          it="Adobe CX Enterprise Coworker è l’assistente agentico di Adobe Experience Cloud. Si usa in chat, in italiano, e lavora con le applicazioni che avete già. Per Analytics passa dal server MCP di Adobe: legge le report suite dove stanno, senza spostare un dato."
-          en="Adobe CX Enterprise Coworker is Adobe Experience Cloud’s agentic assistant. You use it in chat, in your language, and it works with the applications you already have. For Analytics it goes through Adobe’s MCP server: it reads report suites where they are, without moving any data."
+          it="Adobe CX Enterprise Coworker è l’assistente in chat di Adobe Experience Cloud. Si usa in chat, in linguaggio naturale (oggi in inglese, l’italiano è annunciato), e lavora con le applicazioni che avete già. Per Analytics passa dal server MCP di Adobe: legge le report suite dove stanno, senza spostare un dato."
+          en="Adobe CX Enterprise Coworker is Adobe Experience Cloud’s chat assistant. You use it in chat, in natural language (English today, Italian announced), and it works with the applications you already have. For Analytics it goes through Adobe’s MCP server: it reads report suites where they are, without moving any data."
         />
       </div>
       <div class="sd-steps sd-steps--3" data-reveal data-reveal-delay="0.14">
         <div class="sd-step">
           <span class="sd-step-n">1</span>
           <T as="p" class="sd-step-title" it="Chat" en="Chat" />
-          <T as="p" class="sd-step-body" it="Domande in linguaggio naturale, risposte con tabelle e grafici, conversazione a più turni. Ogni analisi si apre in Analysis Workspace per continuare a mano." en="Natural-language questions, answers with tables and charts, multi-turn conversation. Every analysis opens in Analysis Workspace to continue by hand." />
+          <T as="p" class="sd-step-body" it="Domande in linguaggio naturale, risposte con tabelle e grafici, conversazione a più turni. Dal 2 ottobre ogni analisi si apre in Analysis Workspace per continuare a mano." en="Natural-language questions, answers with tables and charts, multi-turn conversation. From 2 October every analysis opens in Analysis Workspace to continue by hand." />
         </div>
         <div class="sd-step">
           <span class="sd-step-n">2</span>
           <T as="p" class="sd-step-title" it="Skill" en="Skills" />
-          <T as="p" class="sd-step-body" it="Procedure ripetibili scritte in un file di testo: «il riepilogo del lunedì», «il controllo delle suite». Le scrive il team, le usa chiunque abbia i permessi." en="Repeatable procedures written in a text file: “the Monday summary”, “the suite check”. The team writes them, anyone with permissions uses them." />
+          <T as="p" class="sd-step-body" it="Procedure ripetibili scritte in un file di testo: «il riepilogo del lunedì», «il controllo delle suite». Le scrive il team, le usa chiunque abbia il profilo Analytics e il permesso." en="Repeatable procedures written in a text file: “the Monday summary”, “the suite check”. The team writes them, anyone with the Analytics profile and the permission uses them." />
         </div>
         <div class="sd-step">
           <span class="sd-step-n">3</span>
           <T as="p" class="sd-step-title" it="Memoria e approvazioni" en="Memory and approvals" />
-          <T as="p" class="sd-step-body" it="Ricorda la report suite e le convenzioni del team. Prima di scrivere qualcosa in Analytics chiede: le modifiche restano una vostra decisione." en="Remembers the report suite and the team’s conventions. Before writing anything to Analytics it asks: changes remain your decision." />
+          <T as="p" class="sd-step-body" it="Ricorda la report suite e le convenzioni del team. Le scritture in Analytics si mettono dietro un’approvazione: le modifiche restano una vostra decisione." en="Remembers the report suite and the team’s conventions. Writes to Analytics sit behind an approval: changes remain your decision." />
         </div>
       </div>
       <p class="sd-src" data-reveal data-reveal-delay="0.24">
         <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
-        <a href={SOURCES.coworkerDocs.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerDocs.label.it}</span><span data-lang-en>{SOURCES.coworkerDocs.label.en}</span></a>
+        <a href={SOURCES.coworkerChat.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerChat.label.it}</span><span data-lang-en>{SOURCES.coworkerChat.label.en}</span></a>
         &nbsp;·&nbsp;<a href={SOURCES.mcpDocs.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpDocs.label.it}</span><span data-lang-en>{SOURCES.mcpDocs.label.en}</span></a>
       </p>
     </Slide>
@@ -149,22 +149,22 @@ const chi = [
       <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgTake.src})`}></div>
       <div class="sd-take" data-reveal>
         <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa ti porti a casa" en="What you take home" />
-        <T as="h2" class="sd-take-title" it="Si accende in un pomeriggio, senza toccare l’app" en="It switches on in an afternoon, without touching the app" />
+        <T as="h2" class="sd-take-title" it="Lato vostro è un pomeriggio, senza toccare l’app" en="On your side it is an afternoon, without touching the app" />
         <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Tempo" en="Time" />
-            <T as="p" class="sd-take-t" it="Un permesso in Admin Console e un accesso. <strong>Nessun rilascio</strong> sulla SuperApp, nessuna modifica a Launch." en="One permission in Admin Console and one sign-in. <strong>No release</strong> on the SuperApp, no change to Launch." />
+            <T as="p" class="sd-take-t" it="Un permesso in Admin Console e un accesso. <strong>Nessun rilascio</strong> sulla SuperApp, nessuna modifica a Tags (Launch)." en="One permission in Admin Console and one sign-in. <strong>No release</strong> on the SuperApp, no change to Tags (Launch)." />
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Controllo" en="Control" />
-            <T as="p" class="sd-take-t" it="Decidi tu chi lo usa e su quali suite. <strong>Le scritture passano da te</strong>; la lettura eredita Workspace." en="You decide who uses it and on which suites. <strong>Writes go through you</strong>; reads inherit Workspace." />
+            <T as="p" class="sd-take-t" it="Decidi tu chi lo usa e su quali suite. <strong>I permessi sono quelli di Analytics</strong>, per persona, e li dai e togli tu." en="You decide who uses it and on which suites. <strong>Permissions are Analytics permissions</strong>, per person, and you grant and revoke them." />
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Costo" en="Cost" />
-            <T as="p" class="sd-take-t" it="Il server MCP fa parte della licenza Analytics. <strong>Coworker</strong> parte con crediti di prova per l’organizzazione." en="The MCP server is part of the Analytics licence. <strong>Coworker</strong> starts with trial credits for the organisation." />
+            <T as="p" class="sd-take-t" it="Adobe include il server MCP nell’entitlement Analytics. <strong>Coworker</strong> parte con crediti di prova; il modello dopo i crediti va sul tavolo prima della settimana quattro." en="Adobe includes the MCP server in the Analytics entitlement. <strong>Coworker</strong> starts with trial credits; the pricing after the credits goes on the table before week four." />
           </div>
         </div>
-        <T as="p" class="sd-caveat" it="<strong>Una cautela.</strong> La disponibilità per la vostra org dipende dal calendario di attivazione Adobe: la richiesta va fatta prima di pianificare la sessione con il business." en="<strong>One caution.</strong> Availability for your org depends on Adobe’s enablement calendar: file the request before scheduling the session with the business." data-reveal data-reveal-delay="0.24" />
+        <T as="p" class="sd-caveat" it="<strong>Una cautela.</strong> Lato Adobe c’è la richiesta di eccezione per il settore finanziario e il calendario di attivazione: la settimana uno parte dalla conferma scritta, non dalla richiesta." en="<strong>One caution.</strong> On Adobe’s side there is the financial-services exception request and the enablement calendar: week one starts from the written confirmation, not from the request." data-reveal data-reveal-delay="0.24" />
       </div>
     </Slide>
 
