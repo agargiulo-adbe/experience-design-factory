@@ -6,10 +6,12 @@
  * Brand non invertibile, firma fissa su ogni slide, lockup grande su prima e
  * ultima slide. Qui si dichiara solo CHI è il brand.
  *
- * Il marchio ufficiale Poste Italiane non è distribuito come SVG su poste.it né
- * su posteitaliane.it (header in PNG/JS, sprite di sole icone): il motore ripiega
- * sul nome in carattere display. Quando il cliente consegna l'SVG ufficiale, si
- * aggiunge `<BrandMark slot="brand" />` qui dentro e cambia in tutta l'experience.
+ * Il marchio ufficiale Poste Italiane è un WORDMARK tipografico («Poste» bold +
+ * «italiane» regular, blu su banda gialla) distribuito da media.poste.it solo in
+ * WebP/PNG (l'SVG risponde 403, verificato il 30/9/2026). Niente SVG a currentColor,
+ * quindi niente logo nello slot: il ripiego è il nome nel carattere del cliente
+ * (Inter, lo stesso di poste.it) con il contrasto di peso del wordmark vero. Non è
+ * il logo: quando il cliente consegna l'SVG ufficiale, si passa `<svg slot="brand">`.
  */
 import Core from '@edf/core/blocks/CoBrand.astro';
 
@@ -20,4 +22,6 @@ interface Props {
 }
 const props = Astro.props as Props;
 ---
-<Core brand="Poste Italiane" {...props} />
+<Core brand="Poste Italiane" {...props}>
+  <span slot="brand" class="sd-cobrand-word" aria-hidden="true"><b>Poste</b>italiane</span>
+</Core>
