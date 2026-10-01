@@ -34,6 +34,8 @@ export interface Experience {
   status: 'live' | 'draft' | 'archived';
   /** Visibile su /showcase/ — letta anche dal ruolo anon (vedi 0013). */
   show_in_showcase?: boolean;
+  /** Tipo di deliverable (0016): prospettiva · storia · blueprint · playbook · interno */
+  type?: 'prospettiva' | 'storia' | 'blueprint' | 'playbook' | 'interno' | null;
   updated_at?: string;
 }
 

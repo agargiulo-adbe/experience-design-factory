@@ -17,6 +17,8 @@
  *   Admin può accenderle, ma non è questo file a deciderlo.
  */
 
+import type { ExperienceType } from '../../../../packages/core/src/data/experienceTypes';
+
 const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
 
 export interface Experience {
@@ -26,6 +28,8 @@ export interface Experience {
   name: string;
   /** client / brand it's skinned for */
   client: string;
+  /** tipo di deliverable (tassonomia 1 ott 2026): prospettiva · storia · blueprint · playbook · interno */
+  type: ExperienceType;
   /** short brand label for the architecture skins diagram (e.g. "Max Mara") */
   brandLabel: string;
   /** live, deployed URL (absolute) */
@@ -49,6 +53,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'generazioni-maxmara',
     name: 'Generazioni',
     client: 'Max Mara',
+    type: 'storia',
     brandLabel: 'Max Mara',
     url: `${LIVE}/generazioni-maxmara/`,
     shot: 'shots/maxmara.webp',
@@ -68,6 +73,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'unicredit-engagement',
     name: 'Engagement Unlimited',
     client: 'UniCredit',
+    type: 'storia',
     brandLabel: 'UniCredit',
     url: `${LIVE}/unicredit-engagement/`,
     shot: 'shots/unicredit.webp',
@@ -87,6 +93,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'ferrari-racing',
     name: 'Pole Position',
     client: 'Ferrari Racing',
+    type: 'blueprint',
     brandLabel: 'Ferrari Racing',
     url: `${LIVE}/ferrari-racing/`,
     shot: 'shots/ferrari.webp',
@@ -106,6 +113,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'trenitalia-connessioni',
     name: 'Connessioni Intelligenti',
     client: 'FS Group',
+    type: 'blueprint',
     brandLabel: 'FS Group',
     url: `${LIVE}/trenitalia-connessioni/`,
     shot: 'shots/trenitalia.webp',
@@ -125,6 +133,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'agos-trait-dunion',
     name: "Trait d'Union",
     client: 'Agos',
+    type: 'blueprint',
     brandLabel: 'Agos',
     url: `${LIVE}/agos-trait-dunion/`,
     shot: 'shots/agos.webp',
@@ -144,6 +153,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'atelier',
     name: 'Experience Atelier',
     client: 'Adobe Italy',
+    type: 'interno',
     brandLabel: 'Atelier',
     url: `${LIVE}/atelier/`,
     shot: 'shots/atelier.webp',
@@ -163,6 +173,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'eni-orbita',
     name: 'Orbita',
     client: 'Eni',
+    type: 'prospettiva',
     brandLabel: 'Eni',
     url: `${LIVE}/eni-orbita/`,
     shot: 'shots/eni.webp',
@@ -182,6 +193,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'mim-alfabeti',
     name: 'Alfabeti',
     client: 'Ministero dell\u2019Istruzione',
+    type: 'prospettiva',
     brandLabel: 'MIM',
     url: `${LIVE}/mim-alfabeti/`,
     shot: 'shots/mim.webp',
@@ -201,6 +213,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'isybank-momento',
     name: 'Il momento giusto',
     client: 'Isybank',
+    type: 'prospettiva',
     brandLabel: 'Isybank',
     url: `${LIVE}/isybank-momento/`,
     shot: 'shots/isybank.webp',
@@ -220,6 +233,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'poste-sei-domande',
     name: 'Sei domande',
     client: 'Poste Italiane',
+    type: 'playbook',
     brandLabel: 'Poste Italiane',
     url: `${LIVE}/poste-sei-domande/`,
     shot: 'shots/poste.webp',
@@ -239,6 +253,7 @@ export const EXPERIENCES: Experience[] = [
     slug: 'aperture-email',
     name: 'Aperture',
     client: 'Osservatorio',
+    type: 'interno',
     brandLabel: 'Aperture',
     url: `${LIVE}/aperture-email/`,
     shot: 'shots/aperture.webp',

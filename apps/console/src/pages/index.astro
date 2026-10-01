@@ -22,6 +22,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       draft:    { label: 'Bozza',      color: 'var(--accent-gold)',  soft: 'var(--accent-gold-soft)' },
       archived: { label: 'Archiviata', color: 'var(--ink-tertiary)', soft: 'var(--bg-card)' },
     };
+    const TYPE_LABEL: Record<string, string> = { prospettiva: 'Prospettiva', storia: 'Storia', blueprint: 'Blueprint', playbook: 'Playbook', interno: 'Interno' };
     type StatusKey = keyof typeof STATUS;
     const escMap: Record<string, string> = { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' };
     function esc(s: unknown): string { return String(s ?? '').replace(/[&<>"]/g, (c) => escMap[c] ?? c); }
@@ -57,7 +58,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <article class="exp-card" data-slug="${esc(exp.slug)}">
           <div class="exp-card-top">
             <div>
-              <p class="exp-client">${esc(exp.client)}</p>
+              <p class="exp-client">${esc(exp.client)}${exp.type ? ` · <span class="exp-type">${esc(TYPE_LABEL[exp.type] || exp.type)}</span>` : ''}</p>
               <h2 class="exp-name">${esc(exp.name)}</h2>
             </div>
             <span class="exp-status" style="color:${st.color};background:${st.soft};">${st.label}</span>
@@ -148,6 +149,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .exp-skeleton, .exp-empty { grid-column: 1 / -1; color: var(--ink-tertiary); font-size: 0.9rem; padding: 2rem 0; text-align: center; }
     .exp-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; display: flex; flex-direction: column; }
     .exp-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .exp-type { color: var(--accent-primary, #1473e6); }
     .exp-client { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-tertiary); margin-bottom: 0.15rem; }
     .exp-name { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
     .exp-status { font-size: 0.6875rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }

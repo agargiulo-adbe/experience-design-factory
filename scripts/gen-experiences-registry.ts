@@ -11,7 +11,7 @@ const out = path.resolve('packages/mcp-atelier/src/registry.json');
 const registry = {
   generatedAt: new Date().toISOString(),
   experiences: EXPERIENCES.map((e) => ({
-    slug: e.slug, name: e.name, client: e.client, url: e.url, sections: e.sections, tag: e.tag, desc: e.desc,
+    slug: e.slug, name: e.name, client: e.client, type: e.type, url: e.url, sections: e.sections, tag: e.tag, desc: e.desc,
   })),
 };
 await writeFile(out, JSON.stringify(registry, null, 2) + '\n');
