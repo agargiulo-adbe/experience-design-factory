@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+
+// Tipo di deliverable (tassonomia Factory): la copertina lo rende da experienceTypes.ts.
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+const last = CHAPTERS[CHAPTERS.length - 1];
+const n = CHAPTERS.length;
+---
+<BaseLayout title={SITE.name}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <!-- Avanti oltre l'ultima slide → primo capitolo; indietro prima della copertina → la
+       slide-firma dell'ultimo capitolo (il deck è un anello: nessuna freccia va a vuoto). -->
+  <DeckContainer nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
+
+    <!-- ── 0 · Cover ─────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-cover" data-reveal>
+        <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
+        <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
+        <T
+          as="p"
+          class="ex-cover-tag"
+          it="La frase che il cliente ricorda uscendo dalla stanza. Una sola, e che prometta qualcosa di vero."
+          en="The one line the client remembers on the way out of the room. Just one, and it has to promise something real."
+          data-reveal data-reveal-delay="0.16"
+        />
+        <T
+          as="p"
+          class="ex-cover-lead"
+          it={`Questo deck è stato generato con lo scheletro del tipo «${type.label.it}»: ${n} capitoli, una copertina e una firma. Il design system è un segnaposto finché non si legge quello vero di ${SITE.client} dal suo CSS di produzione.`}
+          en={`This deck was generated from the «${type.label.en}» skeleton: ${n} chapters, a cover and a signature. The design system is a placeholder until the real ${SITE.client} one is read from its production CSS.`}
+          data-reveal data-reveal-delay="0.22"
+        />
+        <T
+          as="p"
+          class="ex-cover-note"
+          it={`${type.coverLine.it} · fonti e asset generati dichiarati slide per slide`}
+          en={`${type.coverLine.en} · sources and generated assets credited slide by slide`}
+          data-reveal data-reveal-delay="0.3"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── 1 · Il percorso ───────────────────────────────────────────────── -->
+    <Slide id="slide-percorso" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-percorso">
+        <T as="p" class="slide-eyebrow" it="Il percorso" en="The path" data-reveal />
+        <T as="h2" class="ex-percorso-title" it={`«${type.question.it}»`} en={`“${type.question.en}”`} data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="ex-percorso-lead"
+          it={`È la domanda a cui risponde ${['Storia', 'Prospettiva'].includes(type.label.it) ? 'una' : 'un'} ${type.label.it}. Ogni capitolo ne prende un pezzo; l'ordine viene dallo scheletro e si può cambiare, accorciare o dividere senza chiedere permesso.`}
+          en={`That is the question a ${type.label.en} answers. Each chapter takes one piece of it; the order comes from the skeleton and can be changed, shortened or split without asking anyone.`}
+          data-reveal data-reveal-delay="0.15"
+        />
+        <!-- Blocchi di uguale misura in una griglia bilanciata (auto-rows-fr + h-full):
+             le colonne sono calcolate dal generatore sul numero di capitoli. -->
+        <div class="ex-journey grid grid-cols-__ROADMAP_COLS__ auto-rows-fr gap-3" data-reveal data-reveal-delay="0.22">
+          {CHAPTERS.map((c) => (
+            <a href={href(base, '/' + c.slug)} class="ex-journey-card h-full">
+              <p class="ex-journey-num">{c.num}</p>
+              <p class="ex-journey-name"><span data-lang-it>{c.title.it}</span><span data-lang-en>{c.title.en}</span></p>
+              <p class="ex-journey-open"><span data-lang-it>Apri il capitolo →</span><span data-lang-en>Open the chapter →</span></p>
+            </a>
+          ))}
+        </div>
+        <div data-reveal data-reveal-delay="0.35" class="text-center">
+          <a href={href(base, '/' + first.slug)} class="ex-cta">
+            <span data-lang-it>Primo capitolo</span><span data-lang-en>First chapter</span>
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

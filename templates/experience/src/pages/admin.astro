@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+// Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
+// accende e spegne. Ogni <Slide id> nuova va registrata qui.
+const PAGE_REGISTRY: PageEntry[] = [
+__PAGE_REGISTRY__
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
+// Adobe che l'experience propone davvero (nomi verificati, vedi memoria
+// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'piattaforma', name: 'Adobe Experience Cloud — segnaposto', shortName: 'Adobe', pillar: 'piattaforma',
+    description: 'Sostituire con i prodotti Adobe che il deck propone, uno per voce, con il nome per esteso.', appearsIn: [__APPEARS_IN__] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
+const PILLAR_ORDER = ['piattaforma'];
+const PILLAR_COLORS: Record<string, string> = { piattaforma: '__ACCENT__' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+---
+<BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
+  <AdminConsole
+    projectSlug={SITE.slug}
+    projectName={SITE.name}
+    clientLabel={`Adobe × ${SITE.client}`}
+    deckHref={deckHref}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>
