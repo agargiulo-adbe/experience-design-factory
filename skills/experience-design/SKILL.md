@@ -1,9 +1,25 @@
+---
+name: experience-design
+description: Use when starting a new client experience for the Factory from scratch, or when the user asks which kind of deliverable (prospettiva, storia, blueprint, playbook) fits a client situation — before any scaffolding, brand reading or copywriting.
+---
+
 # Experience Design Skill
 
 Build branded, **immersive** experience-design sites where each client is a skin
 (tokens + content + assets) over a shared engine. The signature format is a
 **step-by-step immersive flow**: each page is a vertical sequence of full-screen
 steps, scroll-snapped, where **animation explains the value** — not decoration.
+
+## Step 0 — Intake router (always first)
+Before brand research, decide **which deliverable** the situation calls for with
+`references/intake-router.md`: five questions asked once, a decision table, and what the
+type decides downstream (cover line, chapters, panel personas, next step, registry). The
+four client-facing types — **Prospettiva · Storia · Blueprint · Playbook** — live in
+`packages/core/src/data/experienceTypes.ts`; `interno` covers Adobe-only decks. Print the
+«what stays human» list at the end of intake, then run, in order: `pnpm brand:tokens <url>`
+→ the `experience-brief` skill (Part 8 personas) → `pnpm new:experience --slug … --type …`
+→ content per chapter → build + `audit:deck` 0 HARD + 1920 screenshots → `panel-review`
+→ `/handover`. The Method below is the content craft inside that pipeline.
 
 ## Method
 1. **Brand Research** — values, audience, strategy, tone of voice.

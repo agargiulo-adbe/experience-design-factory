@@ -11,18 +11,35 @@ Monorepo for the **Experience Design Factory**: a reusable engine where each cli
 shared core. On top sits a **Super Admin Console** to manage experiences and the users
 who can configure them.
 
-Experiences today:
-- **Generazioni** — Max Mara (IT, quiet‑luxury). First instance.
-- **Engagement Unlimited** — UniCredit (IT/EN, 7 capitoli: Scenario · Il Sito · Contenuti · Analizza · Coworker · Risultati · **Chiusura**; la chiusura è un capitolo a sé, così si può spegnere Risultati e tenerla).
-- **Pole Position** — Ferrari Racing × Adobe (EN/IT bilingual, motorsport, 7 sections).
-- **Connessioni Intelligenti** — FS Group (IT, 6 sezioni + casi d'uso).
-- **Trait d'Union** — Agos (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
-- **Sei domande** — Poste Italiane (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per Giuseppe Sperandeo (Responsabile Monitoraggio Canali Digitali, Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (GA su Adobe Analytics il 2/10/2026). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (Gangemi). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
+Experiences today (tipo tra parentesi, vedi Tassonomia):
+- **Generazioni** — Max Mara [Storia] (IT, quiet‑luxury). First instance.
+- **Engagement Unlimited** — UniCredit [Storia] (IT/EN, 7 capitoli: Scenario · Il Sito · Contenuti · Analizza · Coworker · Risultati · **Chiusura**; la chiusura è un capitolo a sé, così si può spegnere Risultati e tenerla).
+- **Pole Position** — Ferrari Racing × Adobe [Blueprint] (EN/IT bilingual, motorsport, 7 sections).
+- **Connessioni Intelligenti** — FS Group [Blueprint] (IT, 6 sezioni + casi d'uso).
+- **Trait d'Union** — Agos [Blueprint] (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
+- **Sei domande** — Poste Italiane [Playbook] (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per Giuseppe Sperandeo (Responsabile Monitoraggio Canali Digitali, Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (GA su Adobe Analytics il 2/10/2026). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (Gangemi). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
 
 Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
 
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no
 wrong‑brand imagery** (see Quality Bar).
+
+## Tassonomia dei deliverable (decisa il 1 ott 2026, BINDING)
+Il cliente legge in copertina **che cosa riceve**, nominato per la domanda a cui risponde.
+Fonte di verità: `packages/core/src/data/experienceTypes.ts` (label IT/EN, riga di copertina,
+domanda, pubblico, passo successivo, scheletro dei capitoli); `type` in `experiences.ts`,
+nelle card di hub e showcase, nella console (`0016`) e nel registry MCP.
+- **Prospettiva** — «Dove potremmo arrivare?» · C‑level, prima della discovery · il vostro anno visto da fuori → la domanda → le idee → la rotta · chiede un tavolo di lavoro. (Eni, Isybank, MIM)
+- **Storia** — «Come funzionerebbe per un nostro cliente?» · business e marketing, dopo un workshop · scenario → persona → momenti con la piattaforma dal vivo → il motore → risultati · chiede di vederla sui vostri dati. (UniCredit, Max Mara)
+- **Blueprint** — «Come si collega a quello che abbiamo?» · CDO/CIO con il business owner, dopo la discovery · scenario → fondamenta → use case → convergenza → valore → rotta · chiede di perimetrare una fase. (Agos, FS, Ferrari)
+- **Playbook** — «Come lo uso da lunedì?» · chi possiede lo strumento, prima del go‑live · punto di partenza → N domande = N capitoli, «oggi» vs «con X» → cosa ti porti a casa · chiede di accenderlo. (Poste)
+- **Interno** — showcase, Atelier, Aperture: non rivolti al cliente.
+Regole: niente «demo» nei nomi (il software dal vivo è una proprietà di Storia e Playbook); la
+copertina rende `EXPERIENCE_TYPES[TYPE].coverLine`, mai una stringa a mano; un ibrido si
+registra sotto il tipo **dove il cliente decide** (Ferrari apre da Prospettiva, decide da
+Blueprint). «Experience» resta il nome del formato, non del contenuto. Il router di intake
+(`skills/experience-design/references/intake-router.md`, Step 0 della skill `/experience-design`)
+sceglie il tipo da cinque domande; `pnpm new:experience` genera la skin dal suo scheletro.
 
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`

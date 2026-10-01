@@ -10,6 +10,10 @@ import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../assets.index';
 import { cite } from '../data/sources';
 import { STATS } from '../data/stats';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+
+// Tipo di deliverable (tassonomia Factory, 1 ott 2026): la copertina lo rende da qui.
+const TYPE = 'blueprint' as const;
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -76,9 +80,10 @@ const journey = [
           <span data-lang-en>powered by Adobe</span><span data-lang-it>con Adobe</span>
         </span>
       </div>
-      <p class="mt-7 text-center text-[0.58rem] tracking-widest uppercase text-[var(--color-grigio-500)] max-w-2xl mx-auto relative z-10">
-        <span data-lang-en>Concept demo — illustrative scenario not commissioned by Ferrari · Public data cited at sources</span>
-        <span data-lang-it>Demo concettuale — scenario illustrativo non commissionato da Ferrari · Dati pubblici citati alle fonti</span>
+      <!-- max-width inline: il reset `[data-slide] p { max-width: 62ch }` batte la utility e stringeva la nota a tre righe -->
+      <p class="mt-7 text-center text-[0.58rem] tracking-widest uppercase text-[var(--color-grigio-500)] max-w-2xl mx-auto relative z-10" style="max-width: 42rem;">
+        <span data-lang-en>{EXPERIENCE_TYPES[TYPE].coverLine.en} · Illustrative scenario not commissioned by Ferrari · Public data cited at sources</span>
+        <span data-lang-it>{EXPERIENCE_TYPES[TYPE].coverLine.it} · Scenario illustrativo non commissionato da Ferrari · Dati pubblici citati alle fonti</span>
       </p>
     </Slide>
 

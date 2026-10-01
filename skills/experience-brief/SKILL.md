@@ -151,6 +151,8 @@ differentiation → next steps.
 
 ```
 # Experience Brief — <Brand>
+## 0. Deliverable type         (prospettiva · storia · blueprint · playbook — chosen with the
+                                intake router; the client's question it answers; the ask at the end)
 ## 1. Executive summary        (brand, sector, the objective this experience serves, who must
                                 say yes, audience, languages — in a few tight lines)
 ## 2. Client objective & pain   (the "before": the goal/pain/issue, and the cost of standing still)
