@@ -27,16 +27,16 @@
 - **2 pagine**: `src/pages/index.astro` (la narrativa) e `src/pages/blueprint.astro` (deep-dive tecnico). Componenti: `layouts/BaseLayout.astro`, `components/SiteNav.astro`, `components/SiteFooter.astro`.
 
 ### 13.2 Struttura `index` (ordine sezioni) + comportamenti
-Hero → **what** → **why** → **proof** → **architecture** → **flow** → **skill** → **grow** (roadmap) → **author**. Nav sticky con anchor + **scrollspy** + **barra di progresso** (gradiente, in `SiteNav`). `blueprint.astro`: TOC sticky + **12 sezioni** + elenco dei **12 check** (`a b c d e g h i j k m` + `exp` — 11 dopo la correzione del 10 set, **12 dal 12 set** con l'aggiunta di `m`).
+Hero → **what** → **why** → **proof** → **results** (dal 1 ott) → **architecture** → **firefly** → **flow** → **skill** → **maintain** (dal 1 ott) → **dossier** → **grow** (roadmap) → **author**. Nav sticky con anchor + **scrollspy** + **barra di progresso** (gradiente, in `SiteNav`). `blueprint.astro`: TOC sticky + **12 sezioni** + elenco dei **12 check** (`a b c d e g h i j k m` + `exp` — 11 dopo la correzione del 10 set, **12 dal 12 set** con l'aggiunta di `m`).
 - **Hero**: gradiente animato (`heroDrift`, reduced-motion off), 4 **KPI** con count-up (`[data-count]`), CTA **primaria "Guardalo dal vivo"** (`#proof`), **secondaria "Ottieni la skill"** (dot verde → `#skill`), link testuale al blueprint.
 - **Proof**: 3 card con **screenshot reali** delle esperienze live (badge "LIVE" pulsante) + strip Console.
 - **Motion**: reveal-on-scroll (`[data-reveal]` + IntersectionObserver in `BaseLayout`), count-up, progress bar, copy-to-clipboard — **tutti reduced-motion safe**.
 
 ### 13.3 Decisioni di contenuto (LOCKED — non regredire)
-- **Autore = Antonio Gargiulo** (NON "Argiulo"), titolo **"Senior Product Sales Specialist · Adobe Italia"**. Contatto = **deep-link Teams** `https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com` (CTA "Scrivimi su Teams"). Coerente con email `agargiulo@adobe.com`.
+- **Autore = Antonio Gargiulo** (NON "Argiulo"), titolo **"Solution Sales Specialist · Adobe Italia"** — ⚠️ **corretto il 1 ott dal panel**: era «Senior Product Sales Specialist», ma l'unica fonte pubblica (adobe.com) dice «Solution Sales Specialist», ed è il primo dato che un manager verifica. Contatto = **deep-link Teams** `https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.com` (CTA "Scrivimi su Teams"). Coerente con email `agargiulo@adobe.com`.
 - **Reframe tempo (importante)**: il "~1h / < 1h" è **solo lo step di scaffold del motore**, non l'intera esperienza. Headline flusso **"Il pensiero è tuo. L'ora è del motore."**; ogni step del flusso ha un **tag actor** (Adobian ×4 · Il motore ×1 · KB Factory ×1) per **valorizzare il lavoro dell'Adobian** (ricerca/concezione) e l'ottimizzazione a valle. KPI hero = *"dal brief a una build funzionante"*. **Non trivializzare il lavoro umano.**
-- **Nota KB = solo locale**: la KB vive **solo sul computer di Antonio**, **mai** su sistemi terzi/cloud/esterni (tutela dati Adobe). Tenere esplicito.
-- **Nota "Da segnalare"**: copre **sia** i tool della catena **sia** ogni componente dell'architettura/runtime della Factory — tutti su account `@adobe.com` via login Google, **nessuna licenza aggiuntiva**, non bloccati da Adobe.
+- ⚠️ **SUPERATA dal panel (1 ott, P0)** — la nota diceva che la KB vive «solo sul computer di Antonio, **mai** su sistemi terzi/cloud». L'assoluto è **falso**: il testo dei dossier sta in Supabase (`restricted_docs`) e il flusso passa per assistenti AI. Formulazione corrente: «non pubblicata né versionata nel repo; oggi è sulla macchina di lavoro dell'autore, **in migrazione** verso uno spazio Adobe con accesso controllato», e per il dossier «servito da Supabase dietro RLS e token, mai indicizzato». **Non reintrodurre «mai su alcun sistema terzo».**
+- ⚠️ **SUPERATA dal panel (1 ott, P0)** — il box «Da segnalare» rivendicava «nessuna licenza aggiuntiva» e «né bloccate né precluse»: è un claim di conformità **non firmato da nessuno** (Firefly Services richiede Developer Console, OAuth S2S e crediti; Copilot richiede la licenza della tenant). Sostituito da un elenco secco **«Cosa serve»** + «Revisione Security/Legal Adobe: in attesa». **Non reintrodurre «nessuna licenza aggiuntiva»**, né nello showcase né in `skills/experience-brief/`.
 - **KPI "12"** = i check del contratto deck (`a b c d e g h i j k m` + `exp`); etichetta precisa *"controlli di layout e accessibilità, per slide"*, **linkata a `blueprint#deck`** (verificabile, no overselling). Era «12 (a–l)» fino al 10 set — numero giusto, lettere sbagliate → corretto a 11; tornato a **12** il 12 set con `m`, questa volta perché il check esiste davvero.
 - **Roadmap**: Firefly (imagery/video) è **"In valutazione"**; la skill di intake è **"Disponibile"**. Griglia **simmetrica 3×2**.
 - **Mark distintivo**: chip gradiente + **due piani (core+skin)** — NON la "A" Adobe (leggeva come logo Adobe rotto). In `public/favicon.svg` + SVG inline in `SiteNav`/`SiteFooter` (id gradiente distinti: `edf-fav`/`edf-grad-nav`/`edf-grad-foot`).
@@ -99,6 +99,59 @@ Shutterstock/Getty).
 
 ### 13.8 Tipo sulle card + primo panel review dello showcase (2026-10-01)
 Le card di `#proof` mostrano il **tipo** (`exp-type`, da `EXPERIENCE_TYPES[e.type]`, campo `type` in `experiences.ts`); lo stesso badge è sulla card dell'hub e nella console. Lo showcase è stato il **primo artefatto non-deck** passato dalla skill `panel-review` (giro 1, report-only, 4 personas **derivate** → `⚠️ DERIVED PERSONAS`): 55 claim verificati, **16 confutati**, backlog 10 P0 / 12 P1 / 8 P2 — i P0 sono claim pubblici falsi (Lighthouse ≥95, «interamente di API Adobe», conteggi 6/12/14, link riservati nel DOM, «mai su sistema terzo»). Verdetto in `docs/Factory/PANEL-VERDICT-2026-10-01-round1.md` (git-ignored); **non applicato** (decisione owner, vedi §10). Da riscrivere anche la promessa «scaffoldata in meno di un'ora», ora vera grazie a `pnpm new:experience`.
+
+
+### 13.9 Panel review giro 2 — personas reali (2026-10-01, sera)
+Secondo e **ultimo** giro (la skill si ferma a due). Personas: **cinque persone reali** — Mengoli
+(Managing Director), Capuano (AE servizi finanziari), De Silvestri (Data Solutions Consultant),
+Oggioni (Manager Enterprise Sales, nuovo), Di Loreto (Partner Manager, nuovo) — più il seggio di chi
+guida il Solution Consulting in Italia, che **nessuna fonte pubblica nomina**. Verdetto in
+`docs/Factory/PANEL-VERDICT-2026-10-01-round2.md`, JSON in `docs/Factory/panel/2026-10-01-round2/`
+(entrambi git-ignorati). 66 claim verificati su 24 unità.
+
+| Asse | Giro 1 | Giro 2 | Δ |
+|---|---|---|---|
+| credibilità dei fatti | 3,0 | **4,0** | +1,0 |
+| rilevanza per me | 3,5 | 3,5 | 0 |
+| chiarezza | 3,8 | 3,7 | −0,1 |
+| rischio (5 = nessuno percepito) | 2,0 | **2,0** | 0 |
+| azionabilità | 2,8 | 3,2 | +0,4 |
+
+**La lezione del giro 2: una correzione può creare un'esposizione peggiore di quella che chiude.**
+La sezione «Risultati sul business», nata per rispondere al P1 del giro 1, ha messo **in chiaro la
+pipeline italiana** — l'AD di Isybank il 10 set, il CIO di Eni lo stesso giorno, il workshop con
+Accenture il 14 — su una pagina che dichiara essa stessa «accesso pubblico, senza login», e su due
+conti che nel 2026 hanno preso provvedimenti dal Garante. Tutte e sei le personas la sollevano. Il
+**candore** della tabella («esito da registrare» invece di un KPI inventato) resta invece nella lista
+«non toccare»: va spostato il contenuto nominativo, non l'ammissione.
+
+**Sette affermazioni confutate alla fonte**, tutte su una pagina pubblica: il `noindex` c'era **solo
+su Poste**; Lighthouse non è 74–98 ma **63–96**, cinque experience su sei sotto 90 e Poste a 64 — erano
+i numeri del giro 1, mai rimisurati; «ogni slide passa un audit prima di andare online» è falso
+(l'audit **non gira in CI**); «le experience più vecchie restano **in parte** su stock» è falso, Max
+Mara, Ferrari, Agos e FS sono **100% stock**; «quattro sessioni» sono **tre**; l'eroe diceva «11
+controlli», sono **dodici**; e «si aprono solo su invito» era falso due volte — quelle cinque
+rispondono 200 senza login e **quattro erano linkate dall'hub pubblico**. Difetto trovato dalle
+personas e non dall'audit: il contenuto parte a `opacity:0` e **due sezioni uscivano bianche** negli
+screenshot, una era «Chi lo mantiene».
+
+**Applicato la sera stessa**: otto P0 su dieci e la metà meccanica dei P1 — `noindex` sui cinque
+BaseLayout mancanti, i quattro link riservati tolti dall'hub, il difetto senza JavaScript invertito
+(`html.js-reveal` da script inline + regole per stampa e reduced-motion; verificato a zero elementi
+nascosti), Lighthouse sostituita dalla tabella per experience, lo stock dichiarato, i conteggi
+corretti, e **la tabella dei risultati ridotta all'aggregato** (via nomi, ruoli, date e il nome del
+partner; dettaglio dietro il login della console). **Non applicate** perché sono scelte e non
+correzioni: depubblicare o mettere dietro login le experience con consenso «in attesa», e la data
+della richiesta a Security/Legal (§10). **Scostamento dichiarato**: il verdetto chiedeva di nominare
+Eni, MIM e Isybank nella riga sul perimetro; sono rimasti conteggi **senza nomi**, perché nominarli
+in pubblico è la stessa divulgazione che il primo P0 toglie. **Verifica**: build di tutte le app
+toccate, `typecheck` 0 errori su 14 app, `lint` 0 errori; ferrari, trenitalia e agos a **0 HARD**;
+**maxmara 5 HARD e UniCredit 1**, entrambi preesistenti (riverificati sulla baseline) e ora P0 in §10.
+
+**Resta all'autore**, e nessun giro lo chiuderà: sei marchi cliente portano il lockup «Adobe × Brand»
+su un dominio pubblico a nome di una persona, con sei consensi «in attesa» e Legal che non ha ancora
+visto niente. La skill si ferma a due giri: se dopo i P0 il rischio non sale almeno a 3/5, il problema
+non è più il sito ma **dove vive**.
 
 ## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
 
@@ -250,38 +303,5 @@ Estensione che risponde a 6 dubbi del cliente sul configuratore. **La matematica
 - Breach Trenitalia: `sky.it/cronaca/2026/06/26` (giugno 2026).
 
 **Solution gating corrente**: `convergenza → cja` · `connessioni → data-collab` · `roadmap → rtcdp + ajo + mix-modeler`.
-
----
-## 16. Trait d'Union — Agos (14 lug 2026)
-
-**App**: `apps/agos-trait-dunion` · live a `/experience-design-factory/agos-trait-dunion/` · slug admin `agos-trait-dunion`.
-
-**Contesto commerciale (da discovery, luglio 2026 — fonti interne al team Adobe, non nel deck):**
-- Agos usa **Adobe Campaign v7 on-prem + Adobe Analytics** da anni (impianto Deloitte); contratti fino a mar 2027.
-- Programma di trasformazione interno: CRM→Salesforce, data lake→Snowflake, telefonia→AWS, go-live set–ott 2027. L'IT prevede **solo lift & shift** del campaign management; il Marketing vuole "preparare il terreno". Decisione aperta **Campaign v8 vs AJO**.
-- Pain point chiave dalle sessioni: overlap open market/customer base non misurabile (attribuzione binaria Internet/"Mailing"), dato di conversione (caricata/liquidata) fuori piattaforma, log tecnico server-side = fonte di verità (100% richieste), DPO ultra-restrittivo, DMP dismessa, Target abbandonato anni fa per discrepanza col log, customer match Google = uplift zero (cultura evidence-based).
-- **Riservatezza**: il deck è pubblico → niente nomi di persone Agos, niente citazioni attribuite, niente numeri contrattuali; nomi interni di programma non citati (si dice "la trasformazione"). Dati pubblici citati con fonte (CS FY2024, ACT 2028, Osservatorio Assofin–CRIF–Prometeia).
-
-**Narrativa (7 sezioni)**: scenario (il paradosso dei due mondi: digitale vs filiale/customer base, persona Elisa) → fondamenta (stack attuale + trasformazione + "Non sostituire. Connettere.") → evoluzione (5 use case attuali → evoluti: form abbandonato→AJO journeys, use case→Orchestrated Campaigns+NBO, dato di ritorno→wave in piattaforma, A/B→Target experimentation, DEM→GenStudio con brand score compliance) → trait-dunion (CJA: fonti, è/non è, demo fallout Elisa con MediaDemoSlot `cja-fallout-demo`, overlap risolto, data governance DPO) → orizzonti (playbook FSI: offerta pre-qualificata +120% illustrativo, life events+NBO+payment denial, RT-CDP Collaboration coi partner, prospect anonimi+LLM Optimizer, panorama 12 use case) → valore (metodo evidence-based: ipotesi/controllo/log come giudice; KPI dichiarati illustrativi) → roadmap (2026 Preparare · 2027 Migrare evolvendo · Scalare a **fine 2027**, sequenziata con la trasformazione; 3 next step).
-
-**Design**: palette **petrolio/acqua reale del brand agos.it** (verificata dal CSS live: #05636B, #008590, #06ABB8, #10CAD8) + arancio #F57C00; **Montserrat** display + Inter. Logo/favicon = due cerchi (acqua+arancio) uniti da un tratto — il trait d'union. Dark-dominant (lavagna #121E21).
-
-**Solution gating**: `evoluzione → ajo+target+genstudio` · `trait-dunion → cja` · `orizzonti → rtcdp+data-collab`. 6 soluzioni in 4 pillar (analytics/activation/content/growth). `nextHref`+`prevHref` su tutte le pagine.
-
-**Audit**: registrato in `scripts/deck-audit.ts` (route set `agos`); 0 failure sui 3 viewport. Lezioni: (1) i titoli con blocchi contenuto alti cadono sopra la banda 30% → compattare sotto il titolo, non sopra; (2) `mb-3` (13.5px) tra h2 e lead viola il check g (≥16px) → usare `mb-4`; (3) per gli "inventory" 4 voci, griglia 2×2 con categoria in-card batte le righe impilate quando il titolo cade alto.
-
-**Registrazioni**: deploy.yml (merge + verifica), factory-hub card, showcase `experiences.ts` (+`shots/agos.webp`), migrazione `0006_seed_agos.sql` (**da applicare al DB remoto**: `supabase db query --linked`).
-
-**Pending**: media demo per `trait-dunion:slide-demo-cja` da configurare in admin (video CJA fallout); eventuale bilingue se servisse per il gruppo CA.
-
-**Aggiornamento 2026-09-03 (refresh contenuti + design check)** — commit `eae473b` · `cd37cc8` · `8cd3cf4`:
-- **Intro**: nuova slide **`slide-competitori`** "Lo scenario competitivo" (Findomestic vs Compass, mosse 2025–26 verificate via `/deep-research`: HeyLight/Nexi/piano MPS 17→21 mld; findomestic.it rifatta) con **4 fonti linkate**; solo testo, nessun logo concorrente. La home NON è in `PAGE_REGISTRY` → nessuna registrazione admin.
-- **Design check — allineamenti**: corretto il testo dei bullet che ereditava `text-align:center` da uno `Slide align="center"` → aggiunto `text-left` su `.evo-item` (Evoluzione, 5 slide), sui `<li>` di `fondamenta/finestra`, `orizzonti/prequalified` (Come funziona) e `roadmap/fase2`. **Bug ricorrente da ricordare**: un elenco puntato dentro un flex/grid child, su slide centrata, eredita il center e "spezza" a metà → serve `text-left` esplicito sull'item.
-- **Overflow HARD** risolti: nib connettore `.tdu-source::before` sporgente in `trait-dunion/slide-convergenza` (rimosso; resta la spina centrale a gradiente) e nodo finale timeline in `roadmap/slide-3fasi` (rientrato a `left: calc(100% - 7px)`).
-- **Naming**: «Next best offer» → **Next Best Experience** ovunque (orizzonti card+testo, roadmap, valore, admin RT-CDP).
-- **Roadmap**: tolto il tag **Assessment** (non è un prodotto), **2027 = solo tag AJO** (rimosso "Orchestrated Campaigns"), fase **Scalare spostata a "2027 · fine anno"** (era 2028), tag prodotto allineati in fondo alla card (`mt-auto`).
-- **Orizzonti — nuova slide `slide-agentic` "Orizzonte 5 · L'era agentica"** (coda ispirazionale): **Adobe Firefly** (commercially-safe + Custom Models/Foundry) · **Adobe GenStudio** for Performance Marketing (contenuti on-brand su scala + brand score) · **Agent Orchestrator → CX Enterprise Coworker** (data governance nativa). Prima era il generico "AI Assistant" → sostituito su richiesta con Firefly/GenStudio. Naming/capability verificati via `/deep-research` (fonti newsroom Adobe: MAX 2025 Firefly Foundry, Summit 2025 GenStudio/Agent Orchestrator, GA giu 2026 Coworker). **Caveat in nota (BINDING)**: il «commercially safe» di Adobe = sicurezza **IP/copyright**, **non** compliance regolatoria del credito — non conflarli su un operatore regolato. Cover Orizzonti → "Cinque"; slide registrata in `admin.astro` PAGE_REGISTRY.
-- **Immagine persona Elisa** rigenerata via `assets:build` (Pexels, "woman dining outdoors in Rome, Italy") → legge come italiana (prima modello asiatico). Query `persona-elisa` aggiornata in `assets.manifest.ts`.
-- `audit:deck` **0 hard** su tutte le route dopo le modifiche (residui solo SOFT `a`/`i`/`g`); slide modificate rilette a 1920.
 
 ---

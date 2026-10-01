@@ -157,4 +157,39 @@ Primo uso della modalità **Panel review** (skill `experience-design`, passo 13)
 - Audit finale: **0 HARD** 7 rotte × 3 viewport; soft `a`/`i` invariati. Screenshot 1920 IT riletti.
 
 ### 32.6 Tipo «Playbook» in copertina (2026-10-01)
-Con la tassonomia del 1 ott la cover rende `EXPERIENCE_TYPES.playbook.coverLine` (IT/EN) al posto di «Preparato dal team Adobe Italia» (`26c77d1`); home riauditata: 0 HARD, soft `a` sul lockup «Posteitaliane» come prima. Emerso: `.sd-cover-note` è a **0,74rem** (13,3px), un soffio sotto il minimo 0,75rem del contratto → P1 in §10. Il panel del 30/09 resta valido: la riga non porta claim.
+Con la tassonomia del 1 ott la cover rende `EXPERIENCE_TYPES.playbook.coverLine` (IT/EN) al posto di «Preparato dal team Adobe Italia» (`26c77d1`); home riauditata: 0 HARD, soft `a` sul lockup «Posteitaliane» come prima. Emerso: `.sd-cover-note` era a **0,74rem** (13,3px), un soffio sotto il minimo 0,75rem del contratto.
+
+**Chiuso il 1 ott (pomeriggio).** Portate a 0,76rem la nota di copertina e tutte le etichette e note dello stesso rango: `.sd-tag`, `.sd-take-k`, `.sd-today-k`, `.sd-arch-sub`, `.sd-chat-bar-title`, `.sd-chat-note` (la variante compatta sotto 900px di altezza da 0,66 a 0,75rem). **Lasciati com'erano, per scelta dichiarata**, i tre pezzi di cromo *dentro* il mock della chat, che riproducono un'interfaccia di prodotto e non sono testo del deck: `.sd-chat-bar-scope` (0,72rem, monospaziato), `.sd-chip` (0,74rem), `.sd-msg-avatar` (0,68rem). Metodo: audit della baseline **prima** della modifica per avere un termine di paragone, non solo dopo. Esito identico — **48 soft (30 `a` + 18 `i`), 0 HARD su 21 rotte × 3 viewport** sia prima sia dopo: il tipo più grande non ha spostato una sola misura. Copertina riletta a 1920. Il panel del 30/09 resta valido: la riga non porta claim.
+
+### 32.7 Le otto domande ad Adobe, portate alla fonte (2026-10-01)
+Le domande aperte del dossier §11 non erano più rimandabili: la sessione con Sperandeo è il 2 ottobre e
+metà di esse riguarda cose che in sala si affermano o non si affermano. Ricerca nell'ordine prescritto
+dall'adattatore (Experience League → release notes → `developer.adobe.com` → Slack interno → Field
+Readiness), ogni risposta con **stato, testo e fonte datata**; dettaglio in
+`docs/Poste Italiane/RESEARCH-2026-09-29.md` §«Aggiornamento 01/10/2026», e §11 del dossier riscritta da
+`docs/Poste Italiane/0017_update_poste_dossier_q.sql` (git-ignorato, **da eseguire**: un solo `update`,
+idempotente, tocca solo la §11 e lascia le altre undici sezioni byte per byte quelle di `0015`).
+
+Quel che cambia il discorso in sala:
+- **Modello e dati.** Claude via AWS Bedrock per default (OpenAI su Azure su richiesta, BYO LLM no);
+  nessun dato cliente addestra i foundation model. **Regione dell'inferenza e retention restano aperte**:
+  stanno nel *Coworker Security Overview* e nella *Security FAQ*, condivisibili **solo sotto NDA**.
+- **`MCP Access` abilita davvero i client di terzi** — è il suo scopo dichiarato (OAuth dei propri agenti).
+  **Nessuna granularità**: non si toglie la scrittura via MCP senza toglierla in Workspace. L'unico freno
+  è a monte, lato IMS, vietando le «third party applications»: non è un controllo per client.
+- **Il gate sulle scritture esiste** (Plan mode propone e aspetta l'approvazione) ma **un admin cliente non
+  può imporlo alla propria org**: resta una scelta di chi chatta. Da dire così, non «è configurabile».
+- **L'audit trail prometteva più di quanto esista** — vedi §10: non c'è un log dell'MCP, le azioni sono
+  indistinguibili da quelle di Workspace. Slide «Registro» corretta.
+- **Italiano**: nove lingue in più entro fine ottobre 2026, italiano incluso. Nessuna release note pubblica
+  → nel deck resta senza data.
+- **FSI**: il processo c'è (mail con IMS org e app licenziate), **la SLA no**. Mai promettere tempi.
+- **Prezzo**: 25 crediti per Input, ogni follow-up è un nuovo Input; Launch Offer 20.000 $ per sei mesi
+  senza limite fino al 31/12/2026; AI Credits a 0,20 $; **rate card attesa in Q4 2026**.
+- **«Apri in Workspace» apre una visualizzazione**, non è documentato che salvi un progetto; le skill si
+  richiamano per nome, non per ID contrattuale; **non si schedulano** (le routine sono in sviluppo, i
+  ricorrenti restano in Workspace).
+- **Root-cause e Contribution Analysis**: nessuna fonte collega la skill all'entitlement, che non è in
+  Analytics Select. Finché non c'è risposta scritta la skill **non si nomina fra le cose del pilota**.
+
+Per Sperandeo (Q9–Q10) la nota è pronta: cinque conferme, ognuna con il perché conta per il pilota.
