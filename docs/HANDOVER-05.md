@@ -97,6 +97,9 @@ la garanzia vera. ⚠️ **Nei deck la frase è ancora quella vecchia** → back
 Shutterstock/Getty).
 
 
+### 13.8 Tipo sulle card + primo panel review dello showcase (2026-10-01)
+Le card di `#proof` mostrano il **tipo** (`exp-type`, da `EXPERIENCE_TYPES[e.type]`, campo `type` in `experiences.ts`); lo stesso badge è sulla card dell'hub e nella console. Lo showcase è stato il **primo artefatto non-deck** passato dalla skill `panel-review` (giro 1, report-only, 4 personas **derivate** → `⚠️ DERIVED PERSONAS`): 55 claim verificati, **16 confutati**, backlog 10 P0 / 12 P1 / 8 P2 — i P0 sono claim pubblici falsi (Lighthouse ≥95, «interamente di API Adobe», conteggi 6/12/14, link riservati nel DOM, «mai su sistema terzo»). Verdetto in `docs/Factory/PANEL-VERDICT-2026-10-01-round1.md` (git-ignored); **non applicato** (decisione owner, vedi §10). Da riscrivere anche la promessa «scaffoldata in meno di un'ora», ora vera grazie a `pnpm new:experience`.
+
 ## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
 
 `apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche. È uno **strumento** (island interattiva full-bleed), NON una slide-keynote: **esente da `audit:deck`** (`/scoping/` non è nel ROUTE_SET di `scripts/deck-audit.ts`). Doc di riferimento del blocco: **`packages/core/src/blocks/scoping/README.md`** (architettura + come estendere).
