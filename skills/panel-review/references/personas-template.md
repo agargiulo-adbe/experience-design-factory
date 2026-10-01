@@ -24,6 +24,7 @@ Sources: <where the facts come from, with date>. No internal facts.
 ```
 
 Rules:
+- Facts come from the research procedure in `persona-research.md`; each carries its date and source inline.
 - Facts with dates; no judgement of the person, no speculation about private life.
 - Forbidden vocabulary for this audience (a regulator's decision, a past incident, a word the
   sponsor dislikes) goes in a final `## Vocabulary` section, stated as fact + date.

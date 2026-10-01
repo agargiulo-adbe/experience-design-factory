@@ -11,6 +11,7 @@ La skill `panel-review` (canonica in `skills/panel-review/`, esposta globalmente
 ## Personas
 - File: `docs/<Cliente>/PANEL-PERSONAS.md` — **git-ignorato** (ritratti di persone reali). Senza file non si derivano personas a tavolino: si costruiscono con `skills/experience-brief/SKILL.md` Part 8 da fonti pubbliche (LinkedIn, stampa, sito del cliente), poi si lancia il panel. Se davvero non c'è tempo, giro degradato dichiarato.
 - Minimo: la persona in sala, il suo capo, l'owner dei dati/IT; poi business owner e team adiacente.
+- Ricerca (`skills/panel-review/references/persona-research.md`): l'owner dà nome, ruolo e azienda; profili LinkedIn (PDF o screenshot) e materiale passato vanno in `docs/<Cliente>/` (git-ignorata) e sono la fonte primaria; poi sito del cliente, comunicati, interviste, talk, bilancio e piano industriale; Fluffy/CRM solo per «cosa ha già visto da Adobe». Ogni fatto con data e fonte; slot non trovati restano vuoti e marcati.
 
 ## Fact-check
 - Fonti pubbliche che contano, in ordine: Experience League (`experienceleague.adobe.com`), `developer.adobe.com`, `news.adobe.com` e le release notes, `business.adobe.com`; le pubblicazioni del cliente (sito, comunicati, bilancio); stampa di settore solo per fatti del cliente.
