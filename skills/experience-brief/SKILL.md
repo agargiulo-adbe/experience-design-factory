@@ -140,7 +140,8 @@ collect them here, from **public sources only** (LinkedIn, press, the company's 
 - Any **forbidden vocabulary** for this account (a regulator's decision, a past incident, a
   word the sponsor dislikes) — stated as a fact with its date, never as a judgement.
 These portraits become `docs/<Client>/PANEL-PERSONAS.md` in the Factory and drive the panel
-review; they never appear in the experience itself.
+review (skill `panel-review`, portrait shape in its `references/personas-template.md`); they
+never appear in the experience itself.
 
 ## Output — the value-proposition brief
 When enough is known, produce **one Markdown document** with these headings, ready to hand off.

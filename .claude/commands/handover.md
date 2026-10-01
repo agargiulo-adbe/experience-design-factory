@@ -7,7 +7,7 @@ Sei incaricato di mantenere la documentazione di **handover** del monorepo Exper
 Factory, così che una **nuova sessione di Claude Code** possa leggerla per intero all'avvio.
 
 Argomento ricevuto: `$ARGUMENTS`
-- Se è `check` → esegui **solo** gli step 6–7 (misura + verifica leggibilità) e il report, in
+- Se è `check` → esegui **solo** gli step 3.4 (gate panel, sola lettura), 6–7 (misura + verifica leggibilità) e il report, in
   **sola lettura**: nessuna riscrittura, nessun commit. Segnala i file oltre soglia; inoltre
   **stampa il backlog prioritario corrente** (voci P0/P1 dalla sezione backlog del doc) così da
   dare subito il quadro delle cose da fare, poi fermati.
@@ -53,6 +53,20 @@ Aggiorna il contenuto completo mantenendo la struttura a sezioni `##` esistente:
     lasciare todo "fatti" nel backlog: il backlog è solo ciò che resta da fare).
 - Fatti verificati (naming prodotti, personas, numeri, fonti) — non inventare: se non sei sicuro, marca `(da verificare)`.
 - Non rimuovere storia utile; se una sezione diventa enorme, è lo split (step 5) a gestirla, non il taglio.
+
+## Step 3.4 — Gate «panel review» (modalità completa E `check`)
+Un'experience consegnata senza il verdetto del panel è il difetto che la skill `panel-review`
+(`skills/panel-review/`, adattatore `.claude/panel-review.md`) esiste per impedire. Per ogni
+experience che ha commit nella finestra del change log corrente (`git log` su `apps/<app>/`):
+1. cerca nella sua sezione del handover una voce **«Panel review»** con data, numero del giro e
+   medie per asse, **successiva** all'ultima modifica sostanziale di contenuto (copy, dati,
+   struttura; non build/CSS puro);
+2. se manca, o è precedente → aggiungi al backlog la voce **`[P0] <experience> — panel review
+   mancante per lo stato corrente`** (con il comando: `/panel-review apps/<app>`), e stampa nel
+   report `⚠️ NO PANEL: <experience>`;
+3. se il verdetto è marcato `⚠️ DEGRADED` o `⚠️ DERIVED PERSONAS` → voce **P1** «completare il
+   panel» con le personas mancanti.
+In modalità `check` lo step è in sola lettura: stampa gli avvisi senza riscrivere il doc.
 
 ## Step 3.5 — Sincronizza la task list di sessione dal backlog (solo modalità completa, in-session)
 Il backlog dello Step 3 è la fonte di verità **persistente**; la **task list** del tool

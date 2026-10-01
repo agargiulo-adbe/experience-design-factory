@@ -1,0 +1,67 @@
+{
+  "$comment": "JSON Schemas used by workflow.js for the three roles. Keep in sync with prompts/*.md.",
+  "persona": {
+    "type": "object",
+    "required": ["persona_id", "scores", "convinces", "objections", "questions", "cut", "add", "domain_errors", "copy_tells", "verdict"],
+    "properties": {
+      "persona_id": { "type": "string" },
+      "scores": {
+        "type": "array", "minItems": 5, "maxItems": 5,
+        "items": { "type": "object", "required": ["axis", "score", "why"],
+          "properties": { "axis": { "type": "string" }, "score": { "type": "integer", "minimum": 1, "maximum": 5 }, "why": { "type": "string" } } }
+      },
+      "convinces": { "type": "array", "items": { "type": "object", "required": ["ref", "why"], "properties": { "ref": { "type": "string" }, "why": { "type": "string" } } } },
+      "objections": {
+        "type": "array", "minItems": 3,
+        "items": { "type": "object", "required": ["ref", "objection", "fix"],
+          "properties": { "ref": { "type": "string" }, "objection": { "type": "string" }, "fix": { "type": "string" }, "survived_from_round_1": { "type": "boolean" } } }
+      },
+      "questions": { "type": "array", "items": { "type": "object", "required": ["question"], "properties": { "question": { "type": "string" }, "expected_answer": { "type": "string" }, "gap": { "type": "string" } } } },
+      "cut": { "type": "array", "items": { "type": "object", "required": ["ref", "why"], "properties": { "ref": { "type": "string" }, "why": { "type": "string" } } } },
+      "add": { "type": "array", "items": { "type": "object", "required": ["what", "why"], "properties": { "what": { "type": "string" }, "why": { "type": "string" }, "where": { "type": "string" } } } },
+      "domain_errors": { "type": "array", "items": { "type": "object", "required": ["ref", "error", "correct"], "properties": { "ref": { "type": "string" }, "error": { "type": "string" }, "correct": { "type": "string" } } } },
+      "copy_tells": { "type": "array", "items": { "type": "object", "required": ["ref", "quote", "rewrite"], "properties": { "ref": { "type": "string" }, "quote": { "type": "string" }, "rewrite": { "type": "string" } } } },
+      "verdict": { "type": "object", "required": ["accept", "lines"],
+        "properties": { "accept": { "type": "string", "enum": ["yes", "conditional", "no"] }, "conditions": { "type": "array", "items": { "type": "string" } }, "lines": { "type": "string" } } }
+    }
+  },
+  "factcheck": {
+    "type": "object",
+    "required": ["claims", "internal_inconsistencies", "summary"],
+    "properties": {
+      "claims": {
+        "type": "array",
+        "items": { "type": "object", "required": ["ref", "claim", "status", "source", "evidence"],
+          "properties": {
+            "ref": { "type": "string" }, "claim": { "type": "string" },
+            "status": { "type": "string", "enum": ["confirmed", "refuted", "unverifiable", "internal-only"] },
+            "source": { "type": "string" }, "evidence": { "type": "string" }, "correction": { "type": "string" },
+            "overstated": { "type": "boolean" } } }
+      },
+      "internal_inconsistencies": { "type": "array", "items": { "type": "object", "required": ["refs", "issue"], "properties": { "refs": { "type": "array", "items": { "type": "string" } }, "issue": { "type": "string" } } } },
+      "summary": { "type": "string" }
+    }
+  },
+  "arbiter": {
+    "type": "object",
+    "required": ["scores_summary", "do_not_touch", "backlog", "disagreements", "questions", "verdict"],
+    "properties": {
+      "scores_summary": { "type": "array", "items": { "type": "object", "required": ["axis", "mean", "min", "max"],
+        "properties": { "axis": { "type": "string" }, "mean": { "type": "number" }, "min": { "type": "integer" }, "max": { "type": "integer" }, "delta": { "type": "number" } } } },
+      "do_not_touch": { "type": "array", "items": { "type": "object", "required": ["ref", "strength", "named_by"],
+        "properties": { "ref": { "type": "string" }, "strength": { "type": "string" }, "named_by": { "type": "array", "items": { "type": "string" } } } } },
+      "backlog": { "type": "array", "items": { "type": "object", "required": ["priority", "ref", "finding", "change", "kind", "raised_by"],
+        "properties": {
+          "priority": { "type": "string", "enum": ["P0", "P1", "P2"] }, "ref": { "type": "string" },
+          "finding": { "type": "string" }, "change": { "type": "string" },
+          "kind": { "type": "string", "enum": ["copy", "structure", "data", "source", "design", "code"] },
+          "raised_by": { "type": "array", "items": { "type": "string" } },
+          "status_vs_round_1": { "type": "string", "enum": ["new", "survived", "closed", "regressed"] } } } },
+      "discarded": { "type": "array", "items": { "type": "object", "required": ["finding", "why"], "properties": { "finding": { "type": "string" }, "why": { "type": "string" } } } },
+      "disagreements": { "type": "array", "items": { "type": "object", "required": ["topic", "positions", "tradeoff"],
+        "properties": { "topic": { "type": "string" }, "positions": { "type": "array", "items": { "type": "object", "required": ["persona", "position"], "properties": { "persona": { "type": "string" }, "position": { "type": "string" } } } }, "tradeoff": { "type": "string" } } } },
+      "questions": { "type": "array", "items": { "type": "object", "required": ["question"], "properties": { "question": { "type": "string" }, "expected_answer": { "type": "string" }, "gap": { "type": "string" } } } },
+      "verdict": { "type": "string" }
+    }
+  }
+}

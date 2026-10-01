@@ -19,7 +19,7 @@ Experiences today:
 - **Trait d'Union** — Agos (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
 - **Sei domande** — Poste Italiane (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per Giuseppe Sperandeo (Responsabile Monitoraggio Canali Digitali, Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (GA su Adobe Analytics il 2/10/2026). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (Gangemi). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
 
-Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, and the shareable **intake skill** `skills/experience-brief/`. Full detail in `docs/HANDOVER.md` §13.
+Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
 
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no
 wrong‑brand imagery** (see Quality Bar).
@@ -312,16 +312,16 @@ c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un dif
 
 ### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
 `audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
-**compri l'argomento**. Prima della consegna si lancia il **panel**: sub‑agent freschi e
-isolati, uno per stakeholder reale (personas **cieche**: sanno solo ciò che sa un cliente,
-ritratti pubblici in `docs/<Cliente>/PANEL-PERSONAS.md`), un **critico paranoico** che
-riverifica ogni claim, data, numero e link alla fonte (pubblica + Fluffy per il controllo
-interno: la verifica dei fatti Adobe avviene a monte E a valle), un **arbitro** che produce
-il backlog P0/P1/P2 con la correzione per ogni rilievo e la lista «non toccare». Si applicano
-P0 e P1, si riverifica (build, audit 0 HARD, screenshot) e si rilancia il panel per la delta;
-**due giri al massimo**. Il verdetto vive in chat, nel handover e nel **dossier interno**
-dell'experience. Dettaglio e forma fissa dei verbali: `skills/experience-design/SKILL.md`
-→ «Panel review». Memoria: `panel-review-mode`.
+**compri l'argomento**. Prima della consegna si lancia la skill **`panel-review`** (canonica in
+`skills/panel-review/`, installata anche globalmente; adattatore di questo repo in
+**`.claude/panel-review.md`**): sub‑agent freschi e isolati, uno per stakeholder reale (personas
+**cieche**, ritratti pubblici in `docs/<Cliente>/PANEL-PERSONAS.md`), un **critico paranoico** che
+riverifica ogni claim alla fonte (pubblica + Fluffy), un **arbitro** con backlog P0/P1/P2 e lista
+«non toccare»; orchestrati dal Workflow `skills/panel-review/references/workflow.js` con output a
+schema. Si applicano P0 e P1, si riverifica (build, audit 0 HARD, screenshot) e si rilancia per la
+delta; **due giri al massimo**. Verdetto in chat, nel handover e nel **dossier interno**.
+`/handover` segnala come P0 un'experience modificata senza verdetto registrato. Memoria:
+`panel-review-mode`.
 
 ### Cross‑experience propagation
 A product/naming change (e.g. LLMO + Semrush → **Adobe Brand Visibility**) or a shared‑engine improvement (`packages/core`, Admin engine) propagates **everywhere**: update every experience that references it **and** each `admin.astro` (PAGE_REGISTRY / SOLUTIONS) **and** hub/showcase if they list products, then verify each (build + `audit:deck`). Verify names against the authoritative source (`docs/*.pptx`), not from memory; keep co‑brand discreet ("Adobe + Semrush"). Memory: `brand-visibility-product`.
