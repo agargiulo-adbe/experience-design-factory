@@ -2,8 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { href as buildHref } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
-import { EXPERIENCES, DEFAULT_PUBLISHED, EXPERIENCE_COUNT, RESERVED_COUNT, PUBLISHED_CLIENT, spellCount } from '../data/experiences';
-import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { EXPERIENCES, DEFAULT_PUBLISHED, EXPERIENCE_COUNT, RESERVED_COUNT, spellCount } from '../data/experiences';
+import { EXPERIENCE_TYPES, EXPERIENCE_TYPE_IDS } from '@edf/core/data/experienceTypes';
 import out01 from '../assets/apis/out-01.webp';
 import out02 from '../assets/apis/out-02.webp';
 import out03 from '../assets/apis/out-03.webp';
@@ -18,6 +18,11 @@ const TEAMS_URL = 'https://teams.microsoft.com/l/chat/0/0?users=agargiulo@adobe.
 const SKILL_URL = 'https://github.com/agargiulo-adbe/experience-design-factory/tree/main/skills/experience-brief';
 const SKILL_ZIP = `${b}skill/experience-brief-skill.zip`;
 const SKILL_MD = `${b}skill/experience-brief-SKILL.md`;
+// Seconda skill condivisibile: il panel review. Stessa forma della prima —
+// cartella versionata nel repo, zip servito dalla vetrina, istruzioni in chiaro.
+const PANEL_URL = 'https://github.com/agargiulo-adbe/experience-design-factory/tree/main/skills/panel-review';
+const PANEL_ZIP = `${b}skill/panel-review-skill.zip`;
+const PANEL_MD = `${b}skill/panel-review-SKILL.md`;
 
 // The entire site derives from the central EXPERIENCES module — add an entry
 // there and the hero stats, prose counts, proof grid and architecture diagram
@@ -56,6 +61,29 @@ const internalWords = spellCount(INTERNAL_OFF_COUNT);
 // Spelled-out portfolio count for prose ("Four" / "Quattro"), derived from data.
 const countWords = spellCount(EXPERIENCE_COUNT);
 
+// ── La tassonomia dei deliverable (decisa il 1 ott 2026) ────────────────
+// Quattro tipi rivolti al cliente, nominati per la domanda a cui rispondono,
+// piu' il tipo interno. Unica fonte: packages/core/src/data/experienceTypes.ts
+// — la stessa mappa che rende la riga di copertina di ogni deck, i badge di hub
+// e console, e lo scheletro di capitoli da cui parte `pnpm new:experience`.
+// Qui non si riscrive nulla a mano: se un tipo cambia, cambia da li'.
+const clientTypes = (['prospettiva', 'storia', 'blueprint', 'playbook'] as const).map(
+  (id) => EXPERIENCE_TYPES[id],
+);
+// Le etichette dei tipi servono anche allo script che costruisce a runtime la
+// card di una experience pubblicata dalla Console: e' un dato della tassonomia,
+// non del cliente, quindi puo' stare nel markup di una pagina pubblica.
+const TYPE_LABELS = Object.fromEntries(
+  EXPERIENCE_TYPE_IDS.map((id) => [id, EXPERIENCE_TYPES[id].label]),
+);
+// Come il registry si distribuisce sui tipi: il conteggio esce dai dati, cosi'
+// non puo' smentire le card della prova qui sotto.
+const typeSpread = EXPERIENCE_TYPE_IDS.map((id) => ({
+  id,
+  label: EXPERIENCE_TYPES[id].label,
+  n: EXPERIENCES.filter((e) => e.type === id).length,
+}));
+
 const values = [
   {
     n: '01',
@@ -71,28 +99,35 @@ const values = [
   },
   {
     n: '03',
-    titleEn: 'Every slide is measured by a DOM audit at three projection sizes',
-    titleIt: 'Ogni slide è misurata da un audit DOM a tre risoluzioni di proiezione',
-    bodyEn: 'Twelve geometric and contrast checks on the real DOM, at 1920, 1440 and 1280: the hard ones must sit at zero, the soft ones are accepted on deliberately airy slides. It runs before publishing, not in CI, and it covers neither keyboard navigation nor a screen-reader pass, so it is a layout and contrast gate rather than a WCAG 2.2 AA certification. Lighthouse accessibility 100 on the six experiences, 96 on this page, best practices 100. Performance on 1 October 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, published on 30 September and not optimised yet. Only UniCredit is above 90; the rest is open work, re-measured after every publication.',
-    bodyIt: 'Dodici check geometrici e di contrasto sul DOM reale, a 1920, 1440 e 1280: quelli hard devono stare a zero, i soft sono accettati sulle slide volutamente ariose. Si lancia prima di pubblicare, non in CI, e non copre la navigazione da tastiera né un passaggio con screen reader, quindi è un gate di layout e contrasto e non una certificazione WCAG 2.2 AA. Accessibilità Lighthouse 100 sulle sei experience, 96 su questa pagina, best practices 100. Performance al 1 ottobre 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, pubblicata il 30 settembre e non ancora ottimizzata. Solo UniCredit è sopra 90: il resto è lavoro aperto, rimisurato dopo ogni pubblicazione.',
-  },
-  {
-    n: '04',
     titleEn: 'Reconfigurable at runtime', titleIt: 'Riconfigurabile a runtime',
     bodyEn: 'Toggle Adobe solutions on or off, attach demo media to any slide, author new on-brand slides — then share a link. Tailor a live demo per audience with no redeploy.',
     bodyIt: 'Attiva o disattiva le solution Adobe, allega media demo a ogni slide, crea nuove slide on-brand — poi condividi un link. Adatta una demo live per ogni pubblico senza redeploy.',
   },
   {
-    n: '05',
-    titleEn: 'Bilingual by construction', titleIt: 'Bilingue per costruzione',
-    bodyEn: 'Every string can carry EN and IT together; the active language switches instantly, with no reload. Built for an international audience from the first line.',
-    bodyIt: 'Ogni stringa può portare EN e IT insieme; la lingua attiva cambia all’istante, senza reload. Pensato per un pubblico internazionale dalla prima riga.',
-  },
-  {
-    n: '06',
+    n: '04',
     titleEn: 'Governed and multi-user', titleIt: 'Governato e multi-utente',
     bodyEn: 'A Super Admin Console with real authentication and per-experience roles sits on top — the system of record for who can configure what.',
     bodyIt: 'In cima c’è una Super Admin Console con autenticazione reale e ruoli per-esperienza — il sistema di riferimento su chi può configurare cosa.',
+  },
+];
+
+// I due gate non sono due valori fra gli altri: sono una coppia, e rispondono a
+// due domande diverse — la slide si vede? l'argomento regge? Stanno in un blocco
+// a due colonne perche' la loro lunghezza affonderebbe una griglia di card brevi.
+const gates = [
+  {
+    k: 'A',
+    tagEn: 'It shows', tagIt: 'Si vede',
+    titleEn: 'A DOM audit at three projection sizes', titleIt: 'Un audit DOM a tre risoluzioni di proiezione',
+    bodyEn: 'Twelve geometric and contrast checks on the real DOM, at 1920, 1440 and 1280: the hard ones must sit at zero, the soft ones are accepted on deliberately airy slides. It runs before publishing, not in CI, and it covers neither keyboard navigation nor a screen-reader pass, so it is a layout and contrast gate rather than a WCAG 2.2 AA certification. Lighthouse accessibility 100 on the six experiences, 96 on this page, best practices 100. Performance on 1 October 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, published on 30 September and not optimised yet. Only UniCredit is above 90; the rest is open work, re-measured after every publication.',
+    bodyIt: 'Dodici check geometrici e di contrasto sul DOM reale, a 1920, 1440 e 1280: quelli hard devono stare a zero, i soft sono accettati sulle slide volutamente ariose. Si lancia prima di pubblicare, non in CI, e non copre la navigazione da tastiera né un passaggio con screen reader, quindi è un gate di layout e contrasto e non una certificazione WCAG 2.2 AA. Accessibilità Lighthouse 100 sulle sei experience, 96 su questa pagina, best practices 100. Performance al 1 ottobre 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, pubblicata il 30 settembre e non ancora ottimizzata. Solo UniCredit è sopra 90: il resto è lavoro aperto, rimisurato dopo ogni pubblicazione.',
+  },
+  {
+    k: 'B',
+    tagEn: 'It holds', tagIt: 'Regge',
+    titleEn: 'The room’s objections, before the room', titleIt: 'Le obiezioni della stanza, prima della stanza',
+    bodyEn: 'An audit proves a slide renders. It proves nothing about whether the people who receive it buy the argument. So before handover, isolated agents read the deliverable as the real stakeholders — portraits built from dated public sources, without the context of whoever wrote it — a fact-checker re-verifies every claim at its source, and an arbiter turns the verdicts into a P0/P1/P2 backlog with a list of things not to touch. Two rounds per review, not three: what survives the second is an open point for a person. When the content changes substantially the round starts again on the delta — this page is on its third, the Poste playbook too. It has run on two deliverables out of eleven; for the other nine it is open work, not a result.',
+    bodyIt: 'Un audit prova che una slide si vede. Non dice niente su chi la riceve, né se l’argomento lo convince. Quindi prima della consegna agenti isolati leggono il deliverable come i veri interlocutori — ritratti costruiti da fonti pubbliche datate, senza il contesto di chi l’ha scritto — un fact-checker riverifica ogni affermazione alla sua fonte, e un arbitro trasforma i verdetti in un backlog P0/P1/P2 con la lista delle cose da non toccare. Due giri per revisione, non tre: quello che sopravvive al secondo resta un punto aperto per una persona. Quando il contenuto cambia in modo sostanziale il giro riparte sulla delta — questa pagina è al terzo, e anche il playbook di Poste. È girato su due deliverable su undici: per gli altri nove è lavoro aperto, non un risultato.',
   },
 ];
 /**
@@ -222,6 +257,61 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     </div>
   </section>
 
+  <!-- ══ COSA RICEVE IL CLIENTE — la tassonomia ══
+       Il tipo e' la prima cosa che il cliente legge in copertina. Qui non si
+       riscrive niente a mano: etichetta, domanda, pubblico, passo successivo e
+       scheletro dei capitoli arrivano da packages/core/src/data/experienceTypes.ts,
+       la stessa mappa che rende la riga di copertina di ogni deck, i badge della
+       prova qui sotto, quelli dell'hub e della console, e il generatore. Se un
+       tipo cambia, cambia da li' e questa sezione lo segue. -->
+  <section id="deliverables" class="section band-dlv" aria-labelledby="dlv-title">
+    <div class="wrap">
+      <p class="eyebrow eyebrow--dark" data-reveal><T en="What the client gets" it="Cosa riceve il cliente" /></p>
+      <h2 id="dlv-title" class="h-section dlv-title" data-reveal>
+        <T en="Four questions, four deliverables." it="Quattro domande, quattro artefatti." />
+      </h2>
+      <p class="lead dlv-lead" data-reveal>
+        <T en="The type is the first thing on the cover, and it is named after the question it answers instead of after a format. It settles who is in the room, what the last slide asks for, and the chapter skeleton the generator starts from. There is no «demo» among the names: live software is a property of two of the four, not their title."
+           it="Il tipo è la prima cosa in copertina, ed è nominato per la domanda a cui risponde invece che per un formato. Decide chi è in sala, che cosa chiede l’ultima slide e lo scheletro di capitoli da cui parte il generatore. Fra i nomi non c’è «demo»: il software dal vivo è una proprietà di due dei quattro, non il loro titolo." />
+      </p>
+
+      <div class="dlv-grid">
+        {clientTypes.map((t, i) => (
+          <article class="dlv-card" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)}>
+            <span class="dlv-badge"><T en={t.label.en} it={t.label.it} /></span>
+            <h3 class="dlv-q"><T en={t.question.en} it={t.question.it} /></h3>
+            <dl class="dlv-meta">
+              <div>
+                <dt><T en="In the room" it="In sala" /></dt>
+                <dd><T en={t.audience.en} it={t.audience.it} /></dd>
+              </div>
+              <div>
+                <dt><T en="It asks for" it="Chiede" /></dt>
+                <dd><T en={t.nextStep.en} it={t.nextStep.it} /></dd>
+              </div>
+            </dl>
+            <p class="dlv-path">
+              <span data-lang-en>{t.skeleton.map((c) => c.title.en).join(' → ')}</span>
+              <span data-lang-it>{t.skeleton.map((c) => c.title.it).join(' → ')}</span>
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <div class="dlv-foot" data-reveal>
+        <ul class="dlv-spread" role="list">
+          {typeSpread.map((t) => (
+            <li><span class="dlv-sp-n">{t.n}</span> <T en={t.label.en} it={t.label.it} /></li>
+          ))}
+        </ul>
+        <p class="dlv-note">
+          <T en="A fifth type, Internal, covers what has no client to present to: the Factory’s own deck and the email observatory. This showcase is not in the registry at all, so it is in none of the counts. A hybrid is registered under the type where the client decides — the Ferrari one opens as a perspective and closes as a blueprint, so it counts as a blueprint. The taxonomy was set on 1 October 2026: the eleven experiences in the registry were classified onto it afterwards, not born from it, and the first one generated from a skeleton is still to come."
+             it="Un quinto tipo, Interno, copre ciò che non ha un cliente a cui presentarsi: il deck della Factory e l’osservatorio sulle email. Questa vetrina nel registry non c’è, quindi non sta in nessuno dei conteggi. Un ibrido si registra sotto il tipo dove il cliente decide — quella Ferrari apre da prospettiva e chiude da blueprint, quindi conta come blueprint. La tassonomia è del 1 ottobre 2026: le undici experience del registry ci sono state classificate dopo, non ci sono nate, e la prima generata da uno scheletro deve ancora arrivare." />
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- ══ WHY IT MATTERS ══ -->
   <section id="why" class="section band-why" aria-labelledby="why-title">
     <div class="wrap">
@@ -238,6 +328,28 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
           </article>
         ))}
       </div>
+
+      <div class="gate-pair">
+        {gates.map((g, i) => (
+          <article class="gate-card" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)}>
+            <span class="gate-tag"><T en={g.tagEn} it={g.tagIt} /></span>
+            <h3 class="gate-title"><T en={g.titleEn} it={g.titleIt} /></h3>
+            <T en={g.bodyEn} it={g.bodyIt} as="p" class="gate-body" />
+          </article>
+        ))}
+      </div>
+
+      <aside class="why-note" data-reveal>
+        <span class="why-note-tag"><T en="What it changed" it="Che cosa ha cambiato" /></span>
+        <p class="why-note-text">
+          <T en="Two examples, because the difference between a comment and a gate shows up here. «Scaffolded in under an hour» was on this page with nothing behind it: the panel marked it unverifiable, and the answer was to write the command — the page still says no experience has been born from it yet. The hero figure read «11 checks»; there are twelve in the code, and the fact-checker found it before a colleague did. Neither correction would have come out of the author re-reading his own page."
+             it="Due esempi, perché la differenza fra un commento e un gate si vede qui. «Scaffoldata in meno di un’ora» stava su questa pagina senza niente dietro: il panel l’ha marcata non verificabile, e la risposta è stata scrivere il comando — la pagina continua a dire che nessuna experience ci è ancora nata. La cifra dell’eroe diceva «11 controlli»: nel codice sono dodici, e il fact-checker l’ha trovata prima di un collega. Nessuna delle due correzioni sarebbe uscita da una rilettura dell’autore." />
+        </p>
+        <p class="why-note-text">
+          <T en="What a round returns is a backlog, not a score to publish: the verdicts, the client-side numbers and the names stay in the internal dossier, behind the Console login, next to the material they judge. What belongs here is the shape of the outcome. On this page the panel refuted claims at the source and raised the factual-credibility score between rounds; on the last deliverable it reviewed, every claim and every link was checked one by one and the ones that did not hold were corrected before handover. Two items are still open, and they stay open because they are the author’s decisions rather than corrections."
+             it="Quello che un giro restituisce è un backlog, non un punteggio da pubblicare: i verdetti, i numeri lato cliente e i nomi restano nel dossier interno, dietro il login della Console, accanto al materiale che giudicano. Qui sta la forma dell’esito. Su questa pagina il panel ha confutato affermazioni alla fonte e ha alzato il voto sulla credibilità dei fatti fra un giro e l’altro; sull’ultimo deliverable che ha letto, ogni affermazione e ogni link sono stati verificati uno per uno e quelli che non reggevano sono stati corretti prima della consegna. Due voci restano aperte, e restano aperte perché sono decisioni dell’autore e non correzioni." />
+        </p>
+      </aside>
     </div>
   </section>
 
@@ -277,53 +389,21 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       </div>
 
       <p class="proof-scope" data-reveal>
-        <span data-lang-en><span data-live-word>{countWords.en}</span> are published here. {reservedWords.en} are not on the showcase: {confidentialWords.en.toLowerCase()} come from confidential preparation material, {internalWords.en.toLowerCase()} are internal to the Factory. Their names are not in this page’s markup. Anyone who has the address can still open them today: the authentication is still to be put in place.</span>
-        <span data-lang-it><span data-live-word>{countWords.it}</span> sono pubblicate qui. {reservedWords.it} non sono in vetrina: {confidentialWords.it.toLowerCase()} nascono da materiale di preparazione riservato, {internalWords.it.toLowerCase()} sono interne alla Factory. I loro nomi non stanno nel markup di questa pagina. Chi ha l’indirizzo oggi le apre comunque: l’autenticazione è ancora da mettere.</span>
+        <span data-lang-en><span data-live-word>{countWords.en}</span> are published here. {reservedWords.en} are not on the showcase: {confidentialWords.en.toLowerCase()} come from confidential preparation material, {internalWords.en.toLowerCase()} are internal to the Factory. Three of them are named further down, where the build chain says which experiences Firefly is in: those pages are not listed here, but anyone who has the address opens them today — the authentication is still to be put in place.</span>
+        <span data-lang-it><span data-live-word>{countWords.it}</span> sono pubblicate qui. {reservedWords.it} non sono in vetrina: {confidentialWords.it.toLowerCase()} nascono da materiale di preparazione riservato, {internalWords.it.toLowerCase()} sono interne alla Factory. Tre sono nominate più sotto, dove la catena di build dice su quali experience lavora Firefly: quelle pagine non sono elencate qui, ma chi ha l’indirizzo oggi le apre — l’autenticazione è ancora da mettere.</span>
       </p>
 
-      <!-- Dove vive, chi la vede: hosting, indicizzazione, accesso, materiale,
-           consenso co-brand per experience, piano. È la prima domanda che arriva
-           quando sei marchi di clienti stanno su un dominio pubblico. -->
-      <div class="where-box" data-reveal>
-        <p class="where-tag"><T en="Where it lives, who can see it" it="Dove vive, chi la vede" /></p>
-        <dl class="where-grid">
-          <div>
-            <dt><T en="Hosting" it="Hosting" /></dt>
-            <dd>GitHub Pages — <code>agargiulo-adbe.github.io</code></dd>
-          </div>
-          <div>
-            <dt><T en="Indexing (SEO)" it="Indicizzazione (SEO)" /></dt>
-            <dd><T en="noindex, nofollow on all six client experiences, on the hub, on this showcase and on the dossier pages. It is an instruction to crawlers, and crawlers are the only thing it stops."
-                   it="noindex, nofollow su tutte e sei le experience cliente, sull’hub, su questa vetrina e sulle pagine di dossier. È un’istruzione ai crawler, e i crawler sono l’unica cosa che ferma." /></dd>
-          </div>
-          <div>
-            <dt><T en="Access (security)" it="Accesso (sicurezza)" /></dt>
-            <dd><T en="public, no login: anyone with the address opens the page. noindex is not an access control, and there is no other one yet."
-                   it="pubblico, senza login: chi ha l’indirizzo apre la pagina. noindex non è un controllo d’accesso, e un altro non c’è ancora." /></dd>
-          </div>
-          <div>
-            <dt><T en="Material" it="Materiale" /></dt>
-            <dd><T en="public Adobe capabilities and public client sources only, no confidential data"
-                   it="solo capability Adobe pubbliche e fonti pubbliche del cliente, nessun dato riservato" /></dd>
-          </div>
-          <div>
-            <dt><T en="What is on screen" it="Cosa si vede a schermo" /></dt>
-            <dd><T en="Invented people, no real client data, no personal data processed, no profiling mechanism shown on screen. Checked slide by slide at the panel review of 1 October 2026."
-                   it="Persone inventate, nessun dato di cliente reale, nessun dato personale trattato, nessun meccanismo di profilazione mostrato a schermo. Verificato slide per slide al panel review del 1 ottobre 2026." /></dd>
-          </div>
-        </dl>
-        <p class="where-sub"><T en="Co-brand consent, one line per experience" it="Consenso al co-brand, una riga per experience" /></p>
-        <ul class="where-consent" role="list">
-          {PUBLISHED_CLIENT.map((e) => (
-            <li><strong>{e.client}</strong> — <T en="public material only; written consent pending" it="materiale solo pubblico; consenso scritto in attesa" /></li>
-          ))}
-        </ul>
-        <p class="where-plan">
-          <T en="Adobe Security/Legal review: pending, request still to send. Adobe domain or SSO: date to be set. The day one of the six says no, the switch in the Super Admin Console takes that experience off the showcase in real time, with no rebuild. Who authorises inside Adobe, who authorises on the client side and by when: still to write."
-             it="Revisione Security/Legal Adobe: in attesa, richiesta da inviare. Dominio Adobe o SSO: data da fissare. Il giorno in cui uno dei sei dice di no, l’interruttore nella Super Admin Console toglie quell’experience dalla vetrina in tempo reale, senza rebuild. Chi autorizza dentro Adobe, chi autorizza dal lato cliente ed entro quando: da scrivere." />
-        </p>
-      </div>
+      <p class="proof-note" data-reveal>
+        <T en="What is on screen in all six: invented people, no real client data, no personal data processed, no profiling mechanism shown. Checked unit by unit at the panel review of 1 October 2026, and again on 3 October."
+           it="Che cosa si vede a schermo in tutte e sei: persone inventate, nessun dato di cliente reale, nessun dato personale trattato, nessun meccanismo di profilazione mostrato. Verificato unità per unità al panel review del 1 ottobre 2026, e di nuovo il 3 ottobre." />
+      </p>
 
+      <!-- Il blocco «Dove vive, chi la vede» (hosting, indicizzazione, accesso,
+           materiale, consenso co-brand per experience, stato Security/Legal) è
+           stato RIMOSSO il 2 ott 2026 su decisione dell'autore: in vetrina
+           leggeva come allarmismo. Il giro 2 del panel lo teneva fra le cose da
+           non toccare, quindi la decisione va riletta nel verdetto della delta.
+           Lo stato di consenso resta dove si lavora: dossier e console. -->
       <a class="console-strip" href={`${LIVE}/console/`} target="_blank" rel="noopener" data-reveal>
         <div class="console-ico" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
@@ -354,8 +434,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       <h2 id="res-title" class="h-section" data-reveal>
         <T en="What has been in the room, and what has not come back yet." it="Che cosa è stato in riunione, e cosa non è ancora tornato indietro." />
       </h2>
-      <T en="Three sessions were held between 10 and 14 September 2026; one more is in the calendar for 2 October. Their outcome is not written down yet, so this says so instead of guessing. No client verbatim is on record: when there is one, it is quoted here, attributed and dated."
-         it="Tre sessioni si sono tenute fra il 10 e il 14 settembre 2026; una è in calendario il 2 ottobre. L’esito non è ancora messo per iscritto, quindi questa riga lo dice invece di indovinare. Nessuna citazione di cliente è registrata: quando ci sarà, si cita qui, attribuita e datata."
+      <T en="Three sessions were held between 10 and 14 September 2026, and a fourth on 2 October. Their outcome is not written down yet, so this says so instead of guessing. No client verbatim is on record: when there is one, it is quoted here, attributed and dated."
+         it="Tre sessioni si sono tenute fra il 10 e il 14 settembre 2026, e una quarta il 2 ottobre. L’esito non è ancora messo per iscritto, quindi questa riga lo dice invece di indovinare. Nessuna citazione di cliente è registrata: quando ci sarà, si cita qui, attribuita e datata."
          as="p" class="lead prose-max" data-reveal />
       <T en={`The scope is the ${clientWords.en.toLowerCase()} client experiences of the registry. The ${internalWords2.en.toLowerCase()} internal ones, the Factory’s own deck and the email observatory, are out of this count: there is no client to present them to.`}
          it={`Il perimetro sono le ${clientWords.it.toLowerCase()} experience cliente del registry. Le ${internalWords2.it.toLowerCase()} interne, il deck della Factory e l’osservatorio sulle email, restano fuori da questo conteggio: non c’è un cliente a cui presentarle.`}
@@ -639,11 +719,11 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">07</span>
           <div class="flow-step-body">
-            <span class="flow-step-actor" data-actor="factory"><T en="Factory KB" it="KB Factory" /></span>
-            <h3 class="flow-step-title"><T en="Verified" it="Verifica" /></h3>
+            <span class="flow-step-actor" data-actor="factory"><T en="Audit + panel" it="Audit + panel" /></span>
+            <h3 class="flow-step-title"><T en="The gate" it="Il gate" /></h3>
             <p class="flow-step-desc">
-              <T en="Every step is checked against the Experience Design Factory knowledge base — so what ships is accurate, on-message and on-brand."
-                 it="Ogni passo è verificato contro la knowledge base della Experience Design Factory — così ciò che va live è accurato, coerente nel messaggio e on-brand." />
+              <T en="Two checks that answer different questions. The audit measures the DOM at three projection sizes: that proves the slides <strong>show</strong>. Then a panel of isolated agents reads the deliverable as the people who will receive it, a fact-checker re-verifies every claim at its source, and an arbiter returns a P0/P1/P2 backlog: that is what tells you whether the argument <strong>holds</strong>. P0 and P1 are applied, the delta goes through a second round, and it stops there. Nothing is handed over without a verdict on record — the handover routine flags any experience changed without one. Content is checked against the Factory knowledge base along the way, so what ships stays on-message and on-brand."
+                 it="Due controlli che rispondono a domande diverse. L’audit misura il DOM a tre risoluzioni di proiezione: prova che le slide <strong>si vedono</strong>. Poi un panel di agenti isolati legge il deliverable come le persone che lo riceveranno, un fact-checker riverifica ogni affermazione alla sua fonte e un arbitro restituisce un backlog P0/P1/P2: è quello che dice se l’argomento <strong>regge</strong>. P0 e P1 si applicano, la delta passa un secondo giro, e lì ci si ferma. Niente va in consegna senza un verdetto agli atti: la routine di handover segnala ogni experience modificata che non ce l’ha. Lungo il percorso i contenuti si verificano contro la knowledge base della Factory, così quello che va live resta coerente nel messaggio e on-brand." />
             </p>
           </div>
         </li>
@@ -804,8 +884,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         </article>
         <article class="dos-card" data-reveal data-reveal-delay="1">
           <h3 class="dos-h"><T en="Closed by construction" it="Chiuso per costruzione" /></h3>
-          <T en="The confidential sources stay out of the repository and out of the static bundle. The dossier text itself is served from Supabase behind row-level security and a token, never indexed, and never linked from a public page — see «Where it lives, who can see it» above."
-             it="Le fonti riservate restano fuori dal repository e dal bundle statico. Il testo del dossier è servito da Supabase dietro RLS e token, mai indicizzato e mai linkato da una pagina pubblica — vedi «Dove vive, chi la vede» qui sopra." as="p" class="dos-p" />
+          <T en="The confidential sources stay out of the repository and out of the static bundle. The dossier text itself is served from Supabase behind row-level security and a token, never indexed, and never linked from a public page."
+             it="Le fonti riservate restano fuori dal repository e dal bundle statico. Il testo del dossier è servito da Supabase dietro RLS e token, mai indicizzato e mai linkato da una pagina pubblica." as="p" class="dos-p" />
         </article>
         <article class="dos-card" data-reveal data-reveal-delay="2">
           <h3 class="dos-h"><T en="It sets the brief straight" it="Raddrizza il brief" /></h3>
@@ -822,11 +902,12 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap skill-wrap">
       <p class="eyebrow eyebrow--dark" data-reveal><T en="For every Adobian — available today" it="Per ogni Adobian — disponibile oggi" /></p>
       <h2 id="skill-title" class="h-section skill-title" data-reveal>
-        <T en="Put the factory’s intake inside your own AI." it="Metti l’intake della fabbrica dentro la tua AI." />
+        <T en="Two skills you can take away, factory not included." it="Due skill da portarti via, senza la fabbrica." />
       </h2>
+      <p class="skill-unit-tag" data-reveal><span aria-hidden="true">01</span> <T en="The intake" it="L’intake" /></p>
       <p class="lead skill-lead" data-reveal>
-        <T en="One installable skill turns your Claude, ChatGPT or Copilot into a guided interview: it researches the brand and its decision-makers with you, then writes the hyper-detailed, executive-grade brief that seeds a new experience — one that leads with the client’s objective and proves its value. It runs in the AI assistant you already have."
-           it="Una skill installabile trasforma il tuo Claude, ChatGPT o Copilot in un’intervista guidata: studia con te il brand e chi decide, poi scrive il brief di iper-dettaglio e di livello executive che dà vita a una nuova esperienza — che parte dall’obiettivo del cliente e ne dimostra il valore. Gira nell’assistente AI che già usi." />
+        <T en="The first one turns your Claude, ChatGPT or Copilot into a guided interview: it researches the brand and its decision-makers with you, then writes the hyper-detailed, executive-grade brief that seeds a new experience — one that leads with the client’s objective and proves its value. It runs in the AI assistant you already have."
+           it="La prima trasforma il tuo Claude, ChatGPT o Copilot in un’intervista guidata: studia con te il brand e chi decide, poi scrive il brief di iper-dettaglio e di livello executive che dà vita a una nuova esperienza — che parte dall’obiettivo del cliente e ne dimostra il valore. Gira nell’assistente AI che già usi." />
       </p>
       <p class="skill-method" data-reveal>
         <T en="The intake follows the <em>Selling to Executives</em> method by Jacques Sciammas. Only the Claude Code route has actually been run end to end; the other two are possible and untested. The skill is deliberately tool-agnostic because the interview is the method, not the assistant — which GenAI tool Adobe IT approves for third-party data is still to confirm with Adobe IT."
@@ -871,6 +952,42 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="Adobe internal use; partners by agreement. With the brief in hand you can run <code>pnpm new:experience</code> yourself (see «Who maintains it») and open a pull request. Or send it to Antonio via Teams: the experience is scaffolded, together with its internal war-room dossier, a private Adobe-only page for meeting prep, and you’re given Admin Console access to grow it."
            it="Uso interno Adobe; partner su accordo. Col brief in mano puoi lanciare tu <code>pnpm new:experience</code> (vedi «Chi lo mantiene») e aprire una pull request. Oppure mandalo ad Antonio via Teams: l’esperienza viene scaffoldata, insieme al suo dossier war-room interno, una pagina riservata solo Adobe per preparare il meeting, e ricevi l’accesso alla Admin Console per farla crescere." />
       </p>
+
+      <div class="skill-unit" data-reveal>
+        <p class="skill-unit-tag"><span aria-hidden="true">02</span> <T en="The panel" it="Il panel" /></p>
+        <h3 class="skill-unit-title">
+          <T en="The room’s objections, on your own deliverable." it="Le obiezioni della stanza, sul tuo deliverable." />
+        </h3>
+        <p class="skill-unit-desc">
+          <T en="The first skill helps a deliverable get born. This one decides whether it is ready to leave the building, and it needs none of the factory: it runs on anything with an audience — a deck, a site, a PDF, a business plan, a pull request. Stakeholders read it blind, a fact-checker re-verifies every claim at its source, an arbiter hands back a P0/P1/P2 backlog and a list of things not to touch. Two rounds per review, and it starts again on the delta."
+             it="La prima skill fa nascere un deliverable. Questa decide se è pronto a uscire, e della fabbrica non ha bisogno: gira su qualunque cosa abbia un pubblico — un deck, un sito, un PDF, un business plan, una pull request. Gli interlocutori lo leggono alla cieca, un fact-checker riverifica ogni affermazione alla sua fonte, un arbitro restituisce un backlog P0/P1/P2 e la lista delle cose da non toccare. Due giri per revisione, e riparte sulla delta." />
+        </p>
+        <ul class="skill-unit-list" role="list">
+          <li><T en="Whoever reviews it has never seen the conversation that produced it. The isolation is the mechanism, not a formality."
+                 it="Chi recensisce non ha mai visto la conversazione che ha prodotto l’artefatto. L’isolamento è il meccanismo, non una formalità." /></li>
+          <li><T en="Portraits are built from dated public sources and are meant to stay internal: the portrait files themselves are kept out of version control. The repository is public, though, so before running it on a named account, check that what you write about a real person does not end up in a tracked file — role, public objectives and public statements, never personal assessments or anything said in a meeting."
+                 it="I ritratti si costruiscono da fonti pubbliche datate e devono restare interni: i file dei ritratti stanno fuori dal controllo di versione. Il repository però è pubblico, quindi prima di lanciarla su un conto con un nome conviene controllare che quello che si scrive di una persona reale non finisca in un file tracciato — ruolo, obiettivi pubblici e dichiarazioni pubbliche, mai valutazioni personali né cose dette in riunione." /></li>
+          <li><T en="It needs an assistant that can orchestrate agents: on Claude Code it runs on its own, which is the route that has been used. Elsewhere the same prompts drive the round by hand, and the verdict says it was a reduced one."
+                 it="Serve un assistente che sappia orchestrare agenti: su Claude Code gira da solo, ed è il percorso che è stato usato. Altrove gli stessi prompt fanno il giro a mano, e il verdetto dichiara che è stato ridotto." /></li>
+        </ul>
+        <div class="skill-actions">
+          <a class="btn btn-primary" href={PANEL_ZIP} download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="flex-shrink:0"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+            <T en="Download the panel skill" it="Scarica la skill del panel" />
+          </a>
+          <button class="btn btn-on-dark" type="button" data-copy-skill data-skill-src={PANEL_MD}>
+            <span data-copy-idle><T en="Copy the instructions" it="Copia le istruzioni" /></span>
+            <span data-copy-done hidden><T en="Copied ✓" it="Copiato ✓" /></span>
+          </button>
+          <a class="btn btn-on-dark" href={PANEL_URL} target="_blank" rel="noopener">
+            <T en="View on GitHub" it="Vedi su GitHub" /> <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <p class="skill-fineprint">
+          <T en="Adobe internal use; partners by agreement. It replaces neither a legal, security nor accessibility review, and it never talks to the client. This page has been through it three times: «Why it matters» says what it changed."
+             it="Uso interno Adobe; partner su accordo. Non sostituisce una revisione legale, di sicurezza o di accessibilità, e non parla mai con il cliente. Questa pagina ci è passata tre volte: «Perché conta» dice che cosa ha cambiato." />
+        </p>
+      </div>
     </div>
   </section>
 
@@ -948,7 +1065,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       </div>
     </div>
   </section>
-<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY, TYPE_LABELS }}>
 /*
   Quali Experience Design compaiono qui lo decide il toggle in Super Admin, in
   tempo reale: nessun rebuild. La pagina parte dal set di default già renderizzato
@@ -988,6 +1105,9 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     a.rel = 'noopener';
     a.setAttribute('data-exp', row.slug);
     a.setAttribute('data-sections', '0');
+    // Il registry statico non porta l'accento di una experience non pubblicata
+    // (direbbe da se' quale cliente e'): la card remota prende quello di sistema.
+    a.style.setProperty('--exp-accent', 'var(--accent-primary)');
 
     var visual = el('div', 'exp-visual');
     visual.appendChild(el('span', 'exp-chip', row.client || ''));
@@ -999,10 +1119,15 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     a.appendChild(visual);
 
     var body = el('div', 'exp-body');
+    // Il tipo e' una colonna del registry (migrazione 0016): la card remota
+    // porta lo stesso badge delle altre, con l'etichetta della tassonomia.
+    var lang = document.documentElement.getAttribute('data-lang') === 'en' ? 'en' : 'it';
+    var label = row.type && TYPE_LABELS[row.type] ? TYPE_LABELS[row.type][lang] : '';
+    if (label) body.appendChild(el('p', 'exp-type', label));
     body.appendChild(el('h3', 'exp-name', row.name || row.slug));
     if (row.description) body.appendChild(el('p', 'exp-desc', row.description));
     var open = el('span', 'exp-open');
-    open.appendChild(el('span', null, document.documentElement.getAttribute('data-lang') === 'en' ? 'Open experience' : 'Apri l\u2019esperienza'));
+    open.appendChild(el('span', null, lang === 'en' ? 'Open experience' : 'Apri l\u2019esperienza'));
     body.appendChild(open);
     a.appendChild(body);
     return a;
@@ -1059,7 +1184,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     });
   }
 
-  fetch(SUPABASE_URL + '/rest/v1/experiences?select=slug,name,client,description,base_url&show_in_showcase=eq.true', {
+  fetch(SUPABASE_URL + '/rest/v1/experiences?select=slug,name,client,description,base_url,type&show_in_showcase=eq.true', {
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
   })
     .then(function (r) { return r.ok ? r.json() : null; })
@@ -1126,16 +1251,63 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .split-card li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 0.5rem; height: 0.5rem; border-radius: 2px; background: var(--accent-primary); }
   .split-plus { font-size: 2rem; font-weight: 300; color: var(--ink-tertiary); text-align: center; }
 
+  /* ── COSA RICEVE IL CLIENTE (dark) ──
+     Fascia scura fra due chiare: la tassonomia e' la tesi della pagina, non una
+     nota a margine, e il contrasto la stacca da «Cos'e'» senza spostare nulla. */
+  .band-dlv { background: var(--surface-inverse); color: var(--ink-inverse); }
+  .dlv-title { color: #fff; }
+  :global(.dlv-lead) { color: var(--color-slate-300); margin-top: 1.2rem; max-width: 72ch; }
+  .dlv-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 3rem; }
+  @media (min-width: 820px) { .dlv-grid { grid-template-columns: repeat(2, 1fr); } }
+  .dlv-card { display: flex; flex-direction: column; height: 100%; padding: 1.6rem;
+    border-radius: 16px; background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.12); }
+  .dlv-badge { align-self: flex-start; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #fff;
+    background: color-mix(in srgb, var(--color-adobe-red) 62%, #000); padding: 3px 9px; border-radius: 999px; }
+  .dlv-q { font-size: 1.35rem; color: #fff; margin: 0.8rem 0 1.1rem; letter-spacing: -0.01em; }
+  .dlv-meta { display: flex; flex-direction: column; gap: 0.7rem; }
+  .dlv-meta dt { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-slate-400); margin-bottom: 0.15rem; }
+  .dlv-meta dd { font-size: 0.95rem; color: var(--color-slate-300); }
+  .dlv-path { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.7; color: var(--color-slate-400); }
+  .dlv-foot { margin-top: 2rem; }
+  .dlv-spread { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .dlv-spread li { display: inline-flex; align-items: baseline; gap: 0.4rem; font-size: 0.8rem;
+    color: var(--color-slate-300); background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 999px; padding: 0.3rem 0.7rem; }
+  .dlv-sp-n { font-family: var(--font-display); font-weight: 800; font-size: 0.95rem; color: #fff; }
+  .dlv-note { margin-top: 1.1rem; font-size: 0.9rem; line-height: 1.6; color: var(--color-slate-300); max-width: 76ch; }
+
   /* ── WHY ── */
   .band-why { background: var(--surface-secondary); }
   .value-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 3rem; }
+  /* Quattro valori brevi: 2x2 fino al desktop, una riga sola da 1240 in su.
+     Mai tre colonne con quattro card, che lascerebbero un avanzo in fondo. */
   @media (min-width: 640px) { .value-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 980px) { .value-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1240px) { .value-grid { grid-template-columns: repeat(4, 1fr); } }
+  .value-grid { grid-auto-rows: 1fr; }
   .value-card { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-radius: 16px; padding: 1.6rem; transition: transform 0.2s, box-shadow 0.2s; }
   .value-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -24px rgba(22,22,26,0.4); }
   .value-n { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--color-adobe-red-dark); letter-spacing: 0.1em; }
   .value-title { font-size: 1.2rem; margin: 0.6rem 0 0.7rem; }
   :global(.value-body) { font-size: 0.94rem; color: var(--ink-secondary); }
+  /* I due gate: una coppia, non due card fra sei. Testo lungo per costruzione,
+     quindi due colonne larghe invece di una griglia di riquadri brevi. */
+  .gate-pair { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; grid-auto-rows: 1fr; }
+  @media (min-width: 900px) { .gate-pair { grid-template-columns: repeat(2, 1fr); } }
+  .gate-card { height: 100%; padding: 1.75rem; border-radius: 16px; background: var(--surface-primary);
+    border: 1px solid var(--line-default); border-top: 3px solid var(--accent-primary); }
+  .gate-tag { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--color-adobe-red-dark); }
+  .gate-title { font-size: 1.25rem; margin: 0.5rem 0 0.8rem; letter-spacing: -0.01em; }
+  :global(.gate-body) { font-size: 0.94rem; line-height: 1.6; color: var(--ink-secondary); }
+  .why-note { margin-top: 2rem; padding: 1.25rem 1.5rem; border-radius: 14px;
+    background: var(--surface-inverse); color: var(--ink-inverse); }
+  .why-note-tag { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
+  .why-note-text { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.65; max-width: 78ch;
+    color: color-mix(in srgb, var(--ink-inverse) 88%, transparent); }
 
   /* ── PROOF (dark) ── */
   .band-proof { background: var(--surface-inverse); color: var(--ink-inverse); }
@@ -1159,7 +1331,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     margin-top: 3rem;
     --exp-cols: 1;
   }
-  .exp-grid > .exp-card {
+  .exp-grid > :global(.exp-card) {
     flex: 0 1 calc((100% - (var(--exp-cols) - 1) * 1.25rem) / var(--exp-cols));
     min-width: 0;
   }
@@ -1167,44 +1339,28 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   @media (min-width: 720px)  { .exp-grid { --exp-cols: 2; } }
   @media (min-width: 940px)  { .exp-grid { --exp-cols: 3; } }
   @media (min-width: 1240px) { .exp-grid { --exp-cols: 4; } }
-  .exp-card { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
-  .exp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
-  .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #101014; }
+  :global(.exp-card) { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
+  :global(.exp-card:hover) { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
+  :global(.exp-visual) { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #101014; }
   /* Card costruita a runtime dallo stato remoto: non ha screenshot (vive nel
      bundle statico), quindi la superficie porta solo il colore e i chip. */
-  .exp-card--remote .exp-visual { background: linear-gradient(135deg, #16161B, #0E0E12); }
-  .exp-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.5s cubic-bezier(.2,.7,.2,1); }
-  .exp-card:hover .exp-shot { transform: scale(1.045); }
-  .exp-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,16,20,0) 55%, rgba(16,16,20,0.55) 100%); }
-  .exp-chip { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.25rem 0.6rem; border-radius: 999px; backdrop-filter: blur(4px); }
-  .exp-live { position: absolute; top: 0.9rem; right: 0.9rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.22rem 0.55rem; border-radius: 999px; backdrop-filter: blur(4px); }
-  .exp-live-dot { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #33D17A; box-shadow: 0 0 0 0 rgba(51,209,122,0.7); animation: livePulse 2s infinite; }
+  :global(.exp-card--remote .exp-visual) { background: linear-gradient(135deg, #16161B, #0E0E12); }
+  :global(.exp-shot) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.5s cubic-bezier(.2,.7,.2,1); }
+  :global(.exp-card:hover .exp-shot) { transform: scale(1.045); }
+  :global(.exp-visual::after) { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,16,20,0) 55%, rgba(16,16,20,0.55) 100%); }
+  :global(.exp-chip) { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.25rem 0.6rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  :global(.exp-live) { position: absolute; top: 0.9rem; right: 0.9rem; z-index: 1; display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; color: #fff; background: rgba(0,0,0,0.42); border: 1px solid rgba(255,255,255,0.24); padding: 0.22rem 0.55rem; border-radius: 999px; backdrop-filter: blur(4px); }
+  :global(.exp-live-dot) { width: 0.42rem; height: 0.42rem; border-radius: 50%; background: #33D17A; box-shadow: 0 0 0 0 rgba(51,209,122,0.7); animation: livePulse 2s infinite; }
   @keyframes livePulse { 0% { box-shadow: 0 0 0 0 rgba(51,209,122,0.6); } 70% { box-shadow: 0 0 0 6px rgba(51,209,122,0); } 100% { box-shadow: 0 0 0 0 rgba(51,209,122,0); } }
-  @media (prefers-reduced-motion: reduce) { .exp-live-dot { animation: none; } .exp-card:hover .exp-shot { transform: none; } }
-  .exp-body { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-  .exp-name { font-size: 1.35rem; color: #fff; }
-  .exp-type { display:inline-block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: color-mix(in srgb, var(--exp-accent) 55%, #000); padding: 2px 8px; border-radius: 999px; margin-bottom: 0.45rem; }
-  .exp-tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
+  @media (prefers-reduced-motion: reduce) { :global(.exp-live-dot) { animation: none; } :global(.exp-card:hover .exp-shot) { transform: none; } }
+  :global(.exp-body) { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  :global(.exp-name) { font-size: 1.35rem; color: #fff; }
+  :global(.exp-type) { display:inline-block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: color-mix(in srgb, var(--exp-accent) 55%, #000); padding: 2px 8px; border-radius: 999px; margin-bottom: 0.45rem; }
+  :global(.exp-tag) { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
   :global(.exp-desc) { font-size: 0.9rem; color: var(--color-slate-300); flex: 1; }
-  .exp-open { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  :global(.exp-open) { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  :global(.proof-note) { margin-top: 0.9rem; font-size: 0.92rem; color: var(--color-slate-300); max-width: 72ch; }
   :global(.proof-scope) { margin-top: 1.5rem; font-size: 0.92rem; color: var(--color-slate-300); max-width: 72ch; }
-  .where-box { margin-top: 1.75rem; padding: 1.4rem 1.6rem; border-radius: 16px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); }
-  .where-tag { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
-    text-transform: uppercase; color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
-  .where-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem 1.5rem; margin-top: 1rem; }
-  @media (min-width: 720px) { .where-grid { grid-template-columns: repeat(2, 1fr); } }
-  .where-grid dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--color-slate-400); margin-bottom: 0.2rem; }
-  .where-grid dd { font-size: 0.92rem; color: var(--color-slate-300); }
-  .where-grid code { font-family: var(--font-mono); font-size: 0.85em; }
-  .where-sub { margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--color-slate-400); }
-  .where-consent { list-style: none; margin-top: 0.6rem; display: grid; grid-template-columns: 1fr; gap: 0.35rem; }
-  @media (min-width: 760px) { .where-consent { grid-template-columns: repeat(2, 1fr); } }
-  .where-consent li { font-size: 0.9rem; color: var(--color-slate-300); }
-  .where-consent strong { color: #fff; }
-  .where-plan { margin-top: 1.2rem; font-size: 0.9rem; color: var(--color-slate-300); }
 
   .console-strip { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; padding: 1.1rem 1.3rem; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.2s, background 0.2s; }
   .console-strip:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.07); }
@@ -1477,6 +1633,17 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   :global(.dos-p) { font-size: 0.93rem; line-height: 1.62; color: var(--ink-secondary); }
 
   .band-skill { position: relative; background: var(--surface-inverse); color: var(--ink-inverse); overflow: hidden; }
+  .skill-unit-tag { margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-slate-400); }
+  .skill-unit-tag span { color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); margin-right: 0.3rem; }
+  .skill-unit { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,0.14); }
+  .skill-unit .skill-unit-tag { margin-top: 0; }
+  .skill-unit-title { font-size: clamp(1.4rem, 2.6vw, 1.9rem); color: #fff; margin: 0.5rem 0 1rem; letter-spacing: -0.015em; }
+  .skill-unit-desc { font-size: 1rem; line-height: 1.65; color: var(--color-slate-300); max-width: 72ch; }
+  .skill-unit-list { list-style: none; margin-top: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; max-width: 76ch; }
+  .skill-unit-list li { position: relative; padding-left: 1.1rem; font-size: 0.92rem; line-height: 1.6; color: var(--color-slate-300); }
+  .skill-unit-list li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 0.35rem; height: 0.35rem;
+    border-radius: 50%; background: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
   .skill-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
       radial-gradient(50% 60% at 85% 0%, color-mix(in srgb, var(--color-adobe-red) 26%, transparent), transparent 62%),
       radial-gradient(45% 55% at 8% 100%, color-mix(in srgb, var(--color-adobe-violet) 24%, transparent), transparent 66%); }
