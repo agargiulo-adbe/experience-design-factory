@@ -32,7 +32,7 @@ nelle card di hub e showcase, nella console (`0016`) e nel registry MCP.
 - **Prospettiva** — «Dove potremmo arrivare?» · C‑level, prima della discovery · il vostro anno visto da fuori → la domanda → le idee → la rotta · chiede un tavolo di lavoro. (Eni, Isybank, MIM)
 - **Storia** — «Come funzionerebbe per un nostro cliente?» · business e marketing, dopo un workshop · scenario → persona → momenti con la piattaforma dal vivo → il motore → risultati · chiede di vederla sui vostri dati. (UniCredit, Max Mara)
 - **Blueprint** — «Come si collega a quello che abbiamo?» · CDO/CIO con il business owner, dopo la discovery · scenario → fondamenta → use case → convergenza → valore → rotta · chiede di perimetrare una fase. (Agos, FS, Ferrari)
-- **Playbook** — «Come lo uso da lunedì?» · chi possiede lo strumento, prima del go‑live · punto di partenza → N domande = N capitoli, «oggi» vs «con X» → cosa ti porti a casa · chiede di accenderlo. (Poste)
+- **Playbook** — «Come lo uso da lunedì?» · chi possiede lo strumento, prima del go‑live · punto di partenza → N domande = N capitoli, «oggi» vs «con X» → cosa vi portate a casa · chiede di accenderlo. (Poste)
 - **Interno** — showcase, Atelier, Aperture: non rivolti al cliente.
 Regole: niente «demo» nei nomi (il software dal vivo è una proprietà di Storia e Playbook); la
 copertina rende `EXPERIENCE_TYPES[TYPE].coverLine`, mai una stringa a mano; un ibrido si
@@ -163,6 +163,19 @@ Copy must read like a sharp human wrote it, never "AI‑generated". Kill the tel
 - empty value‑speak & superlatives ("crea valore", "un'unica visione", "the speed decides who stays");
 - buzzword stacking, over‑parallel bullets, AI connectors ("Inoltre", "In a world where", "It's not just about…").
 Rewrite into natural, concrete sentences with varied rhythm. **Never touch** product/persona names, numbers, sources, claims; **keep each string within ±10% of its length** so the deck audit (height/legibility) doesn't break. Bilingual (Ferrari): EN and IT each idiomatic, never a literal echo; `<T en it>` ALWAYS keeps BOTH languages. Memory: `copy-must-be-human`.
+
+### Il deck parla all'organizzazione, non alla persona in sala (BINDING, ogni experience)
+Chi riceve il deck lo gira ai colleghi: la copia che sopravvive al meeting è quella che
+regge **senza** chi l'ha presentata. Quindi niente **seconda persona singolare** nella voce
+del deck — titoli, occhielli, lead, bullet, take, cautele, fonti: si usa il **plurale
+istituzionale** («la vostra istanza», «decidete voi», «cosa vi portate a casa») o
+l'impersonale («si controlla», «la conferma spetta all'Admin»). Nominare il referente per
+nome nel contenuto è anche peggio: il deck diventa suo e muore con lui.
+Due eccezioni, perché sono dialoghi e non voce del deck: il **mock di chat** (la persona
+che digita e l'assistente che le risponde parlano al singolare, se no non è una chat) e i
+**messaggi di interfaccia** rivolti a chi sta operando (login del dossier, console admin).
+Lo scheletro dei tipi in `experienceTypes.ts` segue la stessa regola, così ogni experience
+nuova nasce già al plurale. Memoria: `deck-voice-institutional`.
 
 ### `audit:deck` — leggere davvero l'esito, non solo la riga finale
 Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe

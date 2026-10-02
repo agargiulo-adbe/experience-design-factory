@@ -90,7 +90,7 @@ export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
       { slug: 'domanda-1', title: { it: 'Domanda 1', en: 'Question 1' } },
       { slug: 'domanda-2', title: { it: 'Domanda 2', en: 'Question 2' } },
       { slug: 'domanda-3', title: { it: 'Domanda 3', en: 'Question 3' } },
-      { slug: 'casa', title: { it: 'Cosa ti porti a casa', en: 'What you take home' } },
+      { slug: 'casa', title: { it: 'Cosa vi portate a casa', en: 'What you take home' } },
     ],
   },
   interno: {
