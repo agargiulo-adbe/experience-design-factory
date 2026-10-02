@@ -5,6 +5,26 @@
 
 ## 11. Change log recente
 
+### Change log — la tassonomia in vetrina, i due gate, la seconda skill; terzo giro di panel (2026-10-03)
+- `6335a33` **feat(showcase)** — risposta alla domanda dell'autore («tassonomia e panel meritano più
+  risalto?»). Nuova fascia **`#deliverables`** con i quattro tipi nominati per la domanda del cliente,
+  resa da `experienceTypes.ts`; **`#why`** ristrutturato (quattro valori brevi + i **due gate in
+  coppia**, «si vede» e «regge», + la nota «che cosa ha cambiato»); **passo 07** del flusso riscritto
+  (diceva «verificato contro la KB», che non è il gate); **`#skill` a due skill**, la seconda è il
+  panel review con zip e `INSTALL.md`; **card remota di `#proof`** riparata (stili scoped di Astro
+  contro DOM costruito a runtime — memoria `astro-scoped-css-runtime-dom`); **nav** stretta perché le
+  voci sono dodici. **Rimosso** il blocco «Dove vive, chi la vede» su decisione dell'autore.
+  Dettaglio in **§13.10 (HANDOVER-05)**. Build 14 app verde, pushato.
+- **Terzo giro di panel sulla delta** (§13.11): credibilità **4,0 → 3,3**, rischio **2,0 → 1,3**
+  (minimo dei tre giri), rilevanza e azionabilità +0,2. **15 P0 · 20 P1 · 11 P2**, nove P0 applicati
+  nello stesso commit. La lezione, scritta perché non vada persa: **togliere la dichiarazione di un
+  rischio non toglie il rischio** — la rimozione ha lasciato un rimando morto, una frase che negava
+  nomi presenti dieci volte nel DOM, e i punteggi interni del panel accanto al nome di un cliente su
+  una pagina senza login. Tutte e tre corrette; la decisione di fondo resta dell'autore (§10).
+- **Trovato dal panel, fuori dalla vetrina**: sette `docs/HANDOVER-*.md` **tracciati** nominano
+  referenti reali dei clienti su un repository **pubblico** (`raw.githubusercontent` risponde 200).
+  Prima voce P0 di §10, memoria `client-names-public-repo`.
+
 ### Change log — il marchio smette di sembrare rotto, e il link condiviso mostra un'immagine (2026-10-02, sera tardi) → dettaglio §32.9
 - `f954792` **feat(poste)** — segnalazione dell'owner su screenshot di Teams: «il logo e il favicon restano bruttini, sembra un'immagine non caricata». Era vero, ed era lo **stesso difetto del 30/9 spostato di un passo**: il «?» era stato tracciato per non dipendere dal font, ma un arco di 3,4px con un puntino **a 16px legge come un carattere che non ha caricato**. Il problema non era il font, era che **un glifo sottile non regge alla misura di una favicon**. Sostituito dalla **faccia del sei** (due colonne per tre, l'ultimo punto giallo = la risposta): forma piena, non lettera. Verificata a 16/24/32/64/96 px e nella nav a 1920.
 - Stessa richiesta, seconda parte: **l'anteprima del link non aveva immagine**. Mancava `og:image` — Teams prendeva titolo e descrizione e metteva il suo segnaposto grigio. Aggiunta una card **1200×630** renderizzata con Playwright dal **poster vero della copertina** + lockup Adobe × Posteitaliane + titolo, col giallo solo su «dentro Adobe Analytics». Più `og:url`, `og:locale`, dimensioni e alt, `twitter:card`, `canonical`, `theme-color`, icone raster 192/180. ⚠️ **Gli URL vanno assoluti** (da `Astro.site`): con un path relativo l'unfurler non risolve e la card resta vuota — la trappola per cui il fix sembra applicato e non si vede. ⚠️ Il deck resta `noindex`: **Teams lo ignora** (verificato live), **LinkedIn potrebbe no**.

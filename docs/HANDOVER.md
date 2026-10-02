@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-02**.
+> Documento di passaggio di consegne. Stato al **2026-10-03**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -10,10 +10,12 @@
 > `.md` costa ~20k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> ✅ **Working tree pulito al 2 ott 2026, sera.** Il lavoro del 1–2 ott (showcase dopo i due giri di
-> panel, `noindex` sui cinque deck che non l'avevano, minimi tipografici, fix su Ferrari) e il terzo
-> giro di panel su Poste, col marchio nuovo e l'anteprima del link, sono **committati, spinti e
-> online** (`f2b60f8` → `ef5f741`, deploy Pages success). Il backlog P0 di §10 (Parte 2) resta la prima cosa da leggere prima di decidere.
+> ✅ **Working tree pulito al 3 ott 2026.** L'ultimo lavoro — la tassonomia in vetrina, i due gate
+> separati, la seconda skill scaricabile e il fix della card costruita a runtime — è committato e
+> spinto (`6335a33`), con build verde su 14 app. Il **terzo giro di panel sulla vetrina** (3 ott) ha
+> alzato rilevanza e azionabilità e **abbassato credibilità e rischio**: §13.11 (Parte 5) per i numeri,
+> e soprattutto il **backlog P0 di §10 (Parte 2)**, che ora apre con una voce che non riguarda una
+> pagina ma il repository: nomi di referenti cliente dentro file tracciati, su un repo pubblico.
 
 ---
 

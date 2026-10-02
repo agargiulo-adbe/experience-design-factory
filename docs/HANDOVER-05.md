@@ -153,6 +153,71 @@ su un dominio pubblico a nome di una persona, con sei consensi «in attesa» e L
 visto niente. La skill si ferma a due giri: se dopo i P0 il rischio non sale almeno a 3/5, il problema
 non è più il sito ma **dove vive**.
 
+### 13.10 La tassonomia in vetrina, i due gate separati, la seconda skill (2026-10-03, `6335a33`)
+Domanda di partenza dell'autore: la tassonomia e il panel review meritano più risalto?
+Risposta data e applicata: **la tassonomia sì, senza riserve** (era una parola dentro una card);
+**il panel sì, ma riposizionato**, perché «orchestrazione agentica» è un pattern di dominio
+pubblico e ciò che non lo è è la disciplina (ritratti ciechi, fact-check alla fonte, arbitro,
+gate che blocca la consegna).
+- **`index#deliverables`, nuova fascia scura subito dopo «Cos'è»** — «Quattro domande, quattro
+  artefatti». Quattro card: badge del tipo, **la domanda del cliente come titolo**, «in sala»,
+  «chiede», e lo scheletro dei capitoli come percorso. Tutto reso da `EXPERIENCE_TYPES`
+  (`packages/core/src/data/experienceTypes.ts`): **nessuna stringa a mano**. Sotto, la
+  distribuzione del registry calcolata dai dati e la nota su quinto tipo, ibridi e sul fatto
+  che le undici ci sono state **classificate dopo**. Voce di nav «Artefatti/Deliverables».
+- **`index#why` ristrutturato** — da sei valori a **quattro brevi** in griglia bilanciata (2×2,
+  poi 4 in riga da 1240; via «bilingue», già detto in `#what` e `#architecture`), poi i **due
+  gate in coppia**: «si vede» (audit DOM, con tutte le riserve già verificate) e «regge» (il
+  panel). Erano due muri di testo in una griglia di card brevi: mezza sezione restava vuota.
+  Sotto, la nota **«Che cosa ha cambiato»**: «meno di un'ora» marcata non verificabile → è nato
+  `pnpm new:experience`; «11 controlli» → erano dodici. Il panel ha cambiato il **prodotto**.
+- **Passo 07 del flusso** — diceva «verificato contro la knowledge base», che non è il gate.
+  Ora dice le due verifiche e che `/handover` segnala come P0 un'experience senza verdetto.
+- **`index#skill` a due skill** — la seconda è il panel review: `skills/panel-review/INSTALL.md`
+  nuovo, zip + SKILL.md + INSTALL serviti da `public/skill/`. Dichiara il vincolo vero (serve un
+  harness che orchestri agenti; altrove il giro è ridotto **e va dichiarato**).
+- **Card remota di `#proof` — bug vero, vedi memoria `astro-scoped-css-runtime-dom`.** Le regole
+  `.exp-card`/`.exp-visual`/`.exp-chip`/`.exp-body` erano **scoped** da Astro: la card costruita a
+  runtime da `buildCard()` per una experience pubblicata dalla Console nasceva **senza stili**
+  (vista su Isybank). Ora sono `:global()`, la card remota riceve `--exp-accent` e il badge del
+  tipo (colonna `type`, migrazione 0016; la query ora la chiede). Verificata riproducendo il DOM
+  esatto di `buildCard()`.
+- **Rimosso il blocco «Dove vive, chi la vede»** (hosting, indicizzazione, accesso, materiale,
+  consenso co-brand per cliente, stato Security/Legal) — **decisione dell'autore**, lo giudicava
+  allarmistico. Il giro 2 lo teneva fra le cose da **non toccare**. Nel codice resta un commento
+  che data e motiva la rimozione; le conseguenze sono nel backlog (§10).
+- **Nav**: dodici voci tagliavano «Blueprint» a **ogni** viewport (overflow 48px). Stretta la
+  voce (`padding .42rem`, `font .75rem`): 0 di overflow a 1440/1920, e a 1280 va meglio di prima.
+
+### 13.11 Panel review — giro sulla delta (2026-10-03)
+Verdetto `docs/Factory/PANEL-VERDICT-2026-10-03-delta.md`, JSON in
+`docs/Factory/panel/2026-10-03-delta/` (git-ignorati). Stesse sei personas del giro 2, pacchetto
+di evidenza ricostruito (26 unità, testo esatto + schermate a 1440, IT). **Terzo giro**: la skill
+si ferma a due **per revisione**, e il contenuto era cambiato in modo sostanziale.
+
+| Asse | Giro 2 (1 ott) | Delta (3 ott) | Δ |
+|---|---|---|---|
+| credibilità dei fatti | 4,0 | **3,3** | −0,7 |
+| rilevanza per me | 3,5 | 3,7 | +0,2 |
+| chiarezza | 3,7 | 3,7 | 0,0 |
+| rischio (5 = nessuno) | 2,0 | **1,3** | −0,7 |
+| azionabilità | 3,2 | 3,3 | +0,2 |
+
+**15 P0 · 20 P1 · 11 P2.** Guadagna dove è cambiata (tassonomia e seconda skill sono nel «non
+toccare», sei personas su sei citano la tassonomia), **perde su credibilità e rischio** — 1,3 è il
+minimo dei tre giri. La lettura dell'arbitro, da tenere: la rimozione del blocco ha lasciato
+**impronte** (un rimando morto, una frase che negava nomi presenti dieci volte nel DOM, e al loro
+posto i punteggi interni accanto al nome di un cliente), e chi legge non conclude «è meno
+allarmista» ma «il gate si scavalca per gusto, e me lo propongono come standard».
+**Applicati 9 P0** (quelli causati dalla delta più le correzioni verificabili sulla pagina):
+rimando morto in `#dossier`; contatori dei tipi contro la prosa; «due giri mai tre» allineato alla
+pratica; punteggi di panel e numeri dell'account fuori dalla pagina pubblica; riga sui ritratti
+allineata al fatto che il repo è pubblico; data del 2 ottobre al passato; la frase «i loro nomi non
+stanno nel markup»; la riga sui dati personali chiesta da tre giri; la nav. **I P0 restanti sono
+in §10**: sei sono precedenti alla delta, uno è una decisione dell'autore.
+
+---
+
 ## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
 
 `apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche. È uno **strumento** (island interattiva full-bleed), NON una slide-keynote: **esente da `audit:deck`** (`/scoping/` non è nel ROUTE_SET di `scripts/deck-audit.ts`). Doc di riferimento del blocco: **`packages/core/src/blocks/scoping/README.md`** (architettura + come estendere).
