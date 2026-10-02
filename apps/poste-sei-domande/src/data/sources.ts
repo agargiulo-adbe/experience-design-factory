@@ -17,7 +17,7 @@ export const SOURCES: Record<string, Source> = {
   },
   coworkerDocs: {
     id: 'coworkerDocs',
-    label: { it: 'Experience League, Coworker Chat: casi d’uso', en: 'Experience League, Coworker Chat use cases' },
+    label: { it: 'Experience League, Coworker Chat: casi d’uso (oggi documentati su CJA)', en: 'Experience League, Coworker Chat use cases (documented on CJA today)' },
     url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/overview',
   },
   mcpFaq: {

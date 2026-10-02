@@ -20,16 +20,16 @@ const currentPath = Astro.url.pathname;
 
 const nonFa = [
   { k: { it: 'Non raccoglie', en: 'Does not collect' }, b: { it: 'Nessun tag nuovo, nessun evento in più sull’app o sul sito. Coworker legge ciò che Analytics riceve già da AppMeasurement e dall’SDK mobile via Tags (Launch), come Workspace.', en: 'No new tag, no extra event on the app or site. Coworker reads what Analytics already receives from AppMeasurement and the mobile SDK via Tags (Launch), like Workspace.' } },
-  { k: { it: 'Non vede persone', en: 'Does not see people' }, b: { it: 'Lavora sui report aggregati delle report suite: visite, sezioni, piattaforme, segmenti. Non unisce profili né decodifica identificativi. Le variabili con identificativi pseudonimi le vede come Workspace: l’inventario è della settimana zero, e i permessi si sommano fra profili.', en: 'It works on the aggregated reports of the report suites: visits, sections, platforms, segments. It stitches no profiles and decodes no identifiers. Variables carrying pseudonymous identifiers it sees as Workspace does: the inventory belongs to week zero, and permissions add up across profiles.' } },
+  { k: { it: 'Non profila', en: 'Does not profile' }, b: { it: 'Lavora sui report aggregati delle report suite: visite, sezioni, piattaforme, segmenti. Non unisce profili né decodifica identificativi. Le variabili con identificativi pseudonimi le vede come Workspace: l’inventario è della settimana zero, e i permessi si sommano fra profili.', en: 'It works on the aggregated reports of the report suites: visits, sections, platforms, segments. It stitches no profiles and decodes no identifiers. Variables carrying pseudonymous identifiers it sees as Workspace does: the inventory belongs to week zero, and permissions add up across profiles.' } },
   { k: { it: 'Non decide', en: 'Does not decide' }, b: { it: 'Non attiva campagne, non tocca contenuti, non personalizza niente per il cliente finale. Risponde a chi chiede, dentro l’organizzazione.', en: 'It triggers no campaigns, touches no content, personalises nothing for the end customer. It answers whoever asks, inside the organisation.' } },
   { k: { it: 'Non sorveglia', en: 'Does not monitor' }, b: { it: 'Sulla vostra Analytics risponde alle domande che riceve: non gira alert per conto suo. Il primo segnale resta un alert di Analytics o un reclamo.', en: 'On your Analytics it answers the questions it receives: it runs no alerts of its own. The first signal is still an Analytics alert or a complaint.' } },
 ];
 
 const regole = [
-  { t: { it: 'Un profilo per il pilota', en: 'A profile for the pilot' }, b: { it: 'MCP Access segue i diritti Analytics: per il pilota un profilo di prodotto dedicato, senza authoring, con la conferma obbligatoria sulle quattro scritture. Le scritture in produzione, se servono, a quattro occhi.', en: 'MCP Access follows Analytics rights: for the pilot a dedicated product profile, without authoring, with mandatory confirmation on the four write tools. Writes in production, if needed, with a second pair of eyes.' } },
+  { t: { it: 'Un profilo per il pilota', en: 'A profile for the pilot' }, b: { it: 'MCP Access segue i diritti Analytics: per il pilota un profilo di prodotto dedicato, senza authoring, con la conferma richiesta su tutte e quattro le scritture, per convenzione del pilota. Le scritture in produzione, se servono, a quattro occhi.', en: 'MCP Access follows Analytics rights: for the pilot a dedicated product profile, without authoring, with confirmation required on all four write tools, as a pilot convention. Writes in production, if needed, with a second pair of eyes.' } },
   { t: { it: 'Una suite di prova', en: 'A test suite' }, b: { it: 'La prima settimana sulla suite di sviluppo della SuperApp, che avete già. Dalla seconda quella di produzione.', en: 'The first week on the SuperApp development suite you already have. From the second, the production one.' } },
   { t: { it: 'Validare sul report certificato', en: 'Validate on the certified report' }, b: { it: 'Ogni risposta usata per una decisione si confronta il primo mese col report certificato. Se i numeri tornano, il metodo regge.', en: 'Every answer used for a decision is checked against the certified report during the first month. If the numbers match, the method holds.' } },
-  { t: { it: 'Settimana zero: Comitato IA e DPO', en: 'Week zero: AI Committee and DPO' }, b: { it: 'L’istruttoria la fa il Comitato IA, con il DPO e la sicurezza. Adobe compila la parte tecnica della scheda: modello, regione, conservazione, uso per addestramento, registro, uscita. Questo deck è un allegato, non l’istruttoria.', en: 'The assessment is the AI Committee’s, with the DPO and security. Adobe fills in the technical part of the file: model, region, retention, training use, log, exit. This deck is an attachment, not the assessment.' } },
+  { t: { it: 'Settimana zero: Comitato IA e DPO', en: 'Week zero: AI Committee and DPO' }, b: { it: 'L’istruttoria la fa il Comitato IA, con il DPO e la sicurezza; in parallelo si verifica con chi governa i fornitori ICT se il server MCP ricade nel contratto Analytics o è un servizio nuovo da censire. Adobe compila la parte tecnica della scheda: modello, regione, conservazione, uso per addestramento, registro, uscita. Questo deck è un allegato, non l’istruttoria.', en: 'The assessment is the AI Committee’s, with the DPO and security; in parallel, whoever governs ICT suppliers checks whether the MCP server falls under the Analytics contract or is a new service to register. Adobe fills in the technical part of the file: model, region, retention, training use, log, exit. This deck is an attachment, not the assessment.' } },
 ];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
@@ -49,7 +49,7 @@ const regole = [
         <T
           as="p"
           class="sd-q-lead"
-          it="È la domanda che ti faranno per prima, e giustamente. La risposta è corta: i dati grezzi restano in Adobe Analytics. Coworker legge i risultati aggregati con i permessi di chi chiede, e non ne fa copie, arricchimenti o esportazioni."
+          it="È la domanda che vi faranno per prima, e giustamente. La risposta è corta: i dati grezzi restano in Adobe Analytics. Coworker legge i risultati aggregati con i permessi di chi chiede, e non ne fa copie né arricchimenti: quello che esce è il risultato aggregato che l’utente vede."
           en="It is the question you will be asked first, and rightly so. The answer is short: the raw data stays in Adobe Analytics. Coworker reads aggregated results with the permissions of whoever asks, and makes no copy, adds nothing and exports nothing."
           data-reveal data-reveal-delay="0.15"
         />
@@ -109,7 +109,7 @@ const regole = [
       </div>
       <p class="sd-src" data-reveal data-reveal-delay="0.24">
         <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
-        <a href={SOURCES.coworkerDocs.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerDocs.label.it}</span><span data-lang-en>{SOURCES.coworkerDocs.label.en}</span></a>
+        <a href={SOURCES.mcpFaq.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpFaq.label.it}</span><span data-lang-en>{SOURCES.mcpFaq.label.en}</span></a>
         &nbsp;·&nbsp;<a href={SOURCES.mcpTools.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpTools.label.it}</span><span data-lang-en>{SOURCES.mcpTools.label.en}</span></a>
       </p>
     </Slide>
@@ -146,8 +146,8 @@ const regole = [
     <Slide id="slide-take" bg="inverse" align="center">
       <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgTake.src})`}></div>
       <div class="sd-take" data-reveal>
-        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa ti porti a casa" en="What you take home" />
-        <T as="h2" class="sd-take-title" it="Una risposta che puoi dare tu, in una riga" en="An answer you can give yourself, in one line" />
+        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa vi portate a casa" en="What you take home" />
+        <T as="h2" class="sd-take-title" it="Una risposta che potete dare voi, in una riga" en="An answer you can give yourself, in one line" />
         <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Dati" en="Data" />
@@ -155,11 +155,11 @@ const regole = [
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Accesso" en="Access" />
-            <T as="p" class="sd-take-t" it="Un permesso che <strong>dai e togli tu</strong>, per persona, in Admin Console." en="A permission <strong>you grant and revoke</strong>, per person, in Admin Console." />
+            <T as="p" class="sd-take-t" it="Un permesso che <strong>date e togliete voi</strong>, per persona, in Admin Console." en="A permission <strong>you grant and revoke</strong>, per person, in Admin Console." />
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Registro" en="Log" />
-            <T as="p" class="sd-take-t" it="Conversazioni e scritture lasciano <strong>una traccia</strong>; formato ed esportazione del registro stanno nella scheda, prima del pilota." en="Conversations and writes leave <strong>a trace</strong>; the log format and its export sit in the file, before the pilot." />
+            <T as="p" class="sd-take-t" it="Le scritture lasciano <strong>le stesse voci</strong> che lascia Workspace negli audit log di Analytics: non c’è un registro separato delle azioni via MCP. Come si esporta sta nella scheda, prima del pilota." en="Writes leave <strong>the same entries</strong> Workspace leaves in the Analytics audit logs: there is no separate register of MCP actions. How it exports sits in the file, before the pilot." />
           </div>
         </div>
         <T as="p" class="sd-caveat" it="<strong>Il perimetro.</strong> Questo deck resta dentro Adobe Analytics. Se un giorno si volesse collegare Coworker ad altri sistemi, quella è una valutazione nuova, con il Comitato IA, non un’estensione di questa." en="<strong>The scope.</strong> This deck stays inside Adobe Analytics. If one day you wanted to connect Coworker to other systems, that is a new assessment, with the AI Committee, not an extension of this one." data-reveal data-reveal-delay="0.24" />
