@@ -78,15 +78,15 @@ export const EXPERIENCES: Experience[] = [
     url: `${LIVE}/unicredit-engagement/`,
     shot: 'shots/unicredit.webp',
     accent: '#007A91',
-    sections: 6,
+    sections: 7,
     defaultPublished: true,
     tag: {
-      en: 'Bilingual EN/IT · six chapters · the most mature',
-      it: 'Bilingue EN/IT · sei capitoli · la pi\u00f9 matura',
+      en: 'Bilingual EN/IT · seven chapters, closing included',
+      it: 'Bilingue EN/IT · sette capitoli, chiusura inclusa',
     },
     desc: {
-      en: 'One customer story told in six chapters, each one a live demo. Its design system is read from UniCredit\u2019s production CSS, not from a brand deck.',
-      it: 'Una sola storia di cliente in sei capitoli, ognuno una demo dal vivo. Il design system \u00e8 letto dal CSS di produzione di UniCredit, non da un brand book.',
+      en: 'One customer story told in seven chapters, closing included, each one a live demo. Its design system is read from UniCredit\u2019s production CSS, not from a brand deck.',
+      it: 'Una sola storia di cliente in sette capitoli, chiusura inclusa, ognuno una demo dal vivo. Il design system \u00e8 letto dal CSS di produzione di UniCredit, non da un brand book.',
     },
   },
   {
@@ -105,8 +105,8 @@ export const EXPERIENCES: Experience[] = [
       it: 'Bilingue EN/IT · motorsport · mockup di prodotto live',
     },
     desc: {
-      en: 'A data-collaboration narrative from Maranello to every fan, with interactive Adobe product mockups and a licensing scoping model built into the deck.',
-      it: 'Un racconto di data-collaboration da Maranello a ogni tifoso, con mockup interattivi dei prodotti Adobe e un modello di scoping del licensing dentro al deck.',
+      en: 'A data-collaboration narrative from Maranello to every fan, with interactive Adobe product mockups and a scoping model priced by whoever uses it \u2014 no price list, scenarios kept private or shared by link.',
+      it: 'Un racconto di data-collaboration da Maranello a ogni tifoso, con mockup interattivi dei prodotti Adobe e un modello di scoping a prezzi inseriti da chi lo usa, senza listino, con scenari privati o condivisi via link.',
     },
   },
   {
@@ -245,8 +245,8 @@ export const EXPERIENCES: Experience[] = [
       it: '6 capitoli · IT/EN · tecnico-operativa',
     },
     desc: {
-      en: 'Six questions a digital-analytics team gets every week, each answered today in Workspace and tomorrow in CX Enterprise Coworker \u2014 without touching the stack.',
-      it: 'Sei domande che un team di web analytics riceve ogni settimana, ognuna risposta oggi in Workspace e domani in CX Enterprise Coworker \u2014 senza toccare lo stack.',
+      en: 'Six questions an analytics team gets every week: today in Workspace, and from the same week in CX Enterprise Coworker (GA on Adobe Analytics, 2 October 2026).',
+      it: 'Sei domande che un team di analytics riceve ogni settimana: oggi in Workspace, e dalla stessa settimana in CX Enterprise Coworker (GA su Adobe Analytics, 2 ottobre 2026).',
     },
   },
   {
@@ -276,6 +276,17 @@ export const DEFAULT_PUBLISHED = EXPERIENCES.filter((e) => e.defaultPublished);
 
 /** Number of live, deployed experiences — il set di default, non il registry intero. */
 export const EXPERIENCE_COUNT = DEFAULT_PUBLISHED.length;
+
+/**
+ * Le experience nate da materiale di preparazione riservato. Non stanno in
+ * vetrina e NON vengono renderizzate nel markup statico di una pagina pubblica:
+ * se la Console le pubblica, la vetrina costruisce la card a runtime dai dati
+ * che il backend restituisce. Qui serve solo il conteggio.
+ */
+export const RESERVED_COUNT = EXPERIENCES.length - EXPERIENCE_COUNT;
+
+/** Le experience cliente pubblicate per difetto (co-brand da dichiarare). */
+export const PUBLISHED_CLIENT = DEFAULT_PUBLISHED.filter((e) => e.type !== 'interno');
 
 /** Sum of all sections across the published portfolio. */
 export const TOTAL_SECTIONS = DEFAULT_PUBLISHED.reduce((n, e) => n + e.sections, 0);

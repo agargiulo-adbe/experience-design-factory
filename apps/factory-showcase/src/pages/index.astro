@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { href as buildHref } from '@edf/core/utils/url.js';
 import T from '@edf/core/blocks/i18n/T.astro';
-import { EXPERIENCES, EXPERIENCE_COUNT, spellCount } from '../data/experiences';
+import { EXPERIENCES, DEFAULT_PUBLISHED, EXPERIENCE_COUNT, RESERVED_COUNT, PUBLISHED_CLIENT, spellCount } from '../data/experiences';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import out01 from '../assets/apis/out-01.webp';
 import out02 from '../assets/apis/out-02.webp';
@@ -28,11 +28,31 @@ const LIVE = 'https://agargiulo-adbe.github.io/experience-design-factory';
 // Senza chiavi o senza risposta la pagina resta sul set di default (fail-closed).
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
-const experiences = EXPERIENCES.map((e) => ({
+// Solo il set di default finisce nel markup. Le experience nate da materiale
+// riservato non compaiono nel DOM di questa pagina pubblica: se la Console le
+// pubblica, la card viene costruita a runtime dai dati del backend.
+const experiences = DEFAULT_PUBLISHED.map((e) => ({
   ...e,
   href: e.url,
   shot: `${b}${e.shot}`,
 }));
+const reservedWords = spellCount(RESERVED_COUNT);
+// Il registry intero, pubblicate più non pubblicate: l'eroe dice entrambe le
+// cifre, così «6» e «undici» non si leggono come un conteggio in conflitto.
+const PORTFOLIO_COUNT = EXPERIENCE_COUNT + RESERVED_COUNT;
+// Le non pubblicate non sono tutte uguali: alcune nascono da materiale di
+// preparazione riservato, altre sono interne alla Factory e non hanno un
+// cliente. Qui servono solo i due conteggi: i nomi restano fuori dal markup.
+const INTERNAL_OFF_COUNT = EXPERIENCES.filter((e) => !e.defaultPublished && e.type === 'interno').length;
+const CONFIDENTIAL_OFF_COUNT = RESERVED_COUNT - INTERNAL_OFF_COUNT;
+// Perimetro dichiarato del registro dei risultati: le experience cliente, non
+// quelle interne, che non hanno nessuno a cui presentarsi.
+const INTERNAL_TOTAL = EXPERIENCES.filter((e) => e.type === 'interno').length;
+const CLIENT_TOTAL = EXPERIENCES.length - INTERNAL_TOTAL;
+const clientWords = spellCount(CLIENT_TOTAL);
+const internalWords2 = spellCount(INTERNAL_TOTAL);
+const confidentialWords = spellCount(CONFIDENTIAL_OFF_COUNT);
+const internalWords = spellCount(INTERNAL_OFF_COUNT);
 // Spelled-out portfolio count for prose ("Four" / "Quattro"), derived from data.
 const countWords = spellCount(EXPERIENCE_COUNT);
 
@@ -40,8 +60,8 @@ const values = [
   {
     n: '01',
     titleEn: 'No rebuilding, ever', titleIt: 'Mai più da zero',
-    bodyEn: 'A brand-perfect, accessible experience isn’t rebuilt each time — it’s a skin over a shared core. Once the thinking is done, the engine assembles a working build in an hour, so effort goes to strategy, not scaffolding.',
-    bodyIt: 'Un’esperienza on-brand e accessibile non si ricostruisce ogni volta — è una skin sopra un core condiviso. Fatto il pensiero, il motore assembla una build funzionante in un’ora: l’impegno va alla strategia, non all’impalcatura.',
+    bodyEn: 'A brand-perfect, accessible experience is a skin over a shared core, not a rebuild. Once the thinking is done the engine assembles the skin from one command, so the effort goes into strategy instead of scaffolding.',
+    bodyIt: 'Un’esperienza on-brand e accessibile è una skin sopra un core condiviso, non una ricostruzione. Fatto il pensiero, il motore assembla la skin da un comando: l’impegno va alla strategia invece che all’impalcatura.',
   },
   {
     n: '02',
@@ -51,9 +71,10 @@ const values = [
   },
   {
     n: '03',
-    titleEn: 'A hard quality bar, enforced', titleIt: 'Uno standard alto, garantito',
-    bodyEn: 'WCAG 2.2 AA, Lighthouse ≥ 95, auto-responsive from phone to giant TV. A deterministic 12-point deck audit runs at three projection sizes — quality is measured, not hoped for.',
-    bodyIt: 'WCAG 2.2 AA, Lighthouse ≥ 95, auto-responsive dal telefono al maxi-schermo. Un audit deterministico a 12 punti gira su tre risoluzioni di proiezione — la qualità è misurata, non sperata.',
+    titleEn: 'Every slide is measured by a DOM audit at three projection sizes',
+    titleIt: 'Ogni slide è misurata da un audit DOM a tre risoluzioni di proiezione',
+    bodyEn: 'Twelve geometric and contrast checks on the real DOM, at 1920, 1440 and 1280: the hard ones must sit at zero, the soft ones are accepted on deliberately airy slides. It runs before publishing, not in CI, and it covers neither keyboard navigation nor a screen-reader pass, so it is a layout and contrast gate rather than a WCAG 2.2 AA certification. Lighthouse accessibility 100 on the six experiences, 96 on this page, best practices 100. Performance on 1 October 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, published on 30 September and not optimised yet. Only UniCredit is above 90; the rest is open work, re-measured after every publication.',
+    bodyIt: 'Dodici check geometrici e di contrasto sul DOM reale, a 1920, 1440 e 1280: quelli hard devono stare a zero, i soft sono accettati sulle slide volutamente ariose. Si lancia prima di pubblicare, non in CI, e non copre la navigazione da tastiera né un passaggio con screen reader, quindi è un gate di layout e contrasto e non una certificazione WCAG 2.2 AA. Accessibilità Lighthouse 100 sulle sei experience, 96 su questa pagina, best practices 100. Performance al 1 ottobre 2026: UniCredit 96 · Agos 83 · FS 82 · Max Mara 82 · Ferrari 79 · Poste 64, pubblicata il 30 settembre e non ancora ottimizzata. Solo UniCredit è sopra 90: il resto è lavoro aperto, rimisurato dopo ogni pubblicazione.',
   },
   {
     n: '04',
@@ -75,49 +96,52 @@ const values = [
   },
 ];
 /**
- * Le API Adobe per cui la Factory ha credenziali server-to-server, con l'uso
- * concreto dentro un'experience design. Elenco tenuto sul `.env` di progetto:
- * se una riga è qui, il token IMS per quel servizio è stato verificato.
- * Non c'è un campo «stato»: sono tutte disponibili, e dividerle in chi lavora e
- * chi aspetta non dice niente di utile a chi legge. Conta che cosa fanno.
+ * Le API Adobe della catena di build, divise per quello che conta davvero a chi
+ * legge: che cosa gira oggi dentro una experience e che cosa è disponibile ma
+ * non è ancora in catena. La seconda lista è al futuro per scelta — scriverla al
+ * presente è esattamente il claim che il panel ha rifiutato.
+ * Le credenziali stanno sul `.env` di progetto: se una riga è qui, il token IMS
+ * per quel servizio è stato verificato.
  */
-const adobeApis = [
+const apisLive = [
   { fam: 'firefly', api: '/v3/images/generate',
-    name: 'Firefly Image Model',
-    en: 'Every backdrop and scene, described in a manifest next to the deck: prompt, negative prompt, seed, brand colours. 17 images on Isybank, 10 on UniCredit.',
-    it: 'Ogni sfondo e ogni scena, descritti in un manifest accanto al deck: prompt, negative prompt, seed, colori di marca. 17 immagini su Isybank, 10 su UniCredit.' },
+    name: 'Firefly Image',
+    en: 'Every backdrop and scene, described in a manifest next to the deck: prompt, negative prompt, seed, brand colours. 17 images on Isybank, 10 on UniCredit. The image call does not send an explicit model version yet, so the provenance records the gateway default on /v3 at generation time, not a version the API confirmed back.',
+    it: 'Ogni sfondo e ogni scena, descritti in un manifest accanto al deck: prompt, negative prompt, seed, colori di marca. 17 immagini su Isybank, 10 su UniCredit. La chiamata immagini non invia ancora una versione di modello esplicita, quindi il provenance registra il default del gateway su /v3 al momento della generazione, non una versione confermata dall’API.' },
   { fam: 'firefly', api: '/v3/videos/generate',
-    name: 'Firefly Video Model',
-    en: 'Text-to-video clips for covers and closings. Asynchronous: the call returns a job, the pipeline polls it, then re-cuts the clip so it loops without a visible jump.',
-    it: 'Clip text-to-video per copertine e chiusure. Asincrona: la chiamata torna un job, la pipeline lo interroga, poi la clip viene rimontata perché giri senza stacco.' },
-  { fam: 'cc', api: 'cutout · select subject',
-    name: 'Remove Background',
-    en: 'Cuts a subject out of its original background so it can sit on the brand surface instead of in a scene that belongs to someone else. Used on the UniCredit persona portrait.',
-    it: 'Scontorna un soggetto dal suo sfondo originale perché stia sulla superficie del brand invece che in una scena che non gli appartiene. Usata sul ritratto della persona UniCredit.' },
-  { fam: 'cc', api: 'generative expand · select subject',
-    name: 'Photoshop',
-    en: 'Generative expand to reframe one asset to every projection size without cropping the subject, and subject selection to derive the no-text zones the layout audit checks.',
-    it: 'Generative expand per riquadrare un asset a ogni formato di proiezione senza tagliare il soggetto, e selezione del soggetto per ricavare le zone senza testo che l\u2019audit verifica.' },
-  { fam: 'cc', api: 'presets · auto-tone',
-    name: 'Lightroom',
-    en: 'One photographic grade applied across every image of an experience, so forty backdrops read as one film instead of forty sources.',
-    it: 'Una sola viratura fotografica su tutte le immagini di un\u2019experience, così quaranta sfondi leggono come una pellicola sola invece che come quaranta fonti.' },
-  { fam: 'cc', api: '3D render · materials',
-    name: 'Substance 3D',
-    en: 'Renders abstract objects whose materials carry the exact brand colours — imagery that can never be wrong-brand, at any resolution, consistent across a whole deck.',
-    it: 'Rende oggetti astratti con materiali nei colori esatti del brand — imagery che non può essere del brand sbagliato, a qualunque risoluzione, coerente su tutto un deck.' },
-  { fam: 'doc', api: 'data merge · rendition',
-    name: 'InDesign',
-    en: 'The leave-behind: a branded PDF generated from the same content model that feeds the deck. One source, two artifacts.',
-    it: 'Il lascito: un PDF di brand generato dallo stesso modello di contenuto che alimenta il deck. Una sorgente, due artefatti.' },
-  { fam: 'doc', api: 'vector rendition · data merge',
-    name: 'Illustrator',
-    en: 'Vector rendition and data merge: diagram and icon sets produced in the brand palette as SVG, instead of drawn by hand per experience.',
-    it: 'Rendition vettoriale e data merge: diagrammi e set di icone prodotti nella palette del brand come SVG, invece che disegnati a mano per ogni experience.' },
+    name: 'Firefly Video',
+    en: 'Text-to-video clips for covers and closings — seven in the portfolio so far. Asynchronous: the call returns a job, the pipeline polls it, then re-cuts the clip so it loops without a visible jump.',
+    it: 'Clip text-to-video per copertine e chiusure — sette in tutto il portfolio. Asincrona: la chiamata torna un job, la pipeline lo interroga, poi la clip viene rimontata perché giri senza stacco.' },
   { fam: 'auth', api: 'ims/token/v3 · client_credentials',
     name: 'Adobe IMS',
     en: 'Server-to-server auth. Credentials live in the build environment and never reach the browser or the repository; one token per run, reused across every call.',
     it: 'Autenticazione server-to-server. Le credenziali stanno nell\u2019ambiente di build e non arrivano mai al browser né al repository; un token per esecuzione, riusato su tutte le chiamate.' },
+  { fam: 'cc', api: 'cutout · select subject',
+    name: 'Remove Background',
+    en: 'Used once, by hand, on the UniCredit persona portrait, so the subject sits on the brand surface instead of in a scene that belongs to someone else. Wiring it into the scripts is the next step.',
+    it: 'Usata una volta, a mano, sul ritratto della persona UniCredit, perché il soggetto stia sulla superficie del brand invece che in una scena che non gli appartiene. Integrazione negli script: prossimo passo.' },
+];
+const apisAvailable = [
+  { fam: 'cc', api: 'generative expand · select subject',
+    name: 'Photoshop',
+    en: 'Next step: generative expand to reframe one asset to every projection size without cropping the subject, and subject selection to derive the no-text zones the layout audit checks.',
+    it: 'Prossimo passo: generative expand per riquadrare un asset a ogni formato di proiezione senza tagliare il soggetto, e selezione del soggetto per ricavare le zone senza testo che l\u2019audit verifica.' },
+  { fam: 'cc', api: 'presets · auto-tone',
+    name: 'Lightroom',
+    en: 'Next step: one photographic grade applied across every image of an experience, so forty backdrops would read as one film instead of forty sources.',
+    it: 'Prossimo passo: una sola viratura fotografica su tutte le immagini di un\u2019experience, così quaranta sfondi leggerebbero come una pellicola sola invece che come quaranta fonti.' },
+  { fam: 'cc', api: '3D render · materials',
+    name: 'Substance 3D',
+    en: 'Next step: abstract objects whose materials carry the exact brand colours — imagery that could never be wrong-brand, at any resolution.',
+    it: 'Prossimo passo: oggetti astratti con materiali nei colori esatti del brand — imagery che non potrebbe essere del brand sbagliato, a qualunque risoluzione.' },
+  { fam: 'doc', api: 'data merge · rendition',
+    name: 'InDesign',
+    en: 'Next step: a leave-behind PDF generated from the same content model that feeds the deck. One source, two artifacts — none of it built yet.',
+    it: 'Prossimo passo: un PDF da lasciare, generato dallo stesso modello di contenuto che alimenta il deck. Una sorgente, due artefatti — ancora da costruire.' },
+  { fam: 'doc', api: 'vector rendition · data merge',
+    name: 'Illustrator',
+    en: 'Next step: diagram and icon sets produced in the brand palette as SVG, instead of drawn by hand per experience.',
+    it: 'Prossimo passo: diagrammi e set di icone prodotti nella palette del brand come SVG, invece che disegnati a mano per ogni experience.' },
 ];
 const apiOutputs = [out01, out02, out03, out04, out05, out06];
 
@@ -152,10 +176,10 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="or read the architecture blueprint" it="o leggi il blueprint dell’architettura" /> <span aria-hidden="true">→</span>
       </a>
       <dl class="hero-stats" data-reveal data-reveal-delay="3">
-        <div><dt><span data-count={String(EXPERIENCE_COUNT)} data-live-count>{EXPERIENCE_COUNT}</span></dt><dd><T en="live experiences" it="esperienze live" /></dd></div>
-        <div><dt><span class="hero-stat-lt">&lt;</span>&nbsp;1<span class="hero-stat-u">h</span></dt><dd><T en="from brief to a working build" it="dal brief a una build funzionante" /></dd></div>
-        <div><dt><span data-count="11">11</span></dt><dd><a class="hero-stat-ref" href={`${blueprint}#deck`}><T en="layout & accessibility checks, per slide" it="controlli di layout e accessibilità, per slide" /></a></dd></div>
-        <div><dt><span data-count="2">2</span></dt><dd><T en="languages, instant switch" it="lingue, switch istantaneo" /></dd></div>
+        <div><dt><span data-count={String(EXPERIENCE_COUNT)} data-live-count>{EXPERIENCE_COUNT}</span></dt><dd><T en={`experiences published, ${PORTFOLIO_COUNT} in all`} it={`esperienze pubblicate, ${PORTFOLIO_COUNT} in tutto`} /></dd></div>
+        <div><dt><span class="hero-stat-lt">&lt;</span>&nbsp;1<span class="hero-stat-u">h</span></dt><dd><T en="to scaffold the skin, from one command" it="per lo scaffold della skin, da un comando" /></dd></div>
+        <div><dt><span data-count="12">12</span></dt><dd><a class="hero-stat-ref" href={`${blueprint}#deck`}><T en="layout & contrast checks, per slide" it="controlli di layout e contrasto, per slide" /></a></dd></div>
+        <div><dt><span data-count="3">3</span></dt><dd><T en="languages — EN, IT, FR, already in production" it="lingue — EN, IT, FR, già in produzione" /></dd></div>
       </dl>
     </div>
   </section>
@@ -203,7 +227,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap">
       <p class="eyebrow" data-reveal><T en="Why it matters" it="Perché conta" /></p>
       <h2 id="why-title" class="h-section" data-reveal>
-        <T en="Speed and quality usually trade off. Here they compound." it="Velocità e qualità di solito sono un compromesso. Qui si sommano." />
+        <T en="A new experience doesn’t start from zero, and it passes the same checks as the others." it="Una experience nuova non parte da zero e passa gli stessi controlli delle altre." />
       </h2>
       <div class="value-grid">
         {values.map((v, i) => (
@@ -222,7 +246,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap">
       <p class="eyebrow eyebrow--dark" data-reveal><T en="Proof" it="La prova" /></p>
       <h2 id="proof-title" class="h-section proof-title" data-reveal>
-        <T en="Not slides. Live, running software." it="Non slide. Software vivo, in esecuzione." />
+        <span data-lang-en><span data-live-word>{countWords.en}</span> experiences online: open one and navigate.</span>
+        <span data-lang-it><span data-live-word>{countWords.it}</span> esperienze online: aprine una e naviga.</span>
       </h2>
       <p class="lead proof-lead" data-reveal>
         <span data-lang-en><span data-live-word>{countWords.en}</span> experiences are deployed and interactive right now — each a different brand, all the same engine. Open any of them.</span>
@@ -232,7 +257,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       <div class="exp-grid">
         {experiences.map((e, i) => (
           <a class="exp-card" href={e.href} target="_blank" rel="noopener" data-reveal data-reveal-delay={String((i % 3) as 0 | 1 | 2)}
-             style={`--exp-accent:${e.accent}`} data-exp={e.slug} data-sections={String(e.sections)} hidden={!e.defaultPublished}>
+             style={`--exp-accent:${e.accent}`} data-exp={e.slug} data-sections={String(e.sections)}>
             <div class="exp-visual">
               <img class="exp-shot" src={e.shot} alt={`${e.name} — ${e.client}, live experience`} loading="lazy" width="1200" height="750" />
               <span class="exp-chip">{e.client}</span>
@@ -249,6 +274,54 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
             </div>
           </a>
         ))}
+      </div>
+
+      <p class="proof-scope" data-reveal>
+        <span data-lang-en><span data-live-word>{countWords.en}</span> are published here. {reservedWords.en} are not on the showcase: {confidentialWords.en.toLowerCase()} come from confidential preparation material, {internalWords.en.toLowerCase()} are internal to the Factory. Their names are not in this page’s markup. Anyone who has the address can still open them today: the authentication is still to be put in place.</span>
+        <span data-lang-it><span data-live-word>{countWords.it}</span> sono pubblicate qui. {reservedWords.it} non sono in vetrina: {confidentialWords.it.toLowerCase()} nascono da materiale di preparazione riservato, {internalWords.it.toLowerCase()} sono interne alla Factory. I loro nomi non stanno nel markup di questa pagina. Chi ha l’indirizzo oggi le apre comunque: l’autenticazione è ancora da mettere.</span>
+      </p>
+
+      <!-- Dove vive, chi la vede: hosting, indicizzazione, accesso, materiale,
+           consenso co-brand per experience, piano. È la prima domanda che arriva
+           quando sei marchi di clienti stanno su un dominio pubblico. -->
+      <div class="where-box" data-reveal>
+        <p class="where-tag"><T en="Where it lives, who can see it" it="Dove vive, chi la vede" /></p>
+        <dl class="where-grid">
+          <div>
+            <dt><T en="Hosting" it="Hosting" /></dt>
+            <dd>GitHub Pages — <code>agargiulo-adbe.github.io</code></dd>
+          </div>
+          <div>
+            <dt><T en="Indexing (SEO)" it="Indicizzazione (SEO)" /></dt>
+            <dd><T en="noindex, nofollow on all six client experiences, on the hub, on this showcase and on the dossier pages. It is an instruction to crawlers, and crawlers are the only thing it stops."
+                   it="noindex, nofollow su tutte e sei le experience cliente, sull’hub, su questa vetrina e sulle pagine di dossier. È un’istruzione ai crawler, e i crawler sono l’unica cosa che ferma." /></dd>
+          </div>
+          <div>
+            <dt><T en="Access (security)" it="Accesso (sicurezza)" /></dt>
+            <dd><T en="public, no login: anyone with the address opens the page. noindex is not an access control, and there is no other one yet."
+                   it="pubblico, senza login: chi ha l’indirizzo apre la pagina. noindex non è un controllo d’accesso, e un altro non c’è ancora." /></dd>
+          </div>
+          <div>
+            <dt><T en="Material" it="Materiale" /></dt>
+            <dd><T en="public Adobe capabilities and public client sources only, no confidential data"
+                   it="solo capability Adobe pubbliche e fonti pubbliche del cliente, nessun dato riservato" /></dd>
+          </div>
+          <div>
+            <dt><T en="What is on screen" it="Cosa si vede a schermo" /></dt>
+            <dd><T en="Invented people, no real client data, no personal data processed, no profiling mechanism shown on screen. Checked slide by slide at the panel review of 1 October 2026."
+                   it="Persone inventate, nessun dato di cliente reale, nessun dato personale trattato, nessun meccanismo di profilazione mostrato a schermo. Verificato slide per slide al panel review del 1 ottobre 2026." /></dd>
+          </div>
+        </dl>
+        <p class="where-sub"><T en="Co-brand consent, one line per experience" it="Consenso al co-brand, una riga per experience" /></p>
+        <ul class="where-consent" role="list">
+          {PUBLISHED_CLIENT.map((e) => (
+            <li><strong>{e.client}</strong> — <T en="public material only; written consent pending" it="materiale solo pubblico; consenso scritto in attesa" /></li>
+          ))}
+        </ul>
+        <p class="where-plan">
+          <T en="Adobe Security/Legal review: pending, request still to send. Adobe domain or SSO: date to be set. The day one of the six says no, the switch in the Super Admin Console takes that experience off the showcase in real time, with no rebuild. Who authorises inside Adobe, who authorises on the client side and by when: still to write."
+             it="Revisione Security/Legal Adobe: in attesa, richiesta da inviare. Dominio Adobe o SSO: data da fissare. Il giorno in cui uno dei sei dice di no, l’interruttore nella Super Admin Console toglie quell’experience dalla vetrina in tempo reale, senza rebuild. Chi autorizza dentro Adobe, chi autorizza dal lato cliente ed entro quando: da scrivere." />
+        </p>
       </div>
 
       <a class="console-strip" href={`${LIVE}/console/`} target="_blank" rel="noopener" data-reveal>
@@ -268,6 +341,32 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     </div>
   </section>
 
+  <!-- ══ BUSINESS RESULTS ══
+       Il dettaglio per experience — account, interlocutore, data, stadio, next
+       step — NON sta su questa pagina: è pipeline italiana, e la pagina stessa
+       dichiara di non avere login. Qui resta l'aggregato, che è anche la cosa
+       che il panel ha chiesto di tenere: un registro che si rifiuta di
+       indovinare il proprio esito. Il nominativo vive dietro l'auth della
+       console, dove sta il dossier. -->
+  <section id="results" class="section band-results" aria-labelledby="res-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="Business results" it="Risultati sul business" /></p>
+      <h2 id="res-title" class="h-section" data-reveal>
+        <T en="What has been in the room, and what has not come back yet." it="Che cosa è stato in riunione, e cosa non è ancora tornato indietro." />
+      </h2>
+      <T en="Three sessions were held between 10 and 14 September 2026; one more is in the calendar for 2 October. Their outcome is not written down yet, so this says so instead of guessing. No client verbatim is on record: when there is one, it is quoted here, attributed and dated."
+         it="Tre sessioni si sono tenute fra il 10 e il 14 settembre 2026; una è in calendario il 2 ottobre. L’esito non è ancora messo per iscritto, quindi questa riga lo dice invece di indovinare. Nessuna citazione di cliente è registrata: quando ci sarà, si cita qui, attribuita e datata."
+         as="p" class="lead prose-max" data-reveal />
+      <T en={`The scope is the ${clientWords.en.toLowerCase()} client experiences of the registry. The ${internalWords2.en.toLowerCase()} internal ones, the Factory’s own deck and the email observatory, are out of this count: there is no client to present them to.`}
+         it={`Il perimetro sono le ${clientWords.it.toLowerCase()} experience cliente del registry. Le ${internalWords2.it.toLowerCase()} interne, il deck della Factory e l’osservatorio sulle email, restano fuori da questo conteggio: non c’è un cliente a cui presentarle.`}
+         as="p" class="lead prose-max res-scope" data-reveal />
+      <p class="tbl-foot" data-reveal>
+        <T en="Which account, which role, which date, what stage and what the next step is: that table exists, and it sits behind the Super Admin Console login, next to the dossier. A page with no login is not the place for a sales pipeline."
+           it="Quale account, quale interlocutore, quale data, a che stadio e qual è il next step: quella tabella esiste, e sta dietro il login della Super Admin Console, accanto al dossier. Una pagina senza login non è il posto di una pipeline commerciale." />
+      </p>
+    </div>
+  </section>
+
   <!-- ══ ARCHITECTURE ══ -->
   <section id="architecture" class="section band-arch" aria-labelledby="arch-title">
     <div class="wrap">
@@ -276,8 +375,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="One monorepo, cleanly layered." it="Un monorepo, a strati puliti." />
       </h2>
       <T
-        en="A shared engine at the bottom, client skins in the middle, a governance console on top, a backend for auth and sharing. Between engine and skins sits the build chain, where the Adobe APIs turn a brief into the tokens and assets a skin is made of."
-        it="Un motore condiviso alla base, le skin cliente al centro, una console di governance in cima, un backend per auth e condivisione. Fra motore e skin sta la catena di build, dove le API Adobe trasformano un brief nei token e negli asset di cui una skin è fatta."
+        en="A shared engine at the bottom, client skins in the middle, a governance console on top, a backend for auth and sharing. Between engine and skins sits the build chain: the Factory’s own scripts on one side, the Adobe APIs they call on the other."
+        it="Un motore condiviso alla base, le skin cliente al centro, una console di governance in cima, un backend per auth e condivisione. Fra motore e skin sta la catena di build: da un lato gli script della Factory, dall’altro le API Adobe che chiamano."
         as="p" class="lead prose-max" data-reveal />
 
       <div class="arch-diagram" data-reveal role="img"
@@ -295,24 +394,45 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
           </div>
         </div>
 
+        <!-- Due colonne, non una: brand:tokens, audit:deck, loop:seamless e sharp
+             sono script della Factory. Metterli sotto «API Adobe» gonfiava il
+             perimetro di cosa è Adobe nella catena. -->
         <div class="arch-layer arch-build">
-          <span class="arch-layer-label"><T en="Build chain — scripts/ · Adobe APIs" it="Catena di build — scripts/ · API Adobe" /></span>
-          <div class="arch-build-row">
-            <div class="arch-build-step">
-              <code>brand:tokens</code>
-              <span><T en="reads the client's design system from their production CSS" it="legge il design system del cliente dal suo CSS di produzione" /></span>
+          <span class="arch-layer-label"><T en="Build chain" it="Catena di build" /></span>
+          <div class="arch-build-cols">
+            <div class="arch-build-col">
+              <p class="arch-build-col-h"><T en="Factory scripts" it="Script della Factory" /></p>
+              <div class="arch-build-step">
+                <code>brand:tokens</code>
+                <span><T en="reads the client's design system from their production CSS" it="legge il design system del cliente dal suo CSS di produzione" /></span>
+              </div>
+              <div class="arch-build-step">
+                <code>assets:build</code>
+                <span><T en="Firefly Image or Pexels stock, from a typed manifest, with provenance" it="Firefly Image o stock Pexels, da un manifest tipizzato, con provenance" /></span>
+              </div>
+              <div class="arch-build-step">
+                <code>loop:seamless</code>
+                <span><T en="re-cuts a clip so the wrap does not show, and measures it" it="ricuce una clip perché il giro non si veda, e lo misura" /></span>
+              </div>
+              <div class="arch-build-step">
+                <code>audit:deck</code>
+                <span><T en="the twelve-check gate, at three projection sizes" it="il gate a dodici check, su tre risoluzioni di proiezione" /></span>
+              </div>
             </div>
-            <div class="arch-build-step">
-              <code>assets:build</code>
-              <span><T en="Firefly Image · backdrops and scenes from a typed manifest" it="Firefly Image · sfondi e scene da un manifest tipizzato" /></span>
-            </div>
-            <div class="arch-build-step">
-              <code>video:build</code>
-              <span><T en="Firefly Video · cover and closing clips" it="Firefly Video · clip di copertina e chiusura" /></span>
-            </div>
-            <div class="arch-build-step">
-              <code>Photoshop · Lightroom</code>
-              <span><T en="cut-outs, reframing and one grade across an experience" it="scontorni, riquadrature e una viratura sola per experience" /></span>
+            <div class="arch-build-col">
+              <p class="arch-build-col-h"><T en="Adobe APIs" it="API Adobe" /></p>
+              <div class="arch-build-step arch-build-step--api">
+                <code>/v3/images/generate</code>
+                <span>Firefly Image — <T en="backdrops and scenes" it="sfondi e scene" /></span>
+              </div>
+              <div class="arch-build-step arch-build-step--api">
+                <code>/v3/videos/generate</code>
+                <span>Firefly Video — <T en="cover and closing clips" it="clip di copertina e chiusura" /></span>
+              </div>
+              <div class="arch-build-step arch-build-step--api">
+                <code>ims/token/v3</code>
+                <span>Adobe IMS — <T en="server-to-server auth" it="auth server-to-server" /></span>
+              </div>
             </div>
           </div>
           <span class="arch-build-out"><T en="tokens + assets + provenance ↓" it="token + asset + provenance ↓" /></span>
@@ -321,8 +441,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <div class="arch-layer arch-skins">
           <span class="arch-layer-label"><T en="Client skins — apps/*" it="Skin cliente — apps/*" /></span>
           <div class="arch-skins-row">
-            {EXPERIENCES.map((e) => (
-              <div class="arch-skin" style={`--k:${e.accent}`} data-exp-skin={e.slug} hidden={!e.defaultPublished}><strong>{e.brandLabel}</strong><span>{e.name}</span></div>
+            {DEFAULT_PUBLISHED.map((e) => (
+              <div class="arch-skin" style={`--k:${e.accent}`} data-exp-skin={e.slug}><strong>{e.brandLabel}</strong><span>{e.name}</span></div>
             ))}
             <div class="arch-skin arch-skin--next"><strong>+</strong><span><T en="the next brand" it="il prossimo brand" /></span></div>
           </div>
@@ -363,16 +483,17 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap">
       <p class="eyebrow" data-reveal><T en="How an experience is born" it="Come nasce un’esperienza" /></p>
       <h2 id="flow-title" class="h-section" data-reveal>
-        <T en="You do the thinking. The engine does the hour." it="Il pensiero è tuo. L’ora è del motore." />
+        <T en="You write the brief; the engine scaffolds it in under an hour." it="Tu scrivi il brief; lo scaffold lo fa il motore in meno di un’ora." />
       </h2>
       <p class="lead prose-max flow-lead serif-note" data-reveal>
-        <T en="Researching the brand, finding the angle, shaping the story — that’s the Adobian’s craft, and it takes the time it deserves. The factory removes everything that <em>isn’t</em> that: once the brief is ready, a working, brand-perfect experience is scaffolded in under an hour — then the Adobian makes it grow."
-           it="Studiare il brand, trovare l’angolo, dare forma alla storia — è il mestiere dell’Adobian, e prende il tempo che merita. La fabbrica toglie tutto ciò che <em>non</em> è quello: quando il brief è pronto, un’esperienza funzionante e on-brand viene scaffoldata in meno di un’ora — poi l’Adobian la fa crescere." />
+        <T en="Researching the brand, finding the angle, shaping the story — that’s the Adobian’s craft, and it takes the time it deserves. The factory removes everything that <em>isn’t</em> that: the skin scaffold is one command, and on the last two the presentable deck took a working day, as the table below shows."
+           it="Studiare il brand, trovare l’angolo, dare forma alla storia — è il mestiere dell’Adobian, e prende il tempo che merita. La fabbrica toglie tutto ciò che <em>non</em> è quello: lo scaffold della skin è un comando, e sulle ultime due il deck presentabile ha preso un giorno lavorativo, come dice la tabella qui sotto." />
       </p>
 
       <div class="flow-principles" data-reveal>
         <p class="flow-principles-eyebrow">
-          <T en="Every experience is built to convince a C-suite" it="Ogni esperienza è costruita per convincere un C-suite" />
+          <T en="Built for whoever decides, and for whoever has to convince them: from the C-level to the head of a function"
+             it="Costruita per chi decide e per chi lo deve convincere: dal C-level al responsabile di funzione" />
         </p>
         <ul class="flow-principles-grid" role="list">
           <li class="flow-principle">
@@ -397,18 +518,18 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
           </li>
         </ul>
         <p class="flow-principles-cite">
-          <T en="Grounded in Adobe’s <em>Selling to Executives</em> method (Jacques Sciammas)."
-             it="Fondato sul metodo Adobe <em>Selling to Executives</em> (Jacques Sciammas)." />
+          <T en="Which level it addresses is written into the deliverable type: a prospettiva goes to the top of the house, a playbook to the person who owns the tool, as the Poste one does. Grounded in the <em>Selling to Executives</em> method by Jacques Sciammas."
+             it="A quale livello parla sta scritto nel tipo di deliverable: una prospettiva va al vertice, un playbook a chi possiede lo strumento, come fa quello di Poste. Fondato sul metodo <em>Selling to Executives</em> di Jacques Sciammas." />
         </p>
       </div>
 
       <div class="flow-kb" data-reveal>
         <span class="flow-kb-badge" aria-hidden="true">KB</span>
         <div>
-          <h3 class="flow-kb-title"><T en="It starts with grounded knowledge — kept strictly local" it="Parte da una conoscenza fondata — e rigorosamente locale" /></h3>
+          <h3 class="flow-kb-title"><T en="It starts with grounded knowledge — and that knowledge has an address" it="Parte da una conoscenza fondata — e quella conoscenza ha un indirizzo" /></h3>
           <p class="flow-kb-desc">
-            <T en="A curated knowledge base — Adobe product depth, points of view, use cases and positioning — grounds every experience. It lives <strong>only on Antonio’s own computer</strong>, like any other file on his machine: it is <strong>never uploaded to any third-party, cloud or external system</strong>. To protect Adobe’s data, by design."
-               it="Una knowledge base curata — competenza sui prodotti Adobe, point of view, casi d’uso e posizionamento — fonda ogni esperienza. Vive <strong>solo sul computer di Antonio</strong>, come qualunque altro file sulla sua macchina: <strong>non viene mai caricata su alcun sistema terzo, cloud o esterno</strong>. A tutela dei dati Adobe, per scelta." />
+            <T en="A curated knowledge base — Adobe product depth, points of view, use cases and positioning — grounds every experience. It is <strong>not published and not versioned in the repository</strong>; today it sits on the author’s work machine, and it is <strong>moving to an Adobe space with controlled access</strong> (see «Who maintains it»)."
+               it="Una knowledge base curata — competenza sui prodotti Adobe, point of view, casi d’uso e posizionamento — fonda ogni esperienza. <strong>Non è pubblicata né versionata nel repo</strong>; oggi è sulla macchina di lavoro dell’autore, ed è <strong>in migrazione verso uno spazio Adobe con accesso controllato</strong> (vedi «Chi lo mantiene»)." />
           </p>
         </div>
       </div>
@@ -420,8 +541,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
             <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="Research" it="Ricerca" /></h3>
             <p class="flow-step-desc">
-              <T en="An Adobian runs deep research in their own Claude, ChatGPT or Copilot — objectives, industrial plan, financials, news, brand and CX initiatives, and the executive who has to say yes: the full context of the company the experience is for. A shareable Factory skill asks the right questions."
-                 it="Un Adobian conduce una ricerca approfondita nel proprio Claude, ChatGPT o Copilot — obiettivi, piano industriale, bilanci, news, brand e iniziative CX, e chi deve dire sì: tutto il contesto dell’azienda per cui si costruisce. Una skill condivisibile della Factory pone le domande giuste." />
+              <T en="Two routes, and they do not mix. <strong>Public sources</strong> — the site, the annual report, the press, LinkedIn — go into your AI assistant, where a shareable Factory skill asks the right questions. <strong>Confidential material</strong> — minutes, plans, contracts — goes only into the dossier, never into an external LLM. Which GenAI tool Adobe IT approves for third-party data: to confirm with Adobe IT."
+                 it="Due percorsi, e non si mescolano. Le <strong>fonti pubbliche</strong> — sito, bilancio, stampa, LinkedIn — vanno nel tuo assistente AI, dove una skill condivisibile della Factory pone le domande giuste. Il <strong>materiale riservato</strong> — verbali, piani, contratti — va solo nel dossier, mai in un LLM esterno. Quale strumento GenAI sia approvato da Adobe IT per dati di terzi: da confermare con Adobe IT." />
             </p>
             <a class="flow-step-link" href="#skill">
               <T en="Get the skill for Claude, ChatGPT or Copilot" it="Ottieni la skill per Claude, ChatGPT o Copilot" /> <span aria-hidden="true">↓</span>
@@ -445,8 +566,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
             <span class="flow-step-actor" data-actor="human"><T en="Adobian" it="Adobian" /></span>
             <h3 class="flow-step-title"><T en="The brief" it="Il brief" /></h3>
             <p class="flow-step-desc">
-              <T en="The output is a hyper-detailed, executive-grade brief — it leads with the client’s objective and proves revenue, cost or risk. It lands with Antonio Gargiulo, who turns intent into an executable spec."
-                 it="L’output è un brief di iper-dettaglio, di livello executive — parte dall’obiettivo del cliente e dimostra ricavi, costi o rischio. Arriva ad Antonio Gargiulo, che trasforma l’intento in uno spec eseguibile." />
+              <T en="The output is a hyper-detailed, executive-grade brief: it leads with the client’s objective and proves revenue, cost or risk. From here you run <code>pnpm new:experience</code> yourself and the skin is scaffolded on your machine, with the command chain in «Who maintains it» as the runbook. Sending the brief to Antonio Gargiulo is the fallback, for when you would rather not touch the repository."
+                 it="L’output è un brief di iper-dettaglio, di livello executive: parte dall’obiettivo del cliente e dimostra ricavi, costi o rischio. Da qui lanci tu <code>pnpm new:experience</code> e la skin nasce sulla tua macchina, con la catena di comandi di «Chi lo mantiene» come runbook. Mandare il brief ad Antonio Gargiulo è il ripiego, per quando preferisci non toccare il repository." />
             </p>
           </div>
         </li>
@@ -464,12 +585,44 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <li class="flow-step" data-reveal>
           <span class="flow-step-n" aria-hidden="true">05</span>
           <div class="flow-step-body">
-            <span class="flow-step-actor" data-actor="engine"><T en="The engine · ~1h" it="Il motore · ~1h" /></span>
+            <span class="flow-step-actor" data-actor="engine"><T en="Engine" it="Motore" /></span>
             <h3 class="flow-step-title"><T en="Scaffold" it="Scaffold" /></h3>
             <p class="flow-step-desc">
-              <T en="The engine assembles the skin over the shared core — deck, Admin Console, i18n and responsiveness included. A working build is ready in under an hour."
-                 it="Il motore assembla la skin sul core condiviso — deck, Admin Console, i18n e responsive inclusi. Una build funzionante è pronta in meno di un’ora." />
+              <T en="The engine assembles the skin over the shared core, deck and Admin Console and i18n and responsiveness included. The scaffold is one command, <code>pnpm new:experience</code>, written on 1 October 2026: no experience has been born from it yet, so «under an hour» is what it does, not something measured on a run. Here are the real dates of the last three, and the person-hours are not in the table because nobody counted them."
+                 it="Il motore assembla la skin sul core condiviso, deck e Admin Console e i18n e responsive inclusi. Lo scaffold è un comando, <code>pnpm new:experience</code>, scritto il 1 ottobre 2026: nessuna experience è ancora nata con esso, quindi «meno di un’ora» è quello che fa, non una misura su un’esecuzione. Qui ci sono le date vere delle ultime tre, e le ore-persona non sono in tabella perché nessuno le ha contate." />
             </p>
+            <div class="tbl-scroll tbl-scroll--flow">
+              <table class="tbl tbl--compact">
+                <thead>
+                  <tr>
+                    <th scope="col"><T en="Experience" it="Experience" /></th>
+                    <th scope="col"><T en="Brief received" it="Brief ricevuto" /></th>
+                    <th scope="col"><T en="First build" it="Prima build" /></th>
+                    <th scope="col"><T en="First demo" it="Prima demo" /></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Poste Italiane · Sei domande</th>
+                    <td><T en="29 Sep 2026" it="29 set 2026" /></td>
+                    <td><T en="29 Sep 2026" it="29 set 2026" /></td>
+                    <td><T en="30 Sep 2026, online after the panel review" it="30 set 2026, online dopo il panel review" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Isybank · Il momento giusto</th>
+                    <td>n.d.</td>
+                    <td><T en="9 Sep 2026" it="9 set 2026" /></td>
+                    <td><T en="10 Sep 2026, presented" it="10 set 2026, presentata" /></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Agos · Trait d’Union</th>
+                    <td>n.d.</td>
+                    <td>n.d.</td>
+                    <td><T en="online since 14 Jul 2026, not presented yet" it="online dal 14 lug 2026, non ancora presentata" /></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </li>
         <li class="flow-step" data-reveal>
@@ -497,12 +650,64 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       </ol>
 
       <aside class="flow-note" data-reveal>
-        <span class="flow-note-tag"><T en="Worth noting" it="Da segnalare" /></span>
-        <p class="flow-note-text">
-          <T en="Everything here — every tool in this chain <strong>and</strong> every component behind the Factory’s architecture and runtime — is active and accessible with an @adobe.com account via Google login. Technologies neither blocked nor precluded by Adobe. No additional licence."
-             it="Tutto qui — ogni strumento di questa catena <strong>e</strong> ogni componente dietro l’architettura e il runtime della Factory — è attivo e accessibile con un account @adobe.com via login Google. Tecnologie né bloccate né precluse da Adobe. Nessuna licenza aggiuntiva." />
-        </p>
+        <span class="flow-note-tag"><T en="What you need" it="Cosa serve" /></span>
+        <ul class="flow-note-list" role="list">
+          <li><T en="Adobe Developer Console credentials — server-to-server OAuth, Firefly Services credits" it="credenziali Adobe Developer Console — OAuth server-to-server, crediti Firefly Services" /></li>
+          <li><T en="the console on Supabase — email and password, or a magic link" it="la console su Supabase — email e password, oppure magic link" /></li>
+          <li><T en="the AI assistant you already have — Claude, ChatGPT or Copilot; on Microsoft 365 Copilot the tenant’s Copilot licence is required" it="l’assistente AI che già hai — Claude, ChatGPT o Copilot; su Microsoft 365 Copilot serve la licenza Copilot della tenant" /></li>
+          <li><T en="a Pexels key for stock imagery" it="una chiave Pexels per lo stock" /></li>
+          <li><T en="Adobe Security/Legal review: pending — the request is still to send" it="revisione Security/Legal Adobe: in attesa — la richiesta è da inviare" /></li>
+        </ul>
       </aside>
+    </div>
+  </section>
+
+  <!-- ══ WHO MAINTAINS IT ══
+       Un owner solo è il primo motivo per cui un responsabile non dà i suoi
+       account alla Factory. Qui si dice chi, con che accessi, entro quando, e
+       con quale runbook un altro ci arriva senza passare da lui. -->
+  <section id="maintain" class="section band-maintain" aria-labelledby="mnt-title">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal><T en="Who maintains it" it="Chi lo mantiene" /></p>
+      <h2 id="mnt-title" class="h-section" data-reveal>
+        <T en="One owner today, a second one by the end of October." it="Un owner oggi, un secondo entro fine ottobre." />
+      </h2>
+      <div class="mnt-grid">
+        <article class="mnt-card" data-reveal>
+          <h3><T en="Owner and backup" it="Owner e secondo maintainer" /></h3>
+          <T en="Antonio Gargiulo owns the engine, the skins and the console. A second maintainer is to be named <strong>by 31 October 2026</strong>, with access to the repository, to Supabase and to the IMS credentials — the three things that today pass through one person."
+             it="Antonio Gargiulo è l’owner del motore, delle skin e della console. Il secondo maintainer è <strong>da nominare entro il 31 ottobre 2026</strong>, con accesso al repository, a Supabase e alle credenziali IMS — le tre cose che oggi passano da una persona sola." as="p" />
+        </article>
+        <article class="mnt-card" data-reveal data-reveal-delay="1">
+          <h3><T en="Where the knowledge base lives" it="Dove sta la knowledge base" /></h3>
+          <T en="Not published, not versioned in the repository. Today it sits on the author’s work machine; it is moving to an Adobe space with controlled access, and the migration date is still to be set."
+             it="Non pubblicata, non versionata nel repo. Oggi sta sulla macchina di lavoro dell’autore; è in migrazione verso uno spazio Adobe con accesso controllato, e la data è ancora da fissare." as="p" />
+        </article>
+        <article class="mnt-card" data-reveal data-reveal-delay="2">
+          <h3><T en="Service levels" it="Tempi di servizio" /></h3>
+          <T en="The scaffold is one command, <code>pnpm new:experience</code>, written on 1 October 2026: no experience has been born from it yet. Measured on the last two, from brief to presentable deck took a working day each, Poste and Isybank. With more chapters it can go up, and that is not measured. Person-hours per experience and the cost of a run are not counted yet, so they are not on this page."
+             it="Lo scaffold è un comando, <code>pnpm new:experience</code>, scritto il 1 ottobre 2026: nessuna experience è ancora nata con esso. Misurato sulle ultime due, dal brief al deck presentabile ha preso un giorno lavorativo per ciascuna, Poste e Isybank. Con più capitoli può salire, e quello non è misurato. Le ore-persona per experience e il costo di una lavorazione non sono ancora contati, quindi non stanno in questa pagina." as="p" />
+        </article>
+        <article class="mnt-card" data-reveal>
+          <h3><T en="Build a skin on your own" it="Fare una skin da soli" /></h3>
+          <T en="The command chain is the runbook, and it is the same one the owner runs:"
+             it="La catena di comandi è il runbook, ed è la stessa che lancia l’owner:" as="p" />
+          <ol class="mnt-run" role="list">
+            <li><code>pnpm brand:tokens &lt;url&gt;</code></li>
+            <li><code>pnpm new:experience --slug … --type …</code></li>
+            <li><code>pnpm --filter &lt;app&gt; assets:build</code></li>
+            <li><code>pnpm --filter &lt;app&gt; audit:deck</code></li>
+            <li><T en="pull request" it="pull request" /></li>
+          </ol>
+          <a class="flow-step-link" href={`${blueprint}#repo`}>
+            <T en="The repository, step by step" it="Il repository, passo per passo" /> <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      </div>
+      <p class="mnt-foot" data-reveal>
+        <T en="Ownership is written in the repository too: a CODEOWNERS file records the owner of the whole repository, in one line. Splitting it by area arrives with the second maintainer."
+           it="La titolarità sta scritta anche nel repository: un file CODEOWNERS registra l’owner di tutto il repository, in una riga sola. La ripartizione per area arriva col secondo maintainer." />
+      </p>
     </div>
   </section>
 
@@ -518,8 +723,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="Art direction that ships with the code." it="Art direction che viaggia col codice." />
       </h2>
       <p class="lead" data-reveal>
-        <T en="No stock hunt, no licence to chase, nothing to re-cut by hand. Every backdrop and every motion clip is described in a manifest next to the deck — prompt, negative prompt, seed, brand colours — and generated at build time. Change the palette, re-run one command, and the art direction follows the brand instead of trailing behind it."
-           it="Nessuna caccia allo stock, nessuna licenza da inseguire, niente da ritagliare a mano. Ogni sfondo e ogni clip in movimento è descritto in un manifest accanto al deck — prompt, negative prompt, seed, colori di marca — e generato a build time. Cambi la palette, rilanci un comando, e l&rsquo;art direction segue il brand invece di rincorrerlo." />
+        <T en="Where the imagery is generated there is no stock hunt: backdrops and clips are described in a manifest next to the deck (prompt, negative prompt, seed, brand colours) and re-generated at build time, so changing the palette is one command. Firefly is in the chain on Isybank, MIM, Poste, UniCredit and Atelier. Max Mara, Ferrari, Agos and FS Group have no generated asset at all: their imagery is licensed stock from end to end, every file with its provenance. 35 of 113 assets come from Pexels."
+           it="Dove si genera non c’è caccia allo stock: sfondo e clip sono descritti in un manifest accanto al deck (prompt, negative prompt, seed, colori di marca) e rigenerati alla build, così cambiare la palette è un comando. Firefly è in catena su Isybank, MIM, Poste, UniCredit e Atelier. Max Mara, Ferrari, Agos e FS Group non hanno alcun asset generato: la loro imagery è tutta stock licenziato, ogni file con il suo provenance. 35 asset su 113 vengono da Pexels." />
       </p>
     </div>
 
@@ -536,18 +741,33 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         </div>
       </div>
       <figcaption class="apis-cap">
-        <T en="Real output, from the decks above — Firefly Image Model v3, brand palette written into the prompt."
-           it="Output veri, dai deck qui sopra — Firefly Image Model v3, palette di marca scritta dentro il prompt." />
+        <T en="Real output, from the decks above. Firefly Image, endpoint /v3/images/generate; prompt, seed and licence are written to each asset’s provenance, the model version as the gateway default on /v3. Brand palette written into the prompt."
+           it="Output veri, dai deck qui sopra. Firefly Image, endpoint /v3/images/generate; prompt, seed e licenza finiscono nel provenance di ogni asset, la versione del modello come default del gateway su /v3. Palette di marca scritta dentro il prompt." />
       </figcaption>
     </figure>
 
     <div class="wrap">
+      <h3 class="apis-group-h" data-reveal><T en="In production today" it="In produzione oggi" /></h3>
       <ol class="apis-index" data-reveal>
-        {adobeApis.map((a) => (
+        {apisLive.map((a) => (
           <li class={`apis-row apis-row--${a.fam}`}>
             <span class="apis-dot" aria-hidden="true"></span>
             <div class="apis-id">
-              <h3 class="apis-name">{a.name}</h3>
+              <h4 class="apis-name">{a.name}</h4>
+              <code class="apis-endpoint">{a.api}</code>
+            </div>
+            <T as="p" class="apis-use" en={a.en} it={a.it} />
+          </li>
+        ))}
+      </ol>
+
+      <h3 class="apis-group-h apis-group-h--next" data-reveal><T en="Available, not yet in the chain" it="Disponibili, non ancora in catena" /></h3>
+      <ol class="apis-index apis-index--next" data-reveal>
+        {apisAvailable.map((a) => (
+          <li class={`apis-row apis-row--${a.fam}`}>
+            <span class="apis-dot" aria-hidden="true"></span>
+            <div class="apis-id">
+              <h4 class="apis-name">{a.name}</h4>
               <code class="apis-endpoint">{a.api}</code>
             </div>
             <T as="p" class="apis-use" en={a.en} it={a.it} />
@@ -556,8 +776,10 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
       </ol>
 
       <div class="apis-note" data-reveal>
-        <T en="Everything above runs server-to-server against firefly-api.adobe.io and image.adobe.io. Firefly is trained on licensed and public-domain content and signs what it generates with Content Credentials (C2PA). The files shipped in the decks are re-cropped and re-encoded for the web, so they no longer carry the manifest — which is why every asset is also written to a provenance file next to the images: prompt, model, seed, licence and, for derived assets, what they came from. Months later it is still clear where a picture came from."
-           it="Tutto quanto sopra gira server-to-server su firefly-api.adobe.io e image.adobe.io. Firefly è addestrato su contenuti licenziati e di pubblico dominio e firma ciò che genera con le Content Credentials (C2PA). I file spediti nei deck vengono ri-ritagliati e riconvertiti per il web, quindi non portano più il manifest — per questo ogni asset finisce anche in un file di provenance accanto alle immagini: prompt, modello, seed, licenza e, per i derivati, da che cosa vengono. A distanza di mesi si sa ancora da dove viene un&rsquo;immagine." as="p" />
+        <T en="Firefly Image and Firefly Video run server-to-server against firefly-api.adobe.io. Firefly is trained on licensed and public-domain content and signs what it generates with Content Credentials (C2PA). The files shipped in the decks are re-cropped and re-encoded for the web, so they no longer carry the manifest — which is why every asset is also written to a provenance file next to the images: prompt, model, seed, licence and, for derived assets, what they came from. Months later it is still clear where a picture came from."
+           it="Firefly Image e Firefly Video girano server-to-server su firefly-api.adobe.io. Firefly è addestrato su contenuti licenziati e di pubblico dominio e firma ciò che genera con le Content Credentials (C2PA). I file spediti nei deck vengono ri-ritagliati e riconvertiti per il web, quindi non portano più il manifest — per questo ogni asset finisce anche in un file di provenance accanto alle immagini: prompt, modello, seed, licenza e, per i derivati, da che cosa vengono. A distanza di mesi si sa ancora da dove viene un&rsquo;immagine." as="p" />
+        <T en="The provenance file is the proof in the repository; the label the person in the room actually sees is the per-slide «made with» credit the engine carries, and the seven generated clips are credited as generated. The cover note of each experience declares where the text was produced with AI assistance and that it is checked against the knowledge base. Confirmation from Italian Legal that this form satisfies law 132/2025, which asks that whoever receives the material be told which systems produced it: still to request."
+           it="Il file di provenance è la prova nel repository; l’etichetta che vede davvero chi è in riunione è il credito «creato con» per slide che il motore già porta, e le sette clip generate sono accreditate come generate. La nota di copertina di ogni experience dichiara dove il testo è stato prodotto con assistenza AI e che è verificato contro la knowledge base. Conferma di Legal italiano che questa forma soddisfi la legge 132/2025, che chiede che il destinatario sappia quali sistemi hanno prodotto il materiale: da chiedere." as="p" class="apis-note-add" />
       </div>
     </div>
   </section>
@@ -582,8 +804,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         </article>
         <article class="dos-card" data-reveal data-reveal-delay="1">
           <h3 class="dos-h"><T en="Closed by construction" it="Chiuso per costruzione" /></h3>
-          <T en="Dossiers are noindex, never linked from any public page, and the confidential material they are built from stays out of the repository entirely — it never leaves the machine it was written on, and never reaches a third-party or cloud system."
-             it="I dossier sono noindex, non linkati da nessuna pagina pubblica, e il materiale riservato da cui nascono resta del tutto fuori dal repository — non lascia la macchina su cui è stato scritto e non arriva mai su un sistema terzo o cloud." as="p" class="dos-p" />
+          <T en="The confidential sources stay out of the repository and out of the static bundle. The dossier text itself is served from Supabase behind row-level security and a token, never indexed, and never linked from a public page — see «Where it lives, who can see it» above."
+             it="Le fonti riservate restano fuori dal repository e dal bundle statico. Il testo del dossier è servito da Supabase dietro RLS e token, mai indicizzato e mai linkato da una pagina pubblica — vedi «Dove vive, chi la vede» qui sopra." as="p" class="dos-p" />
         </article>
         <article class="dos-card" data-reveal data-reveal-delay="2">
           <h3 class="dos-h"><T en="It sets the brief straight" it="Raddrizza il brief" /></h3>
@@ -603,12 +825,12 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <T en="Put the factory’s intake inside your own AI." it="Metti l’intake della fabbrica dentro la tua AI." />
       </h2>
       <p class="lead skill-lead" data-reveal>
-        <T en="One installable skill turns your Claude, ChatGPT or Copilot into a guided interview: it researches the brand and its decision-makers with you, then writes the hyper-detailed, executive-grade brief that seeds a new experience — one that leads with the client’s objective and proves its value. It runs in your own account — no extra licence, nothing to set up."
-           it="Una skill installabile trasforma il tuo Claude, ChatGPT o Copilot in un’intervista guidata: studia con te il brand e chi decide, poi scrive il brief di iper-dettaglio e di livello executive che dà vita a una nuova esperienza — che parte dall’obiettivo del cliente e ne dimostra il valore. Gira nel tuo account — nessuna licenza aggiuntiva, niente da configurare." />
+        <T en="One installable skill turns your Claude, ChatGPT or Copilot into a guided interview: it researches the brand and its decision-makers with you, then writes the hyper-detailed, executive-grade brief that seeds a new experience — one that leads with the client’s objective and proves its value. It runs in the AI assistant you already have."
+           it="Una skill installabile trasforma il tuo Claude, ChatGPT o Copilot in un’intervista guidata: studia con te il brand e chi decide, poi scrive il brief di iper-dettaglio e di livello executive che dà vita a una nuova esperienza — che parte dall’obiettivo del cliente e ne dimostra il valore. Gira nell’assistente AI che già usi." />
       </p>
       <p class="skill-method" data-reveal>
-        <T en="The intake follows Adobe’s <em>Selling to Executives</em> method by Jacques Sciammas."
-           it="L’intake segue il metodo Adobe <em>Selling to Executives</em> di Jacques Sciammas." />
+        <T en="The intake follows the <em>Selling to Executives</em> method by Jacques Sciammas. Only the Claude Code route has actually been run end to end; the other two are possible and untested. The skill is deliberately tool-agnostic because the interview is the method, not the assistant — which GenAI tool Adobe IT approves for third-party data is still to confirm with Adobe IT."
+           it="L’intake segue il metodo <em>Selling to Executives</em> di Jacques Sciammas. Solo il percorso Claude Code è stato collaudato da capo a fondo; gli altri due sono possibili e non provati. La skill è volutamente agnostica rispetto allo strumento perché il metodo è l’intervista, non l’assistente: quale strumento GenAI sia approvato da Adobe IT per dati di terzi resta da confermare con Adobe IT." />
       </p>
 
       <div class="skill-platforms">
@@ -646,8 +868,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         </a>
       </div>
       <p class="skill-fineprint" data-reveal>
-        <T en="Send the brief it produces to Antonio via Teams — the experience is scaffolded, together with its internal war-room dossier (a private, Adobe-only page for meeting prep), and you’re given Admin Console access to grow it."
-           it="Invia il brief che produce ad Antonio via Teams — l’esperienza viene scaffoldata, insieme al suo dossier war-room interno (una pagina riservata, solo Adobe, per preparare il meeting), e ricevi l’accesso alla Admin Console per farla crescere." />
+        <T en="Adobe internal use; partners by agreement. With the brief in hand you can run <code>pnpm new:experience</code> yourself (see «Who maintains it») and open a pull request. Or send it to Antonio via Teams: the experience is scaffolded, together with its internal war-room dossier, a private Adobe-only page for meeting prep, and you’re given Admin Console access to grow it."
+           it="Uso interno Adobe; partner su accordo. Col brief in mano puoi lanciare tu <code>pnpm new:experience</code> (vedi «Chi lo mantiene») e aprire una pull request. Oppure mandalo ad Antonio via Teams: l’esperienza viene scaffoldata, insieme al suo dossier war-room interno, una pagina riservata solo Adobe per preparare il meeting, e ricevi l’accesso alla Admin Console per farla crescere." />
       </p>
     </div>
   </section>
@@ -657,44 +879,49 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap">
       <p class="eyebrow eyebrow--dark" data-reveal><T en="How it could grow" it="Come può crescere" /></p>
       <h2 id="grow-title" class="h-section grow-title" data-reveal>
-        <T en="The engine is the asset. The roadmap writes itself." it="Il motore è l’asset. La roadmap si scrive da sé." />
+        <T en="What comes next, and what has already started." it="Cosa viene dopo, e cosa è già partito." />
       </h2>
       <p class="lead grow-lead" data-reveal>
-        <T en="A mix of what’s under evaluation and what’s already in motion — each one compounds on the shared engine, for every experience at once."
-           it="Un mix di ciò che è in valutazione e ciò che è già in movimento — ognuno si somma sul motore condiviso, per tutte le esperienze insieme." />
+        <T en="Each card says where it stands: done, in progress, or still an idea. All of them compound on the shared engine, so they land on every experience at once."
+           it="Ogni card dice a che punto è: fatto, in corso, o ancora un’idea. Tutte si sommano sul motore condiviso, quindi arrivano su tutte le esperienze insieme." />
       </p>
 
       <div class="grow-grid">
         <article class="grow-card" data-reveal>
-          <span class="grow-eval"><T en="Under evaluation" it="In valutazione" /></span>
-          <h3><T en="Firefly imagery & video" it="Imagery e video con Firefly" /></h3>
-          <T en="Move beyond stock: generate on-brand imagery and video with Adobe Firefly — commercially safe, tuned to each brand, produced inside the factory instead of sourced."
-             it="Oltre lo stock: generare imagery e video on-brand con Adobe Firefly — sicuri per uso commerciale, calibrati su ogni brand, prodotti dentro la fabbrica invece che reperiti." as="p" />
+          <span class="grow-eval grow-eval--wip"><T en="In progress" it="In corso" /></span>
+          <h3><T en="Firefly on the experiences still on stock" it="Firefly sulle experience ancora su stock" /></h3>
+          <T en="Isybank, MIM, Poste, UniCredit and Atelier already generate their imagery. Max Mara, Ferrari, Agos and FS Group have no generated asset at all — 11 of 11, 3 of 3, 1 of 1 and 1 of 1 files are stock. Extending the manifest to them is the work in hand."
+             it="Isybank, MIM, Poste, UniCredit e Atelier generano già la loro imagery. Max Mara, Ferrari, Agos e FS Group non hanno alcun asset generato — 11 file su 11, 3 su 3, 1 su 1 e 1 su 1 sono stock. Estendere il manifest anche a loro è il lavoro in corso." as="p" />
         </article>
         <article class="grow-card" data-reveal data-reveal-delay="1">
+          <span class="grow-eval grow-eval--wip"><T en="In progress" it="In corso" /></span>
           <h3><T en="Self-serve authoring" it="Authoring self-serve" /></h3>
-          <T en="Extend the console so a marketer or seller composes a full experience — sections, media, copy — with zero code."
-             it="Estendere la console perché un marketer o un seller componga un’esperienza intera — sezioni, media, copy — senza codice." as="p" />
+          <T en="The console already turns chapters and slides on or off, attaches demo media and authors new slides. What is missing is editing the copy of an existing slide without a pull request."
+             it="La console già accende e spegne capitoli e slide, allega media demo e crea slide nuove. Manca modificare il copy di una slide esistente senza una pull request." as="p" />
         </article>
         <article class="grow-card" data-reveal data-reveal-delay="2">
+          <span class="grow-eval grow-eval--done"><T en="Done" it="Fatto" /></span>
           <h3><T en="Brand-to-tokens" it="Dal brand ai token" /></h3>
-          <T en="Point at a brand’s guidelines and auto-generate the skin’s token set — colour, type, imagery direction — in minutes."
-             it="Puntare alle guidelines di un brand e generare automaticamente il set di token della skin — colore, tipografia, direzione imagery — in minuti." as="p" />
+          <T en="<code>pnpm brand:tokens</code> reads a client’s production CSS and returns colours by frequency, published tokens and declared typefaces. It is the first command of every new skin."
+             it="<code>pnpm brand:tokens</code> legge il CSS di produzione del cliente e torna colori per frequenza, token pubblicati e caratteri dichiarati. È il primo comando di ogni nuova skin." as="p" />
         </article>
         <article class="grow-card" data-reveal>
+          <span class="grow-eval"><T en="Idea" it="Idea" /></span>
           <h3><T en="More product mockups" it="Più mockup di prodotto" /></h3>
-          <T en="Extend the interactive product-mockup library — Customer Journey Analytics, Express and more — so every experience can demo the real thing, not a screenshot."
-             it="Estendere la libreria di mockup di prodotto interattivi — Customer Journey Analytics, Express e altri — così ogni esperienza può mostrare il prodotto reale, non uno screenshot." as="p" />
+          <T en="Extend the interactive product-mockup library, Customer Journey Analytics and Express among others, as a faithful reproduction of the interface with product, version and date declared in the slide credit. A reproduction is not the product: these interfaces ship monthly, and the credit is what says when this one was drawn."
+             it="Estendere la libreria di mockup di prodotto interattivi, fra cui Customer Journey Analytics ed Express, come riproduzione fedele dell’interfaccia con prodotto, versione e data dichiarati nel credito di slide. Una riproduzione non è il prodotto: queste interfacce rilasciano ogni mese, e il credito è ciò che dice quando questa è stata disegnata." as="p" />
         </article>
         <article class="grow-card" data-reveal data-reveal-delay="1">
+          <span class="grow-eval"><T en="Idea" it="Idea" /></span>
           <h3><T en="Multi-tenant platform" it="Piattaforma multi-tenant" /></h3>
           <T en="Give each team or region its own governed space — the console already models roles and a registry to get there."
              it="Dare a ogni team o region uno spazio governato proprio — la console modella già ruoli e registry per arrivarci." as="p" />
         </article>
         <article class="grow-card" data-reveal data-reveal-delay="2">
+          <span class="grow-eval grow-eval--wip"><T en="In progress" it="In corso" /></span>
           <h3><T en="Beyond EN / IT" it="Oltre EN / IT" /></h3>
-          <T en="Add languages as easily as the two here — every string already carries its translations, so a new market is a config away, not a rebuild."
-             it="Aggiungere lingue con la stessa facilità delle due attuali — ogni stringa porta già le sue traduzioni, così un nuovo mercato è a un passo di configurazione, non una riscrittura." as="p" />
+          <T en="The Atelier deck already runs in three languages, French included, so the mechanism is proven. Adding a market is a configuration step on the strings, not a rebuild."
+             it="Il deck Atelier gira già in tre lingue, francese incluso: il meccanismo è provato. Aggiungere un mercato è un passo di configurazione sulle stringhe, non una riscrittura." as="p" />
         </article>
       </div>
     </div>
@@ -705,7 +932,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     <div class="wrap author-inner">
       <p class="eyebrow" data-reveal><T en="Who’s behind it" it="Chi c’è dietro" /></p>
       <h2 id="author-title" class="h-section author-title" data-reveal>Antonio Gargiulo</h2>
-      <p class="author-role" data-reveal>Senior Product Sales Specialist · Adobe Italia</p>
+      <p class="author-role" data-reveal>Solution Sales Specialist · Adobe Italia</p>
       <T
         en="I design and build the Experience Design Factory at Adobe — the engine, the client experiences and the console. The method is deliberate: only public Adobe capabilities and demo material, real bilingual copy, a hard accessibility and layout bar, and everything shipped as live software you can open, not a slide about software."
         it="Progetto e costruisco la Experience Design Factory in Adobe — il motore, le esperienze cliente e la console. Il metodo è preciso: solo capability Adobe pubbliche e materiale demo, copy bilingue reale, uno standard alto di accessibilità e layout, e tutto consegnato come software vivo che puoi aprire, non una slide sul software."
@@ -732,45 +959,113 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   pubbliche nel codice. Un guasto non può far comparire qualcosa che era stato
   depubblicato. La policy anon lato database restituisce comunque SOLO le righe
   con show_in_showcase = true.
+
+  Le experience nate da materiale riservato NON stanno nel markup statico: né la
+  card, né il link, né il nome del cliente. Se la Console le pubblica, la card
+  viene costruita qui con i dati che il backend restituisce — così il DOM di una
+  pagina pubblica non porta mai un URL che non è stato pubblicato.
 */
 (function () {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return;
 
-  function applyPublished(slugs) {
-    var live = 0, sections = 0;
+  var grid = document.querySelector('.exp-grid');
+  var skinsRow = document.querySelector('.arch-skins-row');
+  var nextSkin = skinsRow ? skinsRow.querySelector('.arch-skin--next') : null;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  // Una card costruita dal solo stato remoto. Nessuna immagine: lo screenshot
+  // vive nel bundle statico e il suo nome direbbe da sé quale cliente è.
+  function buildCard(row) {
+    var a = el('a', 'exp-card exp-card--remote');
+    a.href = row.base_url && row.base_url.charAt(0) === '/' ? row.base_url : '#';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.setAttribute('data-exp', row.slug);
+    a.setAttribute('data-sections', '0');
+
+    var visual = el('div', 'exp-visual');
+    visual.appendChild(el('span', 'exp-chip', row.client || ''));
+    var live = el('span', 'exp-live');
+    live.setAttribute('aria-hidden', 'true');
+    live.appendChild(el('span', 'exp-live-dot'));
+    live.appendChild(document.createTextNode('LIVE'));
+    visual.appendChild(live);
+    a.appendChild(visual);
+
+    var body = el('div', 'exp-body');
+    body.appendChild(el('h3', 'exp-name', row.name || row.slug));
+    if (row.description) body.appendChild(el('p', 'exp-desc', row.description));
+    var open = el('span', 'exp-open');
+    open.appendChild(el('span', null, document.documentElement.getAttribute('data-lang') === 'en' ? 'Open experience' : 'Apri l\u2019esperienza'));
+    body.appendChild(open);
+    a.appendChild(body);
+    return a;
+  }
+
+  function buildSkin(row) {
+    var d = el('div', 'arch-skin');
+    d.setAttribute('data-exp-skin', row.slug);
+    d.appendChild(el('strong', null, row.client || row.slug));
+    d.appendChild(el('span', null, row.name || ''));
+    return d;
+  }
+
+  function applyPublished(rows) {
+    var slugs = rows.map(function (r) { return r.slug; });
+
+    // 1. le card già nel markup: si spengono se non sono più pubblicate
     document.querySelectorAll('[data-exp]').forEach(function (card) {
-      var on = slugs.indexOf(card.getAttribute('data-exp')) !== -1;
-      card.hidden = !on;
-      if (on) { live++; sections += parseInt(card.getAttribute('data-sections') || '0', 10); }
+      card.hidden = slugs.indexOf(card.getAttribute('data-exp')) === -1;
     });
     document.querySelectorAll('[data-exp-skin]').forEach(function (skin) {
       skin.hidden = slugs.indexOf(skin.getAttribute('data-exp-skin')) === -1;
     });
-    document.querySelectorAll('[data-live-count]').forEach(function (el) {
-      el.setAttribute('data-count', String(live));
-      el.textContent = String(live);
+
+    // 2. le righe pubblicate che non hanno una card: si costruiscono adesso
+    rows.forEach(function (row) {
+      if (!row.slug) return;
+      if (grid && !grid.querySelector('[data-exp="' + row.slug + '"]')) {
+        grid.appendChild(buildCard(row));
+      }
+      if (skinsRow && !skinsRow.querySelector('[data-exp-skin="' + row.slug + '"]')) {
+        skinsRow.insertBefore(buildSkin(row), nextSkin);
+      }
+    });
+
+    var live = 0;
+    document.querySelectorAll('[data-exp]').forEach(function (card) { if (!card.hidden) live++; });
+
+    document.querySelectorAll('[data-live-count]').forEach(function (el2) {
+      el2.setAttribute('data-count', String(live));
+      el2.textContent = String(live);
       // Il contatore animato marca l'elemento come già contato e ne riscrive il
       // testo: se lo stato remoto arriva dopo, va ri-animato sul nuovo valore.
       // (Con reduced-motion countUp esce subito e resta il testo appena scritto.)
-      el.removeAttribute('data-counted');
-      if (window.__edfCountUp) window.__edfCountUp(el);
+      el2.removeAttribute('data-counted');
+      if (window.__edfCountUp) window.__edfCountUp(el2);
     });
     var EN = ['zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve'];
     var IT = ['zero','Una','Due','Tre','Quattro','Cinque','Sei','Sette','Otto','Nove','Dieci','Undici','Dodici'];
-    document.querySelectorAll('[data-live-word]').forEach(function (el) {
-      var it = !!el.closest('[data-lang-it]');
+    document.querySelectorAll('[data-live-word]').forEach(function (el2) {
+      var it = !!el2.closest('[data-lang-it]');
       var words = it ? IT : EN;
-      el.textContent = live < words.length ? words[live] : String(live);
+      el2.textContent = live < words.length ? words[live] : String(live);
     });
   }
 
-  fetch(SUPABASE_URL + '/rest/v1/experiences?select=slug&show_in_showcase=eq.true', {
+  fetch(SUPABASE_URL + '/rest/v1/experiences?select=slug,name,client,description,base_url&show_in_showcase=eq.true', {
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
   })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (rows) {
       if (!Array.isArray(rows) || rows.length === 0) return;   // fail-closed
-      applyPublished(rows.map(function (r) { return r.slug; }));
+      applyPublished(rows);
     })
     .catch(function () { /* fail-closed: resta il set di default */ });
 })();
@@ -875,6 +1170,9 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .exp-card { display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--color-ink-800); border: 1px solid rgba(255,255,255,0.08); transition: transform 0.2s, border-color 0.2s; }
   .exp-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--exp-accent) 60%, transparent); }
   .exp-visual { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #101014; }
+  /* Card costruita a runtime dallo stato remoto: non ha screenshot (vive nel
+     bundle statico), quindi la superficie porta solo il colore e i chip. */
+  .exp-card--remote .exp-visual { background: linear-gradient(135deg, #16161B, #0E0E12); }
   .exp-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: transform 0.5s cubic-bezier(.2,.7,.2,1); }
   .exp-card:hover .exp-shot { transform: scale(1.045); }
   .exp-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,16,20,0) 55%, rgba(16,16,20,0.55) 100%); }
@@ -889,6 +1187,25 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .exp-tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
   :global(.exp-desc) { font-size: 0.9rem; color: var(--color-slate-300); flex: 1; }
   .exp-open { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  :global(.proof-scope) { margin-top: 1.5rem; font-size: 0.92rem; color: var(--color-slate-300); max-width: 72ch; }
+  .where-box { margin-top: 1.75rem; padding: 1.4rem 1.6rem; border-radius: 16px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); }
+  .where-tag { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
+  .where-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem 1.5rem; margin-top: 1rem; }
+  @media (min-width: 720px) { .where-grid { grid-template-columns: repeat(2, 1fr); } }
+  .where-grid dt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-slate-400); margin-bottom: 0.2rem; }
+  .where-grid dd { font-size: 0.92rem; color: var(--color-slate-300); }
+  .where-grid code { font-family: var(--font-mono); font-size: 0.85em; }
+  .where-sub { margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-slate-400); }
+  .where-consent { list-style: none; margin-top: 0.6rem; display: grid; grid-template-columns: 1fr; gap: 0.35rem; }
+  @media (min-width: 760px) { .where-consent { grid-template-columns: repeat(2, 1fr); } }
+  .where-consent li { font-size: 0.9rem; color: var(--color-slate-300); }
+  .where-consent strong { color: #fff; }
+  .where-plan { margin-top: 1.2rem; font-size: 0.9rem; color: var(--color-slate-300); }
+
   .console-strip { display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; padding: 1.1rem 1.3rem; border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.2s, background 0.2s; }
   .console-strip:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.07); }
   .console-ico { flex-shrink: 0; color: color-mix(in srgb, var(--color-adobe-red) 70%, #fff); }
@@ -931,9 +1248,11 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
      le skin. Senza, il diagramma raccontava un'architettura a runtime e taceva
      il pezzo che produce metà di quello che si vede. */
   .arch-build { border-style: dashed; }
-  .arch-build-row { display: grid; grid-template-columns: 1fr; gap: 0.55rem; }
-  @media (min-width: 760px) { .arch-build-row { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .arch-build-row { grid-template-columns: repeat(4, 1fr); } }
+  .arch-build-cols { display: grid; grid-template-columns: 1fr; gap: 1rem 1.5rem; margin-top: 0.75rem; }
+  @media (min-width: 820px) { .arch-build-cols { grid-template-columns: 1fr 1fr; } }
+  .arch-build-col { display: flex; flex-direction: column; gap: 0.55rem; min-width: 0; }
+  .arch-build-col-h { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-secondary); }
   .arch-build-step {
     display: flex; flex-direction: column; gap: 0.3rem;
     padding: 0.7rem 0.8rem; border-radius: 10px;
@@ -945,6 +1264,13 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     font-family: var(--font-mono); font-size: 0.72rem;
     color: var(--color-adobe-red-dark); overflow-wrap: anywhere;
   }
+  /* Le API Adobe restano visivamente distinte dagli script della Factory: è il
+     punto del P0 — non gonfiare il perimetro di cosa è Adobe nella catena. */
+  .arch-build-step--api {
+    background: color-mix(in srgb, var(--color-adobe-violet) 6%, transparent);
+    border-color: color-mix(in srgb, var(--color-adobe-violet) 24%, transparent);
+  }
+  .arch-build-step--api code { color: var(--color-adobe-violet-dark); }
   .arch-build-step span { font-size: 0.8rem; line-height: 1.45; color: var(--ink-secondary); }
   .arch-build-out {
     display: block; margin-top: 0.7rem; text-align: center;
@@ -958,6 +1284,35 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .arch-cta { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; align-items: center; justify-content: space-between; padding: 1.75rem; border-radius: 16px; background: var(--surface-secondary); border: 1px solid var(--line-subtle); }
   .arch-cta-title { font-size: 1.25rem; }
   :global(.arch-cta-desc) { font-size: 0.9rem; color: var(--ink-secondary); max-width: 52ch; margin-top: 0.35rem; }
+
+  /* ── TABELLE (tempi reali, risultati sul business) ── */
+  .band-results { background: var(--surface-secondary); }
+  .tbl-scroll { margin-top: 2rem; max-width: 100%; overflow-x: auto; border: 1px solid var(--line-subtle); border-radius: 12px; background: var(--surface-primary); }
+  .tbl-scroll--flow { margin-top: 1rem; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 46rem; }
+  .tbl--compact { min-width: 40rem; font-size: 0.86rem; }
+  .tbl th, .tbl td { text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line-subtle); vertical-align: top; }
+  .tbl thead th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-tertiary); background: var(--surface-secondary); white-space: nowrap; }
+  .tbl tbody th { font-weight: 600; color: var(--ink-primary); }
+  .tbl tbody td { color: var(--ink-secondary); }
+  .tbl tbody tr:last-child th, .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl-foot { margin-top: 0.9rem; font-size: 0.85rem; color: var(--ink-tertiary); max-width: 70ch; }
+  :global(.res-scope) { margin-top: 1rem; }
+
+  /* ── CHI LO MANTIENE ── */
+  .band-maintain { background: var(--surface-primary); }
+  .mnt-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 2.5rem; }
+  @media (min-width: 720px) { .mnt-grid { grid-template-columns: repeat(2, 1fr); } }
+  .mnt-card { border: 1px solid var(--line-subtle); border-radius: 14px; padding: 1.5rem; background: var(--surface-secondary); }
+  .mnt-card h3 { font-size: 1.08rem; margin-bottom: 0.5rem; }
+  .mnt-card :global(p) { font-size: 0.93rem; color: var(--ink-secondary); line-height: 1.6; }
+  .mnt-card :global(code) { font-family: var(--font-mono); font-size: 0.85em; background: var(--surface-primary);
+    padding: 0.1rem 0.35rem; border-radius: 5px; color: var(--ink-primary); }
+  .mnt-run { list-style: decimal; margin: 0.8rem 0 0 1.2rem; display: flex; flex-direction: column; gap: 0.3rem; }
+  .mnt-run li { font-size: 0.86rem; color: var(--ink-secondary); }
+  .mnt-run code { font-family: var(--font-mono); font-size: 0.85em; overflow-wrap: anywhere; }
+  .mnt-foot { margin-top: 1.5rem; font-size: 0.88rem; color: var(--ink-tertiary); }
 
   /* ── FLOW ── */
   .band-flow { background: var(--surface-secondary); }
@@ -979,7 +1334,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .flow-step-n { flex-shrink: 0; width: 2.9rem; height: 2.9rem; display: grid; place-items: center; border-radius: 50%;
     background: var(--surface-primary); border: 1px solid var(--line-default); color: var(--accent-primary);
     font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; }
-  .flow-step-body { padding-top: 0.25rem; }
+  .flow-step-body { padding-top: 0.25rem; min-width: 0; flex: 1; }
   .flow-step-title { font-size: 1.2rem; margin-bottom: 0.3rem; }
   .flow-step-desc { font-size: 0.95rem; color: var(--ink-secondary); max-width: 64ch; }
   .flow-step-link { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.7rem; font-size: 0.85rem; font-weight: 600; color: var(--accent-primary); }
@@ -990,6 +1345,11 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .flow-note-tag { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
     color: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); flex-shrink: 0; }
   .flow-note-text { font-size: 0.92rem; color: color-mix(in srgb, var(--ink-inverse) 88%, transparent); max-width: 72ch; }
+  .flow-note-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; max-width: 76ch; }
+  .flow-note-list li { position: relative; padding-left: 1.1rem; font-size: 0.92rem;
+    color: color-mix(in srgb, var(--ink-inverse) 88%, transparent); }
+  .flow-note-list li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 0.35rem; height: 0.35rem;
+    border-radius: 2px; background: color-mix(in srgb, var(--color-adobe-red) 72%, #fff); }
 
   /* executive-selling principles (how experiences are built to convince a C-suite) */
   .flow-principles { margin-top: 2.5rem; }
@@ -1091,8 +1451,19 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   .apis-endpoint { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-inverse); opacity: 0.55; }
   :global(.apis-use) { font-size: 0.92rem; line-height: 1.6; color: var(--ink-inverse); opacity: 0.82; margin: 0; }
 
+  .apis-group-h {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-inverse); opacity: 0.72; margin-bottom: 0.6rem;
+  }
+  .apis-group-h--next { margin-top: clamp(2rem, 4vh, 3rem); }
+  /* Il secondo gruppo è disponibile, non in catena: lo dice anche visivamente. */
+  .apis-index--next { border-top-style: dashed; }
+  .apis-index--next .apis-dot { opacity: 0.45; }
+
   .apis-note { margin-top: clamp(1.5rem, 3vh, 2.25rem); }
   :global(.apis-note p) { font-size: 0.9rem; line-height: 1.65; color: var(--ink-inverse); opacity: 0.72; max-width: 82ch; }
+  /* Stesso bordo sinistro dei fratelli: la colonna non si allarga. */
+  :global(.apis-note-add) { margin-top: 0.9rem; }
 
   @media (prefers-reduced-motion: reduce) {
     .apis-track { animation: none; }
@@ -1130,6 +1501,8 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   :global(.grow-lead) { color: var(--color-slate-300); margin-top: 1.2rem; max-width: 60ch; }
   .grow-card { position: relative; }
   .grow-eval { display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #E8A317; background: color-mix(in srgb, #E8A317 16%, transparent); padding: 0.2rem 0.55rem; border-radius: 999px; margin-bottom: 0.6rem; }
+  .grow-eval--wip { color: #7FC8FF; background: rgba(127, 200, 255, 0.16); }
+  .grow-eval--done { color: #6FE09B; background: rgba(111, 224, 155, 0.16); }
   .grow-flagships { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
   @media (min-width: 720px) { .grow-flagships { grid-template-columns: repeat(2, 1fr); } }
   .grow-card--flagship { position: relative; background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));

@@ -8,12 +8,18 @@ interface Props {
   description?: string;
   /** Solutions active for this page — checked client-side at boot. */
   pageSolutions?: string[];
+  /** Orphan/internal pages and client-brand pages: keep out of search engines. */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'Adobe × Ferrari Racing — data-driven sponsorship, from Maranello to every fan.',
   pageSolutions,
+  // Nessuna experience cliente va nei motori di ricerca: porta il marchio di un
+  // cliente su un dominio pubblico e il consenso scritto al co-brand non c'è.
+  // noindex è un'istruzione ai crawler, non un controllo d'accesso.
+  noindex = true,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -27,6 +33,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{title === 'Adobe × Ferrari Racing' ? title : `${title} | Adobe × Ferrari Racing`}</title>
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

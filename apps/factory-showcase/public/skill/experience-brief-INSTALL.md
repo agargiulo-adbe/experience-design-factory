@@ -1,8 +1,8 @@
 # Install the “Experience Brief” skill
 
 One skill, three assistants. The brain is the body of [`SKILL.md`](./SKILL.md) — everything
-below just tells each assistant to use it. It runs entirely in the Adobian's own account; no
-extra licence, no special access.
+below just tells each assistant to use it. It runs in the AI assistant you already have: on
+Microsoft 365 Copilot that means your tenant's Copilot licence.
 
 > **Tip:** the source of truth is `SKILL.md`. When you “paste the instructions” below, paste
 > everything **after** the YAML front-matter (i.e. from `# Experience Brief — the Factory intake`
@@ -51,6 +51,6 @@ first message.
 
 ## What you get
 A guided interview that researches the target company/brand and drafts the experience you want,
-producing a hyper-detailed **brief**. Send it to **Antonio Gargiulo — Senior Product Sales
+producing a hyper-detailed **brief**. Send it to **Antonio Gargiulo — Solution Sales
 Specialist, Adobe Italia** (Teams / agargiulo@adobe.com), who scaffolds the experience and gives
 you Admin Console access to grow it.

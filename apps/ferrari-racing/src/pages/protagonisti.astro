@@ -161,14 +161,18 @@ const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
 
   <style>
     /* Cover — three apex points on one racing line */
+    /* La riga è il blocco di riferimento dei connettori: se lo fosse il singolo
+       apex, il connettore uscirebbe dal suo box e il check `c` dell'audit
+       leggerebbe un overflow vero (scrollWidth 495 su 330). */
     .cast-line {
+      position: relative;
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       gap: 0.5rem;
     }
     .cast-apex {
-      position: relative;
+      position: static;
       flex: 1 1 0;
       display: flex;
       flex-direction: column;
@@ -196,14 +200,17 @@ const partners = ['HP', 'Shell', 'Puma', 'IBM', 'UniCredit', 'Aon'];
       letter-spacing: -0.01em;
       color: var(--ink-inverse);
     }
-    /* connector between apexes, aligned to the node row */
+    /* connector between apexes, aligned to the node row.
+       Tre apex di pari larghezza: i centri cadono a 1/6, 1/2 e 5/6 della riga,
+       quindi ogni connettore parte da un centro e copre un terzo. */
     .cast-apex-track {
       position: absolute;
       top: 10px;
-      left: 50%;
-      width: 100%;
+      width: 33.333%;
       height: 2px;
     }
+    .cast-apex:nth-child(1) .cast-apex-track { left: 16.667%; }
+    .cast-apex:nth-child(2) .cast-apex-track { left: 50%; }
     @media (max-width: 640px) {
       .cast-line { flex-direction: column; align-items: stretch; gap: 1.1rem; }
       .cast-apex { flex-direction: row; align-items: center; gap: 0.85rem; text-align: left; padding: 0; }
