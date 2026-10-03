@@ -10,12 +10,14 @@
 > `.md` costa ~20k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> ✅ **Working tree pulito al 3 ott 2026.** L'ultimo lavoro — la tassonomia in vetrina, i due gate
-> separati, la seconda skill scaricabile e il fix della card costruita a runtime — è committato e
-> spinto (`6335a33`), con build verde su 14 app. Il **terzo giro di panel sulla vetrina** (3 ott) ha
-> alzato rilevanza e azionabilità e **abbassato credibilità e rischio**: §13.11 (Parte 5) per i numeri,
-> e soprattutto il **backlog P0 di §10 (Parte 2)**, che ora apre con una voce che non riguarda una
-> pagina ma il repository: nomi di referenti cliente dentro file tracciati, su un repo pubblico.
+> ✅ **Working tree pulito al 3 ott 2026, sera.** Giornata in due tempi: la tassonomia in vetrina
+> più il terzo giro di panel (§13.10–13.11, Parte 5), e poi una **verifica generale** che ha trovato
+> lo stesso difetto — stili scoped di Astro contro DOM costruito a runtime — in **altri due posti**,
+> fra cui `AdminConsole.astro`, cioè l'editor delle slide personalizzate **senza stile in 11 app**.
+> Corretto e verificato. Corretta anche, alla fonte, la GA di CX Enterprise Coworker su Analytics
+> (è un **rollout**, GA **TBD**) in vetrina, hub e deck Poste. Build+typecheck+lint verdi.
+> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
+> cliente dentro file tracciati su un repository pubblico.
 
 ---
 

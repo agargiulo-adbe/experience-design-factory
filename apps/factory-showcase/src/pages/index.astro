@@ -393,6 +393,25 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
         <span data-lang-it><span data-live-word>{countWords.it}</span> sono pubblicate qui. {reservedWords.it} non sono in vetrina: {confidentialWords.it.toLowerCase()} nascono da materiale di preparazione riservato, {internalWords.it.toLowerCase()} sono interne alla Factory. Tre sono nominate più sotto, dove la catena di build dice su quali experience lavora Firefly: quelle pagine non sono elencate qui, ma chi ha l’indirizzo oggi le apre — l’autenticazione è ancora da mettere.</span>
       </p>
 
+      <dl class="proof-terms" data-reveal>
+        <div>
+          <dt><T en="Where it lives" it="Dove vive" /></dt>
+          <dd><T en="GitHub Pages, public address, no login." it="GitHub Pages, indirizzo pubblico, senza login." /></dd>
+        </div>
+        <div>
+          <dt><T en="Indexing" it="Indicizzazione" /></dt>
+          <dd><T en="noindex, nofollow on the experiences, the hub, this page and the dossiers." it="noindex, nofollow sulle experience, sull’hub, su questa pagina e sui dossier." /></dd>
+        </div>
+        <div>
+          <dt><T en="Co-brand consent" it="Consenso al co-brand" /></dt>
+          <dd><T en="Public material only; written consent not yet signed for any of the six. The switch in the Console takes one off the showcase in real time." it="Materiale solo pubblico; il consenso scritto non è ancora firmato per nessuno dei sei. L’interruttore nella Console ne toglie una dalla vetrina in tempo reale." /></dd>
+        </div>
+        <div>
+          <dt><T en="Adobe Security/Legal" it="Security/Legal Adobe" /></dt>
+          <dd><T en="Request still to send; date to be set." it="Richiesta da inviare; data da fissare." /></dd>
+        </div>
+      </dl>
+
       <p class="proof-note" data-reveal>
         <T en="What is on screen in all six: invented people, no real client data, no personal data processed, no profiling mechanism shown. Checked unit by unit at the panel review of 1 October 2026, and again on 3 October."
            it="Che cosa si vede a schermo in tutte e sei: persone inventate, nessun dato di cliente reale, nessun dato personale trattato, nessun meccanismo di profilazione mostrato. Verificato unità per unità al panel review del 1 ottobre 2026, e di nuovo il 3 ottobre." />
@@ -1135,6 +1154,7 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
 
   function buildSkin(row) {
     var d = el('div', 'arch-skin');
+    d.style.setProperty('--k', 'var(--accent-primary)');
     d.setAttribute('data-exp-skin', row.slug);
     d.appendChild(el('strong', null, row.client || row.slug));
     d.appendChild(el('span', null, row.name || ''));
@@ -1359,6 +1379,15 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
   :global(.exp-tag) { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; color: color-mix(in srgb, var(--exp-accent) 60%, #fff); }
   :global(.exp-desc) { font-size: 0.9rem; color: var(--color-slate-300); flex: 1; }
   :global(.exp-open) { margin-top: 0.4rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  /* Quattro righe asciutte, non un blocco: etichetta → fatto, niente prosa.
+     Sostituiscono «Dove vive, chi la vede» (rimosso il 2 ott), che il panel del
+     3 ott chiedeva all'unanimità di riportare in forma leggera. */
+  .proof-terms { display: grid; grid-template-columns: 1fr; gap: 0.7rem 2rem; margin-top: 1.6rem;
+    padding-top: 1.3rem; border-top: 1px solid rgba(255,255,255,0.14); }
+  @media (min-width: 760px) { .proof-terms { grid-template-columns: repeat(2, 1fr); } }
+  .proof-terms dt { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--color-slate-400); margin-bottom: 0.15rem; }
+  .proof-terms dd { font-size: 0.9rem; line-height: 1.55; color: var(--color-slate-300); }
   :global(.proof-note) { margin-top: 0.9rem; font-size: 0.92rem; color: var(--color-slate-300); max-width: 72ch; }
   :global(.proof-scope) { margin-top: 1.5rem; font-size: 0.92rem; color: var(--color-slate-300); max-width: 72ch; }
 
@@ -1388,15 +1417,15 @@ const apiOutputs = [out01, out02, out03, out04, out05, out06];
     display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch;
     gap: 0.6rem; margin-top: 0.75rem; --exp-cols: 2;
   }
-  .arch-skins-row > .arch-skin {
+  .arch-skins-row > :global(.arch-skin) {
     flex: 0 1 calc((100% - (var(--exp-cols) - 1) * 0.6rem) / var(--exp-cols));
     min-width: 0;
   }
   @media (min-width: 720px) { .arch-skins-row { --exp-cols: 4; } }
-  .arch-skin { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-left: 3px solid var(--k, var(--accent-primary)); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; }
-  .arch-skin strong { font-size: 0.95rem; }
-  .arch-skin span { font-size: 0.72rem; color: var(--ink-tertiary); }
-  .arch-skin--next { border-left-style: dashed; border-left-color: var(--ink-tertiary); opacity: 0.75; }
+  :global(.arch-skin) { background: var(--surface-primary); border: 1px solid var(--line-subtle); border-left: 3px solid var(--k, var(--accent-primary)); border-radius: 10px; padding: 0.7rem 0.85rem; display: flex; flex-direction: column; }
+  :global(.arch-skin strong) { font-size: 0.95rem; }
+  :global(.arch-skin span) { font-size: 0.72rem; color: var(--ink-tertiary); }
+  :global(.arch-skin--next) { border-left-style: dashed; border-left-color: var(--ink-tertiary); opacity: 0.75; }
   .arch-core { background: var(--surface-inverse); color: var(--ink-inverse); border-color: transparent; text-align: center; padding: 1.75rem 1.25rem; }
   .arch-core-kicker { color: color-mix(in srgb, #fff 55%, transparent); }
   .arch-core-title { display: block; font-family: var(--font-display); font-size: 1.5rem; margin: 0.3rem 0 1rem; }

@@ -5,6 +5,40 @@
 
 ## 11. Change log recente
 
+### Change log — verifica generale: lo stesso bug in due altri posti, la GA di Coworker, le quattro righe sul consenso (2026-10-03, sera)
+- **Il difetto «stili scoped contro DOM a runtime» non era uno, erano tre.** Dopo la card della
+  prova, segnalata dall'owner, è saltata fuori anche la **skin di `#architecture`** (`buildSkin()`:
+  stesso bug, stesso file) e — con una ricognizione sistematica su tutto il monorepo — il caso
+  grosso: **`packages/core/src/blocks/admin/AdminConsole.astro`**, un unico `<style>` scoped di 600
+  righe con **zero `:global()`**, importato da **12 app**. Le tre funzioni che costruiscono DOM
+  (`blockNode`, `renderPreview`, `renderList`) producevano **~26 classi senza stile**: l'editor delle
+  slide personalizzate, la sua anteprima e la lista delle slide salvate erano **senza formattazione
+  in tutte e 12**. Globalizzate **35 regole**, lasciando scoped tutto il resto; le regole
+  dell'anteprima restano ancorate a `.cs-preview-stage` perché le stesse classi `.cs-*` esistono
+  nelle `global.css` delle app e non devono raggiungere le slide vere del deck. Verificato
+  misurando lo stile calcolato di un nodo `cs-block` creato a runtime (bordo 1px, raggio 8px,
+  fondo `#f9fafb`) e con una schermata dell'editor. Memoria `astro-scoped-css-runtime-dom`.
+- **Il resto del monorepo è pulito, e adesso è verificato**: il runtime del deck, l'iniezione delle
+  slide personalizzate nei 11 BaseLayout, i mockup di prodotto, il calcolatore Ferrari, le due
+  pagine della console, le quattro pagine di dossier e il presenter MIM usano già
+  `is:global` / `:global()` / `global.css`. L'elenco completo di ciò che è stato controllato sta
+  nella ricognizione del 3 ott; qui basta la regola: **se una classe può finire su un nodo creato da
+  JavaScript, la sua regola non può stare in un `<style>` scoped**.
+- **«GA su Adobe Analytics, 2 ottobre 2026» era sbagliato, ed è stato corretto ovunque.** Fonte
+  verificata il 3 ott su Experience League (release notes Adobe Analytics): la voce «CX Enterprise
+  Coworker: Analyze Adobe Analytics data in Coworker Chat» dice **«Rollout starts: October 2, 2026»**
+  e **«General Availability: TBD»** (era prevista il 25 set). Toccati: `experiences.ts` della vetrina
+  (IT+EN), la card dell'hub, e tre punti del deck Poste (`accendere`, `capire` ×2, `sources.ts`).
+  Deck Poste rigirato: **0 HARD**, soft invariati. Chiude un P0 del panel.
+- **Le quattro righe sul consenso al co-brand, decise dall'owner**, al posto del blocco rimosso:
+  dove vive · indicizzazione · consenso al co-brand · Security/Legal. Etichetta → fatto, niente
+  prosa: è la forma che il panel aveva proposto («se il problema era il tono, due righe asciutte»).
+  Chiude il P0 unanime del giro del 3 ott.
+- **Verifica generale della vetrina**: build+typecheck+lint verdi su tutto il monorepo; zero overflow
+  orizzontale a 1280/1440/1920 in **entrambe le lingue**; zero errori in console; **tutti i link
+  interni ed esterni a 200**; 211 tag `<T>` in `index` e 66 in `blueprint`, **nessuno monolingue**;
+  conteggi della pagina riconciliati col registry (11 totali, 6 pubblicate, 2 interne, 9 clienti).
+
 ### Change log — la tassonomia in vetrina, i due gate, la seconda skill; terzo giro di panel (2026-10-03)
 - `6335a33` **feat(showcase)** — risposta alla domanda dell'autore («tassonomia e panel meritano più
   risalto?»). Nuova fascia **`#deliverables`** con i quattro tipi nominati per la domanda del cliente,
