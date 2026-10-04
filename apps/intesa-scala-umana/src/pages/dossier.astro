@@ -1,0 +1,431 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
+const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Orfana (fuori nav) + noindex. Il contenuto confidenziale NON è nel bundle
+// statico: vive in Supabase (tabella restricted_docs, RLS) e si carica solo
+//   1) dopo login (super admin o utente con accesso a intesa-scala-umana), oppure
+//   2) via secret-link ?t=<uuid> (RPC get_shared_doc, senza login).
+// Seed (git-ignored): docs/Intesa Sanpaolo/0020_seed_intesa_scala_umana_dossier.sql.
+// Renderer esteso: items (con badge), timeline, stats, people, rows, ideas,
+// table, say/dont, sources, note/foot. IT (L() accetta stringa o {it,en}).
+const DOC_SLUG = 'intesa-scala-umana';
+---
+<DocLayout
+  title="Dossier — Intesa Sanpaolo"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <div class="dw-shell">
+    <header class="dw-header dw-noprint">
+      <div class="dw-header-inner">
+        <div class="dw-header-left">
+          <span class="dw-badge" id="dw-badge">Adobe internal · Riservato</span>
+          <h1 class="dw-title" id="dw-title">Dossier — Intesa Sanpaolo</h1>
+        </div>
+        <div class="dw-header-right" id="dw-tools" hidden>
+          <button type="button" class="dw-pdf" id="dw-pdf">↓ PDF</button>
+        </div>
+      </div>
+      <p class="dw-disclaimer" id="dw-disclaimer"></p>
+    </header>
+
+    <main class="dw-main">
+      <!-- Stato: caricamento / gate / no-access. Nessun contenuto riservato qui. -->
+      <div id="dw-state" class="dw-state">
+        <p class="dw-state-msg" id="dw-state-msg">Verifica accesso…</p>
+        <div id="dw-state-actions" class="dw-state-actions" hidden></div>
+      </div>
+
+      <!-- Contenuto iniettato dopo l'accesso (da Supabase) -->
+      <div id="dw-doc" hidden></div>
+
+      <footer class="dw-footer dw-noprint" id="dw-footer" hidden></footer>
+    </main>
+  </div>
+
+  <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON, DOC_SLUG, base }}>
+  (function () {
+    var SESSION_KEY = 'edf:sb-session';
+    var stateEl = document.getElementById('dw-state');
+    var stateMsg = document.getElementById('dw-state-msg');
+    var stateActions = document.getElementById('dw-state-actions');
+    var docEl = document.getElementById('dw-doc');
+    var toolsEl = document.getElementById('dw-tools');
+    var footerEl = document.getElementById('dw-footer');
+    var content = null;
+
+    var T = {
+      checking: 'Verifica accesso…',
+      needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
+      login: 'Accedi dal Console',
+      noAccess: 'Il tuo account non ha accesso a questo dossier. L’accesso si attiva dal Console (Utenti).',
+      expired: 'Sessione scaduta. Riaccedi per continuare.',
+      backend: 'Backend non configurato.',
+      error: 'Errore nel caricamento del dossier. Riprova.',
+    };
+    function t(k) { return T[k]; }
+
+    function consoleLoginUrl() {
+      var b = String(base || '/');
+      return b.replace(/[^/]+\/?$/, 'console/') + 'login/';
+    }
+    function readSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } }
+    function nowSec() { return Math.floor(Date.now() / 1000); }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+    // Content is authored by super admins (trusted) and RLS-gated; still, only
+    // <strong>/<em> are allowed through — everything else is escaped.
+    function richText(s) {
+      return esc(s)
+        .replace(/&lt;strong&gt;/g, '<strong>').replace(/&lt;\/strong&gt;/g, '</strong>')
+        .replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>');
+    }
+    // L(): accetta stringa semplice o oggetto {it,en} (IT default).
+    function L(v) { if (v == null) return ''; if (typeof v === 'string') return v; return v.it != null ? v.it : (v.en || ''); }
+
+    function showState(msg, actionsHtml) {
+      docEl.hidden = true; toolsEl.hidden = true; footerEl.hidden = true;
+      stateEl.hidden = false;
+      stateMsg.textContent = msg;
+      if (actionsHtml) { stateActions.hidden = false; stateActions.innerHTML = actionsHtml; }
+      else { stateActions.hidden = true; stateActions.innerHTML = ''; }
+    }
+    function loginButton() { return '<a class="dw-btn" href="' + esc(consoleLoginUrl()) + '">' + esc(t('login')) + '</a>'; }
+    function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+    function chipClass(b) {
+      var s = String(b || '').toLowerCase();
+      if (s.indexOf('attenzione') === 0) return 'dw-chip dw-chip--warn';
+      if (s.indexOf('competitivo') === 0) return 'dw-chip dw-chip--comp';
+      return 'dw-chip';
+    }
+
+    function render() {
+      if (!content) return;
+      document.getElementById('dw-badge').textContent = L(content.badge) || 'Adobe internal';
+      document.getElementById('dw-title').textContent = L(content.title) || 'Dossier';
+      document.getElementById('dw-disclaimer').textContent = L(content.disclaimer) || '';
+      docEl.innerHTML = '';
+
+      (content.sections || []).forEach(function (sec) {
+        var s = el('section', 'dw-section');
+        var h = el('h2', 'dw-h');
+        h.innerHTML = '<span class="dw-h-num">' + esc(sec.n || '') + '</span>' + esc(L(sec.h));
+        s.appendChild(h);
+        if (sec.note) s.appendChild(el('p', 'dw-note', richText(L(sec.note))));
+
+        if (sec.timeline && sec.timeline.length) {
+          var tl = el('div', 'dw-timeline');
+          sec.timeline.forEach(function (c) {
+            var r = el('div', 'dw-tl-row');
+            r.appendChild(el('span', 'dw-tl-year', esc(c.anno)));
+            r.appendChild(el('p', 'dw-tl-text', richText(L(c.t))));
+            tl.appendChild(r);
+          });
+          s.appendChild(tl);
+        }
+        if (sec.stats && sec.stats.length) {
+          var g = el('div', 'dw-grid dw-grid--4');
+          sec.stats.forEach(function (n) {
+            var c = el('div', 'dw-card dw-card--stat');
+            c.appendChild(el('p', 'dw-stat-v', esc(n.v)));
+            c.appendChild(el('p', 'dw-stat-l', esc(L(n.l))));
+            if (n.s) c.appendChild(el('p', 'dw-stat-s', esc(L(n.s))));
+            g.appendChild(c);
+          });
+          s.appendChild(g);
+        }
+        if (sec.people && sec.people.length) {
+          var pg = el('div', 'dw-grid');
+          sec.people.forEach(function (p) {
+            var c = el('div', 'dw-card');
+            c.appendChild(el('p', 'dw-card-name', esc(p.name || '')));
+            c.appendChild(el('p', 'dw-card-model', esc(L(p.role))));
+            if (p.note) c.appendChild(el('p', 'dw-card-touch', esc(L(p.note))));
+            if (p.li) { var a = el('a', 'dw-person-li', 'LinkedIn ↗'); a.href = p.li; a.target = '_blank'; a.rel = 'noopener noreferrer'; c.appendChild(a); }
+            pg.appendChild(c);
+          });
+          s.appendChild(pg);
+        }
+        if (sec.items && sec.items.length) {
+          var ul = el('ul', 'dw-list');
+          sec.items.forEach(function (it) {
+            var li = el('li', 'dw-li');
+            if (it && typeof it === 'object' && it.t != null) {
+              if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(it.badge) + '</span>';
+              li.appendChild(el('span', null, richText(L(it.t))));
+            } else {
+              li.innerHTML = richText(L(it));
+            }
+            ul.appendChild(li);
+          });
+          s.appendChild(ul);
+        }
+        if (sec.rows && sec.rows.length) {
+          var rows = el('div', 'dw-rows');
+          sec.rows.forEach(function (r) {
+            var row = el('div', 'dw-row');
+            var left = el('div');
+            left.appendChild(el('p', 'dw-row-k', esc(L(r.k))));
+            if (r.sub) left.appendChild(el('p', 'dw-row-sub', esc(L(r.sub))));
+            row.appendChild(left);
+            row.appendChild(el('p', 'dw-row-v', richText(L(r.v))));
+            rows.appendChild(row);
+          });
+          s.appendChild(rows);
+        }
+        if (sec.ideas && sec.ideas.length) {
+          var ig = el('div', 'dw-ideas');
+          sec.ideas.forEach(function (b) {
+            var a = el('article', 'dw-idea');
+            if (b.tag) a.appendChild(el('span', 'dw-chip', esc(b.tag)));
+            a.appendChild(el('h4', 'dw-idea-name', esc(L(b.nome))));
+            if (b.parte) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Da dove parte</span> ' + richText(L(b.parte))));
+            if (b.cosa) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Cosa mostriamo</span> ' + richText(L(b.cosa))));
+            if (b.adobe) a.appendChild(el('p', 'dw-idea-adobe', esc(b.adobe)));
+            ig.appendChild(a);
+          });
+          s.appendChild(ig);
+        }
+        if (sec.table && sec.table.rows) {
+          var tb = el('div', 'dw-table'); tb.setAttribute('role', 'table');
+          var cols = (sec.table.head || []).length || (sec.table.rows[0] || []).length;
+          var tpl = 'grid-template-columns: 2.2fr ' + new Array(Math.max(cols - 1, 0)).fill('1fr').join(' ') + ';';
+          if (sec.table.head) {
+            var hd = el('div', 'dw-tr dw-tr--head'); hd.setAttribute('role', 'row'); hd.style.cssText = tpl;
+            sec.table.head.forEach(function (c) { var sp = el('span', null, esc(c)); sp.setAttribute('role', 'columnheader'); hd.appendChild(sp); });
+            tb.appendChild(hd);
+          }
+          sec.table.rows.forEach(function (r) {
+            var tr = el('div', 'dw-tr'); tr.setAttribute('role', 'row'); tr.style.cssText = tpl;
+            r.forEach(function (c, i) {
+              var sp = el('span', i === 0 ? 'dw-td-idea' : null); sp.setAttribute('role', 'cell');
+              if (sec.table.pcol != null && i === sec.table.pcol) sp.innerHTML = '<span class="dw-p dw-p--' + esc(String(c).toLowerCase()) + '">' + esc(c) + '</span>';
+              else sp.textContent = c;
+              tr.appendChild(sp);
+            });
+            tb.appendChild(tr);
+          });
+          s.appendChild(tb);
+        }
+        var hasSay = sec.say && sec.say.length, hasDont = sec.dont && sec.dont.length;
+        if (hasSay || hasDont) {
+          var cw = el('div', 'dw-cols');
+          var mk = function (title, arr, mod) {
+            var c = el('div', 'dw-col ' + mod);
+            c.appendChild(el('h3', 'dw-col-h', esc(title)));
+            var u = el('ul', 'dw-list');
+            (arr || []).forEach(function (it) { u.appendChild(el('li', 'dw-li dw-li--tight', richText(L(it)))); });
+            c.appendChild(u); return c;
+          };
+          if (hasSay) cw.appendChild(mk('✓ Da dire', sec.say, 'dw-col--ok'));
+          if (hasDont) cw.appendChild(mk('✗ Da non dire', sec.dont, 'dw-col--no'));
+          if (!hasSay || !hasDont) cw.style.gridTemplateColumns = '1fr';
+          s.appendChild(cw);
+        }
+        if (sec.sources && sec.sources.length) {
+          var sl = el('ul', 'dw-sources');
+          sec.sources.forEach(function (b) {
+            var li = el('li', 'dw-source');
+            li.innerHTML = '<span class="dw-chip dw-chip--' + esc(b.tipo || 'ref') + '">' + esc(b.tipo || '') + '</span>';
+            var a = el('a'); a.href = b.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = b.label || b.url;
+            li.appendChild(a); sl.appendChild(li);
+          });
+          s.appendChild(sl);
+        }
+        if (sec.foot) s.appendChild(el('p', 'dw-note', richText(L(sec.foot))));
+        docEl.appendChild(s);
+      });
+
+      footerEl.textContent = (L(content.footer) ? L(content.footer) + ' · ' : '') + (L(content.updated) || '') + ' · Adobe internal';
+      stateEl.hidden = true; docEl.hidden = false; toolsEl.hidden = false; footerEl.hidden = false;
+    }
+
+    var pdfBtn = document.getElementById('dw-pdf');
+    if (pdfBtn) pdfBtn.addEventListener('click', function () { window.print(); });
+
+    function shareToken() {
+      try {
+        var v = new URLSearchParams(location.search).get('t');
+        return (v && /^[0-9a-f-]{32,40}$/i.test(v)) ? v : null;
+      } catch (_) { return null; }
+    }
+
+    // Unlisted secret-link path: fetch content by token via SECURITY DEFINER RPC, no login.
+    function bootFromToken(token) {
+      showState(t('checking'));
+      fetch(SUPABASE_URL + '/rest/v1/rpc/get_shared_doc', {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ p_token: token }),
+      }).then(function (r) {
+        if (!r.ok) { showState(t('error')); return null; }
+        return r.json();
+      }).then(function (data) {
+        if (data == null) return;
+        if (!data || typeof data !== 'object' || !data.sections) { showState(t('needLogin'), loginButton()); return; }
+        content = data; render();
+      }).catch(function () { showState(t('error')); });
+    }
+
+    function boot() {
+      if (!SUPABASE_URL || !SUPABASE_ANON) { showState(t('backend')); return; }
+      var token = shareToken();
+      if (token) { bootFromToken(token); return; }
+      var sess = readSession();
+      if (!sess || !sess.access_token) { showState(t('needLogin'), loginButton()); return; }
+      if (sess.expires_at && sess.expires_at < nowSec()) { showState(t('expired'), loginButton()); return; }
+      showState(t('checking'));
+      fetch(SUPABASE_URL + '/rest/v1/restricted_docs?slug=eq.' + encodeURIComponent(DOC_SLUG) + '&select=content', {
+        headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + sess.access_token, Accept: 'application/json' },
+      }).then(function (r) {
+        if (r.status === 401 || r.status === 403) { showState(t('expired'), loginButton()); return null; }
+        if (!r.ok) { showState(t('error')); return null; }
+        return r.json();
+      }).then(function (rows) {
+        if (rows == null) return;
+        if (!rows.length || !rows[0].content) { showState(t('noAccess')); return; }
+        content = rows[0].content; render();
+      }).catch(function () { showState(t('error')); });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+    else boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+  </script>
+
+  <style is:global>
+    /* NB: is:global — il contenuto è iniettato via JS (nodi senza data-astro-cid),
+       quindi gli stili NON possono essere scoped. Classi prefissate .dw-*. */
+    .dw-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(120% 60% at 18% 0%, rgba(37, 137, 0, 0.16), transparent 55%),
+        var(--doc-bg);
+    }
+    .dw-header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(8, 26, 1, 0.94); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--doc-line);
+      padding: 0.9rem clamp(1.25rem, 4vw, 3rem) 0.8rem;
+    }
+    .dw-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 64rem; margin-inline: auto; flex-wrap: wrap; }
+    .dw-header-left { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex-wrap: wrap; }
+    .dw-badge { flex-shrink: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; background: var(--doc-badge); padding: 0.25rem 0.6rem; border-radius: 3px; }
+    .dw-title { font-family: var(--doc-font-display); font-weight: 700; letter-spacing: -0.01em; font-size: clamp(1.05rem, 2vw, 1.35rem); color: #fff; line-height: 1.2; }
+    .dw-header-right { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; flex-wrap: wrap; }
+    .dw-pdf { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; color: var(--doc-bg); background: var(--doc-accent); border: 0; border-radius: 4px; padding: 0.3rem 0.75rem; cursor: pointer; }
+    .dw-pdf:hover { background: var(--doc-accent-hi); }
+    .dw-deck-link { font-size: 0.8rem; font-weight: 600; color: var(--doc-accent); text-decoration: none; white-space: nowrap; }
+    .dw-deck-link:hover { text-decoration: underline; }
+    .dw-disclaimer { max-width: 64rem; margin: 0.5rem auto 0; font-size: 0.8rem; line-height: 1.5; color: var(--doc-ink-3); }
+
+    .dw-main { max-width: 64rem; margin-inline: auto; padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) 4rem; display: flex; flex-direction: column; gap: clamp(2rem, 4vw, 3rem); }
+
+    .dw-state { min-height: 40vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; }
+    .dw-state-msg { font-size: 1.02rem; line-height: 1.6; color: var(--doc-ink-2); max-width: 34rem; }
+    .dw-btn { display: inline-block; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; color: var(--doc-bg); background: var(--doc-accent); border-radius: 5px; padding: 0.6rem 1.2rem; text-decoration: none; }
+    .dw-btn:hover { background: var(--doc-accent-hi); }
+
+    .dw-section { border-top: 1px solid var(--doc-line); padding-top: clamp(1.25rem, 2.5vw, 2rem); }
+    .dw-h { display: flex; align-items: baseline; gap: 0.8rem; font-family: var(--doc-font-display); font-weight: 700; letter-spacing: -0.015em; font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: #fff; margin-bottom: 1.1rem; }
+    .dw-h-num { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--doc-accent); font-family: var(--doc-font-body); }
+    .dw-note { font-size: 0.88rem; line-height: 1.55; color: var(--doc-ink-3); margin-top: 0.9rem; max-width: none; }
+    .dw-note strong { color: #fff; font-weight: 600; }
+
+    .dw-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; margin: 0; padding: 0; }
+    .dw-li { position: relative; padding-left: 1.15rem; font-size: 0.96rem; line-height: 1.6; color: var(--doc-ink-2); }
+    .dw-li::before { content: ''; position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 50%; background: var(--doc-accent); }
+    .dw-li--tight { font-size: 0.9rem; }
+    .dw-li strong { color: #fff; font-weight: 600; }
+    .dw-li em { color: var(--doc-alt-hi); font-style: normal; }
+
+    .dw-chip { display: inline-flex; margin-right: 0.5rem; padding: 0.14rem 0.5rem; border-radius: 999px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--doc-bg); background: var(--doc-accent); vertical-align: middle; }
+    .dw-chip--warn { background: var(--doc-badge); color: var(--doc-bg); }   /* inchiostro scuro sull'arancio: 7,1:1 (il bianco dava 2,2:1) */
+    .dw-chip--comp { background: #c8321e; color: #fff; }   /* rosso di allerta: nella palette ISP non c'e' un terzo colore e il verde di sistema non segnala nulla. Pagina interna, non artefatto cliente. 5,3:1 */
+    .dw-chip--primaria { background: var(--doc-accent); }
+    .dw-chip--stampa { background: var(--doc-alt-hi); color: #fff; }   /* 4,5:1 */
+    .dw-chip--profilo { background: var(--doc-ink-3); }
+
+    .dw-timeline { display: flex; flex-direction: column; margin-bottom: 1rem; }
+    .dw-tl-row { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: 0.7rem 0; border-top: 1px solid var(--doc-line); }
+    .dw-tl-year { font-family: var(--doc-font-display); font-weight: 700; color: var(--doc-accent); font-size: 0.9rem; letter-spacing: 0.02em; }
+    .dw-tl-text { font-size: 0.93rem; line-height: 1.55; color: var(--doc-ink-2); max-width: none; }
+    @media (max-width: 640px) { .dw-tl-row { grid-template-columns: 1fr; gap: 0.2rem; } }
+
+    .dw-grid { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .dw-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 900px) { .dw-grid--4 { grid-template-columns: repeat(4, 1fr); } }
+    .dw-card { border: 1px solid var(--doc-line); border-radius: 10px; padding: 1rem 1.1rem; background: rgba(16, 48, 6, 0.6); }
+    .dw-card-name { font-family: var(--doc-font-display); font-weight: 700; font-size: 1.02rem; color: #fff; }
+    .dw-card-model { font-size: 0.85rem; line-height: 1.45; color: var(--doc-alt-hi); margin-top: 0.25rem; max-width: none; }
+    .dw-card-touch { font-size: 0.88rem; line-height: 1.5; color: var(--doc-ink-2); margin-top: 0.5rem; max-width: none; }
+    .dw-person-li { display: inline-block; margin-top: 0.55rem; font-size: 0.78rem; font-weight: 600; color: var(--doc-accent); text-decoration: none; }
+    .dw-card--stat { text-align: center; }
+    .dw-stat-v { font-family: var(--doc-font-display); font-weight: 800; font-size: 1.35rem; color: var(--doc-accent); letter-spacing: -0.02em; line-height: 1.1; }
+    .dw-stat-l { font-size: 0.86rem; line-height: 1.4; color: var(--doc-ink-2); margin-top: 0.4rem; max-width: none; }
+    .dw-stat-s { font-size: 0.72rem; color: var(--doc-ink-4); margin-top: 0.4rem; letter-spacing: 0.02em; }
+
+    .dw-rows { display: flex; flex-direction: column; }
+    .dw-row { display: grid; grid-template-columns: 13rem 1fr; gap: 1rem; padding: 0.75rem 0; border-top: 1px solid var(--doc-line); align-items: start; }
+    .dw-row-k { font-family: var(--doc-font-display); font-weight: 700; font-size: 0.98rem; color: #fff; line-height: 1.3; }
+    .dw-row-sub { font-size: 0.78rem; line-height: 1.4; color: var(--doc-alt-hi); margin-top: 0.2rem; max-width: none; }
+    .dw-row-v { font-size: 0.92rem; line-height: 1.55; color: var(--doc-ink-2); max-width: none; }
+    .dw-row-v strong { color: #fff; }
+    @media (max-width: 640px) { .dw-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+    .dw-ideas { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-ideas { grid-template-columns: 1fr 1fr; } }
+    .dw-idea { border: 1px solid var(--doc-line); border-radius: 12px; padding: 1.15rem 1.25rem; background: rgba(16, 48, 6, 0.6); display: flex; flex-direction: column; gap: 0.5rem; }
+    .dw-idea > .dw-chip { align-self: flex-start; }
+    .dw-idea-name { font-family: var(--doc-font-display); font-weight: 700; font-size: 1.1rem; color: #fff; margin-top: 0.15rem; }
+    .dw-idea-line { font-size: 0.9rem; line-height: 1.55; color: var(--doc-ink-2); max-width: none; }
+    .dw-idea-k { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--doc-ink-4); margin-bottom: 0.1rem; }
+    .dw-idea-adobe { margin-top: auto; padding-top: 0.6rem; border-top: 1px dashed var(--doc-line); font-family: var(--doc-font-display); font-weight: 700; font-size: 0.9rem; color: var(--doc-alt-hi); max-width: none; }
+
+    .dw-table { display: flex; flex-direction: column; border: 1px solid var(--doc-line); border-radius: 10px; overflow: hidden; }
+    .dw-tr { display: grid; gap: 0.75rem; padding: 0.7rem 1rem; border-top: 1px solid var(--doc-line); font-size: 0.85rem; color: var(--doc-ink-2); align-items: center; }
+    .dw-tr:first-child { border-top: 0; }
+    .dw-tr--head { background: rgba(16, 48, 6, 0.8); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--doc-ink-3); }
+    .dw-td-idea { font-weight: 600; color: #fff; }
+    .dw-p { display: inline-flex; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; }
+    .dw-p--p0 { background: var(--doc-badge); color: #fff; }
+    .dw-p--p1 { background: var(--doc-line); color: var(--doc-ink-2); }
+    @media (max-width: 760px) { .dw-tr { grid-template-columns: 1fr !important; gap: 0.25rem; } .dw-tr--head { display: none; } .dw-td-idea { font-size: 0.95rem; } }
+
+    .dw-cols { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .dw-cols { grid-template-columns: 1fr 1fr; } }
+    .dw-col { border: 1px solid var(--doc-line); border-radius: 10px; padding: 1.1rem 1.2rem; background: rgba(16, 48, 6, 0.6); }
+    .dw-col--ok { box-shadow: inset 0 2px 0 0 var(--doc-accent); }
+    .dw-col--no { box-shadow: inset 0 2px 0 0 var(--doc-badge); }
+    .dw-col-h { font-family: var(--doc-font-display); font-weight: 700; font-size: 0.98rem; color: #fff; margin-bottom: 0.8rem; }
+    .dw-col--no .dw-li::before { background: var(--doc-badge); }
+
+    .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; margin: 0; padding: 0; }
+    .dw-source { font-size: 0.9rem; line-height: 1.5; }
+    .dw-source a { color: var(--doc-ink-2); }
+    .dw-source a:hover { color: var(--doc-accent); }
+
+    .dw-footer { border-top: 1px solid var(--doc-line); padding-top: 1.2rem; font-size: 0.78rem; letter-spacing: 0.04em; color: var(--doc-ink-4); }
+
+    /* ── Print / PDF: white paper, dark ink, no chrome ── */
+    @media print {
+      .dw-noprint { display: none !important; }
+      .dw-shell { background: #fff !important; }
+      .dw-main { max-width: none; padding: 0 1.5rem; gap: 1.4rem; }
+      .dw-section { border-top: 1px solid #ccc; break-inside: avoid; }
+      .dw-h, .dw-title, .dw-card-name, .dw-col-h, .dw-li strong, .dw-idea-name, .dw-row-k, .dw-td-idea, .dw-stat-l { color: #111 !important; }
+      .dw-h-num, .dw-tl-year, .dw-idea-adobe, .dw-card-model, .dw-row-sub, .dw-stat-v { color: #1d6b00 !important; }
+      .dw-li, .dw-tl-text, .dw-note, .dw-source a, .dw-li em, .dw-idea-line, .dw-row-v, .dw-card-touch, .dw-tr { color: #222 !important; }
+      .dw-col, .dw-card, .dw-idea, .dw-table { border: 1px solid #ccc; background: #fff; }
+      .dw-chip, .dw-p { color: #fff !important; background: #1d6b00 !important; }
+      .dw-li::before { background: #1d6b00; }
+      a { text-decoration: none; }
+    }
+  </style>
+</DocLayout>

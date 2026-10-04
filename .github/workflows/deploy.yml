@@ -61,10 +61,15 @@ jobs:
           cp -r apps/aperture-email/dist/. pages/aperture-email/
           mkdir -p pages/poste-sei-domande
           cp -r apps/poste-sei-domande/dist/. pages/poste-sei-domande/
+          # intesa-scala-umana: app minimale, SOLO la pagina dossier (orfana,
+          # gated, noindex). Nessun index.html alla radice: la verifica sotto
+          # controlla /dossier/index.html, non /index.html.
+          mkdir -p pages/intesa-scala-umana
+          cp -r apps/intesa-scala-umana/dist/. pages/intesa-scala-umana/
       - name: Verify artifact structure
         run: |
           fail=0
-          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/acquisizione/index.html; do
+          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/intesa-scala-umana/dossier/index.html pages/acquisizione/index.html; do
             if [ ! -f "$f" ]; then echo "MISSING: $f"; fail=1; fi
           done
           if [ $fail -ne 0 ]; then echo "Artifact structure check failed" && exit 1; fi
