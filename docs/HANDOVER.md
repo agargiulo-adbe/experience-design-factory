@@ -36,3 +36,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · §32 **Poste «Sei domande»**](./HANDOVER-08.md) — §32 apre con la correzione del claim portante (rollout, non GA).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
+- [Parte 11 — §33 **Intesa Sanpaolo «Su scala umana»**](./HANDOVER-11.md) — dossier gated + quattro slide per il 22 ott; perché NON è un'experience e perché l'app non è generata.
