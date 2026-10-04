@@ -100,7 +100,7 @@ Leak check sul `dist`: **zero** su sedici termini (nomi, competitor, cifre, «do
 ### 33.6 Le quattro slide
 
 `docs/Intesa Sanpaolo/output/20261022_Adobe_x_Intesa_Su_scala_umana.pptx` (+ PDF e PNG),
-generate da `output/build/build_vassena.py` **da zero** sul master Adobe 2026 svuotato — non
+generate da `output/build/build_slide_22ott.py` **da zero** sul master Adobe 2026 svuotato — non
 adattando un deck esistente. Copertina + 4, come deciso in call.
 
 1. **Da dove partiamo** — le quattro direttrici dichiarate dal cliente a maggio e le tre priorità
@@ -120,7 +120,7 @@ chi riceve, e la cosa di cui parla in pubblico — competitor solo nel dossier.
 
 Trappola di `python-pptx` su questo template: il **master delle note è stato svuotato** insieme al
 resto, non ha segnaposti, quindi `notes_text_frame` torna `None` e le note si perdono in silenzio.
-`build_vassena.py` costruisce il segnaposto a mano (e `insert_element_before` vuole i tagname come
+`build_slide_22ott.py` costruisce il segnaposto a mano (e `insert_element_before` vuole i tagname come
 stringa, non passati per `qn()`).
 
 ### 33.7 Che cosa resta aperto
