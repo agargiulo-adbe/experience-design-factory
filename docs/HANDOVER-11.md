@@ -127,8 +127,26 @@ stringa, non passati per `qn()`).
 
 Tutto in `§12` del dossier, con la domanda già scritta. In sintesi: il perimetro dell'incumbent
 (l'unica fotografia pubblica è del **2017** e chi la raccontava non ricopre più quel ruolo), chi
-ne fa il system integration, se esista una gara, lo stato di un contratto scaduto il 30 settembre,
-e la conferma di tre nomi che in trascrizione ballano. **L'esito dell'incontro del 13 ottobre è un
-buco dichiarato per scelta**: chi ha preparato il materiale è fuori sede dal 10 al 15.
+ne fa il system integration, se esista una gara, e lo stato di un contratto scaduto il 30 settembre.
+**L'esito dell'incontro del 13 ottobre è un buco dichiarato per scelta**: chi ha preparato il
+materiale è fuori sede dal 10 al 15.
+
+**Chiuso la sera del 4 ott: la mappa del potere.** I nomi che in trascrizione ballavano sono stati
+verificati su LinkedIn, e la §04 del dossier è passata da ipotesi a mappa con fonte, distinguendo
+le schede complete da quelle laterali (abbreviate e autodichiarate). Tre correzioni che contano:
+
+- **chi fa il targeting commerciale** e **il suo capo** — che guida *servizio sviluppo commerciale
+  e CRM* nella Direzione Customer Experience e CRM della Divisione — sono due persone distinte, ed
+  erano la stessa casella confusa in call;
+- **la persona del recap di maggio non è «il referente IT»**: è **Head of Group Channels**, cioè un
+  livello sopra il responsabile canali della Divisione. Era una caratterizzazione sbagliata, ora
+  corretta in tre punti del dossier;
+- è comparso un **Head of Advanced Analytics della Divisione**: è il nome che va nella stanza se la
+  conversazione va sul viaggio intero, e prima non c'era.
+
+E un fatto da usare il 6 ottobre: **due delle persone che contano su questo conto vengono dal
+partner con cui si pranza quel giorno** — una ne è stata Partner della CRM Service Line fino al
+2007, l'altra vi ha fatto digital marketing per i financial services. Conviene chiedere a loro
+invece di indovinare.
 
 **Scadenza vera: venerdì 9 ottobre** (revisione interna), non il 22.
