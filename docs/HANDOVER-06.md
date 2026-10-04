@@ -1,5 +1,93 @@
-# Handover — Parte 6 di 9
+# Handover — Parte 6 di 10
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
+
+---
+
+## 15. Root hub, feature parity & Connessioni Intelligenti (13–14 lug 2026)
+
+### 15.1 Factory Hub (root)
+`apps/factory-hub` è la **landing** a `/experience-design-factory/` (prima la root era Max Mara → link "generico"). App Astro minimale, **senza tailwind né `@edf/core`**, stile scoped scuro-neutro (NON un brand cliente). Contiene: 4 card esperienza brand-accented con link diretti + Showcase + Console. Serve anche gli **stub di redirect** (`src/pages/<slug>.astro` via `_redirect.astro`) per i vecchi deep-link maxmara root-level (`/acquisizione/`, `/engagement/`, `/conversione/`, `/loyalty/`, `/motore-adobe/`, `/persona/`, `/chiusura/`, `/maxmara-adobe/`) → redirect a `/generazioni-maxmara/<path>/` preservando `location.search`. Max Mara ha cambiato `base` in `astro.config.mjs`. Deploy.yml: root ← factory-hub, maxmara → sottodir.
+
+### 15.2 Feature parity (uniforme su tutti i deck)
+- **Frecce bidirezionali tra sezioni**: ogni pagina-deck ha `nextHref` **e** `prevHref`; il runtime di gating riscrive **sia** `data-deck-next` **sia** `data-deck-prev-href` (`nextEnabledAfter()` / `prevEnabledBefore()`) per saltare le sezioni disattivate. Regola nel Type & legibility contract (`CLAUDE.md`).
+- **Max Mara resa config-driven** (predava il sistema): `admin.astro` (PAGE_REGISTRY dai veri slide id, 12 SOLUTIONS dai prodotti presenti), runtimes ferrari-style (media slot + gating + custom slides), `.cs-*` retinted quiet-luxury. Pagine funnel volutamente **non** gated (narrativa persona continua).
+
+### 15.3 Connessioni Intelligenti — stato & lock
+> ⚠️ **STRUTTURA SUPERATA il 31 ago 2026 dalla BIFORCAZIONE (vedi §26):** la nav qui sotto e la mappa slide di §15.4 descrivono l'esperienza monolitica pre-biforcazione. Oggi: tronco (cover+scenario+bivio) + rami `/fs-park/*` e `/trenitalia/*`. **I 13 vincoli LOCKED di §15.4 e le fonti restano PIENAMENTE VALIDI** (i contenuti sono migrati nei rami); la mappa slide corrente è in `admin.astro` e in §26.
+
+`apps/trenitalia-connessioni` · IT · cliente **FS Group / Ferrovie** (Trenitalia + FS Park + FS Technology). Nav (storica): SCENARIO · FOUNDATION · CJA (convergenza) · CONNESSIONI (data-collab) · ROADMAP · CASI D'USO.
+- **Personas (LOCKED)**: **Davide** (pendolare business Milano–Roma) + **Elena** (business/frequent traveler). **MAI Marco/Sofia** (=UniCredit) né Giulia/Francesca (=Max Mara) né Adriana (=UniCredit B2B). Foto persona rigenerata e **distinta** da UniCredit (era duplicata).
+- **Leggibilità (LOCKED)**: type generoso per proiezione (vedi §8 / Type contract). L'ecosistema Foundation va tenuto **impilato full-width** (righe categoria), non a grid — richiesta esplicita cliente. `audit:deck` a **0**.
+- **Sezione governance dedicata** (`slide-governance` in connessioni): scudo privacy & security per tutte le app AEP (non solo Data Collaboration).
+- **Casi d'uso**: framing unificato "scenari di ispirazione ancorati al mondo FS" — NON "3 provati + 8 da esplorare". Structure 4-col: Scenario · Segnale CJA · Azione · Impatto Atteso — uniforme su core cases E "Da esplorare". Tutti etichettati "da validare sul campo".
+- Memorie: `trenitalia-connessioni`, `hub-root-and-parity`.
+
+### 15.4 Connessioni Intelligenti — mappa slide & vincoli contenuto (LOCKED)
+
+**Struttura slide corrente** (da `admin.astro`):
+
+| Sezione | Slide id | Label |
+|---|---|---|
+| scenario | `slide-cover` | Cover — Il viaggio del cliente oggi |
+| scenario | `slide-marco` | Davide — profilo persona |
+| scenario | `slide-touchpoints` | I touchpoint isolati |
+| scenario | `slide-email-gap` | Oracle Responsys — gap comunicativo |
+| scenario | `slide-opportunity` | L'opportunità integrata |
+| fondazione | `slide-cover` | Cover — La foundation |
+| fondazione | `slide-ecosystem` | Ecosistema a strati |
+| fondazione | `slide-salesforce` | Salesforce Foundation Q1 2026 |
+| fondazione | `slide-choice` | Non sostituire. Connettere. |
+| convergenza | `slide-cover` | Cover — CJA il layer di convergenza |
+| convergenza | `slide-convergenza` | Tutte le fonti. Un'unica vista. |
+| convergenza | `slide-cja-vs-cdp` | CJA è / non è — disambiguazione (**nuova**, lug 2026) |
+| convergenza | `slide-demo-cja` | Demo CJA Workspace — Davide |
+| convergenza | `slide-content-analytics` | Content Analytics su AEM |
+| convergenza | `slide-fasi` | Le 3 fasi — approccio graduale |
+| connessioni | `slide-cover` | Cover — FS Park × Trenitalia |
+| connessioni | `slide-gap` | Il gap attuale |
+| connessioni | `slide-why-collab` | Perché serve Data Collaboration |
+| connessioni | `slide-usecases` | I 3 use case ad impatto |
+| connessioni | `slide-data-collab` | Data Collaboration — clean room |
+| connessioni | `slide-governance` | AEP — Data Governance & Security |
+| connessioni | `slide-value` | Il valore end-to-end |
+| roadmap | `slide-cover` | Cover — Roadmap |
+| roadmap | `slide-3fasi` | Le 3 fasi evolutive |
+| roadmap | `slide-fase1-cja` | Fase 1 deep-dive — CJA + Governance (**nuova**, lug 2026) |
+| roadmap | `slide-rtcdp-ajo` | Fase 2 deep-dive — Real-Time CDP + AJO |
+| roadmap | `slide-mix-modeler` | Fase 3 — Adobe Mix Modeler |
+| roadmap | `slide-mix-usecase` | Fase 3 — Mix Modeler use case FS |
+| roadmap | `slide-genstudio` | Fase 3 — GenStudio + Target + Exp. Accelerator |
+| casi-duso | `slide-cover` | Cover — recap e da esplorare |
+| casi-duso | `slide-recap` | I 3 casi core, in sintesi |
+| casi-duso | `slide-explore-retention` | Da esplorare · Retention & Loyalty |
+| casi-duso | `slide-explore-loyalty` | Da esplorare · Loyalty & Acquisition |
+| casi-duso | `slide-explore-growth` | Da esplorare · Acquisition & Ecosystem |
+| casi-duso | `slide-explore-intelligence` | Da esplorare · Intelligence & Optimization |
+| casi-duso | `slide-sintesi` | Sintesi + invito |
+
+**Vincoli contenuto (LOCKED — non regredire in nessuna sessione):**
+
+1. **Nessun nome di integratore/consulente** — non nominare mai IBM, Accenture o Pico. Usare "system integrator" se necessario; non attribuire decisioni architetturali interne al cliente.
+2. **Nessuna "lottizzazione"** — non riportare mai le decisioni di assegnazione interna tra vendor/team FS. Nell'Experience riportare **solo i benefici e il valore** di un'integrazione con CJA.
+3. **Oracle Responsys = CRM B2C che CJA complementa, NON sostituisce.** Trenitalia gestisce l'intera base clienti con Oracle CDP + Eloqua; CJA (e qualsiasi altro componente Adobe) va valorizzato **in combinata** con Oracle, non in sostituzione né in opposizione.
+4. **AJO framing locked**: "AJO orchestra SOPRA Oracle Responsys — non lo sostituisce. Responsys rimane il motore di esecuzione email". Usare questo framing esatto in roadmap e in qualsiasi slide che menzioni AJO.
+5. **CJA ≠ CDP** (slide `slide-cja-vs-cdp` in convergenza): CJA è un **layer di analytics e convergenza**, non un CDP. La disambiguazione ha una slide dedicata; non rimuoverla.
+6. **KPI numerici** — ogni metrica numerica deve recare l'etichetta **"stima illustrativa"** o **"KPI da validare sul campo"**. Nessuna promessa precisa senza una fonte verificabile.
+7. **Casi d'uso** — tutti i casi (core 3 + da esplorare 8) sono etichettati **"da validare sul campo"**, mai "dimostrati". La sintesi dice "3 casi core da validare · 8 da esplorare insieme".
+8. **GDPR Data Collaboration** — FS Park e Trenitalia sono **entità legali distinte** anche all'interno del Gruppo FS. Il GDPR richiede una clean room (Data Collaboration) anche per condivisione audience intra-gruppo. Questa rationale è inline in `slide-why-collab` e non va mai rimossa.
+9. **AEP Governance / breach angle** — il cyberattacco a Trenitalia (giugno 2026, sky.it/cronaca/2026/06/26) è il driver di credibilità per la sezione Data Governance in `slide-governance`. Non rimuoverlo, ma non collegarlo a numeri o danni specifici (dati non pubblici).
+10. **Email 611/anno** — fonte: analisi campione email Trenitalia tramite Google Takeout personale (luglio 2026, 1 account cliente). **Solo illustrativa**, non pubblicare come dato ufficiale. Il footnote nella slide va tenuto.
+11. **"Le fondamenta"** (NON "La foundation") — titolo della sezione fondazione in italiano corretto. Tenere coerente in header, nav, CTA, meta title.
+12. **Nessuna timeline sulle fasi** — le date/mesi per le fasi roadmap erano state rimosse. Le fasi sono etichettate "Fase 1/2/3" senza suffissi temporali. Il disclaimer "Scenario evolutivo a titolo illustrativo — fasi e tempistiche da definire con FS Technology" va mantenuto.
+13. **Touchpoint scenario** — 4 touchpoint puliti (trenitalia.com, Frecce booking, App Trenitalia, FS Park app/web). Nessun riferimento a loyalty program esterno, AI-powered, o sistemi di terze parti non Adobe nel touchpoint layer.
+
+**Fonti verificate citate nell'experience:**
+- Salesforce Foundation FS Technology: `fsnews.it` — FS Technology + Salesforce Foundation Digitale (mar 2026).
+- Oracle Responsys / email count: campione email personale (Google Takeout, luglio 2026, 1 account, solo illustrativo).
+- AEM su trenitalia.com: osservazione pubblica.
+- Breach Trenitalia: `sky.it/cronaca/2026/06/26` (giugno 2026).
+
+**Solution gating corrente**: `convergenza → cja` · `connessioni → data-collab` · `roadmap → rtcdp + ajo + mix-modeler`.
 
 ---
 
@@ -174,76 +262,25 @@ Codificate nella sezione «Working rules» di `CLAUDE.md` (ogni experience prese
   `title`=nome sito → "SiteName | SiteName" (inquina il link-preview, che legge `<title>` in
   assenza di tag OG). Guard: `title === SiteName ? title : \`${title} | SiteName\``, su tutte le
   layout + showcase. Correggeva unicredit/maxmara/agos/trenitalia/eni.
-## 23. Redesign «eccellenza» E2E dei 6 deck (`/impeccable`) — 21 lug 2026, live in `main`
-Ridisegno end-to-end del 100% dell'experience-design di **tutti e 6 i deck** a livello
-gallery-grade. Metodo invariante: un **concept brand-native** centralizzato come
-design-system `.xx-*` nel `global.css` di ogni app → ogni sezione ricostruita via **subagent**
-(un file ciascuno, senza build/worktree per non corrompere il `dist` condiviso) → build →
-QC screenshot a 1920 → fix → commit. **Copy/claim/numeri/fonti/personas preservati VERBATIM**:
-cambiati solo markup, layout e visual, mai il testo (rubrica `copy-must-be-human` rispettata).
-
-Concept per esperienza: **Agos** `.tdu-*` "two worlds, one current" (petrolio/acqua); **Atelier**
-`.loom-*` telaio/trama-e-ordito (carbonio/champagne); **Ferrari** `.frl-*` racing line
-(Rosso Corsa/carbonio/giallo); **UniCredit** `.uc-*` "il filo" d'oro (rosso #BE2027/blu-notte,
-light-dominant); **Max Mara** `.mm-*` "il filo di seta" cammello quiet-luxury (light-dominant);
-**FS/Connessioni** `.fs-*` "la linea" signal-line ambra su rete scura (dark-dominant).
-
-I 6 branch feature mergiati in `main` con `--no-ff` (zero conflitti: ogni branch tocca solo la
-sua app), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati
-**eliminati** (remoti + locali) dopo il merge. **`audit:deck` non rigirato** dopo il redesign
-(ambiente sandbox) e QC 1920 fatto solo a campione → follow-up P1 nel backlog (§10).
-
-### 23.1 Fix tecnico riutilizzabile — flip degli ink su slide inverse/brand
-Il componente `Slide` (`@edf/core`) **NON espone `data-bg`**: applica lo sfondo come **classe
-Tailwind** (`bg-[var(--surface-inverse)]`, `bg-[var(--accent-primary)]`). Quindi i selettori
-di flip devono targettare la classe reale (`[data-slide].bg-\[var\(--surface-inverse\)\]`),
-non un attributo. Due regole: (1) `bg="brand"` non è sempre scuro — per Max Mara cammello è un
-mid-tone chiaro, tieni ink scuro; flippa solo `inverse`. (2) `bg="inverse"` non è sempre chiaro
-— una cover con backdrop scuro resta scura: scopa il flip per `#id` alle slide che rendono
-davvero chiare (es. FS `#slide-opportunity`), non a tutte le `inverse`. Verifica sempre le
-slide inverse/brand con screenshot 1920. Memoria `deck-ink-flip-selector`.
-
-### 23.2 Nota CI — `pnpm build` ≠ gate del CI (typecheck **e** lint)
-`pnpm build` passa anche con errori TypeScript e con problemi di lint (astro build non fa il
-type-check completo né linta); il CI usa `pnpm typecheck` (`astro check`) **e** `pnpm lint`
-(eslint) e li blocca. Nel consolidamento del redesign sono emersi, con `build` verde, tre casi:
-- **typecheck** — 2 errori TS dai subagent FS (param `any` in `fondazione.astro`; campo `badge`
-  inesistente in `scenario.astro`) → `b0106bc`.
-- **lint** — 1 *parsing error* in Agos `scenario.astro`: un commento `<!-- -->` **dentro** il
-  `.map()` (espressione JSX) conta come secondo elemento root → "JSX expressions must have one
-  parent element". I commenti HTML a livello template sono ok; dentro `{...}` no. → `0298ccc`.
-**Regola: prima di pushare un redesign girare `pnpm typecheck` E `pnpm lint`, non solo
-`pnpm build`.** Nota: build/deploy NON dipendono dal CI (workflow distinti) — le pagine possono
-essere già live mentre il gate qualità è rosso.
-
----
-## 24. Orbita — Eni (28 ago 2026)
-
-**App**: `apps/eni-orbita` · live a `/experience-design-factory/eni-orbita/` · commit `31c8e13` → `0c42beb` → `48e3e63`. **Scopo**: meeting col **CIO Chessa il 10 set 2026** (rinnovo Eni SpA al 30/09). Brief verificato in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` — **confidenziale, git-ignored, MAI committare** (con `31c8e13` sono entrate in `.gitignore` anche `docs/Eni/`, `docs/Credit Agricole/`, `docs/UniCredit/`, `docs/Adobe Material/`). Memorie: `eni-orbita-prep`, `firefly-deck-motion-exploration`.
-
-### 24.1 Deck (7 pagine, bilingue EN/IT)
-`index` (Orbita) · `domanda` · `piattaforma` · `traiettorie` (6 traiettorie, **gated**) · `mappa` (gruppo) · `persone` · `rotta` (tre orizzonti). Design system **`.eo-*`**: giallo Eni / fumo / azzurro orbita; **Archivo + Inter**. Admin con PAGE_REGISTRY + **6 solutions su 3 pilastri**; gating su slide traiettorie e nav. Con `48e3e63` tutte le pagine deck sono passate a `<T en it>` (EN idiomatico, non calco; lunghezze nel contratto audit) + **LangToggle EN/IT in nav**.
-
-### 24.2 Dossier war-room `/dossier/` (trilingue EN/IT/FR, noindex, fuori nav)
-Executive summary · profilo CIO con video · fatti verificati · say/don't-say · **mappa persone** · obiezioni · run of show · biblioteca fonti. **Nessun dato contrattuale nel build.** Con `0c42beb` chiuso il buco della mappa persone: **Elvira Fabrizio = Head of Digital & IT Enilive** (verificata LinkedIn + bio The Innovation Group; 25+ anni ICT nel gruppo, board EGEM dal 2020 → tocca anche l'orbita trading). **Resta aperta l'intro da chiedere a Chessa** (P1 §10). Gotcha i18n: il **FR è confinato al dossier** — guard anti-flash + `astro:after-swap` degradano `fr→it` sulle pagine deck **senza sovrascrivere la preferenza salvata**.
-
-### 24.3 Registrazioni & verifica
-Registrata in: `deploy.yml` (merge + verify), factory-hub, showcase `experiences.ts`, `scripts/deck-audit.ts` (ROUTE_SET `eni-orbita`, 7 route). **NON seedata nella console Supabase** (manca `0008_seed_eni.sql` → P2 §10). `audit:deck` **0 hard** a 1920/1440/1280 (soft residue su cover ariose); verifica visiva screenshot in entrambe le lingue. Nota pro-futuro (NON implementato): esplorazione motion/Firefly per i deck in `docs/Eni/FIREFLY-DECK-EXPLORATION.md` (5 livelli L1–L5).
-
----
-## 25. Core: responsive envelope, nav single-line & sweep visivo (21–22 lug 2026)
-
-Tre interventi trasversali post-redesign, tutti a livello Factory (ereditati da ogni esperienza presente e futura).
-
-### 25.1 Responsive envelope (`f09fca1`, core `DeckContainer`)
-- **Tier cramped-laptop** (min-width 641, height 521–799px — browser in finestra o pannello 1366×768): reserve chrome alleggerita + l'overflow residuo **scrolla** invece di clippare (bug segnalato: timeline `/method/` Atelier tagliata sotto la piega). Il laptop è superficie di **preview**, mai target di proiezione.
-- **Giant-TV/4K** alzato a **≥2560px** (frame più generoso, controlli più grandi, lettura a 4–8 m); controlli bottom con `env(safe-area-inset)` (home-indicator phone); floor tap-target per coarse pointer. Tutte le app deck: `viewport-fit=cover` nel meta viewport.
-- **Regola in-code (vincolante)**: i **3 viewport di proiezione** certificati dall'audit (1280×800, 1440×900, 1920×1080) sono **deliberatamente intoccati** — li possiedono i `:root` per-app — così un miglioramento laptop/mobile/TV non può mai regredire il proiettore. Verifica: **audit parity identica before/after sui 6 deck** (atelier 39 · maxmara 35 · unicredit 173 · trenitalia 75 · ferrari 37 · agos 43 — totali incl. soft), typecheck 0, screenshot letti a 1366×768/1920/390×844/2560×1440.
-
-### 25.2 Nav single-line su ogni esperienza (`7bd7511` + `d042105`)
-Le pill di sezione andavano a capo ("01 The"/"method"). Fix su **tutte** le nav (6 deck + showcase + core Navigation Max Mara): pill `whitespace-nowrap`, rail `flex-nowrap + min-w-0 + overflow-x-auto` (scrollbar nascosta, scroll orizzontale grazioso), item `flex-shrink-0`. Con `d042105` anche il **right-cluster**: nowrap + `flex-shrink-0` su cluster e logo, label decorative "Live Pitch"/co-brand **nascoste sotto 2xl (1536px)**. Contratto in memoria `nav-single-line-contract` (verificare TUTTA la barra, non solo il rail). La nav Trenitalia è poi diventata **a 3 stati** con la biforcazione (§26).
-
-### 25.3 Sweep visivo esaustivo (`d042105`, 22 lug)
-**536 screenshot** — ogni slide dei 6 deck a 1920 e 1366 — letti uno a uno; ha trovato 3 bug di leggibilità che l'audit DOM non vede: card Max Mara loyalty "Dietro le quinte" **invisibile** (avorio su card chiara: `.mm-panel` batteva l'utility `bg-inverse` → surface scura forzata inline); pannelli Ferrari activate slavati su slide inverse (dato sfondo carbon + glow Rosso Corsa a `.act-frame`/`.act-results`); rail UniCredit a 12 voci con l'attivo fuori dal bordo destro sui laptop (ora auto-centra l'attivo). → Questo sweep + la parity di §25.1 **chiudono la voce P1** «rigirare audit + QC 1920 sui 6 deck» del 21 lug.
-
----
+### 22.x Stili scoped contro DOM a runtime — l'Admin Console era senza stile in 11 app (2026-10-03, `959d280`)
+In un `.astro` il `<style>` è **scoped**: il compilatore marca gli elementi del template con
+`data-astro-cid-*` e appende quel cid a **ogni** compound selector della catena. Un nodo creato da
+JavaScript non ce l'ha, quindi non riceve **niente** — e il markup statico resta corretto, perciò
+nessun gate se ne accorge.
+**`packages/core/src/blocks/admin/AdminConsole.astro`** aveva **un solo `<style>` di ~600 righe,
+scoped, con ZERO `:global()`**, ed è importato da **11 app**. Le tre funzioni che costruiscono DOM
+— `blockNode()`, `renderPreview()`, `renderList()` — producevano **~26 classi senza stile**: il tab
+**«Slide personalizzate»** era senza formattazione ovunque (box del blocco senza bordo, toolbar
+B/I/H3 come bottoni di sistema, area di testo senza altezza né placeholder, swatch del colore
+collassato a 0×0, lista delle slide salvate senza card). L'anteprima era il caso peggiore: perdendo
+gli override di scala ereditava la tipografia **da deck** (titolo `clamp(3rem,6vw,6rem)`) dentro un
+riquadro 16:9 di poche centinaia di px.
+**Correzione**: globalizzate **35 regole**, il resto resta scoped (i nomi lì dentro sono generici —
+`field-input`, `btn-ghost` — e non devono uscire più del necessario). ⚠️ Le regole dell'anteprima
+restano **ancorate a `.cs-preview-stage`**: le stesse classi `.cs-*` esistono nelle `global.css` di
+tutte le app per le slide vere del deck, e globalizzarle senza ancora le avrebbe rimpicciolite.
+**Verifica**: stile calcolato di un nodo `cs-block` creato a runtime (bordo 1px, raggio 8px, fondo
+`#f9fafb`, padding 13.5px), schermata dell'editor, e `.cs-block{` senza cid nel CSS compilato di
+**tutte e 11** le app con `/admin/` — anche sul live. Il resto del monorepo è stato controllato ed è
+già a posto (runtime del deck, iniezione slide personalizzate negli 11 BaseLayout, mockup, scoping
+calculator, console, dossier, presenter MIM). Memoria `astro-scoped-css-runtime-dom`.

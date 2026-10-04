@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-03**.
+> Documento di passaggio di consegne. Stato al **2026-10-04**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -10,7 +10,7 @@
 > `.md` costa ~20k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> ✅ **Working tree pulito al 3 ott 2026, sera.** Giornata in due tempi: la tassonomia in vetrina
+> ✅ **Working tree pulito al 4 ott 2026.** Il 3 ott è stato una giornata in due tempi: la tassonomia in vetrina
 > più il terzo giro di panel (§13.10–13.11, Parte 5), e poi una **verifica generale** che ha trovato
 > lo stesso difetto — stili scoped di Astro contro DOM costruito a runtime — in **altri due posti**,
 > fra cui `AdminConsole.astro`, cioè l'editor delle slide personalizzate **senza stile in 11 app**.
@@ -23,14 +23,16 @@
 
 <!-- HANDOVER-SPLIT -->
 
-> **Handover splittato per dimensione** (9 parti, contratto ≤48KB/≤1500 righe per file). Leggile in ordine — ognuna è leggibile in una singola `Read`.
+Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 KB, ≤1800 char per riga).
+**Leggi le parti in ordine.** Se devi decidere cosa fare, la Parte 2 basta: è il backlog P0/P1.
 
-- [Parte 1 di 9](./HANDOVER-01.md) — §1 Cos'è e stato generale (**nove esperienze cliente** + Aperture/Atelier/hub/showcase/console) · 2 Architettura · 3 **Comandi** (`brand:tokens`, `new:experience`, `loop:seamless`, i comandi-skill) · 4 **Stato per esperienza, col tipo** · 5 **UniCredit content model** · 6 Feature runtime deck · 7 **Admin Console — 4 tab** · 8 **Audit — 12 check**, la lezione sul gate che mentiva e, dal 1 ott, quella sul connettore che esce dal suo box — ⚠️ **§9 Deploy è stata spostata nella Parte 2** (ribilanciamento del 2 ott)
-- [Parte 2 di 9](./HANDOVER-02.md) — §9 **Deploy & segreti** (spostata qui dalla Parte 1) · §10 **Pending / backlog prioritario** — **leggi il backlog per primo se devi decidere cosa fare**. **P0**: giro **delta** del panel su Poste (le correzioni sono state applicate dopo che le personas avevano letto il deck) · le **due decisioni** che il panel non può prendere per l'autore (dove vivono le experience con marchio cliente; richiesta a Security/Legal) · **sei fallimenti HARD aperti** su Max Mara (5) e UniCredit (1). Poi i P1 e i P2.
-- [Parte 3 di 9](./HANDOVER-03.md) — §11 **Change log datato, parte 1** (in cima **2 ott sera tardi: marchio «faccia del sei» e anteprima del link con immagine; poi voce del deck al plurale istituzionale (regola BINDING nuova), prova esterna su Poste verificata e tenuta fuori dal deck, 15 fatti refutati corretti dal terzo panel, tutto committato, spinto e online**; poi **1 ott sera → 2 ott: migrazione 0016 applicata, minimi tipografici, 3 HARD preesistenti chiusi su Ferrari, showcase portato a due giri di panel con personas reali, le otto domande ad Adobe chiuse alla fonte**; poi 1 ott pom. tassonomia e `new:experience`; poi la skill `panel-review`; poi Poste «Sei domande»; poi 14 set Atelier; 11–12 set firma co-brand, loop, credito, design system letto dal sito; 10 set UniCredit; 9 set Isybank; …)
-- [Parte 4 di 9](./HANDOVER-04.md) — §11 **Change log datato, parte 2** (continua dall'8 set: Aperture, Atelier, FSTechnology, UniCredit workshop cut, MIM, Eni, biforcazione FS, redesign E2E, e a scendere fino a giugno)
-- [Parte 5 di 9](./HANDOVER-05.md) — §12 Puntatori · 13 **Factory Showcase** (§13.7 catena di build · §13.8 tipo sulle card e primo panel · **§13.9 panel giro 2 con personas reali: cosa è stato confutato e cosa è stato applicato**) · 14 **Ferrari /scoping** · 15 Root hub, parity & Connessioni Intelligenti (vincoli LOCKED) — ⚠️ **§16 Agos è stata spostata nella Parte 6** (ribilanciamento del 2 ott)
-- [Parte 6 di 9](./HANDOVER-06.md) — §16 **Trait d'Union — Agos** (spostata qui dalla Parte 5) · 17 Adobe Brand Visibility + de-AI copy + /handover · 18–20 Ferrari /scoping · 22 Core trasversali (§22.4 regole BINDING) · 23 **Redesign E2E 6 deck** · 24 **Orbita — Eni** · 25 Core responsive + nav single-line — ⚠️ **§21 Experience Atelier è nella Parte 9**
-- [Parte 7 di 9](./HANDOVER-07.md) — §26 **Biforcazione FS Park × Trenitalia** (+ §26.8 dossier FSTechnology) · 27 **UniCredit — Attribution «Analizza» + Dossier** · 28 **«La voce del Ministero» — MIM**
-- [Parte 8 di 9](./HANDOVER-08.md) — §29 **Firefly asset+video pipeline** (+ §29.3 regole BINDING · §29.4 API immagine Adobe) · 30 **Aperture** · 31 **«Il momento giusto» — Isybank** · **32 «Sei domande» — Poste** (§32.5 panel review · §32.6 tipo Playbook e minimi tipografici · §32.7 le otto domande ad Adobe chiuse alla fonte · **§32.8 terzo giro di panel: 15 fatti refutati corretti, i due P0 che restano** · §32.9 marchio e anteprima del link)
-- [Parte 9 di 9](./HANDOVER-09.md) — §21 **Experience Atelier** (spostata qui dalla Parte 6 per dimensione): storia del deck trilingue, disciplina dei fatti, passate del 20 lug / 8 set / 14 set, e in fondo **§21.8 redesign sulle tre mosse (14 set)** — struttura a 36 slide con `gap`/`moves`, taglio sponsor a 20, le due prove (telemetria del deck + MCP server `atelier`), calendario nov 2026 → giu 2027, esito dei gate
+- [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
+- [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal 3 ott 2026 all'indietro.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — la storia più vecchia.
+- [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
+- [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
+- [Parte 7 — §26 FS Park × Trenitalia · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md).
+- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · §32 **Poste «Sei domande»**](./HANDOVER-08.md) — §32 apre con la correzione del claim portante (rollout, non GA).
+- [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
+- [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.

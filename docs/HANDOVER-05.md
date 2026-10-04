@@ -1,4 +1,4 @@
-# Handover — Parte 5 di 9
+# Handover — Parte 5 di 10
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -218,6 +218,31 @@ in §10**: sei sono precedenti alla delta, uno è una decisione dell'autore.
 
 ---
 
+### 13.12 La verifica generale: lo stesso difetto in altri due posti (2026-10-03, sera → `959d280`)
+L'owner segnala che la tile **Isybank** rende male anche in `#architecture`. Non era la card della
+prova (corretta la sera prima): è la **skin**, costruita dalla stessa famiglia di codice
+(`buildSkin()`), rimasta rotta perché erano state globalizzate le regole della card e non quelle
+della skin. Da lì una **ricognizione sistematica su tutto il monorepo** (ogni punto che crea DOM a
+runtime × dove vive la regola di ogni classe che assegna): vedi §22 nella Parte 6 per il caso
+grosso, che è nel motore condiviso. **Regola generale, da non riscoprire una terza volta: se una
+classe può finire su un nodo creato da JavaScript, la sua regola non può stare in un `<style>`
+scoped.** Memoria `astro-scoped-css-runtime-dom`.
+- **Quattro righe asciutte sul consenso** (`#proof`), decisione dell'owner dopo il verdetto del
+  giro delta: dove vive · indicizzazione · consenso al co-brand · Security/Legal. Etichetta → fatto,
+  niente prosa — è la forma che il panel stesso aveva proposto. Chiude il P0 unanime; **resta aperto
+  ciò che le righe dichiarano** (§10, Parte 2).
+- **GA di CX Enterprise Coworker corretta alla fonte** in `experiences.ts` (IT+EN): è un **rollout**
+  avviato il 2 ott, con **GA dichiarata TBD** da Adobe. Stessa correzione su hub e deck Poste (§32).
+- **Il commento HTML non è un posto privato** (`7589aeb`): i commenti `<!-- -->` finiscono nel
+  sorgente servito e si leggono in view-source. Quello che datava e motivava la rimozione del blocco
+  è stato convertito in `{/* */}`, che Astro non rende. Gli altri sei commenti serviti sono note di
+  design innocue, riletti uno per uno.
+- **Gate della verifica**: build + typecheck + lint verdi su tutto il monorepo; **zero overflow
+  orizzontale** a 1280/1440/1920 in **entrambe le lingue**; zero errori in console; **tutti i link
+  a 200**; **277 tag `<T>`** fra le due pagine, **nessuno monolingue**; conteggi riconciliati col
+  registry (11 · 6 pubblicate · 2 interne · 9 clienti). Sul **live**, dopo il deploy: le sette skin
+  misurate una per una (bordo 3px, raggio 10px, stesso fondo) e zero card senza stile.
+
 ## 14. Ferrari — sezione `/scoping` (calcolatore di licensing)
 
 `apps/ferrari-racing/src/pages/scoping.astro` (gated dalla solution `scoping`). Pagina customer-facing che modella **volumi e costo di licenza** di **RTCDP Collaboration** (Collaboration Credits) e **CJA** (Rows of Data) — due prodotti indipendenti, due metriche. È uno **strumento** (island interattiva full-bleed), NON una slide-keynote: **esente da `audit:deck`** (`/scoping/` non è nel ROUTE_SET di `scripts/deck-audit.ts`). Doc di riferimento del blocco: **`packages/core/src/blocks/scoping/README.md`** (architettura + come estendere).
@@ -281,92 +306,5 @@ Estensione che risponde a 6 dubbi del cliente sul configuratore. **La matematica
 - **Nuova slide** `slide-model` in `/scoping/` («Come si compone il costo» — 4 driver + lettura Ferrari worked, dati `COST_DRIVERS`/`COST_MODEL_SUMMARY` in `data/scoping.ts`); metriche di licensing arricchite (funnel + tipi campagna).
 - **Nuova sezione deck «Casi d'uso»** (`apps/ferrari-racing/src/pages/casi-duso.astro`, nav tra Il Loop e Scoping, **non gated**): cover + 4 scenari end-to-end sull'intero perimetro prodotti (RT-CDP Collaboration → GenStudio + Express → Attivazione → CJA) + slide mappa prodotti. Dati `USE_CASES` in `data/scoping.ts`. Cross-nav: loop → casi-duso → scoping. Registrata in `admin.astro` (PAGE_REGISTRY, scoping ora "09") e in `FerrariNav.astro`. **Aggiunta a `deck-audit.ts`** (route set ferrari) → `audit:deck` **0 su 3 viewport**; `scoping` resta **fuori** dal route set (slide-calculator = esenzione interattiva).
 - **Verifica**: 53/53 test core verdi; build monorepo 0 errori; sweep `audit:deck` ferrari (8 sezioni + casi-duso) **PASS pulito**; screenshot 1920 letti (slide-model, calculator, use-case, mappa) → type generoso, composizione bilanciata. File toccati: `cost-model.ts` (+178) e `.test.ts` (+116), `scenario.ts`, `data/scoping.ts` (+299), `ScopingCalculator.astro`, `ScopingField.astro`, `scoping.astro`, `casi-duso.astro` (nuovo), `FerrariNav.astro`, `admin.astro`, `loop.astro`, `deck-audit.ts`. Memoria `ferrari-scoping-calculator` (da aggiornare a v2 dopo il commit).
-
----
-## 15. Root hub, feature parity & Connessioni Intelligenti (13–14 lug 2026)
-
-### 15.1 Factory Hub (root)
-`apps/factory-hub` è la **landing** a `/experience-design-factory/` (prima la root era Max Mara → link "generico"). App Astro minimale, **senza tailwind né `@edf/core`**, stile scoped scuro-neutro (NON un brand cliente). Contiene: 4 card esperienza brand-accented con link diretti + Showcase + Console. Serve anche gli **stub di redirect** (`src/pages/<slug>.astro` via `_redirect.astro`) per i vecchi deep-link maxmara root-level (`/acquisizione/`, `/engagement/`, `/conversione/`, `/loyalty/`, `/motore-adobe/`, `/persona/`, `/chiusura/`, `/maxmara-adobe/`) → redirect a `/generazioni-maxmara/<path>/` preservando `location.search`. Max Mara ha cambiato `base` in `astro.config.mjs`. Deploy.yml: root ← factory-hub, maxmara → sottodir.
-
-### 15.2 Feature parity (uniforme su tutti i deck)
-- **Frecce bidirezionali tra sezioni**: ogni pagina-deck ha `nextHref` **e** `prevHref`; il runtime di gating riscrive **sia** `data-deck-next` **sia** `data-deck-prev-href` (`nextEnabledAfter()` / `prevEnabledBefore()`) per saltare le sezioni disattivate. Regola nel Type & legibility contract (`CLAUDE.md`).
-- **Max Mara resa config-driven** (predava il sistema): `admin.astro` (PAGE_REGISTRY dai veri slide id, 12 SOLUTIONS dai prodotti presenti), runtimes ferrari-style (media slot + gating + custom slides), `.cs-*` retinted quiet-luxury. Pagine funnel volutamente **non** gated (narrativa persona continua).
-
-### 15.3 Connessioni Intelligenti — stato & lock
-> ⚠️ **STRUTTURA SUPERATA il 31 ago 2026 dalla BIFORCAZIONE (vedi §26):** la nav qui sotto e la mappa slide di §15.4 descrivono l'esperienza monolitica pre-biforcazione. Oggi: tronco (cover+scenario+bivio) + rami `/fs-park/*` e `/trenitalia/*`. **I 13 vincoli LOCKED di §15.4 e le fonti restano PIENAMENTE VALIDI** (i contenuti sono migrati nei rami); la mappa slide corrente è in `admin.astro` e in §26.
-
-`apps/trenitalia-connessioni` · IT · cliente **FS Group / Ferrovie** (Trenitalia + FS Park + FS Technology). Nav (storica): SCENARIO · FOUNDATION · CJA (convergenza) · CONNESSIONI (data-collab) · ROADMAP · CASI D'USO.
-- **Personas (LOCKED)**: **Davide** (pendolare business Milano–Roma) + **Elena** (business/frequent traveler). **MAI Marco/Sofia** (=UniCredit) né Giulia/Francesca (=Max Mara) né Adriana (=UniCredit B2B). Foto persona rigenerata e **distinta** da UniCredit (era duplicata).
-- **Leggibilità (LOCKED)**: type generoso per proiezione (vedi §8 / Type contract). L'ecosistema Foundation va tenuto **impilato full-width** (righe categoria), non a grid — richiesta esplicita cliente. `audit:deck` a **0**.
-- **Sezione governance dedicata** (`slide-governance` in connessioni): scudo privacy & security per tutte le app AEP (non solo Data Collaboration).
-- **Casi d'uso**: framing unificato "scenari di ispirazione ancorati al mondo FS" — NON "3 provati + 8 da esplorare". Structure 4-col: Scenario · Segnale CJA · Azione · Impatto Atteso — uniforme su core cases E "Da esplorare". Tutti etichettati "da validare sul campo".
-- Memorie: `trenitalia-connessioni`, `hub-root-and-parity`.
-
-### 15.4 Connessioni Intelligenti — mappa slide & vincoli contenuto (LOCKED)
-
-**Struttura slide corrente** (da `admin.astro`):
-
-| Sezione | Slide id | Label |
-|---|---|---|
-| scenario | `slide-cover` | Cover — Il viaggio del cliente oggi |
-| scenario | `slide-marco` | Davide — profilo persona |
-| scenario | `slide-touchpoints` | I touchpoint isolati |
-| scenario | `slide-email-gap` | Oracle Responsys — gap comunicativo |
-| scenario | `slide-opportunity` | L'opportunità integrata |
-| fondazione | `slide-cover` | Cover — La foundation |
-| fondazione | `slide-ecosystem` | Ecosistema a strati |
-| fondazione | `slide-salesforce` | Salesforce Foundation Q1 2026 |
-| fondazione | `slide-choice` | Non sostituire. Connettere. |
-| convergenza | `slide-cover` | Cover — CJA il layer di convergenza |
-| convergenza | `slide-convergenza` | Tutte le fonti. Un'unica vista. |
-| convergenza | `slide-cja-vs-cdp` | CJA è / non è — disambiguazione (**nuova**, lug 2026) |
-| convergenza | `slide-demo-cja` | Demo CJA Workspace — Davide |
-| convergenza | `slide-content-analytics` | Content Analytics su AEM |
-| convergenza | `slide-fasi` | Le 3 fasi — approccio graduale |
-| connessioni | `slide-cover` | Cover — FS Park × Trenitalia |
-| connessioni | `slide-gap` | Il gap attuale |
-| connessioni | `slide-why-collab` | Perché serve Data Collaboration |
-| connessioni | `slide-usecases` | I 3 use case ad impatto |
-| connessioni | `slide-data-collab` | Data Collaboration — clean room |
-| connessioni | `slide-governance` | AEP — Data Governance & Security |
-| connessioni | `slide-value` | Il valore end-to-end |
-| roadmap | `slide-cover` | Cover — Roadmap |
-| roadmap | `slide-3fasi` | Le 3 fasi evolutive |
-| roadmap | `slide-fase1-cja` | Fase 1 deep-dive — CJA + Governance (**nuova**, lug 2026) |
-| roadmap | `slide-rtcdp-ajo` | Fase 2 deep-dive — Real-Time CDP + AJO |
-| roadmap | `slide-mix-modeler` | Fase 3 — Adobe Mix Modeler |
-| roadmap | `slide-mix-usecase` | Fase 3 — Mix Modeler use case FS |
-| roadmap | `slide-genstudio` | Fase 3 — GenStudio + Target + Exp. Accelerator |
-| casi-duso | `slide-cover` | Cover — recap e da esplorare |
-| casi-duso | `slide-recap` | I 3 casi core, in sintesi |
-| casi-duso | `slide-explore-retention` | Da esplorare · Retention & Loyalty |
-| casi-duso | `slide-explore-loyalty` | Da esplorare · Loyalty & Acquisition |
-| casi-duso | `slide-explore-growth` | Da esplorare · Acquisition & Ecosystem |
-| casi-duso | `slide-explore-intelligence` | Da esplorare · Intelligence & Optimization |
-| casi-duso | `slide-sintesi` | Sintesi + invito |
-
-**Vincoli contenuto (LOCKED — non regredire in nessuna sessione):**
-
-1. **Nessun nome di integratore/consulente** — non nominare mai IBM, Accenture o Pico. Usare "system integrator" se necessario; non attribuire decisioni architetturali interne al cliente.
-2. **Nessuna "lottizzazione"** — non riportare mai le decisioni di assegnazione interna tra vendor/team FS. Nell'Experience riportare **solo i benefici e il valore** di un'integrazione con CJA.
-3. **Oracle Responsys = CRM B2C che CJA complementa, NON sostituisce.** Trenitalia gestisce l'intera base clienti con Oracle CDP + Eloqua; CJA (e qualsiasi altro componente Adobe) va valorizzato **in combinata** con Oracle, non in sostituzione né in opposizione.
-4. **AJO framing locked**: "AJO orchestra SOPRA Oracle Responsys — non lo sostituisce. Responsys rimane il motore di esecuzione email". Usare questo framing esatto in roadmap e in qualsiasi slide che menzioni AJO.
-5. **CJA ≠ CDP** (slide `slide-cja-vs-cdp` in convergenza): CJA è un **layer di analytics e convergenza**, non un CDP. La disambiguazione ha una slide dedicata; non rimuoverla.
-6. **KPI numerici** — ogni metrica numerica deve recare l'etichetta **"stima illustrativa"** o **"KPI da validare sul campo"**. Nessuna promessa precisa senza una fonte verificabile.
-7. **Casi d'uso** — tutti i casi (core 3 + da esplorare 8) sono etichettati **"da validare sul campo"**, mai "dimostrati". La sintesi dice "3 casi core da validare · 8 da esplorare insieme".
-8. **GDPR Data Collaboration** — FS Park e Trenitalia sono **entità legali distinte** anche all'interno del Gruppo FS. Il GDPR richiede una clean room (Data Collaboration) anche per condivisione audience intra-gruppo. Questa rationale è inline in `slide-why-collab` e non va mai rimossa.
-9. **AEP Governance / breach angle** — il cyberattacco a Trenitalia (giugno 2026, sky.it/cronaca/2026/06/26) è il driver di credibilità per la sezione Data Governance in `slide-governance`. Non rimuoverlo, ma non collegarlo a numeri o danni specifici (dati non pubblici).
-10. **Email 611/anno** — fonte: analisi campione email Trenitalia tramite Google Takeout personale (luglio 2026, 1 account cliente). **Solo illustrativa**, non pubblicare come dato ufficiale. Il footnote nella slide va tenuto.
-11. **"Le fondamenta"** (NON "La foundation") — titolo della sezione fondazione in italiano corretto. Tenere coerente in header, nav, CTA, meta title.
-12. **Nessuna timeline sulle fasi** — le date/mesi per le fasi roadmap erano state rimosse. Le fasi sono etichettate "Fase 1/2/3" senza suffissi temporali. Il disclaimer "Scenario evolutivo a titolo illustrativo — fasi e tempistiche da definire con FS Technology" va mantenuto.
-13. **Touchpoint scenario** — 4 touchpoint puliti (trenitalia.com, Frecce booking, App Trenitalia, FS Park app/web). Nessun riferimento a loyalty program esterno, AI-powered, o sistemi di terze parti non Adobe nel touchpoint layer.
-
-**Fonti verificate citate nell'experience:**
-- Salesforce Foundation FS Technology: `fsnews.it` — FS Technology + Salesforce Foundation Digitale (mar 2026).
-- Oracle Responsys / email count: campione email personale (Google Takeout, luglio 2026, 1 account, solo illustrativo).
-- AEM su trenitalia.com: osservazione pubblica.
-- Breach Trenitalia: `sky.it/cronaca/2026/06/26` (giugno 2026).
-
-**Solution gating corrente**: `convergenza → cja` · `connessioni → data-collab` · `roadmap → rtcdp + ajo + mix-modeler`.
 
 ---

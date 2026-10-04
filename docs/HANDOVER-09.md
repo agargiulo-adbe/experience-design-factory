@@ -1,4 +1,4 @@
-# Handover — Parte 9 di 9
+# Handover — Parte 9 di 10
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -150,3 +150,77 @@ Cambia la **tesi**, non le slide: da «una fabbrica di pitch da scalare a cinqua
   Gantt), e serve il gate **brand/legal Adobe** prima di qualsiasi uso in workshop ufficiale.
 - Il deck **presenta** il piano M1–M3; **non** implementa le sue feature (pilot, SSO,
   partner access, simulazione) — quelle sono fuori scope di questo deliverable.
+
+## 23. Redesign «eccellenza» E2E dei 6 deck (`/impeccable`) — 21 lug 2026, live in `main`
+Ridisegno end-to-end del 100% dell'experience-design di **tutti e 6 i deck** a livello
+gallery-grade. Metodo invariante: un **concept brand-native** centralizzato come
+design-system `.xx-*` nel `global.css` di ogni app → ogni sezione ricostruita via **subagent**
+(un file ciascuno, senza build/worktree per non corrompere il `dist` condiviso) → build →
+QC screenshot a 1920 → fix → commit. **Copy/claim/numeri/fonti/personas preservati VERBATIM**:
+cambiati solo markup, layout e visual, mai il testo (rubrica `copy-must-be-human` rispettata).
+
+Concept per esperienza: **Agos** `.tdu-*` "two worlds, one current" (petrolio/acqua); **Atelier**
+`.loom-*` telaio/trama-e-ordito (carbonio/champagne); **Ferrari** `.frl-*` racing line
+(Rosso Corsa/carbonio/giallo); **UniCredit** `.uc-*` "il filo" d'oro (rosso #BE2027/blu-notte,
+light-dominant); **Max Mara** `.mm-*` "il filo di seta" cammello quiet-luxury (light-dominant);
+**FS/Connessioni** `.fs-*` "la linea" signal-line ambra su rete scura (dark-dominant).
+
+I 6 branch feature mergiati in `main` con `--no-ff` (zero conflitti: ogni branch tocca solo la
+sua app), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati
+**eliminati** (remoti + locali) dopo il merge. **`audit:deck` non rigirato** dopo il redesign
+(ambiente sandbox) e QC 1920 fatto solo a campione → follow-up P1 nel backlog (§10).
+
+### 23.1 Fix tecnico riutilizzabile — flip degli ink su slide inverse/brand
+Il componente `Slide` (`@edf/core`) **NON espone `data-bg`**: applica lo sfondo come **classe
+Tailwind** (`bg-[var(--surface-inverse)]`, `bg-[var(--accent-primary)]`). Quindi i selettori
+di flip devono targettare la classe reale (`[data-slide].bg-\[var\(--surface-inverse\)\]`),
+non un attributo. Due regole: (1) `bg="brand"` non è sempre scuro — per Max Mara cammello è un
+mid-tone chiaro, tieni ink scuro; flippa solo `inverse`. (2) `bg="inverse"` non è sempre chiaro
+— una cover con backdrop scuro resta scura: scopa il flip per `#id` alle slide che rendono
+davvero chiare (es. FS `#slide-opportunity`), non a tutte le `inverse`. Verifica sempre le
+slide inverse/brand con screenshot 1920. Memoria `deck-ink-flip-selector`.
+
+### 23.2 Nota CI — `pnpm build` ≠ gate del CI (typecheck **e** lint)
+`pnpm build` passa anche con errori TypeScript e con problemi di lint (astro build non fa il
+type-check completo né linta); il CI usa `pnpm typecheck` (`astro check`) **e** `pnpm lint`
+(eslint) e li blocca. Nel consolidamento del redesign sono emersi, con `build` verde, tre casi:
+- **typecheck** — 2 errori TS dai subagent FS (param `any` in `fondazione.astro`; campo `badge`
+  inesistente in `scenario.astro`) → `b0106bc`.
+- **lint** — 1 *parsing error* in Agos `scenario.astro`: un commento `<!-- -->` **dentro** il
+  `.map()` (espressione JSX) conta come secondo elemento root → "JSX expressions must have one
+  parent element". I commenti HTML a livello template sono ok; dentro `{...}` no. → `0298ccc`.
+**Regola: prima di pushare un redesign girare `pnpm typecheck` E `pnpm lint`, non solo
+`pnpm build`.** Nota: build/deploy NON dipendono dal CI (workflow distinti) — le pagine possono
+essere già live mentre il gate qualità è rosso.
+
+---
+## 24. Orbita — Eni (28 ago 2026)
+
+**App**: `apps/eni-orbita` · live a `/experience-design-factory/eni-orbita/` · commit `31c8e13` → `0c42beb` → `48e3e63`. **Scopo**: meeting col **CIO Chessa il 10 set 2026** (rinnovo Eni SpA al 30/09). Brief verificato in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` — **confidenziale, git-ignored, MAI committare** (con `31c8e13` sono entrate in `.gitignore` anche `docs/Eni/`, `docs/Credit Agricole/`, `docs/UniCredit/`, `docs/Adobe Material/`). Memorie: `eni-orbita-prep`, `firefly-deck-motion-exploration`.
+
+### 24.1 Deck (7 pagine, bilingue EN/IT)
+`index` (Orbita) · `domanda` · `piattaforma` · `traiettorie` (6 traiettorie, **gated**) · `mappa` (gruppo) · `persone` · `rotta` (tre orizzonti). Design system **`.eo-*`**: giallo Eni / fumo / azzurro orbita; **Archivo + Inter**. Admin con PAGE_REGISTRY + **6 solutions su 3 pilastri**; gating su slide traiettorie e nav. Con `48e3e63` tutte le pagine deck sono passate a `<T en it>` (EN idiomatico, non calco; lunghezze nel contratto audit) + **LangToggle EN/IT in nav**.
+
+### 24.2 Dossier war-room `/dossier/` (trilingue EN/IT/FR, noindex, fuori nav)
+Executive summary · profilo CIO con video · fatti verificati · say/don't-say · **mappa persone** · obiezioni · run of show · biblioteca fonti. **Nessun dato contrattuale nel build.** Con `0c42beb` chiuso il buco della mappa persone: **Elvira Fabrizio = Head of Digital & IT Enilive** (verificata LinkedIn + bio The Innovation Group; 25+ anni ICT nel gruppo, board EGEM dal 2020 → tocca anche l'orbita trading). **Resta aperta l'intro da chiedere a Chessa** (P1 §10). Gotcha i18n: il **FR è confinato al dossier** — guard anti-flash + `astro:after-swap` degradano `fr→it` sulle pagine deck **senza sovrascrivere la preferenza salvata**.
+
+### 24.3 Registrazioni & verifica
+Registrata in: `deploy.yml` (merge + verify), factory-hub, showcase `experiences.ts`, `scripts/deck-audit.ts` (ROUTE_SET `eni-orbita`, 7 route). **NON seedata nella console Supabase** (manca `0008_seed_eni.sql` → P2 §10). `audit:deck` **0 hard** a 1920/1440/1280 (soft residue su cover ariose); verifica visiva screenshot in entrambe le lingue. Nota pro-futuro (NON implementato): esplorazione motion/Firefly per i deck in `docs/Eni/FIREFLY-DECK-EXPLORATION.md` (5 livelli L1–L5).
+
+---
+## 25. Core: responsive envelope, nav single-line & sweep visivo (21–22 lug 2026)
+
+Tre interventi trasversali post-redesign, tutti a livello Factory (ereditati da ogni esperienza presente e futura).
+
+### 25.1 Responsive envelope (`f09fca1`, core `DeckContainer`)
+- **Tier cramped-laptop** (min-width 641, height 521–799px — browser in finestra o pannello 1366×768): reserve chrome alleggerita + l'overflow residuo **scrolla** invece di clippare (bug segnalato: timeline `/method/` Atelier tagliata sotto la piega). Il laptop è superficie di **preview**, mai target di proiezione.
+- **Giant-TV/4K** alzato a **≥2560px** (frame più generoso, controlli più grandi, lettura a 4–8 m); controlli bottom con `env(safe-area-inset)` (home-indicator phone); floor tap-target per coarse pointer. Tutte le app deck: `viewport-fit=cover` nel meta viewport.
+- **Regola in-code (vincolante)**: i **3 viewport di proiezione** certificati dall'audit (1280×800, 1440×900, 1920×1080) sono **deliberatamente intoccati** — li possiedono i `:root` per-app — così un miglioramento laptop/mobile/TV non può mai regredire il proiettore. Verifica: **audit parity identica before/after sui 6 deck** (atelier 39 · maxmara 35 · unicredit 173 · trenitalia 75 · ferrari 37 · agos 43 — totali incl. soft), typecheck 0, screenshot letti a 1366×768/1920/390×844/2560×1440.
+
+### 25.2 Nav single-line su ogni esperienza (`7bd7511` + `d042105`)
+Le pill di sezione andavano a capo ("01 The"/"method"). Fix su **tutte** le nav (6 deck + showcase + core Navigation Max Mara): pill `whitespace-nowrap`, rail `flex-nowrap + min-w-0 + overflow-x-auto` (scrollbar nascosta, scroll orizzontale grazioso), item `flex-shrink-0`. Con `d042105` anche il **right-cluster**: nowrap + `flex-shrink-0` su cluster e logo, label decorative "Live Pitch"/co-brand **nascoste sotto 2xl (1536px)**. Contratto in memoria `nav-single-line-contract` (verificare TUTTA la barra, non solo il rail). La nav Trenitalia è poi diventata **a 3 stati** con la biforcazione (§26).
+
+### 25.3 Sweep visivo esaustivo (`d042105`, 22 lug)
+**536 screenshot** — ogni slide dei 6 deck a 1920 e 1366 — letti uno a uno; ha trovato 3 bug di leggibilità che l'audit DOM non vede: card Max Mara loyalty "Dietro le quinte" **invisibile** (avorio su card chiara: `.mm-panel` batteva l'utility `bg-inverse` → surface scura forzata inline); pannelli Ferrari activate slavati su slide inverse (dato sfondo carbon + glow Rosso Corsa a `.act-frame`/`.act-results`); rail UniCredit a 12 voci con l'attivo fuori dal bordo destro sui laptop (ora auto-centra l'attivo). → Questo sweep + la parity di §25.1 **chiudono la voce P1** «rigirare audit + QC 1920 sui 6 deck» del 21 lug.
+
+---
