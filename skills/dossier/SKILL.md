@@ -34,10 +34,17 @@ Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
    di login dell'area riservata, le schede degli store (download, valutazioni, e soprattutto
    il **testo delle recensioni negative**, che dice dove il servizio si rompe). È evidenza
    verificabile, non opinione — e nessun concorrente la porta in riunione.
-3. **La stampa di settore verticale**, per i virgolettati. I quotidiani economici danno i
+3. **I prodotti che si propongono si verificano, uno per uno.** Prima di scrivere un'idea:
+   Fluffy (`field_readiness_sharepoint_search`, `full_documentation_search`) per il nome
+   corrente e i casi d'uso dichiarati, più le fonti pubbliche. Due errori evitati così su
+   un solo dossier: il prodotto giusto per «leggere i documenti» non era quello che avevo
+   in mente, e la firma elettronica andava **tolta** perché il cliente è esso stesso
+   Certification Authority accreditata — proporgliela sarebbe stata la frase che chiude la
+   riunione. Quello che il cliente già fa da sé non si propone.
+4. **La stampa di settore verticale**, per i virgolettati. I quotidiani economici danno i
    numeri; le testate di settore danno le **parole del referente** a un convegno. Una frase
    sua vale dieci frasi nostre: è la porta d'ingresso dell'incontro.
-4. **L'installato e i contratti**, dalle fonti interne. Vanno in **una sola sezione**,
+5. **L'installato e i contratti**, dalle fonti interne. Vanno in **una sola sezione**,
    dichiarata come «mai in sala».
 
 **Regole di metodo, imparate sbagliando:**
@@ -52,7 +59,7 @@ Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
 
 Il motore (`@edf/core/blocks/doc/DossierPage.astro`) rende un JSON di sezioni. Blocchi
 disponibili: `note` · `timeline` · `stats` · `people` · `items` · `rows` · `ideas` ·
-`table` · `say`/`dont` · `sources` · `foot`. Testo: stringa o `{it,en}`. Enfasi ammessa
+`table` · `gloss` · `say`/`dont` · `sources` · `foot`. Testo: stringa o `{it,en}`. Enfasi ammessa
 nei campi descrittivi: `<strong>`, `<em>`, `<code>`.
 
 Scheletro che regge in quasi tutti i casi:
@@ -77,6 +84,11 @@ Scheletro che regge in quasi tutti i casi:
 - **Il dato prima del commento.** Dove una sezione ha una tabella *e* un elenco, si
   dichiara `"order": ["note","table","items"]`: una tabella di numeri letta dopo tre
   capoversi non è più una tabella, è una nota.
+- **Un indicatore si spiega dove sta il numero.** Se il dossier porta KPI di mestiere
+  (expense ratio, combined ratio, cost/income), il blocco `gloss` apre una voce per
+  ciascuno con tre cose: che cos'è, che cosa dice davvero, e **come si usa in sala**. Chi
+  entra senza l'esperto deve poter spiegare l'indicatore, non solo citarlo. Niente tooltip:
+  su telefono l'hover non esiste e un overlay copre quello che si sta leggendo.
 - **Voce istituzionale**, mai la seconda persona singolare (vale la regola dei deck).
 - Chi va in sala senza l'esperto di soluzioni ha bisogno di **domande già scritte** e di un
   say/don't stretto: il dossier diventa più prescrittivo, non più lungo.
@@ -121,6 +133,7 @@ spera.
 | g | misura di lettura | 60–95 caratteri per riga sul desktop |
 | h | stampa | niente comandi, carta bianca, URL delle fonti stampati |
 | i | JavaScript | zero errori |
+| j | contenuto | nessun elemento sfora la **propria colonna** (il viewport non basta: un dominio lungo in una cella stretta esce dal riquadro senza allargare la pagina) |
 
 **Gli errori che l'audit è nato per impedire** (tutti visti sul campo):
 - l'avvertenza dentro la barra fissa: **330px, il 49% di un iPhone SE**, che ti segue per
@@ -130,7 +143,10 @@ spera.
 - un figlio di griglia senza `min-width: 0`: una data o un codice sfondano la traccia e la
   **pagina intera** scorre di lato;
 - `position:absolute; left:-9999px` per lo skip link: allarga l'area di scorrimento. Si usa
-  il ritaglio a 1px.
+  il ritaglio a 1px;
+- la **gerarchia piatta**: il corpo a 16px è giusto, ma se su telefono il titolo di sezione
+  sta a 20px e i numeri a 20, tutto sembra piccolo. La scala si apre sui titoli e sui
+  numeri, non gonfiando il corpo — che allungherebbe soltanto la pagina.
 
 Dopo l'audit si **guarda** comunque uno screenshot a 390 e uno a 1280: l'audit dice che si
 può leggere, non che è bello.
