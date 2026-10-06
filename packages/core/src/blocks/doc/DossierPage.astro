@@ -26,7 +26,7 @@
 //  CONTRATTO DEL CONTENUTO (chiavi di sezione, tutte facoltative tranne `h`):
 //    n h note · timeline[{anno,t}] · stats[{v,l,s}] · people[{name,role,note,li}]
 //    items[string | {badge,t}] · rows[{k,sub,v}] · ideas[{tag,nome,parte,cosa,adobe}]
-//    table{head[],rows[][],pcol} · say[] / dont[] · sources[{tipo,url,label}] · foot
+//    table{head[],rows[][],pcol} · gloss[{t,k,d,use}] · say[]/dont[] · sources[{tipo,url,label}] · foot
 //  `order`: elenco facoltativo dei blocchi, per anteporre il dato al commento.
 //  Testo: stringa, oppure {it,en} (IT di default). In `richText` passano solo
 //  <strong>, <em> e <code>: tutto il resto è escapato. L'enfasi vale nei campi
@@ -383,6 +383,22 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     if (!say || !say.length || !dont || !dont.length) cw.classList.add('dw-cols--one');
     return cw;
   }
+  // gloss: termine → come si legge → come si usa in sala. `<details>` nativo:
+  // funziona da tastiera, funziona al tocco, e in stampa esce già aperto.
+  function blockGloss(rows) {
+    var w = el('div', 'dw-gloss');
+    rows.forEach(function (g) {
+      var d = el('details', 'dw-gl');
+      var sum = el('summary', 'dw-gl-s');
+      sum.innerHTML = '<span class="dw-gl-t">' + esc(L(g.t)) + '</span>' + (g.k ? '<span class="dw-gl-k">' + esc(L(g.k)) + '</span>' : '');
+      d.appendChild(sum);
+      if (g.d) d.appendChild(el('p', 'dw-gl-d', richText(L(g.d))));
+      if (g.use) d.appendChild(el('p', 'dw-gl-u', '<span class="dw-gl-lab">In sala</span>' + richText(L(g.use))));
+      w.appendChild(d);
+    });
+    return w;
+  }
+
   function blockSources(rows) {
     var ul = el('ul', 'dw-sources');
     rows.forEach(function (b) {
@@ -436,7 +452,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       // sezione dichiara in `order` — serve quando il dato viene prima del
       // commento (una tabella di numeri letta dopo tre capoversi di lettura
       // non è più una tabella di numeri, è una nota).
-      var DEFAULT_ORDER = ['note', 'timeline', 'stats', 'people', 'items', 'rows', 'ideas', 'table', 'saydont', 'sources'];
+      var DEFAULT_ORDER = ['note', 'timeline', 'stats', 'people', 'items', 'rows', 'ideas', 'table', 'gloss', 'saydont', 'sources'];
       var make = {
         note: function () { return sec.note ? el('p', 'dw-note', richText(L(sec.note))) : null; },
         timeline: function () { return (sec.timeline || []).length ? blockTimeline(sec.timeline) : null; },
@@ -448,6 +464,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
         table: function () { return (sec.table && sec.table.rows) ? blockTable(sec.table) : null; },
         saydont: function () { return ((sec.say || []).length || (sec.dont || []).length) ? blockSayDont(sec.say, sec.dont) : null; },
         sources: function () { return (sec.sources || []).length ? blockSources(sec.sources) : null; },
+        gloss: function () { return (sec.gloss || []).length ? blockGloss(sec.gloss) : null; },
       };
       var order = Array.isArray(sec.order) && sec.order.length ? sec.order : DEFAULT_ORDER;
       // ciò che l'ordine esplicito dimentica viene comunque reso, in coda:
@@ -529,7 +546,11 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   }
 
   // ── Comandi ─────────────────────────────────────────────────────────────
-  var pdfBtn = $('dw-pdf'); if (pdfBtn) pdfBtn.addEventListener('click', function () { window.print(); });
+  var pdfBtn = $('dw-pdf'); if (pdfBtn) pdfBtn.addEventListener('click', function () {
+    // un glossario chiuso non finisce sulla carta: si apre tutto prima di stampare
+    document.querySelectorAll('.dw-gl').forEach(function (d) { d.open = true; });
+    window.print();
+  });
   var langGroup = $('dw-lang');
   if (langGroup) langGroup.addEventListener('click', function (e) {
     var b = e.target.closest('.dw-lang-btn'); if (!b) return;
@@ -746,7 +767,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-cover { padding-bottom: 0.4rem; }
   .dw-cover-h {
     font-family: var(--_font-display); font-weight: 800; letter-spacing: -0.02em;
-    font-size: clamp(1.4rem, 5vw, 2.1rem); line-height: 1.15; color: var(--_ink-strong);
+    font-size: clamp(1.65rem, 6.5vw, 2.3rem); line-height: 1.12; color: var(--_ink-strong);
     text-wrap: balance;
   }
   .dw-cover-meta {
@@ -766,15 +787,15 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-h {
     display: flex; align-items: baseline; gap: 0.7rem;
     font-family: var(--_font-display); font-weight: 700; letter-spacing: -0.015em;
-    font-size: clamp(1.3rem, 3.6vw, 1.7rem); line-height: 1.25; color: var(--_ink-strong);
+    font-size: clamp(1.5rem, 5vw, 1.9rem); line-height: 1.22; color: var(--_ink-strong);
     margin-bottom: 1rem; text-wrap: balance;
   }
   .dw-h-num { flex-shrink: 0; font-family: var(--_font-body); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--_accent); }
-  .dw-note { font-size: 0.95rem; line-height: 1.6; color: var(--_ink-soft); overflow-wrap: anywhere; }
+  .dw-note { font-size: 1rem; line-height: 1.6; color: var(--_ink-soft); overflow-wrap: anywhere; }
   .dw-note + * { margin-top: 1.1rem; }
   .dw-note--foot {
     margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px dashed var(--_line);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
   .dw-note strong { color: var(--_ink-strong); font-weight: 600; }
   .dw-note em { color: var(--_alt); font-style: normal; }
@@ -824,16 +845,16 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-stats { display: grid; gap: 0.6rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (min-width: 860px) { .dw-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .dw-stat { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 0.85rem 0.9rem; background: var(--_surface); }
-  .dw-stat-v { font-family: var(--_font-display); font-weight: 800; font-size: clamp(1.25rem, 5vw, 1.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--_accent); }
-  .dw-stat-l { margin-top: 0.3rem; font-size: 0.85rem; line-height: 1.35; color: var(--_ink-strong); font-weight: 600; }
-  .dw-stat-s { margin-top: 0.25rem; font-size: 0.76rem; line-height: 1.4; color: var(--_ink-soft); }
+  .dw-stat-v { font-family: var(--_font-display); font-weight: 800; font-size: clamp(1.6rem, 7vw, 2rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--_accent); }
+  .dw-stat-l { margin-top: 0.35rem; font-size: 0.9rem; line-height: 1.35; color: var(--_ink-strong); font-weight: 600; }
+  .dw-stat-s { margin-top: 0.3rem; font-size: 0.8rem; line-height: 1.4; color: var(--_ink-soft); }
 
   /* ── Schede persona ──────────────────────────────────────────────────── */
   .dw-grid { display: grid; gap: 0.8rem; grid-template-columns: 1fr; }
   @media (min-width: 760px) { .dw-grid { grid-template-columns: 1fr 1fr; } }
   .dw-card { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 1rem 1.05rem; background: var(--_surface); }
-  .dw-card-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.02rem; color: var(--_ink-strong); }
-  .dw-card-role { margin-top: 0.2rem; font-size: 0.85rem; line-height: 1.45; color: var(--_alt); }
+  .dw-card-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.08rem; color: var(--_ink-strong); }
+  .dw-card-role { overflow-wrap: anywhere; margin-top: 0.2rem; font-size: 0.88rem; line-height: 1.45; color: var(--_alt); }
   .dw-card-note { margin-top: 0.55rem; font-size: 0.92rem; line-height: 1.55; color: var(--_ink); }
   .dw-card-link { display: inline-block; margin-top: 0.6rem; font-size: 0.8rem; font-weight: 700; color: var(--_accent); text-decoration: none; }
 
@@ -841,8 +862,8 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-rows { display: flex; flex-direction: column; }
   .dw-row { display: grid; grid-template-columns: 12rem 1fr; gap: 1.1rem; padding: 0.85rem 0; border-top: 1px solid var(--_line); align-items: start; }
   .dw-row:first-child { border-top: 0; padding-top: 0; }
-  .dw-row-k { font-family: var(--_font-display); font-weight: 700; font-size: 0.97rem; line-height: 1.35; color: var(--_ink-strong); }
-  .dw-row-sub { margin-top: 0.15rem; font-size: 0.78rem; line-height: 1.4; color: var(--_alt); }
+  .dw-row-k { overflow-wrap: anywhere; font-family: var(--_font-display); font-weight: 700; font-size: 1.02rem; line-height: 1.35; color: var(--_ink-strong); }
+  .dw-row-sub { overflow-wrap: anywhere; margin-top: 0.15rem; font-size: 0.8rem; line-height: 1.4; color: var(--_alt); }
   .dw-row-v { min-width: 0; overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.6; color: var(--_ink); }
   .dw-row-v strong { color: var(--_ink-strong); }
   .dw-row-v em { color: var(--_alt); font-style: normal; }
@@ -856,7 +877,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   @media (min-width: 900px) { .dw-ideas { grid-template-columns: 1fr 1fr; } }
   .dw-idea { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 12px; padding: 1.1rem 1.15rem; background: var(--_surface); display: flex; flex-direction: column; gap: 0.55rem; }
   .dw-idea > .dw-chip { align-self: flex-start; margin-right: 0; }
-  .dw-idea-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.3; color: var(--_ink-strong); }
+  .dw-idea-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.15rem; line-height: 1.3; color: var(--_ink-strong); }
   .dw-idea-line { font-size: 0.93rem; line-height: 1.6; color: var(--_ink); }
   .dw-idea-k { display: block; margin-bottom: 0.15rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--_ink-faint); }
   .dw-idea-adobe { margin-top: auto; padding-top: 0.65rem; border-top: 1px dashed var(--_line); font-family: var(--_font-display); font-weight: 700; font-size: 0.88rem; line-height: 1.4; color: var(--_alt); }
@@ -866,7 +887,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
      non deve mai scorrere in orizzontale. Vale fra i 761px (dove la pila
      mobile si spegne) e la larghezza in cui le colonne stanno davvero. */
   .dw-table-wrap { border: 1px solid var(--_line); border-radius: 10px; overflow-x: auto; overflow-y: hidden; max-width: 100%; }
-  .dw-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .dw-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
   .dw-table th, .dw-table td { padding: 0.65rem 0.85rem; text-align: left; vertical-align: top; line-height: 1.5; }
   .dw-table thead th {
     background: var(--_surface-2);
@@ -892,7 +913,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     .dw-table tbody tr:last-child { margin-bottom: 0; }
     .dw-table th, .dw-table td { padding: 0; }
     .dw-td-key { font-size: 1rem; line-height: 1.35; margin-bottom: 0.5rem; }
-    .dw-table td { display: flex; gap: 0.6rem; justify-content: space-between; align-items: baseline; padding: 0.3rem 0; border-top: 1px solid var(--_line); font-size: 0.92rem; }
+    .dw-table td { display: flex; gap: 0.6rem; justify-content: space-between; align-items: baseline; padding: 0.35rem 0; border-top: 1px solid var(--_line); font-size: 0.95rem; }
     .dw-table td[data-label]::before {
       content: attr(data-label);
       flex-shrink: 0;
@@ -914,6 +935,22 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-col--ok .dw-col-h::before { content: '✓ '; }
   .dw-col--no .dw-col-h::before { content: '✕ '; }
   .dw-col--no .dw-li::before { background: var(--_warn); }
+
+  /* ── Glossario operativo ─────────────────────────────────────────────── */
+  .dw-gloss { display: flex; flex-direction: column; gap: 0.5rem; }
+  .dw-gl { border: 1px solid var(--_line); border-radius: 10px; background: var(--_surface); overflow: hidden; }
+  .dw-gl-s {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
+    min-height: 2.75rem; padding: 0.6rem 0.95rem; cursor: pointer; list-style: none;
+  }
+  .dw-gl-s::-webkit-details-marker { display: none; }
+  .dw-gl-s::after { content: '+'; margin-left: auto; font-weight: 700; color: var(--_accent); font-size: 1.1rem; line-height: 1; }
+  .dw-gl[open] .dw-gl-s::after { content: '–'; }
+  .dw-gl-t { font-family: var(--_font-display); font-weight: 700; font-size: 1rem; color: var(--_ink-strong); }
+  .dw-gl-k { font-size: 0.85rem; color: var(--_accent); font-weight: 700; }
+  .dw-gl-d, .dw-gl-u { padding: 0 0.95rem 0.5rem; font-size: 0.95rem; line-height: 1.6; color: var(--_ink); }
+  .dw-gl-u { padding-bottom: 0.9rem; color: var(--_ink-soft); }
+  .dw-gl-lab { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--_ink-faint); margin-bottom: 0.1rem; }
 
   /* ── Fonti ───────────────────────────────────────────────────────────── */
   .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; margin: 0; padding: 0; }
@@ -945,5 +982,8 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     .dw-source-a::after { content: ' (' attr(href) ')'; font-size: 0.75em; color: #666; overflow-wrap: anywhere; }
     .dw-source-h { display: none; }
     .dw-table thead { position: static; width: auto; height: auto; clip: auto; }
+    /* in stampa un glossario chiuso è un glossario perso */
+    .dw-gl { display: block; }
+    .dw-gl > *:not(summary) { display: block !important; }
   }
 </style>

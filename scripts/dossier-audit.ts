@@ -16,6 +16,9 @@
  *   g  misura di lettura 60–95 caratteri per riga sul desktop
  *   h  stampa: niente comandi, carta bianca, inchiostro scuro
  *   i  nessun errore JavaScript
+ *   j  nessun contenuto che sfora la PROPRIA colonna — un dominio lungo in una
+ *      cella stretta non allarga la pagina (quindi `b` non lo vede) ma esce
+ *      dal suo riquadro, e si vede benissimo
  *
  * Uso:
  *   tsx scripts/dossier-audit.ts <url-con-?t=token> [altre url…]
@@ -129,6 +132,25 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         .filter((r) => r.width > 0 && (r.width < minTap || r.height < minTap))
         .map((r) => `${Math.round(r.width)}×${Math.round(r.height)}`);
 
+      // j — contenuto che sfora la propria colonna. Esclusi: ciò che sta in un
+      // contenitore che scorre, e ciò che è nascosto di proposito (thead
+      // ritagliato quando la tabella si impila).
+      const spill = [...document.querySelectorAll('#dw-doc *')]
+        .filter((e) => {
+          if (e.children.length) return false;
+          if (e.scrollWidth <= e.clientWidth + 1 || e.clientWidth <= 0) return false;
+          if (e.closest('thead')) return false;
+          let p: Element | null = e.parentElement;
+          while (p && p !== document.documentElement) {
+            const ox = getComputedStyle(p).overflowX;
+            if (ox === 'auto' || ox === 'scroll' || ox === 'hidden') return false;
+            p = p.parentElement;
+          }
+          return true;
+        })
+        .map((e) => `${(e.className || e.tagName).toString().split(' ')[0]} ${e.clientWidth}→${e.scrollWidth}px «${(e.textContent || '').trim().slice(0, 28)}»`)
+        .slice(0, 4);
+
       // f — indice
       const toc = document.querySelectorAll('#dw-toc-list a').length;
 
@@ -157,6 +179,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         tiny,
         toc,
         cpl,
+        spill,
       };
     },
     { minBody: MIN_BODY, minTable: MIN_TABLE, minNote: MIN_NOTE, minTap: MIN_TAP },
@@ -181,6 +204,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
   if (vp.w >= 1024 && m.cpl != null && (m.cpl < CPL_MIN || m.cpl > CPL_MAX)) {
     out.push({ check: 'g', viewport: vp.name, detail: `${m.cpl} caratteri per riga (finestra ${CPL_MIN}–${CPL_MAX})` });
   }
+  if (m.spill.length) out.push({ check: 'j', viewport: vp.name, detail: `sforano la propria colonna: ${m.spill.join(' · ')}` });
   if (jsErrors.length) out.push({ check: 'i', viewport: vp.name, detail: `errori JS: ${jsErrors.slice(0, 2).join(' | ')}` });
 
   // h — stampa, solo una volta per URL
