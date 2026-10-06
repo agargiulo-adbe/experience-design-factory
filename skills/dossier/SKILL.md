@@ -133,6 +133,7 @@ spera.
 | g | misura di lettura | 60–95 caratteri per riga sul desktop |
 | h | stampa | niente comandi, carta bianca, URL delle fonti stampati |
 | i | JavaScript | zero errori |
+| k | contenuto | **nessun blocco reso vuoto**: una forma non supportata viene scartata in silenzio e la riga sparisce senza errore — in un dossier è il difetto peggiore, perché ciò che manca non si vede mancare |
 | j | contenuto | nessun elemento sfora la **propria colonna** (il viewport non basta: un dominio lungo in una cella stretta esce dal riquadro senza allargare la pagina) |
 
 **Gli errori che l'audit è nato per impedire** (tutti visti sul campo):
@@ -144,6 +145,10 @@ spera.
   **pagina intera** scorre di lato;
 - `position:absolute; left:-9999px` per lo skip link: allarga l'area di scorrimento. Si usa
   il ritaglio a 1px;
+- **i nomi dei campi inventati**: scrivere `{label, body}` dove il contratto dice
+  `{k, v}` non dà errore, dà una riga vuota. È successo in un dossier già consegnato: un
+  run of show intero, cinque righe, invisibile. Si corregge il contenuto, non si aggiungono
+  alias nel motore — e il check `k` lo trova al giro dopo;
 - la **gerarchia piatta**: il corpo a 16px è giusto, ma se su telefono il titolo di sezione
   sta a 20px e i numeri a 20, tutto sembra piccolo. La scala si apre sui titoli e sui
   numeri, non gonfiando il corpo — che allungherebbe soltanto la pagina.

@@ -19,6 +19,8 @@
  *   j  nessun contenuto che sfora la PROPRIA colonna — un dominio lungo in una
  *      cella stretta non allarga la pagina (quindi `b` non lo vede) ma esce
  *      dal suo riquadro, e si vede benissimo
+ *   k  nessun blocco reso VUOTO — un contenuto che il renderer scarta in
+ *      silenzio è il difetto peggiore di un dossier: non si vede mancare
  *
  * Uso:
  *   tsx scripts/dossier-audit.ts <url-con-?t=token> [altre url…]
@@ -151,6 +153,13 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         .map((e) => `${(e.className || e.tagName).toString().split(' ')[0]} ${e.clientWidth}→${e.scrollWidth}px «${(e.textContent || '').trim().slice(0, 28)}»`)
         .slice(0, 4);
 
+      // k — blocchi resi vuoti. Il contenuto arriva da un database e passa per
+      // un renderer: se una forma non è supportata la riga sparisce senza un
+      // errore, e nessuno si accorge che manca.
+      const empty = [...document.querySelectorAll('.dw-li, .dw-row-v, .dw-stat-v, .dw-idea-line, .dw-tl-text, .dw-card-note, .dw-gl-d')]
+        .filter((e) => !(e.textContent || '').trim())
+        .map((e) => (e.className || e.tagName).toString().split(' ')[0]);
+
       // f — indice
       const toc = document.querySelectorAll('#dw-toc-list a').length;
 
@@ -180,6 +189,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         toc,
         cpl,
         spill,
+        empty,
       };
     },
     { minBody: MIN_BODY, minTable: MIN_TABLE, minNote: MIN_NOTE, minTap: MIN_TAP },
@@ -204,6 +214,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
   if (vp.w >= 1024 && m.cpl != null && (m.cpl < CPL_MIN || m.cpl > CPL_MAX)) {
     out.push({ check: 'g', viewport: vp.name, detail: `${m.cpl} caratteri per riga (finestra ${CPL_MIN}–${CPL_MAX})` });
   }
+  if (m.empty.length) out.push({ check: 'k', viewport: vp.name, detail: `${m.empty.length} blocchi resi vuoti (${[...new Set(m.empty)].join(', ')}): contenuto scartato dal renderer` });
   if (m.spill.length) out.push({ check: 'j', viewport: vp.name, detail: `sforano la propria colonna: ${m.spill.join(' · ')}` });
   if (jsErrors.length) out.push({ check: 'i', viewport: vp.name, detail: `errori JS: ${jsErrors.slice(0, 2).join(' | ')}` });
 

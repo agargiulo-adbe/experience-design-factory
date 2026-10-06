@@ -297,18 +297,22 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     });
     return g;
   }
+  // Una voce di elenco è una stringa, un {it,en}, oppure un {badge, t}.
+  // Vale per `items` E per say/dont: prima la forma col badge veniva scartata
+  // in silenzio fuori da `items`, e la riga spariva dalla pagina senza errore.
+  function listItem(it) {
+    var li = el('li', 'dw-li');
+    if (it && typeof it === 'object' && it.t != null) {
+      if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(it.badge) + '</span>';
+      li.appendChild(el('span', null, richText(L(it.t))));
+    } else {
+      li.innerHTML = richText(L(it));
+    }
+    return li;
+  }
   function blockItems(rows) {
     var ul = el('ul', 'dw-list');
-    rows.forEach(function (it) {
-      var li = el('li', 'dw-li');
-      if (it && typeof it === 'object' && it.t != null) {
-        if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(it.badge) + '</span>';
-        li.appendChild(el('span', null, richText(L(it.t))));
-      } else {
-        li.innerHTML = richText(L(it));
-      }
-      ul.appendChild(li);
-    });
+    rows.forEach(function (it) { ul.appendChild(listItem(it)); });
     return ul;
   }
   function blockRows(rows) {
@@ -374,7 +378,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       var c = el('div', 'dw-col ' + mod);
       c.appendChild(el('h3', 'dw-col-h', esc(title)));
       var u = el('ul', 'dw-list dw-list--tight');
-      (arr || []).forEach(function (it) { u.appendChild(el('li', 'dw-li', richText(L(it)))); });
+      (arr || []).forEach(function (it) { u.appendChild(listItem(it)); });
       c.appendChild(u);
       return c;
     };
