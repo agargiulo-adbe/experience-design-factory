@@ -157,6 +157,15 @@ Scheletro che regge in quasi tutti i casi:
 | 13 | Buchi aperti | `table` |
 | 14 | Fonti | `sources` |
 
+- **Una dichiarazione ha una data di scadenza.** Un'idea che nasce da una frase detta dal
+  referente a un convegno, o da un piano citato in un bilancio, poggia su materiale vecchio
+  di mesi: nel frattempo quel programma può essere stato chiuso, affidato ad altri o
+  superato. Quindi ogni idea costruita così **si marca come spunto, con la data della
+  fonte in chiaro** — e in sala si apre con una domanda («è ancora aperto?»), mai con
+  un'affermazione («voi avete questo problema»). Se il tema risulta già coperto è una buona
+  notizia: il perimetro è confermato e si passa oltre. Se invece si parte dall'affermazione
+  e il tema è chiuso, la stanza si perde al primo minuto. Vale uguale dentro e fuori: nel
+  dossier come spunto dichiarato, nelle slide come domanda di chiusura.
 - **Il dato prima del commento.** Dove una sezione ha una tabella *e* un elenco, si
   dichiara `"order": ["note","table","items"]`: una tabella di numeri letta dopo tre
   capoversi non è più una tabella, è una nota.
