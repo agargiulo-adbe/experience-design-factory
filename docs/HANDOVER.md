@@ -24,9 +24,16 @@
 > da sé non si propone; esiste una **gerarchia delle fonti** e «non trovato» non significa «falso»;
 > una **dichiarazione ha una data di scadenza**. Le prime due sono anche in `CLAUDE.md`.
 >
+> **In serata**, senza toccare il codice: su **Unipol** il rinnovo di **Adobe Target** (31 dicembre
+> 2026) è a rischio per un POC con un concorrente di personalizzazione, e l'argomento scelto è
+> **Coworker su CJA e Target insieme** — con l'ask, portata alla call dell'8 ottobre, di estendere a
+> Target l'high-touch già in corso su CJA (§11, voce della sera; memoria
+> `unipol-target-retention-coworker`). Da lì anche un fatto operativo: il connettore **Microsoft 365
+> è in sola lettura**, le bozze Outlook si creano via **AppleScript**.
+>
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
-> cliente dentro file tracciati su un repository pubblico, e ha una voce nuova — **il panel review
-> mancante sulle quattro slide dell'8 ottobre**.
+> cliente dentro file tracciati su un repository pubblico, e il più urgente in agenda è **il panel
+> review mancante sulle quattro slide dell'8 ottobre** — fra due giorni.
 
 ---
 
@@ -37,7 +44,7 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal 3 ott 2026 all'indietro.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal 6 ott 2026 all'indietro.
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — la storia più vecchia.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
