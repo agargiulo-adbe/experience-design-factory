@@ -402,6 +402,7 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
   BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.
 - `blocks/admin/AdminConsole.astro` — the shared config‑driven Admin Console.
+- **Dossier interni** (skill `skills/dossier/`): nessuna idea entra nella sezione «le idee da portare» senza verifica preventiva su **Fluffy** (`field_readiness_sharepoint_search`, `full_documentation_search`), sulle fonti Adobe pubbliche e su quelle del cliente — nome corrente del prodotto, casi d'uso dichiarati, e soprattutto **quello che il cliente già fa da sé, che non si propone**. Stessa regola per le referenze: si citano con le parole del cliente, mai con le nostre. Un dossier **non** porta il co-brand (il perché, in tre righe, sta nella skill §5).
 - `blocks/doc/DossierPage.astro` — il **motore unico dei dossier interni gated**: gate (Supabase `restricted_docs`, login o `?t=`), renderer dei 14 blocchi, indice con scroll‑spy, barra di avanzamento, bilingue, stampa su carta bianca. Ogni app ha solo un **wrapper sottile** che passa `docSlug` e mappa la propria palette sul contratto `--dw-*`. **Mai copiare il renderer dentro un'app**: è così che sono nate sei copie divergenti. Barra di qualità e metodo di ricerca: skill `skills/dossier/`.
 
 ### Gli 11 check che ogni slide deve passare — a 1920×1080, 1440×900 E 1280×800 (`audit:deck`)

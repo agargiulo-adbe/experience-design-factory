@@ -34,13 +34,26 @@ Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
    di login dell'area riservata, le schede degli store (download, valutazioni, e soprattutto
    il **testo delle recensioni negative**, che dice dove il servizio si rompe). È evidenza
    verificabile, non opinione — e nessun concorrente la porta in riunione.
-3. **I prodotti che si propongono si verificano, uno per uno.** Prima di scrivere un'idea:
-   Fluffy (`field_readiness_sharepoint_search`, `full_documentation_search`) per il nome
-   corrente e i casi d'uso dichiarati, più le fonti pubbliche. Due errori evitati così su
-   un solo dossier: il prodotto giusto per «leggere i documenti» non era quello che avevo
-   in mente, e la firma elettronica andava **tolta** perché il cliente è esso stesso
-   Certification Authority accreditata — proporgliela sarebbe stata la frase che chiude la
-   riunione. Quello che il cliente già fa da sé non si propone.
+3. **Nessuna idea entra nel dossier senza verifica — è un passaggio obbligato, non un
+   di più.** La sezione «le idee da portare» è l'unica che qualcuno userà per parlare: ogni
+   prodotto nominato, ogni referenza citata, ogni numero attribuito a un cliente terzo si
+   verifica **prima** di scriverlo, su tutto quello che c'è:
+   - **Fluffy** — `field_readiness_sharepoint_search` (materiale di vendita, casi d'uso
+     dichiarati, battlecard), `full_documentation_search` (wiki, Slack, SharePoint,
+     Experience League insieme), `google_web_search` per il pubblico;
+   - **le fonti Adobe pubbliche** — business.adobe.com, Experience League, le customer story;
+   - **le fonti del cliente** — sito, bilancio, comunicati: quello che già fa da sé.
+   Tre cose che questo passaggio ha intercettato su un dossier solo:
+   **(a)** il prodotto giusto per «leggere i documenti» non era quello che avevo in mente —
+   mancava proprio quello che serviva;
+   **(b)** la firma elettronica andava **tolta**, perché il cliente è esso stesso
+   Certification Authority accreditata: proporgliela sarebbe stata la frase che chiude la
+   riunione. **Quello che il cliente già fa da sé non si propone;**
+   **(c)** una nostra slide di referenza attribuiva a un cliente terzo il nome di un indice
+   che quel cliente non ha mai usato — cercato nella trascrizione integrale, nell'abstract
+   ufficiale della sessione, nelle fonti interne e sul web: zero occorrenze ovunque tranne
+   che nel nostro script. **Una referenza si cita con le parole del cliente, non con le
+   nostre**: se il nome non si trova alla fonte, si descrive la cosa senza nominarla.
 4. **La stampa di settore verticale**, per i virgolettati. I quotidiani economici danno i
    numeri; le testate di settore danno le **parole del referente** a un convegno. Una frase
    sua vale dieci frasi nostre: è la porta d'ingresso dell'incontro.
@@ -156,7 +169,35 @@ spera.
 Dopo l'audit si **guarda** comunque uno screenshot a 390 e uno a 1280: l'audit dice che si
 può leggere, non che è bello.
 
-## 5 · Che cosa NON fare
+## 5 · Marchi: perché un dossier non porta il co-brand
+
+Prima o poi qualcuno chiede di mettere in testa il lockup «Adobe × Cliente», o di dare un
+logo a ciascun formato. Per il dossier la risposta è **no**, per tre ragioni in ordine di
+peso:
+
+1. **Significato.** Il co-brand dichiara un artefatto fatto **con** o **per** quel cliente.
+   Un dossier è fatto **su** di loro, e porta scritto che il cliente non deve sapere che
+   esiste. Il loro marchio in testa afferma una paternità congiunta che non c'è.
+2. **Rischio.** Dentro ci sono dati contrattuali, intelligence competitiva, a volte la
+   lettura del carattere di una persona. La pagina è gated, ma il link gira in chat e il PDF
+   finisce sui portatili. Con il lockup in testa, un documento che esce **sembra un
+   documento ufficiale congiunto**: trasforma una fuga interna in qualcosa di molto peggio.
+   Il segnale che deve dominare in testa è l'opposto — «Adobe internal · Riservato».
+3. **Asset.** La regola del co-brand vuole l'**SVG ufficiale** che il cliente distribuisce;
+   quasi nessun cliente lo distribuisce (su nove experience, una sola ha l'SVG vero: le
+   altre ripiegano sul nome in carattere display). Il ripiego sarebbe un wordmark — che il
+   titolo del dossier già è.
+
+**E un logo per formato?** Non paga: è un sistema da disegnare e mantenere per ogni formato,
+e non aggiunge informazione. Il formato è già scritto nel titolo («Dossier — …»), la
+riservatezza nel badge, la paternità in «Adobe internal». Se si vuole che i formati si
+riconoscano come una famiglia, la leva è il **sistema di token condiviso** — che il motore
+unico già è — non un marchio.
+
+Le experience e i deck restano un altro discorso: lì il co-brand è **binding** (vedi
+CLAUDE.md → Firma co-brand), perché quello è materiale che il cliente vede.
+
+## 6 · Che cosa NON fare
 
 - **Niente immagini generate.** Un dossier è già lungo venti schermate e si apre in
   mobilità: un'immagine decorativa aggiunge peso e scroll, non informazione, e ai colleghi
@@ -168,7 +209,7 @@ può leggere, non che è bello.
 - **Niente dati contrattuali fuori dalla loro sezione**, e mai a voce in riunione.
 - **Il cliente non deve sapere che il dossier esiste.**
 
-## 6 · Verifica prima di consegnare
+## 7 · Verifica prima di consegnare
 
 ```
 pnpm --filter <app> build
