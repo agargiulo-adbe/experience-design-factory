@@ -10,14 +10,44 @@ description: >
 # Dossier — il documento che qualcun altro legge sul telefono
 
 Un dossier non è un riassunto: è il materiale con cui un collega entra in una stanza che
-non ha preparato lui. Due vincoli nascono da lì, e decidono tutto il resto:
+non ha preparato lui.
 
-1. **Chi lo legge non eri tu alla ricerca.** Ogni affermazione deve portarsi dietro la
-   fonte, e ogni buco deve essere dichiarato tale. Un'ipotesi scritta come se fosse un
-   fatto è il modo in cui si perde una riunione.
-2. **Lo si legge in piedi, su un telefono, venti minuti prima.** È il primo deliverable su
+## 0 · Per chi è scritto — il lettore da tenere in mente
+
+**Un collega Adobe che non sa nulla di come questo documento è fatto.** Non conosce la
+Experience Design Factory, non sa che esiste un motore, un formato, una skill o delle
+regole. Ha ricevuto un link, lo apre sul telefono, e giudica tre cose soltanto: se è
+**chiaro**, se è **efficace** in riunione, e se dimostra che chi l'ha scritto **conosce
+davvero quel cliente e Adobe**. Non gli interessa il nostro processo; gli interessa non fare
+brutta figura giovedì.
+
+Da questo lettore discendono vincoli che valgono per ogni riga:
+
+1. **Zero gergo interno, zero rimandi che richiedono di aver già letto il documento.** Mai
+   «§14», «§7», «vedi §09», «l'idea I1», «P0». Un collega che all'apertura legge «le fonti
+   sono citate in §14» si chiede *«che cos'è? che numeri sono?»* — e ha ragione: sta
+   guardando il primo paragrafo, non ha ancora visto nessuna sezione. **Le sezioni si
+   richiamano per nome** («nella sezione sulle referenze», «le domande preparate»), perché
+   il nome funziona anche a lettura zero. Lo stesso vale per i titoli: «Run of show» e
+   «Say / Don't» diventano «L'ora, minuto per minuto» e «Da dire, da non dire».
+   E niente **presupposti di presenza**: «la domanda rimasta aperta in call» non dice nulla
+   a chi a quella call non c'era. Si scrive «nella riunione interna di preparazione del
+   6 ottobre», e si aggiunge perché quella domanda conta.
+2. **L'avvertenza in testa deve insegnare a usare il documento**, non elencare regole
+   nostre: che incontro prepara, quanto ci vuole a leggerlo, che cosa leggere se si ha poco
+   tempo, dove stanno le fonti, che cosa non si porta in riunione.
+3. **Ogni affermazione porta la sua fonte, ogni buco è dichiarato tale.** Un'ipotesi scritta
+   come se fosse un fatto è il modo in cui si perde una riunione.
+4. **Ogni sigla si scioglie la prima volta**, compresi gli indicatori di mestiere del
+   cliente (vedi il blocco `gloss`): chi legge può essere bravissimo e non sapere che cos'è
+   un expense ratio.
+5. **Lo si legge in piedi, su un telefono, venti minuti prima.** È il primo deliverable su
    cui i colleghi giudicano la qualità del lavoro: se la tabella dei numeri è illeggibile a
    390px, il contenuto non conta.
+
+**Prova del nove, da fare prima di consegnare:** rileggere il documento fingendo di non aver
+mai sentito nominare la Factory. Ogni volta che ci si deve fermare a chiedere «che cosa
+vuol dire?» o «dove sta questa cosa?», è una riga da riscrivere.
 
 ## 1 · Ricerca — l'ordine che ha funzionato
 
@@ -59,7 +89,7 @@ Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
 5. **L'installato e i contratti**, dalle fonti interne. Vanno in **una sola sezione**,
    dichiarata come «mai in sala».
 
-## 1-bis · La gerarchia delle fonti, e l'errore che costa di più
+## 2 · La gerarchia delle fonti, e l'errore che costa di più
 
 Per un fatto attribuito a un **cliente terzo** (una referenza, un numero, il nome di una
 cosa che ha costruito lui) le fonti non valgono tutte uguale. Dalla più forte:
@@ -101,7 +131,7 @@ Due regole che ne escono:
   sezione obbligatoria, con la domanda già formulata e la cella vuota. Quando due fonti
   nostre si contraddicono, la contraddizione **si scrive**, con l'indicazione di quale vince.
 
-## 2 · Struttura — quattordici blocchi, un ordine
+## 3 · Struttura — quattordici blocchi, un ordine
 
 Il motore (`@edf/core/blocks/doc/DossierPage.astro`) rende un JSON di sezioni. Blocchi
 disponibili: `note` · `timeline` · `stats` · `people` · `items` · `rows` · `ideas` ·
@@ -139,7 +169,7 @@ Scheletro che regge in quasi tutti i casi:
 - Chi va in sala senza l'esperto di soluzioni ha bisogno di **domande già scritte** e di un
   say/don't stretto: il dossier diventa più prescrittivo, non più lungo.
 
-## 3 · Come si pubblica
+## 4 · Come si pubblica
 
 Il contenuto è riservato: **non sta mai nel bundle statico**.
 
@@ -163,7 +193,7 @@ Un accento **non è un inchiostro**: il colore di sistema del cliente su fondo s
 sta sotto 4,5:1 e per il testo serve la sua schiaritura. Si verifica il contrasto, non si
 spera.
 
-## 4 · La barra di qualità — misurata, non sperata
+## 5 · La barra di qualità — misurata, non sperata
 
 `pnpm audit:dossier` (o `DOSSIER_URLS="url1,url2" npx tsx scripts/dossier-audit.ts`) gira su
 **320, 375, 390, 768, 1280** e deve uscire a **zero rilievi**:
@@ -202,7 +232,7 @@ spera.
 Dopo l'audit si **guarda** comunque uno screenshot a 390 e uno a 1280: l'audit dice che si
 può leggere, non che è bello.
 
-## 5 · Marchi: perché un dossier non porta il co-brand
+## 6 · Marchi: perché un dossier non porta il co-brand
 
 Prima o poi qualcuno chiede di mettere in testa il lockup «Adobe × Cliente», o di dare un
 logo a ciascun formato. Per il dossier la risposta è **no**, per tre ragioni in ordine di
@@ -230,7 +260,7 @@ unico già è — non un marchio.
 Le experience e i deck restano un altro discorso: lì il co-brand è **binding** (vedi
 CLAUDE.md → Firma co-brand), perché quello è materiale che il cliente vede.
 
-## 6 · Che cosa NON fare
+## 7 · Che cosa NON fare
 
 - **Niente immagini generate.** Un dossier è già lungo venti schermate e si apre in
   mobilità: un'immagine decorativa aggiunge peso e scroll, non informazione, e ai colleghi
@@ -242,9 +272,10 @@ CLAUDE.md → Firma co-brand), perché quello è materiale che il cliente vede.
 - **Niente dati contrattuali fuori dalla loro sezione**, e mai a voce in riunione.
 - **Il cliente non deve sapere che il dossier esiste.**
 
-## 7 · Verifica prima di consegnare
+## 8 · Verifica prima di consegnare
 
 ```
+grep -nE '§ ?[0-9]|\bP[01]\b|\bI[123]\b' <seed>            # zero rimandi interni
 pnpm --filter <app> build
 grep -ril "<cognome>\|<cifra contrattuale>" apps/<app>/dist/    # deve dare 0
 # senza token → gate; con ?t=<token> → contenuto
