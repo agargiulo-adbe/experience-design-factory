@@ -254,7 +254,9 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   function progress() {
     var fill = $('dw-progress-fill'); if (!fill) return;
     var h = document.documentElement.scrollHeight - window.innerHeight;
-    fill.style.width = (h > 0 ? Math.min(100, (window.scrollY / h) * 100) : 0) + '%';
+    // scaleX, non width: la barra si aggiorna a ogni tick di scroll e animare
+    // una proprietà di layout costerebbe un ricalcolo per fotogramma.
+    fill.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ')';
   }
 
   // ── Blocchi ─────────────────────────────────────────────────────────────
@@ -683,7 +685,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-lang-btn[aria-pressed='true'] { background: var(--_surface-2); color: var(--_ink-strong); }
 
   .dw-progress { height: 2px; background: transparent; }
-  .dw-progress > span { display: block; height: 100%; width: 0; background: var(--_accent); transition: width 0.1s linear; }
+  .dw-progress > span { display: block; height: 100%; width: 100%; background: var(--_accent); transform: scaleX(0); transform-origin: left center; transition: transform 0.1s linear; }
   @media (prefers-reduced-motion: reduce) { .dw-progress > span { transition: none; } }
 
   /* ── Indice ──────────────────────────────────────────────────────────── */
@@ -903,14 +905,14 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   .dw-cols { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
   @media (min-width: 860px) { .dw-cols { grid-template-columns: 1fr 1fr; } .dw-cols--one { grid-template-columns: 1fr; } }
   .dw-col { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 1rem 1.1rem; background: var(--_surface); }
-  .dw-col--ok { border-top: 3px solid var(--_accent); }
-  .dw-col--no { border-top: 3px solid var(--_warn); }
   .dw-col-h {
     margin-bottom: 0.75rem; font-family: var(--_font-display); font-weight: 700; font-size: 0.95rem;
     color: var(--_ink-strong);
   }
-  .dw-col--ok .dw-col-h::before { content: '✓ '; color: var(--_accent); }
-  .dw-col--no .dw-col-h::before { content: '✕ '; color: var(--_warn); }
+  .dw-col--ok .dw-col-h { color: var(--_accent); }
+  .dw-col--no .dw-col-h { color: var(--_warn); }
+  .dw-col--ok .dw-col-h::before { content: '✓ '; }
+  .dw-col--no .dw-col-h::before { content: '✕ '; }
   .dw-col--no .dw-li::before { background: var(--_warn); }
 
   /* ── Fonti ───────────────────────────────────────────────────────────── */
