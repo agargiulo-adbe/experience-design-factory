@@ -1,0 +1,80 @@
+---
+// Guscio minimo per la sola pagina dossier. Niente deck, niente tailwind,
+// niente @edf/core: questa app oggi serve UNA pagina orfana e gated.
+//
+// TOKEN — letti dal CSS di produzione di www.intesasanpaolo.com con
+// `pnpm brand:tokens https://www.intesasanpaolo.com` (4 fogli, 805 KB, 4 ott
+// 2026), non a memoria. Il colore di SISTEMA è il verde #258900 (181
+// occorrenze), non un blu; l'accento è l'arancio #fa9600 (35); il verde notte
+// #0d2901 (46) regge la superficie scura. I valori Bootstrap 3 trovati nel
+// foglio (#337ab7, #a94442, #3c763d, #8a6d3b) sono default di framework e
+// NON fanno parte del design system: scartati.
+//
+// Carattere: Open Sans, dichiarato 59 volte dal sito. Per una volta non serve
+// una sostituta — è distribuibile. `ispfont` è il loro font di icone, non di testo.
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = '', noindex = false } = Astro.props;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+    />
+    <style is:global>
+      :root {
+        /* superfici */
+        --doc-bg: #0d2901;        /* verde notte, dal CSS di produzione */
+        --doc-line: #203b18;      /* bordo sottile, derivato dal verde notte */
+
+        /* accenti — l'accento non è un inchiostro: su fondo scuro il verde di
+           sistema #258900 dà 3,5:1 e non basta per il testo, quindi per il
+           testo si usa la sua schiaritura (6,8:1) e #258900 resta per i pieni */
+        --doc-accent: #4fc21f;    /* schiarita di #258900 — 6,8:1 su --doc-bg */
+        --doc-accent-hi: #6fd93f;
+        --doc-alt: #258900;       /* il verde di sistema, per i pieni */
+        --doc-alt-hi: #2b8804;
+        --doc-badge: #fa9600;     /* arancio di accento, dal CSS di produzione */
+
+        /* inchiostri */
+        --doc-ink-2: #d7e3d2;     /* 11,8:1 — corpo del testo */
+        --doc-ink-3: #a8bda2;     /*  8,0:1 — note e fonti */
+        --doc-ink-4: #7d9276;     /* solo decorativo, mai testo di lettura */
+
+        --doc-font-display: 'Open Sans', system-ui, sans-serif;
+        --doc-font-body: 'Open Sans', system-ui, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        background: var(--doc-bg);
+        color: var(--doc-ink-2);
+        font-family: var(--doc-font-body);
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      /* Serve davvero: la pagina nasconde il gate con l'attributo `hidden`, ma
+         .dw-state dichiara display:flex e senza questa riga lo batte — il gate
+         resterebbe a schermo sopra il contenuto. */
+      [hidden] { display: none !important; }
+      @media print {
+        body { background: #fff; color: #222; }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
