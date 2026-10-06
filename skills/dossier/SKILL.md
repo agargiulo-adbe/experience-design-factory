@@ -49,24 +49,57 @@ Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
    **(b)** la firma elettronica andava **tolta**, perché il cliente è esso stesso
    Certification Authority accreditata: proporgliela sarebbe stata la frase che chiude la
    riunione. **Quello che il cliente già fa da sé non si propone;**
-   **(c)** una nostra slide di referenza attribuiva a un cliente terzo il nome di un indice
-   che quel cliente non ha mai usato — cercato nella trascrizione integrale, nell'abstract
-   ufficiale della sessione, nelle fonti interne e sul web: zero occorrenze ovunque tranne
-   che nel nostro script. **Una referenza si cita con le parole del cliente, non con le
-   nostre**: se il nome non si trova alla fonte, si descrive la cosa senza nominarla.
+   **(c)** i numeri e i nomi di una referenza vanno presi dall'**artefatto approvato**
+   (il deck presentato, l'abstract scritto dal cliente), non dalla nostra sintesi: fra le
+   due versioni di un risultato ballavano 40 punti percentuali, e il nome del prodotto del
+   cliente era storpiato.
 4. **La stampa di settore verticale**, per i virgolettati. I quotidiani economici danno i
    numeri; le testate di settore danno le **parole del referente** a un convegno. Una frase
    sua vale dieci frasi nostre: è la porta d'ingresso dell'incontro.
 5. **L'installato e i contratti**, dalle fonti interne. Vanno in **una sola sezione**,
    dichiarata come «mai in sala».
 
-**Regole di metodo, imparate sbagliando:**
+## 1-bis · La gerarchia delle fonti, e l'errore che costa di più
+
+Per un fatto attribuito a un **cliente terzo** (una referenza, un numero, il nome di una
+cosa che ha costruito lui) le fonti non valgono tutte uguale. Dalla più forte:
+
+1. **Artefatti approvati dal cliente** — il deck che ha presentato, l'abstract che ha
+   scritto lui, un comunicato. È la sua voce, già passata dal suo ufficio.
+2. **La corrispondenza dell'account** — i `.eml`/`.msg` e i loro allegati nella cartella del
+   cliente. Qui si trova chi ha scritto cosa e chi l'ha approvato.
+3. **Registrazioni e trascrizioni** della sessione. Attenzione: le sbobinature **sbagliano i
+   nomi propri** — in un caso reale il cognome del relatore era storpiato, e il nome del
+   prodotto del cliente scritto «UNIKA» invece di «Unica». Non si cita mai un nome proprio
+   da una trascrizione: si prende dall'artefatto approvato.
+4. **Cataloghi e abstract pubblici**, spesso tagliati rispetto all'originale.
+5. **Il web generico.**
+
+**L'errore da non ripetere.** Un nome di indice attribuito a un cliente non si trovava in
+quattro fonti di livello 3-5, e l'ho dichiarato **inventato da noi**, chiedendo di correggere
+una slide fatta da un collega. Era vero il contrario: quel nome l'aveva scritto il cliente
+stesso in una mail di febbraio, e stava nel deck presentato — due fonti di livello 1 e 2 che
+in quel momento non erano nella cartella.
+
+Due regole che ne escono:
+
+- **Assenza di prova non è prova di assenza.** Da «non trovato in X, Y, Z» si conclude
+  «non confermato nelle fonti che ho: chiedere al team», mai «falso». Le due frasi costano
+  in modo molto diverso: la prima è gratis, la seconda fa buttare lavoro buono e mina la
+  fiducia nel materiale di tutti.
+- **Prima di dichiarare sbagliato il lavoro di un collega, ci si chiede quale fonte avesse
+  lui** — e la si cerca. In pratica: `ls` della cartella del cliente **rifatto al momento**
+  (il materiale arriva mentre si lavora), e non solo i documenti già puliti: anche `.eml`,
+  `.msg`, `.pptx`.
+
+**Altre regole di metodo, imparate sbagliando:**
 - **Il ruolo si verifica, non si assume.** «CEO» detto in una call interna è risultato
   essere COO. Un titolo sbagliato brucia i primi trenta secondi.
 - **Misurare prima di affermare.** Un'ipotesi che cade è un risultato, non un fallimento:
   va scritta la versione vera, non quella comoda.
 - **Un buco dichiarato vale più di un'ipotesi travestita.** La §«buchi aperti» è una
-  sezione obbligatoria, con la domanda già formulata e la cella vuota.
+  sezione obbligatoria, con la domanda già formulata e la cella vuota. Quando due fonti
+  nostre si contraddicono, la contraddizione **si scrive**, con l'indicazione di quale vince.
 
 ## 2 · Struttura — quattordici blocchi, un ordine
 
