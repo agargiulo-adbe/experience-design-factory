@@ -35,33 +35,48 @@ const { title, description = '', noindex = false } = Astro.props;
     />
     <style is:global>
       :root {
-        /* superfici */
-        --doc-bg: #0d2901;        /* verde notte, dal CSS di produzione */
-        --doc-line: #203b18;      /* bordo sottile, derivato dal verde notte */
+        /* ── PALETTE INTESA → contratto `--dw-*` del motore dossier ──────────
+           Valori letti dal CSS di produzione di www.intesasanpaolo.com con
+           `pnpm brand:tokens` (4 ott 2026), non a memoria: il colore di SISTEMA
+           è il verde #258900 (181 occorrenze), l'accento l'arancio #fa9600 (35),
+           il verde notte #0d2901 (46) regge la superficie scura. I valori
+           Bootstrap 3 del foglio (#337ab7, #a94442…) sono default di framework:
+           scartati.
+           Un accento non è un inchiostro: #258900 su fondo notte dà 3,5:1 e non
+           basta per il testo, quindi per testo e pieni si usa la sua schiaritura
+           #4fc21f (7,6:1 su #0d2901) e #258900 resta disponibile per i fondi.
+           --dw-alt è una schiaritura ulteriore (8,9:1): serve ai ruoli e ai
+           sottotitoli, dove il verde pieno #2b8804 dava 3,5:1 — sotto la soglia. */
+        --dw-bg: #0d2901;
+        --dw-tint: rgba(37, 137, 0, 0.16);
+        --dw-surface: rgba(16, 48, 6, 0.6);
+        --dw-surface-2: rgba(37, 137, 0, 0.18);
+        --dw-line: #203b18;
 
-        /* accenti — l'accento non è un inchiostro: su fondo scuro il verde di
-           sistema #258900 dà 3,5:1 e non basta per il testo, quindi per il
-           testo si usa la sua schiaritura (6,8:1) e #258900 resta per i pieni */
-        --doc-accent: #4fc21f;    /* schiarita di #258900 — 6,8:1 su --doc-bg */
-        --doc-accent-hi: #6fd93f;
-        --doc-alt: #258900;       /* il verde di sistema, per i pieni */
-        --doc-alt-hi: #2b8804;
-        --doc-badge: #fa9600;     /* arancio di accento, dal CSS di produzione */
+        --dw-ink: #d7e3d2;          /* 11,8:1 — corpo del testo */
+        --dw-ink-soft: #a8bda2;     /*  7,8:1 — note e metadati */
+        --dw-ink-faint: #7d9276;    /*  4,7:1 — etichette minute */
+        --dw-ink-strong: #ffffff;
 
-        /* inchiostri */
-        --doc-ink-2: #d7e3d2;     /* 11,8:1 — corpo del testo */
-        --doc-ink-3: #a8bda2;     /*  8,0:1 — note e fonti */
-        --doc-ink-4: #7d9276;     /* solo decorativo, mai testo di lettura */
+        --dw-accent: #4fc21f;       /* 7,6:1 — numeri, bullet, stato attivo */
+        --dw-fill: #4fc21f;
+        --dw-on-fill: #0d2901;      /* inchiostro scuro sul pieno: 7,6:1 */
+        --dw-warn: #fa9600;
+        --dw-on-warn: #0d2901;      /* 7,1:1 — il bianco sull'arancio dava 2,2:1 */
+        --dw-alt: #9ecf8a;          /* 8,9:1 — ruoli, sottotitoli, crediti */
 
-        --doc-font-display: 'Open Sans', system-ui, sans-serif;
-        --doc-font-body: 'Open Sans', system-ui, sans-serif;
+        /* Carattere: Open Sans, dichiarato 59 volte dal sito. Per una volta non
+           serve una sostituta — è distribuibile. `ispfont` è il loro font di
+           icone, non di testo. */
+        --dw-font-display: 'Open Sans', system-ui, sans-serif;
+        --dw-font-body: 'Open Sans', system-ui, sans-serif;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
       body {
-        background: var(--doc-bg);
-        color: var(--doc-ink-2);
-        font-family: var(--doc-font-body);
+        background: var(--dw-bg);
+        color: var(--dw-ink);
+        font-family: var(--dw-font-body);
         line-height: 1.6;
       }
       img { max-width: 100%; }

@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 
 // App MINIMALE, di proposito: oggi contiene SOLO la pagina dossier (orfana,
@@ -9,4 +10,11 @@ export default defineConfig({
   base: '/experience-design-factory/intesa-scala-umana',
   output: 'static',
   trailingSlash: 'always',
+  vite: {
+    resolve: {
+      alias: {
+        '@edf/core': fileURLToPath(new URL('../../packages/core/src', import.meta.url)),
+      },
+    },
+  },
 });

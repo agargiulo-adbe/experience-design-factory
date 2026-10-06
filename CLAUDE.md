@@ -17,7 +17,7 @@ Experiences today (tipo tra parentesi, vedi Tassonomia):
 - **Pole Position** — Ferrari Racing × Adobe [Blueprint] (EN/IT bilingual, motorsport, 7 sections).
 - **Connessioni Intelligenti** — FS Group [Blueprint] (IT, 6 sezioni + casi d'uso).
 - **Trait d'Union** — Agos [Blueprint] (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
-- **Sei domande** — Poste Italiane [Playbook] (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per Giuseppe Sperandeo (Responsabile Monitoraggio Canali Digitali, Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (GA su Adobe Analytics il 2/10/2026). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (Gangemi). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
+- **Sei domande** — Poste Italiane [Playbook] (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per il Responsabile Monitoraggio Canali Digitali (Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (GA su Adobe Analytics il 2/10/2026). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (parole del referente tecnico). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
 
 Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
 
@@ -48,6 +48,7 @@ sceglie il tipo da cinque domande; `pnpm new:experience` genera la skin dal suo 
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
 - `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente).
+- `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
 ## Apps & structure
@@ -401,6 +402,7 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
   BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.
 - `blocks/admin/AdminConsole.astro` — the shared config‑driven Admin Console.
+- `blocks/doc/DossierPage.astro` — il **motore unico dei dossier interni gated**: gate (Supabase `restricted_docs`, login o `?t=`), renderer dei 14 blocchi, indice con scroll‑spy, barra di avanzamento, bilingue, stampa su carta bianca. Ogni app ha solo un **wrapper sottile** che passa `docSlug` e mappa la propria palette sul contratto `--dw-*`. **Mai copiare il renderer dentro un'app**: è così che sono nate sei copie divergenti. Barra di qualità e metodo di ricerca: skill `skills/dossier/`.
 
 ### Gli 11 check che ogni slide deve passare — a 1920×1080, 1440×900 E 1280×800 (`audit:deck`)
 > Nel codice i check sono `a b c d e g h i j k m` + `exp` (nessun `f`, nessun `l`).

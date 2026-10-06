@@ -1,0 +1,947 @@
+---
+// ═══════════════════════════════════════════════════════════════════════════
+//  DossierPage — il motore UNICO dei dossier interni gated.
+//
+//  Prima di questo file ogni app aveva la sua copia del renderer (sei copie
+//  divergenti, fra 345 e 583 righe): migliorare la leggibilità su telefono in
+//  una non la migliorava nelle altre, e una copia aveva già preso la strada
+//  dei token rinominati a mano. Qui vale la regola del motore condiviso: si
+//  migliora una volta, lo prendono tutti.
+//
+//  COSA FA
+//  - Gate: contenuto MAI nel bundle statico. Arriva da Supabase `restricted_docs`
+//    dopo login (RLS) oppure via secret-link `?t=<uuid>` (RPC `get_shared_doc`).
+//  - Rende un documento JSON con 14 tipi di blocco (vedi CONTRATTO sotto).
+//  - Indice navigabile con scroll-spy, barra di avanzamento, ancore per sezione.
+//  - Stampa/PDF su carta bianca.
+//
+//  CONTRATTO DEI TOKEN — l'app dichiara `--dw-*` (di norma su :root, nel suo
+//  layout); il motore li consuma con un valore di riserva. Niente palette
+//  cablata qui dentro, niente gare di specificità con i fogli dell'app:
+//    --dw-bg --dw-tint --dw-surface --dw-surface-2 --dw-line
+//    --dw-ink --dw-ink-soft --dw-ink-faint --dw-ink-strong
+//    --dw-accent --dw-fill --dw-on-fill --dw-warn --dw-on-warn --dw-alt
+//    --dw-font-display --dw-font-body  (+ misure: --dw-col --dw-gut --dw-bar-h)
+//
+//  CONTRATTO DEL CONTENUTO (chiavi di sezione, tutte facoltative tranne `h`):
+//    n h note · timeline[{anno,t}] · stats[{v,l,s}] · people[{name,role,note,li}]
+//    items[string | {badge,t}] · rows[{k,sub,v}] · ideas[{tag,nome,parte,cosa,adobe}]
+//    table{head[],rows[][],pcol} · say[] / dont[] · sources[{tipo,url,label}] · foot
+//  `order`: elenco facoltativo dei blocchi, per anteporre il dato al commento.
+//  Testo: stringa, oppure {it,en} (IT di default). In `richText` passano solo
+//  <strong>, <em> e <code>: tutto il resto è escapato. L'enfasi vale nei campi
+//  DESCRITTIVI (note, items, ruoli, etichette dei numeri); i campi IDENTIFICATIVI
+//  (nomi, celle di tabella, etichette delle fonti) restano testo puro.
+// ═══════════════════════════════════════════════════════════════════════════
+interface Props {
+  /** slug in `restricted_docs` (di norma = slug dell'experience) */
+  docSlug: string;
+  /** titolo di fallback, mostrato finché il documento non è caricato */
+  title: string;
+  /** `import.meta.env.BASE_URL` dell'app: serve a costruire il link al Console */
+  base: string;
+  supabaseUrl?: string;
+  supabaseAnon?: string;
+  /** etichetta e link opzionali verso il deck dell'experience */
+  deckHref?: string;
+  deckLabel?: string;
+}
+const {
+  docSlug,
+  title,
+  base,
+  supabaseUrl = '',
+  supabaseAnon = '',
+  deckHref = '',
+  deckLabel = 'Vai al deck ↗',
+} = Astro.props;
+
+const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
+---
+
+<a class="dw-skip" href="#dw-doc">Salta al contenuto</a>
+
+<div class="dw-shell">
+  <header class="dw-bar dw-noprint">
+    <div class="dw-bar-in">
+      <span class="dw-badge" id="dw-badge" title="Adobe internal">Adobe internal</span>
+      <span class="dw-badge dw-badge--short" id="dw-badge-short">Riservato</span>
+      <p class="dw-bar-title" id="dw-bar-title">{title}</p>
+      <p class="dw-bar-here" id="dw-bar-here" aria-hidden="true"></p>
+      <div class="dw-bar-tools" id="dw-tools" hidden>
+        <div class="dw-lang" id="dw-lang" role="group" aria-label="Lingua / Language" hidden>
+          <button type="button" class="dw-lang-btn" data-lang="it" aria-pressed="true">IT</button>
+          <button type="button" class="dw-lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" class="dw-btn-ghost" id="dw-toc-btn" aria-expanded="false" aria-controls="dw-toc-sheet" aria-label="Apri l’indice delle sezioni">
+          <span aria-hidden="true">☰</span><span class="dw-lbl"> Indice</span>
+        </button>
+        {deckHref && <a class="dw-btn-ghost dw-only-wide" href={deckHref}>{deckLabel}</a>}
+        <button type="button" class="dw-btn-solid" id="dw-pdf" aria-label="Stampa o salva in PDF">↓<span class="dw-lbl"> PDF</span></button>
+      </div>
+    </div>
+    <div class="dw-progress" aria-hidden="true"><span id="dw-progress-fill"></span></div>
+  </header>
+
+  <!-- Indice a scomparsa: su telefono è l'unico modo sensato di muoversi in
+       un documento che su iPhone SE è lungo venti schermate. -->
+  <nav class="dw-sheet" id="dw-toc-sheet" aria-label="Indice delle sezioni" hidden>
+    <div class="dw-sheet-in">
+      <div class="dw-sheet-head">
+        <p class="dw-sheet-h">Indice</p>
+        <button type="button" class="dw-btn-ghost" id="dw-toc-close" aria-label="Chiudi l’indice">✕</button>
+      </div>
+      <ol class="dw-toc" id="dw-toc-list"></ol>
+    </div>
+  </nav>
+  <div class="dw-scrim dw-noprint" id="dw-scrim" hidden></div>
+
+  <div class="dw-body">
+    <!-- Rail dell'indice: solo da 1100px in su, dove c'è davvero la colonna. -->
+    <aside class="dw-rail dw-noprint" id="dw-rail" hidden>
+      <p class="dw-rail-h">Indice</p>
+      <ol class="dw-toc dw-toc--rail" id="dw-rail-list"></ol>
+    </aside>
+
+    <main class="dw-main">
+      <!-- Stato: caricamento / gate / nessun accesso. Nessun contenuto riservato. -->
+      <div id="dw-state" class="dw-state">
+        <p class="dw-state-msg" id="dw-state-msg">Verifica accesso…</p>
+        <div id="dw-state-actions" class="dw-state-actions" hidden></div>
+      </div>
+
+      <article id="dw-doc" hidden></article>
+
+      <footer class="dw-footer" id="dw-footer" hidden></footer>
+    </main>
+  </div>
+</div>
+
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON: supabaseAnon, DOC_SLUG: docSlug, base }}>
+(function () {
+  var SESSION_KEY = 'edf:sb-session';
+  var $ = function (id) { return document.getElementById(id); };
+  var stateEl = $('dw-state'), stateMsg = $('dw-state-msg'), stateActions = $('dw-state-actions');
+  var docEl = $('dw-doc'), toolsEl = $('dw-tools'), footerEl = $('dw-footer');
+  var railEl = $('dw-rail'), sheetEl = $('dw-toc-sheet'), scrimEl = $('dw-scrim');
+  var content = null, spy = null;
+  var LANG_KEY = 'edf:doc-lang';
+  var lang = 'it';
+  try { var saved = localStorage.getItem(LANG_KEY); if (saved === 'it' || saved === 'en') lang = saved; } catch (_) {}
+
+  var T = {
+    checking: 'Verifica accesso…',
+    needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
+    login: 'Accedi dal Console',
+    noAccess: 'Il tuo account non ha accesso a questo dossier. L’accesso si attiva dal Console (Utenti).',
+    expired: 'Sessione scaduta. Riaccedi per continuare.',
+    backend: 'Backend non configurato.',
+    error: 'Errore nel caricamento del dossier. Riprova.',
+  };
+
+  function consoleLoginUrl() {
+    var b = String(base || '/');
+    return b.replace(/[^/]+\/?$/, 'console/') + 'login/';
+  }
+  function loginButton() { return '<a class="dw-btn" href="' + consoleLoginUrl() + '">' + T.login + '</a>'; }
+  function readSession() { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (_) { return null; } }
+  function nowSec() { return Math.floor(Date.now() / 1000); }
+
+  function esc(s) { var d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+  // Si escapa tutto, poi si riaprono DUE soli tag. Il contenuto arriva dal
+  // database: trattarlo come HTML sarebbe una porta aperta.
+  // `&amp;` scritto nel JSON è già una entità: senza questa riga uscirebbe
+  // doppio-escapato e il lettore vedrebbe la stringa «&amp;» invece di «&».
+  function richText(s) {
+    return esc(s)
+      .replace(/&amp;amp;/g, '&amp;')
+      .replace(/&lt;strong&gt;/g, '<strong>').replace(/&lt;\/strong&gt;/g, '</strong>')
+      .replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>')
+      .replace(/&lt;code&gt;/g, '<code class="dw-code">').replace(/&lt;\/code&gt;/g, '</code>');
+  }
+  // L(): stringa semplice oppure {it,en}. Segue la lingua scelta e ripiega
+  // sull'altra se quella manca — un documento tradotto a metà resta leggibile.
+  function L(v) {
+    if (v == null) return '';
+    if (typeof v === 'string') return v;
+    var first = v[lang];
+    if (first != null && first !== '') return first;
+    return (lang === 'it' ? v.en : v.it) || '';
+  }
+  // Il selettore compare solo se nel documento esiste davvero una coppia it/en.
+  function isBilingual(node, depth) {
+    if (depth > 6 || node == null || typeof node !== 'object') return false;
+    if (!Array.isArray(node) && node.it != null && node.en != null) return true;
+    var keys = Array.isArray(node) ? node : Object.keys(node).map(function (k) { return node[k]; });
+    for (var i = 0; i < keys.length; i++) { if (isBilingual(keys[i], depth + 1)) return true; }
+    return false;
+  }
+
+  function el(tag, cls, html) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function chipClass(b) {
+    var s = String(b || '').toLowerCase();
+    if (s.indexOf('attenzione') === 0) return 'dw-chip dw-chip--warn';
+    if (s.indexOf('competitivo') === 0) return 'dw-chip dw-chip--comp';
+    if (s.indexOf('leva') === 0) return 'dw-chip dw-chip--go';
+    return 'dw-chip';
+  }
+  function hostOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (_) { return ''; } }
+
+  function showState(msg, actionsHtml) {
+    docEl.hidden = true; toolsEl.hidden = true; footerEl.hidden = true;
+    if (railEl) railEl.hidden = true;
+    stateEl.hidden = false;
+    stateMsg.textContent = msg;
+    if (actionsHtml) { stateActions.hidden = false; stateActions.innerHTML = actionsHtml; }
+    else { stateActions.hidden = true; stateActions.innerHTML = ''; }
+  }
+
+  // ── Indice: pannello su telefono, rail su desktop, stessa lista ──────────
+  function closeSheet() {
+    sheetEl.hidden = true; scrimEl.hidden = true;
+    document.body.classList.remove('dw-locked');
+    var b = $('dw-toc-btn'); if (b) { b.setAttribute('aria-expanded', 'false'); b.focus(); }
+  }
+  function openSheet() {
+    sheetEl.hidden = false; scrimEl.hidden = false;
+    document.body.classList.add('dw-locked');
+    $('dw-toc-btn').setAttribute('aria-expanded', 'true');
+    var first = sheetEl.querySelector('a'); if (first) first.focus();
+  }
+  function buildToc(secs) {
+    [['dw-toc-list', true], ['dw-rail-list', false]].forEach(function (pair) {
+      var list = $(pair[0]); if (!list) return;
+      list.innerHTML = '';
+      secs.forEach(function (sec, i) {
+        var id = 's' + String(i + 1).padStart(2, '0');
+        var li = el('li', 'dw-toc-li');
+        var a = el('a', 'dw-toc-a');
+        a.href = '#' + id;
+        a.innerHTML = '<span class="dw-toc-n">' + esc(sec.n || String(i + 1)) + '</span><span>' + esc(L(sec.h)) + '</span>';
+        a.addEventListener('click', function () { if (pair[1]) closeSheet(); });
+        li.appendChild(a); list.appendChild(li);
+      });
+    });
+  }
+  function startSpy(secs) {
+    if (spy) spy.disconnect();
+    if (!('IntersectionObserver' in window)) return;
+    var links = {};
+    document.querySelectorAll('.dw-toc-a').forEach(function (a) {
+      var k = a.getAttribute('href').slice(1);
+      (links[k] = links[k] || []).push(a);
+    });
+    spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) {
+          links[k].forEach(function (a) {
+            if (k === e.target.id) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        });
+        var label = e.target.getAttribute('data-bar');
+        if (label) $('dw-bar-here').textContent = label;
+      });
+    }, { rootMargin: '-12% 0px -72% 0px' });
+    document.querySelectorAll('.dw-section').forEach(function (s) { spy.observe(s); });
+  }
+  function progress() {
+    var fill = $('dw-progress-fill'); if (!fill) return;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    fill.style.width = (h > 0 ? Math.min(100, (window.scrollY / h) * 100) : 0) + '%';
+  }
+
+  // ── Blocchi ─────────────────────────────────────────────────────────────
+  function blockTimeline(rows) {
+    var tl = el('div', 'dw-timeline');
+    rows.forEach(function (c) {
+      var r = el('div', 'dw-tl-row');
+      r.appendChild(el('span', 'dw-tl-year', esc(c.anno)));
+      r.appendChild(el('p', 'dw-tl-text', richText(L(c.t))));
+      tl.appendChild(r);
+    });
+    return tl;
+  }
+  function blockStats(rows) {
+    var g = el('div', 'dw-stats');
+    rows.forEach(function (n) {
+      var c = el('div', 'dw-stat');
+      c.appendChild(el('p', 'dw-stat-v', esc(n.v)));
+      c.appendChild(el('p', 'dw-stat-l', richText(L(n.l))));
+      if (n.s) c.appendChild(el('p', 'dw-stat-s', richText(L(n.s))));
+      g.appendChild(c);
+    });
+    return g;
+  }
+  function blockPeople(rows) {
+    var g = el('div', 'dw-grid');
+    rows.forEach(function (p) {
+      var c = el('div', 'dw-card');
+      c.appendChild(el('p', 'dw-card-name', esc(p.name || '')));
+      c.appendChild(el('p', 'dw-card-role', richText(L(p.role))));
+      if (p.note) c.appendChild(el('p', 'dw-card-note', richText(L(p.note))));
+      if (p.li) {
+        var a = el('a', 'dw-card-link', 'LinkedIn ↗');
+        a.href = p.li; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        c.appendChild(a);
+      }
+      g.appendChild(c);
+    });
+    return g;
+  }
+  function blockItems(rows) {
+    var ul = el('ul', 'dw-list');
+    rows.forEach(function (it) {
+      var li = el('li', 'dw-li');
+      if (it && typeof it === 'object' && it.t != null) {
+        if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(it.badge) + '</span>';
+        li.appendChild(el('span', null, richText(L(it.t))));
+      } else {
+        li.innerHTML = richText(L(it));
+      }
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+  function blockRows(rows) {
+    var w = el('div', 'dw-rows');
+    rows.forEach(function (r) {
+      var row = el('div', 'dw-row');
+      var left = el('div', 'dw-row-l');
+      left.appendChild(el('p', 'dw-row-k', esc(L(r.k))));
+      if (r.sub) left.appendChild(el('p', 'dw-row-sub', richText(L(r.sub))));
+      row.appendChild(left);
+      row.appendChild(el('p', 'dw-row-v', richText(L(r.v))));
+      w.appendChild(row);
+    });
+    return w;
+  }
+  function blockIdeas(rows) {
+    var g = el('div', 'dw-ideas');
+    rows.forEach(function (b) {
+      var a = el('article', 'dw-idea');
+      if (b.tag) a.appendChild(el('span', 'dw-chip dw-chip--go', esc(b.tag)));
+      a.appendChild(el('h3', 'dw-idea-name', esc(L(b.nome))));
+      if (b.parte) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Da dove parte</span>' + richText(L(b.parte))));
+      if (b.cosa) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Cosa mostriamo</span>' + richText(L(b.cosa))));
+      if (b.adobe) a.appendChild(el('p', 'dw-idea-adobe', esc(b.adobe)));
+      g.appendChild(a);
+    });
+    return g;
+  }
+  // Tabella VERA (non div con role): su telefono ogni riga diventa una scheda
+  // e ogni cella si porta dietro l'intestazione della colonna. Nascondere la
+  // riga di intestazione, come faceva il renderer precedente, lasciava quattro
+  // numeri in colonna senza sapere di che cosa fossero.
+  function blockTable(t) {
+    var wrap = el('div', 'dw-table-wrap');
+    var tb = el('table', 'dw-table');
+    var head = t.head || [];
+    if (head.length) {
+      var thead = el('thead');
+      var tr = el('tr');
+      head.forEach(function (c) { var th = el('th', null, esc(c)); th.scope = 'col'; tr.appendChild(th); });
+      thead.appendChild(tr); tb.appendChild(thead);
+    }
+    var tbody = el('tbody');
+    (t.rows || []).forEach(function (r) {
+      var tr = el('tr');
+      r.forEach(function (c, i) {
+        var cell = el(i === 0 ? 'th' : 'td');
+        if (i === 0) { cell.scope = 'row'; cell.className = 'dw-td-key'; }
+        if (head[i]) cell.setAttribute('data-label', head[i]);
+        if (t.pcol != null && i === t.pcol) cell.innerHTML = '<span class="dw-p dw-p--' + esc(String(c).toLowerCase()) + '">' + esc(c) + '</span>';
+        else cell.textContent = c;
+        tr.appendChild(cell);
+      });
+      tbody.appendChild(tr);
+    });
+    tb.appendChild(tbody);
+    wrap.appendChild(tb);
+    return wrap;
+  }
+  function blockSayDont(say, dont) {
+    var cw = el('div', 'dw-cols');
+    var mk = function (title, arr, mod) {
+      var c = el('div', 'dw-col ' + mod);
+      c.appendChild(el('h3', 'dw-col-h', esc(title)));
+      var u = el('ul', 'dw-list dw-list--tight');
+      (arr || []).forEach(function (it) { u.appendChild(el('li', 'dw-li', richText(L(it)))); });
+      c.appendChild(u);
+      return c;
+    };
+    if (say && say.length) cw.appendChild(mk('Da dire', say, 'dw-col--ok'));
+    if (dont && dont.length) cw.appendChild(mk('Da non dire', dont, 'dw-col--no'));
+    if (!say || !say.length || !dont || !dont.length) cw.classList.add('dw-cols--one');
+    return cw;
+  }
+  function blockSources(rows) {
+    var ul = el('ul', 'dw-sources');
+    rows.forEach(function (b) {
+      var li = el('li', 'dw-source');
+      if (b.tipo) li.appendChild(el('span', 'dw-chip dw-chip--mute', esc(b.tipo)));
+      var a = el('a', 'dw-source-a');
+      a.href = b.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.textContent = b.label || b.url;
+      li.appendChild(a);
+      var h = hostOf(b.url);
+      if (h) li.appendChild(el('span', 'dw-source-h', esc(h)));
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
+  function render() {
+    if (!content) return;
+    var secs = content.sections || [];
+
+    var badge = L(content.badge) || 'Adobe internal';
+    $('dw-badge').textContent = badge;
+    // Forma breve per la barra stretta: l'ultimo segmento è la parola che conta
+    // («Adobe internal · Riservato» → «Riservato»). Derivata dal contenuto, non
+    // cablata: un dossier che si etichetta diversamente resta coerente.
+    $('dw-badge-short').textContent = badge.split('·').pop().trim() || badge;
+    $('dw-bar-title').textContent = L(content.title) || 'Dossier';
+    document.title = (L(content.title) || 'Dossier');
+
+    docEl.innerHTML = '';
+
+    // Copertina: titolo intero, data, avvertenza. Fuori dalla barra fissa —
+    // è roba che si legge una volta, non che deve seguire chi scorre.
+    var cover = el('header', 'dw-cover');
+    cover.appendChild(el('h1', 'dw-cover-h', esc(L(content.title) || 'Dossier')));
+    if (L(content.updated)) cover.appendChild(el('p', 'dw-cover-meta', esc(L(content.updated))));
+    if (L(content.disclaimer)) cover.appendChild(el('p', 'dw-cover-note', esc(L(content.disclaimer))));
+    docEl.appendChild(cover);
+
+    secs.forEach(function (sec, i) {
+      var s = el('section', 'dw-section');
+      s.id = 's' + String(i + 1).padStart(2, '0');
+      s.setAttribute('tabindex', '-1');
+      s.setAttribute('data-bar', (sec.n ? sec.n + ' · ' : '') + L(sec.h));
+
+      var h = el('h2', 'dw-h');
+      h.innerHTML = '<span class="dw-h-num">' + esc(sec.n || String(i + 1)) + '</span><span>' + esc(L(sec.h)) + '</span>';
+      s.appendChild(h);
+
+      // Ordine dei blocchi: quello di DEFAULT qui sotto, oppure quello che la
+      // sezione dichiara in `order` — serve quando il dato viene prima del
+      // commento (una tabella di numeri letta dopo tre capoversi di lettura
+      // non è più una tabella di numeri, è una nota).
+      var DEFAULT_ORDER = ['note', 'timeline', 'stats', 'people', 'items', 'rows', 'ideas', 'table', 'saydont', 'sources'];
+      var make = {
+        note: function () { return sec.note ? el('p', 'dw-note', richText(L(sec.note))) : null; },
+        timeline: function () { return (sec.timeline || []).length ? blockTimeline(sec.timeline) : null; },
+        stats: function () { return (sec.stats || []).length ? blockStats(sec.stats) : null; },
+        people: function () { return (sec.people || []).length ? blockPeople(sec.people) : null; },
+        items: function () { return (sec.items || []).length ? blockItems(sec.items) : null; },
+        rows: function () { return (sec.rows || []).length ? blockRows(sec.rows) : null; },
+        ideas: function () { return (sec.ideas || []).length ? blockIdeas(sec.ideas) : null; },
+        table: function () { return (sec.table && sec.table.rows) ? blockTable(sec.table) : null; },
+        saydont: function () { return ((sec.say || []).length || (sec.dont || []).length) ? blockSayDont(sec.say, sec.dont) : null; },
+        sources: function () { return (sec.sources || []).length ? blockSources(sec.sources) : null; },
+      };
+      var order = Array.isArray(sec.order) && sec.order.length ? sec.order : DEFAULT_ORDER;
+      // ciò che l'ordine esplicito dimentica viene comunque reso, in coda:
+      // meglio un blocco fuori posto che un blocco perso.
+      DEFAULT_ORDER.forEach(function (k) { if (order.indexOf(k) === -1) order = order.concat([k]); });
+      order.forEach(function (k) { var node = make[k] && make[k](); if (node) s.appendChild(node); });
+
+      if (sec.foot) s.appendChild(el('p', 'dw-note dw-note--foot', richText(L(sec.foot))));
+
+      docEl.appendChild(s);
+    });
+
+    footerEl.textContent = (L(content.footer) ? L(content.footer) + ' · ' : '') + (L(content.updated) || '') + ' · Adobe internal';
+
+    var langEl = $('dw-lang');
+    if (langEl) {
+      langEl.hidden = !isBilingual(content, 0);
+      langEl.querySelectorAll('.dw-lang-btn').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+      });
+    }
+    document.documentElement.setAttribute('lang', lang);
+
+    buildToc(secs);
+    stateEl.hidden = true;
+    docEl.hidden = false; toolsEl.hidden = false; footerEl.hidden = false;
+    if (railEl) railEl.hidden = false;
+    startSpy(secs);
+    progress();
+
+    // Ancora nell'URL: ci si arriva anche quando il contenuto è appena stato reso.
+    if (location.hash) {
+      var target = document.getElementById(location.hash.slice(1));
+      if (target) target.scrollIntoView();
+    }
+  }
+
+  // ── Accesso ─────────────────────────────────────────────────────────────
+  function shareToken() {
+    try {
+      var v = new URLSearchParams(location.search).get('t');
+      return (v && /^[0-9a-f-]{32,40}$/i.test(v)) ? v : null;
+    } catch (_) { return null; }
+  }
+  function bootFromToken(token) {
+    showState(T.checking);
+    fetch(SUPABASE_URL + '/rest/v1/rpc/get_shared_doc', {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ p_token: token }),
+    }).then(function (r) {
+      if (!r.ok) { showState(T.error); return null; }
+      return r.json();
+    }).then(function (data) {
+      if (data == null) return;
+      if (!data || typeof data !== 'object' || !data.sections) { showState(T.needLogin, loginButton()); return; }
+      content = data; render();
+    }).catch(function () { showState(T.error); });
+  }
+  function boot() {
+    if (!SUPABASE_URL || !SUPABASE_ANON) { showState(T.backend); return; }
+    var token = shareToken();
+    if (token) { bootFromToken(token); return; }
+    var sess = readSession();
+    if (!sess || !sess.access_token) { showState(T.needLogin, loginButton()); return; }
+    if (sess.expires_at && sess.expires_at < nowSec()) { showState(T.expired, loginButton()); return; }
+    showState(T.checking);
+    fetch(SUPABASE_URL + '/rest/v1/restricted_docs?slug=eq.' + encodeURIComponent(DOC_SLUG) + '&select=content', {
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + sess.access_token, Accept: 'application/json' },
+    }).then(function (r) {
+      if (r.status === 401 || r.status === 403) { showState(T.expired, loginButton()); return null; }
+      if (!r.ok) { showState(T.error); return null; }
+      return r.json();
+    }).then(function (rows) {
+      if (rows == null) return;
+      if (!rows.length || !rows[0].content) { showState(T.noAccess); return; }
+      content = rows[0].content; render();
+    }).catch(function () { showState(T.error); });
+  }
+
+  // ── Comandi ─────────────────────────────────────────────────────────────
+  var pdfBtn = $('dw-pdf'); if (pdfBtn) pdfBtn.addEventListener('click', function () { window.print(); });
+  var langGroup = $('dw-lang');
+  if (langGroup) langGroup.addEventListener('click', function (e) {
+    var b = e.target.closest('.dw-lang-btn'); if (!b) return;
+    var next = b.getAttribute('data-lang'); if (next === lang) return;
+    lang = next;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (_) {}
+    var y = window.scrollY; render(); window.scrollTo(0, y);
+  });
+  var tocBtn = $('dw-toc-btn'); if (tocBtn) tocBtn.addEventListener('click', function () { sheetEl.hidden ? openSheet() : closeSheet(); });
+  var tocClose = $('dw-toc-close'); if (tocClose) tocClose.addEventListener('click', closeSheet);
+  if (scrimEl) scrimEl.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheetEl.hidden) closeSheet(); });
+  window.addEventListener('scroll', progress, { passive: true });
+  window.addEventListener('resize', progress);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  document.addEventListener('astro:page-load', boot);
+})();
+</script>
+
+<style is:global>
+  /* ═══════════════════════════════════════════════════════════════════════
+     NB: `is:global` è necessario — il contenuto è iniettato via JS, quindi
+     nasce senza l'attributo di scoping di Astro. Tutte le classi sono
+     prefissate `.dw-` per non collidere con il resto dell'app.
+
+     TOKEN: il motore non conosce nessuna palette. Ogni app mappa la propria
+     su queste variabili nel wrapper; i default servono solo da rete di
+     sicurezza. Vedi il commento in testa al componente.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .dw-shell {
+    /* Alias interni: il motore CONSUMA il contratto pubblico `--dw-*` e porta
+       con sé il valore di riserva. Nessuna dichiarazione di `--dw-*` qui
+       dentro, così l'app che li definisce (su :root, nel suo layout) vince
+       sempre, senza gare di specificità né dipendenze dall'ordine dei fogli. */
+    --_bg:        var(--dw-bg, #10131a);
+    --_tint:      var(--dw-tint, rgba(255, 255, 255, 0.05));
+    --_surface:   var(--dw-surface, rgba(255, 255, 255, 0.045));
+    --_surface-2: var(--dw-surface-2, rgba(255, 255, 255, 0.08));
+    --_line:      var(--dw-line, rgba(255, 255, 255, 0.14));
+    --_ink:       var(--dw-ink, #dfe4ec);
+    --_ink-soft:  var(--dw-ink-soft, #aab3c0);
+    --_ink-faint: var(--dw-ink-faint, #7f8795);
+    --_ink-strong:var(--dw-ink-strong, #ffffff);
+    --_accent:    var(--dw-accent, #74a7ff);
+    --_fill:      var(--dw-fill, #2f6fd0);
+    --_on-fill:   var(--dw-on-fill, #ffffff);
+    --_warn:      var(--dw-warn, #e08a00);
+    --_on-warn:   var(--dw-on-warn, #13161c);
+    --_alt:       var(--dw-alt, #9cc0ff);
+    --_font-display: var(--dw-font-display, system-ui, sans-serif);
+    --_font-body:    var(--dw-font-body, system-ui, sans-serif);
+
+    /* misure: una sola costante da cambiare, sovrascrivibile dall'app */
+    --_col:   var(--dw-col, 48rem);
+    --_gut:   var(--dw-gut, clamp(1.1rem, 4vw, 2.5rem));
+    --_bar-h: var(--dw-bar-h, 3.75rem);
+
+    min-height: 100dvh;
+    background: radial-gradient(130% 55% at 15% 0%, var(--_tint), transparent 60%) var(--_bg);
+    font-family: var(--_font-body);
+    color: var(--_ink);
+  }
+
+  .dw-skip {
+    position: absolute; top: 0; left: 0; z-index: 100;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    background: var(--_fill); color: var(--_on-fill);
+    padding: 0.7rem 1.1rem; border-radius: 0 0 6px 0; font-weight: 700; text-decoration: none;
+  }
+  .dw-skip:focus { width: auto; height: auto; overflow: visible; clip-path: none; }
+
+  .dw-shell :focus-visible { outline: 2px solid var(--_accent); outline-offset: 2px; border-radius: 3px; }
+  body.dw-locked { overflow: hidden; }
+
+  /* ── Barra fissa: compatta per contratto. Prima occupava il 49% di un
+     iPhone SE perché conteneva anche sei righe di avvertenza. ───────────── */
+  .dw-bar {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--_bg) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--_line);
+  }
+  @supports not (background: color-mix(in srgb, red 50%, blue)) {
+    .dw-bar { background: var(--_bg); }
+  }
+  .dw-bar-in {
+    max-width: calc(var(--_col) + 20rem);
+    margin-inline: auto;
+    padding: 0 var(--_gut);
+    min-height: var(--_bar-h);
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .dw-badge {
+    flex-shrink: 0;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--_on-warn); background: var(--_warn);
+    padding: 0.22rem 0.5rem; border-radius: 3px; white-space: nowrap;
+  }
+  .dw-bar-title {
+    flex: 1; min-width: 0;
+    font-family: var(--_font-display); font-weight: 700; font-size: 0.9rem; line-height: 1.3;
+    color: var(--_ink-strong);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .dw-bar-tools { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+  /* Budget della barra a 375px: 17,6px di margine per lato + badge + due
+     bersagli da 40px. Il titolo non ci sta e non serve — è in copertina e
+     l'indice dice dove si è. Le etichette tornano da 560px in su. */
+  .dw-bar-title { display: none; }
+  .dw-lbl { display: none; }
+  .dw-badge { display: none; }
+  .dw-badge--short { display: inline-flex; }
+  /* Sulla barra stretta il titolo del documento è ridondante (è in copertina):
+     al suo posto va la sezione in cui ci si trova, che è l'unica informazione
+     che cambia mentre si scorre. Da 560px tornano titolo ed etichette. */
+  .dw-bar-here {
+    flex: 1; min-width: 0;
+    font-family: var(--_font-display); font-weight: 700; font-size: 0.82rem; line-height: 1.3;
+    color: var(--_ink-strong);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  @media (min-width: 560px) {
+    .dw-bar-title { display: block; }
+    .dw-bar-here { display: none; }
+    .dw-badge { display: inline-flex; }
+    .dw-badge--short { display: none; }
+    .dw-lbl { display: inline; }
+  }
+  /* icona sola = bersaglio quadrato da 44px, non 37 */
+  @media (max-width: 559px) { .dw-btn-ghost, .dw-btn-solid { min-width: 2.75rem; justify-content: center; padding: 0 0.5rem; } }
+  .dw-btn-ghost, .dw-btn-solid {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    min-height: 2.75rem; padding: 0 0.75rem;    /* 44px pieni: la soglia di Apple HIG, non il minimo WCAG */
+    border-radius: 6px; border: 1px solid var(--_line);
+    font-family: inherit; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer; text-decoration: none; white-space: nowrap;
+  }
+  .dw-btn-ghost { background: transparent; color: var(--_ink); }
+  .dw-btn-ghost:hover { background: var(--_surface-2); color: var(--_ink-strong); }
+  .dw-btn-solid { background: var(--_fill); color: var(--_on-fill); border-color: transparent; }
+  .dw-btn-solid:hover { filter: brightness(1.12); }
+  .dw-only-wide { display: none; }
+  @media (min-width: 720px) { .dw-only-wide { display: inline-flex; } }
+
+  .dw-lang { display: inline-flex; border: 1px solid var(--_line); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+  .dw-lang-btn {
+    min-width: 2.75rem; min-height: 2.75rem; padding: 0 0.5rem; border: 0; background: transparent;
+    font-family: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+    color: var(--_ink-soft); cursor: pointer;
+  }
+  .dw-lang-btn[aria-pressed='true'] { background: var(--_surface-2); color: var(--_ink-strong); }
+
+  .dw-progress { height: 2px; background: transparent; }
+  .dw-progress > span { display: block; height: 100%; width: 0; background: var(--_accent); transition: width 0.1s linear; }
+  @media (prefers-reduced-motion: reduce) { .dw-progress > span { transition: none; } }
+
+  /* ── Indice ──────────────────────────────────────────────────────────── */
+  .dw-sheet {
+    position: fixed; z-index: 60; inset: var(--_bar-h) 0 0 auto;
+    width: min(22rem, 86vw);
+    background: var(--_bg); border-left: 1px solid var(--_line);
+    overflow-y: auto; overscroll-behavior: contain;
+  }
+  .dw-sheet-in { padding: 1rem var(--_gut) 2.5rem; }
+  .dw-sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+  .dw-sheet-h, .dw-rail-h {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--_ink-faint);
+  }
+  .dw-scrim { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.66); }
+  .dw-toc { list-style: none; margin: 0; padding: 0; }
+  .dw-toc-a {
+    display: flex; gap: 0.6rem; align-items: baseline;
+    min-height: 2.75rem; padding: 0.5rem 0;      /* 44px */
+    font-size: 0.93rem; line-height: 1.35; color: var(--_ink); text-decoration: none;
+    border-bottom: 1px solid var(--_line);
+  }
+  .dw-toc-a:hover { color: var(--_ink-strong); }
+  .dw-toc-a[aria-current] { color: var(--_accent); font-weight: 700; }
+  .dw-toc-n { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; color: var(--_ink-faint); }
+  .dw-toc-a[aria-current] .dw-toc-n { color: var(--_accent); }
+
+  .dw-body { max-width: calc(var(--_col) + 20rem); margin-inline: auto; display: flex; gap: 2.5rem; }
+  .dw-rail { display: none; }
+  @media (min-width: 1100px) {
+    .dw-rail {
+      display: block; position: sticky; align-self: flex-start;
+      top: calc(var(--_bar-h) + 1.5rem);
+      width: 15rem; flex-shrink: 0;
+      padding: 2.5rem 0 2rem var(--_gut);
+      max-height: calc(100dvh - var(--_bar-h) - 3rem); overflow-y: auto;
+    }
+    .dw-toc--rail .dw-toc-a { font-size: 0.82rem; min-height: 2.25rem; padding: 0.35rem 0; }
+  }
+
+  .dw-main {
+    flex: 1; min-width: 0;
+    max-width: var(--_col);
+    padding: clamp(1.5rem, 4vw, 2.5rem) var(--_gut) 4rem;
+    display: flex; flex-direction: column;
+  }
+
+  .dw-state { min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.2rem; text-align: center; }
+  .dw-state-msg { font-size: 1rem; line-height: 1.6; color: var(--_ink-soft); max-width: 32rem; }
+  .dw-btn {
+    display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 1.2rem;
+    font-size: 0.88rem; font-weight: 700; color: var(--_on-fill); background: var(--_fill);
+    border-radius: 6px; text-decoration: none;
+  }
+
+  /* ── Copertina ───────────────────────────────────────────────────────── */
+  .dw-cover { padding-bottom: 0.4rem; }
+  .dw-cover-h {
+    font-family: var(--_font-display); font-weight: 800; letter-spacing: -0.02em;
+    font-size: clamp(1.4rem, 5vw, 2.1rem); line-height: 1.15; color: var(--_ink-strong);
+    text-wrap: balance;
+  }
+  .dw-cover-meta {
+    margin-top: 0.7rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--_accent);
+  }
+  .dw-cover-note {
+    margin-top: 1rem; padding: 0.9rem 1rem;
+    border: 1px solid var(--_line); border-left: 3px solid var(--_warn); border-radius: 0 8px 8px 0;
+    background: var(--_surface);
+    font-size: 0.9rem; line-height: 1.6; color: var(--_ink-soft);
+  }
+
+  /* ── Sezioni ─────────────────────────────────────────────────────────── */
+  .dw-section { border-top: 1px solid var(--_line); padding-top: 1.6rem; margin-top: 2.2rem; scroll-margin-top: calc(var(--_bar-h) + 1rem); }
+  .dw-section:focus { outline: none; }
+  .dw-h {
+    display: flex; align-items: baseline; gap: 0.7rem;
+    font-family: var(--_font-display); font-weight: 700; letter-spacing: -0.015em;
+    font-size: clamp(1.3rem, 3.6vw, 1.7rem); line-height: 1.25; color: var(--_ink-strong);
+    margin-bottom: 1rem; text-wrap: balance;
+  }
+  .dw-h-num { flex-shrink: 0; font-family: var(--_font-body); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--_accent); }
+  .dw-note { font-size: 0.95rem; line-height: 1.6; color: var(--_ink-soft); overflow-wrap: anywhere; }
+  .dw-note + * { margin-top: 1.1rem; }
+  .dw-note--foot {
+    margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px dashed var(--_line);
+    font-size: 0.9rem;
+  }
+  .dw-note strong { color: var(--_ink-strong); font-weight: 600; }
+  .dw-note em { color: var(--_alt); font-style: normal; }
+
+  /* ── Elenchi ─────────────────────────────────────────────────────────── */
+  .dw-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; }
+  .dw-list + * { margin-top: 1.1rem; }
+  .dw-li { position: relative; padding-left: 1.05rem; font-size: 1rem; line-height: 1.6; color: var(--_ink); overflow-wrap: anywhere; }
+  .dw-li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--_accent); }
+  .dw-list--tight .dw-li { font-size: 0.93rem; line-height: 1.55; }
+  .dw-li strong { color: var(--_ink-strong); font-weight: 600; }
+  .dw-li em { color: var(--_alt); font-style: normal; }
+
+  /* `code`: nei dossier tecnici si citano nomi di variabili, suite e parametri.
+     Prima venivano escapati e il lettore vedeva i tag alla lettera. */
+  .dw-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em; padding: 0.08em 0.32em; border-radius: 4px;
+    background: var(--_surface-2); color: var(--_ink-strong);
+    overflow-wrap: anywhere;
+  }
+
+  .dw-chip {
+    display: inline-flex; align-items: center; margin-right: 0.45rem;
+    padding: 0.16rem 0.5rem; border-radius: 999px;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--_on-fill); background: var(--_fill); vertical-align: middle;
+  }
+  .dw-chip--warn { background: var(--_warn); color: var(--_on-warn); }
+  .dw-chip--comp { background: #c8321e; color: #fff; }
+  .dw-chip--go { background: transparent; color: var(--_accent); border: 1px solid var(--_accent); }
+  .dw-chip--mute { background: transparent; color: var(--_ink-faint); border: 1px solid var(--_line); }
+
+  /* ── Cronologia ──────────────────────────────────────────────────────── */
+  .dw-timeline { display: flex; flex-direction: column; }
+  .dw-tl-row { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; padding: 0.7rem 0; border-top: 1px solid var(--_line); }
+  .dw-tl-row:first-child { border-top: 0; padding-top: 0; }
+  .dw-tl-year { font-family: var(--_font-display); font-weight: 700; font-size: 0.88rem; color: var(--_accent); }
+  .dw-tl-text { font-size: 0.95rem; line-height: 1.6; color: var(--_ink); }
+  @media (max-width: 600px) {
+    .dw-tl-row { grid-template-columns: 1fr; gap: 0.25rem; }
+    .dw-tl-year { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  }
+
+  /* ── Numeri: due per riga anche sul telefono, non quattro schede in fila
+     una sotto l'altra alte duecento pixel l'una. ────────────────────────── */
+  .dw-stats { display: grid; gap: 0.6rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 860px) { .dw-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .dw-stat { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 0.85rem 0.9rem; background: var(--_surface); }
+  .dw-stat-v { font-family: var(--_font-display); font-weight: 800; font-size: clamp(1.25rem, 5vw, 1.5rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--_accent); }
+  .dw-stat-l { margin-top: 0.3rem; font-size: 0.85rem; line-height: 1.35; color: var(--_ink-strong); font-weight: 600; }
+  .dw-stat-s { margin-top: 0.25rem; font-size: 0.76rem; line-height: 1.4; color: var(--_ink-soft); }
+
+  /* ── Schede persona ──────────────────────────────────────────────────── */
+  .dw-grid { display: grid; gap: 0.8rem; grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .dw-grid { grid-template-columns: 1fr 1fr; } }
+  .dw-card { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 1rem 1.05rem; background: var(--_surface); }
+  .dw-card-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.02rem; color: var(--_ink-strong); }
+  .dw-card-role { margin-top: 0.2rem; font-size: 0.85rem; line-height: 1.45; color: var(--_alt); }
+  .dw-card-note { margin-top: 0.55rem; font-size: 0.92rem; line-height: 1.55; color: var(--_ink); }
+  .dw-card-link { display: inline-block; margin-top: 0.6rem; font-size: 0.8rem; font-weight: 700; color: var(--_accent); text-decoration: none; }
+
+  /* ── Righe chiave/valore ─────────────────────────────────────────────── */
+  .dw-rows { display: flex; flex-direction: column; }
+  .dw-row { display: grid; grid-template-columns: 12rem 1fr; gap: 1.1rem; padding: 0.85rem 0; border-top: 1px solid var(--_line); align-items: start; }
+  .dw-row:first-child { border-top: 0; padding-top: 0; }
+  .dw-row-k { font-family: var(--_font-display); font-weight: 700; font-size: 0.97rem; line-height: 1.35; color: var(--_ink-strong); }
+  .dw-row-sub { margin-top: 0.15rem; font-size: 0.78rem; line-height: 1.4; color: var(--_alt); }
+  .dw-row-v { min-width: 0; overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.6; color: var(--_ink); }
+  .dw-row-v strong { color: var(--_ink-strong); }
+  .dw-row-v em { color: var(--_alt); font-style: normal; }
+  @media (max-width: 760px) {
+    .dw-row { grid-template-columns: 1fr; gap: 0.35rem; }
+    .dw-row-l { border-left: 2px solid var(--_accent); padding-left: 0.6rem; }
+  }
+
+  /* ── Idee ────────────────────────────────────────────────────────────── */
+  .dw-ideas { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .dw-ideas { grid-template-columns: 1fr 1fr; } }
+  .dw-idea { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 12px; padding: 1.1rem 1.15rem; background: var(--_surface); display: flex; flex-direction: column; gap: 0.55rem; }
+  .dw-idea > .dw-chip { align-self: flex-start; margin-right: 0; }
+  .dw-idea-name { font-family: var(--_font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.3; color: var(--_ink-strong); }
+  .dw-idea-line { font-size: 0.93rem; line-height: 1.6; color: var(--_ink); }
+  .dw-idea-k { display: block; margin-bottom: 0.15rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--_ink-faint); }
+  .dw-idea-adobe { margin-top: auto; padding-top: 0.65rem; border-top: 1px dashed var(--_line); font-family: var(--_font-display); font-weight: 700; font-size: 0.88rem; line-height: 1.4; color: var(--_alt); }
+
+  /* ── Tabelle ─────────────────────────────────────────────────────────── */
+  /* Una tabella con troppe colonne scorre DENTRO il suo contenitore: la pagina
+     non deve mai scorrere in orizzontale. Vale fra i 761px (dove la pila
+     mobile si spegne) e la larghezza in cui le colonne stanno davvero. */
+  .dw-table-wrap { border: 1px solid var(--_line); border-radius: 10px; overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+  .dw-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .dw-table th, .dw-table td { padding: 0.65rem 0.85rem; text-align: left; vertical-align: top; line-height: 1.5; }
+  .dw-table thead th {
+    background: var(--_surface-2);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--_ink-soft);
+    white-space: nowrap;
+  }
+  .dw-table tbody tr { border-top: 1px solid var(--_line); }
+  .dw-table tbody td { color: var(--_ink); }
+  .dw-td-key { font-weight: 600; color: var(--_ink-strong); }
+  .dw-p { display: inline-flex; padding: 0.12rem 0.5rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
+  .dw-p--p0 { background: var(--_warn); color: var(--_on-warn); }
+  .dw-p--p1 { background: var(--_surface-2); color: var(--_ink); }
+  /* Sul telefono ogni riga diventa una scheda e OGNI cella si porta dietro
+     l'intestazione della sua colonna: senza, restano numeri senza nome. */
+  @media (max-width: 860px) {
+    .dw-table-wrap { border: 0; border-radius: 0; }
+    .dw-table, .dw-table tbody, .dw-table tr, .dw-table td, .dw-table th { display: block; }
+    .dw-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .dw-table tbody tr {
+      border: 1px solid var(--_line); border-radius: 10px; background: var(--_surface);
+      padding: 0.75rem 0.9rem; margin-bottom: 0.6rem;
+    }
+    .dw-table tbody tr:last-child { margin-bottom: 0; }
+    .dw-table th, .dw-table td { padding: 0; }
+    .dw-td-key { font-size: 1rem; line-height: 1.35; margin-bottom: 0.5rem; }
+    .dw-table td { display: flex; gap: 0.6rem; justify-content: space-between; align-items: baseline; padding: 0.3rem 0; border-top: 1px solid var(--_line); font-size: 0.92rem; }
+    .dw-table td[data-label]::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--_ink-faint);
+      padding-top: 0.15em;
+    }
+  }
+
+  /* ── Da dire / da non dire ───────────────────────────────────────────── */
+  .dw-cols { display: grid; gap: 0.9rem; grid-template-columns: 1fr; }
+  @media (min-width: 860px) { .dw-cols { grid-template-columns: 1fr 1fr; } .dw-cols--one { grid-template-columns: 1fr; } }
+  .dw-col { min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--_line); border-radius: 10px; padding: 1rem 1.1rem; background: var(--_surface); }
+  .dw-col--ok { border-top: 3px solid var(--_accent); }
+  .dw-col--no { border-top: 3px solid var(--_warn); }
+  .dw-col-h {
+    margin-bottom: 0.75rem; font-family: var(--_font-display); font-weight: 700; font-size: 0.95rem;
+    color: var(--_ink-strong);
+  }
+  .dw-col--ok .dw-col-h::before { content: '✓ '; color: var(--_accent); }
+  .dw-col--no .dw-col-h::before { content: '✕ '; color: var(--_warn); }
+  .dw-col--no .dw-li::before { background: var(--_warn); }
+
+  /* ── Fonti ───────────────────────────────────────────────────────────── */
+  .dw-sources { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; margin: 0; padding: 0; }
+  .dw-source { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem; padding: 0.55rem 0; border-top: 1px solid var(--_line); font-size: 0.92rem; line-height: 1.5; }
+  .dw-source:first-child { border-top: 0; }
+  .dw-source-a { color: var(--_ink); text-decoration: none; border-bottom: 1px solid var(--_line); overflow-wrap: anywhere; }
+  .dw-source-a:hover { color: var(--_accent); border-bottom-color: var(--_accent); }
+  .dw-source-h { font-size: 0.74rem; color: var(--_ink-faint); }
+
+  .dw-footer { margin-top: 2.5rem; padding-top: 1.1rem; border-top: 1px solid var(--_line); font-size: 0.78rem; line-height: 1.5; letter-spacing: 0.02em; color: var(--_ink-faint); }
+
+  /* ── Stampa / PDF: carta bianca, inchiostro scuro, niente comandi ─────── */
+  @media print {
+    .dw-noprint, .dw-bar, .dw-rail, .dw-sheet, .dw-scrim, .dw-skip { display: none !important; }
+    .dw-shell { background: #fff !important; color: #1a1a1a; }
+    .dw-body { display: block; max-width: none; }
+    .dw-main { max-width: none; padding: 0; }
+    .dw-cover-h, .dw-h, .dw-card-name, .dw-col-h, .dw-idea-name, .dw-row-k, .dw-td-key, .dw-stat-l,
+    .dw-li strong, .dw-note strong { color: #111 !important; }
+    .dw-h-num, .dw-tl-year, .dw-cover-meta, .dw-stat-v, .dw-idea-adobe, .dw-card-role, .dw-row-sub { color: #333 !important; }
+    .dw-li, .dw-tl-text, .dw-note, .dw-idea-line, .dw-row-v, .dw-card-note, .dw-source-a, .dw-table td { color: #222 !important; }
+    .dw-card, .dw-idea, .dw-col, .dw-stat, .dw-table-wrap, .dw-cover-note { border: 1px solid #ccc !important; background: #fff !important; }
+    .dw-chip, .dw-p { background: #222 !important; color: #fff !important; border-color: #222 !important; }
+    .dw-li::before { background: #555 !important; }
+    .dw-section { break-inside: auto; page-break-inside: auto; }
+    .dw-h, .dw-cover-h { break-after: avoid; page-break-after: avoid; }
+    .dw-card, .dw-idea, .dw-col, .dw-stat, .dw-table tbody tr { break-inside: avoid; page-break-inside: avoid; }
+    /* l'URL di una fonte, su carta, è l'unica cosa che la rende verificabile */
+    .dw-source-a::after { content: ' (' attr(href) ')'; font-size: 0.75em; color: #666; overflow-wrap: anywhere; }
+    .dw-source-h { display: none; }
+    .dw-table thead { position: static; width: auto; height: auto; clip: auto; }
+  }
+</style>
