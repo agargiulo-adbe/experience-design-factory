@@ -214,6 +214,8 @@ Su richiesta cliente, **rimossa ogni economia Adobe** dal modello (era diventato
 ---
 ## 22. Modifiche core trasversali introdotte da Atelier (verificate su tutte le esperienze)
 
+> **Motore dei dossier interni:** `packages/core/src/blocks/doc/DossierPage.astro` è il renderer unico delle pagine dossier gated (sei app, wrapper di ~30 righe ciascuna) con il suo gate `pnpm audit:dossier`. Vive nella **§34 (Parte 11)**, non qui, perché ha regole di contenuto e di ricerca che non sono quelle dei deck.
+
 Due cambi in `packages/core` fatti per Atelier ma **propagati/verificati su tutte** (regola
 di propagazione cross-experience in `CLAUDE.md`).
 

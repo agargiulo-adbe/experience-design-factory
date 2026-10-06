@@ -150,3 +150,239 @@ partner con cui si pranza quel giorno** — una ne è stata Partner della CRM Se
 invece di indovinare.
 
 **Scadenza vera: venerdì 9 ottobre** (revisione interna), non il 22.
+
+
+---
+
+## 34. Il motore unico dei dossier (6 ott 2026)
+
+### 34.1 Perché esiste
+
+Sei app avevano **sei copie divergenti** dello stesso renderer di dossier, fra 345 e 583 righe
+l'una. Migliorare la lettura su telefono in una non la migliorava nelle altre; una copia aveva già
+rinominato i token a mano (in Poste `--color-menta` era il giallo e `--color-arancio` il blu); e due
+difetti vecchi stavano lì senza che nessuno li vedesse. Vale la regola del motore condiviso: si
+migliora una volta, lo prendono tutti.
+
+`packages/core/src/blocks/doc/DossierPage.astro` è adesso **il** renderer. Ogni app ha un **wrapper
+di ~30 righe**: importa il componente, passa `docSlug`, `base` e le chiavi Supabase, e mappa la
+propria palette sul contratto `--dw-*`. Retrofit fatto su tutte e sei — isybank, mim, poste,
+unicredit, intesa ×2 — e **ciascuna verificata con il contenuto reale** letto dal database, non con
+una fixture.
+
+**Non migrate, di proposito:** `eni-orbita` e `trenitalia` usano il vecchio schema con il contenuto
+**dentro il bundle statico** (pattern superato). Convertirle significa prima spostare materiale
+riservato su Supabase: lavoro a sé, voce P1 nel backlog.
+
+### 34.2 Il contratto dei token
+
+Il motore **non dichiara** `--dw-*`: li **consuma** con un valore di riserva
+(`--_bg: var(--dw-bg, #10131a)`). Così l'app che li definisce vince sempre, senza gare di
+specificità né dipendenze dall'ordine dei fogli. Il contratto: `--dw-bg --dw-tint --dw-surface
+--dw-surface-2 --dw-line --dw-ink --dw-ink-soft --dw-ink-faint --dw-ink-strong --dw-accent
+--dw-fill --dw-on-fill --dw-warn --dw-on-warn --dw-alt --dw-font-display --dw-font-body`
+(+ misure `--dw-col --dw-gut --dw-bar-h`).
+
+### 34.3 Il contratto del contenuto
+
+Blocchi di sezione: `n h note` · `timeline[{anno,t}]` · `stats[{v,l,s}]` ·
+`people[{name,role,note,li}]` · `items[string|{badge,t}]` · `rows[{k,sub,v}]` ·
+`ideas[{tag,nome,parte,cosa,adobe}]` · `table{head,rows,pcol}` · **`gloss[{t,k,d,use}]`** ·
+`say[]`/`dont[]` · `sources[{tipo,url,label}]` · `foot`. Testo: stringa o `{it,en}`.
+
+Due cose nuove: **`order`** (elenco facoltativo dei blocchi, per anteporre il dato al commento —
+una tabella di numeri letta dopo tre capoversi non è più una tabella) e **`gloss`**, che spiega un
+indicatore dove sta il numero, con disclosure native: su telefono il tooltip non esiste, non c'è
+hover, e un overlay copre quello che si sta leggendo.
+
+Enfasi ammessa nei campi **descrittivi** (`<strong>`, `<em>`, `<code>`); i campi **identificativi**
+(nomi, celle di tabella, etichette delle fonti) restano testo puro.
+
+### 34.4 `pnpm audit:dossier` — il gate
+
+`scripts/dossier-audit.ts`, su **cinque viewport** (320 · 375 · 390 · 768 · 1280). Deve uscire a
+**zero rilievi**; esce 2 se non audita nulla (la trappola già vista su `audit:deck`).
+
+| | Controllo | Soglia |
+|---|---|---|
+| a | barra fissa | ≤ 12% del viewport |
+| b | scorrimento orizzontale della pagina | nessuno; una tabella larga scorre **dentro** il suo contenitore |
+| c | tipo | corpo ≥16px · celle ≥14px · note ≥14px (etichette di colonna ≥11px) |
+| d | tabelle impilate | ogni cella porta la **sua** intestazione |
+| e | bersagli tattili | ≥ 44×44 |
+| f | indice | completo oltre le sei sezioni |
+| g | misura di lettura | 60–95 caratteri per riga |
+| h | stampa | niente comandi, carta bianca, URL delle fonti |
+| i | JavaScript | zero errori |
+| j | contenuto | nessun elemento sfora la **propria colonna** |
+| k | contenuto | **nessun blocco reso vuoto** |
+
+**I difetti che il gate è nato per impedire**, tutti visti sul campo: l'avvertenza dentro la barra
+fissa (**330px, il 49% di un iPhone SE**, che segue il lettore per venti schermate); la tabella che
+su telefono nasconde l'intestazione e lascia quattro numeri senza nome; celle a 11px; un figlio di
+griglia senza `min-width: 0` che fa scorrere di lato **l'intera pagina**; lo skip link a
+`left:-9999px` che allarga l'area di scorrimento; e la **gerarchia piatta** — il corpo a 16px è
+giusto, ma se il titolo di sezione sta a 20px tutto sembra piccolo: la scala si apre sui titoli e
+sui numeri, non gonfiando il corpo.
+
+I check **`j`** e **`k`** sono nati da difetti che il controllo grezzo non vedeva, e hanno trovato
+subito cose vecchie: un dominio che sforava la sua colonna di 82px da 768px in su, e il **«Run of
+show» del dossier Poste** — cinque righe **invisibili da settembre** perché scritte con i campi
+`{label, sub, body}` mentre il contratto dice `{k, sub, v}`. Convertito in `timeline`; **nessun
+alias aggiunto al motore**, perché un contratto con le scorciatoie non è più un contratto.
+
+### 34.5 La skill `dossier`
+
+`skills/dossier/SKILL.md` (symlink in `.claude/skills/dossier`) tiene il metodo: per chi è scritto,
+la ricerca, la gerarchia delle fonti, la struttura delle sezioni, la pubblicazione, la barra di
+qualità, i marchi, le cose da non fare, la verifica. Le quattro regole aggiunte il 6 ott, tutte da
+errori veri di quella giornata:
+
+1. **Per chi è scritto.** Un collega Adobe che **non sa nulla della Factory**, del formato o delle
+   regole: apre un link, legge sul telefono e giudica chiarezza, efficacia in riunione e quanto il
+   documento dimostra di conoscere quel cliente e Adobe. Quindi **nessun rimando a numero di
+   sezione** («§7», «idea I1», «P0»), titoli in italiano piano, avvertenza che insegna a usare il
+   documento, ogni sigla sciolta la prima volta, e **nessun presupposto di presenza** («la domanda
+   rimasta aperta in call» non dice niente a chi a quella call non c'era).
+2. **Le idee si verificano prima di scriverle**, su Fluffy e sulle fonti pubbliche e del cliente. E
+   **quello che il cliente fa già da sé non si propone**.
+3. **La gerarchia delle fonti** per un fatto attribuito a un cliente terzo (§34.6).
+4. **Una dichiarazione ha una data di scadenza**: un'idea che nasce da una frase di mesi prima è uno
+   **spunto da verificare**, non un assunto — nel dossier con la data in chiaro, nelle slide come
+   domanda invece che come affermazione.
+
+Le regole 1 e 2 stanno anche in `CLAUDE.md`. **Un dossier non porta il co-brand** (skill §6):
+il lockup dichiara un artefatto fatto *con* il cliente, un dossier è fatto *su* di lui e porta
+scritto che il cliente non deve sapere che esiste; e se esce, con quel lockup sembra congiunto.
+Sui deck la regola resta binding.
+
+### 34.6 La gerarchia delle fonti, e l'errore da non ripetere
+
+Un nome di indice attribuito a un cliente terzo non si trovava in **quattro** fonti (una nostra
+trascrizione ripulita, il catalogo abbreviato della sessione, le fonti interne, il web) e **è stato
+dichiarato inventato**, chiedendo di correggere la slide di un collega. Era vero il contrario: quel
+nome l'aveva scritto **il cliente stesso** in una mail di febbraio che proponeva il testo
+dell'abstract, e stava nel deck presentato. Le due fonti sono arrivate nella cartella **dopo** la
+ricerca.
+
+Gerarchia, dalla più forte: **(1)** artefatti approvati dal cliente (deck presentato, abstract
+scritto da lui) · **(2)** corrispondenza dell'account (`.eml`/`.msg` e allegati nella sua cartella)
+· **(3)** trascrizioni — **sbagliano i nomi propri**, quindi da lì non si cita mai un nome ·
+**(4)** cataloghi pubblici, spesso tagliati · **(5)** web generico.
+
+Due regole: **«non trovato» non si traduce in «falso»** (si conclude «non confermato, chiedere al
+team»), e **prima di dichiarare sbagliato il lavoro di un collega si cerca la fonte che aveva lui**,
+rifacendo l'`ls` della cartella del cliente — il materiale arriva mentre si lavora. Memoria:
+`fonti-cliente-gerarchia`.
+
+---
+
+## 35. Intesa Sanpaolo Assicurazioni — «Dopo la firma» (6 ott 2026)
+
+> ⚠️ Stesse regole della §33: su questo file tracciato le persone si citano per **ruolo**. Nomi,
+> installato e intelligence stanno in `docs/Intesa Sanpaolo/` (git-ignorata) e nel dossier gated.
+
+### 35.1 La stanza, e perché è un'altra
+
+Giovedì **8 ottobre 2026, ore 11:00**, un'ora di persona con il **Chief Operating Officer di Intesa
+Sanpaolo Assicurazioni** (la capogruppo assicurativa, ex Intesa Sanpaolo Vita). In sala due colleghi
+Adobe e, possibile, un **Information Technology Manager** che è il suo riporto: se c'è, è lui il
+verificatore tecnico.
+
+È una stanza **diversa** da quella della §33 (Banca dei Territori, 22 ott): perimetro diverso,
+vincoli diversi. Per questo l'entità è separata — `apps/intesa-dopo-la-firma/`, migrazione
+`0021` — così un vincolo di una stanza non cola nell'altra.
+
+### 35.2 Il perimetro, verificato sulle superfici del cliente
+
+La domanda rimasta aperta nella riunione interna del mattino era quanto dell'esperienza del cliente
+finale sia della compagnia e quanto della banca. Verificata leggendo direttamente i siti, le app e i
+portali:
+
+- **due siti istituzionali su Adobe Experience Manager** (librerie e DAM sotto `isp_assicurazioni` e
+  `isp_protezione`) — **AEM sta sul PUBBLICO**, prima del login;
+- **Adobe Analytics in produzione su due report suite**, distribuito via **Tealium**: misura le
+  pagine pubbliche, **non** l'area clienti, l'app, il percorso del sinistro, i ticket;
+- **app propria con oltre un milione di download**, distinta da quelle bancarie;
+- **area clienti su Liferay + CA SiteMinder**: il post-login **non è AEM**, è un'altra macchina e
+  un'altra generazione;
+- **digitalizzazione della «Customer Journey Sinistri Danni»** già dichiarata a bilancio, con tre
+  cantieri nominati: *Video Perizia*, *Hardbooking*, **New Document Management**.
+
+Conclusione operativa: **il perimetro digitale esiste, è suo, e comincia dopo la firma.**
+L'acquisizione passa dalla banca — da lì non si entra.
+
+### 35.3 Che cosa lo muove
+
+Ruolo dichiarato dalla stampa di settore: *life underwriting & claims* e *information technology
+insurance in generale*; ai convegni è accreditato come «responsabile area operations e sistemi
+informativi». Viene dalla consulenza di processo e ha fatto il COO di una compagnia prima di
+arrivare qui: ragiona per processi e per numeri.
+
+- **La sua metrica è l'expense ratio** (33,9% al 31 dic 2025, in calo da 34,5%): l'unica voce del
+  conto che dipende da come è organizzata l'azienda. Sta già tagliando: non gli si dice che ha un
+  problema di costi, gli si chiede dove il prossimo mezzo punto è più difficile.
+- **Otto milioni e mezzo di contratti, e il numero non cresce** (vita −0,9%, danni +0,6%, premi a
+  doppia cifra): la crescita viene dal valore per contratto. Tutto si gioca sulla base installata.
+- **Sta scrivendo il Piano Strategico dell'Informatica 2026-2029** — è scritto nel bilancio della
+  sua area, con cinque principi già fissati. È la finestra, e non se ne apre un'altra presto.
+- Obiettivi riferiti per via interna (fuori dal deck, dentro il dossier): far crescere i **clienti
+  diretti** e la **raccolta danni**, perché il vita è trainato dal cross-selling bancario.
+
+### 35.4 Il dossier
+
+`apps/intesa-dopo-la-firma/dossier/` — **quattordici sezioni**, reso dal motore §34, contenuto in
+Supabase (`restricted_docs`, slug `intesa-dopo-la-firma`), seed git-ignorato in
+`docs/Intesa Sanpaolo/0021_…`, README tracciato accanto alla migrazione. Markdown master accanto al
+seed.
+
+Novità rispetto ai dossier precedenti: **glossario degli indicatori** (expense ratio, loss ratio,
+combined ratio, contratti, solvency — con *che cos'è*, *che cosa dice davvero* e **«in sala»**),
+tabelle con il **dato prima del commento** (`order`), e **zero gergo interno** dopo la riscrittura
+del 6 ott (diciannove rimandi a numero di sezione rimossi).
+
+Tre idee, tutte **marcate come spunti** con la data della fonte: i **documenti** (PDF Extract API,
+Document Generation, AEM Forms — che è contrattualizzato dalla banca, **non** dalla compagnia), il
+**percorso** (Customer Journey Analytics), il **modulo giusto nel momento giusto** sull'offerta
+modulare. **Niente firma elettronica**: il gruppo è **Certification Authority accreditata AgID** ed
+emette i propri certificati — proporla sarebbe la frase che chiude la riunione.
+
+### 35.5 Le quattro slide dell'8 ottobre
+
+`docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Dopo_la_firma.pptx`,
+generate da `output/build/build_slide_8ott.py` sul master Adobe 2026 svuotato. Copertina + 4, come
+deciso nella riunione interna del pomeriggio del 6 ott: **slide «da tenere in tasca»**, una per
+tema, non un deck da scorrere.
+
+1. **Dove ci innestiamo** — i documenti, il percorso, i momenti.
+2. **I documenti che non si chiedono due volte.**
+3. **Perché hanno chiamato** — con la referenza italiana.
+4. **Il modulo giusto nel momento giusto.**
+
+**Ogni slide chiude su una domanda, non su un'affermazione**: le leve nascono da dichiarazioni di
+giugno 2025 e da un piano citato in un bilancio di fine 2025, quindi sono spunti da verificare
+(§34.5, regola 4). Le note del relatore portano la regia e i divieti. Verificato convertendo in PDF
+e leggendo le slide: corretto un difetto vero, la domanda di chiusura finiva **sopra il logo Adobe**.
+
+### 35.6 La referenza, e la lezione che ne è uscita
+
+La referenza italiana è una compagnia concorrente che ha presentato ad Adobe Summit 2026 un modello
+omnicanale su Customer Journey Analytics. Due cose la rendono la più utile che abbiamo: ha lanciato
+**due anni prima la stessa idea della polizza unica** del nostro interlocutore, e ha messo in un solo
+ambiente nove fonti — performance, ticketing, CRM, voce del cliente — **senza sostituire un solo
+strumento**, che è esattamente la posizione che serve a noi. Risultati dichiarati sul palco: −20% sul
+tempo di troubleshooting, 2× sull'identificazione della causa, −90% sul tempo per produrre
+un'analisi integrata. Tempi, senza sconti: ~18 mesi di implementazione più 6 di analisi.
+
+**La lezione sta in §34.6**: il nome dell'indice composito che la nostra slide di referenza usa era
+stato dichiarato «inventato da noi» e non lo era — l'aveva scritto il cliente nell'abstract della
+sessione. Resta una discordanza fra due nostre fonti sul risultato dell'analisi (−50% dalla sintesi
+della trascrizione, −90% dal deck presentato): **in sala valgono i numeri del deck**, che è
+l'artefatto approvato. È scritta nel dossier, non nascosta.
+
+### 35.7 Che cosa resta aperto
+
+Due domande che non si chiudono da fonti pubbliche e vanno fatte in sala: **quanti moduli ha in
+media una polizza** dell'offerta modulare (è il numero che dimensiona la terza idea), e se la
+**lettura automatica dei documenti in ingresso** sia già coperta dentro il cantiere che hanno
+dichiarato. Più il **panel review**, che su queste quattro slide non è stato lanciato: voce P0.
