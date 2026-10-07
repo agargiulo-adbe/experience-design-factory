@@ -277,7 +277,7 @@ rifacendo l'`ls` della cartella del cliente — il materiale arriva mentre si la
 
 ---
 
-## 35. Intesa Sanpaolo Assicurazioni — «Dopo la firma» (6 ott 2026)
+## 35. Intesa Sanpaolo Assicurazioni — l'incontro dell'8 ottobre (6-7 ott 2026)
 
 > ⚠️ Stesse regole della §33: su questo file tracciato le persone si citano per **ruolo**. Nomi,
 > installato e intelligence stanno in `docs/Intesa Sanpaolo/` (git-ignorata) e nel dossier gated.
@@ -309,8 +309,10 @@ portali:
 - **digitalizzazione della «Customer Journey Sinistri Danni»** già dichiarata a bilancio, con tre
   cantieri nominati: *Video Perizia*, *Hardbooking*, **New Document Management**.
 
-Conclusione operativa: **il perimetro digitale esiste, è suo, e comincia dopo la firma.**
-L'acquisizione passa dalla banca — da lì non si entra.
+Conclusione operativa del 6 ott: **il perimetro digitale esiste, è suo, e comincia dopo la
+firma.** ⚠️ **Corretta il 7 ott**: non comincia *solo* dopo la firma — i canali che non passano
+dalla banca sono anch'essi suoi da abilitare, e la verifica sta in **§35.9**. «L'acquisizione
+passa dalla banca» resta vero *in larga parte*, non in assoluto.
 
 ### 35.3 Che cosa lo muove
 
@@ -326,8 +328,10 @@ arrivare qui: ragiona per processi e per numeri.
   doppia cifra): la crescita viene dal valore per contratto. Tutto si gioca sulla base installata.
 - **Sta scrivendo il Piano Strategico dell'Informatica 2026-2029** — è scritto nel bilancio della
   sua area, con cinque principi già fissati. È la finestra, e non se ne apre un'altra presto.
-- Obiettivi riferiti per via interna (fuori dal deck, dentro il dossier): far crescere i **clienti
-  diretti** e la **raccolta danni**, perché il vita è trainato dal cross-selling bancario.
+- Obiettivi riferiti per via interna: far crescere i **clienti diretti** e la **raccolta danni**,
+  perché il vita è trainato dal cross-selling bancario. ⚠️ **Verificato il 7 ott** (§35.9): la
+  *direzione* regge su fonti pubbliche — è nel suo piano informatico — ma **il numero no**, e sul
+  deck non ci va.
 
 ### 35.4 Il dossier
 
@@ -347,44 +351,87 @@ Document Generation, AEM Forms — che è contrattualizzato dalla banca, **non**
 modulare. **Niente firma elettronica**: il gruppo è **Certification Authority accreditata AgID** ed
 emette i propri certificati — proporla sarebbe la frase che chiude la riunione.
 
-### 35.5 Le undici slide dell'8 ottobre (v3, 6 ott sera)
+### 35.5 Il deck dell'8 ottobre — «Quando il cliente è vostro» (v6, 7 ott sera)
 
-`docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Dopo_la_firma_v3.pptx`
-(+ PDF e `speaker_notes_8ott_v3.md`), generate da `output/build/build_slide_8ott_v3.py`. La v1 a
-quattro slide resta accanto, non toccata.
+`docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Quando_il_cliente_e_vostro_v6.pptx`
+(+ PDF e `speaker_notes_8ott_v6.md`), da `output/build/build_slide_8ott_v6.py`. Le versioni
+precedenti restano accanto: v1 (quattro slide, §35.5-bis) e v3 (quella passata dal panel, §35.8).
 
-**Perché è cambiata.** Le quattro slide reggevano i tre temi ma non dicevano chi siamo né perché
-portiamo proprio quelli. Richiesta della sera del 6 ott: introdurre Adobe, dichiarare il perché, e
-mettere davanti **l'analisi da fuori** — informazioni pubbliche raccolte, la nostra comprensione,
-e da lì gli ambiti. Poi il **panel review** (§35.8) ha rifatto metà del resto.
+**Il titolo è cambiato perché il perimetro è cambiato** (§35.9): «Dopo la firma» copriva metà di
+quello che è suo. Sottotitolo: *«Il post-vendita — documenti, sinistri, assistenza — e i canali
+che non passano dalla banca. Due perimetri, la stessa macchina.»* ⚠️ Il titolo **non è ancora
+deciso**: sul tavolo restano «La macchina che serve il cliente», «Da qualunque porta entri» e
+«Il perimetro che è vostro» (voce di backlog).
 
-Copertina + nove + **una di appendice**:
+Quattordici slide: copertina · 01 l'ora che abbiamo · 02 che cosa avete già di Adobe · **stacco I**
+· 03 il vostro bilancio · 04 la nostra lettura · **stacco II** · 05 l'aggancio · 06 i documenti ·
+07 il percorso · **08 i contenuti** · 09 i dati · 10 il seguito (chiusura scura) · A appendice.
 
-1. **Un'ora sul post-vendita** — l'intento, e che cosa resta fuori (acquisizione, core).
-2. **Adobe, per la parte che vi riguarda** — il documento, il contenuto, la misura. Niente
-   fatturato: tutte e cinque le personas lo davano da tagliare.
-3. **Quello che abbiamo letto** — bilancio 2025, semestre 2026, piano e cantieri, con le **fonti
-   pubbliche stampate in chiaro**. È la slide che il panel ha messo in «non toccare».
-4. **Tre cose che ne abbiamo capito** — chiuse dalla loro frase sull'architettura aperta.
-5. **Dove ci agganciamo, e che cosa non tocchiamo** — cosa resta master, nessuna scrittura verso
-   polizza e sinistri, come si rilascia. Ha preso il posto di «Dove ci innestiamo», che quattro
-   stakeholder su cinque davano da togliere.
-6. **I documenti che non si chiedono due volte** — parte dai loro cantieri, non dal nostro tema.
-7. **Perché hanno chiamato** — con i ventiquattro mesi nel corpo, non in nota.
-8. **I dati, prima che ce lo chiediate** — categorie particolari, che cosa si fissa per iscritto,
-   chi deve dire sì. Non c'era, ed è la ragione per cui il rischio stava a 2/5.
-9. **Novanta minuti su un processo** — la richiesta, che nella v1 viveva solo nelle note.
-10. *(appendice)* **Il prodotto giusto nel momento giusto** — fuori dal flusso: contraddiceva la
-    slide 1 e «proposte accettate senza intervento umano» apriva adeguatezza e governo del prodotto.
+**Che cosa è cambiato dalla v3**, in quattro mosse chieste dall'owner il 7 ott:
 
-**Ogni slide chiude su una domanda.** Ogni numero stampato è verificato alla **fonte primaria**,
-non al dossier: il bilancio consolidato 2025 scaricato e letto, il comunicato semestrale del
-**29 luglio 2026** (non 10 agosto: quello è il rilancio d'agenzia), i ricavi Adobe FY2025 dal
-comunicato del 10 dicembre 2025, l'HTML dei siti e dell'area clienti riletto il 6 ottobre.
+1. **Le domande stampate in fondo alle slide sono sparite tutte.** Erano nove, e scritte suonavano
+   come un questionario; adesso stanno nelle note del relatore, con scritto che si fanno a voce.
+2. **Nessuna richiesta.** «Una richiesta sola» → «**Se vi sembra utile**: un pomeriggio su un
+   processo, con i vostri numeri davanti». La terza colonna della slide 01 è diventata «che cosa
+   lasciamo aperto», e il verbo «chiediamo» non compare più.
+3. **Tipografia a due livelli e ritmo.** Corpo da 13-14 a **16pt**, titoli fino a 36, e una frase
+   grande che si legge dal fondo della sala con il dettaglio sotto (la slide dei numeri si apre
+   con «I premi salgono di nove punti. I contratti stanno fermi.»). Due **stacchi scuri a tutta
+   pagina** più una chiusura scura rompono la fila di pagine chiare tutte uguali.
+4. **Un tema nuovo: i contenuti** (slide 08, §35.10).
+
+**La grafica, tutta disegnata da primitive** — niente PNG, niente glifi al posto di icone, tutto
+modificabile da chi riceve il file: il **grafico a pendenza** premi/contratti (indice 2024 = 100,
+perché premi e contratti non si misurano nella stessa unità: due assi sarebbero l'errore classico),
+lo **schema di aggancio** a due bande con la freccia che sale e quella sbarrata, la **catena del
+documento** in quattro passi col rosso dove si rompe, **sei scatole separate → un ambiente solo**
+sul percorso, il **ventaglio** un brief → cinque uscite sui contenuti, e le tre **tessere** con i
+segni di documento, contenuto e misura. La coppia di colori del grafico è passata dal validatore
+della skill `dataviz`: il petrolio del deck bocciava il controllo di croma (su fondo chiaro legge
+grigio), quindi per le sole tracce si usa un gradino più saturo (`#0093AF`).
+
+**Quattro immagini, generate con Firefly** (`output/build/gen_firefly_8ott.mts`, provenance in
+`output/firefly/provenance.8ott.json`): copertina, due stacchi e la chiusura. ⚠️ **Il primo giro è
+stato buttato**: tre immagini su quattro erano il tunnel di velocità al neon — il cliché, e tutte
+uguali fra loro. Rigenerate con una direzione più severa (un gesto solo, composizione asimmetrica,
+luce fotografica, niente radial burst né perspective tunnel nel negativo), poi graduate tutte allo
+stesso modo con una **rampa scura a sinistra cotta nell'immagine**, così il testo bianco ha
+contrasto vero senza bordi netti. Nessuna persona, nessun edificio, nessun marchio.
+⚠️ Trappola: `fill.transparency` **non esiste in python-pptx** — il velo sopra le immagini resta
+opaco e le immagini spariscono. L'alpha va scritta nell'XML (`velo_scuro()` nel build).
 
 **Tolto «Adobe Confidential» dal piè di pagina**, che il master metteva su ogni slide — anche sulla
 v1. Su un deck che resta in mano al cliente era un difetto vero: `togli_confidential()` nel build
 riscrive la nota di copyright nei master e nei layout.
+
+### 35.5-ter Il prodotto attribuito al cliente che il cliente non ha (7 ott)
+
+Vale oltre questa stanza. La slide «che cosa avete già di Adobe» aveva una tessera che diceva
+**«I documenti — leggere quello che arriva, generare quello che parte. Il motore c'è già, nel
+gruppo»**. È falso, e lo si è scoperto solo perché l'owner ha chiesto *«siamo certi che hanno già
+Document Cloud?»*.
+
+Verificato su tre fonti indipendenti il 7 ott:
+- **l'estrazione contrattuale** (`data.xlsx`, riletta riga per riga, non ripresa dal dossier): le
+  sole soluzioni presenti sono **Sites, Assets, Forms, Analytics**. Document Cloud / Acrobat
+  Services non compare su nessuna delle tre entità;
+- **Fluffy / Field Readiness**: zero occorrenze di Intesa o Sanpaolo; `tenant_or_program_search`
+  su «Intesa Sanpaolo» torna vuoto;
+- **Fluffy / Slack**: *«Enterprise PDF Services … requires an ETLA for Enterprise PDF Services …
+  If the organization does not have that ETLA entitlement, Enterprise PDF Services is not
+  available»*, e *«PDF Services API … is generally sold as a standalone SKU»*.
+
+Quindi: nel gruppo c'è **AEM Forms** (90 milioni di rendition l'anno, sull'entità della banca), che
+**compone e rende** moduli e documenti in uscita; **non legge** i documenti in ingresso. PDF
+Extract e Document Generation sono Acrobat Services, famiglia diversa e SKU a sé, assente.
+La tessera ora dice «**SOLO NEL GRUPPO · AEM Forms**», e la riga di chiusura separa le due cose:
+«leggere i documenti in ingresso» torna fra le **cose che oggi non ci sono**, insieme al percorso
+in un ambiente solo.
+
+**La lezione, scritta pro futuro:** l'errore non era nel capitolo sui documenti — quello proponeva
+già l'estrazione come cosa nuova e ammetteva di non avere una referenza assicurativa. Era nella
+**slide di sintesi**, dove tre prodotti erano stati compressi in una parola («i documenti»).
+**La sintesi è dove si rompono i fatti**, ed è l'ultimo posto dove si pensa di controllarli.
 
 ### 35.5-bis Le quattro slide originali (v1, 6 ott mattina)
 
@@ -420,10 +467,16 @@ l'artefatto approvato. È scritta nel dossier, non nascosta.
 
 ### 35.7 Che cosa resta aperto
 
+**Il titolo del deck non è deciso.** Oggi è «Quando il cliente è vostro»; sul tavolo restano
+«La macchina che serve il cliente» (la più vicina alla sua lingua: lui possiede operations e
+sistemi), «Da qualunque porta entri» (mette davanti i canali) e «Il perimetro che è vostro» (il
+più piatto e sicuro). Scelto il titolo cambiano copertina, nome del file e questa sezione.
+
 Domande che non si chiudono da fonti pubbliche e vanno fatte in sala: **quanti moduli ha in
 media una polizza** dell'offerta modulare, se la **lettura automatica dei documenti in ingresso**
-sia già coperta dentro il cantiere dichiarato, e **quanto del percorso autenticato** sia della
-compagnia e quanto dei canali della banca.
+sia già coperta dentro il cantiere dichiarato, **quanto del percorso autenticato** sia della
+compagnia e quanto dei canali della banca, e — tema nuovo — **di chi è la fabbrica dei contenuti**
+nel gruppo (§35.10).
 
 **Le referenze vanno con il nome** — deciso dall'account la sera del 6 ottobre, contro la cautela
 iniziale del dossier: sulla slide del percorso c'è **Unipol**, su quella dei documenti
@@ -471,3 +524,45 @@ sintesi del round 2 è scritta a mano sui loro output — sta scritto nel verdet
 di Unipol si chiama **Digital Experience Index**, non «Application Health Index» — nome che nei
 materiali del cliente non esiste. Corretti il dossier, il seed `0021` e
 `docs/Unipol/_build_unipol_cja_referenza_slide.py`.
+
+### 35.9 Il perimetro si allarga: i canali che non passano dalla banca (7 ott)
+
+Arriva per via interna che il COO ha un obiettivo anche sull'**acquisizione**, per la piccola
+quota di clienti che non vengono dalla banca. Verificato il 7 ott, con due esiti distinti.
+
+**Confermato che quei canali sono nel suo perimetro ed è lui che li abilita**, e lo dicono due
+righe del **suo stesso capitolo** del bilancio 2025 (Sistemi informativi, scritto dalla sua area):
+fra i cinque principi del Piano Strategico dell'Informatica 2026-2029 c'è «**sviluppo di
+piattaforme digitali per canali esteri ed extra-captive**»; e «per i canali extra-captive di ISPA
+e FV … è stato implementato il nuovo sistema vita **MyInsurance HUB**, che ha consentito
+l'abilitazione alla vendita dei prodotti vita su tali canali».
+
+**Confermato che sono piccoli, con parole loro**: la compagnia si avvale «primariamente» delle
+reti bancarie, di Intesa Sanpaolo Insurance Agency e «**marginalmente**, di intermediari extra
+captive».
+
+⚠️ **Non confermato il numero, e non va inventato.** Nessuna fonte pubblica dà la quota dei
+clienti diretti. Nel bilancio c'è un **7,5% di «vendita diretta»** che è il **mercato italiano
+danni**, non loro: attribuirlo alla compagnia è esattamente l'errore che il fact-checker ha già
+contestato due volte. E non è documentato pubblicamente un obiettivo personale del COO su quel
+fronte: è documentato che il suo piano informatico ha quella riga.
+
+Conseguenza sul deck: titolo e sottotitolo cambiati (§35.5), e una terza lettura sulla slide
+«la nostra lettura» — «**i canali nuovi sono vostri da abilitare**» — che poggia solo sulle due
+righe verificate, senza percentuali.
+
+### 35.10 Il tema nuovo: la fabbrica dei contenuti (7 ott)
+
+Chiesto dall'owner: portare la **Content Supply Chain** anche senza sapere se sia nel perimetro
+del COO, perché è un tema che il gruppo ha comunque davanti. Slide 08, costruita su fatti pubblici
+del **Piano d'Impresa 2026-2029** (2 feb 2026): premi danni a **2,3 miliardi da 1,6** (+9%
+composto), circa **360 specialisti di prodotti danni** nella Banca dei Territori (≈150 in più
+rispetto al 2025), offerta di **assicurazione danni non-motor sul digitale** via Isybank e
+Fideuram Direct, più i canali esteri ed extra-captive del suo piano informatico. Più prodotti,
+più reti, più materiali.
+
+**L'onestà è scritta sulla slide**, ed è la riga che la rende portabile: «*non sappiamo se questo
+pezzo sia vostro o di un'altra struttura del gruppo. Lo portiamo perché il piano lo rende
+inevitabile per qualcuno*». Se risponde «non è mia», si chiede di chi è e si chiude lì.
+Prodotto, se lo chiede: **Adobe GenStudio** sopra Experience Manager, che hanno già sui siti
+(naming verificato sul deck ufficiale FSI CXO POV 2026 e sulla memoria `adobe-product-naming-2026`).

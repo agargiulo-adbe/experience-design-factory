@@ -5,6 +5,37 @@
 
 ## 11. Change log recente
 
+### Change log — Intesa Assicurazioni: il perimetro si allarga, e un prodotto attribuito per sbaglio (2026-10-07, sera) → §35.5, §35.5-ter, §35.9, §35.10
+
+Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato qui.
+
+- **Il deck passa da v3 a v6 e cambia titolo.** «Dopo la firma» copriva metà del suo perimetro:
+  arriva per via interna che ha un obiettivo anche sui clienti che non vengono dalla banca, e la
+  verifica (§35.9) lo conferma **con due righe del suo stesso bilancio** — il principio sui
+  «canali esteri ed extra-captive» nel Piano Strategico dell'Informatica 2026-2029 e
+  **MyInsurance HUB**, che la sua area ha già implementato per abilitarli. ⚠️ Il **numero** no:
+  nessuna fonte pubblica dà la quota dei clienti diretti, e il 7,5% di «vendita diretta» che sta
+  nel bilancio è il **mercato italiano**, non loro.
+- **Via tutte le domande stampate in fondo alle slide** (erano nove), via la parola «richiesta»
+  (la chiusura è «se vi sembra utile»), corpo da 13-14 a **16pt** con una frase grande e il
+  dettaglio sotto, due **stacchi scuri** più una chiusura scura per il ritmo.
+- **Un tema nuovo, i contenuti** (§35.10), con la riga che dichiara di non sapere se sia il suo
+  perimetro — ed è quella che lo rende portabile.
+- **Grafica disegnata da primitive su sei slide** (grafico a pendenza indicizzato, schema di
+  aggancio, catena del documento, sparso→unito, ventaglio, tessere) e **quattro immagini Firefly**
+  con provenance. ⚠️ Il primo giro di immagini è stato **buttato**: era il tunnel di velocità al
+  neon, tre volte uguale. ⚠️ `fill.transparency` **non esiste in python-pptx**: il velo resta
+  opaco e le immagini spariscono, l'alpha va scritta nell'XML.
+- **Attribuito al cliente un prodotto che non ha** (§35.5-ter), trovato solo perché l'owner ha
+  chiesto «siamo certi?». La slide di sintesi diceva che «il motore che legge i documenti c'è
+  già nel gruppo»: nel gruppo c'è **AEM Forms**, che compone e rende, **non legge**; PDF Extract
+  e Document Generation sono Acrobat Services, SKU a sé, assente da tutte e tre le entità.
+  Verificato su `data.xlsx` riletto riga per riga, su Field Readiness (zero occorrenze) e su
+  Slack interno. **La sintesi è dove si rompono i fatti.**
+- **Panel review:** i due giri del 6 ott (§35.8) coprono la **v3**. La v6 ha titolo, perimetro,
+  struttura e un capitolo diversi → il verdetto **non copre lo stato corrente** (voce P0).
+
+
 ### Change log — Poste: l'ultima passata prima della sala (2026-10-07, mattina) → §32.11, commit `a386afe`→`80f4053`
 
 - **Il costo detto come un fatto, e il limite di reporting col numero vero** (`a386afe`): i crediti di prova diventano una frase piana sulla copertina e in «Cosa vi portate a casa», senza numeri di settimana — è una prima sessione di introduzione, non una trattativa; il «monte richieste di reporting» ha il numero pubblico della Product Description (**Analytics Select, 500.000 richieste di report al mese per IMS org**, e le domande via MCP contano lì dentro). Via la nota sulla verifica interna per il settore finanziario, e via il criterio del 2024 sui «dati di altri reparti», che chiedeva «quali reparti?» a chi presidia i canali digitali: al suo posto l'altro criterio approvato, la facilità d'uso.

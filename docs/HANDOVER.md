@@ -15,9 +15,13 @@
 > divergenti, con un gate deterministico — `pnpm audit:dossier`, cinque viewport, **sei dossier a
 > zero rilievi** — e una skill che ne tiene il metodo (`skills/dossier/`). Il gate ha trovato cose
 > vecchie che nessuno vedeva, fra cui cinque righe **invisibili da settembre** in un dossier già
-> consegnato. La seconda: **Intesa Sanpaolo Assicurazioni «Dopo la firma»** (§35), dossier e quattro
-> slide per l'incontro di **giovedì 8 ottobre**, con il perimetro del cliente verificato sulle sue
-> superfici invece che ipotizzato.
+> consegnato. La seconda: **Intesa Sanpaolo Assicurazioni** (§35), dossier e deck per l'incontro di
+> **giovedì 8 ottobre**, con il perimetro del cliente verificato sulle sue superfici invece che
+> ipotizzato. Il 7 ott sera il deck è arrivato alla **v6, «Quando il cliente è vostro»**: il
+> perimetro si è allargato ai **canali che non passano dalla banca** (§35.9, verificato sul suo
+> bilancio), è entrato il capitolo sui **contenuti** (§35.10), e una tessera che attribuiva al
+> cliente **Document Cloud** è stata corretta — nel gruppo c'è AEM Forms, che compone e non legge
+> (§35.5-ter). ⚠️ Il panel copre la v3, non la v6.
 >
 > Quattro regole generalizzate il 6 ottobre, tutte da errori veri: un dossier si scrive per **chi non sa
 > nulla della Factory**; le idee **si verificano prima di scriverle** e quello che il cliente fa già
@@ -54,8 +58,8 @@
 >
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
 > cliente dentro file tracciati su un repository pubblico — inventario rifatto il 7 ott, due spec
-> tracciate in più di quante se ne contassero — e il più urgente in agenda è **il panel review
-> mancante sulle slide di domani, 8 ottobre**.
+> tracciate in più di quante se ne contassero — e il più urgente in agenda è il deck di **domani,
+> 8 ottobre**: il panel l'ha approvato nella versione v3, ma in sala va la v6.
 
 ---
 
@@ -74,6 +78,6 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank](./HANDOVER-08.md).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
-- [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni «Dopo la firma»**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, e il panel review a due giri sulle undici slide dell’8 ottobre.
+- [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla v6 con il perimetro allargato ai canali extra-captive.
 - [Parte 12 — §32 **Poste «Sei domande»**](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione; §32.10 è la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato, il video tenuto in locale, il dossier rinominato) e **§32.11 la mattina dell'incontro** (costo, «Evolvere» come proposta di avvio, lo slug senza il cognome, l'intermezzo «In azione»).
 - [Parte 13 — §11 change log datato (coda)](./HANDOVER-13.md) — dal 2 set 2026 all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti.
