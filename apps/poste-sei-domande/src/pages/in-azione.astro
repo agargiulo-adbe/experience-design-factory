@@ -19,16 +19,17 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const media = `${base.replace(/\/?$/, '/')}media/`;
 
-// Registrazioni dell'organizzazione dimostrativa Adobe. A differenza delle clip
-// Firefly del deck, queste NON vanno sul Release pubblico: mostrano l'interfaccia
-// di Coworker su Adobe Analytics, che è in rollout e senza GA dichiarata.
-// Gli MP4 stanno in `public/media/` e sono git-ignorati (`apps/*/public/media/*.mp4`):
-// si riproducono da una copia locale del sito, non dal deployato. I poster sono
-// tracciati, quindi la slide resta leggibile ovunque anche senza il video.
-// Le sorgenti originali stanno in `docs/Poste Italiane/coworker-poste-0*.mp4`.
+// Una sola registrazione dell'organizzazione dimostrativa Adobe, caricata su
+// YouTube come video non in elenco, mostrata in due tratti: la demo cambia
+// registro a metà, da «fare domande» a «produrre un documento».
+//
+// Facciata con poster, non iframe: il player di terzi nasce al clic. Così la
+// pagina non carica YouTube su ogni slide, l'audit non aspetta la rete, e
+// niente cookie di terzi finché qualcuno non decide di guardare.
+const YT = 'XE5yH5qXbtc';
 const clip = {
-  uno: { src: `${media}sd-azione-01-riepilogo.mp4`, poster: `${media}sd-azione-01-riepilogo.poster.jpg` },
-  due: { src: `${media}sd-azione-02-documento.mp4`, poster: `${media}sd-azione-02-documento.poster.jpg` },
+  uno: { start: 125, end: 300, poster: `${media}sd-azione-01-riepilogo.poster.jpg` },
+  due: { start: 300, end: 399, poster: `${media}sd-azione-02-documento.poster.jpg` },
 };
 
 // Le tre cose da dire PRIMA di far partire una clip, non dopo.
@@ -57,17 +58,17 @@ const prima = [
 ];
 
 const guarda1 = [
-  { it: '<strong>Otto indicatori del mese contro il precedente</strong> — luglio su giugno — già confrontati, con la variazione e il trend accanto. Non è un export: è una lettura.', en: '<strong>Eight indicators for the month against the previous one</strong> — July against June — already compared, with the change and the trend beside them. Not an export: a reading.' },
-  { it: 'Sotto la tabella scrive il metodo: contano solo i canali digitali App e Web, le comunicazioni marketing sono escluse, «stabile» vuol dire variazione entro il 5%.', en: 'Under the table it states the method: only the App and Web digital channels count, marketing communications are excluded, “stable” means a change within 5%.' },
-  { it: '«Cosa è cambiato» in tre punti, e tre raccomandazioni che si possono discutere o buttare.', en: '“What changed” in three points, and three recommendations you can discuss or discard.' },
-  { it: 'In fondo elenca <strong>i componenti che ha usato</strong>: nome, identificativo, e perché quello — con l’esportazione in CSV. Per un Admin è la riga che conta: dice su che cosa ha davvero misurato.', en: 'At the bottom it lists <strong>the components it used</strong>: name, ID, and why that one — with CSV export. For an Admin that is the line that matters: it says what it actually measured.' },
+  { it: 'La domanda è scritta <strong>in italiano</strong>, come si direbbe a voce: «Mostrami il trend giornaliero degli utenti della SuperApp da aprile a luglio ed evidenzia le anomalie».', en: 'The question is typed <strong>in Italian</strong>, the way you would say it: “Show me the daily trend of SuperApp users from April to July and highlight the anomalies.”' },
+  { it: 'Mentre lavora <strong>mostra i passaggi</strong>: quali skill carica, quanti script esegue. A un certo punto scrive «Retrying» e riprova da sé — si vede anche quando qualcosa non riesce al primo colpo.', en: 'As it works it <strong>shows its steps</strong>: which skills it loads, how many scripts it runs. At one point it writes “Retrying” and tries again on its own — you also see when something fails first time.' },
+  { it: 'Il grafico marca <strong>dieci anomalie</strong> e sotto le spiega a parole, con la tabella dei giorni fuori intervallo — valore atteso, scostamento, esportazione in CSV.', en: 'The chart marks <strong>ten anomalies</strong> and explains them below in words, with a table of the days outside the expected range — expected value, deviation, CSV export.' },
+  { it: 'Poi altre due domande: quali sezioni pesano di più, e quanto di ogni servizio passa dall’App invece che dal sito. Da lì esce la riga che vale: <strong>Prestiti, Poste Vita e Conto BancoPosta oggi passano quasi solo dal web</strong>.', en: 'Then two more questions: which sections weigh most, and how much of each service goes through the App rather than the site. That is where the line worth having comes out: <strong>Prestiti, Poste Vita and Conto BancoPosta today go almost only through the web</strong>.' },
 ];
 
 const guarda2 = [
-  { it: '<strong>Tre pagine</strong>: la copertina, i numeri con i grafici, «cosa è cambiato» con le raccomandazioni.', en: '<strong>Three pages</strong>: the cover, the numbers with charts, “what changed” with the recommendations.' },
-  { it: 'Esce con <strong>il marchio, il giallo e il blu di Poste</strong>, non con i colori di default: quelle regole stanno in Experience Context, caricate come documento.', en: 'It comes out with <strong>Poste’s wordmark, yellow and blue</strong>, not the defaults: those rules live in Experience Context, loaded as a document.' },
-  { it: 'In testa dichiara per chi è e che cosa ha guardato: «Destinatari: Management Poste Italiane», «Periodo analizzato: 01/07 – 31/07».', en: 'At the top it states who it is for and what it looked at: “Recipients: Poste Italiane Management”, “Period analysed: 01/07 – 31/07”.' },
-  { it: 'È «cosa vi portate a casa»: il pomeriggio che oggi se ne va in impaginazione.', en: 'It is “what you take home”: the afternoon that goes into layout today.' },
+  { it: 'Una riga sola: «Crea un executive summary dei KPI digitali di luglio per il management».', en: 'One line: “Create an executive summary of July’s digital KPIs for management.”' },
+  { it: 'Carica una <strong>skill dedicata</strong> e produce prima il riepilogo a schermo: otto indicatori, luglio contro giugno, con lo scostamento su ciascuno.', en: 'It loads a <strong>dedicated skill</strong> and first produces the summary on screen: eight indicators, July against June, with the change on each.' },
+  { it: 'Poi il documento: <strong>tre pagine</strong>, il marchio e il giallo di Poste, «Destinatari: Management Poste Italiane», il periodo analizzato dichiarato in testa.', en: 'Then the document: <strong>three pages</strong>, Poste’s wordmark and yellow, “Recipients: Poste Italiane Management”, the period analysed stated at the top.' },
+  { it: 'I colori e il carattere non sono scelti lì per lì: vengono dalle <strong>regole di marchio caricate prima</strong>, estratte dalle vostre brand guidelines con il rimando alla pagina.', en: 'The colours and typeface are not improvised: they come from the <strong>brand rules loaded earlier</strong>, extracted from your brand guidelines with a page reference.' },
 ];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
@@ -83,12 +84,12 @@ const guarda2 = [
       <div class="sd-q" data-reveal>
         <p class="sd-q-num"><span data-lang-it>Intermezzo · {ch.label.it}</span><span data-lang-en>Interlude · {ch.label.en}</span></p>
         <span class="sd-q-mark" aria-hidden="true"></span>
-        <T as="h2" class="sd-q-title" it="Due clip, un minuto in tutto" en="Two clips, a minute in all" data-reveal data-reveal-delay="0.08" />
+        <T as="h2" class="sd-q-title" it="Una demo, in due tratti" en="One demo, in two parts" data-reveal data-reveal-delay="0.08" />
         <T
           as="p"
           class="sd-q-lead"
-          it="Fin qui sono parole. Queste sono due registrazioni di Coworker che lavora: una domanda e un riepilogo, poi un documento per il management costruito in chat. Girano sull’organizzazione dimostrativa Adobe, non sono pubblicate online e si riproducono dalla copia locale: la pagina prima delle clip dice esattamente che cosa vale e che cosa no."
-          en="So far these are words. These are two recordings of Coworker working: a question and a summary, then a management document built in chat. They run on Adobe’s demo organisation, are not published online and play from the local copy: the page before the clips says exactly what carries over and what does not."
+          it="Fin qui sono parole. Questa è una registrazione di Coworker che lavora, divisa dove la demo cambia registro: prima tre domande in italiano sui dati, poi una richiesta sola che diventa un documento per il management. Gira sull’organizzazione dimostrativa Adobe, e la pagina qui dopo dice esattamente che cosa vale e che cosa no."
+          en="So far these are words. This is a recording of Coworker working, split where the demo changes register: first three questions in Italian about the data, then a single request that becomes a management document. It runs on Adobe’s demo organisation, and the page that follows says exactly what carries over and what does not."
           data-reveal data-reveal-delay="0.15"
         />
       </div>
@@ -103,8 +104,8 @@ const guarda2 = [
         <T
           as="p"
           class="sd-head-lead"
-          it="Una demo che si spiega dopo è una demo che ha già creato l’aspettativa sbagliata. Queste tre righe valgono per entrambe le clip."
-          en="A demo explained afterwards is a demo that has already set the wrong expectation. These three lines hold for both clips."
+          it="Una demo che si spiega dopo è una demo che ha già creato l’aspettativa sbagliata. Queste tre righe valgono per entrambi i tratti."
+          en="A demo explained afterwards is a demo that has already set the wrong expectation. These three lines hold for both parts."
         />
       </div>
       <div class="sd-steps sd-steps--3" data-reveal data-reveal-delay="0.14">
@@ -127,13 +128,18 @@ const guarda2 = [
     <Slide id="slide-clip-riepilogo" bg="primary" align="center">
       <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgUno.src})`}></div>
       <div class="sd-head" data-reveal>
-        <T as="p" class="slide-eyebrow mb-3" it="Clip 1 · 21 secondi" en="Clip 1 · 21 seconds" />
-        <T as="h2" class="sd-head-title" it="Una domanda, un riepilogo" en="One question, one summary" />
+        <T as="p" class="slide-eyebrow mb-3" it="Parte 1 · quasi tre minuti" en="Part 1 · almost three minutes" />
+        <T as="h2" class="sd-head-title" it="Tre domande, in italiano" en="Three questions, in Italian" />
       </div>
       <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
         <div class="sd-clip">
-          <video class="sd-clip-v" controls preload="none" playsinline poster={clip.uno.poster} src={clip.uno.src} aria-label="Coworker: il riepilogo del mese"></video>
-          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · la clip si riproduce dalla copia locale, non è pubblicata" en="Adobe demo organisation · sandbox data · the clip plays from the local copy, it is not published" />
+          <button type="button" class="sd-clip-v sd-clip-play" data-yt={YT} data-start={clip.uno.start} data-end={clip.uno.end} style={`--poster: url(${clip.uno.poster})`}>
+            <span class="sd-clip-badge" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+            </span>
+            <span class="sr-only" data-lang-it>Guarda il primo tratto della demo</span><span class="sr-only" data-lang-en>Play the first part of the demo</span>
+          </button>
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · registrata il 6 ottobre 2026" en="Adobe demo organisation · sandbox data · recorded 6 October 2026" />
         </div>
         <div class="sd-panel sd-panel--blu">
           <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
@@ -150,13 +156,18 @@ const guarda2 = [
     <Slide id="slide-clip-documento" bg="secondary" align="center">
       <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgDue.src})`}></div>
       <div class="sd-head" data-reveal>
-        <T as="p" class="slide-eyebrow mb-3" it="Clip 2 · 34 secondi" en="Clip 2 · 34 seconds" />
-        <T as="h2" class="sd-head-title" it="Il documento per il management, fatto in chat" en="The management document, built in chat" />
+        <T as="p" class="slide-eyebrow mb-3" it="Parte 2 · un minuto e quaranta" en="Part 2 · one minute forty" />
+        <T as="h2" class="sd-head-title" it="Una richiesta, un documento finito" en="One request, a finished document" />
       </div>
       <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
         <div class="sd-clip">
-          <video class="sd-clip-v" controls preload="none" playsinline poster={clip.due.poster} src={clip.due.src} aria-label="Coworker: il documento per il management"></video>
-          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · la clip si riproduce dalla copia locale, non è pubblicata" en="Adobe demo organisation · sandbox data · the clip plays from the local copy, it is not published" />
+          <button type="button" class="sd-clip-v sd-clip-play" data-yt={YT} data-start={clip.due.start} data-end={clip.due.end} style={`--poster: url(${clip.due.poster})`}>
+            <span class="sd-clip-badge" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+            </span>
+            <span class="sr-only" data-lang-it>Guarda il secondo tratto della demo</span><span class="sr-only" data-lang-en>Play the second part of the demo</span>
+          </button>
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · registrata il 6 ottobre 2026" en="Adobe demo organisation · sandbox data · recorded 6 October 2026" />
         </div>
         <div class="sd-panel sd-panel--blu">
           <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
@@ -194,3 +205,35 @@ const guarda2 = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  // Il player di terzi nasce al clic, non al caricamento: la facciata è un
+  // poster e un pulsante. `youtube-nocookie.com` e nessun cookie finché
+  // qualcuno non decide di guardare.
+  (function () {
+    function boot() {
+      document.querySelectorAll('.sd-clip-play').forEach((btn) => {
+        if ((btn as HTMLElement).dataset.wired) return;
+        (btn as HTMLElement).dataset.wired = '1';
+        btn.addEventListener('click', () => {
+          const b = btn as HTMLElement;
+          const p = new URLSearchParams({
+            start: b.dataset.start || '0',
+            end: b.dataset.end || '',
+            autoplay: '1', rel: '0', modestbranding: '1', playsinline: '1', hl: document.documentElement.lang || 'it',
+          });
+          const f = document.createElement('iframe');
+          f.className = 'sd-clip-v';
+          f.src = `https://www.youtube-nocookie.com/embed/${b.dataset.yt}?${p}`;
+          f.title = 'Adobe CX Enterprise Coworker — demo su organizzazione dimostrativa';
+          f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+          f.setAttribute('allowfullscreen', '');
+          f.setAttribute('loading', 'lazy');
+          b.replaceWith(f);
+        });
+      });
+    }
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>

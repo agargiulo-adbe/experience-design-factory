@@ -357,6 +357,22 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 /* ── Takeaway: «Cosa ti porti a casa» ──────────────────────────────────── */
 .sd-clip { min-width: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .sd-clip-v { width: 100%; aspect-ratio: 1920 / 1144; display: block; background: #000; border: 1px solid var(--line-subtle); border-radius: 12px; box-shadow: 0 1px 2px rgba(26,28,30,0.06); object-fit: cover; }
+/* `color` esplicito: la facciata sta su fondo nero e porta un'etichetta per
+   lo screen reader. Senza, eredita l'inchiostro scuro della slide chiara e
+   il check di contrasto `h` fallisce — HARD, non estetico. */
+.sd-clip-play { position: relative; padding: 0; cursor: pointer; overflow: hidden; color: #ffffff;
+  background-color: #0b0d12; background-image: var(--poster); background-size: cover; background-position: top center; }
+.sd-clip-play::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,12,16,0.04), rgba(10,12,16,0.34)); transition: background 0.18s ease; }
+.sd-clip-play:hover::after { background: linear-gradient(180deg, rgba(10,12,16,0.1), rgba(10,12,16,0.46)); }
+.sd-clip-play:focus-visible { outline: 2px solid var(--color-blu); outline-offset: 3px; }
+.sd-clip-badge { position: absolute; z-index: 1; left: 50%; top: 50%; translate: -50% -50%;
+  display: grid; place-items: center; width: 3.6rem; height: 3.6rem; border-radius: 50%;
+  background: rgba(255,255,255,0.94); color: var(--color-blu);
+  box-shadow: 0 6px 18px -4px rgba(10,12,16,0.5), 0 1px 3px rgba(10,12,16,0.3);
+  transition: scale 0.18s cubic-bezier(0.16,1,0.3,1), background 0.18s ease; }
+.sd-clip-play:hover .sd-clip-badge { scale: 1.07; background: #fff; }
+.sd-clip-play svg { margin-left: 2px; }
+@media (prefers-reduced-motion: reduce) { .sd-clip-play:hover .sd-clip-badge { scale: 1; } }
 .sd-clip-cap { font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note); max-width: none; }
 [data-slide] p.sd-clip-cap { max-width: none; }
 .sd-take { width: 100%; max-width: 66rem; margin-inline: auto; text-align: left; }
