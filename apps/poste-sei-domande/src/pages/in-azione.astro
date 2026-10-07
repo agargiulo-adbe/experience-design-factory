@@ -1,0 +1,193 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SdNavigation from '../components/SdNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/notte-4.webp';
+import bgPrima from '../assets/generated/bg/carta-2.webp';
+import bgUno from '../assets/generated/bg/carta-1.webp';
+import bgDue from '../assets/generated/bg/carta-3.webp';
+import bgTake from '../assets/generated/bg/notte-1.webp';
+
+const SLUG = 'in-azione';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const media = `${base.replace(/\/?$/, '/')}media/`;
+
+// Registrazioni dell'organizzazione dimostrativa Adobe. MP4 sul Release `media`
+// come le altre clip del deck; i poster stanno in public/media (tracciati).
+const REL = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/';
+
+const clip = {
+  uno: { src: `${REL}sd-azione-01-riepilogo.mp4`, poster: `${media}sd-azione-01-riepilogo.poster.jpg` },
+  due: { src: `${REL}sd-azione-02-documento.mp4`, poster: `${media}sd-azione-02-documento.poster.jpg` },
+};
+
+// Le tre cose da dire PRIMA di far partire una clip, non dopo.
+const prima = [
+  {
+    t: { it: 'È l’organizzazione dimostrativa Adobe', en: 'It is Adobe’s demo organisation' },
+    b: {
+      it: 'Non la vostra istanza. I numeri che si vedono sono di una sandbox e non hanno la scala di Poste: non vanno letti, vanno guardati per la forma.',
+      en: 'Not your instance. The numbers on screen are a sandbox’s and have nothing like Poste’s scale: they are not to be read, only looked at for their shape.',
+    },
+  },
+  {
+    t: { it: 'Gira su dati dimostrativi in CJA', en: 'It runs on demo data in CJA' },
+    b: {
+      it: 'Quello che si trasferisce al vostro caso è <strong>la forma della conversazione e dell’uscita</strong>, non la lettura delle vostre report suite. Su Adobe Analytics cambia la fonte, non il modo di chiedere.',
+      en: 'What carries over to your case is <strong>the shape of the conversation and of the output</strong>, not the reading of your report suites. On Adobe Analytics the source changes, not the way you ask.',
+    },
+  },
+  {
+    t: { it: 'Su Analytics è in rollout', en: 'On Analytics it is rolling out' },
+    b: {
+      it: 'La lettura delle report suite di Adobe Analytics è in rollout dal 2 ottobre e la GA non è ancora dichiarata. Le clip mostrano il prodotto, non una data.',
+      en: 'Reading Adobe Analytics report suites has been rolling out since 2 October and GA is not yet declared. The clips show the product, not a date.',
+    },
+  },
+];
+
+const guarda1 = [
+  { it: 'La domanda è una riga, scritta come si direbbe a voce.', en: 'The question is one line, written the way you would say it.' },
+  { it: 'Otto indicatori del mese contro il precedente, già confrontati: non è un export, è una lettura.', en: 'Eight indicators for the month against the previous one, already compared: not an export, a reading.' },
+  { it: '«Cosa è cambiato» in tre righe, e tre raccomandazioni che si possono discutere o buttare.', en: '“What changed” in three lines, and three recommendations you can discuss or discard.' },
+  { it: 'È la skill «il riepilogo del lunedì» del capitolo <em>Rispondere</em>, vista dal vivo: scritta una volta, si ripete da sé.', en: 'It is the “Monday summary” skill from the <em>Answer</em> chapter, seen live: written once, it repeats itself.' },
+];
+
+const guarda2 = [
+  { it: 'Il documento esce con i colori e il carattere del marchio, non con quelli di default.', en: 'The document comes out in the brand’s colours and typeface, not the defaults.' },
+  { it: 'A metà lavoro l’assistente <strong>si accorge da solo</strong> che le etichette si sovrappongono alle barre, e le sistema.', en: 'Halfway through, the assistant <strong>notices on its own</strong> that the labels overlap the bars, and fixes them.' },
+  { it: 'Quella correzione è il punto: non è un modello riempito, è un lavoro controllato mentre si fa.', en: 'That correction is the point: it is not a filled template, it is work checked while it happens.' },
+  { it: 'È «cosa vi portate a casa» — il pomeriggio che oggi se ne va in impaginazione.', en: 'It is “what you take home” — the afternoon that goes into layout today.' },
+];
+---
+<BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <SdNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover ─────────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="sd-q" data-reveal>
+        <p class="sd-q-num"><span data-lang-it>Intermezzo · {ch.label.it}</span><span data-lang-en>Interlude · {ch.label.en}</span></p>
+        <span class="sd-q-mark" aria-hidden="true"></span>
+        <T as="h2" class="sd-q-title" it="Due clip, un minuto in tutto" en="Two clips, a minute in all" data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="sd-q-lead"
+          it="Fin qui sono parole. Queste sono due registrazioni di Coworker che lavora: una domanda e un riepilogo, poi un documento per il management costruito in chat. Girano sull’organizzazione dimostrativa Adobe, e la pagina prima delle clip dice esattamente che cosa vale e che cosa no."
+          en="So far these are words. These are two recordings of Coworker working: a question and a summary, then a management document built in chat. They run on Adobe’s demo organisation, and the page before the clips says exactly what carries over and what does not."
+          data-reveal data-reveal-delay="0.15"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Prima di guardarle ────────────────────────────────────────────── -->
+    <Slide id="slide-prima" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgPrima.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Prima di guardarle" en="Before watching them" />
+        <T as="h2" class="sd-head-title" it="Tre cose, dette prima e non dopo" en="Three things, said before and not after" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Una demo che si spiega dopo è una demo che ha già creato l’aspettativa sbagliata. Queste tre righe valgono per entrambe le clip."
+          en="A demo explained afterwards is a demo that has already set the wrong expectation. These three lines hold for both clips."
+        />
+      </div>
+      <div class="sd-steps sd-steps--3" data-reveal data-reveal-delay="0.14">
+        {prima.map((p, i) => (
+          <div class="sd-step">
+            <span class="sd-step-n">{i + 1}</span>
+            <T as="p" class="sd-step-title" it={p.t.it} en={p.t.en} />
+            <T as="p" class="sd-step-body" it={p.b.it} en={p.b.en} />
+          </div>
+        ))}
+      </div>
+      <p class="sd-src" data-reveal data-reveal-delay="0.24">
+        <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
+        <a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
+        &nbsp;·&nbsp;<span data-lang-it>clip registrate sull’organizzazione dimostrativa Adobe, 6 ottobre 2026</span><span data-lang-en>clips recorded on Adobe’s demo organisation, 6 October 2026</span>
+      </p>
+    </Slide>
+
+    <!-- ── Clip 1 · Il riepilogo ─────────────────────────────────────────── -->
+    <Slide id="slide-clip-riepilogo" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgUno.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Clip 1 · 21 secondi" en="Clip 1 · 21 seconds" />
+        <T as="h2" class="sd-head-title" it="Una domanda, un riepilogo" en="One question, one summary" />
+      </div>
+      <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
+        <div class="sd-clip">
+          <video class="sd-clip-v" controls preload="none" playsinline poster={clip.uno.poster} src={clip.uno.src} aria-label="Coworker: il riepilogo del mese"></video>
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox" en="Adobe demo organisation · sandbox data" />
+        </div>
+        <div class="sd-panel sd-panel--blu">
+          <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
+          <ul class="sd-ul">
+            {guarda1.map((g) => (
+              <li class="sd-li"><span class="sd-dot"></span><T as="span" it={g.it} en={g.en} /></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Clip 2 · Il documento ─────────────────────────────────────────── -->
+    <Slide id="slide-clip-documento" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgDue.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Clip 2 · 34 secondi" en="Clip 2 · 34 seconds" />
+        <T as="h2" class="sd-head-title" it="Il documento per il management, fatto in chat" en="The management document, built in chat" />
+      </div>
+      <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
+        <div class="sd-clip">
+          <video class="sd-clip-v" controls preload="none" playsinline poster={clip.due.poster} src={clip.due.src} aria-label="Coworker: il documento per il management"></video>
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox" en="Adobe demo organisation · sandbox data" />
+        </div>
+        <div class="sd-panel sd-panel--blu">
+          <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
+          <ul class="sd-ul">
+            {guarda2.map((g) => (
+              <li class="sd-li"><span class="sd-dot"></span><T as="span" it={g.it} en={g.en} /></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Cosa resta ────────────────────────────────────────────────────── -->
+    <Slide id="slide-take" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="sd-bg-notte" style={`--bg-src: url(${bgTake.src})`}></div>
+      <div class="sd-take" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3 sd-on-dark" it="Cosa resta delle clip" en="What the clips leave behind" />
+        <T as="h2" class="sd-take-title" it="Un minuto che vale più di tre slide di benefici" en="A minute worth more than three slides of benefits" />
+        <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Quello che si vede" en="What you see" />
+            <T as="p" class="sd-take-t" it="La <strong>forma</strong> della conversazione e dell’uscita: una riga di domanda, una lettura, un documento. Sulle vostre suite cambia la fonte, non il modo di chiedere." en="The <strong>shape</strong> of the conversation and the output: one line of question, a reading, a document. On your suites the source changes, not the way you ask." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="Quello che non si vede" en="What you do not see" />
+            <T as="p" class="sd-take-t" it="I vostri numeri, la vostra scala, i vostri nomi di sezione. <strong>Quello arriva con la prova</strong>, sulla suite di sviluppo, con le vostre domande." en="Your numbers, your scale, your section names. <strong>That comes with the trial</strong>, on the development suite, with your questions." />
+          </div>
+          <div class="sd-take-item">
+            <T as="p" class="sd-take-k" it="La domanda da farsi" en="The question to ask" />
+            <T as="p" class="sd-take-t" it="Non «è bello?», ma <strong>«questa risposta la userei per una decisione?»</strong>. È la stessa domanda su cui si misura la prova." en="Not “is it nice?”, but <strong>“would I use this answer for a decision?”</strong>. It is the same question the trial is measured on." />
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

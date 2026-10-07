@@ -130,6 +130,7 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'capire',     route: '/experience-design-factory/poste-sei-domande/capire/' },
     { name: 'governare',  route: '/experience-design-factory/poste-sei-domande/governare/' },
     { name: 'proteggere', route: '/experience-design-factory/poste-sei-domande/proteggere/' },
+    { name: 'in-azione',  route: '/experience-design-factory/poste-sei-domande/in-azione/' },
     { name: 'evolvere',   route: '/experience-design-factory/poste-sei-domande/evolvere/' },
   ],
   'mim-alfabeti': [
