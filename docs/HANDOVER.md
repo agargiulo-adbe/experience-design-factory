@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-07**.
+> Documento di passaggio di consegne. Stato al **2026-10-07** (sera tardi).
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -43,9 +43,9 @@
 > memoria riallineati su «rollout dal 2 ott, GA **TBD**». Il video demo del cliente **non si mostra
 > intero** (è una sessione di preparazione su dati CJA): due clip tagliate, player offline, **nessun
 > upload**. Il dossier Poste è passato da «War Room» a **«Dossier»** e ha una §13 nuova sul perché
-> Coworker e non un server MCP collegato al proprio assistente. Tutto in **§32.10 (Parte 12)**.
+> Coworker e non un server MCP collegato al proprio assistente. Tutto in **§32.10 (Parte 13)**.
 >
-> **7 ottobre, mattina dell'incontro.** Cinque commit fra le 08:23 e le 11:42, tutti su Poste e tutti
+> **7 ottobre, la giornata intera.** Mattina: cinque commit fra le 08:23 e le 11:42, tutti su Poste e tutti
 > con lo stesso movimento: dire quello che è vero e citare dove sta scritto. Il **costo** detto come un
 > fatto e il limite di reporting col numero pubblico; **«Evolvere» riprogettato** da elenco di funzioni
 > a **proposta di avvio** (4 → 7 slide), con l'**istruttoria che torna a Poste** e le promesse su
@@ -54,7 +54,21 @@
 > e **«In azione»**, l'intermezzo con le due clip del cliente — nel flusso e nella nav senza numero,
 > fuori dalla griglia 2×3 della home — le cui **clip restano fuori dal Release pubblico**, perché
 > mostrano l'interfaccia di un prodotto in rollout. Deck a **39 slide su 8 rotte**, 0 HARD su 123
-> controlli. Tutto in **§32.11 (Parte 12)**.
+> controlli (**§32.11**). **Pomeriggio e sera**, sei commit con un filo solo: il deck smette di
+> poggiare su quello che avevo supposto e poggia su due fonti vere. La **trascrizione della
+> riunione** letta per intero declassa il **Comitato IA** da cancello a nota (mai nominato in 76
+> minuti), fa salire la governance che il cliente ha chiesto davvero («si apre per gradi»), nomina
+> **iTouch** nel piano e porta in «Governare» **il caso d'uso che ha portato lui** — la verifica di
+> un rilascio contro i requisiti caricati una volta come skill. La **registrazione della demo**,
+> guardata tutta, diventa **tre tratti** incorporati con una facciata a poster (player al clic,
+> zero richieste a YouTube prima): il primo è quello che avevo tagliato a torto, e mostra le skill a
+> livello utente e organizzazione, la memoria fra conversazioni **spenta di serie**, e il contesto
+> di Poste costruito caricando un documento di guidelines. Rivedendolo sono emersi tre errori di
+> copy miei, compreso il momento più forte del video: Coworker **dichiara il limite dei propri
+> dati** e dice di non presentare quella risposta come un risultato. In più l'**anteprima rapida**
+> (`O` da qualsiasi slide), che mostra tutto il deck con ricerca e salto, e `src/data/slides.ts`
+> come mappa unica contro la deriva dei titoli. Deck a **43 slide**, 0 HARD su 129 controlli.
+> Tutto in **§32.12 (Parte 13)**.
 >
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
 > cliente dentro file tracciati su un repository pubblico — inventario rifatto il 7 ott, due spec
@@ -79,5 +93,6 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla v6 con il perimetro allargato ai canali extra-captive.
-- [Parte 12 — §32 **Poste «Sei domande»**](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione; §32.10 è la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato, il video tenuto in locale, il dossier rinominato) e **§32.11 la mattina dell'incontro** (costo, «Evolvere» come proposta di avvio, lo slug senza il cognome, l'intermezzo «In azione»).
-- [Parte 13 — §11 change log datato (coda)](./HANDOVER-13.md) — dal 2 set 2026 all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti.
+- [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
+- [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
+- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal 2 set 2026 all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti.

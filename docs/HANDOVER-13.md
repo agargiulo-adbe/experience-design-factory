@@ -1,69 +1,179 @@
-# Handover — Parte 13 di 13
-> Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
+# Handover — Parte 13 di 14
+> Torna all’indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
-## 11. Change log recente (coda più vecchia — continua dalla Parte 4)
+## 32. «Sei domande» — Poste Italiane *(seguito della [Parte 12](./HANDOVER-12.md))*
 
-<!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione, quindi è
-     divisa fra Parte 3 (recente), Parte 4 (seguito) e questa, che tiene la coda dal 2 set 2026
-     all'indietro. I confini sono tutti a un ### -->
+<!-- sezione spezzata a sotto-livello: §32.1–32.9 stanno nella Parte 12 -->
 
-### Change log — UniCredit bilingue IT/EN + Dossier shareable-link (2 set 2026, dal più recente) → dettaglio §27.7
-- `ccd0373` **Dossier — shared-link apre in EN di default**: il path token (`?t=`) usa **EN** come lingua iniziale (colleghi internazionali); login/deck restano IT; override esplicito `?lang=en|it`. Verificato live.
-- `c17d37d` **Dossier — unlisted secret-link (no login)**: migration **`0009_restricted_doc_share.sql`** (applicata al DB remoto) — colonna `restricted_docs.share_token uuid` + RPC **`get_shared_doc(p_token)` SECURITY DEFINER** (anon-callable, ritorna solo `content` per il token esatto; RLS invariata). La pagina legge `?t=<uuid>`: presente → fetch via RPC **senza login**; assente → gate login. Resta `noindex` + fuori dal bundle → link-only, non su Google. Revoca/rotazione via `share_token` (`gen_random_uuid()`/`null`). **Verificato E2E live** (render col token in browser pulito senza sessione; gate login senza token; RPC ritorna null su token errato). Chiude il P1 «QC dossier render» (render/i18n provati via shared-link). ⚠️ Il token è un **segreto** (mai in repo/handover): leggerlo con `supabase db query --linked "select share_token from restricted_docs where slug='unicredit-attribution'"`.
-- `0cd4848` **Deck UniCredit bilingue IT/EN** (Ferrari-parity, **IT default**): retrofit di **tutte le 13 sezioni + nav** a `<T en it>` (+ LangToggle in nav desktop/mobile), IT **verbatim** + EN idiomatico umano (±10%), nomi prodotto/persona/numeri/fonti **invariati**. Infra: `data-lang` + anti-flash init in `BaseLayout`, regole display in `global.css`, **headline dinamica home** resa bilingue nel suo JS (entrambi gli span riempiti). Cover via **dual-CoverHero `.contents`** (CoverHero non-`T`-aware). Audit: **FINAL IT HARD == baseline** (0 nuovi hard, 158 tot), **EN HARD ⊆ baseline** (152 tot); 5 tip marginali `c`/`b` (home-journey, conosci nba+persona, analizza costpersale+llm-mix) risolti con spacing/`min-w-0`/`break-words`, **mai type shrink**. `deck-audit.ts` +opz. **`DECK_LANG`** per auditare una lingua forzata. 6 slide EN lette a 1920. Spec `docs/superpowers/specs/2026-09-02-unicredit-bilingual-en-design.md`. Memoria `unicredit-bilingual`.
+Le sei giornate che hanno riscritto il deck dopo il terzo giro di panel: la verifica alla
+fonte del claim portante, la mattina dell’incontro, e il pomeriggio in cui il deck ha
+smesso di poggiare su quello che avevo supposto.
 
-### Change log — VPN: follow-up ticket Zscaler (2 set 2026)
-- **Ticket VPN INC3719631** — postato il follow-up (commento customer-visible) sul ticket ServiceNow: sblocco/allowlist Zscaler per `*.github.io` (URL live Factory). Stato **In Progress**, assigned a **GOC ITP Integration** (SD-Global, EMEA). In attesa di riscontro IT. Vedi §10 P1.
+### 32.10 Il claim portante riverificato alla fonte, il video e il dossier rinominato (2026-10-06/07) — `2e307ea`
 
-### Change log — UniCredit attribution + Dossier login-gated · Alfabeti MIM (2 set 2026, dal più recente) → dettaglio §27–28
-- `f03c343`+`a19516f` **Dossier Attribution UniCredit — ruoli LinkedIn + rifiniture**: §4 mappa org con ruoli verificati (Giancarlini Head of Digital Sales, Ramler Group MarComs Data/Research/Intelligence Lead, Lombardo Head of Data Platform & Architecture, Ricciotti Head of Data & Statistical Reporting, Porro Group CFO, Cristina D'Ambrosio Head of Retail Digital Channels) + link LinkedIn; Cristina spostata in mappa org; rimosso blocco team Adobe/ACN da §6; «CJA B2B Edition» → CJA Attribution IQ (contesto retail); rimossa §10 «Domande aperte»; tolto «(deep-research)» dal titolo §9. Seed `restricted_docs` aggiornato (ri-applicato al DB).
-- `45cfcdf` **fix stili dossier `is:global`**: il contenuto è iniettato via JS (nodi senza `data-astro-cid`) → gli stili scoped `.ur-*` non lo colpivano (testo scuro su fondo scuro, illeggibile). Reso `<style is:global>`. Gotcha nota (scoped-style su nodi non-Astro).
-- `d2f67ba` **Dossier Attribution login-gated, bilingue IT/EN + PDF**: `/dossier/` diventa la pagina unica (merge dossier+war-room); contenuto riservato NON nel bundle statico ma in **Supabase `restricted_docs` (RLS)**, caricato solo dopo login (super admin o ruolo su unicredit-engagement, da `/console/users/`); toggle IT/EN + download PDF (window.print). Migration `0008_restricted_docs.sql`. Supporto `noindex` aggiunto al BaseLayout. Vedi §27.
-- `9d308de` **attribution al centro di «Analizza»**: +2 slide (`slide-lasttouch`, `slide-costpersale`) + riordino + card Attribution in testa al use-case bancario; sezione «Analizza» **HARD-clean** su 1920/1440/1280 (bonificate cxa-brand/agent/banking/llm-mix). Fonte: meeting Giancarlini (riservato, `docs/UniCredit/`) + deep-research 2/09. Spec `docs/superpowers/specs/2026-09-02-unicredit-analizza-attribution-design.md`. Vedi §27.
-- `fadb1e3` **nuova experience «Alfabeti» — MIM × Adobe**: `apps/mim-alfabeti`, deck 8 sezioni, IT+EN, palette light carta/blu + Titillium Web; sezione «realtà» gated da soluzione *interno* (doppio uso client/interno); `audit:deck` 0 hard; base `/mim-alfabeti/`; registrata in deploy.yml/factory-hub/deck-audit/root scripts; dossier strategico bilingue in `docs/` (git-ignored). Vedi §28.
+**Da dove nasce.** Una call interna del 6 ott (prep dell'incontro del 7) ha sollevato due dubbi: che su Adobe Analytics Coworker avesse **un solo caso d'uso documentato** (la validazione AA↔CJA) e che l'integrazione passasse dall'**Analytics Source Connector** dentro AEP. Entrambi portati alla fonte, pubblica e interna.
 
-### Change log — CI lint · «Selling to Executives» · a11y showcase (1–2 set 2026, dal più recente)
-- `3ddefb4` **fix content-audit → CI di nuovo verde su HEAD** (2 set): la citazione "Grounded in Adobe's Selling to Executives method (Jacques Sciammas)" compariva **identica** in `#flow` e `#skill` del showcase → violava la regola (c) di `content-audit.ts` (nessuna frase ≥8 parole ripetuta 2× nella stessa pagina), tenendo **rossa la CI** su `850e94a`/`1d71620`/`f469123` (solo il gate CI; il Deploy era verde). Riformulata la nota in `#skill` ("The intake follows… / L'intake segue…"), distinta da quella in `#flow`; entrambe citano ancora il metodo. `content-audit PASS` + lint/typecheck 0; **CI verde su `3ddefb4`** (l'unico warning residuo è il P2 cosmetico `var` in Agos BaseLayout). ⚠️ Nota per chi legge il git: i run CI di `1d71620`/`f469123` risultano *failure* perché precedono questo fix — HEAD è verde.
-- `1d71620` **a11y showcase — contrasto AA sui testi accento** (chiusa la voce P1 «showcase a11y pass»): il testo accento piccolo su fondo chiaro non arrivava a 4.5:1 — rosso Adobe #EB1000 come testo = 4.08–4.41 → eyebrow/`.value-n`/`.flow-principles-eyebrow`/chip attore "Adobian" ora usano `--color-adobe-red-dark` #C50E00 (5.5–5.9; 4.63 sul chip col tint 12%→10%); chip "Factory KB" violetto 4.48 → nuovo token `--color-adobe-violet-dark` #4E22CC (6.7) + tint 10%. Riempimenti/linee decorative restano brand-red pieno. Grey inks già a norma (ink-secondary 7.1, ink-tertiary 4.9); slate-400 solo su fondi scuri (banda proof/skill/grow sono `--surface-inverse`). Già presenti: reduced-motion, focus-visible, skip-link. lint/typecheck 0, screenshot 1920 EN+IT letti.
-- `850e94a` **principi «Selling to Executives» (Jacques Sciammas) nell'intake e in vetrina** (chiusa la voce P1): **SKILL.md ristrutturato** — 5 principi in testa (lead-to-solution · lingua dell'executive · prova revenue/cost/risk · before→after · trusted advisor), Part 1 ricerca industry/company/executive (cosa misura il CXO), Part 2 executive rilevante + 3 lenti (Financial/Operational/Growth), Part 3 obiettivo/pain prima del prodotto, Part 4 ROI rule + figure illustrative, **output = value-proposition brief** (12 heading). **Showcase (solo weaving + citazione esplicita)**: `#flow` strip 4 principi "Every experience is built to convince a C-suite" + citazione, step Research/Brief riformulati; `#skill` lead executive-grade + nota "Grounded in Selling to Executives". Artefatti scaricabili rigenerati (`public/skill/*.md` + `.zip`). Fonte: `docs/Adobe Material/Selling to Executives/*.pptx` (git-ignored). Screenshot 1920 EN+IT letti.
-- `6c37210` **CI lint di nuovo verde** (chiusa la voce P0): le 156 errors `no-unused-expressions` erano tutte nei due bundle minificati `modern-screenshot.umd.js` (tooling vendored impeccable, `.claude` + `.github` copie) → aggiunto `'**/skills/impeccable/scripts/**'` agli ignores di `eslint.config.js`. `pnpm lint` 0 errors (restano warning non bloccanti); `scripts/*.ts` restano lintati; typecheck 0.
+**Il dubbio sul caso d'uso unico era vero fino al 2 ottobre, non dopo.** Lo Slack interno del 22 lug associava ad AA la sola «AA-to-CJA migration validation and data reconciliation», e la pagina della skill di validazione è del 9 set. Ma l'indice `chat/use-cases/overview` di Experience League è stato aggiornato **il 2 ottobre**, lo stesso giorno del rollout, e oggi elenca per Adobe Analytics le skill `aa` su *Pull reports & metrics*, *Comparative analysis*, *Campaign performance*, *Funnel analysis*, *Forecasting* ed *Executive summaries*, più **`aa-root-cause-analysis`**; c'è anche la pagina dedicata `data-insights/analytics-chat` (agg. 2 ott): «Coworker Chat accesses Adobe Analytics report suites». Chi ha guardato prima del 2 ott ha visto un solo use case **e aveva ragione allora**.
 
-### Change log — Depubblicazione Experience Atelier (1 set 2026)
-- `4cca945` **Atelier depubblicata dai listing pubblici**: rimossa la card dal showcase (`apps/factory-showcase/src/data/experiences.ts`) e la tile dal factory-hub (`apps/factory-hub/src/pages/index.astro`). I conteggi data-driven del showcase tornano **6→5 esperienze** in automatico (hero stat, prose, griglia proof, diagramma architettura). **Codice `apps/atelier` invariato**; la route `/atelier/` resta buildata e raggiungibile (solo unlinked) → P2 in §10 se serve un 404 vero. Nota: il seed console `0007_seed_atelier.sql` (status `live`) NON è stato toccato. Build showcase+hub verdi, 0 ref «Atelier» negli output.
+**L'ipotesi del connector è smentita.** La release note dice «accesses data from **your Adobe Analytics report suites**», e lo Slack interno del 22 lug è esplicito: «The expected path is to use the Adobe Analytics MCP server. **No movement of Adobe Analytics data into Adobe Experience Platform was indicated**». Portarla in sala avrebbe fatto apparire un progetto AEP che non serve, davanti a chi CJA l'ha chiuso nel 2024.
 
-### Change log — Revisioni post-biforcazione Trenitalia (1 set 2026, dal più recente) → dettaglio §26.7
-- `d99254c`+`56a391f` closer FS Park iterato → **"Ogni sosta, un cliente riconosciuto."** (prima "Un cliente intero, a partire da casa": goffo + duplicava il titolo della sintesi).
-- `754de62` **obiezione CDP + connettori verificati + closer**: gestita l'obiezione "abbiamo già Data Cloud CDP" nelle slide CJA≠CDP; **linea `z-index:-1` dietro i nodi** (fix definitivo overlap linea/emoji); **connettori AEP corretti su fonti Adobe** (Data Cloud niente source nativo; Responsys è destination non source; nativo solo Salesforce CRM); tolto "611 email/anno a un singolo cliente" dalla card sistema + "rollout graduale per superfici"; **2 slide di chiusura solo visual** a fine di entrambi i rami.
-- `d4a90d7` **revisione iper-approfondita** (3 revisori paralleli): **Elena rimossa** (persona orfana); "Nessuno sistema"→"Nessun sistema"; de-AI tricolon/slogan; tono ROI Trenitalia ammorbidito; tolta l'accusa a Responsys; a11y (nav /40→/70, badge 11px→13px, `color-mix()`→`rgba()`).
-- `4c0493e` **copy/UI**: disclaimer cover "firmato Adobe"; "tronco comune" → **due racconti distinti convergenti**; piattaforma agentica attribuita (FS Technology × Salesforce, link fsnews); "confronto di lavoro"→"tavolo di lavoro FS Park × Adobe"; **Mix Modeler → Marketing Campaign Analytics (ex Mix Modeler)** (id `mix-modeler` invariato); slide adozione **AI Assistant vs CX Enterprise Coworker**; nodi opachi; touchpoint altezza uniforme.
-- Nuova memoria **`adobe-product-naming-2026`** (naming Adobe verificati: MCA, CX Enterprise Coworker GA giu 2026, clean room = Real-Time CDP Collaboration *da confermare*).
+**Rollout ≠ GA, ed è scritto nella release note.** Due colonne distinte: «Rollout starts: **October 2, 2026**» · «General Availability: **TBD** (originally planned for September 25, 2026)». Il deck lo diceva già giusto; **`CLAUDE.md` e la memoria di progetto no** (davano la GA per fatta il 2/10): allineati.
 
-### Change log — Biforcazione Trenitalia · Eni Orbita · core responsive/nav (21 lug – 1 set 2026) → dettaglio §§24–26
-- `5aaa5b0`+`954dde1`+`0ec1259` (**31 ago 2026**) **biforcazione `trenitalia-connessioni`**: tronco neutralizzato + `/bivio/` + rami autoconsistenti `/fs-park/*` (ambra) e `/trenitalia/*` (rosso), 5 capitoli speculari; vecchie route → stub redirect; slug/gating branch-aware in BaseLayout; `audit:deck` 0 hard su 13 route. Dettaglio **§26**.
-- `31c8e13`+`0c42beb`+`48e3e63` (**28 ago 2026**) **nuova experience Eni «Orbita»**: deck 7 pagine (poi bilingue EN/IT) + dossier war-room trilingue; Elvira Fabrizio identificata (Head of Digital & IT Enilive). Dettaglio **§24**. ⚠️ Da questi push la **CI è rossa su lint** (tooling pre-esistente → P0 §10).
-- `f09fca1`+`7bd7511` (**21 lug**) + `d042105` (**22 lug**) **core responsive envelope** (tier cramped-laptop/giant-TV, viewport proiezione intoccati) + **nav single-line su tutte le esperienze** + **sweep visivo esaustivo 536 screenshot** con 3 fix di leggibilità. Dettaglio **§25**. → chiusa la voce P1 «rigirare audit + QC 1920 sui 6 deck» (parity audit + sweep completo).
+**I numeri del server MCP, ricontati.** Il tool reference (agg. 18 mag 2026) ha 4 + 7 + 2 + 3 + 3 + 4 = **23** strumenti, e i quattro che scrivono sono `upsertSegment`, `upsertCalculatedMetric`, `createDateRange`, `upsertProject`. Confermato il permesso: «a product profile containing the **MCP Access** permission item» + «MCP servers enforce the same permissions as the UI». I numeri del deck erano esatti.
 
-### Change log — Redesign «eccellenza» E2E dei 6 deck + consolidamento CI (21 lug 2026) → dettaglio §23
-- **Redesign E2E** di tutti e 6 i deck (Agos `.tdu-*`, Atelier `.loom-*`, Ferrari `.frl-*`, UniCredit `.uc-*`, Max Mara `.mm-*`, FS `.fs-*`): concept brand-native centralizzato in `global.css`, sezioni ricostruite via subagent, **copy/claim/numeri/fonti/personas verbatim**. Rollout su 6 branch feature, poi **merge `--no-ff` in `main`** (`572ba5b`/`1563e9e`/`ca541a1`/`0b610e6`/`25e7927`/`37b6650`), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati **eliminati** (remoti + locali) dopo il merge.
-- `de81eaf` **fix flip-ink Max Mara** (inverse-only): lo `Slide` applica lo sfondo come classe Tailwind, non `data-bg` → i selettori di flip non scattavano (numeri invisibili su slide scure); ritargettati alla classe reale, brand cammello tiene ink scuro (§23.1, memoria `deck-ink-flip-selector`).
-- `b0106bc` **fix 2 errori typecheck FS** (param `any` in `fondazione.astro`, campo `badge` inesistente in `scenario.astro`) — `astro check` rosso pur con `build` verde.
-- `0298ccc` **fix lint parsing error Agos**: un commento `<!-- -->` dentro il `.map()` di `scenario.astro` contava come 2° elemento root (`JSX expressions must have one parent element`), unico *error* che teneva rosso il gate lint (build/deploy non impattati). Il commento a livello template resta valido.
-- `52e47df` handover §23 aggiunto. **Lezione:** `pnpm build` verde non basta — girare `typecheck`+`lint` prima di ogni push di redesign (§23.2, nota "CI vs Deploy" §10).
+**L'overclaim corretto, in cinque punti.** «Ogni analisi si apre in Analysis Workspace» non regge su Adobe Analytics: lo Slack interno descrive una skill custom nata per «close the parity gap where CJA Coworker artifacts already had an analyze-in-workspace button but **AA data did not**», il wiki BACOM tiene «full AA tool parity + open in Workspace» come richiesta **senza data**, e perfino «Open in CJA» è «limited in how exact it will create related tables». Ciò che è documentato è `upsertProject` col `workspaceLink`. Corretto in `accendere`, `rispondere`, `capire`, `evolvere` e nella **copertina**, più l'etichetta della fonte che diceva «casi d'uso (oggi documentati su CJA)» — vera a settembre, falsa dal 2 ott. Verifica: build ok, audit **102 rotte, 0 HARD**, soft invariato (30 `a`, 18 `i`) **rimisurato sulla baseline** rimettendo i file originali: nessuna regressione.
 
-### Change log — Agos: deck «casi d'uso evolutivi AEP» (PPTX, fuori repo) (20 lug 2026)
-- Prodotto **`docs/Agos/Agos_x_Adobe_Casi_uso_evolutivi_AEP.pptx`** — deck **24 slide IT su template Adobe** (rosso Adobe + accenti petrolio/acqua Agos), generato con **python-pptx** (PowerPoint nativo/editabile), NON un'app del monorepo. Contenuto: recap "cosa Adobe ha compreso" (profilo Agos con numeri di discovery ~9M/~5M/~3,7M/~80 use case, as-is Campaign v7 + Analytics + DWH Oracle/SAS-Matrix, contesto trasformazione set–ott 2027, **5 attriti**: dato di ritorno assente, dato rigido, offerte fuori, misura frammentata, canali non parlanti) + **9 casi d'uso evolutivi su AEP** (AJO/RTCDP/CJA: chiudere il loop caricata/liquidata, recupero abbandoni form TIG, transazione negata→journey, next-best-offer, inbound/outbound orchestrati, churn proattivo, agenti conversazionali, FAC su Snowflake, contenuti on-brand + link SMS) + roadmap Crawl/Walk/Run + next steps. Fonti: doc di discovery in `docs/Agos/` (sessioni, CVM, architettura) + librerie casi d'uso Adobe (Journey Optimizer / FSI / Retail Banking POV) in `docs/Agos/*.pptx`. **Non committato** (`docs/Agos/` in `.gitignore`); reso in PNG e verificato slide-per-slide (0 overflow). Non tocca app/build. Generatore usa-e-getta in `/tmp` (non nel repo). Distinto dal deck web `apps/agos-trait-dunion` (§16).
+**Il video demo: letto, tagliato, tenuto in locale.** `docs/Poste Italiane/Video Demo Poste Italiane.mov` (6'39", 3280×1954, **senza traccia audio**) non è una demo registrata ma una **sessione di lavoro per preparare la demo**, su dati dimostrativi **CJA** nella org `demosystem4`: a 3:40 Coworker vende CJA («è proprio la vista unica sul cliente che CJA rende possibile»), a 4:50 c'è il bottone «Analyze in CJA» e la frase «**Per la demo** consiglio di non presentare questa domanda come insight», a 5:12 «Loaded Generate Executive Summary **from CJA** skill». **Intero non si mostra.** Estratte due clip verificate fotogramma per fotogramma: `coworker-poste-01-riepilogo.mp4` (5:31→5:52: gli otto KPI, «cosa è cambiato», le raccomandazioni) e `coworker-poste-02-documento.mp4` (6:04→6:38: il PDF brandizzato, con l'autocorrezione delle etichette del grafico), 1920×1144, 2,0 e 3,0 MB. **Gotcha ffmpeg riusabile**: `-ss` *prima* di `-i` aggancia il keyframe precedente, e il primo taglio conteneva esattamente la riga su CJA che doveva escludere — il seek accurato vuole `-ss` **dopo** `-i`. Niente caricato da nessuna parte: `player.html` + `serve.command` nella cartella git-ignorata, con la dichiarazione obbligatoria (sandbox Adobe, dati CJA, rollout non GA) **sopra** il player, così non si proietta dimenticandola.
 
-### Change log — Atelier redesign + fix CI (20 lug 2026, dal più recente)
-- `5fc362e` **fix CI cronico** (non era in backlog: scoperto ora). Il workflow **`CI`** (separato da `Deploy to GitHub Pages`) falliva da CI #90 sullo step `npx tsx scripts/content-audit.ts`, **regola (c)** (nessuna frase ≥8 parole ripetuta 2× nella stessa pagina buildata). Root cause su Ferrari `/scoping/`: `METRICS[0].what.it` (`apps/ferrari-racing/src/data/scoping.ts`) e `badgeCollab.it` (`packages/core/.../ScopingCalculator.astro`) rendevano la **stessa prima frase IT verbatim**, mentre in EN divergevano (`what.en` "burned" vs `badge.en` "consumed"); `what.it` era anche **incoerente col proprio EN**. Fix alla sorgente: `what.it` "consumato" → **"bruciato"** (mirror di "burned") — rompe la ripetizione **e** corregge la deriva EN/IT; nessun tocco al core condiviso. Verificato: typecheck+lint+build+`content-audit PASS`; **run CI di `5fc362e` = success (verde)**. (c49e7db/f4caf92 restano rossi in storia perché pushati prima del fix.)
-- `f4caf92`+`c49e7db` **Atelier — passata de-celebrazione + sintesi grafica** (dettaglio §21.5b). Copy de-celebrato trilingue (meaning-preserving, ±10%): tolti brag/staccato/tricolon/tetracolon ("Weeks per experience. Not quarters.", "Enterprise-grade… this deck is one of them", "deepest content model in the family", "this demo is real", "in Adobe hands", "Touching it beats both", "prove the craft"). **Nuova `slide-roadmap`** (Gantt: 5 workstream × 3 milestone + riga key-moments) + **`slide-kpi`** da 4 righe → **scorecard 2×2** con metric-pill. Registrata in `PAGE_REGISTRY` (plan ora 6 slide / deck 30). Audit **0 hard**; nuovi soft `a`/`i` su roadmap+kpi **whitelisted** (screenshot 1920 letti: type generoso, composizione bilanciata; parità altezza EN/IT/FR a 1280).
+**Il dossier: rinominato e corretto** (migrazione `0020`, applicata e verificata sul link condiviso). «War Room — …» → «**Dossier — Poste Italiane · Giuseppe Sperandeo**». La §01 dava per **GA il 29 settembre** e prometteva un «Open in Analysis Workspace» nativo: riscritta. Aggiunta la **§13 «Perché Coworker e non il server MCP collegato al nostro assistente?»**, sette voci ricavate dalla call Luxottica × Adobe del 6 ott (PM Adobe: Brett, piattaforma analytics; Ankita Datta, soluzioni AI): le tre ragioni vere — controllo, permessi ereditati, skill che restano dell'organizzazione — e ciò che **non c'è ancora**: business context **in alpha** previsto a novembre, memoria **spenta** e attesa in quindici giorni, crawling abilitato per cliente da Adobe, connettori verso i sistemi del cliente che significano «scrivetevi il vostro server MCP». Più il taglio su cosa **non** portare a Poste (CJA, il problema multi-marchio, la «democratizzazione dell'analytics») e la regola di **non nominare il cliente** in sala. ⚠️ «War Room» resta nei dossier Eni e Trenitalia.
 
-### Change log — lug 2026 (condensato a puntatori; dettaglio completo nelle sezioni §)
-> Le voci di luglio sono collassate: il racconto per esteso vive nelle sezioni indicate — qui restano hash + una riga.
-- **Experience Atelier** (17 lug, `e296cb5`/`56a7808`/`e4e88ba`/`d5bc6d0`/`c9fb186`/`1f9c018`/`abbc71b`/`13cb5e6`/`d7854af`/`47bce98`+`2bbd988`): scaffold trilingue + admin wrapper; **fix gating SPA su tutte le 6 esperienze** (`astro:after-swap`, memoria `spa-gating-reapply`); **i18n core `fr`** opzionale; core `T` inoltra attributi extra; registry→`live` (`0007`). → **§21–§22**.
-- **UniCredit** (lug, `aabd2d1`/`310e045`/`b8bd78c`/`aa26cd1`/`c6385e4`/`2da455b`): personas Marco B2C/Adriana B2B; pass copy morbido/credibilità (14M→"milioni", risultati→direzione ↑/↓, Next-Best-Experience); naming analytics vs MEGA DECK (MCA/DIA/Coworker); slide AI Agents in AEM + Firefly; rinumerazione dinamica card + nav frecce bidirezionale; Brand Concierge in Admin. → **§5, §17**.
-- **Hub · Parity · Ferrari scoping · Trenitalia** (13–14 lug): hub root = `factory-hub` + Max Mara→`/generazioni-maxmara/` (stub redirect, `0005_hub_registry.sql`); `prevHref`/gating bidirezionale ovunque + Max Mara config-driven; **Type & legibility contract** codificato in `CLAUDE.md`; Trenitalia redesign leggibilità (`audit:deck` 165→0, personas Davide/Elena); showcase data-driven (`experiences.ts`); Ferrari /scoping v1 (**superato** il 15 lug dal modello Adobe-fedele §18). → **§8, §14, §15**.
-- **Factory Showcase** (lug): prima versione + wiring deploy `/showcase/`; skill **`experience-brief`** creata; WOW pass (screenshot Proof, sezione Skill, hero animato); sezione "Come nasce un'esperienza"; mark distintivo; KPI "12" reso verificabile. → **§13**.
+**Da chiarire col PMM.** La pagina pubblica dice di collegare il server `cja-mcp`; la documentazione Analytics e i tool interni parlano di un `aa-mcp` distinto (`aa-mcp__runReport`). Se l'Admin chiede «quale server collego», oggi la risposta pubblica è ambigua.
 
----
+### 32.11 L'ultima passata prima della sala (2026-10-07, mattina) — `a386afe`→`80f4053`
+
+Cinque commit fra le 08:23 e le 11:42 del giorno dell'incontro, tutti su contenuto e tutti con lo stesso movimento: **dire quello che è vero e citare dove sta scritto**, togliendo i numeri che invecchiano e le promesse che il prodotto non mantiene.
+
+**Il costo detto come un fatto, il limite col numero vero** (`a386afe`). Copertina e «Cosa vi portate a casa»: i crediti di prova diventano una frase piana — vederlo all'opera non costa nulla — senza numeri di settimana, perché quella del 7 ott è una prima sessione di introduzione e non una trattativa. Il «monte richieste di reporting» era vago: il numero è pubblico nella Product Description — **Analytics Select, 500.000 richieste di report al mese per IMS org** — e le domande via MCP contano lì dentro insieme a Workspace e alle API; fonte citata sulla slide. Tolta la nota sulla verifica interna per il settore finanziario: dei tempi resta solo ciò che è vero, cioè che il calendario parte dall'attivazione lato Adobe e dalla conferma scritta. Sostituito il criterio del 2024 «analizzare i dati di altri reparti» — che chiedeva «quali reparti?» a un pubblico che presidia i canali digitali — con l'altro criterio approvato, la **facilità d'uso**. «Oggi in inglese» riverificato e tenuto: Coworker supporta ufficialmente il solo inglese, le altre nove lingue sono annunciate e nel deck restano **senza data**.
+
+**«Evolvere» non è più un elenco di funzioni future: è una proposta di avvio** (`71bfcb3`), da quattro slide a sette, con un'altra domanda in testa — non «quali funzioni arrivano» ma «come si comincia».
+- **«Si parte piccolo, su una suite di prova»**: quattro passi senza numeri di settimana (si accende · si misura il prima · si prova sulle vostre domande · si decide). Il calendario lo detta l'istruttoria di Poste, non un piano nostro.
+- **«Chi coinvolgere»**: cinque ruoli nell'ordine in cui entrano — il team di monitoraggio, l'Admin di Analytics, chi fa campagne digitali, Comitato IA + DPO + sicurezza, Adobe.
+- **«Da parte nostra»**: il programma di affiancamento (high touch) su Coworker, oggi attivo su CJA, chiesto per Poste **su Adobe Analytics** — si apre su richiesta, la richiesta la facciamo noi, la conferma arriva per iscritto. Sul costo niente «illimitato»: Coworker è licenziato in **crediti di IA** (Product Description in vigore dal 30 lug 2026) e il modello commerciale è una conversazione a parte.
+- **«Gli altri MCP di Coworker»** dichiara il perimetro possibile con le disponibilità verificate: **AEM supportato, Workfront in preview, Target, AJO, Real-Time CDP ed Experience Platform in beta**, più i server MCP del cliente verso sistemi non Adobe. E dice che AEM Forms e Adobe Commerce il Gruppo **li ha già, ma in altre divisioni**: non è una decisione di questo team. Footprint letto da `20260929_Poste_Italiane_Adobe_Footprint_data.xlsx` — l'ECCID 1445148 ha esattamente AEM Forms, Analytics Select, Commerce.
+
+**E «Proteggere» smette di promettere quello che Adobe non pubblica** (stesso commit). «Settimana zero: Comitato IA e DPO» → «**L'istruttoria la aprite voi**»: tempi, forma e interlocutori li decide Poste, noi rispondiamo per iscritto alle domande tecniche con la fonte accanto. «Tre pezzi, tutti Adobe, nessuna copia dei dati grezzi» → «Tre pezzi, e che cosa tocca ciascuno», con retention e residenza **inventate** rimosse e una riga «quello che questa slide non dice» che rimanda ai termini Adobe sulle funzionalità di IA generativa e alla documentazione contrattuale. La freccia dei permessi era **sbagliata**: non «permessi dell'utente» ma **«permessi Analytics + MCP Access»** (Experience League, agg. 18 set 2026). Via «ventitré strumenti, quattro scritture» qui e in `accendere` — il numero invecchia a ogni release — restano i tipi di scrittura che Adobe elenca (segmenti, metriche calcolate, intervalli di date, progetti Workspace).
+
+**Lo slug del dossier nominava il referente, su una pagina pubblica** (`1a1aba9`). `/dossier/` è pubblica: il gate protegge il contenuto, non l'HTML. E dentro quell'HTML viaggiava `DOC_SLUG = "poste-sperandeo"`, cioè il cognome della persona del cliente, leggibile da chiunque facesse una GET senza token — **verificato sul deployato**, non solo in locale. La riga Supabase è stata rinominata in **`poste-sei-domande` mantenendo lo stesso `share_token`**: il link già distribuito continua a funzionare. ⚠️ Stesso difetto su isybank (`isybank-valitutti`), segnalato e non toccato. Memoria `client-names-public-repo`.
+
+**«In azione»: le due clip del cliente diventano un intermezzo del deck** (`70ac729`), fra Proteggere ed Evolvere. Era una slide creata dalla Console con un embed YouTube che non partiva; ora è una sezione vera, nel design system dell'experience. **Non è una settima domanda** — il deck si chiama «Sei domande»: `interlude: true` in `chapters.ts` la mette nel flusso e nella nav **senza numero** e la tiene **fuori dalla griglia del percorso in home**, che resta 6 card su 2 righe da 3 come vuole la regola della roadmap (`QUESTIONS` filtra gli intermezzi; nav e home leggono la stessa fonte, nessun capitolo rinumerato). Cinque slide: cover (due clip, un minuto in tutto) · **«Prima di guardarle»**, le tre avvertenze dette *prima* del play e non dopo (è l'organizzazione dimostrativa Adobe · gira su dati dimostrativi **CJA**, quindi si trasferisce la forma della conversazione e non la lettura delle vostre suite · su Analytics è in rollout con la GA non dichiarata) · clip 1, 21 s, una domanda e un riepilogo, con «che cosa guardare» accanto · clip 2, 34 s, il documento per il management e l'autocorrezione delle etichette sovrapposte · «Cosa resta».
+
+**Dettagli tecnici dell'intermezzo.** `.sd-clip*` e `.sd-split--media` nel design system dell'app, proporzione 1920×1144 come i file; le clip **non sono generate**, quindi `data-made-with="Firefly"` sta solo sulle due slide con sfondo generato e `provenance.video.json` le registra come `screen-recording` con la nota esplicita «NON generata con Firefly»; rotta aggiunta a `deck-audit.ts`, slide registrate nel `PAGE_REGISTRY`. Audit: **0 HARD su 123 controlli** (1920/1440/1280); i **9 soft nuovi** stanno tutti sulle due slide con la clip — il parser non conta un video come massa di testo, quindi `a` su una slide che a occhio è bilanciata, il limite noto già scritto in `CLAUDE.md`. Le altre sette rotte sono invariate, rilievo per rilievo.
+
+**Le clip restano fuori dal Release pubblico** (`80f4053`), e la decisione nasce da **cosa mostrano**: non dati di Poste, ma l'interfaccia di Coworker su Adobe Analytics, che è in rollout e senza GA dichiarata. Su un URL pubblico sarebbero scaricabili e indicizzabili, e ritirarle dopo non le fa sparire dalle cache. Quindi la sorgente video passa dal Release a **`public/media/`, che per gli mp4 è git-ignorato**: le clip si riproducono da una copia locale del sito, non dal deployato. I **poster restano tracciati**, così le due slide reggono comunque — poster, titolo, «che cosa guardare» — anche per chi apre il link pubblico. E lo dice la slide, invece di lasciare un play che non fa niente: «organizzazione dimostrativa Adobe · dati di sandbox · la clip si riproduce dalla copia locale, non è pubblicata», con la stessa nota in copertina di capitolo e in `provenance.video.json`, dove è registrato il percorso delle sorgenti. Riproduzione verificata su preview locale (play ok, 1920×1144).
+
+⚠️ **Due conseguenze da tenere a mente.** La prima: il deck pubblicato ha ora **otto rotte** (home + sei domande + intermezzo) e due slide che su URL pubblico mostrano **solo il poster**. È una scelta dichiarata in pagina, non un difetto da «sistemare» caricando i file da qualche parte. La seconda: il verdetto del panel resta quello del **2 ottobre** e ora è ancora più lontano dallo stato corrente — «Evolvere» è un capitolo diverso, «Proteggere» ha tre affermazioni riscritte e c'è una sezione nuova. Vedi il P0 di §10.
+
+### 32.12 Il pomeriggio e la sera del 7 ottobre: la riunione, l'anteprima, il video intero (2026-10-07) — `408c28b`→`8eada70`
+
+Sei commit dopo la sala. Il filo è uno solo: **il deck smette di poggiare su quello che
+avevo supposto e poggia su due fonti vere** — la trascrizione della riunione e la
+registrazione della demo, guardate entrambe per intero.
+
+**Il deck riallineato alla riunione** (`408c28b`). Trascrizione Plaud letta tutta (429
+interventi, 76 minuti). Quattro modifiche sostanziali, ognuna con la sua evidenza.
+- **Il Comitato IA scende da cancello a nota.** In 76 minuti: zero occorrenze di
+  «comitato», «DPO», «garante», «GDPR», «legal»; le due di «privacy» sono una battuta sui
+  dati finti della demo. Il deck era costruito su una porta che il cliente non ha mai
+  nominato, e che rallentava uno che vuole partire prima di Natale. Resta come nota sul
+  perimetro in «Proteggere» — il Manifesto e il Comitato esistono davvero e il deck
+  circolerà fra chi in sala non c'era — ma non è più il punto da cui parte il calendario.
+- **Sale la governance che ha chiesto lui.** La sua preoccupazione è «apri tutto»: che una
+  risposta giusta venga letta male da chi non ha la sensibilità di quel dato. La quarta
+  regola di «Proteggere» diventa **«Si apre per gradi, non "apri tutto"»**: poche persone
+  nominate, le domande ricorrenti fissate in skill scritte da chi il mestiere lo conosce,
+  e allargare resta una loro decisione.
+- **Il piano è quello concordato.** «Evolvere» dice **iTouch** per nome: circa due mesi,
+  **non è una licenza**, serve a usarlo sul serio senza consumare i crediti di prova — e
+  quindi a **misurare il consumo** prima di impegnarsi. L'attivazione è quella vera
+  (richiesta della IMS org da parte nostra, prima coorte, giorni; poi accessi self-service
+  in Admin Console e crediti già lì). Il quarto numero su cui si decide non è più generico:
+  è quanto ha consumato.
+- **Entra il caso d'uso che ha portato lui**: nuova slide in «Governare», `slide-rilasci`,
+  «Questo rilascio traccia quello che avevamo chiesto?». Oggi è un controllo a mano,
+  requisito per requisito; con i requisiti caricati **una volta** come skill, Coworker dice
+  che cosa manca, che cosa non corrisponde, che cosa arriva vuoto — e il controllo lo esegue
+  chi è arrivato da poco. È la cosa più forte che ha detto, ed era assente.
+
+**La numerazione, e il copy delle clip riscritto guardando il video** (`3d5a860`).
+L'intermezzo prende il **06** ed «Evolvere» passa al **07**. Due conteggi, ciascuno vero
+nel suo posto: la **nav** conta il deck (01→07), la **griglia della home** conta solo le
+domande (01→06), così «Sei capitoli, sei domande» resta una frase vera e la roadmap resta
+6 card su 2 righe da 3 (`QUESTIONS` in `chapters.ts` filtra `interlude: true`). Il copy
+delle clip l'avevo scritto dalle didascalie del player locale, non guardando il video:
+guardato, «è la skill *il riepilogo del lunedì*» era **sbagliato** (il confronto è
+**mensile**, luglio su giugno) e la correzione automatica delle etichette **non era
+verificabile** in 34 secondi, quindi tolta. ⚠️ **La lingua**: «oggi in inglese» era vero in
+agosto ma non è ciò che il video mostra — prompt in italiano e risposta in italiano — e il
+deck ora dice entrambe le cose senza datare l'italiano.
+
+**Anteprima rapida: tutto il deck in una pagina** (`a3db2da`). Otto rotte e 42 slide, e da
+dentro non si vedono: chi riceve il link atterra sulla prima slide. `SdOverview.astro` apre
+un indice su superficie scura col **titolo vero** di ogni slide raggruppato per capitolo e,
+sotto il nome del capitolo, **la domanda a cui risponde**; niente miniature, perché a 120px
+una slide di testo non dice nulla. **La ricerca è il punto**: al primo giro «costo» dava
+zero risultati — i titoli non contengono la parola, e chi non conosce il deck cerca per
+argomento — quindi ogni slide porta le sue parole chiave nella mappa. Tastiera `O` / frecce
+/ Invio / Esc, deck in pausa mentre è aperto; il salto fra rotte passa da `sessionStorage` e
+dalla navigazione SPA, quindi **non perde lo schermo intero**.
+**Zero wiring**: il pulsante nasce fuori e si innesta da sé in `[data-deck-controls]`, come
+gli altri runtime del progetto. E **una duplicazione in meno**: la mappa delle slide viveva
+solo nel `PAGE_REGISTRY` della Console e aveva già divergito (tre titoli fermi a una
+versione precedente) — ora sta in **`src/data/slides.ts`**, letta da entrambi, con
+`pnpm --filter poste-sei-domande check:slides` che confronta gli id con i `<Slide id>` reali
+e fallisce se qualcuno entra o esce senza passare di lì.
+
+**Il video innestato nel deck** (`d7638f0`, poi rifatto in `8eada70`). La registrazione sta
+su **YouTube come video non in elenco** (`XE5yH5qXbtc`), caricata dall'account: il deck non
+incorpora mp4 e mostra **tratti dello stesso video** con una **facciata a poster**, così il
+player di terzi nasce **al clic** su `youtube-nocookie.com`. Verificato: **0 richieste a
+YouTube prima del clic**. Un HARD chiuso in corsa: il pulsante-facciata
+falliva il check `h` su tutti e tre i viewport, perché l'etichetta per screen reader
+ereditava l'inchiostro scuro della slide chiara finendo su fondo nero — risolto con `color`
+e `background-color` espliciti.
+
+**Poi il taglio in due si è rivelato sbagliato, e sono tre** (`8eada70`). Avevo escluso
+0:00–2:05 scrivendo che «il contesto sta già in Accendere»: lì ci sono **tre righe** sulle
+skill, e in due punti il deck promette un meccanismo («i requisiti si caricano una volta
+come skill» in Governare, «i colori vengono dalle regole caricate prima» nella parte sul
+documento) di cui avevo tagliato l'**unica prova filmata**. Ora i tratti sono tre:
+
+| slide | tratto | che cosa mostra |
+|---|---|---|
+| `slide-clip-contesto` — «Prima di rispondere, che cosa sa di voi» | 0:00 → 2:05 | l'interruttore **Utente / Organizzazione** sulle skill (290 installate · 210 di prodotto · **78 dell'organizzazione** · 2 personali); la **memoria fra conversazioni spenta di serie**, con il prodotto che rimanda ad Adobe per accenderla; la scheda di marchio con **un solo documento** caricato e i controlli che ne risultano; le regole con il loro identificativo a punti (`brand_voice.lexicon.use-specific-action-led-ctas`), la frase **italiana** da cui sono state estratte e il rimando alla pagina del PDF |
+| `slide-clip-riepilogo` — «Quattro domande, in italiano» | 2:05 → 5:00 | trend giornaliero e dieci anomalie · sezioni · App contro Web · **e la quarta domanda, sulla distribuzione oraria, dove Coworker si ferma** |
+| `slide-clip-documento` — «Una richiesta, un documento finito» | 5:00 → 6:39 | il riepilogo a schermo, poi il PDF di tre pagine |
+
+Rivedendo i tratti 2 e 3 sono emersi **tre errori di copy**, tutti miei:
+- le domande sono **quattro**, non tre: mancava quella sulla distribuzione oraria;
+- su quella quarta Coworker **dichiara il limite dei propri dati** — «con questi dati non si
+  può individuare una vera ora di picco. È un limite della demo da dichiarare, non un
+  risultato sull'uso dei clienti» — ed è il momento più forte del video per una stanza
+  diffidente. Non c'era;
+- il **controllo che il prodotto fa sul proprio documento** (rilettura delle tre pagine,
+  etichette del grafico corrette) era stato tolto il giorno prima come non verificabile:
+  sta scritto a schermo a **6:05**, e torna.
+
+⚠️ **Nota di onestà tenuta nel deck.** La scheda di marchio (Experience Context) è una
+configurazione **a sé**, fuori dall'attivazione di Coworker su Analytics: la slide lo dice
+in una riga e non promette disponibilità. Lato interno risulta che la voce di menu è oggi
+aperta alle **organizzazioni clienti Experience Manager con accesso a Coworker** — se il
+perimetro Experience Manager di Poste soddisfi quella condizione **non è verificato**, ed è
+una voce del backlog, non una cosa da dire in sala.
+
+**Poster rifatti dai tratti giusti.** Quello della Parte 2 veniva dal **riepilogo mensile**,
+che è contenuto della Parte 3; a quello della Parte 3 è stata **tagliata la barra del
+browser**, che mostrava il percorso locale di un collega e la cartella di un altro cliente.
+Tutti e tre 1920×1144, in `provenance.video.json` come `screen-recording` col fotogramma di
+origine e la nota «NON generata con Firefly».
+
+**Verifica.** `audit:deck` **129 controlli, 0 HARD**, 66 soft (il residuo `a`/`i` delle
+slide con media: il parser non conta un video come massa di testo). `check:slides` PASS su
+**8 rotte**; il deck è a **43 slide** (4+5+5+5+6+5+6+7). I tre player provati dal vivo con
+`window.__edfDeck`: `start`/`end` = 0–125, 125–300, 300–399.
+
+⚠️ **Un difetto che l'audit non vede, e lo screenshot sì.** A 1280×800 l'ultima riga della
+nota finiva **sotto la firma co-brand**, con `b:ok`: il check `b` misura la collisione con
+`[data-deck-controls]`, non con la firma in basso a sinistra né col credito «creato con» a
+destra, che sono `fixed` e volutamente fuori dalle misure. Regola generalizzata nella
+memoria `audit-deck-false-pass`: ogni blocco aggiunto **sotto** il contenuto principale va
+misurato contro il `top` minimo degli elementi `fixed` nella metà bassa del viewport — o
+più semplicemente si legge **anche** lo screenshot a 1280.
+
+**Dossier aggiornato e applicato** (migrazione `0026`, non tracciata, rigenerata da
+`poste-dossier.json`): 15 sezioni, la sezione dei fatti verificati passa a **15 voci** con i
+due livelli delle skill, la memoria spenta di serie ed Experience Context (con l'adozione
+interna citata e il vincolo Experience Manager); una **domanda aperta** in più nella sezione
+delle domande; e **corretta la riga sulla lingua** — «solo inglese» è del 31 agosto, e il 6
+ottobre l'italiano funziona in domanda e in risposta sull'organizzazione dimostrativa.

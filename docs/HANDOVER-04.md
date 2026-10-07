@@ -1,4 +1,4 @@
-# Handover — Parte 4 di 13
+# Handover — Parte 4 di 14
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -7,7 +7,7 @@
 
 <!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione, quindi è
      divisa in tre parti a confini ### — questa continua dal change log della Parte 3 e prosegue
-     nella Parte 13, che tiene la coda dal 2 set 2026 all'indietro -->
+     nella Parte 14, che tiene la coda dal 2 set 2026 all'indietro -->
 
 ### Change log — Experience Atelier: redesign sulle tre mosse (2026-09-14) → dettaglio §21.8 (HANDOVER-09)
 - **25 commit `21c5002`→`7fc78f7`, mergiati fast-forward in `main` il 14 set** (CI e Deploy verdi; `/atelier/`, `/gap/`, `/moves/` e gli stub verificati live). Cambia la tesi del deck, non le slide: «ogni opportunità ha la sua esperienza — viva fra i meeting, misurata, fatta con i prodotti che vende». `The multiplication` diventa **`/gap/`** («cosa vogliono i buyer oggi», quattro numeri datati) e `New frontiers` diventa **`/moves/`** (le tre mosse + «La simulazione», gated `simulation`); i vecchi slug restano come stub di redirect. Deck a **36 slide**, taglio sponsor `?s=asks` a **20**. Calendario rifatto: decisione entro il **31 ott 2026**, M1 fine gen 2027, M2 all'Adobe Summit 22–25 mar 2027 (**data da confermare su summit.adobe.com**), M3 fine giu 2027. Dentro il deck ci sono ora **due prove che funzionano davvero**, così le mosse si leggono «esiste già» e non «faremo»: la **telemetria del deck stesso** (migrazione `0014_deck_events.sql` applicata al DB remoto, `DeckTelemetry.astro` nel core, RPC `atelier_slide_stats`, fail-closed, `?telemetry=mock` per l'audit) e il **server MCP `atelier`** (`packages/mcp-atelier`, tre tool, `?lang=` imparato dal core, due nuove Agent Skill, trascrizione reale versionata). Propagato fuori: «Experience Cloud» → **«Adobe CX Enterprise»** in Agos, Console e UniCredit, lasciando intatte le citazioni datate (rinominare una fonte la falsifica). **Gate**: build 15 progetti, typecheck 0, lint 0, content-audit PASS, 67 test verdi, `audit:deck` **0 HARD** su 8 rotte × 3 viewport in **EN, FR e IT** (soft accettati: 50 / 56 / 52), 36 slide lette a 1920 in EN + 14 in FR e IT. Memoria `experience-atelier-deck`.
