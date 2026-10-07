@@ -347,10 +347,48 @@ Document Generation, AEM Forms — che è contrattualizzato dalla banca, **non**
 modulare. **Niente firma elettronica**: il gruppo è **Certification Authority accreditata AgID** ed
 emette i propri certificati — proporla sarebbe la frase che chiude la riunione.
 
-### 35.5 Le quattro slide dell'8 ottobre
+### 35.5 Le undici slide dell'8 ottobre (v3, 6 ott sera)
 
-`docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Dopo_la_firma.pptx`,
-generate da `output/build/build_slide_8ott.py` sul master Adobe 2026 svuotato. Copertina + 4, come
+`docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Dopo_la_firma_v3.pptx`
+(+ PDF e `speaker_notes_8ott_v3.md`), generate da `output/build/build_slide_8ott_v3.py`. La v1 a
+quattro slide resta accanto, non toccata.
+
+**Perché è cambiata.** Le quattro slide reggevano i tre temi ma non dicevano chi siamo né perché
+portiamo proprio quelli. Richiesta della sera del 6 ott: introdurre Adobe, dichiarare il perché, e
+mettere davanti **l'analisi da fuori** — informazioni pubbliche raccolte, la nostra comprensione,
+e da lì gli ambiti. Poi il **panel review** (§35.8) ha rifatto metà del resto.
+
+Copertina + nove + **una di appendice**:
+
+1. **Un'ora sul post-vendita** — l'intento, e che cosa resta fuori (acquisizione, core).
+2. **Adobe, per la parte che vi riguarda** — il documento, il contenuto, la misura. Niente
+   fatturato: tutte e cinque le personas lo davano da tagliare.
+3. **Quello che abbiamo letto** — bilancio 2025, semestre 2026, piano e cantieri, con le **fonti
+   pubbliche stampate in chiaro**. È la slide che il panel ha messo in «non toccare».
+4. **Tre cose che ne abbiamo capito** — chiuse dalla loro frase sull'architettura aperta.
+5. **Dove ci agganciamo, e che cosa non tocchiamo** — cosa resta master, nessuna scrittura verso
+   polizza e sinistri, come si rilascia. Ha preso il posto di «Dove ci innestiamo», che quattro
+   stakeholder su cinque davano da togliere.
+6. **I documenti che non si chiedono due volte** — parte dai loro cantieri, non dal nostro tema.
+7. **Perché hanno chiamato** — con i ventiquattro mesi nel corpo, non in nota.
+8. **I dati, prima che ce lo chiediate** — categorie particolari, che cosa si fissa per iscritto,
+   chi deve dire sì. Non c'era, ed è la ragione per cui il rischio stava a 2/5.
+9. **Novanta minuti su un processo** — la richiesta, che nella v1 viveva solo nelle note.
+10. *(appendice)* **Il prodotto giusto nel momento giusto** — fuori dal flusso: contraddiceva la
+    slide 1 e «proposte accettate senza intervento umano» apriva adeguatezza e governo del prodotto.
+
+**Ogni slide chiude su una domanda.** Ogni numero stampato è verificato alla **fonte primaria**,
+non al dossier: il bilancio consolidato 2025 scaricato e letto, il comunicato semestrale del
+**29 luglio 2026** (non 10 agosto: quello è il rilancio d'agenzia), i ricavi Adobe FY2025 dal
+comunicato del 10 dicembre 2025, l'HTML dei siti e dell'area clienti riletto il 6 ottobre.
+
+**Tolto «Adobe Confidential» dal piè di pagina**, che il master metteva su ogni slide — anche sulla
+v1. Su un deck che resta in mano al cliente era un difetto vero: `togli_confidential()` nel build
+riscrive la nota di copyright nei master e nei layout.
+
+### 35.5-bis Le quattro slide originali (v1, 6 ott mattina)
+
+`…_Dopo_la_firma.pptx`, da `build_slide_8ott.py`. Copertina + 4, come
 deciso nella riunione interna del pomeriggio del 6 ott: **slide «da tenere in tasca»**, una per
 tema, non un deck da scorrere.
 
@@ -382,7 +420,54 @@ l'artefatto approvato. È scritta nel dossier, non nascosta.
 
 ### 35.7 Che cosa resta aperto
 
-Due domande che non si chiudono da fonti pubbliche e vanno fatte in sala: **quanti moduli ha in
-media una polizza** dell'offerta modulare (è il numero che dimensiona la terza idea), e se la
-**lettura automatica dei documenti in ingresso** sia già coperta dentro il cantiere che hanno
-dichiarato. Più il **panel review**, che su queste quattro slide non è stato lanciato: voce P0.
+Domande che non si chiudono da fonti pubbliche e vanno fatte in sala: **quanti moduli ha in
+media una polizza** dell'offerta modulare, se la **lettura automatica dei documenti in ingresso**
+sia già coperta dentro il cantiere dichiarato, e **quanto del percorso autenticato** sia della
+compagnia e quanto dei canali della banca.
+
+**Le referenze vanno con il nome** — deciso dall'account la sera del 6 ottobre, contro la cautela
+iniziale del dossier: sulla slide del percorso c'è **Unipol**, su quella dei documenti
+**HUK-COBURG**. Il motivo è il rilievo più citato dei due giri di panel: una referenza che il
+cliente non può chiamare non è una referenza, e su un deck che gira verso il vertice vale meno di
+niente. La cautela sopravvive su **come** si cita, non **se**: Unipol è un concorrente diretto,
+quindi è la prova che in Italia si fa, mai un modello da copiare — sta nella nota del relatore.
+
+Da chiudere **prima dell'8**, con l'account team: **chi implementa in Italia e con quale partner**,
+più una compagnia assicurativa europea citabile oltre a HUK-COBURG; un **ordine di grandezza delle
+giornate-uomo** della prima messa in opera.
+
+### 35.8 Panel review — due giri, 6 ottobre
+
+Cinque personas cieche (il COO in sala, il suo capo, il suo riporto IT, il vertice danni e salute,
+l'architettura di gruppo) costruite da sole fonti pubbliche datate in `PANEL-PERSONAS.md`
+(git-ignorato), più un fact-checker che riverifica ogni claim alla fonte. Verdetti in
+`PANEL-VERDICT-2026-10-06-round1.md` e `…-round2.md`, JSON in `panel/`.
+
+| Asse | Giro 1 | Giro 2 |
+|---|---|---|
+| Credibilità dei fatti | 3,4 | **4,0** |
+| Rilevanza | 3,2 | **3,8** |
+| Chiarezza | 4,0 | 4,0 |
+| Rischio | **2,0** | **3,6** |
+| Azionabilità | 3,2 | **3,8** |
+
+Tutte e cinque accettano i novanta minuti in entrambi i giri; nel giro 1 nessuna accettava il
+deck (12 P0). Il salto sul rischio è la slide sui dati, che non esisteva.
+
+**Quello che ha trovato, e che l'audit non avrebbe mai trovato.** Un numero falso («i premi
+crescono a doppia cifra»: sono +9,4% e +8,5%) proprio sulla slide costruita per dimostrare di aver
+letto il loro bilancio. Una frase sbagliata sul loro conto economico («l'expense ratio è l'unica
+voce che dipende da come è organizzata l'azienda») corretta da tutti e cinque. Un'affermazione
+**falsa sui loro sistemi** — «dietro il login la raccolta va costruita» — smentita leggendo l'HTML
+dell'area clienti, che carica già lo stesso Tealium e la stessa report suite con `user_id` e stato
+di login. Una data sbagliata nella riga delle fonti (il comunicato semestrale è del 29 luglio, non
+del 10 agosto). E la contraddizione più grossa: il deck citava i loro cantieri a pagina quattro e
+tre slide dopo proponeva i documenti come terreno vergine.
+
+**L'arbitro del giro 2 è andato in timeout**; personas e fact-checker avevano già consegnato, e la
+sintesi del round 2 è scritta a mano sui loro output — sta scritto nel verdetto.
+
+**Lezione pro futuro.** Il fact-checker ha corretto anche i *nostri* materiali: l'indice composito
+di Unipol si chiama **Digital Experience Index**, non «Application Health Index» — nome che nei
+materiali del cliente non esiste. Corretti il dossier, il seed `0021` e
+`docs/Unipol/_build_unipol_cja_referenza_slide.py`.
