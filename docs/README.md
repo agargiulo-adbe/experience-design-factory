@@ -10,8 +10,8 @@ you don't need all of it for most tasks.
 - **memory `MEMORY.md`** (~0.6k tok) — index of auto-memories. Individual memory files load on recall (not all at once; ~9k total across 15 files).
 
 ## Read order (on demand, via the Read tool)
-1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-10-06**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe/≤1800 char per riga, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **11 parti**, da leggere in ordine (≈30k tok totali; ognuna sta in una singola `Read`). La mappa sezione→parte sta nel manifest e non si duplica qui; due cose vale la pena sapere prima di aprirlo:
-   - **Se devi decidere cosa fare, la Parte 2 basta**: contiene il **backlog P0 e P1**. Al 6 ott i P0 aperti sono dieci: il primo non riguarda una pagina ma il **repository** (nomi di referenti cliente dentro file tracciati, su repo pubblico), e il più urgente in agenda è il **panel review mancante sulle quattro slide dell'8 ottobre**. I **P2 e le note non azionabili** sono nella **Parte 10**: la §10 da sola aveva superato i 48 KB ed è stata spezzata ai sotto-livelli.
+1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-10-07**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe/≤1800 char per riga, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **12 parti**, da leggere in ordine (≈30k tok totali; ognuna sta in una singola `Read`). La mappa sezione→parte sta nel manifest e non si duplica qui; due cose vale la pena sapere prima di aprirlo:
+   - **Se devi decidere cosa fare, la Parte 2 basta**: contiene il **backlog P0 e P1**. Al 7 ott i P0 aperti sono dieci: il primo non riguarda una pagina ma il **repository** (nomi di referenti cliente dentro file tracciati, su repo pubblico), e il più urgente in agenda è il **panel review mancante sulle quattro slide dell'8 ottobre**. I **P2 e le note non azionabili** sono nella **Parte 10**: la §10 da sola aveva superato i 48 KB ed è stata spezzata ai sotto-livelli.
    - **Il motore dei dossier interni sta nella Parte 11 (§34)**, non fra i core trasversali: ha regole di contenuto e di ricerca proprie, e una skill (`skills/dossier/`) con il suo gate `pnpm audit:dossier`.
    - **Le parti sono ribilanciate quando una tocca il tetto**, quindi *la numerazione delle sezioni non segue sempre quella delle parti*: §15 è passata alla Parte 6, §23–25 alla Parte 9, §10.b alla Parte 10. Il manifest è sempre aggiornato; fidati di quello, non della memoria.
 
@@ -23,7 +23,7 @@ you don't need all of it for most tasks.
 For UniCredit specifics the freshest reference is the memory **`unicredit-personas-credibility`** (personas, copy/credibility rules, verified analytics naming) — HANDOVER §5 mirrors it.
 
 ## ⚠️ Do NOT read these wholesale (context / size hazard)
-- **`docs/*.pptx`** (up to ~2.8 GB) and **`docs/*.mp4`** — large binaries, **git-ignored (local‑only)**: they are **not in a fresh clone**. Never `Read` them (it will blow context / fail). They are Adobe source-of-truth decks (e.g. `Summit 2026 Analytics Track MEGA DECK.pptx`).
+- **`docs/*.pptx`** (up to ~2.8 GB) and **`docs/*.mp4` / `*.mov`** — large binaries, **git-ignored (local‑only)**: they are **not in a fresh clone**. Never `Read` them (it will blow context / fail). They are Adobe source-of-truth decks (e.g. `Summit 2026 Analytics Track MEGA DECK.pptx`).
   - The facts already extracted from them are distilled in **HANDOVER §5.3** and the memory above — use those.
   - If you must re-verify and the file is present locally, extract slide text selectively:
     ```bash

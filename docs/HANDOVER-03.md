@@ -1,9 +1,17 @@
-# Handover — Parte 3 di 11
+# Handover — Parte 3 di 12
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### Change log — Poste: il claim portante alla fonte, il video in locale, il dossier rinominato (2026-10-06/07) → §32.10, commit `2e307ea`
+
+- **Due dubbi interni, entrambi verificati alla fonte.** «Su Analytics c'è un solo caso d'uso» era vero fino al 2 ott (poi l'indice di Experience League ha aggiunto le skill `aa` e `aa-root-cause-analysis`); «passa dall'Analytics Source Connector dentro AEP» è falso — release note e Slack interno dicono server MCP Analytics, nessun dato spostato in AEP.
+- **Corretto un overclaim in cinque punti del deck** (`accendere`, `rispondere`, `capire`, `evolvere`, copertina) più l'etichetta di una fonte: su Adobe Analytics l'«apri in Analysis Workspace» non è nativo, è `upsertProject` col `workspaceLink`. Audit: 102 rotte, 0 HARD, soft invariato sulla baseline.
+- **`CLAUDE.md` e la memoria di progetto allineati**: davano per GA il 2/10 ciò che la release note dichiara in rollout con **GA TBD**.
+- **Il video demo non si mostra intero**: è una sessione di preparazione su dati CJA, con dentro il consiglio di Coworker su cosa non presentare. Due clip tagliate e verificate, player offline nella cartella git-ignorata, **nessun upload**.
+- **Dossier Poste rinominato** da «War Room» a «Dossier», §01 corretta e **§13 nuova** («perché Coworker e non il server MCP»), dalla call Luxottica × Adobe del 6 ott: migrazione `0020` applicata e verificata sul link condiviso.
 
 ### Change log — Unipol: il rinnovo di Target a rischio e la leva Coworker (2026-10-06, sera) → memoria `unipol-target-retention-coworker`
 

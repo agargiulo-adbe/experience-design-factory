@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-06**.
+> Documento di passaggio di consegne. Stato al **2026-10-07**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -31,6 +31,16 @@
 > `unipol-target-retention-coworker`). Da lì anche un fatto operativo: il connettore **Microsoft 365
 > è in sola lettura**, le bozze Outlook si creano via **AppleScript**.
 >
+> **7 ottobre, prima dell'incontro Poste.** Due dubbi sollevati in una call interna sono stati portati
+> alla fonte: su Adobe Analytics i casi d'uso di Coworker erano uno solo **fino al 2 ottobre** (poi
+> l'indice di Experience League ha aggiunto `aa` e `aa-root-cause-analysis`), e l'ipotesi che si
+> passasse dall'Analytics Source Connector dentro AEP è **falsa**. Da lì un overclaim corretto in
+> cinque punti del deck — su AA l'«apri in Analysis Workspace» **non è nativo** — con `CLAUDE.md` e la
+> memoria riallineati su «rollout dal 2 ott, GA **TBD**». Il video demo del cliente **non si mostra
+> intero** (è una sessione di preparazione su dati CJA): due clip tagliate, player offline, **nessun
+> upload**. Il dossier Poste è passato da «War Room» a **«Dossier»** e ha una §13 nuova sul perché
+> Coworker e non un server MCP collegato al proprio assistente. Tutto in **§32.10 (Parte 12)**.
+>
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
 > cliente dentro file tracciati su un repository pubblico, e il più urgente in agenda è **il panel
 > review mancante sulle quattro slide dell'8 ottobre** — fra due giorni.
@@ -49,7 +59,8 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
 - [Parte 7 — §26 FS Park × Trenitalia · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md).
-- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · §32 **Poste «Sei domande»**](./HANDOVER-08.md) — §32 apre con la correzione del claim portante (rollout, non GA).
+- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank](./HANDOVER-08.md).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni «Dopo la firma»**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, e il panel review a due giri sulle undici slide dell’8 ottobre.
+- [Parte 12 — §32 **Poste «Sei domande»**](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione; §32.10 è la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato, il video tenuto in locale, il dossier rinominato).
