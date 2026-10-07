@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { PAGE_REGISTRY as SLIDE_MAP_REGISTRY } from '../data/slides';
 import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
 import { href } from '@edf/core/utils/url.js';
 
@@ -10,66 +11,10 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 interface SlideEntry { id: string; label: string; }
 interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
 
-const PAGE_REGISTRY: PageEntry[] = [
-  { slug: 'index', label: 'Sei domande (00)', slides: [
-    { id: 'slide-cover',    label: 'Cover — Sei domande' },
-    { id: 'slide-numeri',   label: 'Un’app che è diventata il canale' },
-    { id: 'slide-pain',     label: 'Due criteri del 2024, ancora aperti' },
-    { id: 'slide-percorso', label: 'Il percorso — sei capitoli' },
-  ]},
-  { slug: 'accendere', label: 'Accendere (01)', slides: [
-    { id: 'slide-cover', label: 'Cover — Come lo accendo, e per chi?' },
-    { id: 'slide-cosa',  label: 'Un assistente che legge Adobe Analytics' },
-    { id: 'slide-passi', label: 'Quattro passi, nessun rilascio' },
-    { id: 'slide-chi',   label: 'Gli stessi permessi di Workspace' },
-    { id: 'slide-take',  label: 'Cosa vi portate a casa' },
-  ]},
-  { slug: 'rispondere', label: 'Rispondere (02)', slides: [
-    { id: 'slide-cover',     label: 'Cover — Cos’è successo ieri sulla SuperApp?' },
-    { id: 'slide-oggi',      label: 'Oggi — cinque passaggi in Workspace' },
-    { id: 'slide-chat',      label: 'Con Coworker — la stessa domanda' },
-    { id: 'slide-settimana', label: 'Il riepilogo del lunedì (skill)' },
-    { id: 'slide-take',      label: 'Cosa vi portate a casa' },
-  ]},
-  { slug: 'capire', label: 'Capire (03)', slides: [
-    { id: 'slide-cover',  label: 'Cover — Perché le Operazioni Veloci sono calate?' },
-    { id: 'slide-oggi',   label: 'Oggi — il perché per esclusione' },
-    { id: 'slide-chat',   label: 'Con Coworker — da cosa dipende il calo' },
-    { id: 'slide-canali', label: 'Sito e app — quota per piattaforma' },
-    { id: 'slide-take',   label: 'Cosa vi portate a casa' },
-  ]},
-  { slug: 'governare', label: 'Governare (04)', slides: [
-    { id: 'slide-cover',     label: 'Cover — Quali segmenti e suite non usa più nessuno?' },
-    { id: 'slide-oggi',      label: 'Oggi — sedici report suite, dieci residuali' },
-    { id: 'slide-chat',      label: 'Con Coworker — uso e duplicati' },
-    { id: 'slide-workspace', label: 'Costruiscimi il Workspace del lunedì' },
-    { id: 'slide-rilasci',   label: 'La verifica di un rilascio — requisiti caricati come skill' },
-    { id: 'slide-take',      label: 'Cosa vi portate a casa' },
-  ]},
-  { slug: 'proteggere', label: 'Proteggere (05)', slides: [
-    { id: 'slide-cover',  label: 'Cover — Dove finiscono i dati?' },
-    { id: 'slide-arch',   label: 'Tre pezzi, tutti Adobe, nessuna copia dei dati grezzi' },
-    { id: 'slide-nonfa',  label: 'Quattro cose che Coworker non fa' },
-    { id: 'slide-regole', label: 'Quattro regole prima e durante il primo mese' },
-    { id: 'slide-take',   label: 'Cosa vi portate a casa' },
-  ]},
-  { slug: 'in-azione', label: 'In azione (intermezzo)', slides: [
-    { id: 'slide-cover',            label: 'Cover — Due clip, un minuto in tutto' },
-    { id: 'slide-prima',            label: 'Prima di guardarle — tre cose dette prima' },
-    { id: 'slide-clip-riepilogo',   label: 'Clip 1 — Una domanda, un riepilogo' },
-    { id: 'slide-clip-documento',   label: 'Clip 2 — Il documento per il management' },
-    { id: 'slide-take',             label: 'Cosa resta delle clip' },
-  ]},
-  { slug: 'evolvere', label: 'Evolvere (06)', slides: [
-    { id: 'slide-cover',     label: 'Cover — E domani?' },
-    { id: 'slide-avvio',     label: 'Come si parte — piccolo, su una suite di prova' },
-    { id: 'slide-chi',       label: 'Chi coinvolgere — cinque ruoli' },
-    { id: 'slide-noi',       label: 'Da parte nostra — il programma di affiancamento' },
-    { id: 'slide-evolutive', label: 'Quattro evolutive, ognuna con chi decide' },
-    { id: 'slide-chiusura',  label: 'Chiusura — Le risposte erano già lì' },
-    { id: 'slide-signature', label: 'La firma — Adobe × Poste Italiane' },
-  ]},
-];
+// La mappa delle slide vive in un posto solo: `src/data/slides.ts`, letta anche
+// dall'anteprima rapida. Teneva due copie e avevano già divergito.
+const PAGE_REGISTRY: PageEntry[] = SLIDE_MAP_REGISTRY;
+
 
 interface SolutionEntry {
   id: string; name: string; shortName: string;

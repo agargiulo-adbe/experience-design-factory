@@ -1,0 +1,393 @@
+---
+/**
+ * Anteprima rapida — la mappa del deck, per chi non l'ha mai visto.
+ *
+ * Il deck è otto rotte e quaranta slide, e da dentro non si vede: chi riceve il
+ * link atterra sulla prima slide e non sa che cosa c'è. Questa vista mostra
+ * tutto insieme, con il titolo vero di ogni slide, e porta esattamente dove si
+ * vuole andare — anche a metà di un altro capitolo.
+ *
+ * Si apre con il pulsante nel chrome o con «O», si filtra scrivendo, si naviga
+ * con le frecce, si salta con Invio. Il salto fra rotte passa da
+ * sessionStorage e dalla navigazione SPA del deck, così non si perde lo
+ * schermo intero.
+ *
+ * Vive fuori da `[data-slide]`: è chrome, non entra nel conteggio slide né
+ * nelle misure di `audit:deck`.
+ */
+import { SLIDE_MAP } from '../data/slides';
+import { CHAPTERS } from '../data/chapters';
+import { href } from '@edf/core/utils/url.js';
+
+const base = import.meta.env.BASE_URL;
+const chapterBySlug = new Map(CHAPTERS.map((c) => [c.slug, c]));
+
+const sections = SLIDE_MAP.map((p) => {
+  const ch = chapterBySlug.get(p.slug);
+  return {
+    slug: p.slug,
+    href: href(base, p.slug === 'index' ? '/' : '/' + p.slug),
+    num: ch ? ch.num : '',
+    name: ch ? ch.label : { it: 'Apertura', en: 'Opening' },
+    question: ch ? ch.question : { it: 'Di che cosa parliamo', en: 'What this is about' },
+    slides: p.slides,
+  };
+});
+const total = sections.reduce((n, s) => n + s.slides.length, 0);
+---
+
+<button type="button" class="deck-btn sd-ov-open" data-sd-overview-open aria-haspopup="dialog" aria-expanded="false">
+  <span class="sr-only" data-lang-it>Apri l’indice del deck</span><span class="sr-only" data-lang-en>Open the deck index</span>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.4" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<div class="sd-ov" data-sd-overview hidden role="dialog" aria-modal="true" aria-label="Indice del deck">
+  <div class="sd-ov-scrim" data-sd-overview-close></div>
+
+  <div class="sd-ov-panel" role="document">
+    <header class="sd-ov-head">
+      <div class="sd-ov-head-l">
+        <p class="sd-ov-title"><span data-lang-it>Tutto il deck, in una pagina</span><span data-lang-en>The whole deck, on one page</span></p>
+        <p class="sd-ov-sub">
+          <span data-lang-it>{total} slide in {sections.length} capitoli. Scrivete per cercare, Invio per andarci.</span>
+          <span data-lang-en>{total} slides across {sections.length} chapters. Type to search, Enter to jump.</span>
+        </p>
+      </div>
+      <div class="sd-ov-head-r">
+        <label class="sd-ov-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21" stroke-linecap="round"/>
+          </svg>
+          <input type="search" data-sd-overview-search autocomplete="off" spellcheck="false" />
+          <span class="sd-ov-ph" aria-hidden="true"><span data-lang-it>costo, permessi, clip…</span><span data-lang-en>cost, permissions, clips…</span></span>
+        </label>
+        <button type="button" class="sd-ov-x" data-sd-overview-close>
+          <span class="sr-only" data-lang-it>Chiudi</span><span class="sr-only" data-lang-en>Close</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="sd-ov-body" data-sd-overview-body>
+      <div class="sd-ov-grid">
+        {sections.map((s) => (
+          <section class="sd-ov-ch" data-sd-ch={s.slug}>
+            <p class="sd-ov-ch-h">
+              {s.num && <span class="sd-ov-ch-n">{s.num}</span>}
+              <span class="sd-ov-ch-name"><span data-lang-it>{s.name.it}</span><span data-lang-en>{s.name.en}</span></span>
+            </p>
+            <p class="sd-ov-ch-q"><span data-lang-it>{s.question.it}</span><span data-lang-en>{s.question.en}</span></p>
+            <ul class="sd-ov-list">
+              {s.slides.map((sl, i) => (
+                <li>
+                  <button
+                    type="button"
+                    class="sd-ov-item"
+                    data-sd-go
+                    data-href={s.href}
+                    data-slug={s.slug}
+                    data-i={i}
+                    data-q={`${sl.t.it} ${sl.t.en} ${sl.k} ${s.name.it} ${s.name.en} ${s.question.it} ${s.question.en}`.toLowerCase()}
+                  >
+                    <span class="sd-ov-item-n">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="sd-ov-item-t"><span data-lang-it>{sl.t.it}</span><span data-lang-en>{sl.t.en}</span></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <p class="sd-ov-empty" data-sd-overview-empty hidden>
+        <span data-lang-it>Nessuna slide con queste parole.</span><span data-lang-en>No slide matches those words.</span>
+      </p>
+    </div>
+
+    <footer class="sd-ov-foot">
+      <span class="sd-ov-keys"><kbd>↑</kbd><kbd>↓</kbd> <span data-lang-it>scorrere</span><span data-lang-en>move</span></span>
+      <span class="sd-ov-keys"><kbd>↵</kbd> <span data-lang-it>andare</span><span data-lang-en>go</span></span>
+      <span class="sd-ov-keys"><kbd>Esc</kbd> <span data-lang-it>chiudere</span><span data-lang-en>close</span></span>
+      <span class="sd-ov-keys sd-ov-keys--end"><kbd>O</kbd> <span data-lang-it>riaprire da qualsiasi slide</span><span data-lang-en>reopen from any slide</span></span>
+    </footer>
+  </div>
+</div>
+
+<style is:global>
+  /* ── Anteprima rapida ───────────────────────────────────────────────────
+     Superficie propria, scura: aprirla è «uscire» dal deck per un momento.
+     Tutto in fixed, niente dentro il flusso delle slide.                   */
+  .sd-ov { position: fixed; inset: 0; z-index: 90; display: flex; align-items: stretch; justify-content: center; }
+  .sd-ov[hidden] { display: none !important; }
+  .sd-ov-scrim { position: absolute; inset: 0; background: rgba(10, 12, 16, 0.72); backdrop-filter: blur(3px); }
+
+  .sd-ov-panel {
+    position: relative; display: flex; flex-direction: column;
+    width: 100%; max-width: 92rem; margin: clamp(0.75rem, 3vh, 2.25rem);
+    background: #12151c; color: #eef1f6;
+    border: 1px solid rgba(238, 241, 246, 0.12); border-radius: 16px;
+    box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+  }
+  /* Un solo momento d'ingresso, in uscita esponenziale da uno stato già visibile. */
+  .sd-ov[data-in] .sd-ov-scrim { animation: sd-ov-fade 0.22s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .sd-ov[data-in] .sd-ov-panel { animation: sd-ov-rise 0.34s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes sd-ov-fade { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes sd-ov-rise { from { opacity: 0; transform: translateY(10px) scale(0.985); filter: blur(6px) } to { opacity: 1; transform: none; filter: none } }
+  @media (prefers-reduced-motion: reduce) {
+    .sd-ov[data-in] .sd-ov-scrim, .sd-ov[data-in] .sd-ov-panel { animation: none; }
+  }
+
+  .sd-ov-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+    padding: 1.15rem clamp(1rem, 2.4vw, 1.9rem); border-bottom: 1px solid rgba(238, 241, 246, 0.1); }
+  .sd-ov-title { font-family: var(--font-display); font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; color: #fff; }
+  .sd-ov-sub { font-size: 0.86rem; line-height: 1.5; color: #9fb0c6; margin-top: 0.15rem; }
+  .sd-ov-head-r { display: flex; align-items: center; gap: 0.6rem; }
+
+  .sd-ov-search { position: relative; display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(238, 241, 246, 0.07); border: 1px solid rgba(238, 241, 246, 0.14);
+    border-radius: 9px; padding: 0.42rem 0.7rem; color: #9fb0c6; min-width: min(20rem, 56vw);
+    transition: border-color 0.15s ease, background 0.15s ease; }
+  .sd-ov-search:focus-within { border-color: var(--color-giallo); background: rgba(238, 241, 246, 0.1); }
+  .sd-ov-search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; color: #eef1f6; font: inherit; font-size: 0.9rem; }
+  .sd-ov-search input::-webkit-search-cancel-button { filter: invert(1) opacity(0.5); }
+  .sd-ov-ph { position: absolute; left: 2.1rem; font-size: 0.9rem; color: #7b8ca4; pointer-events: none; }
+  .sd-ov-search input:not(:placeholder-shown) ~ .sd-ov-ph,
+  .sd-ov-search input[data-filled] ~ .sd-ov-ph { display: none; }
+
+  .sd-ov-x { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 8px;
+    border: 1px solid rgba(238, 241, 246, 0.14); background: none; color: #9fb0c6; cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease; }
+  .sd-ov-x:hover { color: #fff; border-color: rgba(238, 241, 246, 0.34); }
+
+  .sd-ov-body { flex: 1; min-height: 0; overflow-y: auto; padding: clamp(0.9rem, 2.2vh, 1.5rem) clamp(1rem, 2.4vw, 1.9rem) 1.4rem; scrollbar-width: thin; scrollbar-color: rgba(238,241,246,0.22) transparent; }
+  .sd-ov-body::-webkit-scrollbar { width: 10px; }
+  .sd-ov-body::-webkit-scrollbar-thumb { background: rgba(238, 241, 246, 0.2); border-radius: 99px; border: 3px solid #12151c; }
+  .sd-ov-body::-webkit-scrollbar-track { background: transparent; }
+
+  .sd-ov-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: clamp(1rem, 2vw, 1.9rem) clamp(1rem, 2vw, 1.6rem); align-items: start; }
+  .sd-ov-ch[hidden] { display: none; }
+  .sd-ov-ch-h { display: flex; align-items: baseline; gap: 0.5rem; }
+  .sd-ov-ch-n { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--color-giallo); font-variant-numeric: tabular-nums; }
+  .sd-ov-ch-name { font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: #fff; }
+  .sd-ov-ch-q { font-size: 0.8rem; line-height: 1.45; color: #8da0b8; margin: 0.1rem 0 0.6rem; }
+
+  .sd-ov-list { display: flex; flex-direction: column; gap: 1px; }
+  .sd-ov-item { display: flex; align-items: baseline; gap: 0.55rem; width: 100%; text-align: left;
+    padding: 0.42rem 0.55rem; border: 0; border-radius: 7px; background: none; color: #d6dfeb;
+    font: inherit; font-size: 0.875rem; line-height: 1.4; cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease; }
+  .sd-ov-item[hidden] { display: none; }
+  .sd-ov-item-n { font-size: 0.7rem; color: #6d7f98; font-variant-numeric: tabular-nums; flex: none; }
+  .sd-ov-item:hover { background: rgba(238, 241, 246, 0.08); color: #fff; }
+  .sd-ov-item:focus-visible { outline: 2px solid var(--color-giallo); outline-offset: -2px; }
+  .sd-ov-item[data-cur] { background: rgba(238, 220, 0, 0.14); color: #fff; }
+  .sd-ov-item[data-cur] .sd-ov-item-n { color: var(--color-giallo); }
+  .sd-ov-item[data-seen]:not([data-cur]) { color: #93a4bb; }
+  .sd-ov-item mark { background: rgba(238, 220, 0, 0.28); color: #fff; border-radius: 2px; }
+
+  .sd-ov-empty { padding: 2.5rem 0.5rem; text-align: center; color: #8da0b8; font-size: 0.92rem; }
+  .sd-ov-empty[hidden] { display: none; }
+
+  .sd-ov-foot { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap;
+    padding: 0.7rem clamp(1rem, 2.4vw, 1.9rem); border-top: 1px solid rgba(238, 241, 246, 0.1);
+    font-size: 0.74rem; color: #7b8ca4; }
+  .sd-ov-keys { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .sd-ov-keys--end { margin-left: auto; }
+  .sd-ov-foot kbd { font: inherit; font-size: 0.7rem; padding: 0.1rem 0.34rem; border-radius: 4px;
+    background: rgba(238, 241, 246, 0.1); border: 1px solid rgba(238, 241, 246, 0.16); color: #c3d0e0; }
+
+  .sd-ov ::selection { background: var(--color-giallo); color: #12151c; }
+
+  @media (max-width: 640px) {
+    .sd-ov-panel { margin: 0; border-radius: 0; border: 0; }
+    .sd-ov-head { align-items: stretch; flex-direction: column; gap: 0.75rem; }
+    .sd-ov-head-r { width: 100%; }
+    .sd-ov-search { flex: 1; min-width: 0; }
+    .sd-ov-keys--end { display: none; }
+  }
+</style>
+
+<script>
+  (function () {
+    const KEY = 'sd:overview-goto';
+    const SEEN = 'sd:overview-seen';
+
+    function q<T extends Element>(s: string, r: ParentNode = document) { return r.querySelector(s) as T | null; }
+    function all<T extends Element>(s: string, r: ParentNode = document) { return Array.from(r.querySelectorAll(s)) as T[]; }
+
+    function slugOf() {
+      const p = window.location.pathname.replace(/\/+$/, '').split('/');
+      const last = p[p.length - 1] || '';
+      return last && last !== 'poste-sei-domande' ? last : 'index';
+    }
+
+    function seen(): Record<string, number> {
+      try { return JSON.parse(sessionStorage.getItem(SEEN) || '{}'); } catch { return {}; }
+    }
+    function markSeen(slug: string, i: number) {
+      try {
+        const s = seen();
+        s[slug] = Math.max(s[slug] ?? -1, i);
+        sessionStorage.setItem(SEEN, JSON.stringify(s));
+      } catch { /* sessionStorage può essere spento: la vista funziona lo stesso */ }
+    }
+
+    function boot() {
+      const root = q<HTMLElement>('[data-sd-overview]');
+      if (!root) return;
+      const body = q<HTMLElement>('[data-sd-overview-body]', root);
+      const search = q<HTMLInputElement>('[data-sd-overview-search]', root);
+      const empty = q<HTMLElement>('[data-sd-overview-empty]', root);
+      const items = all<HTMLButtonElement>('[data-sd-go]', root);
+      const opener = q<HTMLButtonElement>('[data-sd-overview-open]');
+
+      // Il pulsante nasce fuori e si innesta nel chrome del deck, accanto a
+      // schermo intero: così non serve toccare il motore né le otto pagine, e
+      // ogni rotta lo eredita alla navigazione SPA.
+      const controls = q<HTMLElement>('[data-deck-controls]');
+      if (opener && controls && opener.parentElement !== controls) controls.appendChild(opener);
+
+      // ── stato: dove siamo, dove siamo già stati ────────────────────────
+      function paint() {
+        const cur = slugOf();
+        const deck = (window as any).__edfDeck;
+        const idx = deck && typeof deck.index === 'number' ? deck.index : 0;
+        const been = seen();
+        items.forEach((b) => {
+          const s = b.dataset.slug!, i = Number(b.dataset.i);
+          b.toggleAttribute('data-cur', s === cur && i === idx);
+          b.toggleAttribute('data-seen', (been[s] ?? -1) >= i);
+        });
+      }
+
+      // ── filtro ─────────────────────────────────────────────────────────
+      function filter() {
+        const term = (search?.value || '').trim().toLowerCase();
+        search?.toggleAttribute('data-filled', term.length > 0);
+        let shown = 0;
+        items.forEach((b) => {
+          const hit = !term || (b.dataset.q || '').includes(term);
+          b.hidden = !hit;
+          if (hit) shown++;
+        });
+        all<HTMLElement>('[data-sd-ch]', root).forEach((sec) => {
+          sec.hidden = !all<HTMLButtonElement>('[data-sd-go]', sec).some((b) => !b.hidden);
+        });
+        if (empty) empty.hidden = shown > 0;
+      }
+
+      function visible() { return items.filter((b) => !b.hidden); }
+
+      function focusStep(d: number) {
+        const v = visible();
+        if (!v.length) return;
+        const at = v.indexOf(document.activeElement as HTMLButtonElement);
+        const next = at < 0 ? (d > 0 ? 0 : v.length - 1) : (at + d + v.length) % v.length;
+        v[next].focus({ preventScroll: true });
+        v[next].scrollIntoView({ block: 'nearest' });
+      }
+
+      // ── apertura / chiusura ────────────────────────────────────────────
+      let lastFocus: HTMLElement | null = null;
+      function open() {
+        if (!root.hidden) return;
+        lastFocus = document.activeElement as HTMLElement;
+        paint(); filter();
+        root.hidden = false;
+        root.setAttribute('data-in', '');
+        opener?.setAttribute('aria-expanded', 'true');
+        document.documentElement.style.overflow = 'hidden';
+        // il deck non deve reagire alle frecce mentre l'indice è aperto
+        q<HTMLElement>('[data-deck]')?.setAttribute('data-deck-lock', 'overview');
+        requestAnimationFrame(() => {
+          const cur = root.querySelector<HTMLElement>('[data-cur]');
+          (cur || search)?.focus({ preventScroll: true });
+          cur?.scrollIntoView({ block: 'center' });
+        });
+      }
+      function close() {
+        if (root.hidden) return;
+        root.hidden = true;
+        root.removeAttribute('data-in');
+        opener?.setAttribute('aria-expanded', 'false');
+        document.documentElement.style.overflow = '';
+        const deck = q<HTMLElement>('[data-deck]');
+        if (deck?.getAttribute('data-deck-lock') === 'overview') deck.removeAttribute('data-deck-lock');
+        lastFocus?.focus?.({ preventScroll: true });
+      }
+
+      // ── il salto ───────────────────────────────────────────────────────
+      function go(b: HTMLButtonElement) {
+        const slug = b.dataset.slug!, i = Number(b.dataset.i), href = b.dataset.href!;
+        markSeen(slug, i);
+        close();
+        if (slug === slugOf()) {
+          (window as any).__edfDeck?.goTo?.(i);
+          return;
+        }
+        try { sessionStorage.setItem(KEY, JSON.stringify({ slug, i })); } catch { /* vedi sopra */ }
+        const nav = (window as any).__edfNavigate;
+        if (nav) nav(href); else window.location.assign(href);
+      }
+
+      opener?.addEventListener('click', open);
+      all('[data-sd-overview-close]', root).forEach((el) => el.addEventListener('click', close));
+      search?.addEventListener('input', filter);
+      items.forEach((b) => b.addEventListener('click', () => go(b)));
+
+      root.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); focusStep(1); return; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); focusStep(-1); return; }
+        if (e.key === 'Enter' && (document.activeElement as HTMLElement)?.matches('[data-sd-go]')) {
+          e.preventDefault(); go(document.activeElement as HTMLButtonElement); return;
+        }
+        if (e.key === 'Enter' && document.activeElement === search) {
+          const v = visible(); if (v.length) { e.preventDefault(); go(v[0]); }
+        }
+      });
+
+      document.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (!root.hidden) return;
+        const t = e.target as HTMLElement;
+        if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+        if (t && t.isContentEditable) return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        if (e.key === 'o' || e.key === 'O') { e.preventDefault(); open(); }
+      });
+
+      document.addEventListener('deck:change', (e: any) => {
+        const slug = slugOf(), i = e?.detail?.index ?? 0;
+        markSeen(slug, i);
+        if (!root.hidden) paint();
+      });
+
+      // ── arrivo da un salto fra rotte ───────────────────────────────────
+      let target: { slug: string; i: number } | null = null;
+      try {
+        const raw = sessionStorage.getItem(KEY);
+        if (raw) { target = JSON.parse(raw); sessionStorage.removeItem(KEY); }
+      } catch { /* niente salto, si resta sulla prima slide */ }
+      if (target && target.slug === slugOf()) {
+        const want = target.i;
+        let tries = 0;
+        const land = () => {
+          const deck = (window as any).__edfDeck;
+          if (deck?.goTo) { deck.goTo(want); markSeen(slugOf(), want); return; }
+          if (tries++ < 40) requestAnimationFrame(land);
+        };
+        requestAnimationFrame(land);
+      }
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
