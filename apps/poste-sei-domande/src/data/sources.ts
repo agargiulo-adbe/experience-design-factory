@@ -70,6 +70,11 @@ export const SOURCES: Record<string, Source> = {
     label: { it: 'Poste Italiane, Manifesto per un uso etico e responsabile dell’IA', en: 'Poste Italiane, Manifesto for an ethical and responsible use of AI' },
     url: 'https://www.posteitaliane.it/it/manifesto-intelligenza-artificiale.html',
   },
+  aaProductDesc: {
+    id: 'aaProductDesc',
+    label: { it: 'Adobe, Analytics: Product Description (Select — richieste di report al mese)', en: 'Adobe, Analytics Product Description (Select — monthly report requests)' },
+    url: 'https://helpx.adobe.com/legal/product-descriptions/adobe-analytics.html',
+  },
   aaApi14: {
     id: 'aaApi14',
     label: { it: 'Adobe Analytics, fine vita API 1.4 (31 ago 2026)', en: 'Adobe Analytics, API 1.4 end of life (31 Aug 2026)' },
