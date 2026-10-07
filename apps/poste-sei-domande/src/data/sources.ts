@@ -70,6 +70,31 @@ export const SOURCES: Record<string, Source> = {
     label: { it: 'Poste Italiane, Manifesto per un uso etico e responsabile dell’IA', en: 'Poste Italiane, Manifesto for an ethical and responsible use of AI' },
     url: 'https://www.posteitaliane.it/it/manifesto-intelligenza-artificiale.html',
   },
+  coworkerProductDesc: {
+    id: 'coworkerProductDesc',
+    label: { it: 'Adobe, CX Enterprise Coworker: Product Description (in vigore dal 30 lug 2026)', en: 'Adobe, CX Enterprise Coworker Product Description (effective 30 Jul 2026)' },
+    url: 'https://helpx.adobe.com/legal/product-descriptions/adobe-cx-enterprise-coworker.html',
+  },
+  genaiTerms: {
+    id: 'genaiTerms',
+    label: { it: 'Adobe Legal, termini per le funzionalità di IA generativa', en: 'Adobe Legal, Generative AI Features terms' },
+    url: 'https://www.adobe.com/legal/terms/enterprise-licensing/genai-ww.html',
+  },
+  coworkerGateway: {
+    id: 'coworkerGateway',
+    label: { it: 'Experience League, CX Coworker Gateway: strumenti per prodotto e disponibilità', en: 'Experience League, CX Coworker Gateway: product tools and availability' },
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/mcp/mcp-get-started/access',
+  },
+  coworkerAnalytics: {
+    id: 'coworkerAnalytics',
+    label: { it: 'Experience League, analizzare i dati CX Analytics con Coworker Chat (agg. 2 ott 2026)', en: 'Experience League, analyse CX Analytics data with Coworker Chat (upd. 2 Oct 2026)' },
+    url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/data-insights/analytics-chat',
+  },
+  aemMcp: {
+    id: 'aemMcp',
+    label: { it: 'Experience League, AEM MCP Server (agg. 6 ott 2026)', en: 'Experience League, AEM MCP Server (upd. 6 Oct 2026)' },
+    url: 'https://experienceleague.adobe.com/en/docs/experience-manager-learn/cloud-service/ai/mcp-servers/overview',
+  },
   aaProductDesc: {
     id: 'aaProductDesc',
     label: { it: 'Adobe, Analytics: Product Description (Select — richieste di report al mese)', en: 'Adobe, Analytics Product Description (Select — monthly report requests)' },

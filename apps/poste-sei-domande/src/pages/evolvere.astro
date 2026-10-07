@@ -9,8 +9,10 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug } from '../data/chapters';
 import { SOURCES } from '../data/sources';
 import bgCover from '../assets/generated/bg/notte-6.webp';
+import bgAvvio from '../assets/generated/bg/carta-1.webp';
+import bgChi from '../assets/generated/bg/carta-2.webp';
+import bgNoi from '../assets/generated/bg/carta-3.webp';
 import bgEvo from '../assets/generated/bg/carta-4.webp';
-import bgPilota from '../assets/generated/bg/carta-1.webp';
 import bgChiusura from '../assets/generated/bg/notte-2.webp';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 // Clip Firefly Video Model (5 s, ricucita): MP4 sul Release `media`, poster in public/media.
@@ -21,38 +23,143 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// Come si parte. Nessun numero di settimana: questa è una prima sessione di
+// introduzione, e il calendario lo detta l'istruttoria che apre Poste.
+const avvio = [
+  {
+    t: { it: 'Si accende', en: 'Switch it on' },
+    b: {
+      it: 'La richiesta di attivazione ad Adobe la facciamo noi. Voi accendete <code>MCP Access</code> su un profilo di prodotto dedicato, con poche persone nominate. Prime domande sulla suite di sviluppo della SuperApp, quella che avete già.',
+      en: 'We file the enablement request with Adobe. You switch on <code>MCP Access</code> on a dedicated product profile, with a few named people. First questions on the SuperApp development suite, the one you already have.',
+    },
+  },
+  {
+    t: { it: 'Si misura il prima', en: 'Measure the before' },
+    b: {
+      it: 'Il team conta le domande che riceve e il tempo con cui risponde oggi. È la riga più noiosa e la più importante: senza, alla fine la decisione torna a essere un’impressione.',
+      en: 'The team counts the questions it receives and how long it takes to answer today. The dullest line and the most important: without it, the decision at the end goes back to being an impression.',
+    },
+  },
+  {
+    t: { it: 'Si prova sulle vostre domande', en: 'Try it on your questions' },
+    b: {
+      it: 'Le domande di questo deck sulla suite di produzione, più le vostre. Ogni risposta si riapre in Analysis Workspace e si confronta con il report certificato: se i numeri tornano, il metodo regge.',
+      en: 'The questions in this deck on the production suite, plus yours. Every answer is reopened in Analysis Workspace and checked against the certified report: if the numbers match, the method holds.',
+    },
+  },
+  {
+    t: { it: 'Si decide', en: 'Decide' },
+    b: {
+      it: 'Tempo alla risposta contro il prima, risposte che tornano, domande chiuse senza il team. Se i numeri ci sono si apre a chi fa campagne, con due skill scritte da voi. Se non ci sono, ci si ferma.',
+      en: 'Time to answer against the before, answers that match, questions closed without the team. If the numbers are there, open it to the campaign side with two skills written by you. If they are not, stop.',
+    },
+  },
+];
+
+// Chi serve al tavolo. L'ordine non è gerarchico: è l'ordine in cui entrano.
+const chi = [
+  {
+    k: { it: 'Il team di monitoraggio', en: 'The monitoring team' },
+    b: {
+      it: 'Possiede le report suite e le convenzioni con cui si leggono. Prova le domande per primo e scrive le prime skill: il suo mestiere, messo per iscritto una volta sola.',
+      en: 'Owns the report suites and the conventions for reading them. Tries the questions first and writes the first skills: its craft, written down once.',
+    },
+  },
+  {
+    k: { it: 'L’Admin di Adobe Analytics', en: 'The Adobe Analytics Admin' },
+    b: {
+      it: 'Dà <code>MCP Access</code> sul profilo di prodotto e decide quali report suite si vedono. È il freno a mano, e resta in mano vostra per tutta la prova.',
+      en: 'Grants <code>MCP Access</code> on the product profile and decides which report suites are visible. The handbrake, and it stays in your hands throughout.',
+    },
+  },
+  {
+    k: { it: 'Chi fa campagne digitali', en: 'The digital campaign side' },
+    b: {
+      it: 'Porta le domande vere, quelle che oggi arrivano al monitoraggio per mail. Entra dopo la prova, con una domanda scritta insieme: così la prima volta funziona.',
+      en: 'Brings the real questions, the ones that reach monitoring by email today. Joins after the trial, with a question written together: that way the first time works.',
+    },
+  },
+  {
+    k: { it: 'Comitato IA, DPO e sicurezza', en: 'AI Committee, DPO and security' },
+    b: {
+      it: 'L’istruttoria è vostra e la aprite voi, con i vostri tempi e la vostra forma. Noi rispondiamo per iscritto alle domande tecniche che ci girate, con la fonte accanto.',
+      en: 'The assessment is yours and you open it, in your own time and your own form. We answer in writing the technical questions you send us, with the source next to each.',
+    },
+  },
+  {
+    k: { it: 'Adobe', en: 'Adobe' },
+    b: {
+      it: 'Un referente di prodotto e un punto fisso ogni settimana, dentro il programma di affiancamento. Più la demo sull’organizzazione dimostrativa, prima di toccare la vostra.',
+      en: 'A product contact and a fixed weekly slot, inside the high-touch programme. Plus the demo on Adobe’s demo organisation, before touching yours.',
+    },
+  },
+];
+
+// Il programma di affiancamento (high touch). Oggi è attivo su CJA; per Poste
+// lo chiediamo su Adobe Analytics: si apre su richiesta, non è automatico.
+const noi = [
+  {
+    k: { it: 'Che cosa mettiamo', en: 'What we bring' },
+    b: {
+      it: 'Un referente di prodotto Adobe dentro il programma, le prime skill scritte insieme a voi, la demo sull’organizzazione dimostrativa prima di toccare la vostra. E le domande che non funzionano tornano al team di prodotto, non restano nel vostro backlog.',
+      en: 'An Adobe product contact inside the programme, the first skills written together with you, the demo on Adobe’s demo organisation before touching yours. And the questions that do not work go back to the product team, instead of sitting in your backlog.',
+    },
+  },
+  {
+    k: { it: 'Che cosa chiediamo', en: 'What we ask' },
+    b: {
+      it: 'Due persone e un’ora a settimana, per il tempo della prova. E domande vere: il programma vive di quelle, se no diventa una demo lunga.',
+      en: 'Two people and one hour a week, for the length of the trial. And real questions: the programme runs on those, otherwise it becomes a long demo.',
+    },
+  },
+  {
+    k: { it: 'Che cosa costa', en: 'What it costs' },
+    b: {
+      it: 'Il programma è lato Adobe. Coworker si misura in crediti di IA e la prova parte su quelli che mette Adobe; il modello commerciale è una conversazione a parte, da fare prima di decidere.',
+      en: 'The programme sits on Adobe’s side. Coworker is metered in AI Credits and the trial runs on the ones Adobe provides; the commercial model is a separate conversation, to have before deciding.',
+    },
+  },
+];
+
+// Dove può andare. Il perimetro di oggi è uno solo; il perimetro possibile
+// si dice, perché la domanda arriva comunque — ma con chi decide accanto.
 const evolutive = [
   {
     k: { it: 'Il Workspace che si scrive da sé', en: 'The Workspace that writes itself' },
     tag: { it: 'Vostra · in rollout', en: 'Yours · rolling out' },
-    b: { it: 'Un’analisi fatta in chat diventa un progetto in Analysis Workspace, da riprendere a mano. Le skill del team generano i progetti ricorrenti. È la parte di Coworker più vicina al vostro lavoro, ed è tutta dentro Analytics.', en: 'An analysis done in chat becomes an Analysis Workspace project to pick up by hand. The team’s skills generate the recurring projects. It is the part of Coworker closest to your daily work, and it all sits inside Analytics.' },
+    b: {
+      it: 'Un’analisi fatta in chat diventa un progetto in Analysis Workspace, da riprendere a mano. Le skill del team generano i progetti ricorrenti. È la parte di Coworker più vicina al vostro lavoro, ed è tutta dentro Analytics.',
+      en: 'An analysis done in chat becomes an Analysis Workspace project to pick up by hand. The team’s skills generate the recurring projects. It is the part of Coworker closest to your daily work, and it all sits inside Analytics.',
+    },
     tone: 'giallo',
   },
   {
     k: { it: 'Le domande del business', en: 'The business questions' },
     tag: { it: 'Vostra, con chi fa campagne', en: 'Yours, with the campaign side' },
-    b: { it: 'Operazioni concluse e abbandonate per prodotto dalle pagine di conferma già tracciate (bollettino, ricarica, bonifico, postagiro), ricariche dopo una push contro un martedì senza (se l’apertura della push è tracciata), dove si perde il cliente fra la sezione e la conferma. Sono le domande che il business fa a voi: dalla settimana cinque, con una skill scritta insieme, le può fare a Coworker.', en: 'Operations completed and abandoned by product from the confirmation pages already tracked (payment slip, top-up, transfer, postagiro), top-ups after a push against a Tuesday without one (if the push open is tracked), where the customer is lost between the section and the confirmation. These are the questions the business asks you: from week five, with a skill written together, it can ask Coworker.' },
+    b: {
+      it: 'Operazioni concluse e abbandonate per prodotto dalle pagine di conferma già tracciate (bollettino, ricarica, bonifico, postagiro), ricariche dopo una push contro un martedì senza (se l’apertura della push è tracciata), dove si perde il cliente fra la sezione e la conferma. Sono le domande che il business fa a voi: dopo la prova, con una skill scritta insieme, le può fare a Coworker.',
+      en: 'Operations completed and abandoned by product from the confirmation pages already tracked (payment slip, top-up, transfer, postagiro), top-ups after a push against a Tuesday without one (if the push open is tracked), where the customer is lost between the section and the confirmation. These are the questions the business asks you: after the trial, with a skill written together, it can ask Coworker.',
+    },
     tone: '',
   },
   {
-    k: { it: 'Altre integrazioni di Coworker', en: 'Other Coworker integrations' },
-    tag: { it: 'Fuori da questo pilota', en: 'Outside this pilot' },
-    b: { it: 'Coworker parla anche con altre applicazioni Adobe, e lo stesso server MCP si collega a client di terzi: nel pilota lo useremo solo con Coworker: il permesso in sé non distingue il client. Ognuna è una valutazione a sé, con chi governa i dati e con il Comitato IA, e non è oggetto di questo deck.', en: 'Coworker also talks to other Adobe applications, and the same MCP server connects to third-party clients: in the pilot we will use it only with Coworker: the permission itself does not tell clients apart. Each is a separate assessment, with whoever governs the data and with the AI Committee, and not the subject of this deck.' },
+    k: { it: 'Gli altri MCP di Coworker', en: 'Coworker’s other MCP servers' },
+    tag: { it: 'Fuori dal pilota', en: 'Outside the pilot' },
+    b: {
+      it: 'Oggi il perimetro è uno: Adobe Analytics. Lo stesso meccanismo però collega Coworker agli altri prodotti Adobe — AEM già supportato, Workfront in preview, Target, Journey Optimizer, Real-Time CDP ed Experience Platform in beta — e accetta anche server MCP vostri, verso sistemi non Adobe. Il Gruppo ha già AEM Forms e Adobe Commerce, ma in altre divisioni: allargare il perimetro è una decisione loro e del Comitato IA, non di questo pilota.',
+      en: 'Today the scope is one: Adobe Analytics. The same mechanism, though, connects Coworker to the other Adobe applications — AEM already supported, Workfront in preview, Target, Journey Optimizer, Real-Time CDP and Experience Platform in beta — and it also accepts MCP servers of your own, towards non-Adobe systems. The Group already has AEM Forms and Adobe Commerce, but in other divisions: widening the scope is their decision and the AI Committee’s, not this pilot’s.',
+    },
     tone: 'grigio',
   },
   {
     k: { it: 'Il tracciamento', en: 'Tracking' },
     tag: { it: 'Fuori perimetro, oggi', en: 'Out of scope, today' },
-    b: { it: 'Le novità di Analytics che chiedono un cambio al tracciamento passano dal Web SDK e dall’SDK mobile. Non è la domanda di oggi: si riapre quando la SuperApp avrà un rilascio del tracciamento in agenda.', en: 'The Analytics features that need a tracking change go through the Web SDK and the mobile SDK. Not today’s question: it reopens when the SuperApp has a tracking release on the agenda.' },
+    b: {
+      it: 'Le novità di Analytics che chiedono un cambio al tracciamento passano dal Web SDK e dall’SDK mobile. Non è la domanda di oggi: si riapre quando la SuperApp avrà un rilascio del tracciamento in agenda.',
+      en: 'The Analytics features that need a tracking change go through the Web SDK and the mobile SDK. Not today’s question: it reopens when the SuperApp has a tracking release on the agenda.',
+    },
     tone: 'grigio',
   },
-];
-
-const pilota = [
-  { t: { it: 'Settimana 0 · Autorizzare e misurare', en: 'Week 0 · Authorise and measure' }, b: { it: 'Verifica interna e attivazione ad Adobe, scheda per il Comitato IA e il DPO (valutazione d’impatto istruita per default, il DPO dice se si può escludere), inventario delle variabili con identificativi: dura quanto serve. Intanto il team conta le domande che riceve e il tempo mediano di risposta: la baseline.', en: 'Internal check and enablement with Adobe, file for the AI Committee and the DPO (impact assessment opened by default, the DPO says whether it can be ruled out), inventory of variables carrying identifiers: it takes as long as it takes. Meanwhile the team counts the questions it receives and the median time to answer: the baseline.' } },
-  { t: { it: 'Settimana 1 · Accendere', en: 'Week 1 · Switch on' }, b: { it: 'Parte dalla conferma scritta. MCP Access a tre persone nominate, test negativo sui permessi, prime domande con i nomi dei vostri componenti sulla suite di sviluppo.', en: 'Starts from the written confirmation. MCP Access for three named people, a negative test on permissions, first questions with your component names on the development suite.' } },
-  { t: { it: 'Settimane 2–3 · Le domande', en: 'Weeks 2–3 · The questions' }, b: { it: 'Le tre domande del deck sulla suite di produzione, più tre vostre, una scritta da chi fa campagne digitali. Ogni risposta riaperta in Workspace e confrontata col report certificato.', en: 'The deck’s three questions on the production suite, plus three of yours, one written by the digital campaign side. Every answer reopened in Workspace and compared with the certified report.' } },
-  { t: { it: 'Settimana 4 · Decidere', en: 'Week 4 · Decide' }, b: { it: 'Tempo mediano alla risposta contro la baseline, risposte che tornano entro la tolleranza concordata col report certificato, domande chiuse senza il team. Costo di Coworker dopo i crediti sul tavolo. Poi si apre al business con due skill vostre, o ci si ferma.', en: 'Median time to answer against the baseline, answers matching the certified report within the agreed tolerance, questions closed without the team. Coworker’s cost after the credits on the table. Then open up to the business with two skills of yours, or stop.' } },
 ];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgCover.src}>
@@ -72,18 +179,87 @@ const pilota = [
         <T
           as="p"
           class="sd-q-lead"
-          it="Le prime cinque domande stanno nel perimetro del monitoraggio e si chiudono senza cambiare nulla. La sesta guarda avanti: due cose vostre, una del business con voi, due fuori perimetro. Ognuna detta per quello che è."
-          en="The first five questions sit inside monitoring’s remit and close without changing anything. The sixth looks ahead: two things that are yours, one the business shares with you, two out of scope. Each one called what it is."
+          it="Le prime cinque domande stanno nel perimetro del monitoraggio e si chiudono senza cambiare nulla. La sesta è quella che resta quando la riunione finisce: come si parte, chi serve al tavolo, che cosa mette Adobe, e dove può arrivare."
+          en="The first five questions sit inside monitoring’s remit and close without changing anything. The sixth is the one left when the meeting ends: how to start, who is needed at the table, what Adobe brings, and where it can go."
           data-reveal data-reveal-delay="0.15"
         />
       </div>
+    </Slide>
+
+    <!-- ── Come si parte ─────────────────────────────────────────────────── -->
+    <Slide id="slide-avvio" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgAvvio.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Quello che proponiamo" en="What we propose" />
+        <T as="h2" class="sd-head-title" it="Si parte piccolo, su una suite di prova, e si misura" en="Start small, on a test suite, and measure" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Niente da firmare, niente da installare, nessun rilascio sull’app. Una prova sul vostro Analytics, con il vostro team e le vostre domande, misurata su tre cose: quanto prima arriva la risposta, se i numeri tornano, quante domande si chiudono senza il team."
+          en="Nothing to sign, nothing to install, no app release. A trial on your Analytics, with your team and your questions, measured on three things: how much sooner the answer arrives, whether the numbers match, how many questions get closed without the team."
+        />
+      </div>
+      <div class="sd-steps" data-reveal data-reveal-delay="0.14">
+        {avvio.map((p, i) => (
+          <div class="sd-step">
+            <span class:list={['sd-step-n', i === 3 && 'sd-step-n--giallo']}>{i + 1}</span>
+            <T as="p" class="sd-step-title" it={p.t.it} en={p.t.en} />
+            <T as="p" class="sd-step-body" it={p.b.it} en={p.b.en} />
+          </div>
+        ))}
+      </div>
+      <T as="p" class="sd-src" it="Il calendario lo dettate voi: la prova parte quando l’istruttoria che aprite con il Comitato IA e il DPO dice di sì, e quando Adobe conferma l’attivazione per iscritto." en="You set the calendar: the trial starts when the assessment you open with the AI Committee and the DPO says yes, and when Adobe confirms enablement in writing." data-reveal data-reveal-delay="0.24" />
+    </Slide>
+
+    <!-- ── Chi serve al tavolo ───────────────────────────────────────────── -->
+    <Slide id="slide-chi" bg="primary" align="center">
+      <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgChi.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Chi coinvolgere" en="Who to involve" />
+        <T as="h2" class="sd-head-title" it="Cinque ruoli, nell’ordine in cui entrano" en="Five roles, in the order they join" />
+      </div>
+      <div class="w-full max-w-6xl mx-auto flex flex-col" data-reveal data-reveal-delay="0.14">
+        {chi.map((r, i) => (
+          <div class="sd-row">
+            <div>
+              <p class="sd-row-label"><span class="sd-row-n">0{i + 1}</span><span class="sd-row-t"><span data-lang-it>{r.k.it}</span><span data-lang-en>{r.k.en}</span></span></p>
+            </div>
+            <T as="p" class="sd-row-body" it={r.b.it} en={r.b.en} />
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── Quello che mettiamo noi ───────────────────────────────────────── -->
+    <Slide id="slide-noi" bg="secondary" align="center">
+      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgNoi.src})`}></div>
+      <div class="sd-head" data-reveal>
+        <T as="p" class="slide-eyebrow mb-3" it="Da parte nostra" en="On our side" />
+        <T as="h2" class="sd-head-title" it="Un affiancamento, non una licenza in più" en="A programme alongside you, not another licence" />
+        <T
+          as="p"
+          class="sd-head-lead"
+          it="Su alcuni clienti Adobe apre un programma di affiancamento su Coworker: un avvio insieme, un referente di prodotto, un punto fisso ogni settimana. Oggi è attivo su Customer Journey Analytics; per voi lo chiediamo su Adobe Analytics."
+          en="On selected customers Adobe opens a high-touch programme on Coworker: a kickoff together, a product contact, a fixed weekly slot. Today it runs on Customer Journey Analytics; for you we are asking for it on Adobe Analytics."
+        />
+      </div>
+      <div class="sd-steps sd-steps--3" data-reveal data-reveal-delay="0.14">
+        {noi.map((n, i) => (
+          <div class="sd-step">
+            <span class="sd-step-n">{i + 1}</span>
+            <T as="p" class="sd-step-title" it={n.k.it} en={n.k.en} />
+            <T as="p" class="sd-step-body" it={n.b.it} en={n.b.en} />
+          </div>
+        ))}
+      </div>
+      <T as="p" class="sd-src" it="Il programma si apre su richiesta e la richiesta la facciamo noi: non è automatico, e la conferma arriva da Adobe per iscritto. · Coworker è licenziato in crediti di IA (Product Description, in vigore dal 30 lug 2026)." en="The programme opens on request and we file the request: it is not automatic, and confirmation comes from Adobe in writing. · Coworker is licensed in AI Credits (Product Description, effective 30 Jul 2026)." data-reveal data-reveal-delay="0.24" />
     </Slide>
 
     <!-- ── Le quattro evolutive ──────────────────────────────────────────── -->
     <Slide id="slide-evolutive" bg="primary" align="center">
       <div slot="backdrop" class="sd-bg-carta" style={`--bg-src: url(${bgEvo.src})`}></div>
       <div class="sd-head" data-reveal>
-        <T as="p" class="slide-eyebrow mb-3" it="E domani" en="And tomorrow" />
+        <T as="p" class="slide-eyebrow mb-3" it="E poi" en="And then" />
         <T as="h2" class="sd-head-title" it="Quattro evolutive, ognuna con chi decide" en="Four next steps, each with who decides" />
       </div>
       <div class="sd-steps sd-steps--2" data-reveal data-reveal-delay="0.14">
@@ -99,34 +275,10 @@ const pilota = [
       </div>
       <p class="sd-src" data-reveal data-reveal-delay="0.24">
         <span data-lang-it>Fonti:&nbsp;</span><span data-lang-en>Sources:&nbsp;</span>
-        <a href={SOURCES.aaRelease.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aaRelease.label.it}</span><span data-lang-en>{SOURCES.aaRelease.label.en}</span></a>
-        &nbsp;·&nbsp;<a href={SOURCES.mcpDocs.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.mcpDocs.label.it}</span><span data-lang-en>{SOURCES.mcpDocs.label.en}</span></a>
+        <a href={SOURCES.coworkerGateway.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerGateway.label.it}</span><span data-lang-en>{SOURCES.coworkerGateway.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.aemMcp.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.aemMcp.label.it}</span><span data-lang-en>{SOURCES.aemMcp.label.en}</span></a>
+        &nbsp;·&nbsp;<a href={SOURCES.coworkerChat.url} target="_blank" rel="noopener noreferrer"><span data-lang-it>{SOURCES.coworkerChat.label.it}</span><span data-lang-en>{SOURCES.coworkerChat.label.en}</span></a>
       </p>
-    </Slide>
-
-    <!-- ── Il pilota ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-pilota" bg="secondary" align="center">
-      <div slot="backdrop" class="sd-bg-azzurro" style={`--bg-src: url(${bgPilota.src})`}></div>
-      <div class="sd-head" data-reveal>
-        <T as="p" class="slide-eyebrow mb-3" it="Quello che proponiamo" en="What we propose" />
-        <T as="h2" class="sd-head-title" it="Una settimana zero, quattro settimane dalla conferma scritta, poi si decide" en="A week zero, four weeks from the written confirmation, then you decide" />
-        <T
-          as="p"
-          class="sd-head-lead"
-          it="Niente da firmare, niente da installare. Un pilota sul vostro Analytics, con il vostro team e le vostre domande, misurato su tre cose: quanto prima arriva la risposta, se i numeri tornano, quante domande si chiudono senza il team."
-          en="Nothing to sign, nothing to install. A pilot on your Analytics, with your team and your questions, measured on three things: how much sooner the answer arrives, whether the numbers match, how many questions get closed without the team."
-        />
-      </div>
-      <div class="sd-steps" data-reveal data-reveal-delay="0.14">
-        {pilota.map((p, i) => (
-          <div class="sd-step">
-            <span class:list={['sd-step-n', i === 3 && 'sd-step-n--giallo']}>{i}</span>
-            <T as="p" class="sd-step-title" it={p.t.it} en={p.t.en} />
-            <T as="p" class="sd-step-body" it={p.b.it} en={p.b.en} />
-          </div>
-        ))}
-      </div>
-      <T as="p" class="sd-src" it="Da parte nostra: la richiesta di attivazione ad Adobe, un pomeriggio insieme per le prime skill, la demo sull’organizzazione dimostrativa Adobe prima di toccare la vostra." en="On our side: the enablement request to Adobe, an afternoon together for the first skills, the demo on Adobe’s demo organisation before touching yours." data-reveal data-reveal-delay="0.24" />
     </Slide>
 
     <!-- ── Chiusura ──────────────────────────────────────────────────────── -->
@@ -138,7 +290,7 @@ const pilota = [
         <div class="sd-take-grid" data-reveal data-reveal-delay="0.14">
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="I due criteri del 2024" en="The two 2024 criteria" />
-            <T as="p" class="sd-take-t" it="Il tempo alla risposta e l’accesso ai dati di altri reparti: <strong>sono le due cose che questo cambia</strong>, senza toccare lo stack." en="Time to answer and access to other departments’ data: <strong>those are the two things this changes</strong>, without touching the stack." />
+            <T as="p" class="sd-take-t" it="Il tempo dalla richiesta all’insight e un’interfaccia che chi ha la domanda sa usare: <strong>sono le due cose che questo cambia</strong>, senza toccare lo stack." en="Time from request to insight, and an interface the person with the question can use: <strong>those are the two things this changes</strong>, without touching the stack." />
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Il ruolo del team" en="The team’s role" />
@@ -146,7 +298,7 @@ const pilota = [
           </div>
           <div class="sd-take-item">
             <T as="p" class="sd-take-k" it="Il prossimo passo" en="The next step" />
-            <T as="p" class="sd-take-t" it="La scheda per il Comitato IA e una data per la suite di sviluppo. <strong>Il resto lo decidono i numeri</strong> della settimana quattro." en="The file for the AI Committee and a date for the development suite. <strong>The numbers of week four</strong> decide the rest." />
+            <T as="p" class="sd-take-t" it="Da parte vostra l’istruttoria e una data per la suite di sviluppo; da parte nostra la richiesta ad Adobe. <strong>Il resto lo decidono i numeri</strong> della prova." en="On your side the assessment and a date for the development suite; on ours the request to Adobe. <strong>The numbers of the trial</strong> decide the rest." />
           </div>
         </div>
       </div>
