@@ -96,11 +96,12 @@ export const SLIDE_MAP: PageRef[] = [
     slug: 'in-azione',
     adminLabel: 'In azione (06)',
     slides: [
-      { id: 'slide-cover',          t: { it: 'Due clip, un minuto in tutto',                 en: 'Two clips, a minute in all' }, k: 'video clip demo dimostrazione filmato' },
+      { id: 'slide-cover',          t: { it: 'Una demo, in tre tratti',                      en: 'One demo, in three parts' }, k: 'video clip demo dimostrazione filmato registrazione' },
       { id: 'slide-prima',          t: { it: 'Tre cose, dette prima e non dopo',             en: 'Three things, said before and not after' }, k: 'cautele demo sandbox cja rollout avvertenze premesse' },
-      { id: 'slide-clip-riepilogo', t: { it: 'Una domanda, un riepilogo',                    en: 'One question, one summary' }, k: 'clip video riepilogo kpi mensile componenti csv demo' },
-      { id: 'slide-clip-documento', t: { it: 'Il documento per il management, fatto in chat', en: 'The management document, built in chat' }, k: 'clip video documento pdf management marchio executive summary demo' },
-      { id: 'slide-take',           t: { it: 'Un minuto che vale più di tre slide di benefici', en: 'A minute worth more than three slides of benefits' }, k: 'forma prova demo' },
+      { id: 'slide-clip-contesto',  t: { it: 'Prima di rispondere, che cosa sa di voi',      en: 'Before it answers, what it knows about you' }, k: 'clip video contesto skill utente organizzazione memoria spenta brand guidelines tassonomia regole estratte lessico vocabolario pdf' },
+      { id: 'slide-clip-riepilogo', t: { it: 'Quattro domande, in italiano',                 en: 'Four questions, in Italian' }, k: 'clip video anomalie trend superapp sezioni app sito italiano limite dichiarato ora di picco demo' },
+      { id: 'slide-clip-documento', t: { it: 'Una richiesta, un documento finito',           en: 'One request, a finished document' }, k: 'clip video documento pdf management marchio executive summary luglio demo' },
+      { id: 'slide-take',           t: { it: 'Una demo intera vale più di tre slide di benefici', en: 'A whole demo is worth more than three slides of benefits' }, k: 'forma prova demo' },
     ],
   },
   {
