@@ -19,13 +19,16 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const media = `${base.replace(/\/?$/, '/')}media/`;
 
-// Registrazioni dell'organizzazione dimostrativa Adobe. MP4 sul Release `media`
-// come le altre clip del deck; i poster stanno in public/media (tracciati).
-const REL = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/';
-
+// Registrazioni dell'organizzazione dimostrativa Adobe. A differenza delle clip
+// Firefly del deck, queste NON vanno sul Release pubblico: mostrano l'interfaccia
+// di Coworker su Adobe Analytics, che è in rollout e senza GA dichiarata.
+// Gli MP4 stanno in `public/media/` e sono git-ignorati (`apps/*/public/media/*.mp4`):
+// si riproducono da una copia locale del sito, non dal deployato. I poster sono
+// tracciati, quindi la slide resta leggibile ovunque anche senza il video.
+// Le sorgenti originali stanno in `docs/Poste Italiane/coworker-poste-0*.mp4`.
 const clip = {
-  uno: { src: `${REL}sd-azione-01-riepilogo.mp4`, poster: `${media}sd-azione-01-riepilogo.poster.jpg` },
-  due: { src: `${REL}sd-azione-02-documento.mp4`, poster: `${media}sd-azione-02-documento.poster.jpg` },
+  uno: { src: `${media}sd-azione-01-riepilogo.mp4`, poster: `${media}sd-azione-01-riepilogo.poster.jpg` },
+  due: { src: `${media}sd-azione-02-documento.mp4`, poster: `${media}sd-azione-02-documento.poster.jpg` },
 };
 
 // Le tre cose da dire PRIMA di far partire una clip, non dopo.
@@ -84,8 +87,8 @@ const guarda2 = [
         <T
           as="p"
           class="sd-q-lead"
-          it="Fin qui sono parole. Queste sono due registrazioni di Coworker che lavora: una domanda e un riepilogo, poi un documento per il management costruito in chat. Girano sull’organizzazione dimostrativa Adobe, e la pagina prima delle clip dice esattamente che cosa vale e che cosa no."
-          en="So far these are words. These are two recordings of Coworker working: a question and a summary, then a management document built in chat. They run on Adobe’s demo organisation, and the page before the clips says exactly what carries over and what does not."
+          it="Fin qui sono parole. Queste sono due registrazioni di Coworker che lavora: una domanda e un riepilogo, poi un documento per il management costruito in chat. Girano sull’organizzazione dimostrativa Adobe, non sono pubblicate online e si riproducono dalla copia locale: la pagina prima delle clip dice esattamente che cosa vale e che cosa no."
+          en="So far these are words. These are two recordings of Coworker working: a question and a summary, then a management document built in chat. They run on Adobe’s demo organisation, are not published online and play from the local copy: the page before the clips says exactly what carries over and what does not."
           data-reveal data-reveal-delay="0.15"
         />
       </div>
@@ -130,7 +133,7 @@ const guarda2 = [
       <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
         <div class="sd-clip">
           <video class="sd-clip-v" controls preload="none" playsinline poster={clip.uno.poster} src={clip.uno.src} aria-label="Coworker: il riepilogo del mese"></video>
-          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox" en="Adobe demo organisation · sandbox data" />
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · la clip si riproduce dalla copia locale, non è pubblicata" en="Adobe demo organisation · sandbox data · the clip plays from the local copy, it is not published" />
         </div>
         <div class="sd-panel sd-panel--blu">
           <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
@@ -153,7 +156,7 @@ const guarda2 = [
       <div class="sd-split sd-split--media" data-reveal data-reveal-delay="0.14">
         <div class="sd-clip">
           <video class="sd-clip-v" controls preload="none" playsinline poster={clip.due.poster} src={clip.due.src} aria-label="Coworker: il documento per il management"></video>
-          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox" en="Adobe demo organisation · sandbox data" />
+          <T as="p" class="sd-clip-cap" it="Organizzazione dimostrativa Adobe · dati di sandbox · la clip si riproduce dalla copia locale, non è pubblicata" en="Adobe demo organisation · sandbox data · the clip plays from the local copy, it is not published" />
         </div>
         <div class="sd-panel sd-panel--blu">
           <div class="sd-panel-head"><T as="span" class="sd-tag" it="Che cosa guardare" en="What to watch" /></div>
