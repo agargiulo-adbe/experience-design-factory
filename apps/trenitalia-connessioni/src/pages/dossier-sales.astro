@@ -1,0 +1,35 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+import DossierPage from '@edf/core/blocks/doc/DossierPage.astro';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Orfana (fuori nav) + noindex. Il contenuto confidenziale NON è nel bundle
+// statico: vive in Supabase (tabella restricted_docs, RLS) e si carica solo
+//   1) dopo login (super admin o utente con accesso a trenitalia-connessioni), o
+//   2) via secret-link ?t=<uuid> (RPC get_shared_doc di 0009, senza login).
+// Seed (git-ignorato): docs/Ferrovie/0026_seed_trenitalia_sales_dossier.sql.
+//
+// Perché una SECONDA pagina di dossier in questa app: `dossier.astro` prepara
+// il tavolo con FSTechnology (la società ICT del Gruppo), questa prepara il
+// tavolo con la Direzione Sales di Trenitalia. Stanze diverse, interlocutori
+// diversi, vincoli diversi: non si mescolano in un unico documento. Condividono
+// l'experience nel registry, non il contenuto.
+//
+// Il rendering è del motore condiviso `@edf/core/blocks/doc/DossierPage.astro`:
+// qui restano solo lo slug e il guscio. La palette sta nel DocLayout.
+---
+<DocLayout
+  title="Dossier — Direzione Sales Trenitalia"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <DossierPage
+    docSlug="trenitalia-direzione-sales"
+    title="Dossier — Direzione Sales Trenitalia"
+    base={import.meta.env.BASE_URL}
+    supabaseUrl={import.meta.env.PUBLIC_SUPABASE_URL ?? ''}
+    supabaseAnon={import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? ''}
+    deckHref="/experience-design-factory/trenitalia-connessioni/"
+    deckLabel="Apri l'esperienza ↗"
+  />
+</DocLayout>

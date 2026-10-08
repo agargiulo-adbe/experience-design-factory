@@ -1,0 +1,99 @@
+---
+// ═══════════════════════════════════════════════════════════════════════════
+//  DocLayout — guscio minimo per i dossier interni gated di questa app.
+//
+//  Niente nav, niente deck, niente `@edf/core` oltre al motore del dossier:
+//  una pagina che si legge su un telefono venti minuti prima di una riunione
+//  non ha bisogno del resto dell'app, e il peso in più si paga in attesa.
+//
+//  Qui vive SOLO la mappatura della palette sul contratto `--dw-*` del motore
+//  condiviso (`@edf/core/blocks/doc/DossierPage.astro`). Il renderer sta nel
+//  core: migliorarlo lì migliora tutti i dossier.
+// ═══════════════════════════════════════════════════════════════════════════
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = '', noindex = false } = Astro.props;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+    />
+    <style is:global>
+      :root {
+        /* ── DESIGN SYSTEM TRENITALIA → contratto `--dw-*` ──────────────────
+           Valori letti dal CSS di produzione di www.trenitalia.com con
+           `pnpm brand:tokens` (8 ott 2026, 831 KB di CSS), non a memoria.
+           La gerarchia che ne esce è netta e smentisce l'intuizione:
+             · il colore di SISTEMA è l'ardesia #2f394e — 285 occorrenze;
+             · il suo secondario è #606c87 — 96;
+             · il ROSSO del sito è #d91835 — 34 (con #b51039 come scuro).
+           Nota: #d91835 non è il rosso corporate FS #E2001A che usa il deck
+           di questa app. Qui si usa quello del sito, perché il sito è la
+           superficie che il cliente guarda ogni giorno.
+
+           Un accento non è un inchiostro. Misurato sul fondo #1b2230:
+             #d91835 → 3,14:1 e #e2001a → 3,22:1, entrambi SOTTO 4,5:1.
+           Per il testo si usa quindi la schiaritura #ff8d9d (7,24:1), e il
+           rosso pieno resta disponibile solo per i fondi.
+           Il fondo #1b2230 è uno scurimento dello stesso #2f394e: tiene la
+           famiglia con il deck dell'app, che è a dominante scura.
+
+           Carattere: Poppins, dichiarato 26 volte dal sito — per una volta
+           non serve una sostituta, è distribuibile. (`fs-icon` è il loro
+           font di icone, non di testo: scartato.) */
+        --dw-bg: #1b2230;
+        --dw-tint: rgba(217, 24, 53, 0.14);
+        --dw-surface: rgba(47, 57, 78, 0.55);
+        --dw-surface-2: rgba(96, 108, 135, 0.22);
+        --dw-line: #333e54;
+
+        --dw-ink: #d6dbe6;        /* 11,5:1 — corpo del testo */
+        --dw-ink-soft: #a7b0c2;   /*  7,3:1 — note e metadati */
+        --dw-ink-faint: #848fa6;  /*  4,9:1 — etichette minute */
+        --dw-ink-strong: #ffffff; /* 15,9:1 */
+
+        --dw-accent: #ff8d9d;     /*  7,2:1 — numeri, bullet, stato attivo */
+        --dw-fill: #ff8d9d;
+        --dw-on-fill: #1b2230;    /*  7,2:1 — inchiostro scuro sul pieno */
+        --dw-warn: #ffc94d;       /* 10,4:1 — ambra, come nel deck dell'app */
+        --dw-on-warn: #1b2230;    /* 10,4:1 — il bianco sull'ambra dava 1,5:1 */
+        --dw-alt: #f5a623;        /*  7,9:1 — ruoli, sottotitoli, crediti */
+
+        --dw-font-display: 'Poppins', system-ui, -apple-system, sans-serif;
+        --dw-font-body: 'Poppins', system-ui, -apple-system, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        background: var(--dw-bg);
+        color: var(--dw-ink);
+        font-family: var(--dw-font-body);
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      /* Serve davvero: la pagina nasconde il gate con `hidden`, ma .dw-state
+         dichiara display:flex e senza questa riga lo batte — il gate resterebbe
+         a schermo sopra il contenuto. */
+      [hidden] { display: none !important; }
+      @media print {
+        body { background: #fff; color: #000; }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
