@@ -6,80 +6,179 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgAnno from '../assets/generated/bg/stacco-anno.jpg';
 
 const SLUG = 'apertura';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Le quattro direttrici e le tre priorità sono DEL CLIENTE: dette da loro, non
-// nostre letture. Vanno rese come specchio, con le loro parole.
-const direttrici = [
+/**
+ * Tutto questo capitolo viene da fonti PUBBLICHE del cliente su sé stesso, con
+ * la data accanto. È la differenza fra una Prospettiva e un verbale: non si
+ * rimanda indietro quello che ci hanno detto in una call, si mostra di averli
+ * guardati da fuori.
+ */
+const anno = [
   {
-    n: '01',
-    t: { it: 'L’esperienza del prospect', en: 'The prospect experience' },
-    s: { it: 'e l’omnicanalità', en: 'and omnichannel' },
+    when: { it: '2 febbraio', en: '2 February' },
+    what: {
+      it: 'Il consiglio approva il <b>Piano d’Impresa 2026-2029</b>. Fra gli obiettivi dichiarati: il <b>100% delle applicazioni in cloud entro il 2029</b> e circa <b>2,5 milioni di clienti netti in più</b> nell’arco di piano.',
+      en: 'The board approves the <b>2026-2029 Business Plan</b>. Among the stated goals: <b>100% of applications in the cloud by 2029</b> and roughly <b>2.5 million net new customers</b> over the plan period.',
+    },
   },
   {
-    n: '02',
-    t: { it: 'Il CMS e la gestione del contenuto', en: 'The CMS and content management' },
-    s: { it: 'da modernizzare', en: 'to be modernised' },
+    when: { it: '24 febbraio', en: '24 February' },
+    what: {
+      it: 'Escono i numeri della tecnologia: <b>4,6 miliardi di nuovi investimenti IT entro il 2029</b>, per un impegno complessivo <b>superiore a 10 miliardi dal 2022</b>. Le applicazioni in cloud erano al <b>64% a fine 2025</b>.',
+      en: 'The technology figures are published: <b>€4.6 billion of new IT investment by 2029</b>, for a total commitment <b>above €10 billion since 2022</b>. Cloud applications stood at <b>64% at the end of 2025</b>.',
+    },
   },
   {
-    n: '03',
-    t: { it: 'I dati e gli analytics', en: 'Data and analytics' },
-    s: { it: 'da valorizzare più a fondo', en: 'to be put to deeper use' },
+    when: { it: '8 ottobre', en: '8 October' },
+    what: {
+      it: 'La Banca dei Territori annuncia <b>20 miliardi</b> per le piccole imprese di commercio, artigianato e turismo: innovazione, digitalizzazione, riqualificazione.',
+      en: 'The Banca dei Territori announces <b>€20 billion</b> for small businesses in retail, crafts and tourism: innovation, digitalisation, renewal.',
+    },
+  },
+];
+
+const numeri = [
+  {
+    v: '95%',
+    l: { it: 'dei prodotti per i privati', en: 'of retail products' },
+    s: { it: 'è già gestibile digitalmente', en: 'can already be handled digitally' },
   },
   {
-    n: '04',
-    t: { it: 'L’AI per il contenuto', en: 'AI for content' },
-    s: { it: 'e per l’engagement', en: 'and for engagement' },
+    v: '~70%',
+    l: { it: 'dei customer journey', en: 'of customer journeys' },
+    s: { it: 'è già omnicanale', en: 'are already omnichannel' },
+  },
+  {
+    v: '~150',
+    l: { it: 'use case di AI', en: 'AI use cases' },
+    s: { it: 'già in produzione', en: 'already in production' },
+  },
+  {
+    v: '64 → 100%',
+    l: { it: 'applicazioni in cloud', en: 'applications in the cloud' },
+    s: { it: 'da fine 2025 al 2029', en: 'from end-2025 to 2029' },
   },
 ];
 ---
-<BaseLayout title={ch.label.it}>
+<BaseLayout title={ch.label.it} preloadImage={bgAnno.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Da dove partiamo ──────────────────────────────────────────────── -->
-    <Slide id="slide-direttrici" bg="primary" align="left">
+    <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgAnno.src})`}></div>
+      <div class="w-full max-w-5xl">
+        <p class="isu-ch-n">
+          <span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span>
+        </p>
+        <T as="h2" class="isu-ch-t mt-4" it={ch.label.it} en={ch.label.en} />
+        <hr class="isu-rule" />
+        <T
+          as="p"
+          class="isu-lead"
+          it="Non quello che ci avete detto voi: quello che di voi si legge da fuori, con la data accanto."
+          en="Not what you told us: what can be read about you from outside, with the date beside it."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── L'anno in tre date ────────────────────────────────────────────── -->
+    <Slide id="slide-anno" bg="primary" align="left">
       <div class="w-full max-w-7xl">
-        <T as="p" class="slide-eyebrow" it="Quello che ci avete detto" en="What you told us" />
+        <T as="p" class="slide-eyebrow" it="2026, fonti pubbliche" en="2026, public sources" />
         <T
           as="h2"
           class="isu-title mt-3 text-[var(--ink-primary)]"
-          it="Da dove partiamo"
-          en="Where we start from"
+          it="Tre date che dicono la direzione"
+          en="Three dates that show the direction"
         />
         <hr class="isu-rule" />
 
-        <ul class="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-8" role="list">
-          {direttrici.map((d) => (
-            <li role="listitem" class="flex flex-col gap-2 min-w-0 h-full">
+        <div class="isu-tl isu-tl--light mb-5">
+          {anno.map((r) => (
+            <div class="isu-tl-row">
+              <T as="p" class="isu-tl-when" it={r.when.it} en={r.when.en} />
+              <p class="isu-tl-what">
+                <span data-lang-it set:html={r.what.it} /><span data-lang-en set:html={r.what.en} />
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
+          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── I numeri ──────────────────────────────────────────────────────── -->
+    <Slide id="slide-numeri" bg="secondary" align="left">
+      <div class="w-full max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Dichiarati da voi, in pubblico" en="Stated by you, in public" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Dove siete già arrivati"
+          en="How far you have already come"
+        />
+        <hr class="isu-rule" />
+
+        <ul class="grid gap-x-6 gap-y-7 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-7" role="list">
+          {numeri.map((n) => (
+            <li role="listitem" class="flex flex-col gap-1.5 min-w-0 h-full" data-display>
               <span class="isu-col-rule" aria-hidden="true"></span>
-              <span class="isu-num">{d.n}</span>
-              <T as="h3" class="isu-col-title min-h-[2.6em]" it={d.t.it} en={d.t.en} />
-              <T as="p" class="isu-col-sub" it={d.s.it} en={d.s.en} />
+              <p class="isu-metric-xl mt-1 break-words">{n.v}</p>
+              <T as="h3" class="isu-col-title" it={n.l.it} en={n.l.en} />
+              <T as="p" class="isu-col-sub" it={n.s.it} en={n.s.en} />
             </li>
           ))}
         </ul>
 
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.tecnologia.label.it}</span>
+          <span data-lang-en>{SOURCES.tecnologia.label.en}</span>
+          · <a href={SOURCES.tecnologia.url} target="_blank" rel="noopener noreferrer">{SOURCES.tecnologia.short}</a>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── La lettura, dichiarata come lettura ───────────────────────────── -->
+    <Slide id="slide-lettura" bg="primary" align="left">
+      <div class="w-full max-w-6xl">
+        <div class="isu-read">
+          <T as="p" class="isu-read-k" it="Quello che vediamo da qui" en="What we see from here" />
+          <T
+            as="h2"
+            class="isu-read-t"
+            it="L’architettura ha una data. Quello che il cliente legge, e la misura di che cosa ha funzionato, non ancora."
+            en="The architecture has a date. What the customer reads, and the measure of what worked, do not yet."
+          />
+        </div>
+
         <T
           as="p"
-          class="isu-lead"
-          it="Accanto, tre priorità di business: campagne CRM più efficaci, acquisizione dei prospect, journey digitale e omnicanale."
-          en="Alongside them, three business priorities: more effective CRM campaigns, prospect acquisition, and a digital, omnichannel journey."
+          class="isu-lead mt-8"
+          it="Sette journey su dieci sono già omnicanali e quasi tutti i prodotti per i privati si gestiscono digitalmente: la parte che il cliente attraversa c’è. Quando anche l’ultimo terzo delle applicazioni sarà in cloud, quello che resta aperto sta a monte, e non si chiude con l’infrastruttura."
+          en="Seven journeys out of ten are already omnichannel and almost every retail product can be handled digitally: the part the customer walks through is there. When the last third of the applications reaches the cloud too, what stays open sits upstream, and infrastructure does not close it."
         />
 
-        <hr class="isu-rule mt-5" />
+        <hr class="isu-rule mt-7" />
         <T
           as="p"
           class="isu-ask"
-          it="Di queste, quali due devono funzionare meglio nel 2027?"
-          en="Of these, which two have to work better in 2027?"
+          it="Questa lettura regge, vista da dentro?"
+          en="Does this reading hold, seen from the inside?"
         />
       </div>
     </Slide>

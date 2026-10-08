@@ -8,14 +8,15 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { CHAPTERS } from '../data/chapters';
+import bgCover from '../assets/generated/bg/cover-scala.jpg';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-// La copertina rende la riga del TIPO, mai una stringa a mano: così se la
-// tassonomia cambia, cambiano tutte le copertine insieme.
+// La copertina rende la riga del TIPO, mai una stringa a mano: se la tassonomia
+// cambia, cambiano tutte le copertine insieme.
 const TYPE = EXPERIENCE_TYPES.prospettiva;
 ---
-<BaseLayout title="Su scala umana · Adobe × Intesa Sanpaolo">
+<BaseLayout title="Su scala umana · Adobe × Intesa Sanpaolo" preloadImage={bgCover.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
@@ -23,12 +24,13 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
   <DeckContainer nextHref={href(base, '/' + CHAPTERS[0].slug)}>
 
     <!-- ── Copertina ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="left">
+    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--cover" style={`--bg-src: url(${bgCover.src})`}></div>
       <div class="w-full max-w-6xl">
         <!-- `hero` al posto dell'occhiello «Adobe × Intesa Sanpaolo»: lì il
              lockup è contenuto, non chrome. La firma fissa si spegne da sola. -->
-        <CoBrand variant="hero" class="mb-7" />
-        <h1 class="isu-title text-[var(--ink-primary)]">Su scala umana</h1>
+        <CoBrand variant="hero" class="mb-8" />
+        <h1 class="isu-title text-[var(--ink-inverse)]">Su scala umana</h1>
         <hr class="isu-rule" />
         <T
           as="p"
@@ -36,10 +38,10 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
           it="Contenuto, dati e ascolto alla scala della Banca dei Territori."
           en="Content, data and listening at the scale of the Banca dei Territori."
         />
-        <div class="mt-9 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+        <div class="mt-9 flex flex-wrap items-baseline gap-x-7 gap-y-2">
           <T
             as="p"
-            class="text-sm font-bold tracking-wide text-[var(--ink-primary)]"
+            class="text-sm font-bold tracking-wide text-[var(--ink-inverse)]"
             it={TYPE.coverLine.it}
             en={TYPE.coverLine.en}
           />
@@ -50,17 +52,11 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
             en="Milan · 22 October 2026"
           />
         </div>
-        <T
-          as="p"
-          class="isu-note mt-7"
-          it="Le quattro direttrici e le tre priorità sono quelle che ci avete indicato voi. I numeri della banca citata sono pubblicati da Adobe, con la fonte in pagina. Testo redatto con assistenza di AI generativa e verificato alla fonte."
-          en="The four directions and three priorities are the ones you pointed us to. The figures for the bank cited are published by Adobe, with the source on the page. Text written with generative AI assistance and verified against the source."
-        />
       </div>
     </Slide>
 
     <!-- ── Il percorso ───────────────────────────────────────────────────── -->
-    <Slide id="slide-percorso" bg="secondary" align="left">
+    <Slide id="slide-percorso" bg="primary" align="left">
       <div class="w-full max-w-7xl">
         <T as="p" class="slide-eyebrow" it="Un’ora, quattro passaggi" en="One hour, four steps" />
         <T as="h2" class="isu-title mt-3 text-[var(--ink-primary)]" it="Il percorso" en="The route" />
@@ -82,6 +78,12 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
             </li>
           ))}
         </ol>
+        <T
+          as="p"
+          class="isu-note mt-8"
+          it="I fatti del primo capitolo sono pubblici e datati, con la fonte in pagina. Quello che ne ricaviamo è dichiarato come nostra lettura, non come vostro dato. Testo redatto con assistenza di AI generativa e verificato alla fonte; sfondi generati con Adobe Firefly."
+          en="The facts in the first chapter are public and dated, with the source on the page. What we read into them is declared as our reading, not as your data. Text written with generative AI assistance and verified against the source; backdrops generated with Adobe Firefly."
+        />
       </div>
     </Slide>
 

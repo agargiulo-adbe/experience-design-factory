@@ -7,6 +7,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import bgRotta from '../assets/generated/bg/stacco-rotta.jpg';
 
 const SLUG = 'rotta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -40,7 +41,7 @@ const passi = [
   },
 ];
 ---
-<BaseLayout title={ch.label.it}>
+<BaseLayout title={ch.label.it} preloadImage={bgRotta.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
@@ -48,12 +49,16 @@ const passi = [
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Come andiamo avanti ───────────────────────────────────────────── -->
-    <Slide id="slide-passi" bg="primary" align="left">
+    <!-- Questo capitolo non ha stacco: la rotta arriva dopo quaranta minuti di
+         conversazione, e una pagina di respiro in più qui allontana la
+         richiesta invece di prepararla. Lo sfondo sta sulla slide stessa. -->
+    <Slide id="slide-passi" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgRotta.src})`}></div>
       <div class="w-full max-w-7xl">
         <T as="p" class="slide-eyebrow" it="La proposta" en="The proposal" />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-primary)]"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
           it="Come andiamo avanti"
           en="How we move forward"
         />

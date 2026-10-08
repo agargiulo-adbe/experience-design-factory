@@ -6,6 +6,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import bgDomanda from '../assets/generated/bg/stacco-domanda.jpg';
 
 const SLUG = 'domanda';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -19,8 +20,8 @@ const currentPath = Astro.url.pathname;
  * Il set ne contiene altre quattro che restano FUORI dalle slide, di proposito:
  * due sono costruite per far emergere il sentiment verso gli strumenti in uso e
  * stampate si leggerebbero per quello che sono; due preparano la richiesta e
- * vivono meglio dette a voce, dove si può scegliere il momento. Una domanda
- * stampata è un'agenda, una domanda detta è una conversazione.
+ * vivono meglio dette a voce, dove si sceglie il momento. Una domanda stampata
+ * è un'agenda, una domanda detta è una conversazione.
  *
  * La quarta usa «consenso» e «preferenze»: è il vocabolario corretto, e l'altra
  * parola non si usa.
@@ -55,16 +56,79 @@ const domande = [
     },
   },
 ];
+
+// Il ragionamento che porta alle domande. Due colonne, due momenti.
+const spostamento = [
+  {
+    k: { it: 'Fino a qui', en: 'Up to here' },
+    t: { it: 'Il collo di bottiglia era il canale', en: 'The bottleneck was the channel' },
+    b: {
+      it: 'Mettere il prodotto online, farlo funzionare su app e filiale, tenere insieme i sistemi. È il lavoro che risulta fatto al 95% sui prodotti per i privati.',
+      en: 'Getting the product online, making it work across app and branch, holding the systems together. That is the work now reported at 95% on retail products.',
+    },
+  },
+  {
+    k: { it: 'Da qui in avanti', en: 'From here on' },
+    t: { it: 'Diventa quello che ci passa dentro', en: 'It becomes what runs through it' },
+    b: {
+      it: 'Quanti pezzi di contenuto servono per coprire quei journey, chi li produce e li aggiorna, e come si capisce quale dei passaggi ha spostato davvero il risultato.',
+      en: 'How many pieces of content it takes to cover those journeys, who produces and updates them, and how anyone tells which step actually moved the outcome.',
+    },
+  },
+];
 ---
-<BaseLayout title={ch.label.it}>
+<BaseLayout title={ch.label.it} preloadImage={bgDomanda.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
+    <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgDomanda.src})`}></div>
+      <div class="w-full max-w-5xl">
+        <p class="isu-ch-n">
+          <span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span>
+        </p>
+        <T as="h2" class="isu-ch-t mt-4" it={ch.label.it} en={ch.label.en} />
+        <hr class="isu-rule" />
+        <T
+          as="p"
+          class="isu-lead"
+          it="Quattro cose che vorremmo capire prima di proporre qualunque cosa."
+          en="Four things we would like to understand before proposing anything at all."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Dove si sposta il collo di bottiglia ──────────────────────────── -->
+    <Slide id="slide-spostamento" bg="primary" align="left">
+      <div class="w-full max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Il punto di attrito si muove" en="The friction point moves" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Da «si può fare» a «chi lo fa, e come si vede»"
+          en="From “can it be done” to “who does it, and how is it seen”"
+        />
+        <hr class="isu-rule" />
+
+        <div class="grid gap-8 lg:grid-cols-2 auto-rows-fr">
+          {spostamento.map((s) => (
+            <div class="flex flex-col gap-3 min-w-0 h-full">
+              <span class="isu-col-rule" aria-hidden="true"></span>
+              <T as="p" class="isu-num" it={s.k.it} en={s.k.en} />
+              <T as="h3" class="isu-col-title text-xl" it={s.t.it} en={s.t.en} />
+              <T as="p" class="isu-col-sub" it={s.b.it} en={s.b.en} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
     <!-- ── Le quattro domande ────────────────────────────────────────────── -->
-    <Slide id="slide-domande" bg="inverse" align="left">
+    <Slide id="slide-domande" bg="secondary" align="left">
       <div class="w-full max-w-6xl">
         <T
           as="p"
@@ -74,7 +138,7 @@ const domande = [
         />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
           it="Quello che vogliamo capire"
           en="What we want to understand"
         />

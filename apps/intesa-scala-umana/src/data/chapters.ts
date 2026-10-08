@@ -44,8 +44,8 @@ export const CHAPTERS: Chapter[] = [
       en: 'Your year, seen from outside',
     },
     lead: {
-      it: 'Le quattro direttrici che ci avete già indicato, rimesse in fila come le leggiamo da qui.',
-      en: 'The four directions you already pointed us to, lined up as we read them from here.',
+      it: 'Tre date pubbliche del 2026, i numeri che avete dichiarato voi, e che cosa se ne legge da fuori.',
+      en: 'Three public dates from 2026, the figures you stated yourselves, and what they read like from outside.',
     },
   },
   {
@@ -53,8 +53,8 @@ export const CHAPTERS: Chapter[] = [
     num: '02',
     label: { it: 'La domanda', en: 'The question' },
     lead: {
-      it: 'Quattro cose che vorremmo capire prima di proporre qualunque cosa.',
-      en: 'Four things we would like to understand before proposing anything at all.',
+      it: 'Dove si sposta il punto di attrito, e le quattro cose che vorremmo capire prima di proporre.',
+      en: 'Where the friction point moves, and the four things we want to understand before proposing.',
     },
   },
   {
@@ -62,8 +62,8 @@ export const CHAPTERS: Chapter[] = [
     num: '03',
     label: { it: 'Le idee', en: 'The ideas' },
     lead: {
-      it: 'Dove ci innestiamo, in due tempi, e una banca che lo ha già fatto.',
-      en: 'Where we plug in, in two stages, and a bank that has already done it.',
+      it: 'Dove ci innestiamo su quello che avete già, in due tempi, e una banca che lo ha fatto.',
+      en: 'Where we plug into what you already have, in two stages, and a bank that has done it.',
     },
   },
   {
