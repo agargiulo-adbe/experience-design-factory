@@ -3,11 +3,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
 import CoBrand from '../components/CoBrand.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
 import bgRotta from '../assets/generated/bg/stacco-rotta.jpg';
+
+// La clip ricucita sta sul Release `media`, non nel repo (regola di .gitignore).
+// `pnpm loop:seamless` l'ha misurata: giro da 14,8 a 30,9 dB contro un
+// riferimento di 29,8 fra due fotogrammi adiacenti. Il poster è il PRIMO
+// fotogramma della clip ricucita, quindi l'attacco non fa stacco.
+const FIRMA_VIDEO =
+  'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/isu-firma.loop.mp4';
 
 const SLUG = 'rotta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -97,7 +105,14 @@ const passi = [
          CHIARA. Fallisce il check SOFT `i` (il lockup è un SVG e il parser non
          lo conta come massa di testo): è voluta ariosa, e non si aggiusta
          rimpicciolendo il tipo. -->
-    <Slide id="slide-signature" bg="inverse" align="center">
+    <Slide id="slide-signature" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={FIRMA_VIDEO}
+        poster={`${base.replace(/\/?$/, '/')}media/isu-firma.poster.jpg`}
+        scrim="isu-scrim-firma"
+        opacity={1}
+      />
       <CoBrand variant="hero" />
       <T
         as="p"
