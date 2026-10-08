@@ -56,9 +56,13 @@ Template), riletta sulle fonti interne l'8 ottobre 2026.
    il difetto `T` del gate.
 4. **Fondi delle slide di contenuto: nero o bianco.** Il rosso sta su copertina e
    chiusura. Niente fondi di colore del cliente.
-5. **Solo Adobe Clean** — Display Black titoli · Bold enfasi · Regular corpo. Se
-   non è installato, **non si cambia il carattere**: si lasciano intatti i
-   riferimenti del template (e si sa che il proprio render è un'approssimazione).
+5. **Solo Adobe Clean** — Display Black titoli · Bold enfasi · Regular corpo.
+   «The only typeface we use for all external and internal Adobe communications.
+   Other typefaces should not be used, even other Adobe fonts.» Si sincronizza da
+   Creative Cloud desktop, non si installa a mano. Se su una macchina manca, **non
+   si cambia il carattere**: si lasciano i riferimenti del template e si sa che il
+   proprio render è un'approssimazione — `pnpm pptx:fonts` lo accerta con una
+   prova. Per condividere fuori: **PDF**, perché chi riceve non ha Adobe Clean.
 6. **Titoli in sentence case, testo a bandiera sinistra.**
 7. **Icone solo nere o bianche, e solo dal set Adobe.** Non si ridisegnano.
 8. **Grafici e diagrammi in prevalenza grigi**, con pochi accenti sul dato che
@@ -115,9 +119,18 @@ permesso di aprire i PNG e leggerli, esattamente come per `audit:deck`.
 - Carattere Adobe Clean: Inside Adobe › Brand Center › font; anche in Marketing
   Hub › Collections (collezione «Adobe Clean font»).
 - Flusso sostenuto per gli assistenti: partire dal template di Brand Center e
-  **riempire i layout approvati**, non generare slide da zero. Esiste una skill
-  `adobe-powerpoint` pubblicata fra le skill di Claude, e Brand ne stava
-  preparando una ufficiale: prima di adottarne una non ufficiale, il consiglio
-  interno è parlare col team presentation design/keynotes.
+  **riempire i layout approvati**, non generare slide da zero.
+- Esiste sul wiki interno una **«Adobe PPTX Brand Skill»** (spazio adobedotcom).
+  Ne abbiamo letto il testo integrale: **conferma in modo indipendente** la
+  geometria che avevamo letto nel master — thread `x=0 · w=0,14" · h=7,5" ·
+  #EB1000`, contenuto da `x ≥ 0,45"`, fondi solo `FFFFFF`/`1A1A1A`/`EB1000`,
+  niente gradienti, ombre, angoli arrotondati o icone colorate, sequenza dei
+  grafici `EB1000 → 1A1A1A → 6E6E6E → CCCCCC`. Quei controlli sono ora nel gate.
+  **Ma il suo metodo non si adotta**: genera le slide da zero con `pptxgenjs` e
+  impone **Calibri**, che è il ripiego di un ambiente senza Adobe Clean e
+  contraddice la pagina font di Brand Center. Noi abbiamo il template vero e il
+  carattere vero: si compone dai layout, in Adobe Clean.
+- Prima di adottare una skill non ufficiale, il consiglio interno è parlare col
+  team presentation design/keynotes; Brand ne stava preparando una ufficiale.
 - Express **Generate Presentation** è GA da dicembre 2025 ma **non ha API
   pubblica**: non è automatizzabile da qui.

@@ -33,7 +33,8 @@ Uso:
 """
 import collections, json, pathlib, re, shutil, subprocess, sys
 from pptx import Presentation
-from pptx.util import Emu, Pt
+from pptx.util import Emu, Inches, Pt
+from pptx.enum.shapes import MSO_SHAPE
 
 ADOBE_RED_DEFAULT = "EB1000"
 ROSSI_NOTI = {
@@ -201,6 +202,41 @@ def audit(path):
                 R("HARD", i, "C", f"«{(sh.name or '?')[:26]}» esce dal foglio: "
                                   f"{Emu(l).inches:.2f},{Emu(t).inches:.2f} "
                                   f"{Emu(w).inches:.2f}×{Emu(h).inches:.2f} in")
+
+        # --- X/G/O: zona del thread, gradienti, forme vietate -------------------
+        # Dalla scheda «Adobe PPTX Brand Skill» (wiki adobedotcom), che conferma
+        # indipendentemente la geometria letta nel master: il thread è x=0 w=0,14"
+        # h=7,5" #EB1000, e il contenuto parte da x ≥ 0,45". Vietati: gradienti,
+        # ombre, angoli arrotondati, icone colorate.
+        for sh in s.shapes:                      # solo primo livello: i figli seguono il gruppo
+            if sh.left is None or sh.width is None:
+                continue
+            pieno_schermo = sh.width >= W * 0.97 and (sh.height or 0) >= H * 0.97
+            e_il_thread = sh.width <= Emu(Pt(24)) and (sh.height or 0) >= H * 0.9
+            if not pieno_schermo and not e_il_thread and sh.left < Inches(0.45):
+                R("SOFT", i, "X", f"«{(sh.name or '?')[:24]}» parte da {Emu(sh.left).inches:.2f}in: "
+                                  f"il contenuto comincia a 0,45in per stare largo dal red thread")
+            try:
+                if sh.fill.type == 3:            # MSO_FILL.GRADIENT
+                    R("HARD", i, "G", f"«{(sh.name or '?')[:24]}» ha un riempimento a gradiente: "
+                                      f"il template non usa gradienti")
+            except Exception:
+                pass
+            try:
+                if sh.shape_type == 1 and sh.auto_shape_type == MSO_SHAPE.ROUNDED_RECTANGLE:
+                    R("SOFT", i, "O", f"«{(sh.name or '?')[:24]}» è un rettangolo ad angoli "
+                                      f"arrotondati: il template usa angoli vivi")
+            except Exception:
+                pass
+            try:
+                if sh._element.spPr is not None and sh._element.spPr.find(
+                        "{http://schemas.openxmlformats.org/drawingml/2006/main}effectLst") is not None \
+                   and len(sh._element.spPr.find(
+                        "{http://schemas.openxmlformats.org/drawingml/2006/main}effectLst")):
+                    R("SOFT", i, "O", f"«{(sh.name or '?')[:24]}» ha un effetto (ombra/bagliore): "
+                                      f"il template non li usa")
+            except Exception:
+                pass
 
         # --- L: il marchio -----------------------------------------------------
         if not marchio and not any(re.search(r"logo|adobe", sh.name or "", re.I) for sh in forme):
