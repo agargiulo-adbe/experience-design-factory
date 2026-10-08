@@ -1,0 +1,40 @@
+---
+/**
+ * Un arco che rende visibile una percentuale prima che la si legga.
+ *
+ * Perché un arco e non una barra: questi numeri sono quote di un intero
+ * dichiarato («il 95% DEI prodotti», «il 70% DEI journey»), e l'arco mostra
+ * anche la parte che manca — che è il punto dell'argomento. Una barra senza
+ * fondo mostrerebbe solo la parte piena.
+ *
+ * `aria-hidden`: il numero è già scritto in chiaro accanto, e un grafico
+ * decorativo letto due volte da uno screen reader è rumore.
+ */
+interface Props {
+  /** 0-100. Il valore mostrato, non il testo: quello lo scrive la slide. */
+  value: number;
+  /** Etichetta grande dentro l'arco (es. «95%», «64 → 100%»). */
+  label: string;
+  /** Scrive l'arco con l'inchiostro d'accento della superficie corrente. */
+  class?: string;
+}
+const { value, label, class: className } = Astro.props as Props;
+
+const R = 54;
+const C = 2 * Math.PI * R;
+const dash = (Math.max(0, Math.min(100, value)) / 100) * C;
+---
+<div class:list={['isu-gauge', className]}>
+  <svg viewBox="0 0 128 128" aria-hidden="true" focusable="false">
+    <circle class="isu-gauge-track" cx="64" cy="64" r={R} />
+    <circle
+      class="isu-gauge-arc"
+      cx="64"
+      cy="64"
+      r={R}
+      stroke-dasharray={`${dash} ${C - dash}`}
+      stroke-dashoffset={C / 4}
+    />
+  </svg>
+  <span class="isu-gauge-label">{label}</span>
+</div>

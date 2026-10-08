@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
+import IsuFlow from '../components/IsuFlow.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
-import bgDomanda from '../assets/generated/bg/stacco-domanda.jpg';
+import bgStacco from '../assets/generated/bg/stacco-domanda.jpg';
+import bgSpostamento from '../assets/generated/bg/dark-spostamento.jpg';
+import bgDomande from '../assets/generated/bg/dark-domande.jpg';
 
 const SLUG = 'domanda';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -56,28 +59,8 @@ const domande = [
     },
   },
 ];
-
-// Il ragionamento che porta alle domande. Due colonne, due momenti.
-const spostamento = [
-  {
-    k: { it: 'Fino a qui', en: 'Up to here' },
-    t: { it: 'Il collo di bottiglia era il canale', en: 'The bottleneck was the channel' },
-    b: {
-      it: 'Mettere il prodotto online, farlo funzionare su app e filiale, tenere insieme i sistemi. È il lavoro che risulta fatto al 95% sui prodotti per i privati.',
-      en: 'Getting the product online, making it work across app and branch, holding the systems together. That is the work now reported at 95% on retail products.',
-    },
-  },
-  {
-    k: { it: 'Da qui in avanti', en: 'From here on' },
-    t: { it: 'Diventa quello che ci passa dentro', en: 'It becomes what runs through it' },
-    b: {
-      it: 'Quanti pezzi di contenuto servono per coprire quei journey, chi li produce e li aggiorna, e come si capisce quale dei passaggi ha spostato davvero il risultato.',
-      en: 'How many pieces of content it takes to cover those journeys, who produces and updates them, and how anyone tells which step actually moved the outcome.',
-    },
-  },
-];
 ---
-<BaseLayout title={ch.label.it} preloadImage={bgDomanda.src}>
+<BaseLayout title={ch.label.it} preloadImage={bgStacco.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
@@ -85,51 +68,55 @@ const spostamento = [
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgDomanda.src})`}></div>
-      <div class="w-full max-w-5xl">
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgStacco.src})`}></div>
+      <div class="isu-wrap max-w-4xl">
         <p class="isu-ch-n">
           <span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span>
         </p>
-        <T as="h2" class="isu-ch-t mt-4" it={ch.label.it} en={ch.label.en} />
-        <hr class="isu-rule" />
+        <T as="h2" class="isu-ch-t mt-4 mx-auto" it={ch.label.it} en={ch.label.en} />
+        <hr class="isu-rule mx-auto" />
         <T
           as="p"
-          class="isu-lead"
+          class="isu-lead mx-auto"
           it="Quattro cose che vorremmo capire prima di proporre qualunque cosa."
           en="Four things we would like to understand before proposing anything at all."
         />
       </div>
     </Slide>
 
-    <!-- ── Dove si sposta il collo di bottiglia ──────────────────────────── -->
-    <Slide id="slide-spostamento" bg="primary" align="left">
-      <div class="w-full max-w-7xl">
+    <!-- ── Dove si sposta il punto di attrito ────────────────────────────── -->
+    <Slide id="slide-spostamento" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgSpostamento.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
         <T as="p" class="slide-eyebrow" it="Il punto di attrito si muove" en="The friction point moves" />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-primary)]"
-          it="Da «si può fare» a «chi lo fa, e come si vede»"
-          en="From “can it be done” to “who does it, and how is it seen”"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Da «si può fare» a «chi lo fa»"
+          en="From “can it be done” to “who does it”"
         />
-        <hr class="isu-rule" />
+        <hr class="isu-rule mx-auto" />
 
-        <div class="grid gap-8 lg:grid-cols-2 auto-rows-fr">
-          {spostamento.map((s) => (
-            <div class="flex flex-col gap-3 min-w-0 h-full">
-              <span class="isu-col-rule" aria-hidden="true"></span>
-              <T as="p" class="isu-num" it={s.k.it} en={s.k.en} />
-              <T as="h3" class="isu-col-title text-xl" it={s.t.it} en={s.t.en} />
-              <T as="p" class="isu-col-sub" it={s.b.it} en={s.b.en} />
-            </div>
-          ))}
-        </div>
+        <IsuFlow
+          class="mb-7"
+          from={{ k: 'Fino a qui', t: 'Il collo di bottiglia era il canale' }}
+          to={{ k: 'Da qui in avanti', t: 'Adesso è quello che ci passa dentro' }}
+        />
+
+        <T
+          as="p"
+          class="isu-lead mx-auto"
+          it="Per anni il lavoro difficile è stato mettere il prodotto online e farlo funzionare su app e in filiale. Adesso quella parte regge. Resta da capire quanta roba serve per riempirla, chi la scrive, chi la aggiorna quando cambia un’offerta, e come si distingue il passaggio che ha spostato il risultato da quello che era solo di passaggio."
+          en="For years the hard work was getting the product online and making it run across app and branch. That part holds now. What is left is how much material it takes to fill it, who writes it, who updates it when an offer changes, and how anyone tells the step that moved the outcome from the step that was merely passed through."
+        />
       </div>
     </Slide>
 
     <!-- ── Le quattro domande ────────────────────────────────────────────── -->
-    <Slide id="slide-domande" bg="secondary" align="left">
-      <div class="w-full max-w-6xl">
+    <Slide id="slide-domande" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgDomande.src})`}></div>
+      <div class="isu-wrap max-w-5xl">
         <T
           as="p"
           class="slide-eyebrow"
@@ -138,13 +125,13 @@ const spostamento = [
         />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-primary)]"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
           it="Quello che vogliamo capire"
           en="What we want to understand"
         />
-        <hr class="isu-rule" />
+        <hr class="isu-rule mx-auto" />
 
-        <ul class="flex flex-col gap-5 mb-6" role="list">
+        <ul class="flex flex-col gap-5 mb-7 w-full" role="list">
           {domande.map((d) => (
             <li role="listitem" class="isu-q min-w-0">
               <span class="isu-q-n" aria-hidden="true">{d.n}</span>
@@ -155,7 +142,7 @@ const spostamento = [
 
         <T
           as="p"
-          class="isu-ask"
+          class="isu-ask mx-auto"
           it="Le risposte a queste quattro decidono che cosa ha senso proporre. Per questo vengono prima."
           en="The answers to these four decide what is worth proposing. That is why they come first."
         />

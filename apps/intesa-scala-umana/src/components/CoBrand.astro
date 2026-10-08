@@ -6,16 +6,20 @@
  * Brand non invertibile, firma fissa su ogni slide, lockup grande su prima e
  * ultima slide. Qui si dichiara solo CHI è il brand.
  *
- * NESSUN SVG UFFICIALE VERIFICATO. Il marchio Intesa Sanpaolo non è stato
- * trovato come SVG distribuibile a `currentColor`, quindi vale il ripiego
- * automatico previsto dalla regola: il nome nel carattere del cliente (Open
- * Sans, lo stesso di intesasanpaolo.com). **Non è il logo** — e un logo
- * ricostruito a mano è esattamente la wrong-brand imagery che la Quality Bar
- * vieta. Il ripiego resta a peso UNICO di proposito: imitare il contrasto di
- * pesi del logotipo vero senza averlo verificato sarebbe una ricostruzione.
- * Quando il cliente consegna l'SVG ufficiale si passa `<svg slot="brand">`.
+ * MARCHIO UFFICIALE. `src/assets/brand/intesa-sanpaolo.svg` è il logotipo
+ * distribuito dal cliente stesso sul proprio dominio corporate
+ * (group.intesasanpaolo.com → /content/dam/portalgroup/nuove-immagini/
+ * immagini-cross/loghi/logo_isp.svg, scaricato l'8 ottobre 2026). L'originale
+ * è un export Illustrator con `fill:#FFFFFF` fisso: qui il fill è portato a
+ * `currentColor`, se no il lockup non si ribalta con la superficie e sul fondo
+ * chiaro sparisce. Niente altro è stato toccato — nessun ridisegno, nessun
+ * ritocco di tracciati: la Quality Bar vieta i marchi ricostruiti a mano.
+ *
+ * Si inietta inline (`?raw` + `set:html`) e non come `<img>`: un'immagine non
+ * eredita `currentColor`, e il ribaltamento chiaro/scuro si perderebbe.
  */
 import Core from '@edf/core/blocks/CoBrand.astro';
+import logo from '../assets/brand/intesa-sanpaolo.svg?raw';
 
 interface Props {
   variant?: 'chrome' | 'hero';
@@ -25,5 +29,5 @@ interface Props {
 const props = Astro.props as Props;
 ---
 <Core brand="Intesa Sanpaolo" {...props}>
-  <span slot="brand" class="isu-cobrand-word" aria-hidden="true">Intesa Sanpaolo</span>
+  <span slot="brand" class="isu-brand-mark" set:html={logo} />
 </Core>

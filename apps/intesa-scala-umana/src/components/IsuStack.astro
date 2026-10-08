@@ -1,0 +1,35 @@
+---
+/**
+ * La pila dell'innesto: quello che c'è già sotto, quello che si aggiunge sopra.
+ *
+ * È il disegno che regge la posizione del deck — «ci innestiamo, non
+ * sostituiamo». Detta a parole è una frase che il cliente ha già sentito da
+ * tutti; disegnata, lo strato del cliente sta sotto e porta il suo verde, e
+ * quelli Adobe si appoggiano sopra senza coprirlo.
+ *
+ * L'ordine è dal basso: il primo elemento dell'array è la fondazione.
+ */
+interface Layer {
+  /** Etichetta dello strato. */
+  t: string;
+  /** Riga breve sotto l'etichetta. */
+  s?: string;
+  /** `base` = quello che il cliente ha già; `add` = quello che si aggiunge. */
+  kind: 'base' | 'add';
+}
+interface Props {
+  layers: Layer[];
+  class?: string;
+}
+const { layers, class: className } = Astro.props as Props;
+// Dal basso verso l'alto: la fondazione si disegna per ultima in colonna.
+const top = [...layers].reverse();
+---
+<div class:list={['isu-stack', className]}>
+  {top.map((l) => (
+    <div class:list={['isu-stack-layer', `isu-stack-layer--${l.kind}`]}>
+      <span class="isu-stack-t">{l.t}</span>
+      {l.s && <span class="isu-stack-s">{l.s}</span>}
+    </div>
+  ))}
+</div>

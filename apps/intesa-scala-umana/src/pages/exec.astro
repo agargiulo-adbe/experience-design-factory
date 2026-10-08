@@ -1,0 +1,182 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsuNavigation from '../components/IsuNavigation.astro';
+import CoBrand from '../components/CoBrand.astro';
+import IsuGauge from '../components/IsuGauge.astro';
+import IsuStack from '../components/IsuStack.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SOURCES } from '../data/sources';
+import bgCover from '../assets/generated/bg/dark-exec.jpg';
+import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
+import bgLettura from '../assets/generated/bg/light-lettura.jpg';
+import bgInnesto from '../assets/generated/bg/dark-innesto.jpg';
+import bgRotta from '../assets/generated/bg/stacco-rotta.jpg';
+
+/**
+ * TAGLIO EXEC — cinque slide, non una di più.
+ *
+ * Non è il deck lungo accorciato: è un percorso suo. Chi ha dieci minuti non
+ * vuole il capitolo delle domande (quello vive in sala, a voce) e nemmeno la
+ * referenza per esteso. Vuole sapere che li abbiamo guardati, che cosa ne
+ * ricaviamo, dove ci mettiamo e che cosa chiediamo.
+ *
+ * Stessa pelle, stessi fatti, stesse fonti del percorso lungo: se i due
+ * divergono, è il lungo che va riallineato, non questo.
+ */
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const TYPE = EXPERIENCE_TYPES.prospettiva;
+
+const numeri = [
+  { v: 95, label: '95%', l: { it: 'dei prodotti per i privati si gestisce già digitalmente', en: 'of retail products can already be handled digitally' } },
+  { v: 70, label: '~70%', l: { it: 'dei customer journey è già omnicanale', en: 'of customer journeys are already omnichannel' } },
+  { v: 64, label: '64%', l: { it: 'delle applicazioni era in cloud a fine 2025, verso il 100% nel 2029', en: 'of applications were in the cloud at end-2025, heading to 100% in 2029' } },
+  { v: 100, label: '~150', l: { it: 'use case di AI sono già in produzione', en: 'AI use cases are already in production' } },
+];
+
+const strati = [
+  { kind: 'base' as const, t: 'Quello che avete già', s: 'Experience Manager e Analytics, dentro la banca' },
+  { kind: 'add' as const, t: 'Il contenuto alla scala della banca', s: 'Experience Manager · GenStudio · Firefly · Brand Visibility' },
+  { kind: 'add' as const, t: 'Il viaggio intero, e che cosa ha funzionato', s: 'Customer Journey Analytics' },
+];
+
+const passi = [
+  { n: '01', t: { it: 'Un tavolo di lavoro', en: 'A working session' }, b: { it: 'Mezza giornata con canali, contenuto e dati. Non una presentazione.', en: 'Half a day with channels, content and data. Not a presentation.' } },
+  { n: '02', t: { it: 'Due casi scelti da voi', en: 'Two cases you choose' }, b: { it: 'Sui vostri processi e sui vostri vincoli.', en: 'On your processes and your constraints.' } },
+  { n: '03', t: { it: 'Una risposta netta', en: 'A clear answer' }, b: { it: 'Che cosa conviene fare, che cosa no, in che ordine. Per iscritto, entro fine anno.', en: 'What is worth doing, what is not, in what order. In writing, before the year is out.' } },
+];
+---
+<BaseLayout title="Taglio exec" preloadImage={bgCover.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsuNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')}>
+
+    <!-- ── 1 · Copertina ─────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--cover" style={`--bg-src: url(${bgCover.src})`}></div>
+      <div class="isu-wrap max-w-5xl">
+        <CoBrand variant="hero" class="mb-9" />
+        <h1 class="isu-title text-[var(--ink-inverse)]">Su scala umana</h1>
+        <hr class="isu-rule mx-auto" />
+        <T
+          as="p"
+          class="isu-lead mx-auto"
+          it="Contenuto, dati e ascolto alla scala della Banca dei Territori. In cinque pagine."
+          en="Content, data and listening at the scale of the Banca dei Territori. In five pages."
+        />
+        <p class="isu-coverline mt-10">
+          <span data-lang-it><b>{TYPE.coverLine.it}</b> · Milano · 22 ottobre 2026</span>
+          <span data-lang-en><b>{TYPE.coverLine.en}</b> · Milan · 22 October 2026</span>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 2 · Il vostro anno ────────────────────────────────────────────── -->
+    <Slide id="slide-anno" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgNumeri.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Il vostro 2026, da fonti pubbliche" en="Your 2026, from public sources" />
+        <T as="h2" class="isu-title mt-3 text-[var(--ink-primary)]" it="Dove siete già arrivati" en="How far you have already come" />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="grid gap-x-7 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-7 w-full" role="list">
+          {numeri.map((n) => (
+            <li role="listitem" class="flex flex-col items-center gap-3 min-w-0 h-full" data-display>
+              <IsuGauge value={n.v} label={n.label} />
+              <T as="p" class="isu-col-sub" it={n.l.it} en={n.l.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-col-sub mx-auto"
+          it="A febbraio il piano 2026-2029 ha messo una data sul resto: 100% delle applicazioni in cloud entro il 2029, con 4,6 miliardi di nuovi investimenti IT."
+          en="In February the 2026-2029 plan put a date on the rest: 100% of applications in the cloud by 2029, with €4.6 billion of new IT investment."
+        />
+        <p class="isu-note mt-3 mx-auto">
+          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
+          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 3 · La lettura ────────────────────────────────────────────────── -->
+    <Slide id="slide-lettura" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
+      <div class="isu-wrap max-w-5xl">
+        <div class="isu-read mx-auto">
+          <T as="p" class="isu-read-k" it="Quello che vediamo da qui" en="What we see from here" />
+          <T
+            as="h2"
+            class="isu-read-t"
+            it="L’architettura ha una data. Quello che il cliente legge, e la misura di che cosa ha funzionato, non ancora."
+            en="The architecture has a date. What the customer reads, and the measure of what worked, do not yet."
+          />
+        </div>
+        <T
+          as="p"
+          class="isu-lead mt-9 mx-auto"
+          it="Con il 95% dei prodotti già digitale e sette journey su dieci già omnicanali, la parte difficile si è spostata a monte. Quanta roba serve per tenere in piedi quei journey, chi la produce, e come si distingue il passaggio che ha spostato il risultato."
+          en="With 95% of products already digital and seven journeys out of ten already omnichannel, the hard part has moved upstream. How much material it takes to keep those journeys running, who produces it, and how anyone tells the step that moved the outcome."
+        />
+        <hr class="isu-rule mt-8 mx-auto" />
+        <T as="p" class="isu-ask mx-auto" it="Questa lettura regge, vista da dentro?" en="Does this reading hold, seen from the inside?" />
+      </div>
+    </Slide>
+
+    <!-- ── 4 · Dove ci innestiamo ────────────────────────────────────────── -->
+    <Slide id="slide-innesto" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgInnesto.src})`}></div>
+      <div class="isu-wrap max-w-5xl">
+        <T as="p" class="slide-eyebrow" it="Su quello che avete già" en="On what you already have" />
+        <T as="h2" class="isu-title mt-3 text-[var(--ink-inverse)]" it="Dove ci innestiamo" en="Where we plug in" />
+        <hr class="isu-rule mx-auto" />
+        <IsuStack layers={strati} class="mb-6" />
+        <T
+          as="p"
+          class="isu-col-sub mx-auto"
+          it="La fondazione è già vostra. Una banca da 68 milioni di clienti ha fatto questo percorso in otto mesi, e il suo centro di competenza interno è nato l’anno dopo."
+          en="The foundation is already yours. A bank with 68 million customers walked this path in eight months, and its internal centre of excellence came the year after."
+        />
+        <p class="isu-note mt-3 mx-auto">
+          <span data-lang-it>{SOURCES.santander.label.it}</span><span data-lang-en>{SOURCES.santander.label.en}</span>
+          · <a href={SOURCES.santander.url} target="_blank" rel="noopener noreferrer">{SOURCES.santander.short}</a>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 5 · La rotta, e la firma ──────────────────────────────────────── -->
+    <Slide id="slide-rotta" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgRotta.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <CoBrand variant="hero" class="mb-8" />
+        <T as="h2" class="isu-title text-[var(--ink-inverse)]" it="Come andiamo avanti" en="How we move forward" />
+        <hr class="isu-rule mx-auto" />
+        <ol class="isu-path mb-8" role="list">
+          {passi.map((p) => (
+            <li role="listitem" class="isu-path-step">
+              <span class="isu-path-dot" aria-hidden="true"></span>
+              <span class="isu-num block mb-1">{p.n}</span>
+              <T as="h3" class="isu-col-title text-lg" it={p.t.it} en={p.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={p.b.it} en={p.b.en} />
+            </li>
+          ))}
+        </ol>
+        <T
+          as="p"
+          class="isu-ask mx-auto"
+          it="Quello che chiediamo è poco: un referente, due casi e una data."
+          en="What we are asking for is small: one contact, two cases and one date."
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

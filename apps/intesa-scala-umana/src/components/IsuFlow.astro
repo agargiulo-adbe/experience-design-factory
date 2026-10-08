@@ -1,0 +1,33 @@
+---
+/**
+ * Due stati e una freccia: «da qui» → «a qui».
+ *
+ * Serve a far vedere lo SPOSTAMENTO prima di leggerlo. L'argomento centrale
+ * della Prospettiva è che il punto di attrito si muove: detto a parole sono
+ * due paragrafi, disegnato è una freccia.
+ *
+ * Non è un diagramma decorativo — le due etichette sono il contenuto, e la
+ * freccia porta il verso. Su telefono le due colonne si impilano e la freccia
+ * ruota di 90°, se no indica fuori dal flusso di lettura.
+ */
+interface Props {
+  from: { k: string; t: string };
+  to: { k: string; t: string };
+  class?: string;
+}
+const { from, to, class: className } = Astro.props as Props;
+---
+<div class:list={['isu-flow', className]}>
+  <div class="isu-flow-node">
+    <span class="isu-flow-k">{from.k}</span>
+    <span class="isu-flow-t">{from.t}</span>
+  </div>
+  <svg class="isu-flow-arrow" viewBox="0 0 64 24" aria-hidden="true" focusable="false">
+    <path d="M0 12 H52" />
+    <path d="M44 5 L54 12 L44 19" />
+  </svg>
+  <div class="isu-flow-node isu-flow-node--to">
+    <span class="isu-flow-k">{to.k}</span>
+    <span class="isu-flow-t">{to.t}</span>
+  </div>
+</div>

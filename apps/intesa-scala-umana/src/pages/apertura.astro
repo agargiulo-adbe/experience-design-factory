@@ -1,13 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
+import IsuGauge from '../components/IsuGauge.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
 import { SOURCES } from '../data/sources';
-import bgAnno from '../assets/generated/bg/stacco-anno.jpg';
+import bgStacco from '../assets/generated/bg/stacco-anno.jpg';
+import bgAnno from '../assets/generated/bg/light-anno.jpg';
+import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
+import bgLettura from '../assets/generated/bg/light-lettura.jpg';
 
 const SLUG = 'apertura';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -44,30 +48,38 @@ const anno = [
   },
 ];
 
+// L'arco rende visibile la quota PRIMA che si legga il numero. Per i due che
+// non sono percentuali di un intero, l'arco porta comunque la proporzione:
+// 64 su 100 per il cloud, e il pieno per i 150 use case (è un conteggio, non
+// una quota — l'arco resta pieno e il numero fa il lavoro).
 const numeri = [
   {
-    v: '95%',
+    v: 95,
+    label: '95%',
     l: { it: 'dei prodotti per i privati', en: 'of retail products' },
     s: { it: 'è già gestibile digitalmente', en: 'can already be handled digitally' },
   },
   {
-    v: '~70%',
+    v: 70,
+    label: '~70%',
     l: { it: 'dei customer journey', en: 'of customer journeys' },
     s: { it: 'è già omnicanale', en: 'are already omnichannel' },
   },
   {
-    v: '~150',
+    v: 64,
+    label: '64%',
+    l: { it: 'applicazioni in cloud', en: 'applications in the cloud' },
+    s: { it: 'a fine 2025, verso il 100% nel 2029', en: 'at end-2025, heading to 100% in 2029' },
+  },
+  {
+    v: 100,
+    label: '~150',
     l: { it: 'use case di AI', en: 'AI use cases' },
     s: { it: 'già in produzione', en: 'already in production' },
   },
-  {
-    v: '64 → 100%',
-    l: { it: 'applicazioni in cloud', en: 'applications in the cloud' },
-    s: { it: 'da fine 2025 al 2029', en: 'from end-2025 to 2029' },
-  },
 ];
 ---
-<BaseLayout title={ch.label.it} preloadImage={bgAnno.src}>
+<BaseLayout title={ch.label.it} preloadImage={bgStacco.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
@@ -75,36 +87,37 @@ const numeri = [
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgAnno.src})`}></div>
-      <div class="w-full max-w-5xl">
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgStacco.src})`}></div>
+      <div class="isu-wrap max-w-4xl">
         <p class="isu-ch-n">
           <span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span>
         </p>
-        <T as="h2" class="isu-ch-t mt-4" it={ch.label.it} en={ch.label.en} />
-        <hr class="isu-rule" />
+        <T as="h2" class="isu-ch-t mt-4 mx-auto" it={ch.label.it} en={ch.label.en} />
+        <hr class="isu-rule mx-auto" />
         <T
           as="p"
-          class="isu-lead"
-          it="Non quello che ci avete detto voi: quello che di voi si legge da fuori, con la data accanto."
-          en="Not what you told us: what can be read about you from outside, with the date beside it."
+          class="isu-lead mx-auto"
+          it="Quello che di voi si legge da fuori, con la data accanto a ogni fatto."
+          en="What can be read about you from outside, with a date beside every fact."
         />
       </div>
     </Slide>
 
     <!-- ── L'anno in tre date ────────────────────────────────────────────── -->
-    <Slide id="slide-anno" bg="primary" align="left">
-      <div class="w-full max-w-7xl">
+    <Slide id="slide-anno" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgAnno.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
         <T as="p" class="slide-eyebrow" it="2026, fonti pubbliche" en="2026, public sources" />
         <T
           as="h2"
           class="isu-title mt-3 text-[var(--ink-primary)]"
-          it="Tre date che dicono la direzione"
-          en="Three dates that show the direction"
+          it="Tre date del vostro 2026"
+          en="Three dates from your 2026"
         />
-        <hr class="isu-rule" />
+        <hr class="isu-rule mx-auto" />
 
-        <div class="isu-tl isu-tl--light mb-5">
+        <div class="isu-tl isu-tl--light mb-5 w-full">
           {anno.map((r) => (
             <div class="isu-tl-row">
               <T as="p" class="isu-tl-when" it={r.when.it} en={r.when.en} />
@@ -115,16 +128,17 @@ const numeri = [
           ))}
         </div>
 
-        <p class="isu-note">
+        <p class="isu-note mx-auto">
           <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
           <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
         </p>
       </div>
     </Slide>
 
-    <!-- ── I numeri ──────────────────────────────────────────────────────── -->
-    <Slide id="slide-numeri" bg="secondary" align="left">
-      <div class="w-full max-w-7xl">
+    <!-- ── I numeri, resi visibili ───────────────────────────────────────── -->
+    <Slide id="slide-numeri" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgNumeri.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
         <T as="p" class="slide-eyebrow" it="Dichiarati da voi, in pubblico" en="Stated by you, in public" />
         <T
           as="h2"
@@ -132,20 +146,19 @@ const numeri = [
           it="Dove siete già arrivati"
           en="How far you have already come"
         />
-        <hr class="isu-rule" />
+        <hr class="isu-rule mx-auto" />
 
-        <ul class="grid gap-x-6 gap-y-7 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-7" role="list">
+        <ul class="grid gap-x-7 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-7 w-full" role="list">
           {numeri.map((n) => (
-            <li role="listitem" class="flex flex-col gap-1.5 min-w-0 h-full" data-display>
-              <span class="isu-col-rule" aria-hidden="true"></span>
-              <p class="isu-metric-xl mt-1 break-words">{n.v}</p>
+            <li role="listitem" class="flex flex-col items-center gap-3 min-w-0 h-full" data-display>
+              <IsuGauge value={n.v} label={n.label} />
               <T as="h3" class="isu-col-title" it={n.l.it} en={n.l.en} />
               <T as="p" class="isu-col-sub" it={n.s.it} en={n.s.en} />
             </li>
           ))}
         </ul>
 
-        <p class="isu-note">
+        <p class="isu-note mx-auto">
           <span data-lang-it>{SOURCES.tecnologia.label.it}</span>
           <span data-lang-en>{SOURCES.tecnologia.label.en}</span>
           · <a href={SOURCES.tecnologia.url} target="_blank" rel="noopener noreferrer">{SOURCES.tecnologia.short}</a>
@@ -154,9 +167,10 @@ const numeri = [
     </Slide>
 
     <!-- ── La lettura, dichiarata come lettura ───────────────────────────── -->
-    <Slide id="slide-lettura" bg="primary" align="left">
-      <div class="w-full max-w-6xl">
-        <div class="isu-read">
+    <Slide id="slide-lettura" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
+      <div class="isu-wrap max-w-5xl">
+        <div class="isu-read mx-auto">
           <T as="p" class="isu-read-k" it="Quello che vediamo da qui" en="What we see from here" />
           <T
             as="h2"
@@ -168,15 +182,15 @@ const numeri = [
 
         <T
           as="p"
-          class="isu-lead mt-8"
-          it="Sette journey su dieci sono già omnicanali e quasi tutti i prodotti per i privati si gestiscono digitalmente: la parte che il cliente attraversa c’è. Quando anche l’ultimo terzo delle applicazioni sarà in cloud, quello che resta aperto sta a monte, e non si chiude con l’infrastruttura."
-          en="Seven journeys out of ten are already omnichannel and almost every retail product can be handled digitally: the part the customer walks through is there. When the last third of the applications reaches the cloud too, what stays open sits upstream, and infrastructure does not close it."
+          class="isu-lead mt-9 mx-auto"
+          it="Il percorso che il cliente attraversa, ormai, c’è. Quello che i numeri non dicono è quanto costa tenerlo pieno. Ogni journey vuole contenuto; ogni variante ne vuole dell’altro. E portare in cloud l’ultimo terzo delle applicazioni non sposta quel conto."
+          en="The path the customer walks is there by now. What the figures leave out is the cost of keeping it full. Every journey wants content; every variant wants more of it. Moving the last third of the applications to the cloud does not change that bill."
         />
 
-        <hr class="isu-rule mt-7" />
+        <hr class="isu-rule mt-8 mx-auto" />
         <T
           as="p"
-          class="isu-ask"
+          class="isu-ask mx-auto"
           it="Questa lettura regge, vista da dentro?"
           en="Does this reading hold, seen from the inside?"
         />

@@ -152,6 +152,7 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'domanda',  route: '/experience-design-factory/intesa-scala-umana/domanda/' },
     { name: 'idee',     route: '/experience-design-factory/intesa-scala-umana/idee/' },
     { name: 'rotta',    route: '/experience-design-factory/intesa-scala-umana/rotta/' },
+    { name: 'exec',     route: '/experience-design-factory/intesa-scala-umana/exec/' },
   ],
 };
 
