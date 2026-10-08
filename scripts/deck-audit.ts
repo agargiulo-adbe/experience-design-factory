@@ -143,6 +143,16 @@ const ROUTE_SETS: Record<string, Array<{ name: string; route: string }>> = {
     { name: 'persone',     route: '/experience-design-factory/mim-alfabeti/persone/' },
     { name: 'rotta',       route: '/experience-design-factory/mim-alfabeti/rotta/' },
   ],
+  // «Su scala umana» — Prospettiva per l'incontro del 22 ottobre. L'app NON è
+  // registrata in hub, showcase e deploy pubblico (handover §33.3): qui sì,
+  // perché deck-audit è un utensile locale e un deck non misurato non esiste.
+  'intesa-scala-umana': [
+    { name: 'home',     route: '/experience-design-factory/intesa-scala-umana/' },
+    { name: 'apertura', route: '/experience-design-factory/intesa-scala-umana/apertura/' },
+    { name: 'domanda',  route: '/experience-design-factory/intesa-scala-umana/domanda/' },
+    { name: 'idee',     route: '/experience-design-factory/intesa-scala-umana/idee/' },
+    { name: 'rotta',    route: '/experience-design-factory/intesa-scala-umana/rotta/' },
+  ],
 };
 
 // Auto-detect app from cwd (set by `pnpm --filter <app> audit:deck`); override with --app.
@@ -158,6 +168,7 @@ const CWD_ALIAS: Record<string, string> = {
   'isybank-momento': 'isybank-momento',
   'aperture-email': 'aperture-email',
   'poste-sei-domande': 'poste-sei-domande',
+  'intesa-scala-umana': 'intesa-scala-umana',
 };
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {

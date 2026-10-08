@@ -1,0 +1,87 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import CoBrand from '../components/CoBrand.astro';
+import MadeWith from '@edf/core/blocks/MadeWith.astro';
+
+/**
+ * BaseLayout — «Su scala umana · Adobe × Intesa Sanpaolo» (Prospettiva).
+ *
+ * Bilingue IT (default) + EN: <T en it> rende entrambe, html[data-lang] mostra
+ * l'attiva; anti-flash in <head> e ripristino dopo ogni swap del ClientRouter.
+ *
+ * DELIBERATAMENTE SNELLO. Non porta il cablaggio di media-slot, slide
+ * personalizzate e gating soluzioni: questa app non ha (ancora) un `admin.astro`,
+ * e mettere il runtime di una console che non esiste sarebbe codice morto. Il
+ * gating di capitoli e slide arriva comunque gratis, perché vive in
+ * `DeckContainer` e ricava lo slug di progetto da `BASE_URL`.
+ *
+ * `noindex` è ACCESO di default: l'incontro è il 22 ottobre e questa pagina non
+ * va trovata da un motore di ricerca prima (né dopo, finché non si decide).
+ */
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const SITE_NAME = 'Su scala umana · Adobe × Intesa Sanpaolo';
+
+const {
+  title,
+  description =
+    'Contenuto, dati e ascolto alla scala della Banca dei Territori: le quattro direttrici che ci avete indicato, dove ci innestiamo e che cosa chiediamo. Prospettiva preparata dal team Adobe Italia.',
+  noindex = true,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const isHome = Astro.url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '');
+// Guardia contro «SiteName | SiteName» sulla home (avvelena anche gli scraper
+// delle anteprime, che leggono <title>).
+const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_NAME}`;
+---
+<!doctype html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    <title>{docTitle}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+    />
+    <meta name="theme-color" content="#258900" />
+    <script is:inline>
+      (function () {
+        var h = document.documentElement;
+        h.classList.add('js');
+        try {
+          var l = localStorage.getItem('edf:lang');
+          if (l === 'en' || l === 'it') { h.setAttribute('data-lang', l); h.lang = l; }
+        } catch (e) {}
+        if (!window.__isuHtmlStateBound) {
+          window.__isuHtmlStateBound = true;
+          document.addEventListener('astro:after-swap', function () {
+            document.documentElement.classList.add('js');
+          });
+        }
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <slot />
+    <!-- La firma Adobe × Intesa Sanpaolo: una volta qui, quindi su ogni slide di
+         ogni capitolo. Si spegne da sola dove c'è un lockup `hero`. -->
+    <CoBrand />
+    <!-- Il credito «creato con». NIENTE fallback: solo cinque slide hanno uno
+         sfondo generato e lo dichiarano con `data-made-with`. Un fallback
+         metterebbe «Adobe Firefly» anche sulle slide senza immagine, che è una
+         dichiarazione falsa e non una scorciatoia grafica. -->
+    <MadeWith />
+  </body>
+</html>

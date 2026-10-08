@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsuNavigation from '../components/IsuNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
+import bgIdee from '../assets/generated/bg/stacco-idee.jpg';
+
+const SLUG = 'idee';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/**
+ * Due tempi, nell'ordine che conta: il contenuto è il mestiere di chi è in
+ * sala, il viaggio intero appartiene ad altre direzioni. Nessun fornitore in
+ * carica nominato: la posizione è l'innesto su un'architettura che esiste.
+ */
+const tempi = [
+  {
+    tag: { it: 'Primo tempo', en: 'First stage' },
+    t: { it: 'Il contenuto alla scala della banca', en: 'Content at the scale of the bank' },
+    b: {
+      it: 'Produrre, declinare e misurare il contenuto quando i momenti di contatto sono milioni al giorno e le offerte centinaia, senza moltiplicare le mani che lo fanno. Più la domanda nuova: farsi trovare dagli assistenti conversazionali.',
+      en: 'Producing, adapting and measuring content when the contact moments are millions a day and the offers hundreds, without multiplying the hands that do the work. Plus the new question: being found by conversational assistants.',
+    },
+    p: 'Experience Manager · GenStudio · Firefly · Brand Visibility',
+  },
+  {
+    tag: { it: 'Secondo tempo', en: 'Second stage' },
+    t: { it: 'Il viaggio intero, e che cosa ha funzionato', en: 'The whole journey, and what worked' },
+    b: {
+      it: 'Dal contare le visite su un canale al seguire la stessa persona attraverso i canali, e capire che cosa ha davvero spostato l’ago. Si appoggia su Analytics, che è già in casa.',
+      en: 'From counting visits on one channel to following the same person across channels, and understanding what actually moved the needle. It builds on Analytics, which is already in house.',
+    },
+    p: 'Customer Journey Analytics',
+  },
+];
+
+// Numeri pubblicati da Adobe. La fonte è in pagina, con la data.
+const prova = [
+  {
+    v: '100 mln',
+    l: { it: 'profili unificati', en: 'unified profiles' },
+    s: { it: 'in una vista sola, oltre 500 attributi', en: 'in a single view, over 500 attributes' },
+  },
+  {
+    v: '15 min',
+    l: { it: 'invece di tre giorni', en: 'instead of three days' },
+    s: {
+      it: 'il tempo di reazione su un carrello lasciato a metà',
+      en: 'reaction time on an abandoned basket',
+    },
+  },
+  {
+    v: '+600%',
+    l: { it: 'conversioni', en: 'conversions' },
+    s: { it: 'sulle campagne di recupero', en: 'on recovery campaigns' },
+  },
+  {
+    v: '+380%',
+    l: { it: 'journey personalizzate', en: 'personalised journeys' },
+    s: { it: 'a parità di squadra', en: 'with the same team' },
+  },
+];
+---
+<BaseLayout title={ch.label.it} preloadImage={bgIdee.src}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsuNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="left" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgIdee.src})`}></div>
+      <div class="w-full max-w-5xl">
+        <p class="isu-ch-n">
+          <span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span>
+        </p>
+        <T as="h2" class="isu-ch-t mt-4" it={ch.label.it} en={ch.label.en} />
+        <hr class="isu-rule" />
+        <T
+          as="p"
+          class="isu-lead"
+          it="Dove ci innestiamo su quello che avete già, in due tempi, e una banca che lo ha fatto."
+          en="Where we plug into what you already have, in two stages, and a bank that has done it."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Dove ci innestiamo ────────────────────────────────────────────── -->
+    <Slide id="slide-innesto" bg="primary" align="left">
+      <div class="w-full max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Su quello che avete già" en="On what you already have" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Dove ci innestiamo"
+          en="Where we plug in"
+        />
+        <hr class="isu-rule" />
+
+        <div class="grid gap-7 lg:grid-cols-2 auto-rows-fr mb-7">
+          {tempi.map((t) => (
+            <div class="flex flex-col gap-3 min-w-0 h-full">
+              <span class="isu-col-rule" aria-hidden="true"></span>
+              <T as="p" class="isu-num" it={t.tag.it} en={t.tag.en} />
+              <T as="h3" class="isu-col-title text-xl" it={t.t.it} en={t.t.en} />
+              <T as="p" class="isu-col-sub" it={t.b.it} en={t.b.en} />
+              <p class="isu-products mt-auto pt-2">{t.p}</p>
+            </div>
+          ))}
+        </div>
+
+        <span class="isu-col-rule block mb-4" aria-hidden="true"></span>
+        <T
+          as="p"
+          class="isu-col-sub"
+          it="Nessuno dei due parte da zero: Experience Manager e Analytics sono già dentro la banca."
+          en="Neither starts from nothing: Experience Manager and Analytics are already inside the bank."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Una banca che l'ha fatto ──────────────────────────────────────── -->
+    <Slide id="slide-prova" bg="secondary" align="left">
+      <div class="w-full max-w-7xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Santander Brasil · 68 milioni di clienti"
+          en="Santander Brasil · 68 million customers"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Una banca che l’ha fatto"
+          en="A bank that has done it"
+        />
+        <hr class="isu-rule" />
+
+        <ul class="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-7" role="list">
+          {prova.map((p) => (
+            <li role="listitem" class="flex flex-col gap-1.5 min-w-0 h-full" data-display>
+              <span class="isu-col-rule" aria-hidden="true"></span>
+              <p class="isu-metric mt-1 break-words">{p.v}</p>
+              <T as="h3" class="isu-col-title" it={p.l.it} en={p.l.en} />
+              <T as="p" class="isu-col-sub" it={p.s.it} en={p.s.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-col-sub mb-5"
+          it="Programma avviato a marzo 2024, in produzione da novembre dello stesso anno. Il centro di competenza interno è nato all’inizio del 2025, ed è lì che il modello ha cominciato a reggersi da solo."
+          en="The programme started in March 2024 and went into production in November of the same year. The internal centre of excellence came in early 2025, and that is where the model began to stand on its own."
+        />
+
+        <span class="isu-col-rule block mb-3" aria-hidden="true"></span>
+        <p class="isu-products">
+          Experience Platform · Real-Time CDP · Journey Optimizer · Customer Journey Analytics · Experience Manager · Target
+        </p>
+        <p class="isu-note mt-3">
+          <span data-lang-it>{SOURCES.santander.label.it}</span><span data-lang-en>{SOURCES.santander.label.en}</span>
+          · <a href={SOURCES.santander.url} target="_blank" rel="noopener noreferrer">{SOURCES.santander.short}</a>
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

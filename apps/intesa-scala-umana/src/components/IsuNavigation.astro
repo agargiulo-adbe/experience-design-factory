@@ -1,0 +1,61 @@
+---
+import { href } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+import { CHAPTERS } from '../data/chapters';
+
+/**
+ * La nav resta UNA barra: rail dei capitoli a `nowrap` con scroll, cluster a
+ * destra. Nessun marchio disegnato — non esiste un SVG ufficiale verificato del
+ * cliente, e il nome basta (vedi `CoBrand.astro`). Nessuna voce «Admin»: questa
+ * app non ha una console, e una voce di navigazione che non porta da nessuna
+ * parte è un difetto.
+ */
+interface Props {
+  currentPath: string;
+  base: string;
+}
+const { currentPath, base } = Astro.props;
+
+function isActive(slug: string) {
+  return currentPath.replace(/\/+$/, '').endsWith('/' + slug);
+}
+---
+<nav class="isu-nav flex items-center justify-between px-6 py-3" aria-label="Navigazione">
+  <a
+    href={href(base, '/')}
+    class="flex items-baseline gap-2.5 no-underline group flex-shrink-0"
+    aria-label="Home — Su scala umana"
+  >
+    <span class="text-sm font-bold text-[var(--ink-primary)] group-hover:text-[var(--color-verde)] transition-colors whitespace-nowrap">
+      Su scala umana
+    </span>
+    <span class="hidden 2xl:inline text-[0.65rem] font-bold tracking-widest uppercase text-[var(--color-grigio-600)] whitespace-nowrap">
+      Adobe × Intesa Sanpaolo
+    </span>
+  </a>
+
+  <ol
+    class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    role="list"
+  >
+    {CHAPTERS.map((c) => (
+      <li role="listitem" class="flex-shrink-0">
+        <a
+          href={href(base, '/' + c.slug)}
+          class:list={[
+            'isu-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold transition-colors no-underline',
+            isActive(c.slug) && 'isu-nav-link--active',
+          ]}
+          aria-current={isActive(c.slug) ? 'page' : undefined}
+        >
+          <span class="text-[var(--color-grigio-500)] mr-1 tabular-nums">{c.num}</span>
+          <span data-lang-it>{c.label.it}</span><span data-lang-en>{c.label.en}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <LangToggle langs={['it', 'en']} />
+  </div>
+</nav>
