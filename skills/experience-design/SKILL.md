@@ -21,6 +21,14 @@ four client-facing types — **Prospettiva · Storia · Blueprint · Playbook** 
 → content per chapter → build + `audit:deck` 0 HARD + 1920 screenshots → `panel-review`
 → `/handover`. The Method below is the content craft inside that pipeline.
 
+## Step 0-bis — In che forma si consegna (sempre, subito dopo il router)
+Il router sceglie il **tipo**; `references/deliverable-format.md` sceglie la **forma**:
+experience HTML (il design system è del cliente) o **.pptx sul template Adobe** (il design
+system è di Adobe). Un artefatto, un design system: gli ibridi sono l'errore da cui nasce
+quella regola. Lì stanno anche le dieci regole di marchio del .pptx verificate alla fonte,
+la catena `pptx:layouts → pptx:find → pptx:take → audit:pptx`, e che cosa funziona davvero
+quando si eredita una slide da una libreria Adobe.
+
 ## Method
 1. **Brand Research** — values, audience, strategy, tone of voice.
 2. **Design Tokens** — 3-level system (primitive → semantic → component) from brand guidelines.

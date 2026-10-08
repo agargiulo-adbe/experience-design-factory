@@ -41,6 +41,35 @@ Blueprint). «Experience» resta il nome del formato, non del contenuto. Il rout
 (`skills/experience-design/references/intake-router.md`, Step 0 della skill `/experience-design`)
 sceglie il tipo da cinque domande; `pnpm new:experience` genera la skin dal suo scheletro.
 
+## In che forma si consegna — experience HTML o .pptx (8 ott 2026, BINDING)
+La Tassonomia dice **che cosa** si consegna; questa regola dice **in che forma**, e si
+decide con una domanda sola: **di chi è il design system di questo documento?**
+- **Del cliente** → **experience HTML**. La skin è la sua (`pnpm brand:tokens`).
+- **Di Adobe** → **.pptx sul template di Brand Center**. Il design system è quello di Adobe.
+
+**Un artefatto, un design system.** L'ibrido è l'errore da cui nasce la regola: il deck
+dell'8 ottobre era un artefatto di marchio Adobe (red thread, logo, Adobe Clean) con dentro
+un accento *di cliente* — per giunta il petrolio `#007A91` di UniCredit in una stanza di
+Intesa. Sul template Adobe il colore del cliente **non struttura** la slide: i fondi di
+contenuto sono neri o bianchi e i grafici stanno in grigio con pochi accenti.
+
+Sul .pptx valgono dieci regole **lette dal template e dalla sua guida**, non a memoria
+(dettaglio e fonti in `skills/experience-design/references/deliverable-format.md`):
+**si compone, non si disegna** — il template porta **166 layout approvati** e «do not create
+slides from scratch»; **Adobe Red è `#EB1000`** (si legge dal master; `#FA0F00` è il rosso
+del logo corporate, non quello delle slide); il **red thread** non si copre, sposta,
+ricolora, rompe; fondi di contenuto **nero o bianco**; **solo Adobe Clean** (se manca, non
+si cambia il carattere: si lasciano i riferimenti del template); titoli in sentence case e
+testo a bandiera sinistra; icone solo nere o bianche dal set Adobe; grafici in prevalenza
+grigi; loghi di prodotto ufficiali col nome accanto in testo editabile; **una scala
+tipografica di 5-7 corpi** — un corpo a mezzo punto è il segno del testo rimpicciolito
+finché entrava, e allora si taglia la copia o si cambia layout.
+
+Ereditare da una libreria Adobe: `pptx:find` → `pptx:take` → modifica → **rendi e guarda**.
+Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla cieca no**
+(una ricolorazione automatica appiattisce le illustrazioni isometriche). La provenienza
+— file + numero di slide — si cita nel builder e nel handover.
+
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
 - `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `poste-sei-domande`, `console`, `factory-showcase`, `factory-hub`)
@@ -48,6 +77,8 @@ sceglie il tipo da cinque domande; `pnpm new:experience` genera la skin dal suo 
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
 - `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente).
+- `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
+- `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
