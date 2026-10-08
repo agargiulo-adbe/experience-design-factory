@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsuNavigation from '../components/IsuNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+
+const SLUG = 'apertura';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+// Le quattro direttrici e le tre priorità sono DEL CLIENTE: dette da loro, non
+// nostre letture. Vanno rese come specchio, con le loro parole.
+const direttrici = [
+  {
+    n: '01',
+    t: { it: 'L’esperienza del prospect', en: 'The prospect experience' },
+    s: { it: 'e l’omnicanalità', en: 'and omnichannel' },
+  },
+  {
+    n: '02',
+    t: { it: 'Il CMS e la gestione del contenuto', en: 'The CMS and content management' },
+    s: { it: 'da modernizzare', en: 'to be modernised' },
+  },
+  {
+    n: '03',
+    t: { it: 'I dati e gli analytics', en: 'Data and analytics' },
+    s: { it: 'da valorizzare più a fondo', en: 'to be put to deeper use' },
+  },
+  {
+    n: '04',
+    t: { it: 'L’AI per il contenuto', en: 'AI for content' },
+    s: { it: 'e per l’engagement', en: 'and for engagement' },
+  },
+];
+---
+<BaseLayout title={ch.label.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsuNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Da dove partiamo ──────────────────────────────────────────────── -->
+    <Slide id="slide-direttrici" bg="primary" align="left">
+      <div class="w-full max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Quello che ci avete detto" en="What you told us" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Da dove partiamo"
+          en="Where we start from"
+        />
+        <hr class="isu-rule" />
+
+        <ul class="grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr mb-8" role="list">
+          {direttrici.map((d) => (
+            <li role="listitem" class="flex flex-col gap-2 min-w-0 h-full">
+              <span class="isu-col-rule" aria-hidden="true"></span>
+              <span class="isu-num">{d.n}</span>
+              <T as="h3" class="isu-col-title min-h-[2.6em]" it={d.t.it} en={d.t.en} />
+              <T as="p" class="isu-col-sub" it={d.s.it} en={d.s.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-lead"
+          it="Accanto, tre priorità di business: campagne CRM più efficaci, acquisizione dei prospect, journey digitale e omnicanale."
+          en="Alongside them, three business priorities: more effective CRM campaigns, prospect acquisition, and a digital, omnichannel journey."
+        />
+
+        <hr class="isu-rule mt-5" />
+        <T
+          as="p"
+          class="isu-ask"
+          it="Di queste, quali due devono funzionare meglio nel 2027?"
+          en="Of these, which two have to work better in 2027?"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -1,0 +1,363 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — i symlink di pnpm non vengono rilevati da Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «SU SCALA UMANA» — Adobe × Intesa Sanpaolo · Prospettiva
+   Design system LETTO dal CSS di produzione di www.intesasanpaolo.com con
+   `pnpm brand:tokens` (4 fogli, 805 KB, 4 ott 2026), non a memoria:
+     verde di sistema  #258900  (181 occorrenze: link, stati, tab, focus)
+     verde notte       #0d2901  (46: la superficie scura)
+     verde 2           #2b8804  (37)
+     arancio           #fa9600  (35: l'accento)
+     carattere         Open Sans (59 dichiarazioni) — distribuibile, nessuna
+                       sostituta. `ispfont` è il loro font di ICONE, non di testo.
+   I valori Bootstrap 3 del foglio (#337ab7, #a94442, #3c763d, #8a6d3b) sono
+   default di framework e NON fanno parte del design system: scartati.
+   Dominante CHIARA come il sito. NON è una banca blu.
+
+   CONTRASTI MISURATI (non stimati), perché un accento non è un inchiostro:
+     #258900 su bianco   4,5:1  → passa per il testo, al limite
+     #258900 su #0d2901  3,5:1  → NON basta per il testo: solo pieni
+     #4fc21f su #0d2901  6,8:1  → è l'inchiostro d'accento sul fondo scuro
+     #fa9600 su bianco   2,2:1  → NON è un inchiostro su chiaro: solo pieni,
+                                   col testo scuro sopra (7,1:1)
+     #fa9600 su #0d2901  7,1:1  → su scuro invece è inchiostro
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-verde: #258900;
+  --color-verde-2: #2b8804;
+  --color-verde-chiaro: #4fc21f;
+  --color-verde-scuro: #1f7400;
+  --color-verde-notte: #0d2901;
+  --color-verde-velo: #f1f7ee;
+  --color-arancio: #fa9600;
+  --color-inchiostro: #1a1a1a;
+  --color-grafite: #474747;
+  --color-grigio-100: #f5f6f5;
+  --color-grigio-200: #e4e7e3;
+  --color-grigio-300: #d6d6d6;
+  --color-grigio-500: #8a8f88;
+  --color-grigio-600: #5c6159;
+
+  --font-display: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-body: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+:root {
+  --color-verde: #258900;
+  --color-verde-2: #2b8804;
+  --color-verde-chiaro: #4fc21f;
+  --color-verde-scuro: #1f7400;
+  --color-verde-notte: #0d2901;
+  --color-verde-velo: #f1f7ee;
+  --color-arancio: #fa9600;
+  --color-inchiostro: #1a1a1a;
+  --color-grafite: #474747;
+  --color-grigio-100: #f5f6f5;
+  --color-grigio-200: #e4e7e3;
+  --color-grigio-300: #d6d6d6;
+  --color-grigio-500: #8a8f88;
+  --color-grigio-600: #5c6159;
+
+  --font-display: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-body: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface (dominante CHIARA: primary/secondary chiari, inverse scuro) */
+  --surface-primary: #ffffff;
+  --surface-secondary: var(--color-verde-velo);
+  --surface-tertiary: var(--color-grigio-100);
+  --surface-inverse: var(--color-verde-notte);
+  --surface-brand: var(--color-verde);
+
+  /* Semantici — Ink (sta su surface-X) */
+  --ink-primary: var(--color-inchiostro);
+  --ink-secondary: var(--color-grafite);
+  --ink-tertiary: var(--color-grigio-600);
+  --ink-inverse: #ffffff;
+  --ink-brand: var(--color-verde);
+  --ink-link: var(--color-verde-scuro);
+
+  /* Inchiostri che si ribaltano con la superficie (default = fondo CHIARO) */
+  /* Il verde di sistema #258900 dà 4,5:1 su BIANCO ma 4,1:1 sul velo verde
+     #f1f7ee: su una superficie tinta non è più un inchiostro. L'inchiostro è
+     la sua scuritura #1f7400 — 5,9:1 su bianco, 5,4:1 sul velo — mentre
+     #258900 resta per i PIENI (filetti, bordi, barre), che non sono testo.
+     Misurato, non stimato: il check h lo aveva colto a 4,14. */
+  --ink-accent: var(--color-verde-scuro);
+  --ink-mark: var(--color-grafite);   /* l'arancio su chiaro è 2,2:1: non è inchiostro */
+  --ink-note: var(--color-grigio-600);
+  --ink-body: var(--color-grafite);
+
+  /* Semantici — Accent */
+  --accent-primary: var(--color-verde);
+  --accent-secondary: var(--color-arancio);
+  --accent-hover: var(--color-verde-2);
+
+  /* Semantici — Line */
+  --line-subtle: var(--color-grigio-200);
+  --line-default: var(--color-grigio-300);
+  --line-strong: var(--color-grigio-600);
+
+  --focus-ring: var(--color-verde);
+
+  /* Deck safe-area contract */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Le varianti scure DOPO le chiare: stessa specificità, vince l'ultima. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+.isu-on-dark {
+  --ink-accent: var(--color-verde-chiaro); /* 6,8:1 su #0d2901 */
+  --ink-mark: var(--color-arancio);        /* 7,1:1 su #0d2901 */
+  --ink-note: #b9c4b4;
+  --ink-body: #e2e8e0;
+}
+/* Componenti chiari dentro una slide scura riprendono gli inchiostri chiari. */
+.isu-on-light,
+.isu-card {
+  --ink-accent: var(--color-verde-scuro);
+  --ink-mark: var(--color-grafite);
+  --ink-note: var(--color-grigio-600);
+  --ink-body: var(--color-grafite);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-verde-2); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+  /* Il guscio minimo non aveva questa riga e il gate del dossier restava a
+     schermo: `display:flex` batteva l'attributo. Vedi handover §33.5. */
+  [hidden] { display: none !important; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+.slide-eyebrow {
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV e minimi del tipo (contratto Type & legibility) */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 62ch; }
+
+[data-admin-only] { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMPONENTI `.isu-*`
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Il filetto sotto l'occhiello: è la citazione del sito, dove il verde
+   sottolinea la voce attiva. Pieno, quindi il verde può restare #258900. */
+.isu-rule {
+  width: 3.5rem; height: 3px; border: 0; border-radius: 0;
+  /* pieno, non testo: qui il verde di sistema va bene */
+  background: var(--accent-primary); margin-block: 0.85rem 1.35rem;
+}
+.isu-on-dark .isu-rule,
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-rule { background: var(--color-verde-chiaro); }
+
+.isu-title {
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  letter-spacing: -0.015em;
+}
+.isu-lead {
+  font-size: clamp(1.05rem, 1.25vw, 1.3rem);
+  line-height: 1.58;
+  color: var(--ink-body);
+}
+
+/* La domanda: il blocco su cui ogni capitolo si chiude. */
+.isu-ask {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2vw, 1.95rem);
+  line-height: 1.26;
+  color: var(--ink-primary);
+  max-width: 34ch;
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-ask { color: var(--ink-inverse); }
+
+/* Colonna di inventario / direttrici: blocchi di pari larghezza */
+.isu-col-rule { width: 100%; height: 2px; background: var(--line-subtle); }
+.isu-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.875rem; letter-spacing: 0.1em;
+  color: var(--ink-accent);
+}
+.isu-col-title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1rem, 1.15vw, 1.15rem); line-height: 1.26;
+  color: var(--ink-primary);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-col-title { color: var(--ink-inverse); }
+.isu-col-sub {
+  font-size: clamp(0.95rem, 1vw, 1.02rem); line-height: 1.5;
+  color: var(--ink-body);
+}
+
+/* Card: superficie chiara che si porta dentro una slide scura */
+.isu-card {
+  background: var(--surface-primary);
+  border: 1px solid var(--line-subtle);
+  padding: 1.35rem 1.5rem;
+}
+
+/* Il numero-prova (metrica grande). Verde pieno, non arancio: su bianco
+   l'arancio è 2,2:1. */
+.isu-metric {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.1rem, 3vw, 2.9rem); line-height: 1;
+  color: var(--ink-accent);
+  letter-spacing: -0.02em;
+}
+
+/* Le domande elencate: la spina dorsale del capitolo «La domanda». */
+.isu-q { display: flex; gap: 1rem; align-items: baseline; }
+.isu-q-n {
+  flex: 0 0 auto; font-family: var(--font-display); font-weight: 700;
+  font-size: 0.9rem; letter-spacing: 0.08em; color: var(--ink-accent);
+  min-width: 1.6rem;
+}
+.isu-q-t {
+  font-size: clamp(1rem, 1.15vw, 1.14rem); line-height: 1.5;
+  color: var(--ink-body); max-width: 56ch;
+}
+
+/* La riga dei prodotti Adobe sotto un blocco. Il rosso Adobe non entra in
+   questa skin: l'artefatto ha il design system del cliente, e il co-brand
+   porta già il marchio. Qui i prodotti stanno in inchiostro pieno. */
+.isu-products {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.85rem, 0.95vw, 0.95rem); line-height: 1.45;
+  color: var(--ink-primary); letter-spacing: 0.01em;
+  /* elenco di nomi, non prosa: il cap di lettura a 62ch spezzava
+     «Customer Journey Analytics» a metà. Il bordo resta quello della colonna. */
+  max-width: none;
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-products { color: var(--ink-inverse); }
+
+/* Nota di fonte */
+.isu-note {
+  font-size: 0.8125rem; line-height: 1.5; color: var(--ink-note);
+  max-width: 78ch;
+}
+
+/* Il wordmark del ripiego co-brand: due pesi, come il marchio vero. */
+.isu-cobrand-word { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.01em; }
+.isu-cobrand-word b { font-weight: 700; }
+
+/* La nav: una barra sola, fondo chiaro, filetto sottile in basso. */
+.isu-nav {
+  /* rgba() esplicito, non color-mix(): il parser di contrasto dell'audit non
+     legge color-mix() e lo tratta come bianco — un PASS falso sul check h. */
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line-subtle);
+}
+.isu-nav-link { color: var(--color-grigio-600); }
+.isu-nav-link:hover { color: var(--ink-primary); background: var(--color-grigio-100); }
+/* Il verde sottolinea la voce attiva: è il gesto del sito del cliente. */
+.isu-nav-link--active {
+  color: var(--ink-primary);
+  box-shadow: inset 0 -2px 0 0 var(--accent-primary);
+}
+
+/* Card del percorso in home: blocchi di pari dimensione in griglia bilanciata */
+.isu-road {
+  display: flex; flex-direction: column; gap: 0.6rem; height: 100%;
+  background: var(--surface-primary);
+  border: 1px solid var(--line-subtle);
+  border-top: 3px solid var(--accent-primary);
+  padding: 1.3rem 1.4rem;
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--easing-default),
+              transform var(--duration-fast) var(--easing-out);
+}
+.isu-road:hover { border-color: var(--color-verde); transform: translateY(-2px); }
+.isu-road:hover .isu-col-title { color: var(--ink-primary); }
+
+/* La riga della slide-firma: una frase breve presa dal deck, sotto il lockup. */
+.isu-sig-line {
+  margin-top: 1.9rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--ink-body);
+  max-width: 44ch;
+  text-align: center;
+}

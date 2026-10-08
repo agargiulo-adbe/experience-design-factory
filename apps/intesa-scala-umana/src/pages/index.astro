@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsuNavigation from '../components/IsuNavigation.astro';
+import CoBrand from '../components/CoBrand.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { CHAPTERS } from '../data/chapters';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+// La copertina rende la riga del TIPO, mai una stringa a mano: così se la
+// tassonomia cambia, cambiano tutte le copertine insieme.
+const TYPE = EXPERIENCE_TYPES.prospettiva;
+---
+<BaseLayout title="Su scala umana · Adobe × Intesa Sanpaolo">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsuNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/' + CHAPTERS[0].slug)}>
+
+    <!-- ── Copertina ─────────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="left">
+      <div class="w-full max-w-6xl">
+        <!-- `hero` al posto dell'occhiello «Adobe × Intesa Sanpaolo»: lì il
+             lockup è contenuto, non chrome. La firma fissa si spegne da sola. -->
+        <CoBrand variant="hero" class="mb-7" />
+        <h1 class="isu-title text-[var(--ink-primary)]">Su scala umana</h1>
+        <hr class="isu-rule" />
+        <T
+          as="p"
+          class="isu-lead"
+          it="Contenuto, dati e ascolto alla scala della Banca dei Territori."
+          en="Content, data and listening at the scale of the Banca dei Territori."
+        />
+        <div class="mt-9 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <T
+            as="p"
+            class="text-sm font-bold tracking-wide text-[var(--ink-primary)]"
+            it={TYPE.coverLine.it}
+            en={TYPE.coverLine.en}
+          />
+          <T
+            as="p"
+            class="text-sm text-[var(--ink-note)]"
+            it="Milano · 22 ottobre 2026"
+            en="Milan · 22 October 2026"
+          />
+        </div>
+        <T
+          as="p"
+          class="isu-note mt-7"
+          it="Le quattro direttrici e le tre priorità sono quelle che ci avete indicato voi. I numeri della banca citata sono pubblicati da Adobe, con la fonte in pagina. Testo redatto con assistenza di AI generativa e verificato alla fonte."
+          en="The four directions and three priorities are the ones you pointed us to. The figures for the bank cited are published by Adobe, with the source on the page. Text written with generative AI assistance and verified against the source."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Il percorso ───────────────────────────────────────────────────── -->
+    <Slide id="slide-percorso" bg="secondary" align="left">
+      <div class="w-full max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Un’ora, quattro passaggi" en="One hour, four steps" />
+        <T as="h2" class="isu-title mt-3 text-[var(--ink-primary)]" it="Il percorso" en="The route" />
+        <hr class="isu-rule" />
+        <T
+          as="p"
+          class="isu-lead mb-8"
+          it="Il tempo buono di questo incontro è quello in cui parlate voi. Le quattro parti servono a tenere la rotta, non a riempire l’ora."
+          en="The good time in this meeting is the time you spend talking. The four parts are there to hold the course, not to fill the hour."
+        />
+        <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 auto-rows-fr" role="list">
+          {CHAPTERS.map((c) => (
+            <li role="listitem" class="h-full">
+              <a href={href(base, '/' + c.slug)} class="isu-road">
+                <span class="isu-num">{c.num}</span>
+                <T as="h3" class="isu-col-title" it={c.label.it} en={c.label.en} />
+                <T as="p" class="isu-col-sub" it={c.lead.it} en={c.lead.en} />
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
