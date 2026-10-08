@@ -23,6 +23,8 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /** Sfondo della prima slide: si precarica, se no la cover arriva a pezzi. */
+  preloadImage?: string;
 }
 
 const SITE_NAME = 'Su scala umana · Adobe × Intesa Sanpaolo';
@@ -32,6 +34,7 @@ const {
   description =
     'Contenuto, dati e ascolto alla scala della Banca dei Territori: le quattro direttrici che ci avete indicato, dove ci innestiamo e che cosa chiediamo. Prospettiva preparata dal team Adobe Italia.',
   noindex = true,
+  preloadImage,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
@@ -55,6 +58,7 @@ const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
     />
     <meta name="theme-color" content="#258900" />
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
     <script is:inline>
       (function () {
         var h = document.documentElement;
