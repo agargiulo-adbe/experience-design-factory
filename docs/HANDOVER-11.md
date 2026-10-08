@@ -353,6 +353,10 @@ emette i propri certificati — proporla sarebbe la frase che chiude la riunione
 
 ### 35.5 Il deck dell'8 ottobre — «Quando il cliente è vostro» (v6, 7 ott sera)
 
+> ⚠️ **Superata dalla v8** (§35.11, 8 ott): quattordici slide, quattro casi d'uso ereditati
+> dalla FSI Use Case Library, tre slide eliminate e due fatti rimessi a posto. Questa sezione
+> resta perché descrive la grafica e le regole che la v8 eredita intatte.
+
 `docs/Intesa Sanpaolo/output/20261008_Adobe_x_Intesa_Sanpaolo_Assicurazioni_Quando_il_cliente_e_vostro_v6.pptx`
 (+ PDF e `speaker_notes_8ott_v6.md`), da `output/build/build_slide_8ott_v6.py`. Le versioni
 precedenti restano accanto: v1 (quattro slide, §35.5-bis) e v3 (quella passata dal panel, §35.8).
@@ -566,3 +570,100 @@ pezzo sia vostro o di un'altra struttura del gruppo. Lo portiamo perché il pian
 inevitabile per qualcuno*». Se risponde «non è mia», si chiede di chi è e si chiude lì.
 Prodotto, se lo chiede: **Adobe GenStudio** sopra Experience Manager, che hanno già sui siti
 (naming verificato sul deck ufficiale FSI CXO POV 2026 e sulla memoria `adobe-product-naming-2026`).
+
+### 35.11 La v8 — i casi d'uso ereditati dalla libreria, e tre fatti rimessi a posto (8 ott)
+
+`…_Quando_il_cliente_e_vostro_v8.pptx` (+ PDF, `speaker_notes_8ott_v8.md`, render in
+`output/render_v8/`), da `output/build/build_slide_8ott_v8.py`. **Quattordici slide**, tutte
+vettoriali: 6 MB contro i 26 della v7.
+
+**Che cos'era la v7.** Montata a mano in PowerPoint sopra la v6, con tre slide incollate da deck
+Adobe: «Adobe is your AI toolkit» dal **FSI CXO POV 2026** e due casi d'uso in inglese dalla
+**FSI Use Case Library**. Diciassette slide e 26 MB, con i template altrui dentro.
+
+⚠️ **Due fatti verificati si erano persi nella riscrittura a mano**, tutti e due sulla slide
+dell'inventario: «Experience Manager … **è lo stesso strumento che fa i moduli e le lettere al
+cliente**» (falso: i moduli sono AEM Forms, SKU diverso sull'entità della banca) e «I documenti …
+**il motore c'è già, nel gruppo**» (falso per la lettura — esattamente l'errore che §35.5-ter
+aveva corretto il giorno prima, tornato ribattendo il testo a mano). La regola che ne esce vale
+oltre questa stanza: **la correzione di un fatto sopravvive solo se vive nel builder**. Una
+slide ritoccata a mano non porta con sé la verifica che l'ha prodotta.
+
+**I quattro casi d'uso sono EREDITATI, non inventati.** Lette tutte e 167 le slide della FSI Use
+Case Library e scelte cinque, ricontestualizzate sul loro perimetro:
+
+| Slide v8 | Fonte nella libreria | Che cosa è stato tolto, e perché |
+|---|---|---|
+| 06 · Dalla denuncia alla liquidazione | 151, *Streamline claims submission (FNOL)* | la **firma elettronica**: il gruppo è CA accreditata AgID ed emette i propri certificati |
+| 07 · Perché hanno chiamato | 98 *Identify breaks in the journey* + 150 *Detect points of failure* | — (ci confluiscono la figura «sei sistemi → un ambiente solo» e la referenza, dalla ex slide 07) |
+| 08 · Chi risponde non riparte da zero | 77, *Call center context* | **tutte le offerte allo sportello**: a chi chiama per un sinistro non si vende |
+| 09 · Gli stessi materiali | 119, *Scale GTM with GenAI-driven content creation* | «campagne» e «marketing»: qui sono materiali e informative per le reti |
+| 10 · Il modulo giusto | 137, *Cross-Sell Voluntary Benefits* | «proposte accettate senza intervento umano»: apre adeguatezza e POG |
+
+Le due slide inglesi incollate nella v7 sono quindi **ridisegnate nel linguaggio del deck**, non
+lasciate nel loro template: stessa grammatica delle altre (occhiello-indice, catena di tappe,
+blocchi etichettati), stessi token, tutto modificabile da chi riceve il file.
+
+**Tre slide eliminate, su richiesta dell'owner.**
+- «**Niente di quello che avete viene toccato**» (l'aggancio): lo schema diceva tutto e niente. La
+  sostanza — si legge attraverso le interfacce che ci sono, i vostri sistemi restano master — sta
+  ora in una riga sullo **stacco della seconda parte** e nelle note, detta a voce.
+- «**Le domande che vi farebbe il vostro compliance**»: non è un tema da primo incontro. La riga
+  che però non si poteva perdere — dentro un sinistro ci sono referti, e che cosa si legge si mette
+  per iscritto prima — è passata **sulla slide dei documenti**, dove il problema nasce.
+- «**Sapere da dove veniva chi vi chiama**»: stesso tema del caso d'uso delle chiamate, confluita lì.
+
+**L'appendice sul modulo è diventata un caso d'uso nel corpo** (slide 10), ed è l'unico argomento
+di ricavo in un deck altrimenti tutto di costo. **XME Protezione verificato sulla pagina pubblica
+di prodotto** l'8 ott: più di venti moduli in tre aree (Salute 10, Casa 7, Famiglia 3) e scala
+sconti **5 / 8 / 12 / 17 / 23 / 30%**, il 30% dal settimo modulo in su. Da lì la quarta tappa della
+catena, che è la lettura che probabilmente nessuno gli ha fatto: «**il gradino dello sconto — a sei
+moduli, il settimo vale il 30%**». ⚠️ Durata della polizza, rinnovo automatico e disdetta del
+singolo modulo dopo sei mesi **non stanno su quella pagina**: non sono stampati, e la prima tappa
+dice «la scadenza», generica apposta.
+
+**Il bilancio non ripete più i suoi numeri.** Sotto il grafico una banda sola dice come li
+leggiamo e perché la slide esiste: la crescita del 2026 esce dai contratti che ci sono già, e su
+una base ferma il margine si fa sul costo di servirla — l'expense ratio, la riga su cui è
+misurato. È il ponte fra la prima e la seconda parte.
+
+**La terza lettura rifatta.** «I canali nuovi sono vostri da abilitare» era un titolo che non
+significa niente: adesso è «**il canale senza filiali**», e il corpo dice che cosa sono i canali
+extra-captive (distribuire fuori dalla rete del gruppo) e perché contano (lì non c'è un gestore
+che spiega — spiegano i documenti e gli schermi).
+
+⚠️ **MyInsurance HUB, un mio errore dell'8 ott mattina.** L'ho tolto dalla slide scrivendo che il
+bilancio lo cita «come cantiere, non come risultato» e istruendo a chiederne lo stato. È falso:
+§35.9 porta il verbatim del bilancio 2025, «**è stato implementato** il nuovo sistema vita
+MyInsurance HUB, che ha consentito l'abilitazione alla vendita dei prodotti vita su tali canali».
+Nota corretta nel builder l'8 ott. **La lezione**: ho rifatto una ricerca pubblica invece di
+rileggere la sezione che quel fatto l'aveva già verificato alla fonte primaria. L'handover è la
+fonte verificata — ri-verificare da zero senza leggerlo costa un fatto.
+
+**Il vocabolario dei canali, chiarito** (domanda dell'owner, 8 ott). Sono **tre assi diversi** e
+confonderli si sente in sala: *captive / extra-captive* dice **di chi è la rete** (entrambi
+intermediati: una polizza venduta da una banca terza è extra-captive e diretta zero);
+*intermediato / diretto* dice **se c'è un intermediario** (il preventivatore auto sul loro sito è
+diretto, non extra-captive); e il **rapporto diretto con l'assicurato** nel post-vendita è un'altra
+cosa ancora — ce l'hanno già su otto milioni e mezzo di contratti, chiunque abbia venduto la
+polizza, ed è il perimetro di questo incontro. ⚠️ «Aumentare i clienti diretti» è **acquisizione**,
+fuori perimetro per scelta: la formulazione sicura è «quanta parte di quel rapporto si chiude senza
+che qualcuno debba intervenire» (operazioni in autonomia, pratiche chiuse al primo contatto).
+
+**Il file montato a mano, analizzato.** L'owner continua a lavorare nel `…_v7.pptx` dentro
+PowerPoint, fondendoci il contenuto della v8: al 8 ott quel file ha 14 slide e **tre difetti
+misurati** che la v8 non ha. (a) **La numerazione degli occhielli è rotta in tre punti**: la slide
+dei pilastri Adobe non ha numero, fra `04` e `06` manca il `05` (era l'aggancio), e il **`10` compare
+due volte** (su «Il modulo» e sulla chiusura). (b) **La chiusura è l'unica pagina di contenuto su
+fondo scuro**: nel deck il fondo scuro con immagine significa «si respira, non si legge» —
+copertina e due stacchi, che portano solo occhiello, titolo e una riga — mentre quella porta tre
+colonne con filetti ed etichette. (c) **Usa una terza griglia**: occhiello a y 1,90, titolo a 2,58
+a 40pt, corpo a 4,72, cioè né quella delle pagine di contenuto (0,62 / 1,18 a 36pt / ~2,4) né
+quella degli stacchi (2,55 / 3,26 a 44pt / 5,06); con la fascia 0→1,9 completamente vuota, velo al
+**62%** contro il 32% degli stacchi, e un inchiostro (`#7FD4E4`) che vive solo lì. Il contrasto
+invece **non** è un problema: misurato, 14-20:1 di mediana come le altre pagine scure.
+
+**Il titolo è deciso** (chiude la voce di backlog di §35.7): la copertina dice «**La Macchina che
+serve il Cliente**», con sottotitolo «Il post-vendita — documenti, sinistri, assistenza».
+
+⚠️ **La v8 non è passata dal panel.** I due giri del 6 ott coprono la v3.

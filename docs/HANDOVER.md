@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-07** (sera tardi).
+> Documento di passaggio di consegne. Stato al **2026-10-08**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -9,6 +9,18 @@
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
 > `.md` costa ~20k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> ⏱️ **L'8 ottobre alle 11 c'è la stanza di Intesa Sanpaolo Assicurazioni**, e il deck ci va alla
+> **v8** (§35.11, Parte 11): quattordici slide, i **quattro casi d'uso ereditati dalla FSI Use Case
+> Library** di Adobe invece che inventati, tre slide eliminate su richiesta dell'owner, l'appendice
+> sul modulo promossa a capitolo con la scala sconti di XME Protezione verificata alla pagina di
+> prodotto. Due fatti verificati il 7 ott erano **tornati falsi** ribattendo il testo a mano in
+> PowerPoint: da lì la regola che vale oltre questa stanza — **la correzione di un fatto sopravvive
+> solo se vive nel builder**. ⚠️ Il panel copre la **v3**: due riscritture indietro, e un terzo giro
+> prima delle 11 non ci sta (voce P0 di §10). ⚠️ Esistono **due artefatti**: il file che l'owner monta
+> a mano in PowerPoint e la v8 del builder — e il primo ha tre difetti misurati che la seconda non ha
+> (numerazione degli occhielli rotta in tre punti, la chiusura come unica pagina di contenuto su fondo
+> scuro, una terza griglia): va deciso quale dei due va in sala.
 >
 > ✅ **Working tree pulito al 7 ott 2026.** Il 6 ottobre ha prodotto due cose. La prima: i dossier
 > interni hanno **un solo motore** (`packages/core/.../DossierPage.astro`) al posto di sei copie
@@ -72,8 +84,8 @@
 >
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: apre con i nomi di referenti
 > cliente dentro file tracciati su un repository pubblico — inventario rifatto il 7 ott, due spec
-> tracciate in più di quante se ne contassero — e il più urgente in agenda è il deck di **domani,
-> 8 ottobre**: il panel l'ha approvato nella versione v3, ma in sala va la v6.
+> tracciate in più di quante se ne contassero — e il più urgente in agenda è il deck di **oggi,
+> 8 ottobre, ore 11**: il panel l'ha approvato nella versione v3, ma in sala va la **v8**.
 
 ---
 
@@ -84,15 +96,15 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal 7 ott 2026 all'indietro, fino al 29 set.
-- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — da metà settembre al 2 set.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dall'8 ott 2026 all'indietro, fino al 2 ott.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 1 ott 2026 al 2 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
 - [Parte 7 — §26 FS Park × Trenitalia · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md).
 - [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank](./HANDOVER-08.md).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
-- [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla v6 con il perimetro allargato ai canali extra-captive.
+- [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d’uso ereditati dalla libreria FSI (§35.11).
 - [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
 - [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal 2 set 2026 all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti.
