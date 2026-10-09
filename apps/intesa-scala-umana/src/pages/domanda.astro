@@ -65,7 +65,7 @@ const domande = [
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Stacco di capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
@@ -131,9 +131,14 @@ const domande = [
         />
         <hr class="isu-rule mx-auto" />
 
-        <ul class="flex flex-col gap-5 mb-7 w-full" role="list">
+        {/* Quattro blocchi di pari dimensione su due righe, non un elenco:
+            l'elenco faceva partire la domanda corta da un'ascissa diversa (il
+            reset centra i paragrafi dentro una slide centrata) e si vedeva. In
+            griglia le quattro domande pesano uguale, che è il punto: nessuna
+            conta più delle altre. */}
+        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-2 auto-rows-fr mb-7 w-full" role="list">
           {domande.map((d) => (
-            <li role="listitem" class="isu-q min-w-0">
+            <li role="listitem" class="isu-q h-full min-w-0">
               <span class="isu-q-n" aria-hidden="true">{d.n}</span>
               <T as="p" class="isu-q-t" it={d.t.it} en={d.t.en} />
             </li>

@@ -13,9 +13,17 @@ interface Props {
   /** Show a small "← →" keyboard hint next to the progress counter on a cold
    *  visit (until the first slide advance). Off by default — opt-in per app. */
   hint?: boolean;
+  /**
+   * Scala il tipo sui viewport da MURO (≥2000px): vedi la regola più sotto nel
+   * foglio di stile. **Opt-in per app**, e non per prudenza generica: il tipo
+   * più grande cambia come il contenuto va a capo, e una composizione che sta
+   * in piedi a 1920 può collidere a 2560. Si accende dopo aver passato
+   * `pnpm --filter <app> audit:deck -- --tv` a 0 HARD, non prima.
+   */
+  wallScale?: boolean;
   class?: string;
 }
-const { nextHref, prevHref, hint = false, class: className } = Astro.props;
+const { nextHref, prevHref, hint = false, wallScale = false, class: className } = Astro.props;
 // Lo slug di progetto usato dall'Admin coincide con l'ultimo segmento di `base`
 // in ogni app (verificato su tutte). Ricavarlo qui evita di cablare una prop in
 // ogni BaseLayout: ogni deck, presente e futuro, eredita il gating dei capitoli.
@@ -24,6 +32,7 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
 
 <div
   data-deck
+  data-wall-scale={wallScale ? '' : undefined}
   data-deck-next={nextHref}
   data-deck-prev-href={prevHref}
   class:list={["deck fixed inset-0 overflow-hidden bg-[var(--surface-primary)]", className]}
@@ -281,15 +290,22 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
 
      `:has()` tiene la regola dentro le pagine che hanno davvero un deck: un
      dossier o una pagina di testo non si scala. Dove `:has()` non c'è, non
-     succede nulla e il deck resta com'era. */
+     succede nulla e il deck resta com'era.
+
+     OPT-IN PER APP (`wallScale` sul DeckContainer). Non è prudenza generica: il
+     tipo più grande cambia come il contenuto va a capo, e una composizione che
+     sta in piedi a 1920 può collidere a 2560. Misurato: accendendola su tutti i
+     deck insieme, un'altra experience usciva con dieci collisioni testo-su-testo
+     ai soli viewport da muro. Si accende per app, dopo `audit:deck -- --tv` a
+     0 HARD. */
   @media (min-width: 2000px) {
-    html:has([data-deck]) { font-size: 20px; }
+    html:has([data-deck][data-wall-scale]) { font-size: 20px; }
   }
   @media (min-width: 2560px) {
-    html:has([data-deck]) { font-size: 24px; }
+    html:has([data-deck][data-wall-scale]) { font-size: 24px; }
   }
   @media (min-width: 3200px) {
-    html:has([data-deck]) { font-size: 28px; }
+    html:has([data-deck][data-wall-scale]) { font-size: 28px; }
   }
 </style>
 

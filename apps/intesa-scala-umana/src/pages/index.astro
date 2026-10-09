@@ -3,30 +3,43 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
 import CoBrand from '../components/CoBrand.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { CHAPTERS } from '../data/chapters';
-import bgCover from '../assets/generated/bg/cover-scala.jpg';
 import bgPercorso from '../assets/generated/bg/light-percorso.jpg';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+/* La clip della copertina. Sta sul Release `media` come tutte le altre: i .mp4
+   non entrano nel repo. Ricucita con `pnpm loop:seamless --boomerang`, perché
+   la luce deriva lungo i cinque secondi e nessuna dissolvenza faceva combaciare
+   testa e coda (39,7 → 44,5 dB, riferimento 49,2). */
+const COVER_VIDEO =
+  'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/isu-cover.loop.mp4';
 // La copertina rende la riga del TIPO, mai una stringa a mano: se la tassonomia
 // cambia, cambiano tutte le copertine insieme.
 const TYPE = EXPERIENCE_TYPES.prospettiva;
 ---
-<BaseLayout title="Su scala umana · Adobe × Intesa Sanpaolo" preloadImage={bgCover.src}>
+<BaseLayout title="Su scala umana · Adobe × Intesa Sanpaolo" preloadImage={`${base.replace(/\/?$/, '/')}media/isu-cover.poster.jpg`}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/' + CHAPTERS[0].slug)}>
+  <DeckContainer wallScale nextHref={href(base, '/' + CHAPTERS[0].slug)}>
 
     <!-- ── Copertina ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg isu-bg--cover" style={`--bg-src: url(${bgCover.src})`}></div>
+    <Slide id="slide-cover" bg="inverse" align="center" data-audio="loud" data-made-with="Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={COVER_VIDEO}
+        poster={`${base.replace(/\/?$/, '/')}media/isu-cover.poster.jpg`}
+        scrim="isu-scrim-cover"
+        opacity={0.42}
+      />
       <div class="isu-wrap max-w-5xl">
         <!-- `hero` al posto dell'occhiello «Adobe × Intesa Sanpaolo»: lì il
              lockup è contenuto, non chrome. La firma fissa si spegne da sola. -->

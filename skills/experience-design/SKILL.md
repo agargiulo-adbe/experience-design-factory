@@ -29,6 +29,17 @@ quella regola. Lì stanno anche le dieci regole di marchio del .pptx verificate 
 la catena `pptx:layouts → pptx:find → pptx:take → audit:pptx`, e che cosa funziona davvero
 quando si eredita una slide da una libreria Adobe.
 
+## Step 0-ter — Il guscio sensoriale (marchio, movimento, suono, scala)
+Quattro cose si vedono prima che si legga una riga, e nessun check le fa fallire:
+il **marchio** (favicon geometrico + icone + anteprima del link, da `pnpm brand:icons`),
+il **movimento** (clip in loop su copertina e chiusura, `pnpm loop:seamless`, con
+`--boomerang` quando la clip deriva), il **suono** (`@edf/core/blocks/DeckAudio.astro`:
+traccia Adobe Stock licenziata, spenta di default, livello per slide) e la **scala**
+(il tipo cresce col muro: la radice scala sopra i 1920, gate `audit:deck -- --tv`).
+Comandi, trappole e checklist in `references/sensory-shell.md`. Lì stanno anche le tre
+collisioni che l'audit NON vede (nav, co-brand, credito, comando audio) e la regola che
+le chiude: mentre si legge un blocco aperto, il contorno arretra.
+
 ## Method
 1. **Brand Research** — values, audience, strategy, tone of voice.
 2. **Design Tokens** — 3-level system (primitive → semantic → component) from brand guidelines.

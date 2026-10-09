@@ -73,10 +73,11 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
 - `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `poste-sei-domande`, `console`, `factory-showcase`, `factory-hub`)
-- `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema.
+- `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema. **`--tv`** aggiunge 2560×1440 e 3840×2160: si lancia quando si tocca la composizione e prima di una proiezione su parete.
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
-- `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente).
+- `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente; **`--boomerang`** quando la clip *deriva* e nessuna dissolvenza fa combaciare testa e coda: andata e ritorno, il giro si chiude per costruzione).
+- `pnpm brand:icons <app> --title "…" --sub "…"` — dal `favicon.svg` disegnato a mano rende `icon-192.png`, `apple-touch-icon.png` e `og.png`; la palette la legge dal marchio, così le icone non divergono da lui.
 - `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
@@ -373,6 +374,43 @@ c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un dif
 - Residuo noto e accettato: il `loop` nativo costa **un tick di compositor (~17 ms, un
   fotogramma)** sul giro. È il restart del decoder, non un salto di contenuto.
 
+### Il guscio sensoriale: marchio, movimento, suono, scala (BINDING, ogni experience)
+Quattro cose si vedono prima che si legga una riga, e **nessun check le fa fallire**.
+Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-shell.md`.
+- **Marchio.** Ogni experience ha il suo `public/favicon.svg`: una forma **geometrica**
+  presa dal disegno che regge il deck, mai una lettera (a 16px un glifo sembra un
+  carattere non caricato) e mai il logo del cliente (quello vive nel co-brand).
+  `pnpm brand:icons` rende icone e `og.png` **dal favicon**. L'anteprima del link serve
+  soprattutto ai deck `noindex`: chi lo riceve in chat vede comunque il riquadro.
+- **Movimento.** La clip in loop sta su **copertina e chiusura**, dove non si parla; in
+  mezzo ruba lo sguardo. Prompt con camera bloccata e `pan, tilt, zoom, dolly` nel
+  negative, se no il modello dà una carrellata. Se la clip deriva, `--boomerang`. Una
+  clip generata è quasi sempre più luminosa dell'immagine ferma che sostituisce: **lo
+  scrim va ricalibrato guardando lo screenshot col titolo sopra**.
+- **Suono.** `@edf/core/blocks/DeckAudio.astro`: traccia **Adobe Stock licenziata**
+  (niente API che genera musica; licenziare consuma una licenza → **si chiede prima**),
+  ricucita sul giro, sul Release `media`, con `provenance.audio.json`. Parte **spenta**
+  con il comando in vista — il browser pretende comunque un gesto, quindi «acceso di
+  default» non esiste, esiste «acceso al primo clic», che per chi apre il link è musica a
+  sorpresa. Sale su `data-audio="loud"` (copertina e chiusura), velo altrove;
+  dissolvenze mai salti; tace a scheda nascosta; sopravvive agli swap SPA.
+- **Scala.** Il tetto `clamp(…, 1.125rem)` della radice è già raggiunto a 1600px: oltre,
+  **il tipo non cresceva più** (misurato: a 3840 il corpo restava a 18,4px e il contenuto
+  copriva il 34% della larghezza). `DeckContainer` scala la **radice** a 20/24/28px sopra
+  2000/2560/3200 — così crescono insieme tipo e `max-w-*` in rem — e **parte sopra i
+  1920**, per non invalidare i viewport già verificati. È **opt-in per app**
+  (`<DeckContainer wallScale>`): accesa su tutti i deck insieme, un'altra experience
+  usciva con dieci collisioni testo-su-testo ai soli viewport da muro. Si accende dopo
+  `audit:deck -- --tv` a **0 HARD**, mai prima.
+- **Quello che l'audit non vede.** Il check `b` guarda i comandi del deck: **non** la nav
+  dell'app, **non** la firma co-brand, **non** il credito «creato con», **non** il comando
+  audio. Con un blocco aperto su schermo basso ci finiscono sopra. La regola che chiude il
+  caso: `HowItWorks` marca `html[data-hiw-open]` e **la pelle fa arretrare il contorno**.
+- **Griglia prima dell'elenco.** Quattro voci brevi in colonna si disallineano da sole (il
+  reset centra i paragrafi con `max-width`, e `m` non lo coglie perché guarda solo i figli
+  diretti): vanno in **griglia 2×2 a blocchi pari**, e ogni blocco a bandiera dentro un
+  componente si difende con `margin-inline: 0` a specificità sufficiente.
+
 ### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
 `audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
 **compri l'argomento**. Prima della consegna si lancia la skill **`panel-review`** (canonica in
@@ -429,6 +467,8 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
   `preload="auto"` + scrim). Il `src` deve essere una clip **ricucita** (`pnpm loop:seamless`).
 - `blocks/MadeWith.astro` — il credito «creato con»: i prodotti Adobe usati per creare
   gli asset della slide attiva. Una riga nel BaseLayout, `data-made-with` sulla slide.
+- `blocks/DeckAudio.astro` — il letto sonoro: spento di default, livello per slide (`data-audio="loud"`), dissolvenze, sopravvive agli swap SPA.
+- `blocks/HowItWorks.astro` — «Scopri come»: il dettaglio che si apre sul posto; marca `html[data-hiw-open]` perché la pelle faccia arretrare il contorno. Ri-misurato dal check `exp`.
 - `blocks/CoBrand.astro` — la firma «Adobe × Brand». `chrome` su ogni slide (una riga nel
   BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
 - `blocks/i18n/T.astro`, `LangToggle.astro` — bilingual text + language switch.

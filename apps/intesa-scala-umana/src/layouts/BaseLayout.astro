@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
 import MadeWith from '@edf/core/blocks/MadeWith.astro';
+import DeckAudio from '@edf/core/blocks/DeckAudio.astro';
 
 /**
  * BaseLayout — «Su scala umana · Adobe × Intesa Sanpaolo» (Prospettiva).
@@ -38,6 +39,10 @@ const {
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
+/* La traccia sta sul Release `media` come i video: gli asset pesanti non
+   entrano nel repo. Provenienza in `public/media/provenance.audio.json`. */
+const AUDIO_SRC =
+  'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/isu-ambient.loop.m4a';
 const isHome = Astro.url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '');
 // Guardia contro «SiteName | SiteName» sulla home (avvelena anche gli scraper
 // delle anteprime, che leggono <title>).
@@ -57,7 +62,24 @@ const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
     />
-    <meta name="theme-color" content="#258900" />
+    <meta name="theme-color" content="#0d2901" />
+
+    {/* Il marchio: la pila dell'innesto, lo stesso disegno che regge il deck.
+        PNG e anteprima si rendono dal favicon con `pnpm brand:icons`, così non
+        possono divergere dal marchio. */}
+    <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
+    <link rel="icon" type="image/png" sizes="192x192" href={`${base.replace(/\/?$/, '/')}icon-192.png`} />
+    <link rel="apple-touch-icon" href={`${base.replace(/\/?$/, '/')}apple-touch-icon.png`} />
+
+    {/* L'anteprima quando il link finisce in una chat. `noindex` riguarda i
+        motori di ricerca; chi riceve il link per messaggio vede comunque il
+        riquadro, e senza og è un rettangolo vuoto. */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={docTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${base.replace(/\/?$/, '/')}og.png`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
     {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
     <script is:inline>
       (function () {
@@ -87,5 +109,11 @@ const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_
          metterebbe «Adobe Firefly» anche sulle slide senza immagine, che è una
          dichiarazione falsa e non una scorciatoia grafica. -->
     <MadeWith />
+    <!-- Il letto sonoro. Parte SPENTO, con il comando in vista: il browser
+         pretende comunque un gesto, e chi riceve il link non deve trovarsi la
+         musica addosso. Sale su copertina e chiusura (`data-audio="loud"`),
+         resta un velo altrove. Traccia: Adobe Stock 511567171 «Ambient Minimal
+         Corporate», licenziata, ricucita sul giro e ospitata sul Release. -->
+    <DeckAudio src={AUDIO_SRC} loud={0.42} soft={0.1} labels={{ it: 'Audio', en: 'Audio' }} />
   </body>
 </html>

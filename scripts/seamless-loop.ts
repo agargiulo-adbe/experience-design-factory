@@ -14,7 +14,18 @@
  * qualsiasi, il loop è a posto — ed è un numero, non un'impressione.
  *
  *   pnpm loop:seamless <clip.mp4> [--fade 0.75] [--out <file.mp4>] [--poster]
+ *   pnpm loop:seamless <clip.mp4> --boomerang  → andata e ritorno (vedi sotto)
  *   pnpm loop:seamless --check <clip.mp4>      → solo verifica, exit ≠0 se il giro salta
+ *
+ * Quando la dissolvenza non basta: se la clip DERIVA (la luce cresce, la materia
+ * si sposta), testa e coda sono immagini diverse e nessuna dissolvenza le fa
+ * combaciare — si alza `--fade` e il giro resta sotto il riferimento. Lì serve
+ * `--boomerang`: andata e ritorno, cioè la clip seguita da sé stessa al
+ * contrario. Il giro si chiude per costruzione, perché l'ultimo fotogramma è
+ * identico al primo. La clip dura il doppio e il moto si inverte a metà: su uno
+ * sfondo con un gesto quasi fermo non si vede, su un movimento riconoscibile
+ * (qualcosa che cade, che scorre in una direzione sola) sì — lì si rigenera la
+ * clip, non si bara col montaggio.
  *
  * Richiede ffmpeg/ffprobe nel PATH.
  */
@@ -99,6 +110,28 @@ async function stitch(input: string, output: string, fade: number): Promise<void
   ]);
 }
 
+/**
+ * Andata e ritorno: la clip, poi sé stessa al contrario. Dal segmento invertito
+ * si tolgono il primo e l'ultimo fotogramma, che sono i duplicati esatti della
+ * fine dell'andata e dell'inizio del giro dopo: senza questo si vedono due
+ * fotogrammi fermi, uno per capo.
+ */
+async function boomerang(input: string, output: string): Promise<void> {
+  const n = await frameCount(input);
+  if (n < 8) throw new Error(`clip troppo corta per l'andata e ritorno (${n} fotogrammi)`);
+  const filter =
+    `[0:v]split[fwd][rev];` +
+    `[rev]reverse,trim=start_frame=1:end_frame=${n - 1},setpts=PTS-STARTPTS[rev];` +
+    `[fwd][rev]concat=n=2:v=1:a=0,format=yuv420p[v]`;
+  await run('ffmpeg', [
+    '-y', '-v', 'error', '-i', input,
+    '-filter_complex', filter, '-map', '[v]', '-an',
+    '-c:v', 'libx264', '-preset', 'slow', '-crf', '20',
+    '-pix_fmt', 'yuv420p', '-movflags', '+faststart',
+    output,
+  ]);
+}
+
 /** Il poster DEVE essere il primo fotogramma della clip ricucita, non dell'originale. */
 async function writePoster(clip: string, poster: string): Promise<void> {
   await run('ffmpeg', ['-y', '-v', 'error', '-i', clip, '-frames:v', '1', '-q:v', '4', poster]);
@@ -112,6 +145,7 @@ async function main() {
   const argv = process.argv.slice(2);
   const check = argv.includes('--check');
   const wantPoster = argv.includes('--poster');
+  const wantBoomerang = argv.includes('--boomerang');
   const flag = (name: string) => {
     const i = argv.indexOf(name);
     return i !== -1 && argv[i + 1] ? argv[i + 1] : undefined;
@@ -138,16 +172,24 @@ async function main() {
 
   const out = flag('--out') ?? input.replace(/\.mp4$/i, '.loop.mp4');
   const before = await measureSeam(input);
-  await stitch(input, out, fade);
+  if (wantBoomerang) await boomerang(input, out);
+  else await stitch(input, out, fade);
   const after = await measureSeam(out);
   if (wantPoster) await writePoster(out, out.replace(/\.loop\.mp4$/i, '.poster.jpg').replace(/\.mp4$/i, '.poster.jpg'));
 
-  console.log(`\n${path.basename(input)} → ${path.basename(out)}  (coda di ${fade}s dissolta sulla testa)`);
+  const how = wantBoomerang ? 'andata e ritorno' : `coda di ${fade}s dissolta sulla testa`;
+  console.log(`\n${path.basename(input)} → ${path.basename(out)}  (${how})`);
   console.log(`  giro  prima : ${db(before.seam)}`);
   console.log(`  giro  dopo  : ${db(after.seam)}`);
   console.log(`  riferimento : ${db(after.adjacent)}  (due fotogrammi adiacenti)`);
   if (wantPoster) console.log('  poster      : primo fotogramma della clip ricucita');
-  console.log(after.ok ? '\nPASS — il loop non fa più stacco.\n' : '\nATTENZIONE — il giro resta sotto il riferimento: prova un --fade più lungo.\n');
+  console.log(
+    after.ok
+      ? '\nPASS — il loop non fa più stacco.\n'
+      : wantBoomerang
+        ? '\nATTENZIONE — il giro salta anche con andata e ritorno: la clip va rigenerata.\n'
+        : '\nATTENZIONE — il giro resta sotto il riferimento: alza --fade, e se la clip deriva usa --boomerang.\n',
+  );
   if (!after.ok) process.exit(1);
 }
 
