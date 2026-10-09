@@ -102,9 +102,9 @@ Le card di `#proof` mostrano il **tipo** (`exp-type`, da `EXPERIENCE_TYPES[e.typ
 
 
 ### 13.9 Panel review giro 2 — personas reali (2026-10-01, sera)
-Secondo e **ultimo** giro (la skill si ferma a due). Personas: **cinque persone reali** — Mengoli
-(Managing Director), Capuano (AE servizi finanziari), De Silvestri (Data Solutions Consultant),
-Oggioni (Manager Enterprise Sales, nuovo), Di Loreto (Partner Manager, nuovo) — più il seggio di chi
+Secondo e **ultimo** giro (la skill si ferma a due). Personas: **cinque persone reali** — il Managing Director
+(Managing Director), l'AE servizi finanziari (AE servizi finanziari), il Data Solutions Consultant (Data Solutions Consultant),
+il Manager Enterprise Sales (Manager Enterprise Sales, nuovo), il Partner Manager (Partner Manager, nuovo) — più il seggio di chi
 guida il Solution Consulting in Italia, che **nessuna fonte pubblica nomina**. Verdetto in
 `docs/Factory/PANEL-VERDICT-2026-10-01-round2.md`, JSON in `docs/Factory/panel/2026-10-01-round2/`
 (entrambi git-ignorati). 66 claim verificati su 24 unità.

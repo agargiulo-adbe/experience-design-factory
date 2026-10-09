@@ -413,6 +413,34 @@ Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-sh
   diretti): vanno in **griglia 2×2 a blocchi pari**, e ogni blocco a bandiera dentro un
   componente si difende con `margin-inline: 0` a specificità sufficiente.
 
+### Il repo è pubblico: in un file tracciato va il RUOLO, mai il nome (BINDING)
+Ogni file tracciato è leggibile da chiunque su `raw.githubusercontent.com`, senza login. Un
+ritratto costruito da fonti pubbliche resta legittimo finché resta interno; pubblicato sul
+dominio di un repo che porta il nome Adobe diventa un trattamento di dati personali di
+dipendenti identificabili di clienti. Quindi: nei file tracciati — **handover e migrazioni
+compresi** — si scrive «il Responsabile Monitoraggio Canali Digitali», non il cognome; i nomi
+vivono in `docs/<Cliente>/` (git-ignorata) e nel dossier dietro il gate.
+**Non basta cercare i nomi.** Il 9 ott 2026 lo stesso difetto è uscito da tre porte diverse,
+e due non erano «un nome in un documento»:
+- **il contenuto nel bundle** — una pagina di dossier con il renderer copiato dentro l'app e
+  il testo scritto nel `.astro`: compilato e pubblicato. Il badge «Riservato» è una scritta,
+  `noindex` tiene fuori i motori di ricerca, non chi ha il link;
+- **il seed dentro una migrazione tracciata** — `0008_restricted_docs.sql` portava otto persone
+  del cliente con l'URL del loro profilo LinkedIn. Una migrazione tracciata porta **schema e
+  policy**, mai contenuto;
+- **lo slug** di una riga `restricted_docs`: il wrapper lo stampa nell'HTML **pubblico**, perché
+  il gate protegge il contenuto, non la pagina che lo va a prendere. Lo slug prende il nome
+  dell'**experience**, mai della persona.
+Il gate è **`pnpm audit:leaks`** (`scripts/tracked-leaks-audit.mjs`): cerca le **forme** —
+profili LinkedIn, seed dentro migrazioni, pagine di dossier che non usano il motore condiviso,
+slug che non partono dal nome dell'experience — più i cognomi di `docs/.names-watchlist.txt`,
+git-ignorata (un elenco di cognomi in un repo pubblico sarebbe la fuga stessa). **Deve uscire
+a 0.** Un nome citato come **autore di una frase pubblica con la fonte accanto** è
+un'attribuzione, non un ritratto: si dichiara nel file col marcatore
+`leaks-audit: attribuzione pubblica`, così l'eccezione è una scelta visibile in diff.
+La bonifica dello **storico** git è una decisione dell'autore, non un'azione da prendere da
+soli. Memoria: `client-names-public-repo`.
+
 ### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
 `audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
 **compri l'argomento**. Prima della consegna si lancia la skill **`panel-review`** (canonica in

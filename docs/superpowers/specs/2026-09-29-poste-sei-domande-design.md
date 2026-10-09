@@ -1,13 +1,13 @@
 # «Sei domande» — Adobe × Poste Italiane · design spec (2026-09-29)
 
-**Cliente / interlocutore.** Poste Italiane · Giuseppe Sperandeo, Responsabile Monitoraggio
+**Cliente / interlocutore.** Poste Italiane · il Responsabile Monitoraggio Canali Digitali, Responsabile Monitoraggio
 Canali Digitali, Admin di Adobe Analytics. Pubblico: solo lui. Taglio tecnico‑operativo che
 fa vedere il valore *interno* (tempo, autonomia dall'IT, governance) senza cambiare stack.
 
 **Assunzioni (decise da Antonio il 29/09).** Rinnovo Analytics dato per fatto. AEM Forms e
 Commerce fuori (altre divisioni). Niente CJA (costo di re‑implementazione FE). Stack:
 AppMeasurement + Adobe Launch. «Coworker» = **Adobe CX Enterprise Coworker**. Demo su sandbox
-Adobe. Adobe Target = evolutiva di interesse ma non di sua responsabilità (Gangemi).
+Adobe. Adobe Target = evolutiva di interesse ma non di sua responsabilità (il Data Officer).
 
 **App.** `apps/poste-sei-domande` · base `/experience-design-factory/poste-sei-domande/` ·
 bilingue **IT default + EN** (`<T en it>`), light‑dominant (poste.it è chiaro), dark per le
@@ -17,7 +17,7 @@ sistema `#0047bb`, blu `#4270e4`, link `#337ab7`, azzurro `#f2f8ff`, giallo di m
 uso sul sito, distribuibile). Classi `.sd-*`. Firma Adobe × Poste Italiane sul motore
 (`CoBrand`, ripiego wordmark: nessun SVG ufficiale trovato su poste.it/posteitaliane.it).
 
-**Struttura — sei capitoli, ognuno è una domanda di Giuseppe.** Ogni capitolo: cover con la
+**Struttura — sei capitoli, ognuno è una domanda del referente.** Ogni capitolo: cover con la
 domanda → «Oggi» (come si fa in Workspace) → «Con Coworker» (mock chat) → seconda domanda /
 approfondimento → «Cosa ti porti a casa» (valore + una riga di cautela).
 - `index` 00 — cover (hero lockup) · «Il vostro tracciamento» (SuperApp, 18,2 mln utenti, una
