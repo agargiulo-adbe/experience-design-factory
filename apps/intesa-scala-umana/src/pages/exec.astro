@@ -10,6 +10,7 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SOURCES } from '../data/sources';
+import { NUMERI as numeri, numeroInRiga, strati as pila, passi as proposta, ASK } from '../data/contenuti';
 import bgCover from '../assets/generated/bg/dark-exec.jpg';
 import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
 import bgLettura from '../assets/generated/bg/light-lettura.jpg';
@@ -31,12 +32,6 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const TYPE = EXPERIENCE_TYPES.prospettiva;
 
-const numeri = [
-  { v: 95, label: '95%', l: { it: 'dei prodotti per i privati si gestisce già digitalmente', en: 'of retail products can already be handled digitally' } },
-  { v: 70, label: '~70%', l: { it: 'dei customer journey è già omnicanale', en: 'of customer journeys are already omnichannel' } },
-  { v: 64, label: '64%', l: { it: 'delle applicazioni era in cloud a fine 2025, verso il 100% nel 2029', en: 'of applications were in the cloud at end-2025, heading to 100% in 2029' } },
-  { v: 100, label: '~150', l: { it: 'use case di AI sono già in produzione', en: 'AI use cases are already in production' } },
-];
 
 /* Dal basso: fondazione, poi il 2º tempo, poi il 1º — così dall'alto si legge
    nell'ordine in cui le due idee si raccontano. Stessa regola del percorso
@@ -44,18 +39,7 @@ const numeri = [
 /* Niente «tempi» e niente elenco di prodotti: la sintesi dice che cosa cambia.
    Stesso ordine e stesse parole del percorso lungo — se i due divergono, è il
    lungo che comanda. */
-const strati = [
-  { kind: 'base' as const, t: 'Quello che avete già', s: 'Analytics, già in uso e già in cloud · Experience Manager e Forms, dentro la banca' },
-  { kind: 'add' as const, t: 'Una persona sola, non cinque conteggi', s: 'Seguire la stessa persona dal primo annuncio alla firma, e misurare dove si perde' },
-  { kind: 'add' as const, t: 'Decidere che cosa arriva, a chi', s: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già' },
-  { kind: 'add' as const, t: 'Produrre contenuto alla scala della banca', s: 'Centinaia di offerte senza moltiplicare le mani, con le parti obbligatorie intatte' },
-];
 
-const passi = [
-  { n: '01', t: { it: 'Un tavolo di lavoro', en: 'A working session' }, b: { it: 'Mezza giornata con canali, contenuto e dati. Non una presentazione.', en: 'Half a day with channels, content and data. Not a presentation.' } },
-  { n: '02', t: { it: 'Due casi scelti da voi', en: 'Two cases you choose' }, b: { it: 'Sui vostri processi e sui vostri vincoli.', en: 'On your processes and your constraints.' } },
-  { n: '03', t: { it: 'Una risposta netta', en: 'A clear answer' }, b: { it: 'Che cosa conviene fare, che cosa no, in che ordine. Per iscritto, entro fine anno.', en: 'What is worth doing, what is not, in what order. In writing, before the year is out.' } },
-];
 ---
 <BaseLayout title="In dieci minuti" preloadImage={bgCover.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -96,7 +80,7 @@ const passi = [
           {numeri.map((n) => (
             <li role="listitem" class="flex flex-col items-center gap-3 min-w-0 h-full" data-display>
               <IsuGauge value={n.v} label={n.label} />
-              <T as="p" class="isu-col-sub" it={n.l.it} en={n.l.en} />
+              <T as="p" class="isu-col-sub" it={numeroInRiga(n).it} en={numeroInRiga(n).en} />
             </li>
           ))}
         </ul>
@@ -145,7 +129,7 @@ const passi = [
         <T as="p" class="slide-eyebrow" it="Su quello che avete già" en="On what you already have" />
         <T as="h2" class="isu-title mt-3 text-[var(--ink-inverse)]" it="Dove ci innestiamo" en="Where we plug in" />
         <hr class="isu-rule mx-auto" />
-        <IsuStack layers={strati} class="mb-6" />
+        <IsuStack layers={pila('breve')} class="mb-6" />
         <T
           as="p"
           class="isu-col-sub mx-auto"
@@ -167,7 +151,7 @@ const passi = [
         <T as="h2" class="isu-title text-[var(--ink-inverse)]" it="Come andiamo avanti" en="How we move forward" />
         <hr class="isu-rule mx-auto" />
         <ol class="isu-path mb-8" role="list">
-          {passi.map((p) => (
+          {proposta('breve').map((p) => (
             <li role="listitem" class="isu-path-step">
               <span class="isu-path-dot" aria-hidden="true"></span>
               <span class="isu-num block mb-1">{p.n}</span>
@@ -179,8 +163,8 @@ const passi = [
         <T
           as="p"
           class="isu-ask mx-auto"
-          it="Un tavolo in due: voi un referente, due casi e una data. Noi le persone, la piattaforma e la risposta scritta."
-          en="A table for two: you bring one contact, two cases and a date. We bring the people, the platform and the written answer."
+          it={ASK.it}
+          en={ASK.en}
         />
       </div>
     </Slide>

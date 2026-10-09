@@ -437,6 +437,48 @@ posizionamenti: tutto.
   confermato, da chiedere», mai «falso» (vedi `fonti-cliente-gerarchia`).
 Memoria: `user-claims-are-hypotheses`.
 
+### Un taglio corto non è una copia: è la stessa fonte, più corta (BINDING)
+Molti deck hanno due percorsi — quello intero e il «taglio da N minuti» per chi non ha
+l'ora. Finché i due tengono **due copie a mano** degli stessi blocchi, divergono: non è
+una possibilità, è una certezza, e diverge sempre il taglio corto, perché le correzioni
+arrivano sul lungo. Su Intesa è successo nello stesso giro in cui era scritto nei commenti
+«se divergono comanda il lungo»: il titolo di uno strato e una riga che diceva il falso su
+Analytics erano stati corretti solo nel percorso intero.
+- I blocchi condivisi vivono in **`src/data/<nome>.ts`**, definiti **una volta**, bilingui.
+- Dove il taglio corto ha bisogno di meno parole, la versione corta è **un campo accanto**
+  a quella lunga (`sBreve`, `bBreve`), mai un'altra voce: titoli, numeri, ordine e
+  etichette restano **fisicamente lo stesso oggetto**. Si può accorciare una descrizione,
+  non cambiare che cosa dice la slide.
+- Una funzione sola serve le due forme (`strati('lungo' | 'breve')`), e le differenze che
+  dipendono dal percorso — per esempio i link alle slide di dettaglio, che nel taglio
+  corto non esistono — le decide lei, non la pagina.
+- **L'ask sta in un posto solo.** Due versioni della richiesta sono il modo più rapido di
+  sembrare confusi davanti a un cliente.
+Una regola affidata alla memoria di chi modifica non è una regola. Memoria:
+`taglio-corto-stessa-fonte`.
+
+### Il marchio in pagina non lo aggiorna `brand:icons` (BINDING)
+`pnpm brand:icons` rende `icon-192`, `apple-touch-icon` e `og.png` **dal `favicon.svg`**.
+Il marchio che si vede *dentro* l'app — quello nella nav — è un **SVG inline** in un
+componente, e lo script non lo tocca: un favicon nuovo lascia la barra alla versione
+vecchia, e chi guarda la pagina conclude, correttamente, che il logo non è cambiato.
+Quando cambia il favicon si cambiano **entrambi**, e si verifica guardando la pagina, non
+la scheda del browser.
+
+### Un velo si calibra sulla misura, non sulla presenza del video (BINDING)
+«La clip c'è» non vuol dire «la clip si vede». Su Intesa la copertina aveva il `<video>`
+in pagina, in riproduzione, con il `loop` giusto — e un'opacità di 0,42 sotto uno scrim
+radiale a 0,84 lasciava passare il 6%: la differenza fra due fotogrammi a 2,5 s di
+distanza era **0,046 livelli su 255**, sotto qualunque soglia percettiva. Si misura:
+- **movimento** = differenza media fra due screenshot a qualche secondo di distanza (sotto
+  ~0,1 su 255 non si vede; la stessa misura sulla clip nuda dice quanto margine c'è);
+- **contrasto nel caso peggiore**, non in media: si nasconde il testo, si fotografa il
+  fondo su 8-10 istanti del giro e si prende il punto **più chiaro** sotto ogni riga —
+  titolo grande ≥3:1, testo normale ≥4,5:1. Una cresta luminosa che passa dietro al lead
+  una volta per giro basta a bocciare la slide, e la media non la vede.
+Dove le due misure confliggono, si rinforza il velo **solo al centro**, dove sta il testo,
+lasciando leggeri i bordi: il movimento resta visibile dove non c'è niente da leggere.
+
 ### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
 `audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
 **compri l'argomento**. Prima della consegna si lancia la skill **`panel-review`** (canonica in

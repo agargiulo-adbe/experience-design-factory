@@ -8,6 +8,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import { passi as proposta, ASK } from '../data/contenuti';
 import bgRotta from '../assets/generated/bg/stacco-rotta.jpg';
 
 // La clip ricucita sta sul Release `media`, non nel repo (regola di .gitignore).
@@ -22,32 +23,6 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const passi = [
-  {
-    n: '01',
-    t: { it: 'Un tavolo di lavoro', en: 'A working session' },
-    b: {
-      it: 'Mezza giornata con le persone che il lavoro lo fanno: canali, contenuto, dati. Non una presentazione.',
-      en: 'Half a day with the people who do the work: channels, content, data. Not a presentation.',
-    },
-  },
-  {
-    n: '02',
-    t: { it: 'Due casi scelti da voi', en: 'Two cases you choose' },
-    b: {
-      it: 'Si guardano sui vostri processi e sui vostri vincoli, non sui nostri esempi.',
-      en: 'We look at them against your processes and your constraints, not our examples.',
-    },
-  },
-  {
-    n: '03',
-    t: { it: 'Una risposta netta', en: 'A clear answer' },
-    b: {
-      it: 'Che cosa conviene fare, che cosa no, e in che ordine. Per iscritto, entro fine anno.',
-      en: 'What is worth doing, what is not, and in what order. In writing, before the year is out.',
-    },
-  },
-];
 ---
 <BaseLayout title={ch.label.it} preloadImage={bgRotta.src}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -73,7 +48,7 @@ const passi = [
         <hr class="isu-rule mx-auto" />
 
         <ol class="isu-path mb-9" role="list">
-          {passi.map((p) => (
+          {proposta('lungo').map((p) => (
             <li role="listitem" class="isu-path-step">
               <span class="isu-path-dot" aria-hidden="true"></span>
               <span class="isu-num block mb-1">{p.n}</span>
@@ -87,8 +62,8 @@ const passi = [
         <T
           as="p"
           class="isu-ask mx-auto"
-          it="Un tavolo in due: voi mettete un referente, due casi e una data. Noi le persone, la piattaforma e la risposta scritta."
-          en="A table for two: you bring one contact, two cases and a date. We bring the people, the platform and the written answer."
+          it={ASK.it}
+          en={ASK.en}
         />
         <T
           as="p"
