@@ -1,0 +1,90 @@
+---
+// ═══════════════════════════════════════════════════════════════════════════
+//  DocLayout — guscio minimo per il dossier interno gated di questa app.
+//
+//  Niente nav, niente deck, niente `@edf/core` oltre al motore del dossier:
+//  una pagina che si legge su un telefono venti minuti prima di una riunione
+//  non ha bisogno del resto dell'app, e il peso in più si paga in attesa.
+//
+//  Qui vive SOLO la mappatura della palette sul contratto `--dw-*` del motore
+//  condiviso (`@edf/core/blocks/doc/DossierPage.astro`). Il renderer sta nel
+//  core: migliorarlo lì migliora tutti i dossier.
+// ═══════════════════════════════════════════════════════════════════════════
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = '', noindex = false } = Astro.props;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+    />
+    <style is:global>
+      :root {
+        /* ── PALETTE «ORBITA» → contratto `--dw-*` ───────────────────────────
+           Gli stessi valori di `src/styles/global.css` dell'experience, non
+           una seconda palette: il dossier e il deck si aprono nella stessa
+           riunione e non devono sembrare due documenti di aziende diverse.
+
+           Un accento non è un inchiostro: ogni valore qui sotto è misurato
+           sul fondo #101114 (fumo), non scelto a occhio.
+             avorio #F7F5EF 17,3:1 · grigio-200 #D8D9D6 13,3:1
+             grigio-300 #AEB0AE 8,7:1 · grigio-400 #82858A 5,1:1
+             orbita #5AC8E1 9,7:1 · giallo #FFCE00 12,7:1 · ambra #FF9E2C 9,2:1
+           Il grigio-500 #565A62 dà 2,7:1 e quindi NON porta testo: resta un
+           colore di linea. */
+        --dw-bg: #101114;
+        --dw-tint: rgba(90, 200, 225, 0.12);
+        --dw-surface: rgba(32, 34, 42, 0.72);
+        --dw-surface-2: rgba(86, 90, 98, 0.22);
+        --dw-line: #2b2d36;
+
+        --dw-ink: #D8D9D6;        /* 13,3:1 — corpo del testo */
+        --dw-ink-soft: #AEB0AE;   /*  8,7:1 — note e metadati */
+        --dw-ink-faint: #82858A;  /*  5,1:1 — etichette minute */
+        --dw-ink-strong: #F7F5EF; /* 17,3:1 */
+
+        --dw-accent: #5AC8E1;     /*  9,7:1 — numeri, bullet, stato attivo */
+        --dw-fill: #5AC8E1;
+        --dw-on-fill: #101114;    /*  9,7:1 — inchiostro scuro sul pieno */
+        --dw-warn: #FFCE00;       /* 12,7:1 — il giallo del deck */
+        --dw-on-warn: #101114;    /* 12,7:1 — il bianco sul giallo dava 1,3:1 */
+        --dw-alt: #FF9E2C;        /*  9,2:1 — ruoli, sottotitoli, crediti */
+
+        --dw-font-display: 'Archivo', 'Helvetica Neue', sans-serif;
+        --dw-font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        background: var(--dw-bg);
+        color: var(--dw-ink);
+        font-family: var(--dw-font-body);
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      /* Serve davvero: la pagina nasconde il gate con `hidden`, ma .dw-state
+         dichiara display:flex e senza questa riga lo batte — il gate resterebbe
+         a schermo sopra il contenuto. */
+      [hidden] { display: none !important; }
+      @media print {
+        body { background: #fff; color: #000; }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

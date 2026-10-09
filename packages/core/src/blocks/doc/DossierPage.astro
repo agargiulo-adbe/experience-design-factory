@@ -69,10 +69,9 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       <p class="dw-bar-title" id="dw-bar-title">{title}</p>
       <p class="dw-bar-here" id="dw-bar-here" aria-hidden="true"></p>
       <div class="dw-bar-tools" id="dw-tools" hidden>
-        <div class="dw-lang" id="dw-lang" role="group" aria-label="Lingua / Language" hidden>
-          <button type="button" class="dw-lang-btn" data-lang="it" aria-pressed="true">IT</button>
-          <button type="button" class="dw-lang-btn" data-lang="en" aria-pressed="false">EN</button>
-        </div>
+        <!-- I bottoni li scrive il runtime: le lingue sono quelle che il
+             documento porta davvero, non due fisse nel markup. -->
+        <div class="dw-lang" id="dw-lang" role="group" aria-label="Lingua / Language" hidden></div>
         <button type="button" class="dw-btn-ghost" id="dw-toc-btn" aria-expanded="false" aria-controls="dw-toc-sheet" aria-label="Apri l’indice delle sezioni">
           <span aria-hidden="true">☰</span><span class="dw-lbl"> Indice</span>
         </button>
@@ -92,6 +91,15 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
         <button type="button" class="dw-btn-ghost" id="dw-toc-close" aria-label="Chiudi l’indice">✕</button>
       </div>
       <ol class="dw-toc" id="dw-toc-list"></ol>
+      <!-- La scelta della lingua, su telefono, vive qui e non nella barra.
+           Un bersaglio tattile non scende sotto 44px, quindi tre lingue nella
+           barra di un 320px costano più dello spazio che c'è: il badge
+           «Riservato» non si baratta per un selettore. Qui invece c'è posto,
+           e tre voci in fila si leggono meglio di tre quadratini. -->
+      <div class="dw-sheet-lang" id="dw-sheet-lang" hidden>
+        <p class="dw-sheet-h dw-sheet-h--sub">Lingua</p>
+        <div class="dw-lang dw-lang--sheet" id="dw-lang-sheet" role="group" aria-label="Lingua / Language"></div>
+      </div>
     </div>
   </nav>
   <div class="dw-scrim dw-noprint" id="dw-scrim" hidden></div>
@@ -126,8 +134,14 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   var railEl = $('dw-rail'), sheetEl = $('dw-toc-sheet'), scrimEl = $('dw-scrim');
   var content = null, spy = null;
   var LANG_KEY = 'edf:doc-lang';
+  // Le lingue del documento si ricavano dal contenuto (vedi langsOf), non da
+  // un elenco fisso: un dossier trilingue non va riscritto per essere letto.
+  // `langs` resta a ['it'] finché il contenuto non è caricato.
+  var LANG_PREF = ['it', 'en', 'fr', 'de', 'es', 'pt'];
+  var langs = ['it'];
   var lang = 'it';
-  try { var saved = localStorage.getItem(LANG_KEY); if (saved === 'it' || saved === 'en') lang = saved; } catch (_) {}
+  var savedLang = null;
+  try { savedLang = localStorage.getItem(LANG_KEY); } catch (_) {}
 
   var T = {
     checking: 'Verifica accesso…',
@@ -159,22 +173,51 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       .replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>')
       .replace(/&lt;code&gt;/g, '<code class="dw-code">').replace(/&lt;\/code&gt;/g, '</code>');
   }
-  // L(): stringa semplice oppure {it,en}. Segue la lingua scelta e ripiega
-  // sull'altra se quella manca — un documento tradotto a metà resta leggibile.
+  // Una mappa di lingue è un oggetto le cui chiavi sono TUTTE codici a due
+  // lettere e i cui valori sono tutti stringhe: `{it,en}`, `{it,en,fr}`. I nodi
+  // di contenuto non la imitano — hanno chiavi di una lettera (`n`, `h`, `t`,
+  // `k`, `v`) o parole (`badge`, `label`, `url`), quindi non c'è ambiguità.
+  function isLangMap(node) {
+    if (node == null || typeof node !== 'object' || Array.isArray(node)) return false;
+    var ks = Object.keys(node);
+    if (!ks.length) return false;
+    for (var i = 0; i < ks.length; i++) {
+      if (!/^[a-z]{2}$/.test(ks[i])) return false;
+      if (typeof node[ks[i]] !== 'string') return false;
+    }
+    return true;
+  }
+  // L(): stringa semplice oppure mappa di lingue. Segue la lingua scelta e
+  // ripiega sulle altre nell'ordine di preferenza se quella manca — un
+  // documento tradotto a metà resta leggibile.
   function L(v) {
     if (v == null) return '';
     if (typeof v === 'string') return v;
     var first = v[lang];
     if (first != null && first !== '') return first;
-    return (lang === 'it' ? v.en : v.it) || '';
+    for (var i = 0; i < langs.length; i++) {
+      var alt = v[langs[i]];
+      if (alt != null && alt !== '') return alt;
+    }
+    return '';
   }
-  // Il selettore compare solo se nel documento esiste davvero una coppia it/en.
-  function isBilingual(node, depth) {
-    if (depth > 6 || node == null || typeof node !== 'object') return false;
-    if (!Array.isArray(node) && node.it != null && node.en != null) return true;
-    var keys = Array.isArray(node) ? node : Object.keys(node).map(function (k) { return node[k]; });
-    for (var i = 0; i < keys.length; i++) { if (isBilingual(keys[i], depth + 1)) return true; }
-    return false;
+  // Quali lingue porta davvero questo documento. Il selettore compare solo se
+  // sono almeno due; con una sola non c'è niente da scegliere.
+  function langsOf(node, depth, seen) {
+    if (depth > 8 || node == null || typeof node !== 'object') return seen;
+    if (isLangMap(node)) {
+      Object.keys(node).forEach(function (k) { if (seen.indexOf(k) === -1) seen.push(k); });
+      return seen;
+    }
+    var vals = Array.isArray(node) ? node : Object.keys(node).map(function (k) { return node[k]; });
+    for (var i = 0; i < vals.length; i++) langsOf(vals[i], depth + 1, seen);
+    return seen;
+  }
+  function sortLangs(found) {
+    var out = [];
+    LANG_PREF.forEach(function (k) { if (found.indexOf(k) !== -1) out.push(k); });
+    found.forEach(function (k) { if (out.indexOf(k) === -1) out.push(k); });
+    return out;
   }
 
   function el(tag, cls, html) {
@@ -423,6 +466,12 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     if (!content) return;
     var secs = content.sections || [];
 
+    // Prima di leggere una stringa, si sa in che lingue il documento esiste:
+    // L() ripiega su quelle, e la scelta salvata vale solo se è fra loro.
+    var found = sortLangs(langsOf(content, 0, []));
+    langs = found.length ? found : ['it'];
+    if (langs.indexOf(lang) === -1) lang = savedLang && langs.indexOf(savedLang) !== -1 ? savedLang : langs[0];
+
     var badge = L(content.badge) || 'Adobe internal';
     $('dw-badge').textContent = badge;
     // Forma breve per la barra stretta: l'ultimo segmento è la parola che conta
@@ -483,13 +532,25 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
 
     footerEl.textContent = (L(content.footer) ? L(content.footer) + ' · ' : '') + (L(content.updated) || '') + ' · Adobe internal';
 
-    var langEl = $('dw-lang');
-    if (langEl) {
-      langEl.hidden = !isBilingual(content, 0);
-      langEl.querySelectorAll('.dw-lang-btn').forEach(function (b) {
-        b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
+    // Due gruppi identici, uno nella barra e uno nel pannello dell'indice: la
+    // CSS mostra quello che ci sta. Il click è delegato, quindi non importa su
+    // quale dei due si tocca.
+    var langEl = $('dw-lang'), langSheet = $('dw-lang-sheet'), langSheetBox = $('dw-sheet-lang');
+    [langEl, langSheet].forEach(function (box) {
+      if (!box) return;
+      box.textContent = '';
+      langs.forEach(function (k) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'dw-lang-btn';
+        b.setAttribute('data-lang', k);
+        b.setAttribute('aria-pressed', String(k === lang));
+        b.textContent = k.toUpperCase();
+        box.appendChild(b);
       });
-    }
+    });
+    if (langEl) langEl.hidden = langs.length < 2;
+    if (langSheetBox) langSheetBox.hidden = langs.length < 2;
     document.documentElement.setAttribute('lang', lang);
 
     buildToc(secs);
@@ -555,11 +616,10 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     document.querySelectorAll('.dw-gl').forEach(function (d) { d.open = true; });
     window.print();
   });
-  var langGroup = $('dw-lang');
-  if (langGroup) langGroup.addEventListener('click', function (e) {
-    var b = e.target.closest('.dw-lang-btn'); if (!b) return;
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.dw-lang-btn'); if (!b) return;
     var next = b.getAttribute('data-lang'); if (next === lang) return;
-    lang = next;
+    lang = next; savedLang = next;
     try { localStorage.setItem(LANG_KEY, lang); } catch (_) {}
     var y = window.scrollY; render(); window.scrollTo(0, y);
   });
@@ -708,6 +768,17 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     color: var(--_ink-soft); cursor: pointer;
   }
   .dw-lang-btn[aria-pressed='true'] { background: var(--_surface-2); color: var(--_ink-strong); }
+
+  /* Un bersaglio tattile non scende sotto 44px: tre lingue nella barra di un
+     telefono da 320px chiedono più spazio di quanto ce ne sia, e il badge
+     «Riservato» non si baratta per un selettore. Sotto i 480px il gruppo della
+     barra sparisce e passa il testimone a quello nel pannello dell'indice. */
+  @media (max-width: 479px) { .dw-lang:not(.dw-lang--sheet) { display: none; } }
+  .dw-sheet-lang { display: none; margin-top: 1.25rem; }
+  @media (max-width: 479px) { .dw-sheet-lang:not([hidden]) { display: block; } }
+  .dw-sheet-h--sub { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--_ink-faint); margin-bottom: 0.5rem; }
+  .dw-lang--sheet { display: flex; width: 100%; }
+  .dw-lang--sheet .dw-lang-btn { flex: 1 1 0; }
 
   .dw-progress { height: 2px; background: transparent; }
   .dw-progress > span { display: block; height: 100%; width: 100%; background: var(--_accent); transform: scaleX(0); transform-origin: left center; transition: transform 0.1s linear; }
