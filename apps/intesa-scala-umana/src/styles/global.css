@@ -291,7 +291,17 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 
 /* Le domande elencate: la spina dorsale del capitolo «La domanda». */
-.isu-q { display: flex; gap: 1rem; align-items: baseline; }
+/* La domanda: numero in alto, testo sotto, dentro un blocco che regge la
+   griglia. Il filetto a sinistra dà il bordo di lettura e rende il blocco una
+   cosa sola invece di «numero + paragrafo». */
+.isu-q {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  padding: 0.1rem 0 0.1rem 1.1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.16);
+  text-align: left;
+}
+[data-slide]:not(.bg-\[var\(--surface-inverse\)\]) .isu-q { border-left-color: var(--line-default); }
+[data-slide] .isu-q .isu-q-t { margin-inline: 0; max-width: none; }
 .isu-q-n {
   flex: 0 0 auto; font-family: var(--font-display); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.08em; color: var(--ink-accent);
@@ -862,7 +872,11 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    che allo stato aperto non c'era. */
 .isu-credits {
   display: flex; flex-wrap: wrap; align-items: baseline;
-  justify-content: center; gap: 0.3rem 0.7rem; width: 100%;
+  justify-content: center;
+  /* Il vuoto fra le due righe, quando vanno a capo, deve restare ≥16px anche
+     con la radice scalata del muro: a 2560 un `0.3rem` dava 7px e il check `g`
+     (ritmo verticale) lo coglieva. */
+  gap: 1rem 0.7rem; width: 100%;
 }
 .isu-credits .isu-note { max-width: none; }
 
@@ -905,4 +919,59 @@ html[data-hiw-open] .edf-madewith {
 }
 @media (prefers-reduced-motion: reduce) {
   .isu-nav, .edf-cobrand--chrome, .edf-madewith { transition: none; }
+}
+
+/* Lo scrim della copertina sopra la clip. Stessa costruzione di `.isu-bg`, ma
+   un filo più leggera: la clip è già scura, e la copertina è l'unica slide dove
+   la materia ha un ruolo invece di fare solo da fondo. */
+.isu-scrim-cover {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(13, 41, 1, 0.9) 0%,
+      rgba(13, 41, 1, 0.5) 18%,
+      rgba(13, 41, 1, 0) 36%
+    ),
+    radial-gradient(
+      ellipse at 50% 48%,
+      rgba(13, 41, 1, 0.9) 0%,
+      rgba(13, 41, 1, 0.84) 48%,
+      rgba(13, 41, 1, 0.76) 100%
+    );
+}
+
+/* A dimensione muro il tipo scala dalla radice (DeckContainer) e i margini
+   scritti in `rem` crescono con lui — ma `mt-3` di Tailwind non bastava: fra
+   la riga dei prodotti e la nota di fonte restavano 7px, sotto i 16 che il
+   check `g` pretende, e `exp` lo ri-misurava da aperto come HARD. Qui il
+   margine e' dichiarato una volta sulla COPPIA, cosi' vale ovunque compaia e
+   non dipende da chi si ricorda di mettere la classe giusta. */
+.isu-products + .isu-note,
+.isu-products + * { margin-top: 1.1rem; }
+
+/* La nota di fonte e' un'etichetta piu' un link: inline, su due righe a
+   dimensione muro, i due riquadri si sovrapponevano e il check `e` li leggeva
+   come testo su testo. In flex ogni figlio ha il suo riquadro e il problema
+   non si pone — la resa a video e' identica. */
+.isu-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15em 0.4em;
+  justify-content: center;
+}
+.isu-wrap .isu-note { margin-inline: auto; }
+
+/* ── Sul muro il titolo deve crescere più del corpo ──────────────────────
+   Il motore scala la radice (DeckContainer), e con essa cresce tutto in modo
+   proporzionale. Ma su una copertina — poche parole in mezzo a un 4K — la
+   proporzione giusta a 1920 resta timida a 3840: i tetti delle `clamp()` del
+   display si alzano, e SOLO sopra i 1920, per non toccare i tre viewport su
+   cui il deck è già stato verificato. */
+@media (min-width: 2000px) {
+  .isu-title { font-size: clamp(2.6rem, 3.6vw, 3.7rem); }
+  .isu-ch-t { font-size: clamp(2.4rem, 3.4vw, 3.5rem); }
+  .isu-lead { font-size: clamp(1.15rem, 1.35vw, 1.45rem); }
+  .isu-metric { font-size: clamp(2.4rem, 3.2vw, 3.2rem); }
 }
