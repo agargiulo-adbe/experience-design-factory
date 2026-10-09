@@ -36,4 +36,32 @@ export const SOURCES = {
     short: 'business.adobe.com',
     url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html',
   },
+  /* ── Le tre fonti di prodotto del capitolo «Le idee» ──────────────────
+     Servono perché una slide che spiega una capacità deve poter essere
+     verificata da chi la riceve, senza passare da noi. Tutte lette l'8
+     ottobre 2026: la data sta in pagina, perché le pagine prodotto cambiano. */
+  genstudioPm: {
+    label: {
+      it: 'Adobe, pagina prodotto GenStudio for Performance Marketing, letta l’8 ottobre 2026',
+      en: 'Adobe, GenStudio for Performance Marketing product page, read on 8 October 2026',
+    },
+    short: 'business.adobe.com',
+    url: 'https://business.adobe.com/products/genstudio/performance-marketing.html',
+  },
+  brandVisibility: {
+    label: {
+      it: 'Adobe, pagina prodotto Brand Visibility, letta l’8 ottobre 2026',
+      en: 'Adobe, Brand Visibility product page, read on 8 October 2026',
+    },
+    short: 'business.adobe.com',
+    url: 'https://business.adobe.com/products/brand-visibility.html',
+  },
+  cjaUpgrade: {
+    label: {
+      it: 'Adobe Experience League, documentazione di passaggio a Customer Journey Analytics, aggiornata il 28 settembre 2026',
+      en: 'Adobe Experience League, Customer Journey Analytics upgrade documentation, updated 28 September 2026',
+    },
+    short: 'experienceleague.adobe.com',
+    url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations',
+  },
 } as const;

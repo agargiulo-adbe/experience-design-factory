@@ -1,0 +1,74 @@
+---
+/**
+ * Il giro: quattro tappe attorno a un anello, e al centro il numero che
+ * spiega perché il giro esiste.
+ *
+ * Un cerchio dice «si chiude» senza doverlo scrivere, ed è l'unica forma
+ * onesta per questo contenuto: misurare la visibilità nelle risposte serve
+ * solo se quello che si misura torna dentro alle correzioni.
+ *
+ * Griglia esplicita a tre colonne e due righe: le quattro etichette stanno
+ * negli angoli, l'anello occupa la colonna di mezzo su entrambe le righe. Le
+ * posizioni sono dichiarate una per una, e non lasciate al flusso: con due
+ * colonne «che si riempiono da sole» le etichette si sfalsavano in verticale
+ * di una decina di pixel, e si vedeva.
+ *
+ * Tutte e quattro restano allineate a sinistra: due colonne speculari
+ * darebbero due bordi di lettura diversi, che è il difetto che il check `m`
+ * dell'audit va a cercare.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Bilingual {
+  it: string;
+  en: string;
+}
+interface Node {
+  n: string;
+  t: Bilingual;
+  d: Bilingual;
+}
+interface Props {
+  /** Quattro tappe, in senso orario a partire da in alto a sinistra. */
+  nodes: Node[];
+  /** Il numero al centro dell'anello, con la sua riga e la sua fonte. */
+  core: { v: string; t: Bilingual; src: string };
+  class?: string;
+}
+const { nodes, core, class: className } = Astro.props as Props;
+const [a, b, c, d] = nodes;
+/* in alto a sinistra · in alto a destra · in basso a destra · in basso a sinistra */
+const placed = [
+  { node: a, area: 'tl' },
+  { node: b, area: 'tr' },
+  { node: c, area: 'br' },
+  { node: d, area: 'bl' },
+];
+---
+<div class:list={['isu-loop', className]}>
+  {placed.map(({ node, area }) => (
+    <div class="isu-loop-node" style={`grid-area: ${area}`}>
+      <span class="isu-num">{node.n}</span>
+      <T as="h3" class="isu-col-title mt-1" it={node.t.it} en={node.t.en} />
+      <T as="p" class="isu-col-sub mt-1" it={node.d.it} en={node.d.en} />
+    </div>
+  ))}
+
+  <div class="isu-loop-ring">
+    <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+      <circle class="isu-loop-track" cx="100" cy="100" r="92" />
+      <!-- Il verso: quattro punte, una per tappa, sui quattro quarti. -->
+      {[0, 90, 180, 270].map((deg) => (
+        <g transform={`rotate(${deg} 100 100)`}>
+          <circle class="isu-loop-pip" cx="100" cy="8" r="4.5" />
+          <path class="isu-loop-head" d="M112 14 L121 21 L113 28" />
+        </g>
+      ))}
+    </svg>
+    <div class="isu-loop-core">
+      <p class="isu-loop-v">{core.v}</p>
+      <T as="p" class="isu-loop-t" it={core.t.it} en={core.t.en} />
+      <p class="isu-loop-src">{core.src}</p>
+    </div>
+  </div>
+</div>

@@ -54,7 +54,8 @@ function loadEnv(): void {
 }
 
 const NEG =
-  'text, letters, words, numbers, logo, brand, watermark, signature, people, faces, hands, ' +
+  'denim, jeans, indigo, blue grey, steel grey, '
+  + 'text, letters, words, numbers, logo, brand, watermark, signature, people, faces, hands, ' +
   'buildings, architecture, office interior, desk, laptop, handshake, stock photo, money, ' +
   'collage, clipart, 3d render, cartoon, neon, cyberpunk, rainbow colours, ' +
   'grass, field, meadow, landscape, horizon, sky, trees, plants, nature scene, ' +
@@ -120,6 +121,46 @@ const SLOTS = [
       'minimal. Fine film grain, strongly asymmetric, abstract',
     seed: 3214,
   },
+  {
+    // «Primo tempo · la filiera»: UN filo continuo che attraversa tutta la trama
+    // senza interrompersi. È il disegno dell'argomento — la parte obbligatoria
+    // resta intatta in ogni variante — prima ancora che lo si legga.
+    id: 'dark-filiera',
+    /* Primo giro scartato (seed 3320): la trama è uscita blu-denim e il filo
+       tagliava il fotogramma a metà. Il tessuto grezzo tira verso il jeans, e
+       una linea centrata non lascia il vuoto dove va il diagramma. Secondo giro:
+       carta invece di tessuto, verde insistito, filo basso a destra. */
+    prompt:
+      'Extreme macro photograph of one single fine pale cord lying unbroken across dark ' +
+      'moss-green handmade paper, entering low at the right edge and leaving beyond the lower ' +
+      'right corner, one grazing light touching the cord alone. The upper left three quarters ' +
+      'of the frame are empty, matte, near-black dark green. Deep desaturated forest green ' +
+      'throughout, no grey, no indigo. Fine film grain, shallow depth of field, strongly ' +
+      'asymmetric, abstract',
+    seed: 3330,
+  },
+  {
+    // «Primo tempo · farsi trovare»: la famiglia CHIARA. Carta avorio e una sola
+    // ombra morbida: metà fotogramma vuota, che è dove va il diagramma.
+    id: 'light-trovare',
+    prompt:
+      'Extreme macro photograph of pale ivory handmade paper with visible long fibres, one soft ' +
+      'diagonal shadow falling across the lower left corner, the upper right two thirds open, ' +
+      'bright and almost empty. Warm neutral off-white, matte, tactile, no gloss. Fine film ' +
+      'grain, shallow depth of field, strongly asymmetric, abstract',
+    seed: 3321,
+  },
+  {
+    // «Secondo tempo · il viaggio intero»: una cucitura sola che unisce due
+    // pezzi in una superficie sola. I canali ricuciti, disegnati.
+    id: 'dark-viaggio',
+    prompt:
+      'Extreme macro photograph of two pieces of dark green felt joined by one fine straight ' +
+      'seam running diagonally across the lower right of the frame, a single soft light grazing ' +
+      'along the seam, the upper left falling into near-black shadow. Matte, tactile, no gloss. ' +
+      'Fine film grain, shallow depth of field, strongly asymmetric, abstract',
+    seed: 3322,
+  },
 ];
 
 async function main() {
@@ -130,9 +171,30 @@ async function main() {
     process.exit(1);
   }
   fs.mkdirSync(OUT, { recursive: true });
-  const provenance: unknown[] = [];
 
-  for (const slot of SLOTS) {
+  /* `--only a,b` rigenera solo quegli slot. Senza filtro si rigenera tutto, e
+     un'immagine già approvata torna indietro per niente. */
+  const onlyArg = process.argv.find((a) => a.startsWith('--only='))
+    ?? (process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : undefined);
+  const only = onlyArg?.replace(/^--only=/, '').split(',').map((s) => s.trim()).filter(Boolean);
+  const todo = only?.length ? SLOTS.filter((s) => only.includes(s.id)) : SLOTS;
+  if (only?.length && todo.length !== only.length) {
+    const missing = only.filter((id) => !SLOTS.some((s) => s.id === id));
+    console.error(`slot inesistenti: ${missing.join(', ')}`);
+    process.exit(2);
+  }
+
+  /* Il provenance si FONDE con quello esistente. Riscriverlo da zero cancellava
+     la provenienza degli sfondi non rigenerati in questo giro: il credito
+     «creato con» è un fatto verificabile, e un fatto non si perde per un flag. */
+  const provFile = path.join(OUT, 'provenance.json');
+  type Slot = { id: string } & Record<string, unknown>;
+  const previous: Slot[] = fs.existsSync(provFile)
+    ? (JSON.parse(fs.readFileSync(provFile, 'utf8')).slots ?? [])
+    : [];
+  const provenance: Slot[] = previous.filter((p) => !todo.some((s) => s.id === p.id));
+
+  for (const slot of todo) {
     process.stdout.write(`· ${slot.id} … `);
     const r = await generateImage(creds, {
       prompt: slot.prompt,
@@ -157,11 +219,9 @@ async function main() {
     });
   }
 
-  fs.writeFileSync(
-    path.join(OUT, 'provenance.json'),
-    JSON.stringify({ tool: 'Adobe Firefly', slots: provenance }, null, 2) + '\n',
-  );
-  console.log(`\n${SLOTS.length} sfondi in ${path.relative(REPO, OUT)} + provenance.json`);
+  provenance.sort((a, b) => a.id.localeCompare(b.id));
+  fs.writeFileSync(provFile, JSON.stringify({ tool: 'Adobe Firefly', slots: provenance }, null, 2) + '\n');
+  console.log(`\n${todo.length} sfondi generati in ${path.relative(REPO, OUT)} · provenance: ${provenance.length} slot`);
 }
 
 main().catch((e) => {

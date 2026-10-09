@@ -8,14 +8,29 @@
  * quelli Adobe si appoggiano sopra senza coprirlo.
  *
  * L'ordine è dal basso: il primo elemento dell'array è la fondazione.
+ *
+ * Uno strato con `href` diventa un link alla pagina che lo racconta per esteso,
+ * e la pila diventa l'indice delle idee. Lo strato del cliente non ne ha mai
+ * uno: non è una cosa che gli vendiamo, e un link che non porta a niente è un
+ * difetto (stessa regola della nav).
  */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Bilingual {
+  it: string;
+  en: string;
+}
 interface Layer {
-  /** Etichetta dello strato. */
-  t: string;
-  /** Riga breve sotto l'etichetta. */
-  s?: string;
+  /** Etichetta dello strato. Bilingue dove serve, stringa dove non cambia. */
+  t: string | Bilingual;
+  /** Riga breve sotto l'etichetta: di solito i prodotti. */
+  s?: string | Bilingual;
   /** `base` = quello che il cliente ha già; `add` = quello che si aggiunge. */
   kind: 'base' | 'add';
+  /** Ordinale del tempo: «1º», «2º». Dice la sequenza prima delle parole. */
+  n?: string;
+  /** Dove si legge per esteso. Solo sugli strati `add`. */
+  href?: string;
 }
 interface Props {
   layers: Layer[];
@@ -24,12 +39,61 @@ interface Props {
 const { layers, class: className } = Astro.props as Props;
 // Dal basso verso l'alto: la fondazione si disegna per ultima in colonna.
 const top = [...layers].reverse();
+const bi = (v: string | Bilingual | undefined) =>
+  v === undefined ? undefined : typeof v === 'string' ? { it: v, en: v } : v;
 ---
 <div class:list={['isu-stack', className]}>
-  {top.map((l) => (
-    <div class:list={['isu-stack-layer', `isu-stack-layer--${l.kind}`]}>
-      <span class="isu-stack-t">{l.t}</span>
-      {l.s && <span class="isu-stack-s">{l.s}</span>}
-    </div>
-  ))}
+  {top.map((l) => {
+    const t = bi(l.t)!;
+    const s = bi(l.s);
+    const Tag = l.href ? 'a' : 'div';
+    return (
+      <Tag
+        class:list={['isu-stack-layer', `isu-stack-layer--${l.kind}`, l.href && 'isu-stack-layer--link']}
+        href={l.href}
+      >
+        <span class="isu-stack-head">
+          {l.n && <span class="isu-stack-n" aria-hidden="true">{l.n}</span>}
+          <T as="span" class="isu-stack-t" it={t.it} en={t.en} />
+          {l.href && (
+            <svg class="isu-stack-go" width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          )}
+        </span>
+        {s && <T as="span" class="isu-stack-s" it={s.it} en={s.en} />}
+      </Tag>
+    );
+  })}
 </div>
+
+<script>
+  /**
+   * Un `href="#slide-x"` dentro un deck non porta da nessuna parte: le slide
+   * non scorrono, si cambiano. Qui il link diventa un salto vero alla slide
+   * con quell'id, e senza JavaScript resta comunque un'ancora valida.
+   *
+   * Il clic sulla metà destra della slide fa avanzare il deck: `stopPropagation`
+   * serve, se no il salto viene subito scavalcato.
+   */
+  function wireStackLinks() {
+    document.querySelectorAll<HTMLAnchorElement>('.isu-stack-layer--link').forEach((a) => {
+      if (a.dataset.stackReady) return;
+      a.dataset.stackReady = 'true';
+      a.addEventListener('click', (e) => {
+        const id = (a.getAttribute('href') || '').replace(/^#/, '');
+        if (!id) return;
+        const slides = Array.from(document.querySelectorAll('[data-slide]'));
+        const i = slides.findIndex((s) => s.id === id);
+        const deck = (window as unknown as { __edfDeck?: { goTo(n: number): void } }).__edfDeck;
+        if (i < 0 || !deck) return;
+        e.preventDefault();
+        e.stopPropagation();
+        deck.goTo(i);
+      });
+    });
+  }
+
+  wireStackLinks();
+  document.addEventListener('astro:after-swap', wireStackLinks);
+</script>

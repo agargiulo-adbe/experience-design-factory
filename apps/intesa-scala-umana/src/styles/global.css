@@ -675,3 +675,234 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   max-width: none;
 }
 .isu-coverline b { color: var(--ink-inverse); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   I DIAGRAMMI DEL CAPITOLO «LE IDEE»
+   Tre disegni, non tre decorazioni: ognuno porta l'argomento della sua
+   slide prima che lo si legga. Le superfici tinte usano `rgba()` esplicito
+   e non `color-mix()`, perché il parser dei contrasti dell'audit non sa
+   leggere `color-mix()` e darebbe un PASS falso sul check `h`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── La filiera: tre tappe nel tempo, un binario sotto ───────────────── */
+.isu-pipe { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; text-align: left; }
+.isu-pipe-track { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; width: 100%; }
+.isu-pipe-stop { position: relative; padding: 0 1.6rem 0 0; min-width: 0; }
+.isu-pipe-dot { display: flex; align-items: center; gap: 0; margin-bottom: 0.85rem; }
+.isu-pipe-dot::before {
+  content: ''; width: 0.75rem; height: 0.75rem; flex: 0 0 auto;
+  border-radius: 50%; background: var(--ink-accent);
+}
+.isu-pipe-dot::after { content: ''; height: 2px; flex: 1 1 auto; background: var(--line-default); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-pipe-dot::after { background: rgba(255, 255, 255, 0.22); }
+.isu-pipe-stop:last-child .isu-pipe-dot::after { background: transparent; }
+
+/* Il ritorno: quello che si misura rientra in quello che si assembla. */
+.isu-pipe-back { display: flex; align-items: center; gap: 0.7rem; width: 100%; }
+.isu-pipe-back-svg { width: 100%; height: 22px; flex: 1 1 auto; }
+.isu-pipe-back-svg path { fill: none; stroke: var(--line-default); stroke-width: 1.5; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-pipe-back-svg path { stroke: rgba(255, 255, 255, 0.3); }
+.isu-pipe-back-t { flex: 0 0 auto; font-size: 0.8125rem; line-height: 1.4; color: var(--ink-note); }
+
+/* Il binario: NON è una tappa, sta sotto tutte e tre. */
+.isu-pipe-rail {
+  display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap;
+  padding: 0.85rem 1.1rem;
+  border-left: 3px solid var(--accent-primary);
+  background: rgba(37, 137, 0, 0.08);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-pipe-rail {
+  border-left-color: var(--color-verde-chiaro);
+  background: rgba(79, 194, 31, 0.12);
+}
+.isu-pipe-rail-k {
+  display: inline-flex; align-items: center; gap: 0.45rem; flex: 0 0 auto;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-accent);
+}
+.isu-pipe-rail-t {
+  font-size: clamp(0.95rem, 1vw, 1.02rem); line-height: 1.45;
+  color: var(--ink-body); min-width: 0; max-width: none;
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-pipe-rail-t { color: var(--ink-inverse); }
+
+/* ── Il giro: quattro tappe attorno a un anello ──────────────────────── */
+.isu-loop {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas: 'tl ring tr' 'bl ring br';
+  /* `start` e non `center`: con le celle centrate, una colonna di tre righe e
+     una di due facevano partire i due titoli a quote diverse. L'anello si
+     ricentra da solo sulle due righe. */
+  gap: 1.6rem 2.2rem; align-items: start; width: 100%; text-align: left;
+}
+.isu-loop-node { min-width: 0; }
+.isu-loop-ring {
+  grid-area: ring; align-self: center; position: relative;
+  width: clamp(11rem, 15vw, 14.5rem); aspect-ratio: 1;
+  display: grid; place-items: center; text-align: center;
+}
+.isu-loop-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.isu-loop-track { fill: none; stroke: var(--line-default); stroke-width: 2; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-loop-track { stroke: rgba(255, 255, 255, 0.26); }
+.isu-loop-pip { fill: var(--ink-accent); }
+.isu-loop-head { fill: none; stroke: var(--ink-accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+/* Il testo sta DENTRO l'anello: 62% del diametro è il quadrato inscritto meno
+   il respiro. Prima sbordava e finiva sopra una punta di freccia. */
+.isu-loop-core { width: 62%; }
+.isu-loop-v {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.9rem, 2.6vw, 2.5rem); line-height: 1;
+  color: var(--ink-accent); letter-spacing: -0.02em; max-width: none;
+}
+.isu-loop-t {
+  margin-top: 0.3rem; font-size: 0.8125rem; line-height: 1.35;
+  color: var(--ink-body); max-width: none;
+}
+.isu-loop-src { margin-top: 0.25rem; font-size: 0.75rem; color: var(--ink-note); max-width: none; }
+
+/* ── Il viaggio ricucito, e lo stesso viaggio letto due volte ────────── */
+.isu-jny { display: flex; flex-direction: column; gap: 1rem; width: 100%; text-align: left; }
+/* Etichetta + pista: una griglia sola, così le barre cadono esattamente sotto
+   la loro tappa. Con due griglie separate lo scarto era di una cella. */
+.isu-jny-grid {
+  display: grid; grid-template-columns: 10.5rem minmax(0, 1fr);
+  align-items: center; row-gap: 0.55rem; column-gap: 1rem; width: 100%;
+}
+.isu-jny-row {
+  display: grid; grid-template-columns: repeat(var(--jny-cols, 5), minmax(0, 1fr));
+  gap: 0.4rem; width: 100%; min-width: 0;
+}
+.isu-jny-track { position: relative; align-items: start; margin-bottom: 0.35rem; }
+/* IL FILO: una linea sola dietro i pallini, dal primo all'ultimo. Disegnarlo a
+   pezzi dentro ogni cella (con un margine negativo per scavalcare il vuoto)
+   faceva sbordare la cella di 7px, e il check `c` lo leggeva come scorrimento
+   orizzontale. Il bordo destro è la larghezza di una cella meno il raggio del
+   pallino: con n colonne e gap g, W − (n−1)(cella+g) = cella. */
+.isu-jny-track::before {
+  content: ''; position: absolute; top: 0.3rem; height: 2px;
+  left: 0.3rem;
+  right: calc((100% - (var(--jny-cols, 5) - 1) * 0.4rem) / var(--jny-cols, 5) - 0.3rem);
+  background: var(--ink-accent); opacity: 0.55;
+}
+.isu-jny-stop { position: relative; min-width: 0; }
+.isu-jny-dot { display: flex; align-items: center; margin-bottom: 0.5rem; }
+.isu-jny-dot::before {
+  content: ''; width: 0.6rem; height: 0.6rem; flex: 0 0 auto;
+  border-radius: 50%; background: var(--ink-accent);
+  position: relative; z-index: 1;
+}
+.isu-jny-t {
+  display: block; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.9rem, 0.95vw, 0.98rem); line-height: 1.3;
+  color: var(--ink-primary);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-jny-t { color: var(--ink-inverse); }
+.isu-jny-k {
+  font-size: clamp(0.9rem, 0.95vw, 0.98rem); line-height: 1.35;
+  color: var(--ink-body); text-align: left;
+}
+.isu-jny-cell { display: block; height: 0.7rem; background: rgba(0, 0, 0, 0.07); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-jny-cell { background: rgba(255, 255, 255, 0.1); }
+.isu-jny-bar { display: block; height: 100%; width: var(--w); background: var(--ink-accent); }
+.isu-jny-cap { font-size: 0.8125rem; line-height: 1.5; color: var(--ink-note); max-width: 84ch; }
+
+/* ── La pila come indice: ordinale, freccia, stato di link ───────────── */
+.isu-stack-head { display: flex; align-items: baseline; gap: 0.6rem; }
+.isu-stack-n {
+  flex: 0 0 auto; font-family: var(--font-display); font-weight: 700;
+  font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-accent);
+}
+.isu-stack-go { flex: 0 0 auto; align-self: center; color: var(--ink-accent); transition: transform var(--duration-fast) var(--easing-default); }
+.isu-stack-layer--link { text-decoration: none; transition: background-color var(--duration-fast) var(--easing-default); }
+.isu-stack-layer--link:hover { background: rgba(37, 137, 0, 0.07); }
+.isu-stack-layer--link:hover .isu-stack-go { transform: translateX(3px); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-stack-layer--link:hover { background: rgba(79, 194, 31, 0.1); }
+.isu-stack-layer--link:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 3px; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-stack-layer--link:focus-visible { outline-color: var(--color-verde-chiaro); }
+
+/* ── «Come funziona, in concreto»: il dettaglio che si apre sul posto ── */
+.isu-hiw { width: 100%; text-align: left; }
+.isu-hiw .hiw-body p {
+  font-size: clamp(0.9rem, 0.95vw, 0.98rem); line-height: 1.55;
+  color: var(--ink-body); max-width: 92ch;
+}
+.isu-hiw .hiw-body p + p { margin-top: 0.55rem; }
+.isu-hiw .hiw-body b { color: var(--ink-primary); font-weight: 700; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-hiw .hiw-body b { color: var(--ink-inverse); }
+
+/* Il dettaglio aperto su DUE colonne da 1024px in su. In colonna unica, a
+   1280×800, l'espansione spingeva il titolo sopra la safe-area e l'occhiello
+   fuori dal viewport: i check `c` e `j` lo hanno colto. Due colonne dimezzano
+   l'altezza dello stato aperto senza togliere una parola. */
+@media (min-width: 1024px) {
+  .isu-hiw .hiw-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.6rem; align-items: start; }
+  /* `space-y-*` di Tailwind vince per specificità e sfalsava la seconda colonna
+     di 10px: la si batte sullo stesso selettore, non alzando un !important. */
+  .isu-hiw .hiw-body > :not([hidden]) ~ :not([hidden]) { margin-top: 0; }
+  .isu-hiw .hiw-body p { max-width: 54ch; }
+}
+
+/* Il reset centra ogni `p` con un max-width dentro una slide centrata, e qui
+   rientrava il blocco aperto rispetto al suo stesso pulsante. Un blocco a
+   bandiera parte dal bordo della colonna (è il check `m`, applicato a mano
+   dentro al componente). */
+.isu-hiw .hiw-body p { margin-inline: 0; }
+[data-slide] .isu-jny .isu-jny-cap,
+[data-slide] .isu-loop .isu-loop-node p { margin-inline: 0; }
+/* La fascia è un blocco a bandiera: il testo parte dal suo bordo, non dal
+   centro della slide. Senza questo eredita il `text-align: center` della
+   slide e la seconda riga si centra da sola. */
+.isu-pipe-rail { text-align: left; }
+
+/* Prodotti e fonte sulla stessa riga: due righe separate costavano un'altezza
+   che allo stato aperto non c'era. */
+.isu-credits {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: center; gap: 0.3rem 0.7rem; width: 100%;
+}
+.isu-credits .isu-note { max-width: none; }
+
+/* Schermi bassi (il 1280×800 dell'audit, e ogni portatile): si stringono i
+   RESPIRI, non il corpo del testo. Allo stato aperto mancavano una dozzina di
+   pixel e il titolo saliva sopra la safe-area; rimpicciolire il tipo per
+   rientrare è esattamente ciò che il contratto di leggibilità vieta. */
+@media (max-height: 860px) {
+  .isu-pipe { gap: 0.65rem; }
+  .isu-pipe-dot { margin-bottom: 0.6rem; }
+  .isu-pipe-rail { padding: 0.65rem 1rem; }
+  .isu-jny { gap: 0.8rem; }
+  .isu-jny-dot { margin-bottom: 0.4rem; }
+  .isu-loop { gap: 1.1rem 1.6rem; }
+  .isu-hiw .hiw-body { padding-top: 0.15rem; }
+  .isu-hiw .hiw-body p { line-height: 1.42; }
+  /* Il blocco aperto non deve spingere l'occhiello sotto la barra in alto:
+     il check `b` dell'audit guarda i comandi del deck, non la nav dell'app,
+     e questa collisione si vede solo guardando uno screenshot a 1280×800. */
+  .isu-hiw { margin-block: 0.5rem !important; }
+  .isu-credits { margin-top: 0.25rem !important; }
+}
+
+/* ── Mentre si legge il dettaglio, il contorno arretra ────────────────────
+   `HowItWorks` marca <html data-hiw-open> quando un blocco è aperto. Il blocco
+   cresce dentro la slide e su uno schermo basso arrivava sotto la barra in
+   alto e sopra i crediti d'angolo: invece di tagliare altro testo, qui sparisce
+   quello che in quel momento non serve. Torna da solo alla chiusura, e con
+   `prefers-reduced-motion` senza dissolvenza.
+   Nota: nessuno di questi tre elementi è visto dall'audit, che guarda i comandi
+   del deck. Le collisioni si trovano solo leggendo uno screenshot a 1280×800. */
+html[data-hiw-open] .isu-nav,
+html[data-hiw-open] .edf-cobrand--chrome,
+html[data-hiw-open] .edf-madewith {
+  opacity: 0;
+  pointer-events: none;
+}
+.isu-nav, .edf-cobrand--chrome, .edf-madewith {
+  transition: opacity var(--duration-normal) var(--easing-default);
+}
+@media (prefers-reduced-motion: reduce) {
+  .isu-nav, .edf-cobrand--chrome, .edf-madewith { transition: none; }
+}

@@ -1,0 +1,64 @@
+---
+/**
+ * Il viaggio ricucito, e lo stesso viaggio letto due volte.
+ *
+ * Sopra: le tappe di un percorso, unite da un filo solo. È il «un cliente, non
+ * una sessione» disegnato — oggi quelle tappe sono conteggi separati, uno per
+ * canale, e il filo è ciò che manca.
+ *
+ * Sotto: le stesse tappe pesate da due modelli di attribuzione diversi. È il
+ * fatto che vale la slide: il modello si applica al momento della lettura e
+ * vale anche sul passato, quindi cambiare idea non costa un nuovo tracciamento.
+ *
+ * UNA GRIGLIA SOLA per tappe e barre, con la stessa colonna di etichetta a
+ * sinistra: se le barre non cadono esattamente sotto la loro tappa, il
+ * confronto non si legge e il diagramma dice il falso. Prima erano due griglie
+ * indipendenti e lo scarto si vedeva a occhio nudo.
+ *
+ * Le barre NON portano numeri, ed è una scelta: un numero su un esempio diventa
+ * un dato nella memoria di chi guarda, e qui non c'è nessun dato del cliente.
+ * Le proporzioni sono schematiche e la didascalia lo dice.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Bilingual {
+  it: string;
+  en: string;
+}
+interface Props {
+  /** Le tappe del percorso, in ordine. */
+  stops: Bilingual[];
+  /** Le due letture: etichetta + pesi schematici (0-100) per ogni tappa. */
+  readings: Array<{ k: Bilingual; w: number[] }>;
+  cap: Bilingual;
+  class?: string;
+}
+const { stops, readings, cap, class: className } = Astro.props as Props;
+const cols = `--jny-cols: ${stops.length}`;
+---
+<div class:list={['isu-jny', className]} style={cols}>
+  <div class="isu-jny-grid">
+    <!-- riga 1: le tappe, cucite da un filo solo -->
+    <span class="isu-jny-k isu-jny-k--head" aria-hidden="true"></span>
+    <ol class="isu-jny-row isu-jny-track" role="list">
+      {stops.map((s) => (
+        <li class="isu-jny-stop" role="listitem">
+          <span class="isu-jny-dot" aria-hidden="true"></span>
+          <T as="span" class="isu-jny-t" it={s.it} en={s.en} />
+        </li>
+      ))}
+    </ol>
+
+    <!-- righe 2 e 3: lo stesso percorso, pesato da due modelli -->
+    {readings.map((r) => [
+      <T as="span" class="isu-jny-k" it={r.k.it} en={r.k.en} />,
+      <div class="isu-jny-row isu-jny-bars" aria-hidden="true">
+        {r.w.map((w) => (
+          <span class="isu-jny-cell"><span class="isu-jny-bar" style={`--w:${w}%`}></span></span>
+        ))}
+      </div>,
+    ])}
+  </div>
+
+  <T as="p" class="isu-jny-cap" it={cap.it} en={cap.en} />
+</div>

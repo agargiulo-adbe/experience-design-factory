@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
 import IsuStack from '../components/IsuStack.astro';
+import IsuPipeline from '../components/IsuPipeline.astro';
+import IsuLoop from '../components/IsuLoop.astro';
+import IsuJourney from '../components/IsuJourney.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
@@ -10,6 +14,9 @@ import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
 import { SOURCES } from '../data/sources';
 import bgStacco from '../assets/generated/bg/stacco-idee.jpg';
 import bgInnesto from '../assets/generated/bg/dark-innesto.jpg';
+import bgFiliera from '../assets/generated/bg/dark-filiera.jpg';
+import bgTrovare from '../assets/generated/bg/light-trovare.jpg';
+import bgViaggio from '../assets/generated/bg/dark-viaggio.jpg';
 import bgProva from '../assets/generated/bg/light-prova.jpg';
 
 const SLUG = 'idee';
@@ -18,54 +25,165 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 /**
+ * IL CAPITOLO DELLE DUE IDEE, in sei slide.
+ *
  * La pila dice la posizione prima delle parole: lo strato del cliente sta
  * SOTTO, pieno e col suo verde, e quelli Adobe si appoggiano sopra senza
  * coprirlo. È il disegno di «ci innestiamo, non sostituiamo» — una frase che
  * il cliente ha già sentito da tutti, e che disegnata si verifica a colpo
- * d'occhio.
+ * d'occhio. Da qui in poi la pila fa anche da INDICE: ogni strato porta alla
+ * pagina che lo racconta per esteso.
+ *
+ * L'ORDINE NON È NEGOZIABILE: prima il contenuto, poi il viaggio. Il contenuto
+ * è il mestiere di chi è in sala; il viaggio intero è il mestiere di chi non
+ * c'è. Aprire dal secondo vuol dire parlare alla persona sbagliata del lavoro
+ * di qualcun altro.
+ *
+ * OGNI CAPACITÀ DESCRITTA QUI HA UNA FONTE PUBBLICA IN PAGINA, con la data di
+ * lettura: una slide che spiega come funziona una cosa deve poter essere
+ * verificata da chi la riceve, senza passare da noi. Il dettaglio tecnico non
+ * sta nella slide ma dentro «Come funziona, in concreto»: chi legge in fretta
+ * non lo apre, l'IT che riceve il link sì. Lì dentro sta anche il vincolo del
+ * connettore, perché un vincolo detto da noi vale molto più dello stesso
+ * vincolo scoperto da loro un mese dopo.
  */
+/* L'array va dal basso: la fondazione per prima, e il componente impila al
+   contrario. Il 2º tempo sta quindi PRIMA del 1º qui dentro, perché dall'alto
+   si legga 1º, 2º, fondazione: la pila ha un ordine architettonico (il cliente
+   sotto) e uno di lettura (il primo tempo per primo), e quando confliggono
+   vince la lettura — i due strati Adobe non hanno un ordine fra loro. */
 const strati = [
   {
     kind: 'base' as const,
-    t: 'Quello che avete già',
-    s: 'Experience Manager e Analytics, dentro la banca, sulla rotta verso il cloud',
+    t: { it: 'Quello che avete già', en: 'What you already have' },
+    s: {
+      it: 'Experience Manager e Analytics, dentro la banca, sulla rotta verso il cloud',
+      en: 'Experience Manager and Analytics, inside the bank, heading for the cloud',
+    },
   },
   {
     kind: 'add' as const,
-    t: 'Primo tempo · il contenuto alla scala della banca',
-    s: 'Experience Manager · GenStudio · Firefly · Brand Visibility',
+    n: '2º tempo',
+    t: { it: 'Il viaggio intero, e che cosa ha funzionato', en: 'The whole journey, and what worked' },
+    s: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
+    href: '#slide-viaggio',
   },
   {
     kind: 'add' as const,
-    t: 'Secondo tempo · il viaggio intero, e che cosa ha funzionato',
-    s: 'Customer Journey Analytics',
+    n: '1º tempo',
+    t: { it: 'Il contenuto alla scala della banca', en: 'Content at the scale of the bank' },
+    s: {
+      it: 'Experience Manager · GenStudio for Performance Marketing · Firefly · Brand Visibility',
+      en: 'Experience Manager · GenStudio for Performance Marketing · Firefly · Brand Visibility',
+    },
+    href: '#slide-filiera',
   },
 ];
 
-// Numeri pubblicati da Adobe. La fonte è in pagina, con la data.
+/* ── Primo tempo · la filiera ─────────────────────────────────────────── */
+const tappe = [
+  {
+    n: '01',
+    t: { it: 'Assemblare', en: 'Assemble' },
+    d: {
+      it: 'Copy, immagine e video nascono da template che stabiliscono che cosa si modifica, che cosa si sostituisce e che cosa resta bloccato.',
+      en: 'Copy, image and video come out of templates that set what can be edited, what can be swapped and what stays locked.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Attivare', en: 'Activate' },
+    d: {
+      it: 'Le varianti approvate escono verso i canali già marcate: campagna, prodotto, destinatario, mercato.',
+      en: 'Approved variants go out to the channels already tagged: campaign, product, audience, market.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'Ottimizzare', en: 'Optimise' },
+    d: {
+      it: 'Gli insight non dicono soltanto quanto ha reso una campagna. Dicono quale attributo ha reso, su quale pubblico e su quale canale.',
+      en: 'Insights do not only say how a campaign performed. They say which attribute performed, with which audience and on which channel.',
+    },
+  },
+];
+
+/* ── Primo tempo · farsi trovare ──────────────────────────────────────── */
+const giro = [
+  {
+    n: '01',
+    t: { it: 'Le domande vere', en: 'The real questions' },
+    d: {
+      it: 'Si parte dalle domande che le persone fanno davvero agli assistenti, ordinate per intenzione, non da una lista di parole chiave.',
+      en: 'You start from the questions people actually ask the assistants, sorted by intent, not from a keyword list.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Come vi raccontano', en: 'How you are described' },
+    d: {
+      it: 'Quante volte il marchio viene citato, con che tono, accanto a chi, e come cambia nel tempo.',
+      en: 'How often the brand is cited, in what tone, next to whom, and how that shifts over time.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'Che cosa si corregge', en: 'What gets fixed' },
+    d: {
+      it: 'Le correzioni suggerite si pubblicano su Experience Manager Sites senza aprire un progetto con l’IT.',
+      en: 'Suggested fixes publish straight to Experience Manager Sites without opening an IT project.',
+    },
+  },
+  {
+    n: '04',
+    t: { it: 'Che cosa ha prodotto', en: 'What it produced' },
+    d: {
+      it: 'Il traffico che arriva dalle risposte, e che cosa fa una volta sul sito, letto dentro Analytics.',
+      en: 'The traffic arriving from the answers, and what it does once on the site, read inside Analytics.',
+    },
+  },
+];
+
+/* ── Secondo tempo · il viaggio intero ────────────────────────────────── */
+const tappeViaggio = [
+  { it: 'Annuncio', en: 'Ad' },
+  { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' },
+  { it: 'Filiale', en: 'Branch' },
+  { it: 'Servizio clienti', en: 'Customer service' },
+];
+const letture = [
+  { k: { it: 'Primo tocco', en: 'First touch' }, w: [100, 0, 0, 0, 0] },
+  { k: { it: 'Algoritmico', en: 'Algorithmic' }, w: [42, 26, 16, 34, 12] },
+];
+
+/* ── La prova ─────────────────────────────────────────────────────────────
+ * Due numeri per idea, così la referenza prova il capitolo intero e non metà.
+ * Tutti e quattro stanno nella pagina pubblica del caso, alla lettera: il
+ * «15 min invece di tre giorni» che stava qui prima NON ci stava, e la fonte
+ * dice «de dias para minutos». Un numero che non sopravvive alla sua fonte
+ * esce, non si arrotonda.
+ */
 const prova = [
   {
     v: '100 mln',
     l: { it: 'profili unificati', en: 'unified profiles' },
-    s: { it: 'in una vista sola, oltre 500 attributi', en: 'in a single view, over 500 attributes' },
-  },
-  {
-    v: '15 min',
-    l: { it: 'invece di tre giorni', en: 'instead of three days' },
-    s: {
-      it: 'il tempo di reazione su un carrello lasciato a metà',
-      en: 'reaction time on an abandoned basket',
-    },
+    s: { it: 'una vista sola su individui, PMI e prospect', en: 'a single view of individuals, SMEs and prospects' },
   },
   {
     v: '+600%',
     l: { it: 'conversioni', en: 'conversions' },
-    s: { it: 'sulle campagne di recupero', en: 'on recovery campaigns' },
+    s: { it: 'sulle campagne di recupero del carrello', en: 'on cart recovery campaigns' },
   },
   {
-    v: '+380%',
-    l: { it: 'journey personalizzate', en: 'personalised journeys' },
-    s: { it: 'a parità di squadra', en: 'with the same team' },
+    v: '4.400',
+    l: { it: 'asset creativi', en: 'creative assets' },
+    s: { it: 'per 530 offerte al retail e 800 alle PMI', en: 'for 530 retail offers and 800 for SMEs' },
+  },
+  {
+    v: 'minuti',
+    l: { it: 'invece di giorni', en: 'instead of days' },
+    s: { it: 'il tempo per portare una campagna sul mercato', en: 'the time to take a campaign to market' },
   },
 ];
 ---
@@ -94,7 +212,7 @@ const prova = [
       </div>
     </Slide>
 
-    <!-- ── La pila dell'innesto ──────────────────────────────────────────── -->
+    <!-- ── La pila dell'innesto, che è anche l'indice delle due idee ─────── -->
     <Slide id="slide-innesto" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgInnesto.src})`}></div>
       <div class="isu-wrap max-w-5xl">
@@ -107,14 +225,194 @@ const prova = [
         />
         <hr class="isu-rule mx-auto" />
 
-        <IsuStack layers={strati} class="mb-6" />
+        <IsuStack layers={strati} class="mb-5" />
 
         <T
           as="p"
           class="isu-col-sub mx-auto"
-          it="La fondazione è già vostra. Noi ci appoggiamo sopra."
-          en="The foundation is already yours. We build on top of it."
+          it="La fondazione è già vostra. I due strati sopra si aprono sulla pagina che li racconta."
+          en="The foundation is already yours. The two layers above open onto the page that tells each one."
         />
+      </div>
+    </Slide>
+
+    <!-- ── Primo tempo · la filiera ──────────────────────────────────────── -->
+    <Slide id="slide-filiera" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgFiliera.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Primo tempo · il contenuto alla scala della banca"
+          en="First half · content at the scale of the bank"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Centinaia di versioni, una linea guida sola"
+          en="Hundreds of versions, one set of guidelines"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <IsuPipeline
+          stops={tappe}
+          back={{
+            it: 'quello che ha funzionato rientra nel giro dopo',
+            en: 'what worked feeds the next round',
+          }}
+          rail={{
+            k: { it: 'Governance', en: 'Governance' },
+            t: {
+              it: 'Ogni variante prende un punteggio di aderenza alle linee guida e pubblica solo dopo l’approvazione di una persona. Le parti obbligatorie, avvertenze e citazioni, entrano come elementi pre-approvati e restano intatte.',
+              en: 'Every variant is scored against the brand guidelines and goes live only once a person approves it. Mandatory elements, disclaimers and citations, come in pre-approved and stay untouched.',
+            },
+          }}
+          class="mb-4"
+        />
+
+        <HowItWorks
+          title="filiera"
+          tone="onDark"
+          label="Come funziona, in concreto"
+          class="isu-hiw mb-3"
+        >
+          <p>
+            <span data-lang-it>Le linee guida, i prodotti e le persone si caricano una volta e valgono per tutto quello che si genera dopo. Il controllo gira su ogni variante e indica il punto da correggere, non un voto.</span>
+            <span data-lang-en>Guidelines, products and personas are loaded once and govern everything generated afterwards. The check runs on every variant and points at what to fix, not at a score.</span>
+          </p>
+          <p>
+            <span data-lang-it>I modelli generativi sono più d’uno, Firefly compreso, e la scelta resta vostra. I template arrivano da Journey Optimizer o da Marketo e ci tornano con il codice di personalizzazione intatto.</span>
+            <span data-lang-en>More than one generative model is available, Firefly included, and the choice stays yours. Templates come in from Journey Optimizer or Marketo and go back with their personalisation code intact.</span>
+          </p>
+        </HowItWorks>
+
+        <div class="isu-credits"><p class="isu-products">Experience Manager · GenStudio for Performance Marketing · Firefly</p>
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.genstudioPm.label.it}</span><span data-lang-en>{SOURCES.genstudioPm.label.en}</span>
+          · <a href={SOURCES.genstudioPm.url} target="_blank" rel="noopener noreferrer">{SOURCES.genstudioPm.short}</a>
+        </p></div>
+      </div>
+    </Slide>
+
+    <!-- ── Primo tempo · farsi trovare ───────────────────────────────────── -->
+    <Slide id="slide-trovare" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgTrovare.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Primo tempo · la stessa filiera, dall’altra parte"
+          en="First half · the same pipeline, from the other end"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Comparire nelle risposte, non solo nei risultati"
+          en="Showing up in the answers, not only in the results"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <IsuLoop
+          nodes={giro}
+          core={{
+            v: '60%',
+            t: {
+              it: 'delle ricerche finisce senza un clic verso il sito',
+              en: 'of searches end without a click through to the site',
+            },
+            src: 'Bain & Company',
+          }}
+          class="mb-4"
+        />
+
+        <div class="isu-pipe-rail">
+          <span class="isu-pipe-rail-k">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+              <path d="M2 11.5L6 7l3 2.5L14 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10.5 4H14v3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            4,4×
+          </span>
+          <T
+            as="span"
+            class="isu-pipe-rail-t"
+            it="è quanto converte in più chi arriva da una risposta generata, rispetto al traffico da ricerca organica."
+            en="is how much better traffic arriving from a generated answer converts, compared with organic search."
+          />
+        </div>
+
+        <div class="isu-credits mt-4"><p class="isu-products">Adobe Brand Visibility · Experience Manager Sites · Analytics</p>
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.brandVisibility.label.it}</span><span data-lang-en>{SOURCES.brandVisibility.label.en}</span>
+          · <a href={SOURCES.brandVisibility.url} target="_blank" rel="noopener noreferrer">{SOURCES.brandVisibility.short}</a>
+        </p></div>
+      </div>
+    </Slide>
+
+    <!-- ── Secondo tempo · il viaggio intero ─────────────────────────────── -->
+    <Slide id="slide-viaggio" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgViaggio.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Secondo tempo · il viaggio intero"
+          en="Second half · the whole journey"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Lo stesso cliente, visto su tutti i canali"
+          en="The same customer, seen across every channel"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <IsuJourney
+          stops={tappeViaggio}
+          readings={letture}
+          cap={{
+            it: 'Proporzioni di esempio. Il punto è che sono due letture dello stesso storico: il modello si applica quando il dato si legge, non quando si raccoglie, e vale anche sul passato.',
+            en: 'Illustrative proportions. The point is that these are two readings of the same history: the model applies when the data is read, not when it is collected, and it applies to the past as well.',
+          }}
+          class="mb-4"
+        />
+
+        <div class="isu-pipe-rail">
+          <span class="isu-pipe-rail-k">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+              <path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <T as="span" it="Da oggi a domani" en="From today onwards" />
+          </span>
+          <T
+            as="span"
+            class="isu-pipe-rail-t"
+            it="Analytics resta acceso: lo storico entra con il connettore dedicato, Analysis Workspace resta lo strumento di chi lo usa già, e i segmenti che si trovano qui si pubblicano sul profilo cliente."
+            en="Analytics stays on: history comes in through the dedicated connector, Analysis Workspace stays the tool your people already know, and the segments found here publish to the customer profile."
+          />
+        </div>
+
+        <HowItWorks
+          title="viaggio"
+          tone="onDark"
+          label="Come funziona, in concreto"
+          class="isu-hiw mt-4 mb-3"
+        >
+          <p>
+            <span data-lang-it>Customer Journey Analytics legge dati che stanno su Experience Platform. Lo storico di Adobe Analytics ci arriva con il connettore dedicato, e i due ambienti convivono finché serve il confronto.</span>
+            <span data-lang-en>Customer Journey Analytics reads data that sits on Experience Platform. The Adobe Analytics history arrives through the dedicated connector, and the two environments run side by side as long as the comparison needs.</span>
+          </p>
+          <p>
+            <span data-lang-it><b>Da sapere prima:</b> il connettore da solo non è la strada di lungo periodo: latenza, schema legato alla nomenclatura di Analytics, dati che restano dentro l’analisi invece di essere disponibili alle altre applicazioni. Il percorso consigliato da Adobe è lo storico via connettore insieme a una raccolta nuova, pianificata.</span>
+            <span data-lang-en><b>Worth knowing first:</b> the connector on its own is not the long-term route: latency, a schema tied to Analytics nomenclature, data that stays inside the analysis instead of reaching the other applications. The route Adobe recommends is history through the connector alongside a new, planned collection.</span>
+          </p>
+        </HowItWorks>
+
+        <div class="isu-credits"><p class="isu-products">Customer Journey Analytics · Experience Platform</p>
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.cjaUpgrade.label.it}</span><span data-lang-en>{SOURCES.cjaUpgrade.label.en}</span>
+          · <a href={SOURCES.cjaUpgrade.url} target="_blank" rel="noopener noreferrer">{SOURCES.cjaUpgrade.short}</a>
+        </p></div>
       </div>
     </Slide>
 
@@ -148,7 +446,7 @@ const prova = [
         </ul>
 
         <p class="isu-products mx-auto">
-          Experience Platform · Real-Time CDP · Journey Optimizer · Customer Journey Analytics · Experience Manager · Target
+          Experience Platform · Real-Time CDP · Journey Optimizer · Customer Journey Analytics · Experience Manager · Target · Workfront
         </p>
         <p class="isu-note mt-3 mx-auto">
           <span data-lang-it>{SOURCES.santander.label.it}</span><span data-lang-en>{SOURCES.santander.label.en}</span>

@@ -60,6 +60,17 @@ const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[va
         if (next) region!.removeAttribute('aria-hidden'); else region!.setAttribute('aria-hidden', 'true');
         if (arrow) arrow.style.transform = next ? 'rotate(90deg)' : 'none';
 
+        /* Mentre si legge il dettaglio, il contorno arretra. Il blocco aperto
+           cresce dentro la slide e su uno schermo basso (1280×800: un portatile
+           qualunque) finisce sotto la barra di navigazione o sopra la firma
+           co-brand. L'audit non lo vede — il check `b` guarda i comandi del
+           deck, non la nav dell'app né i crediti d'angolo — e si scopre solo
+           guardando uno screenshot.
+           Qui il motore si limita a PUBBLICARE lo stato su <html>; che cosa
+           arretra lo decide la pelle di ogni experience nel suo global.css. */
+        if (next) document.documentElement.dataset.hiwOpen = 'true';
+        else delete document.documentElement.dataset.hiwOpen;
+
         if (REDUCED) {
           region!.style.height = next ? 'auto' : '0';
           region!.style.opacity = next ? '1' : '0';

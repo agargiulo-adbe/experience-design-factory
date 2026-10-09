@@ -1,0 +1,72 @@
+---
+/**
+ * La filiera del contenuto, disegnata: tre tappe nel tempo, un binario sotto.
+ *
+ * Il binario NON è una quarta tappa, ed è questo il punto dell'immagine: la
+ * governance non viene dopo, sta sotto tutte e tre. Sul binario viaggiano gli
+ * elementi che in una banca non si possono toccare — avvertenze, citazioni —
+ * e che restano identici in ogni variante generata.
+ *
+ * Perché tre tappe e non quattro: i pilastri dichiarati del prodotto sono
+ * Assemble, Activate, Optimize e **Brand governance**, e l'ultimo è trasversale
+ * agli altri tre (fonte: pagina prodotto, letta l'8 ottobre 2026). Disegnarlo
+ * in riga con gli altri sarebbe un diagramma che contraddice il prodotto.
+ *
+ * Geometria presa da `.isu-path` (la rotta), che l'audit attraversa già pulita:
+ * pallino + filetto che corre fino alla tappa dopo, l'ultimo filetto trasparente.
+ * La freccia di ritorno dice che il giro ricomincia da quello che si è misurato.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Bilingual {
+  it: string;
+  en: string;
+}
+interface Stop {
+  n: string;
+  t: Bilingual;
+  d: Bilingual;
+}
+interface Props {
+  stops: Stop[];
+  /** Il binario trasversale: che cosa regge tutte le tappe. */
+  rail: { k: Bilingual; t: Bilingual };
+  /** Didascalia della freccia di ritorno. */
+  back: Bilingual;
+  class?: string;
+}
+const { stops, rail, back, class: className } = Astro.props as Props;
+---
+<div class:list={['isu-pipe', className]}>
+  <ol class="isu-pipe-track" role="list">
+    {stops.map((s) => (
+      <li class="isu-pipe-stop" role="listitem">
+        <span class="isu-pipe-dot" aria-hidden="true"></span>
+        <span class="isu-num">{s.n}</span>
+        <T as="h3" class="isu-col-title mt-1" it={s.t.it} en={s.t.en} />
+        <T as="p" class="isu-col-sub mt-1" it={s.d.it} en={s.d.en} />
+      </li>
+    ))}
+  </ol>
+
+  <!-- Il ritorno: quello che si è misurato rientra nella tappa che assembla. -->
+  <div class="isu-pipe-back">
+    <svg class="isu-pipe-back-svg" viewBox="0 0 1000 26" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d="M992 2 V14 Q992 22 982 22 H18 Q8 22 8 14 V2" />
+      <path d="M2 8 L8 1 L14 8" />
+    </svg>
+    <T as="span" class="isu-pipe-back-t" it={back.it} en={back.en} />
+  </div>
+
+  <!-- Il binario: sta SOTTO le tre tappe, e le attraversa tutte. -->
+  <div class="isu-pipe-rail">
+    <span class="isu-pipe-rail-k">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+        <rect x="3" y="7" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <T as="span" it={rail.k.it} en={rail.k.en} />
+    </span>
+    <T as="span" class="isu-pipe-rail-t" it={rail.t.it} en={rail.t.en} />
+  </div>
+</div>
