@@ -7,6 +7,7 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagSoglia from '../../components/diagrammi/DiagSoglia.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -35,6 +36,30 @@ const radar = [
   },
 ];
 
+// Il POC letto come una soglia: a sinistra, tratteggiato, quello che non serve
+// avere pronto; a destra, pieno, quello che si vede già. La freccia di ritorno
+// dice che il resto si aggiunge dopo, senza rifare il lavoro.
+const sogliaPoc = {
+  prima: {
+    titolo: 'Non serve averlo pronto',
+    voci: [
+      'L\'ecosistema completo già in produzione',
+      'L\'area riservata web già attiva',
+      'Una migrazione preventiva dello storico',
+    ],
+  },
+  soglia: 'Il POC',
+  dopo: {
+    titolo: 'Si vede già',
+    voci: [
+      'La riconciliazione delle identità tra sito, app e CRM',
+      'Il journey end-to-end, dall\'accesso anonimo all\'acquisto',
+      'La drop-off analysis sul funnel di prenotazione',
+    ],
+  },
+  ritorno: 'Quello che manca si aggiunge dopo, senza rifare il POC',
+};
+
 // Il riepilogo si ferma al capitolo 04: il 05 è questa pagina — il suo
 // contenuto (POC, radar, adozione) vive nel paragrafo di chiusura, non in lista.
 const capitoli = [
@@ -53,7 +78,7 @@ const capitoli = [
     <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/bivio')}
     prevHref={href(base, '/fs-park/meta-invisibile')}
   >
@@ -64,10 +89,10 @@ const capitoli = [
       <div slot="backdrop" class="fsp-stalli"></div>
       <Sfondo slot="backdrop" id="pk-varco" forza="leggera" />
       <CoverHero
-        eyebrow="05 · Il percorso"
+        eyebrow="05 · Percorso"
         numeral="05"
         title="Il percorso"
-        lead="Un primo passo concreto e dimostrabile, una lista di use case sul radar e un accompagnamento che rende il team autonomo. Senza scadenze imposte: il ritmo lo decide FS Park."
+        lead="Si comincia da un passo dimostrabile. Dietro ci sono gli use case già sul radar e un accompagnamento pensato per rendere il team autonomo. Nessuna scadenza imposta: il ritmo lo decide FS Park."
         size="phase"
         tone="ink"
         signature={false}
@@ -91,7 +116,7 @@ const capitoli = [
         Un POC su dati realistici o simulati.
       </h2>
       <p
-        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-10"
         style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
         data-reveal
         data-reveal-delay="0.14"
@@ -100,26 +125,16 @@ const capitoli = [
         prima di qualunque impegno sull'ecosistema reale.
       </p>
 
-      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.2">
-        <div class="fs-panel text-left">
-          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-4">Cosa dimostra</p>
-          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
-            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>La riconciliazione delle identità tra sito, app e CRM</li>
-            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>Il journey end-to-end, dall'accesso anonimo all'acquisto</li>
-            <li class="flex gap-3"><span class="text-emerald-400 flex-shrink-0 mt-px">✓</span>La drop-off analysis sul funnel di prenotazione</li>
-          </ul>
-        </div>
-        <div class="fs-panel text-left">
-          <p class="text-[0.85rem] font-bold tracking-widest uppercase mb-4" style="color: rgba(var(--sig-rgb), 0.98);">Cosa non richiede</p>
-          <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>L'ecosistema completo già in produzione</li>
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>L'area riservata web già attiva</li>
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>Una migrazione preventiva dello storico</li>
-          </ul>
-        </div>
+      <div class="fsp-diag w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <DiagSoglia
+          prima={sogliaPoc.prima}
+          soglia={sogliaPoc.soglia}
+          dopo={sogliaPoc.dopo}
+          ritorno={sogliaPoc.ritorno}
+        />
       </div>
 
-      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
+      <p class="mt-9 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
         Ipotesi emerse al tavolo di lavoro Adobe × FS Park, luglio 2026 · perimetro da definire insieme
       </p>
     </Slide>
@@ -223,10 +238,10 @@ const capitoli = [
     </Slide>
 
     <!-- ── SLIDE 4: Verso il Gruppo ───────────────────────────────── -->
-    <Slide id="slide-orizzonte" bg="inverse" align="center">
+    <Slide id="slide-orizzonte" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
-      <Sfondo slot="backdrop" id="pk-alba" forza="media" chiara />
+      <Sfondo slot="backdrop" id="pk-alba" forza="media" />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         L'ORIZZONTE
       </p>
@@ -246,8 +261,8 @@ const capitoli = [
       >
         Il valore per FS Park parte prima e non aspetta nessuno. Ma la linea del bivio
         può richiudersi: la clean room permette alle due metà del viaggio di Davide di
-        raccontarsi a vicenda, con ogni società padrona dei propri dati. Un orizzonte,
-        una possibilità aperta, non una dipendenza.
+        raccontarsi a vicenda, con ogni società padrona dei propri dati. Resta una
+        possibilità aperta, da cui nessuno dei due rami dipende.
       </p>
 
       <div class="relative w-full max-w-4xl mx-auto" data-reveal data-reveal-delay="0.24">
@@ -260,7 +275,7 @@ const capitoli = [
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node relative z-10" data-active style="border-color: rgba(241, 243, 244, 0.9); box-shadow: 0 0 18px rgba(241, 243, 244, 0.4);">⇄</span>
-            <span class="fs-node-label">La clean room · Data Collaboration</span>
+            <span class="fs-node-label">La clean room · Real-Time CDP Collaboration</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node fs-node--alt" data-active>🚆</span>
@@ -315,9 +330,9 @@ const capitoli = [
         data-reveal
         data-reveal-delay="0.26"
       >
-        Da qui comincia il percorso vero: POC su dati simulati, use case sul radar,
-        adozione accompagnata. Il primo passo è sedersi sui dati e definire insieme
-        il perimetro del POC e le prime domande a cui rispondere.
+        Da qui comincia il percorso vero, con il POC su dati simulati e l'adozione
+        accompagnata. Il primo passo è sedersi sui dati e definire insieme il perimetro
+        del POC e le prime domande a cui rispondere.
       </p>
 
       <div class="text-center" data-reveal data-reveal-delay="0.34">
@@ -359,3 +374,6 @@ const capitoli = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- Come in fondamenta.astro: il ritmo delle voci del DiagSoglia su fondo nudo
+     va portato ai 16px che una proiezione pretende. -->

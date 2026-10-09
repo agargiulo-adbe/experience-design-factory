@@ -6,6 +6,7 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import DiagSoglia from '../../components/diagrammi/DiagSoglia.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../../assets.index';
 
@@ -21,11 +22,18 @@ const emailTipi = [
   { label: 'FS Park',                 icon: '🅿️', desc: 'Nessuna comunicazione con Trenitalia', freq: 'Gap', badge: 'Gap' },
 ];
 
-// Il punto cieco di Trenitalia: quello che succede prima del binario.
-const puntiCiechi = [
-  { n: '01', label: 'Come arriva', desc: 'In auto, in metro, accompagnato: il tragitto verso la stazione non lascia traccia nei sistemi Trenitalia.' },
-  { n: '02', label: 'Dove sosta', desc: 'Davide parcheggia ogni lunedì in un hub FS Park. Per i dati Trenitalia quel parcheggio non esiste.' },
-  { n: '03', label: 'Quanto prima', desc: 'Arriva 40 minuti prima o all\'ultimo? Il tempo passato in stazione, e come lo usa, resta invisibile.' },
+// Il punto cieco di Trenitalia: il binario è la soglia. Prima c'è un
+// comportamento senza nome, dopo c'è un cliente con una storia. Il diagramma
+// porta lo stesso contenuto dei tre punti ciechi, ma mostra dove cade il taglio.
+const primaDelBinario = [
+  'Come arriva: in auto, in metro, accompagnato',
+  'Dove sosta: hub FS Park, ogni lunedì',
+  'Quanto prima: 40 minuti o all\'ultimo momento',
+];
+const dalBinarioInPoi = [
+  'Il biglietto comprato in app',
+  'CartaFreccia Oro e abbonamento A/R',
+  'Il viaggio fino all\'arrivo, e il ritorno',
 ];
 ---
 <BaseLayout
@@ -37,7 +45,7 @@ const puntiCiechi = [
     <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/trenitalia/fondamenta')}
     prevHref={href(base, '/bivio')}
   >
@@ -48,7 +56,7 @@ const puntiCiechi = [
       <div slot="backdrop" class="fs-grid"></div>
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <CoverHero
-        eyebrow="Ramo Trenitalia · Il punto di partenza"
+        eyebrow="Ramo Trenitalia · 01 Partenza"
         numeral="01"
         title="La metà su rotaia"
         lead="Dal binario in poi Trenitalia vede tutto: la ricerca, il biglietto, il viaggio, il ritorno. Prima della stazione, però, Davide non esiste ancora."
@@ -90,7 +98,7 @@ const puntiCiechi = [
             <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(27, 34, 48, 0.85)] to-transparent" aria-hidden="true"></div>
             <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
               <span class="fs-node fs-node--alt !w-11 !h-11" data-active>D</span>
-              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">La metà su rotaia</span>
+              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">La metà che Trenitalia vede</span>
             </div>
           </div>
         </div>
@@ -169,7 +177,7 @@ const puntiCiechi = [
         data-reveal
         data-reveal-delay="0.15"
       >
-        Un CRM attivo e ad alta frequenza, eppure nessuna email sfrutta il momento del viaggio. E FS Park non compare mai.
+        Il CRM è attivo e parla spesso, ma nessuna di queste email si aggancia al viaggio in corso, e FS Park non compare mai.
       </p>
 
       <div
@@ -200,7 +208,7 @@ const puntiCiechi = [
 
       <div class="fs-panel fs-panel--alt max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
         <p class="fs-panel-body">
-          <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> manca la lettura del <em>journey</em>, quella che collega i segnali sparsi e li usa al momento giusto.
+          <strong class="text-[var(--ink-primary)]">I dati ci sono:</strong> manca chi legge il <em>journey</em>, collega i segnali sparsi e li usa quando servono davvero.
         </p>
       </div>
       <p class="mt-4 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
@@ -224,29 +232,19 @@ const puntiCiechi = [
       >
         Per Trenitalia, Davide appare in stazione.
       </h2>
-      <p
-        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-5"
-        style="font-size: clamp(0.95rem, 1.15vw, 1.1rem);"
-        data-reveal
-        data-reveal-delay="0.14"
-      >
-        Il biglietto, l'app e la CartaFreccia raccontano il viaggio dal binario in poi.
-        Tutto quello che succede prima resta fuori dal quadro.
-      </p>
 
-      <div class="w-full max-w-4xl mx-auto flex flex-col gap-2.5 mb-5" data-reveal data-reveal-delay="0.2">
-        {puntiCiechi.map((p) => (
-          <div class="fs-card w-full text-left flex items-center gap-5" style="padding: 0.85rem 1.2rem;">
-            <span class="fs-node flex-shrink-0" style="width: 2.5rem; height: 2.5rem; font-size: 0.95rem; border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgb(26,26,40);" aria-hidden="true">{p.n}</span>
-            <div class="min-w-0 flex-1">
-              <p class="fs-card-title mb-0.5" style="font-size: 1.08rem;">{p.label}</p>
-              <p class="fs-card-body">{p.desc}</p>
-            </div>
-          </div>
-        ))}
+      {/* Il diagramma dice da solo quello che prima stava in un paragrafo più tre
+          schede: dove cade il taglio, e che la freccia di ritorno è il lavoro da fare. */}
+      <div class="w-full max-w-5xl mx-auto mb-6" data-reveal data-reveal-delay="0.16">
+        <DiagSoglia
+          prima={{ titolo: 'Prima della stazione · fuori campo', voci: primaDelBinario }}
+          soglia="il binario"
+          dopo={{ titolo: 'Dal binario in poi · tutto registrato', voci: dalBinarioInPoi }}
+          ritorno="il lavoro è riattaccare il prima al dopo"
+        />
       </div>
 
-      <div class="fs-panel fs-panel--alt max-w-4xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
+      <div class="fs-panel fs-panel--alt max-w-5xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
         <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">Perché conta:</strong> per Davide l'esperienza è
           porta-a-porta, non binario-a-binario. Ogni pezzo di viaggio che Trenitalia non vede

@@ -6,28 +6,44 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import DiagFlusso from '../../components/diagrammi/DiagFlusso.astro';
+import DiagFasi from '../../components/diagrammi/DiagFasi.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const fontiDati = [
-  { label: 'Adobe Analytics ×2',    node: 'AA', desc: 'Sito istituzionale + funnel acquisto Frecce' },
-  { label: 'App Trenitalia',        node: 'AP', desc: 'Streaming events · notifiche · uso in-app' },
-  { label: 'Oracle Responsys',      node: 'OR', desc: 'Open rate · risposta email · campagne CRM' },
-  { label: 'Salesforce Data Cloud', node: 'SF', desc: 'Profili CRM · storico clienti' },
-  { label: 'FS Park',               node: 'FP', desc: 'Parcheggio · accessi hub · via Data Collaboration (cap. 4)', rosso: true },
+// Le cinque fonti che confluiscono nel layer, e il percorso che ne esce: è il
+// concetto più ripetuto del capitolo, e qui si vede invece di leggersi.
+const fonti = [
+  'Adobe Analytics ×2 · sito e funnel',
+  'App Trenitalia · eventi e notifiche',
+  'Oracle Responsys · risposta alle email',
+  'Salesforce Data Cloud · profili CRM',
+  'FS Park · accessi agli hub (cap. 4)',
 ];
 
-const fasiFase1 = [
-  { fase: 'Fase 1', label: 'Convergenza analytics', desc: 'CJA unifica le due istanze Adobe Analytics. Prima vista end-to-end: dalla homepage al checkout, senza toccare l\'infrastruttura.' },
-  { fase: 'Fase 2', label: 'Journey full-funnel', desc: 'Aggiunta app, Oracle Responsys (via SFTP) e Salesforce Data Cloud (via MuleSoft). Journey analysis cross-sistema.' },
-  { fase: 'Fase 3', label: 'Attivazione & evoluzione', desc: 'RTCDP, AJO, Data Collaboration. Target esteso al funnel e all\'app. Data Collaboration FS Park × Trenitalia.', rosso: true },
+const percorsoLeggibile = [
+  // spazio unificatore: senza, «4892-XX» resta orfano su una riga sua
+  'Identità ricucita: Davide Ferretti, CartaFreccia 4892-XX',
+  'Il percorso completo su una timeline sola',
+  'Sei sistemi diventano un profilo di journey',
+  'Ricerca → booking → app → parcheggio',
+  'Parcheggio ricorrente e abbonamento in scadenza',
+];
+
+// Le tre fasi di CJA sulla linea del tempo. Le durate non sono stimate da noi:
+// sono le parole del deck («CJA subito, l'attivazione a seguire, l'intelligence
+// nel tempo»), e la nota sotto la slide dice che i tempi si fissano con FS.
+const fasiCja = [
+  { n: 'Fase 1', nome: 'Convergenza analytics', durata: 'subito', esito: 'CJA unifica le due istanze Adobe Analytics: prima vista end-to-end dalla homepage al checkout, senza toccare l\'infrastruttura.' },
+  { n: 'Fase 2', nome: 'Journey full-funnel', durata: 'a seguire', esito: 'Si aggiungono app, Oracle Responsys via SFTP e Salesforce Data Cloud via MuleSoft. Journey analysis cross-sistema.' },
+  { n: 'Fase 3', nome: 'Attivazione ed evoluzione', durata: 'nel tempo', esito: 'Real-Time CDP e AJO per l\'attivazione, la clean room Collaboration per incontrare FS Park. Target esteso a funnel e app.' },
 ];
 ---
 <BaseLayout
   title="CJA: il layer di convergenza · Ramo Trenitalia"
-  description="Customer Journey Analytics connette le due istanze Adobe Analytics e tutti i sistemi — senza disruption, in fasi incrementali."
+  description="Customer Journey Analytics connette le due istanze Adobe Analytics e tutti i sistemi, senza disruption, in fasi incrementali."
   pageSolutions={['cja']}
   branch="trenitalia"
 >
@@ -35,7 +51,7 @@ const fasiFase1 = [
     <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/trenitalia/meta-invisibile')}
     prevHref={href(base, '/trenitalia/fondamenta')}
   >
@@ -51,7 +67,7 @@ const fasiFase1 = [
         eyebrow="03 · Customer Journey Analytics"
         numeral="03"
         title="CJA: il layer di convergenza"
-        lead="Una vista unica del journey, senza migrare né dismettere nulla. CJA lavora sopra i sistemi che già avete e per la prima volta li fa parlare tra loro."
+        lead="Una vista unica del journey, senza migrare né dismettere nulla. CJA lavora sopra i sistemi che già avete, senza toccarli, e li fa parlare tra loro."
         size="phase"
         tone="ink"
         signature={false}
@@ -96,48 +112,29 @@ const fasiFase1 = [
         Tutte le fonti in un'unica vista, senza stravolgere nulla.
       </h2>
 
-      <div
-        class="w-full max-w-6xl mx-auto grid grid-cols-[1fr_92px_1.15fr] gap-4 items-center"
-        data-reveal
-        data-reveal-delay="0.2"
-      >
-        <!-- Fonti dati : stazioni sulla linea -->
-        <div class="flex flex-col gap-2">
-          {fontiDati.map((f) => (
-            <div class="flex items-center gap-3.5">
-              <span class={`fs-node ${f.rosso ? 'fs-node--alt' : ''} flex-shrink-0`} data-active style="width:2.5rem;height:2.5rem;font-size:0.82rem;">{f.node}</span>
-              <div class="min-w-0 flex-1 text-left">
-                <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
-                <p class="text-[0.88rem] text-[var(--color-grigio-200)] leading-snug">{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <!-- CJA hub : il nodo di convergenza dove le linee si incontrano -->
-        <div class="relative flex flex-col items-center justify-center h-full">
-          <div class="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(var(--sig-rgb), 0.55)] to-transparent" aria-hidden="true"/>
-          <span class="fs-node fs-node--alt relative z-10" data-active style="width:3.6rem;height:3.6rem;font-size:0.78rem;font-weight:600;letter-spacing:0.04em;">CJA</span>
-        </div>
-
-        <!-- Output: journey unificato -->
-        <div class="fs-panel fs-panel--alt h-full flex flex-col justify-center">
-          <p class="fs-panel-tag mb-4" style="color: rgba(var(--sig2-rgb), 0.98);">
-            Vista Unificata del Journey
-          </p>
-          {[
-            { label: 'Identità stitched', value: 'Davide Ferretti · CartaFreccia 4892-XX' },
-            { label: 'Touchpoint risolti', value: '6 sistemi → 1 profilo journey' },
-            { label: 'Journey completezza', value: 'Ricerca → Booking → App → Parcheggio' },
-            { label: 'Cross-sell signal', value: 'Parcheggio ricorrente + abbonamento in scadenza' },
-          ].map((a) => (
-            <div class="mb-3 last:mb-0">
-              <span class="block text-[0.76rem] text-[var(--color-grigio-300)] uppercase tracking-wide leading-tight mb-0.5">{a.label}</span>
-              <span class="block text-[1.05rem] text-[var(--ink-primary)] leading-snug">{a.value}</span>
-            </div>
-          ))}
-        </div>
+      {/* Fonti separate → il layer che le legge → un percorso unico. Il
+          diagramma sostituisce le tre colonne fatte a mano che dicevano la
+          stessa cosa con tre strutture diverse. */}
+      {/* text-left: la slide è centrata e il diagramma eredita il centramento,
+          così le tappe sulla linea escono allineate al centro e i pallini della
+          rotaia restano orfani a sinistra. */}
+      <div class="w-full max-w-6xl mx-auto text-left" data-reveal data-reveal-delay="0.2">
+        <DiagFlusso
+          fonti={fonti}
+          layer="Customer Journey Analytics"
+          esito={percorsoLeggibile}
+        />
       </div>
+
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed mx-auto mt-7 text-center"
+        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem); max-width: 52rem;"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        Le frecce vanno in una direzione sola: CJA legge le fonti dove stanno già, senza
+        spostarle e senza chiedere a nessuno dei cinque sistemi di cambiare mestiere.
+      </p>
     </Slide>
 
     <!-- ── SLIDE 1b: CJA è / non è — disambiguazione ─────────────── -->
@@ -156,7 +153,7 @@ const fasiFase1 = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Cosa fa CJA — e cosa no.
+        Cosa fa CJA, e cosa no.
       </h2>
       <p
         class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
@@ -165,7 +162,7 @@ const fasiFase1 = [
         data-reveal-delay="0.12"
       >
         «Ma abbiamo già una CDP» è l'obiezione più comune. CJA non è la CDP operativa (Salesforce
-        Data Cloud): è l'analytics del journey. La CDP attiva i profili, CJA legge il viaggio — complementari.
+        Data Cloud): è l'analytics del journey. La CDP attiva i profili, CJA legge il viaggio: servono entrambe.
       </p>
 
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
@@ -180,7 +177,7 @@ const fasiFase1 = [
         <div class="fs-panel fs-panel--alt text-left">
           <p class="text-[0.85rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-4">CJA NON È · non sostituisce una CDP</p>
           <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
-            <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non raccoglie profili operativi real-time (è RTCDP)</li>
+            <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non raccoglie profili operativi real-time (è Real-Time CDP)</li>
             <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non invia campagne né messaggi (è AJO + Responsys)</li>
             <li class="flex gap-3"><span class="text-[var(--accent-primary)] flex-shrink-0 mt-px">✗</span>Non sostituisce Oracle Responsys né Salesforce CRM</li>
           </ul>
@@ -216,8 +213,8 @@ const fasiFase1 = [
           >
             CJA Workspace ricostruisce il percorso completo: ricerca su trenitalia.com,
             abbandono del funnel a metà checkout, ritorno da push app, prenotazione parcheggio
-            FS Park, acquisto biglietto, viaggio, NPS post-arrivo. Tutto su una sola
-            timeline, come non era mai stato possibile vederlo.
+            FS Park, acquisto biglietto, viaggio, NPS post-arrivo. Una sola timeline, dalla
+            prima ricerca all'ultimo contatto.
           </p>
 
           <div
@@ -269,7 +266,7 @@ const fasiFase1 = [
         data-reveal
         data-reveal-delay="0.14"
       >
-        Content Analytics — costruito su CJA e integrato con AEM — analizza le caratteristiche
+        Content Analytics, costruito su CJA e integrato con AEM, analizza le caratteristiche
         dei contenuti (formato, stile visivo, posizione, lunghezza) e le correla con engagement
         e conversione. Il team editoriale AEM ottimizza sui dati, non più a intuito.
       </p>
@@ -297,7 +294,7 @@ const fasiFase1 = [
               'Quali offerte homepage generano più click su funnel',
               'Quali CTA X-GO e CartaFreccia convertono meglio',
               'Stagionalità dei contenuti ad alto engagement',
-              'A/B test guided da attributi, non solo da varianti manuali',
+              'A/B test guidati dagli attributi, non dalle varianti fatte a mano',
             ],
           },
         ].map((col) => (
@@ -323,55 +320,30 @@ const fasiFase1 = [
       <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
         <div class="fs-grid"></div>
       </div>
-      <!-- Prose (left) + phase stations on the line (right), title stays centred -->
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-[0.8fr_1.2fr] gap-8 items-center">
-        <div class="text-left">
-          <p class="fs-panel-tag mb-4" data-reveal>
-            APPROCCIO GRADUALE · SENZA SALTI NEL VUOTO
-          </p>
-          <h2
-            class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-            style="font-size: clamp(1.6rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-            data-reveal
-            data-reveal-delay="0.08"
-          >
-            Tre fasi. Valore ad ogni passo.
-          </h2>
-          <p
-            class="text-[var(--ink-secondary)] leading-snug"
-            style="font-size: clamp(0.9rem, 1.1vw, 1.05rem);"
-            data-reveal
-            data-reveal-delay="0.14"
-          >
-            Nessun sistema viene dismesso. Ogni fase aggiunge intelligence e porta valore
-            misurabile prima di passare alla successiva.
-          </p>
-        </div>
-
-        <div
-          class="relative w-full flex flex-col gap-3 pl-2"
+      <div class="w-full max-w-5xl mx-auto text-center">
+        <p class="fs-panel-tag mb-3" data-reveal>
+          APPROCCIO GRADUALE · SENZA SALTI NEL VUOTO
+        </p>
+        <h2
+          class="text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
           data-reveal
-          data-reveal-delay="0.2"
+          data-reveal-delay="0.08"
         >
-          <!-- vertical signal line threading the three phase-nodes -->
-          <div class="absolute left-[1.05rem] top-4 bottom-4 w-px bg-gradient-to-b from-[rgba(var(--sig-rgb), 0.9)] via-[rgba(var(--sig-rgb), 0.4)] to-[rgba(var(--sig2-rgb), 0.6)]" aria-hidden="true"/>
-          {fasiFase1.map((f, i) => (
-            <div class="relative flex items-start gap-4">
-              <span class={`fs-node ${f.rosso ? 'fs-node--alt' : ''} relative z-10 flex-shrink-0`} data-active style="width:2.2rem;height:2.2rem;font-size:0.9rem;">{i + 1}</span>
-              <div class="fs-card flex-1 min-w-0 text-left" class:list={[f.rosso && 'fs-panel--alt']} style="padding: 0.85rem 1.1rem;">
-                <div class="flex items-center gap-3 mb-1.5 flex-wrap">
-                  <span class="fs-panel-tag" style={f.rosso ? 'color: rgba(var(--sig2-rgb), 0.98);' : ''}>{f.fase}</span>
-                  <p class="fs-card-title" style="font-size: 1.1rem;">{f.label}</p>
-                </div>
-                <p class="fs-card-body" style="font-size: 0.98rem;">{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+          Tre fasi, e ognuna lascia qualcosa.
+        </h2>
+      </div>
+
+      {/* Le fasi sull'asse del tempo: la barra dice quanto dura, la riga sotto
+          che cosa consegna. Prima era un elenco in colonna con i numeri a lato.
+          Il lead che stava qui («nessun sistema viene dismesso») è già nella
+          copertina del capitolo: ripeterlo alzava il titolo fuori banda. */}
+      <div class="w-full max-w-6xl mx-auto mt-6" data-reveal data-reveal-delay="0.22">
+        <DiagFasi fasi={fasiCja} />
       </div>
 
       <p class="mt-5 text-center fs-stat-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
-        Ipotesi di percorso per discussione — tempistiche da definire con FS Technology
+        Ipotesi di percorso per discussione · tempistiche da definire con FS Technology
       </p>
 
       <div class="mt-4 text-center" data-reveal data-reveal-delay="0.38">

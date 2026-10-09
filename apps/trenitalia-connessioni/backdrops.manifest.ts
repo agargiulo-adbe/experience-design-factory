@@ -81,7 +81,6 @@ export const backdrops: AssetSlot[] = [
   // ── Ramo Trenitalia — la metà su rotaia ──────────────────────────────────
   shot('rl-binari', 'Two steel rails curving gently away across dark wet ballast, photographed from low and close, raking side light on the polished railheads.', RAIL_LIGHT, 121),
   shot('rl-pensilina', 'The underside of a long railway platform canopy in silhouette, repeating steel ribs and tie rods receding into soft darkness.', RAIL_LIGHT, 122),
-  shot('rl-catenaria', 'Slender overhead catenary masts and their wires seen against a heavy overcast dawn sky, spare and graphic, nothing else in frame.', '', 123),
   shot('rl-banchina', 'The empty edge of a railway platform, tactile paving strip running away into shallow focus, wet stone, nobody there.', RAIL_LIGHT, 124),
   shot('rl-alba', 'A wide open railway track field at the very first light before sunrise, flat horizon, low mist, almost monochrome.', '', 125),
   shot('rl-quiete', 'A single steel rail running away through deep darkness, one faint line of reflected light along its head.', QUIET, 126),
@@ -98,7 +97,6 @@ export const backdrops: AssetSlot[] = [
   shot('tc-strati', 'Several large planes of dark tinted glass and brushed metal overlapping in depth inside a modern building, soft daylight passing between them.', '', 141),
   shot('tc-acciaio', 'Close macro of a brushed steel surface under raking light, fine parallel grain crossing the frame, nothing else.', QUIET, 142),
   shot('tc-quiete', 'An almost black empty field with one extremely soft gradient of grey light rising from the lower edge.', QUIET, 143),
-  shot('tc-orizzonte', 'A wide calm horizon before sunrise seen over open flat ground, a soft band of pale light along the far edge, deep blue darkness above.', '', 144),
 ];
 
 /** Alias per `build-assets`, che si aspetta un export chiamato `assets`. */

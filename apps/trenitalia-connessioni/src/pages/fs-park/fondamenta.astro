@@ -5,6 +5,8 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagSoglia from '../../components/diagrammi/DiagSoglia.astro';
+import DiagStrati from '../../components/diagrammi/DiagStrati.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -33,25 +35,37 @@ const chiavi = [
   },
 ];
 
-const xdmCards = [
-  {
-    n: '01',
-    nome: 'Schema XDM',
-    ruolo: 'La lingua comune',
-    desc: 'Ogni fonte entra in Adobe Experience Platform parlando lo stesso vocabolario: eventi, profili, transazioni.',
+// Il confine anonimo/autenticato, disegnato: a sinistra quel che c'è senza un
+// nome (tratteggiato), a destra quel che si sa dal login in poi, e la freccia
+// che torna indietro — la riconciliazione che riattacca il prima.
+const sogliaLogin = {
+  prima: {
+    titolo: 'Prima del login · anonimo',
+    voci: [
+      'Pagine viste, tariffe confrontate, ricerche di disponibilità',
+      'Nessun nome: solo un identificativo tecnico di sessione',
+      'Qui matura la decisione di acquisto, e il CRM non la vede',
+    ],
   },
-  {
-    n: '02',
-    nome: 'Source connector',
-    ruolo: 'Lo storico entra',
-    desc: 'I dati già raccolti si portano dentro con connettori dedicati, senza rifare la raccolta da zero.',
+  soglia: 'Login',
+  dopo: {
+    titolo: 'Dal login in poi · autenticato',
+    voci: [
+      'Profilo noto: prenotazioni, pagamenti, abbonamenti',
+      'Comportamento in app già tracciato e attribuibile',
+      'Sosta e assistenza finiscono sulla stessa persona',
+    ],
   },
-  {
-    n: '03',
-    nome: 'Tagging esistente',
-    ruolo: 'In parte riutilizzabile',
-    desc: 'Quello che l\'app già traccia si valuta e si riusa dove ha senso: il lavoro già fatto resta un patrimonio.',
-  },
+  ritorno: 'La riconciliazione riattacca a questo profilo anche tutto il prima',
+};
+
+// La piattaforma vista di taglio: sotto i sistemi di oggi, che non si toccano;
+// sopra lo schema e la lettura. Sostituisce le tre card che lo dicevano a parole.
+const stratiXdm = [
+  { nome: 'Sito, app, area riservata, CRM Salesforce', nota: 'Restano dove sono, come oggi' },
+  { nome: 'Source connector e tagging già in produzione', nota: 'Lo storico entra, e quel che l\'app traccia si riusa' },
+  { nome: 'Schema XDM · Adobe Experience Platform', nota: 'Eventi, profili e transazioni in una lingua sola', evidenza: true },
+  { nome: 'Customer Journey Analytics', nota: 'Legge il flusso che arriva da sotto' },
 ];
 ---
 <BaseLayout
@@ -63,7 +77,7 @@ const xdmCards = [
     <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/fs-park/convergenza')}
     prevHref={href(base, '/fs-park/partenza')}
   >
@@ -101,53 +115,25 @@ const xdmCards = [
         Al login, il cliente si accende.
       </h2>
       <p
-        class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-10"
         style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
         data-reveal
         data-reveal-delay="0.14"
       >
-        Fino a quel momento è un visitatore qualunque. Il valore non è solo in quel che segue:
-        è nel poter ricostruire anche tutto quello che c'era prima.
+        Fino a quel momento è un visitatore qualunque. Quello che conta davvero
+        è poter ricostruire anche tutto quanto c'era prima.
       </p>
 
-      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-reveal data-reveal-delay="0.2">
-        <div class="fs-panel text-left">
-          <p class="fs-panel-tag mb-3" style="color: rgba(221,224,232,0.85);">Prima del login · anonimo</p>
-          <ul class="space-y-2.5 text-[0.98rem] text-[var(--color-grigio-200)]" style="line-height: 1.55;">
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(241, 243, 244, 0.5)]" aria-hidden="true"/>
-              Pagine viste, tariffe confrontate, ricerche di disponibilità
-            </li>
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(241, 243, 244, 0.5)]" aria-hidden="true"/>
-              Nessun nome: solo un identificativo tecnico di sessione
-            </li>
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(241, 243, 244, 0.5)]" aria-hidden="true"/>
-              È qui che matura la decisione di acquisto, invisibile al CRM
-            </li>
-          </ul>
-        </div>
-        <div class="fs-panel text-left">
-          <p class="fs-panel-tag mb-3">Dal login in poi · autenticato</p>
-          <ul class="space-y-2.5 text-[0.98rem] text-[var(--color-grigio-200)]" style="line-height: 1.55;">
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(var(--sig-rgb), 0.95)]" aria-hidden="true"/>
-              Profilo noto: prenotazioni, pagamenti, abbonamenti
-            </li>
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(var(--sig-rgb), 0.95)]" aria-hidden="true"/>
-              Comportamento in app già tracciato e attribuibile
-            </li>
-            <li class="flex items-start gap-2.5">
-              <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[rgba(var(--sig-rgb), 0.95)]" aria-hidden="true"/>
-              La riconciliazione riattacca a questo profilo anche il prima
-            </li>
-          </ul>
-        </div>
+      <div class="fsp-diag w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <DiagSoglia
+          prima={sogliaLogin.prima}
+          soglia={sogliaLogin.soglia}
+          dopo={sogliaLogin.dopo}
+          ritorno={sogliaLogin.ritorno}
+        />
       </div>
 
-      <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
+      <p class="mt-9 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
         Ricostruire il prima è il cuore della riconciliazione · dal tavolo di lavoro Adobe × FS Park, luglio 2026
       </p>
     </Slide>
@@ -223,19 +209,10 @@ const xdmCards = [
           </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-4 mb-4" data-reveal data-reveal-delay="0.14">
-          {xdmCards.map((item) => (
-            <div class="fs-card flex flex-col">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="fs-mark" aria-hidden="true">{item.n}</span>
-                <div>
-                  <p class="fs-card-title" style="font-size: 1.08rem;">{item.nome}</p>
-                  <p class="text-[0.78rem] font-semibold uppercase tracking-wide" style="color: rgba(var(--sig-rgb), 0.95);">{item.ruolo}</p>
-                </div>
-              </div>
-              <p class="fs-card-body" style="font-size: 0.95rem;">{item.desc}</p>
-            </div>
-          ))}
+        <!-- Gli strati al posto delle tre card: la sovrapposizione si vede, e si
+             vede che sotto non si tocca niente. -->
+        <div class="mb-4" data-reveal data-reveal-delay="0.14">
+          <DiagStrati strati={stratiXdm} />
         </div>
 
         <p class="fs-panel-src text-center" data-reveal data-reveal-delay="0.24">
@@ -245,10 +222,10 @@ const xdmCards = [
     </Slide>
 
     <!-- ── SLIDE 4: Non rifare. Riconciliare. ─────────────────────── -->
-    <Slide id="slide-choice" bg="inverse" align="center">
+    <Slide id="slide-choice" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
-      <Sfondo slot="backdrop" id="pk-alba" forza="media" chiara />
+      <Sfondo slot="backdrop" id="pk-alba" forza="media" />
       <div class="w-full max-w-3xl mx-auto text-left">
         <p class="slide-eyebrow text-[rgba(var(--sig-rgb), 0.95)] mb-8" data-reveal>
           IL PRINCIPIO GUIDA
@@ -258,7 +235,7 @@ const xdmCards = [
             class="fs-quote-text text-[var(--color-chiaro)] font-[family-name:var(--font-display)]"
             style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
           >
-            Non rifare.<br/>Riconciliare.
+            Non si rifà:<br/>si riconcilia.
           </h2>
         </div>
         <p
@@ -267,9 +244,23 @@ const xdmCards = [
           data-reveal
           data-reveal-delay="0.16"
         >
-          Il sito può evolvere coi suoi tempi, l'app è già tracciata, l'area riservata arriverà.
-          La piattaforma riconcilia ciò che esiste e accoglie ciò che verrà. A nessuno viene
-          chiesto di ripartire da zero.
+          Il sito può evolvere con i suoi tempi, l'app è già tracciata e l'area riservata
+          arriverà. La piattaforma riconcilia quello che c'è e accoglie quello che arriva
+          dopo. A nessuno viene chiesto di ripartire da zero.
+        </p>
+
+        <!-- La foundation di Gruppo comprende FS Park per nome: tacerla qui, e
+             dedicarle una slide intera nel ramo Trenitalia, voleva dire portare
+             due fotografie diverse della stessa azienda a due tavoli. -->
+        <p
+          class="fs-panel-src max-w-2xl -mt-6 mb-10"
+          data-reveal
+          data-reveal-delay="0.2"
+        >
+          Vale anche per la base di Gruppo: la piattaforma agentica che FS Technology ha
+          avviato con Salesforce nel marzo 2026 mette Trenitalia, Busitalia, FS Park e
+          FS Logistix sullo stesso backbone CRM. Adobe si aggancia lì, non accanto.&nbsp;
+          <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">fsnews.it, marzo 2026</a>
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 max-w-2xl" data-reveal data-reveal-delay="0.24">
@@ -288,3 +279,7 @@ const xdmCards = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- Le voci del DiagSoglia stanno su fondo nudo dentro le loro colonne: a
+     0.45rem di gap l'audit le conta appiccicate e in proiezione lo sono.
+     `is:global` perché il markup è del componente, non di questa pagina. -->

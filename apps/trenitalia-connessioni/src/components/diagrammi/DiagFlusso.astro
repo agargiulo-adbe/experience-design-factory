@@ -45,14 +45,20 @@ const { fonti, layer, esito, class: className } = Astro.props as Props;
 </div>
 
 <style is:global>
+  /* A bandiera sempre: il diagramma vive dentro slide centrate e, ereditando
+     `text-align: center`, le tappe si staccavano dai punti del percorso che
+     stanno a sinistra. Qui non è una preferenza, è la lettura della linea. */
   .dg-flusso {
+    text-align: left;
     display: grid;
     grid-template-columns: minmax(8rem, 1fr) 3.5rem minmax(7rem, 0.8fr) 2rem minmax(9rem, 1.2fr);
     align-items: center;
     gap: 0 0.5rem;
     width: 100%;
   }
-  .dg-col { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+  /* 1.05rem ≈ 19px alla radice del deck: il check `g` del ritmo verticale
+     vuole almeno 16px fra due blocchi di testo adiacenti. */
+  .dg-col { display: flex; flex-direction: column; gap: 1.05rem; min-width: 0; }
   .dg-box {
     border: 1px solid rgba(214, 219, 230, 0.22);
     background: rgba(47, 57, 78, 0.5);
@@ -62,7 +68,10 @@ const { fonti, layer, esito, class: className } = Astro.props as Props;
     line-height: 1.3;
     color: rgba(241, 243, 244, 0.92);
   }
-  .dg-raccordo { width: 100%; height: 11rem; overflow: visible; }
+  /* Altezza fissa NO: la colonna delle fonti cresce con le etichette e le
+     curve partivano scollate dalle scatole. Stirato sulla riga del grid, con
+     preserveAspectRatio="none", ogni curva riprende il centro della sua. */
+  .dg-raccordo { width: 100%; align-self: stretch; height: auto; min-height: 7rem; overflow: visible; }
   .dg-raccordo path {
     fill: none;
     stroke: rgba(var(--sig-rgb), 0.55);

@@ -5,49 +5,23 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagStrati from '../../components/diagrammi/DiagStrati.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// La piattaforma vista di taglio, dal basso verso l'alto: prima i sistemi che
+// girano già, in cima lo strato che manca. Lo stato di ciascun prodotto (attivo,
+// parziale, da aggiungere) sta nella nota, dove si legge insieme al nome.
 const strati = [
-  {
-    layer: 'Content & Experience',
-    color: 'var(--accent-primary)',
-    prodotti: [
-      { nome: 'AEM Sites / Edge Delivery', stato: 'Attivo', desc: 'trenitalia.com + ~33 siti · cloud, edge, fast' },
-    ],
-  },
-  {
-    layer: 'Analytics & Behavioral Data',
-    color: 'var(--color-verde)',
-    prodotti: [
-      { nome: 'Adobe Analytics (×2)', stato: 'Attivo', desc: 'Sito istituzionale + funnel acquisto' },
-      { nome: 'Adobe Target',          stato: 'Parziale', desc: 'Solo homepage · assente su funnel e app' },
-    ],
-  },
-  {
-    layer: 'CRM & Marketing Automation',
-    color: 'var(--color-grigio-300)',
-    prodotti: [
-      { nome: 'Oracle Responsys',    stato: 'Attivo', desc: 'CartaFreccia · X-GO · campagne email ad alta frequenza' },
-      { nome: 'Salesforce CRM',      stato: 'Foundation 2026', desc: 'Backbone operativo · MuleSoft · Data Cloud' },
-    ],
-  },
-  {
-    layer: 'Intelligence Layer',
-    color: 'var(--color-grigio-500)',
-    prodotti: [
-      { nome: 'Customer Journey Analytics', stato: 'Opportunità', desc: 'Il layer mancante — converge i segnali in una vista unica' },
-    ],
-  },
+  { nome: 'Oracle Responsys', nota: 'Attivo · CartaFreccia, X-GO, email ad alta frequenza' },
+  { nome: 'Salesforce CRM, Data Cloud, MuleSoft', nota: 'Foundation 2026 · il backbone operativo del Gruppo' },
+  { nome: 'AEM Sites su Edge Delivery', nota: 'Attivo · trenitalia.com e circa 33 siti' },
+  { nome: 'Adobe Analytics ×2', nota: 'Attivo · sito istituzionale e funnel di acquisto' },
+  { nome: 'Adobe Target', nota: 'Parziale · solo in homepage, assente su funnel e app' },
+  { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · legge tutti gli strati sotto', evidenza: true },
 ];
-
-const statoTone = (stato: string) =>
-  stato === 'Attivo'          ? 'bg-emerald-500/15 text-emerald-400' :
-  stato === 'Parziale'        ? 'bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)]' :
-  stato === 'Opportunità'     ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' :
-                                'bg-[var(--color-ardesia-media)] text-[var(--color-grigio-200)]';
 ---
 <BaseLayout
   title="Le fondamenta · Ramo Trenitalia"
@@ -58,7 +32,7 @@ const statoTone = (stato: string) =>
     <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/trenitalia/convergenza')}
     prevHref={href(base, '/trenitalia/partenza')}
   >
@@ -69,7 +43,7 @@ const statoTone = (stato: string) =>
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="Ramo Trenitalia · 02 Fondamenta"
+        eyebrow="02 · Fondamenta"
         numeral="02"
         title="Le fondamenta che avete già"
         lead="Ciò che funziona resta al suo posto. Il lavoro è collegare i sistemi che avete già e aggiungere lo strato di intelligence che oggi manca."
@@ -96,50 +70,15 @@ const statoTone = (stato: string) =>
             data-reveal
             data-reveal-delay="0.08"
           >
-            Un ecosistema ricco. Un layer da completare.
+            Tanti sistemi, un solo strato da aggiungere.
           </h2>
         </div>
 
-        {/* strati: Oracle Responsys fonte campione email luglio 2026 · AEM fonte osservazione pubblica · Salesforce v. slide successiva */}
-        <div class="relative flex flex-col gap-3">
-          {/* la linea del segnale che infila i nodi-stazione */}
-          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
-
-          {strati.map((strato, i) => (
-            <div
-              class="relative grid md:grid-cols-[15rem_1fr] items-center gap-4 md:pl-0"
-              data-reveal
-              data-reveal-delay={(0.16 + i * 0.07).toFixed(2)}
-            >
-              <div class="flex items-center gap-4">
-                <span
-                  class="fs-node flex-shrink-0 relative z-10"
-                  data-active
-                  style={`border-color: ${strato.color}; box-shadow: 0 0 18px ${strato.color}55;`}
-                  aria-hidden="true"
-                >{i + 1}</span>
-                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style={`color: ${strato.color}; font-size: 0.82rem;`}>
-                  {strato.layer}
-                </p>
-              </div>
-
-              <div class={`grid gap-3 ${strato.prodotti.length > 1 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
-                {strato.prodotti.map((p) => (
-                  <div class="fs-card flex items-center gap-4" style="padding: 0.85rem 1.1rem;">
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2.5 flex-wrap mb-1">
-                        <p class="fs-card-title" style="font-size: 1.1rem;">{p.nome}</p>
-                        <span class={['text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0', statoTone(p.stato)].join(' ')}>
-                          {p.stato}
-                        </span>
-                      </div>
-                      <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5;">{p.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+        {/* strati: Oracle Responsys fonte campione email luglio 2026 · AEM fonte
+            osservazione pubblica · Salesforce v. slide successiva. Impilati, si
+            vede che CJA sta sopra e che sotto non si tocca niente. */}
+        <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.16">
+          <DiagStrati strati={strati} />
         </div>
       </div>
     </Slide>
@@ -153,14 +92,14 @@ const statoTone = (stato: string) =>
         <div class="fs-panel fs-panel--alt mb-5" data-reveal>
           <p class="fs-panel-tag">FS TECHNOLOGY + SALESFORCE · Q1 2026</p>
           <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
-            La foundation agentica è partita.<br/>Adobe si innesta su di essa.
+            La foundation agentica è partita.<br/>Adobe si collega a quella base.
           </h2>
           <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.62;">
             A marzo 2026 FS Technology ha lanciato con Salesforce una piattaforma agentica che unisce
-            Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM — MuleSoft come
-            integration engine, Data Cloud come layer dati. Adobe si collega alla base Salesforce —
-            connettore nativo per il CRM, i dati di Data Cloud che confluiscono in AEP — e aggiunge
-            l'intelligenza del journey che nessun CRM genera da solo.
+            Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM, con MuleSoft come
+            integration engine e Data Cloud come layer dati. Adobe si aggancia con il connettore
+            nativo per il CRM e con i dati di Data Cloud che confluiscono in AEP, e aggiunge
+            l'intelligenza del journey che nessun CRM produce da solo.
           </p>
         </div>
 
@@ -186,7 +125,7 @@ const statoTone = (stato: string) =>
               n: '03',
               prodotto: 'Salesforce Data Cloud',
               ruolo: 'Layer dati centralizzato',
-              adobe: 'I dati di Data Cloud confluiscono in AEP e alimentano CJA e RTCDP',
+              adobe: 'I dati di Data Cloud confluiscono in AEP e alimentano CJA e Real-Time CDP',
             },
           ].map((item) => (
             <div class="fs-card flex flex-col">
@@ -225,7 +164,7 @@ const statoTone = (stato: string) =>
             class="fs-quote-text text-[var(--color-chiaro)] font-[family-name:var(--font-display)]"
             style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
           >
-            Non sostituire.<br/>Connettere.
+            Non si sostituisce:<br/>si connette.
           </h2>
         </div>
         <p
@@ -235,8 +174,8 @@ const statoTone = (stato: string) =>
           data-reveal-delay="0.16"
         >
           Oracle Responsys continua a eseguire le campagne, Salesforce a gestire i profili,
-          AEM a consegnare i contenuti. CJA si aggiunge come layer che li legge tutti e restituisce,
-          per la prima volta, una vista del journey completa e pronta all'uso.
+          AEM a consegnare i contenuti. CJA si appoggia sopra e li legge tutti, restituendo una
+          vista del journey che nessuno dei tre, da solo, è in grado di dare.
         </p>
 
         <div

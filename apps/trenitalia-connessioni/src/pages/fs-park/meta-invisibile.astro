@@ -5,6 +5,9 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagIncrocio from '../../components/diagrammi/DiagIncrocio.astro';
+import DiagStrati from '../../components/diagrammi/DiagStrati.astro';
+import DiagFasi from '../../components/diagrammi/DiagFasi.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -17,28 +20,28 @@ const puntiCiechi = [
   { mark: '04', nome: 'Il valore oltre il parcheggio', desc: 'Quanto vale quel cliente per il Gruppo, oltre la sosta che paga a FS Park.' },
 ];
 
-const cleanRoomCards = [
-  {
-    n: '01',
-    nome: 'Nessun trasferimento di PII',
-    desc: 'I dati personali non passano da una società all\'altra: restano ciascuno a casa propria.',
+// La forma della data collaboration: due titolari, e in condivisione solo
+// l'intersezione. Disegnata, la domanda «ma allora vi passate i dati?» non nasce.
+// I colori dei due cerchi vengono da --park-rgb e --rail-rgb, cioè la stessa
+// coppia che il deck usa per asfalto e rotaia: l'associazione è già nota.
+const incrocioGruppo = {
+  sinistra: {
+    nome: 'FS Park',
+    nota: 'Titolare dei dati della sosta: prenotazioni, pagamenti, assistenza',
   },
-  {
-    n: '02',
-    nome: 'Matching in ambiente neutro',
-    desc: 'Le audience si incontrano in una clean room: si vede la sovrapposizione, non i singoli record.',
+  destra: {
+    nome: 'Trenitalia',
+    nota: 'Titolare dei dati del viaggio: biglietti, treni, frequenza',
   },
-  {
-    n: '03',
-    nome: 'Consenso e finalità rispettati',
-    desc: 'Ogni analisi avviene dentro il perimetro dei consensi raccolti e delle finalità dichiarate.',
-  },
-];
+  centro: 'Solo la sovrapposizione',
+  vincolo:
+    'Nessun dato personale passa da una società all\'altra: la clean room restituisce la sovrapposizione fra le due audience, non i singoli record, e solo dentro i consensi raccolti.',
+};
 
 const scenari = [
   {
     nome: 'Ritardo treno → benefit sosta',
-    desc: 'Il treno di Davide arriva tardi e la sua sosta si estende senza penale. Il disservizio di uno diventa attenzione dell\'altro.',
+    desc: 'Il treno di Davide arriva tardi e la sua sosta si estende senza penale, perché il ritardo di una società lo sa anche l\'altra.',
   },
   {
     nome: 'Cross-selling sosta + viaggio',
@@ -50,21 +53,33 @@ const scenari = [
   },
 ];
 
-const governanceCards = [
+// La governance di taglio, dal dato grezzo in basso all'analisi in cima: così si
+// vede che le regole stanno SOTTO l'analisi, non accanto come tre card pari.
+const stratiGovernance = [
+  { nome: 'Il dato, come arriva dalla fonte', nota: 'Eventi, profili, transazioni' },
+  { nome: 'Etichette d\'uso', nota: 'Dichiarano come quel dato può essere usato' },
+  { nome: 'Policy enforcement', nota: 'La piattaforma applica le regole e blocca il resto' },
+  { nome: 'Consenso che viaggia col record', nota: 'Le scelte del cliente seguono il dato in ogni analisi' },
+  { nome: 'L\'analisi, dentro il perimetro consentito', nota: 'Anche quando due società collaborano', evidenza: true },
+];
+
+// Le due mosse del ramo, con il peso che dice quanto dura ciascuna. Niente date:
+// il deck dichiara che il ritmo lo decide FS Park, e un numero inventato qui
+// sarebbe una scadenza mai concordata.
+const fasiGruppo = [
   {
     n: '01',
-    nome: 'Etichette d\'uso',
-    desc: 'Ogni dato entra in piattaforma con un\'etichetta che dichiara come può essere usato e per quali finalità.',
+    nome: 'FS Park legge il proprio cliente',
+    durata: 'Si parte da qui',
+    esito: 'Identità riconciliata, journey e funnel sui dati di casa, senza dipendere da nessun altro.',
+    peso: 1.1,
   },
   {
     n: '02',
-    nome: 'Policy enforcement',
-    desc: 'Le regole non sono un documento: la piattaforma le applica da sola e blocca gli usi non consentiti.',
-  },
-  {
-    n: '03',
-    nome: 'Consenso che viaggia col dato',
-    desc: 'Le scelte del cliente accompagnano ogni record, in ogni analisi, anche quando le società collaborano.',
+    nome: 'La clean room apre il Gruppo',
+    durata: 'Quando le due società decidono',
+    esito: 'Benefit sulla sosta, cross-selling fra sosta e viaggio, retention letta su entrambe le metà.',
+    peso: 1,
   },
 ];
 ---
@@ -78,18 +93,18 @@ const governanceCards = [
     <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/fs-park/percorso')}
     prevHref={href(base, '/fs-park/convergenza')}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center">
+    <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
-      <Sfondo slot="backdrop" id="pk-rampa" forza="leggera" chiara />
+      <Sfondo slot="backdrop" id="pk-rampa" forza="leggera" />
       <CoverHero
-        eyebrow="04 · La metà invisibile"
+        eyebrow="04 · Metà invisibile"
         numeral="04"
         title="Alla sbarra,<br/>Davide scompare"
         lead="La lettura del cliente FS Park si interrompe dove inizia il viaggio. Quello che succede dopo esiste, ma appartiene a un'altra società del Gruppo."
@@ -161,16 +176,13 @@ const governanceCards = [
           </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-4 mb-4" data-reveal data-reveal-delay="0.14">
-          {cleanRoomCards.map((c) => (
-            <div class="fs-card flex flex-col text-left">
-              <div class="flex items-center gap-3 mb-2">
-                <span class="fs-mark" aria-hidden="true">{c.n}</span>
-                <p class="fs-card-title" style="font-size: 1.06rem;">{c.nome}</p>
-              </div>
-              <p class="fs-card-body" style="font-size: 0.95rem;">{c.desc}</p>
-            </div>
-          ))}
+        <div class="fsp-incrocio mb-5" data-reveal data-reveal-delay="0.14">
+          <DiagIncrocio
+            sinistra={incrocioGruppo.sinistra}
+            destra={incrocioGruppo.destra}
+            centro={incrocioGruppo.centro}
+            vincolo={incrocioGruppo.vincolo}
+          />
         </div>
 
         <p class="fs-panel-src text-center" data-reveal data-reveal-delay="0.24">
@@ -252,27 +264,24 @@ const governanceCards = [
         data-reveal-delay="0.14"
       >
         La governance non è un adempimento che frena: è quello che rende possibile la
-        collaborazione. Regole chiare sul dato, applicate dalla piattaforma, sempre.
+        collaborazione. Le regole stanno sul dato, e le applica la piattaforma.
       </p>
 
-      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.2">
-        {governanceCards.map((c) => (
-          <div class="fs-card flex flex-col text-left" style="padding: 1.5rem 1.5rem;">
-            <div class="flex items-center gap-3 mb-3">
-              <span class="fs-mark" aria-hidden="true">{c.n}</span>
-              <p class="fs-card-title" style="font-size: 1.08rem;">{c.nome}</p>
-            </div>
-            <p class="fs-card-body" style="font-size: 0.98rem; line-height: 1.62;">{c.desc}</p>
-          </div>
-        ))}
+      <!-- Tre card pari facevano sembrare etichette, policy e consenso tre cose
+           accanto. Sono impilate: ognuna poggia sulla precedente. -->
+      <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <DiagStrati strati={stratiGovernance} />
       </div>
 
-      <div class="fs-panel max-w-4xl mx-auto text-left mt-6" data-reveal data-reveal-delay="0.28">
-        <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
-          Etichette, policy e consenso sono nativi in Adobe Experience Platform: valgono per
-          l'uso interno dei dati FS Park e, quando servirà, per la collaborazione tra società.
-        </p>
-      </div>
+      <p
+        class="text-center text-[var(--ink-secondary)] max-w-4xl mx-auto mt-6"
+        style="font-size: 0.98rem; line-height: 1.6;"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        Etichette, policy e consenso sono nativi in Adobe Experience Platform: valgono per
+        l'uso interno dei dati FS Park e, quando servirà, per la collaborazione tra società.
+      </p>
     </Slide>
 
     <!-- ── SLIDE 5: Partire da FS Park, estendere al Gruppo ───────── -->
@@ -292,24 +301,21 @@ const governanceCards = [
         Partire da FS Park.<br/>Estendere al Gruppo.
       </h2>
 
-      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5 mb-6" data-reveal data-reveal-delay="0.16">
-        <div class="fs-panel text-left">
-          <p class="fs-panel-tag mb-2">Oggi · il caso concreto</p>
-          <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
-            FS Park riconcilia le proprie fonti e impara a leggere il proprio cliente:
-            identità, journey, funnel. Il valore arriva qui, con i dati di casa,
-            senza dipendere da nessun altro.
-          </p>
-        </div>
-        <div class="fs-panel text-left">
-          <p class="fs-panel-tag mb-2" style="color: rgba(221,224,232,0.85);">Domani · l'orizzonte</p>
-          <p class="fs-panel-body" style="font-size: 1rem; line-height: 1.6;">
-            La stessa piattaforma apre gli scenari di Gruppo attraverso la clean room:
-            benefit sulla sosta, cross-selling, retention letta insieme. Quando le due
-            società decideranno di farlo.
-          </p>
-        </div>
+      <!-- Le due mosse sulla linea del tempo, invece di due pannelli affiancati:
+           così si vede che la seconda non blocca la prima. -->
+      <div class="fsp-fasi w-full max-w-6xl mx-auto mb-7" data-reveal data-reveal-delay="0.16">
+        <DiagFasi fasi={fasiGruppo} />
       </div>
+
+      <p
+        class="text-center text-[var(--ink-secondary)] max-w-3xl mx-auto mb-7"
+        style="font-size: 1rem; line-height: 1.6;"
+        data-reveal
+        data-reveal-delay="0.22"
+      >
+        La prima mossa sta in piedi da sola, sui dati di casa. La seconda arriva sulla
+        stessa piattaforma, e la decidono le due società quando vogliono.
+      </p>
 
       <div class="text-center" data-reveal data-reveal-delay="0.28">
         <a
@@ -326,3 +332,11 @@ const governanceCards = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- DiagIncrocio è tarato su note di poche parole: le nostre dicono di che cosa
+     ciascuna società è titolare, e a quella misura il cerchio centrale finiva
+     SOPRA il testo dei due lati (letto a schermo, non dall'audit: le note sono
+     a 0.86rem e il check testo-su-testo guarda solo da 16px in su). I cerchi si
+     allargano, la sovrapposizione si stringe e il padding interno tiene il
+     testo fuori dall'area coperta. Scoped al ramo: la nav è SPA e i fogli
+     restano in pagina anche dopo lo swap. -->

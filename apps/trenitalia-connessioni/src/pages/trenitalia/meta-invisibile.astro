@@ -6,6 +6,7 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import DiagIncrocio from '../../components/diagrammi/DiagIncrocio.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
@@ -13,7 +14,7 @@ const currentPath = Astro.url.pathname;
 ---
 <BaseLayout
   title="La metà che manca · Ramo Trenitalia"
-  description="Trenitalia guarda oltre la stazione: use case di cross-sell e Data Collaboration con FS Park, orchestrati da Adobe CJA e Adobe Data Collaboration."
+  description="Trenitalia guarda oltre la stazione: use case di cross-sell e Real-Time CDP Collaboration con FS Park, orchestrati da Adobe CJA e Adobe Real-Time CDP Collaboration."
   pageSolutions={['data-collab']}
   branch="trenitalia"
 >
@@ -21,7 +22,7 @@ const currentPath = Astro.url.pathname;
     <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/trenitalia/percorso')}
     prevHref={href(base, '/trenitalia/convergenza')}
   >
@@ -35,7 +36,7 @@ const currentPath = Astro.url.pathname;
         eyebrow="04 · Metà invisibile"
         numeral="04"
         title="La metà che manca"
-        lead="Il viaggio di Davide non comincia al binario. C'è una metà che Trenitalia oggi non vede: l'arrivo, la sosta, il tempo prima della partenza. Data Collaboration la rende leggibile senza scambiare dati in chiaro."
+        lead="Il viaggio di Davide non comincia al binario. C'è una metà che Trenitalia oggi non vede: l'arrivo, la sosta, il tempo prima della partenza. Real-Time CDP Collaboration la rende leggibile senza scambiare dati in chiaro."
         size="phase"
         tone="ink"
         signature={false}
@@ -56,7 +57,7 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.08"
       >
-        Dati che non si parlano, valore lasciato sul tavolo.
+        Sistemi che non si parlano, occasioni che si perdono.
       </h2>
       <p
         class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
@@ -64,8 +65,8 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.13"
       >
-        Ogni sistema conosce solo la propria fetta di cliente. Tra quello che Trenitalia sa
-        e quello che non vede c'è tutto il valore che oggi va perso.
+        Ogni sistema conosce solo la propria fetta di cliente. Nello spazio fra quello che
+        Trenitalia sa e quello che non vede stanno le occasioni che oggi si perdono.
       </p>
 
       {/* Three station-nodes on the signal line: each system sits on the same rail
@@ -79,21 +80,21 @@ const currentPath = Astro.url.pathname;
               rosso: false,
               sa: 'Chi ha prenotato · quando · dove · durata sosta',
               nonSa: 'Se ha viaggiato in Frecce · se ha abbonamento · se è CartaFreccia',
-              gap: 'Nessuna offerta bundled. Parcheggio = commodity.',
+              gap: 'Nessun pacchetto: il parcheggio resta commodity.',
             },
             {
               brand: 'Trenitalia',
               rosso: true,
               sa: 'Storico biglietti · classe · frequenza · canale',
               nonSa: 'Se ha usato FS Park · se ha cercato parcheggio · dove arriva',
-              gap: 'Bundle viaggio + parcheggio invisibile. Ricavo accessorio non colto.',
+              gap: 'Il pacchetto viaggio-parcheggio non si vede: ricavo accessorio perso.',
             },
             {
               brand: 'Oracle Responsys',
               rosso: false,
               sa: 'Open rate · click · programma CRM · device',
               nonSa: 'Se ha appena prenotato · abbonamento in scadenza · LTV reale',
-              gap: 'Campagne a calendario: il contesto del momento non è ancora sfruttato.',
+              gap: 'Campagne a calendario: il contesto del momento resta inutilizzato.',
             },
           ].map((item, i) => (
             <div class="flex flex-col items-center">
@@ -116,51 +117,44 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1b: Perché serve Data Collaboration ─────────────── -->
+    <!-- ── SLIDE 1b: Perché serve Real-Time CDP Collaboration ─────────────── -->
     <Slide id="slide-why-collab" bg="secondary" align="center" data-solution="data-collab">
       <div slot="backdrop" class="fs-bg-soft"></div>
       <Sfondo slot="backdrop" id="tc-strati" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
       <p class="slide-eyebrow text-center text-[var(--accent-secondary)] mb-4" data-reveal>
-        PERCHÉ SERVE DATA COLLABORATION — ANCHE DENTRO IL GRUPPO FS
+        DATA COLLABORATION · ANCHE DENTRO IL GRUPPO FS
       </p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-8 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.9vw, 2.6rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
       >
-        Stesso Gruppo, entità separate.<br/>Serve una clean room.
+        Stesso Gruppo, entità legali distinte.<br/>Serve una clean room.
       </h2>
 
-      {/* Two entities on the same rail — the clean room is the node where their
-          audiences meet without exchanging PII in the clear. */}
-      <div class="relative w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.16">
-        <div class="flex items-center justify-center gap-4 mb-8" aria-hidden="true">
-          <span class="fs-node">FP</span>
-          <span class="fs-line-h relative flex-1 max-w-[7rem]" style="position: relative; top: auto; left: auto; right: auto;"></span>
-          <span class="fs-node fs-node--alt" data-active>CR</span>
-          <span class="fs-line-h relative flex-1 max-w-[7rem]" style="position: relative; top: auto; left: auto; right: auto;"></span>
-          <span class="fs-node">TR</span>
-        </div>
-        <div class="grid md:grid-cols-2 gap-5 text-left">
-          <div class="fs-panel">
-            <p class="fs-panel-tag">Entità separate</p>
-            <p class="fs-panel-body mt-3">
-              FS Park e Trenitalia sono <strong class="text-[var(--ink-primary)]">entità giuridiche separate</strong>.
-              Il GDPR impone che la condivisione di dati personali identificativi tra società distinte passi da
-              consenso, DPA formale e minimizzazione dei dati.
-            </p>
-          </div>
-          <div class="fs-panel fs-panel--alt">
-            <p class="fs-panel-tag" style="color: rgba(var(--sig2-rgb), 0.98);">La clean room</p>
-            <p class="fs-panel-body mt-3">
-              CJA analizza i comportamenti aggregati di entrambe, ma <strong class="text-[var(--ink-primary)]">non può attivare
-              campagne cross-entità su PII senza una clean room</strong>. Adobe Data Collaboration risolve il nodo:
-              fa incontrare le audience senza scambiare dati in chiaro, resta GDPR-compliant e misura l'attribuzione.
-            </p>
-          </div>
-        </div>
+      {/* Due insiemi che condividono soltanto l'intersezione: disegnata così, la
+          domanda «ma allora vi passate i dati?» non nasce nemmeno. Prima erano
+          tre nodi fatti a mano più due pannelli che si ripetevano. */}
+      <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.16">
+        {/* Note cortissime per forza: il cerchio centrale copre la metà interna
+            dei due laterali, e una riga oltre gli 8rem ci finisce sotto. Quello
+            che ciascuna società sa per esteso sta nella slide precedente. */}
+        <DiagIncrocio
+          sinistra={{ nome: 'FS Park', nota: 'la sosta' }}
+          destra={{ nome: 'Trenitalia', nota: 'il viaggio' }}
+          centro="chi fa entrambe le cose"
+          vincolo="Sono due entità giuridiche distinte: per condividere dati personali identificativi servono consenso, DPA e minimizzazione. Nessun profilo esce da una parte né dall'altra: si incrociano le audience, non gli archivi."
+        />
+      </div>
+
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-5" data-reveal data-reveal-delay="0.26">
+        <p class="fs-panel-body">
+          CJA legge i comportamenti aggregati di entrambe, ma <strong class="text-[var(--ink-primary)]">per attivare
+          una campagna sui dati personali serve la clean room</strong>: Adobe Real-Time CDP Collaboration fa incontrare le
+          audience senza dati in chiaro, e misura l'attribuzione.
+        </p>
       </div>
     </Slide>
 
@@ -178,7 +172,7 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.08"
       >
-        Dalla data intelligence all'azione concreta.
+        Dalla lettura del journey a tre azioni concrete.
       </h2>
 
       {/* Three use-cases threaded on one vertical rail — each is a station on the
@@ -200,7 +194,7 @@ const currentPath = Astro.url.pathname;
             id: 'uc2',
             tag: 'Use Case 02 · Cross-sell',
             title: 'Il parcheggio come cross-sell',
-            recap: 'Chi parcheggia da FS Park e viaggia in Frecce esiste già nei dati di entrambe — ma le due società non lo sanno. La clean room fa incontrare le audience: bundle parcheggio + biglietto.',
+            recap: 'Chi parcheggia da FS Park e viaggia in Frecce esiste già nei dati di entrambe, ma le due società non lo sanno. La clean room fa incontrare le audience: bundle parcheggio + biglietto.',
             impatto: 'Ricavo accessorio per viaggio, oggi non colto',
           },
           {
@@ -238,7 +232,7 @@ const currentPath = Astro.url.pathname;
       </p>
     </Slide>
 
-    <!-- ── SLIDE 3: Data Collaboration — come funziona ────────────── -->
+    <!-- ── SLIDE 3: Real-Time CDP Collaboration — come funziona ────────────── -->
     <Slide id="slide-data-collab" bg="primary" align="left" data-solution="data-collab">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
@@ -254,7 +248,7 @@ const currentPath = Astro.url.pathname;
             data-reveal
             data-reveal-delay="0.08"
           >
-            Privacy al primo posto, ricavi in più.
+            Nessun dato in chiaro, e un ricavo in più.
           </h2>
           <p
             class="text-[var(--color-grigio-200)] leading-snug mb-6"
@@ -262,8 +256,8 @@ const currentPath = Astro.url.pathname;
             data-reveal
             data-reveal-delay="0.14"
           >
-            Adobe Data Collaboration crea una clean room tra FS Park e Trenitalia: collaborano
-            sull'overlap dei clienti senza mai scambiarsi PII. Audience matching GDPR-compliant e campagne misurabili.
+            Adobe Real-Time CDP Collaboration crea una clean room tra FS Park e Trenitalia: collaborano
+            sull'overlap dei clienti senza mai scambiarsi PII. L'incrocio resta conforme al GDPR e la campagna si misura.
           </p>
 
           {/* Four sequential nodes on a single connected rail: hash → overlap →
@@ -278,7 +272,7 @@ const currentPath = Astro.url.pathname;
               {
                 step: '01',
                 label: 'Hashing & Match',
-                desc: 'Entrambe portano i segmenti come hash pseudonimi — mai dati in chiaro.',
+                desc: 'Entrambe portano i segmenti come hash pseudonimi, mai dati in chiaro.',
               },
               {
                 step: '02',
@@ -288,7 +282,7 @@ const currentPath = Astro.url.pathname;
               {
                 step: '03',
                 label: 'Audience Activation',
-                desc: 'L\'audience si attiva in Responsys e nell\'app — senza trasferire dati.',
+                desc: 'L\'audience si attiva in Responsys e nell\'app, senza trasferire dati.',
               },
               {
                 step: '04',
@@ -308,7 +302,7 @@ const currentPath = Astro.url.pathname;
             ))}
           </div>
         </div>
-        <MediaDemoSlot id="data-collab-demo" label="Adobe Data Collaboration — Clean Room FS" />
+        <MediaDemoSlot id="data-collab-demo" label="Adobe Real-Time CDP Collaboration — Clean Room FS" />
       </div>
     </Slide>
 
@@ -326,7 +320,7 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.08"
       >
-        Un'unica piattaforma governata. Un solo perimetro.
+        Una piattaforma governata, un perimetro solo.
       </h2>
       <p
         class="text-center text-[var(--ink-secondary)] leading-snug max-w-4xl mx-auto mb-6"
@@ -335,7 +329,7 @@ const currentPath = Astro.url.pathname;
         data-reveal-delay="0.14"
       >
         PII sparsi su sei sistemi moltiplicano la superficie di attacco. Centralizzando in AEP,
-        il Gruppo passa da sei perimetri a uno solo, che protegge RTCDP, CJA, AJO e Data Collaboration.
+        il Gruppo passa da sei perimetri a uno solo, che copre CJA, Real-Time CDP, AJO e la clean room Collaboration.
       </p>
 
       {/* Four controls of the single governed perimeter — numbered marks, no emoji. */}
@@ -345,10 +339,10 @@ const currentPath = Astro.url.pathname;
         data-reveal-delay="0.2"
       >
         {[
-          { n: '01', label: 'Sensitivity labels', desc: 'Ogni campo classificato per sensibilità — PII protetto by design.' },
+          { n: '01', label: 'Sensitivity labels', desc: 'Ogni campo classificato per sensibilità: il PII è protetto all\'origine.' },
           { n: '02', label: 'Usage policy enforce', desc: 'Policy applicate in automatico: nessuna attivazione fuori consenso.' },
-          { n: '03', label: 'Audit trail completo', desc: 'Log di ogni accesso — chi tocca cosa, e quando.' },
-          { n: '04', label: 'Pseudonimizzazione', desc: 'Identità su hash — mai PII in chiaro fuori perimetro.' },
+          { n: '03', label: 'Audit trail completo', desc: 'Log di ogni accesso: chi tocca cosa, e quando.' },
+          { n: '04', label: 'Pseudonimizzazione', desc: 'Identità su hash: nessun PII in chiaro fuori dal perimetro.' },
         ].map((p) => (
           <div class="fs-card text-left flex flex-col gap-2.5">
             <span class="fs-mark" aria-hidden="true">{p.n}</span>
@@ -370,7 +364,7 @@ const currentPath = Astro.url.pathname;
           <strong class="text-[var(--ink-primary)]">Perché conta oggi:</strong> il caso pubblico di violazione dati
           che ha coinvolto Trenitalia nel giugno 2026 ricorda quanto pesi il rischio quando i dati personali
           vivono sparsi. Un perimetro unico e governato è la risposta strutturale.
-          <span class="block mt-2 text-[0.72rem] tracking-wide uppercase text-[var(--color-grigio-300)]">Rif. cronaca pubblica · sky.it/cronaca (giu 2026) — illustrativo</span>
+          <span class="block mt-2 text-[0.72rem] tracking-wide uppercase text-[var(--color-grigio-300)]">Rif. cronaca pubblica · sky.it/cronaca (giu 2026) · illustrativo</span>
         </p>
       </div>
     </Slide>
@@ -396,8 +390,8 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.15"
       >
-        CJA + Data Collaboration legge ogni touchpoint come un segnale di relazione e lo traduce
-        in un'azione pertinente. Basta invii a raffica e dati chiusi nei silos.
+        CJA e Real-Time CDP Collaboration leggono ogni contatto come un segnale e lo traducono in un'azione
+        pertinente, al posto degli invii a calendario su dati che restano separati.
       </p>
 
       {/* Four terminal stations on the rosso ground — the end-to-end payoff, each
@@ -406,9 +400,9 @@ const currentPath = Astro.url.pathname;
         <span class="hidden md:block absolute top-0 left-[10%] right-[10%] h-[2px]" style="background: linear-gradient(90deg, rgba(241, 243, 244, 0) 0%, rgba(241, 243, 244, 0.55) 12%, rgba(241, 243, 244, 0.55) 88%, rgba(241, 243, 244, 0) 100%);" aria-hidden="true"></span>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 md:pt-6">
           {[
-            { value: 'LTV ↑', label: 'Valore del cliente cross-brand', sub: 'Relazione più lunga e ricca — da misurare sul campo' },
-            { value: 'CAC ↓', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger al posto del batch — da misurare' },
-            { value: '€/viaggio', label: 'Ricavo accessorio da bundle', sub: 'Parcheggio + servizi correlati — da misurare' },
+            { value: 'LTV ↑', label: 'Valore del cliente cross-brand', sub: 'Relazione più lunga e più ricca, da misurare sul campo' },
+            { value: 'CAC ↓', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger al posto del batch, da misurare' },
+            { value: '€/viaggio', label: 'Ricavo accessorio da bundle', sub: 'Parcheggio e servizi correlati, da misurare' },
             { value: '100%', label: 'GDPR-compliant', sub: 'Zero PII condivisi tra FS Park e Trenitalia' },
           ].map((m) => (
             <div class="relative text-center px-3 py-4 bg-[var(--color-chiaro)]/10 border border-[var(--color-chiaro)]/25 rounded-sm">

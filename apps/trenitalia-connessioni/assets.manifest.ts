@@ -1,61 +1,17 @@
 import type { AssetSlot } from '@edf/core/assets/types';
 import { backdrops } from './backdrops.manifest';
 
+/**
+ * Slot immagine di questa experience.
+ *
+ * Qui resta SOLO il ritratto di Davide, che è una foto stock di persona: tutti
+ * gli sfondi vengono da `backdrops.manifest.ts` e sono generati con Firefly
+ * nella palette letta dal CSS di produzione di trenitalia.com. I sei sfondi
+ * stock precedenti sono stati rimossi il 9 ott 2026: non erano referenziati da
+ * nessuna slide e portavano il duotone CONDIVISO (marrone/avorio), cioè la
+ * palette di un'altra experience.
+ */
 export const assets: AssetSlot[] = [
-  {
-    id: 'bg-stazione',
-    type: 'stock',
-    query: 'modern railway station interior architecture steel light perspective travel',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'editorial',
-    alt: '',
-  },
-  {
-    id: 'bg-binari',
-    type: 'stock',
-    query: 'railway tracks night LED lights perspective atmospheric dark minimal',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'duotone',
-    alt: '',
-  },
-  {
-    id: 'bg-dati',
-    type: 'stock',
-    query: 'abstract data network nodes dark background technology connection lines',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'duotone',
-    alt: '',
-  },
-  {
-    id: 'bg-parcheggio',
-    type: 'stock',
-    query: 'modern parking garage aerial view urban structure lines symmetry',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'editorial',
-    alt: '',
-  },
-  {
-    id: 'bg-viaggio',
-    type: 'stock',
-    query: 'businessman traveler with luggage train station natural light motion',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'editorial',
-    alt: '',
-  },
-  {
-    id: 'bg-dashboard',
-    type: 'stock',
-    query: 'analytics dashboard monitor dark office data screen professional',
-    aspect: '16:9',
-    width: 2400,
-    grade: 'duotone',
-    alt: '',
-  },
   {
     id: 'persona-marco',
     type: 'stock',

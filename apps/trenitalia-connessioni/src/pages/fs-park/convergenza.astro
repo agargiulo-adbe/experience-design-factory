@@ -5,16 +5,28 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagFlusso from '../../components/diagrammi/DiagFlusso.astro';
 import { href } from '@edf/core/utils/url.js';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// Le quattro fonti come le legge il diagramma: ognuna chiusa nella sua scatola,
+// con la riga che dice che cosa porta dentro.
 const fontiDati = [
-  { label: 'Sito istituzionale',  node: 'SI', desc: 'Navigazione e ricerche · oggi con tracciamenti limitati' },
-  { label: 'Area riservata web',  node: 'AR', desc: 'Autenticazione da browser · in arrivo, già misurabile' },
-  { label: 'App iOS e Android',   node: 'AP', desc: 'Prenotazioni e pagamenti · eventi già tracciati' },
-  { label: 'CRM Salesforce',      node: 'SF', desc: 'Anagrafiche, contratti, assistenza e reclami' },
+  'Sito istituzionale · ricerche',
+  'Area riservata web · login',
+  'App iOS e Android · acquisti',
+  'CRM Salesforce · assistenza',
+];
+
+// Che cosa si legge dall'altra parte del layer. Erano quattro coppie
+// etichetta/valore in un pannello: qui sono le tappe della vista unificata.
+const vistaUnificata = [
+  'Un solo Davide, dal cookie al record CRM',
+  'Accesso anonimo → login → acquisto → ritorno',
+  'Ogni passo della prenotazione, con i suoi abbandoni',
+  'Reclami e richieste accanto al comportamento',
 ];
 
 const useCases = [
@@ -67,7 +79,7 @@ const adozioneCards = [
     <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/fs-park/meta-invisibile')}
     prevHref={href(base, '/fs-park/fondamenta')}
   >
@@ -123,45 +135,26 @@ const adozioneCards = [
         Sito, area riservata, app e CRM. Una vista sola.
       </h2>
 
-      <div
-        class="w-full max-w-6xl mx-auto grid grid-cols-[1fr_92px_1.15fr] gap-4 items-center"
-        data-reveal
-        data-reveal-delay="0.2"
-      >
-        <div class="flex flex-col gap-2.5">
-          {fontiDati.map((f) => (
-            <div class="flex items-center gap-3.5">
-              <span class="fs-node fs-node--sig flex-shrink-0" data-active style="width:2.5rem;height:2.5rem;font-size:0.82rem;">{f.node}</span>
-              <div class="min-w-0 flex-1 text-left">
-                <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
-                <p class="text-[0.88rem] text-[var(--color-grigio-200)] leading-snug">{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div class="relative flex flex-col items-center justify-center h-full">
-          <div class="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(var(--sig-rgb), 0.55)] to-transparent" aria-hidden="true"/>
-          <span class="fs-node fs-node--sig relative z-10" data-active style="width:3.6rem;height:3.6rem;font-size:0.78rem;font-weight:600;letter-spacing:0.04em;">CJA</span>
-        </div>
-
-        <div class="fs-panel h-full flex flex-col justify-center">
-          <p class="fs-panel-tag mb-4">
-            Vista unificata della sosta
-          </p>
-          {[
-            { label: 'Identità riconciliata', value: 'Un solo Davide, dal cookie al record CRM' },
-            { label: 'Journey completo', value: 'Accesso anonimo → login → acquisto → ritorno' },
-            { label: 'Funnel leggibile', value: 'Ogni passo della prenotazione, con i suoi abbandoni' },
-            { label: 'Assistenza collegata', value: 'Reclami e richieste accanto al comportamento' },
-          ].map((a) => (
-            <div class="mb-3 last:mb-0">
-              <span class="block text-[0.76rem] text-[var(--color-grigio-300)] uppercase tracking-wide leading-tight mb-0.5">{a.label}</span>
-              <span class="block text-[1.02rem] text-[var(--ink-primary)] leading-snug">{a.value}</span>
-            </div>
-          ))}
-        </div>
+      <!-- Il raccordo fra le quattro fonti e la vista unica era un grid a tre
+           colonne montato a mano; DiagFlusso lo dice con le curve che
+           confluiscono, e il colore segue il ramo da --sig-rgb. -->
+      <div class="fsp-diag w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <DiagFlusso
+          fonti={fontiDati}
+          layer="Customer Journey Analytics"
+          esito={vistaUnificata}
+        />
       </div>
+
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-relaxed max-w-4xl mx-auto mt-7"
+        style="font-size: clamp(0.96rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.3"
+      >
+        Le quattro fonti restano in casa loro. Quello che cambia è che la sosta di Davide
+        si legge in fila, dalla prima pagina vista fino al reclamo di due mesi dopo.
+      </p>
     </Slide>
 
     <!-- ── SLIDE 2: CJA è / non è ─────────────────────────────────── -->
@@ -178,7 +171,7 @@ const adozioneCards = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Cosa fa CJA — e cosa no.
+        Cosa fa CJA, e cosa no.
       </h2>
       <p
         class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
@@ -186,8 +179,8 @@ const adozioneCards = [
         data-reveal
         data-reveal-delay="0.12"
       >
-        «Ma abbiamo già una CDP» è l'equivoco più comune. CJA non è la CDP operativa — come
-        Salesforce Data Cloud: la CDP unifica e attiva i profili, CJA legge il viaggio. Sono complementari.
+        «Ma abbiamo già una CDP» è l'obiezione più comune. CJA non prende il posto della CDP
+        operativa, tipo Salesforce Data Cloud: quella unifica e attiva i profili, CJA legge il viaggio.
       </p>
 
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.16">
@@ -291,8 +284,8 @@ const adozioneCards = [
           <div class="fs-panel text-left" data-reveal data-reveal-delay="0.24">
             <p class="fs-panel-tag mb-2">Cosa si vede nel POC</p>
             <p class="fs-panel-body" style="font-size: 0.98rem;">
-              Il funnel di Davide che prenota la sosta: dove entra, dove esita, dove
-              abbandona e cosa lo riporta dentro. Con l'identità già ricucita tra le fonti.
+              Il funnel di Davide che prenota la sosta: da dove entra, su quale passo
+              si blocca e cosa lo riporta dentro, con l'identità già ricucita tra le fonti.
             </p>
           </div>
         </div>
@@ -336,7 +329,7 @@ const adozioneCards = [
         ADOZIONE · OLTRE LA TECNOLOGIA
       </p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -393,3 +386,6 @@ const adozioneCards = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- Stessa ragione di partenza.astro: le tappe del DiagFlusso su fondo nudo
+     vanno a 16px di ritmo, se no in proiezione sono righe appiccicate. -->

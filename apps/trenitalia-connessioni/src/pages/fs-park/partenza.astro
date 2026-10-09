@@ -6,6 +6,7 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
+import DiagFlusso from '../../components/diagrammi/DiagFlusso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../../assets.index';
 
@@ -47,10 +48,20 @@ const badgeStyle = (tone: string) =>
       : 'background: rgba(241, 243, 244, 0.12); color: rgba(221,224,232,0.9);';
 
 const versioni = [
-  { mark: '01', nome: "L'anonimo sul sito", desc: 'Visita le pagine, guarda le tariffe, magari fa un preventivo. Nessun nome, nessun profilo.' },
+  { mark: '01', nome: "L'anonimo sul sito", desc: 'Guarda le pagine e confronta le tariffe, magari fa un preventivo. Resta senza nome né profilo.' },
   { mark: '02', nome: "L'utente in app", desc: 'Autenticato, prenota e paga la sosta. È il cliente più riconoscibile che FS Park abbia.' },
   { mark: '03', nome: 'Il record CRM', desc: 'Anagrafica, contratti, abbonamenti dentro Salesforce. Sa chi è il cliente, non cosa fa online.' },
-  { mark: '04', nome: 'Il ticket assistenza', desc: 'Richieste e reclami gestiti nel CRM. Un segnale prezioso che oggi resta scollegato dal resto.' },
+  { mark: '04', nome: 'Il ticket assistenza', desc: 'Richieste e reclami gestiti nel CRM. Un segnale che oggi resta staccato da tutto il resto.' },
+];
+
+// Il percorso che si legge quando le quattro fonti diventano un profilo solo.
+// Sono le stesse tappe che il tavolo di luglio ha usato come esempio: restano
+// illustrative, e la slide lo dichiara.
+const percorsoDavide = [
+  'Tre visite anonime al sito, a novembre',
+  'Login in app a dicembre',
+  'Prima sosta lunga a gennaio',
+  'Poi ogni lunedì, senza eccezioni',
 ];
 ---
 <BaseLayout
@@ -62,21 +73,21 @@ const versioni = [
     <TreniNavigation currentPath={currentPath} base={base} branch="fs-park" />
   </div>
 
-  <DeckContainer
+  <DeckContainer wallScale
     nextHref={href(base, '/fs-park/fondamenta')}
     prevHref={href(base, '/bivio')}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center">
+    <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
-      <Sfondo slot="backdrop" id="pk-varco" forza="leggera" chiara />
+      <Sfondo slot="backdrop" id="pk-varco" forza="leggera" />
       <CoverHero
-        eyebrow="Ramo FS Park · Il punto di partenza"
+        eyebrow="Ramo FS Park · 01 Partenza"
         numeral="01"
         title="La metà su asfalto"
-        lead="Dall'auto alla sbarra, FS Park vede tutto: l'arrivo, la sosta, il pagamento. Poi il cliente esce di scena e il suo viaggio continua altrove."
+        lead="Dall'arrivo in auto al pagamento della sosta, FS Park vede ogni passo. Poi il cliente esce dal varco e il suo viaggio continua da un'altra parte."
         size="phase"
         tone="ink"
         signature={false}
@@ -119,8 +130,8 @@ const versioni = [
             data-reveal-delay="0.2"
           >
             Ogni lunedì arriva in auto a Milano Centrale, entra nell'hub e paga la sosta lunga
-            dall'app FS Park. Fin qui la sua storia è nitida: orari, ricorrenza, abbonamento.
-            Quello che succede dopo la sbarra, per FS Park, semplicemente non esiste.
+            dall'app FS Park. Fin qui la sua storia si legge negli orari e nella ricorrenza
+            dell'abbonamento. Oltre la sbarra, per FS Park, il racconto si interrompe.
           </p>
 
           <div class="relative w-full" data-reveal data-reveal-delay="0.32">
@@ -250,50 +261,50 @@ const versioni = [
       </p>
     </Slide>
 
-    <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────── -->
+    <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────────
+         Il paragrafo che descriveva «quattro fonti → un profilo → un
+         percorso» è diventato il disegno: è il concetto che il deck ripete
+         più spesso, e letto si perde. La slide passa a superficie scura
+         chiara come nel tronco e nel ramo gemello: i diagrammi hanno adesso
+         la loro variante per fondo chiaro in global.css. -->
     <Slide id="slide-opportunity" bg="inverse" align="center">
-      <Sfondo slot="backdrop" id="pk-alba" forza="media" chiara />
+      <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-alba" forza="forte" chiara />
+      <div slot="backdrop" class="fs-grid"></div>
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         L'OPPORTUNITÀ
       </p>
       <h2
-        class="text-[var(--color-ardesia-notte)] mb-6 text-center font-[family-name:var(--font-display)]"
+        class="text-[var(--ink-primary)] mb-7 text-center font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
       >
         Leggere il percorso intero,<br/>dal primo accesso anonimo in poi.
       </h2>
-      <p
-        class="text-[var(--color-grigio-500)] leading-relaxed max-w-3xl mx-auto text-center mb-8"
-        style="font-size: clamp(1rem, 1.3vw, 1.2rem);"
-        data-reveal
-        data-reveal-delay="0.16"
-      >
-        Quando le quattro fonti diventano un solo cliente, il percorso si legge da capo a fondo:
-        la prima visita senza nome, il login, l'acquisto della sosta e quello successivo.
-        È la base per capire dove il funnel perde le persone e cosa spinge davvero all'acquisto.
-      </p>
 
-      <div
-        class="fs-panel max-w-3xl mx-auto text-left"
+      <div class="fsp-diag w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
+        <DiagFlusso
+          fonti={ecosistema.map((f) => f.nome)}
+          layer="Un solo profilo cliente"
+          esito={percorsoDavide}
+        />
+      </div>
+
+      <p
+        class="text-[var(--ink-secondary)] leading-relaxed max-w-4xl mx-auto text-center mt-7"
+        style="font-size: clamp(0.98rem, 1.2vw, 1.12rem);"
         data-reveal
         data-reveal-delay="0.26"
       >
-        <p class="fs-panel-tag mb-2">Come cambierebbe la lettura di Davide</p>
-        <p class="fs-panel-head !text-[1.15rem] !leading-snug">
-          Tre visite anonime al sito a novembre, login in app a dicembre, prima sosta lunga
-          a gennaio, poi ogni lunedì. Un solo profilo, una storia che finalmente torna.
-        </p>
-        <p class="fs-panel-src mt-2.5">
-          Scenario illustrativo · da validare sul campo
-        </p>
-      </div>
+        Con il percorso leggibile da capo a fondo si vede dove il funnel perde le persone
+        e cosa le riporta dentro. Le tappe qui sopra sono un esempio, da validare sul campo.
+      </p>
 
       <div class="mt-7 text-center" data-reveal data-reveal-delay="0.36">
         <a
           href={href(base, '/fs-park/fondamenta')}
-          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-ardesia-notte)] text-[var(--color-chiaro)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-verde)] text-white hover:bg-[#00807f] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
           Le fondamenta: una sola identità
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -305,3 +316,10 @@ const versioni = [
 
   </DeckContainer>
 </BaseLayout>
+
+<!-- Le tappe del DiagFlusso stanno su fondo nudo: con gap 0.5rem il check `g`
+     dell'audit le legge come righe appiccicate (9px invece dei 16 richiesti),
+     e in proiezione è esattamente così che si vedono. Il ritmo si allarga qui,
+     sotto una classe di pagina, per non toccare il componente condiviso che
+     l'altro ramo sta usando in parallelo. `is:global` perché gli elementi li
+     rende DiagFlusso, non questa pagina: uno stile scoped non li raggiunge. -->

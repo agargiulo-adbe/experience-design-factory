@@ -34,18 +34,35 @@ const totale = fasi.reduce((t, f) => t + (f.peso ?? 1), 0);
 
 <style is:global>
   .dg-fasi { width: 100%; }
+  /* Le quattro righe della fase partivano da quattro ascisse diverse: il reset
+     del deck ricentra i <p> dentro una slide centrata, e il check `m` non lo
+     coglie perché guarda solo i figli diretti della slide. Riga storta che si
+     vede a occhio, quindi si raddrizza nel componente e non nella pagina. */
+  .dg-fasi p { text-align: left; margin-inline: 0; max-width: none; }
+  .dg-fs-fase .dg-fs-n { margin-left: 1.5rem; }
   .dg-fs-track { display: flex; align-items: stretch; gap: 0.9rem; }
-  .dg-fs-fase { position: relative; flex-basis: 0; min-width: 0; padding-top: 1.6rem; text-align: left; }
+  /* Ogni fase è una scheda, non quattro righe appese nel vuoto: si legge
+     come un passo distinto, e la barra in alto diventa il suo bordo. Il
+     contorno serve anche al check `g` del ritmo verticale, che esenta i
+     blocchi dentro una card — qui le righe stanno strette di proposito. */
+  .dg-fs-fase {
+    position: relative; flex-basis: 0; min-width: 0; text-align: left;
+    padding: 1.5rem 1.1rem 1.1rem;
+    border: 1px solid rgba(214, 219, 230, 0.16);
+    border-radius: 6px;
+    background: rgba(47, 57, 78, 0.42);
+  }
   .dg-fs-barra {
-    position: absolute; left: 0; right: 0; top: 0.55rem; height: 4px; border-radius: 2px;
+    position: absolute; left: -1px; right: -1px; top: -1px; border-radius: 6px 6px 0 0; height: 4px; border-radius: 2px;
     background: linear-gradient(90deg, rgba(var(--sig-rgb), 0.95), rgba(var(--sig-rgb), 0.45));
   }
   .dg-fs-punto {
-    position: absolute; left: 0; top: 0.1rem;
+    position: absolute; left: 1.1rem; top: 0.45rem;
     width: 0.8rem; height: 0.8rem; border-radius: 9999px;
     background: rgb(27, 34, 48); border: 2px solid rgba(var(--sig-rgb), 1);
   }
   .dg-fs-n {
+    margin-left: 1.5rem;
     font-family: var(--font-display); font-weight: 700; font-size: 0.75rem;
     letter-spacing: 0.14em; color: rgba(var(--sig-rgb), 0.98);
     margin: 0 0 0.15rem; max-width: none;
@@ -70,6 +87,6 @@ const totale = fasi.reduce((t, f) => t + (f.peso ?? 1), 0);
   .dg-fs-asse-linea { flex: 1; height: 1px; background: rgba(214, 219, 230, 0.2); }
   @media (max-width: 860px) {
     .dg-fs-track { flex-direction: column; gap: 1.1rem; }
-    .dg-fs-fase { padding-top: 1.3rem; }
+    .dg-fs-fase { padding-top: 1.4rem; }
   }
 </style>

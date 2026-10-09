@@ -585,12 +585,79 @@
 [data-slide].bg-\[var\(--surface-inverse\)\] .fs-node--alt,
 [data-slide].bg-\[var\(--surface-inverse\)\] .fs-mark.fs-node--alt {
   background-color: rgba(0,102,102,0.95); border-color: rgba(0,102,102,1); }
-/* Inchiostri semantici: sul chiaro l'accento torna al pieno del sito. */
+/* Inchiostri semantici: su una slide chiara si ribaltano TUTTI, non solo
+   l'accento. Senza questo, una slide che usa `--ink-primary` (giustamente, è
+   il token) usciva bianca su bianco: successo su due copertine di capitolo e
+   due slide-manifesto del ramo FS Park. */
 [data-slide].bg-\[var\(--surface-inverse\)\] {
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: rgba(47, 57, 78, 0.92);
+  --ink-tertiary: rgba(47, 57, 78, 0.78);
+  --ink-brand: var(--color-rosso);
   --ink-accent: var(--color-rosso);
   --ink-accent-2: var(--color-verde);
   --ink-link: var(--color-rosso);
 }
+/* L'occhiello e la nota di fonte prendono il pieno del segnale DEL RAMO: su
+   fondo chiaro il rosso e il verde del sito sono inchiostri veri (4,8:1 e
+   5,9:1 su #f8f9fa), mentre le loro schiariture sparirebbero. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .slide-eyebrow,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-tag { color: rgba(var(--sig-solid-rgb), 1); }
+
+/* ── I diagrammi su slide chiara ───────────────────────────────────────────
+   La libreria `.dg-*` nasce per il fondo ardesia. Senza queste righe un
+   diagramma su una slide chiara è illeggibile, e il costo di quell'assenza
+   era una terza versione della stessa slide: «l'opportunità» era chiara nel
+   tronco e nel ramo Trenitalia e scura in FS Park, solo perché lì c'era un
+   diagramma. Adesso la regola è una. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-box {
+  border-color: rgba(27, 34, 48, 0.2); background: rgba(255, 255, 255, 0.82); color: rgba(27, 34, 48, 0.95); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-layer {
+  border-color: rgba(var(--sig-solid-rgb), 0.8); background: rgba(var(--sig-solid-rgb), 0.1); color: rgba(27, 34, 48, 0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-raccordo path { stroke: rgba(var(--sig-solid-rgb), 0.6); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-linea {
+  background: linear-gradient(180deg, rgba(var(--sig-solid-rgb), 0.9), rgba(var(--sig-solid-rgb), 0.3)); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-tappa { color: rgba(27, 34, 48, 0.95); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-punto {
+  background: rgba(255, 255, 255, 1); border-color: rgba(var(--sig-solid-rgb), 0.95); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-tit { color: rgba(47, 57, 78, 0.9); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-voce--vuota {
+  border-color: rgba(27, 34, 48, 0.3); background: rgba(255, 255, 255, 0.6); color: rgba(47, 57, 78, 0.95); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-voce--piena {
+  border-color: rgba(var(--sig-solid-rgb), 0.55); background: rgba(var(--sig-solid-rgb), 0.1); color: rgba(27, 34, 48, 0.97); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-asta,
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-soglia .dg-sg-asta:last-child {
+  background: linear-gradient(180deg, rgba(var(--sig-solid-rgb), 0.2), rgba(var(--sig-solid-rgb), 0.9)); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-eti { color: rgba(27, 34, 48, 0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-ritorno path { stroke: rgba(var(--sig-solid-rgb), 0.8); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-sg-ritorno span { color: rgba(var(--sig-solid-rgb), 1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-st-riga {
+  border-color: rgba(27, 34, 48, 0.16); background: rgba(255, 255, 255, 0.78); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-st-riga[data-evidenza] {
+  border-color: rgba(var(--sig-solid-rgb), 0.7); background: rgba(var(--sig-solid-rgb), 0.1); box-shadow: none; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-st-nome { color: rgba(27, 34, 48, 0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-st-nota { color: rgba(47, 57, 78, 0.9); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-n { color: rgba(var(--sig-solid-rgb), 1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-nome { color: rgba(27, 34, 48, 0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-durata,
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-asse { color: rgba(47, 57, 78, 0.85); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-esito { color: rgba(47, 57, 78, 0.95); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-punto {
+  background: rgba(255, 255, 255, 1); border-color: rgba(var(--sig-solid-rgb), 1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-barra {
+  background: linear-gradient(90deg, rgba(var(--sig-solid-rgb), 0.95), rgba(var(--sig-solid-rgb), 0.4)); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-fs-fase {
+  border-color: rgba(27, 34, 48, 0.16); background: rgba(255, 255, 255, 0.78); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-nome { color: rgba(27, 34, 48, 0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-nota,
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-vincolo { color: rgba(47, 57, 78, 0.92); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-centro {
+  background: rgba(255, 255, 255, 0.96); border-color: rgba(27, 34, 48, 0.45); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-centro span { color: rgba(27, 34, 48, 0.99); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-cerchio--sx {
+  border-color: rgba(0, 102, 102, 0.8); background: rgba(0, 102, 102, 0.1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .dg-ic-cerchio--dx {
+  border-color: rgba(217, 24, 53, 0.8); background: rgba(217, 24, 53, 0.1); }
 
 /* ── Biforcazione FS Park × Trenitalia — accento per ramo ──────────────────
    Il ramo è dichiarato da BaseLayout con data-branch su <html>. Il tronco
