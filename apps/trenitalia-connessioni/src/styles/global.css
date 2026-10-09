@@ -4,51 +4,96 @@
 @source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
 @source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
 
-/* Tailwind v4 theme — FS/Trenitalia: dark-tech, rosso FS, ambra */
-@theme {
-  --color-rosso-fs: #E2001A;
-  --color-rosso-scuro: #A30013;
-  --color-carbonio: #0D0D14;
-  --color-ardesia: #1A1A28;
-  --color-acciaio: #252538;
-  --color-binario: #353550;
-  --color-ambra: #F5A623;
-  --color-ambra-chiara: #FFC94D;
-  --color-ghiaccio: #F2F4F8;
-  --color-nebbia: #E8EAF0;
-  --color-bianco: #FFFFFF;
-  --color-grigio-100: #F4F5F8;
-  --color-grigio-200: #DDE0E8;
-  --color-grigio-300: #B0B6C4;
-  --color-grigio-400: #7A8196;
-  --color-grigio-500: #4E5568;
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM TRENITALIA — valori LETTI dal CSS di produzione
+   ───────────────────────────────────────────────────────────────────────
+   Fonte: www.trenitalia.com, 831 KB di CSS scaricati con `pnpm brand:tokens`
+   (riletti il 9 ott 2026). Non a memoria, e non dal brand book: dal foglio di
+   stile che serve la pagina che il cliente guarda ogni giorno. Il sito nomina
+   i propri colori, quindi non c'è niente da interpretare:
 
-  --font-display: 'Space Grotesk', 'DM Sans', 'Helvetica Neue', sans-serif;
-  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+     .color-primary-blu   #2f394e   285 occorrenze   ← il colore di SISTEMA
+     (hover/secondari)    #606c87    96 · #444d60  9
+     .color-red           #d91835    34   (hover .cta-primary-red #b51039, 10)
+     .color-primary-green #006666     9   ← secondo colore di marca, CTA verdi
+     .color-grey-600      #6C6C6C         neutri: #ffffff 240 · #f1f3f4 26 ·
+                                          #f8f9fa 17 · #4e5054 41 · #adb5bd 4
+     font-family          "Poppins"  26 dichiarazioni  (+ "fs-icon", icone)
+
+   DUE ERRORI CHE QUESTA TABELLA CORREGGE, entrambi presenti qui fino al 9 ott:
+   il rosso del deck era #E2001A (rosso corporate del Gruppo FS, non del sito:
+   quello è #d91835) e l'ambra #F5A623 non esiste in nessuna fonte FS — era
+   inventata. Il carattere era Space Grotesk; Poppins è quello vero ed è
+   distribuibile, quindi per una volta non serve una sostituta.
+
+   ESTENSIONI, e perché. Il sito non ha un tema scuro e il deck è a dominante
+   scura, quindi due valori non si leggono dal CSS e vanno dichiarati:
+     · il fondo #1b2230 è uno SCURIMENTO dello stesso #2f394e (stessa tinta,
+       luminosità abbassata) — già usato dal dossier interno di questa app;
+     · un accento non è un inchiostro. Misurato sul fondo #1b2230, #d91835 dà
+       3,14:1 e #006666 dà 2,35:1, entrambi sotto 4,5:1. Per il TESTO si usano
+       quindi le schiariture #ff8d9d (7,2:1) e #4fbdb4 (7,0:1); i colori pieni
+       restano per i fondi e per le CTA, dove il bianco sopra dà 5,1:1.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Tailwind v4 theme */
+@theme {
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-scuro: #b51039;
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
+  --color-bianco: #FFFFFF;
+  --color-grigio-100: #f8f9fa;
+  --color-grigio-200: #d6dbe6;
+  --color-grigio-300: #adb5bd;
+  --color-grigio-400: #a7b0c2;
+  --color-grigio-500: #4e5054;
+
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
 }
 
 :root {
-  /* Primitivi */
-  --color-rosso-fs: #E2001A;
-  --color-rosso-scuro: #A30013;
-  --color-carbonio: #0D0D14;
-  --color-ardesia: #1A1A28;
-  --color-acciaio: #252538;
-  --color-binario: #353550;
-  --color-ambra: #F5A623;
-  --color-ambra-chiara: #FFC94D;
-  --color-ghiaccio: #F2F4F8;
-  --color-nebbia: #E8EAF0;
+  /* Primitivi — ogni riga sopra ha la sua fonte nel blocco in testa al file */
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-scuro: #b51039;
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
   --color-bianco: #FFFFFF;
-  --color-grigio-100: #F4F5F8;
-  --color-grigio-200: #DDE0E8;
-  --color-grigio-300: #B0B6C4;
-  --color-grigio-400: #7A8196;
-  --color-grigio-500: #4E5568;
+  --color-grigio-100: #f8f9fa;
+  --color-grigio-200: #d6dbe6;
+  --color-grigio-300: #adb5bd;
+  --color-grigio-400: #a7b0c2;
+  --color-grigio-500: #4e5054;
 
-  /* Tipografia */
-  --font-display: 'Space Grotesk', 'DM Sans', 'Helvetica Neue', sans-serif;
-  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Il SEGNALE: la linea e i nodi che attraversano il deck. Due ruoli fissi
+     — rotaia e asfalto — e due alias che si scambiano con il ramo, così lo
+     stesso componente cambia colore senza che la slide lo sappia. */
+  --rail-rgb: 255, 141, 157;    /* #ff8d9d — il rosso del sito, schiarito */
+  --rail-solid-rgb: 217, 24, 53;/* #d91835 — .color-red, per i pieni */
+  --park-rgb: 79, 189, 180;     /* #4fbdb4 — il verde del sito, schiarito */
+  --park-solid-rgb: 0, 102, 102;/* #006666 — .color-primary-green */
+  --sig-rgb: var(--rail-rgb);
+  --sig-solid-rgb: var(--rail-solid-rgb);
+  --sig2-rgb: var(--park-rgb);
+
+  /* Tipografia — Poppins su tutto, come il sito */
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
 
   --text-display-xl: clamp(2.75rem, 5vw + 1rem, 5rem);
   --text-display-lg: clamp(2.25rem, 4vw + 0.75rem, 4rem);
@@ -88,33 +133,42 @@
   --spacing-16: 4rem;
   --spacing-20: 5rem;
 
-  /* Semantici — Surface (dark-dominant) */
-  --surface-primary: var(--color-ardesia);
-  --surface-secondary: var(--color-acciaio);
-  --surface-tertiary: var(--color-binario);
-  --surface-inverse: var(--color-ghiaccio);
-  --surface-brand: var(--color-rosso-fs);
+  /* Semantici — Surface (dominante scura: il fondo è lo stesso primary-blu
+     del cliente, abbassato di luminosità; la superficie "secondary" è il
+     #2f394e pieno, così il colore di sistema del sito è visibile come fondo
+     intero e non solo come dettaglio) */
+  --surface-primary: var(--color-ardesia-notte);
+  --surface-secondary: var(--color-ardesia);
+  --surface-tertiary: var(--color-ardesia-media);
+  --surface-inverse: var(--color-nebbia);
+  --surface-brand: var(--color-rosso);
 
-  /* Semantici — Ink */
-  --ink-primary: var(--color-ghiaccio);
-  --ink-secondary: var(--color-grigio-300);
-  --ink-tertiary: var(--color-grigio-400);
-  --ink-inverse: var(--color-carbonio);
-  --ink-brand: var(--color-rosso-fs);
-  --ink-link: var(--color-ambra);
+  /* Semantici — Ink. I rapporti sono misurati sul fondo #1b2230. */
+  --ink-primary: var(--color-bianco);      /* 15,9:1 */
+  --ink-secondary: var(--color-grigio-200);/* 11,5:1 — corpo del testo */
+  --ink-tertiary: var(--color-grigio-400); /*  7,3:1 — note e metadati */
+  --ink-inverse: var(--color-ardesia);
+  --ink-brand: var(--color-rosso-chiaro);
 
-  /* Semantici — Accent */
-  --accent-primary: var(--color-rosso-fs);
-  --accent-secondary: var(--color-ambra);
+  /* Inchiostri che si ribaltano con la superficie: il default è la versione
+     per fondo SCURO; le varianti chiare stanno più in basso nel file, dopo,
+     così a parità di specificità vince l'ultima. */
+  --ink-accent: var(--color-rosso-chiaro);
+  --ink-accent-2: var(--color-verde-chiaro);
+  --ink-link: var(--color-rosso-chiaro);
+
+  /* Semantici — Accent (i PIENI: fondi, CTA, barre. Mai come inchiostro.) */
+  --accent-primary: var(--color-rosso);
+  --accent-secondary: var(--color-verde);
   --accent-hover: var(--color-rosso-scuro);
 
   /* Semantici — Line */
-  --line-subtle: var(--color-binario);
-  --line-default: var(--color-grigio-500);
+  --line-subtle: var(--color-ardesia-media);
+  --line-default: var(--color-ardesia-chiara);
   --line-strong: var(--color-grigio-300);
 
   /* Semantici — Focus */
-  --focus-ring: var(--color-ambra);
+  --focus-ring: var(--color-rosso-chiaro);
 
   /* Deck safe-area contract */
   --slide-safe-inset: 80px;
@@ -184,7 +238,7 @@
     transition: color var(--duration-fast) var(--easing-default);
   }
 
-  a:hover { color: var(--color-ambra-chiara); }
+  a:hover { color: var(--color-verde-chiaro); }
 
   :focus-visible {
     outline: 2px solid var(--focus-ring);
@@ -340,7 +394,7 @@
   width: 100%; max-width: 56rem;
   border-radius: 8px; overflow: hidden;
   aspect-ratio: 16 / 9;
-  background: rgba(242,244,248,0.08);
+  background: rgba(241, 243, 244, 0.08);
   box-shadow: 0 12px 40px -12px rgba(0,0,0,0.4);
 }
 .cs-media img, .cs-media video, .cs-media iframe {
@@ -352,22 +406,22 @@
   margin-top: 0.5rem;
 }
 .cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
-.cs-slide[data-cs-tone="dark"] .cs-prose { color: rgba(242,244,248,0.88); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: rgba(241, 243, 244, 0.88); }
 .cs-slide[data-cs-tone="dark"] .slide-eyebrow { color: var(--accent-secondary); }
-.cs-slide[data-cs-tone="dark"] .cs-caption { color: rgba(242,244,248,0.7); }
-.cs-slide[data-cs-tone="light"] .cs-title { color: var(--color-carbonio); }
+.cs-slide[data-cs-tone="dark"] .cs-caption { color: rgba(241, 243, 244, 0.7); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: var(--color-ardesia-notte); }
 .cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-grigio-500); }
 .cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--accent-primary); }
 
-/* Deck chrome contrast (WCAG AA) — trenitalia runs on a DARK surface, so the
-   shared .deck-btn (semi-transparent surface-primary + ink-secondary icon)
-   composites to a low-contrast mid-tone. Scope a darker, near-opaque button
-   (explicit rgba — ardesia #1A1A28) with a bright ghiaccio icon so
-   prev/next/fullscreen hit ≥3:1 (large/graphical). */
+/* Contrasto del contorno del deck (WCAG AA) — questa experience gira su una
+   superficie SCURA, quindi il .deck-btn condiviso (surface-primary semi-
+   trasparente + icona ink-secondary) compone un mezzotono illeggibile. Qui il
+   bottone è quasi opaco in rgba esplicito (ardesia notte #1b2230) con icona
+   chiara: prev/next/fullscreen stanno sopra 3:1 (grafico/large). */
 [data-deck] .deck-btn {
   color: var(--ink-primary);
-  background: rgba(26, 26, 40, 0.92);
-  border-color: var(--color-binario);
+  background: rgba(27, 34, 48, 0.92);
+  border-color: var(--color-ardesia-media);
 }
 [data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
 [data-deck] .deck-progress { color: var(--color-grigio-200); }
@@ -386,179 +440,237 @@
    is never counted in scrollHeight). Full-bleed atmosphere — visually identical. */
 [data-deck] .slide-backdrop [data-parallax] { transform-origin: 50% 100%; }
 
-/* Journey roadmap cards sit on the solid rosso (brand) slide. Use an explicit
-   rgba dark tint (NOT a Tailwind opacity modifier, which emits oklab() the audit
-   contrast parser can't read) so ghiaccio text composites to ≥4.5:1. */
-.journey-card { background: rgba(13, 13, 20, 0.55); }
-.journey-card:hover { background: rgba(13, 13, 20, 0.7); }
+/* Le card della roadmap stanno sulla slide a fondo pieno (brand). Tinta scura
+   in rgba esplicito — NON un modificatore di opacità Tailwind, che emette
+   oklab() e il parser del contrasto non lo legge — così l'inchiostro chiaro
+   sopra compone ≥4,5:1. */
+.journey-card { background: rgba(27, 34, 48, 0.55); }
+.journey-card:hover { background: rgba(27, 34, 48, 0.7); }
 
 /* ═══════════════════════════════════════════════════════════════════════
    "La linea" — Connessioni Intelligenti (FS Group) design system (.fs-*)
-   A single luminous amber signal-line threads station-nodes across a dark
-   network — the rail-map made data. Dark-dominant (ardesia/carbonio ground,
-   ghiaccio ink); ambra is the signal, rosso FS the accent. Space Grotesk.
-   Explicit rgba() so the deck contrast audit measures real values.
-   ambra #F5A623 → 245,166,35 · rosso #E2001A → 226,0,26 · ghiaccio #F2F4F8 → 242,244,248
-   ardesia #1A1A28 → 26,26,40 · acciaio #252538 → 37,37,56 · carbonio #0D0D14 → 13,13,20
+   Una linea di segnale attraversa i nodi-stazione su un fondo ardesia: la
+   mappa ferroviaria fatta dato. Dominante scura sul primary-blu del cliente,
+   inchiostro chiaro, Poppins.
+   Il colore della linea NON è scritto nelle regole: passa da --sig-rgb, che
+   il ramo ribalta. Rotaia = rosso del sito schiarito #ff8d9d (255,141,157);
+   asfalto = verde del sito schiarito #4fbdb4 (79,189,180). I pieni #d91835 e
+   #006666 stanno in --accent-*, e servono solo da fondo.
+   rgba() esplicito (o rgba(var(--x), a)): l'audit del contrasto misura valori
+   reali e non sa leggere oklab()/color-mix().
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* — Atmospheric grounds — */
 .fs-bg { position: absolute; inset: 0; overflow: hidden; background:
-    radial-gradient(120% 90% at 82% 6%, rgba(245,166,35,0.14), transparent 55%),
-    radial-gradient(90% 80% at 4% 100%, rgba(226,0,26,0.10), transparent 60%); }
+    radial-gradient(120% 90% at 82% 6%, rgba(var(--sig-rgb), 0.14), transparent 55%),
+    radial-gradient(90% 80% at 4% 100%, rgba(var(--sig2-rgb), 0.10), transparent 60%); }
 .fs-bg-soft { position: absolute; inset: 0; overflow: hidden; background:
-    radial-gradient(100% 80% at 50% 0%, rgba(245,166,35,0.10), transparent 62%); }
+    radial-gradient(100% 80% at 50% 0%, rgba(var(--sig-rgb), 0.10), transparent 62%); }
 /* faint network grid — the schematic under the story */
 .fs-grid { position: absolute; inset: 0; opacity: 0.5;
   background-image:
-    repeating-linear-gradient(90deg, rgba(242,244,248,0.05) 0 1px, transparent 1px 96px),
-    repeating-linear-gradient(0deg, rgba(242,244,248,0.035) 0 1px, transparent 1px 96px);
+    repeating-linear-gradient(90deg, rgba(241, 243, 244, 0.05) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, rgba(241, 243, 244, 0.035) 0 1px, transparent 1px 96px);
   mask-image: radial-gradient(120% 100% at 50% 40%, #000 55%, transparent 100%); }
 
 /* — The signal line + station nodes — */
 /* z-index:-1 keeps the absolute line BEHIND the (static, opaque) nodes, so it
    only shows in the gaps between stations and never crosses over a glyph/emoji. */
 .fs-line-h { position: absolute; z-index: -1; height: 2px; background: linear-gradient(90deg,
-    rgba(245,166,35,0) 0%, rgba(245,166,35,0.95) 12%, rgba(245,166,35,0.95) 88%, rgba(245,166,35,0) 100%);
-  box-shadow: 0 0 12px rgba(245,166,35,0.5); }
+    rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.95) 12%, rgba(var(--sig-rgb), 0.95) 88%, rgba(var(--sig-rgb), 0) 100%);
+  box-shadow: 0 0 12px rgba(var(--sig-rgb), 0.5); }
 .fs-node { display: inline-flex; align-items: center; justify-content: center;
   width: 2.9rem; height: 2.9rem; border-radius: 9999px;
-  background: rgb(26,26,40); border: 2px solid rgba(245,166,35,0.6);
-  color: rgba(242,244,248,0.95); font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; }
+  background: rgb(27, 34, 48); border: 2px solid rgba(var(--sig-rgb), 0.6);
+  color: rgba(241, 243, 244, 0.95); font-family: var(--font-display); font-size: 1.05rem; font-weight: 500; }
 /* Opaque base + tint layered on top: the signal line must stop AT the node,
    never show through the glyph (D/E/emoji sit on the line on several slides). */
 .fs-node[data-active], .fs-node.is-active {
-  background-color: rgb(26,26,40);
-  background-image: linear-gradient(rgba(245,166,35,0.22), rgba(245,166,35,0.22));
-  border-color: rgba(245,166,35,1);
-  color: rgba(255,255,255,1); box-shadow: 0 0 18px rgba(245,166,35,0.55); }
-.fs-node--rosso { border-color: rgba(226,0,26,0.85); }
-.fs-node--rosso[data-active] {
-  background-color: rgb(26,26,40);
-  background-image: linear-gradient(rgba(226,0,26,0.24), rgba(226,0,26,0.24));
-  border-color: rgba(226,0,26,1);
-  box-shadow: 0 0 18px rgba(226,0,26,0.5); }
+  background-color: rgb(27, 34, 48);
+  background-image: linear-gradient(rgba(var(--sig-rgb), 0.22), rgba(var(--sig-rgb), 0.22));
+  border-color: rgba(var(--sig-rgb), 1);
+  color: rgba(255,255,255,1); box-shadow: 0 0 18px rgba(var(--sig-rgb), 0.55); }
+.fs-node--alt { border-color: rgba(var(--sig2-rgb), 0.85); }
+.fs-node--alt[data-active] {
+  background-color: rgb(27, 34, 48);
+  background-image: linear-gradient(rgba(var(--sig2-rgb), 0.24), rgba(var(--sig2-rgb), 0.24));
+  border-color: rgba(var(--sig2-rgb), 1);
+  box-shadow: 0 0 18px rgba(var(--sig2-rgb), 0.5); }
 .fs-node-label { font-family: var(--font-body); font-size: 0.82rem; letter-spacing: 0.02em;
-  color: rgba(242,244,248,0.72); }
+  color: rgba(241, 243, 244, 0.72); }
 
 /* — Panel: primary editorial surface (dark; explicit light ink to dodge flip) — */
-.fs-panel { position: relative; background: rgba(37,37,56,0.72);
-  border: 1px solid rgba(242,244,248,0.10); border-radius: 6px; padding: 1.6rem 1.75rem;
+.fs-panel { position: relative; background: rgba(47, 57, 78, 0.72);
+  border: 1px solid rgba(241, 243, 244, 0.10); border-radius: 6px; padding: 1.6rem 1.75rem;
   box-shadow: 0 24px 60px -34px rgba(0,0,0,0.7); backdrop-filter: blur(2px); }
 .fs-panel::before { content: ""; position: absolute; left: 0; top: 1.5rem; bottom: 1.5rem;
-  width: 3px; background: linear-gradient(180deg, rgba(245,166,35,1), rgba(245,166,35,0.25));
-  border-radius: 3px; box-shadow: 0 0 10px rgba(245,166,35,0.4); }
-.fs-panel--rosso::before { background: linear-gradient(180deg, rgba(226,0,26,1), rgba(226,0,26,0.25));
-  box-shadow: 0 0 10px rgba(226,0,26,0.4); }
+  width: 3px; background: linear-gradient(180deg, rgba(var(--sig-rgb), 1), rgba(var(--sig-rgb), 0.25));
+  border-radius: 3px; box-shadow: 0 0 10px rgba(var(--sig-rgb), 0.4); }
+.fs-panel--alt::before { background: linear-gradient(180deg, rgba(var(--sig2-rgb), 1), rgba(var(--sig2-rgb), 0.25));
+  box-shadow: 0 0 10px rgba(var(--sig2-rgb), 0.4); }
 .fs-panel-tag { font-family: var(--font-body); font-size: 0.73rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(245,166,35,0.98); }
+  text-transform: uppercase; color: rgba(var(--sig-rgb), 0.98); }
 .fs-panel-head { font-family: var(--font-display); font-weight: 600; font-size: 1.55rem;
-  line-height: 1.16; color: rgba(242,244,248,0.99); margin-top: 0.35rem; letter-spacing: -0.01em; }
+  line-height: 1.16; color: rgba(241, 243, 244, 0.99); margin-top: 0.35rem; letter-spacing: -0.01em; }
 .fs-panel-figure { font-family: var(--font-display); font-weight: 600; font-size: 2.5rem;
   line-height: 1; color: rgba(255,255,255,1); letter-spacing: -0.02em; }
 .fs-panel-body { font-family: var(--font-body); font-size: 0.98rem; line-height: 1.6;
-  color: rgba(242,244,248,0.85); }
+  color: rgba(241, 243, 244, 0.85); }
 .fs-panel-src { font-family: var(--font-body); font-size: 0.75rem; line-height: 1.4;
-  color: rgba(242,244,248,0.6); }
+  color: rgba(241, 243, 244, 0.6); }
 
 /* — Card: lighter grouped surface (max 2 cols) — */
-.fs-card { position: relative; background: rgba(26,26,40,0.6);
-  border: 1px solid rgba(242,244,248,0.10); border-radius: 6px; padding: 1.35rem 1.4rem; }
+.fs-card { position: relative; background: rgba(27, 34, 48, 0.6);
+  border: 1px solid rgba(241, 243, 244, 0.10); border-radius: 6px; padding: 1.35rem 1.4rem; }
 .fs-mark { display: inline-flex; align-items: center; justify-content: center;
-  width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: rgba(245,166,35,0.16);
-  border: 1px solid rgba(245,166,35,0.55); color: rgba(255,255,255,0.98);
+  width: 2.5rem; height: 2.5rem; border-radius: 9999px; background: rgba(var(--sig-rgb), 0.16);
+  border: 1px solid rgba(var(--sig-rgb), 0.55); color: rgba(255,255,255,0.98);
   font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; }
 .fs-card-title { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem;
-  line-height: 1.18; color: rgba(242,244,248,0.99); letter-spacing: -0.01em; }
+  line-height: 1.18; color: rgba(241, 243, 244, 0.99); letter-spacing: -0.01em; }
 .fs-card-body { font-family: var(--font-body); font-size: 0.95rem; line-height: 1.58;
-  color: rgba(242,244,248,0.82); }
+  color: rgba(241, 243, 244, 0.82); }
 
 /* — Pull quote — */
 .fs-quote { position: relative; padding-top: 1rem; }
 .fs-quote::before { content: ""; position: absolute; top: 0; left: 0; width: 3.5rem; height: 2px;
-  background: rgba(245,166,35,1); box-shadow: 0 0 10px rgba(245,166,35,0.5); }
+  background: rgba(var(--sig-rgb), 1); box-shadow: 0 0 10px rgba(var(--sig-rgb), 0.5); }
 .fs-quote-text { font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.28; color: rgba(242,244,248,0.98);
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem); line-height: 1.28; color: rgba(241, 243, 244, 0.98);
   letter-spacing: -0.01em; }
 .fs-quote-cite { font-family: var(--font-body); font-size: 0.85rem; letter-spacing: 0.02em;
-  color: rgba(242,244,248,0.62); }
+  color: rgba(241, 243, 244, 0.62); }
 
 /* — Stat / metric — */
 .fs-stat-value { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.5rem, 4.4vw, 3.8rem);
   line-height: 0.98; color: rgba(255,255,255,1); letter-spacing: -0.02em; }
-.fs-stat-label { font-family: var(--font-body); font-size: 0.9rem; line-height: 1.4; color: rgba(242,244,248,0.82); }
-.fs-stat-src { font-family: var(--font-body); font-size: 0.72rem; color: rgba(242,244,248,0.55); }
+.fs-stat-label { font-family: var(--font-body); font-size: 0.9rem; line-height: 1.4; color: rgba(241, 243, 244, 0.82); }
+.fs-stat-src { font-family: var(--font-body); font-size: 0.72rem; color: rgba(241, 243, 244, 0.55); }
 
 /* — Genuinely-light slides: flip panels/cards to light + dark ink. NB: a
    bg="inverse" slide is NOT always light — a dark backdrop image (e.g. the
    index cover) keeps it dark, where the default light ink is correct. So this
    flip is scoped to the specific slides that actually render light (ghiaccio
    scrim), by id, rather than the blanket inverse surface class. — */
-#slide-opportunity .fs-panel { background: rgba(255,255,255,0.9); border-color: rgba(13,13,20,0.12); }
-#slide-opportunity .fs-card { background: rgba(255,255,255,0.82); border-color: rgba(13,13,20,0.12); }
+#slide-opportunity .fs-panel { background: rgba(255,255,255,0.9); border-color: rgba(27, 34, 48, 0.12); }
+#slide-opportunity .fs-card { background: rgba(255,255,255,0.82); border-color: rgba(27, 34, 48, 0.12); }
 #slide-opportunity .fs-panel-head,
 #slide-opportunity .fs-panel-figure,
 #slide-opportunity .fs-card-title,
 #slide-opportunity .fs-quote-text,
-#slide-opportunity .fs-stat-value { color: rgba(13,13,20,0.98); }
+#slide-opportunity .fs-stat-value { color: rgba(27, 34, 48, 0.98); }
 #slide-opportunity .fs-panel-body,
 #slide-opportunity .fs-card-body,
-#slide-opportunity .fs-stat-label { color: rgba(37,37,56,0.86); }
+#slide-opportunity .fs-stat-label { color: rgba(47, 57, 78, 0.86); }
 #slide-opportunity .fs-panel-src,
-#slide-opportunity .fs-stat-src { color: rgba(37,37,56,0.6); }
-#slide-opportunity .fs-panel-tag { color: rgba(196,110,10,1); }
-#slide-opportunity .fs-node-label { color: rgba(37,37,56,0.75); }
+#slide-opportunity .fs-stat-src { color: rgba(47, 57, 78, 0.6); }
+#slide-opportunity .fs-panel-tag { color: rgba(217, 24, 53, 1); }
+#slide-opportunity .fs-node-label { color: rgba(47, 57, 78, 0.75); }
 
-/* ── Biforcazione FS Park × Trenitalia — accent e texture per ramo ──────────
+/* ── Biforcazione FS Park × Trenitalia — accento per ramo ──────────────────
    Il ramo è dichiarato da BaseLayout con data-branch su <html>. Il tronco
-   (nessun data-branch) resta neutro di Gruppo (rosso FS). Nel ramo FS Park
-   l'ambra — già "il segnale" del sistema — diventa l'accent primario. */
+   (nessun data-branch) parla con la voce di Trenitalia, che è la superficie
+   da cui è letto tutto il design system. Nel ramo FS Park il verde del sito
+   — .color-primary-green, il secondo colore di marca — prende il posto del
+   rosso: due società, due segnali, nessun colore inventato. */
 html[data-branch="fs-park"] {
-  --accent-primary: var(--color-ambra);
-  --accent-hover: var(--color-ambra-chiara);
-  --accent-secondary: var(--color-rosso-fs);
+  --sig-rgb: var(--park-rgb);
+  --sig-solid-rgb: var(--park-solid-rgb);
+  --sig2-rgb: var(--rail-rgb);
+  --accent-primary: var(--color-verde);
+  --accent-hover: var(--color-verde-chiaro);
+  --accent-secondary: var(--color-rosso);
+  --ink-accent: var(--color-verde-chiaro);
+  --ink-accent-2: var(--color-rosso-chiaro);
+  --ink-link: var(--color-verde-chiaro);
+  --ink-brand: var(--color-verde-chiaro);
+  --focus-ring: var(--color-verde-chiaro);
 }
 
-/* Nodo ambra esplicito (per usi fuori dal ramo, es. bivio e porte) */
-.fs-node--ambra { border-color: rgba(245,166,35,0.85); }
-.fs-node--ambra[data-active] {
-  background-color: rgb(26,26,40);
-  background-image: linear-gradient(rgba(245,166,35,0.22), rgba(245,166,35,0.22));
-  border-color: rgba(245,166,35,1);
-  box-shadow: 0 0 18px rgba(245,166,35,0.55); }
+/* Nodo nel colore del segnale (per usi fuori dal ramo, es. bivio e porte) */
+.fs-node--sig { border-color: rgba(var(--sig-rgb), 0.85); }
+.fs-node--sig[data-active] {
+  background-color: rgb(27, 34, 48);
+  background-image: linear-gradient(rgba(var(--sig-rgb), 0.22), rgba(var(--sig-rgb), 0.22));
+  border-color: rgba(var(--sig-rgb), 1);
+  box-shadow: 0 0 18px rgba(var(--sig-rgb), 0.55); }
 
 /* Mondo-asfalto (ramo FS Park): griglia stalli + segnaletica tratteggiata */
 .fsp-stalli { position: absolute; inset: 0; opacity: 0.5; background-image:
-  repeating-linear-gradient(90deg, rgba(245,166,35,0.09) 0 2px, transparent 2px 150px),
-  repeating-linear-gradient(0deg, rgba(242,244,248,0.045) 0 1px, transparent 1px 96px);
+  repeating-linear-gradient(90deg, rgba(var(--sig-rgb), 0.09) 0 2px, transparent 2px 150px),
+  repeating-linear-gradient(0deg, rgba(241, 243, 244, 0.045) 0 1px, transparent 1px 96px);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 78%);
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 78%); }
 .fsp-carreggiata { position: absolute; left: 0; right: 0; height: 4px;
-  background: repeating-linear-gradient(90deg, rgba(245,166,35,0.85) 0 44px, transparent 44px 80px);
+  background: repeating-linear-gradient(90deg, rgba(var(--sig-rgb), 0.85) 0 44px, transparent 44px 80px);
   opacity: 0.55; }
 
 /* Porte del bivio: card-link grandi, accent per ramo in rgba espliciti (AA) */
 .fs-porta { display: block; text-decoration: none; border-radius: 6px; padding: 1.5rem 1.6rem;
-  background: rgba(26,26,40,0.88); border: 1px solid rgba(242,244,248,0.14);
+  background: rgba(27, 34, 48, 0.88); border: 1px solid rgba(241, 243, 244, 0.14);
   transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease; }
 .fs-porta:hover { transform: translateY(-3px); }
-.fs-porta--ambra:hover { border-color: rgba(245,166,35,0.75); background: rgba(245,166,35,0.07); }
-.fs-porta--rosso:hover { border-color: rgba(226,0,26,0.75); background: rgba(226,0,26,0.07); }
+.fs-porta--park:hover { border-color: rgba(var(--park-rgb), 0.75); background: rgba(var(--park-rgb), 0.07); }
+.fs-porta--rail:hover { border-color: rgba(var(--rail-rgb), 0.75); background: rgba(var(--rail-rgb), 0.07); }
 .fs-porta-kicker { font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
   letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.55rem; }
-.fs-porta--ambra .fs-porta-kicker { color: rgba(245,166,35,0.95); }
-.fs-porta--rosso .fs-porta-kicker { color: rgba(255,90,105,0.95); }
+.fs-porta--park .fs-porta-kicker { color: rgba(var(--park-rgb), 0.95); }
+.fs-porta--rail .fs-porta-kicker { color: rgba(var(--rail-rgb), 0.95); }
 .fs-porta-title { font-family: var(--font-display); font-size: clamp(1.45rem, 2vw, 1.9rem);
-  font-weight: 600; line-height: 1.12; letter-spacing: -0.015em; color: rgba(242,244,248,0.98);
+  font-weight: 600; line-height: 1.12; letter-spacing: -0.015em; color: rgba(241, 243, 244, 0.98);
   margin-bottom: 0.5rem; }
 .fs-porta-lead { font-family: var(--font-body); font-size: 1rem; line-height: 1.5;
-  color: rgba(221,224,232,0.88); margin-bottom: 1rem; }
+  color: rgba(214, 219, 230, 0.88); margin-bottom: 1rem; }
 .fs-porta-chapters { display: flex; flex-direction: column; gap: 0.4rem; }
 .fs-porta-chapter { display: flex; align-items: baseline; gap: 0.6rem; font-family: var(--font-body);
-  font-size: 0.95rem; line-height: 1.45; color: rgba(176,182,196,0.95); }
-.fs-porta-chapter b { color: rgba(242,244,248,0.92); font-weight: 600; }
+  font-size: 0.95rem; line-height: 1.45; color: rgba(173, 181, 189, 0.95); }
+.fs-porta-chapter b { color: rgba(241, 243, 244, 0.92); font-weight: 600; }
 .fs-porta-num { font-family: var(--font-display); font-size: 0.78rem; font-weight: 600;
-  color: rgba(122,129,150,1); }
+  color: rgba(167, 176, 194, 1); }
 .fs-porta-cta { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.1rem;
   font-family: var(--font-display); font-size: 0.95rem; font-weight: 600;
-  color: rgba(242,244,248,0.95); }
+  color: rgba(241, 243, 244, 0.95); }
+
+/* ── Scrim degli sfondi (componente src/components/Sfondo.astro) ───────────
+   Un RADIALE, non un velo piatto: denso al centro, dove vive il testo, e più
+   leggero verso i bordi, dove l'immagine può respirare. Nasce da un difetto
+   vero: fino al 9 ott 2026 gli sfondi di questo deck erano a opacity-12 sotto
+   un velo al 90%, cioè non si vedevano — la slide leggeva come un fondo piatto.
+   rgba esplicito: il parser del contrasto dell'audit non legge oklab(). */
+.tr-scrim { position: absolute; inset: 0; }
+.tr-scrim--leggera { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(27,34,48,0.74) 0%, rgba(27,34,48,0.60) 58%, rgba(27,34,48,0.42) 100%); }
+.tr-scrim--media { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(27,34,48,0.88) 0%, rgba(27,34,48,0.76) 58%, rgba(27,34,48,0.58) 100%); }
+.tr-scrim--forte { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(27,34,48,0.95) 0%, rgba(27,34,48,0.88) 58%, rgba(27,34,48,0.72) 100%); }
+
+/* Slide dichiarate chiare (bg="inverse"): lo scrim si ribalta, se no
+   l'immagine scura mangia l'inchiostro scuro che ci sta sopra. */
+.tr-scrim-chiaro { position: absolute; inset: 0; }
+.tr-scrim-chiaro--leggera { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(248,249,250,0.80) 0%, rgba(248,249,250,0.68) 58%, rgba(248,249,250,0.52) 100%); }
+.tr-scrim-chiaro--media { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(248,249,250,0.90) 0%, rgba(248,249,250,0.82) 58%, rgba(248,249,250,0.68) 100%); }
+.tr-scrim-chiaro--forte { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(248,249,250,0.96) 0%, rgba(248,249,250,0.91) 58%, rgba(248,249,250,0.80) 100%); }
+
+/* Slide a fondo pieno di marca (bg="brand"): lo scrim è il rosso del sito. */
+.tr-scrim-marca { position: absolute; inset: 0; }
+.tr-scrim-marca--leggera { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(217,24,53,0.86) 0%, rgba(217,24,53,0.78) 58%, rgba(217,24,53,0.64) 100%); }
+.tr-scrim-marca--media { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(217,24,53,0.92) 0%, rgba(217,24,53,0.86) 58%, rgba(217,24,53,0.74) 100%); }
+.tr-scrim-marca--forte { background:
+    radial-gradient(130% 95% at 50% 50%, rgba(217,24,53,0.96) 0%, rgba(217,24,53,0.92) 58%, rgba(217,24,53,0.84) 100%); }
+
+/* La CTA di ritorno della slide-firma sta sopra una clip che ha una banda di
+   luce al centro: col bordo a `currentColor` all'85% ci si confondeva dentro.
+   Qui prende un fondo proprio in rgba esplicito, così si stacca sempre. */
+[data-slide] .edf-sig-cta {
+  opacity: 1;
+  background: rgba(27, 34, 48, 0.78);
+  border-color: rgba(241, 243, 244, 0.45);
+  backdrop-filter: blur(3px);
+}
+[data-slide] .edf-sig-cta:hover { background: rgba(27, 34, 48, 0.92); border-color: rgba(241, 243, 244, 0.8); }

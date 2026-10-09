@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../../assets.index';
@@ -46,12 +46,7 @@ const puntiCiechi = [
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-binari')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--surface-primary)]/90"
-      />
+      <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <CoverHero
         eyebrow="Ramo Trenitalia · Il punto di partenza"
         numeral="01"
@@ -65,18 +60,18 @@ const puntiCiechi = [
       <!-- La linea del ramo: la parte fuori campo e il mondo-binario -->
       <div class="relative w-full max-w-3xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
         <span class="absolute hidden md:block" style="top: 1.45rem; left: 8%; width: 26%; height: 2px; background: repeating-linear-gradient(90deg, rgba(122,129,150,0.6) 0 9px, transparent 9px 17px);" aria-hidden="true"></span>
-        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 38%; right: 8%; background: linear-gradient(90deg, rgba(226,0,26,0.95) 0%, rgba(226,0,26,0.95) 88%, rgba(226,0,26,0) 100%); box-shadow: 0 0 12px rgba(226,0,26,0.45);" aria-hidden="true"></span>
+        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 38%; right: 8%; background: linear-gradient(90deg, rgba(var(--sig2-rgb), 0.95) 0%, rgba(var(--sig2-rgb), 0.95) 88%, rgba(var(--sig2-rgb), 0) 100%); box-shadow: 0 0 12px rgba(var(--sig2-rgb), 0.45);" aria-hidden="true"></span>
         <div class="relative flex justify-between items-start px-[4%]">
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node" style="border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgb(26,26,40);" aria-hidden="true">🚗</span>
             <span class="fs-node-label">Prima della stazione · fuori campo</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🚆</span>
+            <span class="fs-node fs-node--alt" data-active aria-hidden="true">🚆</span>
             <span class="fs-node-label">Il binario · il mondo Trenitalia</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🏁</span>
+            <span class="fs-node fs-node--alt" data-active aria-hidden="true">🏁</span>
             <span class="fs-node-label">Il viaggio, la destinazione</span>
           </div>
         </div>
@@ -86,15 +81,16 @@ const puntiCiechi = [
     <!-- ── SLIDE 1: Davide, visto da Trenitalia ───────────────────── -->
     <Slide id="slide-davide" bg="primary" align="split">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="rl-banchina" forza="forte" />
       <div slot="backdrop" class="fs-grid"></div>
       <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,0.82fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
         <div class="flex items-center justify-center" data-reveal>
           <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,420px); aspect-ratio:4/5; height:min(520px,64dvh);">
             <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="52% 32%" />
-            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
+            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(27, 34, 48, 0.85)] to-transparent" aria-hidden="true"></div>
             <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
-              <span class="fs-node fs-node--rosso !w-11 !h-11" data-active>D</span>
-              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">La metà su rotaia</span>
+              <span class="fs-node fs-node--alt !w-11 !h-11" data-active>D</span>
+              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">La metà su rotaia</span>
             </div>
           </div>
         </div>
@@ -126,7 +122,7 @@ const puntiCiechi = [
           <!-- La riga del viaggio: metà sinistra fuori campo, metà destra piena -->
           <div class="relative w-full" data-reveal data-reveal-delay="0.35">
             <span class="absolute hidden md:block" style="top: 1.45rem; left: 5%; width: 42%; height: 2px; background: repeating-linear-gradient(90deg, rgba(122,129,150,0.6) 0 9px, transparent 9px 17px);" aria-hidden="true"></span>
-            <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 53%; right: 5%; background: linear-gradient(90deg, rgba(226,0,26,0.95) 0%, rgba(226,0,26,0.95) 82%, rgba(226,0,26,0) 100%); box-shadow: 0 0 12px rgba(226,0,26,0.45);" aria-hidden="true"></span>
+            <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 53%; right: 5%; background: linear-gradient(90deg, rgba(var(--sig2-rgb), 0.95) 0%, rgba(var(--sig2-rgb), 0.95) 82%, rgba(var(--sig2-rgb), 0) 100%); box-shadow: 0 0 12px rgba(var(--sig2-rgb), 0.45);" aria-hidden="true"></span>
             <div class="grid grid-cols-4 gap-3">
               <div class="flex flex-col items-center gap-2.5 text-center">
                 <span class="fs-node" style="border-style: dashed; border-color: rgba(122,129,150,0.6); color: rgba(176,182,196,0.9); background: rgb(26,26,40);" aria-hidden="true">🚗</span>
@@ -137,11 +133,11 @@ const puntiCiechi = [
                 <span class="fs-node-label">La sosta · fuori campo</span>
               </div>
               <div class="flex flex-col items-center gap-2.5 text-center">
-                <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🚆</span>
+                <span class="fs-node fs-node--alt" data-active aria-hidden="true">🚆</span>
                 <span class="fs-node-label">Il binario · da qui si vede</span>
               </div>
               <div class="flex flex-col items-center gap-2.5 text-center">
-                <span class="fs-node fs-node--rosso" data-active aria-hidden="true">🏁</span>
+                <span class="fs-node fs-node--alt" data-active aria-hidden="true">🏁</span>
                 <span class="fs-node-label">Il viaggio, l'arrivo</span>
               </div>
             </div>
@@ -153,6 +149,7 @@ const puntiCiechi = [
     <!-- ── SLIDE 2: Le email — Oracle Responsys in azione ─────────── -->
     <Slide id="slide-email-gap" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         ORACLE RESPONSYS · CRM EMAIL ATTIVO
       </p>
@@ -182,7 +179,7 @@ const puntiCiechi = [
       >
         {emailTipi.map((e) => (
           <div class="fs-card flex items-start gap-3 !py-3 !px-4"
-               style={e.badge === 'Gap' ? "border-color: rgba(226,0,26,0.4); background: rgba(226,0,26,0.08);" : undefined}>
+               style={e.badge === 'Gap' ? "border-color: rgba(var(--sig2-rgb), 0.4); background: rgba(var(--sig2-rgb), 0.08);" : undefined}>
             <span class="text-lg flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap mb-1">
@@ -191,9 +188,9 @@ const puntiCiechi = [
                   "text-[0.72rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase",
                   e.badge === 'Gap'
                     ? "text-white"
-                    : "text-[rgba(242,244,248,0.75)]",
+                    : "text-[rgba(241, 243, 244, 0.75)]",
                 ]}
-                style={e.badge === 'Gap' ? "background: rgba(226,0,26,0.85);" : "background: rgba(242,244,248,0.12);"}>{e.badge}</span>
+                style={e.badge === 'Gap' ? "background: rgba(var(--sig2-rgb), 0.85);" : "background: rgba(241, 243, 244, 0.12);"}>{e.badge}</span>
               </div>
               <p class="fs-card-body !text-[0.9rem] leading-snug">{e.desc}</p>
             </div>
@@ -201,7 +198,7 @@ const puntiCiechi = [
         ))}
       </div>
 
-      <div class="fs-panel fs-panel--rosso max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
+      <div class="fs-panel fs-panel--alt max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
         <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">Il gap non è nei dati:</strong> manca la lettura del <em>journey</em>, quella che collega i segnali sparsi e li usa al momento giusto.
         </p>
@@ -215,12 +212,7 @@ const puntiCiechi = [
     <Slide id="slide-punto-cieco" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-stazione')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--surface-primary)]/92"
-      />
+      <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
       <p class="fs-panel-tag text-center mb-3" data-reveal>
         IL PUNTO CIECO
       </p>
@@ -254,7 +246,7 @@ const puntiCiechi = [
         ))}
       </div>
 
-      <div class="fs-panel fs-panel--rosso max-w-4xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
+      <div class="fs-panel fs-panel--alt max-w-4xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
         <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">Perché conta:</strong> per Davide l'esperienza è
           porta-a-porta, non binario-a-binario. Ogni pezzo di viaggio che Trenitalia non vede
@@ -265,17 +257,12 @@ const puntiCiechi = [
 
     <!-- ── SLIDE 4: Il momento dell'opportunità ───────────────────── -->
     <Slide id="slide-opportunity" bg="inverse" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-parcheggio')}
-        imageClass="opacity-18"
-        scrim="bg-[var(--color-ghiaccio)]/92"
-      />
+      <Sfondo slot="backdrop" id="rl-alba" forza="forte" chiara />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         L'OPPORTUNITÀ · VISTA DA TRENITALIA
       </p>
       <h2
-        class="text-[var(--color-carbonio)] mb-6 font-[family-name:var(--font-display)]"
+        class="text-[var(--color-ardesia-notte)] mb-6 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -302,7 +289,7 @@ const puntiCiechi = [
         ].map((col, ci) => (
           <div class="fs-card">
             <div class="flex items-center gap-2.5 mb-3">
-              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 1 && "fs-node--rosso !bg-[rgba(226,0,26,0.16)] !border-[rgba(226,0,26,0.55)]"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
+              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 1 && "fs-node--alt !bg-[rgba(var(--sig2-rgb), 0.16)] !border-[rgba(var(--sig2-rgb), 0.55)]"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
               <p class="fs-card-title !text-[1.05rem]">{col.label}</p>
             </div>
             <ul class="space-y-2">
@@ -318,7 +305,7 @@ const puntiCiechi = [
       </div>
 
       <div
-        class="fs-panel max-w-3xl mx-auto !bg-[rgba(245,166,35,0.14)] !border-[rgba(245,166,35,0.4)]"
+        class="fs-panel max-w-3xl mx-auto !bg-[rgba(var(--sig-rgb), 0.14)] !border-[rgba(var(--sig-rgb), 0.4)]"
         data-reveal
         data-reveal-delay="0.3"
       >
@@ -337,7 +324,7 @@ const puntiCiechi = [
       <div class="mt-6" data-reveal data-reveal-delay="0.4">
         <a
           href={href(base, '/trenitalia/fondamenta')}
-          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-ardesia-notte)] text-[var(--color-chiaro)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
           Le fondamenta che avete già
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">

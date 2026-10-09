@@ -1,0 +1,37 @@
+---
+/**
+ * SfondoLoop — la clip in loop dietro copertina e chiusura.
+ *
+ * Il movimento sta dove non si parla. In mezzo al percorso ruba lo sguardo, e
+ * infatti nel deck non c'è: solo la copertina del tronco e la chiusura dei due
+ * rami montano una clip.
+ *
+ * Il `src` è SEMPRE la clip ricucita (`*.loop.mp4`, da `pnpm loop:seamless`):
+ * una clip generata finisce su un fotogramma che col frame 0 non c'entra nulla
+ * e il loop nativo fa uno stacco visibile. Il poster è il primo fotogramma
+ * della clip ricucita, così reduced-motion e primo paint combaciano.
+ *
+ * Il .mp4 ricucito viaggia sul **Release GitHub `media`** (i file in
+ * public/media/ sono git-ignorati: in un clone pulito non ci sono, e il
+ * deploy li perderebbe). Il POSTER invece è committato in public/media/,
+ * perché deve esserci al primo paint e sotto reduced-motion. Il suo path si
+ * costruisce a mano: `href()` forza la slash finale e su un FILE quella dà
+ * 404 su Pages.
+ */
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
+
+interface Props {
+  id: string;
+  forza?: 'leggera' | 'media' | 'forte';
+  opacity?: number;
+}
+const { id, forza = 'leggera', opacity = 0.9 } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const RELEASE = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/';
+---
+<LoopVideo
+  src={`${RELEASE}${id}.loop.mp4`}
+  poster={`${base}media/${id}.poster.jpg`}
+  opacity={opacity}
+  scrim={`tr-scrim tr-scrim--${forza}`}
+/>

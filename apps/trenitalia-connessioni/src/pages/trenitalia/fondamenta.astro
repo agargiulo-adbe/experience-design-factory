@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
-import { mediaProps } from '../../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -21,7 +20,7 @@ const strati = [
   },
   {
     layer: 'Analytics & Behavioral Data',
-    color: 'var(--color-ambra)',
+    color: 'var(--color-verde)',
     prodotti: [
       { nome: 'Adobe Analytics (×2)', stato: 'Attivo', desc: 'Sito istituzionale + funnel acquisto' },
       { nome: 'Adobe Target',          stato: 'Parziale', desc: 'Solo homepage · assente su funnel e app' },
@@ -48,7 +47,7 @@ const statoTone = (stato: string) =>
   stato === 'Attivo'          ? 'bg-emerald-500/15 text-emerald-400' :
   stato === 'Parziale'        ? 'bg-[var(--accent-secondary)]/15 text-[var(--accent-secondary)]' :
   stato === 'Opportunità'     ? 'bg-[var(--accent-primary)]/15 text-[var(--accent-primary)]' :
-                                'bg-[var(--color-binario)] text-[var(--color-grigio-200)]';
+                                'bg-[var(--color-ardesia-media)] text-[var(--color-grigio-200)]';
 ---
 <BaseLayout
   title="Le fondamenta · Ramo Trenitalia"
@@ -67,6 +66,7 @@ const statoTone = (stato: string) =>
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
         eyebrow="Ramo Trenitalia · 02 Fondamenta"
@@ -82,6 +82,7 @@ const statoTone = (stato: string) =>
     <!-- ── SLIDE 1: Ecosistema a strati (righe full-width impilate) ── -->
     <Slide id="slide-ecosystem" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="tc-strati" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
 
       <div class="w-full max-w-6xl mx-auto">
@@ -102,7 +103,7 @@ const statoTone = (stato: string) =>
         {/* strati: Oracle Responsys fonte campione email luglio 2026 · AEM fonte osservazione pubblica · Salesforce v. slide successiva */}
         <div class="relative flex flex-col gap-3">
           {/* la linea del segnale che infila i nodi-stazione */}
-          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
 
           {strati.map((strato, i) => (
             <div
@@ -145,16 +146,11 @@ const statoTone = (stato: string) =>
 
     <!-- ── SLIDE 2: Salesforce Foundation — il nuovo backbone ─────── -->
     <Slide id="slide-salesforce" bg="secondary" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-dati')}
-        imageClass="opacity-08"
-        scrim="bg-[var(--surface-secondary)]/94"
-      />
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
       <div slot="backdrop" class="fs-bg-soft"></div>
 
       <div class="w-full max-w-6xl mx-auto">
-        <div class="fs-panel fs-panel--rosso mb-5" data-reveal>
+        <div class="fs-panel fs-panel--alt mb-5" data-reveal>
           <p class="fs-panel-tag">FS TECHNOLOGY + SALESFORCE · Q1 2026</p>
           <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
             La foundation agentica è partita.<br/>Adobe si innesta su di essa.
@@ -219,26 +215,21 @@ const statoTone = (stato: string) =>
 
     <!-- ── SLIDE 3: La scelta · non disruption, connessione ──────── -->
     <Slide id="slide-choice" bg="brand" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-binari')}
-        imageClass="opacity-08"
-        scrim="bg-[var(--accent-primary)]/90"
-      />
+      <Sfondo slot="backdrop" id="rl-alba" forza="media" marca />
       <div class="w-full max-w-3xl mx-auto text-left">
-        <p class="slide-eyebrow text-[var(--color-ghiaccio)]/70 mb-8" data-reveal>
+        <p class="slide-eyebrow text-[var(--color-chiaro)]/70 mb-8" data-reveal>
           IL PRINCIPIO GUIDA
         </p>
         <div class="fs-quote" data-reveal data-reveal-delay="0.08">
           <h2
-            class="fs-quote-text text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)]"
+            class="fs-quote-text text-[var(--color-chiaro)] font-[family-name:var(--font-display)]"
             style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
           >
             Non sostituire.<br/>Connettere.
           </h2>
         </div>
         <p
-          class="text-[var(--color-ghiaccio)]/85 leading-relaxed max-w-2xl mt-6 mb-10"
+          class="text-[var(--color-chiaro)]/85 leading-relaxed max-w-2xl mt-6 mb-10"
           style="font-size: clamp(1.1rem, 1.5vw, 1.4rem);"
           data-reveal
           data-reveal-delay="0.16"
@@ -255,7 +246,7 @@ const statoTone = (stato: string) =>
         >
           <a
             href={href(base, '/trenitalia/convergenza')}
-            class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-ghiaccio)] text-[var(--color-carbonio)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
+            class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-chiaro)] text-[var(--color-ardesia-notte)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
           >
             CJA: il layer di convergenza
             <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">

@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
 import { mediaProps } from '../../../assets.index';
@@ -43,8 +43,8 @@ const badgeStyle = (tone: string) =>
   tone === 'verde'
     ? 'background: rgba(16,185,129,0.16); color: rgba(82,222,166,0.98);'
     : tone === 'ambra'
-      ? 'background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);'
-      : 'background: rgba(242,244,248,0.12); color: rgba(221,224,232,0.9);';
+      ? 'background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);'
+      : 'background: rgba(241, 243, 244, 0.12); color: rgba(221,224,232,0.9);';
 
 const versioni = [
   { mark: '01', nome: "L'anonimo sul sito", desc: 'Visita le pagine, guarda le tariffe, magari fa un preventivo. Nessun nome, nessun profilo.' },
@@ -71,12 +71,7 @@ const versioni = [
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-parcheggio')}
-        imageClass="opacity-15"
-        scrim="bg-[var(--color-carbonio)]/92"
-      />
+      <Sfondo slot="backdrop" id="pk-varco" forza="leggera" chiara />
       <CoverHero
         eyebrow="Ramo FS Park · Il punto di partenza"
         numeral="01"
@@ -91,15 +86,16 @@ const versioni = [
     <!-- ── SLIDE 1: Davide visto da FS Park ───────────────────────── -->
     <Slide id="slide-davide" bg="primary" align="split">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-stalli" forza="forte" />
       <div slot="backdrop" class="fsp-stalli"></div>
       <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,0.78fr)_minmax(0,1fr)] gap-10 md:gap-14 items-center">
         <div class="flex items-center justify-center" data-reveal>
           <div class="relative overflow-hidden rounded-sm mx-auto" style="width:min(100%,400px); aspect-ratio:4/5; height:min(500px,62dvh);">
             <MediaSlot {...mediaProps('persona-marco')} fill objectPosition="52% 32%" />
-            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(13,13,20,0.85)] to-transparent" aria-hidden="true"></div>
+            <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(27, 34, 48, 0.85)] to-transparent" aria-hidden="true"></div>
             <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
-              <span class="fs-node fs-node--ambra !w-11 !h-11" data-active>D</span>
-              <span class="fs-node-label !text-[rgba(242,244,248,0.9)]">La metà che FS Park vede</span>
+              <span class="fs-node fs-node--sig !w-11 !h-11" data-active>D</span>
+              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">La metà che FS Park vede</span>
             </div>
           </div>
         </div>
@@ -129,14 +125,14 @@ const versioni = [
 
           <div class="relative w-full" data-reveal data-reveal-delay="0.32">
             <span class="fs-line-h" style="top: 1.4rem; left: 3%; width: 44%;" aria-hidden="true"></span>
-            <span class="absolute" style="top: 1.32rem; right: 3%; width: 44%; height: 2px; background: repeating-linear-gradient(90deg, rgba(242,244,248,0.35) 0 14px, transparent 14px 26px);" aria-hidden="true"></span>
+            <span class="absolute" style="top: 1.32rem; right: 3%; width: 44%; height: 2px; background: repeating-linear-gradient(90deg, rgba(241, 243, 244, 0.35) 0 14px, transparent 14px 26px);" aria-hidden="true"></span>
             <div class="grid grid-cols-4 gap-3">
               <div class="flex flex-col items-center gap-2.5 text-center">
-                <span class="fs-node fs-node--ambra" data-active>🚗</span>
+                <span class="fs-node fs-node--sig" data-active>🚗</span>
                 <span class="fs-node-label">In auto, ore 6:40</span>
               </div>
               <div class="flex flex-col items-center gap-2.5 text-center">
-                <span class="fs-node fs-node--ambra" data-active>🅿️</span>
+                <span class="fs-node fs-node--sig" data-active>🅿️</span>
                 <span class="fs-node-label">Sosta lunga, in app</span>
               </div>
               <div class="flex flex-col items-center gap-2.5 text-center">
@@ -156,6 +152,7 @@ const versioni = [
     <!-- ── SLIDE 2: L'ecosistema FS Park oggi ─────────────────────── -->
     <Slide id="slide-ecosistema" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="pk-struttura" forza="media" />
       <div slot="backdrop" class="fsp-stalli"></div>
 
       <div class="w-full max-w-6xl mx-auto">
@@ -174,7 +171,7 @@ const versioni = [
         </div>
 
         <div class="relative flex flex-col gap-3">
-          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
 
           {ecosistema.map((fonte, i) => (
             <div
@@ -183,8 +180,8 @@ const versioni = [
               data-reveal-delay={(0.14 + i * 0.06).toFixed(2)}
             >
               <div class="flex items-center gap-4">
-                <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
-                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style="color: rgba(245,166,35,0.95); font-size: 0.8rem;">
+                <span class="fs-node fs-node--sig flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+                <p class="fs-node-label font-semibold uppercase tracking-widest leading-tight" style="color: rgba(var(--sig-rgb), 0.95); font-size: 0.8rem;">
                   {fonte.nome}
                 </p>
               </div>
@@ -213,6 +210,7 @@ const versioni = [
     <!-- ── SLIDE 3: Quattro versioni dello stesso cliente ─────────── -->
     <Slide id="slide-identita" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="pk-asfalto" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         IL PROBLEMA DI IDENTITÀ
@@ -254,17 +252,12 @@ const versioni = [
 
     <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────── -->
     <Slide id="slide-opportunity" bg="inverse" align="center">
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-parcheggio')}
-        imageClass="opacity-18"
-        scrim="bg-[var(--color-ghiaccio)]/92"
-      />
+      <Sfondo slot="backdrop" id="pk-alba" forza="media" chiara />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         L'OPPORTUNITÀ
       </p>
       <h2
-        class="text-[var(--color-carbonio)] mb-6 text-center font-[family-name:var(--font-display)]"
+        class="text-[var(--color-ardesia-notte)] mb-6 text-center font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
@@ -300,7 +293,7 @@ const versioni = [
       <div class="mt-7 text-center" data-reveal data-reveal-delay="0.36">
         <a
           href={href(base, '/fs-park/fondamenta')}
-          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-carbonio)] text-[var(--color-ghiaccio)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
+          class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-ardesia-notte)] text-[var(--color-chiaro)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
           Le fondamenta: una sola identità
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">

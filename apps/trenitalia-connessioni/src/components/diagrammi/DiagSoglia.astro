@@ -1,0 +1,111 @@
+---
+/**
+ * DiagSoglia — «prima della soglia / dopo la soglia», con la freccia che torna
+ * indietro a riattaccare il prima.
+ *
+ * È il concetto del confine anonimo/autenticato, che nel deck stava in due
+ * colonne di testo: qui si vede che il valore non è solo in quel che segue il
+ * login, ma nel poter ricucire quello che c'era prima.
+ */
+interface Props {
+  prima: { titolo: string; voci: string[] };
+  soglia: string;
+  dopo: { titolo: string; voci: string[] };
+  /** La riga sulla freccia di ritorno. Senza, la freccia non si disegna. */
+  ritorno?: string;
+  class?: string;
+}
+const { prima, soglia, dopo, ritorno, class: className } = Astro.props as Props;
+---
+<div class:list={["dg-soglia", className]} role="img"
+     aria-label={`${prima.titolo}: ${prima.voci.join(', ')}. Soglia: ${soglia}. ${dopo.titolo}: ${dopo.voci.join(', ')}.${ritorno ? ' ' + ritorno : ''}`}>
+  <div class="dg-sg-lato dg-sg-lato--prima" aria-hidden="true">
+    <p class="dg-sg-tit">{prima.titolo}</p>
+    {prima.voci.map((v) => <span class="dg-sg-voce dg-sg-voce--vuota">{v}</span>)}
+  </div>
+  <div class="dg-sg-soglia" aria-hidden="true">
+    <span class="dg-sg-asta"></span>
+    <span class="dg-sg-eti">{soglia}</span>
+    <span class="dg-sg-asta"></span>
+  </div>
+  <div class="dg-sg-lato dg-sg-lato--dopo" aria-hidden="true">
+    <p class="dg-sg-tit">{dopo.titolo}</p>
+    {dopo.voci.map((v) => <span class="dg-sg-voce dg-sg-voce--piena">{v}</span>)}
+  </div>
+  {ritorno && (
+    <div class="dg-sg-ritorno" aria-hidden="true">
+      <svg viewBox="0 0 400 26" preserveAspectRatio="none"><path d="M396 22 C 396 6, 300 4, 200 4 C 100 4, 12 6, 10 20 M10 20 l 6 -7 M10 20 l 7 5" /></svg>
+      <span>{ritorno}</span>
+    </div>
+  )}
+</div>
+
+<style is:global>
+  .dg-soglia {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "prima soglia dopo" "ritorno ritorno ritorno";
+    align-items: stretch;
+    gap: 0 1.4rem;
+    width: 100%;
+  }
+  .dg-sg-lato { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+  .dg-sg-lato--prima { grid-area: prima; }
+  .dg-sg-lato--dopo  { grid-area: dopo; }
+  .dg-sg-tit {
+    font-family: var(--font-body);
+    font-size: 0.73rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(167, 176, 194, 0.95);
+    margin: 0 0 0.25rem; max-width: none;
+  }
+  .dg-sg-voce {
+    border-radius: 4px; padding: 0.5rem 0.75rem;
+    font-size: 0.93rem; line-height: 1.35;
+  }
+  /* Prima della soglia: tratteggio: c'è un comportamento, non c'è un nome. */
+  .dg-sg-voce--vuota {
+    border: 1px dashed rgba(214, 219, 230, 0.35);
+    background: rgba(47, 57, 78, 0.28);
+    color: rgba(214, 219, 230, 0.86);
+  }
+  /* Dopo la soglia: pieno, e nel colore del segnale. */
+  .dg-sg-voce--piena {
+    border: 1px solid rgba(var(--sig-rgb), 0.5);
+    background: rgba(var(--sig-rgb), 0.1);
+    color: rgba(241, 243, 244, 0.97);
+  }
+  .dg-sg-soglia {
+    grid-area: soglia;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    padding-top: 1.3rem;
+  }
+  .dg-sg-asta { flex: 1; width: 2px; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0.15), rgba(var(--sig-rgb), 0.9)); }
+  .dg-sg-soglia .dg-sg-asta:last-child { background: linear-gradient(180deg, rgba(var(--sig-rgb), 0.9), rgba(var(--sig-rgb), 0.15)); }
+  .dg-sg-eti {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-family: var(--font-display); font-weight: 600; font-size: 0.82rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.98);
+    padding: 0.5rem 0.2rem;
+  }
+  .dg-sg-ritorno {
+    grid-area: ritorno;
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    margin-top: 0.6rem;
+  }
+  .dg-sg-ritorno svg { width: 100%; max-width: 34rem; height: 1.6rem; }
+  .dg-sg-ritorno path {
+    fill: none; stroke: rgba(var(--sig-rgb), 0.75); stroke-width: 1.5;
+    stroke-linecap: round; vector-effect: non-scaling-stroke;
+  }
+  .dg-sg-ritorno span {
+    font-size: 0.82rem; letter-spacing: 0.02em;
+    color: rgba(var(--sig-rgb), 0.98);
+  }
+  @media (max-width: 860px) {
+    .dg-soglia { grid-template-columns: 1fr; grid-template-areas: "prima" "soglia" "dopo" "ritorno"; gap: 0.8rem; }
+    .dg-sg-soglia { flex-direction: row; padding-top: 0; }
+    .dg-sg-asta { width: auto; height: 2px; flex: 1; }
+    .dg-sg-eti { writing-mode: horizontal-tb; }
+  }
+</style>

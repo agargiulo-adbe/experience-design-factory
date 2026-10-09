@@ -1,4 +1,5 @@
 import type { AssetSlot } from '@edf/core/assets/types';
+import { backdrops } from './backdrops.manifest';
 
 export const assets: AssetSlot[] = [
   {
@@ -64,4 +65,7 @@ export const assets: AssetSlot[] = [
     grade: 'editorial',
     alt: 'Davide — pendolare business Milano–Roma',
   },
+
+  // Gli sfondi Firefly, uno per ogni slide — vedi backdrops.manifest.ts
+  ...backdrops,
 ];

@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
+import MadeWith from '@edf/core/blocks/MadeWith.astro';
 
 interface Props {
   title: string;
@@ -26,6 +27,8 @@ const {
 
 const base = import.meta.env.BASE_URL;
 const PROJECT_SLUG = 'trenitalia-connessioni';
+// Nel tronco parla il Gruppo; dentro un ramo parla la società di quel ramo.
+const coBrand = branch === 'fs-park' ? 'FS Park' : branch === 'trenitalia' ? 'Trenitalia' : 'FS Group';
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
@@ -41,15 +44,23 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <ClientRouter />
   </head>
   <body>
     <slot />
-    <!-- La firma Adobe × Brand: una volta qui, quindi su ogni slide di ogni capitolo. -->
-    <CoBrand />
+    <!-- La firma Adobe × Brand: una volta qui, quindi su ogni slide di ogni
+         capitolo. Il nome segue il ramo, perché nel ramo chi parla non è il
+         Gruppo: è la società con cui si sta facendo quella conversazione. -->
+    <CoBrand brand={coBrand} />
+    <!-- Il credito «creato con», speculare alla firma. È un FATTO: ogni slide
+         di questo deck ha uno sfondo generato con Firefly (si verifica in
+         src/assets/generated/provenance.json), e le clip di copertina e
+         chiusura pure. Il ritratto di Davide invece è stock, e infatti il
+         credito dice «sfondo»: non rivendica la fotografia. -->
+    <MadeWith fallback="Adobe Firefly" fallbackFor="sfondo" />
   </body>
 </html>
 
@@ -88,7 +99,7 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   function isSafeUrl(u) { return /^https:\/\//i.test(String(u || '')); }
   function csPlaceholderEl(text) {
     var d = document.createElement('div');
-    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1A1A28;color:#B0B6C4;font-size:0.9rem;';
+    d.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#2f394e;color:#adb5bd;font-size:0.9rem;';
     d.textContent = text || 'Media non valido';
     return d;
   }

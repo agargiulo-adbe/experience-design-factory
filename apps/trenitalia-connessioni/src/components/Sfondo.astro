@@ -1,0 +1,40 @@
+---
+/**
+ * Sfondo — l'immagine dietro UNA slide di questo deck.
+ *
+ * Esiste per una ragione sola: prima del 9 ott 2026 gli sfondi c'erano ma non
+ * si vedevano. Erano montati a `opacity-12` sotto uno scrim al 90%, cioè
+ * annullati: a 1920 la slide leggeva come un fondo piatto. Qui l'immagine sta
+ * al 55-75% e lo scrim è un RADIALE — denso al centro, dove vive il testo, e
+ * via via più leggero verso i bordi, dove l'immagine può respirare. Così la
+ * legibilità è protetta dove serve senza spegnere la fotografia ovunque.
+ *
+ * `forza` sceglie quanto il centro è protetto, e si decide dalla densità di
+ * testo della slide, non dal gusto:
+ *   leggera → copertine e slide-firma (poche parole grandi)
+ *   media   → slide con un titolo e un paragrafo
+ *   forte   → slide con pannelli, tabelle, elenchi
+ *
+ * Gli scrim sono in rgba ESPLICITO in global.css (`.tr-scrim-*`): il parser
+ * del contrasto dell'audit non sa leggere oklab()/color-mix(), e un modificatore
+ * di opacità Tailwind emette proprio quello.
+ */
+import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
+import { mediaProps } from '../../assets.index';
+
+interface Props {
+  /** id dello slot in backdrops.manifest.ts */
+  id: string;
+  forza?: 'leggera' | 'media' | 'forte';
+  /** Slide a fondo chiaro (bg="inverse"): lo scrim si ribalta in chiaro. */
+  chiara?: boolean;
+  /** Slide a fondo pieno di marca (bg="brand"): lo scrim prende il rosso. */
+  marca?: boolean;
+}
+const { id, forza = 'media', chiara = false, marca = false } = Astro.props;
+
+const opacita = { leggera: 'opacity-75', media: 'opacity-60', forte: 'opacity-45' }[forza];
+const famiglia = chiara ? 'tr-scrim-chiaro' : marca ? 'tr-scrim-marca' : 'tr-scrim';
+const scrim = `${famiglia} ${famiglia}--${forza}`;
+---
+<SlideBackdrop slot="backdrop" {...mediaProps(id)} imageClass={opacita} scrim={scrim} />

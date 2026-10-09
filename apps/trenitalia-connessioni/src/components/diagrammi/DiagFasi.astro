@@ -1,0 +1,75 @@
+---
+/**
+ * DiagFasi — il percorso nel tempo: le fasi una dopo l'altra sulla linea, con
+ * quanto durano e che cosa consegnano.
+ *
+ * Sostituisce l'elenco puntato delle roadmap: una fase che dura il doppio si
+ * vede che dura il doppio, invece di leggerlo in fondo alla riga.
+ */
+interface Props {
+  fasi: { n: string; nome: string; durata: string; esito: string; peso?: number }[];
+  class?: string;
+}
+const { fasi, class: className } = Astro.props as Props;
+const totale = fasi.reduce((t, f) => t + (f.peso ?? 1), 0);
+---
+<div class:list={["dg-fasi", className]} role="img"
+     aria-label={fasi.map((f) => `Fase ${f.n}, ${f.nome}, ${f.durata}: ${f.esito}`).join('. ')}>
+  <div class="dg-fs-track" aria-hidden="true">
+    {fasi.map((f) => (
+      <div class="dg-fs-fase" style={`flex-grow: ${f.peso ?? 1}`}>
+        <span class="dg-fs-barra"></span>
+        <span class="dg-fs-punto"></span>
+        <p class="dg-fs-n">{f.n}</p>
+        <p class="dg-fs-nome">{f.nome}</p>
+        <p class="dg-fs-durata">{f.durata}</p>
+        <p class="dg-fs-esito">{f.esito}</p>
+      </div>
+    ))}
+  </div>
+  <p class="dg-fs-asse" aria-hidden="true">
+    <span>oggi</span><span class="dg-fs-asse-linea"></span><span>{totale > 0 ? 'a regime' : ''}</span>
+  </p>
+</div>
+
+<style is:global>
+  .dg-fasi { width: 100%; }
+  .dg-fs-track { display: flex; align-items: stretch; gap: 0.9rem; }
+  .dg-fs-fase { position: relative; flex-basis: 0; min-width: 0; padding-top: 1.6rem; text-align: left; }
+  .dg-fs-barra {
+    position: absolute; left: 0; right: 0; top: 0.55rem; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, rgba(var(--sig-rgb), 0.95), rgba(var(--sig-rgb), 0.45));
+  }
+  .dg-fs-punto {
+    position: absolute; left: 0; top: 0.1rem;
+    width: 0.8rem; height: 0.8rem; border-radius: 9999px;
+    background: rgb(27, 34, 48); border: 2px solid rgba(var(--sig-rgb), 1);
+  }
+  .dg-fs-n {
+    font-family: var(--font-display); font-weight: 700; font-size: 0.75rem;
+    letter-spacing: 0.14em; color: rgba(var(--sig-rgb), 0.98);
+    margin: 0 0 0.15rem; max-width: none;
+  }
+  .dg-fs-nome {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.08rem; line-height: 1.2;
+    color: rgba(255, 255, 255, 0.98); margin: 0 0 0.15rem; max-width: none;
+  }
+  .dg-fs-durata {
+    font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: rgba(167, 176, 194, 0.98); margin: 0 0 0.4rem; max-width: none;
+  }
+  .dg-fs-esito {
+    font-size: 0.93rem; line-height: 1.45;
+    color: rgba(214, 219, 230, 0.95); margin: 0; max-width: none;
+  }
+  .dg-fs-asse {
+    display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; max-width: none;
+    font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(167, 176, 194, 0.9);
+  }
+  .dg-fs-asse-linea { flex: 1; height: 1px; background: rgba(214, 219, 230, 0.2); }
+  @media (max-width: 860px) {
+    .dg-fs-track { flex-direction: column; gap: 1.1rem; }
+    .dg-fs-fase { padding-top: 1.3rem; }
+  }
+</style>

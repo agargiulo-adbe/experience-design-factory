@@ -1,12 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
-import SlideBackdrop from '@edf/core/blocks/SlideBackdrop.astro';
 import { href } from '@edf/core/utils/url.js';
-import { mediaProps } from '../../../assets.index';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -76,6 +75,7 @@ const adozioneCards = [
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-stalli" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
         eyebrow="03 · Customer Journey Analytics"
@@ -91,15 +91,15 @@ const adozioneCards = [
         <div class="fs-line-h" style="top: 1.45rem; left: 8%; right: 8%;"></div>
         <div class="relative flex justify-between items-start px-[4%]">
           <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--ambra" data-active>4</span>
+            <span class="fs-node fs-node--sig" data-active>4</span>
             <span class="fs-node-label">Fonti separate</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--ambra" data-active>CJA</span>
+            <span class="fs-node fs-node--sig" data-active>CJA</span>
             <span class="fs-node-label">Il layer di lettura</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--ambra" data-active>1</span>
+            <span class="fs-node fs-node--sig" data-active>1</span>
             <span class="fs-node-label">Un journey leggibile</span>
           </div>
         </div>
@@ -110,12 +110,7 @@ const adozioneCards = [
     <Slide id="slide-convergenza" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
-      <SlideBackdrop
-        slot="backdrop"
-        {...mediaProps('bg-dati')}
-        imageClass="opacity-10"
-        scrim="bg-[var(--surface-primary)]/92"
-      />
+      <Sfondo slot="backdrop" id="tc-strati" forza="media" />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         COME FUNZIONA · CONNETTORI NATIVI, DATI IN ADOBE EXPERIENCE PLATFORM
       </p>
@@ -136,7 +131,7 @@ const adozioneCards = [
         <div class="flex flex-col gap-2.5">
           {fontiDati.map((f) => (
             <div class="flex items-center gap-3.5">
-              <span class="fs-node fs-node--ambra flex-shrink-0" data-active style="width:2.5rem;height:2.5rem;font-size:0.82rem;">{f.node}</span>
+              <span class="fs-node fs-node--sig flex-shrink-0" data-active style="width:2.5rem;height:2.5rem;font-size:0.82rem;">{f.node}</span>
               <div class="min-w-0 flex-1 text-left">
                 <p class="text-[1.02rem] font-semibold text-[var(--ink-primary)] font-[family-name:var(--font-display)] leading-tight">{f.label}</p>
                 <p class="text-[0.88rem] text-[var(--color-grigio-200)] leading-snug">{f.desc}</p>
@@ -146,8 +141,8 @@ const adozioneCards = [
         </div>
 
         <div class="relative flex flex-col items-center justify-center h-full">
-          <div class="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(245,166,35,0.55)] to-transparent" aria-hidden="true"/>
-          <span class="fs-node fs-node--ambra relative z-10" data-active style="width:3.6rem;height:3.6rem;font-size:0.78rem;font-weight:600;letter-spacing:0.04em;">CJA</span>
+          <div class="absolute top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-[rgba(var(--sig-rgb), 0.55)] to-transparent" aria-hidden="true"/>
+          <span class="fs-node fs-node--sig relative z-10" data-active style="width:3.6rem;height:3.6rem;font-size:0.78rem;font-weight:600;letter-spacing:0.04em;">CJA</span>
         </div>
 
         <div class="fs-panel h-full flex flex-col justify-center">
@@ -172,6 +167,7 @@ const adozioneCards = [
     <!-- ── SLIDE 2: CJA è / non è ─────────────────────────────────── -->
     <Slide id="slide-cja-vs-cdp" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
       <p class="fs-panel-tag text-center mb-4" data-reveal>
         DISAMBIGUAZIONE · CJA ≠ CDP
@@ -204,11 +200,11 @@ const adozioneCards = [
           </ul>
         </div>
         <div class="fs-panel text-left">
-          <p class="text-[0.85rem] font-bold tracking-widest uppercase mb-4" style="color: rgba(255,201,77,0.98);">CJA NON È · non sostituisce una CDP</p>
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase mb-4" style="color: rgba(var(--sig-rgb), 0.98);">CJA NON È · non sostituisce una CDP</p>
           <ul class="space-y-3.5 text-[1rem] text-[var(--color-grigio-200)] leading-snug">
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non gestisce profili operativi real-time (è Real-Time CDP)</li>
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non invia comunicazioni né campagne ai clienti</li>
-            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(255,201,77,0.98);">✗</span>Non sostituisce il CRM Salesforce: lo legge</li>
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>Non gestisce profili operativi real-time (è Real-Time CDP)</li>
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>Non invia comunicazioni né campagne ai clienti</li>
+            <li class="flex gap-3"><span class="flex-shrink-0 mt-px" style="color: rgba(var(--sig-rgb), 0.98);">✗</span>Non sostituisce il CRM Salesforce: lo legge</li>
           </ul>
         </div>
       </div>
@@ -217,6 +213,7 @@ const adozioneCards = [
     <!-- ── SLIDE 3: I 3 use case prioritari ───────────────────────── -->
     <Slide id="slide-usecases-core" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-stalli" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
 
       <div class="w-full max-w-6xl mx-auto">
@@ -235,7 +232,7 @@ const adozioneCards = [
         </div>
 
         <div class="relative flex flex-col gap-3">
-          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(245,166,35,0) 0%, rgba(245,166,35,0.9) 8%, rgba(245,166,35,0.9) 92%, rgba(245,166,35,0) 100%);" aria-hidden="true"></div>
+          <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
 
           {useCases.map((uc, i) => (
             <div
@@ -243,11 +240,11 @@ const adozioneCards = [
               data-reveal
               data-reveal-delay={(0.14 + i * 0.07).toFixed(2)}
             >
-              <span class="fs-node fs-node--ambra flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
+              <span class="fs-node fs-node--sig flex-shrink-0 relative z-10" data-active aria-hidden="true">{i + 1}</span>
               <div class="fs-card flex-1 min-w-0 text-left" style="padding: 1rem 1.25rem;">
                 <div class="flex items-center gap-2.5 flex-wrap mb-1">
                   <p class="fs-card-title" style="font-size: 1.1rem; margin-inline: 0;">{uc.nome}</p>
-                  <span class="text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style="background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);">
+                  <span class="text-[0.72rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style="background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);">
                     Priorità alta · da validare sul campo
                   </span>
                 </div>
@@ -266,6 +263,7 @@ const adozioneCards = [
     <!-- ── SLIDE 4: Demo / POC su dati simulati ───────────────────── -->
     <Slide id="slide-demo-poc" bg="secondary" align="split">
       <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
       <div slot="backdrop" class="fs-grid"></div>
       <div class="w-full flex-1 min-h-0 grid md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] gap-10 md:gap-12 items-center">
         <div class="text-left">
@@ -301,11 +299,11 @@ const adozioneCards = [
 
         <!-- Mock CJA Workspace: funnel sosta su dati simulati -->
         <div class="fs-panel !p-0 overflow-hidden" data-reveal data-reveal-delay="0.2">
-          <div class="flex items-center justify-between px-5 py-3" style="background: rgba(13,13,20,0.75); border-bottom: 1px solid rgba(242,244,248,0.1);">
-            <p class="text-[0.82rem] font-semibold tracking-wide text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)]">
+          <div class="flex items-center justify-between px-5 py-3" style="background: rgba(27, 34, 48, 0.75); border-bottom: 1px solid rgba(241, 243, 244, 0.1);">
+            <p class="text-[0.82rem] font-semibold tracking-wide text-[var(--color-chiaro)] font-[family-name:var(--font-display)]">
               CJA Workspace · Funnel prenotazione sosta
             </p>
-            <span class="text-[0.68rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase" style="background: rgba(245,166,35,0.16); color: rgba(255,201,77,0.98);">
+            <span class="text-[0.68rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase" style="background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);">
               Dati simulati
             </span>
           </div>
@@ -314,10 +312,10 @@ const adozioneCards = [
               <div>
                 <div class="flex items-baseline justify-between mb-1.5">
                   <p class="text-[0.95rem] text-[var(--color-grigio-200)] leading-snug">{i + 1}. {step.label}</p>
-                  <p class="text-[1rem] font-semibold text-[var(--color-ghiaccio)] font-[family-name:var(--font-display)] tabular-nums">{step.pct}%</p>
+                  <p class="text-[1rem] font-semibold text-[var(--color-chiaro)] font-[family-name:var(--font-display)] tabular-nums">{step.pct}%</p>
                 </div>
-                <div class="h-2.5 rounded-sm overflow-hidden" style="background: rgba(242,244,248,0.08);">
-                  <div class="h-full rounded-sm" style={`width: ${step.pct}%; background: linear-gradient(90deg, rgba(245,166,35,0.95), rgba(255,201,77,0.75));`}></div>
+                <div class="h-2.5 rounded-sm overflow-hidden" style="background: rgba(241, 243, 244, 0.08);">
+                  <div class="h-full rounded-sm" style={`width: ${step.pct}%; background: linear-gradient(90deg, rgba(var(--sig-rgb), 0.95), rgba(var(--sig-rgb), 0.75));`}></div>
                 </div>
               </div>
             ))}
@@ -332,6 +330,7 @@ const adozioneCards = [
     <!-- ── SLIDE 5: La lettura del dato come servizio ─────────────── -->
     <Slide id="slide-adozione" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-struttura" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
       <p class="fs-panel-tag text-center mb-3" data-reveal>
         ADOZIONE · OLTRE LA TECNOLOGIA
