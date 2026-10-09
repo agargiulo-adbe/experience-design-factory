@@ -1,9 +1,18 @@
-# Handover — Parte 3 di 14
+# Handover — Parte 3 di 15
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### Change log — Intesa «Su scala umana»: le registrazioni, il giro di critica, la copia unica (2026-10-09) → dettaglio §33.8 e §33.9, commit `e18aba4` `64c94d5` `97e9f7b` `f61eccd`
+
+- **Tutto da due registrazioni della settimana, non da una nostra idea** (`e18aba4`): il partner ha portato **due bisogni espressamente non collegati** — AI decisioning per la «next best experience» (lo stanno valutando adesso, e non sapevano che Adobe se ne occupasse) e una Content Factory per tagliare ~2,5 mln di spesa agenzie. Tre verifiche hanno **cambiato il contenuto**: Forms mancava davvero (footprint SAS + Analytics + AEM Sites e Forms, questi ultimi on-premise); Salesforce **non è «solo in CIB»** (il Marketing Cloud è in uso nella divisione retail); e un contatto che si dava per acquisito **è un invito da fare tramite il partner**, che aveva già declinato. Nell'experience le **tre date diventano tre obiettivi** (una data si legge e si dimentica), l'attrito «il collo di bottiglia è il canale» passa da nostro punto di vista non dichiarato a **lettura marcata come nostra** poggiata su due numeri pubblicati dal cliente, e nasce la slide dell'**arbitro** (molte sorgenti entrano, tre meccanismi decidono — ordina, filtra, mette il tetto — e al cliente arriva una cosa sola).
+- **La verifica che mancava al commit precedente** (`64c94d5`): screenshot delle slide cambiate e giro sui viewport da muro. Ha trovato una **didascalia strozzata a un terzo di larghezza** — la cappa a 62ch del reset ha specificità (0,1,1) e batteva quella del componente (0,1,0) — e **sei trattini lunghi** usati come stampella. È la trappola del `max-width` già documentata, in direzione opposta.
+- **Il giro di critica** (`97e9f7b`): via «primo/secondo tempo», ogni slide di dettaglio porta nell'occhiello lo strato da cui pende; la base della pila smette di dire il falso (**Analytics è già in cloud**); entrano Workfront dove ha una ragione, Semrush con il suo numero e CX Enterprise Coworker sulle quattro domande; l'ask diventa **una proposta a due**; il marchio diventa una scala su una base, resa in geometria.
+- **La copia che non può più divergere** (`f61eccd`): il taglio da dieci minuti teneva una copia a mano degli stessi blocchi con scritto nei commenti «se divergono comanda il lungo» — ed è **esattamente lì** che si erano persi il titolo di uno strato e la correzione su Analytics. Ora i blocchi stanno in `src/data/contenuti.ts`, definiti una volta e bilingui, e la versione corta è un **campo accanto** a quella lunga. ⚠️ Scoperta collaterale: `brand:icons` rigenera favicon e anteprima, ma **il marchio dentro la pagina è un SVG inline** che lo script non tocca — era rimasto alla forma vecchia.
+- Verifica dichiarata: `audit:deck --tv` 5 viewport **0 HARD** (115 misure nell'ultimo giro), allineamento lungo/exec confrontato **sul dist**, screenshot a 1920. ⚠️ Il **P0 del panel resta aperto e pesa di più di prima**: il deck è cambiato in profondità e nessun giro l'ha mai visto.
+
 
 ### Change log — il motore decideva male quali slide sono scure (2026-10-09, sera) → `packages/core/src/blocks/immersive/deck.ts`, commit `d4d2355`
 
@@ -154,37 +163,3 @@ Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato 
 - **docs: la skill `dossier`** — `skills/dossier/SKILL.md` (+ symlink `.claude/skills/dossier`): il lettore da tenere in mente, il metodo di ricerca, la gerarchia delle fonti, la struttura, la pubblicazione, la barra di qualità, i marchi, le cose da non fare. Quattro regole generalizzate oggi, tutte da errori veri: **(1)** il dossier si scrive per un collega che **non sa nulla della Factory** e giudica solo chiarezza, efficacia e conoscenza del cliente — quindi nessun rimando a numero di sezione («§7», «idea I1», «P0»), titoli in italiano piano, e nessun presupposto di presenza («la domanda rimasta aperta in call» non dice niente a chi non c'era); **(2)** nessuna idea entra senza **verifica su Fluffy** e sulle fonti pubbliche e del cliente, e **quello che il cliente fa già da sé non si propone**; **(3)** la **gerarchia delle fonti** per un fatto attribuito a un cliente terzo, con la regola «non trovato ≠ falso»; **(4)** una **dichiarazione ha una data di scadenza**: le idee che nascono da una frase di mesi prima sono spunti da verificare, non assunti. Le prime due regole stanno anche in `CLAUDE.md`.
 - **docs: perché un dossier non porta il co-brand** — tre ragioni (significato, rischio, asset) nella skill §6: il lockup dichiara un artefatto fatto *con* il cliente, un dossier è fatto *su* di lui; un documento con quel lockup, se esce, sembra congiunto; e l'SVG ufficiale quasi nessun cliente lo distribuisce (su nove experience **una sola** ha il marchio vero, le altre ripiegano sul wordmark). Sui deck la regola resta binding.
 - **chore: due nomi di referenti cliente tolti da `CLAUDE.md`** — file tracciato su repo pubblico, vale la regola del ruolo al posto del nome. Resta aperta la coda nei file `docs/HANDOVER-*.md` (P0 di §10) e in due **slug** di dossier.
-
-### Change log — verifica generale: lo stesso bug in due altri posti, la GA di Coworker, le quattro righe sul consenso (2026-10-03, sera)
-- **Il difetto «stili scoped contro DOM a runtime» non era uno, erano tre.** Dopo la card della
-  prova, segnalata dall'owner, è saltata fuori anche la **skin di `#architecture`** (`buildSkin()`:
-  stesso bug, stesso file) e — con una ricognizione sistematica su tutto il monorepo — il caso
-  grosso: **`packages/core/src/blocks/admin/AdminConsole.astro`**, un unico `<style>` scoped di 600
-  righe con **zero `:global()`**, importato da **12 app**. Le tre funzioni che costruiscono DOM
-  (`blockNode`, `renderPreview`, `renderList`) producevano **~26 classi senza stile**: l'editor delle
-  slide personalizzate, la sua anteprima e la lista delle slide salvate erano **senza formattazione
-  in tutte e 12**. Globalizzate **35 regole**, lasciando scoped tutto il resto; le regole
-  dell'anteprima restano ancorate a `.cs-preview-stage` perché le stesse classi `.cs-*` esistono
-  nelle `global.css` delle app e non devono raggiungere le slide vere del deck. Verificato
-  misurando lo stile calcolato di un nodo `cs-block` creato a runtime (bordo 1px, raggio 8px,
-  fondo `#f9fafb`) e con una schermata dell'editor. Memoria `astro-scoped-css-runtime-dom`.
-- **Il resto del monorepo è pulito, e adesso è verificato**: il runtime del deck, l'iniezione delle
-  slide personalizzate nei 11 BaseLayout, i mockup di prodotto, il calcolatore Ferrari, le due
-  pagine della console, le quattro pagine di dossier e il presenter MIM usano già
-  `is:global` / `:global()` / `global.css`. L'elenco completo di ciò che è stato controllato sta
-  nella ricognizione del 3 ott; qui basta la regola: **se una classe può finire su un nodo creato da
-  JavaScript, la sua regola non può stare in un `<style>` scoped**.
-- **«GA su Adobe Analytics, 2 ottobre 2026» era sbagliato, ed è stato corretto ovunque.** Fonte
-  verificata il 3 ott su Experience League (release notes Adobe Analytics): la voce «CX Enterprise
-  Coworker: Analyze Adobe Analytics data in Coworker Chat» dice **«Rollout starts: October 2, 2026»**
-  e **«General Availability: TBD»** (era prevista il 25 set). Toccati: `experiences.ts` della vetrina
-  (IT+EN), la card dell'hub, e tre punti del deck Poste (`accendere`, `capire` ×2, `sources.ts`).
-  Deck Poste rigirato: **0 HARD**, soft invariati. Chiude un P0 del panel.
-- **Le quattro righe sul consenso al co-brand, decise dall'owner**, al posto del blocco rimosso:
-  dove vive · indicizzazione · consenso al co-brand · Security/Legal. Etichetta → fatto, niente
-  prosa: è la forma che il panel aveva proposto («se il problema era il tono, due righe asciutte»).
-  Chiude il P0 unanime del giro del 3 ott.
-- **Verifica generale della vetrina**: build+typecheck+lint verdi su tutto il monorepo; zero overflow
-  orizzontale a 1280/1440/1920 in **entrambe le lingue**; zero errori in console; **tutti i link
-  interni ed esterni a 200**; 211 tag `<T>` in `index` e 66 in `blueprint`, **nessuno monolingue**;
-  conteggi della pagina riconciliati col registry (11 totali, 6 pubblicate, 2 interne, 9 clienti).

@@ -1,4 +1,4 @@
-# Handover — Parte 8 di 14
+# Handover — Parte 8 di 15
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -239,6 +239,10 @@ Giro 1: 53 claim verificati (24 confermati, **20 refutati**), 38 P0, sei «accet
 sei. Giro 2: 61 claim (34 confermati, 12 refutati), 28 P0 di cui 23 sopravvissute o nuove.
 Verdetti in `docs/Ferrovie/PANEL-VERDICT-2026-10-09-round{1,2}.md`, JSON grezzi in
 `docs/Ferrovie/panel/2026-10-09-round{1,2}/` (tutto git-ignorato).
+
+⚠️ **Il verdetto del giro 2 fotografa lo stato PRIMA delle correzioni del giro 2** (`a81579e`): è
+la fine normale del ciclo a due giri, non un buco. Quello che quelle correzioni non hanno chiuso è
+nel backlog come punto aperto per un umano, non per un terzo giro.
 
 **Le correzioni che valgono il giro.** Fuori l'**incidente di sicurezza del cliente** usato due volte
 come leva di vendita, con la data sbagliata e l'etichetta «illustrativo» su un fatto reale che li
