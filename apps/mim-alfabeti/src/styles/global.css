@@ -401,7 +401,15 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
   font-size: 0.82rem; letter-spacing: 0; text-transform: none; line-height: 1.45;
   color: var(--color-ardesia-500);
 }
+/* La nota delle fonti si legge in due righe, non in una mescolata: la frase di
+   contesto prende la sua riga, le citazioni la loro. Ogni citazione è un blocco
+   atomico, così la riga va a capo FRA una fonte e l'altra e non a metà del
+   titolo — un pezzo di testo spezzato a metà riga produce un rettangolo che
+   copre due righe e si sovrappone al vicino (check `e`), e a dimensione muro,
+   dove il tipo cresce, succede sempre. Lo stacco è in rem: cresce col tipo. */
+.alf-src > span[data-i18n] { display: block; margin-bottom: 0.3rem; }
 .alf-src a {
+  display: inline-block;
   color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em;
 }
 .alf-src a:hover { color: var(--color-blu-scuro); }
@@ -492,6 +500,9 @@ html[data-lang="it"] [data-lang-en], html[data-lang="it"] [data-lang-fr] { displ
 }
 .alf-source-card dt { font-weight: 600; color: var(--color-ardesia-500); white-space: nowrap; }
 .alf-source-card dd { min-width: 0; margin: 0; }
+/* Nome della fonte e nota che lo segue: ciascuno un blocco atomico, per la
+   stessa ragione della nota fonti qui sopra (check `e` a dimensione muro). */
+.alf-source-card dd > a, .alf-source-card dd > span[data-i18n] { display: inline-block; }
 .alf-source-card a { color: var(--color-blu); text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* ── Charts ──────────────────────────────────────────────────────────
@@ -568,8 +579,13 @@ html:not(.js) .alf-bar-fill { transform: scaleX(1); transition: none; }
    .alf-clock      Titillium 700 2rem time stamp (e.g. «23:47») */
 .alf-phone {
   --phone-scale: 1;
-  width: 360px; height: 640px; flex-shrink: 0;
-  border-radius: 28px; padding: 12px;
+  /* Il telaio si misura in rem, non in px: il suo contenuto (bollettino, chat,
+     orologio) è dimensionato in rem, e con la scala da muro cresceva dentro una
+     cornice ferma a 360px — la tabella del bollettino sbordava e lo schermo
+     scorreva. A radice 18px (i tre viewport di proiezione) 20rem × 35,56rem
+     valgono esattamente i 360 × 640 di prima. */
+  width: 20rem; height: calc(20rem * 16 / 9); flex-shrink: 0;
+  border-radius: 1.556rem; padding: 0.667rem;
   background: var(--color-blu-notte); border: 1px solid rgba(255, 255, 255, 0.18);
   transform: scale(var(--phone-scale)); transform-origin: 50% 50%;
   display: flex; flex-direction: column; overflow: hidden;

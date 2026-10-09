@@ -22,7 +22,7 @@ const dedupEn = String(SIMULATOR.dedupFactor);
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/accesso')} prevHref={href(base, '/voce')}>
+  <DeckContainer wallScale nextHref={href(base, '/accesso')} prevHref={href(base, '/voce')}>
 
     <Slide id="slide-builder" bg="secondary" align="split">
       <div slot="backdrop" class="alf-bg-soft" style={`--bg-src: url(${bgSoft.src})`}></div>
@@ -195,7 +195,11 @@ const dedupEn = String(SIMULATOR.dedupFactor);
     font-family: var(--font-display); font-weight: 700; font-size: 1.9rem; line-height: 1; letter-spacing: -0.02em;
     color: var(--color-blu); font-feature-settings: 'tnum' 1, 'lnum' 1; max-width: none;
   }
-  #slide-builder .bld-out-label { font-size: 0.85rem; line-height: 1.4; color: var(--color-ardesia-700); margin-top: 0.35rem; max-width: none; }
+  /* `line-height: 1` sul numerale tiene la cifra compatta, ma la sua gabbia
+     tipografica (1,53em in Titillium) sporge sotto il paragrafo: con 0,35rem la
+     cifra sfiorava l'etichetta e a dimensione muro la toccava (check `e`).
+     0,8rem lascia aria a ogni scala — la misura è in rem, cresce col tipo. */
+  #slide-builder .bld-out-label { font-size: 0.85rem; line-height: 1.4; color: var(--color-ardesia-700); margin-top: 0.8rem; max-width: none; }
   #slide-builder .bld-out-formula {
     font-size: 0.85rem; line-height: 1.4; color: var(--color-ardesia-500); margin-top: 0.15rem; max-width: none;
     font-feature-settings: 'tnum' 1, 'lnum' 1;

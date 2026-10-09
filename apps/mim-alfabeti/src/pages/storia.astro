@@ -85,7 +85,7 @@ const journey = [
     <AlfabetiNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/voce')} prevHref={href(base, '/domanda')}>
+  <DeckContainer wallScale nextHref={href(base, '/voce')} prevHref={href(base, '/domanda')}>
 
     <!-- ── SLIDE 0: Ponte (text-free bridge, video plays once) ────────── -->
     <Slide id="slide-ponte" bg="inverse" align="left" data-dark data-display>
@@ -352,10 +352,13 @@ const journey = [
   }
   /* Wrapper takes the SCALED box of the phone so the layout (and the
      .slide-inner height bound) sees the real on-screen size. */
-  #slide-notte .notte-phone-wrap { width: 360px; height: 640px; flex-shrink: 0; }
+  /* Il box che prenota lo spazio del telefono segue il telaio, ora in rem
+     (20rem × 35,56rem = i 360 × 640 di prima a radice 18px): se resta in px
+     fisso, a dimensione muro il telefono cresce e sborda dal suo contenitore. */
+  #slide-notte .notte-phone-wrap { width: 20rem; height: calc(20rem * 16 / 9); flex-shrink: 0; }
   #slide-notte .notte-phone-wrap .alf-phone { transform-origin: 0 0; }
-  @media (max-height: 899px) { #slide-notte .notte-phone-wrap { width: calc(360px * 0.82); height: calc(640px * 0.82); } }
-  @media (max-height: 799px) { #slide-notte .notte-phone-wrap { width: calc(360px * 0.72); height: calc(640px * 0.72); } }
+  @media (max-height: 899px) { #slide-notte .notte-phone-wrap { width: calc(20rem * 0.82); height: calc(20rem * 16 / 9 * 0.82); } }
+  @media (max-height: 799px) { #slide-notte .notte-phone-wrap { width: calc(20rem * 0.72); height: calc(20rem * 16 / 9 * 0.72); } }
   #slide-notte .alf-phone-body { position: relative; }
   #slide-notte .notte-screen {
     position: absolute; inset: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem;

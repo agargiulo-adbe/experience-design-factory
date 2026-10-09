@@ -197,9 +197,18 @@ const serializedFeatures = mockup.features.map(f => ({
     transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
-  /* Caption overlay */
+  /* Caption overlay.
+     La didascalia sta SOPRA i comandi del deck, e quanto siano alti lo sa solo
+     `--deck-chrome-safe`: il motore lo porta da 60px su un telefono a 224px su
+     una parete. Era inchiodata a `4.5rem` — cioè dentro la riserva dei comandi
+     a quasi ogni breakpoint, e ci finiva fisicamente sopra. Il check `b` non
+     lo coglieva perché misura solo il testo ≥24px e questa didascalia sta
+     sotto quella soglia fino ai viewport da muro: un difetto visibile a occhio
+     e invisibile al gate. Il fallback serve a chi usa il mock fuori da un
+     deck. */
   .ms-caption-bar {
-    position: absolute; bottom: 4.5rem; left: 0; right: 0;
+    position: absolute; bottom: calc(var(--deck-chrome-safe, 4.5rem) + 0.75rem);
+    left: 0; right: 0;
     display: flex; justify-content: center; z-index: 20;
     pointer-events: none; padding: 0 2rem;
   }

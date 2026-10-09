@@ -625,18 +625,25 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 .im-mossa-label::after { content: ' — '; color: rgba(133,153,176,0.7); font-weight: 400; }
 
+/* Il piede della slide dice due cose diverse — con quali prodotti si fa e da
+   dove vengono i fatti — e per anni le ha dette sulla stessa riga. Finché la
+   riga bastava si leggeva; appena va a capo, la riga delle fonti comincia sotto
+   i prodotti e il lettore non sa più dove finisce il credito e dove comincia la
+   citazione. Quindi: due righe, sempre. Lo spazio fra le due è in `rem`, così
+   cresce col tipo quando il deck va su una parete. */
 .im-idea-foot {
   margin-top: clamp(0.6rem, 1.4vh, 0.95rem);
+  display: grid;
+  justify-items: start;
+  row-gap: 0.95rem;
   font-size: 0.76rem;
   line-height: 1.5;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   max-width: none;
 }
-.im-idea-foot > span { display: inline; }
-.im-idea-sep { padding: 0 0.55rem; }
+.im-idea-foot > span { display: block; }
 .im-idea-adobe { color: var(--color-blu-chiaro); font-weight: 600; }
-.im-idea-sep { color: rgba(133, 153, 176, 0.5); }
 .im-idea-fonti { color: var(--color-grigio-300); }
 .im-idea-fonti a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .im-idea-fonti a:hover { color: var(--ink-primary); }
@@ -719,6 +726,15 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 .im-figures-fonti a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .im-figures-fonti a:hover { color: var(--ink-primary); }
+
+/* Una citazione non si spezza a metà. Resa come blocco atomico, la riga va a
+   capo FRA una fonte e l'altra invece che dentro «Piano di Impresa 2026-2029
+   (2 feb / 2026)» — più leggibile, e senza il rettangolo a cavallo di due righe
+   che il check `e` dell'audit legge, a ragione, come testo sovrapposto. */
+.im-figures-fonti a,
+.im-idea-fonti a,
+.im-fonti a { display: inline-block; }
+.im-fonti { line-height: 1.8; }
 
 /* Il reset di base cappa la larghezza di ogni <p> dentro una slide. Questi blocchi
    la governano da sé, quindi vanno liberati con pari specificità — ma «liberati»

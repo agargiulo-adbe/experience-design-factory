@@ -28,7 +28,11 @@ const ringProducts = [
 ];
 const ring = ringProducts.map((name, i) => {
   const angle = (i / ringProducts.length) * Math.PI * 2 - Math.PI / 2;
-  const rx = 37; const ry = 37;
+  // Il riquadro è largo una volta e mezzo la sua altezza (vedi la slide): il
+  // raggio orizzontale si divide per lo stesso fattore, così l'anello resta un
+  // CERCHIO e le targhette dei prodotti — che sporgono della propria metà —
+  // restano dentro il riquadro invece di farlo sbordare (check `c`).
+  const rx = 37 / 1.5; const ry = 37;
   const left = 50 + rx * Math.cos(angle);
   const top = 50 + ry * Math.sin(angle);
   const fromX = Math.round(Math.cos(angle) * 240);
@@ -44,10 +48,16 @@ const phases = [
   { label: 'Loyalty & LTV', products: ['Journey Optimizer', 'Real-Time CDP', 'Customer Journey Analytics'] },
   { label: 'Operations & Content Supply Chain', products: ['Workfront', 'GenStudio for Performance Marketing'] },
 ];
+// La nuvola di punti vive dentro un riquadro 2:1. Il raggio era in px: il
+// riquadro cambia misura con il viewport (e con la scala da muro) mentre i
+// punti no, così la nuvola usciva dal riquadro e faceva sbordare la colonna
+// (check `c`). Ora il raggio è una frazione della LARGHEZZA del riquadro;
+// l'asse y è moltiplicato per due perché la scatola è alta la metà, così la
+// nuvola resta un cerchio e sta dentro a ogni misura.
 const dataDots = Array.from({ length: 24 }).map((_, i) => {
   const angle = (i / 24) * Math.PI * 2;
-  const radius = 80 + ((i * 41) % 120);
-  return { x: Math.round(Math.cos(angle) * radius), y: Math.round(Math.sin(angle) * radius) };
+  const r = 0.16 + ((i * 41) % 120) / 480; // 0.16 → 0.41 della larghezza
+  return { x: +(Math.cos(angle) * r * 100).toFixed(2), y: +(Math.sin(angle) * r * 200).toFixed(2) };
 });
 ---
 <BaseLayout title="Il Motore Adobe" description="L'architettura Adobe che trasforma un data lake silente in relazioni conosciute e durature.">
@@ -55,7 +65,7 @@ const dataDots = Array.from({ length: 24 }).map((_, i) => {
     <Navigation items={navItems} currentPath={currentPath} base={base.replace(/\/$/, '')} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/persona')} prevHref={href(base, '/loyalty')}>
+  <DeckContainer wallScale nextHref={href(base, '/persona')} prevHref={href(base, '/loyalty')}>
 
     <!-- ── SLIDE 0: Apertura ─────────────────────────────────────── -->
     <Slide id="slide-apertura" bg="secondary" align="center">
@@ -67,7 +77,11 @@ const dataDots = Array.from({ length: 24 }).map((_, i) => {
     <Slide id="slide-datalake" bg="primary" align="center">
       <div class="mm-bg-soft" slot="backdrop" aria-hidden="true"></div>
 
-      <div class="w-full max-w-6xl mx-auto grid lg:grid-cols-[1fr_auto] gap-10 lg:gap-16 items-center text-left">
+      <!-- La colonna della viz ha una larghezza DEFINITA: con `auto` la
+           traccia si misurava sul contenuto, e lì dentro c'è solo roba in
+           `absolute` — larghezza zero, disco schiacciato sul bordo destro e
+           nuvola fuori dalla colonna (check `c`). -->
+      <div class="w-full max-w-6xl mx-auto grid lg:grid-cols-[1fr_24rem] gap-10 lg:gap-16 items-center text-left">
         <div>
           <p class="mm-panel-tag" data-reveal>IL PUNTO DI PARTENZA</p>
           <h2 class="mm-panel-head mt-2" style="font-size: clamp(2rem, 3.6vw, 3.4rem);" data-reveal data-reveal-delay="0.1">
@@ -81,9 +95,9 @@ const dataDots = Array.from({ length: 24 }).map((_, i) => {
           </p>
         </div>
 
-        <div class="relative w-full max-w-md mx-auto lg:mx-0 aspect-[2/1]" data-reveal data-reveal-delay="0.15" aria-hidden="true">
+        <div class="relative w-full max-w-[24rem] mx-auto lg:max-w-none lg:mx-0 aspect-[2/1]" data-reveal data-reveal-delay="0.15" aria-hidden="true">
           {dataDots.map((d) => (
-            <div class="absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]/40" style={`left: calc(50% + ${d.x}px); top: calc(50% + ${d.y}px); transform: translate(-50%, -50%);`} />
+            <div class="absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]/40" style={`left: calc(50% + ${d.x}%); top: calc(50% + ${d.y}%); transform: translate(-50%, -50%);`} />
           ))}
           <div class="absolute inset-0 flex items-center justify-center">
             <div class="flex flex-col items-center gap-2">
@@ -105,7 +119,7 @@ const dataDots = Array.from({ length: 24 }).map((_, i) => {
         Ogni prodotto converge in un unico motore
       </h2>
 
-      <div class="relative w-[clamp(18rem,42vh,27rem)] mx-auto aspect-square" data-stack-assemble>
+      <div class="relative mx-auto h-[clamp(18rem,42vh,27rem)] w-[clamp(27rem,63vh,40.5rem)] max-w-full" data-stack-assemble>
         <div class="stack-core absolute left-1/2 top-1/2 w-28 h-28 md:w-32 md:h-32 rounded-full bg-[var(--accent-secondary)] flex flex-col items-center justify-center text-center px-3 z-10 shadow-xl ring-1 ring-[var(--accent-primary)]/40" style="transform: translate(-50%, -50%);">
           <span class="text-[0.62rem] tracking-[0.16em] uppercase text-[var(--surface-inverse)]/70">Cuore</span>
           <span class="text-[1rem] font-[family-name:var(--font-display)] font-medium text-[var(--surface-inverse)] leading-tight mt-0.5">Experience Platform</span>

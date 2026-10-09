@@ -112,7 +112,7 @@ const integrationPills = [
     <UniNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/risultati')} prevHref={href(base, '/b2b')}>
+  <DeckContainer wallScale nextHref={href(base, '/risultati')} prevHref={href(base, '/b2b')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
@@ -507,10 +507,19 @@ const integrationPills = [
   .motore-name { font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; line-height: 1.2; color: var(--color-inchiostro); max-width: none; }
   .motore-node--b2b { align-items: flex-start; }
 
-  /* Stack rows: each layer is a segment threaded to the engine. */
+  /* Stack rows: each layer is a segment threaded to the engine.
+     ⚠️ Qui c'era una graffa mancante: `.motore-layer { padding: …` apriva
+     DENTRO la media query e il blocco non veniva mai chiuso — lo chiudeva la
+     fine del foglio. Risultato: la card bianca, il filo rosso, la tinta della
+     fondazione e i bordi delle pill esistevano **solo sotto gli 860px di
+     altezza**, cioè a 1920 i prodotti rendevano come testo nudo. Il disegno
+     sta nella regola base; nella media query resta solo la compattazione. */
   .motore-layer {
     position: relative; display: flex; align-items: center; gap: 1.25rem;
     padding: 0.5rem 0.75rem 0.5rem 1.1rem;
+    background: var(--color-bianco);
+    border: 1px solid rgba(38,38,38,0.12); border-radius: 4px;
+    box-shadow: 0 6px 22px -18px rgba(38,38,38,0.4);
   }
   @media (max-height: 860px) {
     #slide-stack .slide-title { font-size: 2.2rem !important; margin-bottom: 0.5rem; }
@@ -518,10 +527,7 @@ const integrationPills = [
     #slide-integration .uc-brand-pill { padding: 0.28rem 0.65rem; }
     #slide-stack .uc-quote { margin-top: 0.5rem; }
     #slide-stack .uc-quote-text { font-size: 1.05rem; }
-    .motore-layer { padding: 0.3rem 0.75rem 0.3rem 1.1rem;
-    background: var(--color-bianco);
-    border: 1px solid rgba(38,38,38,0.12); border-radius: 4px;
-    box-shadow: 0 6px 22px -18px rgba(38,38,38,0.4);
+    .motore-layer { padding: 0.3rem 0.75rem 0.3rem 1.1rem; }
   }
   .motore-layer-thread {
     position: absolute; left: 0; top: 0.6rem; bottom: 0.6rem; width: 3px;

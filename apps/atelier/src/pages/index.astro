@@ -166,7 +166,7 @@ const wall: WallTile[] = [
     <AtelierNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/method')}>
+  <DeckContainer wallScale nextHref={href(base, '/method')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="clip">
@@ -415,9 +415,17 @@ const wall: WallTile[] = [
     line-height: 1.15;
     max-width: none;
   }
-  /* The platform is not one of the eight: a small link under the heading, not a tile. */
+  /* The platform is not one of the eight: a small link under the heading, not a tile.
+     The label and the ↗ are FLEX SIBLINGS, not inline neighbours. Inline, the
+     arrow ends up inside the rect of a label that wraps — in a 12rem heading
+     column at wall sizes it always wraps — and the two boxes overlap (check `e`).
+     As flex items the arrow is a box BESIDE the label block: it trails the last
+     line (`flex-end`) and never sits on top of it. Gap in rem so it grows with
+     the type when the root scales on a wall. */
   .wall-hub-link {
-    display: inline-block;
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0.3rem;
     margin-top: 1rem;
     font-size: 0.85rem;
     line-height: 1.45;
@@ -428,8 +436,9 @@ const wall: WallTile[] = [
     padding-bottom: 0.15rem;
     transition: color var(--duration-fast) var(--easing-default), border-color var(--duration-fast) var(--easing-default);
   }
+  .wall-hub-link > :global([data-i18n]) { min-width: 0; }
   .wall-hub-link:hover, .wall-hub-link:focus-visible { color: var(--color-champagne); border-color: var(--color-champagne); }
-  .wall-ext-inline { margin-left: 0.3rem; color: var(--color-champagne); }
+  .wall-ext-inline { flex: none; color: var(--color-champagne); }
   @media (min-width: 1024px) {
     .wall-layout { grid-template-columns: 9rem minmax(0, 1fr); gap: 1.3rem; }
   }

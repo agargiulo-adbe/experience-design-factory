@@ -192,3 +192,32 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .cs-slide[data-cs-tone="light"] .cs-title { color: var(--ink-primary); }
 .cs-slide[data-cs-tone="light"] .cs-prose { color: var(--ink-secondary); }
 .cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--accent-primary); }
+
+/* ════════════════════════════════════════════════════════════════════
+   MockupSlide (motore) — tenuta sui viewport da MURO
+   Il mock generico del browser nasce full-bleed e misura i suoi gutter in
+   rem: a 1920 coincidono quasi con la safe-area della slide, e il difetto
+   restava sotto la soglia di misura dell'audit (il titolo della scena sta a
+   22,5px, l'audit misura da 24px in su). Sopra i 2560 il motore porta
+   `--slide-safe-inset` a 160px e il mock resta indietro: il titolo si ferma
+   a 129px dal bordo, fuori area sicura. Peggio, la didascalia stava a
+   `bottom: 4.5rem`, esattamente l'altezza che lì hanno i comandi del deck, e
+   ci finiva sopra — si legge nello screenshot 2560 del 9 ott.
+   Qui la finestra del browser si stacca dai bordi e si posa sul carbonio, e
+   la didascalia sale sopra i comandi. Tutto in rem e sui token del deck,
+   così cresce insieme al tipo.
+   La didascalia è stata corretta nel motore — `.ms-caption-bar` ora parte da
+   `--deck-chrome-safe`, che è il token che sa quanto sono alti i comandi a
+   quel breakpoint — quindi qui non c'è più la pezza: resta solo l'area
+   sicura del mock, che è una scelta di questa pelle.
+   ════════════════════════════════════════════════════════════════════ */
+/* La doppia classe serve: il motore dichiara `background` su `[data-mockup-slide]`
+   con la stessa specificità e il suo foglio arriva dopo. */
+@media (min-width: 2560px) {
+  [data-slide][data-mockup-slide] {
+    padding: var(--slide-safe-inset);
+    background: var(--surface-inverse);
+  }
+  [data-slide][data-mockup-slide] .ms-chrome { border-radius: 12px 12px 0 0; }
+  [data-slide][data-mockup-slide] .ms-shell { border-radius: 0 0 12px 12px; overflow: hidden; }
+}
