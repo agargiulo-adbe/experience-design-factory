@@ -18,10 +18,12 @@
  *    going back. → / ← always move between slides (presenter escape hatch).
  *    Steps reset whenever a slide is (re)prepared. Under reduced-motion the CSS
  *    shows every step and the controller skips stepping.
- *  - `data-on-dark` on the deck root while the active slide is dark: the slide
- *    carries `[data-dark]` (or `data-dark="false"` to force light), the Slide
- *    bg class `bg-[var(--surface-inverse)]` / `bg-[var(--accent-primary)]`, or a
- *    computed background whose relative luminance is < 0.45.
+ *  - `data-on-dark` on the deck root while the active slide is dark. Chi decide,
+ *    in ordine: `[data-dark]` esplicito sulla slide (`"false"` la forza chiara),
+ *    poi la LUMINANZA calcolata del fondo (< 0.45 = scura), e solo se il fondo
+ *    non si legge le classi `bg-[var(--surface-inverse)]` /
+ *    `bg-[var(--accent-primary)]`. La classe NON vince sulla luminanza: in una
+ *    experience a dominante scura `--surface-inverse` è il fondo CHIARO.
  */
 import { prepareSlide, playSlide } from './animations';
 
@@ -30,6 +32,8 @@ const SLIDE_MS = 500;
 const reduced = typeof window !== 'undefined'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/* Indizio di ripiego, non verdetto: serve SOLO quando il fondo calcolato non si
+   può leggere (trasparente, o getComputedStyle non disponibile). Vedi isDarkSlide. */
 const DARK_CLASSES = ['bg-[var(--surface-inverse)]', 'bg-[var(--accent-primary)]'];
 
 function relLuminance(color: string): number | null {
@@ -42,15 +46,36 @@ function relLuminance(color: string): number | null {
   return 0.2126 * f(p[0]) + 0.7152 * f(p[1]) + 0.0722 * f(p[2]);
 }
 
-/** Is this slide visually dark (light chrome needed)? See the header contract. */
+/**
+ * Questa slide rende SCURA (e quindi il contorno del deck va chiaro)?
+ *
+ * L'ordine conta, ed è stato corretto il 9 ott 2026. Prima la classe vinceva
+ * sulla luminanza: `bg-[var(--surface-inverse)]` era tenuta per scura sempre.
+ * È vero nelle experience a dominante CHIARA, dove `inverse` è il fondo scuro;
+ * è FALSO in quelle a dominante scura (Agos, Eni, Isybank, Trenitalia), dove
+ * `--surface-inverse` è il bianco del brand. Lì il contorno usciva chiaro su
+ * fondo chiaro: misurato su `/scenario/` di Trenitalia, firma co-brand bianca
+ * su #f8f9fa, e su quattro slide di Agos con fondo rgb(242,247,247).
+ *
+ * Adesso:
+ *   1. `data-dark` esplicito vince su tutto — è l'uscita di sicurezza per la
+ *      slide che DICHIARA una superficie e ne rende un'altra (tipico: fondo
+ *      chiaro con un backdrop scuro sotto uno scrim denso);
+ *   2. poi la LUMINANZA calcolata del fondo, che è il fatto;
+ *   3. la classe resta solo come ripiego, per quando il fondo non si legge
+ *      (trasparente, o getComputedStyle non disponibile).
+ *
+ * Verificato prima e dopo su 476 slide di 12 app: il verdetto cambia su 4, e
+ * sono esattamente le quattro dove era sbagliato.
+ */
 export function isDarkSlide(slide: HTMLElement): boolean {
   const flag = slide.getAttribute('data-dark');
   if (flag !== null) return flag !== 'false';
-  if (DARK_CLASSES.some(c => slide.classList.contains(c))) return true;
   try {
     const l = relLuminance(getComputedStyle(slide).backgroundColor);
-    return l !== null && l < 0.45;
-  } catch { return false; }
+    if (l !== null) return l < 0.45;
+  } catch { /* niente getComputedStyle: si ripiega sulla classe */ }
+  return DARK_CLASSES.some(c => slide.classList.contains(c));
 }
 
 function sectionSlug(): string {

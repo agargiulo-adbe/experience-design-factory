@@ -446,7 +446,13 @@
   border-color: var(--color-alga);
 }
 [data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
-[data-deck] .deck-progress { color: var(--color-grigio-200); }
+/* Il contatore solo sulle slide SCURE. Agos ha quattro slide a fondo chiaro
+   (`rgb(242,247,247)`): fino al 9 ott 2026 il motore le teneva per scure —
+   perché la classe `bg-[var(--surface-inverse)]` vinceva sulla luminanza — e
+   l'errore si compensava con questa riga, chiara sempre. Corretto il motore,
+   il contatore chiaro sarebbe finito su fondo chiaro. */
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grigio-200); }
+[data-deck]:not([data-on-dark]) .deck-progress { color: rgba(18, 30, 33, 0.92); }
 
 /* Backdrop parallax clip — the shared SlideBackdrop over-scales its image
    (scale 1.04–1.06) so the drift never reveals an edge. On `overflow:hidden`
