@@ -286,3 +286,38 @@ tutte le app per le slide vere del deck, e globalizzarle senza ancora le avrebbe
 **tutte e 11** le app con `/admin/` — anche sul live. Il resto del monorepo è stato controllato ed è
 già a posto (runtime del deck, iniezione slide personalizzate negli 11 BaseLayout, mockup, scoping
 calculator, console, dossier, presenter MIM). Memoria `astro-scoped-css-runtime-dom`.
+
+### 22.y `prefers-reduced-motion` nascondeva la clip di sfondo — il motore decideva al posto di chi guarda (2026-10-09, notte, `dc82a1e`)
+`LoopVideo` portava una riga sola: `@media (prefers-reduced-motion: reduce) { .edf-loopvideo-clip
+{ display: none } }`. Rispettare la preferenza è giusto; **spegnere e basta** no.
+
+- **Il difetto, misurato.** Con la preferenza attiva: `display:none`, `paused:true`, `t:0`. Senza:
+  in riproduzione a `t:6.01`. Su macOS «Riduci movimento» è acceso su moltissime macchine — spesso
+  per la nausea da parallasse, non per togliere una clip ambient di sfondo — e chi apriva il deck
+  vedeva **una copertina ferma senza sapere che ci fosse un video**. Nessun check lo coglieva.
+- **La correzione.** Niente autoplay (la preferenza vale: nessun movimento a sorpresa) **più un
+  comando** nella barra del deck. La scelta si ricorda in `localStorage['edf:motion']`, vale per
+  tutte le clip del percorso, sopravvive agli swap SPA (dock/undock come `DeckAudio`), e **senza
+  quella preferenza il comando non compare nemmeno**. Vive nel motore: ogni deck con una clip lo
+  eredita senza wiring.
+- **Pillola e non cerchio.** Gli altri comandi sono tondi perché portano una sola icona; qui serve
+  una parola, perché un «play» in mezzo ai comandi di una presentazione si legge come «avvia le
+  slide». Su telefono resta la sola icona, bersaglio 44×44, e il senso vive in `aria-label`.
+- **Verifica**: quattro casi misurati uno per uno (senza preferenza · con preferenza, prima e dopo
+  il clic · altro capitolo, per la persistenza), barra dentro il viewport a 1920/1280/768/390 **con
+  la preferenza attiva**, 16 app buildate, `audit:deck --tv` 0 HARD, `audit:wrap` pulito.
+- ⚠️ **Le altre cinque experience con `LoopVideo` non sono state guardate** con la preferenza
+  attiva: P1 in §10.
+
+#### La regola che ne esce, e vale oltre questo difetto
+**Misurare nelle condizioni di chi guarda, non in quelle del browser di prova.** Sono serviti tre
+giri. L'owner ha detto tre volte «la copertina è ferma»; ogni volta la misura — in locale, poi in
+produzione, con la differenza fra fotogrammi, il PSNR del giro e il contrasto nel caso peggiore —
+diceva che il movimento c'era. Era vero e inutile: Playwright parte **senza** le preferenze
+dell'utente. Quando qualcuno dice «non lo vedo» e lo strumento dice che c'è, **la differenza sta
+nelle condizioni di misura**: `reducedMotion`, `colorScheme`, `forcedColors`, `locale`, zoom,
+`deviceScaleFactor`, rete lenta, risparmio energetico — e la **produzione**, non solo il preview.
+È il contrappeso di «quello che dice l'utente è un'ipotesi»: quando l'owner segnala un difetto e i
+numeri dicono il contrario, a sbagliare è quasi sempre la misura. In `CLAUDE.md` e nella memoria
+`misurare-nelle-condizioni-utente`.
+

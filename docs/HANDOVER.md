@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-09** (sera tardi).
+> Documento di passaggio di consegne. Stato al **2026-10-10**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -141,17 +141,37 @@
 > git-ignorata. Qui resta solo la regola riusabile: **una concessione su un prodotto va coperta da un
 > upsell sullo stesso prodotto**.
 
+> 🎬 **La notte fra il 9 e il 10 ottobre, un difetto che nessuna misura vedeva.** La copertina dei
+> deck era **ferma per chiunque abbia «Riduci movimento» attivo** — su macOS moltissimi, spesso per
+> la nausea da parallasse e non per togliere una clip ambient. `LoopVideo` faceva un `display: none`
+> secco sotto `prefers-reduced-motion`: tecnicamente corretto, in pratica una copertina statica senza
+> che nessuno potesse sapere che ci fosse un video. Ora la preferenza vale (**niente autoplay**) ma
+> non decide al posto di chi guarda: un **comando nella barra del deck** accende il movimento, la
+> scelta si ricorda, e **ogni deck con una clip lo eredita dal motore**. ⚠️ La lezione è più grande
+> del difetto ed è BINDING in `CLAUDE.md`: **si misura nelle condizioni di chi guarda, non in quelle
+> del browser di prova** — sono serviti tre giri perché Playwright parte senza le preferenze
+> dell'utente, e ogni volta il movimento «c'era». Quando qualcuno dice «non lo vedo» e lo strumento
+> dice il contrario, la differenza sta nelle condizioni di misura. 🚄 **Trenitalia, la stessa notte**:
+> la riunione del 9 ha **ridotto il perimetro a due fonti** — l'Analytics di trenitalia.com e il CRM,
+> uniti da chi fa login — e tutto il resto (Frecce, piattaforma di invio, checkout, FS Park) diventa
+> orizzonte dichiarato invece di promessa; percorso lineare, ramo FS Park fuori dal flusso ma
+> raggiungibile da una riga in `src/data/percorso.ts`, e lo **zero-copy detto a voce in riunione
+> corretto nel deck** (per CJA il dato entra: si governa *quanto*). ⚠️ **Il panel a due giri copre il
+> deck di prima**: P0 nuovo, da chiudere prima del TTG del 14-16 ott (§36.9, Parte 8).
+
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: **quattro P0 nuovi o riscritti il
 > 9 ott** stanno in testa (il dossier FSTechnology esposto · il panel mancante su un'app ormai pubblica
 > · il giro delta su Intesa Assicurazioni a stanza avvenuta), e subito sotto c'è quello che non si
 > chiude da solo — i nomi di referenti cliente dentro file tracciati su un repository pubblico,
 > inventario rifatto il 7 ott. Dal 9 ott sera ci sono **tre P1 nuovi su Trenitalia**: il difetto del
 > motore sulle slide chiare (tocca quattro experience), quello che è sopravvissuto al secondo giro di
-> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione** (rimisurata il 9 ott, sera tardi): le
-> parti a filo del tetto sono la **1** (47,5 KB) e la **7** (47,8 KB) su 49,1 — la prossima sezione che
-> cresce lì dentro fa scattare un ribilanciamento. Il giro di stasera ha liberato la **3** (43,4 KB) e la
-> **4** (45,2 KB) spingendo la coda del change log nella **14** (40,8 KB). Le parti con più spazio restano
-> la **11** (23,5 KB), la **13** (24,0 KB) e la **12** (24,9 KB).
+> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione** (rimisurata il 10 ott): il giro di stanotte ha fatto sforare la **3** (48,8 KB
+su 49,1) e ha richiesto un ribilanciamento a catena **3 → 4 → 14**. Ora le parti al filo sono la **7**
+(47,8 KB), la **1** (47,5 KB), la **4** (46,7 KB) e la **2** (46,4 KB): la prossima sezione che cresce
+lì dentro fa scattare un altro giro. Le parti con più spazio restano la **11** (23,5 KB), la **13**
+(24,0 KB) e la **12** (24,9 KB). ⚠️ Il change log occupa da solo **tre** parti (3, 4, 14) e ogni voce
+nuova in testa spinge la coda: è il costo fisso di tenerlo integrale, ed è una scelta — si paga un
+ribilanciamento ogni due o tre giornate di lavoro.
 
 ---
 
@@ -162,16 +182,16 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **9 ott 2026** all'indietro, fino al 6 ott: il gate `audit:wrap` e il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
-- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 6 ott 2026 al 9 set.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dalla **notte del 9-10 ott 2026** all'indietro, fino al 7 ott mattina: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 6-7 ott 2026 all'11 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
-- [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
+- [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.
 - [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo. ⚠️ Per lo stato CORRENTE del deck Trenitalia la fonte non è qui ma **§36 (Parte 8)**.
-- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · **§36 Trenitalia riscritta (9 ott)**](./HANDOVER-08.md) — §36 è lo stato corrente di «Connessioni Intelligenti»: design system letto, sfondi e clip, diagrammi, schermo da muro, incoerenze fra slide, e il panel a due giri.
+- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · **§36 Trenitalia riscritta (9 ott)**](./HANDOVER-08.md) — §36 è lo stato corrente di «Connessioni Intelligenti»: design system letto, sfondi e clip, diagrammi, schermo da muro, incoerenze fra slide, il panel a due giri e, in **§36.9, il perimetro ridotto a due fonti** la sera del 9 (posteriore al panel).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier**](./HANDOVER-11.md) — la stanza del 22 ott e il motore che regge tutti i dossier. **§35 (l'altra Intesa) è la Parte 15**, in fondo. §33.8 e §33.9 sono le due giornate del 9 ott: quello che hanno detto le registrazioni, il giro di critica, e il taglio da dieci minuti che non può più divergere dal percorso intero.
 - [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
-- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **9 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **tre** volte il 9 ott, l'ultima la sera tardi, quando la voce sul gate degli a capo ha fatto crescere la Parte 3.
+- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **10 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **quattro** volte, l'ultima la notte del 9-10 ott.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.

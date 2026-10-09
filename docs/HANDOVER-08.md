@@ -266,3 +266,28 @@ viewport (1280→3840), 373 controlli, 0 HARD**. Soft residui: `a` 199, `i` 33, 
 strutturali delle composizioni centrate con titolo in alto, e il contratto vieta di farli passare
 rimpicciolendo il tipo. `astro check` 0 errori. Build dell'intero monorepo verde.
 
+### 36.9 Il perimetro si stringe a due fonti — 9 ottobre, sera (`c4e14f0`)
+La riunione del 9 ottobre ha **ridotto la proposta**, e il deck l'ha seguita. Le fonti sono due:
+l'**Adobe Analytics di trenitalia.com** e il **CRM**, uniti da chi fa login. Le Frecce, la
+piattaforma di invio, il checkout e FS Park diventano **orizzonte dichiarato invece di promessa** —
+che è la forma onesta di dire «ci si arriva» senza venderlo adesso.
+
+- **Il percorso di default è lineare**: copertina, scenario, quattro capitoli. Il ramo FS Park, il
+  bivio e il capitolo sulla clean room **restano nel repo e raggiungibili**, ma fuori dal flusso.
+- **`src/data/percorso.ts` è la fonte unica** da cui leggono barra di navigazione, card della home e
+  frecce di ogni pagina: riaccendere un ramo è **una riga**, e non ci sono tre posti dove ricordarsi
+  di farlo. È la stessa regola applicata a Intesa con `contenuti.ts` lo stesso giorno.
+- **Nel merito**: l'accusa ai sistemi del Gruppo diventa **una domanda**, come chiesto in riunione;
+  esce la slide del varco e il suo diagramma della soglia viene riusato per il prerequisito vero, il
+  **login**; gli use case sono quelli nati al tavolo, con il **limite dell'attivazione dichiarato**.
+  Tre slide nuove in Convergenza: dove finisce il dato del CRM, le tre domande con cosa si fa della
+  risposta, e **CX Enterprise Coworker** sulla ricerca delle cause in linguaggio naturale.
+- ⚠️ **Una cosa detta a voce in riunione era sbagliata ed è corretta qui**: lo **zero-copy**. Per CJA
+  il dato **entra**; quello che si governa è *quanto*. Correggere nel deck una frase detta al tavolo
+  è il modo meno costoso di non farsela contestare dopo.
+- Verifica: build pulita, `astro check` a zero, **0 HARD su 222 slide-viewport** comprese le rotte
+  fuori percorso, quattro slide lette a 1920.
+- ⚠️ **Il panel di §36.7 copre il deck PRIMA di questa riscrittura** — ed era proprio sul perimetro
+  che aveva chiesto i tagli più pesanti. È il **P0 nuovo** di §10, da chiudere prima del TTG
+  (14-16 ott).
+
