@@ -15,7 +15,10 @@
  *                               ancora di aprirsi.
  *
  * I colori NON si passano a mano: si leggono dal favicon stesso, che la palette
- * ce l'ha già. Così icone e anteprima non possono divergere dal marchio.
+ * ce l'ha già. Così icone e anteprima non possono divergere dal marchio. Ma si
+ * LEGGE il colore e si MISURA l'inchiostro: la scelta sta in
+ * `lib/brand-icons-palette.ts`, con i suoi test, perché una decisione di
+ * contrasto è un numero e va provata senza avviare un browser.
  *
  *   pnpm brand:icons <app> --title "Su scala umana" --sub "Adobe × Intesa Sanpaolo"
  *
@@ -24,6 +27,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
+import { contrast, paletteFromSvg } from './lib/brand-icons-palette';
 
 const REPO = process.cwd();
 
@@ -34,12 +38,6 @@ function flag(name: string): string | undefined {
   return pre ? pre.slice(name.length + 3) : undefined;
 }
 
-/** Il fondo del marchio e il suo accento: il primo `fill` pieno e l'ultimo. */
-function paletteFromSvg(svg: string): { bg: string; accent: string } {
-  const fills = [...svg.matchAll(/fill="(#[0-9a-fA-F]{3,8})"/g)].map((m) => m[1]);
-  const strokes = [...svg.matchAll(/stroke="(#[0-9a-fA-F]{3,8})"/g)].map((m) => m[1]);
-  return { bg: fills[0] ?? '#111111', accent: strokes[0] ?? fills[fills.length - 1] ?? '#ffffff' };
-}
 
 async function main() {
   const app = process.argv[2];
@@ -54,7 +52,7 @@ async function main() {
     process.exit(1);
   }
   const svg = fs.readFileSync(svgFile, 'utf8');
-  const { bg, accent } = paletteFromSvg(svg);
+  const { bg, ink, accent } = paletteFromSvg(svg);
   const title = flag('title') ?? app;
   const sub = flag('sub') ?? '';
   const font = flag('font') ?? 'Inter, system-ui, sans-serif';
@@ -85,7 +83,7 @@ async function main() {
     <div style="width:1200px;height:630px;background:${bg};display:flex;flex-direction:column;justify-content:center;gap:34px;padding:0 96px;box-sizing:border-box;font-family:${font}">
       <div style="width:104px;height:104px">${svg.replace('<svg', '<svg width="100%" height="100%"')}</div>
       <div>
-        <div style="font-size:76px;font-weight:700;color:#ffffff;letter-spacing:-0.02em;line-height:1.05">${title}</div>
+        <div style="font-size:76px;font-weight:700;color:${ink};letter-spacing:-0.02em;line-height:1.05">${title}</div>
         ${sub ? `<div style="margin-top:20px;font-size:30px;font-weight:600;color:${accent};letter-spacing:0.08em;text-transform:uppercase">${sub}</div>` : ''}
       </div>
     </div></body></html>`);
@@ -95,7 +93,10 @@ async function main() {
   made.push('og.png (1200×630)');
 
   await browser.close();
-  console.log(`\n${app} · palette letta dal marchio: fondo ${bg}, accento ${accent}`);
+  console.log(
+    `\n${app} · fondo ${bg} · titolo ${ink} (${contrast(ink, bg).toFixed(1)}:1)` +
+    ` · riga ${accent} (${contrast(accent, bg).toFixed(1)}:1)`,
+  );
   made.forEach((m) => console.log(`  · ${m}`));
   console.log(`\nRicorda il <head>: favicon.svg, icon-192.png, apple-touch-icon.png, og:image.\n`);
 }

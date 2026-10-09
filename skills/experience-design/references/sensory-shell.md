@@ -37,6 +37,39 @@ chat** vede comunque il riquadro di anteprima: senza `og:image` è un rettangolo
 vuoto, e il deck sembra rotto prima ancora di aprirsi. L'anteprima serve
 soprattutto alle experience riservate, non di meno.
 
+**Tre errori veri, trovati facendo l'inventario dei dodici marchi esistenti**
+(9 ott 2026). Valgono come lista di controllo, perché sono passati inosservati
+per mesi: nessun check guarda un favicon.
+
+- **Il logo del cliente ridisegnato.** Ferrari aveva il **Cavallino Rampante**
+  come favicon: 14 KB di tracciati, lo scudo con il tricolore. È vietato due
+  volte — il marchio del cliente vive nel co-brand, e un logo ricostruito a
+  mano è esattamente la wrong-brand imagery che la Quality Bar vieta. Al suo
+  posto, la geometria del deck: la **griglia di partenza** con la prima
+  piazzola occupata.
+- **La lettera.** Max Mara aveva una «G» in Georgia, UniCredit un «UC» in
+  serif, l'hub la sigla «EDF». A 16px sembrano un carattere che non ha
+  caricato — ed è la ragione per cui la regola dice forma, non glifo.
+  ⚠️ Su UniCredit la lettera era per giunta su un rosso **#BE2027** che non
+  esiste nel suo design system (il marchio è #E2001A, il colore di sistema è
+  il petrolio #007A91): un marchio nato a memoria invece che dal CSS.
+- **Lo stesso file su due experience.** Atelier e MIM avevano il **medesimo
+  favicon** (stesso md5): due deck diversi con la stessa icona nella barra
+  delle schede, e per MIM per giunta fuori dalla sua identità blu. Si verifica
+  in un comando: `md5 -q apps/*/public/favicon.svg | sort | uniq -d`.
+  Fanno eccezione hub e vetrina, che sono due facce della **stessa** cosa.
+
+**Gli inchiostri dell'anteprima si misurano, non si leggono in ordine.** La
+prima versione di `brand:icons` prendeva il fondo dal primo `fill` e l'accento
+dall'ultimo, con il titolo bianco per contratto. Sul marchio della vetrina —
+gradiente più `fill="#fff"` di dettaglio — usciva un'anteprima **bianca su
+bianco**: titolo e riga invisibili, e nessuno se ne accorge finché non incolla
+il link. Ora lo script calcola la luminanza relativa, sceglie fra bianco e
+quasi-nero quello che stacca di più sul fondo, e accetta come accento un colore
+del marchio solo se misura **≥ 4,5:1** (se nessuno ci arriva, avvicina
+l'inchiostro al fondo quanto basta). Stampa i rapporti misurati a ogni giro:
+`fondo #0B0B0D · titolo #ffffff (19,7:1) · riga #FF2800 (5,2:1)`.
+
 ---
 
 ## 2. Il movimento — la clip in loop su copertina e chiusura
@@ -169,6 +202,29 @@ Tre vincoli non negoziabili:
 **Il display cresce di più del corpo.** Su una copertina la proporzione giusta a
 1920 resta timida a 3840: si alzano i tetti delle `clamp()` di titolo, occhiello
 di capitolo, lead e metriche, **solo sopra i 2000px**.
+
+**La citazione non si spezza a metà.** Accendendo la scala su tutti i deck, i
+HARD nuovi sono quasi tutti `e` (testo-su-testo) e quasi tutti nello stesso
+posto: la **nota delle fonti** in fondo alla slide. La causa non è una
+sovrapposizione vera. A 1920 la nota sta su una riga; a 2560 va a capo, e un
+link inline che si spezza **dentro** la propria etichetta produce un
+`getBoundingClientRect` che copre entrambe le righe — un rettangolo largo quanto
+la colonna, che si sovrappone al vicino. Il check la legge come collisione, e ha
+ragione: anche per un lettore «Piano di Impresa 2026-2029 (2 / feb 2026)»
+spezzato a metà è un difetto.
+
+Il rimedio è uno, e vale per ogni skin:
+
+- ogni voce della nota è un **blocco atomico** — `.<prefisso>-fonti a { display:
+  inline-block }` — così la riga va a capo **fra** una fonte e l'altra;
+- se il piede mescola **crediti prodotto** e **fonti** sulla stessa riga, si
+  spezza in due righe con un `row-gap` in **rem**: sono due cose diverse, e
+  appena la riga si allunga il lettore non sa più dove finisce l'una.
+
+Residuo accettato: due citazioni su righe consecutive hanno `gap: 0` e fanno
+fallire il **soft `g`**. È il ritmo di una nota a piè di slide, non un difetto:
+portarlo a 16px vorrebbe dire un'interlinea da elenco puntato dentro una riga di
+fonti.
 
 **Il gate.** `pnpm --filter <app> audit:deck -- --tv` aggiunge 2560×1440 e
 3840×2160 ai tre viewport di proiezione. Non è nel giro di default perché
