@@ -413,6 +413,30 @@ Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-sh
   diretti): vanno in **griglia 2×2 a blocchi pari**, e ogni blocco a bandiera dentro un
   componente si difende con `margin-inline: 0` a specificità sufficiente.
 
+### Quello che dice l'utente è un'ipotesi, non un oracolo (BINDING, sempre)
+Un'affermazione — del committente, di un collega, di un verbale, di un riassunto
+automatico — è il **punto di partenza di una ricerca**, mai un fatto da trascrivere.
+Prima si verifica, poi si risponde con l'esito, anche quando l'esito contraddice chi
+l'ha detto. Vale per nomi di prodotto, perimetri di persone, numeri, competitor,
+posizionamenti: tutto.
+- **Tre fonti, in quest'ordine:** interne Adobe (Fluffy — `field_readiness_sharepoint_search`,
+  `full_documentation_search`; Slack; wiki), pubbliche ufficiali (pagina prodotto,
+  Experience League, newsroom del cliente), e il materiale del cliente stesso.
+  Una sola non basta quando la frase finisce davanti a un cliente.
+- **Si risponde con il verdetto, non con l'eco.** «Hai ragione, e il numero è questo»,
+  oppure «no, e la fonte dice un'altra cosa». L'accondiscendenza su un fatto sbagliato
+  è un danno differito: esce in riunione, davanti al cliente, e non si recupera.
+- **Le cose da sapere prima si dicono prima.** Un vincolo dichiarato da noi vale molto
+  più dello stesso vincolo scoperto dal loro IT un mese dopo.
+- **Un riassunto automatico non è una fonte.** Gli AI summary delle registrazioni
+  sbagliano i nomi propri con regolarità («Easybank» per Isybank, «Vazzana» per Vassena):
+  si risale sempre al parlato prima di scrivere un nome in un documento.
+- **Dove c'è conflitto fra due fonti, si riporta il conflitto** e si chiede, invece di
+  sceglierne una in silenzio. Chi legge deve poter vedere che c'era un bivio.
+- **Assenza di prova non è prova di assenza:** da «non trovato» si conclude «non
+  confermato, da chiedere», mai «falso» (vedi `fonti-cliente-gerarchia`).
+Memoria: `user-claims-are-hypotheses`.
+
 ### Panel review — gli occhi del cliente (BINDING, prima di ogni handover)
 `audit:deck` verde e screenshot letti provano che il deck **si vede**, non che il cliente
 **compri l'argomento**. Prima della consegna si lancia la skill **`panel-review`** (canonica in

@@ -1,0 +1,73 @@
+---
+/**
+ * L'arbitro: molte sorgenti entrano, una sola esperienza esce.
+ *
+ * È il disegno che regge tutto il posizionamento. Il rischio, su questo tema,
+ * è che il cliente capisca «volete rifarmi i modelli» — e a quel punto ha
+ * ragione a difendersi. Disegnato, l'equivoco non nasce: le sorgenti restano
+ * dove sono, distinte e con i loro nomi, e Adobe è lo strato stretto davanti
+ * al cliente che sceglie fra quello che le sorgenti hanno già prodotto.
+ *
+ * Le tre regole al centro non sono inventate per la slide: sono i tre
+ * meccanismi nominati sulla pagina prodotto (AI ranking, eligibility
+ * constraints, frequency capping), tradotti in italiano piano.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Bilingual {
+  it: string;
+  en: string;
+}
+interface Props {
+  /** Le sorgenti che restano dove sono. */
+  sources: Bilingual[];
+  /** I meccanismi dell'arbitro, in ordine. */
+  rules: Array<{ t: Bilingual; d: Bilingual }>;
+  /** Che cosa esce. */
+  out: { t: Bilingual; d: Bilingual };
+  class?: string;
+}
+const { sources, rules, out, class: className } = Astro.props as Props;
+---
+<div class:list={['isu-arb', className]}>
+  <!-- Sinistra: quello che c'è già, e che non si tocca -->
+  <div class="isu-arb-col">
+    <T as="p" class="isu-arb-k" it="Resta dov’è" en="Stays where it is" />
+    <ul class="isu-arb-src" role="list">
+      {sources.map((s) => (
+        <li role="listitem"><T as="span" it={s.it} en={s.en} /></li>
+      ))}
+    </ul>
+  </div>
+
+  <svg class="isu-arb-in" viewBox="0 0 48 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0 24 H34 M0 60 H34 M0 96 H34" />
+    <path d="M30 18 L40 24 L30 30 M30 54 L40 60 L30 66 M30 90 L40 96 L30 102" />
+  </svg>
+
+  <!-- Centro: l'arbitro, cioè le tre regole -->
+  <div class="isu-arb-core">
+    <T as="p" class="isu-arb-k isu-arb-k--core" it="Decide qui" en="Decided here" />
+    <ol class="isu-arb-rules" role="list">
+      {rules.map((r, i) => (
+        <li role="listitem">
+          <span class="isu-arb-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <T as="h3" class="isu-arb-rt" it={r.t.it} en={r.t.en} />
+          <T as="p" class="isu-arb-rd" it={r.d.it} en={r.d.en} />
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <svg class="isu-arb-in" viewBox="0 0 48 120" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0 60 H34" />
+    <path d="M30 54 L40 60 L30 66" />
+  </svg>
+
+  <!-- Destra: una sola cosa -->
+  <div class="isu-arb-col isu-arb-col--out">
+    <T as="p" class="isu-arb-k" it="Arriva al cliente" en="Reaches the customer" />
+    <T as="h3" class="isu-arb-ot" it={out.t.it} en={out.t.en} />
+    <T as="p" class="isu-arb-od" it={out.d.it} en={out.d.en} />
+  </div>
+</div>

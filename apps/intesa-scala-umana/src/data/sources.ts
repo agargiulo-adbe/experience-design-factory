@@ -56,6 +56,14 @@ export const SOURCES = {
     short: 'business.adobe.com',
     url: 'https://business.adobe.com/products/brand-visibility.html',
   },
+  aiDecisioning: {
+    label: {
+      it: 'Adobe, pagina prodotto AI decisioning in Journey Optimizer, letta il 9 ottobre 2026',
+      en: 'Adobe, AI decisioning in Journey Optimizer product page, read on 9 October 2026',
+    },
+    short: 'business.adobe.com',
+    url: 'https://business.adobe.com/products/journey-optimizer/ai-decisioning.html',
+  },
   cjaUpgrade: {
     label: {
       it: 'Adobe Experience League, documentazione di passaggio a Customer Journey Analytics, aggiornata il 28 settembre 2026',

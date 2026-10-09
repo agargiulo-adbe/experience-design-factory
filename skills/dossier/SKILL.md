@@ -9,6 +9,19 @@ description: >
 
 # Dossier — il documento che qualcun altro legge sul telefono
 
+## Prima di tutto: niente si dà per vero perché l'ha detto qualcuno
+Il dossier esiste per reggere a una domanda in riunione, e regge solo se ogni riga ha
+una fonte. **Ogni affermazione in ingresso — dal committente, da un collega, da un
+verbale, da un riassunto automatico — è un'ipotesi da verificare**, su fonti interne
+Adobe (Fluffy, Slack, wiki), su fonti pubbliche ufficiali e sul materiale del cliente.
+Poi si risponde con l'esito, anche quando contraddice chi l'ha chiesto.
+Tre trappole viste sul campo: un **riassunto automatico** di una registrazione sbaglia
+i nomi propri con regolarità, e prima di scriverne uno si risale al parlato; una
+**referenza cliente** può essere in uscita proprio mentre la si cita, e va ricontrollata
+alla data; due fonti che **confliggono** si riportano entrambe, con la domanda, invece
+di sceglierne una in silenzio. Regola per esteso in CLAUDE.md.
+
+
 Un dossier non è un riassunto: è il materiale con cui un collega entra in una stanza che
 non ha preparato lui.
 

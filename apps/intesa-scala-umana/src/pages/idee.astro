@@ -5,6 +5,7 @@ import IsuStack from '../components/IsuStack.astro';
 import IsuPipeline from '../components/IsuPipeline.astro';
 import IsuLoop from '../components/IsuLoop.astro';
 import IsuJourney from '../components/IsuJourney.astro';
+import IsuArbiter from '../components/IsuArbiter.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
@@ -18,6 +19,8 @@ import bgFiliera from '../assets/generated/bg/dark-filiera.jpg';
 import bgTrovare from '../assets/generated/bg/light-trovare.jpg';
 import bgViaggio from '../assets/generated/bg/dark-viaggio.jpg';
 import bgProva from '../assets/generated/bg/light-prova.jpg';
+import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
+import bgPercorsoUsi from '../assets/generated/bg/light-percorso.jpg';
 
 const SLUG = 'idee';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -47,34 +50,55 @@ const currentPath = Astro.url.pathname;
  * connettore, perché un vincolo detto da noi vale molto più dello stesso
  * vincolo scoperto da loro un mese dopo.
  */
-/* L'array va dal basso: la fondazione per prima, e il componente impila al
-   contrario. Il 2º tempo sta quindi PRIMA del 1º qui dentro, perché dall'alto
-   si legga 1º, 2º, fondazione: la pila ha un ordine architettonico (il cliente
-   sotto) e uno di lettura (il primo tempo per primo), e quando confliggono
-   vince la lettura — i due strati Adobe non hanno un ordine fra loro. */
+/**
+ * VIA I «TEMPI», e via i prodotti.
+ *
+ * «Primo» e «secondo tempo» dichiaravano una sequenza che non esiste: i due
+ * bisogni che il partner ha riportato il 7 ottobre sono espressamente NON
+ * collegati, e numerarli prometteva un ordine di esecuzione che nessuno ha
+ * deciso. L'ordine qui è solo di racconto, e si legge dall'alto.
+ *
+ * E in una slide di sintesi l'elenco dei prodotti non dice niente a chi
+ * ascolta: dice che cosa compriamo, non che cosa cambia. Al suo posto, una
+ * riga su COSA CAMBIA. I nomi dei prodotti stanno nelle slide di dettaglio,
+ * dove c'è lo spazio per spiegare che cosa fanno.
+ *
+ * L'array va dal basso: la fondazione per prima, il componente impila al
+ * contrario.
+ */
 const strati = [
   {
     kind: 'base' as const,
     t: { it: 'Quello che avete già', en: 'What you already have' },
     s: {
-      it: 'Experience Manager e Analytics, dentro la banca, sulla rotta verso il cloud',
-      en: 'Experience Manager and Analytics, inside the bank, heading for the cloud',
+      it: 'Experience Manager, Forms e Analytics, dentro la banca, sulla rotta verso il cloud',
+      en: 'Experience Manager, Forms and Analytics, inside the bank, heading for the cloud',
     },
   },
   {
     kind: 'add' as const,
-    n: '2º tempo',
-    t: { it: 'Il viaggio intero, e che cosa ha funzionato', en: 'The whole journey, and what worked' },
-    s: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
+    t: { it: 'Vedere il cliente intero, non il canale', en: 'Seeing the whole customer, not the channel' },
+    s: {
+      it: 'Dal contare le visite su un canale al seguire la stessa persona dal primo annuncio alla firma: da lì in poi si misura dove si perde, e quanto ha pesato ogni passaggio',
+      en: 'From counting visits on one channel to following the same person from the first ad to signature: from there you can measure where it breaks, and what each step was worth',
+    },
     href: '#slide-viaggio',
   },
   {
     kind: 'add' as const,
-    n: '1º tempo',
-    t: { it: 'Il contenuto alla scala della banca', en: 'Content at the scale of the bank' },
+    t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Experience Manager · GenStudio for Performance Marketing · Firefly · Brand Visibility',
-      en: 'Experience Manager · GenStudio for Performance Marketing · Firefly · Brand Visibility',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie cosa esce, su che canale e quanto spesso — senza rifare nulla di quello che c’è',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often — without redoing any of it',
+    },
+    href: '#slide-decisioning',
+  },
+  {
+    kind: 'add' as const,
+    t: { it: 'Produrre contenuto alla scala della banca', en: 'Producing content at the scale of the bank' },
+    s: {
+      it: 'Centinaia di offerte e decine di mercati senza moltiplicare le mani che le scrivono, con le parti obbligatorie che restano intatte e una persona che approva',
+      en: 'Hundreds of offers and dozens of markets without multiplying the hands that write them, with mandatory wording left intact and a person who approves',
     },
     href: '#slide-filiera',
   },
@@ -144,6 +168,48 @@ const giro = [
   },
 ];
 
+/* ── Il decisioning: l'arbitro davanti al cliente ──────────────────────
+ * Le tre regole hanno un nome sulla pagina prodotto Adobe — AI ranking,
+ * eligibility constraints, frequency capping — e sono tradotte, non inventate.
+ * L'ordine è quello in cui agiscono: prima si ordina, poi si filtra per
+ * ammissibilità, infine si mette il tetto.
+ */
+const sorgenti = [
+  { it: 'I vostri modelli di propensione', en: 'Your own propensity models' },
+  { it: 'Gli strumenti di decisioning specializzati che già usate', en: 'The specialised decisioning tools you already use' },
+  { it: 'Le regole di business, anche quelle che oggi vivono in un foglio', en: 'Business rules, including the ones living in a spreadsheet today' },
+];
+const regole = [
+  {
+    t: { it: 'Ordina', en: 'Rank' },
+    d: {
+      it: 'Mette in fila le opzioni per probabilità che quella persona reagisca, e impara dagli esiti.',
+      en: 'Ranks the options by how likely that person is to respond, and learns from the outcomes.',
+    },
+  },
+  {
+    t: { it: 'Filtra', en: 'Filter' },
+    d: {
+      it: 'Regole di ammissibilità: che cosa può essere mostrato a chi, e in quale momento.',
+      en: 'Eligibility rules: what can be shown to whom, and when.',
+    },
+  },
+  {
+    t: { it: 'Mette il tetto', en: 'Cap' },
+    d: {
+      it: 'Un limite di frequenza per persona e per spazio, perché la buona offerta di troppo è un’offerta persa.',
+      en: 'A frequency limit per person and per placement, because one offer too many is an offer lost.',
+    },
+  },
+];
+const esito = {
+  t: { it: 'Una cosa sola, nel momento giusto', en: 'One single thing, at the right moment' },
+  d: {
+    it: 'Non la somma di quello che ogni sistema avrebbe mandato per conto suo. Un pagamento rifiutato al POS, e nello stesso minuto in app arriva la proposta giusta per quella persona: l’informazione c’era già, mancava qualcuno che decidesse di usarla subito.',
+    en: 'Not the sum of what every system would have sent on its own. A card declined at the till, and in the same minute the right proposal appears in the app: the information was already there, what was missing was someone deciding to use it straight away.',
+  },
+};
+
 /* ── Secondo tempo · il viaggio intero ────────────────────────────────── */
 const tappeViaggio = [
   { it: 'Annuncio', en: 'Ad' },
@@ -152,6 +218,29 @@ const tappeViaggio = [
   { it: 'Filiale', en: 'Branch' },
   { it: 'Servizio clienti', en: 'Customer service' },
 ];
+/* Quello che la vista omnicanale ABILITA. L'attribuzione è il quarto, non il
+   titolo: prima viene la fondazione, poi quello che ci si costruisce sopra.
+   Ordinati per vicinanza al problema che loro stessi hanno dichiarato — il
+   funnel commerciale che non si segue fino in fondo. */
+const casiUso = [
+  {
+    t: { it: 'Dove si rompe', en: 'Where it breaks' },
+    d: { it: 'Il punto esatto in cui la pratica si ferma, canale per canale', en: 'The exact point where the application stalls, channel by channel' },
+  },
+  {
+    t: { it: 'Perché chiamano', en: 'Why they call' },
+    d: { it: 'Le telefonate che nascono da un passaggio digitale che non ha funzionato', en: 'The calls that come from a digital step that did not work' },
+  },
+  {
+    t: { it: 'Chi richiamare', en: 'Who to go back to' },
+    d: { it: 'Gruppi di persone trovati qui e pubblicati sul profilo, pronti da usare', en: 'Groups found here and published to the profile, ready to use' },
+  },
+  {
+    t: { it: 'Che cosa ha pesato', en: 'What counted' },
+    d: { it: 'L’attribuzione: uno dei casi, non il titolo', en: 'Attribution: one of the cases, not the headline' },
+  },
+];
+
 const letture = [
   { k: { it: 'Primo tocco', en: 'First touch' }, w: [100, 0, 0, 0, 0] },
   { k: { it: 'Algoritmico', en: 'Algorithmic' }, w: [42, 26, 16, 34, 12] },
@@ -230,8 +319,8 @@ const prova = [
         <T
           as="p"
           class="isu-col-sub mx-auto"
-          it="La fondazione è già vostra. I due strati sopra si aprono sulla pagina che li racconta."
-          en="The foundation is already yours. The two layers above open onto the page that tells each one."
+          it="La fondazione è già vostra. I tre strati sopra si aprono sulla pagina che li racconta."
+          en="The foundation is already yours. The three layers above open onto the page that tells each one."
         />
       </div>
     </Slide>
@@ -336,15 +425,58 @@ const prova = [
           <T
             as="span"
             class="isu-pipe-rail-t"
-            it="è quanto converte in più chi arriva da una risposta generata, rispetto al traffico da ricerca organica."
-            en="is how much better traffic arriving from a generated answer converts, compared with organic search."
+            it="è quanto converte in più chi arriva da una risposta generata, rispetto al traffico da ricerca organica. Brand Visibility unisce le due metà: l’intelligenza di Semrush su come il marchio appare nelle risposte, e la correzione che si pubblica da Adobe."
+            en="is how much better traffic arriving from a generated answer converts, compared with organic search. Brand Visibility joins the two halves: Semrush intelligence on how the brand shows up in answers, and the fix you publish from Adobe."
           />
         </div>
 
-        <div class="isu-credits mt-4"><p class="isu-products">Adobe Brand Visibility · Experience Manager Sites · Analytics</p>
+        <div class="isu-credits mt-4"><p class="isu-products">Adobe Brand Visibility (Adobe + Semrush) · Experience Manager Sites · Analytics</p>
         <p class="isu-note">
           <span data-lang-it>{SOURCES.brandVisibility.label.it}</span><span data-lang-en>{SOURCES.brandVisibility.label.en}</span>
           · <a href={SOURCES.brandVisibility.url} target="_blank" rel="noopener noreferrer">{SOURCES.brandVisibility.short}</a>
+        </p></div>
+      </div>
+    </Slide>
+
+    <!-- ── L'arbitro: il decisioning davanti al cliente ─────────────────── -->
+    <!-- Idea arrivata DA LORO tramite il partner, non proposta da noi: per
+         questo apre dichiarando di non toccare quello che c'è. Se la slide
+         facesse pensare «vogliono rifarci i modelli», avrebbe già perso. -->
+    <Slide id="slide-decisioning" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgNumeri.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="L’ultimo strato, quello davanti al cliente"
+          en="The last layer, the one in front of the customer"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Molti decidono, al cliente arriva una cosa sola"
+          en="Many decide, one thing reaches the customer"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <IsuArbiter sources={sorgenti} rules={regole} out={esito} class="mb-5" />
+
+        {/* Il vincolo sta IN CHIARO, non dentro una disclosure: su questa
+            slide il pannello aperto sforava la safe-area a 1440 e 1280, e fra
+            nascondere il vincolo e nasconderlo dietro un clic si sceglie di
+            dirlo. Una riga si legge sempre; un pannello si legge se qualcuno
+            lo apre. */}
+        <T
+          as="p"
+          class="isu-note mt-3 mx-auto"
+          it="Il punto aperto, detto subito: la decisione legge il profilo dove il profilo vive. Se la base dati sta altrove la strada esiste, ma va verificata su un’architettura vera — ed è la prima cosa da mettere su un tavolo tecnico, non l’ultima."
+          en="The open point, up front: the decision reads the profile where the profile lives. If the data foundation sits elsewhere there is a route, but it must be checked against a real architecture — and that is the first thing for a technical session, not the last."
+        />
+
+        <div class="isu-credits"><p class="isu-products">AI decisioning · Journey Optimizer</p>
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.aiDecisioning.label.it}</span><span data-lang-en>{SOURCES.aiDecisioning.label.en}</span>
+          · <a href={SOURCES.aiDecisioning.url} target="_blank" rel="noopener noreferrer">{SOURCES.aiDecisioning.short}</a>
         </p></div>
       </div>
     </Slide>
@@ -356,8 +488,8 @@ const prova = [
         <T
           as="p"
           class="slide-eyebrow"
-          it="Secondo tempo · il viaggio intero"
-          en="Second half · the whole journey"
+          it="La fondazione, e quello che ci si costruisce sopra"
+          en="The foundation, and what gets built on it"
         />
         <T
           as="h2"
@@ -371,26 +503,11 @@ const prova = [
           stops={tappeViaggio}
           readings={letture}
           cap={{
-            it: 'Proporzioni di esempio. Il punto è che sono due letture dello stesso storico: il modello si applica quando il dato si legge, non quando si raccoglie, e vale anche sul passato.',
-            en: 'Illustrative proportions. The point is that these are two readings of the same history: the model applies when the data is read, not when it is collected, and it applies to the past as well.',
+            it: 'Il filo in alto è la fondazione: lo stesso cliente riconosciuto su tutte le tappe. Le due righe sotto sono uno dei suoi usi — proporzioni di esempio — e mostrano che il modello si applica quando il dato si legge, non quando si raccoglie: vale anche sul passato.',
+            en: 'The thread above is the foundation: the same customer recognised at every step. The two rows below are one of its uses — illustrative proportions — and show that the model applies when the data is read, not when it is collected: it holds for the past too.',
           }}
           class="mb-4"
         />
-
-        <div class="isu-pipe-rail">
-          <span class="isu-pipe-rail-k">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
-              <path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <T as="span" it="Da oggi a domani" en="From today onwards" />
-          </span>
-          <T
-            as="span"
-            class="isu-pipe-rail-t"
-            it="Analytics resta acceso: lo storico entra con il connettore dedicato, Analysis Workspace resta lo strumento di chi lo usa già, e i segmenti che si trovano qui si pubblicano sul profilo cliente."
-            en="Analytics stays on: history comes in through the dedicated connector, Analysis Workspace stays the tool your people already know, and the segments found here publish to the customer profile."
-          />
-        </div>
 
         <HowItWorks
           title="viaggio"
@@ -399,12 +516,16 @@ const prova = [
           class="isu-hiw mt-4 mb-3"
         >
           <p>
-            <span data-lang-it>Customer Journey Analytics legge dati che stanno su Experience Platform. Lo storico di Adobe Analytics ci arriva con il connettore dedicato, e i due ambienti convivono finché serve il confronto.</span>
-            <span data-lang-en>Customer Journey Analytics reads data that sits on Experience Platform. The Adobe Analytics history arrives through the dedicated connector, and the two environments run side by side as long as the comparison needs.</span>
+            <span data-lang-it><b>Analytics resta acceso.</b> Customer Journey Analytics legge dati che stanno su Experience Platform; lo storico di Adobe Analytics ci arriva con il connettore dedicato, Analysis Workspace resta lo strumento di chi lo usa già, e i due ambienti convivono finché serve il confronto.</span>
+            <span data-lang-en><b>Analytics stays on.</b> Customer Journey Analytics reads data on Experience Platform; the Adobe Analytics history arrives through the dedicated connector, Analysis Workspace stays the tool your people know, and the two run side by side as long as the comparison needs.</span>
           </p>
           <p>
             <span data-lang-it><b>Da sapere prima:</b> il connettore da solo non è la strada di lungo periodo: latenza, schema legato alla nomenclatura di Analytics, dati che restano dentro l’analisi invece di essere disponibili alle altre applicazioni. Il percorso consigliato da Adobe è lo storico via connettore insieme a una raccolta nuova, pianificata.</span>
             <span data-lang-en><b>Worth knowing first:</b> the connector on its own is not the long-term route: latency, a schema tied to Analytics nomenclature, data that stays inside the analysis instead of reaching the other applications. The route Adobe recommends is history through the connector alongside a new, planned collection.</span>
+          </p>
+          <p>
+            <span data-lang-it><b>Una porta che resta aperta.</b> Dalla stessa fondazione si arriva anche a come ripartire la spesa fra i canali, mettendo insieme la lettura evento per evento e quella aggregata nel tempo (Marketing Campaign Analytics). Non la proponiamo qui: è una decisione di chi possiede il budget media, e prima vorremmo sapere da voi se quel tavolo è vostro o di qualcun altro.</span>
+            <span data-lang-en><b>A door left open.</b> The same foundation also leads to how spend is split across channels, combining the event-level and the aggregated-over-time readings (Marketing Campaign Analytics). We are not proposing it here: it is a decision for whoever owns the media budget, and we would rather ask you first whether that table is yours or someone else’s.</span>
           </p>
         </HowItWorks>
 
@@ -413,6 +534,45 @@ const prova = [
           <span data-lang-it>{SOURCES.cjaUpgrade.label.it}</span><span data-lang-en>{SOURCES.cjaUpgrade.label.en}</span>
           · <a href={SOURCES.cjaUpgrade.url} target="_blank" rel="noopener noreferrer">{SOURCES.cjaUpgrade.short}</a>
         </p></div>
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa ci si costruisce sopra ───────────────────────────────── -->
+    <!-- Erano quattro blocchi in coda alla slide del viaggio, che a 1280 non
+         ci stavano. Divisa, non compressa: il contratto dice di tagliare la
+         copia e poi di dividere, mai di rimpicciolire il tipo. -->
+    <Slide id="slide-usi" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgPercorsoUsi.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Una volta che il filo c’è"
+          en="Once the thread is there"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Quattro domande che prima non avevano risposta"
+          en="Four questions that had no answer before"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="isu-uses mb-6" role="list">
+          {casiUso.map((u) => (
+            <li role="listitem">
+              <T as="h3" class="isu-uses-t" it={u.t.it} en={u.t.en} />
+              <T as="p" class="isu-uses-d" it={u.d.it} en={u.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-lead mx-auto"
+          it="Nessuna delle quattro richiede un progetto a sé: richiedono la stessa fondazione. È per questo che l’ordine conta — prima si vede il cliente intero, poi si sceglie da dove cominciare."
+          en="None of the four needs a project of its own: they all need the same foundation. That is why the order matters — first you see the whole customer, then you choose where to start."
+        />
       </div>
     </Slide>
 

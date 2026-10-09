@@ -40,6 +40,16 @@ Comandi, trappole e checklist in `references/sensory-shell.md`. Lì stanno anche
 collisioni che l'audit NON vede (nav, co-brand, credito, comando audio) e la regola che
 le chiude: mentre si legge un blocco aperto, il contorno arretra.
 
+## Regola di metodo che precede tutto
+**Quello che il committente dice è un'ipotesi da verificare, non un fatto da
+trascrivere** — nomi di prodotto, perimetri di persone, numeri, competitor,
+posizionamenti. Si verifica su fonti interne Adobe (Fluffy, Slack, wiki), su fonti
+pubbliche ufficiali e sul materiale del cliente; poi si risponde con l'esito, anche
+quando contraddice chi l'ha chiesto. Un riassunto automatico di una registrazione non
+è una fonte: sbaglia i nomi propri, e prima di scriverne uno si risale al parlato.
+Dove due fonti confliggono si riporta il conflitto e si chiede. Regola per esteso in
+CLAUDE.md → «Quello che dice l'utente è un'ipotesi, non un oracolo».
+
 ## Method
 1. **Brand Research** — values, audience, strategy, tone of voice.
 2. **Design Tokens** — 3-level system (primitive → semantic → component) from brand guidelines.

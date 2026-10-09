@@ -44,8 +44,8 @@ export const CHAPTERS: Chapter[] = [
       en: 'Your year, seen from outside',
     },
     lead: {
-      it: 'Tre date pubbliche del 2026, i numeri che avete dichiarato voi, e come li leggiamo da qui.',
-      en: 'Three public dates from 2026, the figures you stated yourselves, and what they read like from outside.',
+      it: 'Tre obiettivi che avete dichiarato voi, i numeri che ci state dietro, e che cosa chiedono a chi comunica.',
+      en: 'Three goals you stated yourselves, the figures behind them, and what they ask of whoever communicates.',
     },
   },
   {
