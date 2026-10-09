@@ -18,6 +18,11 @@
  * · **Le transizioni sono dissolvenze**, mai salti: un cambio di volume netto
  *   si sente come un errore tecnico.
  *
+ * · **Il cursore è un guadagno generale**, non un volume assoluto: moltiplica i
+ *   livelli per slide invece di sostituirli, così la dinamica decisa in pagina
+ *   (copertina forte, velo altrove) sopravvive a qualunque posizione del
+ *   cursore. Compare solo ad audio acceso, e la posizione si ricorda.
+ *
  * · **Si ferma quando la scheda non è in primo piano.** Un deck lasciato aperto
  *   in una scheda dietro non deve suonare mentre si parla d'altro.
  *
@@ -55,9 +60,10 @@ const {
   data-soft={String(soft)}
 >
   <audio data-edf-audio-el loop preload="none" src={src}></audio>
+  <div class="edf-audio-control" data-edf-audio-control>
   <button
     type="button"
-    class="edf-audio-btn"
+    class="edf-audio-btn deck-btn"
     data-edf-audio-toggle
     aria-pressed="false"
   >
@@ -72,43 +78,54 @@ const {
       <span data-lang-it>{labels.it}</span><span data-lang-en>{labels.en}</span>
     </span>
   </button>
+
+  {/* Il livello è un GUADAGNO GENERALE, non un volume assoluto: moltiplica i
+      livelli per slide, così la dinamica (copertina forte, velo altrove) resta
+      quella decisa in pagina invece di essere schiacciata dal cursore.
+      Compare quando l'audio è acceso: un cursore che non governa niente è
+      peggio di un cursore assente. */}
+  <label class="edf-audio-level" data-edf-audio-level>
+    <span class="edf-audio-sr">
+      <span data-lang-it>Livello audio</span><span data-lang-en>Audio level</span>
+    </span>
+    <input
+      type="range"
+      min="20"
+      max="150"
+      step="10"
+      value="100"
+      data-edf-audio-range
+      aria-label={labels.it === labels.en ? `${labels.it} — livello` : 'Livello audio'}
+    />
+  </label>
+  </div>
 </div>
 
 <style is:global>
-  .edf-audio {
-    position: fixed;
-    right: var(--edf-audio-right, 1.5rem);
-    bottom: var(--edf-audio-bottom, 4.25rem);
-    z-index: 40;
+  /* Il nodo che resta nel layout (con `transition:persist`) porta solo
+     l'elemento <audio>: non si vede e non occupa spazio. Il COMANDO viene
+     spostato a runtime dentro la barra del deck, accanto a frecce, contatore e
+     schermo intero — è lì che chi presenta cerca i comandi, e così eredita
+     anche la sparizione automatica del chrome. */
+  .edf-audio { position: absolute; width: 0; height: 0; overflow: visible; }
+  .edf-audio-control {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    pointer-events: auto;
     transition: opacity 300ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
+  /* Il bottone prende la stessa forma degli altri comandi (`.deck-btn`): nella
+     barra, una pillola accanto a tre cerchi sarebbe un corpo estraneo. */
   .edf-audio-btn {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.4rem 0.7rem;
-    border: 1px solid var(--edf-audio-line, rgba(255, 255, 255, 0.28));
-    border-radius: 999px;
-    background: var(--edf-audio-bg, rgba(0, 0, 0, 0.34));
-    color: var(--edf-audio-ink, rgba(255, 255, 255, 0.92));
-    font: inherit;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: opacity 200ms ease, border-color 200ms ease;
+    font: inherit;
   }
-  .edf-audio-btn:hover { border-color: var(--edf-audio-line-hover, rgba(255, 255, 255, 0.5)); }
-  .edf-audio-btn:focus-visible {
-    outline: 2px solid var(--edf-audio-focus, #ffffff);
-    outline-offset: 3px;
-  }
+  .edf-audio-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
   /* Chiuso = la crocetta; aperto = le onde. Una sola icona, due stati. */
   .edf-audio-btn .edf-audio-on { display: none; }
   .edf-audio-btn[aria-pressed='true'] .edf-audio-on { display: inline; }
   .edf-audio-btn[aria-pressed='true'] .edf-audio-off { display: none; }
-  .edf-audio-btn[aria-pressed='true'] { opacity: 1; }
-  .edf-audio-btn[aria-pressed='false'] { opacity: 0.62; }
+  .edf-audio-btn[aria-pressed='false'] { opacity: 0.7; }
 
   /* Su fondo chiaro il comando si ribalta: una pillola nera su bianco è un buco.
      Lo stato arriva dal deck (`data-on-dark`) ricopiato qui dal runtime: un
@@ -119,19 +136,55 @@ const {
     color: rgba(0, 0, 0, 0.78);
   }
 
+  /* Il cursore del livello: appare solo ad audio acceso, e si apre in larghezza
+     invece che comparire di colpo. */
+  .edf-audio-level {
+    display: flex; align-items: center;
+    width: 0; overflow: hidden; opacity: 0;
+    transition: width 260ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity 200ms ease;
+  }
+  .edf-audio-control[data-on] .edf-audio-level { width: 6.5rem; opacity: 1; }
+  .edf-audio-sr {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0, 0, 0, 0); white-space: nowrap;
+  }
+  .edf-audio-level input[type='range'] {
+    width: 6.5rem; height: 1.5rem; margin: 0;
+    appearance: none; background: transparent; cursor: pointer;
+  }
+  .edf-audio-level input[type='range']::-webkit-slider-runnable-track {
+    height: 3px; border-radius: 999px;
+    background: var(--edf-audio-track, rgba(255, 255, 255, 0.3));
+  }
+  .edf-audio-level input[type='range']::-moz-range-track {
+    height: 3px; border-radius: 999px;
+    background: var(--edf-audio-track, rgba(255, 255, 255, 0.3));
+  }
+  .edf-audio-level input[type='range']::-webkit-slider-thumb {
+    appearance: none; width: 0.85rem; height: 0.85rem; margin-top: -0.35rem;
+    border-radius: 50%; border: 0;
+    background: var(--edf-audio-thumb, rgba(255, 255, 255, 0.95));
+  }
+  .edf-audio-level input[type='range']::-moz-range-thumb {
+    width: 0.85rem; height: 0.85rem; border: 0; border-radius: 50%;
+    background: var(--edf-audio-thumb, rgba(255, 255, 255, 0.95));
+  }
+  .edf-audio-level input[type='range']:focus-visible {
+    outline: 2px solid var(--edf-audio-focus, #ffffff); outline-offset: 3px; border-radius: 999px;
+  }
+  .edf-audio-control[data-on-light] { --edf-audio-track: rgba(0, 0, 0, 0.22); --edf-audio-thumb: rgba(0, 0, 0, 0.72); }
+
   /* Mentre si legge un dettaglio aperto, il contorno arretra (vedi HowItWorks). */
-  html[data-hiw-open] .edf-audio { opacity: 0; pointer-events: none; }
+  html[data-hiw-open] .edf-audio-control { opacity: 0; pointer-events: none; }
 
   /* Su telefono resta solo l'icona: la parola non serve e ruba spazio. */
   @media (max-width: 640px) {
-    .edf-audio { --edf-audio-bottom: 3.5rem; --edf-audio-right: 0.75rem; }
-    .edf-audio-label { display: none; }
-  }
-  @media (min-width: 2000px) {
-    .edf-audio-btn { font-size: 0.7rem; padding: 0.5rem 0.9rem; }
+    /* Su telefono il cursore è un bersaglio troppo fine: resta l'interruttore. */
+    .edf-audio-control[data-on] .edf-audio-level { width: 0; opacity: 0; }
+    .edf-audio-control { gap: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .edf-audio, .edf-audio-btn { transition: none; }
+    .edf-audio-control, .edf-audio-level { transition: none; }
   }
 </style>
 
@@ -148,17 +201,51 @@ const {
   }
 
   const KEY = 'edf:audio-on';
+  const GAIN_KEY = 'edf:audio-gain';
 
   function wireDeckAudio() {
     const root = document.querySelector<HTMLElement>('[data-edf-audio]');
     const el = root?.querySelector<HTMLAudioElement>('[data-edf-audio-el]');
-    const btn = root?.querySelector<HTMLButtonElement>('[data-edf-audio-toggle]');
+    const btn = document.querySelector<HTMLButtonElement>('[data-edf-audio-toggle]');
     if (!root || !el || !btn) return;
 
     const w = window as unknown as { __edfAudio?: AudioState };
     const first = !w.__edfAudio;
     const state: AudioState = w.__edfAudio ?? { on: false, target: 0, raf: null };
     w.__edfAudio = state;
+
+    const control = root.querySelector<HTMLElement>('[data-edf-audio-control]')
+      ?? document.querySelector<HTMLElement>('[data-edf-audio-control]');
+    const range = control?.querySelector<HTMLInputElement>('[data-edf-audio-range]')
+      ?? document.querySelector<HTMLInputElement>('[data-edf-audio-range]');
+
+    /**
+     * Il comando si trasferisce nella barra del deck, in coda agli altri.
+     * Va rifatto a ogni swap del ClientRouter: il nodo con <audio> sopravvive
+     * (`transition:persist`), la barra del deck no — viene ricostruita, e il
+     * comando resterebbe orfano nella pagina vecchia.
+     */
+    function dock() {
+      const bar = document.querySelector('[data-deck-controls]');
+      if (!bar || !control || control.parentElement === bar) return;
+      bar.appendChild(control);
+    }
+
+    /**
+     * Prima dello swap il comando TORNA dentro il nodo persistente. Senza
+     * questo passaggio muore con la pagina vecchia — è stato spostato fuori da
+     * ciò che `transition:persist` protegge — e dopo il primo cambio capitolo
+     * l'audio resta acceso ma senza comandi per spegnerlo.
+     */
+    function undock() {
+      if (control && root && control.parentElement !== root) root.appendChild(control);
+    }
+
+    /** Guadagno generale scelto da chi presenta: moltiplica, non sostituisce. */
+    function gain(): number {
+      const v = range ? parseFloat(range.value) : 100;
+      return Number.isFinite(v) ? v / 100 : 1;
+    }
 
     const levels = () => ({
       loud: parseFloat(root.dataset.loud || '0.5'),
@@ -194,20 +281,24 @@ const {
       const deck = (window as unknown as { __edfDeck?: { index: number } }).__edfDeck;
       const active = deck && slides[deck.index] ? slides[deck.index] : slides[0];
       const { loud, soft } = levels();
-      return active?.dataset.audio === 'loud' ? loud : soft;
+      const base = active?.dataset.audio === 'loud' ? loud : soft;
+      /* Il tetto a 1 è del mezzo, non una scelta: `HTMLMediaElement.volume` non
+         va oltre. Con il guadagno al massimo la copertina ci arriva vicino. */
+      return Math.min(1, base * gain());
     }
 
     /** Ricopia la dominante della slide attiva, per ribaltare l'inchiostro. */
     function syncTone() {
       const deckEl = document.querySelector('[data-deck]');
       if (!deckEl) return;
-      if (deckEl.hasAttribute('data-on-dark')) delete root!.dataset.onLight;
-      else root!.dataset.onLight = 'true';
+      if (deckEl.hasAttribute('data-on-dark')) delete control!.dataset.onLight;
+      else control!.dataset.onLight = 'true';
     }
 
     function setOn(on: boolean, persist = true) {
       state.on = on;
       btn!.setAttribute('aria-pressed', String(on));
+      if (on) control!.dataset.on = ''; else delete control!.dataset.on;
       if (persist) { try { localStorage.setItem(KEY, on ? '1' : '0'); } catch { /* private mode */ } }
       if (on) {
         el!.volume = 0;
@@ -225,6 +316,17 @@ const {
         syncTone();
         if (state.on) fadeTo(levelForActiveSlide(), 1200);
       });
+      /* Il cursore agisce SUBITO (chi lo muove sta ascoltando), quindi una
+         dissolvenza corta: 1,2 s qui sembrerebbe un comando che non risponde. */
+      range?.addEventListener('input', () => {
+        try { localStorage.setItem(GAIN_KEY, range.value); } catch { /* private mode */ }
+        if (state.on) fadeTo(levelForActiveSlide(), 160);
+      });
+      /* Le frecce del deck e quelle del cursore sono le stesse: mentre il
+         cursore ha il fuoco, la navigazione non deve rubargliele. */
+      range?.addEventListener('keydown', (e) => e.stopPropagation());
+      range?.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('astro:before-swap', undock);
       /* Scheda dietro: si tace. Un deck dimenticato in una scheda non deve suonare. */
       document.addEventListener('visibilitychange', () => {
         if (!state.on) return;
@@ -239,9 +341,13 @@ const {
     try {
       const saved = localStorage.getItem(KEY);
       if (saved === '1' && !state.on) btn.setAttribute('aria-pressed', 'false');
+      const savedGain = localStorage.getItem(GAIN_KEY);
+      if (savedGain && range) range.value = savedGain;
     } catch { /* private mode */ }
 
+    dock();
     btn.setAttribute('aria-pressed', String(state.on));
+    if (state.on) control!.dataset.on = ''; else delete control!.dataset.on;
     syncTone();
   }
 

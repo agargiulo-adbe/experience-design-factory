@@ -393,7 +393,9 @@ Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-sh
   con il comando in vista — il browser pretende comunque un gesto, quindi «acceso di
   default» non esiste, esiste «acceso al primo clic», che per chi apre il link è musica a
   sorpresa. Sale su `data-audio="loud"` (copertina e chiusura), velo altrove;
-  dissolvenze mai salti; tace a scheda nascosta; sopravvive agli swap SPA.
+  dissolvenze mai salti; tace a scheda nascosta; sopravvive agli swap SPA. Il
+  comando sta **nella barra del deck** accanto agli altri, e il cursore è un
+  **guadagno generale** (moltiplica i livelli per slide, non li sostituisce).
 - **Scala.** Il tetto `clamp(…, 1.125rem)` della radice è già raggiunto a 1600px: oltre,
   **il tipo non cresceva più** (misurato: a 3840 il corpo restava a 18,4px e il contenuto
   copriva il 34% della larghezza). `DeckContainer` scala la **radice** a 20/24/28px sopra

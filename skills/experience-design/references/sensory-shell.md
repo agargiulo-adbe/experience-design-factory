@@ -94,6 +94,15 @@ letto sonoro che cambia livello con la slide.
 4. Nel BaseLayout: `<DeckAudio src={…} loud={0.42} soft={0.1} />`.
    Le slide dove il suono sale dichiarano `data-audio="loud"` — copertina e
    chiusura. Tutte le altre restano al velo senza dichiarare niente.
+5. **Il comando vive nella barra del deck**, in coda a frecce, contatore e
+   schermo intero: è lì che chi presenta cerca i comandi, e così eredita anche
+   la sparizione automatica del chrome. Il blocco si monta nel BaseLayout, poi
+   sposta il suo comando dentro `[data-deck-controls]` a runtime.
+6. **Il cursore del livello è un GUADAGNO GENERALE**, non un volume assoluto:
+   moltiplica i livelli per slide (0,2×–1,5×) invece di sostituirli, così la
+   dinamica decisa in pagina sopravvive a qualunque posizione del cursore.
+   Compare solo ad audio acceso — un cursore che non governa niente è peggio di
+   un cursore assente — e la posizione si ricorda.
 
 **Le regole di comportamento, e perché**
 
@@ -106,7 +115,16 @@ letto sonoro che cambia livello con la slide.
 - **Sopravvive al cambio di capitolo** (`transition:persist`): la navigazione è
   SPA, e senza quello la musica ripartirebbe da capo a ogni capitolo.
 
-**La trappola.** Nella dissolvenza, `k` va clampato **anche in basso**: il
+**Due trappole.**
+
+*Il comando che sparisce.* Spostarlo dentro la barra del deck lo porta **fuori**
+da ciò che `transition:persist` protegge: al primo cambio capitolo muore con la
+pagina vecchia, e l'audio resta acceso senza più un modo per spegnerlo. Prima
+dello swap (`astro:before-swap`) il comando torna dentro il nodo persistente, e
+dopo si ri-aggancia alla barra nuova. Si verifica contando i nodi dopo **due**
+navigazioni, non una.
+
+*La dissolvenza che non parte.* `k` va clampato **anche in basso**: il
 timestamp del primo `requestAnimationFrame` può precedere di qualche millisecondo
 il `performance.now()` preso un attimo prima, e un `k` negativo produce un volume
 negativo. Il setter lancia, l'eccezione esce dal ciclo e **l'audio non parte
@@ -222,7 +240,11 @@ del cliente non si inventa mai per riempire un grafico.
 - [ ] scrim ricalibrato sulla clip (si guarda lo screenshot col titolo sopra)
 - [ ] traccia audio licenziata **dopo averlo chiesto**, ricucita, sul Release,
       con `provenance.audio.json`; `data-audio="loud"` su copertina e chiusura
-- [ ] audio verificato leggendo `el.volume` ai tre stati (loud / soft / off)
+- [ ] audio verificato leggendo `el.volume` ai tre stati (loud / soft / off) e
+      ai tre livelli del cursore; comando ancora presente e agganciato dopo due
+      cambi di capitolo
+- [ ] **audio spento e schede chiuse a fine lavoro**: una prova lasciata aperta
+      suona nelle cuffie di chi ti sta leggendo
 - [ ] `audit:deck -- --tv` a 0 HARD **prima** di accendere `wallScale`, e
       screenshot letti a 2560
 - [ ] nessuna collisione con nav, co-brand, credito e comando audio **con i
