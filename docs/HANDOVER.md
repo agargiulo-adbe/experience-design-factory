@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-09** (sera).
+> Documento di passaggio di consegne. Stato al **2026-10-09** (sera tardi).
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -123,15 +123,34 @@
 > le slide a metà dissolvenza), e dal panel è uscito anche un **difetto del motore** che tocca
 > quattro experience a dominante scura (P1, §36.5).
 
+> 🔤 **La sera tardi del 9 ottobre, tre cose piccole e una che cambia una proposta.** È nato un gate
+> nuovo, **`pnpm audit:wrap`**: misura le righe *realmente rese* e segnala la **parola di servizio
+> appesa** a fine riga — «…alla scala della Banca dei Territori. In / cinque pagine.» — che
+> `text-wrap: balance` non risolve e che `audit:deck` non vede, perché le scatole sono a posto ed è il
+> testo a rompersi nel punto sbagliato. Guarda solo dove il difetto si nota: titoli, occhielli, lead. Si
+> corregge con uno spazio unificatore, **mai rimpicciolendo il tipo**. Insieme sono uscite le **rotte dei
+> deck in un posto solo** (`scripts/lib/deck-routes.ts`), perché il gate nuovo avrebbe dovuto tenerne una
+> copia. ⚠️ **Tutto questo è nel working tree e non è committato** (P1 nuovo, §10). Sul fronte Poste, la
+> prima delle due domande lasciate aperte dal referente — **il modello di costo dopo i crediti di prova**
+> — ha una risposta portata alla fonte interna, e cambia la forma della proposta: il percorso è **prova →
+> ponte a durata fissa senza metering → crediti dimensionati sull'uso → licenza enterprise sopra una
+> soglia di ARR**, partendo piccoli. Senza dati d'uso non si dimensiona un acquisto di crediti, ed è a
+> questo che servono i due mesi di affiancamento già chiesti. Resta aperto il **consumo per prompt**
+> (P1 nuovo). Cifre, SKU e stato della trattativa **non stanno nel repo**: `docs/Poste Italiane/` è
+> git-ignorata. Qui resta solo la regola riusabile: **una concessione su un prodotto va coperta da un
+> upsell sullo stesso prodotto**.
+
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: **quattro P0 nuovi o riscritti il
 > 9 ott** stanno in testa (il dossier FSTechnology esposto · il panel mancante su un'app ormai pubblica
 > · il giro delta su Intesa Assicurazioni a stanza avvenuta), e subito sotto c'è quello che non si
 > chiude da solo — i nomi di referenti cliente dentro file tracciati su un repository pubblico,
 > inventario rifatto il 7 ott. Dal 9 ott sera ci sono **tre P1 nuovi su Trenitalia**: il difetto del
 > motore sulle slide chiare (tocca quattro experience), quello che è sopravvissuto al secondo giro di
-> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione**: le Parti **1, 3, 7 e
-> 11** viaggiano fra 46,1 e 48,0 KB su 49,1: la prossima sezione che cresce lì dentro fa scattare un
-> ribilanciamento. Le parti con più spazio sono la **11** (23,5 KB) e la **13** (24,0 KB).
+> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione** (rimisurata il 9 ott, sera tardi): le
+> parti a filo del tetto sono la **1** (47,5 KB) e la **7** (47,8 KB) su 49,1 — la prossima sezione che
+> cresce lì dentro fa scattare un ribilanciamento. Il giro di stasera ha liberato la **3** (43,4 KB) e la
+> **4** (45,2 KB) spingendo la coda del change log nella **14** (40,8 KB). Le parti con più spazio restano
+> la **11** (23,5 KB), la **13** (24,0 KB) e la **12** (24,9 KB).
 
 ---
 
@@ -142,8 +161,8 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **9 ott 2026** all'indietro, fino al 3 ott: il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
-- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 3 ott 2026 al 9 set.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **9 ott 2026** all'indietro, fino al 6 ott: il gate `audit:wrap` e il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 6 ott 2026 al 9 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
 - [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo. ⚠️ Per lo stato CORRENTE del deck Trenitalia la fonte non è qui ma **§36 (Parte 8)**.
@@ -153,5 +172,5 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier**](./HANDOVER-11.md) — la stanza del 22 ott e il motore che regge tutti i dossier. **§35 (l'altra Intesa) è la Parte 15**, in fondo. §33.8 e §33.9 sono le due giornate del 9 ott: quello che hanno detto le registrazioni, il giro di critica, e il taglio da dieci minuti che non può più divergere dal percorso intero.
 - [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
-- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dall'**8 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata due volte il 9 ott, l'ultima quando la correzione del motore ha fatto crescere la Parte 3.
+- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **9 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **tre** volte il 9 ott, l'ultima la sera tardi, quando la voce sul gate degli a capo ha fatto crescere la Parte 3.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
