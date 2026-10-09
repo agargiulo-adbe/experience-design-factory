@@ -130,7 +130,8 @@
 > testo a rompersi nel punto sbagliato. Guarda solo dove il difetto si nota: titoli, occhielli, lead. Si
 > corregge con uno spazio unificatore, **mai rimpicciolendo il tipo**. Insieme sono uscite le **rotte dei
 > deck in un posto solo** (`scripts/lib/deck-routes.ts`), perché il gate nuovo avrebbe dovuto tenerne una
-> copia. ⚠️ **Tutto questo è nel working tree e non è committato** (P1 nuovo, §10). Sul fronte Poste, la
+> copia. Tutto committato in `0d15ba5`, con la regola BINDING in `CLAUDE.md` e il passo 9b nella skill;
+> ⚠️ **le legature sono state applicate a una sola experience** (P1 nuovo, §10). Sul fronte Poste, la
 > prima delle due domande lasciate aperte dal referente — **il modello di costo dopo i crediti di prova**
 > — ha una risposta portata alla fonte interna, e cambia la forma della proposta: il percorso è **prova →
 > ponte a durata fissa senza metering → crediti dimensionati sull'uso → licenza enterprise sopra una
