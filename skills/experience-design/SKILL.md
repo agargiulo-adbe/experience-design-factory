@@ -425,6 +425,15 @@ Conventions & hard-won lessons:
 7. Verify: `pnpm dev`, `pnpm build`, `pnpm typecheck`; check 360px + reduced-motion; then deploy.
 8. **Copy pass — human, not AI** (IT + EN): scrub the AI tells (see Content rules / CLAUDE.md → Copy voice); keep names/numbers/sources; `<T>` keeps both languages.
 9. **Audit gate:** `audit:deck` HARD checks (`b/c/d/e/f/h/j/k`) = **0** at 1920/1440/1280; resolve SOFT (`a/i/g`) only by cutting copy or splitting slides, **never by shrinking type**. Then read a 1920 screenshot of every slide.
+9b. **Line-break gate — `pnpm audit:wrap`.** Run it after every copy change, *before*
+    `audit:deck`. It reads the lines the browser actually renders and flags a preposition,
+    article or conjunction left hanging at the end of a line in **large text** (titles,
+    eyebrows, leads — body copy is exempt, that break is ordinary typography). `balance` and
+    `pretty` do not catch this. Fix by **binding the pair** with a non-breaking space
+    (`\u00a0`), never by rewriting the sentence to make it fit and never by shrinking type;
+    compound proper nouns («Banca dei Territori») bind whole. Binding moves the break point,
+    so re-run `audit:wrap` and then `audit:deck` — a string that can no longer wrap may
+    overflow, which is a HARD failure.
 10. **Co-brand:** add the app's thin `CoBrand.astro` wrapper (brand name + official mark, or
     the wordmark fallback), one `<CoBrand />` in `BaseLayout`, and `<CoBrand variant="hero" />`
     on the first and last slide in place of the text eyebrow. Order is Adobe × Brand, always.

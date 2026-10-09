@@ -80,6 +80,7 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 - `pnpm brand:icons <app> --title "…" --sub "…"` — dal `favicon.svg` disegnato a mano rende `icon-192.png`, `apple-touch-icon.png` e `og.png`; la palette la legge dal marchio, così le icone non divergono da lui.
 - `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
+- `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
@@ -436,6 +437,31 @@ posizionamenti: tutto.
 - **Assenza di prova non è prova di assenza:** da «non trovato» si conclude «non
   confermato, da chiedere», mai «falso» (vedi `fonti-cliente-gerarchia`).
 Memoria: `user-claims-are-hypotheses`.
+
+### Gli a capo si misurano: nessuna parola di servizio appesa (BINDING, `audit:wrap`)
+`text-wrap: balance` e `pretty` risolvono le righe finali squilibrate e la parola sola a
+fine paragrafo. **Non** risolvono quello che in proiezione si nota di più: la preposizione
+appesa a fine riga, lontana dal suo complemento — «…alla scala della Banca dei Territori.
+**In** / cinque pagine.». Nessun check di layout la vede: le scatole sono a posto, il
+contrasto è a posto, è il testo che si rompe nel punto sbagliato.
+- Il gate è **`pnpm audit:wrap`** (`scripts/wrap-audit.ts`): apre le rotte del deck ai tre
+  viewport di proiezione (`--tv` aggiunge quelli da muro), ricava con la Range API le righe
+  **realmente rese** e segnala l'ultima parola di ogni riga quando è una preposizione, un
+  articolo o una congiunzione. Gira contro il **preview statico**, come `audit:deck`.
+- **Guarda solo il testo grande** — corpo oltre il 15% di quello di base: titoli, occhielli,
+  lead, la frase che chiude. Lì le righe sono poche e l'occhio le prende intere. Dentro un
+  paragrafo di corpo la stessa rottura non la nota nessuno, e legarla tutta riempirebbe il
+  testo di vincoli che poi sbordano sui viewport stretti (`--tutto` li mostra, come
+  indicazione e non come difetto). La soglia è **relativa**, non assoluta: a dimensione muro
+  la radice sale a 24-28px e un «≥18px» promuoverebbe a titolo ogni paragrafo.
+- **Si risolve legando, non riscrivendo**: uno spazio unificatore (`\u00a0`) fra la parola di
+  servizio e la sua. Si lega **la coppia che serve**, non la frase intera, se no la riga non
+  può più andare a capo da nessuna parte. Fanno eccezione i **nomi propri composti** («Banca
+  dei Territori»), che non si spezzano mai e si legano per intero.
+- Mai risolvere un a capo storto **rimpicciolendo il tipo**: vale il contratto di leggibilità.
+- Legare sposta il punto di rottura, quindi dopo si **rilancia `audit:wrap` e poi
+  `audit:deck`** — una stringa che non va più a capo può sbordare, ed è un HARD.
+Memoria: `a-capo-parole-appese`.
 
 ### Un taglio corto non è una copia: è la stessa fonte, più corta (BINDING)
 Molti deck hanno due percorsi — quello intero e il «taglio da N minuti» per chi non ha
