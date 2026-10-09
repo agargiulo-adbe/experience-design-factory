@@ -7,8 +7,12 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import DiagStrati from '../../components/diagrammi/DiagStrati.astro';
 import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
 
 const base = import.meta.env.BASE_URL;
+// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
+// un capitolo non lascia una freccia che punta fuori dal percorso.
+const { next, prev } = rotte('trenitalia/fondamenta');
 const currentPath = Astro.url.pathname;
 
 // La piattaforma vista di taglio, dal basso verso l'alto: prima i sistemi che
@@ -21,15 +25,15 @@ const currentPath = Astro.url.pathname;
 // al più sono le attività a concentrarsi lì. Il numero di siti e di istanze è
 // informazione del cliente: sta fra le domande della prima sessione.
 const strati = [
-  { nome: 'Piattaforma di esecuzione email', nota: 'Attiva · CartaFreccia, X-GO, alta frequenza di invio — fornitore da confermare con voi' },
+  { nome: 'Piattaforma di esecuzione email', nota: 'Attiva · CartaFreccia, X-GO, alta frequenza di invio — fuori dalla prima fase, fornitore da confermare con voi' },
   { nome: 'Salesforce CRM, Data Cloud, MuleSoft', nota: 'Foundation 2026 · il backbone operativo del Gruppo' },
   { nome: 'AEM Sites (as a Cloud Service)', nota: 'Attivo · trenitalia.com e le property di Gruppo' },
   // Il vincolo di tempo entra nella fotografia dell'ecosistema: strumentare un
   // funnel che sta per essere rifatto è lavoro che si butta.
-  { nome: 'Piattaforma di vendita', nota: 'In rifacimento dentro il piano · vincolo di tempo per la strumentazione del funnel' },
-  { nome: 'Adobe Analytics', nota: 'Attivo · due istanze, da verificare con voi: sito e funnel' },
+  { nome: 'Piattaforma di vendita', nota: 'Fuori perimetro · in rifacimento dentro il piano, strumentarla adesso è lavoro che si butta' },
+  { nome: 'Adobe Analytics', nota: 'Attivo · due istanze: nella prima fase entra quella di trenitalia.com, le Frecce dopo' },
   { nome: 'Adobe Target', nota: 'Implementato sul sito via integrazione AEM · copertura d\'uso da verificare' },
-  { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · legge tutti gli strati sotto', evidenza: true },
+  { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · nella prima fase legge trenitalia.com e il CRM', evidenza: true },
 ];
 
 // Le cinque misure della prima sessione. Nessuna è nostra: stanno nei sistemi
@@ -63,7 +67,7 @@ const misure = [
 ];
 ---
 <BaseLayout
-  title="Le fondamenta · Ramo Trenitalia"
+  title="Le fondamenta che ci sono già"
   description="AEM, Adobe Analytics, Target, la piattaforma email, Salesforce: fondamenta solide. CJA è il layer di intelligence che le completa."
   branch="trenitalia"
 >
@@ -72,8 +76,8 @@ const misure = [
   </div>
 
   <DeckContainer wallScale
-    nextHref={href(base, '/trenitalia/convergenza')}
-    prevHref={href(base, '/trenitalia/partenza')}
+    nextHref={href(base, next)}
+    prevHref={href(base, prev)}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
@@ -82,7 +86,7 @@ const misure = [
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="02 · Fondamenta"
+        eyebrow="Capitolo 02 · Fondamenta"
         numeral="02"
         title="Le fondamenta che avete già"
         lead="Ciò che funziona resta al suo posto. Il lavoro è collegare i sistemi che avete già e aggiungere lo strato di intelligence che oggi manca."
@@ -129,7 +133,7 @@ const misure = [
           data-reveal
           data-reveal-delay="0.26"
         >
-          Il rifacimento della piattaforma di vendita è un vincolo di tempo: la prima fase parte dai pezzi stabili, cioè app, area autenticata e letture di CRM.
+          Il rifacimento della piattaforma di vendita è un vincolo di tempo: la prima fase parte dai pezzi stabili, cioè il sito autenticato e le letture del CRM.
         </p>
       </div>
     </Slide>
@@ -205,13 +209,13 @@ const misure = [
               n: '01',
               prodotto: 'Salesforce CRM',
               ruolo: 'Backbone operativo',
-              adobe: 'Adobe CJA legge i profili CRM e li arricchisce con behavioral journey data',
+              adobe: 'CJA porta gli attributi che servono all\'analisi accanto al comportamento sul sito',
             },
             {
               n: '02',
               prodotto: 'MuleSoft',
               ruolo: 'Integration engine',
-              adobe: 'Già in campo → feed dati verso AEP/CJA senza nuova infrastruttura',
+              adobe: 'Già in campo: alimenta AEP e CJA senza aggiungere infrastruttura',
             },
             {
               n: '03',
@@ -276,7 +280,7 @@ const misure = [
           data-reveal-delay="0.24"
         >
           <a
-            href={href(base, '/trenitalia/convergenza')}
+            href={href(base, next)}
             class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-chiaro)] text-[var(--color-ardesia-notte)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
           >
             CJA: il layer di convergenza

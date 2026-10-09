@@ -8,9 +8,13 @@ import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import DiagSoglia from '../../components/diagrammi/DiagSoglia.astro';
 import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
 import { mediaProps } from '../../../assets.index';
 
 const base = import.meta.env.BASE_URL;
+// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
+// un capitolo non lascia una freccia che punta fuori dal percorso.
+const { next, prev } = rotte('trenitalia/partenza');
 const currentPath = Astro.url.pathname;
 
 // Le categorie sono quelle osservate nella casella del campione, non i
@@ -28,22 +32,24 @@ const emailTipi = [
 ];
 
 // Il punto cieco di Trenitalia: il binario è la soglia. Prima c'è un
-// comportamento senza nome, dopo c'è un cliente con una storia. Il diagramma
-// porta lo stesso contenuto dei tre punti ciechi, ma mostra dove cade il taglio.
-const primaDelBinario = [
-  'Come arriva: in auto, in metro, accompagnato',
-  'Dove sosta: hub FS Park, ogni lunedì',
-  'Quanto prima: 40 minuti o all\'ultimo momento',
+// comportamento senza nome, dopo c'è un cliente con una storia. La soglia era
+// il binario, cioè il racconto di Gruppo; dentro il perimetro di questa
+// proposta la soglia che conta è il login, perché è la condizione tecnica
+// perché i due sistemi si uniscano.
+const primaDelLogin = [
+  'Un cookie, una tratta cercata, un prezzo guardato',
+  'Nessun legame con quello che la persona ha comprato',
+  'Il profilo CartaFreccia resta fuori dall\'analisi',
 ];
-const dalBinarioInPoi = [
-  'Il posto prenotato dall\'app',
-  'CartaFreccia Oro e abbonamento A/R',
-  'Il viaggio fino all\'arrivo, e il ritorno',
+const dopoIlLogin = [
+  'Le ricerche si attaccano alla persona che le ha fatte',
+  'Livello carta, abbonamenti e storico entrano nel conto',
+  'La stessa audience regge su più visite e più device',
 ];
 ---
 <BaseLayout
-  title="La metà su rotaia · Ramo Trenitalia"
-  description="Il ramo Trenitalia: dal binario in poi il viaggio si legge tutto. Prima della stazione, Davide non si vede."
+  title="Cosa si vede di chi compra"
+  description="Quello che Trenitalia sa di chi compra, quello che le sfugge, e la condizione per unire le due cose."
   branch="trenitalia"
 >
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -51,20 +57,20 @@ const dalBinarioInPoi = [
   </div>
 
   <DeckContainer wallScale
-    nextHref={href(base, '/trenitalia/fondamenta')}
-    prevHref={href(base, '/bivio')}
+    nextHref={href(base, next)}
+    prevHref={href(base, prev)}
   >
 
-    <!-- ── SLIDE 0: Cover — La metà su rotaia ─────────────────────── -->
+    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <CoverHero
-        eyebrow="Ramo Trenitalia · 01 Partenza"
+        eyebrow="Capitolo 01 · Partenza"
         numeral="01"
-        title="La metà su rotaia"
-        lead="Dal binario in poi Trenitalia vede tutto: la ricerca, il biglietto, il viaggio, il ritorno. Prima della stazione, però, Davide non esiste ancora."
+        title="Cosa si vede di chi compra"
+        lead="Trenitalia vede la ricerca, il biglietto, il viaggio e il ritorno. Quello che non vede è che sono tutti della stessa persona."
         size="phase"
         tone="ink"
         signature={false}
@@ -212,7 +218,7 @@ const dalBinarioInPoi = [
         ))}
       </div>
 
-      <div class="fs-panel fs-panel--alt max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
+      <div class="fs-panel fs-panel--alt w-full max-w-3xl mx-auto mt-6 !py-3.5" data-reveal data-reveal-delay="0.35">
         <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">I dati ci sono:</strong> manca chi legge il <em>journey</em>, collega i segnali sparsi e li usa quando servono davvero.
         </p>
@@ -232,111 +238,49 @@ const dalBinarioInPoi = [
       </p>
     </Slide>
 
-    <!-- ── SLIDE 3: Il punto cieco — prima del binario ────────────── -->
-    <Slide id="slide-punto-cieco" bg="primary" align="center">
-      <div slot="backdrop" class="fs-bg"></div>
-      <div slot="backdrop" class="fs-grid"></div>
-      <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
+    <!-- ── SLIDE 3: Il prerequisito — il riconoscimento ───────────── -->
+    <Slide id="slide-riconoscimento" bg="inverse" align="center">
+      <Sfondo slot="backdrop" id="rl-alba" forza="forte" chiara />
       <p class="fs-panel-tag text-center mb-3" data-reveal>
-        IL PUNTO CIECO
+        IL PREREQUISITO
       </p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--color-ardesia-notte)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.6rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal
         data-reveal-delay="0.08"
       >
-        Per Trenitalia, Davide appare in stazione.
+        Unire i due sistemi vuol dire sapere che è lui.
       </h2>
 
-      {/* Il diagramma dice da solo quello che prima stava in un paragrafo più tre
-          schede: dove cade il taglio, e che la freccia di ritorno è il lavoro da fare. */}
+      {/* Lo stesso diagramma che prima raccontava la soglia del binario: qui la
+          soglia è il login, che è dove il dato di navigazione diventa dato di
+          una persona. */}
       <div class="w-full max-w-5xl mx-auto mb-6" data-reveal data-reveal-delay="0.16">
         <DiagSoglia
-          prima={{ titolo: 'Prima della stazione · fuori campo', voci: primaDelBinario }}
-          soglia="il binario"
-          dopo={{ titolo: 'Dal binario in poi · tutto registrato', voci: dalBinarioInPoi }}
-          ritorno="il lavoro è riattaccare il prima al dopo"
+          prima={{ titolo: 'Sessione anonima', voci: primaDelLogin }}
+          soglia="il login"
+          dopo={{ titolo: 'Sessione riconosciuta', voci: dopoIlLogin }}
+          ritorno="il lavoro è attaccare le ricerche a chi le ha fatte"
         />
       </div>
 
-      <div class="fs-panel fs-panel--alt max-w-5xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left !py-3.5" data-reveal data-reveal-delay="0.3">
         <p class="fs-panel-body">
-          <strong class="text-[var(--ink-primary)]">Perché conta:</strong> per Davide l'esperienza è
-          porta-a-porta, non binario-a-binario. Ogni pezzo di viaggio che Trenitalia non vede
-          è un'occasione di servizio che non parte.
+          <strong class="text-[var(--ink-primary)]">Perché non è un dettaglio:</strong> Customer
+          Journey Analytics unisce due insiemi di dati solo quando condividono lo stesso Person ID.
+          Senza un identificativo che attraversi navigazione e CRM quel campo non esiste, e
+          l'unione non avviene: non è una questione di configurazione.
         </p>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 4: Il momento dell'opportunità ───────────────────── -->
-    <Slide id="slide-opportunity" bg="inverse" align="center">
-      <Sfondo slot="backdrop" id="rl-alba" forza="forte" chiara />
-      <p class="fs-panel-tag text-center mb-4" data-reveal>
-        L'OPPORTUNITÀ · VISTA DA TRENITALIA
-      </p>
-      <h2
-        class="text-[var(--color-ardesia-notte)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Trenitalia conosce il viaggio.<br/>L'offerta giusta non parte mai.
-      </h2>
-
-      <div
-        class="relative w-full max-w-4xl mx-auto grid md:grid-cols-2 gap-5 mb-5"
-        data-reveal
-        data-reveal-delay="0.18"
-      >
-        {[
-          {
-            label: 'Quello che FS Park sa',
-            items: ['Davide parcheggia ogni lunedì', 'Stazione Milano Centrale, Hub P1', 'Abbonamento mensile parcheggio in scadenza'],
-            tone: 'left',
-          },
-          {
-            label: 'Quello che Trenitalia sa',
-            items: ['Davide ha CartaFreccia Oro', 'Abbonamento A/R Milano–Roma in corso', 'Prenota sempre in app, lunedì mattina'],
-            tone: 'right',
-          },
-        ].map((col, ci) => (
-          <div class="fs-card">
-            <div class="flex items-center gap-2.5 mb-3">
-              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 1 && "fs-node--alt !bg-[rgba(var(--sig2-rgb), 0.16)] !border-[rgba(var(--sig2-rgb), 0.55)]"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
-              <p class="fs-card-title !text-[1.05rem]">{col.label}</p>
-            </div>
-            <ul class="space-y-2">
-              {col.items.map((item) => (
-                <li class="flex items-start gap-2.5 fs-card-body">
-                  <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <div
-        class="fs-panel max-w-3xl mx-auto !bg-[rgba(var(--sig-rgb), 0.14)] !border-[rgba(var(--sig-rgb), 0.4)]"
-        data-reveal
-        data-reveal-delay="0.3"
-      >
-        <p class="fs-panel-tag mb-2">
-          Quello che un journey unificato renderebbe possibile
-        </p>
-        <p class="fs-panel-head !text-[1.15rem] !leading-snug">
-          «Il tuo Frecciarossa è in ritardo di 40 minuti: la sosta è estesa, non serve fare nulla.»
-        </p>
-        <p class="fs-panel-src mt-2.5">
-          Push all'evento di ritardo · canale preferito: app
+        <p class="fs-panel-src mt-2">
+          Fonte: Adobe Experience League, «Create or edit a connection» — «to merge datasets, you
+          need to use the same Person ID», consultata il 9 ott 2026
         </p>
       </div>
 
       <div class="mt-6" data-reveal data-reveal-delay="0.4">
         <a
-          href={href(base, '/trenitalia/fondamenta')}
+          href={href(base, next)}
           class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-ardesia-notte)] text-[var(--color-chiaro)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
           Le fondamenta che avete già

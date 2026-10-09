@@ -9,21 +9,25 @@ import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { CAPITOLI } from '../data/percorso';
 
 const TYPE = 'blueprint' as const;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Il tronco non è numerato. Due capitoli «01» e due «02» nello stesso documento
-// (Scenario/Partenza, Bivio/Fondamenta) obbligavano chi legge a tenere a mente
-// quale serie stesse guardando: la numerazione 01–05 resta ai capitoli di ramo,
-// il tronco si nomina per quello che è.
-const journey = [
-  { kind: 'Tronco', label: 'Scenario',   sub: 'Il viaggio di Davide, intero: dall\'auto alla destinazione', href: '/scenario' },
-  { kind: 'Tronco', label: 'Il bivio',   sub: 'Due società, due sguardi sullo stesso percorso',             href: '/bivio' },
-  { kind: 'Ramo',   label: 'FS Park',    sub: 'La metà su asfalto, in 5 capitoli che stanno in piedi da soli', href: '/fs-park/partenza' },
-  { kind: 'Ramo',   label: 'Trenitalia', sub: 'La metà su rotaia, in 5 capitoli che stanno in piedi da soli', href: '/trenitalia/partenza' },
-];
+// Le tappe vengono da `src/data/percorso.ts`, la stessa fonte che alimenta la
+// barra di navigazione e le frecce: scritte a mano qui divergevano dal resto al
+// primo cambio di perimetro. Il tronco non è numerato — due «01» nello stesso
+// documento obbligavano chi legge a ricordare quale serie stesse guardando.
+// Le card sono i CAPITOLI: lo scenario è dove porta il bottone qui sotto, e
+// metterlo anche fra le card faceva cinque blocchi, cioè una griglia che non
+// si bilancia in nessun modo.
+const journey = CAPITOLI.map((t, i) => ({
+  kind: String(i + 1).padStart(2, '0'),
+  label: t.label,
+  sub: t.sub,
+  href: '/' + t.slug,
+}));
 
 // Una notazione sola in tutto il deck (€16,5 mld, €100 mld) e ogni cifra
 // intestata al documento da cui viene: «100B€» accanto a «€16,5B» erano due
@@ -67,19 +71,19 @@ const fsStats = [
       />
       <p class="mt-5 text-center text-[0.75rem] tracking-widest uppercase text-[var(--color-grigio-300)] max-w-2xl mx-auto">
         {EXPERIENCE_TYPES[TYPE].coverLine.it}. I fatti sul Gruppo vengono da fonti pubbliche datate;
-        il ramo FS Park da un tavolo di lavoro Adobe × FS Park di luglio 2026; il ramo Trenitalia
-        da fonti pubbliche e da ipotesi nostre, senza un tavolo equivalente. Scenari e numeri di
-        esempio sono dichiarati slide per slide.
+        l'ecosistema in piedi da un tavolo tecnico FSTechnology di aprile 2025 e dal tracking delle
+        campagne, quindi va riconfermato. Scenari e numeri di esempio sono dichiarati slide per slide.
       </p>
 
-      <!-- Un solo viaggiatore, Davide: la linea sfuma dal verde (FS Park) al
-           rosso (Trenitalia), le due società che lo guardano da lati opposti. -->
+      <!-- Un solo viaggiatore, Davide. La linea sfuma perché il suo viaggio è
+           porta a porta mentre Trenitalia lo vede da un binario all'altro: è il
+           punto di partenza del documento, non una proposta sul Gruppo. -->
       <div class="relative w-full max-w-2xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
         <div class="fs-line-h" style="top: 1.45rem; left: 14%; right: 14%; background: linear-gradient(90deg, rgba(var(--park-rgb), 0) 0%, rgba(var(--park-rgb), 0.9) 26%, rgba(var(--rail-rgb), 0.9) 74%, rgba(var(--rail-rgb), 0) 100%); box-shadow: 0 0 12px rgba(var(--rail-rgb), 0.28);"></div>
         <div class="relative flex justify-center items-start">
           <div class="flex flex-col items-center gap-2.5 text-center max-w-[26rem]">
             <span class="fs-node" data-active>D</span>
-            <span class="fs-node-label">Davide, pendolare business Milano–Roma. Un viaggio solo, che FS Park e Trenitalia guardano da lati opposti.</span>
+            <span class="fs-node-label">Davide, pendolare business Milano–Roma. Un viaggio continuo, che i sistemi vedono a tratti.</span>
           </div>
         </div>
       </div>
@@ -149,7 +153,7 @@ const fsStats = [
     <!-- ── SLIDE 2: Roadmap del percorso ──────────────────────────── -->
     <Slide id="slide-journey" bg="brand" align="center">
       <Sfondo slot="backdrop" id="tr-atrio" forza="forte" marca />
-      <div class="w-full max-w-5xl mx-auto">
+      <div class="w-full max-w-6xl mx-auto">
         <p class="fs-panel-tag text-center mb-3" style="color: rgba(241, 243, 244, 0.78);" data-reveal>
           IL PERCORSO
         </p>
@@ -159,36 +163,36 @@ const fsStats = [
           data-reveal
           data-reveal-delay="0.08"
         >
-          Un viaggio, due sguardi, una sola intelligenza.
+          Si parte da quello che c'è già.
         </h2>
         <p
           class="text-[clamp(0.9rem,1.05vw,1.05rem)] leading-[1.55] text-[var(--color-chiaro)]/80 max-w-2xl mx-auto text-center mb-8"
           data-reveal
           data-reveal-delay="0.15"
         >
-          Due racconti distinti e autoconsistenti, uno per società: ciascuno parte dal proprio
-          cliente e produce risultati in casa propria. Convergono perché sotto c'è la stessa
-          piattaforma, che apre gli scenari di Gruppo quando le società vorranno.
+          Il perimetro di questa proposta è l'Adobe Analytics di trenitalia.com più il CRM, uniti
+          da chi fa login. Le Frecce, la piattaforma di invio delle campagne e il parcheggio
+          restano sullo sfondo: entrano quando questa prima fase ha prodotto numeri.
         </p>
 
         <!-- La linea del percorso: tronco comune, poi i due rami -->
         <div class="relative pt-6" data-reveal data-reveal-delay="0.22">
           <div class="fs-line-h" style="top: 0.5rem; left: 5%; right: 5%; background: linear-gradient(90deg, rgba(241, 243, 244, 0) 0%, rgba(241, 243, 244, 0.9) 12%, rgba(241, 243, 244, 0.9) 88%, rgba(241, 243, 244, 0) 100%); box-shadow: 0 0 12px rgba(241, 243, 244, 0.35);"></div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="grid grid-cols-2 md:grid-cols-4 auto-rows-fr gap-4">
             {journey.map((step) => (
               <a
                 href={href(base, step.href)}
                 data-edf-journey-card
-                class="journey-card relative px-4 pt-5 pb-3.5 border border-[var(--color-chiaro)]/25 rounded-md text-left text-[var(--color-chiaro)] transition-colors no-underline group"
+                class="journey-card relative h-full px-5 pt-5 pb-4 border border-[var(--color-chiaro)]/25 rounded-md text-left text-[var(--color-chiaro)] transition-colors no-underline group"
               >
                 <span class="absolute -top-[1.65rem] left-1/2 -translate-x-1/2 size-3 rounded-full bg-[var(--color-chiaro)] ring-4 ring-[var(--accent-primary)] group-hover:bg-white transition-colors"></span>
-                <p class="text-[0.75rem] font-semibold tracking-widest uppercase text-[var(--color-chiaro)]/70 mb-1 font-[family-name:var(--font-display)]">
-                  {step.kind}
+                <p class="text-[0.78rem] font-semibold tracking-widest uppercase text-[var(--color-chiaro)]/70 mb-1 font-[family-name:var(--font-display)] tabular-nums">
+                  Capitolo {step.kind}
                 </p>
                 <p class="text-[1.05rem] font-semibold text-[var(--color-chiaro)] mb-1 font-[family-name:var(--font-display)]">
                   {step.label}
                 </p>
-                <p class="text-[0.82rem] leading-[1.4] text-[var(--color-chiaro)]/75">{step.sub}</p>
+                <p class="text-[0.95rem] leading-[1.45] text-[var(--color-chiaro)]/85">{step.sub}</p>
               </a>
             ))}
           </div>
@@ -199,7 +203,7 @@ const fsStats = [
             href={href(base, '/scenario')}
             class="inline-flex items-center gap-3 px-9 py-2.5 text-[clamp(1rem,1.2vw,1.15rem)] font-semibold tracking-wide bg-[var(--color-chiaro)] text-[var(--color-ardesia-notte)] hover:bg-white transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--color-chiaro)] focus-visible:outline-offset-4 font-[family-name:var(--font-display)]"
           >
-            Dallo scenario
+            Dal lunedì di Davide
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

@@ -7,35 +7,42 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import MediaSlot from '@edf/core/blocks/MediaSlot.astro';
 import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../data/percorso';
 import { mediaProps } from '../../assets.index';
 
 const base = import.meta.env.BASE_URL;
+// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
+// un capitolo non lascia una freccia che punta fuori dal percorso.
+const { next, prev } = rotte('scenario');
 const currentPath = Astro.url.pathname;
 
+// `fase1` dice quali due sistemi stanno nel perimetro di questa proposta. Gli
+// altri quattro restano in pagina perché la fotografia dell'oggi è questa, ma
+// marcarli evita la promessa di un'integrazione che non è sul tavolo.
 const touchpoints = [
-  { label: 'trenitalia.com',  icon: '🌐', owner: 'Trenitalia', nota: 'Adobe Analytics istanza 1 · navigazione anonima' },
-  { label: 'Frecce booking',  icon: '🎫', owner: 'Trenitalia', nota: 'Adobe Analytics istanza 2 · funnel acquisto' },
-  { label: 'App Trenitalia', icon: '📱', owner: 'Trenitalia', nota: 'Streaming events · comportamento in-app' },
-  { label: 'Piattaforma di esecuzione email', icon: '📧', owner: 'Trenitalia', nota: 'Campagne CRM · CartaFreccia · X-GO' },
-  { label: 'Salesforce CRM',  icon: '☁️', owner: 'FSTechnology', nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
+  { label: 'trenitalia.com',  icon: '🌐', owner: 'Trenitalia', fase1: true,  nota: 'Adobe Analytics istanza 1 · navigazione e ricerche' },
+  { label: 'Salesforce CRM',  icon: '☁️', owner: 'FSTechnology', fase1: true, nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
+  { label: 'Frecce booking',  icon: '🎫', owner: 'Trenitalia', fase1: false, nota: 'Adobe Analytics istanza 2 · funnel acquisto' },
+  { label: 'App Trenitalia', icon: '📱', owner: 'Trenitalia', fase1: false, nota: 'Streaming events · comportamento in-app' },
+  { label: 'Piattaforma di esecuzione email', icon: '📧', owner: 'Trenitalia', fase1: false, nota: 'Campagne CRM · CartaFreccia · X-GO' },
   // FS Park ha una propria app (iOS e Android) per prenotazione, estensione
   // della sosta e abbonamenti. EasyPark è un canale diverso — accesso e
   // pagamento con lettura targa — e fino al 9 ott 2026 questa riga lo dava
   // come il sistema di prenotazione: due fornitori confusi in uno.
-  { label: 'App FS Park',     icon: '🅿️', owner: 'FS Park', nota: 'Prenotazione, estensione della sosta, abbonamenti' },
+  { label: 'App FS Park',     icon: '🅿️', owner: 'FS Park', fase1: false, nota: 'Prenotazione, estensione della sosta, abbonamenti' },
 ];
 ---
 <BaseLayout
   title="Il viaggio del cliente oggi"
-  description="Sei sistemi e sei touchpoint che non si parlano. Lo scenario da cui parte CJA."
+  description="Quattro canali, sei sistemi, e un identificativo che non li attraversa. Lo scenario da cui parte CJA."
 >
   <div class="fixed top-0 left-0 right-0 z-50">
     <TreniNavigation currentPath={currentPath} base={base} />
   </div>
 
   <DeckContainer wallScale
-    nextHref={href(base, '/bivio')}
-    prevHref={href(base, '/')}
+    nextHref={href(base, next)}
+    prevHref={href(base, prev)}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
@@ -49,7 +56,7 @@ const touchpoints = [
       <CoverHero
         eyebrow="Tronco comune · Scenario"
         title="Il viaggio del cliente oggi"
-        lead="Davide usa quattro canali in un viaggio solo. Sei sistemi lo osservano, nessuno lo riconosce."
+        lead="Davide usa quattro canali in un viaggio solo. Quanti di questi sistemi sanno che è sempre lui?"
         size="phase"
         tone="ink"
         signature={false}
@@ -68,7 +75,7 @@ const touchpoints = [
             <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[rgba(27, 34, 48, 0.85)] to-transparent" aria-hidden="true"></div>
             <div class="absolute left-4 bottom-4 flex items-center gap-2.5" aria-hidden="true">
               <span class="fs-node !w-11 !h-11" data-active>D</span>
-              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">Il viaggio intero</span>
+              <span class="fs-node-label !text-[rgba(241, 243, 244, 0.9)]">Il cliente che compra già</span>
             </div>
           </div>
         </div>
@@ -91,17 +98,17 @@ const touchpoints = [
             data-reveal
             data-reveal-delay="0.2"
           >
-            Ogni lunedì mattina Davide parcheggia a Milano Centrale, prenota il posto dall'app e
-            sale su un Frecciarossa per Roma. È un cliente CartaFreccia Oro da 4 anni, con un
-            abbonamento mensile A/R e un abbonamento mensile al parcheggio. Ogni settimana lui,
-            la sua auto e il suo smartphone lasciano tracce su tre sistemi che non si parlano.
+            Ogni lunedì mattina Davide prende il Frecciarossa per Roma e il venerdì rientra a
+            Milano. È un cliente CartaFreccia Oro da quattro anni, con un abbonamento mensile
+            A/R acquistato sempre in app. Fuori dal lavoro cerca altre tratte, le guarda e le
+            lascia lì: quelle ricerche restano in un sistema che non parla con il suo profilo.
           </p>
           <div class="fs-panel" data-reveal data-reveal-delay="0.4">
             <p class="fs-panel-tag mb-2.5">Davide, oggi</p>
             <div class="fs-quote">
               <p class="fs-quote-text" style="font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.4;">
-                «Ricevo email CartaFreccia ogni settimana. Per il parcheggio, mai una.
-                Ogni lunedì cerco dove lasciare l'auto. Nessuno me ne ha mai parlato.»
+                «Ricevo email CartaFreccia ogni settimana e sono sempre le stesse. Napoli la
+                cerco da un mese: in quelle email non ne ho mai vista una.»
               </p>
             </div>
           </div>
@@ -123,7 +130,7 @@ const touchpoints = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Davide usa quattro canali.<br/>Sei sistemi lo osservano, nessuno lo riconosce.
+        Davide usa quattro canali.<br/>Quanti di questi sistemi sanno che è sempre lui?
       </h2>
       {/* Six systems on one signal line — nodes lit, but the story between them is dark. */}
       <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.22">
@@ -134,7 +141,10 @@ const touchpoints = [
               <span class:list={["fs-node mb-3 relative z-10 max-[1350px]:!w-9 max-[1350px]:!h-9 max-[1350px]:!text-[0.85rem]", tp.owner === 'FS Park' && "fs-node--park"]} aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div class="fs-card w-full flex-1 text-left flex items-start gap-3 !py-4 !px-5 max-[1350px]:!py-2.5 max-[1350px]:!px-3.5">
+              <div
+                class:list={["fs-card w-full flex-1 text-left flex items-start gap-3 !py-4 !px-5 max-[1350px]:!py-2.5 max-[1350px]:!px-3.5", !tp.fase1 && "opacity-80"]}
+                style={tp.fase1 ? 'border-color: rgba(var(--rail-rgb), 0.55); box-shadow: inset 2px 0 0 rgba(var(--rail-rgb), 0.9);' : undefined}
+              >
                 <span class="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">{tp.icon}</span>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2 flex-wrap mb-1">
@@ -149,6 +159,11 @@ const touchpoints = [
                     >{tp.owner}</span>
                   </div>
                   <p class="fs-card-body">{tp.nota}</p>
+                  {tp.fase1 && (
+                    <p class="mt-1.5 text-[0.78rem] font-semibold tracking-wide uppercase" style="color: rgba(var(--rail-rgb), 0.95);">
+                      Nel perimetro della prima fase
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -160,9 +175,10 @@ const touchpoints = [
            stava al posto dell'app FS Park. Chi è titolare del dato quando il
            canale è di terzi lo dice il ramo FS Park, dove c'è lo spazio. -->
       <p class="mt-4 text-center fs-panel-src max-w-4xl mx-auto">
-        Il dato esiste, sparso fra analytics separati, CRM distinti, app e varco · accesso e
-        pagamento della sosta passano anche da EasyPark, operatore terzo, con lettura della
-        targa · scenario illustrativo
+        Questa proposta prende i due sistemi marcati e li unisce. Gli altri quattro entrano più
+        tardi, uno per volta · la sosta passa anche da EasyPark, operatore terzo, con lettura
+        della targa · ecosistema da riconfermare, fonte: tavolo tecnico FSTechnology apr 2025 e
+        tracking delle campagne
       </p>
     </Slide>
 
@@ -178,7 +194,7 @@ const touchpoints = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Davide parcheggia ogni lunedì.<br/>L'offerta giusta non arriva mai.
+        Davide cerca Napoli da settimane.<br/>Compra sempre e solo Roma.
       </h2>
 
       <div
@@ -188,21 +204,24 @@ const touchpoints = [
       >
         {[
           {
-            label: 'Quello che FS Park sa',
-            items: ['Davide parcheggia ogni lunedì', 'Stazione Milano Centrale, Hub P1', 'Abbonamento mensile parcheggio in scadenza'],
-            tone: 'left',
+            label: 'Quello che dice la navigazione',
+            fonte: 'Adobe Analytics · trenitalia.com',
+            mark: 'N',
+            items: ['Cerca Milano–Napoli quasi ogni venerdì sera', 'Apre le offerte, non arriva mai al carrello', 'Sempre da telefono, pochi minuti per volta'],
           },
           {
-            label: 'Quello che Trenitalia sa',
-            items: ['Davide ha CartaFreccia Oro', 'Abbonamento A/R Milano–Roma in corso', 'Acquista sempre in app, lunedì mattina'],
-            tone: 'right',
+            label: 'Quello che dice il CRM',
+            fonte: 'Salesforce · Data Cloud',
+            mark: 'C',
+            items: ['CartaFreccia Oro da quattro anni', 'Abbonamento Milano–Roma sempre rinnovato', 'Nessun acquisto fuori dalla tratta di lavoro'],
           },
         ].map((col, ci) => (
-          <div class="fs-card">
-            <div class="flex items-center gap-2.5 mb-3">
-              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 0 ? "fs-node--park" : "fs-node--rail"]} aria-hidden="true">{ci === 0 ? 'P' : 'T'}</span>
+          <div class="fs-card text-left">
+            <div class="flex items-center gap-2.5 mb-1">
+              <span class:list={["fs-mark !w-8 !h-8 !text-[0.85rem]", ci === 0 && "fs-node--rail"]} aria-hidden="true">{col.mark}</span>
               <p class="fs-card-title !text-[1.05rem]">{col.label}</p>
             </div>
+            <p class="fs-panel-src mb-3 ml-[2.6rem]">{col.fonte}</p>
             <ul class="space-y-2">
               {col.items.map((item) => (
                 <li class="flex items-start gap-2.5 fs-card-body">
@@ -215,29 +234,34 @@ const touchpoints = [
         ))}
       </div>
 
+      <p class="text-center fs-panel-src max-w-2xl mx-auto -mt-1 mb-4" data-reveal data-reveal-delay="0.24">
+        Le due colonne parlano della stessa persona. Oggi nessun identificativo le attraversa.
+      </p>
+
       <div
         class="fs-panel max-w-3xl mx-auto !bg-[rgba(var(--sig-rgb), 0.14)] !border-[rgba(var(--sig-rgb), 0.4)]"
         data-reveal
         data-reveal-delay="0.3"
       >
         <p class="fs-panel-tag mb-2">
-          Quello che un journey unificato renderebbe possibile
+          Quello che l'unione dei due rende possibile
         </p>
         <p class="fs-panel-head !text-[1.15rem] !leading-snug">
-          «Ciao Davide, il tuo abbonamento parcheggio scade il 31. Lo rinnovi insieme a quello
-          Frecciarossa, in un passaggio solo.»
+          «Davide cerca Napoli e non compra mai. Se il motivo è il prezzo, un'offerta sul venerdì
+          sera lo verifica in due settimane.»
         </p>
         <p class="fs-panel-src mt-2.5">
-          Push il venerdì 3 settimane prima della scadenza · canale preferito: app
+          Scenario illustrativo. La prima fase costruisce e misura questa audience; portarla a
+          Target è il passo dopo, e ha un costo suo.
         </p>
       </div>
 
       <div class="mt-6" data-reveal data-reveal-delay="0.4">
         <a
-          href={href(base, '/bivio')}
+          href={href(base, next)}
           class="inline-flex items-center gap-3 px-8 py-2.5 text-base font-semibold tracking-wide bg-[var(--color-ardesia-notte)] text-[var(--color-chiaro)] hover:bg-[var(--color-ardesia)] transition-colors duration-300 font-[family-name:var(--font-display)]"
         >
-          Al bivio: i due punti di vista
+          Dentro Trenitalia: cosa si vede oggi
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

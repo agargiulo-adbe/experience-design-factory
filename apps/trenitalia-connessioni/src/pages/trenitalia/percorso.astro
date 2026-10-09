@@ -8,8 +8,12 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
 
 const base = import.meta.env.BASE_URL;
+// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
+// un capitolo non lascia una freccia che punta fuori dal percorso.
+const { next, prev } = rotte('trenitalia/percorso');
 const currentPath = Astro.url.pathname;
 
 // La tabella delle fasi vive QUI, in una copia sola per tutto il ramo: prodotto,
@@ -23,16 +27,16 @@ const currentPath = Astro.url.pathname;
 const roadmapPhases = [
   {
     fase: 'Fase 1',
-    label: 'Convergenza',
+    label: 'Analisi',
     colore: 'var(--accent-primary)',
     headline: 'La vista unificata',
-    prodotti: ['Customer Journey Analytics', 'le due istanze Adobe Analytics', 'Content Analytics (richiede Web SDK)'],
-    prerequisito: 'Le istanze Analytics già attive. Content Analytics raccoglie con Adobe Web SDK: il passaggio sulle property da misurare è un\'attività della fase.',
-    chiEsegue: 'FSTechnology porta i dati, Adobe monta lo schema e CJA, Trenitalia porta le domande.',
+    prodotti: ['Customer Journey Analytics', 'Adobe Analytics di trenitalia.com', 'gli attributi del CRM da Data Cloud'],
+    prerequisito: 'L\'istanza Analytics di trenitalia.com già attiva, un identificativo di persona condiviso con il CRM, e la scelta di quali attributi portare. Le Frecce e la piattaforma di invio restano fuori.',
+    chiEsegue: 'FSTechnology e chi presidia il CRM portano i dati, Adobe monta lo schema e CJA, Trenitalia porta le domande.',
     misura: [
-      'Conversione d\'acquisto sui canali diretti',
-      'Abbandono al checkout, passo per passo',
-      'Contatti all\'assistenza per mille transazioni',
+      'Quota di chi cerca una tratta e ne compra un\'altra',
+      'Punti di caduta del percorso, letti per livello di carta',
+      'Copertura: quanti dei riconosciuti hanno un profilo nel CRM',
     ],
     attiva: true,
   },
@@ -42,7 +46,7 @@ const roadmapPhases = [
     colore: 'var(--accent-secondary)',
     headline: 'Dal dato all\'azione',
     prodotti: ['Adobe Real-Time CDP', 'Adobe Journey Optimizer'],
-    prerequisito: 'Lo schema dati della Fase 1, il perimetro dei consensi concordato con i DPO e la cadenza di ogni fonte, misurata nel POC.',
+    prerequisito: 'Lo schema dati della Fase 1, il perimetro dei consensi concordato con i DPO, e la voce di Real-Time CDP messa a contratto: senza quel passaggio i segmenti non escono verso Target in automatico.',
     chiEsegue: 'Adobe sull\'orchestrazione, FSTechnology sulle destinazioni, Trenitalia sulle regole di contatto.',
     misura: [
       'Rinnovi prima della scadenza',
@@ -86,25 +90,25 @@ const direttrici = [
 // quando si chiude e che fine fanno i dati. È il passo che il capitolo chiede
 // al cliente, e nel ramo Trenitalia non c'era.
 const pocPerimetro = [
-  'App Trenitalia e area autenticata del sito',
-  'Le due istanze Adobe Analytics e le letture di CRM da Data Cloud',
-  'Un caso pilota solo: infomobilità e recovery dopo il disservizio',
-  'Dati simulati o campionati, senza dati personali in chiaro',
-  'La copia di produzione pseudonimizzata è possibile, ma prima serve il parere del DPO di Trenitalia',
+  'Primo passo su un ambiente Adobe, senza toccare i sistemi di Trenitalia',
+  'Lo schema ricostruito sui contenuti pubblici del sito e su attributi CRM simulati',
+  'Un caso pilota solo: chi cerca una tratta e ne compra un\'altra',
+  'Nessun dato personale, quindi nessun passaggio di sicurezza da aprire adesso',
+  'Il secondo passo, sui dati reali, si apre solo se il primo convince: lì servono il parere del DPO e un perimetro concordato',
 ];
 
 const pocEsito = [
-  'Otto settimane come proposta: due di schema, quattro sui dati, due di lettura insieme',
-  'Trenitalia porta le domande e l\'accesso alle fonti',
-  'FSTechnology porta i dati e le integrazioni di Gruppo',
-  'Adobe monta lo schema e CJA, e affianca nella lettura',
-  'Alla fine esce lo schema dati e la baseline delle tre misure della Fase 1',
-  'Si chiude se lo schema non regge il pilota o se la baseline non si rileva. I dati del POC si cancellano, e quello che resta esce in formato aperto',
+  'Quattro settimane come proposta, tutte su ambiente Adobe',
+  'Trenitalia porta le domande a cui vuole vedere una risposta',
+  'Adobe monta lo schema, costruisce il caso e lo mostra funzionante',
+  'Alla fine si vede che cosa si legge davvero, e quali attributi del CRM servono',
+  'Da lì si decide se aprire il passo sui dati reali, con l\'elenco preciso di cosa chiedere a chi presidia il CRM',
+  'Se non convince, si chiude senza aver mosso un dato di Trenitalia',
 ];
 ---
 <BaseLayout
-  title="Il percorso · Ramo Trenitalia"
-  description="Due fasi da perimetrare e un orizzonte: convergenza con CJA, attivazione con Real-Time CDP e AJO, e un POC che fissa la baseline prima di qualunque numero."
+  title="Il percorso e la decisione"
+  description="La prima fase su trenitalia.com e il CRM, l'attivazione dopo, e un primo passo che non tocca i sistemi di Trenitalia."
   pageSolutions={['rtcdp', 'ajo']}
   branch="trenitalia"
 >
@@ -113,8 +117,8 @@ const pocEsito = [
   </div>
 
   <DeckContainer wallScale
-    nextHref={href(base, '/bivio')}
-    prevHref={href(base, '/trenitalia/meta-invisibile')}
+    nextHref={href(base, next)}
+    prevHref={href(base, prev)}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
@@ -123,8 +127,8 @@ const pocEsito = [
       <Sfondo slot="backdrop" id="tr-tetto" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="05 · Percorso"
-        numeral="05"
+        eyebrow="Capitolo 04 · Percorso"
+        numeral="04"
         title="Il percorso"
         lead="Due fasi da perimetrare e un orizzonte. La prima parte da un POC su un pezzo stabile dell'ecosistema, la seconda si appoggia allo schema che ne esce. Nessun numero promesso prima di avere una baseline."
         size="phase"

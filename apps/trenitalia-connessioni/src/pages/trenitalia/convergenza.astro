@@ -9,31 +9,32 @@ import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
 import DiagFlusso from '../../components/diagrammi/DiagFlusso.astro';
 import DiagFasi from '../../components/diagrammi/DiagFasi.astro';
 import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
 
 const base = import.meta.env.BASE_URL;
+// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
+// un capitolo non lascia una freccia che punta fuori dal percorso.
+const { next, prev } = rotte('trenitalia/convergenza');
 const currentPath = Astro.url.pathname;
 
-// Le fonti che confluiscono nel layer, e il percorso che ne esce: è il concetto
-// più ripetuto del capitolo, e qui si vede invece di leggersi.
-// Cinque fonti, tutte dentro il perimetro Trenitalia: le due istanze Analytics
-// contano due. FS Park non sta in questo elenco — una clean room restituisce
-// sovrapposizioni di audience, non eventi a livello di persona, e quella metà
-// si legge nel capitolo 4.
+// Le fonti che confluiscono nel layer, e il percorso che ne esce. L'elenco
+// dichiara il perimetro: due fonti nella prima fase, e le altre in attesa.
+// Teneva cinque fonti tutte sullo stesso piano, cioè la promessa di
+// un'integrazione che non è sul tavolo.
 const fonti = [
-  'Adobe Analytics ×2 · sito e funnel',
-  'App Trenitalia · eventi e notifiche',
-  'Piattaforma di esecuzione email · risposta alle email',
-  'Salesforce Data Cloud · profili CRM',
+  'Adobe Analytics · trenitalia.com — prima fase',
+  'Salesforce Data Cloud · attributi CRM — prima fase',
+  'Adobe Analytics · Frecce — dopo',
+  'Piattaforma email e app · dopo',
 ];
 
 const percorsoLeggibile = [
-  // Mai un identificativo di loyalty a schermo: il mock è pseudonimo, come
-  // quello del ramo FS Park, e la slide lo dichiara «dati simulati».
-  'Davide, cliente CartaFreccia riconosciuto su tutte le fonti',
-  'Il percorso completo su una timeline sola',
-  'Cinque fonti Trenitalia, le due istanze comprese, in un profilo solo',
-  'Ricerca → acquisto → app → viaggio',
-  'Il ritorno a Milano, e la sera a casa',
+  // Mai un identificativo di loyalty a schermo: il mock è pseudonimo, e la
+  // slide lo dichiara «dati simulati».
+  'Davide, riconosciuto al login come cliente CartaFreccia',
+  'Le ricerche e le pagine viste, in ordine di tempo',
+  'Accanto: livello carta, abbonamenti, storico acquisti',
+  'Dove si ferma, e quante volte torna prima di comprare',
 ];
 
 // Richiamo sintetico della tabella delle fasi, che vive in una copia sola nel
@@ -41,13 +42,13 @@ const percorsoLeggibile = [
 // si ridisegna, e prerequisiti, chi esegue e cosa si misura non si ripetono —
 // due roadmap nello stesso ramo erano due piani diversi per chi gira il deck.
 const fasiCja = [
-  { n: 'Fase 1', nome: 'Convergenza', durata: 'subito', esito: 'Customer Journey Analytics e le due istanze Adobe Analytics: la prima vista da capo a fondo.' },
-  { n: 'Fase 2', nome: 'Attivazione', durata: 'a seguire', esito: 'Adobe Real-Time CDP e Adobe Journey Optimizer, sopra lo schema dati costruito nella Fase 1.' },
-  { n: 'Fase 3', nome: 'Orizzonte', durata: 'nel tempo', esito: 'L\'ottimizzazione della spesa media, da aprire quando la prima fase ha una baseline.' },
+  { n: 'Fase 1', nome: 'Analisi', durata: 'subito', esito: 'Customer Journey Analytics su trenitalia.com e sugli attributi del CRM: le domande di questo capitolo trovano una risposta.' },
+  { n: 'Fase 2', nome: 'Attivazione', durata: 'a seguire', esito: 'I segmenti escono verso Adobe Target e verso le campagne. Qui serve il passaggio di Real-Time CDP, da mettere a contratto prima.' },
+  { n: 'Fase 3', nome: 'Estensione', durata: 'nel tempo', esito: 'Le Frecce, la piattaforma di invio, e la collaborazione fra società: una fonte per volta, quando la prima fase ha una baseline.' },
 ];
 ---
 <BaseLayout
-  title="CJA: il layer di convergenza · Ramo Trenitalia"
+  title="Cosa si legge, cosa si attiva"
   description="Customer Journey Analytics connette le due istanze Adobe Analytics e tutti i sistemi, senza disruption, in fasi incrementali."
   pageSolutions={['cja']}
   branch="trenitalia"
@@ -57,8 +58,8 @@ const fasiCja = [
   </div>
 
   <DeckContainer wallScale
-    nextHref={href(base, '/trenitalia/meta-invisibile')}
-    prevHref={href(base, '/trenitalia/fondamenta')}
+    nextHref={href(base, next)}
+    prevHref={href(base, prev)}
   >
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
@@ -69,7 +70,7 @@ const fasiCja = [
         <div class="fs-grid"></div>
       </div>
       <CoverHero
-        eyebrow="03 · Customer Journey Analytics"
+        eyebrow="Capitolo 03 · Convergenza"
         numeral="03"
         title="CJA: il layer di convergenza"
         lead="Una vista unica del journey, senza migrare né dismettere nulla. CJA lavora sopra i sistemi che già avete, senza toccarli, e li fa parlare tra loro."
@@ -106,7 +107,7 @@ const fasiCja = [
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
       <p class="fs-panel-tag text-center mb-4 flex items-center justify-center gap-3 flex-wrap" data-reveal>
-        <span>COME FUNZIONA · CONNETTORI NATIVI, DATI SEMPRE IN AEP</span>
+        <span>COME FUNZIONA · CONNETTORI NATIVI, I DATI ENTRANO IN AEP</span>
         {/* Lo stesso marchio che porta il mock del ramo FS Park: quello che si
             vede qui è un esempio, non un record. */}
         <span class="font-bold px-2 py-0.5 rounded-sm tracking-wide" style="font-size: 0.68rem; background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);">
@@ -119,7 +120,7 @@ const fasiCja = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Tutte le fonti in un'unica vista, senza stravolgere nulla.
+        Due fonti in un'unica vista. Le altre quando serve.
       </h2>
 
       {/* Fonti separate → il layer che le legge → un percorso unico. Il
@@ -197,6 +198,74 @@ const fasiCja = [
       </div>
     </Slide>
 
+    <!-- ── SLIDE 1c: Dove sta il dato ──────────────────────────────── -->
+    {/* La domanda arrivata in riunione era «sto duplicando la base dati?». La
+        risposta onesta è che per CJA il dato entra: non esiste oggi una lettura
+        in sede per l'analisi, e prometterla si paga al primo tavolo con il loro
+        cyber. Quello che si governa è quanto dato entra e con che etichette. */}
+    <Slide id="slide-dove-sta-il-dato" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
+        <div class="fs-grid"></div>
+      </div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        LA DOMANDA TECNICA · DOVE FINISCE IL DATO DEL CRM
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Il dato entra. Si decide quanto.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] mx-auto mb-7"
+        style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.55; max-width: 52rem;"
+        data-reveal
+        data-reveal-delay="0.12"
+      >
+        CJA analizza quello che è stato portato dentro Adobe Experience Platform: una lettura
+        che lasci il dato alla fonte e lo interroghi da fuori oggi non c'è. La leva non è
+        evitare la copia, è scegliere cosa copiare.
+      </p>
+
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-reveal data-reveal-delay="0.18">
+        <div class="fs-card text-left h-full">
+          <p class="fs-card-title mb-2.5" style="font-size: 1.05rem;">Quello che entra</p>
+          <ul class="space-y-2.5">
+            <li class="fs-card-body">Gli attributi che servono all'analisi, non la base dati: livello carta, stato dell'abbonamento, sintesi dello storico.</li>
+            <li class="fs-card-body">Entrano come Profile dataset, accanto agli eventi di navigazione, sulla stessa chiave di persona.</li>
+          </ul>
+        </div>
+        <div class="fs-card text-left h-full">
+          <p class="fs-card-title mb-2.5" style="font-size: 1.05rem;">Come entra</p>
+          <ul class="space-y-2.5">
+            <li class="fs-card-body">File su SFTP, chiamate verso le API, oppure in continuo dall'Edge come già arriva il dato di Analytics.</li>
+            <li class="fs-card-body">La scelta fra le tre è un tema da chiudere con l'IT e con chi presidia il CRM.</li>
+          </ul>
+        </div>
+        <div class="fs-card text-left h-full">
+          <p class="fs-card-title mb-2.5" style="font-size: 1.05rem;">Quello che resta dov'è</p>
+          <ul class="space-y-2.5">
+            <li class="fs-card-body">Salesforce Data Cloud resta master del profilo, del consenso e delle liste di soppressione.</li>
+            <li class="fs-card-body">Gli attributi copiati portano le etichette d'uso del dato e le politiche che ne governano l'impiego.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fs-panel fs-panel--alt w-full max-w-6xl mx-auto text-left mt-6 !py-3.5" data-reveal data-reveal-delay="0.3">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">Da dire prima:</strong> in Adobe esiste un modo
+          per lasciare il dato nel magazzino e interrogarlo a distanza, ma serve a comporre audience,
+          non ad alimentare l'analisi di cui si parla qui. Una clean room lavora invece su indicatori
+          che stanno fuori dal data lake: è un'altra cosa ancora, e viene dopo.
+        </p>
+        <p class="fs-panel-src mt-1.5">Verificato il 9 ott 2026 su documentazione Adobe</p>
+      </div>
+    </Slide>
+
     <!-- ── SLIDE 2: Demo CJA Workspace ───────────────────────────── -->
     <Slide id="slide-demo-cja" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
@@ -215,7 +284,7 @@ const fasiCja = [
             data-reveal
             data-reveal-delay="0.08"
           >
-            Il journey di Davide,<br/>visto per la prima volta.
+            Lo stesso cliente,<br/>letto da due sistemi.
           </h2>
           <p
             class="text-[var(--ink-secondary)] leading-normal max-w-2xl mb-5"
@@ -223,10 +292,10 @@ const fasiCja = [
             data-reveal
             data-reveal-delay="0.14"
           >
-            CJA Workspace ricostruisce il percorso completo: ricerca su trenitalia.com,
-            abbandono del funnel a metà checkout, ritorno da push app, prenotazione del posto,
-            viaggio, NPS post-arrivo. Una sola timeline, dalla prima ricerca all'ultimo
-            contatto, dentro il perimetro Trenitalia.
+            CJA Workspace mette su una timeline sola le ricerche e le pagine viste su
+            trenitalia.com, e accanto gli attributi che arrivano dal CRM: livello carta,
+            abbonamenti, storico degli acquisti. Lo stesso cliente, letto da due sistemi che
+            oggi si guardano da lontano.
           </p>
 
           <div
@@ -235,9 +304,9 @@ const fasiCja = [
             data-reveal-delay="0.2"
           >
             {[
-              { metric: '5→1', label: 'fonti Trenitalia in una vista sola', sub: 'La sovrapposizione con la base FS Park si legge come audience, nel capitolo 4' },
-              { metric: 'Da capo a fondo', label: 'il percorso di un cliente', sub: 'Dalla prima ricerca alla fine del viaggio, dentro il perimetro Trenitalia' },
-              { metric: 'Senza estrazioni', label: 'le domande si fanno sul posto', sub: 'Oggi una risposta cross-sistema passa da un\'estrazione e da chi la prepara' },
+              { metric: 'Cosa cerca', label: 'chi poi compra, e chi no', sub: 'Oggi le ricerche restano separate dal profilo di chi le ha fatte' },
+              { metric: 'Dove si ferma', label: 'e quante volte torna prima', sub: 'Il flusso si legge per passaggi, non per pagine isolate' },
+              { metric: 'Senza estrazioni', label: 'le domande si fanno sul posto', sub: 'Oggi una risposta che incrocia due sistemi passa da un\'estrazione e da chi la prepara' },
             ].map((m) => (
               <div class="fs-card text-center">
                 <p class="fs-stat-value mb-1.5" style="font-size: clamp(2rem, 3.4vw, 2.9rem);">{m.metric}</p>
@@ -257,6 +326,132 @@ const fasiCja = [
       </div>
     </Slide>
 
+    <!-- ── SLIDE 2b: Che cosa si fa con due fonti ──────────────────── -->
+    {/* «Se mi fermo ad analizzare non c'è alcun interesse»: ogni riga qui parte
+        da una domanda che oggi resta senza risposta e arriva a cosa si fa con
+        la risposta. Gli esempi sono quelli nati in riunione, non i nostri. */}
+    <Slide id="slide-use-case" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <Sfondo slot="backdrop" id="rl-banchina" forza="media" />
+        <div class="fs-grid"></div>
+      </div>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
+        CHE COSA SI FA CON QUESTE DUE FONTI
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Tre domande, e cosa si fa con la risposta.
+      </h2>
+
+      <div class="w-full max-w-6xl mx-auto flex flex-col gap-3.5" data-reveal data-reveal-delay="0.16">
+        {[
+          {
+            n: '01',
+            domanda: 'Cerca una tratta, ne compra un\'altra. Perché?',
+            oggi: 'Le ricerche stanno in Analytics, gli acquisti nel CRM: nessuno può dire se chi cerca Napoli poi la compra o ripiega.',
+            uso: 'Un\'offerta sulla tratta cercata e mai comprata, misurata su due settimane.',
+          },
+          {
+            n: '02',
+            domanda: 'Chi si ferma lungo il percorso, e che cliente è?',
+            oggi: 'Il punto di caduta si vede, la persona dietro no: un abbonato e un visitatore di passaggio contano uguale.',
+            uso: 'La priorità di intervento va dove si fermano i clienti che valgono di più.',
+          },
+          {
+            n: '03',
+            domanda: 'Il cliente Oro che entra viene trattato come tale?',
+            oggi: 'Il livello carta sta nel CRM e non arriva al sito: chi è abbonato da anni vede la pagina di chiunque altro.',
+            uso: 'Un canale di contatto riservato, mostrato solo a quel segmento.',
+          },
+        ].map((uc) => (
+          <div class="fs-card text-left !py-4 !px-5">
+            <div class="grid md:grid-cols-[auto_minmax(0,1fr)_minmax(0,0.78fr)] gap-x-5 gap-y-2 items-start">
+              <span class="fs-mark" aria-hidden="true">{uc.n}</span>
+              <div class="min-w-0">
+                <p class="fs-card-title mb-1.5" style="font-size: 1.08rem;">{uc.domanda}</p>
+                <p class="fs-card-body">{uc.oggi}</p>
+              </div>
+              <div class="min-w-0 md:border-l md:border-[var(--line-subtle)] md:pl-5">
+                <p class="text-[0.78rem] font-semibold tracking-widest uppercase mb-1.5" style="color: rgba(var(--sig-rgb), 0.95);">
+                  Cosa si fa
+                </p>
+                <p class="fs-card-body">{uc.uso}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="fs-panel fs-panel--alt w-full max-w-6xl mx-auto text-left mt-5 !py-3.5" data-reveal data-reveal-delay="0.32">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">Fin dove arriva la prima fase:</strong> le tre
+          analisi e i tre segmenti si costruiscono qui. Portarli su Adobe Target in automatico
+          richiede un passaggio in più, che ha un suo perimetro commerciale: è una voce da chiudere
+          insieme prima di partire, non un interruttore da accendere dopo.
+        </p>
+        <p class="fs-panel-src mt-1.5">Verificato il 9 ott 2026 su documentazione Adobe · scenari illustrativi</p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 2c: Trovare le cause ─────────────────────────────── -->
+    {/* L'obiezione più forte della riunione: «se la regola me la devo
+        immaginare da sola, il lavoro l'ho fatto io». È l'unica a cui una
+        capability nuova risponde per intero, e non era nelle slide. */}
+    <Slide id="slide-coworker" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg"></div>
+        <Sfondo slot="backdrop" id="tc-strati" forza="media" />
+        <div class="fs-grid"></div>
+      </div>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
+        TROVARE LE CAUSE, NON SOLO I NUMERI
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-3 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Chiedere perché, invece di dettare la regola.
+      </h2>
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-6" data-reveal data-reveal-delay="0.18">
+        <div class="fs-panel text-left h-full">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-[var(--accent-primary)] mb-3.5">Oggi · si parte dall'ipotesi</p>
+          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)]" style="line-height: 1.5;">
+            <li>«Quanti hanno cercato due volte la stessa tratta negli ultimi tre mesi»: è una regola scritta a mano.</li>
+            <li>Serve chi conosce il modello dati e sa dove guardare, e si procede per esclusione.</li>
+            <li>Le ipotesi che nessuno formula restano fuori dall'analisi.</li>
+          </ul>
+        </div>
+        <div class="fs-panel text-left h-full">
+          <p class="text-[0.85rem] font-bold tracking-widest uppercase text-emerald-400 mb-3.5">Con Coworker · si parte dalla domanda</p>
+          <ul class="space-y-3 text-[1rem] text-[var(--color-grigio-200)]" style="line-height: 1.5;">
+            <li>«Perché su questo tipo di ricerca si perde più gente che sull'altro»: la domanda si scrive in italiano.</li>
+            <li>Lo strumento cerca prima dove il dato si discosta, poi risale alle cause.</li>
+            <li>La competenza di analisi smette di essere di poche persone.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-6 !py-3.5" data-reveal data-reveal-delay="0.3">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">Stato.</strong> Adobe CX Enterprise Coworker è
+          stato rilasciato a giugno 2026 e distribuito per gradi da luglio; l'analisi dei dati di
+          Customer Journey Analytics in chat è nelle note di rilascio di luglio. Ha una licenza
+          propria, quindi entra nel conto dei costi insieme a tutto il resto.
+        </p>
+        <p class="fs-panel-src mt-1.5">
+          Fonti: note di rilascio CJA lug 2026 · Experience League, «CJA &amp; Coworker — Root Cause
+          Analysis», agg. 7 ott 2026
+        </p>
+      </div>
+    </Slide>
+
     <!-- ── SLIDE 3: Content Analytics ────────────────────────────── -->
     <Slide id="slide-content-analytics" bg="secondary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
@@ -265,7 +460,7 @@ const fasiCja = [
         <div class="fs-grid"></div>
       </div>
       <p class="fs-panel-tag text-center mb-4" data-reveal>
-        ADOBE CONTENT ANALYTICS · SU AEM
+        ADOBE CONTENT ANALYTICS · SU AEM — OLTRE LA PRIMA FASE
       </p>
       <h2
         class="text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
@@ -359,7 +554,7 @@ const fasiCja = [
           data-reveal
           data-reveal-delay="0.08"
         >
-          Due fasi che lasciano qualcosa, e un orizzonte.
+          Si legge, poi si attiva, e solo dopo si allarga.
         </h2>
       </div>
 
@@ -378,10 +573,10 @@ const fasiCja = [
 
       <div class="mt-4 text-center" data-reveal data-reveal-delay="0.38">
         <a
-          href={href(base, '/trenitalia/meta-invisibile')}
+          href={href(base, next)}
           class="inline-flex items-center gap-3 px-8 py-3.5 text-base font-semibold tracking-wide bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity duration-300 font-[family-name:var(--font-display)] rounded-sm"
         >
-          La metà invisibile: oltre la stazione
+          Il percorso e la decisione
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
