@@ -142,14 +142,34 @@ export const STRATI: Strato[] = [
   },
 ];
 
-/** La pila come la vuole `IsuStack`: lunga con i link, breve senza. */
-export const strati = (taglio: 'lungo' | 'breve') =>
-  STRATI.map((l) => ({
-    kind: l.kind,
-    t: l.t,
-    s: taglio === 'lungo' ? l.s : l.sBreve,
-    ...(taglio === 'lungo' && l.href ? { href: l.href } : {}),
-  }));
+/**
+ * La pila come la vuole `IsuStack`.
+ *
+ * I LINK CI SONO IN ENTRAMBI I PERCORSI, e cambiano solo bersaglio: nel
+ * percorso intero l'approfondimento è una slide della stessa pagina (ancora
+ * locale, salto immediato); nel taglio da dieci minuti quelle slide non
+ * esistono, quindi la freccia porta alla pagina delle idee, sulla slide
+ * giusta. Così chi presenta i dieci minuti può aprire il dettaglio solo se
+ * la domanda arriva — che è esattamente il motivo per cui un taglio corto ha
+ * senso: non toglie il contenuto, lo mette a un clic di distanza.
+ *
+ * `base` serve perché il sito vive sotto un percorso (`/experience-design-
+ * factory/intesa-scala-umana/`): un href che parte da `/` finirebbe sulla
+ * radice del dominio.
+ */
+export const strati = (taglio: 'lungo' | 'breve', base = '/') =>
+  STRATI.map((l) => {
+    const dove =
+      !l.href ? undefined
+      : taglio === 'lungo' ? l.href
+      : `${base.replace(/\/?$/, '/')}idee/${l.href}`;
+    return {
+      kind: l.kind,
+      t: l.t,
+      s: taglio === 'lungo' ? l.s : l.sBreve,
+      ...(dove ? { href: dove } : {}),
+    };
+  });
 
 /* ── La proposta ───────────────────────────────────────────────────────────
    Tre passi. Il taglio exec usa `bBreve`, che è la stessa frase senza gli
@@ -202,6 +222,69 @@ export const PASSI: Passo[] = [
 
 export const passi = (taglio: 'lungo' | 'breve') =>
   PASSI.map((p) => ({ n: p.n, t: p.t, b: taglio === 'lungo' ? p.b : p.bBreve }));
+
+/* ── I tre obiettivi dichiarati ────────────────────────────────────────────
+   `goal` è quello che ha detto il cliente (in grassetto la cifra), `ask` è la
+   nostra lettura di che cosa chiede a chi comunica. La distinzione è dichiarata
+   in pagina: una riga nostra spacciata per una loro è il modo più rapido di
+   perdere credibilità in sala. `goal` contiene `<b>`, quindi va reso con
+   `set:html`. */
+export interface Obiettivo {
+  n: string;
+  goal: Bilingue;
+  ask: Bilingue;
+}
+
+export const OBIETTIVI: Obiettivo[] = [
+  {
+    n: '01',
+    goal: {
+      it: '<b>2,5 milioni di clienti netti in più</b> nell’arco del Piano d’Impresa 2026-2029.',
+      en: '<b>2.5 million net new customers</b> over the 2026-2029 Business Plan.',
+    },
+    ask: {
+      it: 'Crescere di due milioni e mezzo vuol dire parlare a chi non vi conosce ancora, su canali dove la prima risposta non la date voi.',
+      en: 'Growing by two and a half million means speaking to people who do not know you yet, on channels where the first answer is not yours to give.',
+    },
+  },
+  {
+    n: '02',
+    goal: {
+      it: '<b>100% delle applicazioni in cloud entro il 2029</b>, dal 64% di fine 2025, dentro 4,6 miliardi di nuovi investimenti IT.',
+      en: '<b>100% of applications in the cloud by 2029</b>, from 64% at the end of 2025, within €4.6 billion of new IT investment.',
+    },
+    ask: {
+      it: 'La rotta è decisa e vale anche per quello che gestisce i contenuti e i moduli: il tema non è se muoverli, è che cosa si guadagna nel farlo.',
+      en: 'The route is set and it covers what runs content and forms too: the question is not whether to move them, but what you gain by doing it.',
+    },
+  },
+  {
+    n: '03',
+    goal: {
+      it: '<b>20 miliardi alle piccole imprese</b> di commercio, artigianato e turismo, annunciati dalla Banca dei Territori l’8 ottobre 2026.',
+      en: '<b>€20 billion for small businesses</b> in retail, crafts and tourism, announced by the Banca dei Territori on 8 October 2026.',
+    },
+    ask: {
+      it: 'Un impegno di questa portata si racconta a centinaia di migliaia di imprese diverse fra loro, e ognuna vuole sentirsi parlare della propria.',
+      en: 'A commitment this size has to be told to hundreds of thousands of very different businesses, each wanting to hear about its own.',
+    },
+  },
+];
+
+/** La nota che distingue la loro parola dalla nostra lettura. */
+export const NOTA_OBIETTIVI: Bilingue = {
+  it: 'In grande gli obiettivi, come li avete dichiarati voi. In piccolo che cosa chiedono a chi comunica: quella riga è una nostra lettura, non una vostra parola.',
+  en: 'In large type, the goals as you stated them. In small type, what they ask of whoever communicates: that line is our reading, not your words.',
+};
+
+/* ── La domanda che chiude il primo capitolo ───────────────────────────────
+   Sta sui numeri, in entrambi i percorsi. È la riga che trasforma «il vostro
+   anno visto da fuori» da verbale a domanda: senza, la slide afferma al
+   cliente come stanno le sue cose. */
+export const DOMANDA_LETTURA: Bilingue = {
+  it: 'Questa lettura regge, vista da dentro?',
+  en: 'Does this reading hold, seen from the inside?',
+};
 
 /* ── L'ask ─────────────────────────────────────────────────────────────────
    Una frase sola, in un posto solo: è la cosa che il cliente si porta via, e

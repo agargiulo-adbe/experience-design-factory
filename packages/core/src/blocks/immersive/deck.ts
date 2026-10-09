@@ -419,5 +419,37 @@ export function initDeck() {
   const root = document.querySelector<HTMLElement>('[data-deck]');
   const w = window as Window & { __edfDeck?: Deck };
   w.__edfDeck?.destroy();
-  if (root) w.__edfDeck = new Deck(root);
+  if (!root) return;
+  const deck = new Deck(root);
+  w.__edfDeck = deck;
+
+  /**
+   * Un link che arriva da un'altra pagina con `#slide-x` deve APRIRE quella
+   * slide, non la prima. Senza questo, un indice che rimanda a un capitolo
+   * («questo strato si racconta lì») porta sempre in copertina e tocca a chi
+   * guarda cercarsi il punto — che è il modo più rapido di rendere inutile un
+   * rimando. Vale per ogni deck: sta nel motore, non nelle app.
+   *
+   * L'id si cerca fra le slide VIVE: il gating di capitoli e soluzioni toglie
+   * `data-slide` a quelle spente, quindi un'ancora verso una slide spenta non
+   * trova niente e il deck resta in copertina, che è il comportamento giusto.
+   */
+  const vaiAllAncora = () => {
+    const hash = decodeURIComponent(location.hash || '').replace(/^#/, '');
+    if (!hash) return;
+    const i = Array.from(document.querySelectorAll('[data-slide]')).findIndex((s) => s.id === hash);
+    if (i > 0) deck.goTo(i);
+  };
+  vaiAllAncora();
+
+  /**
+   * Cambiare SOLO l'ancora sulla stessa pagina non ricarica niente: nessun
+   * `load`, nessun `initDeck`, e il deck resterebbe dov'era. Capita appena si
+   * clicca un secondo rimando verso lo stesso capitolo, ed è indistinguibile
+   * da un link rotto per chi guarda. Il listener si toglie con il deck.
+   */
+  window.addEventListener('hashchange', vaiAllAncora);
+  const stopHash = () => window.removeEventListener('hashchange', vaiAllAncora);
+  const destroyOriginale = deck.destroy.bind(deck);
+  deck.destroy = () => { stopHash(); destroyOriginale(); };
 }

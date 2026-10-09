@@ -3,19 +3,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import IsuNavigation from '../components/IsuNavigation.astro';
 import CoBrand from '../components/CoBrand.astro';
 import IsuGauge from '../components/IsuGauge.astro';
+import bgObiettivi from '../assets/generated/bg/light-anno.jpg';
 import IsuStack from '../components/IsuStack.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SOURCES } from '../data/sources';
-import { NUMERI as numeri, numeroInRiga, strati as pila, passi as proposta, ASK } from '../data/contenuti';
-import bgCover from '../assets/generated/bg/dark-exec.jpg';
+import { NUMERI as numeri, numeroInRiga, strati as pila, passi as proposta, ASK, DOMANDA_LETTURA, OBIETTIVI as obiettivi, NOTA_OBIETTIVI } from '../data/contenuti';
+
+/* Le stesse due clip del percorso intero, dagli stessi nomi sul Release: la
+   copertina e la chiusura si muovono anche qui. Erano due immagini ferme — un
+   taglio corto è una versione breve, non una versione spenta. */
+const COVER_VIDEO =
+  'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/isu-cover.loop.mp4';
+const FIRMA_VIDEO =
+  'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/isu-firma.loop.mp4';
 import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
-import bgLettura from '../assets/generated/bg/light-lettura.jpg';
 import bgInnesto from '../assets/generated/bg/dark-innesto.jpg';
-import bgRotta from '../assets/generated/bg/stacco-rotta.jpg';
 
 /**
  * TAGLIO EXEC — cinque slide, non una di più.
@@ -41,7 +48,7 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
    lungo che comanda. */
 
 ---
-<BaseLayout title="In dieci minuti" preloadImage={bgCover.src}>
+<BaseLayout title="In dieci minuti" preloadImage={`${base.replace(/\/?$/, '/')}media/isu-cover.poster.jpg`}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <IsuNavigation currentPath={currentPath} base={base} />
   </div>
@@ -49,8 +56,14 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
   <DeckContainer wallScale nextHref={href(base, '/')}>
 
     <!-- ── 1 · Copertina ─────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg isu-bg--cover" style={`--bg-src: url(${bgCover.src})`}></div>
+    <Slide id="slide-cover" bg="inverse" align="center" data-audio="loud" data-made-with="Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={COVER_VIDEO}
+        poster={`${base.replace(/\/?$/, '/')}media/isu-cover.poster.jpg`}
+        scrim="isu-scrim-cover"
+        opacity={1}
+      />
       <div class="isu-wrap max-w-5xl">
         <CoBrand variant="hero" class="mb-9" />
         <h1 class="isu-title text-[var(--ink-inverse)]">Su scala umana</h1>
@@ -69,6 +82,46 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
     </Slide>
 
     <!-- ── 2 · Il vostro anno ────────────────────────────────────────────── -->
+    <!-- ── 2 · Gli obiettivi dichiarati ──────────────────────────────────
+         Stessa slide del percorso intero, stessa fonte: è la diapositiva che
+         rende il capitolo «il vostro anno visto da fuori» invece di un
+         verbale, perché parte da quello che hanno detto loro. In dieci minuti
+         serve prima dei numeri: gli obiettivi dicono dove vogliono andare, i
+         numeri dicono da dove partono. -->
+    <Slide id="slide-obiettivi" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgObiettivi.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T as="p" class="slide-eyebrow" it="Dichiarati da voi, in pubblico" en="Stated by you, in public" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Tre obiettivi del vostro piano"
+          en="Three goals from your plan"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <div class="isu-goals mb-5 w-full">
+          {obiettivi.map((o) => (
+            <div class="isu-goal">
+              <span class="isu-num" aria-hidden="true">{o.n}</span>
+              <p class="isu-goal-t">
+                <span data-lang-it set:html={o.goal.it} /><span data-lang-en set:html={o.goal.en} />
+              </p>
+              <p class="isu-goal-s">
+                <span data-lang-it set:html={o.ask.it} /><span data-lang-en set:html={o.ask.en} />
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <T as="p" class="isu-note mx-auto" it={NOTA_OBIETTIVI.it} en={NOTA_OBIETTIVI.en} />
+        <p class="isu-note mt-2 mx-auto">
+          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
+          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
+        </p>
+      </div>
+    </Slide>
+
     <Slide id="slide-anno" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgNumeri.src})`}></div>
       <div class="isu-wrap max-w-7xl">
@@ -91,6 +144,7 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
           it="Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutti e tre passano da quello che il cliente legge."
           en="Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads."
         />
+        <T as="p" class="isu-ask mt-6 mx-auto" it={DOMANDA_LETTURA.it} en={DOMANDA_LETTURA.en} />
         <p class="isu-note mt-3 mx-auto">
           <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
           <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
@@ -98,29 +152,6 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
       </div>
     </Slide>
 
-    <!-- ── 3 · La lettura ────────────────────────────────────────────────── -->
-    <Slide id="slide-lettura" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
-      <div class="isu-wrap max-w-5xl">
-        <div class="isu-read mx-auto">
-          <T as="p" class="isu-read-k" it="Quello che vediamo da qui" en="What we see from here" />
-          <T
-            as="h2"
-            class="isu-read-t"
-            it="L’architettura ha una data. Quello che il cliente legge, e la misura di che cosa ha funzionato, non ancora."
-            en="The architecture has a date. What the customer reads, and the measure of what worked, do not yet."
-          />
-        </div>
-        <T
-          as="p"
-          class="isu-lead mt-9 mx-auto"
-          it="Con il 95% dei prodotti già digitale e sette journey su dieci già omnicanali, la parte difficile si è spostata a monte. Quanta roba serve per tenere in piedi quei journey, chi la produce, e come si distingue il passaggio che ha spostato il risultato."
-          en="With 95% of products already digital and seven journeys out of ten already omnichannel, the hard part has moved upstream. How much material it takes to keep those journeys running, who produces it, and how anyone tells the step that moved the outcome."
-        />
-        <hr class="isu-rule mt-8 mx-auto" />
-        <T as="p" class="isu-ask mx-auto" it="Questa lettura regge, vista da dentro?" en="Does this reading hold, seen from the inside?" />
-      </div>
-    </Slide>
 
     <!-- ── 4 · Dove ci innestiamo ────────────────────────────────────────── -->
     <Slide id="slide-innesto" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
@@ -129,12 +160,12 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
         <T as="p" class="slide-eyebrow" it="Su quello che avete già" en="On what you already have" />
         <T as="h2" class="isu-title mt-3 text-[var(--ink-inverse)]" it="Dove ci innestiamo" en="Where we plug in" />
         <hr class="isu-rule mx-auto" />
-        <IsuStack layers={pila('breve')} class="mb-6" />
+        <IsuStack layers={pila('breve', base)} class="mb-6" />
         <T
           as="p"
           class="isu-col-sub mx-auto"
-          it="La fondazione è già vostra. Una banca da 68 milioni di clienti ha fatto questo percorso in otto mesi, e il suo centro di competenza interno è nato l’anno dopo."
-          en="The foundation is already yours. A bank with 68 million customers walked this path in eight months, and its internal centre of excellence came the year after."
+          it="La fondazione è già vostra, e ogni strato si apre sul capitolo che lo racconta, se la domanda arriva. Una banca da 68 milioni di clienti ha fatto questo percorso in otto mesi."
+          en="The foundation is already yours, and each layer opens onto the chapter that tells it, if the question comes up. A bank with 68 million customers walked this path in eight months."
         />
         <p class="isu-note mt-3 mx-auto">
           <span data-lang-it>{SOURCES.santander.label.it}</span><span data-lang-en>{SOURCES.santander.label.en}</span>
@@ -144,8 +175,14 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
     </Slide>
 
     <!-- ── 5 · La rotta, e la firma ──────────────────────────────────────── -->
-    <Slide id="slide-rotta" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgRotta.src})`}></div>
+    <Slide id="slide-rotta" bg="inverse" align="center" data-audio="loud" data-made-with="Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={FIRMA_VIDEO}
+        poster={`${base.replace(/\/?$/, '/')}media/isu-firma.poster.jpg`}
+        scrim="isu-scrim-firma"
+        opacity={1}
+      />
       <div class="isu-wrap max-w-7xl">
         <CoBrand variant="hero" class="mb-8" />
         <T as="h2" class="isu-title text-[var(--ink-inverse)]" it="Come andiamo avanti" en="How we move forward" />

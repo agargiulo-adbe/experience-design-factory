@@ -81,15 +81,33 @@ const bi = (v: string | Bilingual | undefined) =>
       if (a.dataset.stackReady) return;
       a.dataset.stackReady = 'true';
       a.addEventListener('click', (e) => {
-        const id = (a.getAttribute('href') || '').replace(/^#/, '');
-        if (!id) return;
-        const slides = Array.from(document.querySelectorAll('[data-slide]'));
-        const i = slides.findIndex((s) => s.id === id);
-        const deck = (window as unknown as { __edfDeck?: { goTo(n: number): void } }).__edfDeck;
-        if (i < 0 || !deck) return;
+        const href = a.getAttribute('href') || '';
+        if (!href) return;
+        const w = window as unknown as {
+          __edfDeck?: { goTo(n: number): void };
+          __edfNavigate?: (h: string) => void;
+        };
+
+        // Ancora locale: la slide è in questa pagina, si salta e basta.
+        if (href.startsWith('#')) {
+          const id = href.slice(1);
+          const i = Array.from(document.querySelectorAll('[data-slide]')).findIndex((s) => s.id === id);
+          if (i < 0 || !w.__edfDeck) return;
+          e.preventDefault();
+          e.stopPropagation();
+          w.__edfDeck.goTo(i);
+          return;
+        }
+
+        /* Pagina diversa (il taglio corto che rimanda all'approfondimento):
+           si passa dalla navigazione SPA del deck, se no il ricaricamento
+           pieno fa cadere la modalità a tutto schermo nel mezzo di una
+           presentazione. Il deck di arrivo legge l'ancora e apre la slide
+           giusta (il salto sull'hash vive in `initDeck`). */
+        if (!w.__edfNavigate) return;
         e.preventDefault();
         e.stopPropagation();
-        deck.goTo(i);
+        w.__edfNavigate(href);
       });
     });
   }
