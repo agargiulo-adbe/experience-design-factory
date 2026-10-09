@@ -31,8 +31,48 @@ function glob(dir: string, ext: string): string[] {
   return results;
 }
 
+/**
+ * Sottoalberi marcati `data-audit-skip` e `<nav>`: un INDICE ripete i titoli
+ * dei capitoli per mestiere, e la regola (c) — nessuna frase lunga due volte
+ * nella stessa pagina — li leggeva come prosa duplicata. L'anteprima rapida di
+ * Poste elenca tutte le domande su ogni pagina, e faceva cadere la CI con venti
+ * rilievi che erano tutti lo stesso falso positivo. Si toglie la navigazione,
+ * non si allenta la regola.
+ */
+function stripIndexes(html: string): string {
+  let out = html.replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, ' ');
+  // Sottoalbero bilanciato, non una regex non-greedy: un indice ha div
+  // annidati e `[\s\S]*?</div>` si fermerebbe al PRIMO chiuso, lasciando
+  // dentro tutto il resto. È il motivo per cui il primo tentativo non
+  // cambiava nulla.
+  for (;;) {
+    const at = out.search(/<(\w+)\b[^>]*\sdata-audit-skip\b/i);
+    if (at === -1) break;
+    const tag = /^<(\w+)/.exec(out.slice(at))![1].toLowerCase();
+    const open = new RegExp(`<${tag}\\b`, 'gi');
+    const close = new RegExp(`</${tag}\\s*>`, 'gi');
+    let depth = 0;
+    let i = at;
+    let end = -1;
+    while (i < out.length) {
+      open.lastIndex = i;
+      close.lastIndex = i;
+      const o = open.exec(out);
+      const c = close.exec(out);
+      if (!c) break;
+      if (o && o.index < c.index) { depth++; i = o.index + 1; continue; }
+      depth--;
+      i = c.index + 1;
+      if (depth === 0) { end = c.index + c[0].length; break; }
+    }
+    out = end === -1 ? out.slice(0, at) : out.slice(0, at) + ' ' + out.slice(end);
+  }
+  return out;
+}
+
 function textContent(html: string): string {
-  return html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+  return stripIndexes(html)
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')

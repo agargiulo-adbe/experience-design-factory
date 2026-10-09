@@ -262,6 +262,35 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
     [data-deck] .deck-btn { width: 4.5rem; height: 4.5rem; }
     [data-deck] .deck-btn svg { width: 34px; height: 34px; }
   }
+
+  /* ── IL TIPO CRESCE COL MURO ───────────────────────────────────────────
+     Ogni skin fissa `html { font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem) }`:
+     il tetto è 18px ed è già raggiunto a 1600px di larghezza. Da lì in poi il
+     tipo NON cresceva più, e il contenuto restava un francobollo: misurato su
+     un 3840×2160, il corpo stava a 18,4px e il blocco copriva il 34% della
+     larghezza e il 30% dell'altezza. Allargare solo le safe-area e i comandi
+     — che è quello che il motore faceva — non sposta niente.
+
+     Si scala la RADICE, non i singoli corpi: tipo, interlinea e larghezze
+     massime (`max-w-*` è in rem) crescono insieme, quindi la riga resta lunga
+     più o meno gli stessi caratteri e la composizione non si deforma.
+
+     La scala parte SOPRA i 1920: 1920, 1440 e 1280 sono i viewport su cui
+     l'audit misura e su cui ogni deck è già stato verificato a mano. Toccarli
+     qui vorrebbe dire rifare quella verifica su tutte le experience.
+
+     `:has()` tiene la regola dentro le pagine che hanno davvero un deck: un
+     dossier o una pagina di testo non si scala. Dove `:has()` non c'è, non
+     succede nulla e il deck resta com'era. */
+  @media (min-width: 2000px) {
+    html:has([data-deck]) { font-size: 20px; }
+  }
+  @media (min-width: 2560px) {
+    html:has([data-deck]) { font-size: 24px; }
+  }
+  @media (min-width: 3200px) {
+    html:has([data-deck]) { font-size: 28px; }
+  }
 </style>
 
 <!--

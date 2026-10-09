@@ -194,7 +194,16 @@ const ROUTES = onlyFlag
 if (!ROUTES.length) throw new Error(`--only ${onlyFlag}: nessuna rotta con questo nome in ${appFlag}`);
 
 // A projected keynote must hold beyond exactly 1920×1080 — test common projector/laptop sizes.
-const VIEWPORTS: Array<[number, number]> = [[1920, 1080], [1440, 900], [1280, 800]];
+/* I tre viewport di proiezione. `--tv` aggiunge i due da MURO: lì il motore
+   scala la radice del tipo (DeckContainer), e una slide che sta in piedi a
+   1920 può comunque sbordare a 2560×1440, dove l'altezza cresce molto meno
+   della larghezza. Non è nel giro di default perché raddoppia i tempi: si
+   lancia quando si tocca la composizione, e prima di una proiezione su parete. */
+const TV_VIEWPORTS: Array<[number, number]> = [[2560, 1440], [3840, 2160]];
+const VIEWPORTS: Array<[number, number]> = [
+  [1920, 1080], [1440, 900], [1280, 800],
+  ...(process.argv.includes('--tv') ? TV_VIEWPORTS : []),
+];
 const OUT_BASE = path.resolve(process.cwd(), 'audit');
 
 async function findBaseUrl(): Promise<string> {
