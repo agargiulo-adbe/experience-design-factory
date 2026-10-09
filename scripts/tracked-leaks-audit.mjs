@@ -80,6 +80,17 @@ for (const f of tracked.filter((f) => /\/src\/pages\/dossier[^/]*\.astro$/.test(
   }
 }
 
+// ── 4-bis · i materiali del panel non si tracciano mai ───────────────────
+// I ritratti delle personas sono fatti di persone reali, e i verdetti portano
+// i loro giudizi simulati. La vetrina dichiara che «i file dei ritratti stanno
+// fuori dal controllo di versione»: finché è una dichiarazione è un'intenzione,
+// qui diventa un controllo. Verificato il 9 ott 2026 che non sono mai stati
+// committati; questa riga impedisce che succeda per distrazione.
+const PANEL = /(^|\/)(PANEL-PERSONAS\.md|PANEL-VERDICT-.*\.md)$|(^|\/)panel\/.*\.(json|md)$/;
+for (const f of tracked) {
+  if (PANEL.test(f)) add(f, 'materiale del panel tracciato (ritratti o verdetti: vanno in docs/<Cliente>/, git-ignorata)');
+}
+
 // ── 5 · la watchlist dei cognomi, se c'è ──────────────────────────────────
 const WATCH = 'docs/.names-watchlist.txt';
 let watchNote = `nessuna watchlist (${WATCH} assente): il controllo sui cognomi non è stato fatto`;

@@ -5,6 +5,142 @@
 
 ## 11. Change log recente
 
+### Change log — due giri di panel, e quello che hanno trovato dentro le correzioni appena fatte (2026-10-09, notte) → §13, §32
+
+Lanciati i due giri delta che erano P0 e che si potevano lanciare: **vetrina** (giro delta, sei
+personas cieche + fact-checker + arbitro, `docs/Factory/PANEL-VERDICT-2026-10-09-delta.md`) e
+**Poste «Sei domande»** (giro 2, cinque personas,
+`docs/Poste Italiane/PANEL-VERDICT-2026-10-09-round2.md`). Quindici agenti, zero errori.
+
+**Poste, giro 2 — il verdetto migliore finora.** Credibilità **4,0** su cinque personas (tenuta),
+**rilevanza +0,6** (3,0 → 3,6: le due personas del business, che al giro 1 davano 2, si sono
+mosse), azionabilità +0,2, rischio fermo a 3,0, chiarezza −0,4. Il Responsabile Monitoraggio
+Canali Digitali dà **rilevanza 5** e dice perché: `governare/slide-rilasci` è il caso d'uso che ha
+portato lui, e si prova sulla suite di sviluppo senza chiedere niente a nessuno. Quello che la
+costanza del rischio dice: il pilota in sola lettura adesso è scritto in due punti, ma il registro
+delle azioni via MCP non c'è, e il deck lo ammette.
+
+**Vetrina, giro delta — credibilità +0,3, rischio +0,8, e tre voti che scendono.** Il metodo della
+serie Lighthouse è la cosa più citata del giro: tutte e sei le personas la indicano come la ragione
+per cui credono al resto, «la pagina pubblica il proprio voto peggiore e ritira il proprio numero
+migliore». Ma le stesse correzioni del 9 ottobre hanno aperto contraddizioni nuove, ed è la lezione
+del giro: **una correzione può creare un'esposizione peggiore di quella che chiude.**
+
+Applicati nove P0 nella stessa serata, in ordine di gravità:
+
+- **Cinque experience erano indicizzabili, e nessuno se n'era accorto.** Il flag `noindex` esisteva
+  in quattro `BaseLayout` ma partiva da **`false`**, e solo le pagine di dossier lo accendevano;
+  l'Atelier e la **console di amministrazione** non avevano alcun meta robots. Misurato sul `dist`:
+  36 pagine su 156 senza. La prova dall'esterno era nella serie Lighthouse appena pubblicata — SEO
+  100 su Isybank, MIM, Eni e Atelier contro 60-63 sulle altre. Default a `true` nelle cinque
+  BaseLayout, meta aggiunto in Atelier e console: **156 pagine su 156**, verificato ricontando il
+  `dist`.
+- **La serie Lighthouse aveva ricostruito l'indice dei conti riservati.** Elencava in chiaro nome e
+  punteggio di cinque experience fuori vetrina — una regressione introdotta nella stessa giornata,
+  su un rilievo che un giro precedente aveva già chiuso togliendo quei nomi da altre due sezioni.
+  Le righe fuori vetrina restano nella serie, perché forchetta e conteggio devono restare veri, ma
+  **senza nome**. In pagina resta vero il conto dei nominati: quattro, tre conti più l'Atelier.
+- **La rivendicazione sul panel era smentita dal verdetto agli atti.** «Il panel ha alzato il voto
+  sulla credibilità fra un giro e l'altro»: il verdetto del 3 ottobre registra −0,7. Sostituita con
+  un fatto verificabile — «fra il primo giro e l'ultimo questa pagina ha ritirato tre propri numeri
+  contro il proprio interesse».
+- **Tre numeri della provenance erano sbagliati e scritti a mano.** Ora li conta
+  `pnpm provenance:count` e la pagina li legge: **142 file, 123 record** (35 stock, 88 generati),
+  **21 file senza registro**. «35 su 113» non corrispondeva né ai record né ai file; «sette clip»
+  ne ignorava quattro (le tre di MIM e la copertina di Intesa non hanno un record video).
+- **La base giuridica era quella sbagliata.** L'art. 13 della legge 132/2025 mette l'obbligo di
+  informativa sui sistemi di IA in capo a chi esercita una **professione intellettuale** verso il
+  destinatario della prestazione; la riconoscibilità generale dei contenuti sintetici sta
+  nell'**AI Act, art. 50**. Un materiale di prevendita non è ovviamente né l'uno né l'altro, e la
+  pagina adesso dice che quale dei due vincoli si applichi è la domanda da portare a Legal.
+- **«In rollout dal 2 ottobre» prometteva più della fonte.** Le release notes Adobe, riverificate
+  direttamente il 9 ott, dichiarano **Rollout Status: TBD** (rimandato dal 25 settembre) e GA non
+  dichiarata. Corretto in dieci punti fra la vetrina e il deck di Poste: la data è annunciata, il
+  rollout no. È la seconda metà della correzione del 6 ottobre, che aveva già sostituito una GA
+  affermata con «rollout».
+- Più: la licenza Microsoft 365 Copilot (l'agent si costruisce senza licenza; serve per **usarlo**,
+  ed è per utente, non della tenant), e `blueprint#build`, che descriveva ancora l'audit come
+  «lanciato prima di spedire» mentre dalla stessa giornata gira in CI.
+- **I ritratti delle personas non erano mai stati committati** (`git log --all` su quei percorsi
+  torna zero), ma la vetrina lo dichiarava come intenzione. Adesso è un controllo: `audit:leaks`
+  fallisce se un `PANEL-PERSONAS.md`, un `PANEL-VERDICT-*.md` o un file sotto `panel/` entra fra i
+  tracciati.
+
+⚠️ **Due giri al massimo**: quello che è sopravvissuto non va a un terzo giro, resta un punto
+aperto in §10. I più pesanti: l'**aritmetica dell'inventario** (tre insiemi diversi chiamati tutti
+«undici», e due app Intesa che non esistono per nessun conteggio della pagina — va deciso se
+entrano nel registry), i **21 file senza registro di licenza**, e sul deck di Poste la **numerazione
+dei capitoli** (si chiama «Sei domande», la nav ne mostra sette, e «Evolvere» è 06 nel sommario e
+07 in copertina) più i **nomi di tre prodotti reali** letti da una sandbox che la slide prima
+dichiara non leggibile.
+
+### Change log — sei P0 chiusi, e tre gate che prima non c'erano (2026-10-09, sera) → §10 (Parte 2), `CLAUDE.md`
+
+Giro sul backlog P0 (`worktree-p0-sweep-2026-10-09`, quattro commit). Il filo che tiene insieme
+quasi tutto: **tre volte in un giorno materiale riservato era già pubblico, per tre vie diverse,
+e nessuna delle tre era «un nome in un documento»**.
+
+- **Due dossier interni erano leggibili senza password** (`720757d`). `trenitalia-connessioni/dossier/`
+  (FSTechnology) ed `eni-orbita/dossier/` avevano il renderer **copiato dentro l'app** e il contenuto
+  **scritto nel file `.astro`**: compilato nel bundle e pubblicato su GitHub Pages. Chi apriva l'URL
+  leggeva tutto — nome e ruolo del referente, lettura competitiva su un fornitore concorrente, mappa
+  degli stakeholder, minutaggio e piano B dell'incontro. Il badge «Riservato» è una scritta, `noindex`
+  tiene fuori i motori di ricerca, non chi ha il link. Contenuto spostato su `restricted_docs`
+  (migrazioni **0027** e **0028**, seed git-ignorati, applicate al DB remoto), pagine ridotte a
+  wrapper sottili sul motore condiviso. **Gli URL non cambiano.** Il contenuto Eni è stato *rimappato*
+  dai `const` del vecchio file, non riscritto a mano. **Verificato**: nessuna stringa riservata nei
+  bundle; il gate nega senza token; `pnpm audit:dossier` a **0 rilievi su nove dossier**.
+- **Il motore dei dossier non ha più due lingue fisse nel markup.** Le ricava dal contenuto — una
+  mappa di lingue è un oggetto con chiavi di due lettere e valori stringa — quindi il dossier Eni
+  resta **trilingue IT/EN/FR** invece di perdere il francese nella migrazione. Sotto i 480px il
+  selettore passa nel pannello dell'indice: tre bersagli da 44px non stanno nella barra di un telefono
+  da 320 (misurati 355px contro 320), e il badge «Riservato» non si baratta per un selettore.
+- **Il ruolo al posto del nome, e un gate che lo impedisca** (`27d64a4`). 53 riferimenti a 23 persone
+  — referenti di cliente, le cinque personas del panel Poste con i loro voti, cinque colleghi Adobe coi
+  loro — sostituiti col ruolo in 13 file tracciati. Ma il ritrovamento vero era altrove:
+  **`0008_restricted_docs.sql` è tracciato e portava dentro di sé l'intero seed del dossier UniCredit**,
+  otto persone del cliente con nome, ruolo e **URL del profilo LinkedIn**. Schema e policy restano nella
+  migrazione, il contenuto esce dal repo (README **0008b**). Nuovo gate **`pnpm audit:leaks`**: cerca le
+  **forme** — profili LinkedIn, seed dentro migrazioni, pagine di dossier che non usano il motore
+  condiviso, slug col nome di una persona — più i cognomi di `docs/.names-watchlist.txt`, git-ignorata,
+  perché un elenco di cognomi in un repo pubblico sarebbe la fuga stessa. Due nomi restano, **dichiarati**
+  col marcatore `leaks-audit: attribuzione pubblica`: sono citazioni pubbliche con la fonte accanto, e
+  toglierle le renderebbe non verificabili. Gira in CI.
+- **Tre affermazioni della vetrina non reggevano** (`25fdd3a`). (1) La serie **Lighthouse** non era
+  riproducibile: rigirata, lo stesso URL oscillava fino a 35 punti. Ora `node scripts/lighthouse-median.mjs`
+  fa tre giri per pagina sul sito pubblicato, tiene la **mediana** e scrive data, strumento, condizioni e
+  **oscillazione per pagina** in `apps/factory-showcase/src/data/lighthouse.json`, che le due pagine ora
+  **leggono** invece di ripetere a mano. Misurato il 9 ott: accessibilità **100 su undici experience**, 97
+  sulla vetrina, 95 sull'hub; best practices 100 ovunque; performance **fra 73 e 86 — nessuna pagina sopra
+  90**, e UniCredit è a **81**, non a 96. (2) I **denominatori della provenance** erano i record, non i
+  file: le quattro experience su stock hanno 37 file e il registro ne copre 16. (3) **Nessuna copertina**
+  dichiara l'assistenza AI sul testo, e l'Atelier non ha nota: la frase diceva il contrario e ci poggiava
+  il paragrafo sulla legge 132/2025.
+- **Il tile Isybank del wall** aveva la nota tagliata, il puntatore del mouse nel fotogramma e il progresso
+  in hover. Era catturato a 1280×720, **più basso di qualunque risoluzione che l'audit verifica** — e
+  infatti a 1920/1440/1280×800 la copertina è pulita. `scripts/wall-tile.mjs` cattura a 1920×1080 e riduce
+  a 1280×720; con Playwright il puntatore non esiste.
+- **I sei fallimenti HARD sono chiusi** (`116a516`). Max Mara: il riquadro del visual di
+  `motore-adobe/slide-datalake` misurava **0×0** — `w-full` in una colonna di griglia `auto` il cui
+  contenuto è tutto assoluto non ha larghezza intrinseca — e la nuvola di punti sbordava di 182px; la
+  targhetta «AEM Sites» sporgeva di 4px dall'anello di `slide-assemble`; su `acquisizione/slide-datalake`
+  l'apertura di «Scopri come» faceva crescere di 129px anche la colonna del visual, per via di `h-full`.
+  UniCredit, `b2b/slide-adriana`: colonna sinistra 874px contro 464 disponibili, l'eccedenza oltre 400px
+  non si taglia — la citazione è diventata **una slide sua**, e il tipo non si è toccato.
+- **`audit:deck` gira in CI**, che è il motivo per cui quei sei erano rimasti aperti per settimane.
+  `pnpm audit:deck:ci` unisce i `dist` nell'albero che il deploy pubblica, li serve da **un'origine sola**
+  e audita ogni deck con **`--hard-only`**: esce ≠0 solo sui HARD, i soft restano stampati. ⚠️ Tre trappole,
+  tutte costate un giro: il server statico deve mandare **`content-length`** (senza, `networkidle` non si
+  assesta e ogni rotta va in timeout — 982ms contro 30s); gli audit vanno lanciati **in modo asincrono**,
+  perché `execFileSync` blocca l'event loop del server che sta nello stesso processo; e un **`--app`
+  sconosciuto ricadeva in silenzio su maxmara**, quindi i primi tre deck «verdi» erano lo stesso deck tre
+  volte. Ora è un errore, `--app` accetta anche il nome della cartella, e il gate **conta le rotte
+  auditate**: zero rotte non è un PASS. Stessa famiglia del baco di `--only` già documentato.
+- **Un link di dossier revocato adesso lo dice** (`5640618`). La RPC `get_shared_doc` restituisce
+  esattamente `null` quando il token non esiste, e `null` era anche il segnale interno «errore già
+  mostrato»: chi apriva un link morto restava su «Verifica accesso…» per sempre. Un vicolo cieco, non un
+  rifiuto.
+
 ### Change log — il guscio sensoriale: marchio, movimento, suono, scala (2026-10-09) → `CLAUDE.md`, `skills/experience-design/references/sensory-shell.md`, commit `f84c767`→`fc28457`
 
 - **Quattro cose che si vedono prima che si legga una riga, e che nessun check faceva fallire** (`f84c767`), ora generalizzate in una regola BINDING e in un reference della skill: **marchio** (ogni experience ha il suo `public/favicon.svg` geometrico — mai una lettera, mai il logo del cliente — e `pnpm brand:icons` ne deriva `icon-192`, `apple-touch-icon` e `og.png`); **movimento** (la clip in loop sta su copertina e chiusura, dove non si parla; `--boomerang` quando la clip deriva e nessuna dissolvenza fa combaciare testa e coda); **suono**; **scala**.
@@ -93,7 +229,6 @@ Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato 
 - **Panel review:** i due giri del 6 ott (§35.8) coprono la **v3**. La v6 ha titolo, perimetro,
   struttura e un capitolo diversi → il verdetto **non copre lo stato corrente** (voce P0).
 
-
 ### Change log — Poste: l'ultima passata prima della sala (2026-10-07, mattina) → §32.11, commit `a386afe`→`80f4053`
 
 - **Il costo detto come un fatto, e il limite di reporting col numero vero** (`a386afe`): i crediti di prova diventano una frase piana sulla copertina e in «Cosa vi portate a casa», senza numeri di settimana — è una prima sessione di introduzione, non una trattativa; il «monte richieste di reporting» ha il numero pubblico della Product Description (**Analytics Select, 500.000 richieste di report al mese per IMS org**, e le domande via MCP contano lì dentro). Via la nota sulla verifica interna per il settore finanziario, e via il criterio del 2024 sui «dati di altri reparti», che chiedeva «quali reparti?» a chi presidia i canali digitali: al suo posto l'altro criterio approvato, la facilità d'uso.
@@ -119,78 +254,4 @@ Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato 
 - **Il cross-selling è l'altra metà.** L'high-touch su Coworker per CJA è partito col cliente il 1 ott e ha una call di stato settimanale: estenderlo a Target farebbe **un solo programma su due prodotti**, che difende il rinnovo di dicembre e insieme approfondisce l'adozione CJA. È l'ask portata alla call dell'8 ottobre con il PM del programma di retention Target.
 - **Ruoli verificati, e un'assunzione corretta.** I tre interlocutori lato cliente sono stati verificati sui profili pubblici archiviati in `docs/Unipol/` (git-ignorata): **Adobe Target è del Lead Digital Intelligence (CDP & CRO Specialist)**, non del contatto quotidiano su CJA come si era scritto in prima battuta — ed è la stessa persona che sta valutando il concorrente. Sopra di loro c'è il Head of Digital Experience, che siede nella discussione sul rinnovo. Lato Adobe il programma di retention Target è passato di mano a fine settembre: chi lo teneva si è spostato su AJO.
 - **Il connettore Microsoft 365 è in SOLA LETTURA.** Ha `Mail.Read` ma non `Mail.ReadWrite` (e nemmeno `People.Read`): legge e cerca la posta di `agargiulo@adobe.com`, **non** crea bozze — `outlook_create_draft` risponde 403 e servirebbe il consenso di un amministratore. Per produrre una mail modificabile: **AppleScript su `Microsoft Outlook`** (`make new outgoing message` + `make new to/cc recipient`, poi `open`; **senza `save`**, che su Mac vuole un percorso file e fallisce con −1701). Fallback per la formattazione: `textutil -convert rtf -format html` e il risultato negli appunti con `osascript -e 'set the clipboard to (read … as «class RTF »)'`. Un file `.eml` **non** serve: il nuovo Outlook per Mac lo apre in sola lettura, con il solo bottone «Import».
-
-### Change log — il motore unico dei dossier, misurato sul telefono; Intesa «Dopo la firma» (2026-10-06) → dettaglio §34, §35
-
-- **feat(intesa): «Dopo la firma»** — entità nuova `apps/intesa-dopo-la-firma/`, distinta da `intesa-scala-umana`: lì la Divisione Banca dei Territori il 22 ott, qui il **Chief Operating Officer della capogruppo assicurativa** l'8 ott. Perimetri e vincoli diversi (niente canali della banca, niente che tocchi il core assicurativo), quindi entità separata così un vincolo di una stanza non cola nell'altra. Migrazione tracciata `0021_seed_intesa_dopo_la_firma.sql` + README; contenuto e seed in `docs/Intesa Sanpaolo/` (git-ignorata). Dettaglio §35.
-- **feat(core): un solo motore per i dossier** — `packages/core/src/blocks/doc/DossierPage.astro`. Sei app avevano **sei copie divergenti** del renderer (345→583 righe l'una): migliorare la lettura su telefono in una non la migliorava nelle altre, e una copia aveva già rinominato i token a mano. Ora ogni app è un **wrapper di ~30 righe** che passa `docSlug` e mappa la sua palette sul contratto `--dw-*`. Retrofit su tutte e sei (isybank, mim, poste, unicredit, intesa ×2), ciascuna verificata con il **contenuto reale** dal database. Dettaglio §34.
-- **feat(core): leggibilità sul telefono, misurata** — barra fissa da **330px a 63px** su iPhone SE (dal 49% al 9% dello schermo: l'avvertenza di sei righe non insegue più il lettore per venti schermate, sta in copertina); su barra stretta il titolo è la **sezione corrente**, non il titolo del documento; **indice con scroll-spy** (pannello su telefono, rail da 1100px) e ancora per sezione; **tabelle vere** che su telefono diventano schede dove **ogni cella porta l'intestazione della sua colonna** (prima l'intestazione spariva e restavano quattro numeri senza nome, a 11px); corpo 16px, celle 14,7px, misura di lettura 84 caratteri per riga; bersagli tattili 44px; **bilingue IT/EN portato nel motore** così MIM e UniCredit non perdono il selettore che avevano; stampa su carta bianca con l'URL di ogni fonte accanto al link.
-- **feat(core): gerarchia del tipo aperta** — il tipo non era più piccolo degli altri dossier (misurati tutti e sei: identici al pixel). Piatta era la **gerarchia**: su telefono il titolo di sezione stava a 20,8px contro un corpo di 16. Copertina 22,4→26,4px, titolo di sezione 20,8→24, numeri 20→27,3, celle 14,7→15,2. Il corpo resta a 16: quello era giusto.
-- **feat(core): blocco `gloss`** — un indicatore si spiega dove sta il numero. Disclosure native (`<details>`): su telefono il tooltip non esiste, non c'è hover, e un overlay copre quello che si sta leggendo. In stampa si aprono da sole.
-- **feat: `scripts/dossier-audit.ts` (`pnpm audit:dossier`)** — il gate deterministico dei dossier, su **cinque viewport** (320→1280): `a` barra ≤12% del viewport · `b` nessuno scorrimento orizzontale · `c` tipo (corpo ≥16px, celle ≥14px) · `d` celle etichettate quando la tabella si impila · `e` bersagli ≥44px · `f` indice completo · `g` 60–95 caratteri per riga · `h` stampa pulita · `i` zero errori JS · **`j`** contenuto che sfora la **propria** colonna · **`k`** nessun blocco reso vuoto. Sei dossier, zero rilievi.
-- **fix(core): quattro difetti trovati dall'audit, non guardando** — un figlio di griglia senza `min-width` faceva scorrere di lato **l'intera pagina** di Poste; lo skip link a `left:-9999px` allargava l'area di scorrimento; i tag `<code>` e `<strong>` scritti nei campi descrittivi uscivano **alla lettera** (nel dossier Poste erano venticinque); e `say`/`dont` **scartava in silenzio** le voci con badge — la cautela più importante del dossier Intesa non compariva in pagina. Da lì il check `k`, che ha subito trovato un difetto più vecchio: il **«Run of show» di Poste**, cinque righe, invisibile da settembre perché scritto con i campi `{label, sub, body}` invece di `{k, sub, v}`. Convertito in `timeline`; nessun alias aggiunto al motore.
-- **fix(core): il gate di lint non è decorativo** — un ternario usato come istruzione (`no-unused-expressions`) ha fatto fallire il job *quality* e **il primo push non è mai arrivato in pagina**. `pnpm lint` e `pnpm typecheck` vanno eseguiti **prima** del push, non dopo.
-- **docs: la skill `dossier`** — `skills/dossier/SKILL.md` (+ symlink `.claude/skills/dossier`): il lettore da tenere in mente, il metodo di ricerca, la gerarchia delle fonti, la struttura, la pubblicazione, la barra di qualità, i marchi, le cose da non fare. Quattro regole generalizzate oggi, tutte da errori veri: **(1)** il dossier si scrive per un collega che **non sa nulla della Factory** e giudica solo chiarezza, efficacia e conoscenza del cliente — quindi nessun rimando a numero di sezione («§7», «idea I1», «P0»), titoli in italiano piano, e nessun presupposto di presenza («la domanda rimasta aperta in call» non dice niente a chi non c'era); **(2)** nessuna idea entra senza **verifica su Fluffy** e sulle fonti pubbliche e del cliente, e **quello che il cliente fa già da sé non si propone**; **(3)** la **gerarchia delle fonti** per un fatto attribuito a un cliente terzo, con la regola «non trovato ≠ falso»; **(4)** una **dichiarazione ha una data di scadenza**: le idee che nascono da una frase di mesi prima sono spunti da verificare, non assunti. Le prime due regole stanno anche in `CLAUDE.md`.
-- **docs: perché un dossier non porta il co-brand** — tre ragioni (significato, rischio, asset) nella skill §6: il lockup dichiara un artefatto fatto *con* il cliente, un dossier è fatto *su* di lui; un documento con quel lockup, se esce, sembra congiunto; e l'SVG ufficiale quasi nessun cliente lo distribuisce (su nove experience **una sola** ha il marchio vero, le altre ripiegano sul wordmark). Sui deck la regola resta binding.
-- **chore: due nomi di referenti cliente tolti da `CLAUDE.md`** — file tracciato su repo pubblico, vale la regola del ruolo al posto del nome. Resta aperta la coda nei file `docs/HANDOVER-*.md` (P0 di §10) e in due **slug** di dossier.
-
-### Change log — verifica generale: lo stesso bug in due altri posti, la GA di Coworker, le quattro righe sul consenso (2026-10-03, sera)
-- **Il difetto «stili scoped contro DOM a runtime» non era uno, erano tre.** Dopo la card della
-  prova, segnalata dall'owner, è saltata fuori anche la **skin di `#architecture`** (`buildSkin()`:
-  stesso bug, stesso file) e — con una ricognizione sistematica su tutto il monorepo — il caso
-  grosso: **`packages/core/src/blocks/admin/AdminConsole.astro`**, un unico `<style>` scoped di 600
-  righe con **zero `:global()`**, importato da **12 app**. Le tre funzioni che costruiscono DOM
-  (`blockNode`, `renderPreview`, `renderList`) producevano **~26 classi senza stile**: l'editor delle
-  slide personalizzate, la sua anteprima e la lista delle slide salvate erano **senza formattazione
-  in tutte e 12**. Globalizzate **35 regole**, lasciando scoped tutto il resto; le regole
-  dell'anteprima restano ancorate a `.cs-preview-stage` perché le stesse classi `.cs-*` esistono
-  nelle `global.css` delle app e non devono raggiungere le slide vere del deck. Verificato
-  misurando lo stile calcolato di un nodo `cs-block` creato a runtime (bordo 1px, raggio 8px,
-  fondo `#f9fafb`) e con una schermata dell'editor. Memoria `astro-scoped-css-runtime-dom`.
-- **Il resto del monorepo è pulito, e adesso è verificato**: il runtime del deck, l'iniezione delle
-  slide personalizzate nei 11 BaseLayout, i mockup di prodotto, il calcolatore Ferrari, le due
-  pagine della console, le quattro pagine di dossier e il presenter MIM usano già
-  `is:global` / `:global()` / `global.css`. L'elenco completo di ciò che è stato controllato sta
-  nella ricognizione del 3 ott; qui basta la regola: **se una classe può finire su un nodo creato da
-  JavaScript, la sua regola non può stare in un `<style>` scoped**.
-- **«GA su Adobe Analytics, 2 ottobre 2026» era sbagliato, ed è stato corretto ovunque.** Fonte
-  verificata il 3 ott su Experience League (release notes Adobe Analytics): la voce «CX Enterprise
-  Coworker: Analyze Adobe Analytics data in Coworker Chat» dice **«Rollout starts: October 2, 2026»**
-  e **«General Availability: TBD»** (era prevista il 25 set). Toccati: `experiences.ts` della vetrina
-  (IT+EN), la card dell'hub, e tre punti del deck Poste (`accendere`, `capire` ×2, `sources.ts`).
-  Deck Poste rigirato: **0 HARD**, soft invariati. Chiude un P0 del panel.
-- **Le quattro righe sul consenso al co-brand, decise dall'owner**, al posto del blocco rimosso:
-  dove vive · indicizzazione · consenso al co-brand · Security/Legal. Etichetta → fatto, niente
-  prosa: è la forma che il panel aveva proposto («se il problema era il tono, due righe asciutte»).
-  Chiude il P0 unanime del giro del 3 ott.
-- **Verifica generale della vetrina**: build+typecheck+lint verdi su tutto il monorepo; zero overflow
-  orizzontale a 1280/1440/1920 in **entrambe le lingue**; zero errori in console; **tutti i link
-  interni ed esterni a 200**; 211 tag `<T>` in `index` e 66 in `blueprint`, **nessuno monolingue**;
-  conteggi della pagina riconciliati col registry (11 totali, 6 pubblicate, 2 interne, 9 clienti).
-
-### Change log — la tassonomia in vetrina, i due gate, la seconda skill; terzo giro di panel (2026-10-03)
-- `6335a33` **feat(showcase)** — risposta alla domanda dell'autore («tassonomia e panel meritano più
-  risalto?»). Nuova fascia **`#deliverables`** con i quattro tipi nominati per la domanda del cliente,
-  resa da `experienceTypes.ts`; **`#why`** ristrutturato (quattro valori brevi + i **due gate in
-  coppia**, «si vede» e «regge», + la nota «che cosa ha cambiato»); **passo 07** del flusso riscritto
-  (diceva «verificato contro la KB», che non è il gate); **`#skill` a due skill**, la seconda è il
-  panel review con zip e `INSTALL.md`; **card remota di `#proof`** riparata (stili scoped di Astro
-  contro DOM costruito a runtime — memoria `astro-scoped-css-runtime-dom`); **nav** stretta perché le
-  voci sono dodici. **Rimosso** il blocco «Dove vive, chi la vede» su decisione dell'autore.
-  Dettaglio in **§13.10 (HANDOVER-05)**. Build 14 app verde, pushato.
-- **Terzo giro di panel sulla delta** (§13.11): credibilità **4,0 → 3,3**, rischio **2,0 → 1,3**
-  (minimo dei tre giri), rilevanza e azionabilità +0,2. **15 P0 · 20 P1 · 11 P2**, nove P0 applicati
-  nello stesso commit. La lezione, scritta perché non vada persa: **togliere la dichiarazione di un
-  rischio non toglie il rischio** — la rimozione ha lasciato un rimando morto, una frase che negava
-  nomi presenti dieci volte nel DOM, e i punteggi interni del panel accanto al nome di un cliente su
-  una pagina senza login. Tutte e tre corrette; la decisione di fondo resta dell'autore (§10).
-- **Trovato dal panel, fuori dalla vetrina**: sette `docs/HANDOVER-*.md` **tracciati** nominano
-  referenti reali dei clienti su un repository **pubblico** (`raw.githubusercontent` risponde 200).
-  Prima voce P0 di §10, memoria `client-names-public-repo`.
-
-### Change log — il marchio smette di sembrare rotto, e il link condiviso mostra un'immagine (2026-10-02, sera tardi) → dettaglio §32.9
-- `f954792` **feat(poste)** — segnalazione dell'owner su screenshot di Teams: «il logo e il favicon restano bruttini, sembra un'immagine non caricata». Era vero, ed era lo **stesso difetto del 30/9 spostato di un passo**: il «?» era stato tracciato per non dipendere dal font, ma un arco di 3,4px con un puntino **a 16px legge come un carattere che non ha caricato**. Il problema non era il font, era che **un glifo sottile non regge alla misura di una favicon**. Sostituito dalla **faccia del sei** (due colonne per tre, l'ultimo punto giallo = la risposta): forma piena, non lettera. Verificata a 16/24/32/64/96 px e nella nav a 1920.
-- Stessa richiesta, seconda parte: **l'anteprima del link non aveva immagine**. Mancava `og:image` — Teams prendeva titolo e descrizione e metteva il suo segnaposto grigio. Aggiunta una card **1200×630** renderizzata con Playwright dal **poster vero della copertina** + lockup Adobe × Posteitaliane + titolo, col giallo solo su «dentro Adobe Analytics». Più `og:url`, `og:locale`, dimensioni e alt, `twitter:card`, `canonical`, `theme-color`, icone raster 192/180. ⚠️ **Gli URL vanno assoluti** (da `Astro.site`): con un path relativo l'unfurler non risolve e la card resta vuota — la trappola per cui il fix sembra applicato e non si vede. ⚠️ Il deck resta `noindex`: **Teams lo ignora** (verificato live), **LinkedIn potrebbe no**.
-- `ef5f741` **docs** — §32.9 e il **P2** per il resto della Factory: hub, showcase e le altre nove experience condividono il link senza immagine. La ricetta è nel commit, ma la card è arte per experience: una alla volta.
-- **Gate**: build verde, `astro check` 0 errori, `audit:deck` **0 HARD** e soft invariati (il marchio sta nella nav, fuori dalle misure), deploy Pages **success**, `og.png` verificato sul live (200, 409 KB, `image/png`).
 

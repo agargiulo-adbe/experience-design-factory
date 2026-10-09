@@ -246,7 +246,7 @@ export const EXPERIENCES: Experience[] = [
     },
     desc: {
       en: 'Six questions an analytics team gets every week: today in Workspace, and from the same week in CX Enterprise Coworker (Adobe Analytics rollout started 2 October 2026; GA still TBD).',
-      it: 'Sei domande che un team di analytics riceve ogni settimana: oggi in Workspace, e dalla stessa settimana in CX Enterprise Coworker (rollout su Adobe Analytics avviato il 2 ottobre 2026; GA ancora TBD).',
+      it: 'Sei domande che un team di analytics riceve ogni settimana: oggi in Workspace, e dalla stessa settimana in CX Enterprise Coworker (annunciata per Adobe Analytics il 2 ottobre 2026; stato del rollout e GA dichiarati TBD nelle release notes).',
     },
   },
   {

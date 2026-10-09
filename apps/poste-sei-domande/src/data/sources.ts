@@ -32,7 +32,7 @@ export const SOURCES: Record<string, Source> = {
   },
   coworkerRca: {
     id: 'coworkerRca',
-    label: { it: 'Experience League, Coworker: root-cause analysis (doc CJA; versione Analytics in rollout dal 2 ott)', en: 'Experience League, Coworker: root-cause analysis (CJA doc; Analytics version from 2 Oct)' },
+    label: { it: 'Experience League, Coworker: root-cause analysis (doc CJA; versione Analytics annunciata per il 2 ott, rollout dichiarato TBD)', en: 'Experience League, Coworker: root-cause analysis (CJA doc; Analytics version from 2 Oct)' },
     url: 'https://experienceleague.adobe.com/en/docs/cx-enterprise-ai/experience-cloud-ai/coworker/chat/use-cases/data-insights/root-cause-analysis',
   },
   mcpDocs: {

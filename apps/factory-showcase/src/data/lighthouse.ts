@@ -10,6 +10,7 @@
  * stessa misura; chi scrive non può sbagliare a ricopiarla.
  */
 import raw from './lighthouse.json';
+import { DEFAULT_PUBLISHED } from './experiences';
 
 type Page = {
   label: string;
@@ -40,11 +41,29 @@ export const A11Y_HUB = byLabel('hub')?.accessibility ?? 0;
 export const BP_ALL_100 = LH.pagine.every((p) => p['best-practices'] === 100);
 export const RUNS = LH.pagine[0]?.runs ?? 0;
 
-/** «Max Mara 82 · Ferrari 82 · …», dalla più veloce alla più lenta. */
+/**
+ * «Max Mara 82 · Ferrari 82 · …», dalla più veloce alla più lenta — ma SOLO
+ * per le pagine che sono già in vetrina.
+ *
+ * Il 9 ottobre questa riga ha ricostruito, da sola, l'indice dei conti che la
+ * pagina dichiara di non nominare: un elenco con nome e punteggio accanto, in
+ * chiaro nel markup pubblico, di cinque experience fuori vetrina. Un giro
+ * precedente aveva già tolto quei nomi da altre due sezioni; sono rientrati da
+ * qui. Le righe non pubblicate restano nella serie — il conteggio e la
+ * forchetta devono restare veri — ma senza nome.
+ */
+const SLUG = (url: string) => url.replace(/\/$/, '').split('/').pop() || '';
+const IN_VETRINA = new Set(
+  DEFAULT_PUBLISHED.map((e) => e.slug).concat(['showcase', 'experience-design-factory']),
+);
+const nameable = (p: Page) => p.label === 'vetrina' || p.label === 'hub' || IN_VETRINA.has(SLUG(p.url));
+
 export const PERF_LIST = [...LH.pagine]
   .sort((a, b) => b.performance - a.performance)
-  .map((p) => `${p.label} ${p.performance}`)
+  .map((p) => `${nameable(p) ? p.label : 'una fuori vetrina'} ${p.performance}`)
   .join(' · ');
+/** Quante righe della serie restano senza nome, per poterlo dire in pagina. */
+export const PERF_ANONYME = LH.pagine.filter((p) => !nameable(p)).length;
 
 /** La data in italiano piano: «9 ottobre 2026». */
 const MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
