@@ -130,8 +130,8 @@
 > inventario rifatto il 7 ott. Dal 9 ott sera ci sono **tre P1 nuovi su Trenitalia**: il difetto del
 > motore sulle slide chiare (tocca quattro experience), quello che è sopravvissuto al secondo giro di
 > panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione**: le Parti **1, 3, 7 e
-> 11** viaggiano fra 47,4 e 48,0 KB su 49,1: la prossima sezione che cresce lì dentro fa scattare un
-> ribilanciamento. La Parte 8 è quella con più spazio (32,8 KB).
+> 11** viaggiano fra 46,1 e 48,0 KB su 49,1: la prossima sezione che cresce lì dentro fa scattare un
+> ribilanciamento. Le parti con più spazio sono la **10** (24,9 KB) e la **12** (24,9 KB).
 
 ---
 
@@ -142,8 +142,8 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **9 ott 2026** all'indietro, fino al 2 ott: il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica, il tavolo della Direzione Sales di Trenitalia.
-- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 2 ott 2026 all'8 set.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **9 ott 2026** all'indietro, fino al 3 ott: il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 3 ott 2026 al 9 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
 - [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo. ⚠️ Per lo stato CORRENTE del deck Trenitalia la fonte non è qui ma **§36 (Parte 8)**.
@@ -153,4 +153,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d’uso ereditati dalla libreria FSI (§35.11).
 - [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
-- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **7 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata il 9 ott, quando la Parte 3 ha toccato il tetto.
+- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dall'**8 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata due volte il 9 ott, l'ultima quando la correzione del motore ha fatto crescere la Parte 3.

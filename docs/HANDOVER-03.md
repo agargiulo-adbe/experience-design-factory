@@ -5,6 +5,16 @@
 
 ## 11. Change log recente
 
+### Change log — il motore decideva male quali slide sono scure (2026-10-09, sera) → `packages/core/src/blocks/immersive/deck.ts`, commit `d4d2355`
+
+- **Il difetto.** `isDarkSlide` decide l'inchiostro del contorno del deck (firma co-brand, credito «creato con», contatore) e teneva per scura la classe `bg-[var(--surface-inverse)]` **prima** di guardare il fondo calcolato. Vero nelle experience a dominante CHIARA, dove `inverse` è il fondo scuro; **falso** in quelle a dominante scura — Agos, Eni, Isybank, Trenitalia — dove `--surface-inverse` è il bianco del brand. Lì il contorno usciva **chiaro su fondo chiaro**: misurato su `/scenario/` di Trenitalia (firma bianca su #f8f9fa, luminanza 0,946) e su quattro slide di Agos (rgb(242,247,247), 0,921).
+- **La correzione.** Nuovo ordine: `data-dark` esplicito → **luminanza calcolata** → la classe solo come ripiego, quando il fondo non si legge. L'uscita `data-dark` resta e serve ancora, per la slide che dichiara una superficie e ne rende un'altra per via di un backdrop sotto uno scrim denso.
+- **Come è stata verificata la propagazione**, che su un file del core è la parte che costa: una sonda Playwright calcola in pagina **entrambi** i verdetti su ogni slide di ogni rotta, e stampa solo quelle in disaccordo. **476 slide, 12 app**: cambiano **4 slide di Agos** e **3 di Trenitalia**, cioè esattamente quelle dove era sbagliato. Zero su maxmara, unicredit, ferrari, atelier, eni-orbita, isybank, mim-alfabeti, poste, intesa-scala-umana, aperture-email. ⚠️ **Metodo da riusare** per ogni modifica a `packages/core`: misurare il delta prima di toccare, invece di riaprire nove deck a mano.
+- **Due conseguenze.** **Agos** compensava l'errore con un override non condizionato (`[data-deck] .deck-progress`, chiaro sempre): corretto il motore, il contatore chiaro sarebbe finito su fondo chiaro — adesso è scopato alla superficie. **Trenitalia** perde il ripiego per-app che marcava le slide chiare con `data-dark="false"` dal BaseLayout: lo fa il motore, per tutti.
+- Audit dopo: trenitalia `--tv` 373 controlli **0 HARD**, agos 137 controlli **0 HARD** (47 soft = baseline storica). Build dei 16 pacchetti verde.
+- ⚠️ **Resta da guardare**: sette app portano un override non condizionato del contatore (`aperture-email`, `atelier`, `eni-orbita`, `isybank-momento`, `mim-alfabeti`, `poste-sei-domande` oltre ad Agos, ora corretta). Oggi non fanno danno perché su quelle app nessuna slide cambia verdetto, ma è la stessa trappola: se una slide chiara comparisse, il contatore sparirebbe.
+
+
 ### Change log — Trenitalia: il design system vero, la grafica, e due giri di panel (2026-10-09) → §36 (Parte 8), commit da `cc5e222` ad `a81579e`
 
 - **La pelle era inventata e adesso è letta** (`cc5e222`). Il deck girava su rosso #E2001A — che è il corporate del Gruppo FS, non quello del sito — su un'**ambra #F5A623 che non esiste in nessuna fonte FS**, e su Space Grotesk. `pnpm brand:tokens` su trenitalia.com restituisce un design system che **si nomina da solo**: `.color-primary-blu` #2f394e (285 occorrenze), `.color-red` #d91835 (34), `.color-primary-green` #006666 (9), **Poppins** 26 volte — e Poppins è distribuibile, quindi niente sostituta. Due estensioni dichiarate perché il sito non ha un tema scuro: il fondo #1b2230 (lo stesso #2f394e abbassato) e le schiariture #ff8d9d / #4fbdb4 per il testo, perché i pieni danno 3,14:1 e 2,35:1.
@@ -178,30 +188,3 @@ Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato 
   orizzontale a 1280/1440/1920 in **entrambe le lingue**; zero errori in console; **tutti i link
   interni ed esterni a 200**; 211 tag `<T>` in `index` e 66 in `blueprint`, **nessuno monolingue**;
   conteggi della pagina riconciliati col registry (11 totali, 6 pubblicate, 2 interne, 9 clienti).
-
-### Change log — la tassonomia in vetrina, i due gate, la seconda skill; terzo giro di panel (2026-10-03)
-- `6335a33` **feat(showcase)** — risposta alla domanda dell'autore («tassonomia e panel meritano più
-  risalto?»). Nuova fascia **`#deliverables`** con i quattro tipi nominati per la domanda del cliente,
-  resa da `experienceTypes.ts`; **`#why`** ristrutturato (quattro valori brevi + i **due gate in
-  coppia**, «si vede» e «regge», + la nota «che cosa ha cambiato»); **passo 07** del flusso riscritto
-  (diceva «verificato contro la KB», che non è il gate); **`#skill` a due skill**, la seconda è il
-  panel review con zip e `INSTALL.md`; **card remota di `#proof`** riparata (stili scoped di Astro
-  contro DOM costruito a runtime — memoria `astro-scoped-css-runtime-dom`); **nav** stretta perché le
-  voci sono dodici. **Rimosso** il blocco «Dove vive, chi la vede» su decisione dell'autore.
-  Dettaglio in **§13.10 (HANDOVER-05)**. Build 14 app verde, pushato.
-- **Terzo giro di panel sulla delta** (§13.11): credibilità **4,0 → 3,3**, rischio **2,0 → 1,3**
-  (minimo dei tre giri), rilevanza e azionabilità +0,2. **15 P0 · 20 P1 · 11 P2**, nove P0 applicati
-  nello stesso commit. La lezione, scritta perché non vada persa: **togliere la dichiarazione di un
-  rischio non toglie il rischio** — la rimozione ha lasciato un rimando morto, una frase che negava
-  nomi presenti dieci volte nel DOM, e i punteggi interni del panel accanto al nome di un cliente su
-  una pagina senza login. Tutte e tre corrette; la decisione di fondo resta dell'autore (§10).
-- **Trovato dal panel, fuori dalla vetrina**: sette `docs/HANDOVER-*.md` **tracciati** nominano
-  referenti reali dei clienti su un repository **pubblico** (`raw.githubusercontent` risponde 200).
-  Prima voce P0 di §10, memoria `client-names-public-repo`.
-
-### Change log — il marchio smette di sembrare rotto, e il link condiviso mostra un'immagine (2026-10-02, sera tardi) → dettaglio §32.9
-- `f954792` **feat(poste)** — segnalazione dell'owner su screenshot di Teams: «il logo e il favicon restano bruttini, sembra un'immagine non caricata». Era vero, ed era lo **stesso difetto del 30/9 spostato di un passo**: il «?» era stato tracciato per non dipendere dal font, ma un arco di 3,4px con un puntino **a 16px legge come un carattere che non ha caricato**. Il problema non era il font, era che **un glifo sottile non regge alla misura di una favicon**. Sostituito dalla **faccia del sei** (due colonne per tre, l'ultimo punto giallo = la risposta): forma piena, non lettera. Verificata a 16/24/32/64/96 px e nella nav a 1920.
-- Stessa richiesta, seconda parte: **l'anteprima del link non aveva immagine**. Mancava `og:image` — Teams prendeva titolo e descrizione e metteva il suo segnaposto grigio. Aggiunta una card **1200×630** renderizzata con Playwright dal **poster vero della copertina** + lockup Adobe × Posteitaliane + titolo, col giallo solo su «dentro Adobe Analytics». Più `og:url`, `og:locale`, dimensioni e alt, `twitter:card`, `canonical`, `theme-color`, icone raster 192/180. ⚠️ **Gli URL vanno assoluti** (da `Astro.site`): con un path relativo l'unfurler non risolve e la card resta vuota — la trappola per cui il fix sembra applicato e non si vede. ⚠️ Il deck resta `noindex`: **Teams lo ignora** (verificato live), **LinkedIn potrebbe no**.
-- `ef5f741` **docs** — §32.9 e il **P2** per il resto della Factory: hub, showcase e le altre nove experience condividono il link senza immagine. La ricetta è nel commit, ma la card è arte per experience: una alla volta.
-- **Gate**: build verde, `astro check` 0 errori, `audit:deck` **0 HARD** e soft invariati (il marchio sta nella nav, fuori dalle misure), deploy Pages **success**, `og.png` verificato sul live (200, 409 KB, `image/png`).
-
