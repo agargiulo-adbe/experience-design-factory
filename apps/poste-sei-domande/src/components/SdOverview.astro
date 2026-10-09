@@ -240,8 +240,14 @@ const total = sections.reduce((n, s) => n + s.slides.length, 0);
     }
 
     function boot() {
-      const root = q<HTMLElement>('[data-sd-overview]');
-      if (!root) return;
+      // La guardia c'e', ma il restringimento di un `const` non sopravvive
+      // dentro le closure `open()`/`close()` dichiarate piu' sotto: `astro check`
+      // le vedeva come `HTMLElement | null` e dava otto ts(18047). Il tipo
+      // esplicito dopo la guardia chiude il buco senza aggiungere controlli a
+      // runtime che sarebbero morti.
+      const rootEl = q<HTMLElement>('[data-sd-overview]');
+      if (!rootEl) return;
+      const root: HTMLElement = rootEl;
       const body = q<HTMLElement>('[data-sd-overview-body]', root);
       const search = q<HTMLInputElement>('[data-sd-overview-search]', root);
       const empty = q<HTMLElement>('[data-sd-overview-empty]', root);
