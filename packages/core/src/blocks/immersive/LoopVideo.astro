@@ -13,9 +13,22 @@
  * `pnpm loop:seamless --check <clip.mp4>` verifica il giro di una clip esistente.
  *
  * `preload="auto"`: la clip è tutta in buffer prima del giro, così il wrap non
- * aspetta la rete. Sotto `prefers-reduced-motion` il video sparisce e resta il
- * poster, che per questo deve essere il PRIMO FOTOGRAMMA della clip ricucita
- * (lo scrive lo script insieme al .loop.mp4).
+ * aspetta la rete. Il poster deve essere il PRIMO FOTOGRAMMA della clip
+ * ricucita (lo scrive lo script insieme al .loop.mp4): regge il primo paint e
+ * tutti i casi in cui la clip non parte.
+ *
+ * `prefers-reduced-motion`: LA PREFERENZA SI RISPETTA, MA NON SI DECIDE AL
+ * POSTO DI CHI GUARDA. Prima qui c'era un `display: none` secco sulla clip:
+ * tecnicamente corretto, in pratica un difetto silenzioso — su macOS «Riduci
+ * movimento» è attivo su moltissime macchine, spesso per la nausea da
+ * parallasse e non per togliere una clip ambient, e chi apriva il deck vedeva
+ * una copertina ferma senza sapere che ci fosse un video. Nessun check lo
+ * coglieva, e chi lavorava al deck nemmeno: un browser di prova non ha quella
+ * preferenza.
+ * Ora: niente autoplay (la preferenza vale, nessun movimento a sorpresa) e un
+ * comando nella barra del deck per accenderlo. La scelta si ricorda, vale per
+ * tutte le clip del percorso, e senza quella preferenza il comando non compare
+ * nemmeno.
  */
 interface Props {
   /** URL della clip ricucita (`*.loop.mp4`). */
@@ -61,5 +74,109 @@ const { src, poster, scrim, opacity = 0.9, class: className } = Astro.props as P
   .edf-loopvideo-scrim { position: absolute; inset: 0; z-index: 1; }
   /* Il contenuto della slide sta sopra il backdrop. */
   [data-slide]:has(.edf-loopvideo) > .inset-0 { z-index: 2; }
-  @media (prefers-reduced-motion: reduce) { .edf-loopvideo-clip { display: none; } }
+  /* La clip sparisce solo finché chi guarda non chiede il movimento. */
+  @media (prefers-reduced-motion: reduce) {
+    html:not([data-edf-motion='on']) .edf-loopvideo-clip { display: none; }
+  }
+  /* Il comando esiste SOLO sotto la preferenza: altrove sarebbe un bottone
+     che non serve a niente in mezzo ai comandi del deck. */
+  .edf-motion-btn { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    /* Una pillola, non un cerchio: i comandi del deck sono tondi perché
+       portano una sola icona, qui serve una parola — «play» da solo, in mezzo
+       ai comandi di una presentazione, si legge come «avvia le slide». La
+       larghezza è automatica, l'altezza resta quella degli altri così la
+       barra non si scompone. */
+    .edf-motion-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: auto;
+      padding-inline: 1.1rem;
+      white-space: nowrap;
+    }
+  }
+  .edf-motion-btn[aria-pressed='false'] { opacity: 0.85; }
+  .edf-motion-btn .edf-motion-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  /* Sui telefoni resta la sola icona: la barra è stretta e la parola la
+     farebbe scorrere fuori. L'etichetta vive comunque in `aria-label`. */
+  @media (max-width: 640px) {
+    .edf-motion-btn { padding-inline: 0; width: 3.5rem; }
+    .edf-motion-btn .edf-motion-label { display: none; }
+  }
 </style>
+
+<script>
+  /**
+   * Il comando «movimento», montato una volta sola per pagina.
+   *
+   * Vive qui e non in una app perché il difetto era del motore: ogni deck con
+   * una clip di sfondo lo eredita senza wiring, come il co-brand e il credito
+   * «creato con». Si aggancia alla barra dei comandi del deck con lo stesso
+   * meccanismo di `DeckAudio` (dock/undock attorno agli swap SPA), così sta
+   * dove chi presenta cerca i comandi invece che in un angolo tutto suo.
+   */
+  const PREF = '(prefers-reduced-motion: reduce)';
+  const CHIAVE = 'edf:motion';
+
+  function applica(on: boolean) {
+    document.documentElement.dataset.edfMotion = on ? 'on' : 'off';
+    document.querySelectorAll<HTMLVideoElement>('.edf-loopvideo-clip').forEach((v) => {
+      if (on) void v.play().catch(() => {});
+      else v.pause();
+    });
+    document.querySelectorAll<HTMLButtonElement>('.edf-motion-btn').forEach((b) => {
+      b.setAttribute('aria-pressed', String(on));
+      b.setAttribute('aria-label', on ? 'Ferma il movimento degli sfondi' : 'Attiva il movimento degli sfondi');
+      const l = b.querySelector('.edf-motion-label');
+      if (l) l.textContent = on ? 'Movimento' : 'Attiva il movimento';
+    });
+  }
+
+  function creaComando(): HTMLButtonElement {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'edf-motion-btn deck-btn';
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', 'Attiva il movimento degli sfondi');
+    b.title = 'Gli sfondi animati sono fermi perché il sistema chiede meno movimento';
+    b.innerHTML =
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+      '<path d="M6 4.2v7.6l6-3.8z" fill="currentColor"/></svg>' +
+      '<span class="edf-motion-label">Attiva il movimento</span>';
+    b.addEventListener('click', () => {
+      const on = b.getAttribute('aria-pressed') !== 'true';
+      applica(on);
+      try { localStorage.setItem(CHIAVE, on ? 'on' : 'off'); } catch { /* finestra privata */ }
+    });
+    return b;
+  }
+
+  let comando: HTMLButtonElement | null = null;
+
+  function monta() {
+    if (!window.matchMedia(PREF).matches) return;
+    if (!document.querySelector('.edf-loopvideo-clip')) return;   // niente clip, niente comando
+    if (!comando) comando = creaComando();
+    const barra = document.querySelector('[data-deck-controls]');
+    if (barra && comando.parentElement !== barra) barra.appendChild(comando);
+    let scelta: string | null = null;
+    try { scelta = localStorage.getItem(CHIAVE); } catch { /* finestra privata */ }
+    applica(scelta === 'on');
+  }
+
+  /* Prima dello swap il comando esce dalla barra, che viene ricostruita: se
+     restasse agganciato morirebbe con la pagina vecchia (stessa trappola di
+     `DeckAudio`). */
+  function smonta() { comando?.remove(); }
+
+  monta();
+  document.addEventListener('astro:page-load', monta);
+  document.addEventListener('astro:after-swap', monta);
+  document.addEventListener('astro:before-swap', smonta);
+</script>

@@ -438,6 +438,37 @@ posizionamenti: tutto.
   confermato, da chiedere», mai «falso» (vedi `fonti-cliente-gerarchia`).
 Memoria: `user-claims-are-hypotheses`.
 
+### `prefers-reduced-motion` si rispetta, non decide al posto di chi guarda (BINDING)
+`LoopVideo` nascondeva la clip con un `display: none` sotto la preferenza di sistema.
+Tecnicamente corretto, in pratica un difetto silenzioso: su macOS «Riduci movimento» è
+attivo su moltissime macchine — spesso per la nausea da parallasse, non per togliere una
+clip ambient — e chi apriva il deck vedeva **una copertina ferma senza sapere che ci fosse
+un video**. Nessun check lo coglieva, e chi lavorava al deck nemmeno: un browser di prova
+non ha quella preferenza.
+- La regola è **niente autoplay** (la preferenza vale: nessun movimento a sorpresa) **più
+  un comando** nella barra del deck per accenderlo. La scelta si ricorda in
+  `localStorage['edf:motion']`, vale per tutte le clip del percorso e sopravvive agli swap
+  SPA; senza quella preferenza il comando non compare nemmeno. Sta nel motore
+  (`LoopVideo.astro`): ogni deck lo eredita senza wiring.
+- **Pillola, non cerchio.** Gli altri comandi sono tondi perché portano una sola icona; qui
+  serve una parola, perché un «play» in mezzo ai comandi di una presentazione si legge come
+  «avvia le slide». Su telefono resta la sola icona (bersaglio 44×44) e il senso vive in
+  `aria-label`.
+
+### Misurare nelle condizioni di chi guarda, non in quelle del browser di prova (BINDING)
+Tre giri per trovare quel difetto, perché ogni volta misuravo con Playwright **senza** le
+preferenze dell'utente, e ogni volta il movimento c'era. Una misura fatta in condizioni che
+nessuno ha non prova niente. Quando qualcuno dice «non lo vedo» e lo strumento dice che
+c'è, **la differenza è nelle condizioni**: si riproducono prima di cercare altrove.
+- Le condizioni che cambiano la resa e si impostano in Playwright: `reducedMotion`,
+  `colorScheme`, `forcedColors`, `locale`, `timezoneId`, zoom e `deviceScaleFactor`,
+  connessione lenta, risparmio energetico.
+- **Si misura la produzione, non solo il preview locale**: un CSS non ancora deployato o un
+  asset che in locale arriva dal disco e in rete da un Release cambiano l'esito.
+- Vale anche al contrario: prima di dichiarare risolto, si verifica **nella condizione che
+  mostrava il difetto**, non in quella comoda.
+Memoria: `misurare-nelle-condizioni-utente`.
+
 ### Gli a capo si misurano: nessuna parola di servizio appesa (BINDING, `audit:wrap`)
 `text-wrap: balance` e `pretty` risolvono le righe finali squilibrate e la parola sola a
 fine paragrafo. **Non** risolvono quello che in proiezione si nota di più: la preposizione
