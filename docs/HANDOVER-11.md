@@ -154,6 +154,65 @@ invece di indovinare.
 
 ---
 
+### 33.8 Il giro del 9 ottobre — quello che hanno detto le registrazioni
+
+> ⚠️ Persone per **ruolo**: questo file è tracciato su un repository pubblico.
+
+**La fonte.** Le trascrizioni della settimana (registrazioni, non sessioni di lavoro)
+hanno cambiato il contenuto. Il 7 ottobre il **system integrator partner** ha portato
+**due bisogni del gruppo, espressamente non collegati**: *AI decisioning* per la «next
+best experience», che stanno valutando adesso e di cui **non sapevano che Adobe si
+occupasse**, e una *Content Factory* in ottica riduzione costi — circa **2,5 milioni**
+di spesa agenzie sulla sola banca centrale, tutto esternalizzato, con l'idea di un
+centro di eccellenza di gruppo e una persona già individuata per guidarlo. A spingere è stata la **struttura internazionale del partner**, su Santander. La frase
+da cui nasce il riposizionamento è loro: «noi vi conosciamo solo come commodity».
+L'**altra big four** non è su questo canale: è il partner su *insurance*.
+
+**Tre verifiche che hanno corretto il dossier.**
+1. **Forms mancava davvero.** Footprint: SAS, Adobe Analytics (la Divisione ne è il
+   principale utilizzatore del gruppo), **AEM Sites e Forms, entrambi on-premise**.
+   Forms è il motore dei moduli, cioè dove il funnel commerciale si rompe.
+2. **Il CRM concorrente non è «solo nell'altra divisione».** Il Sales Cloud sì, ma il
+   **Marketing Cloud è in uso nella Divisione**. Non è la stessa cosa.
+3. **Il responsabile dei canali non è un contatto nostro:** è un invito da fare tramite
+   il partner, e aveva già declinato. Scritto così nel dossier.
+
+**Dossier** (applicato a Supabase, JSON validato): via la cronaca sui nomi storpiati;
+dentro Forms, la correzione sul CRM, i due bisogni, il posizionamento del decisioning,
+e in «non dire» la cautela sulla **banca spagnola citata come caso d'uso** — nella
+stessa settimana è emerso che sta dismettendo Adobe, quindi il meccanismo si racconta
+**senza intestarlo**. Santander resta la referenza buona.
+
+**Experience, le modifiche di contenuto.**
+- Le **tre date diventano tre obiettivi** (clienti netti, 100% cloud, i miliardi alle
+  piccole imprese): sono le ancore del discorso. Aggiornate tutte le occorrenze a
+  valle, taglio corto compreso.
+- La slide «l'architettura ha una data» diceva tre cose insieme: riscritta su una sola.
+- L'attrito «il collo di bottiglia è il canale» **era un nostro punto di vista non
+  dichiarato**: ora poggia su due numeri pubblicati da loro ed è marcato come lettura.
+- La **quarta domanda** (consenso e preferenze) suonava difensiva: sostituita con il
+  filo che si perde fra primo contatto e firma, che è il problema che hanno dichiarato.
+- Via «primo/secondo tempo» e via i prodotti dalla sintesi: al loro posto, cosa cambia.
+- **Brand Visibility** racconta tutto lo spettro (Adobe + Semrush, i prompt reali, le
+  quattro piattaforme), non solo l'ex-LLMO.
+- Il viaggio non è più solo attribution: la vista omnicanale è la **fondazione**, e i
+  casi che abilita stanno su una slide loro. **MMM e budget mix** nominati una volta
+  sola e **come domanda**: Marketing Campaign Analytics risponde a «dove investire»,
+  che non è il perimetro della persona in sala (verificato sulla knowledge base).
+- **Slide nuova, l'arbitro** (`IsuArbiter`): le sorgenti restano dove sono, tre
+  meccanismi decidono (i nomi sono quelli della pagina prodotto: AI ranking, eligibility
+  constraints, frequency capping), al cliente arriva una cosa sola. Il vincolo
+  architetturale è **in chiaro**, non dietro un clic.
+
+**Verifica:** `audit:deck --tv` 6 rotte **0 HARD** sui cinque viewport; screenshot
+letti; build di tutte le app; typecheck pulito. Il capitolo idee è passato da 6 a 8
+slide: tagliata la copia e poi **diviso**, mai rimpicciolito il tipo.
+
+**Resta aperto.** La fattibilità del decisioning su una base dati di terzi («Zero
+Copy» è de relato e **non verificato**): prima cosa per il tavolo tecnico col partner.
+L'architettura reale della referenza, per reggere il «come». E un **conflitto di date**
+registrato nel dossier: un verbale del 9 ott dice 23, il resto dice 22 — confermato 22.
+
 ## 34. Il motore unico dei dossier (6 ott 2026)
 
 ### 34.1 Perché esiste
