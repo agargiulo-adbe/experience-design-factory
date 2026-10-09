@@ -20,8 +20,47 @@ jobs:
       - run: pnpm lint
       - run: pnpm test
       - run: pnpm test:scripts
+      # Il repo è pubblico: questo gate cerca materiale riservato nei file
+      # tracciati — profili LinkedIn, seed di dossier dentro una migrazione,
+      # pagine di dossier che non usano il motore condiviso, slug col nome di
+      # una persona. Costa un secondo e chiude una famiglia di errori che è
+      # già uscita da tre porte diverse.
+      - run: pnpm audit:leaks
       - run: pnpm build
         env:
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
       - run: npx tsx scripts/content-audit.ts
+
+  # Il gate di resa dei deck, in un job suo: dura una ventina di minuti e non
+  # deve rallentare il primo riscontro su typecheck e lint. Fino al 9 ottobre
+  # 2026 `audit:deck` girava SOLO a mano prima di pubblicare, ed è per questo
+  # che sei fallimenti HARD sono rimasti aperti per settimane su due deck senza
+  # che nessuno se ne accorgesse. Fallisce sui soli HARD: i soft sono
+  # aspirazionali e accettati sulle slide volutamente ariose — contarli
+  # avrebbe tinto la CI di rosso permanente, che si smette di guardare.
+  decks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: npx playwright install --with-deps chromium
+      - run: pnpm build
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      - run: pnpm audit:deck:ci
+      - name: Le catture delle slide che hanno fallito
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deck-audit
+          path: apps/*/audit/**
+          if-no-files-found: ignore
+          retention-days: 7

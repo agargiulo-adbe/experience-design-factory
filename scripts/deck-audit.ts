@@ -174,12 +174,34 @@ const CWD_ALIAS: Record<string, string> = {
 const appFromCwd = CWD_ALIAS[path.basename(process.cwd())] ?? 'maxmara';
 const appFlag = (() => {
   const idx = process.argv.indexOf('--app');
-  if (idx !== -1 && process.argv[idx + 1]) return process.argv[idx + 1];
-  const prefixed = process.argv.find((a) => a.startsWith('--app='));
-  if (prefixed) return prefixed.split('=')[1];
-  return appFromCwd;
+  const raw = idx !== -1 && process.argv[idx + 1]
+    ? process.argv[idx + 1]
+    : process.argv.find((a) => a.startsWith('--app='))?.split('=')[1];
+  if (!raw) return appFromCwd;
+  // Si accetta sia il nome del route set (`unicredit`) sia quello della
+  // cartella dell'app (`unicredit-engagement`): chi scrive uno script parte
+  // dal secondo, e sbagliarlo costava un giro intero.
+  const resolved = CWD_ALIAS[raw] ?? raw;
+  if (!ROUTE_SETS[resolved]) {
+    // MAI un ripiego silenzioso. Prima, un `--app` sconosciuto ricadeva su
+    // maxmara e stampava un PASS perfettamente credibile per un deck che non
+    // era stato nemmeno aperto: tre deck «verdi» di fila erano lo stesso deck.
+    // È la stessa famiglia del baco di `--only`, e un gate che mente è peggio
+    // di nessun gate.
+    console.error(`--app ${raw}: route set sconosciuto. Validi: ${Object.keys(ROUTE_SETS).join(', ')}`);
+    process.exit(2);
+  }
+  return resolved;
 })();
-const ROUTE_SET = ROUTE_SETS[appFlag] ?? ROUTE_SETS.maxmara;
+// I check HARD: difetti di resa veri, che devono stare a zero a ogni viewport
+// di proiezione. Gli altri — `a` banda di lettura, `g` ritmo verticale, `i` uso
+// dello spazio — sono aspirazionali, e il contratto dice esplicitamente che è
+// VIETATO farli passare rimpicciolendo il tipo. Con `--hard-only` il comando
+// esce ≠0 solo sui primi: è la forma che può stare in CI.
+const HARD_CHECKS = new Set(['b', 'c', 'd', 'e', 'h', 'j', 'k', 'm', 'exp']);
+const HARD_ONLY = process.argv.includes('--hard-only');
+
+const ROUTE_SET = ROUTE_SETS[appFlag];
 // --only <name[,name]> restringe il giro a una o più rotte: iterare su una sola
 // pagina mentre la si sistema costa secondi invece di minuti.
 const onlyFlag = (() => {
@@ -459,6 +481,7 @@ async function auditViewport(browser: import('playwright').Browser, base: string
   const slideIds: string[] = await page.evaluate(() => Array.from(document.querySelectorAll('[data-slide]')).map((s) => s.id));
 
   let fails = 0;
+  let hardFails = 0;
   const lines: string[] = [];
   for (let i = 0; i < slideIds.length; i++) {
     const id = slideIds[i];
@@ -489,6 +512,12 @@ async function auditViewport(browser: import('playwright').Browser, base: string
     const results: Record<string, { pass: boolean }> = { a: r.a, b: r.b, c: r.c, d: r.d, e: r.e, g: r.g, h: r.h, i: r.i, j: r.j, k: r.k, m: r.m, exp };
     const order = ['a', 'b', 'c', 'd', 'e', 'g', 'h', 'i', 'j', 'k', 'm', 'exp'];
     const failed = order.filter((key) => !results[key].pass);
+    // HARD = difetti di resa veri, devono stare a zero. SOFT (`a` banda di
+    // lettura, `g` ritmo verticale, `i` uso dello spazio) sono aspirazionali e
+    // accettati sulle slide volutamente ariose: contarli nello stesso totale
+    // rende il gate inutilizzabile in CI, perché nessun deck del monorepo è a
+    // zero e il rosso permanente si smette di guardare.
+    hardFails += failed.filter((key) => HARD_CHECKS.has(key)).length;
     if (failed.length) { fails += failed.length; await page.screenshot({ path: path.join(outDir, `${W}x${H}-${id}.png`) }); }
     lines.push(`${failed.length ? '✗' : '✓'} ${String(i).padStart(2, '0')} ${id.padEnd(18)} ` +
       order.map((key) => `${key}:${results[key].pass ? 'ok' : 'F'}`).join(' '));
@@ -505,13 +534,14 @@ async function auditViewport(browser: import('playwright').Browser, base: string
     if (!exp.pass) lines.push(`     exp → ${JSON.stringify(exp.fails)}`);
   }
   await ctx.close();
-  return { lines, fails };
+  return { lines, fails, hardFails };
 }
 
 async function main() {
   const base = await findBaseUrl();
   const browser = await chromium.launch();
   let totalFails = 0;
+  let totalHard = 0;
   // Filtro posizionale opzionale: `audit:deck engagement` gira solo quella rotta.
   // ATTENZIONE: il VALORE di `--only`/`--app` non è un filtro posizionale. Senza
   // escluderlo, `--only home,roadmap` finiva qui come la stringa "home,roadmap",
@@ -537,8 +567,8 @@ async function main() {
     const blocks: string[] = [];
     let routeFails = 0;
     for (const [W, H] of VIEWPORTS) {
-      const { lines, fails } = await auditViewport(browser, base, route, outDir, W, H);
-      routeFails += fails; totalFails += fails;
+      const { lines, fails, hardFails } = await auditViewport(browser, base, route, outDir, W, H);
+      routeFails += fails; totalFails += fails; totalHard += hardFails;
       blocks.push(`\n=== ${W}×${H} ===\n${lines.join('\n')}`);
     }
     console.log(`\n━━━ ${name} · ${base}${route} · checks a–k + exp · ${VIEWPORTS.map(([w, h]) => `${w}×${h}`).join(', ')} ━━━`);
@@ -546,7 +576,14 @@ async function main() {
     console.log(routeFails === 0 ? `✓ ${name}: PASS — all slides clean at ALL viewports` : `✗ ${name}: ${routeFails} check failure(s) — see audit/${name}/`);
   }
   await browser.close();
-  console.log(`\n${totalFails === 0 ? 'PASS — all decks clean at ALL viewports (a–k, "Scopri come" expanded inline)' : `FAIL — ${totalFails} check failure(s) total`}\n`);
+  const soft = totalFails - totalHard;
+  console.log(`\n${totalFails === 0 ? 'PASS — all decks clean at ALL viewports (a–k, "Scopri come" expanded inline)' : `FAIL — ${totalFails} check failure(s) total · ${totalHard} HARD, ${soft} soft`}\n`);
+  if (HARD_ONLY) {
+    console.log(totalHard === 0
+      ? `PASS (--hard-only) — 0 HARD. I ${soft} soft restano: si chiudono tagliando copy o dividendo la slide, mai rimpicciolendo il tipo.`
+      : `FAIL (--hard-only) — ${totalHard} HARD da chiudere.`);
+    process.exit(totalHard === 0 ? 0 : 1);
+  }
   process.exit(totalFails === 0 ? 0 : 1);
 }
 

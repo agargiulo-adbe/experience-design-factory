@@ -28,7 +28,12 @@ const ringProducts = [
 ];
 const ring = ringProducts.map((name, i) => {
   const angle = (i / ringProducts.length) * Math.PI * 2 - Math.PI / 2;
-  const rx = 37; const ry = 37;
+  // Raggio orizzontale più corto di quello verticale: le targhette sono
+  // larghe e a destra «AEM Sites» sporgeva di 4px dal riquadro, che a
+  // 1280×800 bastava a far scorrere la pagina (check `c`). 34 contro 37 la
+  // riporta dentro a tutte e tre le risoluzioni di proiezione, e l'anello
+  // resta un anello — appena più stretto che alto.
+  const rx = 34; const ry = 37;
   const left = 50 + rx * Math.cos(angle);
   const top = 50 + ry * Math.sin(angle);
   const fromX = Math.round(Math.cos(angle) * 240);
@@ -81,7 +86,14 @@ const dataDots = Array.from({ length: 24 }).map((_, i) => {
           </p>
         </div>
 
-        <div class="relative w-full max-w-md mx-auto lg:mx-0 aspect-[2/1]" data-reveal data-reveal-delay="0.15" aria-hidden="true">
+        <!-- Dimensione ESPLICITA, non `w-full`: in una colonna di griglia
+             `auto` il contenuto è tutto in posizione assoluta, quindi non dà
+             larghezza intrinseca e `w-full` si risolveva a zero. Il riquadro
+             misurava 0×0 e la nuvola di punti sbordava di 182px a destra e 164
+             in basso — il check `c` lo vedeva, l'occhio no. Il lato è 26rem
+             (416px): il raggio massimo dei punti è 199px, quindi la nuvola ci
+             sta tutta senza tagli. -->
+        <div class="relative w-[26rem] max-w-full mx-auto lg:mx-0 aspect-square" data-reveal data-reveal-delay="0.15" aria-hidden="true">
           {dataDots.map((d) => (
             <div class="absolute w-2 h-2 rounded-full bg-[var(--accent-primary)]/40" style={`left: calc(50% + ${d.x}px); top: calc(50% + ${d.y}px); transform: translate(-50%, -50%);`} />
           ))}
