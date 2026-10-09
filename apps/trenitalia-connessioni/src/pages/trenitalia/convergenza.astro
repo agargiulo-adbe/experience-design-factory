@@ -13,32 +13,37 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Le cinque fonti che confluiscono nel layer, e il percorso che ne esce: è il
-// concetto più ripetuto del capitolo, e qui si vede invece di leggersi.
+// Le fonti che confluiscono nel layer, e il percorso che ne esce: è il concetto
+// più ripetuto del capitolo, e qui si vede invece di leggersi.
+// Cinque fonti, tutte dentro il perimetro Trenitalia: le due istanze Analytics
+// contano due. FS Park non sta in questo elenco — una clean room restituisce
+// sovrapposizioni di audience, non eventi a livello di persona, e quella metà
+// si legge nel capitolo 4.
 const fonti = [
   'Adobe Analytics ×2 · sito e funnel',
   'App Trenitalia · eventi e notifiche',
   'Piattaforma di esecuzione email · risposta alle email',
   'Salesforce Data Cloud · profili CRM',
-  'FS Park · accessi agli hub (cap. 4)',
 ];
 
 const percorsoLeggibile = [
-  // spazio unificatore: senza, «4892-XX» resta orfano su una riga sua
-  'Identità ricucita: Davide Ferretti, CartaFreccia 4892-XX',
+  // Mai un identificativo di loyalty a schermo: il mock è pseudonimo, come
+  // quello del ramo FS Park, e la slide lo dichiara «dati simulati».
+  'Davide, cliente CartaFreccia riconosciuto su tutte le fonti',
   'Il percorso completo su una timeline sola',
-  'Cinque fonti Trenitalia diventano un profilo di journey',
+  'Cinque fonti Trenitalia, le due istanze comprese, in un profilo solo',
   'Ricerca → acquisto → app → viaggio',
   'Il ritorno a Milano, e la sera a casa',
 ];
 
-// Le tre fasi di CJA sulla linea del tempo. Le durate non sono stimate da noi:
-// sono le parole del deck («CJA subito, l'attivazione a seguire, l'intelligence
-// nel tempo»), e la nota sotto la slide dice che i tempi si fissano con FS.
+// Richiamo sintetico della tabella delle fasi, che vive in una copia sola nel
+// capitolo «Il percorso»: stesse etichette, stesso ordine dei prodotti. Qui non
+// si ridisegna, e prerequisiti, chi esegue e cosa si misura non si ripetono —
+// due roadmap nello stesso ramo erano due piani diversi per chi gira il deck.
 const fasiCja = [
-  { n: 'Fase 1', nome: 'Convergenza analytics', durata: 'subito', esito: 'CJA unifica le due istanze Adobe Analytics: prima vista end-to-end dalla homepage al checkout, senza toccare l\'infrastruttura.' },
-  { n: 'Fase 2', nome: 'Journey full-funnel', durata: 'a seguire', esito: 'Si aggiungono app, la piattaforma email via SFTP e Salesforce Data Cloud via MuleSoft. Journey analysis cross-sistema.' },
-  { n: 'Fase 3', nome: 'Attivazione ed evoluzione', durata: 'nel tempo', esito: 'Real-Time CDP e AJO per l\'attivazione, la clean room Collaboration per incontrare FS Park. Target esteso a funnel e app.' },
+  { n: 'Fase 1', nome: 'Convergenza', durata: 'subito', esito: 'Customer Journey Analytics e le due istanze Adobe Analytics: la prima vista da capo a fondo.' },
+  { n: 'Fase 2', nome: 'Attivazione', durata: 'a seguire', esito: 'Adobe Real-Time CDP e Adobe Journey Optimizer, sopra lo schema dati costruito nella Fase 1.' },
+  { n: 'Fase 3', nome: 'Orizzonte', durata: 'nel tempo', esito: 'L\'ottimizzazione della spesa media, da aprire quando la prima fase ha una baseline.' },
 ];
 ---
 <BaseLayout
@@ -100,8 +105,13 @@ const fasiCja = [
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
-      <p class="fs-panel-tag text-center mb-4" data-reveal>
-        COME FUNZIONA · CONNETTORI NATIVI, DATI SEMPRE IN AEP
+      <p class="fs-panel-tag text-center mb-4 flex items-center justify-center gap-3 flex-wrap" data-reveal>
+        <span>COME FUNZIONA · CONNETTORI NATIVI, DATI SEMPRE IN AEP</span>
+        {/* Lo stesso marchio che porta il mock del ramo FS Park: quello che si
+            vede qui è un esempio, non un record. */}
+        <span class="font-bold px-2 py-0.5 rounded-sm tracking-wide" style="font-size: 0.68rem; background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);">
+          Dati simulati
+        </span>
       </p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
@@ -132,9 +142,10 @@ const fasiCja = [
         data-reveal
         data-reveal-delay="0.3"
       >
-        Le frecce vanno in una direzione sola. I dataset entrano in Adobe Experience Platform
-        e si modellano su uno schema comune; nessuna delle cinque fonti cambia mestiere, e
-        nessuna viene sostituita.
+        Le frecce vanno in una direzione sola. I dataset entrano in Adobe Experience Platform e
+        si modellano su uno schema comune; nessuna delle fonti cambia mestiere, e nessuna viene
+        sostituita. <strong class="text-[var(--ink-primary)]">Salesforce Data Cloud resta master
+        del profilo, e master del consenso e della soppressione.</strong>
       </p>
     </Slide>
 
@@ -213,9 +224,9 @@ const fasiCja = [
             data-reveal-delay="0.14"
           >
             CJA Workspace ricostruisce il percorso completo: ricerca su trenitalia.com,
-            abbandono del funnel a metà checkout, ritorno da push app, prenotazione parcheggio
-            FS Park, acquisto biglietto, viaggio, NPS post-arrivo. Una sola timeline, dalla
-            prima ricerca all'ultimo contatto.
+            abbandono del funnel a metà checkout, ritorno da push app, acquisto biglietto,
+            viaggio, NPS post-arrivo. Una sola timeline, dalla prima ricerca all'ultimo
+            contatto, dentro il perimetro Trenitalia.
           </p>
 
           <div
@@ -235,8 +246,11 @@ const fasiCja = [
               </div>
             ))}
           </div>
-          <p class="text-center fs-stat-src tracking-widest uppercase">
-            Fonte: Adobe Customer Journey Analytics · benchmark Adobe 2024
+          {/* La riga di fonte citava un «benchmark Adobe 2024» che il cliente non
+              può aprire, e la tessera che reggeva («<1h time-to-insight») non c'è
+              più. Qui si dichiara che cos'è quello che si guarda. */}
+          <p class="text-center text-[var(--color-grigio-300)]" style="font-size: 0.82rem; line-height: 1.5;">
+            Mock illustrativo su dati simulati · Adobe Customer Journey Analytics
           </p>
         </div>
         <MediaDemoSlot id="cja-workspace-demo" label="CJA Workspace — Demo FS Journey" />
@@ -295,7 +309,7 @@ const fasiCja = [
               'Quali offerte homepage generano più click su funnel',
               'Quali CTA X-GO e CartaFreccia convertono meglio',
               'Stagionalità dei contenuti ad alto engagement',
-              'A/B test guidati dagli attributi, non dalle varianti fatte a mano',
+              'Ipotesi di test suggerite dagli attributi che performano, da eseguire su Adobe Target',
             ],
           },
         ].map((col) => (
@@ -312,6 +326,20 @@ const fasiCja = [
           </div>
         ))}
       </div>
+
+      {/* Il prerequisito va detto qui, non scoperto dal loro IT fra un mese:
+          Content Analytics raccoglie con Adobe Web SDK, e trenitalia.com oggi
+          raccoglie con at.js e AppMeasurement. */}
+      <p
+        class="mx-auto mt-5 text-center text-[var(--color-grigio-300)]"
+        style="font-size: 0.85rem; line-height: 1.5; max-width: 52rem;"
+        data-reveal
+        data-reveal-delay="0.28"
+      >
+        Un prerequisito, dichiarato prima: Content Analytics raccoglie con Adobe Web SDK, mentre
+        le property oggi raccolgono con at.js e AppMeasurement. Il passaggio va messo in conto
+        come attività, sulle sole property che si vogliono misurare.
+      </p>
     </Slide>
 
     <!-- ── SLIDE 4: Le 3 fasi ─────────────────────────────────────── -->
@@ -331,7 +359,7 @@ const fasiCja = [
           data-reveal
           data-reveal-delay="0.08"
         >
-          Tre fasi, e ognuna lascia qualcosa.
+          Due fasi che lasciano qualcosa, e un orizzonte.
         </h2>
       </div>
 
@@ -343,8 +371,9 @@ const fasiCja = [
         <DiagFasi fasi={fasiCja} />
       </div>
 
-      <p class="mt-5 text-center fs-stat-src tracking-widest uppercase" data-reveal data-reveal-delay="0.3">
-        Ipotesi di percorso per discussione · tempistiche da definire con FS Technology
+      <p class="mx-auto mt-5 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 52rem;" data-reveal data-reveal-delay="0.3">
+        Ipotesi di percorso per discussione, tempistiche da definire con FS Technology. Prerequisiti,
+        chi esegue e cosa si misura per ciascuna fase stanno nel capitolo «Il percorso», in una copia sola.
       </p>
 
       <div class="mt-4 text-center" data-reveal data-reveal-delay="0.38">
@@ -352,7 +381,7 @@ const fasiCja = [
           href={href(base, '/trenitalia/meta-invisibile')}
           class="inline-flex items-center gap-3 px-8 py-3.5 text-base font-semibold tracking-wide bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity duration-300 font-[family-name:var(--font-display)] rounded-sm"
         >
-          La metà che manca: oltre la stazione
+          La metà invisibile: oltre la stazione
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

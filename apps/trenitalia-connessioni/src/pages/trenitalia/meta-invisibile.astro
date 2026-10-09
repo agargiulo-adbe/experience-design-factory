@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 ---
 <BaseLayout
-  title="La metà che manca · Ramo Trenitalia"
+  title="La metà invisibile · Ramo Trenitalia"
   description="Trenitalia guarda oltre la stazione: use case di cross-sell e Real-Time CDP Collaboration con FS Park, orchestrati da Adobe CJA e Adobe Real-Time CDP Collaboration."
   pageSolutions={['data-collab']}
   branch="trenitalia"
@@ -27,7 +27,7 @@ const currentPath = Astro.url.pathname;
     prevHref={href(base, '/trenitalia/convergenza')}
   >
 
-    <!-- ── SLIDE 0: Cover — La metà che manca ─────────────────────── -->
+    <!-- ── SLIDE 0: Cover — La metà invisibile ─────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center" data-solution="data-collab">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
@@ -35,7 +35,7 @@ const currentPath = Astro.url.pathname;
       <CoverHero
         eyebrow="04 · Metà invisibile"
         numeral="04"
-        title="La metà che manca"
+        title="La metà invisibile"
         lead="Il viaggio di Davide non comincia al binario. C'è una metà che Trenitalia oggi non vede: l'arrivo, la sosta, il tempo prima della partenza. Real-Time CDP Collaboration la rende leggibile senza scambiare dati in chiaro."
         size="phase"
         tone="ink"
@@ -69,11 +69,13 @@ const currentPath = Astro.url.pathname;
         Trenitalia sa e quello che non vede stanno le occasioni che oggi si perdono.
       </p>
 
-      {/* Three station-nodes on the signal line: each system sits on the same rail
-          yet never shares what it sees. The line is drawn but the nodes stay dark. */}
-      <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
-        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 16.6%; right: 16.6%;" aria-hidden="true"></span>
-        <div class="grid md:grid-cols-3 gap-5 relative">
+      {/* Due nodi sulla linea del segnale: gli attori sono le due società, e
+          sono due perché due sono i titolari del trattamento. La piattaforma di
+          esecuzione email stava qui come terzo attore, e un lettore interno ne
+          concludeva che il CRM è un terzo titolare: è scesa fra gli esecutori. */}
+      <div class="relative w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.18">
+        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 25%; right: 25%;" aria-hidden="true"></span>
+        <div class="grid md:grid-cols-2 gap-5 relative">
           {[
             {
               brand: 'FS Park',
@@ -88,13 +90,6 @@ const currentPath = Astro.url.pathname;
               sa: 'Storico biglietti · classe · frequenza · canale',
               nonSa: 'Se ha usato FS Park · se ha cercato parcheggio · dove arriva',
               gap: 'Il pacchetto viaggio-parcheggio non si vede: ricavo accessorio perso.',
-            },
-            {
-              brand: 'Email',
-              rosso: false,
-              sa: 'Open rate · click · programma CRM · device',
-              nonSa: 'Se ha appena prenotato · abbonamento in scadenza · LTV reale',
-              gap: 'Campagne a calendario: il contesto del momento resta inutilizzato.',
             },
           ].map((item, i) => (
             <div class="flex flex-col items-center">
@@ -114,6 +109,15 @@ const currentPath = Astro.url.pathname;
             </div>
           ))}
         </div>
+      </div>
+
+      <div class="w-full max-w-5xl mx-auto mt-5 fs-panel text-left !py-3.5" data-reveal data-reveal-delay="0.3">
+        <p class="fs-panel-body" style="margin-inline: 0;">
+          <strong class="text-[var(--ink-primary)]">Fra gli esecutori, non fra i titolari:</strong> la
+          piattaforma di esecuzione email manda le campagne, e di suo conosce aperture, click e device.
+          Il contesto del momento, cioè se una prenotazione è appena stata fatta o un abbonamento sta
+          scadendo, oggi non arriva fino a lì.
+        </p>
       </div>
     </Slide>
 
@@ -281,13 +285,13 @@ const currentPath = Astro.url.pathname;
               },
               {
                 step: '03',
-                label: 'Audience Activation',
-                desc: 'L\'audience si attiva nella piattaforma di esecuzione email e nell\'app, senza trasferire dati.',
+                label: 'Attivazione',
+                desc: 'Nessun dato personale passa fra le due società; l\'attivazione avviene sulle destinazioni di una sola di esse, in export batch, e richiede Real-Time CDP, cioè la fase successiva.',
               },
               {
                 step: '04',
-                label: 'Attribution chiara',
-                desc: 'Conversione attribuita con modello fractional: FS Park, Trenitalia, Adobe.',
+                label: 'Misurazione condivisa',
+                desc: 'Sovrapposizione, insight di audience e report di campagna concordati fra le due società. Alcune automazioni di misura non sono nella prima release.',
               },
             ].map((s) => (
               <div class="relative flex gap-4 items-start">
@@ -328,27 +332,34 @@ const currentPath = Astro.url.pathname;
         data-reveal
         data-reveal-delay="0.14"
       >
-        I dati personali vivono su più sistemi, e nessuno di questi viene sostituito. Adobe
-        Experience Platform aggiunge un perimetro governato SOPRA quelli che restano: etichette
-        di sensibilità, policy d'uso e audit trail su ogni dato che ci transita.
+        I dati personali vivono su più sistemi, e nessuno viene sostituito. Adobe Experience
+        Platform aggiunge un perimetro governato sopra quelli che restano.
       </p>
 
-      {/* Four controls of the single governed perimeter — numbered marks, no emoji. */}
+      {/* I quattro controlli del perimetro governato. Griglia 2×2 a blocchi
+          pari: su quattro colonne la riga più lunga usciva a quindici caratteri
+          per riga, e il meccanismo non si poteva più descrivere per quello che è.
+          Due meccanismi erano descritti sbagliati: le data usage label
+          classificano dataset e campi, non cifrano e non «proteggono il PII
+          all'origine»; e AEP non pseudonimizza da sola all'ingestione —
+          l'hashing si fa a monte o in Data Prep. */}
       <div
-        class="w-full max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"
+        class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 auto-rows-fr gap-4 mb-4"
         data-reveal
         data-reveal-delay="0.2"
       >
         {[
-          { n: '01', label: 'Sensitivity labels', desc: 'Ogni campo classificato per sensibilità: il PII è protetto all\'origine.' },
-          { n: '02', label: 'Usage policy enforce', desc: 'Policy applicate in automatico: nessuna attivazione fuori consenso.' },
+          { n: '01', label: 'Etichette di sensibilità', desc: 'Ogni campo classificato: le attivazioni fuori policy si bloccano da sole.' },
+          { n: '02', label: 'Policy d\'uso', desc: 'Le regole stanno sul dataset, non nella testa di chi lo usa.' },
           { n: '03', label: 'Audit trail completo', desc: 'Log di ogni accesso: chi tocca cosa, e quando.' },
-          { n: '04', label: 'Pseudonimizzazione', desc: 'Identità su hash: nessun PII in chiaro fuori dal perimetro.' },
+          { n: '04', label: 'Identificativi su hash', desc: 'Hashing a monte dell\'ingestione, policy in AEP: una scelta di implementazione, non un interruttore.' },
         ].map((p) => (
-          <div class="fs-card text-left flex flex-col gap-2.5">
-            <span class="fs-mark" aria-hidden="true">{p.n}</span>
-            <p class="fs-card-title">{p.label}</p>
-            <p class="fs-card-body">{p.desc}</p>
+          <div class="fs-card text-left h-full flex flex-col gap-2 md:flex-row md:items-start md:gap-4">
+            <span class="fs-mark flex-shrink-0" aria-hidden="true">{p.n}</span>
+            <div class="min-w-0">
+              <p class="fs-card-title mb-1" style="margin-inline: 0;">{p.label}</p>
+              <p class="fs-card-body" style="margin-inline: 0;">{p.desc}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -363,9 +374,8 @@ const currentPath = Astro.url.pathname;
         </svg>
         <p class="fs-panel-body">
           <strong class="text-[var(--ink-primary)]">Perché conta oggi:</strong> ogni nuovo
-          collegamento fra sistemi allarga la superficie da proteggere. La governance non è un
-          capitolo da aggiungere dopo: è un requisito della prima fase, e si verifica con il DPO
-          di ciascuna società prima che un dato si muova.
+          collegamento allarga la superficie da proteggere. La governance è un requisito della
+          prima fase, e si verifica con il DPO di ciascuna società prima che un dato si muova.
         </p>
       </div>
     </Slide>
@@ -404,7 +414,7 @@ const currentPath = Astro.url.pathname;
             { value: 'LTV ↑', label: 'Valore del cliente cross-brand', sub: 'Relazione più lunga e più ricca, da misurare sul campo' },
             { value: 'CAC ↓', label: 'Costo di acquisizione abbonamento', sub: 'Early-trigger al posto del batch, da misurare' },
             { value: '€/viaggio', label: 'Ricavo accessorio da bundle', sub: 'Parcheggio e servizi correlati, da misurare' },
-            { value: 'In chiaro: zero', label: 'Dati personali scambiati fra le due società', sub: 'L\'incrocio avviene su identificativi pseudonimizzati, dentro i consensi raccolti. La conformità del trattamento la valuta il DPO di ciascuna società' },
+            { value: 'In chiaro: zero', label: 'Dati personali scambiati fra le due società', sub: 'Identificativi pseudonimizzati, dentro i consensi raccolti. La conformità la valuta il DPO di ciascuna società' },
           ].map((m) => (
             <div class="relative text-center px-3 py-4 bg-[var(--color-chiaro)]/10 border border-[var(--color-chiaro)]/25 rounded-sm">
               <span class="hidden md:block absolute -top-[calc(1.5rem+5px)] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-[var(--color-chiaro)]" style="box-shadow: 0 0 10px rgba(241, 243, 244, 0.7);" aria-hidden="true"></span>
@@ -415,7 +425,9 @@ const currentPath = Astro.url.pathname;
                 {m.value}
               </p>
               <p class="text-[0.98rem] font-medium text-[var(--color-chiaro)]/90 mb-1 leading-snug break-words">{m.label}</p>
-              <p class="text-[0.78rem] text-[var(--color-chiaro)]/70 leading-snug">{m.sub}</p>
+              {/* La cautela sul trattamento è la riga che il DPO cerca per prima:
+                  a 0.78rem sbiadita al 70% in proiezione non si leggeva. */}
+              <p class="text-[0.84rem] text-[var(--color-chiaro)]/90" style="line-height: 1.5;">{m.sub}</p>
             </div>
           ))}
         </div>

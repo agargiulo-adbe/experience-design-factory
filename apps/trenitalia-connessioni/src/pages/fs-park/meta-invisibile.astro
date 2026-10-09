@@ -16,7 +16,10 @@ const currentPath = Astro.url.pathname;
 const puntiCiechi = [
   { mark: '01', nome: 'Il treno', desc: 'Quale prende, a che ora, con che frequenza. La sosta ha sempre una destinazione, e FS Park non la vede.' },
   { mark: '02', nome: 'Il motivo della sosta', desc: 'Pendolarismo, trasferta, aeroporto: contesti diversi che chiederebbero offerte diverse.' },
-  { mark: '03', nome: 'Il ritorno', desc: 'Quando Davide riprende l\'auto e se il ritardo del treno gli ha fatto sforare la tariffa.' },
+  // L'uscita dal varco è la transazione su cui FS Park fattura: metterla fra
+  // le cose che non vede era l'errore di dominio più grave del ramo. Il ritorno
+  // lo vedete; quello che manca è il perché.
+  { mark: '03', nome: 'Il perché del ritorno', desc: 'L\'uscita dal varco si vede, con orario e durata. Resta fuori la causa: se la tariffa è sforata perché il treno è arrivato tardi.' },
   { mark: '04', nome: 'Il valore oltre il parcheggio', desc: 'Quanto vale quel cliente per il Gruppo, oltre la sosta che paga a FS Park.' },
 ];
 
@@ -35,13 +38,40 @@ const incrocioGruppo = {
   },
   centro: 'Solo la sovrapposizione',
   vincolo:
-    'Nessun dato personale passa da una società all\'altra: la clean room restituisce la sovrapposizione fra le due audience, non i singoli record, e solo dentro i consensi raccolti.',
+    'Nessun dato personale passa da una società all\'altra: la clean room restituisce la sovrapposizione fra le due audience, non i singoli record. Resta la condizione dei consensi, che pesa più di tutto il resto.',
 };
 
+// La condizione abilitante del capitolo stava in corpo minore in fondo a una
+// riga di vincolo. Senza una stima della base consensata questo capitolo è
+// teoria, e il costo del re-consenso è di FS Park: tre righe, in evidenza.
+const consensi = [
+  {
+    n: '01',
+    nome: 'Quanta base è consensata oggi',
+    desc: 'Da rilevare sui dati FS Park: quanti clienti hanno un consenso che regge una finalità di marketing, e su quali canali è stato raccolto.',
+  },
+  {
+    n: '02',
+    nome: 'Quanta ne serve perché la sovrapposizione sia utile',
+    desc: 'La sovrapposizione produce audience azionabili solo se entrambe le basi consensate sono abbastanza larghe. La soglia si fissa insieme, sul caso scelto.',
+  },
+  {
+    n: '03',
+    nome: 'Come si recupera quella che manca',
+    desc: 'Il consenso si richiede dove il cliente è già in contatto: area riservata, app, conferma della prenotazione. Serve un\'informativa nuova, non una lettura estensiva di quella vecchia.',
+  },
+];
+
+// Il «ritardo treno → benefit sosta» è uscito da qui: è un'azione su un singolo
+// record, in tempo reale, al varco — cioè un'integrazione operativa fra sistemi,
+// non un caso da clean room. La slide precedente dice che la clean room
+// restituisce la sovrapposizione fra audience e non i singoli record: le due
+// cose, consecutive, si contraddicevano. Vive ora nel capitolo Percorso, con il
+// suo percorso tecnico e legale. Qui restano i casi che vivono sull'overlap.
 const scenari = [
   {
-    nome: 'Ritardo treno → benefit sosta',
-    desc: 'Il treno di Davide arriva tardi e la sua sosta si estende senza penale, perché il ritardo di una società lo sa anche l\'altra.',
+    nome: 'Quanto si sovrappongono le due basi',
+    desc: 'Quanta parte di chi parcheggia negli hub viaggia anche in treno, e con quale frequenza. È la misura che dice se gli scenari insieme valgono la pena.',
   },
   {
     nome: 'Cross-selling sosta + viaggio',
@@ -78,14 +108,14 @@ const fasiGruppo = [
     n: '02',
     nome: 'La clean room apre il Gruppo',
     durata: 'Quando le due società decidono',
-    esito: 'Benefit sulla sosta, cross-selling fra sosta e viaggio, retention letta su entrambe le metà.',
+    esito: 'Sovrapposizione misurata, cross-selling fra sosta e viaggio, retention letta su entrambe le metà.',
     peso: 1,
   },
 ];
 ---
 <BaseLayout
   branch="fs-park"
-  title="Alla sbarra, Davide scompare"
+  title="La metà invisibile"
   description="La metà che FS Park non vede e la clean room che permette di leggerla insieme a Trenitalia, nel rispetto del GDPR."
   pageSolutions={['data-collab']}
 >
@@ -103,11 +133,15 @@ const fasiGruppo = [
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fsp-stalli"></div>
       <Sfondo slot="backdrop" id="pk-rampa" forza="leggera" />
+      <!-- Il capitolo si chiamava in tre modi: «Metà invisibile» nella nav,
+           «La metà invisibile» in entrambi i rami: un capitolo, un nome
+           gemello. Il nome è uno, quello della nav; l'immagine della sbarra
+           resta, nel lead. -->
       <CoverHero
         eyebrow="04 · Metà invisibile"
         numeral="04"
-        title="Alla sbarra,<br/>Davide scompare"
-        lead="La lettura del cliente FS Park si interrompe dove inizia il viaggio. Quello che succede dopo esiste, ma appartiene a un'altra società del Gruppo."
+        title="La metà invisibile"
+        lead="Alla sbarra la lettura del cliente FS Park si interrompe: quello che succede dopo esiste, ma appartiene a un'altra società del Gruppo."
         size="phase"
         tone="ink"
         signature={false}
@@ -191,7 +225,52 @@ const fasiGruppo = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 3: Scenari intersocietari ────────────────────────── -->
+    <!-- ── SLIDE 3: La base consensata ─────────────────────────────── -->
+    <Slide id="slide-consensi" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-asfalto" forza="media" />
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-4" data-reveal>
+        LA CONDIZIONE ABILITANTE
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Senza base consensata, la sovrapposizione resta teoria.
+      </h2>
+      <p
+        class="text-center text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-7"
+        style="font-size: clamp(0.95rem, 1.15vw, 1.08rem);"
+        data-reveal
+        data-reveal-delay="0.14"
+      >
+        L'informativa con cui oggi si prenota uno stallo difficilmente copre una finalità
+        commerciale incrociata con un'altra società. È la prima cosa da misurare, prima di
+        qualunque scenario.
+      </p>
+
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 auto-rows-fr gap-4" data-reveal data-reveal-delay="0.2">
+        {consensi.map((c) => (
+          <div class="fs-card h-full flex flex-col text-left" style="padding: 1.1rem 1.25rem;">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="fs-mark flex-shrink-0 !w-9 !h-9 !text-[0.85rem]" aria-hidden="true">{c.n}</span>
+              <p class="fs-card-title" style="font-size: 1.02rem; margin-inline: 0;">{c.nome}</p>
+            </div>
+            <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{c.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="mt-6 text-center fs-panel-src max-w-4xl mx-auto" data-reveal data-reveal-delay="0.32">
+        Titolarità della sovrapposizione e base giuridica non le decide un progetto di analytics:
+        le decidono i DPO delle due società. Il costo di un nuovo consenso è di chi lo raccoglie.
+      </p>
+    </Slide>
+
+    <!-- ── SLIDE 4: Scenari intersocietari ────────────────────────── -->
     <Slide id="slide-usecases-gruppo" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
@@ -235,13 +314,16 @@ const fasiGruppo = [
           ))}
         </div>
 
-        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.36">
-          Evoluzione possibile, non punto di partenza · dal tavolo di lavoro Adobe × FS Park, luglio 2026
+        <p class="mt-5 text-center fs-panel-src max-w-5xl mx-auto" data-reveal data-reveal-delay="0.36">
+          Sono i casi che vivono sulla sovrapposizione fra audience. Il benefit sulla sosta quando
+          il treno ritarda non passa da qui: è un'integrazione fra sistemi, e sta nel capitolo
+          Percorso. Evoluzione possibile, non punto di partenza · dal tavolo di lavoro
+          Adobe × FS Park, luglio 2026
         </p>
       </div>
     </Slide>
 
-    <!-- ── SLIDE 4: AEP Data Governance ───────────────────────────── -->
+    <!-- ── SLIDE 5: AEP Data Governance ───────────────────────────── -->
     <Slide id="slide-governance" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
       <Sfondo slot="backdrop" id="tc-acciaio" forza="media" />
@@ -284,7 +366,7 @@ const fasiGruppo = [
       </p>
     </Slide>
 
-    <!-- ── SLIDE 5: Partire da FS Park, estendere al Gruppo ───────── -->
+    <!-- ── SLIDE 6: Partire da FS Park, estendere al Gruppo ───────── -->
     <Slide id="slide-strategia" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="pk-alba" forza="media" />

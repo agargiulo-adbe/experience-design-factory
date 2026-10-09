@@ -13,13 +13,18 @@ import { mediaProps } from '../../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// Le categorie sono quelle osservate nella casella del campione, non i
+// programmi del CRM: un mittente («biglietti webmaster») non è un programma, e
+// l'etichetta è stata rifatta sulla categoria. X-GO non è un'offerta «youth»:
+// è il programma fedeltà di Regionale e Intercity (fonte: la pagina X-GO di
+// Trenitalia, ott 2026).
 const emailTipi = [
   { label: 'CartaFreccia', icon: '🏅', desc: 'Punti, offerte partner, premi', freq: '~2×/sett.', badge: 'Loyalty' },
-  { label: 'X-GO',         icon: '🎟️', desc: 'Sconti Regionale, carnet, cashback', freq: '~1×/sett.', badge: 'Youth' },
-  { label: 'Biglietti webmaster',     icon: '🎫', desc: 'Conferme, cambi, rimborsi', freq: 'Transazionale', badge: 'Transact' },
+  { label: 'X-GO',         icon: '🎟️', desc: 'Loyalty Regionale e Intercity: punti, cashback, under 30 e over 60', freq: '~1×/sett.', badge: 'Loyalty' },
+  { label: 'Conferme e rimborsi',     icon: '🎫', desc: 'Biglietti, cambi, rimborsi', freq: 'Transazionale', badge: 'Transact' },
   { label: 'Feedback & NPS',          icon: '📋', desc: 'Sondaggi soddisfazione', freq: '2×/mese', badge: 'Survey' },
-  { label: 'Infomobilità',            icon: '🚨', desc: 'Ritardi e disservizi', freq: 'On event', badge: 'Alert' },
-  { label: 'FS Park',                 icon: '🅿️', desc: 'Nessuna comunicazione con Trenitalia', freq: 'Gap', badge: 'Gap' },
+  { label: 'Infomobilità',            icon: '🚨', desc: 'Ritardi e disservizi: la sola agganciata al viaggio', freq: 'On event', badge: 'Alert' },
+  { label: 'FS Park',                 icon: '🅿️', desc: 'Nel campione non compare. Una comunicazione congiunta esiste?', freq: 'Domanda', badge: 'Domanda' },
 ];
 
 // Il punto cieco di Trenitalia: il binario è la soglia. Prima c'è un
@@ -159,25 +164,26 @@ const dalBinarioInPoi = [
       <div slot="backdrop" class="fs-bg-soft"></div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <p class="fs-panel-tag text-center mb-4" data-reveal>
-        ORACLE RESPONSYS · CRM EMAIL ATTIVO
+        LA PIATTAFORMA EMAIL · CAMPIONE DI UNA CASELLA
       </p>
-
-      <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-baseline justify-center gap-x-6 gap-y-1 mb-2" data-reveal data-reveal-delay="0.08">
-        <span class="fs-stat-value" data-display style="font-size: clamp(2.6rem, 5vw, 4rem);">611</span>
-        <h2
-          class="text-[var(--ink-primary)] font-[family-name:var(--font-display)] text-center md:text-left"
-          style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em;"
-        >
-          email in un anno.<br class="hidden md:block"/> Nessuna sull'arrivo di Davide.
-        </h2>
-      </div>
+      <h2
+        class="text-center text-[var(--ink-primary)] font-[family-name:var(--font-display)] mb-4"
+        style="font-size: clamp(1.55rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Quante comunicazioni riceve un cliente come Davide.
+      </h2>
       <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-3xl mx-auto mb-6"
+        class="text-[var(--ink-secondary)] leading-normal max-w-3xl mx-auto mb-6"
         style="font-size: clamp(0.95rem, 1.05vw, 1rem);"
         data-reveal
         data-reveal-delay="0.15"
       >
-        Il CRM è attivo e parla spesso, ma nessuna di queste email si aggancia al viaggio in corso, e FS Park non compare mai.
+        Una casella osservata per un anno riceve <strong class="text-[var(--ink-primary)]">oltre dieci
+        comunicazioni a settimana</strong>: è il campione di una persona, non la misura degli invii di
+        Trenitalia. Il programma c'è e parla spesso; a parte l'infomobilità, nessuna di queste
+        comunicazioni si aggancia al viaggio in corso.
       </p>
 
       <div
@@ -187,18 +193,18 @@ const dalBinarioInPoi = [
       >
         {emailTipi.map((e) => (
           <div class="fs-card flex items-start gap-3 !py-3 !px-4"
-               style={e.badge === 'Gap' ? "border-color: rgba(var(--sig2-rgb), 0.4); background: rgba(var(--sig2-rgb), 0.08);" : undefined}>
+               style={e.badge === 'Domanda' ? "border-color: rgba(var(--sig2-rgb), 0.4); background: rgba(var(--sig2-rgb), 0.08);" : undefined}>
             <span class="text-lg flex-shrink-0 mt-0.5" aria-hidden="true">{e.icon}</span>
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap mb-1">
                 <p class="fs-card-title !text-[1.02rem] leading-tight">{e.label}</p>
                 <span class:list={[
                   "text-[0.72rem] font-bold px-1.5 py-0.5 rounded-sm tracking-wide uppercase",
-                  e.badge === 'Gap'
+                  e.badge === 'Domanda'
                     ? "text-white"
                     : "text-[rgba(241, 243, 244, 0.75)]",
                 ]}
-                style={e.badge === 'Gap' ? "background: rgba(var(--sig2-rgb), 0.85);" : "background: rgba(241, 243, 244, 0.12);"}>{e.badge}</span>
+                style={e.badge === 'Domanda' ? "background: rgba(var(--sig2-rgb), 0.85);" : "background: rgba(241, 243, 244, 0.12);"}>{e.badge}</span>
               </div>
               <p class="fs-card-body !text-[0.9rem] leading-snug">{e.desc}</p>
             </div>
@@ -211,8 +217,18 @@ const dalBinarioInPoi = [
           <strong class="text-[var(--ink-primary)]">I dati ci sono:</strong> manca chi legge il <em>journey</em>, collega i segnali sparsi e li usa quando servono davvero.
         </p>
       </div>
-      <p class="mt-4 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
-        <span class="whitespace-nowrap">Analisi campione email Trenitalia</span> · <span class="whitespace-nowrap">Google Takeout, lug 2026, 1 account</span> · illustrativo
+      {/* La riga di metodo era in maiuscoletto a 0.75rem e in proiezione non si
+          leggeva: qui sta in tondo a 0.85rem, perché è la riga che dice di chi
+          è il campione e vale quanto il numero. */}
+      <p
+        class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]"
+        style="font-size: 0.85rem; line-height: 1.5; max-width: 50rem;"
+        data-reveal
+        data-reveal-delay="0.42"
+      >
+        Metodo: una sola casella personale, esportata da Google Takeout e contata per dodici mesi
+        (luglio 2026). Campione illustrativo, non un dato di sistema: il volume reale degli invii lo
+        conosce chi gestisce la piattaforma.
       </p>
     </Slide>
 

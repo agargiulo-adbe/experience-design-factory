@@ -13,30 +13,45 @@ import { mediaProps } from '../../../assets.index';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+// Verifica diretta su fspark.it del 9 ott 2026: Adobe Analytics è già a bordo
+// via una property Adobe Tags della stessa company FS. «Tracciamenti limitati»
+// davanti al cliente suonava come «non c'è Analytics», e il comportamento
+// pre-acquisto (confronto tariffe, ricerca disponibilità) non sta su un sito
+// istituzionale: sta sul canale di vendita, che è fspark.it stesso.
 const ecosistema = [
   {
-    nome: 'Sito istituzionale',
-    stato: 'Tracciamenti limitati',
-    tone: 'ambra',
-    desc: 'Oggi raccoglie poco del comportamento di navigazione. Una revisione è possibile, ma non è un prerequisito.',
+    nome: 'Sito fspark.it',
+    stato: 'Adobe Analytics già a bordo',
+    tone: 'verde',
+    desc: 'Il canale di vendita: tariffe e disponibilità si guardano qui. Adobe Analytics c\'è già, su una property Adobe Tags della company FS; il tagging va arricchito, non introdotto.',
   },
   {
     nome: 'Area riservata web',
     stato: 'In arrivo',
     tone: 'neutro',
-    desc: 'Il punto in cui il cliente si autenticherà anche da browser. Nasce già pensata per essere misurata.',
+    desc: 'Dove il cliente si autenticherà anche da browser. Nasce già pensata per essere misurata.',
   },
   {
     nome: 'App iOS e Android',
     stato: 'Già tracciate',
     tone: 'verde',
-    desc: 'Il canale più maturo: eventi di comportamento in-app già raccolti e pronti a confluire nella piattaforma.',
+    desc: 'Il canale più maturo: eventi in-app già raccolti e pronti per la piattaforma.',
   },
   {
     nome: 'CRM Salesforce',
     stato: 'Fonte customer-centric',
     tone: 'ambra',
-    desc: 'Anagrafiche, contratti e assistenza: la vista sul cliente conosciuto, da unire a quella comportamentale.',
+    desc: 'Anagrafiche, contratti, assistenza: il cliente conosciuto, da unire a quello osservato.',
+  },
+  // Il varco mancava da tutto il ramo: è la fonte con il volume più alto che
+  // FS Park possiede, e l'unico punto in cui un veicolo anonimo diventa un
+  // cliente ricorrente. Un blueprint sulla sosta che nomina solo i canali web
+  // ha guardato metà dell'azienda.
+  {
+    nome: 'Varco e casse automatiche',
+    stato: 'Il volume più alto',
+    tone: 'neutro',
+    desc: 'Targhe, sbarre e casse: ogni ingresso e ogni uscita passa da qui, con orario e durata. È la fonte che il digitale non vede e il conto economico sì.',
   },
 ];
 
@@ -47,14 +62,48 @@ const badgeStyle = (tone: string) =>
       ? 'background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);'
       : 'background: rgba(241, 243, 244, 0.12); color: rgba(221,224,232,0.9);';
 
-const versioni = [
+const versioni: { mark: string; nome: string; desc: string; larga?: boolean }[] = [
   { mark: '01', nome: "L'anonimo sul sito", desc: 'Guarda le pagine e confronta le tariffe, magari fa un preventivo. Resta senza nome né profilo.' },
   { mark: '02', nome: "L'utente in app", desc: 'Autenticato, prenota e paga la sosta. È il cliente più riconoscibile che FS Park abbia.' },
   { mark: '03', nome: 'Il record CRM', desc: 'Anagrafica, contratti, abbonamenti dentro Salesforce. Sa chi è il cliente, non cosa fa online.' },
   { mark: '04', nome: 'Il ticket assistenza', desc: 'Richieste e reclami gestiti nel CRM. Un segnale che oggi resta staccato da tutto il resto.' },
+  { mark: '05', nome: 'La targa al varco', desc: 'Un veicolo che entra e esce, con orario e durata, senza nessun nome attaccato. È la versione più frequente di Davide e la più muta.', larga: true },
 ];
 
-// Il percorso che si legge quando le quattro fonti diventano un profilo solo.
+// In tutto il deck non c'era un solo indicatore di FS Park: i tre numeri del
+// tronco sono di Gruppo, e chi deve difendere un conto economico piccolo dentro
+// un Gruppo grande non aveva niente da mettere in una richiesta di budget.
+// Qui ci sono gli indicatori, non le cifre: i valori sono di FS Park e si
+// misurano sui suoi dati. Inventarli sarebbe stato il modo più rapido di
+// perdere la riunione.
+const indicatori = [
+  {
+    nome: 'Occupazione degli stalli, per hub',
+    domanda: 'Quali hub sono pieni e a che ora, e quali restano vuoti nelle stesse fasce?',
+  },
+  {
+    nome: 'Durata media della sosta',
+    domanda: 'Chi si ferma due ore e chi tutto il giorno, e che cosa distingue i due comportamenti?',
+  },
+  {
+    nome: 'Ricavo per stallo disponibile',
+    domanda: 'Quanto rende uno stallo tenendo conto delle ore in cui resta libero?',
+  },
+  {
+    nome: 'Quota di abbonati sul totale',
+    domanda: 'Quanta parte del giro d\'affari è ricorrente e quanta dipende dalla sosta occasionale?',
+  },
+  {
+    nome: 'Tasso di rinnovo degli abbonamenti',
+    domanda: 'Chi non rinnova, e che cosa era successo a quel cliente nelle settimane prima?',
+  },
+  {
+    nome: 'No-show sulle prenotazioni',
+    domanda: 'Quanti stalli prenotati restano vuoti, e quanto costa tenerli fermi ad aspettare?',
+  },
+];
+
+// Il percorso che si legge quando le cinque fonti diventano un profilo solo.
 // Sono le stesse tappe che il tavolo di luglio ha usato come esempio: restano
 // illustrative, e la slide lo dichiara.
 const percorsoDavide = [
@@ -167,7 +216,7 @@ const percorsoDavide = [
       <div slot="backdrop" class="fsp-stalli"></div>
 
       <div class="w-full max-w-6xl mx-auto">
-        <div class="text-center mb-6">
+        <div class="text-center mb-4">
           <p class="fs-panel-tag inline-block" data-reveal>
             L'ECOSISTEMA FS PARK OGGI
           </p>
@@ -177,11 +226,11 @@ const percorsoDavide = [
             data-reveal
             data-reveal-delay="0.08"
           >
-            Quattro fonti, ognuna a uno stadio diverso.
+            Cinque fonti, ognuna a uno stadio diverso.
           </h2>
         </div>
 
-        <div class="relative flex flex-col gap-3">
+        <div class="relative flex flex-col gap-1.5">
           <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
 
           {ecosistema.map((fonte, i) => (
@@ -197,7 +246,7 @@ const percorsoDavide = [
                 </p>
               </div>
 
-              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.85rem 1.1rem;">
+              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.6rem 1.1rem;">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2.5 flex-wrap mb-1">
                     <p class="fs-card-title" style="font-size: 1.08rem; margin-inline: 0;">{fonte.nome}</p>
@@ -212,8 +261,8 @@ const percorsoDavide = [
           ))}
         </div>
 
-        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.4">
-          Fonte: dal tavolo di lavoro Adobe × FS Park, luglio 2026
+        <p class="mt-3 text-center fs-panel-src max-w-6xl mx-auto" data-reveal data-reveal-delay="0.4">
+          Tavolo di lavoro Adobe × FS Park, luglio 2026; sito verificato su fspark.it il 9 ottobre 2026 · su accesso e pagamento c'è EasyPark, operatore terzo: titolarità e responsabilità del trattamento vanno fissate per iscritto
         </p>
       </div>
     </Slide>
@@ -232,7 +281,7 @@ const percorsoDavide = [
         data-reveal
         data-reveal-delay="0.08"
       >
-        Quattro fonti, quattro versioni di Davide.
+        Cinque fonti, cinque versioni di Davide.
       </h2>
       <p
         class="text-center text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-7"
@@ -244,9 +293,12 @@ const percorsoDavide = [
         nessuno di questi pezzi sa di appartenere alla stessa persona.
       </p>
 
-      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-reveal data-reveal-delay="0.2">
+      <!-- La quinta versione sta su tutta la riga invece di lasciare un buco
+           nella griglia a due colonne: è anche quella che pesa di più, perché
+           è l'unica senza nome. -->
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 auto-rows-fr gap-4" data-reveal data-reveal-delay="0.2">
         {versioni.map((v) => (
-          <div class="fs-card flex items-start gap-4 text-left">
+          <div class:list={["fs-card flex items-start gap-4 text-left h-full", v.larga && "md:col-span-2"]}>
             <span class="fs-mark flex-shrink-0" aria-hidden="true">{v.mark}</span>
             <div class="min-w-0 flex-1">
               <p class="fs-card-title mb-1" style="font-size: 1.1rem;">{v.nome}</p>
@@ -257,12 +309,49 @@ const percorsoDavide = [
       </div>
 
       <p class="mt-6 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.32">
-        Quattro profili separati · nessuna riconciliazione · scenario descritto al tavolo di lavoro Adobe × FS Park, luglio 2026
+        Cinque profili separati · nessuna riconciliazione · scenario descritto al tavolo di lavoro Adobe × FS Park, luglio 2026
       </p>
     </Slide>
 
-    <!-- ── SLIDE 4: L'opportunità ─────────────────────────────────────
-         Il paragrafo che descriveva «quattro fonti → un profilo → un
+    <!-- ── SLIDE 4: Gli indicatori della sosta ─────────────────────── -->
+    <Slide id="slide-indicatori" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="pk-asfalto" forza="media" />
+      <div slot="backdrop" class="fsp-stalli"></div>
+
+      <div class="w-full max-w-6xl mx-auto">
+        <div class="text-center mb-6">
+          <p class="fs-panel-tag inline-block" data-reveal>
+            I NUMERI DELLA SOSTA
+          </p>
+          <h2
+            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+            data-reveal
+            data-reveal-delay="0.08"
+          >
+            Sei indicatori, e la domanda che ognuno apre.
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 auto-rows-fr gap-4" data-reveal data-reveal-delay="0.16">
+          {indicatori.map((ind) => (
+            <div class="fs-card h-full flex flex-col text-left" style="padding: 1.1rem 1.25rem;">
+              <p class="fs-card-title mb-2" style="font-size: 1.05rem; margin-inline: 0; color: rgba(var(--sig-rgb), 0.98);">{ind.nome}</p>
+              <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{ind.domanda}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-6 text-center fs-panel-src max-w-4xl mx-auto" data-reveal data-reveal-delay="0.34">
+          Qui ci sono gli indicatori, non le cifre: i valori sono di FS Park e si misurano sui
+          suoi dati. Sono anche i numeri con cui si difende una richiesta di budget dentro il Gruppo.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── SLIDE 5: L'opportunità ─────────────────────────────────────
+         Il paragrafo che descriveva «le fonti → un profilo → un
          percorso» è diventato il disegno: è il concetto che il deck ripete
          più spesso, e letto si perde. La slide passa a superficie scura
          chiara come nel tronco e nel ramo gemello: i diagrammi hanno adesso

@@ -16,22 +16,32 @@ const chiavi = [
   {
     nome: 'Email, anche hashata',
     ruolo: 'Identificativo candidato',
-    desc: 'È il dato che app, area riservata e CRM hanno in comune. Hashata, permette il riconoscimento senza esporre il dato in chiaro.',
+    desc: 'Il dato comune ad app, area riservata e CRM. Hashata, riconosce senza esporre nulla in chiaro.',
+  },
+  // La chiave email esiste solo dopo il login, e al varco il login non c'è:
+  // senza la targa il cliente più ricorrente resta fuori dal grafo. È un dato
+  // personale, quindi la condizione legale si dice qui, non dopo.
+  {
+    nome: 'La targa, al varco',
+    ruolo: 'La chiave fuori dal login',
+    desc: 'Al varco il cliente è una targa, e una targa è un dato personale: entra nel grafo solo con base giuridica e informativa che lo prevedano. In app si lega alla prenotazione.',
   },
   {
     nome: 'Identity Graph',
     ruolo: 'La mappa delle identità',
-    desc: 'Collega tra loro gli identificativi dello stesso cliente: cookie del sito, ID dell\'app, record del CRM.',
+    desc: 'Collega gli identificativi dello stesso cliente: cookie, ID dell\'app, record CRM, targa.',
   },
   {
     nome: 'Stitching',
     ruolo: 'Il ricucito dei percorsi',
-    desc: 'Le sessioni anonime e quelle autenticate della stessa persona diventano un unico percorso leggibile.',
+    desc: 'Sessioni anonime e autenticate della stessa persona diventano un percorso unico.',
   },
+  // La finestra accanto al meccanismo: «anche tutto il prima» prometteva una
+  // retroattività illimitata, e il cliente l'avrebbe scoperta a POC finito.
   {
     nome: 'Backfill',
     ruolo: 'Il recupero del prima',
-    desc: 'A riconoscimento avvenuto, anche la storia precedente al login si riattacca al profilo del cliente.',
+    desc: 'Il prima si riattacca una volta sola, nella finestra del pacchetto: 13–25 mesi; lookback 30 giorni.',
   },
 ];
 
@@ -56,7 +66,7 @@ const sogliaLogin = {
       'Sosta e assistenza finiscono sulla stessa persona',
     ],
   },
-  ritorno: 'La riconciliazione riattacca a questo profilo anche tutto il prima',
+  ritorno: 'La riconciliazione riattacca il prima a questo profilo, dentro una finestra definita',
 };
 
 // La piattaforma vista di taglio: sotto i sistemi di oggi, che non si toccano;
@@ -145,21 +155,21 @@ const stratiXdm = [
       <div slot="backdrop" class="fs-grid"></div>
 
       <div class="w-full max-w-6xl mx-auto">
-        <div class="text-center mb-6">
+        <div class="text-center mb-3">
           <p class="fs-panel-tag inline-block" data-reveal>
-            LA CHIAVE DI RICONCILIAZIONE
+            LE CHIAVI DI RICONCILIAZIONE
           </p>
           <h2
-            class="text-[var(--ink-primary)] mt-3 font-[family-name:var(--font-display)]"
+            class="text-[var(--ink-primary)] mt-2 font-[family-name:var(--font-display)]"
             style="font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
             data-reveal
             data-reveal-delay="0.08"
           >
-            Una chiave comune, tre meccanismi che la usano.
+            Due chiavi, tre meccanismi che le usano.
           </h2>
         </div>
 
-        <div class="relative flex flex-col gap-3">
+        <div class="relative flex flex-col gap-1.5">
           <div class="fs-line-h hidden md:block" style="left: 1.45rem; top: 1.45rem; bottom: 1.45rem; width: 2px; height: auto; background: linear-gradient(180deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 8%, rgba(var(--sig-rgb), 0.9) 92%, rgba(var(--sig-rgb), 0) 100%);" aria-hidden="true"></div>
 
           {chiavi.map((c, i) => (
@@ -175,7 +185,7 @@ const stratiXdm = [
                 </p>
               </div>
 
-              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.85rem 1.1rem;">
+              <div class="fs-card flex items-center gap-4 text-left" style="padding: 0.6rem 1.1rem;">
                 <div class="flex-1 min-w-0">
                   <p class="fs-card-title mb-1" style="font-size: 1.08rem; margin-inline: 0;">{c.nome}</p>
                   <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{c.desc}</p>
@@ -185,8 +195,8 @@ const stratiXdm = [
           ))}
         </div>
 
-        <p class="mt-5 text-center fs-panel-src tracking-widest uppercase" data-reveal data-reveal-delay="0.42">
-          Gli aspetti tecnici restano da approfondire insieme · dal tavolo di lavoro Adobe × FS Park, luglio 2026
+        <p class="mt-3 text-center fs-panel-src max-w-6xl mx-auto" data-reveal data-reveal-delay="0.42">
+          Quanto la chiave riconosca è un esito del POC, non una promessa: ospiti e canali indiretti restano fuori · tavolo Adobe × FS Park, luglio 2026
         </p>
       </div>
     </Slide>

@@ -18,7 +18,11 @@ const touchpoints = [
   { label: 'App Trenitalia', icon: '📱', owner: 'Trenitalia', nota: 'Streaming events · comportamento in-app' },
   { label: 'Piattaforma di esecuzione email', icon: '📧', owner: 'Trenitalia', nota: 'Campagne CRM · CartaFreccia · X-GO' },
   { label: 'Salesforce CRM',  icon: '☁️', owner: 'FS Technology', nota: 'Foundation 2026 · Data Cloud · MuleSoft' },
-  { label: 'FS Park app/web', icon: '🅿️', owner: 'FS Park', nota: 'EasyPark · prenotazione parcheggio' },
+  // FS Park ha una propria app (iOS e Android) per prenotazione, estensione
+  // della sosta e abbonamenti. EasyPark è un canale diverso — accesso e
+  // pagamento con lettura targa — e fino al 9 ott 2026 questa riga lo dava
+  // come il sistema di prenotazione: due fornitori confusi in uno.
+  { label: 'App FS Park',     icon: '🅿️', owner: 'FS Park', nota: 'Prenotazione, estensione della sosta, abbonamenti' },
 ];
 ---
 <BaseLayout
@@ -39,9 +43,11 @@ const touchpoints = [
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
       <Sfondo slot="backdrop" id="tr-atrio" forza="leggera" />
+      <!-- Senza numero: la serie 01–05 è dei capitoli di ramo, e un «01 ·
+           Scenario» accanto a un «01 · Partenza» faceva due capitoli primi
+           nello stesso documento. -->
       <CoverHero
-        eyebrow="01 · Scenario"
-        numeral="01"
+        eyebrow="Tronco comune · Scenario"
         title="Il viaggio del cliente oggi"
         lead="Davide usa quattro canali in un viaggio solo. Sei sistemi lo osservano, nessuno lo riconosce."
         size="phase"
@@ -119,23 +125,13 @@ const touchpoints = [
       >
         Davide usa quattro canali.<br/>Sei sistemi lo osservano, nessuno lo riconosce.
       </h2>
-      <p
-        class="text-[var(--ink-secondary)] leading-snug max-w-2xl mx-auto mb-4"
-        style="font-size: clamp(0.95rem, 1.1vw, 1.05rem);"
-        data-reveal
-        data-reveal-delay="0.15"
-      >
-        Il dato esiste, ma è sparso tra analytics separati, CRM distinti, app e parcheggio:
-        nessun sistema conosce il viaggio completo e le comunicazioni arrivano fuori tempo.
-      </p>
-
       {/* Six systems on one signal line — nodes lit, but the story between them is dark. */}
       <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.22">
         <span class="fs-line-h hidden md:block" style="top: 1.4rem; left: 8.3%; right: 8.3%;" aria-hidden="true"></span>
         <div class="grid grid-cols-2 md:grid-cols-3 auto-rows-fr gap-x-4 gap-y-4 max-[1350px]:gap-y-3 relative">
           {touchpoints.map((tp, i) => (
             <div class="flex flex-col items-center h-full">
-              <span class:list={["fs-node mb-3 relative z-10 max-[1350px]:!w-9 max-[1350px]:!h-9 max-[1350px]:!text-[0.85rem]", tp.label === 'FS Park app/web' && "fs-node--park"]} aria-hidden="true">
+              <span class:list={["fs-node mb-3 relative z-10 max-[1350px]:!w-9 max-[1350px]:!h-9 max-[1350px]:!text-[0.85rem]", tp.owner === 'FS Park' && "fs-node--park"]} aria-hidden="true">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div class="fs-card w-full flex-1 text-left flex items-start gap-3 !py-4 !px-5 max-[1350px]:!py-2.5 max-[1350px]:!px-3.5">
@@ -159,8 +155,14 @@ const touchpoints = [
           ))}
         </div>
       </div>
-      <p class="mt-4 text-center fs-panel-src tracking-widest uppercase">
-        Nessuna delle due società vede il viaggio intero · scenario illustrativo
+      <!-- EasyPark va nominato per quello che è — accesso e pagamento con
+           lettura della targa, operatore terzo — perché fino al 9 ott 2026
+           stava al posto dell'app FS Park. Chi è titolare del dato quando il
+           canale è di terzi lo dice il ramo FS Park, dove c'è lo spazio. -->
+      <p class="mt-4 text-center fs-panel-src max-w-4xl mx-auto">
+        Il dato esiste, sparso fra analytics separati, CRM distinti, app e varco · accesso e
+        pagamento della sosta passano anche da EasyPark, operatore terzo, con lettura della
+        targa · scenario illustrativo
       </p>
     </Slide>
 

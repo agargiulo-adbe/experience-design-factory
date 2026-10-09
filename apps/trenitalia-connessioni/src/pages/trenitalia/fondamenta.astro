@@ -14,13 +14,52 @@ const currentPath = Astro.url.pathname;
 // La piattaforma vista di taglio, dal basso verso l'alto: prima i sistemi che
 // girano già, in cima lo strato che manca. Lo stato di ciascun prodotto (attivo,
 // parziale, da aggiungere) sta nella nota, dove si legge insieme al nome.
+//
+// Verificato su trenitalia.com il 9 ott 2026: AEM Sites «classico» (clientlibs,
+// componenti core, /content/dam dietro CDN), non Edge Delivery; Adobe Target è
+// distribuito su tutto il sito via integrazione AEM, non «solo in homepage» —
+// al più sono le attività a concentrarsi lì. Il numero di siti e di istanze è
+// informazione del cliente: sta fra le domande della prima sessione.
 const strati = [
   { nome: 'Piattaforma di esecuzione email', nota: 'Attiva · CartaFreccia, X-GO, alta frequenza di invio — fornitore da confermare con voi' },
   { nome: 'Salesforce CRM, Data Cloud, MuleSoft', nota: 'Foundation 2026 · il backbone operativo del Gruppo' },
-  { nome: 'AEM Sites su Edge Delivery', nota: 'Attivo · trenitalia.com e circa 33 siti' },
-  { nome: 'Adobe Analytics ×2', nota: 'Attivo · sito istituzionale e funnel di acquisto' },
-  { nome: 'Adobe Target', nota: 'Parziale · solo in homepage, assente su funnel e app' },
+  { nome: 'AEM Sites (as a Cloud Service)', nota: 'Attivo · trenitalia.com e le property di Gruppo' },
+  // Il vincolo di tempo entra nella fotografia dell'ecosistema: strumentare un
+  // funnel che sta per essere rifatto è lavoro che si butta.
+  { nome: 'Piattaforma di vendita', nota: 'In rifacimento dentro il piano · vincolo di tempo per la strumentazione del funnel' },
+  { nome: 'Adobe Analytics', nota: 'Attivo · due istanze, come emerso al tavolo di lavoro: sito e funnel' },
+  { nome: 'Adobe Target', nota: 'Implementato sul sito via integrazione AEM · copertura d\'uso da verificare' },
   { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · legge tutti gli strati sotto', evidenza: true },
+];
+
+// Le cinque misure della prima sessione. Nessuna è nostra: stanno nei sistemi
+// del cliente, e la colonna di destra dice la direzione senza portare un numero.
+const misure = [
+  {
+    nome: 'Quota di prenotazioni da app',
+    oggi: 'Sul totale dei canali diretti, mese per mese',
+    direzione: 'Più prenotazioni che nascono e si chiudono in app',
+  },
+  {
+    nome: 'Costo per contatto all\'assistenza',
+    oggi: 'Contatti per mille transazioni, e quanto costa gestirli',
+    direzione: 'Meno contatti a parità di viaggi venduti',
+  },
+  {
+    nome: 'Tasso di consenso',
+    oggi: 'Raccolto e revocato, per canale di raccolta',
+    direzione: 'Più consenso raccolto, e meno revoche dopo una campagna',
+  },
+  {
+    nome: 'Rinnovo degli abbonamenti',
+    oggi: 'Alla scadenza e nei trenta giorni successivi',
+    direzione: 'Più rinnovi prima della scadenza, meno recuperi dopo',
+  },
+  {
+    nome: 'Quota di vendita diretta',
+    oggi: 'Rispetto ai canali di terzi, per tipo di servizio',
+    direzione: 'Più vendita diretta a parità di spesa in comunicazione',
+  },
 ];
 ---
 <BaseLayout
@@ -80,7 +119,59 @@ const strati = [
         <div class="w-full max-w-5xl mx-auto" data-reveal data-reveal-delay="0.16">
           <DiagStrati strati={strati} />
         </div>
+
+        {/* Una riga sola, perché la slide è già alta: la conseguenza del vincolo
+            che la fotografia qui sopra adesso dichiara. Il dettaglio sta nella
+            slide del POC e nella Fase 1 del capitolo «Il percorso». */}
+        <p
+          class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]"
+          style="font-size: 0.85rem; line-height: 1.5; max-width: 64rem;"
+          data-reveal
+          data-reveal-delay="0.26"
+        >
+          Il rifacimento della piattaforma di vendita è un vincolo di tempo: la prima fase parte dai pezzi stabili, cioè app, area autenticata e letture di CRM.
+        </p>
       </div>
+    </Slide>
+
+    <!-- ── SLIDE 1b: Cosa misuriamo ───────────────────────────────── -->
+    <Slide id="slide-misure" bg="secondary" align="center">
+      <div slot="backdrop" class="fs-bg-soft"></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
+      <div slot="backdrop" class="fs-grid"></div>
+
+      <p class="fs-panel-tag text-center mb-3" data-reveal>
+        COSA MISURIAMO · PRIMA DI PROMETTERE QUALSIASI COSA
+      </p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.55rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal
+        data-reveal-delay="0.08"
+      >
+        Cinque numeri, da leggere insieme.
+      </h2>
+
+      <div class="w-full max-w-6xl mx-auto flex flex-col gap-2.5" data-reveal data-reveal-delay="0.2">
+        {/* Le intestazioni stanno sulla stessa ascissa delle celle: stesso
+            padding orizzontale del pannello, e a bandiera come il contenuto. */}
+        <div class="grid md:grid-cols-[13rem_1fr_1fr] gap-x-6 text-left" style="padding-left: 1.75rem; padding-right: 1.75rem;">
+          <span class="fs-panel-tag">LA MISURA</span>
+          <span class="fs-panel-tag">OGGI, DA LEGGERE INSIEME</span>
+          <span class="fs-panel-tag" style="color: rgba(var(--sig2-rgb), 0.98);">COSA VORREMMO VEDERE</span>
+        </div>
+        {misure.map((m) => (
+          <div class="fs-panel text-left grid md:grid-cols-[13rem_1fr_1fr] gap-x-6 gap-y-1.5 items-baseline" style="padding-top: 0.8rem; padding-bottom: 0.8rem;">
+            <p class="fs-card-title" style="font-size: 1.02rem; margin-inline: 0;">{m.nome}</p>
+            <p class="fs-card-body" style="margin-inline: 0;">{m.oggi}</p>
+            <p class="fs-card-body" style="margin-inline: 0; color: rgba(241, 243, 244, 0.95);">{m.direzione}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 64rem;" data-reveal data-reveal-delay="0.32">
+        Nessuno di questi numeri è nostro: baseline da rilevare nel POC, target da fissare insieme.
+      </p>
     </Slide>
 
     <!-- ── SLIDE 2: Salesforce Foundation — il nuovo backbone ─────── -->
@@ -97,9 +188,10 @@ const strati = [
           <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.62;">
             A marzo 2026 FS Technology ha lanciato con Salesforce una piattaforma agentica che unisce
             Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM, con MuleSoft come
-            integration engine e Data Cloud come layer dati. Adobe si aggancia con il connettore
-            nativo per il CRM e con i dati di Data Cloud che confluiscono in AEP, e aggiunge
-            l'intelligenza del journey che nessun CRM produce da solo.
+            integration engine e Data Cloud come layer dati. Il confine è scritto una volta e vale
+            per tutto il percorso: <strong class="text-[var(--ink-primary)]">Salesforce Data Cloud resta
+            master del dato CRM e del consenso; Adobe lavora sul profilo di esperienza e non duplica
+            il profilo operativo.</strong>
           </p>
         </div>
 
@@ -124,8 +216,8 @@ const strati = [
             {
               n: '03',
               prodotto: 'Salesforce Data Cloud',
-              ruolo: 'Layer dati centralizzato',
-              adobe: 'I dati di Data Cloud confluiscono in AEP e alimentano CJA e Real-Time CDP',
+              ruolo: 'Master del profilo e del consenso',
+              adobe: 'CJA legge le letture che servono all\'analisi; il profilo operativo e le liste di soppressione restano qui',
             },
           ].map((item) => (
             <div class="fs-card flex flex-col">

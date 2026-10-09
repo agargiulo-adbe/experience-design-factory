@@ -13,18 +13,20 @@ import { href } from '@edf/core/utils/url.js';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const radar = [
+// La segmentazione per tipo di veicolo è uscita: la leva economica vera è
+// l'occupazione, che decide tariffe e capacità.
+const radar: { nome: string; desc: string; badge?: string }[] = [
   {
     nome: 'Rinnovi e mancati rinnovi',
-    desc: 'Capire chi non rinnova l\'abbonamento e cosa era successo nelle settimane prima.',
+    desc: 'Chi non rinnova l\'abbonamento, e che cosa era successo nelle settimane prima.',
   },
   {
     nome: 'Ricorrenze → proposta abbonamento',
     desc: 'Chi acquista soste singole con regolarità riceve la proposta di abbonamento al momento giusto.',
   },
   {
-    nome: 'Segmentazione auto / moto / bici',
-    desc: 'Comportamenti e bisogni diversi per tipo di veicolo, letti come segmenti distinti.',
+    nome: 'Occupazione e durata per hub e fascia oraria',
+    desc: 'Quanti stalli occupati, per quanto tempo e in quali ore: da qui si muovono tariffe e capacità.',
   },
   {
     nome: 'Sorgenti che convertono',
@@ -63,8 +65,8 @@ const sogliaPoc = {
 // Il riepilogo si ferma al capitolo 04: il 05 è questa pagina — il suo
 // contenuto (POC, radar, adozione) vive nel paragrafo di chiusura, non in lista.
 const capitoli = [
-  { num: '01', label: 'Partenza', desc: 'La metà su asfalto: l\'ecosistema e il cliente in quattro versioni' },
-  { num: '02', label: 'Fondamenta', desc: 'Una sola identità: email hashata, Identity Graph, stitching, backfill' },
+  { num: '01', label: 'Partenza', desc: 'La metà su asfalto: cinque fonti, cinque versioni del cliente, i numeri della sosta' },
+  { num: '02', label: 'Fondamenta', desc: 'Una sola identità: email hashata, targa al varco, Identity Graph, stitching, backfill' },
   { num: '03', label: 'Convergenza', desc: 'Customer Journey Analytics: tutte le fonti, un\'unica lettura' },
   { num: '04', label: 'Metà invisibile', desc: 'La clean room che apre gli scenari di Gruppo, nel rispetto del GDPR' },
 ];
@@ -173,8 +175,8 @@ const capitoli = [
               <div class="fs-card flex-1 min-w-0 text-left" style="padding: 0.65rem 1rem;">
                 <div class="flex items-center gap-2.5 flex-wrap mb-0.5">
                   <p class="fs-card-title" style="font-size: 1.05rem; margin-inline: 0;">{r.nome}</p>
-                  <span class="text-[0.7rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style="background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);">
-                    Da validare sul campo
+                  <span class="text-[0.7rem] font-bold px-2 py-0.5 rounded-sm tracking-wide uppercase flex-shrink-0" style={r.badge ? 'background: rgba(241, 243, 244, 0.12); color: rgba(221,224,232,0.92);' : 'background: rgba(var(--sig-rgb), 0.16); color: rgba(var(--sig-rgb), 0.98);'}>
+                    {r.badge ?? 'Da validare sul campo'}
                   </span>
                 </div>
                 <p class="fs-card-body" style="font-size: 0.95rem; line-height: 1.5; margin-inline: 0;">{r.desc}</p>
@@ -254,7 +256,7 @@ const capitoli = [
         Quando l'asfalto incontra la rotaia.
       </h2>
       <p
-        class="text-[var(--color-grigio-200)] max-w-3xl mx-auto text-center mb-10"
+        class="text-[var(--color-grigio-200)] max-w-3xl mx-auto text-center mb-8"
         style="font-size: clamp(1rem, 1.25vw, 1.2rem); line-height: 1.55;"
         data-reveal
         data-reveal-delay="0.15"
@@ -285,13 +287,15 @@ const capitoli = [
       </div>
 
       <p
-        class="mt-10 text-center text-[var(--color-grigio-200)] max-w-2xl mx-auto"
+        class="mt-8 text-center text-[var(--color-grigio-200)] max-w-3xl mx-auto"
         style="font-size: 0.98rem; line-height: 1.55;"
         data-reveal
         data-reveal-delay="0.32"
       >
-        Gli scenari intersocietari restano da esplorare, con ogni società titolare
-        dei propri dati. Intanto il ramo FS Park cammina sulle proprie gambe.
+        Il benefit sulla sosta quando il treno ritarda è una pista diversa e più corta: un evento
+        di ritardo verso il sistema di tariffazione, cioè un'integrazione fra sistemi, con percorso
+        tecnico e base giuridica da istruire. Gli scenari da clean room restano da esplorare, ogni
+        società titolare dei propri dati.
       </p>
     </Slide>
 

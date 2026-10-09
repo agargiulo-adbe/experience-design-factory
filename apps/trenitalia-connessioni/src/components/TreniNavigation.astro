@@ -15,7 +15,7 @@ interface NavEntry { slug: string; label: string; solution: string | null }
 // Rail del tronco: le due tappe comuni. Le porte-ramo sono rese a parte.
 const trunkSections: NavEntry[] = [
   { slug: 'scenario', label: 'Scenario', solution: null },
-  { slug: 'bivio',    label: 'Bivio',    solution: null },
+  { slug: 'bivio',    label: 'Il bivio', solution: null },
 ];
 
 // Rail di ramo: i 5 capitoli speculari. Il gating di percorso vale solo per
@@ -25,7 +25,7 @@ const chapterSections = (br: 'fs-park' | 'trenitalia'): NavEntry[] => [
   { slug: `${br}/fondamenta`,      label: 'Fondamenta',      solution: null },
   { slug: `${br}/convergenza`,     label: 'Convergenza',     solution: 'cja' },
   { slug: `${br}/meta-invisibile`, label: 'Metà invisibile', solution: 'data-collab' },
-  { slug: `${br}/percorso`,        label: 'Percorso',        solution: br === 'trenitalia' ? 'rtcdp,ajo,mix-modeler' : null },
+  { slug: `${br}/percorso`,        label: 'Percorso',        solution: br === 'trenitalia' ? 'rtcdp,ajo' : null },
 ];
 
 const sections = branch ? chapterSections(branch) : trunkSections;
@@ -88,9 +88,14 @@ function isActive(slug: string) {
           ].join(' ')}
           aria-current={isActive(s.slug) ? 'page' : undefined}
         >
-          <span class="text-[var(--color-grigio-400)] mr-1 tabular-nums">
-            {String(i + 1).padStart(2, '0')}
-          </span>
+          {/* Solo i capitoli di RAMO sono numerati: la serie 01–05 è loro. Il
+              tronco numerato dava due «01» nello stesso documento, e chi legge
+              doveva ricordare quale serie stesse guardando. */}
+          {branch && (
+            <span class="text-[var(--color-grigio-400)] mr-1 tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+          )}
           {s.label}
         </a>
       </li>
