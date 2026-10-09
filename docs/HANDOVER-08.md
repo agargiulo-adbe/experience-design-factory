@@ -125,3 +125,140 @@ Richiesta dell'utente: un PPTX **su template Adobe** per la riunione con Valitut
 - **Gotcha tecnici**: `s.shapes.title` restituisce un proxy nuovo a ogni accesso → confrontare `shape_id`, non `is`; `set_paras` copia il rPr del primo run → per run con dimensioni diverse usare `set_run_texts`; notes placeholder assente nel template → iniettare `<p:sp>` body; LibreOffice risolve Adobe Clean Black a intermittenza (font installato in `~/Library/Application Support/Adobe/.User Owned Fonts`); Firefly **429** oltre ~10 immagini consecutive → rigenerare singolarmente; `SendUserFile` limite 30 MB (i PPTX v2/v3 restano solo su disco).
 
 ---
+
+---
+## 36. Trenitalia «Connessioni Intelligenti» — la riscrittura del 9 ottobre 2026
+
+Richiesta dell'owner, in sei punti: design system di trenitalia.com al 100%, ottimizzazione per
+schermi da muro, sfondi su ogni slide con clip in loop su copertina e chiusura, largo uso di
+elementi grafici, `/panel-review` con **Gianluca Palmieri** come stakeholder principale, e
+umanizzazione completa della copy. Poi, a lavoro in corso: analizzare e correggere le incoerenze
+fra slide. Commit da `cc5e222` ad `a81579e`. Deck a **72 slide** su 13 rotte.
+
+### 36.1 Il design system, letto e non ricordato
+`pnpm brand:tokens https://www.trenitalia.com` (831 KB di CSS, riletti il 9 ott). Il sito **nomina**
+i propri colori, quindi non c'è nulla da interpretare: `.color-primary-blu` **#2f394e** (285
+occorrenze, il colore di SISTEMA), hover `#606c87` (96) e `#444d60` (9), `.color-red` **#d91835**
+(34, hover `.cta-primary-red` **#b51039**), `.color-primary-green` **#006666** (9), `.color-grey-600`
+#6C6C6C; neutri #ffffff 240 · #f1f3f4 26 · #f8f9fa 17 · #4e5054 41 · #adb5bd 4; **Poppins** dichiarato
+26 volte (più `fs-icon`, che è il loro font di icone).
+
+**Due errori che la tabella corregge**, entrambi presenti fino al 9 ott: il rosso del deck era
+**#E2001A** — che è il corporate del Gruppo FS, non quello del sito — e l'**ambra #F5A623 non esiste
+in nessuna fonte FS**, era inventata. Il carattere era Space Grotesk; **Poppins è distribuibile**,
+quindi per una volta non serve una sostituta.
+
+**Due estensioni dichiarate**, perché il sito non ha un tema scuro e il deck è a dominante scura:
+il fondo **#1b2230** è lo stesso #2f394e abbassato di luminosità (già usato dal dossier della stessa
+app), e per il TESTO si usano le schiariture **#ff8d9d** (7,2:1) e **#4fbdb4** (7,0:1) — i pieni
+danno 3,14:1 e 2,35:1, cioè **non sono inchiostri**. ⚠️ Scelta dell'owner, presa in chat: dominanza
+scura costruita sul primary-blu del cliente, e per il ramo FS Park il **verde del sito** al posto
+dell'ambra inventata, così entrambi i segnali vengono dal CSS letto.
+
+Il segnale non è scritto nelle regole: passa da `--sig-rgb`, che il ramo ribalta. Rotaia = rosso
+schiarito, asfalto = verde schiarito; i pieni stanno in `--accent-*` e servono solo da fondo.
+⚠️ Un nodo che porta la «P» di FS Park o la «T» di Trenitalia **nomina una società**: il suo colore
+non può dipendere dal ramo da cui si guarda — da qui `.fs-node--park` e `.fs-node--rail`, fissi.
+
+### 36.2 Sfondi, clip e il difetto che li rendeva inutili
+**20 immagini Firefly** (`backdrops.manifest.ts`) su tutte e 72 le slide, più due clip in loop su
+copertina e sulle due chiusure. **Il primo giro è stato buttato**: chiedeva «linee di luce», «rete»,
+«nodi» e metteva gli esadecimali nel prompt, ed è tornato neon ciano (i codici colore il modello li
+ignora), arancio nonostante stesse nel negative, e la stessa prospettiva a punto di fuga in cinque
+immagini su ventidue. Rifatto con `contentClass: 'photo'` — la leva singola che sposta di più —
+parole di colore al posto dei codici, e tutto l'armamentario neon/sci-fi/data-viz/punto-di-fuga nel
+negative. ⚠️ Nessun mezzo, mai: un treno generato arriva con una livrea che non è quella del cliente.
+
+**Il difetto che contava di più**: gli sfondi c'erano già prima, ma a `opacity-12` sotto un velo al
+90% — cioè annullati. Il componente `Sfondo.astro` porta l'immagine al 45-75% sotto uno scrim
+**radiale** (denso al centro dove sta il testo, leggero ai bordi), con tre forze scelte dalla densità
+di testo della slide. `SfondoLoop.astro` monta le clip dal Release `media`.
+
+Le clip Firefly sono uscite **indaco saturo**: graduate verso l'ardesia con ffmpeg
+(`hue=s=0.40,colorbalance=rm=0.06:bm=-0.08,eq=gamma=1.06:saturation=0.92`) e ricucite con
+`loop:seamless` (PASS; la chiusura ha richiesto `--fade 1.2`).
+
+### 36.3 Grafica: una libreria, non disegni per slide
+`src/components/diagrammi/`: **DiagFlusso** (fonti → layer → percorso leggibile), **DiagSoglia**
+(prima/dopo la soglia, con la freccia che torna a riattaccare il prima), **DiagStrati** (gli strati
+della piattaforma, con quello che si propone in evidenza), **DiagFasi** (le fasi sull'asse del
+tempo, ognuna una scheda), **DiagIncrocio** (due insiemi che condividono solo l'intersezione).
+Tredici diagrammi collocati nelle slide dove il concetto era solo scritto. Ognuno ha la sua variante
+per **fondo chiaro** in `global.css`.
+
+### 36.4 Schermo da muro
+`wallScale` acceso su tutte e 13 le pagine **dopo** un giro `--tv` a 0 HARD, come prescrive la
+regola. Il check `i` (uso dello spazio) scende da 99 a 31, e **94 di quei 99 stavano a 2560 e 3840**:
+senza wallScale, sopra i 1600px il tipo smetteva di crescere.
+
+### 36.5 Il contorno che spariva — e un difetto del MOTORE
+Su `/scenario/` la firma co-brand era **bianca su #f8f9fa**. Causa: `DARK_CLASSES` in
+`packages/core/src/blocks/immersive/deck.ts` tiene per scura la classe `bg-[var(--surface-inverse)]`,
+vero nelle experience a dominante **chiara** e falso in quelle a dominante **scura**, dove
+`--surface-inverse` è il bianco. ⚠️ **Il difetto è del motore e tocca Agos, Eni, Isybank e questa**:
+qui è stato aggirato marcando le slide chiare con `data-dark="false"` dal BaseLayout (l'uscita di
+sicurezza prevista dal motore). **Voce di backlog P1**, non corretta nel core per non rimettere in
+gioco nove deck con una riga.
+
+### 36.6 Incoerenze fra slide, cercate e chiuse
+Il grosso non si vede slide per slide: si vede solo confrontandole.
+- **Nome di prodotto sbagliato**: la clean room era «Adobe Data Collaboration». Verificato su
+  Experience League il 9 ott — il prodotto è **Adobe Real-Time CDP Collaboration** (docs aggiornate
+  al 23 set 2026, Limited Availability, disponibile in EMEA); «data collaboration» è la categoria.
+  20 occorrenze corrette, sigle RTCDP/RT-CDP ricondotte a «Real-Time CDP».
+- **Lo stesso componente rendeva in due modi**: gli aggiustamenti dei diagrammi erano finiti in
+  `<style is:global>` dentro le pagine di un ramo solo. Portati nei componenti.
+- **Copertine di capitolo con cinque formati di occhiello**; due su dieci erano chiare **con
+  inchiostro chiaro sopra** (titolo bianco su bianco). Tutte e dieci scure, formato unico.
+- **«L'opportunità» aveva due trattamenti** (chiara nel tronco, scura in FS Park perché lì c'era un
+  diagramma): aggiunta la variante chiara alla libreria.
+- **Le «4 aree di valore» non erano le 4 direttrici** della slide precedente; **il ramo FS Park non
+  nominava mai la foundation Salesforce di Gruppo**, a cui l'altro ramo dedica una slide intera e
+  che comprende FS Park per nome. Due fotografie diverse della stessa azienda a due tavoli.
+- **Un capitolo, due nomi** («La metà che manca» / «La metà invisibile»); la nav numerava anche il
+  tronco, dando due «01» nello stesso documento; due levette della console (`mix-modeler`, `ajo`)
+  non spegnevano più niente.
+
+### 36.7 Panel review — due giri, 9 ottobre 2026
+Personas: `docs/Ferrovie/PANEL-PERSONAS.md` (git-ignorato) — **Gianluca Palmieri** (il digitale di
+Trenitalia, stakeholder principale e contatto Adobe esistente), **Giuseppe Raffaniello** (Customer
+Operations: il percorso d'acquisto è suo dal set 2025), **Mario Alovisi** (Marketing e Revenue
+Management), **Domenico Scida** (CTIDO di Gruppo da lug 2026), più due **seat** senza nome pubblico
+(il Digital Business Partner Trasporto di FSTechnology e il presidio digitale di FS Park).
+⚠️ Due ritratti sono di ruolo, non di persona: il verdetto lo dichiara.
+
+| asse | giro 1 | giro 2 |
+|---|---|---|
+| credibilità dei fatti | 2,17 | **4,00** |
+| rilevanza per me | 2,33 | **3,50** |
+| chiarezza | 3,17 | **4,00** |
+| rischio (5 = nessuno) | 2,00 | **3,50** |
+| azionabilità | 2,33 | **3,67** |
+
+Giro 1: 53 claim verificati (24 confermati, **20 refutati**), 38 P0, sei «accetto condizionato» su
+sei. Giro 2: 61 claim (34 confermati, 12 refutati), 28 P0 di cui 23 sopravvissute o nuove.
+Verdetti in `docs/Ferrovie/PANEL-VERDICT-2026-10-09-round{1,2}.md`, JSON grezzi in
+`docs/Ferrovie/panel/2026-10-09-round{1,2}/` (tutto git-ignorato).
+
+**Le correzioni che valgono il giro.** Fuori l'**incidente di sicurezza del cliente** usato due volte
+come leva di vendita, con la data sbagliata e l'etichetta «illustrativo» su un fatto reale che li
+riguarda — cinque personas su sei si fermavano lì. Fuori «**100% GDPR-compliant**» (nessun prodotto
+rende conforme un'organizzazione) e «**da sei perimetri a uno solo**», che si smontava da solo contro
+«non si sostituisce niente». Il **fornitore email** genericizzato, perché non ha conferma pubblica e
+l'unica prova era una casella personale. **Davide** reso coerente (era abbonato *e* acquirente a ogni
+viaggio). La **slide del POC** scritta per il ramo Trenitalia, dove non esisteva. I **«KPI target»**
+(«meno blind spot») sostituiti da misure del cliente con baseline da rilevare. La **Fase 3** svuotata
+di prodotti e cifre media. Il **varco** aggiunto fra le fonti di FS Park.
+
+⚠️ **Il pacchetto di evidenza mentiva, e un giro è stato buttato per questo.** Lo script di cattura
+aspettava 260 ms dopo il cambio slide contro ~1,2 s di dissolvenza: fotografava le slide a metà, e
+nel giro 1 **tre personas hanno scritto «questa slide arriva vuota» su slide che si vedono
+benissimo**. Il giro 2 è stato fermato e rilanciato su un pacchetto onesto. Lezione generale: un
+pacchetto di evidenza che mente costa un giro intero di panel.
+
+### 36.8 Verifica
+`pnpm --filter trenitalia-connessioni audit:deck -- --tv` contro la preview statica: **13 rotte × 5
+viewport (1280→3840), 373 controlli, 0 HARD**. Soft residui: `a` 199, `i` 33, `g` 12 — in gran parte
+strutturali delle composizioni centrate con titolo in alto, e il contratto vieta di farli passare
+rimpicciolendo il tipo. `astro check` 0 errori. Build dell'intero monorepo verde.
+

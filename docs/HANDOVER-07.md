@@ -74,6 +74,9 @@ Stanza **distinta** da quella di §26.8: lì la società ICT del Gruppo, qui il 
 - **La tenaglia che rende la riunione.** Ricavi della business unit Trasporto Passeggeri **−2%** nel 2025; operatori sull'alta velocità **da due a quattro** nel 2026 (entrano SNCF e Arenaways, 33% Renfe; SNCF dichiara il 15% entro il 2030); **pricing dinamico** dal 1° gennaio 2026; prezzo del biglietto **fermo per decisione annunciata dal vertice di Gruppo**; piano che chiede **+100 milioni di passeggeri**. Tolti prezzo e tempo, resta la **conversione**.
 - **Finestra operativa**: il **TTG Travel Experience di Rimini è il 14-16 ottobre** e lui ci sarà. È la fiera dove nell'ottobre 2025 ha fatto le dichiarazioni su cui poggia metà del dossier (panel sul posizionamento delle vendite Trenitalia sul mercato): **le fonti più citate hanno un anno e lì si rinfrescano**. ⚠️ La bozza interna è attesa il 16, mentre lui è ancora a Rimini. Memoria `trenitalia-direzione-sales`.
 
+### 26.10 ⚠️ Deck riscritto il 9 ott 2026 — lo stato corrente è in **§36 (Parte 8)**
+§26.1–26.7 restano la storia della biforcazione, non lo stato del contenuto.
+
 ---
 ## 27. UniCredit — Attribution al centro di «Analizza» + Dossier Attribution login-gated (2 set 2026)
 

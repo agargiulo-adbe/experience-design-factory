@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-09**.
+> Documento di passaggio di consegne. Stato al **2026-10-09** (sera).
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -106,12 +106,32 @@
 > Airways**) e **il contenuto su scala**. 📅 Il **TTG di Rimini è il 14-16 ottobre e lui ci sarà**: è
 > dove un anno fa ha detto le cose su cui poggia metà del dossier, e lì si rinfrescano.
 >
+> 🚄 **La sera del 9 ottobre: Trenitalia riscritta, e due giri di panel.** Il deck «Connessioni
+> Intelligenti» girava su una pelle **inventata** — rosso #E2001A (che è il corporate del Gruppo FS,
+> non quello del sito), un'ambra #F5A623 che non esiste in nessuna fonte FS, Space Grotesk. Adesso
+> ogni valore viene dal CSS di produzione di trenitalia.com: **ardesia #2f394e** (il colore di
+> sistema, 285 occorrenze), **#d91835**, **#006666**, **Poppins** — che per una volta è
+> distribuibile. Più: **20 sfondi Firefly su tutte e 72 le slide** (prima c'erano ma a `opacity-12`
+> sotto un velo al 90%, cioè annullati), **due clip in loop** su copertina e chiusure, **tredici
+> diagrammi** da una libreria di cinque componenti, `wallScale` ovunque, e una caccia alle
+> **incoerenze fra slide** che ha trovato un **nome di prodotto sbagliato** (la clean room è
+> *Adobe Real-Time CDP Collaboration*, non «Adobe Data Collaboration»), due copertine bianche su
+> bianco e un ramo che non nominava la foundation Salesforce di Gruppo mentre l'altro le dedica una
+> slide. **Panel review a due giri** con **Gianluca Palmieri** come stakeholder principale: la
+> credibilità dei fatti passa da **2,17 a 4,00**, il rischio da 2,00 a 3,50. Tutto in **§36 (Parte
+> 8)**; ⚠️ un giro è stato buttato perché **il pacchetto di evidenza mentiva** (lo script fotografava
+> le slide a metà dissolvenza), e dal panel è uscito anche un **difetto del motore** che tocca
+> quattro experience a dominante scura (P1, §36.5).
+
 > Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: **quattro P0 nuovi o riscritti il
 > 9 ott** stanno in testa (il dossier FSTechnology esposto · il panel mancante su un'app ormai pubblica
 > · il giro delta su Intesa Assicurazioni a stanza avvenuta), e subito sotto c'è quello che non si
 > chiude da solo — i nomi di referenti cliente dentro file tracciati su un repository pubblico,
-> inventario rifatto il 7 ott. ⚠️ **Nota di dimensione**: le Parti **1 e 7** sono a filo del tetto
-> (48,6 e 48,7 KB su 49,1): la prossima sezione che cresce lì dentro fa scattare un ribilanciamento.
+> inventario rifatto il 7 ott. Dal 9 ott sera ci sono **tre P1 nuovi su Trenitalia**: il difetto del
+> motore sulle slide chiare (tocca quattro experience), quello che è sopravvissuto al secondo giro di
+> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione**: le Parti **1, 3, 7 e
+> 11** viaggiano fra 47,4 e 48,0 KB su 49,1: la prossima sezione che cresce lì dentro fa scattare un
+> ribilanciamento. La Parte 8 è quella con più spazio (32,8 KB).
 
 ---
 
@@ -126,8 +146,8 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 2 ott 2026 all'8 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime.
-- [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo e il modo giusto di farlo.
-- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank](./HANDOVER-08.md).
+- [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo. ⚠️ Per lo stato CORRENTE del deck Trenitalia la fonte non è qui ma **§36 (Parte 8)**.
+- [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · **§36 Trenitalia riscritta (9 ott)**](./HANDOVER-08.md) — §36 è lo stato corrente di «Connessioni Intelligenti»: design system letto, sfondi e clip, diagrammi, schermo da muro, incoerenze fra slide, e il panel a due giri.
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
 - [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier** · §35 **Intesa Assicurazioni**](./HANDOVER-11.md) — le due stanze Intesa (22 ott e 8 ott), il motore che regge tutti i dossier, il panel a due giri, e il deck dell’8 ottobre fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d’uso ereditati dalla libreria FSI (§35.11).
