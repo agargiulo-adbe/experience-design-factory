@@ -136,14 +136,23 @@ const {
     color: rgba(0, 0, 0, 0.78);
   }
 
-  /* Il cursore del livello: appare solo ad audio acceso, e si apre in larghezza
-     invece che comparire di colpo. */
-  .edf-audio-level {
-    display: flex; align-items: center;
-    width: 0; overflow: hidden; opacity: 0;
-    transition: width 260ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity 200ms ease;
+  /* Il cursore del livello: c'è solo ad audio acceso.
+     Niente animazione di LARGHEZZA — animare width fa ricalcolare il layout a
+     ogni fotogramma, e questa barra sta sopra una slide proiettata, dove lo
+     scatto si vede. Quando è spento il cursore non occupa spazio (`display:
+     none`), quindi la barra resta centrata sui suoi quattro comandi; quando si
+     accende entra con una dissolvenza e uno scivolo, che sono composite-only.
+     La barra si riallarga in un colpo solo: è la conseguenza di un gesto
+     esplicito, non un'animazione mancata. */
+  .edf-audio-level { display: none; align-items: center; }
+  .edf-audio-control[data-on] .edf-audio-level {
+    display: flex;
+    animation: edf-audio-level-in 220ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
   }
-  .edf-audio-control[data-on] .edf-audio-level { width: 6.5rem; opacity: 1; }
+  @keyframes edf-audio-level-in {
+    from { opacity: 0; transform: translateX(-0.5rem); }
+    to   { opacity: 1; transform: none; }
+  }
   .edf-audio-sr {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip: rect(0, 0, 0, 0); white-space: nowrap;
@@ -180,11 +189,12 @@ const {
   /* Su telefono resta solo l'icona: la parola non serve e ruba spazio. */
   @media (max-width: 640px) {
     /* Su telefono il cursore è un bersaglio troppo fine: resta l'interruttore. */
-    .edf-audio-control[data-on] .edf-audio-level { width: 0; opacity: 0; }
+    .edf-audio-control[data-on] .edf-audio-level { display: none; }
     .edf-audio-control { gap: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .edf-audio-control, .edf-audio-level { transition: none; }
+    .edf-audio-control { transition: none; }
+    .edf-audio-control[data-on] .edf-audio-level { animation: none; }
   }
 </style>
 
