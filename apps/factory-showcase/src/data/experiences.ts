@@ -117,7 +117,7 @@ export const EXPERIENCES: Experience[] = [
     brandLabel: 'FS Group',
     url: `${LIVE}/trenitalia-connessioni/`,
     shot: 'shots/trenitalia.webp',
-    accent: '#E2001A',
+    accent: '#d91835',
     sections: 12,
     defaultPublished: true,
     tag: {

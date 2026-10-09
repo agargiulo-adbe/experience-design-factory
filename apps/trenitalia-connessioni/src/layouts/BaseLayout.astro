@@ -64,6 +64,29 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   </body>
 </html>
 
+<script is:inline>
+// ── Quali slide sono SCURE, in una experience a dominante scura ────────────
+// Il motore del deck decide l'inchiostro del contorno (firma co-brand, credito
+// «creato con», contatore) guardando se la slide attiva è scura, e fra i suoi
+// indizi tiene per scura la classe `bg-[var(--surface-inverse)]`. È vero nelle
+// experience a dominante CHIARA, dove `inverse` è il fondo scuro. Qui è il
+// contrario: `--surface-inverse` è il bianco del sito. Senza questa riga il
+// contorno resta chiaro sopra le slide chiare e sparisce — misurato il 9 ott
+// 2026 su `/scenario/`, dove la firma era bianca su #f8f9fa.
+// Si marca `data-dark="false"`, che è l'uscita di sicurezza prevista dal
+// motore e vince su ogni altro indizio. Gira a tempo di parsing, quindi prima
+// che il deck conti le slide, e si ripete dopo gli scambi SPA.
+(function () {
+  function marca() {
+    document.querySelectorAll('[data-slide].bg-\\[var\\(--surface-inverse\\)\\]')
+      .forEach(function (s) { if (!s.hasAttribute('data-dark')) s.setAttribute('data-dark', 'false'); });
+  }
+  marca();
+  document.addEventListener('astro:after-swap', marca);
+  document.addEventListener('DOMContentLoaded', marca);
+})();
+</script>
+
 <script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON_KEY }}>
 (function() {
   var STORAGE_KEY = 'edf:media-slots:trenitalia-connessioni';

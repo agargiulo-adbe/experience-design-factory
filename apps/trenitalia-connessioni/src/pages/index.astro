@@ -17,8 +17,8 @@ const currentPath = Astro.url.pathname;
 const journey = [
   { num: '01', label: 'Scenario',        sub: 'Il viaggio di Davide, intero: dall\'auto alla destinazione', href: '/scenario' },
   { num: '02', label: 'Il bivio',        sub: 'Due società, due sguardi sullo stesso percorso',             href: '/bivio' },
-  { num: 'P',  label: 'Ramo FS Park',    sub: 'La metà su asfalto — 5 capitoli autoconsistenti',            href: '/fs-park/partenza' },
-  { num: 'T',  label: 'Ramo Trenitalia', sub: 'La metà su rotaia — 5 capitoli autoconsistenti',             href: '/trenitalia/partenza' },
+  { num: 'P',  label: 'Ramo FS Park',    sub: 'La metà su asfalto, in 5 capitoli che stanno in piedi da soli', href: '/fs-park/partenza' },
+  { num: 'T',  label: 'Ramo Trenitalia', sub: 'La metà su rotaia, in 5 capitoli che stanno in piedi da soli', href: '/trenitalia/partenza' },
 ];
 
 const fsStats = [
@@ -35,7 +35,7 @@ const fsStats = [
     <TreniNavigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/scenario')}>
+  <DeckContainer wallScale nextHref={href(base, '/scenario')}>
 
     <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="clip">
@@ -65,10 +65,10 @@ const fsStats = [
       <!-- Un solo viaggiatore, Davide: la linea sfuma dal verde (FS Park) al
            rosso (Trenitalia), le due società che lo guardano da lati opposti. -->
       <div class="relative w-full max-w-2xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
-        <div class="fs-line-h" style="top: 1.45rem; left: 14%; right: 14%; background: linear-gradient(90deg, rgba(var(--sig-rgb), 0) 0%, rgba(var(--sig-rgb), 0.9) 26%, rgba(var(--sig2-rgb), 0.9) 74%, rgba(var(--sig2-rgb), 0) 100%); box-shadow: 0 0 12px rgba(var(--sig2-rgb), 0.28);"></div>
+        <div class="fs-line-h" style="top: 1.45rem; left: 14%; right: 14%; background: linear-gradient(90deg, rgba(var(--park-rgb), 0) 0%, rgba(var(--park-rgb), 0.9) 26%, rgba(var(--rail-rgb), 0.9) 74%, rgba(var(--rail-rgb), 0) 100%); box-shadow: 0 0 12px rgba(var(--rail-rgb), 0.28);"></div>
         <div class="relative flex justify-center items-start">
           <div class="flex flex-col items-center gap-2.5 text-center max-w-[26rem]">
-            <span class="fs-node fs-node--alt" data-active>D</span>
+            <span class="fs-node" data-active>D</span>
             <span class="fs-node-label">Davide, pendolare business Milano–Roma. Un viaggio solo, che FS Park e Trenitalia guardano da lati opposti.</span>
           </div>
         </div>
@@ -104,34 +104,31 @@ const fsStats = [
           intelligenza che la completa.
         </p>
 
-        <!-- Le tre cifre come stazioni sulla linea del Gruppo -->
-        <div class="relative pt-6" data-reveal data-reveal-delay="0.22">
-          <div class="fs-line-h" style="top: 0.5rem; left: 8%; right: 8%;"></div>
+        <!-- Le tre cifre come stazioni sulla linea del Gruppo. I nodi stanno nel
+             FLUSSO, non in assoluto sopra il blocco: posizionati fuori finivano
+             addosso all'ultima riga del lead a 1920. -->
+        <div class="relative pt-3" data-reveal data-reveal-delay="0.22">
+          <div class="fs-line-h" style="top: 1.45rem; left: 10%; right: 10%;"></div>
           <div class="grid grid-cols-3 gap-6">
-            {fsStats.map((m, i) => (
-              <div class="relative text-center">
-                <span class={`fs-node ${i === 0 ? 'fs-node--alt' : ''} absolute left-1/2 -translate-x-1/2 -top-[3.4rem]`} data-active></span>
-                <p class="fs-stat-value mb-2">{m.value}</p>
-                <p class="fs-stat-label font-medium mb-1">{m.label}</p>
+            {fsStats.map((m) => (
+              <div class="relative flex flex-col items-center text-center gap-[18px]">
+                <span class="fs-node relative z-10" data-active aria-hidden="true"></span>
+                <p class="fs-stat-value mt-1">{m.value}</p>
+                <p class="fs-stat-label font-medium">{m.label}</p>
                 <p class="fs-stat-src">{m.sub}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <p class="fs-panel-src mt-8">
-          Fonte:&nbsp;
-          <a href="https://www.fsitaliane.it/content/fsitaliane/it/media/comunicati-stampa/2024/12/12/gruppo-fs-piano-strategico-2025-2029-100-miliardi-investimenti-accompagnare-crescita-paese.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">
-            Gruppo FS, Piano Strategico 2025–2029 (dic 2024)
-          </a>
-          &nbsp;·&nbsp;
-          <a href="https://www.fsitaliane.it/it/media/comunicati-stampa/2025/4/3/risultati-bilancio-2024-gruppofs.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">
-            Bilancio 2024 (apr 2025)
-          </a>
-          &nbsp;·&nbsp;
-          <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-100">
-            FS Technology, foundation digitale (mar 2026)
-          </a>
+        <!-- Le fonti stavano su una riga sola separate da &nbsp;·&nbsp;: ai
+             viewport da muro i tre link andavano a capo e le loro scatole si
+             sovrapponevano (check e). In flex-wrap con un gap vero non succede. -->
+        <p class="fs-panel-src mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <span>Fonte:</span>
+          <a href="https://www.fsitaliane.it/content/fsitaliane/it/media/comunicati-stampa/2024/12/12/gruppo-fs-piano-strategico-2025-2029-100-miliardi-investimenti-accompagnare-crescita-paese.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Piano Strategico 2025–2029 (dic 2024)</a>
+          <a href="https://www.fsitaliane.it/it/media/comunicati-stampa/2025/4/3/risultati-bilancio-2024-gruppofs.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Bilancio 2024 (apr 2025)</a>
+          <a href="https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">FS Technology, foundation digitale (mar 2026)</a>
         </p>
       </div>
     </Slide>
@@ -189,7 +186,7 @@ const fsStats = [
             href={href(base, '/scenario')}
             class="inline-flex items-center gap-3 px-9 py-2.5 text-[clamp(1rem,1.2vw,1.15rem)] font-semibold tracking-wide bg-[var(--color-chiaro)] text-[var(--color-ardesia-notte)] hover:bg-white transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-[var(--color-chiaro)] focus-visible:outline-offset-4 font-[family-name:var(--font-display)]"
           >
-            Inizia il percorso
+            Dallo scenario
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

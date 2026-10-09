@@ -424,7 +424,10 @@
   border-color: var(--color-ardesia-media);
 }
 [data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
-[data-deck] .deck-progress { color: var(--color-grigio-200); }
+/* Il contatore solo sulle slide SCURE: su quelle chiare resta quello del
+   motore, che è scuro. Prima era chiaro sempre, e sulle slide chiare spariva. */
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grigio-200); }
+[data-deck]:not([data-on-dark]) .deck-progress { color: rgba(47, 57, 78, 0.92); }
 
 /* Backdrop parallax clip — the shared SlideBackdrop over-scales its image
    (scale 1.04–1.06) so the drift never reveals an edge. On `overflow:hidden`
@@ -547,25 +550,47 @@
 .fs-stat-label { font-family: var(--font-body); font-size: 0.9rem; line-height: 1.4; color: rgba(241, 243, 244, 0.82); }
 .fs-stat-src { font-family: var(--font-body); font-size: 0.72rem; color: rgba(241, 243, 244, 0.55); }
 
-/* — Genuinely-light slides: flip panels/cards to light + dark ink. NB: a
-   bg="inverse" slide is NOT always light — a dark backdrop image (e.g. the
-   index cover) keeps it dark, where the default light ink is correct. So this
-   flip is scoped to the specific slides that actually render light (ghiaccio
-   scrim), by id, rather than the blanket inverse surface class. — */
-#slide-opportunity .fs-panel { background: rgba(255,255,255,0.9); border-color: rgba(27, 34, 48, 0.12); }
-#slide-opportunity .fs-card { background: rgba(255,255,255,0.82); border-color: rgba(27, 34, 48, 0.12); }
-#slide-opportunity .fs-panel-head,
-#slide-opportunity .fs-panel-figure,
-#slide-opportunity .fs-card-title,
-#slide-opportunity .fs-quote-text,
-#slide-opportunity .fs-stat-value { color: rgba(27, 34, 48, 0.98); }
-#slide-opportunity .fs-panel-body,
-#slide-opportunity .fs-card-body,
-#slide-opportunity .fs-stat-label { color: rgba(47, 57, 78, 0.86); }
-#slide-opportunity .fs-panel-src,
-#slide-opportunity .fs-stat-src { color: rgba(47, 57, 78, 0.6); }
-#slide-opportunity .fs-panel-tag { color: rgba(217, 24, 53, 1); }
-#slide-opportunity .fs-node-label { color: rgba(47, 57, 78, 0.75); }
+/* — Slide davvero CHIARE: pannelli, card e inchiostri si ribaltano ─────────
+   Prima questo blocco era appeso a UN id (`#slide-opportunity`), perché una
+   slide `bg="inverse"` non è detto che renda chiara: con un backdrop scuro
+   resta scura. Adesso le slide chiare sono poche e dichiarate — portano la
+   classe della superficie inverse e uno scrim `tr-scrim-chiaro` — quindi il
+   ribaltamento si aggancia alla CLASSE e vale per tutte e nove, comprese
+   quelle che arriveranno. Le due che dichiaravano chiaro e rendevano scure
+   (copertina e chiusure, che montano una clip) sono state portate su
+   `bg="primary"`, che è la verità.
+   Si aggancia alla classe e non a `[data-dark="false"]` — che il BaseLayout
+   mette via JS — perché la classe c'è già nell'HTML servito: niente lampo. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel { background: rgba(255,255,255,0.9); border-color: rgba(27,34,48,0.12); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-card { background: rgba(255,255,255,0.82); border-color: rgba(27,34,48,0.12); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-head,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-figure,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-card-title,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-quote-text,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-stat-value { color: rgba(27,34,48,0.98); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-body,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-card-body,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-stat-label { color: rgba(47,57,78,0.9); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-src,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-stat-src,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-quote-cite { color: rgba(47,57,78,0.78); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-panel-tag { color: rgba(217,24,53,1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-node-label { color: rgba(47,57,78,0.82); }
+/* Il nodo e il bollo: sul chiaro il testo bianco dentro un cerchio pallido
+   spariva. Fondo pieno nel colore del segnale, inchiostro bianco sopra. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-node,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-mark {
+  background-color: rgba(217,24,53,0.92); background-image: none;
+  border-color: rgba(217,24,53,1); color: rgba(255,255,255,1); box-shadow: none; }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-node--alt,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-mark.fs-node--alt {
+  background-color: rgba(0,102,102,0.95); border-color: rgba(0,102,102,1); }
+/* Inchiostri semantici: sul chiaro l'accento torna al pieno del sito. */
+[data-slide].bg-\[var\(--surface-inverse\)\] {
+  --ink-accent: var(--color-rosso);
+  --ink-accent-2: var(--color-verde);
+  --ink-link: var(--color-rosso);
+}
 
 /* ── Biforcazione FS Park × Trenitalia — accento per ramo ──────────────────
    Il ramo è dichiarato da BaseLayout con data-branch su <html>. Il tronco
@@ -674,3 +699,29 @@ html[data-branch="fs-park"] {
   backdrop-filter: blur(3px);
 }
 [data-slide] .edf-sig-cta:hover { background: rgba(27, 34, 48, 0.92); border-color: rgba(241, 243, 244, 0.8); }
+
+/* ── Nodi che stanno per una SOCIETÀ precisa ───────────────────────────────
+   `--sig`/`--sig2` si scambiano col ramo, ed è giusto per il segnale generico.
+   Ma un nodo che porta la «P» di FS Park o la «T» di Trenitalia nomina una
+   società: il suo colore non può dipendere da quale ramo si sta guardando.
+   Questi due lo fissano. (Nel tronco si vedeva: la P era rossa e la T verde.) */
+.fs-node--park, .fs-node--park[data-active], .fs-mark.fs-node--park {
+  border-color: rgba(var(--park-rgb), 0.85);
+  background-color: rgb(27, 34, 48);
+  background-image: linear-gradient(rgba(var(--park-rgb), 0.22), rgba(var(--park-rgb), 0.22));
+  color: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 0 18px rgba(var(--park-rgb), 0.5);
+}
+.fs-node--rail, .fs-node--rail[data-active], .fs-mark.fs-node--rail {
+  border-color: rgba(var(--rail-rgb), 0.85);
+  background-color: rgb(27, 34, 48);
+  background-image: linear-gradient(rgba(var(--rail-rgb), 0.22), rgba(var(--rail-rgb), 0.22));
+  color: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 0 18px rgba(var(--rail-rgb), 0.5);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-node--park,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-mark.fs-node--park {
+  background-color: rgba(0, 102, 102, 0.95); background-image: none; border-color: rgba(0, 102, 102, 1); }
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-node--rail,
+[data-slide].bg-\[var\(--surface-inverse\)\] .fs-mark.fs-node--rail {
+  background-color: rgba(217, 24, 53, 0.95); background-image: none; border-color: rgba(217, 24, 53, 1); }
