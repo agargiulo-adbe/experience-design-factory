@@ -269,6 +269,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Non un pitch: un osservatorio sul tracciamento dentro le email dei brand. Le fonti sono citate, mai interpretate, e non compare nessun prodotto Adobe.',
     },
   },
+  {
+    slug: 'trenitalia-prospettiva-sales',
+    name: 'Dove può arrivare il viaggio',
+    client: 'Trenitalia',
+    type: 'prospettiva',
+    brandLabel: 'Trenitalia',
+    url: `${LIVE}/trenitalia-prospettiva-sales/`,
+    shot: 'shots/trenitalia-prospettiva-sales.webp',
+    accent: '#d91835',
+    sections: 7,
+    defaultPublished: false,
+    tag: {
+      en: '7 chapters · IT · scaffold',
+      it: '7 capitoli · IT · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Perspective» skeleton: 7 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Prospettiva»: 7 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

@@ -11,7 +11,7 @@
  *      slide-firma;
  *  (b) registra l'app dove un'app nuova DEVE essere registrata: deploy.yml (merge +
  *      verifica), hub, showcase, package.json di radice (dev:<slug> + audit:deck:all),
- *      scripts/deck-audit.ts (ROUTE_SETS + CWD_ALIAS) e una migrazione seed Supabase.
+ *      scripts/lib/deck-routes.ts (ROUTE_SETS + CWD_ALIAS) e una migrazione seed Supabase.
  *      Ogni modifica è chirurgica (ancore nel testo, formattazione preservata) e
  *      rilanciare con lo stesso slug non duplica nulla.
  *
@@ -34,7 +34,8 @@ function usage(msg?: string): never {
   if (msg) console.error(`\n✗ ${msg}\n`);
   console.error(
     'Uso: pnpm new:experience --slug <kebab> --name "<Nome>" --client "<Cliente>" ' +
-      '--type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]',
+      '--type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] ' +
+      '[--chapters "slug:Titolo;slug:Titolo;…"] [--dry-run]',
   );
   process.exit(2);
 }
@@ -104,7 +105,25 @@ const ctaBg = onAccentOk ? accent : accentDeep;                            // bo
 const onCta = onAccentOk ? onAccent : '#ffffff';
 
 // ── Dati derivati ─────────────────────────────────────────────────────────
-const chapters = type.skeleton.map((c, i) => ({ slug: c.slug, num: String(i + 1).padStart(2, '0'), title: c.title }));
+// Lo scheletro del tipo è il punto di partenza, non un vincolo (lo dice
+// experienceTypes.ts): `--chapters "slug:Titolo;slug:Titolo"` lo sostituisce quando
+// l'agenda concordata col cliente ha una forma sua. Senza il flag vale lo scheletro.
+// Separatore `;` e non `,`: i titoli veri contengono virgole («Un viaggio, non più
+// prodotti») e con la virgola il primo titolo spezzerebbe il capitolo in due.
+const chapterSpec = (() => {
+  const raw = args.chapters === undefined ? '' : String(args.chapters).trim();
+  if (!raw) return type.skeleton;
+  const parsed = raw.split(';').map((piece) => {
+    const [cslug, ...rest] = piece.split(':');
+    const cs = (cslug ?? '').trim();
+    const ct = rest.join(':').trim();
+    if (!/^[a-z0-9-]+$/.test(cs) || !ct) usage(`--chapters: voce non valida «${piece}» (serve «slug-kebab:Titolo»)`);
+    return { slug: cs, title: { it: ct, en: ct } };
+  });
+  if (new Set(parsed.map((c) => c.slug)).size !== parsed.length) usage('--chapters: due capitoli con lo stesso slug');
+  return parsed;
+})();
+const chapters = chapterSpec.map((c, i) => ({ slug: c.slug, num: String(i + 1).padStart(2, '0'), title: c.title }));
 const n = chapters.length;
 const langs: Array<'it' | 'en'> = langMode === 'it' ? ['it'] : ['it', 'en'];
 const today = new Date().toISOString().slice(0, 10);
@@ -335,8 +354,10 @@ register('package.json', 'script dev:<slug> + audit:deck:all', (text) => {
   return { text: JSON.stringify(pkg, null, 2) + '\n', snippet: `"${devKey}": "pnpm --filter ${slug} dev"\n"audit:deck:all": … && ${auditCmd}` };
 });
 
-// deck-audit.ts — ROUTE_SETS + CWD_ALIAS
-register('scripts/deck-audit.ts', 'ROUTE_SETS (ogni rotta) + CWD_ALIAS', (text) => {
+// lib/deck-routes.ts — ROUTE_SETS + CWD_ALIAS. Le rotte sono state estratte qui dal
+// deck-audit perché anche wrap-audit le usa: il generatore patcha la fonte, non il suo
+// primo consumatore.
+register('scripts/lib/deck-routes.ts', 'ROUTE_SETS (ogni rotta) + CWD_ALIAS', (text) => {
   const routeKey = `  ${jsStr(slug)}: [`;
   const aliasLine = `  ${jsStr(slug)}: ${jsStr(slug)},`;
   const hasRoutes = text.includes(routeKey);
@@ -353,13 +374,13 @@ register('scripts/deck-audit.ts', 'ROUTE_SETS (ogni rotta) + CWD_ALIAS', (text) 
   if (!hasRoutes) {
     const s = out.indexOf('const ROUTE_SETS');
     const e = out.indexOf('\n};', s);
-    if (s === -1 || e === -1) throw new Error('deck-audit.ts: non trovo ROUTE_SETS');
+    if (s === -1 || e === -1) throw new Error('lib/deck-routes.ts: non trovo ROUTE_SETS');
     out = out.slice(0, e) + '\n' + routes + out.slice(e);
   }
   if (!hasAlias) {
     const s = out.indexOf('const CWD_ALIAS');
     const e = out.indexOf('\n};', s);
-    if (s === -1 || e === -1) throw new Error('deck-audit.ts: non trovo CWD_ALIAS');
+    if (s === -1 || e === -1) throw new Error('lib/deck-routes.ts: non trovo CWD_ALIAS');
     out = out.slice(0, e) + '\n' + aliasLine + out.slice(e);
   }
   return { text: out, snippet: `${routes}\n${aliasLine}` };

@@ -1,0 +1,545 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «Dove può arrivare il viaggio» — Adobe × Trenitalia
+   Prospettiva per la Direzione Sales. Generata l'11 ottobre 2026.
+
+   IL DESIGN SYSTEM È STATO LETTO, NON RICORDATO.
+   Fonte: `pnpm brand:tokens https://www.trenitalia.com`, 11 ottobre 2026 —
+   2 fogli di stile di produzione, 831 KB di CSS analizzati. Occorrenze:
+
+     #2f394e  285×   ardesia — il COLORE DI SISTEMA (fondi, barre, stati)
+     #606c87   96×   ardesia chiara — testo secondario, bordi
+     #d91835   34×   rosso — IL MARCHIO (le Frecce, le CTA), raro per scelta
+     #b51039   10×   rosso scuro — stati premuti
+     #006666    9×   verde — accento secondario, usato con parsimonia
+     #f1f3f4   26×   chiaro di superficie   ·   #f8f9fa 17×  nebbia
+     #ffffff  240×   bianco
+
+   Il più frequente è il colore di sistema, non il marchio: qui la gerarchia si
+   vede a occhio nudo, 285 contro 34. Chi ricorda «Trenitalia è rossa» inverte
+   le parti e costruisce una skin che non è la loro.
+
+   CARATTERE — nessuna sostituta: il sito dichiara **Poppins** (26 volte) ed è
+   distribuibile (Google Fonts, Open Font License). È il caso raro in cui si usa
+   il carattere vero del cliente. Non cambiarlo per gusto.
+
+   DOMINANTE SCURA, e il perché: un keynote si proietta in una sala con le luci
+   basse, e l'ardesia notte è un colore del loro sistema abbassato di luminosità,
+   non un fondo inventato. `--surface-inverse` è quindi la superficie CHIARA —
+   come in `trenitalia-connessioni`, con cui questa experience deve stare in piedi
+   nella stessa stanza. I rapporti di contrasto sotto sono misurati sul #1b2230.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-scuro: #b51039;
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
+  --color-bianco: #ffffff;
+  --color-grigio-200: #e3e5e9;
+  --color-grigio-300: #cfd3d9;
+  --color-grigio-400: #b4b9c2;
+  --color-grigio-600: #5a6069;
+
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  /* Primitive — i valori letti dal CSS di produzione di trenitalia.com */
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-rgb: 217, 24, 53;
+  --color-rosso-scuro: #b51039;
+  /* Il rosso di marchio su fondo scuro non si legge (2,9:1): questa è la sua
+     versione schiarita, e si usa SOLO come inchiostro. Il pieno resta #d91835. */
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
+  --color-bianco: #ffffff;
+  --color-grigio-200: #e3e5e9;
+  --color-grigio-300: #cfd3d9;
+  --color-grigio-400: #b4b9c2;
+  --color-grigio-600: #5a6069;
+
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface. Dominante SCURA: il fondo è l'ardesia di sistema
+     abbassata; `secondary` è il #2f394e pieno, così il colore che regge il sito
+     si vede come superficie intera e non solo come dettaglio. `inverse` è la
+     superficie CHIARA — ribaltata in blocco, come dice il contratto. */
+  --surface-primary: var(--color-ardesia-notte);
+  --surface-secondary: var(--color-ardesia);
+  --surface-tertiary: var(--color-ardesia-media);
+  --surface-inverse: var(--color-nebbia);
+  --surface-brand: var(--color-rosso);
+
+  /* Semantici — Ink (`--ink-X` sta su `--surface-X`). Misurati sul #1b2230. */
+  --ink-primary: var(--color-bianco);       /* 15,9:1 */
+  --ink-secondary: var(--color-grigio-200); /* 11,5:1 — corpo del testo */
+  --ink-tertiary: var(--color-grigio-400);  /*  7,3:1 — note e metadati */
+  --ink-inverse: var(--color-ardesia);
+  --ink-brand: var(--color-rosso-chiaro);
+
+  /* Inchiostri che si ribaltano con la superficie. Qui il default è la versione
+     per fondo SCURO, perché la dominante è scura; le varianti chiare stanno più
+     in basso, così a parità di specificità vince l'ultima. Per il TESTO usare
+     sempre questi, mai `--color-rosso` o `--accent-*`. */
+  --ink-accent: var(--color-rosso-chiaro);
+  --ink-accent-2: var(--color-verde-chiaro);
+  --ink-note: var(--color-grigio-400);
+  --ink-body: var(--color-grigio-200);
+  --ink-link: var(--color-rosso-chiaro);
+
+  /* Semantici — Accent: i PIENI (fondi, CTA, barre). Mai come inchiostro. */
+  --accent-primary: var(--color-rosso);
+  --accent-secondary: var(--color-verde);
+  --accent-hover: var(--color-rosso-scuro);
+  --color-cta: var(--color-rosso);
+  --color-on-cta: var(--color-bianco);   /* 5,3:1 sul rosso pieno */
+
+  /* Semantici — Line */
+  --line-subtle: var(--color-ardesia-media);
+  --line-default: var(--color-ardesia-chiara);
+  --line-strong: var(--color-grigio-300);
+
+  --focus-ring: var(--color-rosso-chiaro);
+
+  /* Deck safe-area contract (px) — DeckContainer li ribalta per breakpoint */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Le varianti CHIARE dopo le scure: stessa specificità, vince l'ultima. Lo Slide
+   rende la superficie come classe Tailwind, non come data-attribute, quindi il
+   selettore insegue la classe. Una slide che DICHIARA scuro ma rende chiara per
+   via del backdrop si marca `.tp-on-light`. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+.tp-on-light,
+.tp-card,
+.tp-panel {
+  /* `--ink-primary` e `--ink-secondary` RIBALTANO anche loro, e non è un vezzo:
+     le classi del motore (titoli, nomi, voci) li usano dando per scontata una
+     dominante chiara. Qui la dominante è scura, quindi fuori da questo blocco
+     `--ink-primary` è BIANCO — e su una slide chiara dava bianco su bianco, un
+     titolo invisibile che nessun check vede (il check h misura i bottoni, non la
+     prosa). Si ribaltano qui una volta per tutte, non slide per slide. */
+  --ink-primary: var(--color-ardesia-notte);   /* 14,8:1 sul nebbia */
+  --ink-secondary: var(--color-ardesia);       /*  9,7:1 — corpo del testo */
+  --ink-tertiary: var(--color-grigio-600);
+  --ink-accent: var(--color-rosso-scuro);      /*  7,4:1 sul nebbia */
+  --ink-accent-2: var(--color-verde);
+  --ink-note: var(--color-grigio-600);
+  --ink-body: var(--color-ardesia);
+  --ink-link: var(--color-rosso-scuro);
+}
+/* Un componente scuro dentro una slide chiara ritorna agli inchiostri scuri. */
+.tp-on-dark {
+  --ink-primary: var(--color-bianco);
+  --ink-secondary: var(--color-grigio-200);
+  --ink-tertiary: var(--color-grigio-400);
+  --ink-accent: var(--color-rosso-chiaro);
+  --ink-accent-2: var(--color-verde-chiaro);
+  --ink-note: var(--color-grigio-400);
+  --ink-body: var(--color-grigio-200);
+  --ink-link: var(--color-rosso-chiaro);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-rosso); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+/* Occhiello (kicker): ≥ 0.75rem per contratto di leggibilità. */
+.slide-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.76rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV: minimi del tipo */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 60ch; }
+
+[data-admin-only] { display: none !important; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .ex-* — art direction di partenza (neutra). Rinominare il prefisso con due
+   lettere del cliente quando il design system vero entra (es. .sd-* per Poste).
+   Tutti i colori dietro testo in rgba esplicito o token: il parser di contrasto
+   dell'audit non legge oklab()/color-mix().
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop (solo gradienti: nessuna immagine finché non c'è un asset vero).
+   Quando arriva uno sfondo generato, passare `--bg-src: url(...)` dalla slide e
+   dichiarare `data-made-with` sulla slide (il credito è un fatto).
+
+   RISCRITTI per la dominante scura. Nel template `.ex-bg-night` poggiava su
+   `--surface-inverse` e ci stendeva sopra veli di grigio neutro (17,19,24):
+   con la dominante ribaltata quella base è la nebbia CHIARA, e i veli neutri
+   spegnevano l'ardesia del cliente — misurato sullo screenshot, il fondo usciva
+   #313337, un grigio-bruno che non appartiene a questo marchio. Ora la base è la
+   superficie giusta e i veli sono in ardesia (27,34,48), così il blu resta blu.
+   Abbinamento: slide scura `bg="primary"` → `.ex-bg-night`; slide chiara
+   `bg="inverse"` → `.ex-bg-paper`. ───────────────────────────────────────── */
+.ex-bg-night {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-rosso-rgb), 0.16), transparent 52%),
+    radial-gradient(75% 65% at 50% 45%, rgba(47,57,78,0.55), transparent 78%),
+    linear-gradient(rgba(27,34,48,0.55), rgba(27,34,48,0.88)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-primary);
+}
+.ex-bg-paper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(100% 70% at 90% 100%, rgba(var(--color-rosso-rgb), 0.07), transparent 55%),
+    radial-gradient(90% 60% at 8% 0%, rgba(47,57,78,0.07), transparent 60%),
+    linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.78)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-inverse);
+}
+
+/* ── Copertina del deck ────────────────────────────────────────────────── */
+.ex-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
+.ex-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
+.ex-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+.ex-cover-tag { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-rosso-chiaro); max-width: 40ch; margin: 0 auto; display: block; }
+.ex-cover-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grigio-200); max-width: 66ch; margin: 0 auto; display: block; }
+.ex-cover-note { font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grigio-400); max-width: 70ch; margin: 0 auto; display: block; }
+
+/* ── Il percorso (home) ────────────────────────────────────────────────── */
+.ex-percorso { width: 100%; max-width: 72rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ex-percorso-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--ink-primary); text-align: center; margin: 1rem auto 0.9rem; max-width: 32ch; display: block; }
+.ex-percorso-lead { font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.55; color: var(--ink-body); max-width: 64ch; margin: 0 auto 1.2rem; text-align: center; display: block; }
+.ex-journey { width: 100%; margin-bottom: clamp(1rem, 2vh, 1.3rem); }
+.ex-journey-card {
+  display: flex; flex-direction: column; text-align: left; text-decoration: none; min-width: 0;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem 0.9rem; color: var(--ink-primary);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.ex-journey-card:hover { border-color: var(--color-rosso); background: #fff; color: var(--ink-primary); }
+.ex-journey-num { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-accent); font-variant-numeric: tabular-nums; margin-bottom: 0.45rem; }
+.ex-journey-name { font-family: var(--font-display); font-size: 1.12rem; font-weight: 700; line-height: 1.25; color: var(--ink-primary); }
+.ex-journey-open { margin-top: auto; padding-top: 0.6rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-note); }
+.ex-journey-card:hover .ex-journey-open { color: var(--ink-accent); }
+[data-slide] .ex-journey-card p { max-width: none; margin-inline: 0; }
+
+/* CTA piena: coppia `--color-cta` / `--color-on-cta` calcolata dal generatore (WCAG AA). */
+.ex-cta {
+  display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.7rem 2.1rem; border-radius: 6px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem); font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  background: var(--color-cta); color: var(--color-on-cta); transition: background 200ms ease;
+}
+.ex-cta:hover { background: var(--color-rosso-scuro); color: #ffffff; }
+
+/* ── Cover del capitolo ────────────────────────────────────────────────── */
+.ex-ch { width: 100%; max-width: 66rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1.1rem, 2.6vh, 1.8rem); }
+.ex-ch-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-accent); }
+.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-inverse); max-width: 20ch; text-wrap: balance; }
+.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--color-grigio-200); max-width: 56ch; }
+.slide-inner .ex-ch p { margin-inline: auto; }
+/* L'agenda del capitolo: i tre blocchi della slide di contenuto, anticipati. Dà alla
+   cover una base e un respiro reali (check i), non riempitivo. */
+.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid rgba(255,255,255,0.18); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.ex-ch-agenda-k { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-note); }
+.ex-ch-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem); }
+.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-inverse); white-space: nowrap; }
+.ex-ch-agenda-n { width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(var(--color-rosso-rgb), 0.28); color: var(--color-rosso-chiaro); font-size: 0.82rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── Slide di contenuto: UNA colonna (max 72rem) per tutto, così i blocchi a
+   bandiera condividono il bordo (check m dell'audit). ─────────────────────── */
+.ex-content { width: 100%; max-width: 72rem; margin-inline: auto; text-align: left; }
+.ex-head { margin-bottom: clamp(1rem, 2.4vh, 1.6rem); }
+.ex-head-title { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.8rem, 3vw, 2.9rem); color: var(--ink-primary); max-width: 26ch; text-wrap: balance; margin-top: 1rem; }
+.ex-head-lead { font-size: clamp(0.98rem, 1.12vw, 1.12rem); line-height: 1.55; color: var(--ink-body); max-width: 68ch; margin-top: 1rem; }
+
+.ex-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 1.8vw, 1.5rem); }
+.ex-card {
+  min-width: 0; background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.25rem 1.3rem 1.2rem; display: flex; flex-direction: column; height: 100%;
+}
+.ex-card-k { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: 0.55rem; }
+.ex-card-t { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.25; color: var(--ink-primary); margin-bottom: 0.5rem; }
+.ex-card-b { color: var(--ink-body); font-size: 0.98rem; line-height: 1.5; }
+.ex-src { margin-top: clamp(0.9rem, 2vh, 1.3rem); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; color: var(--ink-note); text-align: left; }
+.ex-src a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Il reset centra ogni <p> (`.slide-inner.text-center p`) e lo cappa a 60ch:
+   dentro i blocchi a bandiera la larghezza la governa il contenitore. */
+.slide-inner .ex-content p { margin-inline: 0; }
+[data-slide] .ex-card p, [data-slide] p.ex-src { max-width: none; }
+[data-slide] p.ex-head-lead { max-width: 68ch; }
+
+/* ── Slide-firma ───────────────────────────────────────────────────────── */
+.ex-sig-line { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grigio-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
+
+/* ── Deck chrome (WCAG AA, valori ESPLICITI) ──────────────────────────────
+   Il bottone si porta uno sfondo bianco suo, quindi il suo inchiostro non può
+   essere `--ink-primary`: quel token segue la dominante dell'experience, e qui
+   la dominante è scura — bianco su bianco, 1,17:1, nove fallimenti del check h.
+   Dove lo sfondo è esplicito, esplicito dev'essere anche l'inchiostro. */
+[data-deck] .deck-btn { color: #1b2230; background: rgba(255,255,255,0.92); border-color: var(--color-grigio-300); }
+[data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+[data-deck] .deck-progress { color: var(--color-ardesia); }
+/* Sulle slide scure il chrome si ribalta (il deck marca data-on-dark). */
+[data-deck][data-on-dark] .deck-btn { color: #fff; background: rgba(17,19,24,0.9); border-color: var(--color-ardesia); }
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grigio-200); }
+
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* ── Custom slides (Admin Console) — in sync con l'anteprima dell'admin ─── */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.04; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 600; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose ul { list-style: disc; } .cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: rgba(17,19,24,0.06); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: #fff; }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-grigio-200); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-rosso-chiaro); }
+
+/* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
+/* La barra ha un fondo bianco ESPLICITO, quindi deve portarsi anche gli inchiostri
+   espliciti: fuori dalle slide `--ink-primary` segue la dominante dell'experience,
+   che qui è scura, e il nome del deck usciva bianco su bianco su ogni pagina. */
+.ex-nav {
+  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-accent: var(--color-rosso-scuro);
+  --ink-note: var(--color-grigio-600);
+}
+.ex-nav-link { color: var(--color-ardesia); }
+.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-chiaro); }
+.ex-nav-link--active { color: var(--ink-accent); background: var(--color-chiaro); border: 1px solid rgba(var(--color-rosso-rgb), 0.3); }
+.ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ex-mark svg { width: 100%; height: 100%; display: block; }
+
+/* ── Compattazione sotto i 900 px di altezza (1280×800, 1440×900): si stringono
+   spazi e contenitori, non il tipo: il corpo resta ≥ 0,95rem. ─────────────── */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Componenti di questa Prospettiva (.tp-*)
+   Minimi di leggibilità rispettati: corpo ≥ 0.95rem con interlinea ≥ 1.5,
+   titoli di scheda ≥ 1rem, occhielli ≥ 0.75rem. Se un blocco non ci sta,
+   si taglia la copia o si divide la slide — non si rimpicciolisce il tipo.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Citazione / affermazione grande, su slide centrata ────────────────── */
+.tp-quote { width: 100%; max-width: 58rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(0.9rem, 2.2vh, 1.5rem); }
+.tp-quote-big {
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 2.9vw, 2.65rem); line-height: 1.18; color: var(--ink-primary);
+  max-width: 24ch; text-wrap: balance; margin-inline: auto;
+}
+.tp-quote-big strong { color: var(--ink-accent); font-weight: 800; }
+.tp-quote-after { font-size: clamp(1rem, 1.2vw, 1.18rem); line-height: 1.6; color: var(--ink-body); max-width: 56ch; margin-inline: auto; }
+.tp-quote-after strong { color: var(--ink-primary); font-weight: 700; }
+.tp-quote .ex-src { text-align: center; }
+
+/* Numero da copertina: unico per slide, e marcato data-display perché l'audit
+   non lo misuri come prosa (check a). */
+.tp-big-number {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.04em;
+  font-size: clamp(4.5rem, 11vw, 9rem); line-height: 0.95; color: var(--ink-accent);
+  font-variant-numeric: tabular-nums; overflow-wrap: anywhere; max-width: none;
+}
+
+/* ── La domanda centrale del deck ──────────────────────────────────────── */
+.tp-domanda {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em;
+  font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: 1.1; color: var(--ink-primary);
+  max-width: 24ch; text-wrap: balance; margin-inline: auto;
+}
+.tp-domanda-sub { font-size: clamp(1rem, 1.2vw, 1.18rem); line-height: 1.6; color: var(--ink-body); max-width: 58ch; margin-inline: auto; }
+.tp-domanda-sub strong { color: var(--ink-primary); font-weight: 700; }
+/* Su fondo di marchio l'inchiostro è quello che regge sul rosso pieno, non il token
+   che segue la dominante: lo sfondo è esplicito, l'inchiostro pure. */
+[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda,
+[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda-sub strong { color: #ffffff; }
+[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda-sub { color: rgba(255,255,255,0.92); }
+
+/* ── La mappa dei quattro punti ────────────────────────────────────────── */
+.tp-mappa { width: 100%; display: flex; flex-direction: column; gap: 0; }
+.tp-mappa-row { display: grid; grid-template-columns: 3.4rem 1fr; gap: clamp(0.8rem, 1.4vw, 1.3rem); align-items: start; padding: clamp(0.7rem, 1.5vh, 1rem) 0; border-top: 1px solid var(--line-subtle); }
+.tp-mappa-row:first-child { border-top: 0; padding-top: 0; }
+.tp-mappa-n { font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink-accent); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tp-mappa-body { display: grid; gap: 0.25rem; min-width: 0; }
+.tp-mappa-dove { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note); }
+.tp-mappa-t { font-family: var(--font-display); font-size: clamp(1.02rem, 1.25vw, 1.2rem); font-weight: 700; line-height: 1.3; color: var(--ink-primary); }
+.tp-mappa-b { font-size: clamp(0.95rem, 1.05vw, 1.03rem); line-height: 1.52; color: var(--ink-body); max-width: 86ch; }
+
+/* ── Numeri del referto ────────────────────────────────────────────────── */
+.tp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 1.6vw, 1.3rem); }
+.tp-stat { min-width: 0; border: 1px solid var(--line-subtle); border-radius: 10px; padding: clamp(0.9rem, 1.6vh, 1.2rem) clamp(0.9rem, 1.3vw, 1.15rem); background: color-mix(in srgb, var(--surface-secondary) 55%, transparent); display: flex; flex-direction: column; gap: 0.35rem; }
+.tp-stat-v { font-family: var(--font-display); font-size: clamp(2.1rem, 3.4vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--ink-accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.tp-stat-su { font-size: 0.92rem; font-weight: 600; letter-spacing: 0; color: var(--ink-note); margin-left: 0.38rem; }
+.tp-stat-l { font-family: var(--font-display); font-size: clamp(1rem, 1.12vw, 1.08rem); font-weight: 700; line-height: 1.32; color: var(--ink-primary); }
+.tp-stat-s { font-size: clamp(0.95rem, 1vw, 1rem); line-height: 1.5; color: var(--ink-body); }
+/* I testi stanno dentro una scheda che ha già la sua larghezza: qui togliere il
+   cap dei paragrafi è sicuro, perché a contenere è la colonna della griglia. */
+[data-slide] .tp-stat p, [data-slide] .tp-mappa-b, [data-slide] .tp-domande-row { max-width: none; }
+
+/* ── La domanda che facciamo al cliente, in evidenza ───────────────────── */
+.tp-ask { border-left: 3px solid var(--accent-primary); padding: clamp(0.8rem, 1.6vh, 1.1rem) 0 clamp(0.8rem, 1.6vh, 1.1rem) clamp(0.9rem, 1.4vw, 1.25rem); display: grid; gap: 0.4rem; }
+.tp-ask-k { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent); }
+.tp-ask-t { font-size: clamp(1rem, 1.18vw, 1.14rem); line-height: 1.58; color: var(--ink-primary); max-width: 72ch; }
+
+/* ── Le domande aperte ─────────────────────────────────────────────────── */
+.tp-domande { width: 100%; display: flex; flex-direction: column; gap: 0; }
+.tp-domande-row { font-size: clamp(1rem, 1.16vw, 1.12rem); line-height: 1.55; color: var(--ink-primary); padding: clamp(0.7rem, 1.5vh, 0.95rem) 0 clamp(0.7rem, 1.5vh, 0.95rem) 1.5rem; border-top: 1px solid var(--line-subtle); position: relative; }
+.tp-domande-row:first-child { border-top: 0; padding-top: 0; }
+.tp-domande-row::before { content: '?'; position: absolute; left: 0; top: clamp(0.7rem, 1.5vh, 0.95rem); font-family: var(--font-display); font-weight: 800; color: var(--ink-accent); }
+.tp-domande-row:first-child::before { top: 0; }
+
+/* ── Il percorso come linea con sette fermate ──────────────────────────── */
+.tp-linea { width: 100%; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin: clamp(0.8rem, 2vh, 1.4rem) 0 clamp(1rem, 2.2vh, 1.5rem); position: relative; }
+/* La rotaia: una riga sola dietro le fermate, dal primo all'ultimo pallino. */
+.tp-linea::before { content: ''; position: absolute; left: 7.15%; right: 7.15%; top: 0.47rem; height: 2px; background: var(--line-default); }
+.tp-linea-stop { min-width: 0; }
+.tp-linea-link { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; text-decoration: none; padding: 0 0.3rem; min-height: 2.75rem; }
+.tp-linea-dot { width: 0.95rem; height: 0.95rem; border-radius: 50%; background: var(--surface-inverse); border: 2px solid var(--line-default); position: relative; z-index: 1; transition: background var(--duration-fast) var(--easing-default), border-color var(--duration-fast) var(--easing-default); }
+.tp-linea-num { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; color: var(--ink-note); font-variant-numeric: tabular-nums; }
+.tp-linea-name { font-family: var(--font-display); font-size: clamp(0.95rem, 1.02vw, 1.02rem); font-weight: 700; line-height: 1.28; color: var(--ink-primary); text-wrap: balance; }
+.tp-linea-link:hover .tp-linea-dot { background: var(--accent-primary); border-color: var(--accent-primary); }
+.tp-linea-link:hover .tp-linea-name { color: var(--ink-accent); }
+
+@media (max-height: 900px) {
+  .ex-head { margin-bottom: 0.7rem; }
+  .ex-head-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
+  .ex-head-lead { font-size: 0.95rem; line-height: 1.45; }
+  .ex-cards { gap: 0.8rem; }
+  .ex-card { padding: 0.9rem 1rem; }
+  .ex-card-b { font-size: 0.95rem; line-height: 1.42; }
+  .ex-src { margin-top: 0.6rem; font-size: 0.75rem; line-height: 1.45; }
+  .ex-ch-title { font-size: clamp(2.1rem, 4.2vw, 3.6rem); }
+  .ex-ch-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); }
+  .ex-percorso-title { font-size: clamp(1.6rem, 2.4vw, 2.2rem); margin: 0.8rem auto 0.7rem; }
+  .ex-percorso-lead { margin-bottom: 0.8rem; }
+  .ex-journey-card { padding: 0.75rem 0.95rem 0.7rem; }
+  .ex-journey-num { margin-bottom: 0.3rem; }
+  /* Sotto i 900 px l'affordance «Apri il capitolo» cede lo spazio alla griglia. */
+  .ex-journey-open { display: none; }
+}
+
+/* ── Strumenti elencati dentro un disclosure ───────────────────────────── */
+/* gap ≥ 16px: il check `g` vuole almeno quello fra blocchi di testo impilati. */
+.tp-tools { display: grid; gap: 1.05rem; margin-top: 0.9rem; }
+.tp-tools li { font-size: clamp(0.95rem, 1.02vw, 1.02rem); line-height: 1.5; color: var(--ink-body); }
+.tp-tools-n { font-weight: 700; color: var(--ink-primary); }
+.tp-tools-n::after { content: ' — per'; font-weight: 400; color: var(--ink-note); }
+
+/* ── Responsive dei componenti .tp-* ───────────────────────────────────── */
+@media (max-width: 1100px) {
+  .tp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  /* La linea si raddrizza: da orizzontale a verticale, la rotaia passa a sinistra. */
+  .tp-linea { grid-template-columns: 1fr; }
+  .tp-linea::before { left: 0.47rem; right: auto; top: 0.5rem; bottom: 0.5rem; width: 2px; height: auto; }
+  .tp-linea-link { flex-direction: row; align-items: center; gap: 0.7rem; text-align: left; padding: 0.45rem 0; }
+  .tp-linea-name { text-wrap: pretty; }
+  .tp-mappa-row { grid-template-columns: 2.6rem 1fr; }
+  .tp-stats { grid-template-columns: 1fr; }
+}

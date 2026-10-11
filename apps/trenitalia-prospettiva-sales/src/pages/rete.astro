@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+/**
+ * Capitolo 06 — Il canale delle agenzie.
+ *
+ * L'unico capitolo che cade INTERAMENTE nel perimetro dell'interlocutore: non
+ * deve chiedere il permesso a nessuno per volerlo. È anche il primo a cadere se
+ * l'ora si accorcia — e in quel caso il suo contenuto diventa il passo finale,
+ * non sparisce. Il gating capitoli della console lo spegne in una riga.
+ */
+const SLUG = 'rete';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          L’ultimo punto del percorso, e il più vicino a casa: un canale che è vostro,
+          che vende ogni giorno e che oggi non vi racconta quasi niente.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Il numero, e la finestra ──────────────────────────────────────── -->
+    <Slide id="slide-settantamila" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">Nel canale che è vostro</p>
+        <p class="tp-big-number" data-display data-reveal data-reveal-delay="0.06">70.000</p>
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.16">
+          punti vendita raggiunti attraverso la piattaforma con cui le agenzie vi vendono.
+          È nata intorno al 2011 e <strong>si sta rifacendo adesso</strong>, dentro il piano
+          strategico. Una finestra che si chiude da sé.
+        </p>
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          Fonti pubbliche sulla piattaforma commerciale e sul piano strategico in corso.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa si potrebbe sapere ───────────────────────────────────── -->
+    <Slide id="slide-sapere" bg="inverse" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">La domanda</p>
+          <h2 class="ex-head-title">Che cosa sapreste, se guardaste la rete come guardate un sito</h2>
+          <p class="ex-head-lead">
+            Di un canale digitale sapete tutto: chi entra, dove si ferma, che cosa funziona.
+            Di un canale intermediato, quasi nulla. <strong>Non è una differenza di natura:
+            è una differenza di strumenti</strong>, e nel momento in cui la piattaforma si
+            rifà è anche una differenza che costa poco colmare.
+          </p>
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          <div class="ex-card">
+            <p class="ex-card-k">Chi vende che cosa</p>
+            <p class="ex-card-t">Per rete, per agenzia, per prodotto</p>
+            <p class="ex-card-b">Dove la proposta multiprodotto arriva e dove si ferma al solo treno: è la misura diretta della vostra riorganizzazione commerciale.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">Che cosa converte</p>
+            <p class="ex-card-t">Quale materiale vende, e quale resta nel cassetto</p>
+            <p class="ex-card-b">Il collegamento con il capitolo precedente: produrre meno varianti e più di quelle che funzionano.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">Che cosa succede se…</p>
+            <p class="ex-card-t">Provare un’alternativa invece di deciderla</p>
+            <p class="ex-card-b">Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Oggi su questo canale non si prova niente.</p>
+          </div>
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          Lo strumento per provare un’alternativa e misurarla lo avete già in casa:
+          <strong>Adobe Target</strong>. Quello che manca è portarlo dove oggi non arriva.
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

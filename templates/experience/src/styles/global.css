@@ -328,7 +328,11 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .ex-sig-line { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grey-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
 
 /* ── Deck chrome (WCAG AA, rgba esplicito) ─────────────────────────────── */
-[data-deck] .deck-btn { color: var(--ink-primary); background: rgba(255,255,255,0.92); border-color: var(--color-grey-300); }
+/* Inchiostro ESPLICITO, non `--ink-primary`: il bottone si porta uno sfondo bianco
+   suo, e `--ink-primary` segue la dominante dell'experience. In una skin a dominante
+   scura (Trenitalia, Agos, Eni) diventa bianco su bianco: 1,17:1, check h fallito su
+   ogni slide. Dove lo sfondo è esplicito, esplicito dev'essere anche l'inchiostro. */
+[data-deck] .deck-btn { color: #1b1d21; background: rgba(255,255,255,0.92); border-color: var(--color-grey-300); }
 [data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
 [data-deck] .deck-progress { color: var(--color-ink-2); }
 /* Sulle slide scure il chrome si ribalta (il deck marca data-on-dark). */
@@ -358,7 +362,15 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-accent-soft); }
 
 /* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
-.ex-nav { background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px); }
+/* Fondo bianco esplicito → inchiostri espliciti. In una skin a dominante scura
+   `--ink-primary` è bianco, e il nome del deck sparirebbe su ogni pagina. */
+.ex-nav {
+  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+}
 .ex-nav-link { color: var(--color-ink-2); }
 .ex-nav-link:hover { color: var(--ink-accent); background: var(--color-paper-2); }
 .ex-nav-link--active { color: var(--ink-accent); background: var(--color-paper-2); border: 1px solid rgba(var(--color-accent-rgb), 0.3); }

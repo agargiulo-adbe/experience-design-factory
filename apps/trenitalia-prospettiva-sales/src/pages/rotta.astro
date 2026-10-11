@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+import { CHAPTERS, prevSlug } from '../data/chapters';
+
+/**
+ * Capitolo 07 — La rotta.
+ *
+ * Una Prospettiva non chiede un programma: chiede UN passo, piccolo e reversibile,
+ * che il nostro interlocutore possa decidere da solo. Qui il passo è una sessione
+ * sui loro dati della rete agenzie — la cosa più piccola che fa succedere la
+ * seconda riunione.
+ *
+ * Le domande aperte stanno in slide per scelta: sono il modo di dire che non siamo
+ * venuti con una risposta preconfezionata, e sono anche il contenuto del tavolo di
+ * lavoro che il tipo «Prospettiva» chiede come passo successivo.
+ *
+ * L'ultima slide è la slide-firma: lockup grande, una riga, la via di ritorno.
+ * Dove c'è un `hero` la firma fissa si spegne da sola (runtime del DeckContainer).
+ */
+const SLUG = 'rotta';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+
+const domande = [
+  'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
+  'Quanta parte delle vendite passa dai vostri canali e quanta dagli intermediari — e quale dei due volete far crescere?',
+  'Le biglietterie e il personale a bordo come entrano in questa idea di viaggio unico?',
+  'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <!-- Avanti oltre l'ultima slide → si torna alla copertina: il deck è un anello. -->
+  <DeckContainer wallScale nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          Quattro punti sono troppi per cominciare da tutti. Ne proponiamo uno,
+          ed è quello che potete decidere senza chiedere niente a nessuno.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Il passo ──────────────────────────────────────────────────────── -->
+    <Slide id="slide-passo" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">Quello che vi chiediamo</p>
+        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06">
+          Una sessione sui vostri dati,<br />mentre la piattaforma si rifà.
+        </h2>
+        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">
+          Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa
+          manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati,
+          nessun impegno dopo. <strong>Non è un progetto e non è un’offerta.</strong>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Le domande aperte ─────────────────────────────────────────────── -->
+    <Slide id="slide-domande" bg="inverse" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Quello che non sappiamo</p>
+          <h2 class="ex-head-title">Quattro cose che possiamo imparare solo da voi</h2>
+          <p class="ex-head-lead">
+            Questo documento è costruito su fonti pubbliche e su una misura che abbiamo fatto
+            noi. Il che significa che quattro cose importanti ci mancano, e nessuna si indovina.
+          </p>
+        </div>
+        <ul class="tp-domande" role="list" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
+          {domande.map((d) => <li class="tp-domande-row">{d}</li>)}
+        </ul>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Sono anche l’ordine del giorno del tavolo di lavoro, se deciderete che vale la pena farlo.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Slide-firma ───────────────────────────────────────────────────── -->
+    <Slide id="slide-signature" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <CoBrand variant="hero" data-reveal />
+      <p class="ex-sig-line" data-reveal data-reveal-delay="0.1">
+        {SITE.name}. Il passo dopo: un tavolo di lavoro sulle domande aperte.
+      </p>
+      <a href={href(base, '/' + first.slug)} class="edf-sig-cta" data-reveal data-reveal-delay="0.18">Ricomincia dal primo capitolo →</a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -141,6 +141,16 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'rotta',    route: '/experience-design-factory/intesa-scala-umana/rotta/' },
     { name: 'exec',     route: '/experience-design-factory/intesa-scala-umana/exec/' },
   ],
+  'trenitalia-prospettiva-sales': [
+    { name: 'home',       route: '/experience-design-factory/trenitalia-prospettiva-sales/' },
+    { name: 'apertura',   route: '/experience-design-factory/trenitalia-prospettiva-sales/apertura/' },
+    { name: 'domanda',    route: '/experience-design-factory/trenitalia-prospettiva-sales/domanda/' },
+    { name: 'ricerca',    route: '/experience-design-factory/trenitalia-prospettiva-sales/ricerca/' },
+    { name: 'viaggio',    route: '/experience-design-factory/trenitalia-prospettiva-sales/viaggio/' },
+    { name: 'contenuto',  route: '/experience-design-factory/trenitalia-prospettiva-sales/contenuto/' },
+    { name: 'rete',       route: '/experience-design-factory/trenitalia-prospettiva-sales/rete/' },
+    { name: 'rotta',      route: '/experience-design-factory/trenitalia-prospettiva-sales/rotta/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -157,4 +167,5 @@ export const CWD_ALIAS: Record<string, string> = {
   'aperture-email': 'aperture-email',
   'poste-sei-domande': 'poste-sei-domande',
   'intesa-scala-umana': 'intesa-scala-umana',
+  'trenitalia-prospettiva-sales': 'trenitalia-prospettiva-sales',
 };

@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+/**
+ * Capitolo 05 — Il contenuto che l'offerta richiede.
+ *
+ * Terreno libero: non sfiora nessuna scelta già fatta dal cliente. Parte da una
+ * conseguenza aritmetica della SUA riorganizzazione, non da un nostro prodotto.
+ * È anche l'unico posto dove entra il collega digitale, e con una distinzione che
+ * va detta per intero: lavora accanto alle persone dell'azienda, non parla ai loro
+ * clienti. Quella distinzione è ciò che tiene la proposta fuori da perimetri altrui.
+ */
+const SLUG = 'contenuto';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const moltiplicatori = [
+  { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity, Regionale — una squadra sola li vende tutti' },
+  { v: '4', l: 'mercati esteri presidiati', s: 'più la Cina, dove le vendite sono raddoppiate in un anno' },
+  { v: '70.000', l: 'punti vendita nella rete', s: 'ognuno con il proprio materiale, le proprie vetrine, le proprie stagioni' },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          Un problema che non esisteva prima della vostra riorganizzazione, e che nessuno
+          dei fornitori in campo sta risolvendo.
+        </p>
+        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
+          <p class="ex-ch-agenda-k">In questo capitolo</p>
+          <ul role="list">
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><span>L’aritmetica della squadra unica</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Un posto solo, dalle agenzie ai mercati</span></li>
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── L'aritmetica ──────────────────────────────────────────────────── -->
+    <Slide id="slide-aritmetica" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">A valle</p>
+          <h2 class="ex-head-title">Un venditore che conosceva un prodotto oggi ne vende quattro</h2>
+          <p class="ex-head-lead">
+            Unire le tre squadre commerciali è stata una scelta di mercato, non di
+            comunicazione. Ma ha una conseguenza aritmetica: ogni prodotto, per ogni mercato,
+            in ogni lingua, su ogni canale e per ogni intermediario vuole il suo materiale.
+            <strong>Il numero di varianti cresce moltiplicando, non sommando.</strong>
+          </p>
+        </div>
+        <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
+          {moltiplicatori.map((m) => (
+            <div class="tp-stat">
+              <p class="tp-stat-v" data-display>{m.v}</p>
+              <p class="tp-stat-l">{m.l}</p>
+              <p class="tp-stat-s">{m.s}</p>
+            </div>
+          ))}
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Nessuna struttura creativa produce a mano quel numero di versioni. Si fa una scelta:
+          produrne meno, o produrle in un altro modo.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Un posto solo ─────────────────────────────────────────────────── -->
+    <Slide id="slide-unposto" bg="inverse" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Come si produce, oggi, quel numero di varianti</p>
+          <h2 class="ex-head-title">Nasce, si approva, si traduce e si misura nello stesso posto</h2>
+          <p class="ex-head-lead">
+            Con le agenzie dentro lo stesso flusso, invece che in fondo a una catena di allegati.
+            E con la misura attaccata al pezzo di materiale, così si sa quale versione ha venduto
+            e quale no — che è l’unico modo per smettere di produrne di inutili.
+          </p>
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          <div class="ex-card">
+            <p class="ex-card-k">Il tempo</p>
+            <p class="ex-card-t">Dal brief alla vetrina</p>
+            <p class="ex-card-b">Il numero da guardare non è quanto costa una variante, ma quanti giorni passano prima che sia davanti a un cliente. È lì che si perde una stagione.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">Il marchio</p>
+            <p class="ex-card-t">Conforme senza una revisione a mano</p>
+            <p class="ex-card-b">Le regole del marchio stanno dentro lo strumento invece che in un documento che qualcuno dovrebbe ricordarsi di aprire.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">Le persone</p>
+            <p class="ex-card-t">Le stesse, con meno passaggi a mano</p>
+            <p class="ex-card-b">Non è una slide sul taglio: è una slide su quante versioni la stessa squadra riesce a mettere in circolo in una settimana.</p>
+          </div>
+        </div>
+        <HowItWorks title="E il lavoro agentico, qui" label="E il lavoro agentico, qui" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <p>
+            Qui, e soltanto qui, entra un collega digitale: lavora accanto alle vostre persone,
+            dal brief all’approvazione al lancio, con chi decide che continua a decidere.
+            <strong>È agentico sul lavoro dei vostri, non sulla conversazione con i vostri
+            viaggiatori</strong>: due mestieri diversi.
+          </p>
+          <!-- Gli strumenti su righe separate, non in una frase con tre grassetti: tre
+               `<strong>` che vanno a capo dentro lo stesso paragrafo producono riquadri
+               che si intersecano, e il check `e` li legge come testo sopra testo. -->
+          <ul class="tp-tools" role="list">
+            <li><span class="tp-tools-n">Adobe Experience Manager</span> il materiale</li>
+            <li><span class="tp-tools-n">Adobe GenStudio for Performance Marketing</span> le varianti di campagna</li>
+            <li><span class="tp-tools-n">CX Enterprise Coworker</span> il lavoro agentico, da giugno 2026</li>
+          </ul>
+        </HowItWorks>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

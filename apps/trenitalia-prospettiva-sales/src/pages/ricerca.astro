@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+/**
+ * Capitolo 03 — Quando un viaggio si cerca con l'intelligenza artificiale.
+ *
+ * È il capitolo che porta una misura NOSTRA, come la lettura delle superfici nel
+ * dossier: otto domande di viaggio, nessuna di marca, poste l'11 ottobre 2026 a un
+ * assistente pubblico con ricerca agganciata. Dati grezzi, metodo e limiti in
+ * docs/Ferrovie/MISURA-visibilita-risposte-generate-2026-10-11.md.
+ *
+ * Regola rispettata alla lettera: si dice «la fotografia che abbiamo scattato noi
+ * l'11 ottobre con otto domande», mai «il 75% delle risposte vi ignora». Il limite
+ * del campione è dichiarato IN SLIDE, non nascosto: se lo trova il cliente per primo
+ * cade tutto il resto.
+ */
+const SLUG = 'ricerca';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const referto = [
+  { v: '6', su: 'su 8', l: 'risposte nominano Trenitalia', s: 'il marchio c’è, e in due casi è raccomandato bene' },
+  { v: '2', su: 'su 8', l: 'citano trenitalia.com fra le fonti', s: 'la risposta si costruisce sulle pagine di qualcun altro' },
+  { v: '4', su: 'su 8', l: 'citano il sito del concorrente', s: 'italotreno.com compare il doppio delle volte del vostro' },
+  { v: '8', su: 'su 8', l: 'citano rivenditori e aggregatori', s: 'Trainline, Rome2Rio, Omio, Raileurope, Italiarail' },
+];
+
+const kpi = [
+  { k: 'Presenza', t: 'Su quante domande comparite', b: 'Un punteggio di visibilità da misurare nel tempo, per mercato e per lingua, non una fotografia sola.' },
+  { k: 'Confronto', t: 'Quanto, rispetto a chi entra adesso', b: 'La quota di voce rispetto agli altri operatori sulle stesse domande: è il numero che dice se si sta guadagnando o perdendo terreno.' },
+  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti', b: 'Le visite che nascono da una risposta generata, separate da quelle di ricerca: oggi, nella maggior parte delle aziende, finiscono indistinte nello stesso totale.' },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          Il primo punto del percorso, quello che viene prima di ogni vostra pagina.
+          Qui non portiamo una teoria: portiamo una misura, con il suo metodo e i suoi limiti.
+        </p>
+        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
+          <p class="ex-ch-agenda-k">In questo capitolo</p>
+          <ul role="list">
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><span>Otto domande, nessuna di marca</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Di chi sono le Frecce</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">3</span><span>Che cosa si misura, e che cosa si cambia</span></li>
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Il referto ────────────────────────────────────────────────────── -->
+    <Slide id="slide-referto" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Una misura, non una teoria</p>
+          <h2 class="ex-head-title">Otto domande di viaggio, fatte come le fa un viaggiatore</h2>
+          <p class="ex-head-lead">
+            L’11 ottobre abbiamo chiesto a un assistente pubblico come si arriva a Matera, in
+            Costiera, alle Cinque Terre, in Puglia. Nessuna domanda conteneva un nome di marca.
+            Abbiamo registrato due cose diverse: chi viene nominato, e quali siti la risposta
+            cita come fonte. È la seconda che conta.
+          </p>
+        </div>
+        <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
+          {referto.map((r) => (
+            <div class="tp-stat">
+              <p class="tp-stat-v" data-display>{r.v}<span class="tp-stat-su">{r.su}</span></p>
+              <p class="tp-stat-l">{r.l}</p>
+              <p class="tp-stat-s">{r.s}</p>
+            </div>
+          ))}
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Otto domande, un assistente, un giorno: una fotografia, non uno studio. Il metodo per
+          intero, compresi i limiti, è allegato a questo documento.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── L'errore sul marchio ──────────────────────────────────────────── -->
+    <Slide id="slide-frecce" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">Alla domanda «come andare da Torino a Bologna senza auto»</p>
+        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
+          «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
+          Italo, Trenitalia e Intercity</strong>.»
+        </p>
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
+          Quattro nomi messi sullo stesso piano, come se fossero quattro aziende in concorrenza
+          fra loro. Due sono vostri prodotti. Non è un problema di quanto comparite:
+          <strong>è un problema di che cosa viene detto di voi</strong>, e mette il vostro treno
+          di punta accanto al concorrente nella stessa frase.
+        </p>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Risposta registrata l’11 ottobre 2026. Lo stesso scambio si ripete su un’altra delle otto domande.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa si misura, che cosa si cambia ────────────────────────── -->
+    <Slide id="slide-leva" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Che cosa si misura, e che cosa si cambia</p>
+          <h2 class="ex-head-title">Non è una classifica da subire: si governa</h2>
+          <p class="ex-head-lead">
+            Alla domanda sulla Puglia la risposta è quasi un vostro testo: Trenitalia protagonista,
+            la biglietteria condivisa con le ferrovie locali spiegata bene, «parti dal sito o
+            dall’app di Trenitalia» come consiglio esplicito. <strong>Quando la pagina giusta
+            esiste, la risposta la usa.</strong> È la prova che la cosa si sistema.
+          </p>
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          {kpi.map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
+        </div>
+        <!-- `tone` sembra invertito e non lo è: il componente assume una dominante chiara,
+             dove `onLight` significa «inchiostro --ink-secondary». Qui la dominante è scura,
+             quindi --ink-secondary È l'inchiostro chiaro, cioè quello che serve su questa
+             slide. Si sceglie il tono che rende giusto, non quello che suona giusto. -->
+        <HowItWorks title="Come si interviene" label="Come si interviene" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <p>
+            Si parte dalle domande vere dei vostri mercati, non da parole chiave: per ciascuna si
+            vede chi viene nominato e da dove arriva la risposta. Dove manca un pezzo si scrive,
+            si pubblica e si rimisura la stessa domanda.
+          </p>
+          <p>
+            Lo strumento è <strong>Adobe Brand Visibility</strong>: misura la presenza del marchio
+            nelle risposte generate, la confronta con quella degli altri operatori e pubblica le
+            correzioni sulle pagine senza passare da un progetto tecnico.
+          </p>
+        </HowItWorks>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

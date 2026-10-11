@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+/**
+ * Capitolo 02 — La domanda.
+ *
+ * Il capitolo-cerniera: trasforma il contesto in una domanda sola, e la domanda
+ * nella mappa del resto del deck. I quattro punti qui sotto SONO i quattro
+ * capitoli che seguono, nello stesso ordine: chi ha visto questa slide sa già
+ * dove stiamo andando, e può fermarci sul punto che gli interessa.
+ */
+const SLUG = 'domanda';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const punti = [
+  {
+    n: '01',
+    dove: 'Prima del sito',
+    t: 'Nella risposta che qualcun altro scrive',
+    b: 'Chi organizza un viaggio oggi chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra.',
+  },
+  {
+    n: '02',
+    dove: 'Dentro l’offerta',
+    t: 'Nel momento in cui il viaggio torna a essere un biglietto',
+    b: 'Treno, autobus, sosta e volo esistono già nella vostra offerta. Chi compra, però, compra ancora un pezzo alla volta — e il valore del viaggio intero non si vede da nessuna parte.',
+  },
+  {
+    n: '03',
+    dove: 'A valle',
+    t: 'Nel materiale che non si riesce a produrre',
+    b: 'Una squadra sola che vende tre prodotti più i servizi, su quattro mercati e in più lingue, ha bisogno di un numero di varianti che nessuna struttura creativa produce a mano.',
+  },
+  {
+    n: '04',
+    dove: 'Nel canale che è vostro',
+    t: 'In settantamila punti vendita che non rispondono',
+    b: 'La rete delle agenzie vende ogni giorno e non restituisce quasi nulla: quali vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
+  },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          Una sola, e tutto il resto di questo documento prova a rispondere a quella.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── La domanda, grande e sola ─────────────────────────────────────── -->
+    <Slide id="slide-domanda" bg="brand" align="center">
+      <div class="tp-quote" data-reveal>
+        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06">
+          Quando il prezzo non è più la leva,<br />dove si perdono le vendite?
+        </h2>
+        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">
+          Non è una domanda retorica: ha quattro risposte, e stanno in quattro punti diversi
+          del percorso che una persona fa prima di salire su un treno.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── I quattro punti = i quattro capitoli che seguono ───────────────── -->
+    <Slide id="slide-mappa" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">La mappa</p>
+          <h2 class="ex-head-title">Quattro punti, in ordine di percorso</h2>
+          <p class="ex-head-lead">
+            Sono anche i quattro capitoli che seguono. Se uno solo vi interessa, si va diretti lì:
+            il resto si legge dopo, o non si legge.
+          </p>
+        </div>
+        <ul class="tp-mappa" role="list" data-stagger="0.12" data-reveal data-reveal-delay="0.12">
+          {punti.map((p) => (
+            <li class="tp-mappa-row">
+              <span class="tp-mappa-n" aria-hidden="true">{p.n}</span>
+              <span class="tp-mappa-body">
+                <span class="tp-mappa-dove">{p.dove}</span>
+                <span class="tp-mappa-t">{p.t}</span>
+                <span class="tp-mappa-b">{p.b}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

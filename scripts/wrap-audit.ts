@@ -135,7 +135,11 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
           for (let k = 0; k < ordinate.length - 1; k++) {
             const riga = (righe.get(ordinate[k]) || '').trim();
             if (!riga) continue;
-            const parole = riga.split(/\s+/);
+            // Si spezza su ogni spazio TRANNE quello unificatore: `\s` in JavaScript
+            // comprende \u00a0, e con quello il gate segnalava ancora la coppia appena
+            // legata — cioè rifiutava il rimedio che lui stesso prescrive. Una coppia
+            // unita da \u00a0 è una parola sola, perché il browser non la spezza.
+            const parole = riga.split(/[^\S\u00a0]+/);
             const ultima = parole[parole.length - 1]
               .toLowerCase()
               .replace(/^[«"'(\[]+|[»"'),.;:!?\]]+$/g, '');

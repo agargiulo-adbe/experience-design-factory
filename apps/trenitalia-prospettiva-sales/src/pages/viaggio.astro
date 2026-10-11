@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+/**
+ * Capitolo 04 — Un viaggio, non più prodotti.
+ *
+ * Il capitolo in cui si parla poco e si ascolta: è il suo mestiere, viene
+ * dall'intermodale. Si apre con una DOMANDA sul laboratorio con la compagnia
+ * aerea, perché la fonte ha mesi e perché se è già coperto è una buona notizia.
+ * Prudenza dichiarata sull'orchestrazione dei messaggi: confina con un perimetro
+ * già assegnato e non si va oltre il nominarla.
+ */
+const SLUG = 'viaggio';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const gia = [
+  { k: 'Gomma', t: 'Busitalia, al 100%', b: 'Oltre 1.700 destinazioni raggiungibili, dentro il perimetro e non in partnership. I collegamenti sono già nell’applicazione.' },
+  { k: 'Sosta', t: 'I parcheggi di stazione', b: 'Già integrati nei canali digitali: il pezzo di viaggio che comincia prima del treno e finisce dopo.' },
+  { k: 'Aria', t: 'Air-Rail dal 2023, e un laboratorio dal 2026', b: 'I prodotti combinati con la compagnia aerea esistono da tre anni; da marzo 2026 c’è anche un laboratorio congiunto sull’intelligenza artificiale, firmato dai due vertici.' },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num">Capitolo {ch.num}</p>
+        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          È il capitolo in cui abbiamo più domande che risposte, e va bene così:
+          l’intermodale è il vostro mestiere, non il nostro.
+        </p>
+        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
+          <p class="ex-ch-agenda-k">In questo capitolo</p>
+          <ul role="list">
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><span>Quello che è già partito</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Dove il viaggio torna un biglietto</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">3</span><span>Chi incontra il viaggiatore prima di voi</span></li>
+          </ul>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Quello che è già partito ──────────────────────────────────────── -->
+    <Slide id="slide-gia" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Il punto di partenza è vostro</p>
+          <h2 class="ex-head-title">L’intermodale non è un progetto da aprire: è già aperto</h2>
+          <p class="ex-head-lead">
+            Treno, gomma, sosta e aria sono già nel perimetro. Quello che manca non è un pezzo
+            di offerta: è il momento dell’acquisto visto come un viaggio solo.
+          </p>
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          {gia.map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          Fonti pubbliche: comunicati del Gruppo, 2023-2026.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Il caso Roma-Matera: la prova che viene dalla misura ──────────── -->
+    <Slide id="slide-matera" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">Alla domanda «come arrivo da Roma a Matera senza auto»</p>
+        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
+          La risposta apre con tre operatori di autobus, e il biglietto
+          combinato treno più autobus lo attribuisce al <strong>concorrente</strong>.
+        </p>
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
+          Busitalia non viene nominata. È la tratta che senza intermodalità non esiste, ed è la
+          domanda in cui partite avvantaggiati: la gomma è vostra, le destinazioni sono vostre.
+          <strong>La risposta, no.</strong>
+        </p>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Registrata l’11 ottobre 2026, fra le otto domande del capitolo precedente.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa cambia nell'acquisto ─────────────────────────────────── -->
+    <Slide id="slide-acquisto" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Dentro l’offerta</p>
+          <h2 class="ex-head-title">Riconoscere chi sta componendo un viaggio</h2>
+          <p class="ex-head-lead">
+            Una persona che cerca un treno per Bari a luglio, con due bagagli e un ritorno aperto,
+            sta costruendo una vacanza. Oggi, nel momento dell’acquisto, è indistinguibile da chi
+            va a Bari per lavoro il martedì mattina. <strong>Distinguerli cambia che cosa si
+            propone</strong>, e cambia il valore di quel viaggio.
+          </p>
+        </div>
+        <div class="tp-ask" data-reveal data-reveal-delay="0.16">
+          <p class="tp-ask-k">La domanda che vi facciamo</p>
+          <p class="tp-ask-t">
+            Il laboratorio con la compagnia aerea quanto di questo copre già? Se copre anche
+            l’acquisto, è una buona notizia e passiamo oltre. Se riguarda i flussi e non il
+            momento in cui si compra, è lì che possiamo essere utili.
+          </p>
+        </div>
+        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
+          <p>
+            Servono due cose, e nessuna delle due è una piattaforma nuova. La prima: leggere il
+            percorso di acquisto per intero, treno e gomma e sosta insieme, con
+            <strong>Customer Journey Analytics</strong> — che in casa vostra è già un terreno
+            aperto. La seconda: poter provare una proposta diversa su una parte del traffico e
+            misurarne l’effetto con <strong>Adobe Target</strong>, che avete già.
+          </p>
+          <p>
+            L’orchestrazione dei messaggi lungo il viaggio è il passo successivo, e lo nominiamo
+            soltanto: confina con scelte che avete già fatto, e non è questa la stanza per discuterle.
+          </p>
+        </HowItWorks>
+      </div>
+    </Slide>
+
+    <!-- ── Chi incontra il viaggiatore prima di voi ───────────────────────── -->
+    <Slide id="slide-prima" bg="inverse" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Prima ancora della scelta del treno</p>
+          <h2 class="ex-head-title">Il viaggio comincia a casa di qualcun altro</h2>
+          <p class="ex-head-lead">
+            Chi decide di passare dieci giorni in Italia lo decide davanti a una compagnia aerea,
+            a una destinazione, a una catena di ospitalità. Loro sanno che sta per viaggiare
+            mesi prima di voi. <strong>Si può lavorare sugli stessi viaggiatori senza che nessuna
+            delle due aziende consegni all’altra i propri dati</strong>: ciascuno tiene i suoi,
+            e si incrocia solo quello che serve a capire chi interessa a entrambi.
+          </p>
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          <div class="ex-card">
+            <p class="ex-card-k">Con chi</p>
+            <p class="ex-card-t">Partner del viaggio, e le società del Gruppo</p>
+            <p class="ex-card-b">Lo stesso meccanismo vale fra aziende diverse e fra società della stessa famiglia, che oggi guardano gli stessi clienti da finestre separate.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">Dove sta il valore</p>
+            <p class="ex-card-t">Arrivare prima della scelta del vettore</p>
+            <p class="ex-card-b">Quando la decisione è «come arrivo», la partita è già giocata sul prezzo. Prima, si gioca sul viaggio.</p>
+          </div>
+          <div class="ex-card">
+            <p class="ex-card-k">La Cina, e il resto dell’Asia</p>
+            <p class="ex-card-t">Dove non si compra su un sito</p>
+            <p class="ex-card-b">Le vendite in Cina sono raddoppiate in un anno. Lì l’acquisto e il pagamento vivono dentro le applicazioni locali: è un canale, non una versione tradotta del vostro.</p>
+          </div>
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          La collaborazione fra aziende su clienti comuni, senza trasferimento di dati, è
+          <strong>Adobe Real-Time CDP Collaboration</strong>.
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

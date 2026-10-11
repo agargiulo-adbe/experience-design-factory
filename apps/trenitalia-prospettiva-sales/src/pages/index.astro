@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+
+/**
+ * Copertina e percorso.
+ *
+ * Il percorso NON è una griglia di card: sette capitoli in griglia danno
+ * un'ultima riga zoppa (4+3), che il contratto della Factory vieta. Qui vale
+ * l'esenzione prevista per i paradigmi non-a-card, e la forma giusta per questo
+ * cliente è anche la più ovvia: una linea con sette fermate. Su telefono la
+ * linea si raddrizza e diventa verticale.
+ */
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+const last = CHAPTERS[CHAPTERS.length - 1];
+---
+<BaseLayout title={SITE.name}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
+
+    <!-- ── 0 · Copertina ─────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-cover" data-reveal>
+        <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
+        <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
+        <p class="ex-cover-tag" data-reveal data-reveal-delay="0.16">
+          Quattro punti in cui una vendita si perde prima di diventare un viaggio.
+        </p>
+        <p class="ex-cover-lead" data-reveal data-reveal-delay="0.22">
+          Un’ora di conversazione sull’anno che si apre: la concorrenza che arriva, il prezzo
+          che si muove da solo e il 96% del Paese che i vostri ospiti stranieri non hanno
+          ancora visto. Metà del tempo vorremmo passarla ad ascoltare.
+        </p>
+        <p class="ex-cover-note" data-reveal data-reveal-delay="0.3">
+          {type.coverLine.it} · fonti dichiarate slide per slide
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 1 · Il percorso: una linea, sette fermate ─────────────────────── -->
+    <Slide id="slide-percorso" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-percorso">
+        <p class="slide-eyebrow" data-reveal>Il percorso</p>
+        <h2 class="ex-percorso-title" data-reveal data-reveal-delay="0.08">«{type.question.it}»</h2>
+        <p class="ex-percorso-lead" data-reveal data-reveal-delay="0.15">
+          Sette fermate. Le prime due servono a mettersi d’accordo sulla domanda, le quattro
+          centrali sono i quattro punti del percorso di acquisto, l’ultima è il passo che
+          vi chiediamo. Si può salire e scendere dove volete.
+        </p>
+        <ol class="tp-linea" data-reveal data-reveal-delay="0.22">
+          {CHAPTERS.map((c) => (
+            <li class="tp-linea-stop">
+              <a href={href(base, '/' + c.slug)} class="tp-linea-link">
+                <span class="tp-linea-dot" aria-hidden="true"></span>
+                <span class="tp-linea-num">{c.num}</span>
+                <span class="tp-linea-name">{c.title.it}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+        <div data-reveal data-reveal-delay="0.35" class="text-center">
+          <a href={href(base, '/' + first.slug)} class="ex-cta">
+            Prima fermata
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

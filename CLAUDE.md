@@ -17,6 +17,13 @@ Experiences today (tipo tra parentesi, vedi Tassonomia):
 - **Pole Position** — Ferrari Racing × Adobe [Blueprint] (EN/IT bilingual, motorsport, 7 sections).
 - **Connessioni Intelligenti** — FS Group [Blueprint] (IT, 6 sezioni + casi d'uso).
 - **Trait d'Union** — Agos [Blueprint] (IT, credito al consumo, 7 sezioni; palette petrolio/acqua dal brand agos.it).
+- **Dove può arrivare il viaggio** — Trenitalia [Prospettiva] (IT, `apps/trenitalia-prospettiva-sales`,
+  11 ott 2026): per la **Direzione Sales**, un'ora, filo «dove si perdono le vendite» — prima del
+  sito (visibilità nelle risposte generate, con una **misura nostra** dell'11 ott), dentro l'offerta
+  (intermodale), a valle (contenuto), nel canale suo (70.000 punti vendita). Sette capitoli: i
+  quattro temi dell'agenda mandata alla segreteria, fra apertura e rotta. Design system **letto** da
+  trenitalia.com (ardesia `#2f394e` di sistema, rosso `#d91835` di marchio, **Poppins** vero del
+  cliente), dominante scura. Spenta sullo showcase. Dossier gated a parte: `dossier-sales.astro`.
 - **Sei domande** — Poste Italiane [Playbook] (IT default + EN, `apps/poste-sei-domande`, 29 set 2026): deck tecnico‑operativo per il Responsabile Monitoraggio Canali Digitali (Admin di Adobe Analytics). **Sei capitoli = sei domande** che il team riceve, ognuna risposta «oggi in Workspace» e «con CX Enterprise Coworker» (su Adobe Analytics in rollout dal 2/10/2026, GA dichiarata TBD). Niente CJA, niente Web SDK, Target solo come evolutiva «di interesse, non tua» (parole del referente tecnico). Design system letto da poste.it (blu `#0047bb`, giallo `#eedc00`, Inter). Dossier gated `/dossier/?t=`; pubblicata su showcase.
 
 Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
@@ -72,7 +79,7 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
-- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `agos-trait-dunion`, `poste-sei-domande`, `console`, `factory-showcase`, `factory-hub`)
+- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `trenitalia-prospettiva-sales`, `agos-trait-dunion`, `poste-sei-domande`, `console`, `factory-showcase`, `factory-hub`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema. **`--tv`** aggiunge 2560×1440 e 3840×2160: si lancia quando si tocca la composizione e prima di una proiezione su parete.
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
