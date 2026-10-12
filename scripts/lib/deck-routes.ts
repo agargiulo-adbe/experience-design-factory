@@ -150,6 +150,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'contenuto',  route: '/experience-design-factory/trenitalia-prospettiva-sales/contenuto/' },
     { name: 'rete',       route: '/experience-design-factory/trenitalia-prospettiva-sales/rete/' },
     { name: 'rotta',      route: '/experience-design-factory/trenitalia-prospettiva-sales/rotta/' },
+    { name: 'dieci-minuti', route: '/experience-design-factory/trenitalia-prospettiva-sales/dieci-minuti/' },
   ],
   'tim-contenuti-su-scala': [
     { name: 'home',      route: '/experience-design-factory/tim-contenuti-su-scala/' },

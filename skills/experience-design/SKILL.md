@@ -310,6 +310,20 @@ playback one — fix the asset, not with JavaScript.
   Natural, concrete sentences, varied rhythm. Bilingual: EN and IT each idiomatic (never a literal
   echo); `<T en it>` ALWAYS keeps both. Keep length ~±10% so the audit doesn't break. (CLAUDE.md → Working rules.)
 
+## Il taglio «In dieci minuti» (BINDING per ogni experience con due percorsi)
+Un'ora concessa diventa venti minuti più spesso di quanto si ammetta, e il taglio corto è
+anche la versione che l'interlocutore gira al suo capo. Quindi ogni experience rivolta a un
+executive ne ha uno: **cinque o sei slide**, rotta `/dieci-minuti/`, con l'ask dentro.
+Non è una copia del percorso lungo: **è la stessa fonte, più corta.** I blocchi condivisi
+vivono in `src/data/<nome>.ts` e le fonti in `src/data/sources.ts`, definiti una volta; dove il
+taglio ha bisogno di meno parole la versione breve è un **campo accanto** a quella lunga
+(`bBreve`, `sBreve`), mai un'altra voce; una funzione sola serve le due forme; l'ask sta in un
+posto solo. L'allineamento è **continuo per costruzione e verificato da un gate**:
+`DECK_URL=… pnpm audit:taglio --app <alias>` — HARD su copia a mano, numeri che solo il taglio
+afferma, fonti che solo il taglio porta. L'app si dichiara in `scripts/lib/cut-routes.ts`.
+Che cosa entra nei dieci minuti, le convenzioni, l'ordine dei gate:
+**`references/taglio-dieci-minuti.md`**.
+
 ## Panel review — the client's eyes (BINDING — before every handover)
 `audit:deck` and a screenshot pass prove the deck **renders**. They prove nothing about
 whether the client will **buy the argument** or whether every claim survives a check at its

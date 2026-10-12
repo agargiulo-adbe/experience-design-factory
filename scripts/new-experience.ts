@@ -471,7 +471,18 @@ Resta da fare a mano (nell'ordine):
   6. supabase db query --linked < supabase/migrations/<nn>_seed_${slug.replace(/-/g, '_')}.sql
   7. apps/factory-showcase/public/shots/${slug}.webp (1200×750) quando la cover è vera;
      \`pnpm mcp:registry\` per rigenerare il registry dell'Atelier.
-  8. Verifica: pnpm --filter ${slug} build && pnpm --filter ${slug} preview --port 4520
-     DECK_URL=http://localhost:4520 pnpm --filter ${slug} audit:deck   (0 HARD: b c d e h j k m exp)
+  8. Il taglio «In dieci minuti», se l'experience va a un executive: pagina
+     apps/${slug}/src/pages/dieci-minuti.astro con cinque o sei slide e l'ask dentro, i
+     blocchi condivisi in src/data/ (versione breve come campo ACCANTO a quella lunga),
+     e la riga in scripts/lib/cut-routes.ts. Poi \`pnpm audit:taglio --app ${slug}\`:
+     un taglio che tiene due copie a mano diverge, sempre. Vedi
+     skills/experience-design/references/taglio-dieci-minuti.md.
+  9. Verifica, nell'ordine: pnpm --filter ${slug} build && pnpm --filter ${slug} preview --port 4520
+     pnpm --silent exec tsx scripts/copy-audit.ts --app ${slug}           (0 HARD)
+     DECK_URL=http://localhost:4520 pnpm audit:wrap   --app ${slug}
+     DECK_URL=http://localhost:4520 pnpm audit:taglio --app ${slug}       (se c'è il taglio)
+     DECK_URL=http://localhost:4520 pnpm --filter ${slug} audit:deck      (0 HARD: b c d e h j k m exp)
+     DECK_URL=http://localhost:4520 pnpm audit:ink    --app ${slug}       (pulito)
+     DECK_URL=http://localhost:4520 pnpm audit:fonti  --app ${slug}       (0 HARD)
      poi screenshot a 1920 letti con gli occhi (apps/${slug}/scripts/shots.mjs).
 `);

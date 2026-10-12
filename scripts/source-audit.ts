@@ -15,11 +15,20 @@
  *          portano nessun link. Soft perché una riga di fonte può legittimamente
  *          rimandare a un documento interno o a una misura fatta da noi: il gate
  *          le elenca, il giudizio resta umano.
+ *   SOFT · i link GENERICI, cioè quelli che puntano alla homepage di un sito
+ *          («fonti pubbliche: comunicati del Gruppo — fsnews.it»). Rispondono 200
+ *          e sembrano una fonte, ma non portano all'affermazione: chi li clicca
+ *          deve cercarsela da sé, e quasi sempre non la trova. Un link generico
+ *          è una fonte dichiarata e non data. Successo sul campo: tre slide della
+ *          Prospettiva Trenitalia citavano due homepage per sei fatti distinti.
  *
  * CHE COSA NON CONTROLLA
  * Che il link sia quello GIUSTO per quella frase. Nessuno script lo sa: una
- * pagina che risponde 200 può parlare d'altro. Questo resta un controllo umano,
- * e va fatto una volta per fonte quando la si cita.
+ * pagina che risponde 200 può parlare d'altro — ed è l'errore più costoso, perché
+ * il link c'è e sembra a posto (successo: la slide d'apertura della Prospettiva
+ * Trenitalia citava un articolo ANSA che NON conteneva la frase fra virgolette).
+ * Questo resta un controllo umano, e va fatto una volta per fonte quando la si
+ * cita: si apre il link e si cerca nella pagina la frase che sta in slide.
  *
  *   DECK_URL=http://localhost:4592 npx tsx scripts/source-audit.ts --app <alias>
  */
@@ -108,18 +117,30 @@ await Promise.all(unici.map(async (u) => {
 }));
 
 /**
- * 401/403/429 NON sono «rotto»: sono siti che bloccano gli accessi automatici.
- * Gartner risponde 403 anche a un Chromium headless con uno user-agent da browser,
- * e quella pagina per una persona si apre benissimo. Trattarli come errori riempie
+ * 401/403/406/429 NON sono «rotto»: sono siti che bloccano gli accessi automatici.
+ * Gartner risponde 403 anche a un Chromium headless con uno user-agent da browser, e
+ * euronews risponde 406 a qualunque HEAD: due pagine che per una persona si aprono
+ * benissimo, e che una persona ha aperto. Trattarli come errori riempie
  * il gate di falsi allarmi — e un gate che grida al lupo viene ignorato, che è il
  * contrario del suo scopo. Finiscono in una terza lista: verifica umana, una volta.
  */
-const BLOCCA_BOT = new Set([401, 403, 429]);
+const BLOCCA_BOT = new Set([401, 403, 406, 429]);
 const rotti = links.filter((l) => {
   const st = stato.get(l.href);
   return typeof st !== 'number' ? st !== 'bloccato' : (st >= 400 && !BLOCCA_BOT.has(st));
 });
 const daGuardare = links.filter((l) => { const st = stato.get(l.href); return typeof st === 'number' && BLOCCA_BOT.has(st); });
+
+/**
+ * Link generico = punta alla radice di un sito. Un indirizzo senza percorso non
+ * è una fonte: è il nome di un sito scritto in azzurro. Si contano come generici
+ * anche i soliti alias della radice («/it», «/index.html», «/it.html»), perché
+ * il risultato per chi clicca è identico.
+ */
+const RADICE = /^\/?$|^\/(it|en|index)([.-][a-z]{2})?(\.html?)?\/?$/i;
+const generici = links.filter((l) => {
+  try { const u = new URL(l.href); return RADICE.test(u.pathname) && !u.search; } catch { return false; }
+});
 
 console.log(`\nsource-audit · ${appFlag} · ${ROUTES.length} rotte`);
 console.log(`Link esterni nelle slide: ${links.length} (${unici.length} distinti)`);
@@ -138,7 +159,12 @@ if (nude.length) {
   for (const n of nude) console.log(`  · ${n.rotta} · ${n.slide} — «${n.testo}»`);
   console.log('  (legittime se rimandano a un documento interno o a una misura nostra — si guardano una per una)');
 }
-if (!rotti.length && !nude.length && !daGuardare.length) console.log('\nPULITO — ogni fonte pubblica porta il suo link, e ogni link risponde.');
+if (generici.length) {
+  console.log(`\nSOFT — link generici (portano alla homepage, non all'affermazione): ${generici.length}`);
+  for (const l of generici) console.log(`  · ${l.rotta} · ${l.slide} — ${l.href}\n     «${l.testo}»`);
+  console.log('  (si sostituisce con la pagina che contiene davvero il fatto: comunicato, scheda, pagina di prodotto)');
+}
+if (!rotti.length && !nude.length && !daGuardare.length && !generici.length) console.log('\nPULITO — ogni fonte pubblica porta il suo link, e ogni link risponde.');
 else if (!rotti.length) console.log('\nNessun link rotto. Le righe qui sopra vanno guardate una per una.');
 
 console.log('\n⚠️  Il gate verifica che il link RISPONDA, non che sia quello giusto per quella frase: quello resta un controllo umano.');
