@@ -2,7 +2,7 @@
 
 Questo file si carica da sé in ogni sessione aperta su `docs/` o su una qualunque
 cartella al suo interno, perché Claude Code risale le cartelle padre. Se stai
-leggendo qui, stai lavorando **su un conto cliente**, non sulla Factory.
+leggendo qui, stai lavorando **su un conto**, non sulla Factory.
 
 > **Questo file è TRACCIATO e il repo è PUBBLICO.** Dentro ci vanno ruoli, non
 > nomi di persone; nessun dato di cliente, nessun numero di contratto, nessun
@@ -19,9 +19,26 @@ applica**, salvo quando stai effettivamente producendo un artefatto della Factor
 Quello che **resta valido sempre**, perché non riguarda i deck ma il mestiere, è
 qui sotto in «Le regole che valgono». Il resto, ignoralo.
 
+## Che cos'è un conto, e quali cartelle lo sono
+
+Un **conto** è una cartella sotto `docs/` con un `CONTO.md` dentro. Due tipi:
+
+- **un cliente** — `docs/Banca Generali/`, `docs/Unipol/`, `docs/Enel/`…
+- **`docs/Adobe/`** — il lavoro che **non è legato a un singolo cliente**: richieste
+  di colleghi, materiale trasversale, analisi su più account, processi interni.
+
+**La regola di smistamento:** se la cosa riguarda **un** cliente, va nella cartella di
+quel cliente anche se è arrivata da un collega. In `docs/Adobe/` ci sta solo quello che
+non ha un cliente, o che ne ha molti insieme.
+
+**Non sono conti** e non hanno registro: `docs/Adobe Material/` (deposito di deck e
+materiale Adobe — attenzione a non confonderla con `docs/Adobe/`), `docs/Factory/`,
+`docs/Claude/`, `docs/superpowers/`. `/account-open` non le apre e `/accounts` non le
+elenca.
+
 ## Che cos'è un `CONTO.md`
 
-Il registro operativo di un cliente: un file per cartella, `docs/<Cliente>/CONTO.md`.
+Il registro operativo di un conto: un file per cartella, `docs/<Conto>/CONTO.md`.
 Non è un archivio e non è un dossier. Risponde a quattro domande e a nient'altro:
 **dove siamo**, **chi ha la palla**, **qual è il prossimo passo**, **quali fatti
 sappiamo e da quale fonte**.
@@ -44,11 +61,11 @@ illeggibile in tre mesi, e un registro che nessuno apre non serve a nulla.
 
 ## Protocollo di apertura
 
-All'inizio di una sessione su una cartella cliente, **senza che te lo si chieda**:
+All'inizio di una sessione su una cartella di conto, **senza che te lo si chieda**:
 
-1. leggi `CONTO.md` (se non c'è, vai a «Il primo `CONTO.md` di un cliente»);
+1. leggi `CONTO.md` (se non c'è, vai a «Il primo `CONTO.md` di un conto»);
 2. prendi la data di `aggiornato`;
-3. cerca nella posta i thread di quel cliente **da quella data**, e guarda la
+3. cerca nella posta i thread di quel conto **da quella data**, e guarda la
    cartella per materiale arrivato dopo (footprint, allegati, trascrizioni);
 4. riferisci **in chat**, in poche righe: cosa è cambiato, cosa è bloccato, chi ha
    la palla, qual è il prossimo passo aperto;
@@ -66,7 +83,7 @@ Prima di concludere una sessione in cui è cambiata una delle quattro cose:
 4. aggiorna la data di `aggiornato`;
 5. **mostra il diff prima di salvare.**
 
-Il comando `/conto` esegue l'apertura, `/conto chiudi` la chiusura. Non aspettare
+Il comando `/account-open` esegue l'apertura, `/account-close` la chiusura. Non aspettare
 il comando: i due protocolli valgono comunque.
 
 ## Le regole che valgono
@@ -97,7 +114,7 @@ operative:
 
 ## Riservatezza — la regola secca
 
-Le cartelle cliente sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
+Le cartelle di conto sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
 fail-closed: ignora tutto e riammette i soli documenti della Factory). Quindi:
 
 - dentro un `CONTO.md` si scrivono **nomi di persone, ruoli, identificativi,
@@ -107,7 +124,7 @@ fail-closed: ignora tutto e riammette i soli documenti della Factory). Quindi:
   per estratto in un documento tracciato: si cita per rimando;
 - non si aggiunge **mai** una riga `!` a `docs/.gitignore` per un documento di
   cliente. Il gate `pnpm audit:docs` controlla entrambe le direzioni;
-- non si committa nulla da `docs/<Cliente>/`, nemmeno un markdown che «è solo una
+- non si committa nulla da `docs/<Conto>/`, nemmeno un markdown che «è solo una
   nota».
 
 ## Il confine con quello che esiste già
@@ -117,7 +134,7 @@ divergono:
 
 | Dove | Che cos'è | Quando |
 | --- | --- | --- |
-| `docs/<Cliente>/CONTO.md` | lo **stato operativo** vivo del conto | sempre, è la base |
+| `docs/<Conto>/CONTO.md` | lo **stato operativo** vivo del conto | sempre, è la base |
 | skill `dossier` | la preparazione di **un incontro**, come pagina gated | quando c'è una data in calendario |
 | `PANEL-*.md` | la revisione di **un deliverable** prima della consegna | prima di un handover |
 | memoria (`MEMORY.md`) | i **fatti durevoli trasversali** — la regola, non il caso | quando impari una regola |
@@ -127,9 +144,9 @@ Il dossier **si alimenta** dal `CONTO.md`, non lo sostituisce e non lo duplica.
 Quando da un conto nasce un contenuto, il verso è uno solo:
 `CONTO.md` → `EXPERIENCE-BRIEF.md` → skill `/experience-design`.
 
-## Il primo `CONTO.md` di un cliente
+## Il primo `CONTO.md` di un conto
 
-Non si creano in blocco: nasce alla prima sessione su quel cliente. Si costruisce
+Non si creano in blocco: nasce alla prima sessione su quel conto. Si costruisce
 da ciò che c'è — materiale nella cartella, thread di posta, memoria — **si dichiara
 la fonte di ogni riga**, e si fa approvare prima di salvarlo. Quello che non si sa
 si scrive `da chiedere`, non si inventa e non si lascia vuoto.
@@ -137,7 +154,7 @@ si scrive `da chiedere`, non si inventa e non si lascia vuoto.
 ## Il template
 
 ```markdown
-# <Cliente> — conto
+# <Conto> — conto
 <identificativi: ECC ID, ragione sociale se serve> · aggiornato <gg mmm aaaa>
 
 ## Installato

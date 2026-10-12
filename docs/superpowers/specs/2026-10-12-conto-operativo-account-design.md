@@ -71,13 +71,29 @@ regola di riservatezza; il confine con `dossier`, `PANEL-*`, memoria e `HANDOVER
 **template**, dentro il file stesso così non può divergere dalle istruzioni che lo
 descrivono.
 
-### `/conto` e `/conti`
-`/conto` esegue l'apertura, `/conto chiudi` la chiusura, `/conto` su un cliente senza
-registro lo crea e lo fa approvare. `/conti` dà la vista d'insieme chiamando
-`pnpm conti` (`scripts/conti.ts`), che legge i registri e stampa: i passi **scaduti**, i
+### `/account-open`, `/account-close` e `/accounts`
+`/account-open` esegue l'apertura, `/account-close` la chiusura, `/account-open` su un conto senza
+registro lo crea e lo fa approvare. `/accounts` dà la vista d'insieme chiamando
+`pnpm accounts` (`scripts/accounts.ts`), che legge i registri e stampa: i passi **scaduti**, i
 conti **fermi** da più di 21 giorni, una riga per conto con chi ha la palla e da quanto, e
 l'elenco dei clienti ancora senza registro. Tutti i rami verificati, incluso quello degli
 scaduti.
+
+### `docs/Adobe/` — il conto non-cliente
+Il lavoro che non è legato a un singolo cliente (richieste di colleghi, analisi su più
+account, processi interni) è un **conto come gli altri**: `docs/Adobe/CONTO.md`, e nella
+vista d'insieme. La regola di smistamento: se riguarda **un** cliente va nella sua
+cartella, anche se è arrivata da un collega. Da non confondere con `docs/Adobe Material/`,
+che è un **deposito** di materiale e non ha registro — insieme a `Factory/`, `Claude/` e
+`superpowers/`.
+
+### I nomi dei comandi
+Prima si chiamavano `/conto`, `/conto chiudi` e `/conti`: incomprensibili, e il secondo
+chiedeva di ricordare un argomento. Ora sono tre comandi separati con prefisso comune, che
+si trovano con `/acc` + TAB. Scartata la variante con la parola `task`
+(`account-close-task`): si legge come «segna il task come fatto», che è un'azione diversa
+da «deposita lo stato del conto», e fra sei mesi manderebbe a cercare un comando che non
+esiste.
 
 ### Tre registri come prova del formato
 `Banca Generali` (caso vivo, fatti letti alla fonte), `Enel` (due casi aperti, con la
@@ -90,8 +106,8 @@ distinzione fra un calcolo di un collega e un dato di sistema marcata nel regist
 
 Un **mod** (plugin con handler JS dentro Claude Code), uno solo, non uno per cliente:
 
-1. **`/conti` come comando del mod** — gira senza un turno di Claude, a costo zero di
-   token, anche mentre Claude lavora. Delega a `pnpm conti`, che esiste già: il mod non
+1. **`/accounts` come comando del mod** — gira senza un turno di Claude, a costo zero di
+   token, anche mentre Claude lavora. Delega a `pnpm accounts`, che esiste già: il mod non
    reimplementa la logica, la chiama.
 2. **Banda sopra il prompt** con lo stato del conto su cui si sta lavorando.
 3. **Hook `tool.call`** che ferma un `git add` con file di una cartella cliente e chiede
@@ -124,5 +140,5 @@ non è installata non è un deliverable, è un debito.
 pnpm audit:docs                       # 0 rilievi, e deve fallare se si rimuove il `*`
 git status --porcelain docs/          # nessun file di cliente
 git check-ignore -q "docs/<finto>/"   # un cliente mai dichiarato è già ignorato
-pnpm conti                            # legge i registri, stampa scaduti e fermi
+pnpm accounts                            # legge i registri, stampa scaduti e fermi
 ```
