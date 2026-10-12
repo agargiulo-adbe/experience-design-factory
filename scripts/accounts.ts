@@ -1,10 +1,10 @@
 /**
- * conti — una riga per conto: dove siamo, chi ha la palla, da quanto è fermo.
+ * accounts — una riga per conto: dove siamo, chi ha la palla, da quanto è fermo.
  *
  * PERCHÉ ESISTE
- * I `CONTO.md` risolvono «dove eravamo rimasti su questo cliente». Non risolvono
+ * I `CONTO.md` risolvono «dove eravamo rimasti su questo conto». Non risolvono
  * «su quale dei sedici conti si è fermato qualcosa»: per saperlo bisognerebbe
- * aprirli tutti, e nessuno lo fa. Con sedici conti la cosa che manca non è il
+ * aprirli tutti, e nessuno lo fa. Con una quindicina di conti la cosa che manca non è il
  * dettaglio, è la vista d'insieme — e soprattutto l'avviso sui conti che nessuno
  * tocca da settimane, che sono quelli che fanno danno.
  *
@@ -12,15 +12,15 @@
  *   · i conti con un registro, ordinati per quanto tempo è passato;
  *   · i passi SCADUTI (c'è una data «entro» ed è passata);
  *   · i conti FERMI da più di tre settimane;
- *   · le cartelle cliente SENZA registro, perché il primo `/conto` lo crea.
+ *   · le cartelle SENZA registro, perché il primo `/account-open` lo crea.
  *
  * CHE COSA NON FA
  * Non legge la posta e non giudica il contenuto: legge i registri. Se un registro
  * è vecchio, lo dice; se è sbagliato, non può saperlo — quello lo scopre
- * l'apertura di `/conto`, che confronta con i thread.
+ * l'apertura di `/account-open`, che confronta con i thread.
  *
- *   pnpm conti            tutto
- *   pnpm conti --fermi    solo ciò che chiede attenzione
+ *   pnpm accounts            tutto
+ *   pnpm accounts --fermi    solo ciò che chiede attenzione
  */
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -31,9 +31,10 @@ const DOCS = join(ROOT, 'docs');
 const SOLO_FERMI = process.argv.includes('--fermi');
 const GIORNI_FERMO = 21;
 
-/* I documenti della Factory stanno in piano in docs/; le cartelle sono i conti,
-   meno le tre che non sono clienti. */
-const NON_CONTI = new Set(['superpowers', 'Adobe Material', 'Factory', 'Claude']);
+/* I documenti della Factory stanno in piano in docs/; le cartelle sono i conti, meno i
+   depositi di materiale. `Adobe` (senza «Material») È un conto: ci sta il lavoro non
+   legato a un cliente, e va nella vista d'insieme come tutti gli altri. */
+const DEPOSITI = new Set(['superpowers', 'Adobe Material', 'Factory', 'Claude']);
 
 const MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 
@@ -60,7 +61,7 @@ const conti: Conto[] = [];
 for (const cliente of readdirSync(DOCS).sort()) {
   const dir = join(DOCS, cliente);
   if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
-  if (cliente.startsWith('.') || NON_CONTI.has(cliente)) continue;
+  if (cliente.startsWith('.') || DEPOSITI.has(cliente)) continue;
 
   const registro = join(dir, 'CONTO.md');
   if (!existsSync(registro)) {
@@ -117,7 +118,7 @@ const fermi = conRegistro.filter((c) => c.aggiornato && giorni(c.aggiornato) > G
 
 const taglia = (s: string, n: number): string => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 
-console.log(`\nconti · ${conRegistro.length} con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
+console.log(`\naccounts · ${conRegistro.length} conti con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
 
 if (scaduti.length) {
   console.log(`\nSCADUTI — il passo aveva una data, ed è passata: ${scaduti.length}`);
@@ -143,10 +144,10 @@ if (!SOLO_FERMI) {
     }
   }
   if (senza.length) {
-    console.log('\nSenza registro — il primo `/conto` lo crea:');
+    console.log('\nSenza registro — il primo `/account-open` lo crea:');
     console.log('  ' + senza.map((c) => c.cliente).join(' · '));
   }
 }
 
 if (!scaduti.length && !fermi.length) console.log('\nNiente scaduto e niente fermo da settimane.');
-console.log('\n⚠️  Legge i registri, non la posta: un registro vecchio lo segnala, un registro sbagliato no. Quello lo scopre `/conto` in apertura.');
+console.log('\n⚠️  Legge i registri, non la posta: un registro vecchio lo segnala, un registro sbagliato no. Quello lo scopre `/account-open`.');

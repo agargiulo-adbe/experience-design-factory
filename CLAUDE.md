@@ -9,7 +9,7 @@
 Se la sessione è aperta su `docs/` o su `docs/<Cliente>/` e il lavoro è **operativo**
 (una mail, un'analisi, un rinnovo, un blocco contrattuale), la guida è **`docs/CLAUDE.md`**
 e **le regole di questo file non si applicano**: lì il registro è `docs/<Cliente>/CONTO.md`,
-i comandi sono `/conto` e `/conti`. Le cartelle cliente sono **ignorate da git** e il repo è
+i comandi sono `/account-open`, `/account-close` e `/accounts`. Le cartelle cliente sono **ignorate da git** e il repo è
 **pubblico**: nulla di quel materiale finisce in un file tracciato (gate `pnpm audit:docs`).
 
 ## Project Overview
