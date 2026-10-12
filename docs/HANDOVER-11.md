@@ -1,4 +1,4 @@
-# Handover — Parte 11 di 15
+# Handover — Parte 11 di 17
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
