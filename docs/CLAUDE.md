@@ -2,11 +2,11 @@
 
 Questo file si carica da sé in ogni sessione aperta su `docs/` o su una qualunque
 cartella al suo interno, perché Claude Code risale le cartelle padre. Se stai
-leggendo qui, stai lavorando **su un conto**, non sulla Factory.
+leggendo qui, stai lavorando **su un account**, non sulla Factory.
 
 > **Questo file è TRACCIATO e il repo è PUBBLICO.** Dentro ci vanno ruoli, non
 > nomi di persone; nessun dato di cliente, nessun numero di contratto, nessun
-> identificativo. Quelle cose stanno nei `CONTO.md`, che sono ignorati da git.
+> identificativo. Quelle cose stanno nei `ACCOUNT.md`, che sono ignorati da git.
 
 ## Le regole dei deck qui non valgono
 
@@ -19,9 +19,9 @@ applica**, salvo quando stai effettivamente producendo un artefatto della Factor
 Quello che **resta valido sempre**, perché non riguarda i deck ma il mestiere, è
 qui sotto in «Le regole che valgono». Il resto, ignoralo.
 
-## Che cos'è un conto, e quali cartelle lo sono
+## Che cos'è un account, e quali cartelle lo sono
 
-Un **conto** è una cartella sotto `docs/` con un `CONTO.md` dentro. Due tipi:
+Un **account** è una cartella sotto `docs/` con un `ACCOUNT.md` dentro. Due tipi:
 
 - **un cliente** — `docs/Banca Generali/`, `docs/Unipol/`, `docs/Enel/`…
 - **`docs/Adobe/`** — il lavoro che **non è legato a un singolo cliente**: richieste
@@ -31,7 +31,7 @@ Un **conto** è una cartella sotto `docs/` con un `CONTO.md` dentro. Due tipi:
 quel cliente anche se è arrivata da un collega. In `docs/Adobe/` ci sta solo quello che
 non ha un cliente, o che ne ha molti insieme.
 
-**Non sono conti** e non hanno registro: `docs/Adobe Material/` (deposito di deck e
+**Non sono account** e non hanno registro: `docs/Adobe Material/` (deposito di deck e
 materiale Adobe — attenzione a non confonderla con `docs/Adobe/`), `docs/Factory/`,
 `docs/Claude/`, `docs/superpowers/`. `/account-open` non le apre e `/accounts` non le
 elenca.
@@ -42,9 +42,9 @@ Dentro una sessione, tutti e tre si trovano con `/acc` + TAB:
 
 | | Che cosa fa |
 | --- | --- |
-| `/account-open [<Conto>]` | legge il Radar, poi il registro, poi le cinque fonti; **riferisce senza scrivere** |
-| `/account-close [<Conto>]` | deposita lo stato, diff prima di salvare |
-| `/accounts [fermi]` | la vista d'insieme su tutti i conti |
+| `/account-open [<Account>]` | legge il Radar, poi il registro, poi le cinque fonti; **riferisce senza scrivere** |
+| `/account-close [<Account>]` | deposita lo stato, diff prima di salvare |
+| `/accounts [fermi]` | la vista d'insieme su tutti gli account |
 
 Fuori da una sessione c'è la **stessa parola**, come funzione di shell — nessun nome in più
 da ricordare, e costa zero token:
@@ -68,7 +68,7 @@ rispettata, se no nascono due copie degli stessi numeri — che divergono **semp
 | | Possiede | Esempi |
 | --- | --- | --- |
 | **Radar** | i **numeri** e la **struttura** | book dei 25 account, ARR, ECC ID e IMS Org, team Adobe, prodotti con date di contratto, rinnovi, opportunità aperte, salute, e i **prodotti eleggibili** per il piano (Goal Sheet) |
-| **`CONTO.md`** | la **storia** | dove siamo, chi ha la palla, i blocchi, i fatti detti in riunione, i vincoli e il vocabolario del cliente |
+| **`ACCOUNT.md`** | la **storia** | dove siamo, chi ha la palla, i blocchi, i fatti detti in riunione, i vincoli e il vocabolario del cliente |
 
 Quindi: **il registro non ricopia** ARR, date di rinnovo, identificativi e nomi del team.
 Li citerebbe vecchi. Se un numero del Radar è sbagliato si corregge **nel Radar**.
@@ -80,27 +80,27 @@ I file del Radar:
 - `Mappa_Account/_PROMPT_PanoAI.md` — i prompt per rinfrescarlo (~10 minuti)
 - `Registro_opportunita.md` — backlog trasversale. **La colonna «Decisione Antonio» non si
   tocca mai**: è dove una persona scrive SÌ / NO / DOPO
-- `alias_cartelle.md` — con che nome un conto sta nel book (`Telecom Italia` è `TIM`)
+- `alias_cartelle.md` — con che nome un account sta nel book (`Telecom Italia` è `TIM`)
 - `Sintesi_Task_storico/` — **storia, non si continua.** Era una scansione a mano dei task
-  da email, si è fermata dopo due giri: faceva lo stesso mestiere del `CONTO.md`, e due
+  da email, si è fermata dopo due giri: faceva lo stesso mestiere del `ACCOUNT.md`, e due
   posti per «cosa devo a questo cliente» divergono. Quel lavoro lo fa ora `/accounts`.
 
 **Lo snapshot invecchia.** Oltre un mese e mezzo i numeri si citano come datati, mai come
 correnti: `pnpm accounts` stampa l'età in testa.
 
-## Che cos'è un `CONTO.md`
+## Che cos'è un `ACCOUNT.md`
 
-Il registro operativo di un conto: un file per cartella, `docs/<Conto>/CONTO.md`.
+Il registro operativo di un account: un file per cartella, `docs/<Account>/ACCOUNT.md`.
 Non è un archivio e non è un dossier. Risponde a quattro domande e a nient'altro:
 **dove siamo**, **chi ha la palla**, **qual è il prossimo passo**, **quali fatti
 sappiamo e da quale fonte**.
 
-Serve perché lo stato di un conto oggi vive sparso in decine di thread di posta, e
+Serve perché lo stato di un account oggi vive sparso in decine di thread di posta, e
 ricostruirlo costa un'ora ogni volta che serve.
 
 ### La regola di quando si scrive
 
-Si aggiorna il `CONTO.md` **solo** se è cambiata una di queste quattro cose:
+Si aggiorna il `ACCOUNT.md` **solo** se è cambiata una di queste quattro cose:
 
 1. dove siamo,
 2. chi ha la palla,
@@ -113,15 +113,15 @@ illeggibile in tre mesi, e un registro che nessuno apre non serve a nulla.
 
 ## Protocollo di apertura
 
-All'inizio di una sessione su una cartella di conto, **senza che te lo si chieda**:
+All'inizio di una sessione su una cartella di account, **senza che te lo si chieda**:
 
-1. leggi `CONTO.md` (se non c'è, vai a «Il primo `CONTO.md` di un conto»);
+1. leggi `ACCOUNT.md` (se non c'è, vai a «Il primo `ACCOUNT.md` di un account»);
 2. prendi la data di `aggiornato`;
 3. cerca **da quella data** in cinque fonti (dettaglio in `/account-open`): **Outlook** e
    **Teams** — entrambi dal connettore Microsoft 365, non da Centralino — le
    **trascrizioni** nella cartella `/Plaud` su Dropbox, **WhatsApp** via Centralino
    (nell'account `whatsapp-personale`, perché quel numero è il numero di lavoro; si cerca
-   per **nome di persona**, non di cliente), e la **cartella del conto**;
+   per **nome di persona**, non di cliente), e la **cartella dell'account**;
 4. riferisci **in chat**, in poche righe: cosa è cambiato, cosa è bloccato, chi ha
    la palla, qual è il prossimo passo aperto;
 5. **non scrivere ancora niente.** Una mail è una fonte, non un verdetto: l'aggiornamento
@@ -150,7 +150,7 @@ Ereditate dal repo perché sono regole di mestiere, non di grafica. Qui diventan
 operative:
 
 - **Un'affermazione è un'ipotesi, non un oracolo.** Vale per il committente, un
-  collega, un verbale, un riassunto automatico. Un fatto entra nel `CONTO.md`
+  collega, un verbale, un riassunto automatico. Un fatto entra nel `ACCOUNT.md`
   **solo con fonte e data**. Da «non trovato» si conclude «non confermato, da
   chiedere», mai «falso».
 - **Gerarchia delle fonti**, in quest'ordine: artefatti approvati dal cliente →
@@ -159,7 +159,7 @@ operative:
   dette in fretta) → **trascrizioni** (cartella `/Plaud`
   su Dropbox) → cataloghi pubblici → web. Le **trascrizioni sbagliano i nomi
   propri** con regolarità: prima di scrivere un nome si risale al parlato o alla
-  firma di una mail. E una trascrizione conta per un conto solo se **quel conto è
+  firma di una mail. E una trascrizione conta per un account solo se **quell'account è
   l'oggetto** della riunione: la ricerca per contenuto trova il nome di un cliente
   anche dentro riunioni che parlano d'altro, e quella è una traccia, non un fatto.
   Quella cartella contiene anche riunioni interne e colloqui: non si aprono.
@@ -170,7 +170,7 @@ operative:
   mette il nuovo con la sua fonte. Serve a sapere che su quel punto si era detto
   altro — e a chi lo sta ancora usando in riunione.
 - **La sintesi è dove si rompono i fatti.** L'installato e i numeri di consumo si
-  rileggono dal footprint riga per riga; il `CONTO.md` non è la fonte di sé stesso.
+  rileggono dal footprint riga per riga; il `ACCOUNT.md` non è la fonte di sé stesso.
 - **Le cose da sapere prima si dicono prima.** Un vincolo dichiarato da noi vale
   molto più dello stesso vincolo scoperto dall'IT del cliente un mese dopo.
 - **Dove due fonti sono in conflitto, si riporta il conflitto** e si chiede, invece
@@ -178,20 +178,20 @@ operative:
 
 ## Riservatezza — la regola secca
 
-Le cartelle di conto sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
+Le cartelle di account sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
 fail-closed: ignora tutto e riammette i soli documenti della Factory). Quindi:
 
-- dentro un `CONTO.md` si scrivono **nomi di persone, ruoli, identificativi,
+- dentro un `ACCOUNT.md` si scrivono **nomi di persone, ruoli, identificativi,
   numeri di contratto e di consumo**: è il suo scopo;
 - **niente di tutto questo si copia in un file tracciato** — non negli `HANDOVER`,
-  non nel `README`, non in una spec, non in questo file. Un `CONTO.md` non si cita
+  non nel `README`, non in una spec, non in questo file. Un `ACCOUNT.md` non si cita
   per estratto in un documento tracciato: si cita per rimando;
 - non si aggiunge **mai** una riga `!` a `docs/.gitignore` per un documento di
   cliente. Il gate `pnpm audit:docs` controlla entrambe le direzioni;
-- non si committa nulla da `docs/<Conto>/`, nemmeno un markdown che «è solo una
+- non si committa nulla da `docs/<Account>/`, nemmeno un markdown che «è solo una
   nota»;
 - e vale anche al contrario: l'account WhatsApp che porta il lavoro **mescola lavoro
-  e vita privata**. Nel registro entra solo ciò che riguarda il conto; il resto non
+  e vita privata**. Nel registro entra solo ciò che riguarda l'account; il resto non
   si cita, non si riassume e non si commenta.
 
 ## Il confine con quello che esiste già
@@ -201,19 +201,19 @@ divergono:
 
 | Dove | Che cos'è | Quando |
 | --- | --- | --- |
-| `docs/<Conto>/CONTO.md` | lo **stato operativo** vivo del conto | sempre, è la base |
+| `docs/<Account>/ACCOUNT.md` | lo **stato operativo** vivo dell'account | sempre, è la base |
 | skill `dossier` | la preparazione di **un incontro**, come pagina gated | quando c'è una data in calendario |
 | `PANEL-*.md` | la revisione di **un deliverable** prima della consegna | prima di un handover |
 | memoria (`MEMORY.md`) | i **fatti durevoli trasversali** — la regola, non il caso | quando impari una regola |
 | `docs/HANDOVER*.md` | lo stato **ingegneristico della Factory** | mai per un caso d'account |
 
-Il dossier **si alimenta** dal `CONTO.md`, non lo sostituisce e non lo duplica.
-Quando da un conto nasce un contenuto, il verso è uno solo:
-`CONTO.md` → `EXPERIENCE-BRIEF.md` → skill `/experience-design`.
+Il dossier **si alimenta** dal `ACCOUNT.md`, non lo sostituisce e non lo duplica.
+Quando da un account nasce un contenuto, il verso è uno solo:
+`ACCOUNT.md` → `EXPERIENCE-BRIEF.md` → skill `/experience-design`.
 
-## Il primo `CONTO.md` di un conto
+## Il primo `ACCOUNT.md` di un account
 
-Non si creano in blocco: nasce alla prima sessione su quel conto. Si costruisce
+Non si creano in blocco: nasce alla prima sessione su quell'account. Si costruisce
 da ciò che c'è — materiale nella cartella, thread di posta, memoria — **si dichiara
 la fonte di ogni riga**, e si fa approvare prima di salvarlo. Quello che non si sa
 si scrive `da chiedere`, non si inventa e non si lascia vuoto.
@@ -221,7 +221,7 @@ si scrive `da chiedere`, non si inventa e non si lascia vuoto.
 ## Il template
 
 ```markdown
-# <Conto> — conto
+# <Account> — account
 <identificativi: ECC ID, ragione sociale se serve> · aggiornato <gg mmm aaaa>
 
 ## Installato
@@ -252,7 +252,7 @@ Note sul template:
 
 - **Un file per cliente, i casi come sezioni.** Un caso esce in un file suo
   (`CASO-<slug>.md`) soltanto quando la sua sezione supera ~120 righe, e nel
-  `CONTO.md` resta la riga di rimando. Prima è cerimonia che si paga subito e
+  `ACCOUNT.md` resta la riga di rimando. Prima è cerimonia che si paga subito e
   serve dopo. È la stessa logica con cui `HANDOVER.md` si è spezzato: quando ha
   toccato il tetto, non prima.
 - **Ogni riga di log nata da una mail porta l'identificativo del thread**, non solo

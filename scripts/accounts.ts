@@ -1,27 +1,27 @@
 /**
- * accounts — i conti in una schermata: cosa scade, cosa è fermo, cosa non è coperto,
+ * accounts — gli account in una schermata: cosa scade, cosa è fermo, cosa non è coperto,
  * e quanto di tutto questo conta per il piano.
  *
  * PERCHÉ ESISTE
- * I `CONTO.md` risolvono «dove eravamo rimasti su questo conto». Non risolvono «su quale
- * dei conti si è fermato qualcosa», e soprattutto non sanno due cose che nessun registro
+ * Gli `ACCOUNT.md` risolvono «dove eravamo rimasti su questo account». Non risolvono «su
+ * quale degli account si è fermato qualcosa», e soprattutto non sanno due cose che nessun registro
  * può sapere da sé: quali account del **book** non hanno nemmeno una cartella, e quali
  * scadenze contano davvero per il piano. Quelle due stanno nel **Radar**
  * (`docs/Adobe/Radar/`), alimentato a mano da PanoAI, e questo script le mette insieme.
  *
  * LA DIVISIONE DEL LAVORO (la ragione per cui non c'è un doppione)
- *   Radar    → i NUMERI e la STRUTTURA: book, ARR, rinnovi, opportunità, prodotti
+ * Radar      → i NUMERI e la STRUTTURA: book, ARR, rinnovi, opportunità, prodotti
  *              eleggibili per il piano. Fonte di verità, aggiornata da PanoAI.
- *   CONTO.md → la STORIA: dove siamo, chi ha la palla, i blocchi, i fatti detti in
+ * ACCOUNT.md → la STORIA: dove siamo, chi ha la palla, i blocchi, i fatti detti in
  *              riunione. Niente di questo è nel Radar, e nessun PanoAI lo sa.
  * Due copie a mano degli stessi numeri divergono sempre: il registro non li ricopia.
  *
  * CHE COSA STAMPA
  *   · SCADUTI    — un passo del registro con una data «entro» già passata
  *   · RINNOVI    — dal Radar, entro N giorni, con la marca «conta per il piano» o no
- *   · FERMI      — conti con il registro vecchio di più di tre settimane
+ *   · FERMI      — account con il registro vecchio di più di tre settimane
  *   · COPERTURA  — account del book senza registro (e cartelle fuori dal book)
- *   · tutti i conti, con l'ARR dal book dove l'abbinamento è certo
+ *   · tutti gli account, con l'ARR dal book dove l'abbinamento è certo
  *
  * CHE COSA NON FA
  * Non legge la posta e non giudica il contenuto. E **non indovina gli abbinamenti**: i nomi
@@ -48,8 +48,8 @@ const GIORNI_FERMO = 21;
 const GIORNI_RINNOVO = 120;
 const GIORNI_SNAPSHOT_VECCHIO = 45;
 
-/* I documenti della Factory stanno in piano in docs/; le cartelle sono i conti, meno i
-   depositi di materiale. `Adobe` (senza «Material») È un conto: ci sta il lavoro non
+/* I documenti della Factory stanno in piano in docs/; le cartelle sono gli account, meno i
+   depositi di materiale. `Adobe` (senza «Material») È un account: ci sta il lavoro non
    legato a un cliente, e va nella vista d'insieme come tutti gli altri. */
 const DEPOSITI = new Set(['superpowers', 'Adobe Material', 'Factory', 'Claude']);
 
@@ -83,7 +83,7 @@ const importo = (s: string): number => {
   return u === 'M' ? v * 1e6 : u === 'K' ? v * 1e3 : v;
 };
 
-/* ── i registri di conto ──────────────────────────────────────────────────────── */
+/* ── i registri di account ──────────────────────────────────────────────────────── */
 interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date }
 interface Conto { cliente: string; aggiornato?: Date; senzaRegistro?: boolean; casi: Caso[]; illeggibile?: string }
 
@@ -93,7 +93,7 @@ for (const cliente of readdirSync(DOCS).sort()) {
   if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
   if (cliente.startsWith('.') || DEPOSITI.has(cliente)) continue;
 
-  const registro = join(dir, 'CONTO.md');
+  const registro = join(dir, 'ACCOUNT.md');
   if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [] }); continue; }
 
   const righe = readFileSync(registro, 'utf8').split('\n');
@@ -207,7 +207,7 @@ if (radar.presente) {
    Dichiarato in `Radar/alias_cartelle.md` (`nome nel book = cartella`), perché i nomi
    non si possono indovinare: `Telecom Italia` è `TIM`. In un posto solo, e nel Radar,
    perché è una proprietà della mappatura fra i due registri, non della storia di un
-   conto. Chi non è dichiarato si abbina solo per nome identico, e se non si abbina
+   account. Chi non è dichiarato si abbina solo per nome identico, e se non si abbina
    viene ELENCATO, non accoppiato a caso. */
 const alias = new Map<string, string>();
 const fileAlias = join(RADAR, 'alias_cartelle.md');
@@ -238,7 +238,7 @@ const rinnoviVicini = radar.rinnovi
   .filter((r) => giorni(r.quando) > -GIORNI_RINNOVO && giorni(r.quando) <= 0)
   .sort((a, b) => +a.quando - +b.quando);
 
-console.log(`\naccounts · ${conRegistro.length} conti con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
+console.log(`\naccounts · ${conRegistro.length} account con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
 if (radar.presente) {
   const eta = radar.snapshot ? giorni(radar.snapshot) : undefined;
   console.log(`Radar · book di ${radar.book.length} account · snapshot di ${eta === undefined ? 'data ignota' : `${eta} gg`}` +
@@ -297,7 +297,7 @@ if (fuoriBook.length) {
 }
 
 if (!SOLO_FERMI) {
-  console.log('\nTutti i conti:');
+  console.log('\nTutti gli account:');
   for (const c of conRegistro) {
     const eta = c.aggiornato ? `${giorni(c.aggiornato)} gg` : '?';
     const righe = radar.book.filter((x) => contoDi(x.account) === c);
