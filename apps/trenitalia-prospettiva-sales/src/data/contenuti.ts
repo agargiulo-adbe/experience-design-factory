@@ -46,9 +46,9 @@ export interface Stat {
 
 /* ── Copertina e firma: le righe che vivono in entrambi i percorsi ───────── */
 export const COVER = {
-  tag: 'Quattro punti in cui una vendita si perde prima di diventare un viaggio.',
+  tag: 'Quattro punti in cui una vendita si perde prima che qualcuno salga sul treno.',
   /** La riga della slide-firma, identica nei due percorsi. */
-  firma: 'Il passo dopo: un tavolo di lavoro sulle domande aperte.',
+  firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
 };
 
 /* ── Le teste di slide che i due percorsi condividono ─────────────────────
@@ -59,7 +59,7 @@ export const COVER = {
 export const TESTE = {
   contesto: {
     titolo: 'Tre cose che capitano nello stesso anno',
-    lead: 'Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto. Non è una brutta notizia: è il motivo per cui conviene guardarla adesso.',
+    lead: 'Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto. Vale la pena guardarla adesso, mentre il piano si sta scrivendo.',
     leadBreve: 'Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
   },
   mappa: {
@@ -86,7 +86,7 @@ export const APERTURA = {
     '«Contribuiamo a far conoscere agli italiani e soprattutto ai visitatori stranieri quel <strong>96% del territorio italiano non ancora esplorato</strong>.»',
   /** Come lo legge lui, e con che leva. */
   lettura:
-    'E, lo stesso giorno, sulla leva: «investiamo sull’intermodalità, arricchendo il nostro pacchetto con un’offerta capillare grazie anche alle connessioni di Busitalia».',
+    'E, lo stesso giorno, sulla leva: «investiamo sull’intermodalità, quindi arricchendo il nostro pacchetto con un’offerta capillare grazie anche alle connessioni di Busitalia».',
   letturaBreve:
     'E la leva che avete indicato è l’intermodalità, «grazie anche alle connessioni di Busitalia».',
 };
@@ -100,9 +100,9 @@ export const CONTESTO: Card[] = [
   {
     k: 'Il mercato',
     t: 'Da due operatori a tre, e il terzo è autorizzato',
-    b: 'Sull’alta velocità italiana oggi siete in due. SNCF ha il via libera dell’Antitrust da marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato italiano dell’alta velocità.',
-    bBreve: 'Sull’alta velocità siete in due. SNCF ha il via libera da marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato.',
-    fonti: ['sncf'],
+    b: 'Sull’alta velocità italiana oggi siete in due. SNCF ha il via libera dell’Antitrust dal 7 marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato entro il 2030.',
+    bBreve: 'Sull’alta velocità siete in due. SNCF ha il via libera dal 7 marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato entro il 2030.',
+    fonti: ['sncfVialibera', 'sncf'],
   },
   {
     k: 'Il prezzo',
@@ -135,10 +135,10 @@ export const CONTESTO: Card[] = [
    molto più che farselo dire da loro. */
 export const DOMANDA = {
   titolo: 'Il prezzo lavora già al massimo,<br />e verso l’alto il listino è fermo.<br />Dove si perdono le vendite che il prezzo non recupera?',
-  sub: 'Non è una domanda retorica: ha quattro risposte, e stanno in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  sub: 'Ha quattro risposte, e stanno in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   subBreve: 'Ha quattro risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   perimetri:
-    'Due di questi quattro punti non si decidono in questa stanza: il percorso di acquisto sta in Customer Operations, marca e prezzo nel marketing. Lo diciamo noi prima che lo diciate voi — e quello che vi chiediamo alla fine cade per intero dentro il vostro perimetro.',
+    'Due di questi quattro punti non si decidono in questa stanza: dalla riorganizzazione commerciale del settembre 2025 il percorso di acquisto sta in Customer Operations, e marca e prezzo nel marketing. Lo mettiamo per iscritto perché non ve lo dobbiate chiedere, e quello che vi chiediamo alla fine cade per intero dentro il vostro perimetro.',
 };
 
 export interface Punto { n: string; dove: string; t: string; b: string; bBreve: string }
@@ -177,10 +177,10 @@ export const PUNTI: Punto[] = [
    NIENTE conteggio animato su questi numeri: mentre contava, la slide diceva
    «0 su 8 risposte nominano Trenitalia», l'esatto contrario del fatto. */
 export const REFERTO: Stat[] = [
-  { v: '7', su: 'su 8', l: 'trenitalia.com citato come fonte, su ChatGPT', s: 'va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
-  { v: '2', su: 'su 8', l: 'trenitalia.com citato come fonte, su Google', s: 'la risposta si costruisce su rivenditori e aggregatori: Trainline, Rome2Rio, Omio — che vendono comunque i vostri biglietti' },
-  { v: '0', su: 'su 8', l: 'errori sul marchio, su ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
-  { v: '2', su: 'su 8', l: 'errori sul marchio, su Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
+  { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
+  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti: la risposta si costruisce su rivenditori e aggregatori — Trainline, Rome2Rio, Omio — che vendono comunque i vostri biglietti' },
+  { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
+  { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
 ];
 
 export const KPI: Card[] = [
@@ -211,8 +211,8 @@ export const GIA: Card[] = [
   },
   {
     k: 'Aria',
-    t: 'Air-Rail dal 2023, un laboratorio dal 2026',
-    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Dal 9 marzo 2026 c’è anche un laboratorio comune sull’intelligenza artificiale per l’intermodalità, firmato dai due Amministratori Delegati.',
+    t: 'Air-Rail dal 2023, e un laboratorio comune',
+    b: 'Il percorso sul biglietto integrato con ITA Airways è partito nel 2023, e lo dice il comunicato del 9 marzo 2026: quel giorno un memorandum firmato dai due Amministratori Delegati istituisce un laboratorio comune sull’intelligenza artificiale per l’intermodalità.',
     fonti: ['itaAirways'],
   },
 ];
@@ -227,7 +227,7 @@ export const PRIMA: Card[] = [
   {
     k: 'Dove sta il valore',
     t: 'Arrivare prima della scelta del vettore',
-    b: 'Quando la decisione è «come arrivo», la partita è già giocata sul prezzo. Prima, si gioca sul viaggio.',
+    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo dove andare, no.',
   },
   {
     k: 'La Cina, e il resto dell’Asia',
@@ -244,7 +244,7 @@ export const PRIMA: Card[] = [
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
   { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
-  { v: '70.000', l: 'punti vendita nella rete commerciale', s: 'ricevitorie, bar, tabaccherie ed edicole oltre alle biglietterie: dato del 2014, da aggiornare insieme' },
+  { v: '70.000', l: 'punti vendita fuori dalle biglietterie', s: 'tabaccherie, bar, edicole, ricevitorie e self service sul Regionale: dato del 2014, da aggiornare insieme' },
 ];
 
 export const UNPOSTO: Card[] = [
@@ -261,7 +261,7 @@ export const UNPOSTO: Card[] = [
   {
     k: 'Le persone',
     t: 'Le stesse, con meno passaggi a mano',
-    b: 'La stessa squadra, più versioni in circolo nella stessa settimana. Nessun taglio: è il numero di versioni che cambia.',
+    b: 'Le persone restano le stesse: cambia quante versioni riescono a far uscire in una settimana.',
   },
 ];
 
@@ -274,10 +274,10 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita della rete commerciale — ricevitorie, bar, tabaccherie, edicole — da un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie — tabaccherie, bar, edicole, ricevitorie — che vendono il Regionale, da un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
   dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
   domanda:
-    'PICO, la piattaforma con cui le agenzie vi vendono, è del 2011 e ha preso il posto di Sipax. Ci risulta che la stiate rifacendo: se è così, finché il capitolato è aperto la misura è una riga di requisiti; dopo è un progetto a sé. È una domanda, non un’affermazione.',
+    'PICO, la piattaforma con cui le agenzie vi vendono, nasce nel 2011 al posto di Sipax, e le agenzie ci sono migrate entro la fine del 2014. Ci risulta che la stiate rifacendo: se è così, finché il capitolato è aperto la misura è una riga di requisiti; dopo è un progetto a sé. È una domanda, non un’affermazione.',
 };
 
 export const SAPERE: Card[] = [
@@ -308,13 +308,13 @@ export const ASK = {
   /** Che cosa serve davvero: «i vostri dati» non è un perimetro, e chi tiene la
    *  piattaforma commerciale lo chiede al primo giro. */
   servono:
-    'Che cosa serve: un estratto delle vendite per agenzia e per prodotto, da chi tiene la piattaforma commerciale, nel formato che ha già. Se estrarlo costa più di mezza giornata, guardiamo quello che c’è.',
+    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, su un periodo che scegliete voi, da chi tiene la piattaforma commerciale e nel formato che ha già — sotto l’accordo di riservatezza, come qualunque altro dato che ci passate. Se estrarlo costa più di mezza giornata, guardiamo quello che c’è.',
 };
 
 export const DOMANDE_APERTE = [
-  'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
   'Quanta parte delle vendite passa dai vostri canali e quanta dagli intermediari, e quale dei due volete far crescere?',
-  'Le biglietterie e il personale a bordo come entrano in questa idea di viaggio unico?',
+  'Quale dato esiste oggi per rete e per agenzia, e chi lo possiede?',
+  'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
   'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
 ];
 

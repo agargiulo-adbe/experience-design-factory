@@ -104,6 +104,28 @@ export const SOURCES = {
       'Conferenza stampa a InnoTrans, verbatim del vertice di Gruppo: «non ci sarà alcun aumento per il prezzo dei biglietti», in risposta ai rincari energetici. È una dichiarazione del vertice, non una riga di piano — il piano non è ancora uscito. Stesso fatto, in altre parole, su lamescolanza.com del 22 settembre 2026.',
   },
 
+  sncfVialibera: {
+    url: 'https://www.quotidianopiemontese.it/2026/03/07/inuovi-concorrenti-treni-alta-velocita-regionali/',
+    label: 'stampa, 7 marzo 2026',
+    data: '7 marzo 2026',
+    cosaDice:
+      'Il via libera dell\'Antitrust a SNCF sull\'alta velocità italiana è del 7 marzo 2026. Il Foglio del 4 marzo è di tre giorni PRIMA: cita l\'istruttoria, il debutto slittato e l\'obiettivo del 15%, non l\'autorizzazione. Due fatti, due date, due fonti.',
+  },
+  pico: {
+    url: 'https://www.ttgitalia.com/agenzie-viaggi/65585-nasce-pico-il-nuovo-sistema-vendite-di-trenitalia-XWTG69275',
+    label: 'TTG Italia, 1 marzo 2011',
+    data: '1 marzo 2011',
+    cosaDice:
+      'Nasce PICO, la piattaforma che unifica i sistemi di vendita precedenti di Trenitalia; avvio a fasi nel 2011. La migrazione delle agenzie da Sipax si completa entro la fine del 2014 (TTG Italia, 28 ottobre 2014, stesso sito). ⚠️ Nessuna fonte pubblica trovata sul rifacimento in corso: in slide resta una domanda.',
+  },
+  riorgCommerciale: {
+    url: 'https://www.fitcisl.org/documenti/trenitalia-settore-commerciale/',
+    label: 'documenti sindacali, 30 marzo 2026',
+    data: '30 marzo 2026',
+    cosaDice:
+      'Riorganizzazione del settore commerciale di Trenitalia: la Direzione Customer Operations, istituita a settembre 2025, tiene vendita diretta, assistenza e post-vendita, con le Customer Room. È la fonte di «il percorso di acquisto non è della Direzione Sales», che altrimenti è un\'affermazione sull\'organigramma del cliente detta al cliente senza prova.',
+  },
+
   /* ── L'intermodale che è già partito ──────────────────────────────────── */
   busitalia: {
     url: 'https://www.fsnews.it/it/focus-on/servizi/2025/10/9/busitalia-trenitalia-ttg-rimini-2025.html',
@@ -140,7 +162,7 @@ export const SOURCES = {
     label: 'comunicato Sisal, novembre 2014',
     data: 'novembre 2014',
     cosaDice:
-      'Con l\'ingresso delle ricevitorie Sisal la rete di terzi che vende biglietti e abbonamenti REGIONALI supera i 70.000 punti (tabaccherie, bar, edicole, ricevitorie, self service). È un numero del 2014 e riguarda il Regionale: non è il numero delle agenzie di viaggio, e non è il numero della piattaforma.',
+      'Verbatim: le ricevitorie Sisal «si aggiungeranno all\'attuale rete commerciale di Trenitalia Regionale, portando a oltre 70mila i punti vendita (tabaccherie, bar, edicole, ricevitorie e self service) integrativi e alternativi alle tradizionali biglietterie di stazione». Quindi: oltre 70.000 è il totale dei punti vendita FUORI dalle biglietterie, sul Regionale, ed è un dato del 2014. Non è il numero delle agenzie di viaggio e non è il numero della piattaforma.',
   },
 
   /* ── La misura che abbiamo fatto noi: si nomina, non si linka ─────────── */
