@@ -36,6 +36,35 @@ materiale Adobe — attenzione a non confonderla con `docs/Adobe/`), `docs/Facto
 `docs/Claude/`, `docs/superpowers/`. `/account-open` non le apre e `/accounts` non le
 elenca.
 
+## Il Radar e i registri: chi possiede che cosa
+
+Sotto `docs/Adobe/Radar/` vive il **Radar Opportunità**, alimentato a mano da PanoAI
+(mensile e trimestrale). Si sovrappone ai registri su una materia sola, e la divisione va
+rispettata, se no nascono due copie degli stessi numeri — che divergono **sempre**.
+
+| | Possiede | Esempi |
+| --- | --- | --- |
+| **Radar** | i **numeri** e la **struttura** | book dei 25 account, ARR, ECC ID e IMS Org, team Adobe, prodotti con date di contratto, rinnovi, opportunità aperte, salute, e i **prodotti eleggibili** per il piano (Goal Sheet) |
+| **`CONTO.md`** | la **storia** | dove siamo, chi ha la palla, i blocchi, i fatti detti in riunione, i vincoli e il vocabolario del cliente |
+
+Quindi: **il registro non ricopia** ARR, date di rinnovo, identificativi e nomi del team.
+Li citerebbe vecchi. Se un numero del Radar è sbagliato si corregge **nel Radar**.
+
+I file del Radar:
+- `Mappa_Account/Anagrafica_account.md` — il book, trimestrale
+- `Mappa_Account/Panorama_AAAAMMGG.md` — rinnovi, opportunità, rischi; mensile
+- `Mappa_Account/Goal_Sheet_FY*.md` — il piano: quali prodotti **contano** per M1/M2
+- `Mappa_Account/_PROMPT_PanoAI.md` — i prompt per rinfrescarlo (~10 minuti)
+- `Registro_opportunita.md` — backlog trasversale. **La colonna «Decisione Antonio» non si
+  tocca mai**: è dove una persona scrive SÌ / NO / DOPO
+- `alias_cartelle.md` — con che nome un conto sta nel book (`Telecom Italia` è `TIM`)
+- `Sintesi_Task_storico/` — **storia, non si continua.** Era una scansione a mano dei task
+  da email, si è fermata dopo due giri: faceva lo stesso mestiere del `CONTO.md`, e due
+  posti per «cosa devo a questo cliente» divergono. Quel lavoro lo fa ora `/accounts`.
+
+**Lo snapshot invecchia.** Oltre un mese e mezzo i numeri si citano come datati, mai come
+correnti: `pnpm accounts` stampa l'età in testa.
+
 ## Che cos'è un `CONTO.md`
 
 Il registro operativo di un conto: un file per cartella, `docs/<Conto>/CONTO.md`.
@@ -173,7 +202,8 @@ si scrive `da chiedere`, non si inventa e non si lascia vuoto.
 <identificativi: ECC ID, ragione sociale se serve> · aggiornato <gg mmm aaaa>
 
 ## Installato
-<prodotti> · fonte: <footprint/file, data>
+Numeri e struttura → Radar: `Adobe/Radar/Mappa_Account/Anagrafica_account.md`
+<solo ciò che il Radar non sa, con la sua fonte e data>
 
 ## Chi è chi
 <ruolo, lato cliente o Adobe> · ultimo scambio <data>

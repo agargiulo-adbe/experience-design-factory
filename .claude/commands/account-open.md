@@ -19,9 +19,27 @@ Argomento ricevuto: `$ARGUMENTS`
 conti**: sono depositi di materiale. Non hanno registro e non si aprono con questo comando.
 `docs/Adobe/` invece è un conto a tutti gli effetti.
 
-## 1 — Leggi
-`docs/<Conto>/CONTO.md`. Se non esiste, salta a **Primo registro**.
-Prendi la data del campo `aggiornato`.
+## 1 — Leggi il Radar, poi il registro
+
+**Prima il Radar** (`docs/Adobe/Radar/`), che possiede i numeri e la struttura:
+- `Mappa_Account/Anagrafica_account.md` — la riga di questo conto: ECC ID, IMS Org, ARR,
+  team Adobe (AE, CSM, SC), prodotti con date di contratto, salute, adoption score;
+- `Mappa_Account/Panorama_AAAAMMGG.md` (**il più recente**) — rinnovi, opportunità aperte,
+  rischi di questo conto;
+- `Mappa_Account/Goal_Sheet_FY*.md` — se un rinnovo o un'opportunità è su un prodotto
+  **eleggibile**, conta per il piano; se non lo è, è relazione e va detto così;
+- `alias_cartelle.md` — con che nome questo conto sta nel book (`Telecom Italia` è `TIM`).
+
+Dì **quanto è vecchio** lo snapshot del Radar. Oltre un mese e mezzo, i numeri si citano
+come datati: si rinfrescano coi prompt in `Mappa_Account/_PROMPT_PanoAI.md`.
+
+**Poi** `docs/<Conto>/CONTO.md`, che possiede la storia. Se non esiste, salta a **Primo
+registro**. Prendi la data del campo `aggiornato`.
+
+> **La divisione del lavoro, e perché.** I numeri stanno nel Radar, la storia nel registro.
+> Il registro **non ricopia** ARR, date di rinnovo, nomi del team e identificativi: li
+> citerebbe vecchi, e due copie a mano degli stessi numeri divergono sempre. Se un numero
+> del Radar è sbagliato si corregge **nel Radar**, non nel registro.
 
 ## 2 — Cerca cosa è cambiato, in cinque fonti
 
@@ -78,6 +96,8 @@ Due differenze pratiche rispetto alla posta:
   `WhatsApp <data, chi>`.
 
 ## 3 — Riferisci in chat, in poche righe
+- **il quadro dal Radar**: ARR, prossimo rinnovo con la data, se conta per il piano,
+  opportunità aperte, salute — e l'età dello snapshot;
 - cosa è cambiato dall'ultimo aggiornamento,
 - cosa è bloccato e **da quanto**,
 - chi ha la palla,
