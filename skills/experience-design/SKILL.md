@@ -274,6 +274,25 @@ playback one — fix the asset, not with JavaScript.
   (e.g. "Una relazione che attraversa il tempo", never "ringiovanire il target").
 - **One hero product, used consistently** (e.g. the Whitney Bag for Generazioni) — don't
   drift between products across slides.
+- **Ogni fonte pubblica citata in una slide porta il SUO LINK (BINDING).** Una slide che
+  nomina una fonte senza link chiede di fidarsi; con il link si verifica in dieci secondi —
+  e il documento viene quasi sempre letto da chi non era in sala, che quel controllo lo fa
+  davvero. Vale per le fonti del cliente (comunicati, stampa, pagine ufficiali) **e per i
+  prodotti Adobe citati**: il nome del prodotto rimanda alla sua pagina pubblica su
+  Experience League o alla descrizione di prodotto su helpx. Non vale per quello che è
+  nostro e non è pubblico: una misura fatta da noi, un documento di lavoro, una fonte
+  interna si citano **senza** link e dicendo che cosa sono.
+  - **Un link rotto è peggio di nessun link**: è una fonte che cade proprio mentre qualcuno
+    la controlla. Si verifica che risponda PRIMA di metterlo in slide, e poi lo tiene d'occhio
+    il gate: **`DECK_URL=<origin> pnpm audit:fonti --app <alias>`** — HARD sui link che non
+    rispondono, SOFT sulle righe di fonte senza link (legittime quando rimandano a un
+    documento interno: il gate le elenca, il giudizio resta umano).
+  - Il gate verifica che il link **risponda**, non che sia **quello giusto** per quella frase:
+    una pagina che dà 200 può parlare d'altro. Quel controllo si fa una volta, a mano, quando
+    si cita la fonte.
+  - Stile: sobrio. Una fonte non è una CTA — eredita l'inchiostro del testo che la ospita e si
+    distingue per la sottolineatura, che si accende d'accento al passaggio. Così il contrasto
+    resta quello del testo (e `audit:ink` continua a passare) e il link non ruba l'occhio.
 - **Sources: never cross-attribute a number.** Each statistic carries its own correct,
   readable micro-source (e.g. 75% luxury-spend → Bain/Altagamma; +306% emotional-connection
   LTV → Motista 2018 — NOT Harvard/Bain). Verify before citing.

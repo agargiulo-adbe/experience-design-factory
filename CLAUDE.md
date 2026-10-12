@@ -252,6 +252,26 @@ Prospettiva Trenitalia: copertina di capitolo illeggibile con `audit:deck` a 0 H
   inchiostro **bianco trasparente** su fondo di marchio (`rgba(255,255,255,0.92)`) scende
   sotto soglia — su uno sfondo esplicito l'inchiostro va esplicito e pieno.
 
+### Le fonti pubbliche portano il link, e il link risponde (BINDING, ogni experience)
+Una slide che cita una fonte pubblica **senza link** chiede di fidarsi; con il link si
+verifica in dieci secondi — e un deck viene quasi sempre letto da chi non era in sala, che
+quel controllo lo fa davvero. Vale per le fonti del cliente (comunicati, stampa, pagine
+ufficiali) **e per i prodotti Adobe nominati**, che rimandano alla pagina pubblica su
+Experience League o alla descrizione di prodotto su helpx. **Non** vale per ciò che è nostro
+e non pubblico — una misura fatta da noi, un documento di lavoro, una fonte interna: quelli
+si citano senza link, dicendo che cosa sono.
+- **Un link rotto è peggio di nessun link:** è una fonte che cade proprio mentre qualcuno la
+  controlla. Si verifica che risponda prima di metterlo in slide, e poi lo tiene d'occhio il
+  gate: **`DECK_URL=<origin> pnpm audit:fonti --app <alias>`** — **HARD** sui link che non
+  rispondono (2xx/3xx attesi), **SOFT** sulle righe di fonte prive di link, che sono legittime
+  quando rimandano a un documento interno.
+- Il gate verifica che il link **risponda**, non che sia **quello giusto** per quella frase:
+  una pagina che dà 200 può parlare d'altro. Quello resta un controllo umano, da fare una
+  volta per fonte quando la si cita.
+- **Stile sobrio:** una fonte non è una CTA. Eredita l'inchiostro del testo che la ospita e si
+  distingue per la sottolineatura, che si accende d'accento al passaggio — così il contrasto
+  resta quello del testo e `audit:ink` continua a passare.
+
 ### Umanizzazione: `copy-audit` si LANCIA, non si ricorda (BINDING)
 La rubrica de-AI e la voce al plurale istituzionale sono regole che un `grep` sa controllare,
 e `scripts/copy-audit.ts` le controlla: **`pnpm --silent exec tsx scripts/copy-audit.ts --app
