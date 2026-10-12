@@ -95,6 +95,38 @@ si trovano con `/acc` + TAB. Scartata la variante con la parola `task`
 da «deposita lo stato del conto», e fra sei mesi manderebbe a cercare un comando che non
 esiste.
 
+### Le fonti dell'apertura, e quella che è stata esclusa
+`/account-open` legge **cinque** fonti: Outlook e **Teams** (entrambi dal connettore
+Microsoft 365 — Teams **non** passa da Centralino, che non indicizza né Teams né la casella
+Adobe), le **trascrizioni** nella cartella `/Plaud` su Dropbox (ricerca anche sul contenuto;
+il Plaud MCP è il ripiego quando la sincronizzazione è in ritardo), e la cartella del conto.
+
+**WhatsApp** è la quinta, via Centralino — e qui una prima conclusione era **sbagliata**,
+vale la pena registrare come. La misura diceva: `whatsapp-aziendale` fermo al 2022,
+`whatsapp-app-business` è un'altra attività, `whatsapp-personale` corrente e personale →
+«WhatsApp non porta lavoro», escluso dal default. La misura era giusta, la conclusione no:
+il lavoro sta in **`whatsapp-personale`** perché quel numero, `393489696067`, è il **numero
+di lavoro** — è quello della firma delle mail Adobe. L'etichetta era di Centralino, non del
+contenuto. Verificato cercando i nomi: messaggi correnti di colleghi Adobe e di referenti
+cliente. `whatsapp-aziendale` resta un **archivio storico** fino al 2022, utile per
+ricostruire storie vecchie.
+
+Due regole proprie: si cerca per **nome di persona**, non di cliente (WhatsApp è
+persona-a-persona, e il cliente spesso non viene nominato); e quell'account mescola lavoro
+e vita privata, quindi nel registro entra solo ciò che riguarda il conto — il resto non si
+cita né si riassume. Un messaggio WhatsApp non ha identificativo di thread: nel log si
+scrive `WhatsApp <data, chi>`.
+
+La lezione generalizzabile: **il nome di un account non dice che cosa contiene.** Lì per lì
+avevo preso l'etichetta `personale` come un fatto sul contenuto, invece che come un nome
+dato da uno strumento.
+
+Le trascrizioni hanno due regole proprie, perché non sono una fonte come le altre: stanno
+**sotto la corrispondenza** nella gerarchia e sbagliano i nomi propri; e una **menzione di
+passaggio non è un fatto** — una trascrizione conta per un conto solo se quel conto è
+l'oggetto della riunione. In quella cartella ci sono anche riunioni interne e colloqui, che
+non si aprono.
+
 ### Tre registri come prova del formato
 `Banca Generali` (caso vivo, fatti letti alla fonte), `Enel` (due casi aperti, con la
 distinzione fra un calcolo di un collega e un dato di sistema marcata nel registro) e

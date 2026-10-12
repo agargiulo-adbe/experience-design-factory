@@ -65,8 +65,11 @@ All'inizio di una sessione su una cartella di conto, **senza che te lo si chieda
 
 1. leggi `CONTO.md` (se non c'è, vai a «Il primo `CONTO.md` di un conto»);
 2. prendi la data di `aggiornato`;
-3. cerca nella posta i thread di quel conto **da quella data**, e guarda la
-   cartella per materiale arrivato dopo (footprint, allegati, trascrizioni);
+3. cerca **da quella data** in cinque fonti (dettaglio in `/account-open`): **Outlook** e
+   **Teams** — entrambi dal connettore Microsoft 365, non da Centralino — le
+   **trascrizioni** nella cartella `/Plaud` su Dropbox, **WhatsApp** via Centralino
+   (nell'account `whatsapp-personale`, perché quel numero è il numero di lavoro; si cerca
+   per **nome di persona**, non di cliente), e la **cartella del conto**;
 4. riferisci **in chat**, in poche righe: cosa è cambiato, cosa è bloccato, chi ha
    la palla, qual è il prossimo passo aperto;
 5. **non scrivere ancora niente.** Una mail è una fonte, non un verdetto: l'aggiornamento
@@ -79,7 +82,10 @@ Prima di concludere una sessione in cui è cambiata una delle quattro cose:
 1. riscrivi **Dove siamo**, **Palla a**, **Prossimo passo**;
 2. **aggiungi** i fatti nuovi, ognuno con fonte e data;
 3. **aggiungi** una riga al log — il log è *append-only*: non si riscrive e non si
-   riordina mai, nemmeno per pulizia;
+   riordina mai, nemmeno per pulizia. Ogni riga porta l'**identificativo** di dove
+   sta la cosa: `thread <id>` per una mail, `Teams <data, chi>` per una chat,
+   `WhatsApp <data, chi>`, `/Plaud/<file>.txt` per una trascrizione. Senza, ritrovarla
+   costa cinque minuti;
 4. aggiorna la data di `aggiornato`;
 5. **mostra il diff prima di salvare.**
 
@@ -96,9 +102,15 @@ operative:
   **solo con fonte e data**. Da «non trovato» si conclude «non confermato, da
   chiedere», mai «falso».
 - **Gerarchia delle fonti**, in quest'ordine: artefatti approvati dal cliente →
-  corrispondenza dell'account → trascrizioni → cataloghi pubblici → web. Le
-  **trascrizioni sbagliano i nomi propri** con regolarità: prima di scrivere un
-  nome si risale al parlato o alla firma di una mail.
+  corrispondenza dell'account (**Outlook**; **Teams**, dove vivono molte decisioni
+  operative che non arrivano mai in una mail; e **WhatsApp**, dove vivono le cose
+  dette in fretta) → **trascrizioni** (cartella `/Plaud`
+  su Dropbox) → cataloghi pubblici → web. Le **trascrizioni sbagliano i nomi
+  propri** con regolarità: prima di scrivere un nome si risale al parlato o alla
+  firma di una mail. E una trascrizione conta per un conto solo se **quel conto è
+  l'oggetto** della riunione: la ricerca per contenuto trova il nome di un cliente
+  anche dentro riunioni che parlano d'altro, e quella è una traccia, non un fatto.
+  Quella cartella contiene anche riunioni interne e colloqui: non si aprono.
 - **Le dichiarazioni invecchiano.** Ogni fatto porta la sua data. Un fatto su cui
   si sta per costruire qualcosa, se ha più di qualche mese, si marca `da
   riverificare` invece di ripeterlo come corrente.
@@ -125,7 +137,10 @@ fail-closed: ignora tutto e riammette i soli documenti della Factory). Quindi:
 - non si aggiunge **mai** una riga `!` a `docs/.gitignore` per un documento di
   cliente. Il gate `pnpm audit:docs` controlla entrambe le direzioni;
 - non si committa nulla da `docs/<Conto>/`, nemmeno un markdown che «è solo una
-  nota».
+  nota»;
+- e vale anche al contrario: l'account WhatsApp che porta il lavoro **mescola lavoro
+  e vita privata**. Nel registro entra solo ciò che riguarda il conto; il resto non
+  si cita, non si riassume e non si commenta.
 
 ## Il confine con quello che esiste già
 
@@ -177,7 +192,7 @@ Fatti verificati
 - <fatto superato> · superato il <data> → <fatto nuovo> · <fonte>, <data>
 
 Log (append-only)
-<aaaa-mm-gg>  <cosa è stato fatto> · thread <id>
+<aaaa-mm-gg>  <cosa è stato fatto> · thread <id> | Teams/WhatsApp <data, chi> | /Plaud/<file>.txt
 ```
 
 Note sul template:
