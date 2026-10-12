@@ -144,7 +144,12 @@
    rende la superficie come classe Tailwind, non come data-attribute, quindi il
    selettore insegue la classe. Una slide che DICHIARA scuro ma rende chiara per
    via del backdrop si marca `.tp-on-light`. */
+/* `.ex-card` sta qui perché si porta una superficie CHIARA sua (bianco al 90%)
+   dentro slide scure: senza questa riga eredita gli inchiostri del fondo scuro e
+   scrive bianco su bianco. È la regola dei componenti chiari dentro slide scure,
+   e la classe giusta è quella del motore — `.ex-card`, non `.tp-card`. */
 [data-slide].bg-\[var\(--surface-inverse\)\],
+.ex-card,
 .tp-on-light,
 .tp-card,
 .tp-panel {
@@ -327,15 +332,15 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 /* ── Cover del capitolo ────────────────────────────────────────────────── */
 .ex-ch { width: 100%; max-width: 66rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1.1rem, 2.6vh, 1.8rem); }
 .ex-ch-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-accent); }
-.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-inverse); max-width: 20ch; text-wrap: balance; }
-.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--color-grigio-200); max-width: 56ch; }
+.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-primary); max-width: 20ch; text-wrap: balance; }
+.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--ink-body); max-width: 56ch; }
 .slide-inner .ex-ch p { margin-inline: auto; }
 /* L'agenda del capitolo: i tre blocchi della slide di contenuto, anticipati. Dà alla
    cover una base e un respiro reali (check i), non riempitivo. */
-.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid rgba(255,255,255,0.18); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid var(--line-subtle); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
 .ex-ch-agenda-k { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-note); }
 .ex-ch-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem); }
-.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-inverse); white-space: nowrap; }
+.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
 .ex-ch-agenda-n { width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(var(--color-rosso-rgb), 0.28); color: var(--color-rosso-chiaro); font-size: 0.82rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 /* ── Slide di contenuto: UNA colonna (max 72rem) per tutto, così i blocchi a
@@ -455,10 +460,15 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .tp-domanda-sub { font-size: clamp(1rem, 1.2vw, 1.18rem); line-height: 1.6; color: var(--ink-body); max-width: 58ch; margin-inline: auto; }
 .tp-domanda-sub strong { color: var(--ink-primary); font-weight: 700; }
 /* Su fondo di marchio l'inchiostro è quello che regge sul rosso pieno, non il token
-   che segue la dominante: lo sfondo è esplicito, l'inchiostro pure. */
-[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda,
-[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda-sub strong { color: #ffffff; }
-[data-slide].bg-\[var\(--surface-brand\)\] .tp-domanda-sub { color: rgba(255,255,255,0.92); }
+   che segue la dominante: lo sfondo è esplicito, l'inchiostro pure.
+   ATTENZIONE alla classe: `bg="brand"` sullo Slide rende `bg-[var(--accent-primary)]`,
+   NON `--surface-brand`. Con il selettore sbagliato la regola non si applica e non
+   se ne accorge nessuno — qui il sottotitolo restava grigio, 4,03:1 sul rosso.
+   Bianco PIENO e non al 92%: la trasparenza lo riporta sotto la soglia AA. */
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda,
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda-sub strong,
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda-sub { color: #ffffff; }
+[data-slide].bg-\[var\(--accent-primary\)\] .slide-eyebrow { color: #ffffff; }
 
 /* ── La mappa dei quattro punti ────────────────────────────────────────── */
 .tp-mappa { width: 100%; display: flex; flex-direction: column; gap: 0; }

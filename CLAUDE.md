@@ -233,6 +233,31 @@ silenziose:
   (`a` banda di lettura, `i` uso dello spazio). Quello che deve restare a zero è l'insieme
   **HARD** — e va verificato grepando le colonne, non leggendo il totale.
 
+### `audit:ink` — il contrasto del TESTO, che nessun altro check guarda (BINDING)
+Il check `h` di `audit:deck` misura **bottoni e CTA**: è nato per quelli. Il testo delle
+slide non lo misura nessuno, e in una skin a **dominante ribaltata** è esattamente lì che si
+rompe — un titolo che eredita `--ink-inverse` su una superficie diventata scura esce ardesia
+su ardesia, **passa tutti e undici i check** e in sala non si legge. Successo sulla
+Prospettiva Trenitalia: copertina di capitolo illeggibile con `audit:deck` a 0 HARD.
+- **`DECK_URL=<origin> pnpm audit:ink --app <alias>`** (`--only <rotta>` per una pagina).
+  Non legge il CSS: ritaglia il rettangolo di ogni blocco di testo dallo screenshot e guarda
+  i **pixel** — fondo = colore modale, inchiostro = pixel più lontano dal fondo. Così
+  gradienti, scrim e backdrop sono già dentro la misura. Soglie AA: 4,5:1, e 3:1 sul testo
+  grande (≥24px, o ≥18,66px se grassetto). **Deve uscire PULITO.**
+- **Le tre trappole che ha trovato**, tutte invisibili agli altri gate: un componente con
+  **superficie chiara propria** dentro una slide scura (`.ex-card` ha un fondo bianco al 90%)
+  eredita gli inchiostri del fondo scuro → va elencato nel blocco dei ribaltamenti; un
+  **selettore di superficie sbagliato** (`bg="brand"` rende `bg-[var(--accent-primary)]`, NON
+  `--surface-brand`) fa sì che la regola non si applichi e nessuno se ne accorga; e un
+  inchiostro **bianco trasparente** su fondo di marchio (`rgba(255,255,255,0.92)`) scende
+  sotto soglia — su uno sfondo esplicito l'inchiostro va esplicito e pieno.
+
+### Umanizzazione: `copy-audit` si LANCIA, non si ricorda (BINDING)
+La rubrica de-AI e la voce al plurale istituzionale sono regole che un `grep` sa controllare,
+e `scripts/copy-audit.ts` le controlla: **`pnpm --silent exec tsx scripts/copy-audit.ts --app
+<alias>`** → **0 HARD**. Scriverle rispettandole non basta: finché non gira, dipende da quanto
+bene se le ricorda chi scrive. Il gate trova i segni, non giudica il tono.
+
 ### Audit discipline — hard vs soft; never shrink type to pass
 `audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
 - **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `m` blocchi a bandiera fuori riga · `exp` ogni disclosure ri‑misurata da aperta.
