@@ -101,6 +101,12 @@ Verdetti e JSON grezzi in `docs/Ferrovie/PANEL-VERDICT-2026-10-12-round{1,2}.md`
 | rischio (5 = nessuno) | 2,3 | 2,8 |
 | azionabilità | 2,8 | 3,2 |
 
+Il secondo giro ha prodotto 24 P0: **otto erano già chiusi nell'albero di lavoro** (le personas
+leggono uno snapshot), gli altri sono stati applicati la notte del 13 — fonti che non dicevano
+quella frase (il via libera a SNCF è del 7 marzo, Il Foglio è del 4), PICO con la sua fonte,
+i 70.000 detti come li dice il comunicato, l'ask in un posto solo e un terzo giro di
+umanizzazione sulle dodici formule a specchio. Coda del verdetto round 2 per il dettaglio.
+
 Al primo giro **sei «accetto a condizione» su sei**; al secondo il Direttore Sales passa a
 **«sì»** e restano cinque condizionati. **Quindici fatti refutati**, e i tre che contano di più
 erano invisibili ai gate perché i link rispondevano: la slide d'apertura attribuiva a lui, fra
