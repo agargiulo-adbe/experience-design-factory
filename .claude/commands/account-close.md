@@ -45,6 +45,30 @@ Se la sezione di un caso supera **~120 righe**, proponi di estrarla in
 `docs/<Conto>/CASO-<slug>.md` lasciando nel `CONTO.md` la riga di rimando. **Proponi**, non
 farlo d'iniziativa.
 
-## 5 — Chiudi
+## 5 — Se è emerso un segnale, proponilo al Radar
+
+Il prompt del Radar lo dice da sé: PanoAI **non** copre l'utilizzo rispetto
+all'entitlement, e «quei segnali il radar li prende da email, Plaud e ticket» — che è
+esattamente ciò che l'apertura ha appena letto. Quindi quando una sessione fa emergere un
+segnale nuovo — uno sforamento, un bisogno dichiarato, un prodotto nominato dal cliente,
+un rinnovo a rischio per una ragione che Panorama non sa — **proponi una riga** in
+`docs/Adobe/Radar/Registro_opportunita.md`:
+
+`| ID | Primo segnale | Account | Opportunità | Prodotto | Stato | Ultimo aggiornamento | Fonte | Decisione Antonio |`
+
+Tre regole, e la prima è assoluta:
+- **la colonna «Decisione Antonio» non si tocca mai.** È il posto dove una persona scrive
+  SÌ / NO / DOPO, e il Radar è progettato per rispettarla. Su una riga nuova si lascia
+  **vuota**; su una riga esistente non si riscrive, nemmeno per «aggiornarla»;
+- in `Fonte` va **dove sta la prova**: `thread <id>`, `Teams/WhatsApp <data, chi>`,
+  `/Plaud/<file>.txt`. Un segnale senza fonte non si scrive;
+- **proponi, non scrivere d'iniziativa**: mostra la riga e aspetta. Una riga in quel
+  registro diventa una conversazione commerciale, e non la si apre per conto di qualcuno.
+
+Se il prodotto **non è eleggibile** per il piano (Goal Sheet), scrivilo nella riga: è
+un'occasione di relazione o uno spunto per un collega, non attainment. Confonderli porta a
+lavorare su cose che non contano.
+
+## 6 — Chiudi
 Stampa il percorso del file e le righe aggiunte. Se hai toccato file **fuori** da `docs/`,
 dillo e lascia decidere: da qui non si committa.

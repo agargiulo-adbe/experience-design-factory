@@ -1,23 +1,33 @@
 /**
- * accounts — una riga per conto: dove siamo, chi ha la palla, da quanto è fermo.
+ * accounts — i conti in una schermata: cosa scade, cosa è fermo, cosa non è coperto,
+ * e quanto di tutto questo conta per il piano.
  *
  * PERCHÉ ESISTE
- * I `CONTO.md` risolvono «dove eravamo rimasti su questo conto». Non risolvono
- * «su quale dei sedici conti si è fermato qualcosa»: per saperlo bisognerebbe
- * aprirli tutti, e nessuno lo fa. Con una quindicina di conti la cosa che manca non è il
- * dettaglio, è la vista d'insieme — e soprattutto l'avviso sui conti che nessuno
- * tocca da settimane, che sono quelli che fanno danno.
+ * I `CONTO.md` risolvono «dove eravamo rimasti su questo conto». Non risolvono «su quale
+ * dei conti si è fermato qualcosa», e soprattutto non sanno due cose che nessun registro
+ * può sapere da sé: quali account del **book** non hanno nemmeno una cartella, e quali
+ * scadenze contano davvero per il piano. Quelle due stanno nel **Radar**
+ * (`docs/Adobe/Radar/`), alimentato a mano da PanoAI, e questo script le mette insieme.
+ *
+ * LA DIVISIONE DEL LAVORO (la ragione per cui non c'è un doppione)
+ *   Radar    → i NUMERI e la STRUTTURA: book, ARR, rinnovi, opportunità, prodotti
+ *              eleggibili per il piano. Fonte di verità, aggiornata da PanoAI.
+ *   CONTO.md → la STORIA: dove siamo, chi ha la palla, i blocchi, i fatti detti in
+ *              riunione. Niente di questo è nel Radar, e nessun PanoAI lo sa.
+ * Due copie a mano degli stessi numeri divergono sempre: il registro non li ricopia.
  *
  * CHE COSA STAMPA
- *   · i conti con un registro, ordinati per quanto tempo è passato;
- *   · i passi SCADUTI (c'è una data «entro» ed è passata);
- *   · i conti FERMI da più di tre settimane;
- *   · le cartelle SENZA registro, perché il primo `/account-open` lo crea.
+ *   · SCADUTI    — un passo del registro con una data «entro» già passata
+ *   · RINNOVI    — dal Radar, entro N giorni, con la marca «conta per il piano» o no
+ *   · FERMI      — conti con il registro vecchio di più di tre settimane
+ *   · COPERTURA  — account del book senza registro (e cartelle fuori dal book)
+ *   · tutti i conti, con l'ARR dal book dove l'abbinamento è certo
  *
  * CHE COSA NON FA
- * Non legge la posta e non giudica il contenuto: legge i registri. Se un registro
- * è vecchio, lo dice; se è sbagliato, non può saperlo — quello lo scopre
- * l'apertura di `/account-open`, che confronta con i thread.
+ * Non legge la posta e non giudica il contenuto. E **non indovina gli abbinamenti**: i nomi
+ * del book non coincidono con quelli delle cartelle (`Telecom Italia`/`TIM`,
+ * `FS Technology`/`Ferrovie`), quindi stanno dichiarati in `Radar/alias_cartelle.md`;
+ * quello che non si abbina viene **elencato**, non accoppiato a caso.
  *
  *   pnpm accounts            tutto
  *   pnpm accounts --fermi    solo ciò che chiede attenzione
@@ -26,10 +36,17 @@ import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
+// `pnpm accounts | head` chiude la pipe a metà: senza questo, Node butta uno stack trace
+// EPIPE addosso a chi voleva solo le prime righe.
+process.stdout.on('error', (e: NodeJS.ErrnoException) => { if (e.code !== 'EPIPE') throw e; });
+
 const ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim();
 const DOCS = join(ROOT, 'docs');
+const RADAR = join(DOCS, 'Adobe/Radar');
 const SOLO_FERMI = process.argv.includes('--fermi');
 const GIORNI_FERMO = 21;
+const GIORNI_RINNOVO = 120;
+const GIORNI_SNAPSHOT_VECCHIO = 45;
 
 /* I documenti della Factory stanno in piano in docs/; le cartelle sono i conti, meno i
    depositi di materiale. `Adobe` (senza «Material») È un conto: ci sta il lavoro non
@@ -52,30 +69,39 @@ const data = (s: string): Date | undefined => {
 
 const oggi = new Date();
 const giorni = (d: Date): number => Math.floor((+oggi - +d) / 86_400_000);
+const taglia = (s: string, n: number): string => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const norm = (s: string): string =>
+  s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const soldi = (n: number): string =>
+  n >= 1e6 ? `$${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `$${Math.round(n / 1e3)}K` : `$${Math.round(n)}`;
+/** «$11.2M», «$267.4K» → numero */
+const importo = (s: string): number => {
+  const m = s.match(/\$?\s*([\d.,]+)\s*([KM])?/i);
+  if (!m) return 0;
+  const v = parseFloat(m[1].replace(/,/g, ''));
+  const u = m[2]?.toUpperCase();
+  return u === 'M' ? v * 1e6 : u === 'K' ? v * 1e3 : v;
+};
 
+/* ── i registri di conto ──────────────────────────────────────────────────────── */
 interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date }
 interface Conto { cliente: string; aggiornato?: Date; senzaRegistro?: boolean; casi: Caso[]; illeggibile?: string }
 
 const conti: Conto[] = [];
-
 for (const cliente of readdirSync(DOCS).sort()) {
   const dir = join(DOCS, cliente);
   if (!existsSync(dir) || !statSync(dir).isDirectory()) continue;
   if (cliente.startsWith('.') || DEPOSITI.has(cliente)) continue;
 
   const registro = join(dir, 'CONTO.md');
-  if (!existsSync(registro)) {
-    conti.push({ cliente, senzaRegistro: true, casi: [] });
-    continue;
-  }
+  if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [] }); continue; }
 
   const righe = readFileSync(registro, 'utf8').split('\n');
   const conto: Conto = { cliente, casi: [] };
 
-  // la data di aggiornamento sta nell'intestazione, nelle prime righe
-  for (const r of righe.slice(0, 6)) {
-    const m = r.match(/aggiornato\s+(.+?)\s*$/i);
-    if (m) { conto.aggiornato = data(m[1]); break; }
+  for (const r of righe.slice(0, 12)) {
+    const a = r.match(/aggiornato\s+(.+?)\s*$/i);
+    if (a && !conto.aggiornato) { conto.aggiornato = data(a[1]); break; }
   }
   if (!conto.aggiornato) conto.illeggibile = 'manca il campo «aggiornato» nell\'intestazione';
 
@@ -90,8 +116,6 @@ for (const cliente of readdirSync(DOCS).sort()) {
     if (chiuso) { corrente.chiuso = data(chiuso[1]); continue; }
     const palla = r.match(/^Palla a\s*[—-]\s*(.+?)\s*$/i);
     if (palla) {
-      // «<chi> · dal <data>»: la data è il numero che conta davvero — da quanto
-      // è su quella persona — e nel nome non ci deve finire.
       const [chi, da] = palla[1].split(/\s*·\s*dal\s+/i);
       corrente.palla = chi.trim();
       if (da) corrente.dal = data(da);
@@ -107,24 +131,146 @@ for (const cliente of readdirSync(DOCS).sort()) {
   conti.push(conto);
 }
 
-/* ordine: il più fermo in testa; chi non ha registro va in fondo, a parte */
+/* ── il Radar ─────────────────────────────────────────────────────────────────── */
+interface Rinnovo { account: string; prodotto: string; quando: Date; rbob: number; rischio: string; eleggibile?: boolean }
+const radar = {
+  presente: existsSync(RADAR),
+  snapshot: undefined as Date | undefined,
+  book: [] as { account: string; arr: number }[],
+  rinnovi: [] as Rinnovo[],
+  eleggibili: [] as string[],
+  fineQuarter: undefined as Date | undefined,
+  avvisi: [] as string[],
+};
+
+const piuRecente = (dir: string, re: RegExp): string | undefined => {
+  if (!existsSync(dir)) return undefined;
+  const f = readdirSync(dir).filter((x) => re.test(x)).sort();
+  return f.length ? join(dir, f[f.length - 1]) : undefined;
+};
+
+if (radar.presente) {
+  const MAPPA = join(RADAR, 'Mappa_Account');
+
+  // Anagrafica: la tabella P0 è il book, e l'intestazione porta la data di estrazione
+  const anag = join(MAPPA, 'Anagrafica_account.md');
+  if (existsSync(anag)) {
+    const s = readFileSync(anag, 'utf8');
+    const testa = s.slice(0, 800);
+    radar.snapshot = data(testa.match(/aggiornati al\s+(\S+)/)?.[1] ?? testa.match(/PanoAI il\s+(\S+)/)?.[1] ?? '');
+    const i0 = s.indexOf('## Elenco account');
+    const i1 = s.indexOf('## P1');
+    if (i0 >= 0) {
+      for (const r of s.slice(i0, i1 > i0 ? i1 : undefined).split('\n')) {
+        const c = r.split('|').map((x) => x.trim());
+        if (c.length < 4 || !c[1] || c[1] === 'Account' || /^-+$/.test(c[1])) continue;
+        radar.book.push({ account: c[1], arr: importo(c[2]) });
+      }
+    }
+    if (!radar.book.length) radar.avvisi.push('Anagrafica_account.md c\'è ma la tabella del book non si legge');
+  } else radar.avvisi.push('manca Mappa_Account/Anagrafica_account.md: niente book, niente copertura');
+
+  // Goal Sheet: quali prodotti contano per il piano, e quando chiude il quarter
+  const goal = piuRecente(MAPPA, /^Goal_Sheet_FY\d+\.md$/);
+  if (goal) {
+    const s = readFileSync(goal, 'utf8');
+    const i0 = s.indexOf('## Prodotti eleggibili');
+    const i1 = s.indexOf('## Prodotti NON');
+    if (i0 >= 0 && i1 > i0) {
+      const corpo = s.slice(s.indexOf('\n', i0), i1).replace(/\n/g, ' ');
+      radar.eleggibili = corpo.split(';').map((x) => norm(x)).filter((x) => x.length > 1);
+    }
+    radar.fineQuarter = data(s.match(/chiude il\s+(\S+)/)?.[1] ?? '');
+  } else radar.avvisi.push('manca Goal_Sheet_FY*.md: i rinnovi non si possono pesare sul piano');
+
+  // Panorama: P3 sono i rinnovi, in blocchi `;`-separati, uno per trimestre
+  const pano = piuRecente(MAPPA, /^Panorama_\d{8}\.md$/);
+  if (pano) {
+    const s = readFileSync(pano, 'utf8');
+    const i0 = s.indexOf('## P3');
+    const i1 = s.indexOf('## P4');
+    const p3 = i0 >= 0 ? s.slice(i0, i1 > i0 ? i1 : undefined) : '';
+    for (const r of p3.split('\n')) {
+      const c = r.split(';').map((x) => x.trim());
+      if (c.length < 7 || c[0] === 'Account' || !c[2]) continue;
+      const quando = data(c[2]);
+      if (!quando) continue;
+      const rin: Rinnovo = { account: c[0], prodotto: c[1], quando, rbob: parseFloat(c[4]) || 0, rischio: c[6] };
+      if (radar.eleggibili.length) rin.eleggibile = radar.eleggibili.includes(norm(rin.prodotto));
+      radar.rinnovi.push(rin);
+    }
+    if (!radar.rinnovi.length) radar.avvisi.push('Panorama c\'è ma le righe P3 non si leggono');
+  } else radar.avvisi.push('manca Panorama_AAAAMMGG.md: niente rinnovi');
+}
+
+/* ── abbinamento book ↔ cartella ──────────────────────────────────────────────
+   Dichiarato in `Radar/alias_cartelle.md` (`nome nel book = cartella`), perché i nomi
+   non si possono indovinare: `Telecom Italia` è `TIM`. In un posto solo, e nel Radar,
+   perché è una proprietà della mappatura fra i due registri, non della storia di un
+   conto. Chi non è dichiarato si abbina solo per nome identico, e se non si abbina
+   viene ELENCATO, non accoppiato a caso. */
+const alias = new Map<string, string>();
+const fileAlias = join(RADAR, 'alias_cartelle.md');
+if (existsSync(fileAlias)) {
+  for (const r of readFileSync(fileAlias, 'utf8').split('\n')) {
+    const m = r.match(/^\s*([^=#`|]+?)\s*=\s*([^=#`|]+?)\s*$/);
+    if (m) alias.set(norm(m[1]), norm(m[2]));
+  }
+}
+const perCartella = new Map<string, Conto>(conti.map((c) => [norm(c.cliente), c]));
+const contoDi = (account: string): Conto | undefined =>
+  perCartella.get(alias.get(norm(account)) ?? norm(account));
+
+const bookScoperti = radar.book
+  .filter((b) => { const c = contoDi(b.account); return !c || c.senzaRegistro; })
+  .sort((a, b) => b.arr - a.arr);
+const cartelleCoperte = new Set(radar.book.map((b) => contoDi(b.account)?.cliente).filter(Boolean));
+const fuoriBook = conti.filter((c) => c.cliente !== 'Adobe' && !cartelleCoperte.has(c.cliente));
+
+/* ── esito ───────────────────────────────────────────────────────────────────── */
 const conRegistro = conti.filter((c) => !c.senzaRegistro)
   .sort((a, b) => (b.aggiornato ? giorni(b.aggiornato) : 9e9) - (a.aggiornato ? giorni(a.aggiornato) : 9e9));
 const senza = conti.filter((c) => c.senzaRegistro);
-
 const aperti = (c: Conto): Caso[] => c.casi.filter((k) => !k.chiuso);
 const scaduti = conRegistro.flatMap((c) => aperti(c).filter((k) => k.scadenza && giorni(k.scadenza) > 0).map((k) => ({ c, k })));
 const fermi = conRegistro.filter((c) => c.aggiornato && giorni(c.aggiornato) > GIORNI_FERMO);
-
-const taglia = (s: string, n: number): string => (s.length > n ? s.slice(0, n - 1) + '…' : s);
+const rinnoviVicini = radar.rinnovi
+  .filter((r) => giorni(r.quando) > -GIORNI_RINNOVO && giorni(r.quando) <= 0)
+  .sort((a, b) => +a.quando - +b.quando);
 
 console.log(`\naccounts · ${conRegistro.length} conti con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
+if (radar.presente) {
+  const eta = radar.snapshot ? giorni(radar.snapshot) : undefined;
+  console.log(`Radar · book di ${radar.book.length} account · snapshot di ${eta === undefined ? 'data ignota' : `${eta} gg`}` +
+    (radar.fineQuarter ? ` · il quarter chiude fra ${-giorni(radar.fineQuarter)} gg` : ''));
+  if (eta !== undefined && eta > GIORNI_SNAPSHOT_VECCHIO) {
+    console.log(`  ⚠️  Lo snapshot ha ${eta} giorni: i rinnovi e la priorità qui sotto sono vecchi di altrettanto.`);
+    console.log('      Si rinfresca coi prompt in Radar/Mappa_Account/_PROMPT_PanoAI.md (~10 minuti).');
+  }
+  for (const a of radar.avvisi) console.log(`  ⚠️  ${a}`);
+} else {
+  console.log('Radar assente (docs/Adobe/Radar/): niente book, niente rinnovi, niente peso sul piano.');
+}
 
 if (scaduti.length) {
   console.log(`\nSCADUTI — il passo aveva una data, ed è passata: ${scaduti.length}`);
-  for (const { c, k } of scaduti.sort((a, b) => giorni(a.k.scadenza!) - giorni(b.k.scadenza!)).reverse()) {
-    console.log(`  ! ${c.cliente} · ${taglia(k.nome, 44)} — ${taglia(k.passo ?? '', 56)} (${giorni(k.scadenza!)} gg)`);
+  for (const { c, k } of scaduti.sort((a, b) => giorni(b.k.scadenza!) - giorni(a.k.scadenza!))) {
+    console.log(`  ! ${c.cliente} · ${taglia(k.nome, 42)} — ${taglia(k.passo ?? '', 52)} (${giorni(k.scadenza!)} gg)`);
   }
+}
+
+if (rinnoviVicini.length) {
+  const conta = rinnoviVicini.filter((r) => r.eleggibile);
+  console.log(`\nRINNOVI entro ${GIORNI_RINNOVO} gg: ${rinnoviVicini.length}` +
+    (radar.eleggibili.length ? ` · di cui ${conta.length} su prodotti che contano per il piano` : ''));
+  for (const r of rinnoviVicini) {
+    const c = contoDi(r.account);
+    const stato = !c ? '· NESSUNA CARTELLA' : c.senzaRegistro ? '· senza registro' : '';
+    const peso = r.eleggibile === undefined ? ' ' : r.eleggibile ? '€' : '·';
+    const rischio = /not at risk|^n\/a$|^$/i.test(r.rischio) ? '' : ` · ${r.rischio}`;
+    console.log(`  ${peso} ${r.quando.toISOString().slice(0, 10)}  ${taglia(r.account, 24).padEnd(24)} ${taglia(r.prodotto, 26).padEnd(26)} ${soldi(r.rbob).padStart(7)} ${stato}${rischio}`);
+  }
+  if (radar.eleggibili.length) console.log('  («€» = il prodotto conta per M1/M2 del Goal Sheet · «·» = relazione, non attainment)');
 }
 
 if (fermi.length) {
@@ -132,11 +278,32 @@ if (fermi.length) {
   for (const c of fermi) console.log(`  · ${c.cliente} — fermo da ${giorni(c.aggiornato!)} gg · ${aperti(c).length} ${aperti(c).length === 1 ? 'caso aperto' : 'casi aperti'}`);
 }
 
+if (bookScoperti.length) {
+  const tot = bookScoperti.reduce((s, b) => s + b.arr, 0);
+  console.log(`\nCOPERTURA — account del book senza registro: ${bookScoperti.length} su ${radar.book.length}, ${soldi(tot)} di ARR`);
+  for (const b of bookScoperti.slice(0, 12)) {
+    const rin = radar.rinnovi.filter((r) => norm(r.account) === norm(b.account) && giorni(r.quando) > -GIORNI_RINNOVO && giorni(r.quando) <= 0);
+    const nota = rin.length ? ` · ${rin.length} rinnov${rin.length === 1 ? 'o' : 'i'} entro ${GIORNI_RINNOVO} gg` : '';
+    console.log(`  · ${taglia(b.account, 26).padEnd(26)} ${soldi(b.arr).padStart(7)}${nota}`);
+  }
+  if (bookScoperti.length > 12) console.log(`  … e altri ${bookScoperti.length - 12}`);
+  console.log('  (il registro lo crea il primo `/account-open <Account>`)');
+}
+
+if (fuoriBook.length) {
+  console.log(`\nFUORI DAL BOOK — cartelle che non corrispondono a un account del Radar: ${fuoriBook.length}`);
+  console.log('  ' + fuoriBook.map((c) => c.cliente).join(' · '));
+  console.log('  (lavoro fuori dai tuoi account, oppure un nome che non combacia: in quel caso si aggiunge una riga a Radar/alias_cartelle.md)');
+}
+
 if (!SOLO_FERMI) {
   console.log('\nTutti i conti:');
   for (const c of conRegistro) {
     const eta = c.aggiornato ? `${giorni(c.aggiornato)} gg` : '?';
-    console.log(`  ${c.cliente.padEnd(26)} agg. ${eta.padStart(6)}   ${aperti(c).length} aperti` + (c.illeggibile ? `   ⚠ ${c.illeggibile}` : ''));
+    const righe = radar.book.filter((x) => contoDi(x.account) === c);
+    const somma = righe.reduce((t, x) => t + x.arr, 0);
+    const arr = righe.length ? ` · ${soldi(somma)}${righe.length > 1 ? ` (${righe.length} entità)` : ''}` : '';
+    console.log(`  ${c.cliente.padEnd(24)} agg. ${eta.padStart(6)}   ${aperti(c).length} aperti${arr}` + (c.illeggibile ? `   ⚠ ${c.illeggibile}` : ''));
     for (const k of aperti(c)) {
       const palla = k.palla ? ` · palla: ${taglia(k.palla, 28)}` : '';
       const da = k.dal ? ` (da ${giorni(k.dal)} gg)` : '';
@@ -144,10 +311,10 @@ if (!SOLO_FERMI) {
     }
   }
   if (senza.length) {
-    console.log('\nSenza registro — il primo `/account-open` lo crea:');
+    console.log('\nCartelle senza registro — il primo `/account-open` lo crea:');
     console.log('  ' + senza.map((c) => c.cliente).join(' · '));
   }
 }
 
-if (!scaduti.length && !fermi.length) console.log('\nNiente scaduto e niente fermo da settimane.');
-console.log('\n⚠️  Legge i registri, non la posta: un registro vecchio lo segnala, un registro sbagliato no. Quello lo scopre `/account-open`.');
+if (!scaduti.length && !fermi.length && !rinnoviVicini.length) console.log('\nNiente scaduto, niente fermo da settimane, nessun rinnovo vicino.');
+console.log('\n⚠️  Legge i registri e il Radar, non la posta: un registro vecchio lo segnala, un registro sbagliato no. Quello lo scopre `/account-open`.');

@@ -134,6 +134,41 @@ distinzione fra un calcolo di un collega e un dato di sistema marcata nel regist
 è ancora riconciliato con la posta**). Gli altri dieci clienti nascono alla prima sessione:
 è una decisione, non un residuo.
 
+### L'innesto del Radar (12 ott 2026)
+Sotto `docs/Claude/Radar` c'era un sistema già costruito — e sotto `docs/Adobe/Radar` un
+suo **guscio** con i soli template e una versione vecchia del prompt PanoAI. Consolidato in
+`docs/Adobe/Radar/`, tenendo i dati e il prompt ricco; `docs/Claude/` lascia un `LEGGIMI.md`
+che dice dove sono andate le cose.
+
+**La divisione del lavoro**, perché i due sistemi si sovrapponevano su una materia: il
+Radar possiede i **numeri e la struttura** (book, ARR, ECC/IMS, team, rinnovi, opportunità,
+e il Goal Sheet con i prodotti eleggibili per M1/M2); il `CONTO.md` possiede la **storia**.
+Il registro **non ricopia** i numeri: li citerebbe vecchi, e due copie a mano divergono
+sempre — è la lezione già pagata sul taglio corto di Intesa.
+
+**`Sintesi_Task` non si continua.** Era una scansione a mano dei task da email, ALTA/MEDIA/
+BASSA per cliente: lo stesso mestiere del `CONTO.md`, e si è fermata dopo due giri nello
+stesso giorno. I due file restano come storia; quel lavoro lo fa `/accounts`.
+
+**Tre innesti.** `/account-open` legge il Radar **prima** del registro e apre col quadro
+(ARR, prossimo rinnovo, se conta per il piano, salute, età dello snapshot).
+`/account-close` **propone** una riga in `Registro_opportunita.md` quando emerge un segnale
+che PanoAI non può vedere — il prompt del Radar lo dice da sé: gli sforamenti «li prende da
+email, Plaud e ticket», che è ciò che l'apertura legge; e la colonna «Decisione Antonio» è
+intoccabile. `pnpm accounts` guadagna età dello snapshot, **rinnovi entro 120 giorni** con
+la marca «conta per il piano», e la **copertura**.
+
+**Il numero che è uscito da solo:** 20 account del book su 25 non hanno un registro, per
+$35,5M di ARR — INPS $11,2M, Inail $3,5M, FS Technology $3,4M, Unicredit Bank $2,8M, e
+nove rinnovi entro 120 giorni su account senza cartella. Quattro cartelle (Agos, Eni,
+Ferrero, MIM) sono lavoro **fuori** dai 25.
+
+**Gli abbinamenti si dichiarano, non si indovinano:** `Telecom Italia`/`TIM`,
+`FS Technology`/`Ferrovie`, tre entità Unipol su un conto solo. Stanno in
+`Radar/alias_cartelle.md`, in un posto solo e dentro il Radar perché è una proprietà della
+mappatura fra i due registri; ciò che non si abbina viene **elencato**, non accoppiato a
+caso. Senza, `Unipol` risultava scoperto pur avendo un registro.
+
 ## Fase 2 — dichiarata, non implementata
 
 Un **mod** (plugin con handler JS dentro Claude Code), uno solo, non uno per cliente:
