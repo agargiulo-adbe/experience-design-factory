@@ -29,9 +29,14 @@ const flag = (name: string): string | undefined => {
   const i = process.argv.indexOf(`--${name}`);
   return i !== -1 ? process.argv[i + 1] : undefined;
 };
-const appFlag = flag('app') ?? CWD_ALIAS[process.cwd().split('/').pop() ?? ''] ?? 'maxmara';
+// `--app` accetta sia l'alias del route set sia il nome della cartella dell'app:
+// chi lancia il gate ha in mente «agos-trait-dunion», non «agos».
+const asked = flag('app') ?? process.cwd().split('/').pop() ?? '';
+const appFlag = ROUTE_SETS[asked] ? asked : (CWD_ALIAS[asked] ?? 'maxmara');
 const ROUTE_SET = ROUTE_SETS[appFlag];
-if (!ROUTE_SET) throw new Error(`ink-audit: nessun route set per «${appFlag}»`);
+if (!ROUTE_SET) {
+  throw new Error(`ink-audit: nessun route set per «${asked}». Validi: ${Object.keys(ROUTE_SETS).join(', ')}`);
+}
 const only = flag('only');
 const ROUTES = only ? ROUTE_SET.filter((r) => only.split(',').includes(r.name)) : ROUTE_SET;
 if (!ROUTES.length) throw new Error(`ink-audit: --only ${only} non seleziona nessuna rotta`);
