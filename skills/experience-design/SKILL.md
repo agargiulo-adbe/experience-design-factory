@@ -290,6 +290,12 @@ playback one — fix the asset, not with JavaScript.
   - Il gate verifica che il link **risponda**, non che sia **quello giusto** per quella frase:
     una pagina che dà 200 può parlare d'altro. Quel controllo si fa una volta, a mano, quando
     si cita la fonte.
+  - **403 non vuol dire rotto.** Molti siti (Gartner, parecchi editori) rispondono 401/403/429
+    a qualunque accesso automatico, compreso un Chromium headless con user-agent da browser,
+    mentre per una persona la pagina si apre benissimo. Il gate li mette in una lista a parte
+    — «da aprire a mano» — invece di chiamarli errori: un gate che grida al lupo viene
+    ignorato, ed è il contrario del suo scopo. Quei link si aprono una volta in un browser
+    vero e si tira una riga.
   - Stile: sobrio. Una fonte non è una CTA — eredita l'inchiostro del testo che la ospita e si
     distingue per la sottolineatura, che si accende d'accento al passaggio. Così il contrasto
     resta quello del testo (e `audit:ink` continua a passare) e il link non ruba l'occhio.

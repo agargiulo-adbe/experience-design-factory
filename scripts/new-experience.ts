@@ -196,8 +196,12 @@ const rel = (p: string) => path.relative(ROOT, p);
 // (a) la skin
 const appDir = path.join(ROOT, 'apps', slug);
 if (existsSync(appDir)) {
-  if (!dryRun) usage(`apps/${slug} esiste già: il generatore non sovrascrive una skin. Rimuoverla o scegliere un altro slug.`);
-  notes.push(`apps/${slug} esiste già — con --dry-run mostro comunque il piano`);
+  const existingEntries = readdirSync(appDir);
+  const containsOnlyImpeccableContext = existingEntries.every((entry) => entry === 'PRODUCT.md' || entry === '.impeccable');
+  if (!dryRun && !containsOnlyImpeccableContext) {
+    usage(`apps/${slug} esiste già: il generatore non sovrascrive una skin. Rimuoverla o scegliere un altro slug.`);
+  }
+  if (dryRun) notes.push(`apps/${slug} esiste già — con --dry-run mostro comunque il piano`);
 }
 
 function walk(dir: string): string[] {

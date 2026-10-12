@@ -289,6 +289,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Generata dallo scheletro «Prospettiva»: 7 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
     },
   },
+  {
+    slug: 'tim-contenuti-su-scala',
+    name: 'Una campagna, molti formati',
+    client: 'TIM',
+    type: 'prospettiva',
+    brandLabel: 'TIM',
+    url: `${LIVE}/tim-contenuti-su-scala/`,
+    shot: 'shots/tim-contenuti-su-scala.webp',
+    accent: '#004691',
+    sections: 4,
+    defaultPublished: false,
+    tag: {
+      en: '4 chapters · IT · scaffold',
+      it: '4 capitoli · IT · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Perspective» skeleton: 4 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Prospettiva»: 4 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

@@ -80,18 +80,46 @@ await browser.close();
 // ── i link rispondono? Una sola volta per URL. ────────────────────────────
 const unici = [...new Set(links.map((l) => l.href))];
 const stato = new Map<string, number | string>();
-await Promise.all(unici.map(async (u) => {
+/**
+ * Due tentativi, non uno. Un timeout di rete non è un link rotto, e un gate che
+ * dà un falso allarme per una connessione lenta smette di essere creduto al
+ * secondo falso allarme — successo subito, sulla prima esecuzione vera.
+ */
+async function provaUna(u: string): Promise<number | 'irraggiungibile'> {
   try {
     const c = new AbortController();
-    const t = setTimeout(() => c.abort(), 20000);
+    const t = setTimeout(() => c.abort(), 25000);
+    // Si parte da HEAD perché è leggero, ma parecchi server lo rifiutano e basta:
+    // helpx.adobe.com risponde 403 a HEAD e 200 allo stesso URL con GET. Quindi su
+    // 403/405 si riprova con una GET vera prima di dire qualunque cosa sul link.
     let r = await fetch(u, { method: 'HEAD', redirect: 'follow', signal: c.signal });
     if (r.status === 405 || r.status === 403) r = await fetch(u, { redirect: 'follow', signal: c.signal });
     clearTimeout(t);
-    stato.set(u, r.status);
-  } catch { stato.set(u, 'irraggiungibile'); }
+    return r.status;
+  } catch { return 'irraggiungibile'; }
+}
+await Promise.all(unici.map(async (u) => {
+  let st = await provaUna(u);
+  if (st === 'irraggiungibile') {
+    await new Promise((r) => setTimeout(r, 1500));
+    st = await provaUna(u);
+  }
+  stato.set(u, st);
 }));
 
-const rotti = links.filter((l) => { const s = stato.get(l.href); return typeof s !== 'number' || s >= 400; });
+/**
+ * 401/403/429 NON sono «rotto»: sono siti che bloccano gli accessi automatici.
+ * Gartner risponde 403 anche a un Chromium headless con uno user-agent da browser,
+ * e quella pagina per una persona si apre benissimo. Trattarli come errori riempie
+ * il gate di falsi allarmi — e un gate che grida al lupo viene ignorato, che è il
+ * contrario del suo scopo. Finiscono in una terza lista: verifica umana, una volta.
+ */
+const BLOCCA_BOT = new Set([401, 403, 429]);
+const rotti = links.filter((l) => {
+  const st = stato.get(l.href);
+  return typeof st !== 'number' ? st !== 'bloccato' : (st >= 400 && !BLOCCA_BOT.has(st));
+});
+const daGuardare = links.filter((l) => { const st = stato.get(l.href); return typeof st === 'number' && BLOCCA_BOT.has(st); });
 
 console.log(`\nsource-audit · ${appFlag} · ${ROUTES.length} rotte`);
 console.log(`Link esterni nelle slide: ${links.length} (${unici.length} distinti)`);
@@ -100,13 +128,18 @@ if (rotti.length) {
   console.log(`\nHARD — link che non rispondono: ${rotti.length}`);
   for (const l of rotti) console.log(`  ✗ ${l.rotta} · ${l.slide} — ${stato.get(l.href)} · ${l.href}\n     «${l.testo}»`);
 }
+if (daGuardare.length) {
+  console.log(`\nDA APRIRE A MANO — il sito blocca gli accessi automatici: ${daGuardare.length}`);
+  for (const l of daGuardare) console.log(`  ? ${l.rotta} · ${l.slide} — ${stato.get(l.href)} · ${l.href}`);
+  console.log('  (403/401/429 non vuol dire rotto: si apre il link in un browser, una volta, e si tira una riga)');
+}
 if (nude.length) {
   console.log(`\nSOFT — righe di fonte senza link: ${nude.length}`);
   for (const n of nude) console.log(`  · ${n.rotta} · ${n.slide} — «${n.testo}»`);
   console.log('  (legittime se rimandano a un documento interno o a una misura nostra — si guardano una per una)');
 }
-if (!rotti.length && !nude.length) console.log('\nPULITO — ogni fonte pubblica porta il suo link, e ogni link risponde.');
-else if (!rotti.length) console.log('\nNessun link rotto. Le righe soft qui sopra vanno guardate.');
+if (!rotti.length && !nude.length && !daGuardare.length) console.log('\nPULITO — ogni fonte pubblica porta il suo link, e ogni link risponde.');
+else if (!rotti.length) console.log('\nNessun link rotto. Le righe qui sopra vanno guardate una per una.');
 
 console.log('\n⚠️  Il gate verifica che il link RISPONDA, non che sia quello giusto per quella frase: quello resta un controllo umano.');
 process.exit(rotti.length ? 1 : 0);
