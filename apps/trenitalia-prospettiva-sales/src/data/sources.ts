@@ -77,6 +77,11 @@ export const SOURCES = {
     cosaDice:
       'Renfe (con il fondo Serena) entra al 33% nella holding che opera i treni Arenaways. Arenaways è sulla rete TRADIZIONALE, non sull\'alta velocità: nuovi collegamenti da dicembre 2025, servizio pubblico in Piemonte.',
   },
+  // NON più citata in slide dal secondo giro del panel: la slide presentava il
+  // pricing dinamico come la novità dell'anno, e per chi fa quel mestiere da anni
+  // («il revenue management è il mestiere, non la novità») era la riga che faceva
+  // rileggere tutte le altre con sospetto. Resta qui perché il limite che porta —
+  // riguarda solo le Frecce — vale comunque per chi scriverà la prossima versione.
   pricing: {
     url: 'https://www.altroconsumo.it/vita-privata-famiglia/viaggi-tempo-libero/news/trenitalia-prezzi-biglietti-dinamici',
     label: 'Altroconsumo, gennaio 2026',

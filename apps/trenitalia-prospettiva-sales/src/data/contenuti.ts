@@ -107,9 +107,9 @@ export const CONTESTO: Card[] = [
   {
     k: 'Il prezzo',
     t: 'Una leva che si muove da sola',
-    b: 'Dal 1º gennaio 2026 il prezzo delle Frecce varia con la domanda, come in aereo. E i biglietti non aumenteranno: lo ha dichiarato il vertice del Gruppo. Verso l’alto la leva è chiusa, e non è vostra: il revenue management sta nel marketing.',
-    bBreve: 'Dal 1º gennaio 2026 il prezzo delle Frecce varia con la domanda, e il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
-    fonti: ['pricing', 'prezziFermi'],
+    b: 'Il revenue management sull’alta velocità lo fate da anni, e lavora. Quello che è cambiato è il tetto: i biglietti non aumenteranno, lo ha dichiarato il vertice del Gruppo a settembre. Verso l’alto la leva è chiusa.',
+    bBreve: 'Il revenue management lavora già. Quello che è cambiato è il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
+    fonti: ['prezziFermi'],
   },
   {
     k: 'Il momento',
@@ -134,7 +134,7 @@ export const CONTESTO: Card[] = [
    diverse: due dei quattro punti si decidono altrove, e dirlo noi prima vale
    molto più che farselo dire da loro. */
 export const DOMANDA = {
-  titolo: 'Il prezzo lo muove il mercato, e non è la vostra leva.<br />Dove si perdono le vendite?',
+  titolo: 'Il prezzo lavora già al massimo,<br />e verso l’alto il listino è fermo.<br />Dove si perdono le vendite che il prezzo non recupera?',
   sub: 'Non è una domanda retorica: ha quattro risposte, e stanno in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   subBreve: 'Ha quattro risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   perimetri:
@@ -243,8 +243,8 @@ export const PRIMA: Card[] = [
    primo che qualcuno chiede. */
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
-  { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori, più la Cina dove le vendite sono raddoppiate nel 2025' },
-  { v: '70.000', l: 'punti vendita di terzi', s: 'ricevitorie, bar, tabaccherie ed edicole che vendono i biglietti regionali' },
+  { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
+  { v: '70.000', l: 'punti vendita di terzi', s: 'ricevitorie, bar, tabaccherie ed edicole che vendono il Regionale: è un dato del 2014, da aggiornare insieme' },
 ];
 
 export const UNPOSTO: Card[] = [
