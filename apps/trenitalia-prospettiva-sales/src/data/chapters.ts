@@ -20,7 +20,7 @@ export interface Chapter {
 export const CHAPTERS: Chapter[] = [
   { slug: 'apertura', num: '01', title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' }, short: 'Il vostro anno' },
   { slug: 'domanda', num: '02', title: { it: 'La domanda', en: 'La domanda' }, short: 'La domanda' },
-  { slug: 'ricerca', num: '03', title: { it: 'Quando un viaggio si cerca con l\'intelligenza artificiale', en: 'Quando un viaggio si cerca con l\'intelligenza artificiale' }, short: 'La ricerca' },
+  { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'La ricerca' },
   { slug: 'viaggio', num: '04', title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' }, short: 'Il viaggio' },
   { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' }, short: 'Il contenuto' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'La rete' },
