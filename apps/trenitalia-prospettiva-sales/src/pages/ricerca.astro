@@ -14,14 +14,23 @@ import bg_search from '../assets/generated/bg/bg-search.webp';
  * Capitolo 03 — Quando un viaggio si cerca con l'intelligenza artificiale.
  *
  * È il capitolo che porta una misura NOSTRA, come la lettura delle superfici nel
- * dossier: otto domande di viaggio, nessuna di marca, poste l'11 ottobre 2026 a un
- * assistente pubblico con ricerca agganciata. Dati grezzi, metodo e limiti in
+ * dossier: le stesse otto domande di viaggio, nessuna di marca, poste a DUE assistenti
+ * — ChatGPT il 12 ottobre e la risposta generata di Google l'11. Perplexity e Gemini
+ * chiedono un accesso e sono rimasti fuori: sta scritto in slide, non omesso.
+ * Dati grezzi, metodo e limiti in
  * docs/Ferrovie/MISURA-visibilita-risposte-generate-2026-10-11.md.
  *
+ * Il secondo giro ha cambiato la tesi, non solo i numeri. Con un motore solo la slide
+ * diceva «non vi citano»; con due si vede che **dipende da quale assistente**: Google
+ * costruisce la risposta sui rivenditori e sbaglia due volte su otto di chi sono le
+ * Frecce, ChatGPT va sui siti ufficiali e non sbaglia mai. Attribuire l'errore a «gli
+ * assistenti» sarebbe stato falso, e su una slide che accusa qualcuno di sbagliare un
+ * fatto, sbagliare un fatto è fatale.
+ *
  * Regola rispettata alla lettera: si dice «la fotografia che abbiamo scattato noi
- * l'11 ottobre con otto domande», mai «il 75% delle risposte vi ignora». Il limite
- * del campione è dichiarato IN SLIDE, non nascosto: se lo trova il cliente per primo
- * cade tutto il resto.
+ * l'11 e il 12 ottobre, otto domande, due assistenti», mai «il 75% delle risposte vi
+ * ignora». Il limite del campione è dichiarato IN SLIDE: se lo trova il cliente per
+ * primo, cade tutto il resto.
  */
 const SLUG = 'ricerca';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -29,10 +38,10 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const referto = [
-  { v: '6', su: 'su 8', l: 'risposte nominano Trenitalia', s: 'il marchio c’è, e in due casi è raccomandato bene' },
-  { v: '2', su: 'su 8', l: 'citano trenitalia.com fra le fonti', s: 'la risposta si costruisce sulle pagine di qualcun altro' },
-  { v: '4', su: 'su 8', l: 'citano il sito del concorrente', s: 'italotreno.com compare il doppio delle volte del vostro' },
-  { v: '8', su: 'su 8', l: 'citano rivenditori e aggregatori', s: 'Trainline, Rome2Rio, Omio, Raileurope, Italiarail' },
+  { v: '7', su: 'su 8', l: 'ChatGPT cita trenitalia.com', s: 'va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
+  { v: '2', su: 'su 8', l: 'Google cita trenitalia.com', s: 'la risposta si costruisce su rivenditori e aggregatori: Trainline, Rome2Rio, Omio' },
+  { v: '0', su: 'su 8', l: 'errori sul marchio, su ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
+  { v: '2', su: 'su 8', l: 'errori sul marchio, su Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
 ];
 
 const kpi = [
@@ -55,8 +64,8 @@ const kpi = [
         <p class="ex-ch-num">Capitolo {ch.num}</p>
         <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
         <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Il primo punto del percorso, quello che viene prima di ogni vostra pagina.
-          Qui non portiamo una teoria: portiamo quello che abbiamo misurato.
+          Il primo punto del percorso, prima di ogni vostra pagina. Non una teoria:
+          una misura, su due assistenti.
         </p>
         <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
           <p class="ex-ch-agenda-k">In questo capitolo</p>
@@ -77,15 +86,15 @@ const kpi = [
              farseli trovare dal cliente no. -->
         <HowItWorks title="Come l’abbiamo misurato" label="Come l’abbiamo misurato" tone="onLight" data-reveal data-reveal-delay="0.3">
           <p>
-            <strong>Le domande.</strong> Quattro in italiano e quattro in inglese, nessuna con
-            un nome di marca: sono le domande di chi organizza un viaggio, non di chi compra un
-            biglietto. Di ognuna abbiamo registrato chi viene nominato e quali siti la risposta
-            cita come fonte. <strong>È la seconda che conta</strong>: la fonte è dove
-            l’assistente va a prendere quello che dice.
+            <strong>Chi, e con che cosa.</strong> <strong>ChatGPT</strong> e la <strong>risposta
+            generata di Google</strong>, stesse otto domande, una per conversazione nuova.
+            Perplexity e Gemini chiedono un accesso e sono rimasti fuori. Nessuna domanda
+            contiene un nome di marca.
           </p>
           <p>
-            <strong>I limiti.</strong> Un assistente, otto domande, un giorno, nessuna
-            cronologia e nessuna posizione. È una fotografia, e va riscattata prima di usarla.
+            <strong>Che cosa abbiamo registrato, e i limiti.</strong> Chi è nominato, quali siti
+            sono citati come fonte, se i prodotti sono attribuiti a chi li fa. Due assistenti su
+            quattro e otto domande: è una fotografia, va riscattata prima di usarla.
           </p>
         </HowItWorks>
       </div>
@@ -97,13 +106,15 @@ const kpi = [
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <p class="slide-eyebrow">Una misura, non una teoria</p>
-          <h2 class="ex-head-title">Otto domande di viaggio, fatte come le fa un viaggiatore</h2>
+          <h2 class="ex-head-title">Le stesse otto domande, due assistenti, due risposte diverse</h2>
           <!-- Lead accorciato quando è arrivato il blocco sul metodo: diceva le stesse
                cose, e una slide che ripete sé stessa due centimetri più sotto non è
                densa, è ridondante. Qui resta il fatto; il come sta nel blocco. -->
           <p class="ex-head-lead">
-            L’11 ottobre abbiamo chiesto a un assistente pubblico come si arriva a Matera, in
-            Costiera, alle Cinque Terre, in Puglia. Nessuna domanda conteneva un nome di marca.
+            Abbiamo chiesto a <strong>ChatGPT</strong> e alla <strong>risposta generata di
+            Google</strong> come si arriva a Matera, in Costiera, alle Cinque Terre, in Puglia.
+            Le stesse parole, nessun nome di marca. <strong>Non rispondono allo stesso modo</strong>,
+            e la differenza non è di tono: è di dove vanno a prendere quello che dicono.
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
@@ -127,23 +138,24 @@ const kpi = [
       </div>
     </Slide>
 
-    <!-- ── L'errore sul marchio ──────────────────────────────────────────── -->
+    <!-- ── L'errore sul marchio, e di chi è ────────────────────────────── -->
     <Slide id="slide-frecce" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">Alla domanda «come andare da Torino a Bologna senza auto»</p>
+        <p class="slide-eyebrow">«Come andare da Torino a Bologna senza auto», la stessa domanda a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
           «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
           Italo, Trenitalia e Intercity</strong>.»
         </p>
         <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          Quattro nomi messi sullo stesso piano, come se fossero quattro aziende in concorrenza
-          fra loro. Due sono vostri prodotti. Non è un problema di quanto comparite:
-          <strong>è un problema di che cosa viene detto di voi</strong>, e mette il vostro treno
-          di punta accanto al concorrente nella stessa frase.
+          Quattro nomi sullo stesso piano, come fossero quattro aziende in concorrenza.
+          Due sono vostri prodotti, e <strong>lo dice Google</strong>. Sulla stessa domanda
+          ChatGPT scrive «Trenitalia: confronta Frecciarossa, Intercity e regionali»,
+          e non sbaglia in nessuna delle otto. <strong>Non è un problema degli assistenti:
+          è un problema di quale assistente.</strong>
         </p>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Risposta registrata l’11 ottobre 2026. Lo stesso scambio si ripete su un’altra delle otto domande.
+          Risposte registrate l’11 e il 12 ottobre 2026. L’errore si ripete su un’altra delle otto domande.
         </p>
       </div>
     </Slide>
