@@ -6,6 +6,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { REFERTO, KPI } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
 import bg_search from '../assets/generated/bg/bg-search.webp';
@@ -15,8 +17,12 @@ import bg_search from '../assets/generated/bg/bg-search.webp';
  *
  * È il capitolo che porta una misura NOSTRA, come la lettura delle superfici nel
  * dossier: le stesse otto domande di viaggio, nessuna di marca, poste a DUE assistenti
- * — ChatGPT il 12 ottobre e la risposta generata di Google l'11. Perplexity e Gemini
- * chiedono un accesso e sono rimasti fuori: sta scritto in slide, non omesso.
+ * — ChatGPT il 12 ottobre e la risposta generata di Google l'11. Il limite del campione
+ * (due assistenti, otto domande) sta scritto in slide; il PERCHÉ gli altri due sono
+ * fuori — un account gratuito che si esaurisce, una sessione che non parte — è un
+ * dettaglio operativo che a un direttore commerciale non dice niente e sposta
+ * l'attenzione sulla nostra attrezzatura invece che sul suo mercato: sta nel
+ * documento di metodo, non in slide.
  * Dati grezzi, metodo e limiti in
  * docs/Ferrovie/MISURA-visibilita-risposte-generate-2026-10-11.md.
  *
@@ -37,18 +43,7 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const referto = [
-  { v: '7', su: 'su 8', l: 'ChatGPT cita trenitalia.com', s: 'va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
-  { v: '2', su: 'su 8', l: 'Google cita trenitalia.com', s: 'la risposta si costruisce su rivenditori e aggregatori: Trainline, Rome2Rio, Omio' },
-  { v: '0', su: 'su 8', l: 'errori sul marchio, su ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
-  { v: '2', su: 'su 8', l: 'errori sul marchio, su Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
-];
 
-const kpi = [
-  { k: 'Presenza', t: 'Su quante domande comparite', b: 'Un punteggio di visibilità da misurare nel tempo, per mercato e per lingua, non una fotografia sola.' },
-  { k: 'Confronto', t: 'Quanto, rispetto a chi entra adesso', b: 'La quota di voce rispetto agli altri operatori sulle stesse domande: è il numero che dice se si sta guadagnando o perdendo terreno.' },
-  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti', b: 'Le visite che nascono da una risposta generata, separate da quelle di ricerca: oggi, nella maggior parte delle aziende, finiscono indistinte nello stesso totale.' },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -88,13 +83,13 @@ const kpi = [
           <p>
             <strong>Chi, e con che cosa.</strong> <strong>ChatGPT</strong> e la <strong>risposta
             generata di Google</strong>, stesse otto domande, una per conversazione nuova.
-            Perplexity e Gemini chiedono un accesso e sono rimasti fuori. Nessuna domanda
-            contiene un nome di marca.
+            Nessuna domanda contiene un nome di marca.
           </p>
           <p>
             <strong>Che cosa abbiamo registrato, e i limiti.</strong> Chi è nominato, quali siti
-            sono citati come fonte, se i prodotti sono attribuiti a chi li fa. Due assistenti su
-            quattro e otto domande: è una fotografia, va riscattata prima di usarla.
+            sono citati come fonte, se i prodotti sono attribuiti a chi li fa. Quattro domande in
+            italiano e quattro in inglese. Due assistenti e otto domande: è una fotografia, va
+            riscattata prima di usarla.
           </p>
         </HowItWorks>
       </div>
@@ -113,12 +108,13 @@ const kpi = [
           <p class="ex-head-lead">
             Abbiamo chiesto a <strong>ChatGPT</strong> e alla <strong>risposta generata di
             Google</strong> come si arriva a Matera, in Costiera, alle Cinque Terre, in Puglia.
-            Le stesse parole, nessun nome di marca. <strong>Non rispondono allo stesso modo</strong>,
-            e la differenza non è di tono: è di dove vanno a prendere quello che dicono.
+            Le stesse parole, nessun nome di marca. Trenitalia è nominata in sei risposte su otto
+            su Google e in sette su ChatGPT: <strong>il problema non è la menzione, è la fonte</strong>
+            — dove i due vanno a prendere quello che dicono.
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
-          {referto.map((r) => (
+          {REFERTO.map((r) => (
             <div class="tp-stat">
               <!-- NIENTE conteggio animato su questi numeri, ed è una decisione, non una
              dimenticanza: mentre contava, la slide diceva «0 su 8 risposte nominano
@@ -133,7 +129,8 @@ const kpi = [
           ))}
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.3">
-          Risposte per esteso nel documento di lavoro. Lo strumento: <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener noreferrer">Adobe Brand Visibility</a>.
+          {SOURCES.misura.label}: otto domande su due assistenti, a mano, un giro solo. È una
+          fotografia nostra, non una statistica — e la rifacciamo davanti a voi quando volete.
         </p>
       </div>
     </Slide>
@@ -142,20 +139,20 @@ const kpi = [
     <Slide id="slide-frecce" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">«Come andare da Torino a Bologna senza auto», la stessa domanda a due assistenti</p>
+        <p class="slide-eyebrow">«Come andare da Torino a Bologna in giornata senza auto», la stessa domanda a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
           «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
           Italo, Trenitalia e Intercity</strong>.»
         </p>
         <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          Quattro nomi sullo stesso piano, come fossero quattro aziende in concorrenza.
-          Due sono vostri prodotti, e <strong>lo dice Google</strong>. Sulla stessa domanda
-          ChatGPT scrive «Trenitalia: confronta Frecciarossa, Intercity e regionali»,
-          e non sbaglia in nessuna delle otto. <strong>Non è un problema degli assistenti:
-          è un problema di quale assistente.</strong>
+          Quattro nomi sullo stesso piano, come fossero quattro aziende in concorrenza. Due
+          sono vostri prodotti, e lo dice <strong>la risposta generata dentro la ricerca
+          Google</strong>. Sulla stessa domanda ChatGPT scrive «Trenitalia — ricerca biglietti:
+          confronta Frecciarossa, Intercity e regionali», e non sbaglia in nessuna delle otto.
+          <strong>Non è un problema degli assistenti: è un problema di quale assistente.</strong>
         </p>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Risposte registrate l’11 e il 12 ottobre 2026. L’errore si ripete su un’altra delle otto domande.
+          {SOURCES.misura.label}: l’errore si ripete su un’altra delle otto domande.
         </p>
       </div>
     </Slide>
@@ -166,16 +163,16 @@ const kpi = [
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <p class="slide-eyebrow">Che cosa si misura, e che cosa si cambia</p>
-          <h2 class="ex-head-title">Non è una classifica da subire: si governa</h2>
+          <h2 class="ex-head-title">Si può intervenire, e si vede se ha funzionato</h2>
           <p class="ex-head-lead">
-            Alla domanda sulla Puglia la risposta è quasi un vostro testo: Trenitalia protagonista,
-            la biglietteria condivisa con le ferrovie locali spiegata bene, «parti dal sito o
-            dall’app di Trenitalia» come consiglio esplicito. <strong>Quando la pagina giusta
+            Alla domanda sulla Puglia la risposta è quasi un vostro testo: Trenitalia protagonista
+            e «parti dal sito o dall’app di Trenitalia» come consiglio esplicito, su entrambi gli
+            assistenti. <strong>Quando la pagina giusta
             esiste, la risposta la usa.</strong> È la prova che si può sistemare.
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {kpi.map((x) => (
+          {KPI.map((x) => (
             <div class="ex-card">
               <p class="ex-card-k">{x.k}</p>
               <p class="ex-card-t">{x.t}</p>
@@ -190,13 +187,13 @@ const kpi = [
         <HowItWorks title="Come si interviene" label="Come si interviene" tone="onLight" data-reveal data-reveal-delay="0.2">
           <p>
             Si parte dalle domande vere dei vostri mercati, non da parole chiave: per ciascuna si
-            vede chi viene nominato e da dove arriva la risposta. Dove manca un pezzo si scrive,
-            si pubblica e si rimisura la stessa domanda.
+            vede chi è nominato e da dove arriva la risposta.
           </p>
           <p>
-            Lo strumento è <strong><a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener noreferrer">Adobe Brand Visibility</a></strong>: misura la presenza del marchio
-            nelle risposte generate, la confronta con quella degli altri operatori e pubblica le
-            correzioni sulle pagine senza passare da un progetto tecnico.
+            Lo strumento è <strong><a href={SOURCES.brandVisibility.url} target="_blank" rel="noopener noreferrer">{SOURCES.brandVisibility.label}</a></strong>: misura la presenza del marchio nelle risposte
+            generate; le correzioni si pubblicano al bordo della rete — il CDN lo configura una
+            volta il vostro IT, poi ogni correzione va in produzione con un clic e si ritira con
+            un altro.
           </p>
         </HowItWorks>
       </div>

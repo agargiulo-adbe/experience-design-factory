@@ -6,6 +6,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { GIA, PRIMA, fontiDi } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_journey from '../assets/generated/bg/bg-journey.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
@@ -15,8 +17,11 @@ import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
  * Capitolo 04 — Un viaggio, non più prodotti.
  *
  * Il capitolo in cui si parla poco e si ascolta: è il suo mestiere, viene
- * dall'intermodale. Si apre con una DOMANDA sul laboratorio con la compagnia
- * aerea, perché la fonte ha mesi e perché se è già coperto è una buona notizia.
+ * dall'intermodale. Si apre con una DOMANDA sul laboratorio con ITA Airways,
+ * perché la fonte ha mesi e perché se è già coperto è una buona notizia. La
+ * compagnia aerea si NOMINA: il protocollo è pubblico e l'ha firmato il loro
+ * Amministratore Delegato — chiamarla «la compagnia aerea» davanti a chi c'era
+ * suona evasivo. Copia e fonti in `src/data/`.
  * Prudenza dichiarata sull'orchestrazione dei messaggi: confina con un perimetro
  * già assegnato e non si va oltre il nominarla.
  */
@@ -25,11 +30,9 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const gia = [
-  { k: 'Gomma', t: 'Busitalia, al 100%', b: 'Oltre 1.700 destinazioni raggiungibili, dentro il perimetro e non in partnership. I collegamenti sono già nell’applicazione.' },
-  { k: 'Sosta', t: 'I parcheggi di stazione', b: 'Già integrati nei canali digitali: il pezzo di viaggio che comincia prima del treno e finisce dopo.' },
-  { k: 'Aria', t: 'Air-Rail dal 2023, e un laboratorio dal 2026', b: 'I prodotti combinati con la compagnia aerea esistono da tre anni; da marzo 2026 c’è anche un laboratorio congiunto sull’intelligenza artificiale, firmato dai due vertici.' },
-];
+// Una fonte per fatto, dedotta dalle carte: la pagina non scrive indirizzi.
+const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
+
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -72,7 +75,7 @@ const gia = [
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {gia.map((x) => (
+          {GIA.map((x) => (
             <div class="ex-card">
               <p class="ex-card-k">{x.k}</p>
               <p class="ex-card-t">{x.t}</p>
@@ -81,7 +84,9 @@ const gia = [
           ))}
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
-          Fonti pubbliche: comunicati del Gruppo (<a href="https://www.fsnews.it/" target="_blank" rel="noopener noreferrer">fsnews.it</a>) e <a href="https://www.fsbusitalia.it/" target="_blank" rel="noopener noreferrer">fsbusitalia.it</a>, 2023-2026.
+          Fonti: {fontiGia.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
+          ))}.
         </p>
       </div>
     </Slide>
@@ -102,7 +107,7 @@ const gia = [
           vostra, le destinazioni sono vostre. La risposta, no.
         </p>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Registrate l’11 e il 12 ottobre 2026, fra le otto domande del capitolo precedente.
+          Fra le otto domande del capitolo precedente: {SOURCES.misura.label}, non una fonte pubblica.
         </p>
       </div>
     </Slide>
@@ -116,15 +121,16 @@ const gia = [
           <h2 class="ex-head-title">Riconoscere chi sta componendo un viaggio</h2>
           <p class="ex-head-lead">
             Una persona che cerca un treno per Bari a luglio, con due bagagli e un ritorno aperto,
-            sta costruendo una vacanza. Oggi, nel momento dell’acquisto, è indistinguibile da chi
-            va a Bari per lavoro il martedì mattina. <strong>Distinguerli cambia che cosa si
-            propone</strong>, e cambia il valore di quel viaggio.
+            sta costruendo una vacanza. La pianificazione porta-a-porta esiste già, su alcune
+            destinazioni; quello che manca è che nel momento dell’acquisto quella persona sia
+            indistinguibile da chi va a Bari per lavoro il martedì mattina. <strong>Distinguerli
+            cambia che cosa si propone</strong>, e cambia il valore di quel viaggio.
           </p>
         </div>
         <div class="tp-ask" data-reveal data-reveal-delay="0.16">
           <p class="tp-ask-k">La domanda che vi facciamo</p>
           <p class="tp-ask-t">
-            Il laboratorio con la compagnia aerea quanto di questo copre già? Se copre anche
+            Il laboratorio con ITA Airways quanto di questo copre già? Se copre anche
             l’acquisto, è una buona notizia e passiamo oltre. Se riguarda i flussi e non il
             momento in cui si compra, è lì che possiamo essere utili.
           </p>
@@ -132,16 +138,18 @@ const gia = [
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
           <p>
             Servono due cose, e nessuna delle due è una piattaforma nuova. La prima: leggere il
-            percorso di acquisto per intero, treno e gomma e sosta insieme, con
-            <strong>Customer Journey Analytics</strong>, che in casa vostra è già un terreno
-            aperto. La seconda: poter provare una proposta diversa su una parte del traffico e
-            misurarne l’effetto con <strong>Adobe Target</strong>, che avete già.
+            percorso di acquisto per intero, treno e gomma e sosta insieme — è il mestiere di
+            <strong><a href={SOURCES.cja.url} target="_blank" rel="noopener noreferrer">Customer Journey Analytics</a></strong>.
+            La seconda: poter provare una proposta diversa su una parte del traffico e misurarne
+            l’effetto con <strong><a href={SOURCES.target.url} target="_blank" rel="noopener noreferrer">Adobe Target</a></strong>,
+            che avete già scelto.
           </p>
           <p>
-            L’orchestrazione dei messaggi lungo il viaggio è il passo successivo, e lo nominiamo
-            soltanto: confina con scelte che avete già fatto, e non è questa la stanza per discuterle.
+            L’orchestrazione dei messaggi lungo il viaggio è il passo successivo, e qui lo
+            nominiamo soltanto: vendita diretta e assistenza stanno in un’altra direzione, e non
+            è questa la stanza per decidere al posto loro.
           </p>
-        </HowItWorks>
+          </HowItWorks>
       </div>
     </Slide>
 
@@ -151,35 +159,29 @@ const gia = [
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <p class="slide-eyebrow">Prima ancora della scelta del treno</p>
-          <h2 class="ex-head-title">Il viaggio comincia a casa di qualcun altro</h2>
+          <h2 class="ex-head-title">Il viaggio si decide prima, e altrove</h2>
           <p class="ex-head-lead">
-            Chi decide di passare dieci giorni in Italia lo decide davanti a una compagnia aerea,
-            a una destinazione, a una catena di ospitalità. Loro sanno che sta per viaggiare
-            mesi prima di voi. <strong>Si può lavorare sugli stessi viaggiatori senza che nessuna
+            Chi decide dieci giorni in Italia lo decide davanti a una compagnia aerea o a un
+            operatore turistico, mesi prima di scegliere il treno. <strong>Si può lavorare sugli stessi viaggiatori senza che nessuna
             delle due aziende consegni all’altra i propri dati</strong>: ciascuno tiene i suoi,
             e si incrocia solo quello che serve a capire chi interessa a entrambi.
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          <div class="ex-card">
-            <p class="ex-card-k">Con chi</p>
-            <p class="ex-card-t">Partner del viaggio, e le società del Gruppo</p>
-            <p class="ex-card-b">Lo stesso meccanismo vale fra aziende diverse e fra società della stessa famiglia, che oggi guardano gli stessi clienti da finestre separate.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">Dove sta il valore</p>
-            <p class="ex-card-t">Arrivare prima della scelta del vettore</p>
-            <p class="ex-card-b">Quando la decisione è «come arrivo», la partita è già giocata sul prezzo. Prima, si gioca sul viaggio.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">La Cina, e il resto dell’Asia</p>
-            <p class="ex-card-t">Dove non si compra su un sito</p>
-            <p class="ex-card-b">Le vendite in Cina sono raddoppiate in un anno. Lì l’acquisto e il pagamento vivono dentro le applicazioni locali: è un canale, non una versione tradotta del vostro.</p>
-          </div>
+          {PRIMA.map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          I numeri sulla Cina: <a href={SOURCES.cina.url} target="_blank" rel="noopener noreferrer">{SOURCES.cina.label}</a>.
           La collaborazione fra aziende su clienti comuni, senza trasferimento di dati, è
-          <strong><a href="https://experienceleague.adobe.com/en/docs/real-time-cdp-collaboration/using/home" target="_blank" rel="noopener noreferrer">Adobe Real-Time CDP Collaboration</a></strong>.
+          <strong><a href={SOURCES.rtcdpCollab.url} target="_blank" rel="noopener noreferrer">{SOURCES.rtcdpCollab.label}</a></strong>:
+          oggi dichiarata per il mercato statunitense e con una licenza Real-Time CDP come
+          prerequisito, quindi qui è un orizzonte, non una cosa da accendere.
         </p>
       </div>
     </Slide>

@@ -1,7 +1,8 @@
 ---
 /**
  * Navigation — UNA barra: marchio a sinistra, rail dei capitoli al centro (nowrap,
- * scorre se non entra), cluster destro (lingua + Admin). Mai su due righe.
+ * scorre se non entra), cluster destro («In dieci minuti» + lingua + Admin).
+ * Mai su due righe.
  */
 import { href } from '@edf/core/utils/url.js';
 import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
@@ -52,6 +53,15 @@ function isActive(slug: string) {
   </ol>
 
   <div class="flex items-center gap-3 flex-shrink-0">
+    <!-- Il taglio «In dieci minuti» non è un capitolo: non entra nel rail, sta nel
+         cluster destro. Sotto `lg` sparisce, perché la barra resta UNA riga. -->
+    <a
+      href={href(base, '/dieci-minuti')}
+      class:list={['ex-nav-link hidden lg:block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm transition-colors no-underline', isActive('dieci-minuti') && 'ex-nav-link--active']}
+      aria-current={isActive('dieci-minuti') ? 'page' : undefined}
+    >
+      In dieci minuti
+    </a>
     {SITE.langs.length > 1 && <LangToggle langs={SITE.langs} />}
     <a
       href={href(base, '/admin')}

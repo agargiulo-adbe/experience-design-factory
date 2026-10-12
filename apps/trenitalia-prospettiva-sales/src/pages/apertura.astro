@@ -5,6 +5,8 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { APERTURA, CONTESTO, TESTE, fontiDi } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
@@ -12,35 +14,23 @@ import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
 /**
  * Capitolo 01 — Il vostro anno, visto da fuori.
  *
- * Experience in UNA lingua (vedi SITE.langs): il copy sta nel markup, senza `<T>`.
- * Se un giorno diventasse bilingue, ogni stringa va riportata dentro `<T it en>`.
+ * Experience in UNA lingua (vedi SITE.langs): il copy sta in `src/data/contenuti.ts`,
+ * senza `<T>`. Se un giorno diventasse bilingue, ogni campo di quel file diventa
+ * `{it, en}` — e le pagine non cambiano.
  *
- * Si apre con una frase SUA, non con Adobe: è la regola del dossier, e quella sul
- * 96% del territorio è la migliore che abbiamo perché è un'occasione raccontata da
- * lui, non una diagnosi portata da noi. Nessun logo in questo capitolo.
+ * Si apre con una frase SUA, non con Adobe: è la regola del dossier. Il 96% è sua,
+ * verbatim; il 75% e il 4% sono un dato di contesto che circola al TTG e NON una
+ * sua citazione — per questo stanno fuori dalle virgolette, con la loro fonte.
+ * Nessun logo in questo capitolo.
  */
 const SLUG = 'apertura';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const contesto = [
-  {
-    k: 'Il mercato',
-    t: 'Da due operatori a quattro',
-    b: 'Nel 2026 l’alta velocità italiana passa da due operatori a quattro: entrano SNCF e Arenaways, partecipata al 33% da Renfe. SNCF ha dichiarato di voler arrivare al 15% di quota entro il 2030.',
-  },
-  {
-    k: 'Il prezzo',
-    t: 'Una leva che si muove da sola',
-    b: 'Dal 1º gennaio 2026 il prezzo del biglietto varia con la domanda. E il piano industriale annunciato a settembre esclude aumenti delle tariffe: verso l’alto la leva è chiusa per decisione di Gruppo.',
-  },
-  {
-    k: 'Il momento',
-    t: 'Un piano che si sta scrivendo',
-    b: 'Il nuovo piano industriale di Gruppo è atteso entro la fine dell’anno. È l’unica finestra in cui un’idea esterna può diventare una riga di piano invece che una richiesta fuori piano.',
-  },
-];
+// Le fonti della slide del contesto: una per fatto, dedotte dalle carte, senza
+// ripetere la stessa pagina due volte.
+const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -56,34 +46,31 @@ const contesto = [
         <p class="ex-ch-num">Capitolo {ch.num}</p>
         <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
         <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Prima di parlare di noi, tre cose che riguardano voi e che non abbiamo scoperto noi:
+          Prima di parlare di noi, quello che riguarda voi e che non abbiamo scoperto noi:
           le avete dette, annunciate o decise voi.
         </p>
         <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
           <p class="ex-ch-agenda-k">In questo capitolo</p>
           <ul role="list">
             <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><span>Il 96% che resta</span></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Quattro operatori, un prezzo fermo</span></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Il mercato, il prezzo, il momento</span></li>
           </ul>
         </div>
       </div>
     </Slide>
 
-    <!-- ── Il 96% — la sua frase, nessun commento nostro ─────────────────── -->
+    <!-- ── Il 96% — il dato, poi le sue parole ───────────────────────────── -->
     <Slide id="slide-novantasei" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">Rimini, ottobre 2025</p>
-        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
-          «Il <strong>75%</strong> degli stranieri che visitano la Penisola si ferma solo nel
-          <strong>4%</strong> del territorio.»
-        </p>
+        <p class="slide-eyebrow">{APERTURA.eyebrow}</p>
+        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08" set:html={APERTURA.dato} />
         <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          «Un potenziale di crescita enorme per aiutarli a scoprire il restante
-          <strong>96%</strong> grazie all’intermodalità che possiamo offrire.»
+          <span set:html={APERTURA.citazione} /> {APERTURA.lettura}
         </p>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Direzione Sales di Trenitalia, TTG Travel Experience, Rimini, ottobre 2025 — <a href="https://www.ansa.it/ansacom/notizie/economia/ferrovie-dello-stato-italiane/2025/10/09/cacciapuoti-trenitalia-investiamo-sulla-intermodalita_379ce4de-97d4-48e7-83b6-064a2a522de8.html" target="_blank" rel="noopener noreferrer">ANSA, 9 ottobre 2025</a>.
+          Il dato come circola al TTG: <a href={SOURCES.turismo75.url} target="_blank" rel="noopener noreferrer">{SOURCES.turismo75.label}</a>.
+          Le sue parole: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> e <a href={SOURCES.ttgAnsa.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgAnsa.label}</a>.
         </p>
       </div>
     </Slide>
@@ -93,15 +80,12 @@ const contesto = [
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
-          <p class="slide-eyebrow">Il vostro anno, visto da fuori</p>
-          <h2 class="ex-head-title">Tre orologi che per una volta segnano la stessa ora</h2>
-          <p class="ex-head-lead">
-            Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del
-            prezzo si chiude. Non è una brutta notizia: è il motivo per cui conviene guardarla adesso.
-          </p>
+          <p class="slide-eyebrow">{ch.title.it}</p>
+          <h2 class="ex-head-title">{TESTE.contesto.titolo}</h2>
+          <p class="ex-head-lead">{TESTE.contesto.lead}</p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {contesto.map((x) => (
+          {CONTESTO.map((x) => (
             <div class="ex-card">
               <p class="ex-card-k">{x.k}</p>
               <p class="ex-card-t">{x.t}</p>
@@ -110,7 +94,9 @@ const contesto = [
           ))}
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
-          Fonti pubbliche: comunicati del Gruppo (<a href="https://www.fsnews.it/" target="_blank" rel="noopener noreferrer">fsnews.it</a>) e stampa di settore, 2025-2026.
+          Fonti: {fontiContesto.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
+          ))}.
         </p>
       </div>
     </Slide>

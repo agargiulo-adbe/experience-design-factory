@@ -7,6 +7,7 @@ import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import { SITE } from '../data/site';
 import { CHAPTERS, prevSlug } from '../data/chapters';
+import { ASK, COVER, DOMANDE_APERTE } from '../data/contenuti';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
@@ -19,6 +20,10 @@ import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
  * che il nostro interlocutore possa decidere da solo. Qui il passo è una sessione
  * sui loro dati della rete agenzie — la cosa più piccola che fa succedere la
  * seconda riunione.
+ *
+ * Il passo e le domande aperte stanno in `src/data/contenuti.ts`: l'ask vive
+ * anche nel taglio «In dieci minuti», e due versioni della richiesta sono il
+ * modo più rapido di sembrare confusi davanti a un cliente.
  *
  * Le domande aperte stanno in slide per scelta: sono il modo di dire che non siamo
  * venuti con una risposta preconfezionata, e sono anche il contenuto del tavolo di
@@ -39,12 +44,6 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
 
-const domande = [
-  'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
-  'Quanta parte delle vendite passa dai vostri canali e quanta dagli intermediari, e quale dei due volete far crescere?',
-  'Le biglietterie e il personale a bordo come entrano in questa idea di viaggio unico?',
-  'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -71,15 +70,10 @@ const domande = [
     <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">Quello che vi chiediamo</p>
-        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06">
-          Una sessione sui vostri dati,<br />mentre la piattaforma si rifà.
-        </h2>
-        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">
-          Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa
-          manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati,
-          nessun impegno dopo. <strong>Non è un progetto e non è un’offerta.</strong>
-        </p>
+        <p class="slide-eyebrow">{ASK.eyebrow}</p>
+        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
+        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">{ASK.servono}</p>
       </div>
     </Slide>
 
@@ -96,10 +90,11 @@ const domande = [
           </p>
         </div>
         <ul class="tp-domande" role="list" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
-          {domande.map((d) => <li class="tp-domande-row">{d}</li>)}
+          {DOMANDE_APERTE.map((d) => <li class="tp-domande-row">{d}</li>)}
         </ul>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Sono anche l’ordine del giorno del tavolo di lavoro, se deciderete che vale la pena farlo.
+          Le prime due sono l’ordine del giorno della mezza giornata sulle agenzie. Le altre due
+          sono tavoli separati, con altre persone: non le mettiamo nello stesso invito.
         </p>
       </div>
     </Slide>

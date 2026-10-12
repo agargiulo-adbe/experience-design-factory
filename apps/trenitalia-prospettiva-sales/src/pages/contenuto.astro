@@ -6,6 +6,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { MOLTIPLICATORI, UNPOSTO } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_network from '../assets/generated/bg/bg-network.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
@@ -15,6 +17,10 @@ import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
  *
  * Terreno libero: non sfiora nessuna scelta già fatta dal cliente. Parte da una
  * conseguenza aritmetica della SUA riorganizzazione, non da un nostro prodotto.
+ * I numeri sono i suoi, dichiarati al TTG dell'ottobre 2025, e stanno in
+ * `src/data/contenuti.ts` con la loro fonte. Il «4 mercati esteri» che c'era
+ * prima non ha nessuna fonte pubblica: un numero senza fonte, su una slide di
+ * numeri, è il primo che qualcuno chiede.
  * È anche l'unico posto dove entra il collega digitale, e con una distinzione che
  * va detta per intero: lavora accanto alle persone dell'azienda, non parla ai loro
  * clienti. Quella distinzione è ciò che tiene la proposta fuori da perimetri altrui.
@@ -24,11 +30,6 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const moltiplicatori = [
-  { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
-  { v: '4', l: 'mercati esteri presidiati', s: 'più la Cina, dove le vendite sono raddoppiate in un anno' },
-  { v: '70.000', l: 'punti vendita nella rete', s: 'ognuno con il proprio materiale, le proprie vetrine, le proprie stagioni' },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -44,8 +45,9 @@ const moltiplicatori = [
         <p class="ex-ch-num">Capitolo {ch.num}</p>
         <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
         <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Un problema che non esisteva prima della vostra riorganizzazione, e che nessuno
-          dei fornitori in campo sta risolvendo.
+          Un problema che non esisteva prima della vostra riorganizzazione e che non si risolve
+          aggiungendo persone. La domanda che vi facciamo: è già coperto da uno dei cantieri
+          che avete aperto?
         </p>
         <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
           <p class="ex-ch-agenda-k">In questo capitolo</p>
@@ -72,7 +74,7 @@ const moltiplicatori = [
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
-          {moltiplicatori.map((m) => (
+          {MOLTIPLICATORI.map((m) => (
             <div class="tp-stat">
               <p class="tp-stat-v" data-display>{m.v}</p>
               <p class="tp-stat-l">{m.l}</p>
@@ -81,8 +83,10 @@ const moltiplicatori = [
           ))}
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Nessuna struttura creativa produce a mano quel numero di versioni. Si fa una scelta:
-          produrne meno, o produrle in un altro modo.
+          Numeri vostri: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> ·
+          <a href={SOURCES.retePunti.url} target="_blank" rel="noopener noreferrer">{SOURCES.retePunti.label}</a>.
+          Nessuna struttura creativa produce a mano quel numero di versioni: si fa una scelta,
+          produrne meno o produrle in un altro modo.
         </p>
       </div>
     </Slide>
@@ -101,36 +105,28 @@ const moltiplicatori = [
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          <div class="ex-card">
-            <p class="ex-card-k">Il tempo</p>
-            <p class="ex-card-t">Dal brief alla vetrina</p>
-            <p class="ex-card-b">Il numero da guardare non è quanto costa una variante, ma quanti giorni passano prima che sia davanti a un cliente. È lì che si perde una stagione.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">Il marchio</p>
-            <p class="ex-card-t">Conforme senza una revisione a mano</p>
-            <p class="ex-card-b">Le regole del marchio stanno dentro lo strumento invece che in un documento che qualcuno dovrebbe ricordarsi di aprire.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">Le persone</p>
-            <p class="ex-card-t">Le stesse, con meno passaggi a mano</p>
-            <p class="ex-card-b">Non è una slide sul taglio: è una slide su quante versioni la stessa squadra riesce a mettere in circolo in una settimana.</p>
-          </div>
+          {UNPOSTO.map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
         </div>
         <HowItWorks title="E il lavoro agentico, qui" label="E il lavoro agentico, qui" tone="onLight" data-reveal data-reveal-delay="0.2">
           <p>
-            Qui, e soltanto qui, entra un collega digitale: lavora accanto alle vostre persone,
-            dal brief all’approvazione al lancio, con chi decide che continua a decidere.
+            Qui entra l’automazione sul lavoro di produzione: prepara le varianti, le manda in
+            approvazione, le pubblica. Chi approva resta chi approva oggi.
             <strong>È agentico sul lavoro dei vostri, non sulla conversazione con i vostri
-            viaggiatori</strong>: due mestieri diversi.
+            viaggiatori</strong>: due mestieri diversi, e il secondo non lo tocchiamo.
           </p>
           <!-- Gli strumenti su righe separate, non in una frase con tre grassetti: tre
                `<strong>` che vanno a capo dentro lo stesso paragrafo producono riquadri
                che si intersecano, e il check `e` li legge come testo sopra testo. -->
           <ul class="tp-tools" role="list">
-            <li><span class="tp-tools-n"><a href="https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/overview/introduction" target="_blank" rel="noopener noreferrer">Adobe Experience Manager</a></span> il materiale</li>
-            <li><span class="tp-tools-n"><a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/home" target="_blank" rel="noopener noreferrer">Adobe GenStudio for Performance Marketing</a></span> le varianti di campagna</li>
-            <li><span class="tp-tools-n"><a href="https://helpx.adobe.com/legal/product-descriptions/adobe-cx-enterprise-coworker.html" target="_blank" rel="noopener noreferrer">CX Enterprise Coworker</a></span> il lavoro agentico, da giugno 2026</li>
+            <li><span class="tp-tools-n"><a href={SOURCES.aem.url} target="_blank" rel="noopener noreferrer">Adobe Experience Manager</a></span> il materiale</li>
+            <li><span class="tp-tools-n"><a href={SOURCES.genstudio.url} target="_blank" rel="noopener noreferrer">Adobe GenStudio for Performance Marketing</a></span> le varianti di campagna</li>
+            <li><span class="tp-tools-n"><a href={SOURCES.coworker.url} target="_blank" rel="noopener noreferrer">CX Enterprise Coworker</a></span> il lavoro agentico, disponibile da giugno 2026 e in rilascio progressivo</li>
           </ul>
         </HowItWorks>
       </div>
