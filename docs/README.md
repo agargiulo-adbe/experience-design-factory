@@ -5,6 +5,18 @@ you get up to speed without wasting context. Everything tracked here is small Ma
 reading **every** doc below is ~15k tokens total, safely within limits. Read on demand;
 you don't need all of it for most tasks.
 
+## Due mestieri, due guide
+`docs/` ospita **due cose diverse**, e la guida giusta dipende da che cosa stai facendo:
+- **lavoro sulla Factory** (experience, deck, motore) → continua a leggere questo file;
+- **lavoro operativo d'account** (una mail, un'analisi, un rinnovo, un blocco contrattuale
+  su un cliente) → la guida è **`docs/CLAUDE.md`**, che si carica da sé, più il registro
+  `docs/<Cliente>/CONTO.md` e i comandi `/conto` e `/conti`. Lì le regole dei deck **non
+  si applicano**, e c'è scritto perché. Spec: `docs/superpowers/specs/2026-10-12-conto-operativo-account-design.md`.
+
+⚠️ Le cartelle cliente sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
+fail-closed: ignora tutto e riammette i soli documenti della Factory). Il repo è
+**pubblico**: niente di quelle cartelle si copia in un file tracciato. Gate: `pnpm audit:docs`.
+
 ## What loads automatically (don't re-read)
 - **`/CLAUDE.md`** (~4k tok) — agent guide, Quality Bar, deck contract, **Type & legibility contract (BINDING for every deck slide)**, aesthetics. Auto-loaded every session.
 - **memory `MEMORY.md`** (~3k tok) — index of auto-memories, **70 al 9 ott 2026 (sera)**. I singoli file si caricano a richiamo, non tutti insieme.
