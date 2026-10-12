@@ -1,6 +1,6 @@
 ---
-description: "Chiude un conto: deposita lo stato nel registro — dove siamo, chi ha la palla, i fatti nuovi con la fonte — mostrando il diff prima di scrivere. Uso: /account-close [<Conto>]"
-argument-hint: "[<Conto>]"
+description: "Chiude un account: deposita lo stato nel registro — dove siamo, chi ha la palla, i fatti nuovi con la fonte — mostrando il diff prima di scrivere. Uso: /account-close [<Account>]"
+argument-hint: "[<Account>]"
 ---
 
 Deposita nel registro quello che è emerso. Le regole di contenuto e il template stanno in
@@ -8,7 +8,7 @@ Deposita nel registro quello che è emerso. Le regole di contenuto e il template
 
 Argomento ricevuto: `$ARGUMENTS`
 
-## Quale conto
+## Quale account
 Come per `/account-open`: dall'argomento, altrimenti dalla directory di lavoro, altrimenti
 si chiede. Se il registro non esiste ancora, questo non è il comando giusto: lo crea
 `/account-open`.
@@ -42,7 +42,7 @@ Mostra le righe che cambiano **prima** di salvare. Poi scrivi.
 
 ## 4 — Controlla la dimensione
 Se la sezione di un caso supera **~120 righe**, proponi di estrarla in
-`docs/<Conto>/CASO-<slug>.md` lasciando nel `CONTO.md` la riga di rimando. **Proponi**, non
+`docs/<Account>/CASO-<slug>.md` lasciando nel `ACCOUNT.md` la riga di rimando. **Proponi**, non
 farlo d'iniziativa.
 
 ## 5 — Se è emerso un segnale, proponilo al Radar

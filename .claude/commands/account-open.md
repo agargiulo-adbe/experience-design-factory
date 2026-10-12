@@ -1,39 +1,39 @@
 ---
-description: "Apre un conto: legge il registro, poi Outlook, Teams, le trascrizioni Plaud, WhatsApp e la cartella da dove era rimasto, e riferisce cosa è cambiato e chi ha la palla. NON scrive. Uso: /account-open [<Conto>]"
-argument-hint: "[<Conto>]"
+description: "Apre un account: legge il registro, poi Outlook, Teams, le trascrizioni Plaud, WhatsApp e la cartella da dove era rimasto, e riferisce cosa è cambiato e chi ha la palla. NON scrive. Uso: /account-open [<Account>]"
+argument-hint: "[<Account>]"
 ---
 
-Apri il **conto** di un cliente — o `Adobe`, per il lavoro non legato a un cliente — e di'
+Apri il **account** di un cliente — o `Adobe`, per il lavoro non legato a un cliente — e di'
 a che punto siamo. Le regole di contenuto, il template e i confini con dossier, panel e
 memoria stanno in **`docs/CLAUDE.md`**: è già in contesto se la sessione è sotto `docs/`.
 
 Argomento ricevuto: `$ARGUMENTS`
 
-## Quale conto
-1. Se l'argomento nomina un conto, è quello (confronta con le cartelle di `docs/`,
+## Quale account
+1. Se l'argomento nomina un account, è quello (confronta con le cartelle di `docs/`,
    tollerando abbreviazioni: «BG» → `Banca Generali`).
-2. Altrimenti ricavalo dalla directory di lavoro, se è sotto `docs/<Conto>/`.
-3. Altrimenti elenca i conti con un registro e quelli senza, e chiedi quale. Non indovinare.
+2. Altrimenti ricavalo dalla directory di lavoro, se è sotto `docs/<Account>/`.
+3. Altrimenti elenca gli account con un registro e quelli senza, e chiedi quale. Non indovinare.
 
 `docs/Adobe Material/`, `docs/Factory/`, `docs/Claude/` e `docs/superpowers/` **non sono
-conti**: sono depositi di materiale. Non hanno registro e non si aprono con questo comando.
-`docs/Adobe/` invece è un conto a tutti gli effetti.
+account**: sono depositi di materiale. Non hanno registro e non si aprono con questo comando.
+`docs/Adobe/` invece è un account a tutti gli effetti.
 
 ## 1 — Leggi il Radar, poi il registro
 
 **Prima il Radar** (`docs/Adobe/Radar/`), che possiede i numeri e la struttura:
-- `Mappa_Account/Anagrafica_account.md` — la riga di questo conto: ECC ID, IMS Org, ARR,
+- `Mappa_Account/Anagrafica_account.md` — la riga di questo account: ECC ID, IMS Org, ARR,
   team Adobe (AE, CSM, SC), prodotti con date di contratto, salute, adoption score;
 - `Mappa_Account/Panorama_AAAAMMGG.md` (**il più recente**) — rinnovi, opportunità aperte,
-  rischi di questo conto;
+  rischi di questo account;
 - `Mappa_Account/Goal_Sheet_FY*.md` — se un rinnovo o un'opportunità è su un prodotto
   **eleggibile**, conta per il piano; se non lo è, è relazione e va detto così;
-- `alias_cartelle.md` — con che nome questo conto sta nel book (`Telecom Italia` è `TIM`).
+- `alias_cartelle.md` — con che nome questo account sta nel book (`Telecom Italia` è `TIM`).
 
 Dì **quanto è vecchio** lo snapshot del Radar. Oltre un mese e mezzo, i numeri si citano
 come datati: si rinfrescano coi prompt in `Mappa_Account/_PROMPT_PanoAI.md`.
 
-**Poi** `docs/<Conto>/CONTO.md`, che possiede la storia. Se non esiste, salta a **Primo
+**Poi** `docs/<Account>/ACCOUNT.md`, che possiede la storia. Se non esiste, salta a **Primo
 registro**. Prendi la data del campo `aggiornato`.
 
 > **La divisione del lavoro, e perché.** I numeri stanno nel Radar, la storia nel registro.
@@ -43,7 +43,7 @@ registro**. Prendi la data del campo `aggiornato`.
 
 ## 2 — Cerca cosa è cambiato, in cinque fonti
 
-Tutte **dalla data di `aggiornato`** a oggi, cercando per nome del conto e per le società
+Tutte **dalla data di `aggiornato`** a oggi, cercando per nome dell'account e per le società
 collegate se il registro le nomina. Per ogni cosa utile annota **data, chi (ruolo), e
 l'identificativo** che permette di ritrovarla.
 
@@ -58,7 +58,7 @@ l'identificativo** che permette di ritrovarla.
    ha latenza — si guarda il Plaud MCP (`list_files` con `date_from`).
 4. **WhatsApp**, via Centralino (`mail_search` con `accounts`). Vedi sotto: l'account che
    porta il lavoro e il modo di cercarlo non sono quelli che il nome suggerisce.
-5. **Cartella del conto**: file arrivati dopo quella data (`ls -lt`), in particolare
+5. **Cartella dell'account**: file arrivati dopo quella data (`ls -lt`), in particolare
    footprint, allegati, trascrizioni, PDF di dashboard.
 
 **Niente altro.** Non aprire Fluffy né il web: qui serve sapere cosa si è mosso, non
@@ -70,10 +70,10 @@ riverificare il mondo.
   propri** con regolarità: un nome che compare solo lì non si scrive nel registro senza
   risalire a una firma di mail o al parlato.
 - **Una menzione di passaggio non è un fatto.** La ricerca per contenuto trova il nome di un
-  cliente anche dentro riunioni che parlano d'altro. Una trascrizione conta per un conto solo
-  se **quel conto è l'oggetto** della riunione; altrimenti è una traccia da verificare, e si
-  riferisce come tale. E una trascrizione che non riguarda il conto **non si apre**: in quella
-  cartella ci sono anche riunioni interne e colloqui, che non c'entrano niente con un conto
+  cliente anche dentro riunioni che parlano d'altro. Una trascrizione conta per un account solo
+  se **quell'account è l'oggetto** della riunione; altrimenti è una traccia da verificare, e si
+  riferisce come tale. E una trascrizione che non riguarda l'account **non si apre**: in quella
+  cartella ci sono anche riunioni interne e colloqui, che non c'entrano niente con un account
   cliente.
 
 ### WhatsApp — quale account, e come si legge
@@ -84,14 +84,14 @@ colleghi e dei referenti cliente, correnti (verificato il 12 ott 2026).
 
 - `whatsapp-aziendale` è un **archivio storico**: l'indice si ferma al 2022. Si guarda
   quando si ricostruisce una storia vecchia, non per sapere cosa si è mosso ieri.
-- `whatsapp-app-business` è **un'altra attività**: fuori dal giro di un conto.
+- `whatsapp-app-business` è **un'altra attività**: fuori dal giro di un account.
 
 Due differenze pratiche rispetto alla posta:
-- **Si cerca per NOME DI PERSONA**, non solo per nome del conto. WhatsApp è
+- **Si cerca per NOME DI PERSONA**, non solo per nome dell'account. WhatsApp è
   persona-a-persona: il referente o il collega è l'indice, il cliente spesso non viene
   nominato affatto.
 - Quell'account **mescola lavoro e vita privata**. Nel registro entra solo ciò che riguarda
-  il conto; il resto non si cita, non si riassume e non si commenta.
+  l'account; il resto non si cita, non si riassume e non si commenta.
 - Un messaggio WhatsApp **non ha un identificativo di thread**: nel log si scrive
   `WhatsApp <data, chi>`.
 
@@ -115,7 +115,7 @@ conferma. Chiudi chiedendo che cosa si fa. Per scrivere c'è **`/account-close`*
 
 ---
 
-# Primo registro di un conto
+# Primo registro di un account
 
 1. Guarda cosa c'è: `ls` della cartella, i `.md` già presenti (`DOSSIER-`, `RESEARCH-`,
    `RIUNIONE-`, `PANEL-`), il footprint o il `data.xlsx` se c'è.
@@ -130,6 +130,6 @@ conferma. Chiudi chiedendo che cosa si fa. Per scrivere c'è **`/account-close`*
 # Sempre
 
 - **Non inviare posta.** Solo bozze.
-- **Non committare** niente da `docs/<Conto>/`: è materiale riservato in un repo pubblico,
+- **Non committare** niente da `docs/<Account>/`: è materiale riservato in un repo pubblico,
   ed è ignorato da git per questo.
-- **Nomi di persone solo nel `CONTO.md`**, mai in un file tracciato.
+- **Nomi di persone solo nel `ACCOUNT.md`**, mai in un file tracciato.

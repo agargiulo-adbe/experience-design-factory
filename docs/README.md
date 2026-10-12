@@ -10,8 +10,8 @@ you don't need all of it for most tasks.
 - **lavoro sulla Factory** (experience, deck, motore) → continua a leggere questo file;
 - **lavoro operativo d'account** (una mail, un'analisi, un rinnovo, un blocco contrattuale
   su un cliente) → la guida è **`docs/CLAUDE.md`**, che si carica da sé, più il registro
-  `docs/<Cliente>/CONTO.md` e i comandi `/account-open`, `/account-close` e `/accounts`. Lì le regole dei deck **non
-  si applicano**, e c'è scritto perché. Spec: `docs/superpowers/specs/2026-10-12-conto-operativo-account-design.md`.
+  `docs/<Account>/ACCOUNT.md` e i comandi `/account-open`, `/account-close` e `/accounts`. Lì le regole dei deck **non
+  si applicano**, e c'è scritto perché. Spec: `docs/superpowers/specs/2026-10-12-account-operativo-design.md`.
 
 ⚠️ Le cartelle cliente sotto `docs/` sono **ignorate da git** (`docs/.gitignore` è
 fail-closed: ignora tutto e riammette i soli documenti della Factory). Il repo è
