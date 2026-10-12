@@ -8,6 +8,9 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
+import bg_cover from '../assets/generated/bg/bg-cover.webp';
+import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 
 /**
  * Copertina e percorso.
@@ -19,6 +22,12 @@ import { CHAPTERS } from '../data/chapters';
  * linea si raddrizza e diventa verticale.
  */
 const type = EXPERIENCE_TYPES[SITE.type];
+// Le clip NON stanno nel repo: `apps/*/public/media/*.mp4` è git-ignorato, quindi
+// un file locale non arriverebbe mai al sito pubblicato. Vivono sulla Release
+// `media` e si referenziano per URL assoluto, come fanno le altre experience.
+// Il poster invece è un .jpg leggero e viaggia col repo: regge il primo paint e
+// «Riduci movimento», dove la clip non parte.
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-cover.loop.mp4';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
@@ -32,8 +41,14 @@ const last = CHAPTERS[CHAPTERS.length - 1];
   <DeckContainer wallScale nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
 
     <!-- ── 0 · Copertina ─────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={CLIP}
+        poster={`${import.meta.env.BASE_URL}media/cover-loop.poster.jpg`}
+        scrim="absolute inset-0 bg-[rgba(27,34,48,0.72)]"
+        opacity={0.85}
+      />
       <div class="ex-cover" data-reveal>
         <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
         <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
@@ -52,8 +67,8 @@ const last = CHAPTERS[CHAPTERS.length - 1];
     </Slide>
 
     <!-- ── 1 · Il percorso: una linea, sette fermate ─────────────────────── -->
-    <Slide id="slide-percorso" bg="inverse" align="center">
-      <div slot="backdrop" class="ex-bg-paper"></div>
+    <Slide id="slide-percorso" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="ex-percorso">
         <p class="slide-eyebrow" data-reveal>Il percorso</p>
         <h2 class="ex-percorso-title" data-reveal data-reveal-delay="0.08">«{type.question.it}»</h2>
@@ -62,7 +77,7 @@ const last = CHAPTERS[CHAPTERS.length - 1];
           centrali sono i quattro punti del percorso di acquisto, l’ultima è il passo che
           vi chiediamo. Si può salire e scendere dove volete.
         </p>
-        <ol class="tp-linea" data-reveal data-reveal-delay="0.22">
+        <ol class="tp-linea" data-stagger="0.09" data-reveal data-reveal-delay="0.22">
           {CHAPTERS.map((c) => (
             <li class="tp-linea-stop">
               <a href={href(base, '/' + c.slug)} class="tp-linea-link">

@@ -62,7 +62,12 @@ export async function initCountUp(container: HTMLElement) {
 
   if (REDUCED_MOTION) {
     els.forEach(el => {
-      el.textContent = el.dataset.countUp || el.textContent;
+      // Con prefisso/suffisso lo stato statico deve essere il numero COMPLETO:
+      // scrivere il solo `data-count-up` mostrava «70» al posto di «70.000», cioè
+      // un numero sbagliato a chi ha «Riduci movimento» — e il contratto dice che
+      // la versione senza animazione dipinge lo stato finale, non un pezzo.
+      const t = el.dataset.countUp;
+      if (t) el.textContent = (el.dataset.countPrefix || '') + t + (el.dataset.countSuffix || '');
     });
     return;
   }

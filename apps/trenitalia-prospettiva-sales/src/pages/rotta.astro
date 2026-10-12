@@ -7,6 +7,10 @@ import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import { SITE } from '../data/site';
 import { CHAPTERS, prevSlug } from '../data/chapters';
+import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
+import bg_close from '../assets/generated/bg/bg-close.webp';
+import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 
 /**
  * Capitolo 07 — La rotta.
@@ -25,6 +29,12 @@ import { CHAPTERS, prevSlug } from '../data/chapters';
  */
 const SLUG = 'rotta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+// Le clip NON stanno nel repo: `apps/*/public/media/*.mp4` è git-ignorato, quindi
+// un file locale non arriverebbe mai al sito pubblicato. Vivono sulla Release
+// `media` e si referenziano per URL assoluto, come fanno le altre experience.
+// Il poster invece è un .jpg leggero e viaggia col repo: regge il primo paint e
+// «Riduci movimento», dove la clip non parte.
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-close.loop.mp4';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
@@ -45,8 +55,8 @@ const domande = [
   <DeckContainer wallScale nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num">Capitolo {ch.num}</p>
         <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
@@ -58,8 +68,8 @@ const domande = [
     </Slide>
 
     <!-- ── Il passo ──────────────────────────────────────────────────────── -->
-    <Slide id="slide-passo" bg="primary" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
         <p class="slide-eyebrow">Quello che vi chiediamo</p>
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06">
@@ -74,8 +84,8 @@ const domande = [
     </Slide>
 
     <!-- ── Le domande aperte ─────────────────────────────────────────────── -->
-    <Slide id="slide-domande" bg="inverse" align="left">
-      <div slot="backdrop" class="ex-bg-paper"></div>
+    <Slide id="slide-domande" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <p class="slide-eyebrow">Quello che non sappiamo</p>
@@ -95,8 +105,14 @@ const domande = [
     </Slide>
 
     <!-- ── Slide-firma ───────────────────────────────────────────────────── -->
-    <Slide id="slide-signature" bg="primary" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-signature" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={CLIP}
+        poster={`${import.meta.env.BASE_URL}media/close-loop.poster.jpg`}
+        scrim="absolute inset-0 bg-[rgba(27,34,48,0.72)]"
+        opacity={0.85}
+      />
       <CoBrand variant="hero" data-reveal />
       <p class="ex-sig-line" data-reveal data-reveal-delay="0.1">
         {SITE.name}. Il passo dopo: un tavolo di lavoro sulle domande aperte.
