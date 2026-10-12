@@ -36,6 +36,29 @@ materiale Adobe — attenzione a non confonderla con `docs/Adobe/`), `docs/Facto
 `docs/Claude/`, `docs/superpowers/`. `/account-open` non le apre e `/accounts` non le
 elenca.
 
+## I comandi
+
+Dentro una sessione, tutti e tre si trovano con `/acc` + TAB:
+
+| | Che cosa fa |
+| --- | --- |
+| `/account-open [<Conto>]` | legge il Radar, poi il registro, poi le cinque fonti; **riferisce senza scrivere** |
+| `/account-close [<Conto>]` | deposita lo stato, diff prima di salvare |
+| `/accounts [fermi]` | la vista d'insieme su tutti i conti |
+
+Fuori da una sessione c'è la **stessa parola**, come funzione di shell — nessun nome in più
+da ricordare, e costa zero token:
+
+```zsh
+# in ~/.zshrc
+accounts() {
+  ( cd "$HOME/Documents/progetti/Experience Design Factory" && pnpm --silent accounts "$@" )
+}
+```
+
+Funziona da qualunque cartella, anche fuori dal repo (`pnpm accounts` da solo no: vuole
+essere dentro). `accounts --fermi` mostra solo ciò che chiede attenzione.
+
 ## Il Radar e i registri: chi possiede che cosa
 
 Sotto `docs/Adobe/Radar/` vive il **Radar Opportunità**, alimentato a mano da PanoAI
