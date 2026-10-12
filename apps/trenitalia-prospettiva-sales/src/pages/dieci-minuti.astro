@@ -9,7 +9,7 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
-import { APERTURA, CONTESTO, COVER, DOMANDA, PUNTI, ASK, TESTE, card } from '../data/contenuti';
+import { APERTURA, CONTESTO, COVER, DOMANDA, PUNTI, ASK, TESTE, card, fontiDi } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
@@ -43,6 +43,7 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const type = EXPERIENCE_TYPES[SITE.type];
 const first = CHAPTERS[0];
+const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
 const COVER = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-cover.loop.mp4';
 const CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-close.loop.mp4';
 ---
@@ -104,7 +105,7 @@ const CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-factory/re
           <h2 class="ex-head-title">{TESTE.contesto.titolo}</h2>
           <p class="ex-head-lead">{TESTE.contesto.leadBreve}</p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+                <div class="ex-cards" data-reveal data-reveal-delay="0.14">
           {CONTESTO.map((x) => card(x, 'breve')).map((x) => (
             <div class="ex-card">
               <p class="ex-card-k">{x.k}</p>
@@ -113,6 +114,13 @@ const CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-factory/re
             </div>
           ))}
         </div>
+        <!-- Le fonti stanno anche qui: questa pagina viene letta da sola, da chi non era
+             in sala, e un taglio senza fonti è un taglio che chiede di fidarsi. -->
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          Fonti: {fontiContesto.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
+          ))}.
+        </p>
       </div>
     </Slide>
 

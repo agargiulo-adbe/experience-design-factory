@@ -5,7 +5,7 @@
 
 ## 37. Trenitalia — «Dove può arrivare il viaggio» (Prospettiva per la Direzione Sales)
 
-**Stato al 2026-10-12: draft, spenta sullo showcase, mai passata da un panel.**
+**Stato al 2026-10-12 (sera): draft, spenta sullo showcase, due giri di panel fatti e applicati.**
 App: `apps/trenitalia-prospettiva-sales`. Tipo: **Prospettiva** (la domanda del cliente è «dove
 potremmo arrivare?», e la stanza è precedente a qualunque discovery). È la **seconda** experience
 sul Gruppo FS e non va confusa con «Connessioni Intelligenti» (§36, Parte 8), che è un Blueprint su
@@ -79,10 +79,60 @@ bianco. Da qui sono nati anche **`audit:ink`** e **`audit:fonti`** (§11, voci d
 
 ### 37.6 Gate
 
-`audit:deck` **0 HARD su 5 viewport fino a 3840×2160** (`wallScale` acceso **dopo** il gate, non
-prima), `audit:ink` pulito su 231→243 blocchi, `audit:wrap` pulito, `copy-audit` **0 HARD e 0 SOFT**
-(rubrica de-AI e voce istituzionale comprese), `audit:fonti` 12 link 0 rotti, `typecheck` 0 errori.
-⚠️ **Nessuno di questi prova che il cliente compri l'argomento**: il panel è il P0 di §10 (Parte 2).
+`audit:deck` **0 HARD** a 1920/1440/1280 (34 slide su 9 rotte; il residuo è tutto soft: `a` 27,
+`i` 16, `g` 8 — bande di lettura e uso dello spazio su slide volutamente ariose), `audit:ink`
+pulito su 312 blocchi, `audit:wrap` pulito, `copy-audit` **0 HARD e 0 SOFT**, `audit:taglio`
+**ALLINEATO**, `audit:fonti` 28 link, **nessuno rotto e nessuno generico** (le tre righe senza
+link sono la nostra misura, che non è pubblica). ⚠️ **Nessuno di questi prova che il cliente
+compri l'argomento**: per quello serve il panel, §37.7.
+
+### 37.7 Il panel del 12 ottobre — due giri, e che cosa ha trovato
+
+Sei personas cieche (lui, il Direttore Generale, marketing, Customer Operations, il presidio
+digitale, il Digital Business Partner di FSTechnology) più il fact-checker e l'arbitro.
+Verdetti e JSON grezzi in `docs/Ferrovie/PANEL-VERDICT-2026-10-12-round{1,2}.md` e
+`docs/Ferrovie/panel/` (git-ignorati). Personas: `docs/Ferrovie/PANEL-PERSONAS-SALES.md`.
+
+| Asse | giro 1 | giro 2 |
+|---|---|---|
+| credibilità dei fatti | 2,0 | 3,2 |
+| rilevanza per me | 4,0 | 4,0 |
+| chiarezza | 3,8 | 3,8 |
+| rischio (5 = nessuno) | 2,3 | 2,8 |
+| azionabilità | 2,8 | 3,2 |
+
+Al primo giro **sei «accetto a condizione» su sei**; al secondo il Direttore Sales passa a
+**«sì»** e restano cinque condizionati. **Quindici fatti refutati**, e i tre che contano di più
+erano invisibili ai gate perché i link rispondevano: la slide d'apertura attribuiva a lui, fra
+virgolette, una frase che l'articolo ANSA citato **non contiene**; «da due operatori a quattro»
+è falso (sono due, SNCF è il terzo e debutta non prima di fine 2027); i **70.000 punti vendita
+non sono le agenzie** ma la rete di terzi che vende il Regionale, con un numero del 2014 — il
+canale suo sono **12.400 agenzie**, contate da lui. Dettaglio e correzioni in
+`docs/Ferrovie/CORREZIONI-DA-RIPORTARE-NEL-DOSSIER-2026-10-12.md`: **le stesse righe stanno
+ancora nel dossier**, che è quello che il team legge per prepararsi.
+
+⚠️ **La lezione che vale oltre questo deck**: `audit:fonti` verifica che il link **risponda**,
+non che dica quella frase. Da qui due cose nuove — il SOFT sui **link generici** (tre slide
+citavano due homepage per sei fatti) e il campo `cosaDice` in `src/data/sources.ts`, che tiene
+scritto che cosa ogni pagina conferma **verbatim**.
+
+**Che cosa resta aperto dopo due giri** (il contratto dice due, non tre): nessun ordine di
+grandezza del valore per i quattro punti — e non si inventa, si chiede; nessun indicatore del
+loro mestiere (riempimento, ricavo per posto-km, mix diretto/intermediato); il parco applicativo
+del cliente non è mai descritto; manca una riga su che cosa **non** duplichiamo rispetto ai
+cantieri aperti con gli altri fornitori. Tutti e quattro chiedono numeri o scelte che il team
+d'account deve portare: sono punti per una persona, non per un altro giro di panel.
+
+### 37.8 «In dieci minuti», il taglio che non può divergere
+
+`/dieci-minuti/` — 7 slide (copertina, la sua frase, il contesto, la domanda, i quattro punti,
+il passo, la firma) con **l'ask dentro**, perché un'ora concessa diventa venti minuti più spesso
+di quanto si ammetta, ed è anche la versione che lui gira al suo capo. Non è una copia: copia e
+fonti stanno in `src/data/contenuti.ts` e `src/data/sources.ts`, e dove il taglio ha bisogno di
+meno parole la versione breve è un **campo accanto** a quella lunga (`bBreve`, `leadBreve`).
+Lo verifica `pnpm audit:taglio` (§11): HARD su copia a mano, numeri che solo il taglio afferma,
+fonti che solo il taglio porta. È la prima applicazione della funzione, ora generale
+(`skills/experience-design/references/taglio-dieci-minuti.md`).
 
 ---
 

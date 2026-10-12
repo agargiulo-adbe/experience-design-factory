@@ -78,7 +78,7 @@ export const TESTE = {
    numeri. Su una slide d'apertura costruita sulle parole dell'interlocutore,
    quello è l'errore che costa tutto il resto del documento. */
 export const APERTURA = {
-  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025',
+  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025 — parole vostre',
   /** Dato di contesto: niente virgolette, niente attribuzione a lui. */
   dato: 'Il <strong>75%</strong> degli stranieri che visitano l’Italia si ferma sul <strong>4%</strong> del territorio.',
   /** Sue parole, verbatim. */
@@ -86,9 +86,9 @@ export const APERTURA = {
     '«Contribuiamo a far conoscere agli italiani e soprattutto ai visitatori stranieri quel <strong>96% del territorio italiano non ancora esplorato</strong>.»',
   /** Come lo legge lui, e con che leva. */
   lettura:
-    'Lo stesso giorno, sulla leva: «investiamo sull’intermodalità, arricchendo il nostro pacchetto con un’offerta capillare grazie anche alle connessioni di Busitalia».',
+    'E, lo stesso giorno, sulla leva: «investiamo sull’intermodalità, arricchendo il nostro pacchetto con un’offerta capillare grazie anche alle connessioni di Busitalia».',
   letturaBreve:
-    'E la leva che ha indicato è l’intermodalità, «grazie anche alle connessioni di Busitalia».',
+    'E la leva che avete indicato è l’intermodalità, «grazie anche alle connessioni di Busitalia».',
 };
 
 /* ── Capitolo 01 · i tre orologi ───────────────────────────────────────────
@@ -100,9 +100,9 @@ export const CONTESTO: Card[] = [
   {
     k: 'Il mercato',
     t: 'Da due operatori a tre, e il terzo è autorizzato',
-    b: 'Sull’alta velocità italiana oggi siete in due. SNCF ha il via libera da marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato. Sulla rete tradizionale è già entrato un operatore partecipato da Renfe.',
-    bBreve: 'Sull’alta velocità siete in due: SNCF ha il via libera da marzo 2026 e dichiara di volere il 15% del mercato.',
-    fonti: ['sncf', 'arenaways'],
+    b: 'Sull’alta velocità italiana oggi siete in due. SNCF ha il via libera dell’Antitrust da marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato italiano dell’alta velocità.',
+    bBreve: 'Sull’alta velocità siete in due. SNCF ha il via libera da marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato.',
+    fonti: ['sncf'],
   },
   {
     k: 'Il prezzo',
@@ -167,7 +167,7 @@ export const PUNTI: Punto[] = [
   {
     n: '04',
     dove: 'Nel canale che è vostro',
-    t: 'In dodicimila agenzie che vendono e non rispondono',
+    t: 'In 12.400 agenzie che vendono e non rispondono',
     b: 'La rete intermediata vende ogni giorno e non restituisce quasi nulla: quali agenzie vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
     bBreve: 'La rete intermediata vende ogni giorno e non restituisce quasi nulla: chi vende che cosa, e dove si ferma la proposta multiprodotto.',
   },
@@ -244,7 +244,7 @@ export const PRIMA: Card[] = [
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
   { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
-  { v: '70.000', l: 'punti vendita di terzi', s: 'ricevitorie, bar, tabaccherie ed edicole che vendono il Regionale: è un dato del 2014, da aggiornare insieme' },
+  { v: '70.000', l: 'punti vendita nella rete commerciale', s: 'ricevitorie, bar, tabaccherie ed edicole oltre alle biglietterie: dato del 2014, da aggiornare insieme' },
 ];
 
 export const UNPOSTO: Card[] = [
@@ -274,7 +274,7 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> punti di terzi — ricevitorie, bar, tabaccherie, edicole — vendono il Regionale. Di tutto questo canale sapete quello che vi raccontano i conti.',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita della rete commerciale — ricevitorie, bar, tabaccherie, edicole — da un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
   dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
   domanda:
     'PICO, la piattaforma con cui le agenzie vi vendono, è del 2011 e ha preso il posto di Sipax. Ci risulta che la stiate rifacendo: se è così, finché il capitolato è aperto la misura è una riga di requisiti; dopo è un progetto a sé. È una domanda, non un’affermazione.',

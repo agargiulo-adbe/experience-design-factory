@@ -167,8 +167,10 @@
 > assistente** il 12, e **la tesi è cambiata**: non «gli assistenti sbagliano», ma *dipende da quale* —
 > uno costruisce la risposta sui rivenditori e due volte su otto sbaglia di chi sono le Frecce, l'altro
 > va sui siti ufficiali e non sbaglia mai. Su una slide che accusa qualcuno di sbagliare un fatto,
-> sbagliare un fatto è fatale. **Il panel su questa experience non è mai stato lanciato** (P0 nuovo), e
-> l'incontro è dopo il 20 ottobre. Da lì sono nati **`audit:ink`** — che misura il contrasto del *testo*
+> sbagliare un fatto è fatale. **Il panel è stato fatto la sera del 12, due giri** (§37.7): credibilità
+> dei fatti da 2,0 a 3,2 su 5, quindici fatti refutati e corretti — fra cui una citazione d'apertura che
+> l'articolo citato non conteneva — e il taglio **«In dieci minuti»**, che ora è una funzione della
+> Factory con il suo gate (`audit:taglio`). L'incontro è dopo il 20 ottobre. Da lì sono nati **`audit:ink`** — che misura il contrasto del *testo*
 > leggendo i pixel dello screenshot, e ha trovato 19 blocchi sotto AA mentre `audit:deck` stampava 0
 > HARD — e **`audit:fonti`**, con la regola BINDING che una fonte pubblica citata in slide **porta il
 > link**. Sul fronte `docs/`, il `.gitignore` si è **rovesciato**: ignora tutto e riammette i soli
