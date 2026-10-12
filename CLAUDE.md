@@ -5,6 +5,13 @@
 > status, UniCredit content model & verified product naming, deck runtime features, audit
 > method, pending items, change log). Never `Read` the `docs/*.pptx`/`*.mp4` (huge, git-ignored).
 
+## Lavoro operativo d'account — un'altra guida
+Se la sessione è aperta su `docs/` o su `docs/<Cliente>/` e il lavoro è **operativo**
+(una mail, un'analisi, un rinnovo, un blocco contrattuale), la guida è **`docs/CLAUDE.md`**
+e **le regole di questo file non si applicano**: lì il registro è `docs/<Cliente>/CONTO.md`,
+i comandi sono `/conto` e `/conti`. Le cartelle cliente sono **ignorate da git** e il repo è
+**pubblico**: nulla di quel materiale finisce in un file tracciato (gate `pnpm audit:docs`).
+
 ## Project Overview
 Monorepo for the **Experience Design Factory**: a reusable engine where each client
 **Experience Design** is a *skin* (design tokens + content + assets + config) over the

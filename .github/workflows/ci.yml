@@ -16,6 +16,11 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Primo, non ultimo: è un gate di riservatezza su un repo PUBBLICO e
+      # costa secondi. Se sotto docs/ è finito materiale di un cliente, il
+      # giro deve rompersi subito, non dopo cinque minuti di build.
+      - name: docs/ non contiene materiale di cliente
+        run: pnpm audit:docs
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
