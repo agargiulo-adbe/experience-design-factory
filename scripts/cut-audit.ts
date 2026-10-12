@@ -66,7 +66,19 @@ async function rendi(route: string): Promise<Reso> {
   await page.goto(BASE + route, { waitUntil: 'networkidle' });
   return page.evaluate(() => {
     const slides = Array.from(document.querySelectorAll('[data-slide]'));
-    const testo = slides.map((s) => (s.textContent || '')).join('\n');
+    // I nodi di testo si raccolgono UNO PER UNO e si uniscono con uno spazio: con
+    // `textContent` due elementi adiacenti si fondono («…2029.» + «2.5 million» =
+    // «2029.2.5») e il confronto dei numeri inventa differenze che non ci sono —
+    // è successo al primo giro su Intesa, e un gate che grida al lupo è peggio di
+    // nessun gate.
+    // (niente funzione con nome qui dentro: tsx la trasforma in qualcosa che nel
+    // browser non esiste — `__name is not defined`. Si scrive in linea.)
+    const testo = slides.map((el) => {
+      const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const out: string[] = [];
+      while (w.nextNode()) out.push((w.currentNode.nodeValue || '').trim());
+      return out.filter(Boolean).join(' ');
+    }).join('\n');
     const link = slides.flatMap((s) =>
       Array.from(s.querySelectorAll('a[href]'))
         .map((a) => (a as HTMLAnchorElement).href)
