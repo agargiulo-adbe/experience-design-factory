@@ -329,9 +329,36 @@ sui 2-3 account indicati.
 Da oggi `pnpm accounts` gira da sé **lun-ven alle 07:30 via launchd** (`pnpm radar:install`
 installa o riallinea; `scripts/radar-giro.sh` è la sorgente versionata): scrive **sempre** in
 `docs/Adobe/Radar/giri/` — è il battito — e **notifica solo se c'è un rilievo**, massimo cinque
-righe, con la cosa più urgente nel sottotitolo. Quattro soglie e nessuna in più: passo scaduto ·
-rinnovo entro 30 gg (eleggibile per il piano, o su account senza registro) · account fermo da
-oltre 21 gg · evento entro 14 gg o iscrizione entro 3. Gli eventi stanno in
+righe, con la cosa più urgente nel sottotitolo.
+
+⚠️ **Il 13 ott il giro è stato riportato allo scopo**, che non era «igiene e rinnovi» ma
+**creare occasioni di cross-sell, upsell e relazione**: il Radar aveva già i dati e il giro
+leggeva solo i rinnovi. Ora la scala di urgenza è: passo scaduto del registro · evento o
+iscrizione che chiude · **trattativa aperta** che chiude entro 21 gg · **salute in rosso**
+con la ragione dichiarata · rinnovo entro 30 gg (eleggibile, o su account senza registro) ·
+**trattativa ferma** (data passata) · account fermo da oltre 21 gg. Tutto **raggruppato per
+account**: tre righe rosse dello stesso cliente sono una notizia sola, e otto righe di
+salute su quindici affogavano il resto (da 15 rilievi a 11). Quello che ne è uscito: **12
+trattative aperte con una data davanti, $1,7M** (Banca Generali chiude fra 8 giorni con
+tre), **4 ferme** ($202K, più 6 oltre i 18 mesi che sono residui di dati), e **14 solution
+in rosso o con una data vicina** — fra cui **Telecom Italia con tre solution in rosso e
+nessun registro**.
+
+**`accounts --cross` è la mappa del cross-sell** e sta **fuori dalla notifica di
+proposito**: per ogni account del book, quali prodotti eleggibili ha e quali no (208
+caselle vuote). Le fonti interne del ruolo dicono di partire **dal segnale del cliente, non
+dallo SKU che manca**; presentare quelle caselle come cose da fare sarebbe l'approccio che
+giudicano debole. È una mappa da incrociare con un segnale, e il segnale lo trova
+`/account-open`.
+
+⚠️ Tre difetti trovati **provando**, non rileggendo: `toISOString()` stampava ogni data con
+**un giorno di anticipo** (mezzanotte locale → UTC), e su una data di chiusura un giorno è
+la differenza fra arrivare e non arrivare; il parser di P2 leggeva **uno solo dei due
+blocchi** che il file ha, e nove account risultavano «non ha niente» pur avendo milioni di
+ARR; e il recupero contro il doppione usava `compgen`, un builtin di **bash** in uno script
+**zsh**, quindi non proteggeva da niente.
+
+Le quattro soglie originarie restano la base. Gli eventi stanno in
 `docs/Adobe/Radar/eventi.md` perché il calendario costerebbe token e **un invito non dice chi è
 iscritto a un evento**.
 
