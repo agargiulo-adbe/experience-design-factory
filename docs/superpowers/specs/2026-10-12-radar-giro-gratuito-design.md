@@ -184,12 +184,15 @@ account** — una riga, il RBOB sommato, la data prima, e il simbolo «€» se 
 
 - **Lo strato 2 (innesco per conteggi).** Serve quando gli account con registro saranno
   molti: oggi sono cinque e lo strato 1 basta.
-- **`eventi.md` alimentato da `/account-close`.** Quando in una sessione emerge un evento con
-  una data, la chiusura lo propone insieme al resto. Non sostituisce il file: aggiunge una
-  seconda strada perché il gesto manuale non sia l'unica.
+- ~~**`eventi.md` alimentato da `/account-close`.**~~ **Fatto il 13 ott**: la chiusura
+  propone la riga dell'evento con la fonte e ciò che resta da chiarire. Il file resta
+  scrivibile a mano: sono due strade, non una sostituzione.
 - **Il clic sulla notifica.** Chiede `terminal-notifier`, che non è installato. Da valutare
   solo se la notifica senza clic risulta scomoda all'uso.
-- **La copertura.** Il numero più azionabile che lo strato 1 già stampa: 20 account del book
-  su 25 senza registro, $35,5M di ARR, con nove rinnovi entro 120 giorni su account senza
-  cartella. Non è lavoro di questa spec, ma è il lavoro che questa spec rende visibile ogni
-  mattina.
+- **La copertura.** Il numero più azionabile che lo strato 1 stampa. Al 13 ott, **dopo** il
+  primo giro di lavoro che il radar ha reso visibile: da 20 account scoperti su 25 ($35,5M)
+  a **17 su 25 ($28,3M)**, e soprattutto **nessun rinnovo eleggibile resta su un account
+  senza registro** — erano Unicredit Bank (Analytics $1,4M al 13 dic, salute Yellow),
+  FS Technology (Target $409K al 30 dic, adoption 0,0 e nessuna conversazione in posta) e
+  Intesa SanPaolo (Analytics $36K al 31 dic). I 17 che restano hanno rinnovi su prodotti
+  **non** eleggibili: sono relazione, non attainment, e si aprono quando serve.
