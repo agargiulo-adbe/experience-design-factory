@@ -292,6 +292,30 @@ e `scripts/copy-audit.ts` le controlla: **`pnpm --silent exec tsx scripts/copy-a
 <alias>`** → **0 HARD**. Scriverle rispettandole non basta: finché non gira, dipende da quanto
 bene se le ricorda chi scrive. Il gate trova i segni, non giudica il tono.
 
+**Il gate conta le stringhe che misura, e il numero si guarda.** Per mesi ha letto solo gli
+attributi `it=`/`en=` di `<T>`: sulle experience in **una lingua sola** — dove la copia sta nei
+campi dei dati e nel markup — ne vedeva una ventina su qualche centinaio, e stampava PASS.
+Dal 13 ott 2026 legge anche quelle (e salta le note non rese, `cosaDice`, e la console admin):
+l'intestazione dice **quante stringhe ha misurato**, e segnala le app dove ne misura zero.
+Un PASS senza il conto delle stringhe non è un PASS.
+
+### La linearità si misura: una frase si ascolta una volta sola (BINDING, `copy-audit` famiglia `L`)
+Un dirigente legge la slide **mentre qualcuno parla**: una frase che va capita due volte è persa,
+e la semplicità non è un gusto, è la condizione perché l'argomento arrivi. Quattro segni, SOFT,
+che un conteggio sa vedere e che l'occhio perdona sempre:
+- **`L1` frase oltre le ~28 parole** — si taglia in due, non si accorcia il tipo;
+- **`L2` tre o più subordinate** nella stessa frase — una idea per frase;
+- **`L3` doppia relativa** («che … che …») — si riscrive con un punto o un sostantivo;
+- **`L4` apre con una subordinata** e la principale arriva dopo la rincorsa — prima il soggetto.
+Successo che ha generato la regola: sulla Prospettiva Trenitalia la **domanda chiave del deck**
+stava in terza riga, dietro due subordinate e una doppia relativa («Il prezzo lavora già al
+massimo, e verso l'alto il listino è fermo. Dove si perdono le vendite che il prezzo non
+recupera?»). La premessa è contesto: è andata **nell'occhiello**, e la domanda è rimasta sola e
+grande. Il giro completo ha portato il deck da 20 frasi sopra soglia a 0 — e la slide, che
+falliva il check `i`, ora passa tutti e dodici.
+Le eccezioni vere si **dichiarano sulla riga** con `copy-audit-ignore` (una citazione verbatim,
+un ritmo voluto che il panel ha messo fra le cose da non toccare), mai silenziando la famiglia.
+
 ### Audit discipline — hard vs soft; never shrink type to pass
 `audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
 - **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `m` blocchi a bandiera fuori riga · `exp` ogni disclosure ri‑misurata da aperta.

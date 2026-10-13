@@ -169,22 +169,83 @@ const RULES: Rule[] = [
   },
 ];
 
+/* ── SOFT · linearità: quanto regge una frase ascoltata UNA volta sola ────────
+   Un dirigente legge la slide mentre qualcuno parla: una frase che va capita
+   due volte è persa. Non si misura la bellezza — si misurano le quattro cose
+   che costringono a tornare indietro, e che un conteggio sa vedere:
+   la frase troppo lunga, la catena di subordinate, la doppia relativa e la
+   principale che arriva dopo una rincorsa. Successo sul campo: sulla
+   Prospettiva Trenitalia ha portato da 20 a 6 le frasi contorte, e le 14
+   corrette erano tutte difetti veri (la domanda chiave del deck era in terza
+   riga, dietro due subordinate e una doppia relativa). Soglie volutamente
+   larghe: un gate che segnala troppo viene spento. */
+const SUBORD = /\b(?:che|cui|quando|mentre|perché|poiché|finché|affinché|benché|dove|se)\b/gi;
+const APRE_SUB = /^\s*(?:Quando|Dove|Se|Finché|Mentre|Dopo che|Prima che|Dal momento|Poiché|Benché|Nel momento in cui)\b/;
+
+interface FraseFinding { code: string; why: string }
+function linearita(testo: string): FraseFinding[] {
+  const out: FraseFinding[] = [];
+  for (const f of testo.split(/(?<=[.!?])\s+/)) {
+    const frase = f.trim();
+    if (!frase) continue;
+    const parole = (frase.match(/[\wÀ-ÿ’']+/g) ?? []).length;
+    const sub = (frase.match(SUBORD) ?? []).length;
+    if (parole > 28) out.push({ code: 'L1', why: `frase di ${parole} parole: oltre le ~28 si perde il filo leggendo mentre qualcuno parla. Si taglia in due.` });
+    if (sub >= 3 && parole > 14) out.push({ code: 'L2', why: `${sub} subordinate nella stessa frase: una idea per frase regge meglio in sala.` });
+    if (/\bche\b[^.!?]{0,60}?\bche\b/i.test(frase) && parole > 12) out.push({ code: 'L3', why: 'doppia relativa («che … che …»): si riscrive con un punto o un sostantivo.' });
+    if (APRE_SUB.test(frase) && parole > 18) out.push({ code: 'L4', why: 'la frase apre con una subordinata e la principale arriva dopo la rincorsa: si mette prima il soggetto.' });
+  }
+  return out;
+}
+
 // ── Estrazione delle stringhe visibili ───────────────────────────────────────
 // `it="…"` / `en="…"` degli <T>, e `it: '…'` / `en: '…'` nei file di dati.
 // Niente altro: i commenti e il codice non vanno in pagina, e misurarli
 // produrrebbe solo rumore.
 const ATTR = /\b(it|en)\s*=\s*"([^"]{3,})"/g;
 const FIELD = /\b(it|en)\s*:\s*(['"`])((?:(?!\2).){3,})\2/g;
+/* Le experience in UNA lingua non passano da `<T it en>`: la copia sta nei campi
+   dei file di dati (`b: '…'`, `titolo: '…'`) e nel markup delle pagine. Finché
+   il gate guardava solo `it`/`en` le vedeva per il 2% — sulla Prospettiva
+   Trenitalia misurava 14 stringhe su 337 equivalenti, e stampava PASS. Un giro
+   che non misura niente non è un PASS, e qui non lo era per metà monorepo. */
+const FIELD_ANY = /\b([a-zA-Z][\w]*)\s*:\s*(['"`])((?:(?!\2).){12,})\2/g;
+const TESTO_MARKUP = />([^<>{}]{12,})</g;
 
-function visibleStrings(src: string): Array<{ lang: 'it' | 'en'; text: string; line: number }> {
+/** Prosa, non codice: classi, percorsi, URL ed espressioni non vanno in pagina. */
+function èProsa(t: string): boolean {
+  if (/\$\{|var\(|=>|&&|\|\||https?:|\.(?:ts|astro|css|json|webp|png|mp4)\b|^\/|#[0-9a-f]{3,}/i.test(t)) return false;
+  if (!/[a-zà-ÿ]{3}/.test(t)) return false;
+  const tok = t.trim().split(/\s+/);
+  if (tok.length < 4) return false;
+  const tecnici = tok.filter((x) => /[-:/_]/.test(x) && !/[.,;:!?»']$/.test(x)).length;
+  return tecnici / tok.length <= 0.3;
+}
+
+/* Campi che NON finiscono in pagina: note di lavoro accanto alle fonti, chiavi
+   tecniche, etichette della console di amministrazione. Misurarli riempie il
+   gate di rilievi che nessun cliente leggerà mai. */
+const CAMPI_NON_RESI = /^(?:cosaDice|nota|note|why|data|url|href|id|slug|key|code|class|className|path|src)$/;
+
+function visibleStrings(src: string, file: string): Array<{ lang: 'it' | 'en'; text: string; line: number }> {
+  const èPagina = /\.astro$/.test(file);
+  const èConsole = /admin\.astro$/.test(file);
+  if (èConsole) return [];                      // la console non è copia da cliente
   const out: Array<{ lang: 'it' | 'en'; text: string; line: number }> = [];
   const lineOf = (i: number) => src.slice(0, i).split('\n').length;
-  for (const re of [ATTR, FIELD]) {
+  // niente commenti: non vanno in pagina, e misurarli produrrebbe solo rumore
+  const pulito = src.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '))
+                    .replace(/<!--[\s\S]*?-->/g, (c) => c.replace(/[^\n]/g, ' '))
+                    .replace(/^\s*\/\/.*$/gm, (c) => c.replace(/[^\n]/g, ' '));
+  for (const re of [ATTR, FIELD, ...(èPagina ? [TESTO_MARKUP] : [FIELD_ANY])]) {
     re.lastIndex = 0;
     let m: RegExpExecArray | null;
-    while ((m = re.exec(src))) {
-      const lang = m[1] as 'it' | 'en';
-      const text = re === ATTR ? m[2] : m[3];
+    while ((m = re.exec(pulito))) {
+      const bilingue = re === ATTR || re === FIELD;
+      const lang = (bilingue ? m[1] : 'it') as 'it' | 'en';
+      const text = re === ATTR ? m[2] : re === FIELD ? m[3] : re === FIELD_ANY ? m[3] : m[1];
+      if (re === FIELD_ANY && CAMPI_NON_RESI.test(m[1])) continue;
+      if (!bilingue && !èProsa(text)) continue;
       const line = lineOf(m.index);
       // riga marcata a mano come eccezione (mock di chat, messaggi d'interfaccia)
       const lineSrc = src.split('\n')[line - 1] ?? '';
@@ -192,7 +253,13 @@ function visibleStrings(src: string): Array<{ lang: 'it' | 'en'; text: string; l
       out.push({ lang, text, line });
     }
   }
-  return out;
+  const visti = new Set<string>();
+  return out.filter((x) => {
+    const k = `${x.line}·${x.text}`;
+    if (visti.has(k)) return false;
+    visti.add(k);
+    return true;
+  });
 }
 
 function walk(dir: string, out: string[] = []): string[] {
@@ -226,11 +293,23 @@ if (apps.length === 0) {
 }
 
 const findings: Finding[] = [];
+/* Quante stringhe sono state misurate, per app. Serve a non ripetere l'errore che
+   questo gate ha fatto per mesi: leggeva solo `it=`/`en=`, quindi sulle experience
+   in una lingua sola misurava il 2% della copia e stampava PASS. Un PASS senza il
+   conto delle stringhe non è un PASS. */
+const misurate = new Map<string, number>();
 
 for (const app of apps) {
   for (const file of walk(join(APPS, app, 'src'))) {
     const src = readFileSync(file, 'utf8');
-    for (const { lang, text, line } of visibleStrings(src)) {
+    for (const { lang, text, line } of visibleStrings(src, file)) {
+      misurate.set(app, (misurate.get(app) ?? 0) + 1);
+      for (const l of linearita(text)) {
+        findings.push({
+          sev: 'SOFT', code: l.code, file: relative(ROOT, file), line, lang,
+          text: text.trim().slice(0, 70), why: l.why,
+        });
+      }
       for (const rule of RULES) {
         if (rule.langs && !rule.langs.includes(lang)) continue;
         rule.re.lastIndex = 0;
@@ -242,7 +321,9 @@ for (const app of apps) {
           file: relative(ROOT, file),
           line,
           lang,
-          text: m[0].trim().slice(0, 70),
+          // un rilievo di cinque caratteri («5 — p») non dice niente a chi deve
+          // correggerlo: sotto i 24 caratteri si mostra la frase che lo contiene.
+          text: (m[0].trim().length < 24 ? text.trim() : m[0].trim()).slice(0, 90),
           why: rule.why,
         });
       }
@@ -266,7 +347,10 @@ function report(title: string, group: Finding[]) {
   }
 }
 
-console.log(`copy-audit — ${apps.length} app, rubrica de-AI + voce istituzionale + tipografia`);
+const totMisurate = [...misurate.values()].reduce((a, b) => a + b, 0);
+console.log(`copy-audit — ${apps.length} app, ${totMisurate} stringhe misurate · rubrica de-AI + voce istituzionale + tipografia + linearità`);
+const vuote = apps.filter((a) => !misurate.get(a));
+if (vuote.length) console.log(`⚠️  zero stringhe misurate in: ${vuote.join(', ')} — non è un PASS, è un giro a vuoto.`);
 report('HARD — devono essere zero', hard);
 if (!hardOnly) report('SOFT — segni da guardare uno per uno', soft);
 

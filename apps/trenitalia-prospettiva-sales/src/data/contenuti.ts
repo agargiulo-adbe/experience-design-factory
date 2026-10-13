@@ -78,7 +78,7 @@ export const TESTE = {
    numeri. Su una slide d'apertura costruita sulle parole dell'interlocutore,
    quello è l'errore che costa tutto il resto del documento. */
 export const APERTURA = {
-  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025 — parole vostre',
+  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025 · parole vostre',
   /** Dato di contesto: niente virgolette, niente attribuzione a lui. */
   dato: 'Il <strong>75%</strong> degli stranieri che visitano l’Italia si ferma sul <strong>4%</strong> del territorio.',
   /** Sue parole, verbatim. */
@@ -107,14 +107,14 @@ export const CONTESTO: Card[] = [
   {
     k: 'Il prezzo',
     t: 'Una leva che si muove da sola',
-    b: 'Il revenue management sull’alta velocità lo fate da anni, e lavora. Quello che è cambiato è il tetto: i biglietti non aumenteranno, lo ha dichiarato il vertice del Gruppo a settembre. Verso l’alto la leva è chiusa.',
-    bBreve: 'Il revenue management lavora già. Quello che è cambiato è il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
+    b: 'Il revenue management sull’alta velocità lo fate da anni, e lavora. È cambiato il tetto: i biglietti non aumenteranno, lo ha dichiarato il vertice del Gruppo a settembre. Verso l’alto la leva è chiusa.',
+    bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['prezziFermi'],
   },
   {
     k: 'Il momento',
     t: 'Un piano che si sta scrivendo',
-    b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno: lo ha annunciato il vertice a settembre. Il piano si sta scrivendo adesso, ed è il momento in cui un’idea esterna diventa una riga di piano invece che una richiesta fuori piano.',
+    b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno: lo ha annunciato il vertice a settembre. Si sta scrivendo adesso, ed è il momento in cui un’idea esterna diventa una riga di piano invece di una richiesta fuori piano.',
     bBreve: 'Il piano industriale di Gruppo arriva entro la fine dell’anno, e si sta scrivendo adesso: un’idea esterna può diventare una riga di piano.',
     fonti: ['piano'],
   },
@@ -134,11 +134,15 @@ export const CONTESTO: Card[] = [
    diverse: due dei quattro punti si decidono altrove, e dirlo noi prima vale
    molto più che farselo dire da loro. */
 export const DOMANDA = {
-  titolo: 'Il prezzo lavora già al massimo,<br />e verso l’alto il listino è fermo.<br />Dove si perdono le vendite che il prezzo non recupera?',
+  /** La premessa sta nell'occhiello, non nel titolo: è contesto, e finché occupava
+   *  il posto della domanda la domanda arrivava in terza riga, dietro due
+   *  subordinate e una doppia relativa. Qui sopra sta il fatto, sotto la domanda. */
+  eyebrow: 'Il prezzo si muove già da sé, e più in alto non va',
+  titolo: 'Allora dove si perdono le vendite?',
   sub: 'Ha quattro risposte, e stanno in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   subBreve: 'Ha quattro risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   perimetri:
-    'Due di questi quattro punti non si decidono in questa stanza: dalla riorganizzazione commerciale del settembre 2025 il percorso di acquisto sta in Customer Operations, e marca e prezzo nel marketing. Lo mettiamo per iscritto perché non ve lo dobbiate chiedere, e quello che vi chiediamo alla fine cade per intero dentro il vostro perimetro.',
+    'Due di questi quattro punti non si decidono in questa stanza: dal settembre 2025 il percorso di acquisto sta in Customer Operations, marca e prezzo nel marketing. Lo scriviamo noi, e quello che vi chiediamo alla fine resta tutto dentro il vostro perimetro.',
 };
 
 export interface Punto { n: string; dove: string; t: string; b: string; bBreve: string }
@@ -154,22 +158,22 @@ export const PUNTI: Punto[] = [
     n: '02',
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
-    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e la pianificazione porta-a-porta esiste su alcune destinazioni. Quello che non si vede da nessuna parte è il valore del viaggio intero: chi lo sta componendo, nel momento in cui compra, è indistinguibile da chiunque altro.',
+    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e la pianificazione porta-a-porta esiste su alcune destinazioni. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
     bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
   },
   {
     n: '03',
     dove: 'A valle',
     t: 'Nel materiale che non si riesce a produrre',
-    b: 'Una squadra sola che vende tre prodotti più i servizi, sui mercati esteri e in più lingue, ha bisogno di un numero di varianti che nessuna struttura creativa produce a mano.',
-    bBreve: 'Una squadra sola che vende tre prodotti su più mercati e più lingue ha bisogno di più varianti di quante se ne producano a mano.',
+    b: 'Una squadra sola vende tre prodotti più i servizi, su più mercati e in più lingue. Il materiale da produrre si moltiplica, e a mano non si tiene il passo.',
+    bBreve: 'Una squadra sola vende tre prodotti su più mercati e più lingue. Il materiale si moltiplica, e a mano non si tiene il passo.',
   },
   {
     n: '04',
     dove: 'Nel canale che è vostro',
-    t: 'In 12.400 agenzie che vendono e non rispondono',
-    b: 'La rete intermediata vende ogni giorno e non restituisce quasi nulla: quali agenzie vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
-    bBreve: 'La rete intermediata vende ogni giorno e non restituisce quasi nulla: chi vende che cosa, e dove si ferma la proposta multiprodotto.',
+    t: 'In 12.400 agenzie che non vi rispondono',
+    b: 'La rete intermediata vende ogni giorno. Non sapete quali agenzie vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
+    bBreve: 'La rete intermediata vende ogni giorno. Non sapete chi vende che cosa, né dove si ferma la proposta multiprodotto.',
   },
 ];
 
@@ -178,7 +182,7 @@ export const PUNTI: Punto[] = [
    «0 su 8 risposte nominano Trenitalia», l'esatto contrario del fatto. */
 export const REFERTO: Stat[] = [
   { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
-  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti: la risposta si costruisce su rivenditori e aggregatori — Trainline, Rome2Rio, Omio — che vendono comunque i vostri biglietti' },
+  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti: la risposta si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio), che vendono comunque i vostri biglietti' },
   { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
   { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
 ];
@@ -200,19 +204,19 @@ export const GIA: Card[] = [
   {
     k: 'Gomma',
     t: 'Busitalia, al 100%',
-    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno. L’offerta che integra treno, gomma e altri vettori arriva a più di 1.700 destinazioni — parole vostre, un anno fa.',
+    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno. L’offerta che integra treno, gomma e altri vettori arriva a più di 1.700 destinazioni: parole vostre, un anno fa.',
     fonti: ['busitalia'],
   },
   {
     k: 'Sosta',
     t: 'I parcheggi di stazione',
-    b: 'Si prenotano dall’app, dal sito, in biglietteria e in agenzia, e si aggiungono a un biglietto già comprato fino al giorno prima: il pezzo di viaggio che comincia prima del treno.',
+    b: 'Si prenotano dall’app, dal sito, in biglietteria e in agenzia. E si aggiungono a un biglietto già comprato, fino al giorno prima: è il pezzo di viaggio che comincia prima del treno.',
     fonti: ['fsPark'],
   },
   {
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
-    b: 'Il percorso sul biglietto integrato con ITA Airways è partito nel 2023, e lo dice il comunicato del 9 marzo 2026: quel giorno un memorandum firmato dai due Amministratori Delegati istituisce un laboratorio comune sull’intelligenza artificiale per l’intermodalità.',
+    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno firmato un memorandum che istituisce un laboratorio comune sull’intelligenza artificiale per l’intermodalità.',
     fonti: ['itaAirways'],
   },
 ];
@@ -256,7 +260,7 @@ export const UNPOSTO: Card[] = [
   {
     k: 'Il marchio',
     t: 'Conforme senza una revisione a mano',
-    b: 'Le regole del marchio stanno dentro lo strumento invece che in un documento che qualcuno dovrebbe ricordarsi di aprire.',
+    b: 'Le regole del marchio stanno dentro lo strumento, non in un documento che qualcuno deve ricordarsi di aprire.',
   },
   {
     k: 'Le persone',
@@ -274,17 +278,17 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie — tabaccherie, bar, edicole, ricevitorie — che vendono il Regionale, da un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
   dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
   domanda:
-    'PICO, la piattaforma con cui le agenzie vi vendono, nasce nel 2011 al posto di Sipax, e le agenzie ci sono migrate entro la fine del 2014. Ci risulta che la stiate rifacendo: se è così, finché il capitolato è aperto la misura è una riga di requisiti; dopo è un progetto a sé. È una domanda, non un’affermazione.',
+    'PICO, la piattaforma con cui le agenzie vi vendono, è del 2011 e ha preso il posto di Sipax. Ci risulta che la stiate rifacendo: finché il capitolato è aperto la misura è una riga di requisiti, dopo è un progetto a sé. È una domanda, non un’affermazione.',
 };
 
 export const SAPERE: Card[] = [
   {
     k: 'Chi vende che cosa',
     t: 'Per rete, per agenzia, per prodotto',
-    b: 'Dove la proposta multiprodotto arriva e dove si ferma al solo treno: è la misura diretta della vostra riorganizzazione commerciale.',
+    b: 'È la misura diretta della vostra riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
   {
     k: 'Che cosa converte',
@@ -294,7 +298,7 @@ export const SAPERE: Card[] = [
   {
     k: 'Che cosa succede se…',
     t: 'Provare un’alternativa invece di deciderla',
-    b: 'Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Su un sito si fa; su questo canale, per quanto ne sappiamo, no — ed è una delle cose che vorremmo chiedervi.',
+    b: 'Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Su un sito si fa; su questo canale, per quanto ne sappiamo, no. È una delle cose che vorremmo chiedervi.',
   },
 ];
 
@@ -304,11 +308,14 @@ export const SAPERE: Card[] = [
 export const ASK = {
   eyebrow: 'Quello che vi chiediamo',
   titolo: 'Una sessione sui vostri dati,<br />mentre la piattaforma si rifà.',
-  sub: 'Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati, nessun impegno dopo. <strong>Non è un progetto e non è un’offerta.</strong>',
+    // Le tre «che cosa» sono la formula che il panel ha messo fra le cose da NON
+  // toccare: cinque personas su sei la citano come la riga che fa accettare la
+  // riunione. Il ritmo è voluto, non è una frase contorta — eccezione dichiarata.
+  sub: 'Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati, nessun impegno dopo. <strong>Non è un progetto e non è un’offerta.</strong>',  // copy-audit-ignore
   /** Che cosa serve davvero: «i vostri dati» non è un perimetro, e chi tiene la
    *  piattaforma commerciale lo chiede al primo giro. */
   servono:
-    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, su un periodo che scegliete voi, da chi tiene la piattaforma commerciale e nel formato che ha già — sotto l’accordo di riservatezza, come qualunque altro dato che ci passate. Se estrarlo costa più di mezza giornata, guardiamo quello che c’è.',
+    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scegliete voi, e vale l’accordo di riservatezza come per qualunque altro dato. Se estrarlo costa più di mezza giornata, guardiamo quello che c’è.',
 };
 
 export const DOMANDE_APERTE = [
