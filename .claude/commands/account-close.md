@@ -69,6 +69,28 @@ Se il prodotto **non è eleggibile** per il piano (Goal Sheet), scrivilo nella r
 un'occasione di relazione o uno spunto per un collega, non attainment. Confonderli porta a
 lavorare su cose che non contano.
 
-## 6 — Chiudi
+## 6 — Se è emerso un evento con una data, proponilo in `eventi.md`
+
+Il giro automatico di ogni mattina **non legge il calendario** (costerebbe token, e un
+invito non dice chi è iscritto a un evento): legge
+`docs/Adobe/Radar/eventi.md`, e avvisa quando una data è entro 14 giorni o un'iscrizione
+chiude entro 3. Quel file lo riempie una persona a mano — ed è la parte fragile, perché i
+gesti manuali decadono: è così che è morta `Sintesi_Task`.
+
+Quindi quando in una sessione emerge un evento con una data — un forum, un Adobe Day, una
+cena executive, un workshop, una scadenza di iscrizione — **proponi la riga**:
+
+`| data | evento | account coinvolti | scadenza iscrizione | note |`
+
+- le date in ISO o in chiaro, `—` dove non si sa, **mai una data inventata**;
+- in `note` la **fonte** (`thread <id>`, `Teams <data, chi>`) e ciò che resta da chiarire —
+  tipicamente **chi dei nostri referenti è nella guest list**, che è la differenza fra
+  sapere che c'è un evento e avere due incontri a margine;
+- se l'evento c'è già, **non si duplica**: si aggiorna la riga esistente;
+- un evento passato **non si cancella**: resta come storia, e il giro lo ignora da sé.
+
+Come per il registro delle opportunità: **proponi, non scrivere d'iniziativa.**
+
+## 7 — Chiudi
 Stampa il percorso del file e le righe aggiunte. Se hai toccato file **fuori** da `docs/`,
 dillo e lascia decidere: da qui non si committa.
