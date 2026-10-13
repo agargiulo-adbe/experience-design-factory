@@ -95,13 +95,33 @@ Due differenze pratiche rispetto alla posta:
 - Un messaggio WhatsApp **non ha un identificativo di thread**: nel log si scrive
   `WhatsApp <data, chi>`.
 
+## 2bis — Il grafo dei contatti, se è vecchio di più di una settimana
+
+Guarda la riga `Dominio: … · grafo aggiornato <data>` nella sezione «Chi è chi» del registro.
+
+- **Entro sette giorni** → non rifarlo, usa quello che c'è.
+- **Più vecchio, assente, o senza `Dominio:`** → rifallo adesso. Le due ricerche, la regola
+  del destinatario e **i due limiti misurati** stanno in `docs/CLAUDE.md`, sezione «Il grafo
+  dei contatti»: leggila prima, perché una delle due ricerche non misura quello che sembra.
+- **Senza `Dominio:`** → ricavalo dagli indirizzi che tornano cercando il nome dell'account,
+  e **proponilo**: non indovinarlo da come si chiama l'azienda (`Banca Generali` non è
+  `bancagenerali.com` per forza).
+
+Costo: **1 + N chiamate** per account, N = i contatti trovati. A cadenza settimanale è poco;
+al giorno sarebbe spreco, perché il grafo cambia lentamente.
+
+Il grafo **si propone, non si scrive**: vale la regola del passo 4. Le righe nuove e quelle
+cambiate si mostrano come diff, e il verdetto di ogni riga porta il suo motivo.
+
 ## 3 — Riferisci in chat, in poche righe
 - **il quadro dal Radar**: ARR, prossimo rinnovo con la data, se conta per il piano,
   opportunità aperte, salute — e l'età dello snapshot;
 - cosa è cambiato dall'ultimo aggiornamento,
 - cosa è bloccato e **da quanto**,
 - chi ha la palla,
-- il prossimo passo aperto, e se è scaduto dillo.
+- il prossimo passo aperto, e se è scaduto dillo,
+- **a chi si può parlare**: quanti contatti ha il grafo, quanti sono «scrivi tu», e se non
+  ce n'è nessuno dillo come un buco da chiedere all'AE, non come un'assenza di opportunità.
 
 Se la posta **contraddice** un fatto del registro, dillo come conflitto fra due fonti con
 le rispettive date. Non scegliere tu.

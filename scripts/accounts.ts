@@ -60,6 +60,7 @@ const GIORNI_RINNOVO_NOTIFICA = 30;   // nella notifica si guarda vicino, non a 
 const GIORNI_EVENTO = 14;             // un evento entro due settimane
 const GIORNI_ISCRIZIONE = 3;          // una scadenza d'isciizione è più urgente dell'evento
 const GIORNI_GIRO_FERMO = 2;          // oltre questo, il cron potrebbe essere morto
+const GIORNI_GRAFO = 7;               // il grafo dei contatti cambia lentamente: una passata a settimana
 const MAX_RIGHE_NOTIFICA = 5;
 const GIORNI_OPP_VICINA = 21;      // una trattativa che chiude entro tre settimane
 const MESI_OPP_FERMA = 18;         // oltre, è residuo di dati e non una trattativa
@@ -108,7 +109,15 @@ const importo = (s: string): number => {
 
 /* ── i registri di account ──────────────────────────────────────────────────────── */
 interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date }
-interface Conto { cliente: string; aggiornato?: Date; senzaRegistro?: boolean; casi: Caso[]; illeggibile?: string }
+/* contatti/tuoi: il grafo dei contatti vive nella sezione «Chi è chi» del registro, e lo
+   ricava `/account-open` dalla posta (regola e limiti misurati in docs/CLAUDE.md). Qui si
+   LEGGE soltanto — a costo zero — per sapere a quali account manca il contatto: senza un
+   contatto noto un'apertura non si costruisce, e questo è l'unico modo di accorgersene
+   senza aprirli tutti a mano. */
+interface Conto {
+  cliente: string; aggiornato?: Date; senzaRegistro?: boolean; casi: Caso[]; illeggibile?: string;
+  dominio?: string; grafo?: Date; contatti: number; tuoi: number;
+}
 
 const conti: Conto[] = [];
 for (const cliente of readdirSync(DOCS).sort()) {
@@ -117,10 +126,10 @@ for (const cliente of readdirSync(DOCS).sort()) {
   if (cliente.startsWith('.') || DEPOSITI.has(cliente)) continue;
 
   const registro = join(dir, 'ACCOUNT.md');
-  if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [] }); continue; }
+  if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [], contatti: 0, tuoi: 0 }); continue; }
 
   const righe = readFileSync(registro, 'utf8').split('\n');
-  const conto: Conto = { cliente, casi: [] };
+  const conto: Conto = { cliente, casi: [], contatti: 0, tuoi: 0 };
 
   for (const r of righe.slice(0, 12)) {
     const a = r.match(/aggiornato\s+(.+?)\s*$/i);
@@ -129,10 +138,28 @@ for (const cliente of readdirSync(DOCS).sort()) {
   if (!conto.aggiornato) conto.illeggibile = 'manca il campo «aggiornato» nell\'intestazione';
 
   let corrente: Caso | undefined;
+  let inChiEChi = false;
   for (const r of righe) {
     const caso = r.match(/^##\s*Caso\s*[·:]\s*(.+?)\s*$/i);
-    if (caso) { corrente = { nome: caso[1] }; conto.casi.push(corrente); continue; }
-    if (r.startsWith('## ')) { corrente = undefined; continue; }
+    if (caso) { corrente = { nome: caso[1] }; conto.casi.push(corrente); inChiEChi = false; continue; }
+    if (r.startsWith('## ')) { corrente = undefined; inChiEChi = /^##\s*Chi\s+è\s+chi/i.test(r); continue; }
+    if (inChiEChi) {
+      const dom = r.match(/^Dominio:\s*([^\s·]+)/i);
+      if (dom) {
+        conto.dominio = dom[1];
+        const g = r.match(/grafo aggiornato\s+(.+?)\s*$/i);
+        if (g) conto.grafo = data(g[1]);
+        continue;
+      }
+      /* si contano solo le righe con una DATA di ultimo scambio: una riga di prosa senza
+         data non è un contatto del grafo, è un appunto, e contarla farebbe credere di
+         conoscere qualcuno che non si sa quando ha parlato con noi. */
+      if (/·\s*ultimo scambio\s/i.test(r)) {
+        conto.contatti++;
+        if (/scrivi tu/i.test(r)) conto.tuoi++;
+      }
+      continue;
+    }
     if (!corrente) continue;
 
     const chiuso = r.match(/Dove siamo\s*[—-]\s*chiuso il\s+(.+?)\s*$/i);
@@ -448,6 +475,23 @@ if (oppFerme.length) {
 }
 for (const c of fermi) rilievi.push(`${c.cliente} fermo da ${giorni(c.aggiornato!)} gg · ${aperti(c).length} aperti`);
 
+/* Un account che ha un segnale e NESSUN contatto noto: lì un'apertura non si costruisce,
+   e la cosa da fare non è «proporre qualcosa», è «chiedere all'AE chi conosciamo». Senza
+   questa riga il buco resta invisibile finché non si apre l'account a mano — ed è il buco
+   che rende inutile tutto il resto, perché un segnale senza destinatario non si lavora. */
+const conSegnale = new Set<string>(conRegistro.filter((c) => aperti(c).length).map((c) => c.cliente));
+for (const r of rinnoviNotifica) { const c = contoDi(r.account); if (c && !c.senzaRegistro) conSegnale.add(c.cliente); }
+for (const o of oppVicine) { const c = contoDi(o.account); if (c && !c.senzaRegistro) conSegnale.add(c.cliente); }
+/* UNA riga, non una per account: sette righe dello stesso tipo affogano la notifica, ed è
+   lo stesso errore già corretto su salute e rinnovi. E `Adobe` resta fuori: non è un
+   cliente, non ha contatti di cliente, e chiederne all'AE non vuol dire niente. */
+const senzaContatto = conRegistro.filter((c) =>
+  c.cliente !== 'Adobe' && conSegnale.has(c.cliente) && !c.contatti);
+if (senzaContatto.length) {
+  const quali = senzaContatto.slice(0, 3).map((c) => c.cliente).join(', ');
+  rilievi.push(`${senzaContatto.length} account con un segnale e nessun contatto noto (${quali}${senzaContatto.length > 3 ? '…' : ''}) · il grafo lo ricava /account-open`);
+}
+
 if (SOLO_RILIEVI) {
   // Contratto col cron: niente da dire = nessun output = nessuna notifica.
   for (const r of rilievi.slice(0, MAX_RIGHE_NOTIFICA)) console.log(r);
@@ -625,7 +669,13 @@ if (!SOLO_FERMI) {
     const righe = radar.book.filter((x) => contoDi(x.account) === c);
     const somma = righe.reduce((t, x) => t + x.arr, 0);
     const arr = righe.length ? ` · ${soldi(somma)}${righe.length > 1 ? ` (${righe.length} entità)` : ''}` : '';
-    console.log(`  ${c.cliente.padEnd(24)} agg. ${eta.padStart(6)}   ${aperti(c).length} aperti${arr}` + (c.illeggibile ? `   ⚠ ${c.illeggibile}` : ''));
+    /* «grafo —» non vuol dire che non conosciamo nessuno: vuol dire che il grafo non è
+       stato ancora ricavato (lo fa `/account-open`). I due casi si confondono facilmente
+       ed è la confusione che porterebbe a scrivere «nessun contatto» in un'apertura. */
+    const grafo = c.contatti
+      ? ` · ${c.contatti} contatti${c.tuoi ? ` (${c.tuoi} tuoi)` : ''}${c.grafo && giorni(c.grafo) > GIORNI_GRAFO ? ` da ${giorni(c.grafo)} gg` : ''}`
+      : ' · grafo —';
+    console.log(`  ${c.cliente.padEnd(24)} agg. ${eta.padStart(6)}   ${aperti(c).length} aperti${arr}${grafo}` + (c.illeggibile ? `   ⚠ ${c.illeggibile}` : ''));
     for (const k of aperti(c)) {
       const palla = k.palla ? ` · palla: ${taglia(k.palla, 28)}` : '';
       const da = k.dal ? ` (da ${giorni(k.dal)} gg)` : '';
