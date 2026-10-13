@@ -64,8 +64,9 @@ RILIEVI="$("$PNPM" --silent accounts --rilievi 2>/dev/null)"
 # CHIAMATE a settimana su 25 account. Questo ne fa una.
 PROMPT="Sei il consulente interno di un Product Specialist di Adobe Italia. Il suo piano FY26: 70% su nuovo ARR dei prodotti eleggibili, 30% sul tasso di rinnovo. Nel radar qui sotto «€» marca i prodotti che contano per il piano e «·» quelli che sono relazione e non attainment. L'\''account resta dell'\''Account Executive: lui porta la crescita del suo prodotto dentro l'\''account, e ogni mossa verso il cliente passa dall'\''AE.
 
-Dal radar di stamattina scrivi ESATTAMENTE cinque righe, una per etichetta, e nient'\''altro: nessun preambolo, nessun markdown, nessun elenco.
+Dal radar di stamattina scrivi ESATTAMENTE sei righe, una per etichetta, e nient'\''altro: nessun preambolo, nessun markdown, nessun elenco.
 
+TITOLO: la stessa cosa di OGGI in **meno di 90 caratteri**, come la diresti a voce entrando in ufficio. Serve alla notifica, che taglia: «Enel AAM \$243K: rosso in due liste, 47 giorni» va bene, una frase con una subordinata no.
 OGGI: la cosa su cui lavorare oggi e perché, in una frase. Scegli per rischio × valore × quanto conta per il piano, non per quanto fa rumore.
 NON: una cosa che sembra urgente e non lo è, e perché.
 CLIENTE: un'\''occasione di relazione o di cross-sell verso un cliente, ma SOLO se nel radar c'\''è un segnale che la giustifica (una trattativa, un rinnovo, una salute in rosso, un evento). Se quel segnale non c'\''è, scrivi «nessuna occasione con un segnale oggi» e fermati: proporre un prodotto che manca senza un caso d'\''uso è un approccio debole.
@@ -86,7 +87,10 @@ if printf '%s' "$GIUDIZIO" | grep -q "^OGGI:"; then
   { echo "# Consulenza · $(date '+%d %b %Y, %H:%M')"; echo; printf '%s\n' "$GIUDIZIO"; } > "$CONS"
   # La notifica porta il GIUDIZIO, non i conteggi: «Radar · 11 cose» non dice niente,
   # «rinnovo da 1,48M senza owner» dice tutto.
-  OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^OGGI:" | sed 's/^OGGI: *//')"
+  # il sottotitolo è TITOLO, che nasce corto: con OGGI la notifica tagliava a metà
+  # frase e il punto si perdeva. Se TITOLO manca, si ripiega su OGGI.
+  OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^TITOLO:" | sed 's/^TITOLO: *//')"
+  [ -z "$OGGI_L" ] && OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^OGGI:" | sed 's/^OGGI: *//')"
   ALTRE="$(printf '%s' "$GIUDIZIO" | grep -m1 "^DENTRO:" | sed 's/^DENTRO: *//')"
   [ ${#ALTRE} -gt 140 ] && ALTRE="${ALTRE:0:137}…"
   q() { printf '%s' "${1//\"/\\\"}"; }
