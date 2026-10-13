@@ -62,6 +62,14 @@ per account, non al giorno: il grafo cambia lentamente.
 ⚠️ La regola **si dichiara sempre** nell'apertura, con il motivo: «ultimo scambio a luglio,
 non tuo» è l'informazione che fa decidere.
 
+⚠️ **Corretta il 13 ott 2026, implementando.** «tu *a lui*» **non è calcolabile**: il filtro
+`recipient:` non distingue il destinatario diretto da chi era in copia — tre contatti dello
+stesso cliente tornano con gli stessi cinque messaggi di un thread di gruppo indirizzato a un
+quarto. E la ricerca gira sulla casella propria, quindi chi parla solo con l'AE è invisibile.
+Il verdetto poggia ora su un fatto che si misura — **ti ha scritto lui, di recente** — più un
+giudizio dichiarato sulla funzione. Regola corrente e limiti: `docs/CLAUDE.md`, «Il grafo dei
+contatti»; questa resta la versione del disegno, superata su quel punto.
+
 ## B · L'apertura
 
 **Quattro campi obbligatori.** Se ne manca uno, l'apertura **non esce**: meglio una riga in

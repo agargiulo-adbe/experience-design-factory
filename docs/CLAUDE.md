@@ -281,7 +281,13 @@ Numeri e struttura → Radar: `Adobe/Radar/Mappa_Account/Anagrafica_account.md`
 <solo ciò che il Radar non sa, con la sua fonte e data>
 
 ## Chi è chi
-<ruolo, lato cliente o Adobe> · ultimo scambio <data>
+Dominio: <dominio.com> · grafo aggiornato <gg mmm aaaa>
+
+Contatti del cliente
+- <funzione> · <Nome Cognome> · <indirizzo> · ultimo scambio <data> · <tema> · <scrivi tu | passa dall'AE> — <motivo>
+
+Team Adobe → Radar: `Adobe/Radar/Mappa_Account/Anagrafica_account.md`
+- <solo ciò che il Radar non sa: come si comporta questa persona, non come si chiama>
 
 ## Vincoli e vocabolario
 <ciò che cambia come si parla a questo cliente: divieti, sensibilità,
@@ -311,6 +317,51 @@ Note sul template:
   la data. Senza, ritrovarla costa cinque minuti; con, dieci secondi.
 - **Le date in chiaro, mai relative.** «il mese scorso» non si legge a febbraio.
 - Un caso chiuso non si cancella: la sezione resta con `Dove siamo — chiuso il <data>`.
+
+## Il grafo dei contatti — si ricava, non si compila
+
+La sezione «Chi è chi» non è una rubrica tenuta a mano: una rubrica a mano diverge in tre
+settimane, come ogni cosa che dipende da chi si ricorda di aggiornarla. Si **ricava dalla
+posta**, una volta a settimana per account, e ogni riga porta la sua data.
+
+**Le due ricerche** (connettore Microsoft 365, `outlook_email_search`):
+
+1. `sender: <dominio del cliente>` → **chi di quel cliente ha scritto in un thread tuo**,
+   con data e tema dell'ultimo scambio. Questo è il grafo.
+2. `sender: <tuo indirizzo>` + `recipient: <indirizzo del contatto>` → i thread in cui
+   **tu hai scritto e lui c'era**. Serve a datare la tua ultima uscita verso quella persona.
+
+⚠️ **Due limiti misurati il 13 ott 2026, da conoscere prima di fidarsi del grafo.**
+
+- **La ricerca gira sulla tua casella.** Quindi un contatto del cliente con cui non hai mai
+  condiviso un thread è **invisibile**, anche se l'AE lo sente ogni settimana. Il grafo dice
+  «chi conosci tu», non «chi c'è»: da un grafo magro non si conclude «non conosciamo
+  nessuno», si conclude «chiedi all'AE».
+- **Il filtro `recipient:` non distingue il destinatario diretto da chi era in copia.** Tre
+  contatti dello stesso cliente restituiscono gli stessi cinque messaggi di un thread di
+  gruppo, il cui testo è indirizzato a un quarto. Quindi **«gli hai scritto tu» non è calcolabile** da
+  questa fonte, e non va dichiarato: si dichiara la co-presenza, che è ciò che si misura.
+
+**La regola del destinatario**, costruita su ciò che si misura davvero:
+
+- **scrivi tu** — il contatto **ti ha scritto lui** (compare come mittente nella ricerca 1) e
+  l'ultimo scambio è entro **~120 giorni**. È il fatto forte: ha scritto dove c'eri tu, di
+  recente.
+- **passa dall'AE** — in tutti gli altri casi, e il motivo si dice:
+  - **lo conosci di rimbalzo** — il nome arriva dentro una mail inoltrata dall'AE, non da un
+    suo messaggio (è il caso di chi scrive all'AE e non a te);
+  - **è freddo** — ultimo scambio oltre i 120 giorni;
+  - **la funzione non compra i tuoi prodotti** — acquisti, cybersecurity, legale. Questo è un
+    **giudizio dichiarato**, non un dato: si scrive come giudizio, e vince sul dato quando i
+    due dicono cose diverse (un contatto di cybersecurity che ti ha scritto ieri resta
+    «passa dall'AE»).
+
+**La regola si dichiara sempre, col motivo.** «Ultimo scambio a luglio, lo conosci di
+rimbalzo» è l'informazione che fa decidere; «passa dall'AE» da solo è un oracolo.
+
+**Niente nome inventato.** Un contatto entra solo se è stato **visto** in un thread. Se di un
+account non si conosce nessuno, non si costruisce un'apertura: si scrive che manca il
+contatto, e lo si chiede all'AE.
 
 ## Cosa non fare, qui
 
