@@ -3,11 +3,31 @@
 
 ---
 
-## 11. Change log recente (coda di luglio 2026 — continua dalla Parte 14)
+## 11. Change log recente (coda: settembre e luglio 2026 — continua dalla Parte 14)
 
 <!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione ed è divisa
      fra Parte 3 (recente), Parte 4 (seguito), Parte 14 (coda) e questa, nata il 12 ott 2026 per
-     fare posto al change log dell'11-12 ott. I confini sono tutti a un ### -->
+     fare posto al change log dell'11-12 ott e ribilanciata il 13 ott, quando le voci del 12-13
+     sono entrate in cima. I confini sono tutti a un ### -->
+
+### Change log — Revisioni post-biforcazione Trenitalia (1 set 2026, dal più recente) → dettaglio §26.7
+- `d99254c`+`56a391f` closer FS Park iterato → **"Ogni sosta, un cliente riconosciuto."** (prima "Un cliente intero, a partire da casa": goffo + duplicava il titolo della sintesi).
+- `754de62` **obiezione CDP + connettori verificati + closer**: gestita l'obiezione "abbiamo già Data Cloud CDP" nelle slide CJA≠CDP; **linea `z-index:-1` dietro i nodi** (fix definitivo overlap linea/emoji); **connettori AEP corretti su fonti Adobe** (Data Cloud niente source nativo; Responsys è destination non source; nativo solo Salesforce CRM); tolto "611 email/anno a un singolo cliente" dalla card sistema + "rollout graduale per superfici"; **2 slide di chiusura solo visual** a fine di entrambi i rami.
+- `d4a90d7` **revisione iper-approfondita** (3 revisori paralleli): **Elena rimossa** (persona orfana); "Nessuno sistema"→"Nessun sistema"; de-AI tricolon/slogan; tono ROI Trenitalia ammorbidito; tolta l'accusa a Responsys; a11y (nav /40→/70, badge 11px→13px, `color-mix()`→`rgba()`).
+- `4c0493e` **copy/UI**: disclaimer cover "firmato Adobe"; "tronco comune" → **due racconti distinti convergenti**; piattaforma agentica attribuita (FS Technology × Salesforce, link fsnews); "confronto di lavoro"→"tavolo di lavoro FS Park × Adobe"; **Mix Modeler → Marketing Campaign Analytics (ex Mix Modeler)** (id `mix-modeler` invariato); slide adozione **AI Assistant vs CX Enterprise Coworker**; nodi opachi; touchpoint altezza uniforme.
+- Nuova memoria **`adobe-product-naming-2026`** (naming Adobe verificati: MCA, CX Enterprise Coworker GA giu 2026, clean room = Real-Time CDP Collaboration *da confermare*).
+
+### Change log — Biforcazione Trenitalia · Eni Orbita · core responsive/nav (21 lug – 1 set 2026) → dettaglio §§24–26
+- `5aaa5b0`+`954dde1`+`0ec1259` (**31 ago 2026**) **biforcazione `trenitalia-connessioni`**: tronco neutralizzato + `/bivio/` + rami autoconsistenti `/fs-park/*` (ambra) e `/trenitalia/*` (rosso), 5 capitoli speculari; vecchie route → stub redirect; slug/gating branch-aware in BaseLayout; `audit:deck` 0 hard su 13 route. Dettaglio **§26**.
+- `31c8e13`+`0c42beb`+`48e3e63` (**28 ago 2026**) **nuova experience Eni «Orbita»**: deck 7 pagine (poi bilingue EN/IT) + dossier war-room trilingue; Elvira Fabrizio identificata (Head of Digital & IT Enilive). Dettaglio **§24**. ⚠️ Da questi push la **CI è rossa su lint** (tooling pre-esistente → P0 §10).
+- `f09fca1`+`7bd7511` (**21 lug**) + `d042105` (**22 lug**) **core responsive envelope** (tier cramped-laptop/giant-TV, viewport proiezione intoccati) + **nav single-line su tutte le esperienze** + **sweep visivo esaustivo 536 screenshot** con 3 fix di leggibilità. Dettaglio **§25**. → chiusa la voce P1 «rigirare audit + QC 1920 sui 6 deck» (parity audit + sweep completo).
+
+### Change log — Redesign «eccellenza» E2E dei 6 deck + consolidamento CI (21 lug 2026) → dettaglio §23
+- **Redesign E2E** di tutti e 6 i deck (Agos `.tdu-*`, Atelier `.loom-*`, Ferrari `.frl-*`, UniCredit `.uc-*`, Max Mara `.mm-*`, FS `.fs-*`): concept brand-native centralizzato in `global.css`, sezioni ricostruite via subagent, **copy/claim/numeri/fonti/personas verbatim**. Rollout su 6 branch feature, poi **merge `--no-ff` in `main`** (`572ba5b`/`1563e9e`/`ca541a1`/`0b610e6`/`25e7927`/`37b6650`), build completo pulito (9 app), **deploy live 21 lug**. I 6 branch feature sono stati **eliminati** (remoti + locali) dopo il merge.
+- `de81eaf` **fix flip-ink Max Mara** (inverse-only): lo `Slide` applica lo sfondo come classe Tailwind, non `data-bg` → i selettori di flip non scattavano (numeri invisibili su slide scure); ritargettati alla classe reale, brand cammello tiene ink scuro (§23.1, memoria `deck-ink-flip-selector`).
+- `b0106bc` **fix 2 errori typecheck FS** (param `any` in `fondazione.astro`, campo `badge` inesistente in `scenario.astro`) — `astro check` rosso pur con `build` verde.
+- `0298ccc` **fix lint parsing error Agos**: un commento `<!-- -->` dentro il `.map()` di `scenario.astro` contava come 2° elemento root (`JSX expressions must have one parent element`), unico *error* che teneva rosso il gate lint (build/deploy non impattati). Il commento a livello template resta valido.
+- `52e47df` handover §23 aggiunto. **Lezione:** `pnpm build` verde non basta — girare `typecheck`+`lint` prima di ogni push di redesign (§23.2, nota "CI vs Deploy" §10).
 
 ### Change log — Agos: deck «casi d'uso evolutivi AEP» (PPTX, fuori repo) (20 lug 2026)
 - Prodotto **`docs/Agos/Agos_x_Adobe_Casi_uso_evolutivi_AEP.pptx`** — deck **24 slide IT su template Adobe** (rosso Adobe + accenti petrolio/acqua Agos), generato con **python-pptx** (PowerPoint nativo/editabile), NON un'app del monorepo. Contenuto: recap "cosa Adobe ha compreso" (profilo Agos con numeri di discovery ~9M/~5M/~3,7M/~80 use case, as-is Campaign v7 + Analytics + DWH Oracle/SAS-Matrix, contesto trasformazione set–ott 2027, **5 attriti**: dato di ritorno assente, dato rigido, offerte fuori, misura frammentata, canali non parlanti) + **9 casi d'uso evolutivi su AEP** (AJO/RTCDP/CJA: chiudere il loop caricata/liquidata, recupero abbandoni form TIG, transazione negata→journey, next-best-offer, inbound/outbound orchestrati, churn proattivo, agenti conversazionali, FAC su Snowflake, contenuti on-brand + link SMS) + roadmap Crawl/Walk/Run + next steps. Fonti: doc di discovery in `docs/Agos/` (sessioni, CVM, architettura) + librerie casi d'uso Adobe (Journey Optimizer / FSI / Retail Banking POV) in `docs/Agos/*.pptx`. **Non committato** (`docs/Agos/` in `.gitignore`); reso in PNG e verificato slide-per-slide (0 overflow). Non tocca app/build. Generatore usa-e-getta in `/tmp` (non nel repo). Distinto dal deck web `apps/agos-trait-dunion` (§16).

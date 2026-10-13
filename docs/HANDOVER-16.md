@@ -179,6 +179,35 @@ i quattro punti, nessun indicatore del mestiere del cliente (riempimento, ricavo
 diretto/intermediato), il parco applicativo mai descritto, e una riga su che cosa **non**
 duplichiamo rispetto ai cantieri aperti con gli altri fornitori.
 
+### 37.10 Il 13 ottobre: la linearità, e una CI rossa che aveva ragione
+
+**La domanda chiave era contorta, e il committente l'ha vista prima del gate.** Diceva: «Il prezzo
+lavora già al massimo, e verso l'alto il listino è fermo. Dove si perdono le vendite che il prezzo
+non recupera?» — tre subordinate prima della domanda, che arrivava in terza riga dietro una doppia
+relativa. **La premessa stava occupando il posto della domanda**: è scesa nell'occhiello, e il
+titolo è rimasto solo — «Allora dove si perdono le vendite?». Quella slide falliva il check `i`
+(troppo vuota): ora passa tutti e dodici.
+
+Poi la stessa verifica su tutto il deck, **misurata e non a occhio**: lunghezza della frase, catena
+di subordinate, doppia relativa, principale che arriva dopo la rincorsa. **Venti frasi sopra soglia
+→ zero.** Il metodo è diventato la famiglia **`L`** di `copy-audit` (§11, voce del 13 ott), perché
+una regola che vive in una sessione non è una regola.
+
+⚠️ **E lungo la strada è emerso che il gate era cieco su questo deck**: `copy-audit` leggeva solo
+gli attributi `it=`/`en=` di `<T>`, e qui la copia è in una lingua sola — **14 stringhe misurate su
+226**, con PASS stampato. Ora ne misura 226, e l'intestazione dice sempre quante ne ha viste.
+
+⚠️ **La CI è andata rossa al primo push su `main` perché `typecheck` non era stato lanciato**, e
+aveva ragione tre volte: un `const COVER` con l'URL della clip **ombreggiava l'import** omonimo (la
+copertina del taglio rendeva una riga vuota e la firma mezza frase), e dietro due import inutilizzati
+c'erano la testa della mappa e la riga della firma **tornate scritte a mano** nel percorso lungo.
+Da lì il gate `c1` di `audit:taglio` guarda anche le pagine del percorso intero, non solo il taglio.
+
+**Stato al 13 ottobre:** live su GitHub Pages, nove rotte a 200, `/dieci-minuti/` compresa.
+`typecheck` 0 · `copy-audit` 0 HARD / 0 SOFT su 226 stringhe · `audit:wrap` pulito · `audit:taglio`
+**ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 · `audit:ink` pulito su 325 blocchi ·
+`audit:fonti` 34 link, nessuno rotto e nessuno generico.
+
 ---
 
 ## 38. TIM — «Una campagna, molti formati» (stato di fatto, 12 ott 2026)

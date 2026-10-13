@@ -7,7 +7,47 @@
 
 <!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione, quindi è
      divisa in quattro parti a confini ### — questa continua dal change log della Parte 3 e prosegue
-     nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 12 ott 2026 -->
+     nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 13 ott 2026 -->
+
+### Change log — Poste: la riunione nel deck, l'anteprima rapida, il video intero in tre tratti (2026-10-07, pomeriggio e sera) → §32.12 (Parte 13), commit `408c28b`→`8eada70`
+
+- **Il deck riallineato alla riunione del mattino** (`408c28b`), sulla trascrizione letta per intero (429 interventi, 76 minuti). Il **Comitato IA scende da cancello a nota**: in 76 minuti zero occorrenze di «comitato», «DPO», «garante», «GDPR», «legal», e il deck era costruito su una porta che il cliente non ha mai nominato. Sale invece la governance che ha chiesto lui: la quarta regola di «Proteggere» diventa **«Si apre per gradi, non "apri tutto"»**. «Evolvere» dice **iTouch** per nome (circa due mesi, **non è una licenza**, serve a misurare il consumo prima di impegnarsi) e l'attivazione è quella vera. Nuova slide in «Governare» con **il caso d'uso che ha portato lui**: la verifica di un rilascio contro i requisiti caricati una volta come skill. 0 HARD su 126 controlli.
+- **«In azione» prende il 06, «Evolvere» il 07** (`3d5a860`), con due conteggi ciascuno vero nel suo posto: la nav conta il deck (01→07), la griglia della home solo le domande (01→06), così «Sei capitoli, sei domande» resta vera e la roadmap resta 6 card su 2 righe da 3. Nello stesso commit il **copy delle clip riscritto guardando il video** invece che le didascalie del player: «il riepilogo del lunedì» era sbagliato (il confronto è **mensile**), la correzione automatica delle etichette non era verificabile in 34 secondi ed è stata tolta, e «oggi in inglese» è stato riformulato — il prompt della demo è in italiano e la risposta pure.
+- **Anteprima rapida: tutto il deck in una pagina, con ricerca e salto** (`a3db2da`). Otto rotte e 42 slide non si vedono da dentro: `SdOverview.astro` apre un indice col titolo vero di ogni slide, raggruppato per capitolo e con la domanda a cui il capitolo risponde. Ogni slide porta **parole chiave** nella mappa, perché al primo giro «costo» dava zero risultati. **Zero wiring**: il pulsante si innesta da sé in `[data-deck-controls]`. E **una duplicazione in meno**: la mappa delle slide esce dal `PAGE_REGISTRY` della Console — dove aveva già divergito su tre titoli — e diventa `src/data/slides.ts`, con `check:slides` che la confronta con i `<Slide id>` reali.
+- **Il video innestato nel deck** (`d7638f0`): registrazione su **YouTube non in elenco**, facciata a poster e player che nasce **al clic** su `youtube-nocookie.com` — **0 richieste a YouTube prima del clic**. Un HARD di contrasto sul pulsante-facciata trovato e chiuso.
+- **Poi i tratti diventano tre** (`8eada70`), perché il taglio in due era sbagliato: avevo escluso 0:00–2:05 scrivendo che «il contesto sta già in Accendere», dove ci sono tre righe sulle skill — e intanto il deck prometteva in due punti un meccanismo di cui avevo tagliato l'unica prova filmata. La **Parte 1** mostra l'interruttore Utente / Organizzazione sulle skill, la **memoria fra conversazioni spenta di serie**, e il contesto di marchio costruito caricando un documento, con le regole che portano un identificativo, la frase italiana da cui sono nate e il rimando alla pagina del PDF. Rivedendo i tratti 2 e 3 sono emersi tre errori di copy: le domande sono **quattro**, su quella quarta **Coworker dichiara il limite dei propri dati** («non un risultato sull'uso dei clienti» — il momento più forte del video, assente), e il controllo che il prodotto fa sul proprio documento, tolto il giorno prima come non verificabile, **sta scritto a schermo a 6:05**. Poster rifatti dai tratti giusti; a quello del documento è stata tagliata la barra del browser, che mostrava il percorso locale di un collega e la cartella di un altro cliente.
+- **Verifica**: `audit:deck` **129 controlli, 0 HARD**, 66 soft; `check:slides` PASS su 8 rotte; deck a **43 slide**. ⚠️ **Un difetto che l'audit non vede**: a 1280×800 una nota finiva sotto la firma co-brand con `b:ok`, perché il check `b` misura solo `[data-deck-controls]` — memoria `audit-deck-false-pass` aggiornata.
+- **Dossier** (migrazione `0026`, non tracciata): fatti verificati da 12 a **15 voci** — i due livelli delle skill, la memoria spenta di serie, Experience Context col vincolo «organizzazioni clienti Experience Manager» — più una domanda aperta, e **corretta la riga sulla lingua**.
+
+### Change log — Intesa Assicurazioni: il perimetro si allarga, e un prodotto attribuito per sbaglio (2026-10-07, sera) → §35.5, §35.5-ter, §35.9, §35.10
+
+Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato qui.
+
+- **Il deck passa da v3 a v6 e cambia titolo.** «Dopo la firma» copriva metà del suo perimetro:
+  arriva per via interna che ha un obiettivo anche sui clienti che non vengono dalla banca, e la
+  verifica (§35.9) lo conferma **con due righe del suo stesso bilancio** — il principio sui
+  «canali esteri ed extra-captive» nel Piano Strategico dell'Informatica 2026-2029 e
+  **MyInsurance HUB**, che la sua area ha già implementato per abilitarli. ⚠️ Il **numero** no:
+  nessuna fonte pubblica dà la quota dei clienti diretti, e il 7,5% di «vendita diretta» che sta
+  nel bilancio è il **mercato italiano**, non loro.
+- **Via tutte le domande stampate in fondo alle slide** (erano nove), via la parola «richiesta»
+  (la chiusura è «se vi sembra utile»), corpo da 13-14 a **16pt** con una frase grande e il
+  dettaglio sotto, due **stacchi scuri** più una chiusura scura per il ritmo.
+- **Un tema nuovo, i contenuti** (§35.10), con la riga che dichiara di non sapere se sia il suo
+  perimetro — ed è quella che lo rende portabile.
+- **Grafica disegnata da primitive su sei slide** (grafico a pendenza indicizzato, schema di
+  aggancio, catena del documento, sparso→unito, ventaglio, tessere) e **quattro immagini Firefly**
+  con provenance. ⚠️ Il primo giro di immagini è stato **buttato**: era il tunnel di velocità al
+  neon, tre volte uguale. ⚠️ `fill.transparency` **non esiste in python-pptx**: il velo resta
+  opaco e le immagini spariscono, l'alpha va scritta nell'XML.
+- **Attribuito al cliente un prodotto che non ha** (§35.5-ter), trovato solo perché l'owner ha
+  chiesto «siamo certi?». La slide di sintesi diceva che «il motore che legge i documenti c'è
+  già nel gruppo»: nel gruppo c'è **AEM Forms**, che compone e rende, **non legge**; PDF Extract
+  e Document Generation sono Acrobat Services, SKU a sé, assente da tutte e tre le entità.
+  Verificato su `data.xlsx` riletto riga per riga, su Field Readiness (zero occorrenze) e su
+  Slack interno. **La sintesi è dove si rompono i fatti.**
+- **Panel review:** i due giri del 6 ott (§35.8) coprono la **v3**. La v6 ha titolo, perimetro,
+  struttura e un capitolo diversi → il verdetto **non copre lo stato corrente** (voce P0).
 
 ### Change log — Poste: l'ultima passata prima della sala (2026-10-07, mattina) → §32.11, commit `a386afe`→`80f4053`
 
@@ -156,9 +196,3 @@
 - `ece303b` **feat(poste): marchio e favicon tracciati, wordmark Poste fedele, due clip Firefly Video** (30 set sera, `/impeccable`) — il «?» era `<text>` SVG reso col font di sistema (sembrava un'immagine rotta); il logo Poste è un wordmark tipografico distribuito solo raster (SVG 403) → ripiego `<b>Poste</b>italiane` in Inter; clip `sd-cover`/`sd-firma` ricucite (PASS 30/43 dB) sul Release `media`, `LoopVideo` + scrim, credito «clip».
 - `3337f27` **chore(skills): impeccable v3.9.1 → v4.3.1** (1 ott) — la nuova versione porta un **binario da 12 MB per piattaforma** in `.claude/skills/impeccable/scripts/bin/` e `.github/…`: messo in `.gitignore`, si riscarica con `npx impeccable update`. Vale dalla prossima sessione.
 
-### Change log — Experience Atelier: redesign sulle tre mosse (2026-09-14) → dettaglio §21.8 (HANDOVER-09)
-- **25 commit `21c5002`→`7fc78f7`, mergiati fast-forward in `main` il 14 set** (CI e Deploy verdi; `/atelier/`, `/gap/`, `/moves/` e gli stub verificati live). Cambia la tesi del deck, non le slide: «ogni opportunità ha la sua esperienza — viva fra i meeting, misurata, fatta con i prodotti che vende». `The multiplication` diventa **`/gap/`** («cosa vogliono i buyer oggi», quattro numeri datati) e `New frontiers` diventa **`/moves/`** (le tre mosse + «La simulazione», gated `simulation`); i vecchi slug restano come stub di redirect. Deck a **36 slide**, taglio sponsor `?s=asks` a **20**. Calendario rifatto: decisione entro il **31 ott 2026**, M1 fine gen 2027, M2 all'Adobe Summit 22–25 mar 2027 (**data da confermare su summit.adobe.com**), M3 fine giu 2027. Dentro il deck ci sono ora **due prove che funzionano davvero**, così le mosse si leggono «esiste già» e non «faremo»: la **telemetria del deck stesso** (migrazione `0014_deck_events.sql` applicata al DB remoto, `DeckTelemetry.astro` nel core, RPC `atelier_slide_stats`, fail-closed, `?telemetry=mock` per l'audit) e il **server MCP `atelier`** (`packages/mcp-atelier`, tre tool, `?lang=` imparato dal core, due nuove Agent Skill, trascrizione reale versionata). Propagato fuori: «Experience Cloud» → **«Adobe CX Enterprise»** in Agos, Console e UniCredit, lasciando intatte le citazioni datate (rinominare una fonte la falsifica). **Gate**: build 15 progetti, typecheck 0, lint 0, content-audit PASS, 67 test verdi, `audit:deck` **0 HARD** su 8 rotte × 3 viewport in **EN, FR e IT** (soft accettati: 50 / 56 / 52), 36 slide lette a 1920 in EN + 14 in FR e IT. Memoria `experience-atelier-deck`.
-- **Revisione finale del branch → «with fixes» → onda unica `7fc78f7`**: sfondi Firefly 53→**55** (bg-gap/bg-moves), la telemetria legge il taglio dal pin `sessionStorage` (`edf-solutions-atelier:link`) così il taglio sponsor non risulta più `full` dopo la nav SPA (verificato via RPC), `pnpm test` + `pnpm test:scripts` in `ci.yml`, chip di stato trilingue, «progetto pilota / projet pilote», label admin. Re-review scoped: tutto chiuso. Branch cancellato dopo il merge.
-
-### Change log — Experience Atelier: stato del codice + catena creativa Adobe (2026-09-14) → dettaglio §21.7 (HANDOVER-09)
-- **feat(atelier): il deck racconta le otto experience e si fa gli sfondi con Firefly** — 8 experience/organizzazioni ovunque (Isybank), muro a 8 tile con screenshot ricatturati dai dist, riga MIM senza la rivendicazione C2PA, console a 4 controlli, anatomia con la catena di build, frontiers e M2 riscritti (Firefly è già in build: «prossimo» = generazione in sala). **Nuova slide «Made with Adobe»** con i conteggi letti dai provenance (53 sfondi Firefly, 8 clip, 1 scontorno Photoshop). L'Atelier stesso: 3 sfondi Firefly + clip Firefly Video in copertina (ricucita, Release `media`) + `MadeWith` per slide. Build, typecheck 0, lint 0, content-audit PASS, `audit:deck` 0 HARD su 8×3 (EN) + FR sulle rotte toccate. **Gate**: il check `e` in FR segnalava «testo su testo» fra la freccia ↗ delle tile e lo span `.sr-only` «(s’ouvre dans un nouvel onglet)» — testo **mai dipinto** (`clip: rect(0 0 0 0)`) il cui figlio inline ha comunque un rect di layout, e in un flex column l'assoluto si posa in alto a sinistra. `deck-audit.ts` ora esclude da ogni misura ciò che sta sotto un antenato a clip zero: toglie solo falsi positivi, non può aggiungere fallimenti (verificato su Isybank home). Memoria `experience-atelier-deck`.
