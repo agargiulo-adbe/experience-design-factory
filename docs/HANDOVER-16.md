@@ -344,6 +344,30 @@ tre), **4 ferme** ($202K, più 6 oltre i 18 mesi che sono residui di dati), e **
 in rosso o con una data vicina** — fra cui **Telecom Italia con tre solution in rosso e
 nessun registro**.
 
+⚠️ **E il 13 ott, più tardi, il giudizio è tornato dentro** — perché la correzione
+dell'owner era secca: «il giudizio non è la componente che deve girare su Claude? Io ho
+bisogno di giudizio e di consulenza». Aveva ragione: ottimizzare il costo aveva fatto
+uscire dal sistema la cosa richiesta, e un consulente che conta e non giudica è un
+cruscotto. Ora, **se ci sono rilievi**, il giro passa la propria uscita a `claude -p` e ne
+ricava cinque righe — `OGGI` (su cosa lavorare e perché), `NON` (cosa sembra urgente e non
+lo è), `CLIENTE` (un'occasione, **solo** dove il radar porta un segnale), `DENTRO` (uno
+spunto per l'AE, un collega, il manager), `DOMANDA` — in
+`giri/AAAAMMGG-HHMM-consulenza.md`, e **la notifica porta il giudizio invece dei
+conteggi**.
+
+Tre numeri misurati: **$0,14 per giro** girando **fuori dal repo** (18.538 token di
+contesto) contro **$0,36** dentro (100.821, cioè 75 KB di regole sui deck che lì non
+servono) — e il giudizio fuori è **migliore**; circa **$3 al mese**; **zero nei giorni
+quieti**, perché senza rilievi il consulente non viene chiamato. E `claude -p` **gira sotto
+launchd**, verificato con un job di prova prima di prometterlo. Il radar del 2 ott non è
+morto perché Claude costa: è morto per **300-500 chiamate a settimana** su 25 account —
+questo ne fa **una**, su un input già ridotto. ⚠️ **Ripiego**: se il consulente tace o
+risponde fuori formato torna la notifica dei conteggi, provato con `claude` irraggiungibile;
+un giudizio mancato non deve spegnere il segnale. Il primo giudizio vero ha scelto Enel AAM
+($243K, Red in due liste indipendenti, 47 giorni) scartando le quattro trattative Ferrari
+perché Forms non muove il piano — e ha trovato un buco del radar da sé: **non porta
+l'attainment**, quindi la domanda sul gap di piano non può rispondersela.
+
 **`accounts --cross` è la mappa del cross-sell** e sta **fuori dalla notifica di
 proposito**: per ogni account del book, quali prodotti eleggibili ha e quali no (208
 caselle vuote). Le fonti interne del ruolo dicono di partire **dal segnale del cliente, non
