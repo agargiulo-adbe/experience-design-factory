@@ -78,8 +78,8 @@ riverificare il mondo.
 
 ### WhatsApp — quale account, e come si legge
 Il lavoro su WhatsApp sta nell'account che Centralino chiama **`whatsapp-personale`**,
-perché quel numero — `393489696067` — è il **numero di lavoro**, quello della firma delle
-mail Adobe. L'etichetta è di Centralino, non del contenuto: lì ci sono i messaggi dei
+perché quel numero è il **numero di lavoro**, quello della firma delle mail Adobe (il
+numero non si scrive qui: questo file è tracciato in un repo pubblico). L'etichetta è di Centralino, non del contenuto: lì ci sono i messaggi dei
 colleghi e dei referenti cliente, correnti (verificato il 12 ott 2026).
 
 - `whatsapp-aziendale` è un **archivio storico**: l'indice si ferma al 2022. Si guarda
@@ -104,8 +104,8 @@ Guarda la riga `Dominio: … · grafo aggiornato <data>` nella sezione «Chi è 
   del destinatario e **i due limiti misurati** stanno in `docs/CLAUDE.md`, sezione «Il grafo
   dei contatti»: leggila prima, perché una delle due ricerche non misura quello che sembra.
 - **Senza `Dominio:`** → ricavalo dagli indirizzi che tornano cercando il nome dell'account,
-  e **proponilo**: non indovinarlo da come si chiama l'azienda (`Banca Generali` non è
-  `bancagenerali.com` per forza).
+  e **proponilo**: non indovinarlo da come si chiama l'azienda — la ragione sociale e il
+  dominio di posta coincidono molto meno spesso di quanto sembri.
 
 Costo: **1 + N chiamate** per account, N = i contatti trovati. A cadenza settimanale è poco;
 al giorno sarebbe spreco, perché il grafo cambia lentamente.

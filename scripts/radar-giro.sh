@@ -48,6 +48,24 @@ mkdir -p "$GIRI"
 { echo "# Radar · giro del $(date '+%d %b %Y, %H:%M')"; echo; "$PNPM" --silent accounts; } > "$GIRI/$OGGI.md" 2>&1
 RILIEVI="$("$PNPM" --silent accounts --rilievi 2>/dev/null)"
 
+# L'APERTURA: una conversazione da avviare, scelta in modo deterministico e **depositata**
+# come riga nel Registro opportunità, perché la decisione (SÌ/NO/DOPO) abbia dove andare.
+# Costa zero token come il resto di questo strato: è selezione, non giudizio.
+# `--deposita` ne scrive una sola al giorno: al secondo lancio rimostra quella di oggi.
+APERTURA="$("$PNPM" --silent accounts --apertura --deposita 2>/dev/null)"
+if printf '%s' "$APERTURA" | grep -q "^APERTURA "; then
+  { echo "# Apertura · $(date '+%d %b %Y, %H:%M')"; echo; printf '%s\n' "$APERTURA"; } > "$GIRI/${OGGI}-apertura.md"
+  { echo; echo "## Apertura di oggi"; echo; printf '%s\n' "$APERTURA"; } >> "$GIRI/$OGGI.md"
+fi
+# La riga da notifica: «<account> · scrivi a <nome> — <cosa>». Senza A CHI (apertura già
+# proposta oggi, o nessuna) resta vuota e la notifica ripiega su DENTRO.
+CHI="$(printf '%s\n' "$APERTURA" | awk -F'   +' '/^A CHI /{print $2; exit}' | awk -F' · ' '{print $1}')"
+PROP="$(printf '%s\n' "$APERTURA" | awk -F'   +' '/^PROPONI /{print $2; exit}')"
+ACC="$(printf '%s' "$PROP" | awk -F'  ·  ' '{print $2}')"
+PROP="$(printf '%s' "$PROP" | awk -F'  ·  ' '{print $1}')"
+APERTURA_L=""
+[ -n "$CHI" ] && APERTURA_L="${ACC:+$ACC · }scrivi a $CHI — $PROP"
+
 [ -z "${RILIEVI// /}" ] && exit 0   # mattina quieta: file scritto, nessuna interruzione, ZERO costo
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -66,12 +84,14 @@ PROMPT="Sei il consulente interno di un Product Specialist di Adobe Italia. Il s
 
 Dal radar di stamattina scrivi ESATTAMENTE sei righe, una per etichetta, e nient'\''altro: nessun preambolo, nessun markdown, nessun elenco.
 
-TITOLO: la stessa cosa di OGGI in **meno di 90 caratteri**, come la diresti a voce entrando in ufficio. Serve alla notifica, che taglia: «Enel AAM \$243K: rosso in due liste, 47 giorni» va bene, una frase con una subordinata no.
+TITOLO: la stessa cosa di OGGI in **meno di 90 caratteri**, come la diresti a voce entrando in ufficio. Serve alla notifica, che taglia: «<account> <prodotto>: rosso in due liste, 47 giorni» va bene, una frase con una subordinata no.
 OGGI: la cosa su cui lavorare oggi e perché, in una frase. Scegli per rischio × valore × quanto conta per il piano, non per quanto fa rumore.
 NON: una cosa che sembra urgente e non lo è, e perché.
 CLIENTE: un'\''occasione di relazione o di cross-sell verso un cliente, ma SOLO se nel radar c'\''è un segnale che la giustifica (una trattativa, un rinnovo, una salute in rosso, un evento). Se quel segnale non c'\''è, scrivi «nessuna occasione con un segnale oggi» e fermati: proporre un prodotto che manca senza un caso d'\''uso è un approccio debole.
 DENTRO: uno spunto da portare internamente, all'\''AE o a un altro specialist o al manager o al product marketing, con il motivo.
 DOMANDA: una domanda che vale la pena farsi e a cui il radar non può rispondere.
+
+Se in coda al radar trovi «Apertura di oggi», è la conversazione che lo strato deterministico ha scelto incrociando i segnali col grafo dei contatti. Giudicala: se è quella giusta, in CLIENTE dilla con le tue parole e aggiungi l'\''aggancio che la rende sensata; se NON è quella giusta — il contatto è sbagliato per quel tema, o c'\''è un segnale migliore nella lista — dillo in CLIENTE con il motivo. È il punto in cui il tuo giudizio vale più della selezione.
 
 Non inventare numeri, nomi o date: usa solo quelli che leggi. Se un dato manca, dillo."
 
@@ -91,7 +111,10 @@ if printf '%s' "$GIUDIZIO" | grep -q "^OGGI:"; then
   # frase e il punto si perdeva. Se TITOLO manca, si ripiega su OGGI.
   OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^TITOLO:" | sed 's/^TITOLO: *//')"
   [ -z "$OGGI_L" ] && OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^OGGI:" | sed 's/^OGGI: *//')"
-  ALTRE="$(printf '%s' "$GIUDIZIO" | grep -m1 "^DENTRO:" | sed 's/^DENTRO: *//')"
+  # Nel corpo va l'APERTURA quando c'è: «scrivi a <nome> per <cosa>» è la cosa che questo
+  # sistema esiste per dire, e vale più di uno spunto interno. Senza apertura, DENTRO.
+  ALTRE="$APERTURA_L"
+  [ -z "$ALTRE" ] && ALTRE="$(printf '%s' "$GIUDIZIO" | grep -m1 "^DENTRO:" | sed 's/^DENTRO: *//')"
   [ ${#ALTRE} -gt 140 ] && ALTRE="${ALTRE:0:137}…"
   q() { printf '%s' "${1//\"/\\\"}"; }
   osascript -e "display notification \"$(q "$ALTRE")\" with title \"Radar · $(date '+%-d %b')\" subtitle \"$(q "${OGGI_L:0:110}")\""
@@ -111,6 +134,8 @@ PRIMA="$(printf '%s\n' "$RILIEVI" | head -1)"
 # unirle con lo stesso carattere rende illeggibile dove finisce una e comincia l'altra
 ALTRE="$(printf '%s\n' "$RILIEVI" | tail -n +2 | head -3 | awk '{printf "%s%s", (NR>1 ? " | " : ""), $0}')"
 [ "$N" -gt 4 ] && ALTRE="$ALTRE · e altre $((N - 4))"
+# anche senza consulente l'apertura si vede: è la riga più azionabile delle due
+[ -n "$APERTURA_L" ] && ALTRE="$APERTURA_L"
 [ ${#ALTRE} -gt 150 ] && ALTRE="${ALTRE:0:147}…"
 TITOLO="Radar · $N cos$([ "$N" -eq 1 ] && echo a || echo e)"
 q() { printf '%s' "${1//\"/\\\"}"; }

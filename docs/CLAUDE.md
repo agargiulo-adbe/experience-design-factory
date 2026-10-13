@@ -46,6 +46,9 @@ Dentro una sessione, tutti e tre si trovano con `/acc` + TAB:
 | `/account-close [<Account>]` | deposita lo stato, diff prima di salvare |
 | `/accounts [fermi]` | la vista d'insieme su tutti gli account |
 
+Più due modi che non sono comandi di sessione ma si usano ogni giorno:
+`accounts --apertura` (a chi scrivere oggi) e `accounts --decidi <id> si|no|dopo` (la risposta).
+
 Fuori da una sessione c'è la **stessa parola**, come funzione di shell — nessun nome in più
 da ricordare, e costa zero token:
 
@@ -65,6 +68,48 @@ essere dentro). Due modi in più:
   un'opportunità **solo incrociata con un segnale** del cliente. Le fonti interne del
   ruolo sono esplicite — si parte dal segnale, non dallo SKU che manca, e proporre un
   upgrade senza un caso d'uso è un approccio debole.
+
+**E l'apertura: a chi scrivere oggi.** Lo strato gratuito non si limita a dire che cosa sta
+succedendo: incrocia i segnali del Radar col **grafo dei contatti** e propone **una**
+conversazione da avviare, con quattro campi obbligatori — se ne manca uno l'apertura **non
+esce**, perché una riga senza destinatario fa perdere tempo invece di farne risparmiare.
+
+| Campo | Che cos'è |
+| --- | --- |
+| **A CHI** | nome, funzione, e «scrivi tu» o «passa dall'AE» **col motivo** |
+| **PROPONI** | di che cosa si parla. Uno, non tre |
+| **PERCHÉ ORA** | il segnale che la giustifica, con la fonte |
+| **MUOVE** | M1, M2 o «relazione» — così si vede se tocca il piano · più `Q4?` |
+
+- **`accounts --apertura`** la mostra · **`--apertura --deposita`** la deposita come riga nel
+  `Registro_opportunita.md` con la decisione vuota, ed è ciò che fa il giro della mattina.
+- **Una al giorno per davvero**: se oggi una è già stata proposta e non ha risposta, il
+  comando rimostra quella invece di aggiungerne un'altra. Tre al giorno fanno sessanta al
+  mese, che è la quantità che non si lavora.
+- ⚠️ **PROPONI dice di che cosa si parla, non «vendi questo».** La prima versione stampava
+  «PROPONI AAM» su un account che da AAM sta **migrando**: il segnale era il rischio sul
+  rinnovo, e letto come proposta commerciale diventava falso.
+- **Salute rossa e rinnovo sullo stesso prodotto sono una notizia sola**: si fondono, ed è la
+  fusione che dà al rischio la data e l'eleggibilità del rinnovo (senza, un rischio su un
+  rinnovo eleggibile veniva marcato «relazione»).
+- **Niente contatto, niente apertura.** Gli account esclusi si elencano come **buco da
+  colmare** — «chiedi all'AE chi conosciamo», o rifai il grafo con `/account-open` — mai come
+  assenza di opportunità.
+
+**Il giro di ritorno, che è il pezzo che vale più di tutti**, perché è l'unico che migliora da
+sé: ogni apertura porta un id `A-AAAAMMGG-N`, e la risposta si dà in un modo o nell'altro —
+a mano nella colonna «Decisione Antonio», o con **`accounts --decidi <id> si|no|dopo`**.
+
+- **NO** → quella combinazione (account + contatto + cosa) **non si ripropone più**;
+- **DOPO** → torna fra **21 giorni**;
+- **SÌ** → resta aperta, e l'esito lo chiede **`/account-close`**;
+- **nessuna risposta** → non si ripropone domani, ma **torna dopo una settimana** con lo
+  stesso id: una proposta non risposta è più spesso persa che rifiutata.
+
+⚠️ **La colonna non si riscrive mai**, nemmeno per «aggiornarla»: `--decidi` su una riga già
+decisa **rifiuta** e dice cosa c'è scritto. Dopo un mese quella colonna dice quali *tipi* di
+segnale diventano conversazioni e quali no — ed è il dato che deciderà se accendere le fonti
+esterne, e quali.
 
 **E poi parla il consulente.** Se ci sono rilievi, il giro passa la propria uscita — già
 ridotta a una decina di righe — a `claude -p`, che ne ricava **cinque righe**: `OGGI` (su
