@@ -47,6 +47,12 @@ const SOLO_FERMI = process.argv.includes('--fermi');
 /* --rilievi: stampa SOLO le righe che meritano una notifica, al massimo cinque, e
    NIENTE se non c'è nulla. È il contratto con il cron: output vuoto = silenzio. */
 const SOLO_RILIEVI = process.argv.includes('--rilievi');
+/* --cross: la mappa del cross-sell, SOLO a richiesta. Una casella vuota non è
+   un'opportunità: le fonti interne del ruolo sono esplicite — si parte da un segnale
+   del cliente, non dallo SKU che manca, e proporre un upgrade senza un caso d'uso è
+   un approccio debole. Quindi è una mappa da incrociare, non un elenco da lavorare,
+   e per questo non entra nella notifica. */
+const SOLO_CROSS = process.argv.includes('--cross');
 const GIORNI_FERMO = 21;
 const GIORNI_RINNOVO = 120;
 const GIORNI_SNAPSHOT_VECCHIO = 45;
@@ -55,6 +61,8 @@ const GIORNI_EVENTO = 14;             // un evento entro due settimane
 const GIORNI_ISCRIZIONE = 3;          // una scadenza d'isciizione è più urgente dell'evento
 const GIORNI_GIRO_FERMO = 2;          // oltre questo, il cron potrebbe essere morto
 const MAX_RIGHE_NOTIFICA = 5;
+const GIORNI_OPP_VICINA = 21;      // una trattativa che chiude entro tre settimane
+const MESI_OPP_FERMA = 18;         // oltre, è residuo di dati e non una trattativa
 
 /* I documenti della Factory stanno in piano in docs/; le cartelle sono gli account, meno i
    depositi di materiale. `Adobe` (senza «Material») È un account: ci sta il lavoro non
@@ -77,6 +85,13 @@ const data = (s: string): Date | undefined => {
 
 const oggi = new Date();
 const giorni = (d: Date): number => Math.floor((+oggi - +d) / 86_400_000);
+/** ⚠️ NON si usa `toISOString()`: le date nascono come mezzanotte LOCALE e in UTC
+    diventano il giorno prima (CEST = +2), quindi ogni scadenza veniva stampata con un
+    giorno di anticipo — Banca Generali chiude il 21 e si leggeva 20. Un errore di un
+    giorno su una data di chiusura è esattamente il genere di cosa che fa perdere una
+    scadenza. Qui si formatta dai componenti locali. */
+const iso = (d: Date): string =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const taglia = (s: string, n: number): string => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 const norm = (s: string): string =>
   s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -141,11 +156,16 @@ for (const cliente of readdirSync(DOCS).sort()) {
 
 /* ── il Radar ─────────────────────────────────────────────────────────────────── */
 interface Rinnovo { account: string; prodotto: string; quando: Date; rbob: number; rischio: string; eleggibile?: boolean }
+interface Opportunita { account: string; nome: string; prodotto: string; stage: string; valore: number; chiude: Date; eleggibile?: boolean }
+interface Salute { account: string; solution: string; stato: string; ragione: string }
 const radar = {
   presente: existsSync(RADAR),
   snapshot: undefined as Date | undefined,
   book: [] as { account: string; arr: number }[],
   rinnovi: [] as Rinnovo[],
+  opportunita: [] as Opportunita[],
+  salute: [] as Salute[],
+  posseduti: new Map<string, Set<string>>(),
   eleggibili: [] as string[],
   fineQuarter: undefined as Date | undefined,
   avvisi: [] as string[],
@@ -176,6 +196,28 @@ if (radar.presente) {
       }
     }
     if (!radar.book.length) radar.avvisi.push('Anagrafica_account.md c\'è ma la tabella del book non si legge');
+
+    /* P2: che cosa ogni account POSSIEDE — serve alla mappa del cross-sell.
+       ⚠️ Il file ha DUE blocchi P2 con formati diversi, e leggerne uno solo lascia
+       nove account con la casella «ha» vuota pur avendo milioni di ARR (visto su
+       Amplifon): uno **aggregato** `Account;Solution;ARR;…` (23 account) e uno
+       **per SKU** `Account; Prodotto (SIGLA); Edition; ARR;…` (9). Quindi l'ARR non
+       sta a un indice fisso: si cerca la prima colonna numerica dopo il prodotto. */
+    const j0 = s.indexOf('## P2 Prodotti');
+    if (j0 >= 0) {
+      for (const r of s.slice(j0).split('\n')) {
+        const c = r.split(';').map((x) => x.trim());
+        if (c.length < 4 || !c[0] || c[0] === 'Account' || c[0].startsWith('#') || c[0].startsWith('|')) continue;
+        if (!c[1] || /^Product/i.test(c[1])) continue;
+        const arr = c.slice(2).findIndex((x) => /^[\d][\d.,]*$/.test(x));
+        if (arr < 0) continue;                       // nessuna colonna numerica: non è una riga di prodotto
+        const set = radar.posseduti.get(c[0]) ?? new Set<string>();
+        set.add(norm(c[1]));                         // il nome come scritto
+        const sigla = c[1].match(/\(([^)]+)\)/);     // …e la sigla fra parentesi, che è la chiave vera
+        if (sigla) set.add(norm(sigla[1]));
+        radar.posseduti.set(c[0], set);
+      }
+    }
   } else radar.avvisi.push('manca Mappa_Account/Anagrafica_account.md: niente book, niente copertura');
 
   // Goal Sheet: quali prodotti contano per il piano, e quando chiude il quarter
@@ -208,6 +250,37 @@ if (radar.presente) {
       radar.rinnovi.push(rin);
     }
     if (!radar.rinnovi.length) radar.avvisi.push('Panorama c\'è ma le righe P3 non si leggono');
+
+    // P4: le opportunità aperte. Sono segnali GIÀ qualificati — una trattativa con una
+    // data esiste, non va inventata — e per questo entrano nel giro del mattino.
+    const q0 = s.indexOf('## P4');
+    const q1 = s.indexOf('## P5');
+    if (q0 >= 0) {
+      for (const r of s.slice(q0, q1 > q0 ? q1 : undefined).split('\n')) {
+        const c = r.split(';').map((x) => x.trim());
+        if (c.length < 6 || !c[0] || c[0] === 'Account' || /Opportunity name/.test(r)) continue;
+        const chiude = data(c[5] ?? '');
+        if (!chiude) continue;
+        const o: Opportunita = {
+          account: c[0], nome: c[1] ?? '', prodotto: c[2] ?? '', stage: c[3] ?? '',
+          valore: parseFloat((c[4] ?? '').replace(/,/g, '')) || 0, chiude,
+        };
+        if (radar.eleggibili.length) o.eleggibile = radar.eleggibili.includes(norm(o.prodotto));
+        radar.opportunita.push(o);
+      }
+    }
+
+    // P5: salute e rischi, con la RAGIONE dichiarata — è quella che rende la riga utile
+    const h0 = s.indexOf('## P5');
+    const h1 = s.indexOf('## P6');
+    if (h0 >= 0) {
+      for (const r of s.slice(h0, h1 > h0 ? h1 : undefined).split('\n')) {
+        const c = r.split(';').map((x) => x.trim());
+        if (c.length < 5 || !c[0] || c[0] === 'Account' || /Current health/.test(r)) continue;
+        if (!/^(Yellow|Red)$/i.test(c[2] ?? '')) continue;
+        radar.salute.push({ account: c[0], solution: c[1], stato: c[2], ragione: c[4] ?? '' });
+      }
+    }
   } else radar.avvisi.push('manca Panorama_AAAAMMGG.md: niente rinnovi');
 }
 
@@ -302,6 +375,27 @@ const eventiVicini = eventi.filter((e) =>
   (e.quando && giorni(e.quando) > -GIORNI_EVENTO && giorni(e.quando) <= 0) ||
   (e.iscrizione && giorni(e.iscrizione) > -GIORNI_ISCRIZIONE && giorni(e.iscrizione) <= 0));
 
+/* opportunità: quelle con una data davanti, e quelle ferme (data passata). Oltre i
+   18 mesi non sono trattative ferme: sono residui di dati, e vanno contati a parte
+   invece di gonfiare l'elenco. */
+const oppVicine = radar.opportunita
+  .filter((o) => giorni(o.chiude) <= 0 && giorni(o.chiude) > -GIORNI_OPP_VICINA)
+  .sort((a, b) => +a.chiude - +b.chiude);
+const oppFerme = radar.opportunita
+  .filter((o) => giorni(o.chiude) > 0 && giorni(o.chiude) < MESI_OPP_FERMA * 30)
+  .sort((a, b) => giorni(b.chiude) - giorni(a.chiude));
+const oppResidui = radar.opportunita.filter((o) => giorni(o.chiude) >= MESI_OPP_FERMA * 30);
+const oppFuture = radar.opportunita.filter((o) => giorni(o.chiude) <= 0).sort((a, b) => +a.chiude - +b.chiude);
+
+/* salute: 30 righe Yellow/Red non stanno in una notifica. Entrano le ROSSE, e le
+   gialle solo se quell'account ha un rinnovo entro 120 gg — cioè quando il rischio
+   ha una data. Il resto si legge nella vista intera. */
+const conRinnovoVicino = new Set(radar.rinnovi
+  .filter((r) => giorni(r.quando) > -GIORNI_RINNOVO && giorni(r.quando) <= 0)
+  .map((r) => norm(r.account)));
+const saluteUrgente = radar.salute.filter((h) =>
+  /red/i.test(h.stato) || conRinnovoVicino.has(norm(h.account)));
+
 const rilievi: string[] = [];
 if (deriva) rilievi.push('il giro installato è divergente dalla sorgente: pnpm radar:install');
 for (const { c, k } of scaduti) rilievi.push(`${c.cliente}: «${taglia(k.nome, 30)}» scaduto da ${giorni(k.scadenza!)} gg`);
@@ -315,6 +409,28 @@ for (const e of eventiVicini) {
    Quando un account ha più rinnovi vicini si somma il RBOB e si prende la data
    prima; il simbolo «€» dice se almeno uno conta per M1/M2. */
 const perAccount = new Map<string, Rinnovo[]>();
+/* una trattativa che chiude fra pochi giorni viene prima di un rinnovo fra un mese:
+   l'ordine dei rilievi è una scala di urgenza, non la somma di tre elenchi. */
+const perAccountOpp = new Map<string, Opportunita[]>();
+for (const o of oppVicine) perAccountOpp.set(o.account, [...(perAccountOpp.get(o.account) ?? []), o]);
+for (const [account, righe] of [...perAccountOpp].sort((a, b) => +a[1][0].chiude - +b[1][0].chiude)) {
+  const tot = righe.reduce((t, o) => t + o.valore, 0);
+  const conta = righe.some((o) => o.eleggibile);
+  const che = righe.length === 1 ? taglia(righe[0].prodotto, 20) : `${righe.length} trattative`;
+  rilievi.push(`${conta ? '€ ' : ''}${account} · ${che} ${soldi(tot)} chiude fra ${-giorni(righe[0].chiude)} gg`);
+}
+/* anche qui una riga per ACCOUNT: tre righe rosse dello stesso cliente sono una
+   notizia sola, e otto righe di salute su quindici rilievi affogavano tutto il resto.
+   La ragione mostrata è quella della prima, con il conteggio delle altre. */
+const perAccountSalute = new Map<string, Salute[]>();
+for (const h of saluteUrgente.filter((x) => /red/i.test(x.stato))) {
+  perAccountSalute.set(h.account, [...(perAccountSalute.get(h.account) ?? []), h]);
+}
+for (const [account, righe] of perAccountSalute) {
+  const che = righe.length === 1 ? righe[0].solution : `${righe.length} solution`;
+  rilievi.push(`${account} · ${che} in ROSSO — ${taglia(righe[0].ragione.replace(/^(Commercial|Product|Usage\/Adoption):\s*/, ''), 40)}`);
+}
+
 for (const r of rinnoviNotifica) {
   const k = r.account;
   perAccount.set(k, [...(perAccount.get(k) ?? []), r]);
@@ -326,12 +442,61 @@ for (const [account, righe] of [...perAccount].sort((a, b) => +a[1][0].quando - 
   const che = righe.length === 1 ? righe[0].prodotto : `${righe.length} rinnovi`;
   rilievi.push(`${conta ? '€ ' : ''}${account} · ${che} ${soldi(tot)} fra ${-giorni(righe[0].quando)} gg${!c || c.senzaRegistro ? ' · senza registro' : ''}`);
 }
+if (oppFerme.length) {
+  const tot = oppFerme.reduce((t, o) => t + o.valore, 0);
+  rilievi.push(`${oppFerme.length} trattative con la data già passata · ${soldi(tot)}`);
+}
 for (const c of fermi) rilievi.push(`${c.cliente} fermo da ${giorni(c.aggiornato!)} gg · ${aperti(c).length} aperti`);
 
 if (SOLO_RILIEVI) {
   // Contratto col cron: niente da dire = nessun output = nessuna notifica.
   for (const r of rilievi.slice(0, MAX_RIGHE_NOTIFICA)) console.log(r);
   if (rilievi.length > MAX_RIGHE_NOTIFICA) console.log(`e altre ${rilievi.length - MAX_RIGHE_NOTIFICA} cose`);
+  process.exit(0);
+}
+
+if (SOLO_CROSS) {
+  /* La mappa, non un elenco di cose da fare. Si legge così: a sinistra quello che
+     l'account ha fra i prodotti che contano per il piano, a destra quello che non ha.
+     Una casella vuota diventa un'opportunità SOLO incrociata con un segnale — una
+     frase del cliente, uno sforamento, un rinnovo, un evento. Senza quel segnale,
+     proporre il prodotto che manca è l'approccio che le fonti interne giudicano debole. */
+  const CHIAVE = ['analytics', 'cja', 'target', 'rtcdp', 'journey ajo', 'campaign',
+    'marketo engage', 'content analytics', 'aep add on data distiller',
+    'agent orchestrator cx enterprise coworker'];
+  /* Le sigle del footprint non sono i nomi del Goal Sheet: la mappa è dichiarata qui
+     invece di essere indovinata, perché un abbinamento mancato fa sembrare scoperto
+     un prodotto che l'account ha già — il peggiore degli errori su una mappa di
+     cross-sell, perché porta a proporre quello che il cliente ha comprato. */
+  const SIGLE: Record<string, string> = {
+    aa: 'analytics', at: 'target', aepcdp: 'rtcdp', ajo: 'journey ajo', ac: 'campaign',
+    rtcdp: 'rtcdp', cja: 'cja', aam: 'aam', 'genstudio modules': 'genstudio',
+    sites: 'sites', assets: 'assets',
+  };
+  const ha = (acc: string): Set<string> => {
+    const out = new Set<string>();
+    for (const x of radar.posseduti.get(acc) ?? []) out.add(SIGLE[x] ?? x);
+    return out;
+  };
+  console.log(`\naccounts --cross · la mappa del cross-sell su ${radar.book.length} account del book`);
+  console.log('Fonte: Radar/Mappa_Account (PanoAI) × i prodotti eleggibili del Goal Sheet.\n');
+  let vuote = 0;
+  for (const b of radar.book) {
+    const p = ha(b.account);
+    const presenti = CHIAVE.filter((k) => p.has(k));
+    const manca = CHIAVE.filter((k) => !p.has(k));
+    vuote += manca.length;
+    const c = contoDi(b.account);
+    const reg = !c ? ' ·senza cartella' : c.senzaRegistro ? ' ·senza registro' : '';
+    console.log(`  ${taglia(b.account, 24).padEnd(24)} ${soldi(b.arr).padStart(7)}${reg}`);
+    console.log(`      ha      ${presenti.length ? presenti.map((x) => taglia(x, 16)).join(' · ') : '— (niente fra i prodotti che contano per il piano)'}`);
+    console.log(`      non ha  ${manca.map((x) => taglia(x, 16)).join(' · ')}`);
+  }
+  console.log(`\nCaselle vuote su prodotti che contano per il piano: ${vuote}`);
+  console.log('\n⚠️  Questa è una MAPPA, non un elenco di cose da fare. Una casella vuota diventa');
+  console.log('    un\'opportunità solo incrociata con un segnale del cliente: proporre il prodotto');
+  console.log('    che manca senza un caso d\'uso è l\'approccio che le fonti interne del ruolo');
+  console.log('    giudicano debole. Il segnale lo trova `/account-open`, non questo elenco.');
   process.exit(0);
 }
 
@@ -386,9 +551,48 @@ if (rinnoviVicini.length) {
     const stato = !c ? '· NESSUNA CARTELLA' : c.senzaRegistro ? '· senza registro' : '';
     const peso = r.eleggibile === undefined ? ' ' : r.eleggibile ? '€' : '·';
     const rischio = /not at risk|^n\/a$|^$/i.test(r.rischio) ? '' : ` · ${r.rischio}`;
-    console.log(`  ${peso} ${r.quando.toISOString().slice(0, 10)}  ${taglia(r.account, 24).padEnd(24)} ${taglia(r.prodotto, 26).padEnd(26)} ${soldi(r.rbob).padStart(7)} ${stato}${rischio}`);
+    console.log(`  ${peso} ${iso(r.quando)}  ${taglia(r.account, 24).padEnd(24)} ${taglia(r.prodotto, 26).padEnd(26)} ${soldi(r.rbob).padStart(7)} ${stato}${rischio}`);
   }
   if (radar.eleggibili.length) console.log('  («€» = il prodotto conta per M1/M2 del Goal Sheet · «·» = relazione, non attainment)');
+}
+
+if (oppFuture.length) {
+  const tot = oppFuture.reduce((t, o) => t + o.valore, 0);
+  const conta = oppFuture.filter((o) => o.eleggibile);
+  console.log(`\nTRATTATIVE APERTE con una data davanti: ${oppFuture.length} · ${soldi(tot)}` +
+    (radar.eleggibili.length ? ` · di cui ${conta.length} su prodotti che contano (${soldi(conta.reduce((t, o) => t + o.valore, 0))})` : ''));
+  for (const o of oppFuture) {
+    const c = contoDi(o.account);
+    const stato = !c ? '· NESSUNA CARTELLA' : c.senzaRegistro ? '· senza registro' : '';
+    const peso = o.eleggibile === undefined ? ' ' : o.eleggibile ? '€' : '·';
+    console.log(`  ${peso} ${iso(o.chiude)}  ${taglia(o.account, 22).padEnd(22)} ${taglia(o.prodotto, 20).padEnd(20)} ${soldi(o.valore).padStart(7)}  ${taglia(o.stage, 22).padEnd(22)} ${stato}`);
+  }
+}
+
+if (oppFerme.length || oppResidui.length) {
+  if (oppFerme.length) {
+    console.log(`\nTRATTATIVE FERME — la data di chiusura è passata e sono ancora aperte: ${oppFerme.length} · ${soldi(oppFerme.reduce((t, o) => t + o.valore, 0))}`);
+    for (const o of oppFerme) {
+      console.log(`  ! ${iso(o.chiude)}  ${taglia(o.account, 22).padEnd(22)} ${taglia(o.prodotto, 20).padEnd(20)} ${soldi(o.valore).padStart(7)}  da ${giorni(o.chiude)} gg`);
+    }
+  }
+  if (oppResidui.length) {
+    console.log(`  (più ${oppResidui.length} con data oltre i ${MESI_OPP_FERMA} mesi: non sono trattative ferme, sono residui di dati — si ripuliscono nel CRM, non qui)`);
+  }
+}
+
+if (radar.salute.length) {
+  const rosse = radar.salute.filter((h) => /red/i.test(h.stato));
+  const gialleUrgenti = saluteUrgente.filter((h) => !/red/i.test(h.stato));
+  console.log(`\nSALUTE — ${radar.salute.length} solution in Yellow o Red` +
+    (saluteUrgente.length ? ` · ${saluteUrgente.length} con una data vicina o in rosso` : ''));
+  for (const h of [...rosse, ...gialleUrgenti]) {
+    const c = contoDi(h.account);
+    const stato = !c ? '· NESSUNA CARTELLA' : c.senzaRegistro ? '· senza registro' : '';
+    console.log(`  ${/red/i.test(h.stato) ? '!' : '·'} ${taglia(h.account, 22).padEnd(22)} ${taglia(h.solution, 16).padEnd(16)} ${h.stato.padEnd(6)} ${taglia(h.ragione, 50).padEnd(50)} ${stato}`);
+  }
+  const altre = radar.salute.length - rosse.length - gialleUrgenti.length;
+  if (altre > 0) console.log(`  (più ${altre} in Yellow senza una data vicina: croniche, si guardano quando si apre l'account)`);
 }
 
 if (fermi.length) {

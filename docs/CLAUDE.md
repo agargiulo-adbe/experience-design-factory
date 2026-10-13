@@ -57,7 +57,21 @@ accounts() {
 ```
 
 Funziona da qualunque cartella, anche fuori dal repo (`pnpm accounts` da solo no: vuole
-essere dentro). `accounts --fermi` mostra solo ciò che chiede attenzione.
+essere dentro). Due modi in più:
+- **`accounts --fermi`** — solo ciò che chiede attenzione;
+- **`accounts --cross`** — la **mappa del cross-sell**: per ogni account del book, quali
+  prodotti **eleggibili per il piano** ha e quali no. ⚠️ È una **mappa, non un elenco di
+  cose da fare**, e per questo non entra nella notifica: una casella vuota diventa
+  un'opportunità **solo incrociata con un segnale** del cliente. Le fonti interne del
+  ruolo sono esplicite — si parte dal segnale, non dallo SKU che manca, e proporre un
+  upgrade senza un caso d'uso è un approccio debole.
+
+**Che cosa guarda il giro di ogni mattina**, in scala di urgenza: un passo scaduto del
+registro · un evento o un'iscrizione che chiude · una **trattativa aperta** che chiude
+entro 21 giorni · una **salute in rosso** con la ragione dichiarata · un **rinnovo** entro
+30 giorni (eleggibile, o su un account senza registro) · una **trattativa ferma** (data
+passata) · un account fermo da oltre 21 giorni. Tutto raggruppato **per account**: tre
+righe rosse dello stesso cliente sono una notizia sola.
 
 E ogni mattina alle 07:30, lun-ven, lo stesso giro parte da sé via **launchd**, a costo
 zero di token: scrive in `Radar/giri/` e **notifica solo se c'è qualcosa**. Si installa o
