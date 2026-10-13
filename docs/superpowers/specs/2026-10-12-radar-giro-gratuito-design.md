@@ -1,6 +1,6 @@
 # Il giro gratuito del Radar — design
 
-**Data:** 12 ott 2026 · **Stato:** approvato nelle scelte, **non implementato**
+**Data:** 12 ott 2026 · **Stato:** **implementato e verificato il 13 ott 2026**
 
 ## Il problema
 
@@ -68,14 +68,15 @@ Lo strato 1 è il 60% del valore — *su cosa guardare* — e **esiste già**.
 
 ## A · Il giro gratuito
 
-`~/Library/LaunchAgents/com.gargiulo.radar.plist`, **lunedì-venerdì alle 07:30**, esegue:
+`~/Library/LaunchAgents/com.gargiulo.radar.plist`, **lunedì-venerdì alle 07:30**, esegue
+**un solo argomento**: il percorso assoluto di `~/.local/bin/radar-giro`. Niente shell,
+niente `$HOME`, niente virgolette — la prima versione passava `/bin/zsh -lc "$HOME/…"` e il
+job moriva, perché in `ProgramArguments` ogni `<string>` è un argomento letterale (vedi
+«Che cosa è servito davvero»).
 
-```sh
-/bin/zsh -lc 'cd "$HOME/Documents/progetti/Experience Design Factory" && pnpm --silent accounts'
-```
-
-Il **login shell** non è un vezzo: launchd parte con un `PATH` minimo e `pnpm` sta in
-`/opt/homebrew/bin` (verificato il 12 ott). Senza `-l` il job fallisce in silenzio.
+Si installa con **`pnpm radar:install`**, che copia la sorgente versionata
+`scripts/radar-giro.sh` in `~/.local/bin/radar-giro` e genera il plist. Tenere
+l'installatore nel repo è ciò che rende la cosa riproducibile su un'altra macchina.
 
 **Scrive sempre** `docs/Adobe/Radar/giri/AAAAMMGG-0730.md`, anche quando non trova niente:
 quel file è il battito, e serve al guardiano (D).
@@ -86,11 +87,12 @@ legge.
 
 ## B · Che cosa è un rilievo
 
-Tre soglie, e nessuna in più:
+Quattro soglie, e nessuna in più:
 
 1. **Scaduto** — un passo di un registro con `entro <data>` già passata.
 2. **Rinnovo vicino** — entro **30 giorni** e (su prodotto **eleggibile** secondo il Goal
-   Sheet) **oppure** su un account **senza registro**.
+   Sheet) **oppure** su un account **senza registro**. Una riga **per account**, non per
+   riga di rinnovo: RBOB sommato, data prima, «€» se almeno uno conta per il piano.
 3. **Fermo** — registro più vecchio di **21 giorni** con almeno un caso aperto.
 4. **Evento** — da `eventi.md`: data entro 14 giorni, o scadenza d'iscrizione entro 3.
 
@@ -132,9 +134,15 @@ launchctl start com.gargiulo.radar     # giro a mano, subito
 # il file del giro esiste e ha l'ora giusta
 ls -lt docs/Adobe/Radar/giri/ | head -3
 
-# la notifica compare SOLO con rilievi: si prova nei due stati
-#   (a) con un passo scaduto in un registro → notifica
-#   (b) senza nessun rilievo               → silenzio, file comunque scritto
+# la notifica compare SOLO con rilievi: provato nei due stati il 13 ott
+#   (a) con rilievi    → notifica, file da ~4,7 KB
+#   (b) senza rilievi  → `accounts --rilievi` esce VUOTO, nessuna notifica, file scritto
+
+# lo stderr del job deve essere a ZERO byte: è lì che si vedono i guasti di launchd
+wc -c /tmp/radar-giro.err
+
+# la deriva fra sorgente e copia installata
+pnpm accounts | head -6    # avvisa se ~/.local/bin/radar-giro è vecchio
 
 # il guardiano falla quando deve
 touch -t 202610010730 docs/Adobe/Radar/giri/20261001-0730.md
@@ -143,6 +151,34 @@ pnpm accounts | head -3    # deve avvisare che il cron è fermo
 
 Il gate `pnpm audit:docs` deve restare pulito: `giri/` ed `eventi.md` stanno sotto
 `docs/Adobe/`, già coperta dalla regola fail-closed.
+
+## Che cosa è servito davvero per farlo girare (13 ott)
+
+Il job funzionava a mano e moriva sotto launchd — tre volte, per tre cause diverse. Ognuna
+è il genere di guasto che non si vede se si prova solo dal proprio terminale, ed è
+esattamente il controllo che il 2 ottobre non era stato fatto.
+
+1. **`ProgramArguments` non è una shell.** Ogni `<string>` è un argomento **letterale**:
+   `"$HOME/…/script.sh"` arrivava con le virgolette e la variabile dentro. Esito:
+   `can't open input file`. Correzione: niente shell e niente `$HOME`, solo il percorso
+   assoluto dello script, generato dall'installatore.
+2. **Da `~/Documents` launchd non riesce a ESEGUIRE lo script**, pur riuscendo a leggere i
+   file di quella cartella. Verificato con un job di prova: `[ -r …/package.json ]` passa,
+   l'esecuzione dello script no. Correzione: la copia che gira vive in `~/.local/bin`,
+   installata da `pnpm radar:install`.
+3. **Nel `PATH` di launchd non c'è né `pnpm` né `node`.** Il giro scriveva un file di 77
+   byte con `env: node: No such file or directory`. Correzione: lo script esporta il `PATH`
+   da sé, con i percorsi verificati.
+
+Più una quarta, trovata dopo: il controllo della deriva, scritto in shell, falliva con
+`operation not permitted` perché **zsh lanciato da launchd non riesce ad aprire i file del
+repo**, mentre `node` sì. Il confronto è stato spostato in `accounts.ts`, che quei file li
+legge già — e così la deriva si vede anche quando si digita `accounts`, non solo nel cron.
+
+**Un difetto di contenuto, non di infrastruttura.** La prima versione dei rilievi metteva
+in testa alla notifica due righe Acea su `Assets` e `Sites`, prodotti che **non contano per
+il piano**: la diluizione che la spec voleva evitare. I rinnovi ora si raggruppano **per
+account** — una riga, il RBOB sommato, la data prima, e il simbolo «€» se almeno uno conta.
 
 ## Lavoro successivo, fuori da questa spec
 

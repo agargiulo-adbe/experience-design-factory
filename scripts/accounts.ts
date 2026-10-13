@@ -44,9 +44,17 @@ const ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: '
 const DOCS = join(ROOT, 'docs');
 const RADAR = join(DOCS, 'Adobe/Radar');
 const SOLO_FERMI = process.argv.includes('--fermi');
+/* --rilievi: stampa SOLO le righe che meritano una notifica, al massimo cinque, e
+   NIENTE se non c'è nulla. È il contratto con il cron: output vuoto = silenzio. */
+const SOLO_RILIEVI = process.argv.includes('--rilievi');
 const GIORNI_FERMO = 21;
 const GIORNI_RINNOVO = 120;
 const GIORNI_SNAPSHOT_VECCHIO = 45;
+const GIORNI_RINNOVO_NOTIFICA = 30;   // nella notifica si guarda vicino, non a 120 gg
+const GIORNI_EVENTO = 14;             // un evento entro due settimane
+const GIORNI_ISCRIZIONE = 3;          // una scadenza d'isciizione è più urgente dell'evento
+const GIORNI_GIRO_FERMO = 2;          // oltre questo, il cron potrebbe essere morto
+const MAX_RIGHE_NOTIFICA = 5;
 
 /* I documenti della Factory stanno in piano in docs/; le cartelle sono gli account, meno i
    depositi di materiale. `Adobe` (senza «Material») È un account: ci sta il lavoro non
@@ -203,6 +211,50 @@ if (radar.presente) {
   } else radar.avvisi.push('manca Panorama_AAAAMMGG.md: niente rinnovi');
 }
 
+/* ── gli eventi ───────────────────────────────────────────────────────────────
+   `Radar/eventi.md`: una tabella `data | evento | account | iscrizione | note`.
+   Il calendario costerebbe token e, soprattutto, un invito non dice chi è iscritto
+   a un evento — la guest list dell'AI Forum stava in Teams, non in un invito. */
+interface Evento { quando?: Date; nome: string; account: string; iscrizione?: Date; note: string }
+const eventi: Evento[] = [];
+const fileEventi = join(RADAR, 'eventi.md');
+if (existsSync(fileEventi)) {
+  for (const r of readFileSync(fileEventi, 'utf8').split('\n')) {
+    if (!r.trim().startsWith('|')) continue;
+    const c = r.split('|').map((x) => x.trim());
+    if (c.length < 5 || !c[1] || /^-+$/.test(c[1]) || /^data$/i.test(c[1])) continue;
+    const acc = (c[3] ?? '').replace(/^[—–-]$/, '');   // «—» vuol dire «non si sa», non è un valore
+    eventi.push({ quando: data(c[1]), nome: c[2], account: acc, iscrizione: data(c[4] ?? ''), note: c[5] ?? '' });
+  }
+}
+
+/* ── il battito del cron ──────────────────────────────────────────────────────
+   Il giro automatico scrive un file ogni mattina anche quando non trova niente.
+   Se il più recente è vecchio, il cron è fermo — e il 2 ott 2026 un sistema è morto
+   senza che nessuno se ne accorgesse per dieci giorni, perché l'unico modo di
+   vederlo era aprire una cartella vuota. */
+const dirGiri = join(RADAR, 'giri');
+let ultimoGiro: Date | undefined;
+if (existsSync(dirGiri)) {
+  const f = readdirSync(dirGiri).filter((x) => /^\d{8}-\d{4}\.md$/.test(x)).sort();
+  if (f.length) ultimoGiro = data(f[f.length - 1].slice(0, 4) + '-' + f[f.length - 1].slice(4, 6) + '-' + f[f.length - 1].slice(6, 8));
+}
+
+/* ── la deriva fra sorgente e copia installata ────────────────────────────────
+   launchd non riesce a eseguire uno script che sta in ~/Documents, quindi la copia
+   che gira vive in ~/.local/bin: due file sono due file, e se divergono gira il
+   vecchio senza che nessuno lo sappia. Il confronto sta QUI e non nello script perché
+   zsh lanciato da launchd non riesce ad aprire i file del repo («operation not
+   permitted»), mentre node sì — verificato il 13 ott 2026. */
+let deriva = false;
+try {
+  const sorgente = join(ROOT, 'scripts/radar-giro.sh');
+  const installata = join(process.env.HOME ?? '', '.local/bin/radar-giro');
+  if (existsSync(sorgente) && existsSync(installata)) {
+    deriva = readFileSync(sorgente, 'utf8') !== readFileSync(installata, 'utf8');
+  }
+} catch { /* se non si riesce a confrontare, non si inventa un allarme */ }
+
 /* ── abbinamento book ↔ cartella ──────────────────────────────────────────────
    Dichiarato in `Radar/alias_cartelle.md` (`nome nel book = cartella`), perché i nomi
    non si possono indovinare: `Telecom Italia` è `TIM`. In un posto solo, e nel Radar,
@@ -238,6 +290,51 @@ const rinnoviVicini = radar.rinnovi
   .filter((r) => giorni(r.quando) > -GIORNI_RINNOVO && giorni(r.quando) <= 0)
   .sort((a, b) => +a.quando - +b.quando);
 
+/* ── i rilievi ─────────────────────────────────────────────────────────────────
+   Quattro soglie e nessuna in più: ogni soglia extra diluisce la notifica, e una
+   notifica diluita viene ignorata. Stesso elenco per la notifica e per la testa
+   dell'output umano, così non possono divergere. */
+const rinnoviNotifica = radar.rinnovi
+  .filter((r) => giorni(r.quando) > -GIORNI_RINNOVO_NOTIFICA && giorni(r.quando) <= 0)
+  .filter((r) => { const c = contoDi(r.account); return r.eleggibile || !c || c.senzaRegistro; })
+  .sort((a, b) => +a.quando - +b.quando);
+const eventiVicini = eventi.filter((e) =>
+  (e.quando && giorni(e.quando) > -GIORNI_EVENTO && giorni(e.quando) <= 0) ||
+  (e.iscrizione && giorni(e.iscrizione) > -GIORNI_ISCRIZIONE && giorni(e.iscrizione) <= 0));
+
+const rilievi: string[] = [];
+if (deriva) rilievi.push('il giro installato è divergente dalla sorgente: pnpm radar:install');
+for (const { c, k } of scaduti) rilievi.push(`${c.cliente}: «${taglia(k.nome, 30)}» scaduto da ${giorni(k.scadenza!)} gg`);
+for (const e of eventiVicini) {
+  const q = e.quando ? `fra ${-giorni(e.quando)} gg` : '';
+  const i = e.iscrizione && giorni(e.iscrizione) > -GIORNI_ISCRIZIONE ? ` · iscrizioni chiudono fra ${-giorni(e.iscrizione)} gg` : '';
+  rilievi.push(`${e.nome} ${q}${i}${e.account ? ` · ${taglia(e.account, 24)}` : ''}`);
+}
+/* Una riga per ACCOUNT, non per riga di rinnovo: Acea da sola ne aveva due, su
+   prodotti che non contano per il piano, e finivano in testa alla notifica.
+   Quando un account ha più rinnovi vicini si somma il RBOB e si prende la data
+   prima; il simbolo «€» dice se almeno uno conta per M1/M2. */
+const perAccount = new Map<string, Rinnovo[]>();
+for (const r of rinnoviNotifica) {
+  const k = r.account;
+  perAccount.set(k, [...(perAccount.get(k) ?? []), r]);
+}
+for (const [account, righe] of [...perAccount].sort((a, b) => +a[1][0].quando - +b[1][0].quando)) {
+  const c = contoDi(account);
+  const tot = righe.reduce((t, r) => t + r.rbob, 0);
+  const conta = righe.some((r) => r.eleggibile);
+  const che = righe.length === 1 ? righe[0].prodotto : `${righe.length} rinnovi`;
+  rilievi.push(`${conta ? '€ ' : ''}${account} · ${che} ${soldi(tot)} fra ${-giorni(righe[0].quando)} gg${!c || c.senzaRegistro ? ' · senza registro' : ''}`);
+}
+for (const c of fermi) rilievi.push(`${c.cliente} fermo da ${giorni(c.aggiornato!)} gg · ${aperti(c).length} aperti`);
+
+if (SOLO_RILIEVI) {
+  // Contratto col cron: niente da dire = nessun output = nessuna notifica.
+  for (const r of rilievi.slice(0, MAX_RIGHE_NOTIFICA)) console.log(r);
+  if (rilievi.length > MAX_RIGHE_NOTIFICA) console.log(`e altre ${rilievi.length - MAX_RIGHE_NOTIFICA} cose`);
+  process.exit(0);
+}
+
 console.log(`\naccounts · ${conRegistro.length} account con registro · ${senza.length} ancora senza · ${new Date().toLocaleDateString('it-IT')}`);
 if (radar.presente) {
   const eta = radar.snapshot ? giorni(radar.snapshot) : undefined;
@@ -250,6 +347,27 @@ if (radar.presente) {
   for (const a of radar.avvisi) console.log(`  ⚠️  ${a}`);
 } else {
   console.log('Radar assente (docs/Adobe/Radar/): niente book, niente rinnovi, niente peso sul piano.');
+}
+
+if (deriva) {
+  console.log('\n⚠️  `~/.local/bin/radar-giro` è divergente da `scripts/radar-giro.sh`: gira la copia vecchia.');
+  console.log('    Si riallinea con `pnpm radar:install`.');
+}
+
+if (ultimoGiro === undefined) {
+  console.log(`\n⚠️  Nessun giro automatico ha ancora scritto in Radar/giri/: il cron non è installato o non ha mai girato.`);
+} else if (giorni(ultimoGiro) > GIORNI_GIRO_FERMO) {
+  console.log(`\n⚠️  L'ultimo giro automatico è di ${giorni(ultimoGiro)} giorni fa — il cron potrebbe essere fermo.`);
+  console.log('    Si controlla con `launchctl list | grep com.gargiulo.radar`.');
+}
+
+if (eventiVicini.length) {
+  console.log(`\nEVENTI entro ${GIORNI_EVENTO} gg: ${eventiVicini.length}`);
+  for (const e of eventiVicini) {
+    const q = e.quando ? `fra ${String(-giorni(e.quando)).padStart(2)} gg` : '      ?';
+    const i = e.iscrizione ? ` · iscrizioni ${giorni(e.iscrizione) > 0 ? 'CHIUSE' : `fra ${-giorni(e.iscrizione)} gg`}` : '';
+    console.log(`  · ${q}  ${taglia(e.nome, 30).padEnd(30)} ${taglia(e.account, 28)}${i}`);
+  }
 }
 
 if (scaduti.length) {
