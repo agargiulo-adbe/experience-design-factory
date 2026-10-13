@@ -211,6 +211,25 @@
 > ogni due o tre giornate di lavoro. Le **parti nuove si creano in coda** alla numerazione, così i
 > sessanta rimandi «vedi Parte N» già scritti restano validi.
 
+> 🛰️ **Il 13 ottobre: il radar che gira da sé, e i primi registri dove servivano.** Il «Radar
+> Opportunità» schedulato il 2 ott aveva prodotto **zero file in dieci giorni**, e la causa non era
+> lo scheduler: **l'account Claude su cui girava aveva esaurito i token del mese**. Quel design
+> leggeva cinque fonti per 25 account due volte a settimana — 300-500 chiamate a settimana, quasi
+> tutte su account dove non si era mosso niente. Il principio che lo sostituisce è **selezionare
+> prima di leggere**: lo strato gratuito (`pnpm accounts`) vale il 60% — *su cosa guardare* — e
+> costa zero. Ora parte da sé **lun-ven alle 07:30 via launchd**: scrive sempre in `Radar/giri/`,
+> **notifica solo se c'è un rilievo**, e `accounts` **avvisa se l'ultimo giro ha più di due giorni**
+> — il pezzo che mancava, perché quel sistema è morto senza che nessuno lo notasse. Lo strato caro
+> resta a mano, così il budget non compete col lavoro interattivo. ⚠️ Quattro guasti di launchd,
+> tutti invisibili da una shell interattiva (memoria `launchd-non-e-la-tua-shell`). Dall'altra
+> parte, il lavoro che il radar ha reso visibile: la copertura passa da **20 account del book su 25
+> senza registro** a **17**, e **nessun rinnovo eleggibile resta scoperto** — aperti **UniCredit**
+> (Analytics **$1,48M** al 13 dic, salute **Yellow**, e nessuna conversazione di rinnovo in posta),
+> **Ferrovie** (Target **$409K** al 30 dic con **adoption 0,0**, e in posta **nessuna**
+> conversazione: l'assenza è il fatto) e **Intesa Sanpaolo**. Sull'**AI Forum del 21 ott**:
+> l'iscrizione non ha scadenza dichiarata ma «corporate può chiudere a breve», e all'8 ott
+> risultava **un solo meeting confermato in tutto l'evento**. Tutto in **§39 (Parte 16)**.
+
 ---
 
 <!-- HANDOVER-SPLIT -->
@@ -233,5 +252,5 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
 - [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **14 set 2026** all'indietro, fino al **1 set**. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **cinque** volte, l'ultima il 12 ott.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
-- [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto**](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta.
+- [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account**](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta.
 - [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.
