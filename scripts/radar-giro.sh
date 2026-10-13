@@ -48,7 +48,54 @@ mkdir -p "$GIRI"
 { echo "# Radar · giro del $(date '+%d %b %Y, %H:%M')"; echo; "$PNPM" --silent accounts; } > "$GIRI/$OGGI.md" 2>&1
 RILIEVI="$("$PNPM" --silent accounts --rilievi 2>/dev/null)"
 
-[ -z "${RILIEVI// /}" ] && exit 0   # mattina quieta: file scritto, nessuna interruzione
+[ -z "${RILIEVI// /}" ] && exit 0   # mattina quieta: file scritto, nessuna interruzione, ZERO costo
+
+# ─────────────────────────────────────────────────────────────────────────────
+# IL CONSULENTE. Qui, e solo qui, si spendono token — e si spendono perché il
+# giudizio è la parte che serve: un sistema che conta e non giudica è un cruscotto.
+#
+# Costa poco per costruzione: l'input è già ridotto a una decina di righe dallo
+# strato gratuito, e si gira FUORI dal repo perché lì il contesto di progetto
+# (75 KB di regole sui deck) non serve a niente. Misurato il 13 ott 2026:
+# dentro il repo 100.821 token di contesto e $0,36; fuori 18.538 e **$0,14**,
+# con un giudizio migliore. ~$3 al mese, e **zero nei giorni quieti**.
+#
+# Il radar del 2 ott non è morto perché Claude costa: è morto per 300-500
+# CHIAMATE a settimana su 25 account. Questo ne fa una.
+PROMPT="Sei il consulente interno di un Product Specialist di Adobe Italia. Il suo piano FY26: 70% su nuovo ARR dei prodotti eleggibili, 30% sul tasso di rinnovo. Nel radar qui sotto «€» marca i prodotti che contano per il piano e «·» quelli che sono relazione e non attainment. L'\''account resta dell'\''Account Executive: lui porta la crescita del suo prodotto dentro l'\''account, e ogni mossa verso il cliente passa dall'\''AE.
+
+Dal radar di stamattina scrivi ESATTAMENTE cinque righe, una per etichetta, e nient'\''altro: nessun preambolo, nessun markdown, nessun elenco.
+
+OGGI: la cosa su cui lavorare oggi e perché, in una frase. Scegli per rischio × valore × quanto conta per il piano, non per quanto fa rumore.
+NON: una cosa che sembra urgente e non lo è, e perché.
+CLIENTE: un'\''occasione di relazione o di cross-sell verso un cliente, ma SOLO se nel radar c'\''è un segnale che la giustifica (una trattativa, un rinnovo, una salute in rosso, un evento). Se quel segnale non c'\''è, scrivi «nessuna occasione con un segnale oggi» e fermati: proporre un prodotto che manca senza un caso d'\''uso è un approccio debole.
+DENTRO: uno spunto da portare internamente, all'\''AE o a un altro specialist o al manager o al product marketing, con il motivo.
+DOMANDA: una domanda che vale la pena farsi e a cui il radar non può rispondere.
+
+Non inventare numeri, nomi o date: usa solo quelli che leggi. Se un dato manca, dillo."
+
+CONS="$GIRI/${OGGI}-consulenza.md"
+GIUDIZIO=""
+if command -v claude > /dev/null 2>&1; then
+  GIUDIZIO="$(cd /tmp && claude -p --model sonnet "$PROMPT
+
+$(cat "$GIRI/$OGGI.md")" 2>/dev/null)"
+fi
+
+if printf '%s' "$GIUDIZIO" | grep -q "^OGGI:"; then
+  { echo "# Consulenza · $(date '+%d %b %Y, %H:%M')"; echo; printf '%s\n' "$GIUDIZIO"; } > "$CONS"
+  # La notifica porta il GIUDIZIO, non i conteggi: «Radar · 11 cose» non dice niente,
+  # «rinnovo da 1,48M senza owner» dice tutto.
+  OGGI_L="$(printf '%s' "$GIUDIZIO" | grep -m1 "^OGGI:" | sed 's/^OGGI: *//')"
+  ALTRE="$(printf '%s' "$GIUDIZIO" | grep -m1 "^DENTRO:" | sed 's/^DENTRO: *//')"
+  [ ${#ALTRE} -gt 140 ] && ALTRE="${ALTRE:0:137}…"
+  q() { printf '%s' "${1//\"/\\\"}"; }
+  osascript -e "display notification \"$(q "$ALTRE")\" with title \"Radar · $(date '+%-d %b')\" subtitle \"$(q "${OGGI_L:0:110}")\""
+  exit 0
+fi
+
+# RIPIEGO. Se il consulente non risponde o risponde fuori formato, il radar non tace:
+# torna la notifica dei conteggi. Un giudizio mancato non deve spegnere il segnale.
 
 # Una notifica macOS collassa le righe multiple: non si impagina, si impila il
 # significato. Quindi la cosa più urgente va nel SOTTOTITOLO, che si legge per primo,
