@@ -66,6 +66,25 @@ essere dentro). Due modi in più:
   ruolo sono esplicite — si parte dal segnale, non dallo SKU che manca, e proporre un
   upgrade senza un caso d'uso è un approccio debole.
 
+**E poi parla il consulente.** Se ci sono rilievi, il giro passa la propria uscita — già
+ridotta a una decina di righe — a `claude -p`, che ne ricava **cinque righe**: `OGGI` (su
+cosa lavorare e perché), `NON` (cosa sembra urgente e non lo è), `CLIENTE` (un'occasione,
+**solo** dove il radar porta un segnale), `DENTRO` (uno spunto da portare all'AE, a un
+collega, al manager), `DOMANDA`. Finisce in `giri/AAAAMMGG-HHMM-consulenza.md`, e **la
+notifica porta il giudizio invece dei conteggi**.
+
+Tre cose che rendono sostenibile la parte che costa:
+- **si gira fuori dal repo**, perché lì il contesto di progetto non serve. Misurato il 13
+  ott 2026: dentro 100.821 token di contesto e **$0,36**, fuori 18.538 e **$0,14** — con un
+  giudizio migliore. Circa **$3 al mese**;
+- **niente nei giorni quieti**: senza rilievi il consulente non viene nemmeno chiamato;
+- **non legge posta né Teams.** Giudica su dati già selezionati; leggere le fonti è il
+  mestiere di `/account-open`, a richiesta. Il radar del 2 ott non è morto perché Claude
+  costa: è morto per 300-500 **chiamate** a settimana su 25 account. Questo ne fa **una**.
+
+⚠️ **Se il consulente non risponde, il radar non tace**: torna la notifica dei conteggi. Un
+giudizio mancato non deve spegnere il segnale (provato con `claude` irraggiungibile).
+
 **Che cosa guarda il giro di ogni mattina**, in scala di urgenza: un passo scaduto del
 registro · un evento o un'iscrizione che chiude · una **trattativa aperta** che chiude
 entro 21 giorni · una **salute in rosso** con la ragione dichiarata · un **rinnovo** entro
