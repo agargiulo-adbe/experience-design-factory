@@ -1,59 +1,385 @@
-# Handover — Parte 16 di 18
+# Handover — Parte 16 di 17
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
-## 10.a Backlog prioritario — P1
+## 37. Trenitalia — «Dove può arrivare il viaggio» (Prospettiva, Direzione Sales)
 
-> Continua la §10 della **Parte 2**, che tiene i **P0**. Qui c'è quello che viene subito dopo:
-> non blocca, ma è la coda che diventa P0 se nessuno la guarda. **P2 e note non azionabili** stanno
-> nella **Parte 10** (§10.b). Aggiornato **2026-10-12**.
+`apps/trenitalia-prospettiva-sales` · nata l'**11 ottobre 2026**, live il 12 · tipo **Prospettiva**
+· IT · **27 slide su 8 rotte** · `defaultPublished: false` (fuori dalla vetrina pubblica).
+È l'artefatto che il P1 del 9 ottobre chiedeva di costruire, e che quella voce dava ancora come
+«da fare»: il dossier era pronto da giorni, l'experience no.
 
-**P1 — prossimo**
-- **[P1] AI Forum Milano (21 ott) — la guest list da incrociare, e un solo meeting confermato in tutto l'evento** — area: lavoro di account, nessun artefatto nel repo · §39.7 (Parte 17) · verificato sul thread Teams del 9 ott: **455 registrati**, l'iscrizione **non ha una scadenza dichiarata** («è possibile che corporate chiuda le registrazioni a breve»), e **all'8 ott risultava un solo meeting confermato**, su Generali, con tre executive Adobe presenti. Alla cena executive ci sono già sette account del book. Da fare: aprire il foglio della guest list (percorso in `docs/Adobe/Radar/eventi.md`), incrociarlo coi referenti chiave e chiedere all'AE uno o due incontri a margine. ⚠️ Scade da sé il **21 ott**: dopo, la voce esce dal backlog senza essere stata fatta (agg. 2026-10-13)
-- **[P1] `eventi.md` resta l'unico punto a mano del giro gratuito** — area: `docs/Adobe/Radar/eventi.md`, `.claude/commands/account-close.md` · §39.5 · il giro automatico non legge il calendario (costerebbe token, e un invito non dice chi è iscritto a un evento), quindi gli eventi li scrive una persona. ✅ Mitigato il 13 ott — `/account-close` **propone** la riga quando in una sessione emerge un evento con una data — ma la mitigazione funziona solo se quel giorno si apre un account: un invito può arrivare in una settimana in cui non se ne apre nessuno. **Resta il punto fragile del sistema**, e i gesti manuali decadono: è così che è morta `Sintesi_Task`. Da valutare se un `.ics` del calendario di lavoro sia raggiungibile su questa macchina (agg. 2026-10-13)
-- **[P1] Diciassette account del book su venticinque restano senza registro** — area: `docs/<Account>/ACCOUNT.md` · §39.6 · $28,3M di ARR, giù da $35,5M. **Non blocca**: nessuno di loro ha un rinnovo su prodotto **eleggibile** entro 120 giorni — i rinnovi che hanno (INPS, Inail, Luxottica) sono su `Assets`, `Sites`, `Paid Support`, `LLM Optimizer`, cioè relazione e non attainment. Si apre un registro quando c'è una ragione, con `/account-open <Account>`, non per completare una griglia (agg. 2026-10-13)
-- **[P1] UniCredit e Ferrovie — tre domande che solo una persona può chiudere** — area: `docs/UniCredit/ACCOUNT.md`, `docs/Ferrovie/ACCOUNT.md` · §39.6 · dai due registri aperti il 13 ott: (a) **chi è l'owner del rinnovo Analytics** di UniCredit ($1,48M al 13 dic, salute **Yellow**, adoption 4,4) e perché la salute è gialla; (b) che cosa è successo ad **Adobe Target su UniCredit, azzerato il 30 set** — perso o riorganizzato; (c) se il rinnovo **Target di FS Technology** ($409K al 30 dic, **adoption 0,0**) è presidiato e da chi, perché in posta non c'è **nessuna** conversazione. Più **Assets UniCredit $106K ad adoption 0,0** che scade il 4 dic, nove giorni prima di Analytics: non conta per il piano, ma è una conversazione da avere prima della scadenza (agg. 2026-10-13)
-- **[P1] TIM «Una campagna, molti formati» — il lavoro è in corso e non committato, e il panel è parziale** — area: `apps/tim-contenuti-su-scala`, branch `feat/tim-content-at-scale` · §38 (Parte 17) · al 12 ott l'experience esiste con sette pagine, `PRODUCT.md`, `DESIGN.md` e `src/data/sources.ts`, ed è **seedata** (`supabase/migrations/0028_…`), ma **18 file modificati e 8 nuovi non sono committati** (fra cui `CampaignSection.astro`, le icone, lo scatto per la vetrina). Il panel ha **un giro solo** e il verdetto è marcato **⚠️ DERIVED PERSONAS** più «ricostruzione parziale dal checkpoint di sessione»: le cinque sedute erano **di ruolo, non profili TIM verificati**, e le risposte individuali non sono state salvate (medie 4,0 · 4,2 · 4,0 · 3,6 · 3,2, senza min/max). Esiste una cartella `panel/2026-10-12-round2/` con la sola `evidence/`, **senza verdetto**. Da fare: committare, applicare i **sette P1** del giro 1 (fra cui dire che la pagina pubblica non descrive il processo produttivo, non dedurre un'esclusione di prodotto dal fatto che una guida non documenti il broadcast, e **verificare separatamente l'autorizzazione al lockup Adobe × TIM**), poi un giro con personas verificate (agg. 2026-10-12)
-- **[P1] I quattro gate nuovi girano su poche experience** — area: `scripts/wrap-audit.ts`, `scripts/ink-audit.ts`, `scripts/source-audit.ts`, `scripts/cut-audit.ts`, CI · §11 (voci del 9-12 ott) · in quattro giorni sono nati **tre gate** che misurano cose che `audit:deck` non vede: `audit:wrap` (la parola di servizio appesa a fine riga), `audit:ink` (il contrasto del **testo** delle slide, letto dai pixel dello screenshot e non dal CSS — su Trenitalia ha trovato 19 blocchi sotto AA che nessun altro check vedeva) e `audit:fonti` (i link delle fonti pubbliche, HARD sui rotti e SOFT sulle righe senza link). Tutti e tre sono stati girati **sulle sole app su cui sono nati**: `intesa-scala-umana` e `poste-sei-domande` per il primo, `trenitalia-prospettiva-sales` per gli altri due. Da fare: un giro su tutte le experience, applicare le correzioni e **rilanciare `audit:deck` dopo** (legare o cambiare un inchiostro sposta il punto di rottura), poi decidere quali entrano in CI accanto a `audit:deck` e `audit:dossier`. Dal 12 ott (sera) i gate sono **quattro**: si aggiunge **`audit:taglio`** (il taglio «In dieci minuti» non può divergere dal percorso intero), dichiarato in `scripts/lib/cut-routes.ts` e per ora acceso su `trenitalia-prospettiva-sales` e `intesa-scala-umana` — dove ha trovato subito una frase riscritta a mano. ⚠️ `audit:fonti` porta una lezione già pagata due volte: un **403 non vuol dire rotto** (Gartner, e euronews risponde 406), e un gate che grida al lupo viene ignorato al secondo falso allarme — è successo anche a `audit:taglio` al primo giro, con `textContent` che fondeva due numeri adiacenti. Nuovo SOFT su `audit:fonti`: i **link generici**, quelli che portano alla homepage invece che all'affermazione (agg. 2026-10-12, sera)
-- **[P1] Trenitalia Direzione Sales — quello che resta prima dell'incontro** — area: `apps/trenitalia-prospettiva-sales`, `docs/Ferrovie/` · §26.9 (Parte 7), §37 (Parte 17) · ✅ **la Prospettiva è stata costruita** l'11-12 ott e il dossier era già pronto. Restano: il **contributo all'agenda** da mandare al team; far confermare **ruolo e grafia** del responsabile Digital, Business Innovation & Communication (la fonte pubblica è ferma al 2021, il nome sta nel dossier gated); verificare a runtime se l'applicazione di acquisto porti un **tag Adobe iniettato dopo il caricamento** (nell'HTML servito non c'è); e **raccogliere quello che dice al TTG di Rimini**, che è il **14-16 ottobre** — cioè la finestra in cui si rinfresca metà del materiale su cui poggia il dossier. ⚠️ La misura sugli assistenti è dell'11-12 ott e invecchia in fretta: se l'incontro slitta di settimane va rifatta, non ricitata (agg. 2026-10-12)
-- **[P1] Il comando «movimento» è nel motore: va guardato sulle altre experience con una clip** — area: `packages/core/src/blocks/immersive/LoopVideo.astro` · §11 (voce del 9 ott notte), commit `dc82a1e` · sotto `prefers-reduced-motion` ogni deck con una clip di sfondo eredita adesso la pillola «Attiva il movimento» nella barra dei comandi, **senza wiring per app**. Verificato su `intesa-scala-umana` (quattro casi, quattro viewport). Le altre con `LoopVideo` — `atelier`, `isybank-momento`, `poste-sei-domande`, `trenitalia-connessioni`, `unicredit-engagement` — non sono state **guardate** con la preferenza attiva: la barra lì è più o meno affollata e l'etichetta allarga la pillola di ~200px. Da fare: un giro con `reducedMotion: 'reduce'` su ognuna, controllando che la barra resti dentro il viewport a 1280 e che su telefono resti la sola icona (agg. 2026-10-10)
-- **[P1] Intesa Assicurazioni — il file montato a mano e la v8 sono due artefatti diversi** — area: `docs/Intesa Sanpaolo/output/`, §35.11 · l'owner lavora dentro `…_v7.pptx` in PowerPoint fondendoci il contenuto della v8; il builder produce `…_v8.pptx`. Al 8 ott il file montato a mano ha **tre difetti misurati** che la v8 non ha: (a) la **numerazione degli occhielli è rotta in tre punti** — la slide dei pilastri Adobe non ha numero, fra `04` e `06` manca il `05`, e il `10` compare **due volte**; (b) la chiusura è l'**unica pagina di contenuto su fondo scuro**, dove nel resto del deck il fondo scuro significa «si respira, non si legge»; (c) usa una **terza griglia** (occhiello 1,90 · titolo 2,58 a 40pt · corpo 4,72) che non è né quella delle pagine di contenuto né quella degli stacchi, con velo al 62% contro 32% e un inchiostro che vive solo lì. Il contrasto invece è a posto (14-20:1, misurato). Va deciso **quale dei due file va in sala**, e se è quello montato a mano i tre difetti vanno sistemati lì — se no la correzione vive solo nel builder e il file proiettato non la vede (è già successo con due fatti, §35.11) (agg. 2026-10-08)
-- **[P1] Poste — che cosa resta aperto dopo la sessione del 7 ott** — area: `apps/poste-sei-domande`, §32.12 (Parte 13) · la sessione di introduzione su Coworker × Adobe Analytics si è tenuta **mercoledì 7 ottobre a mezzogiorno** in viale Europa, con il Responsabile Monitoraggio Canali Digitali (e, in copia sull'invito, due colleghe Adobe). ✅ **L'esito è registrato**: trascrizione letta per intero e deck riallineato — il Comitato IA non è mai stato nominato in 76 minuti, la preoccupazione vera è «apri tutto», il piano concordato è **iTouch per circa due mesi** per misurare il consumo prima di impegnarsi, e il caso d'uso che ha portato lui (la verifica di un rilascio contro i requisiti caricati una volta come skill) è entrato in «Governare». **Restano aperte tre cose** che la trascrizione non chiude: **se parte un pilota** su una suite di prova e con quale perimetro; **quale server MCP** gli è stato indicato (voce qui sotto); e le due risposte di Adobe su **modello di costo** e **scheda tecnica**, i due P0 del panel che nessuna riscrittura chiude (§32.8). (agg. 2026-10-07, sera)
-- **[P1] Poste — Experience Context è disponibile per la loro organizzazione?** — area: deck `in-azione` (`slide-clip-contesto`), dossier (sezione dei fatti verificati) · §32.12 (Parte 13) · la Parte 1 del video mostra il contesto di marchio costruito caricando un PDF di brand guidelines, con le regole estratte, il loro identificativo e il rimando alla pagina. Lato interno risulta che **la voce di menu è oggi aperta alle organizzazioni clienti Experience Manager che hanno accesso a Coworker**, in attesa che gli ambiti con Business Context siano definiti, e la stessa fonte dichiara che si può usare **anche senza** Experience Manager. **Se il perimetro Experience Manager di Poste soddisfi quella condizione non è verificato.** Nel deck sta già come meccanismo con una riga «quello che non dice»; da chiarire col team di prodotto **prima** di nominarla come disponibile, e **mai in sala** finché non è confermata (agg. 2026-10-07, sera).
-- **[P1] Quale server MCP si collega per Adobe Analytics: `cja-mcp` o `aa-mcp`?** — area: deck Poste (`accendere`), dossier §13 · la pagina pubblica `data-insights/analytics-chat` dice di collegare `cja-mcp`, la documentazione Analytics e i tool interni parlano di un `aa-mcp` distinto (`aa-mcp__runReport`). Se l'Admin chiede «quale collego», oggi la risposta pubblica è ambigua: da chiarire col product marketing (agg. 2026-10-07).
-- **[P1] Intesa Assicurazioni — quello che è entrato in sala senza risposta** — area: `apps/intesa-dopo-la-firma`, §35.7 · (a) **quanti moduli ha in media una polizza** dell'offerta modulare: dimensiona il tema in appendice e non si ricava da fonti pubbliche; (b) **chi implementa in Italia e con quale partner**, più una compagnia assicurativa europea citabile oltre a HUK-COBURG — chiesto da tre personas in entrambi i giri, nomi verificati non ce ne sono; (c) un **ordine di grandezza delle giornate-uomo** della prima messa in opera, chiesto dal riporto IT e dall'architettura di gruppo; (d) la **discordanza fra due nostre fonti** sul risultato della referenza (−50% dalla sintesi della trascrizione, −90% dal deck presentato): in sala valgono i numeri del deck, ma la slide di referenza in `docs/Unipol/` non è stata riallineata. ⚠️ La stanza è **oggi**: queste quattro restano domande da fare a voce o da chiudere a valle, non più cose da preparare prima. (agg. 2026-10-08)
-- **[P1] Unipol — esito della call dell'8 ott sull'high-touch per Target, e il rinnovo del 31 dicembre** — area: lavoro di account, nessun artefatto nel repo · §11 (change log 6 ott, sera) · l'allineamento con il PM del programma di retention Target è partito il **6 ott**; nella call si chiede di aprire un **high-touch su Adobe Target** nella stessa forma di quello già in corso su CJA (partito col cliente il 1 ott). Da fare: **registrare l'esito** (sì/no, chi lo guida lato prodotto, quando parte) e, se parte, decidere se e come mostrare Coworker **su CJA e Target insieme** sui dati del cliente prima della scadenza. Resta aperta la richiesta di una **sessione deep-dive sulla roadmap Target** per questo cliente. ⚠️ Tocca il P1 di Intesa «Dopo la firma» qui sopra: la **slide di referenza in `docs/Unipol/`** porta ancora il numero discordante rispetto al deck presentato, e le due stanze cadono lo stesso giorno. Memoria `unipol-target-retention-coworker` (agg. 2026-10-06).
-- **[P1] Trenitalia — quello che è sopravvissuto al secondo giro di panel** — area: `apps/trenitalia-connessioni` · §36.7 · due giri sono il massimo previsto, e questi restano **punti aperti per un umano**, non per un terzo giro: (a) **una slide di flusso dati e responsabilità**, identica nei due rami — cosa entra in AEP e cosa resta alla fonte, connettore e cadenza per fonte, regione, retention, titolare e responsabile per tratta; (b) **i numeri del POC** — ambiente, licenze coinvolte, giornate per ruolo, natura commerciale; (c) **chi è il committente** del POC dentro Trenitalia; (d) **la slide gemella sui consensi** nel ramo Trenitalia (nel ramo FS Park c'è); (e) il **2026 che il cliente ha davanti** (quattro operatori sull'alta velocità, tariffazione dinamica da gennaio) al posto del «contesto strategico» fatto di investimenti che il cliente già conosce; (f) i **canali assistiti e il post-vendita**, che in 72 slide non compaiono (agg. 2026-10-09)
-- **[P1] Trenitalia — tre fatti da far confermare al cliente prima della consegna** — area: `apps/trenitalia-connessioni` · §36.7 · il deck li porta già come domande, ma restano da chiudere: **il fornitore della piattaforma email** (nessuna conferma pubblica, l'SPF del dominio punta altrove, e l'unica prova era l'analisi di una casella personale: 26 occorrenze genericizzate); **quante property e quante report suite Adobe Analytics** esistono davvero (la Fase 1 ci costruisce sopra il primo deliverable); **i tempi del rifacimento della piattaforma di vendita**, che decide il perimetro del POC (agg. 2026-10-09)
-- **[P1] `eni-orbita` non è migrata al motore unico dei dossier** — area: `apps/eni-orbita/src/pages/dossier.astro` (583 righe) · §34.1 · ha il contenuto riservato **dentro il bundle statico**, che è il pattern superato: migrarla significa prima spostarlo su Supabase. Finché resta così, un miglioramento del motore **non la raggiunge**. ⚠️ **Da riverificare con urgenza**: su `trenitalia-connessioni` lo stesso pattern si è rivelato un'esposizione pubblica vera (P0 qui sopra), e questa pagina ha la stessa forma — **controllare se anche il dossier Eni sia leggibile senza gate sul deployato**, prima di trattarla come una pulizia architetturale. (agg. 2026-10-09)
-- **[P1] Intesa «Su scala umana» — tre buchi di conoscenza aperti, scadenza interna venerdì 9 ott** — area: `apps/intesa-scala-umana`, §33 · il dossier è in Supabase e le quattro slide sono costruite, ma poggiano su quattro domande senza risposta: il **perimetro dell'incumbent del marketing retail** (l'unica fotografia pubblica è del 2017 e chi la raccontava non ricopre più quel ruolo), **chi ne fa il system integration**, **se esista una gara**, e lo **stato di un contratto scaduto il 30 settembre**. ✅ **La mappa del potere è chiusa dal 4 ott sera** (§33.7): nomi verificati, e corretta la caratterizzazione sbagliata della persona del recap di maggio. Le risposte arrivano da un partner il 6 ott e da un system integrator il 13; la §12 del dossier ha già la domanda formulata e la cella da riempire. ⚠️ **L'incontro del 13 è un buco dichiarato per scelta**: chi ha preparato il materiale è fuori sede dal 10 al 15, e senza appunti di qualcuno quella riga resta vuota il 22 (agg. 2026-10-04).
-- **[P1] Intesa «Su scala umana» — registrare l'esito della revisione umana del 9 ott** — area: `apps/intesa-scala-umana` · la voce del 4 ott diceva che il panel non era stato lanciato **di proposito** (metà dei fatti erano domande aperte) e che le slide sarebbero passate da una **revisione umana il 9 ottobre**. Quella data è oggi. Da registrare: che cosa è emerso, che cosa è stato cambiato, e se le quattro domande aperte si sono ridotte. ⚠️ La parte «non lanciare il panel» di quella voce **è superata**: l'app è pubblica dall'8 ott e il panel è diventato un P0 (vedi sopra) (agg. 2026-10-09).
-- **[P1] Intesa — registrare hub, showcase e `deck-audit` quando l'experience esisterà** — area: `apps/intesa-scala-umana`, `deploy.yml` · oggi l'app ha **una sola pagina** e di proposito non è in nessuno dei tre registri (§33.3): una pagina semivuota col nome del cliente su URL pubblico, prima dell'incontro, è solo esposizione. Dopo il 22, se nasce l'experience: card hub, voce showcase, `ROUTE_SETS` + `CWD_ALIAS`, `dev:<slug>` in root, `type` sulla riga `experiences` (oggi non impostato) e **la verifica in `deploy.yml` va spostata** da `…/dossier/index.html` a `…/index.html` (agg. 2026-10-04).
-- **[P1] Showcase — completare il panel: il seggio del Solution Consulting italiano va nominato** (gate `/handover` 3.4.3: il verdetto del giro 2 è marcato `⚠️ DERIVED PERSONAS` per un seggio su sei) — area: `docs/Factory/PANEL-PERSONAS.md` · cinque ritratti su sei sono persone reali con fatti datati; il sesto resta un **seggio**, perché nessuna fonte pubblica dice chi guida oggi il Solution Consulting di Adobe Italia (l'unica traccia, Giuseppe Borgonovo, è storica e non verificata, e una ricerca interna non ha trovato thread di ownership italiana). Finché non arriva il nome, il verdetto porta il marchio sulle personas derivate. Serve un nome dall'owner, poi il ritratto si riscrive con fatti datati (agg. 2026-10-01).
-- **[P1] `docs/Enel/` era esposta su un repository pubblico** — area: `.gitignore` · comparsa durante la sessione del 1 ott con un xlsx di dati del cliente e **non esclusa dal versionamento**, unica fra le cartelle cliente. Aggiunta a `.gitignore` (riga 26) e verificata con `git check-ignore`. **Da fare quando parte il lavoro su Enel**: trattarla come le altre — materiale riservato solo lì, niente nel build né in sala (agg. 2026-10-01).
-- **[P1] Tre parti del handover sono al tetto, non più una sola** — area: `docs/` · misurato il **9 ott sera**: `HANDOVER-07.md` **48.896 byte su 49.152 (99,5%)**, `HANDOVER-01.md` **48.614 (98,9%)**, e `HANDOVER-02.md` ha una riga da **1.735 caratteri su 1.800** (96%). Nessuna supera, quindi il gate passa e una sessione nuova le legge; ma la prossima aggiunta su una qualsiasi delle tre sfonda. ⚠️ **Il ribilanciamento completo non è gratis:** il corpo è **550 KB su 15 parti** (da 24 a 48,9 KB, media 36,7) e nel testo ci sono **60 rimandi per numero di parte** («continua dalla Parte 3», «vedi Parte 13») che una ri-partizione invaliderebbe quasi tutti. Per questo il 9 ott si è scelto di **misurare e non toccare**. Due mosse pulite, in ordine di costo: (a) spezzare la **§28** fuori dalla Parte 7 e la **§5** o la **§8** fuori dalla Parte 1, creando parti nuove **in coda** alla numerazione invece che in mezzo, così i rimandi esistenti restano validi; (b) sostituire i rimandi per numero con rimandi per **nome di sezione**, che è anche la regola già in vigore per i dossier e rende il documento immune al prossimo ribilanciamento. **Non** spostare la §10 dalla Parte 2: quella è «leggila per prima». Storico: due ribilanciamenti l'hanno già aggirata, il 4 ott (§15 → Parte 6, §23–25 → Parte 9, §10.b → Parte 10) e il 7 ott (change log spezzato in tre, Parte 13 nuova) (agg. 2026-10-09).
-- **[P1] Co-brand in-slide con ordine «Brand × Adobe» (regola BINDING violata)** — area: `packages/core/src/blocks/CoBrandSignature.astro` (Max Mara rende «Max Mara ~ Adobe») e `apps/agos-trait-dunion/src/pages/index.astro` (`.tdu-cobrand` «Agos × Adobe» a mano) · la firma chrome è corretta, i lockup dentro la slide no; Max Mara è nel motore → verificare chi altro usa `CoBrandSignature` (agg. 2026-10-01).
-- **[P1] Ferrari — nota di copertina su fondo chiaro da riverificare a 1280** — area: `apps/ferrari-racing` · la nota è ora a 0,75rem su tre pagine: letta a 1920, non riletta a 1280 su `loop` e `analisi`. Audit a 0 HARD, quindi non è un difetto di resa; è una verifica visiva mancante (agg. 2026-10-01).
-- **[P1] Panel review mai eseguito su 7 experience su 9** — area: `docs/<Cliente>/PANEL-PERSONAS.md` mancante per UniCredit, Ferrari, Agos, Max Mara, Isybank, MIM, Eni (esistono Poste e **Trenitalia/FS**, quest'ultima dal 9 ott con due giri e medie 4,00 / 3,50 / 4,00 / 3,50 / 3,67 — §36.7) · prima della prossima demo di ciascuna: ritratti pubblici con `skills/experience-brief` Part 8, poi `/panel-review apps/<app>`; `/handover` (step 3.4) segnalerà P0 ogni experience modificata senza verdetto (agg. 2026-10-01).
-- **[P1] Poste — due cose da chiudere prima di nominarle in sala (dalle risposte Q1–Q10 del 1 ott)** — area: `apps/poste-sei-domande` + dossier §11 · **(a) root-cause ed entitlement**: nessuna fonte collega la skill di root-cause all'entitlement **Contribution Analysis**, che non è in Analytics Select (il pacchetto di Poste); la release note non dichiara prerequisiti. Finché non c'è risposta scritta, la frase sostenibile è «annunciata, dipendenza non documentata» e **il root-cause non si promette** fra le cose del pilota. Chiudere su `#analytics-mcp` / `cx-coworker-questions@adobe.com`. **(b) regione dell'inferenza e retention** di chat, memoria e skill: aperte, stanno nel *Coworker Security Overview* e nella *Customer-facing Security FAQ*, condivisibili **sotto NDA** — da chiedere prima di parlare di dati con il Comitato IA (agg. 2026-10-01).
-- **[P1] Poste — portare a destinazione le risposte Q1–Q10, ormai scritte** — area: dossier `poste-sei-domande` §11 (Supabase; lo slug è stato rinominato il 7 ott, vedi sopra) + `docs/Poste Italiane/RESEARCH-2026-09-29.md` · **Le otto domande ad Adobe sono state portate alla fonte il 1 ott** (Experience League → release notes → `developer.adobe.com` → Slack interno → Field Readiness), con stato, risposta e fonte datata per ognuna: in sintesi, Coworker gira su **Claude via AWS Bedrock** per default e non usa dati cliente per addestrare i modelli; **MCP Access abilita davvero anche client di terzi** e non ha granularità (il blocco è a monte, lato IMS); il **Plan mode** propone e aspetta l'approvazione ma un admin cliente non può imporlo alla propria org; l'**italiano** arriva con altre otto lingue entro fine ottobre; l'eccezione **FSI** ha un processo ma nessuna SLA; il prezzo è **25 crediti per Input**, con la Launch Offer 20.000 $ per sei mesi fino al 31/12/2026 e la rate card attesa in Q4; «Apri in Workspace» apre **una visualizzazione**, non è documentato che salvi un progetto, e **non si schedula**. Restano aperte solo regione/retention (sotto NDA) e la dipendenza del root-cause (voce sopra). **Da fare**: eseguire `docs/Poste Italiane/0017_update_poste_dossier_q.sql` con `supabase db query --linked` (azione umana) e **mandare la nota Q9–Q10 a Sperandeo** — cinque conferme già formulate: perimetro della suite overall, variabili con ID pseudonimi, TYP per prodotto sulle stesse eVar, stack, dashboard certificata e chi legge a valle. **Rileggere le release notes AA il giorno prima** (la data GA è già slittata due volte; al 1 ott dicono ancora 2 ottobre 2026) (agg. 2026-10-01).
-- **[P1] Poste — demo live su una report suite Analytics: nessuna evidenza che si possa fare** — area: Adobe Demo System Shared org / Demo EMEA (§32) · **verificato il 2026-10-01 su Slack interno**: ogni ricetta documentata di demo Coworker punta a una **data view CJA** (OCMI, Luma, Omni‑Channel Multi Industry), mai a una report suite AA; il percorso AA passa dal server MCP Analytics e oggi internamente gira sulle **report suite aziendali di Adobe** (`adobec8`, abilitazione via manifest list annunciata in `#intheknowwithgmo` il 24/7/2026), che non si mostrano a un cliente. Esiste una report suite AA pubblica di prova, **CIDD**, dietro l'Analysis Workspace Sandbox (`business.adobe.com/resources/adobe-analytics-sandbox.html`): da verificare se Coworker la raggiunge. Prossimo passo: scrivere a `cx-coworker-questions@adobe.com` con l'IMS org, oppure chiedere in `#ask-cxo-enablement-sandbox`. **Finché non c'è risposta, il pilota si mostra con il mock `.sd-chat`** e la demo live non si promette in sala (agg. 2026-10-01).
-- **[P1] Poste — logo ufficiale Poste Italiane in SVG** — area: `apps/poste-sei-domande/src/components/CoBrand.astro` · il ripiego tipografico «Posteitaliane» è fedele ma **non è il logo**. **Ricontrollato il 2026-10-01**: su `poste.it` e su `posteitaliane.it` il marchio è servito solo come **WebP/PNG** da `media.poste.it` (`…/lg/webp/logo-poste-italianei@2x`, 200); ogni variante SVG o `original` dello stesso asset risponde **403**, e nelle due home non c'è un solo SVG del marchio (solo icone di sprite). **Non è recuperabile da fonte pubblica**: va chiesto al cliente o al brand team e passato nello slot `brand` a `currentColor`. Un logo ricostruito a mano resta vietato dalla Quality Bar (agg. 2026-10-01).
-- **[P1] Rivendicazione «firmati con Content Credentials» nei DECK — non più vera sul file spedito** — area: `apps/unicredit-engagement/src/pages/index.astro` + `apps/isybank-momento/src/pages/index.astro` (note di copertina e chiusura) · Firefly firma il proprio output, ma la pipeline **riscarica, ritaglia e riconverte in WebP** e il manifest C2PA si perde: verificato, i file spediti **non lo portano**. Nello **showcase** la nota è già stata corretta il 12 set; **nei deck no**. Due strade: preservare il manifest nella conversione, oppure cambiare la riga in «generati con Adobe Firefly» senza affermare che il file sia firmato. **Decisione dell'owner** — è una frase su una pagina pubblica mostrata a un cliente (agg. 2026-09-12).
-- **[P1] Isybank Valitutti / Eni Chessa — esito dei due incontri del 10 set ancora non registrato** — area: `apps/isybank-momento`, `apps/eni-orbita` · **due giorni di ritardo**: registrare l'esito (fatto / rinviato / cosa è emerso) e chiudere o retrocedere le due voci qui sotto (agg. 2026-09-12).
-- **[P1] Core — buco di media query: a 1280×800 il deck eredita la safe-area da TV** — area: `packages/core/src/blocks/immersive/DeckContainer.astro` · le regole coprono `max-height:799px` e `min-width:1281px`, e un **1280×800** (laptop comunissimo, ed è uno dei tre viewport dell'audit) cade nel mezzo → prende `--slide-safe-inset:80px` + `--deck-chrome-safe:168px`, cioè i valori pensati per i maxi-schermi: restano **464px** di altezza utile. È la causa a monte di gran parte dei fallimenti a 1280 su **tutte** le experience. Fix da una riga, ma è motore condiviso → va verificato app per app (build + `audit:deck`). Chiesto all'owner il 2026-09-10, in attesa di via libera (agg. 2026-09-10).
-- **[P1] Isybank — incontro Valitutti (10 set 2026)** — area: `apps/isybank-momento` + `docs/Intesa Sanpaolo/` · QC tecnico FATTO 9 set (build, 0 HARD, 17 slide lette a 1920) + **pom.: fonti verificate su ogni slide, richieste → 4 domande aperte, sfondi/video Firefly, poster fix live** (§31.4). **Azioni umane**: run-through deck+dossier **in Chrome vero** (i clip cover/chiusura girano solo lì; verificare autoplay su schermo sala); confermare a voce lo stack CRM/comunicazioni in app di Isybank e l'uso di Adobe Analytics (fonte interna); chiedere intro a Claudia Vassena; **NON parlare del rinnovo Analytics ISP (30/09)** con lui → account team ISP. Console + dossier gated già seedati (`0012`). **Deck PPTX (§31.5, `docs/Intesa Sanpaolo/output/…_v3.pptx`)**: prima della riunione (1) **ricontrollare i numeri BBVA** sulla pagina business.adobe.com (letti da indice di ricerca, sandbox in timeout) e i numeri NatWest/Westpac/Truist ereditati dalla bozza; (2) aprire in PowerPoint e confermare i font Adobe Clean; (3) decidere se togliere il footer «Adobe Confidential» del template e se **riportare nel flusso principale** use case / misura / chiusura (oggi in appendice: il deck finisce sulle referenze); (4) se va inviato via mail, comprimere le immagini (90 MB, ereditati dal POV) (agg. 2026-09-09).
-- **[P1] FSTechnology — la call di discovery è fissata per il 13 ottobre** — area: `apps/trenitalia-connessioni` + `docs/Ferrovie/` · opportunità Gruppo FS: sessione di ascolto e proposta con il **Digital Business Partner Trasporto** di FSTechnology, **martedì 13 ottobre dalle 16** (slot chiesto da loro; alla data del 9 ott **non ancora confermato** — l'account executive lo sta rincorrendo per telefono). Perimetro **multimodale passeggeri + merci**. **FATTO 8 set**: dossier verificato come pagina `/dossier/` (§26.8) ⚠️ **che è il P0 sull'esposizione pubblica qui sopra**. **Restano**: confermare lo slot; costruire l'artefatto **dopo** la discovery (non prima — la forma dipende da quello che dicono, e l'ipotesi è un blueprint operativo, non una Prospettiva); confermare a voce se il ramo **Merci/FS Logistix** è nel suo mandato. ⚠️ **Caveat competitivo LOCKED**: FS ha già scelto **Salesforce** (Data Cloud+MuleSoft, foundation agentica coordinata da FSTechnology, mar 2026) → niente pitch CDP greenfield. ⚠️ **Da riallineare**: il dossier dà quella società con un Chief Technology, Innovation & Digital Officer che **dal riassetto di fine luglio 2026 non è più in carica** — il suo presidente è Presidente di FSTechnology, il ruolo di Gruppo è passato ad altri (verificato il 9 ott sulla pagina di governance). ⚠️ **Le due conversazioni devono raccontare la stessa storia** di quella con la Direzione Sales: se non lo fanno, lo scoprono loro prima di noi. Memorie `fst-giampaolo-adobe-day`, `trenitalia-direzione-sales` (agg. 2026-10-09).
-- **[P1] Eni Orbita — prova finale pre-meeting Chessa (10 set 2026)** — area: `apps/eni-orbita` · **QC tecnico FATTO 1 set** (build verde; `audit:deck` 0 hard su 3 viewport — 23 soft `a`/`i` su cover ariose, type generoso confermato a 1920). **Restano azioni UMANE**: run-through live del deck+dossier prima del meeting; **intro a Elvira Fabrizio da chiedere a Chessa** (§24.2); review dossier confidenziale `docs/Eni/` (git-ignored, non apribile). Brief in `docs/Eni/BRIEF-MEETING-CHESSA-2026-09-10.md` (NON committare) (agg. 2026-09-01).
-- **[P1] Accesso da VPN** — **azione UMANA** · le esperienze deployate (GitHub Pages, repo pubblico) sono raggiungibili dalla rete ufficio Adobe ma **bloccate su VPN** (categoria proxy/**Zscaler** su `*.github.io`). Ticket ServiceNow **INC3719631** (creato ~17 lug 2026, stato **In Progress**, assignment group **SD-Global**, assigned to **GOC ITP Integration**, priorità 3-Moderate, EMEA). **Follow-up postato il 2 set 2026** (commento customer-visible) chiedendo allowlist/sblocco per `https://agargiulo-adbe.github.io/experience-design-factory/` e `*.github.io`; **in attesa di riscontro IT**. Workaround demo = screen-share. Piano B (opt-in, non fatto) = redeploy su **Vercel** (agg. 2026-09-02).
-- **[P1] Atelier — confermare il calendario nuovo (redesign del 14 set)** — area: `apps/atelier` · il redesign §21.8 ha **ridatato tutto**: **decisione entro il 31 ottobre 2026**, **M1 fine gennaio 2027** (pilota di 12 settimane da inizio novembre), **M2 all'Adobe Summit di Las Vegas, 22–25 marzo 2027**, **M3 fine giugno 2027**. Restano **assunzioni dell'agente**: l'owner deve confermarle o ridatare (`plan.astro` `milestones[]` + `GANTT`, `asks/slide-sponsor`, `closing/slide-next`, label di `admin.astro`). ⚠️ **La data del Summit 2027 viene da un aggregatore: verificarla su summit.adobe.com prima di presentare** — se cambia, cambiano Gantt, M2 e le colonne dei KPI. L'annex «Annex A» è nominato nel deck e (correttamente) non esiste nel repo → va preparato fuori repo. I conteggi della slide «Made with Adobe» (55 sfondi / 8 clip / 1 scontorno) sono fatti del 14 set e vanno riletti dai `provenance.json` se cambiano gli asset (agg. 2026-09-14).
-- **[P1] MIM — prova in sala della vista presenter + conferma assunzioni** — area: `apps/mim-alfabeti` · dopo l'evoluzione del 9 set (§28.7): (1) run-through con **due finestre** (deck + `/presenter/`) su schermo secondario reale — il fullscreen dal presenter può essere rifiutato dal browser senza gesto nel deck (usare `F` nel deck); (2) confermare o cambiare il **«martedì: tavolo 90' con DGSIS»** in `rotta/slide-route` e i **valori-esempio del simulatore** in `src/data/simulator.config.ts` (etichettati esempio, ma proiettati in un Ministero); (3) leggere le **note relatore** in `src/data/notes/*.ts` e correggerle a voce propria (agg. 2026-09-09).
-- **[P1] Poste — scrivere nel deck e nel dossier la risposta sul modello di costo, e chiudere la seconda domanda** — area: `apps/poste-sei-domande`, dossier Poste (Supabase) · §32.12 (Parte 13), §11 (voce del 9 ott, sera tardi) · la metà «modello di costo» ha una risposta documentata (prova → ponte a durata fissa senza metering → crediti dimensionati sull'uso → licenza enterprise sopra una soglia di ARR, partendo piccoli), ma **non è ancora scritta** né nel deck né nel dossier, e la slide del costo riflette ancora lo stato del 7 ott **(da verificare)**. Resta aperto il **consumo di crediti per prompt**, l'altra domanda lasciata dal referente. Cifre, SKU e listini restano fuori dal repo (`docs/Poste Italiane/`, git-ignorata). (agg. 2026-10-09)
+### 37.1 Da dove viene — la registrazione, non il riassunto
 
+Il punto di partenza è la riunione interna di preparazione del **9 ottobre** (registrazione Plaud).
+La trascrizione è stata letta **per intero**: il riassunto automatico, come al solito, sbagliava
+nomi propri e appiattiva i disaccordi. Tre cose sono uscite solo dal parlato:
 
-**P1 — decisione/azione riservatezza**
-- **[P1] UniCredit workshop (settimana 14/09) — dry-run del deck sul laptop di presentazione** — area: `apps/unicredit-engagement` · (1) **resettare la config soluzioni salvata** (`localStorage['edf-solutions-unicredit-engagement']`, o Console → tutte attive): nel browser dell'owner una config vecchia **nasconde Brand Visibility e Brand Concierge** (= motori 02/03), da cui i conteggi «3 di 4 / 4 di 5» visti il 9 set; (2) verificare autoplay dei clip e i 3 `MediaDemoSlot` da riempire (`visibilita-aem-demo`, `contenuti-genstudio-demo`, `contenuti-brandconcierge-demo`, `analizza-cxa-demo`, `analizza-dia-demo`, `coworker-chat-demo`) (agg. 2026-09-09).
-- **[P1] Dossier UniCredit — seed riservato nel repo PUBBLICO** — area: `supabase/migrations/0008_restricted_docs.sql` · il seed committato contiene il contenuto confidenziale (mappa org con nomi + link LinkedIn, «dire/non-dire», dettagli Adobe Day) nel repo **pubblico**. Il dossier MIM è stato tenuto privato apposta (§28.2, git-ignored); UniCredit **no** → possibile esposizione pre-esistente. **Decisione utente**: applicare lo stesso trattamento (spostare il seed in `docs/UniCredit/…sql` git-ignored + nota tracciata; il contenuto resta comunque nella **git history** → valutare se basta o serve riscrivere la storia). Chiesto all'utente il 2026-09-03, in attesa (agg. 2026-09-03).
+- un **disaccordo interno non risolto** sul posizionamento rispetto al referente tecnologico di
+  Gruppo — registrato nel dossier **come disaccordo**, non ricomposto a tavolino;
+- la richiesta esplicita di preparare **agenda e abstract** da mandare alla segreteria;
+- l'ipotesi, poi verificata e **smentita**, che un certo prodotto fosse disponibile:
+  **Conversation Insights non è uscito ed è di CJA**, non di Analytics (memoria
+  `trenitalia-direzione-sales`).
+
+Il dossier interno (`docs/Ferrovie/`, git-ignorata) è passato da 16 a **17 sezioni** con la bozza
+di agenda titolo per titolo, e ha incassato nove fonti nuove. Dall'agenda interna sono nati i due
+artefatti per il cliente: la **proposta di agenda** e un `.eml` apribile in Outlook
+(`X-Unsent: 1`, oggetto ASCII, `multipart/alternative`) — perché la segreteria riceve una mail,
+non un file Markdown.
+
+### 37.2 I sette capitoli
+
+Apertura · La domanda · **La ricerca** · Il viaggio · Il contenuto · La rete · La rotta.
+I quattro centrali sono **i quattro temi dell'agenda mandata al cliente**, nello stesso ordine:
+così chi ha letto la mail ritrova il documento che si aspetta. Il filo è «dove si perdono le
+vendite»: prima del sito (la visibilità nelle risposte generate), dentro l'offerta
+(l'intermodale), a valle (il contenuto), nel canale suo (~70.000 punti vendita).
+
+### 37.3 La misura — il capitolo che ha cambiato la tesi due volte
+
+Il capitolo «La ricerca» non porta una teoria ma **una misura nostra**, rifatta davanti alla
+stessa domanda: *quando qualcuno chiede a un assistente come si va da A a B, Trenitalia viene
+nominata? E trenitalia.com compare fra le fonti?* Otto domande, una per conversazione nuova,
+**nessun nome di marca dentro la domanda**.
+
+| Misura | Google (risposta generata) | ChatGPT |
+|---|---|---|
+| Trenitalia nominata | 6 / 8 | 7 / 8 |
+| `trenitalia.com` fra le fonti | **2 / 8** | **7 / 8** |
+| Attribuzione sbagliata | 2 / 8 | 0 / 8 |
+
+⚠️ **La misura ha corretto il deck due volte, e la seconda ha salvato una slide dall'accusa
+sbagliata.** Con un motore solo la tesi era «gli assistenti vi ignorano»; con due è diventata
+**«dipende da quale assistente»**, che è più debole da dire e molto più difendibile in sala —
+e l'errore sulle Frecce, che stava per diventare un'accusa generica, si è rivelato **di Google**,
+non di tutti. È il caso da ricordare quando viene la tentazione di misurare una fonte sola.
+
+**Quello che non si è potuto completare** (12 ott): **Gemini 0 domande su 8** e **Perplexity 2 su
+8**. Perplexity esaurisce le ricerche gratuite dopo tre domande; su Gemini la sessione aziendale
+esiste sul profilo del browser, ma davanti alla chat c'è un dialogo di accettazione dei termini
+che **non è un'azione da prendere per conto dell'owner**. Le due risposte di Perplexity — prodotto
+nominato («Frecciarossa e Italo»), **operatore no**, fonti di blog di viaggio — puntano verso il
+comportamento di Google; restano nel documento di misura e **fuori dal deck**, perché due risposte
+non fanno una colonna. Il deck dichiara il proprio perimetro in chiaro, nel blocco di metodo.
+
+Il blocco di metodo è un `HowItWorks` sulla copertina del capitolo: chi presenta non è obbligato
+ad aprirlo, chi legge il deck da solo trova lì come è stata fatta la misura. Dice anche quale
+assistente e **con quali domande**: una misura senza il suo metodo è un'opinione con dei numeri
+davanti.
+
+### 37.4 Pelle, asset, guscio sensoriale
+
+Design system **letto** da trenitalia.com e condiviso con `trenitalia-connessioni`: ardesia di
+sistema `#2f394e`, rosso di marchio `#d91835`, **Poppins** (per una volta il carattere vero del
+cliente è distribuibile). Dominante **scura**, quindi `--surface-inverse` è la superficie
+**chiara**: è la trappola che ha prodotto quasi tutti i difetti di questo giro.
+
+- **8 sfondi Firefly** (`backdrops.manifest.ts`), due famiglie — `ink` per le slide scure, `soft`
+  per le chiare — con **grade duotone** per slot. Il duotone non è un vezzo: chiesta la palette a
+  parole il modello restituisce comunque neon ciano e arancio, cioè i colori di un'altra azienda.
+  Il duotone rimappa la luminanza fra due colori del marchio, e l'immagine esce ardesia qualunque
+  cosa abbia generato il modello.
+- **2 clip in loop** (copertina e chiusura), camera bloccata con `pan, tilt, zoom, dolly` nel
+  negativo, ricucite con `loop:seamless`. Gli `.mp4` stanno sul Release `media`, non nel repo.
+- Niente treni, niente mezzi riconoscibili, niente persone: un treno generato somiglia sempre al
+  treno di qualcuno, ed è la wrong-brand imagery che la Quality Bar vieta.
+
+### 37.5 Due gate nuovi, nati dai difetti di questa experience
+
+- **`pnpm audit:ink`** (`scripts/ink-audit.ts`) — il contrasto del **testo**, misurato sui pixel.
+  È nato perché una copertina di capitolo era **ardesia su ardesia, illeggibile, con `audit:deck`
+  a 0 HARD**: il check `h` guarda i bottoni, il testo delle slide non lo guardava nessuno. Non
+  legge il CSS: ritaglia il rettangolo di ogni blocco dallo screenshot, prende il colore modale
+  come fondo e il pixel più lontano come inchiostro, così scrim e backdrop sono già dentro la
+  misura. ⚠️ Girato su tutto il monorepo ha trovato **259 blocchi sotto AA su 12 experience**
+  (maxmara 77, ferrari 52, trenitalia-connessioni 52, unicredit 44; quattro pulite) — riportati,
+  **non corretti**: fuori dal perimetro di questo lavoro, e sono un P1 a sé.
+- **`pnpm audit:fonti`** (`scripts/source-audit.ts`) — ogni fonte pubblica porta il link, e il
+  link risponde. HARD sui link che non rispondono, SOFT sulle righe di fonte senza link (che sono
+  legittime quando rimandano a una misura nostra o a un documento interno). ⚠️ **403 non vuol dire
+  rotto**: Gartner e parecchi editori rispondono 401/403/429 a qualunque accesso automatico, e
+  `helpx.adobe.com` dà 403 a HEAD e 200 alla GET sullo stesso URL. Il gate ritenta con GET, aspetta
+  e ritenta una seconda volta sui timeout, e mette i bloccati in una lista «da aprire a mano»:
+  un gate che grida al lupo viene ignorato, ed è il contrario del suo scopo.
+
+Entrambi sono **BINDING in `CLAUDE.md`**, insieme alla regola che `copy-audit` **si lancia**, non
+si ricorda.
+
+### 37.6 Lo stato dei gate al 12 ottobre
+
+`audit:deck` **0 HARD** a 1920/1440/1280 (34 slide su 9 rotte dopo il panel; il residuo è tutto
+soft: `a` 27, `i` 15, `g` 8, su slide volutamente ariose) · `exp:ok` su ogni slide, quindi i blocchi
+che si aprono reggono anche da aperti · `audit:ink` **pulito su 322 blocchi** · `audit:wrap`
+**pulito** · **`audit:taglio` ALLINEATO** · `audit:fonti` **34 link, nessuno rotto e nessuno
+generico** (le tre righe senza link sono la nostra misura, che non è pubblica) · `copy-audit`
+**0 HARD / 0 SOFT** dopo tre giri di umanizzazione.
+
+### 37.7 Il panel del 12 ottobre — due giri, e quindici fatti refutati
+
+Sei personas cieche (il Direttore Sales, il Direttore Generale, marketing, Customer Operations, il
+presidio digitale, il Digital Business Partner di FSTechnology), un fact-checker e un arbitro, due
+volte. Personas in `docs/Ferrovie/PANEL-PERSONAS-SALES.md`, verdetti in
+`docs/Ferrovie/PANEL-VERDICT-2026-10-12-round{1,2}.md`, JSON grezzi in `docs/Ferrovie/panel/`
+(tutto git-ignorato).
+
+| Asse | giro 1 | giro 2 |
+|---|---|---|
+| credibilità dei fatti | 2,0 | **3,2** |
+| rilevanza per me | 4,0 | 4,0 |
+| chiarezza | 3,8 | 3,8 |
+| rischio (5 = nessuno) | 2,3 | 2,8 |
+| azionabilità | 2,8 | 3,2 |
+
+Primo giro: **sei «accetto a condizione» su sei**. Secondo: il Direttore Sales passa a **«sì»**,
+cinque restano condizionati. **Quindici fatti refutati**, e i tre che contavano erano invisibili a
+tutti i gate perché i link rispondevano:
+
+- la slide d'apertura attribuiva a lui, **fra virgolette**, una frase che l'articolo ANSA citato
+  non contiene: il 75%/4% è un dato di contesto che circola al TTG, il 96% è suo ma detto altrove;
+- **«da due operatori a quattro»** è falso: sull'alta velocità sono due, SNCF è il terzo e debutta
+  non prima della fine del 2027, Arenaways è sulla rete tradizionale (e la fonte è del 2024);
+- i **70.000 punti vendita non sono le agenzie**: sono i punti fuori dalle biglietterie che vendono
+  il Regionale, da un dato del **2014**. Il canale della Direzione Sales sono **12.400 agenzie**,
+  contate da lui al TTG dell'ottobre 2025.
+
+E la **domanda centrale** del deck («quando il prezzo non è più la leva») era smentita dalla slide
+precedente: dal 1º gennaio 2026 il prezzo lavora più di prima, solo che è una leva del marketing.
+Riscritta due volte, fino alla formulazione che il marketing stesso ha dettato.
+
+⚠️ **La lezione che vale oltre questo deck**: `audit:fonti` verifica che il link **risponda**, non
+che dica quella frase. Da lì due cose nuove — il SOFT sui **link generici** (tre slide citavano due
+homepage per sei fatti) e il campo `cosaDice` in `src/data/sources.ts`, che tiene scritto che cosa
+ogni pagina conferma **verbatim**. Memoria: `link-risponde-non-conferma`.
+
+### 37.8 «In dieci minuti», il taglio che non può divergere
+
+`/dieci-minuti/` — 7 slide (copertina, la sua frase, il contesto, la domanda, i quattro punti, il
+passo, la firma) con **l'ask dentro**: un'ora concessa diventa venti minuti più spesso di quanto si
+ammetta, ed è anche la versione che l'interlocutore gira al suo capo. Non è una copia: copia e fonti
+stanno in `src/data/contenuti.ts` e `src/data/sources.ts`, e dove il taglio ha bisogno di meno
+parole la versione breve è un **campo accanto** a quella lunga (`bBreve`, `leadBreve`). Lo verifica
+**`pnpm audit:taglio`** (registro in `scripts/lib/cut-routes.ts`): HARD su copia a mano, numeri che
+solo il taglio afferma, fonti che solo il taglio porta. Sulla stessa regola è stata riallineata
+anche `intesa-scala-umana`, dove il gate ha trovato subito una frase riscritta a mano. La funzione è
+generale: `skills/experience-design/references/taglio-dieci-minuti.md`, `CLAUDE.md` e la checklist
+di `pnpm new:experience`.
+
+### 37.9 Che cosa manca (le voci sono nel backlog §10, Parte 2)
+
+**Il dossier porta ancora nove dei fatti corretti** — elenco con le fonti in
+`docs/Ferrovie/CORREZIONI-DA-RIPORTARE-NEL-DOSSIER-2026-10-12.md`: è il documento da cui il team si
+prepara, quindi è lì che un fatto sbagliato rientra a voce. **Cover dello showcase** assente
+(`shots/trenitalia-prospettiva-sales.webp`) e la `desc` del record è ancora quella dello scaffold.
+**Letto sonoro** non montato: licenziare una traccia Adobe Stock consuma una licenza, quindi si
+chiede prima. La misura resta a **due motori su quattro**. E restano quattro cose che il panel ha
+chiesto e che **vogliono una persona, non un altro giro**: nessun ordine di grandezza del valore per
+i quattro punti, nessun indicatore del mestiere del cliente (riempimento, ricavo per posto-km, mix
+diretto/intermediato), il parco applicativo mai descritto, e una riga su che cosa **non**
+duplichiamo rispetto ai cantieri aperti con gli altri fornitori.
+
+### 37.10 Il 13 ottobre: la linearità, e una CI rossa che aveva ragione
+
+**La domanda chiave era contorta, e il committente l'ha vista prima del gate.** Diceva: «Il prezzo
+lavora già al massimo, e verso l'alto il listino è fermo. Dove si perdono le vendite che il prezzo
+non recupera?» — tre subordinate prima della domanda, che arrivava in terza riga dietro una doppia
+relativa. **La premessa stava occupando il posto della domanda**: è scesa nell'occhiello, e il
+titolo è rimasto solo — «Allora dove si perdono le vendite?». Quella slide falliva il check `i`
+(troppo vuota): ora passa tutti e dodici.
+
+Poi la stessa verifica su tutto il deck, **misurata e non a occhio**: lunghezza della frase, catena
+di subordinate, doppia relativa, principale che arriva dopo la rincorsa. **Venti frasi sopra soglia
+→ zero.** Il metodo è diventato la famiglia **`L`** di `copy-audit` (§11, voce del 13 ott), perché
+una regola che vive in una sessione non è una regola.
+
+⚠️ **E lungo la strada è emerso che il gate era cieco su questo deck**: `copy-audit` leggeva solo
+gli attributi `it=`/`en=` di `<T>`, e qui la copia è in una lingua sola — **14 stringhe misurate su
+226**, con PASS stampato. Ora ne misura 226, e l'intestazione dice sempre quante ne ha viste.
+
+⚠️ **La CI è andata rossa al primo push su `main` perché `typecheck` non era stato lanciato**, e
+aveva ragione tre volte: un `const COVER` con l'URL della clip **ombreggiava l'import** omonimo (la
+copertina del taglio rendeva una riga vuota e la firma mezza frase), e dietro due import inutilizzati
+c'erano la testa della mappa e la riga della firma **tornate scritte a mano** nel percorso lungo.
+Da lì il gate `c1` di `audit:taglio` guarda anche le pagine del percorso intero, non solo il taglio.
+
+**Stato al 13 ottobre:** live su GitHub Pages, nove rotte a 200, `/dieci-minuti/` compresa.
+`typecheck` 0 · `copy-audit` 0 HARD / 0 SOFT su 226 stringhe · `audit:wrap` pulito · `audit:taglio`
+**ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 · `audit:ink` pulito su 325 blocchi ·
+`audit:fonti` 34 link, nessuno rotto e nessuno generico.
 
 ---
+
+## 38. TIM — «Una campagna, molti formati» (stato di fatto, 12 ott 2026)
+
+`apps/tim-contenuti-su-scala` · tipo **Prospettiva** · 4 capitoli · accento `#004691` ·
+`defaultPublished: false`. **Non è lavoro di questa sessione**: è un workstream parallelo che
+lavora sul ramo `feat/tim-content-at-scale`. Qui si registra solo quello che è verificabile nel
+repo, perché il suo stato ha smesso di essere privato di quel ramo.
+
+⚠️ **Come ci è finita su `main`.** L'11 ottobre un `git add -A` lanciato mentre il working tree era
+su quel ramo ha incluso **18 file di TIM** in un commit di Trenitalia, che è stato pushato e
+**deployato**: l'app risponde **200** su GitHub Pages ed è registrata in `deploy.yml`, nello hub,
+nello showcase (spenta) e in `deck-routes.ts`. L'errore è stato dichiarato subito e il working tree
+è stato restituito a quel ramo senza toccare i loro file. **La decisione su che cosa farne è
+dell'owner** e sta nel backlog: togliere i file da `main`, togliere solo la card dello hub, o
+lasciarli. Finché restano, valgono per quell'app le stesse regole delle altre — panel review
+compresa, che non è mai stata lanciata.
+
+**La regola che resta, ed è la parte utile dell'incidente:** in questo repo **non si usa
+`git add -A`**, e si verifica il ramo prima di ogni commit. I file si elencano uno per uno. Dove
+due lavori insistono sullo stesso tree, il commit si fa da un **worktree separato** sul ramo
+giusto — è così che sono stati fatti i commit del 12 ottobre, senza sfiorare il lavoro altrui.
+
+---
+
+## 39. Il lavoro operativo d'account — registri, Radar, e il giro di ogni mattina
+
+Nato il **12 ottobre 2026** e completato il **13**. Non è una experience: è lo strato con cui
+si lavora sui conti cliente — mail, analisi, rinnovi, blocchi contrattuali — dentro `docs/`,
+che fino al 12 ott serviva due mestieri senza distinguerli.
+
+### 39.1 La falla da cui è partito tutto
+
+Le cartelle cliente erano escluse da git con un **elenco a mano nel `.gitignore` di root, una
+riga per cliente**. Ogni cliente nuovo nasceva **esposto** finché qualcuno non si ricordava
+della sua riga — e il 12 ott una cartella arrivata quel giorno, con footprint e dashboard di
+consumo del cliente, **non era ignorata** (verificato con `git check-ignore`). Il repo è
+pubblico e `main` fa deploy automatico; nulla era mai stato committato (`git ls-files docs`),
+ma bastava un `git add -A`.
+
+Ora `docs/.gitignore` è **fail-closed**: ignora tutto e riammette per nome i soli documenti
+della Factory, così ogni cliente futuro **nasce protetto per costruzione**. Le sedici righe
+nel root sono state tolte. `pnpm audit:docs` (`scripts/docs-guard.ts`) verifica quattro cose,
+tutte HARD, **in entrambe le direzioni** — anche la riammissione sbagliata, che è l'altro modo
+di aprire la falla — ed è il **primo** passo in CI, non l'ultimo. ✅ La prova dal vivo è
+arrivata da sé: una cartella `docs/Ferrero/` comparsa il 12 ott mentre si lavorava era **già
+ignorata**, senza che nessuno aggiungesse niente.
+
+### 39.2 Chi possiede che cosa: Radar e registri
+
+Sotto `docs/Adobe/Radar/` vive il **Radar Opportunità**, alimentato a mano da PanoAI (mensile
+e trimestrale). Si sovrapponeva ai registri su una materia sola, e la divisione è dichiarata
+perché due copie a mano degli stessi numeri **divergono sempre** (lezione già pagata sul taglio
+corto di Intesa):
+
+| | Possiede |
+| --- | --- |
+| **Radar** | i **numeri** e la **struttura**: book di 25 account, ARR, ECC/IMS, team Adobe, prodotti con date di contratto, rinnovi, opportunità aperte, e il **Goal Sheet FY26** con i prodotti **eleggibili** per M1/M2 |
+| **`ACCOUNT.md`** | la **storia**: dove siamo, chi ha la palla, i blocchi, i fatti detti in riunione, vincoli e vocabolario del cliente |
+
+Il registro **non ricopia** ARR, date di rinnovo e identificativi: li citerebbe vecchi. File del
+Radar: `Mappa_Account/Anagrafica_account.md` (il book), `Panorama_AAAAMMGG.md` (rinnovi,
+opportunità, rischi), `Goal_Sheet_FY26.md`, `_PROMPT_PanoAI.md` (i prompt per rinfrescarlo),
+`Registro_opportunita.md` (la colonna **«Decisione Antonio» non si tocca mai**),
+`alias_cartelle.md` e `Sintesi_Task_storico/`.
+
+**`Sintesi_Task` non si continua.** Era una scansione a mano dei task da email, ALTA/MEDIA/BASSA
+per cliente: lo stesso mestiere del registro, e si era fermata dopo due giri nello stesso
+giorno. I due file restano come storia.
+
+### 39.3 I comandi, e il file si chiama ACCOUNT.md
+
+`/account-open` (legge Radar → registro → cinque fonti, **riferisce senza scrivere**),
+`/account-close` (deposita, diff prima di salvare, propone righe in `Registro_opportunita.md` e
+in `eventi.md`), `/accounts` (vista d'insieme). Tutti e tre si trovano con `/acc` + TAB. Fuori
+da una sessione c'è la **stessa parola** come funzione di shell: `accounts`, che gira da
+qualunque cartella e **a zero token** (lo snippet è in `docs/CLAUDE.md`, non solo in un
+`~/.zshrc`).
+
+Il 12 ott «conto» è diventato **«account» in tutto il sistema, file compreso**: i registri si
+chiamano `ACCOUNT.md`. ⚠️ **Gotcha che è costato un ripristino:** la prima passata di rinominare
+era senza confini di parola, e «contiene» è diventato «accountene», «racconto» → «racaccount»,
+«il contorno» → «l'accountrno». Il danno ha toccato il `CLAUDE.md` di root e **venti file di
+memoria** dove «conto» voleva dire altro. Niente era committato, quindi git ha restituito i
+tracciati; memorie e file ignorati sono stati riparati token per token. Memoria
+`rinominare-con-confini-di-parola`.
+
+### 39.4 Le cinque fonti dell'apertura
+
+Outlook e **Teams** (lo **stesso** connettore Microsoft 365: Centralino **non** indicizza né
+Teams né la casella Adobe), le **trascrizioni** in `/Plaud` su Dropbox, **WhatsApp** via
+Centralino, la cartella dell'account.
+
+Due correzioni di fatto, verificate: **Teams non passa da Centralino**, e la prova è un
+messaggio con una decisione commerciale che nessun registro aveva. E su WhatsApp la prima
+conclusione era **sbagliata** — la misura giusta, l'inferenza no: il lavoro sta nell'account che
+Centralino chiama `whatsapp-personale`, perché **quel numero è il numero di lavoro**, quello
+della firma delle mail Adobe. `whatsapp-aziendale` è un archivio fermo al 2022. Memoria
+`etichetta-non-e-contenuto`.
+
+Le trascrizioni hanno due regole proprie: stanno **sotto** la corrispondenza nella gerarchia e
+sbagliano i nomi propri; e una **menzione di passaggio non è un fatto** — in quella cartella ci
+sono anche riunioni interne e colloqui, che non si aprono.
+
+### 39.5 Il giro gratuito di ogni mattina (13 ott)
+
+Il «Radar Opportunità» schedulato il **2 ott** (lun e gio alle 07:30, output su Dropbox) ha
+prodotto **zero file** in dieci giorni. La causa, dichiarata dall'owner: **l'account Claude su
+cui girava ha esaurito i token del mese** — non un guasto dello scheduler. La correzione ribalta
+la priorità: ottimizzare i token non è un accessorio, è **il vincolo che decide se gira**. Quel
+design leggeva cinque fonti per 25 account due volte a settimana: **300-500 chiamate a
+settimana**, quasi tutte su account dove non si era mosso niente.
+
+Il principio che lo sostituisce: **selezionare prima di leggere**. Tre strati, e solo il terzo
+costa token: `pnpm accounts` (zero, legge file locali, vale il 60% — *su cosa guardare*); un
+innesco per conteggi (non implementato: serve quando i registri saranno molti); `/account-open`
+sui 2-3 account indicati.
+
+Da oggi `pnpm accounts` gira da sé **lun-ven alle 07:30 via launchd** (`pnpm radar:install`
+installa o riallinea; `scripts/radar-giro.sh` è la sorgente versionata): scrive **sempre** in
+`docs/Adobe/Radar/giri/` — è il battito — e **notifica solo se c'è un rilievo**, massimo cinque
+righe, con la cosa più urgente nel sottotitolo. Quattro soglie e nessuna in più: passo scaduto ·
+rinnovo entro 30 gg (eleggibile per il piano, o su account senza registro) · account fermo da
+oltre 21 gg · evento entro 14 gg o iscrizione entro 3. Gli eventi stanno in
+`docs/Adobe/Radar/eventi.md` perché il calendario costerebbe token e **un invito non dice chi è
+iscritto a un evento**.
+
+E il pezzo che mancava al tentativo del 2 ott: **il guardiano**. `accounts` avvisa se l'ultimo
+giro ha più di due giorni. Quel sistema è morto e nessuno l'ha notato per dieci giorni, perché
+l'unico modo di accorgersene era aprire una cartella vuota.
+
+⚠️ **Quattro guasti, tutti invisibili da una shell interattiva** (memoria
+`launchd-non-e-la-tua-shell`): in `ProgramArguments` ogni `<string>` è un argomento
+**letterale** (`/bin/zsh -lc "$HOME/…"` arrivava con virgolette e variabile dentro → `can't open
+input file`); **da `~/Documents` launchd non riesce a ESEGUIRE uno script**, pur riuscendo a
+leggerne i file (verificato con un job di prova) — la copia che gira vive in `~/.local/bin`; nel
+`PATH` di launchd **non c'è né `pnpm` né `node`** (il giro scriveva 77 byte con `env: node: No
+such file or directory`); e **zsh sotto launchd non apre i file del repo** (`operation not
+permitted`) mentre node sì, per cui il controllo della deriva fra sorgente e copia installata è
+stato spostato in `accounts.ts`. Il criterio di successo è **zero byte di stderr**, non «ha
+scritto qualcosa».
+
+### 39.6 Che cosa ha già prodotto
+
+La copertura è passata da **20 account del book su 25 senza registro ($35,5M di ARR)** a **17 su
+25 ($28,3M)**, e soprattutto **nessun rinnovo eleggibile resta su un account senza registro**.
+I tre registri aperti il 13 ott, scelti dal Radar e non a sentimento:
+
+- **UniCredit** (`docs/UniCredit/ACCOUNT.md`) — Adobe Analytics **$1,48M** si rinnova il **13 dic
+  2026** in salute **Yellow**, adoption 4,4, e **nessuna conversazione di rinnovo in posta**. AE
+  dedicato nuovo dal 2 ott; la referente si era detta disponibile «dalla settimana del 12». Più
+  due cose nascoste nei numeri: **Assets $106K ad adoption 0,0** scade il 4 dic, nove giorni
+  prima, e **Target risulta azzerato il 30 set** (da capire se perso).
+- **Ferrovie / FS Technology** (`docs/Ferrovie/ACCOUNT.md`) — **Target $409K** si rinnova il **30
+  dic** con adoption **0,0**: pagato e non usato, ed è il rinnovo eleggibile più grosso fra gli
+  account scoperti. Una ricerca in posta **non trova nulla**: l'assenza di conversazione è il
+  fatto. Stesso schema su **AJO $75K, Yellow, adoption 0,0**.
+- **Intesa Sanpaolo** (`docs/Intesa Sanpaolo/ACCOUNT.md`) — Analytics **$36K** al **31 dic**,
+  l'unico prodotto eleggibile dell'account; il resto (Forms $516K, Sites $400K) è relazione, non
+  attainment.
+
+I 17 che restano hanno rinnovi su prodotti **non eleggibili** (`Assets`, `Sites`, `Paid
+Support`, `LLM Optimizer`): si aprono quando serve, non prima.
+
+### 39.7 L'AI Forum del 21 ottobre, verificato alla fonte
+
+Dal thread Teams del 9 ott: **455 registrati** (150 clienti, 9 partner), $16,44M di pipeline
+toccata, 76% dello stretch goal Italia di 600. **L'iscrizione non ha una scadenza dichiarata, e
+questo è peggio di una scadenza**: «è possibile che corporate chiuda le registrazioni a breve».
+⚠️ **All'8 ott risultava UN SOLO meeting confermato in tutto l'evento** (su Generali), con tre
+executive Adobe presenti: un evento così non è affollato, è una porta aperta. Alla **cena
+executive** (55 registrati) ci sono già Agos, Banca Generali, EssilorLuxottica, Ferrero, Credit
+Agricole Italia, UniCredit, Unipol. Tutto in `docs/Adobe/Radar/eventi.md`, col percorso del
+foglio della guest list — che **resta da incrociare coi referenti**, ed è l'azione con più resa
+della settimana.

@@ -7,9 +7,42 @@
 > segnalalo e aggiorna questo file.
 >
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
-> `.md` costa ~20k token (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
+> `.md` costa ~32k token su 17 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
+> 🧭 **12-13 ottobre: la Prospettiva passa dal panel, e nasce «In dieci minuti»** (**§37.7–37.10,
+> Parte 16**). Due giri, sei personas cieche più fact-checker e arbitro: **credibilità dei fatti da
+> 2,0 a 3,2 su 5**, il Direttore Sales da «accetto a condizione» a **«sì»**, **quindici fatti
+> refutati**. I tre che contavano erano **invisibili a tutti i gate perché i link rispondevano**: una
+> citazione d'apertura attribuita a lui che l'articolo ANSA **non contiene**, «da due operatori a
+> quattro» (sono due), e i **70.000 punti vendita** che non sono le agenzie (sono 12.400). Da qui:
+> ogni fonte punta alla pagina che **dice** quel fatto e ne porta il verbatim in `sources.ts`, e
+> `audit:fonti` segnala i **link generici**. Nasce il taglio **«In dieci minuti»** (`/dieci-minuti/`),
+> che dalla fonte unica **non può divergere** — lo verifica **`pnpm audit:taglio`**, che sulla stessa
+> regola ha riallineato anche Intesa. Il 13, su richiesta del committente, la **linearità** è
+> diventata misura (**famiglia `L` di `copy-audit`**, da 20 frasi contorte a 0, con la domanda chiave
+> riscritta) — e si è scoperto che `copy-audit` **misurava 14 stringhe su 226** sulle experience in
+> una lingua sola: ora ne conta 7.548 sul monorepo e ne emergono **480 HARD** mai visti (P1 nuovo).
+>
+> 🚄 **11-12 ottobre: una Prospettiva nuova, e due gate che non esistevano** (**§37, Parte 16**).
+> `apps/trenitalia-prospettiva-sales` — «Dove può arrivare il viaggio», **27 slide su 8 rotte** per
+> la **Direzione Sales** di Trenitalia: i quattro capitoli centrali sono i quattro temi dell'agenda
+> mandata alla segreteria del cliente, nello stesso ordine. Il cuore è una **misura nostra**: otto
+> domande senza nomi di marca a due assistenti, e `trenitalia.com` compare fra le fonti **2 volte su
+> 8 nella risposta generata di Google** contro **7 su 8 in ChatGPT**. ⚠️ **Misurare due motori invece
+> di uno ha cambiato la tesi del deck e salvato una slide**: da «gli assistenti vi ignorano» a
+> «dipende da quale assistente», e l'errore sulle Frecce è risultato di Google, non di tutti. Gemini
+> resta a **0 domande su 8** e Perplexity a 2 (§37.3) — il deck lo dichiara. Dai difetti di questo
+> giro sono nati **due gate BINDING**: **`pnpm audit:ink`**, che misura il contrasto del **testo** sui
+> pixel (è nato da una copertina ardesia su ardesia **illeggibile con `audit:deck` a 0 HARD**, e ha
+> trovato **259 blocchi sotto AA su 12 experience** — P1 nuovo), e **`pnpm audit:fonti`**, per cui ogni
+> fonte pubblica porta il link e il link risponde. ⚠️ **Due P0 nuovi**: l'experience è **pubblicata e
+> non ha mai visto una panel review**, e **18 file di un altro workstream sono finiti su `main`** per un
+> `git add -A` (§38) — la decisione su cosa farne è dell'owner. In parallelo, da un'altra sessione, il
+> **lavoro operativo d'account** è diventato un mestiere a sé (`docs/CLAUDE.md`, `/account-open`,
+> `/account-close`, `/accounts`) e il **`.gitignore` si è rovesciato**: `docs/.gitignore` è ora
+> fail-closed, perché con l'elenco a mano **ogni cliente nuovo nasceva esposto**.
+
 > ⏱️ **Che cosa è successo fra l'8 e il 9 ottobre, in una schermata.** La stanza di **Intesa
 > Assicurazioni si è tenuta** l'8 alle 11 (il deck ci è andato alla **v8**, §35.11 · il verdetto del
 > panel resta fermo alla **v3**, ed è ancora un P0 — ma adesso difende il deck che gira fra i colleghi
@@ -159,96 +192,65 @@
 > corretto nel deck** (per CJA il dato entra: si governa *quanto*). ⚠️ **Il panel a due giri copre il
 > deck di prima**: P0 nuovo, da chiudere prima del TTG del 14-16 ott (§36.9, Parte 8).
 
-> 🚄 **L'11 e il 12 ottobre: una Prospettiva nuova, tre gate nuovi, e il repo che si chiude da sé.**
-> È nata **«Dove può arrivare il viaggio»** (`apps/trenitalia-prospettiva-sales`, §37 · Parte 17), la
-> Prospettiva per la **Direzione Sales di Trenitalia**: sette capitoli sul filo deciso in riunione —
-> dove si perdono le vendite — con il design system **letto** dal sito e **una misura nostra** su come
-> gli assistenti rispondono alle domande di viaggio. ⚠️ La misura è stata **rifatta su un secondo
-> assistente** il 12, e **la tesi è cambiata**: non «gli assistenti sbagliano», ma *dipende da quale* —
-> uno costruisce la risposta sui rivenditori e due volte su otto sbaglia di chi sono le Frecce, l'altro
-> va sui siti ufficiali e non sbaglia mai. Su una slide che accusa qualcuno di sbagliare un fatto,
-> sbagliare un fatto è fatale. **Il panel è stato fatto la sera del 12, due giri** (§37.7): credibilità
-> dei fatti da 2,0 a 3,2 su 5, quindici fatti refutati e corretti — fra cui una citazione d'apertura che
-> l'articolo citato non conteneva — e il taglio **«In dieci minuti»**, che ora è una funzione della
-> Factory con il suo gate (`audit:taglio`). L'incontro è dopo il 20 ottobre. Da lì sono nati **`audit:ink`** — che misura il contrasto del *testo*
-> leggendo i pixel dello screenshot, e ha trovato 19 blocchi sotto AA mentre `audit:deck` stampava 0
-> HARD — e **`audit:fonti`**, con la regola BINDING che una fonte pubblica citata in slide **porta il
-> link**. Sul fronte `docs/`, il `.gitignore` si è **rovesciato**: ignora tutto e riammette i soli
-> documenti della Factory, così **ogni cliente nuovo nasce protetto** invece di nascere esposto finché
-> qualcuno non si ricorda della sua riga — ed era già successo. Insieme sono arrivati il registro
-> operativo d'account (`ACCOUNT.md`, `/account-open`, `/account-close`, `/accounts`) e il **Radar**, che
-> possiede i numeri mentre il registro possiede la storia. ⚠️ Il numero uscito da solo: **20 account del
-> book su 25 non avevano un registro**, con nove rinnovi entro 120 giorni — **scesi a 17 il 13 ott**. In lavorazione e **non
-> committata**, la Prospettiva **TIM** (§38 · Parte 17), il cui panel ha un giro solo e **personas
-> derivate**.
+> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: al 13 ott sono **14 P0 e 33 P1**
+> (più 10 P1 di fondo e 44 P2 nella Parte 10). Il P0 sulla panel review della Prospettiva **è chiuso**
+> — i due giri del 12 ott, §37.7 — e resta come P1 rileggere le slide cambiate il 13. In testa ora sta
+> il P0 dei **18 file di TIM finiti su `main`**, e subito sotto i **quattro del 9-10 ott**: il dossier FSTechnology esposto, il
+> panel mancante su un'app ormai pubblica, il giro delta su Intesa Assicurazioni a stanza avvenuta, e
+> quello che non si chiude da solo, i nomi di referenti cliente dentro file tracciati su un repository
+> pubblico. ⚠️ **Dal 12 ott i dieci P1 fermi da settembre** (VPN, Isybank, Eni, MIM, Atelier, il buco
+> di media query a 1280×800, le due decisioni di riservatezza) **sono scesi nella Parte 10**: non sono
+> chiusi, ma nessuno di loro decide che cosa si fa questa settimana.
+>
+> ⚠️ **Nota di dimensione** (rimisurata il **13 ott**): il change log del 12-13 ott non entrava nella
+> **3**, e il ribilanciamento è andato di nuovo a catena **3 → 4 → 14 → 17** — la stessa catena del 12,
+> quando la **Parte 17** è nata in coda per il change log di luglio. Le parti più piene sono ora la
+> **7** (47,8 KB), la **1** (47,5) e la **2** (45,8) su 49,1; le più vuote la **17** (9,8), la **16**
+> (15,2), la **11** (23,5) e la **13** (24,0). ⚠️ Il change log occupa da solo **quattro** parti
+> (3, 4, 14, 17): è il costo fisso di tenerlo integrale, ed è una scelta — si paga un ribilanciamento
+> ogni due o tre giornate di lavoro. Le **parti nuove si creano in coda** alla numerazione, così i
+> sessanta rimandi «vedi Parte N» già scritti restano validi.
 
 > 🛰️ **Il 13 ottobre: il radar che gira da sé, e i primi registri dove servivano.** Il «Radar
 > Opportunità» schedulato il 2 ott aveva prodotto **zero file in dieci giorni**, e la causa non era
 > lo scheduler: **l'account Claude su cui girava aveva esaurito i token del mese**. Quel design
 > leggeva cinque fonti per 25 account due volte a settimana — 300-500 chiamate a settimana, quasi
-> tutte su account dove non si era mosso niente. Il principio che lo sostituisce è
-> **selezionare prima di leggere**: lo strato gratuito (`pnpm accounts`) vale il 60% — *su cosa
-> guardare* — e costa zero. Ora parte da sé **lun-ven alle 07:30 via launchd**: scrive sempre in
-> `Radar/giri/`, **notifica solo se c'è un rilievo**, e `accounts` **avvisa se l'ultimo giro ha più
-> di due giorni** — il pezzo che mancava, perché quel sistema è morto senza che nessuno lo notasse.
-> Lo strato caro resta a mano, così il budget non compete col lavoro interattivo. ⚠️ Quattro guasti
-> di launchd, tutti invisibili da una shell interattiva (memoria `launchd-non-e-la-tua-shell`).
-> Dall'altra parte, il lavoro che il radar ha reso visibile: la copertura passa da **20 account del
-> book su 25 senza registro** a **17**, e **nessun rinnovo eleggibile resta scoperto** — aperti
-> **UniCredit** (Analytics **$1,48M** al 13 dic, salute **Yellow**, e nessuna conversazione di
-> rinnovo in posta), **Ferrovie** (Target **$409K** al 30 dic con **adoption 0,0**, e in posta
-> **nessuna** conversazione: l'assenza è il fatto) e **Intesa Sanpaolo**. Sull'**AI Forum del 21
-> ott**: l'iscrizione non ha scadenza dichiarata ma «corporate può chiudere a breve», e all'8 ott
-> risultava **un solo meeting confermato in tutto l'evento**. Tutto in **§39 (Parte 17)**.
-
-> ⚠️ **Il P0 che il giro delta della vetrina ha scoperto il 9 ott, e che il 12 era ancora aperto**:
-> **cinque experience sono indicizzabili** — Aperture, Eni, Isybank, MIM e la nuova TIM hanno
-> `noindex = false` per difetto — e **l'Atelier non ha alcun meta robots**. Tre di quelle nascono da
-> materiale di preparazione riservato. Il difetto **si propaga dal template**, ed è per questo che
-> l'experience nata il 12 ottobre lo ha ereditato. Si verifica **contando i meta nel `dist`**, non nel
-> sorgente. ✅ Nel frattempo **due giri delta attesi sono stati fatti** il 9 ott — Poste (medie 4,0 ·
-> 3,6 · 3,6 · 3,0 · 3,6) e la vetrina (il rischio sale di +0,8) — e quello che resta non è lanciarli
-> ma **applicarne i P0**: su Poste il permesso che ha cambiato nome, «niente da firmare» che su un
-> cliente FSI è falso, e i crediti di prova affermati tre volte mentre il contratto non li nomina.
-
-> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: **quattro P0 nuovi o riscritti il
-> 9 ott** stanno in testa (il dossier FSTechnology esposto · il panel mancante su un'app ormai pubblica
-> · il giro delta su Intesa Assicurazioni a stanza avvenuta), e subito sotto c'è quello che non si
-> chiude da solo — i nomi di referenti cliente dentro file tracciati su un repository pubblico,
-> inventario rifatto il 7 ott. Dal 9 ott sera ci sono **tre P1 nuovi su Trenitalia**: il difetto del
-> motore sulle slide chiare (tocca quattro experience), quello che è sopravvissuto al secondo giro di
-> panel, e i tre fatti da far confermare al cliente. ⚠️ **Nota di dimensione** (rimisurata il **12 ott**): il giro di oggi ha richiesto **tre parti
-nuove**. La §10 è stata **spezzata**: i **P0** restano nella Parte 2 (18,8 KB, che ora respira), i
-**P1** sono usciti nella **Parte 16** — era l'unico modo di aggiungere quattro P0 a una parte che
-stava a 47,5 KB. Il change log ha richiesto un ribilanciamento a catena **3 → 4 → 14 → 18**: le due
-giornate dell'11-12 ott pesano 8,5 KB da sole. ⚠️ **Rimisurata il 13 ott:** la Parte 3 è a **49,0 KB, cioè a 110 byte dal tetto** — la prossima voce di change log **impone** il ribilanciamento a catena 3 → 4 → 14 → 18 (registrato come P2 nella Parte 10). Le altre al filo: la **7** (47,8 KB), la **1** (47,5 KB) e la **14** (47,4 KB). ⚠️ Il change log occupa ora **quattro** parti (3,
-4, 14, 18) e ogni voce nuova in testa spinge la coda: è il costo fisso di tenerlo integrale, ed è una
-scelta — si paga un ribilanciamento ogni due giornate di lavoro. La mossa pulita, rimandata di nuovo,
-resta **sostituire i rimandi per numero di parte con rimandi per nome di sezione**: ce ne sono una
-sessantina, e oggi sopravvivono solo perché le parti nuove sono state create **in coda**.
+> tutte su account dove non si era mosso niente. Il principio che lo sostituisce è **selezionare
+> prima di leggere**: lo strato gratuito (`pnpm accounts`) vale il 60% — *su cosa guardare* — e
+> costa zero. Ora parte da sé **lun-ven alle 07:30 via launchd**: scrive sempre in `Radar/giri/`,
+> **notifica solo se c'è un rilievo**, e `accounts` **avvisa se l'ultimo giro ha più di due giorni**
+> — il pezzo che mancava, perché quel sistema è morto senza che nessuno lo notasse. Lo strato caro
+> resta a mano, così il budget non compete col lavoro interattivo. ⚠️ Quattro guasti di launchd,
+> tutti invisibili da una shell interattiva (memoria `launchd-non-e-la-tua-shell`). Dall'altra
+> parte, il lavoro che il radar ha reso visibile: la copertura passa da **20 account del book su 25
+> senza registro** a **17**, e **nessun rinnovo eleggibile resta scoperto** — aperti **UniCredit**
+> (Analytics **$1,48M** al 13 dic, salute **Yellow**, e nessuna conversazione di rinnovo in posta),
+> **Ferrovie** (Target **$409K** al 30 dic con **adoption 0,0**, e in posta **nessuna**
+> conversazione: l'assenza è il fatto) e **Intesa Sanpaolo**. Sull'**AI Forum del 21 ott**:
+> l'iscrizione non ha scadenza dichiarata ma «corporate può chiudere a breve», e all'8 ott
+> risultava **un solo meeting confermato in tutto l'evento**. Tutto in **§39 (Parte 16)**.
 
 ---
 
 <!-- HANDOVER-SPLIT -->
 
-Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 KB, ≤1800 char per riga). **18 parti.**
-**Leggi le parti in ordine.** Se devi decidere cosa fare, la **Parte 2** basta: è il backlog **P0**, cioè quello che blocca. I **P1** sono nella **Parte 16**, i **P2** nella Parte 10.
+Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 KB, ≤1800 char per riga). **17 parti.**
+**Leggi le parti in ordine.** Se devi decidere cosa fare, la Parte 2 basta: è il backlog P0/P1.
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
-- [Parte 2 — §9 Deploy & segreti · §10 backlog **P0**](./HANDOVER-02.md) — **leggila per prima**: cosa blocca adesso. I P1 sono usciti nella Parte 16 il 12 ott, quando i quattro P0 nuovi hanno portato la §10 oltre il tetto.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **13 ott 2026** all'indietro, fino al 7 ott mattina: il giro gratuito del Radar e i primi registri d'account, la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
-- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 6-7 ott 2026 all'11 set.
+- [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **12-13 ott 2026** (il panel a due giri sulla Prospettiva, il taglio «In dieci minuti» e il gate `audit:taglio`, la linearità misurata) e dall'**11-12 ott** (la Prospettiva per la Direzione Sales, `audit:ink` e `audit:fonti`, i file di TIM finiti su `main`, il lavoro d'account) all'indietro, fino alla **sera del 7 ott**: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal **7 ott 2026, sera** (Intesa Assicurazioni, il perimetro che si allarga) all'11 set. Ribilanciata il 13 ott: la coda è scesa nelle Parti 14 e 17.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.
 - [Parte 7 — §26 FS Park × Trenitalia (+ **§26.9 la Direzione Sales**) · §27 UniCredit attribution e dossier · §28 MIM](./HANDOVER-07.md) — ⚠️ §26.8 è il dossier **esposto senza gate** (primo P0); §26.9 è il tavolo nuovo. ⚠️ Per lo stato CORRENTE del deck Trenitalia la fonte non è qui ma **§36 (Parte 8)**.
 - [Parte 8 — §29 pipeline Firefly · §30 Aperture · §31 Isybank · **§36 Trenitalia riscritta (9 ott)**](./HANDOVER-08.md) — §36 è lo stato corrente di «Connessioni Intelligenti»: design system letto, sfondi e clip, diagrammi, schermo da muro, incoerenze fra slide, il panel a due giri e, in **§36.9, il perimetro ridotto a due fonti** la sera del 9 (posteriore al panel).
 - [Parte 9 — §21 Experience Atelier · §23 redesign E2E · §24 Eni · §25 core responsive e nav](./HANDOVER-09.md).
-- [Parte 10 — §10.b backlog **P2 e note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB.
+- [Parte 10 — §10.b backlog: **i dieci P1 fermi da settembre, i P2 e le note non azionabili**](./HANDOVER-10.md) — la coda della §10, spezzata ai sotto-livelli perché da sola superava i 48 KB; i P1 di fondo sono scesi qui il 12 ott.
 - [Parte 11 — §33 **Intesa «Su scala umana»** · §34 **il motore unico dei dossier**](./HANDOVER-11.md) — la stanza del 22 ott e il motore che regge tutti i dossier. **§35 (l'altra Intesa) è la Parte 15**, in fondo. §33.8 e §33.9 sono le due giornate del 9 ott: quello che hanno detto le registrazioni, il giro di critica, e il taglio da dieci minuti che non può più divergere dal percorso intero.
 - [Parte 12 — §32 **Poste «Sei domande»**, §32.1–32.9](./HANDOVER-12.md) — uscita dalla Parte 8 per dimensione, e spezzata a sotto-livello il 7 ott sera perché §32 da sola superava i 48 KB: qui vincoli, struttura, skin, i tre giri di panel e le otto domande portate alla fonte.
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
-- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **10 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **quattro** volte, l'ultima la notte del 9-10 ott.
+- [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **14 set 2026** all'indietro, fino al **1 set**. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **cinque** volte, l'ultima il 12 ott.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
-- [Parte 16 — §10.a backlog **P1**](./HANDOVER-16.md) — la coda del backlog: non blocca, ma diventa P0 se nessuno la guarda.
-- [Parte 17 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM** · §39 **il lavoro operativo d'account**](./HANDOVER-17.md) — le due experience nate l'11-12 ott (la Prospettiva per la Direzione Sales con la misura sugli assistenti, e quella TIM ancora in lavorazione) e, da §39, lo strato con cui si lavora sui conti: il `.gitignore` fail-closed, i registri `ACCOUNT.md`, il Radar, i tre comandi e il giro di ogni mattina a zero token.
-- [Parte 18 — §11 change log datato (coda finale)](./HANDOVER-18.md) — le voci più vecchie, uscite dalla Parte 14 il 12 ott.
+- [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account**](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta.
+- [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.
