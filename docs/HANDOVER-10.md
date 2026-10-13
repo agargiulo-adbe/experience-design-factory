@@ -12,6 +12,9 @@
 > 48 KB, quindi è spezzata ai sotto-livelli come prescrive il contratto di `/handover`.
 
 **P2 — dopo / nice-to-have**
+- **[P2] Lo strato 2 del radar (innesco per conteggi)** — area: `scripts/accounts.ts` · §39.5 · fra la selezione gratuita e la lettura costosa manca un passo: «quanti messaggi nuovi per account dall'ultima data del registro», una chiamata per fonte e non per account. Serve quando i registri saranno molti; **oggi sono otto e la selezione gratuita basta**. Costruirlo adesso sarebbe infrastruttura per un problema che non c'è (agg. 2026-10-13)
+- **[P2] Il clic sulla notifica del radar** — area: `scripts/radar-giro.sh` · §39.5 · aprirebbe il file del giro con un gesto in meno. Chiede `terminal-notifier`, che non è installato, e il comportamento del clic su una notifica di launchd **non è verificato**. Da valutare solo se la notifica senza clic risulta scomoda all'uso (agg. 2026-10-13)
+- **[P2] La Parte 3 del change log ha 110 byte di margine** — area: `docs/HANDOVER-03.md` · la voce del 13 ott l'ha portata a 49.042 byte su un tetto di 49.152: **la prossima voce richiede il ribilanciamento a catena 3 → 4 → 14 → 18**, che è il costo fisso di tenere il change log integrale. La mossa pulita, rimandata da più giri, resta sostituire la sessantina di rimandi «per numero di parte» con rimandi **per nome di sezione**: oggi le parti nuove sopravvivono solo perché vengono create in coda (agg. 2026-10-13)
 - **[P2] L'hub pubblico non è mai passato dal panel** — area: `apps/factory-hub` · la landing alla radice porta i **sei marchi cliente** con tagline e link, su un dominio pubblico senza login, e non ha mai avuto un verdetto: la vetrina sì (tre giri), l'hub no. Non blocca niente oggi, ma è la prima pagina che un collega apre. Un giro degradato dichiarato (tre personas + fact-checker) basterebbe (agg. 2026-10-04).
 - **[P2] Il tab «Slide personalizzate» va riletto a schermo in una seconda app** — area: `packages/core/src/blocks/admin/AdminConsole.astro` · dopo il fix del 3 ott (35 regole globalizzate, §22 nella Parte 6) la prova a schermo è stata fatta su **UniCredit**; sulle altre dieci è verificato il CSS compilato (`.cs-block{` senza cid) ma non la resa. Dieci minuti con `pnpm --filter <app> preview` e l'editor aperto (agg. 2026-10-04).
 - **[P2] `new:experience` — scheletri a 7 capitoli** — area: `templates/experience/src/pages/index.astro` · la roadmap a blocchi uguali non ha griglia bilanciata per 7 (4+3); nessuno scheletro attuale ne ha 7, ma se un tipo cresce va aggiunto un bivio (2 righe da 4 con una card «firma»?) (agg. 2026-10-01).
@@ -70,3 +73,4 @@
 - **Ferrari /scoping** — v3 standalone-only/costo-per-istanza (`ff03a71`, §20) committato; memoria `ferrari-scoping-calculator` a v3. `docs/Ferrovie/`·`docs/Ferrari/`·`docs/Agos/` in `.gitignore` (repo pubblico).
 
 ---
+

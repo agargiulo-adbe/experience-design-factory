@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-12**.
+> Documento di passaggio di consegne. Stato al **2026-10-13**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -176,11 +176,30 @@
 > link**. Sul fronte `docs/`, il `.gitignore` si è **rovesciato**: ignora tutto e riammette i soli
 > documenti della Factory, così **ogni cliente nuovo nasce protetto** invece di nascere esposto finché
 > qualcuno non si ricorda della sua riga — ed era già successo. Insieme sono arrivati il registro
-> operativo d'account (`CONTO.md`, `/account-open`, `/account-close`, `/accounts`) e il **Radar**, che
+> operativo d'account (`ACCOUNT.md`, `/account-open`, `/account-close`, `/accounts`) e il **Radar**, che
 > possiede i numeri mentre il registro possiede la storia. ⚠️ Il numero uscito da solo: **20 account del
-> book su 25 non hanno un registro**, con nove rinnovi entro 120 giorni. In lavorazione e **non
+> book su 25 non avevano un registro**, con nove rinnovi entro 120 giorni — **scesi a 17 il 13 ott**. In lavorazione e **non
 > committata**, la Prospettiva **TIM** (§38 · Parte 17), il cui panel ha un giro solo e **personas
 > derivate**.
+
+> 🛰️ **Il 13 ottobre: il radar che gira da sé, e i primi registri dove servivano.** Il «Radar
+> Opportunità» schedulato il 2 ott aveva prodotto **zero file in dieci giorni**, e la causa non era
+> lo scheduler: **l'account Claude su cui girava aveva esaurito i token del mese**. Quel design
+> leggeva cinque fonti per 25 account due volte a settimana — 300-500 chiamate a settimana, quasi
+> tutte su account dove non si era mosso niente. Il principio che lo sostituisce è
+> **selezionare prima di leggere**: lo strato gratuito (`pnpm accounts`) vale il 60% — *su cosa
+> guardare* — e costa zero. Ora parte da sé **lun-ven alle 07:30 via launchd**: scrive sempre in
+> `Radar/giri/`, **notifica solo se c'è un rilievo**, e `accounts` **avvisa se l'ultimo giro ha più
+> di due giorni** — il pezzo che mancava, perché quel sistema è morto senza che nessuno lo notasse.
+> Lo strato caro resta a mano, così il budget non compete col lavoro interattivo. ⚠️ Quattro guasti
+> di launchd, tutti invisibili da una shell interattiva (memoria `launchd-non-e-la-tua-shell`).
+> Dall'altra parte, il lavoro che il radar ha reso visibile: la copertura passa da **20 account del
+> book su 25 senza registro** a **17**, e **nessun rinnovo eleggibile resta scoperto** — aperti
+> **UniCredit** (Analytics **$1,48M** al 13 dic, salute **Yellow**, e nessuna conversazione di
+> rinnovo in posta), **Ferrovie** (Target **$409K** al 30 dic con **adoption 0,0**, e in posta
+> **nessuna** conversazione: l'assenza è il fatto) e **Intesa Sanpaolo**. Sull'**AI Forum del 21
+> ott**: l'iscrizione non ha scadenza dichiarata ma «corporate può chiudere a breve», e all'8 ott
+> risultava **un solo meeting confermato in tutto l'evento**. Tutto in **§39 (Parte 17)**.
 
 > ⚠️ **Il P0 che il giro delta della vetrina ha scoperto il 9 ott, e che il 12 era ancora aperto**:
 > **cinque experience sono indicizzabili** — Aperture, Eni, Isybank, MIM e la nuova TIM hanno
@@ -202,8 +221,7 @@
 nuove**. La §10 è stata **spezzata**: i **P0** restano nella Parte 2 (18,8 KB, che ora respira), i
 **P1** sono usciti nella **Parte 16** — era l'unico modo di aggiungere quattro P0 a una parte che
 stava a 47,5 KB. Il change log ha richiesto un ribilanciamento a catena **3 → 4 → 14 → 18**: le due
-giornate dell'11-12 ott pesano 8,5 KB da sole. Le parti al filo restano la **7** (47,8 KB), la **3**
-(48,0 KB), la **1** (47,5 KB) e la **14** (47,4 KB). ⚠️ Il change log occupa ora **quattro** parti (3,
+giornate dell'11-12 ott pesano 8,5 KB da sole. ⚠️ **Rimisurata il 13 ott:** la Parte 3 è a **49,0 KB, cioè a 110 byte dal tetto** — la prossima voce di change log **impone** il ribilanciamento a catena 3 → 4 → 14 → 18 (registrato come P2 nella Parte 10). Le altre al filo: la **7** (47,8 KB), la **1** (47,5 KB) e la **14** (47,4 KB). ⚠️ Il change log occupa ora **quattro** parti (3,
 4, 14, 18) e ogni voce nuova in testa spinge la coda: è il costo fisso di tenerlo integrale, ed è una
 scelta — si paga un ribilanciamento ogni due giornate di lavoro. La mossa pulita, rimandata di nuovo,
 resta **sostituire i rimandi per numero di parte con rimandi per nome di sezione**: ce ne sono una
@@ -218,7 +236,7 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–8: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console, audit](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0**](./HANDOVER-02.md) — **leggila per prima**: cosa blocca adesso. I P1 sono usciti nella Parte 16 il 12 ott, quando i quattro P0 nuovi hanno portato la §10 oltre il tetto.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dalla **notte del 9-10 ott 2026** all'indietro, fino al 7 ott mattina: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **13 ott 2026** all'indietro, fino al 7 ott mattina: il giro gratuito del Radar e i primi registri d'account, la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal 6-7 ott 2026 all'11 set.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.
@@ -232,5 +250,5 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **10 set 2026** all'indietro, fino a luglio. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **quattro** volte, l'ultima la notte del 9-10 ott.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
 - [Parte 16 — §10.a backlog **P1**](./HANDOVER-16.md) — la coda del backlog: non blocca, ma diventa P0 se nessuno la guarda.
-- [Parte 17 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM**](./HANDOVER-17.md) — le due experience nate l'11-12 ott: la Prospettiva per la Direzione Sales con la misura sugli assistenti, e quella TIM ancora in lavorazione.
+- [Parte 17 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM** · §39 **il lavoro operativo d'account**](./HANDOVER-17.md) — le due experience nate l'11-12 ott (la Prospettiva per la Direzione Sales con la misura sugli assistenti, e quella TIM ancora in lavorazione) e, da §39, lo strato con cui si lavora sui conti: il `.gitignore` fail-closed, i registri `ACCOUNT.md`, il Radar, i tre comandi e il giro di ogni mattina a zero token.
 - [Parte 18 — §11 change log datato (coda finale)](./HANDOVER-18.md) — le voci più vecchie, uscite dalla Parte 14 il 12 ott.
