@@ -24,7 +24,7 @@
  * REGOLA: nessuna pagina riscrive a mano quello che sta qui. Se serve una
  * variante, si aggiunge un campo in questo file.
  */
-import { SOURCES as S, type ChiaveFonte } from './sources';
+import { SOURCES as S, type ChiaveFonte, type Fonte } from './sources';
 
 export interface Card {
   k: string;
@@ -48,7 +48,7 @@ export interface Stat {
 export const COVER = {
   tag: 'Quattro punti in cui una vendita si perde prima che qualcuno salga sul treno.',
   /** La riga della slide-firma, identica nei due percorsi. */
-  firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
+  firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
 };
 
 /* ── Le teste di slide che i due percorsi condividono ─────────────────────
@@ -325,4 +325,4 @@ export const card = (c: Card, taglio: 'lungo' | 'breve' = 'lungo'): Card =>
   taglio === 'lungo' || !c.bBreve ? c : { ...c, b: c.bBreve };
 
 /** Le fonti di una voce, pronte da rendere: `[{url, label}]`. */
-export const fontiDi = (c: Pick<Card, 'fonti'>) => (c.fonti ?? []).map((k) => S[k]);
+export const fontiDi = (c: Pick<Card, 'fonti'>): Fonte[] => (c.fonti ?? []).map((k) => S[k]);

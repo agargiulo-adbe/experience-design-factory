@@ -134,13 +134,24 @@ const fonteStr = new Set<string>();
 for (const f of spec.fonti) for (const s of stringheLunghe(leggi(path.join(APP_DIR, f)))) fonteStr.add(s);
 
 const c1: string[] = [];
+/* La fonte unica riscritta a mano: nella pagina del taglio (dove nasce la
+   divergenza) e nelle pagine del percorso intero (dove la divergenza nasce al
+   contrario — il taglio prende dalla fonte, il lungo no, e la correzione arriva
+   solo su uno dei due). Successo sul campo: la testa della mappa e la riga della
+   firma di Trenitalia erano tornate a mano nel percorso lungo mentre il taglio le
+   leggeva dai dati, e il gate non le vedeva perché guardava solo il taglio. */
+const masterSrcPerFile = masterRoutes.map((r) => ({
+  nome: r.name,
+  src: norm(leggi(path.join(APP_DIR, 'src/pages', `${r.name === 'home' ? 'index' : r.name}.astro`))),
+}));
 for (const s of fonteStr) {
   if (cutSrcNorm.includes(s)) c1.push(`sta nella fonte unica ED è riscritta nella pagina del taglio — «${s.slice(0, 96)}…»`);
+  for (const m of masterSrcPerFile) {
+    if (m.src.includes(s)) c1.push(`sta nella fonte unica ED è riscritta a mano in «${m.nome}» — «${s.slice(0, 96)}…»`);
+  }
 }
 /* Lo stesso testo in due pagine e in nessuna fonte: due copie senza un padrone. */
-const masterSrc = masterRoutes
-  .map((r) => leggi(path.join(APP_DIR, 'src/pages', `${r.name === 'home' ? 'index' : r.name}.astro`)))
-  .map(norm).join('\n');
+const masterSrc = masterSrcPerFile.map((m) => m.src).join('\n');
 for (const s of cutStr) {
   if (fonteStr.has(s)) continue;
   if (masterSrc.includes(s)) c1.push(`scritta a mano in due pagine, e in nessuna fonte unica — «${s.slice(0, 96)}…»`);
