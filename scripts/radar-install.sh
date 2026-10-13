@@ -35,7 +35,10 @@ cat > "$PLIST" <<PL
     <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
     <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>7</integer><key>Minute</key><integer>30</integer></dict>
   </array>
-  <key>RunAtLoad</key><false/>
+  <!-- RunAtLoad: il giro parte anche al login, per recuperare il caso in cui alle
+       07:30 il Mac era SPENTO (se dormiva, launchd lo fa partire da sé al risveglio).
+       Il doppione lo evita lo script, che esce subito se oggi il giro c'è già. -->
+  <key>RunAtLoad</key><true/>
   <key>StandardOutPath</key><string>/tmp/radar-giro.out</string>
   <key>StandardErrorPath</key><string>/tmp/radar-giro.err</string>
 </dict>
