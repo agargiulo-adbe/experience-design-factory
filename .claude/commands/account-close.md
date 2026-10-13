@@ -69,6 +69,27 @@ Se il prodotto **non è eleggibile** per il piano (Goal Sheet), scrivilo nella r
 un'occasione di relazione o uno spunto per un collega, non attainment. Confonderli porta a
 lavorare su cose che non contano.
 
+## 5bis — Le aperture a cui è stato detto SÌ: chiedi l'esito
+
+Nel `Registro_opportunita.md` le righe con id `A-AAAAMMGG-N` sono le **aperture** proposte
+dal giro della mattina. Quelle con `SÌ` nella colonna della decisione sono conversazioni che
+**dovevano partire**, e il sistema non sa come sono andate: è il punto in cui il giro di
+ritorno si chiude, o muore nel limbo.
+
+Quindi, per l'account che stai chiudendo, cerca le righe `A-` con decisione `SÌ` e **chiedi
+l'esito di ognuna**: è partita? che cosa ha risposto? Poi:
+
+- se la conversazione ha prodotto qualcosa — un incontro, una richiesta, un'obiezione —
+  quello è un **fatto nuovo con fonte e data**: va nel caso del registro, come tutti gli
+  altri, e la riga dell'apertura si aggiorna nello **Stato** (non nella decisione);
+- se non è partita, chiedi se vale ancora: `DOPO` sarebbe stata la risposta giusta, ma
+  **la colonna non si riscrive** — si annota nello Stato e si decide insieme;
+- se è partita e non ha avuto risposta, **non è un no**: è un follow-up, e vive come
+  prossimo passo nel caso.
+
+⚠️ Vale anche qui la regola assoluta: **la colonna «Decisione Antonio» non si tocca**.
+Si legge, si chiede, si scrive altrove.
+
 ## 6 — Se è emerso un evento con una data, proponilo in `eventi.md`
 
 Il giro automatico di ogni mattina **non legge il calendario** (costerebbe token, e un

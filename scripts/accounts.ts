@@ -32,7 +32,7 @@
  *   pnpm accounts            tutto
  *   pnpm accounts --fermi    solo ciò che chiede attenzione
  */
-import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -53,6 +53,13 @@ const SOLO_RILIEVI = process.argv.includes('--rilievi');
    un approccio debole. Quindi è una mappa da incrociare, non un elenco da lavorare,
    e per questo non entra nella notifica. */
 const SOLO_CROSS = process.argv.includes('--cross');
+/* --apertura: UNA conversazione da avviare oggi, scelta in modo deterministico fra i
+   segnali del Radar incrociati col grafo dei contatti. Costa zero token: è selezione, non
+   giudizio. Con --deposita scrive la riga nel Registro opportunità, perché la decisione
+   abbia dove andare; senza, stampa e non tocca niente. */
+const SOLO_APERTURA = process.argv.includes('--apertura');
+const DEPOSITA = process.argv.includes('--deposita');
+const I_DECIDI = process.argv.indexOf('--decidi');
 const GIORNI_FERMO = 21;
 const GIORNI_RINNOVO = 120;
 const GIORNI_SNAPSHOT_VECCHIO = 45;
@@ -64,6 +71,11 @@ const GIORNI_GRAFO = 7;               // il grafo dei contatti cambia lentamente
 const MAX_RIGHE_NOTIFICA = 5;
 const GIORNI_OPP_VICINA = 21;      // una trattativa che chiude entro tre settimane
 const MESI_OPP_FERMA = 18;         // oltre, è residuo di dati e non una trattativa
+const GIORNI_DOPO = 21;            // «DOPO» vuol dire tre settimane, non «mai più»
+/* Un'apertura senza risposta non si ripropone il giorno dopo (sarebbe rumore) ma nemmeno
+   per sempre (una proposta non risposta è più spesso persa che rifiutata): dopo una
+   settimana ritorna, con lo STESSO id, così non nascono righe doppie. */
+const GIORNI_APERTURA_ATTESA = 7;
 
 /* I documenti della Factory stanno in piano in docs/; le cartelle sono gli account, meno i
    depositi di materiale. `Adobe` (senza «Material») È un account: ci sta il lavoro non
@@ -88,7 +100,7 @@ const oggi = new Date();
 const giorni = (d: Date): number => Math.floor((+oggi - +d) / 86_400_000);
 /** ⚠️ NON si usa `toISOString()`: le date nascono come mezzanotte LOCALE e in UTC
     diventano il giorno prima (CEST = +2), quindi ogni scadenza veniva stampata con un
-    giorno di anticipo — Banca Generali chiude il 21 e si leggeva 20. Un errore di un
+    giorno di anticipo — una chiusura del 21 si leggeva 20. Un errore di un
     giorno su una data di chiusura è esattamente il genere di cosa che fa perdere una
     scadenza. Qui si formatta dai componenti locali. */
 const iso = (d: Date): string =>
@@ -107,6 +119,18 @@ const importo = (s: string): number => {
   return u === 'M' ? v * 1e6 : u === 'K' ? v * 1e3 : v;
 };
 
+/** Raggruppa righe in paragrafi: una riga a indentazione zero apre, le righe indentate
+    continuano. Serve perché un elenco scritto a mano va a capo dove capita. */
+const paragrafi = (righe: string[]): string[] => {
+  const out: string[] = [];
+  for (const r of righe) {
+    if (!r.trim() || /^#{1,6}\s/.test(r.trim())) { continue; }
+    if (/^\s{2,}\S/.test(r) && out.length) out[out.length - 1] += ' ' + r.trim();
+    else out.push(r.trim());
+  }
+  return out;
+};
+
 /* ── i registri di account ──────────────────────────────────────────────────────── */
 interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date }
 /* contatti/tuoi: il grafo dei contatti vive nella sezione «Chi è chi» del registro, e lo
@@ -114,9 +138,13 @@ interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scade
    LEGGE soltanto — a costo zero — per sapere a quali account manca il contatto: senza un
    contatto noto un'apertura non si costruisce, e questo è l'unico modo di accorgersene
    senza aprirli tutti a mano. */
+/** Una riga del grafo. `verdetto` manca quando il grafo è nel formato vecchio (prosa senza
+    verdetto): non è un errore ed è diverso da «nessun contatto», ma un'apertura non può
+    dichiarare «scrivi tu» su una riga che non lo dice. */
+interface Contatto { funzione: string; nome: string; ultimo?: Date; tema?: string; verdetto?: 'tu' | 'ae'; motivo?: string; daRifare?: boolean }
 interface Conto {
   cliente: string; aggiornato?: Date; senzaRegistro?: boolean; casi: Caso[]; illeggibile?: string;
-  dominio?: string; grafo?: Date; contatti: number; tuoi: number;
+  dominio?: string; grafo?: Date; contatti: Contatto[];
 }
 
 const conti: Conto[] = [];
@@ -126,10 +154,10 @@ for (const cliente of readdirSync(DOCS).sort()) {
   if (cliente.startsWith('.') || DEPOSITI.has(cliente)) continue;
 
   const registro = join(dir, 'ACCOUNT.md');
-  if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [], contatti: 0, tuoi: 0 }); continue; }
+  if (!existsSync(registro)) { conti.push({ cliente, senzaRegistro: true, casi: [], contatti: [] }); continue; }
 
   const righe = readFileSync(registro, 'utf8').split('\n');
-  const conto: Conto = { cliente, casi: [], contatti: 0, tuoi: 0 };
+  const conto: Conto = { cliente, casi: [], contatti: [] };
 
   for (const r of righe.slice(0, 12)) {
     const a = r.match(/aggiornato\s+(.+?)\s*$/i);
@@ -139,6 +167,7 @@ for (const cliente of readdirSync(DOCS).sort()) {
 
   let corrente: Caso | undefined;
   let inChiEChi = false;
+  const righeChiEChi: string[] = [];
   for (const r of righe) {
     const caso = r.match(/^##\s*Caso\s*[·:]\s*(.+?)\s*$/i);
     if (caso) { corrente = { nome: caso[1] }; conto.casi.push(corrente); inChiEChi = false; continue; }
@@ -151,13 +180,7 @@ for (const cliente of readdirSync(DOCS).sort()) {
         if (g) conto.grafo = data(g[1]);
         continue;
       }
-      /* si contano solo le righe con una DATA di ultimo scambio: una riga di prosa senza
-         data non è un contatto del grafo, è un appunto, e contarla farebbe credere di
-         conoscere qualcuno che non si sa quando ha parlato con noi. */
-      if (/·\s*ultimo scambio\s/i.test(r)) {
-        conto.contatti++;
-        if (/scrivi tu/i.test(r)) conto.tuoi++;
-      }
+      righeChiEChi.push(r);
       continue;
     }
     if (!corrente) continue;
@@ -176,6 +199,31 @@ for (const cliente of readdirSync(DOCS).sort()) {
       corrente.passo = passo[1];
       const entro = passo[1].match(/entro\s+(.+?)\s*$/i);
       if (entro) corrente.scadenza = data(entro[1]);
+    }
+  }
+
+  /* I contatti si leggono a PARAGRAFI, non a righe: un bullet che va a capo tiene la data
+     sulla riga di continuazione, e tre formati diversi convivono nei registri scritti prima
+     di questa regola. Si legge in modo strutturato **solo** il formato corrente; gli altri
+     si contano e si marcano «da rifare», perché indovinare quale metà di «X — Y» sia il
+     nome è esattamente il genere di scorciatoia che mette la persona sbagliata in
+     un'apertura. */
+  for (const par of paragrafi(righeChiEChi)) {
+    if (!/·\s*ultimo scambio\s/i.test(par)) continue;
+    const corpo = par.replace(/^[-*]\s+/, '');
+    const campi = corpo.split(/\s+·\s+/);
+    const iUlt = campi.findIndex((x) => /^ultimo scambio\s/i.test(x));
+    const ultimo = iUlt >= 0 ? data(campi[iUlt].replace(/^ultimo scambio\s+/i, '')) : undefined;
+    const coda = campi.slice(iUlt + 1).join(' · ');
+    const verdetto = /scrivi tu/i.test(coda) ? 'tu' as const : /passa dall'AE/i.test(coda) ? 'ae' as const : undefined;
+    if (iUlt >= 3 && verdetto) {
+      conto.contatti.push({
+        funzione: campi[0] ?? '', nome: campi[1] ?? '', ultimo,
+        tema: campi[iUlt + 1], verdetto,
+        motivo: coda.split(/\s+—\s+/).slice(1).join(' — ') || undefined,
+      });
+    } else {
+      conto.contatti.push({ funzione: '', nome: '', ultimo, daRifare: true });
     }
   }
   conti.push(conto);
@@ -486,10 +534,221 @@ for (const o of oppVicine) { const c = contoDi(o.account); if (c && !c.senzaRegi
    lo stesso errore già corretto su salute e rinnovi. E `Adobe` resta fuori: non è un
    cliente, non ha contatti di cliente, e chiederne all'AE non vuol dire niente. */
 const senzaContatto = conRegistro.filter((c) =>
-  c.cliente !== 'Adobe' && conSegnale.has(c.cliente) && !c.contatti);
+  c.cliente !== 'Adobe' && conSegnale.has(c.cliente) && !c.contatti.length);
 if (senzaContatto.length) {
   const quali = senzaContatto.slice(0, 3).map((c) => c.cliente).join(', ');
   rilievi.push(`${senzaContatto.length} account con un segnale e nessun contatto noto (${quali}${senzaContatto.length > 3 ? '…' : ''}) · il grafo lo ricava /account-open`);
+}
+
+/* ── le aperture: una conversazione da avviare, non un fatto da leggere ───────────
+   Il resto di questo script dice che cosa sta succedendo. Questo pezzo dice **a chi
+   scrivere, per proporre che cosa, e perché oggi** — che è la domanda da cui è nato.
+   Quattro campi obbligatori: se ne manca uno l'apertura NON esce, perché una riga senza
+   destinatario fa perdere tempo invece di farlo risparmiare. */
+interface Apertura {
+  conto: Conto; contatto: Contatto;
+  /** `cosa` è la CHIAVE (il prodotto o l'evento), quella che il giro di ritorno confronta;
+      `proposta` è la frase che si legge. Separarle serve perché la chiave deve restare
+      stabile anche se un giorno si cambia come la frase è scritta. */
+  cosa: string; proposta: string; perche: string; fonte: string;
+  muove: 'M1' | 'M2' | 'relazione'; chiude?: Date;
+}
+const CHIUSURA_Q4 = radar.fineQuarter;
+const chiaveAp = (account: string, cosa: string, nome: string): string =>
+  `${norm(account)}|${norm(cosa)}|${norm(nome)}`;
+
+/* Le decisioni già prese, lette dal Registro opportunità. La colonna «Decisione Antonio»
+   è di una persona: qui si LEGGE e non si riscrive mai — è la regola scritta in testa a
+   quel file, e vale a maggior ragione adesso che qualcuno la usa. */
+interface RigaReg { id: string; celle: string[]; iRiga: number }
+const FILE_REG = join(RADAR, 'Registro_opportunita.md');
+const righeReg: RigaReg[] = [];
+const testoReg = existsSync(FILE_REG) ? readFileSync(FILE_REG, 'utf8').split('\n') : [];
+testoReg.forEach((r, i) => {
+  if (!r.startsWith('|')) return;
+  const celle = r.split('|').slice(1, -1).map((x) => x.trim());
+  if (celle.length < 9 || !/^A-\d{8}-\d+$/.test(celle[0])) return;
+  righeReg.push({ id: celle[0], celle, iRiga: i });
+});
+const nomeDaRiga = (opportunita: string): string =>
+  opportunita.match(/A CHI\s+([^·]+)/)?.[1]?.trim() ?? '';
+/** Perché questa combinazione non si ripropone oggi — o `undefined` se si può. */
+const bloccata = (ch: string): string | undefined => {
+  for (const r of righeReg) {
+    if (chiaveAp(r.celle[2], r.celle[4], nomeDaRiga(r.celle[3])) !== ch) continue;
+    const dec = r.celle[8];
+    const agg = data(r.celle[6]);
+    const eta = agg ? giorni(agg) : 0;
+    if (/^no\b/i.test(dec)) return 'già detto NO';
+    if (/^dopo\b/i.test(dec)) return eta < GIORNI_DOPO ? `DOPO, fra ${GIORNI_DOPO - eta} gg` : undefined;
+    if (/^s[iì]\b/i.test(dec)) return 'già SÌ, conversazione in corso';
+    if (!dec) return eta < GIORNI_APERTURA_ATTESA ? `proposta ${eta} gg fa, ${r.id}` : undefined;
+    return `nota in colonna: ${taglia(dec, 20)}`;   // una nota libera vale come decisione
+  }
+  return undefined;
+};
+
+/* I candidati, nello stesso ordine di urgenza dei rilievi — meno i passi scaduti, che
+   sono compiti tuoi e non conversazioni da aprire con un cliente. */
+const candidati: Apertura[] = [];
+const scartate: string[] = [];
+const senzaContattoAp: string[] = [];
+const aggiungi = (account: string, cosa: string, proposta: string, perche: string,
+                  fonte: string, muove: Apertura['muove'], chiude?: Date): void => {
+  const conto = contoDi(account);
+  if (!conto || conto.senzaRegistro) { senzaContattoAp.push(`${account} (senza registro)`); return; }
+  /* Si sceglie il contatto, non si somma: prima chi ti ha scritto lui e di recente. Le
+     righe «da rifare» non si usano — su quelle il nome non è stato letto, è stato visto. */
+  const usabili = conto.contatti.filter((x) => !x.daRifare && x.nome);
+  const tuoi = usabili.filter((x) => x.verdetto === 'tu');
+  const pool = tuoi.length ? tuoi : usabili;
+  const contatto = [...pool].sort((a, b) => +(b.ultimo ?? 0) - +(a.ultimo ?? 0))[0];
+  if (!contatto) {
+    senzaContattoAp.push(conto.contatti.length ? `${conto.cliente} (grafo da rifare)` : conto.cliente);
+    return;
+  }
+  candidati.push({ conto, contatto, cosa, proposta, perche, fonte, muove, chiude });
+};
+
+/* ⚠️ Il campo PROPONI dice **di che cosa si parla**, non «vendi questo prodotto». La prima
+   versione stampava «PROPONI AAM» su un account che da AAM sta migrando: il segnale era il
+   rischio sul rinnovo, e letto come proposta commerciale diventava falso. Il nome del
+   prodotto resta la chiave (serve al giro di ritorno); la frase dice il suo verso. */
+for (const e of eventiVicini) {
+  if (!e.account) continue;
+  for (const a of e.account.split(/\s*,\s*/).filter(Boolean)) {
+    aggiungi(a, e.nome, `invitarlo a «${e.nome}»`, `l'evento è fra ${-giorni(e.quando!)} gg`,
+      'Radar/eventi.md', 'relazione', e.quando);
+  }
+}
+for (const o of oppVicine) {
+  aggiungi(o.account, o.prodotto, `far avanzare la trattativa su ${o.prodotto}`,
+    `${soldi(o.valore)} chiude fra ${-giorni(o.chiude)} gg · ${o.stage}`,
+    'Radar/Panorama', o.eleggibile ? 'M1' : 'relazione', o.chiude);
+}
+/* Salute rossa e rinnovo sullo stesso prodotto sono UNA notizia, non due: si fondono, e
+   la fusione è anche ciò che dà al segnale di salute la data e l'eleggibilità del rinnovo
+   — senza, un rischio su un rinnovo eleggibile veniva marcato «relazione». */
+for (const h of saluteUrgente.filter((x) => /red/i.test(x.stato))) {
+  const ragione = taglia(h.ragione.replace(/^(Commercial|Product|Usage\/Adoption):\s*/, ''), 60);
+  const rin = radar.rinnovi.find((r) => norm(r.account) === norm(h.account) && norm(r.prodotto) === norm(h.solution)
+    && giorni(r.quando) <= 0 && giorni(r.quando) > -GIORNI_RINNOVO);
+  if (rin) {
+    aggiungi(h.account, h.solution, `difendere il rinnovo di ${h.solution}`,
+      `salute ROSSA (${ragione}) e rinnovo ${soldi(rin.rbob)} fra ${-giorni(rin.quando)} gg`,
+      'Radar/Anagrafica + Panorama', rin.eleggibile ? 'M2' : 'relazione', rin.quando);
+  } else {
+    aggiungi(h.account, h.solution, `capire il rischio su ${h.solution}`,
+      `salute in ROSSO — ${ragione}`, 'Radar/Anagrafica', 'relazione');
+  }
+}
+for (const r of rinnoviNotifica) {
+  aggiungi(r.account, r.prodotto, `difendere il rinnovo di ${r.prodotto}`,
+    `${soldi(r.rbob)} fra ${-giorni(r.quando)} gg${r.rischio ? ` · ${r.rischio}` : ''}`,
+    'Radar/Panorama', r.eleggibile ? 'M2' : 'relazione', r.quando);
+}
+
+const ammesse: Apertura[] = [];
+for (const a of candidati) {
+  const perche = bloccata(chiaveAp(a.conto.cliente, a.cosa, a.contatto.nome));
+  if (perche) { scartate.push(`${a.conto.cliente}/${taglia(a.cosa, 14)} (${perche})`); continue; }
+  if (ammesse.some((x) => chiaveAp(x.conto.cliente, x.cosa, x.contatto.nome) === chiaveAp(a.conto.cliente, a.cosa, a.contatto.nome))) continue;
+  ammesse.push(a);
+}
+
+/** L'id è per data e progressivo: serve al giro di ritorno, e deve stare in una notifica. */
+const prossimoId = (): string => {
+  const pre = `A-${iso(oggi).replace(/-/g, '')}-`;
+  const n = righeReg.filter((r) => r.id.startsWith(pre)).length + 1;
+  return pre + n;
+};
+const idEsistente = (a: Apertura): string | undefined =>
+  righeReg.find((r) => chiaveAp(r.celle[2], r.celle[4], nomeDaRiga(r.celle[3]))
+    === chiaveAp(a.conto.cliente, a.cosa, a.contatto.nome))?.id;
+
+if (I_DECIDI >= 0) {
+  const [id, verdetto] = process.argv.slice(I_DECIDI + 1, I_DECIDI + 3);
+  const ammessi = ['si', 'sì', 'no', 'dopo'];
+  if (!id || !verdetto || !ammessi.includes(verdetto.toLowerCase())) {
+    console.log('uso: pnpm accounts --decidi <A-AAAAMMGG-N> <si|no|dopo>');
+    process.exit(2);
+  }
+  const riga = righeReg.find((r) => r.id === id);
+  if (!riga) { console.log(`apertura ${id} non trovata in Registro_opportunita.md`); process.exit(2); }
+  if (riga.celle[8]) {
+    // La colonna non si riscrive mai, nemmeno per «aggiornarla»: è la regola di quel file.
+    console.log(`${id} ha già una decisione: «${riga.celle[8]}». Non la riscrivo — si cambia a mano.`);
+    process.exit(2);
+  }
+  const v = verdetto.toLowerCase() === 'no' ? 'NO' : verdetto.toLowerCase() === 'dopo' ? 'DOPO' : 'SÌ';
+  riga.celle[8] = v;
+  riga.celle[6] = iso(oggi);
+  testoReg[riga.iRiga] = `| ${riga.celle.join(' | ')} |`;
+  writeFileSync(FILE_REG, testoReg.join('\n'));
+  console.log(`${id} → ${v}` + (v === 'NO' ? ' · non si ripropone più'
+    : v === 'DOPO' ? ` · torna fra ${GIORNI_DOPO} gg` : ' · l\'esito si chiede a /account-close'));
+  process.exit(0);
+}
+
+if (SOLO_APERTURA) {
+  /* UNA al giorno, per davvero: se oggi una è già stata proposta e non ha ancora una
+     decisione, si rimostra quella invece di aggiungerne un'altra. Due lanci nello stesso
+     giorno producevano due aperture — e tre al giorno fanno sessanta al mese, che è
+     esattamente la quantità che non si lavora e per cui questo sistema è stato scelto
+     sottile. Dopo una decisione, la prossima esce. */
+  const oggiPre = `A-${iso(oggi).replace(/-/g, '')}-`;
+  const giaOggi = righeReg.find((r) => r.id.startsWith(oggiPre) && !r.celle[8]);
+  if (giaOggi) {
+    /* Si ristampa nello STESSO formato a etichette, non come riga compressa: la notifica
+       della mattina ricava «scrivi a X — per Y» da quelle etichette, e un giorno con
+       l'apertura pendente perdeva proprio la riga più utile. */
+    const op = giaOggi.celle[3];
+    const chi = op.match(/A CHI\s+(.*?)(?=\s·\sPROPONI\s|$)/)?.[1] ?? op;
+    const prop = op.match(/·\s*PROPONI\s+(.*?)(?=\s·\sPERCHÉ ORA\s|$)/)?.[1] ?? '';
+    const perche = op.match(/·\s*PERCHÉ ORA\s+(.*?)(?=\s·\sMUOVE\s|$)/)?.[1] ?? '';
+    const muove = op.match(/·\s*MUOVE\s+(.*)$/)?.[1] ?? '';
+    console.log(`APERTURA ${giaOggi.id} · già proposta oggi, in attesa di decisione`);
+    console.log(`A CHI       ${chi}`);
+    if (prop) console.log(`PROPONI     ${prop}  ·  ${giaOggi.celle[2]}`);
+    if (perche) console.log(`PERCHÉ ORA  ${perche}`);
+    console.log(`MUOVE       ${muove || '—'} · ${giaOggi.celle[5].replace(/^Apertura proposta dal radar · /, '')}`);
+    console.log(`\nDecidi:  pnpm accounts --decidi ${giaOggi.id} si|no|dopo   ·  poi esce la prossima`);
+    process.exit(0);
+  }
+  const a = ammesse[0];
+  if (!a) {
+    console.log('Nessuna apertura oggi.');
+    if (senzaContattoAp.length) console.log(`Senza contatto noto: ${[...new Set(senzaContattoAp)].join(' · ')} — chiedi all'AE`);
+    if (scartate.length) console.log(`Scartate ${scartate.length}: ${scartate.slice(0, 4).join(' · ')}`);
+    process.exit(0);
+  }
+  let id = idEsistente(a) ?? prossimoId();
+  if (DEPOSITA && !idEsistente(a)) {
+    const op = `A CHI ${a.contatto.nome} · ${a.contatto.funzione} · ${a.contatto.verdetto === 'tu' ? 'scrivi tu' : "passa dall'AE"}${a.contatto.motivo ? ` — ${a.contatto.motivo}` : ''} · PROPONI ${a.proposta} · PERCHÉ ORA ${a.perche} · MUOVE ${a.muove}`;
+    const q4 = CHIUSURA_Q4 && a.chiude ? (+a.chiude <= +CHIUSURA_Q4 ? 'Q4 sì' : 'costruisce il Q1') : 'Q4 da valutare';
+    const celle = [id, iso(oggi), a.conto.cliente, op.replace(/\|/g, '/'), a.cosa.replace(/\|/g, '/'),
+      `Apertura proposta dal radar · ${q4} · in attesa di decisione`, iso(oggi), a.fonte, ''];
+    writeFileSync(FILE_REG, testoReg.join('\n').replace(/\n*$/, '\n') + `| ${celle.join(' | ')} |\n`);
+  }
+  const q4 = CHIUSURA_Q4 && a.chiude
+    ? (+a.chiude <= +CHIUSURA_Q4 ? `sì, chiude entro il ${a.chiude.getDate()}/${a.chiude.getMonth() + 1}` : 'no — costruisce il Q1')
+    : 'da valutare';
+  console.log(`APERTURA ${id}`);
+  console.log(`A CHI       ${a.contatto.nome} · ${a.contatto.funzione}`);
+  console.log(`            ${a.contatto.verdetto === 'tu' ? 'scrivi tu' : "passa dall'AE"}${a.contatto.motivo ? ` — ${a.contatto.motivo}` : ''}`);
+  console.log(`PROPONI     ${a.proposta}  ·  ${a.conto.cliente}`);
+  console.log(`PERCHÉ ORA  ${a.perche} · ${a.fonte}`);
+  console.log(`MUOVE       ${a.muove} · Q4? ${q4}`);
+  if (ammesse.length > 1) {
+    console.log(`\nScartate ${ammesse.length - 1 + scartate.length}, più lontane dalla data o già decise:`);
+    console.log('  ' + [...ammesse.slice(1, 4).map((x) => `${x.conto.cliente}/${taglia(x.cosa, 14)}`), ...scartate.slice(0, 3)].join(' · '));
+  }
+  if (senzaContattoAp.length) {
+    console.log(`\nSenza contatto noto, quindi fuori dalle aperture: ${[...new Set(senzaContattoAp)].slice(0, 6).join(' · ')}`);
+    console.log("  Non vuol dire «nessuna opportunità»: vuol dire chiedere all'AE chi conosciamo, o rifare il grafo con /account-open.");
+  }
+  console.log(`\nDecidi:  pnpm accounts --decidi ${id} si|no|dopo   ·  NO = mai più · DOPO = fra ${GIORNI_DOPO} gg · SÌ = l'esito a /account-close`);
+  process.exit(0);
 }
 
 if (SOLO_RILIEVI) {
@@ -672,8 +931,10 @@ if (!SOLO_FERMI) {
     /* «grafo —» non vuol dire che non conosciamo nessuno: vuol dire che il grafo non è
        stato ancora ricavato (lo fa `/account-open`). I due casi si confondono facilmente
        ed è la confusione che porterebbe a scrivere «nessun contatto» in un'apertura. */
-    const grafo = c.contatti
-      ? ` · ${c.contatti} contatti${c.tuoi ? ` (${c.tuoi} tuoi)` : ''}${c.grafo && giorni(c.grafo) > GIORNI_GRAFO ? ` da ${giorni(c.grafo)} gg` : ''}`
+    const tuoi = c.contatti.filter((x) => x.verdetto === 'tu').length;
+    const rifare = c.contatti.filter((x) => x.daRifare).length;
+    const grafo = c.contatti.length
+      ? ` · ${c.contatti.length} contatti${tuoi ? ` (${tuoi} tuoi)` : ''}${rifare ? ` · ${rifare} da rifare` : ''}${c.grafo && giorni(c.grafo) > GIORNI_GRAFO ? ` · grafo di ${giorni(c.grafo)} gg` : ''}`
       : ' · grafo —';
     console.log(`  ${c.cliente.padEnd(24)} agg. ${eta.padStart(6)}   ${aperti(c).length} aperti${arr}${grafo}` + (c.illeggibile ? `   ⚠ ${c.illeggibile}` : ''));
     for (const k of aperti(c)) {
