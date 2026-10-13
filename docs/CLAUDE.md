@@ -59,6 +59,17 @@ accounts() {
 Funziona da qualunque cartella, anche fuori dal repo (`pnpm accounts` da solo no: vuole
 essere dentro). `accounts --fermi` mostra solo ciò che chiede attenzione.
 
+E ogni mattina alle 07:30, lun-ven, lo stesso giro parte da sé via **launchd**, a costo
+zero di token: scrive in `Radar/giri/` e **notifica solo se c'è qualcosa**. Si installa o
+si riallinea con **`pnpm radar:install`**; si lancia a mano con `launchctl start
+com.gargiulo.radar`. Tre cose da sapere, tutte verificate sul campo il 13 ott 2026:
+- la copia che gira sta in **`~/.local/bin/radar-giro`**, non nel repo: da `~/Documents`
+  launchd non riesce a **eseguire** uno script (pur riuscendo a leggerne i file);
+- launchd parte con un `PATH` minimo dove non c'è **né `pnpm` né `node`**: lo script se lo
+  mette da sé, perché un job che funziona a mano e muore sotto launchd è il peggiore dei
+  due modi di rompersi;
+- essendo due file, possono divergere: `pnpm accounts` lo rileva e lo dice.
+
 ## Il Radar e i registri: chi possiede che cosa
 
 Sotto `docs/Adobe/Radar/` vive il **Radar Opportunità**, alimentato a mano da PanoAI
@@ -81,6 +92,14 @@ I file del Radar:
 - `Registro_opportunita.md` — backlog trasversale. **La colonna «Decisione Antonio» non si
   tocca mai**: è dove una persona scrive SÌ / NO / DOPO
 - `alias_cartelle.md` — con che nome un account sta nel book (`Telecom Italia` è `TIM`)
+- `giri/AAAAMMGG-HHMM.md` — l'esito del **giro automatico** di ogni mattina (lun-ven
+  07:30, launchd). Si scrive sempre, anche quando non c'è niente: è il battito, e
+  `pnpm accounts` avvisa se l'ultimo ha più di due giorni. Zero token: nessuna chiamata
+  a un modello, solo lettura di file locali — per questo gira **anche in un mese in cui
+  il budget di Claude è esaurito**, che è il guasto che ha ucciso il radar del 2 ott 2026
+- `eventi.md` — eventi e occasioni di relazione, a mano. Il giro non legge il calendario
+  (costerebbe token, e un invito non dice chi è iscritto a un evento): legge questo file e
+  avvisa quando una data è entro 14 giorni o un'iscrizione chiude entro 3
 - `Sintesi_Task_storico/` — **storia, non si continua.** Era una scansione a mano dei task
   da email, si è fermata dopo due giri: faceva lo stesso mestiere del `ACCOUNT.md`, e due
   posti per «cosa devo a questo cliente» divergono. Quel lavoro lo fa ora `/accounts`.
