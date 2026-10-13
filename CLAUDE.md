@@ -95,6 +95,7 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 - `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
 - `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
+- `pnpm audit:taglio` / `DECK_URL=http://localhost:N npx tsx scripts/cut-audit.ts --app <app>` — il taglio **«In dieci minuti»** resta allineato al percorso intero: HARD su copia a mano, numeri che solo il taglio afferma, fonti che solo il taglio porta. Si dichiara l'app in `scripts/lib/cut-routes.ts`. Si lancia **prima** di `audit:deck`.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
@@ -576,7 +577,19 @@ Analytics erano stati corretti solo nel percorso intero.
   corto non esistono — le decide lei, non la pagina.
 - **L'ask sta in un posto solo.** Due versioni della richiesta sono il modo più rapido di
   sembrare confusi davanti a un cliente.
-Una regola affidata alla memoria di chi modifica non è una regola. Memoria:
+- Un taglio corto è una versione **breve**, non una versione **spenta**: stesse clip, stessa
+  firma co-brand, stesso guscio sensoriale.
+Una regola affidata alla memoria di chi modifica non è una regola, ed è per questo che ora c'è
+un comando: **`DECK_URL=<origin> pnpm audit:taglio --app <alias>`** — HARD su `c1` copia a mano
+(un testo che sta nella fonte unica ed è riscritto nella pagina del taglio, o lo stesso testo a
+mano in due pagine e in nessuna fonte), `c2` numeri che solo il taglio afferma, `c3` fonti che
+solo il taglio porta; SOFT sulla lunghezza. L'app si dichiara in `scripts/lib/cut-routes.ts`.
+**La forma si chiama «In dieci minuti», la rotta è `/dieci-minuti/`** (Intesa usa `/exec/`:
+nata prima della convenzione, link già condiviso), e vale per ogni experience rivolta a un
+executive: cinque o sei slide con l'ask dentro, perché un'ora concessa diventa venti minuti più
+spesso di quanto si ammetta — ed è anche la versione che l'interlocutore gira al suo capo.
+Che cosa entra, convenzioni e ordine dei gate:
+`skills/experience-design/references/taglio-dieci-minuti.md`. Memoria:
 `taglio-corto-stessa-fonte`.
 
 ### Il marchio in pagina non lo aggiorna `brand:icons` (BINDING)

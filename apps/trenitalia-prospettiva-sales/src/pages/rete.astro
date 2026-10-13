@@ -5,6 +5,8 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { RETE, SAPERE } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_network from '../assets/generated/bg/bg-network.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
@@ -16,6 +18,14 @@ import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
  * deve chiedere il permesso a nessuno per volerlo. È anche il primo a cadere se
  * l'ora si accorcia — e in quel caso il suo contenuto diventa il passo finale,
  * non sparisce. Il gating capitoli della console lo spegne in una riga.
+ *
+ * Il numero grande era «70.000 punti vendita raggiunti attraverso la piattaforma
+ * con cui le agenzie vi vendono»: sono due cose diverse messe insieme. I 70.000
+ * sono la rete di terzi che vende il REGIONALE (numero del 2014, ingresso delle
+ * ricevitorie Sisal); le agenzie di viaggio sono 12.400 e sono il suo canale,
+ * contate da lui al TTG dell'ottobre 2025. E il rifacimento della piattaforma,
+ * che prima era affermato, non ha una fonte pubblica: adesso è una domanda —
+ * che in una Prospettiva vale più di un'asserzione, e non si può smentire.
  */
 const SLUG = 'rete';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -42,19 +52,18 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <!-- ── Il numero, e la finestra ──────────────────────────────────────── -->
+    <!-- ── Il numero, e la domanda sulla finestra ────────────────────────── -->
     <Slide id="slide-settantamila" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_network.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
         <p class="slide-eyebrow">Nel canale che è vostro</p>
-        <p class="tp-big-number" data-display data-reveal data-reveal-delay="0.06">70.000</p>
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.16">
-          punti vendita raggiunti attraverso la piattaforma con cui le agenzie vi vendono.
-          È nata intorno al 2011 e <strong>si sta rifacendo adesso</strong>, dentro il piano
-          strategico. Una finestra che si chiude da sé.
-        </p>
+        <p class="tp-big-number" data-display data-reveal data-reveal-delay="0.06">{RETE.numero}</p>
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.16" set:html={RETE.dopo} />
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
-          Fonti pubbliche sulla piattaforma commerciale e sul piano strategico in corso — <a href="https://www.fsnews.it/" target="_blank" rel="noopener noreferrer">fsnews.it</a>.
+          <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> ·
+          <a href={SOURCES.retePunti.url} target="_blank" rel="noopener noreferrer">{SOURCES.retePunti.label}</a> ·
+          <a href={SOURCES.agenzie.url} target="_blank" rel="noopener noreferrer">{SOURCES.agenzie.label}</a> ·
+          <a href={SOURCES.pico.url} target="_blank" rel="noopener noreferrer">{SOURCES.pico.label}</a>
         </p>
       </div>
     </Slide>
@@ -67,32 +76,30 @@ const currentPath = Astro.url.pathname;
           <p class="slide-eyebrow">La domanda</p>
           <h2 class="ex-head-title">Che cosa sapreste, se guardaste la rete come guardate un sito</h2>
           <p class="ex-head-lead">
-            Di un canale digitale sapete tutto: chi entra, dove si ferma, che cosa funziona.
-            Di un canale intermediato, quasi nulla. <strong>Non è una differenza di natura:
-            è una differenza di strumenti</strong>, e nel momento in cui la piattaforma si
-            rifà è anche una differenza che costa poco colmare.
+            Di un canale digitale sapete tutto: chi entra, dove si ferma, che cosa funziona. Di un
+            canale intermediato, quasi nulla. <strong>In parte manca la strumentazione, in parte manca il diritto di
+            guardare</strong>: la prima cosa da vedere insieme è che cosa le convenzioni con le
+            agenzie permettono di osservare.
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          <div class="ex-card">
-            <p class="ex-card-k">Chi vende che cosa</p>
-            <p class="ex-card-t">Per rete, per agenzia, per prodotto</p>
-            <p class="ex-card-b">Dove la proposta multiprodotto arriva e dove si ferma al solo treno: è la misura diretta della vostra riorganizzazione commerciale.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">Che cosa converte</p>
-            <p class="ex-card-t">Quale materiale vende, e quale resta nel cassetto</p>
-            <p class="ex-card-b">Il collegamento con il capitolo precedente: produrre meno varianti e più di quelle che funzionano.</p>
-          </div>
-          <div class="ex-card">
-            <p class="ex-card-k">Che cosa succede se…</p>
-            <p class="ex-card-t">Provare un’alternativa invece di deciderla</p>
-            <p class="ex-card-b">Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Oggi su questo canale non si prova niente.</p>
-          </div>
+          {SAPERE.map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
         </div>
-        <p class="ex-src" data-reveal data-reveal-delay="0.24">
-          Lo strumento per provare un’alternativa e misurarla lo avete già in casa:
-          <strong><a href="https://experienceleague.adobe.com/en/docs/target/using/target-home" target="_blank" rel="noopener noreferrer">Adobe Target</a></strong>. Quello che manca è portarlo dove oggi non arriva.
+        <div class="tp-ask" data-reveal data-reveal-delay="0.2">
+          <p class="tp-ask-k">La domanda che vi facciamo</p>
+          <p class="tp-ask-t">{RETE.domanda}</p>
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Fra i requisiti della nuova piattaforma: che esponga il venduto per agenzia e per
+          prodotto, e che permetta di provare una variante su una parte della rete misurandone
+          l’effetto — con <strong><a href={SOURCES.target.url} target="_blank" rel="noopener noreferrer">{SOURCES.target.label}</a></strong>
+          o con quello che sceglierete.
         </p>
       </div>
     </Slide>

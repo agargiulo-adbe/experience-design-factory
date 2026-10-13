@@ -272,6 +272,16 @@ export const OBIETTIVI: Obiettivo[] = [
 ];
 
 /** La nota che distingue la loro parola dalla nostra lettura. */
+/**
+ * La stessa cosa dei tre OBIETTIVI, detta in una riga: serve al taglio «In dieci
+ * minuti», dove le tre carte non entrano. Sta QUI e non nella pagina perché i numeri
+ * sono gli stessi di sopra — se uno cambia, deve cambiare in un posto solo.
+ */
+export const SINTESI_OBIETTIVI: Bilingue = {
+  it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutti e tre passano da quello che il cliente legge.',
+  en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads.',
+};
+
 export const NOTA_OBIETTIVI: Bilingue = {
   it: 'In grande gli obiettivi, come li avete dichiarati voi. In piccolo che cosa chiedono a chi comunica: quella riga è una nostra lettura, non una vostra parola.',
   en: 'In large type, the goals as you stated them. In small type, what they ask of whoever communicates: that line is our reading, not your words.',

@@ -109,18 +109,75 @@ si ricorda.
 
 ### 37.6 Lo stato dei gate al 12 ottobre
 
-`audit:deck -- --tv` **0 HARD su 135 misure** slide×viewport (i 9 rilievi residui sono tutti `a`,
-banda di lettura, SOFT) · `exp:ok` su ogni slide, quindi il blocco di metodo regge anche da aperto
-· `audit:ink` **pulito** · `audit:wrap` **pulito** · `audit:fonti` nessun link rotto · `copy-audit`
-**0 HARD / 0 SOFT**. Otto rotte a 200 in produzione.
+`audit:deck` **0 HARD** a 1920/1440/1280 (34 slide su 9 rotte dopo il panel; il residuo è tutto
+soft: `a` 27, `i` 15, `g` 8, su slide volutamente ariose) · `exp:ok` su ogni slide, quindi i blocchi
+che si aprono reggono anche da aperti · `audit:ink` **pulito su 322 blocchi** · `audit:wrap`
+**pulito** · **`audit:taglio` ALLINEATO** · `audit:fonti` **34 link, nessuno rotto e nessuno
+generico** (le tre righe senza link sono la nostra misura, che non è pubblica) · `copy-audit`
+**0 HARD / 0 SOFT** dopo tre giri di umanizzazione.
 
-### 37.7 Che cosa manca (le voci sono nel backlog §10, Parte 2)
+### 37.7 Il panel del 12 ottobre — due giri, e quindici fatti refutati
 
-**Panel review mai lanciata** — è un P0 di gate: l'experience è costruita, pubblicata e mai vista
-da uno stakeholder simulato. **Cover dello showcase** assente (`shots/trenitalia-prospettiva-sales.webp`)
-e la `desc` nel record della vetrina è ancora quella dello scaffold («copy e design system arrivano
-ancora dal brief»), che oggi è falsa. **Letto sonoro** non montato: licenziare una traccia Adobe
-Stock consuma una licenza, quindi si chiede prima. E la misura resta a **due motori su quattro**.
+Sei personas cieche (il Direttore Sales, il Direttore Generale, marketing, Customer Operations, il
+presidio digitale, il Digital Business Partner di FSTechnology), un fact-checker e un arbitro, due
+volte. Personas in `docs/Ferrovie/PANEL-PERSONAS-SALES.md`, verdetti in
+`docs/Ferrovie/PANEL-VERDICT-2026-10-12-round{1,2}.md`, JSON grezzi in `docs/Ferrovie/panel/`
+(tutto git-ignorato).
+
+| Asse | giro 1 | giro 2 |
+|---|---|---|
+| credibilità dei fatti | 2,0 | **3,2** |
+| rilevanza per me | 4,0 | 4,0 |
+| chiarezza | 3,8 | 3,8 |
+| rischio (5 = nessuno) | 2,3 | 2,8 |
+| azionabilità | 2,8 | 3,2 |
+
+Primo giro: **sei «accetto a condizione» su sei**. Secondo: il Direttore Sales passa a **«sì»**,
+cinque restano condizionati. **Quindici fatti refutati**, e i tre che contavano erano invisibili a
+tutti i gate perché i link rispondevano:
+
+- la slide d'apertura attribuiva a lui, **fra virgolette**, una frase che l'articolo ANSA citato
+  non contiene: il 75%/4% è un dato di contesto che circola al TTG, il 96% è suo ma detto altrove;
+- **«da due operatori a quattro»** è falso: sull'alta velocità sono due, SNCF è il terzo e debutta
+  non prima della fine del 2027, Arenaways è sulla rete tradizionale (e la fonte è del 2024);
+- i **70.000 punti vendita non sono le agenzie**: sono i punti fuori dalle biglietterie che vendono
+  il Regionale, da un dato del **2014**. Il canale della Direzione Sales sono **12.400 agenzie**,
+  contate da lui al TTG dell'ottobre 2025.
+
+E la **domanda centrale** del deck («quando il prezzo non è più la leva») era smentita dalla slide
+precedente: dal 1º gennaio 2026 il prezzo lavora più di prima, solo che è una leva del marketing.
+Riscritta due volte, fino alla formulazione che il marketing stesso ha dettato.
+
+⚠️ **La lezione che vale oltre questo deck**: `audit:fonti` verifica che il link **risponda**, non
+che dica quella frase. Da lì due cose nuove — il SOFT sui **link generici** (tre slide citavano due
+homepage per sei fatti) e il campo `cosaDice` in `src/data/sources.ts`, che tiene scritto che cosa
+ogni pagina conferma **verbatim**. Memoria: `link-risponde-non-conferma`.
+
+### 37.8 «In dieci minuti», il taglio che non può divergere
+
+`/dieci-minuti/` — 7 slide (copertina, la sua frase, il contesto, la domanda, i quattro punti, il
+passo, la firma) con **l'ask dentro**: un'ora concessa diventa venti minuti più spesso di quanto si
+ammetta, ed è anche la versione che l'interlocutore gira al suo capo. Non è una copia: copia e fonti
+stanno in `src/data/contenuti.ts` e `src/data/sources.ts`, e dove il taglio ha bisogno di meno
+parole la versione breve è un **campo accanto** a quella lunga (`bBreve`, `leadBreve`). Lo verifica
+**`pnpm audit:taglio`** (registro in `scripts/lib/cut-routes.ts`): HARD su copia a mano, numeri che
+solo il taglio afferma, fonti che solo il taglio porta. Sulla stessa regola è stata riallineata
+anche `intesa-scala-umana`, dove il gate ha trovato subito una frase riscritta a mano. La funzione è
+generale: `skills/experience-design/references/taglio-dieci-minuti.md`, `CLAUDE.md` e la checklist
+di `pnpm new:experience`.
+
+### 37.9 Che cosa manca (le voci sono nel backlog §10, Parte 2)
+
+**Il dossier porta ancora nove dei fatti corretti** — elenco con le fonti in
+`docs/Ferrovie/CORREZIONI-DA-RIPORTARE-NEL-DOSSIER-2026-10-12.md`: è il documento da cui il team si
+prepara, quindi è lì che un fatto sbagliato rientra a voce. **Cover dello showcase** assente
+(`shots/trenitalia-prospettiva-sales.webp`) e la `desc` del record è ancora quella dello scaffold.
+**Letto sonoro** non montato: licenziare una traccia Adobe Stock consuma una licenza, quindi si
+chiede prima. La misura resta a **due motori su quattro**. E restano quattro cose che il panel ha
+chiesto e che **vogliono una persona, non un altro giro**: nessun ordine di grandezza del valore per
+i quattro punti, nessun indicatore del mestiere del cliente (riempimento, ricavo per posto-km, mix
+diretto/intermediato), il parco applicativo mai descritto, e una riga su che cosa **non**
+duplichiamo rispetto ai cantieri aperti con gli altri fornitori.
 
 ---
 

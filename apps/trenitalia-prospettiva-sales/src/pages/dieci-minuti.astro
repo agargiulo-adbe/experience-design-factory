@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+import { APERTURA, CONTESTO, COVER, DOMANDA, PUNTI, ASK, TESTE, card, fontiDi } from '../data/contenuti';
+import { SOURCES } from '../data/sources';
+import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
+import bg_close from '../assets/generated/bg/bg-close.webp';
+import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
+
+/**
+ * «In dieci minuti» — il taglio corto.
+ *
+ * NON è il percorso intero accorciato, e non è un documento suo: è la STESSA
+ * FONTE, più corta. Ogni blocco arriva da `src/data/contenuti.ts` e ogni link da
+ * `src/data/sources.ts`: se i due percorsi divergono, non è una possibilità ma
+ * una certezza, e diverge sempre il corto, perché le correzioni arrivano sul
+ * lungo. Qui non c'è una stringa di contenuto scritta a mano, e il gate lo
+ * verifica: `DECK_URL=… pnpm audit:taglio --app trenitalia-prospettiva-sales`.
+ *
+ * PERCHÉ ESISTE. Un'ora concessa diventa venti minuti più spesso di quanto si
+ * ammetta, e in quel momento chi presenta salta slide a caso: il percorso che
+ * resta non è quello costruito, è quello sopravvissuto. Questo taglio è la
+ * scelta fatta prima. Ed è anche la versione che l'interlocutore gira al suo
+ * capo — un Direttore Generale che arriva da un operatore sfidante e che leggerà
+ * senza nessuno a spiegare.
+ *
+ * CHE COSA RESTA FUORI: il metodo della misura (resta il risultato), le quattro
+ * domande aperte (vivono in sala, a voce), i capitoli di dettaglio. Quello che
+ * NON si taglia mai: l'apertura con le sue parole e il passo che chiediamo.
+ *
+ * Un taglio corto è una versione breve, non una versione spenta: stesse clip in
+ * loop di copertina e chiusura, stessa firma co-brand, stesso guscio.
+ */
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const type = EXPERIENCE_TYPES[SITE.type];
+const first = CHAPTERS[0];
+const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
+const COVER = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-cover.loop.mp4';
+const CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-close.loop.mp4';
+---
+<BaseLayout title="In dieci minuti">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, '/')} prevHref={href(base, '/')}>
+
+    <!-- ── 1 · Copertina ─────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={COVER}
+        poster={`${base}media/cover-loop.poster.jpg`}
+        scrim="absolute inset-0 bg-[rgba(27,34,48,0.72)]"
+        opacity={0.85}
+      />
+      <div class="ex-cover" data-reveal>
+        <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
+        <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
+        <p class="ex-cover-tag" data-reveal data-reveal-delay="0.16">{COVER.tag}</p>
+        <p class="ex-cover-lead" data-reveal data-reveal-delay="0.22">
+          In dieci minuti: il vostro anno, la domanda, i quattro punti e la cosa che vi
+          chiediamo. Il percorso intero è nel menu, se il tempo c’è.
+        </p>
+        <p class="ex-cover-note" data-reveal data-reveal-delay="0.3">
+          {type.coverLine.it} · fonti dichiarate slide per slide
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 2 · La sua frase: il dato, poi le sue parole ──────────────────── -->
+    <Slide id="slide-novantasei" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">{APERTURA.eyebrow}</p>
+        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08" set:html={APERTURA.dato} />
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
+          <span set:html={APERTURA.citazione} /> {APERTURA.letturaBreve}
+        </p>
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+          Il dato come circola al TTG: <a href={SOURCES.turismo75.url} target="_blank" rel="noopener noreferrer">{SOURCES.turismo75.label}</a>.
+          Le sue parole: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> e <a href={SOURCES.ttgAnsa.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgAnsa.label}</a>.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 3 · Il contesto, in tre carte brevi ───────────────────────────── -->
+    <Slide id="slide-contesto" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <!-- Lo stesso sfondo della stessa slide nel percorso intero, e non per gusto:
+           con `bg-journey` l'occhiello rosso di marchio scendeva a 3,01:1 sul grigio
+           chiaro della foto — `audit:ink` lo ha misurato, nessun altro check lo vedeva. -->
+      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">{CHAPTERS[0].title.it}</p>
+          <h2 class="ex-head-title">{TESTE.contesto.titolo}</h2>
+          <p class="ex-head-lead">{TESTE.contesto.leadBreve}</p>
+        </div>
+                <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          {CONTESTO.map((x) => card(x, 'breve')).map((x) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{x.k}</p>
+              <p class="ex-card-t">{x.t}</p>
+              <p class="ex-card-b">{x.b}</p>
+            </div>
+          ))}
+        </div>
+        <!-- Le fonti stanno anche qui: questa pagina viene letta da sola, da chi non era
+             in sala, e un taglio senza fonti è un taglio che chiede di fidarsi. -->
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          Fonti: {fontiContesto.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
+          ))}.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 4 · La domanda, e i quattro punti sotto ───────────────────────── -->
+    <Slide id="slide-domanda" bg="brand" align="center">
+      <div class="tp-quote" data-reveal>
+        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={DOMANDA.titolo} />
+        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">{DOMANDA.subBreve}</p>
+                <p class="tp-domanda-peri" data-reveal data-reveal-delay="0.26">{DOMANDA.perimetri}</p>
+        <p class="ex-src" data-reveal data-reveal-delay="0.32">
+          <a href={SOURCES.riorgCommerciale.url} target="_blank" rel="noopener noreferrer">{SOURCES.riorgCommerciale.label}</a>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── 5 · I quattro punti, in forma breve ───────────────────────────── -->
+    <Slide id="slide-mappa" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">{TESTE.mappa.eyebrow}</p>
+          <h2 class="ex-head-title">{TESTE.mappa.titolo}</h2>
+          <p class="ex-head-lead">{TESTE.mappa.leadBreve}</p>
+        </div>
+        <ul class="tp-mappa" role="list" data-stagger="0.1" data-reveal data-reveal-delay="0.12">
+          {PUNTI.map((p) => (
+            <li class="tp-mappa-row">
+              <span class="tp-mappa-n" aria-hidden="true">{p.n}</span>
+              <span class="tp-mappa-body">
+                <span class="tp-mappa-dove">{p.dove}</span>
+                <span class="tp-mappa-t">{p.t}</span>
+                <span class="tp-mappa-b">{p.bBreve}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+    <!-- ── 6 · Il passo, parola per parola come nel percorso intero ─────── -->
+    <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+      <LoopVideo
+        slot="backdrop"
+        src={CHIUSURA}
+        poster={`${base}media/close-loop.poster.jpg`}
+        scrim="absolute inset-0 bg-[rgba(27,34,48,0.78)]"
+        opacity={0.8}
+      />
+      <div class="tp-quote" data-reveal>
+        <p class="slide-eyebrow">{ASK.eyebrow}</p>
+        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
+        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
+        <p class="ex-src" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
+      </div>
+    </Slide>
+
+    <!-- ── 7 · Slide-firma ───────────────────────────────────────────────── -->
+    <Slide id="slide-signature" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
+      <CoBrand variant="hero" data-reveal />
+      <p class="ex-sig-line" data-reveal data-reveal-delay="0.1">
+        {SITE.name}. {COVER.firma}
+      </p>
+      <a href={href(base, '/' + first.slug)} class="edf-sig-cta" data-reveal data-reveal-delay="0.18">Il percorso intero, sette fermate →</a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
