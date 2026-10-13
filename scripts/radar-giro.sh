@@ -28,6 +28,20 @@ REPO="$HOME/Documents/progetti/Experience Design Factory"
 GIRI="$REPO/docs/Adobe/Radar/giri"
 OGGI="$(date +%Y%m%d-%H%M)"
 
+# RECUPERO. launchd con StartCalendarInterval fa partire il giro al risveglio se
+# alle 07:30 il Mac dormiva, ma NON lo recupera se era spento. Il plist ha quindi
+# anche RunAtLoad, così il giro parte al login — e questo controllo evita il
+# doppione: se oggi è già stato fatto, non si rifà e non si notifica due volte.
+# `RADAR_FORZA=1` lo salta, per provarlo a mano.
+# ⚠️ `compgen -G` qui NON va: è un builtin di bash e questo script gira in zsh —
+# la condizione cadeva sempre e il recupero non proteggeva da niente. L'ha trovato
+# la prova, non la rilettura. `find` non dipende dalla shell.
+GIRI_OGGI="$HOME/Documents/progetti/Experience Design Factory/docs/Adobe/Radar/giri"
+GIA_FATTO="$(find "$GIRI_OGGI" -maxdepth 1 -name "$(date +%Y%m%d)-*.md" 2>/dev/null | head -1)"
+if [ -z "${RADAR_FORZA:-}" ] && [ -n "$GIA_FATTO" ]; then
+  exit 0
+fi
+
 cd "$REPO" || { osascript -e 'display notification "repo non trovato" with title "Radar · guasto"'; exit 1; }
 mkdir -p "$GIRI"
 
