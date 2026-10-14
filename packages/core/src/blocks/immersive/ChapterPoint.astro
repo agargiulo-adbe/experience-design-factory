@@ -1,0 +1,127 @@
+---
+/**
+ * ChapterPoint — «Il punto»: la slide con cui un capitolo si chiude.
+ *
+ * PERCHÉ ESISTE
+ * Perché i nostri capitoli finivano aprendo un argomento nuovo. Misurato il
+ * 14 ott 2026 su 532 slide dei quattordici deck: **27 capitoli su 114** portavano
+ * una sintesi esplicita, e sulla Prospettiva Trenitalia ogni capitolo chiudeva
+ * sulla sua slide più densa (199–246 parole), cioè l'ultima impressione del
+ * capitolo era il massimo carico di lettura e zero conclusione. Chi ascolta
+ * mentre qualcuno parla non sintetizza da sé: se la frase non c'è, non esiste.
+ *
+ * La regola che ne è nata: **ogni capitolo si chiude su una frase sola**, e quella
+ * frase dice che cosa cambia per il cliente — non che cosa fa il prodotto. È il
+ * «so what?» del whiteboarding, portato dove serve a noi: in fondo al capitolo.
+ *
+ * COME SI USA
+ *   <ChapterPoint messaggio={ch.messaggio} />
+ * Il `messaggio` arriva SEMPRE dalla fonte unica dei dati (`src/data/chapters.ts`),
+ * mai scritto a mano nella pagina: una frase in due posti diverge, ed è la stessa
+ * ragione per cui esiste `audit:taglio`. Il gate che lo verifica:
+ *   DECK_URL=<origin> pnpm audit:sintesi --app <alias>
+ *
+ * DOVE VA
+ * Ultima slide del capitolo. Dove il contratto del co-brand chiede la slide-firma
+ * (primo e ultimo capitolo del percorso), «Il punto» sta **prima** di quella: la
+ * firma è un lockup, non un contenuto, e non chiude un argomento.
+ *
+ * Reso UNA volta per capitolo, e basta. Sette messaggi raccolti sulla home sono
+ * esattamente la densità che questa slide esiste per togliere.
+ *
+ * INCHIOSTRO
+ * Il blocco vive DENTRO la slide, quindi prende l'inchiostro dalla superficie che
+ * la slide dichiara (`--ink-primary` e compagnia), e si ribalta con lei dove la
+ * pelle dell'app ribalta gli inchiostri. Si usano i token universali del
+ * contratto, con ripiego sui nomi più vecchi: `--ink-accent` e `--ink-body` non
+ * esistono in tutte le experience.
+ *
+ * AUDIT
+ * È una slide volutamente ariosa: come la slide-firma fallisce il check **soft
+ * `i`** (copre meno del 45% dell'altezza utile, perché porta una frase sola).
+ * Non si aggiusta rimpicciolendo né allungando il testo: il contratto di
+ * leggibilità viene prima di un check soft, e una sintesi lunga non è una sintesi.
+ * Va registrata nel `PAGE_REGISTRY` dell'admin come ogni slide nuova.
+ */
+import Slide from './Slide.astro';
+
+interface Props {
+  /** Il punto del capitolo: UNA frase, ciò che cambia per il cliente. Dai dati. */
+  messaggio: string;
+  /** Occhiello. Si cambia solo se l'experience parla un'altra lingua. */
+  eyebrow?: string;
+  /** Riga opzionale sotto: il passo, o il legame con il capitolo che segue. */
+  passo?: string;
+  id?: string;
+  bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  messaggio,
+  eyebrow = 'Il punto',
+  passo,
+  id = 'slide-punto',
+  bg = 'inverse',
+  class: className,
+  ...rest
+} = Astro.props as Props;
+---
+<Slide id={id} bg={bg} align="center" data-punto class={className} {...rest}>
+  <slot name="backdrop" slot="backdrop" />
+  <div class="edf-punto" data-reveal>
+    <p class="edf-punto-k">{eyebrow}</p>
+    <p class="edf-punto-t" data-reveal data-reveal-delay="0.08" set:html={messaggio} />
+    {passo && <p class="edf-punto-p" data-reveal data-reveal-delay="0.18">{passo}</p>}
+  </div>
+</Slide>
+
+<style is:global>
+  .edf-punto {
+    width: 100%;
+    max-width: 54rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(1rem, 2.4vh, 1.7rem);
+  }
+  .edf-punto-k {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    font-size: clamp(0.8rem, 0.95vw, 0.95rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-accent, var(--accent-primary, currentColor));
+  }
+  /* Una frase sola, grande: il corpo sta fra il titolo di capitolo e il titolo di
+     slide, perché non è né l'uno né l'altro — è la riga che resta in testa. */
+  .edf-punto-t {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.16;
+    font-size: clamp(1.7rem, 3.1vw, 3rem);
+    color: var(--ink-primary);
+    max-width: 30ch;
+    text-wrap: balance;
+  }
+  .edf-punto-t strong { color: var(--ink-accent, var(--accent-primary, inherit)); font-weight: 800; }
+  .edf-punto-p {
+    font-size: clamp(0.98rem, 1.15vw, 1.15rem);
+    line-height: 1.55;
+    color: var(--ink-body, var(--ink-secondary, currentColor));
+    max-width: 52ch;
+    padding-top: clamp(0.6rem, 1.6vh, 1.1rem);
+    border-top: 1px solid var(--line-subtle, currentColor);
+  }
+
+  /* Su telefono la frase resta la cosa più grande della slide, ma smette di
+     essere un titolo da parete. */
+  @media (max-width: 640px) {
+    .edf-punto { gap: 0.9rem; }
+    .edf-punto-t { font-size: clamp(1.45rem, 7vw, 2rem); max-width: 26ch; }
+    .edf-punto-p { font-size: 0.98rem; }
+  }
+</style>

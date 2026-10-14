@@ -141,6 +141,13 @@ export const SOURCES = {
     cosaDice:
       'La sosta si prenota e si paga dall\'app Trenitalia, dal sito, in biglietteria e in agenzia; si può aggiungere a un biglietto già comprato fino alle 24 del giorno prima («Completa il tuo viaggio»).',
   },
+  wetaxi: {
+    url: 'https://www.trenitalia.com/it/servizi/trenitalia-e-wetaxi.html',
+    label: 'trenitalia.com · Trenitalia e Wetaxi',
+    data: 'letta il 14 ottobre 2026',
+    cosaDice:
+      'Il taxi si prenota INSIEME al biglietto Frecce, Intercity e Intercity Notte, dal sito, dall\'app e dal portale di bordo FrecciaPlay; città servite Roma, Milano, Torino, Napoli, Alessandria e Salerno; costo massimo garantito noto in anticipo, e la corsa dà punti CartaFRECCIA. ⚠️ PERIMETRO: l\'accordo con Uber è di ITALO, non di Trenitalia — la partnership taxi vostra è questa. Confonderle davanti alla Direzione Sales significa attribuirvi l\'accordo del concorrente diretto.',
+  },
   itaAirways: {
     url: 'https://www.trenitalia.com/it/chi-siamo/comunicati-stampa/20260309-ita-airways-e-trenitalia.html',
     label: 'comunicato Trenitalia, 9 marzo 2026',

@@ -158,8 +158,8 @@ export const PUNTI: Punto[] = [
     n: '02',
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
-    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e la pianificazione porta-a-porta esiste su alcune destinazioni. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
-    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
+    b: 'Treno, autobus, sosta, volo e taxi sono già nella vostra offerta, e la pianificazione porta-a-porta esiste su alcune destinazioni. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
+    bBreve: 'Treno, autobus, sosta, volo e taxi sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
   },
   {
     n: '03',
@@ -199,25 +199,39 @@ export const KPI: Card[] = [
    Busitalia da sola (sue parole, FS News del 9 ott 2025); la compagnia aerea si
    NOMINA, perché il protocollo è pubblico e l'ha firmato il suo Amministratore
    Delegato — chiamarla «la compagnia aerea» davanti a chi c'era suona evasivo;
-   e il laboratorio ha una data precisa, il 9 marzo 2026. */
+   e il laboratorio ha una data precisa, il 9 marzo 2026.
+
+   14 ott 2026 — quarta voce, la città. Mancava il primo e ultimo miglio urbano, che
+   è il pezzo più forte dei quattro: il taxi si compra DENTRO il biglietto e la corsa
+   dà punti CartaFRECCIA. Quindi l'argomento del capitolo non è «vi manca un pezzo»,
+   è «i pezzi sono cinque e l'acquisto già li tiene insieme — è la misura che non li
+   vede». ⚠️ La partnership con Uber è di ITALO: attribuirla a loro, in una slide
+   sull'intermodalità davanti al direttore vendite, sarebbe l'errore da cui un
+   documento non si riprende (vedi `wetaxi.cosaDice` in sources.ts). */
 export const GIA: Card[] = [
   {
     k: 'Gomma',
     t: 'Busitalia, al 100%',
-    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno. L’offerta che integra treno, gomma e altri vettori arriva a più di 1.700 destinazioni: parole vostre, un anno fa.',
+    b: 'Interamente vostra: 10.300 collegamenti al giorno. L’offerta che integra treno, gomma e altri vettori arriva a oltre 1.700 destinazioni, parole vostre.',
     fonti: ['busitalia'],
   },
   {
     k: 'Sosta',
     t: 'I parcheggi di stazione',
-    b: 'Si prenotano dall’app, dal sito, in biglietteria e in agenzia. E si aggiungono a un biglietto già comprato, fino al giorno prima: è il pezzo di viaggio che comincia prima del treno.',
+    b: 'Si prenotano da app, sito, biglietteria e agenzia, e si aggiungono a un biglietto già comprato fino al giorno prima.',
     fonti: ['fsPark'],
   },
   {
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
-    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno firmato un memorandum che istituisce un laboratorio comune sull’intelligenza artificiale per l’intermodalità.',
+    b: 'Il biglietto integrato con ITA Airways è del 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno istituito un laboratorio comune sull’intelligenza artificiale.',
     fonti: ['itaAirways'],
+  },
+  {
+    k: 'Città',
+    t: 'Il taxi, dentro il biglietto',
+    b: 'Con Wetaxi la corsa si prenota insieme al biglietto di Frecce e Intercity, in sei città. E dà punti CartaFRECCIA.',
+    fonti: ['wetaxi'],
   },
 ];
 
@@ -275,13 +289,27 @@ export const UNPOSTO: Card[] = [
    sono la rete di terzi che vende il REGIONALE (numero del 2014, ingresso delle
    ricevitorie Sisal), le agenzie di viaggio sono 12.400 e sono il suo canale.
    E il rifacimento della piattaforma, che era affermato, non ha una fonte
-   pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
+   pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione.
+
+   14 ott 2026 — correzione di sostanza su PICO. Diceva «la piattaforma con cui le
+   agenzie vi vendono»: sbagliato, e davanti alla persona peggiore. PICO è IL sistema
+   di vendita di Trenitalia — la fonte che citiamo lo annuncia così, «il nuovo sistema
+   vendite» — e da lì passa ogni carrello, sito e app compresi. Ristretto al canale
+   agenzie suona come se non sapessimo di che cosa parliamo, proprio nel capitolo in
+   cui chiediamo la riunione. Tolto anche «finché il capitolato è aperto»: presumeva
+   una gara in corso di cui non abbiamo nessuna prova, e l'argomento regge senza.
+   La data 2011 RESTA: è il lancio a fasi, documentato dalla fonte. Se in sala
+   qualcuno dice 2009, quello è l'avvio del progetto — due date, due eventi. */
 export const RETE = {
   numero: '12.400',
   dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
   dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
-  domanda:
-    'PICO, la piattaforma con cui le agenzie vi vendono, è del 2011 e ha preso il posto di Sipax. Ci risulta che la stiate rifacendo: finché il capitolato è aperto la misura è una riga di requisiti, dopo è un progetto a sé. È una domanda, non un’affermazione.',
+  domanda: // copy-audit-ignore
+    // L4: la seconda frase apre con «Se è in trasformazione», ed è voluto — la
+    // condizionale È il contenuto: non sappiamo se lo stiano facendo, e tutta la
+    // slide esiste per chiederlo. Invertirla la trasformerebbe in un'asserzione
+    // sul cantiere di un altro, che è l'errore da cui questo blocco è nato.
+    'PICO è del 2011, e da lì passano tutte le vostre vendite: sito, app, biglietterie, agenzie. Se è in trasformazione, la misura del canale intermediato è una riga di requisiti adesso; dopo è un progetto a sé. È una domanda, non un’affermazione.', // copy-audit-ignore
 };
 
 export const SAPERE: Card[] = [

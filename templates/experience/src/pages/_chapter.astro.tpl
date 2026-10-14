@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -90,6 +91,10 @@ const blocchi = [
         <T as="p" class="ex-src" it="Fonte: da citare slide per slide, con il link alla pagina pubblica." en="Source: to be cited slide by slide, with the link to the public page." data-reveal data-reveal-delay="0.24" />
       </div>
     </Slide>
+    <!-- ── Il punto: la frase con cui il capitolo si chiude ─────────────────
+         Il messaggio sta in src/data/chapters.ts, mai qui: una frase scritta in
+         due posti diverge. `audit:sintesi` boccia il segnaposto. -->
+    <ChapterPoint messaggio={ch.messaggio} data-made-with="" />
 __SIGNATURE_SLIDE__
   </DeckContainer>
 </BaseLayout>

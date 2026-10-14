@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-13**.
+> Documento di passaggio di consegne. Stato al **2026-10-15**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -9,6 +9,19 @@
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
 > `.md` costa ~32k token su 17 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> ✂️ **14-15 ottobre: «Il punto» — ogni capitolo chiude su una frase** (**§37.11, Parte 16** ·
+> regola BINDING in `CLAUDE.md`). Dal corso **Whiteboarding Mastery** è uscita la domanda che i
+> nostri dodici gate non facevano — «che cosa si porta via chi guarda?» — e la misura che la
+> motiva: **532 slide, mediana 96 parole per slide, 32% oltre 120, e 27 capitoli su 114** con una
+> sintesi esplicita. Ora `Chapter.messaggio` è **obbligatorio** (un capitolo senza punto non
+> compila), il blocco `ChapterPoint` lo rende come **ultima slide del capitolo**, e
+> **`pnpm audit:sintesi`** lo verifica — con un budget di lettura SOFT che stampa la lista delle
+> slide da alleggerire. Fatto su **Trenitalia Prospettiva Sales** (sette punti, 0 HARD su tutti i
+> gate); `pnpm new:experience` lo propaga alle experience nuove. ⚠️ **Il gate, al primo giro, ha
+> stampato un PASS avendo misurato zero** (scartava le slide non attive, marcate `aria-hidden`):
+> ora una misura implausibile esce con **codice 2**. Le altre tredici experience **non sono ancora
+> dichiarate**: il gate stampa da sé l'elenco di quelle da migrare (P1 nuovo).
 >
 > 🧭 **12-13 ottobre: la Prospettiva passa dal panel, e nasce «In dieci minuti»** (**§37.7–37.10,
 > Parte 16**). Due giri, sei personas cieche più fact-checker e arbitro: **credibilità dei fatti da
@@ -24,6 +37,11 @@
 > riscritta) — e si è scoperto che `copy-audit` **misurava 14 stringhe su 226** sulle experience in
 > una lingua sola: ora ne conta 7.548 sul monorepo e ne emergono **480 HARD** mai visti (P1 nuovo).
 >
+> **TIM (§38, Parte 16):** il Round 2 è stato archiviato come sintesi aggregata da personas derivate,
+> non come approvazione del cliente. La vetrina resta spenta e il layout locale imposta `noindex`;
+> l'URL già deployato è ancora raggiungibile. L'autorizzazione al lockup Adobe × TIM resta da
+> verificare prima di ogni ulteriore pubblicazione esterna.
+>
 > 🚄 **11-12 ottobre: una Prospettiva nuova, e due gate che non esistevano** (**§37, Parte 16**).
 > `apps/trenitalia-prospettiva-sales` — «Dove può arrivare il viaggio», **27 slide su 8 rotte** per
 > la **Direzione Sales** di Trenitalia: i quattro capitoli centrali sono i quattro temi dell'agenda
@@ -36,9 +54,10 @@
 > giro sono nati **due gate BINDING**: **`pnpm audit:ink`**, che misura il contrasto del **testo** sui
 > pixel (è nato da una copertina ardesia su ardesia **illeggibile con `audit:deck` a 0 HARD**, e ha
 > trovato **259 blocchi sotto AA su 12 experience** — P1 nuovo), e **`pnpm audit:fonti`**, per cui ogni
-> fonte pubblica porta il link e il link risponde. ⚠️ **Due P0 nuovi**: l'experience è **pubblicata e
-> non ha mai visto una panel review**, e **18 file di un altro workstream sono finiti su `main`** per un
-> `git add -A` (§38) — la decisione su cosa farne è dell'owner. In parallelo, da un'altra sessione, il
+> fonte pubblica porta il link e il link risponde. ⚠️ **Il P0 che resta**: l'esposizione pubblica dei
+> **18 file di un altro workstream su `main`** dopo un `git add -A` (§38) resta da decidere; il panel
+> della Prospettiva Sales, inizialmente mancante, è stato chiuso in due giri il 12 ottobre (§37.7),
+> con una rilettura umana delle modifiche del 13 ancora aperta come P1. In parallelo, da un'altra sessione, il
 > **lavoro operativo d'account** è diventato un mestiere a sé (`docs/CLAUDE.md`, `/account-open`,
 > `/account-close`, `/accounts`) e il **`.gitignore` si è rovesciato**: `docs/.gitignore` è ora
 > fail-closed, perché con l'elenco a mano **ogni cliente nuovo nasceva esposto**.
@@ -192,8 +211,8 @@
 > corretto nel deck** (per CJA il dato entra: si governa *quanto*). ⚠️ **Il panel a due giri copre il
 > deck di prima**: P0 nuovo, da chiudere prima del TTG del 14-16 ott (§36.9, Parte 8).
 
-> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: al 13 ott sono **14 P0 e 33 P1**
-> (più 10 P1 di fondo e 44 P2 nella Parte 10). Il P0 sulla panel review della Prospettiva **è chiuso**
+> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: al 13 ott sono **14 P0 e 36 P1**
+> (più 12 P1 di fondo e 46 P2 nella Parte 10). Il P0 sulla panel review della Prospettiva **è chiuso**
 > — i due giri del 12 ott, §37.7 — e resta come P1 rileggere le slide cambiate il 13. In testa ora sta
 > il P0 dei **18 file di TIM finiti su `main`**, e subito sotto i **quattro del 9-10 ott**: il dossier FSTechnology esposto, il
 > panel mancante su un'app ormai pubblica, il giro delta su Intesa Assicurazioni a stanza avvenuta, e
@@ -205,8 +224,8 @@
 > ⚠️ **Nota di dimensione** (rimisurata il **13 ott**): il change log del 12-13 ott non entrava nella
 > **3**, e il ribilanciamento è andato di nuovo a catena **3 → 4 → 14 → 17** — la stessa catena del 12,
 > quando la **Parte 17** è nata in coda per il change log di luglio. Le parti più piene sono ora la
-> **7** (47,8 KB), la **1** (47,5) e la **2** (45,8) su 49,1; le più vuote la **17** (9,8), la **16**
-> (15,2), la **11** (23,5) e la **13** (24,0). ⚠️ Il change log occupa da solo **quattro** parti
+> **7** (47,8 KB), la **2** (47,5) e la **1** (47,5) su 49,1; le più vuote la **17** (9,8), la **16**
+> (30,1), la **11** (23,5) e la **13** (24,0). ⚠️ Il change log occupa da solo **quattro** parti
 > (3, 4, 14, 17): è il costo fisso di tenerlo integrale, ed è una scelta — si paga un ribilanciamento
 > ogni due o tre giornate di lavoro. Le **parti nuove si creano in coda** alla numerazione, così i
 > sessanta rimandi «vedi Parte N» già scritti restano validi.
@@ -252,5 +271,5 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 13 — §32 **Poste**, seguito: §32.10–32.12](./HANDOVER-13.md) — le sei giornate che hanno riscritto il deck: la verifica alla fonte del 6–7 ott (rollout ≠ GA, l'«apri in Workspace» ridimensionato), **§32.11 la mattina dell'incontro**, e **§32.12 il pomeriggio e la sera** (la riunione nel deck, l'anteprima rapida, il video intero in tre tratti).
 - [Parte 14 — §11 change log datato (coda)](./HANDOVER-14.md) — dal **14 set 2026** all'indietro, fino al **1 set**. Creata il 7 ott: il change log da solo superava due parti; ribilanciata **cinque** volte, l'ultima il 12 ott.
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
-- [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account**](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta.
+- [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, panel e gate pubblici** · §39 **il lavoro operativo d'account**](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra l'incidente dei 18 file TIM su `main`, il panel con personas derivate e il lockup ancora da autorizzare.
 - [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.

@@ -208,14 +208,49 @@ Da lì il gate `c1` di `audit:taglio` guarda anche le pagine del percorso intero
 **ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 · `audit:ink` pulito su 325 blocchi ·
 `audit:fonti` 34 link, nessuno rotto e nessuno generico.
 
+### 37.11 Il 14-15 ottobre: «Il punto», e il gate che misurava il nulla
+
+Dal corso **Whiteboarding Mastery** (Adobe, Londra 14-15 ott, guida in `docs/Adobe/`) è uscita
+l'unica domanda che i nostri dodici gate non facevano: **«che cosa si porta via chi guarda?»**.
+Misurato sul DOM reso dei quattordici deck: **532 slide, mediana 96 parole per slide, 32% oltre
+120, e 27 capitoli su 114 con una sintesi esplicita**. Su questa Prospettiva ogni capitolo
+chiudeva **aprendo** un tema nuovo, sulla sua slide più densa: `/rete/` a 246 parole, `/viaggio/`
+217, `/apertura/` 202. L'ultima immagine di ogni capitolo era il massimo carico di lettura.
+
+**Che cosa è cambiato, nel motore e qui.** `Chapter.messaggio` è un campo **obbligatorio** (un
+capitolo senza il suo punto non compila), reso dal blocco nuovo
+`@edf/core/blocks/immersive/ChapterPoint.astro` come **ultima slide di ogni capitolo** — qui sette,
+registrate nel `PAGE_REGISTRY`, e sulla `rotta` prima della slide-firma. Il gate è
+**`pnpm audit:sintesi`** (`scripts/sintesi-audit.ts`, app dichiarate in
+`scripts/lib/sintesi-apps.ts`): HARD su capitolo senza punto, punto riscritto a mano, segnaposto o
+oltre 25 parole, punto che non chiude; SOFT sul **budget di lettura** e sui **titoli etichetta**.
+`pnpm new:experience` lo propaga: scrive `messaggio: 'DA SCRIVERE…'`, mette il blocco in ogni
+capitolo e dichiara l'app — e il segnaposto è HARD, così non arriva in riunione.
+
+⚠️ **Il gate, alla prima esecuzione, ha stampato un PASS avendo misurato zero.** Il filtro del
+testo decorativo scartava `aria-hidden="true"`, e il deck marca così **la slide non attiva**: 31
+slide su 32 contate a zero parole, e «SINTETICO» soddisfatto. Ora il filtro si ferma al confine
+della slide, e un giro con più di metà delle slide a zero **esce con codice 2** invece di passare.
+È la terza volta che un nostro gate dice di sì senza aver guardato (vedi `audit:deck --only` e
+`copy-audit` sulle experience in una lingua sola): la domanda da fare a ogni gate nuovo è
+**«quante cose ha misurato?»**, non «che cosa ha detto».
+
+**Stato al 15 ottobre:** `typecheck` 0 · `copy-audit` **0 HARD / 0 SOFT** su 235 stringhe ·
+`audit:wrap` **pulito** (quattro parole appese legate con lo spazio unificatore nei messaggi
+nuovi) · `audit:taglio` **ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 (71 soft, di cui
+**21 sono le sette slide del punto sul check `i`**: coprono poco perché portano una frase, come la
+slide-firma) · `audit:ink` **pulito** su 343 blocchi · `audit:fonti` 35 link, nessuno rotto ·
+`audit:sintesi` **0 HARD**, con la lista SOFT delle nove slide oltre 120 parole — che è il
+materiale del prossimo giro di taglio, prima della review del 16.
+
 ---
 
-## 38. TIM — «Una campagna, molti formati» (stato di fatto, 12 ott 2026)
+## 38. TIM — «Una campagna, molti formati» (stato al 13 ott 2026)
 
-`apps/tim-contenuti-su-scala` · tipo **Prospettiva** · 4 capitoli · accento `#004691` ·
-`defaultPublished: false`. **Non è lavoro di questa sessione**: è un workstream parallelo che
-lavora sul ramo `feat/tim-content-at-scale`. Qui si registra solo quello che è verificabile nel
-repo, perché il suo stato ha smesso di essere privato di quel ramo.
+`apps/tim-contenuti-su-scala` · tipo **Prospettiva** · 4 capitoli, 15 slide su cinque rotte ·
+accento `#004691` · non in vetrina per difetto. È un workstream nato sul ramo
+`feat/tim-content-at-scale`; lo stato attuale è nel working tree e non è stato committato da
+questa sessione.
 
 ⚠️ **Come ci è finita su `main`.** L'11 ottobre un `git add -A` lanciato mentre il working tree era
 su quel ramo ha incluso **18 file di TIM** in un commit di Trenitalia, che è stato pushato e
@@ -223,13 +258,35 @@ su quel ramo ha incluso **18 file di TIM** in un commit di Trenitalia, che è st
 nello showcase (spenta) e in `deck-routes.ts`. L'errore è stato dichiarato subito e il working tree
 è stato restituito a quel ramo senza toccare i loro file. **La decisione su che cosa farne è
 dell'owner** e sta nel backlog: togliere i file da `main`, togliere solo la card dello hub, o
-lasciarli. Finché restano, valgono per quell'app le stesse regole delle altre — panel review
-compresa, che non è mai stata lanciata.
+lasciarli. Il panel Round 2 è stato svolto con personas derivate (§38.1), ma non equivale a
+un'approvazione TIM né chiude la decisione sulla disponibilità pubblica.
 
 **La regola che resta, ed è la parte utile dell'incidente:** in questo repo **non si usa
 `git add -A`**, e si verifica il ramo prima di ogni commit. I file si elencano uno per uno. Dove
 due lavori insistono sullo stesso tree, il commit si fa da un **worktree separato** sul ramo
 giusto — è così che sono stati fatti i commit del 12 ottobre, senza sfiorare il lavoro altrui.
+
+### 38.1 Stato del deck e gate residuo
+
+Il deck è stato completato come bozza di lavoro: copertina, apertura, domanda, idee e rotta;
+include il ciclo ipotetico, la proposta di tavolo, un pilot senza target promessi e le condizioni
+di misurazione da definire con TIM. La skin, le fonti e le registrazioni per hub/admin sono nel
+repo. Build e typecheck precedenti sono passati; l'audit deck ha 0 difetti HARD, mentre i rilievi
+soft sono di composizione. Il Round 2 del 12 ott è stato svolto e archiviato localmente in
+`docs/TIM/panel/2026-10-12-round2/`: le cinque sedute erano personas derivate, non profili
+verificati, e non costituiscono approvazione del cliente. Non sono disponibili i risultati
+individuali originali; il verbale conserva solo i dati aggregati riportati nel checkpoint.
+
+Un titolo sulla produzione digitale e broadcast è stato reso esplorativo. La sequenza proposta
+chiede di concordare campagna, referenti, fonti, unità e periodo prima di misurare. Restano
+decisioni che solo l'owner o TIM possono chiudere: autorizzazione specifica al lockup Adobe × TIM,
+partecipanti e perimetro del pilot. Il permesso alla scheda dello showcase non sostituisce
+l'autorizzazione al lockup.
+
+Per ridurre l'esposizione accidentale, nel working tree il fallback della vetrina è
+`defaultPublished: false` e il layout TIM imposta `noindex` per difetto. Sono modifiche locali
+non ancora deployate; `noindex` non protegge l'URL diretto, che resta pubblico. Non applicare il
+seed remoto né attivare la vetrina finché non sono chiusi i gate dell'owner.
 
 ---
 

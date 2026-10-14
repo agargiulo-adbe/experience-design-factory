@@ -139,8 +139,12 @@ const jsStr = (s: string) => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'
 const sqlStr = (s: string) => `'${s.replace(/'/g, "''")}'`;
 const attr = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
+// `messaggio` è IL PUNTO del capitolo (vedi ChapterPoint): nasce come segnaposto
+// perché `audit:sintesi` lo bocci — un campo vuoto che passa un gate è peggio di
+// un campo assente, e il segnaposto è l'unico modo di farsi ricordare che la
+// frase va ancora scritta.
 const chaptersLiteral = chapters
-  .map((c) => `  { slug: ${jsStr(c.slug)}, num: '${c.num}', title: { it: ${jsStr(c.title.it)}, en: ${jsStr(c.title.en)} } },`)
+  .map((c) => `  { slug: ${jsStr(c.slug)}, num: '${c.num}', title: { it: ${jsStr(c.title.it)}, en: ${jsStr(c.title.en)} }, messaggio: 'DA SCRIVERE: che cosa cambia per il cliente, in una frase.' },`)
   .join('\n');
 
 const pageRegistry = [
@@ -152,6 +156,7 @@ const pageRegistry = [
     `  { slug: ${jsStr(c.slug)}, label: ${jsStr(`${c.title.it} (${c.num})`)}, slides: [`,
     `    { id: 'slide-cover',     label: ${jsStr(`Cover — ${c.title.it}`)} },`,
     `    { id: 'slide-contenuto', label: ${jsStr(`${c.title.it} — contenuto`)} },`,
+    `    { id: 'slide-punto',     label: ${jsStr('Il punto — la frase di chiusura')} },`,
     ...(i === n - 1 ? [`    { id: 'slide-signature', label: ${jsStr(`La firma — Adobe × ${client}`)} },`] : []),
     `  ]},`,
   ]),
@@ -390,6 +395,23 @@ register('scripts/lib/deck-routes.ts', 'ROUTE_SETS (ogni rotta) + CWD_ALIAS', (t
   return { text: out, snippet: `${routes}\n${aliasLine}` };
 });
 
+// lib/sintesi-apps.ts — il registro della sintesi. L'app nasce dichiarata: così il
+// gate la verifica dal primo giro e i segnaposto dei messaggi si vedono subito,
+// invece di scoprirli quando il deck è già davanti a qualcuno.
+register('scripts/lib/sintesi-apps.ts', 'SINTESI_SETS (il punto di ogni capitolo)', (text) => {
+  const key = `  ${jsStr(slug)}: {`;
+  if (text.includes(key)) return null;
+  const blocco = [
+    key,
+    `    escluse: ['home'],`,
+    `    fonti: ['src/data/chapters.ts'],`,
+    `  },`,
+  ].join('\n');
+  const e = text.indexOf('\n};', text.indexOf('const SINTESI_SETS'));
+  if (e === -1) throw new Error('lib/sintesi-apps.ts: non trovo SINTESI_SETS');
+  return { text: text.slice(0, e) + '\n' + blocco + text.slice(e), snippet: blocco };
+});
+
 // migrazione seed — numero libero successivo, modellata su 0015
 {
   const migDir = path.join(ROOT, 'supabase', 'migrations');
@@ -477,12 +499,18 @@ Resta da fare a mano (nell'ordine):
      e la riga in scripts/lib/cut-routes.ts. Poi \`pnpm audit:taglio --app ${slug}\`:
      un taglio che tiene due copie a mano diverge, sempre. Vedi
      skills/experience-design/references/taglio-dieci-minuti.md.
-  9. Verifica, nell'ordine: pnpm --filter ${slug} build && pnpm --filter ${slug} preview --port 4520
+  9. I MESSAGGI dei capitoli: in apps/${slug}/src/data/chapters.ts ogni capitolo nasce con
+     \`messaggio: 'DA SCRIVERE…'\`, e \`audit:sintesi\` lo boccia finché resta così. Una frase
+     per capitolo, 25 parole al massimo, e dice che cosa cambia per il cliente — non che
+     cosa fa il prodotto. Il test è il «So what?», ripetuto finché la risposta è una cosa
+     che il cliente vuole ottenere.
+ 10. Verifica, nell'ordine: pnpm --filter ${slug} build && pnpm --filter ${slug} preview --port 4520
      pnpm --silent exec tsx scripts/copy-audit.ts --app ${slug}           (0 HARD)
      DECK_URL=http://localhost:4520 pnpm audit:wrap   --app ${slug}
      DECK_URL=http://localhost:4520 pnpm audit:taglio --app ${slug}       (se c'è il taglio)
      DECK_URL=http://localhost:4520 pnpm --filter ${slug} audit:deck      (0 HARD: b c d e h j k m exp)
      DECK_URL=http://localhost:4520 pnpm audit:ink    --app ${slug}       (pulito)
      DECK_URL=http://localhost:4520 pnpm audit:fonti  --app ${slug}       (0 HARD)
+     DECK_URL=http://localhost:4520 pnpm audit:sintesi --app ${slug}      (0 HARD)
      poi screenshot a 1920 letti con gli occhi (apps/${slug}/scripts/shots.mjs).
 `);

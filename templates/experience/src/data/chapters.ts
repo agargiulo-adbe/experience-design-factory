@@ -11,6 +11,19 @@ export interface Chapter {
   slug: string;
   num: string;
   title: { it: string; en: string };
+  /**
+   * IL PUNTO del capitolo: una frase, e dice che cosa cambia per IL CLIENTE —
+   * non che cosa fa il prodotto. Reso in fondo al capitolo dal blocco
+   * `ChapterPoint`, e da nessun'altra parte: sette punti su una slide sono
+   * esattamente la densità che il punto esiste per togliere.
+   *
+   * Obbligatorio di proposito: un capitolo nuovo senza il suo punto non compila,
+   * che è un vincolo più forte di qualunque gate. Il resto lo verifica
+   * `pnpm audit:sintesi` — una frase sola, 25 parole al massimo, presa da qui e
+   * non riscritta nel markup. Il test di scrittura è il «So what?»: si chiede
+   * finché la risposta è una cosa che il cliente vuole ottenere.
+   */
+  messaggio: string;
 }
 
 export const CHAPTERS: Chapter[] = [
