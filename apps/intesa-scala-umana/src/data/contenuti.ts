@@ -93,12 +93,12 @@ export const STRATI: Strato[] = [
     kind: 'base',
     t: { it: 'Quello che avete già', en: 'What you already have' },
     s: {
-      it: 'Analytics, già in uso e già in cloud · Experience Manager e Forms, oggi dentro la banca',
-      en: 'Analytics, already in use and already in the cloud · Experience Manager and Forms, today inside the bank',
+      it: 'Da fuori risultano Analytics, Experience Manager e Forms già in casa: perimetro e versioni li verifichiamo con chi li governa',
+      en: 'From outside, Analytics, Experience Manager and Forms look already in place: scope and versions we check with whoever runs them',
     },
     sBreve: {
-      it: 'Analytics, già in uso e già in cloud · Experience Manager e Forms, dentro la banca',
-      en: 'Analytics, already in use and in the cloud · Experience Manager and Forms, inside the bank',
+      it: 'Analytics, Experience Manager e Forms risultano già in casa: perimetro e versioni da verificare',
+      en: 'Analytics, Experience Manager and Forms look already in place: scope and versions to be checked',
     },
   },
   {
@@ -118,12 +118,12 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie cosa esce, su che canale e quanto spesso, senza rifare nulla di quello che c’è',
-      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often, without redoing any of it',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie cosa esce, su che canale e quanto spesso, sopra i decisori che restano al loro posto',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often, above the decision engines that stay where they are',
     },
     sBreve: {
-      it: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già',
-      en: 'One arbiter in front of the customer, on top of the models you already have',
+      it: 'Un solo arbitro davanti al cliente, sopra i decisori che avete già',
+      en: 'One arbiter in front of the customer, above the decision engines you already have',
     },
     href: '#slide-decisioning',
   },
@@ -250,8 +250,8 @@ export const OBIETTIVI: Obiettivo[] = [
   {
     n: '02',
     goal: {
-      it: '<b>100% delle applicazioni in cloud entro il 2029</b>, dal 64% di fine 2025, dentro 4,6 miliardi di nuovi investimenti IT.',
-      en: '<b>100% of applications in the cloud by 2029</b>, from 64% at the end of 2025, within €4.6 billion of new IT investment.',
+      it: '<b>Quasi il 100% delle applicazioni in cloud entro il 2029</b>, dal 64% di fine 2025, dentro 4,6 miliardi di nuovi investimenti IT.',
+      en: '<b>Almost 100% of applications in the cloud by 2029</b>, from 64% at the end of 2025, within €4.6 billion of new IT investment.',
     },
     ask: {
       it: 'La rotta è decisa e vale anche per quello che gestisce i contenuti e i moduli: il tema non è se muoverli, è che cosa si guadagna nel farlo.',
@@ -271,6 +271,20 @@ export const OBIETTIVI: Obiettivo[] = [
   },
 ];
 
+/**
+ * Il titolo della slide degli obiettivi, in un posto solo.
+ *
+ * Era scritto a mano in due pagine, e il 15 ott 2026 è stato corretto: diceva
+ * «Tre obiettivi del vostro piano», ma il terzo — i 20 miliardi dell'8 ottobre
+ * — non è un obiettivo del Piano d'Impresa, è un annuncio arrivato otto mesi
+ * dopo. Il fact-check del panel l'ha bocciato, e `audit:taglio` ha bocciato il
+ * fatto che la correzione vivesse in due copie. Ora ne esiste una.
+ */
+export const TITOLO_OBIETTIVI: Bilingue = {
+  it: 'Tre cose che avete dichiarato quest’anno',
+  en: 'Three things you stated this year',
+};
+
 /** La nota che distingue la loro parola dalla nostra lettura. */
 /**
  * La stessa cosa dei tre OBIETTIVI, detta in una riga: serve al taglio «In dieci
@@ -278,8 +292,8 @@ export const OBIETTIVI: Obiettivo[] = [
  * sono gli stessi di sopra — se uno cambia, deve cambiare in un posto solo.
  */
 export const SINTESI_OBIETTIVI: Bilingue = {
-  it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutti e tre passano da quello che il cliente legge.',
-  en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads.',
+  it: 'Tre cose che avete dichiarato quest’anno: 2,5 milioni di clienti netti in più, quasi il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutte e tre passano da quello che il cliente legge.',
+  en: 'Three things you stated this year: 2.5 million net new customers, almost 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads.',
 };
 
 export const NOTA_OBIETTIVI: Bilingue = {
@@ -301,6 +315,6 @@ export const DOMANDA_LETTURA: Bilingue = {
    due versioni diverse della richiesta sono il modo più rapido di sembrare
    confusi. */
 export const ASK: Bilingue = {
-  it: 'Un tavolo in due: voi un referente, due casi e una data. Noi le persone, la piattaforma e la risposta scritta.',
-  en: 'A table for two: you bring a contact, two cases and a date. We bring the people, the platform and the written answer.',
+  it: 'Un tavolo in due: voi i referenti di contenuto, dati e targeting, due casi e una data. Noi le persone, la piattaforma e la risposta scritta.',
+  en: 'A table for two: you bring the content, data and targeting leads, two cases and a date. We bring the people, the platform and the written answer.',
 };

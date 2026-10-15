@@ -29,6 +29,13 @@
  * Reso UNA volta per capitolo, e basta. Sette messaggi raccolti sulla home sono
  * esattamente la densità che questa slide esiste per togliere.
  *
+ * BILINGUE
+ * `messaggio` accetta una stringa (experience in una lingua) oppure `{it, en}`:
+ * nel secondo caso lo rende `<T>`, che tiene ENTRAMBE le lingue nel DOM e lascia
+ * alla CSS su `html[data-lang]` il compito di mostrare quella attiva. Dieci dei
+ * quattordici deck sono bilingui: un blocco che accetta solo una stringa li
+ * taglierebbe fuori tutti.
+ *
  * INCHIOSTRO
  * Il blocco vive DENTRO la slide, quindi prende l'inchiostro dalla superficie che
  * la slide dichiara (`--ink-primary` e compagnia), e si ribalta con lei dove la
@@ -44,14 +51,18 @@
  * Va registrata nel `PAGE_REGISTRY` dell'admin come ogni slide nuova.
  */
 import Slide from './Slide.astro';
+import T from '../i18n/T.astro';
+
+/** Una stringa (experience in una lingua) o le due/tre lingue (contratto `<T>`). */
+export type Testo = string | { it: string; en: string; fr?: string };
 
 interface Props {
   /** Il punto del capitolo: UNA frase, ciò che cambia per il cliente. Dai dati. */
-  messaggio: string;
+  messaggio: Testo;
   /** Occhiello. Si cambia solo se l'experience parla un'altra lingua. */
-  eyebrow?: string;
+  eyebrow?: Testo;
   /** Riga opzionale sotto: il passo, o il legame con il capitolo che segue. */
-  passo?: string;
+  passo?: Testo;
   id?: string;
   bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
   class?: string;
@@ -70,9 +81,15 @@ const {
 <Slide id={id} bg={bg} align="center" data-punto class={className} {...rest}>
   <slot name="backdrop" slot="backdrop" />
   <div class="edf-punto" data-reveal>
-    <p class="edf-punto-k">{eyebrow}</p>
-    <p class="edf-punto-t" data-reveal data-reveal-delay="0.08" set:html={messaggio} />
-    {passo && <p class="edf-punto-p" data-reveal data-reveal-delay="0.18">{passo}</p>}
+    {typeof eyebrow === 'string'
+      ? <p class="edf-punto-k">{eyebrow}</p>
+      : <T as="p" class="edf-punto-k" it={eyebrow.it} en={eyebrow.en} fr={eyebrow.fr} />}
+    {typeof messaggio === 'string'
+      ? <p class="edf-punto-t" data-reveal data-reveal-delay="0.08" set:html={messaggio} />
+      : <T as="p" class="edf-punto-t" it={messaggio.it} en={messaggio.en} fr={messaggio.fr} data-reveal data-reveal-delay="0.08" />}
+    {passo && (typeof passo === 'string'
+      ? <p class="edf-punto-p" data-reveal data-reveal-delay="0.18" set:html={passo} />
+      : <T as="p" class="edf-punto-p" it={passo.it} en={passo.en} fr={passo.fr} data-reveal data-reveal-delay="0.18" />)}
   </div>
 </Slide>
 

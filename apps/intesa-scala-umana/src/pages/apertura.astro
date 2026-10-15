@@ -4,11 +4,12 @@ import IsuNavigation from '../components/IsuNavigation.astro';
 import IsuGauge from '../components/IsuGauge.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
 import { SOURCES } from '../data/sources';
-import { NUMERI as numeri, OBIETTIVI as obiettivi, NOTA_OBIETTIVI } from '../data/contenuti';
+import { NUMERI as numeri, OBIETTIVI as obiettivi, NOTA_OBIETTIVI, TITOLO_OBIETTIVI, DOMANDA_LETTURA } from '../data/contenuti';
 import bgStacco from '../assets/generated/bg/stacco-anno.jpg';
 import bgAnno from '../assets/generated/bg/light-anno.jpg';
 import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
@@ -73,8 +74,8 @@ const currentPath = Astro.url.pathname;
         <T
           as="h2"
           class="isu-title mt-3 text-[var(--ink-primary)]"
-          it="Tre obiettivi del vostro piano"
-          en="Three goals from your plan"
+          it={TITOLO_OBIETTIVI.it}
+          en={TITOLO_OBIETTIVI.en}
         />
         <hr class="isu-rule mx-auto" />
 
@@ -99,8 +100,10 @@ const currentPath = Astro.url.pathname;
           en={NOTA_OBIETTIVI.en}
         />
         <p class="isu-note mt-2 mx-auto">
-          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
-          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
+          <span data-lang-it>Primi due: {SOURCES.piano.label.it}</span><span data-lang-en>First two: {SOURCES.piano.label.en}</span>
+          · <a href={SOURCES.piano.url} target="_blank" rel="noopener noreferrer">{SOURCES.piano.short}</a>
+          · <span data-lang-it>terzo: {SOURCES.pmi20mld.label.it}</span><span data-lang-en>third: {SOURCES.pmi20mld.label.en}</span>
+          · <a href={SOURCES.pmi20mld.url} target="_blank" rel="noopener noreferrer">{SOURCES.pmi20mld.short}</a>
         </p>
       </div>
     </Slide>
@@ -131,8 +134,8 @@ const currentPath = Astro.url.pathname;
         <T
           as="p"
           class="isu-ask mt-2 mx-auto"
-          it="Questa lettura regge, vista da dentro?"
-          en="Does this reading hold, seen from the inside?"
+          it={DOMANDA_LETTURA.it}
+          en={DOMANDA_LETTURA.en}
         />
         <p class="isu-note mt-6 mx-auto">
           <span data-lang-it>{SOURCES.tecnologia.label.it}</span>
@@ -141,6 +144,15 @@ const currentPath = Astro.url.pathname;
         </p>
       </div>
     </Slide>
+
+    <!-- ── Il punto: la frase con cui il capitolo si chiude ─────────────────
+         Il messaggio sta in src/data/chapters.ts e dice la CONSEGUENZA, non il
+         riassunto. Bilingue: il blocco rende entrambe le lingue (contratto <T>). -->
+    <ChapterPoint
+      messaggio={ch.messaggio}
+      eyebrow={{ it: 'Il punto', en: 'The point' }}
+      data-made-with=""
+    />
 
   </DeckContainer>
 </BaseLayout>

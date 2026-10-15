@@ -9,6 +9,7 @@ import IsuArbiter from '../components/IsuArbiter.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
@@ -22,6 +23,7 @@ import bgViaggio from '../assets/generated/bg/dark-viaggio.jpg';
 import bgProva from '../assets/generated/bg/light-prova.jpg';
 import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
 import bgPercorsoUsi from '../assets/generated/bg/light-percorso.jpg';
+import bgGestore from '../assets/generated/bg/cover-scala.jpg';
 
 const SLUG = 'idee';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -118,8 +120,8 @@ const giro = [
     n: '03',
     t: { it: 'Che cosa si corregge', en: 'What gets fixed' },
     d: {
-      it: 'Le correzioni suggerite si pubblicano su Experience Manager Sites senza aprire un progetto con l’IT.',
-      en: 'Suggested fixes publish straight to Experience Manager Sites without opening an IT project.',
+      it: 'Le correzioni suggerite si pubblicano sui template già approvati di Experience Manager Sites, senza un rilascio applicativo. Il flusso di approvazione resta il vostro.',
+      en: 'Suggested fixes publish onto the already-approved Experience Manager Sites templates, with no application release. The approval flow stays yours.',
     },
   },
   {
@@ -154,8 +156,8 @@ const regole = [
   {
     t: { it: 'Filtra', en: 'Filter' },
     d: {
-      it: 'Regole di ammissibilità: che cosa può essere mostrato a chi, e in quale momento.',
-      en: 'Eligibility rules: what can be shown to whom, and when.',
+      it: 'Prima il consenso per finalità e canale e i limiti di contatto della banca, che la decisione legge e non riscrive. Poi le altre regole di ammissibilità.',
+      en: 'Consent by purpose and channel first, plus the bank’s own contact limits: the decision reads them and does not rewrite them. Then the other eligibility rules.',
     },
   },
   {
@@ -169,10 +171,53 @@ const regole = [
 const esito = {
   t: { it: 'Una cosa sola, nel momento giusto', en: 'One single thing, at the right moment' },
   d: {
-    it: 'Non la somma di quello che ogni sistema avrebbe mandato per conto suo. Un pagamento rifiutato al POS, e nello stesso minuto in app arriva la proposta giusta per quella persona: l’informazione c’era già, mancava qualcuno che decidesse di usarla subito.',
-    en: 'Not the sum of what every system would have sent on its own. A card declined at the till, and in the same minute the right proposal appears in the app: the information was already there, what was missing was someone deciding to use it straight away.',
+    it: 'Non la somma di quello che ogni sistema avrebbe mandato per conto suo. Una pratica lasciata a metà sul sito il martedì, e il giovedì il cliente la ritrova dove si era fermato invece di tre messaggi diversi: l’informazione c’era già, mancava qualcuno che decidesse che cosa farne.',
+    en: 'Not the sum of what every system would have sent on its own. An application left half-finished on the website on Tuesday, and on Thursday the customer picks it up where it stopped instead of getting three different messages: the information was already there, what was missing was someone deciding what to do with it.',
   },
 };
+
+/* ── La decisione che arriva al banco ──────────────────────────────────
+ * Tre passi, non un diagramma nuovo: la geometria è quella della rotta
+ * (`.isu-path`), che l'audit attraversa già pulita.
+ *
+ * PERCHÉ QUESTA SLIDE ESISTE. La Divisione ha dichiarato tre direzioni e la
+ * prima è «evoluzione agentica degli strumenti a supporto della Rete». Il
+ * deck, fino al 15 ottobre, parlava solo di canali digitali: un documento
+ * intitolato «Su scala umana» in cui la persona che il cliente ha davanti non
+ * compariva mai. Questa slide non rivendica quella direzione — la tocca nel
+ * solo punto in cui possiamo dire qualcosa di verificabile.
+ *
+ * LA FONTE È OBBLIGATORIA QUI PIÙ CHE ALTROVE: è l'unica pagina dove Adobe
+ * descrive il caso per esteso (le API della decisione che alimentano il
+ * portale di chi riceve le chiamate). Senza, sarebbe una capacità raccontata
+ * a parole nostre.
+ */
+const alBanco = [
+  {
+    n: '01',
+    t: { it: 'La decisione esiste già', en: 'The decision already exists' },
+    d: {
+      it: 'Lo stesso arbitro della pagina prima, con le stesse regole.',
+      en: 'The same arbiter as the page before, with the same rules.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'L’applicazione la chiede', en: 'The application asks for it' },
+    d: {
+      it: 'Le applicazioni di rete chiedono la decisione quando si apre la scheda, e ricevono JSON.',
+      en: 'The branch applications ask for the decision as the record opens, and get JSON back.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'La persona sceglie', en: 'The person chooses' },
+    d: {
+      it: 'La proposta compare accanto al cliente. Decide il Gestore, non il motore.',
+      en: 'The proposal appears next to the customer. The advisor decides, not the engine.',
+    },
+  },
+];
 
 /* ── Una persona sola · il viaggio intero ─────────────────────────────── */
 const tappeViaggio = [
@@ -200,14 +245,9 @@ const casiUso = [
     d: { it: 'Gruppi di persone trovati qui e pubblicati sul profilo, pronti da usare', en: 'Groups found here and published to the profile, ready to use' },
   },
   {
-    t: { it: 'Che cosa ha pesato', en: 'What counted' },
-    d: { it: 'L’attribuzione: uno dei casi, non il titolo', en: 'Attribution: one of the cases, not the headline' },
+    t: { it: 'Che cosa sarebbe successo comunque', en: 'What would have happened anyway' },
+    d: { it: 'Un gruppo di controllo sulla stessa audience; l’attribuzione viene dopo, e ordina le leve', en: 'A control group on the same audience; attribution comes after, and ranks the levers' },
   },
-];
-
-const letture = [
-  { k: { it: 'Primo tocco', en: 'First touch' }, w: [100, 0, 0, 0, 0] },
-  { k: { it: 'Algoritmico', en: 'Algorithmic' }, w: [42, 26, 16, 34, 12] },
 ];
 
 /* ── La prova ─────────────────────────────────────────────────────────────
@@ -226,7 +266,7 @@ const prova = [
   {
     v: '+600%',
     l: { it: 'conversioni', en: 'conversions' },
-    s: { it: 'sulle campagne di recupero del carrello', en: 'on cart recovery campaigns' },
+    s: { it: 'sulle campagne di ripresa delle richieste interrotte, attivate in 15 minuti invece che dopo tre giorni', en: 'on campaigns that pick up abandoned applications, triggered in 15 minutes instead of after three days' },
   },
   {
     v: '4.400',
@@ -259,8 +299,8 @@ const prova = [
         <T
           as="p"
           class="isu-lead mx-auto"
-          it="Dove ci appoggiamo su quello che avete già, e una banca che ha fatto la stessa strada."
-          en="Where we build on what you already have, and a bank that walked the same road."
+          it="Dove ci appoggiamo su quello che avete già, e una banca che ha fatto una strada vicina."
+          en="Where we build on what you already have, and a bank that walked a nearby road."
         />
       </div>
     </Slide>
@@ -327,6 +367,7 @@ const prova = [
           title="filiera"
           tone="onDark"
           label="Come funziona, in concreto"
+          labelEn="How it actually works"
           class="isu-hiw mb-3"
         >
           <p>
@@ -389,8 +430,8 @@ const prova = [
           <T
             as="span"
             class="isu-pipe-rail-t"
-            it="è quanto converte in più chi arriva da una risposta generata, rispetto al traffico da ricerca organica. Brand Visibility unisce le due metà: l’intelligenza di Semrush su come il marchio appare nelle risposte, e la correzione che si pubblica da Adobe."
-            en="is how much better traffic arriving from a generated answer converts, compared with organic search. Brand Visibility joins the two halves: Semrush intelligence on how the brand shows up in answers, and the fix you publish from Adobe."
+            it="converte chi arriva da una risposta generata rispetto a chi arriva dalla ricerca organica: è un confronto fra sorgenti di traffico, media fra settori, non un effetto dello strumento. Brand Visibility unisce le due metà: l’intelligenza di Semrush su come il marchio appare nelle risposte, e la correzione che si pubblica da Adobe."
+            en="is how traffic arriving from a generated answer converts against traffic from organic search: a comparison between sources, averaged across industries, not an effect of the tool. Brand Visibility joins the two halves: Semrush intelligence on how the brand shows up in answers, and the fix you publish from Adobe."
           />
         </div>
 
@@ -398,6 +439,12 @@ const prova = [
         <p class="isu-note">
           <span data-lang-it>{SOURCES.brandVisibility.label.it}</span><span data-lang-en>{SOURCES.brandVisibility.label.en}</span>
           · <a href={SOURCES.brandVisibility.url} target="_blank" rel="noopener noreferrer">{SOURCES.brandVisibility.short}</a>
+        </p>
+        <p class="isu-note">
+          <span data-lang-it>Il 60%: {SOURCES.bain.label.it}</span><span data-lang-en>The 60%: {SOURCES.bain.label.en}</span>
+          · <a href={SOURCES.bain.url} target="_blank" rel="noopener noreferrer">{SOURCES.bain.short}</a>
+          · <span data-lang-it>il 4,4×: {SOURCES.semrush.label.it}</span><span data-lang-en>the 4.4×: {SOURCES.semrush.label.en}</span>
+          · <a href={SOURCES.semrush.url} target="_blank" rel="noopener noreferrer">{SOURCES.semrush.short}</a>
         </p></div>
       </div>
     </Slide>
@@ -445,6 +492,71 @@ const prova = [
       </div>
     </Slide>
 
+    <!-- ── La decisione che arriva al banco ──────────────────────────────
+         Fondo scuro: è un cambio di registro, si esce dal canale e si arriva
+         alla persona. Lo sfondo delle fibre che convergono era l'unico del
+         set rimasto libero, ed è il disegno giusto per questo passaggio. -->
+    <Slide id="slide-gestore" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgGestore.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Lo stesso arbitro, dall’altra parte del banco"
+          en="The same arbiter, on the other side of the desk"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="La stessa decisione, sullo schermo del Gestore"
+          en="The same decision, on the advisor’s screen"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <T
+          as="p"
+          class="isu-lead mx-auto mb-8"
+          it="Nella vostra pagina sulla convergenza la relazione umana resta al centro «e viene potenziata cross-canale». È la seconda metà quella che ci riguarda: la stessa decisione che esce in app può comparire anche a chi il cliente lo ha davanti."
+          en="In your own page on convergence the human relationship stays at the centre “and is strengthened cross-channel”. It is the second half that concerns us: the same decision that goes out in the app can also appear to whoever has the customer in front of them."
+        />
+
+        <ol class="isu-path mb-7" role="list">
+          {alBanco.map((p) => (
+            <li role="listitem" class="isu-path-step">
+              <span class="isu-path-dot" aria-hidden="true"></span>
+              <span class="isu-num block mb-1">{p.n}</span>
+              <T as="h3" class="isu-col-title text-lg" it={p.t.it} en={p.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={p.d.it} en={p.d.en} />
+            </li>
+          ))}
+        </ol>
+
+        <HowItWorks
+          title="al-banco"
+          tone="onDark"
+          label="Che cosa comporta, in pratica"
+          labelEn="What it takes, in practice"
+          class="isu-hiw mt-4 mb-3"
+        >
+          <p>
+            <span data-lang-it><b>Lo schermo resta il vostro.</b> Il canale si chiama «code-based experience»: non rende una pagina, restituisce JSON a qualunque applicazione lo chieda, e quella decide come mostrarlo. Adobe lo documenta per postazioni di questo tipo, chiosco e sportello compresi. Non è una schermata che consegniamo noi: è un’integrazione sulle vostre, e le applicazioni di rete sono più d’una. Quante, e chi le governa, è una delle cose da mettere sul tavolo.</span>
+            <span data-lang-en><b>The screen stays yours.</b> The channel is called “code-based experience”: it does not render a page, it returns JSON to whichever application asks for it, and that application decides how to show it. Adobe documents it for exactly this kind of workstation, kiosks and counters included. This is not a screen we ship: it is an integration on yours, and the branch applications are more than one. How many, and who runs them, is one of the things for the table.</span>
+          </p>
+          <p>
+            <span data-lang-it><b>Vale quanto vale il profilo.</b> La decisione legge il profilo dove il profilo vive, come nella pagina prima. È lo stesso punto aperto, e la stessa risposta: si verifica su un’architettura vera prima di promettere una data.</span>
+            <span data-lang-en><b>It is worth what the profile is worth.</b> The decision reads the profile where the profile lives, as on the page before. Same open point, same answer: it gets checked against a real architecture before any date is promised.</span>
+          </p>
+        </HowItWorks>
+
+        <div class="isu-credits"><p class="isu-products">Journey Optimizer · canale code-based experience</p>
+        <p class="isu-note">
+          <span data-lang-it>{SOURCES.codeBased.label.it}</span><span data-lang-en>{SOURCES.codeBased.label.en}</span>
+          · <a href={SOURCES.codeBased.url} target="_blank" rel="noopener noreferrer">{SOURCES.codeBased.short}</a>
+          · <span data-lang-it>la frase citata: {SOURCES.cetif.label.it}</span><span data-lang-en>the quoted line: {SOURCES.cetif.label.en}</span>
+        </p></div>
+      </div>
+    </Slide>
+
     <!-- ── Una persona sola · il viaggio intero ──────────────────────────── -->
     <Slide id="slide-viaggio" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgViaggio.src})`}></div>
@@ -465,10 +577,9 @@ const prova = [
 
         <IsuJourney
           stops={tappeViaggio}
-          readings={letture}
           cap={{
-            it: 'Il filo in alto è la fondazione: lo stesso cliente riconosciuto su tutte le tappe. Le due righe sotto sono uno dei suoi usi, con proporzioni di esempio, e mostrano che il modello si applica quando il dato si legge, non quando si raccoglie: vale anche sul passato.',
-            en: 'The thread above is the foundation: the same customer recognised at every step. The two rows below are one of its uses, with illustrative proportions, and show that the model applies when the data is read, not when it is collected: it holds for the past too.',
+            it: 'Il filo è la fondazione: lo stesso cliente riconosciuto su tutte le tappe. Da lì in poi il merito di ogni passaggio si può leggere in più modi, e il modello si sceglie dopo, perché si applica quando il dato si legge e non quando si raccoglie: vale anche sul passato.',
+            en: 'The thread is the foundation: the same customer recognised at every step. From there the credit for each step can be read in more than one way, and the model is chosen later, because it applies when the data is read rather than when it is collected: it holds for the past too.',
           }}
           class="mb-4"
         />
@@ -477,6 +588,7 @@ const prova = [
           title="viaggio"
           tone="onDark"
           label="Che cosa comporta, in pratica"
+          labelEn="What it takes, in practice"
           class="isu-hiw mt-4 mb-3"
         >
           <p>
@@ -555,6 +667,10 @@ const prova = [
             en="Today the question goes through an analyst, and waits its turn. With CX Enterprise Coworker it comes from whoever has the problem, written as they would say it, and the answer comes back off the journey data. The foundation stops going through a single desk."
           />
         </div>
+        <p class="isu-note mt-4 mx-auto">
+          <span data-lang-it>{SOURCES.coworker.label.it}</span><span data-lang-en>{SOURCES.coworker.label.en}</span>
+          · <a href={SOURCES.coworker.url} target="_blank" rel="noopener noreferrer">{SOURCES.coworker.short}</a>
+        </p>
       </div>
     </Slide>
 
@@ -596,6 +712,15 @@ const prova = [
         </p>
       </div>
     </Slide>
+
+    <!-- ── Il punto: la frase con cui il capitolo si chiude ─────────────────
+         Il messaggio sta in src/data/chapters.ts e dice la CONSEGUENZA, non il
+         riassunto. Bilingue: il blocco rende entrambe le lingue (contratto <T>). -->
+    <ChapterPoint
+      messaggio={ch.messaggio}
+      eyebrow={{ it: 'Il punto', en: 'The point' }}
+      data-made-with=""
+    />
 
   </DeckContainer>
 </BaseLayout>

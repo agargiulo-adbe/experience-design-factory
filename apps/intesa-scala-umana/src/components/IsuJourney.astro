@@ -29,11 +29,16 @@ interface Props {
   /** Le tappe del percorso, in ordine. */
   stops: Bilingual[];
   /** Le due letture: etichetta + pesi schematici (0-100) per ogni tappa. */
-  readings: Array<{ k: Bilingual; w: number[] }>;
+  /** Le letture a confronto. OPZIONALE: senza, resta il solo filo delle tappe.
+   *  Tolte da `intesa-scala-umana` il 15 ott 2026 su richiesta del panel — due
+   *  personas le hanno lette come dati di Intesa, e la riga «proporzioni di
+   *  esempio» in corpo piccolo non basta a smentirlo in uno screenshot girato
+   *  per posta. */
+  readings?: Array<{ k: Bilingual; w: number[] }>;
   cap: Bilingual;
   class?: string;
 }
-const { stops, readings, cap, class: className } = Astro.props as Props;
+const { stops, readings = [], cap, class: className } = Astro.props as Props;
 const cols = `--jny-cols: ${stops.length}`;
 ---
 <div class:list={['isu-jny', className]} style={cols}>

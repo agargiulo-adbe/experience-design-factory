@@ -4,10 +4,13 @@ import IsuNavigation from '../components/IsuNavigation.astro';
 import IsuFlow from '../components/IsuFlow.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
+import { SOURCES } from '../data/sources';
 import bgStacco from '../assets/generated/bg/stacco-domanda.jpg';
+import bgDirezioni from '../assets/generated/bg/dark-exec.jpg';
 import bgSpostamento from '../assets/generated/bg/dark-spostamento.jpg';
 import bgDomande from '../assets/generated/bg/dark-domande.jpg';
 
@@ -36,6 +39,60 @@ const currentPath = Astro.url.pathname;
  * preoccupazione. Il vocabolario su consenso e preferenze resta quello
  * corretto ovunque serva: non è cambiata la regola, è cambiato il bersaglio.
  */
+/**
+ * LE TRE DIREZIONI, PAROLE LORO.
+ *
+ * Vengono dall'ultima pagina dell'intervento della Divisione al workshop CETIF
+ * del 17 settembre 2026: tre blocchi, nessun meccanismo sotto. `t` è la loro
+ * frase alla lettera e non si tocca; `s` è la nostra posizione su quella
+ * direzione, e la distinzione fra le due è dichiarata in pagina — la stessa
+ * regola dei tre obiettivi del primo capitolo.
+ *
+ * PERCHÉ NON SI NOMINA CHI HA PARLATO. Chi ha tenuto quell'intervento non è in
+ * sala e non è ancora un interlocutore nostro: scriverne il nome lo farebbe
+ * sembrare tale. La Divisione, invece, si cita senza presumere niente — ed è
+ * comunque la cosa che dimostra che abbiamo letto loro e non il comunicato.
+ *
+ * PERCHÉ NON SI PRENDONO TUTTE E TRE. Rivendicare le tre direzioni intere è il
+ * modo più rapido di perdere la stanza: la prima è il mestiere della Rete, e
+ * dirlo vale più di una capacità in più nell'elenco.
+ */
+const direzioni = [
+  {
+    k: { it: 'Agentica', en: 'Agentic' },
+    t: {
+      it: 'Evoluzione agentica degli strumenti a supporto della Rete',
+      en: 'Agentic evolution of the tools that support the branch network',
+    },
+    s: {
+      it: 'Il mestiere è vostro. La sfioriamo in un punto solo: la decisione può arrivare anche sullo schermo di chi il cliente lo ha davanti.',
+      en: 'The craft is yours. We touch it at one point only: the decision can also land on the screen of whoever has the customer in front of them.',
+    },
+  },
+  {
+    k: { it: 'Conversazionale', en: 'Conversational' },
+    t: {
+      it: 'Evoluzione conversazionale dell’esperienza cliente',
+      en: 'Conversational evolution of the customer experience',
+    },
+    s: {
+      it: 'Qui ne tocchiamo un pezzo: come vi raccontano gli assistenti, quando la prima risposta non la date voi.',
+      en: 'Here we touch one piece: how the assistants describe you, when the first answer is not yours to give.',
+    },
+  },
+  {
+    k: { it: 'Opticanale', en: 'Optichannel' },
+    t: {
+      it: 'Orchestrazione opticanale della relazione',
+      en: 'Optichannel orchestration of the relationship',
+    },
+    s: {
+      it: 'Qui sta il peso di quello che abbiamo da dire, ed è il capitolo che segue.',
+      en: 'This is where the weight of what we have to say sits, and it is the chapter that follows.',
+    },
+  },
+];
+
 const domande = [
   {
     n: '01',
@@ -86,9 +143,53 @@ const domande = [
         <T
           as="p"
           class="isu-lead mx-auto"
-          it="Quattro cose che vorremmo capire prima di proporre qualunque cosa."
-          en="Four things we would like to understand before proposing anything at all."
+          it="Tre direzioni le avete dichiarate voi. Quattro cose vorremmo capirle prima di proporre."
+          en="Three directions you set out yourselves. Four things we would like to understand before proposing."
         />
+      </div>
+    </Slide>
+
+    <!-- ── Le tre direzioni dichiarate dalla Divisione ───────────────────
+         Apre il capitolo perché è la loro cornice, non la nostra: la slide
+         dopo è una NOSTRA lettura, e una lettura si appoggia su qualcosa che
+         ha detto chi la riceve. Fondo scuro con le linee di contorno, che è
+         l'unico sfondo del set che disegna tre correnti che convergono. -->
+    <Slide id="slide-direzioni" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgDirezioni.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T
+          as="p"
+          class="slide-eyebrow"
+          it="Dalla vostra Divisione, a settembre"
+          en="From your Division, in September"
+        />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Tre direzioni: sono ancora queste?"
+          en="Three directions: are these still the ones?"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="grid gap-x-7 gap-y-6 lg:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
+          {direzioni.map((d) => (
+            <li role="listitem" class="isu-dir h-full min-w-0">
+              <T as="span" class="isu-dir-k" it={d.k.it} en={d.k.en} />
+              <T as="p" class="isu-col-title" it={d.t.it} en={d.t.en} />
+              <T as="p" class="isu-col-sub" it={d.s.it} en={d.s.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-ask mx-auto"
+          it="Le parole sono vostre, e le abbiamo sentite a settembre. Le tocchiamo tutte e tre, con pesi molto diversi. La prima domanda è se sono ancora queste."
+          en="The words are yours, and we heard them in September. We touch all three, with very different weights. The first question is whether these are still the ones."
+        />
+        <p class="isu-note mt-5 mx-auto">
+          <span data-lang-it>{SOURCES.cetif.label.it}</span><span data-lang-en>{SOURCES.cetif.label.en}</span>
+        </p>
       </div>
     </Slide>
 
@@ -114,15 +215,16 @@ const domande = [
         <T
           as="p"
           class="isu-lead mx-auto"
-          it="Il 95% dei prodotti per i privati è già gestibile digitalmente e circa il 70% dei journey è già omnicanale: i numeri sono vostri, e dicono che il canale c’è. Quello che resta aperto è quanta materia serve per riempirlo, chi la scrive, chi la aggiorna quando cambia un’offerta, e come si distingue il passaggio che ha spostato il risultato da quello che era solo di passaggio."
-          en="95% of retail products can already be handled digitally and around 70% of journeys are already omnichannel: the figures are yours, and they say the channel is there. What stays open is how much material it takes to fill it, who writes it, who updates it when an offer changes, and how anyone tells the step that moved the outcome from the step that was merely passed through."
+          it="Il 95% dei prodotti per i privati è già gestibile digitalmente, e circa il 70% dei journey è già omnicanale. I numeri sono vostri, e dicono che il canale c’è. Non dicono dove si chiude il valore, e quello vorremmo sentirlo da voi. Resta aperto quanta materia serve per riempire il canale, chi la scrive e chi la aggiorna quando cambia un’offerta. E come si distingue il passaggio che ha spostato il risultato da quello che era solo di passaggio."
+          en="95% of retail products can already be handled digitally, and around 70% of journeys are already omnichannel. The figures are yours, and they say the channel is there. They do not say where the value closes, and that we would rather hear from you. What stays open is how much material it takes to fill the channel, who writes it and who updates it when an offer changes. And how anyone tells the step that moved the outcome from the step that was merely passed through."
         />
         <T
           as="p"
           class="isu-note mt-5 mx-auto"
-          it="Questa è una nostra lettura, costruita sui due numeri che avete pubblicato voi. Se da dentro si vede diversamente, è la prima cosa che ci interessa sentire."
-          en="This is our reading, built on two figures you published yourselves. If it looks different from the inside, that is the first thing we want to hear."
+          it="Questa è una nostra lettura, costruita su numeri che avete pubblicato voi. Il 70% dice quanti percorsi sono coperti, non quanta operatività ci passa: se da dentro si vede diversamente, è la prima cosa che ci interessa sentire."
+          en="This is our reading, built on figures you published yourselves. The 70% says how many journeys are covered, not how much of the work runs through them: if it looks different from the inside, that is the first thing we want to hear."
         />
+
       </div>
     </Slide>
 
@@ -166,6 +268,15 @@ const domande = [
         />
       </div>
     </Slide>
+
+    <!-- ── Il punto: la frase con cui il capitolo si chiude ─────────────────
+         Il messaggio sta in src/data/chapters.ts e dice la CONSEGUENZA, non il
+         riassunto. Bilingue: il blocco rende entrambe le lingue (contratto <T>). -->
+    <ChapterPoint
+      messaggio={ch.messaggio}
+      eyebrow={{ it: 'Il punto', en: 'The point' }}
+      data-made-with=""
+    />
 
   </DeckContainer>
 </BaseLayout>

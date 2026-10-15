@@ -33,6 +33,21 @@ export interface Chapter {
   label: Bilingual;
   /** che cosa ci si porta via da questo capitolo, una riga */
   lead: Bilingual;
+  /**
+   * IL PUNTO del capitolo: una frase, e dice la CONSEGUENZA per loro — non il
+   * riassunto di quello che il capitolo ha appena mostrato. Obbligatorio: un
+   * capitolo senza il suo punto non compila.
+   *
+   * Lo rende `ChapterPoint` come ultima slide del capitolo. Nell'ULTIMO capitolo
+   * no: lì `DeckClose` chiude il cerchio — la domanda d'apertura
+   * (`DOMANDA_LETTURA`), questa frase come risposta, e l'ask. Due chiusure a
+   * dieci secondi di distanza sono una di troppo.
+   *
+   * Venticinque parole al massimo, voce al plurale istituzionale, e valgono tutti
+   * i vincoli ereditati qui sopra. Il gate: `pnpm audit:sintesi --app
+   * intesa-scala-umana`.
+   */
+  messaggio: Bilingual;
 }
 
 export const CHAPTERS: Chapter[] = [
@@ -47,14 +62,22 @@ export const CHAPTERS: Chapter[] = [
       it: 'Tre obiettivi che avete dichiarato voi, i numeri che ci state dietro, e che cosa chiedono a chi comunica.',
       en: 'Three goals you stated yourselves, the figures behind them, and what they ask of whoever communicates.',
     },
+    messaggio: {
+      it: 'La base digitale c’è già: adesso cresce il contenuto che deve passarci sopra.',
+      en: 'The digital groundwork is already there: what grows now is the content that runs over it.',
+    },
   },
   {
     slug: 'domanda',
     num: '02',
     label: { it: 'La domanda', en: 'The question' },
     lead: {
-      it: 'Dove si è spostato il punto di attrito, e le quattro cose che vorremmo capire prima di proporre.',
-      en: 'Where the friction point has moved, and the four things we want to understand before proposing.',
+      it: 'Le tre direzioni dichiarate da voi, e le quattro cose da capire prima di proporre.',
+      en: 'The three directions you set out, and the four things to understand before proposing.',
+    },
+    messaggio: {
+      it: 'Prima di qualunque proposta ci servono quattro risposte, non una decisione.',
+      en: 'Before any proposal we need four answers, not a decision.',
     },
   },
   {
@@ -62,8 +85,12 @@ export const CHAPTERS: Chapter[] = [
     num: '03',
     label: { it: 'Le idee', en: 'The ideas' },
     lead: {
-      it: 'Dove ci appoggiamo su quello che avete già, e una banca che ha fatto la stessa strada.',
-      en: 'Where we build on what you already have, and a bank that walked the same road.',
+      it: 'Dove ci appoggiamo su quello che avete già, e una banca che ha fatto una strada vicina.',
+      en: 'Where we build on what you already have, and a bank that walked a nearby road.',
+    },
+    messaggio: {
+      it: 'Ogni strato si appoggia a\u00a0qualcosa che avete già: il lavoro è collegarli, non ricominciare.',
+      en: 'Each layer rests on something you already have: the work is connecting them, not starting over.',
     },
   },
   {
@@ -73,6 +100,10 @@ export const CHAPTERS: Chapter[] = [
     lead: {
       it: 'Tre passi, e la richiesta: un referente, due casi, una data.',
       en: 'Three steps, and the ask: one contact, two cases, one date.',
+    },
+    messaggio: {
+      it: 'Da fuori non possiamo saperlo: è esattamente quello che vorremmo verificare con voi.',
+      en: 'From outside we cannot know: that is exactly what we would like to check with you.',
     },
   },
 ];

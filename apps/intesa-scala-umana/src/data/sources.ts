@@ -64,6 +64,74 @@ export const SOURCES = {
     short: 'business.adobe.com',
     url: 'https://business.adobe.com/products/journey-optimizer/ai-decisioning.html',
   },
+  /* ── Entrate o corrette il 15 ottobre 2026, dopo il panel ─────────────
+     Il giro del panel ha chiesto una cosa sola, e la stessa a cinque voci:
+     ogni numero di terzi deve avere la dignità dei numeri del cliente, cioè
+     istituto, anno e link. Dove non ce l'aveva — il 60% e il 4,4× del
+     capitolo «Le idee» — la fonte primaria è entrata qui.
+
+     `cetif` resta l'unica fonte SENZA link, ed è giusto così: l'evento ha un
+     programma pubblico, le slide no. Per la stessa ragione in pagina le tre
+     direzioni sono una DOMANDA e non un'affermazione: una fonte che chi
+     riceve il deck non può aprire non può reggere un'affermazione su di lui.
+
+     ⚠️ Il nome della Divisione è «Banca dei Territori». «Retail & SME
+     Division» è la dicitura inglese che compare nella firma dell'intervento,
+     ma scritta in italiano accanto a «Banca dei Territori» fa sembrare che
+     siano due cose diverse: chi legge dentro la banca lo vede subito. */
+  cetif: {
+    label: {
+      it: 'Divisione Banca dei Territori, intervento al workshop CETIF del 17 settembre 2026. Evento di settore: il programma è pubblico, le slide no.',
+      en: 'Banca dei Territori Division, address to the CETIF workshop of 17 September 2026. Industry event: the programme is public, the slides are not.',
+    },
+  },
+  pmi20mld: {
+    label: {
+      it: 'Intesa Sanpaolo, comunicato stampa dell’8 ottobre 2026 sul piano da 20 miliardi per commercio, turismo e artigianato',
+      en: 'Intesa Sanpaolo, press release of 8 October 2026 on the €20 billion plan for retail, tourism and crafts',
+    },
+    short: 'group.intesasanpaolo.com',
+    url: 'https://group.intesasanpaolo.com/it/newsroom/comunicati-stampa/2026/10/intesa-sanpaolo-e-le-associazioni-di-categoria-del-commercio--tu',
+  },
+  bain: {
+    label: {
+      it: 'Bain & Company, «Goodbye Clicks, Hello AI», ricerca su consumatori statunitensi, 2025',
+      en: 'Bain & Company, “Goodbye Clicks, Hello AI”, survey of US consumers, 2025',
+    },
+    short: 'bain.com',
+    url: 'https://www.bain.com/insights/goodbye-clicks-hello-ai-zero-click-search-redefines-marketing/',
+  },
+  semrush: {
+    label: {
+      it: 'Semrush (società Adobe), studio sul traffico da ricerca generativa, media fra settori',
+      en: 'Semrush (an Adobe company), study on AI-search traffic, cross-industry average',
+    },
+    short: 'semrush.com',
+    url: 'https://www.semrush.com/blog/ai-search-seo-traffic-study/',
+  },
+  coworker: {
+    label: {
+      it: 'Adobe Experience League, catalogo dei flussi di CX Enterprise Coworker su Customer Journey Analytics, aggiornato il 14 ottobre 2026',
+      en: 'Adobe Experience League, CX Enterprise Coworker workflow catalogue for Customer Journey Analytics, updated 14 October 2026',
+    },
+    short: 'experienceleague.adobe.com',
+    url: 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/workflows',
+  },
+  /* La capacità della slide «lo schermo del Gestore». La prima versione citava
+     la pagina di Decision Management che descrive il portale di chi riceve le
+     chiamate: il fact-check l'ha bocciata, ed è un rilievo giusto — quella
+     pagina è marcata «Legacy». La capacità corrente è il canale «code-based
+     experience», che restituisce JSON a qualunque applicazione lo chieda, e la
+     documentazione di Adobe arriva a nominare proprio «a customer agent's
+     computer». Fonte migliore, e claim più preciso. */
+  codeBased: {
+    label: {
+      it: 'Adobe Experience League, canale «code-based experience» di Journey Optimizer, letta il 15 ottobre 2026',
+      en: 'Adobe Experience League, Journey Optimizer code-based experience channel, read on 15 October 2026',
+    },
+    short: 'experienceleague.adobe.com',
+    url: 'https://experienceleague.adobe.com/en/docs/journey-optimizer/using/channels/code-based-experience/get-started-code-based',
+  },
   cjaUpgrade: {
     label: {
       it: 'Adobe Experience League, documentazione di passaggio a Customer Journey Analytics, aggiornata il 28 settembre 2026',

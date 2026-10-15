@@ -34,21 +34,28 @@
  * Lì **sostituisce** il punto di capitolo (`ChapterPoint`): due chiusure a dieci
  * secondi di distanza sono una di troppo.
  *
+ * BILINGUE
+ * Come `ChapterPoint`: stringa o `{it, en}`, e nel secondo caso rende `<T>`.
+ *
  * AUDIT
  * Come la slide-firma e il punto, è volutamente ariosa e fallisce il soft `i`.
  * Non si aggiusta aggiungendo testo: è la slide che deve restare in testa.
  */
 import Slide from './Slide.astro';
+import T from '../i18n/T.astro';
+
+/** Una stringa (experience in una lingua) o le due/tre lingue (contratto `<T>`). */
+export type Testo = string | { it: string; en: string; fr?: string };
 
 interface Props {
   /** La domanda d'apertura, dalla stessa fonte che la rende in apertura. */
-  domanda: string;
+  domanda: Testo;
   /** La risposta in una riga: il `messaggio` dell'ultimo capitolo. */
-  risposta: string;
+  risposta: Testo;
   /** La richiesta. Dalla fonte unica dell'ask: non si riscrive qui. */
-  ask?: string;
+  ask?: Testo;
   /** Occhiello sopra la domanda. */
-  eyebrow?: string;
+  eyebrow?: Testo;
   id?: string;
   bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
   class?: string;
@@ -68,10 +75,18 @@ const {
 <Slide id={id} bg={bg} align="center" data-chiusura class={className} {...rest}>
   <slot name="backdrop" slot="backdrop" />
   <div class="edf-close" data-reveal>
-    <p class="edf-close-k">{eyebrow}</p>
-    <p class="edf-close-q" set:html={domanda} />
-    <p class="edf-close-a" data-reveal data-reveal-delay="0.1" set:html={risposta} />
-    {ask && <p class="edf-close-ask" data-reveal data-reveal-delay="0.2" set:html={ask} />}
+    {typeof eyebrow === 'string'
+      ? <p class="edf-close-k">{eyebrow}</p>
+      : <T as="p" class="edf-close-k" it={eyebrow.it} en={eyebrow.en} fr={eyebrow.fr} />}
+    {typeof domanda === 'string'
+      ? <p class="edf-close-q" set:html={domanda} />
+      : <T as="p" class="edf-close-q" it={domanda.it} en={domanda.en} fr={domanda.fr} />}
+    {typeof risposta === 'string'
+      ? <p class="edf-close-a" data-reveal data-reveal-delay="0.1" set:html={risposta} />
+      : <T as="p" class="edf-close-a" it={risposta.it} en={risposta.en} fr={risposta.fr} data-reveal data-reveal-delay="0.1" />}
+    {ask && (typeof ask === 'string'
+      ? <p class="edf-close-ask" data-reveal data-reveal-delay="0.2" set:html={ask} />
+      : <T as="p" class="edf-close-ask" it={ask.it} en={ask.en} fr={ask.fr} data-reveal data-reveal-delay="0.2" />)}
   </div>
 </Slide>
 

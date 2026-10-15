@@ -38,6 +38,13 @@ export const PAROLE_MAX_DEFAULT = 25;
 export const BUDGET_DEFAULT = { mediana: 70, p90: 120 };
 
 export const SINTESI_SETS: Record<string, SintesiSpec> = {
+  'intesa-scala-umana': {
+    // `exec` è il taglio da dieci minuti (nato prima della convenzione, link già
+    // condiviso): è tutto sintesi, e sette punti lo raddoppierebbero.
+    escluse: ['home', 'exec'],
+    fonti: ['src/data/chapters.ts', 'src/data/contenuti.ts'],
+    paroleMax: 25,
+  },
   'trenitalia-prospettiva-sales': {
     escluse: ['home', 'dieci-minuti'],
     fonti: ['src/data/chapters.ts', 'src/data/contenuti.ts'],

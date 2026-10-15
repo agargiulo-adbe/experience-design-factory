@@ -133,6 +133,23 @@
   --ink-note: #b9c4b4;
   --ink-body: #e2e8e0;
 }
+/* I due blocchi del motore che chiudono capitolo e percorso — «Il punto» e la
+   chiusura — scrivono il testo grande in `--ink-primary`, che è l'inchiostro di
+   `--surface-primary`: su una slide `bg="inverse"`, che in questa pelle è il
+   petrolio notte, esce #1a1a1a su #0d2901, cioè 1,11:1. `audit:deck` non lo
+   vede (il check `h` guarda i bottoni), `audit:ink` sì, e lo ha trovato su
+   cinque blocchi il 15 ott 2026.
+
+   Qui si ribalta dal lato della pelle, che è il posto dove il contratto dice di
+   marcare un componente che non concorda con la superficie della slide.
+   ⚠️ È una toppa di skin su un difetto di motore: quando i due blocchi
+   smettono di usare `--ink-primary` per il testo di corpo, queste quattro
+   righe vanno via. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .edf-punto-t,
+[data-slide].bg-\[var\(--surface-inverse\)\] .edf-close-q,
+[data-slide].bg-\[var\(--surface-inverse\)\] .edf-close-a,
+[data-slide].bg-\[var\(--surface-inverse\)\] .edf-close-ask { color: var(--ink-inverse); }
+
 /* Componenti chiari dentro una slide scura riprendono gli inchiostri chiari. */
 .isu-on-light,
 .isu-card {
@@ -310,6 +327,29 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .isu-q-t {
   font-size: clamp(1rem, 1.15vw, 1.14rem); line-height: 1.5;
   color: var(--ink-body); max-width: 56ch;
+}
+
+/* Le tre direzioni del cliente: etichetta, parola loro, posizione nostra.
+   Stessa impaginazione della domanda (filetto a sinistra, blocco unico), ma
+   con TRE livelli invece di due, quindi con un passo più largo: tre testi a
+   mezzo rem di distanza si leggono come un paragrafo solo, e qui il punto è
+   che si distingua a colpo d'occhio la loro frase dalla nostra riga.
+   `margin-inline: 0` e `max-width: none` sui figli perché il reset centra i
+   paragrafi dentro una slide centrata: senza, i tre blocchi partono da
+   ascisse diverse e il check `m` lo vede. */
+.isu-dir {
+  display: flex; flex-direction: column; gap: 1.1rem;
+  padding: 0.1rem 0 0.1rem 1.1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.16);
+  text-align: left;
+}
+[data-slide]:not(.bg-\[var\(--surface-inverse\)\]) .isu-dir { border-left-color: var(--line-default); }
+[data-slide] .isu-dir .isu-col-title,
+[data-slide] .isu-dir .isu-col-sub { margin-inline: 0; max-width: none; }
+.isu-dir-k {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.8125rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-accent);
 }
 
 /* La riga dei prodotti Adobe sotto un blocco. Il rosso Adobe non entra in

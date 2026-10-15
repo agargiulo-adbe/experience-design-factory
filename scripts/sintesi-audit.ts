@@ -132,8 +132,11 @@ for (const r of capitoli) {
       const ca = s.querySelector('.edf-close-a');
       return {
         id: s.id || '(senza id)',
-        domanda: s.hasAttribute('data-chiusura') ? (cq ? (cq.textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
-        risposta: s.hasAttribute('data-chiusura') ? (ca ? (ca.textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
+        // Un deck bilingue tiene ENTRAMBE le lingue nel DOM (contratto `<T>`): si
+        // legge solo quella resa, se no la frase risulta doppia e il confronto
+        // con la fonte unica fallisce su una copia che è giusta.
+        domanda: s.hasAttribute('data-chiusura') ? (cq ? (((Array.from(cq.querySelectorAll('[data-lang-it],[data-lang-en],[data-lang-fr]')).filter((x) => x.getClientRects().length > 0)[0] || cq)).textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
+        risposta: s.hasAttribute('data-chiusura') ? (ca ? (((Array.from(ca.querySelectorAll('[data-lang-it],[data-lang-en],[data-lang-fr]')).filter((x) => x.getClientRects().length > 0)[0] || ca)).textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
         parole: [s, ...Array.from(s.querySelectorAll('*'))]
           // Decorativo = un `aria-hidden` DENTRO la slide (i numeri degli
           // elenchi). La slide stessa è aria-hidden quando non è quella attiva,
@@ -154,8 +157,8 @@ for (const r of capitoli) {
           .join(' ')
           .split(/\s+/)
           .filter((w) => /[\p{L}\p{N}]/u.test(w)).length,
-        titolo: h ? (h.textContent || '').replace(/\s+/g, ' ').trim() : '',
-        punto: s.hasAttribute('data-punto') ? (p ? (p.textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
+        titolo: h ? (((Array.from(h.querySelectorAll('[data-lang-it],[data-lang-en],[data-lang-fr]')).filter((x) => x.getClientRects().length > 0)[0] || h).textContent) || '').replace(/\s+/g, ' ').trim() : '',
+        punto: s.hasAttribute('data-punto') ? (p ? (((Array.from(p.querySelectorAll('[data-lang-it],[data-lang-en],[data-lang-fr]')).filter((x) => x.getClientRects().length > 0)[0] || p)).textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
         firma: /signature|firma/i.test(s.id || '') || s.hasAttribute('data-signature'),
       };
     }));
