@@ -116,7 +116,7 @@ export const SOURCES = {
     label: 'TTG Italia, 1 marzo 2011',
     data: '1 marzo 2011',
     cosaDice:
-      'Nasce PICO, la piattaforma che unifica i sistemi di vendita precedenti di Trenitalia; avvio a fasi nel 2011. La migrazione delle agenzie da Sipax si completa entro la fine del 2014 (TTG Italia, 28 ottobre 2014, stesso sito). ⚠️ Nessuna fonte pubblica trovata sul rifacimento in corso: in slide resta una domanda.',
+      'Nasce PICO, la piattaforma che unifica i sistemi di vendita precedenti di Trenitalia; avvio a fasi nel 2011. La migrazione delle agenzie da Sipax si completa entro la fine del 2014 (TTG Italia, 28 ottobre 2014, stesso sito). ⚠️ NON È PIÙ CITATA IN SLIDE (15 ott 2026): sosteneva la frase su PICO, uscita dal deck perché del rifacimento non esiste fonte pubblica — riverificato il 15 ott, si trovano solo una manutenzione programmata dei canali agenzie e il pricing dinamico di gennaio. La voce resta qui perché il fatto è vero e serve se in sala qualcuno nomina la piattaforma.',
   },
   riorgCommerciale: {
     url: 'https://www.fitcisl.org/documenti/trenitalia-settore-commerciale/',

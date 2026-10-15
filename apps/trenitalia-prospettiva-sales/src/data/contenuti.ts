@@ -281,7 +281,20 @@ export const RETE = {
   dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
   dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
   domanda:
-    'PICO, la piattaforma con cui le agenzie vi vendono, è del 2011 e ha preso il posto di Sipax. Ci risulta che la stiate rifacendo: finché il capitolato è aperto la misura è una riga di requisiti, dopo è un progetto a sé. È una domanda, non un’affermazione.',
+    // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
+    // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
+    // trovano una manutenzione programmata dei canali agenzie e il pricing
+    // dinamico di gennaio, nessun rifacimento annunciato), e «ci risulta»
+    // ammette per iscritto di avere una fonte che non possiamo citare. Chiedere
+    // proprio quello, proprio a loro, fa arrivare «chi ve l'ha detto?»: non è un
+    // rischio, è la domanda naturale, e si risponde male. In più non è il suo
+    // cantiere — il percorso di acquisto sta in un'altra direzione da settembre
+    // 2025 — quindi gli si chiedeva di commentare il lavoro di un collega.
+    // Tolto anche «finché il capitolato è aperto»: presumeva una gara in corso
+    // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
+    // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
+    // resta, ma come principio sui sistemi, non come informazione su di loro.
+    'Misurare un canale costa poco quando si mette mano al sistema che lo serve; farlo dopo è un progetto a sé. Per questo la domanda ve la facciamo adesso: del canale intermediato, oggi che cosa riuscite a vedere?',
 };
 
 export const SAPERE: Card[] = [
@@ -307,7 +320,10 @@ export const SAPERE: Card[] = [
    rapido di sembrare confusi davanti a un cliente. */
 export const ASK = {
   eyebrow: 'Quello che vi chiediamo',
-  titolo: 'Una sessione sui vostri dati,<br />mentre la piattaforma si rifà.',
+  // «mentre la piattaforma si rifà» affermava come fatto, nel titolo dell'ask e
+  // su entrambi i percorsi, ciò che la slide del capitolo 06 poneva come
+  // domanda — e quel fatto non ha fonte pubblica. Uscito il 15 ott.
+  titolo: 'Una sessione sui vostri dati,<br />prima di qualunque progetto.',
     // Le tre «che cosa» sono la formula che il panel ha messo fra le cose da NON
   // toccare: cinque personas su sei la citano come la riga che fa accettare la
   // riunione. Il ritmo è voluto, non è una frase contorta — eccezione dichiarata.
