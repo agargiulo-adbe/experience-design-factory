@@ -235,7 +235,15 @@ della slide, e un giro con più di metà delle slide a zero **esce con codice 2*
 `copy-audit` sulle experience in una lingua sola): la domanda da fare a ogni gate nuovo è
 **«quante cose ha misurato?»**, non «che cosa ha detto».
 
-**Stato al 15 ottobre:** `typecheck` 0 · `copy-audit` **0 HARD / 0 SOFT** su 235 stringhe ·
+**La slide più densa è stata divisa, non accorciata.** `/rete/` portava 248 parole in una
+schermata — testa, tre carte, la domanda su PICO e una riga di requisiti — e **la domanda che
+chiede la riunione era l'ultima riga in fondo**. Ora è una slide sua (`slide-pico`), con l'ask
+reso in grande (`.tp-ask--solo`: il tipo **cresce** perché la slide è vuota, mai il contrario),
+e la riga dei requisiti non ripete più le carte accanto: ne nomina lo strumento, che è l'unica
+cosa che le carte non dicono. Stessa cura su `/viaggio/`, dove la riga di fonte ripeteva il
+lead. Mediana del capitolo da 87 a **77 parole/slide**, novantesimo da 202 a 195.
+
+**Stato al 15 ottobre:** `typecheck` 0 · `lint` 0 errori · `copy-audit` **0 HARD / 0 SOFT** su 235 stringhe ·
 `audit:wrap` **pulito** (quattro parole appese legate con lo spazio unificatore nei messaggi
 nuovi) · `audit:taglio` **ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 (71 soft, di cui
 **21 sono le sette slide del punto sul check `i`**: coprono poco perché portano una frase, come la

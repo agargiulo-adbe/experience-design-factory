@@ -722,7 +722,7 @@ if (SOLO_APERTURA) {
     if (scartate.length) console.log(`Scartate ${scartate.length}: ${scartate.slice(0, 4).join(' · ')}`);
     process.exit(0);
   }
-  let id = idEsistente(a) ?? prossimoId();
+  const id = idEsistente(a) ?? prossimoId();
   if (DEPOSITA && !idEsistente(a)) {
     const op = `A CHI ${a.contatto.nome} · ${a.contatto.funzione} · ${a.contatto.verdetto === 'tu' ? 'scrivi tu' : "passa dall'AE"}${a.contatto.motivo ? ` — ${a.contatto.motivo}` : ''} · PROPONI ${a.proposta} · PERCHÉ ORA ${a.perche} · MUOVE ${a.muove}`;
     const q4 = CHIUSURA_Q4 && a.chiude ? (+a.chiude <= +CHIUSURA_Q4 ? 'Q4 sì' : 'costruisce il Q1') : 'Q4 da valutare';

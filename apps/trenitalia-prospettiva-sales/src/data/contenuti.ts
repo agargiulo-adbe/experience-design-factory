@@ -309,7 +309,7 @@ export const RETE = {
     // condizionale È il contenuto: non sappiamo se lo stiano facendo, e tutta la
     // slide esiste per chiederlo. Invertirla la trasformerebbe in un'asserzione
     // sul cantiere di un altro, che è l'errore da cui questo blocco è nato.
-    'PICO è del 2011, e da lì passano tutte le vostre vendite: sito, app, biglietterie, agenzie. Se è in trasformazione, la misura del canale intermediato è una riga di requisiti adesso; dopo è un progetto a sé. È una domanda, non un’affermazione.', // copy-audit-ignore
+    'PICO è del 2011, e da lì passano tutte le vostre vendite: sito, app, biglietterie, agenzie. Se è in trasformazione, la misura del canale intermediato è una riga di requisiti adesso; dopo è un progetto a sé. È una domanda, non un’affermazione.', // copy-audit-ignore
 };
 
 export const SAPERE: Card[] = [
