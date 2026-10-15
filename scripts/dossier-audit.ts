@@ -160,6 +160,16 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         .filter((e) => !(e.textContent || '').trim())
         .map((e) => (e.className || e.tagName).toString().split(' ')[0]);
 
+      // l — tag fuori contratto, STAMPATI come testo. Il renderer escapa tutto e
+      // riapre solo <strong>, <em> e <code>: qualunque altro tag scritto nel
+      // contenuto non dà errore, si stampa. È successo due volte in due giorni —
+      // `<span class="dw-tag">` per diciassette volte, e prima i tag del
+      // disclaimer — e in entrambi i casi l'audit usciva verde mentre la pagina
+      // mostrava markup al lettore. Lo si vede solo guardando il TESTO RESO.
+      const reso = (document.getElementById('dw-doc')?.innerText || '');
+      const tagStampati = [...reso.matchAll(/<\/?([a-zA-Z][a-zA-Z0-9-]*)[^>]{0,80}>/g)]
+        .map((m) => m[0].slice(0, 40));
+
       // f — indice
       const toc = document.querySelectorAll('#dw-toc-list a').length;
 
@@ -190,6 +200,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
         cpl,
         spill,
         empty,
+        tagStampati,
       };
     },
     { minBody: MIN_BODY, minTable: MIN_TABLE, minNote: MIN_NOTE, minTap: MIN_TAP },
@@ -215,6 +226,7 @@ async function auditOne(page: Page, url: string, vp: { w: number; h: number; nam
     out.push({ check: 'g', viewport: vp.name, detail: `${m.cpl} caratteri per riga (finestra ${CPL_MIN}–${CPL_MAX})` });
   }
   if (m.empty.length) out.push({ check: 'k', viewport: vp.name, detail: `${m.empty.length} blocchi resi vuoti (${[...new Set(m.empty)].join(', ')}): contenuto scartato dal renderer` });
+  if (m.tagStampati.length) out.push({ check: 'l', viewport: vp.name, detail: `${m.tagStampati.length} tag STAMPATI come testo (${[...new Set(m.tagStampati)].slice(0, 3).join(' · ')}): nel contenuto passano solo <strong>, <em> e <code> — tutto il resto si escapa e si legge` });
   if (m.spill.length) out.push({ check: 'j', viewport: vp.name, detail: `sforano la propria colonna: ${m.spill.join(' · ')}` });
   if (jsErrors.length) out.push({ check: 'i', viewport: vp.name, detail: `errori JS: ${jsErrors.slice(0, 2).join(' | ')}` });
 
