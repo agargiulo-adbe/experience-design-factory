@@ -61,9 +61,11 @@ jobs:
           cp -r apps/aperture-email/dist/. pages/aperture-email/
           mkdir -p pages/poste-sei-domande
           cp -r apps/poste-sei-domande/dist/. pages/poste-sei-domande/
-          # intesa-scala-umana: app minimale, SOLO la pagina dossier (orfana,
-          # gated, noindex). Nessun index.html alla radice: la verifica sotto
-          # controlla /dossier/index.html, non /index.html.
+          # intesa-scala-umana: non è più la sola pagina del dossier. Dall'8 ott 2026
+          # è una Prospettiva vera (quattro capitoli + il taglio «In dieci minuti»),
+          # fuori da hub e showcase di proposito e `noindex`, ma con un index.html
+          # alla radice. La verifica sotto controlla ORA ENTRAMBI: la radice e il
+          # dossier gated, che resta una pagina a sé.
           mkdir -p pages/intesa-scala-umana
           cp -r apps/intesa-scala-umana/dist/. pages/intesa-scala-umana/
           # intesa-dopo-la-firma: idem — app minimale, SOLO il dossier gated.
@@ -76,7 +78,7 @@ jobs:
       - name: Verify artifact structure
         run: |
           fail=0
-          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/intesa-scala-umana/dossier/index.html pages/intesa-dopo-la-firma/dossier/index.html pages/acquisizione/index.html pages/trenitalia-prospettiva-sales/index.html pages/tim-contenuti-su-scala/index.html; do
+          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/intesa-scala-umana/index.html pages/intesa-scala-umana/dossier/index.html pages/intesa-dopo-la-firma/dossier/index.html pages/acquisizione/index.html pages/trenitalia-prospettiva-sales/index.html pages/tim-contenuti-su-scala/index.html; do
             if [ ! -f "$f" ]; then echo "MISSING: $f"; fail=1; fi
           done
           if [ $fail -ne 0 ]; then echo "Artifact structure check failed" && exit 1; fi

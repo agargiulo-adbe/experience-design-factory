@@ -14,12 +14,21 @@
  */
 interface Props {
   label?: string;
+  /**
+   * L'etichetta nell'altra lingua, sulle experience bilingui. Senza questa,
+   * il markup resta identico a prima (una stringa sola): la disclosure era
+   * l'unico pezzo di testo del motore che NON passava da `T`, e su un deck
+   * bilingue restava in italiano anche in inglese — nessun gate lo vede,
+   * perché è un attributo e non un blocco di testo misurabile. Trovato
+   * leggendo lo screenshot inglese di `intesa-scala-umana`.
+   */
+  labelEn?: string;
   title: string;
   /** Slide background tone — sets an AA-contrast trigger colour. */
   tone?: 'onLight' | 'onDark';
   class?: string;
 }
-const { label = 'Scopri come', title, tone = 'onLight', class: className } = Astro.props;
+const { label = 'Scopri come', labelEn, title, tone = 'onLight', class: className } = Astro.props;
 const regionId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[var(--ink-secondary)]';
 ---
@@ -31,7 +40,7 @@ const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[va
     aria-controls={regionId}
     data-hiw-open
   >
-    {label}
+    {labelEn ? (<><span data-lang-it>{label}</span><span data-lang-en>{labelEn}</span></>) : label}
     <svg class="hiw-arrow transition-transform duration-300" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
 

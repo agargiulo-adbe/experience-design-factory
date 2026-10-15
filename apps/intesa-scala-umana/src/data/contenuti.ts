@@ -297,8 +297,8 @@ export const SINTESI_OBIETTIVI: Bilingue = {
 };
 
 export const NOTA_OBIETTIVI: Bilingue = {
-  it: 'In grande gli obiettivi, come li avete dichiarati voi. In piccolo che cosa chiedono a chi comunica: quella riga è una nostra lettura, non una vostra parola.',
-  en: 'In large type, the goals as you stated them. In small type, what they ask of whoever communicates: that line is our reading, not your words.',
+  it: 'In grande le tre cose, come le avete dichiarate voi. In piccolo che cosa chiedono a chi comunica: quella riga è una nostra lettura, non una vostra parola.',
+  en: 'In large type, the three as you stated them. In small type, what they ask of whoever communicates: that line is our reading, not your words.',
 };
 
 /* ── La domanda che chiude il primo capitolo ───────────────────────────────
