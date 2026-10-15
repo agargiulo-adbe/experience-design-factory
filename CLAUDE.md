@@ -672,6 +672,26 @@ grafica e voce che da grafica, voce e testo a schermo — 16 esperimenti su 16),
 **assertion-evidence** di Alley (un titolo che afferma si ricorda più dello stesso contenuto
 messo in elenco). Memoria: `punto-del-capitolo`.
 
+### Che cosa resta in testa: l'unica misura che non abbiamo (BINDING sul metodo)
+Sappiamo misurare tutto ciò che è facile — contrasto, a capo, sbordamenti, link rotti,
+divergenze fra due percorsi — e da oggi anche **se una sintesi esiste** (`audit:sintesi`).
+Non sappiamo misurare **che cosa resta in testa a chi riceve il deck**, che è l'unica cosa
+che decide una riunione. Finché quel dato non c'è, ogni discussione su come si chiude un
+deck resta una partita fra opinioni informate — questa compresa.
+- **Lo strumento, e sta nel registro d'account, non nel deck:** `Consegnato — «…» · il
+  <data>` il giorno in cui qualcosa esce verso il cliente, `Ritorno — <che cosa è rimasto,
+  parole loro> · il <data>` quando si sa. Dopo **sette giorni** senza ritorno, il caso
+  entra fra i candidati dell'apertura del giro della mattina. Dettaglio e domanda da fare:
+  `docs/CLAUDE.md`, note sul template.
+- **La domanda è una sola** e non è «vi è piaciuto»: «che cosa vi è rimasto?», o «che cosa
+  avete capito che vi chiediamo?». La risposta si trascrive **con le loro parole**.
+- ⚠️ **La telemetria del deck NON si accende su un deck cliente senza dirglielo.**
+  `@edf/core/blocks/immersive/DeckTelemetry.astro` esiste, è anonima (nessun cookie,
+  id di sessione casuale per scheda, opt-out) ed è montata **solo sull'Atelier**, che è
+  interno. Misurare il comportamento di lettura di un cliente — una banca, per giunta —
+  senza dichiararlo è il genere di scorciatoia da cui un rapporto non si riprende. Se
+  serve davvero: si dichiara nella nota di copertina e lo decide chi possiede l'account.
+
 ### Il marchio in pagina non lo aggiorna `brand:icons` (BINDING)
 `pnpm brand:icons` rende `icon-192`, `apple-touch-icon` e `og.png` **dal `favicon.svg`**.
 Il marchio che si vede *dentro* l'app — quello nella nav — è un **SVG inline** in un

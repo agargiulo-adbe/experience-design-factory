@@ -342,6 +342,8 @@ parole che usano loro e che vanno usate. «da chiedere» se non si sa.>
 Dove siamo — <due righe, non più>
 Palla a — <ruolo> · dal <data>
 Prossimo passo — <azione> · entro <data>
+Consegnato — «<che cosa è uscito verso il cliente>» · il <data>
+Ritorno — <che cosa è rimasto, parole loro> · il <data>
 
 Fatti verificati
 - <fatto> · <fonte>, <data>
@@ -362,6 +364,20 @@ Note sul template:
   la data. Senza, ritrovarla costa cinque minuti; con, dieci secondi.
 - **Le date in chiaro, mai relative.** «il mese scorso» non si legge a febbraio.
 - Un caso chiuso non si cancella: la sezione resta con `Dove siamo — chiuso il <data>`.
+- **`Consegnato` e `Ritorno` sono l'unica misura che abbiamo su ciò che resta in testa a
+  chi riceve.** `Consegnato` si scrive il giorno in cui un deck, un dossier o una proposta
+  escono verso il cliente. Dopo **sette giorni** senza `Ritorno`, quel caso entra fra i
+  candidati dell'**apertura** del giro della mattina — «chiedere che cosa è rimasto di
+  «…»» — e compare nella vista intera sotto *CONSEGNATI SENZA RITORNO*. Non entra fra i
+  rilievi della notifica: le soglie lì restano quattro, perché ogni soglia in più la
+  diluisce.
+  La domanda da fare è **una sola**, e non è «vi è piaciuto»: «**che cosa vi è rimasto?**»
+  — o, meglio ancora, «che cosa avete capito che vi chiediamo?». Poi la risposta si scrive
+  in `Ritorno` **con le loro parole**, non con le nostre: è il dato, e riscriverlo lo
+  cancella. Una risposta che non somiglia a quello che volevamo lasciare è il risultato
+  più utile che quel deck possa produrre.
+  Finché quella riga non esiste, ogni discussione su come si chiude un deck — recap sì,
+  recap no — è una partita fra due opinioni.
 
 ## Il grafo dei contatti — si ricava, non si compila
 

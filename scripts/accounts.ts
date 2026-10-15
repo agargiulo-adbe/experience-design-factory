@@ -76,6 +76,10 @@ const GIORNI_DOPO = 21;            // «DOPO» vuol dire tre settimane, non «ma
    per sempre (una proposta non risposta è più spesso persa che rifiutata): dopo una
    settimana ritorna, con lo STESSO id, così non nascono righe doppie. */
 const GIORNI_APERTURA_ATTESA = 7;
+/* IL RITORNO DI UN DECK. Una settimana è il tempo in cui un deck o è stato girato ai
+   colleghi o è morto nella casella: prima è presto per chiedere, dopo la risposta non
+   è più fresca. Vale anche quando la riunione è andata bene — anzi, soprattutto. */
+const GIORNI_RITORNO = 7;
 
 /* I documenti della Factory stanno in piano in docs/; le cartelle sono gli account, meno i
    depositi di materiale. `Adobe` (senza «Material») È un account: ci sta il lavoro non
@@ -132,7 +136,16 @@ const paragrafi = (righe: string[]): string[] => {
 };
 
 /* ── i registri di account ──────────────────────────────────────────────────────── */
-interface Caso { nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date }
+/** `consegnato`/`ritorno`: che cosa è uscito verso il cliente e che cosa ne è tornato.
+    Non è burocrazia — è l'unica misura che abbiamo su ciò che resta in testa a chi
+    riceve un deck, e finché non c'è, ogni discussione su come si chiude un deck è
+    una partita fra opinioni. Si scrivono nel registro così:
+      Consegnato — «Dove può arrivare il viaggio» · il 16 ott 2026
+      Ritorno — hanno capito che chiediamo mezza giornata sui dati agenzie · il 23 ott 2026 */
+interface Caso {
+  nome: string; palla?: string; dal?: Date; passo?: string; scadenza?: Date; chiuso?: Date;
+  consegnato?: { cosa: string; quando: Date }; ritorno?: Date;
+}
 /* contatti/tuoi: il grafo dei contatti vive nella sezione «Chi è chi» del registro, e lo
    ricava `/account-open` dalla posta (regola e limiti misurati in docs/CLAUDE.md). Qui si
    LEGGE soltanto — a costo zero — per sapere a quali account manca il contatto: senza un
@@ -192,6 +205,19 @@ for (const cliente of readdirSync(DOCS).sort()) {
       const [chi, da] = palla[1].split(/\s*·\s*dal\s+/i);
       corrente.palla = chi.trim();
       if (da) corrente.dal = data(da);
+      continue;
+    }
+    const cons = r.match(/^Consegnat[oa]\s*[—-]\s*(.+?)\s*$/i);
+    if (cons) {
+      const [cosa, quando] = cons[1].split(/\s*·\s*il\s+/i);
+      const d = quando ? data(quando) : undefined;
+      if (d) corrente.consegnato = { cosa: cosa.replace(/^[«"]|[»"]$/g, '').trim(), quando: d };
+      continue;
+    }
+    const rit = r.match(/^Ritorno\s*[—-]\s*(?:.+?·\s*il\s+|.*?)\s*$/i);
+    if (rit) {
+      const q = r.match(/·\s*il\s+(.+?)\s*$/i);
+      corrente.ritorno = (q ? data(q[1]) : undefined) ?? new Date();
       continue;
     }
     const passo = r.match(/^Prossimo passo\s*[—-]\s*(.+?)\s*$/i);
@@ -642,6 +668,21 @@ for (const h of saluteUrgente.filter((x) => /red/i.test(x.stato))) {
       `salute in ROSSO — ${ragione}`, 'Radar/Anagrafica', 'relazione');
   }
 }
+/* IL RITORNO. Un deck consegnato e mai richiesto indietro è l'unico punto in cui questo
+   sistema può misurare che cosa resta in testa a chi riceve — e costa una domanda. Entra
+   fra i candidati dell'APERTURA e NON fra i rilievi: le soglie della notifica restano
+   quattro, perché ogni soglia in più la diluisce (è scritto dove si costruiscono). */
+const senzaRitorno = conti.flatMap((c) =>
+  c.casi
+    .filter((k) => k.consegnato && !k.ritorno && !k.chiuso && giorni(k.consegnato.quando) >= GIORNI_RITORNO)
+    .map((k) => ({ conto: c, caso: k })));
+for (const { conto, caso } of senzaRitorno) {
+  aggiungi(conto.cliente, caso.consegnato!.cosa,
+    `chiedere che cosa è rimasto di «${taglia(caso.consegnato!.cosa, 34)}»`,
+    `consegnato ${giorni(caso.consegnato!.quando)} gg fa, nessun ritorno registrato`,
+    `${conto.cliente}/ACCOUNT.md`, 'relazione');
+}
+
 for (const r of rinnoviNotifica) {
   aggiungi(r.account, r.prodotto, `difendere il rinnovo di ${r.prodotto}`,
     `${soldi(r.rbob)} fra ${-giorni(r.quando)} gg${r.rischio ? ` · ${r.rischio}` : ''}`,
@@ -843,6 +884,14 @@ if (scaduti.length) {
   for (const { c, k } of scaduti.sort((a, b) => giorni(b.k.scadenza!) - giorni(a.k.scadenza!))) {
     console.log(`  ! ${c.cliente} · ${taglia(k.nome, 42)} — ${taglia(k.passo ?? '', 52)} (${giorni(k.scadenza!)} gg)`);
   }
+}
+
+if (senzaRitorno.length) {
+  console.log(`\nCONSEGNATI SENZA RITORNO — è uscito qualcosa e non sappiamo che cosa è rimasto: ${senzaRitorno.length}`);
+  for (const { conto, caso } of senzaRitorno.sort((a, b) => +a.caso.consegnato!.quando - +b.caso.consegnato!.quando)) {
+    console.log(`  ? ${taglia(conto.cliente, 20).padEnd(20)} ${taglia(caso.consegnato!.cosa, 40).padEnd(40)} ${giorni(caso.consegnato!.quando)} gg fa`);
+  }
+  console.log('  (una domanda sola: «che cosa vi è rimasto?» — poi la riga «Ritorno — … · il <data>» nel registro)');
 }
 
 if (rinnoviVicini.length) {
