@@ -156,8 +156,10 @@ const pageRegistry = [
     `  { slug: ${jsStr(c.slug)}, label: ${jsStr(`${c.title.it} (${c.num})`)}, slides: [`,
     `    { id: 'slide-cover',     label: ${jsStr(`Cover — ${c.title.it}`)} },`,
     `    { id: 'slide-contenuto', label: ${jsStr(`${c.title.it} — contenuto`)} },`,
-    `    { id: 'slide-punto',     label: ${jsStr('Il punto — la frase di chiusura')} },`,
-    ...(i === n - 1 ? [`    { id: 'slide-signature', label: ${jsStr(`La firma — Adobe × ${client}`)} },`] : []),
+    ...(i === n - 1
+      ? [`    { id: 'slide-chiusura',  label: ${jsStr('La chiusura — domanda d\'apertura, risposta, richiesta')} },`,
+         `    { id: 'slide-signature', label: ${jsStr(`La firma — Adobe × ${client}`)} },`]
+      : [`    { id: 'slide-punto',     label: ${jsStr('Il punto — la frase di chiusura')} },`]),
     `  ]},`,
   ]),
 ].join('\n');
@@ -259,6 +261,25 @@ chapters.forEach((c, i) => {
           'const lcFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);',
         ].join('\n')
       : '',
+    // L'ultimo capitolo chiude il cerchio (DeckClose), gli altri portano il punto.
+    // Non si tengono tutti e due: sarebbero due chiusure a dieci secondi di distanza.
+    __CLOSE_IMPORT__: isLast
+      ? "import DeckClose from '@edf/core/blocks/immersive/DeckClose.astro';\nimport { DOMANDA_APERTURA, RICHIESTA } from '../data/chapters';"
+      : "import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';",
+    __CLOSE_BLOCK__: isLast
+      ? [
+          '    <!-- ── La chiusura: il cerchio si chiude ──────────────────────────────',
+          '         La domanda d\'apertura resa com\'era, la risposta in una riga (il',
+          '         messaggio di questo capitolo) e la richiesta. Tutte dai dati: qui non',
+          '         si scrive copia. Nell\'ultimo capitolo NON va anche il punto. -->',
+          '    <DeckClose domanda={DOMANDA_APERTURA} risposta={ch.messaggio} ask={RICHIESTA} data-made-with="" />',
+        ].join('\n')
+      : [
+          '    <!-- ── Il punto: la frase con cui il capitolo si chiude ─────────────────',
+          '         Il messaggio sta in src/data/chapters.ts, mai qui: una frase scritta in',
+          '         due posti diverge. Dice la CONSEGUENZA, non il riassunto del capitolo. -->',
+          '    <ChapterPoint messaggio={ch.messaggio} data-made-with="" />',
+        ].join('\n'),
     __SIGNATURE_SLIDE__: isLast ? signatureTpl.replace(/\n$/, '') : '',
   };
   const content = expand(chapterTpl, chVars, `pagina ${c.slug}`).replace(/\n{3,}/g, '\n\n');
@@ -499,11 +520,14 @@ Resta da fare a mano (nell'ordine):
      e la riga in scripts/lib/cut-routes.ts. Poi \`pnpm audit:taglio --app ${slug}\`:
      un taglio che tiene due copie a mano diverge, sempre. Vedi
      skills/experience-design/references/taglio-dieci-minuti.md.
-  9. I MESSAGGI dei capitoli: in apps/${slug}/src/data/chapters.ts ogni capitolo nasce con
+  9. I MESSAGGI dei capitoli — la CONSEGUENZA, non il riassunto: in apps/${slug}/src/data/chapters.ts ogni capitolo nasce con
      \`messaggio: 'DA SCRIVERE…'\`, e \`audit:sintesi\` lo boccia finché resta così. Una frase
      per capitolo, 25 parole al massimo, e dice che cosa cambia per il cliente — non che
      cosa fa il prodotto. Il test è il «So what?», ripetuto finché la risposta è una cosa
-     che il cliente vuole ottenere.
+     che il cliente vuole ottenere. Un punto che ridice il capitolo si legge come una
+     ripetizione, ed è la forma con meno prove dalla sua. Il messaggio dell'ULTIMO capitolo
+     è la risposta alla domanda d'apertura: lì il template mette \`DeckClose\` al posto del
+     punto, e il cerchio si chiude.
  10. Verifica, nell'ordine: pnpm --filter ${slug} build && pnpm --filter ${slug} preview --port 4520
      pnpm --silent exec tsx scripts/copy-audit.ts --app ${slug}           (0 HARD)
      DECK_URL=http://localhost:4520 pnpm audit:wrap   --app ${slug}

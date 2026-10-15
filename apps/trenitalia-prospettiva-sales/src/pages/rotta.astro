@@ -3,12 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import ChapterPoint from '@edf/core/blocks/immersive/ChapterPoint.astro';
+import DeckClose from '@edf/core/blocks/immersive/DeckClose.astro';
 import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import { SITE } from '../data/site';
 import { CHAPTERS, prevSlug } from '../data/chapters';
-import { ASK, COVER, DOMANDE_APERTE } from '../data/contenuti';
+import { ASK, COVER, DOMANDA, DOMANDE_APERTE } from '../data/contenuti';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
@@ -100,8 +100,17 @@ const first = CHAPTERS[0];
       </div>
     </Slide>
 
-    <!-- ── Il punto: la frase con cui il capitolo si chiude ───────────────── -->
-    <ChapterPoint messaggio={ch.messaggio} data-made-with="" />
+    <!-- ── La chiusura: il cerchio si chiude ──────────────────────────────
+         L'ultimo capitolo non porta un punto suo: porterebbe due chiusure a dieci
+         secondi di distanza. Porta la domanda con cui il deck si è aperto, resa
+         com'era, la risposta in una riga (il messaggio di questo capitolo) e la
+         richiesta. Nessuna delle tre è scritta qui: arrivano tutte dai dati. -->
+    <DeckClose
+      domanda={DOMANDA.titolo}
+      risposta={ch.messaggio}
+      ask={COVER.firma}
+      data-made-with=""
+    />
 
     <!-- ── Slide-firma ───────────────────────────────────────────────────── -->
     <Slide id="slide-signature" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">

@@ -40,7 +40,7 @@ export const BUDGET_DEFAULT = { mediana: 70, p90: 120 };
 export const SINTESI_SETS: Record<string, SintesiSpec> = {
   'trenitalia-prospettiva-sales': {
     escluse: ['home', 'dieci-minuti'],
-    fonti: ['src/data/chapters.ts'],
+    fonti: ['src/data/chapters.ts', 'src/data/contenuti.ts'],
     paroleMax: 25,
     // Budget di default (70/150 non è un numero rotondo scelto per passare: il
     // deck sta a 97 di mediana e 204 al novantesimo). Resta quello aspirazionale

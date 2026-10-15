@@ -24,15 +24,27 @@ export interface Chapter {
    * audit:sintesi`) verifica il resto: che la frase sia una, stia in fondo al
    * capitolo e venga da qui invece che dal markup.
    *
-   * Regole di scrittura, imparate il 14 ott 2026 misurando i deck:
+   * Regole di scrittura, imparate il 14-15 ott 2026 misurando i deck:
    *   · UNA frase, 25 parole al massimo. Una sintesi lunga non è una sintesi.
+   *   · **La conseguenza, non la compressione.** La prima versione di queste
+   *     sette frasi riassumeva il capitolo, e il committente l'ha letta per quello
+   *     che era: una ripetizione. «Le vendite si perdono in quattro punti, e due
+   *     li decidete voi» ERA la slide-mappa più la riga sui perimetri. Il punto
+   *     non ridice il capitolo: dice che cosa ne segue per loro — «dei quattro,
+   *     i due che decidete voi sono gli ultimi due del percorso».
+   *     Ri-presentare lo stesso materiale è la famiglia di interventi più debole
+   *     che la ricerca abbia misurato (Dunlosky et al. 2013: riassunto e
+   *     rilettura a bassa utilità); quello che regge in fondo è la conseguenza.
    *   · Dice un beneficio del cliente, non una proprietà del prodotto. Il test è
    *     il «So what?»: si chiede finché la risposta è una cosa che LUI vuole
-   *     ottenere. «Il prodotto fa X» non è un punto; «di questo canale sapete
-   *     solo i conti» lo è.
-   *   · Niente fatti nuovi: il punto riassume il capitolo, non aggiunge una
-   *     affermazione che nessuna slide regge e nessuna fonte copre.
+   *     ottenere. «Il prodotto fa X» non è un punto.
+   *   · Niente fatti nuovi: la conseguenza si regge su quello che il capitolo ha
+   *     già mostrato, senza aggiungere affermazioni che nessuna fonte copre.
    *   · Voce al plurale istituzionale, come il resto del deck.
+   *   · **L'ULTIMO capitolo chiude il cerchio**: il suo `messaggio` è la risposta
+   *     alla domanda con cui il deck si è aperto, e lo rende `DeckClose` insieme
+   *     alla domanda stessa e alla richiesta. Lì non c'è un punto di capitolo:
+   *     ci sarebbero due chiusure a dieci secondi di distanza.
    *
    * Reso UNA volta, in fondo al capitolo, dal blocco `ChapterPoint`. NON sulla
    * home: sette punti in una slide sono esattamente la densità che il punto
@@ -46,43 +58,43 @@ export const CHAPTERS: Chapter[] = [
     slug: 'apertura', num: '01',
     title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' },
     short: 'Il vostro anno',
-    messaggio: 'Il terzo operatore arriva, il prezzo verso l’alto è chiuso e il piano si sta scrivendo: la finestra è questa.',
+    messaggio: 'Con il prezzo fermo, la crescita deve arrivare da dove oggi non guardate.',
   },
   {
     slug: 'domanda', num: '02',
     title: { it: 'La domanda', en: 'La domanda' },
     short: 'La domanda',
-    messaggio: 'Le vendite si perdono in quattro punti del percorso d’acquisto, e due di quei quattro li decidete voi.',
+    messaggio: 'Dei quattro punti, i due che decidete voi sono gli ultimi due del percorso.',
   },
   {
     slug: 'ricerca', num: '03',
     title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' },
     short: 'Gli assistenti',
-    messaggio: 'Su Google siete la fonte in due risposte su otto: è un numero, e si muove se qualcuno lo presidia.',
+    messaggio: 'Quel due su otto è una\u00a0leva: si misura, si presidia, e\u00a0si vede se ha funzionato.',
   },
   {
     slug: 'viaggio', num: '04',
     title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' },
     short: 'Il viaggio',
-    messaggio: 'I pezzi del viaggio li avete già tutti e cinque, e l’acquisto li tiene insieme: manca la misura che li veda come uno solo.',
+    messaggio: 'I pezzi ci sono tutti; manca la misura che li veda come un viaggio solo.',
   },
   {
     slug: 'contenuto', num: '05',
     title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' },
     short: 'Il contenuto',
-    messaggio: 'Le varianti si moltiplicano, le persone no: il numero da guardare sono i giorni che passano prima della vetrina.',
+    messaggio: 'Le varianti si moltiplicano, le persone no: il numero da guardare sono i giorni.',
   },
   {
     slug: 'rete', num: '06',
     title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' },
     short: 'Le agenzie',
-    messaggio: 'Quel canale vende ogni giorno, e voi ne vedete solo i conti: quale agenzia vende che cosa è la misura della vostra riorganizzazione.',
+    messaggio: 'Quello che non misurate non lo potete correggere, e\u00a0la rete oggi non si misura.',
   },
   {
     slug: 'rotta', num: '07',
     title: { it: 'La rotta', en: 'La rotta' },
     short: 'La rotta',
-    messaggio: 'Mezza giornata sui dati della rete vi dice quanto di questo percorso è già misurabile oggi.',
+    messaggio: 'Si perdono prima che qualcuno salga sul treno, e la rete è il punto da cui si può partire.',
   },
 ];
 

@@ -17,8 +17,11 @@
  * assertion-evidence) — quindi un titolo di due parole è un'etichetta, e si vede.
  *
  * CHE COSA CONTROLLA
- *   HARD · s1 capitolo senza punto — una rotta di capitolo che non porta
- *          UNA e una sola slide `[data-punto]` (il blocco ChapterPoint).
+ *   HARD · s1 capitolo senza punto — una rotta di capitolo che non porta UNA e una
+ *          sola chiusura: `[data-punto]` (ChapterPoint) per i capitoli, e
+ *          `[data-chiusura]` (DeckClose) per l'ULTIMO, che chiude il cerchio —
+ *          la domanda d'apertura, la risposta in una riga, la richiesta. Due
+ *          chiusure nello stesso capitolo sono una di troppo.
  *   HARD · s2 punto scritto a mano — la frase resa non si trova nella fonte unica
  *          dichiarata: una frase in due posti diverge, come il taglio corto.
  *   HARD · s3 punto non valido — oltre `paroleMax` parole non è una sintesi ma un
@@ -89,9 +92,12 @@ if (!capitoli.length) {
   process.exit(2);
 }
 
-/* ── la fonte unica: le stringhe dei file dichiarati ──────────────────────── */
+/* Normalizza anche la SCRITTURA dello spazio unificatore: in pagina è il carattere,
+   nel sorgente può essere l'escape `\u00a0` (che si vede e non si perde copiando).
+   Senza questa riga il gate dichiara «non viene dalla fonte unica» una frase che
+   viene esattamente da lì — ed è il tipo di falso positivo che fa spegnere un gate. */
 const norm = (s: string) =>
-  s.replace(/ /g, ' ').replace(/\s+/g, ' ').replace(/[‘’′']/g, "'").replace(/[“”]/g, '"').trim();
+  s.replace(/\u00a0/g, ' ').replace(/\\u00a0/g, ' ').replace(/\s+/g, ' ').replace(/[\u2018\u2019\u2032']/g, "'").replace(/[\u201c\u201d]/g, '"').trim();
 let fonte = '';
 for (const f of spec.fonti) {
   const p = path.join(APP_DIR, f);
@@ -103,7 +109,7 @@ for (const f of spec.fonti) {
 }
 
 /* ── che cosa si misura in pagina ─────────────────────────────────────────── */
-interface SlideReso { id: string; parole: number; titolo: string; punto: string | null; firma: boolean }
+interface SlideReso { id: string; parole: number; titolo: string; punto: string | null; domanda: string | null; risposta: string | null; firma: boolean }
 
 const browser = await chromium.launch();
 const page = await (await browser.newContext({ viewport: { width: 1920, height: 1080 } })).newPage();
@@ -122,8 +128,12 @@ for (const r of capitoli) {
       // qualcosa che nel browser non esiste.
       const h = s.querySelector('h1, h2');
       const p = s.querySelector('[data-punto] .edf-punto-t, .edf-punto-t');
+      const cq = s.querySelector('.edf-close-q');
+      const ca = s.querySelector('.edf-close-a');
       return {
         id: s.id || '(senza id)',
+        domanda: s.hasAttribute('data-chiusura') ? (cq ? (cq.textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
+        risposta: s.hasAttribute('data-chiusura') ? (ca ? (ca.textContent || '').replace(/\s+/g, ' ').trim() : '') : null,
         parole: [s, ...Array.from(s.querySelectorAll('*'))]
           // Decorativo = un `aria-hidden` DENTRO la slide (i numeri degli
           // elenchi). La slide stessa è aria-hidden quando non è quella attiva,
@@ -161,12 +171,34 @@ const s4: string[] = [];
 const s6: string[] = [];
 const paroleTutte: Array<{ rotta: string; id: string; parole: number }> = [];
 
+const ultimoCapitolo = capitoli[capitoli.length - 1]?.name;
 for (const { rotta, slide } of rese) {
   const punti = slide.filter((s) => s.punto !== null);
-  if (punti.length === 0) {
+  const chiusure = slide.filter((s) => s.risposta !== null);
+  const tutte = [...punti, ...chiusure];
+  if (tutte.length === 0) {
     s1.push(`«${rotta}» chiude su «${slide[slide.length - 1]?.id ?? '—'}» e non porta nessun punto`);
-  } else if (punti.length > 1) {
-    s1.push(`«${rotta}» porta ${punti.length} punti (${punti.map((p) => p.id).join(', ')}): un capitolo ha un punto solo`);
+  } else if (tutte.length > 1) {
+    s1.push(`«${rotta}» porta ${tutte.length} chiusure (${tutte.map((p) => p.id).join(', ')}): un capitolo ne ha una sola`);
+  }
+  // L'ultimo capitolo chiude il cerchio; gli altri no.
+  if (rotta === ultimoCapitolo && chiusure.length === 0 && !only) {
+    s1.push(`«${rotta}» è l'ultimo capitolo e non chiude il cerchio: lì va DeckClose (domanda d'apertura + risposta + richiesta), non un punto`);
+  }
+  if (rotta !== ultimoCapitolo && chiusure.length > 0) {
+    s1.push(`«${rotta}» porta la chiusura del deck ma non è l'ultimo capitolo`);
+  }
+  for (const c of chiusure) {
+    const q = norm(c.domanda ?? '');
+    const a = norm(c.risposta ?? '');
+    if (!q) s2.push(`«${rotta}» · ${c.id}: la chiusura non rende la domanda d'apertura`);
+    else if (!fonte.includes(q)) s2.push(`«${rotta}» · ${c.id}: la domanda d'apertura non viene dalla fonte unica — «${q.slice(0, 70)}…»`);
+    if (!a) s2.push(`«${rotta}» · ${c.id}: la chiusura non rende la risposta`);
+    else {
+      if (!fonte.includes(a)) s2.push(`«${rotta}» · ${c.id}: la risposta non viene dalla fonte unica — «${a.slice(0, 70)}…»`);
+      const n = a.split(/\s+/).filter(Boolean).length;
+      if (n > paroleMax) s3.push(`«${rotta}» · la risposta è di ${n} parole (il tetto è ${paroleMax})`);
+    }
   }
 
   for (const p of punti) {
@@ -191,8 +223,8 @@ for (const { rotta, slide } of rese) {
   // Il punto chiude il capitolo: in coda, o appena prima della slide-firma.
   const coda = [...slide].reverse();
   const primoUtile = coda.find((s) => !s.firma);
-  if (punti.length === 1 && primoUtile && primoUtile.punto === null) {
-    s4.push(`«${rotta}»: il punto è «${punti[0].id}» ma il capitolo finisce su «${primoUtile.id}»`);
+  if (tutte.length === 1 && primoUtile && primoUtile.punto === null && primoUtile.risposta === null) {
+    s4.push(`«${rotta}»: la chiusura è «${tutte[0].id}» ma il capitolo finisce su «${primoUtile.id}»`);
   }
 
   for (const s of slide) {

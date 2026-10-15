@@ -1,0 +1,130 @@
+---
+/**
+ * DeckClose — la chiusura del deck: il cerchio che si chiude, e la richiesta.
+ *
+ * PERCHÉ ESISTE
+ * Perché i nostri deck chiudevano in undici modi diversi. Misurato il 15 ott 2026
+ * sull'ultima slide di contenuto di ogni deck: due chiudono **aprendo un argomento
+ * nuovo**, uno su uno slogan a tre tempi, gli altri fra un payoff, una citazione e
+ * la richiesta. L'ultimo posto è quello che si ricorda di più (effetto di posizione
+ * seriale), e lo stavamo assegnando a caso.
+ *
+ * CHE COSA NON È
+ * **Non è un riassunto.** «Dì quello che dirai, dillo, ripeti quello che hai detto»
+ * non viene da Aristotele: la traccia più antica è un consiglio del 1908 su come si
+ * costruisce una predica. Dei tre tempi, il primo — l'anticipazione — ha prove
+ * solide (gli advance organizer di Ausubel: effetto che CRESCE nel tempo, 0,21
+ * subito, 0,38 dopo tre settimane; il signaling di Mayer, 0,41) ed è la slide del
+ * percorso che i nostri deck hanno già. Il terzo — ripetere — è il più debole:
+ * ri-presentare lo stesso materiale è la famiglia che la ricerca boccia (Dunlosky
+ * et al. 2013: riassunto e rilettura a bassa utilità, pratica di recupero ad alta).
+ * Quello che regge in fondo non è la ripetizione: è **la conseguenza e la domanda**
+ * — far recuperare invece di ridire (Szpunar, Khan e Schacter, PNAS 2013).
+ *
+ * CHE COS'È
+ * Tre cose, in quest'ordine, e nient'altro:
+ *   1. **la domanda con cui il deck si è aperto**, resa com'era, parola per parola;
+ *   2. **la risposta in una riga** — il `messaggio` dell'ultimo capitolo;
+ *   3. **la richiesta**, che resta l'ultima cosa che si legge.
+ * Tutti e tre arrivano dai dati dell'app: qui non si scrive copia, e due
+ * formulazioni della stessa richiesta sono il modo più rapido di sembrare confusi.
+ *
+ * DOVE VA
+ * Ultima slide di contenuto dell'ULTIMO capitolo, prima della sola slide-firma.
+ * Lì **sostituisce** il punto di capitolo (`ChapterPoint`): due chiusure a dieci
+ * secondi di distanza sono una di troppo.
+ *
+ * AUDIT
+ * Come la slide-firma e il punto, è volutamente ariosa e fallisce il soft `i`.
+ * Non si aggiusta aggiungendo testo: è la slide che deve restare in testa.
+ */
+import Slide from './Slide.astro';
+
+interface Props {
+  /** La domanda d'apertura, dalla stessa fonte che la rende in apertura. */
+  domanda: string;
+  /** La risposta in una riga: il `messaggio` dell'ultimo capitolo. */
+  risposta: string;
+  /** La richiesta. Dalla fonte unica dell'ask: non si riscrive qui. */
+  ask?: string;
+  /** Occhiello sopra la domanda. */
+  eyebrow?: string;
+  id?: string;
+  bg?: 'primary' | 'secondary' | 'inverse' | 'brand';
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  domanda,
+  risposta,
+  ask,
+  eyebrow = 'La domanda da cui siamo partiti',
+  id = 'slide-chiusura',
+  bg = 'inverse',
+  class: className,
+  ...rest
+} = Astro.props as Props;
+---
+<Slide id={id} bg={bg} align="center" data-chiusura class={className} {...rest}>
+  <slot name="backdrop" slot="backdrop" />
+  <div class="edf-close" data-reveal>
+    <p class="edf-close-k">{eyebrow}</p>
+    <p class="edf-close-q" set:html={domanda} />
+    <p class="edf-close-a" data-reveal data-reveal-delay="0.1" set:html={risposta} />
+    {ask && <p class="edf-close-ask" data-reveal data-reveal-delay="0.2" set:html={ask} />}
+  </div>
+</Slide>
+
+<style is:global>
+  .edf-close {
+    width: 100%;
+    max-width: 56rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(0.8rem, 2vh, 1.4rem);
+  }
+  .edf-close-k {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    font-size: clamp(0.78rem, 0.92vw, 0.92rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-accent, var(--accent-primary, currentColor));
+  }
+  /* La domanda è la cosa più grande: è quella che chiude il cerchio. */
+  .edf-close-q {
+    font-family: var(--font-display, inherit);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+    color: var(--ink-primary);
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+  .edf-close-a {
+    font-size: clamp(1.05rem, 1.45vw, 1.42rem);
+    line-height: 1.45;
+    color: var(--ink-primary);
+    max-width: 40ch;
+    font-weight: 600;
+  }
+  .edf-close-ask {
+    font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+    line-height: 1.55;
+    color: var(--ink-body, var(--ink-secondary, currentColor));
+    max-width: 50ch;
+    padding-top: clamp(0.6rem, 1.6vh, 1.1rem);
+    border-top: 1px solid var(--line-subtle, currentColor);
+  }
+  .edf-close-ask strong { color: var(--ink-primary); font-weight: 700; }
+
+  @media (max-width: 640px) {
+    .edf-close { gap: 0.8rem; }
+    .edf-close-q { font-size: clamp(1.5rem, 7.4vw, 2.1rem); max-width: 20ch; }
+    .edf-close-a { font-size: 1.02rem; }
+  }
+</style>

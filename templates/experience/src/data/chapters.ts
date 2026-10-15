@@ -30,6 +30,16 @@ export const CHAPTERS: Chapter[] = [
 __CHAPTERS__
 ];
 
+/**
+ * La domanda con cui il deck si apre e la richiesta con cui si chiude: due stringhe
+ * che vivono in un posto solo, perché l'ULTIMO capitolo le rende insieme alla
+ * risposta (`DeckClose`) e il cerchio si chiude. Due formulazioni della stessa
+ * richiesta sono il modo più rapido di sembrare confusi davanti a un cliente.
+ * `audit:sintesi` boccia i segnaposto.
+ */
+export const DOMANDA_APERTURA = 'DA SCRIVERE: la domanda con cui il deck si apre';
+export const RICHIESTA = 'DA SCRIVERE: il passo che chiediamo, uno solo';
+
 export function chapterIndex(slug: string): number {
   return CHAPTERS.findIndex((c) => c.slug === slug);
 }

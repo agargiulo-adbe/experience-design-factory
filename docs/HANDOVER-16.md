@@ -235,6 +235,35 @@ della slide, e un giro con più di metà delle slide a zero **esce con codice 2*
 `copy-audit` sulle experience in una lingua sola): la domanda da fare a ogni gate nuovo è
 **«quante cose ha misurato?»**, non «che cosa ha detto».
 
+**La correzione del committente: la conseguenza, non la compressione.** Riletti, quattro dei
+sette punti *riassumevano* il capitolo — «Le vendite si perdono in quattro punti, e due li
+decidete voi» ERA la slide-mappa più la riga sui perimetri. Riscritti: ora dicono che cosa ne
+segue («dei quattro, i due che decidete voi sono gli ultimi due del percorso»), e sono scesi
+da ~19 a ~14 parole. La ricerca sostiene la correzione: **ri-presentare lo stesso materiale è
+la famiglia con meno prove** (Dunlosky et al. 2013: riassunto e rilettura a bassa utilità;
+pratica di recupero ad alta), mentre l'anticipazione in apertura è quella messa meglio
+(advance organizer, 0,21 subito e 0,38 dopo tre settimane) — ed è la slide del percorso che
+avevamo già.
+
+**E l'ultimo capitolo chiude il cerchio.** Blocco nuovo
+`@edf/core/blocks/immersive/DeckClose.astro`: la **domanda d'apertura** resa com'era
+(«Allora dove si perdono le vendite?»), la **risposta in una riga** e la **richiesta**, tutte
+e tre dai dati. Sostituisce il punto nell'ultimo capitolo — due chiusure a dieci secondi di
+distanza sono una di troppo. ⚠️ Non è un recap: «dì quello che dirai, dillo, ripeti quello che
+hai detto» non è di Aristotele, la traccia più antica è un consiglio del **1908** su come si
+fa una predica; l'ultimo posto si dà alla conseguenza e alla richiesta, non alla ripetizione.
+Il gate lo verifica (s1 pretende `DeckClose` sull'ultimo capitolo e `ChapterPoint` sugli
+altri), e **le due prove negative sono state fatte**: tolta la fonte, s2 segnala la domanda;
+tolto il blocco, s1 segnala il capitolo.
+
+⚠️ **Due bug miei, degni di nota.** Il primo: gli spazi unificatori inseriti come carattere
+non sono sopravvissuti alla scrittura, e il gate li confrontava con la stessa carta —
+adesso nel sorgente si scrive l'escape `\u00a0` (si vede, si cerca, non si perde) e `norm()`
+normalizza **entrambe** le scritture, se no il gate dichiara «non viene dalla fonte unica»
+una frase che viene esattamente da lì. Il secondo: nel registro dell'admin una sostituzione
+troppo avida aveva mangiato due intestazioni di capitolo — vista rileggendo il file, non dal
+compilatore.
+
 **La slide più densa è stata divisa, non accorciata.** `/rete/` portava 248 parole in una
 schermata — testa, tre carte, la domanda su PICO e una riga di requisiti — e **la domanda che
 chiede la riunione era l'ultima riga in fondo**. Ora è una slide sua (`slide-pico`), con l'ask
@@ -248,7 +277,7 @@ lead. Mediana del capitolo da 87 a **77 parole/slide**, novantesimo da 202 a 195
 nuovi) · `audit:taglio` **ALLINEATO** · `audit:deck` **0 HARD** a 1920/1440/1280 (71 soft, di cui
 **21 sono le sette slide del punto sul check `i`**: coprono poco perché portano una frase, come la
 slide-firma) · `audit:ink` **pulito** su 343 blocchi · `audit:fonti` 35 link, nessuno rotto ·
-`audit:sintesi` **0 HARD**, con la lista SOFT delle nove slide oltre 120 parole — che è il
+`audit:sintesi` **0 HARD** (punti nei sei capitoli, cerchio chiuso nel settimo), con la lista SOFT delle nove slide oltre 120 parole — che è il
 materiale del prossimo giro di taglio, prima della review del 16.
 
 ---

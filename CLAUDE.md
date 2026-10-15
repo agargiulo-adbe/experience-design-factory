@@ -96,7 +96,7 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
 - `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
 - `pnpm audit:taglio` / `DECK_URL=http://localhost:N npx tsx scripts/cut-audit.ts --app <app>` — il taglio **«In dieci minuti»** resta allineato al percorso intero: HARD su copia a mano, numeri che solo il taglio afferma, fonti che solo il taglio porta. Si dichiara l'app in `scripts/lib/cut-routes.ts`. Si lancia **prima** di `audit:deck`.
-- `pnpm audit:sintesi` / `DECK_URL=http://localhost:N npx tsx scripts/sintesi-audit.ts --app <app> [--only <rotta>]` — **il punto di ogni capitolo**: HARD se un capitolo non chiude su una frase sola (`s1`), se la frase è riscritta a mano invece che presa dalla fonte unica (`s2`), se è un segnaposto o supera le 25 parole (`s3`), se non è l'ultima slide (`s4`); SOFT sul **budget di lettura** per slide (`s5`) e sui titoli etichetta (`s6`). L'app si dichiara in `scripts/lib/sintesi-apps.ts`, e il gate stampa da sé quali restano da migrare. Si lancia **prima** di `audit:deck`.
+- `pnpm audit:sintesi` / `DECK_URL=http://localhost:N npx tsx scripts/sintesi-audit.ts --app <app> [--only <rotta>]` — **il punto di ogni capitolo**: HARD se un capitolo non chiude su una frase sola, o se l'ultimo capitolo non chiude il cerchio con `DeckClose` (`s1`), se la frase è riscritta a mano invece che presa dalla fonte unica (`s2`), se è un segnaposto o supera le 25 parole (`s3`), se non è l'ultima slide (`s4`); SOFT sul **budget di lettura** per slide (`s5`) e sui titoli etichetta (`s6`). L'app si dichiara in `scripts/lib/sintesi-apps.ts`, e il gate stampa da sé quali restano da migrare. Si lancia **prima** di `audit:deck`.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
 - `pnpm --filter <app> assets:build` — fetch/grade **Pexels** assets → `src/assets/generated/` + `provenance.json`. Reads `PEXELS_API_KEY` from the app's `.env` (gitignored). Re‑fetches ALL slots; to regenerate a subset use `--manifest <tmp>` with only those slots.
 
@@ -629,6 +629,26 @@ massimo carico di lettura e zero conclusione.
   cambia per il cliente**, non che cosa fa il prodotto. È il «So what?» del whiteboarding:
   si chiede finché la risposta è una cosa che il cliente vuole ottenere. Venticinque parole
   al massimo — una sintesi lunga non è una sintesi.
+- **La conseguenza, non la compressione** (correzione del 15 ott, dal committente). La prima
+  versione dei sette punti di Trenitalia *riassumeva* il capitolo, e si leggeva per quello
+  che era: una ripetizione. «Le vendite si perdono in quattro punti, e due li decidete voi»
+  ERA la slide-mappa più la riga sui perimetri; «il numero da guardare sono i giorni» ERA
+  la carta «Dal brief alla vetrina». Il punto **non ridice** il capitolo: dice **che cosa ne
+  segue**. La ricerca è netta su questo — ri-presentare lo stesso materiale è la famiglia di
+  interventi più debole che sia stata misurata (Dunlosky et al. 2013: riassunto e rilettura
+  a **bassa** utilità, pratica di recupero e pratica distribuita ad **alta**), mentre
+  l'anticipazione in apertura è quella con le prove migliori (advance organizer di Ausubel:
+  0,21 subito e **0,38 dopo tre settimane**; signaling di Mayer 0,41) ed è la slide del
+  percorso che i deck hanno già.
+- **L'ULTIMO capitolo chiude il cerchio, e non porta un punto suo.** Lì va
+  `@edf/core/blocks/immersive/DeckClose.astro`: la **domanda d'apertura** resa com'era, la
+  **risposta in una riga** (il `messaggio` dell'ultimo capitolo) e la **richiesta**. Tutte e
+  tre dai dati. Due chiusure a dieci secondi di distanza sono una di troppo.
+  ⚠️ **Non è un recap.** «Dì quello che dirai, dillo, ripeti quello che hai detto» non è di
+  Aristotele: la traccia più antica è un consiglio del **1908** su come si fa una predica.
+  L'ultimo posto è quello che si ricorda di più (posizione seriale), e proprio per questo si
+  dà alla **conseguenza e alla richiesta**, non alla ripetizione: far recuperare batte
+  ridire (Szpunar, Khan e Schacter, PNAS 2013).
 - **Dove vive:** `messaggio` è un campo **obbligatorio** di `Chapter`, in
   `src/data/chapters.ts`. Obbligatorio di proposito: un capitolo nuovo senza il suo punto
   **non compila**, che è un vincolo più forte di qualunque gate. La pagina lo legge, non lo
@@ -732,6 +752,7 @@ projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm
   gli asset della slide attiva. Una riga nel BaseLayout, `data-made-with` sulla slide.
 - `blocks/DeckAudio.astro` — il letto sonoro: spento di default, livello per slide (`data-audio="loud"`), dissolvenze, sopravvive agli swap SPA.
 - `blocks/HowItWorks.astro` — «Scopri come»: il dettaglio che si apre sul posto; marca `html[data-hiw-open]` perché la pelle faccia arretrare il contorno. Ri-misurato dal check `exp`.
+- `immersive/DeckClose.astro` — la chiusura del deck: domanda d'apertura + risposta in una riga + richiesta. Ultima slide dell'ULTIMO capitolo, al posto del punto.
 - `immersive/ChapterPoint.astro` — «Il punto»: la frase con cui si chiude un capitolo, presa da `Chapter.messaggio`. Ultima slide, una per capitolo (gate `audit:sintesi`).
 - `blocks/CoBrand.astro` — la firma «Adobe × Brand». `chrome` su ogni slide (una riga nel
   BaseLayout), `hero` grande e centrato su prima e ultima slide; ordine non invertibile.
