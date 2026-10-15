@@ -439,7 +439,13 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var cover = el('header', 'dw-cover');
     cover.appendChild(el('h1', 'dw-cover-h', esc(L(content.title) || 'Dossier')));
     if (L(content.updated)) cover.appendChild(el('p', 'dw-cover-meta', esc(L(content.updated))));
-    if (L(content.disclaimer)) cover.appendChild(el('p', 'dw-cover-note', esc(L(content.disclaimer))));
+    // `richText` e non `esc`: il disclaimer è un campo descrittivo come gli altri,
+    // e l'enfasi è ammessa (strong/em/code). Con `esc` i tag uscivano come TESTO —
+    // «<strong>» stampato in chiaro nella prima cosa che si legge, e capitava su
+    // tutti i dossier che ne avevano. La sicurezza non cambia: richText escapa
+    // tutto e riapre solo quei tre tag. Trovato guardando uno screenshot a 390px,
+    // non dall'audit: il gate misura che si legga, non che il testo sia giusto.
+    if (L(content.disclaimer)) cover.appendChild(el('p', 'dw-cover-note', richText(L(content.disclaimer))));
     docEl.appendChild(cover);
 
     secs.forEach(function (sec, i) {
