@@ -94,7 +94,7 @@ const stato = new Map<string, number | string>();
  * dà un falso allarme per una connessione lenta smette di essere creduto al
  * secondo falso allarme — successo subito, sulla prima esecuzione vera.
  */
-async function provaUna(u: string): Promise<number | 'irraggiungibile'> {
+async function provaUna(u: string): Promise<number | 'irraggiungibile' | 'bloccato'> {
   try {
     const c = new AbortController();
     const t = setTimeout(() => c.abort(), 25000);
@@ -105,7 +105,19 @@ async function provaUna(u: string): Promise<number | 'irraggiungibile'> {
     if (r.status === 405 || r.status === 403) r = await fetch(u, { redirect: 'follow', signal: c.signal });
     clearTimeout(t);
     return r.status;
-  } catch { return 'irraggiungibile'; }
+  } catch (e) {
+    /* 16 ott 2026 — il terzo falso allarme, e il più insidioso: business.adobe.com
+       (le pagine prodotto e il blog, cioè quello che un deck Adobe cita di più)
+       chiude il flusso HTTP/2 con un INTERNAL_ERROR appena vede un client
+       automatico. Non è un 403, è uno strappo di connessione — quindi finiva fra
+       gli irraggiungibili e da lì fra i rotti, con un HARD su un link che per una
+       persona si apre benissimo. Un reset di protocollo è un blocco anti-bot, non
+       una pagina morta: va nella lista «da aprire a mano», come i 403. */
+    const err = e as Error & { cause?: Error };
+    const msg = `${err?.message ?? ''} ${err?.cause?.message ?? ''}`;
+    if (/NGHTTP2_INTERNAL_ERROR|INTERNAL_ERROR|not closed cleanly|ECONNRESET|EPROTO/i.test(msg)) return 'bloccato';
+    return 'irraggiungibile';
+  }
 }
 await Promise.all(unici.map(async (u) => {
   let st = await provaUna(u);
@@ -129,7 +141,10 @@ const rotti = links.filter((l) => {
   const st = stato.get(l.href);
   return typeof st !== 'number' ? st !== 'bloccato' : (st >= 400 && !BLOCCA_BOT.has(st));
 });
-const daGuardare = links.filter((l) => { const st = stato.get(l.href); return typeof st === 'number' && BLOCCA_BOT.has(st); });
+const daGuardare = links.filter((l) => {
+  const st = stato.get(l.href);
+  return st === 'bloccato' || (typeof st === 'number' && BLOCCA_BOT.has(st));
+});
 
 /**
  * Link generico = punta alla radice di un sito. Un indirizzo senza percorso non
@@ -152,7 +167,7 @@ if (rotti.length) {
 if (daGuardare.length) {
   console.log(`\nDA APRIRE A MANO — il sito blocca gli accessi automatici: ${daGuardare.length}`);
   for (const l of daGuardare) console.log(`  ? ${l.rotta} · ${l.slide} — ${stato.get(l.href)} · ${l.href}`);
-  console.log('  (403/401/429 non vuol dire rotto: si apre il link in un browser, una volta, e si tira una riga)');
+  console.log('  (403/401/429 e i reset di connessione non vogliono dire rotto: si apre il link in un browser, una volta, e si tira una riga)');
 }
 if (nude.length) {
   console.log(`\nSOFT — righe di fonte senza link: ${nude.length}`);

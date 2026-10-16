@@ -105,8 +105,8 @@ export const SOURCES = {
      Riguarda il Direttore Sales più di qualunque rivenditore, perché tocca la
      sua vetrina. ⚠️ È una PROPOSTA: non è ancora legge, e va detto. */
   ueTicketing: {
-    url: 'https://transport.ec.europa.eu/news/commission-proposes-new-rules-improve-rail-passenger-services-2026-05-13_en',
-    label: 'proposta della Commissione europea, 13 maggio 2026',
+    url: 'https://transport.ec.europa.eu/document/download/5fd64be7-44b8-4dd3-b084-05c35c5f2a8b_en?filename=SWD_2026_300_Impact_assessment.pdf',
+    label: 'valutazione d’impatto della Commissione europea, 13 maggio 2026',
     data: '13 maggio 2026',
     cosaDice:
       'Gli operatori storici con una quota di mercato domestica pari o superiore al 50% dovranno esporre sulla propria piattaforma tutti i servizi ferroviari del Paese e, su richiesta, vendere i biglietti degli altri operatori; dodici mesi dall\'entrata in vigore, e in assenza di accordo entro otto mesi decide il regolatore nazionale. La stessa valutazione d\'impatto osserva che la grande maggioranza delle ricerche e delle vendite online resta oggi sui canali propri degli operatori. ⚠️ Proposta, non norma vigente.',
@@ -128,6 +128,26 @@ export const SOURCES = {
     data: '14-16 ottobre 2026',
     cosaDice:
       'Al TTG 2026: presentazione del nuovo Pass Interrail; progetti Trenitalia e Busitalia per il turismo congressuale; approfondimento sui servizi City Sightseeing, il gruppo rilevato da Busitalia a gennaio 2026; e una sessione di chiusura dedicata ai nuovi servizi digitali e al salvadanaio elettronico.',
+  },
+  /* ⚠️ Il canale WhatsApp non è mai stato ANNUNCIATO — zero comunicati, zero
+     stampa — ma è PUBBLICATO da Trenitalia stessa: il link wa.me sta in chiaro
+     sulla pagina Informazioni, e sulla pagina CartaFRECCIA Oro è scritto che
+     da lì si acquista. Quindi si può nominare citando loro, senza rivelare
+     niente: è la differenza fra «lo sappiamo da una riunione» e «sta sul
+     vostro sito». Verificato il 16 ott 2026. */
+  whatsappTrenitalia: {
+    url: 'https://www.trenitalia.com/it/informazioni.html',
+    label: 'trenitalia.com, pagina Informazioni',
+    data: 'consultata il 16 ottobre 2026',
+    cosaDice:
+      'La pagina pubblica il collegamento diretto al canale WhatsApp di Trenitalia. L\'assistente risponde in linguaggio naturale, propone soluzioni di viaggio con orari, classi e prezzi e porta al carrello; si presenta come «assistente virtuale di Trenitalia basato su Intelligenza Artificiale» e dichiara di poter aiutare «per l\'acquisto di collegamenti diretti per un passeggero». Sulla pagina dei servizi CartaFRECCIA Oro l\'acquisto via WhatsApp è scritto esplicitamente.',
+  },
+  whatsappEuropa: {
+    url: 'https://www.trenord.it/news/trenord-informa/comunicati-stampa/biglietto-treno-whatsapp/',
+    label: 'confronto fra operatori europei',
+    data: 'verificato il 16 ottobre 2026',
+    cosaDice:
+      'Nessun altro operatore ferroviario europeo vende dentro WhatsApp: Trenord ci consegna il biglietto comprato alla macchina (comunicato del 28 aprile 2026), Renfe e Deutsche Bahn mandano notifiche, SNCF Voyageurs ci fa assistenza con agenti dal marzo 2025, Eurostar dichiara pubblicamente di non operare su WhatsApp. Per Italo, ÖBB e SBB non risulta nulla.',
   },
   ttgAnsa: {
     url: 'https://www.ansa.it/ansacom/notizie/economia/ferrovie-dello-stato-italiane/2025/10/09/cacciapuoti-trenitalia-investiamo-sulla-intermodalita_379ce4de-97d4-48e7-83b6-064a2a522de8.html',
