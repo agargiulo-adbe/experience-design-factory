@@ -330,8 +330,12 @@ export const CANALE: Card[] = [
     b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì: scegliere l’orario e confermare senza uscire dalla conversazione.',
   },
   {
+    /* 17 ott: la card non nominava il prodotto. Era un residuo della prima
+       stesura, quando lo credevo non annunciato; verificato poi che Adobe lo
+       nomina nel comunicato del 20 aprile 2026, il nome si può e si deve dire —
+       un cliente che prende appunti deve potersi scrivere una parola da cercare. */
     k: 'A che punto è',
-    t: 'Annunciato, non ancora disponibile',
+    t: 'Si chiama LLM Apps, ed è annunciato ma non disponibile',
     b: 'Adobe l’ha annunciato ad aprile come capacità di Experience Manager, che avete. Non è ancora in disponibilità generale, e lo diciamo adesso: una cosa da guardare insieme mentre si decide, non da comprare oggi.',
   },
 ];
