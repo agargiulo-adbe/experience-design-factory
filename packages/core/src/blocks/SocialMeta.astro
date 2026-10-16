@@ -1,0 +1,82 @@
+---
+/**
+ * SocialMeta.astro — l'anteprima del link, per OGNI artefatto della Factory.
+ *
+ * PERCHÉ STA NEL MOTORE. Un link della Factory finisce quasi sempre in una chat,
+ * non in un motore di ricerca: lo si manda a un collega su Teams, lo si gira a un
+ * cliente per posta. Lì il riquadro di anteprima è la prima cosa che si vede —
+ * prima del titolo, prima di tutto — e senza immagine resta il rettangolo grigio
+ * con l'icona di un documento generico, che fa sembrare il link una cosa qualunque.
+ * Vale a maggior ragione per i deck `noindex`: nessun crawler li indicizza, ma
+ * l'anteprima in chat si costruisce lo stesso.
+ *
+ * Misurato il 16 ott 2026, prima di questo componente: su venti layout solo TRE
+ * dichiaravano `og:image`, e una app (`trenitalia-prospettiva-sales`) aveva il
+ * file `og.png` generato e **mai dichiarato** — l'immagine c'era e nessuno la
+ * vedeva. È il difetto tipico di una cosa lasciata «da ricordare» nel `<head>`:
+ * per questo ora è un componente e non un promemoria.
+ *
+ * L'URL DEVE ESSERE ASSOLUTO. I crawler che costruiscono l'anteprima non
+ * risolvono i percorsi relativi: `/og.png` non arriva da nessuna parte. Qui si
+ * compone `site + base + file`, e il gate `pnpm audit:og` verifica che in pagina
+ * finisca un URL con lo schema.
+ *
+ * USO (una riga nel <head> di ogni layout):
+ *   <SocialMeta title={title} description={description} site={Astro.site}
+ *               base={import.meta.env.BASE_URL} alt="…" />
+ */
+interface Props {
+  /** titolo della pagina — quello che si legge nel riquadro */
+  title: string;
+  /** una riga sotto il titolo; vuota è peggio di breve */
+  description?: string;
+  /** `Astro.site` — l'origine. Senza, l'URL non può essere assoluto */
+  site?: URL | undefined;
+  /** `import.meta.env.BASE_URL` */
+  base: string;
+  /** che cosa si vede nell'immagine, per chi non la vede */
+  alt?: string;
+  /** nome del sito/artefatto per `og:site_name` */
+  siteName?: string;
+  /** il file dentro `public/`; cambiarlo è raro */
+  image?: string;
+  /** 'website' per home e landing, 'article' per i documenti */
+  type?: 'website' | 'article';
+  /** lingua, nella forma che OG vuole (it_IT, en_US) */
+  locale?: string;
+}
+const {
+  title,
+  description = '',
+  site,
+  base,
+  alt = '',
+  siteName = '',
+  image = 'og.png',
+  type = 'website',
+  locale = 'it_IT',
+} = Astro.props;
+
+// origin + base + file. Se `site` manca (app senza `site` in astro.config) resta
+// il percorso assoluto dal dominio: non è l'ideale, e il gate lo segnala.
+const origin = site ? site.origin : '';
+const path = `${base.replace(/\/?$/, '/')}${image}`;
+const imageUrl = `${origin}${path}`;
+const pageUrl = site && Astro.url ? new URL(Astro.url.pathname, site).href : '';
+---
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+{siteName && <meta property="og:site_name" content={siteName} />}
+<meta property="og:locale" content={locale} />
+{pageUrl && <meta property="og:url" content={pageUrl} />}
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{alt && <meta property="og:image:alt" content={alt} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+<meta name="twitter:image" content={imageUrl} />
+{alt && <meta name="twitter:image:alt" content={alt} />}

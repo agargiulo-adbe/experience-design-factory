@@ -20,6 +20,14 @@ export interface ExperienceTypeDef {
   id: ExperienceType;
   /** nome che il cliente legge in copertina */
   label: Bilingual;
+  /**
+   * La sigla che compare nell'anteprima del link (`og.png`), accanto al marchio
+   * del cliente: una lettera dove è univoca, due dove non lo è. Prospettiva e
+   * Playbook iniziano entrambe per P — «Pr» e «Pb» — e due lettere sono meglio
+   * di una lettera ambigua: l'anteprima si legge in un riquadro di chat, dove
+   * non c'è spazio per una legenda.
+   */
+  mark: string;
   /** riga di copertina: «<label> preparata dal team Adobe Italia» (accordo di genere incluso) */
   coverLine: Bilingual;
   /** la domanda del cliente a cui il tipo risponde */
@@ -35,6 +43,7 @@ export interface ExperienceTypeDef {
 export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
   prospettiva: {
     id: 'prospettiva',
+    mark: 'Pr',
     label: { it: 'Prospettiva', en: 'Perspective' },
     coverLine: { it: 'Prospettiva preparata dal team Adobe Italia', en: 'A perspective prepared by the Adobe Italy team' },
     question: { it: 'Dove potremmo arrivare?', en: 'Where could we get to?' },
@@ -49,6 +58,7 @@ export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
   },
   storia: {
     id: 'storia',
+    mark: 'S',
     label: { it: 'Storia', en: 'Customer story' },
     coverLine: { it: 'Storia preparata dal team Adobe Italia', en: 'A customer story prepared by the Adobe Italy team' },
     question: { it: 'Come funzionerebbe per un nostro cliente?', en: 'How would it work for one of our customers?' },
@@ -64,6 +74,7 @@ export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
   },
   blueprint: {
     id: 'blueprint',
+    mark: 'B',
     label: { it: 'Blueprint', en: 'Blueprint' },
     coverLine: { it: 'Blueprint preparato dal team Adobe Italia', en: 'A blueprint prepared by the Adobe Italy team' },
     question: { it: 'Come si collega a quello che abbiamo?', en: 'How does it connect to what we already have?' },
@@ -80,6 +91,7 @@ export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
   },
   playbook: {
     id: 'playbook',
+    mark: 'Pb',
     label: { it: 'Playbook', en: 'Playbook' },
     coverLine: { it: 'Playbook preparato dal team Adobe Italia', en: 'A playbook prepared by the Adobe Italy team' },
     question: { it: 'Come lo uso da lunedì?', en: 'How do I use it from Monday?' },
@@ -95,6 +107,7 @@ export const EXPERIENCE_TYPES: Record<ExperienceType, ExperienceTypeDef> = {
   },
   interno: {
     id: 'interno',
+    mark: 'I',
     label: { it: 'Interno', en: 'Internal' },
     coverLine: { it: 'Documento interno Adobe', en: 'Adobe internal document' },
     question: { it: 'Cosa stiamo costruendo e perché?', en: 'What are we building and why?' },

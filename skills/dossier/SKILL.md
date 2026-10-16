@@ -288,8 +288,22 @@ CLAUDE.md → Firma co-brand), perché quello è materiale che il cliente vede.
   mobilità: un'immagine decorativa aggiunge peso e scroll, non informazione, e ai colleghi
   che valutano il lavoro legge come riempitivo. Il budget di qualità va nella tipografia,
   nell'indice e nelle tabelle.
-- **Niente anteprima social / OG image**: il link gira in chat, e un'anteprima con il nome
-  del cliente è esattamente la fuga che il gate serve a impedire.
+- **L'anteprima del link c'è, e porta il badge «Riservato»** — regola **cambiata il 16 ott
+  2026**, e vale la pena dire perché: qui c'era scritto il contrario («niente anteprima
+  social: un'anteprima con il nome del cliente è la fuga che il gate serve a impedire»).
+  Il divieto partiva da una premessa falsa: **l'anteprima testuale c'è comunque**. Qualunque
+  chat costruisce il riquadro leggendo `<title>` e `<meta name="description">`, che un
+  dossier ha per forza — quindi il nome del cliente nel riquadro c'era già, e mancava solo
+  l'immagine. Il risultato era il peggiore dei due: nome del cliente esposto **e**
+  rettangolo grigio con l'icona del documento generico, cioè un lavoro di giorni che si
+  presenta come un allegato anonimo.
+  Quindi `pnpm og` genera l'anteprima anche per i dossier, con il **badge Riservato** in
+  chiaro — che è un'informazione utile proprio a chi lo riceve. Il marchio del cliente è
+  quello del co-brand (SVG ufficiale o ripiego wordmark), **piccolo, accanto al marchio
+  Adobe**: la cautela del §6 di questa skill vale ancora contro un lockup grande in testa,
+  che farebbe sembrare il dossier un artefatto congiunto.
+  ⚠️ **Quello che l'anteprima non contiene mai:** numeri, nomi di persone, frasi del
+  contenuto. Titolo dell'artefatto, cliente, tipo, badge. Nient'altro.
 - **Niente copia del renderer** dentro l'app (vedi §3.1).
 - **Niente dati contrattuali fuori dalla loro sezione**, e mai a voce in riunione.
 - **Il cliente non deve sapere che il dossier esiste.**

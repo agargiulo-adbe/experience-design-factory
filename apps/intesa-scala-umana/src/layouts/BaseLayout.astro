@@ -4,6 +4,7 @@ import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
 import MadeWith from '@edf/core/blocks/MadeWith.astro';
 import DeckAudio from '@edf/core/blocks/DeckAudio.astro';
+import SocialMeta from '@edf/core/blocks/SocialMeta.astro';
 
 /**
  * BaseLayout — «Su scala umana · Adobe × Intesa Sanpaolo» (Prospettiva).
@@ -74,12 +75,6 @@ const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_
     {/* L'anteprima quando il link finisce in una chat. `noindex` riguarda i
         motori di ricerca; chi riceve il link per messaggio vede comunque il
         riquadro, e senza og è un rettangolo vuoto. */}
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={docTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${base.replace(/\/?$/, '/')}og.png`} />
-    <meta name="twitter:card" content="summary_large_image" />
-
     {preloadImage && <link rel="preload" as="image" href={preloadImage} />}
     <script is:inline>
       (function () {
@@ -98,6 +93,7 @@ const docTitle = isHome || title === SITE_NAME ? SITE_NAME : `${title} | ${SITE_
       })();
     </script>
     <ClientRouter />
+      <SocialMeta title={title} description={description} site={Astro.site} base={import.meta.env.BASE_URL} siteName={SITE_NAME} />
   </head>
   <body>
     <slot />

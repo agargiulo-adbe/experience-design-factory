@@ -91,7 +91,8 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**
 - `pnpm loop:seamless <clip.mp4> --poster` — ricuce una clip perché il loop non faccia stacco (+ `--check` per verificarne una esistente; **`--boomerang`** quando la clip *deriva* e nessuna dissolvenza fa combaciare testa e coda: andata e ritorno, il giro si chiude per costruzione).
-- `pnpm brand:icons <app> --title "…" --sub "…"` — dal `favicon.svg` disegnato a mano rende `icon-192.png`, `apple-touch-icon.png` e `og.png`; la palette la legge dal marchio, così le icone non divergono da lui.
+- `pnpm brand:icons <app> --title "…" --sub "…"` — dal `favicon.svg` disegnato a mano rende `icon-192.png` e `apple-touch-icon.png`; la palette la legge dal marchio, così le icone non divergono da lui.
+- `pnpm og [--app <alias>] [--list]` — **l'anteprima del link** di ogni artefatto (`og.png` 1200×630): firma Adobe × Cliente, sigla del tipo (Pr · S · B · Pb · I · D), titolo, badge sui riservati. I meta li emette il motore (`SocialMeta.astro`). Gate: **`pnpm audit:og`** dopo `pnpm build`.
 - `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
 - `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
@@ -472,8 +473,8 @@ Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-sh
 - **Marchio.** Ogni experience ha il suo `public/favicon.svg`: una forma **geometrica**
   presa dal disegno che regge il deck, mai una lettera (a 16px un glifo sembra un
   carattere non caricato) e mai il logo del cliente (quello vive nel co-brand).
-  `pnpm brand:icons` rende icone e `og.png` **dal favicon**. L'anteprima del link serve
-  soprattutto ai deck `noindex`: chi lo riceve in chat vede comunque il riquadro.
+  `pnpm brand:icons` rende le icone **dal favicon**. L'anteprima del link invece **non**
+  viene da lì: la fa `pnpm og`, e ha una regola sua qui sotto.
 - **Movimento.** La clip in loop sta su **copertina e chiusura**, dove non si parla; in
   mezzo ruba lo sguardo. Prompt con camera bloccata e `pan, tilt, zoom, dolly` nel
   negative, se no il modello dà una carrellata. Se la clip deriva, `--boomerang`. Una
@@ -616,6 +617,45 @@ spesso di quanto si ammetta — ed è anche la versione che l'interlocutore gira
 Che cosa entra, convenzioni e ordine dei gate:
 `skills/experience-design/references/taglio-dieci-minuti.md`. Memoria:
 `taglio-corto-stessa-fonte`.
+
+### Ogni link porta la sua anteprima (BINDING, ogni artefatto presente e futuro)
+Un link della Factory finisce in **chat**, non in un motore di ricerca: lo si manda a un
+collega su Teams, lo si gira per posta. Lì il riquadro di anteprima è la prima cosa che si
+vede — prima del titolo — e senza immagine resta il rettangolo grigio con l'icona del
+documento generico: il link sembra una cosa qualunque, e un dossier preparato in due giorni
+si presenta come un allegato anonimo. Vale **a maggior ragione** per i deck `noindex`:
+nessun crawler li indicizza, ma l'anteprima in chat si costruisce lo stesso.
+- **Si genera: `pnpm og`** (`--app <alias>` per una sola, `--list` per vedere senza fare).
+  Compone **la firma Adobe × Cliente** nell'ordine non invertibile del co-brand, **la sigla
+  del tipo** e il titolo. La sigla è una proprietà del tipo (`EXPERIENCE_TYPES[t].mark`),
+  non una convenzione sparsa: **Pr** Prospettiva · **S** Storia · **B** Blueprint ·
+  **Pb** Playbook · **I** interno · **D** dossier. Due lettere dove una sarebbe ambigua —
+  Prospettiva e Playbook iniziano entrambe per P, e nel riquadro di una chat non c'è spazio
+  per una legenda.
+- **Il marchio del cliente è l'SVG ufficiale o il ripiego wordmark**, come nel co-brand:
+  mai un logo ricostruito a mano. Su venti artefatti **uno solo** ha l'SVG vero (Intesa):
+  per tutti gli altri l'anteprima porta il nome in carattere display, ed è corretto così.
+- **L'URL dev'essere ASSOLUTO.** I crawler che costruiscono l'anteprima non risolvono i
+  percorsi relativi: `/og.png` non arriva da nessuna parte, e il difetto è invisibile dalla
+  pagina. I meta li emette **il motore** — `@edf/core/blocks/SocialMeta.astro`, una riga nel
+  `<head>` del layout — e non si riscrivono per app.
+- **Il gate è `pnpm audit:og`** (dopo `pnpm build`, perché misura il `dist/`): file presente
+  e **1200×630**, `og:image` su **ogni** pagina, URL assoluto, file davvero nel dist,
+  `og:title` e `twitter:card`, e nessun meta duplicato. **Deve uscire PASS.**
+- **I due difetti che questa regola esiste per impedire**, misurati il 16 ott 2026 prima di
+  scriverla: su diciannove app **quattro** avevano un'immagine e su venti layout **tre** la
+  dichiaravano; e `trenitalia-prospettiva-sales` aveva il file generato e **mai dichiarato**
+  — l'immagine c'era, e nessuno l'ha mai vista. Il secondo è il peggiore, perché la pagina
+  è a posto e il difetto si vede solo incollando il link da qualche parte.
+- **Anche i rimandi ce l'hanno.** Le pagine di redirect (i vecchi link di Max Mara sull'hub,
+  i capitoli spostati di FS) portano l'anteprima della destinazione: un vecchio link
+  incollato in chat è proprio il caso in cui il riquadro grigio fa sembrare rotto un link
+  che funziona. Nessuna esenzione nel gate: una lista di eccezioni è il primo passo verso un
+  gate che non misura più niente.
+- **Un accento non è un inchiostro, nemmeno qui.** Il generatore misura il contrasto e
+  schiarisce l'accento finché non regge sul fondo: il blu di marchio del MEF sul suo fondo
+  notte dà **1,7:1** e l'occhiello sarebbe illeggibile. Vale la stessa regola degli
+  inchiostri che si ribaltano con la superficie.
 
 ### Il marchio in pagina non lo aggiorna `brand:icons` (BINDING)
 `pnpm brand:icons` rende `icon-192`, `apple-touch-icon` e `og.png` **dal `favicon.svg`**.
