@@ -240,6 +240,41 @@ export const PRIMA: Card[] = [
   },
 ];
 
+/* ── Capitolo 04 · il canale che si estende ───────────────────────────────
+   Deciso nella call interna del 16 ott: il canale dove il viaggio si cerca sta
+   diventando anche il canale dove si compra, ed era il pezzo mancante. Il filo
+   viene dal cliente, non da noi — a un tavolo precedente hanno detto che la
+   chiusura dell'acquisto la vedono su WhatsApp e WeChat, non dentro un
+   assistente: qui si dice che è lo stesso movimento, un passo più avanti.
+
+   ⚠️ DUE VINCOLI, entrambi verificati il 16 ott e nessuno dei due negoziabile.
+   PRIMO: la capacità Adobe che fa questo è in BETA, con il prezzo ancora in
+   discussione — in call si era detto «mi risulta siano in general availability»
+   e non è così. Quindi niente promesse: si descrive il fenomeno, e la
+   partecipazione si offre come sperimentazione.
+   SECONDO: il prodotto NON SI NOMINA. È un programma non annunciato
+   pubblicamente, e questo deck sta su una pagina pubblica: nominarlo lo
+   divulgherebbe. Vale la stessa regola della via contrattuale di un altro
+   cliente — il fatto si porta a voce, la slide dice la capacità. È anche quello
+   che è stato chiesto in call: «citarlo come concetto, non come tecnologia». */
+export const CANALE: Card[] = [
+  {
+    k: 'Che cosa cambia',
+    t: 'Dalla risposta all’acquisto, senza uscire dalla conversazione',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì, nella stessa conversazione.',
+  },
+  {
+    k: 'Perché non è una novità per voi',
+    t: 'In Asia funziona già così, e lo sapete',
+    b: 'Dove l’acquisto vive dentro l’applicazione di messaggistica, quel canale è già il negozio. Il movimento è lo stesso: cambia solo quale applicazione.',
+  },
+  {
+    k: 'A che punto è',
+    t: 'Una sperimentazione, non un prodotto da comprare',
+    b: 'La capacità esiste ed è in prova con un primo gruppo di aziende; il modello commerciale non è chiuso. Si può partecipare, e per un operatore con percorsi di prenotazione come i vostri è il profilo che cercano.',
+  },
+];
+
 /* ── Capitolo 05 · l'aritmetica ────────────────────────────────────────────
    I numeri sono i suoi, dichiarati al TTG dell'ottobre 2025, più la rete di
    terzi del Regionale. Prima c'era «4 mercati esteri presidiati»: nessuna fonte
