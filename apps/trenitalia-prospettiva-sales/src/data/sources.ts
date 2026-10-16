@@ -74,6 +74,31 @@ export const SOURCES = {
     cosaDice:
       'Verbatim: «The conversion rate for Alterra\'s NBCUniversal premium streaming campaign increased by 30% across three key audience segments». Alterra gestisce comprensori sciistici con ricettività, quindi è il nome pubblico più vicino al turismo fra i clienti del prodotto — ma la collaborazione documentata è fra un inserzionista e un editore, non fra due operatori turistici.',
   },
+  /* ⚠️ Fonte PRIMARIA, letta il 16 ott 2026 sulla pagina di Trenitalia: la voce
+     cinese del selettore di lingua non porta a un sito, porta a due codici QR.
+     Uno apre il mini-program WeChat che VENDE, l'altro l'account che informa.
+     Cioè: il canale cinese di Trenitalia non è il suo sito, è WeChat. */
+  trenitaliaCinese: {
+    url: 'https://www.trenitalia.com/it/html/trenitalia/cinese.html',
+    label: 'trenitalia.com, pagina in cinese',
+    data: 'consultata il 16 ottobre 2026',
+    cosaDice:
+      'La pagina invita a «scansionare il codice per entrare nel mini-program WeChat, acquistare biglietti comodamente» e a «seguire l\'account ufficiale WeChat per informazioni su prodotti e servizi». Nessun sito localizzato in cinese esiste: /zh, /cn e /chi restituiscono 404. Il canale cinese è WeChat.',
+  },
+  fsCina: {
+    url: 'https://www.fsnews.it/it/focus-on/corporate/2025/5/27/trenitalia-nuova-offerta-cina.html',
+    label: 'fsnews.it, 27 maggio 2025',
+    data: '27 maggio 2025',
+    cosaDice:
+      'Verbatim: «I biglietti sono acquistabili sulle principali piattaforme cinesi come WeChat dal profilo ufficiale Trenitalia chiamato Frecciarossa, con percorso di acquisto interamente in cinese.» Perimetro venduto: network Frecciarossa, Trenitalia Pass, Intercity e regionali, più il bus Busitalia per The Mall. Le vendite in Cina sono raddoppiate nel 2025 sul 2024.',
+  },
+  cinaArrivi: {
+    url: 'https://portaleoperatori.italia.it/news/detail/?id=18',
+    label: 'Ministero del Turismo, 13 ottobre 2025',
+    data: '13 ottobre 2025',
+    cosaDice:
+      'La Cina è al decimo posto per arrivi in Italia. ⚠️ Per i volumi in slide si usano i dati ISTAT, che sono primari e arrivano al 2025: 2.308.594 arrivi e 4.661.118 presenze di clienti residenti in Cina. Non mescolare mai gli arrivi ISTAT con i «viaggiatori» di Banca d\'Italia: sono due sistemi di conteggio diversi.',
+  },
   ttgAnsa: {
     url: 'https://www.ansa.it/ansacom/notizie/economia/ferrovie-dello-stato-italiane/2025/10/09/cacciapuoti-trenitalia-investiamo-sulla-intermodalita_379ce4de-97d4-48e7-83b6-064a2a522de8.html',
     label: 'ANSA, 9 ottobre 2025',

@@ -257,9 +257,26 @@ export const PRIMA: Card[] = [
     bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
   },
   {
-    k: 'La Cina, e il resto dell’Asia',
-    t: 'Dove non si compra su un sito',
-    b: 'Lì l’acquisto e il pagamento vivono dentro le applicazioni locali: è un canale, non una versione tradotta del vostro. Il numero di quel mercato sta nel capitolo sul contenuto.',
+    /* 16 ott. La card diceva «lì non si compra su un sito», come se fosse un
+       fenomeno da spiegare a loro. Verificato sulla LORO pagina: ci sono già
+       dentro e ci vendono dal 2025 — mini-program WeChat che vende, account
+       che informa, e nessun sito in cinese (le rotte /zh, /cn, /chi danno 404).
+       Dire a un cliente una cosa che lui ha già fatto, come se fosse un'idea
+       nostra, è il modo più rapido di perdere la stanza. Quindi la card parte
+       da lì e sposta la domanda su quello che manca: i dati di quel canale.
+
+       ⚠️ NON si propone di attivare su WeChat con la nostra tecnologia, e la
+       ragione è contrattuale, non tecnica: nei termini generali Adobe la Cina
+       continentale è un «Restricted Country», e l'elenco dei servizi ammessi
+       non comprende la piattaforma né l'orchestrazione. Esiste dal 2 ottobre
+       2026 il modo di trattare un canale non nativo come WeChat dentro
+       l'orchestrazione, ma dove girano quei dati è una domanda da legale, non
+       da slide. Qui si dice il fatto e si lascia la domanda aperta. */
+    k: 'La Cina, dove siete già',
+    t: 'Vendete dentro WeChat dal 2025',
+    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali, in cinese. Le vendite su quel mercato sono raddoppiate in un anno. Quello che quel canale sa di chi compra, però, oggi resta lì.',
+    bBreve: 'Non c’è un sito in cinese: c’è un mini-program che vende, e le vendite su quel mercato sono raddoppiate in un anno.',
+    fonti: ['trenitaliaCinese', 'fsCina'],
   },
 ];
 
