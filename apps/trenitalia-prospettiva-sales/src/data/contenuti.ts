@@ -192,12 +192,22 @@ export const REFERTO: Stat[] = [
 
 export const KPI: Card[] = [
   { k: 'Presenza', t: 'Su quante domande comparite', b: 'Un punteggio di visibilità da misurare nel tempo, per mercato e per lingua, non una fotografia sola.' },
-  // 16 ott: il confronto non è solo con chi entra sull'alta velocità. Nelle
-  // risposte generate chi arriva prima è spesso un rivenditore che vende il
-  // vostro biglietto — un punto che il cliente ha riconosciuto come proprio in
-  // una riunione del 13 ott. ⚠️ Nessuna cifra: il dimensionamento arriva quando
-  // la misura si rifà con lo strumento, e finché non c'è non si scrive.
-  { k: 'Confronto', t: 'Con chi entra, e con chi vi rivende', b: 'Quota di voce sulle stesse domande, rispetto agli altri operatori. E ai rivenditori: spesso la risposta propone un intermediario che vende il vostro biglietto, prendendosi la relazione.' },
+  /* 16 ott, SECONDA versione. La prima diceva che i rivenditori «si prendono la
+     relazione», cioè li trattava da minaccia. La verifica ha smontato la
+     premessa, e il cliente avrebbe avuto in mano i numeri per smontarla in
+     sala: la Commissione europea scrive che la grande maggioranza delle ricerche
+     e delle vendite si concentra sui canali propri degli operatori e che le
+     piattaforme terze pesano poco (90% delle visite su Bahn.de, 80-90% del
+     venduto online diretto per Renfe e SNCF Connect). Lo dice anche il
+     rivenditore: il suo country manager francese si lamenta che molti lo usano
+     per confrontare e poi comprano sul sito dell'operatore. E soprattutto
+     Trenitalia QUEI TERZI LI CORTEGGIA — pagina pubblica «diventa agenzia
+     partner», sei piattaforme, provvigioni pubblicate, invito esplicito ai
+     metasearch. Non è un nemico: è un canale che pagano a tariffa nota.
+     Quello che resta vero, e che è un argomento di margine e non di furto: se
+     nella risposta generata comparite tramite un rivenditore invece che da voi,
+     quella vendita la pagate in commissione. */
+  { k: 'Confronto', t: 'Con chi entra, e attraverso chi passate', b: 'Quota di voce rispetto agli altri operatori e ai rivenditori: comparire tramite loro è pagare in commissione una vendita che poteva arrivare diretta.' },
   { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti', b: 'Le visite che nascono da una risposta generata, separate da quelle di ricerca: oggi, nella maggior parte delle aziende, finiscono indistinte nello stesso totale.' },
 ];
 
