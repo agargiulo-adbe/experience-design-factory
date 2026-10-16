@@ -156,17 +156,20 @@ export const DOMANDA = {
 export interface Punto { n: string; dove: string; t: string; b: string; bBreve: string }
 export const PUNTI: Punto[] = [
   {
+    /* 16 ott: il punto 01 copre adesso anche il secondo tempo di quel canale,
+       perché il capitolo 03 lo contiene. La mappa e i capitoli devono dire la
+       stessa cosa: è la prima a essere letta e l'ultima a essere ricordata. */
     n: '01',
     dove: 'Prima del sito',
     t: 'Nella risposta che qualcun altro scrive',
-    b: 'Chi organizza un viaggio oggi chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra.',
-    bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra.',
+    b: 'Chi organizza un viaggio chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra. E quel canale sta diventando anche un posto dove si compra.',
+    bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita è persa prima che si apra una vostra pagina.',
   },
   {
     n: '02',
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
-    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e la pianificazione porta-a-porta esiste su alcune destinazioni. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
+    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
     bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
   },
   {
