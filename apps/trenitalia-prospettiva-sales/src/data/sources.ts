@@ -99,6 +99,36 @@ export const SOURCES = {
     cosaDice:
       'La Cina è al decimo posto per arrivi in Italia. ⚠️ Per i volumi in slide si usano i dati ISTAT, che sono primari e arrivano al 2025: 2.308.594 arrivi e 4.661.118 presenze di clienti residenti in Cina. Non mescolare mai gli arrivi ISTAT con i «viaggiatori» di Banca d\'Italia: sono due sistemi di conteggio diversi.',
   },
+  /* Il fatto più grosso che il deck non aveva: la proposta della Commissione
+     del 13 maggio 2026. Gli operatori con quota domestica dal 50% in su
+     dovranno mostrare e vendere anche i concorrenti sulla propria piattaforma.
+     Riguarda il Direttore Sales più di qualunque rivenditore, perché tocca la
+     sua vetrina. ⚠️ È una PROPOSTA: non è ancora legge, e va detto. */
+  ueTicketing: {
+    url: 'https://transport.ec.europa.eu/news/commission-proposes-new-rules-improve-rail-passenger-services-2026-05-13_en',
+    label: 'proposta della Commissione europea, 13 maggio 2026',
+    data: '13 maggio 2026',
+    cosaDice:
+      'Gli operatori storici con una quota di mercato domestica pari o superiore al 50% dovranno esporre sulla propria piattaforma tutti i servizi ferroviari del Paese e, su richiesta, vendere i biglietti degli altri operatori; dodici mesi dall\'entrata in vigore, e in assenza di accordo entro otto mesi decide il regolatore nazionale. La stessa valutazione d\'impatto osserva che la grande maggioranza delle ricerche e delle vendite online resta oggi sui canali propri degli operatori. ⚠️ Proposta, non norma vigente.',
+  },
+  monaco: {
+    url: 'https://www.fsnews.it/it/focus-on/servizi/2026/10/14/ttg-rimini-2026-fs-trenitalia.html',
+    label: 'fsnews.it, 14 ottobre 2026',
+    data: '14 ottobre 2026',
+    cosaDice:
+      'Al TTG 2026 il Gruppo ha presentato il nuovo Pass Interrail e l\'offerta commerciale del collegamento Milano-Monaco, in partenza nel 2027. Il Direttore Sales ha aggiunto che dall\'estate 2027 il Frecciarossa arriverà in Germania e che nel 2028 il collegamento sarà prolungato fino a Berlino, dopo Spagna e Francia.',
+  },
+  /* Gli altri annunci del TTG 2026 che toccano la vendita: il nuovo Pass
+     Interrail, i progetti per il turismo d'affari e congressuale con Busitalia,
+     e City Sightseeing, il gruppo rilevato da Busitalia a gennaio 2026. Sono
+     tutti pezzi di offerta che allargano il carrello oltre il biglietto. */
+  ttgOfferta: {
+    url: 'https://www.fsnews.it/it/focus-on/servizi/2026/10/14/ttg-rimini-2026-fs-trenitalia.html',
+    label: 'il Gruppo FS al TTG 2026',
+    data: '14-16 ottobre 2026',
+    cosaDice:
+      'Al TTG 2026: presentazione del nuovo Pass Interrail; progetti Trenitalia e Busitalia per il turismo congressuale; approfondimento sui servizi City Sightseeing, il gruppo rilevato da Busitalia a gennaio 2026; e una sessione di chiusura dedicata ai nuovi servizi digitali e al salvadanaio elettronico.',
+  },
   ttgAnsa: {
     url: 'https://www.ansa.it/ansacom/notizie/economia/ferrovie-dello-stato-italiane/2025/10/09/cacciapuoti-trenitalia-investiamo-sulla-intermodalita_379ce4de-97d4-48e7-83b6-064a2a522de8.html',
     label: 'ANSA, 9 ottobre 2025',

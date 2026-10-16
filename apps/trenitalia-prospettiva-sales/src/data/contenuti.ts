@@ -62,7 +62,7 @@ export const TESTE = {
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
     titolo: 'Tre cose che capitano nello stesso anno',
-    lead: 'Al TTG avete indicato la parola di quest’anno, internazionalizzazione, e i mercati su cui spingere: Europa e Nord America, ma anche Asia, Sud America e Australia. Arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
+    lead: 'Al TTG avete indicato la parola di quest’anno: internazionalizzazione. Il Frecciarossa in Germania dall’estate 2027 e a Berlino nel 2028, dopo Spagna e Francia; e mercati nuovi fra Asia, Sud America e Australia. Arriva nell’anno in cui il mercato interno si allarga e il prezzo non sale.',
     leadBreve: 'Al TTG avete indicato l’internazionalizzazione, nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
   },
   mappa: {
@@ -101,11 +101,16 @@ export const APERTURA = {
    ARRIVERÀ: una cosa sola, in due carte, senza contraddirsi. */
 export const CONTESTO: Card[] = [
   {
+    /* 16 ott: la concorrenza non arriva solo dai binari. Il 13 maggio la
+       Commissione ha proposto che chi ha metà del mercato domestico venda
+       sulla propria piattaforma anche i treni degli altri — è il tema di
+       disintermediazione che tocca davvero questa stanza, perché riguarda la
+       sua vetrina e non un rivenditore. ⚠️ È una proposta, e la slide lo dice. */
     k: 'Il mercato',
-    t: 'Da due operatori a tre, e il terzo è autorizzato',
-    b: 'Sull’alta velocità italiana oggi siete in due. SNCF ha il via libera dell’Antitrust dal 7 marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato entro il 2030.',
-    bBreve: 'Sull’alta velocità siete in due. SNCF ha il via libera dal 7 marzo 2026, debutta non prima della fine del 2027 e dichiara di volere il 15% del mercato entro il 2030.',
-    fonti: ['sncfVialibera', 'sncf'],
+    t: 'Un concorrente in più, e una vetrina da aprire',
+    b: 'Sull’alta velocità oggi siete in due: SNCF ha il via libera dal 7 marzo 2026 e dichiara di volere il 15% entro il 2030. E a maggio la Commissione ha proposto che chi ha metà del mercato domestico venda sulla propria piattaforma anche i treni degli altri.',
+    bBreve: 'Sull’alta velocità siete in due, e la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
+    fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
   },
   {
     k: 'Il prezzo',
@@ -119,7 +124,7 @@ export const CONTESTO: Card[] = [
     t: 'Un piano in scrittura, un sito in rifacimento',
     b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno. E l’avete detto voi al TTG: l’app è nuova da maggio, il sito arriva entro marzo 2027. Quello che si decide adesso entra lì dentro; il resto diventa un progetto a parte.',
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
-    fonti: ['piano', 'ttgSales2026'],
+    fonti: ['piano', 'ttgSales2026', 'monaco'],
   },
 ];
 
@@ -220,10 +225,14 @@ export const KPI: Card[] = [
    e il laboratorio ha una data precisa, il 9 marzo 2026. */
 export const GIA: Card[] = [
   {
+    /* 16 ott: Busitalia porta anche City Sightseeing, rilevata a gennaio, e i
+       progetti per il turismo congressuale presentati al TTG. Stanno qui e non
+       in una quarta card: la griglia è a tre, e provata a quattro si rompe. */
     k: 'Gomma',
-    t: 'Busitalia, al 100%',
-    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno. L’offerta che integra treno, gomma e altri vettori arriva a più di 1.700 destinazioni: parole vostre, un anno fa.',
-    fonti: ['busitalia'],
+    t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
+    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno, e un’offerta che arriva a più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing, e al TTG avete presentato i progetti per il turismo congressuale.',
+    bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno e più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
+    fonti: ['busitalia', 'ttgOfferta'],
   },
   {
     k: 'Sosta',
