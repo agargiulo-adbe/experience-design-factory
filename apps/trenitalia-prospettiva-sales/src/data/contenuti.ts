@@ -244,10 +244,18 @@ export const GIA: Card[] = [
     fonti: ['fsPark'],
   },
   {
+    /* 17 ott: in riunione era girato il dubbio che l'accordo aereo fosse in
+       scadenza. Verificato: il memorandum del 9 marzo 2026 non scade — quello
+       che finisce il 1° luglio 2026 è l'accordo di vendita LATAM × Trenitalia, e
+       quei passeggeri vengono riprotetti su voli ITA. Verificando è però uscito
+       il fatto che conta qui, e che la card non può tacere: a maggio la stessa
+       compagnia ha firmato lo stesso tipo di intesa con Italo. L'asset c'è, ma
+       non è esclusivo, ed è il motivo per cui va governato. */
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
-    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno firmato un memorandum che istituisce un laboratorio comune sull’intelligenza artificiale per l’intermodalità.',
-    fonti: ['itaAirways'],
+    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno firmato un memorandum per un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo: biglietto unico treno più aereo, in vendita da luglio.',
+    bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo è nato un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
+    fonti: ['itaAirways', 'itaItalo'],
   },
 ];
 
@@ -330,13 +338,15 @@ export const CANALE: Card[] = [
     b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì: scegliere l’orario e confermare senza uscire dalla conversazione.',
   },
   {
-    /* 17 ott: la card non nominava il prodotto. Era un residuo della prima
-       stesura, quando lo credevo non annunciato; verificato poi che Adobe lo
-       nomina nel comunicato del 20 aprile 2026, il nome si può e si deve dire —
-       un cliente che prende appunti deve potersi scrivere una parola da cercare. */
-    k: 'A che punto è',
-    t: 'Si chiama LLM Apps, ed è annunciato ma non disponibile',
-    b: 'Adobe l’ha annunciato ad aprile come capacità di Experience Manager, che avete. Non è ancora in disponibilità generale, e lo diciamo adesso: una cosa da guardare insieme mentre si decide, non da comprare oggi.',
+    /* 17 ott, due passate. Prima la card non nominava il prodotto (residuo di
+       quando lo credevo non annunciato). Poi è uscito dalla slide lo STATO di
+       disponibilità: il nome e il concetto bastano in sala, e a che punto è il
+       prodotto è una cosa che diciamo a voce, non una riga che il deck si porta
+       in giro per i corridoi del cliente. Resta a verbale: annunciato il
+       20 aprile 2026 come capacità di AEM, non ancora in disponibilità generale. */
+    k: 'Dove si innesta',
+    t: 'Si chiama LLM Apps',
+    b: 'Vive dentro Experience Manager, la piattaforma che avete già: porta la vostra offerta dentro la conversazione, e il viaggiatore prenota lì. Una cosa da guardare insieme mentre si decide dove mettere il canale.',
   },
 ];
 

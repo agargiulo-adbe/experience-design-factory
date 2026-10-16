@@ -62,18 +62,12 @@ export const SOURCES = {
     cosaDice:
       'Verbatim: «LLM Apps (a new capability in AEM) will enable brands to build branded experiences that run directly within LLM interfaces, extending a brand\'s presence across AI surfaces.» È l\'unica frase pubblica esistente sul prodotto: la pagina di soluzione collegata al comunicato non lo nomina, e su Experience League non c\'è documentazione.',
   },
-  /* L'unico caso pubblico di Real-Time CDP Collaboration con un risultato
-     misurato. ⚠️ È advertiser × editore televisivo, NON due marchi del turismo
-     che condividono clienti: si cita come prova che il meccanismo produce un
-     numero, mai come precedente di settore. Verificato il 16 ott 2026: fra i
-     clienti pubblici non c'è nessun vettore, nessuna ferrovia, nessuna crociera. */
-  alterra: {
-    url: 'https://business.adobe.com/blog/alterra-mountain-company-transforms-advertising-with-data-collaboration',
-    label: 'Alterra Mountain Company, +30% di conversione',
-    data: '18 marzo 2025',
-    cosaDice:
-      'Verbatim: «The conversion rate for Alterra\'s NBCUniversal premium streaming campaign increased by 30% across three key audience segments». Alterra gestisce comprensori sciistici con ricettività, quindi è il nome pubblico più vicino al turismo fra i clienti del prodotto — ma la collaborazione documentata è fra un inserzionista e un editore, non fra due operatori turistici.',
-  },
+  /* 17 ott 2026: qui stava la referenza Alterra Mountain Company. È uscita per
+     decisione d'account — nel deck non va nessuna referenza di un altro cliente.
+     Resta a verbale il perché non ce n'era una buona: fra i clienti pubblici di
+     Real-Time CDP Collaboration non c'è né un vettore né una ferrovia né una
+     crociera (verificato il 16 ott 2026), e un caso di un altro settore apre la
+     domanda «e nel nostro?» invece di chiuderla. */
   /* ⚠️ Fonte PRIMARIA, letta il 16 ott 2026 sulla pagina di Trenitalia: la voce
      cinese del selettore di lingua non porta a un sito, porta a due codici QR.
      Uno apre il mini-program WeChat che VENDE, l'altro l'account che informa.
@@ -263,6 +257,18 @@ export const SOURCES = {
     data: '9 marzo 2026',
     cosaDice:
       'Memorandum of Understanding ITA Airways × Trenitalia firmato dai due Amministratori Delegati, con costituzione di un «AI Intermodality and Sustainability Lab» congiunto. Nella stessa pagina, l\'AD di ITA Airways data il biglietto integrato Air-Rail: «un percorso avviato nel 2023». Una pagina sola conferma entrambe le date.',
+  },
+
+  /* La stessa compagnia aerea con cui avete il laboratorio ha firmato anche con
+     il vostro concorrente. Letto il 17 ott 2026 su una fonte di settore apribile:
+     il comunicato di ITA risponde 403 a qualunque accesso automatico, quindi la
+     riga in slide porta questa. */
+  itaItalo: {
+    url: 'https://www.qualitytravel.it/ita-airways-e-italo-insieme-arriva-il-biglietto-unico-trenoaereo/188329',
+    label: 'Quality Travel, 12 maggio 2026',
+    data: '12 maggio 2026',
+    cosaDice:
+      'Protocollo d\'intesa ITA Airways × Italo firmato a Roma dai due Amministratori Delegati (Joerg Eberhart e Gianbattista La Rocca). Biglietto combinato treno più aereo in un\'unica operazione, in vendita «da luglio» tramite le agenzie di viaggio, i GDS per i travel manager e il sito di ITA. Italo aveva già integrato bus e servizi navali. ⚠️ Non sostituisce l\'accordo con Trenitalia: si aggiunge.',
   },
 
   /* ── Il canale intermediato ───────────────────────────────────────────── */
