@@ -1,0 +1,31 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+import DossierPage from '@edf/core/blocks/doc/DossierPage.astro';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Unica pagina dell'app. Orfana (nessuna nav, nessun link in ingresso) +
+// noindex. Il contenuto confidenziale NON è nel bundle statico: vive in
+// Supabase (tabella restricted_docs, RLS) e si carica solo
+//   1) dopo login (super admin o utente con accesso a mef-giustizia-tributaria), oppure
+//   2) via secret-link ?t=<uuid> (RPC get_shared_doc, senza login).
+// Seed del contenuto (git-ignorato): docs/MEF/0029_seed_mef_giustizia_tributaria_dossier.sql.
+// Markdown master da cui il seed si rigenera: docs/MEF/DOSSIER-MEF-giustizia-tributaria-2026-10-16.md.
+//
+// Il rendering è del motore condiviso `@edf/core/blocks/doc/DossierPage.astro`:
+// qui restano solo lo slug, il guscio e la mappatura della palette del
+// Dipartimento sul contratto `--dw-*`. Migliorare il motore migliora tutti i
+// dossier — e per questo il renderer non si copia dentro l'app.
+---
+<DocLayout
+  title="Dossier — MEF, Giustizia Tributaria"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <DossierPage
+    docSlug="mef-giustizia-tributaria"
+    title="Dossier — MEF, Dipartimento della Giustizia Tributaria"
+    base={import.meta.env.BASE_URL}
+    supabaseUrl={import.meta.env.PUBLIC_SUPABASE_URL ?? ''}
+    supabaseAnon={import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? ''}
+  />
+</DocLayout>

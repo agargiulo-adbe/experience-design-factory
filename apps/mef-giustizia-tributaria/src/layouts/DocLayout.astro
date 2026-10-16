@@ -1,0 +1,94 @@
+---
+// Guscio minimo per la sola pagina dossier. Niente deck, niente tailwind,
+// niente blocchi di @edf/core oltre al motore dossier: questa app serve UNA
+// pagina orfana e gated.
+//
+// TOKEN — letti dal CSS di produzione di www.dgt.mef.gov.it con
+// `pnpm brand:tokens https://www.dgt.mef.gov.it/gt/` (5 fogli, 1329 KB, 15 ott
+// 2026), non a memoria. Due cose che si vedono solo leggendo:
+//
+//   1. il colore del sito è il blu istituzionale #093696, con 161 occorrenze —
+//      di gran lunga il più frequente fra quelli che non sono default di
+//      framework; #003366 (31) lo accompagna come navy. Tutte le custom
+//      property dichiarate dal foglio (`--primary: #007bff`, `--blue`,
+//      `--success`…) sono i valori di serie di Bootstrap: qui NON vincono su
+//      nulla, sono il tema di base sopra cui il sito scrive il proprio blu;
+//   2. il carattere è **Titillium Web** (9 dichiarazioni), cioè il carattere
+//      istituzionale dei siti della Pubblica Amministrazione italiana. È
+//      distribuibile: per una volta non serve una sostituta.
+//
+// La dominante scura è un'**estensione nostra**: il sito del Dipartimento è
+// chiaro e non ha un tema scuro. Il blu notte #061634 è derivato da #093696 e
+// #003366, e serve perché un documento riservato si legge su un telefono.
+//
+// Un accento non è un inchiostro, e qui il caso è netto: il blu di marchio
+// #093696 su #061634 dà **1,69:1** — invisibile. Per testo e pieni si usa la
+// sua schiaritura #5e94f5 (6,00:1); #093696 resta buono solo per i fondi.
+// Tutti i rapporti qui sotto sono calcolati, non stimati.
+interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title, description = '', noindex = false } = Astro.props;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap"
+    />
+    <style is:global>
+      :root {
+        /* ── PALETTE MEF / Giustizia Tributaria → contratto `--dw-*` ────────── */
+        --dw-bg: #061634;                 /* blu notte, estensione nostra */
+        --dw-tint: rgba(9, 54, 150, 0.22);
+        --dw-surface: rgba(10, 30, 68, 0.62);
+        --dw-surface-2: rgba(9, 54, 150, 0.20);
+        --dw-line: #16294d;
+
+        --dw-ink: #d6e2f7;                /* 13,72:1 — corpo del testo */
+        --dw-ink-soft: #a6bce6;           /*  9,35:1 — note e metadati */
+        --dw-ink-faint: #7d96c6;          /*  6,01:1 — etichette minute */
+        --dw-ink-strong: #ffffff;
+
+        --dw-accent: #5e94f5;             /*  6,00:1 — schiaritura del marchio */
+        --dw-fill: #5e94f5;
+        --dw-on-fill: #061634;            /*  6,00:1 — il bianco sul pieno dava 2,99:1 */
+        --dw-warn: #d39e00;               /*  7,39:1 — ambra, dal CSS del sito (25 occorrenze) */
+        --dw-on-warn: #061634;            /*  7,39:1 — il bianco sull'ambra dava 2,42:1 */
+        --dw-alt: #9bb6e8;                /*  8,75:1 — ruoli, sottotitoli, crediti */
+
+        --dw-font-display: 'Titillium Web', system-ui, sans-serif;
+        --dw-font-body: 'Titillium Web', system-ui, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        background: var(--dw-bg);
+        color: var(--dw-ink);
+        font-family: var(--dw-font-body);
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      /* Serve davvero: la pagina nasconde il gate con l'attributo `hidden`, ma
+         .dw-state dichiara display:flex e senza questa riga lo batte — il gate
+         resterebbe a schermo sopra il contenuto. */
+      [hidden] { display: none !important; }
+      @media print {
+        body { background: #fff; color: #222; }
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
