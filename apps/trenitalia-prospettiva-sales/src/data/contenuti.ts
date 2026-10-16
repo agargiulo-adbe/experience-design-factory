@@ -58,9 +58,12 @@ export const COVER = {
    un titolo diverso vuol dire una slide diversa. */
 export const TESTE = {
   contesto: {
+    // 16 ott: la cornice è la parola che ha usato LUI al TTG il giorno prima.
+    // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
+    // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
     titolo: 'Tre cose che capitano nello stesso anno',
-    lead: 'Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto. Vale la pena guardarla adesso, mentre il piano si sta scrivendo.',
-    leadBreve: 'Quell’ambizione sul 96% arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
+    lead: 'Al TTG avete indicato la parola di quest’anno, internazionalizzazione, e i mercati su cui spingere: Europa e Nord America, ma anche Asia, Sud America e Australia. Arriva nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
+    leadBreve: 'Al TTG avete indicato l’internazionalizzazione, nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
   },
   mappa: {
     eyebrow: 'La mappa',
@@ -113,10 +116,10 @@ export const CONTESTO: Card[] = [
   },
   {
     k: 'Il momento',
-    t: 'Un piano che si sta scrivendo',
-    b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno: lo ha annunciato il vertice a settembre. Si sta scrivendo adesso, ed è il momento in cui un’idea esterna diventa una riga di piano invece di una richiesta fuori piano.',
-    bBreve: 'Il piano industriale di Gruppo arriva entro la fine dell’anno, e si sta scrivendo adesso: un’idea esterna può diventare una riga di piano.',
-    fonti: ['piano'],
+    t: 'Un piano in scrittura, un sito in rifacimento',
+    b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno. E l’avete detto voi al TTG: l’app è nuova da maggio, il sito arriva entro marzo 2027. Quello che si decide adesso entra lì dentro; il resto diventa un progetto a parte.',
+    bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
+    fonti: ['piano', 'ttgSales2026'],
   },
 ];
 
@@ -224,14 +227,19 @@ export const GIA: Card[] = [
 /* ── Capitolo 04 · il viaggio comincia altrove ─────────────────────────── */
 export const PRIMA: Card[] = [
   {
-    k: 'Con chi',
-    t: 'Partner del viaggio, e le società del Gruppo',
-    b: 'Lo stesso meccanismo vale fra aziende diverse e fra società della stessa famiglia, che oggi guardano gli stessi clienti da finestre separate.',
+    // 16 ott: non più «un partner del viaggio» generico. Ne hanno firmato uno
+    // ieri, in pubblico, e il deck lo nomina con la sua fonte.
+    k: 'Con chi, adesso',
+    t: 'Quello che avete appena firmato',
+    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma e, dal 2027, collega i due sistemi di prenotazione. È il caso da cui partire: esiste, ha una data, e il perimetro l’avete scelto voi.',
+    bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione dal 2027. È il caso da cui partire.',
+    fonti: ['costaTtg'],
   },
   {
     k: 'Dove sta il valore',
     t: 'Arrivare prima della scelta del vettore',
-    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo dove andare, no.',
+    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo dove andare, no. Chi ha prenotato una crociera da Genova sta decidendo come arrivarci, e oggi non lo sapete.',
+    bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
   },
   {
     k: 'La Cina, e il resto dell’Asia',
@@ -240,38 +248,47 @@ export const PRIMA: Card[] = [
   },
 ];
 
-/* ── Capitolo 04 · il canale che si estende ───────────────────────────────
-   Deciso nella call interna del 16 ott: il canale dove il viaggio si cerca sta
-   diventando anche il canale dove si compra, ed era il pezzo mancante. Il filo
-   viene dal cliente, non da noi — a un tavolo precedente hanno detto che la
-   chiusura dell'acquisto la vedono su WhatsApp e WeChat, non dentro un
-   assistente: qui si dice che è lo stesso movimento, un passo più avanti.
+/* ── Capitolo 03 · il secondo tempo dello stesso canale ───────────────────
+   Deciso il 16 ott, dopo due riunioni e una verifica.
 
-   ⚠️ DUE VINCOLI, entrambi verificati il 16 ott e nessuno dei due negoziabile.
-   PRIMO: la capacità Adobe che fa questo è in BETA, con il prezzo ancora in
-   discussione — in call si era detto «mi risulta siano in general availability»
-   e non è così. Quindi niente promesse: si descrive il fenomeno, e la
-   partecipazione si offre come sperimentazione.
-   SECONDO: il prodotto NON SI NOMINA. È un programma non annunciato
-   pubblicamente, e questo deck sta su una pagina pubblica: nominarlo lo
-   divulgherebbe. Vale la stessa regola della via contrattuale di un altro
-   cliente — il fatto si porta a voce, la slide dice la capacità. È anche quello
-   che è stato chiesto in call: «citarlo come concetto, non come tecnologia». */
+   PERCHÉ STA QUI e non nel capitolo del viaggio, dove era finito prima: in una
+   riunione con la società tecnologica del Gruppo il confine è stato tirato da
+   loro, non da noi — la visibilità «nel conversazionale puro, fuori dal sito»
+   è una cosa, la «multicanalità di vendita che include la messaggistica» è
+   un'altra. Il canale proprietario interviene quando il cliente ha GIÀ scelto
+   Trenitalia; l'assistente generalista interviene PRIMA, mentre sta ancora
+   decidendo. Questo capitolo è quello del «prima», quindi è qui che la vendita
+   dentro l'assistente appartiene.
+
+   PERCHÉ NON È UNA NOSTRA IDEA: alla stessa riunione hanno dichiarato che
+   «acquistare direttamente dai canali agentici» è una delle ambizioni e dei
+   pilastri su cui stanno già lavorando. La slide parte da lì, non da noi.
+
+   ⚠️ VINCOLI VERIFICATI il 16 ott, nessuno negoziabile.
+   · Il prodotto si chiama LLM Apps ed È annunciato pubblicamente: una frase nel
+     comunicato Adobe del 20 aprile 2026. Si nomina citando QUELLA fonte, e
+     nient'altro: tutto il resto che sappiamo è materiale interno.
+   · NON è in general availability. In riunione si era detto il contrario.
+   · Prerequisito dichiarato: AEM Sites, che loro hanno.
+   · Nessun cliente citabile: non se ne nomina nessuno.
+   · La cautela che il materiale interno scrive contro sé stesso, e che va detta
+     prima perché è la prima obiezione di chi capisce: oggi gli assistenti non
+     scoprono da soli questi collegamenti. Esporsi non basta. */
 export const CANALE: Card[] = [
   {
-    k: 'Che cosa cambia',
-    t: 'Dalla risposta all’acquisto, senza uscire dalla conversazione',
-    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì, nella stessa conversazione.',
+    k: 'La vostra ambizione',
+    t: 'Vendere dentro i canali agentici',
+    b: 'Non è una proposta nostra: è uno dei pilastri che avete dichiarato di avere in lavorazione. Il sito e l’app portano l’ottanta per cento dei ricavi, e il canale dove si decide oggi non è ancora un canale dove si vende.',
   },
   {
-    k: 'Perché non è una novità per voi',
-    t: 'In Asia funziona già così, e lo sapete',
-    b: 'Dove l’acquisto vive dentro l’applicazione di messaggistica, quel canale è già il negozio. Il movimento è lo stesso: cambia solo quale applicazione.',
+    k: 'Che cosa cambia',
+    t: 'La risposta diventa anche il banco',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì: scegliere l’orario e confermare senza uscire dalla conversazione.',
   },
   {
     k: 'A che punto è',
-    t: 'Una sperimentazione, non un prodotto da comprare',
-    b: 'La capacità esiste ed è in prova con un primo gruppo di aziende; il modello commerciale non è chiuso. Si può partecipare, e per un operatore con percorsi di prenotazione come i vostri è il profilo che cercano.',
+    t: 'Annunciato, non ancora disponibile',
+    b: 'Adobe l’ha annunciato ad aprile come capacità di Experience Manager, che avete. Non è ancora in disponibilità generale, e lo diciamo adesso: una cosa da guardare insieme mentre si decide, non da comprare oggi.',
   },
 ];
 

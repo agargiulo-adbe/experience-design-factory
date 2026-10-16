@@ -33,6 +33,47 @@ export interface Fonte {
 
 export const SOURCES = {
   /* ── Le sue parole ────────────────────────────────────────────────────── */
+  /* ── TTG 2026, 14-16 ottobre: le fonti più fresche del deck. Il protocollo
+     con Costa è stato presentato dal Direttore Sales in persona il 15, cioè il
+     giorno prima che questo capitolo venisse riscritto: è la ragione per cui
+     l'idea della collaborazione fra aziende smette di essere un'ipotesi. ── */
+  costaTtg: {
+    url: 'https://www.fsnews.it/it/focus-on/servizi/2026/10/15/costa-crociere-trenitalia-accordo.html',
+    label: 'fsnews.it, 15 ottobre 2026',
+    data: '15 ottobre 2026',
+    cosaDice:
+      'Protocollo d\'intesa Trenitalia-Costa Crociere presentato al TTG di Rimini: l\'offerta Trenitalia entra nella piattaforma di Costa con un unico percorso di acquisto crociera + treno. Da gennaio 2027 un booking engine collega IN TEMPO REALE i sistemi di prenotazione delle due aziende, e le agenzie di viaggio potranno aggiungere alla crociera i collegamenti nazionali e internazionali ricevendo conferma immediata. Previsti anche gestione bagagli, orari coordinati con gli arrivi delle navi, assistenza in stazione e a bordo. ⚠️ Il protocollo è stato PRESENTATO dal Direttore Sales, non è documentato chi lo abbia firmato: non attribuirgli la firma.',
+  },
+  ttgSales2026: {
+    url: 'https://www.affaritaliani.it/economia/notizie-aziende/trenitalia-presente-al-ttg-2026-siglata-lintesa-con-costa-crociere.html',
+    label: 'intervista al Direttore Sales, 15 ottobre 2026',
+    data: '15 ottobre 2026',
+    cosaDice:
+      'Verbatim: «La parola chiave è internazionalizzazione»; i mercati citati sono Europa e Nord America, più quelli «emergenti per noi, come Asia, Sud America e Australia»; «stiamo investendo significativamente nell\'evoluzione dei nostri canali digitali diretti, in particolare nell\'app e nel sito web»; nuova app lanciata «lo scorso maggio», e «entro marzo 2027 prevediamo di lanciare il nostro nuovo sito web». Sulle escursioni in crociera cita Genova-Cinque Terre, Napoli-Pompei, Taranto-Locorotondo e Alberobello.',
+  },
+  /* L'unica fonte PUBBLICA su questa capacità: una frase nel comunicato del
+     20 apr 2026. Tutto il resto che sappiamo (stato, prerequisiti, prezzo,
+     date) è materiale interno e non si cita. ⚠️ Non è in disponibilità
+     generale: verificato il 16 ott 2026. */
+  llmApps: {
+    url: 'https://news.adobe.com/news/2026/04/adobe-introduces-brand-visibility-solution',
+    label: 'comunicato Adobe, 20 aprile 2026',
+    data: '20 aprile 2026',
+    cosaDice:
+      'Verbatim: «LLM Apps (a new capability in AEM) will enable brands to build branded experiences that run directly within LLM interfaces, extending a brand\'s presence across AI surfaces.» È l\'unica frase pubblica esistente sul prodotto: la pagina di soluzione collegata al comunicato non lo nomina, e su Experience League non c\'è documentazione.',
+  },
+  /* L'unico caso pubblico di Real-Time CDP Collaboration con un risultato
+     misurato. ⚠️ È advertiser × editore televisivo, NON due marchi del turismo
+     che condividono clienti: si cita come prova che il meccanismo produce un
+     numero, mai come precedente di settore. Verificato il 16 ott 2026: fra i
+     clienti pubblici non c'è nessun vettore, nessuna ferrovia, nessuna crociera. */
+  alterra: {
+    url: 'https://business.adobe.com/blog/alterra-mountain-company-transforms-advertising-with-data-collaboration',
+    label: 'Alterra Mountain Company, +30% di conversione',
+    data: '18 marzo 2025',
+    cosaDice:
+      'Verbatim: «The conversion rate for Alterra\'s NBCUniversal premium streaming campaign increased by 30% across three key audience segments». Alterra gestisce comprensori sciistici con ricettività, quindi è il nome pubblico più vicino al turismo fra i clienti del prodotto — ma la collaborazione documentata è fra un inserzionista e un editore, non fra due operatori turistici.',
+  },
   ttgAnsa: {
     url: 'https://www.ansa.it/ansacom/notizie/economia/ferrovie-dello-stato-italiane/2025/10/09/cacciapuoti-trenitalia-investiamo-sulla-intermodalita_379ce4de-97d4-48e7-83b6-064a2a522de8.html',
     label: 'ANSA, 9 ottobre 2025',
