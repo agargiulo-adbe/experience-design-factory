@@ -192,7 +192,12 @@ export const REFERTO: Stat[] = [
 
 export const KPI: Card[] = [
   { k: 'Presenza', t: 'Su quante domande comparite', b: 'Un punteggio di visibilità da misurare nel tempo, per mercato e per lingua, non una fotografia sola.' },
-  { k: 'Confronto', t: 'Quanto, rispetto a chi entra adesso', b: 'La quota di voce rispetto agli altri operatori sulle stesse domande: è il numero che dice se si sta guadagnando o perdendo terreno.' },
+  // 16 ott: il confronto non è solo con chi entra sull'alta velocità. Nelle
+  // risposte generate chi arriva prima è spesso un rivenditore che vende il
+  // vostro biglietto — un punto che il cliente ha riconosciuto come proprio in
+  // una riunione del 13 ott. ⚠️ Nessuna cifra: il dimensionamento arriva quando
+  // la misura si rifà con lo strumento, e finché non c'è non si scrive.
+  { k: 'Confronto', t: 'Con chi entra, e con chi vi rivende', b: 'Quota di voce sulle stesse domande, rispetto agli altri operatori. E ai rivenditori: spesso la risposta propone un intermediario che vende il vostro biglietto, prendendosi la relazione.' },
   { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti', b: 'Le visite che nascono da una risposta generata, separate da quelle di ricerca: oggi, nella maggior parte delle aziende, finiscono indistinte nello stesso totale.' },
 ];
 
