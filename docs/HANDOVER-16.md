@@ -210,6 +210,69 @@ Da lì il gate `c1` di `audit:taglio` guarda anche le pagine del percorso intero
 
 ---
 
+### 37.11 Il 16-17 ottobre: il TTG, i canali che il cliente ha già, e quattro fatti dati per buoni
+
+**La review interna del 16 ottobre ha spostato l'asse del deck.** Dalla registrazione è uscito che
+due delle cose che stavamo per *proporre* il cliente le ha **già**: vende dentro un mini-program
+cinese dal 2025, e in Italia ha un assistente su messaggistica che propone soluzioni e porta al
+carrello — in Europa non lo fa nessun altro operatore ferroviario. E il canale agentico non è una
+nostra idea: è **uno dei pilastri che ha dichiarato di avere in lavorazione**. Il capitolo è stato
+riscritto di conseguenza: non «ecco un'opportunità», ma «ecco dove siete già, e qual è il passo».
+
+**Il TTG è entrato dove apparteneva**, non in una slide-notizia: la parola dell'anno dichiarata dal
+Direttore Sales apre il capitolo uno; il protocollo con la compagnia di crociere (15 ott, e **dal
+2027 collega i due sistemi di prenotazione**) diventa il caso da cui parte il capitolo sulla data
+collaboration; gli annunci sull'offerta su gomma sono stati **assorbiti in una card esistente**,
+perché la griglia è a tre e a quattro si rompe. Nel contesto è entrata anche la **proposta della
+Commissione europea del 13 maggio 2026** — chi ha metà del mercato domestico dovrà vendere sulla
+propria piattaforma anche i treni degli altri — marcata per quello che è: una proposta, non una norma.
+
+**Quattro cose che la riunione dava per buone, e che la verifica ha smentito.** È il valore di
+questa passata, ed è il motivo per cui la regola «un'affermazione è un'ipotesi» esiste:
+
+1. **I rivenditori come minaccia.** L'argomento era «ci disintermediano, riprendiamoci il volume».
+   Non regge, e il cliente avrebbe avuto in mano i numeri per dirlo in sala: pubblica una pagina
+   «diventa agenzia partner» con sei sistemi di vendita, una tabella di remunerazione aggiornata ad
+   aprile 2026 e **provvigioni fino al 6%** — quei terzi li corteggia. La stessa valutazione
+   d'impatto europea scrive che la grande maggioranza di ricerche e vendite online **resta sui
+   canali propri degli operatori**. Riscritto come **argomento di margine**: comparire tramite un
+   rivenditore in una risposta generata significa pagare in commissione una vendita che poteva
+   arrivare diretta. Nessuna percentuale in slide, nessuna accusa.
+2. **La referenza citata a voce non esiste.** Quattro verifiche indipendenti, e fra i clienti
+   pubblici del prodotto di data collaboration non c'è né un vettore né una ferrovia né una
+   crociera. Prima era stato messo il caso più vicino preso da un altro settore; poi è arrivata la
+   **decisione d'account: nel deck non va nessuna referenza di un altro cliente**. Il motivo è
+   buono anche fuori da qui — **un caso di un altro settore apre la domanda «e nel nostro?» invece
+   di chiuderla**. La slide dice che è un'ipotesi da provare insieme, e si ferma lì.
+3. **Il prodotto agentico dato per «ormai in general availability».** È **annunciato e basta**: una
+   sola frase pubblica in un comunicato di aprile, nessuna documentazione su Experience League.
+   Esito in slide: **nome e concetto sì, stato di disponibilità no**. Lo stato si dice a voce,
+   perché il deck gira per i corridoi del cliente senza chi l'ha presentato, e una riga sullo stato
+   di un prodotto invecchia da sola.
+4. **L'accordo con la compagnia aerea dato per in scadenza.** Il memorandum di marzo **non scade**:
+   a scadere il 1° luglio 2026 è un accordo di vendita con **un'altra** compagnia, i cui passeggeri
+   vengono riprotetti proprio sui voli della prima. ⚠️ Verificando è però uscito il fatto che
+   contava: **a maggio lo stesso vettore ha firmato la stessa intesa con l'operatore ferroviario
+   concorrente**, biglietto unico in vendita da luglio su agenzie, GDS e sito proprio. La card lo
+   dice: l'asset intermodale c'è, **non è esclusivo**, ed è il motivo per cui va governato.
+
+**Due note di metodo.** La fonte di quell'ultimo fatto è una testata di settore e non il comunicato
+del vettore, perché quel sito risponde **403 a qualunque accesso automatico**: è la classe «da
+aprire a mano» che `audit:fonti` tiene separata dagli errori. E lo stesso gate ha imparato il
+**terzo falso allarme** (`NGHTTP2_INTERNAL_ERROR` e parenti: connessione chiusa male, non link
+rotto), che ora finisce fra i bloccati invece che fra gli irraggiungibili.
+
+**Stato dei gate al 17 ottobre**, dopo nove commit (`3bcf049`→`f9d882e`): `audit:deck` **0 HARD** a
+1920/1440/1280 (soft 34 `a`, 8 `g`, 15 `i`, invariati) · `copy-audit` **0 HARD e 0 SOFT** ·
+`audit:wrap` pulito · `audit:fonti` nessun link rotto, 44 link su 29 distinti · `audit:ink` pulito
+su 349 blocchi · `audit:taglio` **ALLINEATO** · le slide toccate lette a 1920.
+
+⚠️ **Il verdetto del panel resta quello del 12 ottobre** e da allora il deck è cambiato molto: un
+capitolo riscritto, quattro card nuove, due canali del cliente nominati per la prima volta, un
+prodotto nominato e un argomento ribaltato. Gate `/handover` 3.4: voce nel backlog.
+
+---
+
 ## 38. TIM — «Una campagna, molti formati» (stato di fatto, 12 ott 2026)
 
 `apps/tim-contenuti-su-scala` · tipo **Prospettiva** · 4 capitoli · accento `#004691` ·
