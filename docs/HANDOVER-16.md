@@ -497,3 +497,124 @@ executive** (55 registrati) ci sono già Agos, Banca Generali, EssilorLuxottica,
 Agricole Italia, UniCredit, Unipol. Tutto in `docs/Adobe/Radar/eventi.md`, col percorso del
 foglio della guest list — che **resta da incrociare coi referenti**, ed è l'azione con più resa
 della settimana.
+
+### 39.8 Il grafo dei contatti — si ricava dalla posta, non si compila (13 ott, commit `9e98de4`)
+
+Il Radar dice **che cosa** sta succedendo su un account. Non dice **a chi scrivere**: porta il
+team Adobe (AE, CSM, SC), non i contatti del cliente. La sezione «Chi è chi» dei registri c'era
+ma era prosa senza date — ventitré righe su otto account — e da una prosa non si decide niente.
+
+Adesso si **ricava da Outlook**, una passata **a settimana** per account (`1 + N` chiamate), e
+ogni riga porta `funzione · nome · indirizzo · ultimo scambio <data> · tema · verdetto — motivo`.
+Formato, regola e limiti stanno in `docs/CLAUDE.md` → «Il grafo dei contatti»; il passo che lo
+rifà è in `/account-open` (2bis) e scatta solo se il grafo ha più di sette giorni.
+
+⚠️ **Due limiti MISURATI il 13 ott hanno riscritto la regola che il disegno dava per buona.** La
+spec diceva «scrivi tu» se il contatto ha scritto *a te* **o tu a lui**; la seconda metà non è
+calcolabile:
+
+- **il filtro `recipient:` non distingue il destinatario diretto da chi era in copia.** Tre
+  contatti dello stesso cliente tornano con gli **stessi cinque messaggi** di un thread di gruppo
+  il cui testo è indirizzato a un **quarto**. Con la regola scritta a tavolino, un invito o una
+  cancellazione di calendario rende «tuoi» tutti i partecipanti;
+- **la ricerca gira sulla propria casella**: chi parla solo con l'AE o col CSM è **invisibile**.
+  Il grafo dice «chi conosci tu», non «chi c'è».
+
+Quindi il verdetto poggia su un fatto che si misura — **ti ha scritto lui** ed entro ~120 giorni
+→ «scrivi tu» — più un **giudizio dichiarato** sulla funzione: acquisti, cybersecurity e legale
+restano «passa dall'AE» anche se hanno scritto ieri, e il giudizio **vince sul dato** quando i
+due divergono. Il motivo si scrive sempre accanto al verdetto: «ultimo scambio a luglio, lo
+conosci di rimbalzo» è l'informazione che fa decidere; «passa dall'AE» da solo è un oracolo.
+
+**Il primo grafo, su Enel: sei contatti, tre «scrivi tu».** Il caso che vale la pena conoscere è
+la persona più calda — Contract Management, ultimo scambio il 12 ott — che risulta **«passa
+dall'AE»**: non ha mai scritto a noi, scrive all'AE e il thread arriva inoltrato. E un contatto
+di cybersecurity che *ha* scritto, dentro i 120 giorni, resta «passa dall'AE» per funzione. Nel
+giro sono emersi anche un **conflitto fra due fonti** sulla funzione di una persona (registro
+contro firma della mail, riportato e non risolto) e la conferma che `docs/Adobe/` sta **fuori**
+da questo controllo: non è un cliente.
+
+**Lo strato gratuito lo legge a costo zero.** `pnpm accounts` stampa per ogni account `N contatti
+(M tuoi)`, marca quelli in **formato vecchio** come «da rifare» e tiene **una** riga raggruppata
+sugli account che hanno un segnale e **nessun contatto noto** — dove un'apertura non si può
+costruire. Il parser legge **paragrafi**, non righe: tre formati convivono nei registri e un
+bullet che va a capo teneva la data sulla riga di continuazione. I formati vecchi si **contano**
+e si marcano, senza indovinare quale metà di «X — Y» sia il nome.
+
+⚠️ Al 19 ott il grafo strutturato esiste su **un account su nove** (Enel). Ferrero e Banca
+Generali sono in formato vecchio, e **cinque account con un segnale non hanno contatto noto**:
+finché resta così, l'apertura pesca quasi sempre dallo stesso account. Memoria:
+`grafo-contatti-dalla-posta`.
+
+### 39.9 L'apertura e il giro di ritorno — a chi scrivere oggi, e la risposta (13 ott, commit `e699676`)
+
+È il pezzo che risponde alla richiesta da cui è partito tutto: non «che cosa sta succedendo» ma
+**avvia una conversazione con questo contatto per proporre questa cosa**. `pnpm accounts
+--apertura` incrocia i segnali del Radar col grafo dei contatti e propone **una** conversazione,
+con quattro campi **obbligatori** — se ne manca uno l'apertura **non esce**, perché una riga
+senza destinatario fa perdere tempo invece di farne risparmiare:
+
+| Campo | Che cos'è |
+| --- | --- |
+| **A CHI** | nome, funzione, «scrivi tu» o «passa dall'AE» **col motivo** |
+| **PROPONI** | di che cosa si parla. Uno, non tre |
+| **PERCHÉ ORA** | il segnale che la giustifica, con la fonte |
+| **MUOVE** | M1, M2 o «relazione» · più `Q4?` e un id `A-AAAAMMGG-N` |
+
+**I candidati** sono gli stessi segnali dei rilievi, nello stesso ordine di urgenza, **meno i
+passi scaduti**: quelli sono compiti propri, non conversazioni da aprire con un cliente.
+
+⚠️ **Tre difetti trovati provandolo, non rileggendolo**, e ognuno sarebbe passato per funzionante:
+
+- **«PROPONI AAM» su un account che da AAM sta migrando.** Il segnale era il rischio sul rinnovo;
+  stampato come proposta commerciale era **falso**. Ora il campo dice il *verso* del segnale
+  («difendere il rinnovo di X», «far avanzare la trattativa su X», «capire il rischio su X») e il
+  nome del prodotto resta separato come **chiave** del confronto;
+- **salute rossa e rinnovo sullo stesso prodotto erano due aperture** invece di una, e il rischio
+  su un rinnovo **eleggibile** veniva marcato «relazione». Fusi — ed è la fusione che dà al
+  rischio la data e l'eleggibilità del rinnovo, quindi `MUOVE` e `Q4?` giusti;
+- **due lanci nello stesso giorno producevano due aperture.** Ora il secondo rimostra quella
+  pendente, **nello stesso formato a etichette**: la notifica della mattina ricava la sua riga da
+  quelle etichette, e un giorno con l'apertura in attesa perdeva proprio la riga più utile.
+
+**Il giro di ritorno è il pezzo che vale più di tutti**, perché è l'unico che migliora da sé.
+`--apertura --deposita` scrive l'apertura come riga in `docs/Adobe/Radar/Registro_opportunita.md`
+con la colonna **«Decisione Antonio» vuota** — quella colonna esiste dal 2 ott e nessuno l'aveva
+mai scritta: è esattamente il posto previsto. La risposta si dà a mano o con **`pnpm accounts
+--decidi <id> si|no|dopo`**:
+
+- **NO** → quella combinazione (account + contatto + cosa) **non si ripropone più**;
+- **DOPO** → torna fra **21 giorni**;
+- **SÌ** → resta aperta, e l'**esito lo chiede `/account-close`** (passo **5bis** nuovo);
+- **nessuna risposta** → non si ripropone domani, ma **torna dopo una settimana** con lo stesso
+  id: una proposta non risposta è più spesso persa che rifiutata.
+
+⚠️ **La colonna non si riscrive mai**, nemmeno per «aggiornarla»: `--decidi` su una riga già
+decisa **rifiuta** e stampa cosa c'è scritto. La nota in testa al registro dichiara l'eccezione:
+le righe `A-` le scrive il radar, tutte le altre restano a mano.
+
+**Nel giro della mattina** l'apertura si deposita, finisce nel **corpo della notifica** —
+«`<account>` · scrivi a `<nome>` — `<cosa>`» vale più di uno spunto interno — e viene **passata al
+consulente perché la giudichi**. Provato via `launchctl` il 13 ott sera: il consulente **non è
+stato d'accordo**, nel merito — il contatto scelto segue fatturazione e RTCDP, non la leva
+commerciale dietro l'attrition, quindi prima si allinea l'AE, che ha già in mano la variante
+contrattuale sui volumi — e in `DENTRO` ha **collegato la variante al rischio di rinnovo**, due
+cose che stavano in due file diversi. È la tesi del disegno dimostrata dal vivo: selezione
+deterministica a costo zero, giudizio dove serve.
+
+⚠️ **Correzione di metodo che costa cara se non si sa.** Provando il consulente con `env -i` la
+risposta è stata **«Not logged in · Please run /login»**, e la conclusione «sotto launchd il
+giudizio non parte» era **sbagliata**: `env -i` toglie più di quanto launchd tolga (un
+LaunchAgent gira nella sessione dell'utente). La prova è **`launchctl start`**, non una
+simulazione dell'ambiente. Memorie: `apertura-e-giro-di-ritorno`,
+`launchd-non-e-la-tua-shell` (aggiornata).
+
+**Pulizia di riservatezza fatta nello stesso giro**, e vale la pena sapere perché: `pnpm
+audit:docs` dichiara di guardare **i percorsi, non il contenuto**. Il controllo umano che delega
+ha trovato, in file **tracciati** di un repo **pubblico**, un cliente con prodotto e importo di
+rinnovo dentro un prompt, una data di chiusura col nome del cliente, e un **numero di cellulare**.
+Tutto sostituito con segnaposto, nessuna informazione utile persa.
+
+**Stato al 19 ott:** una apertura depositata (`A-20261013-1`, Enel) **in attesa di decisione**.
+Finché non si risponde, le aperture si accumulano senza ripresentarsi — ed è il solo modo in cui
+questo sistema può diventare rumore.
