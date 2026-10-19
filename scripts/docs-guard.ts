@@ -69,12 +69,25 @@ const riammessi = righe
 // I documenti della Factory sono markdown, più la cartella superpowers/ delle
 // spec. Qualunque altra riammissione va guardata: è il modo in cui si riapre la
 // falla "dal lato buono", aggiungendo invece di togliere.
-const AMMESSI_NON_MD = new Set(['.gitignore', 'superpowers/', 'superpowers/**']);
+// 19 ott 2026: si aggiungono gli STRUMENTI. `docs/Claude/` era ignorata per
+// intero perché conteneva i dati del Radar, traslocati in `docs/Adobe/Radar/`
+// il 12 ott; sono rimasti due script (`email.py`, `posta.py`) a cui le regole
+// rimandano, e una regola che rimanda a un file non tracciato vale solo sulla
+// macchina dove quel file esiste. La riammissione è nominale, non a cartella:
+// vedi `ammesso()`, dove sono elencati i singoli file.
+const AMMESSI_NON_MD = new Set(['.gitignore', 'superpowers/', 'superpowers/**', 'Claude/', 'Claude/**']);
 for (const r of riammessi) {
   if (AMMESSI_NON_MD.has(r)) continue;
   if (/\.md$/.test(r) || /^[A-Z-]+\*?\.md$/.test(r)) continue;
   nota(`docs/.gitignore riammette «!${r}», che non è un documento markdown della Factory né superpowers/. Se è materiale di un cliente, non va nel repo: togli la riga.`);
 }
+
+const STRUMENTI = new Set([
+  'Claude/.gitignore',
+  'Claude/LEGGIMI.md',
+  'Claude/email.py',
+  'Claude/posta.py',
+]);
 
 /* 2 — niente di cliente è tracciato ----------------------------------------- */
 const tracciati = git('ls-files', 'docs');
@@ -83,6 +96,12 @@ const ammesso = (p: string): boolean => {
   if (rel.startsWith('superpowers/')) return true;
   if (!rel.includes('/') && /\.md$/.test(rel)) return true; // i doc della Factory stanno in piano
   if (rel === '.gitignore') return true;
+  // Gli strumenti di `docs/Claude/`, uno per uno e non la cartella: un file
+  // nuovo lasciato lì dentro deve far scattare il gate, non passare perché
+  // sta nella cartella giusta. Il `.gitignore` di quella cartella è
+  // fail-closed e li riammette con gli stessi nomi: le due liste vanno
+  // tenute allineate a mano, ed è voluto — sono due decisioni, non una.
+  if (STRUMENTI.has(rel)) return true;
   return false;
 };
 for (const p of tracciati) {
