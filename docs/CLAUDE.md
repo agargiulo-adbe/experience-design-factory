@@ -148,6 +148,28 @@ com.gargiulo.radar`. Tre cose da sapere, tutte verificate sul campo il 13 ott 20
   due modi di rompersi;
 - essendo due file, possono divergere: `pnpm accounts` lo rileva e lo dice.
 
+## WhatsApp è sempre una fonte — per `/accounts` e per tutto ciò che ne deriva
+
+Vale per l'intera famiglia: `/accounts`, `/account-open`, `/account-close`, il grafo dei
+contatti, l'apertura del giro e il Radar. **WhatsApp non è una fonte di scorta da guardare
+se avanza tempo**: su quel numero — che è il numero di lavoro, quello della firma delle mail
+— arrivano le cose dette in fretta, e sono spesso le più recenti che hai su un referente. Un
+giro che salta WhatsApp dà per fermo un account che si è mosso ieri.
+
+Due conseguenze operative:
+
+- **Non si dichiara mai un giro completo con WhatsApp non letto.** Se Centralino non
+  risponde — gira via SSH su un'altra macchina, e capita che sia spenta o irraggiungibile —
+  la fonte si dichiara **cieca**, in chiaro, accanto all'esito: «WhatsApp non verificato,
+  Centralino irraggiungibile». Non è un dettaglio tecnico da tenere per sé: è l'unica cosa
+  che distingue «non si è mosso niente» da «non lo so».
+- **Un silenzio non verificato non è un silenzio.** Prima di scrivere che un contatto non ha
+  risposto, o di proporre un sollecito, WhatsApp va guardato: la risposta che manca nella
+  casella molto spesso è arrivata lì.
+
+E vale il contrario di sempre: quell'account **mescola lavoro e vita privata**, quindi nel
+registro entra solo ciò che riguarda l'account, e il resto non si cita né si riassume.
+
 ## Il Radar e i registri: chi possiede che cosa
 
 Sotto `docs/Adobe/Radar/` vive il **Radar Opportunità**, alimentato a mano da PanoAI
@@ -367,14 +389,20 @@ Note sul template:
 
 La sezione «Chi è chi» non è una rubrica tenuta a mano: una rubrica a mano diverge in tre
 settimane, come ogni cosa che dipende da chi si ricorda di aggiornarla. Si **ricava dalla
-posta**, una volta a settimana per account, e ogni riga porta la sua data.
+posta e da WhatsApp**, una volta a settimana per account, e ogni riga porta la sua data.
 
-**Le due ricerche** (connettore Microsoft 365, `outlook_email_search`):
+**Le tre ricerche** — due sulla posta (connettore Microsoft 365, `outlook_email_search`)
+e una su WhatsApp, che non è un ripiego della posta ma una fonte sua:
 
 1. `sender: <dominio del cliente>` → **chi di quel cliente ha scritto in un thread tuo**,
    con data e tema dell'ultimo scambio. Questo è il grafo.
 2. `sender: <tuo indirizzo>` + `recipient: <indirizzo del contatto>` → i thread in cui
    **tu hai scritto e lui c'era**. Serve a datare la tua ultima uscita verso quella persona.
+3. **WhatsApp** (Centralino, account `whatsapp-personale`), cercando **il nome di ogni
+   contatto** del grafo e dei referenti che l'account nomina. Chi scrive lì è il contatto
+   più caldo che hai, e la posta non lo vede: un referente può risultare fermo a mesi fa
+   nella casella e averti scritto ieri sul telefono. Un ultimo scambio trovato qui **vale
+   come quello della posta** e aggiorna la data della riga.
 
 ⚠️ **Due limiti misurati il 13 ott 2026, da conoscere prima di fidarsi del grafo.**
 
@@ -389,9 +417,11 @@ posta**, una volta a settimana per account, e ogni riga porta la sua data.
 
 **La regola del destinatario**, costruita su ciò che si misura davvero:
 
-- **scrivi tu** — il contatto **ti ha scritto lui** (compare come mittente nella ricerca 1) e
-  l'ultimo scambio è entro **~120 giorni**. È il fatto forte: ha scritto dove c'eri tu, di
-  recente.
+- **scrivi tu** — il contatto **ti ha scritto lui** (compare come mittente nella ricerca 1,
+  **o ti ha scritto su WhatsApp**: ricerca 3) e l'ultimo scambio è entro **~120 giorni**. È il
+  fatto forte: ha scritto dove c'eri tu, di recente. Su WhatsApp è ancora più forte — ha il
+  tuo numero e l'ha usato — e **attenzione a chi ha scritto**: l'«Oggetto» è la
+  conversazione, il «Da» può essere il tuo numero.
 - **passa dall'AE** — in tutti gli altri casi, e il motivo si dice:
   - **lo conosci di rimbalzo** — il nome arriva dentro una mail inoltrata dall'AE, non da un
     suo messaggio (è il caso di chi scrive all'AE e non a te);
@@ -407,6 +437,46 @@ rimbalzo» è l'informazione che fa decidere; «passa dall'AE» da solo è un or
 **Niente nome inventato.** Un contatto entra solo se è stato **visto** in un thread. Se di un
 account non si conosce nessuno, non si costruisce un'apertura: si scrive che manca il
 contatto, e lo si chiede all'AE.
+
+## Un'email si consegna come bozza, e la bozza è BEN FORMATTATA (19 ott 2026)
+
+Regola generale, vale per ogni sessione e per ogni mail — non solo per quelle d'account.
+Chiedere «scrivi un'email» non vuol dire «scrivi il testo in chat»: vuol dire **aprire in
+Outlook una bozza modificabile, con il formato di casa già dentro**. Testo piatto, con
+l'impaginazione lasciata a chi la manda, non è una consegna.
+
+**Un comando solo**, e fa tutto:
+
+```
+python3 docs/Claude/email.py bozza.md --bozza \
+    --a "tizio@adobe.com" --cc "caio@adobe.com,sempronio@adobe.com" \
+    --oggetto "Oggetto della mail"
+```
+
+Il sorgente è un markdown minimo (`## titoletto`, `1.`, `- `, righe `| etichetta | valore |`,
+`**grassetto**`); il generatore applica da sé il corpo a **11pt con interlinea 1,15** e i tre
+costrutti che il motore di Word non regge (tabelle senza bordi, titoletti come paragrafi in
+grassetto, niente `<ol>`/`<ul>`). La bozza si apre, **non si invia**.
+
+**Perché questa strada e non il connettore.** Microsoft 365 qui è in **sola lettura**: manca
+`Mail.ReadWrite`, quindi `outlook_create_draft` risponde **403**; e anche avendolo, rifiuta
+l'HTML che porta `style=`, quindi il nostro formato non ci passerebbe comunque. Sono due
+chiamate buttate a ogni giro: non si ritenta.
+
+**La cosa che non è ovvia.** La proprietà `content` di un `outgoing message` **rende
+l'HTML**, non lo mostra come testo: per questo il corpo formattato ci va dentro direttamente
+e il paste a mano non serve più. ⚠️ Il readback inganna — `content of msg` restituisce i
+**tag**, e sembra che Outlook li tratti letteralmente. L'unico modo di saperlo è
+**fotografare la finestra** e guardarla. Vale come metodo, non solo qui: quando lo strumento
+dice una cosa e il risultato ne dice un'altra, si guarda il risultato.
+
+Due cose le fa Outlook da sé: **accoda la firma** (quindi nel sorgente non si scrive) e
+**salva la bozza** — in AppleScript niente `save`, che su Mac vuole un percorso file e
+fallisce con −1701.
+
+⚠️ **`every outgoing message` non è l'elenco delle bozze**: enumera tutta la posta in uscita
+storica, centinaia di messaggi. Non ci si cicla sopra per cancellare, nemmeno filtrando per
+oggetto.
 
 ## Cosa non fare, qui
 
