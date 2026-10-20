@@ -332,6 +332,34 @@ export const SOURCES = {
     data: 'documentazione pubblica',
     cosaDice: 'Produzione di varianti di campagna conformi alle regole di marca, con misura attaccata al singolo pezzo.',
   },
+  analytics: {
+    url: 'https://experienceleague.adobe.com/en/docs/analytics/analyze/home',
+    label: 'Adobe Analytics',
+    data: 'documentazione pubblica',
+    cosaDice: 'Analisi del comportamento sui canali digitali: segmenti, percorsi, confronti nel tempo. È il prodotto che Trenitalia ha già in casa.',
+  },
+  aemAssets: {
+    url: 'https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/assets/overview',
+    label: 'Adobe Experience Manager Assets',
+    data: 'documentazione pubblica',
+    cosaDice: 'La biblioteca degli asset: versioni, diritti d\'uso, metadati, distribuzione ai canali. Trenitalia ha Assets oltre a Sites.',
+  },
+  firefly: {
+    // Il nome che il cliente riconosce è «Adobe Firefly»; la pagina pubblica che
+    // descrive l'uso su scala — generazione dentro un flusso, via API — è quella
+    // di Firefly Services. Le pagine di prodotto su adobe.com rispondono 403 a
+    // qualunque accesso automatico e non sarebbero verificabili da nessun gate.
+    url: 'https://developer.adobe.com/firefly-services/docs/guides/',
+    label: 'Adobe Firefly',
+    data: 'documentazione pubblica',
+    cosaDice: 'Generazione di immagini e varianti visive con modelli addestrati su contenuti licenziati, utilizzabile anche dentro un flusso di produzione tramite Firefly Services.',
+  },
+  workfront: {
+    url: 'https://experienceleague.adobe.com/en/docs/workfront/using/home',
+    label: 'Adobe Workfront',
+    data: 'documentazione pubblica',
+    cosaDice: 'Il governo del lavoro: richieste, assegnazioni, scadenze, approvazioni e stato di avanzamento su campagne e materiali. È il pezzo che tiene insieme chi chiede e chi produce.',
+  },
   coworker: {
     // La descrizione di prodotto su helpx risponde 403 a qualunque accesso automatico —
     // anche a URL inesistenti — quindi un link lì non è verificabile da nessun gate.

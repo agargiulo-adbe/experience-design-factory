@@ -4,9 +4,10 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import CheServe from '../components/CheServe.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MOLTIPLICATORI, UNPOSTO } from '../data/contenuti';
+import { MOLTIPLICATORI, UNPOSTO, SERVE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_network from '../assets/generated/bg/bg-network.webp';
@@ -99,9 +100,9 @@ const currentPath = Astro.url.pathname;
           <p class="slide-eyebrow">Come si produce, oggi, quel numero di varianti</p>
           <h2 class="ex-head-title">Nasce, si approva, si traduce e si misura nello stesso posto</h2>
           <p class="ex-head-lead">
-            Con le agenzie dentro lo stesso flusso, invece che in fondo a una catena di allegati.
-            E con la misura attaccata al singolo pezzo: si sa quale versione ha venduto e quale no.
-            È l’unico modo per smettere di produrne di inutili.
+            Con le agenzie dentro lo stesso flusso, non in fondo a una catena di allegati. La
+            misura sta attaccata al pezzo: si sa quale versione ha venduto. Chi approva resta chi
+            approva oggi.
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
@@ -113,21 +114,16 @@ const currentPath = Astro.url.pathname;
             </div>
           ))}
         </div>
-        <HowItWorks title="E il lavoro agentico, qui" label="E il lavoro agentico, qui" tone="onLight" data-reveal data-reveal-delay="0.2">
+        {/* 20 ott: il titolo è lo stesso su ogni idea del deck — «Che cosa serve,
+            concretamente» — perché un lettore impari dove guardare una volta sola.
+            `tone` qui è `onDark` e non è un errore: il componente assume una
+            dominante chiara, e in questa skin la dominante è scura; su una slide
+            che rende CHIARA serve l'inchiostro dell'altro verso. */}
+        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onDark" data-reveal data-reveal-delay="0.2">
           <p>
-            Qui entra l’automazione sul lavoro di produzione: prepara le varianti, le manda in
-            approvazione, le pubblica. Chi approva resta chi approva oggi.
-            <strong>È agentico sul lavoro dei vostri, non sulla conversazione con i vostri
-            viaggiatori</strong>: due mestieri diversi, e il secondo non lo tocchiamo.
+            <strong>Automazione sul lavoro dei vostri, non sulla conversazione con i viaggiatori.</strong>
           </p>
-          <!-- Gli strumenti su righe separate, non in una frase con tre grassetti: tre
-               `<strong>` che vanno a capo dentro lo stesso paragrafo producono riquadri
-               che si intersecano, e il check `e` li legge come testo sopra testo. -->
-          <ul class="tp-tools" role="list">
-            <li><span class="tp-tools-n"><a href={SOURCES.aem.url} target="_blank" rel="noopener noreferrer">Adobe Experience Manager</a></span> il materiale</li>
-            <li><span class="tp-tools-n"><a href={SOURCES.genstudio.url} target="_blank" rel="noopener noreferrer">Adobe GenStudio for Performance Marketing</a></span> le varianti di campagna</li>
-            <li><span class="tp-tools-n"><a href={SOURCES.coworker.url} target="_blank" rel="noopener noreferrer">CX Enterprise Coworker</a></span> il lavoro agentico, disponibile da giugno 2026 e in rilascio progressivo</li>
-          </ul>
+          <CheServe pezzi={SERVE.contenuto} />
         </HowItWorks>
       </div>
     </Slide>

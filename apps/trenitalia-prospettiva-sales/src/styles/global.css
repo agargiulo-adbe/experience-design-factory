@@ -547,6 +547,68 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 
 /* ── Strumenti elencati dentro un disclosure ───────────────────────────── */
 /* gap ≥ 16px: il check `g` vuole almeno quello fra blocchi di testo impilati. */
+/* ── «Che cosa serve, concretamente»: i pezzi che occorrono ───────────────
+   Il corpo del drill-down NON dichiara un colore suo: eredita quello della
+   slide, che nel motore è bianco. Su una slide chiara questo vuol dire testo
+   bianco su nebbia — illeggibile, e nessun check lo vede (il check `h` misura i
+   bottoni, non la prosa; `audit:ink` lo vede solo a blocco aperto). Visto il
+   20 ott 2026 sul drill-down del capitolo 05. Si dichiara qui, una volta, con
+   l'inchiostro che si ribalta da sé. */
+[data-slide] .hiw-body,
+[data-slide] .hiw-body p { color: var(--ink-body); }
+
+/* ≥16px fra blocchi di testo impilati: è il check `g` del ritmo verticale, e
+   dentro una disclosure l'audit lo rimisura come HARD. */
+.tp-serve { margin-top: 1rem; }
+/* La legenda sta su UNA riga: è una chiave di lettura, non un paragrafo. */
+.tp-serve-leg {
+  font-size: clamp(0.74rem, 0.8vw, 0.8rem);
+  line-height: 1.4;
+  color: var(--ink-note);
+  max-width: none;
+}
+/* Due colonne dove c'è larghezza. Sono tornate possibili quando la pastiglia è
+   diventata uno pseudo-elemento: con un solo elemento per riga non c'è più
+   niente che il check `e` possa leggere come testo sopra testo. */
+.tp-serve-l { display: grid; gap: 0.18rem 2rem; margin-top: 0.95rem; }
+/* Non sotto i 1500: a 1280 le due colonne sono così strette che i nomi lunghi
+   vanno a capo, e la riga doppia costa più di quanto la colonna faccia guadagnare
+   — misurato, la slide peggiorava di 6px invece di migliorare. */
+@media (min-width: 1500px) {
+  .tp-serve-l { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.tp-serve-i {
+  font-size: clamp(0.88rem, 0.94vw, 0.96rem);
+  line-height: 1.42;
+  color: var(--ink-body);
+  max-width: none;
+}
+.tp-serve-n { font-weight: 700; color: var(--ink-primary); }
+.tp-serve-n::after { content: ' — '; font-weight: 400; color: var(--ink-note); }
+/* La pastiglia porta la parola PIÙ il colore: il colore da solo non è un'informazione. */
+.tp-serve-tag,
+.tp-serve-i::before {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.1em 0.45em;
+  margin-right: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+.tp-serve-i::before { content: attr(data-eti); }
+.tp-serve-tag.is-avete,
+.tp-serve-i[data-stato='avete']::before { color: var(--ink-accent-2); }
+/* «prezzo già fissato» è una terza cosa, e si vede: non è loro oggi, ma non è
+   nemmeno da negoziare. Prende l'accento del marchio, che qui è inchiostro. */
+.tp-serve-tag.is-prezzo,
+.tp-serve-i[data-stato='prezzo']::before { color: var(--ink-accent); }
+.tp-serve-tag.is-nuovo,
+.tp-serve-i[data-stato='nuovo']::before { color: var(--ink-note); }
+
 .tp-tools { display: grid; gap: 1.05rem; margin-top: 0.9rem; }
 .tp-tools li { font-size: clamp(0.95rem, 1.02vw, 1.02rem); line-height: 1.5; color: var(--ink-body); }
 .tp-tools-n { font-weight: 700; color: var(--ink-primary); }
@@ -560,6 +622,8 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    che la ospita) e non ruba l'occhio al contenuto della slide. */
 [data-slide] .ex-src a,
 [data-slide] .tp-tools-n a,
+[data-slide] .tp-serve-n a,
+[data-slide] .hiw-body a,
 [data-slide] .tp-quote-after a,
 [data-slide] .ex-card-b a {
   color: inherit;
@@ -571,6 +635,8 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 [data-slide] .ex-src a:hover,
 [data-slide] .tp-tools-n a:hover,
+[data-slide] .tp-serve-n a:hover,
+[data-slide] .hiw-body a:hover,
 [data-slide] .tp-quote-after a:hover,
 [data-slide] .ex-card-b a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
 [data-slide] a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }

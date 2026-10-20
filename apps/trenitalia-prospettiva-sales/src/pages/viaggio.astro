@@ -4,9 +4,10 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import CheServe from '../components/CheServe.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { GIA, PRIMA, fontiDi } from '../data/contenuti';
+import { GIA, PRIMA, fontiDi, SERVE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_journey from '../assets/generated/bg/bg-journey.webp';
@@ -136,19 +137,11 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
         </div>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
           <p>
-            Servono due cose. La prima: leggere il percorso di acquisto per intero, treno e gomma e sosta insieme: è il mestiere di
-            <strong><a href={SOURCES.cja.url} target="_blank" rel="noopener noreferrer">Customer Journey Analytics</a></strong>,
-            che gira su Adobe Experience Platform.
-            La seconda: poter provare una proposta diversa su una parte del traffico e misurarne
-            l’effetto con <strong><a href={SOURCES.target.url} target="_blank" rel="noopener noreferrer">Adobe Target</a></strong>,
-            che avete già scelto.
+            Leggere il percorso di acquisto per intero, e poter provare una proposta diversa su
+            una parte del traffico. <strong>La seconda la comprate già</strong>: manca la prima.
           </p>
-          <p>
-            L’orchestrazione dei messaggi lungo il viaggio è il passo successivo, e qui lo
-            nominiamo soltanto. Vendita diretta e assistenza stanno in un’altra direzione: non è
-            questa la stanza per decidere al posto loro.
-          </p>
-          </HowItWorks>
+          <CheServe pezzi={SERVE.acquisto} />
+        </HowItWorks>
       </div>
     </Slide>
 
@@ -161,10 +154,8 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
           <h2 class="ex-head-title">Il viaggio si decide prima, e altrove</h2>
           <p class="ex-head-lead">
             Chi decide dieci giorni in Italia lo decide davanti a una compagnia aerea o a un
-            operatore turistico, mesi prima di scegliere il treno. <strong>Si può lavorare sugli stessi viaggiatori senza che nessuna
-            delle due aziende consegni all’altra i propri dati</strong>: ciascuno tiene i suoi,
-            e si incrocia solo quello che serve a capire chi interessa a entrambi. Un accordo che
-            collega due sistemi di prenotazione apre la porta; questo decide che cosa ci passa.
+            operatore turistico, mesi prima di scegliere il treno. <strong>E su quei viaggiatori si
+            può lavorare in due senza scambiarsi i dati.</strong>
           </p>
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
@@ -181,14 +172,44 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             esiste — verificato — e un caso preso da un altro settore apre la
             domanda «e nel nostro?» invece di chiuderla: si dice che è un'ipotesi
             e si chiude lì. */}
-        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+        <p class="ex-src" data-reveal data-reveal-delay="0.26">
           Il canale cinese: <a href={SOURCES.trenitaliaCinese.url} target="_blank" rel="noopener noreferrer">{SOURCES.trenitaliaCinese.label}</a> ·
           <a href={SOURCES.fsCina.url} target="_blank" rel="noopener noreferrer">{SOURCES.fsCina.label}</a>.
           Il protocollo con Costa: <a href={SOURCES.costaTtg.url} target="_blank" rel="noopener noreferrer">{SOURCES.costaTtg.label}</a>.
-          Lo strumento è <strong><a href={SOURCES.rtcdpCollab.url} target="_blank" rel="noopener noreferrer">{SOURCES.rtcdpCollab.label}</a></strong>,
-          oggi in disponibilità limitata, Europa compresa. Fra operatori di trasporto e crociere
-          un caso pubblico non c’è ancora, e quindi questa resta un’ipotesi da provare insieme.
         </p>
+      </div>
+    </Slide>
+
+
+    <!-- ── Dove si innesta la collaborazione sui dati ─────────────────────
+         20 ott: «non è chiaro dove si innesta la data collaboration» — detto in
+         riunione, e aveva ragione: lo strumento stava in una riga di fonte, in
+         fondo, dopo i link. Qui ha una slide sua, che risponde alle due domande
+         che uno si fa: dove si innesta nel PERCORSO e dove nei SISTEMI. Sta a
+         parte e non in fondo alla precedente perché lì, col blocco aperto, la
+         slide usciva dalla safe-area a tutti e tre i viewport: il contratto dice
+         di dividere, non di rimpicciolire. -->
+    <Slide id="slide-collab" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <p class="slide-eyebrow">Lavorare in due sugli stessi viaggiatori</p>
+          <h2 class="ex-head-title">Dove si innesta, e dove no</h2>
+          <p class="ex-head-lead">
+            Sta prima della scelta del vettore, sopra un accordo che esiste già, e <strong>vive in
+            un ambiente a sé</strong>: ciascuna delle due aziende tiene i propri dati dove sono, e si
+            incrocia soltanto chi interessa a entrambe.
+          </p>
+        </div>
+        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.16">
+          <p>
+            Nel percorso di acquisto non entra un sistema nuovo, e non tocca il collegamento fra i due
+            sistemi di prenotazione del 2027. Lo
+            <a href={SOURCES.rtcdpCollab.url} target="_blank" rel="noopener noreferrer">strumento</a>
+            è in disponibilità limitata: fra trasporto e crociere un caso pubblico non c’è ancora.
+          </p>
+          <CheServe pezzi={SERVE.collaborazione} />
+        </HowItWorks>
       </div>
     </Slide>
 

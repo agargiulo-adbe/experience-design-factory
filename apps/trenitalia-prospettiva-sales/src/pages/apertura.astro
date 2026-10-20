@@ -18,9 +18,10 @@ import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
  * senza `<T>`. Se un giorno diventasse bilingue, ogni campo di quel file diventa
  * `{it, en}` — e le pagine non cambiano.
  *
- * Si apre con una frase SUA, non con Adobe: è la regola del dossier. Il 96% è sua,
- * verbatim; il 75% e il 4% sono un dato di contesto che circola al TTG e NON una
- * sua citazione — per questo stanno fuori dalle virgolette, con la loro fonte.
+ * Si apre con una frase SUA, non con Adobe: è la regola del dossier. Dal 20 ott 2026
+ * la frase è quella del TTG di QUEST'ANNO — 15 ottobre 2026 — e non più quella del
+ * TTG 2025: le due slide che seguono stavano già sul 2026, e un deck che apre con la
+ * dichiarazione dell'anno prima si fa rispondere «quello lo dicevamo allora».
  * Nessun logo in questo capitolo.
  */
 const SLUG = 'apertura';
@@ -65,12 +66,13 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
       <div class="tp-quote" data-reveal>
         <p class="slide-eyebrow">{APERTURA.eyebrow}</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08" set:html={APERTURA.dato} />
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          <span set:html={APERTURA.citazione} /> {APERTURA.lettura}
-        </p>
+        {/* Un solo nodo di testo, non due <span> affiancati: due span che vanno a
+            capo dentro lo stesso paragrafo hanno riquadri che si intersecano, e il
+            check `e` dell'audit li legge come testo sopra testo. */}
+        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18" set:html={`${APERTURA.citazione} ${APERTURA.lettura}`} />
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Il dato come circola al TTG: <a href={SOURCES.turismo75.url} target="_blank" rel="noopener noreferrer">{SOURCES.turismo75.label}</a>.
-          Le sue parole: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> e <a href={SOURCES.ttgAnsa.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgAnsa.label}</a>.
+          {APERTURA.fonte.prima} <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a>.
+          {APERTURA.fonte.dopo}
         </p>
       </div>
     </Slide>

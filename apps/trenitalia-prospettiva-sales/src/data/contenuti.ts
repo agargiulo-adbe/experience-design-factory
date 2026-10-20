@@ -62,8 +62,10 @@ export const TESTE = {
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
     titolo: 'Tre cose che capitano nello stesso anno',
-    lead: 'Al TTG avete indicato la parola di quest’anno: internazionalizzazione. Il Frecciarossa in Germania dall’estate 2027 e a Berlino nel 2028, dopo Spagna e Francia; e mercati nuovi fra Asia, Sud America e Australia. Arriva nell’anno in cui il mercato interno si allarga e il prezzo non sale.',
-    leadBreve: 'Al TTG avete indicato l’internazionalizzazione, nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
+    // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
+    // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
+    lead: 'Il Frecciarossa in Germania dall’estate 2027 e a Berlino nel 2028, dopo Spagna e Francia; e mercati nuovi fra Asia, Sud America e Australia. Tutto questo arriva nell’anno in cui il mercato interno si allarga e il prezzo non sale.',
+    leadBreve: 'Il Frecciarossa in Germania dal 2027 e a Berlino nel 2028: tutto nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
   },
   mappa: {
     eyebrow: 'La mappa',
@@ -74,24 +76,36 @@ export const TESTE = {
 };
 
 /* ── Capitolo 01 · la sua frase ────────────────────────────────────────────
-   Il dato e la citazione sono DUE cose, e qui stanno separate per un motivo
-   preciso: il 75% e il 4% circolano al TTG come dato di contesto e NON sono una
-   sua citazione verbatim; il 96% sì. Prima stavano dentro le stesse virgolette,
-   attribuite a lui, con in calce un link ANSA che non conteneva nessuno dei tre
-   numeri. Su una slide d'apertura costruita sulle parole dell'interlocutore,
-   quello è l'errore che costa tutto il resto del documento. */
+   20 ott 2026: questa slide citava il TTG dell'OTTOBRE 2025 — il 96% del
+   territorio non ancora esplorato, il 75% degli stranieri sul 4%, Busitalia.
+   Fatti veri, ma di un anno fa, e le slide successive di questo stesso
+   capitolo stavano già sul TTG 2026. Aprire un documento del 2026 con la
+   dichiarazione dell'anno prima è il modo più rapido di farsi dire «quello lo
+   dicevamo allora».
+
+   Ora la slide sta sulle sue parole del 15 ottobre 2026, verificate
+   sull'articolo riga per riga. Due cose, e sono le due che reggono tutto il
+   deck: la parola dell'anno, e dove dice di stare investendo. Il secondo
+   verbatim è il motivo per cui questo deck esiste — se investono sui canali
+   diretti, dove quei canali perdono vendite è esattamente la domanda. */
 export const APERTURA = {
-  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025 · parole vostre',
-  /** Dato di contesto: niente virgolette, niente attribuzione a lui. */
-  dato: 'Il <strong>75%</strong> degli stranieri che visitano l’Italia si ferma sul <strong>4%</strong> del territorio.',
+  eyebrow: 'Rimini, TTG Travel Experience, 15 ottobre 2026',
+  /** La parola che ha usato lui, grande quanto la pagina. */
+  dato: 'Internazionalizzazione.',
   /** Sue parole, verbatim. */
   citazione:
-    '«Contribuiamo a far conoscere agli italiani e soprattutto ai visitatori stranieri quel <strong>96% del territorio italiano non ancora esplorato</strong>.»',
-  /** Come lo legge lui, e con che leva. */
+    '«La parola chiave è internazionalizzazione: vogliamo rafforzare la collaborazione con i nostri <strong>partner</strong>.»',
+  /** E la seconda metà della stessa intervista: dove dice di investire. */
   lettura:
-    'E, lo stesso giorno, sulla leva: «investiamo sull’intermodalità, quindi arricchendo il nostro pacchetto con un’offerta capillare grazie anche alle connessioni di Busitalia».',
+    'E, nella stessa intervista: «stiamo investendo significativamente nell’evoluzione dei nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
   letturaBreve:
-    'E la leva che avete indicato è l’intermodalità, «grazie anche alle connessioni di Busitalia».',
+    'E, nella stessa intervista, sugli investimenti: «i nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
+  /** La riga di fonte, identica nei due percorsi: il link lo mette la pagina,
+   *  le parole stanno qui — scritte a mano in due posti, divergevano. */
+  fonte: {
+    prima: 'Le sue parole, al TTG di quest’anno:',
+    dopo: 'I mercati che ha indicato: Europa e Nord America, «ma anche quelli emergenti per noi, come Asia, Sud America e Australia».',
+  },
 };
 
 /* ── Capitolo 01 · i tre orologi ───────────────────────────────────────────
@@ -266,14 +280,14 @@ export const PRIMA: Card[] = [
     // ieri, in pubblico, e il deck lo nomina con la sua fonte.
     k: 'Con chi, adesso',
     t: 'Quello che avete appena firmato',
-    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma e, dal 2027, collega i due sistemi di prenotazione. È il caso da cui partire: esiste, ha una data, e il perimetro l’avete scelto voi.',
+    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma e dal 2027 collega i due sistemi di prenotazione. È il caso da cui partire: ha una data, e il perimetro l’avete scelto voi.',
     bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione dal 2027. È il caso da cui partire.',
     fonti: ['costaTtg'],
   },
   {
     k: 'Dove sta il valore',
     t: 'Arrivare prima della scelta del vettore',
-    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo dove andare, no. Chi ha prenotato una crociera da Genova sta decidendo come arrivarci, e oggi non lo sapete.',
+    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci, e oggi non lo sapete.',
     bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
   },
   {
@@ -294,7 +308,7 @@ export const PRIMA: Card[] = [
        da slide. Qui si dice il fatto e si lascia la domanda aperta. */
     k: 'La Cina, dove siete già',
     t: 'Vendete dentro WeChat dal 2025',
-    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali, in cinese. Le vendite su quel mercato sono raddoppiate in un anno. Quello che quel canale sa di chi compra, però, oggi resta lì.',
+    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali. Le vendite su quel mercato sono raddoppiate in un anno, e quello che quel canale sa di chi compra resta lì.',
     bBreve: 'Non c’è un sito in cinese: c’è un mini-program che vende, e le vendite su quel mercato sono raddoppiate in un anno.',
     fonti: ['trenitaliaCinese', 'fsCina'],
   },
@@ -365,7 +379,7 @@ export const UNPOSTO: Card[] = [
   {
     k: 'Il tempo',
     t: 'Dal brief alla vetrina',
-    b: 'Il numero da guardare non è quanto costa una variante, ma quanti giorni passano prima che sia davanti a un cliente. È lì che si perde una stagione.',
+    b: 'Non quanto costa una variante, ma dopo quanti giorni è davanti a un cliente: lì si perde una stagione.',
   },
   {
     k: 'Il marchio',
@@ -404,24 +418,33 @@ export const RETE = {
     // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
     // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
     // resta, ma come principio sui sistemi, non come informazione su di loro.
-    'Misurare un canale costa poco quando si mette mano al sistema che lo serve; farlo dopo è un progetto a sé. Per questo la domanda ve la facciamo adesso: del canale intermediato, oggi che cosa riuscite a vedere?',
+    'Misurare un canale costa poco mentre si mette mano al sistema che lo serve, e diventa un progetto a sé dopo. Del canale intermediato, oggi che cosa riuscite a vedere?',
 };
 
+/* 20 ott: il blocco era scarno e il valore non si vedeva — tre righe che
+   dicevano che cosa si misura, nessuna che dicesse che cosa se ne ricava.
+   Ora ogni voce porta la conseguenza, e «che cosa converte» dice di QUALI
+   contenuti parla: in agenzia la carta esiste ancora, e tanta. Tenerla fuori
+   avrebbe fatto sembrare la proposta un discorso da sito web fatto a chi
+   stampa locandine. */
 export const SAPERE: Card[] = [
   {
     k: 'Chi vende che cosa',
     t: 'Per rete, per agenzia, per prodotto',
-    b: 'È la misura diretta della vostra riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
+    b: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno. Da lì si vede su quali agenzie insistere, e quali vendono un prodotto solo perché nessuno ha dato loro gli altri.',
+    bBreve: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
   {
     k: 'Che cosa converte',
     t: 'Quale materiale vende, e quale resta nel cassetto',
-    b: 'Il collegamento con il capitolo precedente: produrre meno varianti e più di quelle che funzionano.',
+    b: 'Digitale e cartaceo insieme. Le schede prodotto e le email, ma anche le locandine, le brochure e il materiale da banco: in agenzia si stampa ancora, e molto. Di nessuno dei due si sa oggi che cosa ha venduto. È il collegamento con il capitolo precedente: produrne meno, e più di quelli che funzionano.',
+    bBreve: 'Digitale e cartaceo: schede ed email, ma anche brochure e materiale da banco. Produrne meno, e più di quelli che funzionano.',
   },
   {
     k: 'Che cosa succede se…',
     t: 'Provare un’alternativa invece di deciderla',
-    b: 'Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Su un sito si fa; su questo canale, per quanto ne sappiamo, no. È una delle cose che vorremmo chiedervi.',
+    b: 'Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Su un sito si fa; su questo canale, per quanto ne sappiamo, no. E una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
+    bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
   },
 ];
 
@@ -450,6 +473,96 @@ export const DOMANDE_APERTE = [
   'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
   'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
 ];
+
+/* ── Che cosa serve, concretamente ─────────────────────────────────────────
+   Chiesto in riunione il 20 ott 2026, e vale per OGNI idea del deck: una
+   Prospettiva che non dice con che cosa si fa una cosa lascia la stanza con
+   l'impressione che si debba comprare tutto da capo. Qui si dice il contrario,
+   ed è vero — ed è vero più di quanto pensassimo prima di leggere il contratto.
+
+   TRE STATI, e non due: la terza riga esiste perché l'accordo quadro ha una
+   sezione che fissa il prezzo di prodotti NON ancora acquistati. Dire «si
+   aggiunge» di una cosa che ha già il suo prezzo nel loro contratto sarebbe
+   falso in difetto.
+   · `avete`  — licenziato oggi: qui si estende a un uso nuovo;
+   · `prezzo` — non licenziato, ma con prezzo già fissato nell'accordo quadro;
+   · `nuovo`  — non c'è, e va aggiunto.
+
+   LETTO SUL CONTRATTO, non a memoria. La copia sta nella cartella d'account,
+   che è git-ignorata, e qui non se ne riportano gli estremi: il repo è pubblico.
+   · Licenziato: Analytics, Experience Manager Sites, Commerce, Journey
+     Optimizer, Target; più le postazioni Creative Cloud e Acrobat.
+   · Le postazioni Creative Cloud portano con sé la copertura Firefly: Firefly
+     NON è tutto da comprare, e dirlo incrementale sarebbe un errore nostro.
+   · A prezzo bloccato: Workfront, Experience Manager Assets, Forms, Dynamic
+     Media, spazio, e volumi aggiuntivi di Target e Analytics.
+   · Experience Manager Assets risulta poi acquistato: sta in `avete`.
+   · NON compare da nessuna parte: Customer Journey Analytics, Real-Time CDP
+     Collaboration, GenStudio, CX Enterprise Coworker, Brand Visibility. Quelli
+     sono `nuovo`, senza sfumature.
+
+   In slide vanno i NOMI, mai il contratto: niente importi, quantità, scadenze,
+   numero di postazioni. Il contratto è la ragione per cui la pastiglia dice
+   quello che dice, non una cosa da proiettare.
+
+   Il blocco vive DENTRO «Che cosa serve, concretamente», cioè dietro il
+   drill-down: in sala si apre se qualcuno chiede, e intanto non appesantisce
+   una slide che deve reggere da sola. */
+export type Stato = 'avete' | 'prezzo' | 'nuovo';
+export interface Pezzo {
+  nome: string;
+  /** La fonte pubblica del prodotto: il nome in slide è un link verificabile. */
+  fonte?: ChiaveFonte;
+  stato: Stato;
+  /** A che cosa serve QUI, in una riga. Non la scheda del prodotto. */
+  a: string;
+}
+
+export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
+  avete: { eti: 'già vostro', spiega: 'nel contratto' },
+  prezzo: { eti: 'prezzo già fissato', spiega: 'nell\u2019accordo quadro' },
+  nuovo: { eti: 'si aggiunge', spiega: 'oggi non c\u2019\u00e8' },
+};
+
+export const SERVE: Record<
+  'visibilita' | 'canale' | 'acquisto' | 'collaborazione' | 'contenuto' | 'rete',
+  Pezzo[]
+> = {
+  visibilita: [
+    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'la misura, e le pagine che mancano' },
+    { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'dove le pagine già nascono' },
+  ],
+  canale: [
+    { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'la base su cui si innesta' },
+    { nome: 'LLM Apps', fonte: 'llmApps', stato: 'nuovo', a: 'l\u2019offerta dentro l\u2019assistente' },
+  ],
+  acquisto: [
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il punto di partenza' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il percorso per intero' },
+    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'provare una proposta diversa' },
+  ],
+  collaborazione: [
+    { nome: 'Adobe Real-Time CDP Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'il luogo neutro dell\u2019incrocio' },
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il vostro lato dell\u2019incrocio' },
+  ],
+  contenuto: [
+    { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'il materiale e le sue versioni' },
+    { nome: 'Adobe Firefly', fonte: 'firefly', stato: 'avete', a: 'le immagini, già nelle postazioni Creative Cloud' },
+    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'prezzo', a: 'chi chiede, chi produce, chi approva' },
+    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'il lavoro agentico sulla produzione' },
+  ],
+  rete: [
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'la misura che già usate' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il venduto per rete e per agenzia' },
+    /* 20 ott: Target torna nominabile QUI. Il verdetto del panel del 12 ott
+       riguardava il nominarlo «fra i requisiti della nuova piattaforma» \u2014 un
+       fornitore che si autonomina dentro un capitolato \u00e8 un tema di procurement.
+       Questo blocco \u00e8 un'altra cosa: \u00e8 che cosa serve alla NOSTRA proposta, e
+       tacerlo proprio dove il cliente chiede i prodotti sarebbe reticenza. */
+    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'provare su una parte della rete' },
+  ],
+};
 
 /* ── Servizi ───────────────────────────────────────────────────────────────
    `card(x, 'breve')` serve la versione corta dove c'è, quella lunga dove non
