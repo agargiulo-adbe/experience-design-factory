@@ -105,8 +105,8 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Una persona sola, non cinque conteggi', en: 'One person, not five separate counts' },
     s: {
-      it: 'Dal contare le visite su un canale al seguire la stessa persona dal primo annuncio alla firma: da lì in poi si misura dove si perde, e quanto ha pesato ogni passaggio',
-      en: 'From counting visits on one channel to following the same person from the first ad to signature: from there you can measure where it breaks, and what each step was worth',
+      it: 'Si passa dal contare le visite su un canale al seguire la stessa persona dal primo annuncio alla firma. Da lì si misura dove si perde, e quanto ha pesato ogni passaggio',
+      en: 'You move from counting visits on one channel to following the same person from the first ad to signature. From there you measure where it breaks, and what each step was worth',
     },
     sBreve: {
       it: 'Seguire la stessa persona dal primo annuncio alla firma, e misurare dove si perde',
@@ -118,8 +118,8 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie cosa esce, su che canale e quanto spesso, senza rifare nulla di quello che c’è',
-      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often, without redoing any of it',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. Senza rifare nulla di quello che c’è',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. Without redoing any of it',
     },
     sBreve: {
       it: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già',
@@ -131,12 +131,12 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Produrre contenuto alla scala della banca', en: 'Producing content at the scale of the bank' },
     s: {
-      it: 'Centinaia di offerte e decine di mercati senza moltiplicare le mani che le scrivono, con le parti obbligatorie che restano intatte e una persona che approva',
-      en: 'Hundreds of offers and dozens of markets without multiplying the hands that write them, with mandatory wording left intact and a person who approves',
+      it: 'Si comincia dalle risposte che gli assistenti danno su di voi, non dalle immagini. Poi centinaia di offerte senza moltiplicare le mani che le scrivono, con le parti obbligatorie intatte e una persona che approva',
+      en: 'It starts with the answers assistants give about you, not with images. Then hundreds of offers without multiplying the hands that write them, mandatory wording intact and a person who approves',
     },
     sBreve: {
-      it: 'Centinaia di offerte senza moltiplicare le mani, con le parti obbligatorie intatte',
-      en: 'Hundreds of offers without multiplying the hands, with mandatory wording intact',
+      it: 'Dalle risposte degli assistenti alle centinaia di offerte, senza moltiplicare le mani che le scrivono',
+      en: 'From the answers assistants give to hundreds of offers, without multiplying the hands that write them',
     },
     href: '#slide-filiera',
   },
@@ -266,21 +266,16 @@ export const OBIETTIVI: Obiettivo[] = [
       en: 'These are customers who do not know you today, and on those channels the first answer about you is not yours to give.',
     },
   },
+  /* ORDINE. Il cloud stava qui e adesso sta in terza. Non è un gusto: dei tre
+     obiettivi, due si giocano su quello che il cliente legge e il cloud no —
+     è il più lontano dalla conversazione e il più vicino a un'altra direzione
+     aziendale. I 20 miliardi invece sono la notizia più fresca (8 ottobre) e
+     sono l'obiettivo che si attacca direttamente al contenuto: 800.000 imprese
+     a cui parlare una per una. Un deck mette al secondo posto la cosa che
+     vuole far discutere, non quella che gli capita in ordine di importanza
+     altrui. */
   {
     n: '02',
-    cifra: { it: '100%', en: '100%' },
-    cosa: { it: 'delle applicazioni in cloud', en: 'of applications in the cloud' },
-    ctx: {
-      it: 'entro il 2029, dal 64% di fine 2025, dentro 4,6 miliardi di investimenti IT',
-      en: 'by 2029, from 64% at end-2025, within €4.6bn of IT investment',
-    },
-    lettura: {
-      it: 'Dentro quel 100% ci sono anche i sistemi che gestiscono contenuti e moduli: la scelta su di loro si fa in questa finestra, non dopo.',
-      en: 'Inside that 100% sit the systems that run content and forms: the choice about them is made in this window, not after.',
-    },
-  },
-  {
-    n: '03',
     cifra: { it: '20 mld', en: '€20bn' },
     cosa: {
       it: 'alle piccole imprese di commercio, artigianato e turismo',
@@ -298,7 +293,21 @@ export const OBIETTIVI: Obiettivo[] = [
       en: 'Each one wants to hear about its own business, not about a plan for everyone.',
     },
   },
+  {
+    n: '03',
+    cifra: { it: '100%', en: '100%' },
+    cosa: { it: 'delle applicazioni in cloud', en: 'of applications in the cloud' },
+    ctx: {
+      it: 'entro il 2029, dal 64% di fine 2025, dentro 4,6 miliardi di investimenti IT',
+      en: 'by 2029, from 64% at end-2025, within €4.6bn of IT investment',
+    },
+    lettura: {
+      it: 'Dentro quel 100% ci sono anche i sistemi che gestiscono contenuti e moduli: la scelta su di loro si fa in questa finestra, non dopo.',
+      en: 'Inside that 100% sit the systems that run content and forms: the choice about them is made in this window, not after.',
+    },
+  },
 ];
+
 
 /** L'etichetta che dichiara la riga di lettura per quella che è. */
 export const LETTURA_NOSTRA: Bilingue = {
@@ -311,20 +320,38 @@ export const LETTURA_NOSTRA: Bilingue = {
  * minuti», dove le tre carte non entrano. Sta QUI e non nella pagina perché i numeri
  * sono gli stessi di sopra — se uno cambia, deve cambiare in un posto solo.
  */
-/* «Tutti e tre passano da quello che il cliente legge» era falso sul secondo,
-   ed è il genere di falso che un CIO smonta in due secondi — dopodiché non
-   crede più nemmeno agli altri due. Il 100% in cloud è un obiettivo di
-   infrastruttura: non passa da quello che il cliente legge, passa da dove
-   girano i sistemi. La simmetria era forzata (il tricolon che la rubrica
-   de-AI chiama «bullet sovra-paralleli»): tre fatti diversi costretti nella
-   stessa conclusione.
-   La versione vera è anche l'argomento più forte, perché porta una scadenza
-   invece di una generalità: due obiettivi passano dal contenuto, il terzo
-   decide QUANDO si sceglie il sistema che quel contenuto lo produce. È la
-   stessa cosa che dice la riga di lettura della seconda carta. */
-export const SINTESI_OBIETTIVI: Bilingue = {
-  it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, i 20 miliardi alle piccole imprese. Due passano da quello che il cliente legge. Il terzo decide quando si sceglie il sistema che lo produce.',
-  en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, €20 billion for small businesses. Two of them run through what the customer reads. The third decides when the system that produces it gets chosen.',
+/* QUI STAVA `SINTESI_OBIETTIVI`, e non torna.
+   Diceva «tutti e tre passano da quello che il cliente legge», che era falso
+   sul cloud — un tricolon forzato, il genere di simmetria che un CIO smonta in
+   due secondi. Corretta il 20 ott, e poi tolta del tutto lo stesso giorno per
+   una ragione più semplice: stava sulla slide SUBITO DOPO le tre carte e le
+   ripeteva in prosa senza aggiungere niente. Se serve ridire gli obiettivi,
+   il posto è la carta, non un paragrafo. */
+
+
+/* ── L'aggancio ───────────────────────────────────────────────────────────
+   «Non c'è un'agenda col cliente?», «qual è il link?», «devo capire com'è il
+   nesso»: tre volte la stessa domanda, in revisione il 20 ott 2026, e nessuna
+   risposta in pagina. Un'agenda standard però sarebbe un passo indietro — la
+   copertina dice già che cosa ricevono, e un sommario in testa toglie proprio
+   l'effetto «vi abbiamo guardati da fuori» su cui regge il primo capitolo.
+   Quello che mancava non è l'indice: è PERCHÉ siamo a quel tavolo. Una riga.
+   Dice l'aggancio e non dichiara di sapere che cosa stanno valutando: quello,
+   se serve, lo dice a voce chi lo può garantire. */
+export const AGGANCIO: Bilingue = {
+  it: 'Siamo a questo tavolo con Accenture. Prima di proporre qualcosa, questo è come vi vediamo da fuori.',
+  en: 'We are at this table with Accenture. Before proposing anything, this is how we see you from outside.',
+};
+
+/* ── La domanda sugli obiettivi ────────────────────────────────────────────
+   «Gli obiettivi ce li facciamo raccontare da loro» è la regia giusta: una
+   slide che ELENCA gli obiettivi di chi ascolta è una lezione, la stessa slide
+   che CHIEDE è un'apertura. La riga costa sei parole e cambia che cosa succede
+   nei primi due minuti. Vive qui perché la portano tutte e due le versioni del
+   percorso. */
+export const DOMANDA_OBIETTIVI: Bilingue = {
+  it: 'Sono questi i tre che contano, o ne manca uno?',
+  en: 'Are these the three that matter, or is one missing?',
 };
 
 /* ── La domanda che chiude il primo capitolo ───────────────────────────────

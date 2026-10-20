@@ -1,0 +1,309 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import IsuNavigation from '../components/IsuNavigation.astro';
+import IsuFonte from '../components/IsuFonte.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import bgInnesto from '../assets/generated/bg/dark-innesto.jpg';
+import bgLettura from '../assets/generated/bg/light-lettura.jpg';
+import bgViaggio from '../assets/generated/bg/dark-viaggio.jpg';
+import bgPercorso from '../assets/generated/bg/light-percorso.jpg';
+
+/**
+ * L'AFFONDO SUL DECISIONING — quattro slide fuori dal percorso.
+ *
+ * PERCHÉ ESISTE. In revisione (20 ott 2026) è arrivata due volte la stessa
+ * richiesta: «preparati dell'extra materiale a supporto per il decisioning,
+ * che magari neanche apriamo». La ragione è precisa, ed è la parte che vale:
+ * un affondo su quello che facciamo ogni giorno si improvvisa a voce, questo
+ * no — e se la domanda arriva in riunione, dieci minuti di ricostruzione a
+ * braccio valgono meno di quattro slide già pronte.
+ *
+ * PERCHÉ FUORI DAL PERCORSO. Non è un capitolo: è un ramo. Sta fuori da
+ * `CHAPTERS`, quindi non compare nella barra — le voci della barra sono
+ * destinazioni del racconto, e un affondo che si apre solo se qualcuno lo
+ * chiede non è una tappa. Ci si arriva con UN clic dalla slide che lo
+ * riguarda, che è il punto: pronti a scendere subito, non a cercare un file.
+ *
+ * VINCOLI EREDITATI da `chapters.ts`, e qui valgono tutti:
+ *  · nessun competitor nominato, mai — né in pagina né in questi commenti;
+ *  · mai «sostituire», «migrazione», «rip-and-replace»: la posizione è
+ *    l'innesto, e in un cliente che ha appena finito di rifare il suo CRM è
+ *    anche l'unica posizione onesta;
+ *  · nessuna condizione commerciale, nessuna iniziativa, nessuna scadenza.
+ *    In revisione si è parlato di una leva commerciale: non è confermata per
+ *    iscritto, e un documento che il cliente può girare non è il posto dove
+ *    scriverla. Resta una cosa da dire a voce, da chi la può garantire;
+ *  · ogni affermazione di prodotto porta la sua fonte pubblica.
+ */
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+/** Si torna da dove si è venuti: la slide che apre l'affondo. */
+const RITORNO = 'idee/#slide-decisioning';
+
+/* Slide 1 — la posizione. Tre colonne, e la terza è quella che conta:
+   dire che cosa NON si tocca vale più di due righe su che cosa si aggiunge. */
+const posizione = [
+  {
+    n: '01',
+    t: { it: 'Quello che c’è resta', en: 'What is there stays' },
+    d: {
+      it: 'I motori che oggi assegnano punteggi e priorità continuano a farlo, dove sono e come sono.',
+      en: 'The engines that score and prioritise today keep doing it, where they are and as they are.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Si aggiunge un arbitro', en: 'An arbiter is added' },
+    d: {
+      it: 'Davanti al cliente arriva una cosa sola: l’arbitro sceglie fra le proposte che i sistemi di oggi gli passano.',
+      en: 'One single thing reaches the customer: the arbiter picks among the proposals today’s systems hand over.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'Non si rifà niente', en: 'Nothing is rebuilt' },
+    d: {
+      it: 'Nessuna regola esistente viene riscritta per far entrare questo strato. Se va riscritta, non è questo lo strumento.',
+      en: 'No existing rule is rewritten to make room for this layer. If one has to be, this is not the right tool.',
+    },
+  },
+];
+
+/* Slide 2 — che cosa entra, che cosa esce. La colonna di mezzo è volutamente
+   povera di parole: la decisione è UNA, e si vede che è una. */
+const flusso = [
+  {
+    n: '01',
+    t: { it: 'Che cosa legge', en: 'What it reads' },
+    d: {
+      it: 'I punteggi dei modelli che avete già, le preferenze e i consensi della persona, i vincoli di contatto che vi siete dati.',
+      en: 'The scores from the models you already have, the person’s preferences and consents, the contact limits you have set yourselves.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Che cosa decide', en: 'What it decides' },
+    d: {
+      it: 'Una cosa sola, per quella persona, in quel momento.',
+      en: 'One single thing, for that person, at that moment.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'Che cosa emette', en: 'What it emits' },
+    d: {
+      it: 'Il canale, il momento e la frequenza. Chi esegue resta chi esegue oggi.',
+      en: 'The channel, the timing and the frequency. Whoever executes today keeps executing.',
+    },
+  },
+];
+
+/* Slide 3 — i due punti aperti. Si dicono PRIMA: un vincolo dichiarato da noi
+   vale molto più dello stesso vincolo scoperto dal loro IT fra un mese. */
+const daVerificare = [
+  {
+    n: '01',
+    t: { it: 'Dove vive il profilo', en: 'Where the profile lives' },
+    d: {
+      it: 'La decisione legge il profilo dove il profilo sta. Se la base dati è altrove, la strada esiste e va disegnata su una vostra architettura, non su uno schema generico.',
+      en: 'The decision reads the profile where the profile sits. If the data foundation is elsewhere, there is a route and it has to be drawn on your architecture, not on a generic diagram.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Il tempo fra decisione e canale', en: 'The time between decision and channel' },
+    d: {
+      it: 'Fra il momento in cui si decide e il momento in cui il canale esegue passa del tempo. Quanto, dipende dal percorso che fa il dato: si misura su un caso vostro, non in astratto.',
+      en: 'Time passes between the moment of the decision and the moment the channel acts. How much depends on the path the data takes: it is measured on a case of yours, not in the abstract.',
+    },
+  },
+];
+
+/* Slide 4 — come si prova. Tre condizioni, nessuna delle quali è un numero
+   contrattuale: quelle non stanno in un documento che gira. */
+const comeSiProva = [
+  {
+    n: '01',
+    t: { it: 'Un caso solo, scelto da voi', en: 'One case, chosen by you' },
+    d: {
+      it: 'Accanto a quelli che girano oggi, non al posto loro. Così il confronto è leggibile e nessuno smonta niente per provare.',
+      en: 'Alongside the ones running today, not instead of them. That way the comparison is readable and nothing gets dismantled to run a test.',
+    },
+  },
+  {
+    n: '02',
+    t: { it: 'Una misura concordata prima', en: 'A measure agreed up front' },
+    d: {
+      it: 'Che cosa guardiamo per dire che ha funzionato si scrive all’inizio. Deciderlo dopo vuol dire deciderlo guardando il risultato.',
+      en: 'What we look at to call it a success is written down at the start. Deciding afterwards means deciding while looking at the result.',
+    },
+  },
+  {
+    n: '03',
+    t: { it: 'Chi lo porta a terra', en: 'Who makes it land' },
+    d: {
+      it: 'Un partner che conosce la vostra architettura, accanto alle vostre persone. Su un’integrazione di questa forma non è un dettaglio organizzativo.',
+      en: 'A partner who knows your architecture, next to your people. On an integration of this shape that is not an organisational detail.',
+    },
+  },
+];
+---
+<BaseLayout
+  title="Decidere che cosa arriva — l’affondo"
+  description="L’affondo sul decisioning: dove si innesta, che cosa legge e che cosa decide, i due punti da verificare su un’architettura vera, e come si prova senza spostare niente."
+  preloadImage={bgInnesto.src}
+>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <IsuNavigation currentPath={currentPath} base={base} />
+  </div>
+
+  {/* Le due frecce portano entrambe alla slide da cui si è scesi: un ramo non
+      ha un «dopo» nel racconto, ha un ritorno. */}
+  <DeckContainer wallScale nextHref={href(base, RITORNO)} prevHref={href(base, RITORNO)}>
+
+    <!-- ── 1 · La posizione ──────────────────────────────────────────────── -->
+    <Slide id="slide-posizione" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgInnesto.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Affondo · decidere che cosa arriva" en="Deep dive · deciding what reaches whom" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Uno strato in più, non un’architettura nuova"
+          en="One more layer, not a new architecture"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <T
+          as="p"
+          class="isu-lead mb-7 mx-auto"
+          it="L’arbitro si mette davanti al cliente, dove oggi arrivano più proposte insieme. Dietro di lui non cambia niente."
+          en="The arbiter sits in front of the customer, where several proposals arrive together today. Behind it, nothing changes."
+        />
+
+        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
+          {posizione.map((p) => (
+            <li role="listitem" class="isu-q h-full min-w-0">
+              <span class="isu-q-n" aria-hidden="true">{p.n}</span>
+              <T as="h3" class="isu-col-title" it={p.t.it} en={p.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={p.d.it} en={p.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <IsuFonte of={['aiDecisioning']} />
+      </div>
+    </Slide>
+
+    <!-- ── 2 · Che cosa legge, che cosa decide ───────────────────────────── -->
+    <Slide id="slide-flusso" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Affondo · che cosa fa, in concreto" en="Deep dive · what it actually does" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Che cosa legge, che cosa decide"
+          en="What it reads, what it decides"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
+          {flusso.map((f) => (
+            <li role="listitem" class="isu-q h-full min-w-0">
+              <span class="isu-q-n" aria-hidden="true">{f.n}</span>
+              <T as="h3" class="isu-col-title" it={f.t.it} en={f.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={f.d.it} en={f.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-note mx-auto"
+          it="AI decisioning è un modulo di Journey Optimizer: si attiva dentro quella licenza, non da solo. Si dice adesso perché è il genere di cosa che, scoperta dopo, costa una riunione."
+          en="AI decisioning is a module of Journey Optimizer: it is switched on inside that licence, not on its own. We say it now because this is the kind of thing that, found out later, costs a meeting."
+        />
+        <IsuFonte
+          of={['aiDecisioning']}
+          interne={[{
+            it: 'Verifica con il prodotto Adobe, 13 ottobre 2026 · fonte interna, senza link',
+            en: 'Checked with Adobe product, 13 October 2026 · internal source, no link',
+          }]}
+          class="mt-2"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── 3 · I due punti aperti ────────────────────────────────────────── -->
+    <Slide id="slide-verifiche" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgViaggio.src})`}></div>
+      <div class="isu-wrap max-w-6xl">
+        <T as="p" class="slide-eyebrow" it="Affondo · quello che non sappiamo ancora" en="Deep dive · what we do not know yet" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          it="Due cose da verificare su un’architettura vera"
+          en="Two things to check against a real architecture"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-2 auto-rows-fr mb-7 w-full" role="list">
+          {daVerificare.map((v) => (
+            <li role="listitem" class="isu-q h-full min-w-0">
+              <span class="isu-q-n" aria-hidden="true">{v.n}</span>
+              <T as="h3" class="isu-col-title" it={v.t.it} en={v.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={v.d.it} en={v.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T
+          as="p"
+          class="isu-ask mx-auto"
+          it="Sono le prime due domande di un tavolo tecnico, non le ultime."
+          en="These are the first two questions for a technical session, not the last."
+        />
+      </div>
+    </Slide>
+
+    <!-- ── 4 · Come si prova ─────────────────────────────────────────────── -->
+    <Slide id="slide-prova-decisioning" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgPercorso.src})`}></div>
+      <div class="isu-wrap max-w-7xl">
+        <T as="p" class="slide-eyebrow" it="Affondo · come si prova" en="Deep dive · how it gets tested" />
+        <T
+          as="h2"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
+          it="Si prova senza spostare niente"
+          en="It gets tested without moving anything"
+        />
+        <hr class="isu-rule mx-auto" />
+
+        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
+          {comeSiProva.map((c) => (
+            <li role="listitem" class="isu-q h-full min-w-0">
+              <span class="isu-q-n" aria-hidden="true">{c.n}</span>
+              <T as="h3" class="isu-col-title" it={c.t.it} en={c.t.en} />
+              <T as="p" class="isu-col-sub mt-1.5" it={c.d.it} en={c.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        {/* La domanda competitiva è aperta anche per noi, e si porta come
+            domanda. Farsela fare dal cliente è peggio che farla. */}
+        <T
+          as="p"
+          class="isu-ask mx-auto"
+          it="Che cosa continua a decidere quello che avete già, quando davanti al cliente c’è un arbitro solo?"
+          en="What keeps being decided by what you already have, once a single arbiter sits in front of the customer?"
+        />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

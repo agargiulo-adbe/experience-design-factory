@@ -29,15 +29,31 @@ interface Stop {
 }
 interface Props {
   stops: Stop[];
+  /**
+   * I due capi del flusso: da dove entra il lavoro e dove esce.
+   * Esiste perché chi compra questa filiera non compra tre pilastri di
+   * prodotto, compra il suo PROCESSO — «dal brief alla delivery», parole
+   * della revisione del 20 ott 2026. Le tre tappe restano i pilastri
+   * dichiarati dal prodotto e non diventano quattro: i capi stanno fuori
+   * dal binario, come etichette di ingresso e uscita.
+   */
+  span?: { da: Bilingual; a: Bilingual };
   /** Il binario trasversale: che cosa regge tutte le tappe. */
   rail: { k: Bilingual; t: Bilingual };
   /** Didascalia della freccia di ritorno. */
   back: Bilingual;
   class?: string;
 }
-const { stops, rail, back, class: className } = Astro.props as Props;
+const { stops, rail, back, span, class: className } = Astro.props as Props;
 ---
 <div class:list={['isu-pipe', className]}>
+  {span && (
+    <div class="isu-pipe-span" aria-hidden="true">
+      <T as="span" class="isu-pipe-span-k" it={span.da.it} en={span.da.en} />
+      <span class="isu-pipe-span-line"></span>
+      <T as="span" class="isu-pipe-span-k" it={span.a.it} en={span.a.en} />
+    </div>
+  )}
   <ol class="isu-pipe-track" role="list">
     {stops.map((s) => (
       <li class="isu-pipe-stop" role="listitem">

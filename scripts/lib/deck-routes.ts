@@ -138,6 +138,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'apertura', route: '/experience-design-factory/intesa-scala-umana/apertura/' },
     { name: 'domanda',  route: '/experience-design-factory/intesa-scala-umana/domanda/' },
     { name: 'idee',     route: '/experience-design-factory/intesa-scala-umana/idee/' },
+    { name: 'decisioning', route: '/experience-design-factory/intesa-scala-umana/decisioning/' },
     { name: 'rotta',    route: '/experience-design-factory/intesa-scala-umana/rotta/' },
     { name: 'exec',     route: '/experience-design-factory/intesa-scala-umana/exec/' },
   ],

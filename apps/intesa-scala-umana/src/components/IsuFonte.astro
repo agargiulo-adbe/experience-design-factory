@@ -25,15 +25,29 @@
  */
 import { SOURCES, type SourceKey } from '../data/sources';
 
+interface Interna {
+  it: string;
+  en: string;
+}
+
 interface Props {
-  /** Le chiavi dei documenti citati, nell'ordine in cui vanno letti. */
-  of: SourceKey[];
+  /** Le chiavi dei documenti PUBBLICI citati, nell'ordine in cui vanno letti. */
+  of?: SourceKey[];
+  /**
+   * Le fonti che NON sono pubbliche — una verifica fatta da noi, un documento
+   * di lavoro, una risposta del prodotto. Si citano dicendo che cosa sono e
+   * senza link, perché un link che non si può aprire è peggio di nessun link.
+   * Stanno nella stessa riga delle altre: una fonte è una fonte, e scriverle
+   * a mano fuori dal componente è il modo in cui si finisce con due forme
+   * diverse nello stesso deck (successo: la riga centrata dell'affondo).
+   */
+  interne?: Interna[];
   class?: string;
 }
 
-const { of, class: klass = '' } = Astro.props;
+const { of = [], interne = [], class: klass = '' } = Astro.props;
 const voci = of.map((k) => SOURCES[k]);
-const molte = voci.length > 1;
+const molte = voci.length + interne.length > 1;
 ---
 <p class:list={['isu-note', 'isu-src', 'ex-src', klass]}>
   <span class="isu-src-k">
@@ -44,6 +58,11 @@ const molte = voci.length > 1;
       <a class="isu-src-a" href={v.url} target="_blank" rel="noopener noreferrer">
         <span data-lang-it>{v.label.it}</span><span data-lang-en>{v.label.en}</span>
       </a>
+    ))}
+    {interne.map((v) => (
+      <span class="isu-src-i">
+        <span data-lang-it>{v.it}</span><span data-lang-en>{v.en}</span>
+      </span>
     ))}
   </span>
 </p>
