@@ -86,8 +86,8 @@ export const SOURCES = {
   },
   cjaUpgrade: {
     label: {
-      it: 'Adobe Experience League, passaggio a Customer Journey Analytics, aggiornata il 28 settembre 2026',
-      en: 'Adobe Experience League, upgrade to Customer Journey Analytics, updated 28 September 2026',
+      it: 'Adobe Experience League, passaggio a Customer Journey Analytics, aggiornata il 16 ottobre 2026',
+      en: 'Adobe Experience League, upgrade to Customer Journey Analytics, updated 16 October 2026',
     },
     short: 'experienceleague.adobe.com',
     url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations',

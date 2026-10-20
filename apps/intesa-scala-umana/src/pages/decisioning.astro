@@ -9,17 +9,25 @@ import { href } from '@edf/core/utils/url.js';
 import bgInnesto from '../assets/generated/bg/dark-innesto.jpg';
 import bgLettura from '../assets/generated/bg/light-lettura.jpg';
 import bgViaggio from '../assets/generated/bg/dark-viaggio.jpg';
-import bgPercorso from '../assets/generated/bg/light-percorso.jpg';
 
 /**
- * L'AFFONDO SUL DECISIONING — quattro slide fuori dal percorso.
+ * L'AFFONDO SUL DECISIONING — tre slide fuori dal percorso.
  *
  * PERCHÉ ESISTE. In revisione (20 ott 2026) è arrivata due volte la stessa
  * richiesta: «preparati dell'extra materiale a supporto per il decisioning,
  * che magari neanche apriamo». La ragione è precisa, ed è la parte che vale:
  * un affondo su quello che facciamo ogni giorno si improvvisa a voce, questo
  * no — e se la domanda arriva in riunione, dieci minuti di ricostruzione a
- * braccio valgono meno di quattro slide già pronte.
+ * braccio valgono meno di tre slide già pronte.
+ *
+ * PERCHÉ TRE E NON QUATTRO. Il primo giro ne aveva quattro, e le prime due
+ * erano il diagramma della slide madre riscritto in prosa: «quello che resta
+ * / si aggiunge un arbitro» È la colonna «resta dov'è → decide qui», e «che
+ * cosa legge / decide / emette» SONO «ordina · filtra · mette il tetto». Più
+ * pagine non è più profondità, e un affondo che ripete non si apre due volte.
+ * Quello che era stato chiesto non erano le meccaniche: era «perché Adobe
+ * decisioning», da dire su due piedi. Quindi qui sta solo ciò che la slide
+ * madre NON dice.
  *
  * PERCHÉ FUORI DAL PERCORSO. Non è un capitolo: è un ramo. Sta fuori da
  * `CHAPTERS`, quindi non compare nella barra — le voci della barra sono
@@ -44,60 +52,33 @@ const currentPath = Astro.url.pathname;
 /** Si torna da dove si è venuti: la slide che apre l'affondo. */
 const RITORNO = 'idee/#slide-decisioning';
 
-/* Slide 1 — la posizione. Tre colonne, e la terza è quella che conta:
-   dire che cosa NON si tocca vale più di due righe su che cosa si aggiunge. */
-const posizione = [
+/* Slide A — l'argomento, non le meccaniche. Tre cose che il diagramma della
+   slide madre non può dire, e la seconda è quella che disinnesca l'obiezione
+   di chi possiede un motore suo: l'arbitro è l'ULTIMO anello, non un motore
+   in più. Detto da noi prima che lo pensi lui. */
+const perche = [
   {
     n: '01',
-    t: { it: 'Quello che c’è resta', en: 'What is there stays' },
+    t: { it: 'Un tetto che vale davvero', en: 'A cap that actually holds' },
     d: {
-      it: 'I motori che oggi assegnano punteggi e priorità continuano a farlo, dove sono e come sono.',
-      en: 'The engines that score and prioritise today keep doing it, where they are and as they are.',
+      it: 'Quando decidono più sistemi, il limite di contatto vive dentro ciascuno. Sommati non fanno un limite. Un arbitro solo lo applica una volta, sui canali che passano dalla piattaforma: email, app, push, SMS, web, posta. Fuori restano filiale, contact center e ATM.',
+      en: 'When several systems decide, the contact limit lives inside each one. Added up they are not a limit. A single arbiter applies it once, across the channels that run through the platform: email, app, push, SMS, web, direct mail. Branch, contact centre and ATM stay outside.',
     },
   },
   {
     n: '02',
-    t: { it: 'Si aggiunge un arbitro', en: 'An arbiter is added' },
+    t: { it: 'Chi propone continua a proporre', en: 'Whoever proposes keeps proposing' },
     d: {
-      it: 'Davanti al cliente arriva una cosa sola: l’arbitro sceglie fra le proposte che i sistemi di oggi gli passano.',
-      en: 'One single thing reaches the customer: the arbiter picks among the proposals today’s systems hand over.',
+      it: 'L’arbitro è l’ultimo anello, non un motore in più. I motori che avete scelgono che cosa proporre; lui sceglie quale delle proposte esce adesso.',
+      en: 'The arbiter is the last link, not one more engine. Your engines choose what to propose; it chooses which proposal goes out now.',
     },
   },
   {
     n: '03',
-    t: { it: 'Non si rifà niente', en: 'Nothing is rebuilt' },
+    t: { it: 'Si attiva dentro Journey Optimizer', en: 'It switches on inside Journey Optimizer' },
     d: {
-      it: 'Nessuna regola esistente viene riscritta per far entrare questo strato. Se va riscritta, non è questo lo strumento.',
-      en: 'No existing rule is rewritten to make room for this layer. If one has to be, this is not the right tool.',
-    },
-  },
-];
-
-/* Slide 2 — che cosa entra, che cosa esce. La colonna di mezzo è volutamente
-   povera di parole: la decisione è UNA, e si vede che è una. */
-const flusso = [
-  {
-    n: '01',
-    t: { it: 'Che cosa legge', en: 'What it reads' },
-    d: {
-      it: 'I punteggi dei modelli che avete già, le preferenze e i consensi della persona, i vincoli di contatto che vi siete dati.',
-      en: 'The scores from the models you already have, the person’s preferences and consents, the contact limits you have set yourselves.',
-    },
-  },
-  {
-    n: '02',
-    t: { it: 'Che cosa decide', en: 'What it decides' },
-    d: {
-      it: 'Una cosa sola, per quella persona, in quel momento.',
-      en: 'One single thing, for that person, at that moment.',
-    },
-  },
-  {
-    n: '03',
-    t: { it: 'Che cosa emette', en: 'What it emits' },
-    d: {
-      it: 'Il canale, il momento e la frequenza. Chi esegue resta chi esegue oggi.',
-      en: 'The channel, the timing and the frequency. Whoever executes today keeps executing.',
+      it: 'Non si compra da sé: vive dentro Journey Optimizer e si licenzia come modulo sopra di lui. Lo diciamo adesso perché, scoperto dopo, costa una riunione.',
+      en: 'It is not bought on its own: it lives inside Journey Optimizer and is licensed as a module on top of it. We say it now because, found out later, it costs a meeting.',
     },
   },
 ];
@@ -165,28 +146,21 @@ const comeSiProva = [
       ha un «dopo» nel racconto, ha un ritorno. */}
   <DeckContainer wallScale nextHref={href(base, RITORNO)} prevHref={href(base, RITORNO)}>
 
-    <!-- ── 1 · La posizione ──────────────────────────────────────────────── -->
-    <Slide id="slide-posizione" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+    <!-- ── 1 · Perché un arbitro, e perché questo ───────────────────────── -->
+    <Slide id="slide-perche" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgInnesto.src})`}></div>
       <div class="isu-wrap max-w-7xl">
-        <T as="p" class="slide-eyebrow" it="Affondo · decidere che cosa arriva" en="Deep dive · deciding what reaches whom" />
+        <T as="p" class="slide-eyebrow" it="Affondo · perché un arbitro solo" en="Deep dive · why a single arbiter" />
         <T
           as="h2"
           class="isu-title mt-3 text-[var(--ink-inverse)]"
-          it="Uno strato in più, non un’architettura nuova"
-          en="One more layer, not a new architecture"
+          it="Quello che un motore da solo non può fare"
+          en="What one engine alone cannot do"
         />
         <hr class="isu-rule mx-auto" />
 
-        <T
-          as="p"
-          class="isu-lead mb-7 mx-auto"
-          it="L’arbitro si mette davanti al cliente, dove oggi arrivano più proposte insieme. Dietro di lui non cambia niente."
-          en="The arbiter sits in front of the customer, where several proposals arrive together today. Behind it, nothing changes."
-        />
-
         <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
-          {posizione.map((p) => (
+          {perche.map((p) => (
             <li role="listitem" class="isu-q h-full min-w-0">
               <span class="isu-q-n" aria-hidden="true">{p.n}</span>
               <T as="h3" class="isu-col-title" it={p.t.it} en={p.t.en} />
@@ -195,58 +169,24 @@ const comeSiProva = [
           ))}
         </ul>
 
-        <IsuFonte of={['aiDecisioning']} />
-      </div>
-    </Slide>
-
-    <!-- ── 2 · Che cosa legge, che cosa decide ───────────────────────────── -->
-    <Slide id="slide-flusso" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
-      <div class="isu-wrap max-w-7xl">
-        <T as="p" class="slide-eyebrow" it="Affondo · che cosa fa, in concreto" en="Deep dive · what it actually does" />
-        <T
-          as="h2"
-          class="isu-title mt-3 text-[var(--ink-primary)]"
-          it="Che cosa legge, che cosa decide"
-          en="What it reads, what it decides"
-        />
-        <hr class="isu-rule mx-auto" />
-
-        <ul class="grid gap-x-7 gap-y-6 sm:grid-cols-3 auto-rows-fr mb-7 w-full" role="list">
-          {flusso.map((f) => (
-            <li role="listitem" class="isu-q h-full min-w-0">
-              <span class="isu-q-n" aria-hidden="true">{f.n}</span>
-              <T as="h3" class="isu-col-title" it={f.t.it} en={f.t.en} />
-              <T as="p" class="isu-col-sub mt-1.5" it={f.d.it} en={f.d.en} />
-            </li>
-          ))}
-        </ul>
-
-        <T
-          as="p"
-          class="isu-note mx-auto"
-          it="AI decisioning è un modulo di Journey Optimizer: si attiva dentro quella licenza, non da solo. Si dice adesso perché è il genere di cosa che, scoperta dopo, costa una riunione."
-          en="AI decisioning is a module of Journey Optimizer: it is switched on inside that licence, not on its own. We say it now because this is the kind of thing that, found out later, costs a meeting."
-        />
         <IsuFonte
           of={['aiDecisioning']}
           interne={[{
             it: 'Verifica con il prodotto Adobe, 13 ottobre 2026 · fonte interna, senza link',
             en: 'Checked with Adobe product, 13 October 2026 · internal source, no link',
           }]}
-          class="mt-2"
         />
       </div>
     </Slide>
 
-    <!-- ── 3 · I due punti aperti ────────────────────────────────────────── -->
-    <Slide id="slide-verifiche" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgViaggio.src})`}></div>
+    <!-- ── 2 · I due punti aperti ────────────────────────────────────────── -->
+    <Slide id="slide-verifiche" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg isu-bg--light" style={`--bg-src: url(${bgLettura.src})`}></div>
       <div class="isu-wrap max-w-6xl">
         <T as="p" class="slide-eyebrow" it="Affondo · quello che non sappiamo ancora" en="Deep dive · what we do not know yet" />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-inverse)]"
+          class="isu-title mt-3 text-[var(--ink-primary)]"
           it="Due cose da verificare su un’architettura vera"
           en="Two things to check against a real architecture"
         />
@@ -271,14 +211,14 @@ const comeSiProva = [
       </div>
     </Slide>
 
-    <!-- ── 4 · Come si prova ─────────────────────────────────────────────── -->
-    <Slide id="slide-prova-decisioning" bg="secondary" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="isu-bg isu-bg--light isu-bg--veil" style={`--bg-src: url(${bgPercorso.src})`}></div>
+    <!-- ── 3 · Come si prova ─────────────────────────────────────────────── -->
+    <Slide id="slide-prova-decisioning" bg="inverse" align="center" data-made-with="Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="isu-bg" style={`--bg-src: url(${bgViaggio.src})`}></div>
       <div class="isu-wrap max-w-7xl">
         <T as="p" class="slide-eyebrow" it="Affondo · come si prova" en="Deep dive · how it gets tested" />
         <T
           as="h2"
-          class="isu-title mt-3 text-[var(--ink-primary)]"
+          class="isu-title mt-3 text-[var(--ink-inverse)]"
           it="Si prova senza spostare niente"
           en="It gets tested without moving anything"
         />

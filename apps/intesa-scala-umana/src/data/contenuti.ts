@@ -93,12 +93,12 @@ export const STRATI: Strato[] = [
     kind: 'base',
     t: { it: 'Quello che avete già', en: 'What you already have' },
     s: {
-      it: 'Analytics, già in uso e già in cloud · Experience Manager e Forms, oggi dentro la banca',
-      en: 'Analytics, already in use and already in the cloud · Experience Manager and Forms, today inside the bank',
+      it: 'Analytics, già in uso · Experience Manager e Forms, oggi dentro la banca',
+      en: 'Analytics, already in use · Experience Manager and Forms, today inside the bank',
     },
     sBreve: {
-      it: 'Analytics, già in uso e già in cloud · Experience Manager e Forms, dentro la banca',
-      en: 'Analytics, already in use and in the cloud · Experience Manager and Forms, inside the bank',
+      it: 'Analytics, già in uso · Experience Manager e Forms, dentro la banca',
+      en: 'Analytics, already in use · Experience Manager and Forms, inside the bank',
     },
   },
   {
@@ -118,8 +118,8 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. Senza rifare nulla di quello che c’è',
-      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. Without redoing any of it',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. I modelli restano dove sono; cambia chi dà la risposta finale',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. The models stay where they are; what changes is who gives the final answer',
     },
     sBreve: {
       it: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già',
@@ -258,12 +258,12 @@ export const OBIETTIVI: Obiettivo[] = [
     cifra: { it: '2,5 mln', en: '2.5m' },
     cosa: { it: 'clienti netti in più', en: 'net new customers' },
     ctx: {
-      it: 'nell’arco del Piano d’Impresa 2026-2029',
-      en: 'over the 2026-2029 Business Plan',
+      it: 'nell’arco del Piano d’Impresa 2026-2029 · principalmente via isybank e banche estere, dice il piano',
+      en: 'over the 2026-2029 Business Plan · mainly through isybank and the International Banks, the plan says',
     },
     lettura: {
-      it: 'Sono clienti che oggi non vi conoscono, e su quei canali la prima risposta su di voi non la date voi.',
-      en: 'These are customers who do not know you today, and on those channels the first answer about you is not yours to give.',
+      it: 'Il numero cresce soprattutto altrove. Che cosa chiede alla Divisione, una crescita che passa da lì?',
+      en: 'The number grows mostly elsewhere. What does growth that runs through there ask of the Division?',
     },
   },
   /* ORDINE. Il cloud stava qui e adesso sta in terza. Non è un gusto: dei tre
@@ -302,8 +302,8 @@ export const OBIETTIVI: Obiettivo[] = [
       en: 'by 2029, from 64% at end-2025, within €4.6bn of IT investment',
     },
     lettura: {
-      it: 'Dentro quel 100% ci sono anche i sistemi che gestiscono contenuti e moduli: la scelta su di loro si fa in questa finestra, non dopo.',
-      en: 'Inside that 100% sit the systems that run content and forms: the choice about them is made in this window, not after.',
+      it: 'Dentro quel 100% ci sono anche i sistemi che gestiscono contenuti e moduli. Se si spostano, cambia il tempo con cui una campagna va in aria.',
+      en: 'Inside that 100% sit the systems that run content and forms. If they move, the time it takes a campaign to go live changes.',
     },
   },
 ];
@@ -343,6 +343,20 @@ export const AGGANCIO: Bilingue = {
   en: 'We are at this table with Accenture. Before proposing anything, this is how we see you from outside.',
 };
 
+/* ── Il titolo della slide ─────────────────────────────────────────────────
+   Era «Tre obiettivi del vostro piano». Non reggeva: i 20 miliardi alle
+   piccole imprese NON sono un obiettivo del Piano d'Impresa 2026-2029, sono
+   un piano commerciale annunciato otto mesi dopo, l'8 ottobre, dalla
+   Divisione. Il titolo metteva sotto un'unica etichetta due documenti di
+   natura diversa — e la riga piccola della carta, che dice il vero, lo
+   contraddiceva. In una stanza dove due persone conoscono quel piano meglio
+   di chi presenta, era l'unico punto del primo capitolo che invitava a
+   essere contraddetti sul merito. */
+export const TITOLO_OBIETTIVI: Bilingue = {
+  it: 'Tre cose che avete dichiarato quest’anno',
+  en: 'Three things you stated this year',
+};
+
 /* ── La domanda sugli obiettivi ────────────────────────────────────────────
    «Gli obiettivi ce li facciamo raccontare da loro» è la regia giusta: una
    slide che ELENCA gli obiettivi di chi ascolta è una lezione, la stessa slide
@@ -368,6 +382,6 @@ export const DOMANDA_LETTURA: Bilingue = {
    due versioni diverse della richiesta sono il modo più rapido di sembrare
    confusi. */
 export const ASK: Bilingue = {
-  it: 'Un tavolo in due: voi un referente, due casi e una data. Noi le persone, la piattaforma e la risposta scritta.',
-  en: 'A table for two: you bring a contact, two cases and a date. We bring the people, the platform and the written answer.',
+  it: 'Un tavolo in due tempi. Prima mezza giornata con contenuto e campagne, che convocate voi. Accanto, per iscritto, che cosa ci serve da dati e da targeting e per quante ore.',
+  en: 'A table in two steps. First a half-day with content and campaigns, which you convene. Alongside it, in writing, what we need from data and targeting and for how many hours.',
 };

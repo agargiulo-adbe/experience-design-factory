@@ -62,8 +62,8 @@ export const CHAPTERS: Chapter[] = [
     num: '03',
     label: { it: 'Le idee', en: 'The ideas' },
     lead: {
-      it: 'Dove ci appoggiamo su quello che avete già, e una banca che ha fatto la stessa strada.',
-      en: 'Where we build on what you already have, and a bank that walked the same road.',
+      it: 'Dove ci appoggiamo su quello che avete già, e una banca che ne ha percorso una parte.',
+      en: 'Where we build on what you already have, and a bank that walked part of it.',
     },
   },
   {
@@ -71,8 +71,8 @@ export const CHAPTERS: Chapter[] = [
     num: '04',
     label: { it: 'La rotta', en: 'The route' },
     lead: {
-      it: 'Tre passi, e la richiesta: un referente, due casi, una data.',
-      en: 'Three steps, and the ask: one contact, two cases, one date.',
+      it: 'Tre passi, e la richiesta: i referenti di contenuto, dati e targeting, due casi, una data.',
+      en: 'Three steps, and the ask: the content, data and targeting contacts, two cases, one date.',
     },
   },
 ];
