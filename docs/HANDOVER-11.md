@@ -1,4 +1,4 @@
-# Handover — Parte 11 di 17
+# Handover — Parte 11 di 18
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -244,6 +244,28 @@ slide: tagliata la copia e poi **diviso**, mai rimpicciolito il tipo.
 Copy» è de relato e **non verificato**): prima cosa per il tavolo tecnico col partner.
 L'architettura reale della referenza, per reggere il «come». E un **conflitto di date**
 registrato nel dossier: un verbale del 9 ott dice 23, il resto dice 22 — confermato 22.
+
+### 33.10 Il 20 ottobre — la revisione, l'ordine degli obiettivi, e l'affondo sul decisioning
+
+Revisione con l'AE e il lead della patch, **dal parlato e non dal riassunto automatico**: quello diceva «incontro del 21 ottobre» e sbagliava. Il calendario dice **giovedì 22 ottobre alle 16:00 su Teams**, invito del cliente; il «domani» ripetuto in call è l'evento del 21 (AI Forum), sovrapposto parlando. È la seconda volta su questa experience che il riassunto automatico introduce un fatto falso: la regola «si riascolta, non si riassume» vale anche quando costa tempo.
+
+**L'ordine dei tre obiettivi cambia.** Il cloud scende in terza: dei tre, due si giocano su quello che il cliente legge e il cloud no, quindi è il più lontano dalla conversazione. I 20 miliardi salgono in seconda, perché sono notizia dell'8 ottobre e sono l'obiettivo che si attacca al contenuto.
+
+**La cifra fa il lavoro che faceva la frase** (`171eb5d`). La slide era tre periodi in grassetto più una nota di trentaquattro parole che spiegava i corpi del carattere («in grande… in piccolo…») — una cosa vera nel posto sbagliato, e **falsa al primo riflow**, perché su telefono i due corpi quasi coincidono. Adesso la distinzione fra la loro parola e la nostra lettura è un'etichetta attaccata alla riga che qualifica, sopra un filetto che sta alla **stessa quota** nelle tre colonne. Il filetto è in **subgrid**: con `margin-top: auto` si allineava il fondo, e bastava una riga di lettura in meno per sfalsarlo di 26px a 1280. Da ~170 parole a ~60. Bilingue nella cifra, perché «2,5 mln» in inglese è «2.5m» e una virgola decimale in una slide inglese si legge come errore di battitura.
+
+**Le fonti.** I tre obiettivi citavano due documenti e non se ne poteva aprire nessuno; i 20 miliardi erano affermati con la data dell'8 ottobre e **nessun documento, da nessuna parte**. Il comunicato della Divisione Banca dei Territori è stato trovato e verificato — conferma importo, settori e data — e porta le «circa 800.000 piccole e piccolissime aziende clienti della Divisione», che sta al posto di un vago «centinaia di migliaia». Nasce **`IsuFonte`**: un componente solo, etichetta, una citazione per riga, e **la citazione è il link**. La classe `ex-src` non è cosmetica: senza, `audit:fonti` su questa app non vedeva nessuna riga di fonte. Con `40d50ba` il componente impara anche le **fonti non pubbliche**, che si citano dicendo che cosa sono e senza link: scritte a mano fuori dal componente uscivano centrate, con una forma diversa dalle altre nello stesso deck.
+
+**Tre righe che passavano i gate e non dicevano niente** (`6299f6d`). I gate cercano **segni** — frasi lunghe, subordinate, em-dash — non il vuoto e non il falso, e tutte e tre uscivano con 0 HARD. (a) «La rotta è decisa e tocca anche contenuti e moduli»: un piano cloud non tocca i contenuti, tocca i **sistemi che li gestiscono**, ed è il gancio su cui pende metà del deck — «quello che gestisce» era stato amputato per far scendere il conteggio parole, cioè **tagliato per lunghezza e non per dire meglio**. (b) «Si parla a chi non vi conosce ancora» aveva perso il soggetto e il legame causale con la cifra sopra: adesso sono clienti, e sono i loro. (c) «Tutti e tre passano da quello che il cliente legge» era **falso sul secondo**, perché il 100% in cloud è un obiettivo di infrastruttura: un tricolon forzato che in sala il CDO smonta in due secondi, e da lì in poi non crede più nemmeno agli altri due.
+
+**L'affondo sul decisioning** (`40d50ba`, `src/pages/decisioning.astro`): quattro slide, **rotta a sé fuori dai capitoli**, a un clic dalla slide che lo riguarda. Nasce da una richiesta arrivata due volte in call — «preparati dell'extra materiale, che magari neanche apriamo». Dentro: la posizione (uno strato in più, e la colonna che conta dice che cosa **non** si tocca), che cosa legge e che cosa decide, i due punti da verificare su un'architettura vera, come si prova senza spostare niente. Chiude sulla domanda competitiva che il registro segna come aperta. **Fuori, deliberatamente**: la leva commerciale discussa in call — non è confermata per iscritto, e un documento che il cliente può girare non è il posto dove scriverla (voce P1 nel backlog, §10 Parte 2).
+
+**La filiera** porta i due capi, dal brief alla pubblicazione, perché chi compra quel pezzo non compra tre pilastri di prodotto, compra il suo processo. Le tre tappe restano i pilastri dichiarati: i capi stanno **fuori dal binario**, non diventano una quarta tappa. **Meno scritto**: via l'apertura retorica che il gate segnalava da sola e sei periodi oltre le 28 parole spezzati; «contenuto» adesso dice che comincia dalle **risposte degli assistenti** e non dalle immagini, perché in call il rilievo era esattamente quello — lei legge «contenuto» e pensa alle figure.
+
+**Gate, nei tre commit**: `audit:deck` 0 HARD (88 slide-viewport nell'ultimo giro, soft a 38→36 e i 19→14) · `audit:ink` PULITO su 316 blocchi · `audit:fonti` nessun link rotto · `audit:wrap` PULITO, con due a capo nuovi trovati e legati · `audit:taglio` ALLINEATO · `copy-audit` 0 HARD su 450 stringhe, SOFT 32→21.
+
+⚠️ **Il panel continua a non esistere** su questa experience, ed è la voce P0 più vecchia del backlog: il deck di oggi non è quello di cui parlavano gli aggiornamenti precedenti, e l'incontro è il 22.
+
+---
 
 ## 34. Il motore unico dei dossier (6 ott 2026)
 

@@ -1,4 +1,4 @@
-# Handover — Parte 16 di 17
+# Handover — Parte 16 di 18
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -270,6 +270,33 @@ su 349 blocchi · `audit:taglio` **ALLINEATO** · le slide toccate lette a 1920.
 ⚠️ **Il verdetto del panel resta quello del 12 ottobre** e da allora il deck è cambiato molto: un
 capitolo riscritto, quattro card nuove, due canali del cliente nominati per la prima volta, un
 prodotto nominato e un argomento ribaltato. Gate `/handover` 3.4: voce nel backlog.
+
+---
+
+### 37.12 Il 20 ottobre — ogni idea dice con che cosa si fa, e la trascrizione corregge il deck
+
+Due giri nello stesso giorno: il primo applica il feedback raccolto **dopo** la presentazione (`8ee387a`), il secondo nasce dal riascolto integrale della call (`4269b4a`).
+
+**L'apertura citava il 2025.** La seconda slide del primo capitolo stava ancora sul TTG dell'ottobre 2025 — il 96% del territorio, il 75% sul 4% — mentre le due dopo erano già sul TTG di quest'anno. Aprire un documento del 2026 con la dichiarazione dell'anno prima si fa rispondere «quello lo dicevamo allora». Ora porta le sue parole del **15 ottobre 2026**, verificate sull'articolo: la parola dell'anno e, soprattutto, dove dice di investire — i **canali digitali diretti**, che è poi il motivo per cui questo deck esiste.
+
+**«Che cosa serve, concretamente» su ogni idea.** Sei blocchi, **lo stesso titolo ovunque** perché si impari una volta sola dove guardare, dentro il drill-down così la slide regge anche chiusa (componente `CheServe.astro`). La legenda ha **tre stati e non due**: l'accordo quadro, arrivato quella mattina, ha una sezione che fissa il prezzo di prodotti **non ancora acquistati** — dire «si aggiunge» di qualcosa che ha già il suo prezzo nel loro contratto sarebbe falso in difetto. Letto sul contratto e non a memoria: Firefly arriva con le postazioni Creative Cloud che hanno già, Workfront ha il prezzo bloccato.
+
+**La data collaboration ha una slide sua.** Stava in una riga di fonte, in fondo, dopo i link: «non è chiaro dove si innesta» era un rilievo giusto. Ora dice le due cose che uno si chiede — dove sta nel percorso e dove nei sistemi. **Il lavoro agentico** entra nel capitolo del contenuto con Firefly e Workfront oltre ai tre prodotti; il paragrafo lì dentro era **bianco su fondo chiaro** perché il corpo del drill-down non dichiarava un inchiostro suo ed ereditava quello del motore: nessun check lo vedeva. **Il canale delle agenzie** era l'unico capitolo senza i prodotti dietro, e diceva che cosa si misura senza dire che cosa se ne ricava; «che cosa converte» ora nomina digitale **e cartaceo**, perché in agenzia si stampa ancora, e molto.
+
+Due slide nuove (`slide-serve`, `slide-collab`), registrate nell'admin: con il blocco aperto le due slide d'origine uscivano dalla safe-area, e **il contratto dice di dividere, non di rimpicciolire il tipo**.
+
+**Il riascolto: 476 segmenti, non il riassunto** (`4269b4a`), che su un punto era vago — e quel punto era un errore di fatto.
+
+- **Su WhatsApp non si compra.** Il deck scriveva «dentro WhatsApp l'assistente porta al carrello». In riunione la parola «vendono» è stata usata e **corretta a voce da chi l'aveva detta**: «non vendono, è un canale di assistenza — ti dà le combinazioni e poi ti rimanda il link sull'app e sul sito», provato a mano. Era un conflitto fra due fonti nostre: la pagina CartaFRECCIA Oro lascia intendere che da lì si acquisti, la prova diretta dice di no. **Vince la prova diretta**, e la fonte ora porta il conflitto scritto perché nessuno lo rifaccia.
+- **LLM Apps è pull, non push.** È il viaggiatore a richiamare l'app nella conversazione: non è pubblicità dentro ChatGPT, ed era la domanda rimasta aperta più a lungo in riunione. La slide ora lo dice.
+- **Il DAM non è del marketing di Trenitalia**: l'istanza che esiste è di un'altra società del gruppo. «Già vostro» diventa «c'è già nel gruppo, da estendere», che è anche il razionale concordato in call — estendere una cosa che l'azienda ha già è un passo corto.
+- **Di Firefly hanno la versione base**, quella delle postazioni Creative Cloud, e la riga nomina entrambi come chiesto in riunione. Verificato sull'accordo quadro, a chiusura della domanda rimasta in sospeso: i **modelli personalizzati non ci sono**, né fra i prodotti licenziati né fra quelli a prezzo bloccato.
+
+**La rotta resta com'è**, in attesa della riunione della settimana successiva: è l'unico capitolo che nessuno ha rivisto dopo la presentazione (voce P1 nel backlog).
+
+**Gate**: `audit:deck` **0 HARD su 9 rotte** a tre viewport, con ogni disclosure ri-misurata **da aperta** · `audit:ink` PULITO su 347 blocchi · `audit:wrap` PULITO · `audit:taglio` ALLINEATO · `copy-audit` 0 HARD e 0 SOFT su 273 stringhe · `audit:fonti` nessun link rotto · `audit:og` PASS · typecheck 0 errori. Niente estremi di contratto nei file tracciati: il repo è pubblico.
+
+⚠️ **Il verdetto del panel resta quello del 12 ottobre**: fra il 16-17 e il 20 ott il deck è stato riscritto due volte, e il giro 3 (voce P0, §10 Parte 2) ora deve coprirle entrambe.
 
 ---
 
