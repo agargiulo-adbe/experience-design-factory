@@ -262,8 +262,8 @@ export const OBIETTIVI: Obiettivo[] = [
       en: 'over the 2026-2029 Business Plan',
     },
     lettura: {
-      it: 'Si parla a chi non vi conosce ancora, su canali dove la prima risposta non la date voi.',
-      en: 'That means speaking to people who do not know you yet, on channels where the first answer is not yours to give.',
+      it: 'Sono clienti che oggi non vi conoscono, e su quei canali la prima risposta su di voi non la date voi.',
+      en: 'These are customers who do not know you today, and on those channels the first answer about you is not yours to give.',
     },
   },
   {
@@ -275,8 +275,8 @@ export const OBIETTIVI: Obiettivo[] = [
       en: 'by 2029, from 64% at end-2025, within €4.6bn of IT investment',
     },
     lettura: {
-      it: 'La rotta è decisa e tocca anche contenuti e moduli: resta da dire che cosa ci si guadagna.',
-      en: 'The route is set and it covers content and forms too: what remains is to say what you gain.',
+      it: 'Dentro quel 100% ci sono anche i sistemi che gestiscono contenuti e moduli: la scelta su di loro si fa in questa finestra, non dopo.',
+      en: 'Inside that 100% sit the systems that run content and forms: the choice about them is made in this window, not after.',
     },
   },
   {
@@ -311,9 +311,20 @@ export const LETTURA_NOSTRA: Bilingue = {
  * minuti», dove le tre carte non entrano. Sta QUI e non nella pagina perché i numeri
  * sono gli stessi di sopra — se uno cambia, deve cambiare in un posto solo.
  */
+/* «Tutti e tre passano da quello che il cliente legge» era falso sul secondo,
+   ed è il genere di falso che un CIO smonta in due secondi — dopodiché non
+   crede più nemmeno agli altri due. Il 100% in cloud è un obiettivo di
+   infrastruttura: non passa da quello che il cliente legge, passa da dove
+   girano i sistemi. La simmetria era forzata (il tricolon che la rubrica
+   de-AI chiama «bullet sovra-paralleli»): tre fatti diversi costretti nella
+   stessa conclusione.
+   La versione vera è anche l'argomento più forte, perché porta una scadenza
+   invece di una generalità: due obiettivi passano dal contenuto, il terzo
+   decide QUANDO si sceglie il sistema che quel contenuto lo produce. È la
+   stessa cosa che dice la riga di lettura della seconda carta. */
 export const SINTESI_OBIETTIVI: Bilingue = {
-  it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutti e tre passano da quello che il cliente legge.',
-  en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads.',
+  it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, i 20 miliardi alle piccole imprese. Due passano da quello che il cliente legge. Il terzo decide quando si sceglie il sistema che lo produce.',
+  en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, €20 billion for small businesses. Two of them run through what the customer reads. The third decides when the system that produces it gets chosen.',
 };
 
 /* ── La domanda che chiude il primo capitolo ───────────────────────────────
