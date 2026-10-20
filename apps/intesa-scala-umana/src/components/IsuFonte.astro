@@ -1,0 +1,49 @@
+---
+/**
+ * La riga di fonte di una slide — una sola forma, in tutto il deck.
+ *
+ * PERCHÉ ESISTE. Le righe di fonte erano scritte a mano, slide per slide: in
+ * alcune l'etichetta portava il link, in altre no (i tre obiettivi citavano
+ * due documenti e non se ne poteva aprire nessuno), e dove il link c'era si
+ * ripeteva il dominio dopo ogni etichetta — due fonti sulla stessa riga
+ * significavano «group.intesasanpaolo.com» scritto due volte. Una regola
+ * affidata a chi copia-incolla non è una regola.
+ *
+ * COME SI LEGGE. Un'etichetta breve («Fonte»/«Fonti»), poi la citazione
+ * compatta di ciascun documento, che è ANCHE il link: che cos'è, quando, e un
+ * clic per andarci. Niente dominio in coda. Più documenti stanno UNO PER RIGA,
+ * non separati da punti medi: tre citazioni in fila a capo dove capita si
+ * leggono come un paragrafo, e non si vede più dove finisce una e comincia
+ * l'altra.
+ *
+ * STILE. Una fonte non è una CTA: eredita l'inchiostro della nota che la
+ * ospita e si distingue per la sottolineatura, che si accende d'accento al
+ * passaggio. Così il contrasto resta quello del testo e `audit:ink` passa.
+ *
+ * La classe `ex-src` non è cosmetica: è quella su cui `pnpm audit:fonti`
+ * riconosce una riga di fonte. Senza, il gate su questa app non vedeva nulla.
+ */
+import { SOURCES, type SourceKey } from '../data/sources';
+
+interface Props {
+  /** Le chiavi dei documenti citati, nell'ordine in cui vanno letti. */
+  of: SourceKey[];
+  class?: string;
+}
+
+const { of, class: klass = '' } = Astro.props;
+const voci = of.map((k) => SOURCES[k]);
+const molte = voci.length > 1;
+---
+<p class:list={['isu-note', 'isu-src', 'ex-src', klass]}>
+  <span class="isu-src-k">
+    <span data-lang-it>{molte ? 'Fonti' : 'Fonte'}</span><span data-lang-en>{molte ? 'Sources' : 'Source'}</span>
+  </span>
+  <span class="isu-src-list">
+    {voci.map((v) => (
+      <a class="isu-src-a" href={v.url} target="_blank" rel="noopener noreferrer">
+        <span data-lang-it>{v.label.it}</span><span data-lang-en>{v.label.en}</span>
+      </a>
+    ))}
+  </span>
+</p>

@@ -1002,28 +1002,81 @@ html[data-hiw-open] .edf-madewith {
 }
 
 /* ── I tre obiettivi che fanno da ancora ─────────────────────────────────
-   L'obiettivo in grande è parola loro; la riga sotto è una nostra lettura, e
-   la differenza si vede dal peso prima che dalla nota. Blocchi di pari
-   dimensione: nessuno dei tre conta più degli altri. */
-.isu-goals { display: grid; gap: 1.1rem 1.8rem; grid-template-columns: 1fr; width: 100%; }
-@media (min-width: 900px) { .isu-goals { grid-template-columns: repeat(3, 1fr); } }
-.isu-goal {
-  display: flex; flex-direction: column; gap: 0.5rem;
-  padding: 0.1rem 0 0.1rem 1.1rem;
-  border-left: 2px solid var(--line-default);
-  text-align: left; min-width: 0;
+   La CIFRA è l'elemento grafico: si legge da tre metri prima che si legga una
+   parola, e sostituisce la frase intera che prima stava in grassetto. Sotto,
+   due righe di testo e basta. Blocchi di pari dimensione: nessuno dei tre
+   conta più degli altri.
+
+   Il filetto fine sopra «la nostra lettura» separa la parola del cliente dalla
+   nostra, e `margin-top: auto` lo tiene ALLINEATO fra le tre colonne anche
+   quando il testo sopra ha lunghezze diverse: è il filetto a dire dove
+   finisce quello che hanno detto loro, e deve stare alla stessa quota. */
+.isu-goals {
+  display: grid; gap: 1.8rem 2.2rem; grid-template-columns: 1fr;
+  width: 100%; align-items: stretch;
 }
-[data-slide].bg-\[var\(--surface-inverse\)\] .isu-goal { border-left-color: rgba(255, 255, 255, 0.2); }
-[data-slide] .isu-goal .isu-goal-t {
-  margin-inline: 0; max-width: none;
-  font-size: clamp(1rem, 1.1vw, 1.12rem); line-height: 1.45;
+.isu-goal {
+  display: flex; flex-direction: column; min-width: 0; text-align: left;
+  padding-top: 0.9rem;
+  border-top: 3px solid var(--accent-primary);
+}
+/* Il filetto fine che separa la loro parola dalla nostra deve stare alla
+   STESSA QUOTA nelle tre colonne, se no non si legge come una linea di
+   demarcazione ma come un bordo capitato lì. `margin-top: auto` allineava il
+   FONDO della carta, e bastava una riga di lettura in meno (la terza ne ha
+   due dove le altre ne hanno tre) per sfalsarlo di 26px a 1280. Con `subgrid`
+   le due parti vivono nelle righe della griglia esterna: l'altezza della
+   prima riga è quella del blocco di fatti più alto, e il filetto cade dove
+   deve in tutte e tre. Sotto i 900px le carte si impilano e la questione non
+   si pone. */
+@media (min-width: 900px) {
+  .isu-goals { grid-template-columns: repeat(3, 1fr); grid-template-rows: auto auto; row-gap: 0; }
+  .isu-goal { display: grid; grid-template-rows: subgrid; grid-row: span 2; }
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-goal { border-top-color: var(--color-verde-chiaro); }
+
+.isu-goal-fatto { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.isu-goal-lettura {
+  display: flex; flex-direction: column; gap: 0.5rem; min-width: 0;
+  margin-top: 1rem; padding-top: 0.85rem;
+  border-top: 1px solid var(--line-default);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-goal .isu-goal-lettura { border-top-color: rgba(255, 255, 255, 0.22); }
+
+/* I paragrafi dentro la carta sono a bandiera dal bordo della carta: senza
+   questo ereditano il `max-width` + centratura del reset e partono da
+   ascisse diverse (è il check `m`, applicato a mano dentro al componente). */
+[data-slide] .isu-goal p { margin-inline: 0; max-width: none; }
+
+.isu-goal-metric {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.5rem, 4vw, 3.7rem); line-height: 0.95;
+  letter-spacing: -0.03em; color: var(--ink-accent);
+}
+/* I due span dell'i18n sono INLINE, e il riquadro di un inline si misura
+   sull'area dei caratteri (~1,36em), non sull'interlinea: con `line-height:
+   0.95` su una cifra da 59px sbordava di una dozzina di pixel sopra e sotto e
+   il check `e` lo leggeva come testo-su-testo con la riga sotto. A blocco il
+   riquadro torna a essere quello della riga. */
+.isu-goal-metric > span { display: block; }
+.isu-goal-what {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.02rem, 1.2vw, 1.18rem); line-height: 1.3;
+  color: var(--ink-primary);
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .isu-goal .isu-goal-what { color: var(--ink-inverse); }
+.isu-goal-ctx {
+  font-size: clamp(0.95rem, 1vw, 1.02rem); line-height: 1.5;
   color: var(--ink-body);
 }
-[data-slide] .isu-goal .isu-goal-t b { color: var(--ink-primary); font-weight: 700; }
-[data-slide].bg-\[var\(--surface-inverse\)\] .isu-goal .isu-goal-t b { color: var(--ink-inverse); }
-[data-slide] .isu-goal .isu-goal-s {
-  margin-inline: 0; max-width: none;
-  font-size: 0.8125rem; line-height: 1.5; color: var(--ink-note);
+.isu-goal-k {
+  font-family: var(--font-body); font-weight: 700;
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-note);
+}
+.isu-goal-read {
+  font-size: clamp(0.95rem, 1vw, 1.02rem); line-height: 1.5;
+  color: var(--ink-body);
 }
 
 /* ── L'arbitro: molte sorgenti dentro, una esperienza fuori ──────────────
@@ -1123,4 +1176,47 @@ html[data-hiw-open] .edf-madewith {
 [data-slide] .isu-uses .isu-uses-d {
   margin-inline: 0; max-width: none; margin-top: 0.25rem;
   font-size: 0.8125rem; line-height: 1.4; color: var(--ink-note);
+}
+
+/* ── La riga di fonte (IsuFonte) ─────────────────────────────────────────
+   Una fonte non è una CTA: eredita l'inchiostro della nota che la ospita e si
+   distingue per la sottolineatura, che si accende d'accento al passaggio. Così
+   il contrasto misurato resta quello del testo e `audit:ink` continua a
+   passare — un link verde a 13px su fondo chiaro non ci arrivava sempre. */
+.isu-src {
+  /* A BANDIERA, non centrata: tre citazioni centrate su due righe si leggono
+     come un paragrafo capitato lì. A sinistra sono una bibliografia, e il
+     bordo coincide con quello della colonna di contenuto. */
+  display: flex; flex-wrap: nowrap; align-items: baseline;
+  justify-content: flex-start; gap: 0 0.7em;
+  text-align: left; width: 100%; max-width: none;
+}
+.isu-wrap .isu-src { margin-inline: 0; }
+/* `[data-slide] p { max-width: 62ch }` ha più specificità di una classe sola e
+   rimpiccioliva il riquadro della fonte fino a centrarlo per conto suo: la
+   riga sembrava messa a caso sotto la colonna di mezzo. Qui il cap si toglie
+   alla stessa specificità con cui era stato messo. */
+[data-slide] p.isu-src { max-width: none; }
+.isu-src-k {
+  font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  font-size: 0.75rem; color: var(--ink-note); flex: 0 0 auto;
+}
+/* Un documento per riga: con più fonti sulla stessa riga non si vede dove
+   finisce una citazione e comincia l'altra, e i punti medi finiscono a fine
+   riga. In colonna ogni fonte ha il suo riquadro, che è anche ciò che tiene
+   tranquillo il check `e` (testo su testo). */
+.isu-src-list { display: flex; flex-direction: column; gap: 0.3em; min-width: 0; }
+.isu-note a.isu-src-a {
+  color: inherit;
+  text-decoration: underline;
+  /* currentColor e non un color-mix(): il parser di contrasto dell'audit non
+     legge color-mix() e lo tratta come bianco. Vale la stessa regola degli
+     rgba() espliciti nella nav. */
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+.isu-note a.isu-src-a:hover,
+.isu-note a.isu-src-a:focus-visible {
+  color: var(--ink-accent);
 }

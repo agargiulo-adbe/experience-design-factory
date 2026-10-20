@@ -11,8 +11,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
-import { SOURCES } from '../data/sources';
-import { NUMERI as numeri, numeroInRiga, strati as pila, passi as proposta, ASK, DOMANDA_LETTURA, OBIETTIVI as obiettivi, NOTA_OBIETTIVI, SINTESI_OBIETTIVI } from '../data/contenuti';
+import IsuFonte from '../components/IsuFonte.astro';
+import { NUMERI as numeri, numeroInRiga, strati as pila, passi as proposta, ASK, DOMANDA_LETTURA, OBIETTIVI as obiettivi, LETTURA_NOSTRA, SINTESI_OBIETTIVI } from '../data/contenuti';
 
 /* Le stesse due clip del percorso intero, dagli stessi nomi sul Release: la
    copertina e la chiusura si muovono anche qui. Erano due immagini ferme — un
@@ -100,25 +100,34 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
         />
         <hr class="isu-rule mx-auto" />
 
-        <div class="isu-goals mb-5 w-full">
+        <div class="isu-goals mb-6 w-full">
           {obiettivi.map((o) => (
             <div class="isu-goal">
-              <span class="isu-num" aria-hidden="true">{o.n}</span>
-              <p class="isu-goal-t">
-                <span data-lang-it set:html={o.goal.it} /><span data-lang-en set:html={o.goal.en} />
-              </p>
-              <p class="isu-goal-s">
-                <span data-lang-it set:html={o.ask.it} /><span data-lang-en set:html={o.ask.en} />
-              </p>
+              <div class="isu-goal-fatto">
+                <span class="isu-num" aria-hidden="true">{o.n}</span>
+                <p class="isu-goal-metric" data-display>
+                  <span data-lang-it>{o.cifra.it}</span><span data-lang-en>{o.cifra.en}</span>
+                </p>
+                <p class="isu-goal-what">
+                  <span data-lang-it>{o.cosa.it}</span><span data-lang-en>{o.cosa.en}</span>
+                </p>
+                <p class="isu-goal-ctx">
+                  <span data-lang-it>{o.ctx.it}</span><span data-lang-en>{o.ctx.en}</span>
+                </p>
+              </div>
+              <div class="isu-goal-lettura">
+                <p class="isu-goal-k">
+                  <span data-lang-it>{LETTURA_NOSTRA.it}</span><span data-lang-en>{LETTURA_NOSTRA.en}</span>
+                </p>
+                <p class="isu-goal-read">
+                  <span data-lang-it>{o.lettura.it}</span><span data-lang-en>{o.lettura.en}</span>
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
-        <T as="p" class="isu-note mx-auto" it={NOTA_OBIETTIVI.it} en={NOTA_OBIETTIVI.en} />
-        <p class="isu-note mt-2 mx-auto">
-          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
-          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
-        </p>
+        <IsuFonte of={['piano', 'tecnologia', 'piccoleImprese']} />
       </div>
     </Slide>
 
@@ -140,10 +149,7 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
 
         <T as="p" class="isu-col-sub mx-auto" it={SINTESI_OBIETTIVI.it} en={SINTESI_OBIETTIVI.en} />
         <T as="p" class="isu-ask mt-6 mx-auto" it={DOMANDA_LETTURA.it} en={DOMANDA_LETTURA.en} />
-        <p class="isu-note mt-3 mx-auto">
-          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
-          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
-        </p>
+        <IsuFonte of={['piano', 'tecnologia']} class="mt-3" />
       </div>
     </Slide>
 
@@ -162,10 +168,7 @@ const TYPE = EXPERIENCE_TYPES.prospettiva;
           it="La fondazione è già vostra, e ogni strato si apre sul capitolo che lo racconta, se la domanda arriva. Una banca da 68 milioni di clienti ha fatto questo percorso in otto mesi."
           en="The foundation is already yours, and each layer opens onto the chapter that tells it, if the question comes up. A bank with 68 million customers walked this path in eight months."
         />
-        <p class="isu-note mt-3 mx-auto">
-          <span data-lang-it>{SOURCES.santander.label.it}</span><span data-lang-en>{SOURCES.santander.label.en}</span>
-          · <a href={SOURCES.santander.url} target="_blank" rel="noopener noreferrer">{SOURCES.santander.short}</a>
-        </p>
+        <IsuFonte of={['santander']} class="mt-3" />
       </div>
     </Slide>
 

@@ -7,8 +7,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, nextSlug, prevSlug } from '../data/chapters';
-import { SOURCES } from '../data/sources';
-import { NUMERI as numeri, OBIETTIVI as obiettivi, NOTA_OBIETTIVI } from '../data/contenuti';
+import IsuFonte from '../components/IsuFonte.astro';
+import { NUMERI as numeri, OBIETTIVI as obiettivi, LETTURA_NOSTRA, DOMANDA_LETTURA } from '../data/contenuti';
 import bgStacco from '../assets/generated/bg/stacco-anno.jpg';
 import bgAnno from '../assets/generated/bg/light-anno.jpg';
 import bgNumeri from '../assets/generated/bg/light-numeri.jpg';
@@ -78,30 +78,34 @@ const currentPath = Astro.url.pathname;
         />
         <hr class="isu-rule mx-auto" />
 
-        <div class="isu-goals mb-5 w-full">
+        <div class="isu-goals mb-6 w-full">
           {obiettivi.map((o) => (
             <div class="isu-goal">
-              <span class="isu-num" aria-hidden="true">{o.n}</span>
-              <p class="isu-goal-t">
-                <span data-lang-it set:html={o.goal.it} /><span data-lang-en set:html={o.goal.en} />
-              </p>
-              <p class="isu-goal-s">
-                <span data-lang-it set:html={o.ask.it} /><span data-lang-en set:html={o.ask.en} />
-              </p>
+              <div class="isu-goal-fatto">
+                <span class="isu-num" aria-hidden="true">{o.n}</span>
+                <p class="isu-goal-metric" data-display>
+                  <span data-lang-it>{o.cifra.it}</span><span data-lang-en>{o.cifra.en}</span>
+                </p>
+                <p class="isu-goal-what">
+                  <span data-lang-it>{o.cosa.it}</span><span data-lang-en>{o.cosa.en}</span>
+                </p>
+                <p class="isu-goal-ctx">
+                  <span data-lang-it>{o.ctx.it}</span><span data-lang-en>{o.ctx.en}</span>
+                </p>
+              </div>
+              <div class="isu-goal-lettura">
+                <p class="isu-goal-k">
+                  <span data-lang-it>{LETTURA_NOSTRA.it}</span><span data-lang-en>{LETTURA_NOSTRA.en}</span>
+                </p>
+                <p class="isu-goal-read">
+                  <span data-lang-it>{o.lettura.it}</span><span data-lang-en>{o.lettura.en}</span>
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
-        <T
-          as="p"
-          class="isu-note mx-auto"
-          it={NOTA_OBIETTIVI.it}
-          en={NOTA_OBIETTIVI.en}
-        />
-        <p class="isu-note mt-2 mx-auto">
-          <span data-lang-it>{SOURCES.piano.label.it} · {SOURCES.tecnologia.label.it}</span>
-          <span data-lang-en>{SOURCES.piano.label.en} · {SOURCES.tecnologia.label.en}</span>
-        </p>
+        <IsuFonte of={['piano', 'tecnologia', 'piccoleImprese']} />
       </div>
     </Slide>
 
@@ -128,17 +132,8 @@ const currentPath = Astro.url.pathname;
           ))}
         </ul>
 
-        <T
-          as="p"
-          class="isu-ask mt-2 mx-auto"
-          it="Questa lettura regge, vista da dentro?"
-          en="Does this reading hold, seen from the inside?"
-        />
-        <p class="isu-note mt-6 mx-auto">
-          <span data-lang-it>{SOURCES.tecnologia.label.it}</span>
-          <span data-lang-en>{SOURCES.tecnologia.label.en}</span>
-          · <a href={SOURCES.tecnologia.url} target="_blank" rel="noopener noreferrer">{SOURCES.tecnologia.short}</a>
-        </p>
+        <T as="p" class="isu-ask mt-2 mx-auto" it={DOMANDA_LETTURA.it} en={DOMANDA_LETTURA.en} />
+        <IsuFonte of={['tecnologia']} class="mt-6" />
       </div>
     </Slide>
 

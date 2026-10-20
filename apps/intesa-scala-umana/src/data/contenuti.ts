@@ -224,54 +224,88 @@ export const passi = (taglio: 'lungo' | 'breve') =>
   PASSI.map((p) => ({ n: p.n, t: p.t, b: taglio === 'lungo' ? p.b : p.bBreve }));
 
 /* ── I tre obiettivi dichiarati ────────────────────────────────────────────
-   `goal` è quello che ha detto il cliente (in grassetto la cifra), `ask` è la
-   nostra lettura di che cosa chiede a chi comunica. La distinzione è dichiarata
-   in pagina: una riga nostra spacciata per una loro è il modo più rapido di
-   perdere credibilità in sala. `goal` contiene `<b>`, quindi va reso con
-   `set:html`. */
+   LA FORMA È IL MESSAGGIO. Prima ogni obiettivo era una frase intera in
+   grassetto, e la slide diventava un muro: tre periodi lunghi più tre periodi
+   di lettura più una nota di trentaquattro parole che spiegava la tipografia.
+   Adesso la cifra fa il lavoro che faceva la frase — `cifra` si legge da
+   lontano, `cosa` dice di che si tratta, `ctx` porta la precisione che la
+   cifra da sola perderebbe (il punto di partenza, la data, l'ordine di
+   grandezza), e `lettura` è la conseguenza per chi comunica.
+
+   LA DISTINZIONE FRA LA LORO PAROLA E LA NOSTRA non vive più in una nota a
+   piè di slide che descriveva i corpi del carattere («in grande… in
+   piccolo…»): quella nota diceva una cosa vera nel posto sbagliato, e a
+   telefono, dove i due corpi quasi coincidono, diventava falsa. Adesso è
+   un'etichetta attaccata esattamente alla riga che qualifica. */
 export interface Obiettivo {
   n: string;
-  goal: Bilingue;
-  ask: Bilingue;
+  /** La cifra, come si legge. È l'elemento grafico della slide. Bilingue
+      perché il separatore decimale e le abbreviazioni non sono gli stessi:
+      «2,5 mln» in italiano è «2.5m» in inglese, e un numero scritto con la
+      virgola in una slide inglese si legge come un errore di battitura. */
+  cifra: Bilingue;
+  /** Di che cosa è la cifra: quattro o cinque parole, non una frase. */
+  cosa: Bilingue;
+  /** Il contorno che la cifra da sola perderebbe: da dove, entro quando, chi. */
+  ctx: Bilingue;
+  /** La nostra lettura: che cosa chiede a chi comunica. Dichiarata come tale. */
+  lettura: Bilingue;
 }
 
 export const OBIETTIVI: Obiettivo[] = [
   {
     n: '01',
-    goal: {
-      it: '<b>2,5 milioni di clienti netti in più</b> nell’arco del Piano d’Impresa 2026-2029.',
-      en: '<b>2.5 million net new customers</b> over the 2026-2029 Business Plan.',
+    cifra: { it: '2,5 mln', en: '2.5m' },
+    cosa: { it: 'clienti netti in più', en: 'net new customers' },
+    ctx: {
+      it: 'nell’arco del Piano d’Impresa 2026-2029',
+      en: 'over the 2026-2029 Business Plan',
     },
-    ask: {
-      it: 'Crescere di due milioni e mezzo vuol dire parlare a chi non vi conosce ancora, su canali dove la prima risposta non la date voi.',
-      en: 'Growing by two and a half million means speaking to people who do not know you yet, on channels where the first answer is not yours to give.',
+    lettura: {
+      it: 'Si parla a chi non vi conosce ancora, su canali dove la prima risposta non la date voi.',
+      en: 'That means speaking to people who do not know you yet, on channels where the first answer is not yours to give.',
     },
   },
   {
     n: '02',
-    goal: {
-      it: '<b>100% delle applicazioni in cloud entro il 2029</b>, dal 64% di fine 2025, dentro 4,6 miliardi di nuovi investimenti IT.',
-      en: '<b>100% of applications in the cloud by 2029</b>, from 64% at the end of 2025, within €4.6 billion of new IT investment.',
+    cifra: { it: '100%', en: '100%' },
+    cosa: { it: 'delle applicazioni in cloud', en: 'of applications in the cloud' },
+    ctx: {
+      it: 'entro il 2029, dal 64% di fine 2025, dentro 4,6 miliardi di investimenti IT',
+      en: 'by 2029, from 64% at end-2025, within €4.6bn of IT investment',
     },
-    ask: {
-      it: 'La rotta è decisa e vale anche per quello che gestisce i contenuti e i moduli: il tema non è se muoverli, è che cosa si guadagna nel farlo.',
-      en: 'The route is set and it covers what runs content and forms too: the question is not whether to move them, but what you gain by doing it.',
+    lettura: {
+      it: 'La rotta è decisa e tocca anche contenuti e moduli: resta da dire che cosa ci si guadagna.',
+      en: 'The route is set and it covers content and forms too: what remains is to say what you gain.',
     },
   },
   {
     n: '03',
-    goal: {
-      it: '<b>20 miliardi alle piccole imprese</b> di commercio, artigianato e turismo, annunciati dalla Banca dei Territori l’8 ottobre 2026.',
-      en: '<b>€20 billion for small businesses</b> in retail, crafts and tourism, announced by the Banca dei Territori on 8 October 2026.',
+    cifra: { it: '20 mld', en: '€20bn' },
+    cosa: {
+      it: 'alle piccole imprese di commercio, artigianato e turismo',
+      en: 'for small firms in retail, crafts and tourism',
     },
-    ask: {
-      it: 'Un impegno di questa portata si racconta a centinaia di migliaia di imprese diverse fra loro, e ognuna vuole sentirsi parlare della propria.',
-      en: 'A commitment this size has to be told to hundreds of thousands of very different businesses, each wanting to hear about its own.',
+    /* Le «circa 800.000 piccole e piccolissime aziende clienti della Divisione»
+       stanno nello stesso comunicato dell'8 ottobre: è un fatto loro, quindi
+       sta qui e non nella riga di lettura. */
+    ctx: {
+      it: 'annunciati l’8 ottobre 2026 · circa 800.000 sono già clienti della Divisione',
+      en: 'announced 8 October 2026 · around 800,000 are already Division customers',
+    },
+    lettura: {
+      it: 'Ognuna vuole sentirsi parlare della propria attività, non di un piano per tutte.',
+      en: 'Each one wants to hear about its own business, not about a plan for everyone.',
     },
   },
 ];
 
-/** La nota che distingue la loro parola dalla nostra lettura. */
+/** L'etichetta che dichiara la riga di lettura per quella che è. */
+export const LETTURA_NOSTRA: Bilingue = {
+  it: 'La nostra lettura',
+  en: 'Our reading',
+};
+
 /**
  * La stessa cosa dei tre OBIETTIVI, detta in una riga: serve al taglio «In dieci
  * minuti», dove le tre carte non entrano. Sta QUI e non nella pagina perché i numeri
@@ -280,11 +314,6 @@ export const OBIETTIVI: Obiettivo[] = [
 export const SINTESI_OBIETTIVI: Bilingue = {
   it: 'Gli obiettivi dichiarati sono tre: 2,5 milioni di clienti netti in più, il 100% delle applicazioni in cloud entro il 2029, e i 20 miliardi annunciati alle piccole imprese. Tutti e tre passano da quello che il cliente legge.',
   en: 'Three stated goals: 2.5 million net new customers, 100% of applications in the cloud by 2029, and the €20 billion announced for small businesses. All three run through what the customer reads.',
-};
-
-export const NOTA_OBIETTIVI: Bilingue = {
-  it: 'In grande gli obiettivi, come li avete dichiarati voi. In piccolo che cosa chiedono a chi comunica: quella riga è una nostra lettura, non una vostra parola.',
-  en: 'In large type, the goals as you stated them. In small type, what they ask of whoever communicates: that line is our reading, not your words.',
 };
 
 /* ── La domanda che chiude il primo capitolo ───────────────────────────────
