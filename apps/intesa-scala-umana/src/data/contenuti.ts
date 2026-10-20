@@ -118,8 +118,8 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. I modelli restano dove sono; cambia chi dà la risposta finale',
-      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. The models stay where they are; what changes is who gives the final answer',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. I modelli restano dove sono; cambia il punto di uscita — ogni canale che oggi decide da sé va ricollegato, uno alla volta',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. The models stay where they are; what changes is the point of exit — every channel that decides on its own today gets reconnected, one at a time',
     },
     sBreve: {
       it: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già',
