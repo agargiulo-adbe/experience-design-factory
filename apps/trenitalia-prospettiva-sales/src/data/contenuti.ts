@@ -349,7 +349,7 @@ export const CANALE: Card[] = [
   {
     k: 'Che cosa cambia',
     t: 'La risposta diventa anche il banco',
-    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si sta aprendo è chiudere lì: scegliere l’orario e confermare senza uscire dalla conversazione.',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si apre è chiudere lì, quando è il viaggiatore a chiamarvi in causa: non è pubblicità.',
   },
   {
     /* 17 ott, due passate. Prima la card non nominava il prodotto (residuo di
@@ -360,7 +360,7 @@ export const CANALE: Card[] = [
        20 aprile 2026 come capacità di AEM, non ancora in disponibilità generale. */
     k: 'Dove si innesta',
     t: 'Si chiama LLM Apps',
-    b: 'Vive dentro Experience Manager, la piattaforma che avete già: porta la vostra offerta dentro la conversazione, e il viaggiatore prenota lì. Una cosa da guardare insieme mentre si decide dove mettere il canale.',
+    b: 'Vive dentro Experience Manager, la vostra piattaforma di contenuti: è un’estensione, non un sistema nuovo accanto. Una cosa da guardare insieme mentre si decide dove mettere il canale.',
   },
 ];
 
@@ -505,6 +505,18 @@ export const DOMANDE_APERTE = [
    numero di postazioni. Il contratto è la ragione per cui la pastiglia dice
    quello che dice, non una cosa da proiettare.
 
+   DUE SFUMATURE decise in riunione il 20 ott, che la sola lettura del contratto
+   non dava:
+   · Il DAM del gruppo NON è del marketing di Trenitalia — è di un'altra società,
+     e una terza istanza è prevista altrove. Per questo la riga dice «c'è già nel
+     gruppo, da estendere» e non «è vostro»: estendere una cosa che l'azienda ha
+     già è un passo corto, spacciarla per loro è un errore che si scopre in sala.
+   · Di Firefly hanno la VERSIONE BASE, quella che arriva con le postazioni
+     Creative Cloud. Quello che si propone — la produzione su scala — non è nel
+     contratto: verificato, i modelli personalizzati non compaiono né fra i
+     prodotti licenziati né fra quelli a prezzo bloccato. La riga nomina gli
+     strumenti che hanno; il salto lo dice il testo del drill-down.
+
    Il blocco vive DENTRO «Che cosa serve, concretamente», cioè dietro il
    drill-down: in sala si apre se qualcuno chiede, e intanto non appesantisce
    una slide che deve reggere da sola. */
@@ -546,8 +558,8 @@ export const SERVE: Record<
     { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il vostro lato dell\u2019incrocio' },
   ],
   contenuto: [
-    { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'il materiale e le sue versioni' },
-    { nome: 'Adobe Firefly', fonte: 'firefly', stato: 'avete', a: 'le immagini, già nelle postazioni Creative Cloud' },
+    { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
+    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
     { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'prezzo', a: 'chi chiede, chi produce, chi approva' },
     { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'il lavoro agentico sulla produzione' },

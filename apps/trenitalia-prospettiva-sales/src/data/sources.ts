@@ -129,12 +129,22 @@ export const SOURCES = {
      da lì si acquista. Quindi si può nominare citando loro, senza rivelare
      niente: è la differenza fra «lo sappiamo da una riunione» e «sta sul
      vostro sito». Verificato il 16 ott 2026. */
+  /* ⚠️ Il canale WhatsApp non è mai stato ANNUNCIATO — zero comunicati, zero
+     stampa — ma è PUBBLICATO da Trenitalia stessa: il link wa.me sta in chiaro
+     sulla pagina Informazioni. Si nomina citando loro.
+     ⚠️ CONFLITTO RISOLTO il 20 ott 2026, e in favore della prova diretta: la
+     pagina CartaFRECCIA Oro lascia intendere che da WhatsApp si acquisti, ma
+     provandolo a mano («voglio andare da Milano a Roma») l'assistente dà le
+     combinazioni e rimanda il link sull'app e sul sito. È un canale di
+     assistenza e informazione, NON di vendita. In riunione, il 20 ott, chi
+     aveva usato la parola «vendono» si è corretto a voce. Nel deck non si
+     scrive che da lì si compra. */
   whatsappTrenitalia: {
     url: 'https://www.trenitalia.com/it/informazioni.html',
     label: 'trenitalia.com, pagina Informazioni',
     data: 'consultata il 16 ottobre 2026',
     cosaDice:
-      'La pagina pubblica il collegamento diretto al canale WhatsApp di Trenitalia. L\'assistente risponde in linguaggio naturale, propone soluzioni di viaggio con orari, classi e prezzi e porta al carrello; si presenta come «assistente virtuale di Trenitalia basato su Intelligenza Artificiale» e dichiara di poter aiutare «per l\'acquisto di collegamenti diretti per un passeggero». Sulla pagina dei servizi CartaFRECCIA Oro l\'acquisto via WhatsApp è scritto esplicitamente.',
+      'La pagina pubblica il collegamento diretto al canale WhatsApp di Trenitalia. L\'assistente risponde in linguaggio naturale e propone soluzioni di viaggio con orari, classi e prezzi; si presenta come «assistente virtuale di Trenitalia basato su Intelligenza Artificiale». Il percorso però si chiude altrove: verificato provandolo, rimanda all\'app e al sito per l\'acquisto. La pagina CartaFRECCIA Oro lascia intendere il contrario: vince la prova diretta.',
   },
   whatsappEuropa: {
     url: 'https://www.trenord.it/news/trenord-informa/comunicati-stampa/biglietto-treno-whatsapp/',
