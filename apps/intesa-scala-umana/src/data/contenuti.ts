@@ -93,12 +93,12 @@ export const STRATI: Strato[] = [
     kind: 'base',
     t: { it: 'Quello che avete già', en: 'What you already have' },
     s: {
-      it: 'Analytics, già in uso · Experience Manager e Forms, oggi dentro la banca',
-      en: 'Analytics, already in use · Experience Manager and Forms, today inside the bank',
+      it: 'Da fuori risultano Analytics in uso, e Experience Manager e Forms dentro il Gruppo. Perimetro e versioni li verifichiamo con chi li governa',
+      en: 'From outside we see Analytics in use, and Experience Manager and Forms inside the Group. Perimeter and versions we check with whoever governs them',
     },
     sBreve: {
-      it: 'Analytics, già in uso · Experience Manager e Forms, dentro la banca',
-      en: 'Analytics, already in use · Experience Manager and Forms, inside the bank',
+      it: 'Da fuori risultano Analytics in uso, Experience Manager e Forms dentro il Gruppo',
+      en: 'From outside we see Analytics in use, Experience Manager and Forms inside the Group',
     },
   },
   {
@@ -118,8 +118,8 @@ export const STRATI: Strato[] = [
     kind: 'add',
     t: { it: 'Decidere che cosa arriva, a chi', en: 'Deciding what reaches whom' },
     s: {
-      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. I modelli restano dove sono; cambia il punto di uscita — ogni canale che oggi decide da sé va ricollegato, uno alla volta',
-      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. The models stay where they are; what changes is the point of exit — every channel that decides on its own today gets reconnected, one at a time',
+      it: 'Un solo arbitro davanti al cliente: prende i punteggi dai modelli che avete già e sceglie che cosa esce, su che canale e quanto spesso. I modelli restano dove sono. Cambia il punto di uscita: ogni canale che oggi decide da sé va ricollegato, uno alla volta',
+      en: 'One arbiter in front of the customer: it takes the scores from the models you already have and picks what goes out, on which channel and how often. The models stay where they are. What changes is the point of exit: every channel that decides on its own today gets reconnected, one at a time',
     },
     sBreve: {
       it: 'Un solo arbitro davanti al cliente, sopra i modelli che avete già',
@@ -186,12 +186,12 @@ export const PASSI: Passo[] = [
     n: '01',
     t: { it: 'Un tavolo di lavoro', en: 'A working session' },
     b: {
-      it: 'Mezza giornata con le persone che il lavoro lo fanno: canali, contenuto, dati. Non una presentazione.',
-      en: 'Half a day with the people who do the work: channels, content, data. Not a presentation.',
+      it: 'Mezza giornata con chi fa contenuto e campagne. Non una presentazione.',
+      en: 'Half a day with the people who do content and campaigns. Not a presentation.',
     },
     bBreve: {
-      it: 'Mezza giornata con canali, contenuto e dati. Non una presentazione.',
-      en: 'Half a day with channels, content and data. Not a presentation.',
+      it: 'Mezza giornata con chi fa contenuto e campagne. Non una presentazione.',
+      en: 'Half a day with the people who do content and campaigns. Not a presentation.',
     },
   },
   {
