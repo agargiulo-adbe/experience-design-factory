@@ -31,8 +31,14 @@ interface Node {
 interface Props {
   /** Quattro tappe, in senso orario a partire da in alto a sinistra. */
   nodes: Node[];
-  /** Il numero al centro dell'anello, con la sua riga e la sua fonte. */
-  core: { v: string; t: Bilingual; src: string };
+  /**
+   * Il centro dell'anello. Due forme, perché fa due lavori diversi:
+   * `v` + `t` + `src` è una CIFRA che spiega perché il giro esiste;
+   * `k` + `t` è un PERNO — una quinta cosa che le altre quattro toccano
+   * tutte, come Asset Management nella Content Supply Chain, dove sta in
+   * mezzo e non in fila. Disegnarlo come tappa è dire una cosa diversa.
+   */
+  core: { v?: string; k?: Bilingual; t: Bilingual; src?: string };
   class?: string;
 }
 const { nodes, core, class: className } = Astro.props as Props;
@@ -66,9 +72,10 @@ const placed = [
       ))}
     </svg>
     <div class="isu-loop-core">
-      <p class="isu-loop-v">{core.v}</p>
+      {core.v && <p class="isu-loop-v">{core.v}</p>}
+      {core.k && <T as="p" class="isu-loop-k" it={core.k.it} en={core.k.en} />}
       <T as="p" class="isu-loop-t" it={core.t.it} en={core.t.en} />
-      <p class="isu-loop-src">{core.src}</p>
+      {core.src && <p class="isu-loop-src">{core.src}</p>}
     </div>
   </div>
 </div>

@@ -69,21 +69,22 @@ const currentPath = Astro.url.pathname;
  */
 
 /* ── Il contenuto · la filiera ─────────────────────────────────────────── */
-/* I CINQUE PILASTRI DELLA CONTENT SUPPLY CHAIN, come Adobe li nomina.
-   Prima qui c'erano tre tappe — Assemble, Activate, Optimize — che sono i
-   pilastri di UN PRODOTTO (GenStudio), non della filiera. La differenza non è
-   accademica: il nostro interlocutore su questo pezzo non compra un prodotto,
-   compra il suo processo, e il processo ha un nome che in Adobe è già scritto.
-   Fonte: Field Readiness, materiale di abilitazione sulla Content Supply Chain.
-   È una fonte interna: si cita senza link, dicendo che cos'è.
-   La frase che regge il disegno è sempre di lì: «it's a loop, not a pipeline
-   — insights from the end feed planning at the start». Per questo la freccia
-   di ritorno non è una decorazione: è il pilastro che chiude il giro.
-   Una riga per pilastro, e corta: la slide si discute a voce. */
+/* I CINQUE PILASTRI DELLA CONTENT SUPPLY CHAIN, nella forma che hanno.
+   Prima erano cinque tappe in fila con Asset Management in terza posizione e
+   una didascalia che diceva «è un giro, non una fila» — cioè il testo che si
+   scusava per il disegno, lo stesso difetto tolto dagli obiettivi due giorni
+   prima. Nella fonte Adobe non è una fila: è un ANELLO, e Asset Management sta
+   AL CENTRO — «Workflow & Planning, Creation & Production, Asset Management at
+   the centre, Delivery & Activation, and Reporting & Insights. The important
+   word is connected. It's a loop, not a pipeline: insights from the end feed
+   planning at the start». Quattro attorno a uno, in senso orario dall'alto a
+   sinistra, e il perno è l'archivio che tutte e quattro toccano.
+   Fonte: Field Readiness, materiale di abilitazione sulla Content Supply
+   Chain. Fonte interna: si cita senza link, dicendo che cos'è. */
 const tappe = [
   {
     n: '01',
-    t: { it: 'Richieste e pianificazione', en: 'Workflow & Planning' },
+    t: { it: 'Richieste e pianificazione', en: 'Workflow & Planning' },
     d: {
       it: 'Richieste, scadenze e passaggi fra agenzie in un posto solo.',
       en: 'Briefs, deadlines and agency hand-offs in one place.',
@@ -99,22 +100,14 @@ const tappe = [
   },
   {
     n: '03',
-    t: { it: 'Archivio', en: 'Asset Management' },
+    t: { it: 'Pubblicazione', en: 'Delivery & Activation' },
     d: {
-      it: 'Al centro: un archivio solo, dove quello che esiste già si ritrova.',
-      en: 'At the centre: one library, where what exists can be found.',
+      it: 'Le varianti approvate escono già marcate: campagna, prodotto, destinatario.',
+      en: 'Approved variants go out already tagged: campaign, product, audience.',
     },
   },
   {
     n: '04',
-    t: { it: 'Pubblicazione', en: 'Delivery & Activation' },
-    d: {
-      it: 'Escono già marcate: campagna, prodotto, destinatario.',
-      en: 'They go out already tagged: campaign, product, audience.',
-    },
-  },
-  {
-    n: '05',
     t: { it: 'Misura', en: 'Reporting & Insights' },
     d: {
       it: 'Non quanto ha reso la campagna: quale attributo ha reso, e su chi.',
@@ -334,25 +327,36 @@ const prova = [
         />
         <hr class="isu-rule mx-auto" />
 
-        <IsuPipeline
-          stops={tappe}
-          span={{
-            da: { it: 'Dal brief', en: 'From the brief' },
-            a: { it: 'alla misura, e di nuovo al brief', en: 'to measurement, and back to the brief' },
-          }}
-          back={{
-            it: 'è un giro, non una fila: quello che si misura rientra nella pianificazione',
-            en: 'a loop, not a line: what gets measured feeds back into planning',
-          }}
-          rail={{
-            k: { it: 'Governance', en: 'Governance' },
+        <IsuLoop
+          nodes={tappe}
+          core={{
+            k: { it: 'Archivio', en: 'Asset Management' },
             t: {
-              it: 'Sta sotto tutti e cinque. Chi approva è una persona vostra, nominata nel flusso; la versione pubblicata resta tracciata. Avvertenze e citazioni entrano pre-approvate e restano intatte.',
-              en: 'It runs under all five. Whoever approves is one of your people, named in the flow; the published version stays traceable. Disclaimers and citations come in pre-approved and stay untouched.',
+              it: 'Un posto solo, che tutte e quattro toccano.',
+              en: 'One place, which all four touch.',
             },
           }}
-          class="mb-4"
+          class="mb-5"
         />
+
+        {/* La governance non è un sesto pilastro: sta SOTTO tutti. Prima era
+            il binario della pipeline; con l'anello diventa una fascia a sé,
+            che è anche più fedele — nella fonte non è una tappa. */}
+        <div class="isu-pipe-rail mb-3">
+          <span class="isu-pipe-rail-k">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+              <rect x="3" y="7" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <T as="span" it="Governance" en="Governance" />
+          </span>
+          <T
+            as="span"
+            class="isu-pipe-rail-t"
+            it="Sta sotto tutte e cinque. Chi approva è una persona vostra, nominata nel flusso; la versione pubblicata resta tracciata. Avvertenze e citazioni entrano pre-approvate e restano intatte."
+            en="It runs under all five. Whoever approves is one of your people, named in the flow; the published version stays traceable. Disclaimers and citations come in pre-approved and stay untouched."
+          />
+        </div>
 
         {/* QUI STAVA UNA DISCLOSURE, e il vincolo decisivo stava dentro.
             «Il caveat più importante dentro un link che in sala nessuno apre»
