@@ -48,6 +48,11 @@ for (const rotta of ROUTES) {
       const spenta = attiva === 'it' ? '[data-lang-en]' : '[data-lang-it]';
       const clone = s.cloneNode(true);
       clone.querySelectorAll(spenta).forEach((e) => e.remove());
+      // `innerText` raccoglie anche gli <script> inline: sulle slide con una
+      // clip in loop il testo d'evidenza usciva per il 90% fatto di
+      // JavaScript, e le personas lo leggevano come se fosse contenuto della
+      // slide. Trovato il 21 ott 2026, presente in tutti e due i giri.
+      clone.querySelectorAll('script, style, noscript').forEach((e) => e.remove());
       const testo = (clone.innerText || '').split('\n').map((r) => r.trim()).filter(Boolean).join('\n');
       const link = [...s.querySelectorAll('a[href^="http"]')].map((a) => `${a.textContent.trim()} → ${a.href}`);
       return { id: s.id || `(slide ${k + 1})`, testo, link };
