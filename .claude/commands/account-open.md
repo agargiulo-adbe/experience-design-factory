@@ -57,14 +57,19 @@ l'identificativo** che permette di ritrovarla.
    nominati per data e tema. Se una riunione recente non c'è ancora — la sincronizzazione
    ha latenza — si guarda il Plaud MCP (`list_files` con `date_from`).
 4. **WhatsApp**, via Centralino (`mail_search` con `accounts`). Vedi sotto: l'account che
-   porta il lavoro e il modo di cercarlo non sono quelli che il nome suggerisce.
+   porta il lavoro e il modo di cercarlo non sono quelli che il nome suggerisce. **Non è
+   opzionale e non è l'ultima per importanza**: è la fonte dove arrivano le cose dette in
+   fretta, spesso le più recenti che hai su un referente. Se Centralino non risponde — gira
+   via SSH su un'altra macchina — la si dichiara **cieca** nell'esito del passo 3, in
+   chiaro, e **il giro non si dichiara completo**. Soprattutto: non si scrive che un
+   contatto «non ha risposto» con WhatsApp non letto.
 5. **Cartella dell'account**: file arrivati dopo quella data (`ls -lt`), in particolare
    footprint, allegati, trascrizioni, PDF di dashboard.
 
 **Niente altro.** Non aprire Fluffy né il web: qui serve sapere cosa si è mosso, non
 riverificare il mondo.
 
-### Due regole sulle trascrizioni, che non sono una fonte come le altre
+### Tre regole sulle trascrizioni, che non sono una fonte come le altre
 - **Valgono meno della corrispondenza.** Nella gerarchia stanno sotto: artefatti approvati
   dal cliente → corrispondenza → **trascrizioni** → cataloghi → web. Sbagliano i **nomi
   propri** con regolarità: un nome che compare solo lì non si scrive nel registro senza
@@ -75,6 +80,13 @@ riverificare il mondo.
   riferisce come tale. E una trascrizione che non riguarda l'account **non si apre**: in quella
   cartella ci sono anche riunioni interne e colloqui, che non c'entrano niente con un account
   cliente.
+- **Gli orari si riportano nel fuso di chi lavora, sempre.** Plaud espone gli orari di
+  registrazione in **UTC**; il Mac è su `Europe/Rome`, quindi d'estate sono **due ore meno**
+  del vero (l'ora solare ne toglie una). Una riunione che l'MCP chiama «10:05» è la call
+  delle **12:05**, e dire l'ora sbagliata a chi c'era dentro fa dubitare di tutto il resto —
+  o, peggio, fa scartare la registrazione giusta. La conversione si fa **prima** di nominare
+  un orario in chat o in un registro: `TZ=Europe/Rome date -r <epoch>` lo risolve, e `date`
+  da solo dice in che fuso siamo. Vale per ogni fonte che porta un orario, non solo Plaud.
 
 ### WhatsApp — quale account, e come si legge
 Il lavoro su WhatsApp sta nell'account che Centralino chiama **`whatsapp-personale`**,

@@ -15,6 +15,15 @@ Dai la vista d'insieme sugli account. Argomento ricevuto: `$ARGUMENTS`
    aperti; un account con una data vicina in calendario pesa più di uno senza.
 4. Non aprire la posta e non leggere i registri uno per uno: per quello c'è
    **`/account-open`** sul singolo account, ed è lì che si confronta con i thread.
+5. **WhatsApp è una fonte, sempre** — per questo comando e per tutto ciò che ne deriva
+   (apertura del giro, grafo dei contatti, `/account-open`, `/account-close`). Lo script
+   non lo legge: legge solo file locali, per restare a zero token. Quindi quando dallo
+   script nasce un giudizio su **un** account — «è fermo», «non ha risposto», «va
+   sollecitato» — quel giudizio **non si dà** senza aver guardato WhatsApp su quella
+   persona: su quel numero arrivano le cose dette in fretta, e sono le più recenti che hai.
+   Se Centralino non risponde, si dichiara la fonte **cieca** nell'esito; non si dichiara
+   completo un giro con WhatsApp non letto. Il perché sta in `docs/CLAUDE.md`, sezione
+   «WhatsApp è sempre una fonte».
 
 Lo script legge i `ACCOUNT.md`, quindi un account «senza registro» non vuol dire «senza
 lavoro»: vuol dire che il registro non è ancora nato, e lo crea il primo `/account-open`.
