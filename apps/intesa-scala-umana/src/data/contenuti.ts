@@ -337,10 +337,17 @@ export const LETTURA_NOSTRA: Bilingue = {
    l'effetto «vi abbiamo guardati da fuori» su cui regge il primo capitolo.
    Quello che mancava non è l'indice: è PERCHÉ siamo a quel tavolo. Una riga.
    Dice l'aggancio e non dichiara di sapere che cosa stanno valutando: quello,
-   se serve, lo dice a voce chi lo può garantire. */
+   se serve, lo dice a voce chi lo può garantire.
+   22 ott 2026: il partner che era nominato qui è uscito dalla riga, e dal deck.
+   All'incontro si va da soli, e una copertina che si appoggia a un terzo assente
+   è una legittimazione che in sala non c'è nessuno a sostenere. Resta quello che
+   possiamo garantire da soli: che l'incontro l'abbiamo chiesto noi, e che prima
+   di proporre viene il guardare. La provenienza — chi ci ha consigliato di
+   parlarvi — si dice A VOCE nei primi tre minuti: è una referenza interna al
+   cliente, e un nome di persona in un file di questo repo non ci va comunque. */
 export const AGGANCIO: Bilingue = {
-  it: 'Siamo a questo tavolo con Accenture. Prima di proporre qualcosa, questo è come vi vediamo da fuori.',
-  en: 'We are at this table with Accenture. Before proposing anything, this is how we see you from outside.',
+  it: 'L’incontro l’abbiamo chiesto noi. Prima di proporre qualcosa, questo è come vi vediamo da fuori.',
+  en: 'We asked for this meeting. Before proposing anything, this is how we see you from outside.',
 };
 
 /* ── Il titolo della slide ─────────────────────────────────────────────────
