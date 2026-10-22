@@ -83,8 +83,81 @@ pnpm pptx:take "<libreria.pptx>" 151   # estrae e RENDE le slide da ereditare
 pnpm audit:pptx <deck.pptx> --render   # 0 HARD, poi si GUARDANO le pagine
 ```
 
+**I tre gruppi di controlli di `audit:pptx`.** Il terzo è nato il 16 ott 2026, dopo che
+un deck con **mediana 134 parole per slide e 46 pagine su 49 senza un elemento grafico**
+è passato con zero rilievi: il gate misurava la conformità al marchio, non la qualità
+visiva. I deck HTML della Factory avevano quei controlli da sempre (`audit:deck`, banda
+di lettura e uso dello spazio); il .pptx no.
+
+| | codici | che cosa misura |
+|---|---|---|
+| marchio | `T B F R L` | filo rosso, fondi, carattere, rossi fuori norma, marchio |
+| geometria | `C E P O X G J` | fuori foglio, riquadri sovrapposti, segnaposto, effetti |
+| **qualità visiva** | `D Z V G` | **parole per slide** (SOFT >130, HARD >190) · **corpo proiettato** (HARD sotto 8pt, e HARD per un paragrafo oltre 110 caratteri sotto i 12pt) · **pagina usata** e fasce vuote oltre il 34% · **deserti** di sei slide senza un elemento grafico |
+| **marchio, al rendering** | `U` | il carattere **che il renderer ha davvero usato**, letto dai caratteri incorporati nel PDF reso. `F` legge l'XML e quindi non vede un glifo che Adobe Clean non ha: l'XML dice «Adobe Clean», il renderer sostituisce in silenzio, e un `⚠️` esce **giallo** su una tavolozza nero-bianco-rosso. HARD |
+
+Le soglie non sono opinioni: vengono dalla misura fatta sui deck HTML di questo repo
+(mediana 96 parole, un terzo oltre 120 già giudicato denso) e dal contratto di
+leggibilità, che proietta a 1920. Quando `D` o `Z` falliscono, **si taglia la copia o si
+cambia layout, mai si rimpicciolisce il tipo**.
+
 **Il gate misura, non guarda.** `audit:pptx` a zero HARD non è «va bene»: è il
 permesso di aprire i PNG e leggerli, esattamente come per `audit:deck`.
+
+## 4bis. Il motore di composizione, e il difetto che previene
+
+**`scripts/pptx/compose.py` è il motore condiviso**: la scala tipografica, gli
+indici dei layout e i *trattamenti*, cioè i modi di dire una cosa su una slide.
+Si importa dal builder del deck, che resta contenuto puro:
+
+```python
+sys.path.insert(0, str(ROOT / "scripts/pptx"))
+from compose import *
+apri(TEMPLATE, immagini=QUI / "immagini")
+…
+salva(USCITA)        # salva, rende il PDF, e passa il controllo del piede
+```
+
+I trattamenti disponibili, oltre a `colonne`, `cover`, `divisore` e `flusso`:
+
+| | quando |
+|---|---|
+| `citazione` | una frase sola, grande quanto la pagina (layout *Large Quote*) |
+| `meta_immagine` | mezza pagina d'immagine, o un terzo con `terzo=True` |
+| `numeri` | le cifre a 34pt — una slide di numeri in cui i numeri non sono grandi è sprecata |
+| `obiezioni` | le frasi del cliente come virgolettati, la risposta sotto |
+| `strati` | un'architettura a strati, con il solo strato che ci riguarda acceso |
+| `linea_del_tempo` | le date su un asse in scala, **solo** quando la sequenza porta informazione |
+| `grafico_barre` | barre grigie con un accento sul dato che conta |
+
+**La regola che si dimentica più spesso, e il difetto che produce.** Il 16 ott
+2026 un deck è stato bocciato con tre parole — «è un muro di testo» — e la causa
+era misurabile: su 166 layout ne erano stati usati **sette**, tutti a colonne di
+prosa. Il template ne porta **58** con un'area immagine, una citazione a tutta
+pagina o una struttura da caso studio (13 *Title Slide with Image*, 10 *½
+Image*, 9 *⅓ Image*, 5 *Large Quote*, 3 *Case Study*, 1 *Full Image with
+Thread*, più le varianti *Columns - Image and Content*). Quindi: **prima di
+comporre si apre il catalogo e si sceglie la famiglia di layout per ogni
+slide**, non solo il contenuto.
+
+Tre corollari, pagati sul campo:
+
+- **L'immagine non è un fine.** Una tassonomia di cinque voci non ha un soggetto
+  da fotografare: se il contenuto non entra, è sbagliato il layout, non la copia
+  da tagliare.
+- **Le immagini si ereditano dalle librerie Adobe**, non dal repertorio
+  generico: Stock restituisce grattacieli e gente col telefono. E si guardano **a
+  dimensione intera prima di posarle** — da miniatura si prende per «area di
+  lavoro» una schermata di Postman, e per materiale Adobe una schermata di un
+  altro marchio, che la Quality Bar vieta.
+- **Il numerino 01/02/03 non si mette** se l'ordine non porta informazione: è
+  nella lista dei divieti del contratto di qualità.
+
+**Il controllo del piè di pagina.** `audit:pptx` misura le scatole, non il testo
+reso: un paragrafo che sborda dal segnaposto resta dentro il foglio e si siede
+sopra il marchio Adobe. Dal 16 ott 2026 il gate rende il PDF e legge il riquadro
+di ogni parola; quando fallisce **si taglia la copia o si cambia layout, mai si
+rimpicciolisce il tipo**.
 
 ## 5. Ereditare una slide da una libreria Adobe
 

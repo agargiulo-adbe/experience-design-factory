@@ -34,7 +34,7 @@ Uso:
 import collections, json, pathlib, re, shutil, subprocess, sys
 from pptx import Presentation
 from pptx.util import Emu, Inches, Pt
-from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.shapes import MSO_SHAPE, MSO_SHAPE_TYPE
 
 ADOBE_RED_DEFAULT = "EB1000"
 ROSSI_NOTI = {
@@ -165,13 +165,21 @@ def audit(path):
                         # delle experience vuole il corpo ≥ 0,95rem ≈ 17px ≈ 8,5pt e le
                         # note ≥ 0,75rem ≈ 13,5px ≈ 6,75pt. Sotto non si legge in sala,
                         # e NON si risolve rimpicciolendo: si taglia o si cambia layout.
-                        if pt < 7:
+                        # la soglia severa vale per il testo di CORPO, non per
+                        # le etichette e le righe di fonte: una nota a 10pt è
+                        # una nota, un paragrafo a 10pt è un difetto
+                        lungo = len(r.text.strip()) > 110
+                        if pt < 8:
                             R("HARD", i, "Z", f"corpo {pt}pt (≈{pt*2:.0f}px proiettato): "
-                                              f"illeggibile in sala. Taglia la copia o "
-                                              f"cambia layout, non rimpicciolire")
+                                              f"illeggibile in sala a qualunque titolo")
+                        elif lungo and pt < 12:
+                            R("HARD", i, "Z", f"paragrafo di {len(r.text.strip())} caratteri "
+                                              f"a {pt}pt (≈{pt*2:.0f}px proiettato): sotto il "
+                                              f"minimo del contratto di leggibilità. Taglia "
+                                              f"la copia o cambia layout, non rimpicciolire")
                         elif pt < 9:
-                            R("SOFT", i, "Z", f"corpo {pt}pt (≈{pt*2:.0f}px proiettato): "
-                                              f"sotto il minimo del contratto di leggibilità")
+                            R("SOFT", i, "Z", f"etichetta a {pt}pt (≈{pt*2:.0f}px proiettato): "
+                                              f"al limite inferiore")
                         if abs(pt - round(pt)) > 1e-6:
                             R("SOFT", i, "S", f"corpo a mezzo punto {pt}pt: è il segno del testo "
                                               f"rimpicciolito finché entrava, non di una scala")
@@ -265,6 +273,207 @@ def audit(path):
     return prs, rilievi, misure, rosso_atteso
 
 
+def pagine_rese(path):
+    """Rende il deck una volta sola e restituisce (pdf, [png per pagina]).
+    Tutti i controlli che guardano il RESO condividono questa passata."""
+    if not (shutil.which("soffice") and shutil.which("pdftoppm")):
+        return None, []
+    import tempfile
+    import time
+    tmp = pathlib.Path(tempfile.mkdtemp(prefix="auditpptx_"))
+    pdf = tmp / (pathlib.Path(path).stem + ".pdf")
+    # soffice non regge due istanze insieme, e il builder lo chiama un istante
+    # prima del gate: il primo tentativo fallisce in silenzio. Si riprova, invece
+    # di scaricare sull'utente un «rilancia».
+    for tentativo in range(3):
+        subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir",
+                        str(tmp), str(path)], capture_output=True)
+        if pdf.exists():
+            break
+        time.sleep(3 + 3 * tentativo)
+    if not pdf.exists():
+        return None, []
+    subprocess.run(["pdftoppm", "-png", "-r", "80", str(pdf), str(tmp / "s")],
+                   capture_output=True)
+    return pdf, sorted(tmp.glob("s-*.png"))
+
+
+def qualita_visiva(prs, png, R):
+    """I controlli che nessuno faceva, ed è il motivo per cui un deck può
+    passare il gate ed essere un muro di testo.
+
+    `audit:pptx` nasce come gate di MARCHIO: filo rosso, fondi, caratteri,
+    rossi. Niente di tutto questo vede quanto testo c'è su una pagina, quanta
+    pagina resta vuota, o se in venti slide non compare un solo elemento
+    grafico. I deck HTML della Factory hanno quei controlli da sempre
+    (`audit:deck`, banda di lettura e uso dello spazio); il .pptx no, e si è
+    visto: 16 ott 2026, mediana 134 parole per slide e 46 pagine su 49 senza
+    un disegno, con il gate verde.
+
+    Le soglie non sono opinioni: vengono dalla stessa misura fatta sui deck
+    HTML del repo (mediana 96 parole, un terzo oltre 120 già giudicato denso)
+    e dal contratto di leggibilità, che proietta a 1920.
+    """
+    from PIL import Image
+
+    senza_grafica = 0
+    for i, s in enumerate(prs.slides, 1):
+        # ── D · densità: quante parole chiede una pagina sola ───────────────
+        parole = sum(len(sh.text_frame.text.split()) for sh in walk(s.shapes)
+                     if sh.has_text_frame and sh.text_frame.text.strip())
+        if parole > 190:
+            R("HARD", i, "D", f"{parole} parole su una slide: a proiezione non si legge, "
+                              f"si ascolta chi parla. Si taglia o si divide (soglia 190)")
+        elif parole > 130:
+            R("SOFT", i, "D", f"{parole} parole: sopra le 130 la pagina diventa un "
+                              f"documento da leggere, non una slide da guardare")
+
+        # ── G · elementi grafici: un deck tutto testo è un difetto, non uno stile
+        grafici = 0
+        for sh in walk(s.shapes):
+            if sh.shape_type == MSO_SHAPE_TYPE.PICTURE:
+                grafici += 1
+            elif getattr(sh, "has_chart", False):
+                grafici += 1
+            elif sh.shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE and not (
+                    sh.has_text_frame and len(sh.text_frame.text) > 120):
+                grafici += 1
+        if grafici == 0 and parole > 60:
+            senza_grafica += 1
+            if senza_grafica == 6:
+                R("SOFT", i, "G", "sei slide di fila senza un elemento grafico: qui il deck "
+                                  "è diventato un documento. Una figura, un grafico, una "
+                                  "citazione a tutta pagina rompono il muro")
+        else:
+            senza_grafica = 0
+
+    # ── V · quanta pagina è usata, misurata sull'inchiostro vero ────────────
+    #  Si misura sul RESO, non sulle scatole: un segnaposto grande e mezzo
+    #  vuoto conta come pieno se si guarda l'XML. Basta una miniatura — la
+    #  domanda è «quanta pagina è coperta», non «di che colore è quel pixel».
+    for i, f in enumerate(png, 1):
+        im = Image.open(f).convert("L")
+        im = im.resize((200, int(200 * im.height / im.width)))
+        w, h = im.size
+        px = im.load()
+        y0, y1 = int(h * 0.06), int(h * 0.88)      # senza intestazione e piede
+        x0, x1 = int(w * 0.04), int(w * 0.98)      # senza la banda rossa
+        righe_piene, inchiostro, totale = [], 0, 0
+        for y in range(y0, y1):
+            piena = False
+            for x in range(x0, x1):
+                totale += 1
+                if px[x, y] < 230:
+                    inchiostro += 1
+                    piena = True
+            righe_piene.append(piena)
+        copertura = inchiostro / max(totale, 1)
+        if copertura < 0.035:
+            R("SOFT", i, "V", f"la pagina è coperta al {copertura*100:.1f}%: contenuto "
+                              f"appeso in alto e mezzo foglio vuoto. Si riempie, si fonde "
+                              f"con la pagina accanto, o si sceglie un layout più stretto")
+        vuote = massimo = 0
+        for piena in righe_piene:
+            vuote = 0 if piena else vuote + 1
+            massimo = max(massimo, vuote)
+        if massimo > len(righe_piene) * 0.34:
+            R("SOFT", i, "V", f"fascia vuota alta il {massimo/len(righe_piene)*100:.0f}% "
+                              f"della pagina: il contenuto sta tutto da una parte")
+
+
+def piede(path):
+    """Il controllo che la lettura dell'XML non può fare.
+
+    Tutto il resto di questo gate misura le SCATOLE: dove stanno i segnaposti,
+    di che colore sono i fondi, quali corpi e caratteri porta il testo. Nessuna
+    di quelle misure vede il testo RESO, e un paragrafo che sborda dal suo
+    segnaposto resta dentro il foglio mentre si siede sopra il marchio Adobe e
+    la riga di copyright. Successo il 16 ott 2026 alzando una scala tipografica:
+    quattro pagine su 49, gate verde, difetto visibile solo guardando.
+
+    Qui si rende il PDF e si legge il riquadro di ogni parola. Serve `soffice`
+    e `pdftotext`: dove non ci sono, il controllo si dichiara saltato e non
+    finge di essere passato.
+    """
+    if not (shutil.which("soffice") and shutil.which("pdftotext")):
+        return None
+    import tempfile
+    import html as _h
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = pathlib.Path(tmp)
+        subprocess.run(["soffice", "--headless", "--convert-to", "pdf", "--outdir",
+                        str(tmp), str(path)], capture_output=True)
+        pdf = tmp / (pathlib.Path(path).stem + ".pdf")
+        if not pdf.exists():
+            return None
+        box = tmp / "box.html"
+        subprocess.run(["pdftotext", "-bbox", str(pdf), str(box)], capture_output=True)
+        testo = box.read_text(encoding="utf-8", errors="replace")
+    # il copyright del template si riconosce dalle PAROLE, non dall'ascissa:
+    # su un layout con immagine a destra si sposta, e una regola posizionale
+    # lo scambierebbe per un difetto
+    CHROME = {"©", "2024", "2025", "2026", "2027", "Adobe", "All", "Rights",
+              "Reserved", "Confidential"}
+    guai = []
+    for n_, (alt, corpo) in enumerate(re.findall(
+            r'<page width="[\d.]+" height="([\d.]+)">(.*?)</page>', testo, re.S), 1):
+        soglia = float(alt) - 60
+        parole = []
+        for m in re.finditer(r'<word xMin="([\d.]+)" yMin="[\d.]+" xMax="[\d.]+" '
+                             r'yMax="([\d.]+)">(.*?)</word>', corpo):
+            x0, y1, parola = float(m.group(1)), float(m.group(2)), _h.unescape(m.group(3))
+            if y1 <= soglia or (y1 > soglia + 35 and x0 < 120):
+                continue
+            if parola.strip("·.,") in CHROME:
+                continue
+            parole.append(parola)
+        if parole:
+            guai.append((n_, parole))
+    return guai
+
+
+# i caratteri che il template porta per disegno: Adobe Clean in tutte le sue
+# incisioni, più Wingdings, che è il carattere dei punti elenco dei layout
+CARATTERI_DEL_TEMPLATE = re.compile(r"(AdobeClean|Adobe\s*Clean|Wingdings)", re.I)
+
+
+def caratteri_resi(pdf, R):
+    """Che cosa il motore di rendering ha DAVVERO usato per disegnare il testo.
+
+    Il controllo «F» legge il carattere DICHIARATO nell'XML, e per questo non
+    vede la classe di difetto più insidiosa: un glifo che Adobe Clean non ha.
+    L'XML continua a dire «Adobe Clean», il renderer sostituisce in silenzio, e
+    sulla pagina compare un carattere che nessuno ha scelto.
+
+    Successo il 17 ott 2026 sul deck KB FSI: un «⚠️» in una nota di cautela
+    (il selettore U+FE0F forza la resa a emoji) usciva **giallo** su un deck la
+    cui tavolozza è nero, bianco e Adobe Red — l'unico colore fuori marchio in
+    cinquanta pagine. Gate verde su tutte e tre le famiglie di controlli.
+
+    Si misura dalla prova vera: i caratteri che il PDF reso ha incorporato.
+    Così il controllo non dipende da un elenco di codepoint indovinato a mano —
+    prende qualunque sostituzione, compresa quella che non ho previsto.
+    """
+    if not shutil.which("pdffonts"):
+        return False
+    out = subprocess.run(["pdffonts", str(pdf)], capture_output=True, text=True).stdout
+    estranei = set()
+    for riga_ in out.splitlines()[2:]:
+        nome = riga_.split()[0] if riga_.split() else ""
+        if not nome:
+            continue
+        nome = nome.split("+", 1)[-1]          # via il prefisso di sottoinsieme
+        if not CARATTERI_DEL_TEMPLATE.search(nome):
+            estranei.add(nome)
+    for nome in sorted(estranei):
+        R("HARD", 0, "U", f"il reso incorpora «{nome}», che non è del template: "
+                          f"un glifo che Adobe Clean non ha viene sostituito dal "
+                          f"renderer, e la sostituzione porta forma e COLORE suoi "
+                          f"(un'emoji esce a colori). Si toglie il glifo e lo si "
+                          f"dice a parole, o si usa una forma disegnata")
+    return True
+
+
 def rendi(path, out_dir):
     if not shutil.which("soffice"):
         print("  soffice non trovato: niente rendering")
@@ -286,6 +495,40 @@ def main():
         sys.exit(f"non trovato: {path}")
 
     prs, rilievi, misure, rosso = audit(path)
+
+    # i controlli che guardano il RESO: una sola passata di rendering, che
+    # serve sia alla qualità visiva sia al piè di pagina
+    pdf_reso, png_resi = pagine_rese(path)
+    visivi_fatti = False
+    if png_resi:
+        try:
+            qualita_visiva(prs, png_resi, lambda sev, sl, c, d: rilievi.append(
+                {"severita": sev, "slide": sl, "codice": c, "dettaglio": d}))
+            visivi_fatti = True
+        except ImportError:
+            pass
+    # i caratteri DAVVERO usati dal renderer: si legge dallo stesso PDF
+    caratteri_fatti = False
+    if pdf_reso:
+        caratteri_fatti = caratteri_resi(pdf_reso, lambda sev, sl, c, d: rilievi.append(
+            {"severita": sev, "slide": sl, "codice": c, "dettaglio": d}))
+    if not caratteri_fatti:
+        rilievi.append({"severita": "HARD", "slide": 0, "codice": "!",
+                        "dettaglio": "il controllo «U» (caratteri sostituiti al rendering) "
+                                     "NON è girato: manca pdffonts o il rendering non è "
+                                     "riuscito. Questo esito non vale come verde"})
+
+    if not visivi_fatti:
+        # Un controllo saltato NON è un controllo passato. Il rendering può
+        # fallire per contesa su soffice, e un gate che in quel caso stampa
+        # zero mente: è la stessa trappola già vista su audit:deck, dove
+        # «--only a,b» non auditava niente e dichiarava PASS.
+        rilievi.append({"severita": "HARD", "slide": 0, "codice": "!",
+                        "dettaglio": "i controlli di qualità visiva (D, Z sul reso, V, G) "
+                                     "NON sono girati: rendering non riuscito o Pillow "
+                                     "assente. Questo esito non vale come verde — "
+                                     "rilancia, e se soffice è occupato aspetta che finisca"})
+
     hard = [r for r in rilievi if r["severita"] == "HARD"]
     soft = [r for r in rilievi if r["severita"] == "SOFT"]
     estranei = {f for f in misure["font"] if not FONT_OK.match(f)}
@@ -309,6 +552,25 @@ def main():
             if k > 5:
                 print(f"   … e altri {k-5} rilievi «{c}»")
         print()
+
+    guai = piede(path)
+    if guai is None:
+        print("piè di pagina: controllo saltato (serve soffice e pdftotext)\n")
+    elif guai:
+        print(f"PIÈ DI PAGINA — il testo entra dove vivono marchio e copyright: "
+              f"{len(guai)} pagine")
+        for k, w in guai[:6]:
+            print(f"   slide {k:>2}  {' '.join(w[:10])}")
+        if len(guai) > 6:
+            print(f"   … e altre {len(guai)-6} pagine")
+        print("   Si taglia la copia o si cambia layout, mai si rimpicciolisce il tipo.\n")
+        # `hard` è la LISTA dei rilievi, non un conteggio: sommarci un intero
+        # alzava TypeError e il gate moriva DOPO aver stampato tutto, con un
+        # codice d'uscita che non voleva dire quello che sembrava.
+        hard += [{"severita": "HARD", "slide": k, "codice": "Q",
+                  "dettaglio": "il testo entra nel piè di pagina"} for k, _ in guai]
+    else:
+        print("piè di pagina: libero su tutte le pagine\n")
 
     if "--render" in argv:
         j = argv.index("--render")

@@ -79,6 +79,33 @@ grigi; loghi di prodotto ufficiali col nome accanto in testo editabile; **una sc
 tipografica di 5-7 corpi** — un corpo a mezzo punto è il segno del testo rimpicciolito
 finché entrava, e allora si taglia la copia o si cambia layout.
 
+**Il motore sta in `scripts/pptx/compose.py`**, è di tutti i deck e di tutti i clienti, e
+porta i *trattamenti*: oltre a `colonne`, `cover`, `divisore` e `flusso`, ci sono `citazione`
+(una frase grande quanto la pagina), `meta_immagine` (mezza o un terzo d'immagine), `numeri`
+(le cifre a 34pt), `obiezioni` (i virgolettati del cliente), `strati` (un'architettura con
+l'innesto acceso), `linea_del_tempo` e `grafico_barre`. Il builder di un deck importa il
+motore e resta **contenuto puro**. Si migliora il motore una volta, e ne beneficia ogni deck.
+
+**Prima di comporre si APRE il catalogo** (`pnpm pptx:layouts` → `docs/Factory/pptx-layouts/`)
+e si sceglie la famiglia di layout per ogni slide. **58 dei 166** portano un'area immagine, una
+citazione a tutta pagina o una struttura da caso studio: un deck che esce «muro di testo» quasi
+sempre ha usato solo quelli a colonne — è successo il 16 ott 2026, sette layout su 166. Però
+**l'immagine non è un fine**: se il contenuto non entra, è sbagliato il layout, non la copia da
+tagliare. Le immagini si ereditano dalle librerie Adobe con la provenienza accanto, mai dal
+repertorio generico, e **si guardano a dimensione intera prima di posarle**.
+
+`audit:pptx` ha **tre gruppi** di controlli, e il terzo è nato il 16 ott 2026 perché mancava:
+marchio (`T B F R L`), geometria (`C E P O`), e **qualità visiva** — `D` parole per slide (SOFT
+>130, HARD >190), `Z` corpo proiettato (HARD per un paragrafo lungo sotto i 12pt), `V` quanta
+pagina è coperta e le fasce vuote oltre il 34%, `G` i deserti di sei slide senza un elemento
+grafico. Senza di loro un deck con **mediana 134 parole per slide e 46 pagine su 49 senza un
+disegno** passava con zero rilievi. Il giro completo sta in **`/deck-pptx`**.
+
+`audit:pptx` misura le scatole, non il testo reso: dal 16 ott 2026 rende il PDF e verifica che
+nessuna parola di corpo entri nella **fascia del piè di pagina**, dove vivono marchio e
+copyright. Quando fallisce si taglia la copia o si cambia layout, **mai si rimpicciolisce il
+tipo**.
+
 Ereditare da una libreria Adobe: `pptx:find` → `pptx:take` → modifica → **rendi e guarda**.
 Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla cieca no**
 (una ricolorazione automatica appiattisce le illustrazioni isometriche). La provenienza
