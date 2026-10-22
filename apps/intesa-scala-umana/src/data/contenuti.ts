@@ -252,18 +252,29 @@ export interface Obiettivo {
   lettura: Bilingue;
 }
 
+/* ── L'occhiello di provenienza ───────────────────────────────────────────
+   Diceva «Dichiarati da voi, in pubblico». Due parole di troppo: «da voi»
+   punta il dito, e davanti a chi quelle cose le ha dichiarate davvero suona
+   come «vi abbiamo studiati». La provenienza va detta — è quello che tiene in
+   piedi il capitolo — ma si dice dei documenti, non delle persone. Vive qui
+   perché la stessa riga sta su due percorsi: a mano divergerebbero. */
+export const OCCHIELLO_FONTE: Bilingue = {
+  it: 'Dai documenti pubblici del 2026',
+  en: 'From the 2026 public record',
+};
+
 export const OBIETTIVI: Obiettivo[] = [
   {
     n: '01',
     cifra: { it: '2,5 mln', en: '2.5m' },
     cosa: { it: 'clienti netti in più', en: 'net new customers' },
     ctx: {
-      it: 'nell’arco del Piano d’Impresa 2026-2029 · principalmente via isybank e banche estere, dice il piano',
-      en: 'over the 2026-2029 Business Plan · mainly through isybank and the International Banks, the plan says',
+      it: 'nell’arco del Piano d’Impresa 2026-2029 · principalmente via isybank e banche estere',
+      en: 'over the 2026-2029 Business Plan · mainly through isybank and the International Banks',
     },
     lettura: {
-      it: 'Il numero cresce soprattutto altrove. Che cosa chiede alla Divisione, una crescita che passa da lì?',
-      en: 'The number grows mostly elsewhere. What does growth that runs through there ask of the Division?',
+      it: 'Il numero cresce soprattutto altrove. Che cosa chiede questo alla Divisione?',
+      en: 'The number grows mostly elsewhere. What does that ask of the Division?',
     },
   },
   /* ORDINE. Il cloud stava qui e adesso sta in terza. Non è un gusto: dei tre
@@ -329,26 +340,16 @@ export const LETTURA_NOSTRA: Bilingue = {
    il posto è la carta, non un paragrafo. */
 
 
-/* ── L'aggancio ───────────────────────────────────────────────────────────
-   «Non c'è un'agenda col cliente?», «qual è il link?», «devo capire com'è il
-   nesso»: tre volte la stessa domanda, in revisione il 20 ott 2026, e nessuna
-   risposta in pagina. Un'agenda standard però sarebbe un passo indietro — la
-   copertina dice già che cosa ricevono, e un sommario in testa toglie proprio
-   l'effetto «vi abbiamo guardati da fuori» su cui regge il primo capitolo.
-   Quello che mancava non è l'indice: è PERCHÉ siamo a quel tavolo. Una riga.
-   Dice l'aggancio e non dichiara di sapere che cosa stanno valutando: quello,
-   se serve, lo dice a voce chi lo può garantire.
-   22 ott 2026: il partner che era nominato qui è uscito dalla riga, e dal deck.
-   All'incontro si va da soli, e una copertina che si appoggia a un terzo assente
-   è una legittimazione che in sala non c'è nessuno a sostenere. Resta quello che
-   possiamo garantire da soli: che l'incontro l'abbiamo chiesto noi, e che prima
-   di proporre viene il guardare. La provenienza — chi ci ha consigliato di
-   parlarvi — si dice A VOCE nei primi tre minuti: è una referenza interna al
-   cliente, e un nome di persona in un file di questo repo non ci va comunque. */
-export const AGGANCIO: Bilingue = {
-  it: 'L’incontro l’abbiamo chiesto noi. Prima di proporre qualcosa, questo è come vi vediamo da fuori.',
-  en: 'We asked for this meeting. Before proposing anything, this is how we see you from outside.',
-};
+/* ── L'aggancio: NON c'è più, ed è una scelta ─────────────────────────────
+   Ha avuto due vite e tutte e due finite. Prima diceva con chi eravamo a quel
+   tavolo: via il 22 ott, perché all'incontro si va da soli e una copertina che
+   si appoggia a un terzo assente è una legittimazione che in sala non c'è
+   nessuno a sostenere. Poi diceva che l'incontro l'avevamo chiesto noi: via
+   anche quella, stesso giorno. Una copertina che si giustifica parte in
+   difesa; il titolo, la riga sotto e la data bastano. Il perché siamo lì si
+   dice A VOCE nei primi tre minuti — sta nella scaletta dell'ora, non in
+   pagina. Se qualcuno pensa di rimetterla: è già stata tolta due volte. */
+
 
 /* ── Il titolo della slide ─────────────────────────────────────────────────
    Era «Tre obiettivi del vostro piano». Non reggeva: i 20 miliardi alle
@@ -375,14 +376,13 @@ export const DOMANDA_OBIETTIVI: Bilingue = {
   en: 'Are these the three that matter, or is one missing?',
 };
 
-/* ── La domanda che chiude il primo capitolo ───────────────────────────────
-   Sta sui numeri, in entrambi i percorsi. È la riga che trasforma «il vostro
-   anno visto da fuori» da verbale a domanda: senza, la slide afferma al
-   cliente come stanno le sue cose. */
-export const DOMANDA_LETTURA: Bilingue = {
-  it: 'Questa lettura regge, vista da dentro?',
-  en: 'Does this reading hold, seen from the inside?',
-};
+/* ── La domanda sui numeri: TOLTA il 22 ott ───────────────────────────────
+   Era «Questa lettura regge, vista da dentro?» e chiudeva la slide dei numeri
+   in entrambi i percorsi. Il capitolo conserva una domanda sola — quella sugli
+   obiettivi — e due domande ravvicinate che chiedono la stessa cosa (ditemi se
+   ho capito male) suonano come una richiesta di approvazione. La verifica si
+   chiede a voce, guardando chi risponde. */
+
 
 /* ── L'ask ─────────────────────────────────────────────────────────────────
    Una frase sola, in un posto solo: è la cosa che il cliente si porta via, e
