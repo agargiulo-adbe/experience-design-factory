@@ -160,6 +160,15 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'idee',      route: '/experience-design-factory/tim-contenuti-su-scala/idee/' },
     { name: 'rotta',     route: '/experience-design-factory/tim-contenuti-su-scala/rotta/' },
   ],
+  'intesa-innesto': [
+    { name: 'home',         route: '/experience-design-factory/intesa-innesto/' },
+    { name: 'scenario',     route: '/experience-design-factory/intesa-innesto/scenario/' },
+    { name: 'fondamenta',   route: '/experience-design-factory/intesa-innesto/fondamenta/' },
+    { name: 'use-case',     route: '/experience-design-factory/intesa-innesto/use-case/' },
+    { name: 'convergenza',  route: '/experience-design-factory/intesa-innesto/convergenza/' },
+    { name: 'valore',       route: '/experience-design-factory/intesa-innesto/valore/' },
+    { name: 'rotta',        route: '/experience-design-factory/intesa-innesto/rotta/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -178,4 +187,5 @@ export const CWD_ALIAS: Record<string, string> = {
   'intesa-scala-umana': 'intesa-scala-umana',
   'trenitalia-prospettiva-sales': 'trenitalia-prospettiva-sales',
   'tim-contenuti-su-scala': 'tim-contenuti-su-scala',
+  'intesa-innesto': 'intesa-innesto',
 };

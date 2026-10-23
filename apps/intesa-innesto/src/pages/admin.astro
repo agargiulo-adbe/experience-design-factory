@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+// Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
+// accende e spegne. Ogni <Slide id> nuova va registrata qui.
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Dove ci innestiamo (00)', slides: [
+    { id: 'slide-cover',    label: 'Cover — Dove ci innestiamo' },
+    { id: 'slide-percorso', label: 'Il percorso — 6 capitoli' },
+  ]},
+  { slug: 'scenario', label: 'Scenario (01)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Scenario' },
+    { id: 'slide-contenuto', label: 'Scenario — contenuto' },
+  ]},
+  { slug: 'fondamenta', label: 'Le fondamenta (02)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Le fondamenta' },
+    { id: 'slide-contenuto', label: 'Le fondamenta — contenuto' },
+  ]},
+  { slug: 'use-case', label: 'Gli use case (03)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Gli use case' },
+    { id: 'slide-contenuto', label: 'Gli use case — contenuto' },
+  ]},
+  { slug: 'convergenza', label: 'La convergenza (04)', slides: [
+    { id: 'slide-cover',     label: 'Cover — La convergenza' },
+    { id: 'slide-contenuto', label: 'La convergenza — contenuto' },
+  ]},
+  { slug: 'valore', label: 'Il valore (05)', slides: [
+    { id: 'slide-cover',     label: 'Cover — Il valore' },
+    { id: 'slide-contenuto', label: 'Il valore — contenuto' },
+  ]},
+  { slug: 'rotta', label: 'La rotta (06)', slides: [
+    { id: 'slide-cover',     label: 'Cover — La rotta' },
+    { id: 'slide-contenuto', label: 'La rotta — contenuto' },
+    { id: 'slide-signature', label: 'La firma — Adobe × Intesa Sanpaolo' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
+// Adobe che l'experience propone davvero (nomi verificati, vedi memoria
+// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'piattaforma', name: 'Adobe Experience Cloud — segnaposto', shortName: 'Adobe', pillar: 'piattaforma',
+    description: 'Sostituire con i prodotti Adobe che il deck propone, uno per voce, con il nome per esteso.', appearsIn: ['Scenario', 'Le fondamenta', 'Gli use case', 'La convergenza', 'Il valore', 'La rotta'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
+const PILLAR_ORDER = ['piattaforma'];
+const PILLAR_COLORS: Record<string, string> = { piattaforma: '#258900' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+// I dossier interni di questa experience, se ne ha: la console è il posto dove
+// chi presenta trova il deck e il documento che prepara la stanza. Quando nasce
+// un `dossier.astro`, si aggiunge qui — restano gated, il link non li apre.
+const DOSSIERS: { href: string; label?: string }[] = [
+  // { href: href(base, '/dossier'), label: 'Dossier interno' },
+];
+---
+<BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
+  <AdminConsole
+    projectSlug={SITE.slug}
+    projectName={SITE.name}
+    clientLabel={`Adobe × ${SITE.client}`}
+    deckHref={deckHref}
+    dossiers={DOSSIERS}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>
