@@ -254,6 +254,49 @@ che digita e l'assistente che le risponde parlano al singolare, se no non è una
 Lo scheletro dei tipi in `experienceTypes.ts` segue la stessa regola, così ogni experience
 nuova nasce già al plurale. Memoria: `deck-voice-institutional`.
 
+### Ancore, non prosa (BINDING, ogni experience presente e futura)
+Chi guarda una slide **legge**, e mentre legge non ascolta chi parla. Misurato il 22 ott
+2026 in videoconferenza con una banca: il capitolo costruito per far parlare il cliente ha
+prodotto **2 minuti su 18**, e due colleghi nel debrief hanno detto «in video loro si fissano
+sul leggere le slide — bisogna dargli delle **ancore**» e «tu ti sei spiegato benissimo, **ma
+io non ho capito**».
+
+Lo dice anche l'evidenza, e la corregge nel punto utile. Il **redundancy principle** (Mayer):
+si impara meglio da *grafica + voce* che da *grafica + voce + testo a schermo*, perché due
+fonti verbali simultanee competono e una si perde. Ma la condizione al contorno ribalta il
+«via tutto il testo»: **etichette brevi, messe accanto alla cosa che descrivono, migliorano**
+la comprensione, perché guidano l'attenzione invece di competere con la voce.
+
+Quindi, su ogni slide di contenuto:
+- **un'ancora per concetto — massimo 6 parole.** È un nome, non una frase.
+- **una riga di lead**, il punto della slide, massimo ~15 parole. Il titolo *è* il punto, non
+  l'etichetta del capitolo.
+- **tutto il resto dietro `HowItWorks`** («Scopri come»). Non si butta: il deck viene
+  inoltrato e deve reggere senza chi l'ha presentato — ma la prosa sta **a richiesta**, non
+  addosso a chi parla.
+- **dove si spiega un meccanismo, si DISEGNA.** Un diagramma con le ancore attaccate ai nodi
+  batte tre card di testo, sempre. E un'architettura che **nasce a fasi** sotto le frecce del
+  deck dice «ci appoggiamo sopra» con la forma, invece di scriverlo.
+
+**Il template lo impone, non lo ricorda:** `templates/experience/src/pages/_chapter.astro.tpl`
+genera ancore (`.ex-ancore`) più un `HowItWorks`, e porta la regola nel commento al punto
+d'uso. Chi scrive tre paragrafi dentro tre card sta rifacendo l'errore che quella forma
+esiste per impedire. Dettaglio e casi:
+`skills/experience-design/references/ancore-non-prosa.md`.
+
+**Il gate è la famiglia `P` di `copy-audit`:** conta i blocchi di prosa (>25 parole) resi in
+pagina e **fuori** da una disclosure, normalizzati per slide; sopra 2 per slide segnala.
+È **SOFT e non HARD** per una ragione dichiarata: i deck nati prima la sforano quasi tutti, e
+un gate che fallisce ovunque il primo giorno viene spento. Diventa HARD quando sono passati.
+⚠️ Limite noto: non conta la prosa che vive in `src/data/*.ts` e arriva in pagina per import.
+Quella si vede a occhio.
+
+**E il check `i` di `audit:deck` non è il giudice qui.** Misura la **massa di testo**, ed è
+tarato su deck di prosa: un deck ad ancore lo fallisce per costruzione (su Intesa è passato da
+7 a 44 rilievi mentre le slide miglioravano). Un `i` che sale mentre il testo scende non è un
+peggioramento: è il gate che guarda la cosa sbagliata. Non si compensa gonfiando le slide.
+Memoria: `in-video-le-slide-si-leggono`.
+
 ### `audit:deck` — leggere davvero l'esito, non solo la riga finale
 Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe
 silenziose:

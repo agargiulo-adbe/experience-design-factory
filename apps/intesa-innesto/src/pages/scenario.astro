@@ -3,11 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { IMPIANTO, CIFRE } from '../data/impianto';
-
+import { CIFRE } from '../data/impianto';
 const SLUG = 'scenario';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
@@ -20,74 +20,50 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="ex-bg-night"></div>
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T
-          as="p"
-          class="ex-ch-lead"
-          it="Lo diciamo noi per primi, con i vostri nomi e senza aggettivi. Se la lettura è sbagliata in un punto, quel punto è il più utile dell’ora."
-          en="We say it first, using your own names and no adjectives. If this reading is wrong somewhere, that is the most useful minute of the hour."
-          data-reveal data-reveal-delay="0.15"
-        />
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="L’impianto come lo vediamo da fuori" en="The stack as we see it from outside" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="Dove siete già arrivati" en="How far you have already come" /></li>
-          </ul>
-        </div>
+        <T as="p" class="ex-ch-lead" it="Lo diciamo noi per primi, con i vostri nomi e senza aggettivi." en="We say it first, using your own names and no adjectives." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── L'impianto ────────────────────────────────────────────────────── -->
+    <!-- Tre domini, tre nomi. Le spiegazioni stanno dietro «Scopri come»:
+         in pagina competerebbero con chi parla, e perderebbero. -->
     <Slide id="slide-impianto" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="L’impianto" en="The stack" />
-          <T as="h2" class="ex-head-title" it="Tre mestieri, tre sistemi, e un confine fra l’uno e l’altro" en="Three jobs, three systems, and a border between each pair" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Il dato del comportamento digitale sta in Adobe Analytics. I target si costruiscono nel CRM. I journey girano nei workflow di Salesforce Marketing Cloud. Ogni pezzo fa bene il suo mestiere, e il lavoro interessante è nei punti dove si passano la palla."
-            en="Digital behaviour data sits in Adobe Analytics. Targets are built in the CRM. Journeys run inside Salesforce Marketing Cloud workflows. Each part does its own job well, and the interesting work is where they hand over to one another."
-          />
+          <T as="h2" class="ex-head-title" it="Tre mestieri, tre sistemi" en="Three jobs, three systems" />
+          <T as="p" class="ex-head-lead" it="Il lavoro interessante è dove si passano la palla." en="The interesting work is where they hand over." />
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {IMPIANTO.map((x) => (
-            <div class="ex-card">
-              <T as="p" class="ex-card-k" it={x.k.it} en={x.k.en} />
-              <T as="p" class="ex-card-t" it={x.t.it} en={x.t.en} />
-              <T as="p" class="ex-card-b" it={x.b.it} en={x.b.en} />
-            </div>
-          ))}
+        <div class="ii-flusso" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ii-chip" it="Adobe Analytics · il dato digitale" en="Adobe Analytics · digital data" />
+          <span class="ii-freccia" aria-hidden="true">→</span>
+          <T as="p" class="ii-chip" it="CRM · audience e target" en="CRM · audiences and targets" />
+          <span class="ii-freccia" aria-hidden="true">→</span>
+          <T as="p" class="ii-chip" it="Marketing Cloud · il contatto" en="Marketing Cloud · the contact" />
         </div>
-        <T
-          as="p" class="ex-src"
-          it="Lettura nostra, costruita su quanto emerso nell’incontro del 22 ottobre 2026 e sul confronto interno con il team Adobe che segue l’account. Da correggere dove è sbagliata."
-          en="Our own reading, built on what emerged in the 22 October 2026 meeting and on internal discussion with the Adobe account team. To be corrected where it is wrong."
-          data-reveal data-reveal-delay="0.24"
-        />
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Che cosa abbiamo letto, e da dove" tone="onLight">
+            <T as="p" it="Il comportamento su web e app è tracciato in profondità e da anni. Quello che succede in filiale, al telefono e sui contatti assistiti resta in altri sistemi, e oggi non si somma allo stesso cliente." en="Web and app behaviour has been tracked in depth for years. What happens in branch, over the phone and in assisted contacts stays in other systems, and today it does not add up to the same customer." />
+            <T as="p" it="Le audience si costruiscono a monte, con modelli di propensione vostri. I percorsi girano nei workflow di Salesforce Marketing Cloud: chi entra in un ramo riceve la comunicazione prevista per quel ramo." en="Audiences are built upstream, with your own propensity models. Journeys run inside Salesforce Marketing Cloud workflows: whoever enters a branch gets the message that branch prescribes." />
+            <T as="p" it="Il passaggio dalla multicanalità all’omnicanalità è fatto: lo stesso percorso identico dalla filiale, dall’app e dal sito. Web e form girano su Adobe Experience Manager, oggi installato in casa." en="The move from multichannel to omnichannel is done: the very same journey from branch, app and site. Web and forms run on Adobe Experience Manager, today on premise." />
+            <T as="p" it="Lettura nostra, costruita su quanto emerso nell’incontro del 22 ottobre 2026. Da correggere dove è sbagliata." en="Our own reading, built on what emerged in the 22 October 2026 meeting. To be corrected where it is wrong." />
+          </HowItWorks>
+        </div>
       </div>
     </Slide>
 
-    <!-- ── Dove siete già arrivati ───────────────────────────────────────── -->
     <Slide id="slide-dove-siete" bg="secondary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="Il punto di partenza" en="The starting point" />
           <T as="h2" class="ex-head-title" it="Nessuno di questi numeri è nostro" en="None of these figures are ours" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Sono quattro cifre che il Gruppo ha dichiarato in pubblico. Le mettiamo in pagina perché dicono una cosa precisa: la partita non è più costruire il canale, è decidere che cosa farci passare."
-            en="These are four figures the Group has stated publicly. They are on the page because they say something precise: the job is no longer building the channel, it is deciding what goes through it."
-          />
+          <T as="p" class="ex-head-lead" it="La partita non è più costruire il canale. È decidere che cosa farci passare." en="The job is no longer building the channel. It is deciding what goes through it." />
         </div>
         <div class="ii-cifre" data-reveal data-reveal-delay="0.14">
           {CIFRE.map((c) => (

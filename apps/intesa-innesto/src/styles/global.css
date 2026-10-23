@@ -42,6 +42,15 @@
   --color-verde-notte: #0d2901;
   --color-verde-velo: #f1f7ee;
   --color-arancio: #fa9600;
+  /* Alias italiani dei grigi: il deck usa il vocabolario del cliente. Senza
+     questi, `var(--color-grigio-300)` non risolve e la proprietà torna al suo
+     valore iniziale IN SILENZIO — su `stroke` vuol dire «none», e il diagramma
+     sparisce senza che nessun gate se ne accorga. */
+  --color-grigio-100: var(--color-grey-100);
+  --color-grigio-200: var(--color-grey-200);
+  --color-grigio-300: var(--color-grey-300);
+  --color-grigio-500: var(--color-grey-500);
+  --color-grigio-600: var(--color-grey-600);
   --color-ink: #1a1a1a;
   --color-ink-2: #474747;
   --color-night: #0d2901;
@@ -77,6 +86,15 @@
   --color-verde-notte: #0d2901;
   --color-verde-velo: #f1f7ee;
   --color-arancio: #fa9600;
+  /* Alias italiani dei grigi: il deck usa il vocabolario del cliente. Senza
+     questi, `var(--color-grigio-300)` non risolve e la proprietà torna al suo
+     valore iniziale IN SILENZIO — su `stroke` vuol dire «none», e il diagramma
+     sparisce senza che nessun gate se ne accorga. */
+  --color-grigio-100: var(--color-grey-100);
+  --color-grigio-200: var(--color-grey-200);
+  --color-grigio-300: var(--color-grey-300);
+  --color-grigio-500: var(--color-grey-500);
+  --color-grigio-600: var(--color-grey-600);
   --color-ink: #1a1a1a;
   --color-ink-2: #474747;
   --color-night: #0d2901;
@@ -458,78 +476,6 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   max-width: none;
 }
 
-/* ── I tre strati dell'architettura ───────────────────────────────────── */
-.ii-strati {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  width: 100%;
-  max-width: 72rem;
-}
-.ii-strato {
-  display: grid;
-  grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
-  gap: 1.1rem;
-  align-items: start;
-  padding: 0.95rem 1.15rem;
-  border: 1px solid var(--line-subtle);
-  border-radius: 3px;
-  background: var(--surface-primary);
-}
-/* Lo strato 2 è il vuoto: tratteggiato, perché è un'assenza, non un prodotto. */
-.ii-strato--vuoto { border-style: dashed; background: transparent; }
-/* Lo strato 3 è il nostro: l'unico con l'accento, e si vede che sta sopra. */
-.ii-strato--nostro {
-  border-color: var(--color-verde);
-  border-left: 3px solid var(--color-verde);
-  background: var(--color-verde-velo);
-}
-.ii-strato-testa { min-width: 0; }
-.ii-strato-k {
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-grigio-600);
-  margin: 0 0 0.2rem;
-  max-width: none;
-}
-.ii-strato-t {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--ink-primary);
-  margin: 0;
-  max-width: none;
-}
-.ii-pezzi {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-  min-width: 0;
-}
-.ii-pezzo {
-  min-width: 0;
-  padding: 0.55rem 0.7rem;
-  border-left: 2px solid var(--color-grigio-300);
-}
-.ii-pezzo--nostro { border-left-color: var(--color-verde); }
-.ii-pezzo-n {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.35;
-  color: var(--ink-primary);
-  margin: 0 0 0.15rem;
-  max-width: none;
-}
-.ii-pezzo-b {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--ink-secondary);
-  margin: 0;
-  max-width: none;
-}
-
 /* ── Il confronto a due colonne ───────────────────────────────────────── */
 .ii-conf {
   display: grid;
@@ -632,3 +578,114 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    invece di rimpicciolire qualcosa. */
 .ex-cards--due { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 640px) { .ex-cards--due { grid-template-columns: minmax(0, 1fr); } }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   L'architettura — un diagramma a fasi, non una tabella
+   In pagina ci sono SOLO le ancore: una per nodo, il nome e basta. Le
+   spiegazioni sono la voce di chi presenta e vivono in src/data/impianto.ts
+   senza essere rese. Il principio: etichette ancorate alla cosa che
+   descrivono guidano l'attenzione; la prosa compete con chi parla e perde.
+   ═══════════════════════════════════════════════════════════════════════ */
+.ii-arch { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 74rem; }
+.ii-arch-titoli { min-height: 3.2rem; }
+.ii-arch-titolo {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;
+  color: var(--ink-primary); margin: 0;
+}
+.ii-arch-scena { position: relative; width: 100%; }
+.ii-arch-svg { display: block; width: 100%; height: 100%; }
+
+.ii-n { fill: var(--surface-primary); stroke: var(--color-grigio-300); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.ii-n--vuoto { fill: none; stroke: var(--color-grigio-500); stroke-dasharray: 7 6; }
+.ii-n--nostro { fill: var(--color-verde-velo); stroke: var(--color-verde); stroke-width: 2; }
+.ii-l { stroke: var(--color-grigio-300); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.ii-l--su { stroke: var(--color-verde); stroke-width: 2; }
+
+.ii-arch-ancore { position: absolute; inset: 0; pointer-events: none; }
+.ii-a {
+  position: absolute;
+  /* `translate` (proprietà a sé) e non `transform`: il runtime delle fasi
+     scrive `transform: translateY(...)` per l'entrata, e un `transform` in
+     linea sovrascriverebbe il centraggio invece di comporsi con lui. */
+  translate: -50% -50%;
+  /* Minimo del contratto di leggibilità. Un'ancora che non si legge non è
+     un'ancora: se non entra si accorcia il nome, non il corpo. */
+  font-size: 1.02rem; line-height: 1.3; font-weight: 600; text-align: center;
+  color: var(--ink-primary);
+}
+.ii-a--nostro { color: var(--color-verde-scuro); }
+.ii-a--vuoto { color: var(--color-grigio-600); font-weight: 400; font-style: italic; }
+.ii-arch-chiusa { min-height: 2.2rem; }
+
+/* ── Le domande grandi (l'arbitro) ────────────────────────────────────── */
+.ii-domande {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem; width: 100%; max-width: 68rem;
+}
+.ii-domanda {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 2rem 1.6rem;
+  min-height: 7.5rem;
+  display: flex; align-items: center;
+  border-left: 3px solid var(--color-verde);
+  background: var(--color-verde-velo);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 700; line-height: 1.3; color: var(--ink-primary);
+}
+
+/* ── Il dettaglio dietro «Scopri come» ───────────────────────────────────
+   ⚠️ `.hiw-body` del motore NON dichiara un colore: su slide chiara resterebbe
+   bianco su bianco, e a blocco chiuso nessun gate lo vede. Si dichiara qui. */
+.ii-dett { margin-top: 1.3rem; max-width: 56rem; }
+.ii-dett .hiw-body p {
+  font-size: 0.98rem; line-height: 1.6; color: var(--ink-secondary);
+  margin: 0 0 0.7rem; max-width: none;
+}
+.ii-dett .hiw-body p:last-child { margin-bottom: 0; }
+
+@media (max-width: 900px) {
+  .ii-domande { grid-template-columns: minmax(0, 1fr); }
+  .ii-a { font-size: 0.9rem; }
+}
+
+/* ── La sequenza a chip: un flusso che si legge, non si legge a righe ──── */
+.ii-flusso { display: flex; align-items: stretch; flex-wrap: wrap; gap: 0.5rem; width: 100%; max-width: 72rem; }
+.ii-chip {
+  flex: 1 1 0; min-width: 9rem; margin: 0; max-width: none;
+  padding: 1.1rem 1rem; text-align: center;
+  border: 1px solid var(--color-grigio-300); border-radius: 3px;
+  background: var(--surface-primary);
+  font-size: 1.02rem; font-weight: 600; line-height: 1.3; color: var(--ink-primary);
+  display: flex; align-items: center; justify-content: center;
+}
+.ii-chip--vuoto {
+  border-style: dashed; background: transparent;
+  color: var(--color-grigio-600); font-weight: 400; font-style: italic;
+}
+.ii-chip--nostro { border-color: var(--color-verde); border-width: 2px; background: var(--color-verde-velo); color: var(--color-verde-scuro); }
+.ii-freccia { align-self: center; color: var(--color-grigio-500); flex: 0 0 auto; font-size: 1.1rem; }
+
+/* ── Due colonne di ancore corte (resta / si rifà) ───────────────────── */
+.ii-due { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; width: 100%; max-width: 64rem; }
+.ii-due-col { min-width: 0; padding: 1.2rem 1.4rem; border-radius: 3px; background: var(--surface-primary); border: 1px solid var(--line-subtle); }
+.ii-due-col--nostro { border-color: var(--color-verde); border-left: 3px solid var(--color-verde); background: var(--color-verde-velo); }
+.ii-due-k { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); margin: 0 0 0.7rem; max-width: none; }
+.ii-due-col ul { margin: 0; padding: 0; list-style: none; }
+.ii-due-col li { font-size: 1.05rem; font-weight: 600; line-height: 1.35; color: var(--ink-primary); margin-bottom: 0.6rem; }
+.ii-due-col li:last-child { margin-bottom: 0; }
+
+/* ── Il blocco referenza: un nome, un fatto ──────────────────────────── */
+.ii-ref { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; width: 100%; max-width: 64rem; }
+.ii-ref-b { min-width: 0; padding: 1.3rem 1.5rem; border-left: 3px solid var(--color-verde); background: var(--color-verde-velo); border-radius: 3px; }
+.ii-ref-n { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; line-height: 1.2; color: var(--ink-primary); margin: 0 0 0.35rem; max-width: none; }
+.ii-ref-f { font-size: 1.02rem; line-height: 1.45; color: var(--ink-secondary); margin: 0; max-width: none; }
+
+@media (max-width: 900px) {
+  .ii-flusso { flex-direction: column; }
+  .ii-freccia { transform: rotate(90deg); }
+  .ii-due, .ii-ref { grid-template-columns: minmax(0, 1fr); }
+}

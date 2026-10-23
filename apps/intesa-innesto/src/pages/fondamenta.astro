@@ -3,41 +3,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { STRATI } from '../data/impianto';
+import { NODI, LEGAMI, FASI, H_NODO, VIEWBOX } from '../data/impianto';
 
 const SLUG = 'fondamenta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Le tre incognite sull'arbitro. Le portiamo noi, dichiarate come nostre:
-// subirle è peggio che proporle.
-const INCOGNITE = [
-  {
-    t: { it: 'Chi lo governa', en: 'Who governs it' },
-    b: {
-      it: 'L’arbitro non è un secondo motore di propensione. Le regole, i tetti di contatto e le priorità restano una scelta vostra, e vanno scritte da qualcuno con un nome.',
-      en: 'The arbiter is not a second propensity engine. Rules, contact caps and priorities stay your decision, and someone with a name has to write them.',
-    },
-  },
-  {
-    t: { it: 'Chi ne cambia le regole', en: 'Who changes its rules' },
-    b: {
-      it: 'Una regola che si cambia solo con un rilascio non serve. Serve capire chi la tocca, con quale approvazione e in quanto tempo.',
-      en: 'A rule you can only change with a release is useless. What matters is who touches it, with whose sign-off, and how fast.',
-    },
-  },
-  {
-    t: { it: 'Chi risponde di cosa decide', en: 'Who answers for its decisions' },
-    b: {
-      it: 'Su una banca questa è la domanda vera, e non ha una risposta di prodotto. Va messa sul tavolo prima di accendere qualunque cosa.',
-      en: 'In a bank this is the real question, and it has no product answer. It belongs on the table before anything is switched on.',
-    },
-  },
-];
+const [VW, VH] = VIEWBOX.split(' ').slice(2).map(Number);
+const pct = (n: number, tot: number) => `${(n / tot) * 100}%`;
+
+// Stato cumulativo per fase: serve al runtime, e lo si calcola qui una volta.
+const stati = FASI.map((_, i) => {
+  const visibili: string[] = [];
+  for (let k = 0; k <= i; k++) visibili.push(...FASI[k].entrano);
+  return { visibili, spenti: FASI[i].spenti ?? [] };
+});
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -52,59 +37,64 @@ const INCOGNITE = [
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T
-          as="p"
-          class="ex-ch-lead"
-          it="Tre strati, dal basso. Il primo e il secondo sono vostri e restano vostri. Il terzo è quello che proponiamo, e sono componenti con un nome, non una direzione di marcia."
-          en="Three layers, from the bottom up. The first two are yours and stay yours. The third is what we propose, and they are named components, not a direction of travel."
-          data-reveal data-reveal-delay="0.15"
-        />
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="I tre strati, e dove ci attacchiamo" en="The three layers, and where we attach" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="Di chi è l’arbitro" en="Whose arbiter is it" /></li>
-          </ul>
-        </div>
+        <T as="p" class="ex-ch-lead"
+          it="Tre strati. I primi due sono vostri e restano vostri."
+          en="Three layers. The first two are yours and stay yours."
+          data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── L'architettura ───────────────────────────────────────────────────
-         ⚠️ BOZZA: da far validare all'architetto prima del 5 novembre.
-         Diventerà il blocco `Blueprint` a fasi del motore (vedi la spec
-         docs/superpowers/specs/2026-10-23-blueprint-animato-design.md): per
-         questo gli strati arrivano già dai dati e non dal markup. -->
+    <!-- ── L'architettura, a fasi ────────────────────────────────────────────
+         Un DIAGRAMMA, non una tabella: in pagina ci sono solo le ancore, una
+         per nodo. Le spiegazioni sono la voce di chi presenta e stanno in
+         `voce` dentro src/data/impianto.ts, dove non si rendono.
+         Le frecce del deck avanzano di FASE dentro questa slide: il loro
+         impianto resta intero per due terzi del tempo, e si vede che non gli
+         si toglie niente. ⚠️ BOZZA da validare con l'architetto. -->
     <Slide id="slide-architettura" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <T as="p" class="slide-eyebrow" it="L’architettura" en="The architecture" />
-          <T as="h2" class="ex-head-title" it="Un anello in più, in cima a quello che gira già" en="One more link, on top of what already runs" />
-        </div>
-        <div class="ii-strati" data-reveal data-reveal-delay="0.12">
-          {STRATI.map((s) => (
-            <div class={`ii-strato${s.id === 'innesto' ? ' ii-strato--nostro' : ''}${s.id === 'vuoto' ? ' ii-strato--vuoto' : ''}`}>
-              <div class="ii-strato-testa">
-                <T as="p" class="ii-strato-k" it={s.k.it} en={s.k.en} />
-                <T as="p" class="ii-strato-t" it={s.t.it} en={s.t.en} />
-              </div>
-              <div class="ii-pezzi">
-                {s.pezzi.map((p) => (
-                  <div class={`ii-pezzo${p.nostro ? ' ii-pezzo--nostro' : ''}`}>
-                    <p class="ii-pezzo-n">{p.nome}</p>
-                    <T as="p" class="ii-pezzo-b" it={p.nota.it} en={p.nota.en} />
-                  </div>
-                ))}
-              </div>
-            </div>
+      <div class="ii-arch" data-blueprint="architettura" data-fasi={FASI.length}>
+        <script type="application/json" data-bp-stati set:html={JSON.stringify(stati)} />
+
+        <T as="p" class="slide-eyebrow" it="L’architettura" en="The architecture" />
+        <div class="ii-arch-titoli">
+          {FASI.map((f, i) => (
+            <h2 class="ii-arch-titolo" data-fase-titolo={i} hidden={i !== 0}>
+              <span data-lang-it>{f.titolo.it}</span><span data-lang-en>{f.titolo.en}</span>
+            </h2>
           ))}
         </div>
-        <T
-          as="p" class="ii-chiedi"
-          it="La domanda di questo capitolo: questa lettura regge, vista da dentro? Dove è sbagliata, è lì che conviene fermarsi."
-          en="The question of this chapter: does this reading hold up, seen from inside? Where it is wrong is where it pays to stop."
-          data-reveal data-reveal-delay="0.26"
-        />
+
+        <div class="ii-arch-scena" style={`aspect-ratio: ${VW} / ${VH};`}>
+          <svg class="ii-arch-svg" viewBox={VIEWBOX} role="presentation" aria-hidden="true" preserveAspectRatio="none">
+            {LEGAMI.map((l) => (
+              <line class={`ii-l${l.su ? ' ii-l--su' : ''}`} data-el={l.id}
+                    x1={l.x} y1={l.da} x2={l.x} y2={l.a} />
+            ))}
+            {NODI.map((n) => (
+              <rect class={`ii-n${n.nostro ? ' ii-n--nostro' : ''}${n.vuoto ? ' ii-n--vuoto' : ''}`}
+                    data-el={n.id} x={n.x} y={n.y} width={n.w} height={H_NODO} rx="4" />
+            ))}
+          </svg>
+
+          <!-- Le ancore stanno FUORI dall'SVG: restano DOM, quindi copy-audit,
+               audit:wrap e audit:ink continuano a misurarle. -->
+          <div class="ii-arch-ancore">
+            {NODI.map((n) => (
+              <span class={`ii-a${n.nostro ? ' ii-a--nostro' : ''}${n.vuoto ? ' ii-a--vuoto' : ''}`}
+                    data-el={`a-${n.id}`}
+                    style={`left:${pct(n.x + n.w / 2, VW)};top:${pct(n.y + H_NODO / 2, VH)};width:${pct(n.w - 24, VW)}`}>
+                <span data-lang-it>{n.ancora.it}</span><span data-lang-en>{n.ancora.en}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="ii-arch-chiusa">
+          <T as="p" class="ii-chiedi" data-fase-chiusa="2" hidden
+            it="Questa lettura regge, vista da dentro?"
+            en="Does this reading hold up, seen from inside?" />
+        </div>
       </div>
     </Slide>
 
@@ -115,29 +105,102 @@ const INCOGNITE = [
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="L’incognita" en="The open question" />
           <T as="h2" class="ex-head-title" it="Di chi è l’arbitro" en="Whose arbiter is it" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Un anello che sceglie fra più proposte concentra potere, e questa è l’obiezione che arriverebbe comunque. La portiamo noi, con le tre cose che non abbiamo ancora risolto."
-            en="A link that picks between competing offers concentrates power, and that objection would land anyway. We bring it ourselves, with the three things we have not settled yet."
-          />
+          <T as="p" class="ex-head-lead"
+            it="Tre cose che non abbiamo ancora risolto, e le portiamo noi."
+            en="Three things we have not settled yet, and we bring them ourselves." />
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {INCOGNITE.map((x) => (
-            <div class="ex-card">
-              <T as="p" class="ex-card-t" it={x.t.it} en={x.t.en} />
-              <T as="p" class="ex-card-b" it={x.b.it} en={x.b.en} />
-            </div>
-          ))}
+        <div class="ii-domande" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ii-domanda" it="Chi lo governa" en="Who governs it" />
+          <T as="p" class="ii-domanda" it="Chi ne cambia le regole" en="Who changes its rules" />
+          <T as="p" class="ii-domanda" it="Chi risponde di cosa decide" en="Who answers for its decisions" />
         </div>
-        <T
-          as="p" class="ex-src"
-          it="I modelli di propensione restano i vostri e continuano a scegliere che cosa proporre. L’anello in più decide quale delle proposte esce adesso, su quel canale."
-          en="Your propensity models stay yours and keep choosing what to propose. The extra link decides which of those proposals goes out now, on that channel."
-          data-reveal data-reveal-delay="0.24"
-        />
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Perché queste tre, e non altre" tone="onLight">
+            <T as="p" it="L’arbitro non è un secondo motore di propensione: i vostri modelli continuano a scegliere che cosa proporre, lui sceglie quale proposta esce adesso." en="The arbiter is not a second propensity engine: your models keep choosing what to propose, it chooses which proposal goes out now." />
+            <T as="p" it="Le regole, i tetti di contatto e le priorità restano una scelta vostra, e vanno scritte da qualcuno con un nome. Una regola che si cambia solo con un rilascio non serve." en="Rules, contact caps and priorities stay your decision, and someone with a name has to write them. A rule you can only change with a release is useless." />
+            <T as="p" it="La terza non ha una risposta di prodotto, e in una banca è quella vera: va messa sul tavolo prima di accendere qualunque cosa." en="The third has no product answer, and in a bank it is the real one: it belongs on the table before anything is switched on." />
+          </HowItWorks>
+        </div>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  // Le fasi dentro una slide: si intercetta l'ISTANZA del deck, perché next()
+  // e prev() sono chiamate da tutte le vie d'ingresso (tasti, frecce del
+  // contorno, click sulle metà, swipe) e non c'è un hook unico.
+  // Vedi la memoria `mockup-navigation-patterns`.
+  type Stato = { visibili: string[]; spenti: string[] };
+  const RIDOTTO = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function monta() {
+    const root = document.querySelector<HTMLElement>('[data-blueprint="architettura"]');
+    if (!root || root.dataset.montato) return;
+    root.dataset.montato = '1';
+    const slide = root.closest('[data-slide]') as HTMLElement | null;
+    if (!slide) return;
+
+    const stati: Stato[] = JSON.parse(root.querySelector('[data-bp-stati]')!.textContent || '[]');
+    const totale = stati.length;
+    let fase = 0;
+
+    const tutti = () => Array.from(root.querySelectorAll<HTMLElement>('[data-el]'));
+    const rifOf = (e: HTMLElement) => (e.dataset.el || '').replace(/^a-/, '');
+
+    function applica(i: number, animato: boolean) {
+      const s = stati[i];
+      const vis = new Set(s.visibili);
+      const spenti = new Set(s.spenti);
+      for (const e of tutti()) {
+        const rif = rifOf(e);
+        const dentro = vis.has(rif);
+        const target = dentro ? (spenti.has(rif) ? 0.45 : 1) : 0;
+        e.toggleAttribute('data-spento', dentro && spenti.has(rif));
+        if (animato) {
+          e.style.transition = 'opacity .42s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.4,0,.2,1)';
+        } else {
+          e.style.transition = 'none';
+        }
+        e.style.opacity = String(target);
+        e.style.transform = dentro ? 'translateY(0)' : 'translateY(10px)';
+      }
+      root.querySelectorAll<HTMLElement>('[data-fase-titolo]').forEach((p) => {
+        p.hidden = Number(p.dataset.faseTitolo) !== i;
+      });
+      root.querySelectorAll<HTMLElement>('[data-fase-chiusa]').forEach((p) => {
+        p.hidden = Number(p.dataset.faseChiusa) !== i;
+      });
+      (root as unknown as { __fase: number }).__fase = i;
+      root.dispatchEvent(new CustomEvent('bp:fase', { bubbles: true, detail: { fase: i, totale } }));
+    }
+
+    function vaiA(i: number) {
+      fase = Math.max(0, Math.min(totale - 1, i));
+      applica(fase, !RIDOTTO);
+    }
+    (root as unknown as { __bpVaiA: (i: number) => void }).__bpVaiA = vaiA;
+
+    applica(0, false);
+    slide.addEventListener('playSlide', () => vaiA(0));
+
+    document.addEventListener('astro:page-load', function patch() {
+      const deck = (window as unknown as { __edfDeck?: any }).__edfDeck;
+      if (!deck) return;
+      const origNext = deck.next.bind(deck);
+      const origPrev = deck.prev.bind(deck);
+      deck.next = function () {
+        if (deck.slides[deck.index] === slide && fase < totale - 1) { vaiA(fase + 1); return; }
+        origNext();
+      };
+      deck.prev = function () {
+        if (deck.slides[deck.index] === slide && fase > 0) { vaiA(fase - 1); return; }
+        origPrev();
+      };
+    }, { once: true });
+  }
+
+  monta();
+  document.addEventListener('astro:after-swap', monta);
+</script>

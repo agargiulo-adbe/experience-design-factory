@@ -29,6 +29,18 @@ quella regola. Lì stanno anche le dieci regole di marchio del .pptx verificate 
 la catena `pptx:layouts → pptx:find → pptx:take → audit:pptx`, e che cosa funziona davvero
 quando si eredita una slide da una libreria Adobe.
 
+## Step 0-bis — Ancore, non prosa (si legge PRIMA della prima slide)
+Chi guarda una slide **legge**, e mentre legge non ascolta chi parla: misurato il 22 ott
+2026, due minuti di parlato cliente su diciotto. La forma di ogni slide di contenuto è
+**un'ancora per concetto (≤6 parole), una riga di lead, e tutta la prosa dietro
+`HowItWorks`** — dove resta per chi riceve il deck inoltrato senza competere con chi parla.
+Dove si spiega un meccanismo **si disegna**, e se ha una sequenza il diagramma **nasce a
+fasi** sotto le frecce del deck: «non vi tocchiamo niente» si vede invece di essere detto.
+Il template lo impone già (`.ex-ancore` + `HowItWorks`); il gate è la famiglia `P` di
+`copy-audit`. ⚠️ Il check `i` di `audit:deck` misura la massa di TESTO ed è tarato su deck
+di prosa: un deck ad ancore lo fallisce per costruzione, e non si compensa gonfiando le
+slide. Casi, trappole e verifica in **`references/ancore-non-prosa.md`**.
+
 ## Step 0-ter — Il guscio sensoriale (marchio, movimento, suono, scala)
 Quattro cose si vedono prima che si legga una riga, e nessun check le fa fallire:
 il **marchio** (favicon geometrico + icone + anteprima del link, da `pnpm brand:icons`),

@@ -53,46 +53,87 @@ export const CIFRE: Array<{ n: string; l: Testo }> = [
   { n: '~150', l: { it: 'casi d’uso di AI dichiarati in produzione', en: 'AI use cases declared in production' } },
 ];
 
-// ── I tre strati dell'architettura ──────────────────────────────────────────
-// La sequenza è l'argomento: prima tutto il loro, intero; poi il punto dove si
-// ferma; poi i nostri componenti, che si appoggiano sopra senza spegnere nulla.
-export interface Strato {
+// ── L'architettura: un DIAGRAMMA, non una tabella ──────────────────────────
+// Regola, e stavolta applicata: sullo schermo vanno ANCORE, non frasi. Ogni
+// nodo porta un nome (≤ 5 parole) e basta. Le note qui sotto NON si rendono:
+// sono quello che dice chi presenta, e stanno qui perché non si perdano.
+//
+// Geometria in unità di viewBox (1240 × 560), a mano: il layout automatico
+// arriva col blocco `Blueprint` del motore. Gli strati si impilano verso
+// l'ALTO, così «si appoggia sopra» è letterale invece che detto.
+
+export interface Nodo {
   id: string;
-  k: Testo;
-  t: Testo;
-  /** I componenti dello strato. `nostro` solo dove il pezzo è Adobe e nuovo. */
-  pezzi: Array<{ nome: string; nota: Testo; nostro?: boolean }>;
+  ancora: Testo;
+  x: number; y: number; w: number;
+  /** true = strato Adobe. Il default è del cliente: il suo patrimonio viene prima. */
+  nostro?: boolean;
+  /** Il vuoto: tratteggiato, perché è un'assenza e non un prodotto. */
+  vuoto?: boolean;
+  /** Non si rende MAI in pagina: è la battuta di chi presenta. */
+  voce: Testo;
 }
 
-export const STRATI: Strato[] = [
+export const H_NODO = 96;
+export const VIEWBOX = '0 0 1240 560';
+
+export const NODI: Nodo[] = [
+  // Strato 1 — il loro dato (in basso)
+  { id: 'analytics', ancora: { it: 'Adobe Analytics', en: 'Adobe Analytics' }, x: 200, y: 392, w: 300,
+    voce: { it: 'Il comportamento digitale, tracciato in profondità e da anni.', en: 'Digital behaviour, tracked in depth for years.' } },
+  { id: 'crm', ancora: { it: 'CRM', en: 'CRM' }, x: 560, y: 392, w: 300,
+    voce: { it: 'Anagrafica, modelli di propensione, audience. Resta vostro.', en: 'Customer base, propensity models, audiences. Stays yours.' } },
+  { id: 'aem', ancora: { it: 'Experience Manager', en: 'Experience Manager' }, x: 920, y: 392, w: 300,
+    voce: { it: 'Web e form, oggi installato in casa.', en: 'Web and forms, today on premise.' } },
+
+  // Strato 2 — l'esecuzione, e il buco
+  { id: 'mktcloud', ancora: { it: 'Marketing Cloud', en: 'Marketing Cloud' }, x: 200, y: 216, w: 300,
+    voce: { it: 'Esegue il percorso deciso a monte: chi entra nel ramo riceve quel messaggio.', en: 'Runs the journey decided upstream: whoever enters the branch gets that message.' } },
+  { id: 'vuoto', ancora: { it: 'Qui manca la scelta', en: 'The choice is missing here' }, x: 560, y: 216, w: 660, vuoto: true,
+    voce: { it: 'Che cosa esce adesso, per questa persona, su questo canale. Oggi non c’è il posto dove deciderlo.', en: 'What goes out now, for this person, on this channel. Today there is no place to decide it.' } },
+
+  // Strato 3 — il nostro innesto (in cima)
+  { id: 'cja', ancora: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' }, x: 200, y: 40, w: 300, nostro: true,
+    voce: { it: 'Cuce digitale e offline sullo stesso cliente.', en: 'Stitches digital and offline onto the same customer.' } },
+  { id: 'decisioning', ancora: { it: 'AI Decisioning', en: 'AI Decisioning' }, x: 560, y: 40, w: 300, nostro: true,
+    voce: { it: 'Sceglie quale proposta esce adesso, dentro il ramo che avete già deciso.', en: 'Picks which proposal goes out now, inside the branch you already decided.' } },
+  { id: 'coworker', ancora: { it: 'Coworker', en: 'Coworker' }, x: 920, y: 40, w: 300, nostro: true,
+    voce: { it: 'La domanda fatta a parole, sull’Analytics che avete oggi.', en: 'The question asked in plain words, on the Analytics you have today.' } },
+];
+
+/** I collegamenti verticali fra gli strati. `su` = sale verso il nostro strato. */
+export const LEGAMI: Array<{ id: string; x: number; da: number; a: number; su?: boolean }> = [
+  { id: 'l1-350', x: 350, da: 392, a: 312 },
+  { id: 'l1-710', x: 710, da: 392, a: 312 },
+  { id: 'l1-1070', x: 1070, da: 392, a: 312 },
+  { id: 'l2-350', x: 350, da: 216, a: 136, su: true },
+  { id: 'l2-710', x: 710, da: 216, a: 136, su: true },
+  { id: 'l2-1070', x: 1070, da: 216, a: 136, su: true },
+];
+
+export interface Fase {
+  id: string;
+  titolo: Testo;
+  /** Gli id che COMPAIONO in questa fase. Lo stato è cumulativo. */
+  entrano: string[];
+  /** Attenuati, mai rimossi: un nodo del cliente non sparisce. */
+  spenti?: string[];
+}
+
+export const FASI: Fase[] = [
   {
-    id: 'dato',
-    k: { it: 'Strato 1 · quello che avete', en: 'Layer 1 · what you have' },
-    t: { it: 'Il dato e i modelli', en: 'Data and models' },
-    pezzi: [
-      { nome: 'Adobe Analytics', nota: { it: 'il comportamento digitale', en: 'digital behaviour' } },
-      { nome: 'CRM', nota: { it: 'anagrafica, propensione, audience', en: 'customer base, propensity, audiences' } },
-      { nome: 'Adobe Experience Manager', nota: { it: 'web e form, in casa', en: 'web and forms, on premise' } },
-    ],
+    id: 'oggi',
+    titolo: { it: 'Quello che avete oggi', en: 'What you have today' },
+    entrano: ['analytics', 'crm', 'aem', 'l1-350', 'l1-710', 'l1-1070', 'mktcloud'],
   },
   {
-    id: 'vuoto',
-    k: { it: 'Strato 2 · dove si ferma', en: 'Layer 2 · where it stops' },
-    t: { it: 'La scelta dell’ultimo metro', en: 'The last-metre choice' },
-    pezzi: [
-      { nome: 'Salesforce Marketing Cloud', nota: { it: 'esegue il percorso deciso a monte', en: 'runs the journey decided upstream' } },
-      { nome: 'Il ramo è già scritto', nota: { it: 'chi entra nel workflow riceve quel messaggio', en: 'whoever enters the workflow gets that message' } },
-      { nome: 'Manca', nota: { it: 'che cosa esce adesso, per questa persona, su questo canale', en: 'what goes out now, for this person, on this channel' } },
-    ],
+    id: 'ferma',
+    titolo: { it: 'Dove si ferma', en: 'Where it stops' },
+    entrano: ['vuoto'],
   },
   {
     id: 'innesto',
-    k: { it: 'Strato 3 · dove ci innestiamo', en: 'Layer 3 · where we graft on' },
-    t: { it: 'Tre componenti, non tre idee', en: 'Three components, not three ideas' },
-    pezzi: [
-      { nome: 'Customer Journey Analytics', nota: { it: 'cuce digitale e offline sullo stesso cliente', en: 'stitches digital and offline onto the same customer' }, nostro: true },
-      { nome: 'AI Decisioning', nota: { it: 'l’anello che sceglie che cosa esce adesso', en: 'the link that picks what goes out now' }, nostro: true },
-      { nome: 'CX Enterprise Coworker', nota: { it: 'chi interroga i dati senza aprire Workspace', en: 'asking the data without opening Workspace' }, nostro: true },
-    ],
+    titolo: { it: 'Dove ci innestiamo', en: 'Where we graft on' },
+    entrano: ['cja', 'decisioning', 'coworker', 'l2-350', 'l2-710', 'l2-1070'],
   },
 ];

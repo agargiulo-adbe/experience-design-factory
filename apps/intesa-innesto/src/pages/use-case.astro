@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -11,26 +12,6 @@ const SLUG = 'use-case';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
-// Il confronto non è «vecchio contro nuovo»: è dove si sposta la decisione.
-const CONFRONTO = {
-  oggi: {
-    k: { it: 'Come funziona adesso', en: 'How it works today' },
-    righe: [
-      { it: 'L’audience si costruisce a monte, sui modelli di propensione vostri.', en: 'The audience is built upstream, on your own propensity models.' },
-      { it: 'Il percorso entra in un workflow, e il ramo è già scritto quando il cliente ci arriva.', en: 'The journey enters a workflow, and the branch is already written by the time the customer gets there.' },
-      { it: 'L’esito torna aggregato, a campagna chiusa: ha reso o non ha reso.', en: 'Results come back aggregated, once the campaign is closed: it worked or it did not.' },
-    ],
-  },
-  dopo: {
-    k: { it: 'Cosa cambia con l’anello in più', en: 'What the extra link changes' },
-    righe: [
-      { it: 'L’audience resta la vostra, e nessun modello viene sostituito.', en: 'The audience stays yours, and no model gets replaced.' },
-      { it: 'Dentro il ramo, quale offerta esce si decide al momento del contatto.', en: 'Within the branch, which offer goes out is decided at the moment of contact.' },
-      { it: 'L’esito torna per attributo: quale offerta, su quale canale, a chi somigliava.', en: 'Results come back by attribute: which offer, on which channel, to whom it resembled.' },
-    ],
-  },
-};
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -39,90 +20,60 @@ const CONFRONTO = {
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="ex-bg-night"></div>
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T
-          as="p"
-          class="ex-ch-lead"
-          it="Questo capitolo riguarda chi costruisce le audience di mestiere. La domanda non è se la piattaforma è brava: è se il lavoro di targeting diventa più preciso e torna indietro misurato."
-          en="This chapter is about the people who build audiences for a living. The question is not whether the platform is clever: it is whether targeting work gets sharper and comes back measured."
-          data-reveal data-reveal-delay="0.15"
-        />
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="Dove si sposta la decisione" en="Where the decision moves to" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="Un caso solo, seguito fino in fondo" en="One single case, followed through" /></li>
-          </ul>
-        </div>
+        <T as="p" class="ex-ch-lead" it="La domanda non è se la piattaforma è brava. È se il targeting diventa più preciso." en="The question is not whether the platform is clever. It is whether targeting gets sharper." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── Dove si sposta la decisione ───────────────────────────────────── -->
     <Slide id="slide-mestiere" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="Il mestiere" en="The craft" />
           <T as="h2" class="ex-head-title" it="Il target si fa prima. La scelta può farsi dopo." en="The target is built before. The choice can happen after." />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Oggi fra la costruzione dell’audience e il contatto passano giorni, e in quei giorni il cliente si muove. L’anello in più non tocca la prima metà del lavoro: aggiunge la seconda."
-            en="Today days pass between building the audience and making contact, and in those days the customer moves. The extra link does not touch the first half of the job: it adds the second."
-          />
         </div>
-        <div class="ii-conf" data-reveal data-reveal-delay="0.14">
-          <div class="ii-conf-col">
-            <T as="p" class="ii-conf-k" it={CONFRONTO.oggi.k.it} en={CONFRONTO.oggi.k.en} />
-            <ul role="list">
-              {CONFRONTO.oggi.righe.map((r) => (<li><T as="span" it={r.it} en={r.en} /></li>))}
-            </ul>
-          </div>
-          <div class="ii-conf-col ii-conf-col--nostro">
-            <T as="p" class="ii-conf-k" it={CONFRONTO.dopo.k.it} en={CONFRONTO.dopo.k.en} />
-            <ul role="list">
-              {CONFRONTO.dopo.righe.map((r) => (<li><T as="span" it={r.it} en={r.en} /></li>))}
-            </ul>
-          </div>
+        <div class="ii-flusso" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ii-chip" it="Audience dal CRM" en="Audience from the CRM" />
+          <span class="ii-freccia" aria-hidden="true">→</span>
+          <T as="p" class="ii-chip" it="Workflow" en="Workflow" />
+          <span class="ii-freccia" aria-hidden="true">→</span>
+          <T as="p" class="ii-chip ii-chip--nostro" it="Quale offerta, adesso" en="Which offer, now" />
+          <span class="ii-freccia" aria-hidden="true">→</span>
+          <T as="p" class="ii-chip" it="Contatto" en="Contact" />
+        </div>
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Che cosa cambia, passo per passo" tone="onLight">
+            <T as="p" it="Oggi fra la costruzione dell’audience e il contatto passano giorni, e in quei giorni il cliente si muove. Il ramo del percorso è già scritto quando lui ci arriva." en="Today days pass between building the audience and making contact, and in those days the customer moves. The branch is already written by the time they get there." />
+            <T as="p" it="L’anello in più non tocca la prima metà del lavoro: l’audience resta la vostra e nessun modello viene sostituito. Dentro il ramo, quale offerta esce si decide al momento del contatto." en="The extra link does not touch the first half of the job: the audience stays yours and no model is replaced. Within the branch, which offer goes out is decided at the moment of contact." />
+            <T as="p" it="E l’esito torna per attributo: quale offerta, su quale canale, a chi somigliava. Invece che aggregato a campagna chiusa." en="And results come back by attribute: which offer, on which channel, to whom it resembled. Instead of aggregated once the campaign is closed." />
+          </HowItWorks>
         </div>
       </div>
     </Slide>
 
-    <!-- ── Un caso solo ──────────────────────────────────────────────────── -->
     <Slide id="slide-mutuo" bg="secondary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="Il caso" en="The case" />
           <T as="h2" class="ex-head-title" it="Una richiesta di mutuo che si ferma a metà" en="A mortgage application that stops halfway" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="È il caso più banale e il più utile, perché attraversa tutti e tre gli strati e si misura. Chi si ferma lo sapete già. Manca il perché, e la mossa che conviene fare entro sera."
-            en="It is the most ordinary case and the most useful one, because it crosses all three layers and can be measured. You already know who stops. What is missing is the reason, and the move worth making by the evening."
-          />
+          <T as="p" class="ex-head-lead" it="Chi si ferma lo sapete già. Mancano tre risposte." en="You already know who stops. Three answers are missing." />
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          <div class="ex-card">
-            <T as="p" class="ex-card-k" it="Primo passo" en="Step one" />
-            <T as="p" class="ex-card-t" it="Capire perché si è fermata" en="Understand why it stopped" />
-            <T as="p" class="ex-card-b" it="Un abbandono non è un segnale solo: può essere un problema tecnico, un documento mancante, o una consulenza in filiale che ha portato altrove. Oggi i tre casi si assomigliano nei numeri." en="An abandonment is not one single signal: it can be a technical problem, a missing document, or advice in branch that led elsewhere. Today the three look alike in the numbers." />
-          </div>
-          <div class="ex-card">
-            <T as="p" class="ex-card-k" it="Secondo passo" en="Step two" />
-            <T as="p" class="ex-card-t" it="Sommare quello che è successo altrove" en="Add up what happened elsewhere" />
-            <T as="p" class="ex-card-b" it="Se la pratica è ripresa allo sportello, l’abbandono digitale non è una perdita ed è un errore inseguirlo. Serve che i due eventi arrivino sullo stesso cliente." en="If the application was picked up at the counter, the digital drop-off is not a loss and chasing it is a mistake. The two events have to land on the same customer." />
-          </div>
-          <div class="ex-card">
-            <T as="p" class="ex-card-k" it="Terzo passo" en="Step three" />
-            <T as="p" class="ex-card-t" it="Scegliere il contatto che vale" en="Pick the contact that is worth it" />
-            <T as="p" class="ex-card-b" it="Una chiamata costa molto più di un messaggio. Riservarla a chi ha il potenziale per giustificarla è una decisione, e oggi non c’è il posto dove prenderla." en="A phone call costs far more than a message. Reserving it for the customers whose potential justifies it is a decision, and today there is no place to take it." />
-          </div>
+        <div class="ii-domande" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ii-domanda" it="Perché si è fermata" en="Why it stopped" />
+          <T as="p" class="ii-domanda" it="Se è ripresa altrove" en="Whether it resumed elsewhere" />
+          <T as="p" class="ii-domanda" it="Quale contatto vale" en="Which contact is worth it" />
+        </div>
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Perché queste tre, in quest’ordine" tone="onLight">
+            <T as="p" it="Un abbandono non è un segnale solo: può essere un problema tecnico, un documento mancante, o una consulenza in filiale che ha portato altrove. Oggi i tre casi si assomigliano nei numeri." en="An abandonment is not one single signal: a technical problem, a missing document, or advice in branch that led elsewhere. Today the three look alike in the numbers." />
+            <T as="p" it="Se la pratica è ripresa allo sportello, l’abbandono digitale non è una perdita ed è un errore inseguirlo. Serve che i due eventi arrivino sullo stesso cliente." en="If the application was picked up at the counter, the digital drop-off is not a loss and chasing it is a mistake. The two events have to land on the same customer." />
+            <T as="p" it="Una chiamata costa molto più di un messaggio. Riservarla a chi ha il potenziale per giustificarla è una decisione, e oggi non c’è il posto dove prenderla." en="A phone call costs far more than a message. Reserving it for those whose potential justifies it is a decision, and today there is no place to take it." />
+          </HowItWorks>
         </div>
       </div>
     </Slide>

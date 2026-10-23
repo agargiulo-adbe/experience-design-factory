@@ -4,6 +4,7 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -13,10 +14,8 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// I due riquadri video si riempiono dalla console admin («Media demo per slide»):
-// la clip si attacca senza toccare il codice, e il link condivisibile la porta
-// con sé. Finché sono vuoti la slide regge comunque: il riquadro resta un
-// segnaposto dichiarato, non un buco.
+// I riquadri video si riempiono da /admin/ e viaggiano col link condivisibile.
+// Finché sono vuoti restano segnaposto dichiarati, non buchi in pagina.
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -25,47 +24,35 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="ex-bg-night"></div>
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T
-          as="p"
-          class="ex-ch-lead"
-          it="Due componenti, e nessuno dei due è il titolo di questo incontro. Uno chiude il vuoto dello strato due; l’altro lavora già sull’Adobe Analytics che avete oggi, senza passare da nessuna parte."
-          en="Two components, and neither of them is the headline of this meeting. One closes the gap in layer two; the other already works on the Adobe Analytics you have today, with nothing to migrate."
-          data-reveal data-reveal-delay="0.15"
-        />
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="AI Decisioning, dal vivo" en="AI Decisioning, live" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="CX Enterprise Coworker, dal vivo" en="CX Enterprise Coworker, live" /></li>
-          </ul>
-        </div>
+        <T as="p" class="ex-ch-lead"
+          it="Due componenti, e nessuno dei due è il titolo di questo incontro."
+          en="Two components, and neither of them is the headline of this meeting."
+          data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── AI Decisioning ────────────────────────────────────────────────── -->
     <Slide id="slide-decisioning" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div data-demo-flex class="ii-demo">
         <div class="ii-demo-testo" data-reveal>
           <T as="p" class="slide-eyebrow" it="L’anello" en="The link" />
           <T as="h2" class="ex-head-title" it="Adobe AI Decisioning" en="Adobe AI Decisioning" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Riceve le proposte che i vostri modelli hanno già costruito e decide quale esce adesso, per quella persona, su quel canale. Rispetta i tetti di contatto e le priorità che gli scrivete, e restituisce l’esito per attributo."
-            en="It takes the proposals your own models have already built and decides which one goes out now, for that person, on that channel. It honours the contact caps and priorities you write for it, and returns results by attribute."
-          />
+          <T as="p" class="ex-head-lead" it="Sceglie quale proposta esce adesso, dentro il ramo che avete già deciso." en="It picks which proposal goes out now, inside the branch you already decided." />
           <ul class="ii-lista" role="list">
-            <li><T as="span" it="Non costruisce audience: le ordina." en="It does not build audiences: it ranks them." /></li>
-            <li><T as="span" it="Non sostituisce il percorso: sceglie dentro il ramo." en="It does not replace the journey: it chooses inside the branch." /></li>
-            <li><T as="span" it="Vale sui canali che passano dalla piattaforma: sportello, sportello automatico e contatti dovuti restano fuori." en="It applies to the channels that run through the platform: counter, ATM and mandatory contacts stay outside." /></li>
+            <li><T as="span" it="Non costruisce audience: le ordina" en="It does not build audiences: it ranks them" /></li>
+            <li><T as="span" it="Rispetta i tetti di contatto che gli scrivete" en="It honours the contact caps you write for it" /></li>
+            <li><T as="span" it="Restituisce l’esito per attributo" en="It returns results by attribute" /></li>
           </ul>
+          <div class="ii-dett">
+            <HowItWorks title="Dove vale e dove no" tone="onLight">
+              <T as="p" it="Vale sui canali che passano dalla piattaforma. Sportello, sportello automatico e contatti dovuti restano fuori, e il tetto di contatto che conta li somma comunque." en="It applies to the channels that run through the platform. Counter, ATM and mandatory contacts stay outside, and the contact cap that matters adds them up anyway." />
+            </HowItWorks>
+          </div>
           <p class="ex-src">
             <span data-lang-it>Prodotto: </span><span data-lang-en>Product: </span>
             <a href="https://business.adobe.com/products/journey-optimizer/ai-decisioning.html" target="_blank" rel="noopener">business.adobe.com</a>
@@ -75,24 +62,23 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <!-- ── CX Enterprise Coworker ────────────────────────────────────────── -->
     <Slide id="slide-coworker" bg="secondary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div data-demo-flex class="ii-demo">
         <div class="ii-demo-testo" data-reveal>
           <T as="p" class="slide-eyebrow" it="Senza passare da nessuna parte" en="With nothing to migrate" />
           <T as="h2" class="ex-head-title" it="CX Enterprise Coworker" en="CX Enterprise Coworker" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="È una domanda fatta a parole sui dati che avete già. Quante richieste di mutuo si sono fermate al terzo passo la settimana scorsa? Da quale campagna arrivavano? La risposta porta con sé la strada per rifarla in Workspace."
-            en="It is a question asked in plain words of the data you already hold. How many mortgage applications stopped at step three last week? Which campaign did they come from? The answer carries the path to rebuild it in Workspace."
-          />
+          <T as="p" class="ex-head-lead" it="Una domanda fatta a parole, sull’Adobe Analytics che avete oggi." en="A question asked in plain words, on the Adobe Analytics you have today." />
           <ul class="ii-lista" role="list">
-            <li><T as="span" it="Lavora sull’istanza di Adobe Analytics in uso oggi." en="It works on the Adobe Analytics instance in use today." /></li>
-            <li><T as="span" it="Chi deve costruire un target smette di aspettare un rapporto." en="Whoever has to build a target stops waiting for a report." /></li>
-            <li><T as="span" it="La distribuzione su Adobe Analytics è in corso: le date vanno confermate caso per caso." en="Rollout on Adobe Analytics is under way: dates are to be confirmed case by case." /></li>
+            <li><T as="span" it="Niente da migrare" en="Nothing to migrate" /></li>
+            <li><T as="span" it="Chi fa i target smette di aspettare un rapporto" en="Whoever builds targets stops waiting for a report" /></li>
+            <li><T as="span" it="La risposta porta la strada per rifarla in Workspace" en="The answer carries the path to rebuild it in Workspace" /></li>
           </ul>
+          <div class="ii-dett">
+            <HowItWorks title="A che punto è la distribuzione" tone="onLight">
+              <T as="p" it="La distribuzione su Adobe Analytics è in corso e le date vanno confermate caso per caso: è una cosa da verificare insieme, non da dare per fatta." en="Rollout on Adobe Analytics is under way and dates are to be confirmed case by case: something to check together, not to take as done." />
+            </HowItWorks>
+          </div>
           <p class="ex-src">
             <span data-lang-it>Documentazione: </span><span data-lang-en>Documentation: </span>
             <a href="https://experienceleague.adobe.com/en/docs/coworker/content/chat/overview" target="_blank" rel="noopener">experienceleague.adobe.com</a>

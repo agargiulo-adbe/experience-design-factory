@@ -3,7 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import T from '@edf/core/blocks/i18n/T.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 
@@ -11,35 +12,6 @@ const SLUG = 'convergenza';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
-// I tre pezzi che vanno OLTRE l'analisi. Mostrare Customer Journey Analytics
-// come strumento di analisi non sposta nulla: è su questi tre che si gioca.
-const PEZZI = [
-  {
-    k: { it: 'Uno', en: 'One' },
-    t: { it: 'Cucire la stessa persona', en: 'Stitching the same person' },
-    b: {
-      it: 'Sei mesi di navigazione anonima e un indirizzo email che arriva dopo diventano una storia sola, ricostruita a ritroso. Serve per capire che cosa ha portato alla richiesta, non per inseguire chi non si è ancora presentato.',
-      en: 'Six months of anonymous browsing and an email address that turns up later become one single story, rebuilt backwards. It serves to understand what led to the application, not to chase someone who has not introduced themselves yet.',
-    },
-  },
-  {
-    k: { it: 'Due', en: 'Two' },
-    t: { it: 'Portare fuori le audience', en: 'Taking audiences out' },
-    b: {
-      it: 'Un segmento costruito sul comportamento omnicanale non resta in un rapporto: esce verso i sistemi che fanno il contatto. È il punto dove l’analisi smette di essere un documento e diventa lavoro.',
-      en: 'A segment built on omnichannel behaviour does not stay inside a report: it goes out to the systems that make contact. That is where analysis stops being a document and becomes work.',
-    },
-  },
-  {
-    k: { it: 'Tre', en: 'Three' },
-    t: { it: 'Dare un peso ai passaggi', en: 'Weighting the steps' },
-    b: {
-      it: 'Con il solo digitale l’ultimo clic si prende tutto il merito. Sommando il contatto assistito e la filiale, il modello di attribuzione può dire quanto ha pesato ciascun passaggio, e quali si possono togliere.',
-      en: 'With digital alone the last click takes all the credit. Adding assisted contact and the branch, the attribution model can say how much each step weighed, and which ones can be dropped.',
-    },
-  },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -48,31 +20,15 @@ const PEZZI = [
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="ex-bg-night"></div>
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T
-          as="p"
-          class="ex-ch-lead"
-          it="Customer Journey Analytics guardato come strumento di analisi somiglia a quello che già avete. La differenza sta in tre cose che l’analisi, da sola, non fa."
-          en="Looked at as an analysis tool, Customer Journey Analytics resembles what you already have. The difference is in three things that analysis alone does not do."
-          data-reveal data-reveal-delay="0.15"
-        />
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="I tre pezzi che contano" en="The three pieces that matter" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="Che cosa costa passarci" en="What moving across costs" /></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">3</span><T as="span" it="Chi l’ha già fatto" en="Who has already done it" /></li>
-          </ul>
-        </div>
+        <T as="p" class="ex-ch-lead" it="Come strumento di analisi somiglia a quello che avete. La differenza è in tre cose." en="As an analysis tool it resembles what you have. The difference is in three things." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── I tre pezzi ───────────────────────────────────────────────────── -->
     <Slide id="slide-tre" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
@@ -80,16 +36,19 @@ const PEZZI = [
           <T as="p" class="slide-eyebrow" it="Oltre l’analisi" en="Beyond analysis" />
           <T as="h2" class="ex-head-title" it="Tre cose che un rapporto non sa fare" en="Three things a report cannot do" />
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {PEZZI.map((x) => (
-            <div class="ex-card">
-              <T as="p" class="ex-card-k" it={x.k.it} en={x.k.en} />
-              <T as="p" class="ex-card-t" it={x.t.it} en={x.t.en} />
-              <T as="p" class="ex-card-b" it={x.b.it} en={x.b.en} />
-            </div>
-          ))}
+        <div class="ii-domande" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ii-domanda" it="Cucire la stessa persona" en="Stitch the same person" />
+          <T as="p" class="ii-domanda" it="Portare fuori le audience" en="Take audiences out" />
+          <T as="p" class="ii-domanda" it="Dare un peso ai passaggi" en="Weight the steps" />
         </div>
-        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Che cosa vuol dire, una per una" tone="onLight">
+            <T as="p" it="Sei mesi di navigazione anonima e un indirizzo email che arriva dopo diventano una storia sola, ricostruita a ritroso. Serve a capire che cosa ha portato alla richiesta." en="Six months of anonymous browsing and an email address that turns up later become one single story, rebuilt backwards. It serves to understand what led to the application." />
+            <T as="p" it="Un segmento costruito sul comportamento omnicanale non resta in un rapporto: esce verso i sistemi che fanno il contatto. È dove l’analisi smette di essere un documento." en="A segment built on omnichannel behaviour does not stay inside a report: it goes out to the systems that make contact. That is where analysis stops being a document." />
+            <T as="p" it="Con il solo digitale l’ultimo clic si prende tutto il merito. Sommando il contatto assistito e la filiale, il modello può dire quanto ha pesato ciascun passaggio, e quali si possono togliere." en="With digital alone the last click takes all the credit. Adding assisted contact and the branch, the model can say how much each step weighed, and which can be dropped." />
+          </HowItWorks>
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.3">
           <span data-lang-it>Prodotto: Adobe Customer Journey Analytics, </span>
           <span data-lang-en>Product: Adobe Customer Journey Analytics, </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations" target="_blank" rel="noopener">experienceleague.adobe.com</a>
@@ -97,51 +56,43 @@ const PEZZI = [
       </div>
     </Slide>
 
-    <!-- ── Che cosa costa passarci ───────────────────────────────────────── -->
     <Slide id="slide-passaggio" bg="secondary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="Il passaggio" en="The move" />
-          <T as="h2" class="ex-head-title" it="Quello che non si perde, e quello che si rifà" en="What survives the move, and what gets rebuilt" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Lo diciamo prima che lo chieda l’IT, perché un vincolo detto da noi vale più dello stesso vincolo scoperto fra un mese. Non è un rifacimento, e non è nemmeno gratis."
-            en="We say this before IT asks, because a constraint we declare is worth more than the same constraint discovered a month from now. It is not a rebuild, and it is not free either."
-          />
+          <T as="h2" class="ex-head-title" it="Non è un rifacimento. Non è nemmeno gratis." en="Not a rebuild. Not free either." />
+          <T as="p" class="ex-head-lead" it="Lo diciamo prima che lo chieda l’IT." en="We say it before IT asks." />
         </div>
-        <div class="ii-conf" data-reveal data-reveal-delay="0.14">
-          <div class="ii-conf-col ii-conf-col--nostro">
-            <T as="p" class="ii-conf-k" it="Resta" en="Survives" />
+        <div class="ii-due" data-reveal data-reveal-delay="0.14">
+          <div class="ii-due-col ii-due-col--nostro">
+            <T as="p" class="ii-due-k" it="Resta" en="Survives" />
             <ul role="list">
-              <li><T as="span" it="Lo storico del tracciamento si porta dentro: non si ricomincia da zero." en="Tracking history comes across: you do not start from scratch." /></li>
-              <li><T as="span" it="Le persone sono le stesse, e l’ambiente di lavoro è quello che conoscono." en="The same people, and a working environment they already know." /></li>
-              <li><T as="span" it="L’implementazione sui canali digitali non si rifà." en="The implementation on digital channels is not redone." /></li>
+              <li><T as="span" it="Lo storico del tracciamento" en="Tracking history" /></li>
+              <li><T as="span" it="Le stesse persone, lo stesso ambiente" en="Same people, same environment" /></li>
+              <li><T as="span" it="L’implementazione sui canali digitali" en="The digital-channel implementation" /></li>
             </ul>
           </div>
-          <div class="ii-conf-col">
-            <T as="p" class="ii-conf-k" it="Si rifà" en="Gets rebuilt" />
+          <div class="ii-due-col">
+            <T as="p" class="ii-due-k" it="Si rifà" en="Gets rebuilt" />
             <ul role="list">
-              <li><T as="span" it="I segmenti e i calcoli vanno ricostruiti nel nuovo modello di dati." en="Segments and calculations have to be rebuilt in the new data model." /></li>
-              <li><T as="span" it="I dati offline vanno portati, e questa è la parte che richiede il vostro IT." en="Offline data has to be brought in, and that is the part that needs your IT." /></li>
-              <li><T as="span" it="Durante il confronto i due ambienti si pagano entrambi." en="While the two run side by side, both are paid for." /></li>
+              <li><T as="span" it="Segmenti e calcoli" en="Segments and calculations" /></li>
+              <li><T as="span" it="L’arrivo dei dati offline" en="Bringing offline data in" /></li>
+              <li><T as="span" it="Due ambienti, per il tempo del confronto" en="Two environments, while they run side by side" /></li>
             </ul>
           </div>
         </div>
-        <T
-          as="p" class="ex-src"
-          it="Per questo conviene partire da un percorso solo, quello del mutuo, e non da tutto il tracciato."
-          en="Which is why it pays to start from one journey only, the mortgage one, rather than the whole estate."
-          data-reveal data-reveal-delay="0.26"
-        />
+        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Che cosa serve davvero, e a chi" tone="onLight">
+            <T as="p" it="Lo storico si porta dentro e l’implementazione sui canali digitali non si rifà: chi lavora oggi in Workspace ritrova lo stesso ambiente. Segmenti e calcoli invece vanno ricostruiti nel nuovo modello di dati." en="History comes across and the digital-channel implementation is not redone: whoever works in Workspace today finds the same environment. Segments and calculations, instead, have to be rebuilt in the new data model." />
+            <T as="p" it="La parte che richiede il vostro IT è portare dentro i dati offline. E durante il confronto i due ambienti si pagano entrambi: per questo conviene partire da un percorso solo, quello del mutuo." en="The part that needs your IT is bringing offline data in. And while the two run side by side, both are paid for: which is why it pays to start from one journey only, the mortgage one." />
+          </HowItWorks>
+        </div>
       </div>
     </Slide>
 
-    <!-- ── Chi l'ha già fatto ────────────────────────────────────────────────
-         ⚠️ INTERNO: la referenza Unipol va concordata con quell'account prima
-         di promettere documentazione condivisibile o un contatto diretto.
-         In pagina resta solo quello che è già pubblico. -->
+    <!-- ⚠️ INTERNO: la referenza Unipol va concordata con quell'account prima
+         di promettere documentazione condivisibile. In pagina solo il pubblico. -->
     <Slide id="slide-referenza" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
@@ -149,21 +100,18 @@ const PEZZI = [
           <T as="p" class="slide-eyebrow" it="Le referenze" en="References" />
           <T as="h2" class="ex-head-title" it="Due che hanno fatto questo passaggio" en="Two who have made this move" />
         </div>
-        <div class="ex-cards ex-cards--due" data-reveal data-reveal-delay="0.14">
-          <div class="ex-card">
-            <T as="p" class="ex-card-k" it="In Italia, nelle assicurazioni" en="In Italy, in insurance" />
-            <T as="p" class="ex-card-t" it="Gruppo Unipol" en="Unipol Group" />
-            <T as="p" class="ex-card-b" it="Sono partiti da Adobe Analytics, come voi. Sono passati a Customer Journey Analytics portando dentro il dato offline e quello del CRM, che resta di un altro fornitore. Lo hanno raccontato dal palco di un nostro evento." en="They started from Adobe Analytics, as you do. They moved to Customer Journey Analytics bringing in offline and CRM data, with the CRM staying with another vendor. They told the story from the stage at one of our events." />
+        <div class="ii-ref" data-reveal data-reveal-delay="0.14">
+          <div class="ii-ref-b">
+            <p class="ii-ref-n">Gruppo Unipol</p>
+            <T as="p" class="ii-ref-f" it="Da Adobe Analytics a CJA, con il CRM di un altro fornitore." en="From Adobe Analytics to CJA, with the CRM on another vendor." />
           </div>
-          <div class="ex-card">
-            <T as="p" class="ex-card-k" it="Su scala, in banca" en="At scale, in banking" />
-            <T as="p" class="ex-card-t" it="Santander Brasil" en="Santander Brasil" />
-            <T as="p" class="ex-card-b" it="Il pezzo trasferibile è uno: il recupero delle richieste lasciate a metà. Il resto del caso è contesto, e la scala non è la vostra." en="One piece transfers: recovering applications left halfway. The rest of the case is context, and the scale is not yours." />
+          <div class="ii-ref-b">
+            <p class="ii-ref-n">Santander Brasil</p>
+            <T as="p" class="ii-ref-f" it="Il recupero delle richieste lasciate a metà." en="Recovering applications left halfway." />
           </div>
         </div>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
-          <span data-lang-it>Caso pubblicato da Adobe, </span>
-          <span data-lang-en>Case published by Adobe, </span>
+          <span data-lang-it>Caso pubblicato da Adobe, </span><span data-lang-en>Case published by Adobe, </span>
           <a href="https://business.adobe.com/br/customer-success-stories/santander-case-study.html" target="_blank" rel="noopener">business.adobe.com</a>
           <span data-lang-it> · per Unipol stiamo verificando cosa è condivisibile.</span>
           <span data-lang-en> · for Unipol we are checking what can be shared.</span>

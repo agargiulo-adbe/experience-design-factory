@@ -62,6 +62,59 @@ interface Rule {
   why: string;
 }
 
+// ── Famiglia P · ancore, non prosa ──────────────────────────────────────────
+// Chi guarda una slide LEGGE, e mentre legge non ascolta chi parla. La regola
+// (CLAUDE.md → «Ancore, non prosa») è: in pagina ancore e una riga di lead;
+// la prosa dietro una disclosure, dove resta disponibile senza competere con
+// la voce. Questo controllo conta i blocchi di PROSA resi in pagina e FUORI
+// da un <HowItWorks>, normalizzati sul numero di slide.
+//
+// SOFT, non HARD, per una ragione dichiarata: i deck nati prima di questa
+// regola la sforano quasi tutti, e un gate che fallisce ovunque il primo
+// giorno viene spento. Diventa HARD quando i deck esistenti sono passati.
+const parolePr = (t: string) => (t.match(/[\wÀ-ÿ’']+/g) ?? []).length;
+const PAROLE_PROSA = 25;
+const PROSA_SOGLIA = 2; // blocchi di prosa per slide, fuori da una disclosure
+
+export function controllaProsa(sorgente: string, file: string): Finding[] {
+  const slide = (sorgente.match(/<Slide\b/g) ?? []).length;
+  if (!slide) return [];
+
+  // Gli intervalli coperti da una disclosure: lì la prosa è al suo posto.
+  const coperti: Array<[number, number]> = [];
+  const re = /<HowItWorks\b[\s\S]*?<\/HowItWorks>/g;
+  for (const m of sorgente.matchAll(re)) coperti.push([m.index!, m.index! + m[0].length]);
+  const dentro = (i: number) => coperti.some(([a, b]) => i >= a && i < b);
+
+  let prosa = 0;
+  let primaRiga = 0;
+  // Due forme: l'attributo nel markup (`it="…"`) e il campo di un oggetto nel
+  // frontmatter (`it: '…'`), che è dove molte pagine tengono i loro blocchi.
+  // ⚠️ Limite dichiarato: la prosa che vive in `src/data/*.ts` e arriva qui per
+  // import non viene contata. Si vede a occhio, non da questo gate.
+  for (const m of sorgente.matchAll(/\bit\s*[=:]\s*(["'`])([^"'`]{60,})\1/g)) {
+    if (dentro(m.index!)) continue;
+    const parole = parolePr(m[2]);
+    if (parole <= PAROLE_PROSA) continue;
+    prosa++;
+    if (!primaRiga) primaRiga = sorgente.slice(0, m.index!).split('\n').length;
+  }
+
+  const perSlide = prosa / slide;
+  if (perSlide <= PROSA_SOGLIA) return [];
+  return [{
+    sev: 'SOFT',
+    code: 'P1',
+    file,
+    line: primaRiga || 1,
+    lang: 'it',
+    text: `${prosa} blocchi di prosa su ${slide} slide`,
+    why: `${perSlide.toFixed(1)} blocchi di prosa per slide fuori da una disclosure (soglia ${PROSA_SOGLIA}): `
+       + 'in pagina vanno ancore e una riga di lead; il resto dietro <HowItWorks>, dove resta '
+       + 'leggibile per chi riceve il deck inoltrato senza competere con chi parla.',
+  }];
+}
+
 const RULES: Rule[] = [
   // ── HARD · la voce parla all'organizzazione, non alla persona in sala ──────
   {
@@ -302,6 +355,11 @@ const misurate = new Map<string, number>();
 for (const app of apps) {
   for (const file of walk(join(APPS, app, 'src'))) {
     const src = readFileSync(file, 'utf8');
+    // Famiglia P: si misura sul FILE, non sulla singola stringa — guarda
+    // quanta prosa resta in pagina invece di stare dietro una disclosure.
+    if (/\.astro$/.test(file) && !/admin\.astro$/.test(file)) {
+      findings.push(...controllaProsa(src, relative(ROOT, file)));
+    }
     for (const { lang, text, line } of visibleStrings(src, file)) {
       misurate.set(app, (misurate.get(app) ?? 0) + 1);
       for (const l of linearita(text)) {
