@@ -16,7 +16,10 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
 const last = CHAPTERS[CHAPTERS.length - 1];
-const n = CHAPTERS.length;
+// La domanda del tipo è condivisa fra tutti i Blueprint: lo spazio unificatore
+// si applica qui, in pagina, senza toccare experienceTypes.ts.
+const domandaIt = type.question.it.replace(' a ', ' a\u00a0');
+const domandaEn = type.question.en;
 ---
 <BaseLayout title={SITE.name}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -36,22 +39,22 @@ const n = CHAPTERS.length;
         <T
           as="p"
           class="ex-cover-tag"
-          it="La frase che il cliente ricorda uscendo dalla stanza. Una sola, e che prometta qualcosa di vero."
-          en="The one line the client remembers on the way out of the room. Just one, and it has to promise something real."
+          it="Niente da sostituire. Un anello in più, nel punto dove oggi la decisione non c’è."
+          en="Nothing to replace. One more link, exactly where the decision is missing today."
           data-reveal data-reveal-delay="0.16"
         />
         <T
           as="p"
           class="ex-cover-lead"
-          it={`Questo deck è stato generato con lo scheletro del tipo «${type.label.it}»: ${n} capitoli, una copertina e una firma. Il design system è un segnaposto finché non si legge quello vero di ${SITE.client} dal suo CSS di produzione.`}
-          en={`This deck was generated from the «${type.label.en}» skeleton: ${n} chapters, a cover and a signature. The design system is a placeholder until the real ${SITE.client} one is read from its production CSS.`}
+          it="Abbiamo letto il vostro impianto da fuori. Qui ci sono i punti dove possiamo servirvi come componenti, non come idee."
+          en="We read your stack from the outside. Here are the points where we can serve you as components, not as ideas."
           data-reveal data-reveal-delay="0.22"
         />
         <T
           as="p"
           class="ex-cover-note"
-          it={`${type.coverLine.it} · fonti e asset generati dichiarati slide per slide`}
-          en={`${type.coverLine.en} · sources and generated assets credited slide by slide`}
+          it={`${type.coverLine.it} · ogni numero porta la sua fonte, slide per slide`}
+          en={`${type.coverLine.en} · every figure carries its source, slide by slide`}
           data-reveal data-reveal-delay="0.3"
         />
       </div>
@@ -62,16 +65,16 @@ const n = CHAPTERS.length;
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-percorso">
         <T as="p" class="slide-eyebrow" it="Il percorso" en="The path" data-reveal />
-        <T as="h2" class="ex-percorso-title" it={`«${type.question.it}»`} en={`“${type.question.en}”`} data-reveal data-reveal-delay="0.08" />
+        <T as="h2" class="ex-percorso-title" it={`«${domandaIt}»`} en={`“${domandaEn}”`} data-reveal data-reveal-delay="0.08" />
         <T
           as="p"
           class="ex-percorso-lead"
-          it={`È la domanda a cui risponde ${['Storia', 'Prospettiva'].includes(type.label.it) ? 'una' : 'un'} ${type.label.it}. Ogni capitolo ne prende un pezzo; l'ordine viene dallo scheletro e si può cambiare, accorciare o dividere senza chiedere permesso.`}
-          en={`That is the question a ${type.label.en} answers. Each chapter takes one piece of it; the order comes from the skeleton and can be changed, shortened or split without asking anyone.`}
+          it="Il secondo capitolo è il vero motivo dell’incontro: un’architettura di alto livello, i vostri componenti dentro, e una domanda. L’abbiamo letta giusta? Dal terzo in poi, cosa cambia per chi costruisce audience e target."
+          en="The second chapter is the real reason for this meeting: a high-level architecture, your own components in it, and one question. Did we read it right? From the third chapter on, what changes for the people who build audiences and targets."
           data-reveal data-reveal-delay="0.15"
         />
         <!-- Blocchi di uguale misura in una griglia bilanciata (auto-rows-fr + h-full):
-             le colonne sono calcolate dal generatore sul numero di capitoli. -->
+             sei capitoli → due righe da tre, mai un'ultima riga sbilenca. -->
         <div class="ex-journey grid grid-cols-3 auto-rows-fr gap-3" data-reveal data-reveal-delay="0.22">
           {CHAPTERS.map((c) => (
             <a href={href(base, '/' + c.slug)} class="ex-journey-card h-full">

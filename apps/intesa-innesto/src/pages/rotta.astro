@@ -16,24 +16,33 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Tre blocchi di partenza per la slide di contenuto. Sostituire con i fatti del
-// capitolo: il copy deve leggersi come scritto da una persona (vedi CLAUDE.md →
-// Copy voice), con fonti e numeri verificati.
-const blocchi = [
+// In pagina c'è solo quello che portiamo NOI. Nessun effort, nessuna giornata,
+// nessun listino: decisione presa in sessione di lavoro il 21 ott 2026. Se la
+// domanda arriva si risponde a voce, senza improvvisare un numero.
+const PASSI = [
   {
-    k: { it: 'Oggi', en: 'Today' },
-    t: { it: 'Com’è fatto il processo adesso', en: 'How the process works now' },
-    b: { it: 'Dove si inceppa, chi aspetta chi, quanto costa aspettare. Fatti presi dal cliente, non aggettivi.', en: 'Where it jams, who waits for whom, what the waiting costs. Facts taken from the client, not adjectives.' },
+    k: { it: 'Oggi, in questa stanza', en: 'Today, in this room' },
+    t: { it: 'L’architettura validata o corretta', en: 'The architecture confirmed or corrected' },
+    b: {
+      it: 'I tre strati sono quelli giusti? Il punto di innesto è dove pensiamo? Un «no, funziona diversamente» detto qui vale più di un sì generico fra un mese.',
+      en: 'Are the three layers right? Is the graft point where we think it is? A «no, it works differently» said here is worth more than a vague yes in a month.',
+    },
   },
   {
-    k: { it: 'Con Adobe', en: 'With Adobe' },
-    t: { it: 'Cosa fa la piattaforma in questo passaggio', en: 'What the platform does at this step' },
-    b: { it: 'Il prodotto con il nome per esteso, al massimo due per slide, mentre agisce nella storia. Il catalogo intero sta altrove.', en: 'The product named in full, two per slide at most, while it acts in the story. The full catalogue lives elsewhere.' },
+    k: { it: 'Un percorso, non il tracciato', en: 'One journey, not the whole estate' },
+    t: { it: 'Il mutuo, dalla prima visita alla pratica', en: 'The mortgage, from first visit to filed application' },
+    b: {
+      it: 'Un solo percorso su cui provare la cucitura del dato e la scelta dell’offerta. È abbastanza stretto da finirlo e abbastanza largo da attraversare tutti e tre gli strati.',
+      en: 'One journey on which to test data stitching and offer selection. Narrow enough to finish, wide enough to cross all three layers.',
+    },
   },
   {
-    k: { it: 'Cosa serve', en: 'What it takes' },
-    t: { it: 'Dati, persone, decisioni', en: 'Data, people, decisions' },
-    b: { it: 'Quello che il cliente deve mettere sul tavolo perché funzioni, detto prima che lo chieda lui.', en: 'What the client has to bring to the table for this to work, said before they have to ask.' },
+    k: { it: 'Due nomi', en: 'Two names' },
+    t: { it: 'Chi tiene il dato, chi tiene il targeting', en: 'Who owns the data, who owns the targeting' },
+    b: {
+      it: 'Mezza giornata tecnica con chi governa l’ingestione e con chi costruisce le audience. Da parte nostra ci sono l’architetto e il team che segue l’account.',
+      en: 'Half a day of technical work with whoever governs ingestion and whoever builds the audiences. On our side, the architect and the account team.',
+    },
   },
 ];
 ---
@@ -53,37 +62,35 @@ const blocchi = [
         <T
           as="p"
           class="ex-ch-lead"
-          it="L’ultimo capitolo chiude il percorso: cosa resta sul tavolo e chi decide. Dopo c’è solo la firma."
-          en="The last chapter closes the path: what stays on the table and who decides. After it, only the signature."
+          it="Quello che chiediamo è piccolo di proposito: perimetrare una fase, su un percorso solo. Una fase portata a termine vale più di un programma annunciato."
+          en="What we ask for is deliberately small: scope one phase, on one journey. A phase brought to a close is worth more than a programme announced."
           data-reveal data-reveal-delay="0.15"
         />
         <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
           <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
           <ul role="list">
-            {blocchi.map((x, i) => (
-              <li><span class="ex-ch-agenda-n" aria-hidden="true">{i + 1}</span><T as="span" it={x.k.it} en={x.k.en} /></li>
-            ))}
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="Tre cose, e una data" en="Three things, and a date" /></li>
           </ul>
         </div>
       </div>
     </Slide>
 
-    <!-- ── Contenuto ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-contenuto" bg="primary" align="left">
+    <!-- ── I passi ───────────────────────────────────────────────────────── -->
+    <Slide id="slide-passi" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
-          <T as="p" class="slide-eyebrow" it={ch.title.it} en={ch.title.en} />
-          <T as="h2" class="ex-head-title" it="Il punto di questo capitolo, in una riga" en="The point of this chapter, in one line" />
+          <T as="p" class="slide-eyebrow" it="La rotta" en="The route" />
+          <T as="h2" class="ex-head-title" it="Tre cose che chiediamo, e una data" en="Three things we ask for, and a date" />
           <T
             as="p"
             class="ex-head-lead"
-            it="Due o tre frasi che spiegano l’argomento con le parole del cliente: cosa succede oggi, cosa cambia, con un numero se ce n’è uno verificato. Il resto va nei tre blocchi qui sotto."
-            en="Two or three sentences that explain the subject in the client’s own words: what happens today, what changes, with a number if there is a verified one. The rest goes in the three blocks below."
+            it="Nessun impegno da firmare e nessun programma da approvare. Tre cose concrete, e un ritrovo per dire cosa è stato fatto e quali risultati ha portato."
+            en="Nothing to sign and no programme to approve. Three concrete things, and a date to come back and say what was done and what it produced."
           />
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {blocchi.map((x) => (
+          {PASSI.map((x) => (
             <div class="ex-card">
               <T as="p" class="ex-card-k" it={x.k.it} en={x.k.en} />
               <T as="p" class="ex-card-t" it={x.t.it} en={x.t.en} />
@@ -91,11 +98,16 @@ const blocchi = [
             </div>
           ))}
         </div>
-        <T as="p" class="ex-src" it="Fonte: da citare slide per slide, con il link alla pagina pubblica." en="Source: to be cited slide by slide, with the link to the public page." data-reveal data-reveal-delay="0.24" />
+        <T
+          as="p" class="ii-chiedi"
+          it="Se l’architettura regge, il resto è una mezza giornata di lavoro tecnico. Se non regge, l’ora di oggi è servita più di quanto ci aspettassimo."
+          en="If the architecture holds, the rest is half a day of technical work. If it does not, this hour was worth more than we hoped."
+          data-reveal data-reveal-delay="0.26"
+        />
       </div>
     </Slide>
 
-    <!-- ── Firma (ultima slide del percorso: lockup grande + una riga + ritorno).
+    <!-- ── Firma ─────────────────────────────────────────────────────────────
          Slide a sé per contratto co-brand; fallisce il check SOFT `i` di proposito
          (il lockup è un SVG, il parser non lo conta): non si aggiusta rimpicciolendo. -->
     <Slide id="slide-signature" bg="inverse" align="center">
@@ -110,5 +122,6 @@ const blocchi = [
       />
       <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.18"><span data-lang-it>Torna all’inizio →</span><span data-lang-en>Back to the start →</span></a>
     </Slide>
+
   </DeckContainer>
 </BaseLayout>

@@ -9,14 +9,21 @@
  * Logic lives entirely in BaseLayout.astro (is:inline script) — this
  * component has NO script. The admin page writes to localStorage key
  * `edf:media-slots:<project-slug>`.
+ *
+ * `placeholder` (opt-in, default off) tiene il riquadro VISIBILE anche quando
+ * nessun media è configurato, con la sua etichetta dentro. Serve ai deck in cui
+ * la slide deve leggersi completa prima che il video esista: un riquadro
+ * dichiarato è un segnaposto, un riquadro assente è un buco in pagina. Il
+ * default resta `false`, quindi nessun deck esistente cambia comportamento.
  */
 interface Props {
   id: string;
   label: string;
   aspect?: string;
+  placeholder?: boolean;
 }
 
-const { id, label, aspect = '16/9' } = Astro.props;
+const { id, label, aspect = '16/9', placeholder = false } = Astro.props;
 ---
 
 <div
@@ -24,7 +31,7 @@ const { id, label, aspect = '16/9' } = Astro.props;
   data-slot-label={label}
   data-slot-aspect={aspect}
   class="media-demo-slot"
-  style={`flex-shrink: 0; display: none; width: 44%; aspect-ratio: ${aspect};`}
+  style={`flex-shrink: 0; display: ${placeholder ? 'block' : 'none'}; width: 44%; aspect-ratio: ${aspect};`}
 >
   <div
     class="media-slot-inner"
@@ -34,8 +41,15 @@ const { id, label, aspect = '16/9' } = Astro.props;
       <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/>
       <path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="1.5"/>
     </svg>
-    <p style="font-size: 10px; color: var(--ink-tertiary); text-align: center; padding: 0 1rem;">
-      Demo slot<br/>{id}
-    </p>
+    {placeholder ? (
+      <p style="font-size: 0.82rem; line-height: 1.45; color: var(--ink-secondary); text-align: center; padding: 0 1.5rem; margin: 0;">
+        <strong style="display: block; font-size: 0.95rem; margin-bottom: 0.3rem;">{label}</strong>
+        <span>Il video si attacca da /admin/, senza toccare il codice.</span>
+      </p>
+    ) : (
+      <p style="font-size: 10px; color: var(--ink-tertiary); text-align: center; padding: 0 1rem;">
+        Demo slot<br/>{id}
+      </p>
+    )}
   </div>
 </div>

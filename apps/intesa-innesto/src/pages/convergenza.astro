@@ -12,24 +12,32 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-// Tre blocchi di partenza per la slide di contenuto. Sostituire con i fatti del
-// capitolo: il copy deve leggersi come scritto da una persona (vedi CLAUDE.md →
-// Copy voice), con fonti e numeri verificati.
-const blocchi = [
+// I tre pezzi che vanno OLTRE l'analisi. Mostrare Customer Journey Analytics
+// come strumento di analisi non sposta nulla: è su questi tre che si gioca.
+const PEZZI = [
   {
-    k: { it: 'Oggi', en: 'Today' },
-    t: { it: 'Com’è fatto il processo adesso', en: 'How the process works now' },
-    b: { it: 'Dove si inceppa, chi aspetta chi, quanto costa aspettare. Fatti presi dal cliente, non aggettivi.', en: 'Where it jams, who waits for whom, what the waiting costs. Facts taken from the client, not adjectives.' },
+    k: { it: 'Uno', en: 'One' },
+    t: { it: 'Cucire la stessa persona', en: 'Stitching the same person' },
+    b: {
+      it: 'Sei mesi di navigazione anonima e un indirizzo email che arriva dopo diventano una storia sola, ricostruita a ritroso. Serve per capire che cosa ha portato alla richiesta, non per inseguire chi non si è ancora presentato.',
+      en: 'Six months of anonymous browsing and an email address that turns up later become one single story, rebuilt backwards. It serves to understand what led to the application, not to chase someone who has not introduced themselves yet.',
+    },
   },
   {
-    k: { it: 'Con Adobe', en: 'With Adobe' },
-    t: { it: 'Cosa fa la piattaforma in questo passaggio', en: 'What the platform does at this step' },
-    b: { it: 'Il prodotto con il nome per esteso, al massimo due per slide, mentre agisce nella storia. Il catalogo intero sta altrove.', en: 'The product named in full, two per slide at most, while it acts in the story. The full catalogue lives elsewhere.' },
+    k: { it: 'Due', en: 'Two' },
+    t: { it: 'Portare fuori le audience', en: 'Taking audiences out' },
+    b: {
+      it: 'Un segmento costruito sul comportamento omnicanale non resta in un rapporto: esce verso i sistemi che fanno il contatto. È il punto dove l’analisi smette di essere un documento e diventa lavoro.',
+      en: 'A segment built on omnichannel behaviour does not stay inside a report: it goes out to the systems that make contact. That is where analysis stops being a document and becomes work.',
+    },
   },
   {
-    k: { it: 'Cosa serve', en: 'What it takes' },
-    t: { it: 'Dati, persone, decisioni', en: 'Data, people, decisions' },
-    b: { it: 'Quello che il cliente deve mettere sul tavolo perché funzioni, detto prima che lo chieda lui.', en: 'What the client has to bring to the table for this to work, said before they have to ask.' },
+    k: { it: 'Tre', en: 'Three' },
+    t: { it: 'Dare un peso ai passaggi', en: 'Weighting the steps' },
+    b: {
+      it: 'Con il solo digitale l’ultimo clic si prende tutto il merito. Sommando il contatto assistito e la filiale, il modello di attribuzione può dire quanto ha pesato ciascun passaggio, e quali si possono togliere.',
+      en: 'With digital alone the last click takes all the credit. Adding assisted contact and the branch, the attribution model can say how much each step weighed, and which ones can be dropped.',
+    },
   },
 ];
 ---
@@ -49,37 +57,31 @@ const blocchi = [
         <T
           as="p"
           class="ex-ch-lead"
-          it="Questa copertina apre il capitolo. Una frase che dica cosa si trova nelle slide che seguono, con le parole del cliente."
-          en="This cover opens the chapter. One sentence saying what the following slides hold, in the client’s own words."
+          it="Customer Journey Analytics guardato come strumento di analisi somiglia a quello che già avete. La differenza sta in tre cose che l’analisi, da sola, non fa."
+          en="Looked at as an analysis tool, Customer Journey Analytics resembles what you already have. The difference is in three things that analysis alone does not do."
           data-reveal data-reveal-delay="0.15"
         />
         <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
           <T as="p" class="ex-ch-agenda-k" it="In questo capitolo" en="In this chapter" />
           <ul role="list">
-            {blocchi.map((x, i) => (
-              <li><span class="ex-ch-agenda-n" aria-hidden="true">{i + 1}</span><T as="span" it={x.k.it} en={x.k.en} /></li>
-            ))}
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><T as="span" it="I tre pezzi che contano" en="The three pieces that matter" /></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><T as="span" it="Che cosa costa passarci" en="What moving across costs" /></li>
+            <li><span class="ex-ch-agenda-n" aria-hidden="true">3</span><T as="span" it="Chi l’ha già fatto" en="Who has already done it" /></li>
           </ul>
         </div>
       </div>
     </Slide>
 
-    <!-- ── Contenuto ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-contenuto" bg="primary" align="left">
+    <!-- ── I tre pezzi ───────────────────────────────────────────────────── -->
+    <Slide id="slide-tre" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ex-content" data-reveal>
         <div class="ex-head">
-          <T as="p" class="slide-eyebrow" it={ch.title.it} en={ch.title.en} />
-          <T as="h2" class="ex-head-title" it="Il punto di questo capitolo, in una riga" en="The point of this chapter, in one line" />
-          <T
-            as="p"
-            class="ex-head-lead"
-            it="Due o tre frasi che spiegano l’argomento con le parole del cliente: cosa succede oggi, cosa cambia, con un numero se ce n’è uno verificato. Il resto va nei tre blocchi qui sotto."
-            en="Two or three sentences that explain the subject in the client’s own words: what happens today, what changes, with a number if there is a verified one. The rest goes in the three blocks below."
-          />
+          <T as="p" class="slide-eyebrow" it="Oltre l’analisi" en="Beyond analysis" />
+          <T as="h2" class="ex-head-title" it="Tre cose che un rapporto non sa fare" en="Three things a report cannot do" />
         </div>
         <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {blocchi.map((x) => (
+          {PEZZI.map((x) => (
             <div class="ex-card">
               <T as="p" class="ex-card-k" it={x.k.it} en={x.k.en} />
               <T as="p" class="ex-card-t" it={x.t.it} en={x.t.en} />
@@ -87,7 +89,85 @@ const blocchi = [
             </div>
           ))}
         </div>
-        <T as="p" class="ex-src" it="Fonte: da citare slide per slide, con il link alla pagina pubblica." en="Source: to be cited slide by slide, with the link to the public page." data-reveal data-reveal-delay="0.24" />
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          <span data-lang-it>Prodotto: Adobe Customer Journey Analytics, </span>
+          <span data-lang-en>Product: Adobe Customer Journey Analytics, </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations" target="_blank" rel="noopener">experienceleague.adobe.com</a>
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa costa passarci ───────────────────────────────────────── -->
+    <Slide id="slide-passaggio" bg="secondary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Il passaggio" en="The move" />
+          <T as="h2" class="ex-head-title" it="Quello che non si perde, e quello che si rifà" en="What survives the move, and what gets rebuilt" />
+          <T
+            as="p"
+            class="ex-head-lead"
+            it="Lo diciamo prima che lo chieda l’IT, perché un vincolo detto da noi vale più dello stesso vincolo scoperto fra un mese. Non è un rifacimento, e non è nemmeno gratis."
+            en="We say this before IT asks, because a constraint we declare is worth more than the same constraint discovered a month from now. It is not a rebuild, and it is not free either."
+          />
+        </div>
+        <div class="ii-conf" data-reveal data-reveal-delay="0.14">
+          <div class="ii-conf-col ii-conf-col--nostro">
+            <T as="p" class="ii-conf-k" it="Resta" en="Survives" />
+            <ul role="list">
+              <li><T as="span" it="Lo storico del tracciamento si porta dentro: non si ricomincia da zero." en="Tracking history comes across: you do not start from scratch." /></li>
+              <li><T as="span" it="Le persone sono le stesse, e l’ambiente di lavoro è quello che conoscono." en="The same people, and a working environment they already know." /></li>
+              <li><T as="span" it="L’implementazione sui canali digitali non si rifà." en="The implementation on digital channels is not redone." /></li>
+            </ul>
+          </div>
+          <div class="ii-conf-col">
+            <T as="p" class="ii-conf-k" it="Si rifà" en="Gets rebuilt" />
+            <ul role="list">
+              <li><T as="span" it="I segmenti e i calcoli vanno ricostruiti nel nuovo modello di dati." en="Segments and calculations have to be rebuilt in the new data model." /></li>
+              <li><T as="span" it="I dati offline vanno portati, e questa è la parte che richiede il vostro IT." en="Offline data has to be brought in, and that is the part that needs your IT." /></li>
+              <li><T as="span" it="Durante il confronto i due ambienti si pagano entrambi." en="While the two run side by side, both are paid for." /></li>
+            </ul>
+          </div>
+        </div>
+        <T
+          as="p" class="ex-src"
+          it="Per questo conviene partire da un percorso solo, quello del mutuo, e non da tutto il tracciato."
+          en="Which is why it pays to start from one journey only, the mortgage one, rather than the whole estate."
+          data-reveal data-reveal-delay="0.26"
+        />
+      </div>
+    </Slide>
+
+    <!-- ── Chi l'ha già fatto ────────────────────────────────────────────────
+         ⚠️ INTERNO: la referenza Unipol va concordata con quell'account prima
+         di promettere documentazione condivisibile o un contatto diretto.
+         In pagina resta solo quello che è già pubblico. -->
+    <Slide id="slide-referenza" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Le referenze" en="References" />
+          <T as="h2" class="ex-head-title" it="Due che hanno fatto questo passaggio" en="Two who have made this move" />
+        </div>
+        <div class="ex-cards ex-cards--due" data-reveal data-reveal-delay="0.14">
+          <div class="ex-card">
+            <T as="p" class="ex-card-k" it="In Italia, nelle assicurazioni" en="In Italy, in insurance" />
+            <T as="p" class="ex-card-t" it="Gruppo Unipol" en="Unipol Group" />
+            <T as="p" class="ex-card-b" it="Sono partiti da Adobe Analytics, come voi. Sono passati a Customer Journey Analytics portando dentro il dato offline e quello del CRM, che resta di un altro fornitore. Lo hanno raccontato dal palco di un nostro evento." en="They started from Adobe Analytics, as you do. They moved to Customer Journey Analytics bringing in offline and CRM data, with the CRM staying with another vendor. They told the story from the stage at one of our events." />
+          </div>
+          <div class="ex-card">
+            <T as="p" class="ex-card-k" it="Su scala, in banca" en="At scale, in banking" />
+            <T as="p" class="ex-card-t" it="Santander Brasil" en="Santander Brasil" />
+            <T as="p" class="ex-card-b" it="Il pezzo trasferibile è uno: il recupero delle richieste lasciate a metà. Il resto del caso è contesto, e la scala non è la vostra." en="One piece transfers: recovering applications left halfway. The rest of the case is context, and the scale is not yours." />
+          </div>
+        </div>
+        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+          <span data-lang-it>Caso pubblicato da Adobe, </span>
+          <span data-lang-en>Case published by Adobe, </span>
+          <a href="https://business.adobe.com/br/customer-success-stories/santander-case-study.html" target="_blank" rel="noopener">business.adobe.com</a>
+          <span data-lang-it> · per Unipol stiamo verificando cosa è condivisibile.</span>
+          <span data-lang-en> · for Unipol we are checking what can be shared.</span>
+        </p>
       </div>
     </Slide>
 
