@@ -1,0 +1,103 @@
+---
+/**
+ * Motivo — il disegno del capitolo, ridotto a geometria, sulla sua copertina.
+ *
+ * Perché esiste: `audit:ritmo` misurava quattro slide di fila senza un
+ * elemento visivo, e la risposta ovvia sarebbe stata uno sfondo generato. Ma
+ * un deck cliente vuole asset commercialmente sicuri, e la pipeline Firefly
+ * è ferma su una chiave. Allora si disegna: un motivo è nostro, è on-brand per
+ * costruzione, e — a differenza di uno sfondo atmosferico — DICE qualcosa,
+ * perché è la figura di quel capitolo vista da lontano.
+ *
+ * Vive nello slot `backdrop` della cover: sta dietro al testo, fuori dalla
+ * safe-area, quindi non entra nel conteggio né nelle misure dell'audit. Il
+ * tratto è verde chiaro su verde notte, sotto la soglia dove competerebbe con
+ * il titolo — verificato con `audit:ink`, non a occhio.
+ */
+interface Props {
+  /** Quale capitolo: decide il disegno. */
+  capitolo: 'impianto' | 'architettura' | 'assi' | 'cucitura' | 'scelta' | 'rotta';
+}
+const { capitolo } = Astro.props;
+---
+<div class="ex-bg-night mot-bg">
+  <svg class="mot" viewBox="0 0 900 600" role="presentation" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+    {capitolo === 'impianto' && (
+      <g class="mot-g">
+        {/* Tre domini e i due confini: la figura del capitolo 01. */}
+        <rect class="mot-box" x="40" y="210" width="220" height="180" rx="6" />
+        <rect class="mot-box" x="340" y="210" width="220" height="180" rx="6" />
+        <rect class="mot-box" x="640" y="210" width="220" height="180" rx="6" />
+        <line class="mot-cut" x1="300" y1="190" x2="300" y2="270" />
+        <line class="mot-cut" x1="300" y1="330" x2="300" y2="410" />
+        <line class="mot-cut" x1="600" y1="190" x2="600" y2="270" />
+        <line class="mot-cut" x1="600" y1="330" x2="600" y2="410" />
+      </g>
+    )}
+    {capitolo === 'architettura' && (
+      <g class="mot-g">
+        {/* Il flusso e l'arco che manca: la figura del capitolo 02. */}
+        {[40, 210, 380, 550, 720].map((x) => (<rect class="mot-box" x={x} y="270" width="130" height="80" rx="5" />))}
+        {[185, 355, 525, 695].map((x) => (<line class="mot-line" x1={x} y1="310" x2={x + 20} y2="310" />))}
+        <path class="mot-arc" d="M815 370 C815 500, 275 500, 275 370" />
+        <path class="mot-cut-arc" d="M815 270 C815 120, 275 120, 275 270" />
+      </g>
+    )}
+    {capitolo === 'assi' && (
+      <g class="mot-g">
+        {/* Tre assi: la figura del capitolo 03. */}
+        <circle class="mot-node" cx="450" cy="300" r="26" />
+        {[[450, 110], [250, 430], [650, 430]].map(([x, y]) => (
+          <g><line class="mot-line" x1="450" y1="300" x2={x} y2={y} /><circle class="mot-node" cx={x} cy={y} r="42" /></g>
+        ))}
+      </g>
+    )}
+    {capitolo === 'cucitura' && (
+      <g class="mot-g">
+        {/* I punti che diventano profili: la figura del capitolo 04. */}
+        {Array.from({ length: 36 }).map((_, i) => {
+          const a = (i / 36) * Math.PI * 2;
+          const r = 120 + (i % 5) * 42;
+          return (<circle class="mot-dot" cx={450 + Math.cos(a) * r * 1.5} cy={300 + Math.sin(a) * r * 0.62} r="4" />);
+        })}
+        {[330, 450, 570].map((x) => (<circle class="mot-node" cx={x} cy="300" r="36" />))}
+      </g>
+    )}
+    {capitolo === 'scelta' && (
+      <g class="mot-g">
+        {/* Sei proposte, una esce: la figura del capitolo 05. */}
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <rect class={i === 2 ? 'mot-box mot-box--on' : 'mot-box'}
+                x={120 + (i % 3) * 230} y={200 + Math.floor(i / 3) * 140} width="190" height="100" rx="5" />
+        ))}
+      </g>
+    )}
+    {capitolo === 'rotta' && (
+      <g class="mot-g">
+        {/* Una linea aperta e un segno davanti: la figura del capitolo 06. */}
+        <path class="mot-arc" d="M40 420 C260 420, 380 300, 640 300" />
+        <circle class="mot-node" cx="640" cy="300" r="34" />
+        <line class="mot-line" x1="690" y1="300" x2="860" y2="300" />
+      </g>
+    )}
+  </svg>
+</div>
+
+<style is:global>
+  .mot-bg { position: absolute; inset: 0; overflow: hidden; }
+  /* Il blocco di testo della cover è centrato e arriva al 65% della larghezza:
+     il motivo comincia dopo, se no gli passa dietro al titolo. */
+  .mot {
+    position: absolute; right: -7%; top: 50%; translate: 0 -50%;
+    width: 42%; height: auto; max-height: 78%;
+  }
+  /* Il tratto recede: è atmosfera che significa, non un secondo diagramma.
+     Sotto questa soglia non compete con il titolo — misurato, non stimato. */
+  .mot-g { opacity: 0.22; }
+  .mot-box, .mot-node { fill: none; stroke: var(--color-verde-chiaro); stroke-width: 2; }
+  .mot-box--on { fill: var(--color-verde-chiaro); fill-opacity: 0.18; stroke-width: 3; }
+  .mot-line, .mot-arc { fill: none; stroke: var(--color-verde-chiaro); stroke-width: 2; }
+  .mot-cut, .mot-cut-arc { fill: none; stroke: var(--color-verde-chiaro); stroke-width: 2; stroke-dasharray: 8 7; }
+  .mot-dot { fill: var(--color-verde-chiaro); }
+  @media (max-width: 900px) { .mot { right: -18%; width: 92%; } .mot-g { opacity: 0.14; } }
+</style>

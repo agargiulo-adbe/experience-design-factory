@@ -90,6 +90,27 @@ concreto, intanto, si fa a mano in un giorno: `apps/intesa-innesto/src/pages/fon
   `transform: translateY(...)`. Si usa la proprietà **`translate`** per il centraggio: si
   compone con `transform` invece di essere sostituita.
 
+## La copertina di capitolo porta il motivo del suo capitolo
+
+Una copertina di capitolo è il posto dove quasi tutti i deck mettono niente, e
+`audit:ritmo` lo misura come **deserto grafico**. La risposta ovvia è uno sfondo
+generato, ma un deck cliente vuole asset **commercialmente sicuri** e quella
+pipeline può essere ferma su una chiave.
+
+La risposta migliore è disegnare: la copertina porta **la figura del proprio
+capitolo, ridotta a geometria**, grande, a lato del testo e a opacità bassa.
+È nostra, è on-brand per costruzione, e a differenza di uno sfondo atmosferico
+**dice qualcosa** — chi guarda vede in anticipo la forma dell'argomento.
+
+Tre regole, tutte imparate sbagliando:
+- il motivo va nello **slot `backdrop`**, non nel flusso: `<Motivo slot="backdrop" />`.
+  Nel flusso copre il testo, e `audit:ink` lo vede come inchiostro su inchiostro;
+- il blocco di testo di una cover centrata arriva al **65% della larghezza**: il
+  motivo comincia dopo, se no passa dietro al titolo;
+- l'opacità si verifica con `audit:ink`, non a occhio.
+
+Esempio: `apps/intesa-innesto/src/components/Motivo.astro`.
+
 ## Come si verifica
 
 1. **`pnpm --silent exec tsx scripts/copy-audit.ts --app <alias>`** — famiglia `P`: blocchi di
@@ -102,6 +123,26 @@ concreto, intanto, si fa a mano in un giorno: `apps/intesa-innesto/src/pages/fon
    da 7 a 44 rilievi *mentre* le slide miglioravano. Un `i` che sale mentre il testo scende
    non è un peggioramento, è il gate che guarda la cosa sbagliata — e non si compensa
    gonfiando le slide.
+
+## Si legge da fondo sala, e non è un'opinione
+
+Il contratto di leggibilità è tarato su **1920×1080**, dove il corpo minimo è ~17px su 1080,
+cioè l'**1,3% dell'altezza**. `wallScale` alza la radice a 28px sopra i 3200, e sembra
+sufficiente: non lo è. Misurato il 24 ott 2026 su una figura reale, a **3840×2160** il corpo
+più piccolo scendeva a 21px, lo **0,97%** — su una parete, che si guarda da *più lontano*,
+quel rapporto era *sceso*.
+
+La causa: il testo dentro una figura seguiva solo la radice, e la radice non raddoppia quando
+raddoppia lo schermo.
+
+- **Il testo di una figura si lega al viewport**: `clamp(<minimo in rem>, <x>vw, <tetto>)`.
+  Il minimo in `rem` tiene il contratto a 1920; la componente in `vw` fa crescere il corpo
+  con la parete; il tetto evita che a 5120 diventi un cartellone.
+- **`wallScale` si accende DOPO `audit:deck -- --tv` a 0 HARD**, mai prima: su un'altra
+  experience, accesa a tappeto, uscivano dieci collisioni testo-su-testo ai soli viewport da muro.
+- **Il gate è `pnpm audit:ritmo --app <alias> --sala`**, famiglia `S`: gira a 3840×2160 e
+  misura il corpo più piccolo di ogni slide in percentuale dell'altezza. Sotto l'**1,1%** è un
+  rilievo. Dopo la correzione, lo stesso deck misura 1,25%.
 
 ## Il controllo che vale più di tutti
 

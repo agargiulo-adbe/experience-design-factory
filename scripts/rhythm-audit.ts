@@ -62,6 +62,12 @@ const solo = arg('only');
 const daFare = solo ? rotte.filter((r) => solo.split(',').includes(r.name)) : rotte;
 if (!daFare.length) { console.error(`--only «${solo}» non corrisponde a nessuna rotta.`); process.exit(2); }
 
+const SALA = process.argv.includes('--sala');
+// Il corpo più piccolo di una slide, in % dell'altezza dello schermo. A 1920
+// il contratto di leggibilità dà ~1,3%; su una parete, che si guarda da più
+// lontano, quel rapporto non deve SCENDERE. Misurato il 24 ott 2026: senza
+// una componente in `vw`, a 3840 scendeva a 0,97%.
+const SALA_MIN = 0.011;
 const DESERTO = 4;          // slide di fila senza un elemento visivo
 const COPERTURA_MIN = 0.38; // testo + figure, sull'altezza utile
 
@@ -71,13 +77,17 @@ interface Misura {
   tipo: string;
   visivo: boolean;
   copertura: number;
+  /** Il corpo più piccolo reso, in px. Misurato solo con --sala. */
+  minPx?: number;
+  vh?: number;
 }
 
 const browser = await chromium.launch();
 const misure: Misura[] = [];
 
 for (const r of daFare) {
-  const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
+  const VP = SALA ? { width: 3840, height: 2160 } : { width: 1920, height: 1080 };
+  const ctx = await browser.newContext({ viewport: VP, reducedMotion: 'reduce', deviceScaleFactor: 0.5 });
   const page = await ctx.newPage();
   // esbuild inietta `__name` nelle funzioni compilate: senza questo, ogni
   // page.evaluate esplode con «__name is not defined». Stessa riga di deck-audit.
@@ -89,7 +99,7 @@ for (const r of daFare) {
   const perSlide = await page.evaluate(() => {
     const H = window.innerHeight;
     const W = window.innerWidth;
-    const out: Array<{ id: string; tipo: string; visivo: boolean; copertura: number }> = [];
+    const out: Array<{ id: string; tipo: string; visivo: boolean; copertura: number; minPx: number }> = [];
 
     for (const slide of Array.from(document.querySelectorAll<HTMLElement>('[data-slide]'))) {
       // ── Che TIPO di slide è: dalla sua struttura, non da una dichiarazione.
@@ -150,12 +160,24 @@ for (const r of daFare) {
           if (r > da) { area += (r - da) * 10; fine = r; }
         }
       }
-      out.push({ id: slide.id || '(senza id)', tipo, visivo: figure.length > 0, copertura: area / (W * H) });
+      // Il corpo più piccolo effettivamente reso su questa slide.
+      let minPx = Infinity;
+      for (const e of Array.from(slide.querySelectorAll<HTMLElement>('p, li, span[data-el], figcaption'))) {
+        const t = e.textContent?.trim();
+        if (!t || t.length < 3) continue;
+        if (e.querySelector('p, li')) continue;
+        const cs = getComputedStyle(e);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || parseFloat(cs.opacity) < 0.05) continue;
+        const b = e.getBoundingClientRect();
+        if (b.width < 8 || b.height < 8) continue;
+        minPx = Math.min(minPx, parseFloat(cs.fontSize));
+      }
+      out.push({ id: slide.id || '(senza id)', tipo, visivo: figure.length > 0, copertura: area / (W * H), minPx: Number.isFinite(minPx) ? minPx : 0 });
     }
     return out;
   });
 
-  for (const s of perSlide) misure.push({ rotta: r.name, ...s });
+  for (const s of perSlide) misure.push({ rotta: r.name, ...s, vh: VP.height });
   await ctx.close();
 }
 await browser.close();
@@ -195,6 +217,9 @@ for (const m of misure) {
 
 // V1 — massa visiva: testo E figure insieme.
 for (const m of misure) {
+  // La soglia di copertura è tarata su 1920: in modalità sala si misura la
+  // LEGGIBILITÀ (famiglia S), non il riempimento, e V1 farebbe solo rumore.
+  if (SALA) break;
   if (m.tipo === 'copertina') continue; // la firma è volutamente ariosa
   if (m.copertura >= COPERTURA_MIN) continue;
   rilievi.push({
@@ -204,12 +229,28 @@ for (const m of misure) {
   });
 }
 
+// S1 — sala riunioni: il corpo più piccolo, in % dell'altezza dello schermo.
+if (SALA) {
+  for (const m of misure) {
+    const q = (m.minPx ?? 0) / (m.vh ?? 2160);
+    if (!m.minPx || q >= SALA_MIN) continue;
+    rilievi.push({
+      code: 'S1',
+      dove: `${m.rotta} · ${m.id}`,
+      why: `il corpo più piccolo è ${Math.round(m.minPx)}px, cioè il ${(q * 100).toFixed(2)}% dell'altezza `
+         + `(soglia ${(SALA_MIN * 100).toFixed(1)}%): su una parete di sala riunioni non si legge. `
+         + 'Si lega il corpo al viewport con `clamp(<minimo in rem>, <x>vw, <tetto>)`, mai alla sola radice.',
+    });
+  }
+}
+
 // ── Esito ───────────────────────────────────────────────────────────────────
 const tipi = new Map<string, number>();
 for (const m of misure) tipi.set(m.tipo, (tipi.get(m.tipo) ?? 0) + 1);
 
 console.log('');
-console.log(c.bold('audit:ritmo') + c.dim(` · ${app} · ${misure.length} slide su ${daFare.length} rotte a 1920×1080`));
+const et = SALA ? '3840×2160 (sala riunioni)' : '1920×1080';
+console.log(c.bold('audit:ritmo') + c.dim(` · ${app} · ${misure.length} slide su ${daFare.length} rotte a ${et}`));
 console.log('');
 console.log('  ' + c.dim('tipi usati: ') + [...tipi.entries()].sort((a, b) => b[1] - a[1]).map(([t, n]) => `${t} ×${n}`).join(' · '));
 const visivi = misure.filter((m) => m.visivo).length;

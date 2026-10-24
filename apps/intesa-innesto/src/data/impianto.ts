@@ -29,7 +29,7 @@ export const CIFRE: Array<{ n: string; pre?: string; suf?: string; l: Testo }> =
 // E il confronto si disegna: fra la fase 2 e la 3 cambiano gli archi, non gli
 // elenchi. Geometria in unità di viewBox (1440 × 620), a mano.
 
-export const VIEWBOX = '0 0 1440 620';
+export const VIEWBOX = '0 0 1440 700';
 export const H_NODO = 92;
 
 export interface Nodo {
@@ -44,8 +44,8 @@ export interface Nodo {
   voce: Testo;
 }
 
-const Y_FLUSSO = 330;
-const Y_ADOBE = 96;
+const Y_FLUSSO = 360;
+const Y_ADOBE = 80;
 
 export const NODI: Nodo[] = [
   {
@@ -114,31 +114,31 @@ const Y_MID = Y_FLUSSO + H_NODO / 2;
 const dritto = (x1: number, x2: number) => `M${x1} ${Y_MID} L${x2 - 11} ${Y_MID}`;
 
 export const ARCHI: Arco[] = [
-  { id: 'a1', d: dritto(274, 320), etichetta: { it: 'i dati', en: 'the data' }, lx: 297, ly: Y_FLUSSO - 30 },
+  { id: 'a1', d: dritto(274, 320), etichetta: { it: 'i dati', en: 'the data' }, lx: 297, ly: Y_FLUSSO - 46 },
   { id: 'a2', d: dritto(570, 616), etichetta: { it: 'il target', en: 'the target' },
-    nota: { it: 'col prodotto già scelto', en: 'with the product already chosen' }, lx: 593, ly: Y_FLUSSO - 30 },
+    nota: { it: 'col prodotto già scelto', en: 'with the product already chosen' }, lx: 593, ly: Y_FLUSSO - 46 },
   { id: 'a3', d: dritto(866, 912), etichetta: { it: 'la lista', en: 'the list' },
-    nota: { it: 'entro il cap settimanale', en: 'within the weekly cap' }, lx: 889, ly: Y_FLUSSO - 30 },
-  { id: 'a4', d: dritto(1162, 1208), etichetta: { it: 'il messaggio', en: 'the message' }, lx: 1185, ly: Y_FLUSSO - 30 },
+    nota: { it: 'entro il cap settimanale', en: 'within the weekly cap' }, lx: 889, ly: Y_FLUSSO - 46 },
+  { id: 'a4', d: dritto(1162, 1208), etichetta: { it: 'il messaggio', en: 'the message' }, lx: 1185, ly: Y_FLUSSO - 46 },
 
   // L'arco che c'è ma costa: il ritorno dell'interazione, con la sua latenza.
   { id: 'ritorno', attrito: true,
-    d: `M1312 ${Y_FLUSSO + H_NODO} C1312 548, 741 548, 741 ${Y_FLUSSO + H_NODO}`,
+    d: `M1312 ${Y_FLUSSO + H_NODO} C1312 616, 741 616, 741 ${Y_FLUSSO + H_NODO}`,
     etichetta: { it: 'l’interazione torna', en: 'the interaction returns' },
-    nota: { it: 'da 6 a 24 ore', en: '6 to 24 hours' }, lx: 1026, ly: 578 },
+    nota: { it: 'da 6 a 24 ore', en: '6 to 24 hours' }, lx: 1026, ly: 652 },
 
   // L'arco che oggi NON c'è: l'anonimo non si lega al cliente dopo il login.
   { id: 'anon', manca: true,
-    d: `M1312 ${Y_FLUSSO} C1312 150, 465 150, 465 ${Y_FLUSSO}`,
+    d: `M1312 ${Y_FLUSSO} C1312 148, 465 148, 465 ${Y_FLUSSO}`,
     etichetta: { it: 'l’anonimo e il cliente', en: 'the anonymous and the customer' },
-    nota: { it: 'oggi non si legano', en: 'today never tied together' }, lx: 686, ly: 254 },
+    nota: { it: 'oggi non si legano', en: 'today never tied together' }, lx: 686, ly: 196 },
 
   // La fase 3: i due innesti, ciascuno con quello che porta.
   { id: 'i-dec', nostro: true, d: `M1000 ${Y_ADOBE + H_NODO} L1000 ${Y_MID - 15}`,
     etichetta: { it: 'che cosa esce adesso', en: 'what goes out now' },
-    nota: { it: 'per profilo, non per lista', en: 'per profile, not per list' }, lx: 1014, ly: 244, lato: true },
+    nota: { it: 'per profilo, non per lista', en: 'per profile, not per list' }, lx: 1014, ly: 276, lato: true },
   { id: 'i-cja', nostro: true, d: `M465 ${Y_ADOBE + H_NODO} L465 ${Y_FLUSSO - 11}`,
-    etichetta: { it: 'la storia intera', en: 'the whole story' }, lx: 479, ly: 244, lato: true },
+    etichetta: { it: 'la storia intera', en: 'the whole story' }, lx: 479, ly: 276, lato: true },
 ];
 
 export interface Fase {

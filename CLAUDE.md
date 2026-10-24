@@ -327,6 +327,15 @@ verdi — mentre nel motore c'erano **undici scene di meccanismo e trenta blocch
   un inchiostro già grigio dà 1,5:1. Ora scrive `data-scartato` e la pelle lo veste.
 - **Una fase non ancora entrata è ASSENTE, non trasparente.** `visibility: hidden` accanto a
   `opacity: 0`, se no i gate misurano testo invisibile (e i lettori di schermo lo leggono).
+- **Ogni slide si legge su una parete di sala riunioni, e si misura.** Il contratto di
+  leggibilità è tarato su 1920; la scala da muro alza la radice a 28px sopra i 3200, ma **non
+  basta**: misurato il 24 ott 2026, a 3840 il corpo più piccolo di una figura scendeva allo
+  **0,97% dell'altezza** contro l'1,3% che ha a 1920. Su una parete, che si guarda da più
+  lontano, quel rapporto deve salire, non scendere. Il testo dentro una figura si lega al
+  viewport — `clamp(<minimo in rem>, <x>vw, <tetto>)` — **mai alla sola radice**. Lo misura
+  **`pnpm audit:ritmo --app <alias> --sala`** (famiglia `S`, a 3840×2160): corpo più piccolo
+  sotto l'1,1% dell'altezza = rilievo. E `wallScale` si accende **dopo** `audit:deck -- --tv`
+  a 0 HARD, mai prima.
 
 ### `audit:deck` — leggere davvero l'esito, non solo la riga finale
 Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe
