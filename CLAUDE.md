@@ -317,7 +317,11 @@ verdi — mentre nel motore c'erano **undici scene di meccanismo e trenta blocch
   `prefers-reduced-motion`, e **hanno due implementazioni** — `initX` per il formato a
   scorrimento e `playSlide` per il deck. Nel deck basta l'attributo.
 - **Mai due slide di contenuto consecutive dello stesso tipo**, e mai quattro di fila senza un
-  elemento visivo. Lo misura `pnpm audit:ritmo`.
+  elemento visivo. Lo misura `pnpm audit:ritmo`. ⚠️ Il **tipo** dipende dai selettori che il
+  gate conosce: un deck con una pelle tutta sua cade in «testo» anche dove è vario. Il numero
+  di cui fidarsi è **slide con un elemento visivo**, che conta `svg`/`img`/`video` veri.
+  Misurato il 24 ott 2026 su nove deck del monorepo: **26 slide su 213, il 12%**. Non era un
+  difetto di un deck: era l'assenza del gate.
 - **Una scena marca lo STATO, la pelle decide il contrasto.** La scena `personalize` attenuava
   gli scartati con `opacity: 0.2`: ma quelle tessere portano testo, e attenuare con l'opacità
   un inchiostro già grigio dà 1,5:1. Ora scrive `data-scartato` e la pelle lo veste.

@@ -22,6 +22,15 @@
  *   DECK_URL=http://localhost:4520 pnpm audit:ritmo --app <alias> [--only <rotta>]
  *
  * Tutto SOFT: è un gate che insegna a comporre, non un cancello.
+ *
+ * ⚠️ LIMITE DICHIARATO del tipo. Il classificatore riconosce le strutture che
+ * conosce — i blocchi del motore, le scene, e le classi del template. Un deck
+ * con una pelle tutta sua (`.isu-*`, `.sd-*`, `.tdu-*`) cade in «testo» anche
+ * dove è visivamente vario: «testo ×43» va letto come «43 slide che non uso
+ * una struttura condivisa», non come «43 slide uguali». Il numero di cui
+ * fidarsi è l'altro — **slide con un elemento visivo** — che conta `svg`,
+ * `img`, `video` e `canvas` veri e non dipende da nessun selettore di pelle.
+ * Misurato il 24 ott 2026 su nove deck: 26 slide su 213, il 12%.
  */
 import { chromium } from 'playwright';
 import { ROUTE_SETS, CWD_ALIAS, type Rotta } from './lib/deck-routes';
@@ -93,8 +102,14 @@ for (const r of daFare) {
       if (ha('[data-cobrand][data-variant="hero"], .ex-cover, .ex-sig-line')) tipo = 'copertina';
       else if (ha('[data-count-up]')) tipo = 'numeri';
       else if (ha('figure svg, [data-blueprint]')) tipo = 'figura';
+      // Una scena vince sul riquadro media, e porta il PROPRIO nome: due scene
+      // diverse sono due strutture diverse, non due «slide con una scena».
+      else if (ha('[data-personalize]')) tipo = 'scena:personalize';
+      else if (ha('[data-datalake]')) tipo = 'scena:datalake';
+      else if (ha('[data-converse]')) tipo = 'scena:converse';
+      else if (ha('[data-stack-assemble]')) tipo = 'scena:stack';
+      else if (ha('[data-lifecycle]')) tipo = 'scena:lifecycle';
       else if (ha('[data-media-slot], [data-demo-flex]')) tipo = 'schermo';
-      else if (ha('[data-personalize], [data-datalake], [data-converse], [data-stack-assemble], [data-lifecycle]')) tipo = 'scena';
       else if (ha('.ex-ch')) tipo = 'apri-capitolo';
       else if (slide.querySelectorAll('.ii-due-col, .ii-conf-col').length >= 2) tipo = 'confronto';
       else if (slide.querySelectorAll('.ex-ancora, .ii-domanda, .ex-card, .ii-chip, .ii-ref-b').length >= 3) tipo = 'blocchi';
