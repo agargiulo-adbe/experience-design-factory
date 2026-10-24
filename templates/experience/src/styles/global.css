@@ -243,6 +243,29 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
     var(--bg-src, none) center / cover no-repeat,
     var(--surface-inverse);
 }
+/* ── Una frase è un blocco, e va a capo intera ──────────────────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: su un
+   testo di due frasi rompe volentieri dentro la prima e lascia una parola più
+   il punto a capo da sola — «…lo sapete / già. Manca il perché.», che in
+   proiezione è il primo difetto che si nota.
+   Uno spazio unificatore non lo risolve: legare la frase intera la rende
+   inseparabile e a questo corpo sborda (il check `c`, che è HARD). Un blocco
+   in linea invece sì: il browser preferisce rompere FRA le frasi, e se una non
+   ci sta la manda a capo intera e la spezza lì dentro, senza mai sbordare.
+   Lo misura la famiglia `F` di `pnpm audit:wrap`. */
+/* `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+/* `<T>` mette DENTRO due <span> di lingua, e quelli restano inline: la loro
+   scatola è alta quanto l'interlinea e centrata sul testo, quindi su righe
+   consecutive si sovrappone di una quindicina di pixel. Il check `e` guarda
+   gli elementi che contengono testo, cioè proprio questi — non il contenitore.
+   Resi blocchi, la scatola torna a essere quella del contenuto.
+   La regola che nasconde la lingua inattiva usa `display: none` e ha
+   specificità maggiore: continua a vincere. */
+.ex-frase > span { display: block; }
+
 .ex-bg-paper {
   position: absolute; inset: 0;
   background:

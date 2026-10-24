@@ -32,8 +32,8 @@ const NO_TEXT =
   'people, faces, hands, buildings, products, user interfaces, screens, charts';
 
 const NEG =
-  NO_TEXT + ', bright center, blown highlights, busy clutter, noise, low quality, ' +
-  'blue tones, teal, cyan, purple, orange';
+  NO_TEXT + ', bright center, centered glow, symmetrical composition, blown highlights, ' +
+  'busy clutter, noise, low quality, blue tones, teal, cyan, purple, orange';
 
 /** Una copertina di capitolo: fondo notte, una sola idea di luce verde. */
 const notte = (id: string, idea: string, seed: number): AssetSlot => ({
@@ -42,8 +42,9 @@ const notte = (id: string, idea: string, seed: number): AssetSlot => ({
   contentClass: 'art',
   prompt:
     `${idea}, deep near-black green background (#0d2901), a single soft light in ` +
-    'system green (#258900) with a brighter edge (#4fc21f), generous empty dark ' +
-    'space in the upper left for a headline, calm, cinematic, high detail, abstract',
+    'system green (#258900) with a brighter edge (#4fc21f) placed LOW and to the ' +
+    'RIGHT of the frame, the upper half and the left two thirds near-black and ' +
+    'empty, calm, cinematic, high detail, abstract',
   negativePrompt: NEG,
   aspect: '16:9',
   width: 2400,
@@ -59,4 +60,7 @@ export const assets: AssetSlot[] = [
   notte('cap-04', 'many separate threads converging into a single braided line', 614),
   notte('cap-05', 'a slow pulse of light travelling along a thin path and arriving', 615),
   notte('cap-06', 'an open horizon with a single mark set far ahead on it', 616),
+  // La slide-affermazione sta su fondo di marchio e porta una frase grande:
+  // qui serve meno disegno e più respiro, se no compete con il titolo.
+  notte('aff', 'a very soft wide gradient of green light with a single faint horizontal line', 617),
 ];

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoBrand from '../components/CoBrand.astro';
@@ -14,6 +15,14 @@ import { CHAPTERS } from '../data/chapters';
 const type = EXPERIENCE_TYPES[SITE.type];
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+/* Le clip stanno su copertina e chiusura, dove non si parla: in mezzo rubano
+   lo sguardo. Ricucite con `pnpm loop:seamless` (cover PASS a 38,6 dB contro
+   40,8 di riferimento; chiusura in `--boomerang`, 47,6 contro 49,9 — derivava
+   per costruzione e nessuna dissolvenza faceva combaciare testa e coda).
+   L'MP4 vive sul Release `media`, non nel repo: il poster sì, è leggero. */
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
+const POSTER = (n: string) => `${base}media/${n}.poster.jpg`;
 const first = CHAPTERS[0];
 const last = CHAPTERS[CHAPTERS.length - 1];
 // La domanda del tipo è condivisa fra tutti i Blueprint: lo spazio unificatore
@@ -31,8 +40,8 @@ const domandaEn = type.question.en;
   <DeckContainer wallScale nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
 
     <!-- ── 0 · Cover ─────────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-cover.loop.mp4`} poster={POSTER('innesto-cover')} scrim="ii-clip-scrim" opacity={1} />
       <div class="ex-cover" data-reveal>
         <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
         <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>

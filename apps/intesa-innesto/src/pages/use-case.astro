@@ -8,6 +8,8 @@ import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import Motivo from '../components/Motivo.astro';
+import sfondoCap from '../assets/generated/bg/cap-03.webp';
+import sfondoAff from '../assets/generated/bg/aff.webp';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -25,12 +27,15 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <Motivo capitolo="assi" slot="backdrop" />
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <Motivo capitolo="assi" sfondo={sfondoCap.src} slot="backdrop" />
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="ex-ch-lead" it="La domanda non è se la piattaforma è brava. È se il targeting diventa più preciso." en="The question is not whether the platform is clever. It is whether targeting gets sharper." data-reveal data-reveal-delay="0.15" />
+        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
+          <T as="span" class="ex-frase" it="La domanda non è se la piattaforma è brava." en="The question is not whether the platform is clever." />{' '}
+          <T as="span" class="ex-frase" it="È se il targeting diventa più preciso." en="It is whether targeting gets sharper." />
+        </p>
       </div>
     </Slide>
 
@@ -91,13 +96,14 @@ const currentPath = Astro.url.pathname;
 
     <!-- Cambio di scala: qui la slide È la frase. Dopo due pagine di
          struttura, una pagina che si legge in tre secondi. -->
-    <Slide id="slide-mutuo" bg="brand" align="center">
-      <div slot="backdrop" class="ii-aff-bg"></div>
+    <Slide id="slide-mutuo" bg="brand" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ii-aff-bg" style={`--bg-src: url(${sfondoAff.src})`}></div>
       <div class="ii-aff" data-reveal>
         <T as="p" class="ii-aff-k" it="Il caso" en="The case" />
-        <T as="h2" class="ii-aff-t"
-          it="Chi si ferma lo sapete già. Manca il perché."
-          en="You already know who stops. The reason is missing." />
+        <h2 class="ii-aff-t">
+          <T as="span" class="ex-frase" it="Chi si ferma lo sapete già." en="You already know who stops." />{' '}
+          <T as="span" class="ex-frase" it="Manca il perché." en="The reason is missing." />
+        </h2>
         <div class="ii-aff-tre" data-stagger>
           <T as="p" class="ii-aff-q" it="Perché si è fermata" en="Why it stopped" />
           <T as="p" class="ii-aff-q" it="Se è ripresa altrove" en="Whether it resumed elsewhere" />

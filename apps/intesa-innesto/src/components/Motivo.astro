@@ -17,10 +17,17 @@
 interface Props {
   /** Quale capitolo: decide il disegno. */
   capitolo: 'impianto' | 'architettura' | 'assi' | 'cucitura' | 'scelta' | 'rotta';
+  /**
+   * Lo sfondo generato di questo capitolo (`src` dell'import dell'immagine).
+   * Va SOTTO il tratto del motivo, dentro `.ex-bg-night`, che porta già lo
+   * scrim: la pelle compone `--bg-src` sotto tre veli, quindi l'immagine non
+   * arriva mai nuda sotto il titolo. Senza prop il motivo resta com'era.
+   */
+  sfondo?: string;
 }
-const { capitolo } = Astro.props;
+const { capitolo, sfondo } = Astro.props;
 ---
-<div class="ex-bg-night mot-bg">
+<div class:list={["ex-bg-night", "mot-bg", sfondo && "ex-bg-night--gen"]} style={sfondo ? `--bg-src: url(${sfondo})` : undefined}>
   <svg class="mot" viewBox="0 0 900 600" role="presentation" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
     {capitolo === 'impianto' && (
       <g class="mot-g">

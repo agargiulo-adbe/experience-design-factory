@@ -4,6 +4,7 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Motivo from '../components/Motivo.astro';
+import sfondoCap from '../assets/generated/bg/cap-06.webp';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -12,6 +13,7 @@ import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import CoBrand from '../components/CoBrand.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 const type = EXPERIENCE_TYPES[SITE.type];
@@ -20,6 +22,7 @@ const SLUG = 'rotta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 
 // In pagina c'è solo quello che portiamo NOI. Nessun effort, nessuna giornata,
 // nessun listino: decisione presa in sessione di lavoro il 21 ott 2026. Se la
@@ -59,8 +62,8 @@ const PASSI = [
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <Motivo capitolo="rotta" slot="backdrop" />
+    <Slide id="slide-cover" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <Motivo capitolo="rotta" sfondo={sfondoCap.src} slot="backdrop" />
       <div class="ex-ch" data-reveal>
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
@@ -125,8 +128,8 @@ const PASSI = [
     <!-- ── Firma ─────────────────────────────────────────────────────────────
          Slide a sé per contratto co-brand; fallisce il check SOFT `i` di proposito
          (il lockup è un SVG, il parser non lo conta): non si aggiusta rimpicciolendo. -->
-    <Slide id="slide-signature" bg="inverse" align="center">
-      <div slot="backdrop" class="ex-bg-night"></div>
+    <Slide id="slide-signature" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`} poster={`${base}media/innesto-chiusura.poster.jpg`} scrim="ii-clip-scrim" opacity={1} />
       <CoBrand variant="hero" data-reveal />
       <T
         as="p"

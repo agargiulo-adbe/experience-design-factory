@@ -14,12 +14,20 @@
 export interface Testo { it: string; en: string }
 
 // ── Le quattro cifre pubbliche ──────────────────────────────────────────────
-// Fonte: piano d'impresa 2026-2029. Nessuna è nostra, e si dice in slide.
+// Fonte: dichiarazioni pubbliche del Gruppo, febbraio 2026 (intervista al
+// responsabile tecnologia, dati e AI, ripresa sulla newsroom del Gruppo).
+// ⚠️ NON il comunicato del piano d'impresa: quella pagina esiste e queste
+// quattro cifre non ci sono. Verificato il 24 ott 2026 aprendo le due pagine.
+// Le formulazioni qui sotto sono quelle della fonte, parola per parola:
+// «il 95% dei prodotti per i privati è gestibile digitalmente» · «circa il 70%
+// dei customer journey è omnicanale» · «quota di APPLICATIVI cloud-based …
+// al 64% a fine 2025» (non «infrastruttura») · «circa 150 use case già in
+// produzione». Nessuna è nostra, e si dice in slide.
 // `n` è il valore per la scena count-up (nativa nel deck): la cifra sale.
 export const CIFRE: Array<{ n: string; pre?: string; suf?: string; l: Testo }> = [
-  { n: '95', suf: '%', l: { it: 'dei prodotti già disponibili in digitale', en: 'of products already available digitally' } },
+  { n: '95', suf: '%', l: { it: 'dei prodotti per i privati, gestibili in digitale', en: 'of retail products, manageable digitally' } },
   { n: '70', pre: '~', suf: '%', l: { it: 'dei percorsi cliente già omnicanale', en: 'of customer journeys already omnichannel' } },
-  { n: '64', suf: '%', l: { it: 'dell’infrastruttura già in cloud', en: 'of the infrastructure already in the cloud' } },
+  { n: '64', suf: '%', l: { it: 'degli applicativi in cloud a fine 2025', en: 'of applications in the cloud at end-2025' } },
   { n: '150', pre: '~', l: { it: 'casi d’uso di AI dichiarati in produzione', en: 'AI use cases declared in production' } },
 ];
 

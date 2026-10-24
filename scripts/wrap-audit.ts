@@ -10,6 +10,12 @@
  * a posto, è il testo che si rompe nel punto sbagliato.
  *
  * COME MISURA. Per ogni blocco di testo di ogni slide usa la Range API per
+ * DUE FAMIGLIE. `S` la parola di servizio appesa a fine riga (preposizione,
+ * articolo, congiunzione). `F` la coda di frase orfana: la riga non chiude la
+ * frase e quella dopo la chiude in una o due parole — «…lo sapete / già.».
+ * Il rimedio è lo stesso per entrambe: uno spazio unificatore che sposta il
+ * punto di rottura. Mai riscrivere, mai rimpicciolire il tipo.
+ *
  * ricavare le righe REALMENTE RESE (non il sorgente: dipendono da larghezza,
  * carattere e viewport) e guarda l'ultima parola di ciascuna, tranne
  * l'ultima. Se è una parola di servizio — preposizione, articolo,
@@ -79,7 +85,7 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
          chiude. */
       const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
       const soglia = base * 1.15;
-      const out: Array<{ rotta: string; viewport: string; slide: string; parola: string; riga: string; forte: boolean }> = [];
+      const out: Array<{ rotta: string; viewport: string; slide: string; parola: string; riga: string; forte: boolean; fam: 'S' | 'F'; coda?: string }> = [];
 
       const slides = Array.from(document.querySelectorAll<HTMLElement>('[data-slide]'));
       for (const slide of slides) {
@@ -145,7 +151,33 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
               .replace(/^[«"'(\[]+|[»"'),.;:!?\]]+$/g, '');
             if (!ultima) continue;
             if (servizio.has(ultima)) {
-              out.push({ rotta, viewport, slide: slide.id || '(senza id)', parola: ultima, riga, forte: conta });
+              out.push({ rotta, viewport, slide: slide.id || '(senza id)', parola: ultima, riga, forte: conta, fam: 'S' });
+            }
+
+            /* Famiglia F — la CODA DI FRASE orfana.
+               `text-wrap: balance` bilancia le righe e non guarda le frasi: un
+               titolo di due frasi si spezza volentieri DENTRO la prima e lascia
+               una o due parole più il punto a capo da sole — «Chi si ferma lo
+               sapete / già. Manca il perché.». In proiezione è il difetto che si
+               nota per primo, e nessun check lo vedeva: le scatole sono a posto,
+               il contrasto è a posto, è la frase che si rompe nel punto sbagliato.
+               Si segnala quando la riga NON finisce già con una punteggiatura di
+               fine frase e la riga dopo chiude quella frase in due parole o meno. */
+            const dopo = (righe.get(ordinate[k + 1]) || '').trim();
+            const chiudeQui = /[.!?…]["»')\]]?$/.test(riga);
+            const m = dopo.match(/^(.*?[.!?…]["»')\]]?)(\s|$)/);
+            if (!chiudeQui && m) {
+              const coda = m[1].trim();
+              const nParole = coda.split(/[^\S\u00a0]+/).filter(Boolean).length;
+              /* Si segnala comunque, anche se la riga dopo continua: «…lo
+                 sapete / già. Manca il perché.» è il difetto che si nota per
+                 primo in proiezione, e la riga dopo è piena. Un tentativo di
+                 restringere il check a una «coda isolata» (≥60% della riga
+                 successiva) lo faceva smettere di vedere proprio quel caso:
+                 un gate che perdona il caso che l'ha fatto nascere non serve. */
+              if (nParole > 0 && nParole <= 2) {
+                out.push({ rotta, viewport, slide: slide.id || '(senza id)', parola: coda, riga, forte: conta, fam: 'F', coda });
+              }
             }
           }
         }
@@ -201,7 +233,7 @@ async function main() {
 
   console.log(`\nA capo controllati: ${rotte.length} rotte × ${viewports.length} viewport\n`);
   if (!rilievi.length) {
-    console.log('PULITO — nessuna parola di servizio appesa a fine riga.');
+    console.log('PULITO — nessuna parola di servizio appesa, nessuna coda di frase orfana.');
     process.exit(0);
   }
   // Una stessa frase si rompe su più viewport: si raggruppa, se no l'elenco
@@ -217,8 +249,13 @@ async function main() {
   const stampa = (g: Rilievo[], segno: string) => {
     const a = g[0];
     const dove = [...new Set(g.map((x) => x.viewport))].join(', ');
-    console.log(`${segno} ${a.rotta} · ${a.slide} — «${a.parola}» appesa a fine riga  [${dove}]`);
-    console.log(`     …${a.riga.slice(-64)}⏎`);
+    if (a.fam === 'F') {
+      console.log(`${segno} ${a.rotta} · ${a.slide} — la frase chiude a capo su «${a.coda}»  [${dove}]`);
+      console.log(`     …${a.riga.slice(-56)}⏎ ${a.coda}`);
+    } else {
+      console.log(`${segno} ${a.rotta} · ${a.slide} — «${a.parola}» appesa a fine riga  [${dove}]`);
+      console.log(`     …${a.riga.slice(-64)}⏎`);
+    }
   };
   forti.forEach((g) => stampa(g, '✗'));
   if (tutto && deboli.length) {
@@ -231,6 +268,7 @@ async function main() {
     process.exit(0);
   }
   console.log(`\n${forti.length} punto/i da legare con uno spazio unificatore.`);
+  console.log('  S = parola di servizio a fine riga · F = la frase chiude a capo in una o due parole');
   process.exit(1);
 }
 

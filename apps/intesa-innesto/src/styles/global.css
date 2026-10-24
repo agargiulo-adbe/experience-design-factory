@@ -280,6 +280,50 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
     var(--bg-src, none) center / cover no-repeat,
     var(--surface-inverse);
 }
+/* Dove c'è un'immagine generata il velo si alleggerisce: con lo scrim tarato
+   sul fondo pieno l'immagine c'è e non si vede, ed è il difetto misurato una
+   volta su questa stessa experience. I valori sono VERIFICATI sul punto più
+   chiaro sotto il titolo, non stimati. */
+.ex-bg-night--gen {
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-accent-rgb), 0.16), transparent 52%),
+    radial-gradient(68% 58% at 50% 48%, rgba(10,14,10,0.52), transparent 82%),
+    linear-gradient(rgba(10,14,10,0.34), rgba(10,14,10,0.62)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-inverse);
+}
+
+.ii-clip-scrim {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-accent-rgb), 0.14), transparent 52%),
+    radial-gradient(72% 60% at 50% 50%, rgba(8,12,8,0.66), transparent 82%),
+    linear-gradient(rgba(8,12,8,0.30), rgba(8,12,8,0.58));
+}
+
+/* ── Una frase è un blocco, e va a capo intera ──────────────────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: su un
+   testo di due frasi rompe volentieri dentro la prima e lascia una parola più
+   il punto a capo da sola — «…lo sapete / già. Manca il perché.», che in
+   proiezione è il primo difetto che si nota.
+   Uno spazio unificatore non lo risolve: legare la frase intera la rende
+   inseparabile e a questo corpo sborda (il check `c`, che è HARD). Un blocco
+   in linea invece sì: il browser preferisce rompere FRA le frasi, e se una non
+   ci sta la manda a capo intera e la spezza lì dentro, senza mai sbordare.
+   Lo misura la famiglia `F` di `pnpm audit:wrap`. */
+/* `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+/* `<T>` mette DENTRO due <span> di lingua, e quelli restano inline: la loro
+   scatola è alta quanto l'interlinea e centrata sul testo, quindi su righe
+   consecutive si sovrappone di una quindicina di pixel. Il check `e` guarda
+   gli elementi che contengono testo, cioè proprio questi — non il contenitore.
+   Resi blocchi, la scatola torna a essere quella del contenuto.
+   La regola che nasconde la lingua inattiva usa `display: none` e ha
+   specificità maggiore: continua a vincere. */
+.ex-frase > span { display: block; }
+
 .ex-bg-paper {
   position: absolute; inset: 0;
   background:
@@ -293,6 +337,16 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .ex-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
 .ex-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
 .ex-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+/* ── Il testo display si BILANCIA, non si «abbellisce» ──────────────────────
+   Il reset dà `text-wrap: pretty` a ogni <p>: evita la riga finale di UNA
+   parola e basta. Su un occhiello o un lead di due frasi lascia passare
+   «…dove oggi la decisione / non c'è.», che in proiezione è il primo difetto
+   che si nota. `balance` distribuisce le righe e la coda smette di restare
+   sola. Vale solo sul testo corto e grande: su un paragrafo lungo `balance`
+   non si applica (il motore si ferma a poche righe) e `pretty` resta giusto.
+   Lo misura la famiglia `F` di `pnpm audit:wrap`. */
+.ex-cover-tag, .ex-cover-lead, .ex-ch-lead, .ex-head-lead { text-wrap: balance; }
+
 .ex-cover-tag { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-accent-soft); max-width: 40ch; margin: 0 auto; display: block; }
 .ex-cover-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grey-200); max-width: 66ch; margin: 0 auto; display: block; }
 .ex-cover-note { font-size: clamp(0.76rem, 0.7vw, 1.6rem); letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grey-400); max-width: 70ch; margin: 0 auto; display: block; }
@@ -763,7 +817,14 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 4vw, 3.4rem);
   font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
-  color: #ffffff; margin: 0; max-width: 20ch;
+  color: #ffffff; margin: 0;
+  /* 28ch e non 20: la prima frase è lunga 27 caratteri, e in una colonna da 20
+     non poteva che spezzarsi a metà — «Chi si ferma lo sapete / già.». Con la
+     colonna giusta `text-wrap: balance` (che l'<h2> eredita dal reset) rompe
+     dove la frase finisce. Una legatura non serviva: 27 caratteri inseparabili
+     a questo corpo sbordano, e il check `c` lo bocciava a tutti e cinque i
+     viewport. Famiglia `F` di `pnpm audit:wrap`. */
+  max-width: 28ch;
 }
 .ii-aff-tre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; width: 100%; max-width: 54rem; margin-top: 0.8rem; }
 .ii-aff-q {
@@ -791,6 +852,11 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   position: absolute; inset: 0;
   background:
     radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 55%),
+    /* Il velo sta DAVANTI all'immagine e si misura, non si stima: la frase è
+       grande e bianca al centro, e una cresta di luce che le passa dietro una
+       volta sola basta a bocciare la slide (regola «un velo si calibra»). */
+    linear-gradient(160deg, rgba(31,116,0,0.90) 0%, rgba(21,84,10,0.88) 55%, rgba(13,41,1,0.94) 100%),
+    var(--bg-src, none) center / cover no-repeat,
     linear-gradient(160deg, var(--color-verde-scuro) 0%, #15540a 55%, var(--color-verde-notte) 100%);
 }
 
