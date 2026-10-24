@@ -122,6 +122,14 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 - `pnpm og [--app <alias>] [--list]` — **l'anteprima del link** di ogni artefatto (`og.png` 1200×630): firma Adobe × Cliente, sigla del tipo (Pr · S · B · Pb · I · D), titolo, badge sui riservati. I meta li emette il motore (`SocialMeta.astro`). Gate: **`pnpm audit:og`** dopo `pnpm build`.
 - `pnpm pptx:layouts` — catalogo dei **166 layout approvati** del template Adobe (JSON + PNG da guardare) · `pnpm pptx:find "<testo>"` — cerca nelle **1863 slide** delle librerie Adobe indicizzate · `pnpm pptx:take "<libreria.pptx>" <n>…` — estrae quelle slide in un file nuovo **e le rende** · `pnpm pptx:index` — (ri)costruisce l'indice. Output in `docs/Factory/` (git-ignorato).
 - `pnpm audit:pptx <deck.pptx> [--render]` — gate deterministico dei deck consegnati come **file**: red thread non coperto/ricolorato, Adobe Red letto dal master, solo Adobe Clean, fondi nero/bianco, segnaposto rimasti, fuori foglio, scala tipografica. **0 HARD**, poi si guardano le pagine.
+- `pnpm deck:catalogo` — **il catalogo dei blocchi e delle scene del motore** (30 blocchi, 11 scene
+  di meccanismo), letto dal sorgente. **Si apre PRIMA di comporre un capitolo**, come
+  `pnpm pptx:layouts` per i .pptx: comporre a memoria produce tre strutture ripetute, ed è già
+  successo il 24 ott 2026. Output in `docs/Factory/deck-catalogo/` (git-ignorato).
+- `pnpm audit:ritmo` / `DECK_URL=<origin> pnpm audit:ritmo --app <alias>` — il **ritmo** di un deck
+  HTML, cioè i tre check che i `.pptx` avevano e l'HTML no: **`R`** due slide di contenuto
+  consecutive dello stesso tipo, **`G`** quattro slide di fila senza un elemento visivo,
+  **`V`** quanta pagina è coperta da testo **e figure**. Tutto SOFT: insegna a comporre.
 - `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
 - `pnpm audit:taglio` / `DECK_URL=http://localhost:N npx tsx scripts/cut-audit.ts --app <app>` — il taglio **«In dieci minuti»** resta allineato al percorso intero: HARD su copia a mano, numeri che solo il taglio afferma, fonti che solo il taglio porta. Si dichiara l'app in `scripts/lib/cut-routes.ts`. Si lancia **prima** di `audit:deck`.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
@@ -296,6 +304,25 @@ tarato su deck di prosa: un deck ad ancore lo fallisce per costruzione (su Intes
 7 a 44 rilievi mentre le slide miglioravano). Un `i` che sale mentre il testo scende non è un
 peggioramento: è il gate che guarda la cosa sbagliata. Non si compensa gonfiando le slide.
 Memoria: `in-video-le-slide-si-leggono`.
+
+### Un deck è una partitura, non un formato (BINDING)
+La forma giusta per una slide non si decide una volta e si ripete. Misurato il 24 ott 2026:
+un deck nuovo è uscito con **tre strutture ripetute sette volte**, zero immagini e tutti i gate
+verdi — mentre nel motore c'erano **undici scene di meccanismo e trenta blocchi** mai aperti.
+- **Si apre il catalogo prima di comporre: `pnpm deck:catalogo`.** È la stessa regola dei
+  `.pptx`, dove 58 layout su 166 portano un'immagine o una citazione e un deck «muro di testo»
+  quasi sempre ha usato solo quelli a colonne. Per l'HTML quel catalogo non esisteva.
+- **Le scene non si riscrivono**: sono dichiarative (`data-count-up`, `data-personalize`,
+  `data-datalake`, `data-stack-assemble`, `data-converse`, `data-lifecycle`…), già
+  `prefers-reduced-motion`, e **hanno due implementazioni** — `initX` per il formato a
+  scorrimento e `playSlide` per il deck. Nel deck basta l'attributo.
+- **Mai due slide di contenuto consecutive dello stesso tipo**, e mai quattro di fila senza un
+  elemento visivo. Lo misura `pnpm audit:ritmo`.
+- **Una scena marca lo STATO, la pelle decide il contrasto.** La scena `personalize` attenuava
+  gli scartati con `opacity: 0.2`: ma quelle tessere portano testo, e attenuare con l'opacità
+  un inchiostro già grigio dà 1,5:1. Ora scrive `data-scartato` e la pelle lo veste.
+- **Una fase non ancora entrata è ASSENTE, non trasparente.** `visibility: hidden` accanto a
+  `opacity: 0`, se no i gate misurano testo invisibile (e i lettori di schermo lo leggono).
 
 ### `audit:deck` — leggere davvero l'esito, non solo la riga finale
 Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe

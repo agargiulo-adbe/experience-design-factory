@@ -18,6 +18,8 @@ async function ensureGsap() {
 }
 
 // ── Reveal: element fades up into view ──────────────────────────────
+// Markup: [data-reveal] sull'elemento; `data-reveal="up|down|left|right"`
+// per la direzione (default up) e `data-reveal-delay="0.14"` in secondi.
 export async function initReveal(container: HTMLElement) {
   if (REDUCED_MOTION) {
     container.querySelectorAll<HTMLElement>('[data-reveal]').forEach(el => {
@@ -56,6 +58,8 @@ export async function initReveal(container: HTMLElement) {
 }
 
 // ── Count-up: animated number ───────────────────────────────────────
+// Markup: [data-count-up="2500"] sull'elemento che porta la cifra, più
+// `data-count-prefix` e `data-count-suffix` (es. «~», «%», « mln»).
 export async function initCountUp(container: HTMLElement) {
   const els = container.querySelectorAll<HTMLElement>('[data-count-up]');
   if (!els.length) return;
@@ -109,6 +113,8 @@ export async function initCountUp(container: HTMLElement) {
 }
 
 // ── Stagger-in: children enter one by one ───────────────────────────
+// Markup: [data-stagger] sul CONTENITORE; entrano i suoi figli diretti,
+// nell'ordine del DOM. Si usa al posto di N `data-reveal-delay` a mano.
 export async function initStagger(container: HTMLElement) {
   const groups = container.querySelectorAll<HTMLElement>('[data-stagger]');
   if (!groups.length) return;
@@ -152,6 +158,8 @@ export async function initStagger(container: HTMLElement) {
 }
 
 // ── Pulse: front→back impulse line animation ────────────────────────
+// Markup: [data-pulse-line] contenente un SVG con un `.pulse-path` (il
+// tracciato, disegnato progressivamente) e un `.pulse-dot` che lo percorre.
 export async function initPulse(container: HTMLElement) {
   const pulses = container.querySelectorAll<HTMLElement>('[data-pulse-line]');
   if (!pulses.length) return;
@@ -197,6 +205,8 @@ export async function initPulse(container: HTMLElement) {
 }
 
 // ── Data Lake: scattered dots that aggregate into profiles ──────────
+// Markup: [data-datalake] con `.data-dot` sparsi (ciascuno con `data-dx`
+// e `data-dy`, offset in px da cui partono) e `.profile-circle` di arrivo.
 export async function initDataLake(container: HTMLElement) {
   const el = container.querySelector<HTMLElement>('[data-datalake]');
   if (!el) return;
@@ -258,7 +268,8 @@ export async function initPersonalize(container: HTMLElement) {
   if (REDUCED_MOTION) {
     groups.forEach(group => {
       group.querySelectorAll<HTMLElement>('.perso-item').forEach(el => {
-        el.style.opacity = el.hasAttribute('data-match') ? '1' : '0.25';
+        el.style.opacity = '1';
+        if (!el.hasAttribute('data-match')) el.setAttribute('data-scartato', '');
         el.style.transform = 'none';
       });
     });
@@ -286,7 +297,15 @@ export async function initPersonalize(container: HTMLElement) {
         // Phase 1: everything appears, neutral
         tl.to(items, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.05, ease: 'power3.out' });
         // Phase 2: non-matches dim, matches assert themselves
-        tl.to(others, { opacity: 0.2, scale: 0.95, duration: 0.6, ease: 'power2.inOut' }, '+=0.4');
+        // La scena marca lo STATO, non decide il contrasto. Prima attenuava gli
+    // scartati con `opacity: 0.2`: ma quelle tessere portano TESTO, e
+    // attenuare con l'opacità un inchiostro già grigio è la cosa che la
+    // quality bar vieta — misurato, 1,5:1 su bianco. Ora la scena scrive
+    // `data-scartato` e la pelle decide come si vede uno scartato, con un
+    // inchiostro pieno e leggibile. Il recedere lo porta la scala.
+    tl.to(others, { scale: 0.95, duration: 0.6, ease: 'power2.inOut', onStart: () => {
+      others.forEach((el) => el.setAttribute('data-scartato', ''));
+    } }, '+=0.4');
         tl.to(matches, { scale: 1.04, duration: 0.5, ease: 'back.out(2)' }, '<');
       },
     });
@@ -677,7 +696,13 @@ export function prepareSlide(slide: HTMLElement) {
   if (perso) {
     const items = perso.querySelectorAll<HTMLElement>('.perso-item');
     if (REDUCED_MOTION) {
-      items.forEach(el => { el.style.opacity = el.hasAttribute('data-match') ? '1' : '0.25'; el.style.transform = 'none'; });
+      // La scena marca lo STATO; il contrasto lo decide la pelle. Attenuare
+      // con l'opacità un inchiostro già grigio dava 1,5:1 su bianco.
+      items.forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+        if (!el.hasAttribute('data-match')) el.setAttribute('data-scartato', '');
+      });
     } else {
       items.forEach(el => { el.style.opacity = '0'; el.style.transform = 'scale(0.9)'; });
     }
@@ -841,7 +866,10 @@ export async function playSlide(slide: HTMLElement) {
     const others = items.filter(el => !el.hasAttribute('data-match'));
     const tl = gsap.timeline({ delay: 0.3 });
     tl.to(items, { opacity: 1, scale: 1, duration: 0.6, stagger: 0.05, ease: 'power3.out' });
-    tl.to(others, { opacity: 0.2, scale: 0.95, duration: 0.6, ease: 'power2.inOut' }, '+=0.4');
+    // Idem: niente opacity sul testo. `data-scartato` + la scala.
+    tl.to(others, { scale: 0.95, duration: 0.6, ease: 'power2.inOut', onStart: () => {
+      others.forEach((el) => el.setAttribute('data-scartato', ''));
+    } }, '+=0.4');
     tl.to(matches, { scale: 1.04, duration: 0.5, ease: 'back.out(2)' }, '<');
   }
   // Converse — bubbles appear one by one, alternating sides

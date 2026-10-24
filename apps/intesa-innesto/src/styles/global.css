@@ -580,44 +580,62 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 @media (max-width: 640px) { .ex-cards--due { grid-template-columns: minmax(0, 1fr); } }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   L'architettura — un diagramma a fasi, non una tabella
-   In pagina ci sono SOLO le ancore: una per nodo, il nome e basta. Le
-   spiegazioni sono la voce di chi presenta e vivono in src/data/impianto.ts
-   senza essere rese. Il principio: etichette ancorate alla cosa che
-   descrivono guidano l'attenzione; la prosa compete con chi parla e perde.
+   L'architettura — la FIGURA di un meccanismo
+   Non scatole con dei nomi: il percorso che una richiesta fa, e che cosa
+   porta ogni arco. Le etichette degli archi sono la descrizione, ancorata
+   al disegno invece che galleggiante in prosa.
    ═══════════════════════════════════════════════════════════════════════ */
-.ii-arch { display: flex; flex-direction: column; gap: 0.9rem; width: 100%; max-width: 74rem; }
-.ii-arch-titoli { min-height: 3.2rem; }
+.ii-arch { display: flex; flex-direction: column; gap: 0.7rem; width: 100%; max-width: 76rem; }
+.ii-arch-titoli { min-height: 3rem; }
 .ii-arch-titolo {
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  font-size: clamp(1.55rem, 2.5vw, 2.2rem);
   font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;
   color: var(--ink-primary); margin: 0;
 }
+.ii-fig { margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
 .ii-arch-scena { position: relative; width: 100%; }
 .ii-arch-svg { display: block; width: 100%; height: 100%; }
 
+/* I nodi: il sistema è una scatola piena, la persona è un contorno tondo. */
 .ii-n { fill: var(--surface-primary); stroke: var(--color-grigio-300); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.ii-n--vuoto { fill: none; stroke: var(--color-grigio-500); stroke-dasharray: 7 6; }
+.ii-n--persona { fill: var(--color-grigio-100); stroke: var(--color-grigio-500); rx: 44; }
 .ii-n--nostro { fill: var(--color-verde-velo); stroke: var(--color-verde); stroke-width: 2; }
-.ii-l { stroke: var(--color-grigio-300); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.ii-l--su { stroke: var(--color-verde); stroke-width: 2; }
+
+/* Gli archi: grigi quando portano, tratteggiati quando MANCANO, accento
+   quando sono il nostro innesto o quando la fase li accende. */
+.ii-arco { fill: none; stroke: var(--color-grigio-500); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+.ii-arco--manca { stroke: var(--color-grigio-300); stroke-dasharray: 8 7; }
+.ii-arco--nostro { stroke: var(--color-verde); stroke-width: 2.2; }
+.ii-arco[data-acceso] { stroke: var(--color-verde); stroke-width: 2.4; stroke-dasharray: none; }
 
 .ii-arch-ancore { position: absolute; inset: 0; pointer-events: none; }
+/* `translate` e non `transform`: il runtime delle fasi scrive
+   `transform: translateY(...)`, e un transform in linea sovrascriverebbe il
+   centraggio invece di comporsi con lui. */
 .ii-a {
-  position: absolute;
-  /* `translate` (proprietà a sé) e non `transform`: il runtime delle fasi
-     scrive `transform: translateY(...)` per l'entrata, e un `transform` in
-     linea sovrascriverebbe il centraggio invece di comporsi con lui. */
-  translate: -50% -50%;
-  /* Minimo del contratto di leggibilità. Un'ancora che non si legge non è
-     un'ancora: se non entra si accorcia il nome, non il corpo. */
+  position: absolute; translate: -50% -50%;
   font-size: 1.02rem; line-height: 1.3; font-weight: 600; text-align: center;
   color: var(--ink-primary);
 }
 .ii-a--nostro { color: var(--color-verde-scuro); }
-.ii-a--vuoto { color: var(--color-grigio-600); font-weight: 400; font-style: italic; }
-.ii-arch-chiusa { min-height: 2.2rem; }
+.ii-a--persona { font-weight: 500; color: var(--color-grigio-600); }
+
+/* L'etichetta d'arco: piccola ma mai sotto la soglia, e sempre leggibile. */
+.ii-eti {
+  position: absolute; translate: -50% -50%;
+  font-size: 0.82rem; line-height: 1.25; text-align: center; white-space: nowrap;
+  color: var(--color-grigio-600); font-style: italic;
+}
+.ii-eti--nostro { color: var(--color-verde-scuro); font-style: normal; font-weight: 600; }
+.ii-eti--manca { color: var(--color-grigio-500); }
+.ii-eti[data-acceso] { color: var(--color-verde-scuro); font-style: normal; font-weight: 600; }
+
+/* Una figura, una didascalia: dice che cosa mostra il disegno, una riga. */
+.ii-figcap {
+  font-size: 1rem; line-height: 1.5; color: var(--ink-secondary);
+  min-height: 1.6rem; max-width: 58rem;
+}
 
 /* ── Le domande grandi (l'arbitro) ────────────────────────────────────── */
 .ii-domande {
@@ -689,3 +707,74 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   .ii-freccia { transform: rotate(90deg); }
   .ii-due, .ii-ref { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ── Varianti su fondo scuro: una slide di domande non è una slide chiara ── */
+.ii-domande--scure .ii-domanda {
+  background: rgba(255, 255, 255, 0.06);
+  border-left-color: var(--color-verde-chiaro);
+  color: rgba(255, 255, 255, 0.95);
+}
+.ii-dett--scuro .hiw-body p { color: rgba(255, 255, 255, 0.82); }
+
+/* ── Scena «personalize»: le proposte candidate, e quella che esce ─────── */
+.ii-perso { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; margin: 1.1rem 0 0.6rem; max-width: 34rem; }
+.ii-perso-i {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 0.75rem 0.8rem; text-align: center;
+  border: 1px solid var(--color-grigio-300); border-radius: 3px;
+  background: var(--surface-primary);
+  font-size: 0.95rem; line-height: 1.3; color: var(--ink-secondary);
+}
+.ii-perso-i--match {
+  border-color: var(--color-verde); border-width: 2px;
+  background: var(--color-verde-velo);
+  color: var(--color-verde-scuro); font-weight: 700;
+}
+.ii-perso-cap { font-size: 0.9rem; line-height: 1.5; color: var(--color-grigio-600); margin: 0 0 0.9rem; max-width: 34rem; }
+
+/* ── La slide-affermazione: la pagina È la frase ───────────────────────── */
+.ii-aff { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; max-width: 62rem; }
+.ii-aff-k { font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.92); margin: 0; }
+.ii-aff-t {
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.1; letter-spacing: -0.02em;
+  color: #ffffff; margin: 0; max-width: 20ch;
+}
+.ii-aff-tre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; width: 100%; max-width: 54rem; margin-top: 0.8rem; }
+.ii-aff-q {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 1rem 0.9rem; border-radius: 3px;
+  background: rgba(0, 0, 0, 0.17);
+  font-size: 1.05rem; font-weight: 600; line-height: 1.3; color: #ffffff;
+}
+@media (max-width: 900px) { .ii-perso, .ii-aff-tre { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .ii-perso, .ii-aff-tre { grid-template-columns: minmax(0, 1fr); } }
+
+/* Lo scartato: la scena lo marca, la pelle lo veste. Inchiostro PIENO e
+   leggibile; a recedere ci pensano la scala, il bordo e il fondo. */
+.ii-perso-i[data-scartato] {
+  color: var(--color-grigio-600);
+  background: var(--color-grigio-100);
+  border-color: var(--color-grigio-200);
+}
+
+/* Il verde di marchio a tutta pagina è un fondo bello e un contrasto scarso:
+   il bianco piccolo ci sta sopra a 4,4:1, sotto soglia. Un fondo che scende
+   verso il verde scuro risolve il contrasto E smette di essere una campitura
+   piatta. Misurato con audit:ink, non stimato. */
+.ii-aff-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 55%),
+    linear-gradient(160deg, var(--color-verde-scuro) 0%, #15540a 55%, var(--color-verde-notte) 100%);
+}
+
+/* Inchiostri che si ribaltano: una slide di contenuto su fondo scuro deve
+   ribaltare anche titolo e occhiello, non solo il corpo. `.ex-head-title`
+   ereditava l'inchiostro chiaro e usciva scuro su scuro (misurato 1,05:1). */
+.ex-on-dark .ex-head-title,
+.ex-on-dark .ii-arch-titolo { color: #ffffff; }
+.ex-on-dark .ex-head-lead { color: rgba(255, 255, 255, 0.86); }
+.ex-on-dark .slide-eyebrow { color: var(--color-verde-chiaro); }
+.ex-on-dark .ex-src { color: rgba(255, 255, 255, 0.78); }

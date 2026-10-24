@@ -46,94 +46,136 @@ export const IMPIANTO: Array<{ k: Testo; t: Testo; b: Testo }> = [
 
 // ── Le quattro cifre pubbliche ──────────────────────────────────────────────
 // Fonte: piano d'impresa 2026-2029. Nessuna è nostra, e si dice in slide.
-export const CIFRE: Array<{ n: string; l: Testo }> = [
-  { n: '95%', l: { it: 'dei prodotti già disponibili in digitale', en: 'of products already available digitally' } },
-  { n: '~70%', l: { it: 'dei percorsi cliente già omnicanale', en: 'of customer journeys already omnichannel' } },
-  { n: '64%', l: { it: 'dell’infrastruttura già in cloud', en: 'of the infrastructure already in the cloud' } },
-  { n: '~150', l: { it: 'casi d’uso di AI dichiarati in produzione', en: 'AI use cases declared in production' } },
+// `n` è il valore numerico per la scena count-up (nativa nel deck, vedi
+// playSlide): la cifra sale invece di comparire. `pre`/`suf` la vestono.
+export const CIFRE: Array<{ n: string; pre?: string; suf?: string; l: Testo }> = [
+  { n: '95', suf: '%', l: { it: 'dei prodotti già disponibili in digitale', en: 'of products already available digitally' } },
+  { n: '70', pre: '~', suf: '%', l: { it: 'dei percorsi cliente già omnicanale', en: 'of customer journeys already omnichannel' } },
+  { n: '64', suf: '%', l: { it: 'dell’infrastruttura già in cloud', en: 'of the infrastructure already in the cloud' } },
+  { n: '150', pre: '~', l: { it: 'casi d’uso di AI dichiarati in produzione', en: 'AI use cases declared in production' } },
 ];
 
-// ── L'architettura: un DIAGRAMMA, non una tabella ──────────────────────────
-// Regola, e stavolta applicata: sullo schermo vanno ANCORE, non frasi. Ogni
-// nodo porta un nome (≤ 5 parole) e basta. Le note qui sotto NON si rendono:
-// sono quello che dice chi presenta, e stanno qui perché non si perdano.
+// ── L'architettura: il MECCANISMO, non i nomi ───────────────────────────────
+// Regola del mestiere (skills/.../ancore-non-prosa.md + artifact-diagramming):
+// una scatola etichettata «cache» dice meno della prosa; il percorso che una
+// richiesta fa, e che cosa ogni freccia PORTA, dice quello che le parole non
+// dicono. Quindi: cinque tappe in fila, e le frecce parlano.
 //
-// Geometria in unità di viewBox (1240 × 560), a mano: il layout automatico
-// arriva col blocco `Blueprint` del motore. Gli strati si impilano verso
-// l'ALTO, così «si appoggia sopra» è letterale invece che detto.
+// E il confronto si DISEGNA: fra la fase 2 e la 3 cambia un arco — quello che
+// oggi non c'è. È quella differenza l'argomento, non tre elenchi affiancati.
+//
+// Geometria in unità di viewBox (1340 × 540), a mano.
+
+export const VIEWBOX = '0 0 1340 540';
+export const H_NODO = 88;
 
 export interface Nodo {
   id: string;
   ancora: Testo;
   x: number; y: number; w: number;
-  /** true = strato Adobe. Il default è del cliente: il suo patrimonio viene prima. */
   nostro?: boolean;
-  /** Il vuoto: tratteggiato, perché è un'assenza e non un prodotto. */
-  vuoto?: boolean;
-  /** Non si rende MAI in pagina: è la battuta di chi presenta. */
+  /** Il nodo che rappresenta la persona, non un sistema: si disegna diverso. */
+  persona?: boolean;
+  /** Non si rende in pagina: è la battuta di chi presenta. */
   voce: Testo;
 }
 
-export const H_NODO = 96;
-export const VIEWBOX = '0 0 1240 560';
+const Y_FLUSSO = 300;
+const Y_ADOBE = 96;
 
 export const NODI: Nodo[] = [
-  // Strato 1 — il loro dato (in basso)
-  { id: 'analytics', ancora: { it: 'Adobe Analytics', en: 'Adobe Analytics' }, x: 200, y: 392, w: 300,
-    voce: { it: 'Il comportamento digitale, tracciato in profondità e da anni.', en: 'Digital behaviour, tracked in depth for years.' } },
-  { id: 'crm', ancora: { it: 'CRM', en: 'CRM' }, x: 560, y: 392, w: 300,
-    voce: { it: 'Anagrafica, modelli di propensione, audience. Resta vostro.', en: 'Customer base, propensity models, audiences. Stays yours.' } },
-  { id: 'aem', ancora: { it: 'Experience Manager', en: 'Experience Manager' }, x: 920, y: 392, w: 300,
-    voce: { it: 'Web e form, oggi installato in casa.', en: 'Web and forms, today on premise.' } },
+  { id: 'cliente', persona: true, ancora: { it: 'Il cliente', en: 'The customer' },
+    x: 20, y: Y_FLUSSO, w: 210,
+    voce: { it: 'Da qualunque porta: filiale, app, sito. Il percorso è lo stesso.', en: 'From any door: branch, app, site. The journey is the same.' } },
+  { id: 'analytics', ancora: { it: 'Adobe Analytics', en: 'Adobe Analytics' },
+    x: 280, y: Y_FLUSSO, w: 210,
+    voce: { it: 'Vede il digitale, in profondità e da anni. Non vede la filiale.', en: 'Sees digital, deeply and for years. Does not see the branch.' } },
+  { id: 'crm', ancora: { it: 'CRM', en: 'CRM' },
+    x: 540, y: Y_FLUSSO, w: 210,
+    voce: { it: 'Costruisce il target coi vostri modelli. Resta vostro, e nessuno lo tocca.', en: 'Builds the target with your models. Stays yours, nobody touches it.' } },
+  { id: 'mktcloud', ancora: { it: 'Marketing Cloud', en: 'Marketing Cloud' },
+    x: 800, y: Y_FLUSSO, w: 210,
+    voce: { it: 'Esegue il ramo deciso a monte, giorni prima del contatto.', en: 'Runs the branch decided upstream, days before contact.' } },
+  { id: 'contatto', persona: true, ancora: { it: 'Il contatto', en: 'The contact' },
+    x: 1110, y: Y_FLUSSO, w: 210,
+    voce: { it: 'Una mail, una notifica, una chiamata. Ed è qui che si gioca tutto.', en: 'An email, a notification, a call. And this is where it is won or lost.' } },
 
-  // Strato 2 — l'esecuzione, e il buco
-  { id: 'mktcloud', ancora: { it: 'Marketing Cloud', en: 'Marketing Cloud' }, x: 200, y: 216, w: 300,
-    voce: { it: 'Esegue il percorso deciso a monte: chi entra nel ramo riceve quel messaggio.', en: 'Runs the journey decided upstream: whoever enters the branch gets that message.' } },
-  { id: 'vuoto', ancora: { it: 'Qui manca la scelta', en: 'The choice is missing here' }, x: 560, y: 216, w: 660, vuoto: true,
-    voce: { it: 'Che cosa esce adesso, per questa persona, su questo canale. Oggi non c’è il posto dove deciderlo.', en: 'What goes out now, for this person, on this channel. Today there is no place to decide it.' } },
-
-  // Strato 3 — il nostro innesto (in cima)
-  { id: 'cja', ancora: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' }, x: 200, y: 40, w: 300, nostro: true,
-    voce: { it: 'Cuce digitale e offline sullo stesso cliente.', en: 'Stitches digital and offline onto the same customer.' } },
-  { id: 'decisioning', ancora: { it: 'AI Decisioning', en: 'AI Decisioning' }, x: 560, y: 40, w: 300, nostro: true,
-    voce: { it: 'Sceglie quale proposta esce adesso, dentro il ramo che avete già deciso.', en: 'Picks which proposal goes out now, inside the branch you already decided.' } },
-  { id: 'coworker', ancora: { it: 'Coworker', en: 'Coworker' }, x: 920, y: 40, w: 300, nostro: true,
-    voce: { it: 'La domanda fatta a parole, sull’Analytics che avete oggi.', en: 'The question asked in plain words, on the Analytics you have today.' } },
+  { id: 'cja', nostro: true, ancora: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
+    x: 200, y: Y_ADOBE, w: 290,
+    voce: { it: 'Somma al digitale quello che succede in filiale e al telefono, sullo stesso cliente.', en: 'Adds branch and phone to digital, on the same customer.' } },
+  { id: 'coworker', nostro: true, ancora: { it: 'Coworker', en: 'Coworker' },
+    x: 560, y: Y_ADOBE, w: 190,
+    voce: { it: 'La domanda fatta a parole, sull’istanza che avete oggi.', en: 'The question asked in plain words, on the instance you have today.' } },
+  { id: 'decisioning', nostro: true, ancora: { it: 'AI Decisioning', en: 'AI Decisioning' },
+    x: 935, y: Y_ADOBE, w: 250,
+    voce: { it: 'Dentro il ramo, sceglie quale proposta esce adesso.', en: 'Within the branch, it picks which proposal goes out now.' } },
 ];
 
-/** I collegamenti verticali fra gli strati. `su` = sale verso il nostro strato. */
-export const LEGAMI: Array<{ id: string; x: number; da: number; a: number; su?: boolean }> = [
-  { id: 'l1-350', x: 350, da: 392, a: 312 },
-  { id: 'l1-710', x: 710, da: 392, a: 312 },
-  { id: 'l1-1070', x: 1070, da: 392, a: 312 },
-  { id: 'l2-350', x: 350, da: 216, a: 136, su: true },
-  { id: 'l2-710', x: 710, da: 216, a: 136, su: true },
-  { id: 'l2-1070', x: 1070, da: 216, a: 136, su: true },
+/**
+ * Le frecce PARLANO: un arco senza etichetta è «collegati in qualche modo».
+ * `manca` = l'arco che oggi non esiste (tratteggiato, e la fase 3 lo accende).
+ */
+export interface Arco {
+  id: string;
+  d: string;
+  etichetta: Testo;
+  /** Dove sta l'etichetta, in unità di viewBox. */
+  lx: number; ly: number;
+  nostro?: boolean;
+  manca?: boolean;
+}
+
+const orizz = (x1: number, x2: number, y: number) => `M${x1} ${y} L${x2 - 10} ${y}`;
+const Y_MID = Y_FLUSSO + H_NODO / 2;
+
+export const ARCHI: Arco[] = [
+  { id: 'a1', d: orizz(230, 280, Y_MID), etichetta: { it: 'il comportamento', en: 'behaviour' }, lx: 255, ly: Y_FLUSSO - 28 },
+  { id: 'a2', d: orizz(490, 540, Y_MID), etichetta: { it: 'il target', en: 'the target' }, lx: 515, ly: Y_FLUSSO - 28 },
+  { id: 'a3', d: orizz(750, 800, Y_MID), etichetta: { it: 'il ramo', en: 'the branch' }, lx: 775, ly: Y_FLUSSO - 28 },
+  { id: 'a4', d: orizz(1010, 1110, Y_MID), etichetta: { it: 'il messaggio', en: 'the message' }, lx: 1060, ly: Y_FLUSSO - 28 },
+
+  // L'arco che oggi NON c'è: l'esito non torna indietro per attributo.
+  { id: 'ritorno', manca: true,
+    d: `M1215 ${Y_FLUSSO + H_NODO} C1215 480, 385 480, 385 ${Y_FLUSSO + H_NODO}`,
+    etichetta: { it: 'l’esito, per attributo', en: 'the outcome, by attribute' }, lx: 800, ly: 505 },
+
+  // La fase 3: i tre innesti, ciascuno con quello che porta.
+  { id: 'i-cja', nostro: true, d: `M345 ${Y_ADOBE + H_NODO} L345 ${Y_FLUSSO - 10}`,
+    etichetta: { it: 'il dato cucito', en: 'stitched data' }, lx: 352, ly: 232 },
+  { id: 'i-cow', nostro: true, d: `M655 ${Y_ADOBE + H_NODO} L655 ${Y_FLUSSO - 10}`,
+    etichetta: { it: 'la domanda', en: 'the question' }, lx: 662, ly: 232 },
+  { id: 'i-dec', nostro: true, d: `M1060 ${Y_ADOBE + H_NODO} L1060 ${Y_MID - 14}`,
+    etichetta: { it: 'quale offerta, adesso', en: 'which offer, now' }, lx: 1067, ly: 232 },
 ];
 
 export interface Fase {
   id: string;
   titolo: Testo;
-  /** Gli id che COMPAIONO in questa fase. Lo stato è cumulativo. */
+  /** La didascalia della figura: UNA riga, dice che cosa mostra il disegno. */
+  didascalia: Testo;
   entrano: string[];
-  /** Attenuati, mai rimossi: un nodo del cliente non sparisce. */
-  spenti?: string[];
+  accesi?: string[];
 }
 
 export const FASI: Fase[] = [
   {
     id: 'oggi',
     titolo: { it: 'Quello che avete oggi', en: 'What you have today' },
-    entrano: ['analytics', 'crm', 'aem', 'l1-350', 'l1-710', 'l1-1070', 'mktcloud'],
+    didascalia: { it: 'Il percorso dal cliente al contatto, e che cosa porta ogni passaggio.', en: 'The path from customer to contact, and what each hop carries.' },
+    entrano: ['cliente', 'analytics', 'crm', 'mktcloud', 'contatto', 'a1', 'a2', 'a3', 'a4'],
   },
   {
     id: 'ferma',
     titolo: { it: 'Dove si ferma', en: 'Where it stops' },
-    entrano: ['vuoto'],
+    didascalia: { it: 'L’ultimo passaggio esegue un ramo deciso giorni prima, e l’esito non torna.', en: 'The last hop runs a branch decided days earlier, and the outcome never returns.' },
+    entrano: ['ritorno'],
+    accesi: ['a4'],
   },
   {
     id: 'innesto',
     titolo: { it: 'Dove ci innestiamo', en: 'Where we graft on' },
-    entrano: ['cja', 'decisioning', 'coworker', 'l2-350', 'l2-710', 'l2-1070'],
+    didascalia: { it: 'Tre innesti sullo stesso percorso: niente si stacca, e l’arco mancante si chiude.', en: 'Three grafts on the same path: nothing is detached, and the missing arc closes.' },
+    entrano: ['cja', 'coworker', 'decisioning', 'i-cja', 'i-cow', 'i-dec'],
+    accesi: ['ritorno'],
   },
 ];

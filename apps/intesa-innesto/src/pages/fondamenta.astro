@@ -7,7 +7,7 @@ import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { NODI, LEGAMI, FASI, H_NODO, VIEWBOX } from '../data/impianto';
+import { NODI, ARCHI, FASI, H_NODO, VIEWBOX } from '../data/impianto';
 
 const SLUG = 'fondamenta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -15,13 +15,14 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 const [VW, VH] = VIEWBOX.split(' ').slice(2).map(Number);
-const pct = (n: number, tot: number) => `${(n / tot) * 100}%`;
+const px = (n: number) => `${(n / VW) * 100}%`;
+const py = (n: number) => `${(n / VH) * 100}%`;
 
-// Stato cumulativo per fase: serve al runtime, e lo si calcola qui una volta.
+// Stato cumulativo per fase, calcolato una volta e serializzato per il runtime.
 const stati = FASI.map((_, i) => {
   const visibili: string[] = [];
   for (let k = 0; k <= i; k++) visibili.push(...FASI[k].entrano);
-  return { visibili, spenti: FASI[i].spenti ?? [] };
+  return { visibili, accesi: FASI[i].accesi ?? [] };
 });
 ---
 <BaseLayout title={ch.title.it}>
@@ -38,19 +39,17 @@ const stati = FASI.map((_, i) => {
         <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="ex-ch-title" it={ch.title.it} en={ch.title.en} data-reveal data-reveal-delay="0.08" />
         <T as="p" class="ex-ch-lead"
-          it="Tre strati. I primi due sono vostri e restano vostri."
-          en="Three layers. The first two are yours and stay yours."
+          it="Un percorso solo, e l’arco che oggi non c’è."
+          en="One single path, and the arc that is missing today."
           data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <!-- ── L'architettura, a fasi ────────────────────────────────────────────
-         Un DIAGRAMMA, non una tabella: in pagina ci sono solo le ancore, una
-         per nodo. Le spiegazioni sono la voce di chi presenta e stanno in
-         `voce` dentro src/data/impianto.ts, dove non si rendono.
-         Le frecce del deck avanzano di FASE dentro questa slide: il loro
-         impianto resta intero per due terzi del tempo, e si vede che non gli
-         si toglie niente. ⚠️ BOZZA da validare con l'architetto. -->
+    <!-- ── La figura: il meccanismo, a fasi ─────────────────────────────────
+         Non tre file di scatole: il percorso che un cliente fa, con ogni
+         freccia etichettata su quello che PORTA. La fase 2 accende l'arco che
+         manca; la fase 3 lo chiude. È la differenza a essere disegnata.
+         ⚠️ BOZZA da validare con l'architetto prima del 5 novembre. -->
     <Slide id="slide-architettura" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="ii-arch" data-blueprint="architettura" data-fasi={FASI.length}>
@@ -65,43 +64,61 @@ const stati = FASI.map((_, i) => {
           ))}
         </div>
 
-        <div class="ii-arch-scena" style={`aspect-ratio: ${VW} / ${VH};`}>
-          <svg class="ii-arch-svg" viewBox={VIEWBOX} role="presentation" aria-hidden="true" preserveAspectRatio="none">
-            {LEGAMI.map((l) => (
-              <line class={`ii-l${l.su ? ' ii-l--su' : ''}`} data-el={l.id}
-                    x1={l.x} y1={l.da} x2={l.x} y2={l.a} />
-            ))}
-            {NODI.map((n) => (
-              <rect class={`ii-n${n.nostro ? ' ii-n--nostro' : ''}${n.vuoto ? ' ii-n--vuoto' : ''}`}
-                    data-el={n.id} x={n.x} y={n.y} width={n.w} height={H_NODO} rx="4" />
-            ))}
-          </svg>
+        <figure class="ii-fig">
+          <div class="ii-arch-scena" style={`aspect-ratio: ${VW} / ${VH};`}>
+            <svg class="ii-arch-svg" viewBox={VIEWBOX} role="img" preserveAspectRatio="none"
+                 aria-label="Il percorso di una richiesta di mutuo dal cliente al contatto, i sistemi che attraversa e i tre componenti Adobe che si innestano sul tratto finale.">
+              <defs>
+                <marker id="ii-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0 0 L10 5 L0 10 z" fill="context-stroke" />
+                </marker>
+              </defs>
 
-          <!-- Le ancore stanno FUORI dall'SVG: restano DOM, quindi copy-audit,
-               audit:wrap e audit:ink continuano a misurarle. -->
-          <div class="ii-arch-ancore">
-            {NODI.map((n) => (
-              <span class={`ii-a${n.nostro ? ' ii-a--nostro' : ''}${n.vuoto ? ' ii-a--vuoto' : ''}`}
-                    data-el={`a-${n.id}`}
-                    style={`left:${pct(n.x + n.w / 2, VW)};top:${pct(n.y + H_NODO / 2, VH)};width:${pct(n.w - 24, VW)}`}>
-                <span data-lang-it>{n.ancora.it}</span><span data-lang-en>{n.ancora.en}</span>
+              {ARCHI.map((a) => (
+                <path class={`ii-arco${a.nostro ? ' ii-arco--nostro' : ''}${a.manca ? ' ii-arco--manca' : ''}`}
+                      data-el={a.id} d={a.d} marker-end="url(#ii-p)" />
+              ))}
+
+              {NODI.map((n) => (
+                <rect class={`ii-n${n.nostro ? ' ii-n--nostro' : ''}${n.persona ? ' ii-n--persona' : ''}`}
+                      data-el={n.id} x={n.x} y={n.y} width={n.w} height={H_NODO} rx="4" />
+              ))}
+            </svg>
+
+            <!-- Ancore ed etichette d'arco stanno FUORI dall'SVG: restano DOM,
+                 quindi copy-audit, audit:wrap e audit:ink le misurano. -->
+            <div class="ii-arch-ancore">
+              {NODI.map((n) => (
+                <span class={`ii-a${n.nostro ? ' ii-a--nostro' : ''}${n.persona ? ' ii-a--persona' : ''}`}
+                      data-el={`a-${n.id}`}
+                      style={`left:${px(n.x + n.w / 2)};top:${py(n.y + H_NODO / 2)};width:${px(n.w - 20)}`}>
+                  <span data-lang-it>{n.ancora.it}</span><span data-lang-en>{n.ancora.en}</span>
+                </span>
+              ))}
+              {ARCHI.map((a) => (
+                <span class={`ii-eti${a.nostro ? ' ii-eti--nostro' : ''}${a.manca ? ' ii-eti--manca' : ''}`}
+                      data-el={`e-${a.id}`} style={`left:${px(a.lx)};top:${py(a.ly)}`}>
+                  <span data-lang-it>{a.etichetta.it}</span><span data-lang-en>{a.etichetta.en}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <figcaption class="ii-figcap">
+            {FASI.map((f, i) => (
+              <span data-fase-cap={i} hidden={i !== 0}>
+                <span data-lang-it>{f.didascalia.it}</span><span data-lang-en>{f.didascalia.en}</span>
               </span>
             ))}
-          </div>
-        </div>
-
-        <div class="ii-arch-chiusa">
-          <T as="p" class="ii-chiedi" data-fase-chiusa="2" hidden
-            it="Questa lettura regge, vista da dentro?"
-            en="Does this reading hold up, seen from inside?" />
-        </div>
+          </figcaption>
+        </figure>
       </div>
     </Slide>
 
     <!-- ── Di chi è l'arbitro ────────────────────────────────────────────── -->
-    <Slide id="slide-arbitro" bg="secondary" align="left">
-      <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="ex-content" data-reveal>
+    <Slide id="slide-arbitro" bg="inverse" align="left">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-content ex-on-dark" data-reveal>
         <div class="ex-head">
           <T as="p" class="slide-eyebrow" it="L’incognita" en="The open question" />
           <T as="h2" class="ex-head-title" it="Di chi è l’arbitro" en="Whose arbiter is it" />
@@ -109,13 +126,13 @@ const stati = FASI.map((_, i) => {
             it="Tre cose che non abbiamo ancora risolto, e le portiamo noi."
             en="Three things we have not settled yet, and we bring them ourselves." />
         </div>
-        <div class="ii-domande" data-reveal data-reveal-delay="0.14">
+        <div class="ii-domande ii-domande--scure" data-stagger>
           <T as="p" class="ii-domanda" it="Chi lo governa" en="Who governs it" />
           <T as="p" class="ii-domanda" it="Chi ne cambia le regole" en="Who changes its rules" />
           <T as="p" class="ii-domanda" it="Chi risponde di cosa decide" en="Who answers for its decisions" />
         </div>
-        <div class="ii-dett" data-reveal data-reveal-delay="0.22">
-          <HowItWorks title="Perché queste tre, e non altre" tone="onLight">
+        <div class="ii-dett ii-dett--scuro" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Perché queste tre, e non altre" tone="onDark">
             <T as="p" it="L’arbitro non è un secondo motore di propensione: i vostri modelli continuano a scegliere che cosa proporre, lui sceglie quale proposta esce adesso." en="The arbiter is not a second propensity engine: your models keep choosing what to propose, it chooses which proposal goes out now." />
             <T as="p" it="Le regole, i tetti di contatto e le priorità restano una scelta vostra, e vanno scritte da qualcuno con un nome. Una regola che si cambia solo con un rilascio non serve." en="Rules, contact caps and priorities stay your decision, and someone with a name has to write them. A rule you can only change with a release is useless." />
             <T as="p" it="La terza non ha una risposta di prodotto, e in una banca è quella vera: va messa sul tavolo prima di accendere qualunque cosa." en="The third has no product answer, and in a bank it is the real one: it belongs on the table before anything is switched on." />
@@ -129,10 +146,9 @@ const stati = FASI.map((_, i) => {
 
 <script>
   // Le fasi dentro una slide: si intercetta l'ISTANZA del deck, perché next()
-  // e prev() sono chiamate da tutte le vie d'ingresso (tasti, frecce del
-  // contorno, click sulle metà, swipe) e non c'è un hook unico.
-  // Vedi la memoria `mockup-navigation-patterns`.
-  type Stato = { visibili: string[]; spenti: string[] };
+  // e prev() sono chiamate da ogni via d'ingresso (tasti, frecce del contorno,
+  // click sulle metà, swipe). Vedi la memoria `mockup-navigation-patterns`.
+  type Stato = { visibili: string[]; accesi: string[] };
   const RIDOTTO = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function monta() {
@@ -147,32 +163,32 @@ const stati = FASI.map((_, i) => {
     let fase = 0;
 
     const tutti = () => Array.from(root.querySelectorAll<HTMLElement>('[data-el]'));
-    const rifOf = (e: HTMLElement) => (e.dataset.el || '').replace(/^a-/, '');
+    const rif = (e: HTMLElement) => (e.dataset.el || '').replace(/^[ae]-/, '');
 
     function applica(i: number, animato: boolean) {
       const s = stati[i];
       const vis = new Set(s.visibili);
-      const spenti = new Set(s.spenti);
+      const acc = new Set(s.accesi);
       for (const e of tutti()) {
-        const rif = rifOf(e);
-        const dentro = vis.has(rif);
-        const target = dentro ? (spenti.has(rif) ? 0.45 : 1) : 0;
-        e.toggleAttribute('data-spento', dentro && spenti.has(rif));
-        if (animato) {
-          e.style.transition = 'opacity .42s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.4,0,.2,1)';
-        } else {
-          e.style.transition = 'none';
-        }
-        e.style.opacity = String(target);
+        const r = rif(e);
+        const dentro = vis.has(r);
+        e.style.transition = animato
+          ? 'opacity .42s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.4,0,.2,1)'
+          : 'none';
+        e.style.opacity = dentro ? '1' : '0';
         e.style.transform = dentro ? 'translateY(0)' : 'translateY(10px)';
+        // Non ancora entrata = ASSENTE, non trasparente: `visibility` la toglie
+        // dalle misure dei gate (un'etichetta a opacità 0 veniva letta come
+        // bianco su bianco) e dai lettori di schermo.
+        e.style.visibility = dentro ? 'visible' : 'hidden';
+        e.toggleAttribute('data-acceso', dentro && acc.has(r));
       }
       root.querySelectorAll<HTMLElement>('[data-fase-titolo]').forEach((p) => {
         p.hidden = Number(p.dataset.faseTitolo) !== i;
       });
-      root.querySelectorAll<HTMLElement>('[data-fase-chiusa]').forEach((p) => {
-        p.hidden = Number(p.dataset.faseChiusa) !== i;
+      root.querySelectorAll<HTMLElement>('[data-fase-cap]').forEach((p) => {
+        p.hidden = Number(p.dataset.faseCap) !== i;
       });
-      (root as unknown as { __fase: number }).__fase = i;
       root.dispatchEvent(new CustomEvent('bp:fase', { bubbles: true, detail: { fase: i, totale } }));
     }
 
