@@ -77,7 +77,7 @@ function inkAndPaper(png: PNG): { ink: RGB; paper: RGB; coverage: number } {
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1, reducedMotion: 'reduce' });
 const page = await ctx.newPage();
-let findings = 0, measured = 0;
+let findings = 0, measured = 0, disclosure = 0;
 
 for (const rotta of ROUTES) {
   await page.goto(BASE + rotta.route, { waitUntil: 'networkidle' });
@@ -87,6 +87,20 @@ for (const rotta of ROUTES) {
     await page.evaluate((n) => (window as unknown as { __edfDeck: { goTo(k: number): void } }).__edfDeck.goTo(n), i);
     await page.waitForTimeout(260);
     const id = (await slides[i].getAttribute('id')) || `#${i}`;
+
+    /* I blocchi «Scopri come» si APRONO prima di misurare. A blocco chiuso il
+       loro inchiostro non lo guarda nessun gate — `.hiw-body` del motore non
+       dichiara un colore, e su una slide chiara resta bianco su bianco — ed è
+       esattamente lì che si è rotto una volta. Dal 24 ott 2026 il dettaglio
+       ospita anche figure e ancore, cioè altro testo da misurare.
+       Il contesto gira con `reducedMotion: 'reduce'`: l'apertura è istantanea. */
+    const aperti = await page.evaluate((n) => {
+      const slide = document.querySelectorAll('[data-slide]')[n] as HTMLElement;
+      const bottoni = [...slide.querySelectorAll('[data-hiw-open]')] as HTMLElement[];
+      bottoni.forEach((b) => { if (b.getAttribute('aria-expanded') !== 'true') b.click(); });
+      return bottoni.length;
+    }, i);
+    if (aperti) { disclosure += aperti; await page.waitForTimeout(240); }
 
     const blocks = await page.evaluate((n) => {
       const slide = document.querySelectorAll('[data-slide]')[n] as HTMLElement;
@@ -134,5 +148,6 @@ for (const rotta of ROUTES) {
 }
 await browser.close();
 console.log(`\nBlocchi di testo misurati: ${measured} su ${ROUTES.length} rotte a ${VIEWPORT.width}×${VIEWPORT.height}`);
+console.log(`Dettagli «Scopri come» aperti e misurati: ${disclosure}`);
 if (findings) { console.log(`${findings} blocco/blocchi sotto la soglia AA.`); process.exit(1); }
 console.log('PULITO — ogni blocco di testo regge il contrasto AA sul fondo che ha davvero.');

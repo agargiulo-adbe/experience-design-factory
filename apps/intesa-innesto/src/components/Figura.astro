@@ -1,0 +1,247 @@
+---
+/**
+ * Figura — il vocabolario dei micro-diagrammi che stanno dentro un «Scopri come».
+ *
+ * Perché non è testo: il dettaglio si apre in sala per rispondere a una
+ * domanda, e in quel momento un paragrafo è inutile — chi presenta deve poter
+ * puntare una cosa che si vede. Ogni figura porta UN meccanismo, si muove una
+ * volta sola quando il blocco si apre, e non contiene nessuna parola: l'ancora
+ * sotto la nomina. Così la figura è immune alla famiglia `S` di `audit:ritmo`
+ * (nessun corpo che si rimpicciolisce sulla parete) e ai gate sugli a capo.
+ *
+ * Colore: la struttura è in `currentColor` — eredita l'inchiostro della slide e
+ * quindi si ribalta da sola su fondo scuro. L'accento è SOLO sull'elemento che
+ * porta il significato, e usa `--ink-accent`, che la pelle ribalta: un accento
+ * non è un inchiostro.
+ *
+ * Movimento: nessun JavaScript. Il motore marca `[data-hiw][data-hiw-on]` quando
+ * il blocco si apre, e le animazioni sono agganciate a quell'attributo — così
+ * il giro riparte a ogni apertura. Lo stato BASE è quello informativo: con
+ * «Riduci movimento» non parte niente e la figura è già quella finale.
+ *
+ * ⚠️ Per il centraggio e lo spostamento si usano le proprietà `translate` e
+ * `scale`, non `transform`: si compongono invece di sostituirsi (lezione del
+ * runtime a fasi di `fondamenta.astro`).
+ */
+interface Props {
+  k:
+    | 'tracce-separate' | 'ramo-anticipato' | 'una-via'
+    | 'una-esce' | 'tetto' | 'nodo-aperto'
+    | 'giorni-in-mezzo' | 'anello-in-piu' | 'per-attributo'
+    | 'tre-cause-una-cifra' | 'due-eventi-un-cliente' | 'costo-diverso'
+    | 'a-ritroso' | 'esce-dal-rapporto' | 'merito-distribuito'
+    | 'portato-e-rifatto' | 'periodo-doppio' | 'dati-offline'
+    | 'dentro-e-fuori' | 'in-corso'
+    | 'tre-strati-innesto' | 'una-fetta' | 'mezza-giornata';
+}
+const { k } = Astro.props;
+---
+{/* aria-hidden di proposito: l'ancora e la riga sotto la figura DICONO la
+    stessa cosa a parole. Un aria-label qui la farebbe leggere due volte. */}
+<svg class="fg dett-fig" viewBox="0 0 120 72" aria-hidden="true">
+  {k === 'tracce-separate' && (
+    <g>
+      {[10, 20, 30, 40, 50, 60].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i}`} cx="22" cy={y + 3} r="3.4" />))}
+      <circle class="fg-f" cx="98" cy="25" r="3.4" /><circle class="fg-f" cx="98" cy="47" r="3.4" />
+      <path class="fg-s" d="M32 36 H48" /><path class="fg-s" d="M72 36 H88" />
+      <path class="fg-s fg-d" d="M56 20 V52" /><path class="fg-s fg-d" d="M64 20 V52" />
+    </g>
+  )}
+  {k === 'ramo-anticipato' && (
+    <g>
+      <circle class="fg-f" cx="14" cy="36" r="4" />
+      <path class="fg-s fg-a fg-draw" d="M19 36 C40 36, 44 16, 66 16" />
+      <path class="fg-s fg-draw" d="M19 36 C40 36, 44 56, 66 56" />
+      <rect class="fg-s fg-a" x="68" y="8" width="18" height="16" rx="3" />
+      <rect class="fg-s" x="68" y="48" width="18" height="16" rx="3" />
+      <circle class="fg-f fg-in" style="--i:5" cx="106" cy="56" r="5.5" />
+    </g>
+  )}
+  {k === 'una-via' && (
+    <g>
+      {[14, 36, 58].map((y, i) => (<path class="fg-s fg-draw" style={`--i:${i}`} d={`M10 ${y} C34 ${y}, 38 36, 56 36`} />))}
+      <circle class="fg-s" cx="64" cy="36" r="7" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M72 36 H112" />
+    </g>
+  )}
+
+  {k === 'una-esce' && (
+    <g>
+      {[8, 29, 50].map((y, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x="8" y={y} width="34" height="14" rx="3" />))}
+      <path class="fg-s" d="M46 14 C58 14, 56 30, 64 36" /><path class="fg-s" d="M46 36 H64" />
+      <path class="fg-s" d="M46 58 C58 58, 56 42, 64 36" />
+      <rect class="fg-s fg-a" x="64" y="22" width="9" height="28" rx="4" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M77 36 H112" />
+    </g>
+  )}
+  {k === 'tetto' && (
+    <g>
+      {[[14, 30], [38, 36], [62, 33]].map(([x, h], i) => (
+        <rect class="fg-f-soft fg-rise" style={`--i:${i}`} x={x} y={64 - h} width="17" height={h} rx="2" />
+      ))}
+      <rect class="fg-s fg-a fg-d fg-rise" style="--i:3" x="86" y="8" width="17" height="56" rx="2" />
+      <path class="fg-s fg-a" d="M6 28 H112" />
+    </g>
+  )}
+  {k === 'nodo-aperto' && (
+    <g>
+      <path class="fg-s fg-draw" d="M8 36 H64" />
+      <circle class="fg-s fg-a fg-d-fine" cx="80" cy="36" r="13" />
+    </g>
+  )}
+
+  {k === 'giorni-in-mezzo' && (
+    <g>
+      <circle class="fg-s" cx="14" cy="28" r="6" /><circle class="fg-s" cx="106" cy="28" r="6" />
+      <path class="fg-s" d="M21 28 H36" /><path class="fg-s" d="M84 28 H99" />
+      <path class="fg-s fg-d" d="M40 28 H80" />
+      <path class="fg-s fg-d" d="M44 16 V40" /><path class="fg-s fg-d" d="M76 16 V40" />
+      <circle class="fg-a-f fg-slide" cx="68" cy="58" r="5" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M56 58 H38" />
+      <path class="fg-s fg-a" d="M38 58 L46 54" /><path class="fg-s fg-a" d="M38 58 L46 62" />
+    </g>
+  )}
+  {k === 'anello-in-piu' && (
+    <g>
+      {[20, 42, 86].map((x) => (<circle class="fg-s" cx={x} cy="44" r="10" />))}
+      <circle class="fg-s fg-a fg-drop" cx="64" cy="44" r="10" />
+      <path class="fg-s fg-a fg-d fg-drop" style="--i:1" d="M64 6 V30" />
+    </g>
+  )}
+  {k === 'per-attributo' && (
+    <g>
+      <rect class="fg-f-soft fg-rise" x="16" y="16" width="20" height="48" rx="2" />
+      <path class="fg-s fg-d" d="M56 10 V64" />
+      {[[70, 30], [86, 44], [102, 20]].map(([x, h], i) => (
+        <rect class="fg-a-f fg-rise" style={`--i:${i + 1}`} x={x} y={64 - h} width="12" height={h} rx="2" />
+      ))}
+    </g>
+  )}
+
+  {k === 'tre-cause-una-cifra' && (
+    <g>
+      <path class="fg-s fg-in" d="M16 6 L26 22 L6 22 Z" />
+      <rect class="fg-s fg-in" style="--i:1" x="6" y="29" width="20" height="14" rx="2" />
+      <circle class="fg-s fg-in" style="--i:2" cx="16" cy="57" r="8" />
+      {[14, 36, 57].map((y) => (<path class="fg-s" d={`M32 ${y} C52 ${y}, 54 36, 70 36`} />))}
+      <rect class="fg-f-soft fg-rise" style="--i:3" x="78" y="24" width="26" height="24" rx="2" />
+    </g>
+  )}
+  {k === 'due-eventi-un-cliente' && (
+    <g>
+      <circle class="fg-s" cx="14" cy="16" r="5" /><circle class="fg-s" cx="14" cy="56" r="5" />
+      <path class="fg-s fg-draw" d="M20 16 C52 16, 56 36, 76 36" />
+      <path class="fg-s fg-draw" style="--i:1" d="M20 56 C52 56, 56 36, 76 36" />
+      <circle class="fg-s fg-a" cx="88" cy="36" r="11" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="88" cy="36" r="3.4" />
+    </g>
+  )}
+  {k === 'costo-diverso' && (
+    <g>
+      <rect class="fg-f-soft fg-rise" x="28" y="10" width="20" height="54" rx="2" />
+      <rect class="fg-f-soft fg-rise" style="--i:1" x="74" y="46" width="20" height="18" rx="2" />
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M22 8 H54" />
+      <path class="fg-s fg-a" d="M22 8 V16" /><path class="fg-s fg-a" d="M54 8 V16" />
+    </g>
+  )}
+
+  {k === 'a-ritroso' && (
+    <g>
+      {[12, 24, 36, 48, 60, 72].map((x, i) => (<circle class="fg-f-soft fg-in" style={`--i:${i}`} cx={x} cy={56 - i * 2} r="2.8" />))}
+      <circle class="fg-s" cx="96" cy="40" r="7" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M89 36 C64 18, 32 22, 12 44" />
+      <path class="fg-s fg-a" d="M12 44 L20 42" /><path class="fg-s fg-a" d="M12 44 L17 50" />
+    </g>
+  )}
+  {k === 'esce-dal-rapporto' && (
+    <g>
+      <rect class="fg-s" x="8" y="18" width="30" height="38" rx="3" />
+      <path class="fg-s" d="M15 29 H31" /><path class="fg-s" d="M15 37 H31" /><path class="fg-s" d="M15 45 H25" />
+      <path class="fg-s fg-a fg-draw" d="M42 37 H76" />
+      <path class="fg-s fg-a" d="M76 37 L68 32" /><path class="fg-s fg-a" d="M76 37 L68 42" />
+      {[14, 37, 60].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i + 3}`} cx="98" cy={y + 1} r="4" />))}
+    </g>
+  )}
+  {k === 'merito-distribuito' && (
+    <g>
+      {[12, 28].map((x) => (<rect class="fg-s fg-d" x={x} y="56" width="12" height="8" rx="1" />))}
+      <rect class="fg-f-soft fg-rise" x="44" y="12" width="12" height="52" rx="2" />
+      <path class="fg-s fg-d" d="M66 8 V64" />
+      {[[74, 22], [90, 34], [104, 28]].map(([x, h], i) => (
+        <rect class="fg-a-f fg-rise" style={`--i:${i + 1}`} x={x} y={64 - h} width="11" height={h} rx="2" />
+      ))}
+    </g>
+  )}
+
+  {k === 'portato-e-rifatto' && (
+    <g>
+      <rect class="fg-s" x="8" y="10" width="24" height="18" rx="3" />
+      <path class="fg-s fg-a fg-draw" d="M36 19 H74" />
+      <path class="fg-s fg-a" d="M74 19 L66 15" /><path class="fg-s fg-a" d="M74 19 L66 23" />
+      <rect class="fg-s fg-a" x="80" y="10" width="24" height="18" rx="3" />
+      {[8, 18, 28].map((x) => (<rect class="fg-s fg-d" x={x} y="48" width="8" height="14" rx="1" />))}
+      <path class="fg-s fg-d" d="M44 55 H70" />
+      {[80, 88, 96].map((x, i) => (<rect class="fg-s fg-in" style={`--i:${i + 2}`} x={x} y="48" width="7" height="14" rx="1" />))}
+    </g>
+  )}
+  {k === 'dati-offline' && (
+    <g>
+      {[12, 36, 60].map((y, i) => (<rect class="fg-s fg-d fg-in" style={`--i:${i}`} x="6" y={y} width="20" height="12" rx="2" />))}
+      {[18, 42, 66].map((y) => (<path class="fg-s" d={`M28 ${y} C48 ${y}, 50 38, 62 38`} />))}
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M66 38 H84" />
+      <path class="fg-s fg-a" d="M84 38 L76 34" /><path class="fg-s fg-a" d="M84 38 L76 42" />
+      <rect class="fg-s fg-a" x="88" y="22" width="24" height="32" rx="3" />
+    </g>
+  )}
+  {k === 'periodo-doppio' && (
+    <g>
+      <rect class="fg-s" x="8" y="18" width="70" height="16" rx="3" />
+      <rect class="fg-s" x="46" y="40" width="66" height="16" rx="3" />
+      <rect class="fg-a-f-soft fg-grow" x="46" y="18" width="32" height="38" rx="2" />
+      <path class="fg-s fg-a fg-d" d="M46 10 V64" /><path class="fg-s fg-a fg-d" d="M78 10 V64" />
+    </g>
+  )}
+
+  {k === 'dentro-e-fuori' && (
+    <g>
+      <path class="fg-s fg-a" d="M8 10 H112" />
+      <path class="fg-s fg-a" d="M8 10 V19" /><path class="fg-s fg-a" d="M112 10 V19" />
+      <path class="fg-s fg-d" d="M60 22 V70" />
+      {[20, 36, 52].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i}`} cx="28" cy={y + 8} r="4.4" />))}
+      {[20, 36, 52].map((y, i) => (<circle class="fg-s fg-d-fine fg-in" style={`--i:${i + 2}`} cx="92" cy={y + 8} r="4.4" />))}
+    </g>
+  )}
+  {k === 'in-corso' && (
+    <g>
+      <path class="fg-s fg-a fg-draw" d="M10 36 H62" />
+      <path class="fg-s fg-d" d="M66 36 H92" />
+      <circle class="fg-s fg-d" cx="104" cy="36" r="8" />
+      {[10, 36, 62].map((x) => (<path class="fg-s fg-a" d={`M${x} 30 V42`} />))}
+    </g>
+  )}
+
+  {k === 'tre-strati-innesto' && (
+    <g>
+      {[14, 34, 54].map((y, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x="20" y={y} width="80" height="14" rx="3" />))}
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M60 2 V30" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="60" cy="41" r="4.6" />
+    </g>
+  )}
+  {k === 'una-fetta' && (
+    <g>
+      {[14, 34, 54].map((y) => (<rect class="fg-s" x="12" y={y} width="96" height="14" rx="3" />))}
+      <rect class="fg-a-f-soft fg-grow" x="52" y="10" width="18" height="62" rx="2" />
+      <path class="fg-s fg-a" d="M52 10 V72" /><path class="fg-s fg-a" d="M70 10 V72" />
+    </g>
+  )}
+  {k === 'mezza-giornata' && (
+    <g>
+      <rect class="fg-s" x="12" y="42" width="96" height="16" rx="4" />
+      <rect class="fg-a-f-soft fg-grow" x="12" y="42" width="48" height="16" rx="4" />
+      <path class="fg-s" d="M34 24 V42" /><path class="fg-s fg-a" d="M78 24 V42" />
+      <circle class="fg-s fg-in" cx="34" cy="16" r="8" />
+      <circle class="fg-s fg-a fg-in" style="--i:2" cx="78" cy="16" r="8" />
+      <path class="fg-s fg-a" d="M60 38 V62" />
+    </g>
+  )}
+</svg>

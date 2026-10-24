@@ -3,6 +3,7 @@ import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
 import MadeWith from '@edf/core/blocks/MadeWith.astro';
+import SocialMeta from '@edf/core/blocks/SocialMeta.astro';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
 
@@ -52,10 +53,18 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{docTitle}</title>
     <meta name="theme-color" content="#0d2901" />
-    <meta property="og:title" content={isHome ? SITE_NAME : `${title} · ${SITE.name}`} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={SITE_NAME} />
+    {/* L'anteprima del link la emette il MOTORE, e non si riscrive per app:
+        scritta a mano qui mancava `og:image` — e un `og.png` generato ma non
+        dichiarato è come se non esistesse (il difetto che `SocialMeta` esiste
+        per impedire). L'URL dev'essere assoluto, e lo compone lui. */}
+    <SocialMeta
+      title={isHome ? SITE_NAME : `${title} · ${SITE.name}`}
+      description={description}
+      site={Astro.site}
+      base={base}
+      siteName={SITE_NAME}
+      alt={`${SITE.name} — Adobe × ${SITE.client}`}
+    />
     <link rel="icon" type="image/svg+xml" href={`${base.replace(/\/?$/, '/')}favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

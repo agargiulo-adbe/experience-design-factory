@@ -1,0 +1,169 @@
+---
+/**
+ * Dettaglio — il corpo di un «Scopri come», fatto di FIGURE e non di paragrafi.
+ *
+ * Perché esiste: il drill-down era nato per ospitare la prosa che non sta in
+ * slide, e la regola «ancore, non prosa» l'aveva risolta a metà — la pagina era
+ * pulita e il dettaglio era quattro paragrafi, cioè lo stesso muro di testo
+ * spostato dietro un bottone. In sala quel blocco si apre per RISPONDERE a una
+ * domanda: nessuno legge quattro paragrafi davanti a un cliente che aspetta.
+ *
+ * La forma: ogni voce è un micro-diagramma che si muove, un'ANCORA sotto che lo
+ * nomina, e una riga che porta il fatto — quello che deve sopravvivere quando
+ * il deck viene inoltrato a chi non era in sala.
+ *
+ * Le figure stanno nell'app, non qui: il contenitore è di tutti, il vocabolario
+ * dei disegni è di quel cliente. Un disegno gradua al motore quando un secondo
+ * deck chiede lo stesso, non prima — se no il motore si riempie di forme nate
+ * per una slide sola.
+ *
+ * La copia arriva per SLOT e non per prop, e non è un dettaglio di stile:
+ * `copy-audit` legge gli attributi `it=`/`en=` di `<T>`. Passata come
+ * `ancoraIt="…"` la stessa frase diventa invisibile al gate, e la rubrica de-AI
+ * smette di valere proprio sul testo scritto per ultimo.
+ *
+ * Markup:
+ *   <Dettaglio>
+ *     <DettaglioVoce>
+ *       <Figura k="…" />
+ *       <T slot="ancora" as="p" it="…" en="…" />
+ *       <T slot="riga"   as="p" it="…" en="…" />
+ *     </DettaglioVoce>
+ *     <T slot="nota" as="p" it="…" en="…" />   (facoltativa: provenienza, cautela)
+ *   </Dettaglio>
+ */
+interface Props { class?: string }
+const { class: className } = Astro.props;
+const conNota = Astro.slots.has('nota');
+---
+<div class:list={['dett', className]}>
+  <div class="dett-griglia"><slot /></div>
+  {conNota && <div class="dett-nota"><slot name="nota" /></div>}
+</div>
+
+<style is:global>
+  /* ══ Il contratto del tratto e del movimento delle FIGURE ═══════════════
+     Sta nel motore e non nell'app di proposito: la geometria è di quel
+     cliente, lo spessore del tratto, la regola dell'accento e la curva
+     dell'animazione no. Lasciati all'app, due deck disegnano con due mani
+     diverse — ed è la stessa ragione per cui il co-brand non ha una prop
+     per invertirsi. Un `<svg class="fg">` dell'app eredita tutto da qui. */
+  /* Le voci stanno in RIGA: un dettaglio aperto cresce dentro la slide, e il
+     check `exp` la ri-misura da aperta. In colonna, tre voci sfondano a 1280. */
+  .dett-griglia {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: clamp(1rem, 1.8vw, 2.4rem);
+    align-items: start;
+  }
+  .dett-voce { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+  .dett-testo { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+
+  /* Una voce sola non è una colonna: a tutta larghezza il disegno prende mezza
+     pagina e sembra un'illustrazione. Va a fianco del testo, piccolo. */
+  .dett-voce:only-child { flex-direction: row; align-items: center; gap: clamp(1rem, 1.5vw, 2rem); }
+  .dett-voce:only-child .dett-fig-box { flex: 0 0 clamp(11rem, 15vw, 19rem); }
+  /* Il tetto di 15rem serve alla griglia a tre: qui toglierlo, se no la figura
+     sola resta un francobollo e un disegno che non si legge è peggio di niente. */
+  .dett-voce:only-child .dett-fig { max-width: none; }
+  .dett-voce:only-child .dett-testo { flex: 1 1 auto; }
+
+  /* La scatola dice «questa è una figura». Nessuna tinta di fondo: il blocco
+     vive su slide chiare E scure, e una tinta in `color-mix()` sarebbe anche
+     invisibile al parser di contrasto del check `h`. */
+  /* Il disegno ha un tetto: l'altezza del blocco aperto è spazio tolto alla
+     slide, e il check `exp` la ri-misura da aperta. */
+  .dett-fig { max-width: 15rem; margin-inline: auto; }
+  .dett-fig-box {
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line-subtle);
+    border-radius: 0.5rem;
+    padding: clamp(0.55rem, 0.9vw, 1rem);
+  }
+
+  /* Corpo in `rem`, non in `vw`. La regola del `clamp(rem, vw, tetto)` vale per
+     il testo DENTRO un SVG, che non segue la radice; questo è testo normale, e
+     sulla parete lo fa crescere `wallScale` insieme a tutto il resto. Legarlo
+     al viewport lo faceva crescere il DOPPIO della colonna che lo contiene (la
+     colonna è in rem): a 3840 la riga andava a capo ogni quattro parole e
+     `audit:wrap` tirava su ventidue preposizioni appese. Il contratto di
+     leggibilità resta: 0,98rem ≈ 27px a 3840, cioè l'1,27% dell'altezza,
+     sopra la soglia della famiglia `S` di `audit:ritmo`. */
+  .dett-ancora > *, .dett-ancora {
+    font-weight: 600;
+    font-size: 1.08rem;
+    line-height: 1.3;
+  }
+  .dett-riga > *, .dett-riga {
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+  .dett-nota > *, .dett-nota {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .dett-nota { margin-top: clamp(0.9rem, 1.4vw, 1.6rem); }
+
+  /* Schermo basso (un portatile qualunque): il blocco aperto cresce dentro la
+     slide e spingeva il titolo SOPRA la safe-area — il check `c` dentro `exp`,
+     che è HARD. Si restringe il DISEGNO, mai il tipo: la figura è ridondante
+     con l'ancora che la nomina, il testo no. */
+  @media (max-height: 900px) {
+    .dett-fig { max-width: 10.5rem; }
+    .dett-fig-box { padding: 0.5rem; }
+    .dett-griglia { gap: clamp(0.8rem, 1.2vw, 1.5rem); }
+    .dett-voce { gap: 0.4rem; }
+  }
+  /* A bandiera dentro un componente ci si difende da soli: il reset di base
+     centra i <p> con una max-width, e il check `m` non lo coglie (guarda i
+     figli diretti della slide). */
+  .dett-ancora > p, .dett-riga > p, .dett-nota > p {
+    margin: 0; margin-inline: 0; max-width: none;
+  }
+  /* ── Il tratto ──────────────────────────────────────────────────────────── */
+  .fg { display: block; width: 100%; height: auto; overflow: visible; }
+  .fg-s { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .fg-f { fill: currentColor; }
+  .fg-f-soft { fill: currentColor; fill-opacity: 0.42; }
+  .fg-d { stroke-dasharray: 5 4.5; }
+  /* Sulle forme piccole il passo lungo non legge come tratteggio: legge come
+     un contorno rotto male. */
+  .fg-d-fine { stroke-dasharray: 2.6 2.4; }
+  /* L'accento sta SOLO sull'elemento che porta il significato. `--ink-accent`
+     e non `--accent-primary`: la pelle lo ribalta col fondo. */
+  .fg-a { stroke: var(--ink-accent); stroke-width: 2.4; }
+  .fg-a-f { fill: var(--ink-accent); }
+  .fg-a-f-soft { fill: var(--ink-accent); fill-opacity: 0.22; }
+  .fg-s.fg-a { fill: none; }
+
+  /* ── Il movimento ───────────────────────────────────────────────────────── */
+  /* Lo stato BASE è quello finale e informativo: con «Riduci movimento» non
+     parte niente e la figura si legge comunque. Le animazioni si agganciano a
+     `[data-hiw-on]`, che il motore accende all'apertura del blocco — così il
+     giro riparte ogni volta, e una figura dentro un blocco chiuso non si
+     anima mai a vuoto. */
+  .fg-draw { stroke-dasharray: 220; stroke-dashoffset: 0; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-hiw-on] .fg-draw { animation: fg-draw 0.62s cubic-bezier(0.33, 1, 0.68, 1) both; }
+    [data-hiw-on] .fg-in   { animation: fg-in 0.42s cubic-bezier(0.33, 1, 0.68, 1) both; }
+    [data-hiw-on] .fg-rise { animation: fg-rise 0.5s cubic-bezier(0.33, 1, 0.68, 1) both; }
+    [data-hiw-on] .fg-grow { animation: fg-grow 0.55s cubic-bezier(0.33, 1, 0.68, 1) both; }
+    [data-hiw-on] .fg-drop { animation: fg-drop 0.5s cubic-bezier(0.34, 1.3, 0.64, 1) both; }
+    [data-hiw-on] .fg-slide { animation: fg-slide 0.55s cubic-bezier(0.33, 1, 0.68, 1) both; }
+    /* Lo sfasamento racconta l'ordine di lettura: `--i` sulla singola forma. */
+    [data-hiw-on] .fg [style*='--i'] { animation-delay: calc(var(--i, 0) * 0.075s + 0.1s); }
+  }
+
+  @keyframes fg-draw { from { stroke-dashoffset: 220; } to { stroke-dashoffset: 0; } }
+  @keyframes fg-in   { from { opacity: 0; translate: 0 7px; } to { opacity: 1; translate: 0 0; } }
+  /* `transform-box: fill-box` perché l'origine di una forma SVG, senza, è
+     l'angolo del viewBox: una barra crescerebbe dal posto sbagliato. */
+  .fg-rise, .fg-grow, .fg-drop, .fg-slide { transform-box: fill-box; }
+  .fg-rise { transform-origin: 50% 100%; }
+  .fg-grow { transform-origin: 0% 50%; }
+  @keyframes fg-rise { from { scale: 1 0.08; opacity: 0.4; } to { scale: 1 1; opacity: 1; } }
+  @keyframes fg-grow { from { scale: 0.05 1; opacity: 0.4; } to { scale: 1 1; opacity: 1; } }
+  @keyframes fg-drop { from { opacity: 0; translate: 0 -22px; } to { opacity: 1; translate: 0 0; } }
+  @keyframes fg-slide { from { opacity: 0; translate: -26px 0; } to { opacity: 1; translate: 0 0; } }
+</style>

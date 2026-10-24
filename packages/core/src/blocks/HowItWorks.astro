@@ -10,7 +10,13 @@
  *   AA contrast). The audit expands it and re-measures the slide.
  * - prefers-reduced-motion: instant toggle (no animation), content not skipped.
  *
- * Body content via the default slot (the validated paragraphs).
+ * Body content via the default slot. Dentro ci sta il DETTAGLIO — figure con
+ * la loro ancora (`Dettaglio` + `DettaglioVoce`), non paragrafi: un blocco che
+ * si apre su quattro paragrafi è lo stesso muro di testo, soltanto nascosto.
+ *
+ * Markup pubblicato ad apertura, per chi disegna dentro:
+ *   `[data-hiw][data-hiw-on]`  → il blocco è aperto (gancio CSS per le figure)
+ *   evento `hiw:toggle`        → `{ detail: { open } }`, bubbles
  */
 interface Props {
   label?: string;
@@ -70,6 +76,15 @@ const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[va
            arretra lo decide la pelle di ogni experience nel suo global.css. */
         if (next) document.documentElement.dataset.hiwOpen = 'true';
         else delete document.documentElement.dataset.hiwOpen;
+
+        /* Il dettaglio PARTE chiuso: una figura dentro di lui non può animarsi
+           all'ingresso della slide, perché quando la slide entra lei non si
+           vede. Quindi lo stato si pubblica anche sul blocco — `data-hiw-on` —
+           e le figure attaccano la loro animazione a quell'attributo: niente
+           JavaScript per figura, e il giro riparte ogni volta che si apre.
+           Chi ha bisogno di un gancio imperativo ascolta `hiw:toggle`. */
+        if (next) root.dataset.hiwOn = 'true'; else delete root.dataset.hiwOn;
+        root.dispatchEvent(new CustomEvent('hiw:toggle', { detail: { open: next }, bubbles: true }));
 
         if (REDUCED) {
           region!.style.height = next ? 'auto' : '0';

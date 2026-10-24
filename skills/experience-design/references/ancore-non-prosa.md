@@ -50,6 +50,61 @@ Su ogni slide di contenuto, in quest'ordine:
 navigazione anonima e un indirizzo email che arriva dopo diventano una storia sola» è prosa,
 e va dietro la disclosure.
 
+## Il drill-down è una FIGURA, non un paragrafo
+
+La regola sopra, applicata a metà, produce un difetto che sembra una soluzione: la pagina
+resta pulita e il «Scopri come» diventa **quattro paragrafi dietro un bottone**. È lo stesso
+muro di testo, soltanto nascosto — e nascosto nel posto peggiore, perché in sala quel blocco
+si apre **per rispondere a una domanda**, quando il cliente guarda e aspetta. Nessuno legge
+quattro paragrafi in quel momento.
+
+La forma giusta: **`Dettaglio` + `DettaglioVoce`** (`@edf/core/blocks/`). Ogni voce è
+
+| | Che cos'è | Tetto |
+|---|---|---|
+| **figura** | un micro-diagramma che porta UN meccanismo e si muove una volta | nessuna parola dentro |
+| **ancora** | il nome del meccanismo | 6 parole |
+| **riga** | il fatto, quello che deve sopravvivere all'inoltro del deck | 20 parole |
+
+più una **nota** facoltativa per la provenienza o una cautela. Se la riga non sta in venti
+parole non è una riga: è un paragrafo, e la voce porta due cose — si divide in due.
+
+Dove sta che cosa, e perché:
+- **i disegni nell'app** (`src/components/Figura.astro`): la geometria è di quel cliente;
+- **il tratto e il movimento nel motore** (dentro `Dettaglio.astro`): spessore, regola
+  dell'accento, curve. Lasciati all'app, due deck disegnano con due mani diverse — la stessa
+  ragione per cui il co-brand non ha una prop per invertirsi;
+- **niente parole dentro l'SVG.** L'ancora sotto nomina la figura, e un testo dentro un
+  disegno non cresce con la radice: sulla parete sparisce (famiglia `S` di `audit:ritmo`).
+
+Il movimento non ha JavaScript. Il motore marca `[data-hiw][data-hiw-on]` all'apertura, le
+animazioni si agganciano a quell'attributo — il giro riparte ogni volta che si apre — e lo
+stato **base** è quello finale e informativo: con «Riduci movimento» non parte niente e la
+figura si legge comunque. Chi ha bisogno di un gancio imperativo ascolta `hiw:toggle`.
+
+### Tre trappole, tutte misurate il 24 ott 2026
+
+- **Il corpo del dettaglio va in `rem`, non in `vw`.** La regola del `clamp(rem, vw, tetto)`
+  vale per il testo **dentro un SVG**, che non segue la radice; questo è testo normale, e
+  sulla parete lo fa crescere `wallScale` con tutto il resto. Legato al viewport cresceva il
+  **doppio** della colonna che lo contiene (la colonna è in rem): a 3840 la riga andava a capo
+  ogni quattro parole e `audit:wrap` tirava su **ventidue** preposizioni appese. Rimesso in
+  rem: una, e preesistente.
+- **Su schermo basso si restringe il DISEGNO, mai il tipo.** A 1280×800 il blocco aperto
+  spingeva il titolo sopra la safe-area — il check `c` dentro `exp`, che è HARD. La figura è
+  ridondante con l'ancora che la nomina; il testo no. `@media (max-height: 900px)` nel motore.
+- **Una voce sola non è una colonna.** A tutta larghezza il disegno prende mezza pagina e
+  sembra un'illustrazione; ristretto come se fosse in griglia diventa un francobollo
+  illeggibile, che è peggio di nessuna figura. Il motore la mette **in riga** accanto al testo,
+  con una larghezza sua.
+
+### Il gate ora guarda anche lì
+
+`audit:ink` **apre ogni «Scopri come» prima di misurare**. A blocco chiuso quel testo non lo
+guardava nessuno — ed è la trappola nota: `.hiw-body` del motore non dichiara un colore, su
+slide chiara resterebbe bianco su bianco. Su Intesa i blocchi misurati sono passati da 194 a
+**241**, nove dettagli aperti.
+
 ## Perché la prosa non si butta
 
 Il deck viene **inoltrato**: la regola «il deck parla all'organizzazione» impone che regga

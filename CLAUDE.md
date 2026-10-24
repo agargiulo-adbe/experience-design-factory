@@ -279,16 +279,31 @@ Quindi, su ogni slide di contenuto:
 - **un'ancora per concetto — massimo 6 parole.** È un nome, non una frase.
 - **una riga di lead**, il punto della slide, massimo ~15 parole. Il titolo *è* il punto, non
   l'etichetta del capitolo.
-- **tutto il resto dietro `HowItWorks`** («Scopri come»). Non si butta: il deck viene
-  inoltrato e deve reggere senza chi l'ha presentato — ma la prosa sta **a richiesta**, non
-  addosso a chi parla.
+- **il dettaglio dietro `HowItWorks`** («Scopri come»). Non si butta: il deck viene
+  inoltrato e deve reggere senza chi l'ha presentato — ma sta **a richiesta**, non addosso a
+  chi parla.
+- **e dentro quel blocco vanno FIGURE, non paragrafi.** Un «Scopri come» che si apre su
+  quattro paragrafi è lo stesso muro di testo, soltanto nascosto — la regola risolta a metà.
+  In sala quel blocco si apre per **rispondere a una domanda**, e in quel momento nessuno
+  legge quattro paragrafi davanti a un cliente che aspetta. La forma è
+  **`Dettaglio` + `DettaglioVoce`** del motore: per ogni voce un micro-diagramma che si
+  muove, l'**ancora** che lo nomina, e **una riga** col fatto che deve sopravvivere
+  all'inoltro. Venti parole: se non ci stanno, la voce porta due cose e va divisa in due.
+  I disegni vivono nell'app (`src/components/Figura.astro`, solo geometria); **spessore del
+  tratto, regola dell'accento e curva dell'animazione stanno nel motore**, se no due deck
+  disegnano con due mani diverse. Niente parole dentro l'SVG: un testo in un disegno non
+  cresce con la radice e sulla parete sparisce.
+  Il movimento non ha JavaScript: il motore marca `[data-hiw][data-hiw-on]` all'apertura e le
+  animazioni si agganciano lì — il giro riparte ogni volta, e lo stato **base** è quello
+  finale e informativo, così con «Riduci movimento» non parte niente e la figura si legge.
 - **dove si spiega un meccanismo, si DISEGNA.** Un diagramma con le ancore attaccate ai nodi
   batte tre card di testo, sempre. E un'architettura che **nasce a fasi** sotto le frecce del
   deck dice «ci appoggiamo sopra» con la forma, invece di scriverlo.
 
 **Il template lo impone, non lo ricorda:** `templates/experience/src/pages/_chapter.astro.tpl`
-genera ancore (`.ex-ancore`) più un `HowItWorks`, e porta la regola nel commento al punto
-d'uso. Chi scrive tre paragrafi dentro tre card sta rifacendo l'errore che quella forma
+genera ancore (`.ex-ancore`) e un `HowItWorks` che contiene un **`Dettaglio` a tre figure**,
+con un vocabolario di partenza in `templates/experience/src/components/Figura.astro` (cinque
+meccanismi che tornano in quasi ogni blueprint). Porta la regola nel commento al punto d'uso. Chi scrive tre paragrafi dentro tre card sta rifacendo l'errore che quella forma
 esiste per impedire. Dettaglio e casi:
 `skills/experience-design/references/ancore-non-prosa.md`.
 
@@ -359,6 +374,9 @@ rompe — un titolo che eredita `--ink-inverse` su una superficie diventata scur
 su ardesia, **passa tutti e undici i check** e in sala non si legge. Successo sulla
 Prospettiva Trenitalia: copertina di capitolo illeggibile con `audit:deck` a 0 HARD.
 - **`DECK_URL=<origin> pnpm audit:ink --app <alias>`** (`--only <rotta>` per una pagina).
+  **Apre ogni «Scopri come» prima di misurare** (dal 24 ott 2026): a blocco chiuso quel testo
+  non lo guardava nessun gate, ed è esattamente lì che si rompe — `.hiw-body` del motore non
+  dichiara un colore. Su Intesa i blocchi misurati sono passati da 194 a 241.
   Non legge il CSS: ritaglia il rettangolo di ogni blocco di testo dallo screenshot e guarda
   i **pixel** — fondo = colore modale, inchiostro = pixel più lontano dal fondo. Così
   gradienti, scrim e backdrop sono già dentro la misura. Soglie AA: 4,5:1, e 3:1 sul testo

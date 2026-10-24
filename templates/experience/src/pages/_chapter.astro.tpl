@@ -4,6 +4,9 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -25,8 +28,11 @@ const currentPath = Astro.url.pathname;
    Quindi, su ogni slide di contenuto:
      · una ANCORA per concetto — massimo 6 parole, è un nome non una frase;
      · UNA riga di lead, il punto della slide, massimo ~15 parole;
-     · tutto il resto dietro <HowItWorks>, così il deck inoltrato regge
-       comunque senza riempire la pagina di paragrafi;
+     · il dettaglio dietro <HowItWorks>, così il deck inoltrato regge
+       comunque senza riempire la pagina di paragrafi — ma dentro ci vanno
+       FIGURE con la loro ancora, non paragrafi: un blocco che si apre su
+       quattro paragrafi è lo stesso muro di testo, soltanto nascosto, e in
+       sala si apre per RISPONDERE a una domanda, quando nessuno legge;
      · e dove si spiega un meccanismo, si DISEGNA: un diagramma con le
        ancore attaccate ai nodi batte tre card di testo, sempre.
 
@@ -77,7 +83,30 @@ const ancore = [
 
         <div class="ex-dett" data-reveal data-reveal-delay="0.22">
           <HowItWorks title="Che cosa vuol dire, una per una" tone="onLight">
-            <T as="p" it="Qui va la prosa che prima stava in pagina: i fatti del cliente, i numeri con la fonte, il vincolo detto prima che lo chiedano. Serve perché il deck viene inoltrato e deve reggere senza chi l’ha presentato." en="Here goes the prose that used to sit on the page: the client’s facts, the figures with their source, the constraint declared before they ask. It is needed because the deck gets forwarded and has to hold up without the presenter." />
+            {/* Una voce per ancora: il disegno porta il meccanismo, l'ancora
+                lo nomina, la riga porta il FATTO — quello che deve
+                sopravvivere quando il deck viene inoltrato. L'ancora sta in
+                sei parole, la riga in venti: se non ci sta, la voce porta due
+                cose e va divisa in due. I disegni si scelgono (o si
+                aggiungono) in `src/components/Figura.astro`. */}
+            <Dettaglio>
+              <DettaglioVoce>
+                <Figura k="due-non-legati" />
+                <T slot="ancora" as="p" it="L’ancora della prima voce" en="The first anchor" />
+                <T slot="riga" as="p" it="Il fatto del cliente, con il numero se c’è, in una riga sola." en="The client’s fact, with the figure if there is one, in a single line." />
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="una-esce" />
+                <T slot="ancora" as="p" it="La seconda" en="The second" />
+                <T slot="riga" as="p" it="Il vincolo detto prima che lo chiedano." en="The constraint declared before they ask." />
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="prima-dopo" />
+                <T slot="ancora" as="p" it="La terza" en="The third" />
+                <T slot="riga" as="p" it="Che cosa cambia rispetto a come funziona oggi." en="What changes compared with how it works today." />
+              </DettaglioVoce>
+              <T slot="nota" as="p" it="La provenienza di questa lettura, e la data. Da correggere dove è sbagliata." en="Where this reading comes from, and when. To be corrected where it is wrong." />
+            </Dettaglio>
           </HowItWorks>
         </div>
 

@@ -170,7 +170,8 @@
    rende la superficie come classe Tailwind, non come data-attribute. Una slide
    che DICHIARA chiaro ma rende scura per via del backdrop si marca `.ex-on-dark`. */
 [data-slide].bg-\[var\(--surface-inverse\)\],
-.ex-on-dark {
+.ex-on-dark,
+.ii-dett--scuro {
   --ink-accent: var(--color-accent-soft);
   --ink-note: var(--color-grey-400);
   --ink-body: var(--color-grey-200);
@@ -664,12 +665,24 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 /* ── Il dettaglio dietro «Scopri come» ───────────────────────────────────
    ⚠️ `.hiw-body` del motore NON dichiara un colore: su slide chiara resterebbe
    bianco su bianco, e a blocco chiuso nessun gate lo vede. Si dichiara qui. */
-.ii-dett { margin-top: 1.3rem; max-width: 56rem; }
-.ii-dett .hiw-body p {
+.ii-dett { margin-top: 1.3rem; max-width: 76rem; }
+/* La prosa che resta (una cautela, una provenienza) e NON sta in un Dettaglio. */
+.ii-dett .hiw-body > p {
   font-size: 0.98rem; line-height: 1.6; color: var(--ink-secondary);
   margin: 0 0 0.7rem; max-width: none;
 }
-.ii-dett .hiw-body p:last-child { margin-bottom: 0; }
+.ii-dett .hiw-body > p:last-child { margin-bottom: 0; }
+
+/* Il dettaglio a figure. Solo colore qui: il corpo lo decide il motore con un
+   `clamp(rem, vw, tetto)`, e sovrascriverlo da qui vorrebbe dire rimettere un
+   corpo fisso che sulla parete non cresce (famiglia `S` di audit:ritmo). */
+.ii-dett .dett-ancora > p { color: var(--ink-primary); }
+.ii-dett .dett-riga > p { color: var(--ink-secondary); }
+.ii-dett .dett-nota > p { color: var(--ink-note); }
+/* La struttura della figura eredita `currentColor`: si dichiara sul contenitore
+   una volta, e l'accento se lo prende da `--ink-accent`, che si ribalta. */
+.ii-dett .fg { color: var(--color-grigio-600); }
+.ii-dett .dett-fig-box { border-color: var(--color-grigio-300); }
 
 @media (max-width: 900px) {
   .ii-domande { grid-template-columns: minmax(0, 1fr); }
@@ -720,7 +733,12 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   border-left-color: var(--color-verde-chiaro);
   color: rgba(255, 255, 255, 0.95);
 }
-.ii-dett--scuro .hiw-body p { color: rgba(255, 255, 255, 0.82); }
+.ii-dett--scuro .hiw-body > p { color: #dce7d8; }
+.ii-dett--scuro .dett-ancora > p { color: #ffffff; }
+.ii-dett--scuro .dett-riga > p { color: #dce7d8; }
+.ii-dett--scuro .dett-nota > p { color: #bdcfb7; }
+.ii-dett--scuro .fg { color: #9ab894; }
+.ii-dett--scuro .dett-fig-box { border-color: rgba(255, 255, 255, 0.2); }
 
 /* ── Scena «personalize»: le proposte candidate, e quella che esce ─────── */
 .ii-perso { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; margin: 1.1rem 0 0.6rem; max-width: 34rem; }
