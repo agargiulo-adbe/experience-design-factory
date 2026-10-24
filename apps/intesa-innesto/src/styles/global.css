@@ -607,7 +607,12 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .ii-arco { fill: none; stroke: var(--color-grigio-500); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
 .ii-arco--manca { stroke: var(--color-grigio-300); stroke-dasharray: 8 7; }
 .ii-arco--nostro { stroke: var(--color-verde); stroke-width: 2.2; }
-.ii-arco[data-acceso] { stroke: var(--color-verde); stroke-width: 2.4; stroke-dasharray: none; }
+/* Accendere un arco lo METTE IN EVIDENZA, non lo ricolora: il colore porta il
+   significato (grigio = porta, tratteggiato = manca, ambra = costa, verde =
+   nostro) e l'evidenza non deve cancellarlo. Prima `data-acceso` rendeva
+   verdi e continui anche l'arco mancante e quello di attrito. */
+.ii-arco[data-acceso] { stroke-width: 3; }
+.ii-arco--nostro[data-acceso] { stroke-width: 3.2; }
 
 .ii-arch-ancore { position: absolute; inset: 0; pointer-events: none; }
 /* `translate` e non `transform`: il runtime delle fasi scrive
@@ -629,7 +634,8 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 .ii-eti--nostro { color: var(--color-verde-scuro); font-style: normal; font-weight: 600; }
 .ii-eti--manca { color: var(--color-grigio-500); }
-.ii-eti[data-acceso] { color: var(--color-verde-scuro); font-style: normal; font-weight: 600; }
+.ii-eti[data-acceso] .ii-eti-t { font-weight: 700; }
+.ii-eti--nostro[data-acceso] { color: var(--color-verde-scuro); }
 
 /* Una figura, una didascalia: dice che cosa mostra il disegno, una riga. */
 .ii-figcap {
@@ -841,3 +847,33 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   .ii-dom-s::after { bottom: 12%; }
   .ii-profili { flex-direction: column; gap: 0.6rem; }
 }
+
+/* ── Il dettaglio dentro la figura: due righe per nodo, due per arco ───── */
+.ii-a { display: flex; flex-direction: column; gap: 0.15rem; }
+.ii-a-n { font-size: 1.02rem; font-weight: 600; line-height: 1.25; }
+.ii-a-s { font-size: 0.78rem; font-weight: 400; line-height: 1.3; color: var(--color-grigio-600); }
+.ii-a--nostro .ii-a-s { color: var(--color-verde-scuro); }
+.ii-a--persona .ii-a-n { font-weight: 500; color: var(--color-grigio-600); }
+
+.ii-eti { display: flex; flex-direction: column; gap: 0.1rem; align-items: center; }
+.ii-eti-t { font-size: 0.84rem; line-height: 1.2; }
+/* La nota è piccola, quindi l'inchiostro dev'essere PIÙ scuro, non più
+   chiaro: a 13px la soglia è 4,5:1 e il grigio 500 si ferma a 3,3. */
+.ii-eti-n { font-size: 0.76rem; line-height: 1.25; font-style: normal; color: var(--color-grigio-600); }
+.ii-eti--nostro .ii-eti-n { color: var(--color-verde); }
+/* L'arco che c'è ma costa: ambra, perché non è un errore ed è un attrito. */
+.ii-arco--attrito { stroke: var(--color-arancio); stroke-width: 2; stroke-dasharray: none; }
+.ii-eti--attrito { color: #9a5c00; font-style: normal; font-weight: 600; }
+.ii-eti--attrito .ii-eti-n { color: #9a5c00; }
+
+/* ── I tre assi della scelta ───────────────────────────────────────────── */
+.ii-assi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; width: 100%; max-width: 70rem; }
+.ii-asse { min-width: 0; padding: 1.3rem 1.4rem; border-radius: 4px; border: 1px solid var(--color-grigio-300); background: var(--surface-primary); }
+.ii-asse-k { font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-verde-scuro); margin: 0 0 0.4rem; max-width: none; }
+.ii-asse-t { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; line-height: 1.2; color: var(--ink-primary); margin: 0 0 0.5rem; max-width: none; }
+.ii-asse-e { font-size: 0.95rem; line-height: 1.5; color: var(--ink-secondary); margin: 0; max-width: none; }
+@media (max-width: 900px) { .ii-assi { grid-template-columns: minmax(0, 1fr); } }
+
+/* Un'etichetta centrata sopra la propria linea viene tagliata da quella linea:
+   quelle degli innesti stanno a lato, allineate a sinistra. */
+.ii-eti--lato { translate: 0 -50%; align-items: flex-start; text-align: left; }

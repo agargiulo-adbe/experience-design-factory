@@ -67,7 +67,7 @@ const stati = FASI.map((_, i) => {
         <figure class="ii-fig">
           <div class="ii-arch-scena" style={`aspect-ratio: ${VW} / ${VH};`}>
             <svg class="ii-arch-svg" viewBox={VIEWBOX} role="img" preserveAspectRatio="none"
-                 aria-label="Il percorso di una richiesta di mutuo dal cliente al contatto, i sistemi che attraversa e i tre componenti Adobe che si innestano sul tratto finale.">
+                 aria-label="Il percorso di un target dal data warehouse al cliente attraverso la definizione dei target, la Customer Data Platform e i canali; l’arco di ritorno dell’interazione con la sua latenza, il legame mancante fra visitatore anonimo e cliente, e i due componenti Adobe che si innestano.">
               <defs>
                 <marker id="ii-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                   <path d="M0 0 L10 5 L0 10 z" fill="context-stroke" />
@@ -75,7 +75,7 @@ const stati = FASI.map((_, i) => {
               </defs>
 
               {ARCHI.map((a) => (
-                <path class={`ii-arco${a.nostro ? ' ii-arco--nostro' : ''}${a.manca ? ' ii-arco--manca' : ''}`}
+                <path class={`ii-arco${a.nostro ? ' ii-arco--nostro' : ''}${a.manca ? ' ii-arco--manca' : ''}${a.attrito ? ' ii-arco--attrito' : ''}`}
                       data-el={a.id} d={a.d} marker-end="url(#ii-p)" />
               ))}
 
@@ -92,13 +92,19 @@ const stati = FASI.map((_, i) => {
                 <span class={`ii-a${n.nostro ? ' ii-a--nostro' : ''}${n.persona ? ' ii-a--persona' : ''}`}
                       data-el={`a-${n.id}`}
                       style={`left:${px(n.x + n.w / 2)};top:${py(n.y + H_NODO / 2)};width:${px(n.w - 20)}`}>
-                  <span data-lang-it>{n.ancora.it}</span><span data-lang-en>{n.ancora.en}</span>
+                  <span class="ii-a-n"><span data-lang-it>{n.ancora.it}</span><span data-lang-en>{n.ancora.en}</span></span>
+                  {n.sotto && (
+                    <span class="ii-a-s"><span data-lang-it>{n.sotto.it}</span><span data-lang-en>{n.sotto.en}</span></span>
+                  )}
                 </span>
               ))}
               {ARCHI.map((a) => (
-                <span class={`ii-eti${a.nostro ? ' ii-eti--nostro' : ''}${a.manca ? ' ii-eti--manca' : ''}`}
+                <span class={`ii-eti${a.nostro ? ' ii-eti--nostro' : ''}${a.manca ? ' ii-eti--manca' : ''}${a.attrito ? ' ii-eti--attrito' : ''}${a.lato ? ' ii-eti--lato' : ''}`}
                       data-el={`e-${a.id}`} style={`left:${px(a.lx)};top:${py(a.ly)}`}>
-                  <span data-lang-it>{a.etichetta.it}</span><span data-lang-en>{a.etichetta.en}</span>
+                  <span class="ii-eti-t"><span data-lang-it>{a.etichetta.it}</span><span data-lang-en>{a.etichetta.en}</span></span>
+                  {a.nota && (
+                    <span class="ii-eti-n"><span data-lang-it>{a.nota.it}</span><span data-lang-en>{a.nota.en}</span></span>
+                  )}
                 </span>
               ))}
             </div>
