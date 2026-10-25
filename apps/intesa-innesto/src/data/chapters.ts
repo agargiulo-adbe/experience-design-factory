@@ -23,7 +23,7 @@ export interface Chapter {
  *       risposta è il primo obiettivo dell'incontro
  *   03  perché quel vuoto riguarda il mestiere di chi fa audience e target
  *   04  CJA solo su ciò che va oltre l'analisi: stitching, attivazione, attribution
- *   05  AI Decisioning e Coworker come acceleratori, non come titolo
+ *   05  Decisioning e Coworker come acceleratori, non come titolo
  *   06  perimetrare una fase — il passo che il Blueprint chiede
  */
 export const CHAPTERS: Chapter[] = [

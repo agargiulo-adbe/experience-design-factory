@@ -6,7 +6,20 @@
  * stessi blocchi divergono sempre.
  *
  * ⚠️ L'architettura qui sotto è una LETTURA nostra, ricostruita dal lavoro di
- * preparazione sull'AI decisioning di ottobre 2026. Va validata dall'architetto
+ * preparazione sull'AI decisioning di ottobre 2026.
+ *
+ * Che cosa regge e che cosa no — verificato il 25 ott 2026 sul parlato del 22,
+ * sulla call interna del 20, sul registro d'account e sulla cartella cliente:
+ *  · «il ramo è già scritto» REGGE — lo descrive il cliente stesso: entra in
+ *    un workflow per uno specifico ambito e «tempo dopo» riceve la
+ *    comunicazione, con il journey builder dentro Salesforce;
+ *  · «da 6 a 24 ore» NON ha fonte. Che il ritardo ci sia è loro, quanto sia
+ *    era nostro. Ora è la domanda che andiamo a fare;
+ *  · «cap settimanale» NON ha fonte: che un tetto ci sia è mestiere, che sia
+ *    settimanale era un'invenzione. Ora dice «i vostri tetti di contatto»;
+ *  · «l'anonimo non si lega» è una nostra inferenza, dichiarata in pagina.
+ * Mai mettere in figura un numero che sembra misurato e non lo è: in sala
+ * c'è chi quel numero lo conosce. Va validata dall'architetto
  * e corretta dal cliente: in slide è dichiarata come tale. In pagina non c'è
  * nessun virgolettato e non si nomina nessun terzo.
  */
@@ -37,8 +50,23 @@ export const CIFRE: Array<{ n: string; pre?: string; suf?: string; l: Testo }> =
 // E il confronto si disegna: fra la fase 2 e la 3 cambiano gli archi, non gli
 // elenchi. Geometria in unità di viewBox (1440 × 620), a mano.
 
-export const VIEWBOX = '0 0 1440 700';
-export const H_NODO = 92;
+/* Cinque nodi IDENTICI e equidistanti, calcolati e non posati a occhio:
+     margine 24 · lato 248 · intervallo 38  →  5×248 + 4×38 + 2×24 = 1440.
+   L'altezza regge il caso peggiore (un nome su due righe più la descrizione):
+   con i 92 di prima il testo usciva dalla scatola, e usciva solo da QUELLA —
+   i box erano uguali e i contenuti no.
+   ⚠️ L'ALTEZZA DEL viewBox È UN VINCOLO DI LAYOUT, non una scelta di disegno:
+   la figura è il contenuto più alto del deck, e a 1280×800 ogni unità in più
+   spinge il titolo della slide sopra la safe-area (check `c`, HARD). A 760
+   sforava di 9px; a 664 passa. Si compatta la verticale — l'arco di ritorno
+   non ha bisogno di tutto quello spazio — e non si rimpicciolisce mai il tipo:
+   il testo dei nodi è in `rem`, quindi stringere la figura lo farebbe uscire
+   dalle scatole invece di rimpicciolirlo con lei. */
+export const VIEWBOX = '0 0 1440 664';
+export const H_NODO = 108;
+export const W_NODO = 248;
+const X = [24, 310, 596, 882, 1168];           // i cinque appoggi
+const C = X.map((x) => x + W_NODO / 2);         // i cinque centri
 
 export interface Nodo {
   id: string;
@@ -52,50 +80,50 @@ export interface Nodo {
   voce: Testo;
 }
 
-const Y_FLUSSO = 360;
-const Y_ADOBE = 80;
+const Y_FLUSSO = 368;
+const Y_ADOBE = 56;
 
 export const NODI: Nodo[] = [
   {
     id: 'dwh', ancora: { it: 'Data warehouse', en: 'Data warehouse' },
     sotto: { it: 'clienti, catalogo, prodotti', en: 'customers, catalogue, products' },
-    x: 24, y: Y_FLUSSO, w: 250,
+    x: X[0], y: Y_FLUSSO, w: W_NODO,
     voce: { it: 'Qui stanno i dati cliente e il catalogo dell’offerta. Non si sposta niente.', en: 'Customer data and the offer catalogue live here. Nothing moves.' },
   },
   {
     id: 'target', ancora: { it: 'Definizione dei target', en: 'Target definition' },
     sotto: { it: 'propensione, eleggibilità', en: 'propensity, eligibility' },
-    x: 320, y: Y_FLUSSO, w: 250,
+    x: X[1], y: Y_FLUSSO, w: W_NODO,
     voce: { it: 'I modelli di advanced analytics valutano propensione ed eleggibilità. Restano vostri.', en: 'Advanced analytics models score propensity and eligibility. They stay yours.' },
   },
   {
     id: 'cdp', ancora: { it: 'Customer Data Platform', en: 'Customer Data Platform' },
-    sotto: { it: 'contact policy · cap settimanale', en: 'contact policy · weekly cap' },
-    x: 616, y: Y_FLUSSO, w: 250,
+    sotto: { it: 'contact policy', en: 'contact policy' },
+    x: X[2], y: Y_FLUSSO, w: W_NODO,
     voce: { it: 'Finalizza i segmenti, calcola chi è eleggibile a una nuova comunicazione e orchestra i canali.', en: 'Finalises segments, decides who is eligible for another message, orchestrates the channels.' },
   },
   {
     id: 'canali', ancora: { it: 'I canali', en: 'The channels' },
     sotto: { it: 'app, banner, push, email', en: 'app, banners, push, email' },
-    x: 912, y: Y_FLUSSO, w: 250,
+    x: X[3], y: Y_FLUSSO, w: W_NODO,
     voce: { it: 'Diretti e assistiti. I banner sono in prevalenza post-login.', en: 'Direct and assisted. Banners are mostly post-login.' },
   },
   {
     id: 'cliente', persona: true, ancora: { it: 'Il cliente', en: 'The customer' },
-    x: 1208, y: Y_FLUSSO, w: 208,
+    x: X[4], y: Y_FLUSSO, w: W_NODO,
     voce: { it: 'Che nel frattempo si muove, e magari chiude in filiale.', en: 'Who meanwhile moves, and may well close it in branch.' },
   },
 
   {
-    id: 'decisioning', nostro: true, ancora: { it: 'AI Decisioning', en: 'AI Decisioning' },
+    id: 'decisioning', nostro: true, ancora: { it: 'Decisioning', en: 'Decisioning' },
     sotto: { it: 'canale · contenuto · offerta', en: 'channel · content · offer' },
-    x: 760, y: Y_ADOBE, w: 262,
+    x: C[3] - 131, y: Y_ADOBE, w: 262,
     voce: { it: 'Riceve la lista già costruita e decide, per profilo, che cosa esce adesso e su quale canale. Rispetta il cap.', en: 'Takes the list already built and decides, per profile, what goes out now and on which channel. It honours the cap.' },
   },
   {
     id: 'cja', nostro: true, ancora: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
     sotto: { it: 'cuce anonimo e identificato', en: 'stitches anonymous and known' },
-    x: 320, y: Y_ADOBE, w: 290,
+    x: C[1] - 145, y: Y_ADOBE, w: 290,
     voce: { it: 'Oggi il visitatore anonimo non si lega al cliente dopo il login. Questo lo lega, anche a ritroso.', en: 'Today the anonymous visitor is never tied to the customer after login. This ties them, even backwards.' },
   },
 ];
@@ -122,31 +150,32 @@ const Y_MID = Y_FLUSSO + H_NODO / 2;
 const dritto = (x1: number, x2: number) => `M${x1} ${Y_MID} L${x2 - 11} ${Y_MID}`;
 
 export const ARCHI: Arco[] = [
-  { id: 'a1', d: dritto(274, 320), etichetta: { it: 'i dati', en: 'the data' }, lx: 297, ly: Y_FLUSSO - 46 },
-  { id: 'a2', d: dritto(570, 616), etichetta: { it: 'il target', en: 'the target' },
-    nota: { it: 'col prodotto già scelto', en: 'with the product already chosen' }, lx: 593, ly: Y_FLUSSO - 46 },
-  { id: 'a3', d: dritto(866, 912), etichetta: { it: 'la lista', en: 'the list' },
-    nota: { it: 'entro il cap settimanale', en: 'within the weekly cap' }, lx: 889, ly: Y_FLUSSO - 46 },
-  { id: 'a4', d: dritto(1162, 1208), etichetta: { it: 'il messaggio', en: 'the message' }, lx: 1185, ly: Y_FLUSSO - 46 },
+  { id: 'a1', d: dritto(X[0] + W_NODO, X[1]), etichetta: { it: 'i dati', en: 'the data' }, lx: 291, ly: Y_FLUSSO - 48 },
+  { id: 'a2', d: dritto(X[1] + W_NODO, X[2]), etichetta: { it: 'il target', en: 'the target' },
+    nota: { it: 'col prodotto già scelto', en: 'with the product already chosen' }, lx: 577, ly: Y_FLUSSO - 56 },
+  { id: 'a3', d: dritto(X[2] + W_NODO, X[3]), etichetta: { it: 'la lista', en: 'the list' },
+    nota: { it: 'entro i vostri tetti di contatto', en: 'within your contact caps' }, lx: 863, ly: Y_FLUSSO - 56 },
+  { id: 'a4', d: dritto(X[3] + W_NODO, X[4]), etichetta: { it: 'il messaggio', en: 'the message' }, lx: 1149, ly: Y_FLUSSO - 48 },
 
   // L'arco che c'è ma costa: il ritorno dell'interazione, con la sua latenza.
   { id: 'ritorno', attrito: true,
-    d: `M1312 ${Y_FLUSSO + H_NODO} C1312 616, 741 616, 741 ${Y_FLUSSO + H_NODO}`,
+    d: `M${C[4]} ${Y_FLUSSO + H_NODO} C${C[4]} 572, ${C[2]} 572, ${C[2]} ${Y_FLUSSO + H_NODO}`,
     etichetta: { it: 'l’interazione torna', en: 'the interaction returns' },
-    nota: { it: 'da 6 a 24 ore', en: '6 to 24 hours' }, lx: 1026, ly: 652 },
+    nota: { it: 'con quanto ritardo?', en: 'with how much delay?' }, lx: C[3], ly: 616 },
 
   // L'arco che oggi NON c'è: l'anonimo non si lega al cliente dopo il login.
+  // Passa SOTTO i due nodi Adobe (che finiscono a 172) con un margine vero.
   { id: 'anon', manca: true,
-    d: `M1312 ${Y_FLUSSO} C1312 148, 465 148, 465 ${Y_FLUSSO}`,
+    d: `M${C[4]} ${Y_FLUSSO} C${C[4]} 220, ${C[1]} 220, ${C[1]} ${Y_FLUSSO}`,
     etichetta: { it: 'l’anonimo e il cliente', en: 'the anonymous and the customer' },
-    nota: { it: 'oggi non si legano', en: 'today never tied together' }, lx: 686, ly: 196 },
+    nota: { it: 'oggi non si legano', en: 'today never tied together' }, lx: C[2], ly: 252 },
 
   // La fase 3: i due innesti, ciascuno con quello che porta.
-  { id: 'i-dec', nostro: true, d: `M1000 ${Y_ADOBE + H_NODO} L1000 ${Y_MID - 15}`,
+  { id: 'i-dec', nostro: true, d: `M${C[3]} ${Y_ADOBE + H_NODO} L${C[3]} ${Y_MID - 15}`,
     etichetta: { it: 'che cosa esce adesso', en: 'what goes out now' },
-    nota: { it: 'per profilo, non per lista', en: 'per profile, not per list' }, lx: 1014, ly: 276, lato: true },
-  { id: 'i-cja', nostro: true, d: `M465 ${Y_ADOBE + H_NODO} L465 ${Y_FLUSSO - 11}`,
-    etichetta: { it: 'la storia intera', en: 'the whole story' }, lx: 479, ly: 276, lato: true },
+    nota: { it: 'per profilo, non per lista', en: 'per profile, not per list' }, lx: C[3] + 16, ly: 226, lato: true },
+  { id: 'i-cja', nostro: true, d: `M${C[1]} ${Y_ADOBE + H_NODO} L${C[1]} ${Y_FLUSSO - 11}`,
+    etichetta: { it: 'la storia intera', en: 'the whole story' }, lx: C[1] + 16, ly: 226, lato: true },
 ];
 
 export interface Fase {
@@ -168,7 +197,7 @@ export const FASI: Fase[] = [
   {
     id: 'attrito',
     titolo: { it: 'Due cose che costano', en: 'Two things that cost' },
-    didascalia: { it: 'L’interazione torna con ore di ritardo, e il visitatore anonimo non diventa mai quel cliente.', en: 'The interaction comes back hours late, and the anonymous visitor never becomes that customer.' },
+    didascalia: { it: 'L’interazione torna con un ritardo, e il visitatore anonimo non diventa mai quel cliente.', en: 'The interaction comes back with a delay, and the anonymous visitor never becomes that customer.' },
     entrano: ['ritorno', 'anon'],
     accesi: ['ritorno', 'anon'],
   },

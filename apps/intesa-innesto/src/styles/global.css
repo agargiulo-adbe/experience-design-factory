@@ -641,6 +641,16 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    al disegno invece che galleggiante in prosa.
    ═══════════════════════════════════════════════════════════════════════ */
 .ii-arch { display: flex; flex-direction: column; gap: 0.7rem; width: 100%; max-width: 76rem; }
+.ii-arch > .ex-src { margin-top: 0.45rem; }
+/* Schermo basso: la figura è il contenuto più alto del deck, e su un portatile
+   qualunque gli interlinea di contorno bastano a spingere il titolo sopra la
+   safe-area (check `c`, HARD). Si stringono i vuoti, non il tipo né il disegno. */
+@media (max-height: 900px) {
+  .ii-arch { gap: 0.35rem; }
+  .ii-arch-titoli { min-height: 2.1rem; }
+  .ii-arch > .ex-src { margin-top: 0.2rem; }
+  .ii-fig { gap: 0.3rem; }
+}
 .ii-arch-titoli { min-height: 3rem; }
 .ii-arch-titolo {
   font-family: var(--font-display);
@@ -675,6 +685,13 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    centraggio invece di comporsi con lui. */
 .ii-a {
   position: absolute; translate: -50% -50%;
+  /* La scatola del testo È la scatola del disegno: stessa larghezza, stessa
+     altezza, contenuto centrato. Così il margine interno è identico in tutti
+     i nodi e non dipende da quante righe porta quel nodo — prima il testo del
+     più lungo usciva dal rettangolo, e usciva solo da quello. */
+  box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.14rem; padding: 0 0.7rem;
   font-size: 1.02rem; line-height: 1.3; font-weight: 600; text-align: center;
   color: var(--ink-primary);
 }
@@ -686,6 +703,10 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   position: absolute; translate: -50% -50%;
   font-size: clamp(0.82rem, 0.75vw, 1.72rem); line-height: 1.25; text-align: center; white-space: nowrap;
   color: var(--color-grigio-600); font-style: italic;
+  /* Le linee passano SOTTO le etichette, non attraverso: senza un fondo
+     proprio l'arco tratteggiato taglia le parole a metà. */
+  background: var(--surface-primary);
+  padding: 0.05rem 0.4rem; border-radius: 2px;
 }
 .ii-eti--nostro { color: var(--color-verde-scuro); font-style: normal; font-weight: 600; }
 .ii-eti--manca { color: var(--color-grigio-500); }
@@ -795,20 +816,25 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .ii-dett--scuro .dett-fig-box { border-color: rgba(255, 255, 255, 0.2); }
 
 /* ── Scena «personalize»: le proposte candidate, e quella che esce ─────── */
-.ii-perso { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; margin: 1.1rem 0 0.6rem; max-width: 34rem; }
+.ii-perso { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 0.55rem; margin: 1.1rem 0 0.6rem; max-width: 34rem; }
 .ii-perso-i {
   min-width: 0; margin: 0; max-width: none;
-  padding: 0.75rem 0.8rem; text-align: center;
+  box-sizing: border-box; min-height: 3.5rem;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.7rem 0.8rem; text-align: center;
   border: 1px solid var(--color-grigio-300); border-radius: 3px;
   background: var(--surface-primary);
   font-size: 0.95rem; line-height: 1.3; color: var(--ink-secondary);
 }
 .ii-perso-i--match {
-  border-color: var(--color-verde); border-width: 2px;
+  /* Il peso si dà con un'ombra interna, non con un bordo più spesso: due
+     pixel di bordo in più fanno la scatola più grande delle sorelle. */
+  border-color: var(--color-verde);
+  box-shadow: inset 0 0 0 1px var(--color-verde);
   background: var(--color-verde-velo);
   color: var(--color-verde-scuro); font-weight: 700;
 }
-.ii-perso-cap { font-size: clamp(0.92rem, 0.74vw, 1.7rem); line-height: 1.5; color: var(--color-grigio-600); margin: 0 0 0.9rem; max-width: 34rem; }
+.ii-perso-cap { font-size: clamp(0.92rem, 0.74vw, 1.7rem); line-height: 1.5; color: var(--color-grigio-600); margin: 0 0 0.9rem; max-width: 34rem; text-wrap: balance; }
 
 /* ── La slide-affermazione: la pagina È la frase ───────────────────────── */
 .ii-aff { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; max-width: 62rem; }
