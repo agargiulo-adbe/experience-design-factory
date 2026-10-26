@@ -28,7 +28,12 @@
 //    items[string | {badge,t}] · rows[{k,sub,v}] · ideas[{tag,nome,parte,cosa,adobe}]
 //    table{head[],rows[][],pcol} · gloss[{t,k,d,use}] · say[]/dont[] · sources[{tipo,url,label}] · foot
 //  `order`: elenco facoltativo dei blocchi, per anteporre il dato al commento.
-//  Testo: stringa, oppure {it,en} (IT di default). In `richText` passano solo
+//  Testo: stringa, oppure {it,en} (IT di default). ⚠️ OGNI campo di contenuto
+//  passa da L(), compresi quelli che "sembrano" non testuali — la cifra di una
+//  statistica, l'anno di una riga di cronologia, l'etichetta di un'idea, il
+//  tipo e il testo di una fonte. Un campo dimenticato non dà errore: stampa
+//  «[object Object]», che è testo valido e nessun gate segnala.
+//  In `richText` passano solo
 //  <strong>, <em> e <code>: tutto il resto è escapato. L'enfasi vale nei campi
 //  DESCRITTIVI (note, items, ruoli, etichette dei numeri); i campi IDENTIFICATIVI
 //  (nomi, celle di tabella, etichette delle fonti) restano testo puro.
@@ -302,7 +307,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var tl = el('div', 'dw-timeline');
     rows.forEach(function (c) {
       var r = el('div', 'dw-tl-row');
-      r.appendChild(el('span', 'dw-tl-year', esc(c.anno)));
+      r.appendChild(el('span', 'dw-tl-year', esc(L(c.anno))));
       r.appendChild(el('p', 'dw-tl-text', richText(L(c.t))));
       tl.appendChild(r);
     });
@@ -323,7 +328,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var g = el('div', 'dw-grid');
     rows.forEach(function (p) {
       var c = el('div', 'dw-card');
-      c.appendChild(el('p', 'dw-card-name', esc(p.name || '')));
+      c.appendChild(el('p', 'dw-card-name', esc(L(p.name) || '')));
       c.appendChild(el('p', 'dw-card-role', richText(L(p.role))));
       if (p.note) c.appendChild(el('p', 'dw-card-note', richText(L(p.note))));
       if (p.li) {
@@ -341,7 +346,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   function listItem(it) {
     var li = el('li', 'dw-li');
     if (it && typeof it === 'object' && it.t != null) {
-      if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(it.badge) + '</span>';
+      if (it.badge) li.innerHTML = '<span class="' + chipClass(it.badge) + '">' + esc(L(it.badge)) + '</span>';
       li.appendChild(el('span', null, richText(L(it.t))));
     } else {
       li.innerHTML = richText(L(it));
@@ -370,11 +375,11 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var g = el('div', 'dw-ideas');
     rows.forEach(function (b) {
       var a = el('article', 'dw-idea');
-      if (b.tag) a.appendChild(el('span', 'dw-chip dw-chip--go', esc(b.tag)));
+      if (b.tag) a.appendChild(el('span', 'dw-chip dw-chip--go', esc(L(b.tag))));
       a.appendChild(el('h3', 'dw-idea-name', esc(L(b.nome))));
       if (b.parte) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">' + T.idea + '</span>' + richText(L(b.parte))));
       if (b.cosa) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Cosa mostriamo</span>' + richText(L(b.cosa))));
-      if (b.adobe) a.appendChild(el('p', 'dw-idea-adobe', esc(b.adobe)));
+      if (b.adobe) a.appendChild(el('p', 'dw-idea-adobe', esc(L(b.adobe))));
       g.appendChild(a);
     });
     return g;
@@ -446,10 +451,10 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var ul = el('ul', 'dw-sources');
     rows.forEach(function (b) {
       var li = el('li', 'dw-source');
-      if (b.tipo) li.appendChild(el('span', 'dw-chip dw-chip--mute', esc(b.tipo)));
+      if (b.tipo) li.appendChild(el('span', 'dw-chip dw-chip--mute', esc(L(b.tipo))));
       var a = el('a', 'dw-source-a');
       a.href = b.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.textContent = b.label || b.url;
+      a.textContent = L(b.label) || b.url;
       li.appendChild(a);
       var h = hostOf(b.url);
       if (h) li.appendChild(el('span', 'dw-source-h', esc(h)));
