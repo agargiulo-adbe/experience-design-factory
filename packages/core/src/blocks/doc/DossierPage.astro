@@ -143,6 +143,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       error: 'Errore nel caricamento del dossier. Riprova.',
       say: 'Da dire', dont: 'Da non dire', idea: 'Da dove parte',
       toc: 'Indice', skip: 'Salta al contenuto', short: 'Riservato',
+      pdfLabel: 'Stampa o salva in PDF', tocLabel: 'Apri l’indice delle sezioni',
     },
     en: {
       checking: 'Checking access…',
@@ -154,6 +155,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       error: 'The dossier failed to load. Please try again.',
       say: 'Say this', dont: 'Avoid this', idea: 'Where it starts',
       toc: 'Contents', skip: 'Skip to content', short: 'Restricted',
+      pdfLabel: 'Print or save as PDF', tocLabel: 'Open the section index',
     },
   };
   var T = UI[lang];
@@ -165,7 +167,12 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var skip = document.querySelector('.dw-skip'); if (skip) skip.textContent = T.skip;
     var bshort = $('dw-badge-short'); if (bshort) bshort.textContent = T.short;
     document.querySelectorAll('.dw-sheet-h, .dw-rail-h').forEach(function (n) { n.textContent = T.toc; });
-    document.querySelectorAll('.dw-lbl').forEach(function (n) { n.textContent = ' ' + T.toc; });
+    var tocLbl = document.querySelector('#dw-toc-btn .dw-lbl');
+    if (tocLbl) tocLbl.textContent = ' ' + T.toc;
+    var pdfBtn = $('dw-pdf');
+    if (pdfBtn) pdfBtn.setAttribute('aria-label', T.pdfLabel);
+    var tocBtnEl = $('dw-toc-btn');
+    if (tocBtnEl) tocBtnEl.setAttribute('aria-label', T.tocLabel);
     var sheet = $('dw-toc-sheet'); if (sheet) sheet.setAttribute('aria-label', T.toc);
   }
   applyUiLang();
@@ -305,7 +312,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var g = el('div', 'dw-stats');
     rows.forEach(function (n) {
       var c = el('div', 'dw-stat');
-      c.appendChild(el('p', 'dw-stat-v', esc(n.v)));
+      c.appendChild(el('p', 'dw-stat-v', esc(L(n.v))));
       c.appendChild(el('p', 'dw-stat-l', richText(L(n.l))));
       if (n.s) c.appendChild(el('p', 'dw-stat-s', richText(L(n.s))));
       g.appendChild(c);
