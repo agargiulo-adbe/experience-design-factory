@@ -1,0 +1,30 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+import DossierPage from '@edf/core/blocks/doc/DossierPage.astro';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Orfana (fuori nav) + noindex. Il contenuto confidenziale NON sta nel bundle
+// statico: vive in Supabase (tabella restricted_docs, RLS) e si carica solo
+//   1) dopo login (super admin o utente con accesso a intesa-innesto), oppure
+//   2) via secret-link ?t=<uuid> (RPC get_shared_doc di 0009, senza login).
+// Seed (git-ignorato): docs/Intesa Sanpaolo/0031_seed_intesa_innesto_dossier.sql.
+// La riga `experiences` per la FK arriva dalla migrazione tracciata 0030.
+//
+// Il rendering è del motore condiviso `@edf/core/blocks/doc/DossierPage.astro`:
+// qui restano solo lo slug, il guscio e la mappatura della palette Intesa sul
+// contratto `--dw-*` (nel DocLayout). Migliorare il motore migliora tutti i
+// dossier — non si copia mai il renderer dentro l'app.
+---
+<DocLayout
+  title="Dossier — Intesa Sanpaolo · 5 novembre"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <DossierPage
+    docSlug="intesa-innesto"
+    title="Dossier — Intesa Sanpaolo · 5 novembre"
+    base={import.meta.env.BASE_URL}
+    supabaseUrl={import.meta.env.PUBLIC_SUPABASE_URL ?? ''}
+    supabaseAnon={import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? ''}
+  />
+</DocLayout>
