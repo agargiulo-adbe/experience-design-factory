@@ -129,15 +129,46 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
   var lang = 'it';
   try { var saved = localStorage.getItem(LANG_KEY); if (saved === 'it' || saved === 'en') lang = saved; } catch (_) {}
 
-  var T = {
-    checking: 'Verifica accesso…',
-    needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
-    login: 'Accedi dal Console',
-    noAccess: 'Il tuo account non ha accesso a questo dossier. L’accesso si attiva dal Console (Utenti).',
-    expired: 'Sessione scaduta. Riaccedi per continuare.',
-    backend: 'Backend non configurato.',
-    error: 'Errore nel caricamento del dossier. Riprova.',
+  /* Le etichette del guscio seguono la lingua scelta: un dossier in inglese con
+     «Da dire / Da non dire» sopra le colonne non è un dossier in inglese, è un
+     documento misto — e in riunione si nota prima del contenuto. */
+  var UI = {
+    it: {
+      checking: 'Verifica accesso…',
+      needLogin: 'Contenuto riservato. Accedi con il tuo account Adobe per continuare.',
+      login: 'Accedi dal Console',
+      noAccess: 'Il tuo account non ha accesso a questo dossier. L’accesso si attiva dal Console (Utenti).',
+      expired: 'Sessione scaduta. Riaccedi per continuare.',
+      backend: 'Backend non configurato.',
+      error: 'Errore nel caricamento del dossier. Riprova.',
+      say: 'Da dire', dont: 'Da non dire', idea: 'Da dove parte',
+      toc: 'Indice', skip: 'Salta al contenuto', short: 'Riservato',
+    },
+    en: {
+      checking: 'Checking access…',
+      needLogin: 'Restricted content. Sign in with your Adobe account to continue.',
+      login: 'Sign in from the Console',
+      noAccess: 'Your account does not have access to this dossier. Access is granted from the Console (Users).',
+      expired: 'Session expired. Sign in again to continue.',
+      backend: 'Backend not configured.',
+      error: 'The dossier failed to load. Please try again.',
+      say: 'Say this', dont: 'Avoid this', idea: 'Where it starts',
+      toc: 'Contents', skip: 'Skip to content', short: 'Restricted',
+    },
   };
+  var T = UI[lang];
+
+  /* Le etichette che vivono nel markup statico (indice, salto al contenuto,
+     badge corto) non passano dal render: si aggiornano a parte, qui. */
+  function applyUiLang() {
+    document.documentElement.setAttribute('lang', lang);
+    var skip = document.querySelector('.dw-skip'); if (skip) skip.textContent = T.skip;
+    var bshort = $('dw-badge-short'); if (bshort) bshort.textContent = T.short;
+    document.querySelectorAll('.dw-sheet-h, .dw-rail-h').forEach(function (n) { n.textContent = T.toc; });
+    document.querySelectorAll('.dw-lbl').forEach(function (n) { n.textContent = ' ' + T.toc; });
+    var sheet = $('dw-toc-sheet'); if (sheet) sheet.setAttribute('aria-label', T.toc);
+  }
+  applyUiLang();
 
   function consoleLoginUrl() {
     var b = String(base || '/');
@@ -334,7 +365,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       var a = el('article', 'dw-idea');
       if (b.tag) a.appendChild(el('span', 'dw-chip dw-chip--go', esc(b.tag)));
       a.appendChild(el('h3', 'dw-idea-name', esc(L(b.nome))));
-      if (b.parte) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Da dove parte</span>' + richText(L(b.parte))));
+      if (b.parte) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">' + T.idea + '</span>' + richText(L(b.parte))));
       if (b.cosa) a.appendChild(el('p', 'dw-idea-line', '<span class="dw-idea-k">Cosa mostriamo</span>' + richText(L(b.cosa))));
       if (b.adobe) a.appendChild(el('p', 'dw-idea-adobe', esc(b.adobe)));
       g.appendChild(a);
@@ -352,7 +383,7 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     if (head.length) {
       var thead = el('thead');
       var tr = el('tr');
-      head.forEach(function (c) { var th = el('th', null, esc(c)); th.scope = 'col'; tr.appendChild(th); });
+      head.forEach(function (c) { var th = el('th', null, esc(L(c))); th.scope = 'col'; tr.appendChild(th); });
       thead.appendChild(tr); tb.appendChild(thead);
     }
     var tbody = el('tbody');
@@ -361,9 +392,10 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       r.forEach(function (c, i) {
         var cell = el(i === 0 ? 'th' : 'td');
         if (i === 0) { cell.scope = 'row'; cell.className = 'dw-td-key'; }
-        if (head[i]) cell.setAttribute('data-label', head[i]);
-        if (t.pcol != null && i === t.pcol) cell.innerHTML = '<span class="dw-p dw-p--' + esc(String(c).toLowerCase()) + '">' + esc(c) + '</span>';
-        else cell.textContent = c;
+        if (head[i]) cell.setAttribute('data-label', L(head[i]));
+        var cv = L(c);
+        if (t.pcol != null && i === t.pcol) cell.innerHTML = '<span class="dw-p dw-p--' + esc(String(cv).toLowerCase()) + '">' + esc(cv) + '</span>';
+        else cell.textContent = cv;
         tr.appendChild(cell);
       });
       tbody.appendChild(tr);
@@ -382,8 +414,8 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
       c.appendChild(u);
       return c;
     };
-    if (say && say.length) cw.appendChild(mk('Da dire', say, 'dw-col--ok'));
-    if (dont && dont.length) cw.appendChild(mk('Da non dire', dont, 'dw-col--no'));
+    if (say && say.length) cw.appendChild(mk(T.say, say, 'dw-col--ok'));
+    if (dont && dont.length) cw.appendChild(mk(T.dont, dont, 'dw-col--no'));
     if (!say || !say.length || !dont || !dont.length) cw.classList.add('dw-cols--one');
     return cw;
   }
@@ -566,6 +598,8 @@ const SUPABASE_URL = supabaseUrl.replace(/\/$/, '');
     var b = e.target.closest('.dw-lang-btn'); if (!b) return;
     var next = b.getAttribute('data-lang'); if (next === lang) return;
     lang = next;
+    T = UI[lang];
+    applyUiLang();
     try { localStorage.setItem(LANG_KEY, lang); } catch (_) {}
     var y = window.scrollY; render(); window.scrollTo(0, y);
   });
