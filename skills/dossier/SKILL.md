@@ -62,6 +62,36 @@ Da questo lettore discendono vincoli che valgono per ogni riga:
 mai sentito nominare la Factory. Ogni volta che ci si deve fermare a chiedere «che cosa
 vuol dire?» o «dove sta questa cosa?», è una riga da riscrivere.
 
+## 0-bis · Niente virgolettati, niente registrazioni (BINDING)
+
+Un dossier **deduce**, non trascrive. Vale per ogni riga, e discende da che cosa succede
+quando il documento esce dalla stanza — e un documento di venti schermate che gira in chat
+esce sempre.
+
+- **Mai parole altrui fra virgolette.** Né del cliente, né di un collega. Un virgolettato
+  trasforma una lettura in una prova: se la frase è stata capita male, o detta per ipotesi, o
+  semplicemente ricordata storta, il documento la congela e la attribuisce. Si scrive
+  l'**esito**: non «ha detto che stanno decidendo come procedere», ma *la finestra è
+  dichiarata aperta*. L'informazione resta intera e nessuno è citato.
+- **Mai riferimenti a registrazioni o trascrizioni.** Non nelle fonti, non nel corpo, non nei
+  crediti. Una fonte si cita per **che cos'è e quando è successa** — *l'incontro del 22
+  ottobre 2026*, *la riunione interna di preparazione del 23* — non per il supporto su cui è
+  finita. Chi legge deve sapere da dove viene il fatto, non come l'abbiamo raccolto.
+- **Di conseguenza, mai minutaggi.** Né «al minuto 26», né «minuti 40-43», né la durata di
+  una sessione. Un minutaggio esiste solo se esiste una registrazione: citarlo la dichiara.
+  Vale anche per gli orari precisi di una riunione passata, che non aggiungono niente.
+- **Il corsivo al posto delle virgolette.** Le domande da fare in sala e le frasi da dire
+  sono **nostre**, non citazioni: vanno in `<em>`, che il motore rende. I nomi di sezione si
+  richiamano per nome e basta (*nelle prime tre sezioni: In una pagina, Chi c'è nella
+  stanza…*), senza caporali.
+- **E un partner non si nomina**, nemmeno in un documento interno: si scrive *il partner*.
+  Un dossier che gira porta con sé il nome di chi ci ha aperto la porta.
+
+⚠️ Il controllo costa una riga e va fatto **prima** di applicare il seed:
+
+    grep -c '«' <seed>            # deve dare 0
+    grep -ci 'registrazion\|trascrizion\|al minuto' <seed>   # deve dare 0
+
 ## 1 · Ricerca — l'ordine che ha funzionato
 
 Si parte dalle fonti che il mercato non ha già masticato. In ordine di resa:
@@ -170,6 +200,13 @@ Scheletro che regge in quasi tutti i casi:
 | 13 | Buchi aperti | `table` |
 | 14 | Fonti | `sources` |
 
+- **Nella stanza ci sono solo loro.** Il blocco `people` porta **esclusivamente le persone
+  del cliente**: chi decide, chi giudica, con quale criterio. Il team Adobe che va in sala non
+  è un'informazione per il lettore — il lettore *è* quel team, e sapere chi altro viene lo sa
+  dal calendario. Mettercelo dentro allunga la sezione che si legge per prima e sposta
+  l'attenzione dalla parte che conta: come ragiona chi sta dall'altra parte. Le decisioni sul
+  nostro lato (chi entra, chi resta fuori) stanno fra i **buchi aperti**, che è dove vivono le
+  cose da decidere.
 - **Una dichiarazione ha una data di scadenza.** Un'idea che nasce da una frase detta dal
   referente a un convegno, o da un piano citato in un bilancio, poggia su materiale vecchio
   di mesi: nel frattempo quel programma può essere stato chiuso, affidato ad altri o
@@ -312,6 +349,8 @@ CLAUDE.md → Firma co-brand), perché quello è materiale che il cliente vede.
 
 ```
 grep -nE '§ ?[0-9]|\bP[01]\b|\bI[123]\b' <seed>            # zero rimandi interni
+grep -c '«' <seed>                                              # zero virgolettati
+grep -ci 'registrazion\|trascrizion\|al minuto' <seed>          # zero riferimenti al supporto
 pnpm --filter <app> build
 grep -ril "<cognome>\|<cifra contrattuale>" apps/<app>/dist/    # deve dare 0
 # senza token → gate; con ?t=<token> → contenuto
