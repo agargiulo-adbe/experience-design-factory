@@ -559,60 +559,98 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 
 /* ≥16px fra blocchi di testo impilati: è il check `g` del ritmo verticale, e
    dentro una disclosure l'audit lo rimisura come HARD. */
-.tp-serve { margin-top: 1rem; }
-/* La legenda sta su UNA riga: è una chiave di lettura, non un paragrafo. */
-.tp-serve-leg {
-  font-size: clamp(0.74rem, 0.8vw, 0.8rem);
-  line-height: 1.4;
+/* ── Ancore ───────────────────────────────────────────────────────────────
+   Una card porta un occhiello, un titolo e un paragrafo: tre di fila sono il
+   muro di testo che la regola «ancore, non prosa» esiste per togliere. Chi
+   guarda legge, e mentre legge non ascolta. L'ancora tiene l'occhiello e il
+   NOME — sei parole al massimo — e il paragrafo passa dietro lo «Scopri come»,
+   dove si apre per rispondere a una domanda invece di stare addosso a chi parla.
+   Niente scatola piena: un filo sopra e aria. Il peso lo porta il nome. */
+.tp-ancore {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: clamp(1.1rem, 2.4vw, 2.8rem);
+  margin-top: clamp(1rem, 1.8vh, 1.7rem);
+}
+.tp-anc { border-top: 2px solid var(--ink-accent); padding-top: 0.7rem; min-width: 0; }
+.tp-anc-k {
+  font-size: clamp(0.72rem, 0.78vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-note);
+  margin: 0; margin-inline: 0; max-width: none;
+}
+.tp-anc-n {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.42vw, 1.42rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--ink-primary);
+  margin: 0.3rem 0 0; margin-inline: 0; max-width: none;
+  text-wrap: balance;
+}
+/* La riga che chiude il punto della slide, sotto le ancore. */
+.tp-ancore-dopo {
+  margin-top: clamp(0.8rem, 1.3vh, 1.2rem);
+  font-size: clamp(0.98rem, 1.1vw, 1.1rem);
+  line-height: 1.55;
+  color: var(--ink-body);
+  max-width: 72ch;
+}
+
+/* ── «Che cosa serve»: i pezzi, in una riga ───────────────────────────────
+   Era un elenco a colonne con una descrizione per pezzo. Dal 26 ott il
+   dettaglio si apre su figure, che il meccanismo lo mostrano: l'elenco lo
+   ripeteva in parole e, sommato alle figure, portava la slide aperta fuori
+   dalla safe-area. Resta il nome e lo stato, su una riga sola. */
+.tp-serve {
+  font-size: clamp(0.86rem, 0.92vw, 0.94rem);
+  line-height: 1.6;
   color: var(--ink-note);
   max-width: none;
 }
-/* Due colonne dove c'è larghezza. Sono tornate possibili quando la pastiglia è
-   diventata uno pseudo-elemento: con un solo elemento per riga non c'è più
-   niente che il check `e` possa leggere come testo sopra testo. */
-.tp-serve-l { display: grid; gap: 0.18rem 2rem; margin-top: 0.95rem; }
-/* Non sotto i 1500: a 1280 le due colonne sono così strette che i nomi lunghi
-   vanno a capo, e la riga doppia costa più di quanto la colonna faccia guadagnare
-   — misurato, la slide peggiorava di 6px invece di migliorare. */
-@media (min-width: 1500px) {
-  .tp-serve-l { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-.tp-serve-i {
-  font-size: clamp(0.88rem, 0.94vw, 0.96rem);
-  line-height: 1.42;
-  color: var(--ink-body);
-  max-width: none;
-}
-.tp-serve-n { font-weight: 700; color: var(--ink-primary); }
-.tp-serve-n::after { content: ' — '; font-weight: 400; color: var(--ink-note); }
-/* La pastiglia porta la parola PIÙ il colore: il colore da solo non è un'informazione. */
-.tp-serve-tag,
-.tp-serve-i::before {
+.tp-serve-sep { opacity: 0.55; }
+.tp-serve-n { font-weight: 600; color: var(--ink-body); white-space: nowrap; }
+/* La pastiglia è uno pseudo-elemento: nella riga resta un solo elemento di
+   testo, e il check `e` non ha niente da intersecare. Porta la PAROLA oltre al
+   colore — un colore da solo non è un'informazione. */
+.tp-serve-n::before {
+  content: attr(data-eti);
   display: inline-block;
-  font-size: 0.68rem;
+  font-size: 0.7em;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 0.1em 0.45em;
-  margin-right: 0.4rem;
+  margin-right: 0.35rem;
   border-radius: 999px;
   border: 1px solid currentColor;
-  white-space: nowrap;
 }
-.tp-serve-i::before { content: attr(data-eti); }
-.tp-serve-tag.is-avete,
-.tp-serve-i[data-stato='avete']::before { color: var(--ink-accent-2); }
+.tp-serve-n[data-stato='avete']::before { color: var(--ink-accent-2); }
 /* «prezzo già fissato» è una terza cosa, e si vede: non è loro oggi, ma non è
    nemmeno da negoziare. Prende l'accento del marchio, che qui è inchiostro. */
-.tp-serve-tag.is-prezzo,
-.tp-serve-i[data-stato='prezzo']::before { color: var(--ink-accent); }
-.tp-serve-tag.is-nuovo,
-.tp-serve-i[data-stato='nuovo']::before { color: var(--ink-note); }
+.tp-serve-n[data-stato='prezzo']::before { color: var(--ink-accent); }
+.tp-serve-n[data-stato='nuovo']::before { color: var(--ink-note); }
+/* La legenda va a capo da sé e resta nota: è la chiave di lettura, non il contenuto. */
+.tp-serve-leg { display: block; font-size: 0.86em; opacity: 0.85; margin-top: 0.15rem; }
 
 .tp-tools { display: grid; gap: 1.05rem; margin-top: 0.9rem; }
 .tp-tools li { font-size: clamp(0.95rem, 1.02vw, 1.02rem); line-height: 1.5; color: var(--ink-body); }
 .tp-tools-n { font-weight: 700; color: var(--ink-primary); }
 .tp-tools-n::after { content: ' — per'; font-weight: 400; color: var(--ink-note); }
+
+/* ── La coda di frase orfana (famiglia `F` di `audit:wrap`) ────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: un testo
+   di due frasi si spezza dentro la prima e lascia l'ultima — due parole e un
+   punto — da sola a capo. Il rimedio NON è lo spazio unificatore: legare una
+   frase intera la rende inseparabile e a questo corpo sborda (check `c`, HARD).
+   Un blocco in linea sì: il browser preferisce rompere FRA le frasi, e se una
+   non ci sta la manda a capo intera senza mai sbordare.
+   `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
 
 /* ── Link alle fonti pubbliche ─────────────────────────────────────────────
    Regola della Factory: ogni fonte pubblica citata in una slide porta il suo

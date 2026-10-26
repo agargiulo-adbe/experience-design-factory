@@ -13,6 +13,9 @@ import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_journey from '../assets/generated/bg/bg-journey.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 
 /**
  * Capitolo 04 — Un viaggio, non più prodotti.
@@ -75,15 +78,25 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             di offerta: è il momento dell’acquisto visto come un viaggio solo.
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {GIA.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <HowItWorks title="Che cosa c’è già, in concreto" label="Che cosa c’è già, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <Dettaglio>
+            {GIA.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['rete-su-gomma', 'sosta-prenotata', 'biglietto-unico'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
           Fonti: {fontiGia.map((f, i) => (
             <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
@@ -98,7 +111,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
       <div class="tp-quote" data-reveal>
         <p class="slide-eyebrow">«Come arrivo da Roma a Matera senza auto», chiesto a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
-          Tutti e due aprono con gli <strong>operatori di autobus</strong>. E il biglietto
+          <span class="ex-frase">Tutti e due aprono con gli <strong>operatori di autobus</strong>.</span> E il biglietto
           combinato treno più autobus, tutti e due lo attribuiscono prima al
           <strong>concorrente</strong>.
         </p>
@@ -120,12 +133,12 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
         <div class="ex-head">
           <p class="slide-eyebrow">Dentro l’offerta</p>
           <h2 class="ex-head-title">Riconoscere chi sta componendo un viaggio</h2>
+          {/* Il lead è UNA riga: il punto. L'esempio del treno per Bari a luglio
+              stava in cinque righe di paragrafo — ora lo dice la figura del
+              dettaglio, che mostra i due viaggi che diventano lo stesso punto. */}
           <p class="ex-head-lead">
-            Una persona che cerca un treno per Bari a luglio, con due bagagli e un ritorno aperto,
-            sta costruendo una vacanza. La pianificazione porta-a-porta esiste già, su alcune destinazioni. Nel momento
-            dell’acquisto, però, quella persona è indistinguibile da chi va a Bari per lavoro il
-            martedì mattina. <strong>Distinguerli
-            cambia che cosa si propone</strong>, e cambia il valore di quel viaggio.
+            Chi va a Bari in vacanza e chi ci va per lavoro, nel momento in cui comprano, sono lo
+            stesso cliente. <strong>Distinguerli cambia che cosa si propone.</strong>
           </p>
         </div>
         <div class="tp-ask" data-reveal data-reveal-delay="0.16">
@@ -136,11 +149,24 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
           </p>
         </div>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
-          <p>
-            Leggere il percorso di acquisto per intero, e poter provare una proposta diversa su
-            una parte del traffico. <strong>La seconda la comprate già</strong>: manca la prima.
-          </p>
-          <CheServe pezzi={SERVE.acquisto} />
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="tre-tracce-un-percorso" />
+              <p slot="ancora">Il percorso letto per intero</p>
+              <p slot="riga">Treno, gomma e sosta come una cosa sola, non tre tracce separate.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="indistinguibile" />
+              <p slot="ancora">Due viaggi, un punto solo</p>
+              <p slot="riga">Nel momento in cui compra, chi parte per le vacanze è identico a chi va per lavoro.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="prova-su-una-parte" />
+              <p slot="ancora">Una proposta diversa, misurata</p>
+              <p slot="riga">Su una parte del traffico, prima di portarla a tutti: questa la comprate già.</p>
+            </DettaglioVoce>
+            <CheServe slot="nota" pezzi={SERVE.acquisto} />
+          </Dettaglio>
         </HowItWorks>
       </div>
     </Slide>
@@ -158,15 +184,25 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             può lavorare in due senza scambiarsi i dati.</strong>
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {PRIMA.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <HowItWorks title="Che cosa cambia, in concreto" label="Che cosa cambia, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <Dettaglio>
+            {PRIMA.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['due-lati-un-incrocio', 'indistinguibile', 'rete-muta'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
         {/* 17 ott: nel deck non va nessuna referenza di un altro cliente
             (decisione d'account). Il precedente ferroviario o crocieristico non
             esiste — verificato — e un caso preso da un altro settore apre la
@@ -202,13 +238,19 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
           </p>
         </div>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.16">
-          <p>
-            Nel percorso di acquisto non entra un sistema nuovo, e non tocca il collegamento fra i due
-            sistemi di prenotazione del 2027. Lo
-            <a href={SOURCES.rtcdpCollab.url} target="_blank" rel="noopener noreferrer">strumento</a>
-            è in disponibilità limitata: fra trasporto e crociere un caso pubblico non c’è ancora.
-          </p>
-          <CheServe pezzi={SERVE.collaborazione} />
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="due-lati-un-incrocio" />
+              <p slot="ancora">Un luogo neutro in mezzo</p>
+              <p slot="riga">Si incrocia soltanto chi interessa a entrambe: nessun sistema nuovo nell’acquisto.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="nessuno-consegna" />
+              <p slot="ancora">Nessuno consegna il proprio elenco</p>
+              <p slot="riga">Ciascuna azienda tiene i dati dove sono. Lo <a href={SOURCES.rtcdpCollab.url} target="_blank" rel="noopener noreferrer">strumento</a> è in disponibilità limitata.</p>
+            </DettaglioVoce>
+            <CheServe slot="nota" pezzi={SERVE.collaborazione} />
+          </Dettaglio>
         </HowItWorks>
       </div>
     </Slide>

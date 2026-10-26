@@ -30,6 +30,13 @@ export interface Card {
   k: string;
   t: string;
   b: string;
+  /**
+   * L'ancora della voce dentro il «Scopri come»: nomina il MECCANISMO che la
+   * figura mostra, non il concetto della slide. Se ripetesse `t` il dettaglio
+   * direbbe due volte la stessa cosa — e la figura, che è lì per far vedere
+   * come funziona, resterebbe senza nome. Sei parole al massimo.
+   */
+  anc?: string;
   /** La stessa cosa in meno parole, per il taglio da dieci minuti. */
   bBreve?: string;
   /** Le fonti che reggono QUESTA voce, per chiave. */
@@ -46,7 +53,7 @@ export interface Stat {
 
 /* ── Copertina e firma: le righe che vivono in entrambi i percorsi ───────── */
 export const COVER = {
-  tag: 'Quattro punti in cui una vendita si perde prima che qualcuno salga sul treno.',
+  tag: 'Quattro punti in cui una vendita si perde, prima del treno.',
   /** La riga della slide-firma, identica nei due percorsi. */
   firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
 };
@@ -122,21 +129,21 @@ export const CONTESTO: Card[] = [
        sua vetrina e non un rivenditore. ⚠️ È una proposta, e la slide lo dice. */
     k: 'Il mercato',
     t: 'Un concorrente in più, e una vetrina da aprire',
-    b: 'Sull’alta velocità oggi siete in due: SNCF ha il via libera dal 7 marzo 2026 e dichiara di volere il 15% entro il 2030. E a maggio la Commissione ha proposto che chi ha metà del mercato domestico venda sulla propria piattaforma anche i treni degli altri.',
+    b: 'SNCF ha il via libera dal 7 marzo 2026 e dichiara di volere il 15% entro il 2030.',
     bBreve: 'Sull’alta velocità siete in due, e la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
     fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
   },
   {
     k: 'Il prezzo',
     t: 'Una leva che si muove da sola',
-    b: 'Il revenue management sull’alta velocità lo fate da anni, e lavora. È cambiato il tetto: i biglietti non aumenteranno, lo ha dichiarato il vertice del Gruppo a settembre. Verso l’alto la leva è chiusa.',
+    b: 'La leva lavora da anni. È cambiato il tetto: verso l’alto, ormai, non si muove più.',
     bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['prezziFermi'],
   },
   {
     k: 'Il momento',
     t: 'Un piano in scrittura, un sito in rifacimento',
-    b: 'Il nuovo piano industriale di Gruppo arriva entro la fine dell’anno. E l’avete detto voi al TTG: l’app è nuova da maggio, il sito arriva entro marzo 2027. Quello che si decide adesso entra lì dentro; il resto diventa un progetto a parte.',
+    b: 'Il piano di Gruppo arriva entro fine anno e il sito entro marzo 2027: adesso si decide.',
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
     fonti: ['piano', 'ttgSales2026', 'monaco'],
   },
@@ -213,7 +220,8 @@ export const REFERTO: Stat[] = [
 ];
 
 export const KPI: Card[] = [
-  { k: 'Presenza', t: 'Su quante domande comparite', b: 'Un punteggio di visibilità da misurare nel tempo, per mercato e per lingua, non una fotografia sola.' },
+  { k: 'Presenza', t: 'Su quante domande comparite',
+    anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua: non una fotografia sola.' },
   /* 16 ott, SECONDA versione. La prima diceva che i rivenditori «si prendono la
      relazione», cioè li trattava da minaccia. La verifica ha smontato la
      premessa, e il cliente avrebbe avuto in mano i numeri per smontarla in
@@ -229,8 +237,10 @@ export const KPI: Card[] = [
      Quello che resta vero, e che è un argomento di margine e non di furto: se
      nella risposta generata comparite tramite un rivenditore invece che da voi,
      quella vendita la pagate in commissione. */
-  { k: 'Confronto', t: 'Con chi entra, e attraverso chi passate', b: 'Quota di voce rispetto agli altri operatori e ai rivenditori: comparire tramite loro è pagare in commissione una vendita che poteva arrivare diretta.' },
-  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti', b: 'Le visite che nascono da una risposta generata, separate da quelle di ricerca: oggi, nella maggior parte delle aziende, finiscono indistinte nello stesso totale.' },
+  { k: 'Confronto', t: 'Con chi entra, e attraverso chi passate',
+    anc: 'Il passaggio che costa commissione', b: 'Comparire tramite un rivenditore è pagare in commissione una vendita che poteva arrivare diretta.' },
+  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti',
+    anc: 'Il traffico che oggi è indistinto', b: 'Le visite che nascono da una risposta generata, oggi indistinte dal resto del traffico.' },
 ];
 
 /* ── Capitolo 04 · quello che è già partito ────────────────────────────────
@@ -247,14 +257,14 @@ export const GIA: Card[] = [
        in una quarta card: la griglia è a tre, e provata a quattro si rompe. */
     k: 'Gomma',
     t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
-    b: 'La società di autolinee è interamente vostra: 10.300 collegamenti al giorno, e un’offerta che arriva a più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing, e al TTG avete presentato i progetti per il turismo congressuale.',
+    b: 'Interamente vostra: 10.300 collegamenti al giorno, e più di 1.700 destinazioni raggiunte.',
     bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno e più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
     fonti: ['busitalia', 'ttgOfferta'],
   },
   {
     k: 'Sosta',
     t: 'I parcheggi di stazione',
-    b: 'Si prenotano dall’app, dal sito, in biglietteria e in agenzia. E si aggiungono a un biglietto già comprato, fino al giorno prima: è il pezzo di viaggio che comincia prima del treno.',
+    b: 'Si aggiungono a un biglietto già comprato, fino al giorno prima: il viaggio comincia lì.',
     fonti: ['fsPark'],
   },
   {
@@ -266,8 +276,8 @@ export const GIA: Card[] = [
        compagnia ha firmato lo stesso tipo di intesa con Italo. L'asset c'è, ma
        non è esclusivo, ed è il motivo per cui va governato. */
     k: 'Aria',
-    t: 'Air-Rail dal 2023, e un laboratorio comune',
-    b: 'Il biglietto integrato con ITA Airways è partito nel 2023. Il 9 marzo 2026 i due Amministratori Delegati hanno firmato un memorandum per un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo: biglietto unico treno più aereo, in vendita da luglio.',
+    t: 'Air-Rail dal 2023, e un laboratorio comune',
+    b: 'Partito nel 2023, e da marzo c’è un laboratorio comune. A maggio però hanno firmato anche con Italo.',
     bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo è nato un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
     fonti: ['itaAirways', 'itaItalo'],
   },
@@ -280,13 +290,15 @@ export const PRIMA: Card[] = [
     // ieri, in pubblico, e il deck lo nomina con la sua fonte.
     k: 'Con chi, adesso',
     t: 'Quello che avete appena firmato',
+    anc: 'Un accordo che esiste già',
     b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma e dal 2027 collega i due sistemi di prenotazione. È il caso da cui partire: ha una data, e il perimetro l’avete scelto voi.',
     bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione dal 2027. È il caso da cui partire.',
     fonti: ['costaTtg'],
   },
   {
     k: 'Dove sta il valore',
-    t: 'Arrivare prima della scelta del vettore',
+    t: 'Arrivare prima della scelta del vettore',
+    anc: 'Prima che il vettore sia scelto',
     b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci, e oggi non lo sapete.',
     bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
   },
@@ -308,6 +320,7 @@ export const PRIMA: Card[] = [
        da slide. Qui si dice il fatto e si lascia la domanda aperta. */
     k: 'La Cina, dove siete già',
     t: 'Vendete dentro WeChat dal 2025',
+    anc: 'Un canale che non vi racconta',
     b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali. Le vendite su quel mercato sono raddoppiate in un anno, e quello che quel canale sa di chi compra resta lì.',
     bBreve: 'Non c’è un sito in cinese: c’è un mini-program che vende, e le vendite su quel mercato sono raddoppiate in un anno.',
     fonti: ['trenitaliaCinese', 'fsCina'],
@@ -344,12 +357,14 @@ export const CANALE: Card[] = [
   {
     k: 'La vostra ambizione',
     t: 'Vendere dentro i canali agentici',
-    b: 'Non è una proposta nostra: è uno dei pilastri che avete dichiarato di avere in lavorazione. Il sito e l’app portano l’ottanta per cento dei ricavi, e il canale dove si decide oggi non è ancora un canale dove si vende.',
+    anc: 'Un pilastro già vostro',
+    b: 'Non è una proposta nostra: è uno dei pilastri che avete dichiarato di avere in lavorazione.',
   },
   {
     k: 'Che cosa cambia',
     t: 'La risposta diventa anche il banco',
-    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta e poi va altrove a comprare. Il passo che si apre è chiudere lì, quando è il viaggiatore a chiamarvi in causa: non è pubblicità.',
+    anc: 'È il viaggiatore a chiamarvi',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta, e poi va altrove a comprare.',
   },
   {
     /* 17 ott, due passate. Prima la card non nominava il prodotto (residuo di
@@ -360,7 +375,8 @@ export const CANALE: Card[] = [
        20 aprile 2026 come capacità di AEM, non ancora in disponibilità generale. */
     k: 'Dove si innesta',
     t: 'Si chiama LLM Apps',
-    b: 'Vive dentro Experience Manager, la vostra piattaforma di contenuti: è un’estensione, non un sistema nuovo accanto. Una cosa da guardare insieme mentre si decide dove mettere il canale.',
+    anc: 'Dentro la piattaforma che avete',
+    b: 'Vive dentro Experience Manager, la vostra piattaforma di contenuti: è un’estensione, non un sistema accanto.',
   },
 ];
 
@@ -379,6 +395,7 @@ export const UNPOSTO: Card[] = [
   {
     k: 'Il tempo',
     t: 'Dal brief alla vetrina',
+    anc: 'Il tempo, non il costo',
     b: 'Non quanto costa una variante, ma dopo quanti giorni è davanti a un cliente: lì si perde una stagione.',
   },
   {
@@ -431,19 +448,22 @@ export const SAPERE: Card[] = [
   {
     k: 'Chi vende che cosa',
     t: 'Per rete, per agenzia, per prodotto',
-    b: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno. Da lì si vede su quali agenzie insistere, e quali vendono un prodotto solo perché nessuno ha dato loro gli altri.',
+    anc: 'Il venduto, finalmente letto',
+    b: 'Dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
     bBreve: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
   {
     k: 'Che cosa converte',
-    t: 'Quale materiale vende, e quale resta nel cassetto',
-    b: 'Digitale e cartaceo insieme. Le schede prodotto e le email, ma anche le locandine, le brochure e il materiale da banco: in agenzia si stampa ancora, e molto. Di nessuno dei due si sa oggi che cosa ha venduto. È il collegamento con il capitolo precedente: produrne meno, e più di quelli che funzionano.',
+    t: 'Quale materiale vende, e quale resta nel cassetto',
+    anc: 'Digitale e cartaceo insieme',
+    b: 'Schede ed email, ma anche brochure e materiale da banco: in agenzia si stampa ancora, e molto.',
     bBreve: 'Digitale e cartaceo: schede ed email, ma anche brochure e materiale da banco. Produrne meno, e più di quelli che funzionano.',
   },
   {
     k: 'Che cosa succede se…',
     t: 'Provare un’alternativa invece di deciderla',
-    b: 'Una proposta diversa su una parte della rete, misurata per due settimane, prima di portarla a tutte. Su un sito si fa; su questo canale, per quanto ne sappiamo, no. E una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
+    anc: 'Una fetta prima di tutte',
+    b: 'Su un sito si fa. Qui no, e una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
     bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
   },
 ];
@@ -460,7 +480,7 @@ export const ASK = {
     // Le tre «che cosa» sono la formula che il panel ha messo fra le cose da NON
   // toccare: cinque personas su sei la citano come la riga che fa accettare la
   // riunione. Il ritmo è voluto, non è una frase contorta — eccezione dichiarata.
-  sub: 'Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati, nessun impegno dopo. <strong>Non è un progetto e non è un’offerta.</strong>',  // copy-audit-ignore
+  sub: 'Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati, nessun impegno dopo. <strong class="ex-frase">Non è un progetto e non è un’offerta.</strong>',  // copy-audit-ignore
   /** Che cosa serve davvero: «i vostri dati» non è un perimetro, e chi tiene la
    *  piattaforma commerciale lo chiede al primo giro. */
   servono:

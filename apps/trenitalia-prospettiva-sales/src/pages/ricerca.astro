@@ -5,6 +5,9 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import CheServe from '../components/CheServe.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { CANALE, REFERTO, KPI, SERVE } from '../data/contenuti';
@@ -168,31 +171,45 @@ const currentPath = Astro.url.pathname;
         <div class="ex-head">
           <p class="slide-eyebrow">Che cosa si misura</p>
           <h2 class="ex-head-title">Si può intervenire, e si vede se ha funzionato</h2>
+          {/* Il lead è UNA riga: il punto della slide, non il paragrafo che lo spiega.
+              La prova — la risposta sulla Puglia che è quasi un testo loro — sta
+              nella riga sotto le ancore, dove chi presenta la può indicare. */}
           <p class="ex-head-lead">
-            Alla domanda sulla Puglia la risposta è quasi un vostro testo: Trenitalia protagonista
-            e «parti dal sito o dall’app di Trenitalia», su entrambi gli assistenti.
             <strong>Quando la pagina giusta esiste, la risposta la usa.</strong>
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {KPI.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <p class="tp-ancore-dopo" data-reveal data-reveal-delay="0.2">
+          Alla domanda sulla Puglia la risposta è quasi un vostro testo: «parti dal sito o
+          dall’app di Trenitalia», su entrambi gli assistenti.
+        </p>
         <!-- `tone` sembra invertito e non lo è: il componente assume una dominante chiara,
              dove `onLight` significa «inchiostro --ink-secondary». Qui la dominante è scura,
              quindi --ink-secondary È l'inchiostro chiaro, cioè quello che serve su questa
              slide. Si sceglie il tono che rende giusto, non quello che suona giusto. -->
+        {/* 26 ott: il dettaglio si apre su FIGURE, non su paragrafi. In sala questo
+            blocco si apre per rispondere a una domanda, e nessuno legge due
+            paragrafi davanti a un cliente che aspetta: ogni voce è un meccanismo
+            che si vede, l'ancora lo nomina, la riga porta il fatto che sopravvive
+            all'inoltro. I pezzi restano sotto — li ha chiesti il cliente il 20. */}
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <p>
-            Si parte dalle domande vere dei vostri mercati, non da parole chiave. Le pagine
-            continuano a nascere dove nascono oggi.
-          </p>
-          <CheServe pezzi={SERVE.visibilita} />
+          <Dettaglio>
+            {KPI.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['risposta-citata', 'pagina-che-manca', 'pubblicare-dove-si-pubblica'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+            <CheServe slot="nota" pezzi={SERVE.visibilita} />
+          </Dettaglio>
         </HowItWorks>
       </div>
     </Slide>
@@ -210,32 +227,41 @@ const currentPath = Astro.url.pathname;
           <p class="slide-eyebrow">Il secondo tempo dello stesso canale</p>
           <h2 class="ex-head-title">Dove oggi vi citano, domani si comprerà</h2>
           <p class="ex-head-lead">
-            Finora il canale è un posto dove vi nominano, e a volte male. <strong>Sta diventando
-            anche un posto dove si compra.</strong> Su WhatsApp un assistente vostro informa e
-            rimanda al sito: lì chi scrive vi ha già scelti.
+            <strong>Il canale dove vi nominano sta diventando il canale dove si compra.</strong>
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        {/* 26 ott: ancore, non card. L'occhiello e il nome restano in pagina; il
+            paragrafo di ciascuna passa nel dettaglio qui sotto, dove si apre per
+            rispondere a una domanda invece di stare addosso a chi parla. */}
+        <div class="tp-ancore" data-stagger>
           {CANALE.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <p class="tp-ancore-dopo" data-reveal data-reveal-delay="0.2">
+          Su WhatsApp un assistente vostro informa e rimanda al sito: lì chi scrive vi ha già scelti.
+        </p>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <p>
-            Non è un sistema nuovo accanto agli altri: si innesta sulla piattaforma di contenuti
-            che avete già. Il passo prima resta la visibilità.
-          </p>
-          <CheServe pezzi={SERVE.canale} />
+          <Dettaglio>
+            {CANALE.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['richiamata-dal-viaggiatore', 'offerta-nella-conversazione', 'pubblicare-dove-si-pubblica'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+            <CheServe slot="nota" pezzi={SERVE.canale} />
+          </Dettaglio>
         </HowItWorks>
+        {/* Gli assistenti non scoprono da soli questi collegamenti — esporsi non
+            basta, ed è il motivo per cui la visibilità resta il primo passo. Sta
+            nel dettaglio, non qui: la riga delle fonti porta le fonti. */}
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
-          Il vostro canale su messaggistica: <a href={SOURCES.whatsappTrenitalia.url} target="_blank" rel="noopener noreferrer">{SOURCES.whatsappTrenitalia.label}</a>.
-          Oggi gli assistenti non scoprono da soli questi collegamenti: esporsi non basta, e per
-          questo la visibilità del capitolo resta il primo passo. Su LLM Apps:
-          <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>.
+          Il canale su messaggistica: <a href={SOURCES.whatsappTrenitalia.url} target="_blank" rel="noopener noreferrer">{SOURCES.whatsappTrenitalia.label}</a> ·
+          su LLM Apps: <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>
         </p>
       </div>
     </Slide>

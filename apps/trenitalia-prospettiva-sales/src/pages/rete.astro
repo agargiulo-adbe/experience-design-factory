@@ -12,6 +12,9 @@ import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_network from '../assets/generated/bg/bg-network.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 
 /**
  * Capitolo 06 — Il canale delle agenzie.
@@ -81,15 +84,26 @@ const currentPath = Astro.url.pathname;
             diritto di guardare.</strong>
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {SAPERE.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <HowItWorks title="Che cosa si vedrebbe" label="Che cosa si vedrebbe" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <Dettaglio>
+            {SAPERE.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['venduto-per-agenzia', 'materiale-che-converte', 'prova-su-una-parte'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+            <p slot="nota">Come si interviene su un canale che non è un sito: la misura prima, la prova dopo.</p>
+          </Dettaglio>
+        </HowItWorks>
       </div>
     </Slide>
 
@@ -116,12 +130,24 @@ const currentPath = Astro.url.pathname;
           <p class="ex-head-lead">{RETE.domanda}</p>
         </div>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.16">
-          <p>
-            Serve che la piattaforma con cui le agenzie vendono esponga il venduto per rete e per
-            prodotto. <strong>Il pezzo che manca non è uno strumento, è il collegamento</strong> —
-            e quanto si riesca a vedere dipende dalle convenzioni con le agenzie.
-          </p>
-          <CheServe pezzi={SERVE.rete} />
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="rete-muta" />
+              <p slot="ancora">Il collegamento che manca</p>
+              <p slot="riga">Il pezzo che manca non è uno strumento: quei dati non arrivano dove arriva il resto.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="venduto-per-agenzia" />
+              <p slot="ancora">Il venduto, per rete e per prodotto</p>
+              <p slot="riga">Serve che la piattaforma con cui le agenzie vendono lo esponga.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="prova-su-una-parte" />
+              <p slot="ancora">Una variante su una parte</p>
+              <p slot="riga">Quanto si riesca a vedere dipende però dalle convenzioni con le agenzie.</p>
+            </DettaglioVoce>
+            <CheServe slot="nota" pezzi={SERVE.rete} />
+          </Dettaglio>
         </HowItWorks>
       </div>
     </Slide>

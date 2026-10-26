@@ -12,6 +12,9 @@ import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_network from '../assets/generated/bg/bg-network.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 
 /**
  * Capitolo 05 — Il contenuto che l'offerta richiede.
@@ -105,12 +108,11 @@ const currentPath = Astro.url.pathname;
             approva oggi.
           </p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {UNPOSTO.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
@@ -120,10 +122,16 @@ const currentPath = Astro.url.pathname;
             dominante chiara, e in questa skin la dominante è scura; su una slide
             che rende CHIARA serve l'inchiostro dell'altro verso. */}
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onDark" data-reveal data-reveal-delay="0.2">
-          <p>
-            <strong>Automazione sul lavoro dei vostri, non sulla conversazione con i viaggiatori.</strong>
-          </p>
-          <CheServe pezzi={SERVE.contenuto} />
+          <Dettaglio>
+            {UNPOSTO.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['un-posto-solo', 'chi-chiede-chi-approva', 'materiale-che-si-moltiplica'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+            <CheServe slot="nota" pezzi={SERVE.contenuto} />
+          </Dettaglio>
         </HowItWorks>
       </div>
     </Slide>

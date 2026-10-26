@@ -10,6 +10,10 @@ import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
 import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 
 /**
  * Capitolo 01 — Il vostro anno, visto da fuori.
@@ -86,15 +90,25 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
           <h2 class="ex-head-title">{TESTE.contesto.titolo}</h2>
           <p class="ex-head-lead">{TESTE.contesto.lead}</p>
         </div>
-        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+        <div class="tp-ancore" data-stagger>
           {CONTESTO.map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
+            <div class="tp-anc">
+              <p class="tp-anc-k">{x.k}</p>
+              <p class="tp-anc-n">{x.t}</p>
             </div>
           ))}
         </div>
+        <HowItWorks title="Da dove viene, in concreto" label="Da dove viene, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
+          <Dettaglio>
+            {CONTESTO.map((x, i) => (
+              <DettaglioVoce>
+                <Figura k={(['concorrente-in-piu', 'tetto-del-prezzo', 'finestra-aperta'] as const)[i]} />
+                <p slot="ancora">{x.anc ?? x.t}</p>
+                <p slot="riga">{x.b}</p>
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
         <p class="ex-src" data-reveal data-reveal-delay="0.24">
           Fonti: {fontiContesto.map((f, i) => (
             <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
