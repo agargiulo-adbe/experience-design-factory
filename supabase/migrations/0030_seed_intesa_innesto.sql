@@ -12,7 +12,7 @@ values (
   'intesa-innesto',
   'Dove ci innestiamo',
   'Intesa Sanpaolo',
-  'Come si collega a quello che abbiamo? Blueprint per Intesa Sanpaolo: scheletro generato il 2026-10-23, da scrivere con il brief.',
+  'Come si collega a quello che abbiamo? Blueprint per la Divisione Banca dei Territori: dove ci innestiamo sull''impianto che hanno già — la scelta all''ultimo metro e la storia del cliente ricomposta. Prepara l''incontro del 5 novembre 2026.',
   '/experience-design-factory/intesa-innesto/',
   'draft',
   false,
