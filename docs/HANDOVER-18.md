@@ -38,3 +38,126 @@ pnpm --filter unicredit-engagement audit:deck > /tmp/before.txt && git stash pop
 Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (hard)**. Se aumentano gli hard, hai introdotto clipping/scroll/collisione → riduci densità/altezza.
 
 ---
+
+## 40. Intesa Sanpaolo — «Dove ci innestiamo» (Blueprint, 5 novembre 2026)
+
+`apps/intesa-innesto` · live su GitHub Pages, **fuori da hub e showcase**, `noindex`. Nata il
+**23 ott 2026** da `pnpm new:experience` e scritta nei tre giorni successivi per l'incontro di
+**mercoledì 5 novembre, 09:55–11:45, a Torino** (grattacielo Sanpaolo, sala 22 ovest). È la
+seconda stanza di Intesa dopo quella del 22 ottobre, e ha un pubblico diverso: non più la
+direzione Sales & Marketing Digital Retail, ma **chi costruisce i target e chi possiede il CRM**.
+
+**23 slide su 7 rotte** più l'admin e il dossier gated. Design system **letto** dal CSS di
+produzione del cliente (verde di sistema `#258900`, verde notte `#0d2901`, **Open Sans**, che è
+il carattere vero): nessun valore a memoria.
+
+### 40.1 Che cosa dice il deck
+
+Sei capitoli, e il secondo è il motivo dell'incontro. Il filo è l'**innesto**: non sostituire
+niente, aggiungere un anello dove oggi la decisione non c'è.
+
+| | Capitolo | Che cosa fa |
+|---|---|---|
+| 01 | Quello che abbiamo capito di voi | tre mestieri e tre sistemi, con i due confini dove si perde qualcosa |
+| 02 | L'architettura | **la figura a fasi**: il percorso che hanno, i due punti di attrito, i due innesti |
+| 03 | Audience e target | il target si fa prima, la scelta può farsi dopo; e il caso del mutuo |
+| 04 | Oltre l'analisi | tre cose che un rapporto non sa fare; e il passaggio, senza addolcirlo |
+| 05 | Gli acceleratori | Decisioning e Coworker, con due riquadri per i video |
+| 06 | La rotta | tre cose e una data, più la slide-firma |
+
+### 40.2 L'architettura come figura a fasi, e che cosa è nostro
+
+La slide `slide-architettura` è il cuore: un **SVG con uno strato HTML di ancore sopra**, che
+nasce a fasi sotto le frecce del deck — prima quello che il cliente ha, poi dove si ferma, poi
+il pezzo che si appoggia sopra. La geometria è **calcolata e non posata a occhio**: cinque nodi
+identici di 248 unità, margine 24, intervallo 38, che fanno esattamente 1440.
+
+⚠️ **La figura è una lettura NOSTRA e lo dichiara in pagina.** Ricostruita dal lavoro di
+preparazione sul decisioning, non dalla voce del cliente. Due cose in particolare **non hanno
+una fonte del cliente** e nel disegno sono scritte **come domande**:
+
+- «con quanto ritardo torna indietro l'interazione?» — era «da 6 a 24 ore», che non ha fonte;
+- «entro i vostri tetti di contatto» — era «cap settimanale», e settimanale era un'invenzione.
+
+Il **cap settimanale** una fonte interna ce l'ha (la richiesta alla Business Unit del 26 ott,
+in posta) ma non è la voce del cliente: resta domanda in slide. La regola che ne esce è in
+memoria `un-numero-che-sembra-misurato`: **in un diagramma, o il numero ha una fonte o diventa
+la domanda** — in sala c'è chi quel numero lo conosce.
+
+### 40.3 Il fact check del 24-25 ottobre — quattro correzioni di merito
+
+- **Le quattro cifre pubbliche erano giuste e la fonte sbagliata.** Il comunicato del piano
+  d'impresa esiste, risponde, e **non le contiene**: stanno in una dichiarazione pubblica del
+  Gruppo di febbraio 2026. La fonte vera dice anche tre cose diverse dalle nostre — «prodotti
+  **per i privati**», «**applicativi** cloud a **fine 2025**» (non «infrastruttura»).
+- **«Adobe AI Decisioning» non è un prodotto.** La Product Description di Adobe Journey
+  Optimizer (in vigore dall'8 set 2026) dice: *Decisioning* è un **add-on** di AJO, licenziato
+  per 1.000 Engageable Profiles. Corretti slide, figura, segnaposto video e console. Memoria:
+  `decisioning-e-un-add-on-ajo`.
+- **Il recupero a ritroso di CJA non è «sei mesi».** A regime è una finestra di **1–30 giorni**
+  secondo il pacchetto; i 13 o 25 mesi sono il **backfill iniziale**.
+- **I due innesti poggiano su una base Experience Platform che oggi non c'è**, ed è dichiarato
+  nella slide che già si chiama «Non è un rifacimento. Non è nemmeno gratis».
+
+Più: Santander citato con i numeri del caso pubblicato invece che con una frase nostra;
+«Marketing Cloud» disambiguato (è di Salesforce, e accanto ad «Adobe Analytics» si leggeva
+Adobe); Coworker che dichiara il permesso **MCP Access** sulle report suite.
+
+### 40.4 Il guscio sensoriale, acceso e misurato
+
+Sette sfondi Firefly (sei copertine di capitolo più la slide-affermazione) e **due clip in
+loop** su copertina e chiusura, sul disegno dell'innesto. Gli MP4 stanno sul Release `media`,
+i poster in `public/media/`.
+
+- Il **primo giro di sfondi aveva la luce al centro**, cioè dove va il titolo: prompt corretti
+  con la luce in basso a destra e il vuoto dichiarato in alto.
+- Clip ricucite con `pnpm loop:seamless`: la copertina passa a **38,6 dB** contro 40,8 di
+  riferimento; la chiusura **derivava per costruzione** e ha chiuso il giro in `--boomerang`
+  (47,6 contro 49,9).
+- Il velo è **misurato, non stimato**: punto più chiaro sotto il titolo, **5,19:1 nel caso
+  peggiore** sulle sei copertine (serve 3:1); sulla clip, movimento 1,05 e 0,75 su 255 (sotto
+  0,1 non si vede) e contrasto 15,7:1.
+- Il credito «Adobe Firefly · sfondo/clip» compare perché ora è un fatto verificabile in
+  `provenance.json`.
+
+### 40.5 Il marchio
+
+Era il segnaposto del template — un bersaglio generico, con il commento «da sostituire» ancora
+nel file. Ora è **l'innesto**: un percorso che corre e un tratto che vi scende dentro chiudendosi
+in un nodo. Cambiato in **tutti e due i posti** (`public/favicon.svg` **e** l'SVG inline in
+`Navigation.astro`: `brand:icons` non tocca il secondo). ⚠️ La gerarchia fra percorso e innesto
+sta nel **peso del tratto**, non nell'opacità: a 16px l'opacità faceva sparire la linea.
+
+### 40.6 Il dossier interno del 5 novembre
+
+`apps/intesa-innesto/src/pages/dossier.astro` — guscio di trenta righe sopra il motore unico,
+più `DocLayout` che mappa la pelle verde sul contratto `--dw-*`. **Quattordici sezioni**,
+**bilingue IT/EN** (214 coppie di testo). Contenuto in `restricted_docs` sotto RLS; seed
+git-ignorato `docs/Intesa Sanpaolo/0031_seed_intesa_innesto_dossier.sql`; README tracciato in
+`supabase/migrations/0031_intesa_innesto_dossier.README.md`.
+
+Gate: `audit:dossier` **PASS, cinque viewport, zero rilievi**. Verificato che senza token la
+pagina mostra solo il gate, e che nel `dist/` non finiscono né nomi né cifre.
+
+⚠️ **Applicando il seed si è scoperto che `0030_seed_intesa_innesto.sql` non era mai stata
+applicata** al database remoto: stava nel repo dal 23 ott e il buco si è visto solo da una
+violazione di chiave esterna. **Una migrazione committata non è una migrazione applicata**
+(memoria `migrazione-committata-non-applicata`). Nello stesso giro è stata riscritta la
+descrizione nella Console, che diceva ancora «scheletro generato, da scrivere con il brief».
+
+### 40.7 Stato dei gate (26 ott 2026)
+
+`copy-audit` **0 HARD, 0 SOFT** su 437 stringhe · `audit:wrap --tv` **PULITO** (famiglie `S` e
+`F`, cinque viewport) · `audit:ink` **PULITO**, 246 blocchi con i nove «Scopri come» aperti ·
+`audit:fonti` nessun link rotto · **`audit:deck` 0 HARD a 1920/1440/1280/2560/3840** ·
+`audit:ritmo --sala` **PULITO**, **18 slide su 21 con un elemento visivo** · `audit:og` PASS ·
+20 app compilano.
+
+### 40.8 Che cosa manca
+
+- **Il panel review non è mai stato lanciato** su questa experience: è il P0 nuovo di questo
+  giro (Parte 2).
+- La **referenza Unipol** è nominata in slide e va concordata con quell'account prima di
+  promettere materiale condivisibile.
+- Il **blueprint tecnico** chiesto alla Business Unit era atteso per il 29 ott: senza, il
+  disegno che si porta in sala resta nostro e basta.

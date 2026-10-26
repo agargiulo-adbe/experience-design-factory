@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-21**.
+> Documento di passaggio di consegne. Stato al **2026-10-26**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -10,9 +10,23 @@
 > `.md` costa ~34k token su 18 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> ⚠️ **La stanza più vicina è Intesa: giovedì 22 ottobre, 16:00, su Teams** (invito del cliente). Il deck
-> «Su scala umana» ha preso **dieci correzioni il 20 ott** e un **affondo nuovo sul decisioning** (§33.10,
-> Parte 11), e **il panel non è mai stato lanciato**: è il P0 più vecchio del backlog (Parte 2).
+> ⚠️ **La stanza più vicina è Intesa, e non è più quella del 22: è mercoledì 5 novembre, a Torino,
+> 09:55–11:45.** La stanza del 22 si è tenuta ed è andata bene — il cliente ha proposto lui tre
+> pilastri e ha detto che sta decidendo come procedere. Per il 5 è nata un'experience nuova,
+> **`apps/intesa-innesto` «Dove ci innestiamo»** (23 slide, §40, Parte 18), con un **dossier
+> interno bilingue** gated per i colleghi che ci vanno. ⚠️ **Il panel non è mai stato lanciato
+> né su questa né su «Su scala umana»**: sono i due P0 in testa al backlog (Parte 2), e il
+> secondo è il più vecchio. Il pubblico del 5 è un altro — chi costruisce i target e il suo
+> capo, che possiede CRM e Adobe Analytics — quindi **le personas del panel vanno scritte**:
+> quelle esistenti coprono la stanza del 22.
+>
+> 🧩 **Il 24 ottobre la regola «ancore, non prosa» si è chiusa dove era rimasta a metà**: il
+> «Scopri come» si apre su **figure**, non su paragrafi (`Dettaglio` + `DettaglioVoce` nel
+> motore, §40 e change log in Parte 3). Nello stesso giro sono nati **`pnpm deck:catalogo`** e
+> **`pnpm audit:ritmo`**, dopo aver misurato che **26 slide su 213 di tutti i deck portano un
+> elemento visivo** mentre il motore ha 30 blocchi e 11 scene mai aperti; e la famiglia **`S`**
+> del ritmo, perché a 3840 il corpo più piccolo di una figura scendeva allo **0,97%
+> dell'altezza** contro l'1,3% che ha a 1920 — su una parete, che si guarda da più lontano.
 >
 > 📨 **Il lavoro d'account arriva a dire «a chi scrivere», e il change log recupera il 15-16 ottobre**
 > (**§39.8–39.9, Parte 16**). Il Radar diceva che cosa sta succedendo; ora `pnpm accounts --apertura`
@@ -217,8 +231,8 @@
 > corretto nel deck** (per CJA il dato entra: si governa *quanto*). ⚠️ **Il panel a due giri copre il
 > deck di prima**: P0 nuovo, da chiudere prima del TTG del 14-16 ott (§36.9, Parte 8).
 
-> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: al 21 ott sono **14 P0 e 35 P1**
-> (più 19 P1 di fondo e 48 P2 nella Parte 10). ⚠️ **Il P0 più urgente ha una data: Intesa «Su scala
+> Il **backlog P0 di §10 (Parte 2)** resta la prima cosa da leggere: al 26 ott sono **16 P0 e 35 P1**
+> (più 22 P1 di fondo e 48 P2 nella Parte 10). ⚠️ **Il P0 più urgente ha una data: Intesa «Su scala
 > umana» va in sala giovedì 22 ottobre e il panel non è mai stato lanciato.** ⚠️ Il P0 sulla panel review della Prospettiva, dato per
 > chiuso dai due giri del 12 ott, **è tornato P0**: fra il 13 e il 17 quel deck è cambiato molto (TTG,
 > canali, quattro fatti smentiti) e il verdetto non copre più ciò che si consegna. In testa sta
@@ -229,16 +243,17 @@
 > di media query a 1280×800, le due decisioni di riservatezza) **sono scesi nella Parte 10**: non sono
 > chiusi, ma nessuno di loro decide che cosa si fa questa settimana.
 >
-> ⚠️ **Nota di dimensione** (rimisurata il **21 ott**): il giro del 19-20 ott ha richiesto **due**
-> ribilanciamenti. Il change log è andato di nuovo a catena **3 → 4 → 14 → 17**, la stessa di sempre;
-> e per la prima volta ha ceduto anche la **Parte 1**, che con due righe nuove (il comando `deck:pdf`
-> in §3 e i dossier nella console in §7) ha superato il tetto: **§8 è scesa nella Parte 18**, creata
-> in coda alla numerazione così che i rimandi «vedi Parte N» già scritti restino tutti validi.
-> Le parti più piene sono ora la **3** (47,7 KB), la **7** (47,7), la **16** (46,4) e la **14**
-> (46,4) su 48; le più vuote la **18** (6,4), la **13** (24,0), la **12** (24,8) e la **17** (26,8).
-> ⚠️ Il change log occupa da solo **quattro** parti (3, 4, 14, 17) e il backlog **due** (2 e 10): è il
-> costo fisso di tenerli integrali, ed è una scelta — si paga un ribilanciamento ogni due o tre
-> giornate di lavoro. Le **parti nuove si creano in coda** alla numerazione.
+> ⚠️ **Nota di dimensione** (rimisurata il **26 ott**): il giro del 22-26 ott ha portato una
+> **sezione nuova** (§40, l'experience del 5 novembre) e **cinque voci** di change log. La §40 è
+> andata nella **Parte 18**, che era la più vuota (6,4 KB) e ora sta a 14,2; il change log ha
+> richiesto la solita catena **3 → 4 → 14 → 17**, con sedici voci spostate in tutto. Anche il
+> **backlog** ha ceduto: la Parte 2 era arrivata a 190 byte dal tetto, e **tre P1 di fondo sono
+> scesi nella Parte 10**. Le parti più piene sono ora la **7** (47,7 KB), la **14** (47,1), la
+> **2** (47,3) e la **16** (46,4) su 48; le più vuote la **18** (14,2), la **13** (24,0), la
+> **12** (24,8) e la **15** (27,8). ⚠️ Il change log occupa da solo **quattro** parti (3, 4, 14,
+> 17) e il backlog **due** (2 e 10): è il costo fisso di tenerli integrali, ed è una scelta — si
+> paga un ribilanciamento ogni due o tre giornate di lavoro. Le **parti nuove si creano in
+> coda** alla numerazione.
 
 > 🛰️ **Il 13 ottobre: il radar che gira da sé, e i primi registri dove servivano.** Il «Radar
 > Opportunità» schedulato il 2 ott aveva prodotto **zero file in dieci giorni**, e la causa non era
@@ -268,7 +283,7 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–7: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **20 ott 2026** (la console porta al dossier · Intesa e Prospettiva dopo le revisioni · la posta come bozza formattata, 19 ott), dal **16-17 ott 2026** (il TTG nel deck della Direzione Sales e quattro fatti della riunione smentiti dalla verifica), dal **15-16 ott** (il dossier FSTechnology che smette di essere esposto, il contratto del motore come gate, l'anteprima dei link, il dossier MEF) e dalla **sera del 13 ott** (il grafo dei contatti, l'apertura e il giro di ritorno) e dal **12-13 ott** (il panel a due giri sulla Prospettiva, il taglio «In dieci minuti» e il gate `audit:taglio`, la linearità misurata) e dall'**11-12 ott** (la Prospettiva per la Direzione Sales, `audit:ink` e `audit:fonti`, i file di TIM finiti su `main`, il lavoro d'account) all'indietro, fino alla **sera del 7 ott**: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **26 ott 2026** (il dossier del 5 novembre e il motore che non traduceva · «Dove ci innestiamo» e i quattro fatti corretti alla fonte · le ancore che diventano figure · il catalogo del motore e le slide da fondo sala), poi dal **20 ott 2026** (la console porta al dossier · Intesa e Prospettiva dopo le revisioni · la posta come bozza formattata, 19 ott), dal **16-17 ott 2026** (il TTG nel deck della Direzione Sales e quattro fatti della riunione smentiti dalla verifica), dal **15-16 ott** (il dossier FSTechnology che smette di essere esposto, il contratto del motore come gate, l'anteprima dei link, il dossier MEF) e dalla **sera del 13 ott** (il grafo dei contatti, l'apertura e il giro di ritorno) e dal **12-13 ott** (il panel a due giri sulla Prospettiva, il taglio «In dieci minuti» e il gate `audit:taglio`, la linearità misurata) e dall'**11-12 ott** (la Prospettiva per la Direzione Sales, `audit:ink` e `audit:fonti`, i file di TIM finiti su `main`, il lavoro d'account) all'indietro, fino alla **sera del 7 ott**: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal **7 ott 2026, sera** (Intesa Assicurazioni, il perimetro che si allarga) all'11 set. Ribilanciata il 13 ott: la coda è scesa nelle Parti 14 e 17.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.
@@ -283,4 +298,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
 - [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account** (fino a **§39.9: il grafo dei contatti, l'apertura e il giro di ritorno**)](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta. Dal **21 ott** anche **§37.12**: il giro del 20 ott e la trascrizione che corregge il deck.
 - [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.
-- [Parte 18 — §8 **Deck visual contract & audit**](./HANDOVER-18.md) — scesa dalla Parte 1 il **21 ott 2026**, quando la Parte 1 ha superato il tetto di 48 KB: il contratto visivo dei deck e i gate che lo verificano.
+- [Parte 18 — §8 **Deck visual contract & audit** · §40 **Intesa «Dove ci innestiamo»**](./HANDOVER-18.md) — §8 è scesa dalla Parte 1 il 21 ott; **§40 è l'experience del 5 novembre**, scritta qui il 26 perché era la parte con più spazio: i sei capitoli, la figura a fasi dell'architettura (e che cosa in quella figura è una lettura nostra), il fact check che ha corretto quattro cose di merito, il guscio sensoriale misurato, e il **dossier interno bilingue**.
