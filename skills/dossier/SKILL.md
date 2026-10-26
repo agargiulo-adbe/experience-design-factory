@@ -291,6 +291,14 @@ spera.
 Dopo l'audit si **guarda** comunque uno screenshot a 390 e uno a 1280: l'audit dice che si
 può leggere, non che è bello.
 
+**Un dossier bilingue si guarda in ENTRAMBE le lingue.** Il contenuto è stringa oppure
+`{it,en}`, e il selettore compare solo dove esiste davvero una coppia. Ma un campo che
+il motore non passa dal traduttore stampa **`[object Object]`** — testo valido, blocco non
+vuoto, **nessun check scatta**: su Intesa l'audit dava PASS a cinque viewport con
+`[object Object]` grande come un titolo in cima alla prima sezione. Si apre la seconda
+lingua e si legge; e se un campo si scopre fuori, si cercano **tutti** gli altri invece di
+correggere quello solo.
+
 ## 6 · Marchi: perché un dossier non porta il co-brand
 
 Prima o poi qualcuno chiede di mettere in testa il lockup «Adobe × Cliente», o di dare un
