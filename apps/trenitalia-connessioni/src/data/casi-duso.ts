@@ -2,25 +2,22 @@
  * I casi d'uso, in un posto solo.
  *
  * PERCHÉ ESISTE QUESTA SEZIONE
- * Chiesta dal Direttore dei canali digitali il 27 ottobre 2026, con parole sue:
- * «quello che è importante è avere in mente dei casi vittoriosi, dei veri e
- * propri casi […] riusciamo ad avere un quadro di 4-5 casi d'uso importanti?
- * L'obiettivo finale è vendere di più». E con un vincolo ripetuto due volte,
- * che è il motivo per cui ogni caso qui porta anche il lato marketer: «se tu
- * mi dai il pezzo di ferro e poi mi devo costruire tutto da solo… noi vogliamo
- * vendere il sistema, io me lo compro e poi non so che fare».
+ * Chiesta dal Direttore dei canali digitali il 27 ottobre 2026: un quadro di
+ * quattro o cinque casi d'uso importanti, con l'obiettivo dichiarato di
+ * vendere di più. Nella stessa riunione ha posto due volte lo stesso vincolo
+ * — non vuole comprare la tecnologia e doversi poi costruire tutto da solo —
+ * ed è il motivo per cui ogni caso qui porta anche il lato di chi lo prepara.
  *
- * L'ORDINE NON È CASUALE: è il suo schema, non il nostro. Sempre dalla stessa
- * riunione: «a vendere di più ci arrivi facendo entrare più persone nel
- * negozio; oppure sei così bravo dentro che quei clienti, pur essendo meno,
- * convertono di più». Quindi i casi si raggruppano in `leva`: `conversione`
- * (chi è già entrato) e `traffico` (chi deve ancora entrare).
+ * L'ORDINE NON È CASUALE: è il suo schema, non il nostro. Nella stessa
+ * riunione ha descritto due sole strade per vendere di più — far entrare più
+ * persone nel negozio, oppure convertire meglio chi è già entrato. Quindi i
+ * casi si raggruppano in `leva`: `conversione` e `traffico`.
  *
  * I DUE PERIMETRI
  * Il responsabile della piattaforma dati ha ristretto il perimetro il 9 ottobre
  * a **trenitalia.com + CRM**; il Direttore il 27 lo ha allargato a **T-com,
- * Le Frecce, app e CRM**, con una ragione: «non dimenticherei l'altra metà del
- * mio pianeta, i clienti non iscritti al CRM, che sono la metà precisa».
+ * Le Frecce, app e CRM**, con una ragione: i clienti non iscritti al CRM sono
+ * circa la metà, e restringere il perimetro li taglierebbe fuori tutti.
  * Il deck non sceglie: ogni caso dichiara le fonti che richiede, e la figura
  * accende o spegne quelle fuori perimetro. Così la stessa pagina dice a uno
  * che cosa guadagnerebbe allargando e all'altro che cosa perde restringendo.
@@ -83,8 +80,9 @@ export interface Caso {
   /**
    * La frase che chi lavora in marketing SCRIVE, in italiano, dentro Coworker
    * Chat. È il punto su cui il Direttore dei canali digitali si è fermato due
-   * volte — «io me lo compro e poi non so che fare» —: la risposta non è un
-   * corso, è che il gruppo e il test si chiedono a parole.
+   * volte, quando dice che non vuole ritrovarsi lo strumento senza saperlo
+   * usare: la risposta non è un corso, è che il gruppo e il test si chiedono
+   * a parole.
    */
   chiesta: string;
   /**
@@ -104,6 +102,13 @@ export interface Caso {
    * verbatim dalla pagina: se non si può citare col nome, non entra qui — si
    * racconta a voce. Volutamente fuori dal trasporto: non è stato chiesto un
    * concorrente, è stato chiesto che funzioni.
+   *
+   * Le fonti sono due, verificate il 28 ott 2026 aprendo ogni pagina:
+   * **Telmore** (telco danese, 750.000 clienti) e **Santander** (banca). Il
+   * numero di ciascun caso è quello che misura DAVVERO quella cosa, non il più
+   * grosso disponibile: i banner personalizzati stanno sul caso della home, le
+   * vendite incrociate sull'upgrade, il carrello abbandonato su chi torna, il
+   * riconoscimento sui due casi che dipendono dal riconoscere.
    */
   prova: { chi: string; settore: string; v: string; l: string; url: string };
   /** Chi l'ha messo sul tavolo: `cliente` pesa molto più di `adobe`. */
@@ -116,9 +121,11 @@ export const CASI: Caso[] = [
     leva: 'conversione',
     titolo: 'La home sa da dove parti',
     punto: 'Chi arriva da Verona vede le tratte da Verona, non la pagina di tutti.',
-    // Verbatim del 27 ott: «ti colleghi da Verona, io sull'homepage faccio
-    // vedere i quattro principali collegamenti da Verona, da 19, 29, 39 euro».
-    oggi: 'Si fa con un pop-up sopra la pagina. Parole loro: «mi piacerebbe che i componenti si adattassero in automatico».',
+    // Esempio portato da loro il 27 ott: chi si collega da Verona dovrebbe
+    // trovare in homepage i principali collegamenti da Verona, con le fasce di
+    // prezzo. Le cifre qui sotto sono quelle dell'esempio, dichiarate
+    // illustrative nella slide della matrice.
+    oggi: 'Oggi si fa con un pop-up sopra la pagina, e la richiesta loro è che siano i componenti ad adattarsi da soli.',
     viaggiatore: 'La prima schermata porta le tratte che partono da dove si trova, con le fasce di prezzo.',
     marketer: 'Una regola per area di partenza, e un elenco di tratte pronte da abbinare. Si prepara una volta e vale per tutte le città.',
     schermo: {
@@ -138,7 +145,7 @@ export const CASI: Caso[] = [
       { t: 'La misura: quanti arrivano all’acquisto', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
     kpi: ['Conversione della home', 'Prosecuzione fino alla ricerca', 'Ricavo per visita'],
-    prova: { chi: 'Santander', settore: 'banca', v: '2,3×', l: 'la conversione sulle campagne personalizzate', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
+    prova: { chi: 'Telmore', settore: 'telco', v: '+11%', l: 'le vendite dai banner personalizzati, rispetto a quelli uguali per tutti', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
     origine: 'cliente',
   },
   {
@@ -146,12 +153,12 @@ export const CASI: Caso[] = [
     leva: 'conversione',
     titolo: 'L’upgrade che oggi si offre a tutti',
     punto: 'La stessa proposta, fatta a chi ha davvero motivo di accettarla.',
-    // Dalla sintesi d'account del 27 ott: «la proposta di passaggio a classe
-    // superiore a costo zero o a costo marginale oggi si fa a tutti i
-    // viaggiatori e non su base propensione».
+    // Dalla sintesi d'account del 27 ott: oggi la proposta di passaggio a
+    // classe superiore, a costo zero o marginale, va a tutti i viaggiatori e
+    // non su base propensione.
     oggi: 'Il passaggio di classe si propone a tutti i viaggiatori, non a chi ha propensione a prenderlo.',
     viaggiatore: 'Chi viaggia sempre in Standard trova la Business al prezzo della Standard, per ventiquattr’ore.',
-    marketer: 'Il segmento esce dalla vista unica, «sempre Standard, alta frequenza», e diventa un’offerta a tempo su treni scelti. Si misura su due settimane.',
+    marketer: 'Il segmento esce dalla vista unica, sempre Standard e alta frequenza, e diventa un’offerta a tempo su treni scelti.',
     schermo: {
       dove: 'trenitalia.com · il tuo viaggio', // copy-audit-ignore — etichetta d'interfaccia dentro il mock, non voce del deck
       titolo: 'Business al prezzo della Standard',
@@ -169,7 +176,7 @@ export const CASI: Caso[] = [
       { t: 'La misura: quante salite di classe in più', dove: 'CJA', skill: 'target-test-calculator' },
     ],
     kpi: ['Quota di passaggi di classe', 'Ricavo medio per biglietto', 'Posti premium venduti'],
-    prova: { chi: 'Santander', settore: 'banca', v: '1,8×', l: 'l’impatto di business dagli output validati in Target', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
+    prova: { chi: 'Telmore', settore: 'telco', v: '+25%', l: 'le vendite incrociate ai clienti già acquisiti', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
     origine: 'cliente',
   },
   {
@@ -205,7 +212,7 @@ export const CASI: Caso[] = [
     leva: 'conversione',
     titolo: 'Il cliente Oro trattato da Oro',
     punto: 'Il livello della carta sta nel CRM e non arriva alla pagina.',
-    oggi: 'Chi ha lo status Oro vede la pagina di chiunque. Il programma chiude il 31 dicembre 2026: il livello deve comunque arrivare alla pagina.',
+    oggi: 'Chi ha lo status Oro vede la pagina di chiunque, e il programma chiude il 31 dicembre 2026.',
     viaggiatore: 'Al riconoscimento arriva il servizio compreso nel suo livello. Non uno sconto.',
     marketer: 'Il livello arriva dal CRM come attributo e diventa una condizione di esposizione, non una campagna a parte.',
     schermo: {
@@ -224,25 +231,25 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: il servizio compreso', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: uso del servizio e ritorno', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
     ],
-    kpi: ['Uso dei servizi compresi', 'Ricavo per socio', 'Ritorno del socio nel tempo'],
-    prova: { chi: 'Santander', settore: 'banca', v: '100 mln', l: 'di profili uniti in una vista sola: senza quella, riconoscere non si può', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
+    kpi: ['Uso dei servizi compresi', 'Ricavo per socio', 'Ritorno nel tempo'],
+    prova: { chi: 'Telmore', settore: 'telco', v: '+19,5%', l: 'i clienti riconosciuti sui canali a pagamento', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
     origine: 'adobe',
   },
   {
     id: 'insieme',
     leva: 'traffico',
     titolo: 'I clienti che avete in due',
-    punto: 'Sapere chi è già cliente anche dall’altra parte, senza scambiarsi gli elenchi.',
-    oggi: 'Le due società non possono unire le liste, quindi non sanno quanto si sovrappongono.',
+    punto: 'Sapere chi è già cliente di entrambe, senza scambiarsi gli elenchi.',
+    oggi: 'Le due società non possono unire le liste: non sanno quanto si sovrappongono.',
     viaggiatore: 'Chi ha già prenotato dall’altra parte trova una sola offerta, non due scollegate.',
     marketer: 'In uno spazio neutro si misura la sovrapposizione: ciascuno tiene i propri dati, e si attiva solo il gruppo comune.',
     schermo: {
       dove: 'due basi, uno spazio neutro',
       titolo: 'Il viaggio e la sosta, in una cosa sola',
       tessere: [
-        { t: 'Già cliente di entrambe', n: 'il gruppo comune' },
+        { t: 'Cliente di entrambe', n: 'il gruppo comune' },
         { t: 'Elenchi scambiati', n: 'nessuno' },
-        { t: 'Quello che si attiva', n: 'solo la sovrapposizione' },
+        { t: 'Si attiva', n: 'la sovrapposizione' },
       ],
     },
     chiesta: 'Misura quanto si sovrappongono le due basi e prepara l’offerta solo per il gruppo comune.',
@@ -252,8 +259,8 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: l’offerta che le tiene insieme', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: quanti comprano entrambe', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
-    kpi: ['Sovrapposizione attivabile', 'Conversione dell’offerta combinata', 'Costo di acquisizione'],
-    prova: { chi: 'Santander', settore: 'banca', v: 'da 50% a 70%', l: 'il tasso di riconoscimento, con ROI sulla media a pagamento +20%', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
+    kpi: ['Sovrapposizione attivabile', 'Conversione dell’offerta', 'Costo per cliente'],
+    prova: { chi: 'Santander', settore: 'banca', v: 'da 50% a 70%', l: 'il tasso di riconoscimento', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
     origine: 'adobe',
   },
 ];
@@ -290,6 +297,14 @@ export const FONTI_CAPITOLO = [
   {
     cosa: 'Programma CartaFreccia, chiusura al 31 dicembre 2026',
     url: 'https://www.trenitalia.com/it/cartafreccia.html',
+  },
+  {
+    cosa: 'Telmore, personalizzazione con Target e Real-Time CDP',
+    url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html',
+  },
+  {
+    cosa: 'Santander, personalizzazione in scala con Experience Platform',
+    url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html',
   },
   {
     cosa: 'Coworker Chat, le skill su Target e sui segmenti',

@@ -1,20 +1,23 @@
 ---
 /**
- * MockCaso — un caso d'uso visto dai due lati: chi viaggia e chi lo prepara.
+ * MockCaso — un caso d'uso visto dai due lati: chi lo prepara e chi viaggia.
  *
- * PERCHÉ DUE LATI
- * Il vincolo che il Direttore dei canali digitali ha ripetuto due volte il 27
- * ottobre: «se tu mi dai il pezzo di ferro e poi mi devo costruire tutto da
- * solo… noi vogliamo vendere il sistema, io me lo compro e poi non so che
- * fare». Un mockup che mostra solo la pagina del viaggiatore risponde alla
- * metà sbagliata: fa vedere il risultato e nasconde il lavoro, che è
- * esattamente il punto su cui non si fida.
+ * L'ORDINE È PREPARA → VIAGGIA, e non il contrario. La slide risponde al
+ * vincolo che il Direttore dei canali digitali ha posto due volte il 27
+ * ottobre: non vuole comprare lo strumento e doversi poi costruire tutto da
+ * solo. Il dubbio è sul lavoro, quindi il lavoro viene prima e la schermata è
+ * la sua conseguenza. Causa a sinistra, effetto a destra.
  *
- * PERCHÉ IL CONTENUTO È VERO
- * La prima versione aveva rettangoli grigi al posto delle tessere. Diceva
- * «qualcosa cambia» e non diceva che cosa, cioè la metà che a chi decide non
- * interessa. Ora la schermata porta le stazioni, le fasce di prezzo, i servizi
- * — le parole del caso — e il lato destro porta la frase che si scrive davvero.
+ * A SINISTRA È UNA CONVERSAZIONE, non un elenco di gesti. Si scrive una frase
+ * in italiano e Coworker risponde dicendo che cosa ha fatto e dove: il gruppo
+ * e l'attività su Adobe Target, il segmento e la misura su Customer Journey
+ * Analytics. Le risposte portano il nome del prodotto perché è lì che la cosa
+ * esiste davvero, e la chiusura dice SHIP, WAIT o STOP — che è il verdetto
+ * che la skill `target-activity-verdict` restituisce, non una formula nostra.
+ *
+ * A DESTRA SI CAMBIA DISPOSITIVO. L'app è la parte più grande del traffico
+ * (parole loro), quindi una slide che mostra solo il browser mostra la fetta
+ * più piccola: il comando «App / Web» sta lì per questo, non per decorazione.
  *
  * PERCHÉ È DISEGNATO E NON UNO SCREENSHOT
  * Un'interfaccia vera invecchia — il sito Le Frecce si rifà a marzo — e
@@ -28,221 +31,270 @@ interface Props {
   schermo: { dove: string; titolo: string; tessere: { t: string; n: string }[] };
   /** La frase che chi lavora in marketing scrive dentro Coworker Chat. */
   chiesta: string;
+  /** Le risposte di Coworker: che cosa ha fatto, e in quale prodotto. */
   passi: [Passo, Passo, Passo];
-  /** Una riga sotto la schermata: che cosa vede chi viaggia. */
+  /** Una riga sotto il dispositivo: che cosa vede chi viaggia. */
   viaggiatore: string;
   class?: string;
 }
 const { schermo, chiesta, passi, viaggiatore, class: className } = Astro.props as Props;
 ---
-<div class:list={['mk', className]}>
+<div class:list={['mk', className]} data-vista="app">
 
-  {/* ── Il viaggiatore ───────────────────────────────────────────────── */}
-  <figure class="mk-lato">
-    <figcaption class="mk-tag">Chi viaggia</figcaption>
-    <div class="mk-schermo">
-      <div class="mk-barra" aria-hidden="true">
-        <span class="mk-pallino"></span><span class="mk-pallino"></span><span class="mk-pallino"></span>
-        <span class="mk-url">{schermo.dove}</span>
-      </div>
-      <div class="mk-pagina">
-        {/* Quello che non cambia: resta, e si vede che è la stessa pagina. */}
-        <span class="mk-riga" style="width: 38%" aria-hidden="true"></span>
-        {/* Quello che cambia, con dentro le parole del caso. `data-stagger` è
-            una scena del motore: entra una tessera alla volta, e con «Riduci
-            movimento» le tessere sono già al loro posto. */}
-        <p class="mk-titolo">{schermo.titolo}</p>
-        <div class="mk-zona" data-stagger>
-          {schermo.tessere.map((t) => (
-            <span class="mk-tessera">
-              <span class="mk-tessera-t">{t.t}</span>
-              <span class="mk-tessera-n">{t.n}</span>
-            </span>
-          ))}
-        </div>
-        <span class="mk-riga" style="width: 64%" aria-hidden="true"></span>
-      </div>
-    </div>
-    <p class="mk-dice">{viaggiatore}</p>
-  </figure>
-
-  {/* ── Chi lo prepara ───────────────────────────────────────────────── */}
+  {/* ── Chi lo prepara: la conversazione ─────────────────────────────── */}
   <figure class="mk-lato">
     <figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption>
-    <div class="mk-pannello">
-      {/* La frase scritta. È il punto: il gruppo non si costruisce a mano. */}
-      <p class="mk-chiesta">{chiesta}</p>
-      <div class="mk-passi" data-stagger>
-        {passi.map((p, i) => (
-          <div class="mk-passo">
-            <span class="mk-passo-n" aria-hidden="true">{i + 1}</span>
-            <span class="mk-passo-t">{p.t}</span>
-            <span class="mk-passo-d" data-dove={p.dove}>{p.dove}</span>
+
+    <div class="mk-chat">
+      {/* La frase scritta. Ha la forma di un campo perché è una cosa che si
+          digita, non un virgolettato. */}
+      <div class="mk-riga-utente">
+        <p class="mk-chiesta">{chiesta}</p>
+      </div>
+
+      {/* Le risposte entrano una alla volta: `data-stagger` è una scena del
+          motore, con «Riduci movimento» già gestito. Non si riscrive a mano. */}
+      <div class="mk-risposte" data-stagger>
+        {passi.map((p) => (
+          <div class="mk-bolla">
+            <span class="mk-bolla-t">{p.t}</span>
+            <span class="mk-bolla-d" data-dove={p.dove}>{p.dove}</span>
           </div>
         ))}
-      </div>
-      <div class="mk-esito">
-        <span class="mk-sparkline" aria-hidden="true"></span>
-        <span class="mk-esito-t">Coworker dice anche quanto deve durare, e quando si decide</span>
+        <div class="mk-bolla mk-bolla--esito">
+          <span class="mk-bolla-t">
+            Durata consigliata: due settimane. Poi il verdetto — <strong>ship</strong>,
+            <strong>wait</strong> o <strong>stop</strong>.
+          </span>
+        </div>
       </div>
     </div>
+  </figure>
+
+  {/* ── Chi viaggia: il dispositivo ──────────────────────────────────── */}
+  <figure class="mk-lato">
+    <div class="mk-testa">
+      <figcaption class="mk-tag">Chi viaggia</figcaption>
+      <div class="mk-sw" role="group" aria-label="Dispositivo">
+        <button type="button" class="mk-sw-b" data-vista-b="app" aria-pressed="true">App</button>
+        <button type="button" class="mk-sw-b" data-vista-b="web" aria-pressed="false">Web</button>
+      </div>
+    </div>
+
+    <div class="mk-palco">
+      {/* Telefono */}
+      <div class="mk-dev mk-dev--app" aria-hidden="false">
+        <div class="mk-barra mk-barra--app"><span class="mk-tacca"></span></div>
+        <div class="mk-pagina">
+          <span class="mk-riga" style="width: 44%"></span>
+          <p class="mk-titolo">{schermo.titolo}</p>
+          <div class="mk-zona mk-zona--app">
+            {schermo.tessere.map((t) => (
+              <span class="mk-tessera">
+                <span class="mk-tessera-t">{t.t}</span>
+                <span class="mk-tessera-n">{t.n}</span>
+              </span>
+            ))}
+          </div>
+          <span class="mk-riga" style="width: 70%"></span>
+        </div>
+      </div>
+
+      {/* Browser */}
+      <div class="mk-dev mk-dev--web">
+        <div class="mk-barra">
+          <span class="mk-pallino"></span><span class="mk-pallino"></span><span class="mk-pallino"></span>
+          <span class="mk-url">{schermo.dove}</span>
+        </div>
+        <div class="mk-pagina">
+          <span class="mk-riga" style="width: 38%"></span>
+          <p class="mk-titolo">{schermo.titolo}</p>
+          <div class="mk-zona">
+            {schermo.tessere.map((t) => (
+              <span class="mk-tessera">
+                <span class="mk-tessera-t">{t.t}</span>
+                <span class="mk-tessera-n">{t.n}</span>
+              </span>
+            ))}
+          </div>
+          <span class="mk-riga" style="width: 64%"></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="mk-dice">{viaggiatore}</p>
   </figure>
 </div>
 
+<script>
+  // Il comando dispositivo. Vive qui perché è una proprietà del mockup, non
+  // del deck: non tocca i tasti freccia e non interferisce con la navigazione.
+  function montaVista(root: Element) {
+    const bottoni = root.querySelectorAll<HTMLButtonElement>('[data-vista-b]');
+    bottoni.forEach((b) => {
+      b.addEventListener('click', () => {
+        const v = b.dataset.vistaB!;
+        root.setAttribute('data-vista', v);
+        bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.vistaB === v)));
+      });
+    });
+  }
+  const monta = () => document.querySelectorAll('.mk').forEach(montaVista);
+  monta();
+  document.addEventListener('astro:after-swap', monta);
+</script>
+
 <style is:global>
   /* La slide è centrata e il reset del motore centra ogni `p`: dentro il mock
-     tutto va a bandiera, se no «Milano Centrale / da 19 €» esce incolonnato al
-     centro della tessera e sembra un listino, non una card. La specificità con
-     `[data-slide]` serve a battere il reset, non per gusto. */
+     tutto va a bandiera. La specificità con `[data-slide]` serve a battere il
+     reset, e `margin-inline: 0` a non farsi centrare la colonna. */
   [data-slide] .mk,
   [data-slide] .mk p,
   [data-slide] .mk span { text-align: left; }
-  /* Il reset cappa la larghezza dei `p` dentro una slide e li centra con
-     `margin-inline: auto`: il titolo della schermata usciva stretto e in mezzo
-     alla finestra. Si difende come dice la regola — `margin-inline: 0` a
-     specificità sufficiente — non togliendo il limite a tutti. */
   [data-slide] .mk p { max-width: none; width: 100%; margin-inline: 0; }
 
   .mk {
-    width: 100%; max-width: 72rem; margin-inline: auto;
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1.1rem, 2.2vw, 2.1rem);
+    width: 100%; max-width: 76rem; margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(1.1rem, 2.4vw, 2.4rem);
     align-items: start;
   }
   .mk-lato { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; min-width: 0; }
+  .mk-testa { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
   .mk-tag {
     font-size: clamp(0.68rem, 0.78vw, 0.78rem); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
-    text-align: left;
   }
   .mk-dice {
-    font-size: clamp(0.86rem, 0.95vw, 0.96rem); line-height: 1.5;
-    color: var(--ink-secondary); margin: 0; max-width: none; text-align: left;
+    font-size: clamp(0.84rem, 0.92vw, 0.94rem); line-height: 1.5;
+    color: var(--ink-secondary); margin: 0;
   }
 
-  /* ── La finestra del viaggiatore ──────────────────────────────────── */
-  .mk-schermo {
-    border: 1px solid var(--line-subtle); border-radius: 0.6rem; overflow: hidden;
+  /* ── La conversazione ─────────────────────────────────────────────── */
+  .mk-chat {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
+    padding: 0.85rem;
     background: rgba(255, 255, 255, 0.04);
   }
+  .mk-riga-utente { display: flex; justify-content: flex-end; }
+  .mk-chiesta {
+    margin: 0; width: auto; max-width: 92%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgba(var(--sig-rgb), 0.45);
+    border-radius: 0.45rem;
+    background: rgba(var(--sig-rgb), 0.1);
+    font-size: clamp(0.85rem, 0.95vw, 0.96rem); line-height: 1.45;
+    color: var(--ink-primary);
+  }
+  .mk-risposte { display: flex; flex-direction: column; gap: 0.4rem; }
+  .mk-bolla {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 0.45rem;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .mk-bolla-t {
+    flex: 1 1 auto; min-width: 0;
+    font-size: clamp(0.8rem, 0.88vw, 0.9rem); line-height: 1.35;
+    color: var(--ink-secondary);
+  }
+  .mk-bolla--esito { background: transparent; padding-top: 0.15rem; }
+  .mk-bolla--esito .mk-bolla-t { color: var(--ink-tertiary); font-size: 0.8rem; }
+  .mk-bolla--esito strong { color: var(--color-verde-chiaro); font-weight: 600; }
+  /* Il prodotto che esegue: inchiostro pieno su fondo esplicito, perché un
+     accento trasparente scende sotto soglia e `audit:ink` lo vede. */
+  .mk-bolla-d {
+    flex: 0 0 auto;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+    padding: 0.16rem 0.45rem; border-radius: 0.25rem;
+    color: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+  }
+  .mk-bolla-d[data-dove='Target'] { background: rgba(217, 24, 53, 0.3); }
+  .mk-bolla-d[data-dove='CJA'] { background: rgba(0, 102, 102, 0.45); }
+
+  /* ── Il dispositivo ───────────────────────────────────────────────── */
+  .mk-sw {
+    display: inline-flex; gap: 2px; padding: 2px;
+    border-radius: 9999px; border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mk-sw-b {
+    appearance: none; border: 0; cursor: pointer;
+    padding: 0.2rem 0.65rem; border-radius: 9999px;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+    background: transparent; color: rgba(241, 243, 244, 0.72);
+    transition: background 180ms ease, color 180ms ease;
+  }
+  .mk-sw-b[aria-pressed='true'] {
+    background: rgba(241, 243, 244, 0.92);
+    color: rgba(27, 34, 48, 1);
+  }
+
+  .mk-palco { position: relative; display: flex; justify-content: center; }
+  /* In vista App il telefono è stretto e la colonna resta larga: l'etichetta a
+     sinistra, il comando a destra e il telefono in mezzo si staccavano l'uno
+     dall'altro. Qui la colonna si restringe attorno al dispositivo, così i
+     quattro pezzi restano un oggetto solo. */
+  .mk[data-vista='app'] .mk-lato:last-of-type {
+    max-width: 24rem; margin-inline: auto; width: 100%;
+  }
+  .mk-dev {
+    border: 1px solid var(--line-subtle); overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+  }
+  .mk-dev--web { width: 100%; border-radius: 0.6rem; }
+  .mk-dev--app { width: min(17.5rem, 100%); border-radius: 1.4rem; }
+  .mk[data-vista='app'] .mk-dev--web,
+  .mk[data-vista='web'] .mk-dev--app { display: none; }
+
   .mk-barra {
     display: flex; align-items: center; gap: 0.32rem;
     padding: 0.5rem 0.7rem;
     border-bottom: 1px solid var(--line-subtle);
     background: rgba(255, 255, 255, 0.05);
   }
-  .mk-pallino {
-    width: 0.42rem; height: 0.42rem; border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.24);
-  }
-  .mk-url {
-    margin-left: 0.55rem; font-size: 0.74rem; letter-spacing: 0.02em;
-    color: var(--ink-tertiary);
-  }
-  .mk-pagina { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.8rem 0.9rem 0.9rem; }
+  .mk-barra--app { justify-content: center; padding: 0.45rem; }
+  .mk-tacca { display: block; width: 3.2rem; height: 0.28rem; border-radius: 9999px; background: rgba(255,255,255,0.22); }
+  .mk-pallino { width: 0.42rem; height: 0.42rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.24); }
+  .mk-url { margin-left: 0.55rem; font-size: 0.74rem; color: var(--ink-tertiary); }
+
+  .mk-pagina { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.8rem 0.9rem 0.95rem; }
   .mk-riga { display: block; height: 0.4rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.11); }
   .mk-titolo {
-    margin: 0.3rem 0 0; max-width: none; text-align: left;
+    margin: 0.25rem 0 0;
     font-family: var(--font-display); font-weight: 600;
     font-size: clamp(0.95rem, 1.05vw, 1.08rem); line-height: 1.2;
     color: var(--ink-primary);
   }
   .mk-zona { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; margin: 0.1rem 0 0.3rem; }
+  .mk-zona--app { grid-template-columns: minmax(0, 1fr); }
   .mk-tessera {
-    display: flex; flex-direction: column; justify-content: space-between; gap: 0.5rem;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem;
     min-width: 0; min-height: 3.5rem;
-    padding: 0.55rem 0.6rem; border-radius: 0.35rem;
+    padding: 0.5rem 0.6rem; border-radius: 0.35rem;
     border: 1px solid rgba(var(--sig-rgb), 0.5);
     background: rgba(var(--sig-rgb), 0.12);
   }
-  .mk-tessera-t {
-    font-size: clamp(0.72rem, 0.8vw, 0.8rem); line-height: 1.25;
-    color: var(--ink-secondary);
-  }
+  .mk-zona--app .mk-tessera { flex-direction: row; align-items: baseline; justify-content: space-between; min-height: 0; }
+  .mk-tessera-t { font-size: clamp(0.74rem, 0.82vw, 0.82rem); line-height: 1.25; color: var(--ink-secondary); }
   .mk-tessera-n {
     font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(0.84rem, 0.94vw, 0.95rem); line-height: 1.15;
+    font-size: clamp(0.85rem, 0.95vw, 0.96rem); line-height: 1.15;
     color: var(--ink-primary);
   }
 
-  /* ── Il pannello di chi lo prepara ────────────────────────────────── */
-  .mk-pannello {
-    display: flex; flex-direction: column; gap: 0.5rem;
-    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
-    padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.04);
-  }
-  /* La frase scritta. Ha la forma di un CAMPO, non di una citazione: quel
-     blocco non è qualcosa che qualcuno ha detto, è qualcosa che si digita —
-     ed è il punto dell'intera slide. La barra d'accento a sinistra che c'era
-     prima diceva «virgolettato» e per giunta è il tell più riconoscibile
-     delle interfacce generate: via, e al suo posto il contorno pieno e sottile
-     di un campo di testo. */
-  .mk-chiesta {
-    margin: 0; max-width: none; text-align: left;
-    padding: 0.5rem 0.7rem;
-    border: 1px solid var(--line-subtle);
-    border-radius: 0.35rem;
-    background: rgba(255, 255, 255, 0.07);
-    font-size: clamp(0.84rem, 0.93vw, 0.94rem); line-height: 1.45;
-    color: var(--ink-primary);
-  }
-  .mk-passi { display: flex; flex-direction: column; gap: 0.38rem; }
-  .mk-passo {
-    display: flex; align-items: center; gap: 0.55rem;
-    padding: 0.46rem 0.55rem; border-radius: 0.35rem;
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .mk-passo-n {
-    flex: 0 0 auto;
-    width: 1.2rem; height: 1.2rem; border-radius: 9999px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.68rem; font-weight: 700;
-    color: var(--ink-primary);
-    border: 1px solid rgba(var(--sig-rgb), 0.8);
-  }
-  .mk-passo-t {
-    flex: 1 1 auto; min-width: 0;
-    font-size: clamp(0.78rem, 0.86vw, 0.88rem); line-height: 1.3;
-    color: var(--ink-secondary);
-  }
-  /* Il prodotto che esegue il gesto. Inchiostro pieno su fondo esplicito: un
-     accento trasparente qui scenderebbe sotto soglia, e `audit:ink` lo vede. */
-  .mk-passo-d {
-    flex: 0 0 auto;
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
-    padding: 0.14rem 0.42rem; border-radius: 0.25rem;
-    color: rgba(255, 255, 255, 0.96);
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-  }
-  .mk-esito {
-    display: flex; align-items: center; gap: 0.55rem;
-    margin-top: 0; padding: 0.15rem 0.55rem 0;
-  }
-  /* Una riga che sale: la misura, non un grafico vero. Non dice un numero che
-     non abbiamo — dice che alla fine si guarda se ha funzionato. */
-  .mk-sparkline {
-    flex: 0 0 auto; width: 3.4rem; height: 0.85rem;
-    background:
-      linear-gradient(to top right, transparent calc(50% - 1px), rgba(var(--sig-rgb), 0.95) calc(50% - 1px), rgba(var(--sig-rgb), 0.95) calc(50% + 1px), transparent calc(50% + 1px));
-  }
-  .mk-esito-t { font-size: 0.76rem; line-height: 1.35; color: var(--ink-tertiary); }
-
-  /* A 1280 la safe-area si stringe e, col «Scopri come» aperto, la testa della
-     slide sbordava: il contratto dice di ridurre densità e spaziature prima di
-     toccare il tipo, e il tipo qui resta identico. */
   @media (max-width: 1300px) {
-    .mk-lato { gap: 0.4rem; }
-    .mk-pagina { gap: 0.38rem; padding: 0.65rem 0.75rem 0.7rem; }
-    .mk-tessera { min-height: 3.05rem; padding: 0.45rem 0.5rem; gap: 0.35rem; }
-    .mk-pannello { gap: 0.38rem; padding: 0.65rem; }
-    .mk-chiesta { padding: 0.42rem 0.6rem; }
-    .mk-passo { padding: 0.34rem 0.45rem; }
-    .mk-esito { padding-top: 0; }
-    .mk-barra { padding: 0.38rem 0.6rem; }
+    .mk-lato { gap: 0.35rem; }
+    .mk-dice { font-size: 0.82rem; line-height: 1.4; }
+    .mk-chat { gap: 0.34rem; padding: 0.6rem; }
+    .mk-bolla { padding: 0.34rem 0.5rem; }
+    .mk-risposte { gap: 0.32rem; }
+    .mk-pagina { gap: 0.38rem; padding: 0.65rem 0.75rem 0.75rem; }
+    .mk-tessera { min-height: 3.05rem; padding: 0.42rem 0.5rem; }
+    .mk-dev--app { width: min(15.5rem, 100%); }
   }
-
   @media (max-width: 900px) {
     .mk { grid-template-columns: minmax(0, 1fr); }
   }
