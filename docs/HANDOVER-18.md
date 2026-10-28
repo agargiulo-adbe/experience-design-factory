@@ -1,4 +1,4 @@
-# Handover — Parte 18 di 18
+# Handover — Parte 18 di 19
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -47,7 +47,7 @@ Regola pratica: **è accettabile aumentare `a`/`i` (soft) ma NON `b`/`j`/`k` (ha
 seconda stanza di Intesa dopo quella del 22 ottobre, e ha un pubblico diverso: non più la
 direzione Sales & Marketing Digital Retail, ma **chi costruisce i target e chi possiede il CRM**.
 
-**23 slide su 7 rotte** più l'admin e il dossier gated. Design system **letto** dal CSS di
+**21 slide su 7 rotte** più l'admin e il dossier gated (il «23» scritto qui il 26 ott era un conteggio a mano sbagliato: le slide registrate nel `PAGE_REGISTRY` sono 21, e §40.7 lo diceva già — «18 slide su 21 con un elemento visivo»). Design system **letto** dal CSS di
 produzione del cliente (verde di sistema `#258900`, verde notte `#0d2901`, **Open Sans**, che è
 il carattere vero): nessun valore a memoria.
 
@@ -161,3 +161,178 @@ descrizione nella Console, che diceva ancora «scheletro generato, da scrivere c
   promettere materiale condivisibile.
 - Il **blueprint tecnico** chiesto alla Business Unit era atteso per il 29 ott: senza, il
   disegno che si porta in sala resta nostro e basta.
+
+### 40.9 Il giro del 27 ottobre — due correzioni d'ask prima della call interna
+
+La mattina del **27 ott** c'era una riunione interna Adobe (10:00-11:00, Teams, quattro
+persone: l'AE che la organizza, il lead della patch FSI, l'architetto che costruisce il
+blueprint e chi ha scritto il deck) per condividere i contenuti del 5 novembre. Preparandola
+sono uscite due cose di merito, e nessuna delle due era un difetto di resa.
+
+**L'ask chiedeva a chi era in sala il nome di chi era in sala** (commit `44e6769`). Il
+capitolo «La rotta» chiedeva **«Due nomi: dato e targeting»**. Ma il referente che ospita
+l'incontro è **Head of Targeting Commerciale** e costruisce target e audience, e il suo capo
+possiede CRM, sviluppo commerciale e Adobe Analytics: dei due nomi, uno è seduto davanti.
+L'ask ora è **«Un nome: chi governa i dati»**, ed è l'unico che davvero manca — il grafo dei
+contatti, il «chi è chi» del registro e la ricostruzione dell'architettura non nominano
+nessun proprietario dell'ingestione. Nello stesso commit è sparito un array `PASSI` che **non
+era reso da nessuna parte** e teneva una seconda copia della richiesta con la formulazione
+vecchia: è la regola «l'ask sta in un posto solo», applicata a del codice morto.
+
+**Il dual-run si dichiara, non si drammatizza** (commit `b8596ee`). In «Oltre l'analisi» il
+drill-down diceva **«Il periodo in cui si paga due volte»**, mentre la figura che gli sta
+sopra disegna due barre che si sovrappongono fra due tratteggi — una **finestra**, non una
+penale: le parole erano più dure dell'immagine. Ora l'ancora è «La finestra di
+sovrapposizione» e la riga dice che per il tempo del confronto i due ambienti convivono, che
+è una fase da mettere in conto e che si pianifica insieme: **come si gestisce si dice a
+voce**. Nella stessa riga è caduta la coda «conviene partire da un percorso solo, quello del
+mutuo», che lì faceva sembrare il perimetro una **concessione strappata dal costo** invece di
+un metodo, e bruciava due capitoli prima l'ask che «La rotta» porta per intero. Il titolo
+della slide resta **«Non è un rifacimento. Non è nemmeno gratis.»**: lì l'onestà è il motivo
+per cui la slide esiste.
+
+⚠️ **Sul mutuo resta un'obiezione di merito, non risolta e non toccata.** In banca un use
+case si sceglie da quanto patrimonio assorbe: il margine di intermediazione ne assorbe circa
+10-12 ogni 100 prestati, il **margine da servizio** no, e il mutuo prima casa è l'use case che
+portano tutti (memoria `use-case-banca-margine-servizio`). Dall'altra parte il mutuo
+**attraversa tutti e tre gli strati** — digitale, filiale, contatto assistito — che è
+esattamente ciò che serve per dimostrare la cucitura del dato. Il mutuo è in tre punti del
+deck; cambiarlo è una decisione dell'owner, non una pulizia. La candidata ovvia sarebbe
+l'**attivazione nei primi 90 giorni**, che è lato servizio ed è il caso d'uso dichiarato dal
+cliente stesso — con l'avvertenza che lì quella fase vive su un'altra entità del gruppo, e il
+5 si parla con la Divisione.
+
+**Gate dei due commit**: `copy-audit` 0 HARD 0 SOFT su 420 stringhe · `audit:wrap` PULITO ·
+`audit:ink` PULITO · `audit:deck` **0 HARD**, con i SOFT **identici al commit precedente**
+(verificato con uno stash a confronto, non a occhio: 7 `a` e 32 `i` prima e dopo) · le due
+slide rilette a 1920 con il «Scopri come» aperto.
+
+### 40.10 Il dossier corretto il 27 ottobre — e il rilevatore che serviva
+
+Lo stesso giro ha toccato il **dossier interno**, che non sta nel repo: il file di seed è
+git-ignorato e il contenuto vive in `restricted_docs`. Tre cose.
+
+**Un disallineamento IT/EN, e uno solo.** In «Da dire, da non dire» tre voci avevano
+l'inglese **ruotato di uno** (l'inglese del concorrente sotto l'italiano della «vista unica
+del cliente», e così a scalare). Per trovarlo è servito un rilevatore di **scambio**, non di
+traduzione: il primo tentativo — confronto di cifre, marcatori e nomi propri fra `it` e `en` —
+dava **122 falsi positivi** del tipo Torino/Turin. Quello che funziona costruisce una firma
+per stringa (cifre, nomi propri, prefissi di cinque caratteri delle parole lunghe) e, dentro
+ogni elenco, verifica che l'inglese che somiglia di più all'italiano della voce *i* sia
+proprio quello della voce *i*. Passato su tutte le coppie delle quattordici sezioni: **un solo
+punto rotto**, corretto, zero residui al secondo giro.
+
+**Due correzioni di contenuto decise dall'owner**, entrambe verificate prima di applicarle:
+l'**assessment architetturale esce dalla sessione** del 5 (era fra le domande da fare e negli
+ultimi quindici minuti della scaletta, mentre le fonti dello stesso dossier lo registrano come
+«il disegno del dopo» e lo assegnano al giro di inizio anno con la sponsor: due sezioni su
+quattro si contraddicevano, ed è stato corretto nel verso in cui puntavano le altre due); e la
+scaletta chiede **un nome, non due**, come il deck.
+
+⚠️ **Un file di seed corretto non è un dossier corretto.** Il contenuto vive nel database:
+senza `supabase db query --linked -f …` la pagina in rete resta quella vecchia. Applicato e
+riletto dal database. Il seed è idempotente e il `share_token` **non cambia** (`gen_random_uuid()`
+solo dove è nullo), quindi il link già distribuito regge.
+
+---
+
+## 41. Unipol — «Cinque domande» (Playbook, 28 ottobre 2026)
+
+`apps/unipol-cinque-domande` · **bilingue IT/EN** (IT di default) · **30 slide su 9 rotte**
+(home + otto capitoli) · ⚠️ **al 28 ott sera l'intera experience è NON COMMITTATA**: sta solo
+sul disco, insieme a quindici file tracciati modificati (vedi §10, Parte 2).
+
+Nasce il **28 ott 2026** da `pnpm new:experience`, con il design system riscritto lo stesso
+giorno sui valori veri. È il **secondo Playbook** della Factory dopo Poste, e la forma è la
+stessa per costruzione: *N domande = N capitoli*, ognuna risposta «oggi» e «con X». Il
+contesto d'account è il programma high-touch su **CX Enterprise Coworker**, esteso da CJA
+anche ad **Adobe Target** l'8 ott, con il rinnovo Target al 31 dicembre 2026 (memoria
+`unipol-target-retention-coworker`).
+
+### 41.1 I capitoli
+
+Otto, di cui **i cinque centrali sono le cinque domande** poste dal cliente nella call del
+**28 ottobre**:
+
+| | Capitolo | Che cosa fa |
+|---|---|---|
+| 01 | Il punto di partenza | da dove si parte: programma, baseline, le cinque domande |
+| 02 | Chiudere un test | la prima domanda — «oggi» contro «con Coworker» |
+| 03 | La memoria dei test | che cosa resta di un test quando è finito |
+| 04 | Dove è forte | dove lo strumento regge e dove no |
+| 05 | Alert e tabelle | gli alert che non si leggono, e il digest |
+| 06 | Il contesto | che cosa sa di voi quando risponde |
+| 07 | Cosa vi portate a casa | l'ask del Playbook |
+| 08 | **Il registro** | lo strato dinamico (vedi §41.3) |
+
+Ogni voce porta il **livello della fonte**, che è la cosa che distingue questo deck da una
+lista di promesse: `doc` **documentato** (col link a Experience League), `la` **non ancora per
+tutti**, `campo` **dal campo** (altri clienti, anonimizzati), `noi` **detto da noi**.
+⚠️ `CLAUDE.md` ne elenca **tre** e il codice ne dichiara **quattro** (`LIVELLI_REG` in
+`src/data/registro.ts`): uno dei due va allineato, e il codice è quello che si rende.
+
+### 41.2 Il design system, letto e misurato
+
+`pnpm brand:tokens https://www.unipol.it` il 28 ott — due fogli, **366 KB di CSS di
+produzione** — più il bundle critico e il foglio dei caratteri del design system, letti a mano.
+
+- **`#001c35`**, 17 occorrenze, il più frequente: è il **colore di sistema**, il navy di testo
+  e fondi pieni → `--surface-inverse`.
+- **`#0303f5`** è il **marchio**: il sito lo dichiara come `--Unipol-Ink-Blue-500` con una
+  scala completa 50→900, ed è raro (5 occorrenze) e inconfondibile → `--surface-brand` e
+  accento. È di nuovo la regola «il più frequente è il sistema, il marchio è raro».
+- `#e5f3ff` (`--Unipol-Azure-Blue-50`) → secondary · avorio **`#f9f9f7`** → primary ·
+  `#3d95ff` l'azzurro d'azione · verde `#9edc89` e corallo `#f59670` **solo come stato**.
+- **L'inchiostro si ribalta, e il numero lo prova**: il marchio `#0303f5` su `#001c35` dà
+  **1,93:1** — illeggibile; su `#f9f9f7` dà **8,46:1**. Quindi `--ink-accent` ha due valori, e
+  sulle superfici scure è `#3d95ff` (**5,75:1** sul navy). Per il testo si usa sempre
+  `--ink-accent`, mai `--color-accent`.
+- **I caratteri sono quelli veri, non un ripiego.** Il design system dichiara
+  `--Family-Typeface-A: Manrope` (30 usi nel bundle critico) e `--Family-Typeface-B: Apex New`
+  (7 usi). **Manrope è su Google Fonts**, quindi è distribuibile ed è il carattere del
+  cliente; Apex New è Monotype proprietario e il ruolo display lo copre Manrope ai pesi alti.
+  ⚠️ Nota per chi legge dopo: Manrope compare anche nella skin **UniCredit**, ma **lì è una
+  sostituta scelta da noi** e qui è il carattere vero del cliente. Non è un copia-incolla e
+  non va «corretto».
+
+### 41.3 Il registro — lo strato che cresce
+
+L'ottavo capitolo non è una slide di chiusura: è **il documento vivo del programma**. Una riga
+per voce con data, tema, esito, stato e livello della fonte; la pagina **impagina da sé** tre
+voci per slide (`REGISTRO.slice(i, i+3)`), quindi le slide crescono col contenuto senza che
+nessuno tocchi il markup. Al 28 ott sono **11 voci** → quattro pagine più la copertina, cioè
+le cinque slide del capitolo.
+
+L'idea è dichiarata: **i capitoli restano fermi e si riscrivono a due traguardi**, il registro
+si aggiorna a ogni sessione. È la risposta alla deriva tipica di un Playbook, che invecchia il
+giorno dopo la sessione.
+
+### 41.4 Dove è registrata
+
+`deploy.yml` (copia + verifica della struttura dell'artefatto), card nello hub, voce nello
+showcase con **`defaultPublished: false`**, `dev:unipol-cinque-domande` e `audit:deck:all` in
+`package.json`, `ROUTE_SETS` + `CWD_ALIAS` in `scripts/lib/deck-routes.ts`, e la migrazione
+**`0032_seed_unipol_cinque_domande.sql`** che la registra nella Console come **draft** e
+**fuori** dallo showcase.
+
+### 41.5 Che cosa manca
+
+- ⚠️ **Non è committata.** L'app, la migrazione e i quindici file tracciati modificati esistono
+  solo sul disco: un `git stash` distratto o una macchina che si rompe li porta via. È il P0 in
+  testa al backlog.
+- ⚠️ **La migrazione `0032` non risulta applicata** al database remoto *(da verificare)*. Vale
+  la regola imparata su `0030`: **una migrazione committata non è una migrazione applicata**.
+- ⚠️ **La vetrina e la Console la descrivono come uno scaffold** — «5 capitoli · IT/EN ·
+  scaffold», «copy e design system arrivano ancora dal brief», `sections: 5` — mentre i
+  capitoli sono otto, il copy è scritto e il design system è letto dal sito del cliente. Lo
+  stesso vale per `intesa-innesto`, dove il 26 ott era stata corretta **solo** la riga della
+  Console (commit `6599e74`) e non quella dello showcase.
+- **Nessuna panel review** (gate `/handover` 3.4). `docs/Unipol/PANEL-PERSONAS.md` **esiste**,
+  ma è stato scritto per un altro tavolo: va verificato che copra il pubblico di questo
+  Playbook — chi possiede Target e CJA — prima di usarlo.
+- **Nessun dossier interno** e nessuna sezione «guscio sensoriale»: niente clip, niente letto
+  sonoro, `og.png` e favicon generati.
+- **Lo stato dei gate non è registrato qui**: non ci sono numeri di `audit:deck`, `audit:ink`,
+  `copy-audit` o `audit:wrap` per questa experience *(da verificare lanciandoli)*. Finché non
+  ci sono, questa sezione descrive che cosa c'è, non che cosa regge.
+

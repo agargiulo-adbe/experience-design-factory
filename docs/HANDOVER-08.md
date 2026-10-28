@@ -1,4 +1,4 @@
-# Handover — Parte 8 di 18
+# Handover — Parte 8 di 19
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -290,4 +290,105 @@ che è la forma onesta di dire «ci si arriva» senza venderlo adesso.
 - ⚠️ **Il panel di §36.7 copre il deck PRIMA di questa riscrittura** — ed era proprio sul perimetro
   che aveva chiesto i tagli più pesanti. È il **P0 nuovo** di §10, da chiudere prima del TTG
   (14-16 ott).
+
+### 36.10 «Che cosa ci faccio» — il capitolo dei casi d'uso (28 ottobre 2026, sette commit)
+
+Chiesto il **27 ottobre** dal **Direttore dei canali digitali** del cliente: un quadro di
+quattro o cinque casi d'uso importanti, con l'obiettivo dichiarato di vendere di più. Il
+capitolo sta **dopo Convergenza**, perché Convergenza dice *che cos'è* lo strato e questo dice
+*che cosa ci si fa*: invertirli vorrebbe dire mostrare la macchina a chi ha già detto, due
+volte, «io me lo compro e poi non so che fare».
+
+**I due perimetri sono una figura sola, non due documenti.** Il responsabile della piattaforma
+dati aveva ristretto il perimetro il **9 ottobre** a `trenitalia.com` più CRM (§36.9); il
+Direttore il **27** lo ha allargato a Frecce e app. Una matrice li tiene insieme e un dittico
+li confronta: **la figura non cambia, cambia quante fonti sono accese** — due casi su cinque
+restano interi, due a metà, uno aspetta. Nessuno dei due interlocutori deve credere a una
+frase nostra: lo legge dalla figura. ⚠️ I casi fuori perimetro si **smorzano, non si
+spengono**: spegnerli direbbe «non esiste», che è il contrario della domanda che hanno in mano.
+
+**Ogni caso ha due lati, ed è il punto.** Il mockup mostra la pagina di chi viaggia e, accanto,
+il lavoro di chi quel risultato lo prepara. Un mockup del solo lato viaggiatore risponde alla
+metà sbagliata del vincolo. Il lato «chi prepara» è passato per tre forme in una giornata:
+elenco di gesti astratti → i tre passi col **prodotto che li esegue** e le **skill che la
+documentazione pubblica elenca** (`target-audience-composer`, `target-vec`,
+`target-activity-verdict`…) → una **conversazione** vera, con la frase che si scrive in
+Coworker Chat, le risposte e la chiusura col verdetto *ship / wait / stop*, che è quello che
+quella skill restituisce davvero. E l'ordine si è rovesciato: **prima si prepara, poi si
+viaggia** — il lavoro a sinistra, la schermata come sua conseguenza.
+
+**Nessuna animazione scritta a mano.** `pnpm deck:catalogo` aveva già tutte le scene che
+servivano, e il contratto vieta di riscriverle: sono dichiarative, hanno due implementazioni e
+gestiscono già «Riduci movimento». Qui si dichiara solo il markup — `data-converse` (le bolle
+alternate), `data-clienteling` (la riga di scansione e gli attributi che entrano),
+`data-personalize` (le varianti pari, poi quella del profilo che si afferma),
+`data-pulse-line` (l'impulso che percorre il back-end). Le classi del contratto del motore
+(`.chat-bubble`, `.perso-item`, `.scan-line`, `.reveal-attr`) sono **scopate sotto `.mk`**.
+
+**Si racconta un passo alla volta.** Ogni battuta e ogni stadio è un `[data-substep]`: il
+motore li rivela uno alla volta con ↓, Spazio o il pulsante avanti, mentre **→ salta alla
+slide dopo** — l'uscita di sicurezza di chi presenta. ⚠️ **E per due commit non funzionava
+affatto**: era stata copiata da un'altra app la riga `html:not(.js) [data-substep] {opacity:1}`
+— protezione giusta, perché senza JavaScript la slide deve leggersi intera — ma **questa app
+non marcava mai `html.js`**, quindi il selettore era sempre vero, tutto restava visibile e
+premere ↓ non faceva niente. Si vedeva **solo misurando**: a riposo le quattro bolle
+risultavano a opacità 1 e traslazione 0. Ora il layout marca `html.js` in testa e lo rimette
+dopo ogni swap SPA. Regola che ne esce: **il passo manuale e l'animazione non sono in
+conflitto** — il *passo* lo decide chi racconta, il *movimento* resta quello della scena.
+
+**Tre cose trovate verificando, non assumendo** (commit `8c7cbfc`):
+
+- la copertina del capitolo diceva **«Max Mara × Adobe»**. `CoverHero` monta la firma
+  sartoriale di Max Mara **se non la si spegne**: dodici copertine su tredici passavano
+  `signature={false}`, la nuova no. Controllate tutte. È un default del motore che si eredita
+  in silenzio: vale per ogni copertina nuova di ogni app.
+- i vantaggi dello status li avevo **inventati**. Quelli veri, dalla pagina ufficiale:
+  FrecciaLounge, tre upgrade di servizio, Fast Track. E soprattutto **il programma fedeltà
+  chiude il 31 dicembre 2026** senza un sostituto annunciato per l'alta velocità — che è ciò
+  che rende il caso attuale, e non si sarebbe mai trovato senza aprire la pagina.
+- col dettaglio aperto la testa della slide finiva **sotto la barra di navigazione** e
+  l'ultima riga **sotto i comandi del deck**. ⚠️ **Non lo vede nessun check di `audit:deck`**:
+  `b` guarda i comandi del deck, non la nav dell'app, e i comandi si nascondono da soli prima
+  che l'audit misuri. L'ha trovato **`audit:ink`**, che ritagliava la barra e leggeva ardesia
+  su ardesia. La pelle ora fa arretrare nav, firma, credito e comandi, come il motore già fa
+  con l'audio.
+
+**Due decisioni di forma che vale la pena ricordare.** Il blocco della frase che si scrive
+aveva un **bordo d'accento su un lato solo** — il segno più riconoscibile di un'interfaccia
+generata — e per giunta diceva la cosa sbagliata: non è un virgolettato, è il testo che si
+digita dentro Coworker. Contorno sottile e pieno, come un campo. E il **«Scopri come» è uscito
+dai casi**: con la conversazione e i blocchi più grandi non ci stava più a 1440 e 1280, e la
+scelta giusta non era comprimere — «com'è oggi» va in chiaro sotto l'occhiello e le fonti nel
+blocco dei KPI, così **la slide si legge tutta senza aprire niente**, che è la condizione
+perché regga quando viene inoltrata a chi non era in sala.
+
+**Le referenze sono cambiate tre volte, e ogni volta per verifica.** Prima Brightline (l'unico
+operatore ferroviario con una storia Adobe pubblica, tre numeri verbatim); poi Santander, che
+usa la stessa combinazione CJA + Target + Real-Time CDP; infine **due fonti distinte, aperte e
+verificate il 28 ottobre** — Telmore (telco) per i banner personalizzati, le vendite incrociate
+e il riconoscimento sui canali a pagamento, Santander (banca) per il carrello abbandonato e il
+tasso di riconoscimento. **Coca-Cola e Alshaya sono state scartate**: la prima pagina parlava
+d'altro, la seconda non esiste. Ogni numero è attaccato al caso che misura davvero, non il più
+grosso al più vicino.
+
+⚠️ **Tolti i virgolettati delle trascrizioni**, in pagina e nei commenti: il repo è pubblico e
+il parlato di una riunione non si riporta fra virgolette. I fatti restano, le parole sono
+nostre.
+
+**Gate** (ultimo giro): `audit:deck` **0 HARD su 14 rotte e 3 viewport**, blocchi aperti
+compresi · `audit:ink` pulito (da 209 a **243 blocchi** man mano che il capitolo cresceva) ·
+`audit:wrap` pulito · `copy-audit` zero rilievi sui file del capitolo · `audit:fonti` nessun
+link rotto · `audit:og` PASS · `typecheck` pulito · 1920 e 1280 letti a occhio.
+
+⚠️ **Due cose che i gate non coprono, e che vanno fatte a mano su questo capitolo.**
+L'occhiello è a **13px**, cioè **sotto la soglia di misura** di `audit:deck`: la collisione con
+la nav e con la firma co-brand si trova solo misurando le posizioni **a slide attiva e con
+tutti i sotto-passi rivelati** (verificate tutte e cinque: occhiello a 85, serve ≥80; fondo a
+715, serve ≤720). E con i sotto-passi davvero attivi **`audit:ink` misura i ritagli dei testi
+ancora nascosti** — l'opacità del genitore non si propaga a `getComputedStyle` del figlio —
+quindi il contrasto delle parti rivelate va guardato a occhio.
+
+⚠️ **Il panel di §36.7 ora copre un deck di due riscritture fa**: era già scoperto dal
+perimetro ridotto del 9 ott (§36.9), e adesso c'è in più un capitolo intero che nessuna persona
+simulata ha visto. Vedi §10, Parte 2.
 

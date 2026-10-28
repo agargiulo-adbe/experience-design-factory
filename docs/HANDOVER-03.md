@@ -1,9 +1,83 @@
-# Handover — Parte 3 di 18
+# Handover — Parte 3 di 19
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### Change log — «Che cosa ci faccio»: i casi d'uso di Trenitalia, e i sotto-passi che non si attivavano (2026-10-28) → §36.10 (Parte 8), commit `0b7f14c` `8c7cbfc` `111f7a8` `91a98b0` `18aeaf8` `b75a083` `0519283`
+
+Sette commit in una giornata su `apps/trenitalia-connessioni`, ramo
+`feat/trenitalia-connessioni-casi-duso`: un **capitolo nuovo** con cinque casi d'uso, chiesto
+il 27 ott dal Direttore dei canali digitali del cliente. Il merito sta in §36.10; qui le
+quattro cose che valgono oltre questo deck.
+
+**I due perimetri stanno in una figura sola.** Il responsabile della piattaforma dati aveva
+ristretto il perimetro il 9 ott, il Direttore il 27 lo ha allargato: invece di due documenti,
+una matrice e un dittico dove **la figura non cambia e cambia quante fonti sono accese**. I
+casi fuori perimetro si **smorzano, non si spengono**.
+
+**Un difetto che si vedeva solo misurando.** I sotto-passi (`[data-substep]`) non si
+attivavano affatto: era stata copiata da un'altra app la protezione
+`html:not(.js) [data-substep] {opacity:1}`, ma **questa app non marcava mai `html.js`** —
+quindi il selettore era sempre vero, tutto restava visibile e premere ↓ non faceva niente. A
+occhio sembrava funzionare; a riposo le bolle risultavano a opacità 1 e traslazione 0.
+
+**Un default del motore che si eredita in silenzio.** La copertina del capitolo nuovo diceva
+**«Max Mara × Adobe»**: `CoverHero` monta la firma sartoriale di Max Mara se non la si spegne,
+e dodici copertine su tredici passavano `signature={false}`. Da controllare su **ogni
+copertina nuova di ogni app**.
+
+**E una collisione che `audit:deck` non può vedere**: col drill-down aperto la testa della
+slide finiva sotto la nav dell'app e l'ultima riga sotto i comandi del deck. Il check `b`
+guarda i comandi, non la nav; e i comandi si nascondono da soli prima che l'audit misuri.
+L'ha trovato **`audit:ink`**, leggendo ardesia su ardesia nel ritaglio della barra.
+
+⚠️ Il panel di §36.7 ora copre un deck di **due riscritture fa**.
+
+### Change log — Unipol «Cinque domande»: il secondo Playbook, e un design system letto in un giorno (2026-10-28) → §41 (Parte 18)
+
+Nata da `pnpm new:experience` e scritta lo stesso giorno: **30 slide su 9 rotte**, bilingue
+IT/EN, otto capitoli di cui **i cinque centrali sono le cinque domande** poste dal cliente
+nella call del 28 ott, ognuna risposta «oggi» e «con CX Enterprise Coworker». L'ottavo
+capitolo, **il registro**, è lo strato dinamico: impagina da sé tre voci per slide, quindi
+cresce col contenuto senza che nessuno tocchi il markup — i capitoli restano fermi, il
+registro si aggiorna a ogni sessione del programma.
+
+**Il design system è letto, e il ribaltamento dell'inchiostro è misurato**: `#001c35` è il
+colore di sistema (il più frequente), `#0303f5` è il marchio (il sito lo dichiara come
+`--Unipol-Ink-Blue-500`) — e il marchio sul navy dà **1,93:1**, cioè illeggibile, mentre
+sull'avorio dà 8,46:1. Quindi `--ink-accent` ha due valori. **Manrope è il carattere vero del
+cliente** (`--Family-Typeface-A`, su Google Fonts): nella skin UniCredit lo stesso carattere è
+invece una **sostituta scelta da noi**, e le due cose non vanno confuse.
+
+⚠️ **Tutto questo non è committato** al 28 ott sera — l'app, la migrazione `0032` e quindici
+file tracciati modificati stanno solo sul disco. ⚠️ E **la vetrina e la Console la descrivono
+come uno scaffold a cinque capitoli**, come era successo a `intesa-innesto` (dove il 26 ott
+era stata corretta solo la riga della Console). Entrambe le voci sono nel backlog.
+
+### Change log — due correzioni d'ask su «Dove ci innestiamo», e il dossier che si contraddiceva (2026-10-27) → §40.9–40.10 (Parte 18), commit `44e6769` `b8596ee`
+
+Preparando la riunione interna del 27 ott sui contenuti del 5 novembre sono uscite due
+correzioni di merito, nessuna delle quali era un difetto di resa.
+
+**L'ask chiedeva a chi era in sala il nome di chi era in sala.** «Due nomi: dato e targeting»,
+detto a un Head of Targeting Commerciale che costruisce target e audience, brucia metà della
+richiesta. Ora è **«Un nome: chi governa i dati»**, che è l'unico che davvero manca. Nello
+stesso commit è sparito un array che non era reso da nessuna parte e teneva una **seconda copia
+della richiesta** con la formulazione vecchia.
+
+**Le parole erano più dure del disegno.** «Il periodo in cui si paga due volte» stava sopra una
+figura che disegna due barre sovrapposte fra due tratteggi — una finestra, non una penale. Ora
+l'ancora è «La finestra di sovrapposizione» e **come si gestisce si dice a voce**.
+
+**Nel dossier, un disallineamento IT/EN e due correzioni di contenuto.** Per trovare il primo è
+servito un rilevatore di **scambio**, non di traduzione: il confronto ingenuo fra cifre,
+marcatori e nomi propri dava **122 falsi positivi** del tipo Torino/Turin. Quello che funziona
+costruisce una firma per stringa e verifica, dentro ogni elenco, che l'inglese più simile
+all'italiano della voce *i* sia quello della voce *i*. Risultato: **un solo punto rotto** su
+quattordici sezioni. ⚠️ E un seed corretto non è un dossier corretto: il contenuto vive nel
+database, quindi va **applicato** — il seed è idempotente e il `share_token` non cambia.
 
 ### Change log — il dossier del 5 novembre, bilingue, e il motore che non traduceva (2026-10-26) → §40 (Parte 18)
 
@@ -199,11 +273,4 @@ Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a c
 - `2ebada2` **un numero che non tornava, e un effetto che diceva il falso** — il conteggio animato mostrava «**0 su 8 risposte nominano Trenitalia**» mentre saliva: un'affermazione falsa proiettata per mezzo secondo, tolta del tutto. Nel motore, la versione reduced-motion del conteggio perdeva prefisso e suffisso (rendeva «70» al posto di «70.000»). Con `86a4cc9` è tornata verde anche la **CI**, rossa da giorni per tutti per una domanda ripetuta identica in due slide di `trenitalia-connessioni`.
 - **Fatto operativo, non di codice:** un `git add -A` sul ramo di un altro workstream ha portato **18 file di TIM** dentro un commit di Trenitalia, pushato e deployato (**§38, Parte 16**; la decisione su cosa farne è dell'owner ed è nel backlog). **La regola che resta: in questo repo non si usa `git add -A`**, si verifica il ramo prima di ogni commit, e dove due lavori insistono sullo stesso tree si committa da un **worktree separato**.
 - **In parallelo, da un'altra sessione** (`6f5f779`, `50a0db4`, `1c437f6`): il **lavoro operativo d'account** diventa un mestiere distinto da quello sulla Factory — `docs/CLAUDE.md` con le sue regole, il registro `docs/<Cliente>/CONTO.md`, i comandi `/account-open`, `/account-close`, `/accounts`, lo script `scripts/conti.ts`. ⚠️ **Il `.gitignore` si è rovesciato**: `docs/.gitignore` è **fail-closed** — ignora tutto sotto `docs/` e riammette i soli documenti della Factory. Prima era un elenco a mano cliente per cliente, e **ogni cliente nuovo nasceva esposto** (è così che `docs/Enel/` finì tracciata). Gate `pnpm audit:docs`, in CI.
-
-### Change log — la copertina era ferma per metà delle persone, e il perimetro di Trenitalia si stringe (2026-10-09, notte) → commit `c4e14f0`, `dc82a1e`
-
-- `dc82a1e` **`prefers-reduced-motion` nascondeva la clip, e nessuno poteva accorgersene** — `packages/core/src/blocks/immersive/LoopVideo.astro`. Il motore faceva un `display: none` secco sulla clip di sfondo sotto la preferenza di sistema. Tecnicamente corretto, **in pratica un difetto silenzioso**: su macOS «Riduci movimento» è attivo su moltissime macchine — spesso per la nausea da parallasse, non per togliere una clip ambient — e chi apriva il deck vedeva una copertina ferma **senza sapere che ci fosse un video**. Misurato: con la preferenza attiva `display:none`, `paused:true`, `t:0`; senza, gira a `t:6.01`. Ora la preferenza vale (**niente autoplay**, nessun movimento a sorpresa) ma non decide al posto di chi guarda: un **comando nella barra del deck** accende il movimento, la scelta si ricorda in `localStorage['edf:motion']`, vale per tutte le clip del percorso e sopravvive agli swap SPA; **senza quella preferenza il comando non compare**. Pillola e non cerchio, perché un «play» in mezzo ai comandi di una presentazione si legge come «avvia le slide»; su telefono resta la sola icona, bersaglio 44×44, con il senso in `aria-label`. Sta nel motore: **ogni deck con una clip lo eredita senza wiring**. Verifica: i quattro casi misurati uno per uno (senza preferenza · con preferenza prima e dopo il clic · altro capitolo), barra dentro il viewport a 1920/1280/768/390 con la preferenza attiva, 16 app buildate, `audit:deck --tv` 0 HARD, `audit:wrap` pulito.
-- ⚠️ **La lezione è più grande del difetto, ed è in `CLAUDE.md`: misurare nelle condizioni di chi guarda, non in quelle del browser di prova.** Sono serviti **tre giri** per trovarlo. L'owner ha detto tre volte «la copertina è ferma»; ogni volta la misura — prima in locale, poi in produzione, con la differenza fra due fotogrammi, il PSNR del giro e il contrasto nel caso peggiore — diceva che il movimento c'era. Era vero e inutile: Playwright parte **senza** le preferenze dell'utente. Quando qualcuno dice «non lo vedo» e lo strumento dice che c'è, **la differenza è nelle condizioni di misura** e si riproducono prima di cercare altrove: `reducedMotion`, `colorScheme`, `forcedColors`, `locale`, zoom, `deviceScaleFactor`, rete lenta, risparmio energetico — e la **produzione**, non solo il preview. Vale anche al contrario di «quello che dice l'utente è un'ipotesi»: quando l'owner segnala un difetto e i miei numeri dicono il contrario, a sbagliare è quasi sempre la mia misura. Memoria `misurare-nelle-condizioni-utente`.
-- **Nello stesso giro, su `intesa-scala-umana`**: il velo della copertina era tarato male a monte — clip al 42% sotto un radiale a 0,84 lasciava passare il **6%** del movimento (differenza fra due fotogrammi **0,046 livelli su 255**, sotto qualunque soglia percettiva). Ricalibrato sulla misura: movimento **0,245** (5,3×), velo forte al centro dove sta il testo e leggero ai bordi dove corre il movimento, con il **contrasto verificato nel caso peggiore su otto fotogrammi del giro** e non in media — titolo 4,84:1, lead 4,75:1, riga di copertina 9:1. La media non vedeva la cresta chiara che passa dietro al lead una volta per giro. Memoria `velo-si-misura`.
-- `c4e14f0` **Trenitalia: il perimetro torna a trenitalia.com più il CRM** — `apps/trenitalia-connessioni` (§36, Parte 8). La riunione del 9 ottobre **riduce la proposta a due fonti**: l'Adobe Analytics di trenitalia.com e il CRM, uniti da chi fa login. Tutto il resto — le Frecce, la piattaforma di invio, il checkout, FS Park — diventa **orizzonte dichiarato invece di promessa**. Il percorso di default è lineare (copertina, scenario, quattro capitoli); il ramo FS Park, il bivio e il capitolo sulla clean room **restano nel repo e raggiungibili ma fuori dal percorso**, riaccendibili da una riga in `src/data/percorso.ts`, che diventa la **fonte unica** da cui leggono barra di navigazione, card della home e frecce di ogni pagina. Nel merito: l'accusa ai sistemi del Gruppo diventa **una domanda**, come chiesto in riunione; fuori la slide del varco, e il suo diagramma della soglia viene riusato per il prerequisito vero, **il login**; gli use case sono quelli nati al tavolo, con il **limite dell'attivazione dichiarato**; tre slide nuove in Convergenza (dove finisce il dato del CRM · le tre domande con cosa si fa della risposta · CX Enterprise Coworker sulla ricerca delle cause in linguaggio naturale). ⚠️ **Lo zero-copy promesso a voce in riunione era sbagliato ed è corretto qui**: per CJA il dato entra, e quello che si governa è **quanto**. Build pulita, `astro check` a zero, audit **0 HARD su 222 slide-viewport** comprese le rotte fuori percorso, quattro slide lette a 1920. ⚠️ **Il panel a due giri del 9 ott copre il deck PRIMA di questa riscrittura** (P0 nuovo, §10).
 
