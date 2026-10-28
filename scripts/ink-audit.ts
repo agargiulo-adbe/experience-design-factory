@@ -112,6 +112,18 @@ for (const rotta of ROUTES) {
         if (!direct) return;
         const cs = getComputedStyle(e);
         if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity < 0.1) return;
+        // L'opacità NON si eredita come valore calcolato: dentro un blocco a
+        // `opacity: 0` ogni figlio continua a dichiarare 1, e il gate finiva a
+        // ritagliare il fondo credendo di misurare il testo — 28 rilievi a
+        // ~1,0:1 fra due grigi identici, su testo che esiste ma non è ancora
+        // dipinto. Succede con i sotto-passi del deck (`[data-substep]`), che
+        // restano nascosti finché chi presenta non li rivela. Si risale la
+        // catena fino alla slide: se qualcuno sopra è trasparente o nascosto,
+        // quel testo non è sullo schermo e non si misura.
+        for (let a = e.parentElement; a && a !== slide; a = a.parentElement) {
+          const ac = getComputedStyle(a);
+          if (ac.visibility === 'hidden' || ac.display === 'none' || +ac.opacity < 0.1) return;
+        }
         const r = e.getBoundingClientRect();
         if (r.width < 24 || r.height < 10) return;
         const size = parseFloat(cs.fontSize);

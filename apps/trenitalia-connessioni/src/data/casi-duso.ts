@@ -110,14 +110,6 @@ export interface Caso {
     tessere: { t: string; n: string }[];
   };
   /**
-   * La frase che chi lavora in marketing SCRIVE, in italiano, dentro Coworker
-   * Chat. È il punto su cui il Direttore dei canali digitali si è fermato due
-   * volte, quando dice che non vuole ritrovarsi lo strumento senza saperlo
-   * usare: la risposta non è un corso, è che il gruppo e il test si chiedono
-   * a parole.
-   */
-  chiesta: string;
-  /**
    * I tre gesti, ciascuno col prodotto che lo esegue. Sono tre e non quattro
    * perché il quarto nessuno se lo ricorda, e il terzo — la misura — è quello
    * che rende la cosa una prova e non una scommessa.
@@ -161,8 +153,8 @@ export const CASI: Caso[] = [
     viaggiatore: 'La prima schermata porta le tratte che partono da dove si trova, con le fasce di prezzo.',
     marketer: 'Una regola per area di partenza, e un elenco di tratte pronte da abbinare. Si prepara una volta e vale per tutte le città.',
     conversazione: [
-      { chi: 'utente', t: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli le tratte più prenotate da lì.' },
-      { chi: 'coworker', t: 'Gruppo costruito su trenitalia.com e Le Frecce. Lo porto su Target?' },
+      { chi: 'utente', t: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli le tratte più prenotate da lì.' },
+      { chi: 'coworker', t: 'Gruppo costruito. Lo porto su Adobe Target?' },
       { chi: 'utente', t: 'Sì, in cima alla home, con la fascia di prezzo.' },
       { chi: 'coworker', t: 'Attività pronta. Due settimane di prova, poi ship, wait o stop.' },
     ],
@@ -192,7 +184,6 @@ export const CASI: Caso[] = [
         { t: 'Roma Termini', n: 'da 39 €' },
       ],
     },
-    chiesta: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli in cima le tratte più prenotate da lì, con la fascia di prezzo.',
     fonti: ['tcom', 'frecce'],
     passi: [
       { t: 'Il gruppo: chi si collega da una certa area', dove: 'Target', skill: 'target-audience-composer' },
@@ -215,8 +206,8 @@ export const CASI: Caso[] = [
     viaggiatore: 'Chi viaggia sempre in Standard trova la Business al prezzo della Standard, per ventiquattr’ore.',
     marketer: 'Il segmento esce dalla vista unica, sempre Standard e alta frequenza, e diventa un’offerta a tempo su treni scelti.',
     conversazione: [
-      { chi: 'utente', t: 'Chi viaggia sempre in Standard due volte al mese: proponi la Business allo stesso prezzo.' },
-      { chi: 'coworker', t: 'Trovato il gruppo. Lo limito ai treni che partono con posti liberi?' },
+      { chi: 'utente', t: 'Chi viaggia sempre in Standard due volte al mese: proponi la Business allo stesso prezzo.' },
+      { chi: 'coworker', t: 'Trovato il gruppo. Lo limito ai treni che partono con posti liberi?' },
       { chi: 'utente', t: 'Sì, e l’offerta vale ventiquattr’ore.' },
       { chi: 'coworker', t: 'Attiva su Target. Misuro le salite di classe in più.' },
     ],
@@ -246,7 +237,6 @@ export const CASI: Caso[] = [
         { t: 'Resta valida', n: '24 ore' },
       ],
     },
-    chiesta: 'Chi viaggia sempre in Standard almeno due volte al mese: proponi la Business allo stesso prezzo sui treni che partono con posti liberi, per ventiquattr’ore.',
     fonti: ['tcom', 'crm'],
     passi: [
       { t: 'Il gruppo: sempre Standard, alta frequenza', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
@@ -267,9 +257,9 @@ export const CASI: Caso[] = [
     marketer: 'Un gruppo costruito sul comportamento invece che sull’anagrafica: ultima ricerca, frequenza, giorno della settimana.',
     conversazione: [
       { chi: 'utente', t: 'Chi è già passato in questi sette giorni senza login: rimetti in cima la tratta che cercava.' },
-      { chi: 'coworker', t: 'Il gruppo si costruisce sul comportamento, non sull’anagrafica.' },
+      { chi: 'coworker', t: 'Il gruppo si costruisce sul comportamento, non sull’anagrafica.' },
       { chi: 'utente', t: 'Procedi, e misura quanti tornano e comprano.' },
-      { chi: 'coworker', t: 'Fatto. Con questo traffico la lettura è affidabile in due settimane.' },
+      { chi: 'coworker', t: 'Fatto. Con questo traffico la lettura è affidabile in due settimane.' },
     ],
     profilo: [
       { k: 'Login', v: 'no' },
@@ -297,7 +287,6 @@ export const CASI: Caso[] = [
         { t: 'Posti ancora liberi', n: '12' },
       ],
     },
-    chiesta: 'Chi è già passato negli ultimi sette giorni e non ha fatto login: rimetti in cima l’ultima tratta che aveva cercato.',
     fonti: ['tcom', 'app'],
     passi: [
       { t: 'Il gruppo: già passato, senza login', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
@@ -317,8 +306,8 @@ export const CASI: Caso[] = [
     viaggiatore: 'Al riconoscimento arriva il servizio compreso nel suo livello. Non uno sconto.',
     marketer: 'Il livello arriva dal CRM come attributo e diventa una condizione di esposizione, non una campagna a parte.',
     conversazione: [
-      { chi: 'utente', t: 'Chi ha lo status Oro: mostragli il servizio che il suo livello comprende, non uno sconto.' },
-      { chi: 'coworker', t: 'Prendo il livello dal CRM come attributo. Lo uso come condizione di esposizione?' },
+      { chi: 'utente', t: 'Chi ha lo status Oro: mostragli il servizio che il suo livello comprende, non uno sconto.' },
+      { chi: 'coworker', t: 'Prendo il livello dal CRM come attributo. Lo uso come condizione di esposizione?' },
       { chi: 'utente', t: 'Sì, e non come campagna a parte.' },
       { chi: 'coworker', t: 'Pronto. Ti riporto uso del servizio e ritorno nel tempo.' },
     ],
@@ -348,7 +337,6 @@ export const CASI: Caso[] = [
         { t: 'Fast Track', n: 'Termini e Centrale' },
       ],
     },
-    chiesta: 'Chi ha lo status Oro: mostragli il servizio che il suo livello già comprende, non uno sconto.',
     fonti: ['tcom', 'crm'],
     passi: [
       { t: 'Il gruppo: livello della carta, dal CRM', dove: 'Target', skill: 'target-audience-composer' },
@@ -369,7 +357,7 @@ export const CASI: Caso[] = [
     marketer: 'In uno spazio neutro si misura la sovrapposizione: ciascuno tiene i propri dati, e si attiva solo il gruppo comune.',
     conversazione: [
       { chi: 'utente', t: 'Misura quanto si sovrappongono le due basi e prepara l’offerta solo per il gruppo comune.' },
-      { chi: 'coworker', t: 'Lo faccio in uno spazio neutro: nessun elenco passa da una parte all’altra.' },
+      { chi: 'coworker', t: 'Lo faccio in uno spazio neutro: nessun elenco passa da una parte all’altra.' },
       { chi: 'utente', t: 'Attiva solo la sovrapposizione.' },
       { chi: 'coworker', t: 'Gruppo comune pronto su Target. Misuro quanti comprano entrambe.' },
     ],
@@ -399,7 +387,6 @@ export const CASI: Caso[] = [
         { t: 'Si attiva', n: 'la sovrapposizione' },
       ],
     },
-    chiesta: 'Misura quanto si sovrappongono le due basi e prepara l’offerta solo per il gruppo comune.',
     fonti: ['terzi'],
     passi: [
       { t: 'Il gruppo: la sovrapposizione fra le due basi', dove: 'CJA', skill: 'segmenti in Coworker Chat' },

@@ -134,6 +134,8 @@ const SFONDI: Record<string, string> = {
 
     <!-- ── I cinque casi ──────────────────────────────────────────────── -->
     {CASI.map((c, i) => (
+      <>
+      {/* ── Come si fa: la sessione con Coworker, e che cosa vede chi viaggia ── */}
       <Slide id={`slide-caso-${c.id}`} bg={i % 2 === 0 ? 'primary' : 'secondary'} align="center">
         <div slot="backdrop" class="absolute inset-0">
           <div class="fs-bg-soft"></div>
@@ -153,12 +155,33 @@ const SFONDI: Record<string, string> = {
         <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
           {c.punto}
         </p>
-
         <div class="w-full" data-reveal data-reveal-delay="0.2">
-          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} />
+          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="come" />
+        </div>
+      </Slide>
+
+      {/* ── Dietro le quinte: il dato, e che cosa muove il caso ───────────── */}
+      <Slide id={`slide-dietro-${c.id}`} bg={i % 2 === 0 ? 'primary' : 'secondary'} align="center">
+        <div slot="backdrop" class="absolute inset-0">
+          <div class="fs-bg-soft"></div>
+          <div class="fs-grid"></div>
+        </div>
+        <Sfondo slot="backdrop" id={SFONDI[c.id]} forza="forte" />
+        <p class="fs-panel-tag text-center mb-3" data-reveal>
+          CASO {String(i + 1).padStart(2, '0')} · CHE COSA SUCCEDE DIETRO
+        </p>
+        <h2
+          class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          {c.titolo}
+        </h2>
+        <div class="w-full" data-reveal data-reveal-delay="0.16">
+          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="dietro" />
         </div>
 
-        <div class="cs-misura" data-reveal data-reveal-delay="0.3">
+        <div class="cs-misura" data-substep>
           <div class="cs-box cs-box--kpi">
             <p class="cs-box-tag">Su che cosa agisce</p>
             <p class="cs-box-v">{c.kpi.join(' · ')}</p>
@@ -174,6 +197,7 @@ const SFONDI: Record<string, string> = {
           </div>
         </div>
       </Slide>
+      </>
     ))}
 
     <!-- ── Il canale conversazionale ──────────────────────────────────── -->
@@ -306,29 +330,29 @@ const SFONDI: Record<string, string> = {
      il rosso dove si dimostra. Gli inchiostri sono le varianti chiare, le sole
      che reggono AA sul fondo scuro (le piene danno 2,35:1 e 3,14:1). */
   .cs-misura {
-    width: 100%; max-width: 76rem; margin: 0.75rem auto 0;
+    width: 100%; max-width: 76rem; margin: 2.1rem auto 0;
     display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
     gap: clamp(0.7rem, 1.6vw, 1.6rem);
     align-items: stretch;
   }
   [data-slide] .cs-misura p { text-align: left; max-width: none; margin-inline: 0; }
-  .cs-box { border: 1px solid var(--line-subtle); border-radius: 0.55rem; padding: 0.6rem 0.75rem; }
+  .cs-box { border: 1px solid var(--line-subtle); border-radius: 0.6rem; padding: 0.85rem 1rem; }
   .cs-box--kpi { background: rgba(0, 102, 102, 0.18); border-color: rgba(79, 189, 180, 0.3); }
   .cs-box--prova { background: rgba(217, 24, 53, 0.12); border-color: rgba(255, 141, 157, 0.28); }
   .cs-box-tag {
-    margin: 0 0 0.3rem; font-size: clamp(0.64rem, 0.74vw, 0.74rem); font-weight: 700;
+    margin: 0 0 0.5rem; font-size: clamp(0.84rem, 0.92vw, 0.96rem); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
   }
   .cs-box--kpi .cs-box-tag { color: var(--color-verde-chiaro); }
   .cs-box--prova .cs-box-tag { color: var(--color-rosso-chiaro); }
   .cs-box-v {
     margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.15rem 0.45rem;
-    font-size: clamp(0.8rem, 0.88vw, 0.9rem); line-height: 1.4;
+    font-size: clamp(1rem, 1.14vw, 1.2rem); line-height: 1.5;
     color: var(--ink-secondary);
   }
   .cs-prova-v {
     font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.1; letter-spacing: -0.02em;
+    font-size: clamp(1.3rem, 1.8vw, 1.7rem); line-height: 1.08; letter-spacing: -0.02em;
     color: var(--ink-primary);
   }
   .cs-prova-s { color: var(--ink-tertiary); font-size: 0.78rem; }
@@ -343,7 +367,9 @@ const SFONDI: Record<string, string> = {
   @media (max-width: 1300px) {
     .cs-misura { margin-top: 0.3rem; }
     .cs-box { padding: 0.4rem 0.55rem; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
-    .cs-box-tag { margin: 0; flex: 0 0 auto; }
+    .cs-box-tag { margin: 0; flex: 0 0 auto; font-size: 0.68rem; }
+    .cs-box-v { font-size: 0.8rem; line-height: 1.4; }
+    .cs-prova-v { font-size: 1.15rem; }
     [data-slide] .cs-caso-lead { margin-bottom: 0.6rem !important; }
   }
   @media (max-width: 900px) {
