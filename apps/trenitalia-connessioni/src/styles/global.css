@@ -802,3 +802,34 @@ html[data-branch="fs-park"] {
    l'ancoraggio a sinistra. Regola del progetto: un blocco a bandiera dentro un
    componente si difende con margin-inline: 0 a specificità sufficiente. */
 [data-slide] .fs-panel.text-left > p { margin-inline: 0; max-width: 88ch; }
+
+
+/* ── Mentre si legge il dettaglio, il contorno arretra ────────────────────
+   `HowItWorks` marca <html data-hiw-open> quando un blocco è aperto. Il blocco
+   cresce dentro la slide, e su una slide già densa la testa del contenuto
+   finisce SOTTO la barra fissa in alto: misurato il 28 ott 2026 sul capitolo
+   dei casi d'uso, l'occhiello si ritrovava a y=41, cioè dentro la nav.
+   Non lo vede nessun check — `b` guarda i comandi del deck, non la nav
+   dell'app, non la firma co-brand, non il credito «creato con». L'ha trovato
+   `audit:ink`, che ritagliava la barra e leggeva ardesia su ardesia.
+   Invece di tagliare testo, qui sparisce quello che in quel momento non serve:
+   torna da solo alla chiusura, e con «Riduci movimento» senza dissolvenza. */
+html[data-hiw-open] .tr-nav,
+html[data-hiw-open] .edf-cobrand--chrome,
+html[data-hiw-open] .edf-madewith,
+html[data-hiw-open] [data-deck] [data-deck-controls] {
+  opacity: 0;
+  pointer-events: none;
+}
+.tr-nav, .edf-cobrand--chrome, .edf-madewith, [data-deck] [data-deck-controls] {
+  transition: opacity var(--duration-normal, 300ms) var(--easing-default, ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tr-nav, .edf-cobrand--chrome, .edf-madewith, [data-deck] [data-deck-controls] { transition: none; }
+}
+/* Anche i comandi del deck: col dettaglio aperto l'ultima riga del blocco
+   finiva SOTTO le frecce e il contatore — visibile solo guardando uno
+   screenshot a 1280×800, perché i comandi si nascondono da soli dopo qualche
+   secondo e quando l'audit misura spesso non ci sono. Mentre si legge un
+   dettaglio non si naviga; alla chiusura tornano. Il motore fa già esattamente
+   questo con il comando audio (`DeckAudio`), quindi la regola non è nuova. */

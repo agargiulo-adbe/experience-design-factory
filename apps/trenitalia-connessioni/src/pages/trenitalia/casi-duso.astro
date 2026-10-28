@@ -27,7 +27,7 @@ import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
 import MockCaso from '../../components/MockCaso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
-import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO } from '../../data/casi-duso';
+import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO, FONTI_CAPITOLO, type Caso } from '../../data/casi-duso';
 
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/casi-duso');
@@ -35,6 +35,11 @@ const currentPath = Astro.url.pathname;
 
 const nomeFonte = (id: string) => FONTI.find((f) => f.id === id)?.nome ?? id;
 const interi = CASI.filter(dentroRistretto).length;
+
+/** I prodotti che il caso tocca, nominati una volta sola e per esteso. */
+const NOMI = { CJA: 'Customer Journey Analytics', Target: 'Adobe Target' } as const;
+const prodotti = (c: Caso) =>
+  [...new Set(c.passi.map((p) => p.dove))].map((d) => NOMI[d]).join(' e ');
 
 /**
  * La fotografia di ogni caso. Non è decorazione intercambiabile: l'alba sta
@@ -69,6 +74,7 @@ const SFONDI: Record<string, string> = {
         title="Che cosa ci faccio"
         lead="Cinque casi, e il lavoro che c’è dietro ciascuno."
         size="phase"
+        signature={false}
       />
     </Slide>
 
@@ -149,27 +155,46 @@ const SFONDI: Record<string, string> = {
         >
           {c.titolo}
         </h2>
-        <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        <p class="text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
           {c.punto}
         </p>
 
         <div class="w-full" data-reveal data-reveal-delay="0.2">
           <MockCaso
-            viaggiatore={c.viaggiatore}
-            marketer={c.marketer}
+            schermo={c.schermo}
+            chiesta={c.chiesta}
             passi={c.passi}
-            dove={c.fonti.includes('terzi') ? 'due basi, uno spazio neutro' : 'trenitalia.com'}
+            viaggiatore={c.viaggiatore}
           />
         </div>
 
-        <div class="w-full max-w-5xl mx-auto mt-5" data-reveal data-reveal-delay="0.3">
+        <div class="cs-misura" data-reveal data-reveal-delay="0.26">
+          <div>
+            <p class="cs-kpi-tag">Su che cosa agisce</p>
+            <ul class="cs-kpi-l">
+              {c.kpi.map((k) => <li class="cs-kpi-v">{k}</li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="cs-kpi-tag">L’ha già fatto</p>
+            <p class="cs-prova-r">
+              <span class="cs-prova-v">{c.prova.v}</span>
+              <span class="cs-prova-l">{c.prova.l}</span>
+            </p>
+            <p class="cs-prova-f">
+              <a href={c.prova.url} target="_blank" rel="noopener noreferrer">{c.prova.chi}</a>
+              <span> · {c.prova.settore} · caso pubblicato da Adobe</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="w-full max-w-5xl mx-auto mt-3" data-reveal data-reveal-delay="0.3">
           <HowItWorks title="Che cosa serve, e com’è oggi" label="Che cosa serve, e com’è oggi" tone="onLight">
-            <p><strong>Oggi:</strong> {c.oggi}</p>
             <p>
-              <strong>Fonti:</strong> {c.fonti.map(nomeFonte).join(' · ')}.
-              {dentroRistretto(c)
-                ? ' Tutte nella prima fase: si può fare da subito.'
-                : ' Una o più arrivano dopo la prima fase.'}
+              <strong>Oggi:</strong> {c.oggi}
+              <strong class="ml-1">Dove si fa:</strong> {prodotti(c)}, a parole con Coworker.
+              Fonti: {c.fonti.map(nomeFonte).join(' · ')}.
+              {dentroRistretto(c) ? ' Tutte nella prima fase.' : ' Una o più arrivano dopo.'}
             </p>
           </HowItWorks>
         </div>
@@ -276,6 +301,11 @@ const SFONDI: Record<string, string> = {
           nordamericani, un portale di viaggi. Vivono in materiale riservato, quindi li
           raccontiamo a voce e senza il nome.
         </p>
+        <p class="fs-panel-src mt-2.5">
+          Fonti del capitolo, aperte il 28 ottobre 2026: {FONTI_CAPITOLO.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.cosa}</a></>
+          ))}
+        </p>
       </div>
     </Slide>
 
@@ -283,6 +313,60 @@ const SFONDI: Record<string, string> = {
 </BaseLayout>
 
 <style is:global>
+  /* ── Che cosa muove il caso, e la prova ─────────────────────────────── */
+  /* KPI e referenza stanno sulla stessa riga di proposito: un KPI senza una
+     prova è un auspicio, una prova senza il KPI è il numero di qualcun altro. */
+  .cs-misura {
+    width: 100%; max-width: 72rem; margin: 1.25rem auto 0;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.1rem, 2.2vw, 2.1rem);
+    align-items: start;
+  }
+  [data-slide] .cs-misura p,
+  [data-slide] .cs-misura li { text-align: left; max-width: none; margin-inline: 0; }
+  .cs-kpi-tag {
+    margin: 0 0 0.45rem; font-size: clamp(0.68rem, 0.78vw, 0.78rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
+  }
+  .cs-kpi-l { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+  .cs-kpi-v {
+    font-size: clamp(0.76rem, 0.85vw, 0.86rem); line-height: 1.25;
+    padding: 0.32rem 0.6rem; border-radius: 9999px;
+    color: var(--ink-secondary);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line-subtle);
+  }
+  .cs-prova-r { display: flex; align-items: baseline; gap: 0.55rem; margin: 0; }
+  .cs-prova-v {
+    flex: 0 0 auto;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.35rem, 1.9vw, 1.75rem); line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink-primary);
+  }
+  .cs-prova-l {
+    font-size: clamp(0.8rem, 0.9vw, 0.9rem); line-height: 1.4;
+    color: var(--ink-secondary);
+  }
+  .cs-prova-f {
+    margin: 0.4rem 0 0; font-size: clamp(0.72rem, 0.8vw, 0.8rem); line-height: 1.4;
+    color: var(--ink-tertiary);
+  }
+  /* Una fonte non è una CTA: eredita l'inchiostro del testo che la ospita e si
+     distingue per la sottolineatura, che si accende d'accento al passaggio. */
+  .cs-prova-f a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
+  .cs-prova-f a:hover { color: var(--accent-primary); }
+
+  @media (max-width: 1300px) {
+    .cs-misura { margin-top: 0.5rem; }
+    .cs-kpi-tag { margin-bottom: 0.3rem; }
+    .cs-kpi-v { padding: 0.26rem 0.5rem; }
+    .cs-prova-f { margin-top: 0.3rem; }
+  }
+
+  @media (max-width: 900px) {
+    .cs-misura { grid-template-columns: minmax(0, 1fr); }
+  }
+
   /* `!important` serve davvero: `CoverHero` scrive il colore nell'attributo
      `style` dell'occhiello, e un attributo in linea batte qualunque selettore.
      Senza, la regola si applica in silenzio a niente — e `audit:ink` continua
