@@ -57,6 +57,24 @@ const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     />
     <ClientRouter />
       <SocialMeta title={title} description={description} site={Astro.site} base={import.meta.env.BASE_URL} />
+    <script is:inline>
+      // `html.js` è il modo in cui la pelle distingue «JavaScript c'è» da
+      // «JavaScript non c'è»: i sotto-passi del deck restano nascosti solo nel
+      // primo caso, perché senza JS nessuno potrebbe rivelarli e la slide deve
+      // comunque leggersi intera. Senza questa riga la regola `html:not(.js)`
+      // è sempre vera e i sotto-passi non si attivano mai.
+      // ClientRouter riporta gli attributi di <html> ai valori del server a
+      // ogni navigazione SPA: va rimesso dopo ogni swap.
+      (function () {
+        document.documentElement.classList.add('js');
+        if (!window.__trnHtmlJsBound) {
+          window.__trnHtmlJsBound = true;
+          document.addEventListener('astro:after-swap', function () {
+            document.documentElement.classList.add('js');
+          });
+        }
+      })();
+    </script>
   </head>
   <body>
     <slot />
