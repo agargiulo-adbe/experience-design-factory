@@ -1,0 +1,144 @@
+---
+/**
+ * DiagMatrice — i casi d'uso e le fonti che ciascuno richiede, in una figura sola.
+ *
+ * PERCHÉ ESISTE
+ * Sullo stesso tavolo ci sono due perimetri: quello concordato il 9 ottobre con
+ * chi possiede la piattaforma dati — trenitalia.com più il CRM — e quello che il
+ * Direttore dei canali digitali ha allargato il 27 a Frecce e app. Due deck
+ * divergerebbero in una settimana. Una figura sola, no: le fonti stanno in alto,
+ * i casi sotto, e ogni caso accende le sue.
+ *
+ * Il comando restringe la figura al perimetro della prima fase. Quello che
+ * succede allora è il punto: i casi che restano interi sono quelli fattibili
+ * subito, gli altri si spengono a vista. Chi ha ristretto vede che cosa
+ * guadagnerebbe allargando; chi ha allargato vede che cosa resta se non lo fa.
+ * Nessuno dei due deve fidarsi di una frase: lo legge dalla figura.
+ *
+ * Il movimento è CSS su un attributo, senza JavaScript per la resa: lo stato
+ * base è il perimetro intero, cioè quello informativo. Con «Riduci movimento»
+ * la figura non si anima e resta leggibile.
+ */
+import { FONTI, RISTRETTO, type Caso } from '../../data/casi-duso';
+
+interface Props {
+  casi: Caso[];
+  /**
+   * `intero` mostra tutte le fonti; `ristretto` toglie peso a quelle che nella
+   * prima fase non ci sono. È una prop e non un attributo passato dall'esterno
+   * perché in Astro un `data-*` su un componente non arriva al suo DOM: si
+   * perderebbe in silenzio, e la seconda slide del dittico sarebbe identica
+   * alla prima senza che nessun gate se ne accorga.
+   */
+  perimetro?: 'intero' | 'ristretto';
+  class?: string;
+}
+const { casi, perimetro = 'intero', class: className } = Astro.props as Props;
+
+const etichetta = casi
+  .map((c) => `${c.titolo}: ${c.fonti.length} fonti`)
+  .join('. ');
+---
+<div class:list={['dg-mx', className]} data-matrice data-perimetro={perimetro} role="img"
+     aria-label={`Cinque casi d'uso e le fonti che richiedono. ${etichetta}. Nella prima fase sono disponibili trenitalia.com e il CRM.`}>
+
+  <div class="dg-mx-testa" aria-hidden="true">
+    <span class="dg-mx-ang"></span>
+    {FONTI.map((f) => (
+      <span class="dg-mx-fonte" data-dentro={RISTRETTO.includes(f.id) ? 'si' : 'no'}>
+        <span class="dg-mx-fonte-n">{f.nome}</span>
+        <span class="dg-mx-fonte-x">{f.nota}</span>
+      </span>
+    ))}
+  </div>
+
+  {casi.map((c) => (
+    <div class="dg-mx-riga" data-intero={c.fonti.every((f) => RISTRETTO.includes(f)) ? 'si' : 'no'} aria-hidden="true">
+      <span class="dg-mx-caso">
+        <span class="dg-mx-caso-n">{c.titolo}</span>
+        <span class="dg-mx-caso-l">{c.leva === 'traffico' ? 'più persone' : 'più conversione'}</span>
+      </span>
+      {FONTI.map((f) => (
+        <span class="dg-mx-cella">
+          {c.fonti.includes(f.id) && (
+            <span class="dg-mx-punto" data-dentro={RISTRETTO.includes(f.id) ? 'si' : 'no'}></span>
+          )}
+        </span>
+      ))}
+    </div>
+  ))}
+</div>
+
+<style is:global>
+  .dg-mx {
+    width: 100%; max-width: 64rem; margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(10rem, 1.5fr) repeat(5, minmax(0, 1fr));
+    gap: 0.3rem 0.4rem;
+    align-items: stretch;
+  }
+  .dg-mx-testa { display: contents; }
+  .dg-mx-ang { display: block; }
+  .dg-mx-fonte {
+    display: flex; flex-direction: column; gap: 0.1rem; text-align: center;
+    padding: 0 0.2rem 0.5rem;
+    border-bottom: 1.5px solid var(--line-subtle);
+  }
+  .dg-mx-fonte-n {
+    font-size: clamp(0.72rem, 0.82vw, 0.84rem); font-weight: 700; line-height: 1.2;
+    color: var(--ink-primary);
+  }
+  .dg-mx-fonte-x {
+    font-size: clamp(0.62rem, 0.7vw, 0.72rem); line-height: 1.25;
+    color: var(--ink-tertiary);
+  }
+  /* Fuori dalla prima fase: la fonte resta leggibile ma si annuncia come «dopo». */
+  .dg-mx-fonte[data-dentro='no'] { border-bottom-style: dashed; }
+
+  .dg-mx-riga { display: contents; }
+  .dg-mx-caso {
+    display: flex; flex-direction: column; gap: 0.1rem;
+    text-align: left;
+    padding: 0.8rem 0.6rem 0.8rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .dg-mx-caso-n {
+    font-size: clamp(0.84rem, 0.94vw, 0.96rem); font-weight: 600; line-height: 1.25;
+    color: var(--ink-primary);
+  }
+  .dg-mx-caso-l {
+    font-size: clamp(0.64rem, 0.72vw, 0.74rem); letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-tertiary);
+  }
+  .dg-mx-cella {
+    display: flex; align-items: center; justify-content: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .dg-mx-punto {
+    width: 0.78rem; height: 0.78rem; border-radius: 9999px;
+    background: rgba(var(--sig-rgb), 0.95);
+    transition: background 420ms ease, box-shadow 420ms ease, transform 420ms ease;
+  }
+  /* Una fonte che nella prima fase non c'è: cerchio vuoto, non pieno. */
+  .dg-mx-punto[data-dentro='no'] {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.4);
+  }
+
+  /* ── Il perimetro ristretto ─────────────────────────────────────────────
+     Non si nasconde niente: si toglie peso a ciò che resta fuori. Nascondere
+     direbbe «non esiste», e la domanda del Direttore è esattamente quanto
+     costa non averlo. */
+  [data-matrice][data-perimetro='ristretto'] .dg-mx-fonte[data-dentro='no'] { opacity: 0.3; }
+  [data-matrice][data-perimetro='ristretto'] .dg-mx-punto[data-dentro='no'] {
+    opacity: 0.22; transform: scale(0.72);
+  }
+  [data-matrice][data-perimetro='ristretto'] .dg-mx-riga[data-intero='no'] .dg-mx-caso { opacity: 0.42; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dg-mx-punto { transition: none; }
+  }
+  @media (max-width: 900px) {
+    .dg-mx { grid-template-columns: minmax(7rem, 1.3fr) repeat(5, minmax(0, 1fr)); }
+  }
+</style>
