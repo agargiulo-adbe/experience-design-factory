@@ -48,6 +48,9 @@ export interface Passo {
   skill: string;
 }
 
+/** Uno stadio del flusso: che cosa fa, e un esempio concreto di dato. */
+export interface Stadio { k: string; v: string; e: string }
+
 export interface Caso {
   id: string;
   /** La leva di vendita, con le sue parole: più gente dentro, o conversione migliore. */
@@ -84,6 +87,15 @@ export interface Caso {
   varianti: { t: string; n: string; match?: true }[];
   /** Che cosa aggiunge CJA fra la fonte grezza e l'attivazione. Una riga. */
   arricchimento: string;
+  /**
+   * Il dietro le quinte, stadio per stadio, con un ESEMPIO per ciascuno. Senza
+   * un dato vero accanto, «le fonti alimentano CJA che arricchisce e passa a
+   * Target» è un diagramma che si può disegnare per qualunque prodotto di
+   * qualunque fornitore: l'esempio è la differenza fra capire e annuire.
+   * L'ultimo stadio — il ritorno della misura — sta volutamente in una riga:
+   * è un anello di chiusura, non un quarto sistema.
+   */
+  flusso: [Stadio, Stadio, Stadio, Stadio];
   /**
    * Che cosa si vede davvero sulla pagina. Non è decorazione: un mockup di
    * rettangoli grigi fa vedere che «qualcosa cambia» e non dice che cosa, che
@@ -165,6 +177,12 @@ export const CASI: Caso[] = [
       { t: 'Promozione generica', n: '−10%' },
     ],
     arricchimento: 'area di partenza e tratte più prenotate da lì',
+    flusso: [
+      { k: 'Le fonti', v: 'trenitalia.com e Le Frecce', e: 'evento di sessione: «ricerca da Verona Porta Nuova, ore 18:04»' },
+      { k: 'Customer Journey Analytics', v: 'unisce le sessioni della stessa persona e ricava l’attributo', e: 'area di partenza: Verona · tratte più prenotate da lì: Milano, Venezia, Roma' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'in cima alla home: le tre tratte da Verona, con la fascia di prezzo' },
+      { k: 'E torna indietro', v: 'una misura sola, non un quarto sistema', e: 'quanti arrivano all’acquisto' },
+    ],
     schermo: {
       dove: 'trenitalia.com',
       titolo: 'Da Verona Porta Nuova',
@@ -197,15 +215,15 @@ export const CASI: Caso[] = [
     viaggiatore: 'Chi viaggia sempre in Standard trova la Business al prezzo della Standard, per ventiquattr’ore.',
     marketer: 'Il segmento esce dalla vista unica, sempre Standard e alta frequenza, e diventa un’offerta a tempo su treni scelti.',
     conversazione: [
-      { chi: 'utente', t: 'Chi viaggia sempre in Standard almeno due volte al mese: proponi la Business allo stesso prezzo.' },
+      { chi: 'utente', t: 'Chi viaggia sempre in Standard due volte al mese: proponi la Business allo stesso prezzo.' },
       { chi: 'coworker', t: 'Trovato il gruppo. Lo limito ai treni che partono con posti liberi?' },
       { chi: 'utente', t: 'Sì, e l’offerta vale ventiquattr’ore.' },
-      { chi: 'coworker', t: 'Attiva su Target. Misuro le salite di classe e ti dico quando decidere.' },
+      { chi: 'coworker', t: 'Attiva su Target. Misuro le salite di classe in più.' },
     ],
     profilo: [
-      { k: 'Classe abituale', v: 'Standard' },
+      { k: 'Classe', v: 'sempre Standard' },
       { k: 'Viaggi', v: '2 al mese' },
-      { k: 'Treno scelto', v: 'posti liberi' },
+      { k: 'Treno', v: 'posti liberi' },
     ],
     varianti: [
       { t: 'Sconto del 10%', n: 'su tutto' },
@@ -213,6 +231,12 @@ export const CASI: Caso[] = [
       { t: 'Nessuna proposta', n: '—' },
     ],
     arricchimento: 'frequenza di viaggio e classe abituale',
+    flusso: [
+      { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'biglietto acquistato: «Standard, Roma → Milano, 14 ott» · socio dal 2019' },
+      { k: 'Customer Journey Analytics', v: 'mette in fila gli acquisti e calcola l’abitudine', e: 'due viaggi al mese, sempre in Standard · treno scelto: posti liberi' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'mostra la Business allo stesso prezzo, valida ventiquattr’ore' },
+      { k: 'E torna indietro', v: 'una misura sola, non un quarto sistema', e: 'quante salite di classe in più' },
+    ],
     schermo: {
       dove: 'trenitalia.com · il tuo viaggio', // copy-audit-ignore — etichetta d'interfaccia dentro il mock, non voce del deck
       titolo: 'Business al prezzo della Standard',
@@ -229,8 +253,8 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: la Business allo stesso prezzo', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: quante salite di classe in più', dove: 'CJA', skill: 'target-test-calculator' },
     ],
-    kpi: ['Quota di passaggi di classe', 'Ricavo medio per biglietto', 'Posti premium venduti'],
-    prova: { chi: 'Telmore', settore: 'telco', v: '+25%', l: 'le vendite incrociate ai clienti già acquisiti', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
+    kpi: ['Passaggi di classe', 'Ricavo medio per biglietto', 'Posti premium'],
+    prova: { chi: 'Telmore', settore: 'telco', v: '+25%', l: 'le vendite incrociate ai già clienti', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
     origine: 'cliente',
   },
   {
@@ -242,15 +266,15 @@ export const CASI: Caso[] = [
     viaggiatore: 'Chi era già passato ritrova in evidenza la tratta che aveva cercato, senza aver fatto login.',
     marketer: 'Un gruppo costruito sul comportamento invece che sull’anagrafica: ultima ricerca, frequenza, giorno della settimana.',
     conversazione: [
-      { chi: 'utente', t: 'Chi è già passato negli ultimi sette giorni e non ha fatto login: rimetti in cima la tratta che cercava.' },
-      { chi: 'coworker', t: 'Il gruppo esiste anche senza anagrafica: lo costruisco sul comportamento.' },
+      { chi: 'utente', t: 'Chi è già passato in questi sette giorni senza login: rimetti in cima la tratta che cercava.' },
+      { chi: 'coworker', t: 'Il gruppo si costruisce sul comportamento, non sull’anagrafica.' },
       { chi: 'utente', t: 'Procedi, e misura quanti tornano e comprano.' },
       { chi: 'coworker', t: 'Fatto. Con questo traffico la lettura è affidabile in due settimane.' },
     ],
     profilo: [
       { k: 'Login', v: 'no' },
-      { k: 'Ultima ricerca', v: 'Bologna → Firenze' },
-      { k: 'Giorni dall’ultima visita', v: '2' },
+      { k: 'Cercava', v: 'Bologna → Firenze' },
+      { k: 'Ultima visita', v: '2 giorni fa' },
     ],
     varianti: [
       { t: 'La home di chiunque', n: 'partenza vuota' },
@@ -258,6 +282,12 @@ export const CASI: Caso[] = [
       { t: 'Promozione generica', n: '−10%' },
     ],
     arricchimento: 'ultima ricerca e frequenza, senza bisogno del login',
+    flusso: [
+      { k: 'Le fonti', v: 'trenitalia.com e l’app', e: 'evento anonimo: «ricerca Bologna → Firenze, 07:35, due giorni fa»' },
+      { k: 'Customer Journey Analytics', v: 'tiene insieme le visite senza bisogno del login', e: 'già passato negli ultimi 7 giorni · ultima tratta cercata' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'rimette in cima Bologna → Firenze, con i posti liberi' },
+      { k: 'E torna indietro', v: 'una misura sola, non un quarto sistema', e: 'quanti tornano e comprano' },
+    ],
     schermo: {
       dove: 'trenitalia.com',
       titolo: 'Riprendi da dove eri',
@@ -274,8 +304,8 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: la tratta che cercava', dove: 'Target', skill: 'target-vec' },
       { t: 'La misura: quanti tornano e comprano', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
-    kpi: ['Conversione di chi non è loggato', 'Ritorno entro sette giorni', 'Ricerche riprese'],
-    prova: { chi: 'Santander', settore: 'banca', v: '+600%', l: 'le conversioni sulle campagne di carrello abbandonato', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
+    kpi: ['Conversione dei non loggati', 'Ritorno entro 7 giorni', 'Ricerche riprese'],
+    prova: { chi: 'Santander', settore: 'banca', v: '+600%', l: 'le conversioni sul carrello abbandonato', url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html' },
     origine: 'cliente',
   },
   {
@@ -303,6 +333,12 @@ export const CASI: Caso[] = [
       { t: 'Invito a iscriversi', n: 'già socio' },
     ],
     arricchimento: 'livello della carta, che arriva dal CRM',
+    flusso: [
+      { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'attributo di anagrafica: «status Oro, oltre 3.000 punti»' },
+      { k: 'Customer Journey Analytics', v: 'porta il livello accanto al comportamento sul sito', e: 'status Oro · tratta abituale Roma → Milano' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'mostra FrecciaLounge e Fast Track, non uno sconto' },
+      { k: 'E torna indietro', v: 'una misura sola, non un quarto sistema', e: 'uso del servizio, e ritorno nel tempo' },
+    ],
     schermo: {
       dove: 'trenitalia.com · area personale',
       titolo: 'Riconosciuto come CartaFreccia Oro',
@@ -348,6 +384,12 @@ export const CASI: Caso[] = [
       { t: 'Nessuna offerta', n: '—' },
     ],
     arricchimento: 'la sovrapposizione fra le due basi, calcolata in spazio neutro',
+    flusso: [
+      { k: 'Le fonti', v: 'le due basi, ciascuna a casa propria', e: 'nessun elenco si sposta: si confrontano solo identificativi cifrati' },
+      { k: 'Customer Journey Analytics', v: 'misura la sovrapposizione nello spazio neutro', e: 'il gruppo comune, senza sapere chi c’è dentro dall’altra parte' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'una sola offerta che tiene insieme viaggio e sosta' },
+      { k: 'E torna indietro', v: 'una misura sola, non un quarto sistema', e: 'quanti comprano entrambe' },
+    ],
     schermo: {
       dove: 'due basi, uno spazio neutro',
       titolo: 'Il viaggio e la sosta, in una cosa sola',

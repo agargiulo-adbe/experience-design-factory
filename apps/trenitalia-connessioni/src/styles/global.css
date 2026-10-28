@@ -833,3 +833,22 @@ html[data-hiw-open] [data-deck] [data-deck-controls] {
    secondo e quando l'audit misura spesso non ci sono. Mentre si legge un
    dettaglio non si naviga; alla chiusura tornano. Il motore fa già esattamente
    questo con il comando audio (`DeckAudio`), quindi la regola non è nuova. */
+
+
+/* ── Sotto-passi (deck.ts) ───────────────────────────────────────────────
+   Un blocco marcato [data-substep] si rivela uno alla volta con ↓, PageDown,
+   Spazio o il pulsante avanti del deck; ↑ nasconde l'ultimo; → e ← saltano
+   alla slide adiacente, che è l'uscita di sicurezza di chi presenta. Serve a
+   RACCONTARE: una conversazione che compare tutta insieme è un blocco di
+   testo, una che arriva battuta per battuta è una scena.
+   Con «Riduci movimento» e senza JavaScript è tutto visibile: lo stato base
+   resta quello informativo. */
+[data-substep] {
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 320ms ease-out, transform 320ms ease-out;
+}
+[data-substep][data-substep-active] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-substep] { opacity: 1; transform: none; transition: none; }
+}
+html:not(.js) [data-substep] { opacity: 1; transform: none; }

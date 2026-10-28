@@ -1,31 +1,27 @@
 ---
 /**
- * MockCaso — un caso d'uso in tre zone, animate dal motore.
+ * MockCaso — un caso d'uso in tre zone, raccontabili un passo alla volta.
  *
- * NON C'È UNA RIGA DI ANIMAZIONE SCRITTA A MANO, ed è una regola: le scene del
- * motore sono dichiarative, hanno due implementazioni (scorrimento e deck),
- * rispettano «Riduci movimento» e si attivano quando la slide entra. Qui si
- * dichiara solo il markup che ciascuna si aspetta.
+ * SI RACCONTA, NON SPUNTA. Ogni bolla della conversazione e ogni stadio del
+ * flusso è un `[data-substep]`: il motore li rivela uno alla volta con ↓,
+ * Spazio o il pulsante avanti del deck, mentre → salta alla slide successiva.
+ * È il meccanismo del deck, non un comando inventato qui: con «Riduci
+ * movimento» e senza JavaScript è tutto visibile, e l'audit lo misura.
  *
- *   `data-converse`    le bolle compaiono una alla volta, alternando i lati
- *   `data-clienteling` una riga di scansione passa e il profilo si popola
+ * LE SCENE SONO QUELLE DEL MOTORE, dichiarate e non riscritte:
+ *   `data-clienteling` la riga di scansione passa e il profilo si popola
  *   `data-personalize` le varianti compaiono pari, poi una si afferma
- *   `data-pulse-line`  la linea si disegna e un impulso la percorre
+ *   `data-pulse-line`  la linea del back-end si disegna e un impulso la percorre
+ * (`data-converse` qui NON si usa: fa comparire tutte le bolle in sequenza
+ *  automatica, e serviva invece poterle guidare a voce.)
  *
- * LE TRE ZONE RACCONTANO LO STESSO FATTO DA TRE ALTEZZE.
- * In alto a sinistra, che cosa si chiede a Coworker e che cosa risponde: è il
- * lavoro, e sta per primo perché è la parte su cui il dubbio è stato posto.
- * A destra, il profilo di chi viaggia e — da quegli attributi — quale delle
- * varianti gli viene mostrata: senza le alternative accanto, «personalizzato»
- * resta una parola. In basso il dietro le quinte: da quali fonti si parte, che
- * cosa aggiunge Customer Journey Analytics, che cosa riceve Adobe Target e
- * dove finisce. Le tre zone entrano in quest'ordine, quindi la sequenza si
- * legge da sola: si chiede, si vede, e sotto si capisce perché è successo.
- *
- * PERCHÉ È DISEGNATO E NON UNO SCREENSHOT
- * Un'interfaccia vera invecchia — il sito Le Frecce si rifà a marzo — e
- * ricostruirne una falsa sarebbe la wrong-brand imagery che la Quality Bar
- * vieta. Qui ci sono forme e parole vere.
+ * LA PELLE È QUELLA DI TRENITALIA, semplificata. Sul web la barra rossa di
+ * marchio e la striscia di ricerca «Da · A · Data · CERCA», che è l'elemento
+ * per cui quel sito si riconosce a colpo d'occhio; sull'app la stessa testata
+ * stretta e la barra di navigazione in fondo. Non è un ritratto fedele e non
+ * deve esserlo: serve che in sala si capisca in un secondo di quale prodotto
+ * si sta parlando, senza ricostruire un'interfaccia falsa — che sarebbe la
+ * wrong-brand imagery che la Quality Bar vieta.
  */
 import type { Caso } from '../data/casi-duso';
 
@@ -42,9 +38,9 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
   {/* ── 1 · Chi lo prepara: la sessione con Coworker ──────────────────── */}
   <figure class="mk-lato">
     <figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption>
-    <div class="mk-chat" data-converse>
+    <div class="mk-chat">
       {c.conversazione.map((b) => (
-        <p class="chat-bubble" data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
+        <p class="mk-bolla" data-substep data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
       ))}
     </div>
   </figure>
@@ -59,8 +55,6 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
       </div>
     </div>
 
-    {/* Il profilo che decide. La riga di scansione e gli attributi che entrano
-        uno a uno sono la scena `clienteling`: «riconoscere» si vede. */}
     <div class="mk-prof" data-clienteling>
       <span class="scan-line" aria-hidden="true"></span>
       <p class="mk-prof-tag">Quello che sappiamo</p>
@@ -72,27 +66,44 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
     </div>
 
     <div class="mk-dev">
-      <div class="mk-barra mk-barra--app" aria-hidden="true"><span class="mk-tacca"></span></div>
-      <div class="mk-barra mk-barra--web" aria-hidden="true">
-        <span class="mk-pallino"></span><span class="mk-pallino"></span><span class="mk-pallino"></span>
-        <span class="mk-url">{c.schermo.dove}</span>
+      {/* Testata di marchio: rossa, con il marchio a sinistra. Sul web porta
+          anche la striscia di ricerca; sull'app è stretta. */}
+      <div class="mk-top" aria-hidden="true">
+        <span class="mk-top-m">Trenitalia</span>
+        <span class="mk-top-i mk-top-i--web"></span>
+        <span class="mk-top-i mk-top-i--web"></span>
       </div>
+      <div class="mk-cerca mk-solo-web" aria-hidden="true">
+        <span class="mk-cerca-c">Da</span><span class="mk-cerca-c">A</span>
+        <span class="mk-cerca-c">Data</span><span class="mk-cerca-b">CERCA</span>
+      </div>
+
       <div class="mk-pagina">
         <p class="mk-titolo">{c.schermo.titolo}</p>
-        {/* Le varianti: compaiono pari, poi quella del profilo si afferma. */}
         <div class="mk-var" data-personalize>
           {c.varianti.map((v) => (
             <span class="perso-item" data-match={v.match ? '' : undefined}>
-              <span class="mk-var-t">{v.t}</span>
+              <span class="mk-var-h">
+                <span class="mk-var-t">{v.t}</span>
+                {v.match && <span class="mk-var-badge">per questo profilo</span>}
+              </span>
               <span class="mk-var-n">{v.n}</span>
             </span>
           ))}
         </div>
       </div>
+
+      {/* Barra di navigazione: è il segno per cui un'app si riconosce. */}
+      <div class="mk-tab mk-solo-app" aria-hidden="true">
+        <span class="mk-tab-v mk-tab-v--on">Home</span>
+        <span class="mk-tab-v">Biglietti</span>
+        <span class="mk-tab-v">Viaggi</span>
+        <span class="mk-tab-v">Profilo</span>
+      </div>
     </div>
   </figure>
 
-  {/* ── 3 · Dietro le quinte: il dato, da dove parte e dove arriva ────── */}
+  {/* ── 3 · Dietro le quinte, uno stadio alla volta ───────────────────── */}
   <div class="mk-flusso" data-pulse-line>
     <p class="mk-tag mk-flusso-tag">Che cosa succede dietro</p>
     <svg class="mk-flusso-l" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true">
@@ -100,29 +111,20 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
       <circle class="pulse-dot" cx="996" cy="4" r="4" fill="currentColor" />
     </svg>
     <ol class="mk-flusso-n">
-      <li class="mk-nodo">
-        <span class="mk-nodo-k">Le fonti</span>
-        <span class="mk-nodo-v">{fonti.join(' · ')}</span>
-      </li>
-      <li class="mk-nodo" data-prod="CJA">
-        <span class="mk-nodo-k">Customer Journey Analytics</span>
-        <span class="mk-nodo-v">unisce le sessioni e ricava {c.arricchimento}</span>
-      </li>
-      <li class="mk-nodo" data-prod="Target">
-        <span class="mk-nodo-k">Adobe Target</span>
-        <span class="mk-nodo-v">riceve il gruppo e sceglie la variante</span>
-      </li>
-      <li class="mk-nodo">
-        <span class="mk-nodo-k">La schermata</span>
-        <span class="mk-nodo-v">e il risultato torna indietro come misura</span>
-      </li>
+      {c.flusso.map((st, i) => (
+        <li class="mk-stadio" data-substep data-prod={i === 1 ? 'CJA' : i === 2 ? 'Target' : undefined}>
+          <span class="mk-stadio-k">{i === 0 ? `${st.k}: ${fonti.join(' · ')}` : st.k}</span>
+          {i !== 0 && <span class="mk-stadio-v">{st.v}</span>}
+          <span class="mk-stadio-e">{st.e}</span>
+        </li>
+      ))}
     </ol>
   </div>
 </div>
 
 <script>
-  // Il comando dispositivo: è una proprietà del mockup, non del deck. Non
-  // tocca i tasti freccia e non interferisce con la navigazione.
+  // Il comando dispositivo: è una proprietà del mockup, non del deck. Il deck
+  // ignora già i clic su `button`, quindi non serve fermare la propagazione.
   function montaVista(root: Element) {
     const bottoni = root.querySelectorAll<HTMLButtonElement>('[data-vista-b]');
     bottoni.forEach((b) => {
@@ -139,10 +141,6 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
 </script>
 
 <style is:global>
-  /* La slide è centrata e il reset del motore centra ogni `p`: dentro il mock
-     tutto va a bandiera, e `margin-inline: 0` impedisce che la colonna si
-     centri da sola. La specificità con `[data-slide]` serve a battere il
-     reset, non per gusto. */
   [data-slide] .mk,
   [data-slide] .mk p,
   [data-slide] .mk li,
@@ -151,39 +149,39 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
 
   .mk {
     width: 100%; max-width: 76rem; margin-inline: auto;
-    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(0.8rem, 1.8vw, 1.8rem);
+    display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+    gap: clamp(0.7rem, 1.6vw, 1.6rem);
     align-items: start;
   }
-  .mk-lato { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; min-width: 0; }
+  .mk-lato { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; min-width: 0; }
   .mk-testa { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
   .mk-tag {
-    font-size: clamp(0.66rem, 0.76vw, 0.76rem); font-weight: 700;
+    font-size: clamp(0.64rem, 0.74vw, 0.74rem); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
   }
 
   /* ── 1 · La conversazione ─────────────────────────────────────────── */
+  /* `min-height` tiene ferma la colonna mentre le bolle entrano: senza, la
+     slide si riassesta a ogni passo e chi guarda perde il filo. */
   .mk-chat {
-    display: flex; flex-direction: column; gap: 0.4rem;
+    display: flex; flex-direction: column; gap: 0.38rem; justify-content: flex-start;
+    min-height: 13.5rem;
     border: 1px solid var(--line-subtle); border-radius: 0.6rem;
-    padding: 0.75rem;
+    padding: 0.7rem;
     background: rgba(255, 255, 255, 0.04);
   }
-  .mk .chat-bubble {
-    margin: 0; width: auto !important; max-width: 78%;
-    padding: 0.48rem 0.7rem; border-radius: 0.5rem;
-    font-size: clamp(0.8rem, 0.89vw, 0.9rem); line-height: 1.4;
+  .mk .mk-bolla {
+    margin: 0; width: auto !important; max-width: 80%;
+    padding: 0.46rem 0.68rem; border-radius: 0.5rem;
+    font-size: clamp(0.79rem, 0.88vw, 0.89rem); line-height: 1.5;
   }
-  /* Chi scrive sta a destra e porta il colore del segnale; Coworker risponde
-     a sinistra su fondo neutro. Il lato è l'unica cosa che dice chi parla,
-     quindi deve essere inequivocabile. */
-  .mk .chat-bubble[data-side='out'] {
+  .mk .mk-bolla[data-side='out'] {
     align-self: flex-end;
     border: 1px solid rgba(var(--sig-rgb), 0.45);
     background: rgba(var(--sig-rgb), 0.12);
     color: var(--ink-primary);
   }
-  .mk .chat-bubble[data-side='in'] {
+  .mk .mk-bolla[data-side='in'] {
     align-self: flex-start;
     border: 1px solid var(--line-subtle);
     background: rgba(255, 255, 255, 0.07);
@@ -193,8 +191,8 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
   /* ── 2 · Il profilo e le varianti ─────────────────────────────────── */
   .mk-prof {
     position: relative; overflow: hidden;
-    border: 1px solid rgba(79, 189, 180, 0.3); border-radius: 0.55rem;
-    padding: 0.55rem 0.7rem;
+    border: 1px solid rgba(79, 189, 180, 0.32); border-radius: 0.55rem;
+    padding: 0.5rem 0.65rem;
     background: rgba(0, 102, 102, 0.16);
   }
   .mk .scan-line {
@@ -203,13 +201,124 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
     opacity: 0; pointer-events: none;
   }
   .mk-prof-tag {
-    margin: 0 0 0.35rem; font-size: 0.66rem; font-weight: 700;
+    margin: 0 0 0.3rem; font-size: 0.64rem; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro);
   }
-  .mk-prof-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+  .mk-prof-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.15rem; }
   .mk .reveal-attr { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
-  .mk-prof-k { font-size: 0.78rem; color: var(--ink-tertiary); }
-  .mk-prof-v { font-size: 0.82rem; font-weight: 600; color: var(--ink-primary); }
+  .mk-prof-k { font-size: 0.76rem; color: var(--ink-tertiary); }
+  .mk-prof-v { font-size: 0.8rem; font-weight: 600; color: var(--ink-primary); }
+
+  /* ── La pelle di Trenitalia, semplificata ─────────────────────────── */
+  .mk-dev { border: 1px solid var(--line-subtle); overflow: hidden; background: rgba(255, 255, 255, 0.04); }
+  .mk[data-vista='app'] .mk-dev { border-radius: 1.1rem; }
+  .mk[data-vista='web'] .mk-dev { border-radius: 0.5rem; }
+  .mk[data-vista='app'] .mk-solo-web,
+  .mk[data-vista='web'] .mk-solo-app { display: none; }
+
+  .mk-top {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    background: var(--color-rosso);
+  }
+  .mk-top-m {
+    font-family: var(--font-display); font-weight: 700; letter-spacing: 0.01em;
+    font-size: 0.82rem; color: rgba(255, 255, 255, 0.98);
+  }
+  .mk-top-i { width: 0.75rem; height: 0.75rem; border-radius: 0.15rem; background: rgba(255,255,255,0.4); }
+  .mk-top-i--web { margin-left: auto; }
+  .mk-top-i--web + .mk-top-i--web { margin-left: 0; }
+
+  .mk-cerca {
+    display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.3rem;
+    padding: 0.45rem 0.6rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .mk-cerca-c {
+    padding: 0.28rem 0.45rem; border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.68rem; color: rgba(47, 57, 78, 0.85);
+  }
+  .mk-cerca-b {
+    padding: 0.28rem 0.6rem; border-radius: 0.25rem;
+    background: var(--color-rosso);
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.98);
+  }
+
+  .mk-tab {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.2rem;
+    padding: 0.4rem 0.5rem;
+    border-top: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mk-tab-v { font-size: 0.64rem; text-align: center !important; color: var(--ink-tertiary); }
+  .mk-tab-v--on { color: var(--color-rosso-chiaro); font-weight: 700; }
+
+  .mk-pagina { display: flex; flex-direction: column; gap: 0.38rem; padding: 0.65rem 0.7rem 0.7rem; }
+  .mk-titolo {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(0.9rem, 1vw, 1.02rem); line-height: 1.2;
+    color: var(--ink-primary);
+  }
+  .mk-var { display: flex; flex-direction: column; gap: 0.3rem; }
+  .mk .perso-item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+    min-width: 0; padding: 0.4rem 0.55rem; border-radius: 0.35rem;
+    border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mk .perso-item[data-match] {
+    border-color: rgba(var(--sig-rgb), 0.75);
+    background: rgba(var(--sig-rgb), 0.16);
+    box-shadow: 0 0 0 1px rgba(var(--sig-rgb), 0.35);
+  }
+  /* La scena marca lo STATO, la pelle decide il contrasto: attenuare con
+     l'opacità un inchiostro già grigio lo porterebbe sotto soglia. Lo scartato
+     perde il fondo, non la leggibilità. */
+  .mk .perso-item[data-scartato] { border-style: dashed; background: transparent; }
+  .mk-var-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.45rem; min-width: 0; }
+  .mk-var-t { font-size: clamp(0.75rem, 0.83vw, 0.83rem); line-height: 1.3; color: var(--ink-secondary); }
+  .mk .perso-item[data-match] .mk-var-t { color: var(--ink-primary); font-weight: 600; }
+  /* Il livello di personalizzazione, detto a parole sulla tessera che vince. */
+  .mk-var-badge {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.1rem 0.35rem; border-radius: 0.2rem;
+    color: rgba(255, 255, 255, 0.97);
+    background: rgba(217, 24, 53, 0.55);
+  }
+  .mk-var-n { font-size: clamp(0.77rem, 0.85vw, 0.87rem); font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
+
+  /* ── 3 · Il dietro le quinte ──────────────────────────────────────── */
+  .mk-flusso {
+    grid-column: 1 / -1; position: relative;
+    margin-top: 0.2rem; padding-top: 0.4rem;
+    color: rgba(var(--sig-rgb), 0.9);
+  }
+  .mk-flusso-tag { margin: 0 0 0.35rem; }
+  .mk-flusso-l { display: block; width: 100%; height: 8px; }
+  .mk-flusso-n {
+    list-style: none; margin: 0.25rem 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.1vw, 1.1rem);
+  }
+  .mk-stadio { display: flex; flex-direction: column; gap: 0.06rem; min-width: 0; }
+  .mk-stadio-k {
+    font-size: clamp(0.73rem, 0.81vw, 0.81rem); font-weight: 600; line-height: 1.25;
+    color: var(--ink-primary);
+  }
+  .mk-stadio[data-prod='CJA'] .mk-stadio-k { color: var(--color-verde-chiaro); }
+  .mk-stadio[data-prod='Target'] .mk-stadio-k { color: var(--color-rosso-chiaro); }
+  .mk-stadio-v { font-size: clamp(0.69rem, 0.76vw, 0.76rem); line-height: 1.3; color: var(--ink-tertiary); }
+  /* L'esempio: un dato vero, riconoscibile come tale perché citato. */
+  .mk-stadio-e {
+    margin-top: 0.1rem; padding-left: 0.4rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: clamp(0.69rem, 0.76vw, 0.76rem); line-height: 1.35;
+    color: var(--ink-secondary);
+  }
 
   .mk-sw {
     display: inline-flex; gap: 2px; padding: 2px;
@@ -218,90 +327,42 @@ const { caso: c, fonti, class: className } = Astro.props as Props;
   }
   .mk-sw-b {
     appearance: none; border: 0; cursor: pointer;
-    padding: 0.2rem 0.65rem; border-radius: 9999px;
-    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.03em;
+    padding: 0.18rem 0.6rem; border-radius: 9999px;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.03em;
     background: transparent; color: rgba(241, 243, 244, 0.72);
     transition: background 180ms ease, color 180ms ease;
   }
-  .mk-sw-b[aria-pressed='true'] {
-    background: rgba(241, 243, 244, 0.92);
-    color: rgba(27, 34, 48, 1);
-  }
-
-  .mk-dev { border: 1px solid var(--line-subtle); overflow: hidden; background: rgba(255, 255, 255, 0.035); }
-  .mk[data-vista='app'] .mk-dev { border-radius: 1.2rem; }
-  .mk[data-vista='web'] .mk-dev { border-radius: 0.6rem; }
-  .mk[data-vista='app'] .mk-barra--web,
-  .mk[data-vista='web'] .mk-barra--app { display: none; }
-  .mk-barra {
-    display: flex; align-items: center; gap: 0.3rem;
-    padding: 0.45rem 0.65rem;
-    border-bottom: 1px solid var(--line-subtle);
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .mk-barra--app { justify-content: center; padding: 0.4rem; }
-  .mk-tacca { display: block; width: 3rem; height: 0.26rem; border-radius: 9999px; background: rgba(255,255,255,0.22); }
-  .mk-pallino { width: 0.4rem; height: 0.4rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.24); }
-  .mk-url { margin-left: 0.5rem; font-size: 0.72rem; color: var(--ink-tertiary); }
-
-  .mk-pagina { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.7rem 0.8rem 0.8rem; }
-  .mk-titolo {
-    margin: 0;
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(0.92rem, 1.02vw, 1.05rem); line-height: 1.2;
-    color: var(--ink-primary);
-  }
-  .mk-var { display: flex; flex-direction: column; gap: 0.35rem; }
-  .mk[data-vista='web'] .mk-var { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .mk .perso-item {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
-    min-width: 0; padding: 0.42rem 0.55rem; border-radius: 0.35rem;
-    border: 1px solid var(--line-subtle);
-    background: rgba(255, 255, 255, 0.05);
-  }
-  .mk[data-vista='web'] .perso-item { flex-direction: column; align-items: flex-start; gap: 0.3rem; min-height: 3.2rem; }
-  .mk .perso-item[data-match] {
-    border-color: rgba(var(--sig-rgb), 0.65);
-    background: rgba(var(--sig-rgb), 0.14);
-  }
-  /* La scena marca lo STATO, la pelle decide il contrasto: attenuare con
-     l'opacità un inchiostro già grigio lo porterebbe sotto soglia. Qui lo
-     scartato perde il fondo, non la leggibilità. */
-  .mk .perso-item[data-scartato] { border-style: dashed; background: transparent; }
-  .mk-var-t { font-size: clamp(0.76rem, 0.84vw, 0.84rem); line-height: 1.3; color: var(--ink-secondary); }
-  .mk-var-n { font-size: clamp(0.78rem, 0.86vw, 0.88rem); font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
-  .mk[data-vista='web'] .mk-var-n { white-space: normal; }
-  .mk .perso-item[data-match] .mk-var-t { color: var(--ink-primary); }
-
-  /* ── 3 · Il dietro le quinte ──────────────────────────────────────── */
-  .mk-flusso {
-    grid-column: 1 / -1; position: relative;
-    margin-top: 0.3rem; padding-top: 0.5rem;
-    color: rgba(var(--sig-rgb), 0.9);
-  }
-  .mk-flusso-tag { margin: 0 0 0.45rem; }
-  .mk-flusso-l { display: block; width: 100%; height: 8px; }
-  .mk-flusso-n {
-    list-style: none; margin: 0.3rem 0 0; padding: 0;
-    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.2vw, 1.2rem);
-  }
-  .mk-nodo { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
-  .mk-nodo-k {
-    font-size: clamp(0.74rem, 0.82vw, 0.82rem); font-weight: 600; line-height: 1.25;
-    color: var(--ink-primary);
-  }
-  .mk-nodo[data-prod='CJA'] .mk-nodo-k { color: var(--color-verde-chiaro); }
-  .mk-nodo[data-prod='Target'] .mk-nodo-k { color: var(--color-rosso-chiaro); }
-  .mk-nodo-v { font-size: clamp(0.7rem, 0.78vw, 0.78rem); line-height: 1.35; color: var(--ink-tertiary); }
+  .mk-sw-b[aria-pressed='true'] { background: rgba(241, 243, 244, 0.92); color: rgba(27, 34, 48, 1); }
 
   @media (max-width: 1300px) {
-    .mk-chat { gap: 0.32rem; padding: 0.6rem; }
-    .mk .chat-bubble { padding: 0.4rem 0.6rem; }
-    .mk-prof { padding: 0.45rem 0.6rem; }
-    .mk-pagina { gap: 0.32rem; padding: 0.6rem 0.7rem 0.65rem; }
-    .mk .perso-item { padding: 0.36rem 0.5rem; }
-    .mk-flusso { margin-top: 0.1rem; }
+    .mk { gap: 0.6rem; }
+    .mk-top { padding: 0.28rem 0.55rem; }
+    .mk-top-m { font-size: 0.78rem; }
+    .mk-cerca { padding: 0.35rem 0.5rem; }
+    .mk-tab { padding: 0.26rem 0.45rem; }
+    .mk-titolo { margin-bottom: 0.05rem; }
+    .mk-chat { gap: 0.24rem; padding: 0.45rem; min-height: 10.2rem; }
+    .mk .mk-bolla { padding: 0.38rem 0.58rem; }
+    .mk-prof { padding: 0.3rem 0.5rem; }
+    .mk-prof-l { flex-direction: row; flex-wrap: wrap; gap: 0.1rem 0.9rem; }
+    .mk .reveal-attr { justify-content: flex-start; gap: 0.3rem; }
+    .mk-prof-tag { margin-bottom: 0.15rem; }
+    .mk-prof-tag { margin-bottom: 0.2rem; }
+    .mk-top { padding: 0.32rem 0.6rem; }
+    .mk-tab { padding: 0.3rem 0.5rem; }
+    .mk-pagina { gap: 0.3rem; padding: 0.55rem 0.6rem 0.6rem; }
+    .mk .perso-item { padding: 0.3rem 0.45rem; }
+    .mk-var { gap: 0.24rem; }
+    .mk-lato { gap: 0.3rem; }
+    /* A 1280 la slide è 72px troppo alta e il contratto dice di ridurre la
+       densità prima di toccare il tipo. Lo stadio tiene il NOME e l'ESEMPIO —
+       le due cose che portano il senso — e lascia andare la glossa, che a
+       1920, dove il deck si proietta, resta al suo posto. */
+    .mk-stadio-v { display: none; }
+    .mk-flusso { margin-top: 0; padding-top: 0.15rem; }
+    .mk-flusso-tag { margin-bottom: 0.25rem; }
+    .mk-stadio-e { margin-top: 0.05rem; }
+
   }
   @media (max-width: 900px) {
     .mk { grid-template-columns: minmax(0, 1fr); }
