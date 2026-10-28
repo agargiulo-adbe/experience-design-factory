@@ -1,77 +1,55 @@
 ---
 /**
- * MockCaso — un caso d'uso visto dai due lati: chi lo prepara e chi viaggia.
+ * MockCaso — un caso d'uso in tre zone, animate dal motore.
  *
- * L'ORDINE È PREPARA → VIAGGIA, e non il contrario. La slide risponde al
- * vincolo che il Direttore dei canali digitali ha posto due volte il 27
- * ottobre: non vuole comprare lo strumento e doversi poi costruire tutto da
- * solo. Il dubbio è sul lavoro, quindi il lavoro viene prima e la schermata è
- * la sua conseguenza. Causa a sinistra, effetto a destra.
+ * NON C'È UNA RIGA DI ANIMAZIONE SCRITTA A MANO, ed è una regola: le scene del
+ * motore sono dichiarative, hanno due implementazioni (scorrimento e deck),
+ * rispettano «Riduci movimento» e si attivano quando la slide entra. Qui si
+ * dichiara solo il markup che ciascuna si aspetta.
  *
- * A SINISTRA È UNA CONVERSAZIONE, non un elenco di gesti. Si scrive una frase
- * in italiano e Coworker risponde dicendo che cosa ha fatto e dove: il gruppo
- * e l'attività su Adobe Target, il segmento e la misura su Customer Journey
- * Analytics. Le risposte portano il nome del prodotto perché è lì che la cosa
- * esiste davvero, e la chiusura dice SHIP, WAIT o STOP — che è il verdetto
- * che la skill `target-activity-verdict` restituisce, non una formula nostra.
+ *   `data-converse`    le bolle compaiono una alla volta, alternando i lati
+ *   `data-clienteling` una riga di scansione passa e il profilo si popola
+ *   `data-personalize` le varianti compaiono pari, poi una si afferma
+ *   `data-pulse-line`  la linea si disegna e un impulso la percorre
  *
- * A DESTRA SI CAMBIA DISPOSITIVO. L'app è la parte più grande del traffico
- * (parole loro), quindi una slide che mostra solo il browser mostra la fetta
- * più piccola: il comando «App / Web» sta lì per questo, non per decorazione.
+ * LE TRE ZONE RACCONTANO LO STESSO FATTO DA TRE ALTEZZE.
+ * In alto a sinistra, che cosa si chiede a Coworker e che cosa risponde: è il
+ * lavoro, e sta per primo perché è la parte su cui il dubbio è stato posto.
+ * A destra, il profilo di chi viaggia e — da quegli attributi — quale delle
+ * varianti gli viene mostrata: senza le alternative accanto, «personalizzato»
+ * resta una parola. In basso il dietro le quinte: da quali fonti si parte, che
+ * cosa aggiunge Customer Journey Analytics, che cosa riceve Adobe Target e
+ * dove finisce. Le tre zone entrano in quest'ordine, quindi la sequenza si
+ * legge da sola: si chiede, si vede, e sotto si capisce perché è successo.
  *
  * PERCHÉ È DISEGNATO E NON UNO SCREENSHOT
  * Un'interfaccia vera invecchia — il sito Le Frecce si rifà a marzo — e
  * ricostruirne una falsa sarebbe la wrong-brand imagery che la Quality Bar
- * vieta. Qui ci sono forme e parole vere: si capisce il gesto, non si promette
- * una schermata.
+ * vieta. Qui ci sono forme e parole vere.
  */
-import type { Passo } from '../data/casi-duso';
+import type { Caso } from '../data/casi-duso';
 
 interface Props {
-  schermo: { dove: string; titolo: string; tessere: { t: string; n: string }[] };
-  /** La frase che chi lavora in marketing scrive dentro Coworker Chat. */
-  chiesta: string;
-  /** Le risposte di Coworker: che cosa ha fatto, e in quale prodotto. */
-  passi: [Passo, Passo, Passo];
-  /** Una riga sotto il dispositivo: che cosa vede chi viaggia. */
-  viaggiatore: string;
+  caso: Caso;
+  /** I nomi per esteso delle fonti del caso, già risolti dalla pagina. */
+  fonti: string[];
   class?: string;
 }
-const { schermo, chiesta, passi, viaggiatore, class: className } = Astro.props as Props;
+const { caso: c, fonti, class: className } = Astro.props as Props;
 ---
 <div class:list={['mk', className]} data-vista="app">
 
-  {/* ── Chi lo prepara: la conversazione ─────────────────────────────── */}
+  {/* ── 1 · Chi lo prepara: la sessione con Coworker ──────────────────── */}
   <figure class="mk-lato">
     <figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption>
-
-    <div class="mk-chat">
-      {/* La frase scritta. Ha la forma di un campo perché è una cosa che si
-          digita, non un virgolettato. */}
-      <div class="mk-riga-utente">
-        <p class="mk-chiesta">{chiesta}</p>
-      </div>
-
-      {/* Le risposte entrano una alla volta: `data-stagger` è una scena del
-          motore, con «Riduci movimento» già gestito. Non si riscrive a mano. */}
-      <div class="mk-risposte" data-stagger>
-        {passi.map((p) => (
-          <div class="mk-bolla">
-            <span class="mk-bolla-t">{p.t}</span>
-            <span class="mk-bolla-d" data-dove={p.dove}>{p.dove}</span>
-          </div>
-        ))}
-        <div class="mk-bolla mk-bolla--esito">
-          <span class="mk-bolla-t">
-            Durata consigliata: due settimane. Poi il verdetto — <strong>ship</strong>,
-            <strong>wait</strong> o <strong>stop</strong>.
-          </span>
-        </div>
-      </div>
+    <div class="mk-chat" data-converse>
+      {c.conversazione.map((b) => (
+        <p class="chat-bubble" data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
+      ))}
     </div>
   </figure>
 
-  {/* ── Chi viaggia: il dispositivo ──────────────────────────────────── */}
+  {/* ── 2 · Chi viaggia: il profilo, e che cosa gli viene mostrato ────── */}
   <figure class="mk-lato">
     <div class="mk-testa">
       <figcaption class="mk-tag">Chi viaggia</figcaption>
@@ -81,54 +59,70 @@ const { schermo, chiesta, passi, viaggiatore, class: className } = Astro.props a
       </div>
     </div>
 
-    <div class="mk-palco">
-      {/* Telefono */}
-      <div class="mk-dev mk-dev--app" aria-hidden="false">
-        <div class="mk-barra mk-barra--app"><span class="mk-tacca"></span></div>
-        <div class="mk-pagina">
-          <span class="mk-riga" style="width: 44%"></span>
-          <p class="mk-titolo">{schermo.titolo}</p>
-          <div class="mk-zona mk-zona--app">
-            {schermo.tessere.map((t) => (
-              <span class="mk-tessera">
-                <span class="mk-tessera-t">{t.t}</span>
-                <span class="mk-tessera-n">{t.n}</span>
-              </span>
-            ))}
-          </div>
-          <span class="mk-riga" style="width: 70%"></span>
-        </div>
-      </div>
+    {/* Il profilo che decide. La riga di scansione e gli attributi che entrano
+        uno a uno sono la scena `clienteling`: «riconoscere» si vede. */}
+    <div class="mk-prof" data-clienteling>
+      <span class="scan-line" aria-hidden="true"></span>
+      <p class="mk-prof-tag">Quello che sappiamo</p>
+      <ul class="mk-prof-l">
+        {c.profilo.map((a) => (
+          <li class="reveal-attr"><span class="mk-prof-k">{a.k}</span><span class="mk-prof-v">{a.v}</span></li>
+        ))}
+      </ul>
+    </div>
 
-      {/* Browser */}
-      <div class="mk-dev mk-dev--web">
-        <div class="mk-barra">
-          <span class="mk-pallino"></span><span class="mk-pallino"></span><span class="mk-pallino"></span>
-          <span class="mk-url">{schermo.dove}</span>
-        </div>
-        <div class="mk-pagina">
-          <span class="mk-riga" style="width: 38%"></span>
-          <p class="mk-titolo">{schermo.titolo}</p>
-          <div class="mk-zona">
-            {schermo.tessere.map((t) => (
-              <span class="mk-tessera">
-                <span class="mk-tessera-t">{t.t}</span>
-                <span class="mk-tessera-n">{t.n}</span>
-              </span>
-            ))}
-          </div>
-          <span class="mk-riga" style="width: 64%"></span>
+    <div class="mk-dev">
+      <div class="mk-barra mk-barra--app" aria-hidden="true"><span class="mk-tacca"></span></div>
+      <div class="mk-barra mk-barra--web" aria-hidden="true">
+        <span class="mk-pallino"></span><span class="mk-pallino"></span><span class="mk-pallino"></span>
+        <span class="mk-url">{c.schermo.dove}</span>
+      </div>
+      <div class="mk-pagina">
+        <p class="mk-titolo">{c.schermo.titolo}</p>
+        {/* Le varianti: compaiono pari, poi quella del profilo si afferma. */}
+        <div class="mk-var" data-personalize>
+          {c.varianti.map((v) => (
+            <span class="perso-item" data-match={v.match ? '' : undefined}>
+              <span class="mk-var-t">{v.t}</span>
+              <span class="mk-var-n">{v.n}</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>
-
-    <p class="mk-dice">{viaggiatore}</p>
   </figure>
+
+  {/* ── 3 · Dietro le quinte: il dato, da dove parte e dove arriva ────── */}
+  <div class="mk-flusso" data-pulse-line>
+    <p class="mk-tag mk-flusso-tag">Che cosa succede dietro</p>
+    <svg class="mk-flusso-l" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true">
+      <path class="pulse-path" d="M4 4 H996" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      <circle class="pulse-dot" cx="996" cy="4" r="4" fill="currentColor" />
+    </svg>
+    <ol class="mk-flusso-n">
+      <li class="mk-nodo">
+        <span class="mk-nodo-k">Le fonti</span>
+        <span class="mk-nodo-v">{fonti.join(' · ')}</span>
+      </li>
+      <li class="mk-nodo" data-prod="CJA">
+        <span class="mk-nodo-k">Customer Journey Analytics</span>
+        <span class="mk-nodo-v">unisce le sessioni e ricava {c.arricchimento}</span>
+      </li>
+      <li class="mk-nodo" data-prod="Target">
+        <span class="mk-nodo-k">Adobe Target</span>
+        <span class="mk-nodo-v">riceve il gruppo e sceglie la variante</span>
+      </li>
+      <li class="mk-nodo">
+        <span class="mk-nodo-k">La schermata</span>
+        <span class="mk-nodo-v">e il risultato torna indietro come misura</span>
+      </li>
+    </ol>
+  </div>
 </div>
 
 <script>
-  // Il comando dispositivo. Vive qui perché è una proprietà del mockup, non
-  // del deck: non tocca i tasti freccia e non interferisce con la navigazione.
+  // Il comando dispositivo: è una proprietà del mockup, non del deck. Non
+  // tocca i tasti freccia e non interferisce con la navigazione.
   function montaVista(root: Element) {
     const bottoni = root.querySelectorAll<HTMLButtonElement>('[data-vista-b]');
     bottoni.forEach((b) => {
@@ -146,75 +140,77 @@ const { schermo, chiesta, passi, viaggiatore, class: className } = Astro.props a
 
 <style is:global>
   /* La slide è centrata e il reset del motore centra ogni `p`: dentro il mock
-     tutto va a bandiera. La specificità con `[data-slide]` serve a battere il
-     reset, e `margin-inline: 0` a non farsi centrare la colonna. */
+     tutto va a bandiera, e `margin-inline: 0` impedisce che la colonna si
+     centri da sola. La specificità con `[data-slide]` serve a battere il
+     reset, non per gusto. */
   [data-slide] .mk,
   [data-slide] .mk p,
+  [data-slide] .mk li,
   [data-slide] .mk span { text-align: left; }
   [data-slide] .mk p { max-width: none; width: 100%; margin-inline: 0; }
 
   .mk {
     width: 100%; max-width: 76rem; margin-inline: auto;
     display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(1.1rem, 2.4vw, 2.4rem);
+    gap: clamp(0.8rem, 1.8vw, 1.8rem);
     align-items: start;
   }
-  .mk-lato { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; min-width: 0; }
+  .mk-lato { display: flex; flex-direction: column; gap: 0.45rem; margin: 0; min-width: 0; }
   .mk-testa { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
   .mk-tag {
-    font-size: clamp(0.68rem, 0.78vw, 0.78rem); font-weight: 700;
+    font-size: clamp(0.66rem, 0.76vw, 0.76rem); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
   }
-  .mk-dice {
-    font-size: clamp(0.84rem, 0.92vw, 0.94rem); line-height: 1.5;
-    color: var(--ink-secondary); margin: 0;
-  }
 
-  /* ── La conversazione ─────────────────────────────────────────────── */
+  /* ── 1 · La conversazione ─────────────────────────────────────────── */
   .mk-chat {
-    display: flex; flex-direction: column; gap: 0.5rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
     border: 1px solid var(--line-subtle); border-radius: 0.6rem;
-    padding: 0.85rem;
+    padding: 0.75rem;
     background: rgba(255, 255, 255, 0.04);
   }
-  .mk-riga-utente { display: flex; justify-content: flex-end; }
-  .mk-chiesta {
-    margin: 0; width: auto; max-width: 92%;
-    padding: 0.55rem 0.75rem;
+  .mk .chat-bubble {
+    margin: 0; width: auto !important; max-width: 78%;
+    padding: 0.48rem 0.7rem; border-radius: 0.5rem;
+    font-size: clamp(0.8rem, 0.89vw, 0.9rem); line-height: 1.4;
+  }
+  /* Chi scrive sta a destra e porta il colore del segnale; Coworker risponde
+     a sinistra su fondo neutro. Il lato è l'unica cosa che dice chi parla,
+     quindi deve essere inequivocabile. */
+  .mk .chat-bubble[data-side='out'] {
+    align-self: flex-end;
     border: 1px solid rgba(var(--sig-rgb), 0.45);
-    border-radius: 0.45rem;
-    background: rgba(var(--sig-rgb), 0.1);
-    font-size: clamp(0.85rem, 0.95vw, 0.96rem); line-height: 1.45;
+    background: rgba(var(--sig-rgb), 0.12);
     color: var(--ink-primary);
   }
-  .mk-risposte { display: flex; flex-direction: column; gap: 0.4rem; }
-  .mk-bolla {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.5rem 0.6rem;
-    border-radius: 0.45rem;
-    background: rgba(255, 255, 255, 0.06);
-  }
-  .mk-bolla-t {
-    flex: 1 1 auto; min-width: 0;
-    font-size: clamp(0.8rem, 0.88vw, 0.9rem); line-height: 1.35;
+  .mk .chat-bubble[data-side='in'] {
+    align-self: flex-start;
+    border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.07);
     color: var(--ink-secondary);
   }
-  .mk-bolla--esito { background: transparent; padding-top: 0.15rem; }
-  .mk-bolla--esito .mk-bolla-t { color: var(--ink-tertiary); font-size: 0.8rem; }
-  .mk-bolla--esito strong { color: var(--color-verde-chiaro); font-weight: 600; }
-  /* Il prodotto che esegue: inchiostro pieno su fondo esplicito, perché un
-     accento trasparente scende sotto soglia e `audit:ink` lo vede. */
-  .mk-bolla-d {
-    flex: 0 0 auto;
-    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
-    padding: 0.16rem 0.45rem; border-radius: 0.25rem;
-    color: rgba(255, 255, 255, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.24);
-  }
-  .mk-bolla-d[data-dove='Target'] { background: rgba(217, 24, 53, 0.3); }
-  .mk-bolla-d[data-dove='CJA'] { background: rgba(0, 102, 102, 0.45); }
 
-  /* ── Il dispositivo ───────────────────────────────────────────────── */
+  /* ── 2 · Il profilo e le varianti ─────────────────────────────────── */
+  .mk-prof {
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(79, 189, 180, 0.3); border-radius: 0.55rem;
+    padding: 0.55rem 0.7rem;
+    background: rgba(0, 102, 102, 0.16);
+  }
+  .mk .scan-line {
+    position: absolute; left: 0; right: 0; top: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-verde-chiaro), transparent);
+    opacity: 0; pointer-events: none;
+  }
+  .mk-prof-tag {
+    margin: 0 0 0.35rem; font-size: 0.66rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro);
+  }
+  .mk-prof-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.2rem; }
+  .mk .reveal-attr { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .mk-prof-k { font-size: 0.78rem; color: var(--ink-tertiary); }
+  .mk-prof-v { font-size: 0.82rem; font-weight: 600; color: var(--ink-primary); }
+
   .mk-sw {
     display: inline-flex; gap: 2px; padding: 2px;
     border-radius: 9999px; border: 1px solid var(--line-subtle);
@@ -232,70 +228,83 @@ const { schermo, chiesta, passi, viaggiatore, class: className } = Astro.props a
     color: rgba(27, 34, 48, 1);
   }
 
-  .mk-palco { position: relative; display: flex; justify-content: center; }
-  /* In vista App il telefono è stretto e la colonna resta larga: l'etichetta a
-     sinistra, il comando a destra e il telefono in mezzo si staccavano l'uno
-     dall'altro. Qui la colonna si restringe attorno al dispositivo, così i
-     quattro pezzi restano un oggetto solo. */
-  .mk[data-vista='app'] .mk-lato:last-of-type {
-    max-width: 24rem; margin-inline: auto; width: 100%;
-  }
-  .mk-dev {
-    border: 1px solid var(--line-subtle); overflow: hidden;
-    background: rgba(255, 255, 255, 0.035);
-  }
-  .mk-dev--web { width: 100%; border-radius: 0.6rem; }
-  .mk-dev--app { width: min(17.5rem, 100%); border-radius: 1.4rem; }
-  .mk[data-vista='app'] .mk-dev--web,
-  .mk[data-vista='web'] .mk-dev--app { display: none; }
-
+  .mk-dev { border: 1px solid var(--line-subtle); overflow: hidden; background: rgba(255, 255, 255, 0.035); }
+  .mk[data-vista='app'] .mk-dev { border-radius: 1.2rem; }
+  .mk[data-vista='web'] .mk-dev { border-radius: 0.6rem; }
+  .mk[data-vista='app'] .mk-barra--web,
+  .mk[data-vista='web'] .mk-barra--app { display: none; }
   .mk-barra {
-    display: flex; align-items: center; gap: 0.32rem;
-    padding: 0.5rem 0.7rem;
+    display: flex; align-items: center; gap: 0.3rem;
+    padding: 0.45rem 0.65rem;
     border-bottom: 1px solid var(--line-subtle);
     background: rgba(255, 255, 255, 0.05);
   }
-  .mk-barra--app { justify-content: center; padding: 0.45rem; }
-  .mk-tacca { display: block; width: 3.2rem; height: 0.28rem; border-radius: 9999px; background: rgba(255,255,255,0.22); }
-  .mk-pallino { width: 0.42rem; height: 0.42rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.24); }
-  .mk-url { margin-left: 0.55rem; font-size: 0.74rem; color: var(--ink-tertiary); }
+  .mk-barra--app { justify-content: center; padding: 0.4rem; }
+  .mk-tacca { display: block; width: 3rem; height: 0.26rem; border-radius: 9999px; background: rgba(255,255,255,0.22); }
+  .mk-pallino { width: 0.4rem; height: 0.4rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.24); }
+  .mk-url { margin-left: 0.5rem; font-size: 0.72rem; color: var(--ink-tertiary); }
 
-  .mk-pagina { display: flex; flex-direction: column; gap: 0.45rem; padding: 0.8rem 0.9rem 0.95rem; }
-  .mk-riga { display: block; height: 0.4rem; border-radius: 9999px; background: rgba(255, 255, 255, 0.11); }
+  .mk-pagina { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.7rem 0.8rem 0.8rem; }
   .mk-titolo {
-    margin: 0.25rem 0 0;
+    margin: 0;
     font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(0.95rem, 1.05vw, 1.08rem); line-height: 1.2;
+    font-size: clamp(0.92rem, 1.02vw, 1.05rem); line-height: 1.2;
     color: var(--ink-primary);
   }
-  .mk-zona { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.45rem; margin: 0.1rem 0 0.3rem; }
-  .mk-zona--app { grid-template-columns: minmax(0, 1fr); }
-  .mk-tessera {
-    display: flex; flex-direction: column; justify-content: space-between; gap: 0.4rem;
-    min-width: 0; min-height: 3.5rem;
-    padding: 0.5rem 0.6rem; border-radius: 0.35rem;
-    border: 1px solid rgba(var(--sig-rgb), 0.5);
-    background: rgba(var(--sig-rgb), 0.12);
+  .mk-var { display: flex; flex-direction: column; gap: 0.35rem; }
+  .mk[data-vista='web'] .mk-var { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .mk .perso-item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+    min-width: 0; padding: 0.42rem 0.55rem; border-radius: 0.35rem;
+    border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
   }
-  .mk-zona--app .mk-tessera { flex-direction: row; align-items: baseline; justify-content: space-between; min-height: 0; }
-  .mk-tessera-t { font-size: clamp(0.74rem, 0.82vw, 0.82rem); line-height: 1.25; color: var(--ink-secondary); }
-  .mk-tessera-n {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(0.85rem, 0.95vw, 0.96rem); line-height: 1.15;
+  .mk[data-vista='web'] .perso-item { flex-direction: column; align-items: flex-start; gap: 0.3rem; min-height: 3.2rem; }
+  .mk .perso-item[data-match] {
+    border-color: rgba(var(--sig-rgb), 0.65);
+    background: rgba(var(--sig-rgb), 0.14);
+  }
+  /* La scena marca lo STATO, la pelle decide il contrasto: attenuare con
+     l'opacità un inchiostro già grigio lo porterebbe sotto soglia. Qui lo
+     scartato perde il fondo, non la leggibilità. */
+  .mk .perso-item[data-scartato] { border-style: dashed; background: transparent; }
+  .mk-var-t { font-size: clamp(0.76rem, 0.84vw, 0.84rem); line-height: 1.3; color: var(--ink-secondary); }
+  .mk-var-n { font-size: clamp(0.78rem, 0.86vw, 0.88rem); font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
+  .mk[data-vista='web'] .mk-var-n { white-space: normal; }
+  .mk .perso-item[data-match] .mk-var-t { color: var(--ink-primary); }
+
+  /* ── 3 · Il dietro le quinte ──────────────────────────────────────── */
+  .mk-flusso {
+    grid-column: 1 / -1; position: relative;
+    margin-top: 0.3rem; padding-top: 0.5rem;
+    color: rgba(var(--sig-rgb), 0.9);
+  }
+  .mk-flusso-tag { margin: 0 0 0.45rem; }
+  .mk-flusso-l { display: block; width: 100%; height: 8px; }
+  .mk-flusso-n {
+    list-style: none; margin: 0.3rem 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.2vw, 1.2rem);
+  }
+  .mk-nodo { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+  .mk-nodo-k {
+    font-size: clamp(0.74rem, 0.82vw, 0.82rem); font-weight: 600; line-height: 1.25;
     color: var(--ink-primary);
   }
+  .mk-nodo[data-prod='CJA'] .mk-nodo-k { color: var(--color-verde-chiaro); }
+  .mk-nodo[data-prod='Target'] .mk-nodo-k { color: var(--color-rosso-chiaro); }
+  .mk-nodo-v { font-size: clamp(0.7rem, 0.78vw, 0.78rem); line-height: 1.35; color: var(--ink-tertiary); }
 
   @media (max-width: 1300px) {
-    .mk-lato { gap: 0.35rem; }
-    .mk-dice { font-size: 0.82rem; line-height: 1.4; }
-    .mk-chat { gap: 0.34rem; padding: 0.6rem; }
-    .mk-bolla { padding: 0.34rem 0.5rem; }
-    .mk-risposte { gap: 0.32rem; }
-    .mk-pagina { gap: 0.38rem; padding: 0.65rem 0.75rem 0.75rem; }
-    .mk-tessera { min-height: 3.05rem; padding: 0.42rem 0.5rem; }
-    .mk-dev--app { width: min(15.5rem, 100%); }
+    .mk-chat { gap: 0.32rem; padding: 0.6rem; }
+    .mk .chat-bubble { padding: 0.4rem 0.6rem; }
+    .mk-prof { padding: 0.45rem 0.6rem; }
+    .mk-pagina { gap: 0.32rem; padding: 0.6rem 0.7rem 0.65rem; }
+    .mk .perso-item { padding: 0.36rem 0.5rem; }
+    .mk-flusso { margin-top: 0.1rem; }
   }
   @media (max-width: 900px) {
     .mk { grid-template-columns: minmax(0, 1fr); }
+    .mk-flusso-n { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 </style>

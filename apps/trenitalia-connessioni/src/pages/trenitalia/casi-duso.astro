@@ -26,7 +26,7 @@ import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
 import MockCaso from '../../components/MockCaso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
-import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO, FONTI_CAPITOLO, type Caso } from '../../data/casi-duso';
+import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
 
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/casi-duso');
@@ -158,40 +158,50 @@ const SFONDI: Record<string, string> = {
         </p>
 
         <div class="w-full" data-reveal data-reveal-delay="0.2">
-          <MockCaso
-            schermo={c.schermo}
-            chiesta={c.chiesta}
-            passi={c.passi}
-            viaggiatore={c.viaggiatore}
-          />
+          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} />
         </div>
-
-        <div class="cs-misura" data-reveal data-reveal-delay="0.26">
-          <div class="cs-box cs-box--kpi">
-            <p class="cs-box-tag">Su che cosa agisce</p>
-            <ul class="cs-kpi-l">
-              {c.kpi.map((k) => <li class="cs-kpi-v">{k}</li>)}
-            </ul>
-            <p class="cs-box-nota">
-              Fonti: {c.fonti.map(nomeFonte).join(' · ')} —
-              {dentroRistretto(c) ? ' tutte nella prima fase.' : ' una o più dopo la prima fase.'}
-            </p>
-          </div>
-          <div class="cs-box cs-box--prova">
-            <p class="cs-box-tag">L’ha già fatto</p>
-            <p class="cs-prova-r">
-              <span class="cs-prova-v">{c.prova.v}</span>
-              <span class="cs-prova-l">{c.prova.l}</span>
-            </p>
-            <p class="cs-prova-f">
-              <a href={c.prova.url} target="_blank" rel="noopener noreferrer">{c.prova.chi}</a>
-              <span> · {c.prova.settore} · caso pubblicato da Adobe</span>
-            </p>
-          </div>
-        </div>
-
       </Slide>
     ))}
+
+    <!-- ── Che cosa muovono, e chi l'ha già fatto ─────────────────────── -->
+    <!-- Stanno insieme di proposito: cinque referenze sparse una per slide si
+         dimenticano, messe in fila si leggono come un argomento solo. E un KPI
+         senza una prova accanto è un auspicio. -->
+    <Slide id="slide-riepilogo" bg="secondary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>CINQUE CASI, DUE DOMANDE</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Che cosa muovono, e chi l’ha già fatto.
+      </h2>
+      <div class="cs-tab" data-stagger>
+        <div class="cs-tab-h" aria-hidden="true">
+          <span>Il caso</span><span>Su che cosa agisce</span><span>L’ha già fatto</span>
+        </div>
+        {CASI.map((c) => (
+          <div class="cs-tab-r">
+            <span class="cs-tab-c">{c.titolo}</span>
+            <span class="cs-tab-k">{c.kpi.join(' · ')}</span>
+            <span class="cs-tab-p">
+              <span class="cs-tab-v">{c.prova.v}</span>
+              <span class="cs-tab-l">{c.prova.l}</span>
+              <a href={c.prova.url} target="_blank" rel="noopener noreferrer">{c.prova.chi}</a>
+            </span>
+          </div>
+        ))}
+      </div>
+      <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.3">
+        Casi pubblicati da Adobe, aperti e verificati il 28 ottobre 2026. Fuori dal trasporto di proposito:
+        non serve un concorrente, serve che funzioni.
+      </p>
+    </Slide>
 
     <!-- ── Il canale conversazionale ──────────────────────────────────── -->
     {/* Nella riunione del 27 ott i motori conversazionali erano la prima
@@ -318,78 +328,62 @@ const SFONDI: Record<string, string> = {
     color: var(--color-rosso-chiaro); margin-right: 0.4rem;
   }
 
-  /* ── Che cosa muove il caso, e la prova ─────────────────────────────── */
-  /* Due blocchi veri, non due note a margine: KPI e referenza sono la risposta
-     a «e questo che cosa muove?» e «ha già funzionato?», cioè le due domande
-     che arrivano sempre. Si distinguono per colore perché sono due cose
-     diverse — il verde di marca misura, il rosso di marca dimostra — e gli
-     inchiostri sono le varianti chiare, le uniche che reggono AA sul fondo
-     scuro (le piene, #006666 e #d91835, stanno a 2,35:1 e 3,14:1). */
-  .cs-misura {
-    width: 100%; max-width: 76rem; margin: 1rem auto 0;
-    display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    gap: clamp(1.1rem, 2.4vw, 2.4rem);
-    align-items: stretch;
+  /* ── La tabella del riepilogo ────────────────────────────────────── */
+  /* Tre colonne e cinque righe: il caso, che cosa muove, chi l'ha già fatto.
+     Le due colonne di destra portano i colori di marca — verde dove si misura,
+     rosso dove si dimostra — e gli inchiostri sono le varianti chiare, le
+     uniche che reggono AA sul fondo scuro (le piene stanno a 2,35:1 e 3,14:1). */
+  .cs-tab { width: 100%; max-width: 76rem; margin-inline: auto; }
+  [data-slide] .cs-tab span,
+  [data-slide] .cs-tab a { text-align: left; }
+  .cs-tab-h, .cs-tab-r {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1.5fr);
+    gap: clamp(0.8rem, 1.8vw, 1.8rem);
+    align-items: baseline;
   }
-  [data-slide] .cs-misura p,
-  [data-slide] .cs-misura li { text-align: left; max-width: none; margin-inline: 0; }
-  .cs-box {
-    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
-    padding: 0.85rem 0.95rem;
+  .cs-tab-h {
+    padding-bottom: 0.5rem; border-bottom: 1.5px solid var(--line-subtle);
   }
-  .cs-box--kpi { background: rgba(0, 102, 102, 0.18); border-color: rgba(79, 189, 180, 0.3); }
-  .cs-box--prova { background: rgba(217, 24, 53, 0.12); border-color: rgba(255, 141, 157, 0.28); }
-  .cs-box-tag {
-    margin: 0 0 0.6rem; font-size: clamp(0.72rem, 0.82vw, 0.82rem); font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
+  .cs-tab-h span {
+    font-size: clamp(0.68rem, 0.78vw, 0.78rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
   }
-  .cs-box--kpi .cs-box-tag { color: var(--color-verde-chiaro); }
-  .cs-box--prova .cs-box-tag { color: var(--color-rosso-chiaro); }
-
-  .cs-kpi-l { display: flex; flex-wrap: wrap; gap: 0.45rem; list-style: none; margin: 0; padding: 0; }
-  .cs-kpi-v {
-    font-size: clamp(0.84rem, 0.93vw, 0.94rem); line-height: 1.3;
-    padding: 0.36rem 0.7rem; border-radius: 9999px;
-    color: rgba(241, 243, 244, 0.95);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(79, 189, 180, 0.3);
+  .cs-tab-h span:nth-child(2) { color: var(--color-verde-chiaro); }
+  .cs-tab-h span:nth-child(3) { color: var(--color-rosso-chiaro); }
+  .cs-tab-r {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
-  .cs-box-nota {
-    margin: 0.65rem 0 0; font-size: clamp(0.72rem, 0.8vw, 0.8rem); line-height: 1.45;
-    color: var(--ink-tertiary);
-  }
-  .cs-prova-r { display: flex; align-items: baseline; gap: 0.6rem; margin: 0; }
-  .cs-prova-v {
-    flex: 0 0 auto;
+  .cs-tab-c {
     font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(1.6rem, 2.2vw, 2.1rem); line-height: 1.02; letter-spacing: -0.02em;
+    font-size: clamp(0.92rem, 1.02vw, 1.05rem); line-height: 1.25;
     color: var(--ink-primary);
   }
-  .cs-prova-l {
-    font-size: clamp(0.84rem, 0.93vw, 0.94rem); line-height: 1.4;
+  .cs-tab-k {
+    font-size: clamp(0.78rem, 0.86vw, 0.88rem); line-height: 1.4;
     color: var(--ink-secondary);
   }
-  .cs-prova-f {
-    margin: 0.5rem 0 0; font-size: clamp(0.74rem, 0.82vw, 0.82rem); line-height: 1.4;
-    color: var(--ink-tertiary);
+  .cs-tab-p { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.1rem 0.5rem; }
+  .cs-tab-v {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem); line-height: 1.1; letter-spacing: -0.02em;
+    color: var(--ink-primary);
   }
-  /* Una fonte non è una CTA: eredita l'inchiostro del testo che la ospita e si
-     distingue per la sottolineatura, che si accende d'accento al passaggio. */
-  .cs-prova-f a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
-  .cs-prova-f a:hover { color: var(--accent-primary); }
+  .cs-tab-l {
+    font-size: clamp(0.78rem, 0.86vw, 0.88rem); line-height: 1.4;
+    color: var(--ink-secondary);
+  }
+  /* Una fonte non è una CTA: eredita l'inchiostro e si distingue per la
+     sottolineatura, che si accende d'accento al passaggio. */
+  .cs-tab-p a {
+    font-size: clamp(0.72rem, 0.8vw, 0.8rem); color: var(--ink-tertiary);
+    text-decoration: underline; text-underline-offset: 0.18em;
+  }
+  .cs-tab-p a:hover { color: var(--accent-primary); }
 
   @media (max-width: 1300px) {
-    .cs-oggi { margin-bottom: 0.5rem; }
-    .cs-misura { margin-top: 0.5rem; }
-    .cs-box { padding: 0.55rem 0.7rem; }
-    .cs-box-nota { margin-top: 0.45rem; }
-    .cs-kpi-l { gap: 0.35rem; }
-    .cs-box-tag { margin-bottom: 0.45rem; }
-    .cs-kpi-v { padding: 0.3rem 0.6rem; }
-  }
-
-  @media (max-width: 900px) {
-    .cs-misura { grid-template-columns: minmax(0, 1fr); }
+    .cs-tab-r { padding: 0.5rem 0; }
   }
 
   /* `!important` serve davvero: `CoverHero` scrive il colore nell'attributo

@@ -65,6 +65,26 @@ export interface Caso {
   /** Le fonti che servono: decidono se il caso sta dentro il perimetro ristretto. */
   fonti: Fonte[];
   /**
+   * La sessione con Coworker: chi parla e che cosa dice. Alternata, perché è
+   * una conversazione e non un elenco di gesti — ed è la scena `data-converse`
+   * del motore, che fa comparire le bolle una alla volta dai due lati.
+   */
+  conversazione: { chi: 'utente' | 'coworker'; t: string }[];
+  /**
+   * Le informazioni di profilo che decidono che cosa viene mostrato. Tre,
+   * perché il punto è «da questi tre attributi discende quella variante», non
+   * fare l'inventario del profilo. Scena `data-clienteling`.
+   */
+  profilo: { k: string; v: string }[];
+  /**
+   * Le varianti in gioco: quello che vedrebbero profili diversi. Una sola
+   * corrisponde a questo profilo e si afferma, le altre si smorzano — scena
+   * `data-personalize`. Senza le alternative, «personalizzato» è una parola.
+   */
+  varianti: { t: string; n: string; match?: true }[];
+  /** Che cosa aggiunge CJA fra la fonte grezza e l'attivazione. Una riga. */
+  arricchimento: string;
+  /**
    * Che cosa si vede davvero sulla pagina. Non è decorazione: un mockup di
    * rettangoli grigi fa vedere che «qualcosa cambia» e non dice che cosa, che
    * è esattamente la metà che a chi decide non interessa.
@@ -128,6 +148,23 @@ export const CASI: Caso[] = [
     oggi: 'Oggi si fa con un pop-up sopra la pagina, e la richiesta loro è che siano i componenti ad adattarsi da soli.',
     viaggiatore: 'La prima schermata porta le tratte che partono da dove si trova, con le fasce di prezzo.',
     marketer: 'Una regola per area di partenza, e un elenco di tratte pronte da abbinare. Si prepara una volta e vale per tutte le città.',
+    conversazione: [
+      { chi: 'utente', t: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli le tratte più prenotate da lì.' },
+      { chi: 'coworker', t: 'Gruppo costruito su trenitalia.com e Le Frecce. Lo porto su Target?' },
+      { chi: 'utente', t: 'Sì, in cima alla home, con la fascia di prezzo.' },
+      { chi: 'coworker', t: 'Attività pronta. Due settimane di prova, poi ship, wait o stop.' },
+    ],
+    profilo: [
+      { k: 'Area', v: 'Verona' },
+      { k: 'Dispositivo', v: 'app' },
+      { k: 'Ultima ricerca', v: 'Milano' },
+    ],
+    varianti: [
+      { t: 'La pagina di tutti', n: 'offerta nazionale' },
+      { t: 'Le tratte da Verona', n: 'da 19 €', match: true },
+      { t: 'Promozione generica', n: '−10%' },
+    ],
+    arricchimento: 'area di partenza e tratte più prenotate da lì',
     schermo: {
       dove: 'trenitalia.com',
       titolo: 'Da Verona Porta Nuova',
@@ -145,7 +182,7 @@ export const CASI: Caso[] = [
       { t: 'La misura: quanti arrivano all’acquisto', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
     kpi: ['Conversione della home', 'Prosecuzione fino alla ricerca', 'Ricavo per visita'],
-    prova: { chi: 'Telmore', settore: 'telco', v: '+11%', l: 'le vendite dai banner personalizzati, rispetto a quelli uguali per tutti', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
+    prova: { chi: 'Telmore', settore: 'telco', v: '+11%', l: 'le vendite dai banner personalizzati', url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html' },
     origine: 'cliente',
   },
   {
@@ -159,6 +196,23 @@ export const CASI: Caso[] = [
     oggi: 'Il passaggio di classe si propone a tutti i viaggiatori, non a chi ha propensione a prenderlo.',
     viaggiatore: 'Chi viaggia sempre in Standard trova la Business al prezzo della Standard, per ventiquattr’ore.',
     marketer: 'Il segmento esce dalla vista unica, sempre Standard e alta frequenza, e diventa un’offerta a tempo su treni scelti.',
+    conversazione: [
+      { chi: 'utente', t: 'Chi viaggia sempre in Standard almeno due volte al mese: proponi la Business allo stesso prezzo.' },
+      { chi: 'coworker', t: 'Trovato il gruppo. Lo limito ai treni che partono con posti liberi?' },
+      { chi: 'utente', t: 'Sì, e l’offerta vale ventiquattr’ore.' },
+      { chi: 'coworker', t: 'Attiva su Target. Misuro le salite di classe e ti dico quando decidere.' },
+    ],
+    profilo: [
+      { k: 'Classe abituale', v: 'Standard' },
+      { k: 'Viaggi', v: '2 al mese' },
+      { k: 'Treno scelto', v: 'posti liberi' },
+    ],
+    varianti: [
+      { t: 'Sconto del 10%', n: 'su tutto' },
+      { t: 'Business allo stesso prezzo', n: '49 €', match: true },
+      { t: 'Nessuna proposta', n: '—' },
+    ],
+    arricchimento: 'frequenza di viaggio e classe abituale',
     schermo: {
       dove: 'trenitalia.com · il tuo viaggio', // copy-audit-ignore — etichetta d'interfaccia dentro il mock, non voce del deck
       titolo: 'Business al prezzo della Standard',
@@ -187,6 +241,23 @@ export const CASI: Caso[] = [
     oggi: 'Le vendite sono per metà di clienti iscritti e per metà no. Chi torna senza login riparte dalla pagina di chiunque.',
     viaggiatore: 'Chi era già passato ritrova in evidenza la tratta che aveva cercato, senza aver fatto login.',
     marketer: 'Un gruppo costruito sul comportamento invece che sull’anagrafica: ultima ricerca, frequenza, giorno della settimana.',
+    conversazione: [
+      { chi: 'utente', t: 'Chi è già passato negli ultimi sette giorni e non ha fatto login: rimetti in cima la tratta che cercava.' },
+      { chi: 'coworker', t: 'Il gruppo esiste anche senza anagrafica: lo costruisco sul comportamento.' },
+      { chi: 'utente', t: 'Procedi, e misura quanti tornano e comprano.' },
+      { chi: 'coworker', t: 'Fatto. Con questo traffico la lettura è affidabile in due settimane.' },
+    ],
+    profilo: [
+      { k: 'Login', v: 'no' },
+      { k: 'Ultima ricerca', v: 'Bologna → Firenze' },
+      { k: 'Giorni dall’ultima visita', v: '2' },
+    ],
+    varianti: [
+      { t: 'La home di chiunque', n: 'partenza vuota' },
+      { t: 'La tratta che cercava', n: 'Bologna → Firenze', match: true },
+      { t: 'Promozione generica', n: '−10%' },
+    ],
+    arricchimento: 'ultima ricerca e frequenza, senza bisogno del login',
     schermo: {
       dove: 'trenitalia.com',
       titolo: 'Riprendi da dove eri',
@@ -215,6 +286,23 @@ export const CASI: Caso[] = [
     oggi: 'Chi ha lo status Oro vede la pagina di chiunque, e il programma chiude il 31 dicembre 2026.',
     viaggiatore: 'Al riconoscimento arriva il servizio compreso nel suo livello. Non uno sconto.',
     marketer: 'Il livello arriva dal CRM come attributo e diventa una condizione di esposizione, non una campagna a parte.',
+    conversazione: [
+      { chi: 'utente', t: 'Chi ha lo status Oro: mostragli il servizio che il suo livello comprende, non uno sconto.' },
+      { chi: 'coworker', t: 'Prendo il livello dal CRM come attributo. Lo uso come condizione di esposizione?' },
+      { chi: 'utente', t: 'Sì, e non come campagna a parte.' },
+      { chi: 'coworker', t: 'Pronto. Ti riporto uso del servizio e ritorno nel tempo.' },
+    ],
+    profilo: [
+      { k: 'Status', v: 'Oro' },
+      { k: 'Punti status', v: 'oltre 3.000' },
+      { k: 'Tratta abituale', v: 'Roma → Milano' },
+    ],
+    varianti: [
+      { t: 'Sconto sul biglietto', n: '−10%' },
+      { t: 'I servizi del suo livello', n: 'FrecciaLounge, Fast Track', match: true },
+      { t: 'Invito a iscriversi', n: 'già socio' },
+    ],
+    arricchimento: 'livello della carta, che arriva dal CRM',
     schermo: {
       dove: 'trenitalia.com · area personale',
       titolo: 'Riconosciuto come CartaFreccia Oro',
@@ -243,6 +331,23 @@ export const CASI: Caso[] = [
     oggi: 'Le due società non possono unire le liste: non sanno quanto si sovrappongono.',
     viaggiatore: 'Chi ha già prenotato dall’altra parte trova una sola offerta, non due scollegate.',
     marketer: 'In uno spazio neutro si misura la sovrapposizione: ciascuno tiene i propri dati, e si attiva solo il gruppo comune.',
+    conversazione: [
+      { chi: 'utente', t: 'Misura quanto si sovrappongono le due basi e prepara l’offerta solo per il gruppo comune.' },
+      { chi: 'coworker', t: 'Lo faccio in uno spazio neutro: nessun elenco passa da una parte all’altra.' },
+      { chi: 'utente', t: 'Attiva solo la sovrapposizione.' },
+      { chi: 'coworker', t: 'Gruppo comune pronto su Target. Misuro quanti comprano entrambe.' },
+    ],
+    profilo: [
+      { k: 'Cliente Trenitalia', v: 'sì' },
+      { k: 'Cliente dell’altra parte', v: 'sì' },
+      { k: 'Elenchi scambiati', v: 'nessuno' },
+    ],
+    varianti: [
+      { t: 'Due offerte scollegate', n: 'separate' },
+      { t: 'Viaggio e sosta insieme', n: 'una sola offerta', match: true },
+      { t: 'Nessuna offerta', n: '—' },
+    ],
+    arricchimento: 'la sovrapposizione fra le due basi, calcolata in spazio neutro',
     schermo: {
       dove: 'due basi, uno spazio neutro',
       titolo: 'Il viaggio e la sosta, in una cosa sola',
