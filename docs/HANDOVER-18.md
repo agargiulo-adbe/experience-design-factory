@@ -161,3 +161,63 @@ descrizione nella Console, che diceva ancora «scheletro generato, da scrivere c
   promettere materiale condivisibile.
 - Il **blueprint tecnico** chiesto alla Business Unit era atteso per il 29 ott: senza, il
   disegno che si porta in sala resta nostro e basta.
+
+---
+
+<!-- sezione nuova il 29 ott 2026: scritta qui perché la Parte 18 era quella con più spazio -->
+
+## 41. Unipol — «Cinque domande» (Playbook, programma high‑touch su CX Enterprise Coworker)
+
+`apps/unipol-cinque-domande` · `/experience-design-factory/unipol-cinque-domande/` · IT default + EN · **8 capitoli, 30 slide su 9 rotte** · nata il **28 ott 2026**, registrata e portata a termine il **29**.
+
+### 41.1 Che cos'è, e per chi
+
+Il destinatario non è chi compra: è **chi possiede lo strumento**. Due persone, due prodotti — Adobe Target da una parte, CJA e il monitoraggio dall'altra — dentro il programma ad alto contatto su CX Enterprise Coworker che **chiude a fine novembre 2026**. Il formato è il Playbook della Tassonomia: «Come lo uso da lunedì?».
+
+**Cinque capitoli = le cinque domande che il cliente ha fatto davvero**, fra il 15 e il 28 ottobre, nelle sue parole. Non il nostro catalogo di skill. Ognuna risponde «oggi» accanto a «con Coworker», e **ogni voce porta il livello della sua fonte**: `Documentato` (pagina pubblica con link e data), `Non ancora per tutti` (accesso limitato o roadmap), `Dal campo` (altri clienti, anonimo), `Detto da noi` (solo nel registro). Mescolare roadmap e GA nello stesso registro visivo è il modo più rapido di perdere un lettore già scettico — e qui uno dei due interlocutori sta valutando un concorrente.
+
+L'ottavo capitolo, **il registro**, è lo strato dinamico: una riga per voce con data, stato, **chi la chiude** (un ruolo) ed **entro quando**. I capitoli restano fermi e si riscrivono a due traguardi; il registro cresce a ogni sessione. Le voci marcate `Documentato` portano il link che quel livello promette.
+
+### 41.2 Il design system, letto
+
+`pnpm brand:tokens https://www.unipol.it` (28 ott, 366 KB di CSS di produzione) più il bundle critico e `fonts.css`. **Navy di sistema `#001c35`** (17 occorrenze, il più frequente → `--surface-inverse`), **Ink Blue di marchio `#0303f5`** (dichiarato dal sito come `--Unipol-Ink-Blue-500`, raro → `--surface-brand` e accento), azzurro `#e5f3ff`, avorio `#f9f9f7`, azzurro d'azione `#3d95ff`; verde e corallo solo come stato. **Manrope è il carattere VERO del cliente** (`Typeface-A` del suo design system, su Google Fonts) — nella skin UniCredit è una sostituta scelta da noi, qui no, e non va «corretto». L'inchiostro si ribalta **misurato**: il marchio su navy dà 1,93:1, quindi `--ink-accent` vale `#0303f5` sul chiaro e `#3d95ff` sullo scuro.
+
+### 41.3 Il difetto che il repo pubblico rendeva grave
+
+`src/data/domande.ts` **nominava due referenti reali del cliente**, in un file tracciato su un repo pubblico e in copia che va in slide. Corretto il 29 con i ruoli verificati su `docs/Unipol/ACCOUNT.md` (git‑ignorato): **Digital Intelligence** e **Insight & Analytics**. È la stessa regola della voce del deck — un capitolo intestato a una persona diventa suo e muore con lei — e ora sta scritta nel commento di testa del file, perché la prossima riga non la rompa. Memorie: `client-names-public-repo`, `deck-voice-institutional`.
+
+### 41.4 Panel review — due giri il 29 ott 2026
+
+Personas in `docs/Unipol/PANEL-PERSONAS.md`; verdetti in `docs/Unipol/PANEL-VERDICT-2026-10-29-round{1,2}.md` e JSON in `docs/Unipol/panel/` (tutto git‑ignorato).
+
+| Asse | Giro 1 | Giro 2 | Δ |
+|---|---|---|---|
+| credibilità dei fatti | 3,0 | **4,0** | +1,0 |
+| rilevanza per me | 3,7 | **4,3** | +0,7 |
+| chiarezza | 3,0 | **4,0** | +1,0 |
+| rischio (5 = nessuno) | 2,0 | **3,0** | +1,0 |
+| azionabilità | 2,0 | **3,7** | +1,7 |
+
+**Giro 1 — i due rilievi unanimi.** La **copertina portava ancora la copia del generatore** («il design system è un segnaposto finché non si legge quello vero di Unipol» — mentre era già stato letto): prima slide, ogni lettore, e il documento dichiara da solo di non essere finito. E **la slide che chiede qualcosa era vuota**: «Due casi d'uso e tre date» sopra tre etichette senza un caso e senza una data. Ora porta i due casi veri — chiudere un test su Target, **che il cliente ha scelto il 15 ottobre**, e il triage degli alert su CJA, che già fa — le tre date (5 nov, 12 nov, chiusura a fine novembre) e due numeri da prendere adesso.
+
+Il fact‑checker ha verificato **38 affermazioni alla fonte**: dodici cadono. La correzione che vale di più va **nella direzione opposta alla cautela**: il **digest esiste ed è documentato** (Notification Skills, GA, giornaliero o settimanale) mentre il deck lo dava per non annunciato — una risposta presentata come non‑risposta, proprio dove il cliente aveva chiesto aiuto. Poi: il programma chiude a **fine novembre** e non a fine anno; la **quality gate skill è in sola lettura** e il deck le faceva applicare una modifica; il data dictionary non è una «strada chiusa», la stessa pagina dichiara il supporto per una release futura. Via anche un dato di adozione interno senza numero né base, ripetuto su due slide, e «uso senza tetto» su un'org che ha un caso di sovraconsumo aperto.
+
+**Giro 2 — i fatti stavano sulla SECONDA pagina che la slide cita.** Il deck ne citava due e i conti li faceva solo sulla prima: il catalogo Target non è di dodici skill e basta, c'è anche la **famiglia Optimization** che vale su Target. E l'omissione costava più degli errori: **`experiment-knowledge-base` ingerisce un CSV del cliente** e restituisce ipotesi, esiti e apprendimenti dei test passati — è la risposta letterale alla domanda 2 («oggi la memoria storica siamo noi») e non c'era. Altre tre refutazioni verificate alla fonte: la conferma prima di agire è documentata su **tre** fronti; l'analisi di contenuto **esiste** come famiglia a disponibilità limitata; «tutte e cinque hanno una risposta documentata» era smentito dal capitolo successivo dello stesso deck.
+
+**Un rilievo respinto con la fonte**: «il contesto vive in Notion» non era un'invenzione — `ACCOUNT.md` riporta che il data dictionary di Unipol sta su Notion, detto dal cliente. Il fact‑checker va letto, non creduto (memoria `user-claims-are-hypotheses`, che vale anche per gli agenti).
+
+**Una cosa che NON è diventata un numero in slide.** A quale soglia di confidenza il verdetto dica «pronta» **non è pubblicato da nessuna parte** (verificato a mano sulla pagina: è dichiarato il metodo — significatività a due proporzioni sui conteggi grezzi — non la soglia). Quindi è una voce di registro con titolare e scadenza al **3 novembre**, prima della sessione del 5. Stessa sorte per l'unità di consumo e il tetto incluso.
+
+### 41.5 Stato dei gate (29 ott 2026, preview statico)
+
+`audit:deck` **0 HARD** su 9 rotte (residuo soft: `a`=18, `i`=50 — un deck ad ancore li sfora per costruzione) · `audit:ink` **PULITO** su 329 blocchi con i «Scopri come» aperti · `audit:wrap` **PULITO** · `copy-audit` **0 HARD e 0 SOFT** su 463 stringhe · `audit:fonti` 18 link, 7 distinti, **nessuno rotto** · `audit:og` PASS · `audit:docs` PULITO · typecheck 0 errori. Slide rilette a 1920.
+
+### 41.6 Registrazioni e stato di pubblicazione
+
+`scripts/lib/deck-routes.ts` (9 rotte + `CWD_ALIAS`), `dev:unipol` e `audit:deck:all` nel `package.json` di radice, `.github/workflows/deploy.yml` (copia del dist + verifica dell'index), la card sull'hub, la riga sullo showcase **`defaultPublished: false`**, il registry MCP rigenerato, il seed **`0032`** (`status: 'live'`, `show_in_showcase: false`).
+
+### 41.7 Che cosa manca
+
+- **Il confronto esplicito con lo strumento di personalizzazione già scelto in casa**: sopravvissuto a entrambi i giri come condizione di chi possiede Target. Non è una correzione di fatto, è una **decisione commerciale**: o si mette (tre righe, caso per caso, anche dove la risposta è «equivalenti»), o si dichiara a lui prima della stanza che non si mette.
+- **La migrazione `0032` non è ancora applicata al DB remoto** (`supabase db query --linked`), e l'accensione sullo showcase resta una scelta umana.
+- Le due voci di registro con scadenza **3 novembre** (soglia del verdetto, profilo per abilitare Target) vanno chiuse **prima** della sessione del 5, non dentro.
