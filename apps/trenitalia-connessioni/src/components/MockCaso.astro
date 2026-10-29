@@ -140,6 +140,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
     <ol class="mk-flusso-n">
       {c.flusso.map((st, i) => (
         <li class="mk-stadio" data-substep data-prod={i === 1 ? 'CJA' : i === 2 ? 'Target' : undefined}>
+          <span class="mk-stadio-n" aria-hidden="true">{i + 1}</span>
           <span class="mk-stadio-k">{i === 0 ? `${st.k}: ${fonti.join(' · ')}` : st.k}</span>
           {i !== 0 && <span class="mk-stadio-v">{st.v}</span>}
           <span class="mk-stadio-e">{st.e}</span>
@@ -430,11 +431,28 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
   .mk-flusso-tag { margin: 0 0 0.35rem; }
   .mk-flusso-l { display: block; width: 100%; height: 8px; }
   .mk-flusso-n {
-    list-style: none; margin: 0.25rem 0 0; padding: 0;
+    list-style: none; margin: 0.6rem 0 0; padding: 0;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.1vw, 1.1rem);
+    gap: clamp(0.6rem, 1.3vw, 1.3rem);
   }
-  .mk-stadio { display: flex; flex-direction: column; gap: 0.06rem; min-width: 0; }
+  .mk-stadio {
+    display: flex; flex-direction: column; gap: 0.25rem; min-width: 0;
+    padding: 0.9rem 1rem 1rem;
+    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .mk-stadio[data-prod='CJA'] { border-color: rgba(79, 189, 180, 0.3); background: rgba(0, 102, 102, 0.14); }
+  .mk-stadio[data-prod='Target'] { border-color: rgba(255, 141, 157, 0.28); background: rgba(217, 24, 53, 0.1); }
+  .mk-stadio-n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6rem; height: 1.6rem; border-radius: 9999px; margin-bottom: 0.15rem;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(0.82rem, 0.9vw, 0.94rem);
+    color: var(--ink-primary);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+  }
+  .mk-stadio[data-prod='CJA'] .mk-stadio-n { border-color: rgba(79, 189, 180, 0.55); }
+  .mk-stadio[data-prod='Target'] .mk-stadio-n { border-color: rgba(255, 141, 157, 0.5); }
   .mk-stadio-k {
     font-size: clamp(1.1rem, 1.32vw, 1.4rem); font-weight: 600; line-height: 1.3;
     color: var(--ink-primary);
