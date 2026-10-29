@@ -26,6 +26,32 @@ import MockAdobe from '../components/MockAdobe.astro';
 import MappaDoppia from '../components/MappaDoppia.astro';
 import DaVerificare from '../components/DaVerificare.astro';
 import Azione from '../components/Azione.astro';
+
+/* L'APPROFONDIMENTO SU «FARSI TROVARE», dopo il giro di Giulia.
+   Lo schema è quello che il team usa già: due strati — i segnali e le
+   ottimizzazioni — e quattro capacità che si sommano.
+   Le voci vengono dal materiale Adobe di Field Readiness letto il 30 ott
+   2026 (Brand Visibility per FSI B2C, il lavoro GEO per una banca
+   europea, la guida GTM): traffico reale degli agenti dai log del CDN,
+   come gli LLM citano il marchio, raccomandazioni prescrittive e
+   distribuzione dei fix **al bordo, senza passare dal CMS**.
+   ⚠️ Niente proiezioni di mercato in slide: le percentuali che girano su
+   quel materiale sono riprese da terzi e non ho la fonte primaria. Un
+   numero che un CIO va a cercare e non trova vale meno di nessun numero. */
+const BV = [
+  { strato: 'segnali', t: { it: 'Dati di mercato', en: 'Market intelligence' },
+    s: { it: 'Come compaiono i marchi nelle risposte generate', en: 'How brands show up in generated answers' },
+    d: { it: 'Le domande vere delle persone, in più lingue, e chi viene citato accanto a voi: ChatGPT, Perplexity, Copilot, le risposte AI di Google.', en: 'The real questions people ask, across languages, and who gets cited next to you: ChatGPT, Perplexity, Copilot, Google’s AI answers.' } },
+  { strato: 'segnali', t: { it: 'Segnali di casa vostra', en: 'Brand-owned insights' },
+    s: { it: 'Sulle vostre proprietà digitali', en: 'Across your own digital properties' },
+    d: { it: 'Il traffico degli agenti letto dai log del CDN: non una stima, le richieste che arrivano davvero al vostro sito.', en: 'Agent traffic read from CDN logs: not an estimate, the requests that actually reach your site.' } },
+  { strato: 'ottimizzazioni', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
+    s: { it: 'Al bordo e alla fonte, per le persone e per gli agenti', en: 'At the edge and at the source, for people and for agents' },
+    d: { it: 'Raccomandazioni puntuali su che cosa cambiare, e i correttivi approvati vanno in rete al bordo, senza toccare il CMS.', en: 'Specific recommendations on what to change, and approved fixes ship at the edge, without touching the CMS.' } },
+  { strato: 'ottimizzazioni', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
+    s: { it: 'Ogni intervento legato a un indicatore', en: 'Each intervention tied to a KPI' },
+    d: { it: 'Dal momento in cui un assistente vi cita a quello in cui una pratica si apre, nella stessa misura degli altri canali.', en: 'From the moment an assistant cites you to the moment an application opens, in the same measurement as every other channel.' } },
+];
 /* Le scene vengono da Pexels, licenziate, con autore e URL in
    provenance.json. Sono LUOGHI senza volti: l'unico volto della Storia è
    il ritratto di Giulia, così la persona resta coerente per costruzione. */
@@ -141,6 +167,42 @@ const currentPath = Astro.url.pathname;
         </div>
       </Slide>
     ))}
+
+    {/* L'approfondimento arriva DOPO il giro di Giulia, non prima: il
+        momento 01 ha già mostrato l'assistente che la banca c'è o non
+        c'è. Qui si guarda come lo si governa. */}
+    <Slide id="slide-brand-visibility" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · farsi trovare" en="Deep dive · being found" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il primo momento di Giulia, governato" en="Giulia’s first moment, under control" />
+        <T as="p" class="im-ado-l" it="Due strati: prima si misura come comparite nelle risposte generate, poi si interviene. Senza il primo il secondo è un’opinione." en="Two layers: first you measure how you show up in generated answers, then you act. Without the first, the second is an opinion." />
+
+        {/* ⚠️ Gli operatori sono COLONNE della griglia, non figli in
+            posizione assoluta che sporgono dalla card: un figlio assoluto
+            con `right` negativo gonfia lo `scrollWidth` del genitore, e
+            il check `c` lo legge come overflow — un HARD. */}
+        <div class="im-bv">
+          {BV.map((c, i) => (
+            <>
+              <section class="im-bv-i" data-strato={c.strato} data-substep data-side="in">
+                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
+                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+              </section>
+              {i < BV.length - 1 && <span class="im-bv-op" aria-hidden="true">{i === 1 ? '=' : '+'}</span>}
+            </>
+          ))}
+        </div>
+
+        <div class="im-bv-strati" data-substep data-side="in">
+          <T as="span" class="im-bv-strato" data-strato="segnali" it="Strato dei segnali" en="Signal layer" />
+          <T as="span" class="im-bv-strato" data-strato="ottimizzazioni" it="Strato delle ottimizzazioni" en="Optimisation layer" />
+        </div>
+
+        <T as="p" class="im-fonte-riga" it="Capacità verificate sul materiale Adobe di Field Readiness (Brand Visibility per i servizi finanziari, 30 ott 2026). Adobe Brand Visibility." en="Capabilities verified against Adobe Field Readiness material (Brand Visibility for financial services, 30 Oct 2026). Adobe Brand Visibility." />
+      </div>
+    </Slide>
 
   </DeckContainer>
 </BaseLayout>

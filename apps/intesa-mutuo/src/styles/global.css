@@ -2796,3 +2796,161 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   .im-cerslide--persona .im-manca--lato { grid-row: auto; }
   .im-cerslide--persona .im-cer { grid-row: auto; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   LA COPERTINA DELL'INCONTRO — titolo a sinistra, indice a destra
+
+   Due mestieri su una pagina: dire di che cosa si parla e dire che cosa
+   c'è dentro. Nel `.pptx` il secondo lo facevano otto slide «Agenda»
+   ripetute; qui sta in copertina, una volta, ed è cliccabile.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-cop {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center; gap: 0 3.5rem; width: 100%; max-width: 86rem;
+}
+.im-cop-sx { display: grid; gap: 0.75rem; min-width: 0; justify-items: start; }
+.im-cop-lockup { margin-bottom: 0.3rem; }
+.im-cop-t {
+  margin: 0; max-width: 16ch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.3rem, 3.5vw, 5.4rem); line-height: 1.04;
+  letter-spacing: -0.025em; color: #ffffff; text-wrap: balance;
+}
+.im-cop-l {
+  margin: 0; max-width: 46ch;
+  font-size: clamp(1rem, 0.92vw, 2.05rem); line-height: 1.5; color: #f2f8f0;
+}
+.im-cop-tipo {
+  margin: 0.2rem 0 0; max-width: none;
+  font-size: clamp(0.78rem, 0.64vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #9fd68a;
+}
+
+/* ── L'indice: è l'agenda, e si clicca ──────────────────────────────── */
+.im-cop-dx {
+  display: grid; gap: 0.6rem; min-width: 0; align-content: center;
+  padding-left: 2.2rem; border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+.im-cop-occ {
+  margin: 0; max-width: none;
+  font-size: clamp(0.76rem, 0.62vw, 1.4rem); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: #cfe3c8;
+}
+.im-cop-indice { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+/* ⚠️ SUPERFICIE ESPLICITA, e non è una scelta estetica. Il check `h`
+   misura ogni link come CTA: con uno sfondo trasparente confronta due
+   superfici quasi identiche e dà 1,07:1 — un HARD. Con una superficie
+   dichiarata il contrasto diventa reale e misurabile, ed è la stessa
+   regola già scritta per il chrome del deck e le card colorate. */
+.im-cop-cap {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); align-items: baseline;
+  gap: 0.6rem; padding: 0.52rem 0.8rem; border-radius: 10px;
+  /* ⚠️ `color: inherit` sull'<a> risolveva in un inchiostro SCURO: il
+     testo si vedeva lo stesso perché lo portano gli <span> dentro, ma il
+     check `h` misura il colore del LINK e dava 1,07:1 — un HARD
+     invisibile a occhio. Il colore sul link va esplicito. */
+  text-decoration: none; color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.im-cop-cap:hover, .im-cop-cap:focus-visible {
+  background: rgba(255, 255, 255, 0.16); border-color: rgba(159, 214, 138, 0.6); outline: none;
+}
+.im-cop-n {
+  font-size: clamp(0.8rem, 0.66vw, 1.48rem); font-weight: 700;
+  letter-spacing: 0.06em; color: #9fd68a;
+}
+.im-cop-tit {
+  font-size: clamp(1rem, 0.9vw, 2rem); font-weight: 700;
+  line-height: 1.24; color: #ffffff;
+}
+.im-cop-cap:hover .im-cop-tit { color: #d7f0cd; }
+.im-cop-dom {
+  margin: 0.3rem 0 0; max-width: none;
+  font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.38;
+  font-style: italic; color: #cfe3c8;
+}
+
+/* ⚠️ Il credito stava in fondo alla pagina, in posizione assoluta: e
+   lì ci sono i comandi del deck, che gli finivano sopra. Sta nella
+   colonna del titolo, in coda, dove è una nota e non una didascalia
+   centrata sotto i bottoni. */
+.im-cop-cred {
+  margin: 0.4rem 0 0; max-width: 58ch;
+  font-size: clamp(0.7rem, 0.56vw, 1.26rem); line-height: 1.35; color: #a9c2a2;
+}
+
+@media (max-width: 1100px) {
+  .im-cop { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  .im-cop-dx { padding-left: 0; border-left: none; border-top: 1px solid rgba(255, 255, 255, 0.22); padding-top: 1rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   BRAND VISIBILITY — quattro capacità, due strati
+   Lo schema è quello che il team usa già: le prime due si sommano, la
+   terza è la conseguenza (il segno «=»), la quarta si aggiunge. I due
+   strati si leggono sotto, come una fascia che dice dove passa il
+   confine fra misurare e intervenire.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-bv {
+  margin: 0.6rem 0 0; padding: 0;
+  display: grid; align-items: stretch; gap: 0 0.55rem;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+}
+.im-bv-i {
+  display: grid; gap: 0.3rem; align-content: start;
+  min-width: 0; margin-inline: 0;
+  padding: 1rem 1.05rem 1.1rem; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 4px solid rgba(255, 255, 255, 0.3);
+}
+/* Lo strato delle ottimizzazioni è quello dove si agisce: prende
+   l'accento, come nello schema d'origine. */
+.im-bv-i[data-strato='ottimizzazioni'] {
+  background: rgba(235, 16, 0, 0.12); border-top-color: #eb1000;
+}
+.im-bv-t {
+  font-size: clamp(1.02rem, 0.92vw, 2.05rem); font-weight: 700;
+  line-height: 1.16; color: #ffffff; text-wrap: balance;
+}
+.im-bv-s {
+  font-size: clamp(0.8rem, 0.66vw, 1.48rem); line-height: 1.26;
+  font-weight: 700; color: #ffb3aa;
+}
+.im-bv-d {
+  margin-top: 0.15rem;
+  font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.38; color: #e8f1e4;
+}
+/* L'operatore fra una capacità e l'altra: sta NELLO spazio fra le due
+   colonne, non dentro una delle due. */
+.im-bv-op {
+  align-self: center; width: 1.5rem; height: 1.5rem; display: grid; place-items: center;
+  border-radius: 6px; background: #0d2901; border: 1px solid rgba(255, 255, 255, 0.28);
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); font-weight: 700; line-height: 1; color: #ffffff;
+}
+
+.im-bv-strati {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.7rem;
+}
+.im-bv-strato {
+  padding: 0.5rem 0.9rem; border-radius: 10px; text-align: center;
+  font-size: clamp(0.82rem, 0.7vw, 1.56rem); font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.im-bv-strato[data-strato='segnali'] {
+  background: rgba(255, 255, 255, 0.12); color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+.im-bv-strato[data-strato='ottimizzazioni'] {
+  background: #eb1000; color: #ffffff; border: 1px solid #eb1000;
+}
+
+@media (max-width: 1200px) {
+  .im-bv { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.7rem 0.5rem; }
+  .im-bv-op:nth-of-type(2) { display: none; }
+}
+@media (max-height: 940px) {
+  .im-bv-i { padding: 0.78rem 0.85rem 0.85rem; }
+  .im-bv-strato { padding: 0.38rem 0.8rem; }
+}
