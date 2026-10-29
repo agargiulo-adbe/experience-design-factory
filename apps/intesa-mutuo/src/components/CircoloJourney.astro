@@ -60,12 +60,26 @@ const nodi = MOMENTI.map((m, i) => ({
   ey: 50 + ETI * Math.sin(ang(i)),
 }));
 
+/* Un ARCO per segmento, del colore del gruppo da cui parte: così i
+   quattro blocchi dell'offerta si leggono come quattro archi, e il
+   ritorno 07→01 resta l'unico che porta il verde pieno anche a giro
+   spento. Il tratto si disegna con `stroke-dasharray` su un cerchio
+   ruotato: un segmento acceso e il resto vuoto. */
+const CIRC = 2 * Math.PI * R;
+const archi = MOMENTI.map((m, i) => ({
+  i,
+  gruppo: m.gruppo,
+  rot: -90 + (i + 0.5) * PASSO,
+  ritorno: i === N - 1,
+}));
+
 /* Le frecce: una per segmento, a metà strada fra due nodi, ruotata sulla
    tangente. L'ultima — da 07 a 01 — è il ritorno, e si vede. */
-const frecce = MOMENTI.map((_, i) => {
+const frecce = MOMENTI.map((m, i) => {
   const a = (-90 + (i + 0.5) * PASSO) * (Math.PI / 180);
   return {
     i,
+    gruppo: m.gruppo,
     x: 50 + R * Math.cos(a),
     y: 50 + R * Math.sin(a),
     rot: (-90 + (i + 0.5) * PASSO) + 90,
@@ -73,19 +87,28 @@ const frecce = MOMENTI.map((_, i) => {
   };
 });
 
+/* La legenda: i quattro gruppi nell'ordine in cui si incontrano. Il
+   colore non porta mai l'identità da solo. */
+const LEGENDA = [
+  { g: 'trovare', it: 'Farsi trovare', en: 'Brand visibility' },
+  { g: 'contenuto', it: 'Content Factory', en: 'Content supply chain' },
+  { g: 'engagement', it: 'Customer Engagement', en: 'Customer engagement' },
+  { g: 'piattaforma', it: 'AI Platform e CX Analytics', en: 'AI Platform and CX Analytics' },
+] as const;
+
 const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
 ---
 <figure class:list={['im-cer', grande && 'im-cer--grande', className]}>
   <div class="im-cer-campo">
 
     <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-      <circle class="im-cer-anello" cx="50" cy="50" r={R} />
-      {/* Il ritorno è un arco a sé, sopra l'anello: è l'unica parte del
-          giro che porta l'accento anche quando non c'è un passo acceso. */}
-      <circle class="im-cer-ritorno" cx="50" cy="50" r={R}
-              style={`--dash:${2 * Math.PI * R};--seg:${(2 * Math.PI * R) / N};--rot:${-90 + (N - 0.5) * PASSO}deg`} />
+      {archi.map((a) => (
+        <circle class="im-cer-arco" data-gruppo={a.gruppo} data-ritorno={a.ritorno ? '' : null}
+                cx="50" cy="50" r={R}
+                style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${a.rot}deg`} />
+      ))}
       {frecce.map((f) => (
-        <path class="im-cer-fre" data-ritorno={f.ritorno ? '' : null}
+        <path class="im-cer-fre" data-gruppo={f.gruppo} data-ritorno={f.ritorno ? '' : null}
               d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
               style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
       ))}
@@ -93,7 +116,7 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
 
     <ol class="im-cer-nodi">
       {nodi.map((n) => (
-        <li class="im-cer-nodo"
+        <li class="im-cer-nodo" data-gruppo={n.m.gruppo}
             data-attivo={attivo === n.i + 1 ? '' : null}
             data-fatto={attivo > n.i + 1 ? '' : null}
             style={`left:${n.x}%;top:${n.y}%`}
@@ -106,7 +129,7 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
     {grande && (
       <ol class="im-cer-eti">
         {nodi.map((n) => (
-          <li class="im-cer-eti-i"
+          <li class="im-cer-eti-i" data-gruppo={n.m.gruppo}
               data-lato={n.ex < 44 ? 'sx' : n.ex > 56 ? 'dx' : 'cen'}
               style={`left:${n.ex}%;top:${n.ey}%`}>
             <T as="span" class="im-cer-verbo" it={n.m.short.it} en={n.m.short.en} />
@@ -135,4 +158,15 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
       )}
     </div>
   </div>
+
+  {grande && (
+    <ol class="im-cer-leg">
+      {LEGENDA.map((l) => (
+        <li class="im-cer-leg-i" data-gruppo={l.g}>
+          <span class="im-cer-leg-p" aria-hidden="true"></span>
+          <T as="span" class="im-cer-leg-l" it={l.it} en={l.en} />
+        </li>
+      ))}
+    </ol>
+  )}
 </figure>

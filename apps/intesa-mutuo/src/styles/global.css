@@ -1295,15 +1295,29 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-cer--grande .im-cer-campo { max-width: 46rem; margin-inline: auto; }
 
 .im-cer-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.im-cer-anello { fill: none; stroke: var(--color-grey-300); stroke-width: 0.7; }
-/* L'arco di ritorno: un solo segmento dell'anello, ruotato al suo posto. */
-.im-cer-ritorno {
-  fill: none; stroke: var(--color-verde); stroke-width: 1.5; stroke-linecap: round;
+/* Un arco per segmento: un segmento acceso, il resto vuoto, ruotato al
+   suo posto. Il colore è quello del gruppo da cui il segmento parte. */
+.im-cer-arco {
+  fill: none; stroke: var(--gruppo, var(--color-grey-300));
+  stroke-width: 1.5; stroke-linecap: butt;
   stroke-dasharray: var(--seg) var(--dash);
   transform: rotate(var(--rot)); transform-origin: 50% 50%;
 }
-.im-cer-fre { fill: var(--color-grey-400); }
-.im-cer-fre[data-ritorno] { fill: var(--color-verde); }
+/* ⚠️ Il tratteggio NON va sull'arco: `stroke-dasharray` qui porta la
+   GEOMETRIA (un settimo acceso, il resto vuoto), e sostituirlo faceva
+   ripetere il tratteggio su tutto il cerchio, coprendo gli altri archi.
+   Il gruppo della piattaforma è già inconfondibile perché è ACROMATICO —
+   nessun daltonismo lo avvicina a una tinta — e il suo segno tratteggiato
+   vive dove non rompe niente: l'anello dei suoi nodi e la sua pastiglia
+   in legenda. */
+.im-cer-arco[data-gruppo='piattaforma'] { stroke-width: 1.2; }
+.im-cer-arco[data-ritorno] { stroke-width: 2.1; }
+.im-cer-fre { fill: var(--gruppo, var(--color-grey-400)); }
+
+[data-gruppo='trovare']     { --gruppo: var(--blk-trovare); }
+[data-gruppo='contenuto']   { --gruppo: var(--blk-contenuto); }
+[data-gruppo='engagement']  { --gruppo: var(--blk-engagement); }
+[data-gruppo='piattaforma'] { --gruppo: var(--blk-piattaforma); }
 
 .im-cer-nodi { list-style: none; margin: 0; padding: 0; }
 .im-cer-nodo {
@@ -1727,3 +1741,99 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
    lì condividono la pagina con il lockup e con l'ask. */
 .im-mis--taglio { max-width: 52rem; margin: 0.6rem 0 0.2rem; }
 .im-mis--taglio .im-mis-b { padding: 0.68rem 0.8rem; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   LA CODIFICA A COLORI DEI BLOCCHI DELL'OFFERTA
+
+   ⚠️ PERCHÉ QUATTRO GRUPPI E NON CINQUE — è una misura, non un gusto.
+   I blocchi dell'offerta sono cinque, ma cinque tinte distinguibili su
+   questa pelle non esistono: il verde di marchio è fisso, e sull'asse
+   rosso-verde il daltonismo più comune (deuteranopia, protanopia) lo fa
+   collassare con ambra e arancio. Misurato con il validatore della skill
+   `dataviz`: verde ↔ ambra dà ΔE **2,6** in deuteranopia contro una
+   soglia di 8, e nessuna variante lo salva. Anche blu ↔ viola cade
+   (ΔE 0,7). Le famiglie che reggono accanto al verde sono due: **blu** e
+   **magenta**.
+
+   Quindi la codifica dice una cosa VERA invece di inventarne una quinta:
+   tre colori per i tre blocchi che toccano il cliente, e un neutro per
+   la piattaforma — AI Platform e CX Analytics — che non è un canale e
+   serve gli altri tre. Il neutro è acromatico, quindi non si confonde
+   con nessuna tinta sotto nessun tipo di daltonismo, e porta un
+   tratteggio: regge anche in bianco e nero.
+
+   Palette validata sul fondo scuro `#0d2901` (`--pairs all`):
+   tutti e sei i check PASS, CVD peggiore ΔE 11,3, vista normale 24,6.
+   Per questo il cerchio grande vive SEMPRE su slide scura: una palette
+   che deve reggere due superfici si valida due volte e cede su una.
+
+   E il colore non porta mai l'identità da solo: ogni fermata è scritta,
+   e la legenda nomina i quattro gruppi (regola 6 della skill).
+   ══════════════════════════════════════════════════════════════════════ */
+:root {
+  --blk-trovare: #3f8ae0;
+  --blk-contenuto: #d8559c;
+  --blk-engagement: #3ba818;
+  --blk-piattaforma: #e3e0d2;
+}
+
+/* ── I nodi e le etichette prendono il colore del loro gruppo ───────── */
+.im-cer-nodo[data-gruppo] { border-color: var(--gruppo); }
+.im-cer-nodo[data-gruppo='piattaforma'] { border-style: dashed; }
+.im-cer-nodo[data-attivo][data-gruppo] {
+  background: var(--gruppo); border-color: var(--gruppo);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--gruppo) 24%, transparent);
+}
+/* L'inchiostro dentro il nodo acceso: scuro sui tre colori chiari, e
+   scuro anche sul neutro. Dichiarato, non ereditato. */
+.im-cer-nodo[data-attivo] .im-cer-n { color: #071a00; }
+/* ⚠️ Il NOME DEL PRODOTTO non porta il colore del gruppo: a 12px il blu
+   dà 3,81:1 sul fondo scuro e il magenta 4,04:1, sotto la soglia AA.
+   Vale la regola della skill `dataviz`: il testo indossa i token di
+   testo, l'identità la porta il segno colorato accanto — qui l'arco e
+   l'anello del nodo. Misurato con `audit:ink`, non dedotto. */
+
+/* ── La legenda dei quattro gruppi ──────────────────────────────────── */
+.im-cer-leg {
+  list-style: none; margin: 1rem 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.4rem 1.3rem;
+}
+.im-cer-leg-i { display: flex; align-items: center; gap: 0.42rem; margin-inline: 0; }
+.im-cer-leg-p {
+  flex: none; width: 1.1rem; height: 0.3rem; border-radius: 2px;
+  background: var(--gruppo);
+}
+/* Il neutro porta il suo tratteggio anche in legenda: il segno che lo
+   distingue dev'essere lo stesso che si vede sul cerchio. */
+.im-cer-leg-i[data-gruppo='piattaforma'] .im-cer-leg-p {
+  background: repeating-linear-gradient(90deg, var(--gruppo) 0 3px, transparent 3px 6px);
+}
+.im-cer-leg-l {
+  font-size: clamp(0.74rem, 0.6vw, 1.32rem); line-height: 1.2; font-weight: 700;
+  letter-spacing: 0.04em; color: var(--color-grey-200);
+}
+
+/* ── Il badge del blocco, sulle slide doppie ────────────────────────── */
+.im-mom-blocco[data-gruppo] {
+  background: var(--gruppo); color: #071a00; border-color: var(--gruppo);
+}
+
+/* ⚠️ Specificità: i ribaltamenti per slide scura (`[data-slide][data-dark]
+   .im-cer-*`) valgono (0,3,0) e battevano le regole di gruppo (0,2,0),
+   così frecce e anelli restavano grigi mentre gli archi erano colorati.
+   Le regole di gruppo si riscrivono allo stesso peso, e dopo. */
+[data-slide] .im-cer-nodo[data-gruppo],
+[data-slide] .im-cer-nodo[data-gruppo]:not([data-attivo]) { border-color: var(--gruppo); }
+[data-slide] .im-cer-nodo[data-gruppo='piattaforma'] { border-style: dashed; }
+[data-slide] .im-cer-fre[data-gruppo] { fill: var(--gruppo); }
+[data-slide] .im-cer-nodo[data-attivo][data-gruppo] {
+  background: var(--gruppo); border-color: var(--gruppo); border-style: solid;
+}
+[data-slide] .im-cer-nodo[data-attivo][data-gruppo] .im-cer-n { color: #071a00; }
+
+/* Il RITORNO non appartiene a un blocco: è il giro che si chiude, ed è
+   il punto della slide. Porta il verde di marchio, pieno e più spesso,
+   qualunque sia il gruppo da cui parte. */
+[data-slide] .im-cer-arco[data-ritorno] { stroke: var(--color-verde-chiaro); stroke-width: 2.4; }
+[data-slide] .im-cer-fre[data-ritorno] { fill: var(--color-verde-chiaro); }

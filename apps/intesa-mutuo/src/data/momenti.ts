@@ -58,6 +58,11 @@ export interface Momento {
       «il classico percorso XD […] il percorso di vari touchpoint». `dove`
       è narrativo e non sta in una colonna su sette; questo sì. */
   canale: { it: string; en: string };
+  /** Il GRUPPO dell'offerta, per la codifica a colori. Quattro e non
+      cinque: `piattaforma` tiene insieme AI Platform e CX Analytics,
+      perché non sono canali — servono gli altri tre. Vedi il blocco
+      «LA CODIFICA A COLORI» in global.css per il perché del numero. */
+  gruppo: 'trovare' | 'contenuto' | 'engagement' | 'piattaforma';
   prodotto: string;
   cliente: {
     chrome: ChromeCliente;
@@ -82,6 +87,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Chiede', en: 'Asks' },
     funzione: { it: 'Vi trovano, o no', en: 'Found, or not' },
     canale: { it: 'Assistente AI', en: 'AI assistant' },
+    gruppo: 'trovare',
     prodotto: 'Brand Visibility',
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
@@ -108,6 +114,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Riconosce', en: 'Recognises' },
     funzione: { it: 'Varianti già conformi', en: 'Pre-approved variants' },
     canale: { it: 'Social', en: 'Social' },
+    gruppo: 'contenuto',
     prodotto: 'GenStudio',
     cliente: {
       chrome: 'feed', scena: 'scena-02-bar',
@@ -134,6 +141,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Simula', en: 'Simulates' },
     funzione: { it: 'Da anonima a nome', en: 'Anonymous to named' },
     canale: { it: 'Sito', en: 'Website' },
+    gruppo: 'engagement',
     prodotto: 'Real-Time CDP',
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
@@ -160,6 +168,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Si ferma', en: 'Stalls' },
     funzione: { it: 'Si sceglie, col tetto', en: 'One is chosen, within the cap' },
     canale: { it: 'Sito', en: 'Website' },
+    gruppo: 'engagement',
     prodotto: 'Offer Decisioning',
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
@@ -186,6 +195,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Riprende', en: 'Resumes' },
     funzione: { it: 'Parte dall’evento', en: 'Triggered by the event' },
     canale: { it: 'Email', en: 'Email' },
+    gruppo: 'engagement',
     prodotto: 'Journey Optimizer',
     cliente: {
       chrome: 'posta', scena: 'scena-05-colazione',
@@ -212,6 +222,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'In filiale', en: 'In branch' },
     funzione: { it: 'Il quadro si chiede', en: 'The briefing is asked for' },
     canale: { it: 'Filiale', en: 'Branch' },
+    gruppo: 'piattaforma',
     prodotto: 'CX Enterprise Coworker',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
@@ -238,6 +249,7 @@ export const MOMENTI: Momento[] = [
     short: { it: 'Firma', en: 'Signs' },
     funzione: { it: 'Quanto costa acquisirla', en: 'What acquiring her costs' },
     canale: { it: 'App', en: 'App' },
+    gruppo: 'piattaforma',
     prodotto: 'Customer Journey Analytics',
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',
