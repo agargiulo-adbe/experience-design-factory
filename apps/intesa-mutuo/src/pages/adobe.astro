@@ -35,20 +35,32 @@ import wCdp from '../assets/forrester/forrester-cdp.png';
 import wAnalytics from '../assets/forrester/forrester-analytics.png';
 import wOptimization from '../assets/forrester/forrester-optimization.png';
 import wEmail from '../assets/forrester/forrester-email.png';
+/* I sette ritratti del team. Ritagliati dalla slide 2 nella sua versione
+   aggiornata — quella a sette persone, che nei file su disco non c'è:
+   il deck a quattro era una versione precedente. */
+import rGordiani from '../assets/team/gordiani.png';
+import rEllena from '../assets/team/ellena.png';
+import rGargiulo from '../assets/team/gargiulo.png';
+import rSelmi from '../assets/team/selmi.png';
+import rGrieco from '../assets/team/grieco.png';
+import rDeMatteis from '../assets/team/dematteis.png';
+import rMoretti from '../assets/team/moretti.png';
 
 const SLUG = 'adobe';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* Il team che è in sala il 5 novembre. Dal deck, slide 2. */
+/* Il team che è in sala il 5 novembre, nell'ordine della slide 2. */
 const TEAM = [
-  { n: 'Antonio Gargiulo', r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
-  { n: 'Francesca Ellena', r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
-  { n: 'Giacomo Selmi', r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
-  { n: 'Alex Gordiani', r: { it: 'Head of FSI', en: 'Head of FSI' } },
+  { n: 'Alex Gordiani', f: rGordiani, r: { it: 'Head of FSI', en: 'Head of FSI' } },
+  { n: 'Francesca Ellena', f: rEllena, r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
+  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Giacomo Selmi', f: rSelmi, r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
+  { n: 'Matteo Grieco', f: rGrieco, r: { it: 'Solutions Consultant', en: 'Solutions Consultant' } },
+  { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Manager, Solutions Consulting', en: 'Manager, Solutions Consulting' } },
+  { n: 'Barbara Moretti', f: rMoretti, r: { it: 'Principal Product Marketing Manager', en: 'Principal Product Marketing Manager' } },
 ];
-const iniziali = (nome: string) => nome.split(' ').map((p) => p[0]).join('');
 
 /* I cinque numeri, con la fonte accanto. Dal deck, slide 6. */
 const NUMERI = [
@@ -133,14 +145,13 @@ const BLOCCHI = [
       <div class="im-ado-cap" data-reveal>
         <T as="p" class="im-ado-occ" it="Chi è in sala" en="Who is in the room" />
         <T as="h2" class="im-ado-t" it="Il team Adobe per i servizi finanziari" en="The Adobe team for financial services" />
-        <ul class="im-team">
+        <ul class="im-team" data-substep data-side="in">
           {TEAM.map((p) => (
-            <li class="im-team-i" data-substep data-side="in">
-              <span class="im-team-m" aria-hidden="true">{iniziali(p.n)}</span>
-              <span>
-                <span class="im-team-n">{p.n}</span>
-                <T as="span" class="im-team-r" it={`${p.r.it} · Adobe Italia`} en={`${p.r.en} · Adobe Italy`} />
-              </span>
+            <li class="im-team-i">
+              <img class="im-team-f" src={p.f.src} alt="" width="360" height="360" loading="eager" />
+              <span class="im-team-n">{p.n}</span>
+              <T as="span" class="im-team-r" it={p.r.it} en={p.r.en} />
+              <span class="im-team-s">Adobe Italia</span>
             </li>
           ))}
         </ul>
