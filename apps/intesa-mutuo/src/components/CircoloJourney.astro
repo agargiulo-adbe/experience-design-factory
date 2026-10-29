@@ -116,18 +116,32 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
       <circle cx="50" cy="50" r={R} />
     </svg>
 
+    {/* ⚠️ L'ARCO CHE COMPARE COL NODO È QUELLO CHE CI ARRIVA, non quello
+        che riparte. Prima ogni passo portava il proprio arco uscente, e
+        al primo ↓ si vedeva il nodo 01 con una freccia che puntava a un
+        punto ancora vuoto: una freccia orfana, che chiede a chi guarda
+        di immaginare la destinazione. Con l'arco entrante il giro si
+        costruisce come un percorso che avanza — prima la fermata, poi la
+        strada che l'ha raggiunta — e non c'è mai una freccia che punta
+        al nulla.
+        Il ritorno 07→01 resta fuori da questo conto e diventa un passo a
+        sé, l'ultimo: è il punto della slide, e merita il suo ↓. */}
     {nodi.map((n) => {
-      const a = archi[n.i];
-      const f = frecce[n.i];
+      const a = n.i > 0 ? archi[n.i - 1] : null;
+      const f = n.i > 0 ? frecce[n.i - 1] : null;
       return (
         <div class="im-cer-passo" data-substep={aPassi ? '' : null} data-side={aPassi ? 'in' : null}>
           <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-            <circle class="im-cer-arco" data-gruppo={a.gruppo} data-ritorno={a.ritorno ? '' : null}
-                    cx="50" cy="50" r={R}
-                    style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${a.rot}deg`} />
-            <path class="im-cer-fre" data-gruppo={f.gruppo} data-ritorno={f.ritorno ? '' : null}
-                  d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
-                  style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
+            {a && f && (
+              <>
+                <circle class="im-cer-arco" data-gruppo={a.gruppo}
+                        cx="50" cy="50" r={R}
+                        style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${a.rot}deg`} />
+                <path class="im-cer-fre" data-gruppo={f.gruppo}
+                      d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
+                      style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
+              </>
+            )}
           </svg>
 
           <span class="im-cer-nodo" data-gruppo={n.m.gruppo}
@@ -150,6 +164,19 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
         </div>
       );
     })}
+
+    {/* Il ritorno 07→01: l'ultimo passo, da solo. «Il settimo riporta al
+        primo» è la frase che regge la slide, e qui si vede succedere. */}
+    <div class="im-cer-passo" data-substep={aPassi ? '' : null} data-side={aPassi ? 'in' : null}>
+      <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <circle class="im-cer-arco" data-gruppo={archi[N - 1].gruppo} data-ritorno
+                cx="50" cy="50" r={R}
+                style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${archi[N - 1].rot}deg`} />
+        <path class="im-cer-fre" data-gruppo={frecce[N - 1].gruppo} data-ritorno
+              d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
+              style={`transform: translate(${frecce[N - 1].x}px, ${frecce[N - 1].y}px) rotate(${frecce[N - 1].rot}deg)`} />
+      </svg>
+    </div>
 
     {/* Il centro: Giulia, quando c'è il ritratto. Il giro è suo. */}
     <div class="im-cer-cuore" data-con-ritratto={ritratto ? '' : null}>

@@ -2623,11 +2623,12 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
    leggenda che i momenti usano, e questo è l'unico posto dove si spiega.
    La fascia in basso non è un blocco dell'offerta — è il pavimento — e
    prende il rosso Adobe. */
-.im-arch {
-  display: grid; gap: 0.6rem; margin-top: 0.55rem;
-  padding: 0.75rem; border-radius: 18px;
-  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14);
-}
+/* ⚠️ NIENTE FONDO NÉ BORDO sul contenitore. I blocchi compaiono uno
+   alla volta con la freccia in basso, e un riquadro disegnato attorno
+   al nulla non si legge come «sta per arrivare qualcosa»: si legge come
+   un errore di caricamento. Il riquadro lo fanno le card quando ci
+   sono. */
+.im-arch { display: grid; gap: 0.6rem; margin-top: 0.55rem; }
 .im-arch-su {
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem;
@@ -2769,13 +2770,24 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 /* La slide del giro quando ospita anche la persona: la testa e la riga
    finale restano strette, l'anello prende tutto il resto, e l'elenco di
    quello che non avete di lei sta a sinistra invece che su una slide sua. */
+/* ⚠️ Tre colonne, e la terza è vuota. Con due colonne il cerchio era
+   centrato nella SUA colonna e non nella pagina: il titolo, che è
+   centrato davvero, finiva fuori asse rispetto all'anello — ed è lo
+   sfasamento che si vede subito e che a occhio non si sa spiegare.
+   La colonna vuota a destra riporta l'anello sull'asse del titolo. */
 .im-cerslide--persona {
-  display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   align-items: center; gap: 0.5rem 1.6rem; width: 100%; height: 100%;
 }
 .im-cerslide--persona .im-cerslide-testa { grid-column: 1 / -1; text-align: center; }
-.im-cerslide--persona .im-manca--lato { grid-column: 1; grid-row: 2; align-self: center; }
+/* L'elenco ha bisogno della sua misura: stretto contro l'anello
+   andava a capo ogni due parole. */
+.im-cerslide--persona .im-manca--lato {
+  grid-column: 1; grid-row: 2; align-self: center; justify-self: end;
+  width: min(100%, 19rem);
+}
 .im-cerslide--persona .im-cer { grid-column: 2; grid-row: 2; justify-self: center; }
 .im-cerslide--persona .im-cerslide-l { grid-column: 1 / -1; grid-row: 3; }
 /* ⚠️ `.im-manca` nasce a due colonne per la slide che non c'è più: qui
@@ -2791,6 +2803,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 
 @media (max-width: 1200px) {
   .im-cerslide--persona { grid-template-columns: minmax(0, 1fr); }
+  .im-cerslide--persona .im-manca--lato { justify-self: stretch; }
   .im-cerslide--persona .im-manca--lato,
   .im-cerslide--persona .im-cer { grid-column: 1; }
   .im-cerslide--persona .im-manca--lato { grid-row: auto; }
@@ -3013,9 +3026,12 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   font-size: clamp(1.6rem, 1.72vw, 3.44rem); line-height: 1.06;
   letter-spacing: -0.02em; color: #ffffff; text-wrap: balance;
 }
+/* Il claim non è una didascalia del titolo: è la frase che la slide
+   esiste per dire, e in sala è quella che si legge per prima. */
 .im-orch-c {
   margin: 0; max-width: none;
-  font-size: clamp(0.98rem, 0.88vw, 1.96rem); line-height: 1.42; color: #f2f8f0;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.2rem, 1.16vw, 2.5rem); line-height: 1.34; color: #ffffff;
 }
 .im-ado-l--sotto { margin-top: 0.15rem; }
 

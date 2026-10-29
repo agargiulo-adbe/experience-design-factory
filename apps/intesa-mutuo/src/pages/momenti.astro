@@ -23,7 +23,8 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MOMENTI, DOMANDE_IN_SLIDE } from '../data/momenti';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
-import MappaDoppia from '../components/MappaDoppia.astro';
+import Divisore from '../components/Divisore.astro';
+import fondoCap from '../assets/generated/lavoro-05-orchestrazione.webp';
 import DaVerificare from '../components/DaVerificare.astro';
 import Azione from '../components/Azione.astro';
 import FiguraCap from '../components/FiguraCap.astro';
@@ -119,16 +120,21 @@ const CSC = [
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ch im-ch--map" data-reveal>
-        <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Sette momenti, e le due viste sullo stesso minuto" en="Seven moments, and both views of the same minute" data-reveal data-reveal-delay="0.08" />
-      </div>
-      <MappaDoppia data-reveal data-reveal-delay="0.16" />
-      <T as="p" class="im-guida" data-reveal data-reveal-delay="0.3"
-         it="Ogni momento si apre in tre passi, con la freccia in basso: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ la riga «da verificare con voi», che è il punto dove questa meccanica cambia le cose."
-         en="Each moment opens in three steps, with the down arrow: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ the “to check with you” line, which is where this mechanic changes things." />
+    {/* ⚠️ QUI C'ERANO LE DUE MAPPE AFFIANCATE, e sono state tolte.
+        Elencavano i sette momenti con canale, ora e verbo a sinistra, e
+        i blocchi con funzione e prodotti a destra: la prima è quello che
+        il CERCHIO del capitolo 03 mostra già, con Giulia al centro e
+        meglio; la seconda è quello che fa «Orchestrare l'esperienza del
+        cliente» nel capitolo 01, dove sta anche la leggenda dei colori.
+        Erano nate quando il cerchio era un ausilio in un angolo. Da
+        quando è il centro del capitolo precedente, ripetevano due slide
+        appena viste — e il capitolo 04 restava l'unico senza divisore. */}
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondoCap.src}); --fuoco: center 42%`}></div>
+      <Divisore num={ch.num}
+        tIt="Sette momenti, e le due viste sullo stesso minuto" tEn="Seven moments, and both views of the same minute"
+        lIt="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. Ogni momento si apre in tre passi, con la freccia in basso."
+        lEn="Above, what Giulia sees; below, what you do at the same instant. Each moment opens in three steps, with the down arrow." />
     </Slide>
 
     {MOMENTI.map((m, i) => (
