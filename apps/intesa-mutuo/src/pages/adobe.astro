@@ -115,14 +115,39 @@ const WAVE = [
   },
 ];
 
-/* I quattro blocchi dell'offerta. Stessi gruppi, stessi colori e stesso
-   ordine dei momenti: è QUI che la codifica si spiega una volta sola —
-   era il rilievo della revisione del 29 ott, «deve essere una leggenda». */
-const BLOCCHI = [
-  { g: 'trovare', t: { it: 'Farsi trovare', en: 'Be found' }, d: { it: 'Essere citati nelle risposte generate, non solo nei risultati di ricerca.', en: 'Being cited in generated answers, not only in search results.' } },
-  { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' }, d: { it: 'Produrre le varianti che servono, già conformi, senza rifare il giro di approvazione.', en: 'Producing the variants you need, already compliant, without redoing the approval round.' } },
-  { g: 'engagement', t: { it: 'Customer Engagement', en: 'Customer engagement' }, d: { it: 'Profilo, decisione e regia del percorso, sullo stesso dato.', en: 'Profile, decision and journey orchestration, on the same data.' } },
-  { g: 'piattaforma', t: { it: 'Adobe CX Analytics', en: 'Adobe CX analytics' }, d: { it: 'Digital analytics, percorsi del cliente, pianificazione e ROI, contenuto.', en: 'Digital analytics, customer journeys, planning and ROI, content.' } },
+/* L'ARCHITETTURA — disegnata sullo schema che il team usa già.
+   Tre blocchi in alto, una fascia sottile che li attraversa tutti, e
+   sotto una fascia alta che fa da pavimento. Le taglie non sono uguali
+   perché i ruoli non lo sono: i tre in alto sono canali, la fascia di
+   mezzo è la misura che serve a tutti e tre, quella in basso è il modo
+   in cui il lavoro si chiede.
+
+   ⚠️ I DUE NOMI IN BASSO NON SONO NOMI DI PRODOTTO, ed è il punto.
+   «Adobe CX Analytics» dice che cosa si compra, «Analisi omnicanale»
+   dice che cosa fa; «CX Enterprise Coworker» è un listino, «AI
+   conversazionale a supporto del vostro lavoro» è una promessa che in
+   sala si capisce senza glossario. Il nome del prodotto resta accanto,
+   piccolo: serve sapere di che cosa si parla, ma non è quello il titolo. */
+const CANALI = [
+  { g: 'trovare', t: { it: 'Farsi trovare nell’era dell’AI', en: 'Being found in the age of AI' },
+    p: 'Adobe Brand Visibility',
+    d: { it: 'Essere citati nelle risposte generate, non solo nei risultati di ricerca.', en: 'Being cited in generated answers, not only in search results.' } },
+  { g: 'engagement', t: { it: 'Ingaggiare il cliente', en: 'Engaging the customer' },
+    p: 'Adobe Experience Platform',
+    d: { it: 'Profilo, decisione e regia del percorso sullo stesso dato.', en: 'Profile, decision and journey orchestration on the same data.' } },
+  { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' },
+    p: 'Adobe GenStudio',
+    d: { it: 'Le varianti che servono, già conformi, senza rifare il giro di approvazione.', en: 'The variants you need, already compliant, without redoing the approval round.' } },
+];
+const FASCE = [
+  { g: 'piattaforma', alta: false,
+    t: { it: 'Analisi omnicanale', en: 'Omnichannel analytics' },
+    p: 'Adobe CX Analytics',
+    d: { it: 'Una misura sola sotto i tre, dal primo contatto alla firma.', en: 'One measurement beneath all three, from first contact to signing.' } },
+  { g: 'voce', alta: true,
+    t: { it: 'AI conversazionale a supporto del vostro lavoro', en: 'Conversational AI supporting your work' },
+    p: 'CX Enterprise Coworker',
+    d: { it: 'Dall’obiettivo alla campagna senza passare da sei strumenti: si descrive quello che serve, e il sistema lo prepara.', en: 'From objective to campaign without going through six tools: you describe what you need, and the system prepares it.' } },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -178,28 +203,24 @@ const BLOCCHI = [
       </div>
     </Slide>
 
-    <Slide id="slide-numeri" bg="inverse" align="left" data-display>
+    <Slide id="slide-fsi" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap" data-reveal>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Adobe nei servizi finanziari" en="Adobe in financial services" />
-        <T as="h2" class="im-ado-t" it="Il settore finanziario è la prima industry di Adobe" en="Financial services is Adobe’s largest industry" />
-        <ul class="im-num">
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il settore finanziario è la prima industry di Adobe" en="Financial services is Adobe’s largest industry" />
+
+        <ul class="im-num" data-substep data-side="in">
           {NUMERI.map((n) => (
-            <li class="im-num-i" data-substep data-side="in">
+            <li class="im-num-i">
               <span class="im-num-k">{n.k}</span>
               <T as="span" class="im-num-v" it={n.v.it} en={n.v.en} />
             </li>
           ))}
         </ul>
-        <T as="p" class="im-fonte-riga" it="Fonti: Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts." en="Sources: Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts." />
-      </div>
-    </Slide>
 
-    <Slide id="slide-forrester" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="La valutazione di un terzo" en="A third party’s assessment" />
-        <T as="h2" class="im-ado-t" it="Leader nei quattro Forrester Wave del 2026 che riguardano questo tavolo" en="A Leader in the four 2026 Forrester Waves that matter at this table" />
+        <T as="p" class="im-ado-sott" data-substep data-side="in"
+           it="E non lo diciamo solo noi: Leader nei quattro Forrester Wave del 2026 che riguardano questo tavolo."
+           en="And it is not only us saying it: a Leader in the four 2026 Forrester Waves that matter at this table." />
         <ul class="im-wave">
           {WAVE.map((w) => (
             <li class="im-wave-i" data-substep data-side="in">
@@ -211,7 +232,7 @@ const BLOCCHI = [
             </li>
           ))}
         </ul>
-        <T as="p" class="im-fonte-riga" it="Fonte: Forrester Research, The Forrester Wave™, 2026. I grafici sono quelli pubblicati da Forrester." en="Source: Forrester Research, The Forrester Wave™, 2026. The charts are the ones Forrester published." />
+        <T as="p" class="im-fonte-riga" it="Fonti: Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts · Forrester Research, The Forrester Wave™, 2026." en="Sources: Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts · Forrester Research, The Forrester Wave™, 2026." />
       </div>
     </Slide>
 
@@ -220,16 +241,27 @@ const BLOCCHI = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Adobe CX Enterprise" en="Adobe CX Enterprise" />
         <T as="h2" class="im-ado-t" it="Quello che Adobe mette sul tavolo, da un capo all’altro" en="What Adobe brings to the table, end to end" />
-        <T as="p" class="im-ado-l" it="Farsi trovare, ingaggiare, produrre. E sotto, una misura sola — sono i quattro blocchi che tornano in ogni momento del percorso di Giulia." en="Be found, engage, produce. And underneath, one single measurement — the four blocks that come back at every moment of Giulia’s journey." />
-        <ul class="im-blk">
-          {BLOCCHI.map((b) => (
-            <li class="im-blk-i" data-gruppo={b.g} data-substep data-side="in">
-              <T as="span" class="im-blk-t" it={b.t.it} en={b.t.en} />
-              <T as="span" class="im-blk-d" it={b.d.it} en={b.d.en} />
-            </li>
+        <T as="p" class="im-ado-l" it="Tre canali, una misura che li attraversa tutti e, sotto, il modo in cui il lavoro si chiede. Sono i blocchi che tornano in ogni momento del percorso di Giulia." en="Three channels, one measurement running across all of them and, underneath, the way the work gets asked for. These are the blocks that come back at every moment of Giulia’s journey." />
+        <div class="im-arch" data-reveal data-reveal-delay="0.12">
+          <ul class="im-arch-su">
+            {CANALI.map((b) => (
+              <li class="im-arch-b" data-gruppo={b.g} data-substep data-side="in">
+                <T as="span" class="im-arch-t" it={b.t.it} en={b.t.en} />
+                <T as="span" class="im-arch-d" it={b.d.it} en={b.d.en} />
+                <span class="im-arch-pro">{b.p}</span>
+              </li>
+            ))}
+          </ul>
+          {FASCE.map((f) => (
+            <section class="im-arch-b im-arch-f" data-gruppo={f.g} data-alta={f.alta ? '' : undefined} data-substep data-side="in">
+              <div class="im-arch-f-t">
+                <T as="span" class="im-arch-t" it={f.t.it} en={f.t.en} />
+                <span class="im-arch-pro">{f.p}</span>
+              </div>
+              <T as="span" class="im-arch-d" it={f.d.it} en={f.d.en} />
+            </section>
           ))}
-        </ul>
-        <T as="p" class="im-ado-ai" it="Sotto i quattro blocchi, Adobe AI Platform." en="Underneath the four blocks, Adobe AI Platform." />
+        </div>
       </div>
     </Slide>
 

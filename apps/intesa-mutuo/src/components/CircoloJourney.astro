@@ -30,9 +30,18 @@ interface Props {
   /** 1–7 = la fermata accesa. 0 = il giro intero, nessuna accesa. */
   attivo?: number;
   grande?: boolean;
+  /** Le sette fermate compaiono una alla volta con la freccia in basso.
+      Ogni passo è UN `data-substep`: arco, freccia, nodo ed etichetta
+      stanno nello stesso elemento, se no servirebbero quattro passi per
+      fermata e il racconto si spezzerebbe. */
+  aPassi?: boolean;
+  /** Il ritratto al centro del giro. Il suggerimento che l'ha prodotto:
+      «mettete Giulia al centro» — e ha ragione, perché il giro è suo e
+      non del sistema. */
+  ritratto?: string;
   class?: string;
 }
-const { attivo = 0, grande = false, class: className } = Astro.props;
+const { attivo = 0, grande = false, aPassi = false, ritratto, class: className } = Astro.props;
 
 const N = MOMENTI.length;
 const PASSO = 360 / N;
@@ -98,53 +107,59 @@ const LEGENDA = [
 
 const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
 ---
-<figure class:list={['im-cer', grande && 'im-cer--grande', className]}>
+<figure class:list={['im-cer', grande && 'im-cer--grande', aPassi && 'im-cer--passi', className]}>
   <div class="im-cer-campo">
 
-    <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-      {archi.map((a) => (
-        <circle class="im-cer-arco" data-gruppo={a.gruppo} data-ritorno={a.ritorno ? '' : null}
-                cx="50" cy="50" r={R}
-                style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${a.rot}deg`} />
-      ))}
-      {frecce.map((f) => (
-        <path class="im-cer-fre" data-gruppo={f.gruppo} data-ritorno={f.ritorno ? '' : null}
-              d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
-              style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
-      ))}
+    {/* L'anello di guida: c'è da subito, anche a passi spenti, così il
+        giro si vede come giro prima che lo si percorra. */}
+    <svg class="im-cer-svg im-cer-guida" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+      <circle cx="50" cy="50" r={R} />
     </svg>
 
-    <ol class="im-cer-nodi">
-      {nodi.map((n) => (
-        <li class="im-cer-nodo" data-gruppo={n.m.gruppo}
-            data-attivo={attivo === n.i + 1 ? '' : null}
-            data-fatto={attivo > n.i + 1 ? '' : null}
-            style={`left:${n.x}%;top:${n.y}%`}
-            aria-current={attivo === n.i + 1 ? 'step' : null}>
-          <span class="im-cer-n">{n.m.n}</span>
-        </li>
-      ))}
-    </ol>
+    {nodi.map((n) => {
+      const a = archi[n.i];
+      const f = frecce[n.i];
+      return (
+        <div class="im-cer-passo" data-substep={aPassi ? '' : null} data-side={aPassi ? 'in' : null}>
+          <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+            <circle class="im-cer-arco" data-gruppo={a.gruppo} data-ritorno={a.ritorno ? '' : null}
+                    cx="50" cy="50" r={R}
+                    style={`--dash:${CIRC};--seg:${CIRC / N};--rot:${a.rot}deg`} />
+            <path class="im-cer-fre" data-gruppo={f.gruppo} data-ritorno={f.ritorno ? '' : null}
+                  d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
+                  style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
+          </svg>
 
-    {grande && (
-      <ol class="im-cer-eti">
-        {nodi.map((n) => (
-          <li class="im-cer-eti-i" data-gruppo={n.m.gruppo}
-              data-lato={n.ex < 44 ? 'sx' : n.ex > 56 ? 'dx' : 'cen'}
-              style={`left:${n.ex}%;top:${n.ey}%`}>
-            <T as="span" class="im-cer-verbo" it={n.m.short.it} en={n.m.short.en} />
-            <T as="span" class="im-cer-can" it={n.m.canale.it} en={n.m.canale.en} />
-            <T as="span" class="im-cer-fun" it={n.m.funzione.it} en={n.m.funzione.en} />
-            <span class="im-cer-pro">{n.m.prodotto}</span>
-          </li>
-        ))}
-      </ol>
-    )}
+          <span class="im-cer-nodo" data-gruppo={n.m.gruppo}
+                data-attivo={attivo === n.i + 1 ? '' : null}
+                data-fatto={attivo > n.i + 1 ? '' : null}
+                style={`left:${n.x}%;top:${n.y}%`}>
+            <span class="im-cer-n">{n.m.n}</span>
+          </span>
 
-    {/* Il centro: a giro spento dice che cosa fa il giro, acceso dice a
-        che punto siamo. In entrambi i casi è una cosa sola da leggere. */}
-    <div class="im-cer-cuore">
-      {acceso ? (
+          {grande && (
+            <span class="im-cer-eti-i" data-gruppo={n.m.gruppo}
+                  data-lato={n.ex < 44 ? 'sx' : n.ex > 56 ? 'dx' : 'cen'}
+                  style={`left:${n.ex}%;top:${n.ey}%`}>
+              <T as="span" class="im-cer-verbo" it={n.m.short.it} en={n.m.short.en} />
+              <T as="span" class="im-cer-can" it={n.m.canale.it} en={n.m.canale.en} />
+              <T as="span" class="im-cer-fun" it={n.m.funzione.it} en={n.m.funzione.en} />
+              <span class="im-cer-pro">{n.m.prodotto}</span>
+            </span>
+          )}
+        </div>
+      );
+    })}
+
+    {/* Il centro: Giulia, quando c'è il ritratto. Il giro è suo. */}
+    <div class="im-cer-cuore" data-con-ritratto={ritratto ? '' : null}>
+      {ritratto ? (
+        <>
+          <img class="im-cer-volto" src={ritratto} alt="" width="320" height="320" loading="eager" />
+          <span class="im-cer-cuore-v">Giulia</span>
+          <T as="span" class="im-cer-cuore-c" it="Non ancora cliente" en="Not a customer yet" />
+        </>
+      ) : acceso ? (
         <>
           <span class="im-cer-cuore-n">{acceso.n}</span>
           <T as="span" class="im-cer-cuore-v" it={acceso.short.it} en={acceso.short.en} />
