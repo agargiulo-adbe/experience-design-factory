@@ -1,0 +1,113 @@
+---
+/**
+ * Le micro-figure degli approfondimenti — una per capacità.
+ *
+ * ⚠️ PERCHÉ ESISTONO. Le slide di approfondimento erano quattro colonne
+ * con tre blocchi di testo ciascuna: dodici paragrafi su una pagina, cioè
+ * un muro. Nell'XD che fa da riferimento, e nella slide d'origine del
+ * team, ogni colonna ha UNA FIGURA e due righe — la figura fa il lavoro
+ * che il paragrafo faceva male.
+ *
+ * Solo geometria: niente parole dentro l'SVG. Un testo in un disegno non
+ * cresce con la radice e su una parete di sala sparisce. Lo stato finale
+ * è quello informativo, così con «Riduci movimento» la figura si legge
+ * comunque.
+ */
+interface Props { segno: string; class?: string }
+const { segno, class: cls = '' } = Astro.props;
+---
+<svg class={`im-fig ${cls}`} viewBox="0 0 120 64" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+  {/* Dati di mercato: un grafo di fonti attorno al marchio */}
+  {segno === 'grafo' && (
+    <>
+      <circle class="im-fig-l" cx="60" cy="32" r="17" />
+      <circle class="im-fig-f" cx="60" cy="32" r="5.5" />
+      {[[22,14],[98,14],[16,40],[104,40],[44,58],[78,58]].map(([x, y]) => (
+        <>
+          <line class="im-fig-l" x1="60" y1="32" x2={x} y2={y} />
+          <rect class="im-fig-b" x={x - 9} y={y - 4.5} width="18" height="9" rx="4.5" />
+        </>
+      ))}
+    </>
+  )}
+
+  {/* Segnali di casa vostra: due serie che salgono, una è quella degli agenti */}
+  {segno === 'serie' && (
+    <>
+      <line class="im-fig-l" x1="8" y1="56" x2="112" y2="56" />
+      <polyline class="im-fig-l" points="10,48 30,44 50,46 70,38 90,34 110,30" />
+      <polyline class="im-fig-f-s" points="10,52 30,50 50,42 70,30 90,20 110,10" />
+      {[[10,52],[50,42],[90,20],[110,10]].map(([x, y]) => <circle class="im-fig-f" cx={x} cy={y} r="2.6" />)}
+    </>
+  )}
+
+  {/* Ottimizzazioni: la correzione che entra al bordo, prima della fonte */}
+  {segno === 'bordo' && (
+    <>
+      <rect class="im-fig-l" x="6" y="18" width="26" height="28" rx="4" />
+      <rect class="im-fig-l" x="88" y="18" width="26" height="28" rx="4" />
+      <line class="im-fig-l" x1="32" y1="32" x2="88" y2="32" />
+      <path class="im-fig-f-s" d="M60 6 L60 24" />
+      <path class="im-fig-fill" d="M55.5 22 L64.5 22 L60 31 Z" />
+      <circle class="im-fig-f" cx="60" cy="32" r="4" />
+    </>
+  )}
+
+  {/* Esiti misurabili: la curva che si stacca dalla previsione */}
+  {segno === 'esito' && (
+    <>
+      <line class="im-fig-l" x1="8" y1="56" x2="112" y2="56" />
+      <line class="im-fig-l" x1="8" y1="56" x2="8" y2="8" />
+      <path class="im-fig-l" d="M12 50 C 40 48, 70 44, 110 40" />
+      <path class="im-fig-f-s" d="M12 50 C 44 50, 66 34, 110 12" />
+      <circle class="im-fig-f" cx="110" cy="12" r="3.4" />
+      <rect class="im-fig-b" x="84" y="2" width="30" height="9" rx="4.5" />
+    </>
+  )}
+
+  {/* Pianificare: le colonne di un flusso, con l'approvazione dentro */}
+  {segno === 'flusso' && (
+    <>
+      {[10, 46, 82].map((x) => <rect class="im-fig-l" x={x} y="10" width="28" height="44" rx="4" />)}
+      {[10, 46, 82].map((x) => <rect class="im-fig-b" x={x + 5} y="16" width="18" height="6" rx="3" />)}
+      {[10, 46].map((x) => <rect class="im-fig-b" x={x + 5} y="26" width="18" height="6" rx="3" />)}
+      <circle class="im-fig-f" cx="96" cy="43" r="6" />
+      <path class="im-fig-spunta" d="M93 43 l2.4 2.4 L100 40" />
+    </>
+  )}
+
+  {/* Produrre: un brief che diventa molte varianti */}
+  {segno === 'varianti' && (
+    <>
+      <rect class="im-fig-f-r" x="6" y="22" width="20" height="20" rx="3" />
+      <line class="im-fig-l" x1="26" y1="32" x2="42" y2="32" />
+      {[0, 1, 2].map((r) => [0, 1, 2].map((c) => (
+        <rect class="im-fig-b" x={46 + c * 25} y={10 + r * 17} width="20" height="12" rx="2.5" />
+      )))}
+    </>
+  )}
+
+  {/* Gestire: un archivio dove ogni pezzo porta il suo diritto */}
+  {segno === 'archivio' && (
+    <>
+      <path class="im-fig-l" d="M8 18 h30 l6 7 h68 v31 a3 3 0 0 1 -3 3 H11 a3 3 0 0 1 -3 -3 Z" />
+      {[[20,34],[48,34],[76,34]].map(([x, y]) => <rect class="im-fig-b" x={x} y={y} width="20" height="14" rx="2.5" />)}
+      <circle class="im-fig-f" cx="96" cy="44" r="6" />
+      <path class="im-fig-spunta" d="M93 44 l2.4 2.4 L100 41" />
+    </>
+  )}
+
+  {/* Attivare e misurare: i canali, e l'esito che rientra */}
+  {segno === 'canali' && (
+    <>
+      <rect class="im-fig-f-r" x="48" y="24" width="24" height="16" rx="3" />
+      {[[12,12],[12,52],[108,12],[108,52]].map(([x, y]) => (
+        <>
+          <line class="im-fig-l" x1="60" y1="32" x2={x} y2={y} />
+          <circle class="im-fig-b-c" cx={x} cy={y} r="6" />
+        </>
+      ))}
+      <path class="im-fig-f-s" d="M104 56 A 46 46 0 0 1 16 56" />
+    </>
+  )}
+</svg>

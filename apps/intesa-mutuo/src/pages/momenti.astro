@@ -26,6 +26,7 @@ import MockAdobe from '../components/MockAdobe.astro';
 import MappaDoppia from '../components/MappaDoppia.astro';
 import DaVerificare from '../components/DaVerificare.astro';
 import Azione from '../components/Azione.astro';
+import FiguraCap from '../components/FiguraCap.astro';
 
 /* L'APPROFONDIMENTO SU «FARSI TROVARE», dopo il giro di Giulia.
    Lo schema è quello che il team usa già: due strati — i segnali e le
@@ -39,18 +40,14 @@ import Azione from '../components/Azione.astro';
    quel materiale sono riprese da terzi e non ho la fonte primaria. Un
    numero che un CIO va a cercare e non trova vale meno di nessun numero. */
 const BV = [
-  { strato: 'segnali', t: { it: 'Dati di mercato', en: 'Market intelligence' },
-    s: { it: 'Come compaiono i marchi nelle risposte generate', en: 'How brands show up in generated answers' },
-    d: { it: 'Le domande vere delle persone, in più lingue, e chi viene citato accanto a voi: ChatGPT, Perplexity, Copilot, le risposte AI di Google.', en: 'The real questions people ask, across languages, and who gets cited next to you: ChatGPT, Perplexity, Copilot, Google’s AI answers.' } },
-  { strato: 'segnali', t: { it: 'Segnali di casa vostra', en: 'Brand-owned insights' },
-    s: { it: 'Sulle vostre proprietà digitali', en: 'Across your own digital properties' },
-    d: { it: 'Il traffico degli agenti letto dai log del CDN: non una stima, le richieste che arrivano davvero al vostro sito.', en: 'Agent traffic read from CDN logs: not an estimate, the requests that actually reach your site.' } },
-  { strato: 'ottimizzazioni', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
-    s: { it: 'Al bordo e alla fonte, per le persone e per gli agenti', en: 'At the edge and at the source, for people and for agents' },
-    d: { it: 'Raccomandazioni puntuali su che cosa cambiare, e i correttivi approvati vanno in rete al bordo, senza toccare il CMS.', en: 'Specific recommendations on what to change, and approved fixes ship at the edge, without touching the CMS.' } },
-  { strato: 'ottimizzazioni', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
-    s: { it: 'Ogni intervento legato a un indicatore', en: 'Each intervention tied to a KPI' },
-    d: { it: 'Dal momento in cui un assistente vi cita a quello in cui una pratica si apre, nella stessa misura degli altri canali.', en: 'From the moment an assistant cites you to the moment an application opens, in the same measurement as every other channel.' } },
+  { strato: 'segnali', fig: 'grafo', t: { it: 'Dati di mercato', en: 'Market intelligence' },
+    d: { it: 'Chi viene citato accanto a voi, su ChatGPT, Perplexity, Copilot.', en: 'Who gets cited next to you, on ChatGPT, Perplexity, Copilot.' } },
+  { strato: 'segnali', fig: 'serie', t: { it: 'Segnali di casa vostra', en: 'Brand-owned signals' },
+    d: { it: 'Il traffico degli agenti dai log del CDN: non una stima.', en: 'Agent traffic from CDN logs: not an estimate.' } },
+  { strato: 'ottimizzazioni', fig: 'bordo', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
+    d: { it: 'I correttivi vanno in rete al bordo, senza toccare il CMS.', en: 'Fixes ship at the edge, without touching the CMS.' } },
+  { strato: 'ottimizzazioni', fig: 'esito', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
+    d: { it: 'Dalla citazione alla pratica aperta, nella stessa misura.', en: 'From citation to opened application, in one measurement.' } },
 ];
 /* Le scene vengono da Pexels, licenziate, con autore e URL in
    provenance.json. Sono LUOGHI senza volti: l'unico volto della Storia è
@@ -105,18 +102,14 @@ const currentPath = Astro.url.pathname;
    2026 — «scalable, compliant campaign content»: la conformità non è un
    passaggio a valle, sta dentro la produzione. */
 const CSC = [
-  { t: { it: 'Pianificare', en: 'Plan' },
-    s: { it: 'Il brief, i flussi, chi approva', en: 'The brief, the flows, who approves' },
-    d: { it: 'Una campagna nasce con dentro le sue approvazioni, invece di rincorrerle a valle.', en: 'A campaign is born with its approvals inside it, instead of chasing them downstream.' } },
-  { t: { it: 'Produrre', en: 'Produce' },
-    s: { it: 'Le varianti, assemblate sul marchio', en: 'Variants, assembled on the brand' },
-    d: { it: 'Dodici varianti da un brief solo — è il momento 02 di Giulia — con i vincoli di marchio applicati per costruzione.', en: 'Twelve variants from one brief — Giulia’s moment 02 — with brand rules applied by construction.' } },
-  { t: { it: 'Gestire', en: 'Manage' },
-    s: { it: 'Gli asset, i diritti, il riuso', en: 'Assets, rights, reuse' },
-    d: { it: 'Un archivio solo, dove si sa che cosa si può usare, dove e fino a quando.', en: 'One repository, where you know what can be used, where and until when.' } },
-  { t: { it: 'Attivare e misurare', en: 'Activate and measure' },
-    s: { it: 'Sui canali, e l’esito torna indietro', en: 'On the channels, and the outcome comes back' },
-    d: { it: 'Attivazione sui canali dal posto in cui il contenuto è nato, e la performance che rientra nel brief successivo.', en: 'Activation on channels from where the content was born, and performance that feeds the next brief.' } },
+  { fig: 'flusso', t: { it: 'Pianificare', en: 'Plan' },
+    d: { it: 'Una campagna nasce con dentro le sue approvazioni.', en: 'A campaign is born with its approvals inside it.' } },
+  { fig: 'varianti', t: { it: 'Produrre', en: 'Produce' },
+    d: { it: 'Dodici varianti da un brief solo, già conformi.', en: 'Twelve variants from one brief, already compliant.' } },
+  { fig: 'archivio', t: { it: 'Gestire', en: 'Manage' },
+    d: { it: 'Si sa che cosa si può usare, dove e fino a quando.', en: 'You know what can be used, where and until when.' } },
+  { fig: 'canali', t: { it: 'Attivare e misurare', en: 'Activate and measure' },
+    d: { it: 'L’esito rientra nel brief successivo.', en: 'The outcome feeds the next brief.' } },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -211,8 +204,8 @@ const CSC = [
           {BV.map((c, i) => (
             <>
               <section class="im-bv-i" data-strato={c.strato} data-substep data-side="in">
+                <FiguraCap segno={c.fig} />
                 <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
                 <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
               </section>
               {i < BV.length - 1 && <span class="im-bv-op" aria-hidden="true">{i === 1 ? '=' : '+'}</span>}
@@ -244,8 +237,8 @@ const CSC = [
           {CSC.map((c, i) => (
             <>
               <section class="im-bv-i" data-substep data-side="in">
+                <FiguraCap segno={c.fig} />
                 <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
                 <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
               </section>
               {i < CSC.length - 1 && <span class="im-bv-op im-csc-op" aria-hidden="true">→</span>}
