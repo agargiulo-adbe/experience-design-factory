@@ -2,11 +2,14 @@
 /**
  * La persona — Giulia, e perché la riconoscete.
  *
- * Racconto a scorrimento, non deck: vocabolario `.im-*`, superfici che si
- * alternano, nessuna slide e nessun contatore.
+ * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
+ * Il racconto e i mockup restano quelli della Storia — cambia come ci si
+ * muove dentro: una slide alla volta, dimensionata su 1920×1080.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -20,41 +23,39 @@ const currentPath = Astro.url.pathname;
   <div class="fixed top-0 left-0 right-0 z-50">
     <Navigation currentPath={currentPath} base={base} />
   </div>
-  <main class="im-scroll">
-    <section class="im-apre">
-      <div class="im-wrap">
-        <p class="im-k"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h1" class="im-h1" it="Giulia, 34 anni, già vostra cliente" en="Giulia, 34, already your customer" />
-        <T as="p" class="im-lead" it="Conto da sei anni, stipendio accreditato, nessun prodotto oltre la carta. Sta comprando casa, ed è la prima volta che vi chiede qualcosa di grosso." en="Six years with the account, salary paid in, no product beyond the card. She is buying a home, and it is the first time she asks you for something big." />
-      </div>
-    </section>
-    <section class="im-momento" data-sup="chiara">
-      <div class="im-wrap">
-        <p class="im-n">01</p>
-        <T as="h2" class="im-h2" it="Che cosa sapete già di lei" en="What you already know about her" />
-        <T as="p" class="im-sub" it="Saldo, accrediti, movimenti, canali che usa. Il vostro motore le dà una propensione al mutuo di 0,78: alta. Questo pezzo funziona." en="Balance, income, transactions, channels she uses. Your engine gives her a mortgage propensity of 0.78: high. This part works." />
-        <T as="p" class="im-chiusa" it="Il punto non è sapere chi è: è sapere che cosa sta facendo adesso." en="The point is not knowing who she is: it is knowing what she is doing right now." />
-      </div>
-    </section>
-    <section class="im-momento" data-sup="scura">
-      <div class="im-wrap">
-        <p class="im-n">02</p>
-        <T as="h2" class="im-h2" it="Che cosa non sapete" en="What you do not know" />
-        <T as="p" class="im-sub" it="Che ieri sera ha simulato un mutuo in app, che si è fermata sulla busta paga, e che stamattina ha cercato la stessa cosa altrove." en="That last night she simulated a mortgage in the app, stalled on her payslip, and this morning searched for the same thing elsewhere." />
-        <T as="p" class="im-chiusa" it="Fra la propensione e il comportamento ci sono due giorni. In quei due giorni si decide tutto." en="Between propensity and behaviour there are two days. Those two days decide everything." />
-      </div>
-    </section>
 
-    <section class="im-passa">
-      <div class="im-wrap">
-        <T as="p" class="im-passa-t" it="Ora seguiamola, momento per momento, con i due lati sotto gli occhi." en="Now let us follow her, moment by moment, with both sides in view." />
-        <a href={href(base, nextSlug(SLUG))} class="im-cta">
-          <span data-lang-it>I quattro momenti →</span><span data-lang-en>The four moments →</span>
-        </a>
-        <a href={href(base, prevSlug(SLUG))} class="im-indietro">
-          <span data-lang-it>← Indietro</span><span data-lang-en>← Back</span>
-        </a>
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ch" data-reveal>
+        <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h2" class="im-ch-t" it="Giulia, 34 anni, già vostra cliente" en="Giulia, 34, already your customer" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Conto da sei anni, stipendio accreditato, nessun prodotto oltre la carta. Sta comprando casa." en="Six years with the account, salary paid in, no product beyond the card. She is buying a home." data-reveal data-reveal-delay="0.15" />
       </div>
-    </section>
-  </main>
+    </Slide>
+
+    <Slide id="slide-sapete" bg="primary" align="left">
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <p class="im-n">01</p>
+          <T as="h2" class="im-h2" it="Che cosa sapete già di lei" en="What you already know about her" />
+          <T as="p" class="im-sub" it="Saldo, accrediti, movimenti, canali che usa. Il vostro motore le dà una propensione al mutuo di 0,78: alta. Questo pezzo funziona." en="Balance, income, transactions, channels. Your engine gives her a mortgage propensity of 0.78: high. This part works." />
+        </div>
+          <T as="p" class="im-chiusa" it="Il punto non è sapere chi è: è sapere che cosa sta facendo adesso." en="The point is not knowing who she is: it is knowing what she is doing right now." data-reveal data-reveal-delay="0.3" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-non-sapete" bg="inverse" align="left">
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <p class="im-n">02</p>
+          <T as="h2" class="im-h2" it="Che cosa non sapete" en="What you do not know" />
+          <T as="p" class="im-sub" it="Che ieri sera ha simulato un mutuo in app, che si è fermata sulla busta paga, e che stamattina ha cercato la stessa cosa altrove." en="That last night she simulated a mortgage, stalled on her payslip, and this morning searched for the same thing elsewhere." />
+        </div>
+          <T as="p" class="im-chiusa" it="Fra la propensione e il comportamento ci sono due giorni. In quei due giorni si decide tutto." en="Between propensity and behaviour there are two days. Those two days decide everything." data-reveal data-reveal-delay="0.3" />
+      </div>
+    </Slide>
+
+  </DeckContainer>
 </BaseLayout>

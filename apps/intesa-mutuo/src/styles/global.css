@@ -712,183 +712,201 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   IL RACCONTO CHE SCORRE
+   LE SLIDE DELLA STORIA
 
-   Una Storia non è un deck: non ci sono slide, frecce o contatore. Si
-   scorre, e il ritmo lo fa l'alternanza delle superfici. Per questo le
-   sezioni non sono alte quanto lo schermo — la lettura non va interrotta
-   ogni volta.
+   Formato: slide sequenziali, non scorrimento. La safe-area la governa
+   <Slide> del motore; qui si dimensiona il contenuto perché stia in
+   1920×1080 SENZA scorrere — il check `k` dell'audit è HARD su questo.
+
+   Gli inchiostri `--ink-*` li ribalta il motore quando la slide rende
+   scura. I mockup no: si portano una superficie chiara propria e restano
+   scuri, ed è voluto.
    ═══════════════════════════════════════════════════════════════════════ */
 
-.im-scroll { padding-top: 4.5rem; }   /* la nav è fissa */
-.im-wrap { width: min(76rem, 100% - 3rem); margin-inline: auto; }
-
-.im-apre { padding: clamp(3.5rem, 8vh, 7rem) 0 clamp(2.5rem, 5vh, 4rem); background: var(--surface-primary); }
-.im-k {
-  margin: 0 0 0.9rem; max-width: none;
-  font-size: clamp(0.82rem, 0.68vw, 1.5rem); letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--ink-accent, var(--color-accent-deep));
-}
-.im-h1 {
-  margin: 0 0 1rem; font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2.2rem, 4.2vw, 4.4rem); line-height: 1.08;
-  letter-spacing: -0.02em; color: var(--ink-primary); max-width: 20ch;
-}
-.im-lead {
-  margin: 0; font-size: clamp(1.05rem, 1.25vw, 2.1rem); line-height: 1.55;
-  color: var(--ink-secondary); max-width: 52ch;
+.im-bg-notte {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 20% 0%, rgba(37,137,0,0.22) 0%, rgba(37,137,0,0) 58%),
+    linear-gradient(160deg, #143a05 0%, #0d2901 62%, #071a00 100%);
 }
 
-.im-momento { padding: clamp(3rem, 7vh, 5.5rem) 0; }
-.im-momento[data-sup='chiara'] { background: var(--surface-secondary); color: var(--ink-primary); }
-/* Sulla superficie scura gli inchiostri si ribaltano. I mockup NO: si
-   portano una superficie chiara propria, e restano scuri (vedi sopra). */
-.im-momento[data-sup='scura'] { background: var(--surface-inverse); }
-.im-momento[data-sup='scura'] .im-h2 { color: #ffffff; }
-.im-momento[data-sup='scura'] .im-sub,
-.im-momento[data-sup='scura'] .im-chiusa { color: var(--color-grey-200); }
-.im-momento[data-sup='scura'] .im-n { color: var(--color-verde-chiaro); }
-.im-momento[data-sup='scura'] .im-lato-k { color: var(--color-grey-300); }
-.im-momento[data-sup='scura'] .im-giro-p {
-  background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.28);
-  color: #ffffff;
+/* ── Copertina del percorso ─────────────────────────────────────────── */
+.im-cov { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.9rem; max-width: 56rem; }
+/* niente max-width: il lockup è largo quanto è, e stringerlo gli fa
+   sbordare il contenuto (misurato: 411px dentro una scatola da 360). */
+.im-cov-lockup { display: block; margin-bottom: 0.8rem; }
+.im-cov-t {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.3rem, 4vw, 4.6rem); line-height: 1.06;
+  letter-spacing: -0.025em; color: #ffffff; max-width: 17ch;
 }
-.im-momento[data-sup='scura'] .im-giro-f { color: var(--color-grey-300); }
+.im-cov-l {
+  margin: 0; font-size: clamp(1.05rem, 1.2vw, 2.1rem); line-height: 1.5;
+  color: var(--color-grey-200); max-width: 52ch;
+}
+.im-cov-n {
+  margin: 0.5rem 0 0; font-size: clamp(0.86rem, 0.74vw, 1.6rem);
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro);
+}
 
-.im-n {
-  margin: 0 0 0.4rem; max-width: none;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.1rem, 1vw, 2rem); letter-spacing: 0.08em;
-  color: var(--color-accent-deep);
+/* ── Copertina di capitolo ──────────────────────────────────────────── */
+.im-ch { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.8rem; max-width: 54rem; }
+.im-ch-num {
+  margin: 0; max-width: none; font-size: clamp(0.84rem, 0.72vw, 1.55rem);
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-verde-chiaro);
 }
-.im-h2 {
-  margin: 0 0 0.7rem; font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.7rem, 2.9vw, 3.2rem); line-height: 1.14;
-  letter-spacing: -0.015em; color: var(--ink-primary); max-width: 22ch;
+.im-ch-t {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2rem, 3.4vw, 3.9rem); line-height: 1.1;
+  letter-spacing: -0.02em; color: #ffffff; max-width: 20ch;
 }
-.im-sub {
-  margin: 0 0 clamp(1.6rem, 3vh, 2.4rem);
-  font-size: clamp(1rem, 1.1vw, 1.9rem); line-height: 1.55;
-  color: var(--ink-secondary); max-width: 58ch;
+.im-ch-l {
+  margin: 0; font-size: clamp(1rem, 1.12vw, 1.95rem); line-height: 1.5;
+  color: var(--color-grey-200); max-width: 54ch;
 }
-.im-chiusa {
-  margin: clamp(1.5rem, 3vh, 2.2rem) 0 0;
-  padding-left: 1rem; border-left: 3px solid var(--color-accent);
-  font-size: clamp(1rem, 1.08vw, 1.85rem); line-height: 1.55;
-  font-weight: 600; color: var(--ink-primary); max-width: 62ch;
-}
-.im-momento[data-sup='scura'] .im-chiusa { border-left-color: var(--color-verde-chiaro); color: #ffffff; }
 
-.im-giro { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; }
-.im-giro-p {
-  margin: 0; max-width: none; padding: 0.7rem 1.1rem;
-  border: 1px solid var(--line-default); border-radius: 4px;
-  background: var(--surface-primary); color: var(--ink-primary);
-  font-weight: 600; font-size: clamp(0.95rem, 0.9vw, 1.7rem);
+/* ── Il percorso, in copertina ──────────────────────────────────────── */
+.im-perc { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.7rem; max-width: 66rem; }
+.im-perc-t {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.8rem, 2.9vw, 3.3rem); line-height: 1.14;
+  letter-spacing: -0.02em; color: var(--ink-primary); max-width: 22ch;
 }
-.im-giro-f { color: var(--ink-tertiary); font-size: clamp(1.1rem, 1vw, 2rem); }
-.im-giro-f--torna { color: var(--color-accent-deep); font-weight: 700; }
-
-.im-passa { padding: clamp(3rem, 7vh, 5.5rem) 0 clamp(4rem, 9vh, 7rem); background: var(--surface-primary); }
-.im-passa-t {
-  margin: 0 0 1.6rem; font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.4rem, 2.1vw, 2.6rem); line-height: 1.25;
-  color: var(--ink-primary); max-width: 26ch;
-}
-.im-cta {
-  display: inline-block; padding: 0.85rem 1.5rem; border-radius: 4px;
-  background: var(--color-cta); color: var(--color-on-cta);
-  font-weight: 700; font-size: clamp(1rem, 0.95vw, 1.8rem); text-decoration: none;
-}
-.im-cta:hover { background: var(--color-accent-deep); }
-.im-indietro {
-  display: inline-block; margin-left: 1.3rem;
-  font-size: clamp(0.95rem, 0.86vw, 1.7rem);
-  color: var(--ink-secondary); text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.im-indietro:hover { color: var(--color-accent-deep); }
-
-/* Le schede del percorso, in copertina */
-.im-indice { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin-top: 2rem; }
+.im-perc-l { margin: 0 0 0.6rem; font-size: clamp(1rem, 1.05vw, 1.85rem); line-height: 1.5; color: var(--ink-secondary); max-width: 56ch; }
+.im-indice { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.8rem; width: 100%; }
 .im-indice-c {
-  display: block; padding: 1.2rem 1.3rem; border-radius: 4px;
+  display: block; padding: 1.1rem 1rem; border-radius: 4px; text-align: left;
   border: 1px solid var(--line-subtle); background: var(--surface-primary);
   text-decoration: none; height: 100%;
 }
 .im-indice-c:hover { border-color: var(--color-accent); }
-.im-indice-n { margin: 0 0 0.3rem; max-width: none; font-weight: 700; color: var(--color-accent-deep); font-size: clamp(0.85rem, 0.7vw, 1.5rem); }
-.im-indice-t { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1.05rem, 0.95vw, 1.9rem); line-height: 1.25; }
+.im-indice-n { margin: 0 0 0.3rem; max-width: none; font-weight: 700; color: var(--color-accent-deep); font-size: clamp(0.84rem, 0.7vw, 1.5rem); }
+.im-indice-t { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(0.98rem, 0.9vw, 1.8rem); line-height: 1.25; }
 
-@media (max-width: 760px) {
-  .im-wrap { width: min(76rem, 100% - 2rem); }
-  .im-indietro { display: block; margin: 1rem 0 0; }
+/* ── Slide di contenuto ─────────────────────────────────────────────── */
+.im-sl { display: flex; flex-direction: column; gap: clamp(0.9rem, 1.8vh, 1.6rem); width: 100%; max-width: 78rem; }
+.im-sl-head { display: flex; flex-direction: column; gap: 0.4rem; }
+.im-n {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.92rem, 0.82vw, 1.7rem); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-accent, var(--color-accent-deep));
+}
+.im-h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.7rem, 2.6vw, 3rem); line-height: 1.12;
+  letter-spacing: -0.02em; color: var(--ink-primary); max-width: 24ch;
+}
+.im-sub { margin: 0; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.5; color: var(--ink-secondary); max-width: 62ch; }
+.im-chiusa {
+  margin: 0; padding-left: 0.9rem; border-left: 3px solid var(--color-accent);
+  font-size: clamp(1rem, 1vw, 1.78rem); line-height: 1.5; font-weight: 600;
+  color: var(--ink-primary); max-width: 64ch;
 }
 
-/* ── Copertina, cifre e referenze ───────────────────────────────────── */
-.im-cover {
-  padding: clamp(3rem, 9vh, 7rem) 0 clamp(3rem, 7vh, 5rem);
-  background: var(--surface-inverse);
+/* Nella slide coi mockup la testa si stringe: il disegno è il contenuto. */
+.im-sl--mock .im-h2 { font-size: clamp(1.5rem, 2.1vw, 2.5rem); max-width: 30ch; }
+.im-sl--mock .im-sub { font-size: clamp(0.95rem, 0.92vw, 1.65rem); max-width: 74ch; }
+.im-sl--mock .im-chiusa { font-size: clamp(0.95rem, 0.92vw, 1.65rem); max-width: 74ch; }
+.im-sl--mock { gap: clamp(0.7rem, 1.2vh, 1.1rem); }
+.im-sl--mock .im-sl-head { gap: 0.3rem; }
+.im-lati { display: flex; align-items: flex-start; gap: clamp(1.2rem, 2.4vw, 2.8rem); width: 100%; }
+.im-lati > div { min-width: 0; }
+.im-lato-k {
+  margin: 0 0 0.5rem; max-width: none;
+  font-size: clamp(0.8rem, 0.68vw, 1.45rem); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-tertiary);
 }
-.im-cover .im-k { color: var(--color-verde-chiaro); }
-.im-cover .im-lead { color: var(--color-grey-200); }
-.im-h1--cover { color: #ffffff; max-width: 17ch; }
-.im-cover-lockup { display: block; margin-bottom: 2rem; max-width: 22rem; }
-.im-cta--cover { margin-top: 2rem; }
 
-.im-cifre {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-  gap: clamp(1rem, 2vw, 2rem);
+/* ── Il giro, e le cifre ────────────────────────────────────────────── */
+.im-giro { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.im-giro-p {
+  margin: 0; max-width: none; padding: 0.65rem 1rem;
+  border: 1px solid var(--line-default); border-radius: 4px;
+  background: var(--surface-primary); color: var(--ink-primary);
+  font-weight: 600; font-size: clamp(0.95rem, 0.88vw, 1.65rem);
 }
+.im-giro-f { color: var(--ink-tertiary); font-size: clamp(1.05rem, 0.95vw, 1.9rem); }
+.im-giro-f--torna { color: var(--color-accent); font-weight: 700; }
+
+.im-cifre { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2.2rem); }
 .im-cifra { min-width: 0; }
 .im-cifra-n {
-  margin: 0 0 0.35rem; max-width: none;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.7rem, 2.3vw, 3.1rem); line-height: 1.08;
-  letter-spacing: -0.02em; color: var(--color-verde-chiaro);
+  margin: 0 0 0.3rem; max-width: none; font-family: var(--font-display);
+  font-weight: 700; font-size: clamp(1.5rem, 2vw, 2.7rem); line-height: 1.08;
+  letter-spacing: -0.02em; color: var(--ink-accent, var(--color-accent-deep));
 }
-.im-cifra-l {
-  margin: 0; max-width: 24ch;
-  font-size: clamp(0.95rem, 0.86vw, 1.7rem); line-height: 1.45;
-  color: var(--color-grey-200);
-}
-/* Su superficie chiara le cifre si ribaltano: il verde chiaro su bianco
-   non regge, il verde scuro sì. */
-.im-momento[data-sup='chiara'] .im-cifra-n { color: var(--color-accent-deep); }
-.im-momento[data-sup='chiara'] .im-cifra-l { color: var(--ink-secondary); }
+.im-cifra-l { margin: 0; max-width: 26ch; font-size: clamp(0.92rem, 0.84vw, 1.6rem); line-height: 1.4; color: var(--ink-secondary); }
 
-.im-ref { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1.1rem; }
-.im-ref-b {
-  min-width: 0; padding: 1.3rem 1.4rem; border-radius: 4px;
-  border-left: 3px solid var(--color-accent); background: var(--color-verde-velo);
-}
-.im-ref-n {
-  margin: 0 0 0.35rem; max-width: none;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.1rem, 1vw, 2rem); color: var(--color-ink);
-}
-.im-ref-f {
-  margin: 0; max-width: none;
-  font-size: clamp(0.95rem, 0.86vw, 1.7rem); line-height: 1.5;
-  color: var(--color-ink-2);
-}
+.im-ref { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem; width: 100%; max-width: 68rem; }
+.im-ref-b { min-width: 0; padding: 1.2rem 1.3rem; border-radius: 4px; border-left: 3px solid var(--color-accent); background: var(--color-verde-velo); }
+.im-ref-n { margin: 0 0 0.3rem; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.05rem, 0.95vw, 1.9rem); color: var(--color-ink); }
+.im-ref-f { margin: 0; max-width: none; font-size: clamp(0.94rem, 0.86vw, 1.62rem); line-height: 1.45; color: var(--color-ink-2); }
 
-/* Una fonte non è una CTA: eredita l'inchiostro del testo che la ospita e
-   si distingue per la sottolineatura, così il contrasto resta quello del
-   testo e `audit:ink` continua a passare. */
-.im-fonte {
-  margin: clamp(1.4rem, 2.6vh, 2rem) 0 0; max-width: none;
-  font-size: clamp(0.86rem, 0.72vw, 1.55rem); line-height: 1.5;
-  color: var(--ink-tertiary);
-}
-.im-momento[data-sup='scura'] .im-fonte,
-.im-momento[data-sup='scura'] .im-mock-cap { color: var(--color-grey-300); }
+/* Una fonte non è una CTA: eredita l'inchiostro del testo che la ospita. */
+.im-fonte { margin: 0; max-width: none; font-size: clamp(0.84rem, 0.72vw, 1.5rem); line-height: 1.45; color: var(--ink-tertiary); }
 .im-fonte a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
-.im-fonte a:hover { color: var(--color-accent); }
-.im-momento[data-sup='scura'] .im-fonte a:hover { color: var(--color-verde-chiaro); }
+.im-fonte a:hover { color: var(--ink-accent, var(--color-accent)); }
 
-/* Il lockup `hero` vive dentro una <section>, non dentro una <Slide>: il
-   motore non può dedurre la superficie da solo. La si DICHIARA con la
-   classe che il motore prevede apposta — `edf-cobrand--on-dark` in
-   index.astro — invece di riscrivere i colori qui, che è il modo di far
-   divergere una experience dalle altre. */
+/* ── La slide-firma ─────────────────────────────────────────────────── */
+.im-firma { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; max-width: 52rem; }
+.im-firma-l {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.5rem, 2.2vw, 2.7rem); line-height: 1.22;
+  color: #ffffff; max-width: 24ch; text-wrap: balance;
+}
+
+@media (max-width: 900px) {
+  .im-lati { flex-direction: column; }
+  .im-indice { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .im-cifre { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .im-ref { grid-template-columns: minmax(0, 1fr); }
+  .im-tel { margin-inline: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   INCHIOSTRI CHE SI RIBALTANO CON LA SUPERFICIE
+
+   `--ink-X` è l'inchiostro che sta su `--surface-X`, e la coppia vale
+   ovunque. Su questa pelle la dominante è CHIARA, quindi `--surface-inverse`
+   è la superficie scura: lì gli inchiostri vanno ribaltati, se no il titolo
+   esce #1b1d21 su #0d2901 — 1,07:1, cioè invisibile, e lo si vede solo
+   misurando (audit:ink; gli altri undici check passano tutti).
+
+   Le varianti scure stanno DOPO quelle chiare: stessa specificità, vince
+   l'ultima. `data-dark` è l'uscita di sicurezza per una slide che dichiara
+   chiaro ma rende scura per via di un backdrop.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+[data-slide].bg-\[var\(--surface-inverse\)\],
+[data-slide][data-dark],
+[data-slide].bg-\[var\(--accent-primary\)\] {
+  --ink-primary: #ffffff;
+  --ink-secondary: var(--color-grey-200);
+  --ink-tertiary: var(--color-grey-300);
+  --ink-accent: var(--color-verde-chiaro);
+  --line-subtle: rgba(255, 255, 255, 0.18);
+  --line-default: rgba(255, 255, 255, 0.28);
+  --surface-primary: rgba(255, 255, 255, 0.08);
+}
+
+/* I componenti che si portano una superficie CHIARA propria dentro una
+   slide scura NON ereditano gli inchiostri del fondo scuro: i mockup e il
+   riquadro di referenza tengono i loro. */
+[data-slide].bg-\[var\(--surface-inverse\)\] .im-tel-corpo,
+[data-slide].bg-\[var\(--surface-inverse\)\] .im-ado-corpo,
+[data-slide].bg-\[var\(--surface-inverse\)\] .im-ref-b,
+[data-slide][data-dark] .im-tel-corpo,
+[data-slide][data-dark] .im-ado-corpo,
+[data-slide][data-dark] .im-ref-b {
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600);
+  --ink-accent: var(--color-accent-deep);
+}
+
+/* Sulle slide dei mockup il disegno È il contenuto: i due riquadri si
+   allargano a riempire la pagina invece di stare in un terzo di schermo.
+   Più grandi vuol dire leggibili dal fondo di una sala, che è il punto. */
+.im-sl--mock .im-lati { justify-content: flex-start; }
+.im-sl--mock .im-tel { max-width: 23rem; }
+.im-sl--mock .im-ado { max-width: 46rem; }
