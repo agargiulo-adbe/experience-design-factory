@@ -179,6 +179,17 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'risultati',  route: '/experience-design-factory/intesa-mutuo/risultati/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/intesa-mutuo/dieci-minuti/' },
   ],
+  'unipol-cinque-domande': [
+    { name: 'home',      route: '/experience-design-factory/unipol-cinque-domande/' },
+    { name: 'partenza',  route: '/experience-design-factory/unipol-cinque-domande/partenza/' },
+    { name: 'domanda-1', route: '/experience-design-factory/unipol-cinque-domande/domanda-1/' },
+    { name: 'domanda-2', route: '/experience-design-factory/unipol-cinque-domande/domanda-2/' },
+    { name: 'domanda-3', route: '/experience-design-factory/unipol-cinque-domande/domanda-3/' },
+    { name: 'domanda-4', route: '/experience-design-factory/unipol-cinque-domande/domanda-4/' },
+    { name: 'domanda-5', route: '/experience-design-factory/unipol-cinque-domande/domanda-5/' },
+    { name: 'casa',      route: '/experience-design-factory/unipol-cinque-domande/casa/' },
+    { name: 'registro',  route: '/experience-design-factory/unipol-cinque-domande/registro/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -199,4 +210,5 @@ export const CWD_ALIAS: Record<string, string> = {
   'tim-contenuti-su-scala': 'tim-contenuti-su-scala',
   'intesa-innesto': 'intesa-innesto',
   'intesa-mutuo': 'intesa-mutuo',
+  'unipol-cinque-domande': 'unipol-cinque-domande',
 };

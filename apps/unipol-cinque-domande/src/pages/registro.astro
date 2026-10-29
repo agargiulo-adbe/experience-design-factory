@@ -1,0 +1,87 @@
+---
+/**
+ * «Il registro» — lo strato che cresce.
+ * Una riga per voce, con la data e il livello di fonte. Nessuna narrazione:
+ * si legge come un log perché è un log. La copia sta in src/data/registro.ts.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { REGISTRO, STATI, LIVELLI_REG } from '../data/registro';
+
+const SLUG = 'registro';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const risposte = REGISTRO.filter((v) => v.stato === 'risposto').length;
+const aperti = REGISTRO.filter((v) => v.stato !== 'risposto').length;
+/* Tre voci per slide: a cinque il blocco sfondava la safe-area a 1280 (check c e j).
+   La regola è tagliare o spezzare, mai rimpicciolire il tipo. */
+const pagine: typeof REGISTRO[] = [];
+for (let i = 0; i < REGISTRO.length; i += 3) pagine.push(REGISTRO.slice(i, i + 3));
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h2" class="ex-ch-title" it="Il registro" en="The log" data-reveal data-reveal-delay="0.08" />
+        <T
+          as="p"
+          class="ex-ch-lead"
+          it={`Una riga per voce, con la data e la fonte. ${risposte} risposte, ${aperti} ancora aperte.`}
+          en={`One row per item, with its date and source. ${risposte} answered, ${aperti} still open.`}
+          data-reveal
+          data-reveal-delay="0.15"
+        />
+      </div>
+    </Slide>
+
+    {pagine.map((pagina, pi) => (
+      <Slide id={`slide-reg-${pi + 1}`} bg={pi % 2 === 0 ? 'primary' : 'secondary'} align="left">
+        {pi % 2 === 0 && <div slot="backdrop" class="ex-bg-paper"></div>}
+        <div class="ex-content" data-reveal>
+          <div class="ex-head">
+            <T as="p" class="slide-eyebrow" it="Il registro" en="The log" />
+            <T
+              as="h2"
+              class="ex-head-title"
+              it={pi === 0 ? 'Quello che si è chiuso, e quello che resta' : `Le voci aperte, ${pi + 1} di ${pagine.length}`}
+              en={pi === 0 ? 'What closed, and what is left' : `The open items, ${pi + 1} of ${pagine.length}`}
+            />
+          </div>
+          <div class="ex-reg" data-reveal data-reveal-delay="0.12">
+            {pagina.map((v) => (
+              <div class="ex-reg-row">
+                <p class="ex-reg-meta">
+                  <span class="ex-reg-data">{v.data}</span>
+                  <span class={`ex-reg-stato ex-reg-stato--${v.stato}`}>
+                    <span data-lang-it>{STATI[v.stato].it}</span><span data-lang-en>{STATI[v.stato].en}</span>
+                  </span>
+                  <span class="ex-reg-liv">
+                    <span data-lang-it>{LIVELLI_REG[v.livello].it}</span><span data-lang-en>{LIVELLI_REG[v.livello].en}</span>
+                  </span>
+                  <span class="ex-reg-chi">{v.chi}</span>
+                </p>
+                <T as="p" class="ex-reg-tema" it={v.tema.it} en={v.tema.en} />
+                <T as="p" class="ex-reg-esito" it={v.esito.it} en={v.esito.en} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Slide>
+    ))}
+
+  </DeckContainer>
+</BaseLayout>

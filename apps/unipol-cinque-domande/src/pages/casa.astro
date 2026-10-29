@@ -1,0 +1,88 @@
+---
+/**
+ * Capitolo 07 — «Cosa vi portate a casa».
+ * Le cinque risposte in una riga ciascuna, poi l'ask. In un Playbook l'ask sta
+ * in un posto solo: due versioni della richiesta sono il modo più rapido di
+ * sembrare confusi davanti a un cliente.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug } from '../data/chapters';
+import { DOMANDE } from '../data/domande';
+
+const SLUG = 'casa';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/registro')} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h2" class="ex-ch-title" it="Cosa vi portate a casa" en="What you take home" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="ex-ch-lead" it="Cinque risposte, e una cosa da decidere." en="Five answers, and one thing to decide." data-reveal data-reveal-delay="0.15" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-cinque-risposte" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Le cinque risposte" en="The five answers" />
+          <T as="h2" class="ex-head-title" it="Quattro su cinque hanno già una risposta documentata" en="Four out of five already have a documented answer" />
+          <T as="p" class="ex-head-lead" it="La quinta, il contesto, ha una strada e una data." en="The fifth, context, has a route and a date." />
+        </div>
+        <div class="ex-cards" data-reveal data-reveal-delay="0.14">
+          {DOMANDE.map((d) => (
+            <div class="ex-card">
+              <p class="ex-card-k">{d.num}</p>
+              <T as="p" class="ex-card-t" it={d.punto.it} en={d.punto.en} />
+              <T as="p" class="ex-card-b" it={d.lead.it} en={d.lead.en} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-ask" bg="secondary" align="left">
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Quello che chiediamo" en="What we are asking" />
+          <T as="h2" class="ex-head-title" it="Due casi d’uso e tre date, prima che il programma chiuda" en="Two use cases and three dates, before the programme closes" />
+          <T as="p" class="ex-head-lead" it="Non una scelta definitiva: un punto da cui misurare." en="Not a final choice: a point from which to measure." />
+        </div>
+        <div class="ex-ancore" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ex-ancora" it="Due casi, uno per prodotto" en="Two cases, one per product" />
+          <T as="p" class="ex-ancora" it="Una data per provarli" en="A date to try them" />
+          <T as="p" class="ex-ancora" it="Come si vede se è andata" en="How we see whether it worked" />
+        </div>
+        <T as="p" class="ex-frase" it="Se dopo due settimane una delle due domande non ha più bisogno di voi, il programma sta funzionando." en="If after two weeks one of the two questions no longer needs you, the programme is working." data-reveal data-reveal-delay="0.22" />
+        <T as="p" class="ex-src" it="Le voci ancora aperte, con la data e chi le ha, stanno nel capitolo successivo." en="The items still open, with their date and owner, are in the next chapter." data-reveal data-reveal-delay="0.3" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-firma" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-cover-lockup" data-reveal>
+        <CoBrand variant="hero" />
+      </div>
+      <T as="p" class="ex-sig-line" it="Cinque domande, e sono le vostre." en="Five questions, and they are yours." data-reveal data-reveal-delay="0.12" />
+      <a class="ex-cta" href={href(base, '/')}>
+        <span data-lang-it>Torna all'inizio</span><span data-lang-en>Back to the start</span>
+      </a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

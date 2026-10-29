@@ -349,6 +349,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Generata dallo scheletro «Storia»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
     },
   },
+  {
+    slug: 'unipol-cinque-domande',
+    name: 'Cinque domande',
+    client: 'Unipol',
+    type: 'playbook',
+    brandLabel: 'Unipol',
+    url: `${LIVE}/unipol-cinque-domande/`,
+    shot: 'shots/unipol-cinque-domande.webp',
+    accent: '#0303f5',
+    sections: 8,
+    defaultPublished: false,
+    tag: {
+      en: '8 chapters · IT/EN · owners of the tool',
+      it: '8 capitoli · IT/EN · chi possiede lo strumento',
+    },
+    desc: {
+      en: 'Five chapters are the five questions the customer actually asked, each answered «today» and «with Coworker», and every claim marked by source level. An eighth chapter is the live log of the programme.',
+      it: 'Cinque capitoli sono le cinque domande che il cliente ha fatto davvero, ognuna risposta «oggi» e «con Coworker», e ogni voce marcata per livello di fonte. Un ottavo capitolo è il registro che cresce a ogni sessione.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

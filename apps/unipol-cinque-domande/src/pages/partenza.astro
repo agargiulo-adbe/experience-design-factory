@@ -1,0 +1,125 @@
+---
+/**
+ * Capitolo 01 — «Il punto di partenza».
+ * Dice che cos'è il programma, fino a quando dura e da dove si parte davvero.
+ * La baseline è dichiarata: su Target nessuno ha ancora provato Coworker.
+ * Scriverlo è l'unico modo di rendere utile tutto il resto.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { DOMANDE } from '../data/domande';
+
+const SLUG = 'partenza';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h2" class="ex-ch-title" it="Il punto di partenza" en="The starting point" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="ex-ch-lead" it="Due programmi in una stanza sola, e otto settimane davanti." en="Two programmes in one room, and eight weeks ahead." data-reveal data-reveal-delay="0.15" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-programma" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Il programma" en="The programme" />
+          <T as="h2" class="ex-head-title" it="Un canale diretto con chi fa il prodotto" en="A direct line to the people who build it" />
+          <T as="p" class="ex-head-lead" it="Fino a fine anno, una sessione a settimana, il mercoledì alle 16.30." en="Until the end of the year, one session a week, Wednesdays at 16.30." />
+        </div>
+
+        <div class="ex-ancore" data-reveal data-reveal-delay="0.14">
+          <T as="p" class="ex-ancora" it="Il team di prodotto di Target" en="The Target product team" />
+          <T as="p" class="ex-ancora" it="Target e CJA nella stessa sessione" en="Target and CJA in one session" />
+          <T as="p" class="ex-ancora" it="Uso senza tetto, dentro i guardrail" en="Unlimited use, inside the guardrails" />
+        </div>
+
+        <div class="ex-dett" data-reveal data-reveal-delay="0.22">
+          <HowItWorks title="Scopri come" tone="onLight">
+            <Dettaglio>
+              <DettaglioVoce>
+                <Figura k="una-via" />
+                <T slot="ancora" as="p" it="Perché una stanza sola" en="Why a single room" />
+                <T slot="riga" as="p" it="Il valore sta nella giunzione fra i due prodotti, e una giunzione non si discute in due stanze separate." en="The value sits in the join between the two products, and a join is not discussed in two separate rooms." />
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="due-non-legati" />
+                <T slot="ancora" as="p" it="Lo scambio va nei due versi" en="The exchange runs both ways" />
+                <T slot="riga" as="p" it="Da noi guida e risposte. Da voi i riscontri su quello che funziona, senza i quali resta una demo lunga." en="From us guidance and answers, from you what works and what does not. Without the second half it is a long demo." />
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="soglia" />
+                <T slot="ancora" as="p" it="Il vincolo è il tempo" en="The constraint is time" />
+                <T slot="riga" as="p" it="L’accesso c’è già. Quello che manca sono le ore, e per questo si parte dalle vostre domande." en="Access is already there. What is missing is hours, which is why we start from your questions." />
+              </DettaglioVoce>
+              <T slot="nota" as="p" it="Programma dichiarato in apertura del kick-off del 28 ottobre 2026." en="Programme as stated at the opening of the kick-off on 28 October 2026." />
+            </Dettaglio>
+          </HowItWorks>
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-baseline" bg="secondary" align="left">
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Da dove si parte" en="Where we start from" />
+          <T as="h2" class="ex-head-title" it="Su Target nessuno l’ha ancora provato" en="On Target, nobody has tried it yet" />
+          <T as="p" class="ex-head-lead" it="È il motivo per cui la prima cosa che serve è una bussola." en="Which is why the first thing needed is a compass." />
+        </div>
+        <div class="ex-oc" data-reveal data-reveal-delay="0.14">
+          <div class="ex-oc-col">
+            <T as="p" class="ex-oc-k" it="Su CJA" en="On CJA" />
+            <T as="p" class="ex-oc-b" it="Due mesi di sessioni, il triage degli alert già in uso e mezz’ora di prova diretta." en="Two months of sessions, alert triage already in use and half an hour of hands-on." />
+          </div>
+          <div class="ex-oc-fig"><Figura k="prima-dopo" /></div>
+          <div class="ex-oc-col ex-oc-col--con">
+            <T as="p" class="ex-oc-k" it="Su Target" en="On Target" />
+            <T as="p" class="ex-oc-b" it="Niente, per una ragione dichiarata: si è aspettato il kick-off per sapere da dove ingaggiarlo." en="Nothing, for a stated reason: the kick-off was awaited to know where to engage it." />
+          </div>
+        </div>
+        <T as="p" class="ex-src" it="Un dato di adozione interno, non un impegno: chi prova più di un tipo di attività nella prima settimana torna a usarlo con frequenza più alta." en="An internal adoption figure, not a commitment: people who try more than one kind of task in week one come back at a higher rate." data-reveal data-reveal-delay="0.26" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-cinque" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Il percorso" en="The path" />
+          <T as="h2" class="ex-head-title" it="Cinque domande, e sono le vostre" en="Five questions, and they are yours" />
+          <T as="p" class="ex-head-lead" it="Non il nostro catalogo: quello che avete chiesto fra il 15 e il 28 ottobre." en="Not our catalogue: what you asked between 15 and 28 October." />
+        </div>
+        <div class="ex-journey" data-reveal data-reveal-delay="0.14">
+          {DOMANDE.map((d) => (
+            <a class="ex-journey-card" href={href(base, `/${d.slug}`)}>
+              <p class="ex-journey-num">{d.num}</p>
+              <T as="p" class="ex-journey-name" it={d.domanda.it} en={d.domanda.en} />
+              <p class="ex-journey-open"><span data-lang-it>Apri</span><span data-lang-en>Open</span></p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

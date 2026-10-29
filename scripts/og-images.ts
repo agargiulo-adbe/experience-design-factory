@@ -126,7 +126,7 @@ function contrasto(a: string, b: string): number {
  * finché non raggiunge la soglia AA sul fondo — misurando, non a occhio.
  */
 function inchiostroAccento(accent: string, bg: string): string {
-  let h = accent.replace('#', '');
+  const h = accent.replace('#', '');
   let [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
   for (let i = 0; i < 24 && contrasto(`#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`, bg) < 4.5; i++) {
     r = Math.min(255, Math.round(r + (255 - r) * 0.18));

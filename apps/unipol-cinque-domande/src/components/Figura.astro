@@ -1,0 +1,165 @@
+---
+/**
+ * Figura — i micro-diagrammi che stanno dentro un «Scopri come».
+ *
+ * Questo file è il VOCABOLARIO di questa experience: solo geometria. Lo
+ * spessore del tratto, la regola dell'accento e la curva dell'animazione
+ * arrivano dal motore (`@edf/core/blocks/Dettaglio.astro`), così due deck non
+ * disegnano con due mani diverse.
+ *
+ * Come si aggiunge un disegno:
+ *  1. un nome nel tipo `k` che dica il MECCANISMO, non la forma — `tetto`,
+ *     non `linea-con-barre`: il nome va letto fra sei mesi;
+ *  2. un ramo qui sotto, nello stesso viewBox 120 × 72;
+ *  3. niente parole dentro l'SVG. L'ancora sotto la figura la nomina, e un
+ *     testo dentro un disegno non cresce con la radice: sulla parete
+ *     diventa illeggibile (famiglia `S` di `audit:ritmo`).
+ *
+ * Le classi del motore, in breve:
+ *   `fg-s` tratto neutro (eredita `currentColor`, si ribalta col fondo)
+ *   `fg-f` / `fg-f-soft` pieno neutro · `fg-d` / `fg-d-fine` tratteggio
+ *   `fg-a` / `fg-a-f` / `fg-a-f-soft` l'ACCENTO — solo sull'elemento che
+ *       porta il significato, mai su tutto il disegno
+ *   movimento: `fg-draw` (si disegna) · `fg-in` (entra) · `fg-rise` (cresce
+ *       dal basso) · `fg-grow` (cresce da sinistra) · `fg-drop` (cade
+ *       dall'alto) · `fg-slide` (scorre) · `style="--i:N"` per lo sfasamento
+ *
+ * Dodici meccanismi. I primi cinque arrivano dal template; i sette aggiunti il
+ * 28 ott 2026 sono quelli che servono a questo Playbook, e il nome dice il
+ * MECCANISMO: `soglia` è una linea che viene superata, non «linea con barre».
+ */
+interface Props {
+  k:
+    | 'due-non-legati'
+    | 'una-esce'
+    | 'tetto'
+    | 'prima-dopo'
+    | 'una-via'
+    | 'soglia'
+    | 'catena'
+    | 'dentro-fuori'
+    | 'filtro'
+    | 'imbuto'
+    | 'tabella-a-grafico'
+    | 'conferma';
+}
+const { k } = Astro.props;
+---
+{/* aria-hidden: l'ancora e la riga sotto dicono la stessa cosa a parole. */}
+<svg class="fg dett-fig" viewBox="0 0 120 72" aria-hidden="true">
+  {k === 'due-non-legati' && (
+    <g>
+      {/* Due cose che esistono e non si parlano: il difetto più comune. */}
+      {[10, 20, 30, 40, 50, 60].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i}`} cx="22" cy={y + 3} r="3.4" />))}
+      <circle class="fg-f" cx="98" cy="25" r="3.4" /><circle class="fg-f" cx="98" cy="47" r="3.4" />
+      <path class="fg-s" d="M32 36 H48" /><path class="fg-s" d="M72 36 H88" />
+      <path class="fg-s fg-d" d="M56 20 V52" /><path class="fg-s fg-d" d="M64 20 V52" />
+    </g>
+  )}
+  {k === 'una-esce' && (
+    <g>
+      {/* Tante candidate entrano, una esce: arbitrato, scelta, priorità. */}
+      {[8, 29, 50].map((y, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x="8" y={y} width="34" height="14" rx="3" />))}
+      <path class="fg-s" d="M46 14 C58 14, 56 30, 64 36" /><path class="fg-s" d="M46 36 H64" />
+      <path class="fg-s" d="M46 58 C58 58, 56 42, 64 36" />
+      <rect class="fg-s fg-a" x="64" y="22" width="9" height="28" rx="4" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M77 36 H112" />
+    </g>
+  )}
+  {k === 'tetto' && (
+    <g>
+      {/* Un limite che rifiuta: tetto di contatto, quota, capacità. */}
+      {[[14, 30], [38, 36], [62, 33]].map(([x, h], i) => (
+        <rect class="fg-f-soft fg-rise" style={`--i:${i}`} x={x} y={64 - h} width="17" height={h} rx="2" />
+      ))}
+      <rect class="fg-s fg-a fg-d fg-rise" style="--i:3" x="86" y="8" width="17" height="56" rx="2" />
+      <path class="fg-s fg-a" d="M6 28 H112" />
+    </g>
+  )}
+  {k === 'prima-dopo' && (
+    <g>
+      {/* Un aggregato contro un dettaglio: prima e dopo, grosso e fine. */}
+      <rect class="fg-f-soft fg-rise" x="16" y="16" width="20" height="48" rx="2" />
+      <path class="fg-s fg-d" d="M56 10 V64" />
+      {[[70, 30], [86, 44], [102, 20]].map(([x, h], i) => (
+        <rect class="fg-a-f fg-rise" style={`--i:${i + 1}`} x={x} y={64 - h} width="12" height={h} rx="2" />
+      ))}
+    </g>
+  )}
+  {k === 'una-via' && (
+    <g>
+      {/* Più ingressi, un percorso solo: omnicanalità, consolidamento. */}
+      {[14, 36, 58].map((y, i) => (<path class="fg-s fg-draw" style={`--i:${i}`} d={`M10 ${y} C34 ${y}, 38 36, 56 36`} />))}
+      <circle class="fg-s" cx="64" cy="36" r="7" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M72 36 H112" />
+    </g>
+  )}
+  {k === 'soglia' && (
+    <g>
+      {/* Una curva che sale e taglia una linea: la confidenza che arriva a soglia. */}
+      <path class="fg-s fg-d" d="M8 26 H112" />
+      <path class="fg-s fg-draw" d="M10 62 C38 60, 52 46, 66 32" />
+      <path class="fg-s fg-a fg-draw" style="--i:2" d="M66 32 C80 20, 94 16, 110 14" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="78" cy="26" r="4" />
+    </g>
+  )}
+  {k === 'catena' && (
+    <g>
+      {/* Anelli passati che portano a uno nuovo: la memoria che genera l'ipotesi. */}
+      {[18, 40, 62].map((x, i) => (<circle class="fg-s fg-in" style={`--i:${i}`} cx={x} cy="36" r="9" />))}
+      <path class="fg-s" d="M27 36 H31" /><path class="fg-s" d="M49 36 H53" />
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M71 36 H88" />
+      <circle class="fg-s fg-a fg-d fg-in" style="--i:4" cx="99" cy="36" r="11" />
+    </g>
+  )}
+  {k === 'dentro-fuori' && (
+    <g>
+      {/* Un confine, e un pezzo che arriva da oltre: il contesto fuori dallo strumento. */}
+      <rect class="fg-s" x="8" y="12" width="56" height="48" rx="4" />
+      <circle class="fg-f-soft fg-in" cx="26" cy="30" r="4" /><circle class="fg-f-soft fg-in" style="--i:1" cx="44" cy="44" r="4" />
+      <path class="fg-s fg-d" d="M76 10 V62" />
+      <rect class="fg-s fg-a fg-in" style="--i:3" x="88" y="28" width="20" height="16" rx="3" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M86 36 H68" />
+    </g>
+  )}
+  {k === 'filtro' && (
+    <g>
+      {/* Molti segnali entrano, pochi contano: il triage degli alert. */}
+      {[12, 24, 36, 48, 60].map((y, i) => (<path class="fg-s fg-grow" style={`--i:${i}`} d={`M8 ${y} H42`} />))}
+      <path class="fg-s" d="M48 10 L68 36 L48 62 Z" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M70 30 H112" />
+      <path class="fg-s fg-d fg-draw" style="--i:5" d="M70 44 H96" />
+    </g>
+  )}
+  {k === 'imbuto' && (
+    <g>
+      {/* Un imbuto con uno scalino marcato: dove si perde, e perché. */}
+      {[[10, 104], [22, 80], [34, 58], [46, 30]].map(([y, w], i) => (
+        <rect class={i === 2 ? 'fg-a-f fg-grow' : 'fg-f-soft fg-grow'} style={`--i:${i}`} x={(120 - w) / 2} y={y} width={w} height="9" rx="2" />
+      ))}
+      <path class="fg-s fg-a fg-d fg-draw" style="--i:4" d="M92 38 H112" />
+    </g>
+  )}
+  {k === 'tabella-a-grafico' && (
+    <g>
+      {/* Una griglia densa che diventa tre barre: dalla tabella alla lettura. */}
+      {[0, 1, 2, 3, 4].map((r) => [0, 1, 2].map((c) => (
+        <rect class="fg-f-soft fg-in" style={`--i:${r}`} x={10 + c * 13} y={14 + r * 9} width="10" height="6" rx="1" />
+      )))}
+      <path class="fg-s fg-draw" style="--i:3" d="M56 36 H70" />
+      {[[78, 22], [93, 38], [108, 30]].map(([x, h], i) => (
+        <rect class="fg-a-f fg-rise" style={`--i:${i + 3}`} x={x - 5} y={62 - h} width="10" height={h} rx="2" />
+      ))}
+    </g>
+  )}
+  {k === 'conferma' && (
+    <g>
+      {/* Una richiesta che si ferma a un cancello e aspetta un sì. */}
+      <path class="fg-s fg-grow" d="M8 36 H44" />
+      <rect class="fg-s fg-a" x="48" y="18" width="8" height="36" rx="3" />
+      <circle class="fg-s fg-a fg-in" style="--i:2" cx="52" cy="10" r="5" />
+      <path class="fg-s fg-d fg-draw" style="--i:3" d="M60 36 H74" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M80 36 H112" />
+    </g>
+  )}
+</svg>

@@ -1,0 +1,108 @@
+---
+/**
+ * Capitolo «03» — renderer sottile.
+ * La copia NON sta qui: sta in src/data/domande.ts, che è la fonte unica.
+ * Cambiare una parola qui e non là è il modo in cui cinque capitoli divergono.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { domanda, LIVELLI } from '../data/domande';
+
+const SLUG = 'domanda-2';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const d = domanda(SLUG);
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── La domanda, come l'hanno fatta loro ──────────────────────────── -->
+    <Slide id="slide-cover" bg="inverse" align="center">
+      <div slot="backdrop" class="ex-bg-night"></div>
+      <div class="ex-ch" data-reveal>
+        <p class="ex-ch-num"><span data-lang-it>Domanda {ch.num}</span><span data-lang-en>Question {ch.num}</span></p>
+        <T as="h2" class="ex-ch-title" it={d.domanda.it} en={d.domanda.en} data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="ex-ch-lead" it={d.chi.it} en={d.chi.en} data-reveal data-reveal-delay="0.15" />
+      </div>
+    </Slide>
+
+    <!-- ── Oggi, e con Coworker ─────────────────────────────────────────── -->
+    <Slide id="slide-oggi-con" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it={d.domanda.it} en={d.domanda.en} />
+          <T as="h2" class="ex-head-title" it={d.punto.it} en={d.punto.en} />
+          <T as="p" class="ex-head-lead" it={d.lead.it} en={d.lead.en} />
+        </div>
+        <div class="ex-oc" data-reveal data-reveal-delay="0.14">
+          <div class="ex-oc-col">
+            <T as="p" class="ex-oc-k" it="Oggi" en="Today" />
+            <T as="p" class="ex-oc-b" it={d.oggi.it} en={d.oggi.en} />
+          </div>
+          <div class="ex-oc-fig"><Figura k={d.voci[0].figura as any} /></div>
+          <div class="ex-oc-col ex-oc-col--con">
+            <T as="p" class="ex-oc-k" it="Con Coworker" en="With Coworker" />
+            <T as="p" class="ex-oc-b" it={d.con.it} en={d.con.en} />
+          </div>
+        </div>
+      </div>
+    </Slide>
+
+    <!-- ── Le ancore, e il dettaglio dietro «Scopri come» ───────────────── -->
+    <Slide id="slide-ancore" bg="secondary" align="left">
+      <div class="ex-content" data-reveal>
+        <div class="ex-head">
+          <T as="p" class="slide-eyebrow" it="Che cosa serve, per nome" en="What you need, by name" />
+          <T as="h2" class="ex-head-title" it={d.punto2.it} en={d.punto2.en} />
+        </div>
+
+        <div class="ex-anc-row" data-reveal data-reveal-delay="0.12">
+          <div class="ex-ancore">
+            {d.ancore.map((a) => (<T as="p" class="ex-ancora" it={a.it} en={a.en} />))}
+          </div>
+          <div class="ex-anc-fig"><Figura k={d.voci[2].figura as any} /></div>
+        </div>
+
+        <div class="ex-dett" data-reveal data-reveal-delay="0.2">
+          <HowItWorks title="Scopri come" tone="onLight">
+            <Dettaglio>
+              {d.voci.map((v) => (
+                <DettaglioVoce>
+                  <Figura k={v.figura as any} />
+                  <T slot="ancora" as="p" it={`${v.ancora.it} · ${LIVELLI[v.livello].it}`} en={`${v.ancora.en} · ${LIVELLI[v.livello].en}`} />
+                  <T slot="riga" as="p" it={v.riga.it} en={v.riga.en} />
+                </DettaglioVoce>
+              ))}
+              <T slot="nota" as="p" it={d.nota.it} en={d.nota.en} />
+            </Dettaglio>
+          </HowItWorks>
+        </div>
+
+        <p class="ex-fonti" data-reveal data-reveal-delay="0.3">
+          <span class="ex-fonti-k"><span data-lang-it>Fonti</span><span data-lang-en>Sources</span></span>
+          {d.fonti.map((f) => (
+            f.url
+              ? <a class="ex-fonte" href={f.url} target="_blank" rel="noopener"><span data-lang-it>{f.label.it}</span><span data-lang-en>{f.label.en}</span>{f.aggiornata && <span class="ex-fonte-d"> · {f.aggiornata}</span>}</a>
+              : <span class="ex-fonte"><span data-lang-it>{f.label.it}</span><span data-lang-en>{f.label.en}</span></span>
+          ))}
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

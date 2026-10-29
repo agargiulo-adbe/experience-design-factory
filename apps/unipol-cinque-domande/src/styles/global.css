@@ -1,0 +1,615 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «Cinque domande» — Adobe × Unipol · tipo Playbook
+   Generata da `pnpm new:experience` il 28 ott 2026, design system RISCRITTO
+   lo stesso giorno sui valori veri.
+
+   DA DOVE VENGONO QUESTI VALORI
+   `pnpm brand:tokens https://www.unipol.it`, 28 ott 2026: 2 fogli di stile,
+   366 KB di CSS di produzione analizzati. Più il bundle critico letto a mano
+   (https://www.unipol.it/styles/critical.bundle.css, 355 KB decompressi) e il
+   foglio dei caratteri del design system
+   (https://www.unipol.it/scripts/libs/ds/styles/fonts.css).
+
+   I COLORI, E PERCHÉ SONO MAPPATI COSÌ
+   · #001c35 — 17 occorrenze, il più frequente del sito: è il colore di SISTEMA
+     di Unipol, il navy profondo di testo e fondi pieni. Qui è --surface-inverse.
+   · #0303f5 — dichiarato dal sito come `--Unipol-Ink-Blue-500`, con una scala
+     completa 50→900: è il MARCHIO. Blu elettrico, raro (5 occorrenze) e
+     inconfondibile. Qui è --surface-brand e l'accento.
+   · #e5f3ff — `--Unipol-Azure-Blue-50`, 10 occorrenze: la superficie azzurra
+     chiara. Qui è --surface-secondary.
+   · #f9f9f7 — 10 occorrenze: l'avorio caldo del fondo pagina. --surface-primary.
+   · #3d95ff — 5 occorrenze, l'azzurro d'azione. Serve come INCHIOSTRO d'accento
+     sul navy, dove il marchio non si legge (vedi sotto).
+   · #9edc89 (verde) e #f59670 (corallo) sono i colori di stato del sito. Si usano
+     solo per stato, mai come decorazione.
+
+   L'INCHIOSTRO SI RIBALTA — misurato, non stimato
+   Il marchio #0303f5 su #001c35 dà **1,93:1**: illeggibile. Su #f9f9f7 dà
+   **8,46:1**: eccellente. Quindi --ink-accent ha DUE valori: #0303f5 sulle
+   superfici chiare, #3d95ff sulle scure (5,75:1 su #001c35). Per il testo si usa
+   SEMPRE --ink-accent, mai --color-accent.
+
+   I CARATTERI — sono quelli veri, non un ripiego
+   Il design system di Unipol dichiara due famiglie:
+     --Family-Typeface-A: "Manrope"    (30 usi nel bundle critico) → PRIMARIA
+     --Family-Typeface-B: "Apex New"   (7 usi)                     → secondaria
+   **Manrope è su Google Fonts, quindi è distribuibile e qui è il carattere vero
+   del cliente, non una sostituta.** Apex New è un carattere Monotype
+   proprietario e non si può spedire: il ruolo display lo copre Manrope ai pesi
+   alti. Nota per chi legge dopo: Manrope compare anche nella skin UniCredit, ma
+   lì è una SOSTITUTA scelta da noi, qui è il carattere del cliente. Non è un
+   copia-incolla e non va "corretto".
+
+   Tenere primary/secondary chiari e inverse scuro: i blocchi condivisi del
+   motore si aspettano che `--ink-X` stia su `--surface-X`.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-accent: #0303f5;
+  --color-accent-deep: #0202ca;
+  --color-accent-soft: #3d95ff;
+  --color-on-accent: #ffffff;
+  --color-cta: #0303f5;
+  --color-on-cta: #ffffff;
+  --color-ink: #001c35;
+  --color-ink-2: #00295c;
+  --color-night: #001c35;
+  --color-night-2: #001b3d;
+  --color-paper: #f9f9f7;
+  --color-paper-2: #e5f3ff;
+  --color-azure: #3d95ff;
+  --color-azure-50: #e5f3ff;
+  --color-azure-100: #cce7ff;
+  --color-positive: #9edc89;
+  --color-attention: #f59670;
+  --color-grey-100: #eef0f2;
+  --color-grey-200: #dfe2e5;
+  --color-grey-300: #bfc7cd;
+  --color-grey-400: #9aa5ad;
+  --color-grey-500: #63727d;
+  --color-grey-600: #00295c;
+
+  --font-display: 'Manrope', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-body: 'Manrope', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+:root {
+  --color-accent: #0303f5;
+  --color-accent-rgb: 3, 3, 245;
+  --color-accent-deep: #0202ca;
+  --color-accent-soft: #3d95ff;
+  --color-on-accent: #ffffff;
+  /* Bottone pieno: sfondo = accento se regge WCAG AA con un inchiostro, altrimenti
+     l'accento scurito; `--color-on-cta` è l'inchiostro calcolato sopra. */
+  --color-cta: #0303f5;
+  --color-on-cta: #ffffff;
+  --color-ink: #1b1d21;
+  --color-ink-2: #3a3d44;
+  --color-night: #111318;
+  --color-night-2: #1a1d24;
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f5f7;
+  --color-grey-100: #f4f5f7;
+  --color-grey-200: #e3e5e9;
+  --color-grey-300: #cfd3d9;
+  --color-grey-400: #b4b9c2;
+  --color-grey-500: #80868f;
+  --color-grey-600: #5a6069;
+
+  /* Inter: ripiego neutro e distribuibile (Google Fonts). Da sostituire con la
+     sostituta più vicina al carattere del cliente, motivando la scelta qui. */
+  --font-display: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface (dominante CHIARA: primary/secondary chiari, inverse scuro) */
+  --surface-primary: var(--color-paper);
+  --surface-secondary: var(--color-paper-2);
+  --surface-tertiary: var(--color-grey-100);
+  --surface-inverse: var(--color-night);
+  --surface-brand: var(--color-accent);
+
+  /* Semantici — Ink (`--ink-X` sta su `--surface-X`) */
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600);
+  --ink-inverse: #ffffff;
+  --ink-brand: var(--color-accent-deep);
+  --ink-link: var(--color-accent-deep);
+
+  /* Inchiostri che si ribaltano con la superficie (default = fondo CHIARO).
+     Per il testo usare SEMPRE questi, mai `--color-accent` / `--accent-*`. */
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+
+  /* Semantici — Accent */
+  --accent-primary: var(--color-accent);
+  --accent-secondary: var(--color-accent-soft);
+  --accent-hover: var(--color-accent-deep);
+
+  /* Semantici — Line */
+  --line-subtle: var(--color-grey-200);
+  --line-default: var(--color-grey-300);
+  --line-strong: var(--color-grey-600);
+
+  --focus-ring: var(--color-accent);
+
+  /* Deck safe-area contract (px) — DeckContainer li ribalta per breakpoint */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Le varianti scure DOPO le chiare: stessa specificità, vince l'ultima. Lo Slide
+   rende la superficie come classe Tailwind, non come data-attribute. Una slide
+   che DICHIARA chiaro ma rende scura per via del backdrop si marca `.ex-on-dark`. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+.ex-on-dark {
+  --ink-accent: var(--color-accent-soft);
+  --ink-note: var(--color-grey-400);
+  --ink-body: var(--color-grey-200);
+}
+/* Componenti chiari dentro una slide scura riprendono gli inchiostri chiari. */
+.ex-on-light,
+.ex-card {
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-accent); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+/* Occhiello (kicker): ≥ 0.75rem per contratto di leggibilità. */
+.slide-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.76rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV: minimi del tipo */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 60ch; }
+
+[data-admin-only] { display: none !important; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .ex-* — art direction di partenza (neutra). Rinominare il prefisso con due
+   lettere del cliente quando il design system vero entra (es. .sd-* per Poste).
+   Tutti i colori dietro testo in rgba esplicito o token: il parser di contrasto
+   dell'audit non legge oklab()/color-mix().
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop (solo gradienti: nessuna immagine finché non c'è un asset vero).
+   Quando arriva uno sfondo generato, passare `--bg-src: url(...)` dalla slide e
+   dichiarare `data-made-with` sulla slide (il credito è un fatto). ─────────── */
+.ex-bg-night {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-accent-rgb), 0.18), transparent 52%),
+    radial-gradient(70% 60% at 50% 50%, rgba(17,19,24,0.72), transparent 80%),
+    linear-gradient(rgba(17,19,24,0.66), rgba(17,19,24,0.86)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-inverse);
+}
+/* ── Una frase è un blocco, e va a capo intera ──────────────────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: su un
+   testo di due frasi rompe volentieri dentro la prima e lascia una parola più
+   il punto a capo da sola — «…lo sapete / già. Manca il perché.», che in
+   proiezione è il primo difetto che si nota.
+   Uno spazio unificatore non lo risolve: legare la frase intera la rende
+   inseparabile e a questo corpo sborda (il check `c`, che è HARD). Un blocco
+   in linea invece sì: il browser preferisce rompere FRA le frasi, e se una non
+   ci sta la manda a capo intera e la spezza lì dentro, senza mai sbordare.
+   Lo misura la famiglia `F` di `pnpm audit:wrap`. */
+/* `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+/* `<T>` mette DENTRO due <span> di lingua, e quelli restano inline: la loro
+   scatola è alta quanto l'interlinea e centrata sul testo, quindi su righe
+   consecutive si sovrappone di una quindicina di pixel. Il check `e` guarda
+   gli elementi che contengono testo, cioè proprio questi — non il contenitore.
+   Resi blocchi, la scatola torna a essere quella del contenuto.
+   La regola che nasconde la lingua inattiva usa `display: none` e ha
+   specificità maggiore: continua a vincere. */
+.ex-frase > span { display: block; }
+
+.ex-bg-paper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(100% 70% at 90% 100%, rgba(var(--color-accent-rgb), 0.06), transparent 55%),
+    linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.86)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-primary);
+}
+
+/* ── Copertina del deck ────────────────────────────────────────────────── */
+.ex-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
+.ex-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
+.ex-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+.ex-cover-tag { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-accent-soft); max-width: 40ch; margin: 0 auto; display: block; }
+.ex-cover-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grey-200); max-width: 66ch; margin: 0 auto; display: block; }
+.ex-cover-note { font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grey-400); max-width: 70ch; margin: 0 auto; display: block; }
+
+/* ── Il percorso (home) ────────────────────────────────────────────────── */
+.ex-percorso { width: 100%; max-width: 72rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ex-percorso-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--ink-primary); text-align: center; margin: 1rem auto 0.9rem; max-width: 32ch; display: block; }
+.ex-percorso-lead { font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.55; color: var(--ink-body); max-width: 64ch; margin: 0 auto 1.2rem; text-align: center; display: block; }
+.ex-journey { width: 100%; margin-bottom: clamp(1rem, 2vh, 1.3rem); }
+.ex-journey-card {
+  display: flex; flex-direction: column; text-align: left; text-decoration: none; min-width: 0;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem 0.9rem; color: var(--ink-primary);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.ex-journey-card:hover { border-color: var(--color-accent); background: #fff; color: var(--ink-primary); }
+.ex-journey-num { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-accent); font-variant-numeric: tabular-nums; margin-bottom: 0.45rem; }
+.ex-journey-name { font-family: var(--font-display); font-size: 1.12rem; font-weight: 700; line-height: 1.25; color: var(--ink-primary); }
+.ex-journey-open { margin-top: auto; padding-top: 0.6rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-note); }
+.ex-journey-card:hover .ex-journey-open { color: var(--ink-accent); }
+[data-slide] .ex-journey-card p { max-width: none; margin-inline: 0; }
+
+/* CTA piena: coppia `--color-cta` / `--color-on-cta` calcolata dal generatore (WCAG AA). */
+.ex-cta {
+  display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.7rem 2.1rem; border-radius: 6px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem); font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  background: var(--color-cta); color: var(--color-on-cta); transition: background 200ms ease;
+}
+.ex-cta:hover { background: var(--color-accent-deep); color: #ffffff; }
+
+/* ── Cover del capitolo ────────────────────────────────────────────────── */
+.ex-ch { width: 100%; max-width: 66rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1.1rem, 2.6vh, 1.8rem); }
+.ex-ch-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-accent); }
+.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-inverse); max-width: 20ch; text-wrap: balance; }
+.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--color-grey-200); max-width: 56ch; }
+.slide-inner .ex-ch p { margin-inline: auto; }
+/* L'agenda del capitolo: i tre blocchi della slide di contenuto, anticipati. Dà alla
+   cover una base e un respiro reali (check i), non riempitivo. */
+.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid rgba(255,255,255,0.18); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.ex-ch-agenda-k { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-note); }
+.ex-ch-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem); }
+.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-inverse); white-space: nowrap; }
+.ex-ch-agenda-n { width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(var(--color-accent-rgb), 0.28); color: var(--color-accent-soft); font-size: 0.82rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── Slide di contenuto: UNA colonna (max 72rem) per tutto, così i blocchi a
+   bandiera condividono il bordo (check m dell'audit). ─────────────────────── */
+.ex-content { width: 100%; max-width: 72rem; margin-inline: auto; text-align: left; }
+.ex-head { margin-bottom: clamp(1rem, 2.4vh, 1.6rem); }
+.ex-head-title { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.8rem, 3vw, 2.9rem); color: var(--ink-primary); max-width: 26ch; text-wrap: balance; margin-top: 1rem; }
+.ex-head-lead { font-size: clamp(0.98rem, 1.12vw, 1.12rem); line-height: 1.55; color: var(--ink-body); max-width: 68ch; margin-top: 1rem; }
+
+.ex-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 1.8vw, 1.5rem); }
+.ex-card {
+  min-width: 0; background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.25rem 1.3rem 1.2rem; display: flex; flex-direction: column; height: 100%;
+}
+.ex-card-k { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: 0.55rem; }
+.ex-card-t { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.25; color: var(--ink-primary); margin-bottom: 0.5rem; }
+.ex-card-b { color: var(--ink-body); font-size: 0.98rem; line-height: 1.5; }
+.ex-src { margin-top: clamp(0.9rem, 2vh, 1.3rem); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; color: var(--ink-note); text-align: left; }
+.ex-src a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Il reset centra ogni <p> (`.slide-inner.text-center p`) e lo cappa a 60ch:
+   dentro i blocchi a bandiera la larghezza la governa il contenitore. */
+.slide-inner .ex-content p { margin-inline: 0; }
+[data-slide] .ex-card p, [data-slide] p.ex-src { max-width: none; }
+[data-slide] p.ex-head-lead { max-width: 68ch; }
+
+/* ── Slide-firma ───────────────────────────────────────────────────────── */
+.ex-sig-line { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grey-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
+
+/* ── Deck chrome (WCAG AA, rgba esplicito) ─────────────────────────────── */
+/* Inchiostro ESPLICITO, non `--ink-primary`: il bottone si porta uno sfondo bianco
+   suo, e `--ink-primary` segue la dominante dell'experience. In una skin a dominante
+   scura (Trenitalia, Agos, Eni) diventa bianco su bianco: 1,17:1, check h fallito su
+   ogni slide. Dove lo sfondo è esplicito, esplicito dev'essere anche l'inchiostro. */
+[data-deck] .deck-btn { color: #1b1d21; background: rgba(255,255,255,0.92); border-color: var(--color-grey-300); }
+[data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+[data-deck] .deck-progress { color: var(--color-ink-2); }
+/* Sulle slide scure il chrome si ribalta (il deck marca data-on-dark). */
+[data-deck][data-on-dark] .deck-btn { color: #fff; background: rgba(17,19,24,0.9); border-color: var(--color-ink-2); }
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grey-200); }
+
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* ── Custom slides (Admin Console) — in sync con l'anteprima dell'admin ─── */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.04; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 600; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose ul { list-style: disc; } .cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: rgba(17,19,24,0.06); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: #fff; }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-grey-200); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-accent-soft); }
+
+/* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
+/* Fondo bianco esplicito → inchiostri espliciti. In una skin a dominante scura
+   `--ink-primary` è bianco, e il nome del deck sparirebbe su ogni pagina. */
+.ex-nav {
+  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+}
+.ex-nav-link { color: var(--color-ink-2); }
+.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-paper-2); }
+.ex-nav-link--active { color: var(--ink-accent); background: var(--color-paper-2); border: 1px solid rgba(var(--color-accent-rgb), 0.3); }
+.ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ex-mark svg { width: 100%; height: 100%; display: block; }
+
+/* ── Compattazione sotto i 900 px di altezza (1280×800, 1440×900): si stringono
+   spazi e contenitori, non il tipo: il corpo resta ≥ 0,95rem. ─────────────── */
+@media (max-height: 900px) {
+  .ex-head { margin-bottom: 0.7rem; }
+  .ex-head-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
+  .ex-head-lead { font-size: 0.95rem; line-height: 1.45; }
+  .ex-cards { gap: 0.8rem; }
+  .ex-card { padding: 0.9rem 1rem; }
+  .ex-card-b { font-size: 0.95rem; line-height: 1.42; }
+  .ex-src { margin-top: 0.6rem; font-size: 0.75rem; line-height: 1.45; }
+  .ex-ch-title { font-size: clamp(2.1rem, 4.2vw, 3.6rem); }
+  .ex-ch-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); }
+  .ex-percorso-title { font-size: clamp(1.6rem, 2.4vw, 2.2rem); margin: 0.8rem auto 0.7rem; }
+  .ex-percorso-lead { margin-bottom: 0.8rem; }
+  .ex-journey-card { padding: 0.75rem 0.95rem 0.7rem; }
+  .ex-journey-num { margin-bottom: 0.3rem; }
+  /* Sotto i 900 px l'affordance «Apri il capitolo» cede lo spazio alla griglia. */
+  .ex-journey-open { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANCORE — la forma di base di una slide di contenuto
+   Un'ancora è un NOME (≤ 6 parole), non una frase. Sta in pagina perché
+   guida l'attenzione mentre chi presenta parla; la prosa, che invece
+   competerebbe con la voce, vive dietro `<HowItWorks>` in `.ex-dett`.
+   Vedi CLAUDE.md → «Ancore, non prosa».
+   ═══════════════════════════════════════════════════════════════════════ */
+.ex-ancore {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem; width: 100%; max-width: 68rem;
+}
+.ex-ancora {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 2rem 1.6rem; min-height: 7.5rem;
+  display: flex; align-items: center;
+  border-left: 3px solid var(--accent-primary);
+  background: var(--surface-secondary);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 700; line-height: 1.3; color: var(--ink-primary);
+}
+
+/* Il dettaglio dietro «Scopri come».
+   ⚠️ `.hiw-body` del motore NON dichiara un colore: su una slide chiara
+   resterebbe bianco su bianco, e a blocco chiuso nessun gate lo vede. */
+.ex-dett { margin-top: 1.3rem; max-width: 76rem; }
+
+/* Il dettaglio a figure. Qui SOLO il colore: il corpo lo decide il motore, e
+   rimetterlo da qui vorrebbe dire rimettere un corpo fisso che sulla parete
+   non cresce. La struttura del disegno eredita `currentColor`, l'accento se lo
+   prende da `--ink-accent`, che si ribalta col fondo. */
+.ex-dett .dett-ancora > p { color: var(--ink-primary); }
+.ex-dett .dett-riga > p { color: var(--ink-secondary); }
+.ex-dett .dett-nota > p { color: var(--ink-note); }
+.ex-dett .fg { color: var(--ink-tertiary); }
+.ex-dett .dett-fig-box { border-color: var(--line-subtle); }
+/* Su una slide scura gli inchiostri vanno ESPLICITI e pieni: un bianco
+   trasparente su un fondo dichiarato scende sotto soglia, e `audit:ink`
+   misura i pixel. Si sostituiscono con i valori chiari di questa pelle. */
+.ex-dett--scuro .dett-ancora > p { color: var(--ink-inverse); }
+.ex-dett--scuro .dett-riga > p { color: var(--ink-body); }
+.ex-dett--scuro .dett-nota > p { color: var(--ink-note); }
+
+/* La prosa che resta fuori da un Dettaglio: una cautela, una provenienza. */
+.ex-dett .hiw-body > p {
+  font-size: 0.98rem; line-height: 1.6; color: var(--ink-secondary);
+  margin: 0 0 0.7rem; max-width: none;
+}
+.ex-dett .hiw-body > p:last-child { margin-bottom: 0; }
+
+@media (max-width: 900px) { .ex-ancore { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* ── «Oggi» e «Con Coworker»: la forma propria del Playbook ───────────────
+   Tre colonne, la figura in mezzo. Su telefono diventa una colonna e la
+   figura resta: è l'unico elemento visivo della slide e audit:ritmo lo conta.
+   `min-w-0` sulle colonne perché il testo lungo non sfondi la griglia (check c). */
+.ex-oc {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.6rem; align-items: center;
+  width: 100%; max-width: 72rem;
+}
+.ex-oc-col { min-width: 0; }
+.ex-oc-k {
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-secondary); margin-bottom: 0.5rem;
+}
+.ex-oc-col--con .ex-oc-k { color: var(--ink-accent); }
+.ex-oc-b { font-size: 1.02rem; line-height: 1.55; color: var(--ink-primary); max-width: 26rem; }
+.ex-oc-fig { width: 112px; flex: none; color: var(--ink-secondary); }
+.ex-oc-fig .fg { width: 112px; height: auto; }
+@media (max-width: 860px) {
+  .ex-oc { grid-template-columns: 1fr; gap: 1.1rem; }
+  .ex-oc-fig { width: 96px; }
+}
+
+/* ── Le fonti: non sono una CTA ───────────────────────────────────────────
+   Ereditano l'inchiostro del testo che le ospita e si distinguono per la
+   sottolineatura, che si accende d'accento al passaggio: così il contrasto
+   resta quello del testo e audit:ink continua a passare. */
+.ex-fonti {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1rem;
+  margin-top: 1.5rem; font-size: 0.8rem; line-height: 1.5; color: var(--ink-secondary);
+  max-width: 72rem;
+}
+.ex-fonti-k { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.72rem; }
+.ex-fonte { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a.ex-fonte:hover, a.ex-fonte:focus-visible { text-decoration-color: var(--ink-accent); }
+.ex-fonte-d { opacity: 0.75; text-decoration: none; }
+
+/* ── Il registro: righe, non card ─────────────────────────────────────────
+   Una tabella travestita da elenco, perché su una parete una tabella vera non
+   si legge. Tutti i blocchi a bandiera condividono il bordo sinistro: è il
+   check `m` di audit:deck, ed è HARD. */
+.ex-reg { display: flex; flex-direction: column; gap: 1.05rem; width: 100%; max-width: 72rem; }
+.ex-reg-row { border-top: 1px solid var(--line-subtle); padding-top: 0.75rem; min-width: 0; }
+.ex-reg-meta {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem 0.8rem;
+  font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700;
+  color: var(--ink-secondary); margin-bottom: 0.3rem;
+}
+.ex-reg-data { font-variant-numeric: tabular-nums; }
+.ex-reg-stato--risposto { color: var(--ink-accent); }
+.ex-reg-stato--aperto, .ex-reg-stato--verificare { opacity: 0.9; }
+.ex-reg-liv, .ex-reg-chi { font-weight: 600; letter-spacing: 0.04em; text-transform: none; opacity: 0.85; }
+.ex-reg-tema { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; line-height: 1.3; color: var(--ink-primary); margin: 0 0 0.2rem; max-width: 48ch; }
+.ex-reg-esito { font-size: 0.95rem; line-height: 1.5; color: var(--ink-primary); max-width: 62ch; }
+
+/* La figura accanto alle ancore: la slide era coperta al 15% (famiglia V di
+   audit:ritmo) e la regola è aggiungere un disegno, non del testo. */
+.ex-anc-row { display: flex; align-items: center; gap: 2.4rem; width: 100%; max-width: 72rem; }
+.ex-anc-row .ex-ancore { flex: 1 1 auto; min-width: 0; }
+.ex-anc-fig { flex: 0 0 auto; width: 190px; color: var(--ink-secondary); }
+.ex-anc-fig .fg { width: 190px; height: auto; }
+.ex-oc-fig, .ex-oc-fig .fg { width: 150px; }
+@media (max-width: 860px) { .ex-anc-row { flex-direction: column; align-items: flex-start; gap: 1.2rem; } .ex-anc-fig, .ex-anc-fig .fg { width: 140px; } }
+
+/* Il blocco riempiva meno della metà dell'altezza utile: il contratto chiede il
+   55-70% centrale. Si cresce il tipo e il disegno, non si rimpicciolisce nulla. */
+.ex-oc { gap: 2.6rem; }
+.ex-oc-b { font-size: 1.06rem; line-height: 1.6; max-width: 30rem; }
+.ex-oc-k { font-size: 0.82rem; margin-bottom: 0.7rem; }
+.ex-oc-fig, .ex-oc-fig .fg { width: 184px; }
+.ex-anc-row { gap: 3rem; margin-top: 0.4rem; }
+.ex-anc-fig, .ex-anc-fig .fg { width: 230px; }
+.ex-reg-esito { font-size: 1rem; }
+@media (max-width: 860px) { .ex-oc-fig, .ex-oc-fig .fg { width: 130px; } .ex-anc-fig, .ex-anc-fig .fg { width: 150px; } }
+
+/* ── La misura da proiezione ────────────────────────────────────────────────
+   Letto su uno screenshot a 1920: il blocco copriva il 31% dell'altezza utile
+   contro il 55-70% del contratto, con due fasce vuote da 370px sopra e sotto.
+   Non è un difetto di contenuto — è tipo tarato sul viewport stretto e mai
+   ricalibrato sul grande. Quindi SI CRESCE, e si cresce solo da 1500px in su:
+   a 1280 e 1440 le misure verificate restano quelle, e nessun HARD si muove. */
+@media (min-width: 1500px) {
+  .ex-head { margin-bottom: 2rem; }
+  .ex-head-title { font-size: 4rem; line-height: 1.04; max-width: 21ch; }
+  .ex-head-lead { font-size: 1.32rem; line-height: 1.5; margin-top: 1.4rem; max-width: 56ch; }
+  .slide-eyebrow { font-size: 0.92rem; }
+
+  .ex-oc { gap: 3rem; margin-top: 3.6rem; align-items: center; }
+  .ex-oc-k { font-size: 0.92rem; margin-bottom: 1rem; }
+  /* 1,14rem e non di più: oltre il 15% del corpo di base `audit:wrap` lo tratta
+     come testo display e pretende righe pulite — ma questo È un paragrafo, e in un
+     paragrafo legare non converge: ogni legame sposta la rottura alla parola prima.
+     Resta comunque più generoso del minimo di leggibilità (0,95rem). L'altezza che
+     serve alla slide la porta la figura, non il gonfiaggio della prosa. */
+  .ex-oc-b { font-size: 1.14rem; line-height: 1.7; max-width: 30rem; }
+  .ex-oc-fig, .ex-oc-fig .fg { width: 360px; }
+
+  .ex-anc-row { gap: 4rem; margin-top: 1.4rem; }
+  .ex-anc-fig, .ex-anc-fig .fg { width: 320px; }
+  .ex-ancora { font-size: 1.5rem; }
+  .ex-ancore { gap: 1.5rem 2.6rem; }
+  .ex-dett { margin-top: 2rem; }
+  .ex-fonti { margin-top: 1.6rem; font-size: 0.9rem; }
+
+  .ex-ch-title { font-size: 4.6rem; }
+  .ex-ch-lead { font-size: 1.4rem; margin-top: 1.6rem; }
+
+  .ex-reg { gap: 1.8rem; margin-top: 1.8rem; }
+  .ex-reg-tema { font-size: 1.4rem; }
+  .ex-reg-esito { font-size: 1.14rem; line-height: 1.55; max-width: 62ch; }
+  .ex-reg-meta { font-size: 0.86rem; }
+}
