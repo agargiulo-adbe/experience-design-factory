@@ -42,6 +42,13 @@ export const TAPPE: Tappa[] = [
   { slug: 'trenitalia/convergenza', kind: 'Capitolo', attiva: true, label: 'Convergenza',
     sub: 'Cosa si legge, cosa si attiva, dove sta il dato', solution: 'cja' },
 
+  // Chiesto dal Direttore dei canali digitali il 27 ott 2026: «va bene la parte
+  // tecnologica, io mi aspetterei dei casi d'uso interessanti». Sta dopo
+  // Convergenza perché quella dice che cos'è lo strato e questo che cosa ci si
+  // fa — e perché il suo vincolo è «se mi dai il pezzo di ferro non so che fare».
+  { slug: 'trenitalia/casi-duso', kind: 'Capitolo', attiva: true, label: 'Casi d’uso',
+    sub: 'Cinque casi, e il lavoro che c’è dietro', solution: 'cja' },
+
   // Tutto il capitolo poggia su FS Park e sulla clean room: segue il bivio.
   { slug: 'trenitalia/meta-invisibile', kind: 'Capitolo', attiva: false, label: 'Metà invisibile',
     sub: 'La collaborazione fra società, in una clean room', solution: 'data-collab' },

@@ -1,0 +1,388 @@
+---
+/**
+ * Capitolo — «Che cosa ci faccio»: i casi d'uso.
+ *
+ * Nasce il 28 ott 2026 da una richiesta esplicita, fatta il giorno prima dal
+ * Direttore dei canali digitali: un quadro di quattro o cinque casi d'uso
+ * importanti, con l'obiettivo dichiarato di vendere di più. La parte tecnica
+ * gli andava bene; quello che mancava erano i casi.
+ *
+ * STA QUI, dopo Convergenza, perché Convergenza dice che cos'è lo strato e
+ * questo dice che cosa ci si fa: invertirli vorrebbe dire mostrare la macchina
+ * a chi ha già detto di non volersi ritrovare lo strumento senza saperlo usare.
+ *
+ * I DUE PERIMETRI SONO UNA FIGURA SOLA, non due versioni del documento: la
+ * matrice li tiene insieme e il dittico li confronta. Il perché sta in
+ * `src/data/casi-duso.ts`.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
+import MockCaso from '../../components/MockCaso.astro';
+import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
+import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
+
+const base = import.meta.env.BASE_URL;
+const { next, prev } = rotte('trenitalia/casi-duso');
+const currentPath = Astro.url.pathname;
+
+const nomeFonte = (id: string) => FONTI.find((f) => f.id === id)?.nome ?? id;
+const interi = CASI.filter(dentroRistretto).length;
+
+
+/**
+ * La fotografia di ogni caso. Non è decorazione intercambiabile: l'alba sta
+ * sul caso che parte da dove sei, i binari su chi ripassa, la pensilina su due
+ * società che si incontrano. Gli slot vengono da `assets.index`, già usati dal
+ * resto del deck: nessuna immagine nuova da generare.
+ */
+const SFONDI: Record<string, string> = {
+  geo: 'rl-alba',
+  upgrade: 'tc-acciaio',
+  ritorno: 'rl-binari',
+  oro: 'tc-quiete',
+  insieme: 'rl-pensilina',
+};
+---
+<BaseLayout title="Che cosa ci faccio — i casi d'uso">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
+  </div>
+
+  <DeckContainer nextHref={href(base, next)} prevHref={href(base, prev)}>
+
+    <!-- ── Copertina ──────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <Sfondo id="rl-banchina" forza="media" />
+        <div class="fs-grid"></div>
+      </div>
+      <CoverHero
+        eyebrow="Capitolo 04"
+        numeral="04"
+        title="Che cosa ci faccio"
+        lead="Cinque casi, e il lavoro che c’è dietro ciascuno."
+        size="phase"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── La matrice, intera ─────────────────────────────────────────── -->
+    <Slide id="slide-matrice" bg="secondary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>I CASI, E LE FONTI CHE CHIEDONO</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Due modi di vendere di più.
+      </h2>
+      <div class="w-full" data-reveal data-reveal-delay="0.16">
+        <DiagMatrice casi={CASI} />
+      </div>
+      <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.26">
+        Tre dei cinque casi li avete messi voi sul tavolo il 27 ottobre · scenari illustrativi
+      </p>
+    </Slide>
+
+    <!-- ── La matrice, ristretta: lo stesso disegno, due fonti sole ───── -->
+    {/* Il dittico è il punto del capitolo. La figura non cambia: cambia quante
+        fonti sono accese. Chi ha ristretto il perimetro vede che cosa
+        guadagnerebbe allargando, chi l'ha allargato che cosa resta se non lo
+        fa — e nessuno dei due deve credere a una frase nostra. */}
+    <Slide id="slide-matrice-prima" bg="secondary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>SE SI PARTE DA DUE FONTI</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        {interi} casi su {CASI.length} restano interi.
+      </h2>
+      <div class="w-full" data-reveal data-reveal-delay="0.16">
+        <DiagMatrice casi={CASI} perimetro="ristretto" />
+      </div>
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-5 !py-3.5" data-reveal data-reveal-delay="0.26">
+        <p class="fs-panel-body">
+          <strong class="text-[var(--ink-primary)]">La prima fase è {RISTRETTO.map(nomeFonte).join(' e ')}.</strong>
+          Due casi si fanno per intero, due a metà, uno aspetta. Non è un problema di
+          tecnologia: è il perimetro delle fonti, e si allarga una alla volta.
+        </p>
+        <p class="fs-panel-src mt-2.5">
+          C’è un tema trasversale che qui resta sullo sfondo. Ogni caso vive di varianti: una
+          per area di partenza, una per livello di carta. Chi le produce, e con quale ritmo, è
+          una conversazione a parte.
+        </p>
+      </div>
+    </Slide>
+
+    <!-- ── I cinque casi ──────────────────────────────────────────────── -->
+    {CASI.map((c, i) => (
+      <>
+      {/* ── Come si fa: la sessione con Coworker, e che cosa vede chi viaggia ── */}
+      <Slide id={`slide-caso-${c.id}`} bg={i % 2 === 0 ? 'primary' : 'secondary'} align="center">
+        <div slot="backdrop" class="absolute inset-0">
+          <div class="fs-bg-soft"></div>
+          <div class="fs-grid"></div>
+        </div>
+        <Sfondo slot="backdrop" id={SFONDI[c.id]} forza="forte" />
+        <p class="fs-panel-tag text-center mb-3" data-reveal>
+          {c.leva === 'traffico' ? 'PIÙ PERSONE' : 'PIÙ CONVERSIONE'} · CASO {String(i + 1).padStart(2, '0')}
+        </p>
+        <h2
+          class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          {c.titolo}
+        </h2>
+        <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
+          {c.punto}
+        </p>
+        <div class="w-full" data-reveal data-reveal-delay="0.2">
+          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="come" />
+        </div>
+      </Slide>
+
+      {/* ── Dietro le quinte: il dato, e che cosa muove il caso ───────────── */}
+      <Slide id={`slide-dietro-${c.id}`} bg={i % 2 === 0 ? 'primary' : 'secondary'} align="center">
+        <div slot="backdrop" class="absolute inset-0">
+          <div class="fs-bg-soft"></div>
+          <div class="fs-grid"></div>
+        </div>
+        <Sfondo slot="backdrop" id={SFONDI[c.id]} forza="forte" />
+        <p class="fs-panel-tag text-center mb-3" data-reveal>
+          CASO {String(i + 1).padStart(2, '0')} · CHE COSA SUCCEDE DIETRO
+        </p>
+        <h2
+          class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+          style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
+          data-reveal data-reveal-delay="0.08"
+        >
+          {c.titolo}
+        </h2>
+        <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.12">
+          Da dove parte il dato. Che cosa ci aggiunge Customer Journey Analytics, e come lo usa Adobe Target.
+        </p>
+        <div class="w-full" data-reveal data-reveal-delay="0.16">
+          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="dietro" />
+        </div>
+
+        <div class="cs-misura cs-misura--dietro" data-substep>
+          <div class="cs-box cs-box--kpi">
+            <p class="cs-box-tag">Su che cosa agisce</p>
+            <p class="cs-box-v">{c.kpi.join(' · ')}</p>
+          </div>
+          <div class="cs-box cs-box--prova">
+            <p class="cs-box-tag">L’ha già fatto</p>
+            <p class="cs-box-v">
+              <span class="cs-prova-v">{c.prova.v}</span>
+              <span class="cs-prova-l">{c.prova.l}</span>
+              <a href={c.prova.url} target="_blank" rel="noopener noreferrer">{c.prova.chi}</a>
+              <span class="cs-prova-s"> · {c.prova.settore}</span>
+            </p>
+          </div>
+        </div>
+      </Slide>
+      </>
+    ))}
+
+    <!-- ── Il canale conversazionale ──────────────────────────────────── -->
+    {/* Nella riunione del 27 ott i motori conversazionali erano la prima
+        priorità dichiarata. Qui stanno dopo il percorso sulla vista unica, non
+        prima: il contesto che serve a rispondere bene è lo stesso che serve ai
+        cinque casi sopra. Restano due cose, distinte di proposito. */}
+    <Slide id="slide-conversazionale" bg="primary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="rl-banchina" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>IL CANALE CHE CRESCE</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Poco traffico, e converte come nessun altro.
+      </h2>
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        Due cose diverse, e conviene tenerle separate: come vi nominano, e con quale contesto
+        rispondete.
+      </p>
+
+      <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-4" data-stagger>
+        <div class="fs-card text-left !py-4 !px-5">
+          <p class="fs-card-title mb-1.5" style="font-size: 1.05rem;">Come vi nominano</p>
+          <p class="fs-card-body">
+            Che le risposte dicano il vero: le Frecce e gli Intercity sono vostri, non concorrenti
+            che vi stanno accanto. Si misura per domanda e per mercato, e si corregge dove sbaglia.
+          </p>
+        </div>
+        <div class="fs-card text-left !py-4 !px-5">
+          <p class="fs-card-title mb-1.5" style="font-size: 1.05rem;">Con quale contesto rispondete</p>
+          <p class="fs-card-body">
+            L’assistente che arriva sui vostri canali deve sapere chi sta scrivendo. Altrimenti
+            risponde a chiunque allo stesso modo. È lo stesso contesto dei cinque casi qui sopra.
+          </p>
+        </div>
+      </div>
+
+      <div class="w-full max-w-5xl mx-auto mt-5" data-reveal data-reveal-delay="0.3">
+        <HowItWorks title="I numeri, e perché non è urgente ma è presto" label="I numeri, e perché non è urgente ma è presto" tone="onLight">
+          <p>
+            Il traffico che oggi arriva da qui sta sotto il mezzo punto percentuale. Converte
+            però <strong>molto più del resto</strong>. Conviene presidiarlo adesso, mentre costa
+            poco: dopo sarà un canale affollato.
+          </p>
+          <p>
+            Il contesto non è un sistema nuovo accanto al CRM: è il profilo che già si costruisce
+            per la personalizzazione, messo a disposizione di chi risponde. Niente si sovrappone a
+            quello che state costruendo sul CRM.
+          </p>
+        </HowItWorks>
+      </div>
+    </Slide>
+
+    <!-- ── La referenza, e il passo ───────────────────────────────────── -->
+    <Slide id="slide-riferimento" bg="secondary" align="center">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg-soft"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tr-tetto" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>L’HA GIÀ FATTO UN’ALTRA FERROVIA</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        {RIFERIMENTO.nome}
+      </h2>
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        {RIFERIMENTO.cosa}
+      </p>
+
+      <div class="w-full max-w-4xl mx-auto grid grid-cols-3 gap-4" data-stagger>
+        {RIFERIMENTO.numeri.map((n) => (
+          <div class="fs-card text-center !py-5">
+            <p
+              class="mx-auto mb-2 font-[family-name:var(--font-display)] text-[var(--ink-primary)]"
+              style="font-size: clamp(1.8rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.03em;"
+              data-display
+            >{n.v}</p>
+            <p class="fs-card-body">{n.l}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        Caso pubblicato da Adobe ·
+        <a href={RIFERIMENTO.url} target="_blank" rel="noopener noreferrer">business.adobe.com</a>
+      </p>
+
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-4 !py-3.5" data-reveal data-reveal-delay="0.36">
+        <p class="fs-panel-body">
+          Di casi così ne abbiamo altri: una compagnia aerea e un operatore ferroviario
+          nordamericani, un portale di viaggi. Vivono in materiale riservato, quindi li
+          raccontiamo a voce e senza il nome.
+        </p>
+        <p class="fs-panel-src mt-2.5">
+          Fonti del capitolo, aperte il 28 ottobre 2026: {FONTI_CAPITOLO.map((f, i) => (
+            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.cosa}</a></>
+          ))}
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
+
+<style is:global>
+  /* La riga «Oggi»: il punto di partenza, in chiaro e non dietro un blocco.
+     La pastiglia è un pseudo-elemento, così la riga resta UN solo elemento di
+     testo e il check «testo su testo» non ha niente da misurare. */
+  .cs-oggi {
+    max-width: 48rem; margin: 0 auto 0.9rem; text-align: center;
+    font-size: clamp(0.82rem, 0.9vw, 0.92rem); line-height: 1.5;
+    color: var(--ink-tertiary);
+  }
+  .cs-oggi-k {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-rosso-chiaro); margin-right: 0.4rem;
+  }
+
+  /* ── Che cosa muove il caso, e la prova ─────────────────────────── */
+  /* Due riquadri distinti, uno per domanda: il verde di marca dove si misura,
+     il rosso dove si dimostra. Gli inchiostri sono le varianti chiare, le sole
+     che reggono AA sul fondo scuro (le piene danno 2,35:1 e 3,14:1). */
+  .cs-misura--dietro { margin-top: 2.6rem; }
+  .cs-misura {
+    width: 100%; max-width: 76rem; margin: 2.1rem auto 0;
+    display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+    gap: clamp(0.7rem, 1.6vw, 1.6rem);
+    align-items: stretch;
+  }
+  [data-slide] .cs-misura p { text-align: left; max-width: none; margin-inline: 0; }
+  .cs-box { border: 1px solid var(--line-subtle); border-radius: 0.6rem; padding: 0.85rem 1rem; }
+  .cs-box--kpi { background: rgba(0, 102, 102, 0.18); border-color: rgba(79, 189, 180, 0.3); }
+  .cs-box--prova { background: rgba(217, 24, 53, 0.12); border-color: rgba(255, 141, 157, 0.28); }
+  .cs-box-tag {
+    margin: 0 0 0.5rem; font-size: clamp(0.84rem, 0.92vw, 0.96rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .cs-box--kpi .cs-box-tag { color: var(--color-verde-chiaro); }
+  .cs-box--prova .cs-box-tag { color: var(--color-rosso-chiaro); }
+  .cs-box-v {
+    margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.15rem 0.45rem;
+    font-size: clamp(1rem, 1.14vw, 1.2rem); line-height: 1.5;
+    color: var(--ink-secondary);
+  }
+  .cs-prova-v {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.3rem, 1.8vw, 1.7rem); line-height: 1.08; letter-spacing: -0.02em;
+    color: var(--ink-primary);
+  }
+  .cs-prova-s { color: var(--ink-tertiary); font-size: 0.78rem; }
+  /* Una fonte non è una CTA: eredita l'inchiostro e si distingue per la
+     sottolineatura, che si accende d'accento al passaggio. */
+  .cs-misura a {
+    font-size: clamp(0.74rem, 0.82vw, 0.82rem); color: var(--ink-tertiary);
+    text-decoration: underline; text-underline-offset: 0.18em;
+  }
+  .cs-misura a:hover { color: var(--accent-primary); }
+
+  @media (max-width: 1300px) {
+    .cs-misura { margin-top: 0.3rem; }
+    .cs-box { padding: 0.4rem 0.55rem; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+    .cs-box-tag { margin: 0; flex: 0 0 auto; font-size: 0.68rem; }
+    .cs-box-v { font-size: 0.8rem; line-height: 1.4; }
+    .cs-prova-v { font-size: 1.15rem; }
+    [data-slide] .cs-caso-lead { margin-bottom: 0.6rem !important; }
+  }
+  @media (max-width: 900px) {
+    .cs-misura { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* `!important` serve davvero: `CoverHero` scrive il colore nell'attributo
+     `style` dell'occhiello, e un attributo in linea batte qualunque selettore.
+     Senza, la regola si applica in silenzio a niente — e `audit:ink` continua
+     a segnare 2,55:1 mentre il CSS sembra a posto. */
+  #slide-cover [data-cover] > p:first-of-type { color: rgba(241, 243, 244, 0.94) !important; }
+</style>

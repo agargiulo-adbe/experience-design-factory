@@ -1,0 +1,552 @@
+---
+/**
+ * MockCaso — un caso d'uso in tre zone, raccontabili un passo alla volta.
+ *
+ * SI RACCONTA, NON SPUNTA. Ogni bolla della conversazione e ogni stadio del
+ * flusso è un `[data-substep]`: il motore li rivela uno alla volta con ↓,
+ * Spazio o il pulsante avanti del deck, mentre → salta alla slide successiva.
+ * È il meccanismo del deck, non un comando inventato qui: con «Riduci
+ * movimento» e senza JavaScript è tutto visibile, e l'audit lo misura.
+ *
+ * `data-pulse-line` resta una scena del motore: la linea del back-end si
+ * disegna e un impulso la percorre all'ingresso della slide.
+ *
+ * `data-clienteling` e `data-personalize` NON si dichiarano più, e il motivo è
+ * lo stesso del `converse`: partono all'ingresso della slide, quindi la
+ * risposta personalizzata era già sullo schermo prima che si fosse finito di
+ * chiedere. Il loro MOVIMENTO è conservato nella pelle — la riga di scansione
+ * passa, gli attributi entrano a scalare, le varianti compaiono pari e poi una
+ * si afferma — ma il momento lo decide chi racconta.
+ * `data-converse` NON si dichiara: quella scena fa entrare tutte le bolle in
+ * sequenza automatica, e qui il passo deve restare in mano a chi racconta. Il
+ * suo MOVIMENTO però si conserva — ogni bolla entra dal proprio lato — perché
+ * è quello che fa leggere lo scambio come una conversazione invece che come
+ * un elenco che si illumina.
+ *
+ * LA PELLE È QUELLA DI TRENITALIA, semplificata. Sul web la barra rossa di
+ * marchio e la striscia di ricerca «Da · A · Data · CERCA», che è l'elemento
+ * per cui quel sito si riconosce a colpo d'occhio; sull'app la stessa testata
+ * stretta e la barra di navigazione in fondo. Non è un ritratto fedele e non
+ * deve esserlo: serve che in sala si capisca in un secondo di quale prodotto
+ * si sta parlando, senza ricostruire un'interfaccia falsa — che sarebbe la
+ * wrong-brand imagery che la Quality Bar vieta.
+ */
+import type { Caso } from '../data/casi-duso';
+
+interface Props {
+  caso: Caso;
+  /** I nomi per esteso delle fonti del caso, già risolti dalla pagina. */
+  fonti: string[];
+  /**
+   * Quale metà del caso. Il caso sta su DUE slide, e non per gusto: su una
+   * sola i corpi erano scesi a 13,7px dove il contratto ne chiede 17,1, e il
+   * rimedio previsto è dividere la slide, mai rimpicciolire il tipo.
+   *   `come`   la sessione con Coworker e quello che vede chi viaggia
+   *   `dietro` il flusso del dato, stadio per stadio
+   */
+  parte: 'come' | 'dietro';
+  class?: string;
+}
+const { caso: c, fonti, parte, class: className } = Astro.props as Props;
+---
+<div class:list={['mk', `mk--${parte}`, className]} data-vista="app">
+
+  {parte === 'come' && (<>
+  {/* ── 1 · Chi lo prepara: la sessione con Coworker ──────────────────── */}
+  <figure class="mk-lato">
+    <div class="mk-testa"><figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption></div>
+    <div class="mk-chat">
+      {c.conversazione.map((b) => (
+        <p class="mk-bolla" data-substep data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
+      ))}
+    </div>
+  </figure>
+
+  {/* ── 2 · Chi viaggia: il profilo, e che cosa gli viene mostrato ────── */}
+  <figure class="mk-lato">
+    <div class="mk-testa">
+      <figcaption class="mk-tag">Chi viaggia</figcaption>
+      <div class="mk-sw" role="group" aria-label="Dispositivo">
+        <button type="button" class="mk-sw-b" data-vista-b="app" aria-pressed="true">App</button>
+        <button type="button" class="mk-sw-b" data-vista-b="web" aria-pressed="false">Web</button>
+      </div>
+    </div>
+
+    <div class="mk-dev">
+      {/* Testata di marchio: rossa, con il marchio a sinistra. Sul web porta
+          anche la striscia di ricerca; sull'app è stretta. */}
+      <div class="mk-top" aria-hidden="true">
+        <span class="mk-top-m">Trenitalia</span>
+        <span class="mk-top-i mk-top-i--web"></span>
+        <span class="mk-top-i mk-top-i--web"></span>
+      </div>
+      <div class="mk-push mk-solo-app">
+        <div class="mk-push-t" aria-hidden="true">
+          <span class="mk-push-i"></span>
+          <span class="mk-push-n">TRENITALIA</span>
+          <span class="mk-push-o">ora</span>
+        </div>
+        <p class="mk-push-c">{c.push}</p>
+      </div>
+      <div class="mk-cerca mk-solo-web" aria-hidden="true">
+        <span class="mk-cerca-c">Da</span><span class="mk-cerca-c">A</span>
+        <span class="mk-cerca-c">Data</span><span class="mk-cerca-b">CERCA</span>
+      </div>
+
+      <div class="mk-pagina">
+        <p class="mk-titolo">{c.schermo.titolo}</p>
+        <div class="mk-var" data-substep>
+          {c.varianti.map((v) => (
+            <span class="perso-item" data-match={v.match ? '' : undefined}>
+              <span class="mk-var-h">
+                <span class="mk-var-t">{v.t}</span>
+                {v.match && <span class="mk-var-badge">per questo profilo</span>}
+              </span>
+              <span class="mk-var-n">{v.n}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Barra di navigazione: è il segno per cui un'app si riconosce. */}
+      <div class="mk-tab mk-solo-app" aria-hidden="true">
+        <span class="mk-tab-v mk-tab-v--on">Home</span>
+        <span class="mk-tab-v">Biglietti</span>
+        <span class="mk-tab-v">Viaggi</span>
+        <span class="mk-tab-v">Profilo</span>
+      </div>
+    </div>
+    <div class="mk-prof" data-substep>
+      <span class="scan-line" aria-hidden="true"></span>
+      <p class="mk-prof-tag">Quello che sappiamo</p>
+      <ul class="mk-prof-l">
+        {c.profilo.map((a) => (
+          <li class="reveal-attr"><span class="mk-prof-k">{a.k}</span><span class="mk-prof-v">{a.v}</span></li>
+        ))}
+      </ul>
+    </div>
+
+    <span class="mk-scelta" data-substep aria-hidden="true"></span>
+  </figure>
+  </>)}
+
+  {parte === 'dietro' && (
+  <div class="mk-flusso" data-pulse-line>
+    <p class="mk-tag mk-flusso-tag">Che cosa succede dietro</p>
+    <svg class="mk-flusso-l" viewBox="0 0 1000 8" preserveAspectRatio="none" aria-hidden="true">
+      <path class="pulse-path" d="M4 4 H996" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      <circle class="pulse-dot" cx="996" cy="4" r="4" fill="currentColor" />
+    </svg>
+    <ol class="mk-flusso-n">
+      {c.flusso.map((st, i) => (
+        <li class="mk-stadio" data-substep data-prod={i === 1 ? 'CJA' : i === 2 ? 'Target' : undefined}>
+          <span class="mk-stadio-n" aria-hidden="true">{i + 1}</span>
+          <span class="mk-stadio-k">{i === 0 ? `${st.k}: ${fonti.join(' · ')}` : st.k}</span>
+          {i !== 0 && <span class="mk-stadio-v">{st.v}</span>}
+          <span class="mk-stadio-e">{st.e}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+  )}
+</div>
+
+<script>
+  // Il comando dispositivo: è una proprietà del mockup, non del deck. Il deck
+  // ignora già i clic su `button`, quindi non serve fermare la propagazione.
+  function montaVista(root: Element) {
+    const bottoni = root.querySelectorAll<HTMLButtonElement>('[data-vista-b]');
+    bottoni.forEach((b) => {
+      b.addEventListener('click', () => {
+        const v = b.dataset.vistaB!;
+        root.setAttribute('data-vista', v);
+        bottoni.forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.vistaB === v)));
+      });
+    });
+  }
+  const monta = () => document.querySelectorAll('.mk').forEach(montaVista);
+  monta();
+  document.addEventListener('astro:after-swap', monta);
+</script>
+
+<style is:global>
+  [data-slide] .mk,
+  [data-slide] .mk p,
+  [data-slide] .mk li,
+  [data-slide] .mk span { text-align: left; }
+  [data-slide] .mk p { max-width: none; width: 100%; margin-inline: 0; }
+
+  .mk {
+    width: 100%; max-width: 76rem; margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+    gap: clamp(0.7rem, 1.6vw, 1.6rem);
+    align-items: start;
+  }
+  .mk-lato { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; min-width: 0; }
+  .mk-testa {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    height: 2.15rem;
+  }
+  .mk-tag {
+    font-size: clamp(0.84rem, 0.92vw, 0.96rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
+  }
+
+  /* ── 1 · La conversazione ─────────────────────────────────────────── */
+  /* `min-height` tiene ferma la colonna mentre le bolle entrano: senza, la
+     slide si riassesta a ogni passo e chi guarda perde il filo. */
+  .mk-chat {
+    display: flex; flex-direction: column; gap: 0.38rem; justify-content: flex-start;
+    min-height: 16rem;
+    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
+    padding: 0.7rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .mk .mk-bolla {
+    margin: 0; width: auto !important; max-width: 90%;
+    /* `text-wrap: pretty` chiude le code di frase — è esattamente il caso per
+       cui esiste. Le preposizioni appese no: quelle restano legate a mano con
+       lo spazio unificatore, che è l'unico rimedio che le risolve. */
+    /* `balance` e non `pretty`: una bolla è un blocco di due o tre righe, e
+       lì il problema non è l'ultima riga orfana ma lo squilibrio fra tutte.
+       `pretty` lasciava code di una o due parole che in proiezione si notano. */
+    text-wrap: balance;
+    padding: 0.5rem 0.75rem; border-radius: 0.5rem;
+    font-size: clamp(1rem, 1.14vw, 1.2rem); line-height: 1.55;
+  }
+  .mk .mk-bolla[data-side='out'] {
+    align-self: flex-end;
+    border: 1px solid rgba(var(--sig-rgb), 0.45);
+    background: rgba(var(--sig-rgb), 0.12);
+    color: var(--ink-primary);
+  }
+  .mk .mk-bolla[data-side='in'] {
+    align-self: flex-start;
+    border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--ink-secondary);
+  }
+
+  /* ── Il movimento della conversazione ─────────────────────────────────
+     Il PASSO lo decide chi presenta (`[data-substep]`, ↓ o Spazio), il
+     MOVIMENTO resta quello della scena `converse` del motore: ogni bolla
+     entra dal proprio lato — Coworker da sinistra, chi scrive da destra —
+     invece di salire dal basso come un blocco qualunque. La regola globale
+     dei sotto-passi fa alzare tutto di 8px: qui si sostituisce la traslazione
+     con quella laterale, e la sola `opacity` resta sua.
+     La specificità serve a battere `[data-substep][data-substep-active]`, e
+     per lo stesso motivo la riga dell'attivo sta DOPO. */
+  .mk .mk-bolla[data-side='in']  { transform: translate(-26px, 10px); }
+  .mk .mk-bolla[data-side='out'] { transform: translate(26px, 10px); }
+  .mk .mk-bolla { transition: opacity 420ms ease-out, transform 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .mk .mk-bolla[data-substep-active] { transform: none; }
+
+  /* Con «Riduci movimento» e senza JavaScript la conversazione è ferma e
+     tutta leggibile: lo stato base resta quello informativo. */
+  @media (prefers-reduced-motion: reduce) {
+    .mk .mk-bolla[data-side='in'],
+    .mk .mk-bolla[data-side='out'] { transform: none; transition: none; }
+    .mk .reveal-attr { opacity: 1; transform: none; transition: none; }
+    .mk-prof[data-substep-active] .scan-line { animation: none; }
+    .mk-var-badge { opacity: 1; transition: none; }
+    .mk .perso-item[data-match] {
+      border-color: rgba(var(--sig-rgb), 0.75);
+      background: rgba(var(--sig-rgb), 0.16);
+    }
+  }
+  html:not(.js) .mk .reveal-attr { opacity: 1; transform: none; }
+  html:not(.js) .mk-var-badge { opacity: 1; }
+  html:not(.js) .mk .perso-item[data-match] {
+    border-color: rgba(var(--sig-rgb), 0.75);
+    background: rgba(var(--sig-rgb), 0.16);
+  }
+  html:not(.js) .mk .mk-bolla[data-side='in'],
+  html:not(.js) .mk .mk-bolla[data-side='out'] { transform: none; }
+
+  /* ── 2 · Il profilo e le varianti ─────────────────────────────────── */
+  .mk-prof {
+    position: relative; overflow: hidden; margin-top: 0.15rem;
+    border: 1px solid rgba(79, 189, 180, 0.32); border-radius: 0.55rem;
+    padding: 0.5rem 0.65rem;
+    background: rgba(0, 102, 102, 0.16);
+  }
+  .mk .scan-line {
+    position: absolute; left: 0; right: 0; top: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-verde-chiaro), transparent);
+    opacity: 0; pointer-events: none;
+  }
+  .mk-prof-tag {
+    margin: 0 0 0.45rem; font-size: clamp(0.84rem, 0.92vw, 0.96rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro);
+  }
+  .mk-prof-l { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+
+  /* Il riconoscimento, guidato dal passo invece che dall'ingresso in slide:
+     la riga di scansione attraversa il riquadro una volta e gli attributi
+     entrano a scalare. È il movimento della scena `clienteling`, ma scatta
+     quando chi racconta lo decide. */
+  .mk-prof[data-substep-active] .scan-line { animation: mk-scan 1s ease-in-out 0.1s 1 both; }
+  @keyframes mk-scan {
+    0%   { opacity: 0; top: 0; }
+    12%  { opacity: 1; }
+    88%  { opacity: 1; }
+    100% { opacity: 0; top: 100%; }
+  }
+  .mk .reveal-attr { opacity: 0; transform: translateX(-10px); transition: opacity 360ms ease-out, transform 360ms ease-out; }
+  .mk-prof[data-substep-active] .reveal-attr { opacity: 1; transform: none; }
+  .mk-prof[data-substep-active] .reveal-attr:nth-child(1) { transition-delay: 0.18s; }
+  .mk-prof[data-substep-active] .reveal-attr:nth-child(2) { transition-delay: 0.34s; }
+  .mk-prof[data-substep-active] .reveal-attr:nth-child(3) { transition-delay: 0.5s; }
+  .mk .reveal-attr { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; }
+  .mk-prof-k { font-size: clamp(0.9rem, 1vw, 1.05rem); color: var(--ink-tertiary); }
+  .mk-prof-v { font-size: clamp(1rem, 1.12vw, 1.18rem); font-weight: 600; color: var(--ink-primary); }
+
+  /* ── La pelle di Trenitalia, semplificata ─────────────────────────── */
+  .mk-dev { border: 1px solid var(--line-subtle); overflow: hidden; background: rgba(255, 255, 255, 0.04); }
+  .mk[data-vista='app'] .mk-dev { border-radius: 1.1rem; }
+  .mk[data-vista='web'] .mk-dev { border-radius: 0.5rem; }
+  .mk[data-vista='app'] .mk-solo-web,
+  .mk[data-vista='web'] .mk-solo-app { display: none; }
+
+  .mk-top {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.7rem;
+    background: var(--color-rosso);
+  }
+  .mk-top-m {
+    font-family: var(--font-display); font-weight: 700; letter-spacing: 0.01em;
+    font-size: clamp(1rem, 1.12vw, 1.18rem); color: rgba(255, 255, 255, 0.98);
+  }
+  .mk-top-i { width: 0.75rem; height: 0.75rem; border-radius: 0.15rem; background: rgba(255,255,255,0.4); }
+  .mk-top-i--web { margin-left: auto; }
+  .mk-top-i--web + .mk-top-i--web { margin-left: 0; }
+
+  /* La notifica push. Non è decorazione: è il solo punto in cui il prodotto
+     va a cercare la persona invece di aspettarla, ed è il motivo per cui il
+     commutatore App/Web esiste. Fondo chiaro come una notifica di sistema,
+     così si stacca dalla pagina sotto. */
+  .mk-push {
+    margin: 0.55rem 0.6rem 0.1rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.6rem;
+    background: rgba(241, 243, 244, 0.95);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .mk-push-t { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }
+  .mk-push-i {
+    width: 0.95rem; height: 0.95rem; border-radius: 0.25rem;
+    background: var(--color-rosso); flex: 0 0 auto;
+  }
+  .mk-push-n {
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(47, 57, 78, 0.75);
+  }
+  .mk-push-o {
+    margin-left: auto;
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); color: rgba(47, 57, 78, 0.6);
+  }
+  [data-slide] .mk .mk-push-c {
+    margin: 0; width: 100%;
+    font-size: clamp(0.92rem, 1vw, 1.05rem); line-height: 1.4;
+    color: rgba(27, 34, 48, 0.96);
+  }
+
+  .mk-cerca {
+    display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.3rem;
+    padding: 0.45rem 0.6rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+  .mk-cerca-c {
+    padding: 0.28rem 0.45rem; border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: clamp(0.88rem, 0.96vw, 1rem); color: rgba(47, 57, 78, 0.85);
+  }
+  .mk-cerca-b {
+    padding: 0.28rem 0.6rem; border-radius: 0.25rem;
+    background: var(--color-rosso);
+    font-size: clamp(0.88rem, 0.96vw, 1rem); font-weight: 700; letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.98);
+  }
+
+  .mk-tab {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.2rem;
+    padding: 0.4rem 0.5rem;
+    border-top: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mk-tab-v { font-size: clamp(0.84rem, 0.92vw, 0.96rem); text-align: center !important; color: var(--ink-tertiary); }
+  .mk-tab-v--on { color: var(--color-rosso-chiaro); font-weight: 700; }
+
+  .mk-pagina { display: flex; flex-direction: column; gap: 0.38rem; padding: 0.65rem 0.7rem 0.7rem; }
+  .mk-titolo {
+    margin: 0;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.15rem, 1.34vw, 1.42rem); line-height: 1.25;
+    color: var(--ink-primary);
+  }
+  .mk-var { display: flex; flex-direction: column; gap: 0.3rem; }
+  .mk .perso-item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem;
+    min-width: 0; padding: 0.4rem 0.55rem; border-radius: 0.35rem;
+    border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  /* Il segnaposto del passo «scelta»: non occupa spazio, accende la variante
+     giusta e smorza le altre. `:has()` è l'unico modo in CSS per far valere un
+     elemento che nel DOM viene DOPO quelli che deve vestire; dove non c'è, la
+     variante corretta resta semplicemente evidenziata fin da subito, che è uno
+     stato degradato corretto e non rotto. */
+  .mk-scelta { display: block; height: 0; }
+  .mk .perso-item { transition: border-color 420ms ease, background 420ms ease, box-shadow 420ms ease; }
+  .mk-lato:has(.mk-scelta[data-substep-active]) .perso-item[data-match] {
+    border-color: rgba(var(--sig-rgb), 0.75);
+    background: rgba(var(--sig-rgb), 0.16);
+    box-shadow: 0 0 0 1px rgba(var(--sig-rgb), 0.35);
+  }
+  .mk-lato:has(.mk-scelta[data-substep-active]) .perso-item:not([data-match]) {
+    border-style: dashed; background: transparent;
+  }
+  .mk-var-badge { opacity: 0; transition: opacity 360ms ease-out 0.15s; }
+  .mk-lato:has(.mk-scelta[data-substep-active]) .mk-var-badge { opacity: 1; }
+  .mk-lato:has(.mk-scelta[data-substep-active]) .perso-item[data-match] .mk-var-t { color: var(--ink-primary); font-weight: 600; }
+  .mk-var-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.45rem; min-width: 0; }
+  .mk-var-t { font-size: clamp(1rem, 1.12vw, 1.18rem); line-height: 1.45; color: var(--ink-secondary); }
+  /* Il livello di personalizzazione, detto a parole sulla tessera che vince. */
+  .mk-var-badge {
+    font-size: clamp(0.78rem, 0.86vw, 0.9rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.1rem 0.35rem; border-radius: 0.2rem;
+    color: rgba(255, 255, 255, 0.97);
+    background: rgba(217, 24, 53, 0.55);
+  }
+  .mk-var-n { font-size: clamp(1rem, 1.12vw, 1.18rem); font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
+
+  /* ── 3 · Il dietro le quinte ──────────────────────────────────────── */
+  .mk--dietro { grid-template-columns: minmax(0, 1fr); }
+  .mk-flusso {
+    grid-column: 1 / -1; position: relative;
+    margin-top: 0; padding-top: 0.4rem;
+    color: rgba(var(--sig-rgb), 0.9);
+  }
+  .mk-flusso-tag { margin: 0 0 0.35rem; }
+  .mk-flusso-l { display: block; width: 100%; height: 8px; }
+  .mk-flusso-n {
+    list-style: none; margin: 0.6rem 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.6rem, 1.3vw, 1.3rem);
+  }
+  .mk-stadio {
+    display: flex; flex-direction: column; gap: 0.25rem; min-width: 0;
+    padding: 0.9rem 1rem 1rem;
+    border: 1px solid var(--line-subtle); border-radius: 0.6rem;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .mk-stadio[data-prod='CJA'] { border-color: rgba(79, 189, 180, 0.3); background: rgba(0, 102, 102, 0.14); }
+  .mk-stadio[data-prod='Target'] { border-color: rgba(255, 141, 157, 0.28); background: rgba(217, 24, 53, 0.1); }
+  .mk-stadio-n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.6rem; height: 1.6rem; border-radius: 9999px; margin-bottom: 0.15rem;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(0.82rem, 0.9vw, 0.94rem);
+    color: var(--ink-primary);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+  }
+  .mk-stadio[data-prod='CJA'] .mk-stadio-n { border-color: rgba(79, 189, 180, 0.55); }
+  .mk-stadio[data-prod='Target'] .mk-stadio-n { border-color: rgba(255, 141, 157, 0.5); }
+  .mk-stadio-k {
+    font-size: clamp(1.1rem, 1.32vw, 1.4rem); font-weight: 600; line-height: 1.3;
+    color: var(--ink-primary);
+  }
+  .mk-stadio[data-prod='CJA'] .mk-stadio-k { color: var(--color-verde-chiaro); }
+  .mk-stadio[data-prod='Target'] .mk-stadio-k { color: var(--color-rosso-chiaro); }
+  .mk-stadio-v { font-size: clamp(0.98rem, 1.1vw, 1.16rem); line-height: 1.5; color: var(--ink-tertiary); }
+  /* L'esempio: un dato vero, riconoscibile come tale perché citato. */
+  .mk-stadio-e {
+    margin-top: 0.1rem; padding-left: 0.4rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: clamp(0.98rem, 1.1vw, 1.16rem); line-height: 1.5;
+    color: var(--ink-secondary);
+  }
+
+  .mk-sw {
+    display: inline-flex; gap: 2px; padding: 2px;
+    border-radius: 9999px; border: 1px solid var(--line-subtle);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .mk-sw-b {
+    appearance: none; border: 0; cursor: pointer;
+    padding: 0.14rem 0.6rem; border-radius: 9999px;
+    font-size: clamp(0.86rem, 0.94vw, 0.98rem); font-weight: 600; letter-spacing: 0.03em;
+    background: transparent; color: rgba(241, 243, 244, 0.72);
+    transition: background 180ms ease, color 180ms ease;
+  }
+  .mk-sw-b[aria-pressed='true'] { background: rgba(241, 243, 244, 0.92); color: rgba(27, 34, 48, 1); }
+
+  @media (max-width: 1300px) {
+    .mk { gap: 0.6rem; }
+    .mk-top { padding: 0.28rem 0.55rem; }
+    .mk-top-m { font-size: 0.78rem; }
+    /* La notifica push. Non è decorazione: è il solo punto in cui il prodotto
+     va a cercare la persona invece di aspettarla, ed è il motivo per cui il
+     commutatore App/Web esiste. Fondo chiaro come una notifica di sistema,
+     così si stacca dalla pagina sotto. */
+  .mk-push {
+    margin: 0.55rem 0.6rem 0.1rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.6rem;
+    background: rgba(241, 243, 244, 0.95);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .mk-push-t { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }
+  .mk-push-i {
+    width: 0.95rem; height: 0.95rem; border-radius: 0.25rem;
+    background: var(--color-rosso); flex: 0 0 auto;
+  }
+  .mk-push-n {
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(47, 57, 78, 0.75);
+  }
+  .mk-push-o {
+    margin-left: auto;
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); color: rgba(47, 57, 78, 0.6);
+  }
+  [data-slide] .mk .mk-push-c {
+    margin: 0; width: 100%;
+    font-size: clamp(0.92rem, 1vw, 1.05rem); line-height: 1.4;
+    color: rgba(27, 34, 48, 0.96);
+  }
+
+  .mk-cerca { padding: 0.35rem 0.5rem; }
+    .mk-tab { padding: 0.26rem 0.45rem; }
+    .mk-titolo { margin-bottom: 0.05rem; }
+    .mk-chat { gap: 0.24rem; padding: 0.45rem; min-height: 10.2rem; }
+    .mk .mk-bolla { padding: 0.38rem 0.58rem; }
+    .mk-prof { padding: 0.3rem 0.5rem; }
+    .mk-prof-l { flex-direction: row; flex-wrap: wrap; gap: 0.1rem 0.9rem; }
+    .mk .reveal-attr { justify-content: flex-start; gap: 0.3rem; }
+    .mk-prof-tag { margin-bottom: 0.15rem; }
+    .mk-prof-tag { margin-bottom: 0.2rem; }
+    .mk-top { padding: 0.32rem 0.6rem; }
+    .mk-tab { padding: 0.3rem 0.5rem; }
+    .mk-pagina { gap: 0.3rem; padding: 0.45rem 0.6rem 0.5rem; }
+    .mk-push { margin: 0.4rem 0.5rem 0.05rem; padding: 0.4rem 0.55rem; }
+    .mk-push-t { margin-bottom: 0.18rem; }
+    .mk-testa { height: 1.95rem; }
+    .mk .perso-item { padding: 0.3rem 0.45rem; }
+    .mk-var { gap: 0.24rem; }
+    .mk-lato { gap: 0.3rem; }
+    /* A 1280 la slide è 72px troppo alta e il contratto dice di ridurre la
+       densità prima di toccare il tipo. Lo stadio tiene il NOME e l'ESEMPIO —
+       le due cose che portano il senso — e lascia andare la glossa, che a
+       1920, dove il deck si proietta, resta al suo posto. */
+    .mk-stadio-v { display: none; }
+    .mk-flusso { margin-top: 0; padding-top: 0.15rem; }
+    .mk-flusso-tag { margin-bottom: 0.25rem; }
+    .mk-stadio-e { margin-top: 0.05rem; }
+
+  }
+  @media (max-width: 900px) {
+    .mk { grid-template-columns: minmax(0, 1fr); }
+    .mk-flusso-n { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
