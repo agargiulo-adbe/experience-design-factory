@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
 import { href } from '@edf/core/utils/url.js';
 import { SITE } from '../data/site';
+import { REGISTRO } from '../data/registro';
 
 const base = import.meta.env.BASE_URL;
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
@@ -13,6 +14,18 @@ interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
 
 // Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
 // accende e spegne. Ogni <Slide id> nuova va registrata qui.
+/* Il registro impagina tre voci per slide (vedi `registro.astro`) e cresce a ogni
+   sessione: le sue slide si DERIVANO dai dati. Ricopiarle a mano qui significa che
+   alla prima voce nuova la console smette di vedere l'ultima slide — era già
+   successo, con due righe ferme a «voci 1-5» su quattro slide rese. */
+const SLIDE_REGISTRO: SlideEntry[] = [
+  { id: 'slide-cover', label: 'Cover — Il registro' },
+  ...Array.from({ length: Math.ceil(REGISTRO.length / 3) }, (_, i) => ({
+    id: `slide-reg-${i + 1}`,
+    label: `Registro — voci ${i * 3 + 1}-${Math.min((i + 1) * 3, REGISTRO.length)}`,
+  })),
+];
+
 const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'index', label: 'Cinque domande (00)', slides: [
     { id: 'slide-cover',    label: 'Cover — Cinque domande' },
@@ -37,17 +50,17 @@ const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'domanda-3', label: 'Dove è forte (04)', slides: [
     { id: 'slide-cover',    label: 'Cover — «Dove è già forte, e dove no?»' },
     { id: 'slide-oggi-con', label: 'Oggi / Con Coworker' },
-    { id: 'slide-ancore',   label: 'Undici skill, e i no documentati' },
+    { id: 'slide-ancore',   label: 'Dodici skill, e il no documentato' },
   ]},
   { slug: 'domanda-4', label: 'Alert e tabelle (05)', slides: [
     { id: 'slide-cover',    label: 'Cover — «Gli alert, e il muro di tabelle»' },
     { id: 'slide-oggi-con', label: 'Oggi / Con Coworker' },
-    { id: 'slide-ancore',   label: 'Alert Skills, root cause, executive summary' },
+    { id: 'slide-ancore',   label: 'Notification Skills, alert, root cause, sintesi' },
   ]},
   { slug: 'domanda-5', label: 'Il contesto (06)', slides: [
     { id: 'slide-cover',    label: 'Cover — «Cosa non sa di noi?»' },
     { id: 'slide-oggi-con', label: 'Oggi / Con Coworker' },
-    { id: 'slide-ancore',   label: 'Data Dictionary, segmenti, quality gate' },
+    { id: 'slide-ancore',   label: 'Data Dictionary, segmenti, cancello in sola lettura' },
   ]},
   { slug: 'casa', label: 'Cosa vi portate a casa (07)', slides: [
     { id: 'slide-cover',           label: 'Cover — Cosa vi portate a casa' },
@@ -55,11 +68,7 @@ const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-ask',             label: 'L\u2019ask — due casi e tre date' },
     { id: 'slide-firma',           label: 'La firma — Adobe × Unipol' },
   ]},
-  { slug: 'registro', label: 'Il registro (08)', slides: [
-    { id: 'slide-cover', label: 'Cover — Il registro' },
-    { id: 'slide-reg-1', label: 'Registro — voci 1-5' },
-    { id: 'slide-reg-2', label: 'Registro — voci 6-10' },
-  ]},
+  { slug: 'registro', label: 'Il registro (08)', slides: SLIDE_REGISTRO },
 ];
 
 interface SolutionEntry {
@@ -67,17 +76,27 @@ interface SolutionEntry {
   pillar: string; description: string; appearsIn: string[];
 }
 
-// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
-// Adobe che l'experience propone davvero (nomi verificati, vedi memoria
-// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+// I tre prodotti di cui parla questo Playbook, con il nome per esteso come Adobe
+// li scrive (verificati, vedi memoria `adobe-product-naming-2026`). Nessuna slide
+// porta `data-solution`: qui non si spegne un pezzo di racconto, perché i capitoli
+// sono le domande del cliente e non un catalogo. L'elenco serve alla console per
+// dire di che cosa parla l'experience; per spegnere un capitolo c'è il tab
+// «Capitoli e slide».
 const SOLUTIONS: SolutionEntry[] = [
-  { id: 'piattaforma', name: 'Adobe Experience Cloud — segnaposto', shortName: 'Adobe', pillar: 'piattaforma',
-    description: 'Sostituire con i prodotti Adobe che il deck propone, uno per voce, con il nome per esteso.', appearsIn: ['Il punto di partenza', 'Domanda 1', 'Domanda 2', 'Domanda 3', 'Cosa vi portate a casa'] },
+  { id: 'coworker', name: 'Adobe CX Enterprise Coworker', shortName: 'Coworker', pillar: 'assistente',
+    description: 'Il filo di tutto il percorso: ogni domanda ha la risposta di oggi accanto a quella con Coworker.',
+    appearsIn: ['Il punto di partenza', 'Chiudere un test', 'La memoria dei test', 'Dove è forte', 'Alert e tabelle', 'Il contesto', 'Cosa vi portate a casa'] },
+  { id: 'target', name: 'Adobe Target', shortName: 'Target', pillar: 'prodotti',
+    description: 'Le skill su Target: verdetto di un test, dimensionamento, storico del programma, catalogo e limiti.',
+    appearsIn: ['Chiudere un test', 'La memoria dei test', 'Dove è forte'] },
+  { id: 'cja', name: 'Adobe Customer Journey Analytics', shortName: 'CJA', pillar: 'prodotti',
+    description: 'Gli alert, le cause di un calo, le sintesi, e i limiti dichiarati di Coworker dentro Workspace.',
+    appearsIn: ['Alert e tabelle', 'Il contesto'] },
 ];
 
-const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
-const PILLAR_ORDER = ['piattaforma'];
-const PILLAR_COLORS: Record<string, string> = { piattaforma: '#0303f5' };
+const PILLAR_LABELS: Record<string, string> = { assistente: 'L\u2019assistente', prodotti: 'I prodotti' };
+const PILLAR_ORDER = ['assistente', 'prodotti'];
+const PILLAR_COLORS: Record<string, string> = { assistente: '#0303f5', prodotti: '#3d95ff' };
 
 const solutionGroups = PILLAR_ORDER
   .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))

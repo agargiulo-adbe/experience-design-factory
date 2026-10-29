@@ -45,8 +45,10 @@ export interface Fonte {
 
 export interface Domanda {
   slug: string;
+  /** Il numero della DOMANDA (1-5), non quello del capitolo: in sala «la domanda
+      uno» dev'essere la prima domanda, non la seconda pagina. */
   num: string;
-  /** La domanda come l'hanno fatta loro. */
+  /** La domanda come l'hanno fatta loro. */
   domanda: { it: string; en: string };
   /** Chi l'ha fatta, e quando. */
   chi: { it: string; en: string };
@@ -77,11 +79,13 @@ const EL_SKILL =
   'https://experienceleague.adobe.com/en/docs/coworker/content/customizations/skills/create-your-first-skill';
 const EL_GATE =
   'https://experienceleague.adobe.com/en/docs/coworker/content/customizations/skills/run-a-quality-gate-skill';
+const EL_NOTIFICHE =
+  'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/notifications/notification-skills';
 
 export const DOMANDE: Domanda[] = [
   {
     slug: 'domanda-1',
-    num: '02',
+    num: '01',
     domanda: {
       it: '«Quando possiamo chiudere un test?»',
       en: '“When can we close a test?”',
@@ -91,8 +95,8 @@ export const DOMANDE: Domanda[] = [
       en: 'Digital Intelligence, 15 October: this is the point we receive the most requests about.',
     },
     punto: {
-      it: 'Il calcolo non è più una vostra opinione',
-      en: 'The calculation stops being your opinion',
+      it: 'Dimensionamento e verdetto li calcola la skill',
+      en: 'The skill does the sizing and the verdict',
     },
     punto2: {
       it: 'Due skill, e una revisione che resta vostra',
@@ -103,17 +107,17 @@ export const DOMANDE: Domanda[] = [
       en: 'Two documented skills deliver the verdict and the sizing.',
     },
     oggi: {
-      it: 'La domanda arriva a voi e la risposta si costruisce a mano, una volta per test.',
+      it: 'La domanda arriva a voi e la risposta si costruisce a mano, una volta per test.',
       en: 'The question lands on you and the answer is rebuilt by hand, once per test.',
     },
     con: {
-      it: 'Si chiede in italiano, e torna il numero con il motivo accanto.',
+      it: 'Si chiede in italiano, e torna il numero con il motivo accanto.',
       en: 'You ask in plain language, and the figure comes back with its reason.',
     },
     ancore: [
-      { it: 'Spedire, aspettare o fermare', en: 'Ship, wait or stop' },
-      { it: 'Quanto traffico serve', en: 'How much traffic is needed' },
-      { it: 'La configurazione ha un errore', en: 'The configuration has a flaw' },
+      { it: 'Quattro esiti, non un’opinione', en: 'Four verdicts, not an opinion' },
+      { it: 'Campione e durata, calcolati', en: 'Sample and duration, calculated' },
+      { it: 'Mai prima del campione', en: 'Never before the sample' },
     ],
     voci: [
       {
@@ -129,8 +133,8 @@ export const DOMANDE: Domanda[] = [
         figura: 'prima-dopo',
         ancora: { it: 'Target Test Calculator', en: 'Target Test Calculator' },
         riga: {
-          it: 'Campione, durata e lift rilevabile, con correzione di Bonferroni sui confronti multipli.',
-          en: 'Sample size, duration and detectable lift, with Bonferroni correction for multiple comparisons.',
+          it: 'Campione, durata e lift rilevabile. La correzione di Bonferroni riguarda i confronti fra più varianti, non il guardare il risultato ogni giorno.',
+          en: 'Sample size, duration and detectable lift. The Bonferroni correction is about comparing several variants, not about checking the result every day.',
         },
         livello: 'doc',
       },
@@ -145,8 +149,8 @@ export const DOMANDE: Domanda[] = [
       },
     ],
     nota: {
-      it: 'Lettura delle skill documentate di Adobe Target, pagina aggiornata il 27 ottobre 2026. Da correggere dove non corrisponde al vostro caso.',
-      en: 'Read from the documented Adobe Target skills, page updated 27 October 2026. To be corrected wherever it does not match your case.',
+      it: 'La regola che il calcolo non porta: non si chiude prima del campione calcolato. Guardare il risultato ogni giorno è l’altro modo di sbagliare, e lo decidete voi.',
+      en: 'The rule the maths does not carry: do not close before the calculated sample. Checking the result every day is the other way to get it wrong, and that one is yours to set.',
     },
     fonti: [
       {
@@ -159,7 +163,7 @@ export const DOMANDE: Domanda[] = [
 
   {
     slug: 'domanda-2',
-    num: '03',
+    num: '02',
     domanda: {
       it: '«Come colleghiamo i test che abbiamo già fatto?»',
       en: '“How do we connect the tests we have already run?”',
@@ -181,17 +185,17 @@ export const DOMANDE: Domanda[] = [
       en: 'The history gets read, and the next hypothesis comes out of it.',
     },
     oggi: {
-      it: 'I committenti cambiano, i test restano nelle vostre teste e in un foglio.',
+      it: 'I committenti cambiano, i test restano nelle vostre teste e in un foglio.',
       en: 'The requesters change, the tests stay in your heads and in a spreadsheet.',
     },
     con: {
-      it: 'Si chiede che cosa testare dopo, e la risposta cita i test da cui viene.',
+      it: 'Si chiede che cosa testare dopo, e la risposta cita i test da cui viene.',
       en: 'You ask what to test next, and the answer cites the tests it came from.',
     },
     ancore: [
       { it: 'Che cosa ha funzionato', en: 'What has worked' },
       { it: 'Il test successivo', en: 'The next test' },
-      { it: 'La vista di tutto il programma', en: 'The whole programme at once' },
+      { it: 'Il programma visto intero', en: 'The whole programme at once' },
     ],
     voci: [
       {
@@ -237,7 +241,7 @@ export const DOMANDE: Domanda[] = [
 
   {
     slug: 'domanda-3',
-    num: '04',
+    num: '03',
     domanda: {
       it: '«Dove è già forte, e dove no?»',
       en: '“Where is it already strong, and where is it not?”',
@@ -251,42 +255,42 @@ export const DOMANDE: Domanda[] = [
       en: 'We declare the boundary ourselves, before you ask',
     },
     punto2: {
-      it: 'Undici skill, e i limiti scritti accanto',
-      en: 'Eleven skills, with the limits written beside them',
+      it: 'Dodici skill, e i limiti scritti accanto',
+      en: 'Twelve skills, with the limits written beside them',
     },
     lead: {
-      it: 'Undici skill su Target, e tre cose che non fa.',
-      en: 'Eleven skills on Target, and three things it will not do.',
+      it: 'Dodici skill su Target, e un solo no scritto in tabella.',
+      en: 'Twelve skills on Target, and a single no written in the table.',
     },
     oggi: {
-      it: 'Senza mappa si prova a caso, e la prima cosa che non funziona diventa il giudizio.',
+      it: 'Senza mappa si prova a caso, e la prima cosa che non funziona diventa il giudizio.',
       en: 'With no map you try at random, and the first failure becomes the verdict.',
     },
     con: {
-      it: 'Ogni skill è documentata con i suoi prompt, e i limiti stanno nella stessa tabella.',
+      it: 'Ogni skill è documentata con i suoi prompt, e i limiti stanno nella stessa tabella.',
       en: 'Every skill is documented with its prompts, and the limits sit in the same table.',
     },
     ancore: [
-      { it: 'Undici skill, non una demo', en: 'Eleven skills, not a demo' },
-      { it: 'Automated Personalization: no', en: 'Automated Personalization: no' },
-      { it: 'Il Content Fragment AEM: sì', en: 'The AEM Content Fragment: yes' },
+      { it: 'Dodici skill, non una demo', en: 'Twelve skills, not a demo' },
+      { it: 'Automated Personalization non si crea', en: 'Automated Personalization is not created' },
+      { it: 'Il Content Fragment AEM, da confermare', en: 'The AEM Content Fragment, to confirm' },
     ],
     voci: [
       {
         figura: 'tetto',
         ancora: { it: 'Il catalogo per intero', en: 'The whole catalogue' },
         riga: {
-          it: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations.',
-          en: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations.',
+          it: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations, Recommendations Diagnose.',
+          en: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations, Recommendations Diagnose.',
         },
         livello: 'doc',
       },
       {
         figura: 'una-esce',
-        ancora: { it: 'Quello che non fa', en: 'What it will not do' },
+        ancora: { it: 'Automated Personalization', en: 'Automated Personalization' },
         riga: {
-          it: 'Non si crea, né da Coworker né dall’MCP. È scritto nella tabella di confronto.',
-          en: 'Cannot be created, by Coworker or by the Target MCP. It is in the comparison table.',
+          it: 'La creazione di attività di questo tipo non è supportata, né da Coworker né dall’MCP di Target.',
+          en: 'Creating activities of this kind is not supported, by Coworker or by the Target MCP.',
         },
         livello: 'doc',
       },
@@ -294,15 +298,15 @@ export const DOMANDE: Domanda[] = [
         figura: 'dentro-fuori',
         ancora: { it: 'Il Content Fragment AEM', en: 'The AEM Content Fragment' },
         riga: {
-          it: 'In un’attività Target si usa da Coworker, non dall’MCP. È la riga del vostro AEM Cloud Service.',
-          en: 'In a Target activity it works from Coworker, not the MCP. This is the line about your AEM Cloud Service.',
+          it: 'In un’attività Target si usa da Coworker, non dall’MCP. Se usate AEM Cloud Service, la riga è questa: da confermare col vostro IT.',
+          en: 'In a Target activity it works from Coworker, not the MCP. If you run AEM Cloud Service this is the line: to confirm with your IT.',
         },
         livello: 'doc',
       },
     ],
     nota: {
-      it: 'Dato di adozione interno, non un impegno: chi prova più di un tipo di attività nella prima settimana torna con frequenza più alta.',
-      en: 'Internal adoption figure, not a commitment: people who try more than one kind of task in week one come back at a higher rate.',
+      it: 'Il catalogo e i limiti stanno nella stessa pagina documentata, con i prompt di esempio. Quello che non è scritto lì, non lo diamo per vero.',
+      en: 'Catalogue and limits sit on the same documented page, with the example prompts. What is not written there, we do not take as true.',
     },
     fonti: [
       {
@@ -313,14 +317,14 @@ export const DOMANDE: Domanda[] = [
       {
         label: { it: 'Coworker Chat workflows', en: 'Coworker Chat workflows' },
         url: EL_WORKFLOWS,
-        aggiornata: '28.10.2026',
+        aggiornata: '29.10.2026',
       },
     ],
   },
 
   {
     slug: 'domanda-4',
-    num: '05',
+    num: '04',
     domanda: {
       it: '«Gli alert, e il muro di tabelle»',
       en: '“The alerts, and the wall of tables”',
@@ -330,37 +334,37 @@ export const DOMANDE: Domanda[] = [
       en: 'Insight & Analytics, 28 October: we asked it to read our alerts, and it said it could not.',
     },
     punto: {
-      it: 'Il digest che chiedete esiste, e il perimetro va verificato',
-      en: 'The digest you asked for exists, and its scope needs checking',
+      it: 'Il digest è documentato. Resta da vedere se i vostri ci entrano',
+      en: 'The digest exists and is documented. What is left is whether yours fit in',
     },
     punto2: {
-      it: 'Tre famiglie di skill, già disponibili',
-      en: 'Three skill families, already available',
+      it: 'Tre skill, e un perimetro da verificare',
+      en: 'Three skills, and a scope to verify',
     },
     lead: {
-      it: 'Una famiglia di skill sugli alert, una sulle cause, una sulle sintesi.',
-      en: 'One skill family for alerts, one for causes, one for summaries.',
+      it: 'Digest giornaliero o settimanale, su quello che arriva nel pannello delle notifiche.',
+      en: 'A daily or weekly digest, over what lands in the notifications panel.',
     },
     oggi: {
-      it: 'L’alert arriva come mail, si incolla in chat e si chiede che cosa è successo.',
+      it: 'L’alert arriva come mail, si incolla in chat e si chiede che cosa è successo.',
       en: 'The alert arrives as an email, gets pasted into chat, and you ask what happened.',
     },
     con: {
-      it: 'Gli alert diventano un briefing operativo, con le risorse colpite accanto.',
-      en: 'Alerts become an operational briefing, with the affected resources beside them.',
+      it: 'Sugli alert di piattaforma arriva un briefing con accanto che cosa è stato toccato.',
+      en: 'On platform alerts you get a briefing with what was affected beside it.',
     },
     ancore: [
-      { it: 'Dagli alert a un briefing', en: 'From alerts to a briefing' },
+      { it: 'Il digest, giornaliero o settimanale', en: 'The digest, daily or weekly' },
       { it: 'Perché è caduta, non solo che è caduta', en: 'Why it dropped, not just that it dropped' },
       { it: 'Dalla tabella alla slide', en: 'From the table to the slide' },
     ],
     voci: [
       {
-        figura: 'filtro',
-        ancora: { it: 'Customer Alert Skills', en: 'Customer Alert Skills' },
+        figura: 'imbuto',
+        ancora: { it: 'Notification Skills', en: 'Notification Skills' },
         riga: {
-          it: 'Disponibili a tutti i clienti Coworker. Servono gli alert di Experience Platform e le risorse collegate.',
-          en: 'Available to every Coworker customer. They require Experience Platform alerts and the linked resources.',
+          it: 'Digest giornaliero o settimanale, per tutti i clienti Coworker e senza configurazione.',
+          en: 'A daily or weekly digest, for every Coworker customer and with no setup.',
         },
         livello: 'doc',
       },
@@ -368,8 +372,8 @@ export const DOMANDE: Domanda[] = [
         figura: 'imbuto',
         ancora: { it: 'Root cause analysis', en: 'Root cause analysis' },
         riga: {
-          it: 'Perché una metrica è cambiata: cali, picchi e anomalie, con le skill di root cause su CJA.',
-          en: 'Why a metric changed: drops, spikes and anomalies, with the CJA root cause skills.',
+          it: 'Perché una metrica è cambiata: cali, picchi e anomalie. Da verificare che cosa serve già attivo sulla data view.',
+          en: 'Why a metric changed: drops, spikes and anomalies. To verify what must already be active on the data view.',
         },
         livello: 'doc',
       },
@@ -377,32 +381,38 @@ export const DOMANDE: Domanda[] = [
         figura: 'tabella-a-grafico',
         ancora: { it: 'Sintesi e outline di slide', en: 'Summaries and slide outlines' },
         riga: {
-          it: 'La famiglia executive summary produce sintesi per chi decide e scalette di presentazione.',
-          en: 'The executive summary family produces stakeholder summaries and presentation outlines.',
+          it: 'La famiglia executive summary produce sintesi e scalette di presentazione.',
+          en: 'The executive summary family produces summaries and presentation outlines.',
         },
         livello: 'doc',
       },
     ],
     nota: {
-      it: 'Il dubbio dichiarato: queste skill lavorano sugli alert di Experience Platform, i vostri sono di CJA su pannello. La copertura va verificata.',
-      en: 'The stated open question: these skills work on Experience Platform alerts, yours are CJA panel alerts. The coverage needs verifying.',
+      it: 'Le Customer Alert Skills lavorano sugli alert di Experience Platform; i vostri sono di CJA su pannello, e la copertura va provata.',
+      en: 'Customer Alert Skills work on Experience Platform alerts; yours are CJA panel alerts, and the coverage has to be tried.',
     },
     fonti: [
       {
+        label: { it: 'Notification Skills', en: 'Notification Skills' },
+        url: EL_NOTIFICHE,
+        aggiornata: '28.10.2026',
+      },
+      {
         label: { it: 'Customer Alert Skills', en: 'Customer Alert Skills' },
         url: EL_ALERTS,
+        aggiornata: '28.10.2026',
       },
       {
         label: { it: 'Coworker Chat workflows', en: 'Coworker Chat workflows' },
         url: EL_WORKFLOWS,
-        aggiornata: '28.10.2026',
+        aggiornata: '29.10.2026',
       },
     ],
   },
 
   {
     slug: 'domanda-5',
-    num: '06',
+    num: '05',
     domanda: {
       it: '«Cosa non sa di noi, e come glielo diciamo?»',
       en: '“What does it not know about us, and how do we tell it?”',
@@ -412,8 +422,8 @@ export const DOMANDE: Domanda[] = [
       en: 'Insight & Analytics, 28 October: is dropping in a file enough, or is there more?',
     },
     punto: {
-      it: 'Il data dictionary non è la strada, e c’è scritto',
-      en: 'The data dictionary is not the route, and it is documented',
+      it: 'Oggi il dizionario non è collegato, e c’è scritto',
+      en: 'Today the dictionary is not connected, and it is documented',
     },
     punto2: {
       it: 'Due limiti documentati, e una strada',
@@ -428,7 +438,7 @@ export const DOMANDE: Domanda[] = [
       en: 'Context lives in people’s heads and in Notion, and gets retyped into chat each time.',
     },
     con: {
-      it: 'Un’analisi ricorrente diventa una skill pubblicata, con gli intervalli di date dinamici.',
+      it: 'Un’analisi ricorrente diventa una skill pubblicata, con gli intervalli di date dinamici.',
       en: 'A recurring analysis becomes a published skill, with dynamic date ranges.',
     },
     ancore: [
@@ -441,8 +451,8 @@ export const DOMANDE: Domanda[] = [
         figura: 'una-esce',
         ancora: { it: 'Il Data Dictionary', en: 'The Data Dictionary' },
         riga: {
-          it: 'Coworker non vi è collegato e non usa quelle definizioni per spiegare metriche e dimensioni.',
-          en: 'Coworker is not connected to it and does not use those definitions to explain metrics and dimensions.',
+          it: 'Oggi non vi è collegato. La stessa pagina dichiara il supporto per una release futura, senza data.',
+          en: 'Today it is not connected. The same page states support is planned for a future release, with no date.',
         },
         livello: 'doc',
       },
@@ -457,34 +467,36 @@ export const DOMANDE: Domanda[] = [
       },
       {
         figura: 'conferma',
-        ancora: { it: 'Il cancello prima di agire', en: 'The gate before acting' },
+        ancora: { it: 'Il cancello prima dell’attivazione', en: 'The gate before activation' },
         riga: {
-          it: 'Il pattern della quality gate skill: si valida prima di applicare, e la modifica si vede prima.',
-          en: 'The quality gate skill pattern: validate before applying, and see the change before it lands.',
+          it: 'Valida la conformità di un’audience prima dell’attivazione, in sola lettura: non attiva, non modifica, non copia nulla.',
+          en: 'It validates an audience’s readiness before activation, read-only: it never activates, mutates or copies anything.',
         },
         livello: 'doc',
       },
     ],
     nota: {
-      it: 'Il business context non è ancora per tutti: prima versione attesa a inizio dicembre. Fino a lì il contesto sta in una skill.',
-      en: 'Business context is not yet for everyone: first version expected early December. Until then context lives in a skill.',
+      it: 'Il business context non è ancora per tutti e non ha una data pubblica. Fino ad allora il contesto sta in una skill.',
+      en: 'Business context is not yet for everyone and has no public date. Until then context lives in a skill.',
     },
     fonti: [
       {
         label: {
-          it: 'Coworker in Workspace: i limiti dichiarati',
-          en: 'Coworker in Workspace: the stated limitations',
+          it: 'Coworker in Workspace, in test limitato: i limiti dichiarati',
+          en: 'Coworker in Workspace, in limited testing: the stated limitations',
         },
         url: EL_WS_LIMITI,
-        aggiornata: '16.10.2026',
+        aggiornata: '29.10.2026',
       },
       {
         label: { it: 'Create your first Coworker skill', en: 'Create your first Coworker skill' },
         url: EL_SKILL,
+        aggiornata: '28.10.2026',
       },
       {
         label: { it: 'Run a quality gate skill', en: 'Run a quality gate skill' },
         url: EL_GATE,
+        aggiornata: '26.09.2026',
       },
     ],
   },

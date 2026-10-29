@@ -21,9 +21,30 @@ const currentPath = Astro.url.pathname;
 const risposte = REGISTRO.filter((v) => v.stato === 'risposto').length;
 const aperti = REGISTRO.filter((v) => v.stato !== 'risposto').length;
 /* Tre voci per slide: a cinque il blocco sfondava la safe-area a 1280 (check c e j).
-   La regola è tagliare o spezzare, mai rimpicciolire il tipo. */
-const pagine: typeof REGISTRO[] = [];
-for (let i = 0; i < REGISTRO.length; i += 3) pagine.push(REGISTRO.slice(i, i + 3));
+   La regola è tagliare o spezzare, mai rimpicciolire il tipo.
+
+   E si raggruppa per STATO, non si impagina alla cieca. Prima erano fette da tre
+   nell'ordine dell'array, intitolate «Le voci aperte, 2 di 4»: mancava la 1 di 4,
+   e dentro «le voci aperte» finivano voci marcate «Risposto». Il titolo di una
+   slide è il suo punto: qui il punto è lo stato, e il conteggio deve tornare con
+   quello che la copertina del capitolo dichiara. */
+const GRUPPI = [
+  { stato: 'risposto' as const, titolo: { it: 'Quello che si è chiuso', en: 'What has closed' } },
+  { stato: 'verificare' as const, titolo: { it: 'Quello che resta da verificare', en: 'What is left to verify' } },
+  { stato: 'aperto' as const, titolo: { it: 'Quello che resta aperto', en: 'What is still open' } },
+];
+const pagine = GRUPPI.flatMap((g) => {
+  const voci = REGISTRO.filter((v) => v.stato === g.stato);
+  const fette: typeof REGISTRO[] = [];
+  for (let i = 0; i < voci.length; i += 3) fette.push(voci.slice(i, i + 3));
+  return fette.map((voci, i) => ({
+    voci,
+    titolo: {
+      it: fette.length > 1 ? `${g.titolo.it}, ${i + 1} di ${fette.length}` : g.titolo.it,
+      en: fette.length > 1 ? `${g.titolo.en}, ${i + 1} of ${fette.length}` : g.titolo.en,
+    },
+  }));
+});
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -40,8 +61,8 @@ for (let i = 0; i < REGISTRO.length; i += 3) pagine.push(REGISTRO.slice(i, i + 3
         <T
           as="p"
           class="ex-ch-lead"
-          it={`Una riga per voce, con la data e la fonte. ${risposte} risposte, ${aperti} ancora aperte.`}
-          en={`One row per item, with its date and source. ${risposte} answered, ${aperti} still open.`}
+          it={`Per ogni voce: stato, chi la chiude, entro quando. ${risposte} risposte, ${aperti} aperte.`}
+          en={`For each item: its state, who closes it, by when. ${risposte} answered, ${aperti} open.`}
           data-reveal
           data-reveal-delay="0.15"
         />
@@ -54,15 +75,10 @@ for (let i = 0; i < REGISTRO.length; i += 3) pagine.push(REGISTRO.slice(i, i + 3
         <div class="ex-content" data-reveal>
           <div class="ex-head">
             <T as="p" class="slide-eyebrow" it="Il registro" en="The log" />
-            <T
-              as="h2"
-              class="ex-head-title"
-              it={pi === 0 ? 'Quello che si è chiuso, e quello che resta' : `Le voci aperte, ${pi + 1} di ${pagine.length}`}
-              en={pi === 0 ? 'What closed, and what is left' : `The open items, ${pi + 1} of ${pagine.length}`}
-            />
+            <T as="h2" class="ex-head-title" it={pagina.titolo.it} en={pagina.titolo.en} />
           </div>
           <div class="ex-reg" data-reveal data-reveal-delay="0.12">
-            {pagina.map((v) => (
+            {pagina.voci.map((v) => (
               <div class="ex-reg-row">
                 <p class="ex-reg-meta">
                   <span class="ex-reg-data">{v.data}</span>
@@ -72,10 +88,22 @@ for (let i = 0; i < REGISTRO.length; i += 3) pagine.push(REGISTRO.slice(i, i + 3
                   <span class="ex-reg-liv">
                     <span data-lang-it>{LIVELLI_REG[v.livello].it}</span><span data-lang-en>{LIVELLI_REG[v.livello].en}</span>
                   </span>
-                  <span class="ex-reg-chi">{v.chi}</span>
+                  <span class="ex-reg-chi"><span data-lang-it>{v.chi.it}</span><span data-lang-en>{v.chi.en}</span></span>
+                  <span class="ex-reg-entro">
+                    {v.stato === 'risposto'
+                      ? null
+                      : v.entro
+                        ? <><span data-lang-it>Entro: {v.entro.it}</span><span data-lang-en>By: {v.entro.en}</span></>
+                        : <><span data-lang-it>Entro: da assegnare</span><span data-lang-en>By: to be assigned</span></>}
+                  </span>
                 </p>
                 <T as="p" class="ex-reg-tema" it={v.tema.it} en={v.tema.en} />
                 <T as="p" class="ex-reg-esito" it={v.esito.it} en={v.esito.en} />
+                {v.fonte && (
+                  <p class="ex-reg-fonte">
+                    <a href={v.fonte.url} target="_blank" rel="noopener">{v.fonte.label}</a>
+                  </p>
+                )}
               </div>
             ))}
           </div>

@@ -14,6 +14,12 @@
  * COME SI AGGIUNGE UNA RIGA
  * Dopo ogni sessione, dalla minuta: una voce per punto aperto o chiuso, con il
  * livello di fonte e chi ce l'ha. `stato` si muove, la riga non si riscrive.
+ *
+ * E UNA COSA CHE NON CI VA MAI: il nome in codice di un progetto interno. Qui
+ * dentro c'era «Proactive Insights», che vive solo sul wiki Adobe e su una
+ * roadmap marcata Confidential. Un livello di fonte onesto («detto da noi»,
+ * senza documentazione pubblica) dice che cos'è, e non serve nominarlo: il
+ * cliente inoltra questo documento, e un nome in codice non si può ritirare.
  */
 
 export type Stato = 'risposto' | 'aperto' | 'verificare';
@@ -26,8 +32,23 @@ export interface Voce {
   esito: { it: string; en: string };
   stato: Stato;
   livello: Livello;
-  chi: string;
+  /** Chi la CHIUDE — un ruolo, non un'azienda. «Adobe» e «Unipol» dicevano chi
+      l'aveva sollevata, che è un'altra informazione e non serve a nessuno:
+      una voce aperta senza un titolare torna identica alla sessione dopo. */
+  chi: { it: string; en: string };
+  /** Entro quando. Vuoto = ancora da assegnare, e si rende così: una data
+      inventata è peggio di una casella onestamente vuota. */
+  entro?: { it: string; en: string };
+  /** La pagina pubblica, dove c'è. Il deck dichiara che «Documentato» vuol dire
+      pagina pubblica con link: una riga marcata `doc` senza link si contraddice
+      da sola, ed è esattamente quello che il fact-check ha trovato. */
+  fonte?: { label: string; url: string };
 }
+
+const EL_ALERTS = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/alerts/customer-alerts';
+const EL_NOTIFICHE = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/notifications/notification-skills';
+const EL_WS = 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/coworker';
+const EL_WORKFLOWS = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/workflows';
 
 export const STATI: Record<Stato, { it: string; en: string }> = {
   risposto: { it: 'Risposto', en: 'Answered' },
@@ -52,18 +73,22 @@ export const REGISTRO: Voce[] = [
     },
     stato: 'verificare',
     livello: 'doc',
-    chi: 'Adobe',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Sessione del 5 novembre', en: 'Session of 5 November' },
+    fonte: { label: 'Customer Alert Skills', url: EL_ALERTS },
   },
   {
     data: '28.10.2026',
     tema: { it: 'Il digest invece della mail secca', en: 'A digest instead of the bare email' },
     esito: {
-      it: 'Un progetto chiamato Proactive Insights fa quello che avete descritto. Non ha documentazione pubblica: resta un’indicazione, non una data.',
-      en: 'A project called Proactive Insights does what you described. It has no public documentation: it stays an indication, not a date.',
+      it: 'Notification Skills lo documenta ed è disponibile a tutti i clienti Coworker: digest giornaliero o settimanale, nessuna configurazione. Resta da provare se gli alert di CJA su pannello ci entrano.',
+      en: 'Notification Skills documents it and it is available to every Coworker customer: a daily or weekly digest, no setup. What is left is trying whether CJA panel alerts land in it.',
     },
-    stato: 'aperto',
-    livello: 'noi',
-    chi: 'Adobe',
+    stato: 'verificare',
+    livello: 'doc',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Chiusura del programma, fine novembre', en: 'Programme close, end of November' },
+    fonte: { label: 'Notification Skills', url: EL_NOTIFICHE },
   },
   {
     data: '28.10.2026',
@@ -74,40 +99,44 @@ export const REGISTRO: Voce[] = [
     },
     stato: 'risposto',
     livello: 'doc',
-    chi: 'Unipol',
+    chi: { it: 'Insight & Analytics', en: 'Insight & Analytics' },
+    fonte: { label: 'Coworker in Workspace: i limiti', url: EL_WS },
   },
   {
     data: '28.10.2026',
     tema: { it: 'La conferma prima di applicare', en: 'Confirmation before applying' },
     esito: {
-      it: 'Oggi si ottiene con una skill che fa da cancello: valida prima, mostra la modifica, poi applica. Come comportamento di default del prodotto è una richiesta aperta.',
-      en: 'Today it is achieved with a skill acting as a gate: validate, show the change, then apply. As default product behaviour it remains an open request.',
+      it: 'Sulle cancellazioni esiste già: Coworker elenca i pannelli che intende cancellare e aspetta la conferma. Come default su ogni modifica resta una richiesta aperta.',
+      en: 'On deletions it already exists: Coworker lists the panels it plans to delete and waits for confirmation. As a default on every change it remains an open request.',
     },
     stato: 'aperto',
     livello: 'doc',
-    chi: 'Adobe',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Sessione del 12 novembre', en: 'Session of 12 November' },
+    fonte: { label: 'Coworker in Workspace: i limiti', url: EL_WS },
   },
   {
     data: '28.10.2026',
     tema: { it: 'Caricare il data dictionary', en: 'Loading the data dictionary' },
     esito: {
-      it: 'Strada chiusa, ed è documentata: Coworker non è collegato al Data Dictionary di CJA. Il contesto si mette dentro una skill.',
-      en: 'A closed route, and documented: Coworker is not connected to CJA’s Data Dictionary. Context goes inside a skill.',
+      it: 'Oggi Coworker non è collegato al Data Dictionary di CJA, e la stessa pagina dichiara il supporto per una release futura, senza data. Fino ad allora il contesto sta in una skill.',
+      en: 'Today Coworker is not connected to CJA’s Data Dictionary, and the same page states support is planned for a future release, with no date. Until then context lives in a skill.',
     },
     stato: 'risposto',
     livello: 'doc',
-    chi: 'Unipol',
+    chi: { it: 'Insight & Analytics', en: 'Insight & Analytics' },
+    fonte: { label: 'Coworker in Workspace: i limiti', url: EL_WS },
   },
   {
     data: '28.10.2026',
     tema: { it: 'Business context, e cosa si vede in interfaccia', en: 'Business context, and what the interface shows' },
     esito: {
-      it: 'In interfaccia compare Experience context, un oggetto diverso che riguarda il marchio sul lato contenuti. Il business context non è ancora per tutti: prima versione attesa a inizio dicembre.',
-      en: 'What you see is Experience context, a different thing about brand on the content side. Business context is not yet for everyone: first version expected early December.',
+      it: 'In interfaccia compare Experience context, un oggetto diverso che riguarda il marchio sul lato contenuti. Il business context non è ancora per tutti e non ha una data pubblica.',
+      en: 'What you see is Experience context, a different thing about brand on the content side. Business context is not yet for everyone and has no public date.',
     },
     stato: 'aperto',
     livello: 'la',
-    chi: 'Adobe',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
   },
   {
     data: '28.10.2026',
@@ -118,7 +147,8 @@ export const REGISTRO: Voce[] = [
     },
     stato: 'risposto',
     livello: 'doc',
-    chi: 'Unipol',
+    chi: { it: 'Insight & Analytics', en: 'Insight & Analytics' },
+    fonte: { label: 'Coworker Chat workflows', url: EL_WORKFLOWS },
   },
   {
     data: '28.10.2026',
@@ -129,18 +159,20 @@ export const REGISTRO: Voce[] = [
     },
     stato: 'aperto',
     livello: 'noi',
-    chi: 'Adobe',
+    chi: { it: 'Digital Intelligence', en: 'Digital Intelligence' },
+    entro: { it: 'Sessione del 12 novembre', en: 'Session of 12 November' },
   },
   {
     data: '28.10.2026',
     tema: { it: 'Da stage a prod sulle data view', en: 'Stage to prod on data views' },
     esito: {
-      it: 'Una skill non è possibile adesso: Coworker legge le data view e non le modifica. Si attende il supporto amministrativo.',
-      en: 'A skill is not possible yet: Coworker reads data views and does not edit them. Waiting on admin support.',
+      it: 'Per quanto ne sappiamo una skill non è possibile adesso: la modifica di una data view è trattata come un caso d’uso da amministratore. Non c’è una pagina pubblica che lo dica.',
+      en: 'As far as we know a skill is not possible yet: editing a data view is treated as an admin use case. No public page states it.',
     },
     stato: 'aperto',
-    livello: 'doc',
-    chi: 'Adobe',
+    livello: 'noi',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Sessione del 5 novembre', en: 'Session of 5 November' },
   },
   {
     data: '28.10.2026',
@@ -151,6 +183,31 @@ export const REGISTRO: Voce[] = [
     },
     stato: 'verificare',
     livello: 'la',
-    chi: 'Unipol',
+    chi: { it: 'Insight & Analytics', en: 'Insight & Analytics' },
+    entro: { it: 'Chiusura del programma, fine novembre', en: 'Programme close, end of November' },
+  },
+  {
+    data: '28.10.2026',
+    tema: { it: 'Permessi, sandbox e perimetro dei dati', en: 'Permissions, sandbox and data scope' },
+    esito: {
+      it: 'Tre cose da mettere per iscritto prima del primo caso d’uso. Su quale sandbox e quale data view gira Coworker da voi. Chi può eseguire una skill pubblicata. Che cosa dei vostri dati esce verso il modello.',
+      en: 'Three things to put in writing before the first use case. Which sandbox and data view Coworker runs on at your end. Who can run a published skill. What of your data leaves towards the model.',
+    },
+    stato: 'aperto',
+    livello: 'noi',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Sessione del 12 novembre', en: 'Session of 12 November' },
+  },
+  {
+    data: '28.10.2026',
+    tema: { it: 'Chi apre l’accesso su Target', en: 'Who opens access on Target' },
+    esito: {
+      it: 'Su CJA l’accesso c’è e si usa. Su Target va verificato chi lo abilita e con quale profilo, prima di provare il primo caso.',
+      en: 'On CJA access is there and in use. On Target it has to be verified who enables it and with which profile, before the first case is tried.',
+    },
+    stato: 'aperto',
+    livello: 'noi',
+    chi: { it: 'Team di prodotto Adobe', en: 'Adobe product team' },
+    entro: { it: 'Sessione del 5 novembre', en: 'Session of 5 November' },
   },
 ];
