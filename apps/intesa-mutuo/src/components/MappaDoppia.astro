@@ -1,0 +1,72 @@
+---
+/**
+ * LE DUE MAPPE AFFIANCATE — il device di apertura dell'XD Visa.
+ *
+ * Nel Visa la prima slide di contenuto mette una accanto all'altra la
+ * **Customer Journey** e la **Marketer Journey**, ognuna con le sue fasi,
+ * un micro-mockup per fase, la riga che racconta e — sotto — i prodotti
+ * Adobe che quella fase usa. In dieci secondi chi guarda sa dove si va e
+ * con che cosa, e per il resto della presentazione non deve più chiederlo.
+ *
+ * Qui fa lo stesso mestiere e NON porta dati nuovi: a sinistra i sette
+ * momenti di `momenti.ts` (ora, canale, verbo), a destra gli stessi
+ * momenti raggruppati per **blocco dell'offerta**, con la funzione e i
+ * prodotti. Due letture della stessa fonte, che è il punto della Storia.
+ *
+ * Sostituisce il cerchio sulla copertina del capitolo: una mappa si legge,
+ * un cerchio piccolo in un angolo si guarda e basta — ed era il rilievo
+ * della revisione del 29 ott 2026 («il cerchio diventi una legenda»).
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+import { MOMENTI } from '../data/momenti';
+
+/* I blocchi, nell'ordine in cui compaiono, con i loro momenti. Non è una
+   lista a mano: se domani un momento cambia blocco, la mappa lo segue. */
+const BLOCCHI: { nome: { it: string; en: string }; gruppo: string; ms: typeof MOMENTI }[] = [];
+for (const m of MOMENTI) {
+  const ultimo = BLOCCHI[BLOCCHI.length - 1];
+  if (ultimo && ultimo.nome.it === m.blocco.it) ultimo.ms.push(m);
+  else BLOCCHI.push({ nome: m.blocco, gruppo: m.gruppo, ms: [m] });
+}
+---
+<div class="im-map">
+  <section class="im-map-p" data-lato="cliente">
+    <T as="h3" class="im-map-t" it="Il viaggio di Giulia" en="Giulia’s journey" />
+    <ol class="im-map-g" data-colonne={MOMENTI.length}>
+      {MOMENTI.map((m) => (
+        <li class="im-map-c">
+          <span class="im-map-n">{m.n}</span>
+          <T as="span" class="im-map-k" it={m.canale.it} en={m.canale.en} />
+          <T as="span" class="im-map-o" it={m.ora.it} en={m.ora.en} />
+          <T as="span" class="im-map-v" it={m.short.it} en={m.short.en} />
+        </li>
+      ))}
+    </ol>
+    <!-- La linea con i nodi: lo stesso segno del circolo, steso. Dice che
+         i sette passi sono UN percorso, non sette episodi. -->
+    <div class="im-map-filo" aria-hidden="true">
+      {MOMENTI.map(() => <span class="im-map-nodo"></span>)}
+    </div>
+    <T as="p" class="im-map-ore"
+       it="Dalla prima domanda alla firma: undici giorni, sette momenti, un filo solo."
+       en="From the first question to signing: eleven days, seven moments, a single thread." />
+  </section>
+
+  <section class="im-map-p" data-lato="interno">
+    <T as="h3" class="im-map-t" it="Il lavoro in Intesa Sanpaolo" en="The work inside Intesa Sanpaolo" />
+    <ol class="im-map-g" data-colonne={BLOCCHI.length}>
+      {BLOCCHI.map((b) => (
+        <li class="im-map-c" data-gruppo={b.gruppo}>
+          <T as="span" class="im-map-k" it={b.nome.it} en={b.nome.en} />
+          <T as="span" class="im-map-v" it={b.ms[0].funzione.it} en={b.ms[0].funzione.en} />
+          <ul class="im-map-pro">
+            {b.ms.map((m) => <li>{m.prodotto}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+    <T as="p" class="im-map-ore"
+       it="Lo stesso minuto, dall’altro lato: cinque blocchi dell’offerta, e nessun passaggio a mano fra uno e l’altro."
+       en="The same minute, from the other side: five blocks of the offering, and no handover done by hand." />
+  </section>
+</div>

@@ -16,9 +16,13 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
+import Divisore from '../components/Divisore.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import fondo from '../assets/generated/fondo-scenario.webp';
+/* Torino al tramonto, non l'astrazione scura: il divisore è una pagina
+   CHIARA, e una foto quasi nera lì dentro è una macchia, non una
+   fotografia. Visto guardando la slide, non deducendolo. */
+import fondo from '../assets/generated/fondo-apertura.webp';
 import tracce from '../assets/generated/scena-08-tracce.webp';
 import lista from '../assets/generated/scena-09-lista.webp';
 
@@ -52,13 +56,10 @@ const CANDIDATE = [
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${fondo.src})`}></div>
-      <div class="im-ch" data-reveal>
-        <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Il mutuo è il momento in cui una banca si gioca vent’anni" en="A mortgage is where a bank plays for twenty years" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="E quasi sempre lo gioca con qualcuno che oggi è cliente di un’altra banca." en="And it almost always plays it with someone who banks elsewhere today." data-reveal data-reveal-delay="0.15" />
-      </div>
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <Divisore num={ch.num} foto={fondo.src} fuoco="center 46%"
+        tIt="Il mutuo è il momento in cui una banca si gioca vent’anni" tEn="A mortgage is where a bank plays for twenty years"
+        lIt="E quasi sempre lo gioca con qualcuno che oggi è cliente di un’altra banca." lEn="And it almost always plays it with someone who banks elsewhere today." />
     </Slide>
 
     <Slide id="slide-segnale" bg="inverse" align="split">

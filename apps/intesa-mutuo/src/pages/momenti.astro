@@ -23,8 +23,9 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MOMENTI, DOMANDE_IN_SLIDE } from '../data/momenti';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
-import CircoloJourney from '../components/CircoloJourney.astro';
+import MappaDoppia from '../components/MappaDoppia.astro';
 import DaVerificare from '../components/DaVerificare.astro';
+import Azione from '../components/Azione.astro';
 /* Le scene vengono da Pexels, licenziate, con autore e URL in
    provenance.json. Sono LUOGHI senza volti: l'unico volto della Storia è
    il ritratto di Giulia, così la persona resta coerente per costruzione. */
@@ -35,8 +36,32 @@ import s3 from '../assets/generated/scena-04-documenti.webp';
 import s4 from '../assets/generated/scena-05-colazione.webp';
 import s5 from '../assets/generated/scena-06-filiale.webp';
 import s6 from '../assets/generated/scena-07-casa.webp';
+/* L'unico volto della Storia. Sta nel CHIP in alto a sinistra di ogni
+   banda di Giulia: è il device con cui l'XD Visa tiene la persona
+   riconoscibile slide dopo slide, ed è la stessa regola che qui vieta
+   sette volti diversi (`giulia-single-journey-portrait-reuse`). */
+import ritratto from '../assets/generated/persona-giulia.webp';
 const SCENA = [s0, s1, s2, s3, s4, s5, s6].map((x) => x.src);
 const SCENE_CLI = ['ricerca','feed','simulazione','documenti','ripresa','sportello','firma'] as const;
+/* Il punto di fuoco di ogni scena dentro la fascia 47%×56%: un ritaglio
+   di default taglia dove capita, e su una fotografia di luogo il
+   soggetto non sta quasi mai al centro.
+   ⚠️ La 06 non è una preferenza estetica: quella scena porta il nome di
+   uno studio di coworking in rilievo sul muro, al 62-76% della
+   larghezza. Un marchio che non è né Adobe né Intesa dentro una slide di
+   Intesa è la wrong-brand imagery che la Quality Bar vieta, e il
+   ritaglio lo lascia fuori campo. Sostituire la foto resta la soluzione
+   migliore, e richiede una chiave Pexels. */
+const FUOCO = ['center 40%','center 44%','center 42%','center 38%','center 44%','6% 50%','center 36%'];
+/* Lo zoom serve solo alla 06: con `cover` la fascia mostra l'84% della
+   larghezza della foto, e il marchio dello studio — che sta al 62-76% —
+   resta dentro QUALUNQUE sia il punto di fuoco. Al 180% la fascia mostra
+   il 2-58%, e il marchio esce di campo. Verificato guardando la pagina,
+   non calcolandolo soltanto.
+   Due sostituzioni cercate su Pexels sono state scartate guardandole: un
+   bancone da buffet e una scena con un secondo volto femminile, che la
+   regola dell'unico volto vieta. */
+const ZOOM = ['cover','cover','cover','cover','cover','180% auto','cover'];
 
 const SLUG = 'momenti';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -52,12 +77,11 @@ const currentPath = Astro.url.pathname;
 
     <Slide id="slide-cover" bg="inverse" align="center">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ch" data-reveal>
+      <div class="im-ch im-ch--map" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="im-ch-t" it="Sette momenti, e le due viste sullo stesso minuto" en="Seven moments, and both views of the same minute" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. L’app compare solo alla fine, perché prima non aveva motivo di averla." en="Above, what Giulia sees; below, what you do at the same instant. The app appears only at the end, because before she had no reason to have it." data-reveal data-reveal-delay="0.15" />
       </div>
-      <CircoloJourney class="im-cer--cover" data-reveal data-reveal-delay="0.26" />
+      <MappaDoppia data-reveal data-reveal-delay="0.16" />
       <T as="p" class="im-guida" data-reveal data-reveal-delay="0.3"
          it="Ogni momento si apre in tre passi, con la freccia in basso: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ la riga «da verificare con voi», che è il punto dove questa meccanica cambia le cose."
          en="Each moment opens in three steps, with the down arrow: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ the “to check with you” line, which is where this mechanic changes things." />
@@ -65,44 +89,55 @@ const currentPath = Astro.url.pathname;
 
     {MOMENTI.map((m, i) => (
       <Slide id={`slide-m-${m.n}`} bg="inverse" align="left">
-        <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${SCENA[i]})`}></div>
+        <div slot="backdrop" class="im-bg-vx" style={`--foto: url(${SCENA[i]}); --fuoco: ${FUOCO[i]}; --zoom: ${ZOOM[i]}`}></div>
 
         <div class="im-due" data-reveal>
           <header class="im-due-testa">
             <T as="span" class="im-mom-blocco" data-gruppo={m.gruppo} it={m.blocco.it} en={m.blocco.en} />
             <T as="span" class="im-due-ora" it={`${m.ora.it} · ${m.dove.it}`} en={`${m.ora.en} · ${m.dove.en}`} />
+            <span class="im-due-passo">
+              <span class="im-due-passo-n">{m.n}</span>
+              <span class="im-due-passo-d">/ {m.of}</span>
+            </span>
           </header>
 
           <section class="im-due-banda" data-lato="cliente" data-substep data-side="in">
-            <T as="p" class="im-due-chi" it="Giulia" en="Giulia" />
-            <div class="im-due-mock">
-              <MockCliente chrome={m.cliente.chrome} scena={SCENE_CLI[i]} compatto />
-            </div>
             <div class="im-due-txt">
+              <p class="im-due-chi">
+                <img class="im-due-chi-r" src={ritratto.src} alt="" width="120" height="120" loading="eager" />
+                <span>
+                  <T as="span" class="im-due-chi-n" it="Giulia" en="Giulia" />
+                  <T as="span" class="im-due-chi-q" it="Non ancora cliente" en="Not a customer yet" />
+                </span>
+              </p>
               <T as="h2" class="im-due-t" it={m.cliente.titolo.it} en={m.cliente.titolo.en} />
               <T as="p" class="im-due-b" it={m.cliente.corpo.it} en={m.cliente.corpo.en} />
+            </div>
+            <div class="im-due-mock">
+              <MockCliente chrome={m.cliente.chrome} scena={SCENE_CLI[i]} compatto />
+              <Azione segno={m.cliente.chrome} />
             </div>
           </section>
 
           <section class="im-due-banda" data-lato="interno" data-substep data-side="in">
-            <T as="p" class="im-due-chi" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
-            <div class="im-due-mock">
-              <MockAdobe prodotto={m.interno.prodotto} compatto />
-            </div>
             <div class="im-due-txt">
+              <p class="im-due-chi">
+                <span class="im-due-chi-s" aria-hidden="true">IS</span>
+                <span>
+                  <T as="span" class="im-due-chi-n" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
+                  <T as="span" class="im-due-chi-q" it="Perché è stato possibile" en="Why it was possible" />
+                </span>
+              </p>
               <T as="h2" class="im-due-t" it={m.interno.titolo.it} en={m.interno.titolo.en} />
               <T as="p" class="im-due-b" it={m.interno.corpo.it} en={m.interno.corpo.en} />
               <p class="im-due-pro">{m.prodotto}</p>
               {DOMANDE_IN_SLIDE && <DaVerificare it={m.verifica.it} en={m.verifica.en} />}
             </div>
+            <div class="im-due-mock">
+              <MockAdobe prodotto={m.interno.prodotto} compatto />
+              <Azione segno={m.gruppo} />
+            </div>
           </section>
-
-          <aside class="im-due-cer">
-            <CircoloJourney attivo={i + 1} />
-            <T as="p" class="im-due-cau"
-               it="Ricostruzioni illustrative: i sistemi sono vostri, i numeri di esempio."
-               en="Illustrative reconstructions: the systems are yours, the figures are examples." />
-          </aside>
         </div>
       </Slide>
     ))}

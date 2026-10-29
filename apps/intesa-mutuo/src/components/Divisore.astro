@@ -1,0 +1,36 @@
+---
+/**
+ * LA COPERTINA DI CAPITOLO COME DIVISORE — device dell'XD Visa.
+ *
+ * Nel Visa i capitoli si aprono su una pagina CHIARA: il titolo nero
+ * grande a sinistra, una fotografia a tutto sangue al centro, e un
+ * pannello di colore pieno a destra con una frase sola — «value summary».
+ * Il ritmo che ne esce è la metà del lavoro: i momenti sono scuri e
+ * densi, i divisori chiari e vuoti, e chi guarda sa di aver cambiato
+ * capitolo prima di leggere una parola.
+ *
+ * ⚠️ Il confine verticale fra fotografia e pannello di colore sta al 72%
+ * nel fondo, e la colonna del testo parte al 74% nel contenuto: in
+ * orizzontale i due si possono far coincidere, perché la safe-area
+ * laterale è nota e non dipende dall'altezza. (In verticale no: per
+ * quello la slide dei momenti non ha un taglio orizzontale netto.)
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+interface Props {
+  num: string; foto: string; fuoco?: string;
+  tIt: string; tEn: string; lIt: string; lEn: string;
+  puntoIt?: string; puntoEn?: string;
+}
+const { num, foto, fuoco = 'center 38%', tIt, tEn, lIt, lEn, puntoIt, puntoEn } = Astro.props;
+---
+<div slot="backdrop" class="im-div-bg" style={`--foto: url(${foto}); --fuoco: ${fuoco}`}></div>
+<div class="im-div" data-reveal>
+  <div class="im-div-sx">
+    <p class="im-div-num"><span data-lang-it>Capitolo {num}</span><span data-lang-en>Chapter {num}</span></p>
+    <T as="h2" class="im-div-t" it={tIt} en={tEn} data-reveal data-reveal-delay="0.08" />
+  </div>
+  <div class="im-div-dx" data-reveal data-reveal-delay="0.18">
+    <T as="p" class="im-div-oc" it={puntoIt ?? 'Il punto'} en={puntoEn ?? 'The point'} />
+    <T as="p" class="im-div-l" it={lIt} en={lEn} />
+  </div>
+</div>

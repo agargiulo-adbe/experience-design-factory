@@ -1466,81 +1466,239 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 
 /* ══════════════════════════════════════════════════════════════════════
    LA SLIDE DOPPIA — Giulia sopra, chi prepara sotto
+   QUALITÀ DI RAPPRESENTAZIONE: misurata sull'XD Visa (29 ott 2026)
 
-   Una sola slide per momento, due bande orizzontali, e a destra il
-   circolo. La banda non è una decorazione: è il contratto di lettura —
-   chi guarda sa che SOPRA c'è sempre lei e SOTTO sempre voi, su tutte e
-   sette, e quindi smette di cercare dove guardare.
+   La struttura è quella che il team ha approvato — SOPRA Giulia, SOTTO
+   chi prepara — e non si tocca. Cambia COME è rappresentata, e i quattro
+   device vengono da misure prese sui fotogrammi del video, non a memoria:
 
-   Le due colonne dei mockup hanno la STESSA larghezza anche se i due
-   mockup sono di forma diversa: così i due testi partono dalla stessa
-   ascissa, e la slide non sembra storta.
+   1. LA FOTOGRAFIA È CONTENUTO, NON ATMOSFERA. Prima la scena stava
+      sotto un velo allo 0,975: tecnicamente c'era, di fatto non si
+      vedeva (misurato guardando lo screenshot). Ora ogni fascia è
+      divisa in due: colore pieno a sinistra, FOTOGRAFIA PULITA a
+      destra, confine netto. Il velo sopravvive solo come micro-ombra
+      sul taglio, per staccare le due superfici.
+   2. IL MOCKUP GALLEGGIA SUL CONFINE. Parte sul colore e finisce sulla
+      foto, con un'ombra marcata. ⚠️ Nel Visa il mockup esce dal fondo
+      pagina: QUI NON SI PUÒ — il check `j` di audit:deck è HARD e
+      misura ciò che esce dal viewport. L'effetto si ottiene con la
+      sovrapposizione orizzontale e l'ombra, che è il 90% della resa.
+   3. IL CHIP PERSONA. Ritratto tondo + nome + stato, in alto a
+      sinistra. Risolve anche «chi è Giulia» dentro la slide, che era
+      una richiesta della revisione del 29 ott.
+   4. UN SOLO ACCENTO D'AZIONE. L'arancio #fa9600 è un colore VERO del
+      design system di Intesa (35 occorrenze nel CSS di produzione,
+      letto il 29 ott 2026), ed è l'equivalente esatto del giallo che
+      nel Visa marca l'azione.
+
+   ⚠️ CONTRASTO, verificato a mano prima di scrivere: bianco su #258900
+   dà 4,56:1 — passa AA di un soffio, e `audit:ink` campiona i PIXEL,
+   dove l'antialiasing lo fa scendere sotto. La fascia di Giulia usa
+   quindi **#1f7400** (5,99:1). L'arancio come INCHIOSTRO regge solo sul
+   verde notte (7,1:1), non sul verde medio (2,74:1): sul badge sta come
+   SUPERFICIE, con il glifo in verde notte sopra.
    ══════════════════════════════════════════════════════════════════════ */
-.im-bg-doppia {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(95deg, rgba(8,28,1,0.975) 0%, rgba(8,28,1,0.95) 58%, rgba(8,28,1,0.74) 100%),
-    var(--bg);
-  background-size: cover; background-position: center;
+
+/* ── La riserva per i comandi del deck, su QUESTE slide ──────────────
+   `--deck-chrome-safe` vale 168px per lato a ogni viewport: a 1080 costa
+   il 31% dell'altezza, a 800 il 42%. I comandi veri sono alti ~56px e
+   stanno a 90px dal fondo. Su una slide a due bande quella riserva è la
+   differenza fra entrarci e non entrarci (misurato: area utile 464px su
+   800). Qui scende a 120px, che lascia comunque 30px di franco sopra i
+   comandi — e il giudice resta il check `b`, che la collisione la misura
+   davvero invece di fidarsi di questo commento.
+   ⚠️ Si tocca SOLO sulle slide dei momenti, non nel motore: un cambio di
+   token condiviso propaga a nove deck e va misurato slide per slide. */
+[data-slide]:has(.im-due) { --deck-chrome-safe: 120px; }
+
+/* ── Il fondo: colore a sinistra, fotografia in alto a destra ───────── */
+/* ⚠️ PERCHÉ UNA SOLA FOTO E NON DUE FASCE, che era la prima idea.
+   Il fondo è `absolute inset-0` (tutto il viewport); il contenuto vive
+   dentro la safe-area e si divide in due bande con un'aritmetica DIVERSA
+   (inset + testa + metà del resto). Due confini orizzontali calcolati da
+   due aritmetiche non coincidono mai, e uno sfasamento di venti pixel
+   su una linea netta si vede dalla seconda fila della sala.
+   Quindi il taglio orizzontale non esiste: sotto la fotografia c'è lo
+   stesso verde notte della banda bassa, e il passaggio è una dissolvenza.
+   L'unico confine NETTO è quello verticale, che non dipende dall'altezza
+   e che il mockup scavalca — ed è il device che conta. */
+.im-bg-vx { position: absolute; inset: 0; background: #0d2901; }
+/* La fotografia. `brightness` non è un gusto: le scene erano state scelte
+   per stare SOTTO un velo allo 0,975, e senza velo partono cupe. Il grado
+   è leggero e uguale per tutte, così nessuna sembra di un altro servizio. */
+.im-bg-vx::before {
+  content: ''; position: absolute; top: 0; right: 0; left: 53%; height: 56%;
+  background-image: var(--foto); background-size: var(--zoom, cover);
+  background-position: var(--fuoco, center 38%);
+  filter: brightness(1.14) saturate(1.06) contrast(1.02);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 80%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0 80%, transparent 100%);
+}
+/* La colonna di colore, con il taglio verticale netto e una sola ombra
+   che la stacca dalla fotografia. */
+.im-bg-vx::after {
+  content: ''; position: absolute; inset: 0 47% 0 0;
+  background:
+    radial-gradient(90% 60% at 96% 2%, rgba(79, 194, 31, 0.18), transparent 58%),
+    linear-gradient(to bottom, #1f7400 0 44%, #0d2901 60%);
+  box-shadow: 16px 0 40px rgba(0, 0, 0, 0.38);
 }
 
+/* ── La griglia della slide ──────────────────────────────────────────── */
 .im-due {
-  display: grid; width: 100%; height: 100%; max-width: 86rem;
-  grid-template-columns: minmax(0, 1fr) 19rem;
+  display: grid; width: 100%; height: 100%; max-width: none;
   grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-  gap: 0.5rem 1.6rem;
+  gap: 0.3rem 0;
 }
 .im-due-testa {
-  grid-column: 1 / -1; display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+  /* ⚠️ `grid-column: 1 / -1` non è decorativo: nella variante affiancata
+     la griglia ha due colonne, e senza questa riga la testa occupa UNA
+     cella e si gonfia a 573px spingendo tutto fuori dal viewport
+     (misurato il 29 ott 2026, check `c` e `j` in rosso). */
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
 }
 .im-due-testa .im-mom-blocco { margin: 0; }
 .im-due-ora {
-  font-size: clamp(0.78rem, 0.62vw, 1.4rem); font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-verde-chiaro);
+  font-size: clamp(0.8rem, 0.64vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.82);
 }
 
+/* Ogni banda: testo a sinistra dentro il colore, mockup a cavallo del
+   confine. Le due colonne di testo partono dalla stessa ascissa — il
+   check `m` è HARD e un testo storto si vede a occhio prima del gate. */
 .im-due-banda {
-  display: grid; grid-template-columns: 22rem minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr); gap: 0.08rem 1.3rem;
-  min-height: 0; padding-top: 0.4rem; border-top: 1px solid rgba(255,255,255,0.16);
+  /* 1,05fr contro 1fr porta il confine fra le due colonne al ~51% della
+     pagina: il mockup, tirato indietro di 2,4rem, parte PRIMA del taglio
+     verticale del fondo (53%) e lo scavalca. È il device del Visa. */
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center; gap: 0 1.2rem; min-height: 0;
 }
-/* Un'etichetta sola per banda, e si capisce chi parla senza leggerla due
-   volte. Quella di Giulia porta l'accento: è lei la protagonista. */
+.im-due-txt { grid-column: 1; min-width: 0; align-self: center; }
+.im-due-mock {
+  grid-column: 2; min-height: 0; justify-self: start; align-self: center;
+  /* Il mockup parte PRIMA del confine (che sta al 53%) e lo scavalca. */
+  margin-left: -2.4rem;
+}
+
+/* Il chip persona: il device del Visa che dice «chi stai guardando»
+   senza spiegarlo. Il ritratto è UNO SOLO su tutte e sette le slide: è
+   la regola `giulia-single-journey-portrait-reuse`, ed è anche il modo
+   in cui il Visa tiene la persona riconoscibile. */
 .im-due-chi {
-  grid-column: 1 / -1; margin: 0; max-width: none;
-  font-size: clamp(0.7rem, 0.56vw, 1.26rem); font-weight: 700; line-height: 1.1;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-grey-300);
+  display: flex; align-items: center; gap: 0.62rem; margin: 0 0 0.5rem; max-width: none;
 }
-.im-due-banda[data-lato='cliente'] .im-due-chi { color: var(--color-verde-chiaro); }
-.im-due-mock { grid-column: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
-.im-due-txt { grid-column: 2; min-width: 0; align-self: center; }
+.im-due-chi-r {
+  width: clamp(2.3rem, 2.1vw, 4.2rem); aspect-ratio: 1; flex: none;
+  border-radius: 999px; object-fit: cover; object-position: center 22%;
+  border: 2px solid rgba(255, 255, 255, 0.82);
+}
+/* Il lato interno non ha un volto: al suo posto la sigla della squadra,
+   nello stesso ingombro, così le due bande restano allineate. */
+.im-due-chi-s {
+  width: clamp(2.3rem, 2.1vw, 4.2rem); aspect-ratio: 1; flex: none;
+  border-radius: 999px; display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.4);
+  font-size: clamp(0.72rem, 0.58vw, 1.3rem); font-weight: 700; color: #ffffff;
+  letter-spacing: 0.04em;
+}
+.im-due-chi-n {
+  display: block; margin: 0; max-width: none; line-height: 1.2;
+  font-size: clamp(1rem, 0.86vw, 1.9rem); font-weight: 700; color: #ffffff;
+}
+.im-due-chi-q {
+  display: block; margin: 0; max-width: none; line-height: 1.2;
+  font-size: clamp(0.7rem, 0.56vw, 1.26rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.76);
+}
+
+/* Il titolo: il Visa lo tiene al 3,1% della larghezza di pagina. Con due
+   bande invece di una, qui vale la metà abbondante — ed è comunque il
+   DOPPIO di quello che c'era prima. */
 .im-due-t {
-  margin: 0 0 0.4rem; max-width: 34rem;
+  margin: 0 0 0.42rem; max-width: 24ch;
   font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.18rem, 1.08vw, 2.3rem); line-height: 1.16; color: #ffffff;
+  font-size: clamp(1.56rem, 1.62vw, 3.2rem); line-height: 1.1; color: #ffffff;
   text-wrap: balance;
 }
 .im-due-b {
-  margin: 0; max-width: 38rem;
-  font-size: clamp(0.95rem, 0.8vw, 1.8rem); line-height: 1.5; color: var(--color-grey-200);
+  margin: 0; max-width: 42ch;
+  font-size: clamp(1rem, 0.9vw, 2rem); line-height: 1.46; color: rgba(255, 255, 255, 0.94);
 }
 .im-due-pro {
-  margin: 0.5rem 0 0; max-width: none;
-  font-size: clamp(0.8rem, 0.64vw, 1.44rem); font-weight: 700;
-  color: var(--color-verde-chiaro);
+  margin: 0.55rem 0 0; max-width: none;
+  display: inline-flex; align-items: center; gap: 0.44rem;
+  font-size: clamp(0.8rem, 0.64vw, 1.44rem); font-weight: 700; color: #fa9600;
+}
+.im-due-pro::before {
+  content: ''; width: 0.5rem; height: 0.5rem; flex: none;
+  border-radius: 2px; background: #fa9600;
 }
 
-.im-due-cer {
-  grid-column: 2; grid-row: 2 / 4; align-self: center; justify-self: center;
-  display: grid; gap: 0.7rem; width: 100%; max-width: 19rem;
+/* ── Il mockup che galleggia ─────────────────────────────────────────── */
+/* L'ombra è il device: senza, il riquadro sembra incassato nella pagina
+   invece che posato sopra. Due ombre, una stretta e una larga, come fa
+   ogni sistema di elevazione serio. */
+.im-due-mock > * {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.28), 0 28px 64px rgba(0, 0, 0, 0.46);
+  border-radius: 14px;
 }
+/* Il badge d'azione: dice COSA SUCCEDE in quel momento, a cavallo del
+   bordo sinistro del mockup. Glifo in verde notte sull'arancio: 7,1:1. */
+.im-due-mock { position: relative; }
+/* ⚠️ Stava a metà altezza del bordo sinistro, come nel Visa — ma lì il
+   mockup accanto al badge ha un margine vuoto, e qui finiva SOPRA le
+   parole della scheda contatto. All'angolo in basso a sinistra copre solo
+   l'angolo del riquadro, e il device resta quello. */
+.im-due-badge {
+  position: absolute; left: -1.05rem; bottom: -1.05rem; z-index: 3;
+  width: clamp(2.5rem, 2.3vw, 4.6rem); aspect-ratio: 1;
+  display: grid; place-items: center;
+  border-radius: 14px; background: #fa9600;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.42);
+  font-size: clamp(1.1rem, 1vw, 2.2rem); line-height: 1; color: #0d2901;
+}
+
+/* La cautela e la legenda del giro vivono in testa, non più in una
+   colonna loro: il cerchio è uscito dalla slide. */
 .im-due-cau {
-  margin: 0; max-width: none; text-align: center;
-  font-size: clamp(0.7rem, 0.56vw, 1.26rem); line-height: 1.35;
-  font-style: italic; color: var(--color-grey-300);
+  margin: 0; max-width: none;
+  font-size: clamp(0.68rem, 0.54vw, 1.22rem); line-height: 1.3;
+  font-style: italic; color: rgba(255, 255, 255, 0.62);
 }
+/* Il passo nel giro, in alto a destra: una legenda, non un grafico. */
+.im-due-passo {
+  /* ⚠️ Stava bianco sulla fotografia, che in alto a destra è chiara: il
+     contrasto cadeva sotto soglia e `audit:ink` guarda i PIXEL, non il
+     CSS. Su una pastiglia scura il valore è esplicito e non dipende da
+     quale scena capita dietro. */
+  margin-left: auto; display: flex; align-items: baseline; gap: 0.3rem;
+  padding: 0.22rem 0.62rem; border-radius: 999px;
+  background: rgba(8, 28, 1, 0.76); backdrop-filter: blur(3px);
+  font-weight: 700; color: #ffffff;
+}
+.im-due-passo-n { font-size: clamp(1.1rem, 1vw, 2.2rem); }
+.im-due-passo-d { font-size: clamp(0.72rem, 0.58vw, 1.3rem); color: rgba(255, 255, 255, 0.82); }
+
 /* Il circolo sulla copertina del capitolo: più grande, sotto il titolo. */
 .im-cer--cover { max-width: 17rem; margin: 1.6rem auto 0; }
+
+/* ── Quanto contenuto regge un mockup dentro la slide doppia ──────────
+   Aritmetica, non gusto, misurata il 29 ott 2026: l'area utile scende da
+   744px a 1920 a **564px a 1440×900**, e i due mockup da soli ne
+   chiedevano 800. Il contratto di leggibilità vieta di rimpicciolire il
+   tipo, quindi si toglie CONTENUTO alla figura: un mockup qui serve a
+   far riconoscere lo schermo in due secondi, non a essere completo. Le
+   voci che restano sono le prime, cioè quelle di cui parla la slide. */
+.im-due-mock .im-ado-dom li:nth-child(n+4),
+.im-due-mock .im-ado-off li:nth-child(n+4),
+.im-due-mock .im-ado-passi li:nth-child(n+4),
+.im-due-mock .im-ado-barra:nth-child(n+4),
+.im-due-mock .im-ado-grid > *:nth-child(n+4),
+.im-due-mock .im-cli-passi li:nth-child(n+4),
+.im-due-mock .im-cli-citate li:nth-child(n+4),
+.im-due-mock .im-cli-righe > div:nth-child(n+4),
+.im-due-mock .im-ado-righe > div:nth-child(n+4) { display: none; }
 
 /* I mockup in taglia compatta: si tolgono i respiri, non il corpo del
    tipo. Rimpicciolire il testo per far entrare una slide è esattamente
@@ -1548,10 +1706,15 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 /* ⚠️ Il telefono stretto costava 70px di altezza per NIENTE: a 232px il
    testo andava a capo ogni tre parole. Largo quanto la colonna va a capo
    la metà delle volte, e la banda rientra. Misurato, non stimato. */
-.im-due-mock .im-cli { max-width: 17rem; }
-.im-due-mock .im-cli--sito { max-width: 22rem; }
-.im-due-mock .im-cli--filiale { max-width: 22rem; }
-.im-due-mock .im-ado { max-width: 22rem; }
+/* ⚠️ Largo si legge BASSO. Nella griglia nuova la colonna del mockup è
+   metà pagina: tenere il telefono a 17rem faceva andare a capo ogni tre
+   parole e costava 80px di altezza, che è esattamente ciò che mancava.
+   Misurato il 29 ott 2026 — stessa lezione già scritta sopra, applicata
+   alla larghezza nuova. */
+.im-due-mock .im-cli { max-width: 21rem; }
+.im-due-mock .im-cli--sito { max-width: 26rem; }
+.im-due-mock .im-cli--filiale { max-width: 26rem; }
+.im-due-mock .im-ado { max-width: 26rem; }
 /* ⚠️ In taglia compatta il mockup perde le righe che la slide DICE GIÀ
    fuori: la nota del telefono e il rilievo dello schermo Adobe ripetevano
    il corpo del testo accanto, e quelle due righe per banda erano
@@ -1578,7 +1741,12 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-cli--compatto .im-cli-post-az { display: none; }
 /* Il creativo in taglia compatta prende un taglio più largo: 16:9 su una
    colonna stretta costa 20px di altezza che alla banda servono. */
-.im-cli--compatto .im-cli-post-img { aspect-ratio: 2 / 1; }
+/* ⚠️ `aspect-ratio` lega l'altezza alla LARGHEZZA: allargare il mockup
+   per far andare a capo meno il testo faceva crescere il creativo dello
+   stesso tanto, e l'altezza guadagnata se ne andava lì (misurato: da 374
+   a 399px). Dentro la slide doppia il creativo ha un'altezza sua, legata
+   alla radice, e si comporta da banda invece che da riquadro. */
+.im-cli--compatto .im-cli-post-img { aspect-ratio: auto; height: 5.6rem; }
 /* E la testata del post va su una riga sola: nome e «sponsorizzato»
    impilati erano due righe per dire una cosa. */
 .im-cli--compatto .im-cli-feed-chi { display: flex; align-items: baseline; gap: 0.4rem; }
@@ -1600,14 +1768,17 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-ado--compatto .im-ado-bolla { padding: 0.44rem 0.6rem; }
 .im-ado--compatto .im-ado-grid { gap: 0.3rem; }
 
+/* ⚠️ Questa regola descriveva la griglia PRECEDENTE (mock a sinistra in
+   una colonna fissa, circolo a destra) e dopo il ridisegno rimetteva il
+   mockup nella colonna del testo. Ora stringe soltanto, senza ridefinire
+   la struttura. */
 @media (max-width: 1400px) {
-  .im-due { grid-template-columns: minmax(0, 1fr) 16rem; gap: 0.4rem 1.1rem; }
-  .im-due-banda { grid-template-columns: 19rem minmax(0, 1fr); gap: 0.05rem 1rem; }
-  .im-due-cer { max-width: 16rem; }
-  .im-due-mock .im-cli { max-width: 15rem; }
-  .im-due-mock .im-cli--sito, .im-due-mock .im-cli--filiale, .im-due-mock .im-ado { max-width: 19rem; }
+  .im-due-banda { gap: 0 0.9rem; }
+  .im-due-mock { margin-left: -1.8rem; }
+  .im-due-mock .im-cli { max-width: 19rem; }
+  .im-due-mock .im-cli--sito, .im-due-mock .im-cli--filiale, .im-due-mock .im-ado { max-width: 23rem; }
 }
-/* ── Proiezione BASSA (≤860px di altezza) ──────────────────────────────
+/* ── Proiezione BASSA (≤940px di altezza) ──────────────────────────────
    Qui due mockup impilati non ci stanno: non è una questione di
    rifinitura, è aritmetica — l'altezza utile scende a ~640px e due
    bande con uno schermo ciascuna ne chiedono 900. Invece di rimpicciolire
@@ -1616,7 +1787,7 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
    a destra chi prepara, ognuna con il suo mockup sopra e il suo testo
    sotto. Le etichette restano, quindi il contratto di lettura regge.
    Il circolo esce: è un ausilio, e vive intero nel capitolo 04. */
-@media (max-height: 860px) {
+@media (max-height: 940px) {
   .im-due {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto minmax(0, 1fr);
@@ -1628,14 +1799,18 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
     grid-template-rows: auto auto minmax(0, 1fr);
     gap: 0.25rem; padding-top: 0.3rem;
   }
-  .im-due-mock { grid-column: 1; align-items: flex-start; }
+  /* ⚠️ Il margine negativo serve SOLO nel layout impilato, dove il
+     mockup deve scavalcare il taglio verticale del fondo. Affiancato, il
+     mockup sta nella colonna di sinistra e quel margine lo spingeva
+     fuori dalla safe-area: check `c`, HARD. */
+  .im-due-mock { grid-column: 1; align-items: flex-start; margin-left: 0; }
   .im-due-txt { grid-column: 1; align-self: start; }
   .im-due-t { font-size: clamp(1.05rem, 1.3vw, 1.6rem); max-width: none; }
   .im-due-b { max-width: none; }
-  .im-due-mock .im-cli { max-width: 15rem; }
+  .im-due-mock .im-cli { max-width: 22rem; }
   .im-due-mock .im-cli--sito,
   .im-due-mock .im-cli--filiale,
-  .im-due-mock .im-ado { max-width: 20rem; }
+  .im-due-mock .im-ado { max-width: 26rem; }
   /* Gli elenchi illustrativi si accorciano: restano le prime voci, che
      sono quelle di cui parla la slide. Il tipo NON si tocca. */
   .im-due-mock .im-ado-dom li:nth-child(n+5),
@@ -1643,11 +1818,27 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
   .im-due-mock .im-ado-passi li:nth-child(n+5),
   .im-due-mock .im-ado-barra:nth-child(n+5),
   .im-due-mock .im-cli-passi li:nth-child(n+5) { display: none; }
-  .im-due-mock .im-cli-post-img { aspect-ratio: 5 / 2; }
+  .im-due-mock .im-cli-post-img { aspect-ratio: auto; height: 5rem; }
   /* Il gestionale è l'unico mockup a due colonne: in 20rem le due
      colonne si schiacciano e sbordano. Qui l'altezza c'è, la larghezza
      no: una colonna sola. */
   .im-due-mock .im-cli-gest { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+}
+
+/* ── Proiezione BASSISSIMA (≤820px di altezza) ────────────────────────
+   A 1280×800 l'area utile resta 560px e la banda ne chiede 596: mancano
+   36px, e non si prendono dal corpo del tipo. Si prendono dai respiri e
+   dal creativo, che è una figura. */
+@media (max-height: 820px) {
+  /* L'ultimo scalino della riserva: i comandi del deck qui sono gli
+     stessi, la pagina è 280px più bassa. Il check `b` resta il giudice. */
+  [data-slide]:has(.im-due) { --deck-chrome-safe: 104px; }
+  .im-due-mock .im-cli-post-img { height: 4.1rem; }
+  .im-due-chi { margin-bottom: 0.3rem; }
+  .im-due-chi-r, .im-due-chi-s { width: clamp(1.9rem, 1.7vw, 3.4rem); }
+  .im-cli--compatto .im-cli-post-txt { padding: 0.36rem 0.6rem 0.3rem; }
+  .im-cli--compatto .im-cli-post-cta { margin: 0.26rem 0 0.22rem; }
+  .im-due-mock > * { border-radius: 11px; }
 }
 
 /* Dentro i mockup nessun blocco deve poter spingere il suo contenitore:
@@ -1820,8 +2011,25 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 }
 
 /* ── Il badge del blocco, sulle slide doppie ────────────────────────── */
+/* ⚠️ IL COLORE DEL BLOCCO NON RIEMPIE PIÙ L'ETICHETTA (29 ott 2026).
+   Dalla revisione del pomeriggio: «deve essere una leggenda, un colore
+   per argomento e basta». Il magenta pieno su verde non era una codifica,
+   era un secondo marchio che litigava col primo — e con il circolo uscito
+   dalla slide quel colore non ha più niente con cui fare coppia.
+   Ora l'etichetta è neutra e il gruppo lo porta UN SOLO segno: il punto
+   quadrato davanti al nome. La leggenda sta in copertina di capitolo. */
 .im-mom-blocco[data-gruppo] {
-  background: var(--gruppo); color: #071a00; border-color: var(--gruppo);
+  background: rgba(255, 255, 255, 0.11); color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.34);
+  display: inline-flex; align-items: center; gap: 0.46rem;
+}
+.im-mom-blocco[data-gruppo]::before {
+  content: ''; width: 0.56rem; height: 0.56rem; flex: none;
+  border-radius: 2px; background: var(--gruppo);
+}
+/* Il neutro della piattaforma non si vede su fondo scuro: prende un bordo. */
+.im-mom-blocco[data-gruppo='piattaforma']::before {
+  background: transparent; box-shadow: inset 0 0 0 2px var(--gruppo);
 }
 
 /* ⚠️ Specificità: i ribaltamenti per slide scura (`[data-slide][data-dark]
@@ -2046,4 +2254,191 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 
 @media (prefers-reduced-motion: reduce) {
   .im-due-banda[data-substep-active] * { animation: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LE DUE MAPPE AFFIANCATE — apertura del capitolo dei momenti
+   Misurata sull'XD Visa (frame a 7,5 s): due pannelli arrotondati, uno
+   pieno e uno chiaro, ognuno con le sue fasi a colonne e i prodotti
+   sotto. Il pannello chiaro dentro una slide scura si porta i PROPRI
+   inchiostri: è la trappola che `audit:ink` trova e nessun altro gate
+   vede (vedi «Inchiostri che si ribaltano con la superficie»).
+   ══════════════════════════════════════════════════════════════════════ */
+.im-map {
+  display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  gap: 1rem; width: 100%; max-width: 92rem; margin-inline: auto;
+}
+.im-map-p {
+  display: flex; flex-direction: column; gap: 0.9rem;
+  padding: 1.5rem 1.5rem 1.4rem; border-radius: 18px; min-width: 0;
+}
+.im-map-p[data-lato='cliente'] {
+  background: linear-gradient(155deg, #1f7400, #16560a);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+.im-map-p[data-lato='interno'] {
+  background: #f4f5f7; box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+.im-map-t {
+  margin: 0; max-width: none; text-align: center;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.26rem, 1.22vw, 2.44rem); line-height: 1.15;
+  padding-bottom: 0.52rem; border-bottom: 1px solid currentColor;
+}
+.im-map-p[data-lato='cliente'] .im-map-t { color: #ffffff; }
+.im-map-p[data-lato='interno'] .im-map-t { color: var(--color-verde-scuro); }
+
+.im-map-g {
+  list-style: none; margin: 0; padding: 0; min-width: 0;
+  display: grid; grid-template-columns: repeat(var(--col, 7), minmax(0, 1fr)); gap: 0.5rem;
+}
+.im-map-g[data-colonne='7'] { --col: 7; }
+.im-map-g[data-colonne='5'] { --col: 5; }
+.im-map-g[data-colonne='4'] { --col: 4; }
+.im-map-c { display: flex; flex-direction: column; gap: 0.16rem; min-width: 0; text-align: left; }
+.im-map-n {
+  font-size: clamp(0.68rem, 0.54vw, 1.22rem); font-weight: 700;
+  letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.64);
+}
+.im-map-k {
+  font-size: clamp(0.9rem, 0.78vw, 1.75rem); font-weight: 700; line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+.im-map-v { font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.3; }
+/* L'ora è ciò che rende il percorso un racconto invece di un elenco:
+   «ore 21:40, sul divano» è una scena, «il cliente cerca» è un requisito. */
+.im-map-o {
+  font-size: clamp(0.72rem, 0.58vw, 1.3rem); line-height: 1.26;
+  color: rgba(255, 255, 255, 0.66);
+}
+.im-map-p[data-lato='cliente'] .im-map-k { color: #ffffff; }
+.im-map-p[data-lato='cliente'] .im-map-v { color: rgba(255, 255, 255, 0.88); }
+/* Il pannello CHIARO dentro una slide scura: inchiostri espliciti. */
+.im-map-p[data-lato='interno'] .im-map-k {
+  color: var(--color-ink);
+  display: flex; align-items: baseline; gap: 0.4rem;
+}
+.im-map-p[data-lato='interno'] .im-map-k::before {
+  content: ''; width: 0.56rem; height: 0.56rem; flex: none;
+  border-radius: 2px; background: var(--gruppo, var(--color-verde));
+  transform: translateY(-0.04em);
+}
+/* Il neutro della piattaforma, su fondo chiaro, si vede col bordo. */
+.im-map-c[data-gruppo='piattaforma'] .im-map-k::before {
+  background: transparent; box-shadow: inset 0 0 0 2px var(--color-grey-400);
+}
+.im-map-p[data-lato='interno'] .im-map-v { color: var(--color-ink-2); }
+
+.im-map-pro { list-style: none; margin: 0.3rem 0 0; padding: 0; display: grid; gap: 0.14rem; }
+.im-map-pro li {
+  font-size: clamp(0.78rem, 0.64vw, 1.44rem); font-weight: 700; line-height: 1.2;
+  color: var(--color-verde-scuro); overflow-wrap: anywhere;
+}
+
+/* Il filo: lo stesso segno del circolo, steso in orizzontale. */
+.im-map-filo {
+  position: relative; display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr)); align-items: center;
+  margin-top: 0.1rem; height: 0.9rem;
+}
+.im-map-filo::before {
+  content: ''; position: absolute; left: 4%; right: 4%; top: 50%;
+  border-top: 1.5px dashed rgba(255, 255, 255, 0.42);
+}
+/* ⚠️ I nodi del filo NON portano il colore del blocco, e non è una
+   dimenticanza. Dalla revisione del 29 ott 2026: «deve essere una
+   leggenda, un colore per argomento e basta». Il filo è il percorso di
+   Giulia, e lì il colore dei blocchi dell'offerta era un secondo
+   alfabeto da decifrare. La leggenda sta nel pannello accanto — dove i
+   blocchi si chiamano per nome — ed è l'unico posto dove quel colore
+   compare oltre all'etichetta della slide. */
+.im-map-nodo {
+  position: relative; justify-self: start; margin-left: 0.1rem;
+  width: 0.62rem; height: 0.62rem; border-radius: 999px;
+  background: #ffffff; box-shadow: 0 0 0 3px rgba(31, 116, 0, 0.9);
+}
+
+.im-map-ore {
+  margin: auto 0 0; padding-top: 0.5rem; max-width: none;
+  font-size: clamp(0.78rem, 0.62vw, 1.4rem); line-height: 1.35; font-style: italic;
+}
+.im-map-p[data-lato='cliente'] .im-map-ore { color: rgba(255, 255, 255, 0.76); }
+.im-map-p[data-lato='interno'] .im-map-ore { color: var(--color-grey-600); }
+
+@media (max-height: 820px) {
+  .im-map-p { padding: 0.72rem 0.85rem 0.8rem; gap: 0.44rem; }
+  .im-map-pro li:nth-child(n+4) { display: none; }
+}
+
+/* La testa sopra le due mappe: più bassa della copertina tipica, perché
+   qui il contenuto è la mappa e non il titolo. */
+.im-ch--map { margin-bottom: 0.9rem; }
+.im-ch--map .im-ch-t { font-size: clamp(1.6rem, 1.62vw, 3.2rem); margin-bottom: 0; max-width: 34ch; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   IL DIVISORE DI CAPITOLO — pagina chiara, foto, pannello di colore
+   Vedi il commento del componente per il perché del 72%/74%.
+   ⚠️ Questa è l'UNICA famiglia di slide a dominante chiara del percorso.
+   Gli inchiostri qui vanno espliciti e scuri: il resto dell'experience è
+   su fondo scuro, e un titolo che eredita `#ffffff` qui sparisce senza
+   che nessun check di layout se ne accorga — è esattamente la trappola
+   che `audit:ink` esiste per trovare.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-div-bg { position: absolute; inset: 0; background: var(--color-paper); }
+.im-div-bg::before {
+  content: ''; position: absolute; inset: 0 32% 0 40%;
+  background-image: var(--foto); background-size: cover;
+  background-position: var(--fuoco, center 38%);
+  filter: brightness(1.08) saturate(1.04);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22% 100%);
+          mask-image: linear-gradient(to right, transparent, #000 22% 100%);
+}
+/* ⚠️ Il pannello parte al 68% mentre la colonna di testo parte al ~72%:
+   il margine non è estetico, è la tolleranza. La safe-area laterale resa
+   non è esattamente quella del token (misurata: 118px, non 80), e con il
+   confine calcolato al pelo il testo cominciava DIECI PIXEL PRIMA del
+   pannello, sopra la fotografia. Quattro punti percentuali di franco
+   costano nulla e tolgono la dipendenza da un valore che non controllo. */
+.im-div-bg::after {
+  content: ''; position: absolute; inset: 0 0 0 68%;
+  background: linear-gradient(165deg, #1f7400, #0d2901);
+  box-shadow: -18px 0 44px rgba(0, 0, 0, 0.26);
+}
+
+.im-div {
+  display: grid; grid-template-columns: 74fr 26fr;
+  align-items: center; width: 100%; height: 100%; gap: 0 1.6rem;
+}
+.im-div-sx { min-width: 0; display: grid; gap: 0.7rem; align-content: center; }
+.im-div-num {
+  margin: 0; max-width: none; font-size: clamp(0.84rem, 0.72vw, 1.55rem);
+  font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-verde-scuro);
+}
+/* Il titolo del divisore è il tipo più grande del percorso: è il momento
+   in cui la pagina non deve dire altro. */
+.im-div-t {
+  margin: 0; max-width: 13ch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.4rem, 4vw, 5.4rem); line-height: 1.02;
+  letter-spacing: -0.025em; color: var(--color-ink); text-wrap: balance;
+}
+.im-div-dx { min-width: 0; display: grid; gap: 0.55rem; align-content: center; }
+.im-div-oc {
+  margin: 0; max-width: none; font-size: clamp(0.78rem, 0.64vw, 1.44rem);
+  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+.im-div-l {
+  margin: 0; max-width: none;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.1rem, 1.12vw, 2.24rem); line-height: 1.26; color: #ffffff;
+}
+
+/* Sotto i 1100px di larghezza il pannello diventerebbe una colonna di
+   parole singole: la foto esce e il divisore torna a due colonne. */
+@media (max-width: 1100px) {
+  .im-div { grid-template-columns: 62fr 38fr; }
+  .im-div-bg::before { inset: 0 44% 0 44%; }
+  .im-div-bg::after { inset: 0 0 0 56%; }
 }

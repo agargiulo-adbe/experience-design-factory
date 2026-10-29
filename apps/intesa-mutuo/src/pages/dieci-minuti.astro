@@ -31,6 +31,7 @@ import CircoloJourney from '../components/CircoloJourney.astro';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
 import DaVerificare from '../components/DaVerificare.astro';
+import Azione from '../components/Azione.astro';
 import ritratto from '../assets/generated/persona-giulia.webp';
 import scena from '../assets/generated/scena-03-tavolo.webp';
 import fondo from '../assets/generated/fondo-risultati.webp';
@@ -104,36 +105,54 @@ const M = MOMENTI[2];
     </Slide>
 
     <Slide id="slide-momento" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${scena.src})`}></div>
+      <div slot="backdrop" class="im-bg-vx" style={`--foto: url(${scena.src}); --fuoco: center 42%`}></div>
       <div class="im-due" data-reveal>
         <header class="im-due-testa">
           <T as="span" class="im-mom-blocco" data-gruppo={M.gruppo} it={M.blocco.it} en={M.blocco.en} />
           <T as="span" class="im-due-ora" it={`${M.ora.it} · ${M.dove.it}`} en={`${M.ora.en} · ${M.dove.en}`} />
+          <span class="im-due-passo">
+            <span class="im-due-passo-n">{M.n}</span>
+            <span class="im-due-passo-d">/ {M.of}</span>
+          </span>
         </header>
+
         <section class="im-due-banda" data-lato="cliente" data-substep data-side="in">
-          <T as="p" class="im-due-chi" it="Giulia" en="Giulia" />
-          <div class="im-due-mock"><MockCliente chrome={M.cliente.chrome} scena="simulazione" compatto /></div>
           <div class="im-due-txt">
+            <p class="im-due-chi">
+              <img class="im-due-chi-r" src={ritratto.src} alt="" width="120" height="120" loading="eager" />
+              <span>
+                <T as="span" class="im-due-chi-n" it="Giulia" en="Giulia" />
+                <T as="span" class="im-due-chi-q" it="Non ancora cliente" en="Not a customer yet" />
+              </span>
+            </p>
             <T as="h2" class="im-due-t" it={M.cliente.titolo.it} en={M.cliente.titolo.en} />
             <T as="p" class="im-due-b" it={M.cliente.corpo.it} en={M.cliente.corpo.en} />
           </div>
+          <div class="im-due-mock">
+            <MockCliente chrome={M.cliente.chrome} scena="simulazione" compatto />
+            <Azione segno={M.cliente.chrome} />
+          </div>
         </section>
+
         <section class="im-due-banda" data-lato="interno" data-substep data-side="in">
-          <T as="p" class="im-due-chi" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
-          <div class="im-due-mock"><MockAdobe prodotto={M.interno.prodotto} compatto /></div>
           <div class="im-due-txt">
+            <p class="im-due-chi">
+              <span class="im-due-chi-s" aria-hidden="true">IS</span>
+              <span>
+                <T as="span" class="im-due-chi-n" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
+                <T as="span" class="im-due-chi-q" it="Perché è stato possibile" en="Why it was possible" />
+              </span>
+            </p>
             <T as="h2" class="im-due-t" it={M.interno.titolo.it} en={M.interno.titolo.en} />
             <T as="p" class="im-due-b" it={M.interno.corpo.it} en={M.interno.corpo.en} />
             <p class="im-due-pro">{M.prodotto}</p>
             {DOMANDE_IN_SLIDE && <DaVerificare it={M.verifica.it} en={M.verifica.en} />}
           </div>
+          <div class="im-due-mock">
+            <MockAdobe prodotto={M.interno.prodotto} compatto />
+            <Azione segno={M.gruppo} />
+          </div>
         </section>
-        <aside class="im-due-cer">
-          <CircoloJourney attivo={3} />
-          <T as="p" class="im-due-cau"
-             it="Ricostruzioni illustrative: i sistemi sono vostri, i numeri di esempio."
-             en="Illustrative reconstructions: the systems are yours, the figures are examples." />
-        </aside>
       </div>
     </Slide>
 
