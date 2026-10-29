@@ -8,24 +8,30 @@
    «Lo stesso mutuo, dai due lati» — Adobe × Intesa Sanpaolo
    Generata da `pnpm new:experience` il 2026-10-29 (tipo: storia).
 
-   ATTENZIONE — QUESTO DESIGN SYSTEM È UN SEGNAPOSTO, NON QUELLO DEL CLIENTE.
-   Prima di toccare una slide:
-     1. `pnpm brand:tokens <url-del-cliente>` — legge il CSS di produzione e
-        conta i colori. Il più frequente è il colore di SISTEMA (link, stati,
-        bottoni); il marchio è spesso raro e inconfondibile. Non confonderli.
-     2. Sostituire i valori qui sotto con quelli letti, e scrivere in questo
-        commento DA DOVE vengono (URL del foglio, data, occorrenze), come fa
-        apps/poste-sei-domande/src/styles/global.css.
-     3. Caratteri: quello proprietario del cliente quasi mai è distribuibile.
-        Scegliere la sostituta più vicina e scrivere QUI PERCHÉ è stata scelta,
-        così nessuno la cambia per gusto. Inter è il ripiego neutro di partenza.
-     4. Tenere primary/secondary CHIARI e inverse SCURO (dominante chiara) oppure
-        ribaltare tutto in blocco: i blocchi condivisi del motore si aspettano
-        che `--ink-X` stia su `--surface-X`, qualunque delle due sia scura.
-   L'accento `#258900` viene dal flag `--accent` (o dal default del generatore):
-   `--color-accent-deep` e `--color-accent-soft` sono già calcolati per reggere
-   WCAG AA come inchiostro su chiaro e su scuro; `--color-on-accent` è l'inchiostro
-   che regge SOPRA l'accento (bottoni). Ricalcolarli quando cambia l'accento.
+   IL DESIGN SYSTEM È QUELLO VERO, E QUESTA È LA SUA FONTE.
+   Letto da `pnpm brand:tokens https://www.intesasanpaolo.com` il 29 ott
+   2026: 4 fogli di produzione, 805 KB di CSS analizzati.
+
+     #258900   181 occorrenze   il colore di SISTEMA (link, stati, bottoni)
+     #0d2901    46 occorrenze   il verde notte, per le superfici scure
+     #fa9600    35 occorrenze   l'ARANCIO: l'unico accento d'azione
+     Open Sans  59 dichiarazioni — il carattere vero del cliente, e
+                distribuibile: non serve una sostituta.
+
+   L'arancio non è una scelta grafica nostra: è il colore che il sito usa
+   per gli stati che chiedono un gesto, ed è l'equivalente esatto del
+   giallo con cui l'XD Visa marca l'azione in ogni momento. Qui vive sui
+   badge e sul nome del prodotto, e da nessun'altra parte.
+
+   ⚠️ CONTRASTO, verificato prima di scegliere: bianco su #258900 dà
+   4,56:1 — passa AA di un soffio, e `audit:ink` campiona i PIXEL, dove
+   l'antialiasing lo fa scendere sotto. Le superfici che portano testo
+   usano **#1f7400** (5,99:1) o il verde notte. L'arancio come INCHIOSTRO
+   regge solo sul verde notte (7,1:1), non sul verde medio (2,74:1).
+
+   Inchiostri: su un fondo di marchio esplicito vanno ESPLICITI e PIENI.
+   Il bianco trasparente — `rgba(255,255,255,0.76)` — su questi verdi dà
+   3,9-4,1:1 e cade sotto AA. È costato due giri di `audit:ink`.
    ═══════════════════════════════════════════════════════════════════════ */
 @theme {
   --color-accent: #258900;
@@ -1561,7 +1567,7 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-due-testa .im-mom-blocco { margin: 0; }
 .im-due-ora {
   font-size: clamp(0.8rem, 0.64vw, 1.44rem); font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.82);
+  letter-spacing: 0.1em; text-transform: uppercase; color: #eef6ea;
 }
 
 /* Ogni banda: testo a sinistra dentro il colore, mockup a cavallo del
@@ -1606,10 +1612,14 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
   display: block; margin: 0; max-width: none; line-height: 1.2;
   font-size: clamp(1rem, 0.86vw, 1.9rem); font-weight: 700; color: #ffffff;
 }
+/* ⚠️ Era `rgba(255,255,255,0.76)` e dava 4,14:1 sul verde: sotto la
+   soglia AA. È la trappola già scritta nel regolamento — su uno sfondo
+   di marchio esplicito l'inchiostro va esplicito e pieno — e l'ha
+   trovata `audit:ink`, che guarda i pixel, non il CSS. */
 .im-due-chi-q {
   display: block; margin: 0; max-width: none; line-height: 1.2;
   font-size: clamp(0.7rem, 0.56vw, 1.26rem); font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.76);
+  letter-spacing: 0.1em; text-transform: uppercase; color: #eef6ea;
 }
 
 /* Il titolo: il Visa lo tiene al 3,1% della larghezza di pagina. Con due
@@ -1623,7 +1633,7 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 }
 .im-due-b {
   margin: 0; max-width: 42ch;
-  font-size: clamp(1rem, 0.9vw, 2rem); line-height: 1.46; color: rgba(255, 255, 255, 0.94);
+  font-size: clamp(1rem, 0.9vw, 2rem); line-height: 1.46; color: #f2f8f0;
 }
 .im-due-pro {
   margin: 0.55rem 0 0; max-width: none;
@@ -2298,7 +2308,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-map-c { display: flex; flex-direction: column; gap: 0.16rem; min-width: 0; text-align: left; }
 .im-map-n {
   font-size: clamp(0.68rem, 0.54vw, 1.22rem); font-weight: 700;
-  letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.64);
+  letter-spacing: 0.08em; color: #dfe9db;
 }
 .im-map-k {
   font-size: clamp(0.9rem, 0.78vw, 1.75rem); font-weight: 700; line-height: 1.18;
@@ -2309,10 +2319,10 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
    «ore 21:40, sul divano» è una scena, «il cliente cerca» è un requisito. */
 .im-map-o {
   font-size: clamp(0.72rem, 0.58vw, 1.3rem); line-height: 1.26;
-  color: rgba(255, 255, 255, 0.66);
+  color: #dfe9db;
 }
 .im-map-p[data-lato='cliente'] .im-map-k { color: #ffffff; }
-.im-map-p[data-lato='cliente'] .im-map-v { color: rgba(255, 255, 255, 0.88); }
+.im-map-p[data-lato='cliente'] .im-map-v { color: #f0f6ee; }
 /* Il pannello CHIARO dentro una slide scura: inchiostri espliciti. */
 .im-map-p[data-lato='interno'] .im-map-k {
   color: var(--color-ink);
@@ -2362,7 +2372,11 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   margin: auto 0 0; padding-top: 0.5rem; max-width: none;
   font-size: clamp(0.78rem, 0.62vw, 1.4rem); line-height: 1.35; font-style: italic;
 }
-.im-map-p[data-lato='cliente'] .im-map-ore { color: rgba(255, 255, 255, 0.76); }
+/* ⚠️ Tutti gli inchiostri del pannello verde sono ESPLICITI e pieni.
+   Il bianco trasparente su un fondo di marchio scende sotto AA — qui
+   dava 3,87:1 — ed è la trappola che `audit:ink` trova guardando i
+   pixel, mentre il CSS dice «bianco» e sembra a posto. */
+.im-map-p[data-lato='cliente'] .im-map-ore { color: #e2ecde; }
 .im-map-p[data-lato='interno'] .im-map-ore { color: var(--color-grey-600); }
 
 @media (max-height: 820px) {
@@ -2427,7 +2441,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-div-oc {
   margin: 0; max-width: none; font-size: clamp(0.78rem, 0.64vw, 1.44rem);
   font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.78);
+  color: #e6f2e1;
 }
 .im-div-l {
   margin: 0; max-width: none;

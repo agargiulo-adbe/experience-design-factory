@@ -16,20 +16,28 @@
  * quello la slide dei momenti non ha un taglio orizzontale netto.)
  */
 import T from '@edf/core/blocks/i18n/T.astro';
+/* ⚠️ IL FONDO NON STA QUI, e non è una scelta di stile.
+   Astro NON propaga `slot="backdrop"` attraverso un componente: un
+   `<div slot="backdrop">` scritto dentro Divisore finisce nel contenuto
+   della slide, in posizione assoluta SOPRA il testo, e lo copre. Il
+   difetto non si vedeva aprendo la pagina — si vedeva solo nelle
+   condizioni di `audit:ink`, che misura i pixel: titolo, occhiello e
+   lead spariti, e un «contrasto 1,04:1» che sembrava un falso positivo
+   e invece era testo non dipinto.
+   Il fondo lo mette la PAGINA, come figlio diretto di <Slide>. */
 interface Props {
-  num: string; foto: string; fuoco?: string;
+  num: string;
   tIt: string; tEn: string; lIt: string; lEn: string;
   puntoIt?: string; puntoEn?: string;
 }
-const { num, foto, fuoco = 'center 38%', tIt, tEn, lIt, lEn, puntoIt, puntoEn } = Astro.props;
+const { num, tIt, tEn, lIt, lEn, puntoIt, puntoEn } = Astro.props;
 ---
-<div slot="backdrop" class="im-div-bg" style={`--foto: url(${foto}); --fuoco: ${fuoco}`}></div>
 <div class="im-div" data-reveal>
   <div class="im-div-sx">
     <p class="im-div-num"><span data-lang-it>Capitolo {num}</span><span data-lang-en>Chapter {num}</span></p>
     <T as="h2" class="im-div-t" it={tIt} en={tEn} data-reveal data-reveal-delay="0.08" />
   </div>
-  <div class="im-div-dx" data-reveal data-reveal-delay="0.18">
+  <div class="im-div-dx" data-reveal data-reveal-delay="0.1">
     <T as="p" class="im-div-oc" it={puntoIt ?? 'Il punto'} en={puntoEn ?? 'The point'} />
     <T as="p" class="im-div-l" it={lIt} en={lEn} />
   </div>
