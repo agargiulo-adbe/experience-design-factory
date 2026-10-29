@@ -93,6 +93,31 @@ const SLUG = 'momenti';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+/* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
+   I quattro passi vengono dai sei pilastri del Content Supply Chain
+   Maturity Assessment di Adobe (strategia e modello operativo, flussi e
+   pianificazione, creazione e produzione, gestione degli asset, consegna
+   e attivazione, misura e insight), raggruppati in quattro perché sei
+   colonne su una slide non si leggono.
+   La fascia sotto è il punto per una banca, e viene dal value prop per i
+   servizi finanziari di GenStudio letto su Field Readiness il 30 ott
+   2026 — «scalable, compliant campaign content»: la conformità non è un
+   passaggio a valle, sta dentro la produzione. */
+const CSC = [
+  { t: { it: 'Pianificare', en: 'Plan' },
+    s: { it: 'Il brief, i flussi, chi approva', en: 'The brief, the flows, who approves' },
+    d: { it: 'Una campagna nasce con dentro le sue approvazioni, invece di rincorrerle a valle.', en: 'A campaign is born with its approvals inside it, instead of chasing them downstream.' } },
+  { t: { it: 'Produrre', en: 'Produce' },
+    s: { it: 'Le varianti, assemblate sul marchio', en: 'Variants, assembled on the brand' },
+    d: { it: 'Dodici varianti da un brief solo — è il momento 02 di Giulia — con i vincoli di marchio applicati per costruzione.', en: 'Twelve variants from one brief — Giulia’s moment 02 — with brand rules applied by construction.' } },
+  { t: { it: 'Gestire', en: 'Manage' },
+    s: { it: 'Gli asset, i diritti, il riuso', en: 'Assets, rights, reuse' },
+    d: { it: 'Un archivio solo, dove si sa che cosa si può usare, dove e fino a quando.', en: 'One repository, where you know what can be used, where and until when.' } },
+  { t: { it: 'Attivare e misurare', en: 'Activate and measure' },
+    s: { it: 'Sui canali, e l’esito torna indietro', en: 'On the channels, and the outcome comes back' },
+    d: { it: 'Attivazione sui canali dal posto in cui il contenuto è nato, e la performance che rientra nel brief successivo.', en: 'Activation on channels from where the content was born, and performance that feeds the next brief.' } },
+];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -201,6 +226,40 @@ const currentPath = Astro.url.pathname;
         </div>
 
         <T as="p" class="im-fonte-riga" it="Capacità verificate sul materiale Adobe di Field Readiness (Brand Visibility per i servizi finanziari, 30 ott 2026). Adobe Brand Visibility." en="Capabilities verified against Adobe Field Readiness material (Brand Visibility for financial services, 30 Oct 2026). Adobe Brand Visibility." />
+      </div>
+    </Slide>
+
+    {/* Secondo approfondimento: la fabbrica di contenuti. Sta DOPO
+        Brand Visibility perché è il blocco successivo nel giro di
+        Giulia — prima vi trovano, poi quello che trovano deve parlare
+        la sua lingua. */}
+    <Slide id="slide-content-factory" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · Content Factory" en="Deep dive · content factory" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="La catena del contenuto, dal brief alla misura" en="The content chain, from brief to measurement" />
+        <T as="p" class="im-ado-l" it="Quattro passi di un giro solo. Il tempo di una campagna non se ne va nel produrre: se ne va nell’approvare e nel ricominciare da capo." en="Four steps of one loop. A campaign’s time does not go into producing: it goes into approving, and into starting over." />
+
+        <div class="im-bv im-csc">
+          {CSC.map((c, i) => (
+            <>
+              <section class="im-bv-i" data-substep data-side="in">
+                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
+                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+              </section>
+              {i < CSC.length - 1 && <span class="im-bv-op im-csc-op" aria-hidden="true">→</span>}
+            </>
+          ))}
+        </div>
+
+        {/* La riga che per una banca è il punto. */}
+        <div class="im-csc-conf" data-substep data-side="in">
+          <T as="span" class="im-csc-conf-t" it="La conformità sta dentro la produzione, non dopo" en="Compliance lives inside production, not after it" />
+          <T as="span" class="im-csc-conf-d" it="È la differenza fra dodici varianti pronte e dodici varianti da far rivedere. Su una campagna di mutuo, è la differenza fra uscire questa settimana e uscire il mese prossimo." en="It is the difference between twelve variants ready and twelve variants to review. On a mortgage campaign, it is the difference between launching this week and launching next month." />
+        </div>
+
+        <T as="p" class="im-fonte-riga" it="Passi dai sei pilastri del Content Supply Chain Maturity Assessment di Adobe; la riga sulla conformità dal value prop per i servizi finanziari di Adobe GenStudio (Field Readiness, 30 ott 2026)." en="Steps from the six pillars of Adobe’s Content Supply Chain Maturity Assessment; the compliance line from Adobe GenStudio’s financial services value proposition (Field Readiness, 30 Oct 2026)." />
       </div>
     </Slide>
 
