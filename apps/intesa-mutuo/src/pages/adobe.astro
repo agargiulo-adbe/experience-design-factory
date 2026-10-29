@@ -1,0 +1,226 @@
+---
+/**
+ * 01 · ADOBE PER INTESA SANPAOLO — il capitolo che viene dal deck.
+ *
+ * Innesta cinque slide del `.pptx` del 5 novembre: il team (02), chi è
+ * Adobe (07), Adobe nei servizi finanziari (06), i Forrester Wave (08) e
+ * Adobe CX Enterprise (11).
+ *
+ * ⚠️ È L'UNICO CAPITOLO IN CUI IL DESIGN SYSTEM NON È DI INTESA.
+ * La regola «un artefatto, un design system» non è violata: qui Adobe
+ * parla di sé, e il blocco sta dentro il documento come **citazione**
+ * dichiarata — non ridisegnato in verde, non mimetizzato. I quadranti
+ * Forrester restano le immagini originali, perché un grafico di un
+ * analista terzo non si ricolora e non si ridisegna: o è il suo, o non
+ * vale niente.
+ *
+ * Che cosa NON è stato innestato, e perché:
+ *   - le otto slide «Agenda»: in un documento la navigazione è l'agenda;
+ *   - la slide 10, che diceva la stessa cosa della 11 con meno disegno;
+ *   - i numeri della 07, che la 06 ripeteva quasi uguali con il taglio
+ *     FSI in più. Stanno in un posto solo (vedi «slide-numeri»).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import Divisore from '../components/Divisore.astro';
+import fondo from '../assets/generated/lavoro-04-decisione.webp';
+/* I quadranti, estratti dal deck ufficiale. Non ricostruiti: un Wave
+   ridisegnato da noi non sarebbe più una fonte. */
+import wCdp from '../assets/forrester/forrester-cdp.png';
+import wAnalytics from '../assets/forrester/forrester-analytics.png';
+import wOptimization from '../assets/forrester/forrester-optimization.png';
+import wEmail from '../assets/forrester/forrester-email.png';
+
+const SLUG = 'adobe';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/* Il team che è in sala il 5 novembre. Dal deck, slide 2. */
+const TEAM = [
+  { n: 'Antonio Gargiulo', r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Francesca Ellena', r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
+  { n: 'Giacomo Selmi', r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
+  { n: 'Alex Gordiani', r: { it: 'Head of FSI', en: 'Head of FSI' } },
+];
+const iniziali = (nome: string) => nome.split(' ').map((p) => p[0]).join('');
+
+/* I cinque numeri, con la fonte accanto. Dal deck, slide 6. */
+const NUMERI = [
+  { k: '1982', v: { it: 'fondata da J. Warnock e C. Geschke', en: 'founded by J. Warnock and C. Geschke' } },
+  { k: '$23,77 mld', v: { it: 'ricavi nell’esercizio 2025', en: 'fiscal 2025 revenue' } },
+  { k: '+11%', v: { it: 'crescita dei ricavi nell’esercizio 2025', en: 'revenue growth in fiscal 2025' } },
+  { k: '31.360', v: { it: 'dipendenti, metà fuori dagli Stati Uniti', en: 'employees, half outside the United States' } },
+  { k: '8.400', v: { it: 'clienti nei servizi finanziari nel mondo', en: 'financial services customers worldwide' } },
+];
+
+/* I quattro Wave. `pro` è **l'elemento distintivo che Forrester riconosce
+   ad Adobe** in quel quadrante — uno solo, sintetico; `per` è che cosa
+   vuol dire nel contesto di una banca. Senza la prima riga il quadrante
+   è una medaglia; senza la seconda è una medaglia di qualcun altro.
+
+   ⚠️ PROVENIENZA, perché queste righe finiscono davanti a un cliente.
+   Customer Analytics ed Experience Optimization sono verificati sul
+   materiale Adobe di Field Readiness (29 ott 2026): per il primo
+   Forrester indica l'unificazione dei profili su scala enterprise con la
+   ricucitura delle sessioni **anonime prima del login**; per il secondo
+   l'integrazione nativa con Experience Platform, profili in tempo reale
+   e identity resolution.
+   Customer Data Platform ed Email Marketing NON sono stati ritrovati:
+   le loro righe restano quelle già scritte nel deck e **vanno
+   ricontrollate sul report prima del 5 novembre**. Non sono state
+   arricchite con dettagli non verificati — che è il modo più rapido di
+   farsi smentire da un CIO che il report ce l'ha. */
+const WAVE = [
+  {
+    img: wCdp, cat: { it: 'Customer Data Platform', en: 'Customer Data Platform' },
+    q: { it: 'Leader · 3° trim. 2026', en: 'Leader · Q3 2026' },
+    per: { it: 'Una sola vista del cliente, pronta da usare su tutti i canali', en: 'One view of the customer, ready to use across every channel' },
+    pro: { it: 'Per Forrester la forza è la gestione del dato: modelli di settore e regole di governance dentro la piattaforma', en: 'Forrester points to data management: industry models and governance rules inside the platform' },
+  },
+  {
+    img: wAnalytics, cat: { it: 'Customer Analytics', en: 'Customer Analytics' },
+    q: { it: 'Leader · 2° trim. 2026', en: 'Leader · Q2 2026' },
+    per: { it: 'Capire dove i clienti si fermano, tra app, sito e filiale', en: 'Understand where customers stall, across app, site and branch' },
+    pro: { it: 'Per Forrester unifica i profili su scala enterprise, e ricuce anche le sessioni anonime prima del login', en: 'Forrester points to unifying profiles at enterprise scale, stitching even anonymous sessions before login' },
+  },
+  {
+    img: wOptimization, cat: { it: 'Experience Optimization', en: 'Experience Optimization' },
+    q: { it: 'Leader · 3° trim. 2026', en: 'Leader · Q3 2026' },
+    per: { it: 'Testare e personalizzare ogni esperienza, dal sito al singolo messaggio', en: 'Test and personalise every experience, from the site to a single message' },
+    pro: { it: 'Per Forrester la personalizzazione nasce dai profili in tempo reale di Experience Platform, sul web e sugli altri canali', en: 'Forrester points to personalisation built on Experience Platform’s real-time profiles, on web and other channels' },
+  },
+  {
+    img: wEmail, cat: { it: 'Email Marketing', en: 'Email Marketing' },
+    q: { it: 'Leader · 1° trim. 2026', en: 'Leader · Q1 2026' },
+    per: { it: 'Messaggi personalizzati e conformi, su email e sugli altri canali', en: 'Personalised, compliant messages over email and other channels' },
+    pro: { it: 'Per Forrester l’AI di Adobe produce messaggi completi e coerenti con il marchio', en: 'Forrester points to Adobe’s AI producing complete, on-brand messages' },
+  },
+];
+
+/* I quattro blocchi dell'offerta. Stessi gruppi, stessi colori e stesso
+   ordine dei momenti: è QUI che la codifica si spiega una volta sola —
+   era il rilievo della revisione del 29 ott, «deve essere una leggenda». */
+const BLOCCHI = [
+  { g: 'trovare', t: { it: 'Farsi trovare', en: 'Be found' }, d: { it: 'Essere citati nelle risposte generate, non solo nei risultati di ricerca.', en: 'Being cited in generated answers, not only in search results.' } },
+  { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' }, d: { it: 'Produrre le varianti che servono, già conformi, senza rifare il giro di approvazione.', en: 'Producing the variants you need, already compliant, without redoing the approval round.' } },
+  { g: 'engagement', t: { it: 'Customer Engagement', en: 'Customer engagement' }, d: { it: 'Profilo, decisione e regia del percorso, sullo stesso dato.', en: 'Profile, decision and journey orchestration, on the same data.' } },
+  { g: 'piattaforma', t: { it: 'Adobe CX Analytics', en: 'Adobe CX analytics' }, d: { it: 'Digital analytics, percorsi del cliente, pianificazione e ROI, contenuto.', en: 'Digital analytics, customer journeys, planning and ROI, content.' } },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 46%`}></div>
+      <Divisore num={ch.num}
+        tIt="Adobe per Intesa Sanpaolo" tEn="Adobe for Intesa Sanpaolo"
+        lIt="Esperienza cliente e produzione di contenuti nello stesso sistema. Oggi parliamo del primo."
+        lEn="Customer experience and content production in one system. Today we talk about the first." />
+    </Slide>
+
+    <Slide id="slide-team" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap" data-reveal>
+        <T as="p" class="im-ado-occ" it="Chi è in sala" en="Who is in the room" />
+        <T as="h2" class="im-ado-t" it="Il team Adobe per i servizi finanziari" en="The Adobe team for financial services" />
+        <ul class="im-team">
+          {TEAM.map((p) => (
+            <li class="im-team-i" data-substep data-side="in">
+              <span class="im-team-m" aria-hidden="true">{iniziali(p.n)}</span>
+              <span>
+                <span class="im-team-n">{p.n}</span>
+                <T as="span" class="im-team-r" it={`${p.r.it} · Adobe Italia`} en={`${p.r.en} · Adobe Italy`} />
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+    <Slide id="slide-chi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap" data-reveal>
+        <T as="p" class="im-ado-occ" it="Chi è Adobe" en="Who Adobe is" />
+        <T as="h2" class="im-ado-t" it="Dare a tutti la possibilità di creare" en="Giving everyone the ability to create" />
+        <T as="p" class="im-ado-l" it="Adobe sviluppa piattaforme e strumenti per la creatività, la produttività e le esperienze cliente personalizzate: dalla prima scintilla creativa alla distribuzione su ogni canale." en="Adobe builds platforms and tools for creativity, productivity and personalised customer experiences: from the first creative spark to delivery on every channel." />
+        <div class="im-ado-due">
+          <section class="im-ado-area" data-substep data-side="in" data-oggi>
+            <T as="p" class="im-ado-area-t" it="Esperienza cliente" en="Customer experience" />
+            <T as="p" class="im-ado-area-d" it="Experience Cloud: dati, contenuti e percorsi su web, app, assistenza e rete fisica." en="Experience Cloud: data, content and journeys across web, app, service and the branch network." />
+            <T as="p" class="im-ado-area-q" it="È l’ambito di oggi" en="This is today’s scope" />
+          </section>
+          <section class="im-ado-area" data-substep data-side="in">
+            <T as="p" class="im-ado-area-t" it="Creatività e documenti" en="Creativity and documents" />
+            <T as="p" class="im-ado-area-d" it="Acrobat, Photoshop, Express, Firefly: produzione, approvazione e firma di contenuti e documenti." en="Acrobat, Photoshop, Express, Firefly: producing, approving and signing content and documents." />
+          </section>
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-numeri" bg="inverse" align="left" data-display>
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap" data-reveal>
+        <T as="p" class="im-ado-occ" it="Adobe nei servizi finanziari" en="Adobe in financial services" />
+        <T as="h2" class="im-ado-t" it="Il settore finanziario è la prima industry di Adobe" en="Financial services is Adobe’s largest industry" />
+        <ul class="im-num">
+          {NUMERI.map((n) => (
+            <li class="im-num-i" data-substep data-side="in">
+              <span class="im-num-k">{n.k}</span>
+              <T as="span" class="im-num-v" it={n.v.it} en={n.v.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Fonti: Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts." en="Sources: Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-forrester" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="La valutazione di un terzo" en="A third party’s assessment" />
+        <T as="h2" class="im-ado-t" it="Leader nei quattro Forrester Wave del 2026 che riguardano questo tavolo" en="A Leader in the four 2026 Forrester Waves that matter at this table" />
+        <ul class="im-wave">
+          {WAVE.map((w) => (
+            <li class="im-wave-i" data-substep data-side="in">
+              <img class="im-wave-img" src={w.img.src} alt="" width="680" height="664" loading="eager" />
+              <T as="span" class="im-wave-q" it={w.q.it} en={w.q.en} />
+              <T as="span" class="im-wave-c" it={w.cat.it} en={w.cat.en} />
+              <T as="span" class="im-wave-p" it={w.per.it} en={w.per.en} />
+              <T as="span" class="im-wave-r" it={w.pro.it} en={w.pro.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Fonte: Forrester Research, The Forrester Wave™, 2026. I grafici sono quelli pubblicati da Forrester." en="Source: Forrester Research, The Forrester Wave™, 2026. The charts are the ones Forrester published." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-cx" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Adobe CX Enterprise" en="Adobe CX Enterprise" />
+        <T as="h2" class="im-ado-t" it="Quello che Adobe mette sul tavolo, da un capo all’altro" en="What Adobe brings to the table, end to end" />
+        <T as="p" class="im-ado-l" it="Farsi trovare, ingaggiare, produrre. E sotto, una misura sola — sono i quattro blocchi che tornano in ogni momento del percorso di Giulia." en="Be found, engage, produce. And underneath, one single measurement — the four blocks that come back at every moment of Giulia’s journey." />
+        <ul class="im-blk">
+          {BLOCCHI.map((b) => (
+            <li class="im-blk-i" data-gruppo={b.g} data-substep data-side="in">
+              <T as="span" class="im-blk-t" it={b.t.it} en={b.t.en} />
+              <T as="span" class="im-blk-d" it={b.d.it} en={b.d.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-ado-ai" it="Sotto i quattro blocchi, Adobe AI Platform." en="Underneath the four blocks, Adobe AI Platform." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

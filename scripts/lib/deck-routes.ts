@@ -172,6 +172,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
   ],
   'intesa-mutuo': [
     { name: 'home',       route: '/experience-design-factory/intesa-mutuo/' },
+    { name: 'adobe',      route: '/experience-design-factory/intesa-mutuo/adobe/' },
     { name: 'scenario',   route: '/experience-design-factory/intesa-mutuo/scenario/' },
     { name: 'persona',    route: '/experience-design-factory/intesa-mutuo/persona/' },
     { name: 'momenti',    route: '/experience-design-factory/intesa-mutuo/momenti/' },

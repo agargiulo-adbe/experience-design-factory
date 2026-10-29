@@ -14,11 +14,16 @@ export interface Chapter {
 }
 
 export const CHAPTERS: Chapter[] = [
-  { slug: 'scenario', num: '01', title: { it: 'Scenario', en: 'Scenario' } },
-  { slug: 'persona', num: '02', title: { it: 'La persona', en: 'The persona' } },
-  { slug: 'momenti', num: '03', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
-  { slug: 'circolo', num: '04', title: { it: 'Il circolo che si chiude', en: 'The loop that closes' } },
-  { slug: 'risultati', num: '05', title: { it: 'Risultati', en: 'Results' } },
+  /* Il capitolo 01 viene dal deck del 5 novembre (slide 2, 6, 7, 8, 11): è il
+     solo capitolo in cui il design system NON è di Intesa ma di Adobe, perché
+     parla di Adobe. Sta qui dentro come CITAZIONE — dichiarata, non ridisegnata
+     in verde — e non altrove, perché un documento solo vale più di due. */
+  { slug: 'adobe', num: '01', title: { it: 'Adobe per Intesa Sanpaolo', en: 'Adobe for Intesa Sanpaolo' } },
+  { slug: 'scenario', num: '02', title: { it: 'Scenario', en: 'Scenario' } },
+  { slug: 'persona', num: '03', title: { it: 'La persona', en: 'The persona' } },
+  { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
+  { slug: 'circolo', num: '05', title: { it: 'Il circolo che si chiude', en: 'The loop that closes' } },
+  { slug: 'risultati', num: '06', title: { it: 'Risultati', en: 'Results' } },
 ];
 
 export function chapterIndex(slug: string): number {
