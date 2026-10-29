@@ -54,7 +54,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
   {parte === 'come' && (<>
   {/* ── 1 · Chi lo prepara: la sessione con Coworker ──────────────────── */}
   <figure class="mk-lato">
-    <figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption>
+    <div class="mk-testa"><figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption></div>
     <div class="mk-chat">
       {c.conversazione.map((b) => (
         <p class="mk-bolla" data-substep data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
@@ -72,16 +72,6 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
       </div>
     </div>
 
-    <div class="mk-prof" data-substep>
-      <span class="scan-line" aria-hidden="true"></span>
-      <p class="mk-prof-tag">Quello che sappiamo</p>
-      <ul class="mk-prof-l">
-        {c.profilo.map((a) => (
-          <li class="reveal-attr"><span class="mk-prof-k">{a.k}</span><span class="mk-prof-v">{a.v}</span></li>
-        ))}
-      </ul>
-    </div>
-
     <div class="mk-dev">
       {/* Testata di marchio: rossa, con il marchio a sinistra. Sul web porta
           anche la striscia di ricerca; sull'app è stretta. */}
@@ -89,6 +79,14 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
         <span class="mk-top-m">Trenitalia</span>
         <span class="mk-top-i mk-top-i--web"></span>
         <span class="mk-top-i mk-top-i--web"></span>
+      </div>
+      <div class="mk-push mk-solo-app">
+        <div class="mk-push-t" aria-hidden="true">
+          <span class="mk-push-i"></span>
+          <span class="mk-push-n">TRENITALIA</span>
+          <span class="mk-push-o">ora</span>
+        </div>
+        <p class="mk-push-c">{c.push}</p>
       </div>
       <div class="mk-cerca mk-solo-web" aria-hidden="true">
         <span class="mk-cerca-c">Da</span><span class="mk-cerca-c">A</span>
@@ -118,6 +116,16 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
         <span class="mk-tab-v">Profilo</span>
       </div>
     </div>
+    <div class="mk-prof" data-substep>
+      <span class="scan-line" aria-hidden="true"></span>
+      <p class="mk-prof-tag">Quello che sappiamo</p>
+      <ul class="mk-prof-l">
+        {c.profilo.map((a) => (
+          <li class="reveal-attr"><span class="mk-prof-k">{a.k}</span><span class="mk-prof-v">{a.v}</span></li>
+        ))}
+      </ul>
+    </div>
+
     <span class="mk-scelta" data-substep aria-hidden="true"></span>
   </figure>
   </>)}
@@ -174,7 +182,10 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
     align-items: start;
   }
   .mk-lato { display: flex; flex-direction: column; gap: 0.4rem; margin: 0; min-width: 0; }
-  .mk-testa { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+  .mk-testa {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
+    height: 2.15rem;
+  }
   .mk-tag {
     font-size: clamp(0.84rem, 0.92vw, 0.96rem); font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary);
@@ -253,7 +264,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
 
   /* ── 2 · Il profilo e le varianti ─────────────────────────────────── */
   .mk-prof {
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; margin-top: 0.15rem;
     border: 1px solid rgba(79, 189, 180, 0.32); border-radius: 0.55rem;
     padding: 0.5rem 0.65rem;
     background: rgba(0, 102, 102, 0.16);
@@ -308,6 +319,36 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
   .mk-top-i { width: 0.75rem; height: 0.75rem; border-radius: 0.15rem; background: rgba(255,255,255,0.4); }
   .mk-top-i--web { margin-left: auto; }
   .mk-top-i--web + .mk-top-i--web { margin-left: 0; }
+
+  /* La notifica push. Non è decorazione: è il solo punto in cui il prodotto
+     va a cercare la persona invece di aspettarla, ed è il motivo per cui il
+     commutatore App/Web esiste. Fondo chiaro come una notifica di sistema,
+     così si stacca dalla pagina sotto. */
+  .mk-push {
+    margin: 0.55rem 0.6rem 0.1rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.6rem;
+    background: rgba(241, 243, 244, 0.95);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .mk-push-t { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }
+  .mk-push-i {
+    width: 0.95rem; height: 0.95rem; border-radius: 0.25rem;
+    background: var(--color-rosso); flex: 0 0 auto;
+  }
+  .mk-push-n {
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(47, 57, 78, 0.75);
+  }
+  .mk-push-o {
+    margin-left: auto;
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); color: rgba(47, 57, 78, 0.6);
+  }
+  [data-slide] .mk .mk-push-c {
+    margin: 0; width: 100%;
+    font-size: clamp(0.92rem, 1vw, 1.05rem); line-height: 1.4;
+    color: rgba(27, 34, 48, 0.96);
+  }
 
   .mk-cerca {
     display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.3rem;
@@ -416,7 +457,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
   }
   .mk-sw-b {
     appearance: none; border: 0; cursor: pointer;
-    padding: 0.18rem 0.6rem; border-radius: 9999px;
+    padding: 0.14rem 0.6rem; border-radius: 9999px;
     font-size: clamp(0.86rem, 0.94vw, 0.98rem); font-weight: 600; letter-spacing: 0.03em;
     background: transparent; color: rgba(241, 243, 244, 0.72);
     transition: background 180ms ease, color 180ms ease;
@@ -427,7 +468,37 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
     .mk { gap: 0.6rem; }
     .mk-top { padding: 0.28rem 0.55rem; }
     .mk-top-m { font-size: 0.78rem; }
-    .mk-cerca { padding: 0.35rem 0.5rem; }
+    /* La notifica push. Non è decorazione: è il solo punto in cui il prodotto
+     va a cercare la persona invece di aspettarla, ed è il motivo per cui il
+     commutatore App/Web esiste. Fondo chiaro come una notifica di sistema,
+     così si stacca dalla pagina sotto. */
+  .mk-push {
+    margin: 0.55rem 0.6rem 0.1rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.6rem;
+    background: rgba(241, 243, 244, 0.95);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+  .mk-push-t { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; }
+  .mk-push-i {
+    width: 0.95rem; height: 0.95rem; border-radius: 0.25rem;
+    background: var(--color-rosso); flex: 0 0 auto;
+  }
+  .mk-push-n {
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); font-weight: 700; letter-spacing: 0.08em;
+    color: rgba(47, 57, 78, 0.75);
+  }
+  .mk-push-o {
+    margin-left: auto;
+    font-size: clamp(0.72rem, 0.78vw, 0.8rem); color: rgba(47, 57, 78, 0.6);
+  }
+  [data-slide] .mk .mk-push-c {
+    margin: 0; width: 100%;
+    font-size: clamp(0.92rem, 1vw, 1.05rem); line-height: 1.4;
+    color: rgba(27, 34, 48, 0.96);
+  }
+
+  .mk-cerca { padding: 0.35rem 0.5rem; }
     .mk-tab { padding: 0.26rem 0.45rem; }
     .mk-titolo { margin-bottom: 0.05rem; }
     .mk-chat { gap: 0.24rem; padding: 0.45rem; min-height: 10.2rem; }
@@ -439,7 +510,10 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
     .mk-prof-tag { margin-bottom: 0.2rem; }
     .mk-top { padding: 0.32rem 0.6rem; }
     .mk-tab { padding: 0.3rem 0.5rem; }
-    .mk-pagina { gap: 0.3rem; padding: 0.55rem 0.6rem 0.6rem; }
+    .mk-pagina { gap: 0.3rem; padding: 0.45rem 0.6rem 0.5rem; }
+    .mk-push { margin: 0.4rem 0.5rem 0.05rem; padding: 0.4rem 0.55rem; }
+    .mk-push-t { margin-bottom: 0.18rem; }
+    .mk-testa { height: 1.95rem; }
     .mk .perso-item { padding: 0.3rem 0.45rem; }
     .mk-var { gap: 0.24rem; }
     .mk-lato { gap: 0.3rem; }

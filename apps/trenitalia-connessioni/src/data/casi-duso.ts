@@ -85,6 +85,13 @@ export interface Caso {
    * `data-personalize`. Senza le alternative, «personalizzato» è una parola.
    */
   varianti: { t: string; n: string; match?: true }[];
+  /**
+   * La notifica che parte sull'app, e che sul web non esiste. È la differenza
+   * vera fra i due canali: l'app RAGGIUNGE la persona, il sito può solo
+   * rispondere quando lei arriva. Senza questa riga il commutatore App/Web
+   * mostrerebbe due cornici diverse attorno allo stesso contenuto.
+   */
+  push: string;
   /** Che cosa aggiunge CJA fra la fonte grezza e l'attivazione. Una riga. */
   arricchimento: string;
   /**
@@ -168,6 +175,7 @@ export const CASI: Caso[] = [
       { t: 'Le tratte da Verona', n: 'da 19 €', match: true },
       { t: 'Promozione generica', n: '−10%' },
     ],
+    push: 'Da Verona oggi: Milano da 19 €, Venezia da 29 €.',
     arricchimento: 'area di partenza e tratte più prenotate da lì',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e Le Frecce', e: 'evento di sessione: «ricerca da Verona Porta Nuova, ore 18:04»' },
@@ -221,6 +229,7 @@ export const CASI: Caso[] = [
       { t: 'Business allo stesso prezzo', n: '49 €', match: true },
       { t: 'Nessuna proposta', n: '—' },
     ],
+    push: 'C’è posto in Business sul tuo treno. Oggi allo stesso prezzo.', // copy-audit-ignore — notifica al viaggiatore: una push al plurale istituzionale non è una push
     arricchimento: 'frequenza di viaggio e classe abituale',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'biglietto acquistato: «Standard, Roma → Milano, 14 ott» · socio dal 2019' },
@@ -271,6 +280,7 @@ export const CASI: Caso[] = [
       { t: 'La tratta che cercava', n: 'Bologna → Firenze', match: true },
       { t: 'Promozione generica', n: '−10%' },
     ],
+    push: 'Bologna → Firenze delle 07:35: ancora 12 posti liberi.',
     arricchimento: 'ultima ricerca e frequenza, senza bisogno del login',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e l’app', e: 'evento anonimo: «ricerca Bologna → Firenze, 07:35, due giorni fa»' },
@@ -321,6 +331,7 @@ export const CASI: Caso[] = [
       { t: 'I servizi del suo livello', n: 'FrecciaLounge, Fast Track', match: true },
       { t: 'Invito a iscriversi', n: 'già socio' },
     ],
+    push: 'Il tuo status Oro: FrecciaLounge inclusa anche in questo viaggio.', // copy-audit-ignore — notifica al viaggiatore, non voce del deck
     arricchimento: 'livello della carta, che arriva dal CRM',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'attributo di anagrafica: «status Oro, oltre 3.000 punti»' },
@@ -371,6 +382,7 @@ export const CASI: Caso[] = [
       { t: 'Viaggio e sosta insieme', n: 'una sola offerta', match: true },
       { t: 'Nessuna offerta', n: '—' },
     ],
+    push: 'Hai già prenotato la sosta. Ecco il viaggio che la completa.',
     arricchimento: 'la sovrapposizione fra le due basi, calcolata in spazio neutro',
     flusso: [
       { k: 'Le fonti', v: 'le due basi, ciascuna a casa propria', e: 'nessun elenco si sposta: si confrontano solo identificativi cifrati' },
