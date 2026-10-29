@@ -13,11 +13,29 @@
  *
  * Qui il prodotto è NOSTRO: niente «ricostruzione illustrativa» da
  * dichiarare sull'interfaccia, solo la cautela sui dati.
+ *
+ * ⚠️ TUTTI I DATI DI ESEMPIO SONO DI UNA PROSPECT (29 ott 2026).
+ * Giulia non è cliente: il profilo è sottile — due sessioni, una * simulazione, un consenso — e non esiste nel CRM. Le schermate lo devono
+ * dire da sole, se no raccontano il caso facile (il cross-sell su chi è
+ * già dentro) mentre la copia racconta quello difficile.
+ *
+ * La conversazione del Coworker si RACCONTA, non spunta: ogni bolla è un
+ * `[data-substep]` rivelato dal motore con ↓ o Spazio.
  */
 import type { SchermoAdobe } from '../data/momenti';
+/* I creativi delle varianti sono FOTO vere, licenziate. Sei riquadri di
+   colore su una slide che dimostra una content factory dicono, da soli,
+   che il contenuto non c'è: è lo stesso difetto del post nel feed. */
+import v1 from '../assets/generated/var-1.webp';
+import v2 from '../assets/generated/var-2.webp';
+import v3 from '../assets/generated/var-3.webp';
+import v4 from '../assets/generated/var-4.webp';
+import v5 from '../assets/generated/var-5.webp';
+import v6 from '../assets/generated/var-6.webp';
+const IMG = [v1, v2, v3, v4, v5, v6];
 
 interface Props { prodotto: SchermoAdobe; class?: string }
-const { prodotto, class: className } = Astro.props;
+const { prodotto, class: className, compatto = false } = Astro.props;
 
 const TESTATA: Record<SchermoAdobe, string> = {
   visibilita: 'Adobe Experience Manager · Brand Visibility',
@@ -42,31 +60,31 @@ const VARIANTI = ['Torino · prima casa', 'Milano · prima casa', 'Under 36', 'S
                   'Famiglia', 'Secondo immobile'];
 /* 04 · le candidate, e quella che parte. */
 const OFFERTE = [
-  { l: 'Email con la simulazione', s: 'scartata' },
   { l: 'Promemoria documenti', s: 'scelta' },
-  { l: 'Offerta surroga', s: 'esclusa' },
-  { l: 'Polizza casa', s: 'esclusa' },
   { l: 'Richiamo del gestore', s: 'scartata' },
+  { l: 'Sconto prima casa under 36', s: 'esclusa' },
+  { l: 'Offerta conto corrente', s: 'esclusa' },
+  { l: 'Invito in filiale', s: 'scartata' },
 ];
 /* 05 · il percorso che parte dall'evento. */
 const PASSI = [
-  { l: 'Evento: pratica ferma su reddito', s: 'fatto' },
+  { l: 'Evento: simulazione salvata, documenti mancanti', s: 'fatto' },
   { l: 'Attesa 12 ore', s: 'fatto' },
-  { l: 'Notifica in app', s: 'ora' },
-  { l: 'Se non apre → email', s: 'poi' },
-  { l: 'Esito al CRM di filiale, via API', s: 'poi' },
+  { l: 'Email con il link per riprendere', s: 'ora' },
+  { l: 'Se non apre → proposta di richiamo', s: 'poi' },
+  { l: 'Appuntamento al CRM di filiale, via API', s: 'poi' },
 ];
 /* 07 · l'imbuto, e dove si perde. */
 const FUNNEL = [
-  { l: 'Risposte che citano la banca', v: 100, n: '3 su 8' },
+  { l: 'Visite non riconosciute', v: 100, n: '48.000' },
   { l: 'Simulazioni avviate', v: 72, n: '12.400' },
-  { l: 'Richieste salvate', v: 39, n: '6.700' },
+  { l: 'Simulazioni salvate, con consenso', v: 39, n: '6.700' },
   { l: 'Documenti caricati', v: 17, n: '2.900' },
-  { l: 'Pratiche concluse', v: 12, n: '2.100' },
+  { l: 'Mutui erogati a nuovi clienti', v: 12, n: '2.100' },
 ];
 ---
 
-<figure class:list={['im-ado', `im-ado--${prodotto}`, className]} data-prodotto={prodotto}>
+<figure class:list={['im-ado', compatto && 'im-ado--compatto', `im-ado--${prodotto}`, className]} data-prodotto={prodotto}>
   <div class="im-ado-corpo">
     <div class="im-ado-testa">
       <span class="im-ado-punti" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -95,7 +113,8 @@ const FUNNEL = [
           <div class="im-ado-grid">
             {VARIANTI.map((v, i) => (
               <div class="im-ado-var" data-scelta={i === 0 ? '' : null}>
-                <span class="im-ado-var-img" aria-hidden="true"></span>
+                <img class="im-ado-var-img" src={IMG[i].src} width={IMG[i].width} height={IMG[i].height}
+                     alt="" loading="lazy" decoding="async" />
                 <span class="im-ado-var-l">{v}</span>
                 <span class="im-ado-var-ok">informative ✓</span>
               </div>
@@ -107,24 +126,25 @@ const FUNNEL = [
 
       {prodotto === 'profilo' && (
         <>
-          <p class="im-ado-occhiello">Profilo unico · aggiornato 2 secondi fa</p>
+          <p class="im-ado-occhiello">Profilo unico · riconosciuta 2 secondi fa</p>
           <div class="im-ado-prof-id">
-            <span class="im-ado-chip">app</span><span class="im-ado-chip">sito</span>
-            <span class="im-ado-chip">contact center</span><span class="im-ado-chip">filiale</span>
+            <span class="im-ado-chip" data-prima>sessione anonima · 12 nov</span>
+            <span class="im-ado-chip" data-prima>sessione anonima · 13 nov</span>
+            <span class="im-ado-chip">annuncio</span><span class="im-ado-chip">simulazione</span>
           </div>
-          <p class="im-ado-prof-t">Una persona sola, quattro tracce</p>
+          <p class="im-ado-prof-t">Due sere anonime, e adesso un nome</p>
           <dl class="im-ado-righe">
-            <div><dt>Consenso marketing</dt><dd>sì · 14 mar 2026</dd></div>
+            <div><dt>Nel CRM</dt><dd>non presente · non è cliente</dd></div>
+            <div><dt>Consenso</dt><dd>dato ora, con la simulazione</dd></div>
             <div><dt>Score dal vostro motore</dt><dd>propensione mutuo 0,78</dd></div>
-            <div><dt>Ultimo evento</dt><dd>simulazione salvata</dd></div>
           </dl>
-          <p class="im-ado-rilievo">Lo score resta vostro: il profilo lo riceve, non lo ricalcola.</p>
+          <p class="im-ado-rilievo">Le visite di prima non si buttano: si attaccano al profilo quando arriva il consenso.</p>
         </>
       )}
 
       {prodotto === 'decisione' && (
         <>
-          <p class="im-ado-occhiello">Decisione · un contatto, cinque candidate</p>
+          <p class="im-ado-occhiello">Decisione · una prospect, cinque candidate</p>
           <ul class="im-ado-off">
             {OFFERTE.map((o) => (
               <li data-stato={o.s}>
@@ -143,7 +163,7 @@ const FUNNEL = [
           <ul class="im-ado-passi">
             {PASSI.map((p) => (<li data-stato={p.s}><span>{p.l}</span></li>))}
           </ul>
-          <p class="im-ado-rilievo">Nessuno ha costruito un’audience: si è mossa la sua pratica.</p>
+          <p class="im-ado-rilievo">Nessuno ha costruito un’audience: si è mossa la sua simulazione.</p>
         </>
       )}
 
@@ -151,8 +171,9 @@ const FUNNEL = [
         <>
           <p class="im-ado-occhiello">Conversazione · 11:04</p>
           <div class="im-ado-chat">
-            <p class="im-ado-bolla im-ado-bolla--tu">Preparami il quadro di Giulia Marchetti per l’appuntamento delle 11:30.</p>
-            <p class="im-ado-bolla im-ado-bolla--ai">Fatto. Simulazione del 14/11, documenti completi, propensione mutuo alta. Due cose da sapere: la pratica si era fermata due sere, ed è ripresa dopo la notifica.</p>
+            <p class="im-ado-bolla im-ado-bolla--tu" data-substep data-side="out">Preparami il quadro di Giulia Marchetti per l’appuntamento delle 11:30.</p>
+            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Non è ancora cliente, quindi nel CRM non la trova. Ha simulato il 14/11 sul sito, 180.000 su 25 anni, e ha caricato i documenti ieri mattina.</p>
+            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Una cosa da sapere: si era fermata due sere sulla busta paga, ed è ripresa dopo la mail. Arriva informata.</p>
           </div>
           <p class="im-ado-rilievo">Chi riceve l’appuntamento non deve sapere usare sei strumenti: scrive quello che gli serve.</p>
         </>
@@ -160,7 +181,7 @@ const FUNNEL = [
 
       {prodotto === 'misura' && (
         <>
-          <p class="im-ado-occhiello">Il percorso intero · ultimi 30 giorni</p>
+          <p class="im-ado-occhiello">L’imbuto di acquisizione · ultimi 30 giorni</p>
           <div class="im-ado-funnel">
             {FUNNEL.map((f, i) => (
               <div class="im-ado-barra" data-ultimo={i === FUNNEL.length - 1 ? '' : null}>
@@ -170,10 +191,10 @@ const FUNNEL = [
               </div>
             ))}
           </div>
-          <p class="im-ado-rilievo">Fra «documenti caricati» e «pratiche concluse» si perde il passo più caro.</p>
+          <p class="im-ado-rilievo">Fra la simulazione salvata e i documenti si perde il 56%: è lì che sta il costo di acquisizione.</p>
         </>
       )}
     </div>
   </div>
-  <figcaption class="im-mock-cap">Dati di esempio.</figcaption>
+  {!compatto && (<figcaption class="im-mock-cap">Dati di esempio.</figcaption>)}
 </figure>

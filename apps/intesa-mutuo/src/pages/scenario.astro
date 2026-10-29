@@ -3,8 +3,13 @@
  * Scenario — da dove nasce questa storia.
  *
  * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
- * Il racconto e i mockup restano quelli della Storia — cambia come ci si
- * muove dentro: una slide alla volta, dimensionata su 1920×1080.
+ *
+ * ⚠️ Queste due slide erano testo su fondo pieno, e si vedeva: il cliente
+ * le ha chiamate «scarne». La correzione non è stata aggiungere parole —
+ * è stata dare a ciascuna una COSA DA GUARDARE a destra, con la stessa
+ * grammatica dei momenti (sfondo di scena + testo a sinistra + visivo a
+ * destra). Un numero che si vede come una barra dice in un secondo quello
+ * che una riga di testo fa leggere in otto.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -13,11 +18,32 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import fondo from '../assets/generated/fondo-scenario.webp';
+import tracce from '../assets/generated/scena-08-tracce.webp';
+import lista from '../assets/generated/scena-09-lista.webp';
 
 const SLUG = 'scenario';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+/* L'imbuto di chi NON vi conosce ancora. Numeri illustrativi, dichiarati
+   tali: servono a dare la forma della perdita, non a descrivere Intesa
+   Sanpaolo, di cui non abbiamo i dati. */
+const IMBUTO = [
+  { v: 100, n: '48.000', l: { it: 'visite che non sapete di chi sono', en: 'visits you cannot attribute' } },
+  { v: 26, n: '12.400', l: { it: 'simulazioni avviate', en: 'simulations started' } },
+  { v: 14, n: '6.700', l: { it: 'lasciano un nome e un consenso', en: 'leave a name and consent' } },
+  { v: 4, n: '2.100', l: { it: 'arrivano alla firma', en: 'reach signature' } },
+];
+
+/* Le candidate per la stessa persona, e il vincolo che le taglia. */
+const CANDIDATE = [
+  { l: { it: 'Promemoria documenti', en: 'Document reminder' }, s: 'scelta' },
+  { l: { it: 'Richiamo del gestore', en: 'Adviser callback' }, s: 'non-ora' },
+  { l: { it: 'Sconto prima casa under 36', en: 'Under-36 first-home discount' }, s: 'fuori' },
+  { l: { it: 'Offerta conto corrente', en: 'Current account offer' }, s: 'fuori' },
+];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -27,33 +53,67 @@ const currentPath = Astro.url.pathname;
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-notte"></div>
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${fondo.src})`}></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="im-ch-t" it="Il mutuo è il momento in cui una banca si gioca vent’anni" en="A mortgage is where a bank plays for twenty years" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Non è il prodotto con il margine più alto. È quello che decide se una persona resta cliente, e per quanto." en="Not the highest-margin product. The one that decides whether a person stays, and for how long." data-reveal data-reveal-delay="0.15" />
+        <T as="p" class="im-ch-l" it="E quasi sempre lo gioca con qualcuno che oggi è cliente di un’altra banca." en="And it almost always plays it with someone who banks elsewhere today." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <Slide id="slide-segnale" bg="primary" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">01</p>
-          <T as="h2" class="im-h2" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" />
-          <T as="p" class="im-sub" it="Ogni richiesta che si ferma lascia una traccia: in app, sul sito, al contact center. Oggi quelle tracce vivono separate." en="Every stalled application leaves a trace: in the app, on the site, at the call centre. Today those traces live apart." />
+    <Slide id="slide-segnale" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${tracce.src})`}></div>
+      <div class="im-mom" data-reveal>
+        <div class="im-mom-testo">
+          <T as="p" class="im-mom-blocco" it="Il punto di partenza" en="The starting point" />
+          <T as="p" class="im-mom-k" it="01 · Chi cerca un mutuo, di solito, non vi conosce" en="01 · Whoever is shopping for a mortgage usually does not know you" />
+          <T as="h2" class="im-mom-t" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" data-reveal data-reveal-delay="0.08" />
+          <T as="p" class="im-mom-b" it="Ogni simulazione interrotta lascia una traccia: sul sito, nell’annuncio cliccato, al contact center. Finché quelle tracce restano separate, una persona che vi stava valutando resta un numero di sessione." en="Every abandoned simulation leaves a trace: on the site, in the ad clicked, at the call centre. While those traces stay apart, someone who was considering you stays a session number." data-reveal data-reveal-delay="0.16" />
+          <T as="p" class="im-mom-chiusa" it="Il problema non è raccogliere il dato. È che la decisione arriva giorni dopo il momento in cui serviva." en="The problem is not collecting the data. It is that the decision lands days after the moment it was needed." data-reveal data-reveal-delay="0.24" />
         </div>
-          <T as="p" class="im-chiusa" it="Il problema non è raccogliere il dato. È che la decisione arriva giorni dopo il momento in cui serviva." en="The problem is not collecting the data. It is that the decision lands days after the moment it was needed." data-reveal data-reveal-delay="0.3" />
+        <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+          <figure class="im-imbuto">
+            <T as="figcaption" class="im-imbuto-cap" it="Dove si perde chi non vi conosce" en="Where the people who do not know you are lost" />
+            {IMBUTO.map((f, i) => (
+              <div class="im-imbuto-r" data-ultimo={i === IMBUTO.length - 1 ? '' : null}>
+                <span class="im-imbuto-t"><i style={`width:${f.v}%`}></i></span>
+                <span class="im-imbuto-n">{f.n}</span>
+                <T as="span" class="im-imbuto-l" it={f.l.it} en={f.l.en} />
+              </div>
+            ))}
+            <T as="p" class="im-imbuto-nota" it="Ordini di grandezza illustrativi: servono a mostrare la forma della perdita, non i vostri numeri." en="Illustrative orders of magnitude: they show the shape of the loss, not your numbers." />
+          </figure>
+        </div>
       </div>
     </Slide>
 
-    <Slide id="slide-chi-decide" bg="secondary" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">02</p>
-          <T as="h2" class="im-h2" it="Chi decide che cosa dire, e quando" en="Who decides what to say, and when" />
-          <T as="p" class="im-sub" it="I modelli producono molte proposte per la stessa persona. Qualcuno deve scegliere quale parte, su quale canale, e quante volte contattarla." en="Models produce many proposals for the same person. Someone must choose which goes out, on which channel, and how often." />
+    <Slide id="slide-chi-decide" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${lista.src})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+        <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+          <figure class="im-cand">
+            <T as="figcaption" class="im-cand-cap" it="Quattro proposte per la stessa persona, stasera" en="Four proposals for the same person, tonight" />
+            <ul class="im-cand-l">
+              {CANDIDATE.map((c) => (
+                <li data-stato={c.s}>
+                  <T as="span" class="im-cand-n" it={c.l.it} en={c.l.en} />
+                  <span class="im-cand-e">
+                    <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'fuori tetto' : 'non ora'}</span>
+                    <span data-lang-en>{c.s === 'scelta' ? 'goes' : c.s === 'fuori' ? 'over cap' : 'not now'}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <T as="p" class="im-cand-nota" it="Il tetto di contatto è un vincolo dell’offerta: o si valuta qui, o si applica dopo su una scelta già fatta." en="The contact cap is a constraint of the offer: either it is weighed here, or it is applied later to a choice already made." />
+          </figure>
         </div>
-          <T as="p" class="im-chiusa" it="Oggi quella scelta la fa la lista, cioè l’ordine in cui le campagne sono state costruite." en="Today that choice is made by the list: the order in which campaigns were built." data-reveal data-reveal-delay="0.3" />
+        <div class="im-mom-testo">
+          <T as="p" class="im-mom-blocco" it="Il punto di partenza" en="The starting point" />
+          <T as="p" class="im-mom-k" it="02 · Su un prospect si ha una occasione sola" en="02 · With a prospect you get one chance" />
+          <T as="h2" class="im-mom-t" it="Chi decide che cosa dire, e quando" en="Who decides what to say, and when" data-reveal data-reveal-delay="0.08" />
+          <T as="p" class="im-mom-b" it="I modelli producono molte proposte per la stessa persona. Qualcuno deve scegliere quale parte, su quale canale e quante volte contattarla. Su chi è già cliente un messaggio sbagliato si assorbe; su chi vi sta valutando, no." en="Models produce many proposals for the same person. Someone must choose which one goes out, on which channel, and how often. With an existing customer a wrong message is absorbed; with someone still evaluating you, it is not." data-reveal data-reveal-delay="0.16" />
+          <T as="p" class="im-mom-chiusa" it="Oggi quella scelta la fa la lista, cioè l’ordine in cui le campagne sono state costruite." en="Today that choice is made by the list: the order in which campaigns were built." data-reveal data-reveal-delay="0.24" />
+        </div>
       </div>
     </Slide>
 

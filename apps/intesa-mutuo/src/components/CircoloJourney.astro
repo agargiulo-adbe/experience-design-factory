@@ -1,0 +1,138 @@
+---
+/**
+ * CircoloJourney — il percorso di Giulia come CIRCOLO VIRTUOSO.
+ *
+ * ⚠️ PERCHÉ UN CERCHIO E NON UN BINARIO (feedback del team, 29 ott 2026).
+ * Una striscia da sinistra a destra racconta una vendita: comincia e
+ * finisce. Il punto invece è che il giro **si chiude e riparte meglio**:
+ * quello che si impara sul percorso di Giulia migliora la relazione con
+ * lei — che da qui in poi è cliente — e insieme l'acquisizione della
+ * prospect dopo. Il segmento fra l'ultimo passo e il primo è quindi
+ * l'elemento più importante del disegno, non un dettaglio di chiusura:
+ * è marcato `data-ritorno` e porta l'accento anche a giro spento.
+ *
+ * ⚠️ NIENTE TESTO DENTRO L'SVG. L'anello, le frecce e i nodi sono
+ * geometria; le etichette sono HTML posizionato in percentuale sopra.
+ * Un testo in un disegno non cresce con la radice e su una parete di sala
+ * sparisce (famiglia `S` di `audit:ritmo`). Le etichette in HTML sì, e i
+ * gate di contrasto le vedono.
+ *
+ * Due taglie:
+ *   compatto  l'anello con i numeri e, al centro, il passo acceso. Sta
+ *             sulle slide dei momenti, dove lo spazio è quello che è.
+ *   grande    l'anello con tutte e sette le fermate scritte intorno, e
+ *             per ognuna il verbo di Giulia e la funzione per il marketer.
+ */
+import { MOMENTI } from '../data/momenti';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Props {
+  /** 1–7 = la fermata accesa. 0 = il giro intero, nessuna accesa. */
+  attivo?: number;
+  grande?: boolean;
+  class?: string;
+}
+const { attivo = 0, grande = false, class: className } = Astro.props;
+
+const N = MOMENTI.length;
+const PASSO = 360 / N;
+const ang = (i: number) => (-90 + i * PASSO) * (Math.PI / 180);
+
+/* Il raggio dei nodi, in percentuale del riquadro. Nella versione grande
+   l'anello si stringe per lasciare il bordo alle etichette. */
+/* ⚠️ Raggio e posizione delle etichette in PERCENTUALE del riquadro, e
+   le etichette larghe una percentuale anch'esse: una larghezza in rem
+   dentro un contenitore che scala in percentuale esce dal riquadro ai
+   viewport stretti, ed è esattamente il `c`/`j` che l'audit ha trovato. */
+const R = grande ? 23 : 40;
+/* ⚠️ `ETI` non è una scelta estetica: è vincolata dalla larghezza delle
+   etichette. Un'etichetta a destra occupa `ex + 0,92 × larghezza`, e deve
+   stare entro il 100%. Con etichette al 20% del riquadro il massimo è
+   ETI = 31: a 38 uscivano di 37px, ed è il `c`/`j` che l'audit trovava a
+   tutti e tre i viewport. Se si cambia la larghezza, si rifà questo conto. */
+const ETI = grande ? 31 : 0;
+
+const nodi = MOMENTI.map((m, i) => ({
+  m, i,
+  x: 50 + R * Math.cos(ang(i)),
+  y: 50 + R * Math.sin(ang(i)),
+  ex: 50 + ETI * Math.cos(ang(i)),
+  ey: 50 + ETI * Math.sin(ang(i)),
+}));
+
+/* Le frecce: una per segmento, a metà strada fra due nodi, ruotata sulla
+   tangente. L'ultima — da 07 a 01 — è il ritorno, e si vede. */
+const frecce = MOMENTI.map((_, i) => {
+  const a = (-90 + (i + 0.5) * PASSO) * (Math.PI / 180);
+  return {
+    i,
+    x: 50 + R * Math.cos(a),
+    y: 50 + R * Math.sin(a),
+    rot: (-90 + (i + 0.5) * PASSO) + 90,
+    ritorno: i === N - 1,
+  };
+});
+
+const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
+---
+<figure class:list={['im-cer', grande && 'im-cer--grande', className]}>
+  <div class="im-cer-campo">
+
+    <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+      <circle class="im-cer-anello" cx="50" cy="50" r={R} />
+      {/* Il ritorno è un arco a sé, sopra l'anello: è l'unica parte del
+          giro che porta l'accento anche quando non c'è un passo acceso. */}
+      <circle class="im-cer-ritorno" cx="50" cy="50" r={R}
+              style={`--dash:${2 * Math.PI * R};--seg:${(2 * Math.PI * R) / N};--rot:${-90 + (N - 0.5) * PASSO}deg`} />
+      {frecce.map((f) => (
+        <path class="im-cer-fre" data-ritorno={f.ritorno ? '' : null}
+              d="M -2.4 -1.7 L 1.6 0 L -2.4 1.7 Z"
+              style={`transform: translate(${f.x}px, ${f.y}px) rotate(${f.rot}deg)`} />
+      ))}
+    </svg>
+
+    <ol class="im-cer-nodi">
+      {nodi.map((n) => (
+        <li class="im-cer-nodo"
+            data-attivo={attivo === n.i + 1 ? '' : null}
+            data-fatto={attivo > n.i + 1 ? '' : null}
+            style={`left:${n.x}%;top:${n.y}%`}
+            aria-current={attivo === n.i + 1 ? 'step' : null}>
+          <span class="im-cer-n">{n.m.n}</span>
+        </li>
+      ))}
+    </ol>
+
+    {grande && (
+      <ol class="im-cer-eti">
+        {nodi.map((n) => (
+          <li class="im-cer-eti-i"
+              data-lato={n.ex < 44 ? 'sx' : n.ex > 56 ? 'dx' : 'cen'}
+              style={`left:${n.ex}%;top:${n.ey}%`}>
+            <T as="span" class="im-cer-verbo" it={n.m.short.it} en={n.m.short.en} />
+            <T as="span" class="im-cer-can" it={n.m.canale.it} en={n.m.canale.en} />
+            <T as="span" class="im-cer-fun" it={n.m.funzione.it} en={n.m.funzione.en} />
+            <span class="im-cer-pro">{n.m.prodotto}</span>
+          </li>
+        ))}
+      </ol>
+    )}
+
+    {/* Il centro: a giro spento dice che cosa fa il giro, acceso dice a
+        che punto siamo. In entrambi i casi è una cosa sola da leggere. */}
+    <div class="im-cer-cuore">
+      {acceso ? (
+        <>
+          <span class="im-cer-cuore-n">{acceso.n}</span>
+          <T as="span" class="im-cer-cuore-v" it={acceso.short.it} en={acceso.short.en} />
+          <T as="span" class="im-cer-cuore-c" it={acceso.canale.it} en={acceso.canale.en} />
+          {!grande && <T as="span" class="im-cer-cuore-f" it={acceso.funzione.it} en={acceso.funzione.en} />}
+        </>
+      ) : (
+        <T as="span" class="im-cer-cuore-l"
+           it="Ogni giro migliora il prossimo"
+           en="Every loop improves the next" />
+      )}
+    </div>
+  </div>
+</figure>

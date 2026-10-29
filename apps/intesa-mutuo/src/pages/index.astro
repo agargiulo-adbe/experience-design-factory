@@ -12,6 +12,7 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoBrand from '../components/CoBrand.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
@@ -22,6 +23,10 @@ const type = EXPERIENCE_TYPES[SITE.type];
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
+/* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless` perché
+   il giro non faccia stacco. Il poster è in `public/`, così la copertina è
+   già composta prima che la rete risponda. */
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 const last = CHAPTERS[CHAPTERS.length - 1];
 ---
 <BaseLayout title={SITE.name}>
@@ -31,14 +36,17 @@ const last = CHAPTERS[CHAPTERS.length - 1];
 
   <DeckContainer nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
 
-    <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-cov" data-reveal>
+    <Slide id="slide-cover" bg="inverse" align="center"
+           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-cover.loop.mp4`}
+                 poster={`${base}media/innesto-cover.poster.jpg`}
+                 scrim="im-clip-scrim" opacity={1} />
+      <div class="im-cov im-cov--grande" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" data-reveal />
         <T as="h1" class="im-cov-t" it="Lo stesso mutuo, dai due lati" en="The same mortgage, from both sides" data-reveal data-reveal-delay="0.1" />
         <T as="p" class="im-cov-l"
-           it="Una cliente che cerca casa, e chi deve decidere che cosa dirle. Gli stessi quattro momenti, dalle due parti dello schermo."
-           en="A customer looking for a home, and whoever decides what to tell her. The same four moments, from both sides of the screen."
+           it="Una persona che cerca casa e non è ancora vostra cliente, e chi deve decidere che cosa dirle. Gli stessi sette momenti, dalle due parti dello schermo."
+           en="Someone looking for a home who is not your customer yet, and whoever decides what to tell her. The same seven moments, from both sides of the screen."
            data-reveal data-reveal-delay="0.18" />
         <T as="p" class="im-cov-n" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.26" />
       </div>
@@ -49,8 +57,8 @@ const last = CHAPTERS[CHAPTERS.length - 1];
         <T as="p" class="slide-eyebrow" it="Il percorso" en="The path" />
         <T as="h2" class="im-perc-t" it={type.question.it} en={type.question.en} data-reveal data-reveal-delay="0.08" />
         <T as="p" class="im-perc-l"
-           it="Cinque capitoli, una persona sola. I momenti si vedono dalla piattaforma, non si raccontano a parole."
-           en="Five chapters, one person. The moments are seen from the platform, not told in words."
+           it="Cinque capitoli, una persona sola, e l’intero spettro dell’offerta. I momenti si vedono dalla piattaforma, non si raccontano a parole."
+           en="Five chapters, one person, and the full span of the offer. The moments are seen from the platform, not told in words."
            data-reveal data-reveal-delay="0.14" />
         <div class="im-indice" data-stagger>
           {CHAPTERS.map((c) => (

@@ -1,6 +1,17 @@
 ---
 /**
- * I sette momenti di Giulia — la sua esperienza, scena per scena.
+ * I sette momenti — LE DUE VISTE SULLA STESSA SLIDE.
+ *
+ * ⚠️ PERCHÉ UNA SOLA SLIDE PER PASSO (feedback del team, 29 ott 2026).
+ * Prima erano due capitoli: sette slide con Giulia, poi sette con chi
+ * prepara. Chi guardava doveva tenere a mente il momento 04 per sei
+ * slide e ricollegarlo da solo — e in sala nessuno lo fa. Ora i due lati
+ * dello stesso minuto stanno uno sopra l'altro: **in alto Giulia, in
+ * basso chi prepara in Intesa Sanpaolo**, e il legame si vede invece di
+ * essere affermato.
+ *
+ * A destra il CIRCOLO: dice a che punto del giro siamo, e che il giro si
+ * chiude. Non è una barra di avanzamento, è l'argomento.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -11,10 +22,11 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MOMENTI } from '../data/momenti';
 import MockCliente from '../components/MockCliente.astro';
+import MockAdobe from '../components/MockAdobe.astro';
+import CircoloJourney from '../components/CircoloJourney.astro';
 /* Le scene vengono da Pexels, licenziate, con autore e URL in
-   provenance.json. Non sono decorazione: ognuna dice che cosa sta facendo
-   la persona in quel momento, e sta nello SFONDO — così la pagina si
-   riempie e il momento si capisce prima di leggere. */
+   provenance.json. Sono LUOGHI senza volti: l'unico volto della Storia è
+   il ritratto di Giulia, così la persona resta coerente per costruzione. */
 import s0 from '../assets/generated/scena-01-divano.webp';
 import s1 from '../assets/generated/scena-02-bar.webp';
 import s2 from '../assets/generated/scena-03-tavolo.webp';
@@ -22,14 +34,7 @@ import s3 from '../assets/generated/scena-04-documenti.webp';
 import s4 from '../assets/generated/scena-05-colazione.webp';
 import s5 from '../assets/generated/scena-06-filiale.webp';
 import s6 from '../assets/generated/scena-07-casa.webp';
-import s7 from '../assets/generated/lavoro-01-ricerca.webp';
-import s8 from '../assets/generated/lavoro-02-contenuti.webp';
-import s9 from '../assets/generated/lavoro-03-dati.webp';
-import s10 from '../assets/generated/lavoro-04-decisione.webp';
-import s11 from '../assets/generated/lavoro-05-orchestrazione.webp';
-import s12 from '../assets/generated/lavoro-06-filiale-back.webp';
-import s13 from '../assets/generated/lavoro-07-misura.webp';
-const SCENA: Record<string, string> = { 'scena-01-divano': s0.src, 'scena-02-bar': s1.src, 'scena-03-tavolo': s2.src, 'scena-04-documenti': s3.src, 'scena-05-colazione': s4.src, 'scena-06-filiale': s5.src, 'scena-07-casa': s6.src, 'lavoro-01-ricerca': s7.src, 'lavoro-02-contenuti': s8.src, 'lavoro-03-dati': s9.src, 'lavoro-04-decisione': s10.src, 'lavoro-05-orchestrazione': s11.src, 'lavoro-06-filiale-back': s12.src, 'lavoro-07-misura': s13.src };
+const SCENA = [s0, s1, s2, s3, s4, s5, s6].map((x) => x.src);
 const SCENE_CLI = ['ricerca','feed','simulazione','documenti','ripresa','sportello','firma'] as const;
 
 const SLUG = 'momenti';
@@ -48,136 +53,54 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Sette momenti, in tre settimane" en="Seven moments, across three weeks" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Questo è quello che vede lei. Quattro superfici diverse — un assistente, un feed, l’app, lo sportello — e nessun nome di prodotto." en="This is what she sees. Four different surfaces — an assistant, a feed, the app, the branch desk — and no product names." data-reveal data-reveal-delay="0.15" />
+        <T as="h2" class="im-ch-t" it="Sette momenti, e le due viste sullo stesso minuto" en="Seven moments, and both views of the same minute" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. L’app compare solo alla fine, perché prima non aveva motivo di averla." en="Above, what Giulia sees; below, what you do at the same instant. The app appears only at the end, because before she had no reason to have it." data-reveal data-reveal-delay="0.15" />
       </div>
+      <CircoloJourney class="im-cer--cover" data-reveal data-reveal-delay="0.26" />
     </Slide>
 
-    <Slide id="slide-cli-01" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[0].cliente.scena]})`}></div>
-      <div class="im-mom" data-reveal>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[0].blocco.it} en={MOMENTI[0].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[0].ora.it} · ${MOMENTI[0].dove.it}`} en={`${MOMENTI[0].ora.en} · ${MOMENTI[0].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[0].cliente.titolo.it} en={MOMENTI[0].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[0].cliente.corpo.it} en={MOMENTI[0].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[0].cliente.chrome} scena={SCENE_CLI[0]} />
-          </div>
-      </div>
-    </Slide>
+    {MOMENTI.map((m, i) => (
+      <Slide id={`slide-m-${m.n}`} bg="inverse" align="left">
+        <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${SCENA[i]})`}></div>
 
-    <Slide id="slide-cli-02" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[1].cliente.scena]})`}></div>
-      <div class="im-mom" data-verso="schermo-prima" data-reveal>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[1].cliente.chrome} scena={SCENE_CLI[1]} />
-          </div>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[1].blocco.it} en={MOMENTI[1].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[1].ora.it} · ${MOMENTI[1].dove.it}`} en={`${MOMENTI[1].ora.en} · ${MOMENTI[1].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[1].cliente.titolo.it} en={MOMENTI[1].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[1].cliente.corpo.it} en={MOMENTI[1].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-      </div>
-    </Slide>
+        <div class="im-due" data-reveal>
+          <header class="im-due-testa">
+            <T as="span" class="im-mom-blocco" it={m.blocco.it} en={m.blocco.en} />
+            <T as="span" class="im-due-ora" it={`${m.ora.it} · ${m.dove.it}`} en={`${m.ora.en} · ${m.dove.en}`} />
+          </header>
 
-    <Slide id="slide-cli-03" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[2].cliente.scena]})`}></div>
-      <div class="im-mom" data-reveal>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[2].blocco.it} en={MOMENTI[2].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[2].ora.it} · ${MOMENTI[2].dove.it}`} en={`${MOMENTI[2].ora.en} · ${MOMENTI[2].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[2].cliente.titolo.it} en={MOMENTI[2].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[2].cliente.corpo.it} en={MOMENTI[2].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[2].cliente.chrome} scena={SCENE_CLI[2]} />
-          </div>
-      </div>
-    </Slide>
+          <section class="im-due-banda" data-lato="cliente">
+            <T as="p" class="im-due-chi" it="Giulia" en="Giulia" />
+            <div class="im-due-mock">
+              <MockCliente chrome={m.cliente.chrome} scena={SCENE_CLI[i]} compatto />
+            </div>
+            <div class="im-due-txt">
+              <T as="h2" class="im-due-t" it={m.cliente.titolo.it} en={m.cliente.titolo.en} />
+              <T as="p" class="im-due-b" it={m.cliente.corpo.it} en={m.cliente.corpo.en} />
+            </div>
+          </section>
 
-    <Slide id="slide-cli-04" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[3].cliente.scena]})`}></div>
-      <div class="im-mom" data-verso="schermo-prima" data-reveal>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[3].cliente.chrome} scena={SCENE_CLI[3]} />
-          </div>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[3].blocco.it} en={MOMENTI[3].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[3].ora.it} · ${MOMENTI[3].dove.it}`} en={`${MOMENTI[3].ora.en} · ${MOMENTI[3].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[3].cliente.titolo.it} en={MOMENTI[3].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[3].cliente.corpo.it} en={MOMENTI[3].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-      </div>
-    </Slide>
+          <section class="im-due-banda" data-lato="interno">
+            <T as="p" class="im-due-chi" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
+            <div class="im-due-mock">
+              <MockAdobe prodotto={m.interno.prodotto} compatto />
+            </div>
+            <div class="im-due-txt">
+              <T as="h2" class="im-due-t" it={m.interno.titolo.it} en={m.interno.titolo.en} />
+              <T as="p" class="im-due-b" it={m.interno.corpo.it} en={m.interno.corpo.en} />
+              <p class="im-due-pro">{m.prodotto}</p>
+            </div>
+          </section>
 
-    <Slide id="slide-cli-05" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[4].cliente.scena]})`}></div>
-      <div class="im-mom" data-reveal>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[4].blocco.it} en={MOMENTI[4].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[4].ora.it} · ${MOMENTI[4].dove.it}`} en={`${MOMENTI[4].ora.en} · ${MOMENTI[4].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[4].cliente.titolo.it} en={MOMENTI[4].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[4].cliente.corpo.it} en={MOMENTI[4].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[4].cliente.chrome} scena={SCENE_CLI[4]} />
-          </div>
-      </div>
-    </Slide>
-
-    <Slide id="slide-cli-06" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[5].cliente.scena]})`}></div>
-      <div class="im-mom" data-verso="schermo-prima" data-reveal>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[5].cliente.chrome} scena={SCENE_CLI[5]} />
-          </div>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[5].blocco.it} en={MOMENTI[5].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[5].ora.it} · ${MOMENTI[5].dove.it}`} en={`${MOMENTI[5].ora.en} · ${MOMENTI[5].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[5].cliente.titolo.it} en={MOMENTI[5].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[5].cliente.corpo.it} en={MOMENTI[5].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-      </div>
-    </Slide>
-
-    <Slide id="slide-cli-07" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[6].cliente.scena]})`}></div>
-      <div class="im-mom" data-reveal>
-          <div class="im-mom-testo">
-            <T as="p" class="im-mom-blocco" it={MOMENTI[6].blocco.it} en={MOMENTI[6].blocco.en} />
-            <T as="p" class="im-mom-k" it={`${MOMENTI[6].ora.it} · ${MOMENTI[6].dove.it}`} en={`${MOMENTI[6].ora.en} · ${MOMENTI[6].dove.en}`} />
-            <T as="h2" class="im-mom-t" it={MOMENTI[6].cliente.titolo.it} en={MOMENTI[6].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
-            <T as="p" class="im-mom-b" it={MOMENTI[6].cliente.corpo.it} en={MOMENTI[6].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
-            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
-              <span data-lang-it>↳ Lo stesso momento, dal lato di chi prepara</span><span data-lang-en>↳ The same moment, from the preparer’s side</span>
-            </a>
-          </div>
-          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockCliente chrome={MOMENTI[6].cliente.chrome} scena={SCENE_CLI[6]} />
-          </div>
-      </div>
-    </Slide>
+          <aside class="im-due-cer">
+            <CircoloJourney attivo={i + 1} />
+            <T as="p" class="im-due-cau"
+               it="Ricostruzioni illustrative: i sistemi sono vostri, i numeri di esempio."
+               en="Illustrative reconstructions: the systems are yours, the figures are examples." />
+          </aside>
+        </div>
+      </Slide>
+    ))}
 
   </DeckContainer>
 </BaseLayout>

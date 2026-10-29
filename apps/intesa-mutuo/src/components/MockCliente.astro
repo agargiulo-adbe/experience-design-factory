@@ -1,42 +1,59 @@
 ---
 /**
- * MockCliente — lo schermo di Giulia, in quattro chrome DIVERSI.
+ * MockCliente — lo schermo di Giulia, in SEI chrome diversi.
  *
- * Perché quattro e non uno: un assistente, un feed, l'app della banca e il
- * sistema di uno sportello non si somigliano per niente, e mostrarli tutti
- * dentro la stessa cornice fa sembrare che sia sempre la stessa cosa. La
- * cornice è metà del messaggio — dice DOVE sta succedendo.
+ * ⚠️ IL CHROME PORTA IL MESSAGGIO PIÙ IMPORTANTE DELLA STORIA.
+ * Giulia è una prospect: non ha la vostra app, e quindi **l'app compare
+ * solo all'ultimo momento**, quando ha firmato. Chi guarda la sequenza
+ * lo capisce senza che nessuno glielo dica — e capisce anche perché nei
+ * momenti prima potevate raggiungerla solo per posta.
  *
  *   assistente  telefono, nessun marchio di banca: non è un vostro canale
  *   feed        telefono, un post fra gli altri
- *   app         telefono, testata verde: è casa vostra
- *   filiale     desktop, cornice da gestionale: è il posto di lavoro di un
+ *   sito        finestra di browser con l'indirizzo in chiaro: è il vostro
+ *               sito pubblico, dove entra chiunque, anche chi non è cliente
+ *   posta       telefono, una mail: l'unico canale che avete di lei
+ *   filiale     desktop, cornice da gestionale: il posto di lavoro di un
  *               vostro collega, non un canale del cliente
+ *   app         telefono, testata verde — e solo dopo la firma
  *
  * Nessuna immagine: solo geometria e token, così scala con la radice e
  * resta nitido su una parete.
  *
  * ⚠️ Il marchio non è ricostruito: il nome sta in carattere display, come
  * il ripiego wordmark del co-brand. L'SVG ufficiale non lo abbiamo.
+ *
+ * La conversazione si RACCONTA, non spunta: ogni bolla è un
+ * `[data-substep]` e il motore la rivela con ↓ o Spazio (stessa forma di
+ * `MockCaso` su Trenitalia). Lo stato base è quello finale e leggibile,
+ * così con «Riduci movimento» non parte niente e si legge lo stesso.
  */
 import type { ChromeCliente } from '../data/momenti';
+/* Il creativo è una foto VERA, licenziata. Un rettangolo di colore al suo
+   posto negava l'argomento della slide: è la slide della Content Factory,
+   e mostrare un riquadro vuoto dice «il contenuto non c'è». */
+import creativo from '../assets/generated/creativo-mutuo.webp';
 
 interface Props {
   chrome: ChromeCliente;
   /** Quale schermata, dentro il chrome. */
   scena: 'ricerca' | 'feed' | 'simulazione' | 'documenti' | 'ripresa' | 'firma' | 'sportello';
+  /** Taglia compatta: niente didascalia propria. Sulla slide doppia la
+      cautela è una sola, a livello di slide: ripeterla due volte la
+      trasforma in rumore e ruba due righe che servono al racconto. */
+  compatto?: boolean;
   class?: string;
 }
-const { chrome, scena, class: className } = Astro.props;
+const { chrome, scena, class: className, compatto = false } = Astro.props;
 
 const ORA: Record<string, string> = {
   ricerca: '21:40', feed: '08:12', simulazione: '21:48',
   documenti: '22:05', ripresa: '08:02', firma: '18:40', sportello: '11:30',
 };
-const telefono = chrome !== 'filiale';
+const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'posta' || chrome === 'app';
 ---
 
-<figure class:list={['im-cli', `im-cli--${chrome}`, className]} data-chrome={chrome}>
+<figure class:list={['im-cli', compatto && 'im-cli--compatto', `im-cli--${chrome}`, className]} data-chrome={chrome}>
   <div class="im-cli-corpo">
 
     {telefono && (
@@ -52,12 +69,33 @@ const telefono = chrome !== 'filiale';
     {chrome === 'assistente' && (
       <div class="im-cli-testa im-cli-testa--neutra"><span class="im-cli-neutro">Assistente</span></div>
     )}
+    {/* Un feed si riconosce dalla FORMA — avatar, «sponsorizzato», le
+        azioni sotto — non dal logo di una piattaforma, che non possiamo
+        mettere: sarebbe la wrong-brand imagery che la Quality Bar vieta. */}
     {chrome === 'feed' && (
-      <div class="im-cli-testa im-cli-testa--feed"><span class="im-cli-neutro">Per te</span></div>
+      <div class="im-cli-testa im-cli-testa--feed">
+        <span class="im-cli-av" aria-hidden="true">IS</span>
+        <span class="im-cli-feed-chi">
+          <span class="im-cli-feed-nome">Intesa Sanpaolo</span>
+          <span class="im-cli-feed-spo">Sponsorizzato</span>
+        </span>
+      </div>
+    )}
+    {chrome === 'sito' && (
+      <div class="im-cli-testa im-cli-testa--url">
+        <span class="im-cli-punti" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="im-cli-url"><span class="im-cli-lucchetto" aria-hidden="true"></span>intesasanpaolo.com/mutui</span>
+      </div>
+    )}
+    {chrome === 'posta' && (
+      <div class="im-cli-testa im-cli-testa--posta">
+        <span class="im-cli-neutro">Posta in arrivo</span>
+        <span class="im-cli-posta-n">1 nuovo</span>
+      </div>
     )}
     {chrome === 'filiale' && (
       <div class="im-cli-testa im-cli-testa--gest">
-        <span class="im-cli-gest-tab" data-attivo>Scheda cliente</span>
+        <span class="im-cli-gest-tab" data-attivo>Scheda contatto</span>
         <span class="im-cli-gest-tab">Pratiche</span>
         <span class="im-cli-gest-tab">Appuntamenti</span>
       </div>
@@ -67,33 +105,42 @@ const telefono = chrome !== 'filiale';
       {scena === 'ricerca' && (
         <>
           <div class="im-cli-chat">
-            <p class="im-cli-bolla im-cli-bolla--in">Qual è il mutuo migliore per chi compra la prima casa?</p>
-            <p class="im-cli-bolla im-cli-bolla--out">Dipende da durata e tasso. Fra i fissi a 25 anni, tre banche hanno condizioni confrontabili:</p>
+            <p class="im-cli-bolla im-cli-bolla--in" data-substep data-side="in">Qual è il mutuo migliore per chi compra la prima casa?</p>
+            <p class="im-cli-bolla im-cli-bolla--out" data-substep data-side="out">Dipende da durata e tasso. Fra i fissi a 25 anni, tre banche hanno condizioni confrontabili:</p>
           </div>
-          <ul class="im-cli-citate">
-            <li data-citata>Intesa Sanpaolo</li>
-            <li>Seconda banca</li>
-            <li>Terza banca</li>
-          </ul>
-          <p class="im-cli-nota">Le tre fonti che l’assistente ha trovato e saputo leggere.</p>
+          {/* La lista e la sua nota sono UN passo solo: una didascalia che
+              resta appesa mentre la chat è ancora vuota sembra un guasto. */}
+          <div class="im-cli-esito" data-substep data-side="out">
+            <ul class="im-cli-citate">
+              <li data-citata>Intesa Sanpaolo</li>
+              <li>Seconda banca</li>
+              <li>Terza banca</li>
+            </ul>
+            <p class="im-cli-nota">Le tre fonti che l’assistente ha trovato e saputo leggere.</p>
+          </div>
         </>
       )}
 
       {scena === 'feed' && (
         <>
           <div class="im-cli-post">
-            <div class="im-cli-post-img" aria-hidden="true"><span>Torino</span></div>
-            <p class="im-cli-post-t">Il mutuo per la prima casa, a Torino</p>
-            <p class="im-cli-post-b">Tasso fisso, rata che non cambia. Simula in due minuti.</p>
-            <p class="im-cli-post-info">Messaggio pubblicitario · Informazioni nei fogli informativi</p>
+            <img class="im-cli-post-img" src={creativo.src} width={creativo.width} height={creativo.height}
+                 alt="" loading="lazy" decoding="async" />
+            <div class="im-cli-post-txt">
+              <p class="im-cli-post-t">Il mutuo per la prima casa, a Torino</p>
+              <p class="im-cli-post-b">Tasso fisso, rata che non cambia. Simula in due minuti.</p>
+              <p class="im-cli-post-cta">Simula</p>
+              <p class="im-cli-post-info">Messaggio pubblicitario</p>
+            </div>
+            <div class="im-cli-post-az" aria-hidden="true"><i></i><i></i><i></i></div>
           </div>
-          <p class="im-cli-nota">Una delle dodici varianti nate dallo stesso brief.</p>
+          <p class="im-cli-nota">Una delle dodici varianti nate dallo stesso brief: cambia la città, il segmento e l’immagine.</p>
         </>
       )}
 
       {scena === 'simulazione' && (
         <>
-          <p class="im-cli-occhiello">Simulazione mutuo</p>
+          <p class="im-cli-occhiello">Simulazione mutuo · senza registrazione</p>
           <p class="im-cli-titolo">Prima casa · 25 anni</p>
           <div class="im-cli-cifra">
             <span class="im-cli-cifra-n">742</span><span class="im-cli-cifra-u">€ al mese</span>
@@ -101,44 +148,44 @@ const telefono = chrome !== 'filiale';
           <dl class="im-cli-righe">
             <div><dt>Importo</dt><dd>180.000 €</dd></div>
             <div><dt>Tasso fisso</dt><dd>3,10%</dd></div>
-            <div><dt>Riservato ai clienti</dt><dd>−0,20%</dd></div>
           </dl>
-          <p class="im-cli-cta">Salva e continua</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente, non voce del deck. */}
+          <div class="im-cli-campo">
+            <span class="im-cli-campo-l">Salva la simulazione</span>
+            <span class="im-cli-campo-v">giulia.marchetti@…</span>
+          </div>
+          <p class="im-cli-consenso"><span class="im-cli-spunta" aria-hidden="true"></span>Acconsento a essere ricontattata</p>{/* copy-audit-ignore V1 — testo di un consenso NELL'interfaccia, non voce del deck. */}
         </>
       )}
 
       {scena === 'documenti' && (
         <>
-          <p class="im-cli-occhiello">La tua richiesta</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente. */}
+          <p class="im-cli-occhiello">La tua simulazione</p>{/* copy-audit-ignore V1 — messaggio del sito ALLA persona. */}
           <p class="im-cli-titolo">Mancano i documenti</p>
           <ul class="im-cli-passi">
             <li data-stato="fatto">Dati anagrafici</li>
             <li data-stato="fatto">Immobile</li>
             <li data-stato="aperto">Ultime due buste paga</li>
-            <li data-stato="attesa">Firma</li>
+            <li data-stato="attesa">Appuntamento</li>
           </ul>
-          <p class="im-cli-nota">Caricali entro 30 giorni per non perdere la simulazione.</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente. */}
+          <p class="im-cli-nota">Caricali entro 30 giorni per non perdere la simulazione.</p>{/* copy-audit-ignore V1 — messaggio del sito ALLA persona. */}
         </>
       )}
 
       {scena === 'ripresa' && (
         <>
-          <div class="im-cli-notifica">
-            <p class="im-cli-notifica-t">La tua richiesta è ancora valida</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente. */}
-            <p class="im-cli-notifica-b">Riprendi da dove eri: manca solo la busta paga.</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente. */}
+          <div class="im-cli-mail">
+            <p class="im-cli-mail-da">Intesa Sanpaolo</p>
+            <p class="im-cli-mail-og">La tua simulazione è ancora valida</p>{/* copy-audit-ignore V1 — oggetto di una mail ALLA persona. */}
+            <p class="im-cli-mail-b">Riprendi da dove eri: manca solo la busta paga. 180.000 € · 25 anni · 742 € al mese.</p>{/* copy-audit-ignore V1 — corpo di una mail ALLA persona. */}
+            <p class="im-cli-cta">Riprendi la simulazione</p>
           </div>
-          <p class="im-cli-occhiello">Ripresa</p>
-          <p class="im-cli-titolo">Prima casa · 742 € al mese</p>
-          <ul class="im-cli-passi">
-            <li data-stato="fatto">Buste paga caricate</li>
-            <li data-stato="aperto">Appuntamento col gestore</li>
-          </ul>
+          <p class="im-cli-nota">L’unico canale che avete di lei: l’indirizzo lasciato due sere prima.</p>
         </>
       )}
 
       {scena === 'firma' && (
         <>
-          <p class="im-cli-occhiello">La tua pratica</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA cliente. */}
+          <p class="im-cli-occhiello">La tua pratica</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA persona. */}
           <p class="im-cli-titolo">Mutuo erogato</p>
           <dl class="im-cli-righe">
             <div><dt>Rata</dt><dd>742 €/mese</dd></div>
@@ -146,8 +193,8 @@ const telefono = chrome !== 'filiale';
             <div><dt>Firmato il</dt><dd>18 nov</dd></div>
           </dl>
           <div class="im-cli-notifica">
-            <p class="im-cli-notifica-t">Tutto fatto</p>
-            <p class="im-cli-notifica-b">La documentazione è nell’area riservata.</p>
+            <p class="im-cli-notifica-t">Benvenuta</p>
+            <p class="im-cli-notifica-b">Da oggi la pratica e i documenti sono qui.</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA persona. */}
           </div>
         </>
       )}
@@ -155,10 +202,10 @@ const telefono = chrome !== 'filiale';
       {scena === 'sportello' && (
         <div class="im-cli-gest">
           <div class="im-cli-gest-col">
-            <p class="im-cli-occhiello">Cliente</p>
+            <p class="im-cli-occhiello">Contatto</p>
             <p class="im-cli-gest-nome">Giulia Marchetti</p>
             <dl class="im-cli-righe">
-              <div><dt>Cliente dal</dt><dd>2020</dd></div>
+              <div><dt>Rapporto</dt><dd>non ancora cliente</dd></div>
               <div><dt>Appuntamento</dt><dd>oggi, 11:30</dd></div>
               <div><dt>Motivo</dt><dd>mutuo prima casa</dd></div>
             </dl>
@@ -170,18 +217,20 @@ const telefono = chrome !== 'filiale';
               <li data-stato="fatto">Documenti caricati</li>
               <li data-stato="aperto">Da firmare in sede</li>
             </ul>
-            <p class="im-cli-nota">Arriva dal profilo, via API. Nessun doppio inserimento.</p>
+            <p class="im-cli-nota">Nel CRM non c’è: arriva dal profilo, via API.</p>
           </div>
         </div>
       )}
     </div>
   </div>
 
-  <figcaption class="im-mock-cap">
+  {!compatto && (<figcaption class="im-mock-cap">
     {chrome === 'assistente'
       ? 'Ricostruzione illustrativa di un assistente di terze parti: non è un vostro canale.'
       : chrome === 'feed'
         ? 'Ricostruzione illustrativa: il formato è della piattaforma, il contenuto è vostro.'
-        : 'Ricostruzione illustrativa: il sistema è vostro, i numeri sono di esempio.'}
-  </figcaption>
+        : chrome === 'posta'
+          ? 'Ricostruzione illustrativa: il messaggio è vostro, i numeri sono di esempio.'
+          : 'Ricostruzione illustrativa: il sistema è vostro, i numeri sono di esempio.'}
+  </figcaption>)}
 </figure>

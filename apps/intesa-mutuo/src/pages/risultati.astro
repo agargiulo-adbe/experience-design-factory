@@ -17,24 +17,23 @@ import CoBrand from '../components/CoBrand.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug } from '../data/chapters';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
+/* Numeri, misure e ask vengono dalla FONTE UNICA: il taglio «In dieci
+   minuti» legge gli stessi oggetti, e due copie a mano divergono. */
+import { FONTI, CIFRE_TSB, MISURE, ASK } from '../data/referenze';
+import fondo from '../assets/generated/fondo-risultati.webp';
+
+/* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 
 const SLUG = 'risultati';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const TSB = 'https://business.adobe.com/customer-success-stories/tsb-case-study.html';
-const SAN = 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html';
+const TSB = FONTI.tsb;
+const SAN = FONTI.santander;
 
-/* Tutte e quattro dalla STESSA pagina pubblica: una fonte che regge vale
-   più di quattro numeri di quattro clienti, dove basta che uno non si apra
-   e cadono tutti. */
-const CIFRE = [
-  { n: '9 giorni → 24 ore', l: { it: 'latenza del dato', en: 'data latency' } },
-  { n: '+39%', l: { it: 'clienti che scelgono un prodotto dopo un’interazione personalizzata', en: 'customers choosing a product after a personalized interaction' } },
-  { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: 250 three years ago' } },
-  { n: '91%', l: { it: 'dei prodotti acquistati sui canali digitali', en: 'of products bought digitally' } },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -44,7 +43,7 @@ const CIFRE = [
   <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-notte"></div>
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${fondo.src})`}></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
         <T as="h2" class="im-ch-t" it="Una banca che lo fa già, e lo dice in pubblico" en="A bank already doing it, and saying so publicly" data-reveal data-reveal-delay="0.08" />
@@ -60,7 +59,7 @@ const CIFRE = [
           <T as="p" class="im-sub" it="È l’unica referenza pubblica in cui Offer Decisioning è nominato. E l’esempio che racconta è una pratica di mutuo lasciata a metà in app: parole loro." en="The only public reference naming Offer Decisioning. And the example it tells is a mortgage left half-done in the app: their words." />
         </div>
         <div class="im-cifre" data-stagger>
-          {CIFRE.map((c) => (
+          {CIFRE_TSB.map((c) => (
             <div class="im-cifra">
               <p class="im-cifra-n" data-display>{c.n}</p>
               <T as="p" class="im-cifra-l" it={c.l.it} en={c.l.en} />
@@ -80,7 +79,7 @@ const CIFRE = [
         <div class="im-sl-head">
           <p class="im-n">E vicino a voi</p>
           <T as="h2" class="im-h2" it="Due banche, due numeri diversi" en="Two banks, two different numbers" />
-          <T as="p" class="im-sub" it="Perché la domanda che arriva sempre è «sì, ma da noi?». Nessuna delle due è una banca come la vostra: dicono che cosa si misura, non quanto." en="Because the question always comes: «yes, but here?». Neither is a bank like yours: they say what gets measured, not how much." />
+          <T as="p" class="im-sub" it="Perché la domanda che arriva sempre è «sì, ma da noi?». Nessuna delle due è una banca come la vostra: dicono che cosa si misura, non quanto. Il primo numero è proprio sul primo acquisto." en="Because the question always comes: «yes, but here?». Neither is a bank like yours: they say what gets measured, not how much. The first number is about first purchase." />
         </div>
         <div class="im-ref" data-stagger>
           <div class="im-ref-b">
@@ -106,23 +105,32 @@ const CIFRE = [
         <div class="im-sl-head">
           <p class="im-n">Da voi</p>
           <T as="h2" class="im-h2" it="Che cosa misureremmo, dal giorno uno" en="What we would measure, from day one" />
-          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo: un gruppo di controllo fin dall’inizio, su un percorso solo." en="Not a promised number, but the way to know it: a control group from the start, on a single journey." />
+          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo: un gruppo di controllo fin dall’inizio, su un percorso solo. Quattro misure di acquisizione, e tre oggi non si sanno." en="Not a promised number, but the way to know it: a control group from the start, on a single journey. Four acquisition measures, and three are unknown today." />
         </div>
-        <div class="im-giro" data-stagger>
-          <T as="p" class="im-giro-p" it="Pratiche riprese" en="Applications resumed" />
-          <T as="p" class="im-giro-p" it="Giorni fra evento e contatto" en="Days between event and contact" />
-          <T as="p" class="im-giro-p" it="Contatti per cliente" en="Contacts per customer" />
-          <T as="p" class="im-giro-p" it="Costo per pratica conclusa" en="Cost per completed application" />
+        <div class="im-mis" data-stagger>
+          {MISURE.map((m) => (
+            <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
+              <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
+              <p class="im-mis-r">
+                <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
+                <span class="im-mis-f" aria-hidden="true"></span>
+                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
+              </p>
+            </div>
+          ))}
         </div>
-        <T as="p" class="im-chiusa" it="Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre." en="One journey only, the mortgage, with a control group. If it does not move, we know within a quarter." data-reveal data-reveal-delay="0.3" />
+        <T as="p" class="im-chiusa" it={ASK.it} en={ASK.en} data-reveal data-reveal-delay="0.3" />
       </div>
     </Slide>
 
-    <Slide id="slide-firma" bg="inverse" align="center">
-      <div slot="backdrop" class="im-bg-notte"></div>
+    <Slide id="slide-firma" bg="inverse" align="center"
+           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
+                 poster={`${base}media/innesto-chiusura.poster.jpg`}
+                 scrim="im-clip-scrim" opacity={1} />
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <T as="p" class="im-firma-l" it="Il segnale ce l’avete già. Manca il posto dove si decide che farne." en="You already have the signal. What is missing is where to decide what to do with it." data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-l" it="Il segnale ce l’avete già. Manca il posto dove si decide che farne." en="You already have the signal. What is missing is where to decide what to do with it." data-reveal data-reveal-delay="0.14" />
         <a href={href(base, '/')} class="edf-sig-cta">
           <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
         </a>

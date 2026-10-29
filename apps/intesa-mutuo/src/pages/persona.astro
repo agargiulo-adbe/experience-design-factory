@@ -9,7 +9,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MOMENTI } from '../data/momenti';
+import CircoloJourney from '../components/CircoloJourney.astro';
 import ritratto from '../assets/generated/persona-giulia.webp';
 
 const SLUG = 'persona';
@@ -28,8 +28,8 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Giulia, 34 anni, già vostra cliente" en="Giulia, 34, already your customer" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Non è difficile da raggiungere: è già dentro. È il momento in cui vi chiede qualcosa di grosso." en="She is not hard to reach: she is already inside. This is when she asks you for something big." data-reveal data-reveal-delay="0.15" />
+        <T as="h2" class="im-ch-t" it="Giulia, 34 anni, non è vostra cliente" en="Giulia, 34, and not your customer" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Non potete notificarla, non è nel CRM, e la stessa domanda l’ha fatta ad altre due banche." en="You cannot notify her, she is not in the CRM, and she asked two other banks the same question." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
@@ -37,31 +37,35 @@ const currentPath = Astro.url.pathname;
       <div class="im-pers" data-reveal>
         <figure class="im-pers-foto">
           <img src={ritratto.src} width={ritratto.width} height={ritratto.height}
-               alt="Giulia Marchetti, 34 anni, cliente Intesa Sanpaolo da sei anni"
+               alt="Giulia Marchetti, 34 anni, non ancora cliente di Intesa Sanpaolo"
                loading="eager" decoding="async" />
           <span class="im-pers-scrim" data-scrim aria-hidden="true"></span>
           <figcaption class="im-pers-meta">
             <span class="im-pers-nome">Giulia Marchetti</span>
-            <span class="im-pers-sub"><span data-lang-it>34 anni · cliente da sei anni · Torino</span><span data-lang-en>34 · six years a customer · Turin</span></span>
+            <span class="im-pers-sub"><span data-lang-it>34 anni · Torino · non ancora cliente</span><span data-lang-en>34 · Turin · not a customer yet</span></span>
           </figcaption>
         </figure>
         <div class="im-pan">
           <T as="p" class="im-pan-tag" it="La protagonista" en="The lead character" />
-          <T as="p" class="im-pan-b"
-             it="Conto da sei anni, stipendio accreditato, nessun prodotto oltre la carta. Non conosce nessuno dei sistemi che state per vedere: vive solo quello che fanno."
-             en="Six years with the account, salary paid in, no product beyond the card. She knows none of the systems you are about to see: she only lives what they do." />
+          <ul class="im-manca" data-stagger>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessun profilo nel CRM" en="No CRM record" /></li>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna app da notificare" en="No app to notify" /></li>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuno storico su cui modellare" en="No history to model on" /></li>
+            <li class="im-manca-i" data-si><span class="im-manca-v" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Due sere di navigazione anonima" en="Two evenings browsing anonymously" /></li>
+          </ul>
           <T as="p" class="im-pan-q"
-             it="Sta comprando casa. Sette momenti in tre settimane, e in quattro di questi sette oggi non succede niente."
-             en="She is buying a home. Seven moments across three weeks, and in four of those seven nothing happens today." />
-          <ol class="im-passi" data-stagger>
-            {MOMENTI.map((m) => (
-              <li class="im-passi-i">
-                <span class="im-passi-n">{m.n}</span>
-                <T as="p" class="im-passi-l" it={m.short.it} en={m.short.en} />
-              </li>
-            ))}
-          </ol>
+             it="Sta comprando casa. Sette momenti in tre settimane, e fino al settimo l’unico modo di raggiungerla è un indirizzo che deve ancora darvi."
+             en="She is buying a home. Seven moments across three weeks, and until the seventh the only way to reach her is an address she has yet to give you." />
         </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-giro-di-giulia" bg="primary" align="center">
+      <div class="im-cerslide" data-reveal>
+        <T as="p" class="slide-eyebrow" it="Il percorso, in un giro" en="The path, as one loop" />
+        <T as="h2" class="im-cerslide-t" it="Sette momenti, e il settimo riporta al primo" en="Seven moments, and the seventh leads back to the first" data-reveal data-reveal-delay="0.08" />
+        <CircoloJourney grande data-reveal data-reveal-delay="0.16" />
+        <T as="p" class="im-cerslide-l" it="Sopra ogni fermata quello che fa lei, sotto quello che fate voi e con che cosa." en="Above each stop what she does, below what you do and with what." data-reveal data-reveal-delay="0.26" />
       </div>
     </Slide>
 

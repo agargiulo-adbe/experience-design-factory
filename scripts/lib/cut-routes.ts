@@ -36,6 +36,12 @@ export const CUT_SETS: Record<string, CutSpec> = {
     slideMax: 6,
     numeriSoloNelTaglio: ['22', '2026', '5'],
   },
+  'intesa-mutuo': {
+    taglio: 'dieci-minuti',
+    fonti: ['src/data/momenti.ts', 'src/data/referenze.ts'],
+    slideMax: 6,
+    numeriSoloNelTaglio: ['10'],
+  },
   'trenitalia-prospettiva-sales': {
     taglio: 'dieci-minuti',
     fonti: ['src/data/contenuti.ts', 'src/data/sources.ts'],

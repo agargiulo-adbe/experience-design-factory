@@ -1,0 +1,187 @@
+---
+/**
+ * «In dieci minuti» — la Storia quando l'ora concessa diventa venti
+ * minuti, e la versione che l'interlocutore gira al suo capo.
+ *
+ * ⚠️ PERCHÉ ESISTE (detto in riunione il 29 ott 2026, parole testuali):
+ * «Già troppo lungo. […] così solo sta roba ci leva 40 minuti.» Il
+ * percorso intero resta, perché serve a chi ha l'ora; questo è lo stesso
+ * racconto in sei slide.
+ *
+ * ⚠️ NON È UNA COPIA. Ogni blocco viene dalla fonte unica — `MOMENTI`,
+ * `referenze.ts` — e i componenti sono gli stessi. Un taglio che tiene
+ * una copia a mano degli stessi numeri diverge sempre, e diverge sempre
+ * il corto, perché le correzioni arrivano sul lungo. Il gate è
+ * `pnpm audit:taglio`.
+ *
+ * E un taglio è una versione BREVE, non una versione SPENTA: stessa
+ * firma co-brand, stessa clip in copertina, stesso guscio.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { MOMENTI } from '../data/momenti';
+import { FONTI, CIFRE_TSB, MISURE, ASK } from '../data/referenze';
+import CircoloJourney from '../components/CircoloJourney.astro';
+import MockCliente from '../components/MockCliente.astro';
+import MockAdobe from '../components/MockAdobe.astro';
+import ritratto from '../assets/generated/persona-giulia.webp';
+import scena from '../assets/generated/scena-03-tavolo.webp';
+import fondo from '../assets/generated/fondo-risultati.webp';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
+
+/* Il momento che porta la differenza: da visita anonima a persona con un
+   nome. È il terzo, ed è quello in cui la piattaforma fa una cosa che il
+   CRM non può fare, perché il CRM conosce i clienti. */
+const M = MOMENTI[2];
+---
+<BaseLayout title="In dieci minuti">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/')}>
+
+    <Slide id="slide-cover" bg="inverse" align="center"
+           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-cover.loop.mp4`}
+                 poster={`${base}media/innesto-cover.poster.jpg`}
+                 scrim="im-clip-scrim" opacity={1} />
+      <div class="im-cov im-cov--grande" data-reveal>
+        <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" data-reveal />
+        <T as="h1" class="im-cov-t" it="Lo stesso mutuo, dai due lati" en="The same mortgage, from both sides" data-reveal data-reveal-delay="0.1" />
+        <T as="p" class="im-cov-l"
+           it="In dieci minuti: una persona che cerca casa e non è ancora vostra cliente, e che cosa serve per non perderla."
+           en="In ten minutes: someone looking for a home who is not your customer yet, and what it takes not to lose her."
+           data-reveal data-reveal-delay="0.18" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-chi" bg="primary" align="split">
+      <div class="im-pers" data-reveal>
+        <figure class="im-pers-foto">
+          <img src={ritratto.src} width={ritratto.width} height={ritratto.height}
+               alt="Giulia Marchetti, 34 anni, non ancora cliente di Intesa Sanpaolo"
+               loading="eager" decoding="async" />
+          <span class="im-pers-scrim" data-scrim aria-hidden="true"></span>
+          <figcaption class="im-pers-meta">
+            <span class="im-pers-nome">Giulia Marchetti</span>
+            <span class="im-pers-sub"><span data-lang-it>34 anni · Torino · non ancora cliente</span><span data-lang-en>34 · Turin · not a customer yet</span></span>
+          </figcaption>
+        </figure>
+        <div class="im-pan">
+          <T as="p" class="im-pan-tag" it="La protagonista" en="The lead character" />
+          <ul class="im-manca" data-stagger>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessun profilo nel CRM" en="No CRM record" /></li>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna app da notificare" en="No app to notify" /></li>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuno storico su cui modellare" en="No history to model on" /></li>
+            <li class="im-manca-i" data-si><span class="im-manca-v" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Due sere di navigazione anonima" en="Two evenings browsing anonymously" /></li>
+          </ul>
+          <T as="p" class="im-pan-q"
+             it="Sta comprando casa. Sette momenti in tre settimane, e fino al settimo l’unico modo di raggiungerla è un indirizzo che deve ancora darvi."
+             en="She is buying a home. Seven moments across three weeks, and until the seventh the only way to reach her is an address she has yet to give you." />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-giro" bg="primary" align="center">
+      <div class="im-cerslide" data-reveal>
+        <T as="p" class="slide-eyebrow" it="Il percorso, in un giro" en="The path, as one loop" />
+        <T as="h2" class="im-cerslide-t" it="Sette momenti, e il settimo riporta al primo" en="Seven moments, and the seventh leads back to the first" data-reveal data-reveal-delay="0.08" />
+        <CircoloJourney grande data-reveal data-reveal-delay="0.16" />
+        <T as="p" class="im-cerslide-l" it="Per ogni fermata: il canale, quello che fa lei, e quello che fate voi." en="For each stop: the channel, what she does, and what you do." data-reveal data-reveal-delay="0.26" />
+      </div>
+    </Slide>
+
+    <Slide id="slide-momento" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${scena.src})`}></div>
+      <div class="im-due" data-reveal>
+        <header class="im-due-testa">
+          <T as="span" class="im-mom-blocco" it={M.blocco.it} en={M.blocco.en} />
+          <T as="span" class="im-due-ora" it={`${M.ora.it} · ${M.dove.it}`} en={`${M.ora.en} · ${M.dove.en}`} />
+        </header>
+        <section class="im-due-banda" data-lato="cliente">
+          <T as="p" class="im-due-chi" it="Giulia" en="Giulia" />
+          <div class="im-due-mock"><MockCliente chrome={M.cliente.chrome} scena="simulazione" compatto /></div>
+          <div class="im-due-txt">
+            <T as="h2" class="im-due-t" it={M.cliente.titolo.it} en={M.cliente.titolo.en} />
+            <T as="p" class="im-due-b" it={M.cliente.corpo.it} en={M.cliente.corpo.en} />
+          </div>
+        </section>
+        <section class="im-due-banda" data-lato="interno">
+          <T as="p" class="im-due-chi" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
+          <div class="im-due-mock"><MockAdobe prodotto={M.interno.prodotto} compatto /></div>
+          <div class="im-due-txt">
+            <T as="h2" class="im-due-t" it={M.interno.titolo.it} en={M.interno.titolo.en} />
+            <T as="p" class="im-due-b" it={M.interno.corpo.it} en={M.interno.corpo.en} />
+            <p class="im-due-pro">{M.prodotto}</p>
+          </div>
+        </section>
+        <aside class="im-due-cer">
+          <CircoloJourney attivo={3} />
+          <T as="p" class="im-due-cau"
+             it="Ricostruzioni illustrative: i sistemi sono vostri, i numeri di esempio."
+             en="Illustrative reconstructions: the systems are yours, the figures are examples." />
+        </aside>
+      </div>
+    </Slide>
+
+    <Slide id="slide-prova" bg="primary" align="left">
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <p class="im-n">TSB</p>
+          <T as="h2" class="im-h2" it="La prima banca britannica su Experience Platform" en="The first UK bank on Experience Platform" />
+          <T as="p" class="im-sub" it="È l’unica referenza pubblica in cui Offer Decisioning è nominato. E l’esempio che racconta è una pratica di mutuo lasciata a metà: parole loro." en="The only public reference naming Offer Decisioning. And the example it tells is a half-finished mortgage application: their words." />
+        </div>
+        <div class="im-cifre" data-stagger>
+          {CIFRE_TSB.map((c) => (
+            <div class="im-cifra">
+              <p class="im-cifra-n" data-display>{c.n}</p>
+              <T as="p" class="im-cifra-l" it={c.lBreve?.it ?? c.l.it} en={c.lBreve?.en ?? c.l.en} />
+            </div>
+          ))}
+        </div>
+        <p class="im-fonte" data-reveal data-reveal-delay="0.3">
+          <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
+          <a href={FONTI.tsb} target="_blank" rel="noopener">business.adobe.com · TSB</a>
+          <span data-lang-it> · verificata il 29 ottobre 2026</span><span data-lang-en> · checked 29 October 2026</span>
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-firma" bg="inverse" align="center"
+           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
+                 poster={`${base}media/innesto-chiusura.poster.jpg`}
+                 scrim="im-clip-scrim" opacity={1} />
+      <div class="im-firma" data-reveal>
+        <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
+        <div class="im-mis im-mis--taglio" data-stagger>
+          {MISURE.map((m) => (
+            <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
+              <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
+              <p class="im-mis-r">
+                <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
+                <span class="im-mis-f" aria-hidden="true"></span>
+                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
+              </p>
+            </div>
+          ))}
+        </div>
+        <T as="p" class="im-firma-l" it={ASK.it} en={ASK.en} data-reveal data-reveal-delay="0.14" />
+        <a href={href(base, '/')} class="edf-sig-cta">
+          <span data-lang-it>Il percorso intero</span><span data-lang-en>The full path</span>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
