@@ -18,6 +18,7 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
+import { AGENDA } from '../data/agenda';
 import { MOMENTI } from '../data/momenti';
 
 const type = EXPERIENCE_TYPES[SITE.type];
@@ -71,14 +72,27 @@ const last = CHAPTERS[CHAPTERS.length - 1];
         </div>
 
         <nav class="im-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso">
-          <T as="p" class="im-cop-occ" it="Che cosa c’è dentro" en="What is inside" />
+          <T as="p" class="im-cop-occ" it="Agenda dell’incontro" en="Meeting agenda" />
+          {/* ⚠️ L'agenda viene da `agenda.ts`, non dai capitoli: i
+              capitoli sono quello che il documento contiene OGGI,
+              l'agenda è quello di cui si parla in sala. Finché un pezzo
+              del deck non è innestato la sua voce si legge ma non si
+              clicca — un'agenda che mostra solo ciò che è pronto non è
+              l'agenda dell'incontro. */}
           <ol class="im-cop-indice" data-stagger>
-            {CHAPTERS.map((c) => (
+            {AGENDA.map((v) => (
               <li>
-                <a href={href(base, '/' + c.slug)} class="im-cop-cap">
-                  <span class="im-cop-n">{c.num}</span>
-                  <span class="im-cop-tit"><span data-lang-it>{c.title.it}</span><span data-lang-en>{c.title.en}</span></span>
-                </a>
+                {v.capitolo ? (
+                  <a href={href(base, '/' + v.capitolo)} class="im-cop-cap">
+                    <span class="im-cop-n">{v.n}</span>
+                    <span class="im-cop-tit"><span data-lang-it>{v.titolo.it}</span><span data-lang-en>{v.titolo.en}</span></span>
+                  </a>
+                ) : (
+                  <span class="im-cop-cap" data-futura>
+                    <span class="im-cop-n">{v.n}</span>
+                    <span class="im-cop-tit"><span data-lang-it>{v.titolo.it}</span><span data-lang-en>{v.titolo.en}</span></span>
+                  </span>
+                )}
               </li>
             ))}
           </ol>
