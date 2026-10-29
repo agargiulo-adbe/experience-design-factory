@@ -115,17 +115,17 @@ export const DOMANDE: Domanda[] = [
       en: 'You ask in plain language, and the figure comes back with its reason.',
     },
     ancore: [
-      { it: 'Quattro esiti, non un’opinione', en: 'Four verdicts, not an opinion' },
+      { it: 'Significatività su conteggi grezzi', en: 'Significance on raw counts' },
       { it: 'Campione e durata, calcolati', en: 'Sample and duration, calculated' },
-      { it: 'Mai prima del campione', en: 'Never before the sample' },
+      { it: 'Mai prima del campione', en: 'Never before the sample' },
     ],
     voci: [
       {
         figura: 'soglia',
         ancora: { it: 'Target Activity Verdict', en: 'Target Activity Verdict' },
         riga: {
-          it: 'Quattro esiti possibili: pronta, in attesa di dati, da fermare, da correggere.',
-          en: 'Four possible verdicts: ready to ship, waiting for data, to be stopped, to be fixed.',
+          it: 'Quattro esiti: pronta, attendere, fermare, correggere. Li calcola la significatività a due proporzioni sui conteggi grezzi.',
+          en: 'Four verdicts: ship, wait, stop, fix. They come from two-proportion significance on raw counts.',
         },
         livello: 'doc',
       },
@@ -133,8 +133,8 @@ export const DOMANDE: Domanda[] = [
         figura: 'prima-dopo',
         ancora: { it: 'Target Test Calculator', en: 'Target Test Calculator' },
         riga: {
-          it: 'Campione, durata e lift rilevabile. La correzione di Bonferroni riguarda i confronti fra più varianti, non il guardare il risultato ogni giorno.',
-          en: 'Sample size, duration and detectable lift. The Bonferroni correction is about comparing several variants, not about checking the result every day.',
+          it: 'Campione, durata e lift rilevabile, con correzione di Bonferroni. Dipendono dal vostro tasso di partenza, che non abbiamo visto.',
+          en: 'Sample size, duration and detectable lift, with Bonferroni correction. They depend on your baseline rate, which we have not seen.',
         },
         livello: 'doc',
       },
@@ -149,14 +149,19 @@ export const DOMANDE: Domanda[] = [
       },
     ],
     nota: {
-      it: 'La regola che il calcolo non porta: non si chiude prima del campione calcolato. Guardare il risultato ogni giorno è l’altro modo di sbagliare, e lo decidete voi.',
-      en: 'The rule the maths does not carry: do not close before the calculated sample. Checking the result every day is the other way to get it wrong, and that one is yours to set.',
+      it: 'A quale soglia il verdetto dica «pronta» non è pubblicato: è nel registro. La regola resta vostra: non si chiude prima del campione.',
+      en: 'The threshold at which the verdict says «ship» is not published: it is in the log. The rule stays yours: do not close before the sample.',
     },
     fonti: [
       {
         label: { it: 'Coworker skills for Adobe Target', en: 'Coworker skills for Adobe Target' },
         url: EL_TARGET,
         aggiornata: '27.10.2026',
+      },
+      {
+        label: { it: 'Coworker Chat workflows', en: 'Coworker Chat workflows' },
+        url: EL_WORKFLOWS,
+        aggiornata: '29.10.2026',
       },
     ],
   },
@@ -177,8 +182,8 @@ export const DOMANDE: Domanda[] = [
       en: 'The memory of past tests can stop being you',
     },
     punto2: {
-      it: 'Tre strumenti per non ricominciare da capo',
-      en: 'Three tools so you do not start over',
+      it: 'Quattro strumenti, e non si ricomincia da capo',
+      en: 'Four tools, and you do not start over',
     },
     lead: {
       it: 'Lo storico si legge, e da lì esce l’ipotesi successiva.',
@@ -202,8 +207,8 @@ export const DOMANDE: Domanda[] = [
         figura: 'catena',
         ancora: { it: 'Target Strategist', en: 'Target Strategist' },
         riga: {
-          it: 'Analizza i dati storici, trova i pattern dei test migliori e raccomanda il prossimo.',
-          en: 'Analyses historical data, finds the patterns among past winners and recommends the next one.',
+          it: 'Trova i pattern dei test migliori e raccomanda il prossimo.',
+          en: 'Finds the patterns among past winners and recommends the next one.',
         },
         livello: 'doc',
       },
@@ -211,8 +216,17 @@ export const DOMANDE: Domanda[] = [
         figura: 'tetto',
         ancora: { it: 'Target Portfolio Report', en: 'Target Portfolio Report' },
         riga: {
-          it: 'Rollup di programma in sola lettura: migliori e peggiori, tendenze, chi ha perso slancio.',
-          en: 'Read-only programme rollups: best and worst, trends, which activities lost momentum.',
+          it: 'Rollup di programma in sola lettura: migliori, peggiori, chi ha perso slancio.',
+          en: 'Read-only programme rollups: best, worst, which activities lost momentum.',
+        },
+        livello: 'doc',
+      },
+      {
+        figura: 'catena',
+        ancora: { it: 'Experiment Knowledge Base', en: 'Experiment Knowledge Base' },
+        riga: {
+          it: 'Ingerisce un vostro CSV e restituisce ipotesi, esiti e apprendimenti dei test passati.',
+          en: 'Ingests a CSV of yours and returns hypotheses, outcomes and learnings from past tests.',
         },
         livello: 'doc',
       },
@@ -227,14 +241,19 @@ export const DOMANDE: Domanda[] = [
       },
     ],
     nota: {
-      it: 'Le tre skill stanno nella stessa pagina documentata, con i prompt di esempio. Il vostro storico non l’abbiamo visto: la resa dipende da quanto è leggibile.',
-      en: 'The three skills sit in the same documented page, with example prompts. We have not seen your history: the result depends on how readable it is.',
+      it: 'Il foglio che avete lo si dà in pasto alla Knowledge Base: è la riga «Ingest this CSV» della pagina workflows. Il vostro storico non l’abbiamo visto.',
+      en: 'The spreadsheet you have goes into the Knowledge Base: it is the «Ingest this CSV» line on the workflows page. We have not seen your history.',
     },
     fonti: [
       {
         label: { it: 'Coworker skills for Adobe Target', en: 'Coworker skills for Adobe Target' },
         url: EL_TARGET,
         aggiornata: '27.10.2026',
+      },
+      {
+        label: { it: 'Coworker Chat workflows', en: 'Coworker Chat workflows' },
+        url: EL_WORKFLOWS,
+        aggiornata: '29.10.2026',
       },
     ],
   },
@@ -255,12 +274,12 @@ export const DOMANDE: Domanda[] = [
       en: 'We declare the boundary ourselves, before you ask',
     },
     punto2: {
-      it: 'Dodici skill, e i limiti scritti accanto',
-      en: 'Twelve skills, with the limits written beside them',
+      it: 'Il catalogo per nome, e due limiti',
+      en: 'The catalogue by name, and two limits',
     },
     lead: {
-      it: 'Dodici skill su Target, e un solo no scritto in tabella.',
-      en: 'Twelve skills on Target, and a single no written in the table.',
+      it: 'Dodici skill nel plugin, più la famiglia Optimization, e due limiti.',
+      en: 'Twelve skills in the plugin, plus the Optimization family, and two limits.',
     },
     oggi: {
       it: 'Senza mappa si prova a caso, e la prima cosa che non funziona diventa il giudizio.',
@@ -271,17 +290,17 @@ export const DOMANDE: Domanda[] = [
       en: 'Every skill is documented with its prompts, and the limits sit in the same table.',
     },
     ancore: [
-      { it: 'Dodici skill, non una demo', en: 'Twelve skills, not a demo' },
+      { it: 'Un catalogo, non una demo', en: 'A catalogue, not a demo' },
       { it: 'Automated Personalization non si crea', en: 'Automated Personalization is not created' },
       { it: 'Il Content Fragment AEM, da confermare', en: 'The AEM Content Fragment, to confirm' },
     ],
     voci: [
       {
         figura: 'tetto',
-        ancora: { it: 'Il catalogo per intero', en: 'The whole catalogue' },
+        ancora: { it: 'Il catalogo del plugin Target', en: 'The Target plugin catalogue' },
         riga: {
-          it: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations, Recommendations Diagnose.',
-          en: 'Browse, Verdict, Design, VEC, Setup, Intelligence, Strategist, Calculator, Portfolio, Audience, Recommendations, Recommendations Diagnose.',
+          it: 'Dodici nel plugin, più la famiglia Optimization: explorer, analysis, strategist, knowledge base.',
+          en: 'Twelve in the plugin, plus the Optimization family: explorer, analysis, strategist, knowledge base.',
         },
         livello: 'doc',
       },
@@ -334,7 +353,7 @@ export const DOMANDE: Domanda[] = [
       en: 'Insight & Analytics, 28 October: we asked it to read our alerts, and it said it could not.',
     },
     punto: {
-      it: 'Il digest è documentato. Resta da vedere se i vostri ci entrano',
+      it: 'Il digest è documentato. Resta da vedere se i vostri ci entrano',
       en: 'The digest exists and is documented. What is left is whether yours fit in',
     },
     punto2: {
@@ -342,7 +361,7 @@ export const DOMANDE: Domanda[] = [
       en: 'Three skills, and a scope to verify',
     },
     lead: {
-      it: 'Digest giornaliero o settimanale, su quello che arriva nel pannello delle notifiche.',
+      it: 'Digest giornaliero o settimanale, su quello che arriva nel pannello delle notifiche.',
       en: 'A daily or weekly digest, over what lands in the notifications panel.',
     },
     oggi: {
