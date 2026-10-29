@@ -16,8 +16,8 @@ export interface Chapter {
 export const CHAPTERS: Chapter[] = [
   { slug: 'scenario', num: '01', title: { it: 'Scenario', en: 'Scenario' } },
   { slug: 'persona', num: '02', title: { it: 'La persona', en: 'The persona' } },
-  { slug: 'momenti', num: '03', title: { it: 'I momenti della storia', en: 'The moments of the story' } },
-  { slug: 'motore', num: '04', title: { it: 'Il motore dietro la storia', en: 'The engine behind the story' } },
+  { slug: 'momenti', num: '03', title: { it: 'I sei momenti di Giulia', en: 'Giulia’s six moments' } },
+  { slug: 'motore', num: '04', title: { it: 'Gli stessi sei, dall’altro lato', en: 'The same six, from the other side' } },
   { slug: 'risultati', num: '05', title: { it: 'Risultati', en: 'Results' } },
 ];
 

@@ -1,20 +1,29 @@
 ---
 /**
- * I momenti della storia — il cuore: i due lati, slide per slide.
- *
- * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
- * Il racconto e i mockup restano quelli della Storia — cambia come ci si
- * muove dentro: una slide alla volta, dimensionata su 1920×1080.
+ * I momenti di Giulia — la sua esperienza, sei scene.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import MockTelefono from '../components/MockTelefono.astro';
-import MockAdobe from '../components/MockAdobe.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { MOMENTI } from '../data/momenti';
+import MockTelefono from '../components/MockTelefono.astro';
+/* Gli sfondi sono quelli generati con Firefly per il programma Intesa e
+   vivono anche su `intesa-innesto`: stesso cliente, stessa campagna, e la
+   provenienza viaggia con loro in provenance.json. */
+import bg1 from '../assets/generated/bg/cap-01.webp';
+import bg2 from '../assets/generated/bg/cap-02.webp';
+import bg3 from '../assets/generated/bg/cap-03.webp';
+import bg4 from '../assets/generated/bg/cap-04.webp';
+import bg5 from '../assets/generated/bg/cap-05.webp';
+import bg6 from '../assets/generated/bg/cap-06.webp';
+const SFONDO: Record<string, string> = {
+  'cap-01': bg1.src, 'cap-02': bg2.src, 'cap-03': bg3.src,
+  'cap-04': bg4.src, 'cap-05': bg5.src, 'cap-06': bg6.src,
+};
 
 const SLUG = 'momenti';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -32,92 +41,110 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Quattro momenti, una cliente sola" en="Four moments, one customer" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Da una parte quello che vede Giulia. Dall’altra quello che vede chi prepara la campagna, nello stesso istante." en="On one side, what Giulia sees. On the other, what the campaign builder sees, at the same moment." data-reveal data-reveal-delay="0.15" />
+        <T as="h2" class="im-ch-t" it="Sei momenti, in tre settimane" en="Six moments, across three weeks" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Questo è quello che vede lei. Nessun nome di prodotto: un telefono, e una pratica che si muove o si ferma." en="This is what she sees. No product names: a phone, and an application that moves or stalls." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <Slide id="slide-cerca" bg="primary" align="left">
-      <div class="im-sl im-sl--mock" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">01</p>
-          <T as="h2" class="im-h2" it="Cerca, e non parte dal vostro sito" en="She searches, and not from your site" />
-          <T as="p" class="im-sub" it="Chiede a un assistente quale mutuo le conviene. La prima risposta la dà qualcun altro." en="She asks an assistant which mortgage suits her. The first answer comes from someone else." />
-          <T as="p" class="im-chiusa" it="La simulazione che salva è un evento. Oggi vive in un sistema, e la campagna in un altro." en="The simulation she saves is an event. Today it lives in one system, the campaign in another." />
-        </div>
-        <div class="im-lati" data-stagger>
-          <div>
-            <T as="p" class="im-lato-k" it="Il lato di Giulia" en="Giulia’s side" />
-            <MockTelefono scena="simulazione" />
+    <Slide id="slide-cli-01" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[0].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[0].ora.it} · ${MOMENTI[0].dove.it}`} en={`${MOMENTI[0].ora.en} · ${MOMENTI[0].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[0].cliente.titolo.it} en={MOMENTI[0].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[0].cliente.corpo.it} en={MOMENTI[0].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
           </div>
-          <div>
-            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
-            <MockAdobe scena="misura" />
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[0].cliente.mock} />
           </div>
-        </div>
       </div>
     </Slide>
 
-    <Slide id="slide-ferma" bg="inverse" align="left">
-      <div class="im-sl im-sl--mock" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">02</p>
-          <T as="h2" class="im-h2" it="Si ferma sui documenti, e chiude l’app" en="She stalls on the paperwork, and closes the app" />
-          <T as="p" class="im-sub" it="Non ha rinunciato: le manca una busta paga. Il segnale c’è già, ed è adesso che vale di più." en="She hasn’t given up: a payslip is missing. The signal exists, and now is when it is worth most." />
-          <T as="p" class="im-chiusa" it="Il profilo tiene insieme le sue quattro tracce e riceve lo score dal vostro motore: non lo ricalcola." en="The profile holds her four traces and receives the score from your engine: it does not recompute it." />
-        </div>
-        <div class="im-lati" data-stagger>
-          <div>
-            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
-            <MockAdobe scena="profilo" />
+    <Slide id="slide-cli-02" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[1].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[1].cliente.mock} />
           </div>
-          <div>
-            <T as="p" class="im-lato-k" it="Il lato di Giulia" en="Giulia’s side" />
-            <MockTelefono scena="documenti" />
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[1].ora.it} · ${MOMENTI[1].dove.it}`} en={`${MOMENTI[1].ora.en} · ${MOMENTI[1].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[1].cliente.titolo.it} en={MOMENTI[1].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[1].cliente.corpo.it} en={MOMENTI[1].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
           </div>
-        </div>
       </div>
     </Slide>
 
-    <Slide id="slide-scelta" bg="primary" align="left">
-      <div class="im-sl im-sl--mock" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">03</p>
-          <T as="h2" class="im-h2" it="Cinque cose da dirle. Ne parte una." en="Five things to tell her. One goes out." />
-          <T as="p" class="im-sub" it="Le candidate le producono i vostri modelli. Manca il posto dove si sceglie quale parte, e dentro quale tetto." en="Your models produce the candidates. What is missing is where to choose which goes, and within which cap." />
-          <T as="p" class="im-chiusa" it="È lo strato che oggi non avete: non un altro target, ma l’arbitro fra target che si sovrappongono." en="This is the layer you lack: not another target, but the arbiter between overlapping targets." />
-        </div>
-        <div class="im-lati" data-stagger>
-          <div>
-            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
-            <MockAdobe scena="decisione" />
+    <Slide id="slide-cli-03" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[2].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[2].ora.it} · ${MOMENTI[2].dove.it}`} en={`${MOMENTI[2].ora.en} · ${MOMENTI[2].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[2].cliente.titolo.it} en={MOMENTI[2].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[2].cliente.corpo.it} en={MOMENTI[2].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
           </div>
-          <div>
-            <T as="p" class="im-lato-k" it="Che cosa arriva a lei" en="What reaches her" />
-            <MockTelefono scena="ripresa" />
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[2].cliente.mock} />
           </div>
-        </div>
       </div>
     </Slide>
 
-    <Slide id="slide-giro" bg="inverse" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">04</p>
-          <T as="h2" class="im-h2" it="L’esito torna dov’è nato" en="The outcome returns where it began" />
-          <T as="p" class="im-sub" it="Giulia prende l’appuntamento. Quell’esito rientra nella misura lo stesso giorno, e la decisione dopo parte da lì." en="Giulia books the appointment. That outcome returns into measurement the same day, and the next decision starts there." />
-        </div>
-        <div class="im-giro" data-stagger>
-          <T as="p" class="im-giro-p" it="La misura" en="Measurement" />
-          <span class="im-giro-f" aria-hidden="true">→</span>
-          <T as="p" class="im-giro-p" it="Il profilo" en="The profile" />
-          <span class="im-giro-f" aria-hidden="true">→</span>
-          <T as="p" class="im-giro-p" it="La decisione" en="The decision" />
-          <span class="im-giro-f" aria-hidden="true">→</span>
-          <T as="p" class="im-giro-p" it="Il contatto" en="The contact" />
-          <span class="im-giro-f im-giro-f--torna" aria-hidden="true">↩</span>
-        </div>
-          <T as="p" class="im-chiusa" it="È un giro, non una catena: finché l’ultimo anello non torna al primo, ogni campagna riparte da zero." en="It is a loop, not a chain: until the last link returns to the first, every campaign starts from scratch." data-reveal data-reveal-delay="0.3" />
+    <Slide id="slide-cli-04" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[3].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[3].cliente.mock} />
+          </div>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[3].ora.it} · ${MOMENTI[3].dove.it}`} en={`${MOMENTI[3].ora.en} · ${MOMENTI[3].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[3].cliente.titolo.it} en={MOMENTI[3].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[3].cliente.corpo.it} en={MOMENTI[3].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-cli-05" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[4].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[4].ora.it} · ${MOMENTI[4].dove.it}`} en={`${MOMENTI[4].ora.en} · ${MOMENTI[4].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[4].cliente.titolo.it} en={MOMENTI[4].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[4].cliente.corpo.it} en={MOMENTI[4].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
+          </div>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[4].cliente.mock} />
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-cli-06" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[5].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockTelefono scena={MOMENTI[5].cliente.mock} />
+          </div>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[5].ora.it} · ${MOMENTI[5].dove.it}`} en={`${MOMENTI[5].ora.en} · ${MOMENTI[5].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[5].cliente.titolo.it} en={MOMENTI[5].cliente.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[5].cliente.corpo.it} en={MOMENTI[5].cliente.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/motore')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Fra poco, lo stesso momento dall’altro lato</span><span data-lang-en>↳ Shortly, the same moment from the other side</span>
+            </a>
+          </div>
       </div>
     </Slide>
 

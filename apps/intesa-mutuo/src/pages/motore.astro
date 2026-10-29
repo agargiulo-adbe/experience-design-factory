@@ -1,10 +1,6 @@
 ---
 /**
- * Il motore dietro la storia — che cosa resta vostro, che cosa si aggiunge.
- *
- * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
- * Il racconto e i mockup restano quelli della Storia — cambia come ci si
- * muove dentro: una slide alla volta, dimensionata su 1920×1080.
+ * Gli stessi sei momenti, dal lato di chi prepara la campagna.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -13,6 +9,21 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { MOMENTI } from '../data/momenti';
+import MockAdobe from '../components/MockAdobe.astro';
+/* Gli sfondi sono quelli generati con Firefly per il programma Intesa e
+   vivono anche su `intesa-innesto`: stesso cliente, stessa campagna, e la
+   provenienza viaggia con loro in provenance.json. */
+import bg1 from '../assets/generated/bg/cap-01.webp';
+import bg2 from '../assets/generated/bg/cap-02.webp';
+import bg3 from '../assets/generated/bg/cap-03.webp';
+import bg4 from '../assets/generated/bg/cap-04.webp';
+import bg5 from '../assets/generated/bg/cap-05.webp';
+import bg6 from '../assets/generated/bg/cap-06.webp';
+const SFONDO: Record<string, string> = {
+  'cap-01': bg1.src, 'cap-02': bg2.src, 'cap-03': bg3.src,
+  'cap-04': bg4.src, 'cap-05': bg5.src, 'cap-06': bg6.src,
+};
 
 const SLUG = 'motore';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -30,41 +41,110 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Quattro strati, e due restano vostri" en="Four layers, and two stay yours" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Niente di quello che avete appena costruito viene buttato. Si aggiunge l’anello che manca." en="Nothing you have just built gets thrown away. We add the missing link." data-reveal data-reveal-delay="0.15" />
+        <T as="h2" class="im-ch-t" it="Gli stessi sei momenti, dall’altro lato" en="The same six moments, from the other side" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Stessa settimana, stessa persona. Qui si vede che cosa fa — e che cosa oggi non può fare — chi prepara la campagna." en="Same week, same person. Here you see what the campaign builder does — and what they cannot do today." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <Slide id="slide-resta" bg="primary" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">01</p>
-          <T as="h2" class="im-h2" it="Che cosa resta dov’è" en="What stays where it is" />
-          <T as="p" class="im-sub" it="Il data warehouse, il motore di targeting che produce score e propensioni, e il CRM di filiale, costruito su misura." en="The data warehouse, the targeting engine producing scores, and the purpose-built branch CRM." />
-        </div>
-          <T as="p" class="im-chiusa" it="Il CRM riceve segnale e proposta via API, e rimanda l’esito. Non si sostituisce niente." en="The CRM receives signal and proposal via API, and returns the outcome. Nothing gets replaced." data-reveal data-reveal-delay="0.3" />
+    <Slide id="slide-int-01" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[0].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[0].ora.it} · ${MOMENTI[0].dove.it}`} en={`${MOMENTI[0].ora.en} · ${MOMENTI[0].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[0].interno.titolo.it} en={MOMENTI[0].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[0].interno.corpo.it} en={MOMENTI[0].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[0].interno.mock} />
+          </div>
       </div>
     </Slide>
 
-    <Slide id="slide-aggiunge" bg="inverse" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">02</p>
-          <T as="h2" class="im-h2" it="Che cosa si aggiunge" en="What gets added" />
-          <T as="p" class="im-sub" it="Il profilo in tempo reale su Adobe Real-Time CDP, la regia su Adobe Journey Optimizer, e l’arbitro: Offer Decisioning. Sotto, Customer Journey Analytics." en="The real-time profile on Adobe Real-Time CDP, orchestration on Adobe Journey Optimizer, and the arbiter: Offer Decisioning. Underneath, Customer Journey Analytics." />
-        </div>
-          <T as="p" class="im-chiusa" it="L’arbitro non è un altro target: decide fra target che si sovrappongono, dentro il tetto di contatto." en="The arbiter is not another target: it decides between overlapping targets, within the contact cap." data-reveal data-reveal-delay="0.3" />
+    <Slide id="slide-int-02" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[1].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[1].interno.mock} />
+          </div>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[1].ora.it} · ${MOMENTI[1].dove.it}`} en={`${MOMENTI[1].ora.en} · ${MOMENTI[1].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[1].interno.titolo.it} en={MOMENTI[1].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[1].interno.corpo.it} en={MOMENTI[1].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
       </div>
     </Slide>
 
-    <Slide id="slide-domande" bg="primary" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">03</p>
-          <T as="h2" class="im-h2" it="Le tre domande che faremo noi" en="The three questions we will ask" />
-          <T as="p" class="im-sub" it="Dove va il dato quando esce dallo strumento di analisi e con che ritardo; quale CDN usate e se i log si inoltrano; chi governa l’arbitro." en="Where data goes when it leaves the analytics tool and with what delay; which CDN you use and whether logs forward; who governs the arbiter." />
-        </div>
-          <T as="p" class="im-chiusa" it="Sono incognite nostre, non vostre. Le dichiariamo prima perché è lì che un progetto si incaglia." en="These are our unknowns, not yours. We declare them upfront because that is where projects run aground." data-reveal data-reveal-delay="0.3" />
+    <Slide id="slide-int-03" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[2].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[2].ora.it} · ${MOMENTI[2].dove.it}`} en={`${MOMENTI[2].ora.en} · ${MOMENTI[2].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[2].interno.titolo.it} en={MOMENTI[2].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[2].interno.corpo.it} en={MOMENTI[2].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[2].interno.mock} />
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-int-04" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[3].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[3].interno.mock} />
+          </div>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[3].ora.it} · ${MOMENTI[3].dove.it}`} en={`${MOMENTI[3].ora.en} · ${MOMENTI[3].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[3].interno.titolo.it} en={MOMENTI[3].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[3].interno.corpo.it} en={MOMENTI[3].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-int-05" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[4].bg]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[4].ora.it} · ${MOMENTI[4].dove.it}`} en={`${MOMENTI[4].ora.en} · ${MOMENTI[4].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[4].interno.titolo.it} en={MOMENTI[4].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[4].interno.corpo.it} en={MOMENTI[4].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[4].interno.mock} />
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-int-06" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[5].bg]})`}></div>
+      <div class="im-mom" data-verso="schermo-prima" data-reveal>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe scena={MOMENTI[5].interno.mock} />
+          </div>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-k" it={`${MOMENTI[5].ora.it} · ${MOMENTI[5].dove.it}`} en={`${MOMENTI[5].ora.en} · ${MOMENTI[5].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[5].interno.titolo.it} en={MOMENTI[5].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[5].interno.corpo.it} en={MOMENTI[5].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
       </div>
     </Slide>
 

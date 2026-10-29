@@ -12,7 +12,7 @@
  * «AI Decisioning» non è un prodotto, è una capacità dentro Journey Optimizer.
  */
 interface Props {
-  scena: 'misura' | 'profilo' | 'decisione';
+  scena: 'misura' | 'profilo' | 'decisione' | 'percorso' | 'esito';
   class?: string;
 }
 const { scena, class: className } = Astro.props;
@@ -21,7 +21,26 @@ const TESTATA = {
   misura: 'Adobe Customer Journey Analytics',
   profilo: 'Adobe Real-Time CDP',
   decisione: 'Adobe Journey Optimizer · Offer Decisioning',
+  percorso: 'Adobe Journey Optimizer',
+  esito: 'Adobe Customer Journey Analytics',
 }[scena];
+
+/* Il percorso che parte dall'evento, non da una lista. */
+const PASSI = [
+  { l: 'Evento: pratica ferma su reddito', s: 'fatto' },
+  { l: 'Attesa 12 ore', s: 'fatto' },
+  { l: 'Notifica in app', s: 'ora' },
+  { l: 'Se non apre → email', s: 'poi' },
+  { l: 'Esito al CRM di filiale, via API', s: 'poi' },
+];
+
+/* L'esito che rientra nella misura: non un aggregato a campagna chiusa. */
+const ESITO = [
+  { l: 'Offerta partita', v: 'Promemoria documenti' },
+  { l: 'Canale', v: 'Notifica in app' },
+  { l: 'Esito', v: 'Pratica ripresa in 14 ore' },
+  { l: 'Tornato nella misura', v: 'stesso giorno' },
+];
 
 /* Il funnel della misura: quante pratiche arrivano a ogni passo. Le altezze
    sono percentuali del primo passo, così la barra dice il rapporto e non un
@@ -105,6 +124,30 @@ const OFFERTE = [
         <p class="im-ado-rilievo">
           Il tetto di contatto è un vincolo dell’offerta, valutato qui: non un
           filtro applicato dopo, in attivazione.
+        </p>
+      </div>
+    )}
+    {scena === 'percorso' && (
+      <div class="im-ado-in">
+        <p class="im-ado-occhiello">Percorso · ripresa della pratica</p>
+        <ul class="im-ado-passi">
+          {PASSI.map((p) => (<li data-stato={p.s}><span>{p.l}</span></li>))}
+        </ul>
+        <p class="im-ado-rilievo">
+          Nessuno ha costruito un’audience: si è mossa la sua pratica.
+        </p>
+      </div>
+    )}
+
+    {scena === 'esito' && (
+      <div class="im-ado-in">
+        <p class="im-ado-occhiello">Esito · rientrato nella misura</p>
+        <dl class="im-ado-righe">
+          {ESITO.map((e) => (<div><dt>{e.l}</dt><dd>{e.v}</dd></div>))}
+        </dl>
+        <p class="im-ado-rilievo">
+          Quale offerta, su quale canale, come è finita. È il dato che serve
+          alla decisione dopo, non il totale a campagna chiusa.
         </p>
       </div>
     )}

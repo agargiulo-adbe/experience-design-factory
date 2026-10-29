@@ -739,6 +739,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   margin: 0; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(2.3rem, 4vw, 4.6rem); line-height: 1.06;
   letter-spacing: -0.025em; color: #ffffff; max-width: 17ch;
+ text-wrap: balance;
 }
 .im-cov-l {
   margin: 0; font-size: clamp(1.05rem, 1.2vw, 2.1rem); line-height: 1.5;
@@ -759,6 +760,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   margin: 0; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(2rem, 3.4vw, 3.9rem); line-height: 1.1;
   letter-spacing: -0.02em; color: #ffffff; max-width: 20ch;
+ text-wrap: balance;
 }
 .im-ch-l {
   margin: 0; font-size: clamp(1rem, 1.12vw, 1.95rem); line-height: 1.5;
@@ -771,6 +773,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   margin: 0; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.8rem, 2.9vw, 3.3rem); line-height: 1.14;
   letter-spacing: -0.02em; color: var(--ink-primary); max-width: 22ch;
+ text-wrap: balance;
 }
 .im-perc-l { margin: 0 0 0.6rem; font-size: clamp(1rem, 1.05vw, 1.85rem); line-height: 1.5; color: var(--ink-secondary); max-width: 56ch; }
 .im-indice { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.8rem; width: 100%; }
@@ -795,6 +798,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   margin: 0; font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.7rem, 2.6vw, 3rem); line-height: 1.12;
   letter-spacing: -0.02em; color: var(--ink-primary); max-width: 24ch;
+ text-wrap: balance;
 }
 .im-sub { margin: 0; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.5; color: var(--ink-secondary); max-width: 62ch; }
 .im-chiusa {
@@ -910,3 +914,107 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .im-sl--mock .im-lati { justify-content: flex-start; }
 .im-sl--mock .im-tel { max-width: 23rem; }
 .im-sl--mock .im-ado { max-width: 46rem; }
+
+/* ── Gli schermi nuovi: la ricerca, la firma, il percorso, l'esito ───── */
+.im-tel-chat { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.7rem; }
+.im-tel-bolla {
+  margin: 0; max-width: 92%; padding: 0.6rem 0.75rem; border-radius: 12px;
+  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.4;
+}
+.im-tel-bolla--in { align-self: flex-start; background: var(--color-grey-100); color: var(--color-ink); border-bottom-left-radius: 3px; }
+.im-tel-bolla--out { align-self: flex-end; background: var(--color-verde-velo); color: var(--color-verde-scuro); border: 1px solid var(--color-verde); border-bottom-right-radius: 3px; }
+.im-tel-citate { list-style: none; margin: 0 0 0.7rem; padding: 0; display: grid; gap: 0.34rem; }
+.im-tel-citate li {
+  padding: 0.5rem 0.7rem; border-radius: 4px;
+  border: 1px solid var(--color-grey-200); background: #ffffff;
+  font-size: clamp(0.84rem, 0.68vw, 1.55rem); color: var(--color-ink-2);
+}
+/* La fonte citata si marca col peso e il bordo, non attenuando le altre:
+   attenuare un inchiostro già grigio lo porta sotto soglia. */
+.im-tel-citate li[data-citata] {
+  border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde);
+  background: var(--color-verde-velo); color: var(--color-verde-scuro); font-weight: 700;
+}
+.im-ado-passi { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.4rem; }
+.im-ado-passi li {
+  position: relative; padding: 0.45rem 0.7rem 0.45rem 1.9rem; border-radius: 4px;
+  border: 1px solid var(--color-grey-200); background: var(--color-grey-100);
+  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.3; color: var(--color-ink-2);
+}
+.im-ado-passi li::before {
+  content: ''; position: absolute; left: 0.7rem; top: 50%; translate: 0 -50%;
+  width: 0.62rem; height: 0.62rem; border-radius: 50%;
+  border: 2px solid var(--color-grey-300);
+}
+.im-ado-passi li[data-stato='fatto']::before { background: var(--color-verde); border-color: var(--color-verde); }
+.im-ado-passi li[data-stato='ora'] {
+  background: var(--color-verde-velo); border-color: var(--color-verde);
+  color: var(--color-verde-scuro); font-weight: 700;
+}
+.im-ado-passi li[data-stato='ora']::before { border-color: var(--color-verde); box-shadow: inset 0 0 0 2px #ffffff, inset 0 0 0 5px var(--color-verde); }
+.im-ado-passi li[data-stato='poi'] { border-style: dashed; }
+
+/* ── La slide della persona, e l'elenco dei suoi momenti ─────────────── */
+.im-pers { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.6rem, 3.5vw, 4rem); align-items: center; width: 100%; max-width: 80rem; }
+.im-pers-campo {
+  position: relative; aspect-ratio: 3 / 4; border-radius: 4px; overflow: hidden;
+  background: linear-gradient(160deg, var(--color-verde) 0%, var(--color-verde-scuro) 55%, var(--color-night) 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.im-pers-ini {
+  font-family: var(--font-display); font-weight: 700; color: rgba(255,255,255,0.92);
+  font-size: clamp(4rem, 7vw, 9rem); line-height: 1; letter-spacing: -0.04em;
+}
+.im-pers-campo::after {
+  content: ''; position: absolute; inset: auto 0 0 0; height: 42%;
+  background: linear-gradient(to top, rgba(0,0,0,0.42), rgba(0,0,0,0));
+}
+.im-pers-meta { position: absolute; left: 1.2rem; right: 1.2rem; bottom: 1.1rem; z-index: 1; }
+.im-pers-meta p { margin: 0; max-width: none; color: #ffffff; }
+.im-pers-nome { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.5vw, 2.4rem); }
+.im-pers-sub { font-size: clamp(0.88rem, 0.76vw, 1.6rem); color: rgba(255,255,255,0.88); }
+
+.im-pan { padding: clamp(1.3rem, 2vw, 2.2rem); border-radius: 4px; background: var(--surface-primary); border: 1px solid var(--line-subtle); border-top: 3px solid var(--color-accent); }
+.im-pan-tag { margin: 0 0 0.8rem; max-width: none; font-size: clamp(0.76rem, 0.64vw, 1.4rem); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent, var(--color-accent-deep)); }
+.im-pan-b { margin: 0 0 0.9rem; font-size: clamp(0.98rem, 0.94vw, 1.72rem); line-height: 1.55; color: var(--ink-secondary); max-width: 54ch; }
+.im-pan-q { margin: 0; padding-top: 0.9rem; border-top: 1px solid var(--line-subtle); font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.25vw, 2.1rem); line-height: 1.35; color: var(--ink-primary); max-width: 46ch;  text-wrap: balance;
+}
+
+.im-passi { list-style: none; margin: 1.3rem 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0.3rem; position: relative; }
+.im-passi::before { content: ''; position: absolute; left: 8%; right: 8%; top: 0.8rem; height: 2px; background: linear-gradient(to right, rgba(37,137,0,0.25), var(--color-accent) 50%, rgba(37,137,0,0.25)); }
+.im-passi-i { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; min-width: 0; }
+.im-passi-n { width: 1.7rem; height: 1.7rem; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(0.74rem, 0.62vw, 1.35rem); color: var(--color-verde-scuro); background: var(--surface-primary); border: 1px solid var(--color-accent); box-shadow: 0 0 0 4px var(--surface-primary); }
+.im-passi-l { margin: 0; max-width: none; font-size: clamp(0.72rem, 0.62vw, 1.35rem); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-tertiary); line-height: 1.25; }
+
+/* ── La slide-momento: testo a sinistra, schermo a destra ───────────── */
+.im-mom { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr); gap: clamp(1.6rem, 3.5vw, 4rem); align-items: center; width: 100%; max-width: 82rem; }
+.im-mom[data-verso='schermo-prima'] { grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr); }
+.im-mom-k { margin: 0 0 0.7rem; max-width: none; font-size: clamp(0.8rem, 0.68vw, 1.45rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-accent, var(--color-accent-deep)); }
+.im-mom-t { margin: 0 0 0.8rem; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.55rem, 2.3vw, 2.8rem); line-height: 1.14; letter-spacing: -0.02em; color: var(--ink-primary); max-width: 20ch;  text-wrap: balance;
+}
+.im-mom-b { margin: 0; font-size: clamp(1rem, 1vw, 1.8rem); line-height: 1.58; color: var(--ink-secondary); max-width: 46ch; }
+.im-mom-l { display: inline-block; margin-top: 1rem; font-size: clamp(0.9rem, 0.8vw, 1.6rem); color: var(--ink-accent, var(--color-accent-deep)); text-decoration: underline; text-underline-offset: 3px; }
+.im-mom-schermo { display: flex; justify-content: center; }
+.im-mom-schermo .im-tel { max-width: 21rem; }
+.im-mom-schermo .im-ado { max-width: 38rem; }
+
+/* Lo scrim delle slide-momento: l'immagine generata sta sotto, e il testo
+   deve reggere nel caso PEGGIORE, non in media. */
+.im-scrim-storia { background: linear-gradient(100deg, rgba(13,41,1,0.95) 0%, rgba(13,41,1,0.88) 48%, rgba(13,41,1,0.72) 100%); }
+
+@media (max-width: 1000px) {
+  .im-pers, .im-mom, .im-mom[data-verso='schermo-prima'] { grid-template-columns: minmax(0, 1fr); }
+  .im-passi { grid-auto-flow: row; grid-auto-columns: auto; gap: 0.6rem; }
+  .im-passi::before { display: none; }
+}
+
+/* Lo sfondo della slide-momento: l'immagine generata, e sopra un velo che
+   si calibra sul caso PEGGIORE. Il testo sta a sinistra, quindi il velo è
+   più denso lì e si alleggerisce dove non c'è niente da leggere. */
+.im-bg-storia {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(100deg, rgba(13,41,1,0.96) 0%, rgba(13,41,1,0.90) 44%, rgba(13,41,1,0.58) 100%),
+    var(--bg);
+  background-size: cover; background-position: center;
+}
