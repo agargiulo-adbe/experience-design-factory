@@ -1,31 +1,54 @@
 ---
 /**
- * MockAdobe — quello che vede chi prepara la campagna, dentro gli strumenti.
+ * MockAdobe — lo schermo di chi prepara, un layout diverso per prodotto.
  *
- * Qui il prodotto è NOSTRO, quindi si può mostrare per quello che è: niente
- * «ricostruzione illustrativa» da dichiarare sull'interfaccia, solo la
- * cautela sui dati, che sono di esempio.
+ * Sette schermate, e sette forme diverse: una classifica, una griglia di
+ * varianti, una scheda di profilo, una lista di candidate, un percorso a
+ * passi, una conversazione, un imbuto. Se fossero sette tabelle, il
+ * messaggio sarebbe «è sempre la stessa cosa» — che è l'opposto del punto.
  *
  * I nomi di prodotto sono quelli veri e per esteso: il cliente li ritroverà
- * in un'offerta e su Experience League, e un nome inventato in pagina
- * sembrerebbe una cosa nascosta. «Offer Decisioning» è il nome corretto —
- * «AI Decisioning» non è un prodotto, è una capacità dentro Journey Optimizer.
+ * in un'offerta e su Experience League. «Offer Decisioning» è il nome
+ * corretto — «AI Decisioning» non è un prodotto, è una capacità di AJO.
+ *
+ * Qui il prodotto è NOSTRO: niente «ricostruzione illustrativa» da
+ * dichiarare sull'interfaccia, solo la cautela sui dati.
  */
-interface Props {
-  scena: 'misura' | 'profilo' | 'decisione' | 'percorso' | 'esito';
-  class?: string;
-}
-const { scena, class: className } = Astro.props;
+import type { SchermoAdobe } from '../data/momenti';
 
-const TESTATA = {
-  misura: 'Adobe Customer Journey Analytics',
+interface Props { prodotto: SchermoAdobe; class?: string }
+const { prodotto, class: className } = Astro.props;
+
+const TESTATA: Record<SchermoAdobe, string> = {
+  visibilita: 'Adobe Experience Manager · Brand Visibility',
+  genstudio: 'Adobe GenStudio',
   profilo: 'Adobe Real-Time CDP',
   decisione: 'Adobe Journey Optimizer · Offer Decisioning',
   percorso: 'Adobe Journey Optimizer',
-  esito: 'Adobe Customer Journey Analytics',
-}[scena];
+  coworker: 'Adobe CX Enterprise Coworker',
+  misura: 'Adobe Customer Journey Analytics',
+};
 
-/* Il percorso che parte dall'evento, non da una lista. */
+/* 01 · dove il marchio è citato, domanda per domanda. */
+const DOMANDE = [
+  { q: 'Miglior mutuo prima casa', p: 1 },
+  { q: 'Tasso fisso o variabile 2026', p: 0 },
+  { q: 'Quanto posso permettermi', p: 3 },
+  { q: 'Mutuo giovani under 36', p: 0 },
+  { q: 'Surroga conviene', p: 2 },
+];
+/* 02 · le varianti nate da un brief solo. */
+const VARIANTI = ['Torino · prima casa', 'Milano · prima casa', 'Under 36', 'Surroga',
+                  'Famiglia', 'Secondo immobile'];
+/* 04 · le candidate, e quella che parte. */
+const OFFERTE = [
+  { l: 'Email con la simulazione', s: 'scartata' },
+  { l: 'Promemoria documenti', s: 'scelta' },
+  { l: 'Offerta surroga', s: 'esclusa' },
+  { l: 'Polizza casa', s: 'esclusa' },
+  { l: 'Richiamo del gestore', s: 'scartata' },
+];
+/* 05 · il percorso che parte dall'evento. */
 const PASSI = [
   { l: 'Evento: pratica ferma su reddito', s: 'fatto' },
   { l: 'Attesa 12 ore', s: 'fatto' },
@@ -33,124 +56,124 @@ const PASSI = [
   { l: 'Se non apre → email', s: 'poi' },
   { l: 'Esito al CRM di filiale, via API', s: 'poi' },
 ];
-
-/* L'esito che rientra nella misura: non un aggregato a campagna chiusa. */
-const ESITO = [
-  { l: 'Offerta partita', v: 'Promemoria documenti' },
-  { l: 'Canale', v: 'Notifica in app' },
-  { l: 'Esito', v: 'Pratica ripresa in 14 ore' },
-  { l: 'Tornato nella misura', v: 'stesso giorno' },
-];
-
-/* Il funnel della misura: quante pratiche arrivano a ogni passo. Le altezze
-   sono percentuali del primo passo, così la barra dice il rapporto e non un
-   numero assoluto che nessuno può verificare. */
+/* 07 · l'imbuto, e dove si perde. */
 const FUNNEL = [
-  { l: 'Simulazioni avviate', v: 100, n: '12.400' },
-  { l: 'Richieste salvate', v: 54, n: '6.700' },
-  { l: 'Documenti caricati', v: 23, n: '2.900' },
-  { l: 'Pratiche concluse', v: 17, n: '2.100' },
-];
-
-const OFFERTE = [
-  { l: 'Email con la simulazione', s: 'scartata' },
-  { l: 'Promemoria documenti', s: 'scartata' },
-  { l: 'Richiamo del gestore, oggi', s: 'scelta' },
-  { l: 'Offerta surroga', s: 'esclusa' },
-  { l: 'Polizza casa', s: 'esclusa' },
+  { l: 'Risposte che citano la banca', v: 100, n: '3 su 8' },
+  { l: 'Simulazioni avviate', v: 72, n: '12.400' },
+  { l: 'Richieste salvate', v: 39, n: '6.700' },
+  { l: 'Documenti caricati', v: 17, n: '2.900' },
+  { l: 'Pratiche concluse', v: 12, n: '2.100' },
 ];
 ---
 
-<figure class:list={['im-ado', className]} data-scena={scena}>
+<figure class:list={['im-ado', `im-ado--${prodotto}`, className]} data-prodotto={prodotto}>
   <div class="im-ado-corpo">
     <div class="im-ado-testa">
       <span class="im-ado-punti" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="im-ado-nome">{TESTATA}</span>
+      <span class="im-ado-nome">{TESTATA[prodotto]}</span>
     </div>
 
-    {scena === 'misura' && (
-      <div class="im-ado-in">
-        <p class="im-ado-occhiello">Percorso · richiesta di mutuo · ultimi 30 giorni</p>
-        <div class="im-ado-funnel">
-          {FUNNEL.map((f) => (
-            <div class="im-ado-barra">
-              <span class="im-ado-barra-l">{f.l}</span>
-              <span class="im-ado-barra-t"><i style={`width:${f.v}%`}></i></span>
-              <span class="im-ado-barra-n">{f.n}</span>
-            </div>
-          ))}
-        </div>
-        <p class="im-ado-rilievo">
-          Fra «documenti caricati» e «pratiche concluse» si perde il passo più
-          caro: qui la pratica è già pagata e non è ancora un cliente.
-        </p>
-      </div>
-    )}
+    <div class="im-ado-in">
+      {prodotto === 'visibilita' && (
+        <>
+          <p class="im-ado-occhiello">Otto domande che contano · questo mese</p>
+          <ul class="im-ado-dom">
+            {DOMANDE.map((d) => (
+              <li data-citata={d.p > 0 ? '' : null}>
+                <span>{d.q}</span>
+                <em>{d.p > 0 ? `citata · ${d.p}° posto` : 'non citata'}</em>
+              </li>
+            ))}
+          </ul>
+          <p class="im-ado-rilievo">Tre su otto. Le cinque che mancano sono contenuto che l’assistente non riesce a leggere.</p>
+        </>
+      )}
 
-    {scena === 'profilo' && (
-      <div class="im-ado-in">
-        <p class="im-ado-occhiello">Profilo unico · aggiornato 2 secondi fa</p>
-        <div class="im-ado-prof">
+      {prodotto === 'genstudio' && (
+        <>
+          <p class="im-ado-occhiello">Un brief · dodici varianti · già approvate</p>
+          <div class="im-ado-grid">
+            {VARIANTI.map((v, i) => (
+              <div class="im-ado-var" data-scelta={i === 0 ? '' : null}>
+                <span class="im-ado-var-img" aria-hidden="true"></span>
+                <span class="im-ado-var-l">{v}</span>
+                <span class="im-ado-var-ok">informative ✓</span>
+              </div>
+            ))}
+          </div>
+          <p class="im-ado-rilievo">Il tempo non se ne va nel produrle: se ne va nell’approvarle.</p>
+        </>
+      )}
+
+      {prodotto === 'profilo' && (
+        <>
+          <p class="im-ado-occhiello">Profilo unico · aggiornato 2 secondi fa</p>
           <div class="im-ado-prof-id">
-            <span class="im-ado-chip">app</span>
-            <span class="im-ado-chip">sito</span>
-            <span class="im-ado-chip">contact center</span>
-            <span class="im-ado-chip">filiale</span>
+            <span class="im-ado-chip">app</span><span class="im-ado-chip">sito</span>
+            <span class="im-ado-chip">contact center</span><span class="im-ado-chip">filiale</span>
           </div>
           <p class="im-ado-prof-t">Una persona sola, quattro tracce</p>
           <dl class="im-ado-righe">
             <div><dt>Consenso marketing</dt><dd>sì · 14 mar 2026</dd></div>
             <div><dt>Score dal vostro motore</dt><dd>propensione mutuo 0,78</dd></div>
-            <div><dt>Ultimo evento</dt><dd>pratica ferma su reddito</dd></div>
+            <div><dt>Ultimo evento</dt><dd>simulazione salvata</dd></div>
           </dl>
-        </div>
-        <p class="im-ado-rilievo">
-          Lo score resta vostro: il profilo lo riceve, non lo ricalcola.
-        </p>
-      </div>
-    )}
+          <p class="im-ado-rilievo">Lo score resta vostro: il profilo lo riceve, non lo ricalcola.</p>
+        </>
+      )}
 
-    {scena === 'decisione' && (
-      <div class="im-ado-in">
-        <p class="im-ado-occhiello">Decisione · un contatto, cinque candidate</p>
-        <ul class="im-ado-off">
-          {OFFERTE.map((o) => (
-            <li data-stato={o.s}>
-              <span>{o.l}</span>
-              <em>{o.s === 'scelta' ? 'parte' : o.s === 'esclusa' ? 'fuori tetto' : 'non ora'}</em>
-            </li>
-          ))}
-        </ul>
-        <p class="im-ado-rilievo">
-          Il tetto di contatto è un vincolo dell’offerta, valutato qui: non un
-          filtro applicato dopo, in attivazione.
-        </p>
-      </div>
-    )}
-    {scena === 'percorso' && (
-      <div class="im-ado-in">
-        <p class="im-ado-occhiello">Percorso · ripresa della pratica</p>
-        <ul class="im-ado-passi">
-          {PASSI.map((p) => (<li data-stato={p.s}><span>{p.l}</span></li>))}
-        </ul>
-        <p class="im-ado-rilievo">
-          Nessuno ha costruito un’audience: si è mossa la sua pratica.
-        </p>
-      </div>
-    )}
+      {prodotto === 'decisione' && (
+        <>
+          <p class="im-ado-occhiello">Decisione · un contatto, cinque candidate</p>
+          <ul class="im-ado-off">
+            {OFFERTE.map((o) => (
+              <li data-stato={o.s}>
+                <span>{o.l}</span>
+                <em>{o.s === 'scelta' ? 'parte' : o.s === 'esclusa' ? 'fuori tetto' : 'non ora'}</em>
+              </li>
+            ))}
+          </ul>
+          <p class="im-ado-rilievo">Il tetto di contatto è un vincolo dell’offerta, valutato qui: non un filtro applicato dopo.</p>
+        </>
+      )}
 
-    {scena === 'esito' && (
-      <div class="im-ado-in">
-        <p class="im-ado-occhiello">Esito · rientrato nella misura</p>
-        <dl class="im-ado-righe">
-          {ESITO.map((e) => (<div><dt>{e.l}</dt><dd>{e.v}</dd></div>))}
-        </dl>
-        <p class="im-ado-rilievo">
-          Quale offerta, su quale canale, come è finita. È il dato che serve
-          alla decisione dopo, non il totale a campagna chiusa.
-        </p>
-      </div>
-    )}
+      {prodotto === 'percorso' && (
+        <>
+          <p class="im-ado-occhiello">Percorso · ripresa della pratica</p>
+          <ul class="im-ado-passi">
+            {PASSI.map((p) => (<li data-stato={p.s}><span>{p.l}</span></li>))}
+          </ul>
+          <p class="im-ado-rilievo">Nessuno ha costruito un’audience: si è mossa la sua pratica.</p>
+        </>
+      )}
+
+      {prodotto === 'coworker' && (
+        <>
+          <p class="im-ado-occhiello">Conversazione · 11:04</p>
+          <div class="im-ado-chat">
+            <p class="im-ado-bolla im-ado-bolla--tu">Preparami il quadro di Giulia Marchetti per l’appuntamento delle 11:30.</p>
+            <p class="im-ado-bolla im-ado-bolla--ai">Fatto. Simulazione del 14/11, documenti completi, propensione mutuo alta. Due cose da sapere: la pratica si era fermata due sere, ed è ripresa dopo la notifica.</p>
+          </div>
+          <p class="im-ado-rilievo">Chi riceve l’appuntamento non deve sapere usare sei strumenti: scrive quello che gli serve.</p>
+        </>
+      )}
+
+      {prodotto === 'misura' && (
+        <>
+          <p class="im-ado-occhiello">Il percorso intero · ultimi 30 giorni</p>
+          <div class="im-ado-funnel">
+            {FUNNEL.map((f, i) => (
+              <div class="im-ado-barra" data-ultimo={i === FUNNEL.length - 1 ? '' : null}>
+                <span class="im-ado-barra-l">{f.l}</span>
+                <span class="im-ado-barra-t"><i style={`width:${f.v}%`}></i></span>
+                <span class="im-ado-barra-n">{f.n}</span>
+              </div>
+            ))}
+          </div>
+          <p class="im-ado-rilievo">Fra «documenti caricati» e «pratiche concluse» si perde il passo più caro.</p>
+        </>
+      )}
+    </div>
   </div>
   <figcaption class="im-mock-cap">Dati di esempio.</figcaption>
 </figure>

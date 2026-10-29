@@ -493,225 +493,6 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 @media (max-width: 900px) { .ex-ancore { grid-template-columns: minmax(0, 1fr); } }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   I MOCKUP DELLA STORIA
-
-   Due regole che vengono da errori già fatti:
-
-   1. I mockup si portano una SUPERFICIE CHIARA PROPRIA. Quindi il loro
-      inchiostro è scuro sempre, anche dentro una sezione a fondo notte:
-      non eredita gli inchiostri della sezione. Se no sparisce.
-   2. Il testo dentro una figura si lega al VIEWPORT, non alla sola radice.
-      Sulla parete di una sala riunioni la radice sale a 28px e un corpo
-      legato solo a lei scende, in proporzione all'altezza, invece di
-      salire. Quindi `clamp(<min in rem>, <x>vw, <tetto>)`.
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.im-mock-cap {
-  margin: 0.7rem 0 0; max-width: none;
-  font-size: clamp(0.8rem, 0.66vw, 1.5rem); line-height: 1.4;
-  color: var(--ink-tertiary); font-style: italic; text-align: center;
-}
-
-/* ── Il telefono di Giulia ──────────────────────────────────────────── */
-.im-tel { margin: 0; width: 100%; max-width: 20rem; }
-.im-tel-corpo {
-  background: #ffffff; color: var(--color-ink);
-  border: 1px solid var(--color-grey-300); border-radius: 18px;
-  overflow: hidden; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.18);
-}
-.im-tel-barra {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.5rem 0.9rem 0.3rem;
-  font-size: clamp(0.72rem, 0.58vw, 1.3rem); font-weight: 600;
-  color: var(--color-grey-600);
-}
-.im-tel-barra-dx { display: inline-flex; gap: 3px; align-items: flex-end; }
-.im-tel-barra-dx i { display: block; width: 3px; background: var(--color-grey-400); border-radius: 1px; }
-.im-tel-barra-dx i:nth-child(1) { height: 5px; }
-.im-tel-barra-dx i:nth-child(2) { height: 8px; }
-.im-tel-barra-dx i:nth-child(3) { height: 11px; }
-
-.im-tel-testa { padding: 0.55rem 0.9rem; background: var(--color-verde); }
-.im-tel-marchio {
-  font-family: var(--font-display); font-weight: 700; color: #ffffff;
-  font-size: clamp(0.88rem, 0.72vw, 1.6rem); letter-spacing: -0.01em;
-}
-.im-tel-corpo-in { padding: 1rem 0.95rem 1.1rem; }
-
-.im-tel-occhiello {
-  margin: 0 0 0.2rem; max-width: none;
-  font-size: clamp(0.74rem, 0.6vw, 1.35rem); letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--color-grey-600);
-}
-.im-tel-titolo {
-  margin: 0 0 0.8rem; max-width: none;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.02rem, 0.84vw, 1.9rem); line-height: 1.25;
-  color: var(--color-ink);
-}
-.im-tel-cifra { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.8rem; }
-.im-tel-cifra-n {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2.1rem, 1.8vw, 4rem); line-height: 1;
-  color: var(--color-verde-scuro);
-}
-.im-tel-cifra-u { font-size: clamp(0.82rem, 0.66vw, 1.5rem); color: var(--color-grey-600); }
-
-.im-tel-righe { margin: 0 0 0.9rem; display: grid; gap: 0.38rem; }
-.im-tel-righe > div {
-  display: flex; justify-content: space-between; gap: 0.6rem;
-  padding-bottom: 0.34rem; border-bottom: 1px solid var(--color-grey-200);
-  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.35;
-}
-.im-tel-righe dt { color: var(--color-grey-600); margin: 0; }
-.im-tel-righe dd { margin: 0; font-weight: 600; color: var(--color-ink); }
-
-.im-tel-passi { list-style: none; margin: 0 0 0.8rem; padding: 0; display: grid; gap: 0.44rem; }
-.im-tel-passi li {
-  position: relative; padding-left: 1.4rem;
-  font-size: clamp(0.86rem, 0.7vw, 1.6rem); line-height: 1.35;
-  color: var(--color-ink);
-}
-.im-tel-passi li::before {
-  content: ''; position: absolute; left: 0; top: 0.28em;
-  width: 0.72rem; height: 0.72rem; border-radius: 50%;
-  border: 2px solid var(--color-grey-300);
-}
-.im-tel-passi li[data-stato='fatto']::before { background: var(--color-verde); border-color: var(--color-verde); }
-.im-tel-passi li[data-stato='fatto'] { color: var(--color-grey-600); }
-/* Lo stato che BLOCCA si marca, e la pelle lo veste: l'arancio è il colore
-   caldo del loro design system (#fa9600, 35 occorrenze in produzione). */
-.im-tel-passi li[data-stato='aperto']::before { border-color: #c96f00; box-shadow: inset 0 0 0 3px #ffffff, inset 0 0 0 6px #c96f00; }
-.im-tel-passi li[data-stato='aperto'] { font-weight: 700; color: #8a4b00; }
-
-.im-tel-nota {
-  margin: 0; max-width: none;
-  font-size: clamp(0.8rem, 0.64vw, 1.45rem); line-height: 1.45;
-  color: var(--color-grey-600);
-}
-.im-tel-cta {
-  margin: 0; max-width: none; text-align: center;
-  padding: 0.62rem 0.9rem; border-radius: 4px;
-  background: var(--color-verde); color: #ffffff; font-weight: 700;
-  font-size: clamp(0.88rem, 0.7vw, 1.6rem);
-}
-.im-tel-notifica {
-  margin: 0 0 0.9rem; padding: 0.7rem 0.8rem; border-radius: 8px;
-  background: var(--color-verde-velo); border-left: 3px solid var(--color-verde);
-}
-.im-tel-notifica-t {
-  margin: 0 0 0.16rem; max-width: none; font-weight: 700;
-  font-size: clamp(0.86rem, 0.7vw, 1.58rem); line-height: 1.3;
-  color: var(--color-verde-scuro);
-}
-.im-tel-notifica-b {
-  margin: 0; max-width: none;
-  font-size: clamp(0.82rem, 0.66vw, 1.5rem); line-height: 1.4;
-  color: var(--color-ink-2);
-}
-
-/* ── Lo schermo di chi prepara ──────────────────────────────────────── */
-.im-ado { margin: 0; width: 100%; max-width: 34rem; }
-.im-ado-corpo {
-  background: #ffffff; color: var(--color-ink);
-  border: 1px solid var(--color-grey-300); border-radius: 6px;
-  overflow: hidden; box-shadow: 0 10px 34px rgba(0, 0, 0, 0.16);
-}
-.im-ado-testa {
-  display: flex; align-items: center; gap: 0.6rem;
-  padding: 0.6rem 0.9rem; background: var(--color-grey-100);
-  border-bottom: 1px solid var(--color-grey-200);
-}
-.im-ado-punti { display: inline-flex; gap: 5px; }
-.im-ado-punti i { width: 8px; height: 8px; border-radius: 50%; background: var(--color-grey-300); }
-.im-ado-nome {
-  font-weight: 700; color: var(--color-ink);
-  font-size: clamp(0.82rem, 0.66vw, 1.5rem);
-}
-.im-ado-in { padding: 1rem 1.05rem 1.15rem; }
-.im-ado-occhiello {
-  margin: 0 0 0.75rem; max-width: none;
-  font-size: clamp(0.76rem, 0.62vw, 1.4rem); letter-spacing: 0.06em;
-  text-transform: uppercase; color: var(--color-grey-600);
-}
-.im-ado-funnel { display: grid; gap: 0.5rem; margin-bottom: 0.85rem; }
-.im-ado-barra {
-  display: grid; grid-template-columns: minmax(0, 8.5rem) 1fr auto;
-  align-items: center; gap: 0.6rem;
-  font-size: clamp(0.82rem, 0.66vw, 1.5rem);
-}
-.im-ado-barra-l { color: var(--color-ink-2); line-height: 1.3; }
-.im-ado-barra-t { display: block; height: 0.7rem; background: var(--color-grey-100); border-radius: 2px; }
-.im-ado-barra-t i { display: block; height: 100%; background: var(--color-verde); border-radius: 2px; }
-.im-ado-barra:last-child .im-ado-barra-t i { background: #c96f00; }
-.im-ado-barra-n { font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
-
-.im-ado-prof-id { display: flex; flex-wrap: wrap; gap: 0.34rem; margin-bottom: 0.6rem; }
-.im-ado-chip {
-  padding: 0.2rem 0.5rem; border-radius: 3px;
-  background: var(--color-verde-velo); color: var(--color-verde-scuro);
-  border: 1px solid var(--color-verde); font-weight: 600;
-  font-size: clamp(0.74rem, 0.6vw, 1.35rem);
-}
-.im-ado-prof-t {
-  margin: 0 0 0.6rem; max-width: none; font-weight: 700;
-  font-size: clamp(0.94rem, 0.76vw, 1.72rem); color: var(--color-ink);
-}
-.im-ado-righe { margin: 0 0 0.85rem; display: grid; gap: 0.36rem; }
-.im-ado-righe > div {
-  display: flex; justify-content: space-between; gap: 0.7rem;
-  padding-bottom: 0.32rem; border-bottom: 1px solid var(--color-grey-200);
-  font-size: clamp(0.82rem, 0.66vw, 1.5rem); line-height: 1.35;
-}
-.im-ado-righe dt { color: var(--color-grey-600); margin: 0; }
-.im-ado-righe dd { margin: 0; font-weight: 600; color: var(--color-ink); text-align: right; }
-
-.im-ado-off { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.36rem; }
-.im-ado-off li {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
-  padding: 0.5rem 0.65rem; border-radius: 4px;
-  border: 1px solid var(--color-grey-200); background: var(--color-grey-100);
-  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.3;
-  color: var(--color-ink-2);
-}
-.im-ado-off li em {
-  font-style: normal; font-size: clamp(0.74rem, 0.6vw, 1.35rem);
-  color: var(--color-grey-600); white-space: nowrap;
-}
-/* La scelta si marca con il peso e il bordo, non attenuando le altre con
-   l'opacità: attenuare un inchiostro già grigio lo porta sotto soglia. */
-.im-ado-off li[data-stato='scelta'] {
-  background: var(--color-verde-velo); border-color: var(--color-verde);
-  box-shadow: inset 0 0 0 1px var(--color-verde);
-  color: var(--color-verde-scuro); font-weight: 700;
-}
-.im-ado-off li[data-stato='scelta'] em { color: var(--color-verde-scuro); font-weight: 700; }
-.im-ado-off li[data-stato='esclusa'] { border-style: dashed; }
-
-.im-ado-rilievo {
-  margin: 0; max-width: none; padding-top: 0.7rem;
-  border-top: 1px solid var(--color-grey-200);
-  font-size: clamp(0.86rem, 0.7vw, 1.58rem); line-height: 1.5;
-  color: var(--color-ink-2);
-}
-
-/* ── Il doppio lato: i due mockup affiancati ────────────────────────── */
-.im-lati {
-  display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
-  gap: clamp(1.4rem, 3vw, 3.4rem); align-items: start; width: 100%;
-}
-.im-lati[data-verso='interno-prima'] { grid-template-columns: minmax(0, 1fr) minmax(0, 20rem); }
-.im-lato-k {
-  margin: 0 0 0.7rem; max-width: none;
-  font-size: clamp(0.78rem, 0.64vw, 1.42rem); letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--ink-tertiary);
-}
-@media (max-width: 900px) {
-  .im-lati, .im-lati[data-verso='interno-prima'] { grid-template-columns: minmax(0, 1fr); }
-  .im-tel { max-width: 18rem; margin-inline: auto; }
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
    LE SLIDE DELLA STORIA
 
    Formato: slide sequenziali, non scorrimento. La safe-area la governa
@@ -915,45 +696,6 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .im-sl--mock .im-tel { max-width: 23rem; }
 .im-sl--mock .im-ado { max-width: 46rem; }
 
-/* ── Gli schermi nuovi: la ricerca, la firma, il percorso, l'esito ───── */
-.im-tel-chat { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.7rem; }
-.im-tel-bolla {
-  margin: 0; max-width: 92%; padding: 0.6rem 0.75rem; border-radius: 12px;
-  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.4;
-}
-.im-tel-bolla--in { align-self: flex-start; background: var(--color-grey-100); color: var(--color-ink); border-bottom-left-radius: 3px; }
-.im-tel-bolla--out { align-self: flex-end; background: var(--color-verde-velo); color: var(--color-verde-scuro); border: 1px solid var(--color-verde); border-bottom-right-radius: 3px; }
-.im-tel-citate { list-style: none; margin: 0 0 0.7rem; padding: 0; display: grid; gap: 0.34rem; }
-.im-tel-citate li {
-  padding: 0.5rem 0.7rem; border-radius: 4px;
-  border: 1px solid var(--color-grey-200); background: #ffffff;
-  font-size: clamp(0.84rem, 0.68vw, 1.55rem); color: var(--color-ink-2);
-}
-/* La fonte citata si marca col peso e il bordo, non attenuando le altre:
-   attenuare un inchiostro già grigio lo porta sotto soglia. */
-.im-tel-citate li[data-citata] {
-  border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde);
-  background: var(--color-verde-velo); color: var(--color-verde-scuro); font-weight: 700;
-}
-.im-ado-passi { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.4rem; }
-.im-ado-passi li {
-  position: relative; padding: 0.45rem 0.7rem 0.45rem 1.9rem; border-radius: 4px;
-  border: 1px solid var(--color-grey-200); background: var(--color-grey-100);
-  font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.3; color: var(--color-ink-2);
-}
-.im-ado-passi li::before {
-  content: ''; position: absolute; left: 0.7rem; top: 50%; translate: 0 -50%;
-  width: 0.62rem; height: 0.62rem; border-radius: 50%;
-  border: 2px solid var(--color-grey-300);
-}
-.im-ado-passi li[data-stato='fatto']::before { background: var(--color-verde); border-color: var(--color-verde); }
-.im-ado-passi li[data-stato='ora'] {
-  background: var(--color-verde-velo); border-color: var(--color-verde);
-  color: var(--color-verde-scuro); font-weight: 700;
-}
-.im-ado-passi li[data-stato='ora']::before { border-color: var(--color-verde); box-shadow: inset 0 0 0 2px #ffffff, inset 0 0 0 5px var(--color-verde); }
-.im-ado-passi li[data-stato='poi'] { border-style: dashed; }
-
 /* ── La slide della persona, e l'elenco dei suoi momenti ─────────────── */
 .im-pers { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.6rem, 3.5vw, 4rem); align-items: center; width: 100%; max-width: 80rem; }
 .im-pers-campo {
@@ -980,23 +722,24 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .im-pan-q { margin: 0; padding-top: 0.9rem; border-top: 1px solid var(--line-subtle); font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.25vw, 2.1rem); line-height: 1.35; color: var(--ink-primary); max-width: 46ch;  text-wrap: balance;
 }
 
-.im-passi { list-style: none; margin: 1.3rem 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0.3rem; position: relative; }
-.im-passi::before { content: ''; position: absolute; left: 8%; right: 8%; top: 0.8rem; height: 2px; background: linear-gradient(to right, rgba(37,137,0,0.25), var(--color-accent) 50%, rgba(37,137,0,0.25)); }
+/* Sette passi in sette colonne non ci stanno: la griglia si avvolge
+   invece di far sbordare le etichette (check `c`, HARD). */
+.im-passi { list-style: none; margin: 1.3rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(5.4rem, 1fr)); gap: 0.6rem 0.3rem; position: relative; }
+
 .im-passi-i { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; min-width: 0; }
 .im-passi-n { width: 1.7rem; height: 1.7rem; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(0.74rem, 0.62vw, 1.35rem); color: var(--color-verde-scuro); background: var(--surface-primary); border: 1px solid var(--color-accent); box-shadow: 0 0 0 4px var(--surface-primary); }
 .im-passi-l { margin: 0; max-width: none; font-size: clamp(0.72rem, 0.62vw, 1.35rem); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-tertiary); line-height: 1.25; }
 
 /* ── La slide-momento: testo a sinistra, schermo a destra ───────────── */
-.im-mom { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr); gap: clamp(1.6rem, 3.5vw, 4rem); align-items: center; width: 100%; max-width: 82rem; }
-.im-mom[data-verso='schermo-prima'] { grid-template-columns: minmax(0, 0.98fr) minmax(0, 1.02fr); }
+.im-mom { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(2rem, 4.5vw, 5.5rem); align-items: center; width: 100%; max-width: 100%; }
+.im-mom[data-verso='schermo-prima'] { grid-template-columns: auto minmax(0, 1fr); }
 .im-mom-k { margin: 0 0 0.7rem; max-width: none; font-size: clamp(0.8rem, 0.68vw, 1.45rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-accent, var(--color-accent-deep)); }
 .im-mom-t { margin: 0 0 0.8rem; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.55rem, 2.3vw, 2.8rem); line-height: 1.14; letter-spacing: -0.02em; color: var(--ink-primary); max-width: 20ch;  text-wrap: balance;
 }
-.im-mom-b { margin: 0; font-size: clamp(1rem, 1vw, 1.8rem); line-height: 1.58; color: var(--ink-secondary); max-width: 46ch; }
+.im-mom-b { margin: 0; font-size: clamp(1.05rem, 1.12vw, 2rem); line-height: 1.55; color: var(--ink-secondary); max-width: 44ch; }
 .im-mom-l { display: inline-block; margin-top: 1rem; font-size: clamp(0.9rem, 0.8vw, 1.6rem); color: var(--ink-accent, var(--color-accent-deep)); text-decoration: underline; text-underline-offset: 3px; }
 .im-mom-schermo { display: flex; justify-content: center; }
-.im-mom-schermo .im-tel { max-width: 21rem; }
-.im-mom-schermo .im-ado { max-width: 38rem; }
+
 
 /* Lo scrim delle slide-momento: l'immagine generata sta sotto, e il testo
    deve reggere nel caso PEGGIORE, non in media. */
@@ -1017,4 +760,227 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
     linear-gradient(100deg, rgba(13,41,1,0.96) 0%, rgba(13,41,1,0.90) 44%, rgba(13,41,1,0.58) 100%),
     var(--bg);
   background-size: cover; background-position: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   I MOCKUP — QUATTRO CHROME PER IL CLIENTE, SETTE SCHERMI PER CHI PREPARA
+
+   Due regole che vengono da errori già fatti:
+
+   1. Gli schermi si portano una SUPERFICIE CHIARA PROPRIA. Il loro
+      inchiostro resta scuro anche dentro una slide a fondo notte: non
+      eredita gli inchiostri della slide. Se no sparisce.
+   2. Il testo dentro una figura si lega al VIEWPORT, non alla sola radice.
+      Su una parete la radice sale a 28px e un corpo legato solo a lei
+      scende in proporzione all'altezza, invece di salire.
+
+   E una che viene da questa revisione: la CORNICE è metà del messaggio.
+   Un assistente, un feed, l'app della banca e un gestionale di sportello
+   non si somigliano, e mostrarli tutti uguali dice «è sempre la stessa
+   cosa» — che è l'opposto del punto.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.im-mock-cap {
+  margin: 0.6rem 0 0; max-width: 26rem; margin-inline: auto;
+  font-size: clamp(0.78rem, 0.64vw, 1.45rem); line-height: 1.4;
+  color: var(--ink-tertiary); font-style: italic; text-align: center;
+}
+
+/* ── Lo schermo del cliente ─────────────────────────────────────────── */
+.im-cli { margin: 0; width: 100%; }
+.im-cli--assistente, .im-cli--feed, .im-cli--app { max-width: 22rem; }
+.im-cli--filiale { max-width: 42rem; }
+.im-cli-corpo {
+  background: #ffffff; color: var(--color-ink);
+  overflow: hidden; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--color-grey-300);
+}
+/* Il telefono ha gli angoli molto tondi; il gestionale no: è una finestra. */
+.im-cli--assistente .im-cli-corpo,
+.im-cli--feed .im-cli-corpo,
+.im-cli--app .im-cli-corpo { border-radius: 22px; }
+.im-cli--filiale .im-cli-corpo { border-radius: 5px; }
+
+.im-cli-barra {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.5rem 1rem 0.28rem;
+  font-size: clamp(0.72rem, 0.58vw, 1.3rem); font-weight: 700;
+  color: var(--color-grey-600);
+}
+.im-cli-segnale { display: inline-flex; gap: 3px; align-items: flex-end; }
+.im-cli-segnale i { display: block; width: 3px; background: var(--color-grey-400); border-radius: 1px; }
+.im-cli-segnale i:nth-child(1) { height: 5px; }
+.im-cli-segnale i:nth-child(2) { height: 8px; }
+.im-cli-segnale i:nth-child(3) { height: 11px; }
+
+.im-cli-testa { padding: 0.55rem 0.95rem; }
+/* app: la testata è verde — è casa loro, e si vede subito */
+.im-cli-testa--banca { background: var(--color-verde); }
+.im-cli-marchio { font-family: var(--font-display); font-weight: 700; color: #ffffff; font-size: clamp(0.88rem, 0.72vw, 1.6rem); }
+/* assistente e feed: nessun marchio di banca, chrome neutro */
+.im-cli-testa--neutra { background: var(--color-grey-100); border-bottom: 1px solid var(--color-grey-200); }
+.im-cli-testa--feed { background: #ffffff; border-bottom: 1px solid var(--color-grey-200); }
+.im-cli-neutro { font-weight: 700; color: var(--color-grey-600); font-size: clamp(0.8rem, 0.66vw, 1.5rem); letter-spacing: 0.06em; text-transform: uppercase; }
+/* filiale: barra a schede, come un gestionale */
+.im-cli-testa--gest { display: flex; gap: 0.3rem; background: #e8eaed; border-bottom: 1px solid var(--color-grey-300); padding: 0.5rem 0.7rem 0; }
+.im-cli-gest-tab {
+  padding: 0.4rem 0.8rem; border-radius: 4px 4px 0 0; background: #dadde1;
+  font-size: clamp(0.76rem, 0.62vw, 1.4rem); color: var(--color-grey-600); font-weight: 600;
+}
+.im-cli-gest-tab[data-attivo] { background: #ffffff; color: var(--color-ink); box-shadow: 0 -1px 0 0 var(--color-verde) inset; }
+
+.im-cli-in { padding: 1rem 0.95rem 1.1rem; }
+.im-cli--filiale .im-cli-in { padding: 1.1rem 1.2rem 1.2rem; }
+
+.im-cli-occhiello { margin: 0 0 0.2rem; max-width: none; font-size: clamp(0.74rem, 0.6vw, 1.35rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grey-600); }
+.im-cli-titolo { margin: 0 0 0.8rem; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.84vw, 1.9rem); line-height: 1.25; color: var(--color-ink); }
+.im-cli-nota { margin: 0; max-width: none; font-size: clamp(0.8rem, 0.64vw, 1.45rem); line-height: 1.45; color: var(--color-grey-600); }
+
+.im-cli-cifra { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.8rem; }
+.im-cli-cifra-n { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.1rem, 1.8vw, 4rem); line-height: 1; color: var(--color-verde-scuro); }
+.im-cli-cifra-u { font-size: clamp(0.82rem, 0.66vw, 1.5rem); color: var(--color-grey-600); }
+
+.im-cli-righe { margin: 0 0 0.9rem; display: grid; gap: 0.36rem; }
+.im-cli-righe > div { display: flex; justify-content: space-between; gap: 0.6rem; padding-bottom: 0.32rem; border-bottom: 1px solid var(--color-grey-200); font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.35; }
+.im-cli-righe dt { color: var(--color-grey-600); margin: 0; }
+.im-cli-righe dd { margin: 0; font-weight: 700; color: var(--color-ink); }
+
+.im-cli-passi { list-style: none; margin: 0 0 0.8rem; padding: 0; display: grid; gap: 0.42rem; }
+.im-cli-passi li { position: relative; padding-left: 1.4rem; font-size: clamp(0.86rem, 0.7vw, 1.6rem); line-height: 1.35; color: var(--color-ink); }
+.im-cli-passi li::before { content: ''; position: absolute; left: 0; top: 0.3em; width: 0.72rem; height: 0.72rem; border-radius: 50%; border: 2px solid var(--color-grey-300); }
+.im-cli-passi li[data-stato='fatto']::before { background: var(--color-verde); border-color: var(--color-verde); }
+.im-cli-passi li[data-stato='fatto'] { color: var(--color-grey-600); }
+/* lo stato che BLOCCA si marca: ambra, il colore caldo del loro sistema */
+.im-cli-passi li[data-stato='aperto']::before { border-color: #c96f00; box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 6px #c96f00; }
+.im-cli-passi li[data-stato='aperto'] { font-weight: 700; color: #8a4b00; }
+
+.im-cli-cta { margin: 0; max-width: none; text-align: center; padding: 0.62rem 0.9rem; border-radius: 4px; background: var(--color-verde); color: #ffffff; font-weight: 700; font-size: clamp(0.88rem, 0.7vw, 1.6rem); }
+.im-cli-notifica { margin: 0 0 0.9rem; padding: 0.7rem 0.8rem; border-radius: 8px; background: var(--color-verde-velo); border-left: 3px solid var(--color-verde); }
+.im-cli-notifica-t { margin: 0 0 0.16rem; max-width: none; font-weight: 700; font-size: clamp(0.86rem, 0.7vw, 1.58rem); line-height: 1.3; color: var(--color-verde-scuro); }
+.im-cli-notifica-b { margin: 0; max-width: none; font-size: clamp(0.82rem, 0.66vw, 1.5rem); line-height: 1.4; color: var(--color-ink-2); }
+
+.im-cli-chat { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.7rem; }
+.im-cli-bolla { margin: 0; max-width: 92%; padding: 0.6rem 0.75rem; border-radius: 12px; font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.4; }
+.im-cli-bolla--in { align-self: flex-start; background: var(--color-grey-100); color: var(--color-ink); border-bottom-left-radius: 3px; }
+.im-cli-bolla--out { align-self: flex-end; background: #eef2f6; color: var(--color-ink-2); border-bottom-right-radius: 3px; }
+.im-cli-citate { list-style: none; margin: 0 0 0.7rem; padding: 0; display: grid; gap: 0.34rem; }
+.im-cli-citate li { padding: 0.5rem 0.7rem; border-radius: 4px; border: 1px solid var(--color-grey-200); font-size: clamp(0.84rem, 0.68vw, 1.55rem); color: var(--color-ink-2); }
+.im-cli-citate li[data-citata] { border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde); background: var(--color-verde-velo); color: var(--color-verde-scuro); font-weight: 700; }
+
+.im-cli-post { border: 1px solid var(--color-grey-200); border-radius: 8px; overflow: hidden; margin-bottom: 0.7rem; }
+.im-cli-post-img { display: flex; align-items: flex-end; aspect-ratio: 16 / 10; background: linear-gradient(145deg, var(--color-verde) 0%, var(--color-verde-scuro) 70%, var(--color-night) 100%); padding: 0.7rem 0.85rem; }
+.im-cli-post-img span { font-family: var(--font-display); font-weight: 700; color: rgba(255,255,255,0.95); font-size: clamp(1.1rem, 0.95vw, 2rem); }
+.im-cli-post-t { margin: 0.7rem 0.85rem 0.2rem; max-width: none; font-weight: 700; font-size: clamp(0.9rem, 0.74vw, 1.65rem); line-height: 1.3; color: var(--color-ink); }
+.im-cli-post-b { margin: 0 0.85rem 0.5rem; max-width: none; font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.4; color: var(--color-ink-2); }
+.im-cli-post-info { margin: 0 0.85rem 0.8rem; max-width: none; font-size: clamp(0.74rem, 0.6vw, 1.35rem); color: var(--color-grey-600); }
+
+.im-cli-gest { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.4rem; }
+.im-cli-gest-col { min-width: 0; }
+.im-cli-gest-nome { margin: 0 0 0.6rem; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.1rem, 0.95vw, 2rem); color: var(--color-ink); }
+
+/* ── Lo schermo di chi prepara ──────────────────────────────────────── */
+.im-ado { margin: 0; width: 100%; max-width: 40rem; }
+.im-ado-corpo { background: #ffffff; color: var(--color-ink); border: 1px solid var(--color-grey-300); border-radius: 5px; overflow: hidden; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.26); }
+.im-ado-testa { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.9rem; background: #2b2b2b; }
+.im-ado-punti { display: inline-flex; gap: 5px; }
+.im-ado-punti i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+.im-ado-nome { font-weight: 700; color: #ffffff; font-size: clamp(0.8rem, 0.66vw, 1.5rem); }
+.im-ado-in { padding: 1rem 1.05rem 1.15rem; }
+.im-ado-occhiello { margin: 0 0 0.75rem; max-width: none; font-size: clamp(0.76rem, 0.62vw, 1.4rem); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grey-600); }
+.im-ado-rilievo { margin: 0; max-width: none; padding-top: 0.7rem; border-top: 1px solid var(--color-grey-200); font-size: clamp(0.86rem, 0.7vw, 1.58rem); line-height: 1.5; color: var(--color-ink-2); }
+
+.im-ado-dom { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.34rem; }
+.im-ado-dom li { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; padding: 0.46rem 0.65rem; border-radius: 4px; border: 1px solid var(--color-grey-200); background: var(--color-grey-100); font-size: clamp(0.84rem, 0.68vw, 1.55rem); color: var(--color-ink-2); }
+.im-ado-dom li em { font-style: normal; font-size: clamp(0.74rem, 0.6vw, 1.35rem); color: var(--color-grey-600); white-space: nowrap; }
+.im-ado-dom li[data-citata] { background: var(--color-verde-velo); border-color: var(--color-verde); color: var(--color-verde-scuro); font-weight: 700; }
+.im-ado-dom li[data-citata] em { color: var(--color-verde-scuro); font-weight: 700; }
+
+.im-ado-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-bottom: 0.85rem; }
+.im-ado-var { min-width: 0; border: 1px solid var(--color-grey-200); border-radius: 4px; padding: 0.4rem; display: grid; gap: 0.25rem; }
+.im-ado-var[data-scelta] { border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde); background: var(--color-verde-velo); }
+.im-ado-var-img { display: block; aspect-ratio: 16 / 9; border-radius: 2px; background: linear-gradient(140deg, var(--color-verde) 0%, var(--color-verde-scuro) 100%); opacity: 0.85; }
+.im-ado-var-l { font-size: clamp(0.74rem, 0.6vw, 1.35rem); font-weight: 700; color: var(--color-ink); line-height: 1.25; }
+.im-ado-var-ok { font-size: clamp(0.68rem, 0.56vw, 1.25rem); color: var(--color-verde-scuro); }
+
+.im-ado-prof-id { display: flex; flex-wrap: wrap; gap: 0.34rem; margin-bottom: 0.6rem; }
+.im-ado-chip { padding: 0.2rem 0.5rem; border-radius: 3px; background: var(--color-verde-velo); color: var(--color-verde-scuro); border: 1px solid var(--color-verde); font-weight: 700; font-size: clamp(0.74rem, 0.6vw, 1.35rem); }
+.im-ado-prof-t { margin: 0 0 0.6rem; max-width: none; font-weight: 700; font-size: clamp(0.94rem, 0.76vw, 1.72rem); color: var(--color-ink); }
+.im-ado-righe { margin: 0 0 0.85rem; display: grid; gap: 0.34rem; }
+.im-ado-righe > div { display: flex; justify-content: space-between; gap: 0.7rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--color-grey-200); font-size: clamp(0.82rem, 0.66vw, 1.5rem); line-height: 1.35; }
+.im-ado-righe dt { color: var(--color-grey-600); margin: 0; }
+.im-ado-righe dd { margin: 0; font-weight: 700; color: var(--color-ink); text-align: right; }
+
+.im-ado-off { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.34rem; }
+.im-ado-off li { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; padding: 0.46rem 0.65rem; border-radius: 4px; border: 1px solid var(--color-grey-200); background: var(--color-grey-100); font-size: clamp(0.84rem, 0.68vw, 1.55rem); color: var(--color-ink-2); }
+.im-ado-off li em { font-style: normal; font-size: clamp(0.74rem, 0.6vw, 1.35rem); color: var(--color-grey-600); white-space: nowrap; }
+.im-ado-off li[data-stato='scelta'] { background: var(--color-verde-velo); border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde); color: var(--color-verde-scuro); font-weight: 700; }
+.im-ado-off li[data-stato='scelta'] em { color: var(--color-verde-scuro); font-weight: 700; }
+.im-ado-off li[data-stato='esclusa'] { border-style: dashed; }
+
+.im-ado-passi { list-style: none; margin: 0 0 0.85rem; padding: 0; display: grid; gap: 0.4rem; }
+.im-ado-passi li { position: relative; padding: 0.45rem 0.7rem 0.45rem 1.9rem; border-radius: 4px; border: 1px solid var(--color-grey-200); background: var(--color-grey-100); font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.3; color: var(--color-ink-2); }
+.im-ado-passi li::before { content: ''; position: absolute; left: 0.7rem; top: 50%; translate: 0 -50%; width: 0.62rem; height: 0.62rem; border-radius: 50%; border: 2px solid var(--color-grey-300); }
+.im-ado-passi li[data-stato='fatto']::before { background: var(--color-verde); border-color: var(--color-verde); }
+.im-ado-passi li[data-stato='ora'] { background: var(--color-verde-velo); border-color: var(--color-verde); color: var(--color-verde-scuro); font-weight: 700; }
+.im-ado-passi li[data-stato='ora']::before { border-color: var(--color-verde); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 5px var(--color-verde); }
+.im-ado-passi li[data-stato='poi'] { border-style: dashed; }
+
+.im-ado-chat { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.85rem; }
+.im-ado-bolla { margin: 0; max-width: 92%; padding: 0.62rem 0.8rem; border-radius: 12px; font-size: clamp(0.84rem, 0.68vw, 1.55rem); line-height: 1.45; }
+.im-ado-bolla--tu { align-self: flex-end; background: var(--color-grey-100); color: var(--color-ink); border-bottom-right-radius: 3px; }
+.im-ado-bolla--ai { align-self: flex-start; background: var(--color-verde-velo); color: var(--color-verde-scuro); border: 1px solid var(--color-verde); border-bottom-left-radius: 3px; }
+
+.im-ado-funnel { display: grid; gap: 0.44rem; margin-bottom: 0.85rem; }
+.im-ado-barra { display: grid; grid-template-columns: minmax(0, 11rem) 1fr auto; align-items: center; gap: 0.6rem; font-size: clamp(0.82rem, 0.66vw, 1.5rem); }
+.im-ado-barra-l { color: var(--color-ink-2); line-height: 1.3; }
+.im-ado-barra-t { display: block; height: 0.68rem; background: var(--color-grey-100); border-radius: 2px; }
+.im-ado-barra-t i { display: block; height: 100%; background: var(--color-verde); border-radius: 2px; }
+.im-ado-barra[data-ultimo] .im-ado-barra-t i { background: #c96f00; }
+.im-ado-barra-n { font-weight: 700; color: var(--color-ink); font-variant-numeric: tabular-nums; }
+
+/* ── Lo sfondo di scena, e il ritratto ──────────────────────────────── */
+/* La foto dice che cosa sta facendo la persona. Il velo è direzionale:
+   denso dove c'è il testo, leggero dove c'è solo l'immagine. Si calibra
+   sul caso PEGGIORE, non in media: una cresta di luce dietro il titolo
+   una volta sola basta a bocciare la slide. */
+.im-bg-scena {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(100deg, rgba(10,32,1,0.97) 0%, rgba(10,32,1,0.93) 40%, rgba(10,32,1,0.62) 100%),
+    var(--bg);
+  background-size: cover; background-position: center;
+}
+/* Sulle slide dove lo schermo sta a SINISTRA il velo si specchia. */
+.im-mom[data-verso='schermo-prima'] ~ .im-bg-scena,
+[data-slide]:has(.im-mom[data-verso='schermo-prima']) .im-bg-scena {
+  background-image:
+    linear-gradient(260deg, rgba(10,32,1,0.97) 0%, rgba(10,32,1,0.93) 40%, rgba(10,32,1,0.62) 100%),
+    var(--bg);
+}
+
+.im-mom-blocco {
+  display: inline-block; margin: 0 0 0.7rem; max-width: none;
+  padding: 0.26rem 0.7rem; border-radius: 3px;
+  background: #0a2001; border: 1px solid rgba(79,194,31,0.55);
+  font-size: clamp(0.76rem, 0.64vw, 1.4rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--color-verde-chiaro);
+}
+
+.im-mom-schermo { display: flex; justify-content: center; align-items: center; }
+.im-mom-schermo .im-cli--filiale { max-width: 40rem; }
+.im-mom-schermo .im-ado { max-width: 38rem; }
+
+/* Il ritratto 3:4 a piena colonna supera la safe-area di pochi pixel
+   (check `c`, HARD, misurato a 1920). Un tetto in `vh` lo tiene dentro a
+   ogni viewport senza deformarlo. */
+.im-pers-foto { margin: 0 auto; position: relative; border-radius: 4px; overflow: hidden; aspect-ratio: 3 / 4; max-height: 58vh; }
+.im-pers-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.im-pers-scrim { position: absolute; inset: auto 0 0 0; height: 48%; background: linear-gradient(to top, rgba(0,0,0,0.78), rgba(0,0,0,0)); }
+.im-pers-meta { position: absolute; left: 1.2rem; right: 1.2rem; bottom: 1.1rem; z-index: 1; display: grid; gap: 0.18rem; }
+.im-pers-nome { font-family: var(--font-display); font-weight: 700; color: #ffffff; font-size: clamp(1.3rem, 1.5vw, 2.4rem); line-height: 1.15; }
+.im-pers-sub { color: rgba(255,255,255,0.92); font-size: clamp(0.88rem, 0.76vw, 1.6rem); }
+
+@media (max-width: 1100px) {
+  .im-mom, .im-mom[data-verso='schermo-prima'] { grid-template-columns: minmax(0, 1fr); }
 }

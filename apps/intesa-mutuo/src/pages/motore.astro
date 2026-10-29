@@ -1,6 +1,6 @@
 ---
 /**
- * Gli stessi sei momenti, dal lato di chi prepara la campagna.
+ * Gli stessi sette momenti, dal lato di chi prepara — e tutto lo spettro.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -11,19 +11,25 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MOMENTI } from '../data/momenti';
 import MockAdobe from '../components/MockAdobe.astro';
-/* Gli sfondi sono quelli generati con Firefly per il programma Intesa e
-   vivono anche su `intesa-innesto`: stesso cliente, stessa campagna, e la
-   provenienza viaggia con loro in provenance.json. */
-import bg1 from '../assets/generated/bg/cap-01.webp';
-import bg2 from '../assets/generated/bg/cap-02.webp';
-import bg3 from '../assets/generated/bg/cap-03.webp';
-import bg4 from '../assets/generated/bg/cap-04.webp';
-import bg5 from '../assets/generated/bg/cap-05.webp';
-import bg6 from '../assets/generated/bg/cap-06.webp';
-const SFONDO: Record<string, string> = {
-  'cap-01': bg1.src, 'cap-02': bg2.src, 'cap-03': bg3.src,
-  'cap-04': bg4.src, 'cap-05': bg5.src, 'cap-06': bg6.src,
-};
+/* Le scene vengono da Pexels, licenziate, con autore e URL in
+   provenance.json. Non sono decorazione: ognuna dice che cosa sta facendo
+   la persona in quel momento, e sta nello SFONDO — così la pagina si
+   riempie e il momento si capisce prima di leggere. */
+import s0 from '../assets/generated/scena-01-divano.webp';
+import s1 from '../assets/generated/scena-02-bar.webp';
+import s2 from '../assets/generated/scena-03-tavolo.webp';
+import s3 from '../assets/generated/scena-04-documenti.webp';
+import s4 from '../assets/generated/scena-05-colazione.webp';
+import s5 from '../assets/generated/scena-06-filiale.webp';
+import s6 from '../assets/generated/scena-07-casa.webp';
+import s7 from '../assets/generated/lavoro-01-ricerca.webp';
+import s8 from '../assets/generated/lavoro-02-contenuti.webp';
+import s9 from '../assets/generated/lavoro-03-dati.webp';
+import s10 from '../assets/generated/lavoro-04-decisione.webp';
+import s11 from '../assets/generated/lavoro-05-orchestrazione.webp';
+import s12 from '../assets/generated/lavoro-06-filiale-back.webp';
+import s13 from '../assets/generated/lavoro-07-misura.webp';
+const SCENA: Record<string, string> = { 'scena-01-divano': s0.src, 'scena-02-bar': s1.src, 'scena-03-tavolo': s2.src, 'scena-04-documenti': s3.src, 'scena-05-colazione': s4.src, 'scena-06-filiale': s5.src, 'scena-07-casa': s6.src, 'lavoro-01-ricerca': s7.src, 'lavoro-02-contenuti': s8.src, 'lavoro-03-dati': s9.src, 'lavoro-04-decisione': s10.src, 'lavoro-05-orchestrazione': s11.src, 'lavoro-06-filiale-back': s12.src, 'lavoro-07-misura': s13.src };
 
 const SLUG = 'motore';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -41,15 +47,16 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ch" data-reveal>
         <p class="im-ch-num"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
-        <T as="h2" class="im-ch-t" it="Gli stessi sei momenti, dall’altro lato" en="The same six moments, from the other side" data-reveal data-reveal-delay="0.08" />
-        <T as="p" class="im-ch-l" it="Stessa settimana, stessa persona. Qui si vede che cosa fa — e che cosa oggi non può fare — chi prepara la campagna." en="Same week, same person. Here you see what the campaign builder does — and what they cannot do today." data-reveal data-reveal-delay="0.15" />
+        <T as="h2" class="im-ch-t" it="Gli stessi sette, dall’altro lato" en="The same seven, from the other side" data-reveal data-reveal-delay="0.08" />
+        <T as="p" class="im-ch-l" it="Stessa settimana, stessa persona. Sette schermi, e insieme sono l’offerta intera: farsi trovare, contenuto, engagement, AI e misura." en="Same week, same person. Seven screens, and together they are the whole offer: visibility, content, engagement, AI and measurement." data-reveal data-reveal-delay="0.15" />
       </div>
     </Slide>
 
-    <Slide id="slide-int-01" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[0].bg]})`}></div>
+    <Slide id="slide-int-01" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[0].interno.scena]})`}></div>
       <div class="im-mom" data-reveal>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[0].blocco.it} en={MOMENTI[0].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[0].ora.it} · ${MOMENTI[0].dove.it}`} en={`${MOMENTI[0].ora.en} · ${MOMENTI[0].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[0].interno.titolo.it} en={MOMENTI[0].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[0].interno.corpo.it} en={MOMENTI[0].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
@@ -58,18 +65,19 @@ const currentPath = Astro.url.pathname;
             </a>
           </div>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[0].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[0].interno.prodotto} />
           </div>
       </div>
     </Slide>
 
-    <Slide id="slide-int-02" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[1].bg]})`}></div>
+    <Slide id="slide-int-02" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[1].interno.scena]})`}></div>
       <div class="im-mom" data-verso="schermo-prima" data-reveal>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[1].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[1].interno.prodotto} />
           </div>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[1].blocco.it} en={MOMENTI[1].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[1].ora.it} · ${MOMENTI[1].dove.it}`} en={`${MOMENTI[1].ora.en} · ${MOMENTI[1].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[1].interno.titolo.it} en={MOMENTI[1].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[1].interno.corpo.it} en={MOMENTI[1].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
@@ -80,10 +88,11 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <Slide id="slide-int-03" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[2].bg]})`}></div>
+    <Slide id="slide-int-03" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[2].interno.scena]})`}></div>
       <div class="im-mom" data-reveal>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[2].blocco.it} en={MOMENTI[2].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[2].ora.it} · ${MOMENTI[2].dove.it}`} en={`${MOMENTI[2].ora.en} · ${MOMENTI[2].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[2].interno.titolo.it} en={MOMENTI[2].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[2].interno.corpo.it} en={MOMENTI[2].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
@@ -92,18 +101,19 @@ const currentPath = Astro.url.pathname;
             </a>
           </div>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[2].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[2].interno.prodotto} />
           </div>
       </div>
     </Slide>
 
-    <Slide id="slide-int-04" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[3].bg]})`}></div>
+    <Slide id="slide-int-04" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[3].interno.scena]})`}></div>
       <div class="im-mom" data-verso="schermo-prima" data-reveal>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[3].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[3].interno.prodotto} />
           </div>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[3].blocco.it} en={MOMENTI[3].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[3].ora.it} · ${MOMENTI[3].dove.it}`} en={`${MOMENTI[3].ora.en} · ${MOMENTI[3].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[3].interno.titolo.it} en={MOMENTI[3].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[3].interno.corpo.it} en={MOMENTI[3].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
@@ -114,10 +124,11 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <Slide id="slide-int-05" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[4].bg]})`}></div>
+    <Slide id="slide-int-05" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[4].interno.scena]})`}></div>
       <div class="im-mom" data-reveal>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[4].blocco.it} en={MOMENTI[4].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[4].ora.it} · ${MOMENTI[4].dove.it}`} en={`${MOMENTI[4].ora.en} · ${MOMENTI[4].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[4].interno.titolo.it} en={MOMENTI[4].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[4].interno.corpo.it} en={MOMENTI[4].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
@@ -126,24 +137,43 @@ const currentPath = Astro.url.pathname;
             </a>
           </div>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[4].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[4].interno.prodotto} />
           </div>
       </div>
     </Slide>
 
-    <Slide id="slide-int-06" bg="inverse" align="split" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="im-bg-storia" style={`--bg: url(${SFONDO[MOMENTI[5].bg]})`}></div>
+    <Slide id="slide-int-06" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[5].interno.scena]})`}></div>
       <div class="im-mom" data-verso="schermo-prima" data-reveal>
           <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-            <MockAdobe scena={MOMENTI[5].interno.mock} />
+            <MockAdobe prodotto={MOMENTI[5].interno.prodotto} />
           </div>
           <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[5].blocco.it} en={MOMENTI[5].blocco.en} />
             <T as="p" class="im-mom-k" it={`${MOMENTI[5].ora.it} · ${MOMENTI[5].dove.it}`} en={`${MOMENTI[5].ora.en} · ${MOMENTI[5].dove.en}`} />
             <T as="h2" class="im-mom-t" it={MOMENTI[5].interno.titolo.it} en={MOMENTI[5].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
             <T as="p" class="im-mom-b" it={MOMENTI[5].interno.corpo.it} en={MOMENTI[5].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
             <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
               <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
             </a>
+          </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-int-07" bg="inverse" align="split">
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${SCENA[MOMENTI[6].interno.scena]})`}></div>
+      <div class="im-mom" data-reveal>
+          <div class="im-mom-testo">
+            <T as="p" class="im-mom-blocco" it={MOMENTI[6].blocco.it} en={MOMENTI[6].blocco.en} />
+            <T as="p" class="im-mom-k" it={`${MOMENTI[6].ora.it} · ${MOMENTI[6].dove.it}`} en={`${MOMENTI[6].ora.en} · ${MOMENTI[6].dove.en}`} />
+            <T as="h2" class="im-mom-t" it={MOMENTI[6].interno.titolo.it} en={MOMENTI[6].interno.titolo.en} data-reveal data-reveal-delay="0.08" />
+            <T as="p" class="im-mom-b" it={MOMENTI[6].interno.corpo.it} en={MOMENTI[6].interno.corpo.en} data-reveal data-reveal-delay="0.16" />
+            <a href={href(base, '/momenti')} class="im-mom-l" data-reveal data-reveal-delay="0.24">
+              <span data-lang-it>↳ Lo stesso momento, dal lato di Giulia</span><span data-lang-en>↳ The same moment, from Giulia’s side</span>
+            </a>
+          </div>
+          <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
+            <MockAdobe prodotto={MOMENTI[6].interno.prodotto} />
           </div>
       </div>
     </Slide>

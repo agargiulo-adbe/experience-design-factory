@@ -361,8 +361,8 @@ export const EXPERIENCES: Experience[] = [
     sections: 5,
     defaultPublished: false,
     tag: {
-      en: '5 chapters · IT · scaffold',
-      it: '5 capitoli · IT · scaffold',
+      en: '5 chapters · IT · 84 slides',
+      it: '5 capitoli · IT · 84 slide',
     },
     desc: {
       en: 'Generated from the «Customer story» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
