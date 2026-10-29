@@ -1,0 +1,138 @@
+---
+/**
+ * Risultati — che cosa cambia, e chi lo ha già fatto.
+ *
+ * Regola dura: ogni cifra porta la banca che l'ha prodotta e il link che la
+ * regge. Non sono promesse su Intesa Sanpaolo — sono risultati di altri, e
+ * la pagina lo dice invece di lasciarlo capire.
+ *
+ * Fonti verificate il 29 ott 2026, aprendo le pagine.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug } from '../data/chapters';
+
+const SLUG = 'risultati';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const TSB = 'https://business.adobe.com/customer-success-stories/tsb-case-study.html';
+const SAN = 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html';
+
+/* Tutte e quattro dalla stessa pagina pubblica di TSB: una fonte sola che
+   regge vale più di quattro numeri di quattro clienti, dove basta che uno
+   non si apra e cadono tutti. */
+const TSB_CIFRE = [
+  { n: '9 giorni → 24 ore', l: { it: 'latenza del dato, da nove giorni a meno di ventiquattro ore', en: 'data latency, from nine days to under twenty-four hours' } },
+  { n: '+39%', l: { it: 'clienti che scelgono un prodotto dopo un’interazione personalizzata', en: 'customers choosing a product after a personalized interaction' } },
+  { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: there were 250 three years ago' } },
+  { n: '91%', l: { it: 'dei prodotti acquistati sui canali digitali', en: 'of products bought through digital channels' } },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+  <main class="im-scroll">
+
+    <section class="im-apre">
+      <div class="im-wrap">
+        <p class="im-k"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h1" class="im-h1" it="Una banca che lo fa già, e lo dice in pubblico" en="A bank already doing it, and saying so publicly" />
+        <T as="p" class="im-lead"
+           it="Non sono promesse su di voi. Sono risultati di altre banche, con la pagina che li regge: apribile, oggi."
+           en="These are not promises about you. They are other banks’ results, with the page that backs them: open it today." />
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">TSB</p>
+        <T as="h2" class="im-h2" it="La prima banca britannica su Experience Platform" en="The first UK bank on Experience Platform" />
+        <T as="p" class="im-sub"
+           it="Ed è l’unica referenza pubblica in cui Offer Decisioning è nominato per nome. L’esempio che racconta è una pratica di mutuo lasciata a metà in app: parole loro, non nostre."
+           en="And it is the only public reference where Offer Decisioning is named. The example it tells is a mortgage application left half-done in the app: their words, not ours." />
+        <div class="im-cifre">
+          {TSB_CIFRE.map((c) => (
+            <div class="im-cifra">
+              <p class="im-cifra-n">{c.n}</p>
+              <T as="p" class="im-cifra-l" it={c.l.it} en={c.l.en} />
+            </div>
+          ))}
+        </div>
+        <p class="im-fonte">
+          <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
+          <a href={TSB} target="_blank" rel="noopener">business.adobe.com · TSB</a>
+          <span data-lang-it> · verificata il 29 ottobre 2026</span><span data-lang-en> · checked 29 October 2026</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">E in Italia</p>
+        <T as="h2" class="im-h2" it="Due banche vicine, due numeri diversi" en="Two nearby banks, two different numbers" />
+        <T as="p" class="im-sub"
+           it="Perché la domanda che arriva sempre è «sì, ma da noi?». Nessuna delle due è una banca come la vostra: servono a dire che cosa si misura, non quanto."
+           en="Because the question always comes: «yes, but here?». Neither is a bank like yours: they say what gets measured, not how much." />
+        <div class="im-ref">
+          <div class="im-ref-b">
+            <p class="im-ref-n">Crédit Agricole Italia</p>
+            <T as="p" class="im-ref-f"
+               it="+15% sul primo acquisto e +20% di cross-sell, con percorsi in tempo reale sui canali digitali e fisici."
+               en="+15% on first purchase and +20% cross-sell, with real-time journeys across digital and physical channels." />
+          </div>
+          <div class="im-ref-b">
+            <p class="im-ref-n">Santander Brasil</p>
+            <T as="p" class="im-ref-f"
+               it="Oltre 100 milioni di profili in una vista sola, con Real-Time CDP, Journey Optimizer e Customer Journey Analytics."
+               en="Over 100 million profiles in a single view, with Real-Time CDP, Journey Optimizer and Customer Journey Analytics." />
+          </div>
+        </div>
+        <p class="im-fonte">
+          <span data-lang-it>Fonti: </span><span data-lang-en>Sources: </span>
+          <a href={SAN} target="_blank" rel="noopener">business.adobe.com · Santander</a>
+          <span data-lang-it> · Crédit Agricole Italia: caso cliente Adobe, non pubblicato — si cita a voce</span>
+          <span data-lang-en> · Crédit Agricole Italia: Adobe customer case, unpublished — cited verbally</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">Da voi</p>
+        <T as="h2" class="im-h2" it="Che cosa misureremmo, dal giorno uno" en="What we would measure, from day one" />
+        <T as="p" class="im-sub"
+           it="Non un numero promesso, ma il modo di saperlo: un gruppo di controllo fin dall’inizio, su un percorso solo."
+           en="Not a promised number, but the way to know it: a control group from the start, on a single journey." />
+        <div class="im-giro" data-stagger>
+          <T as="p" class="im-giro-p" it="Pratiche riprese" en="Applications resumed" />
+          <T as="p" class="im-giro-p" it="Giorni fra evento e contatto" en="Days between event and contact" />
+          <T as="p" class="im-giro-p" it="Contatti per cliente" en="Contacts per customer" />
+          <T as="p" class="im-giro-p" it="Costo per pratica conclusa" en="Cost per completed application" />
+        </div>
+        <T as="p" class="im-chiusa"
+           it="Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre."
+           en="One journey only, the mortgage, with a control group. If it does not move, we know within a quarter." />
+      </div>
+    </section>
+
+    <section class="im-passa">
+      <div class="im-wrap">
+        <T as="p" class="im-passa-t"
+           it="Il segnale ce l’avete già. Manca il posto dove si decide che farne."
+           en="You already have the signal. What is missing is where to decide what to do with it." />
+        <a href={href(base, '/')} class="im-cta">
+          <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
+        </a>
+        <a href={href(base, prevSlug(SLUG))} class="im-indietro">
+          <span data-lang-it>← Il motore</span><span data-lang-en>← The engine</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>

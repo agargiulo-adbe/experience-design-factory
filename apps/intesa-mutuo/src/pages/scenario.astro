@@ -1,0 +1,60 @@
+---
+/**
+ * Scenario — da dove nasce questa storia.
+ *
+ * Racconto a scorrimento, non deck: vocabolario `.im-*`, superfici che si
+ * alternano, nessuna slide e nessun contatore.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'scenario';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+  <main class="im-scroll">
+    <section class="im-apre">
+      <div class="im-wrap">
+        <p class="im-k"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h1" class="im-h1" it="Il mutuo è il momento in cui una banca si gioca vent’anni" en="A mortgage is where a bank plays for twenty years" />
+        <T as="p" class="im-lead" it="Non è il prodotto con il margine più alto. È quello che decide se una persona resta cliente, e per quanto." en="It is not the highest-margin product. It is the one that decides whether a person stays a customer, and for how long." />
+      </div>
+    </section>
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">01</p>
+        <T as="h2" class="im-h2" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" />
+        <T as="p" class="im-sub" it="Ogni richiesta che si ferma lascia una traccia: in app, sul sito, al contact center. Oggi quelle tracce vivono separate, e nessuna arriva in tempo a chi potrebbe usarla." en="Every stalled application leaves a trace: in the app, on the site, at the call centre. Today those traces live apart, and none reaches in time whoever could act on it." />
+        <T as="p" class="im-chiusa" it="Il problema non è raccogliere il dato. È che la decisione arriva giorni dopo il momento in cui serviva." en="The problem is not collecting the data. It is that the decision lands days after the moment it was needed." />
+      </div>
+    </section>
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">02</p>
+        <T as="h2" class="im-h2" it="Chi decide che cosa dire, e quando" en="Who decides what to say, and when" />
+        <T as="p" class="im-sub" it="I modelli producono molte proposte per la stessa persona. Qualcuno deve scegliere quale parte, su quale canale, e quante volte si può contattarla." en="Models produce many proposals for the same person. Someone has to choose which one goes, on which channel, and how often she can be contacted." />
+        <T as="p" class="im-chiusa" it="Oggi quella scelta la fa la lista, cioè l’ordine in cui le campagne sono state costruite." en="Today that choice is made by the list, that is, the order in which campaigns were built." />
+      </div>
+    </section>
+
+    <section class="im-passa">
+      <div class="im-wrap">
+        <T as="p" class="im-passa-t" it="La storia che segue è una sola persona, seguita per quattro momenti." en="The story that follows is one person, followed through four moments." />
+        <a href={href(base, nextSlug(SLUG))} class="im-cta">
+          <span data-lang-it>Conosci Giulia →</span><span data-lang-en>Meet Giulia →</span>
+        </a>
+        <a href={href(base, prevSlug(SLUG))} class="im-indietro">
+          <span data-lang-it>← Indietro</span><span data-lang-en>← Back</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

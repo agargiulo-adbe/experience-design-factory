@@ -1,0 +1,74 @@
+---
+/**
+ * La copertina della Storia.
+ *
+ * Il tipo di deliverable è la prima cosa che si legge, e la riga la rende
+ * `EXPERIENCE_TYPES[type].coverLine` — mai una stringa scritta a mano: se
+ * la tassonomia cambia, cambia qui dentro e in tutte le experience insieme.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+---
+<BaseLayout title={SITE.name}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <main class="im-scroll">
+
+    <section class="im-cover">
+      <div class="im-wrap">
+        <CoBrand variant="hero" class="im-cover-lockup edf-cobrand--on-dark" />
+        <T as="p" class="im-k" it={type.coverLine.it} en={type.coverLine.en} />
+        <T as="h1" class="im-h1 im-h1--cover" it="Lo stesso mutuo, dai due lati" en="The same mortgage, from both sides" />
+        <T as="p" class="im-lead"
+           it="Una cliente che cerca casa, e chi deve decidere che cosa dirle. Gli stessi quattro momenti, visti dalle due parti dello schermo."
+           en="A customer looking for a home, and whoever decides what to tell her. The same four moments, seen from both sides of the screen." />
+        <a href={href(base, '/' + first.slug)} class="im-cta im-cta--cover">
+          <span data-lang-it>Comincia →</span><span data-lang-en>Start →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <T as="p" class="im-n" it="Il percorso" en="The path" />
+        <T as="h2" class="im-h2" it={type.question.it} en={type.question.en} />
+        <T as="p" class="im-sub"
+           it="Cinque capitoli, una persona sola. Si scorre: non ci sono slide da far avanzare."
+           en="Five chapters, one person. It scrolls: there are no slides to advance." />
+        <div class="im-indice">
+          {CHAPTERS.map((c) => (
+            <a href={href(base, '/' + c.slug)} class="im-indice-c">
+              <p class="im-indice-n">{c.num}</p>
+              <p class="im-indice-t"><span data-lang-it>{c.title.it}</span><span data-lang-en>{c.title.en}</span></p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="im-passa">
+      <div class="im-wrap">
+        <T as="p" class="im-passa-t"
+           it="Ogni cifra di questa storia porta la banca che l’ha prodotta e il link che la regge."
+           en="Every figure in this story carries the bank that produced it and the link that backs it." />
+        <a href={href(base, '/' + first.slug)} class="im-cta">
+          <span data-lang-it>Comincia dallo scenario →</span><span data-lang-en>Start from the scenario →</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>

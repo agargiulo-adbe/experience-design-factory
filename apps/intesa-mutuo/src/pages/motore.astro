@@ -1,0 +1,68 @@
+---
+/**
+ * Il motore dietro la storia — che cosa c'è sotto, e che cosa resta vostro.
+ *
+ * Racconto a scorrimento, non deck: vocabolario `.im-*`, superfici che si
+ * alternano, nessuna slide e nessun contatore.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'motore';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+  <main class="im-scroll">
+    <section class="im-apre">
+      <div class="im-wrap">
+        <p class="im-k"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h1" class="im-h1" it="Quattro strati, e due restano vostri" en="Four layers, and two stay yours" />
+        <T as="p" class="im-lead" it="Niente di quello che avete appena costruito viene buttato. Si aggiunge l’anello che manca, nel punto dove la decisione oggi non c’è." en="Nothing you have just built gets thrown away. We add the missing link, exactly where the decision is absent today." />
+      </div>
+    </section>
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">01</p>
+        <T as="h2" class="im-h2" it="Che cosa resta dov’è" en="What stays where it is" />
+        <T as="p" class="im-sub" it="Il data warehouse, il motore di targeting che produce score e propensioni, e il CRM di filiale, che è vostro e costruito su misura." en="The data warehouse, the targeting engine producing scores and propensities, and the branch CRM, which is yours and purpose-built." />
+        <T as="p" class="im-chiusa" it="Il CRM riceve segnale e proposta via API, e rimanda l’esito. Non si sostituisce niente." en="The CRM receives signal and proposal via API, and returns the outcome. Nothing gets replaced." />
+      </div>
+    </section>
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">02</p>
+        <T as="h2" class="im-h2" it="Che cosa si aggiunge" en="What gets added" />
+        <T as="p" class="im-sub" it="Il profilo in tempo reale su Adobe Real-Time CDP, la regia dei percorsi su Adobe Journey Optimizer, e l’arbitro: Offer Decisioning. Sotto, Customer Journey Analytics tiene la misura." en="The real-time profile on Adobe Real-Time CDP, journey orchestration on Adobe Journey Optimizer, and the arbiter: Offer Decisioning. Underneath, Customer Journey Analytics holds the measurement." />
+        <T as="p" class="im-chiusa" it="L’arbitro non è un altro target: decide fra target che si sovrappongono, dentro il tetto di contatto." en="The arbiter is not another target: it decides between overlapping targets, within the contact cap." />
+      </div>
+    </section>
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">03</p>
+        <T as="h2" class="im-h2" it="Le tre domande che faremo noi" en="The three questions we will ask" />
+        <T as="p" class="im-sub" it="Dove va il dato quando esce dallo strumento di analisi e con che ritardo; quale CDN usate e se i log si possono inoltrare; chi governa l’arbitro e risponde di quello che decide." en="Where the data goes when it leaves the analytics tool and with what delay; which CDN you use and whether logs can be forwarded; who governs the arbiter and answers for what it decides." />
+        <T as="p" class="im-chiusa" it="Sono incognite nostre, non vostre. Le dichiariamo prima perché è lì che un progetto si incaglia." en="These are our unknowns, not yours. We declare them upfront because that is where a project runs aground." />
+      </div>
+    </section>
+
+    <section class="im-passa">
+      <div class="im-wrap">
+        <T as="p" class="im-passa-t" it="Resta la domanda che conta: che cosa cambia, in numeri." en="One question remains: what changes, in numbers." />
+        <a href={href(base, nextSlug(SLUG))} class="im-cta">
+          <span data-lang-it>I risultati →</span><span data-lang-en>The results →</span>
+        </a>
+        <a href={href(base, prevSlug(SLUG))} class="im-indietro">
+          <span data-lang-it>← Indietro</span><span data-lang-en>← Back</span>
+        </a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

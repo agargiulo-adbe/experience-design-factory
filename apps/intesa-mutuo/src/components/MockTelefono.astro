@@ -1,0 +1,89 @@
+---
+/**
+ * MockTelefono — quello che vede Giulia, sul suo telefono.
+ *
+ * È una RICOSTRUZIONE ILLUSTRATIVA, e lo dice in pagina: l'app vera è loro,
+ * e presentare un'interfaccia ridisegnata senza dirlo invita la risposta
+ * «non è così che la facciamo noi». Dichiararlo costa una riga e disinnesca
+ * l'obiezione prima che arrivi.
+ *
+ * Niente marchio ricostruito: il nome sta in carattere display, come il
+ * ripiego wordmark del co-brand. L'SVG ufficiale del cliente non lo abbiamo.
+ *
+ * Il disegno è solo geometria e token: nessuna immagine, quindi scala con la
+ * radice e resta nitido sulla parete di una sala riunioni.
+ */
+interface Props {
+  /** Quale schermo della storia. */
+  scena: 'simulazione' | 'documenti' | 'ripresa';
+  class?: string;
+}
+const { scena, class: className } = Astro.props;
+
+const ORA = { simulazione: '21:14', documenti: '21:19', ripresa: '08:02' }[scena];
+---
+
+<figure class:list={['im-tel', className]} data-scena={scena}>
+  <div class="im-tel-corpo">
+    <div class="im-tel-barra">
+      <span>{ORA}</span>
+      <span class="im-tel-barra-dx" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+
+    <div class="im-tel-testa">
+      <span class="im-tel-marchio">Intesa Sanpaolo</span>
+    </div>
+
+    {scena === 'simulazione' && (
+      <div class="im-tel-corpo-in">
+        <p class="im-tel-occhiello">Simulazione mutuo</p>
+        <p class="im-tel-titolo">Prima casa · 25 anni</p>
+        <div class="im-tel-cifra">
+          <span class="im-tel-cifra-n">742</span>
+          <span class="im-tel-cifra-u">€ al mese</span>
+        </div>
+        <dl class="im-tel-righe">
+          <div><dt>Importo</dt><dd>180.000 €</dd></div>
+          <div><dt>Tasso fisso</dt><dd>3,10%</dd></div>
+          <div><dt>Riservato ai clienti</dt><dd>−0,20%</dd></div>
+        </dl>
+        <p class="im-tel-cta">Salva e continua</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+      </div>
+    )}
+
+    {scena === 'documenti' && (
+      <div class="im-tel-corpo-in">
+        <p class="im-tel-occhiello">La tua richiesta</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+        <p class="im-tel-titolo">Mancano i documenti</p>
+        <ul class="im-tel-passi">
+          <li data-stato="fatto">Dati anagrafici</li>
+          <li data-stato="fatto">Immobile</li>
+          <li data-stato="aperto">Ultime due buste paga</li>
+          <li data-stato="attesa">Firma</li>
+        </ul>
+        <p class="im-tel-nota">Caricali entro 30 giorni per non perdere la simulazione.</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+      </div>
+    )}
+
+    {scena === 'ripresa' && (
+      <div class="im-tel-corpo-in">
+        <div class="im-tel-notifica">
+          <p class="im-tel-notifica-t">La tua richiesta è ancora valida</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+          <p class="im-tel-notifica-b">Riprendi da dove eri: manca solo la busta paga.</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+        </div>
+        <p class="im-tel-occhiello">Ripresa</p>
+        <p class="im-tel-titolo">Prima casa · 742 € al mese</p>
+        <ul class="im-tel-passi">
+          <li data-stato="fatto">Dati anagrafici</li>
+          <li data-stato="fatto">Immobile</li>
+          <li data-stato="fatto">Buste paga</li>
+          <li data-stato="aperto">Appuntamento col gestore</li>
+        </ul>
+        <p class="im-tel-cta">Scegli giorno e ora</p>{/* copy-audit-ignore V1 — è un messaggio dell’app ALLA cliente, non la voce del deck: nel mock si parla come parla un’app. Eccezione dichiarata in CLAUDE.md. */}
+      </div>
+    )}
+  </div>
+  <figcaption class="im-mock-cap">
+    Ricostruzione illustrativa: l’app è vostra, i numeri sono di esempio.
+  </figcaption>
+</figure>

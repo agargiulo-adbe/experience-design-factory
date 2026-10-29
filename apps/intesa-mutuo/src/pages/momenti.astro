@@ -1,0 +1,151 @@
+---
+/**
+ * I momenti della storia — il cuore della Storia.
+ *
+ * NON è un deck: scorre. Quattro momenti, e in ognuno i due lati affiancati —
+ * quello che vede Giulia sul telefono, e quello che vede chi prepara la
+ * campagna dentro gli strumenti. È la forma che il tipo «Storia» chiede:
+ * i momenti con la piattaforma dal vivo, non slide di testo una dopo l'altra.
+ *
+ * I momenti alternano superficie chiara e scura, e il lato che viene prima si
+ * alterna anche lui: quattro sezioni identiche di fila si leggono come un
+ * elenco, non come un racconto.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import MockTelefono from '../components/MockTelefono.astro';
+import MockAdobe from '../components/MockAdobe.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'momenti';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <main class="im-scroll">
+
+    <section class="im-apre">
+      <div class="im-wrap">
+        <p class="im-k"><span data-lang-it>Capitolo {ch.num}</span><span data-lang-en>Chapter {ch.num}</span></p>
+        <T as="h1" class="im-h1" it="Quattro momenti, una cliente sola" en="Four moments, one customer" />
+        <T as="p" class="im-lead"
+           it="Da una parte quello che vede Giulia. Dall’altra quello che vede chi prepara la campagna, nello stesso istante."
+           en="On one side, what Giulia sees. On the other, what the person building the campaign sees, at the same moment." />
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">01</p>
+        <T as="h2" class="im-h2" it="Cerca, e non parte dal vostro sito" en="She searches, and does not start from your site" />
+        <T as="p" class="im-sub"
+           it="Chiede a un assistente quale mutuo le conviene. La prima risposta la dà qualcun altro, e cita chi trova."
+           en="She asks an assistant which mortgage suits her. The first answer comes from someone else, citing whoever it finds." />
+        <div class="im-lati">
+          <div>
+            <T as="p" class="im-lato-k" it="Il lato di Giulia" en="Giulia’s side" />
+            <MockTelefono scena="simulazione" />
+          </div>
+          <div>
+            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
+            <MockAdobe scena="misura" />
+          </div>
+        </div>
+        <T as="p" class="im-chiusa"
+           it="La simulazione che Giulia salva è un evento. Oggi quell’evento vive in un sistema e la campagna in un altro."
+           en="The simulation Giulia saves is an event. Today that event lives in one system and the campaign in another." />
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">02</p>
+        <T as="h2" class="im-h2" it="Si ferma sui documenti, e chiude l’app" en="She stalls on the paperwork, and closes the app" />
+        <T as="p" class="im-sub"
+           it="Non ha rinunciato: le manca una busta paga. Il segnale c’è già, ed è adesso che vale di più."
+           en="She hasn’t given up: she is missing a payslip. The signal already exists, and now is when it is worth most." />
+        <div class="im-lati" data-verso="interno-prima">
+          <div>
+            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
+            <MockAdobe scena="profilo" />
+          </div>
+          <div>
+            <T as="p" class="im-lato-k" it="Il lato di Giulia" en="Giulia’s side" />
+            <MockTelefono scena="documenti" />
+          </div>
+        </div>
+        <T as="p" class="im-chiusa"
+           it="Il profilo tiene insieme le sue quattro tracce e riceve lo score dal vostro motore. Non lo ricalcola: lo legge."
+           en="The profile holds her four traces together and receives the score from your engine. It does not recompute it: it reads it." />
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="chiara">
+      <div class="im-wrap">
+        <p class="im-n">03</p>
+        <T as="h2" class="im-h2" it="Cinque cose da dirle. Ne parte una." en="Five things to tell her. One goes out." />
+        <T as="p" class="im-sub"
+           it="Le candidate le producono i vostri modelli. Manca il posto dove si sceglie quale parte, su quale canale, dentro quale tetto."
+           en="Your models produce the candidates. What is missing is where you choose which one goes, on which channel, within which cap." />
+        <div class="im-lati" data-verso="interno-prima">
+          <div>
+            <T as="p" class="im-lato-k" it="Il lato di chi prepara" en="The preparer’s side" />
+            <MockAdobe scena="decisione" />
+          </div>
+          <div>
+            <T as="p" class="im-lato-k" it="Che cosa arriva a lei" en="What reaches her" />
+            <MockTelefono scena="ripresa" />
+          </div>
+        </div>
+        <T as="p" class="im-chiusa"
+           it="È lo strato che oggi non avete: non un altro target, ma l’arbitro che decide fra target che si sovrappongono."
+           en="This is the layer you do not have today: not another target, but the arbiter deciding between overlapping targets." />
+      </div>
+    </section>
+
+    <section class="im-momento" data-sup="scura">
+      <div class="im-wrap">
+        <p class="im-n">04</p>
+        <T as="h2" class="im-h2" it="L’esito torna dov’è nato" en="The outcome returns where it began" />
+        <T as="p" class="im-sub"
+           it="Giulia prende l’appuntamento. Quell’esito rientra nella misura lo stesso giorno, e la decisione dopo parte da lì."
+           en="Giulia books the appointment. That outcome returns into measurement the same day, and the next decision starts there." />
+        <div class="im-giro" data-stagger>
+          <T as="p" class="im-giro-p" it="La misura" en="Measurement" />
+          <span class="im-giro-f" aria-hidden="true">→</span>
+          <T as="p" class="im-giro-p" it="Il profilo" en="The profile" />
+          <span class="im-giro-f" aria-hidden="true">→</span>
+          <T as="p" class="im-giro-p" it="La decisione" en="The decision" />
+          <span class="im-giro-f" aria-hidden="true">→</span>
+          <T as="p" class="im-giro-p" it="Il contatto" en="The contact" />
+          <span class="im-giro-f im-giro-f--torna" aria-hidden="true">↩</span>
+        </div>
+        <T as="p" class="im-chiusa"
+           it="È un giro, non una catena: finché l’ultimo anello non torna al primo, ogni campagna riparte da zero."
+           en="It is a loop, not a chain: until the last link returns to the first, every campaign starts from scratch." />
+      </div>
+    </section>
+
+    <section class="im-passa">
+      <div class="im-wrap">
+        <T as="p" class="im-passa-t"
+           it="Quattro momenti, e in nessuno dei quattro basta un sistema solo."
+           en="Four moments, and in none of them is one system enough." />
+        <a href={href(base, nextSlug(SLUG))} class="im-cta">
+          <span data-lang-it>Che cosa c’è sotto →</span><span data-lang-en>What is underneath →</span>
+        </a>
+        <a href={href(base, prevSlug(SLUG))} class="im-indietro">
+          <span data-lang-it>← Torna a {CHAPTERS[1].title.it}</span><span data-lang-en>← Back to {CHAPTERS[1].title.en}</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>

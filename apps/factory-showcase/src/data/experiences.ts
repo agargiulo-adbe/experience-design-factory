@@ -329,6 +329,46 @@ export const EXPERIENCES: Experience[] = [
       it: 'Generata dallo scheletro «Blueprint»: 6 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
     },
   },
+  {
+    slug: 'unipol-cinque-domande',
+    name: 'Cinque domande',
+    client: 'Unipol',
+    type: 'playbook',
+    brandLabel: 'Unipol',
+    url: `${LIVE}/unipol-cinque-domande/`,
+    shot: 'shots/unipol-cinque-domande.webp',
+    accent: '#0303f5',
+    sections: 5,
+    defaultPublished: false,
+    tag: {
+      en: '5 chapters · IT/EN · scaffold',
+      it: '5 capitoli · IT/EN · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Playbook» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Playbook»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
+  {
+    slug: 'intesa-mutuo',
+    name: 'Lo stesso mutuo, dai due lati',
+    client: 'Intesa Sanpaolo',
+    type: 'storia',
+    brandLabel: 'Intesa Sanpaolo',
+    url: `${LIVE}/intesa-mutuo/`,
+    shot: 'shots/intesa-mutuo.webp',
+    accent: '#258900',
+    sections: 5,
+    defaultPublished: false,
+    tag: {
+      en: '5 chapters · IT · scaffold',
+      it: '5 capitoli · IT · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Customer story» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Storia»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */
