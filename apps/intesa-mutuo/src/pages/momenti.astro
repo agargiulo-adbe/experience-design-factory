@@ -20,10 +20,11 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MOMENTI } from '../data/momenti';
+import { MOMENTI, DOMANDE_IN_SLIDE } from '../data/momenti';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
 import CircoloJourney from '../components/CircoloJourney.astro';
+import DaVerificare from '../components/DaVerificare.astro';
 /* Le scene vengono da Pexels, licenziate, con autore e URL in
    provenance.json. Sono LUOGHI senza volti: l'unico volto della Storia è
    il ritratto di Giulia, così la persona resta coerente per costruzione. */
@@ -57,6 +58,9 @@ const currentPath = Astro.url.pathname;
         <T as="p" class="im-ch-l" it="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. L’app compare solo alla fine, perché prima non aveva motivo di averla." en="Above, what Giulia sees; below, what you do at the same instant. The app appears only at the end, because before she had no reason to have it." data-reveal data-reveal-delay="0.15" />
       </div>
       <CircoloJourney class="im-cer--cover" data-reveal data-reveal-delay="0.26" />
+      <T as="p" class="im-guida" data-reveal data-reveal-delay="0.3"
+         it="Ogni momento si apre in tre passi, con la freccia in basso: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ la riga «da verificare con voi», che è il punto dove questa meccanica cambia le cose."
+         en="Each moment opens in three steps, with the down arrow: ↓ Giulia · ↓ Intesa Sanpaolo · ↓ the “to check with you” line, which is where this mechanic changes things." />
     </Slide>
 
     {MOMENTI.map((m, i) => (
@@ -69,7 +73,7 @@ const currentPath = Astro.url.pathname;
             <T as="span" class="im-due-ora" it={`${m.ora.it} · ${m.dove.it}`} en={`${m.ora.en} · ${m.dove.en}`} />
           </header>
 
-          <section class="im-due-banda" data-lato="cliente">
+          <section class="im-due-banda" data-lato="cliente" data-substep data-side="in">
             <T as="p" class="im-due-chi" it="Giulia" en="Giulia" />
             <div class="im-due-mock">
               <MockCliente chrome={m.cliente.chrome} scena={SCENE_CLI[i]} compatto />
@@ -80,7 +84,7 @@ const currentPath = Astro.url.pathname;
             </div>
           </section>
 
-          <section class="im-due-banda" data-lato="interno">
+          <section class="im-due-banda" data-lato="interno" data-substep data-side="in">
             <T as="p" class="im-due-chi" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
             <div class="im-due-mock">
               <MockAdobe prodotto={m.interno.prodotto} compatto />
@@ -89,6 +93,7 @@ const currentPath = Astro.url.pathname;
               <T as="h2" class="im-due-t" it={m.interno.titolo.it} en={m.interno.titolo.en} />
               <T as="p" class="im-due-b" it={m.interno.corpo.it} en={m.interno.corpo.en} />
               <p class="im-due-pro">{m.prodotto}</p>
+              {DOMANDE_IN_SLIDE && <DaVerificare it={m.verifica.it} en={m.verifica.en} />}
             </div>
           </section>
 

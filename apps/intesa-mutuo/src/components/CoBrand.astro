@@ -6,13 +6,18 @@
  * Brand non invertibile, firma fissa su ogni slide, lockup grande su prima e
  * ultima slide. Qui si dichiara solo CHI è il brand.
  *
- * Senza SVG ufficiale del cliente il motore ripiega sul nome in carattere
- * display. Quando il marchio ufficiale arriva (SOLO l'SVG che il cliente
- * distribuisce, a `currentColor`), si passa `<svg slot="brand">…</svg>` qui
- * dentro e cambia in tutta l'experience. Mai un logo ricostruito a mano o preso
- * da fonte non ufficiale: è la wrong-brand imagery che la Quality Bar vieta.
+ * MARCHIO UFFICIALE. `src/assets/brand/intesa-sanpaolo.svg` è il logotipo
+ * distribuito dal cliente sul proprio dominio corporate
+ * (group.intesasanpaolo.com → /content/dam/portalgroup/nuove-immagini/
+ * immagini-cross/loghi/logo_isp.svg, scaricato l'8 ottobre 2026). Il fill è
+ * portato a `currentColor`, se no il lockup non si ribalta con la superficie.
+ * Nessun ridisegno: la Quality Bar vieta i marchi ricostruiti a mano.
+ *
+ * Si inietta inline (`?raw` + `set:html`) e non come `<img>`: un'immagine non
+ * eredita `currentColor`.
  */
 import Core from '@edf/core/blocks/CoBrand.astro';
+import logo from '../assets/brand/intesa-sanpaolo.svg?raw';
 
 interface Props {
   variant?: 'chrome' | 'hero';
@@ -21,4 +26,6 @@ interface Props {
 }
 const props = Astro.props as Props;
 ---
-<Core brand="Intesa Sanpaolo" {...props} />
+<Core brand="Intesa Sanpaolo" {...props}>
+  <span slot="brand" class="im-brand-mark" set:html={logo} />
+</Core>

@@ -30,19 +30,23 @@ export const CIFRE_TSB = [
 /* Le quattro misure di ACQUISIZIONE, e che cosa se ne sa oggi. L'ask del
    deck sta qui, in un posto solo: due versioni della richiesta sono il
    modo più rapido di sembrare confusi davanti a un cliente. */
+/* ⚠️ Scritte per essere capite senza chi presenta. La versione prima
+   diceva «oggi: non si sa → con il gruppo di controllo»: due frammenti
+   che vanno ricomposti da chi legge, e in sala nessuno lo fa. Qui ogni
+   riga dice una cosa sola, in parole intere. */
 export const MISURE = [
-  { l: { it: 'Simulazioni riprese', en: 'Simulations resumed' },
-    oggi: { it: 'oggi: non si sa', en: 'today: unknown' },
-    poi: { it: 'con il gruppo di controllo', en: 'with the control group' } },
-  { l: { it: 'Ore fra l’evento e il contatto', en: 'Hours between event and contact' },
-    oggi: { it: 'oggi: giorni', en: 'today: days' },
-    poi: { it: 'obiettivo: ore', en: 'target: hours' } },
-  { l: { it: 'Contatti per prospect', en: 'Contacts per prospect' },
-    oggi: { it: 'oggi: per campagna', en: 'today: per campaign' },
-    poi: { it: 'un tetto solo', en: 'one cap' } },
-  { l: { it: 'Costo per cliente acquisito', en: 'Cost per acquired customer' },
-    oggi: { it: 'oggi: per canale', en: 'today: per channel' },
-    poi: { it: 'sul percorso intero', en: 'across the whole path' },
+  { l: { it: 'Quante simulazioni vengono riprese', en: 'How many simulations get resumed' },
+    oggi: { it: 'oggi non si misura', en: 'not measured today' },
+    poi: { it: 'si misura, con un gruppo che non riceve niente', en: 'measured, against a group that receives nothing' } },
+  { l: { it: 'Quanto passa fra il gesto e il contatto', en: 'How long between the action and the contact' },
+    oggi: { it: 'oggi si contano i giorni', en: 'today it is counted in days' },
+    poi: { it: 'si contano le ore', en: 'counted in hours' } },
+  { l: { it: 'Quante volte si contatta la stessa persona', en: 'How often the same person is contacted' },
+    oggi: { it: 'oggi ogni campagna ha il suo limite', en: 'today each campaign has its own limit' },
+    poi: { it: 'un limite solo, valido su tutti i canali', en: 'one limit, across every channel' } },
+  { l: { it: 'Quanto costa acquisire una cliente', en: 'What it costs to acquire a customer' },
+    oggi: { it: 'oggi si sa per canale', en: 'today known per channel' },
+    poi: { it: 'si sa sul percorso intero, filiale compresa', en: 'known across the whole path, branch included' },
     chiave: true },
 ];
 

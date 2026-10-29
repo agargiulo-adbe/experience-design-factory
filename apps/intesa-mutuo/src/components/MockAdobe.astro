@@ -75,11 +75,15 @@ const PASSI = [
   { l: 'Appuntamento al CRM di filiale, via API', s: 'poi' },
 ];
 /* 07 · l'imbuto, e dove si perde. */
+/* ⚠️ La riga della FILIALE sta dentro l'imbuto, non accanto: la
+   tracciatura offline è una domanda che il referente del targeting ha
+   fatto più volte, e un imbuto tutto digitale la lascia senza risposta
+   proprio sulla slide che parla di misura. */
 const FUNNEL = [
   { l: 'Visite non riconosciute', v: 100, n: '48.000' },
   { l: 'Simulazioni avviate', v: 72, n: '12.400' },
   { l: 'Simulazioni salvate, con consenso', v: 39, n: '6.700' },
-  { l: 'Documenti caricati', v: 17, n: '2.900' },
+  { l: 'Appuntamenti in filiale', v: 22, n: '3.800', offline: true },
   { l: 'Mutui erogati a nuovi clienti', v: 12, n: '2.100' },
 ];
 ---
@@ -184,14 +188,14 @@ const FUNNEL = [
           <p class="im-ado-occhiello">L’imbuto di acquisizione · ultimi 30 giorni</p>
           <div class="im-ado-funnel">
             {FUNNEL.map((f, i) => (
-              <div class="im-ado-barra" data-ultimo={i === FUNNEL.length - 1 ? '' : null}>
+              <div class="im-ado-barra" data-ultimo={i === FUNNEL.length - 1 ? '' : null} data-offline={f.offline ? '' : null}>
                 <span class="im-ado-barra-l">{f.l}</span>
                 <span class="im-ado-barra-t"><i style={`width:${f.v}%`}></i></span>
                 <span class="im-ado-barra-n">{f.n}</span>
               </div>
             ))}
           </div>
-          <p class="im-ado-rilievo">Fra la simulazione salvata e i documenti si perde il 56%: è lì che sta il costo di acquisizione.</p>
+          <p class="im-ado-rilievo">La filiale è dentro lo stesso imbuto, non accanto: senza quella riga metà del percorso resta fuori dalla misura.</p>
         </>
       )}
     </div>

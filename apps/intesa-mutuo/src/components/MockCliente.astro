@@ -33,6 +33,11 @@ import type { ChromeCliente } from '../data/momenti';
    posto negava l'argomento della slide: è la slide della Content Factory,
    e mostrare un riquadro vuoto dice «il contenuto non c'è». */
 import creativo from '../assets/generated/creativo-mutuo.webp';
+/* Il marchio ufficiale, lo stesso della firma co-brand. Nel mockup del
+   sito serve a far capire in un istante DI CHI è la pagina: con una
+   barra anonima e un indirizzo scritto piccolo, il System Design non
+   dice niente e la slide perde il suo punto. */
+import logo from '../assets/brand/intesa-sanpaolo.svg?raw';
 
 interface Props {
   chrome: ChromeCliente;
@@ -82,10 +87,16 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
       </div>
     )}
     {chrome === 'sito' && (
-      <div class="im-cli-testa im-cli-testa--url">
-        <span class="im-cli-punti" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="im-cli-url"><span class="im-cli-lucchetto" aria-hidden="true"></span>intesasanpaolo.com/mutui</span>
-      </div>
+      <>
+        <div class="im-cli-testa im-cli-testa--url">
+          <span class="im-cli-punti" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="im-cli-url"><span class="im-cli-lucchetto" aria-hidden="true"></span>intesasanpaolo.com/mutui</span>
+        </div>
+        <div class="im-cli-sito-testa">
+          <span class="im-cli-sito-logo" set:html={logo} aria-label="Intesa Sanpaolo" role="img" />
+          <span class="im-cli-sito-nav" aria-hidden="true"><i>Conti</i><i>Mutui</i><i>Investi</i></span>
+        </div>
+      </>
     )}
     {chrome === 'posta' && (
       <div class="im-cli-testa im-cli-testa--posta">
@@ -123,6 +134,14 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
 
       {scena === 'feed' && (
         <>
+          {/* Il feed SCORRE: il post sale come se il dito avesse appena
+              scrollato. Prima c'erano anche due post muti sopra e sotto,
+              tolti perché un assoluto fuori dalla scatola allunga
+              `scrollHeight` e il primo antenato che ritaglia diventa un
+              contenitore che scorre — il check `k`, HARD in un deck. Un
+              elemento decorativo non vale un gate rotto: il gesto lo
+              porta il post vero, e la testata dice già che è un feed. */}
+          <div class="im-cli-feedscroll">
           <div class="im-cli-post">
             <img class="im-cli-post-img" src={creativo.src} width={creativo.width} height={creativo.height}
                  alt="" loading="lazy" decoding="async" />
@@ -133,6 +152,7 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
               <p class="im-cli-post-info">Messaggio pubblicitario</p>
             </div>
             <div class="im-cli-post-az" aria-hidden="true"><i></i><i></i><i></i></div>
+          </div>
           </div>
           <p class="im-cli-nota">Una delle dodici varianti nate dallo stesso brief: cambia la città, il segmento e l’immagine.</p>
         </>

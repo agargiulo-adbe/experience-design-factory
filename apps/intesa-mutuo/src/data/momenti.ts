@@ -63,6 +63,11 @@ export interface Momento {
       perché non sono canali — servono gli altri tre. Vedi il blocco
       «LA CODIFICA A COLORI» in global.css per il perché del numero. */
   gruppo: 'trovare' | 'contenuto' | 'engagement' | 'piattaforma';
+  /** IL PUNTO DA VERIFICARE — vedi `DOMANDE_IN_SLIDE` qui sotto.
+      Una domanda sullo stato ATTUALE della banca, non un'affermazione su
+      un concorrente: chi conosce il mercato sente il differenziante da
+      sé, e in sala nessuno deve difendere una scelta già fatta. */
+  verifica: { it: string; en: string };
   prodotto: string;
   cliente: {
     chrome: ChromeCliente;
@@ -78,6 +83,28 @@ export interface Momento {
   };
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   L'INTERRUTTORE DELLE DOMANDE  (29 ott 2026)
+
+   Ogni momento porta una domanda sullo stato attuale della banca, marcata
+   in slide sul SOLO lato interno. Serve a far notare la meccanica che
+   differenzia senza nominare nessun concorrente: si chiede com'è oggi, e
+   chi conosce il mercato conclude da sé.
+
+   Si spegne in TRE modi, dal più rapido al più definitivo:
+
+     1 · in sala, subito — si apre il deck con `?domande=0` nell'indirizzo.
+         La scelta resta per tutto il percorso e si può condividere così.
+         `?domande=1` le riaccende.
+     2 · per sempre su questa copia — si mette `false` qui sotto e si
+         ricompila: il markup non viene nemmeno reso.
+     3 · del tutto — si toglie il campo `verifica` e il componente.
+
+   Il primo serve se al team non piacciono mezz'ora prima dell'incontro;
+   il secondo se la decisione è presa.
+   ══════════════════════════════════════════════════════════════════════ */
+export const DOMANDE_IN_SLIDE = true;
+
 export const MOMENTI: Momento[] = [
   {
     n: '01', of: '07',
@@ -88,6 +115,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Vi trovano, o no', en: 'Found, or not' },
     canale: { it: 'Assistente AI', en: 'AI assistant' },
     gruppo: 'trovare',
+    verifica: { it: 'Oggi sapete su quali domande venite citati, e su quali no?', en: 'Do you know today which questions cite you, and which do not?' },
     prodotto: 'Brand Visibility',
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
@@ -115,6 +143,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Varianti già conformi', en: 'Pre-approved variants' },
     canale: { it: 'Social', en: 'Social' },
     gruppo: 'contenuto',
+    verifica: { it: 'Oggi l’informativa si applica alla produzione, o si verifica in revisione?', en: 'Today, is the disclosure applied at production, or checked at review?' },
     prodotto: 'GenStudio',
     cliente: {
       chrome: 'feed', scena: 'scena-02-bar',
@@ -142,6 +171,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Da anonima a nome', en: 'Anonymous to named' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
+    verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova, quando lascia il nome?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves a name?' },
     prodotto: 'Real-Time CDP',
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
@@ -169,6 +199,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Si sceglie, col tetto', en: 'One is chosen, within the cap' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
+    verifica: { it: 'Oggi il tetto di contatto si valuta quando si sceglie, o si applica dopo?', en: 'Today, is the contact cap weighed when choosing, or applied afterwards?' },
     prodotto: 'Offer Decisioning',
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
@@ -196,6 +227,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Parte dall’evento', en: 'Triggered by the event' },
     canale: { it: 'Email', en: 'Email' },
     gruppo: 'engagement',
+    verifica: { it: 'Oggi quanto passa fra il gesto di una prospect e il primo contatto?', en: 'Today, how long passes between a prospect’s action and the first contact?' },
     prodotto: 'Journey Optimizer',
     cliente: {
       chrome: 'posta', scena: 'scena-05-colazione',
@@ -223,6 +255,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Il quadro si chiede', en: 'The briefing is asked for' },
     canale: { it: 'Filiale', en: 'Branch' },
     gruppo: 'piattaforma',
+    verifica: { it: 'Oggi chi riceve l’appuntamento che cosa vede, di una persona che non è cliente?', en: 'Today, what does the person taking the appointment see about someone who is not a customer?' },
     prodotto: 'CX Enterprise Coworker',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
@@ -250,6 +283,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Quanto costa acquisirla', en: 'What acquiring her costs' },
     canale: { it: 'App', en: 'App' },
     gruppo: 'piattaforma',
+    verifica: { it: 'Oggi sapete quale momento ha prodotto il cliente, o solo quanto ha reso il canale?', en: 'Today, do you know which moment produced the customer, or only what the channel returned?' },
     prodotto: 'Customer Journey Analytics',
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',

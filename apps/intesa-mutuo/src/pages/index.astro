@@ -18,6 +18,7 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
+import { MOMENTI } from '../data/momenti';
 
 const type = EXPERIENCE_TYPES[SITE.type];
 const base = import.meta.env.BASE_URL;
@@ -43,12 +44,38 @@ const last = CHAPTERS[CHAPTERS.length - 1];
                  scrim="im-clip-scrim" opacity={1} />
       <div class="im-cov im-cov--grande" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" data-reveal />
-        <T as="h1" class="im-cov-t" it="Lo stesso mutuo, dai due lati" en="The same mortgage, from both sides" data-reveal data-reveal-delay="0.1" />
+        {/* ⚠️ Il titolo di copertina NON ripete il nome del percorso: in
+            pagina quel nome sta già nella barra, due righe sopra, e
+            leggerlo due volte fa sembrare la copertina un segnaposto.
+            Qui sta la premessa, che è la notizia di questa versione. */}
+        <T as="h1" class="im-cov-t" it="Il mutuo di una persona che non vi conosce ancora" en="The mortgage of someone who does not know you yet" data-reveal data-reveal-delay="0.1" />
         <T as="p" class="im-cov-l"
            it="Una persona che cerca casa e non è ancora vostra cliente, e chi deve decidere che cosa dirle. Gli stessi sette momenti, dalle due parti dello schermo."
            en="Someone looking for a home who is not your customer yet, and whoever decides what to tell her. The same seven moments, from both sides of the screen."
            data-reveal data-reveal-delay="0.18" />
-        <T as="p" class="im-cov-n" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.26" />
+        {/* Tre fatti e i quattro blocchi: la copertina dice che cosa c'è
+            dentro prima che si entri, e si riempie di senso invece che
+            di decorazione. */}
+        <ul class="im-cov-meta" data-reveal data-reveal-delay="0.24">
+          <li><strong>7</strong><T as="span" it="momenti" en="moments" /></li>
+          <li><strong>3</strong><T as="span" it="settimane" en="weeks" /></li>
+          <li><strong>2</strong><T as="span" it="viste, sulla stessa slide" en="views, on the same slide" /></li>
+        </ul>
+        <ol class="im-cov-blocchi" data-stagger>
+          <li data-gruppo="trovare"><span class="im-cov-p" aria-hidden="true"></span><T as="span" it="Farsi trovare" en="Brand visibility" /></li>
+          <li data-gruppo="contenuto"><span class="im-cov-p" aria-hidden="true"></span><T as="span" it="Content Factory" en="Content supply chain" /></li>
+          <li data-gruppo="engagement"><span class="im-cov-p" aria-hidden="true"></span><T as="span" it="Customer Engagement" en="Customer engagement" /></li>
+          <li data-gruppo="piattaforma"><span class="im-cov-p" aria-hidden="true"></span><T as="span" it="AI Platform e CX Analytics" en="AI Platform and CX Analytics" /></li>
+        </ol>
+        <T as="p" class="im-cov-n" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.3" />
+        {/* ⚠️ Il credito è un FATTO, non una decorazione: si dichiara solo
+            ciò che è stato davvero usato, e il `provenance.json` dice che
+            le fotografie sono stock licenziato e che solo le due clip —
+            apertura e chiusura — sono generate. Scrivere «Adobe Firefly»
+            su tutto sarebbe una dichiarazione falsa. */}
+        <T as="p" class="im-cov-cred" data-reveal data-reveal-delay="0.34"
+           it="Clip di apertura e chiusura generate con Adobe Firefly, con Content Credentials. Fotografie da stock licenziato, autore e licenza in provenance.json. Schermate ricostruite a mano."
+           en="Opening and closing clips generated with Adobe Firefly, with Content Credentials. Photographs from licensed stock, author and licence in provenance.json. Screens reconstructed by hand." />
       </div>
     </Slide>
 

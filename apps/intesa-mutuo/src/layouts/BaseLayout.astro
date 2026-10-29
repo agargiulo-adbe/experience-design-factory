@@ -92,6 +92,43 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
         }
       })();
     </script>
+    {/* ── L'interruttore delle domande «Da verificare con voi» ─────────
+        Sta QUI, in <head> e inline, per la stessa ragione dell'anti-flash
+        della lingua: se si decidesse dopo il primo paint, in sala si
+        vedrebbero comparire e poi sparire sette righe.
+
+        `?domande=0` le spegne, `?domande=1` le riaccende; la scelta resta
+        in localStorage per tutto il percorso e sopravvive agli swap SPA,
+        così si spegne una volta sola e vale per ogni capitolo. Il link
+        con il parametro si può anche condividere già spento.
+        Default: accese. */}
+    <script is:inline define:vars={{ PROJECT_SLUG }}>
+      (function () {
+        var CHIAVE = 'edf:domande:' + PROJECT_SLUG;
+        function applica() {
+          var stato = null;
+          try {
+            var q = new URLSearchParams(location.search).get('domande');
+            if (q === '0' || q === 'off' || q === 'no') { stato = 'off'; localStorage.setItem(CHIAVE, 'off'); }
+            else if (q === '1' || q === 'on' || q === 'si') { stato = 'on'; localStorage.setItem(CHIAVE, 'on'); }
+            else { stato = localStorage.getItem(CHIAVE); }
+          } catch (e) {}
+          var h = document.documentElement;
+          if (stato === 'off') h.setAttribute('data-domande', 'off');
+          else h.removeAttribute('data-domande');
+        }
+        applica();
+        if (!window.__imDomandeBound) {
+          window.__imDomandeBound = true;
+          document.addEventListener('astro:after-swap', applica);
+        }
+        /* Una via d'uscita dalla console, se il parametro non è comodo. */
+        window.__imDomande = function (acceso) {
+          try { localStorage.setItem(CHIAVE, acceso === false ? 'off' : 'on'); } catch (e) {}
+          applica();
+        };
+      })();
+    </script>
     <ClientRouter />
   </head>
   <body>

@@ -1251,6 +1251,7 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
   font-size: clamp(0.8rem, 0.64vw, 1.46rem); line-height: 1.3;
 }
 .im-mis-oggi { color: var(--color-grey-300); }
+.im-mis-poi::before { content: ''; }
 .im-mis-poi { color: var(--color-verde-chiaro); font-weight: 700; }
 .im-mis-f { flex: none; width: 1.3rem; height: 1px; background: rgba(255,255,255,0.45); position: relative; }
 .im-mis-f::after {
@@ -1568,7 +1569,6 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-cli--compatto .im-cli-bolla { padding: 0.44rem 0.6rem; }
 .im-cli--compatto .im-cli-citate { gap: 0.24rem; margin-bottom: 0; }
 .im-cli--compatto .im-cli-citate li { padding: 0.38rem 0.6rem; }
-.im-cli--compatto .im-cli-passi li { padding-block: 0.2rem; }
 .im-cli--compatto .im-cli-righe > div { padding-block: 0.26rem; }
 .im-cli--compatto .im-cli-post { margin-bottom: 0; }
 .im-cli--compatto .im-cli-post-txt { padding: 0.5rem 0.6rem 0.4rem; }
@@ -1587,9 +1587,14 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 .im-cli--compatto .im-cli-post-info { margin-bottom: 0.1rem; }
 .im-cli--compatto .im-cli-mail { margin-bottom: 0; }
 .im-ado--compatto .im-ado-dom { gap: 0.24rem; }
+/* ⚠️ `padding` a quattro valori qui cancellava il `padding-left: 1.9rem`
+   che riserva lo spazio al pallino di stato, e i pallini finivano SOPRA
+   le parole. Le liste col pallino tengono il loro margine sinistro. */
 .im-ado--compatto .im-ado-dom li,
-.im-ado--compatto .im-ado-off li,
-.im-ado--compatto .im-ado-passi li { padding: 0.34rem 0.58rem; }
+.im-ado--compatto .im-ado-off li { padding: 0.34rem 0.58rem; }
+.im-ado--compatto .im-ado-passi li { padding: 0.34rem 0.58rem 0.34rem 1.7rem; }
+.im-ado--compatto .im-ado-passi li::before { left: 0.58rem; }
+.im-cli--compatto .im-cli-passi li { padding-block: 0.2rem; }
 .im-ado--compatto .im-ado-righe > div { padding-block: 0.26rem; }
 .im-ado--compatto .im-ado-chat { gap: 0.3rem; }
 .im-ado--compatto .im-ado-bolla { padding: 0.44rem 0.6rem; }
@@ -1837,3 +1842,212 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
    qualunque sia il gruppo da cui parte. */
 [data-slide] .im-cer-arco[data-ritorno] { stroke: var(--color-verde-chiaro); stroke-width: 2.4; }
 [data-slide] .im-cer-fre[data-ritorno] { fill: var(--color-verde-chiaro); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   IL PUNTO DA VERIFICARE  (`DaVerificare`)
+
+   Un filetto a sinistra e un'etichetta piccola: deve farsi notare come
+   «qui c'è il punto», non gridare. Niente colore nuovo — la palette dei
+   quattro gruppi è validata su una superficie sola e un quinto colore
+   cade sul contrasto (misurato con `audit:ink`). Usa l'accento che la
+   pelle già ha.
+
+   Quando l'interruttore è spento il blocco è ASSENTE, non trasparente:
+   `display: none`, se no i gate misurano testo invisibile e i lettori di
+   schermo lo leggono.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-ver {
+  display: grid; gap: 0.12rem; margin: 0.6rem 0 0; max-width: 38rem;
+  padding-left: 0.75rem; border-left: 3px solid var(--color-verde-chiaro);
+}
+.im-ver-tag {
+  font-size: clamp(0.7rem, 0.56vw, 1.26rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro);
+}
+.im-ver-q {
+  font-size: clamp(0.9rem, 0.72vw, 1.62rem); line-height: 1.4;
+  color: #ffffff; font-style: italic;
+}
+/* Su fondo chiaro l'accento chiaro non regge: inchiostri espliciti. */
+[data-slide].bg-\[var\(--surface-primary\)\] .im-ver,
+[data-slide].bg-\[var\(--surface-secondary\)\] .im-ver { border-left-color: var(--color-verde-scuro); }
+[data-slide].bg-\[var\(--surface-primary\)\] .im-ver-tag,
+[data-slide].bg-\[var\(--surface-secondary\)\] .im-ver-tag { color: var(--color-verde-scuro); }
+[data-slide].bg-\[var\(--surface-primary\)\] .im-ver-q,
+[data-slide].bg-\[var\(--surface-secondary\)\] .im-ver-q { color: var(--color-ink); }
+
+/* L'interruttore: spento, il blocco non esiste. */
+html[data-domande='off'] [data-domanda] { display: none !important; }
+
+/* La riga di legenda, una volta sola sulla copertina del capitolo. */
+.im-ver-leg {
+  margin: 1.4rem auto 0; max-width: 46rem; text-align: center;
+  font-size: clamp(0.78rem, 0.62vw, 1.4rem); line-height: 1.45;
+  color: var(--color-grey-300);
+}
+.im-ver-leg b { color: var(--color-verde-chiaro); font-weight: 700; }
+
+/* Le due bande entrano una alla volta, col ↓, così chi presenta governa
+   il racconto: prima Giulia, poi chi prepara, poi — se vuole — la
+   domanda. Entrano dal basso e NON si muovono di posto: `visibility`
+   tiene lo spazio prenotato, quindi la pagina non salta quando la
+   seconda banda compare. */
+.im-due-banda[data-substep] { transform: translateY(14px); }
+.im-due-banda[data-substep-active] { transform: none; }
+@media (prefers-reduced-motion: reduce) { .im-due-banda[data-substep] { transform: none; } }
+html:not(.js) .im-due-banda[data-substep] { transform: none; }
+
+/* La nota per chi presenta: dice come si governa il racconto. Sta sulla
+   copertina del capitolo, dove si entra, e serve anche a chi riceve il
+   link — se non sa del ↓ vede sette slide mezze vuote. */
+.im-guida {
+  margin: 1.2rem auto 0; max-width: 44rem; text-align: center;
+  padding: 0.5rem 0.9rem; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.07);
+  font-size: clamp(0.76rem, 0.6vw, 1.34rem); line-height: 1.4;
+  color: var(--color-grey-200);
+}
+
+/* ── Il marchio di una referenza ───────────────────────────────────────
+   Uno slot, non una decorazione: quando arriva il file ufficiale prende
+   il posto del testo senza che la composizione si muova. Il ripiego a
+   testo deve sembrare una scelta, non una mancanza — quindi ha la stessa
+   scatola, lo stesso respiro e lo stesso allineamento del file. */
+.im-marchio {
+  display: inline-flex; align-items: center; justify-content: flex-start;
+  height: 1.9rem; max-width: 11rem;
+}
+img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position: left center; }
+.im-marchio--testo {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.02rem, 0.84vw, 1.9rem); letter-spacing: 0.01em;
+  color: var(--color-ink); line-height: 1;
+}
+[data-slide].bg-\[var\(--surface-inverse\)\] .im-marchio--testo,
+[data-slide][data-dark] .im-marchio--testo { color: #ffffff; }
+
+/* Sulla slide di TSB il marchio sta in testa, grande quanto un occhiello. */
+.im-sl-marchio { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+.im-sl-marchio .im-marchio { height: 2.4rem; max-width: 14rem; }
+.im-sl-marchio .im-marchio--testo { font-size: clamp(1.3rem, 1.05vw, 2.4rem); letter-spacing: 0.06em; }
+/* Nei due riquadri di referenza prende il posto del nome in grassetto. */
+.im-ref-b .im-marchio { margin-bottom: 0.35rem; }
+
+/* ── La copertina: tre fatti e i quattro blocchi ───────────────────────
+   Riempiono la pagina con quello che c'è dentro, non con decorazione, e
+   presentano la codifica a colori prima che si incontri. */
+.im-cov-meta {
+  list-style: none; margin: 1.1rem 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem 2.2rem;
+}
+.im-cov-meta li { display: flex; align-items: baseline; gap: 0.4rem; margin-inline: 0; }
+.im-cov-meta strong {
+  font-family: var(--font-display); font-weight: 700; line-height: 1;
+  font-size: clamp(1.5rem, 1.5vw, 2.9rem); color: var(--color-verde-chiaro);
+}
+.im-cov-meta span {
+  font-size: clamp(0.86rem, 0.7vw, 1.56rem); color: var(--color-grey-200);
+}
+.im-cov-blocchi {
+  list-style: none; margin: 1.1rem 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem 0.6rem;
+  max-width: 54rem;
+}
+.im-cov-blocchi li {
+  display: flex; align-items: center; gap: 0.44rem; margin-inline: 0;
+  padding: 0.3rem 0.8rem 0.3rem 0.6rem; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(5, 20, 0, 0.5);
+  font-size: clamp(0.78rem, 0.62vw, 1.4rem); font-weight: 700;
+  letter-spacing: 0.04em; color: var(--color-grey-200);
+}
+.im-cov-p { flex: none; width: 0.95rem; height: 0.28rem; border-radius: 2px; background: var(--gruppo); }
+.im-cov-blocchi li[data-gruppo='piattaforma'] .im-cov-p {
+  background: repeating-linear-gradient(90deg, var(--gruppo) 0 3px, transparent 3px 6px);
+}
+.im-cov-cred {
+  margin: 0.9rem auto 0; max-width: 44rem;
+  font-size: clamp(0.7rem, 0.56vw, 1.26rem); line-height: 1.45;
+  color: var(--color-grey-300);
+}
+
+/* La riga della filiale dentro l'imbuto: stessa misura, segno diverso —
+   è l'unico passo che non succede su uno schermo. */
+.im-ado-barra[data-offline] .im-ado-barra-t i {
+  background: repeating-linear-gradient(135deg, var(--color-verde) 0 4px, var(--color-verde-scuro) 4px 8px);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   UNA LOGICA SOLA DI ANIMAZIONE, PER TUTTE LE SLIDE
+
+   La regola: **il mockup si costruisce nell'ordine in cui la cosa accade.**
+   Non è decorazione — è il racconto: le righe di un elenco arrivano una
+   dopo l'altra perché il sistema le produce una dopo l'altra, le barre di
+   un imbuto crescono perché un imbuto si riempie, il feed scorre perché
+   un feed si scorre. Chi guarda capisce il meccanismo senza leggerlo.
+
+   L'innesco è UNO: la banda che entra col ↓ (`[data-substep-active]`).
+   Nessun JavaScript, nessun observer: il motore marca, la pelle veste.
+
+   ⚠️ Lo stato BASE è quello finale e informativo. Fuori da una banda
+   attiva nessuna animazione gira, quindi con «Riduci movimento», senza
+   JavaScript e sotto gli audit tutto è già al suo posto e leggibile.
+   ══════════════════════════════════════════════════════════════════════ */
+@keyframes im-entra { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+@keyframes im-cresce { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes im-scorre { from { transform: translateY(var(--da, 46%)); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes im-accende { 0%,55% { opacity: 0; transform: translateY(7px); } 100% { opacity: 1; transform: none; } }
+
+.im-due-banda[data-substep-active] :is(
+  .im-cli-passi li, .im-cli-citate li, .im-cli-righe > div, .im-cli-campo, .im-cli-consenso,
+  .im-ado-dom li, .im-ado-off li, .im-ado-passi li, .im-ado-var, .im-ado-barra,
+  .im-ado-chip, .im-ado-righe > div
+) { animation: im-entra 360ms both cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Lo sfasamento: sei gradini bastano: oltre, l'occhio non li conta più. */
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(1) { animation-delay: 60ms; }
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(2) { animation-delay: 130ms; }
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(3) { animation-delay: 200ms; }
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(4) { animation-delay: 270ms; }
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(5) { animation-delay: 340ms; }
+.im-due-banda[data-substep-active] :is(.im-cli-passi, .im-cli-citate, .im-cli-righe, .im-ado-dom, .im-ado-off, .im-ado-passi, .im-ado-grid, .im-ado-funnel, .im-ado-prof-id, .im-ado-righe) > *:nth-child(n+6) { animation-delay: 410ms; }
+
+/* L'imbuto si riempie: le barre crescono da sinistra, come un imbuto. */
+.im-due-banda[data-substep-active] .im-ado-barra-t i {
+  transform-origin: left center;
+  animation: im-cresce 620ms both cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* La riga che VINCE arriva per ultima: la scelta si vede accadere. */
+.im-due-banda[data-substep-active] :is(
+  .im-ado-off li[data-stato='scelta'], .im-ado-dom li[data-citata],
+  .im-ado-passi li[data-stato='ora'], .im-ado-var[data-scelta],
+  .im-cli-citate li[data-citata]
+) { animation: im-accende 820ms both cubic-bezier(0.16, 1, 0.3, 1); animation-delay: 220ms; }
+
+/* ── Il feed scorre ──────────────────────────────────────────────────── */
+/* Il feed scorre: il post sale, con una curva lunga da scorrimento. */
+.im-cli-feedscroll { position: relative; }
+.im-due-banda[data-substep-active] .im-cli-feedscroll {
+  animation: im-scorre 980ms both cubic-bezier(0.22, 1, 0.3, 1);
+}
+  border: 1px solid var(--color-grey-200); border-radius: 6px;
+  padding: 0.5rem 0.6rem; margin-bottom: 0.5rem; display: grid; gap: 0.3rem;
+}
+
+/* ── La testata del sito: di chi è questa pagina ─────────────────────── */
+.im-cli-sito-testa {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.7rem;
+  padding: 0.5rem 0.7rem; background: var(--color-verde-scuro); color: #ffffff;
+}
+.im-cli-sito-logo { display: block; height: 1.05rem; color: #ffffff; flex: none; }
+.im-cli-sito-logo svg { height: 100%; width: auto; display: block; fill: currentColor; }
+.im-cli-sito-nav { display: flex; gap: 0.6rem; }
+.im-cli-sito-nav i {
+  font-style: normal; font-size: clamp(0.64rem, 0.52vw, 1.14rem);
+  font-weight: 700; letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.82);
+}
+.im-brand-mark svg { height: 100%; width: auto; display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .im-due-banda[data-substep-active] * { animation: none !important; }
+}
