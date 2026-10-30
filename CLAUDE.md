@@ -870,6 +870,17 @@ The home "il percorso"/chapter roadmap cards MUST be **equal‑size blocks** (eq
 ### Document `<title>` — no self‑duplication (BINDING, every experience)
 Each `BaseLayout.astro` builds `<title>{title} | <SiteName></title>`. The **home** page passes `title` = the site name, which renders "SiteName | SiteName" (also poisons link‑preview scrapers, which read `<title>`). Guard it: `<title>{title === '<SiteName>' ? title : \`${title} | <SiteName>\`}</title>`. Applies to every experience layout + showcase.
 
+⚠️ **E il doppione può stare DENTRO `SITE_NAME`, dove quella guardia non lo
+vede.** Parecchi layout compongono `SITE_NAME = \`${SITE.name} · Adobe ×
+${SITE.client}\``, che è giusto finché il nome è quello del racconto («Lo stesso
+mutuo, dai due lati»). Quando il documento prende per nome la **firma co‑brand**
+— succede ai documenti unici d'incontro, che si chiamano «Adobe × Cliente» — il
+suffisso raddoppia e **ogni** pagina esce `Adobe × Cliente · Adobe × Cliente`,
+home compresa. Si aggiunge solo quando serve:
+`const SITE_NAME = SITE.name.includes(FIRMA) ? SITE.name : \`${SITE.name} · ${FIRMA}\`;`
+Trovato il 30 ott 2026 su `intesa-esperienza-cliente`, **mentre si pubblicava**:
+dalla pagina non si vede, si vede incollando l'URL in una chat.
+
 ### Parallel work on a shared app → isolated worktrees
 Independent tasks on the **same** app (different files but one shared `dist/`) must NOT run concurrent build/preview — they race and corrupt `dist/`. Use **subagents in isolated git worktrees** (`isolation: "worktree"`), one per section/area, each building + auditing in its own worktree; then bring the changed files into the main tree and run **one final build + audit** to confirm. Separate experiences (distinct `dist/`) can use plain parallel subagents.
 
