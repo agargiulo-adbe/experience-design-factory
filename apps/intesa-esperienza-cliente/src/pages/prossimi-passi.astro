@@ -34,6 +34,13 @@ import FiguraCap from '../components/FiguraCap.astro';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import { MISURE, ASK } from '../data/referenze';
 import fondo from '../assets/generated/lavoro-04-decisione.webp';
+/* Le stesse tre cose annunciate nel capitolo 01, dalla stessa fonte —
+   e le stesse tre fotografie, perché è la forma a fare da aggancio. */
+import { TRE } from '../data/tre';
+import f1 from '../assets/generated/scena-08-tracce.webp';
+import f2 from '../assets/generated/scena-02-bar.webp';
+import f3 from '../assets/generated/lavoro-01-ricerca.webp';
+const FOTO = [f1, f2, f3];
 
 /* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
@@ -67,6 +74,34 @@ const SERVE = [
         tIt="Prossimi passi" tEn="Next steps"
         lIt="Che cosa misureremmo dal giorno uno, e che cosa ci serve da voi per scriverlo."
         lEn="What we would measure from day one, and what we need from you to write it down." />
+    </Slide>
+
+    {/* ── LA RIPRESA ─────────────────────────────────────────────────
+        Stessa geometria della mappa del capitolo 01 — è lì che chi
+        guarda riaggancia — e contenuto diverso: non «che cosa vedrete»
+        ma «che cosa ne è seguito». Non è un recap: ri-presentare lo
+        stesso materiale è la famiglia con meno prove, e la forma qui
+        serve da aggancio, non da ripasso (vedi `src/data/tre.ts`). */}
+    <Slide id="slide-ripresa" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Quello di cui abbiamo parlato" en="What we have covered" />
+        <T as="h2" class="im-tre-h" it="Le stesse tre, adesso che le avete viste" en="The same three, now that you have seen them" />
+        <T as="p" class="im-ado-l" it="In apertura erano tre nomi. Dopo il percorso di Giulia hanno una faccia, e un pezzo di stack sotto." en="At the start they were three names. After Giulia’s path they have a face, and a piece of stack underneath." />
+
+        <ul class="im-tre im-tre--ripresa">
+          {TRE.map((c, i) => (
+            <li class="im-tre-i" data-gruppo={c.gruppo}>
+              <figure class="im-tre-foto" style={`--foto: url(${FOTO[i].src})`}>
+                <span class="im-tre-n">{c.n}</span>
+              </figure>
+              <T as="span" class="im-tre-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-tre-d" it={c.poi.it} en={c.poi.en} />
+              <span class="im-tre-pro">{c.prodotto}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Slide>
 
     <Slide id="slide-da-voi" bg="inverse" align="left">

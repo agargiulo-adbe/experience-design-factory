@@ -29,6 +29,25 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/lavoro-04-decisione.webp';
+/* Le tre cose: fonte unica, letta anche dalla slide di ripresa in
+   «Prossimi passi». Due copie a mano divergono sempre. */
+import { TRE } from '../data/tre';
+/* Una fotografia per blocco, scelta GUARDANDOLE in provino, non dal
+   nome del file: le prime tre erano un monitor, una lavagna di post-it e
+   una sala riunioni vuota, e non dicevano niente dei tre concetti.
+   Queste sì — le luci nel buio sono il segnale che c'è e si disperde, la
+   mano sola al bancone è «uno per uno», il grafico è la misura.
+   ⚠️ Sono fotografie da STOCK LICENZIATO (Pexels), non generate: per
+   questo la slide non dichiara `data-made-with="Adobe Firefly"`, che su
+   una foto stock sarebbe una dichiarazione falsa. Nel deck quel credito
+   lo portano le sole clip.
+   ⚠️ Due tornano più avanti come scene dei momenti 01 e 02. Il riuso è
+   voluto: qui sono texture dietro un numero, lì sono la scena — e
+   l'eco aiuta a riconoscerle quando arrivano. */
+import f1 from '../assets/generated/scena-08-tracce.webp';
+import f2 from '../assets/generated/scena-02-bar.webp';
+import f3 from '../assets/generated/lavoro-01-ricerca.webp';
+const FOTO = [f1, f2, f3];
 /* I quadranti, estratti dal deck ufficiale. Non ricostruiti: un Wave
    ridisegnato da noi non sarebbe più una fonte. */
 import wCdp from '../assets/forrester/forrester-cdp.png';
@@ -295,6 +314,36 @@ const FASCE = [
             </section>
           ))}
         </div>
+      </div>
+    </Slide>
+
+    {/* ── LA MAPPA, PRIMA DI PERCORRERLA ──────────────────────────────
+        L'anticipazione in apertura è la parte della vecchia formula «dì
+        quello che dirai, dillo, ripeti» che le prove reggono davvero
+        (advance organizer); la ripetizione finale no. Il perché, con le
+        misure, sta nel commento di `src/data/tre.ts`.
+        ⚠️ NIENTE `data-substep` QUI: una mappa si guarda tutta insieme.
+        Farla comparire a pezzi la trasformerebbe nel racconto che deve
+        invece annunciare. */}
+    <Slide id="slide-tre" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Di che cosa vi parliamo" en="What we are here to talk about" />
+        <T as="h2" class="im-tre-h" it="Prima che vi conoscano, mentre decidono, dopo" en="Before they know you, while they decide, after" />
+        <T as="p" class="im-ado-l" it="Tre momenti del percorso di una persona, e che cosa cambia in ciascuno." en="Three moments in a person’s path, and what changes in each one." />
+
+        <ul class="im-tre">
+          {TRE.map((c, i) => (
+            <li class="im-tre-i" data-gruppo={c.gruppo}>
+              <figure class="im-tre-foto" style={`--foto: url(${FOTO[i].src})`}>
+                <span class="im-tre-n">{c.n}</span>
+              </figure>
+              <T as="span" class="im-tre-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-tre-d" it={c.riga.it} en={c.riga.en} />
+              <span class="im-tre-pro">{c.prodotto}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </Slide>
 
