@@ -1,15 +1,25 @@
 ---
 /**
- * Scenario — da dove nasce questa storia.
+ * Scenario — da dove nasce questa storia. UNA slide di contenuto.
  *
  * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
  *
- * ⚠️ Queste due slide erano testo su fondo pieno, e si vedeva: il cliente
- * le ha chiamate «scarne». La correzione non è stata aggiungere parole —
- * è stata dare a ciascuna una COSA DA GUARDARE a destra, con la stessa
- * grammatica dei momenti (sfondo di scena + testo a sinistra + visivo a
- * destra). Un numero che si vede come una barra dice in un secondo quello
- * che una riga di testo fa leggere in otto.
+ * ⚠️ PERCHÉ UNA E NON DUE (revisione critica, 30 ott 2026).
+ * Qui c'erano due slide: «Il segnale c'è già, e si spegne da solo» (il
+ * dato esiste e resta sparso) e «Chi decide che cosa dire, e quando»
+ * (le proposte esistono e non c'è un arbitro). Sono due metà dello
+ * STESSO problema, e separarle costava due slide di premessa prima che
+ * Giulia entri in scena — su un documento che ne ha trenta.
+ * Di più: la seconda metà il deck la riprende per intero più avanti,
+ * dove c'è anche la risposta — «L'arbitro» fra i quattro componenti
+ * dell'ingaggio, e «Come ragiona una decisione» nell'approfondimento.
+ * Detta due volte, la prima volta è una premessa; detta una volta qui e
+ * risolta là, diventa una domanda che il documento chiude.
+ *
+ * Quello che NON si è buttato sono le due figure: l'imbuto dice in un
+ * secondo dove si perde chi non vi conosce, la lista delle candidate
+ * dice che senza un arbitro decide l'ordine delle campagne. Stanno
+ * affiancate, ognuna con la sua ancora e una riga sola di verdetto.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -24,7 +34,6 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
    fotografia. Visto guardando la slide, non deducendolo. */
 import fondo from '../assets/generated/fondo-apertura.webp';
 import tracce from '../assets/generated/scena-08-tracce.webp';
-import lista from '../assets/generated/scena-09-lista.webp';
 
 const SLUG = 'scenario';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -59,63 +68,62 @@ const CANDIDATE = [
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 46%`}></div>
       <Divisore num={ch.num}
-        tIt="Il mutuo è il momento in cui una banca si gioca vent’anni" tEn="A mortgage is where a bank plays for twenty years"
+        tIt="Il mutuo è il momento in cui una banca si gioca vent’anni" tEn="A mortgage is where a bank plays for twenty years"
         lIt="E quasi sempre lo gioca con qualcuno che oggi è cliente di un’altra banca." lEn="And it almost always plays it with someone who banks elsewhere today." />
     </Slide>
 
-    <Slide id="slide-segnale" bg="inverse" align="split">
+    <Slide id="slide-segnale" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${tracce.src})`}></div>
-      <div class="im-mom" data-reveal>
-        <div class="im-mom-testo">
-          <T as="p" class="im-mom-blocco" it="Il punto di partenza" en="The starting point" />
-          <T as="p" class="im-mom-k" it="01 · Chi cerca un mutuo, di solito, non vi conosce" en="01 · Whoever is shopping for a mortgage usually does not know you" />
-          <T as="h2" class="im-mom-t" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" data-reveal data-reveal-delay="0.08" />
-          <T as="p" class="im-mom-b" it="Ogni simulazione interrotta lascia una traccia: sul sito, nell’annuncio cliccato, al contact center. Finché quelle tracce restano separate, una persona che vi stava valutando resta un numero di sessione." en="Every abandoned simulation leaves a trace: on the site, in the ad clicked, at the call centre. While those traces stay apart, someone who was considering you stays a session number." data-reveal data-reveal-delay="0.16" />
-          <T as="p" class="im-mom-chiusa" it="Il problema non è raccogliere il dato. È che la decisione arriva giorni dopo il momento in cui serviva." en="The problem is not collecting the data. It is that the decision lands days after the moment it was needed." data-reveal data-reveal-delay="0.24" />
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <T as="p" class="im-n" it="Il punto di partenza" en="The starting point" />
+          <T as="h2" class="im-h2" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" />
+          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce, lascia tracce su canali separati, e nessuno ha il posto dove decidere che farne." en="Whoever is shopping for a mortgage does not know you, leaves traces on separate channels, and nobody has the place to decide what to do with them." />
         </div>
-        <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-          <figure class="im-imbuto">
-            <T as="figcaption" class="im-imbuto-cap" it="Dove si perde chi non vi conosce" en="Where the people who do not know you are lost" />
-            {IMBUTO.map((f, i) => (
-              <div class="im-imbuto-r" data-ultimo={i === IMBUTO.length - 1 ? '' : null}>
-                <span class="im-imbuto-t"><i style={`width:${f.v}%`}></i></span>
-                <span class="im-imbuto-n">{f.n}</span>
-                <T as="span" class="im-imbuto-l" it={f.l.it} en={f.l.en} />
-              </div>
-            ))}
-            <T as="p" class="im-imbuto-nota" it="Ordini di grandezza illustrativi: servono a mostrare la forma della perdita, non i vostri numeri." en="Illustrative orders of magnitude: they show the shape of the loss, not your numbers." />
-          </figure>
-        </div>
-      </div>
-    </Slide>
 
-    <Slide id="slide-chi-decide" bg="inverse" align="split">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${lista.src})`}></div>
-      <div class="im-mom" data-verso="schermo-prima" data-reveal>
-        <div class="im-mom-schermo" data-reveal data-reveal-delay="0.2">
-          <figure class="im-cand">
-            <T as="figcaption" class="im-cand-cap" it="Quattro proposte per la stessa persona, stasera" en="Four proposals for the same person, tonight" />
-            <ul class="im-cand-l">
-              {CANDIDATE.map((c) => (
-                <li data-stato={c.s}>
-                  <T as="span" class="im-cand-n" it={c.l.it} en={c.l.en} />
-                  <span class="im-cand-e">
-                    <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'fuori tetto' : 'non ora'}</span>
-                    <span data-lang-en>{c.s === 'scelta' ? 'goes' : c.s === 'fuori' ? 'over cap' : 'not now'}</span>
-                  </span>
-                </li>
+        <div class="im-pb">
+          <section class="im-pb-i" data-substep data-side="in">
+            <T as="p" class="im-pb-k" it="01 · Il dato esiste" en="01 · The data exists" />
+            <figure class="im-imbuto">
+              <T as="figcaption" class="im-imbuto-cap" it="Dove si perde chi non vi conosce" en="Where the people who do not know you are lost" />
+              {IMBUTO.map((f, i) => (
+                <div class="im-imbuto-r" data-ultimo={i === IMBUTO.length - 1 ? '' : null}>
+                  <span class="im-imbuto-t"><i style={`width:${f.v}%`}></i></span>
+                  <span class="im-imbuto-n">{f.n}</span>
+                  <T as="span" class="im-imbuto-l" it={f.l.it} en={f.l.en} />
+                </div>
               ))}
-            </ul>
-            <T as="p" class="im-cand-nota" it="Il tetto di contatto è un vincolo dell’offerta: o si valuta qui, o si applica dopo su una scelta già fatta." en="The contact cap is a constraint of the offer: either it is weighed here, or it is applied later to a choice already made." />
-          </figure>
+            </figure>
+            <T as="p" class="im-pb-v" it="Il problema non è raccogliere il dato: è che la decisione arriva giorni dopo il momento in cui serviva." en="The problem is not collecting the data: it is that the decision lands days after the moment it was needed." />
+          </section>
+
+          <section class="im-pb-i" data-substep data-side="in">
+            <T as="p" class="im-pb-k" it="02 · L’arbitro no" en="02 · The arbiter does not" />
+            <figure class="im-cand">
+              <T as="figcaption" class="im-cand-cap" it="Quattro proposte per la stessa persona, stasera" en="Four proposals for the same person, tonight" />
+              <ul class="im-cand-l">
+                {CANDIDATE.map((c) => (
+                  <li data-stato={c.s}>
+                    <T as="span" class="im-cand-n" it={c.l.it} en={c.l.en} />
+                    <span class="im-cand-e">
+                      <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'fuori tetto' : 'non ora'}</span>
+                      <span data-lang-en>{c.s === 'scelta' ? 'goes' : c.s === 'fuori' ? 'over cap' : 'not now'}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </figure>
+            <T as="p" class="im-pb-v" it="Su chi è già cliente un messaggio sbagliato si assorbe. Su chi vi sta valutando, no." en="With an existing customer a wrong message is absorbed. With someone still evaluating you, it is not." />
+          </section>
         </div>
-        <div class="im-mom-testo">
-          <T as="p" class="im-mom-blocco" it="Il punto di partenza" en="The starting point" />
-          <T as="p" class="im-mom-k" it="02 · Su un prospect si ha una occasione sola" en="02 · With a prospect you get one chance" />
-          <T as="h2" class="im-mom-t" it="Chi decide che cosa dire, e quando" en="Who decides what to say, and when" data-reveal data-reveal-delay="0.08" />
-          <T as="p" class="im-mom-b" it="I modelli producono molte proposte per la stessa persona. Qualcuno deve scegliere quale parte, su quale canale e quante volte contattarla. Su chi è già cliente un messaggio sbagliato si assorbe; su chi vi sta valutando, no." en="Models produce many proposals for the same person. Someone must choose which one goes out, on which channel, and how often. With an existing customer a wrong message is absorbed; with someone still evaluating you, it is not." data-reveal data-reveal-delay="0.16" />
-          <T as="p" class="im-mom-chiusa" it="Quando quel posto non c’è, la scelta la fa la lista: l’ordine in cui le campagne sono state costruite." en="When that place does not exist, the list makes the choice: the order in which campaigns were built." data-reveal data-reveal-delay="0.24" />
-        </div>
+
+        <T as="p" class="im-chiusa" it="Quando quel posto non c’è, la scelta la fa la lista: l’ordine in cui le campagne sono state costruite." en="When that place does not exist, the list makes the choice: the order in which campaigns were built." data-substep data-side="in" />
+
+        {/* ⚠️ Le due dichiarazioni stavano dentro le rispettive figure, e
+            a 1280×800 valevano cento pixel che la slide non aveva. Una
+            riga sola le tiene entrambe, ed è anche la forma giusta: una
+            riga di fonte per slide, come negli approfondimenti. */}
+        <T as="p" class="im-fonte-riga" it="Gli ordini di grandezza dell’imbuto sono illustrativi: mostrano la forma della perdita, non i vostri numeri, che non abbiamo. Il tetto di contatto è un vincolo dell’offerta: o si valuta dove si decide, o si applica dopo su una scelta già fatta." en="The funnel’s orders of magnitude are illustrative: they show the shape of the loss, not your numbers, which we do not have. The contact cap is a constraint of the offer: either it is weighed where the decision happens, or it is applied later to a choice already made." />
       </div>
     </Slide>
 

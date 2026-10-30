@@ -1,33 +1,31 @@
 ---
 /**
- * Risultati — che cosa cambia, e chi lo ha già fatto.
+ * Referenze — chi lo ha già fatto, e con quali numeri.
  *
  * Ogni cifra porta la banca che l'ha prodotta e il link che la regge: non
  * sono promesse su Intesa Sanpaolo, sono risultati di altri, e la pagina lo
  * dice invece di lasciarlo capire. Fonti aperte e lette il 29 ott 2026.
  *
- * L'ultima slide è la slide-FIRMA: lockup grande e CTA di ritorno. Per
- * contratto è una slide a sé — la chiusura densa più il lockup sborda.
+ * ⚠️ IL CAPITOLO DICE UNA COSA SOLA, ed è per questo che è corto: che
+ * altre banche lo fanno e lo dicono in pubblico. Tutto ciò che parla di
+ * noi — le misure, l'ask, la firma — è stato spostato a valle, dove il
+ * flusso lo chiede: referenze → CX Analytics → prossimi passi → firma.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import CoBrand from '../components/CoBrand.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import Divisore from '../components/Divisore.astro';
 import { href } from '@edf/core/utils/url.js';
-import { CHAPTERS, prevSlug } from '../data/chapters';
-import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
-/* Numeri, misure e ask vengono dalla FONTE UNICA: il taglio «In dieci
-   minuti» legge gli stessi oggetti, e due copie a mano divergono. */
-import { FONTI, CIFRE_TSB, MISURE, ASK } from '../data/referenze';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+/* Le cifre vengono dalla FONTE UNICA: il taglio «In dieci minuti» legge
+   gli stessi oggetti, e due copie a mano divergono. Misure e ask stanno
+   nella stessa fonte ma si rendono in «Prossimi passi». */
+import { FONTI, CIFRE_TSB } from '../data/referenze';
 import fondo from '../assets/generated/fondo-risultati.webp';
 import fondoTsb from '../assets/generated/fondo-tsb.webp';
 import MarchioRef from '../components/MarchioRef.astro';
-
-/* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
-const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 
 const SLUG = 'risultati';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -43,7 +41,7 @@ const SAN = FONTI.santander;
     <Navigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 44%`}></div>
@@ -102,42 +100,16 @@ const SAN = FONTI.santander;
       </div>
     </Slide>
 
-    <Slide id="slide-da-voi" bg="inverse" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">Da voi</p>
-          <T as="h2" class="im-h2" it="Che cosa misureremmo, dal giorno uno" en="What we would measure, from day one" />
-          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo: un gruppo di controllo fin dall’inizio, su un percorso solo. Quattro misure di acquisizione, e tre oggi non si sanno." en="Not a promised number, but the way to know it: a control group from the start, on a single journey. Four acquisition measures, and three are unknown today." />
-        </div>
-        <div class="im-mis" data-stagger>
-          {MISURE.map((m) => (
-            <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
-              <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
-              <p class="im-mis-r">
-                <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
-                <span class="im-mis-f" aria-hidden="true"></span>
-                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
-              </p>
-            </div>
-          ))}
-        </div>
-        <T as="p" class="im-chiusa" it={ASK.it} en={ASK.en} data-reveal data-reveal-delay="0.3" />
-      </div>
-    </Slide>
-
-    <Slide id="slide-firma" bg="inverse" align="center"
-           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
-      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
-                 poster={`${base}media/innesto-chiusura.poster.jpg`}
-                 scrim="im-clip-scrim" opacity={1} />
-      <div class="im-firma" data-reveal>
-        <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <T as="p" class="im-firma-l" it="Il segnale ce l’avete già. Manca il posto dove si decide che farne." en="You already have the signal. What is missing is where to decide what to do with it." data-reveal data-reveal-delay="0.14" />
-        <a href={href(base, '/')} class="edf-sig-cta">
-          <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
-        </a>
-      </div>
-    </Slide>
-
+    {/* ⚠️ QUI STAVANO «CHE COSA MISUREREMMO» E LA SLIDE-FIRMA, e sono
+        andate dove servono (revisione critica, 30 ott 2026).
+        Le misure erano in un capitolo di REFERENZE, dove rompevano
+        l'argomento del capitolo: le prime tre slide dicono «questi sono
+        risultati di altri, con la pagina che li regge», e la quarta
+        cambiava soggetto e diventava la nostra proposta. Ora stanno in
+        «Prossimi passi», che è la domanda a cui rispondono — e lì sta
+        anche l'ask, in un posto solo.
+        La slide-firma chiude il PERCORSO, non il capitolo sette: con
+        CX Analytics e Prossimi passi dopo di sé, firmare qui faceva
+        finire il documento tre capitoli prima della fine. */}
   </DeckContainer>
 </BaseLayout>

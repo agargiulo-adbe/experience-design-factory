@@ -1143,6 +1143,61 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
   font-weight: 700; color: var(--color-verde-chiaro);
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+   LE DUE METÀ DEL PROBLEMA, AFFIANCATE  (.im-pb)
+   Nasce dalla fusione delle due slide di Scenario: due figure, ognuna
+   con la sua ancora sopra e una riga sola di verdetto sotto. La figura
+   è una card bianca opaca, quindi non eredita gli inchiostri del fondo
+   scuro — gli inchiostri di ancora e verdetto invece sì, e sono
+   dichiarati espliciti qui.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-pb {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 2.4rem); align-items: start;
+  /* ancora · figura · verdetto: tre righe condivise, se no le due
+     figure hanno altezze diverse e i verdetti partono sfalsati. */
+  grid-template-rows: auto auto 1fr;
+}
+.im-pb-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.5rem;
+  min-width: 0; margin-inline: 0; justify-items: start;
+}
+@supports (grid-template-rows: subgrid) {
+  .im-pb-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-pb-k {
+  margin: 0; max-width: none;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.82rem, 0.7vw, 1.5rem);
+  letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a;
+}
+/* Il verdetto: una riga, e l'inchiostro è quello del corpo su fondo
+   scuro — pieno, non un bianco trasparente (vedi `audit:ink`). */
+.im-pb-v {
+  margin: 0; max-width: none;
+  font-size: clamp(0.88rem, 0.74vw, 1.66rem); line-height: 1.42;
+  font-weight: 700; color: #eef6ea;
+}
+@media (max-width: 940px) {
+  .im-pb { grid-template-columns: minmax(0, 1fr); }
+}
+/* ⚠️ A 1280×800 l'altezza utile è ~464px e la slide ne chiedeva ~600:
+   il titolo finiva sopra la safe-area e il check `c` falliva HARD.
+   Si taglia la DENSITÀ (padding, interlinee fra le righe della figura,
+   l'ancora che a quell'altezza è un lusso), mai il corpo del tipo —
+   vale il contratto di leggibilità. Le due note sulle figure sono già
+   confluite in una riga di fonte sola sotto la slide. */
+@media (max-height: 880px) {
+  .im-pb { gap: 0.8rem; }
+  .im-pb-i { gap: 0.32rem; }
+  .im-pb-k { display: none; }
+  .im-imbuto, .im-cand { padding: 0.65rem 0.75rem 0.7rem; }
+  .im-imbuto { gap: 0.36rem; }
+  .im-cand-cap { margin-bottom: 0.45rem; }
+  .im-cand-l { gap: 0.28rem; }
+  .im-cand-l li { padding: 0.4rem 0.6rem; }
+}
+
 /* ── L'imbuto di chi non vi conosce ───────────────────────────────── */
 .im-imbuto {
   margin: 0; width: 100%; max-width: 32rem;
@@ -1250,7 +1305,7 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
 /* ── Le quattro misure di acquisizione (slide scura) ───────────────── */
 .im-mis {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem; width: 100%; max-width: 62rem; margin: 0.4rem 0 0;
+  gap: 0.75rem; width: 100%; max-width: 72rem; margin: 0.4rem 0 0;
 }
 .im-mis-b {
   margin-inline: 0; padding: 0.9rem 1rem; border-radius: 6px;
@@ -2713,6 +2768,19 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   margin: 0.45rem 0 0; max-width: none !important;
   font-size: clamp(0.74rem, 0.6vw, 1.35rem); line-height: 1.35; color: #c6d8c1;
 }
+/* ⚠️ UNA FONTE NON È UNA CTA. Senza questa regola il link eredita
+   l'accento globale dei link e su questo fondo dà 2,66:1 — il check `h`
+   lo ha trovato HARD su tutti e tre i viewport. L'inchiostro è quello
+   del testo che lo ospita (quindi il contrasto è già misurato) e la
+   distinzione la fa la sottolineatura, che si accende d'accento al
+   passaggio. */
+.im-fonte-riga a {
+  color: inherit; text-decoration: underline;
+  text-decoration-color: rgba(159, 214, 138, 0.65);
+  text-underline-offset: 0.18em;
+}
+.im-fonte-riga a:hover,
+.im-fonte-riga a:focus-visible { text-decoration-color: #9fd68a; }
 
 @media (max-height: 940px) {
   .im-wave-img { height: clamp(4.4rem, 5.8vw, 9rem); }
@@ -2995,6 +3063,25 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 }
 .im-csc .im-bv-i { border-top-color: var(--blk-contenuto); }
 
+/* ⚠️ LA CODIFICA A COLORI È UN CONTRATTO, non una decorazione: la legenda
+   del capitolo 01 dice che ogni blocco dell'offerta ha il suo colore. La
+   catena del PROFILO riusa la griglia di Content Factory (card e frecce)
+   ma appartiene a Customer Engagement, e nata con `im-csc` usciva rosa
+   dentro un approfondimento verde. `im-cat` è la stessa griglia col
+   colore giusto. */
+.im-cat .im-bv-i { border-top-color: var(--blk-engagement); }
+.im-cat-op {
+  background: transparent; border-color: transparent;
+  font-size: clamp(1rem, 0.86vw, 1.9rem); color: #9fd68a;
+}
+/* La fascia di chiusura, nella versione dell'ingaggio. */
+.im-csc-conf--eng {
+  background: rgba(37, 137, 0, 0.26);
+  border-color: rgba(79, 194, 31, 0.6);
+  border-left-color: var(--blk-engagement);
+}
+.im-csc-conf--eng .im-csc-conf-d { color: #eaf6e6; }
+
 /* La riga della conformità: per una banca è il punto, e si vede. */
 .im-csc-conf {
   display: grid; gap: 0.25rem; margin-top: 0.7rem;
@@ -3088,6 +3175,9 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 /* Content Factory: l'accento è il colore del suo blocco. */
 .im-csc .im-fig-f, .im-csc .im-fig-fill { fill: var(--blk-contenuto); }
 .im-csc .im-fig-f-s, .im-csc .im-fig-f-r { stroke: var(--blk-contenuto); }
+/* Customer Engagement: stessa griglia, accento del suo blocco. */
+.im-cat .im-fig-f, .im-cat .im-fig-fill { fill: var(--blk-engagement); }
+.im-cat .im-fig-f-s, .im-cat .im-fig-f-r { stroke: var(--blk-engagement); }
 
 @media (max-height: 940px) {
   .im-fig { height: clamp(2.8rem, 3.5vw, 5.4rem); margin-bottom: 0.3rem; }
@@ -3186,12 +3276,28 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-ciclo {
   list-style: none; margin: 0.7rem 0 0; padding: 0;
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem;
+  /* Due righe dichiarate QUI, non nella card: è la griglia esterna che
+     deve decidere dove comincia la fascia verde, se no ogni card la
+     mette dove finisce il proprio testo. Vedi il subgrid qui sotto. */
+  grid-template-rows: 1fr auto;
 }
 .im-ciclo-i {
   display: grid; grid-template-rows: 1fr auto; min-width: 0; margin-inline: 0;
   border-radius: 14px; overflow: hidden;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.16);
+}
+/* ⚠️ LA FASCIA VERDE DEVE PARTIRE ALLA STESSA ALTEZZA IN TUTTE E QUATTRO.
+   Con `1fr auto` dentro ogni card, la fascia è alta quanto il suo testo:
+   quella della Regia — che ha la descrizione più lunga — andava a due
+   righe e cominciava più in alto delle altre tre. Si vedeva subito, e
+   nessun check la coglieva: le scatole erano tutte dentro la safe-area.
+   La correzione non è accorciare il testo (fragile: la prossima modifica
+   di copia la rompe di nuovo) ma far condividere alle card le righe
+   della griglia esterna. Così la riga `auto` è alta quanto la fascia più
+   alta, e tutte e quattro partono da lì. */
+@supports (grid-template-rows: subgrid) {
+  .im-ciclo-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
 }
 .im-ciclo-su {
   display: grid; gap: 0.26rem; align-content: start;
@@ -3285,18 +3391,209 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-casi-da { color: #cfe3c8; }
 .im-casi-fr { color: var(--blk-engagement); }
 .im-casi-a { color: #9fd68a; }
+/* La riga che dice che cosa resta fuori portata quando i pezzi sono
+   separati. Si stacca dal corpo con un filetto e un inchiostro più
+   freddo: è l'argomento del caso d'uso, non un dettaglio. */
+.im-casi-pezzi {
+  margin-top: 0.3rem; padding-top: 0.42rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: clamp(0.78rem, 0.66vw, 1.48rem); line-height: 1.36;
+  color: #cfe3c8;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LE QUATTRO DOMANDE DI CJA  (.im-dom)
+   Una domanda per area operativa, con chi la fa sopra e che cosa la
+   rende rispondibile sotto. Le tre righe stanno in SUBGRID sulla
+   griglia esterna: le domande sono di lunghezza diversa, e senza
+   subgrid la riga del dettaglio partirebbe a quattro altezze.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-dom {
+  list-style: none; margin: 0.7rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem;
+  grid-template-rows: auto auto 1fr;
+}
+.im-dom-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.3rem;
+  min-width: 0; margin-inline: 0;
+  padding: 0.85rem 1rem 0.95rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 3px solid var(--blk-engagement);
+}
+@supports (grid-template-rows: subgrid) {
+  .im-dom-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-dom-chi {
+  font-size: clamp(0.74rem, 0.62vw, 1.38rem); font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase; color: #9fd68a;
+}
+.im-dom-q {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.98rem, 0.86vw, 1.92rem); line-height: 1.26; color: #ffffff;
+}
+.im-dom-d {
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); line-height: 1.36; color: #e6f1e2;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LA SCELTA DI DISEGNO SUL PROFILO  (.im-scelta)
+   Due strade legittime, una accanto all'altra. Nessuna delle due porta
+   l'accento: se una fosse evidenziata non sarebbe una scelta, e la
+   domanda che il loro IT fa per primo tornerebbe senza risposta.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-scelta { margin-top: 0.7rem; display: grid; gap: 0.4rem; }
+.im-scelta-k {
+  margin: 0; max-width: none;
+  font-size: clamp(0.78rem, 0.66vw, 1.46rem); font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a;
+}
+.im-scelta-g {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem;
+  grid-template-rows: auto auto 1fr;
+}
+.im-scelta-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.28rem;
+  min-width: 0; padding: 0.8rem 1rem 0.85rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px dashed rgba(255, 255, 255, 0.34);
+}
+@supports (grid-template-rows: subgrid) {
+  .im-scelta-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-scelta-t {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.94rem, 0.8vw, 1.8rem); line-height: 1.28; color: #ffffff;
+}
+.im-scelta-d { font-size: clamp(0.8rem, 0.68vw, 1.5rem); line-height: 1.36; color: #e6f1e2; }
+.im-scelta-q {
+  align-self: end; padding-top: 0.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); font-weight: 700; color: #9fd68a;
+}
+
+/* ── I tre modi di eseguire una decisione ───────────────────────────── */
+.im-esec {
+  margin-top: 0.8rem;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem;
+  grid-template-rows: auto auto auto 1fr;
+}
+.im-esec-i {
+  display: grid; grid-template-rows: auto auto auto 1fr; gap: 0.3rem;
+  min-width: 0; padding: 0.95rem 1.1rem 1rem; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-left: 4px solid var(--blk-engagement);
+}
+@supports (grid-template-rows: subgrid) {
+  .im-esec-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-esec-fig { height: clamp(2.4rem, 3.1vw, 5rem); }
+.im-esec-chi {
+  font-size: clamp(0.76rem, 0.64vw, 1.42rem); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a;
+}
+
+/* ── I cinque passaggi di una decisione ─────────────────────────────── */
+.im-dec {
+  list-style: none; margin: 0.8rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.65rem;
+  grid-template-rows: auto auto 1fr;
+}
+.im-dec-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.3rem;
+  min-width: 0; margin-inline: 0;
+  padding: 0.85rem 0.95rem 0.9rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+}
+@supports (grid-template-rows: subgrid) {
+  .im-dec-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-dec-n {
+  width: 1.6rem; height: 1.6rem; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--blk-engagement); color: #071a00;
+  font-size: clamp(0.78rem, 0.66vw, 1.46rem); font-weight: 700; line-height: 1;
+}
+/* Il confine: fondo rosso Adobe come la fascia della piattaforma, perché
+   è una dichiarazione nostra e non una capacità del prodotto. */
+.im-confine {
+  margin-top: 0.7rem; display: grid; gap: 0.25rem;
+  padding: 0.7rem 1.05rem 0.8rem; border-radius: 12px;
+  background: rgba(235, 16, 0, 0.14); border: 1px solid rgba(235, 16, 0, 0.45);
+}
+.im-confine-t {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.92rem, 0.78vw, 1.76rem); color: #ffffff;
+}
+.im-confine-d { font-size: clamp(0.82rem, 0.7vw, 1.56rem); line-height: 1.4; color: #f6e6e3; }
 
 @media (max-width: 1200px) {
-  .im-ciclo, .im-usi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .im-ciclo, .im-usi, .im-dom { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .im-flusso { grid-template-columns: minmax(0, 1fr); }
   .im-flusso-fr { justify-self: center; rotate: 90deg; }
   .im-casi { grid-template-columns: minmax(0, 1fr); }
+  .im-dec { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .im-esec { grid-template-columns: minmax(0, 1fr); }
+  .im-scelta-g { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-height: 940px) {
   .im-ciclo-su { padding: 0.65rem 0.75rem 0.7rem; gap: 0.18rem; }
   .im-ciclo-giu { padding: 0.5rem 0.75rem 0.6rem; }
   .im-ciclo-fig { height: clamp(2rem, 2.6vw, 4.2rem); }
-  .im-casi-i, .im-usi-i { padding: 0.7rem 0.85rem 0.75rem; }
+  .im-casi-i, .im-usi-i, .im-dom-i, .im-dec-i { padding: 0.7rem 0.85rem 0.75rem; }
+  .im-esec-i { padding: 0.75rem 0.9rem 0.8rem; }
+  .im-esec-fig { height: clamp(1.9rem, 2.4vw, 3.8rem); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   L'ASK, GRANDE  (.im-ask)
+   Una cifra da hero accanto alla richiesta. La cifra è un numerale, non
+   copia: il testo arriva verbatim da `referenze.ts` perché l'ask sta in
+   un posto solo (gate `pnpm audit:taglio`).
+   `data-display` esclude la cifra dal check della banda di lettura: un
+   numerale da hero non è prosa.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-ask {
+  display: grid; grid-template-columns: auto minmax(0, 1fr);
+  align-items: center; gap: clamp(0.9rem, 1.4vw, 2rem);
+  width: 100%; max-width: 72rem; margin: 0.2rem 0 0;
+  padding: 0.85rem 1.2rem 0.9rem; border-radius: 10px;
+  background: rgba(250, 150, 0, 0.14); border: 1px solid rgba(250, 150, 0, 0.6);
+}
+.im-ask-n {
+  margin: 0; max-width: none;
+  font-family: var(--font-display); font-weight: 700; line-height: 0.9;
+  font-size: clamp(2.6rem, 3.4vw, 7rem); color: #ffc46b;
+}
+.im-ask-t {
+  margin: 0; max-width: none;
+  font-size: clamp(0.98rem, 0.86vw, 1.9rem); line-height: 1.38;
+  font-weight: 700; color: #ffffff;
+}
+
+/* ── Le tre cose che ci servono per la proposta ─────────────────────── */
+.im-serve {
+  margin-top: 0.8rem;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem;
+  grid-template-rows: auto auto 1fr;
+}
+.im-serve-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.32rem;
+  min-width: 0; padding: 0.95rem 1.1rem 1rem; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+@supports (grid-template-rows: subgrid) {
+  .im-serve-i { grid-row: 1 / -1; grid-template-rows: subgrid; }
+}
+.im-serve-fig { height: clamp(2.4rem, 3.1vw, 5rem); }
+@media (max-width: 1200px) {
+  .im-serve { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 940px) {
+  .im-serve-i { padding: 0.75rem 0.9rem 0.8rem; }
+  .im-serve-fig { height: clamp(1.9rem, 2.4vw, 3.8rem); }
+  .im-ask { padding: 0.7rem 1rem 0.75rem; }
 }
 
 /* ── Coworker: le tre capacità, e lo storyboard del video ─────────── */

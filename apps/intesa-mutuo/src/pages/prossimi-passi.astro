@@ -1,50 +1,136 @@
 ---
 /**
- * 09 · PROSSIMI PASSI — capitolo in attesa di contenuto.
+ * 09 · PROSSIMI PASSI — la fine del percorso.
  *
- * ⚠️ È UN SEGNAPOSTO, E LO DICE. Un capitolo vuoto e muto è peggio di
- * un capitolo che dichiara che cosa arriverà e chi lo porta: chi apre il
- * link fuori dalla riunione capisce che manca un pezzo e non che il
- * documento è rotto. Quando il contenuto arriva, questa slide sparisce
- * e la riga `capitolo` in `agenda.ts` resta la stessa.
+ * ⚠️ NON È PIÙ UN SEGNAPOSTO (revisione critica, 30 ott 2026). Era un
+ * capitolo che dichiarava di essere vuoto, e nel frattempo la risposta
+ * alla sua domanda stava tre capitoli prima, dentro le referenze: «Che
+ * cosa misureremmo, dal giorno uno» parlava di noi in un capitolo che
+ * parla di altre banche, e lì rompeva l'argomento del capitolo.
+ * Ora sta qui, dove è la domanda, insieme all'ask — che resta in UN
+ * POSTO SOLO, letto dalla fonte unica `referenze.ts` come il taglio «In
+ * dieci minuti» (gate `pnpm audit:taglio`).
+ *
+ * Le tre cose che chiediamo vengono dalla slide 61 del deck del 5
+ * novembre («Prossimi passi | che cosa ci serve per la proposta»).
+ * ⚠️ Una riga è stata riscritta: l'originale nominava due prodotti di un
+ * altro fornitore. In un documento che va al cliente quei nomi non
+ * entrano — e la frase funziona meglio senza, perché chiede la mappa dei
+ * collegamenti invece di presupporre quali siano.
+ *
+ * L'ultima slide è la slide-FIRMA, e chiude il PERCORSO: per contratto è
+ * una slide a sé (la chiusura densa più il lockup grande sborda).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { CHAPTERS, prevSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
+import FiguraCap from '../components/FiguraCap.astro';
+import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
+import { MISURE, ASK } from '../data/referenze';
 import fondo from '../assets/generated/lavoro-04-decisione.webp';
+
+/* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
+const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 
 const SLUG = 'prossimi-passi';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+
+/* Le tre cose che servono per scrivere una proposta con un perimetro
+   invece di un ordine di grandezza. Dalla slide 61 del deck. */
+const SERVE = [
+  { fig: 'misura', t: { it: 'I volumi', en: 'The volumes' },
+    d: { it: 'Quanti profili da contattare in dodici mesi, e quanto sono ampi i casi d’uso che volete aprire.', en: 'How many profiles to contact over twelve months, and how wide the use cases you want to open are.' } },
+  { fig: 'canali', t: { it: 'Le integrazioni', en: 'The integrations' },
+    d: { it: 'La mappa reale dei collegamenti fra i sistemi del profilo, quelli di invio, e i canali di contatto.', en: 'The real map of the links between the profile systems, the sending systems, and the contact channels.' } },
+  { fig: 'archivio', t: { it: 'I dati', en: 'The data' },
+    d: { it: 'Quali dati sono già raccolti, con quale tassonomia, quali vanno portati, e chi li possiede.', en: 'Which data is already collected, under which taxonomy, which needs bringing in, and who owns it.' } },
+];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
     <Navigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 40%`}></div>
       <Divisore num={ch.num}
         tIt="Prossimi passi" tEn="Next steps"
-        lIt="Che cosa facciamo da qui, chi lo fa, entro quando."
-        lEn="What we do from here, who does it, by when." />
+        lIt="Che cosa misureremmo dal giorno uno, e che cosa ci serve da voi per scriverlo."
+        lEn="What we would measure from day one, and what we need from you to write it down." />
     </Slide>
 
-    <Slide id="slide-attesa" bg="inverse" align="left">
+    <Slide id="slide-da-voi" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap" data-reveal>
-        <T as="p" class="im-ado-occ" it="Sezione in preparazione" en="Section in preparation" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Le slide di questo capitolo arrivano con il materiale di prodotto" en="This chapter’s slides arrive with the product material" />
-        <T as="p" class="im-ado-l" it="Il capitolo esiste nell’agenda perché in sala se ne parla. Il contenuto non è ancora innestato, e questa pagina lo dice invece di far sembrare il documento finito." en="The chapter exists in the agenda because it is covered in the room. The content is not grafted in yet, and this page says so rather than letting the document look finished." />
-        <T as="p" class="im-fonte-riga" it="Quando il materiale arriva, questa slide esce e il capitolo prende il suo posto senza toccare né l’agenda né la navigazione." en="When the material arrives, this slide goes and the chapter takes its place without touching the agenda or the navigation." />
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <T as="p" class="im-n" it="Da voi" en="At your end" />
+          <T as="h2" class="im-h2" it="Che cosa misureremmo, dal giorno uno" en="What we would measure, from day one" />
+          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo. Quattro misure di acquisizione: a sinistra come si sanno oggi, a destra come si saprebbero." en="Not a promised number, but the way to know it. Four acquisition measures: on the left how they are known today, on the right how they would be known." />
+        </div>
+        <div class="im-mis" data-stagger>
+          {MISURE.map((m) => (
+            <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
+              <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
+              <p class="im-mis-r">
+                <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
+                <span class="im-mis-f" aria-hidden="true"></span>
+                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
+              </p>
+            </div>
+          ))}
+        </div>
+        {/* L'ASK, grande. La cifra è un numerale, non copia: il testo
+            arriva verbatim dalla fonte unica, perché due versioni della
+            richiesta sono il modo più rapido di sembrare confusi. */}
+        <div class="im-ask" data-reveal data-reveal-delay="0.3">
+          <p class="im-ask-n" data-display>1</p>
+          <T as="p" class="im-ask-t" it={ASK.it} en={ASK.en} />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-serve" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Che cosa ci serve per la proposta" en="What we need for the proposal" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tre cose, e il perimetro smette di essere un ordine di grandezza" en="Three things, and the scope stops being an order of magnitude" />
+        <T as="p" class="im-ado-l" it="Sono le tre domande a cui una proposta seria non può rispondere da sola. Le prime due le avete già; la terza si scrive insieme." en="These are the three questions a serious proposal cannot answer on its own. You already have the first two; the third gets written together." />
+
+        <div class="im-serve">
+          {SERVE.map((x) => (
+            <section class="im-serve-i" data-substep data-side="in">
+              <FiguraCap segno={x.fig} class="im-serve-fig" />
+              <T as="span" class="im-bv-t" it={x.t.it} en={x.t.en} />
+              <T as="span" class="im-bv-d" it={x.d.it} en={x.d.en} />
+            </section>
+          ))}
+        </div>
+
+        <T as="p" class="im-fonte-riga" it="Le tre voci vengono dall’ultima slide del documento di lavoro del 5 novembre: è la richiesta, e sta in un posto solo." en="The three items come from the last slide of the 5 November working document: it is the ask, and it sits in one place only." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-firma" bg="inverse" align="center"
+           data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
+      <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
+                 poster={`${base}media/innesto-chiusura.poster.jpg`}
+                 scrim="im-clip-scrim" opacity={1} />
+      <div class="im-firma" data-reveal>
+        <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
+        <T as="p" class="im-firma-l" it="Il segnale ce l’avete già. Manca il posto dove si decide che farne." en="You already have the signal. What is missing is where to decide what to do with it." data-reveal data-reveal-delay="0.14" />
+        <a href={href(base, '/')} class="edf-sig-cta">
+          <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
+        </a>
       </div>
     </Slide>
 

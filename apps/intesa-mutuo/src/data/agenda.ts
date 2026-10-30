@@ -44,12 +44,12 @@ export const AGENDA: VoceAgenda[] = [
   {
     n: '04', capitolo: 'momenti',
     titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
-    riga: { it: 'Misurare i canali, scegliere chi contattare, decidere l’offerta', en: 'Measure the channels, choose who to contact, decide the offer' },
+    riga: { it: 'La misura, il profilo, la regia e l’arbitro — e dove si innestano nei vostri sistemi', en: 'Measurement, profile, orchestration and arbiter — and where they graft onto your systems' },
   },
   {
     n: '05', capitolo: 'circolo',
     titolo: { it: 'Il giro che si chiude', en: 'The loop that closes' },
-    riga: { it: 'Quello che si impara torna sulla relazione e sull’acquisizione dopo', en: 'What you learn comes back on the relationship and on the next acquisition' },
+    riga: { it: 'Il ritorno, e su chi lavora: su lei, e sulla prospect ancora da conoscere', en: 'The return, and who it works on: on her, and on the prospect still unknown' },
   },
   {
     n: '06', capitolo: 'coworker',
@@ -69,6 +69,6 @@ export const AGENDA: VoceAgenda[] = [
   {
     n: '09', capitolo: 'prossimi-passi',
     titolo: { it: 'Prossimi passi', en: 'Next steps' },
-    riga: { it: 'Che cosa facciamo da qui, chi lo fa, entro quando', en: 'What we do from here, who does it, by when' },
+    riga: { it: 'Le misure dal giorno uno, e quello che ci serve da voi', en: 'The measures from day one, and what we need from you' },
   },
 ];
