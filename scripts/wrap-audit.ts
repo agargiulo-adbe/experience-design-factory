@@ -74,9 +74,14 @@ interface Rilievo {
   forte: boolean;
 }
 
+/* Quante righe rese fanno di un blocco «testo che si prende intero». Due è il
+   caso inequivocabile: un lead di due righe si legge come un titolo. Si alza con
+   WRAP_RIGHE per vedere il raggio d'azione prima di cambiare la soglia. */
+const RIGHE_MAX = Number(process.env.WRAP_RIGHE ?? 2);
+
 async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: boolean): Promise<Rilievo[]> {
   return page.evaluate(
-    ({ it, en, rotta, viewport, tutto }) => {
+    ({ it, en, rotta, viewport, tutto, righeMax }) => {
       const servizio = new Set([...it, ...en]);
       /* La soglia è RELATIVA al corpo di base della pagina, non assoluta: a
          dimensione muro la radice sale a 24-28px e un «≥18px» promuoverebbe
@@ -110,8 +115,7 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
           // corpo la stessa rottura non la nota nessuno — e legarla tutta
           // vorrebbe dire un testo pieno di vincoli che poi sborda sui
           // viewport stretti.
-          const conta = corpo >= soglia;
-          if (!conta && !tutto) continue;
+          const grande = corpo >= soglia;
 
           // Le righe rese: si raccolgono i rettangoli dei nodi di testo e si
           // raggruppano per ordinata. È l'unico modo di sapere dove il browser
@@ -136,6 +140,20 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
           }
           const ordinate = Array.from(righe.keys()).sort((a, b) => a - b);
           if (ordinate.length < 2) continue;               // una riga sola non va a capo
+
+          /* Il criterio sono le RIGHE, non il corpo. La ragione del filtro è
+             scritta qui sopra da sempre — «lì le righe sono poche e l'occhio le
+             prende intere» — ma la misura era la dimensione del carattere, che è
+             solo un indizio di quella cosa. Nella fessura fra la ragione e la
+             misura cadeva il caso più frequente: il LEAD di due righe a corpo
+             base, che si legge come un titolo. Misurato a mano su tre slide di
+             intesa-mutuo (adobe·slide-cx «…in cui il / lavoro», prossimi-passi·
+             slide-serve «…rispondere da / sola», analytics·slide-attesa), dove
+             il gate taceva e la preposizione appesa si vedeva benissimo.
+             Il paragrafo lungo resta fuori: lì la rottura non la nota nessuno e
+             legarla tutta riempirebbe il testo di vincoli che poi sbordano. */
+          const conta = grande || ordinate.length <= righeMax;
+          if (!conta && !tutto) continue;
 
           // Tutte tranne l'ultima: l'ultima riga non ha un «a capo dopo».
           for (let k = 0; k < ordinate.length - 1; k++) {
@@ -184,7 +202,7 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
       }
       return out;
     },
-    { it: [...SERVIZIO_IT], en: [...SERVIZIO_EN], rotta, viewport, tutto },
+    { it: [...SERVIZIO_IT], en: [...SERVIZIO_EN], rotta, viewport, tutto, righeMax: RIGHE_MAX },
   );
 }
 
