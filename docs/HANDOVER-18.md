@@ -348,17 +348,86 @@ app (link cross-app, come Trenitalia Sales): «Chi c'è in sala il 5 novembre, e
 `intesa-scala-umana/dossier`). ⚠️ L'etichetta dice **che cosa c'è dentro**, non il nome
 dell'experience che lo ospita: in una console altrui «Dove ci innestiamo» non dice niente.
 
-### 42.7 Stato dei gate (30 ott 2026, preview statico)
+### 42.7 Stato dei gate (30 ott 2026, sera, preview statico — dopo il panel)
 
-`audit:deck` **0 HARD** su 11 rotte · `audit:ink` **PULITO** su 839 blocchi · `copy-audit`
-**0 HARD** su 986 stringhe · `audit:taglio` **allineato** · `audit:fonti` nessun link rotto ·
-`audit:og` **PASS** (211 pagine) · `typecheck` 0 errori su 35 file · build delle 22 app verde.
+`audit:deck` **0 HARD** su 11 rotte (141 soft, tutti `a`/`i`) · `audit:ink` **PULITO** su 969
+blocchi · `copy-audit` **0 HARD** su 1171 stringhe (4 soft) · `audit:taglio` **allineato** ·
+`audit:fonti` nessun link rotto (9 su business.adobe.com «da aprire a mano»: aperti, 200) ·
+`typecheck` 0 errori. `audit:wrap`: 15 residui soft, quasi tutti famiglia `F` (code di frase
+in titoli a due frasi dentro un attributo `<T it=…>`, dove l'`inline-block` per frase non si
+applica): dichiarati, non legati con spazi unificatori — vedi memoria `coda-di-frase-orfana`.
 
-### 42.8 Che cosa manca
+### 42.8 Il panel review del 30 ott 2026 — due giri, sei stakeholder, e che cosa ha cambiato
 
-- **La panel review non è mai stata lanciata** — è il P0 in testa al backlog.
-- **`provenance.json` ha 2 record per 28 immagini** (difetto ereditato): la copertina dichiara che
-  autore e licenza vivono lì. Il rimedio (`pnpm assets:build`) **riscarica tutte le foto**, quindi
-  è una scelta dell'owner.
-- **Il capitolo 08 CX Analytics è un segnaposto dichiarato**, in attesa del materiale di prodotto.
-- **`show_in_showcase` resta `false`**: accenderlo è la decisione umana prevista dalla regola.
+Ritratti nuovi per la stanza del 5 novembre in `docs/Intesa Sanpaolo/PANEL-PERSONAS-5-NOVEMBRE.md`
+(git-ignorato): chi costruisce i target, il suo capo (CRM, Adobe Analytics), il marketing
+digitale, **un seggio derivato** per Group Technology, i Canali, il consulente Deloitte. Verdetti
+in `PANEL-VERDICT-2026-10-30-round1.md` e `-round2.md`, grezzi in `panel/2026-10-30-round{1,2}/`.
+
+| asse | giro 1 | giro 2 |
+|---|---|---|
+| credibilità dei fatti | 3,0 | **4,0** |
+| rilevanza per me | 3,3 | **4,0** |
+| chiarezza | 3,7 | **4,0** |
+| rischio (5 = nessuno) | 2,5 | **3,2** |
+| azionabilità | 2,8 | **4,0** |
+
+Giro 1: sei «sì condizionato», **16 P0 · 12 P1 · 6 P2**, fact-check 60 affermazioni (34 confermate,
+6 refutate). Giro 2: un «sì» (Canali) e cinque «condizionato», fact-check 59 (49 confermate, 3
+refutate, tutte corrette dopo). **Quello che ha cambiato il deck**, in ordine di peso:
+
+- **`scenario/slide-motore`, nuova, nel filo davanti**: «resta il vostro motore di targeting — che
+  cosa entra, che cosa esce», con il perimetro del pilota (prospect senza scheda, canali digitali).
+  Il filo diceva «l'arbitro no», «nessuno ha costruito un'audience»: davanti a chi i target li
+  costruisce suonava «il vostro lavoro non serve». È la riga che il Targeting «porta al capo così».
+- **`momenti/slide-ingaggio-mappa`, nuova**: avete / si aggiunge / resta vostro, e **sei frecce
+  con un nome** (sito e app → piattaforma via SDK, *da disegnare per prima* su AEM on‑premise;
+  CRM → profilo e misura, il ritorno che chiude l'imbuto). Era «una marketecture».
+- **Capitolo 08 scritto** (`slide-passaggio`, `slide-attribuzione`) dalle pagine pubbliche su
+  CJA: che cosa si riusa, che cosa cambia nome, che cosa si aggiunge — come **ipotesi
+  sull'installato, da correggere in sala**. Era il segnaposto, sul tema della convocazione.
+- **Quattro errori di fatto che un lettore coglie a mente**: rata 742 → **863 €** (180.000/25
+  anni/3,10%), «mutuo erogato in tre settimane» → **richiesta firmata il 5 dicembre** (cronologia
+  12 nov → 5 dic che torna), Crédit Agricole «non pubblicata» → **pagina pubblica col link** e
+  il «prima» (150+ percorsi, sei mesi), TSB «unica referenza con Offer Decisioning» → U.S. Bank
+  lo nomina. E lo **score 0,78 su una prospect** è sparito: regola di sessione, score in batch
+  quando è riconosciuta.
+- **La colonna «oggi» è una domanda**, non un fatto (`referenze.ts`); due misure in più (target,
+  filiale) nel percorso intero (`estesa`), quattro nel taglio; le condizioni del trimestre sotto
+  l'ask. **Tetto di contatto → politica di contatto**, due contatori come dice la documentazione.
+- **Fonti pubbliche al posto di sette «Field Readiness»**, i quattro Forrester Wave con nome
+  esatto e link (e la riga sulle sessioni anonime è **testuale** sulla pagina Adobe: il
+  fact‑check del giro 1 la dava per non verificata, era vera), Coworker «si attiva su richiesta»
+  senza promettere la conferma, Projects «annunciato», storyboard della demo sul mutuo con il
+  passo **Target**.
+- **I mock dei momenti mostravano tre righe su tutto** (`nth-child(n+4)`): sparivano proprio
+  «appuntamenti in filiale» e «richieste firmate». Ora l'imbuto ha cinque gradini, le candidate
+  sono quattro ovunque, le otto domande stanno su due colonne. L'imbuto vive in
+  **`src/data/imbuto.ts`**, fonte unica di Scenario e mock (erano due copie con numeri diversi).
+- Registro admin riallineato al vivo (`slide-fsi`, `slide-motore`, `slide-ingaggio-mappa`,
+  `slide-passaggio`, `slide-attribuzione`, `slide-fasi`, `slide-serve` a cinque voci con chi le porta).
+
+**Due strumenti corretti, per tutti i deck**: `scripts/deck-pdf.ts` e `scripts/panel-evidence.mjs`
+**non aprivano i sotto-passi** — il PDF usciva con 103 blocchi invisibili e le personas leggevano
+slide mutile. Ora `revealSubstep()` finché risponde, conteggio nel log; l'evidenza porta anche il
+testo dei «Scopri come» e aspetta 2,2 s (a 1,4 s le card a scaglioni erano a metà dissolvenza).
+Memoria `deck-due-assi-sottopassi`.
+
+### 42.9 Che cosa resta aperto (dal giro 2: decisioni, non difetti)
+
+- **Le dieci slide davanti**: il formato concordato è 10 + backup, il percorso ne ha 47 senza un
+  segno di quali. Si marcano col gating capitoli/slide della console e si conferma la lista con il
+  referente il 3 nov. Proposta del panel: `scenario/slide-segnale`, `slide-motore`,
+  `persona/slide-giro-di-giulia`, `momenti/slide-m-03`, `m-04`, `m-05`, `m-07`,
+  `analytics/slide-passaggio`, `prossimi-passi/slide-da-voi`, `slide-serve`.
+- **Il taglio «in dieci minuti»** porta quattro misure su sei e non dice che il motore resta: va
+  aggiunta una slide «entra / esce» dalla stessa fonte (`sBreve`). È la versione che gira al capo.
+- **Coworker**: senza conferma scritta dell'opt‑in entro il **2 nov**, capitolo 06 in backup.
+- **Il perimetro dell'arbitro detto in tre modi** (posizione nel CRM / lead / prospect): un criterio
+  solo — «chi non ha una scheda cliente; un lead non la fa uscire, la firma sì» — da confermare.
+- **`adobe/slide-fsi`**: cinque personas su sei la tagliano ancora (brochure da vendor in una sala
+  convocata sulla Web Analytics). **`adobe/slide-team`**: sette nomi, cinque sull'invito — si
+  riconcilia o esce. **Residenza del dato** (regione, hyperscaler, log CDN, buste paga caricate da
+  link): mini‑tabella «esce / resta» per il tavolo tecnico. **Consenso nel mock di m‑03**: due
+  caselle, non una. **Filiale Digitale** come canale che richiama un prospect, mai nominata.
+- **`provenance.json` ha 2 record per 28 immagini** (ereditato); **`show_in_showcase` resta `false`**.

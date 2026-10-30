@@ -39,7 +39,21 @@ for (const rotta of ROUTES) {
   const n = await page.evaluate(() => document.querySelectorAll('[data-slide]').length);
   for (let i = 0; i < n; i++) {
     await page.evaluate((k) => window.__edfDeck && window.__edfDeck.goTo(k), i);
-    await page.waitForTimeout(1400);
+    // 2200 e non 1400: una slide con sei card a scaglioni (`data-stagger`)
+    // più un blocco in ritardo di 0,3 s non ha finito a 1,4 s, e lo scatto
+    // mostrava le ultime card a metà dissolvenza (30 ott 2026).
+    await page.waitForTimeout(2200);
+    // I SOTTO-PASSI SI APRONO TUTTI prima di leggere e di fotografare: un deck
+    // ha due assi (le slide, e dentro una slide i `[data-substep]` che si
+    // rivelano col ↓), e fermarsi al primo dà alle personas una slide col solo
+    // titolo. Trovato il 30 ott 2026 sul PDF di Intesa: 103 blocchi invisibili.
+    // Stessa via di `deck-pdf.ts`: l'API del motore, non «Riduci movimento».
+    const passi = await page.evaluate(() => {
+      const d = window.__edfDeck; let n = 0;
+      if (d && d.revealSubstep) while (d.revealSubstep()) n++;
+      return n;
+    });
+    if (passi) await page.waitForTimeout(450);
     const dati = await page.evaluate((k) => {
       const s = document.querySelectorAll('[data-slide]')[k];
       if (!s) return null;
@@ -54,8 +68,13 @@ for (const rotta of ROUTES) {
       // slide. Trovato il 21 ott 2026, presente in tutti e due i giri.
       clone.querySelectorAll('script, style, noscript').forEach((e) => e.remove());
       const testo = (clone.innerText || '').split('\n').map((r) => r.trim()).filter(Boolean).join('\n');
+      // Il dettaglio dietro «Scopri come» è chiuso in proiezione ma viaggia
+      // con il deck: chi lo riceve lo apre. Va nel pacchetto, marcato come
+      // contenuto a richiesta, se no il fact-checker non lo vede.
+      const dettagli = [...clone.querySelectorAll('[data-hiw-region]')].map((r) =>
+        (r.textContent || '').split('\n').map((x) => x.trim()).filter(Boolean).join('\n')).filter(Boolean);
       const link = [...s.querySelectorAll('a[href^="http"]')].map((a) => `${a.textContent.trim()} → ${a.href}`);
-      return { id: s.id || `(slide ${k + 1})`, testo, link };
+      return { id: s.id || `(slide ${k + 1})`, testo, link, dettagli };
     }, i);
     if (!dati) continue;
     // la rete di sicurezza: una slide senza testo è quasi sempre uno scatto
@@ -76,7 +95,7 @@ for (const rotta of ROUTES) {
     }
     await writeFile(
       join(OUT, 'content', `${nome}.md`),
-      `# ${rotta.name} · ${dati.id}\n\nURL: ${BASE}${rotta.route}\n\n## Testo esatto\n\n${dati.testo}\n\n## Link esterni\n\n${dati.link.length ? dati.link.map((l) => `- ${l}`).join('\n') : '(nessuno)'}\n`,
+      `# ${rotta.name} · ${dati.id}\n\nURL: ${BASE}${rotta.route}\n\n## Testo esatto\n\n${dati.testo}\n\n## Dettaglio a richiesta («Scopri come», chiuso in proiezione)\n\n${dati.dettagli.length ? dati.dettagli.map((d) => d).join('\n\n---\n\n') : '(nessuno)'}\n\n## Link esterni\n\n${dati.link.length ? dati.link.map((l) => `- ${l}`).join('\n') : '(nessuno)'}\n`,
     );
     indice.push({ rotta: rotta.name, id: dati.id, parole: dati.testo.split(/\s+/).length });
   }

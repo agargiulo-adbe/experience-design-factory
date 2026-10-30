@@ -26,7 +26,11 @@ import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { MOMENTI, DOMANDE_IN_SLIDE } from '../data/momenti';
-import { FONTI, CIFRE_TSB, MISURE, ASK } from '../data/referenze';
+import { FONTI, CIFRE_TSB, MISURE, ASK, TSB_SUB } from '../data/referenze';
+/* Il taglio corto porta le quattro misure di base; le due estese
+   (target, filiale) stanno nel percorso intero. Stesso oggetto, un
+   campo accanto: mai un altro elenco. */
+const MISURE_BREVI = MISURE.filter((m) => !m.estesa);
 import CircoloJourney from '../components/CircoloJourney.astro';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
@@ -61,7 +65,7 @@ const M = MOMENTI[2];
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" data-reveal />
         <T as="h1" class="im-cov-t" it="Lo stesso mutuo, dai due lati" en="The same mortgage, from both sides" data-reveal data-reveal-delay="0.1" />
         <T as="p" class="im-cov-l"
-           it="In dieci minuti: una persona che cerca casa e non è ancora vostra cliente, e cosa serve per non perderla."
+           it="In dieci minuti: una persona che cerca casa e non è ancora vostra cliente, e cosa serve per non perderla."
            en="In ten minutes: someone looking for a home who is not your customer yet, and what it takes not to lose her."
            data-reveal data-reveal-delay="0.18" />
       </div>
@@ -82,7 +86,7 @@ const M = MOMENTI[2];
         <div class="im-pan">
           <T as="p" class="im-pan-tag" it="La protagonista" en="The lead character" />
           <ul class="im-manca" data-stagger>
-            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessun profilo nel CRM" en="No CRM record" /></li>
+            <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna posizione nel CRM" en="No position in the CRM" /></li>
             <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna app da notificare" en="No app to notify" /></li>
             <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuno storico su cui modellare" en="No history to model on" /></li>
             <li class="im-manca-i" data-si><span class="im-manca-v" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Due sere di navigazione anonima" en="Two evenings browsing anonymously" /></li>
@@ -161,7 +165,7 @@ const M = MOMENTI[2];
         <div class="im-sl-head">
           <p class="im-n">TSB</p>
           <T as="h2" class="im-h2" it="La prima banca britannica su Experience Platform" en="The first UK bank on Experience Platform" />
-          <T as="p" class="im-sub" it="È l’unica referenza pubblica in cui Offer Decisioning è nominato. E l’esempio che racconta è una pratica di mutuo lasciata a metà: parole loro." en="The only public reference naming Offer Decisioning. And the example it tells is a half-finished mortgage application: their words." />
+          <T as="p" class="im-sub" it={TSB_SUB.it} en={TSB_SUB.en} />
         </div>
         <div class="im-cifre" data-stagger>
           {CIFRE_TSB.map((c) => (
@@ -174,7 +178,7 @@ const M = MOMENTI[2];
         <p class="im-fonte" data-reveal data-reveal-delay="0.3">
           <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
           <a href={FONTI.tsb} target="_blank" rel="noopener">business.adobe.com · TSB</a>
-          <span data-lang-it> · verificata il 29 ottobre 2026</span><span data-lang-en> · checked 29 October 2026</span>
+          <span data-lang-it> · verificata il 30 ottobre 2026</span><span data-lang-en> · checked 30 October 2026</span>
         </p>
       </div>
     </Slide>
@@ -187,7 +191,7 @@ const M = MOMENTI[2];
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
         <div class="im-mis im-mis--taglio" data-stagger>
-          {MISURE.map((m) => (
+          {MISURE_BREVI.map((m) => (
             <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
               <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
               <p class="im-mis-r">

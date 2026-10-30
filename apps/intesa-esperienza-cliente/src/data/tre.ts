@@ -41,7 +41,7 @@ export const TRE: Cosa[] = [
   {
     n: '1', gruppo: 'trovare', prodotto: 'Adobe Brand Visibility',
     t: { it: 'Farsi trovare', en: 'Being found' },
-    riga: { it: 'Chi cerca casa lo chiede a un assistente, non a un motore. O la banca è citata, o non esiste.', en: 'House-hunting starts with an assistant, not a search engine. Either the bank is cited, or it does not exist.' },
+    riga: { it: 'Chi cerca casa lo chiede a un assistente, non a un motore. Se non vi cita, il confronto comincia senza di voi.', en: 'House-hunting starts with an assistant, not a search engine. If it does not cite you, the comparison starts without you.' },
     poi: { it: 'I due strati: prima si misura come comparite nelle risposte generate, poi i correttivi vanno in rete al bordo, senza toccare il CMS.', en: 'The two layers: first you measure how you show up in generated answers, then fixes ship at the edge, without touching the CMS.' },
   },
   {
@@ -53,7 +53,7 @@ export const TRE: Cosa[] = [
   {
     n: '3', gruppo: 'piattaforma', prodotto: 'Adobe CX Analytics',
     t: { it: 'Misurare in un posto solo', en: 'Measuring in one place' },
-    riga: { it: 'App, sito, contact center e filiale nello stesso dato. Quello che non si misura non si decide.', en: 'App, site, contact centre and branch in one dataset. What is not measured does not get decided.' },
+    riga: { it: 'App, sito, contact center e filiale oggi stanno in quattro report: li mette insieme a mano chi decide.', en: 'App, site, contact centre and branch sit in four reports today: whoever decides joins them by hand.' },
     poi: { it: 'Quattro domande che oggi hanno quattro risposte diverse — e tre cose da concordare prima: identità, eventi, gruppi di controllo.', en: 'Four questions that today get four different answers — and three things to agree first: identity, events, control groups.' },
   },
 ];

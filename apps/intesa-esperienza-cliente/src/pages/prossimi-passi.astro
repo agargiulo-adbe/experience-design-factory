@@ -32,7 +32,7 @@ import { CHAPTERS, prevSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import FiguraCap from '../components/FiguraCap.astro';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
-import { MISURE, ASK } from '../data/referenze';
+import { MISURE, ASK, TRIMESTRE } from '../data/referenze';
 import fondo from '../assets/generated/lavoro-04-decisione.webp';
 /* Le stesse tre cose annunciate nel capitolo 01, dalla stessa fonte —
    e le stesse tre fotografie, perché è la forma a fare da aggancio. */
@@ -50,15 +50,40 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* Le tre cose che servono per scrivere una proposta con un perimetro
-   invece di un ordine di grandezza. Dalla slide 61 del deck. */
+/* Le cose che servono per scrivere una proposta con un perimetro
+   invece di un ordine di grandezza. Dalla slide 61 del deck, RIFATTE
+   (panel, 30 ott 2026): «chiedere alla Divisione» senza dire chi porta
+   che cosa vuol dire che nessuno le porta. Ogni voce ha la funzione che
+   la possiede e che cosa basta mandare; «i profili in dodici mesi» sono
+   la base di prezzo delle licenze, e si dice, separati dal perimetro
+   del pilota; la governance dell'arbitro e la spesa media per canale
+   sono le due voci che mancavano. */
 const SERVE = [
   { fig: 'misura', t: { it: 'I volumi', en: 'The volumes' },
-    d: { it: 'Quanti profili da contattare in dodici mesi, e quanto sono ampi i casi d’uso che volete aprire.', en: 'How many profiles to contact over twelve months, and how wide the use cases you want to open are.' } },
+    chi: { it: 'Controllo di Gestione · Targeting', en: 'Management control · Targeting' },
+    d: { it: 'Eventi al giorno per canale, profili nel grafo, attributi, retention: sono le grandezze del dimensionamento. I profili da contattare in dodici mesi servono al prezzo, e stanno a parte.', en: 'Events per day per channel, profiles in the graph, attributes, retention: the sizing quantities. Profiles to contact over twelve months serve the price, and sit apart.' } },
   { fig: 'canali', t: { it: 'Le integrazioni', en: 'The integrations' },
-    d: { it: 'La mappa reale dei collegamenti fra i sistemi del profilo, quelli di invio, e i canali di contatto.', en: 'The real map of the links between the profile systems, the sending systems, and the contact channels.' } },
+    chi: { it: 'Group Technology', en: 'Group Technology' },
+    d: { it: 'La mappa dei collegamenti con CRM di filiale, motore di targeting, data lake e Adobe Analytics: chi espone quali dati, e come.', en: 'The map of links with the branch CRM, the targeting engine, the data lake and Adobe Analytics: who exposes which data, and how.' } },
   { fig: 'archivio', t: { it: 'I dati', en: 'The data' },
+    chi: { it: 'Targeting · Advanced Analytics', en: 'Targeting · Advanced analytics' },
     d: { it: 'Quali dati sono già raccolti, con quale tassonomia, quali vanno portati, e chi li possiede.', en: 'Which data is already collected, under which taxonomy, which needs bringing in, and who owns it.' } },
+  { fig: 'regia', t: { it: 'La governance', en: 'Governance' },
+    chi: { it: 'Canali · CRM', en: 'Channels · CRM' },
+    d: { it: 'Chi possiede le regole dell’arbitro e la politica di contatto, canale per canale; e chi vince quando il motore e l’arbitro dicono due cose diverse.', en: 'Who owns the arbiter’s rules and the contact policy, channel by channel; and who wins when the engine and the arbiter disagree.' } },
+  { fig: 'esito', t: { it: 'Il marketing', en: 'Marketing' },
+    chi: { it: 'Marketing digitale', en: 'Digital marketing' },
+    d: { it: 'La spesa media per canale negli ultimi dodici mesi, e le domande su cui volete essere citati dagli assistenti.', en: 'Average spend per channel over the last twelve months, and the questions you want assistants to cite you on.' } },
+];
+/* Le fasi del seguito: un piano, non un preventivo. Il primo tavolo è
+   una sessione di architettura e modello dati. */
+const FASI = [
+  { fig: 'archivio', n: '0', t: { it: 'Il disegno', en: 'The design' },
+    d: { it: 'Identificativi, tassonomia degli eventi, base del consenso, gruppo di controllo, mappa dell’esistente. Le cinque voci qui accanto sono il suo contenuto. Progetto, con il nostro Solutions Consultant al tavolo.', en: 'Identifiers, event taxonomy, consent basis, control group, map of what exists. The five items alongside are its content. A project, with our Solutions Consultant at the table.' } },
+  { fig: 'flusso', n: '1', t: { it: 'Il mutuo, sui prospect', en: 'The mortgage, on prospects' },
+    d: { it: 'Il percorso di Giulia sui canali digitali, con il gruppo di controllo e un trimestre di misura. Licenza per il perimetro del pilota; chi integra lo decidete voi, con noi o con un integratore.', en: 'Giulia’s path on digital channels, with the control group and a quarter of measurement. Licence for the pilot perimeter; who integrates is your call, with us or an integrator.' } },
+  { fig: 'canali', n: '2', t: { it: 'Dopo il trimestre', en: 'After the quarter' },
+    d: { it: 'Il cross-sell dopo la firma, con le proposte del vostro motore come candidate; poi gli altri casi, uno alla volta, ciascuno con la sua misura.', en: 'Cross-sell after signature, with your engine’s proposals as candidates; then the other cases, one at a time, each with its own measurement.' } },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -87,7 +112,7 @@ const SERVE = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Quello di cui abbiamo parlato" en="What we have covered" />
         <T as="h2" class="im-tre-h" it="Le stesse tre, adesso che le avete viste" en="The same three, now that you have seen them" />
-        <T as="p" class="im-ado-l" it="In apertura erano tre nomi. Dopo il percorso di Giulia hanno una faccia, e un pezzo di stack sotto." en="At the start they were three names. After Giulia’s path they have a face, and a piece of stack underneath." />
+        <T as="p" class="im-ado-l" it="In apertura erano tre nomi. Dopo il percorso di Giulia hanno una faccia, e un pezzo di stack sotto. La mappa dell’installato è nel capitolo 04: è la prima cosa da aprire al tavolo tecnico." en="At the start they were three names. After Giulia’s path they have a face, and a piece of stack underneath. The map of the installed base is in chapter 04: it is the first thing to open at the technical table." />
 
         <ul class="im-tre im-tre--ripresa">
           {TRE.map((c, i) => (
@@ -110,9 +135,9 @@ const SERVE = [
         <div class="im-sl-head">
           <T as="p" class="im-n" it="Da voi" en="At your end" />
           <T as="h2" class="im-h2" it="Che cosa misureremmo, dal giorno uno" en="What we would measure, from day one" />
-          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo. Quattro misure di acquisizione: a sinistra come si sanno oggi, a destra come si saprebbero." en="Not a promised number, but the way to know it. Four acquisition measures: on the left how they are known today, on the right how they would be known." />
+          <T as="p" class="im-sub" it="Non un numero promesso, ma il modo di saperlo. Sei misure di acquisizione: a sinistra la domanda su oggi, da verificare con voi; a destra come si saprebbero." en="Not a promised number, but the way to know it. Six acquisition measures: on the left the question about today, to check with you; on the right how they would be known." />
         </div>
-        <div class="im-mis" data-stagger>
+        <div class="im-mis im-mis--sei" data-stagger>
           {MISURE.map((m) => (
             <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
               <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
@@ -131,6 +156,27 @@ const SERVE = [
           <p class="im-ask-n" data-display>1</p>
           <T as="p" class="im-ask-t" it={ASK.it} en={ASK.en} />
         </div>
+        <T as="p" class="im-fonte-riga" it={TRIMESTRE.it} en={TRIMESTRE.en} />
+      </div>
+    </Slide>
+
+    {/* ── Il seguito è un piano a fasi, non un preventivo (B28) ───── */}
+    <Slide id="slide-fasi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Il seguito" en="What follows" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Un piano a tappe, con chi fa che cosa. Il primo tavolo è una sessione di architettura" en="A plan in stages, with who does what. The first table is an architecture session" />
+        <T as="p" class="im-ado-l" it="Progetto o licenza, tappa per tappa, e i prerequisiti di ciascuna." en="Project or licence, stage by stage, and the prerequisites of each." />
+        <div class="im-esec im-fasi">
+          {FASI.map((f) => (
+            <section class="im-esec-i" data-substep data-side="in">
+              <FiguraCap segno={f.fig} class="im-esec-fig" />
+              <T as="span" class="im-bv-t" it={`${f.n} · ${f.t.it}`} en={`${f.n} · ${f.t.en}`} />
+              <T as="span" class="im-esec-chi" it={f.n === '0' ? 'Progetto · entro novembre' : f.n === '1' ? 'Licenza + progetto · un trimestre' : 'Un caso alla volta'} en={f.n === '0' ? 'Project · by November' : f.n === '1' ? 'Licence + project · one quarter' : 'One case at a time'} />
+              <T as="span" class="im-bv-d" it={f.d.it} en={f.d.en} />
+            </section>
+          ))}
+        </div>
       </div>
     </Slide>
 
@@ -138,20 +184,21 @@ const SERVE = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Che cosa ci serve per la proposta" en="What we need for the proposal" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tre cose, e il perimetro smette di essere un ordine di grandezza" en="Three things, and the scope stops being an order of magnitude" />
-        <T as="p" class="im-ado-l" it="Sono le tre domande a cui una proposta seria non può rispondere da sola. Le prime due le avete già; la terza si scrive insieme." en="These are the three questions a serious proposal cannot answer on its own. You already have the first two; the third gets written together." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Cinque cose, e chi le porta" en="Five things, and who brings them" />
+        <T as="p" class="im-ado-l" it="Per ciascuna, la funzione che la possiede e che cosa basta mandare. Nessuna è un preventivo: sono il contenuto della prima sessione." en="For each, the function that owns it and what is enough to send. None is a quote: they are the content of the first session." />
 
-        <div class="im-serve">
+        <div class="im-serve im-serve--cinque">
           {SERVE.map((x) => (
             <section class="im-serve-i" data-substep data-side="in">
               <FiguraCap segno={x.fig} class="im-serve-fig" />
               <T as="span" class="im-bv-t" it={x.t.it} en={x.t.en} />
+              <T as="span" class="im-esec-chi" it={x.chi.it} en={x.chi.en} />
               <T as="span" class="im-bv-d" it={x.d.it} en={x.d.en} />
             </section>
           ))}
         </div>
 
-        <T as="p" class="im-fonte-riga" it="Le tre voci vengono dall’ultima slide del documento di lavoro del 5 novembre: è la richiesta, e sta in un posto solo." en="The three items come from the last slide of the 5 November working document: it is the ask, and it sits in one place only." />
+        <T as="p" class="im-fonte-riga" it="È la richiesta, e sta in un posto solo. Chi di Adobe siede al tavolo e la data del primo incontro si fissano in sala." en="This is the ask, and it sits in one place only. Who from Adobe sits at the table and the date of the first meeting get fixed in the room." />
       </div>
     </Slide>
 
@@ -162,7 +209,7 @@ const SERVE = [
                  scrim="im-clip-scrim" opacity={1} />
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <T as="p" class="im-firma-l" it="Il segnale ce l’avete già. Manca il posto dove si decide che farne." en="You already have the signal. What is missing is where to decide what to do with it." data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-l" it="Il segnale sui prospect ce l’avete già. Manca chi decide che farne, prima che diventino clienti." en="You already have the signal on prospects. What is missing is who decides what to do with it, before they become customers." data-reveal data-reveal-delay="0.14" />
         <a href={href(base, '/')} class="edf-sig-cta">
           <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
         </a>

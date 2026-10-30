@@ -8,8 +8,12 @@
  * messaggio sarebbe «è sempre la stessa cosa» — che è l'opposto del punto.
  *
  * I nomi di prodotto sono quelli veri e per esteso: il cliente li ritroverà
- * in un'offerta e su Experience League. «Offer Decisioning» è il nome
- * corretto — «AI Decisioning» non è un prodotto, è una capacità di AJO.
+ * in un'offerta e su Experience League. «AI Decisioning» non è un prodotto;
+ * «Offer Decisioning» è il nome della generazione precedente, che i casi
+ * pubblici usano ancora, e Experience League raccomanda «Decisioning» per
+ * le nuove implementazioni (fact-check del panel, 30 ott 2026). Brand
+ * Visibility è un prodotto a sé, non una funzione di AEM: il loro AEM è
+ * on-premise, e la testata di prima lo faceva sembrare un prerequisito.
  *
  * Qui il prodotto è NOSTRO: niente «ricostruzione illustrativa» da
  * dichiarare sull'interfaccia, solo la cautela sui dati.
@@ -23,6 +27,7 @@
  * `[data-substep]` rivelato dal motore con ↓ o Spazio.
  */
 import type { SchermoAdobe } from '../data/momenti';
+import { IMBUTO } from '../data/imbuto';
 /* I creativi delle varianti sono FOTO vere, licenziate. Sei riquadri di
    colore su una slide che dimostra una content factory dicono, da soli,
    che il contenuto non c'è: è lo stesso difetto del post nel feed. */
@@ -46,54 +51,60 @@ interface Props {
 const { prodotto, class: className, compatto = false } = Astro.props;
 
 const TESTATA: Record<SchermoAdobe, string> = {
-  visibilita: 'Adobe Experience Manager · Brand Visibility',
+  visibilita: 'Adobe Brand Visibility',
   genstudio: 'Adobe GenStudio',
   profilo: 'Adobe Real-Time CDP',
-  decisione: 'Adobe Journey Optimizer · Offer Decisioning',
+  decisione: 'Adobe Journey Optimizer · Decisioning',
   percorso: 'Adobe Journey Optimizer',
   coworker: 'Adobe CX Enterprise Coworker',
   misura: 'Adobe Customer Journey Analytics',
 };
 
-/* 01 · dove il marchio è citato, domanda per domanda. */
+/* 01 · dove il marchio è citato, domanda per domanda. Otto, perché la
+   slide dice «tre su otto»: con cinque righe in mock il conto non tornava
+   (panel, 30 ott 2026). Illustrative: le otto domande e le citazioni si
+   misurano insieme. */
 const DOMANDE = [
   { q: 'Miglior mutuo prima casa', p: 1 },
   { q: 'Tasso fisso o variabile 2026', p: 0 },
   { q: 'Quanto posso permettermi', p: 3 },
   { q: 'Mutuo giovani under 36', p: 0 },
-  { q: 'Surroga conviene', p: 2 },
+  { q: 'Surroga conviene', p: 0 },
+  { q: 'Spese di notaio e perizia', p: 0 },
+  { q: 'Mutuo al 100% per giovani', p: 0 },
+  { q: 'Quanto dura l’istruttoria', p: 2 },
 ];
 /* 02 · le varianti nate da un brief solo. */
 const VARIANTI = ['Torino · prima casa', 'Milano · prima casa', 'Under 36', 'Surroga',
                   'Famiglia', 'Secondo immobile'];
-/* 04 · le candidate, e quella che parte. */
+/* 04 · le candidate, e quella che parte. QUATTRO, come nello Scenario e
+   nell'approfondimento: erano cinque qui e quattro altrove (panel, 30
+   ott 2026). «Richiamo del gestore» non esiste per una non cliente — un
+   prospect non ha un gestore — ed è diventato il contact center;
+   «Offerta conto corrente» è uscita: è il rapporto su cui il mutuo si
+   appoggia, non un cross-sell da tenere fuori. */
 const OFFERTE = [
   { l: 'Promemoria documenti', s: 'scelta' },
-  { l: 'Richiamo del gestore', s: 'scartata' },
-  { l: 'Sconto prima casa under 36', s: 'esclusa' },
-  { l: 'Offerta conto corrente', s: 'esclusa' },
   { l: 'Invito in filiale', s: 'scartata' },
+  { l: 'Contatto dal contact center', s: 'scartata' },
+  { l: 'Sconto prima casa under 36', s: 'esclusa' },
 ];
 /* 05 · il percorso che parte dall'evento. */
 const PASSI = [
   { l: 'Evento: simulazione salvata, documenti mancanti', s: 'fatto' },
   { l: 'Attesa 12 ore', s: 'fatto' },
   { l: 'Email con il link per riprendere', s: 'ora' },
-  { l: 'Se non apre → proposta di richiamo', s: 'poi' },
-  { l: 'Appuntamento al CRM di filiale, via API', s: 'poi' },
+  { l: 'Se non clicca «Riprendi» → riprova con l’altra variante', s: 'poi' },
+  { l: 'Lead e appuntamento nel CRM di filiale, via API', s: 'poi' },
 ];
-/* 07 · l'imbuto, e dove si perde. */
+/* 07 · l'imbuto, e dove si perde. Dalla FONTE UNICA `data/imbuto.ts`:
+   era una seconda copia a mano, con numeri diversi e un'intestazione
+   «ultimi 30 giorni» che lo faceva sembrare un cruscotto vero. */
 /* ⚠️ La riga della FILIALE sta dentro l'imbuto, non accanto: la
    tracciatura offline è una domanda che il referente del targeting ha
    fatto più volte, e un imbuto tutto digitale la lascia senza risposta
    proprio sulla slide che parla di misura. */
-const FUNNEL = [
-  { l: 'Visite non riconosciute', v: 100, n: '48.000' },
-  { l: 'Simulazioni avviate', v: 72, n: '12.400' },
-  { l: 'Simulazioni salvate, con consenso', v: 39, n: '6.700' },
-  { l: 'Appuntamenti in filiale', v: 22, n: '3.800', offline: true },
-  { l: 'Mutui erogati a nuovi clienti', v: 12, n: '2.100' },
-];
+const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offline }));
 ---
 
 <figure class:list={['im-ado', compatto && 'im-ado--compatto', `im-ado--${prodotto}`, className]} data-prodotto={prodotto}>
@@ -106,7 +117,7 @@ const FUNNEL = [
     <div class="im-ado-in">
       {prodotto === 'visibilita' && (
         <>
-          <p class="im-ado-occhiello">Otto domande che contano · questo mese</p>
+          <p class="im-ado-occhiello">Otto domande che contano · illustrativo</p>
           <ul class="im-ado-dom">
             {DOMANDE.map((d) => (
               <li data-citata={d.p > 0 ? '' : null}>
@@ -115,13 +126,13 @@ const FUNNEL = [
               </li>
             ))}
           </ul>
-          <p class="im-ado-rilievo">Tre su otto. Le cinque che mancano sono contenuto che l’assistente non riesce a leggere.</p>
+          <p class="im-ado-rilievo">Tre su otto. Sulle cinque che mancano si verifica prima il perché: contenuto non leggibile, assente, o battuto da altri.</p>
         </>
       )}
 
       {prodotto === 'genstudio' && (
         <>
-          <p class="im-ado-occhiello">Un brief · dodici varianti · già approvate</p>
+          <p class="im-ado-occhiello">Un brief · dodici varianti · verificate</p>
           <div class="im-ado-grid">
             {VARIANTI.map((v, i) => (
               <div class="im-ado-var" data-scelta={i === 0 ? '' : null}>
@@ -132,7 +143,7 @@ const FUNNEL = [
               </div>
             ))}
           </div>
-          <p class="im-ado-rilievo">Le informative obbligatorie sono già dentro ogni variante.</p>
+          <p class="im-ado-rilievo">Ogni variante è verificata contro le informative prima di uscire.</p>
         </>
       )}
 
@@ -146,26 +157,32 @@ const FUNNEL = [
           </div>
           <p class="im-ado-prof-t">Due sere anonime, e adesso un nome</p>
           <dl class="im-ado-righe">
-            <div><dt>Nel CRM</dt><dd>non presente · non è cliente</dd></div>
+            {/* ⚠️ Qui c'era «Score dal vostro motore · propensione mutuo
+                0,78»: su una persona senza storico il motore di targeting
+                non ha una riga da scorare, e tutte e sei le personas lo
+                hanno visto al primo sguardo. In sessione vale una regola
+                sul comportamento, calcolata in piattaforma; lo score del
+                motore entra quando la persona è riconosciuta. */}
+            <div><dt>Nel CRM</dt><dd>nessuna posizione · non è cliente</dd></div>
             <div><dt>Consenso</dt><dd>dato ora, con la simulazione</dd></div>
-            <div><dt>Score dal vostro motore</dt><dd>propensione mutuo 0,78</dd></div>
+            <div><dt>Regola di sessione</dt><dd>2 sessioni · 1 simulazione salvata</dd></div>
           </dl>
-          <p class="im-ado-rilievo">Le visite di prima non si buttano: si attaccano al profilo quando arriva il consenso.</p>
+          <p class="im-ado-rilievo">Le visite di prima si collegano al profilo quando arriva il consenso, se il consenso ai cookie c’era già.</p>
         </>
       )}
 
       {prodotto === 'decisione' && (
         <>
-          <p class="im-ado-occhiello">Decisione · una prospect, cinque candidate</p>
+          <p class="im-ado-occhiello">Decisione · una prospect, quattro candidate</p>
           <ul class="im-ado-off">
             {OFFERTE.map((o) => (
               <li data-stato={o.s}>
                 <span>{o.l}</span>
-                <em>{o.s === 'scelta' ? 'parte' : o.s === 'esclusa' ? 'fuori tetto' : 'non ora'}</em>
+                <em>{o.s === 'scelta' ? 'parte' : o.s === 'esclusa' ? 'oltre il limite' : 'non ora'}</em>
               </li>
             ))}
           </ul>
-          <p class="im-ado-rilievo">Il tetto di contatto è un vincolo dell’offerta, e si valuta qui, prima che l’offerta esca.</p>
+          <p class="im-ado-rilievo">Il limite per offerta si valuta qui, prima che l’offerta esca; la politica di contatto resta la vostra regola.</p>
         </>
       )}
 
@@ -175,7 +192,7 @@ const FUNNEL = [
           <ul class="im-ado-passi">
             {PASSI.map((p) => (<li data-stato={p.s}><span>{p.l}</span></li>))}
           </ul>
-          <p class="im-ado-rilievo">Nessuno ha costruito un’audience: si è mossa la sua simulazione.</p>
+          <p class="im-ado-rilievo">L’audience l’avete definita una volta: a muoversi è stata la sua simulazione.</p>
         </>
       )}
 
@@ -184,8 +201,8 @@ const FUNNEL = [
           <p class="im-ado-occhiello">Conversazione · 11:04</p>
           <div class="im-ado-chat">
             <p class="im-ado-bolla im-ado-bolla--tu" data-substep data-side="out">Preparami il quadro di Giulia Marchetti per l’appuntamento delle 11:30.</p>
-            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Non è ancora cliente, quindi nel CRM non la trova. Ha simulato il 14/11 sul sito, 180.000 su 25 anni, e ha caricato i documenti ieri mattina.</p>
-            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Una cosa da sapere: si era fermata due sere sulla busta paga, ed è ripresa dopo la mail. Arriva informata.</p>
+            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Non è ancora cliente: nel CRM c’è solo il lead con l’appuntamento. Ha simulato il 14/11 sul sito, 180.000 su 25 anni, e ha caricato i documenti due giorni fa.</p>
+            <p class="im-ado-bolla im-ado-bolla--ai" data-substep data-side="in">Una cosa da sapere: si era fermata una sera sulla busta paga, ed è ripresa dopo la mail. Arriva informata.</p>
           </div>
           <p class="im-ado-rilievo">Chi riceve l’appuntamento chiede a parole quello che gli serve, e lo ottiene fatto.</p>
         </>
@@ -193,7 +210,7 @@ const FUNNEL = [
 
       {prodotto === 'misura' && (
         <>
-          <p class="im-ado-occhiello">L’imbuto di acquisizione · ultimi 30 giorni</p>
+          <p class="im-ado-occhiello">L’imbuto di acquisizione · ordini di grandezza illustrativi</p>
           <div class="im-ado-funnel">
             {FUNNEL.map((f, i) => (
               <div class="im-ado-barra" data-ultimo={i === FUNNEL.length - 1 ? '' : null} data-offline={f.offline ? '' : null}>

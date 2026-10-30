@@ -26,25 +26,32 @@ export interface VoceAgenda {
 }
 
 export const AGENDA: VoceAgenda[] = [
+  /* ⚠️ UN INDICE SOLO (panel del 30 ott 2026). La copertina titolava
+     «02 Tutta l'offerta Adobe · 03 Lo stesso mutuo · 04 Dal dato alla
+     decisione» mentre la barra e le cover dicevano «02 Scenario · 03 La
+     persona · 04 I sette momenti»: due indici dello stesso documento,
+     e chi seguiva l'agenda non ritrovava i capitoli. Ora i numeri e i
+     titoli sono quelli della barra, che è quella che si percorre; la
+     `riga` resta il posto dove l'agenda dice di che cosa si parla. */
   {
     n: '01', capitolo: 'adobe',
-    titolo: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' },
-    riga: { it: 'Posizionamento nei servizi finanziari e obiettivo dell’incontro', en: 'Positioning in financial services, and what this meeting is for' },
+    titolo: { it: 'Adobe per Intesa Sanpaolo', en: 'Adobe for Intesa Sanpaolo' },
+    riga: { it: 'Chi siamo, i blocchi dell’offerta, e le tre cose di cui si parla oggi', en: 'Who we are, the building blocks, and the three things on the table today' },
   },
   {
-    n: '02', capitolo: 'adobe',
-    titolo: { it: 'Tutta l’offerta Adobe', en: 'The whole Adobe offering' },
-    riga: { it: 'Da farsi trovare alla misura: i blocchi, e come stanno insieme', en: 'From being found to measurement: the blocks, and how they hold together' },
+    n: '02', capitolo: 'scenario',
+    titolo: { it: 'Scenario', en: 'Scenario' },
+    riga: { it: 'Il segnale che c’è già, e il motore di targeting che resta', en: 'The signal that already exists, and the targeting engine that stays' },
   },
   {
-    n: '03', capitolo: 'momenti',
-    titolo: { it: 'Lo stesso mutuo, dai due lati', en: 'The same mortgage, from both sides' },
-    riga: { it: 'Sette momenti di una persona che non vi conosce ancora, e cosa succede dall’altra parte', en: 'Seven moments of someone who does not know you yet, and what happens on the other side' },
+    n: '03', capitolo: 'persona',
+    titolo: { it: 'La persona', en: 'The persona' },
+    riga: { it: 'Giulia, 34 anni, non è vostra cliente: le sue tracce, e i dati che mancano', en: 'Giulia, 34, not your customer: her traces, and the data that is missing' },
   },
   {
     n: '04', capitolo: 'momenti',
-    titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
-    riga: { it: 'Dove la misura, il profilo, la regia e l’arbitro si innestano nei vostri sistemi', en: 'Where measurement, profile, orchestration and the arbiter graft onto your systems' },
+    titolo: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' },
+    riga: { it: 'Sopra la sua vista, sotto la vostra; poi gli approfondimenti su dato, profilo, regia e arbitro', en: 'Her view above, yours below; then the deep dives on data, profile, orchestration and the arbiter' },
   },
   {
     n: '05', capitolo: 'circolo',

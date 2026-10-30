@@ -18,6 +18,20 @@
  * immagine per pagina — che viene reso in PDF. Quello che finisce nel file è
  * esattamente quello che si vedrebbe in proiezione, font e sfondi compresi.
  *
+ * I SOTTO-PASSI SI APRONO TUTTI, e questa non è una scelta grafica. Un deck
+ * ha DUE assi: le slide, e dentro una slide i blocchi `[data-substep]` che
+ * si rivelano uno alla volta con ↓ — la chat che arriva battuta per battuta,
+ * l'imbuto che compare sotto il titolo. Chi percorre il solo primo asse
+ * fotografa ogni slide allo stato 0, e in pagina resta il titolo con sotto
+ * il vuoto: il contenuto c'è, ma è `visibility: hidden`. Un PDF non ha un ↓
+ * da premere, quindi ogni slide si apre fino in fondo (`revealSubstep()`
+ * finché risponde) e si scatta a racconto completo.
+ * La via breve — emulare «Riduci movimento», che il CSS rende mostrando ogni
+ * passo — è stata provata e scartata: sotto quella preferenza il motore
+ * manda la clip di sfondo a `display: none` (copertina e chiusura perdono il
+ * video) e accende la pillola «Attiva il movimento», che nel PDF è un
+ * comando inerte stampato sopra la slide. Due difetti nuovi per uno risolto.
+ *
  * LA LINGUA È UN PARAMETRO, non un caso: `<T>` rende ENTRAMBE le lingue e il
  * CSS mostra quella attiva, quindi senza dichiararla si ottiene il PDF nella
  * lingua di default dell'app. `--lang en` produce l'altro.
@@ -70,6 +84,7 @@ for (const rotta of ROUTES) {
     }, LANG);
   }
   const n = await contaSlide(page);
+  let apertiInRotta = 0;
   for (let i = 0; i < n; i++) {
     await page.evaluate((k) => {
       const d = (window as unknown as { __edfDeck?: { goTo(i: number): void } }).__edfDeck;
@@ -78,10 +93,23 @@ for (const rotta of ROUTES) {
     // Il tempo serve: le clip di sfondo hanno un poster che arriva dopo, e le
     // slide che si animano all'ingresso vanno fotografate a transizione finita.
     await page.waitForTimeout(900);
+    // Poi si apre il racconto: i sotto-passi si rivelano DOPO l'attesa, cioè a
+    // slide già entrata e attivata (`goTo` rimanda `playSlide` di mezzo
+    // secondo, e l'ingresso li aveva comunque riazzerati).
+    const passi = await page.evaluate(() => {
+      const d = (window as unknown as { __edfDeck?: { revealSubstep(): boolean } }).__edfDeck;
+      if (!d) return 0;
+      let aperti = 0;
+      while (d.revealSubstep()) aperti++;
+      return aperti;
+    });
+    // Ogni passo entra in 320ms, e partono tutti insieme: un'attesa sola basta.
+    if (passi) await page.waitForTimeout(450);
+    apertiInRotta += passi;
     const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
     scatti.push(`data:image/jpeg;base64,${buf.toString('base64')}`);
   }
-  process.stdout.write(`  ${rotta.name}: ${n} slide\n`);
+  process.stdout.write(`  ${rotta.name}: ${n} slide${apertiInRotta ? ` · ${apertiInRotta} sotto-passi aperti` : ''}\n`);
 }
 
 /* L'HTML di servizio: una immagine per pagina, nessun margine, nessuna

@@ -34,28 +34,48 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
    fotografia. Visto guardando la slide, non deducendolo. */
 import fondo from '../assets/generated/fondo-apertura.webp';
 import tracce from '../assets/generated/scena-08-tracce.webp';
+import lavoro from '../assets/generated/lavoro-03-dati.webp';
+import { IMBUTO, IMBUTO_NOTA } from '../data/imbuto';
 
 const SLUG = 'scenario';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* L'imbuto di chi NON vi conosce ancora. Numeri illustrativi, dichiarati
-   tali: servono a dare la forma della perdita, non a descrivere Intesa
-   Sanpaolo, di cui non abbiamo i dati. */
-const IMBUTO = [
-  { v: 100, n: '48.000', l: { it: 'visite che non sapete di chi sono', en: 'visits you cannot attribute' } },
-  { v: 26, n: '12.400', l: { it: 'simulazioni avviate', en: 'simulations started' } },
-  { v: 14, n: '6.700', l: { it: 'lasciano un nome e un consenso', en: 'leave a name and consent' } },
-  { v: 4, n: '2.100', l: { it: 'arrivano alla firma', en: 'reach signature' } },
-];
+/* L'imbuto di chi NON vi conosce ancora: dalla FONTE UNICA
+   `data/imbuto.ts`, la stessa del mock di CJA nel momento 07. Qui si
+   mostrano le quattro righe digitali; la filiale entra nel mock, dove
+   l'argomento è la misura. Numeri illustrativi, dichiarati tali. */
+const IMBUTO_SCENA = IMBUTO.filter((r) => !r.offline);
 
-/* Le candidate per la stessa persona, e il vincolo che le taglia. */
+/* Le candidate per la stessa persona, e il vincolo che le taglia.
+   Quattro ovunque (qui, nel mock del momento 04, nell'approfondimento). */
 const CANDIDATE = [
   { l: { it: 'Promemoria documenti', en: 'Document reminder' }, s: 'scelta' },
-  { l: { it: 'Richiamo del gestore', en: 'Adviser callback' }, s: 'non-ora' },
+  { l: { it: 'Invito in filiale', en: 'Branch invitation' }, s: 'non-ora' },
+  { l: { it: 'Contatto dal contact center', en: 'Contact-centre call' }, s: 'non-ora' },
   { l: { it: 'Sconto prima casa under 36', en: 'Under-36 first-home discount' }, s: 'fuori' },
-  { l: { it: 'Offerta conto corrente', en: 'Current account offer' }, s: 'fuori' },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0).
+   Il filo davanti diceva «l'arbitro no», «nessuno ha il posto dove
+   decidere», «nessuno ha costruito un'audience»: davanti a chi i target
+   li costruisce — e in sala c'è — suonava «il vostro lavoro non serve».
+   In Divisione il posto esiste: score, audience, politica di contatto.
+   Quello che manca è la decisione su chi NON è cliente. Il confine fra
+   motore e arbitro stava in una riga di backup; ora sta qui, prima di
+   Giulia, dove la sala lo cerca.
+   ══════════════════════════════════════════════════════════════════════ */
+const ENTRA = [
+  { it: 'Score e audience dal vostro motore, in batch, come attributi del profilo', en: 'Scores and audiences from your engine, in batch, as profile attributes' },
+  { it: 'Eleggibilità dal core: chi può ricevere che cosa lo dice chi lo dice oggi', en: 'Eligibility from the core: who may receive what is decided where it is decided today' },
+  { it: 'La politica di contatto: resta una regola vostra, e l’arbitro la legge', en: 'The contact policy: stays your rule, and the arbiter reads it' },
+];
+const ESCE = [
+  { it: 'L’estrazione a mano: il percorso parte dall’evento, dentro il target che avete definito', en: 'Manual extraction: the journey starts from the event, inside the target you defined' },
+  { it: 'La decisione su chi non è nel CRM: oggi non la prende nessuno, qui la prende l’arbitro', en: 'The decision on people not in the CRM: nobody takes it today, here the arbiter does' },
+  { it: 'Il canale scelto una campagna alla volta: una proposta sola, su un canale solo', en: 'A channel chosen one campaign at a time: one proposal, on one channel' },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -78,7 +98,7 @@ const CANDIDATE = [
         <div class="im-sl-head">
           <T as="p" class="im-n" it="Il punto di partenza" en="The starting point" />
           <T as="h2" class="im-h2" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" />
-          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce, lascia tracce su canali separati, e nessuno ha il posto dove decidere che farne." en="Whoever is shopping for a mortgage does not know you, leaves traces on separate channels, and nobody has the place to decide what to do with them." />
+          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce e lascia tracce su canali separati. Sui clienti decidete già; su di lei, oggi, nessuno." en="Whoever is shopping for a mortgage does not know you and leaves traces on separate channels. On customers you already decide; on her, today, nobody does." />
         </div>
 
         <div class="im-pb">
@@ -86,8 +106,8 @@ const CANDIDATE = [
             <T as="p" class="im-pb-k" it="01 · Il dato esiste" en="01 · The data exists" />
             <figure class="im-imbuto">
               <T as="figcaption" class="im-imbuto-cap" it="Dove si perde chi non vi conosce" en="Where the people who do not know you are lost" />
-              {IMBUTO.map((f, i) => (
-                <div class="im-imbuto-r" data-ultimo={i === IMBUTO.length - 1 ? '' : null}>
+              {IMBUTO_SCENA.map((f, i) => (
+                <div class="im-imbuto-r" data-ultimo={i === IMBUTO_SCENA.length - 1 ? '' : null}>
                   <span class="im-imbuto-t"><i style={`width:${f.v}%`}></i></span>
                   <span class="im-imbuto-n">{f.n}</span>
                   <T as="span" class="im-imbuto-l" it={f.l.it} en={f.l.en} />
@@ -98,7 +118,7 @@ const CANDIDATE = [
           </section>
 
           <section class="im-pb-i" data-substep data-side="in">
-            <T as="p" class="im-pb-k" it="02 · L’arbitro no" en="02 · The arbiter does not" />
+            <T as="p" class="im-pb-k" it="02 · Su chi non è cliente, nessuno decide" en="02 · On a non-customer, nobody decides" />
             <figure class="im-cand">
               <T as="figcaption" class="im-cand-cap" it="Quattro proposte per la stessa persona, stasera" en="Four proposals for the same person, tonight" />
               <ul class="im-cand-l">
@@ -106,7 +126,7 @@ const CANDIDATE = [
                   <li data-stato={c.s}>
                     <T as="span" class="im-cand-n" it={c.l.it} en={c.l.en} />
                     <span class="im-cand-e">
-                      <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'fuori tetto' : 'non ora'}</span>
+                      <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'oltre il limite' : 'non ora'}</span>
                       <span data-lang-en>{c.s === 'scelta' ? 'goes' : c.s === 'fuori' ? 'over cap' : 'not now'}</span>
                     </span>
                   </li>
@@ -117,13 +137,50 @@ const CANDIDATE = [
           </section>
         </div>
 
-        <T as="p" class="im-chiusa" it="Senza quel posto, la scelta la fa la lista: l’ordine in cui le campagne sono state costruite." en="Without that place, the list makes the choice: the order in which the campaigns were built." data-substep data-side="in" />
+        <T as="p" class="im-chiusa" it="Senza un arbitro su chi non è cliente, la scelta la fa la lista: l’ordine in cui le campagne sono state costruite." en="Without that place, the list makes the choice: the order in which the campaigns were built." data-substep data-side="in" />
 
         {/* ⚠️ Le due dichiarazioni stavano dentro le rispettive figure, e
             a 1280×800 valevano cento pixel che la slide non aveva. Una
             riga sola le tiene entrambe, ed è anche la forma giusta: una
             riga di fonte per slide, come negli approfondimenti. */}
-        <T as="p" class="im-fonte-riga" it="Gli ordini di grandezza dell’imbuto sono illustrativi: mostrano la forma della perdita, non i vostri numeri, che non abbiamo. Il tetto di contatto è un vincolo dell’offerta: o si valuta dove si decide, o si applica dopo su una scelta già fatta." en="The funnel’s orders of magnitude are illustrative: they show the shape of the loss, not your numbers, which we do not have. The contact cap is a constraint of the offer: either it is weighed where the decision happens, or it is applied later to a choice already made." />
+        {/* ⚠️ Diceva «il tetto di contatto è un vincolo dell'offerta»: vale
+            solo per il limite per offerta della decisione. La politica di
+            contatto per canale è una regola applicata all'invio (Experience
+            League, rule sets), e «tetto di contatto» non è la parola della
+            banca (panel, 30 ott 2026). */}
+        <T as="p" class="im-fonte-riga" it={`${IMBUTO_NOTA.it} Il limite per offerta si valuta nella decisione; la politica di contatto per canale è una regola applicata all’invio: in Adobe si chiama frequency cap.`} en={`${IMBUTO_NOTA.en} The per-offer limit is weighed in the decision; the per-channel contact policy is a rule applied at send time: in Adobe it is called frequency cap.`} />
+      </div>
+    </Slide>
+
+    {/* ── Il motore di targeting resta ─────────────────────────────── */}
+    <Slide id="slide-motore" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${lavoro.src})`}></div>
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <T as="p" class="im-n" it="Il perimetro" en="The perimeter" />
+          <T as="h2" class="im-h2" it="Resta il vostro motore di targeting. Che cosa entra, che cosa esce" en="Your targeting engine stays. What comes in, what goes out" />
+          <T as="p" class="im-sub" it="Score, audience e politica di contatto restano dove sono, e chi li definisce resta chi li definisce oggi. L’arbitro entra su chi non è nel CRM, sui canali digitali." en="Scores, audiences and the contact policy stay where they are, and whoever defines them stays in charge. The arbiter comes in on people not in the CRM, on digital channels." />
+        </div>
+
+        <div class="im-pb im-mot">
+          <section class="im-pb-i" data-substep data-side="in">
+            <T as="p" class="im-pb-k" it="Entra nell’arbitro, dai vostri sistemi" en="Comes into the arbiter, from your systems" />
+            <ul class="im-mot-l" data-verso="entra">
+              {ENTRA.map((r) => <li><T as="span" it={r.it} en={r.en} /></li>)}
+            </ul>
+            <T as="p" class="im-pb-v" it="Niente si rifà: il motore produce, l’arbitro sceglie fra quello che il motore e il core hanno già detto." en="Nothing gets rebuilt: the engine produces, the arbiter picks among what the engine and the core have already said." />
+          </section>
+          <section class="im-pb-i" data-substep data-side="in">
+            <T as="p" class="im-pb-k" it="Esce dal lavoro di oggi" en="Goes out of today’s work" />
+            <ul class="im-mot-l" data-verso="esce">
+              {ESCE.map((r) => <li><T as="span" it={r.it} en={r.en} /></li>)}
+            </ul>
+            <T as="p" class="im-pb-v" it="Dopo la firma, le proposte del vostro motore entrano come candidate: la regola di chi vince si scrive insieme." en="After signature, your engine’s proposals come in as candidates: the rule on who wins gets written together." />
+          </section>
+        </div>
+
+        <T as="p" class="im-chiusa" it="Perimetro del pilota: prospect non presenti nel CRM, canali digitali. Sul cliente, la next best action e la pressione commerciale restano del motore." en="Pilot perimeter: prospects not in the CRM, digital channels. On customers, next best action and commercial pressure stay with the engine." data-substep data-side="in" />
+        <T as="p" class="im-fonte-riga" it="Se il motore applica già il tetto per persona su tutti i canali, l’arbitro lo legge; se no, lo aggiunge. Quello che un motore di propensione a batch non fa per definizione: il ripiego e l’esecuzione in sessione, al bordo e via API, su chi non ha ancora una scheda. La domanda «perché non costruirlo in casa?» si risponde su questo, con i costi davanti." en="If the engine already applies the per-person cap across every channel, the arbiter reads it; if not, it adds it. What a batch propensity engine does not do by definition: the fallback and in-session execution, at the edge and over API, for people without a record yet. The question «why not build it in-house?» gets answered on this, with the costs in view." />
       </div>
     </Slide>
 

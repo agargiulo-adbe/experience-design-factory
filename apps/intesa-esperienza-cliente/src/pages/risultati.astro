@@ -22,7 +22,7 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 /* Le cifre vengono dalla FONTE UNICA: il taglio «In dieci minuti» legge
    gli stessi oggetti, e due copie a mano divergono. Misure e ask stanno
    nella stessa fonte ma si rendono in «Prossimi passi». */
-import { FONTI, CIFRE_TSB } from '../data/referenze';
+import { FONTI, CIFRE_TSB, TSB_SUB, TSB_PRIMA, CA_PRIMA } from '../data/referenze';
 import fondo from '../assets/generated/fondo-risultati.webp';
 import fondoTsb from '../assets/generated/fondo-tsb.webp';
 import MarchioRef from '../components/MarchioRef.astro';
@@ -34,6 +34,7 @@ const currentPath = Astro.url.pathname;
 
 const TSB = FONTI.tsb;
 const SAN = FONTI.santander;
+const CA = FONTI.creditAgricole;
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -47,7 +48,7 @@ const SAN = FONTI.santander;
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 44%`}></div>
       <Divisore num={ch.num}
         tIt="Una banca che lo fa già, e lo dice in pubblico" tEn="A bank already doing it, and saying so publicly"
-        lIt="Non sono promesse su di voi. Sono risultati di altre banche, con la pagina che li regge." lEn="Not promises about you. Other banks’ results, with the page that backs them." />
+        lIt="Risultati di altre banche su clienti esistenti, con la pagina che li regge. Sull’acquisizione la prova si fa insieme, col gruppo di controllo." lEn="Other banks’ results on existing customers, with the page that backs them. On acquisition the proof gets made together, with the control group." />
     </Slide>
 
     <Slide id="slide-tsb" bg="inverse" align="left">
@@ -56,7 +57,7 @@ const SAN = FONTI.santander;
         <div class="im-sl-head">
           <p class="im-sl-marchio"><MarchioRef slug="tsb" nome="TSB" /></p>
           <T as="h2" class="im-h2" it="La prima banca britannica su Experience Platform" en="The first UK bank on Experience Platform" />
-          <T as="p" class="im-sub" it="È l’unica referenza pubblica in cui Offer Decisioning è nominato. E l’esempio che racconta è una pratica di mutuo lasciata a metà in app: parole loro." en="The only public reference naming Offer Decisioning. And the example it tells is a mortgage left half-done in the app: their words." />
+          <T as="p" class="im-sub" it={TSB_SUB.it} en={TSB_SUB.en} />
         </div>
         <div class="im-cifre" data-stagger>
           {CIFRE_TSB.map((c) => (
@@ -66,10 +67,11 @@ const SAN = FONTI.santander;
             </div>
           ))}
         </div>
+        <T as="p" class="im-fonte-riga" it={TSB_PRIMA.it} en={TSB_PRIMA.en} data-reveal data-reveal-delay="0.25" />
         <p class="im-fonte" data-reveal data-reveal-delay="0.3">
           <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
           <a href={TSB} target="_blank" rel="noopener">business.adobe.com · TSB</a>
-          <span data-lang-it> · verificata il 29 ottobre 2026</span><span data-lang-en> · checked 29 October 2026</span>
+          <span data-lang-it> · verificata il 30 ottobre 2026</span><span data-lang-en> · checked 30 October 2026</span>
         </p>
       </div>
     </Slide>
@@ -79,12 +81,14 @@ const SAN = FONTI.santander;
         <div class="im-sl-head">
           <p class="im-n">E vicino a voi</p>
           <T as="h2" class="im-h2" it="Due banche, due numeri diversi" en="Two banks, two different numbers" />
-          <T as="p" class="im-sub" it="Perché la domanda che arriva sempre è «sì, ma da noi?». Nessuna delle due è una banca come la vostra: dicono che cosa si misura, non quanto. Il primo numero è proprio sul primo acquisto." en="Because the question always comes: «yes, but here?». Neither is a bank like yours: they say what gets measured, not how much. The first number is about first purchase." />
+          <T as="p" class="im-sub" it="Perché la domanda che arriva sempre è «sì, ma da noi?». Nessuna delle due è una banca come la vostra: dicono che cosa si misura, non quanto. Il primo numero è sul primo acquisto, e i numeri sono parole loro." en="Because the question always comes: «yes, but here?». Neither is a bank like yours: they say what gets measured, not how much. The first number is about first purchase, and the numbers are their words." />
         </div>
         <div class="im-ref" data-stagger>
           <div class="im-ref-b">
             <MarchioRef slug="credit-agricole" nome="Crédit Agricole Italia" />
-            <T as="p" class="im-ref-f" it="+15% sul primo acquisto e +20% di cross-sell, con percorsi in tempo reale sui canali digitali e fisici." en="+15% on first purchase and +20% cross-sell, with real-time journeys across digital and physical channels." />
+            <T as="p" class="im-ref-f" it="+15% di conversioni al primo acquisto e +20% di efficacia delle campagne di cross-sell, con percorsi in tempo reale sui canali digitali e di filiale." en="+15% first-purchase conversions and +20% cross-sell campaign effectiveness, with real-time journeys across digital and branch channels." />
+            {/* Slide chiara: la classe di fonte dei fondi scuri qui dava 1,38:1 (audit:ink). */}
+            <T as="p" class="im-ref-f im-ref-f--prima" it={CA_PRIMA.it} en={CA_PRIMA.en} />
           </div>
           <div class="im-ref-b">
             <MarchioRef slug="santander" nome="Santander Brasil" />
@@ -93,9 +97,11 @@ const SAN = FONTI.santander;
         </div>
         <p class="im-fonte" data-reveal data-reveal-delay="0.3">
           <span data-lang-it>Fonti: </span><span data-lang-en>Sources: </span>
+          <a href={CA} target="_blank" rel="noopener">business.adobe.com · Crédit Agricole Italia</a>
+          <span data-lang-it> · </span><span data-lang-en> · </span>
           <a href={SAN} target="_blank" rel="noopener">business.adobe.com · Santander</a>
-          <span data-lang-it> · Crédit Agricole Italia: caso cliente Adobe non pubblicato, si cita a voce</span>
-          <span data-lang-en> · Crédit Agricole Italia: unpublished Adobe case, cited verbally</span>
+          <span data-lang-it> · verificate il 30 ottobre 2026</span>
+          <span data-lang-en> · checked 30 October 2026</span>
         </p>
       </div>
     </Slide>
