@@ -102,11 +102,24 @@ const solutionGroups = PILLAR_ORDER
 
 const allSolutionIds = SOLUTIONS.map((s) => s.id);
 const deckHref = href(base, '/');
-// I dossier interni di questa experience, se ne ha: la console è il posto dove
-// chi presenta trova il deck e il documento che prepara la stanza. Quando nasce
-// un `dossier.astro`, si aggiunge qui — restano gated, il link non li apre.
-const DOSSIERS: { href: string; label?: string }[] = [
-  // { href: href(base, '/dossier'), label: 'Dossier interno' },
+// I dossier che preparano QUESTA stanza. La console è il posto dove chi
+// presenta trova il deck e il documento che gli dice chi ha davanti.
+//
+// ⚠️ Vivono in ALTRE app, e il link è quindi cross-app: si costruisce dalla
+// radice del sito, non dal `base` di questa experience (è il caso che il
+// motore chiama «Trenitalia Sales»). Sono nati prima che questo documento
+// esistesse — «Dove ci innestiamo» prepara proprio l'incontro del 5
+// novembre, e «Su scala umana» è quello del 22 ottobre che lo precede.
+// Restano gated: il link non li apre a chi non ha accesso, li porta al
+// login.
+//
+// ⚠️ Nelle etichette NIENTE NOMI DI PERSONE: questo file è tracciato e il
+// repo è pubblico. Chi c'è in sala sta dentro il dossier, che è protetto
+// da RLS e non entra mai nel bundle statico.
+const siteRoot = base.replace(/[^/]+\/?$/, '');
+const DOSSIERS = [
+  { href: href(siteRoot, '/intesa-innesto/dossier'), label: 'Dossier — Dove ci innestiamo (5 novembre)' },
+  { href: href(siteRoot, '/intesa-scala-umana/dossier'), label: 'Dossier — Su scala umana (22 ottobre)' },
 ];
 ---
 <BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
