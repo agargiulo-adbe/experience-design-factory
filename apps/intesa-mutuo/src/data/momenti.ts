@@ -186,7 +186,7 @@ export const MOMENTI: Momento[] = [
       titolo: { it: 'Era un numero di sessione. Adesso è una persona.', en: 'It was a session number. Now it is a person.' },
       corpo: {
         it: 'Le visite anonime delle sere prima si attaccano al profilo nell’istante del consenso, e non si perdono. Niente di tutto questo arriva al CRM: il CRM conosce i clienti, e lei non lo è ancora.',
-        en: 'The anonymous visits of the previous evenings attach to the profile the instant consent is given, and are not lost. None of this reaches the CRM: the CRM knows customers, and she is not one yet.',
+        en: 'Her anonymous visits from the previous evenings attach to the profile the instant consent is given, and are not lost. None of this reaches the CRM: the CRM knows customers, and she is not one yet.',
       },
     },
   },

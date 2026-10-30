@@ -24,7 +24,7 @@ export const CIFRE_TSB = [
     lBreve: { it: 'sceglie un prodotto dopo un’interazione personalizzata', en: 'choose a product after a personalized interaction' } },
   { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: 250 three years ago' },
     lBreve: { it: 'casi d’uso in produzione', en: 'use cases live' } },
-  { n: '91%', l: { it: 'dei prodotti acquistati sui canali digitali', en: 'of products bought digitally' } },
+  { n: '91%', l: { it: 'dei prodotti acquistati sui canali digitali', en: 'of products bought digitally' } },
 ];
 
 /* Le quattro misure di ACQUISIZIONE, e che cosa se ne sa oggi. L'ask del
