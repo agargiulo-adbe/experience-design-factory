@@ -1,0 +1,111 @@
+---
+/**
+ * 06 · IL LAVORO SI CHIEDE A PAROLE — intro a Coworker e il video.
+ *
+ * Due slide: che cos'è, e la dimostrazione con i dati del cliente.
+ * Il video NON è in pagina: è uno slot che si riempie dalla console di
+ * amministrazione (`MediaDemoSlot` dentro una slide `data-demo-flex`),
+ * così la clip si attacca quando esiste e il link si condivide senza
+ * ricompilare niente.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import Divisore from '../components/Divisore.astro';
+import fondo from '../assets/generated/lavoro-06-filiale-back.webp';
+
+const SLUG = 'coworker';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/* Lo storyboard del video, dal deck. È anche la scaletta di che cosa si
+   vede nella clip: chi guarda sa dove siamo mentre scorre. */
+const STORY = [
+  { n: '1', t: { it: 'Obiettivo', en: 'Objective' },
+    d: { it: '«Tassi in calo: entro oggi proporre alternative ai clienti con molta liquidità sul conto».', en: '“Rates are falling: by today, propose alternatives to customers holding high balances.”' } },
+  { n: '2', t: { it: 'Pubblico', en: 'Audience' },
+    d: { it: 'Audience costruita sui dati unificati e sugli score del vostro motore di targeting.', en: 'Audience built on unified data and your targeting engine’s scores.' } },
+  { n: '3', t: { it: 'Contenuti', en: 'Content' },
+    d: { it: 'Email, banner e note per i gestori, con le informative già integrate.', en: 'Emails, banners and adviser notes, with disclosures already built in.' } },
+  { n: '4', t: { it: 'Percorso', en: 'Journey' },
+    d: { it: 'Canali, tempi e frequenza decisi dall’agente, non a mano.', en: 'Channels, timing and frequency decided by the agent, not by hand.' } },
+  { n: '5', t: { it: 'Approvazione', en: 'Approval' },
+    d: { it: 'Marketing e Compliance approvano; in giornata è online.', en: 'Marketing and Compliance approve; it goes live the same day.' } },
+  { n: '6', t: { it: 'Misura', en: 'Measurement' },
+    d: { it: 'I risultati rientrano in CX Analytics, e la campagna si ottimizza da sé.', en: 'Results flow back into CX Analytics, and the campaign optimises itself.' } },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 44%`}></div>
+      <Divisore num={ch.num}
+        tIt="Il lavoro si chiede a parole" tEn="The work is asked for in words"
+        lIt="Dall’obiettivo alla campagna pronta, senza passare da sei strumenti."
+        lEn="From objective to a campaign ready to go, without going through six tools." />
+    </Slide>
+
+    <Slide id="slide-cosa" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Adobe CX Enterprise Coworker" en="Adobe CX Enterprise Coworker" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Un collega che esegue, non un assistente che suggerisce" en="A colleague that executes, not an assistant that suggests" />
+        <T as="p" class="im-ado-l" it="Si descrive l’obiettivo in una frase. Da lì il sistema costruisce il piano, chiama gli strumenti che servono nell’ordine giusto, si corregge quando qualcosa non torna, e tiene memoria di quello che ha già fatto." en="You describe the objective in a sentence. From there the system builds the plan, calls the tools it needs in the right order, corrects itself when something is off, and keeps memory of what it has already done." />
+
+        <ul class="im-cow">
+          <li class="im-cow-i" data-substep data-side="in">
+            <T as="span" class="im-bv-t" it="Chat" en="Chat" />
+            <T as="span" class="im-bv-d" it="Si chiede una cosa a parole e si ottiene fatta: esecuzione autonoma, più passi di fila, con la conversazione che resta." en="You ask for something in plain words and get it done: autonomous execution, several steps in a row, with the conversation kept." />
+          </li>
+          <li class="im-cow-i" data-substep data-side="in">
+            <T as="span" class="im-bv-t" it="Projects" en="Projects" />
+            <T as="span" class="im-bv-d" it="Uno spazio di lavoro per un obiettivo intero: compiti, approvazioni e persone diverse, coordinati dallo stesso agente." en="A workspace for a whole objective: tasks, approvals and different people, coordinated by the same agent." />
+          </li>
+          <li class="im-cow-i" data-substep data-side="in">
+            <T as="span" class="im-bv-t" it="Dove gira" en="Where it runs" />
+            <T as="span" class="im-bv-d" it="Dentro Adobe e accanto agli agenti che già usate: l’orchestratore parla anche con piattaforme di terzi." en="Inside Adobe and alongside the agents you already use: the orchestrator also talks to third-party platforms." />
+          </li>
+        </ul>
+
+        <T as="p" class="im-fonte-riga" it="Capacità verificate sul materiale Adobe di Field Readiness (Summit 2026, 30 ott 2026). Quello che gira sui vostri dati va concordato." en="Capabilities verified on Adobe Field Readiness material (Summit 2026, 30 Oct 2026). What runs on your data is to be agreed." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-video" bg="inverse" align="split" data-demo-flex>
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-cow-demo" data-reveal>
+        <div class="im-cow-demo-sx">
+          <T as="p" class="im-ado-occ" it="Dal vivo · con i vostri dati" en="Live · on your data" />
+          <T as="h2" class="im-ado-t im-ado-t--stretto" it="Dall’obiettivo alla campagna, in una sessione" en="From objective to campaign, in one session" />
+          {/* Lo slot si riempie dalla console: la clip si attacca quando
+              c'è, e il link si condivide senza ricompilare. */}
+          <MediaDemoSlot id="coworker-demo" label="Video demo Coworker" />
+          <T as="p" class="im-fonte-riga" it="Scenario, dati e durata da concordare prima dell’incontro." en="Scenario, data and length to be agreed before the meeting." />
+        </div>
+        <ol class="im-story">
+          {STORY.map((s) => (
+            <li class="im-story-i" data-substep data-side="in">
+              <span class="im-story-n">{s.n}</span>
+              <span>
+                <T as="span" class="im-story-t" it={s.t.it} en={s.t.en} />
+                <T as="span" class="im-story-d" it={s.d.it} en={s.d.en} />
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -92,6 +92,76 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
+/* L'APPROFONDIMENTO SU «INGAGGIARE IL CLIENTE» — tre slide.
+   Il contenuto viene dalle due slide che il team ha già costruito nel
+   deck («Quattro componenti che abilitano un ciclo di lavoro virtuoso»
+   e «CJA + RT-CDP: una sola misura»), più la verifica su Field Readiness
+   del 30 ott 2026 per le parti tecniche: il profilo si costruisce da uno
+   schema dati comune (XDM) con **stitching** di identificatori diversi,
+   l'**identity graph si aggiorna man mano che i dati arrivano**, e
+   l'attribuzione in CJA usa modelli regolati, algoritmici e data-driven
+   al posto dell'ultimo clic.
+   ⚠️ Il limite si dichiara insieme al pregio: l'attribuzione non cattura
+   gli impatti fuori dai canali misurati, e la finestra di osservazione è
+   un vincolo. Dirlo prima vale più che scoprirlo dopo. */
+const CICLO = [
+  { n: '1', fig: 'misura', t: { it: 'La misura', en: 'Measurement' },
+    s: { it: 'Analisi omnicanale', en: 'Omnichannel analytics' },
+    d: { it: 'Percorsi, funnel, coorti e attribuzione su dati a livello di evento, su tutti i canali.', en: 'Journeys, funnels, cohorts and attribution on event-level data, across every channel.' },
+    i: { it: 'Un solo dato per app, sito, contact center e filiale, per Controllo di Gestione e Advanced Analytics.', en: 'One dataset across app, site, contact centre and branch, for management control and advanced analytics.' } },
+  { n: '2', fig: 'profilo', t: { it: 'Il profilo', en: 'The profile' },
+    s: { it: 'Da audience a target', en: 'From audience to target' },
+    d: { it: 'Identità, consenso e segmenti attivabili su ogni canale, su Experience Platform.', en: 'Identity, consent and segments activatable on every channel, on Experience Platform.' },
+    i: { it: 'Riceve dal data lake e dagli eventi digitali, ed espone audience e attributi — compresi gli score del vostro motore di targeting.', en: 'Fed by the data lake and digital events, and exposes audiences and attributes — including your targeting engine’s scores.' } },
+  { n: '3', fig: 'regia', t: { it: 'La regia', en: 'Orchestration' },
+    s: { it: 'In tempo reale', en: 'In real time' },
+    d: { it: 'Percorsi uno-a-uno su email, push, SMS, in-app e web, attivati da eventi, con consenso e regole di conformità.', en: 'One-to-one journeys over email, push, SMS, in-app and web, triggered by events, with consent and compliance rules.' },
+    i: { it: 'Governa i canali digitali e passa segnali e proposte al CRM di filiale, che resta vostro.', en: 'Runs the digital channels and passes signals and proposals to the branch CRM, which stays yours.' } },
+  { n: '4', fig: 'arbitro', t: { it: 'L’arbitro', en: 'The arbiter' },
+    s: { it: 'L’ultimo strato decisionale', en: 'The last decision layer' },
+    d: { it: 'Regole, vincoli e priorità per scegliere la prossima esperienza migliore, ogni volta.', en: 'Rules, constraints and priorities to pick the next best experience, every time.' },
+    i: { it: 'Coesiste col motore di targeting: il motore produce score e audience, qui si arbitrano offerta e canale per ogni contatto.', en: 'It coexists with the targeting engine: the engine produces scores and audiences, here offer and channel are arbitrated per contact.' } },
+];
+
+/* Le fonti che entrano nella misura unica. Dal deck, slide «CJA + RT-CDP». */
+const FONTI_DATO = [
+  { it: 'App e home banking', en: 'App and online banking' },
+  { it: 'Sito', en: 'Website' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'CRM di filiale', en: 'Branch CRM' },
+  { it: 'Data lake e core banking', en: 'Data lake and core banking' },
+];
+const USI_DATO = [
+  { t: { it: 'Controllo di Gestione', en: 'Management control' },
+    v: [{ it: 'Costo di acquisizione per canale', en: 'Cost of acquisition per channel' },
+        { it: 'Contributo reale di ogni canale', en: 'Real contribution of each channel' },
+        { it: 'Uplift misurato su gruppo di controllo', en: 'Uplift measured against a control group' }] },
+  { t: { it: 'Advanced Analytics', en: 'Advanced analytics' },
+    v: [{ it: 'Dati a livello di evento, interrogabili in SQL', en: 'Event-level data, queryable in SQL' },
+        { it: 'Coorti, percorsi e segnali per i modelli', en: 'Cohorts, paths and signals for the models' }] },
+  { t: { it: 'Da definire insieme', en: 'To define together' },
+    v: [{ it: 'Il grafo dell’identità, e quali ID lo compongono', en: 'The identity graph, and which IDs build it' },
+        { it: 'La tassonomia degli eventi, anche in filiale', en: 'The event taxonomy, in the branch too' },
+        { it: 'KPI e gruppi di controllo dal giorno uno', en: 'KPIs and control groups from day one' }] },
+];
+
+/* I casi d'uso. Tutti e quattro nascono da un canale e finiscono in un
+   altro: è lì che sta l'omnicanalità, non nel numero di canali accesi. */
+const CASI = [
+  { da: { it: 'Sito', en: 'Website' }, a: { it: 'Email, poi filiale', en: 'Email, then branch' },
+    t: { it: 'La simulazione lasciata a metà', en: 'The half-finished simulation' },
+    d: { it: 'Riparte dal punto in cui si è fermata, e se poi entra in filiale il gestore la trova già aperta.', en: 'It resumes where it stopped, and if they walk into a branch the adviser finds it already open.' } },
+  { da: { it: 'Filiale', en: 'Branch' }, a: { it: 'App e email', en: 'App and email' },
+    t: { it: 'L’appuntamento che continua dopo', en: 'The appointment that continues' },
+    d: { it: 'Quello che si decide allo sportello prosegue sui canali digitali, senza che nessuno ridigiti niente.', en: 'What is decided at the counter continues on digital channels, with nobody retyping anything.' } },
+  { da: { it: 'Contact center', en: 'Contact centre' }, a: { it: 'Il canale che usa davvero', en: 'The channel they actually use' },
+    t: { it: 'Chi chiama non riparte da zero', en: 'Whoever calls does not start over' },
+    d: { it: 'L’operatore vede il percorso, e il seguito arriva dove quella persona risponde — non su tutti i canali insieme.', en: 'The agent sees the journey, and the follow-up lands where that person replies — not on every channel at once.' } },
+  { da: { it: 'Pratica ferma', en: 'Stalled application' }, a: { it: 'Un promemoria solo', en: 'A single reminder' },
+    t: { it: 'Il documento che manca', en: 'The missing document' },
+    d: { it: 'Un promemoria quando serve, sul canale giusto, e si spegne appena il documento arriva.', en: 'One reminder when needed, on the right channel, switched off the moment the document lands.' } },
+];
+
 /* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
    I quattro passi vengono dai sei pilastri del Content Supply Chain
    Maturity Assessment di Adobe (strategia e modello operativo, flussi e
@@ -259,6 +329,91 @@ const CSC = [
         </div>
 
         <T as="p" class="im-fonte-riga" it="Passi dai sei pilastri del Content Supply Chain Maturity Assessment di Adobe; la riga sulla conformità dal value prop per i servizi finanziari di Adobe GenStudio (Field Readiness, 30 ott 2026)." en="Steps from the six pillars of Adobe’s Content Supply Chain Maturity Assessment; the compliance line from Adobe GenStudio’s financial services value proposition (Field Readiness, 30 Oct 2026)." />
+      </div>
+    </Slide>
+
+    {/* ── Ingaggiare il cliente, in tre tempi ──────────────────────── */}
+    <Slide id="slide-ingaggio-ciclo" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · ingaggiare il cliente" en="Deep dive · engaging the customer" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro componenti di un ciclo che si chiude" en="Four components of a loop that closes" />
+
+        <ul class="im-ciclo">
+          {CICLO.map((c) => (
+            <li class="im-ciclo-i" data-substep data-side="in">
+              <div class="im-ciclo-su">
+                <span class="im-ciclo-n">{c.n}</span>
+                <FiguraCap segno={c.fig} class="im-ciclo-fig" />
+                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
+                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+              </div>
+              <T as="p" class="im-ciclo-giu" it={c.i.it} en={c.i.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-ciclo-base" data-substep data-side="in" it="Sotto tutti e quattro, Adobe Experience Platform." en="Beneath all four, Adobe Experience Platform." />
+        <T as="p" class="im-fonte-riga" it="La riga verde è quello che succederebbe nel vostro perimetro, e va confermata con voi." en="The green line is what would happen inside your perimeter, and is to be confirmed with you." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-ingaggio-dato" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · la misura unica" en="Deep dive · one measurement" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una sola misura di app, sito, contact center e filiale" en="One measurement across app, site, contact centre and branch" />
+
+        <div class="im-flusso">
+          <ul class="im-flusso-fonti" data-substep data-side="in">
+            {FONTI_DATO.map((f) => <li><span data-lang-it>{f.it}</span><span data-lang-en>{f.en}</span></li>)}
+          </ul>
+          <span class="im-flusso-fr" aria-hidden="true">→</span>
+          <section class="im-flusso-aep" data-substep data-side="in">
+            <span class="im-flusso-t">Experience Platform</span>
+            <T as="span" class="im-flusso-d" it="Identità cross-canale, consenso e schema dati comune. Il grafo si aggiorna man mano che i dati arrivano." en="Cross-channel identity, consent and a common data schema. The graph updates as data arrives." />
+          </section>
+          <span class="im-flusso-fr" aria-hidden="true">→</span>
+          <section class="im-flusso-cja" data-substep data-side="in">
+            <span class="im-flusso-t">Customer Journey Analytics</span>
+            <T as="span" class="im-flusso-d" it="Percorsi, funnel, coorti e attribuzione su dati a livello di evento." en="Journeys, funnels, cohorts and attribution on event-level data." />
+          </section>
+        </div>
+
+        <ul class="im-usi" data-substep data-side="in">
+          {USI_DATO.map((u) => (
+            <li class="im-usi-i">
+              <T as="span" class="im-usi-t" it={u.t.it} en={u.t.en} />
+              <ul>{u.v.map((v) => <li><span data-lang-it>{v.it}</span><span data-lang-en>{v.en}</span></li>)}</ul>
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="im-fonte-riga" it="L’attribuzione sostituisce la congettura sull’ultimo clic con modelli regolati, algoritmici o data-driven. Il limite si dichiara: non misura quello che succede fuori dai canali osservati, e la finestra di osservazione è una scelta. Capacità verificate su Field Readiness, 30 ott 2026." en="Attribution replaces last-click guesswork with rule-based, algorithmic or data-driven models. The limit is stated: it does not measure what happens outside the observed channels, and the lookback window is a choice. Capabilities verified on Field Readiness, 30 Oct 2026." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-ingaggio-casi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · quattro casi d’uso omnicanale" en="Deep dive · four omnichannel use cases" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il canale dopo sa quello che è successo prima" en="The next channel knows what happened before" />
+        <T as="p" class="im-ado-l" it="Omnicanale non vuol dire essere su tutti i canali. Vuol dire che chi arriva dopo non chiede di nuovo." en="Omnichannel does not mean being on every channel. It means whoever comes next does not ask again." />
+
+        <ul class="im-casi">
+          {CASI.map((c) => (
+            <li class="im-casi-i" data-substep data-side="in">
+              <p class="im-casi-rotta">
+                <T as="span" class="im-casi-da" it={c.da.it} en={c.da.en} />
+                <span class="im-casi-fr" aria-hidden="true">→</span>
+                <T as="span" class="im-casi-a" it={c.a.it} en={c.a.en} />
+              </p>
+              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Casi d’uso proposti sul vostro perimetro, da prioritizzare insieme: la fattibilità di ciascuno dipende da quali dati sono già in piattaforma." en="Use cases proposed for your perimeter, to be prioritised together: the feasibility of each depends on which data is already on the platform." />
       </div>
     </Slide>
 

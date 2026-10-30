@@ -35,8 +35,12 @@ function isActive(slug: string) {
     <span class="text-sm font-bold text-[var(--ink-primary)] group-hover:text-[var(--ink-accent)] transition-colors whitespace-nowrap">
       {SITE.name}
     </span>
-    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--color-grey-600)] ml-1 whitespace-nowrap">
-      Adobe × {SITE.client}
+    {/* ⚠️ Prima qui c'era «Adobe × <cliente>», che ripeteva il nome del
+        documento ora che il documento SI CHIAMA «Adobe × Intesa
+        Sanpaolo». Al suo posto la data: è l'informazione che manca a chi
+        riapre il link, e che il titolo da solo non dà. */}
+    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-note)] ml-1 whitespace-nowrap">
+      {SITE.sottotitolo}
     </span>
   </a>
 
@@ -48,8 +52,8 @@ function isActive(slug: string) {
           class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.slug) && 'ex-nav-link--active']}
           aria-current={isActive(c.slug) ? 'page' : undefined}
         >
-          <span class="text-[var(--color-grey-600)] mr-1 tabular-nums">{c.num}</span>
-          <span data-lang-it>{c.title.it}</span><span data-lang-en>{c.title.en}</span>
+          <span class="text-[var(--ink-note)] mr-1 tabular-nums">{c.num}</span>
+          <span data-lang-it>{(c.breve ?? c.title).it}</span><span data-lang-en>{(c.breve ?? c.title).en}</span>
         </a>
       </li>
     ))}
@@ -59,7 +63,7 @@ function isActive(slug: string) {
     {SITE.langs.length > 1 && <LangToggle langs={SITE.langs} />}
     <a
       href={href(base, '/admin')}
-      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[var(--line-default)] text-[var(--color-grey-600)] hover:text-[var(--ink-accent)] hover:border-[var(--color-accent)] rounded-sm transition-colors no-underline"
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[rgba(255,255,255,0.22)] text-[var(--ink-note)] hover:text-[var(--ink-accent)] hover:border-[var(--color-accent)] rounded-sm transition-colors no-underline"
       data-admin-only
     >
       Admin

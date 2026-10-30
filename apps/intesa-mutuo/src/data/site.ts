@@ -10,7 +10,13 @@ import type { ExperienceType } from '@edf/core/data/experienceTypes';
  */
 export const SITE = {
   slug: 'intesa-mutuo',
-  name: 'Lo stesso mutuo, dai due lati',
+  /* ⚠️ Il nome del DOCUMENTO, non quello della Storia. «Lo stesso mutuo,
+     dai due lati» è il titolo del racconto di Giulia, che da quando il
+     deck del 5 novembre è stato inglobato è uno dei nove capitoli: in
+     barra faceva sembrare l'intero incontro una storia sul mutuo.
+     Il titolo del racconto resta, e vive nel capitolo e nella copertina. */
+  name: 'Adobe × Intesa Sanpaolo',
+  sottotitolo: '5 novembre 2026',
   client: 'Intesa Sanpaolo',
   type: 'storia' as ExperienceType,
   langs: ['it'] as Array<'it' | 'en'>,

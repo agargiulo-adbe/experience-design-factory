@@ -42,19 +42,19 @@ export const AGENDA: VoceAgenda[] = [
     riga: { it: 'Sette momenti di una persona che non vi conosce ancora, e che cosa succede dall’altra parte', en: 'Seven moments of someone who does not know you yet, and what happens on the other side' },
   },
   {
-    n: '04', capitolo: null,
+    n: '04', capitolo: 'momenti',
     titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
     riga: { it: 'Misurare i canali, scegliere chi contattare, decidere l’offerta', en: 'Measure the channels, choose who to contact, decide the offer' },
   },
   {
-    n: '05', capitolo: null,
-    titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
-    riga: { it: 'L’architettura di arrivo: che cosa resta vostro, che cosa aggiungiamo', en: 'The target architecture: what stays yours, what we add' },
+    n: '05', capitolo: 'circolo',
+    titolo: { it: 'Il giro che si chiude', en: 'The loop that closes' },
+    riga: { it: 'Quello che si impara torna sulla relazione e sull’acquisizione dopo', en: 'What you learn comes back on the relationship and on the next acquisition' },
   },
   {
-    n: '06', capitolo: null,
+    n: '06', capitolo: 'coworker',
     titolo: { it: 'Il lavoro si chiede a parole', en: 'The work is asked for in words' },
-    riga: { it: 'Dalla domanda al dato, dall’obiettivo alla campagna pronta', en: 'From question to data, from objective to a campaign ready to go' },
+    riga: { it: 'Dall’obiettivo alla campagna pronta, con i vostri dati', en: 'From objective to a campaign ready to go, on your data' },
   },
   {
     n: '07', capitolo: 'risultati',
@@ -62,7 +62,12 @@ export const AGENDA: VoceAgenda[] = [
     riga: { it: 'Che cosa hanno in produzione, con quali numeri', en: 'What they run in production, with which numbers' },
   },
   {
-    n: '08', capitolo: null,
+    n: '08', capitolo: 'analytics',
+    titolo: { it: 'CX Analytics', en: 'CX analytics' },
+    riga: { it: 'Che cosa si misura, e che cosa se ne fa chi decide', en: 'What gets measured, and what the decision-makers do with it' },
+  },
+  {
+    n: '09', capitolo: 'prossimi-passi',
     titolo: { it: 'Prossimi passi', en: 'Next steps' },
     riga: { it: 'Che cosa facciamo da qui, chi lo fa, entro quando', en: 'What we do from here, who does it, by when' },
   },

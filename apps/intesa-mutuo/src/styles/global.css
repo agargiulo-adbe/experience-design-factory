@@ -410,18 +410,30 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-accent-soft); }
 
 /* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
-/* Fondo bianco esplicito → inchiostri espliciti. In una skin a dominante scura
-   `--ink-primary` è bianco, e il nome del deck sparirebbe su ogni pagina. */
+/* ⚠️ LA BARRA È SCURA COME IL DOCUMENTO, e non è una preferenza.
+   Nasceva bianca dal template, che presume una dominante chiara: qui la
+   dominante è il verde notte, e una striscia bianca in cima era l'unico
+   elemento di un altro design system — la prima cosa che si vedeva, e
+   l'unica fuori posto. Ora porta il verde notte del percorso, e sotto i
+   divisori di capitolo (che sono chiari) resta comunque leggibile
+   perché il fondo è pieno, non trasparente.
+   Gli inchiostri qui vanno ESPLICITI: su fondo scuro `--ink-primary`
+   del tema chiaro sparirebbe. */
 .ex-nav {
-  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
-  --ink-primary: var(--color-ink);
-  --ink-secondary: var(--color-ink-2);
-  --ink-accent: var(--color-accent-deep);
-  --ink-note: var(--color-grey-600);
+  background: rgba(8, 28, 1, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  --ink-primary: #ffffff;
+  --ink-secondary: #d9e6d4;
+  --ink-accent: var(--color-verde-chiaro);
+  --ink-note: #a9c2a2;
 }
-.ex-nav-link { color: var(--color-ink-2); }
-.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-paper-2); }
-.ex-nav-link--active { color: var(--ink-accent); background: var(--color-paper-2); border: 1px solid rgba(var(--color-accent-rgb), 0.3); }
+.ex-nav-link { color: #d2e3cc; }
+.ex-nav-link:hover { color: #ffffff; background: rgba(255, 255, 255, 0.1); }
+.ex-nav-link--active {
+  color: #ffffff; background: rgba(79, 194, 31, 0.18);
+  border: 1px solid rgba(79, 194, 31, 0.6);
+}
 .ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
 .ex-mark svg { width: 100%; height: 100%; display: block; }
 
@@ -2623,12 +2635,17 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
    leggenda che i momenti usano, e questo è l'unico posto dove si spiega.
    La fascia in basso non è un blocco dell'offerta — è il pavimento — e
    prende il rosso Adobe. */
-/* ⚠️ NIENTE FONDO NÉ BORDO sul contenitore. I blocchi compaiono uno
-   alla volta con la freccia in basso, e un riquadro disegnato attorno
-   al nulla non si legge come «sta per arrivare qualcosa»: si legge come
-   un errore di caricamento. Il riquadro lo fanno le card quando ci
-   sono. */
-.im-arch { display: grid; gap: 0.6rem; margin-top: 0.55rem; }
+/* Il contenitore torna, perché è lui a dire che i cinque blocchi sono
+   UN sistema e non cinque prodotti in fila.
+   ⚠️ Ma non esiste finché è vuoto: i blocchi arrivano uno alla volta col
+   ↓, e un riquadro disegnato attorno al nulla si legge come un errore
+   di caricamento. `:has()` lo accende al primo blocco rivelato. */
+.im-arch { display: grid; gap: 0.6rem; margin-top: 0.55rem; padding: 0.75rem; border-radius: 18px; }
+.im-arch:has([data-substep-active]) {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0.75rem;
+}
 .im-arch-su {
   list-style: none; margin: 0; padding: 0;
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem;
@@ -2685,8 +2702,8 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 /* La fascia dei numeri, quando divide la pagina con i quadranti, si
    stringe: è un dato di contesto, non il contenuto della slide. */
 .im-ado-sott {
-  margin: 0.2rem 0 0; max-width: 72ch;
-  font-size: clamp(0.95rem, 0.84vw, 1.9rem); line-height: 1.42; color: #eaf3e7;
+  margin: 0.9rem 0 0; max-width: 72ch;
+  font-size: clamp(1.02rem, 0.92vw, 2.05rem); line-height: 1.44; color: #eaf3e7;
 }
 .im-ado-t--stretto { max-width: 34ch; font-size: clamp(1.7rem, 1.85vw, 3.7rem); }
 
@@ -3074,4 +3091,259 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 
 @media (max-height: 940px) {
   .im-fig { height: clamp(2.8rem, 3.5vw, 5.4rem); margin-bottom: 0.3rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CHI È ADOBE — i due mondi, e il punto in cui si toccano
+   L'argomento non è un elenco di prodotti: è che Adobe fa gli strumenti
+   con cui il contenuto NASCE e il sistema con cui ARRIVA al cliente, e
+   che le due metà si toccano. Quindi il disegno sta al centro e il
+   testo gli sta intorno, non il contrario.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-mondi {
+  position: relative; display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.5rem minmax(0, 1fr);
+  align-items: stretch; gap: 0; margin-top: 0.9rem;
+}
+.im-mondo {
+  display: grid; gap: 0.5rem; align-content: start; min-width: 0;
+  padding: 1.3rem 1.5rem 1.4rem; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+/* ⚠️ La RIGA va dichiarata, non lasciata all'auto-placement: con le
+   sole colonne il giunto non trovava posto in riga 1 e finiva a capo,
+   sotto le card, dove non collegava più niente. */
+.im-mondo[data-lato='crea'] { grid-column: 1; grid-row: 1; }
+/* La metà che riguarda questo incontro si marca: non è una nota a piè
+   di pagina, è il perimetro della riunione. */
+.im-mondo[data-lato='esperienza'] {
+  grid-column: 3; grid-row: 1;
+  background: rgba(37, 137, 0, 0.18); border-color: rgba(79, 194, 31, 0.55);
+}
+.im-mondo-t {
+  font-size: clamp(1.06rem, 0.96vw, 2.1rem); font-weight: 700;
+  line-height: 1.18; color: #ffffff;
+}
+.im-mondo-p {
+  list-style: none; margin: 0.1rem 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.36rem;
+}
+.im-mondo-p li {
+  padding: 0.26rem 0.62rem; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: clamp(0.8rem, 0.66vw, 1.48rem); font-weight: 700; color: #ffffff;
+}
+.im-mondo[data-lato='esperienza'] .im-mondo-p li {
+  background: rgba(79, 194, 31, 0.2); border-color: rgba(79, 194, 31, 0.5);
+}
+.im-mondo-d {
+  font-size: clamp(0.86rem, 0.72vw, 1.62rem); line-height: 1.38; color: #e3eedf;
+}
+/* Il giunto: tre linee che convergono in un punto solo. È il disegno
+   dell'argomento — due mondi, una giunzione — e non ha parole dentro. */
+/* ⚠️ Il giunto va ANCORATO all'altezza delle card: senza, l'SVG prende
+   l'altezza intrinseca del viewBox e scivola sotto, dove non collega
+   più niente. `align-self: stretch` e altezza piena dentro la cella. */
+/* Il giunto: una linea che attraversa e un punto che la interrompe.
+   ⚠️ Era un SVG con `preserveAspectRatio="none"` e `overflow: visible`:
+   deformato dalla cella, espandeva la riga della griglia e sbordava
+   sopra il testo. Due regole di CSS fanno lo stesso segno e non possono
+   uscire da nessuna parte. */
+.im-mondi-giunto {
+  grid-column: 2; grid-row: 1; align-self: center; position: relative;
+  display: grid; place-items: center; height: 2.6rem;
+}
+.im-mondi-giunto::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%;
+  border-top: 2px dashed rgba(79, 194, 31, 0.75);
+}
+.im-mondi-giunto span {
+  position: relative; z-index: 1;
+  width: 2.1rem; height: 2.1rem; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--color-verde-chiaro); color: #0d2901;
+  font-size: clamp(0.9rem, 0.78vw, 1.75rem); font-weight: 700; line-height: 1;
+}
+
+@media (max-width: 1100px) {
+  .im-mondi { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+  .im-mondo[data-lato='crea'], .im-mondo[data-lato='esperienza'] { grid-column: 1; }
+  .im-mondi-giunto { display: none; }
+}
+@media (max-height: 940px) {
+  .im-mondo { padding: 0.9rem 1rem 1rem; gap: 0.38rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   INGAGGIARE IL CLIENTE — il ciclo, il flusso del dato, i casi d'uso
+
+   Lo schema del ciclo viene dalla slide che il team usa già: quattro
+   componenti in alto e, sotto, una fascia che dice che cosa succede
+   DENTRO il perimetro del cliente. È quella fascia a rendere la slide
+   una proposta invece di un catalogo.
+   ══════════════════════════════════════════════════════════════════════ */
+.im-ciclo {
+  list-style: none; margin: 0.7rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem;
+}
+.im-ciclo-i {
+  display: grid; grid-template-rows: 1fr auto; min-width: 0; margin-inline: 0;
+  border-radius: 14px; overflow: hidden;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.im-ciclo-su {
+  display: grid; gap: 0.26rem; align-content: start;
+  padding: 0.9rem 1rem 0.95rem; position: relative;
+}
+.im-ciclo-n {
+  width: 1.7rem; height: 1.7rem; border-radius: 999px;
+  display: grid; place-items: center; margin-bottom: 0.15rem;
+  background: var(--blk-engagement); color: #071a00;
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); font-weight: 700; line-height: 1;
+}
+.im-ciclo-fig { height: clamp(2.6rem, 3.4vw, 5.4rem); margin-bottom: 0.3rem; }
+/* La riga del cliente: fondo pieno, perché è l'altra metà del discorso. */
+.im-ciclo-giu {
+  margin: 0; max-width: none; padding: 0.7rem 1rem 0.8rem;
+  background: rgba(37, 137, 0, 0.3); border-top: 1px solid rgba(79, 194, 31, 0.5);
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); line-height: 1.36; color: #eaf6e6;
+}
+/* ⚠️ `max-width: none` non basta: il reset cappa i <p> dentro la slide
+   e la fascia restava larga un terzo. Qui serve la larghezza piena,
+   perché è la base su cui poggiano tutti e quattro i componenti. */
+.im-ciclo-base {
+  margin: 0.6rem 0 0; max-width: none !important; width: 100%; padding: 0.55rem 1rem; border-radius: 10px;
+  background: rgba(235, 16, 0, 0.14); border: 1px solid rgba(235, 16, 0, 0.45);
+  text-align: center; font-size: clamp(0.86rem, 0.74vw, 1.66rem);
+  font-weight: 700; color: #ffffff;
+}
+
+/* ── Il flusso del dato ─────────────────────────────────────────────── */
+.im-flusso {
+  display: grid; align-items: stretch; gap: 0.7rem; margin-top: 0.7rem;
+  grid-template-columns: minmax(0, 0.9fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+}
+.im-flusso-fonti { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; align-content: center; }
+.im-flusso-fonti li {
+  padding: 0.4rem 0.7rem; border-radius: 8px; margin-inline: 0;
+  background: rgba(255, 255, 255, 0.09); border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: clamp(0.78rem, 0.66vw, 1.48rem); color: #ffffff;
+}
+.im-flusso-fr { align-self: center; color: var(--blk-engagement); font-size: clamp(1rem, 0.9vw, 2rem); font-weight: 700; }
+.im-flusso-aep, .im-flusso-cja {
+  display: grid; gap: 0.3rem; align-content: center; min-width: 0;
+  padding: 0.95rem 1.05rem; border-radius: 14px;
+}
+.im-flusso-aep { background: rgba(255, 255, 255, 0.09); border: 1px solid rgba(255, 255, 255, 0.22); }
+/* CJA è il punto d'arrivo: prende l'accento del blocco. */
+.im-flusso-cja { background: rgba(59, 168, 24, 0.22); border: 1px solid rgba(79, 194, 31, 0.6); }
+.im-flusso-t { font-size: clamp(0.96rem, 0.84vw, 1.9rem); font-weight: 700; color: #ffffff; }
+.im-flusso-d { font-size: clamp(0.82rem, 0.7vw, 1.58rem); line-height: 1.36; color: #e6f1e2; }
+
+.im-usi {
+  list-style: none; margin: 0.7rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem;
+}
+.im-usi-i {
+  display: grid; gap: 0.3rem; min-width: 0; margin-inline: 0;
+  padding: 0.85rem 1rem 0.9rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.im-usi-t {
+  font-size: clamp(0.88rem, 0.76vw, 1.72rem); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a;
+}
+.im-usi-i ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; }
+.im-usi-i ul li {
+  margin-inline: 0; padding-left: 0.9rem; position: relative;
+  font-size: clamp(0.8rem, 0.68vw, 1.5rem); line-height: 1.34; color: #e6f1e2;
+}
+.im-usi-i ul li::before {
+  content: ''; position: absolute; left: 0; top: 0.55em;
+  width: 0.34rem; height: 0.34rem; border-radius: 999px; background: var(--blk-engagement);
+}
+
+/* ── I casi d'uso: ognuno è una rotta fra due canali ───────────────── */
+.im-casi {
+  list-style: none; margin: 0.8rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem;
+}
+.im-casi-i {
+  display: grid; gap: 0.3rem; min-width: 0; margin-inline: 0;
+  padding: 1rem 1.15rem 1.1rem; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-left: 4px solid var(--blk-engagement);
+}
+.im-casi-rotta {
+  margin: 0 0 0.15rem; max-width: none; display: flex; align-items: center; gap: 0.5rem;
+  font-size: clamp(0.76rem, 0.64vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.im-casi-da { color: #cfe3c8; }
+.im-casi-fr { color: var(--blk-engagement); }
+.im-casi-a { color: #9fd68a; }
+
+@media (max-width: 1200px) {
+  .im-ciclo, .im-usi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .im-flusso { grid-template-columns: minmax(0, 1fr); }
+  .im-flusso-fr { justify-self: center; rotate: 90deg; }
+  .im-casi { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 940px) {
+  .im-ciclo-su { padding: 0.65rem 0.75rem 0.7rem; gap: 0.18rem; }
+  .im-ciclo-giu { padding: 0.5rem 0.75rem 0.6rem; }
+  .im-ciclo-fig { height: clamp(2rem, 2.6vw, 4.2rem); }
+  .im-casi-i, .im-usi-i { padding: 0.7rem 0.85rem 0.75rem; }
+}
+
+/* ── Coworker: le tre capacità, e lo storyboard del video ─────────── */
+.im-cow {
+  list-style: none; margin: 0.8rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem;
+}
+.im-cow-i {
+  display: grid; gap: 0.3rem; min-width: 0; margin-inline: 0;
+  padding: 1.1rem 1.2rem 1.2rem; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 4px solid #eb1000;
+}
+.im-cow-demo {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 0 2rem; align-items: center; width: 100%; height: 100%;
+}
+.im-cow-demo-sx { display: grid; gap: 0.6rem; align-content: center; min-width: 0; }
+.im-story { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; align-content: center; }
+.im-story-i { display: flex; gap: 0.7rem; align-items: flex-start; margin-inline: 0; min-width: 0; }
+.im-story-n {
+  width: 1.6rem; height: 1.6rem; flex: none; border-radius: 999px;
+  display: grid; place-items: center; margin-top: 0.1rem;
+  background: #eb1000; color: #ffffff;
+  font-size: clamp(0.74rem, 0.62vw, 1.4rem); font-weight: 700; line-height: 1;
+}
+.im-story-t {
+  display: block; font-size: clamp(0.92rem, 0.8vw, 1.8rem);
+  font-weight: 700; line-height: 1.2; color: #ffffff;
+}
+.im-story-d {
+  display: block; font-size: clamp(0.82rem, 0.7vw, 1.58rem);
+  line-height: 1.34; color: #e3eedf;
+}
+@media (max-width: 1200px) {
+  .im-cow { grid-template-columns: minmax(0, 1fr); }
+  .im-cow-demo { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+
+/* Lo slot del video, finché è vuoto: si vede che c'è un posto e che cosa
+   ci va. Un'area invisibile in attesa di configurazione lascia metà
+   slide bianca e sembra un errore. */
+.im-cow-demo-sx [data-media-slot],
+.im-cow-demo-sx .media-demo-slot {
+  min-height: clamp(10rem, 22vh, 17rem); border-radius: 14px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  display: grid; place-items: center;
 }

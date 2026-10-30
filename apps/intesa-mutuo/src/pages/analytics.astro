@@ -1,0 +1,52 @@
+---
+/**
+ * 08 · CX ANALYTICS — capitolo in attesa di contenuto.
+ *
+ * ⚠️ È UN SEGNAPOSTO, E LO DICE. Un capitolo vuoto e muto è peggio di
+ * un capitolo che dichiara che cosa arriverà e chi lo porta: chi apre il
+ * link fuori dalla riunione capisce che manca un pezzo e non che il
+ * documento è rotto. Quando il contenuto arriva, questa slide sparisce
+ * e la riga `capitolo` in `agenda.ts` resta la stessa.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import Divisore from '../components/Divisore.astro';
+import fondo from '../assets/generated/lavoro-03-dati.webp';
+
+const SLUG = 'analytics';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 40%`}></div>
+      <Divisore num={ch.num}
+        tIt="CX Analytics" tEn="CX analytics"
+        lIt="Che cosa si misura, con che cosa, e che cosa se ne fa chi decide."
+        lEn="What gets measured, with what, and what the decision-makers do with it." />
+    </Slide>
+
+    <Slide id="slide-attesa" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap" data-reveal>
+        <T as="p" class="im-ado-occ" it="Sezione in preparazione" en="Section in preparation" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Le slide di questo capitolo arrivano con il materiale di prodotto" en="This chapter’s slides arrive with the product material" />
+        <T as="p" class="im-ado-l" it="Il capitolo esiste nell’agenda perché in sala se ne parla. Il contenuto non è ancora innestato, e questa pagina lo dice invece di far sembrare il documento finito." en="The chapter exists in the agenda because it is covered in the room. The content is not grafted in yet, and this page says so rather than letting the document look finished." />
+        <T as="p" class="im-fonte-riga" it="Quando il materiale arriva, questa slide esce e il capitolo prende il suo posto senza toccare né l’agenda né la navigazione." en="When the material arrives, this slide goes and the chapter takes its place without touching the agenda or the navigation." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

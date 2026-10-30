@@ -177,7 +177,10 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'persona',    route: '/experience-design-factory/intesa-mutuo/persona/' },
     { name: 'momenti',    route: '/experience-design-factory/intesa-mutuo/momenti/' },
     { name: 'circolo',  route: '/experience-design-factory/intesa-mutuo/circolo/' },
+    { name: 'coworker',   route: '/experience-design-factory/intesa-mutuo/coworker/' },
     { name: 'risultati',  route: '/experience-design-factory/intesa-mutuo/risultati/' },
+    { name: 'analytics',  route: '/experience-design-factory/intesa-mutuo/analytics/' },
+    { name: 'prossimi-passi', route: '/experience-design-factory/intesa-mutuo/prossimi-passi/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/intesa-mutuo/dieci-minuti/' },
   ],
   'unipol-cinque-domande': [

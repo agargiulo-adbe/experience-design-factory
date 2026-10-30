@@ -62,6 +62,25 @@ const TEAM = [
   { n: 'Barbara Moretti', f: rMoretti, r: { it: 'Principal Product Marketing Manager', en: 'Principal Product Marketing Manager' } },
 ];
 
+/* I DUE MONDI DI ADOBE, e il punto in cui si toccano.
+   ⚠️ CORREZIONE DI NAMING, verificata su Field Readiness il 30 ott 2026:
+   la slide diceva «Experience Cloud», e quel nome non è più quello
+   corrente — dal Summit 2026 l'offerta si chiama **Adobe CX Enterprise**
+   e unifica Brand Visibility, Customer Engagement e Content Supply Chain
+   su un'unica piattaforma di AI. Dirlo col nome vecchio davanti a un
+   cliente che legge gli annunci è il modo più rapido di sembrare fermi
+   a un anno fa.
+   I prodotti elencati vengono dalla marketecture di CX Enterprise, non
+   dalla memoria. */
+const MONDI = [
+  { lato: 'crea', t: { it: 'Dove il contenuto nasce', en: 'Where content is born' },
+    p: ['Creative Cloud', 'Firefly', 'Express', 'Acrobat'],
+    d: { it: 'Produzione, approvazione e firma di contenuti e documenti.', en: 'Producing, approving and signing content and documents.' } },
+  { lato: 'esperienza', t: { it: 'Dove arriva al cliente', en: 'Where it reaches the customer' },
+    p: ['Real-Time CDP', 'Journey Optimizer', 'GenStudio', 'CX Analytics'],
+    d: { it: 'Dati, decisione e regia del percorso su ogni canale.', en: 'Data, decisioning and journey orchestration on every channel.' } },
+];
+
 /* I cinque numeri, con la fonte accanto. Dal deck, slide 6. */
 const NUMERI = [
   { k: '1982', v: { it: 'fondata da J. Warnock e C. Geschke', en: 'founded by J. Warnock and C. Geschke' } },
@@ -185,21 +204,29 @@ const FASCE = [
 
     <Slide id="slide-chi" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap" data-reveal>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Chi è Adobe" en="Who Adobe is" />
-        <T as="h2" class="im-ado-t" it="Dare a tutti la possibilità di creare" en="Giving everyone the ability to create" />
-        <T as="p" class="im-ado-l" it="Adobe sviluppa piattaforme e strumenti per la creatività, la produttività e le esperienze cliente personalizzate: dalla prima scintilla creativa alla distribuzione su ogni canale." en="Adobe builds platforms and tools for creativity, productivity and personalised customer experiences: from the first creative spark to delivery on every channel." />
-        <div class="im-ado-due">
-          <section class="im-ado-area" data-substep data-side="in" data-oggi>
-            <T as="p" class="im-ado-area-t" it="Esperienza cliente" en="Customer experience" />
-            <T as="p" class="im-ado-area-d" it="Experience Cloud: dati, contenuti e percorsi su web, app, assistenza e rete fisica." en="Experience Cloud: data, content and journeys across web, app, service and the branch network." />
-            <T as="p" class="im-ado-area-q" it="È l’ambito di oggi" en="This is today’s scope" />
-          </section>
-          <section class="im-ado-area" data-substep data-side="in">
-            <T as="p" class="im-ado-area-t" it="Creatività e documenti" en="Creativity and documents" />
-            <T as="p" class="im-ado-area-d" it="Acrobat, Photoshop, Express, Firefly: produzione, approvazione e firma di contenuti e documenti." en="Acrobat, Photoshop, Express, Firefly: producing, approving and signing content and documents." />
-          </section>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Dalla prima scintilla creativa alla distribuzione su ogni canale" en="From the first creative spark to delivery on every channel" />
+
+        {/* La figura è l'argomento: Adobe fa gli strumenti con cui il
+            contenuto nasce E il sistema con cui arriva al cliente. Il
+            punto di giunzione è dove le due metà si toccano, ed è lì che
+            sta il perché di questo incontro. */}
+        <div class="im-mondi" data-reveal data-reveal-delay="0.12">
+          {MONDI.map((m) => (
+            <section class="im-mondo" data-lato={m.lato} data-substep data-side="in">
+              <T as="span" class="im-mondo-t" it={m.t.it} en={m.t.en} />
+              <ul class="im-mondo-p">{m.p.map((x) => <li>{x}</li>)}</ul>
+              <T as="span" class="im-mondo-d" it={m.d.it} en={m.d.en} />
+            </section>
+          ))}
+          <div class="im-mondi-giunto" aria-hidden="true"><span>→</span></div>
         </div>
+
+        <T as="p" class="im-ado-sott" data-substep data-side="in"
+           it="Pochi fanno l’una o l’altra. Adobe fa entrambe, e dal 2026 le tiene nello stesso sistema: Adobe CX Enterprise, su Adobe AI Platform."
+           en="Few do one or the other. Adobe does both, and since 2026 keeps them in one system: Adobe CX Enterprise, on Adobe AI Platform." />
+        <T as="p" class="im-fonte-riga" it="Perimetro e nomi dei prodotti dalla marketecture di Adobe CX Enterprise (Field Readiness, 30 ott 2026). «Experience Cloud» è il nome precedente della stessa offerta." en="Scope and product names from the Adobe CX Enterprise marketecture (Field Readiness, 30 Oct 2026). «Experience Cloud» is the former name of the same offering." />
       </div>
     </Slide>
 
@@ -247,7 +274,7 @@ const FASCE = [
           <T as="h2" class="im-orch-t" it="Orchestrare l’esperienza del cliente" en="Orchestrating the customer experience" />
           <T as="p" class="im-orch-c" it="Dati, contenuti e decisione nello stesso sistema: per servire i clienti di Intesa Sanpaolo uno per uno, in app, sul sito, al contact center e in filiale." en="Data, content and decisioning in one system: to serve Intesa Sanpaolo’s customers one by one, in the app, on the site, at the contact centre and in the branch." />
         </div>
-        <T as="p" class="im-ado-l im-ado-l--sotto" it="Tre canali, una misura che li attraversa tutti e, sotto, il modo in cui il lavoro si chiede. Sono i blocchi che tornano in ogni momento del percorso di Giulia." en="Three channels, one measurement running across all of them and, underneath, the way the work gets asked for. These are the blocks that come back at every moment of Giulia’s journey." />
+        <T as="p" class="im-ado-l im-ado-l--sotto" it="Tre canali, una misura che li attraversa tutti e, sotto, il modo in cui il lavoro si chiede." en="Three channels, one measurement running across all of them and, underneath, the way the work gets asked for." />
         <div class="im-arch" data-reveal data-reveal-delay="0.12">
           <ul class="im-arch-su">
             {CANALI.map((b) => (
