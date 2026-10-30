@@ -39,12 +39,12 @@ export const AGENDA: VoceAgenda[] = [
   {
     n: '03', capitolo: 'momenti',
     titolo: { it: 'Lo stesso mutuo, dai due lati', en: 'The same mortgage, from both sides' },
-    riga: { it: 'Sette momenti di una persona che non vi conosce ancora, e che cosa succede dall’altra parte', en: 'Seven moments of someone who does not know you yet, and what happens on the other side' },
+    riga: { it: 'Sette momenti di una persona che non vi conosce ancora, e cosa succede dall’altra parte', en: 'Seven moments of someone who does not know you yet, and what happens on the other side' },
   },
   {
     n: '04', capitolo: 'momenti',
     titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
-    riga: { it: 'La misura, il profilo, la regia e l’arbitro — e dove si innestano nei vostri sistemi', en: 'Measurement, profile, orchestration and arbiter — and where they graft onto your systems' },
+    riga: { it: 'Dove la misura, il profilo, la regia e l’arbitro si innestano nei vostri sistemi', en: 'Where measurement, profile, orchestration and the arbiter graft onto your systems' },
   },
   {
     n: '05', capitolo: 'circolo',

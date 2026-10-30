@@ -52,6 +52,6 @@ export const MISURE = [
 
 /* L'ASK, in un posto solo. */
 export const ASK = {
-  it: 'Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre.',
+  it: 'Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre.',
   en: 'One journey only, the mortgage, with a control group. If it does not move, we know within a quarter.',
 };

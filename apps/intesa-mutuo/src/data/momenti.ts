@@ -255,7 +255,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Il quadro si chiede', en: 'The briefing is asked for' },
     canale: { it: 'Filiale', en: 'Branch' },
     gruppo: 'piattaforma',
-    verifica: { it: 'Oggi chi riceve l’appuntamento che cosa vede, di una persona che non è cliente?', en: 'Today, what does the person taking the appointment see about someone who is not a customer?' },
+    verifica: { it: 'Oggi che cosa vede, di una persona non ancora cliente, chi riceve l’appuntamento?', en: 'Today, what does the person taking the appointment see about someone who is not yet a customer?' },
     prodotto: 'CX Enterprise Coworker',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
@@ -297,8 +297,8 @@ export const MOMENTI: Momento[] = [
       prodotto: 'misura', scena: 'lavoro-07-misura',
       titolo: { it: 'Dove si perde, e quanto è costato acquisirla', en: 'Where it leaks, and what it cost to acquire her' },
       corpo: {
-        it: 'A che serve qui: senza una misura sola dall’assistente alla firma, nessuno sa quale dei sette momenti ha prodotto la cliente, e quindi su quale investire il mese dopo. Il numero che conta non è il tasso di apertura: è quanto costa acquisirla, e dove se ne perdono.',
-        en: 'What it is for: without one measurement from the assistant to the signature, nobody knows which of the seven moments produced the customer, and so where to invest next month. The number that matters is not open rate: it is what she cost to acquire, and where others are lost.',
+        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Il numero che conta non è il tasso di apertura: è quanto costa acquisirla, e dove si perdono.',
+        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. The number that matters is not open rate: it is what she cost to acquire, and where others are lost.',
       },
     },
   },
