@@ -41,6 +41,24 @@ Il template lo impone già (`.ex-ancore` + `HowItWorks`); il gate è la famiglia
 di prosa: un deck ad ancore lo fallisce per costruzione, e non si compensa gonfiando le
 slide. Casi, trappole e verifica in **`references/ancore-non-prosa.md`**.
 
+## Step 0-bis bis — Umanizzare la copia, in tre giri misurati
+Quando il contenuto è fermo e prima della consegna. **Non è una passata di stile: è un
+giro con un prima e un dopo.** La regola che tiene insieme tutto: un intervento che fa
+scendere un contatore può aver **spostato** il marcatore invece di toglierlo. Misurato su
+`intesa-mutuo`: `copy-audit` segnalava 8 trattini-perno, e sostituirli con i due punti li
+avrebbe azzerati — ma il deck aveva già **49 due-punti-perno**, sei volte tanto. Tutti i
+gate verdi, il testo peggiore.
+Quindi: prima di toccare si misura anche quello che il gate NON guarda (**`pnpm lenti
+--app <alias>`**: stilometria per pagina, perni, telai di frase, aperture ripetute), e
+alla fine si riconfronta. I tre giri sono **i segni** (`copy-audit` finché non esce 0, e
+si rilancia: la seconda passata trova i marcatori creati dalla prima), **la misura**
+(stilometria per PAGINA, concentrazione dei telai, e si **guardano** gli screenshot a
+1920), **l'orecchio** (l'altra lingua, i fatti attribuiti a terzi, il tono). Ordine dei
+gate dopo ogni modifica di copia: `copy-audit` → `audit:wrap` → `audit:deck`.
+Le eccezioni si dichiarano sulla riga con `copy-audit-ignore` **e il motivo accanto**.
+Metodo, tipi di intervento con il prima/dopo vero, i due buchi di gate trovati e le due
+sonde da NON costruire: **`references/umanizzazione.md`**.
+
 ## Step 0-ter — Il guscio sensoriale (marchio, movimento, suono, scala)
 Quattro cose si vedono prima che si legga una riga, e nessun check le fa fallire:
 il **marchio** (favicon geometrico + icone + anteprima del link, da `pnpm brand:icons`),

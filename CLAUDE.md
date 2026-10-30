@@ -132,6 +132,11 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
   HTML, cioè i tre check che i `.pptx` avevano e l'HTML no: **`R`** due slide di contenuto
   consecutive dello stesso tipo, **`G`** quattro slide di fila senza un elemento visivo,
   **`V`** quanta pagina è coperta da testo **e figure**. Tutto SOFT: insegna a comporre.
+- `pnpm lenti --app <alias> [--en] [--root <albero>]` — **le misure che nessun gate dà**, per
+  umanizzare: stilometria **per pagina** (frase media, burstiness, Gulpease, type-token),
+  i **perni** (due punti usati come snodo retorico), i **telai** di frase e dove si
+  concentrano, le aperture ripetute. **Non è un gate**: stampa numeri da confrontare prima
+  e dopo un giro. `--root` punta a un albero estratto con `git archive` per la baseline vera.
 - `pnpm audit:wrap` / `DECK_URL=http://localhost:N npx tsx scripts/wrap-audit.ts --app <app> [--tv] [--tutto]` — gli **a capo** del deck: segnala le preposizioni e gli articoli appesi a fine riga nel testo grande (titoli, occhielli, lead), misurati sulle righe davvero rese. Si lancia dopo ogni modifica di copia, **prima** di `audit:deck`.
 - `pnpm audit:taglio` / `DECK_URL=http://localhost:N npx tsx scripts/cut-audit.ts --app <app>` — il taglio **«In dieci minuti»** resta allineato al percorso intero: HARD su copia a mano, numeri che solo il taglio afferma, fonti che solo il taglio porta. Si dichiara l'app in `scripts/lib/cut-routes.ts`. Si lancia **prima** di `audit:deck`.
 - `pnpm audit:dossier` / `DOSSIER_URLS="<url>?t=<token>" npx tsx scripts/dossier-audit.ts` — gate deterministico dei **dossier interni** su 5 viewport (320→1280): barra fissa ≤12% del viewport, zero scorrimento orizzontale, corpo ≥16px e celle ≥14px, celle di tabella etichettate quando si impilano, bersagli ≥44px, indice completo, 60–95 caratteri per riga, stampa pulita. Deve uscire a **0 rilievi**.
@@ -430,6 +435,35 @@ Dal 13 ott 2026 legge anche quelle (e salta le note non rese, `cosaDice`, e la c
 l'intestazione dice **quante stringhe ha misurato**, e segnala le app dove ne misura zero.
 Un PASS senza il conto delle stringhe non è un PASS.
 
+### Umanizzare è un giro MISURATO: spostare un marcatore non è toglierlo (BINDING)
+Un intervento che fa scendere un contatore può aver spostato il segno invece di
+rimuoverlo, e il gate non se ne accorge. Misurato su `intesa-mutuo` il 30 ott 2026:
+`copy-audit` segnalava **8 trattini-perno** (`D1`); la correzione ovvia — i due punti al
+posto del trattino — li avrebbe azzerati, ma il deck aveva già **49 stringhe con i due
+punti come perno retorico**. Sei volte tanto. Tutti i gate verdi, e il testo peggiore.
+- **Prima di toccare si misura anche quello che il gate non guarda: `pnpm lenti --app
+  <alias>`**, e alla fine si riconfronta. Esito reale: trattini 8 → 0, due punti 49 → 48.
+- **Il gate si rilancia finché non esce 0, non una volta.** La seconda passata trova i
+  marcatori creati dalla prima: riscrivendo una doppia relativa ne è uscita un'altra,
+  spostata di tre parole. Su quel deck sono servite tre passate.
+- **Tre giri, in quest'ordine.** I **segni** (la rubrica, riga per riga) · la **misura**
+  (stilometria per PAGINA — una media per app nasconde il capitolo pesante — più la
+  **concentrazione dei telai** di frase, e si **guardano** gli screenshot a 1920) ·
+  l'**orecchio** (l'altra lingua, dove si sente meno; i fatti attribuiti a terzi; il tono).
+- **La concentrazione è il segnale, non il totale.** Su quel deck 33 stringhe su 513
+  giravano sulla negazione, e lette una per una erano quasi tutte guadagnate — l'argomento
+  del deck *è* «quello che date per fatto non succede». Cinque telai identici dentro lo
+  stesso componente invece erano un tic: si toglie quella, non le altre.
+- **Si sostituisce con parole che il deck già usa**, non con parole nostre.
+- **Le eccezioni si dichiarano sulla riga** con `copy-audit-ignore` **e il motivo accanto**:
+  un'eccezione senza motivo è un gate spento di nascosto.
+- **Due sonde provate e scartate**, perché segnalano il corretto: il **tricolon** (un elenco
+  di tre cose vere ha la stessa forma di una terzina retorica) e l'**eco IT/EN** (uno
+  scheletro di punteggiatura identico è quello che produce una traduzione fedele). Restano
+  lenti da puntare a mano, mai gate.
+Dettaglio, tipi di intervento col prima/dopo vero e i due buchi di gate trovati:
+`skills/experience-design/references/umanizzazione.md`. Memoria: `umanizzare-e-misurato`.
+
 ### La linearità si misura: una frase si ascolta una volta sola (BINDING, `copy-audit` famiglia `L`)
 Un dirigente legge la slide **mentre qualcuno parla**: una frase che va capita due volte è persa,
 e la semplicità non è un gusto, è la condizione perché l'argomento arrivi. Quattro segni, SOFT,
@@ -701,7 +735,12 @@ contrasto è a posto, è il testo che si rompe nel punto sbagliato.
   viewport di proiezione (`--tv` aggiunge quelli da muro), ricava con la Range API le righe
   **realmente rese** e segnala l'ultima parola di ogni riga quando è una preposizione, un
   articolo o una congiunzione. Gira contro il **preview statico**, come `audit:deck`.
-- **Guarda solo il testo grande** — corpo oltre il 15% di quello di base: titoli, occhielli,
+- **Guarda il testo che si prende intero**: quello grande (oltre il 15% del corpo di base)
+  **oppure** il blocco che rende in **≤2 righe** — un lead di due righe a corpo base si legge
+  come un titolo. Il criterio era la sola dimensione del carattere fino al 30 ott 2026, e in
+  quella fessura cadeva il caso più frequente: tre preposizioni appese trovate guardando gli
+  screenshot mentre il gate taceva. Si alza con `WRAP_RIGHE`; `WRAP_RIGHE=0` torna al vecchio.
+- Nel dettaglio il testo grande è: titoli, occhielli,
   lead, la frase che chiude. Lì le righe sono poche e l'occhio le prende intere. Dentro un
   paragrafo di corpo la stessa rottura non la nota nessuno, e legarla tutta riempirebbe il
   testo di vincoli che poi sbordano sui viewport stretti (`--tutto` li mostra, come

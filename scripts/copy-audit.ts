@@ -151,7 +151,18 @@ const RULES: Rule[] = [
     why: 'virgolette dritte nel testo visibile: in italiano si usano le caporali («»), in inglese le curve.',
   },
 
-  // ── SOFT · la rubrica de-AI ───────────────────────────────────────────────
+  /* PERCHÉ NON C'È UN CHECK SUL TRICOLON. Provato il 30 ott 2026 su intesa-mutuo:
+   un regex su «A, B, e C» trova 15 ricorrenze e quasi tutte sono ELENCHI di tre
+   cose vere — «l'evento, l'eleggibilità che arriva dal core, e l'uplift misurato
+   su un gruppo di controllo». La terzina retorica («Ogni giorno. Ogni query.»)
+   e l'enumerazione hanno la stessa forma: distinguerle è giudizio, non conteggio.
+   Stessa sorte per l'ECO fra le due lingue: uno scheletro di punteggiatura
+   identico fra `it` ed `en` è quello che fa una traduzione FEDELE di un elenco,
+   non un calco. Restano due lenti da puntare a mano durante una revisione, mai
+   due gate: un check che segnala il corretto viene spento al primo giro, e si
+   porta via la credibilità anche degli altri. */
+
+// ── SOFT · la rubrica de-AI ───────────────────────────────────────────────
   {
     code: 'D1',
     sev: 'SOFT',
@@ -182,7 +193,7 @@ const RULES: Rule[] = [
     code: 'D4',
     sev: 'SOFT',
     langs: ['it'],
-    re: /\b(?:crea(?:re|no)?\s+valore|valore\s+aggiunto|un['’]unica\s+visione|visione\s+unica|a\s+360|end[-\s]to[-\s]end|best[-\s]in[-\s]class|game\s+changer|all['’]avanguardia|sinergi[ae]|leva\s+strategica|abilitante|rivoluzion\w+)\b/gi,
+    re: /\b(?:crea(?:re|no)?\s+valore|valore\s+aggiunto|un['’]unica\s+visione|visione\s+unica|a\s+360|end[-\s]to[-\s]end|best[-\s]in[-\s]class|game\s+changer|all['’]avanguardia|sinergi[ae]|leva\s+strategica|abilitante|rivoluzion\w+|ecosistema|scalabilit[àa]|esperienza\s+fluida|percorso\s+di\s+valore|centricit[àa]|valorizzare|frictionless|seamless)\b/gi,
     why: 'value-speak: dice di valere senza dire che cosa fa. Sostituire con il fatto concreto.',
   },
   {
@@ -196,14 +207,14 @@ const RULES: Rule[] = [
     code: 'D5',
     sev: 'SOFT',
     langs: ['it'],
-    re: /(?:^|[.!?]\s|»\s)(?:Inoltre|Infatti|In\s+un\s+mondo\s+in\s+cui|Non\s+si\s+tratta\s+solo|Di\s+conseguenza|In\s+definitiva)\b/g,
+    re: /(?:^|[.!?]\s|»\s)(?:Inoltre|Infatti|In\s+un\s+mondo\s+in\s+cui|Non\s+si\s+tratta\s+solo|Di\s+conseguenza|In\s+definitiva|Ecco\s+perch[ée]|In\s+altre\s+parole|Allo\s+stesso\s+modo|Non\s+a\s+caso|Detto\s+questo|In\s+sostanza)\b/g,
     why: 'connettore da testo generato: nel parlato di un deck non ci va. Togliere o riscrivere.',
   },
   {
     code: 'D5',
     sev: 'SOFT',
     langs: ['en'],
-    re: /(?:^|[.!?]\s)(?:Moreover|Furthermore|In\s+a\s+world\s+where|It[’']s\s+not\s+just\s+about|Ultimately|Additionally)\b/g,
+    re: /(?:^|[.!?]\s)(?:Moreover|Furthermore|In\s+a\s+world\s+where|It[’']s\s+not\s+just\s+about|Ultimately|Additionally|That\s+said|In\s+short|In\s+other\s+words|Here[’']s\s+why)\b/g,
     why: 'generated-text connector: it does not belong in deck copy. Cut or rewrite.',
   },
   {
@@ -233,6 +244,10 @@ const RULES: Rule[] = [
    riga, dietro due subordinate e una doppia relativa). Soglie volutamente
    larghe: un gate che segnala troppo viene spento. */
 const SUBORD = /\b(?:che|cui|quando|mentre|perché|poiché|finché|affinché|benché|dove|se)\b/gi;
+/* Il gerundio in apertura fa la stessa cosa della subordinata — rimanda il
+   soggetto — e APRE_SUB non lo vede perché elenca congiunzioni. «Data»/«Visto»
+   solo se seguiti da «che»: se no prende «Data lake», misurato il 30 ott 2026. */
+const APRE_GER = /^\s*(?:\w+ando|\w+endo)\b|^\s*(?:Visto|Vista|Dato|Data)\s+che\b/;
 const APRE_SUB = /^\s*(?:Quando|Dove|Se|Finché|Mentre|Dopo che|Prima che|Dal momento|Poiché|Benché|Nel momento in cui)\b/;
 
 interface FraseFinding { code: string; why: string }
@@ -246,6 +261,7 @@ function linearita(testo: string): FraseFinding[] {
     if (parole > 28) out.push({ code: 'L1', why: `frase di ${parole} parole: oltre le ~28 si perde il filo leggendo mentre qualcuno parla. Si taglia in due.` });
     if (sub >= 3 && parole > 14) out.push({ code: 'L2', why: `${sub} subordinate nella stessa frase: una idea per frase regge meglio in sala.` });
     if (/\bche\b[^.!?]{0,60}?\bche\b/i.test(frase) && parole > 12) out.push({ code: 'L3', why: 'doppia relativa («che … che …»): si riscrive con un punto o un sostantivo.' });
+    if (APRE_GER.test(frase) && parole > 18) out.push({ code: 'L5', why: 'apre con un gerundio: la principale arriva dopo la rincorsa, e L4 non lo vede perché guarda solo le congiunzioni.' });
     if (APRE_SUB.test(frase) && parole > 18) out.push({ code: 'L4', why: 'la frase apre con una subordinata e la principale arriva dopo la rincorsa: si mette prima il soggetto.' });
   }
   return out;
