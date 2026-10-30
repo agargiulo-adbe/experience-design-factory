@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-10-29**.
+> Documento di passaggio di consegne. Stato al **2026-10-30**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -9,6 +9,23 @@
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
 > `.md` costa ~34k token su 18 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> 🟢 **La Factory è in rete, e per il 5 novembre ci sono DUE artefatti.** Il 30 ott il ramo è
+> stato mergiato in `main` e il deploy è passato: **`apps/intesa-esperienza-cliente` «Adobe ×
+> Intesa Sanpaolo»** (la **Storia**, nove capitoli e 41 slide — **§42, Parte 18**) e **Unipol
+> «Cinque domande»** sono pubbliche. La Storia ha **inglobato il `.pptx` da 78 slide** del 5
+> novembre: un artefatto invece di due, dopo che i due dicevano cose diverse su chi è Giulia.
+> Lo slug è passato da `intesa-mutuo` a `intesa-esperienza-cliente` **prima** della
+> pubblicazione (dodici stub di rimando coprono il vecchio indirizzo, che era già in rete).
+> ⚠️ **Il panel non è mai stato lanciato su nessuna delle due Intesa del 5 novembre**: sono i
+> due P0 in testa al backlog, e le personas di quel tavolo **vanno scritte una volta** perché
+> servono a entrambe. ⚠️ Tre difetti sono stati trovati **mentre si pubblicava e non da un
+> gate**: il `<title>` doppio che si vede solo incollando l'URL in chat, una prop usata e non
+> dichiarata che teneva la **CI rossa**, e due slide che dichiaravano **Firefly sotto foto
+> Pexels**. 🔒 Due pulizie di riservatezza: i sedici riferimenti per nome a un altro cliente
+> Adobe sono usciti dai commenti del codice, e tre persone reali dal P0 di `HANDOVER-02.md`
+> — ⚠️ resta il nome nel **messaggio di `f97ef53`** e nei diff storici (P1 nuovo: serve un
+> force-push, decisione dell'owner).
 >
 > ⚠️ **La stanza più vicina è Intesa, e non è più quella del 22: è mercoledì 5 novembre, a Torino,
 > 09:55–11:45.** La stanza del 22 si è tenuta ed è andata bene — il cliente ha proposto lui tre
@@ -243,7 +260,17 @@
 > di media query a 1280×800, le due decisioni di riservatezza) **sono scesi nella Parte 10**: non sono
 > chiusi, ma nessuno di loro decide che cosa si fa questa settimana.
 >
-> ⚠️ **Nota di dimensione** (rimisurata il **26 ott**): il giro del 22-26 ott ha portato una
+> ⚠️ **Nota di dimensione** (rimisurata il **30 ott**): il giro del 30 ott ha portato **§42**
+> (andata nella **Parte 18**, che era la più vuota: da 22,3 a 32,0 KB) e **una voce** di change
+> log da 5,2 KB, che ha spinto la **Parte 3 a 48,4 KB** — dentro il contratto, ma a **703 byte**
+> dal tetto. ⚠️ **Il prossimo `/handover` dovrà ribilanciare la catena 3 → 4 → 14 → 17 prima di
+> scrivere**: la Parte 4 ha 2,1 KB di margine, quindi la voce più vecchia della 3 (4,8 KB) non ci
+> entra senza liberare prima la 4. Il **backlog** ha ceduto di nuovo: la Parte 2 era andata a
+> **67 byte oltre** il tetto, e **due P1 di fondo sono scesi nella Parte 10** (ora 2 e 10 stanno
+> entrambe a ~1,1 KB di margine). Una voce di backlog ha anche superato i **1800 char di riga** ed
+> è stata accorciata, non spezzata: per contratto di formato una voce è **una riga**.
+>
+> ⚠️ **Nota di dimensione precedente** (rimisurata il **26 ott**): il giro del 22-26 ott ha portato una
 > **sezione nuova** (§40, l'experience del 5 novembre) e **cinque voci** di change log. La §40 è
 > andata nella **Parte 18**, che era la più vuota (6,4 KB) e ora sta a 14,2; il change log ha
 > richiesto la solita catena **3 → 4 → 14 → 17**, con sedici voci spostate in tutto. Anche il
@@ -283,7 +310,7 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 
 - [Parte 1 — §1–7: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **29 ott 2026** (Unipol «Cinque domande» registrata, i nomi dei referenti fuori dai file tracciati, due giri di panel), poi dal **26 ott 2026** (il dossier del 5 novembre e il motore che non traduceva · «Dove ci innestiamo» e i quattro fatti corretti alla fonte · le ancore che diventano figure · il catalogo del motore e le slide da fondo sala), poi dal **20 ott 2026** (la console porta al dossier · Intesa e Prospettiva dopo le revisioni · la posta come bozza formattata, 19 ott), dal **16-17 ott 2026** (il TTG nel deck della Direzione Sales e quattro fatti della riunione smentiti dalla verifica), dal **15-16 ott** (il dossier FSTechnology che smette di essere esposto, il contratto del motore come gate, l'anteprima dei link, il dossier MEF) e dalla **sera del 13 ott** (il grafo dei contatti, l'apertura e il giro di ritorno) e dal **12-13 ott** (il panel a due giri sulla Prospettiva, il taglio «In dieci minuti» e il gate `audit:taglio`, la linearità misurata) e dall'**11-12 ott** (la Prospettiva per la Direzione Sales, `audit:ink` e `audit:fonti`, i file di TIM finiti su `main`, il lavoro d'account) all'indietro, fino alla **sera del 7 ott**: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **30 ott 2026** (il deck del 5 novembre entra nella Storia, lo slug dice l'incontro, la Factory va in rete), poi dal **29 ott 2026** (Unipol «Cinque domande» registrata, i nomi dei referenti fuori dai file tracciati, due giri di panel), poi dal **26 ott 2026** (il dossier del 5 novembre e il motore che non traduceva · «Dove ci innestiamo» e i quattro fatti corretti alla fonte · le ancore che diventano figure · il catalogo del motore e le slide da fondo sala), poi dal **20 ott 2026** (la console porta al dossier · Intesa e Prospettiva dopo le revisioni · la posta come bozza formattata, 19 ott), dal **16-17 ott 2026** (il TTG nel deck della Direzione Sales e quattro fatti della riunione smentiti dalla verifica), dal **15-16 ott** (il dossier FSTechnology che smette di essere esposto, il contratto del motore come gate, l'anteprima dei link, il dossier MEF) e dalla **sera del 13 ott** (il grafo dei contatti, l'apertura e il giro di ritorno) e dal **12-13 ott** (il panel a due giri sulla Prospettiva, il taglio «In dieci minuti» e il gate `audit:taglio`, la linearità misurata) e dall'**11-12 ott** (la Prospettiva per la Direzione Sales, `audit:ink` e `audit:fonti`, i file di TIM finiti su `main`, il lavoro d'account) all'indietro, fino alla **sera del 7 ott**: la clip nascosta da `prefers-reduced-motion` e il perimetro di Trenitalia ridotto a due fonti, il gate `audit:wrap`, il modello di costo di Poste portato alla fonte, il difetto del motore sulle slide chiare, Trenitalia riscritta, il guscio sensoriale, la CI verde e i dossier ripuliti, Intesa pubblica.
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal **7 ott 2026, sera** (Intesa Assicurazioni, il perimetro che si allarga) all'11 set. Ribilanciata il 13 ott: la coda è scesa nelle Parti 14 e 17.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.
@@ -298,4 +325,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
 - [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account** (fino a **§39.9: il grafo dei contatti, l'apertura e il giro di ritorno**)](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta. Dal **21 ott** anche **§37.12**: il giro del 20 ott e la trascrizione che corregge il deck.
 - [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.
-- [Parte 18 — §8 **Deck visual contract & audit** · §40 **Intesa «Dove ci innestiamo»** · §41 **Unipol «Cinque domande»**](./HANDOVER-18.md) — §8 è scesa dalla Parte 1 il 21 ott; **§40 è l'experience del 5 novembre**, scritta qui il 26 perché era la parte con più spazio: i sei capitoli, la figura a fasi dell'architettura (e che cosa in quella figura è una lettura nostra), il fact check che ha corretto quattro cose di merito, il guscio sensoriale misurato, e il **dossier interno bilingue**. **§41 è l'experience Unipol**, scritta qui il 29 ott: le cinque domande che il cliente ha fatto davvero, i tre livelli di fonte, il registro che cresce, il design system letto da unipol.it e **i due giri di panel con tutti e cinque gli assi in salita** (§41.4).
+- [Parte 18 — §8 **Deck visual contract & audit** · §40 **Intesa «Dove ci innestiamo»** · §41 **Unipol «Cinque domande»** · §42 **Intesa «Adobe × Intesa Sanpaolo»**](./HANDOVER-18.md) — §8 è scesa dalla Parte 1 il 21 ott; **§40 è l'experience del 5 novembre**, scritta qui il 26 perché era la parte con più spazio: i sei capitoli, la figura a fasi dell'architettura (e che cosa in quella figura è una lettura nostra), il fact check che ha corretto quattro cose di merito, il guscio sensoriale misurato, e il **dossier interno bilingue**. **§41 è l'experience Unipol**, scritta qui il 29 ott: le cinque domande che il cliente ha fatto davvero, i tre livelli di fonte, il registro che cresce, il design system letto da unipol.it e **i due giri di panel con tutti e cinque gli assi in salita** (§41.4). **§42 è la Storia del 5 novembre**, scritta qui il 30: i nove capitoli, gli approfondimenti su profilo/regia/arbitro con il limite dichiarato accanto al pregio, la revisione critica che ha tolto più di quanto abbia aggiunto, e **§42.5 la mappa e la ripresa** — dove la formula «dì quello che dirai, dillo, ripeti» è corretta a metà dalle prove.

@@ -5,6 +5,78 @@
 
 ## 11. Change log recente
 
+### Change log — Intesa: il deck del 5 novembre entra nella Storia, lo slug dice l'incontro, e la Factory va in rete (2026-10-30) → §42 (Parte 18)
+
+**Ventiquattro commit fra le 22:35 del 29 e le 08:32 del 30.** L'experience nata il 28 ott come
+Storia a cinque capitoli ha **inglobato il `.pptx` da 78 slide** del 5 novembre: un artefatto
+invece di due, su richiesta dell'owner. Nove capitoli, 41 slide. Il conto del taglio — −8 agende
+ripetute, −35 slide di magazzino, −8 doppioni — e la mappa per funzione stanno in §42.1.
+⚠️ L'argomento che ha deciso la fusione è una **contraddizione fra i due artefatti**: il deck
+diceva «Giulia è già cliente», l'experience «non ancora» — che è la logica prospect chiesta dal
+cliente.
+
+**Gli approfondimenti che mancavano.** Dei quattro componenti dell'ingaggio solo CJA aveva un
+affondo: ora ci sono anche **il profilo** (stitching, grafo, consenso, e la scelta fra portare il
+dato in piattaforma o interrogarlo nel warehouse), **la regia** (i tre modi di eseguire una
+decisione, compreso quello che lascia l'orchestrazione nei sistemi del cliente) e **l'arbitro**
+(cinque passaggi, e il confine: non è il sistema di record dell'eleggibilità creditizia).
+Verificati su Field Readiness; ⚠️ quel materiale **nomina banche clienti** e lo schema si riusa
+mentre i nomi no.
+
+**La revisione critica a dieci punti** ha tolto più di quanto abbia aggiunto: le due slide di
+Scenario sono diventate **una**, il cerchio grande del capitolo 05 è **uscito** perché ripeteva il
+03, i tre blocchi di CJA erano **due reparti e una lista di cose da concordare** (sostituiti da
+quattro domande, una per area operativa), e i quattro casi d'uso sono stati **rifatti**: erano
+continuità operativa, a cui si risponde «anche noi facciamo così»; ora dicono che cosa resta fuori
+portata quando profilo, decisione e misura stanno in sistemi diversi. Il flusso finisce dove deve
+— referenze → CX Analytics → prossimi passi → firma — e `risultati` non punta più a `/`
+saltando due capitoli.
+
+**La mappa e la ripresa, e una tecnica corretta a metà dalle prove** (§42.5). Due slide gemelle:
+una annuncia le tre cose, l'altra le riprende alla fine. ⚠️ «Dì quello che dirai, dillo, ripeti»
+è **folklore del 1908**, non di Aristotele: regge **l'anticipazione** (advance organizer, 0,21
+subito e 0,38 dopo tre settimane), mentre **ri-presentare lo stesso materiale è la famiglia con
+meno prove** (Dunlosky 2013). Quindi la seconda **non ripete**: tiene la geometria e cambia il
+testo, da `src/data/tre.ts`.
+
+**Lo slug dice l'incontro, non il prodotto.** `intesa-mutuo` → **`intesa-esperienza-cliente`**,
+rinominato **prima** della pubblicazione perché dopo un link girato si rompe. Giro completo
+(cartella, base, pacchetto, rotte dei gate, deploy, hub, showcase, registry MCP rigenerato,
+lockfile, migrazioni `0033` e `0034`), più **dodici stub di rimando** nell'hub: il vecchio
+indirizzo era già pubblicato e senza di loro darebbe 404.
+
+**La Factory è andata in rete.** Il ramo è stato mergiato in `main` con fast-forward e il deploy è
+**success**: le 11 rotte rispondono, i rimandi anche. Con lo stesso giro si chiude il P0 «il ramo
+porta due experience e non è su `main`»: anche **Unipol «Cinque domande»** è ora pubblicata.
+
+**Tre difetti trovati mentre si pubblicava, non da un gate.**
+- Il **`<title>` si duplicava** su ogni pagina (`Adobe × Intesa Sanpaolo · Adobe × Intesa
+  Sanpaolo`): il layout appendeva sempre la firma co-brand, e il documento aveva preso per nome
+  la firma. La guardia esistente non poteva vederlo perché il doppione era **dentro** `SITE_NAME`.
+  Non si vede dalla pagina: si vede incollando l'URL in chat. Regola estesa in `CLAUDE.md`.
+- **`MockAdobe` usava la prop `compatto` senza dichiararla**: tre errori di `astro check` e **CI
+  rossa**, mentre la pagina rendeva benissimo.
+- Due slide dichiaravano **`data-made-with="Adobe Firefly"` sotto fotografie Pexels**: una
+  dichiarazione falsa, tolta. Nel deck quel credito lo portano le sole clip.
+
+**Riservatezza, due voci.** I **sedici riferimenti per nome a un altro cliente Adobe** usato come
+riferimento di qualità sono usciti dai commenti del codice (il repo è pubblico): resta il
+ragionamento, sparisce il nome. E un P0 dell'handover nominava **tre persone reali** — due
+referenti del cliente e un collega — in `docs/HANDOVER-02.md`, che è **tracciato**: ora porta i
+ruoli. ⚠️ Non l'ha trovato un gate: `audit:docs` guarda i **percorsi**, non il contenuto.
+⚠️ **Resta aperto** il nome nel **messaggio del commit `f97ef53`** e nei diff storici: riscrivere
+la history richiede un force-push ed è una decisione dell'owner (P1 nuovo).
+
+**La console porta ai dossier.** Chi apre «Apri console» trovava il deck e non il documento che
+gli dice chi ha davanti. I due dossier esistono già e sono di questo cliente: non ne è stato
+creato uno nuovo, perché due documenti che preparano la stessa stanza divergono.
+
+**Supabase, applicato.** Le migrazioni `0033` e `0034` erano ferme: la riga `experiences` **non
+esisteva**, ed è per questo che la Console non mostrava la card. Applicate il 30 ott. ⚠️ La CLI
+non partiva: il binario aveva la **firma non valida** e macOS lo uccideva con SIGKILL — non era
+il sandbox (`brew reinstall supabase`, 2.107 → 2.122).
+
+
 ### Change log — Unipol «Cinque domande»: registrata, ripulita dai nomi, e due giri di panel (2026-10-29) → §41 (Parte 18)
 
 **L'experience c'era dalla notte prima e non era registrata da nessuna parte**: nessuna rotta

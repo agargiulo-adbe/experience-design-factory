@@ -221,3 +221,144 @@ Il fact‑checker ha verificato **38 affermazioni alla fonte**: dodici cadono. L
 - **Il confronto esplicito con lo strumento di personalizzazione già scelto in casa**: sopravvissuto a entrambi i giri come condizione di chi possiede Target. Non è una correzione di fatto, è una **decisione commerciale**: o si mette (tre righe, caso per caso, anche dove la risposta è «equivalenti»), o si dichiara a lui prima della stanza che non si mette.
 - **La migrazione `0032` non è ancora applicata al DB remoto** (`supabase db query --linked`), e l'accensione sullo showcase resta una scelta umana.
 - Le due voci di registro con scadenza **3 novembre** (soglia del verdetto, profilo per abilitare Target) vanno chiuse **prima** della sessione del 5, non dentro.
+
+---
+
+## 42. Intesa Sanpaolo — «Adobe × Intesa Sanpaolo» (Storia, 5 novembre 2026)
+
+`apps/intesa-esperienza-cliente` · **nove capitoli, 41 slide su 10 rotte** più il taglio
+«In dieci minuti» (6 slide) · **live** su `…/experience-design-factory/intesa-esperienza-cliente/`
+dal 30 ott 2026 · tipo **Storia**, lingua IT (contratto bilingue `<T it en>` rispettato).
+
+⚠️ **Non confonderla con §40.** Per lo stesso incontro del 5 novembre ci sono **due** artefatti:
+questo (la Storia, che parla al business) e `apps/intesa-innesto` «Dove ci innestiamo» (il
+Blueprint tecnico, §40). I dossier che preparano la stanza stanno nel Blueprint, e la console di
+questa experience ci **rimanda** (§42.6).
+
+### 42.1 Da dove viene: un documento che ingloba un deck
+
+Nasce il 28-29 ott come Storia a 5 capitoli sul percorso di un mutuo. Il **30 ott ha inglobato il
+`.pptx` da 78 slide** che il team stava preparando per il 5 novembre, su richiesta esplicita
+dell'owner: *un solo artefatto invece di due*. La mappa delle 78 slide (classificazione per
+funzione: ENTRA · FONDE · FUORI · DOSSIER) sta in `docs/Intesa Sanpaolo/MAPPA-DECK-78.md`,
+git-ignorata. Il conto: **−8** agende ripetute, **−35** slide di magazzino di libreria mai montate
+nel racconto, **−8** divisori e doppioni assorbiti. Il salto non era tradurre 78 slide in HTML:
+era **togliere il 55% e tenere il filo**.
+
+⚠️ **L'argomento più forte per il documento unico è una contraddizione trovata nel deck**: la
+slide 15 diceva «Giulia è già cliente», l'experience dice «non ancora cliente» — che è la logica
+prospect chiesta dal cliente stesso. Due artefatti divergono; uno no.
+
+### 42.2 I nove capitoli
+
+01 Adobe · 02 Scenario · 03 La persona · 04 I sette momenti · 05 Il circolo ·
+06 Il lavoro a parole · 07 Referenze · 08 CX Analytics · 09 Prossimi passi.
+
+- **01 Adobe** — il solo capitolo in cui il design system **non è di Intesa ma di Adobe**, perché
+  parla di Adobe: sta dentro come *citazione dichiarata*, non ridisegnato in verde. Team di sette
+  persone coi ritratti, «Chi è Adobe» a due mondi, i numeri FSI e i **quattro Forrester Wave**
+  fusi in una slide, l'architettura CX Enterprise che apre sulla banda «Orchestrare l'esperienza
+  del cliente». ⚠️ **Due dei quattro Wave sono confermati su Field Readiness, gli altri due no**:
+  sono lasciati come il deck li scriveva, e il perché sta in un commento nel codice.
+- **02 Scenario** — una sola slide di contenuto (era due, vedi §42.4).
+- **03 La persona** — Giulia, **prospect e non cliente**, al centro del giro.
+- **04 I sette momenti** — il cuore: sette slide con **le due viste sullo stesso minuto** (sopra
+  Giulia, sotto chi prepara in Intesa) più **otto approfondimenti**: farsi trovare, content
+  factory, e i cinque sull'ingaggio (il ciclo a quattro componenti, la misura unica con le
+  quattro domande di CJA, il profilo, la regia, l'arbitro, i casi d'uso).
+- **05 Il circolo** — che cosa torna indietro, e su chi lavora.
+- **06 Il lavoro a parole** — CX Enterprise Coworker, con uno slot video da riempire dalla console.
+- **07 Referenze** · **08 CX Analytics** (segnaposto dichiarato) · **09 Prossimi passi**.
+
+### 42.3 Gli approfondimenti sull'ingaggio, e le fonti
+
+Verificati su **Field Readiness il 30 ott 2026** e sulla documentazione pubblica. Quello che è
+entrato, e il **limite dichiarato accanto al pregio**:
+
+- **Il profilo (RT‑CDP)**: schema dati comune → stitching → grafo che si aggiorna → consenso. Più
+  la scelta di disegno **portare il dato in piattaforma / lasciarlo nel warehouse e interrogarlo**
+  (Federated Audience Composition). ⚠️ Un'audience federata è una **composizione statica**,
+  aggiornata a ogni esecuzione pianificata, e **non si usa nella qualificazione a evento**: il
+  deck lo dice. Venderla come «tempo reale» si rompe al secondo incontro col loro IT.
+- **La regia (AJO)**: i **tre modi di eseguire** la stessa decisione — al bordo in sessione, dentro
+  il percorso, **chiamata dai vostri sistemi** via API. Il terzo è la risposta a «e quello che
+  abbiamo già?»: l'orchestrazione può restare dov'è, cambia solo chi decide.
+- **L'arbitro (Decisioning)**: catalogo → eleggibilità → vincoli → classifica → ripiego, e **il
+  confine citato**: il motore non è il sistema di record dell'eleggibilità creditizia, dei saldi e
+  delle approvazioni.
+- **CJA**: **quattro domande**, una per area operativa (quale canale porta clienti nuovi · quanto
+  il digitale porta in filiale · dove si perde il cross‑sell · chi sta per andarsene), con chi la
+  fa e che cosa la rende rispondibile.
+
+⚠️ **Il materiale di Field Readiness nomina banche clienti**: lo **schema** si riusa, i nomi no —
+nessuno compare in slide, ed è scritto nei commenti perché non si perda.
+
+### 42.4 La revisione critica del 30 ott, e che cosa ha tolto
+
+Dieci punti dell'owner, con la consegna «non essere accondiscendente». Gli esiti che hanno
+cambiato il deck:
+
+- **Le due slide di Scenario sono diventate una.** Erano due metà dello stesso problema (il dato
+  esiste / l'arbitro no), e la seconda il deck la riprende dove c'è anche la risposta.
+- **I tre blocchi di CJA erano sbagliati**: due reparti e una lista di cose da concordare, messa
+  alla pari come se CJA servisse a produrre questioni aperte. Sostituiti dalle quattro domande.
+- **I quattro casi d'uso erano giusti e piccoli**: raccontavano continuità operativa, a cui un
+  cliente che ha già pezzi di un altro stack risponde «anche noi facciamo così». Rifatti: ognuno
+  dice che cosa **serve** e che cosa resta fuori portata **quando i pezzi stanno in sistemi
+  diversi**. ⚠️ Nessun fornitore è nominato.
+- **Il cerchio grande del capitolo 05 è uscito**: ripeteva il capitolo 03 a tre slide di distanza.
+- **Il flusso finisce dove deve**: referenze → CX Analytics → prossimi passi → firma. `risultati`
+  puntava a `/` e saltava due capitoli.
+- **«Che cosa misureremmo» era nel capitolo sbagliato** (le referenze, dove rompeva l'argomento):
+  è andata in «Prossimi passi» con l'ask, che resta **in un posto solo** (`src/data/referenze.ts`,
+  gate `audit:taglio`).
+
+### 42.5 La mappa e la ripresa — e la tecnica che le prove correggono a metà
+
+Due slide gemelle (30 ott): **`slide-tre`** chiude il capitolo 01, **`slide-ripresa`** apre
+«Prossimi passi». Tre blocchi grandi, una fotografia per blocco col numero in overlay, l'ancora,
+una riga. Le tre cose vivono in **`src/data/tre.ts`**: `riga` per l'annuncio, `poi` per la
+ripresa — due campi accanto, mai due oggetti.
+
+⚠️ **Perché non sono la stessa slide due volte.** «Dì quello che dirai, dillo, ripeti quello che
+hai detto» è **folklore del 1908** (un consiglio su come si fa una predica), non di Aristotele.
+Delle tre parti regge **la prima**: l'anticipazione in apertura è l'*advance organizer*, effetto
+**0,21 subito e 0,38 dopo tre settimane**. La terza è la famiglia con **meno** prove (Dunlosky
+2013: riassunto e rilettura a bassa utilità). Quindi la seconda slide **non ripete**: tiene la
+geometria — è lì che chi guarda riaggancia — e cambia il testo. Niente `data-substep` sulla
+mappa: si guarda tutta insieme. Il ragionamento sta nel commento di `src/data/tre.ts`.
+
+### 42.6 Lo slug, i rimandi, e la console
+
+Lo slug era `intesa-mutuo`; con nove capitoli «mutuo» nell'URL riduceva l'incontro a un prodotto.
+Rinominato **`intesa-esperienza-cliente`** il 30 ott, **prima** della pubblicazione. Il giro
+completo: cartella, `base` di Astro, nome del pacchetto, `SITE.slug`, rotte di `audit:deck` e
+`audit:taglio`, deploy, hub, showcase, **registry MCP rigenerato** (non scritto a mano), lockfile,
+migrazioni `0033` (nasce col nome giusto) e **`0034`** (rinomina la riga se la `0033` era già
+applicata; **non cancella**, perché `experiences` è referenziata da tre tabelle).
+
+⚠️ **Il vecchio indirizzo era già pubblicato**: ci sono **dodici stub** in `factory-hub`
+(`src/pages/intesa-mutuo/[...rotta].astro`, generati da `getStaticPaths`) perché GitHub Pages serve
+file statici e non conosce le riscritture. La query string segue (`?c=`, `?s=`, `?cfg=`), portano
+l'anteprima, e la verifica della struttura dell'artefatto nel workflow li controlla.
+
+La **console** (`/admin/`) rimanda ai **due dossier** che preparano la stanza, che vivono in altre
+app (link cross-app, come Trenitalia Sales): «Chi c'è in sala il 5 novembre, e come si convince»
+(→ `intesa-innesto/dossier`) e «L'incontro del 22 ottobre, che lo precede» (→
+`intesa-scala-umana/dossier`). ⚠️ L'etichetta dice **che cosa c'è dentro**, non il nome
+dell'experience che lo ospita: in una console altrui «Dove ci innestiamo» non dice niente.
+
+### 42.7 Stato dei gate (30 ott 2026, preview statico)
+
+`audit:deck` **0 HARD** su 11 rotte · `audit:ink` **PULITO** su 839 blocchi · `copy-audit`
+**0 HARD** su 986 stringhe · `audit:taglio` **allineato** · `audit:fonti` nessun link rotto ·
+`audit:og` **PASS** (211 pagine) · `typecheck` 0 errori su 35 file · build delle 22 app verde.
+
+### 42.8 Che cosa manca
+
+- **La panel review non è mai stata lanciata** — è il P0 in testa al backlog.
+- **`provenance.json` ha 2 record per 28 immagini** (difetto ereditato): la copertina dichiara che
+  autore e licenza vivono lì. Il rimedio (`pnpm assets:build`) **riscarica tutte le foto**, quindi
+  è una scelta dell'owner.
+- **Il capitolo 08 CX Analytics è un segnaposto dichiarato**, in attesa del materiale di prodotto.
+- **`show_in_showcase` resta `false`**: accenderlo è la decisione umana prevista dalla regola.
