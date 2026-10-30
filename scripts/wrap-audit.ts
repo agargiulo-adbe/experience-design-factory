@@ -147,7 +147,7 @@ async function misuraPagina(page: Page, rotta: string, viewport: string, tutto: 
              solo un indizio di quella cosa. Nella fessura fra la ragione e la
              misura cadeva il caso più frequente: il LEAD di due righe a corpo
              base, che si legge come un titolo. Misurato a mano su tre slide di
-             intesa-mutuo (adobe·slide-cx «…in cui il / lavoro», prossimi-passi·
+             intesa-esperienza-cliente (adobe·slide-cx «…in cui il / lavoro», prossimi-passi·
              slide-serve «…rispondere da / sola», analytics·slide-attesa), dove
              il gate taceva e la preposizione appesa si vedeva benissimo.
              Il paragrafo lungo resta fuori: lì la rottura non la nota nessuno e

@@ -6,7 +6,7 @@ description: Umanizza la copia di una experience in tre giri misurati — i segn
 
 **Non è una passata di stile.** È un giro con un prima e un dopo, e la regola che lo
 tiene insieme è una sola: *un intervento che fa scendere un contatore può aver **spostato**
-il marcatore invece di toglierlo.* Misurato su `intesa-mutuo` il 30 ott 2026: `copy-audit`
+il marcatore invece di toglierlo.* Misurato su `intesa-esperienza-cliente` il 30 ott 2026: `copy-audit`
 segnalava 8 trattini-perno; sostituirli con i due punti li avrebbe azzerati, ma il deck
 aveva già **49 due-punti-perno**. Tutti i gate verdi, e il testo peggiore.
 

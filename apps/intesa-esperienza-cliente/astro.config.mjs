@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 
 export default defineConfig({
   site: 'https://agargiulo-adbe.github.io',
-  base: '/experience-design-factory/intesa-mutuo',
+  base: '/experience-design-factory/intesa-esperienza-cliente',
   output: 'static',
   trailingSlash: 'always',
   vite: {

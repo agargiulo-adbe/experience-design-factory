@@ -151,7 +151,7 @@ const RULES: Rule[] = [
     why: 'virgolette dritte nel testo visibile: in italiano si usano le caporali («»), in inglese le curve.',
   },
 
-  /* PERCHÉ NON C'È UN CHECK SUL TRICOLON. Provato il 30 ott 2026 su intesa-mutuo:
+  /* PERCHÉ NON C'È UN CHECK SUL TRICOLON. Provato il 30 ott 2026 su intesa-esperienza-cliente:
    un regex su «A, B, e C» trova 15 ricorrenze e quasi tutte sono ELENCHI di tre
    cose vere — «l'evento, l'eleggibilità che arriva dal core, e l'uplift misurato
    su un gruppo di controllo». La terzina retorica («Ogni giorno. Ogni query.»)

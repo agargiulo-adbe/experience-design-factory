@@ -36,7 +36,7 @@ export const CUT_SETS: Record<string, CutSpec> = {
     slideMax: 6,
     numeriSoloNelTaglio: ['22', '2026', '5'],
   },
-  'intesa-mutuo': {
+  'intesa-esperienza-cliente': {
     taglio: 'dieci-minuti',
     fonti: ['src/data/momenti.ts', 'src/data/referenze.ts'],
     slideMax: 6,

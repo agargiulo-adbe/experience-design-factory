@@ -330,23 +330,28 @@ export const EXPERIENCES: Experience[] = [
     },
   },
   {
-    slug: 'intesa-mutuo',
-    name: 'Lo stesso mutuo, dai due lati',
+    slug: 'intesa-esperienza-cliente',
+    /* ⚠️ Il nome della CARD è quello del documento, non quello del
+       racconto. «Lo stesso mutuo, dai due lati» è il titolo della storia
+       di Giulia, che da quando il deck del 5 novembre è stato inglobato
+       è uno dei nove capitoli: in vetrina faceva sembrare l'intero
+       incontro una storia su un prodotto. */
+    name: 'Adobe × Intesa Sanpaolo',
     client: 'Intesa Sanpaolo',
     type: 'storia',
     brandLabel: 'Intesa Sanpaolo',
-    url: `${LIVE}/intesa-mutuo/`,
-    shot: 'shots/intesa-mutuo.webp',
+    url: `${LIVE}/intesa-esperienza-cliente/`,
+    shot: 'shots/intesa-esperienza-cliente.webp',
     accent: '#258900',
-    sections: 5,
+    sections: 9,
     defaultPublished: false,
     tag: {
-      en: '5 chapters · IT · 84 slides',
-      it: '5 capitoli · IT · 84 slide',
+      en: '9 chapters · IT · 41 slides',
+      it: '9 capitoli · IT · 41 slide',
     },
     desc: {
-      en: 'Generated from the «Customer story» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
-      it: 'Generata dallo scheletro «Storia»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+      en: 'The single document for the 5 November meeting: nine chapters, from Adobe’s positioning to next steps, threaded on Giulia’s path. She is not a customer yet.',
+      it: 'Il documento unico dell’incontro del 5 novembre: nove capitoli, dal posizionamento Adobe ai prossimi passi, tenuti insieme dal percorso di Giulia, che vostra cliente non è ancora.',
     },
   },
   {

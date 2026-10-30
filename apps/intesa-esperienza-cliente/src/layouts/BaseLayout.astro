@@ -8,7 +8,7 @@ import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
 
 /**
- * BaseLayout — «Lo stesso mutuo, dai due lati · Adobe × Intesa Sanpaolo».
+ * BaseLayout — Adobe × Intesa Sanpaolo.
  * Bilingue: <T en it> rende entrambe, html[data-lang] mostra l'attiva; anti-flash
  * in <head> limitato alle lingue che QUESTA experience offre (SITE.langs).
  * Props: title · description · pageSolutions · noindex · preloadImage.
@@ -21,7 +21,18 @@ interface Props {
   preloadImage?: string;
 }
 
-const SITE_NAME = `${SITE.name} · Adobe × ${SITE.client}`;
+/* ⚠️ IL NOME DEL DOCUMENTO È GIÀ LA FIRMA CO-BRAND.
+   Questa riga appendeva sempre «· Adobe × <cliente>», e aveva senso
+   quando il nome era «Lo stesso mutuo, dai due lati». Da quando il
+   documento si chiama «Adobe × Intesa Sanpaolo», appenderlo di nuovo
+   rendeva `Adobe × Intesa Sanpaolo · Adobe × Intesa Sanpaolo` in OGNI
+   <title> — home compresa, dove la guardia contro il «Nome | Nome» non
+   poteva vederlo perché il doppione era già dentro SITE_NAME.
+   Il <title> è anche quello che legge lo scraper che costruisce
+   l'anteprima del link in chat: il difetto non si vede dalla pagina, si
+   vede quando qualcuno incolla l'URL da qualche parte. */
+const FIRMA = `Adobe × ${SITE.client}`;
+const SITE_NAME = SITE.name.includes(FIRMA) ? SITE.name : `${SITE.name} · ${FIRMA}`;
 
 const {
   title,

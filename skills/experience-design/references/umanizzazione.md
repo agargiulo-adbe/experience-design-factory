@@ -2,7 +2,7 @@
 
 > Quando: dopo che il contenuto è fermo e prima della consegna, su una experience
 > intera. Non è una passata di stile: è un giro misurato, con un prima e un dopo.
-> Metodo ricavato e verificato su `intesa-mutuo` il 30 ott 2026 (41 slide, 956
+> Metodo ricavato e verificato su `intesa-esperienza-cliente` il 30 ott 2026 (41 slide, 956
 > stringhe, 12 pagine). I numeri citati qui sotto sono quelli veri di quel giro.
 
 ## Il principio: togliere un marcatore, non spostarlo
@@ -10,7 +10,7 @@
 Un intervento che fa scendere un contatore non ha necessariamente migliorato il
 testo. Il caso che ha generato la regola:
 
-`copy-audit` segnalava **8 trattini-perno** (`D1`) su `intesa-mutuo`. La
+`copy-audit` segnalava **8 trattini-perno** (`D1`) su `intesa-esperienza-cliente`. La
 correzione ovvia — sostituirli con i due punti — avrebbe portato `D1` a zero. Ma
 misurando *prima* di toccare, il deck aveva già **49 stringhe con i due punti
 usati come perno retorico**: sei volte tanto. I due punti erano già la cadenza
@@ -26,7 +26,7 @@ doppia relativa («Oggi chi riceve l'appuntamento **che** cosa vede, di una pers
 **che** non è cliente?») la prima versione è uscita «**Che** cosa vede oggi chi
 riceve l'appuntamento, di una persona **che** non è ancora cliente?»: due `che`
 ancora, spostati. Per questo **il gate si rilancia finché non esce pulito**, non
-una volta sola. Su `intesa-mutuo` sono servite tre passate: la seconda ha trovato
+una volta sola. Su `intesa-esperienza-cliente` sono servite tre passate: la seconda ha trovato
 tre marcatori creati dalle correzioni della prima.
 
 ## I tre giri, in quest'ordine
@@ -56,7 +56,7 @@ Quello che nessun check per stringa può vedere, perché è **distributivo**.
   della lunghezza di frase), Gulpease, type-token ratio.
   ⚠️ **Le frasi si contano DENTRO ogni stringa.** Unire le stringhe di una pagina
   con uno spazio salda i titoli — che non finiscono col punto — in una frase
-  finta: su `intesa-mutuo` dava a una pagina frase media 50 parole e burstiness
+  finta: su `intesa-esperienza-cliente` dava a una pagina frase media 50 parole e burstiness
   0,0, e falsava il Gulpease, che dipende dal numero di frasi. Il primo giro di
   misura è uscito con tutti i numeri sbagliati per questo.
 - **Il telaio, non il segno.** La scoperta del giro 2 non è stata un marcatore:
@@ -67,7 +67,7 @@ Quello che nessun check per stringa può vedere, perché è **distributivo**.
   telai identici dentro lo stesso componente, letti in fila, sono un tic; cinque
   distribuiti su sette capitoli sono la voce del documento.
 - **Si guardano le pagine rese.** Gli screenshot a 1920 di `audit:deck` mostrano
-  quello che il sorgente non dice. Su `intesa-mutuo` hanno trovato tre
+  quello che il sorgente non dice. Su `intesa-esperienza-cliente` hanno trovato tre
   preposizioni appese che nessun gate segnalava, e da lì è nata la correzione del
   criterio di `audit:wrap` (vedi sotto).
 
@@ -75,7 +75,7 @@ Quello che nessun check per stringa può vedere, perché è **distributivo**.
 
 Il giudizio che il gate dichiara di non dare. Si legge come il destinatario.
 
-- **La metà nell'altra lingua**, che è dove si sente meno. Su `intesa-mutuo`
+- **La metà nell'altra lingua**, che è dove si sente meno. Su `intesa-esperienza-cliente`
   quattro calchi: «the way the work gets asked for» (da «il modo in cui il lavoro
   si chiede»), «Forrester **points to** unifying», «The anonymous visits **of** the
   previous evenings», «segments that **follow**». Nessun conteggio li prende.
@@ -132,7 +132,7 @@ di lunghezza.
   Da estendere a un confronto per **contenimento** sopra una soglia di lunghezza.
 - **`P1` non conta la prosa che vive in `src/data/*.ts`** e arriva in pagina per
   import. E c'è un parente stretto che nessuno guarda: il **contenuto parcheggiato
-  in una riga di fonte**. Su `intesa-mutuo` una `im-fonte-riga` di ~80 parole era
+  in una riga di fonte**. Su `intesa-esperienza-cliente` una `im-fonte-riga` di ~80 parole era
   per due terzi contenuto (prerequisiti + cautela sull'attribuzione) e per un
   terzo provenienza: prosa nascosta in un corpo che nessuno legge.
 
@@ -154,7 +154,7 @@ altri.
 
 ## L'esito del giro di riferimento
 
-`intesa-mutuo`, da `3f9f261` a `73a64cf`:
+`intesa-esperienza-cliente`, da `3f9f261` a `73a64cf`:
 
 | | prima | dopo |
 |---|---:|---:|

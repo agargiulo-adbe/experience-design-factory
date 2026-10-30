@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════════
---  0033 · seed «Lo stesso mutuo, dai due lati» (Intesa Sanpaolo) into the Console registry
+--  0033 · seed «Adobe × Intesa Sanpaolo» into the Console registry
 --  Registers the experience (card in Super Admin, FK for restricted_docs).
 --  Starts as DRAFT and OFF the showcase (show_in_showcase=false): switching
 --  it on makes it public on a page without login — a human decision.
@@ -9,11 +9,11 @@
 
 insert into public.experiences (slug, name, client, description, base_url, status, show_in_showcase, type)
 values (
-  'intesa-mutuo',
-  'Lo stesso mutuo, dai due lati',
+  'intesa-esperienza-cliente',
+  'Adobe × Intesa Sanpaolo',
   'Intesa Sanpaolo',
-  'Come funzionerebbe per un nostro cliente? Storia per Intesa Sanpaolo: scheletro generato il 2026-10-29, da scrivere con il brief.',
-  '/experience-design-factory/intesa-mutuo/',
+  'Come funzionerebbe per un nostro cliente? Il documento unico dell''incontro del 5 novembre 2026: nove capitoli, dal posizionamento Adobe ai prossimi passi, con il percorso di Giulia come filo.',
+  '/experience-design-factory/intesa-esperienza-cliente/',
   'draft',
   false,
   'storia'

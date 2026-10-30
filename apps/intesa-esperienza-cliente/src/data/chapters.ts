@@ -1,5 +1,5 @@
 /**
- * «Lo stesso mutuo, dai due lati» — i capitoli. Fonte unica per nav, home, SECTION_FLOW e, tramite
+ * Adobe × Intesa Sanpaolo — i capitoli. Fonte unica per nav, home, SECTION_FLOW e, tramite
  * `admin.astro`, il registro delle slide.
  *
  * Generati dallo scheletro del tipo «storia» (packages/core/src/data/experienceTypes.ts):

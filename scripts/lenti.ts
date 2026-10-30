@@ -7,7 +7,7 @@
  * scendere un contatore può aver SPOSTATO il marcatore invece di toglierlo, e
  * l'unico modo di saperlo è misurare anche quello che il gate non guarda.
  *
- * Il caso che l'ha generato (intesa-mutuo, 30 ott 2026): `copy-audit` segnalava
+ * Il caso che l'ha generato (intesa-esperienza-cliente, 30 ott 2026): `copy-audit` segnalava
  * 8 trattini-perno. Sostituirli con i due punti avrebbe azzerato il check — ma
  * il deck aveva già 49 due-punti-perno, sei volte tanto. La «correzione» avrebbe
  * peggiorato il testo con tutti i gate verdi.
@@ -24,7 +24,7 @@
  *
  * COME SI LEGGE
  * Nessuna soglia assoluta. Si guarda il DELTA fra due giri, e la colonna dove
- * un numero è fuori scala rispetto alle sorelle: su intesa-mutuo `scenario`
+ * un numero è fuori scala rispetto alle sorelle: su intesa-esperienza-cliente `scenario`
  * aveva 21 perni per 100 stringhe contro una media di 5.
  *
  *   pnpm lenti --app <alias> [--en] [--root <albero>]
@@ -155,7 +155,7 @@ for (const [k, v] of perPagina) {
 /* ── I TELAI ──────────────────────────────────────────────────────────────────
    Non il segno: la FORMA della frase. Una stessa architettura retorica ricorre
    sempre in un documento con una tesi; il difetto è la concentrazione. Su
-   intesa-mutuo il telaio della negazione («non X: Y», «X, non Y») stava in 33
+   intesa-esperienza-cliente il telaio della negazione («non X: Y», «X, non Y») stava in 33
    stringhe su 513, e lette una per una erano quasi tutte guadagnate — perché
    l'argomento del deck È «quello che date per fatto non succede». Ma cinque
    identiche dentro lo stesso componente, lette in fila, erano un tic.

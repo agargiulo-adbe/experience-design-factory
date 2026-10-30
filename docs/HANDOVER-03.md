@@ -37,7 +37,7 @@ Gate: `audit:deck` 0 HARD su 9 rotte · `audit:ink` PULITO su 329 blocchi · `au
 typecheck 0. In più `pnpm lint` torna a **0 errori**: due `prefer-const` preesistenti in
 `scripts/accounts.ts` e `scripts/og-images.ts`.
 
-⚠️ Tutto su `publish/intesa-mutuo`, che il deploy non pubblica: va su `main` quando si decide.
+⚠️ Tutto su `publish/intesa-esperienza-cliente`, che il deploy non pubblica: va su `main` quando si decide.
 
 ### Change log — il dossier del 5 novembre, bilingue, e il motore che non traduceva (2026-10-26) → §40 (Parte 18)
 

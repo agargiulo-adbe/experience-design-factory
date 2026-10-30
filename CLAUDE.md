@@ -437,7 +437,7 @@ Un PASS senza il conto delle stringhe non è un PASS.
 
 ### Umanizzare è un giro MISURATO: spostare un marcatore non è toglierlo (BINDING)
 Un intervento che fa scendere un contatore può aver spostato il segno invece di
-rimuoverlo, e il gate non se ne accorge. Misurato su `intesa-mutuo` il 30 ott 2026:
+rimuoverlo, e il gate non se ne accorge. Misurato su `intesa-esperienza-cliente` il 30 ott 2026:
 `copy-audit` segnalava **8 trattini-perno** (`D1`); la correzione ovvia — i due punti al
 posto del trattino — li avrebbe azzerati, ma il deck aveva già **49 stringhe con i due
 punti come perno retorico**. Sei volte tanto. Tutti i gate verdi, e il testo peggiore.

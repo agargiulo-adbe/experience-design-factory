@@ -45,7 +45,7 @@ slide. Casi, trappole e verifica in **`references/ancore-non-prosa.md`**.
 Quando il contenuto è fermo e prima della consegna. **Non è una passata di stile: è un
 giro con un prima e un dopo.** La regola che tiene insieme tutto: un intervento che fa
 scendere un contatore può aver **spostato** il marcatore invece di toglierlo. Misurato su
-`intesa-mutuo`: `copy-audit` segnalava 8 trattini-perno, e sostituirli con i due punti li
+`intesa-esperienza-cliente`: `copy-audit` segnalava 8 trattini-perno, e sostituirli con i due punti li
 avrebbe azzerati — ma il deck aveva già **49 due-punti-perno**, sei volte tanto. Tutti i
 gate verdi, il testo peggiore.
 Quindi: prima di toccare si misura anche quello che il gate NON guarda (**`pnpm lenti

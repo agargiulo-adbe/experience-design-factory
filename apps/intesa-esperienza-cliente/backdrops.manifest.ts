@@ -1,13 +1,13 @@
 import type { AssetSlot } from '@edf/core/assets/types';
 
 /**
- * «Lo stesso mutuo, dai due lati» (Adobe × Intesa Sanpaolo) — sfondi generati, uno per famiglia di slide.
+ * Adobe × Intesa Sanpaolo — sfondi generati, uno per famiglia di slide.
  *
  * Il deck generato NON ha sfondi: `.ex-bg-night` e `.ex-bg-paper` sono solo
  * gradienti. Quando il design system vero è stato letto (`pnpm brand:tokens`),
  * si descrivono qui le famiglie di sfondo con la palette del cliente e si lancia:
  *
- *   pnpm --filter intesa-mutuo assets:build
+ *   pnpm --filter intesa-esperienza-cliente assets:build
  *
  * che scrive `src/assets/generated/bg/<id>.webp` + `provenance.json`. In pagina:
  *   import bg from '../assets/generated/bg/<id>.webp';
