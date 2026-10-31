@@ -28,9 +28,9 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
-import { CHIUSE, COSTO, ASK } from '../data/condivisi';
+import { CHIUSE, CONTEGGIO, COSTO, ASK, DRIVER } from '../data/condivisi';
 import { CHAPTERS } from '../data/chapters';
-import { DATO, REGIA, CANALI, SCAMBI } from '../data/architettura';
+import { DATO, REGIA, CANALI, SCAMBI, SETTIMANA, MISURE } from '../data/architettura';
 
 const type = EXPERIENCE_TYPES[SITE.type];
 const base = import.meta.env.BASE_URL;
@@ -50,9 +50,7 @@ const currentPath = Astro.url.pathname;
           <CoBrand variant="hero" class="xd-cop-lockup ex-cobrand--on-dark" data-reveal />
           <T as="p" class="xd-cop-occ" it="In dieci minuti" en="In ten minutes" data-reveal data-reveal-delay="0.06" />
           <T as="h1" class="xd-cop-t" it="Sopra quello che avete" en="On top of what you have" data-reveal data-reveal-delay="0.1" />
-          <T as="p" class="xd-cop-l"
-             it="La versione corta dello stesso documento: l’innesto, il cambiamento, i punti aperti e la richiesta."
-             en="The short form of the same document: the graft, the change, the open points and the ask."
+          <T as="p" class="xd-cop-l" it={CONTEGGIO.blocchi.it} en={CONTEGGIO.blocchi.en}
              data-reveal data-reveal-delay="0.16" />
           <T as="p" class="xd-cop-tipo" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.22" />
         </div>
@@ -92,7 +90,7 @@ const currentPath = Astro.url.pathname;
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Modulo per modulo" en="Module by module" />
-          <T as="h2" class="xd-h2" it="Due escono, tre entrano" en="Two go out, three come in" />
+          <T as="h2" class="xd-h2" it={CONTEGGIO.moduli.it} en={CONTEGGIO.moduli.en} />
         </div>
         <ul class="xd-passi" style="--cols:2" data-stagger>
           {SCAMBI.map((s, i) => (
@@ -108,23 +106,55 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    {/* 3 · Quello che non promettiamo */}
+
+    {/* ⚠️ ENTRA NEL TAGLIO AL SECONDO GIRO. Le sei slide erano tutte di
+        sistema — architettura, moduli, dato, fasi, costo, richiesta — e chi
+        fa campagne, che il documento lo legge inoltrato, non si riconosceva
+        in nessuna. La slide esisteva già nel percorso lungo, ed era rimasta
+        nell'allegato: il posto sbagliato per la sola pagina che parla a chi
+        userà lo strumento tutti i giorni. */}
+    <Slide id="slide-settimana" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Dal lato di chi le campagne le fa" en="From the side of whoever runs campaigns" />
+          <T as="h2" class="xd-h2" it="Che cosa cambia in una settimana di lavoro" en="What changes in a working week" />
+        </div>
+        <ul class="xd-passi" style="--cols:3" data-stagger>
+          {SETTIMANA.map((x, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={x.k.it} en={x.k.en} />
+              <T as="p" class="xd-passi-d" it={x.poi.it} en={x.poi.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="xd-chiusa" it={CHIUSE.controllo.it} en={CHIUSE.controllo.en} />
+      </div>
+    </Slide>
+
+    {/* 4 · Quello che non promettiamo */}
     <Slide id="slide-aperto" bg="inverse" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--dark" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Prima di prometterlo" en="Before promising it" />
-          <T as="h2" class="xd-h2" it="Tre cose che oggi non affermiamo" en="Three things we are not claiming today" />
+          <T as="h2" class="xd-h2" it="Tre cose che chiudiamo con voi" en="Three things we close with you" />
         </div>
         <div class="bp-aperti">
-          <Aperto it="La «CDP Oracle» dello schema è un magazzino dati interrogabile, oppure una CDP di prodotto? La federazione si collega a un magazzino."
-                  en="Is the «Oracle CDP» a queryable data warehouse, or a packaged CDP? Federation connects to a warehouse." />
-          <Aperto it="Oracle è coperto dalla 11g in su, su AWS, Azure, Exadata o cloud privato. Nella tabella delle connessioni private non c’è: per voi conta?"
-                  en="Oracle is covered from 11g up, on AWS, Azure, Exadata or private cloud. It is absent from the private-connectivity table: does that matter?" />
+          <Aperto it="La «CDP Oracle» dello schema è una piattaforma dati interrogabile, oppure una CDP di prodotto? La federazione si collega a una piattaforma dati."
+                  en="Is the «Oracle CDP» a queryable data platform, or a packaged CDP? Federation connects to a data platform." />
+          <Aperto it="Oracle è coperto dalla 11g in su, purché raggiungibile da una rete esterna. Nella tabella delle connessioni private non c’è: per voi conta?"
+                  en="Oracle is covered from 11g up, provided it is reachable from an outside network. It is absent from the private-connectivity table: does that matter?" />
         </div>
+        {/* ⚠️ Diceva «nessun nome di banca in queste pagine finché il
+            programma referenze non conferma», e nell'allegato un nome c'era
+            con tre numeri pubblici: o il programma aveva confermato, o il
+            nome non doveva esserci. La distinzione vera è fra una storia
+            pubblicata, che si porta, e una chiamata fra pari, che si chiede. */}
         <Aperto tagIt="E sulle referenze" tagEn="And on references"
-                it="Nessun nome di banca in queste pagine finché il programma referenze non conferma che quella banca accetta di parlarvi."
-                en="No bank names in these pages until the reference programme confirms that bank will talk to you." />
+                it="Un nome pubblicato c’è, con i suoi numeri. La chiamata fra pari la chiediamo attraverso il programma referenze, e la risposta non dipende da noi."
+                en="One published name there is, with its figures. A peer call we request through the reference programme, and that answer is not ours to give." />
         <T as="p" class="xd-chiusa"
            it="Mezza giornata con chi conosce i vostri sistemi chiude le prime due, e si fa prima della proposta."
            en="Half a day with the people who know your systems closes the first two, before the proposal." />
@@ -139,8 +169,8 @@ const currentPath = Astro.url.pathname;
           <T as="p" class="xd-n" it="Il modello" en="The model" />
           <T as="h2" class="xd-h2" it={COSTO.titolo.it} en={COSTO.titolo.en} />
           <T as="p" class="xd-sub"
-             it="Profili ingaggiabili, quali canali si accendono, volumi per canale, righe di dato ingerite."
-             en="Engageable profiles, which channels you switch on, volumes per channel, rows of data ingested." />
+             it={DRIVER.map((d) => d.b.it).join(' · ')}
+             en={DRIVER.map((d) => d.b.en).join(' · ')} />
         </div>
         <div class="xd-pb">
           <section class="xd-pb-i" data-substep data-side="in">
@@ -154,9 +184,15 @@ const currentPath = Astro.url.pathname;
             <T as="p" class="xd-pb-v" it={COSTO.abbassa.it} en={COSTO.abbassa.en} />
           </section>
         </div>
+        {/* ⚠️ Le tre misure del beneficio entrano anche nel taglio: un
+            capitolo sul costo senza una misura del risultato, nelle sei
+            slide che si proiettano, è un listino al posto di un progetto. */}
+        <T as="p" class="xd-sub"
+           it={`Come si misura: ${MISURE.map((m) => m.k.it.toLowerCase()).join(' · ')}.`}
+           en={`How it is measured: ${MISURE.map((m) => m.k.en.toLowerCase()).join(' · ')}.`} />
+
         <T as="p" class="xd-chiusa"
-           it="Una cifra senza perimetro è un numero da ritirare. Con quattro dati vostri arriva in una settimana."
-           en="A figure without scope is a number to be withdrawn. With four inputs from you it arrives in a week." />
+           it={`${COSTO.cifra.it} Con quei cinque dati arriva in una settimana.`} en={`${COSTO.cifra.en} With those five inputs it arrives in a week.`} />
       </div>
     </Slide>
 

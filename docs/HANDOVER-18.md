@@ -441,10 +441,18 @@ sullo showcase. Nasce in una giornata, dall'apertura dell'account allo stato att
 
 ### §43.1 · Perché i capitoli non sono quelli del tipo
 Lo scheletro «blueprint» propone scenario · fondamenta · use case · convergenza · valore ·
-rotta. Qui i sette capitoli di contenuto sono **le sette slide che il referente CRM ha già
-concordato** il 26 ottobre e che porta al suo capo il 6 novembre. Cambiarne il taglio
-vorrebbe dire presentarsi con un documento diverso da quello annunciato, a un incontro
-dove la presentazione passa da lui cinque giorni prima. L'ottavo capitolo è l'ask.
+rotta. Qui i capitoli di contenuto sono **le slide che il referente CRM ha già concordato** il 26
+ottobre e che porta al suo capo il 6 novembre. Cambiarne il taglio vorrebbe dire presentarsi
+con un documento diverso da quello annunciato, a un incontro dove la presentazione passa da
+lui cinque giorni prima. L'ultimo capitolo è l'ask.
+
+⚠️ **Da otto capitoli a sette, dopo il secondo giro.** «Adobe, e perché non è un CRM» era
+stato svuotato al primo giro — chi governa le fabbriche digitali di una banca ha poca
+pazienza per le slide che spiegano chi è il fornitore — ed è rimasto per un giro come
+copertina sola: una voce su otto nell'indice e nella barra, che faceva sembrare il documento
+più lungo di quanto fosse. La tesi che doveva portare sta in copertina e nella mappa, che è
+dove si dimostra invece di essere annunciata. Rimosso anche da `deck-routes.ts` e dal
+`PAGE_REGISTRY` della console.
 
 ### §43.2 · Lo strato XD, e perché sta nel motore
 La forma di `intesa-esperienza-cliente` — copertina a due colonne con l'agenda cliccabile,
@@ -494,22 +502,61 @@ Tagli chiesti all'unanimità: via la slide di posizionamento (5 su 5), via la ta
 delle tre forme di referenza (4 su 5). Aggiunta per il buco che il business ha trovato:
 **che cosa cambia in una settimana di lavoro**.
 
+### §43.4-bis · Il secondo giro, e i cinque errori che nessun gate vede
+Giro 2 il 31 ott, stesse personas, pacchetto di evidenza rigenerato: **media 3,6**, rischio
+percepito **2,2 → 3,0**, rilevanza **3,4 → 3,8**, azionabilità **3,6 → 3,8**, e chiarezza
+**4,0 → 3,6** — l'unico asse sceso, per una ragione aritmetica: *lo stesso fatto contato in
+quattro modi diversi*, e il conteggio sbagliato su una slide proiettata. Verdetto in
+`docs/BPER/PANEL-VERDICT-2026-10-31-round2.md`, grezzi in `docs/BPER/panel/2026-10-31-round2/`.
+Due giri sono il massimo: non ci sarà un terzo panel, e il backlog è stato applicato lo
+stesso giorno. Quello che ha cambiato il documento:
+1. **Il cliente l'arbitro ce l'ha già.** Il comunicato BPER del 23 novembre 2022 scrive che
+   il loro motore di Marketing Automation «consente di calcolare dinamicamente la miglior
+   proposta commerciale per ogni singolo cliente (Next Best Action)». Il deck lo negava in
+   tre punti. È la lezione più cara del giro: *l'affermazione di assenza su un cliente si
+   verifica sulle sue pagine, non sulla nostra impressione* — e la sua fonte è la più forte
+   che esista. Ora la riga dice «presente, non configurato come arbitro fra canali», e il
+   capitolo chiude su una domanda.
+2. **Il conteggio ha una fonte unica** (`CONTEGGIO` in `src/data/condivisi.ts`): i blocchi e
+   i moduli sono due unità diverse, ed è mescolarle che produceva quattro numeri.
+3. **La federazione ha tre tempi** e non uno: l'evento in tempo reale, la composizione
+   federata *programmata* («a static composition, updated when the federated audience
+   composition is executed», e non vale per le qualificazioni di audience), la decisione in
+   sessione che legge il profilo già in piattaforma.
+4. **Il ripiego non è il timeout** — scatta quando nessuna proposta è eleggibile — e
+   **l'eleggibilità filtra, non pesa**: in banca l'ammissibilità di un'offerta è un filtro a
+   monte, e descriverla come peso è un comportamento che il cliente non può autorizzare.
+5. **Il «perché no» non è un registro automatico**: lo ricostruisce il Decisioning Explainer
+   di Coworker, dal 16 settembre 2026, con licenza sua.
+Più i numeri della referenza riscritti sulla fonte (il «sei volte» misura i clienti messi in
+contatto, non quelli raggiunti; i 3.000 sono l'1% dei 300.000 a rischio) e **tre slide nuove**
+che rispondono a tre buchi strutturali: come si misura il beneficio, che cosa manca per una
+stima in giornate, come si esce (esternalizzazione e reversibilità).
+
 ### §43.5 · Stato dei gate
-`copy-audit` 0 HARD e 0 SOFT su 502 stringhe · `audit:deck` **0 HARD** ai tre viewport
-(SOFT `i` 70, `a` 23: un deck ad ancore li fallisce per costruzione) · `audit:ink` pulito su
-381 blocchi, con i «Scopri come» aperti · `audit:fonti` pulito su 13 link · `audit:taglio`
-allineato · `audit:og` PASS · `audit:dossier` **0 rilievi su 5 viewport** · `audit:docs`
-pulito. `audit:wrap` resta a 28 (riferimento Intesa: 20).
+Dopo il secondo giro: `copy-audit` 0 HARD e 0 SOFT su **604 stringhe** · `audit:deck`
+**0 HARD** ai tre viewport su 9 rotte (SOFT `i` 76, `a` 37: un deck ad ancore li fallisce per
+costruzione) · `audit:ink` pulito su **424 blocchi**, con i «Scopri come» aperti ·
+`audit:fonti` nessun link rotto su 18 (i due di business.adobe.com rispondono solo a un
+browser vero: aperti a mano) · `audit:taglio` allineato · `content-audit`, `audit:og` e
+`audit:docs` verdi · `audit:dossier` **0 rilievi su 5 viewport**. `audit:wrap` resta a **21**:
+i residui sono tutti gruppi di tre o quattro parole a fine frase, e legarli oltre questo punto
+crea catene — ed è la catena che ha già prodotto uno sbordamento HARD su questo deck.
 
 ### §43.6 · Che cosa manca, in ordine
-- **P0 di consegna, dall'arbitro:** si manda e si proietta il **taglio da sei slide**, con il
-  percorso intero come allegato. Il referente ha chiesto venticinque minuti e sei slide.
-- **Secondo giro di panel sulla delta**, prima del check interno del 3 novembre. Ritratti già
-  scritti, pacchetto di evidenza rigenerabile in un comando.
-- **Le ventidue voci P1** in `arbiter.json`. Le quattro che pesano: scheda di connettività
-  verso la loro piattaforma di profilazione; che cosa entra con volumi, conservazione e base
-  giuridica; consensi e tetto di pressione durante il parallelo; intervallo di effort per fase
-  più il termine residuo del contratto da sostituire.
+- **P0 di consegna:** si manda e si proietta il **taglio**, con il percorso intero come
+  allegato. Sette schermate e non sei: la settima è quella che parla a chi fa campagne, e al
+  secondo giro era rimasta nell'allegato — il referente aveva chiesto «sei o sette».
+- **La scheda di connettività, una pagina, prima del 12**: connettore e versione minima,
+  porta, autenticazione, indirizzi da mettere in lista bianca, chi tiene il certificato, e lo
+  stato di fatto sulla connessione privata. Il deck dichiara che la portiamo scritta: è
+  l'unico impegno del documento che oggi non ha ancora un file dietro.
+- **Due date per la mezza giornata**, da prendere sul calendario prima del 12: la slide dice
+  che le proponiamo noi entro due settimane dal 12.
+- **La stima in giornate**: la slide dice quali quattro numeri la stringono e che arriva
+  scritta entro una settimana dalla mezza giornata. È una scadenza nostra.
+- **La chiamata fra pari con TSB**: richiesta da aprire al programma referenze. La slide dice
+  che la chiediamo, non che è confermata.
 - **Tre domande senza risposta nostra:** se la loro piattaforma di profilazione sia un
   magazzino interrogabile; se l'incentivo sulla migrazione valga per questo cliente da solo
   (la risposta ricevuta argomenta sull'altra banca); se esistano contratti Adobe in essere.

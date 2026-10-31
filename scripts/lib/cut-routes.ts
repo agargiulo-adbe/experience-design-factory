@@ -44,8 +44,12 @@ export const CUT_SETS: Record<string, CutSpec> = {
   },
   'bper-sopra-quello-che-avete': {
     taglio: 'dieci-minuti',
-    fonti: ['src/data/architettura.ts', 'src/data/fonti.ts', 'src/data/chapters.ts'],
-    slideMax: 6,
+    fonti: ['src/data/architettura.ts', 'src/data/fonti.ts', 'src/data/chapters.ts', 'src/data/condivisi.ts'],
+    /* Sette e non sei: il referente ha chiesto «sei o sette slide», e la
+       settima è quella che parla a chi fa campagne — al secondo giro di
+       revisione era rimasta nell'allegato, e chi quelle campagne le manda
+       non si riconosceva in nessuna delle altre sei. */
+    slideMax: 7,
     numeriSoloNelTaglio: ['10'],
   },
   'trenitalia-prospettiva-sales': {

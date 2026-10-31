@@ -30,7 +30,8 @@ import Fonte from '../components/Fonte.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { COSTO } from '../data/condivisi';
+import { COSTO, DRIVER } from '../data/condivisi';
+import { MISURE } from '../data/architettura';
 import { fonti } from '../data/fonti';
 
 const SLUG = 'valore';
@@ -38,38 +39,11 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* I driver, non i prezzi. Ognuno dice anche QUALE DATO serve da loro per
-   trasformarlo in una cifra: è la parte che un IT porta a casa. */
-/* I driver, non i prezzi. Ognuno dice anche QUALE DATO serve da loro per
-   trasformarlo in una cifra: è la parte che un IT porta a casa.
-   ⚠️ Questa lista è stata riscritta dopo la verifica sulle descrizioni di
-   prodotto. Tre voci su quattro erano sbagliate, e una in modo pericoloso:
-   le decisioni NON si fatturano — sono un limite di picco, non un'unità di
-   prezzo — e «profili raggiungibili» è un termine diverso da quello di
-   fatturazione, che è «profili ingaggiabili». Un numero costruito su una
-   metrica sbagliata è un numero da ritirare davanti al cliente. */
-const DRIVER = [
-  {
-    k: { it: 'Quanti profili', en: 'How many profiles' },
-    d: { it: 'I profili ingaggiabili: è la metrica con cui si fattura.', en: 'Engageable profiles: this is the billing metric.' },
-    s: { it: 'Serve: quante persone contattabili per canale.', en: 'Needed: contactable people per channel.' },
-  },
-  {
-    k: { it: 'Quali canali', en: 'Which channels' },
-    d: { it: 'Posta, mobile, web e assistito sono voci separate a listino.', en: 'Email, mobile, web and assisted are separate line items.' },
-    s: { it: 'Serve: su quali canali si parte, e in che ordine.', en: 'Needed: which channels start, and in what order.' },
-  },
-  {
-    k: { it: 'Quanti messaggi', en: 'How many messages' },
-    d: { it: 'I volumi annui per canale, con i picchi dichiarati.', en: 'Annual volumes per channel, with peaks declared.' },
-    s: { it: 'Serve: gli invii dell’ultimo anno, mese per mese.', en: 'Needed: last year’s sends, month by month.' },
-  },
-  {
-    k: { it: 'Quante righe di dato', en: 'How many rows of data' },
-    d: { it: 'La misura si licenzia sul volume ingerito, non sul numero di report.', en: 'Measurement is licensed on ingested volume, not on report count.' },
-    s: { it: 'Serve: il volume di eventi digitali in un anno.', en: 'Needed: a year of digital event volume.' },
-  },
-];
+/* I driver vivono in `src/data/condivisi.ts`: li rende questa pagina e li
+   riprende il taglio da dieci minuti, e due copie a mano divergono sempre.
+   Da quattro sono diventati cinque, e tre righe su quattro sono state
+   riscritte sulle descrizioni di prodotto — la personalizzazione si licenzia
+   sul traffico, e quella grandezza mancava del tutto. */
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -84,6 +58,41 @@ const DRIVER = [
       <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
     </Slide>
 
+    {/* ⚠️ LA SLIDE CHE MANCAVA DA DUE GIRI, e l'assenza era strutturale: un
+        capitolo intitolato «che cosa si paga, e di che cosa» che diceva solo
+        di che cosa si paga. Quattro lettori su cinque l'hanno messa fra le
+        condizioni — «al comitato porto un listino e non un progetto» — e la
+        prima fase della rotta dichiara che senza misura il confronto con
+        oggi non esiste. I valori di partenza restano in bianco: li riempiono
+        loro, perché un numero di partenza inventato da noi vale zero. */}
+    <Slide id="slide-beneficio" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Prima del prezzo" en="Before the price" />
+          <T as="h2" class="xd-h2" it="Come si misura se è andata meglio" en="How you measure whether it went better" />
+          <T as="p" class="xd-sub"
+             it="Tre indicatori. Il valore di partenza lo mettete voi, il bersaglio a dodici mesi lo fissate voi, e si collegano nella prima fase: prima di spostare un invio."
+             en="Three indicators. You fill in the baseline, you set the twelve-month target, and they get connected in the first phase: before a single send moves." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:3" data-stagger>
+          {MISURE.map((m, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={m.k.it} en={m.k.en} />
+              <T as="p" class="xd-passi-d" it={m.oggi.it} en={m.oggi.en} />
+              <T as="p" class="xd-passi-d" it={m.poi.it} en={m.poi.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="Il primo dei tre è quello del vostro piano industriale. Se il confronto non si può fare, il resto di questo capitolo non serve."
+           en="The first of the three is the one in your industrial plan. If the comparison cannot be made, the rest of this chapter is of no use." />
+      </div>
+    </Slide>
+
     <Slide id="slide-driver" bg="inverse" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--dark" data-reveal>
@@ -91,11 +100,15 @@ const DRIVER = [
           <T as="p" class="xd-n" it="I driver" en="The drivers" />
           <T as="h2" class="xd-h2" it={COSTO.titolo.it} en={COSTO.titolo.en} />
           <T as="p" class="xd-sub"
-             it="Quattro grandezze, e accanto a ognuna il dato che serve da voi. Sono le metriche di listino, non approssimazioni nostre."
-             en="Four quantities, each with the input we need from you. These are the list metrics, not our approximations." />
+             it="Cinque grandezze, e accanto a ognuna il dato che serve da voi. Sono le grandezze con cui si fattura, lette sulle descrizioni di prodotto."
+             en="Five quantities, each with the input we need from you. These are the quantities billing runs on, read from the product descriptions." />
         </div>
 
-        <ul class="xd-passi" style="--cols:2" data-stagger>
+        {/* ⚠️ --cols:3 e non 2: con cinque driver a due colonne, a 1280×800
+            l'altezza del contenuto arrivava al 167% della fascia utile e il
+            titolo finiva SOPRA la safe-area (check `c`, che è HARD). Si
+            cambia la griglia, non il corpo del tipo. */}
+        <ul class="xd-passi" style="--cols:3" data-stagger>
           {DRIVER.map((d, i) => (
             <li class="xd-passi-i" data-substep data-side="in">
               <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -107,11 +120,10 @@ const DRIVER = [
         </ul>
 
         <T as="p" class="xd-chiusa"
-           it="Nessuna delle quattro dipende dal numero di persone che entrano nello strumento: le licenze a posto qui non ci sono."
-           en="The four quantities do not depend on how many people log into the tool. A few accessory components are counted per user, and are declared where they apply." />
+           it="Nessuna delle cinque dipende da quante persone entrano nello strumento. Qualche componente accessorio si conta per utente, e dove si applica lo diciamo."
+           en="None of the five depends on how many people log into the tool. A few accessory components are counted per user, and where that applies we say so." />
 
-        <Aperto it="Una cifra senza perimetro è un numero da ritirare. Con quei quattro dati arriva in una settimana, e regge."
-                en="A figure without scope is a number to be withdrawn. With those four inputs it arrives in a week, and it holds." />
+        <Aperto it={`${COSTO.cifra.it} Con quei cinque dati arriva in una settimana, e regge.`} en={`${COSTO.cifra.en} With those five inputs it arrives in a week, and it holds.`} />
       </div>
     </Slide>
 
@@ -119,42 +131,41 @@ const DRIVER = [
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <T as="p" class="xd-n" it="Core e il resto" en="Core and the rest" />
-          <T as="h2" class="xd-h2" it="Questo perimetro, e quello che è un’altra conversazione" en="This scope, and what is a different conversation" />
+          <T as="p" class="xd-n" it="Che cosa comprende" en="What it covers" />
+          <T as="h2" class="xd-h2" it="Quattro voci, più una che dipende da voi" en="Four lines, plus one that depends on you" />
           <T as="p" class="xd-sub"
-             it="Questo perimetro non è l’oggetto della vostra gara sul gestionale, e non ne tocca il capitolato. Le due cose restano separate anche nei numeri."
-             en="This scope is not the subject of your core-system tender and does not touch its specification. The two stay apart in the numbers as well." />
+             it="Questo perimetro non è l’oggetto della vostra gara sul gestionale. Le due cose restano separate anche nei numeri."
+             en="This scope is not the subject of your core-system tender. The two stay apart in the numbers as well." />
         </div>
 
-        <div class="bp-due">
-          <div class="bp-due-c" data-lato="poi" data-substep data-side="in">
-            <T as="p" class="bp-due-k" it="Core · questo perimetro" en="Core · this scope" />
-            <ul class="bp-due-l">
-              <li><T as="span" it="La regia dei percorsi e l’arbitro fra le proposte" en="Journey orchestration and the arbiter between offers" /></li>
-              <li><T as="span" it="La personalizzazione dei canali digitali" en="Digital-channel personalisation" /></li>
-              <li><T as="span" it="La misura sul percorso intero" en="Measurement across the whole journey" /></li>
-            </ul>
-          </div>
-          <div class="bp-due-c" data-lato="oggi" data-substep data-side="in">
-            <T as="p" class="bp-due-k" it="Fuori perimetro · se lo chiedete" en="Out of scope · if you ask" />
-            <ul class="bp-due-l">
-              <li><T as="span" it="La fabbrica dei contenuti, se i percorsi chiedono più varianti di quante ne produciate" en="The content factory, if journeys need more variants than you produce" /></li>
-              <li><T as="span" it="La visibilità del marchio nelle risposte generate dagli assistenti" en="Brand visibility inside answers generated by assistants" /></li>
-            </ul>
-          </div>
-        </div>
+        {/* ⚠️ LA COLONNA «FUORI PERIMETRO» È STATA TOLTA, e l'hanno tagliata
+            cinque lettori su cinque: in una stanza che discute la
+            sostituzione di due prodotti, due voci che nessuno ha chiesto
+            diventano il momento in cui il fornitore allarga. Chi presenta
+            deve però sapere i nomi correnti, se la domanda arriva in sala:
+            Adobe Brand Visibility (non più LLM Optimizer) per la visibilità
+            del marchio nelle risposte generate, GenStudio per la fabbrica
+            dei contenuti.
+            ⚠️ E l'arbitro: il dettaglio diceva che «non si licenzia da solo».
+            La descrizione di prodotto in vigore dall'8 settembre 2026 lo
+            elenca come componente a sé, con la metrica dei profili
+            ingaggiabili. Una condizione che costa non può stare dietro
+            «Scopri come», ed è la stessa obiezione del primo giro spostata
+            di capitolo. */}
+        <ul class="bp-l" data-stagger>
+          <li data-substep data-side="in"><T as="span" it="La regia dei percorsi, al posto di Marketing Cloud." en="Journey orchestration, in place of Marketing Cloud." /></li>
+          <li data-substep data-side="in"><T as="span" it="L’arbitro fra le proposte: è un componente a sé del listino, con la stessa metrica dei profili ingaggiabili. Non raddoppia il conto, ma si licenzia." en="The arbiter between offers: a separate line item, on the same engageable-profiles metric. It does not double the bill, but it is licensed." /></li>
+          <li data-substep data-side="in"><T as="span" it="La personalizzazione dei canali digitali, che si licenzia sul traffico." en="Digital-channel personalisation, licensed on traffic." /></li>
+          <li data-substep data-side="in"><T as="span" it="La misura sul percorso intero, sul volume ingerito e sulla finestra di conservazione." en="Journey-wide measurement, on ingested volume and retention window." /></li>
+          <li data-substep data-side="in"><T as="span" it="E se la strada federata resta: il componente di federazione, a consumo, sul pacchetto della regia. Dipende dalle due domande del capitolo sul dato." en="And if the federated route holds: the federation add-on, on consumption, on the orchestration package. It depends on the two questions in the data chapter." /></li>
+        </ul>
 
         <T as="p" class="xd-chiusa"
-           it="La colonna di destra si toglie quando non serve, e il resto del discorso regge uguale."
-           en="Drop the right-hand column when it is not needed: the rest of the argument holds the same." />
+           it="Quello che è fuori perimetro sta su righe d’offerta sue, e questo documento non ne porta nessuna."
+           en="Whatever is out of scope sits on its own order lines, and this document carries none." />
 
         <HowItWorks title="Che cosa muove il conto" class="ex-dett">
           <Dettaglio>
-            <DettaglioVoce>
-              <Figura k="arbitro" />
-              <T slot="ancora" as="p" it="Il perimetro minimo" en="The minimum footprint" />
-              <T slot="riga" as="p" it="L’arbitro non si licenzia da solo: vive dentro la licenza della regia dei percorsi." en="The arbiter is not licensed standalone: it lives inside the journey-orchestration licence." />
-            </DettaglioVoce>
             <DettaglioVoce>
               <Figura k="federa" />
               <T slot="ancora" as="p" it="Che cosa alza il conto" en="What raises the bill" />
@@ -168,9 +179,15 @@ const DRIVER = [
           </Dettaglio>
         </HowItWorks>
 
-        <Fonte voci={fonti('ajo', 'rtcdp')}
-               nota="Una nostra macro-stima su questi moduli per BPER esiste, è di aprile 2026 e sta su un perimetro diverso: va riletta prima di essere citata. Documento interno."
-               notaEn="A macro-estimate on these modules for BPER exists, dated April 2026 on a different scope: it must be re-read before being quoted. Internal document." />
+        {/* ⚠️ QUI C'ERA UNA RIGA IN CALCE che annunciava una nostra
+            macro-stima di aprile 2026 su un perimetro diverso, «da rileggere
+            prima di essere citata». Tre lettori su cinque l'hanno messa fra
+            le condizioni del verdetto, con le stesse parole: un numero
+            annunciato e non consegnato è già un numero ritirato, e sta in
+            calce alla slide che dovrebbe costruire fiducia sul costo. La
+            stima esiste, va riletta sul perimetro nuovo, e questo resta un
+            fatto per chi presenta — non una riga in pagina. */}
+        <Fonte voci={fonti('ajo', 'decisioning', 'rtcdp')} />
       </div>
     </Slide>
 

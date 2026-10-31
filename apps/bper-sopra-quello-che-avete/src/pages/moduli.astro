@@ -22,7 +22,7 @@ import Fonte from '../components/Fonte.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { CHIUSE } from '../data/condivisi';
+import { CHIUSE, CONTEGGIO } from '../data/condivisi';
 import { SCAMBI, SETTIMANA } from '../data/architettura';
 import { fonti } from '../data/fonti';
 
@@ -48,10 +48,8 @@ const currentPath = Astro.url.pathname;
       <div class="xd-sl xd-sl--dark" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Modulo per modulo" en="Module by module" />
-          <T as="h2" class="xd-h2" it="Due escono, quattro entrano" en="Two go out, four come in" />
-          <T as="p" class="xd-sub"
-             it="Le prime due righe sostituiscono. Le altre due sono quello che oggi non avete, e si licenziano a parte."
-             en="The first two rows replace. The other two are what you do not have today, and are licensed separately." />
+          <T as="h2" class="xd-h2" it={CONTEGGIO.moduli.it} en={CONTEGGIO.moduli.en} />
+          <T as="p" class="xd-sub" it={CONTEGGIO.righe.it} en={CONTEGGIO.righe.en} />
         </div>
 
         <ul class="xd-passi" style="--cols:2" data-stagger>
@@ -70,7 +68,7 @@ const currentPath = Astro.url.pathname;
 
         <T as="p" class="xd-chiusa" it={CHIUSE.terzoModulo.it} en={CHIUSE.terzoModulo.en} />
 
-        <Fonte voci={fonti('ajo', 'decisioning', 'target', 'cja')} />
+        <Fonte voci={fonti('ajo', 'decisioning', 'target', 'cja', 'bperCrm')} />
       </div>
     </Slide>
 
@@ -87,10 +85,10 @@ const currentPath = Astro.url.pathname;
       <div class="xd-sl xd-sl--dark" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Dal lato di chi le campagne le fa" en="From the side of whoever runs campaigns" />
-          <T as="h2" class="xd-h2" it="Che cosa cambia in una settimana di lavoro" en="What changes in a working week" />
+          <T as="h2" class="xd-h2" it="Che cosa cambia in una settimana di lavoro" en="What changes in a working week" />
           <T as="p" class="xd-sub"
-             it="Tre cose cambiano. Una no, ed è quella che conta dirla: la campagna a lista continua a funzionare."
-             en="Three things change. One does not, and it is worth saying: list campaigns keep working." />
+             it="Sei passi della settimana, con il prima e il dopo. Uno si allunga, ed è marcato: la campagna a lista continua a funzionare."
+             en="Six steps of the week, with before and after. One takes longer, and it is marked: list campaigns keep working." />
         </div>
 
         <ul class="xd-passi" style="--cols:3" data-stagger>
@@ -100,52 +98,70 @@ const currentPath = Astro.url.pathname;
               <T as="p" class="xd-passi-l" it={x.k.it} en={x.k.en} />
               <T as="p" class="xd-passi-d" it={`Oggi: ${x.oggi.it}`} en={`Today: ${x.oggi.en}`} />
               <T as="p" class="xd-passi-d" it={x.poi.it} en={x.poi.en} />
+              {x.verso === 'piu-lungo' && (
+                <T as="p" class="xd-passi-d bp-verso" it="La prima volta si allunga" en="The first time takes longer" />
+              )}
             </li>
           ))}
         </ul>
 
-        <T as="p" class="xd-chiusa"
-           it="Il controllo non si perde: cambia posto. Si sposta dalla lista alla regola, e la regola la scrivete voi."
-           en="Control is not lost: it moves. From the list to the rule, and you write the rule." />
+        <T as="p" class="xd-chiusa" it={CHIUSE.controllo.it} en={CHIUSE.controllo.en} />
       </div>
     </Slide>
 
     <Slide id="slide-arbitro" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="xd-sl" data-reveal>
+        {/* ⚠️ QUESTA SLIDE È STATA RISCRITTA SU QUATTRO VERIFICHE, e tre
+            delle quattro frasi che ha perso erano quelle che convincevano.
+            (1) Diceva «il modulo che non avete»: il comunicato del cliente
+            del 23 novembre 2022 scrive che il suo motore calcola già la
+            miglior proposta per cliente. (2) Diceva che eleggibilità e
+            pressione sono «pesate insieme» al valore: in banca
+            l'ammissibilità di un'offerta di credito o di investimento è un
+            FILTRO a monte — adeguatezza, merito, profilatura — e descriverla
+            come un peso sulla bilancia è un comportamento che il cliente non
+            può autorizzare. (3) Diceva che il ripiego scatta quando il punto
+            di decisione «non risponde in tempo»: la documentazione dice che
+            il fallback scatta quando nessuna proposta è eleggibile, e che
+            timeout ed errore sono un ramo a parte, disegnato nel percorso.
+            (4) Diceva che ogni proposta scartata «resta a registro con il
+            motivo»: il dataset delle decisioni registra selezione, ripiego,
+            posizione e attività — il «perché no» lo ricostruisce il
+            Decisioning Explainer di Coworker, che è un'altra licenza. */}
         <div class="xd-sl-head">
-          <T as="p" class="xd-n" it="Il modulo che non avete" en="The module you do not have" />
-          <T as="h2" class="xd-h2" it="Quattro proposte per la stessa persona, stasera" en="Four offers for the same person, tonight" />
+          <T as="p" class="xd-n" it="L’arbitrato fra canali" en="Arbitration across channels" />
+          <T as="h2" class="xd-h2" it="Chi vince quando più proposte competono" en="Who wins when several offers compete" />
           <T as="p" class="xd-sub"
-             it="Oggi vince quella costruita per prima. Con un arbitro vince quella che la regola dice, e la regola la scrivete voi."
-             en="Today the one built first wins. With an arbiter the rule decides, and you write the rule." />
+             it="Quale proposta fare a ogni cliente lo calcolate già. Qui si decide chi vince quando due o tre arrivano sulla stessa persona nello stesso momento."
+             en="Which offer fits each customer you already compute. Here the question is who wins when two or three reach the same person at the same moment." />
         </div>
 
         <div class="xd-pb">
           <section class="xd-pb-i" data-substep data-side="in">
             <T as="p" class="xd-pb-k" it="Oggi · decide l’ordine" en="Today · order decides" />
             <Figura k="arbitro" />
-            <T as="p" class="xd-pb-v" it="Ogni campagna conosce il proprio target e ignora le altre tre che parlano alla stessa persona." en="Each campaign knows its own target and ignores the other three talking to the same person." />
+            <T as="p" class="xd-pb-v" it="Ogni campagna conosce il proprio target. Quando due parlano alla stessa persona nello stesso giorno, decide l’ordine in cui sono nate." en="Each campaign knows its own target. When two talk to the same person on the same day, the order they were built in decides." />
           </section>
           <section class="xd-pb-i" data-substep data-side="in">
-            <T as="p" class="xd-pb-k" it="Con l’arbitro · decide la regola" en="With the arbiter · the rule decides" />
+            <T as="p" class="xd-pb-k" it="Con l’arbitro · prima filtra, poi ordina" en="With the arbiter · filter first, then rank" />
             <Figura k="regia" />
-            <T as="p" class="xd-pb-v" it="Valore, eleggibilità e pressione commerciale pesati insieme, nel momento in cui la persona apre l’app." en="Value, eligibility and contact pressure weighed together, the moment the person opens the app." />
+            <T as="p" class="xd-pb-v" it="L’eleggibilità e il tetto di pressione togliono dalla rosa quello che non è ammissibile. Fra quello che resta, valore e priorità commerciale decidono l’ordine." en="Eligibility and the pressure cap remove from the pool whatever is not admissible. Among what is left, value and commercial priority set the order." />
           </section>
         </div>
 
-        {/* ⚠️ Due domande che un IT bancario fa sempre, e che un deck che non
-            le anticipa si prende in faccia: che cosa succede se il servizio
-            non risponde in tempo, e chi decide i pesi. */}
         <ul class="bp-l" data-stagger>
-          <li data-substep data-side="in"><T as="span" it="La pagina mostra il contenuto di ripiego che avete definito quando il punto di decisione non risponde in tempo. Non resta vuota e non aspetta." en="The page shows the fallback you defined when the decision endpoint does not answer in time. It never stays blank and never waits." /></li>
-          <li data-substep data-side="in"><T as="span" it="I pesi fra le proposte li governate voi, in una sede dove siedono anche i proprietari delle campagne. Non è una scatola che decide da sé." en="You govern the weights between offers, in a forum where campaign owners sit too. It is not a box that decides on its own." /></li>
-          <li data-substep data-side="in"><T as="span" it="Ogni proposta scartata resta a registro, con il motivo: serve a chi quella campagna l’ha costruita." en="Every rejected offer stays on record with its reason: that matters to whoever built the campaign." /></li>
+          <li data-substep data-side="in"><T as="span" it="Se nessuna proposta è eleggibile, la pagina mostra il contenuto di ripiego che avete definito. Timeout ed errore sono un ramo a parte, disegnato nel percorso." en="If no offer is eligible, the page shows the fallback you defined. Timeout and error are a separate branch, drawn into the journey." /></li>
+          <li data-substep data-side="in"><T as="span" it="Il permesso si verifica prima: se manca, quella proposta non entra nella rosa. La regola la scrivete voi, una volta, dentro il motore." en="Permission is checked first: without it, that offer never enters the pool. You write the rule once, inside the engine." /></li>
+          <li data-substep data-side="in"><T as="span" it="Perché una proposta non è stata mostrata si ricostruisce dopo: eleggibilità, tetto, punteggio. Lo fa il Decisioning Explainer di Coworker: disponibile dal 16 settembre 2026, con licenza sua." en="Why an offer was not shown is reconstructed afterwards: eligibility, cap, score. The Decisioning Explainer in Coworker does it, available from 16 September 2026 under its own licence." /></li>
+          <li data-substep data-side="in"><T as="span" it="Latenza attesa, soglia di timeout e portata al picco li portiamo scritti alla mezza giornata, con il livello di servizio del punto di decisione." en="Expected latency, timeout threshold and peak throughput we bring in writing to the half day, with the decision endpoint’s service level." /></li>
         </ul>
 
         <T as="p" class="xd-chiusa"
-           it="L’eleggibilità resta una regola vostra. L’arbitro la legge, non la riscrive."
-           en="Eligibility stays your rule. The arbiter reads it, it does not rewrite it." />
+           it="I pesi li governate voi, in una sede dove siedono anche i proprietari delle campagne. I dati che alimentano la regola restano nei vostri sistemi."
+           en="You govern the weights, in a forum where campaign owners sit too. The data feeding the rule stays in your systems." />
+
+        <Fonte voci={fonti('decisioning', 'explainer')} />
 
       </div>
     </Slide>

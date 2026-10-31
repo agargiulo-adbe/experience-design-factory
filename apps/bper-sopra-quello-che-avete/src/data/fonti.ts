@@ -63,6 +63,32 @@ export const F = {
     url: 'https://experienceleague.adobe.com/en/docs/target/using/target-home',
     etichetta: 'Adobe Target',
   },
+  /* La ricostruzione del «perché no» di una decisione: è una competenza di
+     CX Enterprise Coworker, disponibile dal 16 settembre 2026, e va
+     licenziata oltre a Decisioning. Il documento lo dice dove lo promette. */
+  explainer: {
+    url: 'https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/experience-decisioning-coworker-skills',
+    etichetta: 'Decisioning Explainer in Coworker',
+  },
+
+  /* ── Le fonti del cliente e la referenza ────────────────────────────── */
+  /* ⚠️ Il comunicato che ha corretto il documento. Dice che il motore di
+     Marketing Automation del cliente «consente di calcolare dinamicamente la
+     miglior proposta commerciale per ogni singolo cliente (Next Best
+     Action)»: tre affermazioni di assenza in questo deck erano smentite
+     dalla fonte più forte che esista, la loro. */
+  bperCrm: {
+    url: 'https://group.bper.it/-/nuovo-ecosistema-di-crm-salesforce',
+    etichetta: 'il vostro comunicato sul CRM, 23 novembre 2022',
+  },
+  tsbCaso: {
+    url: 'https://business.adobe.com/customer-success-stories/tsb-case-study.html',
+    etichetta: 'la storia cliente di TSB',
+  },
+  tsbAnnuncio: {
+    url: 'https://business.adobe.com/blog/the-latest/tsb-partnership-with-adobe-is-elevating-digital-banking-experiences-and-boosting-money-confidence-for-millions',
+    etichetta: 'l’annuncio del 2024, con i numeri dell’iniziativa',
+  },
 } as const satisfies Record<string, Fonte>;
 
 /** Compone la riga di fonte: «etichetta · etichetta». Il link lo mette la

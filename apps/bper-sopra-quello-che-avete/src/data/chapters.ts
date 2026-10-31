@@ -2,7 +2,17 @@
  * Adobe × BPER — i capitoli. Fonte unica per nav, copertina, SECTION_FLOW e,
  * tramite `admin.astro`, il registro delle slide.
  *
- * ⚠️ I SETTE CAPITOLI SONO LE SETTE SLIDE CHE IL CLIENTE HA GIÀ VISTO.
+ * ⚠️ IL CAPITOLO «ADOBE, E PERCHÉ NON È UN CRM» NON C'È PIÙ, e il modo in cui
+ * è sparito vale più della sua assenza. Il primo giro di revisione l'ha
+ * svuotato — chi governa le fabbriche digitali di una banca ha poca pazienza
+ * per le slide che spiegano chi è il fornitore — e per un giro è rimasto come
+ * copertina sola: una voce su otto nell'indice e nella barra, che faceva
+ * sembrare il documento più lungo di quanto fosse. La tesi che doveva portare
+ * («lo strato dove l'esperienza si decide sta sopra il CRM, e non si rifà
+ * quando il CRM cambia») adesso sta in copertina e nella mappa, che è il
+ * posto dove si dimostra invece di essere annunciata.
+ *
+ * ⚠️ I SEI CAPITOLI SONO LE SLIDE CHE IL CLIENTE HA GIÀ VISTO, più l'ask.
  * Non sono lo scheletro del tipo «blueprint» (scenario · fondamenta · use
  * case · convergenza · valore · rotta), che il generatore propone come punto
  * di partenza. Il 26 ottobre il referente IT ha elencato che cosa il suo capo
@@ -21,7 +31,7 @@ export interface Chapter {
   slug: string;
   num: string;
   title: { it: string; en: string };
-  /** Il titolo per la BARRA: con otto capitoli i titoli lunghi non stanno su
+  /** Il titolo per la BARRA: con sette capitoli i titoli lunghi non stanno su
       una riga sola, e la regola della nav è che resti una riga sola. */
   breve?: { it: string; en: string };
   /** Il punto del capitolo: la conseguenza, non il riassunto. Lo rende il
@@ -31,51 +41,42 @@ export interface Chapter {
 
 export const CHAPTERS: Chapter[] = [
   {
-    slug: 'adobe', num: '01',
-    title: { it: 'Adobe, e perché non è un CRM', en: 'Adobe, and why it is not a CRM' },
-    breve: { it: 'Adobe', en: 'Adobe' },
-    punto: {
-      it: 'Lo strato dove l’esperienza si decide sta sopra il CRM. Il giorno in cui cambiate CRM, non si rifà.',
-      en: 'The layer where experience is decided sits above the CRM. The day you change CRM, it is not rebuilt.',
-    },
-  },
-  {
-    slug: 'architettura', num: '02',
+    slug: 'architettura', num: '01',
     title: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
     punto: {
-      it: 'Due blocchi cambiano. Il resto della vostra architettura resta dov’è, e chi la governa resta chi la governa oggi.',
-      en: 'Two blocks change. The rest of your architecture stays where it is, and whoever governs it stays in charge.',
+      it: 'Tre blocchi cambiano. Il resto della vostra architettura resta dov’è, e chi la governa resta chi la governa oggi.',
+      en: 'Three blocks change. The rest of your architecture stays where it is, and whoever governs it stays in charge.',
     },
   },
   {
-    slug: 'moduli', num: '03',
+    slug: 'moduli', num: '02',
     title: { it: 'Che cosa prende il posto di che cosa', en: 'What replaces what' },
     breve: { it: 'I moduli', en: 'The modules' },
     punto: {
-      it: 'Due prodotti escono, tre entrano, e il terzo è quello che oggi non avete.',
-      en: 'Two products go out and four come in. Two of those you do not have today, and they are licensed separately.',
+      it: 'Due prodotti escono, quattro moduli entrano. Gli ultimi due aggiungono l’arbitrato fra canali e la misura sul percorso, e si licenziano a parte.',
+      en: 'Two products go out, four modules come in. The last two add arbitration across channels and journey-wide measurement, and are licensed separately.',
     },
   },
   {
-    slug: 'dato', num: '04',
-    title: { it: 'Il dato resta dov’è', en: 'The data stays where it is' },
+    slug: 'dato', num: '03',
+    title: { it: 'Che cosa entra, e che cosa resta', en: 'What enters, and what stays' },
     breve: { it: 'Il dato', en: 'The data' },
     punto: {
-      it: 'La CDP non si tocca e il dato non si copia: si interroga dove vive. Su come, c’è una domanda da farvi.',
-      en: 'The CDP is untouched and the data is not copied: it is queried where it lives. On how, we have a question for you.',
+      it: 'La vostra base clienti non entra. Entrano la chiave, gli eventi e i recapiti: qui c’è l’elenco, riga per riga.',
+      en: 'Your customer base does not enter. The key, the events and the contact details do: here is the list, row by row.',
     },
   },
   {
-    slug: 'referenze', num: '05',
+    slug: 'referenze', num: '04',
     title: { it: 'Chi l’ha già fatto', en: 'Who has already done it' },
     breve: { it: 'Referenze', en: 'References' },
     punto: {
-      it: 'Una referenza vale se la banca che la porta accetta di parlarvi. Qui c’è quello che possiamo dichiarare oggi.',
+      it: 'Una banca europea l’ha già fatto su questi moduli, e la sua storia è pubblica. Sul resto non inventiamo niente.',
       en: 'A European bank has already done it on these modules, and its story is public. On the rest we invent nothing.',
     },
   },
   {
-    slug: 'rotta', num: '06',
+    slug: 'rotta', num: '05',
     title: { it: 'Come ci si arriva', en: 'How you get there' },
     breve: { it: 'La rotta', en: 'The route' },
     punto: {
@@ -84,20 +85,20 @@ export const CHAPTERS: Chapter[] = [
     },
   },
   {
-    slug: 'valore', num: '07',
-    title: { it: 'Che cosa si paga, e di che cosa', en: 'What you pay for, and on what' },
+    slug: 'valore', num: '06',
+    title: { it: 'Che cosa si paga, e di che cosa', en: 'What you pay for, and on what' },
     breve: { it: 'Il modello', en: 'The model' },
     punto: {
-      it: 'Si paga su profili e volumi, non su licenze utente. E quello che è in più si vede che è in più.',
-      en: 'You pay on profiles and volumes, not on user seats. And what is extra is visibly extra.',
+      it: 'Si paga su profili e volumi, non su licenze utente. Quello che è fuori perimetro sta su righe d’offerta sue.',
+      en: 'You pay on profiles and volumes, not on user seats. What is out of scope sits on its own order lines.',
     },
   },
   {
-    slug: 'prossimi-passi', num: '08',
+    slug: 'prossimi-passi', num: '07',
     title: { it: 'Prossimi passi', en: 'Next steps' },
     breve: { it: 'I passi', en: 'Next steps' },
     punto: {
-      it: 'Tre domande aperte, e mezza giornata per chiuderle con chi conosce i vostri sistemi.',
+      it: 'Tre domande aperte, e mezza giornata per chiuderle con chi conosce i vostri sistemi.',
       en: 'Three open questions, and half a day to close them with the people who know your systems.',
     },
   },

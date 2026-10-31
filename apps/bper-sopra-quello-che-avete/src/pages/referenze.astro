@@ -36,6 +36,7 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { TSB } from '../data/architettura';
+import { fonti } from '../data/fonti';
 
 const SLUG = 'referenze';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -63,7 +64,7 @@ const currentPath = Astro.url.pathname;
           <T as="h2" class="xd-h2" it="Una banca si può nominare. Le altre no, e il motivo conta" en="One bank can be named. The others cannot, and the reason matters" />
           <T as="p" class="xd-sub"
              it="Una storia pubblicata da Adobe si può portare. Un caso che circola internamente e non risulta pubblicato, no."
-             en="Using another client’s name and logo is a contractual right, not a choice made by whoever builds the slides." />
+             en="A story Adobe has published can be brought. A case circulating internally and not published cannot." />
         </div>
 
         <div class="xd-pb">
@@ -72,21 +73,31 @@ const currentPath = Astro.url.pathname;
             <ul class="bp-l">
               {TSB.fatti.map((f) => <li><T as="span" it={f.it} en={f.en} /></li>)}
             </ul>
-            <T as="p" class="xd-pb-v" it={`Sugli stessi moduli: ${TSB.moduli}.`} en={`On the same modules: ${TSB.moduli}.`} />
+            <T as="p" class="xd-pb-v" it={`Sugli stessi moduli: ${TSB.moduli}. Numeri pubblicati nel ${TSB.data}.`} en={`On the same modules: ${TSB.moduli}. Figures published in ${TSB.data}.`} />
+
+            {/* ⚠️ LA RIGA SIMMETRICA AL TAGLIO. Nelle sei slide proiettate si
+                leggeva «nessun nome di banca finché il programma referenze non
+                conferma», e qui un nome c'era con tre numeri: o il programma
+                aveva confermato, o il nome non doveva esserci. Le due pagine
+                adesso dicono la stessa cosa, e la distinzione è quella vera —
+                una storia pubblicata si porta, una chiamata fra pari si
+                chiede. */}
+            <T as="p" class="xd-pb-v" it="La chiamata fra pari è un’altra richiesta, e passa dal programma referenze." en="A peer call is a different request, and goes through the reference programme." />
           </section>
           <section class="xd-pb-i" data-substep data-side="in">
             <T as="p" class="xd-pb-k" it="Non si può nominare · gli altri casi" en="Cannot be named · the other cases" />
             <Figura k="scambio" />
-            <T as="p" class="xd-pb-v" it="I casi di sostituzione che circolano internamente non risultano pubblicati. Un nome citato e poi smentito pesa su tutto il resto, comprese le parti verificate." en="The replacement cases circulating internally are not published. A name quoted and then withdrawn weighs on everything else, including the verified parts." />
+            <T as="p" class="xd-pb-v" it="Il diritto di usare nome e logo di un cliente è contrattuale. Un nome citato e poi smentito pesa su tutto il resto, comprese le parti verificate." en="The right to use a client’s name and logo is contractual. A name quoted and then withdrawn weighs on everything else, including the verified parts." />
           </section>
         </div>
 
         <Aperto tagIt="La domanda per voi" tagEn="The question for you"
-                it="Serve una banca che ha spento Marketing Cloud, oppure basta una banca italiana già su questi moduli? I tempi sono diversi."
-                en="Do you need a bank that switched Marketing Cloud off, or is an Italian bank using these modules enough? The two requests take different time." />
+                it="Al comitato serve una banca con Marketing Cloud già spento, oppure una banca italiana già su questi moduli? Le due richieste hanno tempi diversi."
+                en="Does the committee need a bank with Marketing Cloud already switched off, or an Italian bank already on these modules? The two requests take different time." />
 
-        <Fonte nota="Verifica su fonti pubbliche, 31 ottobre 2026: i casi di sostituzione circolati internamente non risultano pubblicati. Le referenze nominabili si confermano attraverso il programma referenze Adobe."
-               notaEn="Figures from the story Adobe publishes on that bank. Public-source check of 31 October 2026: the replacement cases circulating internally are not published, and are confirmed through the reference programme." />
+        <Fonte voci={fonti('tsbCaso', 'tsbAnnuncio')}
+               nota="I tre numeri sono quelli della storia pubblicata da Adobe e dell’annuncio del 2024, non nostri. Verifica su fonti pubbliche, 31 ottobre 2026: i casi di sostituzione circolati internamente non risultano pubblicati."
+               notaEn="The three figures come from the story Adobe publishes and from the 2024 announcement, not from us. Public-source check of 31 October 2026: the replacement cases circulating internally are not published." />
       </div>
     </Slide>
 

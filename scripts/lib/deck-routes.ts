@@ -196,7 +196,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
   ],
   'bper-sopra-quello-che-avete': [
     { name: 'home',           route: '/experience-design-factory/bper-sopra-quello-che-avete/' },
-    { name: 'adobe',          route: '/experience-design-factory/bper-sopra-quello-che-avete/adobe/' },
     { name: 'architettura',   route: '/experience-design-factory/bper-sopra-quello-che-avete/architettura/' },
     { name: 'moduli',         route: '/experience-design-factory/bper-sopra-quello-che-avete/moduli/' },
     { name: 'dato',           route: '/experience-design-factory/bper-sopra-quello-che-avete/dato/' },

@@ -26,7 +26,7 @@ import Divisore from '../components/Divisore.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MISURE } from '../data/architettura';
+import { SFORZO, USCITA } from '../data/architettura';
 
 const SLUG = 'rotta';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -44,7 +44,13 @@ const FASI = [
   {
     k: { it: 'Un canale, un percorso', en: 'One channel, one journey' },
     d: { it: 'Il canale che pesa di più, su un percorso oggi mal servito.', en: 'The channel that weighs most, on a journey poorly served today.' },
-    f: { it: 'Chiude quando il recapito è pari o migliore di oggi, dopo il riscaldamento degli indirizzi.', en: 'Done when deliverability matches or beats today, after IP warm-up.' },
+    /* ⚠️ Diceva «dopo il riscaldamento degli indirizzi», che è anche il
+       termine sbagliato: non si scaldano i destinatari, si scaldano gli IP di
+       spedizione e si ricostruisce la reputazione del dominio mittente. E
+       mancavano le due cose per cui una migrazione di questo tipo si rompe
+       davvero: l'autenticazione del dominio da rifare, e il registro dei
+       consensi con un solo sistema padrone per tutta la durata del parallelo. */
+    f: { it: 'Chiude quando il recapito è pari o migliore di oggi. Prima: autenticazione del dominio rifatta, indirizzi scaldati per gradi, lista di soppressione condivisa fra i due motori.', en: 'Done when deliverability matches or beats today. Before that: domain authentication rebuilt, sending IPs warmed gradually, suppression list shared between both engines.' },
   },
   {
     k: { it: 'Si accende l’arbitro', en: 'Switch the arbiter on' },
@@ -54,7 +60,7 @@ const FASI = [
   {
     k: { it: 'Si spegne quello che non serve', en: 'Switch off what is no longer needed' },
     d: { it: 'Per ultimo, e canale per canale. Mai come primo passo.', en: 'Last, and channel by channel. Never as the first step.' },
-    f: { it: 'Chiude quando l’ultimo invio è uscito dal canale nuovo per un ciclo, e il vecchio contratto ha una data.', en: 'Done when the last send has left the new channel for a full cycle, and the old contract has a date.' },
+    f: { it: 'Chiude quando l’ultimo invio è uscito dal canale nuovo per un ciclo, e il vecchio contratto ha una data.', en: 'Done when the last send has left the new channel for a full cycle, and the old contract has a date.' },
   },
 ];
 ---
@@ -93,7 +99,7 @@ const FASI = [
         </ul>
 
         <T as="p" class="xd-chiusa"
-           it="In nessuna di queste fasi c’è un giorno in cui tutto passa da una piattaforma all’altra."
+           it="In nessuna di queste fasi c’è un giorno in cui tutto passa da una piattaforma all’altra."
            en="In none of these phases is there a day when everything moves from one platform to the other." />
 
         <HowItWorks title="Perche questo ordine" tone="onDark" class="ex-dett ex-dett--scuro">
@@ -101,15 +107,85 @@ const FASI = [
             <DettaglioVoce>
               <Figura k="scambio" />
               <T slot="ancora" as="p" it="Perché in parallelo" en="Why in parallel" />
-              <T slot="riga" as="p" it="Due sistemi accesi per qualche settimana costano meno di un invio sbagliato a tutta la base." en="Two systems running for a few weeks cost less than one bad send to the whole base." />
+              <T slot="riga" as="p" it="Le settimane con i due motori accesi costano, e sono in stima. Il rischio che evitano si paga una volta sola e non si recupera." en="The weeks with both engines running cost money, and they are in the estimate. The risk they avoid is paid once and never recovered." />
             </DettaglioVoce>
             <DettaglioVoce>
               <Figura k="fasi" />
               <T slot="ancora" as="p" it="Dove si rompe di solito" en="Where it usually breaks" />
-              <T slot="riga" as="p" it="Non sulla tecnologia: sulla regola di chi decide che cosa, mai messa per iscritto da nessuno." en="Not on technology: on the rule about who decides what, which nobody had ever written down." />
+              <T slot="riga" as="p" it="Nelle banche dove l’abbiamo visto rompersi non era la tecnologia: era la regola di chi decide che cosa, non scritta. Da voi lo è?" en="In the banks where we saw it break it was not technology: it was the rule on who decides what, unwritten. Is yours written?" />
             </DettaglioVoce>
+
           </Dettaglio>
         </HowItWorks>
+      </div>
+    </Slide>
+
+    {/* ⚠️ LA RISPOSTA CHE MANCAVA DOPO DUE GIRI. Il cliente ha aperto la
+        porta con due domande — che cosa fate in più, e quanto mi costa in
+        rifacimenti — e la seconda era senza risposta: quattro fasi, nessuna
+        giornata-uomo, nessun costo del doppio esercizio. Una Gantt inventata
+        non si fa, si smonta in sala; ma «l'ordine, non il calendario» da
+        solo è una risposta che non risponde. Qui si dice che cosa stringe la
+        stima, chi la fa, e quando arriva scritta: una scadenza nostra. */}
+    <Slide id="slide-impegno" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Quanto costa in rifacimenti" en="What it costs in rebuild" />
+          <T as="h2" class="xd-h2" it="Che cosa manca per darvi una stima in giornate" en="What is missing to give you an estimate in days" />
+          <T as="p" class="xd-sub"
+             it="Quattro numeri, e nessuno dei quattro ce l’abbiamo noi. Con quelli la stima arriva scritta, fase per fase, entro una settimana dalla mezza giornata."
+             en="Four numbers, and none of the four is ours. With them the estimate arrives in writing, phase by phase, within a week of the half day." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {SFORZO.map((v, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={v.k.it} en={v.k.en} />
+              <T as="p" class="xd-passi-d" it={v.d.it} en={v.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="La ricostruzione di quello che avete oggi è dentro il perimetro della stima, e si dice chi la fa."
+           en="Rebuilding what you have today is inside the estimate’s scope, and we say who does it." />
+      </div>
+    </Slide>
+
+    {/* ⚠️ ZERO RIGHE SU QUESTO PER DUE GIRI, e tre lettori su cinque lo
+        chiamano cancello e non preferenza: in banca il fascicolo del
+        fornitore ICT si apre prima del prezzo, e su un canale di primo
+        livello la reversibilità è una clausola obbligatoria. Scoperto dal
+        loro rischio operativo fra due mesi costa un trimestre.
+        ⚠️ Si dice così e non diversamente: gli obblighi sono del cliente e
+        arrivano a noi per contratto, e la criticità la classifica la banca
+        nella sua analisi d'impatto — mai il fornitore. */}
+    <Slide id="slide-uscita" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Prima della firma" en="Before signature" />
+          <T as="h2" class="xd-h2" it="Come si esce, e in quanto tempo" en="How you exit, and how long it takes" />
+          <T as="p" class="xd-sub"
+             it="Lo portiamo noi al tavolo, non dopo. Un fornitore su un canale di primo livello entra nel vostro fascicolo di esternalizzazione, e il rientro si scrive prima della firma."
+             en="We bring this to the table, not later. A supplier on a first-tier channel enters your outsourcing file, and the exit is written before signature." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {USCITA.map((v, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={v.k.it} en={v.k.en} />
+              <T as="p" class="xd-passi-d" it={v.d.it} en={v.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="Le regole di arbitraggio e le definizioni dei percorsi tornano a voi il giorno in cui decidete di uscire. Formato e tempi sono una clausola, non una promessa."
+           en="The arbitration rules and journey definitions come back to you the day you decide to leave. Format and timescale are a clause, not a promise." />
       </div>
     </Slide>
 
@@ -120,7 +196,7 @@ const FASI = [
           <T as="p" class="xd-n" it="Chi lo fa" en="Who does it" />
           <T as="h2" class="xd-h2" it="Sull’integratore non arriviamo con un nome già scelto" en="On the integrator we do not arrive with a name already picked" />
           <T as="p" class="xd-sub"
-             it="Di solito la scelta la fa la banca, e in casa vostra c’è già chi conosce l’impianto da sostituire."
+             it="Di solito la scelta la fa la banca, e in casa vostra c’è già chi conosce l’impianto da sostituire."
              en="The bank normally makes that call, and you already have people who know the system being replaced." />
         </div>
 
@@ -130,9 +206,11 @@ const FASI = [
           <li data-substep data-side="in"><T as="span" it="Nella prima fase il nostro team lavora accanto al vostro: la misura si collega insieme, non si appalta." en="In the first phase our team works alongside yours: the measurement gets connected together, not outsourced." /></li>
         </ul>
 
-        <T as="p" class="xd-chiusa"
-           it="È una domanda che preferiamo fare noi adesso, invece di scoprirla a metà progetto."
-           en="It is a question we would rather ask now than discover halfway through the project." />
+        {/* ⚠️ QUI C'ERA UNA RIGA — «è una domanda che preferiamo fare noi
+            adesso» — che alludeva alla domanda sul conflitto dell'integratore,
+            tolta nel primo giro. Chi legge si chiedeva quale fosse, e in sala
+            qualcuno l'avrebbe chiesto. Il resto della slide regge da solo, e
+            sta fra le cose da non toccare. */}
       </div>
     </Slide>
 
