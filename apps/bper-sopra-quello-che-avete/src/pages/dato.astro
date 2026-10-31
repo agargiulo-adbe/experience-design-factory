@@ -1,0 +1,151 @@
+---
+/**
+ * 04 · Il dato resta dov’è.
+ *
+ * ⚠️ IL CAPITOLO DOVE LA VERIFICA HA CAMBIATO IL CONTENUTO.
+ * La proposta di struttura del 26 ottobre diceva: «Integrazione con Oracle
+ * CDP: come funziona senza duplicare il dato, es. connettori, Federated
+ * Audience Composition». Trattato come ipotesi e verificato alla fonte il 31
+ * ottobre 2026, l’esito è più sottile dell’ipotesi, e va detto in sala:
+ *
+ *   · Oracle È nell’elenco dei database supportati nella pagina delle
+ *     connessioni e nelle FAQ di Federated Audience Composition;
+ *   · Oracle NON compare nella pagina «Prerequisites and guardrails», che
+ *     elenca sette warehouse e si ferma lì;
+ *   · Oracle NON è nella tabella della CONNETTIVITÀ PRIVATA (PrivateLink e
+ *     VPN site-to-site), che per una banca di norma non è un dettaglio.
+ *
+ * Tre pagine ufficiali che non concordano: la regola dice di riportare il
+ * conflitto e chiedere, non di sceglierne una in silenzio. E c’è una domanda
+ * che viene prima: lo schema nomina «CDP ORACLE» senza dire se sia un data
+ * warehouse interrogabile o una CDP applicativa, e la federazione si collega
+ * a un warehouse. Da quella risposta dipende tutto il resto del capitolo.
+ *
+ * Portare la domanda noi, al minuto giusto, vale più che scoprirla col loro
+ * IT fra un mese: un vincolo dichiarato da noi è credibilità, lo stesso
+ * vincolo trovato da loro è un problema.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Aperto from '../components/Aperto.astro';
+import Fonte from '../components/Fonte.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { fonti } from '../data/fonti';
+
+const SLUG = 'dato';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-federa" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Il principio" en="The principle" />
+          <T as="h2" class="xd-h2" it="Si interroga il dato dove vive, invece di copiarlo" en="You query the data where it lives, instead of copying it" />
+          <T as="p" class="xd-sub"
+             it="L’audience si compone sul vostro magazzino e torna indietro come appartenenza, non come tabella."
+             en="The audience is composed on your warehouse and comes back as membership, not as a table." />
+        </div>
+
+        <div class="bp-due">
+          <div class="bp-due-c" data-lato="oggi" data-substep data-side="in">
+            <T as="p" class="bp-due-k" it="Il modo che temete" en="The way you fear" />
+            <ul class="bp-due-l">
+              <li><T as="span" it="Una copia della base clienti dentro una piattaforma nuova" en="A copy of the customer base inside a new platform" /></li>
+              <li><T as="span" it="Due verità sullo stesso cliente, e la riconciliazione come progetto a sé" en="Two truths about the same customer, and reconciliation as a project of its own" /></li>
+              <li><T as="span" it="Il perimetro dei dati personali si allarga, e nessuno l’aveva chiesto" en="The personal-data perimeter widening without anyone asking" /></li>
+            </ul>
+          </div>
+          <div class="bp-due-c" data-lato="poi" data-substep data-side="in">
+            <T as="p" class="bp-due-k" it="Il modo che proponiamo" en="The way we propose" />
+            <ul class="bp-due-l">
+              <li><T as="span" it="La query gira sul vostro magazzino, con le credenziali che date voi" en="The query runs on your warehouse, with credentials you issue" /></li>
+              <li><T as="span" it="Torna l’appartenenza all’audience e i pochi campi che servono all’invio" en="Back comes audience membership and the few fields the send needs" /></li>
+              <li><T as="span" it="Quali tabelle e quali colonne sono visibili resta una vostra decisione" en="Which tables and columns are visible stays your decision" /></li>
+            </ul>
+          </div>
+        </div>
+
+        <T as="p" class="xd-chiusa"
+           it="La CDP rinnovata fino al 2030 non è un ostacolo da aggirare: è il magazzino a cui ci si collega."
+           en="The CDP renewed to 2030 is not an obstacle to work around: it is the warehouse you connect to." />
+
+        <Fonte voci={fonti('facOverview', 'facConnessioni')} />
+      </div>
+    </Slide>
+
+    <Slide id="slide-domande" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Prima di prometterlo" en="Before promising it" />
+          <T as="h2" class="xd-h2" it="Due cose che dipendono da voi, e le diciamo adesso" en="Two things that depend on you, and we say them now" />
+          <T as="p" class="xd-sub"
+             it="Le abbiamo verificate sulla documentazione il 31 ottobre. Una risposta cambia la strada, l’altra cambia i tempi."
+             en="We checked the documentation on 31 October. One answer changes the route, the other changes the timing." />
+        </div>
+
+        <div class="bp-aperti">
+          <Aperto it="La «CDP Oracle» dello schema è un magazzino dati interrogabile, oppure una CDP di prodotto con un suo modello chiuso? La federazione si collega a un magazzino."
+                  en="Is the «Oracle CDP» in the diagram a queryable data warehouse, or a packaged CDP with its own closed model? Federation connects to a warehouse." />
+          <Aperto it="Oracle è negli elenchi dei database supportati e nelle domande frequenti. Nella tabella delle connessioni private, oggi, non c’è: per voi quella tabella conta?"
+                  en="Oracle is in the supported-database lists and in the FAQ. It is not in the private-connectivity table today: does that table matter for you?" />
+        </div>
+
+        <T as="p" class="xd-chiusa"
+           it="Mezza giornata con chi conosce quei sistemi chiude entrambe, e si fa prima della proposta."
+           en="Half a day with the people who know those systems closes both, and it happens before the proposal." />
+
+        <HowItWorks title="Che cosa dice la documentazione" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="federa" />
+              <T slot="ancora" as="p" it="Dove la documentazione concorda" en="Where the docs agree" />
+              <T slot="riga" as="p" it="Pagina delle connessioni e domande frequenti elencano Oracle fra i database federabili." en="The connections page and the FAQ both list Oracle among the federable databases." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="scambio" />
+              <T slot="ancora" as="p" it="Dove non concorda" en="Where they do not" />
+              <T slot="riga" as="p" it="La pagina dei prerequisiti ne elenca sette e Oracle non è fra quelli. Lo verifichiamo prima della proposta." en="The prerequisites page lists seven and Oracle is not among them. We verify before the proposal." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="fasi" />
+              <T slot="ancora" as="p" it="La via che non dipende da questo" en="The route that does not depend on this" />
+              <T slot="riga" as="p" it="Se la federazione non copre il vostro caso, gli attributi arrivano per flusso programmato, come oggi." en="If federation does not cover your case, attributes arrive on a scheduled feed, as today." />
+            </DettaglioVoce>
+            <T slot="nota" as="p"
+               it="La federazione richiede la licenza Real-Time CDP oppure Journey Optimizer nei pacchetti Prime o Ultimate, più il componente aggiuntivo dedicato."
+               en="Federation requires a Real-Time CDP or Journey Optimizer licence in the Prime or Ultimate packages, plus the dedicated add-on." />
+          </Dettaglio>
+        </HowItWorks>
+
+        <Fonte voci={fonti('facPrerequisiti', 'facFaq', 'facPrivata')}
+               nota="Tre pagine ufficiali consultate il 31 ottobre 2026: concordano sul principio, non sull’elenco."
+               notaEn="Three official pages consulted on 31 October 2026: they agree on the principle, not on the list." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

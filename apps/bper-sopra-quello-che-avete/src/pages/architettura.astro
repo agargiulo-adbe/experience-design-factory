@@ -1,0 +1,104 @@
+---
+/**
+ * 02 · Dove ci innestiamo. IL CAPITOLO CENTRALE.
+ *
+ * ⚠️ PERCHÉ IL DISEGNO E NON UN ELENCO. La domanda vera dell’IT non è «che
+ * cosa fate», è «quanto mi costa in rifacimenti». Un’architettura che nasce a
+ * fasi sotto le frecce — prima il dato che resta, poi la fascia che cambia,
+ * poi il CRM e i canali che restano — dice «non vi tocchiamo il resto» CON LA
+ * FORMA. Tre card di testo direbbero la stessa cosa e non le crederebbe
+ * nessuno allo stesso modo.
+ *
+ * Lo schema di partenza è il LORO, condiviso il 26 ottobre: per questo la
+ * slide può dire «questo è quello che avete» senza il condizionale.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Architettura from '../components/Architettura.astro';
+import Fonte from '../components/Fonte.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { DATO, REGIA, CANALI } from '../data/architettura';
+
+const SLUG = 'architettura';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-mappa" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="La vostra architettura" en="Your architecture" />
+          <T as="h2" class="xd-h2" it="Sei blocchi su nove non si toccano" en="Six blocks out of nine are untouched" />
+          <T as="p" class="xd-sub"
+             it="Lo schema è il vostro, del 26 ottobre. Qui il colore dice il verso: resta, esce, entra."
+             en="The diagram is yours, from 26 October. Here colour tells the direction: stays, goes, comes in." />
+        </div>
+
+        <Architettura dato={DATO} regia={REGIA} canali={CANALI} />
+
+        <T as="p" class="xd-chiusa"
+           it="Il perimetro del cambiamento è la fascia di mezzo. Sopra e sotto non si tocca niente."
+           en="The change is confined to the middle band. Above and below, nothing is touched." />
+
+        <Fonte nota="Schema «Architettura Ecosistema CRM» condiviso dal referente IT il 26 ottobre 2026. Documento interno, non pubblico."
+               notaEn="«Architettura Ecosistema CRM» diagram shared by the IT contact on 26 October 2026. Internal document, not public." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-innesto" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="L’innesto, in pratica" en="The graft, in practice" />
+          <T as="h2" class="xd-h2" it="Tre punti di contatto, e nessuno è una migrazione di dati" en="Three contact points, and none is a data migration" />
+          <T as="p" class="xd-sub"
+             it="Si collega dove i sistemi già parlano: l’evento in arrivo, il profilo da leggere, il canale che esegue."
+             en="It connects where the systems already talk: the event coming in, the profile being queried, the channel executing." />
+        </div>
+
+        <div class="xd-pb xd-pb--tre">
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="01 · L’evento entra" en="01 · The event comes in" />
+            <Figura k="regia" />
+            <T as="p" class="xd-pb-v" it="Un gesto sul canale digitale accende il percorso, senza attendere l’estrazione della lista." en="A gesture on a digital channel starts the journey, without waiting for the list extraction." />
+          </section>
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="02 · Il profilo si interroga" en="02 · The profile is queried" />
+            <Figura k="federa" />
+            <T as="p" class="xd-pb-v" it="Gli attributi restano nella CDP e nella piattaforma dati: si leggono, non si spostano." en="Attributes stay in the CDP and the data platform: they are read, not moved." />
+          </section>
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="03 · Il canale esegue" en="03 · The channel executes" />
+            <Figura k="arbitro" />
+            <T as="p" class="xd-pb-v" it="Dieci canali digitali più il contatto assistito, con una regola sola su chi riceve che cosa." en="Ten digital channels plus assisted contact, with one rule on who gets what." />
+          </section>
+        </div>
+
+        <T as="p" class="xd-chiusa"
+           it="Nessuna delle tre connessioni chiede di rifare il CRM, e nessuna chiede di duplicare la base clienti."
+           en="None of the three connections asks you to rebuild the CRM, and none asks you to duplicate the customer base." />
+
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

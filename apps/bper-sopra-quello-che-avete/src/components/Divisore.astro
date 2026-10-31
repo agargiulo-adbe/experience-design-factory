@@ -1,0 +1,40 @@
+---
+/**
+ * LA COPERTINA DI CAPITOLO COME DIVISORE (forma XD).
+ *
+ * Pagina chiara: il titolo grande e scuro a sinistra, una fotografia al
+ * centro, un pannello di colore pieno a destra con il punto del capitolo.
+ * Il ritmo che ne esce è metà del lavoro — le slide di contenuto sono dense e
+ * scure, i divisori chiari e vuoti, e chi guarda sa di aver cambiato capitolo
+ * prima di leggere una parola.
+ *
+ * ⚠️ IL FONDO NON STA QUI, e non è una scelta di stile. Astro NON propaga
+ * `slot="backdrop"` attraverso un componente: un `<div slot="backdrop">`
+ * scritto qui dentro finisce nel contenuto della slide, in posizione assoluta
+ * SOPRA il testo, e lo copre. Il difetto non si vede aprendo la pagina — si
+ * vede solo misurando i pixel. Il fondo lo mette la PAGINA, come figlio
+ * diretto di <Slide>: `<div slot="backdrop" class="xd-div-bg" …>`.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+
+interface Props {
+  num: string;
+  tIt: string; tEn: string;
+  /** Il punto del capitolo: la conseguenza, non il riassunto. */
+  lIt: string; lEn: string;
+  occIt?: string; occEn?: string;
+  /** Finché non ci sono asset fotografici il divisore vive su due campi. */
+  senzaFoto?: boolean;
+}
+const { num, tIt, tEn, lIt, lEn, occIt, occEn, senzaFoto = true } = Astro.props;
+---
+<div class="xd-div" data-senza-foto={senzaFoto ? "" : null} data-reveal>
+  <div class="xd-div-sx">
+    <p class="xd-div-num"><span data-lang-it>Capitolo {num}</span><span data-lang-en>Chapter {num}</span></p>
+    <T as="h2" class="xd-div-t" it={tIt} en={tEn} data-reveal data-reveal-delay="0.08" />
+  </div>
+  <div class="xd-div-dx" data-reveal data-reveal-delay="0.1">
+    <T as="p" class="xd-div-oc" it={occIt ?? 'Il punto'} en={occEn ?? 'The point'} />
+    <T as="p" class="xd-div-l" it={lIt} en={lEn} />
+  </div>
+</div>

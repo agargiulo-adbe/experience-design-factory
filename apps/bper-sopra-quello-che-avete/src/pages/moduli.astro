@@ -1,0 +1,110 @@
+---
+/**
+ * 03 · Che cosa prende il posto di che cosa.
+ *
+ * La domanda letterale del responsabile delle fabbriche digitali: «come sostituiamo Marketing Cloud e
+ * Personalization, con quali moduli Adobe nello specifico». Quindi una tavola
+ * e basta: a sinistra quello che esce, a destra quello che entra, e una riga
+ * che dice che cosa cambia davvero — non che cosa si chiama diversamente.
+ *
+ * La quarta riga non è una sostituzione: è quello che oggi non c’è. Dirlo
+ * come riga di una tavola di scambi è il modo di farlo notare senza
+ * annunciarlo, che davanti a chi ha scelto l’altra piattaforma funziona
+ * meglio di un elenco di superiorità.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Fonte from '../components/Fonte.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { SCAMBI } from '../data/architettura';
+import { fonti } from '../data/fonti';
+
+const SLUG = 'moduli';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-scambi" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Modulo per modulo" en="Module by module" />
+          <T as="h2" class="xd-h2" it="Due escono, tre entrano" en="Two go out, three come in" />
+          <T as="p" class="xd-sub"
+             it="Le prime due righe sono sostituzioni. Le altre due sono quello che oggi non avete."
+             en="The first two rows are replacements. The other two are what you do not have today." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {SCAMBI.map((s, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={s.poi.it} en={s.poi.en} />
+              <p class="xd-passi-d">
+                <span class="xd-arch-pro">{s.pro}</span>
+              </p>
+              <T as="p" class="xd-passi-d" it={`Oggi: ${s.oggi.it}`} en={`Today: ${s.oggi.en}`} />
+              <T as="p" class="xd-passi-d" it={s.d.it} en={s.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="Il modulo che cambia la giornata di chi fa campagne è il terzo, e oggi in casa non ha un equivalente."
+           en="The module that changes a campaign manager’s day is the third, and today it has no equivalent in-house." />
+
+        <Fonte voci={fonti('ajo', 'target', 'cja')} />
+      </div>
+    </Slide>
+
+    <Slide id="slide-arbitro" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Il modulo che non avete" en="The module you do not have" />
+          <T as="h2" class="xd-h2" it="Quattro proposte per la stessa persona, stasera" en="Four offers for the same person, tonight" />
+          <T as="p" class="xd-sub"
+             it="Oggi vince quella costruita per prima. Con un arbitro vince quella che la regola dice, e la regola la scrivete voi."
+             en="Today the one built first wins. With an arbiter the rule decides, and you write the rule." />
+        </div>
+
+        <div class="xd-pb">
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Oggi · decide l’ordine" en="Today · order decides" />
+            <Figura k="arbitro" />
+            <T as="p" class="xd-pb-v" it="Ogni campagna conosce il proprio target e ignora le altre tre che parlano alla stessa persona." en="Each campaign knows its own target and ignores the other three talking to the same person." />
+          </section>
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Con l’arbitro · decide la regola" en="With the arbiter · the rule decides" />
+            <Figura k="regia" />
+            <T as="p" class="xd-pb-v" it="Valore, eleggibilità e pressione commerciale pesati insieme, nel momento in cui la persona apre l’app." en="Value, eligibility and contact pressure weighed together, the moment the person opens the app." />
+          </section>
+        </div>
+
+        <T as="p" class="xd-chiusa"
+           it="L’eleggibilità resta una regola vostra. L’arbitro la legge, non la riscrive."
+           en="Eligibility stays your rule. The arbiter reads it, it does not rewrite it." />
+
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

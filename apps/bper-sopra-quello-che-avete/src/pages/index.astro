@@ -1,0 +1,80 @@
+---
+/**
+ * La copertina dell’incontro del 12 novembre.
+ *
+ * Due mestieri su una pagina: dire di che cosa si parla, e dire che cosa c’è
+ * dentro. Nel `.pptx` il secondo lo fanno N slide «Agenda» ripetute fra un
+ * capitolo e l’altro; qui l’indice sta in copertina, una volta sola, e si
+ * clicca. È la forma XD, e vive nel motore.
+ *
+ * Il lockup co-brand `hero` sta sulla PRIMA e sull’ULTIMA slide del percorso
+ * (qui e sulla slide-firma di `prossimi-passi`): regola del motore, e dove c’è
+ * un hero la firma fissa si spegne da sola.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+const last = CHAPTERS[CHAPTERS.length - 1];
+---
+<BaseLayout title={SITE.name}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
+
+    <Slide id="slide-cover" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+
+      <div class="xd-cop" data-reveal>
+        <div class="xd-cop-sx">
+          <CoBrand variant="hero" class="xd-cop-lockup ex-cobrand--on-dark" data-reveal />
+          <T as="p" class="xd-cop-occ" it="Incontro del 12 novembre 2026, Milano" en="Meeting of 12 November 2026, Milan" data-reveal data-reveal-delay="0.06" />
+          {/* ⚠️ Il titolo dice il PERIMETRO, e dice che rispettiamo l’esistente.
+              È la prima obiezione di un IT con una gara aperta: «quanto mi
+              costa in rifacimenti?». La risposta sta in copertina. */}
+          <T as="h1" class="xd-cop-t" it="Sopra quello che avete" en="On top of what you have" data-reveal data-reveal-delay="0.1" />
+          <T as="p" class="xd-cop-l"
+             it="Due blocchi della vostra architettura cambiano. Il CRM, la CDP e i canali restano dove sono, e chi li governa resta chi li governa oggi."
+             en="Two blocks of your architecture change. The CRM, the CDP and the channels stay put, and whoever governs them stays in charge."
+             data-reveal data-reveal-delay="0.16" />
+          <T as="p" class="xd-cop-tipo" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.22" />
+          {/* Il credito è un FATTO: qui nessun asset è generato, e scriverlo
+              sarebbe una dichiarazione falsa. Si dice invece da dove viene lo
+              schema, che è l’informazione che conta per chi legge. */}
+          <T as="p" class="xd-cop-cred" data-reveal data-reveal-delay="0.28"
+             it="Lo schema dell’architettura è il vostro, condiviso il 26 ottobre. Nessuna immagine generata: i disegni sono diagrammi, costruiti sui dati di questo documento."
+             en="The architecture diagram is yours, shared on 26 October. No generated imagery: the drawings are diagrams, built on this document’s own data." />
+        </div>
+
+        <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso">
+          <T as="p" class="xd-cop-occ" it="Le sette risposte, più i passi" en="The seven answers, plus next steps" />
+          <ol class="xd-cop-indice" data-stagger>
+            {CHAPTERS.map((c) => (
+              <li>
+                <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
+                  <span class="xd-cop-n">{c.num}</span>
+                  <span class="xd-cop-tit"><span data-lang-it>{(c.breve ?? c.title).it}</span><span data-lang-en>{(c.breve ?? c.title).en}</span></span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <T as="p" class="xd-cop-dom" it={type.question.it} en={type.question.en} />
+        </nav>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

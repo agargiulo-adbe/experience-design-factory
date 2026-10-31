@@ -374,6 +374,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Cinque capitoli sono le cinque domande che il cliente ha fatto davvero, ognuna risposta «oggi» e «con Coworker», e ogni voce marcata per livello di fonte. Un ottavo capitolo è il registro che cresce a ogni sessione.',
     },
   },
+  {
+    slug: 'bper-sopra-quello-che-avete',
+    name: 'Adobe × BPER',
+    client: 'BPER Banca',
+    type: 'blueprint',
+    brandLabel: 'BPER Banca',
+    url: `${LIVE}/bper-sopra-quello-che-avete/`,
+    shot: 'shots/bper-sopra-quello-che-avete.webp',
+    accent: '#005157',
+    sections: 6,
+    defaultPublished: false,
+    tag: {
+      en: '6 chapters · IT · scaffold',
+      it: '6 capitoli · IT · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Blueprint» skeleton: 6 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Blueprint»: 6 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

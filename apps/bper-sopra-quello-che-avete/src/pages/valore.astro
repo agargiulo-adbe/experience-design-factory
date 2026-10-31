@@ -1,0 +1,168 @@
+---
+/**
+ * 07 · Che cosa si paga, e di che cosa.
+ *
+ * Il responsabile delle fabbriche digitali ha chiesto «metriche di pricing» e «core vs nice to have». Sono due
+ * domande diverse e qui restano separate, perché confonderle è il modo di
+ * far sembrare caro il core.
+ *
+ * ⚠️ NESSUNA CIFRA IN QUESTO CAPITOLO, e non è prudenza: è che una cifra
+ * senza perimetro è un numero che poi si deve ritirare, davanti alle stesse
+ * persone. Quello che si può dire con precisione — e che serve a un IT che
+ * deve preparare un budget — sono i DRIVER: su che cosa si misura il costo,
+ * e quindi quale informazione serve per avere una cifra vera.
+ *
+ * Esiste già una macro-stima nostra per BPER su CJA, AJO e Target, di aprile
+ * 2026, fatta su un perimetro diverso. Va ripresa e riletta, non ricopiata:
+ * ha sette mesi e nel frattempo il perimetro è cambiato.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Aperto from '../components/Aperto.astro';
+import Fonte from '../components/Fonte.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { fonti } from '../data/fonti';
+
+const SLUG = 'valore';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/* I driver, non i prezzi. Ognuno dice anche QUALE DATO serve da loro per
+   trasformarlo in una cifra: è la parte che un IT porta a casa. */
+const DRIVER = [
+  {
+    k: { it: 'Quante persone', en: 'How many people' },
+    d: { it: 'I profili raggiungibili, non i clienti a bilancio.', en: 'Addressable profiles, not customers on the balance sheet.' },
+    s: { it: 'Serve: la base contattabile per canale.', en: 'Needed: the contactable base per channel.' },
+  },
+  {
+    k: { it: 'Quanti messaggi', en: 'How many messages' },
+    d: { it: 'I volumi annui per canale, con i picchi dichiarati.', en: 'Annual volumes per channel, with peaks declared.' },
+    s: { it: 'Serve: gli invii dell’ultimo anno, mese per mese.', en: 'Needed: last year’s sends, month by month.' },
+  },
+  {
+    k: { it: 'Quante decisioni', en: 'How many decisions' },
+    d: { it: 'Le richieste all’arbitro, che crescono col canale in sessione.', en: 'Calls to the arbiter, which grow with in-session channels.' },
+    s: { it: 'Serve: sessioni e accessi all’area riservata.', en: 'Needed: sessions and logged-in visits.' },
+  },
+  {
+    k: { it: 'Quanto dato', en: 'How much data' },
+    d: { it: 'Che cosa entra in piattaforma e che cosa resta federato.', en: 'What enters the platform and what stays federated.' },
+    s: { it: 'Serve: l’esito delle due domande sul dato.', en: 'Needed: the answer to the two data questions.' },
+  },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-driver" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="I driver" en="The drivers" />
+          <T as="h2" class="xd-h2" it="Si paga su quanto si usa, non su quante persone lo usano" en="You pay on how much is used, not on how many people use it" />
+          <T as="p" class="xd-sub"
+             it="Quattro grandezze, e accanto a ognuna il dato che serve da voi per trasformarla in una cifra."
+             en="Four quantities, each with the figure we need from you to turn it into a price." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {DRIVER.map((d, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={d.k.it} en={d.k.en} />
+              <T as="p" class="xd-passi-d" it={d.d.it} en={d.d.en} />
+              <T as="p" class="xd-passi-d" it={d.s.it} en={d.s.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="Nessuna delle quattro dipende dal numero di persone che entrano nello strumento: le licenze a posto qui non ci sono."
+           en="None of the four depends on how many people log into the tool: there are no per-seat licences here." />
+
+        <Aperto it="Una cifra senza perimetro è un numero da ritirare. Con quei quattro dati arriva in una settimana, e regge."
+                en="A figure without scope is a number to be withdrawn. With those four inputs it arrives in a week, and it holds." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-core" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Core e il resto" en="Core and the rest" />
+          <T as="h2" class="xd-h2" it="Quello che risponde alla gara, e quello che è un’altra conversazione" en="What answers the tender, and what is a different conversation" />
+          <T as="p" class="xd-sub"
+             it="Teniamo le due cose separate anche nei numeri, così la seconda non fa sembrare cara la prima."
+             en="We keep the two apart in the numbers as well, so the second does not make the first look expensive." />
+        </div>
+
+        <div class="bp-due">
+          <div class="bp-due-c" data-lato="poi" data-substep data-side="in">
+            <T as="p" class="bp-due-k" it="Core · risponde alla gara" en="Core · answers the tender" />
+            <ul class="bp-due-l">
+              <li><T as="span" it="La regia dei percorsi e l’arbitro fra le proposte" en="Journey orchestration and the arbiter between offers" /></li>
+              <li><T as="span" it="La personalizzazione dei canali digitali" en="Digital-channel personalisation" /></li>
+              <li><T as="span" it="La misura sul percorso intero" en="Measurement across the whole journey" /></li>
+            </ul>
+          </div>
+          <div class="bp-due-c" data-lato="oggi" data-substep data-side="in">
+            <T as="p" class="bp-due-k" it="In più · un’altra conversazione" en="Extra · a different conversation" />
+            <ul class="bp-due-l">
+              <li><T as="span" it="La fabbrica dei contenuti, se i percorsi chiedono più varianti di quante ne produciate" en="The content factory, if journeys need more variants than you produce" /></li>
+              <li><T as="span" it="La visibilità del marchio nelle risposte generate dagli assistenti" en="Brand visibility inside answers generated by assistants" /></li>
+            </ul>
+          </div>
+        </div>
+
+        <T as="p" class="xd-chiusa"
+           it="La colonna di destra si toglie quando non serve, e il resto del discorso regge uguale."
+           en="Drop the right-hand column when it is not needed: the rest of the argument holds the same." />
+
+        <HowItWorks title="Che cosa muove il conto" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="arbitro" />
+              <T slot="ancora" as="p" it="Il perimetro minimo" en="The minimum footprint" />
+              <T slot="riga" as="p" it="L’arbitro non si licenzia da solo: vive dentro la licenza della regia dei percorsi." en="The arbiter is not licensed standalone: it lives inside the journey-orchestration licence." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="federa" />
+              <T slot="ancora" as="p" it="Che cosa alza il conto" en="What raises the bill" />
+              <T slot="riga" as="p" it="Il dato portato dentro quando poteva restare fuori: per questo le due domande di prima contano." en="Data brought in when it could have stayed out: that is why the two earlier questions matter." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="fasi" />
+              <T slot="ancora" as="p" it="Che cosa lo abbassa" en="What lowers it" />
+              <T slot="riga" as="p" it="Partire da un canale e un percorso: si paga il perimetro acceso, non quello previsto." en="Starting from one channel and one journey: you pay for what is switched on, not for what is planned." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+
+        <Fonte voci={fonti('ajo', 'rtcdp')}
+               nota="Una nostra macro-stima su questi moduli per BPER esiste, è di aprile 2026 e sta su un perimetro diverso: va riletta prima di essere citata. Documento interno."
+               notaEn="A macro-estimate on these modules for BPER exists, dated April 2026 on a different scope: it must be re-read before being quoted. Internal document." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

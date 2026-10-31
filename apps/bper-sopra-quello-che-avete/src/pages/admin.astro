@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+// Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
+// accende e spegne. Ogni <Slide id> nuova va registrata qui.
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Copertina (00)', slides: [
+    { id: 'slide-cover', label: 'Copertina — Sopra quello che avete' },
+  ]},
+  { slug: 'adobe', label: 'Adobe, e perché non è un CRM (01)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Adobe, e perché non è un CRM' },
+    { id: 'slide-strato', label: 'Lo strato che sta sopra il CRM' },
+  ]},
+  { slug: 'architettura', label: 'Dove ci innestiamo (02)', slides: [
+    { id: 'slide-cover',   label: 'Cover — Dove ci innestiamo' },
+    { id: 'slide-mappa',   label: 'La vostra architettura, per verso' },
+    { id: 'slide-innesto', label: 'I tre punti di contatto' },
+  ]},
+  { slug: 'moduli', label: 'Che cosa prende il posto di che cosa (03)', slides: [
+    { id: 'slide-cover',   label: 'Cover — Che cosa prende il posto di che cosa' },
+    { id: 'slide-scambi',  label: 'Due escono, tre entrano' },
+    { id: 'slide-arbitro', label: 'Quattro proposte per la stessa persona' },
+  ]},
+  { slug: 'dato', label: 'Il dato resta dov’è (04)', slides: [
+    { id: 'slide-cover',   label: 'Cover — Il dato resta dov’è' },
+    { id: 'slide-federa',  label: 'Si interroga dove vive' },
+    { id: 'slide-domande', label: 'Due cose che dipendono da voi' },
+  ]},
+  { slug: 'referenze', label: 'Chi l’ha già fatto (05)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Chi l’ha già fatto' },
+    { id: 'slide-forme',  label: 'Tre forme di referenza' },
+    { id: 'slide-onesta', label: 'Nessun nome, e il motivo' },
+  ]},
+  { slug: 'rotta', label: 'Come ci si arriva (06)', slides: [
+    { id: 'slide-cover', label: 'Cover — Come ci si arriva' },
+    { id: 'slide-fasi',  label: 'Quattro fasi, e che cosa le chiude' },
+    { id: 'slide-chi',   label: 'Sull’integratore' },
+  ]},
+  { slug: 'valore', label: 'Che cosa si paga, e di che cosa (07)', slides: [
+    { id: 'slide-cover',  label: 'Cover — Che cosa si paga, e di che cosa' },
+    { id: 'slide-driver', label: 'I quattro driver' },
+    { id: 'slide-core',   label: 'Core e il resto' },
+  ]},
+  { slug: 'prossimi-passi', label: 'Prossimi passi (08)', slides: [
+    { id: 'slide-cover', label: 'Cover — Prossimi passi' },
+    { id: 'slide-ask',   label: 'Mezza giornata, con chi conosce i sistemi' },
+    { id: 'slide-firma', label: 'La firma — Adobe × BPER' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
+// Adobe che l’experience propone davvero (nomi verificati, vedi memoria
+// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'regia', name: 'Adobe Journey Optimizer', shortName: 'Journey Optimizer', pillar: 'engagement',
+    description: 'La regia dei percorsi, al posto di Marketing Cloud. Porta con sé Decisioning.',
+    appearsIn: ['Dove ci innestiamo', 'Che cosa prende il posto di che cosa', 'Come ci si arriva'] },
+  { id: 'personalizzazione', name: 'Adobe Target', shortName: 'Target', pillar: 'engagement',
+    description: 'La personalizzazione dei canali digitali, al posto di Personalization.',
+    appearsIn: ['Che cosa prende il posto di che cosa'] },
+  { id: 'misura', name: 'Customer Journey Analytics', shortName: 'CJA', pillar: 'dati',
+    description: 'La misura sul percorso intero, senza spostare il dato dalla piattaforma del cliente.',
+    appearsIn: ['Adobe, e perché non è un CRM', 'Che cosa prende il posto di che cosa', 'Come ci si arriva'] },
+  { id: 'federazione', name: 'Federated Audience Composition', shortName: 'Federazione', pillar: 'dati',
+    description: 'Le audience composte sul magazzino del cliente, senza copiarne il contenuto.',
+    appearsIn: ['Il dato resta dov’è'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
+const PILLAR_ORDER = ['piattaforma'];
+const PILLAR_COLORS: Record<string, string> = { piattaforma: '#005157' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+// I dossier interni di questa experience, se ne ha: la console è il posto dove
+// chi presenta trova il deck e il documento che prepara la stanza. Quando nasce
+// un `dossier.astro`, si aggiunge qui — restano gated, il link non li apre.
+const DOSSIERS: { href: string; label?: string }[] = [
+  // { href: href(base, '/dossier'), label: 'Dossier interno' },
+];
+---
+<BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
+  <AdminConsole
+    projectSlug={SITE.slug}
+    projectName={SITE.name}
+    clientLabel={`Adobe × ${SITE.client}`}
+    deckHref={deckHref}
+    dossiers={DOSSIERS}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

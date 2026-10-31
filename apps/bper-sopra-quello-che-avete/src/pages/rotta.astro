@@ -1,0 +1,149 @@
+---
+/**
+ * 06 · Come ci si arriva.
+ *
+ * Il responsabile delle fabbriche digitali ha chiesto «tempistiche e system integrator di riferimento». La
+ * tentazione è una Gantt con dei mesi sopra: non si fa, perché i mesi
+ * dipendono dal perimetro e il perimetro non c’è ancora. Una Gantt inventata
+ * davanti a un IT è la cosa che si smonta più in fretta.
+ *
+ * Quello che si può dire con precisione è l’ORDINE, e perché è quello:
+ * la misura prima dell’invio, un canale alla volta, Marketing Cloud acceso
+ * finché il primo percorso non gira. Sull’integratore vale la stessa regola
+ * del capitolo precedente: il nome lo decide anche il cliente, e nel loro
+ * caso c’è un fatto da non ignorare — l’integratore che ha in mano la gara è
+ * lo stesso che a suo tempo ha seguito l’impianto di Salesforce.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Aperto from '../components/Aperto.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'rotta';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/* L’ordine, non il calendario. Ogni fase dice che cosa la chiude, perché è
+   quello che permette di stimare i mesi quando il perimetro sarà noto. */
+const FASI = [
+  {
+    k: { it: 'Si collega la misura', en: 'Connect the measurement' },
+    d: { it: 'Prima di spostare un invio. Senza, il confronto con oggi non esiste.', en: 'Before moving a single send. Without it, there is nothing to compare with today.' },
+    f: { it: 'Chiude quando il percorso di un cliente si legge su filiale, app e sito.', en: 'Done when one customer’s journey reads across branch, app and site.' },
+  },
+  {
+    k: { it: 'Un canale, un percorso', en: 'One channel, one journey' },
+    d: { it: 'Il canale che pesa di più, su un percorso oggi mal servito.', en: 'The channel that weighs most, on a journey poorly served today.' },
+    f: { it: 'Chiude quando quel percorso gira in Adobe e Marketing Cloud lo fa in parallelo.', en: 'Done when that journey runs in Adobe while Marketing Cloud runs it in parallel.' },
+  },
+  {
+    k: { it: 'Si accende l’arbitro', en: 'Switch the arbiter on' },
+    d: { it: 'Quando le proposte in competizione sono più di una, e si vede.', en: 'When competing offers are more than one, and it shows.' },
+    f: { it: 'Chiude quando la regola di chi vince è scritta e qualcuno la possiede.', en: 'Done when the rule on who wins is written and someone owns it.' },
+  },
+  {
+    k: { it: 'Si spegne quello che non serve', en: 'Switch off what is no longer needed' },
+    d: { it: 'Per ultimo, e canale per canale. Mai come primo passo.', en: 'Last, and channel by channel. Never as the first step.' },
+    f: { it: 'Chiude quando l’ultimo invio è uscito dal canale nuovo per un ciclo intero.', en: 'Done when the last send has left from the new channel for a full cycle.' },
+  },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-fasi" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="L’ordine, non il calendario" en="The order, not the calendar" />
+          <T as="h2" class="xd-h2" it="Quattro fasi, e ognuna dice che cosa la chiude" en="Four phases, and each says what closes it" />
+          <T as="p" class="xd-sub"
+             it="I mesi dipendono dal perimetro, e il perimetro non c’è ancora. L’ordine invece è questo, e regge."
+             en="The months depend on scope, and scope does not exist yet. The order, instead, is this one." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {FASI.map((f, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={f.k.it} en={f.k.en} />
+              <T as="p" class="xd-passi-d" it={f.d.it} en={f.d.en} />
+              <T as="p" class="xd-passi-d" it={f.f.it} en={f.f.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="In nessuna di queste fasi c’è un giorno in cui tutto passa da una piattaforma all’altra."
+           en="In none of these phases is there a day when everything moves from one platform to the other." />
+
+        <HowItWorks title="Perche questo ordine" tone="onDark" class="ex-dett ex-dett--scuro">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="misura" />
+              <T slot="ancora" as="p" it="Perché la misura viene prima" en="Why measurement comes first" />
+              <T slot="riga" as="p" it="Una sostituzione senza un prima e un dopo misurati si difende male al secondo comitato." en="A replacement with no measured before and after defends badly at the second committee." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="scambio" />
+              <T slot="ancora" as="p" it="Perché in parallelo" en="Why in parallel" />
+              <T slot="riga" as="p" it="Due sistemi accesi per qualche settimana costano meno di un invio sbagliato a tutta la base." en="Two systems running for a few weeks cost less than one bad send to the whole base." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="fasi" />
+              <T slot="ancora" as="p" it="Dove si rompe di solito" en="Where it usually breaks" />
+              <T slot="riga" as="p" it="Non sulla tecnologia: sulla regola di chi decide che cosa, mai messa per iscritto da nessuno." en="Not on technology: on the rule about who decides what, which nobody had ever written down." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+      </div>
+    </Slide>
+
+    <Slide id="slide-chi" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Chi lo fa" en="Who does it" />
+          <T as="h2" class="xd-h2" it="Sull’integratore non arriviamo con un nome già scelto" en="On the integrator we do not arrive with a name already picked" />
+          <T as="p" class="xd-sub"
+             it="Di solito la scelta la fa la banca, e in casa vostra c’è già chi conosce l’impianto da sostituire."
+             en="The bank normally makes that call, and you already have people who know the system being replaced." />
+        </div>
+
+        <ul class="bp-l" data-stagger>
+          <li data-substep data-side="in"><T as="span" it="Chi conosce i vostri sistemi parte avanti, e in questa migrazione conta più della certificazione sul prodotto." en="Whoever knows your systems starts ahead, and in this migration that counts more than a product certification." /></li>
+          <li data-substep data-side="in"><T as="span" it="Le competenze sui moduli nuovi si verificano prima, non si danno per presenti perché il nome è grande." en="Skills on the new modules get verified up front, not assumed because the name is big." /></li>
+          <li data-substep data-side="in"><T as="span" it="Nella prima fase il nostro team lavora accanto al vostro: la misura si collega insieme, non si appalta." en="In the first phase our team works alongside yours: the measurement gets connected together, not outsourced." /></li>
+        </ul>
+
+        <Aperto tagIt="La domanda per voi" tagEn="The question for you"
+                it="Chi vi segue sulla gara ha già seguito l’impianto che si sostituisce. Lo vedete come un vantaggio o come un conflitto?"
+                en="Whoever is running the tender for you also ran the system being replaced. Do you see that as an advantage or a conflict?" />
+
+        <T as="p" class="xd-chiusa"
+           it="È una domanda che preferiamo fare noi adesso, invece di scoprirla a metà progetto."
+           en="It is a question we would rather ask now than discover halfway through the project." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

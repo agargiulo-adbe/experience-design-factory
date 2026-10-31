@@ -1,0 +1,32 @@
+---
+/**
+ * Fonte — la riga delle fonti di una slide.
+ *
+ * Ogni fonte pubblica porta il SUO link, prodotti Adobe compresi: chi riceve
+ * il documento non era in sala, e il controllo lo fa. Quello che è nostro e
+ * non pubblico si cita senza link, e si dice che cosa è: per quello c’è
+ * `nota`, che rende dopo i link senza travestirsi da fonte verificabile.
+ *
+ * Stile: sobrio. Una fonte non è una CTA — eredita l’inchiostro del testo che
+ * la ospita e si distingue per la sottolineatura, che si accende al passaggio.
+ * Così il contrasto resta quello del testo e `audit:ink` continua a passare.
+ */
+import type { Fonte } from '../data/fonti';
+
+interface Props { voci?: Fonte[]; nota?: string; notaEn?: string; class?: string }
+const { voci = [], nota, notaEn, class: className } = Astro.props;
+---
+<p class:list={['xd-fonte', className]}>
+  {voci.map((v, i) => (
+    <>
+      {i > 0 && <span aria-hidden="true"> · </span>}
+      <a href={v.url} target="_blank" rel="noopener noreferrer">{v.etichetta}</a>
+    </>
+  ))}
+  {nota && (
+    <>
+      {voci.length > 0 && <span aria-hidden="true"> · </span>}
+      <span data-lang-it>{nota}</span><span data-lang-en>{notaEn ?? nota}</span>
+    </>
+  )}
+</p>

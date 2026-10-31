@@ -1,0 +1,56 @@
+---
+/**
+ * L’ARCHITETTURA DI BPER, CON L’INNESTO ACCESO A FASI.
+ *
+ * ⚠️ PERCHÉ UN DISEGNO E NON UN ELENCO. La domanda del capitolo è «dove vi
+ * innestate?», e un’architettura che nasce a fasi sotto le frecce del deck
+ * dice «non vi tocchiamo il resto» CON LA FORMA, invece di scriverlo. Tre
+ * card di testo direbbero la stessa cosa e nessuno le crederebbe allo stesso
+ * modo: qui si vede che i blocchi grigi non si muovono.
+ *
+ * Il riquadro non esiste finché è vuoto (`:has()` in XD): i blocchi arrivano
+ * uno alla volta, e un contorno disegnato attorno al nulla si legge come un
+ * errore di caricamento.
+ *
+ * Il colore dice il VERSO, non il prodotto — resta / esce / entra — e la
+ * legenda lo scioglie una volta sola, in testa.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+import type { Blocco } from '../data/architettura';
+
+interface Props {
+  dato: Blocco[];
+  regia: Blocco[];
+  canali: Blocco[];
+  /** La legenda: si mostra una volta, dove l’architettura si spiega. */
+  legenda?: boolean;
+}
+const { dato, regia, canali, legenda = true } = Astro.props;
+
+const VERSI = [
+  { v: 'resta', it: 'resta vostro', en: 'stays yours' },
+  { v: 'esce', it: 'esce', en: 'goes out' },
+  { v: 'entra', it: 'entra', en: 'comes in' },
+] as const;
+---
+{legenda && (
+  <ul class="bp-leg" aria-label="Legenda">
+    {VERSI.map((x) => (
+      <li><i data-verso={x.v} aria-hidden="true"></i><span data-lang-it>{x.it}</span><span data-lang-en>{x.en}</span></li>
+    ))}
+  </ul>
+)}
+
+<div class="xd-arch">
+  {[dato, regia, canali].map((fascia) => (
+    <ul class="xd-arch-riga" style={`--cols:${fascia.length}`}>
+      {fascia.map((b) => (
+        <li class="xd-arch-b" data-verso={b.verso} data-resta={b.verso === 'resta' ? '' : null} data-substep data-side="in">
+          <T as="p" class="xd-arch-t" it={b.k.it} en={b.k.en} />
+          <T as="p" class="xd-arch-d" it={b.d.it} en={b.d.en} />
+          {b.pro && <span class="xd-arch-pro">{b.pro}</span>}
+        </li>
+      ))}
+    </ul>
+  ))}
+</div>

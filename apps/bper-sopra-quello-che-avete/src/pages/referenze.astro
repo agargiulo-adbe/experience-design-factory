@@ -1,0 +1,140 @@
+---
+/**
+ * 05 · Chi l’ha già fatto.
+ *
+ * ⚠️ IL CAPITOLO PIÙ DELICATO, E QUELLO DOVE LA VERIFICA HA DETTO DI NO.
+ * La richiesta era: «esperienze di sostituzione di Salesforce, es. Santander»
+ * e «referenze FSI Italia, es. Crédit Agricole, Unipol». La stessa lista
+ * portava quelle voci sotto «da verificare», ed è stato giusto: cercate il 31
+ * ottobre 2026 su fonti pubbliche, NON risulta una storia pubblica che
+ * attribuisca a Santander una sostituzione di Salesforce Marketing Cloud con
+ * Adobe. Quello che risulta pubblicamente è l’uso di altri prodotti Adobe.
+ *
+ * Quindi quei nomi qui NON ci sono. Le ragioni, in ordine di gravità:
+ *   1 · chi legge questo documento verifica, perché è il suo mestiere, e un
+ *       nome che non regge brucia la credibilità di tutte le altre slide;
+ *   2 · il diritto di usare nome e logo di un cliente è CONTRATTUALE, e non
+ *       lo decide chi compone la slide: o c’è la clausola nel Sales Order, o
+ *       si concorda caso per caso;
+ *   3 · una referenza vale quando la banca che la porta accetta di parlare, e
+ *       quella richiesta passa dal programma referenze.
+ *
+ * Il capitolo quindi fa due cose: dice che cosa possiamo dichiarare oggi, e
+ * chiede che tipo di referenza serve davvero — che è anche una domanda utile,
+ * perché «una banca italiana» e «una banca che ha spento Marketing Cloud»
+ * sono due richieste diverse e si lavorano in modo diverso.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Aperto from '../components/Aperto.astro';
+import Fonte from '../components/Fonte.astro';
+import Figura from '../components/Figura.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'referenze';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/* Le tre forme di referenza, che non si equivalgono e costano tempi diversi.
+   ⚠️ I NOMI NON SI SCRIVONO QUI. Entrano quando il programma referenze
+   conferma che quella banca accetta di parlare, e allora questa slide porta
+   il marchio ufficiale e una riga con le sue parole. */
+const FORME = [
+  {
+    k: { it: 'Una banca che lo ha fatto', en: 'A bank that has done it' },
+    d: { it: 'Stessa sostituzione, stesso perimetro. È la più forte e la più lenta da ottenere.', en: 'Same replacement, same scope. The strongest, and the slowest to obtain.' },
+    t: { it: 'settimane', en: 'weeks' },
+  },
+  {
+    k: { it: 'Una banca italiana del settore', en: 'An Italian bank in the sector' },
+    d: { it: 'Stesso mercato e stessi vincoli, perimetro diverso. Parla la stessa lingua dei vostri comitati.', en: 'Same market and constraints, different scope. It speaks your committees’ language.' },
+    t: { it: 'giorni', en: 'days' },
+  },
+  {
+    k: { it: 'Una chiamata fra pari', en: 'A peer call' },
+    d: { it: 'Nessuna slide: il vostro responsabile parla con il suo omologo, e chiede quello che vuole.', en: 'No slides: your lead talks to their counterpart and asks whatever they want.' },
+    t: { it: 'su richiesta', en: 'on request' },
+  },
+];
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
+    </Slide>
+
+    <Slide id="slide-forme" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Che cosa chiedete davvero" en="What you are actually asking for" />
+          <T as="h2" class="xd-h2" it="Tre forme di referenza, e non valgono la stessa cosa" en="Three kinds of reference, and they are not worth the same" />
+          <T as="p" class="xd-sub"
+             it="Dirci quale serve cambia chi coinvolgiamo e quanto ci mette ad arrivare."
+             en="Telling us which one you need changes who we involve and how long it takes." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:3" data-stagger>
+          {FORME.map((f, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={f.k.it} en={f.k.en} />
+              <T as="p" class="xd-passi-d" it={f.d.it} en={f.d.en} />
+              <T as="p" class="xd-passi-d" it={`Tempo: ${f.t.it}`} en={`Time: ${f.t.en}`} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="La chiamata fra pari è quella che in genere sposta un comitato, e costa meno di tutte."
+           en="The peer call is usually the one that moves a committee, and it costs the least." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-onesta" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Quello che possiamo dichiarare oggi" en="What we can state today" />
+          <T as="h2" class="xd-h2" it="Nessun nome in questa pagina, e c’è un motivo" en="No names on this page, and there is a reason" />
+          <T as="p" class="xd-sub"
+             it="Usare nome e logo di un altro cliente è un diritto contrattuale, non una scelta di chi prepara le slide."
+             en="Using another client’s name and logo is a contractual right, not a choice made by whoever builds the slides." />
+        </div>
+
+        <div class="xd-pb">
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Il metodo" en="The method" />
+            <Figura k="fasi" />
+            <T as="p" class="xd-pb-v" it="La richiesta parte dal programma referenze, e la banca risponde sì o no. Poi il nome compare qui, con le sue parole." en="The request goes through the reference programme, and the bank says yes or no. Then the name appears here, in its own words." />
+          </section>
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Perché non anticipiamo" en="Why we do not pre-empt it" />
+            <Figura k="scambio" />
+            <T as="p" class="xd-pb-v" it="Un nome citato e poi smentito pesa su tutto il resto del documento, comprese le parti verificate." en="A name quoted and then withdrawn weighs on the whole document, including the verified parts." />
+          </section>
+        </div>
+
+        <Aperto tagIt="La domanda per voi" tagEn="The question for you"
+                it="Serve una banca che ha spento Marketing Cloud, oppure basta una banca italiana già su questi moduli? I tempi sono diversi."
+                en="Do you need a bank that switched Marketing Cloud off, or is an Italian bank using these modules enough? The two requests take different time." />
+
+        <Fonte nota="Verifica su fonti pubbliche, 31 ottobre 2026: i casi di sostituzione circolati internamente non risultano pubblicati. Le referenze nominabili si confermano attraverso il programma referenze Adobe."
+               notaEn="Public-source check, 31 October 2026: the replacement cases circulating internally are not published. Nameable references are confirmed through the Adobe reference programme." />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

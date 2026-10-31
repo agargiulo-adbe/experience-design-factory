@@ -194,6 +194,17 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'casa',      route: '/experience-design-factory/unipol-cinque-domande/casa/' },
     { name: 'registro',  route: '/experience-design-factory/unipol-cinque-domande/registro/' },
   ],
+  'bper-sopra-quello-che-avete': [
+    { name: 'home',           route: '/experience-design-factory/bper-sopra-quello-che-avete/' },
+    { name: 'adobe',          route: '/experience-design-factory/bper-sopra-quello-che-avete/adobe/' },
+    { name: 'architettura',   route: '/experience-design-factory/bper-sopra-quello-che-avete/architettura/' },
+    { name: 'moduli',         route: '/experience-design-factory/bper-sopra-quello-che-avete/moduli/' },
+    { name: 'dato',           route: '/experience-design-factory/bper-sopra-quello-che-avete/dato/' },
+    { name: 'referenze',      route: '/experience-design-factory/bper-sopra-quello-che-avete/referenze/' },
+    { name: 'rotta',          route: '/experience-design-factory/bper-sopra-quello-che-avete/rotta/' },
+    { name: 'valore',         route: '/experience-design-factory/bper-sopra-quello-che-avete/valore/' },
+    { name: 'prossimi-passi', route: '/experience-design-factory/bper-sopra-quello-che-avete/prossimi-passi/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -215,4 +226,6 @@ export const CWD_ALIAS: Record<string, string> = {
   'intesa-innesto': 'intesa-innesto',
   'intesa-esperienza-cliente': 'intesa-esperienza-cliente',
   'unipol-cinque-domande': 'unipol-cinque-domande',
+  'bper-sopra-quello-che-avete': 'bper-sopra-quello-che-avete',
+  'bper': 'bper-sopra-quello-che-avete',
 };

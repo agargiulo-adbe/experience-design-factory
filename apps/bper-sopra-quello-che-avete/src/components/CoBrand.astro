@@ -1,0 +1,31 @@
+---
+/**
+ * CoBrand (BPER Banca) — wrapper sottile sul componente condiviso.
+ *
+ * Il motore (`@edf/core/blocks/CoBrand.astro`) porta la regola: ordine Adobe ×
+ * Brand non invertibile, firma fissa su ogni slide, lockup grande su prima e
+ * ultima slide. Qui si dichiara solo CHI è il brand.
+ *
+ * MARCHIO UFFICIALE. `src/assets/brand/bper.svg` è il logotipo che BPER
+ * distribuisce sul proprio dominio
+ * (www.bper.it/o/bper-2026-theme/images/BPER_Logo_Verde_SITOCOMM.svg,
+ * scaricato il 31 ottobre 2026). I tre `fill="#005157"` sono portati a
+ * `currentColor`, se no il lockup non si ribalta con la superficie. Nessun
+ * ridisegno: la Quality Bar vieta i marchi ricostruiti a mano.
+ *
+ * Si inietta inline (`?raw` + `set:html`) e non come `<img>`: un’immagine non
+ * eredita `currentColor`.
+ */
+import Core from '@edf/core/blocks/CoBrand.astro';
+import logo from '../assets/brand/bper.svg?raw';
+
+interface Props {
+  variant?: 'chrome' | 'hero';
+  class?: string;
+  [key: string]: unknown;
+}
+const props = Astro.props as Props;
+---
+<Core brand="BPER Banca" {...props}>
+  <span slot="brand" class="bp-brand-mark" set:html={logo} />
+</Core>

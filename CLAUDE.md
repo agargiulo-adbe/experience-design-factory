@@ -35,6 +35,19 @@ Experiences today (tipo tra parentesi, vedi Tassonomia):
 
 - **Cinque domande** — Unipol [Playbook] (IT default + EN, `apps/unipol-cinque-domande`, 28 ott 2026): per chi possiede Adobe Target e CJA dentro il programma high-touch su CX Enterprise Coworker. **Cinque capitoli = le cinque domande fatte dal cliente** nella call del 28 ottobre, ognuna risposta «oggi» e «con Coworker», e ogni voce marcata per livello di fonte: **documentato** (link a Experience League), **non ancora per tutti**, **dal campo** (altri clienti, anonimizzati). Copre Coworker su CJA, su Target e nell'uso congiunto. Un ottavo capitolo, **il registro**, è lo strato dinamico: una riga per voce con data e stato, che cresce a ogni sessione del programma — i capitoli restano fermi e si riscrivono a due traguardi. Design system letto da unipol.it (navy di sistema `#001c35`, Ink Blue di marchio `#0303f5`, avorio `#f9f9f7`, **Manrope** = Typeface A reale; Apex New non è distribuibile).
 
+- **Sopra quello che avete** — BPER Banca [Blueprint] (IT, `apps/bper-sopra-quello-che-avete`,
+  12 nov 2026): per il responsabile delle fabbriche digitali e il suo team, un'ora in sede a
+  Milano, dentro una gara aperta per sostituire Salesforce. Sette capitoli = **le sette slide
+  che il referente CRM ha già concordato**, non lo scheletro del tipo: Adobe non è un CRM ·
+  dove ci innestiamo · che cosa prende il posto di che cosa · il dato resta dov'è · chi l'ha
+  già fatto · come ci si arriva · che cosa si paga. Il capitolo centrale è **la loro
+  architettura**, colorata per verso (resta / esce / entra). Design system **letto** da
+  bper.it (petrolio `#005157`, che qui è insieme colore di sistema **e** marchio; verde vivo
+  `#00b97f`, arancio `#ea862c` solo per ciò che cambia), marchio **SVG ufficiale**, Archivo
+  Narrow + Nunito Sans come sostitute di Giorgio Sans e Proxima Nova Soft. ⚠️ Tre punti del
+  brief sono in slide come **domande dichiarate** e non come promesse, perché la verifica alla
+  fonte li ha smentiti o lasciati aperti (vedi «Lo strato XD»). Spenta sullo showcase.
+
 Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
 
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no
@@ -113,9 +126,38 @@ Traduzione, scambio d'immagine, ricolorazione ed eliminazione funzionano; **alla
 (una ricolorazione automatica appiattisce le illustrazioni isometriche). La provenienza
 — file + numero di slide — si cita nel builder e nel handover.
 
+
+### Lo strato XD — la grammatica visiva, nel motore e non in un'app (31 ott 2026)
+`pnpm new:experience` genera le classi `.ex-*`: copertina, cover di capitolo, ancore, card,
+nav, chrome. Quello che manca è la forma che un deck prende quando il contenuto si fa
+serio — la copertina a due colonne con l'agenda cliccabile, il divisore di capitolo, la
+slide di contenuto con occhiello/titolo/lead/chiusa, l'architettura a strati, le cifre, i
+passi, le referenze. Quella forma era nata dentro `intesa-esperienza-cliente` come `.im-*`,
+e lì sarebbe rimasta: la seconda experience che la vuole la ricopia, e da quel momento le
+due divergono. Ora vive in **`packages/core/src/styles/xd.css`** con un nome, **XD**, e si
+prende con una riga: `@import "…/packages/core/src/styles/xd.css";`.
+- **XD porta geometria, gerarchia e le regole di leggibilità già pagate** (il corpo che non
+  scende sotto il minimo, i blocchi a bandiera che condividono il bordo per il check `m`,
+  gli inchiostri pieni su un fondo dichiarato per `audit:ink`). **Non porta colori di
+  marchio**: quelli arrivano dai token dell'app. Un valore di marchio scritto lì dentro
+  sarebbe la skin di un cliente imposta a tutti gli altri.
+- Il contratto è la famiglia **`--xd-*`** che l'app dichiara: inchiostri e superfici per i
+  pannelli che XD si porta scuri, più `--xd-div-pannello` e `--xd-piano`.
+- **Non è un tema, è una grammatica.** Due experience su XD non condividono i colori:
+  condividono il ritmo — dove sta il titolo, quanto respira un capitolo, come si legge una
+  cifra. La differenza fra due libri della stessa collana e due libri con la stessa copertina.
+- ⚠️ **Intesa non è stata migrata** e continua su `.im-*`: va in sala il 5 novembre, e un
+  refactor del suo CSS a cinque giorni dall'incontro è un rischio senza ritorno. Si migra
+  dopo, e allora `.im-*` diventa quello che resta di suo.
+- Prima app su XD: `bper-sopra-quello-che-avete`. Tre difetti che XD ha già insegnato a
+  evitare — un componente con fondo chiaro fisso dentro una slide scura (1,08:1, invisibile
+  a ogni check di layout); una catena di spazi unificatori che rende una frase inseparabile
+  e la fa sbordare (check `c`, HARD); un divisore senza fotografia che lascia un buco invece
+  di un respiro, e per cui esiste la variante `[data-senza-foto]` a due campi.
+
 ## Commands
 - `pnpm dev` — run the default dev server · `pnpm build` — build **all** apps · `pnpm lint` · `pnpm typecheck`
-- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `trenitalia-prospettiva-sales`, `agos-trait-dunion`, `poste-sei-domande`, `unipol-cinque-domande`, `console`, `factory-showcase`, `factory-hub`)
+- `pnpm --filter <app> dev|build|preview` — per app (`generazioni-maxmara`, `unicredit-engagement`, `ferrari-racing`, `trenitalia-connessioni`, `trenitalia-prospettiva-sales`, `agos-trait-dunion`, `poste-sei-domande`, `unipol-cinque-domande`, `bper-sopra-quello-che-avete`, `console`, `factory-showcase`, `factory-hub`)
 - `pnpm --filter unicredit-engagement audit:deck` — deterministic deck layout audit (3 viewports). `--only <rotta[,rotta]>` limita il giro a una pagina (secondi invece di minuti) mentre la si sistema. **`--tv`** aggiunge 2560×1440 e 3840×2160: si lancia quando si tocca la composizione e prima di una proiezione su parete.
 - `pnpm new:experience --slug <kebab> --name "…" --client "…" --type <prospettiva|storia|blueprint|playbook> [--accent #hex] [--lang it|bilingual] [--dry-run]` — genera una skin **che compila e passa l'audit** dal template `templates/experience/` (capitoli dallo scheletro del tipo) e la registra in deploy, hub, showcase, root scripts, `deck-audit.ts`, migrazione seed. Stampa la checklist di ciò che resta umano. **Secondo comando di ogni nuova experience**, dopo `brand:tokens`.
 - `pnpm brand:tokens <url>` — legge il design system pubblico di un cliente dal suo CSS di produzione (colori per frequenza, custom property, caratteri). **Primo comando di ogni nuova experience.**

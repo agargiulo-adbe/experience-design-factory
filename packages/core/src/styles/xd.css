@@ -1,0 +1,529 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   XD — la grammatica visiva di un'experience della Factory
+   ═══════════════════════════════════════════════════════════════════════════
+
+   CHE COS'È. Le classi `.ex-*` che `pnpm new:experience` genera sono la base:
+   copertina, cover di capitolo, ancore, card, nav, chrome. Quello che manca è
+   la forma che un deck prende quando il contenuto si fa serio — la copertina a
+   due colonne con l'agenda cliccabile, il divisore di capitolo con la
+   fotografia e il pannello di colore, la slide di contenuto con occhiello /
+   titolo / lead / chiusa, l'architettura a strati, le cifre, le referenze.
+   Finora quella forma è nata dentro una app (`intesa-esperienza-cliente`, come
+   `.im-*`), e lì è rimasta: la seconda experience che la vuole la ricopia, e
+   da quel momento le due divergono. Questo file la promuove a **strato del
+   motore**, con un nome: **XD**.
+
+   COME SI USA. Una riga nel `global.css` dell'app, DOPO i token e PRIMA della
+   pelle specifica:
+       @import "@edf/core/styles/xd.css";
+   Poi l'app dichiara il contratto `--xd-*` qui sotto, e scrive solo ciò che la
+   distingue davvero.
+
+   IL CONFINE, E PERCHÉ È QUI. XD porta **geometria, gerarchia e le regole di
+   leggibilità già pagate a caro prezzo** (il corpo che non scende sotto il
+   minimo, il tipo che cresce col muro, i blocchi a bandiera che condividono il
+   bordo per il check `m`, gli inchiostri pieni e mai trasparenti su un fondo
+   dichiarato per `audit:ink`). XD **non** porta colori di marchio: quelli
+   arrivano dai token semantici dell'app, e un valore di marchio scritto qui
+   dentro sarebbe la skin di un cliente imposta a tutti gli altri.
+
+   ⚠️ NON È UN TEMA, È UNA GRAMMATICA. Due experience che usano XD non si
+   somigliano perché condividono i colori — non li condividono — ma perché
+   condividono il ritmo: dove sta il titolo, quanto respira un capitolo, come
+   si legge una cifra. È la stessa differenza che passa fra due libri della
+   stessa collana e due libri con la stessa copertina.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────────────────────────────────────────────────────────
+   IL CONTRATTO — quello che l'app deve dichiarare
+
+   `--ink-X sta su --surface-X` vale già nel motore, e quale delle due sia
+   scura cambia da experience a experience. Quando un blocco di XD si porta
+   un fondo scuro PROPRIO (un pannello, una fascia, il divisore), gli
+   inchiostri non possono ereditare: su un fondo dichiarato vanno **espliciti
+   e pieni**, perché `audit:ink` campiona i pixel e un bianco trasparente
+   scende sotto AA. Questi sono quegli inchiostri.
+
+   I default qui sotto sono neutri e funzionano; servono perché un'app che
+   dimentica di dichiararli ottenga comunque un contrasto valido invece di una
+   variabile vuota, che renderebbe il testo nero su nero.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Inchiostri su una superficie scura dichiarata da XD */
+  --xd-dark-ink: #ffffff;              /* titoli e nomi */
+  --xd-dark-body: #e8ecea;             /* corpo */
+  --xd-dark-note: #b9c6c2;             /* note, fonti, etichette deboli */
+  --xd-dark-accent: var(--color-accent-soft, #8fb8bb); /* l'unico che canta */
+  --xd-dark-surface: rgba(255, 255, 255, 0.06);        /* fondo di un blocco */
+  --xd-dark-surface-2: rgba(255, 255, 255, 0.11);      /* lo stesso, al passaggio */
+  --xd-dark-line: rgba(255, 255, 255, 0.16);
+
+  /* La superficie scura di XD. Un'experience a dominante chiara la prende dal
+     suo `--surface-inverse`; una a dominante scura la dichiara a mano, perché
+     lì `--surface-inverse` è la superficie CHIARA. */
+  --xd-dark-bg: var(--surface-inverse, #111318);
+  --xd-dark-bg-2: var(--color-night-2, #1a1d24);
+
+  /* Il rosso di Adobe, dove un blocco rappresenta Adobe dentro un diagramma.
+     È il rosso delle slide (letto dal master del template), non quello del
+     logo corporate: #FA0F00 è il logo, #EB1000 sono le slide. */
+  --xd-adobe: #eb1000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1 · LA COPERTINA — di che cosa si parla, e che cosa c'è dentro
+   Due mestieri su una pagina sola. Nel `.pptx` il secondo lo facevano N slide
+   «Agenda» ripetute fra un capitolo e l'altro; qui l'indice sta in copertina,
+   una volta, ed è cliccabile.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-cop {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center; gap: 0 3.5rem; width: 100%; max-width: 86rem;
+}
+.xd-cop-sx { display: grid; gap: 0.75rem; min-width: 0; justify-items: start; }
+.xd-cop-lockup { margin-bottom: 0.3rem; }
+.xd-cop-occ {
+  margin: 0; max-width: none;
+  font-size: clamp(0.76rem, 0.62vw, 1.4rem); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--xd-dark-note);
+}
+.xd-cop-t {
+  margin: 0; max-width: 16ch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.3rem, 3.5vw, 5.4rem); line-height: 1.04;
+  letter-spacing: -0.025em; color: var(--xd-dark-ink); text-wrap: balance;
+}
+.xd-cop-l {
+  margin: 0; max-width: 46ch;
+  font-size: clamp(1rem, 0.92vw, 2.05rem); line-height: 1.5; color: var(--xd-dark-body);
+}
+.xd-cop-tipo {
+  margin: 0.2rem 0 0; max-width: none;
+  font-size: clamp(0.78rem, 0.64vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--xd-dark-accent);
+}
+/* ⚠️ Il credito sta nella colonna del titolo, in coda. In fondo alla pagina in
+   posizione assoluta finiva sotto i comandi del deck. */
+.xd-cop-cred {
+  margin: 0.4rem 0 0; max-width: 58ch;
+  font-size: clamp(0.7rem, 0.56vw, 1.26rem); line-height: 1.35; color: var(--xd-dark-note);
+}
+
+/* ── L'indice: è l'agenda, e si clicca ─────────────────────────────────── */
+.xd-cop-dx {
+  display: grid; gap: 0.5rem; min-width: 0; align-content: center;
+  padding-left: 2.2rem; border-left: 1px solid var(--xd-dark-line);
+}
+.xd-cop-indice { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.24rem; }
+/* ⚠️ SUPERFICIE ESPLICITA, e non è una scelta estetica: il check `h` misura
+   ogni link come CTA, e su uno sfondo trasparente confronta due superfici
+   quasi identiche e dà 1,07:1 — un HARD. Stessa regola del chrome del deck.
+   E il `color` va sul link, non solo sugli <span> dentro: il check guarda il
+   colore dell'<a>. */
+.xd-cop-cap {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); align-items: baseline;
+  gap: 0.6rem; padding: 0.44rem 0.8rem; border-radius: 10px;
+  text-decoration: none; color: var(--xd-dark-ink);
+  background: var(--xd-dark-surface); border: 1px solid var(--xd-dark-line);
+}
+.xd-cop-cap:hover, .xd-cop-cap:focus-visible {
+  background: var(--xd-dark-surface-2); border-color: var(--xd-dark-accent); outline: none;
+}
+.xd-cop-n {
+  font-size: clamp(0.8rem, 0.66vw, 1.48rem); font-weight: 700;
+  letter-spacing: 0.06em; color: var(--xd-dark-accent);
+}
+.xd-cop-tit {
+  font-size: clamp(0.98rem, 0.88vw, 1.95rem); font-weight: 700;
+  line-height: 1.24; color: var(--xd-dark-ink);
+}
+.xd-cop-dom {
+  margin: 0.3rem 0 0; max-width: none;
+  font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.38;
+  font-style: italic; color: var(--xd-dark-note);
+}
+/* Una voce d'agenda non ancora innestata: presente e leggibile, senza la
+   promessa di un link che non porta da nessuna parte. */
+.xd-cop-cap[data-futura] { background: rgba(255,255,255,0.04); border-style: dashed; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2 · IL DIVISORE DI CAPITOLO — titolo grande, fotografia, pannello di colore
+   Il ritmo che ne esce è metà del lavoro: le slide di contenuto sono dense, i
+   divisori vuoti, e chi guarda sa di aver cambiato capitolo prima di leggere.
+
+   ⚠️ Il confine verticale fra fotografia e pannello sta al 68% nel fondo e la
+   colonna di testo parte al 74% nel contenuto: i quattro punti di franco sono
+   TOLLERANZA, non estetica. La safe-area resa non è esattamente quella del
+   token (misurata: 118px contro 80), e con il confine al pelo il testo
+   comincia dieci pixel prima del pannello, sopra la fotografia.
+   In verticale lo stesso trucco non funziona — due confini orizzontali
+   calcolati da due aritmetiche diverse non coincidono mai — e per questo sotto
+   la fotografia c'è una dissolvenza, non un taglio.
+
+   ⚠️ IL FONDO LO METTE LA PAGINA, non il componente: Astro non propaga
+   `slot="backdrop"` attraverso un componente, e un `<div slot="backdrop">`
+   scritto dentro finisce nel contenuto, in posizione assoluta SOPRA il testo.
+   Il difetto non si vede aprendo la pagina: si vede solo misurando i pixel.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-div-bg { position: absolute; inset: 0; background: var(--surface-primary); }
+.xd-div-bg::before {
+  content: ''; position: absolute; inset: 0 32% 0 40%;
+  background-image: var(--foto); background-size: cover;
+  background-position: var(--fuoco, center 38%);
+  filter: brightness(1.08) saturate(1.04);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22% 100%);
+          mask-image: linear-gradient(to right, transparent, #000 22% 100%);
+}
+.xd-div-bg::after {
+  content: ''; position: absolute; inset: 0 0 0 68%;
+  background: var(--xd-div-pannello, linear-gradient(165deg, var(--xd-dark-bg-2), var(--xd-dark-bg)));
+  box-shadow: -18px 0 44px rgba(0, 0, 0, 0.26);
+}
+/* ── Il divisore SENZA fotografia ──────────────────────────────────────
+   Il divisore nasce su tre campi: titolo, fotografia, pannello di colore. Un
+   deck che non ha ancora asset lascia il campo di mezzo bianco, e la pagina
+   esce con un buco invece che con un respiro — si vede subito, e nessun check
+   lo misura perché le scatole sono a posto.
+   Senza foto i campi diventano DUE: il colore sale al 52% e il titolo prende
+   la metà che gli resta. È una composizione a sé, non un ripiego. */
+.xd-div-bg[data-senza-foto]::before { display: none; }
+.xd-div-bg[data-senza-foto]::after { inset: 0 0 0 52%; }
+.xd-div-bg[data-senza-foto] {
+  background:
+    radial-gradient(80% 60% at 8% 14%, color-mix(in srgb, var(--accent-primary) 7%, transparent), transparent 62%),
+    var(--surface-primary);
+}
+[data-senza-foto] ~ .slide-inner .xd-div,
+.xd-div[data-senza-foto] { grid-template-columns: 52fr 48fr; }
+
+.xd-div {
+  display: grid; grid-template-columns: 74fr 26fr;
+  align-items: center; width: 100%; height: 100%; gap: 0 1.6rem;
+}
+.xd-div-sx { min-width: 0; display: grid; gap: 0.7rem; align-content: center; }
+.xd-div-num {
+  margin: 0; max-width: none; font-size: clamp(0.84rem, 0.72vw, 1.55rem);
+  font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-accent);
+}
+/* Il titolo del divisore è il tipo più grande del percorso: è il momento in
+   cui la pagina non deve dire altro.
+   ⚠️ Inchiostro ESPLICITO e scuro: questa è l'unica famiglia di slide chiare
+   di molti percorsi, e un titolo che eredita `#ffffff` da una dominante scura
+   sparisce senza che nessun check di layout se ne accorga. */
+.xd-div-t {
+  margin: 0; max-width: 13ch;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(2.4rem, 4vw, 5.4rem); line-height: 1.02;
+  letter-spacing: -0.025em; color: var(--color-ink); text-wrap: balance;
+}
+.xd-div-dx { min-width: 0; display: grid; gap: 0.55rem; align-content: center; }
+.xd-div-oc {
+  margin: 0; max-width: none; font-size: clamp(0.78rem, 0.64vw, 1.44rem);
+  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--xd-dark-note);
+}
+.xd-div-l {
+  margin: 0; max-width: none;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.1rem, 1.12vw, 2.24rem); line-height: 1.26; color: var(--xd-dark-ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3 · LA SLIDE DI CONTENUTO — occhiello, titolo, lead, corpo, chiusa, fonte
+   Una colonna sola (max 78rem) per tutto, così i blocchi a bandiera
+   condividono il bordo sinistro: è il check `m`, ed è HARD.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-sl { display: flex; flex-direction: column; gap: clamp(0.9rem, 1.8vh, 1.6rem); width: 100%; max-width: 78rem; }
+.xd-sl-head { display: flex; flex-direction: column; gap: 0.4rem; }
+.xd-n {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.92rem, 0.82vw, 1.7rem); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-accent);
+}
+.xd-h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.7rem, 2.6vw, 3rem); line-height: 1.12;
+  letter-spacing: -0.02em; color: var(--ink-primary); max-width: 24ch; text-wrap: balance;
+}
+.xd-sub { margin: 0; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.5; color: var(--ink-secondary); max-width: 62ch; }
+/* La chiusa è IL PUNTO della slide: una frase, e si vede che è una frase. */
+.xd-chiusa {
+  margin: 0; padding-left: 0.9rem; border-left: 3px solid var(--accent-primary);
+  font-size: clamp(1rem, 1vw, 1.78rem); line-height: 1.5; font-weight: 600;
+  color: var(--ink-primary); max-width: 64ch;
+}
+/* Dove il disegno È il contenuto, la testa si stringe. */
+.xd-sl--fig .xd-h2 { font-size: clamp(1.5rem, 2.1vw, 2.5rem); max-width: 30ch; }
+.xd-sl--fig .xd-sub, .xd-sl--fig .xd-chiusa { font-size: clamp(0.95rem, 0.92vw, 1.65rem); max-width: 74ch; }
+.xd-sl--fig { gap: clamp(0.7rem, 1.2vh, 1.1rem); }
+.xd-sl--fig .xd-sl-head { gap: 0.3rem; }
+
+/* ── La riga delle fonti ────────────────────────────────────────────────
+   ⚠️ UNA FONTE NON È UNA CTA. Senza questa regola il link eredita l'accento
+   globale e su un fondo scuro dà 2,66:1 — il check `h`, HARD, su tutti e tre
+   i viewport. L'inchiostro è quello del testo che lo ospita (quindi il
+   contrasto è già misurato) e la distinzione la fa la sottolineatura, che si
+   accende d'accento al passaggio. */
+.xd-fonte {
+  margin: 0.45rem 0 0; max-width: none !important;
+  font-size: clamp(0.74rem, 0.6vw, 1.35rem); line-height: 1.4; color: var(--ink-tertiary);
+}
+.xd-fonte a {
+  color: inherit; text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+  text-underline-offset: 0.18em;
+}
+.xd-fonte a:hover, .xd-fonte a:focus-visible { text-decoration-color: currentColor; }
+/* Sulle superfici scure di XD la riga di fonte prende i suoi inchiostri. */
+.xd-on-dark .xd-fonte, .xd-sl--dark .xd-fonte { color: var(--xd-dark-note); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4 · DUE BLOCCHI AFFIANCATI — ancora · figura · verdetto
+   Tre righe condivise dalla griglia, se no le due figure hanno altezze
+   diverse e i verdetti partono sfalsati.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-pb {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 2.4rem); align-items: start;
+  grid-template-rows: auto auto 1fr;
+}
+.xd-pb--tre { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xd-pb-i {
+  display: grid; grid-template-rows: auto auto 1fr; gap: 0.5rem;
+  min-width: 0; margin-inline: 0; justify-items: start;
+}
+.xd-pb-k {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.82rem, 0.7vw, 1.5rem);
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent);
+}
+.xd-pb-v {
+  margin: 0; max-width: none;
+  font-size: clamp(0.88rem, 0.74vw, 1.66rem); line-height: 1.42;
+  font-weight: 700; color: var(--ink-primary);
+}
+.xd-on-dark .xd-pb-k, .xd-sl--dark .xd-pb-k { color: var(--xd-dark-accent); }
+.xd-on-dark .xd-pb-v, .xd-sl--dark .xd-pb-v { color: var(--xd-dark-ink); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5 · L'ARCHITETTURA A STRATI — il diagramma che dice «ci appoggiamo sopra»
+   Blocchi in alto, fasce che li attraversano, tutto dentro un riquadro perché
+   è UN sistema e non N prodotti in fila.
+
+   ⚠️ Il riquadro non esiste finché è vuoto: i blocchi arrivano uno alla volta
+   sotto le frecce del deck, e un contorno disegnato attorno al nulla si legge
+   come un errore di caricamento. `:has()` lo accende al primo blocco rivelato.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-arch { display: grid; gap: 0.6rem; margin-top: 0.55rem; padding: 0.75rem; border-radius: 18px; }
+.xd-arch:has([data-substep-active]) {
+  background: var(--xd-dark-surface); border: 1px solid var(--xd-dark-line);
+}
+.xd-arch-riga {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 0.6rem;
+}
+.xd-arch-b {
+  display: grid; gap: 0.3rem; align-content: start; min-width: 0; margin-inline: 0;
+  padding: 0.95rem 1.05rem 1rem; border-radius: 12px;
+  background: var(--xd-arch-blocco, rgba(0, 0, 0, 0.35));
+  border: 1px solid var(--xd-dark-line);
+  border-top: 4px solid var(--gruppo, var(--xd-dark-accent));
+}
+.xd-arch-t {
+  font-size: clamp(1rem, 0.9vw, 2rem); font-weight: 700;
+  line-height: 1.18; color: var(--xd-dark-ink); text-wrap: balance;
+}
+.xd-arch-d { font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.38; color: var(--xd-dark-body); }
+/* Il nome del prodotto: presente, ma non è il titolo. Il quadratino rosso dice
+   «questo pezzo è Adobe» senza ricostruire l'icona del prodotto, che la
+   Quality Bar vieta. */
+.xd-arch-pro {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: clamp(0.74rem, 0.6vw, 1.35rem); font-weight: 700;
+  letter-spacing: 0.04em; color: var(--xd-arch-pro-ink, #ffb3aa);
+}
+.xd-arch-pro::before {
+  content: ''; width: 0.46rem; height: 0.46rem; flex: none;
+  border-radius: 2px; background: var(--xd-adobe);
+}
+/* Un blocco che RESTA del cliente: nessun rosso, nessuna promessa. */
+.xd-arch-b[data-resta] { border-top-style: dashed; }
+.xd-arch-b[data-resta] .xd-arch-pro { color: var(--xd-dark-note); }
+.xd-arch-b[data-resta] .xd-arch-pro::before { background: var(--xd-dark-note); }
+/* Una fascia attraversa tutta la larghezza: titolo a sinistra, riga a destra. */
+.xd-arch-f { grid-template-columns: minmax(0, 23rem) minmax(0, 1fr); align-items: center; gap: 0.3rem 1.8rem; }
+.xd-arch-f-t { display: grid; gap: 0.18rem; min-width: 0; }
+.xd-arch-f[data-alta] { padding: 1.2rem 1.05rem 1.3rem; }
+.xd-arch-f[data-alta] .xd-arch-t { font-size: clamp(1.14rem, 1.04vw, 2.3rem); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6 · LE CIFRE — dove i numeri SONO il contenuto
+   ⚠️ Qui il tipo CRESCE invece di lasciare il vuoto: a corpo normale la pagina
+   restava coperta per il 23% (misurato). È la direzione che il contratto di
+   leggibilità consente — il contrario di rimpicciolire per far passare un check.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-num {
+  list-style: none; margin: 0.7rem 0 0; padding: 0.9rem 0 0;
+  display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 1.2rem;
+  border-top: 1px solid var(--line-subtle);
+}
+.xd-on-dark .xd-num, .xd-sl--dark .xd-num { border-top-color: var(--xd-dark-line); }
+.xd-num-i { display: grid; gap: 0.2rem; min-width: 0; margin-inline: 0; }
+.xd-num-k {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.6rem, 1.9vw, 3.8rem); line-height: 1.04;
+  letter-spacing: -0.02em; color: var(--ink-primary); overflow-wrap: anywhere;
+}
+.xd-num-v { margin-top: 0.25rem; font-size: clamp(0.9rem, 0.76vw, 1.7rem); line-height: 1.32; color: var(--ink-secondary); }
+.xd-on-dark .xd-num-k, .xd-sl--dark .xd-num-k { color: var(--xd-dark-ink); }
+.xd-on-dark .xd-num-v, .xd-sl--dark .xd-num-v { color: var(--xd-dark-body); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7 · I PASSI — una sequenza che si legge in un secondo
+   N passi in N colonne non ci stanno sempre: la griglia si avvolge invece di
+   far sbordare le etichette (check `c`, HARD).
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-passi {
+  list-style: none; margin: 1rem 0 0; padding: 0; position: relative;
+  display: grid; gap: 0.9rem 1.4rem;
+  /* ⚠️ `--cols` si dichiara quando le voci portano più di un'ancora e una
+     riga. Quattro colonne con due righe di descrizione ciascuna, a 1280,
+     danno celle da ~15rem: il testo si rompe ogni tre parole e `audit:wrap`
+     trova decine di preposizioni appese. Non è un problema di parole, è un
+     problema di larghezza — e si risolve con meno colonne, non con meno tipo. */
+  grid-template-columns: repeat(var(--cols, auto-fit), minmax(min(100%, 13rem), 1fr));
+}
+.xd-passi-i { position: relative; display: grid; gap: 0.4rem; justify-items: center; text-align: center; min-width: 0; margin-inline: 0; }
+.xd-passi-n {
+  width: 1.8rem; height: 1.8rem; border-radius: 999px; display: inline-flex;
+  align-items: center; justify-content: center; font-family: var(--font-display);
+  font-weight: 700; font-size: clamp(0.76rem, 0.64vw, 1.38rem);
+  color: var(--color-on-accent, #fff); background: var(--accent-primary);
+}
+.xd-passi-l {
+  margin: 0; max-width: none; font-size: clamp(0.8rem, 0.68vw, 1.46rem);
+  font-weight: 700; line-height: 1.26; color: var(--ink-primary); text-wrap: balance;
+}
+.xd-passi-d { margin: 0; max-width: none; font-size: clamp(0.78rem, 0.64vw, 1.4rem); line-height: 1.35; color: var(--ink-secondary); }
+.xd-on-dark .xd-passi-l, .xd-sl--dark .xd-passi-l { color: var(--xd-dark-ink); }
+.xd-on-dark .xd-passi-d, .xd-sl--dark .xd-passi-d { color: var(--xd-dark-body); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8 · LE REFERENZE — un nome, un fatto, una fonte
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-ref { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); gap: 1.1rem; width: 100%; max-width: 72rem; }
+.xd-ref-b {
+  min-width: 0; margin-inline: 0; padding: 1.15rem 1.25rem; border-radius: 6px;
+  border-left: 3px solid var(--accent-primary); background: var(--surface-secondary);
+  /* Un riquadro con una superficie CHIARA propria dentro una slide scura non
+     eredita gli inchiostri del fondo: li rimette, o esce grigio su bianco. */
+  --ink-primary: var(--color-ink); --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600); --ink-accent: var(--color-accent-deep);
+}
+.xd-ref-n { margin: 0 0 0.3rem; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.05rem, 0.95vw, 1.9rem); color: var(--ink-primary); }
+.xd-ref-f { margin: 0; max-width: none; font-size: clamp(0.94rem, 0.86vw, 1.62rem); line-height: 1.45; color: var(--ink-secondary); }
+/* Il marchio di un terzo citato come referenza: l'SVG ufficiale se c'è, se no
+   il nome in carattere display. Mai un logo ricostruito a mano. */
+.xd-marchio { height: 1.9rem; max-width: 11rem; width: auto; object-fit: contain; object-position: left center; }
+.xd-marchio--testo {
+  display: inline-block; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.05rem, 0.95vw, 1.9rem); letter-spacing: 0.04em; color: var(--ink-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   9 · LE MICRO-FIGURE — un disegno al posto di un paragrafo
+   Quattro colonne con tre blocchi di testo ciascuna fanno dodici paragrafi su
+   una pagina, cioè un muro. La figura porta il meccanismo; il testo resta
+   un'ancora e una riga.
+   ⚠️ Niente parole dentro l'SVG: un testo in un disegno non cresce con la
+   radice e su una parete di sala sparisce.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-fig { width: 100%; height: clamp(3.4rem, 4.4vw, 7rem); margin-bottom: 0.45rem; display: block; }
+.xd-fig-l { fill: none; stroke: var(--xd-fig-linea, color-mix(in srgb, currentColor 45%, transparent)); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.xd-fig-b { fill: var(--xd-fig-box, color-mix(in srgb, currentColor 20%, transparent)); }
+.xd-fig-b-c { fill: none; stroke: var(--xd-fig-linea, color-mix(in srgb, currentColor 45%, transparent)); stroke-width: 1.6; }
+/* L'accento marca IL PUNTO della figura. Uno solo per disegno. */
+.xd-fig-f { fill: var(--xd-fig-accento, var(--ink-accent)); }
+.xd-fig-f-s { fill: none; stroke: var(--xd-fig-accento, var(--ink-accent)); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.xd-fig-f-r { fill: none; stroke: var(--xd-fig-accento, var(--ink-accent)); stroke-width: 2.2; }
+.xd-fig-fill { fill: var(--xd-fig-accento, var(--ink-accent)); }
+.xd-fig-spunta { fill: none; stroke: var(--xd-fig-spunta, var(--surface-primary)); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.xd-sl--dark .xd-fig, .xd-on-dark .xd-fig { --xd-fig-accento: var(--xd-dark-accent); color: var(--xd-dark-ink); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   10 · LA SLIDE-FIRMA — il lockup, una riga, l'ask
+   L'ultima slide del percorso è una slide a sé: la chiusura tipica è già densa
+   e il lockup grande la fa sbordare, quindi per contratto si divide.
+   Fallisce il check SOFT `i` per costruzione — il lockup è un SVG e il parser
+   non lo conta come massa di testo — ed è la classica slide volutamente
+   ariosa: non si aggiusta rimpicciolendo il tipo.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-firma { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.1rem; max-width: 56rem; margin-inline: auto; }
+.xd-firma-l {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.5rem, 2.2vw, 2.7rem); line-height: 1.22;
+  color: var(--xd-dark-ink); max-width: 24ch; text-wrap: balance;
+}
+.xd-firma-n { margin: 0; max-width: 54ch; font-size: clamp(0.95rem, 0.86vw, 1.7rem); line-height: 1.5; color: var(--xd-dark-body); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   11 · I FONDI
+   Un velo si calibra sul caso PEGGIORE, non in media: una cresta di luce che
+   passa dietro al titolo una volta per giro basta a bocciare la slide, e la
+   media non la vede. Dove il testo sta a sinistra il velo è denso lì e si
+   alleggerisce dove non c'è niente da leggere.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.xd-bg-scena {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(100deg, var(--xd-velo-1, rgba(0,0,0,0.97)) 0%, var(--xd-velo-2, rgba(0,0,0,0.93)) 40%, var(--xd-velo-3, rgba(0,0,0,0.62)) 100%),
+    var(--bg);
+  background-size: cover; background-position: var(--fuoco, center);
+}
+.xd-bg-piano {
+  position: absolute; inset: 0;
+  background: var(--xd-piano, linear-gradient(160deg, var(--xd-dark-bg-2) 0%, var(--xd-dark-bg) 72%));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   12 · COMPATTAZIONE sotto i 900 px di altezza (1280×800, 1440×900)
+   Si stringono spazi e contenitori, MAI il tipo: il corpo resta ≥ 0,95rem.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-height: 900px) {
+  .xd-sl { gap: 0.7rem; }
+  .xd-sl-head { gap: 0.25rem; }
+  .xd-h2 { font-size: clamp(1.45rem, 2.1vw, 2.2rem); }
+  .xd-sub { font-size: clamp(0.96rem, 0.9vw, 1.1rem); line-height: 1.42; }
+  .xd-chiusa { font-size: clamp(0.96rem, 0.9vw, 1.1rem); }
+  .xd-arch { gap: 0.45rem; padding: 0.55rem; margin-top: 0.35rem; }
+  .xd-arch-riga { gap: 0.45rem; }
+  .xd-arch-b { padding: 0.7rem 0.8rem 0.75rem; }
+  .xd-arch-f[data-alta] { padding: 0.8rem 0.8rem 0.85rem; }
+  .xd-num { margin-top: 0.45rem; padding-top: 0.6rem; gap: 0.9rem; }
+  .xd-passi { margin-top: 0.7rem; gap: 0.5rem 0.4rem; }
+  .xd-ref { gap: 0.8rem; }
+  .xd-ref-b { padding: 0.85rem 0.95rem; }
+  .xd-cop-indice { gap: 0.18rem; }
+  .xd-cop-cap { padding: 0.34rem 0.7rem; }
+  .xd-div-t { font-size: clamp(2rem, 3.4vw, 4rem); }
+}
+
+/* Sotto i 900 px di LARGHEZZA le griglie si impilano: meglio una colonna
+   leggibile che sei colonne strette con le etichette a capo ogni due lettere. */
+@media (max-width: 900px) {
+  .xd-cop { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
+  .xd-cop-dx { padding-left: 0; border-left: 0; border-top: 1px solid var(--xd-dark-line); padding-top: 1.2rem; }
+  .xd-pb, .xd-pb--tre, .xd-ref { grid-template-columns: minmax(0, 1fr); }
+  .xd-arch-riga { grid-template-columns: minmax(0, 1fr); }
+  .xd-arch-f { grid-template-columns: minmax(0, 1fr); }
+  .xd-num { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .xd-div { grid-template-columns: minmax(0, 1fr); }
+  .xd-div-bg::before, .xd-div-bg::after { display: none; }
+}
+
+/* Il reset del motore centra ogni <p> dentro una slide centrata e lo cappa:
+   dentro i blocchi a bandiera la larghezza la governa il contenitore. */
+.slide-inner .xd-sl p, .slide-inner .xd-cop p { margin-inline: 0; }
+[data-slide] .xd-arch p, [data-slide] .xd-num p, [data-slide] .xd-ref p,
+[data-slide] .xd-passi p, [data-slide] .xd-pb p { max-width: none; }

@@ -1,0 +1,561 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* LO STRATO XD — la grammatica visiva condivisa (copertina, divisore di
+   capitolo, slide di contenuto, architettura, cifre, passi, referenze,
+   figure, firma). Vive nel motore: `packages/core/src/styles/xd.css`.
+   Percorso relativo e non alias: `@import` nel CSS lo risolve il bundler
+   dei fogli di stile, prima che gli alias di Vite entrino in gioco. */
+@import "../../../../packages/core/src/styles/xd.css";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Adobe × BPER — l'incontro del 12 novembre 2026
+   Generata da `pnpm new:experience` il 2026-10-31 (tipo: blueprint).
+
+   IL DESIGN SYSTEM È QUELLO VERO, E QUESTA È LA SUA FONTE.
+   Letto da `pnpm brand:tokens https://www.bper.it` il 31 ott 2026: 5 fogli
+   di produzione, 2074 KB di CSS analizzati.
+
+     #005157   300 occorrenze   il verde petrolio: colore di SISTEMA
+     #006369   105 occorrenze   la sua variante chiara
+     #00875d    83 occorrenze   il verde pieno
+     #65b6f0    68 occorrenze   l'azzurro informativo
+     #00b97f    50 occorrenze   il verde brillante
+     #e1eded    46 occorrenze   il velo
+     #ea862c    36 occorrenze   l'arancio
+     #212529    83 occorrenze   l'inchiostro
+
+   ⚠️ QUI SISTEMA E MARCHIO COINCIDONO, e non si è dedotto: si è verificato.
+   Di norma il colore più frequente è quello di sistema e il marchio è raro
+   (su UniCredit: petrolio 271 contro rosso 13). Su BPER no — `#005157` è
+   insieme `--lwc-colorTextDefault` del loro design system E il `fill` del
+   logotipo ufficiale che la banca distribuisce
+   (www.bper.it/o/bper-2026-theme/images/BPER_Logo_Verde_SITOCOMM.svg,
+   scaricato il 31 ott 2026). Il file sta in `src/assets/brand/bper.svg` con
+   i fill portati a `currentColor`; nessun ridisegno.
+
+   Le superfici scure non sono inventate: sono le custom property che il sito
+   dichiara da sé, e quando un sito le espone vincono su tutto.
+     --lwc-esColorBackgroundAlt2Darken60  #002023  → --color-night
+     --lwc-esColorBackgroundAlt2Darken40  #003134  → --color-night-2
+     --lwc-esColorBackgroundAlt2Darken20  #004146  → --color-accent-deep
+
+   ⚠️ CONTRASTI, calcolati prima di scegliere e non dopo:
+     #005157 su bianco          8,8:1   ✓  inchiostro e superficie di marchio
+     bianco su #005157          8,8:1   ✓  la CTA piena
+     #004146 su bianco         11,2:1   ✓  l'inchiostro d'accento su chiaro
+     #00b97f su #002023         6,6:1   ✓  l'accento su fondo scuro
+     #ea862c su #002023         6,5:1   ✓  l'arancio, SOLO su fondo scuro
+     #65b6f0 su #002023         7,7:1   ✓  l'azzurro informativo
+     bianco su #002023         17,1:1   ✓
+   Quello che NON si può fare, misurato: `#00b97f` come inchiostro su bianco
+   dà 2,6:1 e `#ea862c` 2,6:1 — su fondo chiaro quei due vivono solo come
+   superficie, mai come testo. E `#66979a`, che il sito dichiara, su scuro
+   passa (5,2:1) ma accanto al verde brillante è spento: l'accento su fondo
+   scuro è `#00b97f`.
+
+   L'ARANCIO HA UN MESTIERE SOLO: marcare **ciò che cambia**. Sull'architettura
+   è il bordo dei due blocchi che escono, e da nessun'altra parte. Un accento
+   usato ovunque non è un accento.
+
+   CARATTERI. Nessuno dei due è il carattere vero: BPER dichiara **GiorgioSans**
+   (Commercial Type) per la titolazione e **ProximaNovaSoft** per il testo, e
+   nessuno dei due è distribuibile. Le sostitute sono scelte, non prese a caso:
+     · **Archivo Narrow** per il display — Giorgio Sans è un grotesque
+       condensato, e Archivo Narrow è il condensato distribuibile con la stessa
+       struttura neo-grottesca. Sta sui titoli, che sono brevi e grandi: lì la
+       condensazione aiuta a tenere una riga sola invece di spezzarla.
+     · **Nunito Sans** per il corpo — Proxima Nova Soft è un geometrico
+       umanista con terminali morbidi, e Nunito Sans è la più vicina fra le
+       distribuibili. Sul corpo NON si usa un condensato: il contratto di
+       leggibilità viene prima della somiglianza.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-accent: #005157;
+  --color-accent-deep: #004146;
+  --color-accent-soft: #00b97f;
+  --color-on-accent: #ffffff;
+  --color-cta: #005157;
+  --color-on-cta: #ffffff;
+  --color-petrolio: #005157;
+  --color-petrolio-chiaro: #006369;
+  --color-verde: #00875d;
+  --color-verde-vivo: #00b97f;
+  --color-azzurro: #65b6f0;
+  --color-arancio: #ea862c;
+  --color-velo: #e1eded;
+  --color-ink: #212529;
+  --color-ink-2: #495057;
+  --color-night: #002023;
+  --color-night-2: #003134;
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f6f6;
+  --color-grey-100: #f8f9fa;
+  --color-grey-200: #e9ecef;
+  --color-grey-300: #dee2e6;
+  --color-grey-400: #b7bfc0;
+  --color-grey-500: #7f8b8c;
+  --color-grey-600: #5a6668;
+
+  --font-display: 'Archivo Narrow', 'Helvetica Neue', 'Arial Narrow', sans-serif;
+  --font-body: 'Nunito Sans', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+:root {
+  --color-accent: #005157;
+  --color-accent-rgb: 0, 81, 87;
+  --color-accent-deep: #004146;
+  --color-accent-soft: #00b97f;
+  --color-on-accent: #ffffff;
+  --color-cta: #005157;
+  --color-on-cta: #ffffff;
+  --color-petrolio: #005157;
+  --color-petrolio-chiaro: #006369;
+  --color-verde: #00875d;
+  --color-verde-vivo: #00b97f;
+  --color-azzurro: #65b6f0;
+  --color-arancio: #ea862c;
+  --color-velo: #e1eded;
+  --color-ink: #212529;
+  --color-ink-2: #495057;
+  --color-night: #002023;
+  --color-night-2: #003134;
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f6f6;
+  --color-grey-100: #f8f9fa;
+  --color-grey-200: #e9ecef;
+  --color-grey-300: #dee2e6;
+  --color-grey-400: #b7bfc0;
+  --color-grey-500: #7f8b8c;
+  --color-grey-600: #5a6668;
+
+  --font-display: 'Archivo Narrow', 'Helvetica Neue', 'Arial Narrow', sans-serif;
+  --font-body: 'Nunito Sans', 'Helvetica Neue', 'Arial', sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface. Dominante CHIARA, come bper.it. */
+  --surface-primary: var(--color-paper);
+  --surface-secondary: var(--color-paper-2);
+  --surface-tertiary: var(--color-velo);
+  --surface-inverse: var(--color-night);
+  --surface-brand: var(--color-accent);
+
+  /* Semantici — Ink (`--ink-X` sta su `--surface-X`) */
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600);
+  --ink-inverse: #ffffff;
+  --ink-brand: var(--color-accent-deep);
+  --ink-link: var(--color-accent-deep);
+
+  /* Inchiostri che si ribaltano con la superficie (default = fondo CHIARO).
+     Per il TESTO usare sempre questi, mai `--color-verde-vivo` o `--accent-*`. */
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+
+  --accent-primary: var(--color-accent);
+  --accent-secondary: var(--color-verde-vivo);
+  --accent-hover: var(--color-accent-deep);
+
+  --line-subtle: var(--color-grey-300);
+  --line-default: #c9d4d4;
+  --line-strong: var(--color-grey-600);
+
+  --focus-ring: var(--color-accent);
+
+  /* Deck safe-area contract (px) — DeckContainer li ribalta per breakpoint */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* ── Il contratto XD, con i valori di BPER ──────────────────────────── */
+  --xd-dark-bg: var(--color-night);
+  --xd-dark-bg-2: var(--color-night-2);
+  --xd-dark-ink: #ffffff;
+  --xd-dark-body: #dbe6e6;
+  --xd-dark-note: #a9bcbd;
+  --xd-dark-accent: var(--color-verde-vivo);
+  --xd-dark-surface: rgba(255, 255, 255, 0.07);
+  --xd-dark-surface-2: rgba(255, 255, 255, 0.13);
+  --xd-dark-line: rgba(255, 255, 255, 0.17);
+  --xd-arch-blocco: rgba(0, 20, 22, 0.55);
+  --xd-div-pannello: linear-gradient(165deg, #005157 0%, #002023 100%);
+  --xd-piano: linear-gradient(160deg, #003134 0%, #002023 68%, #001416 100%);
+}
+
+/* Le varianti scure DOPO le chiare: stessa specificità, vince l'ultima. Lo
+   Slide rende la superficie come classe Tailwind, non come data-attribute.
+   Una slide che DICHIARA chiaro ma rende scura per il backdrop si marca
+   a mano con `.ex-on-dark`. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+[data-slide].bg-\[var\(--surface-brand\)\],
+.ex-on-dark, .xd-on-dark {
+  --ink-primary: #ffffff;
+  --ink-secondary: #dbe6e6;
+  --ink-tertiary: #a9bcbd;
+  --ink-accent: var(--color-verde-vivo);
+  --ink-note: #a9bcbd;
+  --ink-body: #dbe6e6;
+  /* ⚠️ Le SUPERFICI dei pannelli si ribaltano con gli inchiostri, se no un
+     blocco con fondo chiaro fisso dentro una slide scura prende l'inchiostro
+     bianco e sparisce: 1,08:1, e nessun check di layout se ne accorge. */
+  --bp-pan: rgba(255, 255, 255, 0.07);
+  --bp-pan-line: rgba(255, 255, 255, 0.17);
+  --bp-ancora: rgba(255, 255, 255, 0.07);
+}
+/* Componenti che si portano una superficie CHIARA propria dentro una slide
+   scura: rimettono gli inchiostri chiari, se no ereditano il bianco. */
+.ex-on-light, .ex-card, .xd-ref-b {
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600);
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-accent); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+.slide-eyebrow {
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.76rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV: minimi del tipo */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 60ch; }
+
+[data-admin-only] { display: none !important; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ── Una frase è un blocco, e va a capo intera ─────────────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: su un
+   testo di due frasi rompe dentro la prima e lascia una parola più il punto
+   a capo da sola, che in proiezione è il primo difetto che si nota. Legare
+   la frase con spazi unificatori la rende inseparabile e sborda (check `c`,
+   HARD); un blocco in linea no — il browser preferisce rompere FRA le frasi.
+   `vertical-align: top` non è un dettaglio: allineati alla linea di base,
+   due blocchi in linea su righe consecutive hanno scatole che si sovrappongono
+   di qualche pixel, e il check `e` lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+.ex-frase > span { display: block; }
+
+/* ── Backdrop di base ──────────────────────────────────────────────────── */
+.ex-bg-night {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(0, 185, 127, 0.14), transparent 54%),
+    linear-gradient(160deg, #003134 0%, #002023 62%, #001416 100%);
+}
+.ex-bg-paper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(100% 70% at 90% 100%, rgba(0, 81, 87, 0.07), transparent 55%),
+    var(--surface-primary);
+}
+
+/* ── Deck chrome (WCAG AA, rgba esplicito) ─────────────────────────────── */
+[data-deck] .deck-btn { color: #212529; background: rgba(255,255,255,0.93); border-color: var(--color-grey-300); }
+[data-deck] .deck-btn:hover { color: var(--color-accent); border-color: var(--color-accent); }
+[data-deck] .deck-progress { color: var(--color-ink-2); }
+[data-deck][data-on-dark] .deck-btn { color: #fff; background: rgba(0,32,35,0.92); border-color: #2d5255; }
+[data-deck][data-on-dark] .deck-progress { color: #dbe6e6; }
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────
+   Fondo bianco esplicito → inchiostri espliciti. */
+.ex-nav {
+  background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+}
+.ex-nav-link { color: var(--color-ink-2); }
+.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-paper-2); }
+.ex-nav-link--active { color: var(--ink-accent); background: var(--color-velo); border: 1px solid rgba(0, 81, 87, 0.3); }
+.ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ex-mark svg { width: 100%; height: 100%; display: block; }
+
+/* ── Il marchio BPER dentro il lockup co-brand ────────────────────────── */
+.bp-brand-mark { display: inline-flex; }
+.bp-brand-mark svg { width: auto; height: 100%; display: block; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANCORE — la forma di base di una slide di contenuto
+   Un'ancora è un NOME (≤ 6 parole), non una frase. Sta in pagina perché
+   guida l'attenzione mentre chi presenta parla; la prosa, che competerebbe
+   con la voce, vive dietro `<HowItWorks>`. CLAUDE.md → «Ancore, non prosa».
+   ═══════════════════════════════════════════════════════════════════════ */
+.ex-ancore { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; width: 100%; max-width: 68rem; }
+.ex-ancora {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 1.8rem 1.5rem; min-height: 7rem;
+  display: flex; align-items: center;
+  border-left: 3px solid var(--accent-primary);
+  background: var(--bp-ancora, var(--surface-secondary));
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 700; line-height: 1.3; color: var(--ink-primary);
+}
+@media (max-width: 900px) { .ex-ancore { grid-template-columns: minmax(0, 1fr); } }
+
+/* Il dettaglio dietro «Scopri come».
+   ⚠️ `.hiw-body` del motore NON dichiara un colore: su una slide chiara
+   resterebbe bianco su bianco, e a blocco chiuso nessun gate lo vede. */
+.ex-dett { margin-top: 1.2rem; max-width: 76rem; }
+.ex-dett .dett-ancora > p { color: var(--ink-primary); }
+.ex-dett .dett-riga > p { color: var(--ink-secondary); }
+.ex-dett .dett-nota > p { color: var(--ink-note); }
+.ex-dett .fg { color: var(--ink-tertiary); }
+.ex-dett .dett-fig-box { border-color: var(--line-subtle); }
+.ex-dett--scuro .dett-ancora > p { color: #ffffff; }
+.ex-dett--scuro .dett-riga > p { color: #dbe6e6; }
+.ex-dett--scuro .dett-nota > p { color: #a9bcbd; }
+.ex-dett .hiw-body > p {
+  font-size: 0.98rem; line-height: 1.6; color: var(--ink-secondary);
+  margin: 0 0 0.7rem; max-width: none;
+}
+.ex-dett--scuro .hiw-body > p { color: #dbe6e6; }
+.ex-dett .hiw-body > p:last-child { margin-bottom: 0; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LA PELLE DI BPER — solo ciò che XD non può sapere
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── L'architettura: il colore dice il VERSO, non il prodotto ──────────
+   Tre stati, e si distinguono senza leggenda:
+     resta    bordo grigio tratteggiato, nessun accento — è roba loro
+     esce     l'arancio, l'unico posto dove vive in tutta l'experience
+     entra    il verde brillante, col quadratino rosso di Adobe accanto al
+              nome del prodotto (regola XD: le icone non si ricostruiscono) */
+.xd-arch-b[data-verso='resta'] { --gruppo: var(--color-grey-500); }
+.xd-arch-b[data-verso='esce'] {
+  --gruppo: var(--color-arancio);
+  background: rgba(234, 134, 44, 0.13);
+}
+.xd-arch-b[data-verso='entra'] { --gruppo: var(--color-verde-vivo); }
+.xd-arch-b[data-verso='esce'] .xd-arch-pro { color: #f6c89a; }
+.xd-arch-b[data-verso='esce'] .xd-arch-pro::before { background: var(--color-arancio); }
+
+/* ── La legenda dei tre versi: tre voci, una riga ──────────────────────── */
+.bp-leg { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; margin: 0.2rem 0 0; padding: 0; }
+.bp-leg li {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin: 0; max-width: none;
+  font-size: clamp(0.8rem, 0.68vw, 1.44rem); font-weight: 700; color: var(--xd-dark-body);
+}
+.bp-leg i { width: 1.4rem; height: 0.3rem; border-radius: 2px; flex: none; }
+.bp-leg i[data-verso='resta'] { background: var(--color-grey-500); }
+.bp-leg i[data-verso='esce'] { background: var(--color-arancio); }
+.bp-leg i[data-verso='entra'] { background: var(--color-verde-vivo); }
+
+/* ── Il punto aperto: una domanda, non un'affermazione ─────────────────
+   ⚠️ PERCHÉ UNA DOMANDA. Questo documento va davanti all'IT di una banca con
+   una gara aperta, e tocca tre cose che oggi NON sono confermate: la
+   referenza di una banca terza, la connettività privata verso la loro CDP, il
+   modello di prezzo. Affermarle e sbagliare costa la credibilità dell'intero
+   documento, e si verifica in dieci secondi. Chiederle costa niente, e in una
+   riunione tecnica una domanda precisa vale più di una promessa vaga. */
+.bp-aperto {
+  display: grid; gap: 0.3rem; margin: 0; max-width: none;
+  padding: 0.8rem 1rem; border-radius: 8px;
+  border: 1px dashed var(--color-arancio);
+  background: rgba(234, 134, 44, 0.1);
+}
+.bp-aperto-t {
+  font-size: clamp(0.76rem, 0.62vw, 1.4rem); font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #f6c89a;
+}
+.bp-aperto-q { font-size: clamp(0.92rem, 0.78vw, 1.68rem); line-height: 1.42; color: var(--xd-dark-ink); }
+/* Su fondo chiaro l'arancio come inchiostro non regge (2,6:1): lì l'etichetta
+   passa a un bruno scuro e il colore resta solo sul bordo. */
+.xd-sl:not(.xd-sl--dark) .bp-aperto-t { color: #8a4a00; }
+.xd-sl:not(.xd-sl--dark) .bp-aperto-q { color: var(--ink-primary); }
+
+/* Due punti aperti affiancati. NON si usa `xd-pb`, che ha tre righe (ancora
+   · figura · verdetto): con un elemento solo per colonna le altre due restano
+   vuote e lasciano una fascia morta fra i riquadri e la chiusa. */
+.bp-aperti { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.9rem, 1.6vw, 1.8rem); align-items: start; }
+@media (max-width: 900px) { .bp-aperti { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── Due colonne «oggi / con Adobe» ───────────────────────────────────
+   ⚠️ INCHIOSTRI E SUPERFICIE SUI TOKEN, non su valori fissi. Scritte con i
+   `--xd-dark-*` queste colonne funzionavano sulle slide scure e davano 1,27:1
+   su quelle chiare — dove pure servono. Il contrasto lo misura `audit:ink`
+   sui pixel, e un componente che vive su due fondi deve ribaltarsi come loro. */
+.bp-due { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.9rem, 1.6vw, 1.8rem); }
+.bp-due-c {
+  display: grid; gap: 0.5rem; align-content: start; min-width: 0; margin-inline: 0;
+  padding: 1rem 1.15rem 1.1rem; border-radius: 10px;
+  background: var(--bp-pan, var(--surface-secondary));
+  border: 1px solid var(--bp-pan-line, var(--line-subtle));
+}
+.bp-due-c[data-lato='poi'] { border-color: var(--accent-primary); }
+.bp-due-k {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.82rem, 0.7vw, 1.5rem); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-note);
+}
+.bp-due-c[data-lato='poi'] .bp-due-k { color: var(--ink-accent); }
+.bp-due-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+.bp-due-l li {
+  margin: 0; max-width: none; padding-left: 1rem; position: relative;
+  font-size: clamp(0.92rem, 0.78vw, 1.68rem); line-height: 1.42; color: var(--ink-body);
+}
+.bp-due-l li::before {
+  content: ''; position: absolute; left: 0; top: 0.62em;
+  width: 0.4rem; height: 0.4rem; border-radius: 1px; background: var(--ink-note);
+}
+.bp-due-c[data-lato='poi'] .bp-due-l li::before { background: var(--ink-accent); }
+
+/* ── La lista semplice, dove non serve altro ──────────────────────────── */
+.bp-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; width: 100%; }
+.bp-l li {
+  margin: 0; max-width: none; padding-left: 1.1rem; position: relative;
+  font-size: clamp(0.95rem, 0.82vw, 1.72rem); line-height: 1.45; color: var(--ink-body);
+}
+.bp-l li::before {
+  content: ''; position: absolute; left: 0; top: 0.6em;
+  width: 0.45rem; height: 0.45rem; border-radius: 1px; background: var(--ink-accent);
+}
+.xd-sl--dark .bp-l li { color: var(--xd-dark-body); }
+
+/* ── Custom slides (Admin Console) — in sync con l'anteprima dell'admin ─ */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.04; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 700; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose ul { list-style: disc; } .cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: rgba(0,32,35,0.06); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: #fff; }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: #dbe6e6; }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-verde-vivo); }
+
+/* ── Il dettaglio APERTO deve stare dentro la stessa slide ────────────────
+   Il check `exp` ri-misura la slide con il blocco espanso, e quando il
+   contenuto cresce il blocco centrato spinge il titolo sopra la safe-area:
+   su sei slide è uscito a 55px contro gli 80 dell'inset, su tutti e tre i
+   viewport. Non è il tipo a essere grande, è lo spazio: si comprime quello.
+   Le figure restano sopra il minimo leggibile e il corpo non si tocca. */
+.ex-dett { margin-top: 0.85rem; }
+.ex-dett .xd-fig { height: clamp(2.3rem, 2.9vw, 4.2rem); margin-bottom: 0.28rem; }
+.ex-dett .dett-griglia { gap: clamp(0.8rem, 1.3vw, 1.6rem); }
+.ex-dett .dett-voce { gap: 0.32rem; }
+.ex-dett .dett-testo { gap: 0.22rem; }
+.ex-dett .dett-nota { margin-top: 0.45rem; }
+@media (max-height: 900px) {
+  .ex-dett { margin-top: 0.6rem; }
+  .ex-dett .xd-fig { height: 2.1rem; }
+}
+
+/* ── Mentre il dettaglio è aperto, la slide si stringe ───────────────────
+   Il motore marca `html[data-hiw-open]` all'apertura — la stessa leva con cui
+   la pelle fa arretrare il contorno quando un blocco si espande. Qui serve a
+   restituire al dettaglio lo spazio che la slide chiusa può permettersi e
+   quella aperta no. Si toccano SOLO spazi e imbottiture: i corpi restano dove
+   sono, perché il contratto di leggibilità vale anche a blocco aperto, ed è
+   quello che il check `exp` ri-misura. */
+html[data-hiw-open] .xd-sl { gap: 0.55rem; }
+html[data-hiw-open] .xd-sl-head { gap: 0.18rem; }
+html[data-hiw-open] .xd-pb { gap: 0.8rem; }
+html[data-hiw-open] .xd-passi { margin-top: 0.5rem; gap: 0.5rem 1.1rem; }
+html[data-hiw-open] .xd-arch { gap: 0.45rem; padding: 0.55rem; }
+html[data-hiw-open] .xd-arch-b,
+html[data-hiw-open] .bp-due-c { padding: 0.68rem 0.85rem 0.72rem; }
+html[data-hiw-open] .ex-ancora { padding: 1.1rem 1.25rem; min-height: 0; }
+html[data-hiw-open] .bp-aperto { padding: 0.6rem 0.85rem; }
+/* Le tre slide più dense sbordavano ancora di una ventina di pixel a blocco
+   aperto (titolo a 61px contro gli 80 dell'inset). Ultimo giro, sempre e solo
+   su spazi e figure: il corpo del testo resta quello di prima. */
+html[data-hiw-open] .xd-sl { gap: 0.45rem; }
+html[data-hiw-open] .ex-dett { margin-top: 0.6rem; }
+html[data-hiw-open] .ex-dett .xd-fig { height: clamp(1.9rem, 2.4vw, 3.4rem); margin-bottom: 0.22rem; }
+html[data-hiw-open] .bp-due-l { gap: 0.32rem; }
+html[data-hiw-open] .xd-pb { gap: 0.7rem; }

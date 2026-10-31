@@ -1,0 +1,127 @@
+---
+/**
+ * Le micro-figure del dettaglio — una per meccanismo.
+ *
+ * ⚠️ PERCHÉ ESISTONO. Un «Scopri come» che si apre su quattro paragrafi è lo
+ * stesso muro di testo, soltanto nascosto: la regola «ancore, non prosa»
+ * risolta a metà. In sala quel blocco si apre per rispondere a una domanda, e
+ * in quel momento nessuno legge quattro paragrafi davanti a un cliente che
+ * aspetta. La figura porta il meccanismo; il testo resta un’ancora e una riga.
+ *
+ * Solo geometria: niente parole dentro l’SVG. Un testo in un disegno non
+ * cresce con la radice e su una parete di sala sparisce. Lo stato finale è
+ * quello informativo, così con «Riduci movimento» la figura si legge comunque.
+ *
+ * Spessore del tratto, regola dell’accento e curva dell’animazione NON stanno
+ * qui: stanno nel motore (`Dettaglio.astro`), se no due deck disegnano con due
+ * mani diverse. Qui c’è solo la geometria, che è di questo cliente.
+ */
+interface Props { k: string; class?: string }
+const { k, class: cls = '' } = Astro.props;
+---
+<svg class={`xd-fig fg ${cls}`} viewBox="0 0 120 64" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+  {/* Gli strati: il CRM sotto, i canali sopra, e in mezzo lo strato che decide */}
+  {k === 'strati' && (
+    <>
+      <rect class="xd-fig-l" x="8" y="46" width="104" height="12" rx="3" />
+      <rect class="xd-fig-f-r" x="8" y="26" width="104" height="14" rx="3" />
+      <rect class="xd-fig-l" x="8" y="6" width="104" height="12" rx="3" />
+      {[24, 46, 68, 90].map((x) => <line class="xd-fig-l" x1={x} y1="18" x2={x} y2="26" />)}
+      {[24, 46, 68, 90].map((x) => <line class="xd-fig-l" x1={x} y1="40" x2={x} y2="46" />)}
+      <circle class="xd-fig-f" cx="60" cy="33" r="4" />
+    </>
+  )}
+
+  {/* L’arbitro: quattro proposte entrano, una sola esce */}
+  {k === 'arbitro' && (
+    <>
+      {[6, 21, 36, 51].map((y) => <rect class="xd-fig-b" x="6" y={y} width="28" height="9" rx="3" />)}
+      <path class="xd-fig-l" d="M36 10.5 C 48 10.5, 48 32, 56 32" />
+      <path class="xd-fig-l" d="M36 25.5 C 48 25.5, 48 32, 56 32" />
+      <path class="xd-fig-l" d="M36 40.5 C 48 40.5, 48 32, 56 32" />
+      <path class="xd-fig-l" d="M36 55.5 C 48 55.5, 48 32, 56 32" />
+      <rect class="xd-fig-f-r" x="56" y="20" width="20" height="24" rx="4" />
+      <path class="xd-fig-l" d="M76 32 H92" />
+      <rect class="xd-fig-fill" x="92" y="27" width="22" height="10" rx="4" />
+    </>
+  )}
+
+  {/* Federare: il dato resta nel suo recinto, la domanda va e la risposta torna */}
+  {k === 'federa' && (
+    <>
+      <rect class="xd-fig-l" x="4" y="14" width="34" height="36" rx="4" />
+      {[22, 30, 38].map((y) => <rect class="xd-fig-b" x="10" y={y} width="22" height="5" rx="2" />)}
+      <ellipse class="xd-fig-l" cx="21" cy="19" rx="11" ry="4" />
+      <path class="xd-fig-f-s" d="M40 26 H78" />
+      <path class="xd-fig-fill" d="M78 22.5 L84 26 L78 29.5 Z" />
+      <path class="xd-fig-l" d="M78 40 H42" />
+      <path class="xd-fig-b" d="M42 36.5 L36 40 L42 43.5 Z" />
+      <rect class="xd-fig-f-r" x="84" y="14" width="32" height="36" rx="4" />
+      <circle class="xd-fig-f" cx="100" cy="32" r="4.5" />
+    </>
+  )}
+
+  {/* La regia: un evento diventa il canale giusto, non tutti i canali */}
+  {k === 'regia' && (
+    <>
+      <circle class="xd-fig-f" cx="12" cy="32" r="5" />
+      <path class="xd-fig-l" d="M18 32 H44" />
+      <path class="xd-fig-f-s" d="M44 32 C 60 32, 60 12, 76 12" />
+      <path class="xd-fig-l" d="M44 32 C 60 32, 60 32, 76 32" />
+      <path class="xd-fig-l" d="M44 32 C 60 32, 60 52, 76 52" />
+      <rect class="xd-fig-fill" x="82" y="7" width="26" height="10" rx="5" />
+      <rect class="xd-fig-b" x="82" y="27" width="26" height="10" rx="5" />
+      <rect class="xd-fig-b" x="82" y="47" width="26" height="10" rx="5" />
+    </>
+  )}
+
+  {/* La misura: canali diversi, un conteggio solo */}
+  {k === 'misura' && (
+    <>
+      {[[10, 10], [10, 32], [10, 54]].map(([x, y]) => <rect class="xd-fig-b" x={x} y={y - 5} width="24" height="10" rx="3" />)}
+      {[10, 32, 54].map((y) => <path class="xd-fig-l" d={`M34 ${y} C 50 ${y}, 50 32, 64 32`} />)}
+      <line class="xd-fig-l" x1="70" y1="54" x2="116" y2="54" />
+      {[[78, 40], [90, 30], [102, 36], [112, 20]].map(([x, y]) => (
+        <rect class="xd-fig-b" x={x - 4} y={y} width="8" height={54 - y} rx="1.5" />
+      ))}
+      <polyline class="xd-fig-f-s" points="78,38 90,28 102,34 112,18" />
+    </>
+  )}
+
+  {/* Lo scambio: un blocco esce e uno entra, il resto della fila non si muove */}
+  {k === 'scambio' && (
+    <>
+      {[6, 70, 92].map((x) => <rect class="xd-fig-l" x={x} y="22" width="20" height="20" rx="3" />)}
+      <rect class="xd-fig-b" x="30" y="22" width="20" height="20" rx="3" />
+      <path class="xd-fig-l" d="M40 18 V6" />
+      <path class="xd-fig-b" d="M36.5 10 L40 4 L43.5 10 Z" />
+      <rect class="xd-fig-f-r" x="48" y="22" width="20" height="20" rx="3" />
+      <path class="xd-fig-f-s" d="M58 58 V46" />
+      <path class="xd-fig-fill" d="M54.5 50 L58 56 L61.5 50 Z" />
+    </>
+  )}
+
+  {/* Le fasi: tre tappe, e la terza è ancora aperta */}
+  {k === 'fasi' && (
+    <>
+      <line class="xd-fig-l" x1="10" y1="32" x2="110" y2="32" />
+      <circle class="xd-fig-f" cx="22" cy="32" r="6" />
+      <circle class="xd-fig-f" cx="60" cy="32" r="6" />
+      <circle class="xd-fig-b-c" cx="98" cy="32" r="6" stroke-dasharray="3 3" />
+      <rect class="xd-fig-b" x="10" y="12" width="24" height="8" rx="3" />
+      <rect class="xd-fig-b" x="48" y="12" width="24" height="8" rx="3" />
+      <rect class="xd-fig-b" x="86" y="12" width="24" height="8" rx="3" />
+    </>
+  )}
+
+  {/* Il contenuto: un brief che diventa molte varianti, approvate */}
+  {k === 'contenuto' && (
+    <>
+      <rect class="xd-fig-f-r" x="6" y="22" width="20" height="20" rx="3" />
+      <line class="xd-fig-l" x1="26" y1="32" x2="42" y2="32" />
+      {[0, 1, 2].map((r) => [0, 1, 2].map((c) => (
+        <rect class="xd-fig-b" x={46 + c * 25} y={10 + r * 17} width="20" height="12" rx="2.5" />
+      )))}
+    </>
+  )}
+</svg>
