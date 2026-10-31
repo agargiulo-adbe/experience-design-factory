@@ -431,3 +431,87 @@ Memoria `deck-due-assi-sottopassi`.
   link): mini‑tabella «esce / resta» per il tavolo tecnico. **Consenso nel mock di m‑03**: due
   caselle, non una. **Filiale Digitale** come canale che richiama un prospect, mai nominata.
 - **`provenance.json` ha 2 record per 28 immagini** (ereditato); **`show_in_showcase` resta `false`**.
+
+---
+
+## §43 · BPER «Sopra quello che avete» — il Blueprint del 12 novembre, e lo strato XD
+
+**31 ott 2026.** `apps/bper-sopra-quello-che-avete` · tipo **Blueprint** · IT · spenta
+sullo showcase. Nasce in una giornata, dall'apertura dell'account allo stato attuale.
+
+### §43.1 · Perché i capitoli non sono quelli del tipo
+Lo scheletro «blueprint» propone scenario · fondamenta · use case · convergenza · valore ·
+rotta. Qui i sette capitoli di contenuto sono **le sette slide che il referente CRM ha già
+concordato** il 26 ottobre e che porta al suo capo il 6 novembre. Cambiarne il taglio
+vorrebbe dire presentarsi con un documento diverso da quello annunciato, a un incontro
+dove la presentazione passa da lui cinque giorni prima. L'ottavo capitolo è l'ask.
+
+### §43.2 · Lo strato XD, e perché sta nel motore
+La forma di `intesa-esperienza-cliente` — copertina a due colonne con l'agenda cliccabile,
+divisore di capitolo, slide con occhiello/titolo/lead/chiusa, architettura a strati, cifre,
+passi, referenze — era prigioniera di quell'app come `.im-*`. Ora è
+**`packages/core/src/styles/xd.css`**, con un nome: **XD**. Porta geometria e le regole di
+leggibilità già pagate; **non** porta colori di marchio, che restano nei token dell'app. Il
+contratto è la famiglia `--xd-*`. **Intesa non è stata migrata di proposito**: va in sala il
+5 novembre. Tre difetti che XD ha già insegnato a evitare, tutti trovati qui: un componente
+con fondo chiaro fisso dentro una slide scura (1,08:1, invisibile a ogni check di layout);
+una catena di spazi unificatori che rende una frase inseparabile e la fa sbordare (check
+`c`, HARD); un divisore senza fotografia che lascia un buco, per cui esiste la variante
+`[data-senza-foto]` a due campi.
+
+### §43.3 · Il design system, e il caso in cui sistema e marchio coincidono
+Letto da `pnpm brand:tokens https://www.bper.it`: petrolio `#005157` a 300 occorrenze. Di
+norma il più frequente è il colore di sistema e il marchio è raro; qui **coincidono**, e non
+è stato dedotto — `#005157` è insieme `--lwc-colorTextDefault` del loro design system e il
+`fill` del logotipo ufficiale che la banca distribuisce. Le superfici scure sono le custom
+property che il sito espone (`#002023`, `#003134`, `#004146`). Caratteri: Archivo Narrow e
+Nunito Sans, sostitute dichiarate di Giorgio Sans e Proxima Nova Soft. L'arancio `#ea862c`
+ha **un mestiere solo**: marcare ciò che cambia nell'architettura.
+
+⚠️ **Evidenza che vale per la riunione, letta dalle loro superfici:** il sito pubblico serve
+il sistema di design di Salesforce Lightning (558 riferimenti `lwc`, 85 `aura`) dentro un
+portale open source; e carica **due soli script di terze parti**, un gestore di tag di Google
+e una libreria di icone. Nessuno strumento di analisi Adobe. Sta nel dossier, non in slide.
+
+### §43.4 · Il panel, e le quattro affermazioni che non reggevano
+Giro 1 il 31 ott: cinque personas cieche (responsabile fabbriche digitali, responsabile CRM,
+architetto dei dati, chi fa campagne, integratore della gara) più il controllo dei fatti.
+**Media 3,4/5**, rischio percepito 2,2, tutti «conditional». Verdetto e grezzi in
+`docs/BPER/PANEL-VERDICT-2026-10-31-round1.md` e `docs/BPER/panel/2026-10-31-round1/`.
+Quattro errori di merito corretti, tutti e quattro trovati dal panel e nessuno dai gate:
+1. **«la misura senza spostare il dato» era falsa** — la documentazione è esplicita: i dati
+   usati in Customer Journey Analytics sono ingeriti in Experience Platform. Quattro personas
+   su cinque l'hanno colpita. Ora il capitolo ha due colonne, entra / resta.
+2. **«l'arbitro vive dentro la licenza della regia» era falsa** — Decisioning è una voce di
+   listino a sé. Corretto quello, i moduli che entrano sono **quattro**, non tre.
+3. **tre driver di prezzo su quattro erano sbagliati** — le decisioni non si fatturano, la
+   metrica è «profili ingaggiabili» e i canali sono voci separate.
+4. **due affermazioni sul sistema del concorrente erano false** — quella piattaforma sa
+   partire da un evento, e dire il contrario si smonta in una frase.
+Più un errore **in negativo**: la slide delle referenze regalava **TSB**, che è una storia
+pubblicata da Adobe sugli stessi tre moduli. Ora è in pagina con i suoi numeri.
+Tagli chiesti all'unanimità: via la slide di posizionamento (5 su 5), via la tassonomia
+delle tre forme di referenza (4 su 5). Aggiunta per il buco che il business ha trovato:
+**che cosa cambia in una settimana di lavoro**.
+
+### §43.5 · Stato dei gate
+`copy-audit` 0 HARD e 0 SOFT su 502 stringhe · `audit:deck` **0 HARD** ai tre viewport
+(SOFT `i` 70, `a` 23: un deck ad ancore li fallisce per costruzione) · `audit:ink` pulito su
+381 blocchi, con i «Scopri come» aperti · `audit:fonti` pulito su 13 link · `audit:taglio`
+allineato · `audit:og` PASS · `audit:dossier` **0 rilievi su 5 viewport** · `audit:docs`
+pulito. `audit:wrap` resta a 28 (riferimento Intesa: 20).
+
+### §43.6 · Che cosa manca, in ordine
+- **P0 di consegna, dall'arbitro:** si manda e si proietta il **taglio da sei slide**, con il
+  percorso intero come allegato. Il referente ha chiesto venticinque minuti e sei slide.
+- **Secondo giro di panel sulla delta**, prima del check interno del 3 novembre. Ritratti già
+  scritti, pacchetto di evidenza rigenerabile in un comando.
+- **Le ventidue voci P1** in `arbiter.json`. Le quattro che pesano: scheda di connettività
+  verso la loro piattaforma di profilazione; che cosa entra con volumi, conservazione e base
+  giuridica; consensi e tetto di pressione durante il parallelo; intervallo di effort per fase
+  più il termine residuo del contratto da sostituire.
+- **Tre domande senza risposta nostra:** se la loro piattaforma di profilazione sia un
+  magazzino interrogabile; se l'incentivo sulla migrazione valga per questo cliente da solo
+  (la risposta ricevuta argomenta sull'altra banca); se esistano contratti Adobe in essere.
+- **Nessuna immagine**: i divisori usano la variante a due campi.
+- `show_in_showcase` resta `false`.

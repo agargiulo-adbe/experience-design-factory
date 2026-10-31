@@ -30,6 +30,7 @@ import Fonte from '../components/Fonte.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { COSTO } from '../data/condivisi';
 import { fonti } from '../data/fonti';
 
 const SLUG = 'valore';
@@ -39,11 +40,24 @@ const currentPath = Astro.url.pathname;
 
 /* I driver, non i prezzi. Ognuno dice anche QUALE DATO serve da loro per
    trasformarlo in una cifra: è la parte che un IT porta a casa. */
+/* I driver, non i prezzi. Ognuno dice anche QUALE DATO serve da loro per
+   trasformarlo in una cifra: è la parte che un IT porta a casa.
+   ⚠️ Questa lista è stata riscritta dopo la verifica sulle descrizioni di
+   prodotto. Tre voci su quattro erano sbagliate, e una in modo pericoloso:
+   le decisioni NON si fatturano — sono un limite di picco, non un'unità di
+   prezzo — e «profili raggiungibili» è un termine diverso da quello di
+   fatturazione, che è «profili ingaggiabili». Un numero costruito su una
+   metrica sbagliata è un numero da ritirare davanti al cliente. */
 const DRIVER = [
   {
-    k: { it: 'Quante persone', en: 'How many people' },
-    d: { it: 'I profili raggiungibili, non i clienti a bilancio.', en: 'Addressable profiles, not customers on the balance sheet.' },
-    s: { it: 'Serve: la base contattabile per canale.', en: 'Needed: the contactable base per channel.' },
+    k: { it: 'Quanti profili', en: 'How many profiles' },
+    d: { it: 'I profili ingaggiabili: è la metrica con cui si fattura.', en: 'Engageable profiles: this is the billing metric.' },
+    s: { it: 'Serve: quante persone contattabili per canale.', en: 'Needed: contactable people per channel.' },
+  },
+  {
+    k: { it: 'Quali canali', en: 'Which channels' },
+    d: { it: 'Posta, mobile, web e assistito sono voci separate a listino.', en: 'Email, mobile, web and assisted are separate line items.' },
+    s: { it: 'Serve: su quali canali si parte, e in che ordine.', en: 'Needed: which channels start, and in what order.' },
   },
   {
     k: { it: 'Quanti messaggi', en: 'How many messages' },
@@ -51,16 +65,12 @@ const DRIVER = [
     s: { it: 'Serve: gli invii dell’ultimo anno, mese per mese.', en: 'Needed: last year’s sends, month by month.' },
   },
   {
-    k: { it: 'Quante decisioni', en: 'How many decisions' },
-    d: { it: 'Le richieste all’arbitro, che crescono col canale in sessione.', en: 'Calls to the arbiter, which grow with in-session channels.' },
-    s: { it: 'Serve: sessioni e accessi all’area riservata.', en: 'Needed: sessions and logged-in visits.' },
-  },
-  {
-    k: { it: 'Quanto dato', en: 'How much data' },
-    d: { it: 'Che cosa entra in piattaforma e che cosa resta federato.', en: 'What enters the platform and what stays federated.' },
-    s: { it: 'Serve: l’esito delle due domande sul dato.', en: 'Needed: the answer to the two data questions.' },
+    k: { it: 'Quante righe di dato', en: 'How many rows of data' },
+    d: { it: 'La misura si licenzia sul volume ingerito, non sul numero di report.', en: 'Measurement is licensed on ingested volume, not on report count.' },
+    s: { it: 'Serve: il volume di eventi digitali in un anno.', en: 'Needed: a year of digital event volume.' },
   },
 ];
+
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -79,10 +89,10 @@ const DRIVER = [
       <div class="xd-sl xd-sl--dark" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="I driver" en="The drivers" />
-          <T as="h2" class="xd-h2" it="Si paga su quanto si usa, non su quante persone lo usano" en="You pay on how much is used, not on how many people use it" />
+          <T as="h2" class="xd-h2" it={COSTO.titolo.it} en={COSTO.titolo.en} />
           <T as="p" class="xd-sub"
-             it="Quattro grandezze, e accanto a ognuna il dato che serve da voi per trasformarla in una cifra."
-             en="Four quantities, each with the figure we need from you to turn it into a price." />
+             it="Quattro grandezze, e accanto a ognuna il dato che serve da voi. Sono le metriche di listino, non approssimazioni nostre."
+             en="Four quantities, each with the input we need from you. These are the list metrics, not our approximations." />
         </div>
 
         <ul class="xd-passi" style="--cols:2" data-stagger>
@@ -98,7 +108,7 @@ const DRIVER = [
 
         <T as="p" class="xd-chiusa"
            it="Nessuna delle quattro dipende dal numero di persone che entrano nello strumento: le licenze a posto qui non ci sono."
-           en="None of the four depends on how many people log into the tool: there are no per-seat licences here." />
+           en="The four quantities do not depend on how many people log into the tool. A few accessory components are counted per user, and are declared where they apply." />
 
         <Aperto it="Una cifra senza perimetro è un numero da ritirare. Con quei quattro dati arriva in una settimana, e regge."
                 en="A figure without scope is a number to be withdrawn. With those four inputs it arrives in a week, and it holds." />
@@ -110,15 +120,15 @@ const DRIVER = [
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Core e il resto" en="Core and the rest" />
-          <T as="h2" class="xd-h2" it="Quello che risponde alla gara, e quello che è un’altra conversazione" en="What answers the tender, and what is a different conversation" />
+          <T as="h2" class="xd-h2" it="Questo perimetro, e quello che è un’altra conversazione" en="This scope, and what is a different conversation" />
           <T as="p" class="xd-sub"
-             it="Teniamo le due cose separate anche nei numeri, così la seconda non fa sembrare cara la prima."
-             en="We keep the two apart in the numbers as well, so the second does not make the first look expensive." />
+             it="Questo perimetro non è l’oggetto della vostra gara sul gestionale, e non ne tocca il capitolato. Le due cose restano separate anche nei numeri."
+             en="This scope is not the subject of your core-system tender and does not touch its specification. The two stay apart in the numbers as well." />
         </div>
 
         <div class="bp-due">
           <div class="bp-due-c" data-lato="poi" data-substep data-side="in">
-            <T as="p" class="bp-due-k" it="Core · risponde alla gara" en="Core · answers the tender" />
+            <T as="p" class="bp-due-k" it="Core · questo perimetro" en="Core · this scope" />
             <ul class="bp-due-l">
               <li><T as="span" it="La regia dei percorsi e l’arbitro fra le proposte" en="Journey orchestration and the arbiter between offers" /></li>
               <li><T as="span" it="La personalizzazione dei canali digitali" en="Digital-channel personalisation" /></li>
@@ -148,12 +158,12 @@ const DRIVER = [
             <DettaglioVoce>
               <Figura k="federa" />
               <T slot="ancora" as="p" it="Che cosa alza il conto" en="What raises the bill" />
-              <T slot="riga" as="p" it="Il dato portato dentro quando poteva restare fuori: per questo le due domande di prima contano." en="Data brought in when it could have stayed out: that is why the two earlier questions matter." />
+              <T slot="riga" as="p" it={COSTO.alza.it} en={COSTO.alza.en} />
             </DettaglioVoce>
             <DettaglioVoce>
               <Figura k="fasi" />
               <T slot="ancora" as="p" it="Che cosa lo abbassa" en="What lowers it" />
-              <T slot="riga" as="p" it="Partire da un canale e un percorso: si paga il perimetro acceso, non quello previsto." en="Starting from one channel and one journey: you pay for what is switched on, not for what is planned." />
+              <T slot="riga" as="p" it={COSTO.abbassa.it} en={COSTO.abbassa.en} />
             </DettaglioVoce>
           </Dettaglio>
         </HowItWorks>

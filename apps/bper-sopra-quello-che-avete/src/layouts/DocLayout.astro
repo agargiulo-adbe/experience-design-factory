@@ -1,0 +1,79 @@
+---
+import SocialMeta from '@edf/core/blocks/SocialMeta.astro';
+/**
+ * Guscio della sola pagina dossier: orfana, gated, fuori dal deck.
+ * Niente Tailwind e niente `global.css` dell'experience — qui serve una
+ * pagina di testo lunga che si legge sul telefono, non un deck.
+ *
+ * TOKEN — gli stessi dell'experience, letti da `pnpm brand:tokens
+ * https://www.bper.it` il 31 ott 2026 (5 fogli, 2074 KB), mappati sul
+ * contratto `--dw-*` del motore dossier. Il colore di sistema della banca,
+ * `#005157`, è anche il suo marchio: lo si è verificato sul `fill` del
+ * logotipo ufficiale, non dedotto.
+ *
+ * ⚠️ UN ACCENTO NON È UN INCHIOSTRO, e su fondo scuro è dove si sbaglia.
+ * `#005157` sul notte `#002023` dà 1,6:1 e come testo non esiste: per
+ * inchiostro e pieni si usa il verde brillante `#00b97f` (6,6:1), e il
+ * petrolio resta disponibile solo per i fondi. L'arancio `#ea862c` regge
+ * come inchiostro solo qui sul notte (6,5:1) e porta inchiostro scuro
+ * quando fa da pieno.
+ */
+interface Props { title: string; description?: string; noindex?: boolean }
+const { title, description = '', noindex = false } = Astro.props;
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" />
+    <style is:global>
+      :root {
+        --dw-bg: #002023;
+        --dw-tint: rgba(0, 81, 87, 0.22);
+        --dw-surface: rgba(0, 49, 52, 0.62);
+        --dw-surface-2: rgba(0, 81, 87, 0.24);
+        --dw-line: #114a4e;
+
+        --dw-ink: #d7e4e4;          /* 13,1:1 — corpo del testo */
+        --dw-ink-soft: #9fb5b6;     /*  7,9:1 — note e metadati */
+        --dw-ink-faint: #7b9395;    /*  5,2:1 — etichette minute */
+        --dw-ink-strong: #ffffff;   /* 17,1:1 */
+
+        --dw-accent: #00b97f;       /*  6,6:1 — numeri, bullet, stato attivo */
+        --dw-fill: #00b97f;
+        --dw-on-fill: #002023;      /* inchiostro scuro sul pieno: 6,6:1 */
+        --dw-warn: #ea862c;         /*  6,5:1 sul notte */
+        --dw-on-warn: #002023;      /* il bianco sull'arancio darebbe 2,6:1 */
+        --dw-alt: #6fd9b4;          /* 10,0:1 — ruoli, sottotitoli, crediti */
+
+        /* Le stesse sostitute dichiarate nell'experience: Giorgio Sans e
+           Proxima Nova Soft non sono distribuibili. */
+        --dw-font-display: 'Archivo Narrow', system-ui, sans-serif;
+        --dw-font-body: 'Nunito Sans', system-ui, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        background: var(--dw-bg);
+        color: var(--dw-ink);
+        font-family: var(--dw-font-body);
+        line-height: 1.6;
+      }
+      img { max-width: 100%; }
+      /* Serve davvero: il gate si nasconde con `hidden`, ma `.dw-state`
+         dichiara `display:flex` e senza questa riga lo batte — il gate
+         resterebbe a schermo sopra il contenuto. */
+      [hidden] { display: none !important; }
+      @media print { body { background: #fff; color: #222; } }
+    </style>
+    <SocialMeta title={title} description={description} site={Astro.site} base={import.meta.env.BASE_URL} />
+  </head>
+  <body><slot /></body>
+</html>

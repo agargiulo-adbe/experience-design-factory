@@ -1,0 +1,174 @@
+---
+/**
+ * IN DIECI MINUTI — la stessa fonte, più corta.
+ *
+ * ⚠️ NON È UNA COPIA DEL PERCORSO LUNGO. I blocchi vengono da
+ * `src/data/architettura.ts`, gli stessi oggetti che usano i capitoli: dove
+ * servono meno parole si legge `dBreve`, che è un campo ACCANTO a `d`, mai
+ * un’altra voce. Titoli, prodotti e ordine restano fisicamente la stessa
+ * cosa, quindi una correzione sul percorso lungo arriva qui per costruzione.
+ * Un taglio che tiene due copie a mano diverge sempre, e diverge il corto,
+ * perché le correzioni arrivano sul lungo.
+ * Il gate è `DECK_URL=… pnpm audit:taglio --app bper-sopra-quello-che-avete`.
+ *
+ * Quando si usa: l’ora concessa diventa venti minuti più spesso di quanto si
+ * ammetta, ed è anche la versione che il referente gira al suo capo prima
+ * dell’incontro. L’ask sta qui dentro, ed è lo STESSO di `prossimi-passi`:
+ * due versioni della richiesta sono il modo più rapido di sembrare confusi.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import Architettura from '../components/Architettura.astro';
+import Aperto from '../components/Aperto.astro';
+import Figura from '../components/Figura.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHIUSE, COSTO, ASK } from '../data/condivisi';
+import { CHAPTERS } from '../data/chapters';
+import { DATO, REGIA, CANALI, SCAMBI } from '../data/architettura';
+
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title="In dieci minuti">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, '/' + CHAPTERS[CHAPTERS.length - 1].slug)}>
+
+    <Slide id="slide-cover" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-cop" data-reveal>
+        <div class="xd-cop-sx">
+          <CoBrand variant="hero" class="xd-cop-lockup ex-cobrand--on-dark" data-reveal />
+          <T as="p" class="xd-cop-occ" it="In dieci minuti" en="In ten minutes" data-reveal data-reveal-delay="0.06" />
+          <T as="h1" class="xd-cop-t" it="Sopra quello che avete" en="On top of what you have" data-reveal data-reveal-delay="0.1" />
+          <T as="p" class="xd-cop-l"
+             it="La versione corta dello stesso documento: l’innesto, il cambiamento, i punti aperti e la richiesta."
+             en="The short form of the same document: the graft, the change, the open points and the ask."
+             data-reveal data-reveal-delay="0.16" />
+          <T as="p" class="xd-cop-tipo" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.22" />
+        </div>
+        <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso intero">
+          <T as="p" class="xd-cop-occ" it="Il percorso intero" en="The full path" />
+          <ol class="xd-cop-indice" data-stagger>
+            {CHAPTERS.map((c) => (
+              <li>
+                <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
+                  <span class="xd-cop-n">{c.num}</span>
+                  <span class="xd-cop-tit"><span data-lang-it>{(c.breve ?? c.title).it}</span><span data-lang-en>{(c.breve ?? c.title).en}</span></span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <T as="p" class="xd-cop-dom" it={type.question.it} en={type.question.en} />
+        </nav>
+      </div>
+    </Slide>
+
+    {/* 1 · Dove ci innestiamo — la stessa mappa del capitolo 02 */}
+    <Slide id="slide-mappa" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="La vostra architettura" en="Your architecture" />
+          <T as="h2" class="xd-h2" it={CHIUSE.mappa.it} en={CHIUSE.mappa.en} />
+        </div>
+        <Architettura dato={DATO} regia={REGIA} canali={CANALI} />
+        <T as="p" class="xd-chiusa" it={CHIUSE.perimetro.it} en={CHIUSE.perimetro.en} />
+      </div>
+    </Slide>
+
+    {/* 2 · Che cosa prende il posto di che cosa — gli stessi scambi, in breve */}
+    <Slide id="slide-scambi" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Modulo per modulo" en="Module by module" />
+          <T as="h2" class="xd-h2" it="Due escono, tre entrano" en="Two go out, three come in" />
+        </div>
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {SCAMBI.map((s, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={s.poi.it} en={s.poi.en} />
+              <p class="xd-passi-d"><span class="xd-arch-pro">{s.pro}</span></p>
+              <T as="p" class="xd-passi-d" it={s.dBreve.it} en={s.dBreve.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="xd-chiusa" it={CHIUSE.terzoModulo.it} en={CHIUSE.terzoModulo.en} />
+      </div>
+    </Slide>
+
+    {/* 3 · Quello che non promettiamo */}
+    <Slide id="slide-aperto" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Prima di prometterlo" en="Before promising it" />
+          <T as="h2" class="xd-h2" it="Tre cose che oggi non affermiamo" en="Three things we are not claiming today" />
+        </div>
+        <div class="bp-aperti">
+          <Aperto it="La «CDP Oracle» dello schema è un magazzino dati interrogabile, oppure una CDP di prodotto? La federazione si collega a un magazzino."
+                  en="Is the «Oracle CDP» a queryable data warehouse, or a packaged CDP? Federation connects to a warehouse." />
+          <Aperto it="Oracle è coperto dalla 11g in su, su AWS, Azure, Exadata o cloud privato. Nella tabella delle connessioni private non c’è: per voi conta?"
+                  en="Oracle is covered from 11g up, on AWS, Azure, Exadata or private cloud. It is absent from the private-connectivity table: does that matter?" />
+        </div>
+        <Aperto tagIt="E sulle referenze" tagEn="And on references"
+                it="Nessun nome di banca in queste pagine finché il programma referenze non conferma che quella banca accetta di parlarvi."
+                en="No bank names in these pages until the reference programme confirms that bank will talk to you." />
+        <T as="p" class="xd-chiusa"
+           it="Mezza giornata con chi conosce i vostri sistemi chiude le prime due, e si fa prima della proposta."
+           en="Half a day with the people who know your systems closes the first two, before the proposal." />
+      </div>
+    </Slide>
+
+    {/* 4 · Il modello di costo, in quattro grandezze */}
+    <Slide id="slide-costo" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Il modello" en="The model" />
+          <T as="h2" class="xd-h2" it={COSTO.titolo.it} en={COSTO.titolo.en} />
+          <T as="p" class="xd-sub"
+             it="Profili ingaggiabili, quali canali si accendono, volumi per canale, righe di dato ingerite."
+             en="Engageable profiles, which channels you switch on, volumes per channel, rows of data ingested." />
+        </div>
+        <div class="xd-pb">
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Che cosa alza il conto" en="What raises the bill" />
+            <Figura k="federa" />
+            <T as="p" class="xd-pb-v" it={COSTO.alza.it} en={COSTO.alza.en} />
+          </section>
+          <section class="xd-pb-i" data-substep data-side="in">
+            <T as="p" class="xd-pb-k" it="Che cosa lo abbassa" en="What lowers it" />
+            <Figura k="fasi" />
+            <T as="p" class="xd-pb-v" it={COSTO.abbassa.it} en={COSTO.abbassa.en} />
+          </section>
+        </div>
+        <T as="p" class="xd-chiusa"
+           it="Una cifra senza perimetro è un numero da ritirare. Con quattro dati vostri arriva in una settimana."
+           en="A figure without scope is a number to be withdrawn. With four inputs from you it arrives in a week." />
+      </div>
+    </Slide>
+
+    {/* 5 · La firma, con l’ask — lo STESSO di «Prossimi passi» */}
+    <Slide id="slide-firma" bg="inverse" align="center">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-firma" data-reveal>
+        <CoBrand variant="hero" class="ex-cobrand--on-dark" data-reveal />
+        <T as="p" class="xd-firma-l" it={ASK.titolo.it} en={ASK.titolo.en} data-reveal data-reveal-delay="0.1" />
+        <T as="p" class="xd-firma-n" it={ASK.riga.it} en={ASK.riga.en} data-reveal data-reveal-delay="0.18" />
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

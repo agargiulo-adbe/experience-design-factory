@@ -42,6 +42,12 @@ export const CUT_SETS: Record<string, CutSpec> = {
     slideMax: 6,
     numeriSoloNelTaglio: ['10'],
   },
+  'bper-sopra-quello-che-avete': {
+    taglio: 'dieci-minuti',
+    fonti: ['src/data/architettura.ts', 'src/data/fonti.ts', 'src/data/chapters.ts'],
+    slideMax: 6,
+    numeriSoloNelTaglio: ['10'],
+  },
   'trenitalia-prospettiva-sales': {
     taglio: 'dieci-minuti',
     fonti: ['src/data/contenuti.ts', 'src/data/sources.ts'],

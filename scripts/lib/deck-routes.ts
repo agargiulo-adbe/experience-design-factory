@@ -204,6 +204,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'rotta',          route: '/experience-design-factory/bper-sopra-quello-che-avete/rotta/' },
     { name: 'valore',         route: '/experience-design-factory/bper-sopra-quello-che-avete/valore/' },
     { name: 'prossimi-passi', route: '/experience-design-factory/bper-sopra-quello-che-avete/prossimi-passi/' },
+    { name: 'dieci-minuti',   route: '/experience-design-factory/bper-sopra-quello-che-avete/dieci-minuti/' },
   ],
 };
 

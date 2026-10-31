@@ -1,0 +1,28 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+import DossierPage from '@edf/core/blocks/doc/DossierPage.astro';
+
+// ── Pagina RISERVATA (Adobe internal) ──────────────────────────────────────
+// Orfana (fuori dalla nav del deck) e noindex. Il contenuto confidenziale NON
+// sta nel bundle statico: vive in Supabase (`restricted_docs`, con RLS) e si
+// carica solo 1) dopo login, per un super admin o per chi ha un ruolo su
+// questa experience, oppure 2) via secret-link `?t=<uuid>`, senza login.
+// Seed (git-ignorato): docs/BPER/0036_seed_bper_dossier.sql
+//
+// Il rendering è del motore condiviso: qui restano lo slug, il guscio e la
+// mappatura della palette. Migliorare il motore migliora tutti i dossier —
+// ed è la ragione per cui il renderer non si copia dentro l'app.
+---
+<DocLayout
+  title="Dossier — BPER Banca"
+  description="Adobe internal — dossier riservato (accesso ristretto)."
+  noindex={true}
+>
+  <DossierPage
+    docSlug="bper-sopra-quello-che-avete"
+    title="Dossier — BPER Banca"
+    base={import.meta.env.BASE_URL}
+    supabaseUrl={import.meta.env.PUBLIC_SUPABASE_URL ?? ''}
+    supabaseAnon={import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? ''}
+  />
+</DocLayout>

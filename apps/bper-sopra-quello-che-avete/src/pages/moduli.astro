@@ -22,7 +22,8 @@ import Fonte from '../components/Fonte.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { SCAMBI } from '../data/architettura';
+import { CHIUSE } from '../data/condivisi';
+import { SCAMBI, SETTIMANA } from '../data/architettura';
 import { fonti } from '../data/fonti';
 
 const SLUG = 'moduli';
@@ -47,10 +48,10 @@ const currentPath = Astro.url.pathname;
       <div class="xd-sl xd-sl--dark" data-reveal>
         <div class="xd-sl-head">
           <T as="p" class="xd-n" it="Modulo per modulo" en="Module by module" />
-          <T as="h2" class="xd-h2" it="Due escono, tre entrano" en="Two go out, three come in" />
+          <T as="h2" class="xd-h2" it="Due escono, quattro entrano" en="Two go out, four come in" />
           <T as="p" class="xd-sub"
-             it="Le prime due righe sono sostituzioni. Le altre due sono quello che oggi non avete."
-             en="The first two rows are replacements. The other two are what you do not have today." />
+             it="Le prime due righe sostituiscono. Le altre due sono quello che oggi non avete, e si licenziano a parte."
+             en="The first two rows replace. The other two are what you do not have today, and are licensed separately." />
         </div>
 
         <ul class="xd-passi" style="--cols:2" data-stagger>
@@ -67,11 +68,45 @@ const currentPath = Astro.url.pathname;
           ))}
         </ul>
 
-        <T as="p" class="xd-chiusa"
-           it="Il modulo che cambia la giornata di chi fa campagne è il terzo, e oggi in casa non ha un equivalente."
-           en="The module that changes a campaign manager’s day is the third, and today it has no equivalent in-house." />
+        <T as="p" class="xd-chiusa" it={CHIUSE.terzoModulo.it} en={CHIUSE.terzoModulo.en} />
 
         <Fonte voci={fonti('ajo', 'target', 'cja')} />
+      </div>
+    </Slide>
+
+
+    {/* ⚠️ LA SLIDE CHE MANCAVA, e il buco l'ha trovato chi fa campagne.
+        Tre capitoli di fila parlavano di blocchi, innesti e driver: chi
+        riceve il documento inoltrato e manda campagne per mestiere
+        concludeva che avevamo parlato solo con l'informatica. Qui il
+        documento smette di essere un'architettura e dice che cosa cambia
+        in una settimana di lavoro — compreso quello che NON cambia, che è
+        la parte che rassicura: la campagna a lista resta possibile. */}
+    <Slide id="slide-settimana" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Dal lato di chi le campagne le fa" en="From the side of whoever runs campaigns" />
+          <T as="h2" class="xd-h2" it="Che cosa cambia in una settimana di lavoro" en="What changes in a working week" />
+          <T as="p" class="xd-sub"
+             it="Tre cose cambiano. Una no, ed è quella che conta dirla: la campagna a lista continua a funzionare."
+             en="Three things change. One does not, and it is worth saying: list campaigns keep working." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:3" data-stagger>
+          {SETTIMANA.map((x, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={x.k.it} en={x.k.en} />
+              <T as="p" class="xd-passi-d" it={`Oggi: ${x.oggi.it}`} en={`Today: ${x.oggi.en}`} />
+              <T as="p" class="xd-passi-d" it={x.poi.it} en={x.poi.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="Il controllo non si perde: cambia posto. Si sposta dalla lista alla regola, e la regola la scrivete voi."
+           en="Control is not lost: it moves. From the list to the rule, and you write the rule." />
       </div>
     </Slide>
 

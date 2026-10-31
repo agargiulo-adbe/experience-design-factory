@@ -35,8 +35,8 @@ export const CHAPTERS: Chapter[] = [
     title: { it: 'Adobe, e perché non è un CRM', en: 'Adobe, and why it is not a CRM' },
     breve: { it: 'Adobe', en: 'Adobe' },
     punto: {
-      it: 'Lo strato dove l’esperienza si decide sta sopra il CRM, e non dipende da quale CRM avete sotto.',
-      en: 'The layer where experience is decided sits above the CRM, and does not depend on which CRM is underneath.',
+      it: 'Lo strato dove l’esperienza si decide sta sopra il CRM. Il giorno in cui cambiate CRM, non si rifà.',
+      en: 'The layer where experience is decided sits above the CRM. The day you change CRM, it is not rebuilt.',
     },
   },
   {
@@ -53,7 +53,7 @@ export const CHAPTERS: Chapter[] = [
     breve: { it: 'I moduli', en: 'The modules' },
     punto: {
       it: 'Due prodotti escono, tre entrano, e il terzo è quello che oggi non avete.',
-      en: 'Two products go out, three come in, and the third is the one you do not have today.',
+      en: 'Two products go out and four come in. Two of those you do not have today, and they are licensed separately.',
     },
   },
   {
@@ -71,7 +71,7 @@ export const CHAPTERS: Chapter[] = [
     breve: { it: 'Referenze', en: 'References' },
     punto: {
       it: 'Una referenza vale se la banca che la porta accetta di parlarvi. Qui c’è quello che possiamo dichiarare oggi.',
-      en: 'A reference counts when the bank behind it agrees to talk to you. Here is what we can state today.',
+      en: 'A European bank has already done it on these modules, and its story is public. On the rest we invent nothing.',
     },
   },
   {

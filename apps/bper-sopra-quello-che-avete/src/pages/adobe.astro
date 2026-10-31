@@ -12,27 +12,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Figura from '../components/Figura.astro';
 import Divisore from '../components/Divisore.astro';
-import Fonte from '../components/Fonte.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { fonti } from '../data/fonti';
 
 const SLUG = 'adobe';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const ANCORE = [
-  { it: 'Il dato che si misura', en: 'Data you can measure' },
-  { it: 'La regia su ogni canale', en: 'Orchestration on every channel' },
-  { it: 'Il contenuto che tiene il passo', en: 'Content that keeps up' },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -44,54 +33,6 @@ const ANCORE = [
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="xd-div-bg" data-senza-foto></div>
       <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} lIt={ch.punto.it} lEn={ch.punto.en} />
-    </Slide>
-
-    <Slide id="slide-strato" bg="inverse" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--dark" data-reveal>
-        <div class="xd-sl-head">
-          <T as="p" class="xd-n" it="Il posizionamento" en="Where we sit" />
-          <T as="h2" class="xd-h2" it="Non vendiamo un CRM. Vendiamo lo strato che sta sopra" en="We do not sell a CRM. We sell the layer above it" />
-          <T as="p" class="xd-sub"
-             it="Il CRM tiene la relazione. Lo strato sopra sceglie il messaggio, il canale e il momento."
-             en="The CRM holds the relationship. The layer above decides what to say, on which channel and when." />
-        </div>
-
-        <div class="ex-ancore">
-          {ANCORE.map((a) => (
-            <p class="ex-ancora" data-substep data-side="in"><T as="span" it={a.it} en={a.en} /></p>
-          ))}
-        </div>
-
-        <T as="p" class="xd-chiusa"
-           it="Il giorno in cui cambiate CRM, questo strato non si rifà: è la ragione per cui è un suo strato."
-           en="The day you change CRM, this layer is not rebuilt: that is the point of it being its own layer." />
-
-        <HowItWorks title="Lo strato sopra il CRM" tone="onDark" class="ex-dett ex-dett--scuro">
-          <Dettaglio>
-            <DettaglioVoce>
-              <Figura k="strati" />
-              <T slot="ancora" as="p" it="Tre piani, non un monolite" en="Three floors, not a monolith" />
-              <T slot="riga" as="p" it="Sotto i sistemi che tengono il cliente, sopra i canali, in mezzo dove si decide." en="Below, the systems that hold the customer; above, the channels; in between, where it is decided." />
-            </DettaglioVoce>
-            <DettaglioVoce>
-              <Figura k="misura" />
-              <T slot="ancora" as="p" it="Una misura sola" en="One measurement" />
-              <T slot="riga" as="p" it="Filiale, app e sito contati insieme, sullo stesso cliente e sullo stesso percorso." en="Branch, app and site counted together, on the same customer and the same journey." />
-            </DettaglioVoce>
-            <DettaglioVoce>
-              <Figura k="contenuto" />
-              <T slot="ancora" as="p" it="Il contenuto, alla stessa velocità" en="Content, at the same speed" />
-              <T slot="riga" as="p" it="Più percorsi vogliono più varianti, e la produzione diventa il collo di bottiglia." en="More journeys need more variants, and production becomes the bottleneck." />
-            </DettaglioVoce>
-            <T slot="nota" as="p"
-               it="La parte sul contenuto sta in questo documento come opzione dichiarata separata, nel capitolo sul modello di costo. In gara non c’è."
-               en="The content piece appears in this document as a clearly separate option, in the cost chapter. It is not part of the tender." />
-          </Dettaglio>
-        </HowItWorks>
-
-        <Fonte voci={fonti('ajo', 'cja', 'target')} />
-      </div>
     </Slide>
 
   </DeckContainer>
