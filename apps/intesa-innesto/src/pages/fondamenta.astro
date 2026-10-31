@@ -184,6 +184,12 @@ const stati = FASI.map((_, i) => {
     const root = document.querySelector<HTMLElement>('[data-blueprint="architettura"]');
     if (!root || root.dataset.montato) return;
     root.dataset.montato = '1';
+    /* ⚠️ `root` è già protetto dalla guardia qui sopra, ma TypeScript perde il
+       restringimento dentro una `function` dichiarata: una dichiarazione è
+       sollevata, quindi il compilatore deve ammettere che venga chiamata prima
+       del controllo. Una costante presa dopo la guardia porta il tipo ristretto
+       dentro le closure senza un'asserzione e senza cambiare il comportamento. */
+    const rootEl: HTMLElement = root;
     const slide = root.closest('[data-slide]') as HTMLElement | null;
     if (!slide) return;
 
@@ -212,13 +218,13 @@ const stati = FASI.map((_, i) => {
         e.style.visibility = dentro ? 'visible' : 'hidden';
         e.toggleAttribute('data-acceso', dentro && acc.has(r));
       }
-      root.querySelectorAll<HTMLElement>('[data-fase-titolo]').forEach((p) => {
+      rootEl.querySelectorAll<HTMLElement>('[data-fase-titolo]').forEach((p) => {
         p.hidden = Number(p.dataset.faseTitolo) !== i;
       });
-      root.querySelectorAll<HTMLElement>('[data-fase-cap]').forEach((p) => {
+      rootEl.querySelectorAll<HTMLElement>('[data-fase-cap]').forEach((p) => {
         p.hidden = Number(p.dataset.faseCap) !== i;
       });
-      root.dispatchEvent(new CustomEvent('bp:fase', { bubbles: true, detail: { fase: i, totale } }));
+      rootEl.dispatchEvent(new CustomEvent('bp:fase', { bubbles: true, detail: { fase: i, totale } }));
     }
 
     function vaiA(i: number) {

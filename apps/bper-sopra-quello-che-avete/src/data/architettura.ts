@@ -31,7 +31,7 @@ export interface Blocco {
 export const DATO: Blocco[] = [
   {
     k: { it: 'BPER Data Platform', en: 'BPER Data Platform' },
-    d: { it: 'La piattaforma dati di gruppo, sopra tutto il resto', en: 'The group data platform, above everything else' },
+    d: { it: 'La piattaforma dati di gruppo, dove confluisce quello che i sistemi producono', en: 'The group data platform, where what the systems produce converges' },
     verso: 'resta',
   },
   {
@@ -87,8 +87,11 @@ export const CANALI: Blocco[] = [
     verso: 'resta',
   },
   {
+    /* ⚠️ Lo schema ne porta dieci e la riga ne elencava sei: chi conosce i
+       propri canali conta, e trova il buco. O si elencano tutti, o si dice
+       quanti sono quelli nominati. Qui si elencano tutti e dieci. */
     k: { it: 'I dieci canali digitali', en: 'The ten digital channels' },
-    d: { it: 'Internet e mobile banking, mail, sms, push, banner, chat', en: 'Internet and mobile banking, mail, SMS, push, banner, chat' },
+    d: { it: 'Internet e mobile banking, mail, sms, push, banner, chat, videochiamata, coapping, navigazione condivisa', en: 'Internet and mobile banking, mail, SMS, push, banner, chat, video call, co-apping, co-browsing' },
     verso: 'resta',
   },
 ];
@@ -127,12 +130,12 @@ export const SCAMBI: Scambio[] = [
     poi: { it: 'La personalizzazione dei canali', en: 'Channel personalisation' },
     pro: 'Adobe Target',
     d: {
-      it: 'Una regola sola vale su sito, app e area riservata, e si misura dove si applica.',
-      en: 'One rule holds across site, app and the logged-in area, and is measured where it applies.',
+      it: 'Target porta l’esperienza e la prova; l’offerta da proporre la sceglie l’arbitro. Due mestieri, non uno.',
+      en: 'Target carries the experience and the test; which offer to show is the arbiter’s job. Two roles, not one.',
     },
     dBreve: {
-      it: 'Una regola sola su sito, app e area riservata.',
-      en: 'One rule across site, app and the logged-in area.',
+      it: 'L’esperienza e la prova; l’offerta la sceglie l’arbitro.',
+      en: 'The experience and the test; the offer is the arbiter’s call.',
     },
   },
   {

@@ -51,6 +51,10 @@ export const F = {
     url: 'https://experienceleague.adobe.com/en/docs/experience-platform/segmentation/home',
     etichetta: 'servizio di segmentazione',
   },
+  decisioning: {
+    url: 'https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning',
+    etichetta: 'Decisioning',
+  },
   cja: {
     url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-landing',
     etichetta: 'Customer Journey Analytics',
