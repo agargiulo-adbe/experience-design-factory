@@ -461,11 +461,8 @@ passi, referenze — era prigioniera di quell'app come `.im-*`. Ora è
 **`packages/core/src/styles/xd.css`**, con un nome: **XD**. Porta geometria e le regole di
 leggibilità già pagate; **non** porta colori di marchio, che restano nei token dell'app. Il
 contratto è la famiglia `--xd-*`. **Intesa non è stata migrata di proposito**: va in sala il
-5 novembre. Tre difetti che XD ha già insegnato a evitare, tutti trovati qui: un componente
-con fondo chiaro fisso dentro una slide scura (1,08:1, invisibile a ogni check di layout);
-una catena di spazi unificatori che rende una frase inseparabile e la fa sbordare (check
-`c`, HARD); un divisore senza fotografia che lascia un buco, per cui esiste la variante
-`[data-senza-foto]` a due campi.
+5 novembre. I tre difetti che XD ha già insegnato a evitare stanno nel CLAUDE.md di root,
+sezione «Lo strato XD».
 
 ### §43.3 · Il design system, e il caso in cui sistema e marchio coincidono
 Letto da `pnpm brand:tokens https://www.bper.it`: petrolio `#005157` a 300 occorrenze. Di
@@ -476,31 +473,25 @@ property che il sito espone (`#002023`, `#003134`, `#004146`). Caratteri: Archiv
 Nunito Sans, sostitute dichiarate di Giorgio Sans e Proxima Nova Soft. L'arancio `#ea862c`
 ha **un mestiere solo**: marcare ciò che cambia nell'architettura.
 
-⚠️ **Evidenza che vale per la riunione, letta dalle loro superfici:** il sito pubblico serve
-il sistema di design di Salesforce Lightning (558 riferimenti `lwc`, 85 `aura`) dentro un
-portale open source; e carica **due soli script di terze parti**, un gestore di tag di Google
-e una libreria di icone. Nessuno strumento di analisi Adobe. Sta nel dossier, non in slide.
+⚠️ **Evidenza letta dalle loro superfici, per la riunione:** il sito pubblico serve il design
+system di Salesforce Lightning (558 `lwc`, 85 `aura`) e carica **due soli script di terze
+parti**; nessuno strumento di analisi Adobe. Sta nel dossier, non in slide.
 
 ### §43.4 · Il panel, e le quattro affermazioni che non reggevano
 Giro 1 il 31 ott: cinque personas cieche (responsabile fabbriche digitali, responsabile CRM,
 architetto dei dati, chi fa campagne, integratore della gara) più il controllo dei fatti.
 **Media 3,4/5**, rischio percepito 2,2, tutti «conditional». Verdetto e grezzi in
 `docs/BPER/PANEL-VERDICT-2026-10-31-round1.md` e `docs/BPER/panel/2026-10-31-round1/`.
-Quattro errori di merito corretti, tutti e quattro trovati dal panel e nessuno dai gate:
-1. **«la misura senza spostare il dato» era falsa** — la documentazione è esplicita: i dati
-   usati in Customer Journey Analytics sono ingeriti in Experience Platform. Quattro personas
-   su cinque l'hanno colpita. Ora il capitolo ha due colonne, entra / resta.
-2. **«l'arbitro vive dentro la licenza della regia» era falsa** — Decisioning è una voce di
-   listino a sé. Corretto quello, i moduli che entrano sono **quattro**, non tre.
-3. **tre driver di prezzo su quattro erano sbagliati** — le decisioni non si fatturano, la
-   metrica è «profili ingaggiabili» e i canali sono voci separate.
-4. **due affermazioni sul sistema del concorrente erano false** — quella piattaforma sa
-   partire da un evento, e dire il contrario si smonta in una frase.
-Più un errore **in negativo**: la slide delle referenze regalava **TSB**, che è una storia
-pubblicata da Adobe sugli stessi tre moduli. Ora è in pagina con i suoi numeri.
-Tagli chiesti all'unanimità: via la slide di posizionamento (5 su 5), via la tassonomia
-delle tre forme di referenza (4 su 5). Aggiunta per il buco che il business ha trovato:
-**che cosa cambia in una settimana di lavoro**.
+Quattro errori di merito corretti, tutti trovati dal panel e nessuno dai gate: **«la misura
+senza spostare il dato» era falsa** (i dati usati in Customer Journey Analytics sono ingeriti
+in Experience Platform: il capitolo ha ora due colonne, entra / resta); **«l'arbitro vive
+dentro la licenza della regia» era falsa** (Decisioning è una voce di listino a sé, quindi i
+moduli che entrano sono **quattro**); **tre driver di prezzo su quattro erano sbagliati**; e
+**due affermazioni sul sistema del concorrente** non reggevano. Più un errore in negativo: la
+slide delle referenze regalava **TSB**, storia pubblicata da Adobe sugli stessi moduli, e ora
+è in pagina. Tagli chiesti all'unanimità: la slide di posizionamento (5 su 5) e la tassonomia
+delle tre forme di referenza (4 su 5). Aggiunta per il buco trovato dal business: **che cosa
+cambia in una settimana di lavoro**.
 
 ### §43.4-bis · Il secondo giro, e i cinque errori che nessun gate vede
 Giro 2 il 31 ott, stesse personas, pacchetto di evidenza rigenerato: **media 3,6**, rischio
@@ -533,15 +524,44 @@ contatto, non quelli raggiunti; i 3.000 sono l'1% dei 300.000 a rischio) e **tre
 che rispondono a tre buchi strutturali: come si misura il beneficio, che cosa manca per una
 stima in giornate, come si esce (esternalizzazione e reversibilità).
 
+### §43.4-ter · Che cosa è stato chiuso il 1 novembre
+Il backlog del secondo giro lasciava sei punti aperti dichiarati. Cinque sono chiusi:
+- **La scheda di connettività esiste**: `docs/BPER/SCHEDA-CONNETTIVITA.md` (git-ignorata), una
+  pagina per l'architetto dei dati del cliente. Dentro c'è il conflitto fra le tre pagine
+  ufficiali su Oracle dichiarato per intero — la pagina dei prerequisiti elenca **sette**
+  magazzini e Oracle non c'è; la pagina delle connessioni lo copre dalla 11g in su «purché
+  raggiungibile da una rete esterna»; la tabella della connettività privata elenca cinque
+  database e Oracle non c'è — più le sette domande per loro e le quattro cose che portiamo noi.
+- **Residenza, cifratura, chiavi e titolare** sono una slide nuova (`dato · slide-governo`), e
+  la riga che conta è quella che non ci conviene: **una regione italiana non esiste**, in Europa
+  continentale c'è l'Olanda. Il dato è cifrato in transito e a riposo con chiavi di sistema; le
+  chiavi del cliente sono un componente a sé e la scelta non è reversibile.
+- **I quattro numeri di perimetro** (identità attive, eventi all'anno, rinfresco degli
+  attributi, volumi di invio) sono nella richiesta, accanto all'agenda delle quattro ore.
+- **Chi perde copertura quando l'arbitro decide** è una condizione di chiusura della fase 03:
+  gli obiettivi di chi perde si rivedono nella stessa sede che governa i pesi.
+- **Il ritmo**: `audit:ritmo` segnalava due deserti di quattro schermate senza un elemento
+  visivo. Tre figure in più — il rientro dei dati, la misura del beneficio, la lettura del
+  profilo nel taglio — e `G1` è a zero: **15 slide su 33 portano un disegno** (la media del
+  monorepo misurata il 24 ott era il 12%).
+  ⚠️ Lezione di composizione: **una figura dentro una colonna disallinea le altre** (la riga
+  della griglia si allunga sulla voce più alta). Va sotto la lista, allineata a sinistra.
+Resta aperto quello che dipende da altri: le **due date** della mezza giornata, la **risposta
+dell'assistenza** sulla connessione privata a Oracle con gli indirizzi di egress, la **chiamata
+fra pari** con la referenza, e le **giornate per fase**, che il documento promette scritte
+entro una settimana dalla mezza giornata.
+
 ### §43.5 · Stato dei gate
-Dopo il secondo giro: `copy-audit` 0 HARD e 0 SOFT su **604 stringhe** · `audit:deck`
-**0 HARD** ai tre viewport su 9 rotte (SOFT `i` 76, `a` 37: un deck ad ancore li fallisce per
-costruzione) · `audit:ink` pulito su **424 blocchi**, con i «Scopri come» aperti ·
-`audit:fonti` nessun link rotto su 18 (i due di business.adobe.com rispondono solo a un
-browser vero: aperti a mano) · `audit:taglio` allineato · `content-audit`, `audit:og` e
-`audit:docs` verdi · `audit:dossier` **0 rilievi su 5 viewport**. `audit:wrap` resta a **21**:
-i residui sono tutti gruppi di tre o quattro parole a fine frase, e legarli oltre questo punto
-crea catene — ed è la catena che ha già prodotto uno sbordamento HARD su questo deck.
+Al 1 novembre: `copy-audit` 0 HARD e 0 SOFT su **627 stringhe** · `audit:deck` **0 HARD** ai
+tre viewport su 9 rotte (SOFT `i` 79, `a` 44: un deck ad ancore li fallisce per costruzione) ·
+`audit:ink` pulito su **440 blocchi**, con i «Scopri come» aperti · `audit:fonti` nessun link
+rotto (i due di business.adobe.com rispondono solo a un browser vero: aperti a mano) ·
+`audit:taglio` allineato · `audit:ritmo` **G1 a zero**, 15 slide su 33 con un elemento visivo ·
+`content-audit`, `audit:og`, `audit:docs` e `typecheck` verdi · `audit:dossier` **0 rilievi su
+5 viewport**. `audit:wrap` resta a **24**: i residui sono tutti gruppi di tre o quattro parole
+a fine frase, e legarli oltre questo punto crea catene — ed è la catena che ha già prodotto uno
+sbordamento HARD su questo deck. `pnpm lenti`: frase media 9 parole, Gulpease 74, e delle
+diciassette negazioni in coda ne è stata tolta **una**, l'unica che non si guadagnava il posto.
 
 ### §43.6 · Che cosa manca, in ordine
 - **P0 di consegna:** si manda e si proietta il **taglio**, con il percorso intero come
@@ -560,5 +580,5 @@ crea catene — ed è la catena che ha già prodotto uno sbordamento HARD su que
 - **Tre domande senza risposta nostra:** se la loro piattaforma di profilazione sia un
   magazzino interrogabile; se l'incentivo sulla migrazione valga per questo cliente da solo
   (la risposta ricevuta argomenta sull'altra banca); se esistano contratti Adobe in essere.
-- **Nessuna immagine**: i divisori usano la variante a due campi.
-- `show_in_showcase` resta `false`.
+- **Nessuna immagine**: i divisori usano la variante a due campi, e `show_in_showcase`
+  resta `false`.

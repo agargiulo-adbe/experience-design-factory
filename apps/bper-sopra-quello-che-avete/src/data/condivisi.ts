@@ -57,8 +57,8 @@ export const CHIUSE = {
     en: 'Of nine blocks, we touch three',
   },
   controllo: {
-    it: 'Il controllo non si perde: cambia posto. Si sposta dalla lista alla regola, e la regola la scrivete voi.',
-    en: 'Control is not lost: it moves. From the list to the rule, and you write the rule.',
+    it: 'Il controllo resta vostro: si sposta dalla lista alla regola, e la regola la scrivete voi.',
+    en: 'Control stays yours: it moves from the list to the rule, and you write the rule.',
   },
   /* ⚠️ RISCRITTA DOPO UNA VERIFICA CHE HA DETTO IL CONTRARIO.
      Diceva «oggi in casa non ha un equivalente». Il comunicato del cliente
@@ -141,19 +141,19 @@ export const DRIVER: Driver[] = [
   },
   {
     k: { it: 'Quanto traffico', en: 'How much traffic' },
-    d: { it: 'La personalizzazione si licenzia sul traffico: le pagine viste in un anno, o le chiamate al server.', en: 'Personalisation is licensed on traffic: annual page views, or server calls.' },
+    d: { it: 'La personalizzazione si licenzia sul traffico: le pagine viste in un anno, o le chiamate al server.', en: 'Personalisation is licensed on traffic: annual page views, or server calls.' },
     s: { it: 'Serve: le pagine viste di sito e area riservata in un anno.', en: 'Needed: a year of page views on the site and the logged-in area.' },
     b: { it: 'pagine viste all’anno', en: 'annual page views' },
   },
   {
     k: { it: 'Quante righe di dato', en: 'How many rows of data' },
     d: { it: 'La misura si licenzia sul volume ingerito e sulla finestra di conservazione, non sul numero di report.', en: 'Measurement is licensed on ingested volume and retention window, not on report count.' },
-    s: { it: 'Serve: il volume di eventi digitali in un anno, e per quanti mesi vanno tenuti.', en: 'Needed: a year of digital event volume, and how many months it must be kept.' },
+    s: { it: 'Serve: il volume di eventi digitali in un anno, e per quanti mesi vanno tenuti.', en: 'Needed: a year of digital event volume, and how many months it must be kept.' },
     b: { it: 'righe di dato e conservazione', en: 'rows of data and retention' },
   },
   {
     k: { it: 'Quanti invii', en: 'How many sends' },
-    d: { it: 'I volumi annui per canale, con i picchi dichiarati: è la parte che si sottostima sempre.', en: 'Annual volumes per channel, with peaks declared: the part always underestimated.' },
+    d: { it: 'I volumi annui per canale, con i picchi dichiarati: è la parte che si sottostima sempre.', en: 'Annual volumes per channel, with peaks declared: the part always underestimated.' },
     s: { it: 'Serve: gli invii dell’ultimo anno, mese per mese.', en: 'Needed: last year’s sends, month by month.' },
     b: { it: 'volumi di invio', en: 'send volumes' },
   },

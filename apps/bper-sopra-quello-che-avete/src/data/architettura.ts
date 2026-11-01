@@ -298,6 +298,32 @@ export const MISURE: Passo[] = [
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
+   DOVE STA IL DATO, E CHI TIENE LE CHIAVI.
+   ⚠️ In ventinove schermate le parole residenza, cifratura e titolare non
+   comparivano mai, e sono le righe che il comitato di una banca chiede prima
+   di guardare il prezzo. Fatti verificati sulla documentazione il 1 novembre
+   2026, non impressioni:
+   · le regioni sono sei su Azure (Canada, Regno Unito, Paesi Bassi, Virginia,
+     India, Australia) più una su AWS; in Europa continentale c'è l'Olanda, e
+     l'Italia non c'è — dirlo prima vale più che scoprirlo in due mesi;
+   · il dato è cifrato in transito e a riposo per impostazione, con chiavi di
+     sistema. Le chiavi del cliente esistono, ma sono un componente a parte,
+     e una volta accese non si torna indietro;
+   · il titolare resta la banca: lo scrive il contratto, e in slide si dice
+     soltanto che esiste.
+   ══════════════════════════════════════════════════════════════════════ */
+export const GOVERNO: Voce[] = [
+  { k: { it: 'Dove sta', en: 'Where it sits' },
+    d: { it: 'La regione si sceglie all’attivazione. In Europa continentale c’è l’Olanda; in Italia, oggi, no', en: 'The region is chosen at provisioning. In continental Europe there is the Netherlands; in Italy, today, there is not' } },
+  { k: { it: 'Com’è cifrato', en: 'How it is encrypted' },
+    d: { it: 'In transito e a riposo, sempre, con chiavi di sistema', en: 'In transit and at rest, always, with system keys' } },
+  { k: { it: 'Chi tiene le chiavi', en: 'Who holds the keys' },
+    d: { it: 'Le vostre si possono usare al posto di quelle di sistema: è un componente a parte, e la scelta non si annulla', en: 'Yours can replace the system ones: a separate component, and the choice cannot be undone' } },
+  { k: { it: 'Chi risponde di che cosa', en: 'Who answers for what' },
+    d: { it: 'Il titolare restate voi; i subfornitori e la sede del trattamento stanno nel contratto, non in una slide', en: 'You remain the controller; sub-processors and the place of processing are in the contract, not on a slide' } },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
    COME SI ESCE — il fascicolo di esternalizzazione.
    ⚠️ Due giri di revisione e zero righe su questo, mentre tre lettori su
    cinque lo chiamano cancello e non preferenza: in banca il fascicolo del
@@ -311,13 +337,13 @@ export const MISURE: Passo[] = [
    ══════════════════════════════════════════════════════════════════════ */
 export const USCITA: Voce[] = [
   { k: { it: 'Nel vostro registro dei fornitori', en: 'In your supplier register' },
-    d: { it: 'Entriamo con la documentazione che serve: sede del trattamento, subfornitori, addenda contrattuali', en: 'We come in with the paperwork: where processing happens, sub-processors, contractual addenda' } },
+    d: { it: 'Entriamo con la documentazione che serve: sede del trattamento, subfornitori, addenda contrattuali', en: 'We come in with the paperwork: where processing happens, sub-processors, contractual addenda' } },
   { k: { it: 'La criticità la classificate voi', en: 'You classify the criticality' },
-    d: { it: 'La decide la vostra analisi d’impatto. Noi portiamo i documenti per farla, non il giudizio', en: 'Your own impact analysis decides it. We bring the documents to run it, not the verdict' } },
+    d: { it: 'La decide la vostra analisi d’impatto. Noi portiamo i documenti per farla, non il giudizio', en: 'Your own impact analysis decides it. We bring the documents to run it, not the verdict' } },
   { k: { it: 'Come tornano indietro i dati', en: 'How the data comes back' },
-    d: { it: 'Profili, eventi, definizioni dei percorsi e regole di arbitraggio: in quale formato e in quanto tempo si scrive nel contratto', en: 'Profiles, events, journey definitions and arbitration rules: format and timescale are written into the contract' } },
+    d: { it: 'Profili, eventi, percorsi e regole di arbitraggio, in un formato aperto', en: 'Profiles, events, journeys and arbitration rules, in an open format' } },
   { k: { it: 'Continuità e prove', en: 'Continuity and testing' },
-    d: { it: 'Livelli di servizio, piano di continuità e prova di ripristino si allegano prima della firma', en: 'Service levels, continuity plan and recovery test are attached before signature' } },
+    d: { it: 'Livelli di servizio, piano di continuità e prova di ripristino si allegano prima della firma', en: 'Service levels, continuity plan and recovery test are attached before signature' } },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -364,7 +390,7 @@ export const TSB = {
   data: '2024',
   fatti: [
     { it: 'Oltre 300.000 clienti senza addebito diretto sulla carta di credito, a rischio di spese per ritardo', en: 'Over 300,000 customers with no direct debit on their credit card, at risk of late-payment fees' },
-    { it: 'Più di 3.000 addebiti attivati nella prima settimana, contro dieci nei sei mesi precedenti: l’1% dei clienti a rischio', en: 'More than 3,000 direct debits set up in the first week, against ten in the previous six months: 1% of the customers at risk' },
+    { it: 'Più di 3.000 addebiti attivati nella prima settimana, contro dieci nei sei mesi precedenti: l’1% dei clienti a rischio', en: 'More than 3,000 direct debits set up in the first week, against ten in the previous six months: 1% of the customers at risk' },
     { it: 'Sei volte più clienti messi in contatto con l’esperienza finanziaria che risolve il loro bisogno', en: 'Six times more customers connected to the financial experience that solves their need' },
   ],
 } as const;

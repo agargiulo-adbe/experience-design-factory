@@ -734,6 +734,15 @@ posizionamenti: tutto.
   sceglierne una in silenzio. Chi legge deve poter vedere che c'era un bivio.
 - **Assenza di prova non è prova di assenza:** da «non trovato» si conclude «non
   confermato, da chiedere», mai «falso» (vedi `fonti-cliente-gerarchia`).
+- **E vale al contrario, che è il caso più caro: un'affermazione di ASSENZA su un cliente
+  («questo in casa non ce l'hanno») si verifica sulle SUE pagine, prima di scriverla.** Su
+  BPER il deck affermava in tre punti che mancava l'arbitro fra le proposte: il comunicato
+  del gruppo del 23 nov 2022 dice che il loro motore «consente di calcolare dinamicamente la
+  miglior proposta commerciale per ogni singolo cliente (Next Best Action)». La fonte che
+  smentisce è la più forte che esista — la loro — e in sala la trova chiunque. Quando una
+  capacità sembra mancare, la frase giusta non è «non ce l'avete»: è l'osservazione più
+  precisa («presente, non configurato così») seguita dalla domanda. Costa una ricerca e
+  salva la riunione. Memoria: `assenza-sul-cliente-si-verifica`.
 Memoria: `user-claims-are-hypotheses`.
 
 ### `prefers-reduced-motion` si rispetta, non decide al posto di chi guarda (BINDING)

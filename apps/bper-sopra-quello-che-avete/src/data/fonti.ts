@@ -71,6 +71,20 @@ export const F = {
     etichetta: 'Decisioning Explainer in Coworker',
   },
 
+  /* ── Governo del dato: residenza, cifratura, chiavi ─────────────────── */
+  cifratura: {
+    url: 'https://experienceleague.adobe.com/en/docs/experience-platform/landing/governance-privacy-security/encryption',
+    etichetta: 'cifratura in transito e a riposo',
+  },
+  regioni: {
+    url: 'https://experienceleague.adobe.com/en/docs/experience-platform/landing/multi-cloud',
+    etichetta: 'le regioni dove la piattaforma è ospitata',
+  },
+  chiavi: {
+    url: 'https://experienceleague.adobe.com/en/docs/experience-platform/landing/governance-privacy-security/customer-managed-keys/overview',
+    etichetta: 'le chiavi gestite dal cliente',
+  },
+
   /* ── Le fonti del cliente e la referenza ────────────────────────────── */
   /* ⚠️ Il comunicato che ha corretto il documento. Dice che il motore di
      Marketing Automation del cliente «consente di calcolare dinamicamente la

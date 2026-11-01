@@ -40,7 +40,7 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { fonti } from '../data/fonti';
-import { ENTRA, RESTA } from '../data/architettura';
+import { ENTRA, RESTA, GOVERNO } from '../data/architettura';
 
 const SLUG = 'dato';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -103,6 +103,41 @@ const currentPath = Astro.url.pathname;
                 en="Attributes arrive on a scheduled feed, as today: in that scenario a subset gets copied, and we declare which." />
 
         <Fonte voci={fonti('facOverview', 'facConnessioni')} />
+      </div>
+    </Slide>
+
+    {/* ⚠️ LE TRE PAROLE CHE IN VENTINOVE SCHERMATE NON COMPARIVANO MAI:
+        residenza, cifratura, titolare. Sono quelle che il comitato di una
+        banca chiede prima di guardare il prezzo, e arrivare senza è il modo
+        di prendersi un rinvio di un mese. I fatti sono verificati sulla
+        documentazione, Italia compresa: la regione italiana non c'è, e si
+        dice qui invece di lasciarla scoprire a loro. */}
+    <Slide id="slide-governo" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <T as="p" class="xd-n" it="Residenza, chiavi, responsabilità" en="Residency, keys, responsibility" />
+          <T as="h2" class="xd-h2" it="Dove sta il dato che entra, e chi tiene le chiavi" en="Where the data that enters sits, and who holds the keys" />
+          <T as="p" class="xd-sub"
+             it="Quattro righe che il vostro comitato chiede prima del prezzo. Le portiamo noi, con la parte che non ci conviene dentro."
+             en="Four lines your committee asks for before the price. We bring them, including the part that does not suit us." />
+        </div>
+
+        <ul class="xd-passi" style="--cols:2" data-stagger>
+          {GOVERNO.map((v, i) => (
+            <li class="xd-passi-i" data-substep data-side="in">
+              <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <T as="p" class="xd-passi-l" it={v.k.it} en={v.k.en} />
+              <T as="p" class="xd-passi-d" it={v.d.it} en={v.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <T as="p" class="xd-chiusa"
+           it="La regione italiana non esiste, e lo diciamo adesso: se per voi è un vincolo, cambia la conversazione prima della proposta, non dopo."
+           en="There is no Italian region, and we say it now: if that is a constraint for you, it changes the conversation before the proposal, not after." />
+
+        <Fonte voci={fonti('cifratura', 'regioni', 'chiavi')} />
       </div>
     </Slide>
 

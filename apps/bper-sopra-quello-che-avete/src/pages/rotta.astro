@@ -55,12 +55,16 @@ const FASI = [
   {
     k: { it: 'Si accende l’arbitro', en: 'Switch the arbiter on' },
     d: { it: 'Quando le proposte in competizione sono più di una, e si vede.', en: 'When competing offers are more than one, and it shows.' },
-    f: { it: 'Chiude quando la regola di chi vince è scritta e qualcuno la possiede.', en: 'Done when the rule on who wins is written and someone owns it.' },
+    /* ⚠️ Quando più proposte competono, qualcuna perde: per chi possiede
+       quelle è copertura tolta su un obiettivo commerciale che resta. Dirlo
+       come condizione di chiusura evita che la prima lista di perdenti
+       diventi il motivo per cui i pesi si spengono. */
+    f: { it: 'Chiude quando la regola di chi vince è scritta, qualcuno la possiede, e gli obiettivi di chi perde copertura sono rivisti nella stessa sede.', en: 'Done when the rule on who wins is written, someone owns it, and the targets of whoever loses coverage are revised in the same forum.' },
   },
   {
     k: { it: 'Si spegne quello che non serve', en: 'Switch off what is no longer needed' },
     d: { it: 'Per ultimo, e canale per canale. Mai come primo passo.', en: 'Last, and channel by channel. Never as the first step.' },
-    f: { it: 'Chiude quando l’ultimo invio è uscito dal canale nuovo per un ciclo, e il vecchio contratto ha una data.', en: 'Done when the last send has left the new channel for a full cycle, and the old contract has a date.' },
+    f: { it: 'Chiude quando l’ultimo invio è uscito dal canale nuovo per un ciclo, e il vecchio contratto ha una data.', en: 'Done when the last send has left the new channel for a full cycle, and the old contract has a date.' },
   },
 ];
 ---
@@ -169,11 +173,14 @@ const FASI = [
           <T as="p" class="xd-n" it="Prima della firma" en="Before signature" />
           <T as="h2" class="xd-h2" it="Come si esce, e in quanto tempo" en="How you exit, and how long it takes" />
           <T as="p" class="xd-sub"
-             it="Lo portiamo noi al tavolo, non dopo. Un fornitore su un canale di primo livello entra nel vostro fascicolo di esternalizzazione, e il rientro si scrive prima della firma."
-             en="We bring this to the table, not later. A supplier on a first-tier channel enters your outsourcing file, and the exit is written before signature." />
+             it="Un fornitore su un canale di primo livello entra nel vostro fascicolo di esternalizzazione. Lo portiamo noi, prima della firma."
+             en="A supplier on a first-tier channel enters your outsourcing file. We bring it, before signature." />
         </div>
 
-        <ul class="xd-passi" style="--cols:2" data-stagger>
+        {/* Quattro colonne e non due: con la figura sulla terza voce, a
+            1280×800 la lista su due righe spingeva il titolo sopra la
+            safe-area (check c, HARD). Si cambia la griglia, non il tipo. */}
+        <ul class="xd-passi" style="--cols:4" data-stagger>
           {USCITA.map((v, i) => (
             <li class="xd-passi-i" data-substep data-side="in">
               <span class="xd-passi-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -183,9 +190,13 @@ const FASI = [
           ))}
         </ul>
 
+        <div style="max-width:24rem;width:100%" data-substep data-side="in">
+          <Figura k="scambio" />
+        </div>
+
         <T as="p" class="xd-chiusa"
-           it="Le regole di arbitraggio e le definizioni dei percorsi tornano a voi il giorno in cui decidete di uscire. Formato e tempi sono una clausola, non una promessa."
-           en="The arbitration rules and journey definitions come back to you the day you decide to leave. Format and timescale are a clause, not a promise." />
+           it="Il formato e i tempi del rientro sono una clausola del contratto, non una promessa."
+           en="The format and timescale of the exit are a contract clause, not a promise." />
       </div>
     </Slide>
 
