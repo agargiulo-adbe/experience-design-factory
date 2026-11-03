@@ -297,6 +297,30 @@ export const SOURCES = {
       'Verbatim: le ricevitorie Sisal «si aggiungeranno all\'attuale rete commerciale di Trenitalia Regionale, portando a oltre 70mila i punti vendita (tabaccherie, bar, edicole, ricevitorie e self service) integrativi e alternativi alle tradizionali biglietterie di stazione». Quindi: oltre 70.000 è il totale dei punti vendita FUORI dalle biglietterie, sul Regionale, ed è un dato del 2014. Non è il numero delle agenzie di viaggio e non è il numero della piattaforma.',
   },
 
+  /* ── Le referenze di altri clienti ───────────────────────────────────
+     Non sono del travel, ed è una scelta dichiarata: contano i casi più
+     forti che possiamo PROVARE, non quelli del settore giusto che non
+     possiamo verificare. Entrambe le pagine sono state aperte e lette il
+     3 novembre 2026, e i numeri qui sotto sono le loro parole.
+     ⚠️ Tre storie candidate del travel — una compagnia di crociere
+     italiana, due compagnie aeree — sono rimaste fuori perché la loro
+     pagina non ha risposto dal nostro percorso di rete: un link che cade
+     mentre il cliente lo apre è peggio di nessun link. */
+  telmore: {
+    url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html',
+    label: 'Adobe · il caso Telmore',
+    data: 'letta il 3 novembre 2026',
+    cosaDice:
+      'Telmore, telco danese, 750.000 clienti. Verbatim dai risultati: «21% digital sales growth with 25% increase in cross sales to existing customers», «11% lift in sales from personalized offers ranked using artificial intelligence», «19.5% increase in customer matches on Facebook». Prodotti: Experience Platform, Real-Time CDP, Journey Optimizer, Customer Journey Analytics, Analytics, Target.',
+  },
+  santander: {
+    url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html',
+    label: 'Adobe · il caso Santander Brasil',
+    data: 'letta il 3 novembre 2026',
+    cosaDice:
+      'Santander Brasil, 68 milioni di clienti nel Paese, dieci mercati principali nel gruppo. Verbatim dai risultati: «530 ofertas para clientes de varejo e 800 para PMEs, com +4.400 assets criativos», «Redução drástica no time-to-market, de dias para minutos», «+100 milhões de perfis unificados», «600% de aumento nas conversões de campanhas de abandono de carrinho», «taxa de match elevada de 50% para 70%». Prodotti: Experience Platform, AEM Assets, AEM Sites, Real-Time CDP, CJA, Target, Workfront.',
+  },
+
   /* ── La misura che abbiamo fatto noi: si nomina, non si linka ─────────── */
   misura: {
     label: 'misura Adobe dell’11 e 12 ottobre 2026',

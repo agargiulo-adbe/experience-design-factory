@@ -46,7 +46,7 @@ export interface Stat {
 
 /* ── Copertina e firma: le righe che vivono in entrambi i percorsi ───────── */
 export const COVER = {
-  tag: 'Quattro punti in cui una vendita si perde prima che qualcuno salga sul treno.',
+  tag: 'Quattro punti in cui una vendita si perde prima che qualcuno salga sul treno.',
   /** La riga della slide-firma, identica nei due percorsi. */
   firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
 };
@@ -100,6 +100,22 @@ export const APERTURA = {
     'E, nella stessa intervista: «stiamo investendo significativamente nell’evoluzione dei nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
   letturaBreve:
     'E, nella stessa intervista, sugli investimenti: «i nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
+  /** ⚠️ IL PONTE, ed è la riga che decide come va l'ora.
+   *  «Internazionalizzazione» è la parola del Direttore Sales, ma dentro
+   *  l'azienda c'è chi la legge come una traslazione dell'esistente e non
+   *  come una rottura. Sono tutti e due in sala. Una slide che promette di
+   *  portarli all'estero dà ragione a chi la sminuisce; una slide che dice
+   *  che l'impianto è lo stesso dà ragione a tutti e due — e la frase è
+   *  praticamente la loro. L'argomento smette di essere «vi aiutiamo ad
+   *  andare fuori» e diventa «quello che costruite per l'Italia è la stessa
+   *  cosa che vi porta fuori». Il seguito concreto è la slide dell'idea nel
+   *  capitolo del contenuto: un master, quattro mercati.
+   *  ⚠️ Per questo la riga NON promette un progetto estero a parte. */
+  ponte:
+    // copy-audit-ignore L3 · la doppia relativa è la formulazione scelta
+    // dall'owner il 3 nov 2026: riscriverla toglie alla frase la forza che ha
+    // davanti a chi considera l'internazionalizzazione una traslazione.
+    'Quello che costruite per l’Italia è la stessa cosa che vi porta fuori. Non serve un programma estero a parte: servono la lingua e il canale giusti sulla stessa macchina.',
   /** La riga di fonte, identica nei due percorsi: il link lo mette la pagina,
    *  le parole stanno qui — scritte a mano in due posti, divergevano. */
   fonte: {

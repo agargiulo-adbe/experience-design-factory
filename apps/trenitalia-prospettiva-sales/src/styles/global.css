@@ -4,6 +4,16 @@
 @source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
 @source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
 
+/* LO STRATO XD — la grammatica visiva condivisa (copertina a due colonne con
+   l'agenda, divisore di capitolo, slide di contenuto, architettura, cifre,
+   passi, referenze, figure grandi, chiusa). Vive nel motore:
+   `packages/core/src/styles/xd.css`. Percorso relativo e non alias: `@import`
+   nel CSS lo risolve il bundler dei fogli di stile, prima che gli alias di
+   Vite entrino in gioco.
+   ⚠️ XD porta geometria e gerarchia, NON colori di marchio: quelli arrivano
+   dal contratto `--xd-*` dichiarato più sotto, con i valori di Trenitalia. */
+@import "../../../../packages/core/src/styles/xd.css";
+
 /* ═══════════════════════════════════════════════════════════════════════
    «Dove può arrivare il viaggio» — Adobe × Trenitalia
    Prospettiva per la Direzione Sales. Generata l'11 ottobre 2026.
@@ -138,7 +148,52 @@
   --duration-normal: 300ms;
   --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
   --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* ── Il contratto XD, con i valori di Trenitalia ────────────────────────
+     XD si porta dei pannelli scuri suoi (il divisore di capitolo, il piano
+     dell'architettura, i blocchi): questi token dicono di che colore sono.
+     Qui la dominante è GIÀ scura, quindi gli inchiostri coincidono con quelli
+     di `--surface-primary` — ma vanno dichiarati espliciti e pieni, perché un
+     bianco trasparente su un pannello di marchio scende sotto soglia e
+     `audit:ink` lo misura sui pixel. */
+  --xd-dark-bg: var(--color-ardesia-notte);
+  --xd-dark-bg-2: var(--color-ardesia);
+  --xd-dark-ink: #ffffff;
+  --xd-dark-body: #e3e5e9;
+  --xd-dark-note: #b4b9c2;
+  /* L'accento su fondo scuro è il rosso SCHIARITO: il #d91835 pieno dà 2,9:1
+     e come inchiostro non si legge. Il pieno resta `--accent-primary`. */
+  --xd-dark-accent: var(--color-rosso-chiaro);
+  --xd-dark-surface: rgba(255, 255, 255, 0.07);
+  --xd-dark-surface-2: rgba(255, 255, 255, 0.13);
+  --xd-dark-line: rgba(255, 255, 255, 0.17);
+  --xd-arch-blocco: rgba(12, 16, 24, 0.55);
+  --xd-div-pannello: linear-gradient(165deg, #2f394e 0%, #141a25 100%);
+  --xd-piano: linear-gradient(160deg, #333e54 0%, #1b2230 68%, #11161f 100%);
+
+  /* ── Gli alias che XD si aspetta ────────────────────────────────────────
+     Alcune classi di XD leggono nomi primitivi di convenzione
+     (`--color-ink`, `--color-ink-2`, `--color-grey-600`, `--color-accent-deep`,
+     `--color-on-accent`) e li usano SENZA ripiego: `.xd-div-t` prende il
+     colore da `--color-ink`, e `.xd-ref-b` ci rimette gli inchiostri scuri
+     che si porta dentro. Qui la tavolozza ha nomi suoi — ardesia, grigio,
+     rosso — quindi senza questi alias quelle variabili sono vuote: il titolo
+     del divisore eredita il bianco della dominante e sparisce sul chiaro, e
+     nessun check di layout lo vede. Sono alias, non colori nuovi. */
+  --color-ink: var(--color-ardesia-notte);
+  --color-ink-2: var(--color-ardesia);
+  --color-grey-600: var(--color-grigio-600);
+  --color-accent-deep: var(--color-rosso-scuro);
+  --color-on-accent: var(--color-bianco);
 }
+
+/* ⚠️ `.xd-ref-b` prende il fondo da `--surface-secondary` e ci rimette dentro
+   gli inchiostri SCURI: è la scelta giusta in un'experience a dominante
+   chiara, dove `secondary` è un grigio tenue. Qui `secondary` è l'ardesia
+   piena — scura — e il risultato sarebbe ardesia su ardesia. Il blocco
+   referenza diventa quindi un componente CHIARO dentro una slide scura,
+   come `.ex-card`, e gli inchiostri che XD gli mette tornano corretti. */
+.xd-ref-b { background: var(--surface-inverse); border-left-color: var(--accent-primary); }
 
 /* Le varianti CHIARE dopo le scure: stessa specificità, vince l'ultima. Lo Slide
    rende la superficie come classe Tailwind, non come data-attribute, quindi il
@@ -653,4 +708,155 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   .tp-linea-name { text-wrap: pretty; }
   .tp-mappa-row { grid-template-columns: 2.6rem 1fr; }
   .tp-stats { grid-template-columns: 1fr; }
+}
+
+/* ── XD, gli scostamenti di questa pelle ─────────────────────────────────
+   Il ritmo verticale fra il titolo di copertina e il suo lead: XD lascia
+   0,75rem, che a 1920 fanno 14px e il check `g` vuole almeno 16. Si alza lo
+   spazio, non si tocca il tipo — è la direzione che il contratto consente. */
+.xd-cop-sx { gap: 0.95rem; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   IL MOCKUP DI UN'IDEA — `.mk-*`, lo strato XD
+   Una schermata grande e riconoscibile, non quattro disegnini: il registro
+   è quello che si proietta (skills/experience-design/references/xd.md).
+   ⚠️ È un COMPONENTE CHIARO dentro slide scure: si rimette gli inchiostri,
+   se no eredita il bianco della dominante e scrive bianco su bianco.
+   ═══════════════════════════════════════════════════════════════════════ */
+.mk { width: 100%; display: flex; justify-content: center; }
+.mk-schermo {
+  width: 100%; max-width: 46rem; border-radius: 14px; overflow: hidden;
+  background: var(--color-bianco); border: 1px solid var(--color-grigio-300);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-tertiary: var(--color-grigio-600);
+  color: var(--color-ardesia-notte);
+}
+.mk-barra {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1rem; background: var(--color-rosso);
+}
+.mk-barra::before {
+  content: ''; width: 0.62rem; height: 0.62rem; flex: none;
+  border-radius: 2px; background: var(--color-bianco);
+}
+.mk-barra-t {
+  font-family: var(--font-display); font-weight: 700; color: var(--color-bianco);
+  font-size: clamp(0.84rem, 0.72vw, 1.5rem); letter-spacing: 0.02em;
+}
+.mk-corpo { display: grid; gap: 0.7rem; padding: 1rem 1.15rem 1.15rem; }
+
+/* — la risposta generata — */
+.mk-dom { margin: 0; font-size: clamp(1rem, 0.95vw, 1.8rem); font-weight: 700; color: var(--color-ardesia-notte); }
+.mk-risposta {
+  display: grid; gap: 0.6rem; padding: 0.8rem 0.9rem; border-radius: 10px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-grigio-300);
+}
+.mk-risposta p { margin: 0; max-width: none; font-size: clamp(0.9rem, 0.78vw, 1.6rem); line-height: 1.45; color: var(--color-ardesia); }
+.mk-card {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem;
+  padding: 0.55rem 0.75rem; border-radius: 8px;
+  background: var(--color-bianco); border: 1px solid var(--color-grigio-300);
+  border-left: 3px solid var(--color-rosso);
+}
+.mk-card-m { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.94rem, 0.82vw, 1.68rem); color: var(--color-ardesia-notte); }
+.mk-card-o { font-size: clamp(0.82rem, 0.68vw, 1.46rem); color: var(--color-rosso-scuro); font-weight: 700; }
+.mk-fonti-k { margin: 0; font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-fonti { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.mk-chip {
+  padding: 0.3rem 0.7rem; border-radius: 999px;
+  font-size: clamp(0.82rem, 0.68vw, 1.46rem); font-weight: 600;
+  background: var(--color-chiaro); color: var(--color-grigio-600);
+  border: 1px solid var(--color-grigio-300);
+}
+.mk-chip--on { background: var(--color-rosso); color: var(--color-bianco); border-color: var(--color-rosso); }
+
+/* — l'itinerario intermodale — */
+.mk-occ { margin: 0; font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-tratte { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.mk-tratte li {
+  display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) auto;
+  align-items: baseline; gap: 0.3rem 0.8rem;
+  padding: 0.62rem 0.8rem; border-radius: 8px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-ardesia-chiara);
+}
+.mk-tratte li[data-ultimo] { border-left-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-tratta-m { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.92rem, 0.8vw, 1.64rem); color: var(--color-ardesia-notte); }
+.mk-tratta-d { font-size: clamp(0.86rem, 0.72vw, 1.52rem); color: var(--color-ardesia); }
+.mk-tratta-o { font-variant-numeric: tabular-nums; font-weight: 700; font-size: clamp(0.86rem, 0.72vw, 1.52rem); color: var(--color-grigio-600); }
+.mk-totale {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: 0.7rem 0.9rem; border-radius: 8px; background: var(--color-ardesia-notte);
+}
+.mk-totale span { font-size: clamp(0.88rem, 0.74vw, 1.56rem); color: var(--color-grigio-200); }
+.mk-totale strong { font-family: var(--font-display); font-size: clamp(1.2rem, 1.1vw, 2.2rem); color: var(--color-bianco); }
+
+/* — le varianti di contenuto — */
+.mk-master {
+  display: grid; gap: 0.2rem; padding: 0.7rem 0.9rem; border-radius: 8px;
+  background: var(--color-ardesia-notte);
+}
+.mk-master-k { font-size: clamp(0.74rem, 0.6vw, 1.32rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-rosso-chiaro); }
+.mk-master-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.9vw, 1.84rem); color: var(--color-bianco); }
+.mk-varianti { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-varianti li {
+  display: grid; gap: 0.25rem; padding: 0.7rem 0.6rem; border-radius: 8px;
+  background: var(--color-nebbia); border: 1px solid var(--color-grigio-300);
+  border-top: 3px solid var(--color-rosso);
+}
+.mk-varianti li[data-attesa] { border-top-style: dashed; border-top-color: var(--color-grigio-400); }
+.mk-var-l { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.9vw, 1.84rem); color: var(--color-ardesia-notte); }
+.mk-var-d { font-size: clamp(0.8rem, 0.66vw, 1.42rem); color: var(--color-grigio-600); }
+
+/* — la scrivania dell'agenzia — */
+.mk-rete-griglia { display: grid; gap: 0.5rem; }
+.mk-rete-b {
+  display: grid; gap: 0.2rem; padding: 0.68rem 0.85rem; border-radius: 8px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-ardesia-chiara);
+}
+.mk-rete-b[data-on] { border-left-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-rete-k { font-size: clamp(0.74rem, 0.6vw, 1.32rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-rete-v { font-size: clamp(0.92rem, 0.8vw, 1.64rem); font-weight: 700; line-height: 1.3; color: var(--color-ardesia-notte); }
+
+.mk-nota { margin: 0; max-width: none; font-size: clamp(0.82rem, 0.68vw, 1.46rem); line-height: 1.4; color: var(--color-grigio-600); }
+
+@media (max-height: 900px) {
+  .mk-corpo { gap: 0.5rem; padding: 0.8rem 0.95rem 0.95rem; }
+  .mk-tratte li { padding: 0.48rem 0.7rem; }
+  .mk-varianti li { padding: 0.55rem 0.5rem; }
+  .mk-rete-b { padding: 0.52rem 0.75rem; }
+}
+@media (max-width: 900px) {
+  .mk-varianti { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-tratte li { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── La slide dell'idea: mockup a sinistra, prova a destra ───────────────
+   La colonna del mockup è la più larga: in XD la schermata È il contenuto, e
+   il testo accanto la nomina. Le due colonne si allineano in alto, se no la
+   cifra galleggia a metà di un mockup alto. */
+.tp-idea {
+  display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+  gap: clamp(1.1rem, 2.2vw, 2.6rem); align-items: start; width: 100%;
+}
+.tp-idea-sx { min-width: 0; }
+.tp-idea-dx { min-width: 0; display: grid; gap: 0.7rem; align-content: start; }
+/* Dentro la colonna stretta, cifra e referenza partono dal bordo della
+   colonna e non dalla pagina: è il check `m`, ed è HARD. */
+.tp-idea-dx .xd-num { margin-top: 0; padding-top: 0.75rem; }
+.tp-idea-dx .xd-ref { max-width: none; }
+.tp-ref-set { font-family: var(--font-body); font-weight: 600; font-size: clamp(0.84rem, 0.72vw, 1.5rem); color: var(--ink-tertiary); letter-spacing: 0; }
+
+@media (max-width: 1100px) {
+  .tp-idea { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+
+/* Il ponte sotto la citazione d'apertura: è il punto della slide, e si vede
+   che è una frase. Stessa forma della chiusa XD, perché fa lo stesso mestiere. */
+.tp-quote-ponte {
+  margin: 0.4rem auto 0; max-width: 58ch;
+  padding-left: 0.9rem; border-left: 3px solid var(--accent-primary);
+  font-size: clamp(1rem, 1vw, 1.78rem); line-height: 1.5; font-weight: 600;
+  color: var(--ink-primary); text-align: left;
 }

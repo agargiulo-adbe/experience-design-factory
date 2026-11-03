@@ -9,17 +9,24 @@ import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
 import { COVER } from '../data/contenuti';
-import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 
 /**
- * Copertina e percorso.
+ * Copertina e agenda, su una pagina sola.
  *
- * Il percorso NON è una griglia di card: sette capitoli in griglia danno
- * un'ultima riga zoppa (4+3), che il contratto della Factory vieta. Qui vale
- * l'esenzione prevista per i paradigmi non-a-card, e la forma giusta per questo
- * cliente è anche la più ovvia: una linea con sette fermate. Su telefono la
- * linea si raddrizza e diventa verticale.
+ * Prima erano due slide: la copertina con la clip, e «Il percorso» con sette
+ * fermate su una linea. Due slide per dire una cosa, e la seconda arrivava
+ * quando in sala si sta ancora sistemando. Ora l'agenda sta DENTRO la
+ * copertina, nella colonna di destra, nella forma XD del motore — ed è
+ * **generata da `CHAPTERS`**, così non può divergere da quello che si
+ * proietta: si aggiunge un capitolo e l'agenda lo sa.
+ *
+ * ⚠️ L'agenda legge `title.it`, non una lista scritta a mano. Una seconda
+ * copia dei titoli è il modo più rapido di presentare un'agenda che non
+ * corrisponde alle slide.
+ *
+ * Il lockup co-brand `hero` sta sulla PRIMA e sull'ULTIMA slide del percorso:
+ * regola del motore, e dove c'è un hero la firma fissa si spegne da sola.
  */
 const type = EXPERIENCE_TYPES[SITE.type];
 // Le clip NON stanno nel repo: `apps/*/public/media/*.mp4` è git-ignorato, quindi
@@ -40,58 +47,47 @@ const last = CHAPTERS[CHAPTERS.length - 1];
 
   <DeckContainer wallScale nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
 
-    <!-- ── 0 · Copertina ─────────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+    <!-- ── 0 · Copertina e agenda ───────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="clip">
+      {/* ⚠️ IL VELO È STATO RICALIBRATO quando l'agenda è entrata in copertina:
+          prima sotto la clip c'erano cinque righe centrate, ora ci sono anche
+          sette voci cliccabili, e il check `h` misura ogni link come CTA.
+          Il velo si calibra sulla misura, non sulla presenza del video. */}
       <LoopVideo
         slot="backdrop"
         src={CLIP}
         poster={`${import.meta.env.BASE_URL}media/cover-loop.poster.jpg`}
-        scrim="absolute inset-0 bg-[rgba(27,34,48,0.72)]"
-        opacity={0.85}
+        scrim="absolute inset-0 bg-[rgba(27,34,48,0.80)]"
+        opacity={0.8}
       />
-      <div class="ex-cover" data-reveal>
-        <CoBrand variant="hero" class="ex-cover-lockup" data-reveal />
-        <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
-        <p class="ex-cover-tag" data-reveal data-reveal-delay="0.16">{COVER.tag}</p>
-        <p class="ex-cover-lead" data-reveal data-reveal-delay="0.22">
-          Un’ora sull’anno che si apre: arriva un terzo operatore, il prezzo si muove da solo, e
-          tre quarti dei visitatori stranieri non escono dal 4% del territorio. Trenta minuti di
-          presentazione, trenta di domande.
-        </p>
-        <p class="ex-cover-note" data-reveal data-reveal-delay="0.3">
-          {type.coverLine.it} · fonti dichiarate slide per slide
-        </p>
-      </div>
-    </Slide>
 
-    <!-- ── 1 · Il percorso: una linea, sette fermate ─────────────────────── -->
-    <Slide id="slide-percorso" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="ex-percorso">
-        <p class="slide-eyebrow" data-reveal>Il percorso</p>
-        <h2 class="ex-percorso-title" data-reveal data-reveal-delay="0.08">«{type.question.it}»</h2>
-        <p class="ex-percorso-lead" data-reveal data-reveal-delay="0.15">
-          Sette fermate. Le prime due servono a mettersi d’accordo sulla domanda, le quattro
-          centrali sono i quattro punti del percorso di acquisto, l’ultima è il passo che
-          vi chiediamo. Potete salire e scendere dove volete.
-        </p>
-        <ol class="tp-linea" data-stagger="0.09" data-reveal data-reveal-delay="0.22">
-          {CHAPTERS.map((c) => (
-            <li class="tp-linea-stop">
-              <a href={href(base, '/' + c.slug)} class="tp-linea-link">
-                <span class="tp-linea-dot" aria-hidden="true"></span>
-                <span class="tp-linea-num">{c.num}</span>
-                <span class="tp-linea-name">{c.title.it}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-        <div data-reveal data-reveal-delay="0.35" class="text-center">
-          <a href={href(base, '/' + first.slug)} class="ex-cta">
-            Prima fermata
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+      <div class="xd-cop" data-reveal>
+        <div class="xd-cop-sx">
+          <CoBrand variant="hero" class="xd-cop-lockup" data-reveal />
+          <p class="xd-cop-occ" data-reveal data-reveal-delay="0.06">Incontro del 10 novembre 2026 · Roma</p>
+          <h1 class="xd-cop-t" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
+          <p class="xd-cop-l" data-reveal data-reveal-delay="0.16">{COVER.tag}</p>
+          <p class="xd-cop-tipo" data-reveal data-reveal-delay="0.22">{type.coverLine.it}</p>
+          <p class="xd-cop-cred" data-reveal data-reveal-delay="0.26">
+            Le fonti sono dichiarate slide per slide. La misura sulla visibilità nelle risposte
+            generate è nostra, fatta l’11 ottobre.
+          </p>
         </div>
+
+        <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="L’agenda della sessione">
+          <p class="xd-cop-occ">L’ora, come la spendiamo</p>
+          <ol class="xd-cop-indice" data-stagger>
+            {CHAPTERS.map((c) => (
+              <li>
+                <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
+                  <span class="xd-cop-n">{c.num}</span>
+                  <span class="xd-cop-tit">{c.title.it}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <p class="xd-cop-dom">Trenta minuti di racconto, trenta di domande. Si può salire e scendere a ogni fermata.</p>
+        </nav>
       </div>
     </Slide>
 

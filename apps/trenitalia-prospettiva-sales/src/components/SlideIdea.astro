@@ -1,0 +1,61 @@
+---
+/**
+ * LA SLIDE DELL'IDEA — una per capitolo, nel registro XD.
+ *
+ * Una sola forma per tutte e quattro: il mockup a sinistra, a destra la
+ * frase, la cifra e la referenza. Scritta una volta qui, così le quattro
+ * non divergono — e quando la forma migliora, migliorano insieme.
+ *
+ * ⚠️ Questa slide si PROIETTA. Niente diagrammi piccoli, niente elenchi di
+ * prodotti, niente flusso dati: quella è profondità e sta dietro «Scopri
+ * come», nelle slide che seguono.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import MockIdea from './MockIdea.astro';
+import { idea as trovaIdea, type Idea } from '../data/idee';
+
+interface Props { slug: Idea['slug']; }
+const { slug } = Astro.props as Props;
+const i = trovaIdea(slug);
+---
+<Slide id="slide-idea" bg="primary" align="left">
+  <div slot="backdrop" class="xd-bg-piano"></div>
+
+  <div class="xd-sl xd-sl--fig" data-reveal>
+    <div class="xd-sl-head">
+      <p class="xd-n">{i.occhiello}</p>
+      <h2 class="xd-h2">{i.titolo}</h2>
+    </div>
+
+    <div class="tp-idea">
+      <div class="tp-idea-sx" data-reveal data-reveal-delay="0.1">
+        <MockIdea variante={i.mock} />
+      </div>
+
+      <div class="tp-idea-dx">
+        <p class="xd-chiusa" data-reveal data-reveal-delay="0.16">{i.chiusa}</p>
+
+        <ul class="xd-num" style="--cols:1" data-reveal data-reveal-delay="0.22">
+          <li class="xd-num-i">
+            <span class="xd-num-k" data-display>{i.cifra.k}</span>
+            <span class="xd-num-v">{i.cifra.v}</span>
+          </li>
+        </ul>
+
+        {i.prova && (
+          <div class="xd-ref" style="--cols:1" data-reveal data-reveal-delay="0.28">
+            <div class="xd-ref-b">
+              <p class="xd-ref-n"><span class="xd-marchio--testo">{i.prova.chi}</span> · <span class="tp-ref-set">{i.prova.settore}</span></p>
+              <p class="xd-ref-f">{i.prova.fatto}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <p class="xd-fonte" data-reveal data-reveal-delay="0.34">
+      {i.fonte}
+      {i.prova && <> Fonte: <a href={i.prova.fonte.url} target="_blank" rel="noopener noreferrer">{i.prova.fonte.label}</a>, {i.prova.fonte.data.replace(/ /g, "\u00a0")}.</>}
+    </p>
+  </div>
+</Slide>
