@@ -149,6 +149,18 @@ prende con una riga: `@import "…/packages/core/src/styles/xd.css";`.
 - ⚠️ **Intesa non è stata migrata** e continua su `.im-*`: va in sala il 5 novembre, e un
   refactor del suo CSS a cinque giorni dall'incontro è un rischio senza ritorno. Si migra
   dopo, e allora `.im-*` diventa quello che resta di suo.
+- **XD e i micro-diagrammi sono DUE REGISTRI, e non si sostituiscono** (BINDING, ogni
+  deck). **XD è quello che si proietta**: immagine, mockup, una cifra, poche parole — una
+  slide che si legge da otto metri in tre secondi. **I micro-diagrammi** (`Figura.astro`
+  di ogni app) **sono quello che si apre**: piccoli, molti, un meccanismo ciascuno, e
+  stanno DENTRO `HowItWorks` → `Dettaglio` → `DettaglioVoce`. Si sceglie **dalla stanza** —
+  la direzione che decide in un'ora vuole XD, chi possiede la piattaforma vuole il
+  meccanismo — e un deck normalmente porta tutti e due. Quello che non può portare è un
+  drill-down spacciato per slide: il segnale è **più di un disegno piccolo sulla stessa
+  slide**. ⚠️ Nessun gate lo misura: `audit:ritmo` conta SE c'è un elemento visivo, non in
+  che registro è. Il 3 nov 2026 un giro ha proposto di costruire le slide di direzione sul
+  vocabolario dei micro-diagrammi chiamandolo XD — ventidue figure buone, strato sbagliato.
+  Dettaglio in `skills/experience-design/references/xd.md`.
 - Prima app su XD: `bper-sopra-quello-che-avete`. Tre difetti che XD ha già insegnato a
   evitare — un componente con fondo chiaro fisso dentro una slide scura (1,08:1, invisibile
   a ogni check di layout); una catena di spazi unificatori che rende una frase inseparabile

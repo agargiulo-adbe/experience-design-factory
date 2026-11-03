@@ -41,6 +41,19 @@ Il template lo impone già (`.ex-ancore` + `HowItWorks`); il gate è la famiglia
 di prosa: un deck ad ancore lo fallisce per costruzione, e non si compensa gonfiando le
 slide. Casi, trappole e verifica in **`references/ancore-non-prosa.md`**.
 
+## Step 0-bis — XD o micro-diagrammi: in che registro si compone (PRIMA della prima slide)
+**XD è quello che si proietta, i micro-diagrammi sono quello che si apre.** XD
+(`packages/core/src/styles/xd.css`) è la grammatica di **impatto**: copertina con agenda,
+divisore con fotografia, cifre grandi, referenze — immagine, mockup, poche parole, una
+slide che si legge da otto metri in tre secondi. I micro-diagrammi (`Figura.astro` di
+ogni app) sono **profondità**: piccoli, molti, un meccanismo ciascuno, e vivono **dentro**
+`HowItWorks` → `Dettaglio` → `DettaglioVoce`. Si sceglie **dalla stanza**: la direzione che
+decide in un'ora vuole XD, chi possiede la piattaforma vuole il meccanismo. Un deck ha
+normalmente tutti e due; quello che non può avere è **un drill-down spacciato per slide** —
+e il segnale è che la slide porta più di un disegno piccolo. ⚠️ **Nessun gate lo misura**:
+`audit:ritmo` conta se c'è un elemento visivo, non in che registro è. Resta un giudizio da
+fare sullo screenshot a 1920. Casi e trappole in **`references/xd.md`**.
+
 ## Step 0-bis bis — Umanizzare la copia, in tre giri misurati
 Quando il contenuto è fermo e prima della consegna. **Non è una passata di stile: è un
 giro con un prima e un dopo.** La regola che tiene insieme tutto: un intervento che fa
