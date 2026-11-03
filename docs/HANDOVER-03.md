@@ -1,9 +1,67 @@
-# Handover — Parte 3 di 18
+# Handover — Parte 3 di 20
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### Change log — Trenitalia Direzione Sales: lo strato XD, le figure recuperate, l'indice che non mente e il 96% che torna (2026-11-03) → §37 (Parte 16)
+
+**Cinque commit fra le 13:04 e le 17:57, tutti su `apps/trenitalia-prospettiva-sales`** tranne il
+primo, che è una regola. La giornata ha un filo solo: **il deck aveva profondità e non aveva
+superficie**, e metterle insieme ha richiesto prima di separarle a parole.
+
+**La regola: XD e micro-diagrammi sono due registri, e non si sostituiscono** (`fe52899`, BINDING
+in `CLAUDE.md` e in `skills/experience-design/references/xd.md`). L'XD è **quello che si
+proietta** — immagine, mockup, una cifra, poche parole; i micro-diagrammi sono **quello che si
+apre**, piccoli e molti, dietro «Scopri come». Scambiarli non è un errore di gusto: produce una
+slide che non funziona nella stanza in cui va. ⚠️ **Nessun gate lo misura**, per questo la regola
+sta scritta e non in un check.
+
+**Lo strato XD entra nell'app** (`2a78984`): `@import` del motore più il contratto `--xd-*` coi
+valori di Trenitalia e gli alias che XD si aspetta — senza i quali il titolo del divisore eredita
+il bianco della dominante e **sparisce sul chiaro**. Due slide diventano una: **la copertina porta
+anche l'agenda**, generata da `CHAPTERS`, quindi non può divergere da ciò che si proietta; il velo
+è stato ricalibrato (movimento misurato **0,29 su 255**) perché sotto la clip ora c'è un indice di
+link e il check `h` li misura come CTA. Nascono **quattro slide d'idea**, una per capitolo, con
+forma e contenuto in un posto solo (`SlideIdea.astro` + `data/idee.ts`). Il **ponte
+sull'internazionalizzazione** è riscritto perché regga davanti a due letture opposte presenti nella
+stessa sala — la parola è del Direttore Sales, ma in azienda c'è chi la legge come traslazione
+dell'esistente: l'argomento diventa «quello che costruite per l'Italia è la stessa cosa che vi
+porta fuori». Referenze **Telmore** e **Santander Brasil**, verbatim in `sources.ts`; tre storie
+del travel **scartate perché la loro pagina non risponde** dal nostro percorso di rete.
+
+**Le ancore e le figure, recuperate da un ramo mai pubblicato** (`c8dee1c`). Il ramo
+`feat/trenitalia-sales-ancore` era fermo dal 27 ottobre; riletto con la regola dei due registri in
+mano, **non era un'alternativa allo strato XD ma il suo strato di profondità**: ventidue
+micro-figure dentro i blocchi «Scopri come» più il giro di ancore che toglie prosa. La misura lo
+conferma: `audit:ritmo` passa da **4 slide su 40 con un elemento visivo a 14 su 40**.
+
+**L'indice non può più mentire** (`6eecdf6`, da una revisione interna del 3 nov). Il rilievo: la
+copertina del capitolo 01 annunciava «Il 96% che resta» e la slide dopo parlava d'altro. Guardando
+il resto, il difetto era più largo: **tre capitoli su sette non annunciavano niente**, e dove
+c'era, l'agenda contava tre voci su cinque o sei slide. ⚠️ **Nessun gate confronta un indice con il
+suo contenuto: l'ha trovato una persona.** Il registro delle slide esce da `admin.astro` e va in
+`src/data/slides.ts`, da cui l'admin accende/spegne **e** la copertina di capitolo rende le stesse
+voci. Nello stesso commit **le otto domande si vedono**: il deck le contava senza mostrarle mai e
+due slide dopo citava una risposta che chi guarda non poteva ricollegare al campione; elenco e
+referto sono divisi, e **la divisione è una misura** — insieme non entrano in nessuna disclosure, e
+tre posizioni sono state provate, due scartate dal check `exp` (HARD).
+
+**Torna il 96%, che era l'apertura concordata col cliente** (`be607a0`). Verificando il rilievo,
+la cosa è risultata più grave di un indice sbagliato: **l'agenda mandata alla segreteria il 9
+ottobre dice, parola per parola, che si apre con il 96%**. Il 20 ott la slide era stata tolta per
+una ragione giusta (aprire un documento del 2026 con la dichiarazione dell'anno prima invita a
+sentirsi dire «quello lo dicevate allora»), ma **nessuno ha confrontato il deck con l'agenda che
+gli avevamo mandato**. Torna nel registro XD, con la vecchiaia del dato gestita come prescrive la
+regola: data in chiaro nell'occhiello e nella fonte, e subito dopo le sue parole del 2026. ⚠️ **Due
+fonti che non si mescolano**: il 96% è suo e verbatim (L'Agenzia di Viaggi, 13 ott 2025); il
+75%/4% è dato di contesto che circola attorno al suo intervento (Travel Quotidiano, 15 ott 2025) e
+**non gli si attribuisce**. Non entra nel taglio «In dieci minuti», che resta a sette slide.
+
+**Gate a fine giornata:** `audit:deck` **0 HARD** su 9 rotte × 3 viewport · `audit:ink` **PULITO**
+su 521 blocchi · `copy-audit` **0 HARD** su 394 stringhe · `audit:fonti` nessun link rotto ·
+`audit:taglio` ALLINEATO · `audit:ritmo` **15 slide su 41** con un elemento visivo.
 
 ### Change log — Intesa: il deck del 5 novembre entra nella Storia, lo slug dice l'incontro, e la Factory va in rete (2026-10-30) → §42 (Parte 18)
 
@@ -296,12 +354,4 @@ Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a c
 - ⚠️ **Lezione pagata due volte.** La CI è andata **rossa sul primo push su main** perché `typecheck` non era stato lanciato: un `const COVER` con l'URL della clip **ombreggiava l'import** omonimo e la copertina del taglio rendeva una riga vuota. Dietro altri due import inutilizzati c'erano difetti veri — la testa della mappa e la riga della firma **tornate scritte a mano** nel percorso lungo mentre il taglio le leggeva dai dati. Il gate non le vedeva: `c1` guardava solo la pagina del taglio, ora guarda anche quelle del percorso intero.
 - ⚠️ **Due sessioni sullo stesso ramo.** `76eb1ff` ha tolto `audit:taglio` dal `package.json` del branch con la motivazione «puntava a un file non committato»: il file era tracciato dal 12 ott e su `main` il comando girava. Ripristinato (`bf4b94e`). Prima di togliere una voce altrui, `git ls-files <percorso>` — «non c'è nel mio albero» e «non è committato» sono due cose diverse.
 
-### Change log — una Prospettiva nuova per la Direzione Sales di Trenitalia, e due gate che non esistevano (2026-10-11 / 2026-10-12) → commit `ccf136d` `f09075a` `a5ed9d9` `2ebada2` `86a4cc9` `51baaf7` `592c2ca` `01a1131` `9128a16` `1e2a0e7` `b0e2944`
-
-- **`apps/trenitalia-prospettiva-sales` — «Dove può arrivare il viaggio»** (dettaglio in **§37, Parte 16**). Prospettiva per la **Direzione Sales**, 27 slide su 8 rotte, sette capitoli di cui i quattro centrali sono **i quattro temi dell'agenda mandata alla segreteria del cliente**, nello stesso ordine. Nasce dalla registrazione del 9 ott **letta per intero** — il riassunto automatico sbagliava i nomi e appiattiva un disaccordo interno, che nel dossier resta **dichiarato come disaccordo** invece di essere ricomposto a tavolino. Pelle condivisa con `trenitalia-connessioni` (ardesia `#2f394e`, `#d91835`, Poppins), **8 sfondi Firefly in duotone** e **2 clip** ricucite. Dal dossier (16 → **17 sezioni**) sono usciti anche i due artefatti per il cliente: la proposta di agenda e un `.eml` apribile in Outlook. Chiude il P1 del 9 ott «la Prospettiva è da costruire».
-- ⚠️ **La misura ha cambiato la tesi due volte, e la seconda ha salvato una slide.** Il capitolo «La ricerca» porta una **misura nostra** — otto domande, una per conversazione nuova, nessun nome di marca dentro la domanda — su **due** assistenti: `trenitalia.com` compare fra le fonti **2 volte su 8 nella risposta generata di Google** e **7 su 8 in ChatGPT**. Con un motore solo la tesi era «gli assistenti vi ignorano»; con due è diventata **«dipende da quale assistente»**, più debole da dire e molto più difendibile in sala — e l'errore sulle Frecce, che stava per diventare un'accusa generica, è risultato **di Google**, non di tutti. **Gemini 0/8 e Perplexity 2/8** restano fuori (il perché è nel deck e in §37.3). Il metodo sta in un `HowItWorks` sulla copertina del capitolo: una misura senza il suo metodo è un'opinione con dei numeri davanti.
-- `01a1131` + `9128a16` **`pnpm audit:fonti`, gate nuovo e regola BINDING** — `scripts/source-audit.ts`: ogni fonte pubblica porta il link e il link risponde (HARD); le righe di fonte senza link sono SOFT, perché possono rimandare a una misura nostra. ⚠️ **403 non vuol dire rotto**: Gartner risponde 403 a qualunque accesso automatico e `helpx.adobe.com` dà 403 a HEAD e **200 alla GET sullo stesso URL**. Il gate ritenta con GET, riprova dopo un timeout e mette i bloccati in una lista «da aprire a mano» — un gate che grida al lupo viene ignorato.
-- `f09075a` **`pnpm audit:ink`, il contrasto del testo misurato sui pixel** — `scripts/ink-audit.ts`. Nato da un difetto vero: una **copertina di capitolo ardesia su ardesia, illeggibile, con `audit:deck` a 0 HARD**. Il check `h` guarda i bottoni; il testo delle slide non lo guardava nessuno, ed è dove si rompe una skin a **dominante ribaltata** (`--surface-inverse` è la superficie *chiara*). Non legge il CSS: ritaglia ogni blocco dallo screenshot, fondo = colore modale, inchiostro = pixel più lontano. ⚠️ Girato su tutto il monorepo: **259 blocchi sotto AA su 12 experience** (maxmara 77, ferrari 52, trenitalia-connessioni 52, unicredit 44; quattro pulite) — riportati, non corretti: P1 nuovo.
-- `2ebada2` **un numero che non tornava, e un effetto che diceva il falso** — il conteggio animato mostrava «**0 su 8 risposte nominano Trenitalia**» mentre saliva: un'affermazione falsa proiettata per mezzo secondo, tolta del tutto. Nel motore, la versione reduced-motion del conteggio perdeva prefisso e suffisso (rendeva «70» al posto di «70.000»). Con `86a4cc9` è tornata verde anche la **CI**, rossa da giorni per tutti per una domanda ripetuta identica in due slide di `trenitalia-connessioni`.
-- **Fatto operativo, non di codice:** un `git add -A` sul ramo di un altro workstream ha portato **18 file di TIM** dentro un commit di Trenitalia, pushato e deployato (**§38, Parte 16**; la decisione su cosa farne è dell'owner ed è nel backlog). **La regola che resta: in questo repo non si usa `git add -A`**, si verifica il ramo prima di ogni commit, e dove due lavori insistono sullo stesso tree si committa da un **worktree separato**.
-- **In parallelo, da un'altra sessione** (`6f5f779`, `50a0db4`, `1c437f6`): il **lavoro operativo d'account** diventa un mestiere distinto da quello sulla Factory — `docs/CLAUDE.md` con le sue regole, il registro `docs/<Cliente>/CONTO.md`, i comandi `/account-open`, `/account-close`, `/accounts`, lo script `scripts/conti.ts`. ⚠️ **Il `.gitignore` si è rovesciato**: `docs/.gitignore` è **fail-closed** — ignora tutto sotto `docs/` e riammette i soli documenti della Factory. Prima era un elenco a mano cliente per cliente, e **ogni cliente nuovo nasceva esposto** (è così che `docs/Enel/` finì tracciata). Gate `pnpm audit:docs`, in CI.
+---
