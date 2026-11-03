@@ -224,7 +224,7 @@ Il fact‑checker ha verificato **38 affermazioni alla fonte**: dodici cadono. L
 
 ---
 
-## 42. Intesa Sanpaolo — «Adobe × Intesa Sanpaolo» (Storia, 5 novembre 2026)
+## 42. Intesa Sanpaolo — «Adobe × Intesa Sanpaolo» (Storia, 19 novembre 2026)
 
 `apps/intesa-esperienza-cliente` · **nove capitoli, 41 slide su 10 rotte** più il taglio
 «In dieci minuti» (6 slide) · **live** su `…/experience-design-factory/intesa-esperienza-cliente/`
@@ -413,11 +413,44 @@ slide mutile. Ora `revealSubstep()` finché risponde, conteggio nel log; l'evide
 testo dei «Scopri come» e aspetta 2,2 s (a 1,4 s le card a scaglioni erano a metà dissolvenza).
 Memoria `deck-due-assi-sottopassi`.
 
-### 42.9 Che cosa resta aperto (dal giro 2: decisioni, non difetti)
+### 42.9 La revisione del team (30 ott) e la data che si sposta
+
+**L'incontro è slittato al 19 novembre, 11:00–13:00** (era il 5, poi il 10): il cliente l'ha
+spostato «causa MPS». L'**11 novembre alle 14:15** c'è un check del documento **con il referente**,
+35 minuti: è lì che si concordano le slide da proiettare. La stanza è cresciuta a **27 persone**.
+Sedici giorni in più: il tempo non è più il vincolo, lo è la lunghezza del documento.
+
+Il 30 ottobre il documento unico è stato visto da **cinque colleghi**. Il formato ha retto —
+«unico formato di delivery, qualità ottima», «è slide-like ma aggiunge qualcosa e differenzia»,
+«più fluido senza salti» — con **un dubbio non ritirato** dall'AE: «ho paura che si perda il
+referente con tutto experience; se si salta da ppt a experience teniamo di più l'attenzione».
+Quel dubbio si scioglie all'11, mostrandolo al referente, non discutendolo fra noi.
+
+**Quattro voci su cinque hanno chiesto la stessa cosa** — ed è la stessa che il panel aveva messo
+come condizione da tre seggi: il capitolo 04 **dalla nona slide in poi** (i nove approfondimenti)
+esce dalla storia e va in un capitolo a sé, alleggerito; due propongono di assorbirci anche il
+capitolo 05. Il panel chiedeva di tenere **una** slide di confine davanti (`scenario/slide-motore`)
+e la mappa come prima cosa del tavolo tecnico: le due cose si compongono, e questa è la modifica
+strutturale che il documento aspetta.
+
+**Le cinque frasi «tipiche AI»** segnalate con l'alternativa (e confermate dalla patch FSI) sono
+**le stesse** che `copy-audit` e il panel avevano marcato P2 e che il giro di correzioni aveva
+lasciato: sono la prova che un segno spostato non è un segno tolto (memoria `umanizzare-e-misurato`).
+Le alternative proposte dicono un fatto dove c'era un'antitesi, e si applicano tutte.
+
+⚠️ **Coworker: la procedura che il deck presupponeva non esiste.** Verificato il 3 nov sulla
+documentazione pubblica: non c'è un form self-service — dove il cliente è eleggibile l'applicazione
+compare da sé nel selettore, altrimenti la richiesta passa dal team Adobe per licenze ed entitlement
+e poi dall'Admin Console. La capability su Adobe Analytics **esce progressivamente, organizzazione
+per organizzazione**. La trial dà fino a **10.000 crediti AI una tantum per IMS Org** (non per
+applicazione), 25 crediti per input, tariffa dichiarata introduttiva. La riga in slide va
+riscritta su questo, e la verifica sull'istanza del cliente va fatta prima dell'11.
+
+### 42.10 Che cosa resta aperto (dal giro 2 del panel e dalla revisione del team)
 
 - **Le dieci slide davanti**: il formato concordato è 10 + backup, il percorso ne ha 47 senza un
-  segno di quali. Si marcano col gating capitoli/slide della console e si conferma la lista con il
-  referente il 3 nov. Proposta del panel: `scenario/slide-segnale`, `slide-motore`,
+  segno di quali — e **nessuno dei cinque revisori ha nominato quel numero**. Si marcano col gating
+  capitoli/slide della console e si conferma la lista con il referente **al check dell'11 nov**. Proposta del panel: `scenario/slide-segnale`, `slide-motore`,
   `persona/slide-giro-di-giulia`, `momenti/slide-m-03`, `m-04`, `m-05`, `m-07`,
   `analytics/slide-passaggio`, `prossimi-passi/slide-da-voi`, `slide-serve`.
 - **Il taglio «in dieci minuti»** porta quattro misure su sei e non dice che il motore resta: va

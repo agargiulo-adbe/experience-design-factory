@@ -10,16 +10,18 @@
 > `.md` costa ~34k token su 18 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> 🟢 **La Factory è in rete, e per il 5 novembre ci sono DUE artefatti.** Il 30 ott il ramo è
+> 🟢 **La Factory è in rete, e per l'incontro Intesa ci sono DUE artefatti.** Il 30 ott il ramo è
 > stato mergiato in `main` e il deploy è passato: **`apps/intesa-esperienza-cliente` «Adobe ×
 > Intesa Sanpaolo»** (la **Storia**, nove capitoli e 41 slide — **§42, Parte 18**) e **Unipol
-> «Cinque domande»** sono pubbliche. La Storia ha **inglobato il `.pptx` da 78 slide** del 5
-> novembre: un artefatto invece di due, dopo che i due dicevano cose diverse su chi è Giulia.
+> «Cinque domande»** sono pubbliche. La Storia ha **inglobato il `.pptx` da 78 slide**
+> dell'incontro: un artefatto invece di due, dopo che i due dicevano cose diverse su chi è Giulia.
 > Lo slug è passato da `intesa-mutuo` a `intesa-esperienza-cliente` **prima** della
 > pubblicazione (dodici stub di rimando coprono il vecchio indirizzo, che era già in rete).
-> ⚠️ **Il panel non è mai stato lanciato su nessuna delle due Intesa del 5 novembre**: sono i
-> due P0 in testa al backlog, e le personas di quel tavolo **vanno scritte una volta** perché
-> servono a entrambe. ⚠️ Tre difetti sono stati trovati **mentre si pubblicava e non da un
+> ✅ **Il panel è stato fatto sulla Storia** il 30 ott (due giri, sei stakeholder, tutti e cinque
+> gli assi in salita, 16 P0 applicati — §42.8); le personas di quel tavolo sono scritte e servono
+> anche al Blueprint, dove il panel **resta da fare**. ⚠️ **L'incontro è slittato al 19 novembre**
+> e il 30 ott cinque colleghi hanno rivisto il documento: formato approvato, un dubbio dell'AE non
+> ritirato, e quattro voci su cinque che chiedono gli approfondimenti fuori dalla storia (§42.9). ⚠️ Tre difetti sono stati trovati **mentre si pubblicava e non da un
 > gate**: il `<title>` doppio che si vede solo incollando l'URL in chat, una prop usata e non
 > dichiarata che teneva la **CI rossa**, e due slide che dichiaravano **Firefly sotto foto
 > Pexels**. 🔒 Due pulizie di riservatezza: i sedici riferimenti per nome a un altro cliente
@@ -27,8 +29,9 @@
 > — ⚠️ resta il nome nel **messaggio di `f97ef53`** e nei diff storici (P1 nuovo: serve un
 > force-push, decisione dell'owner).
 >
-> ⚠️ **La stanza più vicina è Intesa, e non è più quella del 22: è mercoledì 5 novembre, a Torino,
-> 09:55–11:45.** La stanza del 22 si è tenuta ed è andata bene — il cliente ha proposto lui tre
+> ⚠️ **La stanza Intesa è giovedì 19 novembre, 11:00–13:00** (Teams + sala VDC P20 sud, 27
+> persone), spostata due volte dal cliente; l'**11 nov alle 14:15** c'è il check del documento
+> **con il referente**, ed è lì che si concordano le slide da proiettare. La stanza del 22 si è tenuta ed è andata bene — il cliente ha proposto lui tre
 > pilastri e ha detto che sta decidendo come procedere. Per il 5 è nata un'experience nuova,
 > **`apps/intesa-innesto` «Dove ci innestiamo»** (23 slide, §40, Parte 18), con un **dossier
 > interno bilingue** gated per i colleghi che ci vanno. ⚠️ **Il panel non è mai stato lanciato
@@ -325,4 +328,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 15 — §35 **Intesa Assicurazioni**](./HANDOVER-15.md) — la stanza dell'8 ottobre e il deck fino alla **v8**: il perimetro allargato ai canali extra-captive e i quattro casi d'uso ereditati dalla libreria FSI (§35.11). Uscita dalla Parte 11 il 9 ott sera, quando §33.9 l'ha portata oltre il contratto di dimensione.
 - [Parte 16 — §37 **Trenitalia «Dove può arrivare il viaggio»** · §38 **TIM, stato di fatto** · §39 **il lavoro operativo d'account** (fino a **§39.9: il grafo dei contatti, l'apertura e il giro di ritorno**)](./HANDOVER-16.md) — ⚠️ **§37.7 è il panel a due giri** e **§37.10 il giro di linearità del 13 ott**. La Prospettiva per la Direzione Sales: da dove viene (la registrazione letta per intero, non il riassunto), i sette capitoli, **la misura su due assistenti che ha cambiato la tesi due volte**, gli sfondi in duotone, i due gate nuovi e che cosa manca. §38 registra come 18 file di un altro workstream sono finiti su `main`, e la regola che ne resta. Dal **21 ott** anche **§37.12**: il giro del 20 ott e la trascrizione che corregge il deck.
 - [Parte 17 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-17.md) — le voci più vecchie, scese qui dalla Parte 14 il 12 e il 13 ott per fare posto in cima.
-- [Parte 18 — §8 **Deck visual contract & audit** · §40 **Intesa «Dove ci innestiamo»** · §41 **Unipol «Cinque domande»** · §42 **Intesa «Adobe × Intesa Sanpaolo»** · §43 **BPER «Sopra quello che avete»**](./HANDOVER-18.md) — §8 è scesa dalla Parte 1 il 21 ott; **§40 è l'experience del 5 novembre**, scritta qui il 26 perché era la parte con più spazio: i sei capitoli, la figura a fasi dell'architettura (e che cosa in quella figura è una lettura nostra), il fact check che ha corretto quattro cose di merito, il guscio sensoriale misurato, e il **dossier interno bilingue**. **§41 è l'experience Unipol**, scritta qui il 29 ott: le cinque domande che il cliente ha fatto davvero, i tre livelli di fonte, il registro che cresce, il design system letto da unipol.it e **i due giri di panel con tutti e cinque gli assi in salita** (§41.4). **§42 è la Storia del 5 novembre**, scritta qui il 30: i nove capitoli, gli approfondimenti su profilo/regia/arbitro con il limite dichiarato accanto al pregio, la revisione critica che ha tolto più di quanto abbia aggiunto, e **§42.5 la mappa e la ripresa** — dove la formula «dì quello che dirai, dillo, ripeti» è corretta a metà dalle prove. **§43 è il Blueprint BPER del 12 novembre**, scritto il 31 ott: i sette capitoli che sono le sette slide già concordate col cliente, **lo strato XD promosso nel motore** (la grammatica visiva che era prigioniera di una app), il design system in cui sistema e marchio coincidono, e **§43.4 il panel che ha trovato quattro affermazioni false che nessun gate vedeva** — compresa la misura descritta come a copia zero, che non lo è.
+- [Parte 18 — §8 **Deck visual contract & audit** · §40 **Intesa «Dove ci innestiamo»** · §41 **Unipol «Cinque domande»** · §42 **Intesa «Adobe × Intesa Sanpaolo»** · §43 **BPER «Sopra quello che avete»**](./HANDOVER-18.md) — §8 è scesa dalla Parte 1 il 21 ott; **§40 è l'experience del 5 novembre**, scritta qui il 26 perché era la parte con più spazio: i sei capitoli, la figura a fasi dell'architettura (e che cosa in quella figura è una lettura nostra), il fact check che ha corretto quattro cose di merito, il guscio sensoriale misurato, e il **dossier interno bilingue**. **§41 è l'experience Unipol**, scritta qui il 29 ott: le cinque domande che il cliente ha fatto davvero, i tre livelli di fonte, il registro che cresce, il design system letto da unipol.it e **i due giri di panel con tutti e cinque gli assi in salita** (§41.4). **§42 è la Storia dell'incontro Intesa** (19 nov), scritta qui il 30 e aggiornata il 3: i nove capitoli, gli approfondimenti su profilo/regia/arbitro con il limite dichiarato accanto al pregio, la revisione critica che ha tolto più di quanto abbia aggiunto, e **§42.5 la mappa e la ripresa** (la formula «dì quello che dirai, dillo, ripeti» corretta a metà dalle prove); **§42.8** il panel a due giri, **§42.9** la revisione del team e la data che slitta, **§42.10** i punti aperti. **§43 è il Blueprint BPER del 12 novembre**, scritto il 31 ott: i sette capitoli che sono le sette slide già concordate col cliente, **lo strato XD promosso nel motore** (la grammatica visiva che era prigioniera di una app), il design system in cui sistema e marchio coincidono, e **§43.4 il panel che ha trovato quattro affermazioni false che nessun gate vedeva** — compresa la misura descritta come a copia zero, che non lo è.
