@@ -95,6 +95,35 @@ export const TESTE = {
    deck: la parola dell'anno, e dove dice di stare investendo. Il secondo
    verbatim è il motivo per cui questo deck esiste — se investono sui canali
    diretti, dove quei canali perdono vendite è esattamente la domanda. */
+/* ── Capitolo 01 · il mercato che resta ───────────────────────────────────
+   3 nov 2026, RIMESSA. Questa slide era sparita il 20 ottobre insieme al resto
+   del TTG 2025, per una ragione giusta — aprire un documento del 2026 con la
+   dichiarazione dell'anno prima invita a sentirsi dire «quello lo dicevamo
+   allora». Ma togliendola sono sparite due cose che non dovevano sparire:
+   la grandezza commerciale di cui parla tutto il deck, e **l'apertura che
+   abbiamo concordato col cliente** — l'agenda mandata alla segreteria il
+   9 ottobre dice, parola per parola, «Apertura con una sua frase: il 75% degli
+   stranieri si ferma nel 4% del territorio, il 96% è il mercato che resta».
+   Una revisione interna del 3 novembre ha notato che il capitolo annunciava
+   quel numero e non lo diceva più. Aveva ragione.
+   La vecchiaia del dato si gestisce come prescrive la regola: **la data in
+   chiaro**, e subito dopo le sue parole del 2026, che mostrano che il filo è
+   ancora teso.
+   ⚠️ DUE FONTI DIVERSE, E NON SI MESCOLANO. Il 96% è SUO, verbatim
+   (L'Agenzia di Viaggi, 13 ott 2025). Il 75%/4% è un dato di contesto che
+   circola attorno al suo intervento (Travel Quotidiano, 15 ott 2025): va come
+   dato, mai fra virgolette e mai attribuito a lui. L'ANSA del 9 ottobre, che
+   una versione precedente citava per tutti e tre, non ne contiene nessuno. */
+export const MERCATO = {
+  eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025',
+  /** Le due zone della figura. Il 96% è SUO, e l'etichetta lo attribuisce
+   *  senza aprire un blocco di citazione: in XD le parole sono poche. */
+  quota: { n: '4%', l: 'tre quarti di chi arriva dall’estero si ferma qui' },
+  resto: { n: '96%', l: 'il resto: con le sue parole, «non ancora esplorato»' },
+  /** Il punto della slide. */
+  chiusa: 'Quel 96% non si raggiunge abbassando il prezzo: si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
+};
+
 export const APERTURA = {
   eyebrow: 'Rimini, TTG Travel Experience, 15 ottobre 2026',
   /** La parola che ha usato lui, grande quanto la pagina. */

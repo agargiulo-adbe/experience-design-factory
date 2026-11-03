@@ -38,6 +38,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
     // 2025, tolto dalla slide il 20 ottobre perché vecchio di un anno. La
     // slide porta le sue parole del TTG 2026 — e l'etichetta era rimasta
     // indietro, come l'agenda che la annunciava.
+    { id: 'slide-mercato', label: 'Il mercato che resta · il 96%, con la data in chiaro',
+      agenda: 'Il 96% che resta' },
     { id: 'slide-novantasei', label: 'La sua frase · internazionalizzazione, e dove investono',
       agenda: 'La parola che ha usato lui' },
     { id: 'slide-contesto', label: 'Tre cose nello stesso anno',
