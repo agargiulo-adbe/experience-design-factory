@@ -1,24 +1,24 @@
 ---
 /**
- * CheServe — il blocco sintetico «con che cosa si fa», dentro il drill-down
- * «Che cosa serve, concretamente».
+ * CheServe — i pezzi che occorrono, in UNA riga.
  *
  * PERCHÉ ESISTE
  * Chiesto in riunione il 20 ott 2026: un'idea senza i suoi pezzi lascia la
- * stanza con l'impressione che si debba comprare tutto da capo. Qui si vede
- * subito il contrario — la pastiglia dice quali pezzi sono già loro e quali si
- * aggiungono, e la legenda lo dichiara una volta sola per slide.
+ * stanza con l'impressione che si debba comprare tutto da capo. La pastiglia
+ * dice quali sono già loro e quali si aggiungono.
  *
- * FORMA
- * Una riga per pezzo: pastiglia di stato · nome del prodotto (che è il link
- * alla sua pagina pubblica) · a che cosa serve QUI. Niente schede prodotto:
- * questo è un riepilogo, il racconto sta nel testo sopra.
+ * PERCHÉ È UNA RIGA E NON PIÙ UN ELENCO
+ * Il 26 ott il dettaglio è diventato una griglia di FIGURE («ancore, non
+ * prosa»): il meccanismo lo mostra il disegno, e la riga sotto porta il fatto.
+ * L'elenco a tre colonne ripeteva in parole quello che la figura mostra, e le
+ * due cose insieme portavano la slide aperta fuori dalla safe-area a 1280 —
+ * check `c` dentro `exp`, che è HARD, misurato. Qui resta solo quello che la
+ * figura NON può dire: il nome del prodotto e il suo stato.
  *
- * INCHIOSTRO
- * Nessun colore scritto a mano: tutto da `--ink-*`, che in questa skin si
- * ribaltano con la superficie. La pastiglia `già vostro` prende l'accento
- * secondario (verde), `si aggiunge` resta neutra — la differenza è il colore
- * più la parola, mai il colore da solo.
+ * Vive nello slot `nota` del `Dettaglio`: è la provenienza dei pezzi, non una
+ * quarta voce. La pastiglia porta la PAROLA oltre al colore — un colore da solo
+ * non è un'informazione — e sta in un `::before`, così nella riga c'è un solo
+ * elemento di testo e il check `e` non ha niente da intersecare.
  */
 import { LEGENDA, type Pezzo } from '../data/contenuti';
 import { SOURCES, type ChiaveFonte, type Fonte } from '../data/sources';
@@ -26,14 +26,7 @@ import { SOURCES, type ChiaveFonte, type Fonte } from '../data/sources';
 interface Props {
   pezzi: Pezzo[];
 }
-// Nessun titolo sopra l'elenco: lo dice già il drill-down che lo contiene
-// («Che cosa serve, concretamente»), e una riga ripetuta costa altezza che su
-// queste slide non c'è — misurato il 20 ott, il blocco aperto sforava di 139px.
 const { pezzi } = Astro.props;
-
-// La legenda mostra solo gli stati che questa slide usa davvero: due voci dove
-// ce ne sono due, una sola dove tutto si aggiunge.
-const statiUsati = [...new Set(pezzi.map((p) => p.stato))];
 
 // Una fonte senza `url` è interna: si nomina senza finto link (regola del repo).
 // Il link si risolve qui, dove il tipo `Fonte` dice che `url` è facoltativo.
@@ -43,23 +36,16 @@ const linkDi = (k?: ChiaveFonte): string | undefined => {
   return f.url;
 };
 const righe = pezzi.map((x) => ({ ...x, url: linkDi(x.fonte) }));
----
-<div class="tp-serve">
-  <p class="tp-serve-leg">
-    {statiUsati.map((st, i) => (
-      <>{i > 0 ? ' · ' : ''}<span class={`tp-serve-tag is-${st}`}>{LEGENDA[st].eti}</span>{LEGENDA[st].spiega}</>
-    ))}
-  </p>
 
-  {/* Un solo elemento di testo per riga, oltre alla pastiglia: la descrizione è
-      testo NUDO del <li>, non uno <span>. Due span che vanno a capo dentro la
-      stessa riga producono riquadri che si intersecano, e il check `e` li legge
-      come testo sopra testo — la stessa trappola già registrata su `.tp-tools`. */}
-  <ul class="tp-serve-l" role="list">
-    {righe.map((x) => (
-      <li class="tp-serve-i" data-stato={x.stato} data-eti={LEGENDA[x.stato].eti}><span class="tp-serve-n">{x.url
-          ? <a href={x.url} target="_blank" rel="noopener noreferrer">{x.nome}</a>
-          : x.nome}</span>{x.a}</li>
-    ))}
-  </ul>
-</div>
+// La legenda scioglie solo gli stati che questa slide usa davvero.
+const statiUsati = [...new Set(pezzi.map((p) => p.stato))];
+const legenda = statiUsati.map((st) => `${LEGENDA[st].eti}, ${LEGENDA[st].spiega}`).join(' · ');
+---
+<p class="tp-serve">
+  {righe.map((x, i) => (
+    <>{i > 0 ? <span class="tp-serve-sep" aria-hidden="true"> · </span> : ''}<span class="tp-serve-n" data-stato={x.stato} data-eti={LEGENDA[x.stato].eti}>{x.url
+      ? <a href={x.url} target="_blank" rel="noopener noreferrer">{x.nome}</a>
+      : x.nome}</span></>
+  ))}
+  <span class="tp-serve-leg">{legenda}</span>
+</p>
