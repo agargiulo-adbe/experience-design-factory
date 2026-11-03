@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import SlideIdea from '../components/SlideIdea.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import CheServe from '../components/CheServe.astro';
@@ -11,7 +12,7 @@ import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { CANALE, REFERTO, KPI, SERVE } from '../data/contenuti';
+import { CANALE, REFERTO, REFERTO_INTERO, DOMANDE, KPI, SERVE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
@@ -64,39 +65,9 @@ const currentPath = Astro.url.pathname;
         <p class="ex-ch-num">Capitolo {ch.num}</p>
         <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
         <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Il primo punto del percorso, prima di ogni vostra pagina. Non una teoria:
-          una misura, su due assistenti.
+          Il primo punto del percorso, prima di ogni vostra pagina: non una teoria, una misura.
         </p>
-        <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
-          <p class="ex-ch-agenda-k">In questo capitolo</p>
-          <ul role="list">
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">1</span><span>Otto domande, nessuna di marca</span></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">2</span><span>Di chi sono le Frecce</span></li>
-            <li><span class="ex-ch-agenda-n" aria-hidden="true">3</span><span>Che cosa si misura, e che cosa si cambia</span></li>
-          </ul>
-        </div>
-        <!-- Il metodo sta sulla COPERTINA del capitolo, non in un allegato e non sulla
-             slide dei numeri. Non in allegato perché la prima domanda che arriva su un
-             dato è «da dove viene?», e una slide che manda a cercare la risposta altrove
-             l'ha già persa. Non sulla slide dei numeri perché lì, espanso, sfondava la
-             safe-area a 1280 — e il contratto dice di tagliare o dividere, mai di
-             rimpicciolire. Qui la frase sopra lo annuncia già («con il metodo in
-             chiaro»), e si dichiara come si è misurato PRIMA di mostrare il risultato,
-             che è anche l'ordine giusto. I limiti stanno dentro: dichiararli noi vale,
-             farseli trovare dal cliente no. -->
-        <HowItWorks title="Come l’abbiamo misurato" label="Come l’abbiamo misurato" tone="onLight" data-reveal data-reveal-delay="0.3">
-          <p>
-            <strong>Chi, e con che cosa.</strong> <strong>ChatGPT</strong> e la <strong>risposta
-            generata di Google</strong>, stesse otto domande, una per conversazione nuova.
-            Nessuna domanda contiene un nome di marca.
-          </p>
-          <p>
-            <strong>Che cosa abbiamo registrato, e i limiti.</strong> Chi è nominato, quali siti
-            sono citati come fonte, se i prodotti sono attribuiti a chi li fa. Quattro domande in
-            italiano e quattro in inglese. Due assistenti e otto domande: è una fotografia, va
-            riscattata prima di usarla.
-          </p>
-        </HowItWorks>
+        <AgendaCapitolo slug="ricerca" />
       </div>
     </Slide>
 
@@ -118,13 +89,14 @@ const currentPath = Astro.url.pathname;
           <!-- Lead accorciato quando è arrivato il blocco sul metodo: diceva le stesse
                cose, e una slide che ripete sé stessa due centimetri più sotto non è
                densa, è ridondante. Qui resta il fatto; il come sta nel blocco. -->
+          {/* ⚠️ NIENTE <strong> QUI. Due <strong> che vanno a capo dentro lo
+              stesso paragrafo hanno riquadri che si intersecano, e il check
+              `e` li legge come testo sopra testo: è HARD, ed è la stessa
+              trappola già annotata sulla slide d'apertura. */}
           <p class="ex-head-lead">
-            Abbiamo chiesto a <strong>ChatGPT</strong> e alla <strong>risposta generata di Google</strong>
-            come si arriva a Matera, alle Cinque Terre, in Puglia, da Torino a Bologna: otto
-            domande, quattro in italiano e quattro in inglese.
-            Nessuna contiene un nome di marca. <strong>Nominata</strong> nel testo della risposta,
-            Trenitalia c’è quasi sempre su entrambi. Il problema non è la menzione: è <strong>da
-            quale sito</strong> i due vanno a prendere quello che dicono.
+            Le stesse otto domande, senza nomi di marca, su ChatGPT e sulla risposta generata
+            di Google. Nominata, Trenitalia c’è quasi sempre su entrambi: il problema non è la
+            menzione, è da quale sito i due prendono quello che dicono.
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
@@ -142,10 +114,25 @@ const currentPath = Astro.url.pathname;
             </div>
           ))}
         </div>
-        <p class="ex-src" data-reveal data-reveal-delay="0.3">
+        {/* Le quattro cifre sopra sono una selezione: chi chiede «e il resto?»
+            lo vede qui, dalla stessa misura, senza aprire un allegato. */}
+        {/* Le quattro cifre sopra sono una selezione: chi chiede «e il resto?»
+            lo vede qui, dalla stessa misura e senza aprire un allegato.
+            L'elenco delle otto domande sta sulla copertina del capitolo: insieme,
+            elenco e tabella sbordano (check `exp`, HARD). */}
+        <HowItWorks title="Il referto per intero" label="Il referto per intero" tone="onLight" data-reveal data-reveal-delay="0.24">
+          <table class="tp-ref-tab">
+            <thead><tr><th>Che cosa abbiamo contato</th><th>Google</th><th>ChatGPT</th></tr></thead>
+            <tbody>
+              {REFERTO_INTERO.map((r) => (
+                <tr><td>{r.m}</td><td>{r.g}</td><td>{r.c}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </HowItWorks>
+        <p class="ex-src" data-reveal data-reveal-delay="0.32">
           {SOURCES.misura.label}: contato il dominio trenitalia.com fra le fonti citate, non
-          l’applicazione di acquisto. Un giro solo, a mano: una fotografia nostra, non una
-          statistica — e la rifacciamo davanti a voi quando volete.
+          l’applicazione di acquisto. Un giro solo, a mano: la rifacciamo davanti a voi.
         </p>
       </div>
     </Slide>
@@ -154,7 +141,7 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-frecce" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">«Come andare da Torino a Bologna in giornata senza auto», la stessa domanda a due assistenti</p>
+        <p class="slide-eyebrow">Domanda 8 delle otto: «come andare da Torino a Bologna in giornata senza auto», posta a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
           «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
           Italo, Trenitalia e Intercity</strong>.»
@@ -167,6 +154,23 @@ const currentPath = Astro.url.pathname;
           confronta Frecciarossa, Intercity e regionali», e non sbaglia in nessuna delle otto.
           <strong>L’errore l’abbiamo visto su Google. Su ChatGPT, sulle stesse otto domande, mai.</strong>
         </p>
+        {/* ⚠️ IL CAMPIONE STA SULLA SLIDE CHE CITA UNA DELLE OTTO.
+            Il rilievo del 3 novembre: il deck contava otto domande senza
+            mostrarle mai, e qui cita una risposta — Torino-Bologna — che chi
+            guarda non poteva ricollegare alla misura. Ora la domanda citata ha
+            il suo numero nell'occhiello, e l'elenco intero si apre qui sotto.
+            ⚠️ Elenco e tabella sono DIVISI, per misura e non per gusto: insieme
+            non entrano in nessuna disclosure di questo capitolo, e sulla
+            copertina nemmeno l'elenco da solo ci sta a 1280×800 (agenda a cinque
+            voci più titolo di capitolo). La tabella sta sulla slide dei numeri.
+            Il check è `exp`, ed è HARD su tutti e tre i viewport. */}
+        <HowItWorks title="Le otto domande, una per conversazione nuova" label="Le otto domande, una per conversazione nuova" tone="onLight" data-reveal data-reveal-delay="0.3">
+          <ol class="tp-dom">
+            {DOMANDE.map((d) => (
+              <li><span class="tp-dom-n">{d.n}</span><span class="tp-dom-t">{d.t}</span><span class="tp-dom-l">{d.lang}</span></li>
+            ))}
+          </ol>
+        </HowItWorks>
         <p class="ex-src" data-reveal data-reveal-delay="0.26">
           {SOURCES.misura.label}: l’errore si ripete su un’altra delle otto domande.
         </p>

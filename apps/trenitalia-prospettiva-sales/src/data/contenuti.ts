@@ -228,6 +228,37 @@ export const PUNTI: Punto[] = [
 /* ── Capitolo 03 · il referto della misura ─────────────────────────────────
    NIENTE conteggio animato su questi numeri: mentre contava, la slide diceva
    «0 su 8 risposte nominano Trenitalia», l'esatto contrario del fatto. */
+/* ── LE OTTO DOMANDE, per esteso ───────────────────────────────────────────
+   3 nov 2026. Il deck diceva «otto domande, nessuna di marca» e non le
+   mostrava mai: chi guarda non sa quali siano, e quando più avanti compare la
+   risposta su Torino-Bologna non può collegarla alla misura. Il rilievo è
+   arrivato da una revisione interna, e è giusto: un numero senza il suo
+   campione chiede di fidarsi, e un deck viene letto da chi non era in sala.
+   Le domande sono verbatim, come sono state digitate, in minuscolo e senza
+   punto interrogativo: una per conversazione nuova, nessuna con un nome di
+   marca. Grezzi e metodo:
+   docs/Ferrovie/MISURA-visibilita-risposte-generate-2026-10-11.md. */
+export const DOMANDE: { n: number; t: string; lang: 'IT' | 'EN' }[] = [
+  { n: 1, t: 'come arrivo da Roma a Matera senza auto', lang: 'IT' },
+  { n: 2, t: 'how to travel from Rome to Florence without a car', lang: 'EN' },
+  { n: 3, t: 'come visitare la costiera amalfitana senza macchina', lang: 'IT' },
+  { n: 4, t: 'how to visit Puglia without a car', lang: 'EN' },
+  { n: 5, t: 'come arrivare alle Cinque Terre senza auto', lang: 'IT' },
+  { n: 6, t: 'best way to get from Milan to Venice', lang: 'EN' },
+  { n: 7, t: 'how to get from Rome to Pompeii by train', lang: 'EN' },
+  { n: 8, t: 'come andare da Torino a Bologna in giornata senza auto', lang: 'IT' },
+];
+
+/* Il referto per intero: le quattro cifre della slide sono una selezione di
+   queste righe, e chi chiede «e il resto?» deve poterlo vedere senza aprire un
+   allegato. Stessa fonte, stessa misura. */
+export const REFERTO_INTERO: { m: string; g: string; c: string }[] = [
+  { m: 'Trenitalia nominata nella risposta', g: '6 su 8', c: '7 su 8' },
+  { m: 'trenitalia.com citato come fonte', g: '2 su 8', c: '7 su 8' },
+  { m: 'Un concorrente fra le fonti o nominato', g: '4 su 8', c: '5 su 8' },
+  { m: 'Prodotti attribuiti a chi non li fa', g: '2 su 8', c: '0 su 8' },
+];
+
 export const REFERTO: Stat[] = [
   { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
   { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti: la risposta si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio), che vendono comunque i vostri biglietti' },

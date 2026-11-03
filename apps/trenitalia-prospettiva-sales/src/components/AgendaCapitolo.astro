@@ -1,0 +1,26 @@
+---
+/**
+ * L'agenda di un capitolo, GENERATA dal registro delle slide.
+ *
+ * ⚠️ Non si scrive a mano, e il perché sta in `src/data/slides.ts`: le
+ * agendine scritte a mano sono divergite dal contenuto senza che nessun gate
+ * se ne accorgesse — la copertina del capitolo 01 annunciava un fatto che la
+ * slide dopo non diceva più, e tre capitoli su sette non annunciavano niente.
+ * Qui l'indice non può mentire: viene dalla stessa lista che accende le slide.
+ */
+import { agendaCapitolo } from '../data/slides';
+
+interface Props { slug: string; titolo?: string; }
+const { slug, titolo = 'In questo capitolo' } = Astro.props as Props;
+const voci = agendaCapitolo(slug);
+---
+{voci.length > 0 && (
+  <div class="ex-ch-agenda" data-reveal data-reveal-delay="0.22">
+    <p class="ex-ch-agenda-k">{titolo}</p>
+    <ul role="list">
+      {voci.map((v, i) => (
+        <li><span class="ex-ch-agenda-n" aria-hidden="true">{i + 1}</span><span>{v}</span></li>
+      ))}
+    </ul>
+  </div>
+)}
