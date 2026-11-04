@@ -1,4 +1,4 @@
-# Handover — Parte 8 di 20
+# Handover — Parte 8 di 21
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -105,7 +105,7 @@ sotto scrim all'85-90% → l'unica che valeva era il ritratto persona. Registrar
 `index` (cover «Il momento giusto», il vostro 2026 con 3 stat, percorso 3 card) · `domanda` (cover · «Avete molto in mano» 2 pannelli · 3 domande: primacy/tocco umano/misura) · `idee` (cover + **6 idee gated**: `onboarding` primi 90 giorni RTCDP+AJO · `gestore` che sa già Brand Concierge+AEP+AJO · `momento` (i 35 anni) Target+AJO decisioning · `premialita` isyToken AJO+RTCDP+CJA · `journey` CJA sopra il web analytics in uso · `contenuti` GenStudio+Firefly+AEM+Brand Visibility) · `rotta` (3 orizzonti O1 leggere/O2 rispondere/O3 scalare · 4 richieste senza firma · chiusura «Semplificare non è mai facile»). `admin` con 6 solutions su 3 pilastri (Relazione / Rilevanza / Misura & Contenuti). **`/dossier/`** war-room **gated come MIM** (contenuto in Supabase `restricted_docs` slug `isybank-valitutti`; login/RLS **o** secret-link `?t=<uuid>` via RPC `get_shared_doc`; **niente nel bundle**, verificato con grep su `dist`; PDF via print; renderer esteso timeline/stats/people/rows/ideas/table/say-dont/sources), noindex/orfana (15 sezioni: summary, mission, chi è + timeline, numeri, mappa persone, fatti con badge, Adobe nel perimetro *qualitativo*, 6 idee, matrice, proof point, say/don't, domande+caveat, run of show, 23 fonti). Design system **`.im-*`**: inchiostro `#101318` · blu `#1B99FB` · menta `#26E5AE` · arancio `#FF6200` (palette estratta dal logo isybank) · **Manrope + Inter**.
 
 ### 31.2 Fatti che guidano il pitch (verificati 9 set, 3 filoni deep-research)
-~1,2 mln clienti (ISP 1H26), >3 mld giacenze, 75% under 35, 170k stipendi, C/I 28,6%, utile 2025 18,8 mln, **41 dipendenti** (IT/Filiale Digitale/back office dalla Capogruppo); Piano 2026-29: 2 mln clienti / 8 mld AF / 100 mln utile, Filiale Digitale 80% auto-risoluzione, «Agent-first», isywealth Europe. **Vincoli copy**: Garante Privacy 17,6 mln (12 mar 2026, migrazione Isybank) → mai «profilazione»; Valitutti scettico sull'AI nel proprio lavoro → mai AI-first; «non siamo challenger, siamo una human digital bank». **Chi decide sulle piattaforme**: Claudia Vassena (S&M Digital Retail BdT, consigliera Isybank, parla di GEO/GenAI) + Massimo Proverbio (C-DAITO); incumbent marketing retail ISP = SAS Marketing Automation (dato 2017). isybank.com gira su **AEM** (clientlib verificate) + Tealium. Frame vincente = «Isybank laboratorio del Gruppo»: pilota qui, scala su ISP.
+~1,2 mln clienti (ISP 1H26), >3 mld giacenze, 75% under 35, 170k stipendi, C/I 28,6%, utile 2025 18,8 mln, **41 dipendenti** (IT/Filiale Digitale/back office dalla Capogruppo); Piano 2026-29: 2 mln clienti / 8 mld AF / 100 mln utile, Filiale Digitale 80% auto-risoluzione, «Agent-first», isywealth Europe. **Vincoli copy**: Garante Privacy 17,6 mln (12 mar 2026, migrazione Isybank) → mai «profilazione»; Valitutti scettico sull'AI nel proprio lavoro → mai AI-first; «non siamo challenger, siamo una human digital bank». **Chi decide sulle piattaforme**: la consigliera Isybank per il digitale retail (S&M Digital Retail BdT, consigliera Isybank, parla di GEO/GenAI) + il Chief Data, AI & Technology Officer del gruppo (C-DAITO); incumbent marketing retail ISP = SAS Marketing Automation (dato 2017). isybank.com gira su **AEM** (clientlib verificate) + Tealium. Frame vincente = «Isybank laboratorio del Gruppo»: pilota qui, scala su ISP.
 
 ### 31.3 Registrazioni & verifica
 Registrata in `deploy.yml` (merge + verify), factory-hub, `scripts/deck-audit.ts` (ROUTE_SET 4 route + alias), root `dev:isybank` + `audit:deck:all`. **Seedata in console** (`0012_seed_isybank.sql`, applicata al DB remoto 9 set) + **dossier seedato out-of-band** (`docs/Intesa Sanpaolo/0012_seed_isybank_dossier.sql`, git-ignored; README tracciato `supabase/migrations/0012_isybank_dossier.README.md`; token letto con `select share_token from restricted_docs where slug='isybank-valitutti'`). **Regola resa BINDING dall'utente il 9 set: ogni dossier = pagina gated come MIM, mai inline** (memoria `dossier-as-internal-web-page`). `.gitignore`: `docs/Intesa Sanpaolo/`. `audit:deck` **0 HARD** a 1920/1440/1280 (16 soft `a`/`i`: cover ariose + slide dense a 1280, accettate senza restringere il type); screenshot letti a 1920 e 1280 (deck) + dossier a 1920; `noindex` confermato; grep dei pattern contrattuali sul `dist` = 0.
@@ -131,7 +131,7 @@ Richiesta dell'utente: un PPTX **su template Adobe** per la riunione con Valitut
 
 Richiesta dell'owner, in sei punti: design system di trenitalia.com al 100%, ottimizzazione per
 schermi da muro, sfondi su ogni slide con clip in loop su copertina e chiusura, largo uso di
-elementi grafici, `/panel-review` con **Gianluca Palmieri** come stakeholder principale, e
+elementi grafici, `/panel-review` con **il responsabile del digitale** come stakeholder principale, e
 umanizzazione completa della copy. Poi, a lavoro in corso: analizzare e correggere le incoerenze
 fra slide. Commit da `cc5e222` ad `a81579e`. Deck a **72 slide** su 13 rotte.
 
@@ -220,7 +220,7 @@ Il grosso non si vede slide per slide: si vede solo confrontandole.
   non spegnevano più niente.
 
 ### 36.7 Panel review — due giri, 9 ottobre 2026
-Personas: `docs/Ferrovie/PANEL-PERSONAS.md` (git-ignorato) — **Gianluca Palmieri** (il digitale di
+Personas: `docs/Ferrovie/PANEL-PERSONAS.md` (git-ignorato) — **il responsabile del digitale** (il digitale di
 Trenitalia, stakeholder principale e contatto Adobe esistente), **Giuseppe Raffaniello** (Customer
 Operations: il percorso d'acquisto è suo dal set 2025), **Mario Alovisi** (Marketing e Revenue
 Management), **Domenico Scida** (CTIDO di Gruppo da lug 2026), più due **seat** senza nome pubblico

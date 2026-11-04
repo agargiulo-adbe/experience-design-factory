@@ -1,6 +1,6 @@
 # «Sei domande» — Adobe × Poste Italiane · design spec (2026-09-29)
 
-**Cliente / interlocutore.** Poste Italiane · Giuseppe Sperandeo, Responsabile Monitoraggio
+**Cliente / interlocutore.** Poste Italiane · il Responsabile Monitoraggio Canali Digitali, Responsabile Monitoraggio
 Canali Digitali, Admin di Adobe Analytics. Pubblico: solo lui. Taglio tecnico‑operativo che
 fa vedere il valore *interno* (tempo, autonomia dall'IT, governance) senza cambiare stack.
 

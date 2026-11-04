@@ -1,9 +1,99 @@
-# Handover — Parte 3 di 20
+# Handover — Parte 3 di 21
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### Change log — Trenitalia Direzione Sales: tutto il deck passa al registro XD, e un giro di revisione prima della sessione (2026-11-04) → §37.13 (Parte 16)
+
+**Tre commit** (`63ab31c`, `2a86721`, `05bf555`), tutti su `apps/trenitalia-prospettiva-sales`.
+Il 3 novembre lo strato XD era entrato su **sei slide su trentaquattro** — copertina, apertura e
+le quattro idee — e il resto era la pelle vecchia. Il 4 la domanda dell'owner è stata: «è tutto in
+modalità visual XD?». La risposta misurata era **no**, e da lì è partita la conversione.
+
+**Il quadro prima di toccare**, perché l'intervento è nato da una misura e non da un'impressione:
+XD su **6/34** slide · `audit:ritmo` **4 slide su 41** con un elemento visivo · **cinque slide
+oltre le 150 parole VISIBILI** (il testo dietro «Scopri come» non conta: quello è profondità, ed è
+lì che deve stare), la peggiore a **207**.
+
+**Le sette copertine di capitolo diventano divisori XD** — titolo grande, fotografia, pannello di
+colore con il punto del capitolo e l'agenda generata dal registro delle slide. Ogni capitolo ha
+ora **la sua** immagine: erano tutti e sette la stessa, e sette divisori identici non sono un
+ritmo. ⚠️ XD compone il divisore per una dominante **chiara** e il titolo prende `--color-ink`:
+qui sarebbe uscito ardesia su ardesia — invisibile, e nessun check di layout lo vede. La pelle lo
+ribalta, ed è la regola degli inchiostri che si ribaltano con la superficie applicata a un
+componente del motore.
+
+**La grammatica XD su tutte le slide di contenuto**: **106 classi** `.ex-*` → `.xd-*`. Non è un
+rinomino estetico — porta le regole di leggibilità già pagate — e ha **scoperchiato due difetti
+veri che la pelle vecchia nascondeva**: su una slide di **marchio** l'occhiello e la riga di fonte
+davano **2,31:1** e **2,58:1**, rosa su rosso. Su una superficie dichiarata l'inchiostro va
+esplicito.
+
+**La mappa dei quattro punti** — la spina dorsale del deck — era quattro card di prosa: 207 parole,
+la slide più pesante, e proprio quella su cui chi parla deve essere ascoltato. Ora è **un filo con
+quattro fermate**, un'ancora ciascuna, e i paragrafi dietro «Scopri come» **in forma di figure**:
+quattro paragrafi dentro un drill-down sono lo stesso muro, soltanto nascosto.
+
+**Due blocchi tolti** perché ripetevano la slide che li ospitava e aperti facevano sforare la
+safe-area a 1280×800: il drill-down dell'aritmetica (il suo primo fatto è già nel titolo, il
+secondo nella slide dell'idea) e una chiusa sul referto. Fra una frase e il campione verificabile
+vince il campione.
+
+**`data-stretto` su sei slide**, non su tutte: applicare il respiro stretto ovunque faceva risalire
+il check `g` da **9 a 27** rilievi — SOFT, ma è un peggioramento vero del ritmo pagato per un
+problema che hanno sei slide su trentaquattro.
+
+**Esito:** slide con un elemento visivo **da 4/41 a 16/41**; **nessuna** slide sopra le 150 parole
+visibili.
+
+⚠️ **LA CI È ANDATA ROSSA SUL PRIMO PUSH** (`2a86721` la chiude). Un campo nuovo, `bRiga`, era stato
+aggiunto alle quattro voci dei dati ma **non all'interfaccia** — che è dichiarata su una riga sola,
+e l'inserimento automatico è finito nei letterali. L'errore a monte è il controllo sbagliato: la
+verifica era stata fatta con `npx tsc --noEmit`, **che sui file `.astro` non guarda niente**. Il
+controllo di questo repo è `pnpm typecheck`, cioè `astro check`. È la seconda volta che la CI va
+rossa su `main` per un gate non lanciato in locale (la prima è nel change log del 9 ottobre).
+
+**Il giro di revisione del pomeriggio** (`05bf555`), chiesto dall'owner slide per slide:
+
+- **Mai più «le sue parole».** Cinque punti attribuivano le frasi alla persona — «la parola che ha
+  usato lui», «con le sue parole, non ancora esplorato», «Le sue parole al TTG», «i mercati che ha
+  indicato», e il punto del capitolo 01 con «li avete detti, annunciati o decisi voi». In sala
+  suona come un dito puntato. **Ora si cita la fonte e basta**: la citazione dall'intervista
+  pubblica resta, la cornice che la indica no.
+- **Due fatti che non reggevano.** «La leva lavora da anni» era **falso**: il prezzo dinamico sulle
+  Frecce è partito il **1º gennaio 2026** — dieci mesi — e vale **solo sull'alta velocità**, mentre
+  in quella stanza si vendono tre prodotti; la data la conoscono meglio di noi
+  (Altroconsumo, gennaio 2026). E due **affermazioni di assenza sul cliente** — «non sapete chi
+  vende che cosa», «chi compone un viaggio è indistinguibile» — che si verificano sulle sue pagine
+  prima di scriverle: di che cosa vedano della rete non esiste fonte. Ora la slide dice quello che
+  si osserva sul percorso pubblico, e la domanda la fa il capitolo che chiude.
+- **La riga sui perimetri resta, la mappa delle direzioni no.** Il panel l'aveva chiesta da tre
+  poltrone diverse — dichiarare noi che non tutto si decide lì vale molto — ma elencare quale
+  direzione tiene che cosa, citando i documenti sindacali del 30 marzo, è spiegare a un direttore
+  che cosa non è suo **con in mano le carte interne della sua azienda**, e invita un «chi ve l'ha
+  detto?». È lo stesso errore già corretto su PICO il 15 ottobre. Resta la rassicurazione; i
+  confini li traccia lui. Via anche la fonte, che serviva solo alla mappa.
+- **Due elementi grafici nuovi.** Le sei date erano in prosa nel lead: ora sono una **cronologia**,
+  nella stessa grammatica della mappa dei quattro punti, e si vede che cadono tutte nei prossimi
+  diciotto mesi («adesso» è l'unica tappa accesa). La slide dell'internazionalizzazione aveva solo
+  testo accanto a una slide con una figura: ora porta il **ventaglio dei mercati** nominati al TTG,
+  da un'origine sola.
+- **Copertina**: via la riga sui trenta minuti e la nota sulla misura (si dice dopo); «L'ora, come
+  la spendiamo» diventa **«Agenda»**. Il ponte sull'internazionalizzazione è riscritto e la frase
+  bocciata dall'owner sparisce anche dalla slide dell'idea.
+- **Le ancore dei drill-down smettono di ripetere il titolo della card** che le ospita: su otto
+  voci, aperto, il blocco diceva due volte la stessa riga e sembrava ridondante.
+
+**Gate a fine giornata:** `audit:deck` **0 HARD** su 9 rotte × 3 viewport (residuo SOFT `a` 17 ·
+`g` 12 · `i` 40, il profilo di un deck ad ancore) · `audit:ink` **PULITO** su 567 blocchi, 13
+«Scopri come» aperti e misurati · `copy-audit` **0 HARD** su 401 stringhe · `audit:taglio`
+ALLINEATO · `audit:fonti` nessun link rotto · `typecheck` 0 errori, 0 warning · build di tutte le
+app verde. CI e Deploy verdi, nove rotte su nove a 200.
+
+⚠️ **Il verdetto del panel resta quello del 12 ottobre** e da allora il deck è stato riscritto tre
+volte: resta la voce **P0** in §10.
 
 ### Change log — Trenitalia Direzione Sales: lo strato XD, le figure recuperate, l'indice che non mente e il 96% che torna (2026-11-03) → §37 (Parte 16)
 
@@ -329,29 +419,5 @@ Otto commit che il giro di handover del 17 ott aveva lasciato fuori e dichiarato
 - **Trenitalia Direzione Sales, tre correzioni** (`6f0dc68` `5ccef30` `57f5f0d`): **via il rifacimento di PICO**, che era affermato **senza fonte**; il **nome del prodotto esce dai requisiti**, come aveva chiesto il panel; ed entra il **canale che si estende** — dove il viaggio si cerca, presto si compra.
 - **Un dossier nuovo**: `apps/mef-giustizia-tributaria` (`6d2c763`), **Giustizia Tributaria del MEF** — app minimale con la sola pagina del dossier, come le due Intesa, più la migrazione `0029_seed_mef_giustizia_tributaria.sql` e la pagina che **mancava al deploy**. ⚠️ Non ha una sezione propria in questo handover: è l'unica cosa del 15-16 ott che resta da raccontare per esteso (da verificare con chi l'ha scritta).
 
-### Change log — il grafo dei contatti, l'apertura e il giro di ritorno (2026-10-13, sera) → §39.8–39.9 (Parte 16), commit `9e98de4`, `e699676`
-
-Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a chi scrivere**. Tre pezzi, nell'ordine in cui sono stati costruiti, e in mezzo tre difetti trovati **provandolo** invece di rileggerlo.
-
-- **Il grafo dei contatti si ricava da Outlook**, una passata a settimana per account (`1 + N` chiamate), e si deposita in «Chi è chi» come fatti datati con il verdetto **scrivi tu / passa dall'AE** e il suo motivo. ⚠️ **Due limiti misurati hanno riscritto la regola del disegno**: il filtro `recipient:` **non distingue il destinatario diretto da chi era in copia** (tre contatti dello stesso cliente tornano con gli stessi cinque messaggi di un thread di gruppo indirizzato a un quarto → «gli hai scritto tu» **non è calcolabile**), e la ricerca gira sulla **propria** casella, quindi chi parla solo con l'AE è invisibile. Il verdetto poggia ora su «**ti ha scritto lui**, entro ~120 giorni» più un **giudizio dichiarato** sulla funzione, che vince sul dato. Primo grafo su Enel: **sei contatti, tre «scrivi tu»**, e la persona più calda risulta «passa dall'AE» perché scrive all'AE e non a noi.
-- **L'apertura**: `pnpm accounts --apertura` incrocia i segnali col grafo e propone **una** conversazione con quattro campi obbligatori (A CHI · PROPONI · PERCHÉ ORA · MUOVE, più `Q4?` e un id). Se un campo manca **non esce**. ⚠️ Tre difetti corretti: **«PROPONI AAM» su un account che da AAM sta migrando** (il segnale era il rischio sul rinnovo; come proposta commerciale era **falso**), **salute rossa e rinnovo sullo stesso prodotto come due aperture** invece di una — con il rischio su un rinnovo eleggibile marcato «relazione» — e **due lanci nello stesso giorno = due aperture**.
-- **Il giro di ritorno**, il pezzo che migliora da sé: ogni apertura è una riga nel `Registro_opportunita.md` con la colonna **«Decisione Antonio» vuota** (esisteva dal 2 ott e nessuno l'aveva mai scritta), e `--decidi <id> si|no|dopo` la chiude. **NO** = mai più · **DOPO** = 21 giorni · **SÌ** = l'esito lo chiede `/account-close` (passo **5bis** nuovo) · **nessuna risposta** = torna dopo una settimana con lo stesso id. La colonna **non si riscrive mai**: `--decidi` su una riga decisa rifiuta.
-- **Nel giro della mattina** l'apertura si deposita, va nel **corpo della notifica** e viene **giudicata dal consulente**. Provato via `launchctl`: il consulente **ha dissentito nel merito** (il contatto scelto segue fatturazione, non la leva commerciale dietro l'attrition: prima si allinea l'AE) e ha **collegato la variante contrattuale al rischio di rinnovo**, due cose che stavano in file diversi. ⚠️ Correzione di metodo: con **`env -i`** `claude` risponde «Not logged in» e la conclusione «sotto launchd il giudizio non parte» era **sbagliata** — `env -i` toglie più di quanto launchd tolga. La prova è `launchctl start`.
-- **Riservatezza**: `audit:docs` guarda **i percorsi, non il contenuto**, e il controllo umano che delega ha trovato in file **tracciati** di un repo **pubblico** un cliente con prodotto e importo di rinnovo dentro un prompt, una data di chiusura col nome del cliente e un **numero di cellulare**. Sostituiti con segnaposto.
-- **Misure**: `tsc` pulito, `audit:docs` a 0, giro launchd con **stderr a 0 byte**. Memorie `grafo-contatti-dalla-posta` e `apertura-e-giro-di-ritorno`; `launchd-non-e-la-tua-shell` aggiornata.
-
-### Change log — il giro gratuito del Radar, e i primi registri dove serviva (2026-10-13) → commit `90c4d5d`, `895afdc`, `144d664`
-
-- **Il radar schedulato il 2 ott aveva prodotto zero file in dieci giorni**: la causa è l'esaurimento dei token del mese sull'account che lo eseguiva, non un guasto dello scheduler. Ribalta la priorità: ottimizzare i token è **il vincolo che decide se gira**. Ora `pnpm accounts` parte da sé **lun-ven alle 07:30 via launchd**, a **zero token** — scrive sempre in `Radar/giri/`, notifica solo se c'è un rilievo — e `accounts` avvisa se l'ultimo giro ha più di due giorni, perché quel sistema è morto senza che nessuno lo notasse. ⚠️ Quattro guasti di launchd trovati provandolo **come lo lancia launchd**, non dal terminale. **Copertura da 20 account scoperti su 25 a 17**, e nessun rinnovo **eleggibile** più senza registro: aperti UniCredit (Analytics $1,48M al 13 dic, Yellow, nessuna conversazione in posta), Ferrovie (Target $409K al 30 dic, **adoption 0,0**) e Intesa Sanpaolo. Tutto in **§39 (Parte 16)**.
-
-### Change log — la Prospettiva per la Direzione Sales passa dal panel, e nasce «In dieci minuti» (2026-10-12 sera / 2026-10-13) → §37.7–37.10 (Parte 16), commit `a755ada`→`19d06b9`
-
-- **Panel review a due giri sulla Prospettiva** (`docs/Ferrovie/PANEL-VERDICT-2026-10-12-round{1,2}.md`, personas in `PANEL-PERSONAS-SALES.md`, tutto git-ignorato): sei personas cieche — il Direttore Sales, il Direttore Generale, marketing, Customer Operations, il presidio digitale, il Digital Business Partner di FSTechnology — più fact-checker e arbitro. **Credibilità dei fatti da 2,0 a 3,2 su 5**; al primo giro sei «accetto a condizione» su sei, al secondo il Direttore Sales passa a **«sì»**. **Quindici fatti refutati**, e i tre che contavano erano invisibili ai gate **perché i link rispondevano**: la slide d'apertura attribuiva a lui, fra virgolette, una frase che l'articolo ANSA citato **non contiene**; «da due operatori a quattro» è falso (sono due, SNCF è il terzo e debutta non prima di fine 2027); i **70.000 punti vendita non sono le agenzie** ma i punti fuori dalle biglietterie che vendono il Regionale, da un dato del **2014** — il canale della Direzione Sales sono **12.400 agenzie**, contate da lui. Corretta anche la **domanda centrale**, che era smentita dalla slide precedente: il prezzo dal 1º gennaio 2026 lavora più di prima, solo che è una leva del marketing.
-- **Le fonti puntano alla pagina che dice il fatto.** Tre slide citavano due **homepage** per sei fatti distinti. Copia e fonti sono passate a `src/data/contenuti.ts` e `src/data/sources.ts`, dove ogni voce porta anche **che cosa quella pagina conferma verbatim** (`cosaDice`): è lì che nascono le attribuzioni sbagliate. `audit:fonti` guadagna il SOFT sui **link generici** e tratta il **406** come blocco anti-bot, non come errore.
-- **«In dieci minuti» diventa una funzione della Factory** (`/dieci-minuti/`, 7 slide con l'ask dentro): non una copia del percorso lungo ma **la stessa fonte, più corta**, con la versione breve come campo accanto a quella lunga. Lo verifica **`pnpm audit:taglio`** (`scripts/cut-audit.ts`, registro in `scripts/lib/cut-routes.ts`): HARD su copia a mano, numeri che solo il taglio afferma, fonti che solo il taglio porta. Sulla stessa regola è stata riallineata **`intesa-scala-umana`**, dove il gate ha trovato subito una frase riscritta a mano. Riferimento di skill: `skills/experience-design/references/taglio-dieci-minuti.md`.
-- **Il dossier della Direzione Sales è stato corretto e riapplicato** (`supabase db query --linked`, 95 KB, token invariato, `audit:dossier` 0 rilievi su 5 viewport): nove dei fatti refutati venivano da lì, ed è il documento da cui il team entra in sala. Elenco con le fonti in `docs/Ferrovie/CORREZIONI-DA-RIPORTARE-NEL-DOSSIER-2026-10-12.md`. Registrato anche il fatto confermato dall'account il 13 ott: **Adobe Target è su `trenitalia.com`, non su `lefrecce.it` né sull'app** — si dà per esistente e **non si dice mai che «si espande facilmente»**.
-- **`copy-audit` era cieco, e ora conta quello che misura.** Leggeva solo gli attributi `it=`/`en=` di `<T>`: sulle experience in **una lingua sola** misurava **14 stringhe su 226** e stampava PASS. Ora legge anche i campi dei dati e il markup, salta le note non rese e la console admin, e **stampa quante stringhe ha misurato** (7.548 sul monorepo), segnalando le app dove ne misura zero. Nuova famiglia **`L` (linearità)**, SOFT: frase oltre le ~28 parole, tre o più subordinate, doppia relativa, apertura con subordinata — i quattro modi in cui una frase costringe a tornare indietro mentre qualcuno parla. Sul deck: **da 20 frasi sopra soglia a 0**, e la domanda chiave è passata da tre righe contorte a una sola («Allora dove si perdono le vendite?»), con la premessa nell'occhiello; quella slide, che falliva il check `i`, ora passa tutti e dodici.
-- ⚠️ **Lezione pagata due volte.** La CI è andata **rossa sul primo push su main** perché `typecheck` non era stato lanciato: un `const COVER` con l'URL della clip **ombreggiava l'import** omonimo e la copertina del taglio rendeva una riga vuota. Dietro altri due import inutilizzati c'erano difetti veri — la testa della mappa e la riga della firma **tornate scritte a mano** nel percorso lungo mentre il taglio le leggeva dai dati. Il gate non le vedeva: `c1` guardava solo la pagina del taglio, ora guarda anche quelle del percorso intero.
-- ⚠️ **Due sessioni sullo stesso ramo.** `76eb1ff` ha tolto `audit:taglio` dal `package.json` del branch con la motivazione «puntava a un file non committato»: il file era tracciato dal 12 ott e su `main` il comando girava. Ripristinato (`bf4b94e`). Prima di togliere una voce altrui, `git ls-files <percorso>` — «non c'è nel mio albero» e «non è committato» sono due cose diverse.
 
 ---
