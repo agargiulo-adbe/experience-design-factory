@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import SlideIdea from '../components/SlideIdea.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
@@ -46,17 +47,16 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          L’ultimo punto del percorso, e il più vicino a casa: un canale vostro, che vende ogni giorno e non vi racconta quasi niente.
-        </p>
-        <AgendaCapitolo slug="rete" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_network.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="rete" />
     </Slide>
 
     <!-- ── L'idea, nel registro XD ───────────────────────────────────────
@@ -71,10 +71,10 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-settantamila" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_network.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">Nel canale che è vostro</p>
+        <p class="xd-n">Nel canale che è vostro</p>
         <p class="tp-big-number" data-display data-reveal data-reveal-delay="0.06">{RETE.numero}</p>
         <p class="tp-quote-after" data-reveal data-reveal-delay="0.16" set:html={RETE.dopo} />
-        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.24">
           <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> ·
           <a href={SOURCES.retePunti.url} target="_blank" rel="noopener noreferrer">{SOURCES.retePunti.label}</a> ·
           <a href={SOURCES.agenzie.url} target="_blank" rel="noopener noreferrer">{SOURCES.agenzie.label}</a>
@@ -85,11 +85,11 @@ const currentPath = Astro.url.pathname;
     <!-- ── Che cosa si potrebbe sapere ───────────────────────────────────── -->
     <Slide id="slide-sapere" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">La domanda</p>
-          <h2 class="ex-head-title">Che cosa sapreste, se guardaste la rete come guardate un sito</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">La domanda</p>
+          <h2 class="xd-h2">Che cosa sapreste, se guardaste la rete come guardate un sito</h2>
+          <p class="xd-sub">
             Di un canale digitale sapete tutto: chi entra, dove si ferma, che cosa funziona. Di un
             canale intermediato, quasi nulla. <strong>In parte manca la strumentazione, in parte il
             diritto di guardare.</strong>
@@ -134,11 +134,11 @@ const currentPath = Astro.url.pathname;
          capitolato. -->
     <Slide id="slide-serve" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_network.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Nel canale che è vostro</p>
-          <h2 class="ex-head-title">La domanda che vi facciamo</h2>
-          <p class="ex-head-lead">{RETE.domanda}</p>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Nel canale che è vostro</p>
+          <h2 class="xd-h2">La domanda che vi facciamo</h2>
+          <p class="xd-sub">{RETE.domanda}</p>
         </div>
         <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.16">
           <Dettaglio>

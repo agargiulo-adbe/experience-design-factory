@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import SlideIdea from '../components/SlideIdea.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
@@ -58,17 +59,16 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Il primo punto del percorso, prima di ogni vostra pagina: non una teoria, una misura.
-        </p>
-        <AgendaCapitolo slug="ricerca" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_search.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="ricerca" />
     </Slide>
 
     <!-- ── L'idea, nel registro XD ───────────────────────────────────────
@@ -80,12 +80,12 @@ const currentPath = Astro.url.pathname;
     <SlideIdea slug="ricerca" />
 
     <!-- ── Il referto ────────────────────────────────────────────────────── -->
-    <Slide id="slide-referto" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-referto" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Una misura, non una teoria</p>
-          <h2 class="ex-head-title">Le stesse otto domande, due assistenti, due risposte diverse</h2>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Una misura, non una teoria</p>
+          <h2 class="xd-h2">Le stesse otto domande, due assistenti, due risposte diverse</h2>
           <!-- Lead accorciato quando è arrivato il blocco sul metodo: diceva le stesse
                cose, e una slide che ripete sé stessa due centimetri più sotto non è
                densa, è ridondante. Qui resta il fatto; il come sta nel blocco. -->
@@ -93,10 +93,12 @@ const currentPath = Astro.url.pathname;
               stesso paragrafo hanno riquadri che si intersecano, e il check
               `e` li legge come testo sopra testo: è HARD, ed è la stessa
               trappola già annotata sulla slide d'apertura. */}
-          <p class="ex-head-lead">
-            Le stesse otto domande, senza nomi di marca, su ChatGPT e sulla risposta generata
-            di Google. Nominata, Trenitalia c’è quasi sempre su entrambi: il problema non è la
-            menzione, è da quale sito i due prendono quello che dicono.
+          {/* Il lead dice UNA cosa; il resto — che Trenitalia è quasi sempre
+              nominata su entrambi — sta nelle cifre qui sotto e nel referto
+              per intero, dove si verifica invece di essere raccontato. */}
+          <p class="xd-sub">
+            Il problema non è se vi nominano: è da quale sito i due vanno a prendere quello
+            che dicono.
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
@@ -130,7 +132,12 @@ const currentPath = Astro.url.pathname;
             </tbody>
           </table>
         </HowItWorks>
-        <p class="ex-src" data-reveal data-reveal-delay="0.32">
+        {/* La chiusa stava qui e diceva «non è un problema degli assistenti,
+            è un problema di quale assistente». È vera e sta bene — ma con il
+            referto aperto costava i 52 px che facevano sforare la slide a
+            1280×800. Fra una frase e il campione verificabile vince il
+            campione: la frase la dice chi presenta, il referto no. */}
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.32">
           {SOURCES.misura.label}: contato il dominio trenitalia.com fra le fonti citate, non
           l’applicazione di acquisto. Un giro solo, a mano: la rifacciamo davanti a voi.
         </p>
@@ -141,7 +148,7 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-frecce" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">Domanda 8 delle otto: «come andare da Torino a Bologna in giornata senza auto», posta a due assistenti</p>
+        <p class="xd-n">Domanda 8 delle otto: «come andare da Torino a Bologna in giornata senza auto», posta a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
           «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
           Italo, Trenitalia e Intercity</strong>.»
@@ -171,7 +178,7 @@ const currentPath = Astro.url.pathname;
             ))}
           </ol>
         </HowItWorks>
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           {SOURCES.misura.label}: l’errore si ripete su un’altra delle otto domande.
         </p>
       </div>
@@ -180,14 +187,14 @@ const currentPath = Astro.url.pathname;
     <!-- ── Che cosa si misura, che cosa si cambia ────────────────────────── -->
     <Slide id="slide-leva" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Che cosa si misura</p>
-          <h2 class="ex-head-title">Si può intervenire, e si vede se ha funzionato</h2>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Che cosa si misura</p>
+          <h2 class="xd-h2">Si può intervenire, e si vede se ha funzionato</h2>
           {/* Il lead è UNA riga: il punto della slide, non il paragrafo che lo spiega.
               La prova — la risposta sulla Puglia che è quasi un testo loro — sta
               nella riga sotto le ancore, dove chi presenta la può indicare. */}
-          <p class="ex-head-lead">
+          <p class="xd-sub">
             <strong>Quando la pagina giusta esiste, la risposta la usa.</strong>
           </p>
         </div>
@@ -233,13 +240,13 @@ const currentPath = Astro.url.pathname;
          poco, si comprerà. Il perché sta qui e non nel capitolo del viaggio è
          scritto per esteso in `contenuti.ts`, insieme ai vincoli sul prodotto:
          annunciato sì, disponibile no, e nessun cliente da nominare. -->
-    <Slide id="slide-canale" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-canale" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Il secondo tempo dello stesso canale</p>
-          <h2 class="ex-head-title">Dove oggi vi citano, domani si comprerà</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Il secondo tempo dello stesso canale</p>
+          <h2 class="xd-h2">Dove oggi vi citano, domani si comprerà</h2>
+          <p class="xd-sub">
             <strong>Il canale dove vi nominano sta diventando il canale dove si compra.</strong>
           </p>
         </div>
@@ -272,7 +279,7 @@ const currentPath = Astro.url.pathname;
         {/* Gli assistenti non scoprono da soli questi collegamenti — esporsi non
             basta, ed è il motivo per cui la visibilità resta il primo passo. Sta
             nel dettaglio, non qui: la riga delle fonti porta le fonti. */}
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Il canale su messaggistica: <a href={SOURCES.whatsappTrenitalia.url} target="_blank" rel="noopener noreferrer">{SOURCES.whatsappTrenitalia.label}</a> ·
           su LLM Apps: <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>
         </p>

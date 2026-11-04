@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import SlideIdea from '../components/SlideIdea.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
@@ -44,18 +45,16 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Un problema nato con la squadra commerciale unica, e che non si risolve aggiungendo
-          persone. La domanda che vi facciamo: è già coperto da uno dei cantieri aperti?
-        </p>
-        <AgendaCapitolo slug="contenuto" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_paper_grid.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="contenuto" />
     </Slide>
 
     <!-- ── L'idea, nel registro XD ───────────────────────────────────────
@@ -67,18 +66,19 @@ const currentPath = Astro.url.pathname;
     <SlideIdea slug="contenuto" />
 
     <!-- ── L'aritmetica ──────────────────────────────────────────────────── -->
-    <Slide id="slide-aritmetica" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-aritmetica" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_network.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">A valle</p>
-          <h2 class="ex-head-title">Un venditore che conosceva un prodotto oggi ne vende tre, più i servizi</h2>
-          <p class="ex-head-lead">
-            Unire le tre squadre commerciali è stata una scelta di mercato, non di
-            comunicazione. Ma ha una conseguenza aritmetica: ogni prodotto, per ogni mercato,
-            in ogni lingua, su ogni canale e per ogni intermediario vuole il suo materiale.
-            <strong>Il numero di varianti cresce moltiplicando, non sommando.</strong>
-            E i mercati crescono: in Cina le vendite sono raddoppiate nel 2025.
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">A valle</p>
+          <h2 class="xd-h2">Un venditore che conosceva un prodotto oggi ne vende tre, più i servizi</h2>
+          {/* ⚠️ IL LEAD ERA CINQUE RIGHE, e il punto è uno solo. Il resto —
+              perché le squadre sono state unite, e che i mercati crescono —
+              è contesto: sta dietro «Scopri come», dove risponde a chi lo
+              chiede invece di occupare la slide. */}
+          <p class="xd-sub">
+            Ogni prodotto, per ogni mercato, in ogni lingua, su ogni canale: le varianti
+            crescono moltiplicando, non sommando.
           </p>
         </div>
         <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
@@ -90,23 +90,31 @@ const currentPath = Astro.url.pathname;
             </div>
           ))}
         </div>
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-chiusa" data-reveal data-reveal-delay="0.2">
+          A mano quel numero di versioni non si produce: o se ne fanno meno, o si fanno in un altro modo.
+        </p>
+        {/* ⚠️ QUI NON C'È UN «SCOPRI COME», ed è una scelta. Ne avevo messo
+            uno con i due fatti di contorno — la squadra unica, la Cina — ma
+            il primo è già nel titolo della slide e il secondo è nella slide
+            dell'idea e nella riga di fonte. Aperto costava 253 px e faceva
+            sforare la safe-area a 1280×800 (check `exp`, HARD): un blocco
+            che ripete quello che la slide dice già non vale quel prezzo. */}
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.28">
           Numeri vostri: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> ·
-          <a href={SOURCES.retePunti.url} target="_blank" rel="noopener noreferrer">{SOURCES.retePunti.label}</a>.
-          Nessuna struttura creativa produce a mano quel numero di versioni: si fa una scelta,
-          produrne meno o produrle in un altro modo.
+          <a href={SOURCES.retePunti.url} target="_blank" rel="noopener noreferrer">{SOURCES.retePunti.label}</a> ·
+          <a href={SOURCES.fsCina.url} target="_blank" rel="noopener noreferrer">{SOURCES.fsCina.label}</a>.
         </p>
       </div>
     </Slide>
 
     <!-- ── Un posto solo ─────────────────────────────────────────────────── -->
-    <Slide id="slide-unposto" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-unposto" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Come si produce, oggi, quel numero di varianti</p>
-          <h2 class="ex-head-title">Nasce, si approva, si traduce e si misura nello stesso posto</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Come si produce, oggi, quel numero di varianti</p>
+          <h2 class="xd-h2">Nasce, si approva, si traduce e si misura nello stesso posto</h2>
+          <p class="xd-sub">
             Con le agenzie dentro lo stesso flusso, non in fondo a una catena di allegati. La
             misura sta attaccata al pezzo: si sa quale versione ha venduto. Chi approva resta chi
             approva oggi.

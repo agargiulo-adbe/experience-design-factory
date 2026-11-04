@@ -1002,3 +1002,139 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 }
 .tp-terr-e--on span { color: var(--xd-dark-accent); }
 @media (max-width: 900px) { .tp-terr-eti { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── Il divisore di capitolo, con la dominante di questa pelle ───────────
+   XD compone il divisore per una dominante CHIARA: il titolo prende
+   `--color-ink`, l'inchiostro scuro, su un fondo chiaro. Qui la dominante è
+   scura e quel titolo uscirebbe ardesia su ardesia — invisibile, e nessun
+   check di layout lo vede. Si ribalta qui, una volta per tutte.
+   Il pannello di destra resta scuro (gli inchiostri `--xd-dark-*` ci stanno
+   sopra misurati) e prende un bordo di marchio: è l'unico rosso della slide,
+   e dice di che colore è questo deck senza coprire la fotografia. */
+.xd-div-t { color: var(--ink-primary); }
+.xd-div-num { color: var(--ink-accent); }
+.xd-div-bg::after { border-left: 4px solid var(--accent-primary); }
+/* La fotografia è un duotone scuro su un fondo scuro: senza una vignettatura
+   il confine sinistro non si legge come un campo, si legge come una macchia. */
+.xd-div-bg::before { filter: brightness(1.14) saturate(1.06); }
+
+/* L'agenda dentro il pannello del divisore: ancore, non voci di menu. Resta
+   piccola e silenziosa — il divisore è un respiro, non una slide di contenuto
+   — ma c'è, perché una copertina di capitolo che non dice dove si va lascia
+   chi guarda a indovinare. */
+.xd-div-ag {
+  list-style: none; margin: 0.9rem 0 0; padding: 0.9rem 0 0;
+  display: grid; gap: 0.42rem; border-top: 1px solid var(--xd-dark-line);
+}
+.xd-div-ag li {
+  display: grid; grid-template-columns: 1.35rem minmax(0, 1fr);
+  align-items: baseline; gap: 0.5rem; margin-inline: 0;
+  font-size: clamp(0.86rem, 0.74vw, 1.5rem); line-height: 1.3;
+  color: var(--xd-dark-body);
+}
+.xd-div-ag-n {
+  font-weight: 700; font-variant-numeric: tabular-nums;
+  font-size: clamp(0.76rem, 0.64vw, 1.34rem); color: var(--xd-dark-accent);
+}
+@media (max-height: 860px) {
+  .xd-div-ag { margin-top: 0.6rem; padding-top: 0.6rem; gap: 0.3rem; }
+}
+
+/* ── Due correzioni che la grammatica XD richiede a questa pelle ─────────
+   1 · XD lascia 0,4rem fra occhiello, titolo e lead: sono 7px, e il check `g`
+   vuole almeno 16 fra due blocchi di testo impilati. Da solo sarebbe SOFT, ma
+   `exp` ri-misura tutto a blocco aperto e il suo esito è HARD: 33 rilievi in
+   un colpo. Si alza lo spazio, non si tocca il tipo. */
+.xd-sl-head { gap: 0.9rem; }
+/* 2 · Su una slide di MARCHIO il fondo è il rosso pieno, e la riga di fonte
+   eredita l'inchiostro terziario: 2,58:1, sotto soglia, e il check `h` misura
+   ogni link come CTA. Su un fondo dichiarato l'inchiostro va esplicito e
+   pieno — è la stessa regola degli inchiostri che si ribaltano. */
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-fonte,
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-fonte a,
+/* Stessa ragione per l'occhiello: `--ink-accent` è il rosso schiarito, e su
+   un fondo di marchio rosso dà 2,31:1 — rosa su rosso. Un accento non è un
+   inchiostro, e su una superficie dichiarata l'inchiostro va esplicito. */
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-n { color: #ffffff; }
+
+/* ── Il filo dei quattro punti ───────────────────────────────────────────
+   La mappa del deck: una linea, quattro fermate, un'ancora ciascuna. Il
+   paragrafo che spiega sta dietro «Scopri come» — in sala si apre solo se lo
+   chiedono. Le colonne delle etichette hanno la stessa griglia dei nodi, così
+   ogni ancora cade sotto la sua fermata. */
+.tp-filo { width: 100%; display: grid; gap: 0.2rem; }
+.tp-filo-fig { width: 100%; height: clamp(1.6rem, 2.2vw, 3.2rem); display: block; margin-bottom: -1.05rem; }
+.tp-filo-l { stroke: var(--xd-dark-line); stroke-width: 2; }
+.tp-filo-n { fill: var(--accent-primary); }
+.tp-filo-eti {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 1.2rem;
+}
+.tp-filo-eti li { display: grid; gap: 0.28rem; justify-items: center; text-align: center; min-width: 0; margin-inline: 0; position: relative; }
+/* Il pallino della fermata: CSS e non SVG, così resta tondo. Si siede sulla
+   linea, che l'SVG sopra disegna da bordo a bordo delle colonne estreme. */
+.tp-filo-eti li::before {
+  content: ''; width: 0.78rem; height: 0.78rem; border-radius: 50%;
+  background: var(--accent-primary); margin-bottom: 0.3rem;
+}
+.tp-filo-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.78rem, 0.66vw, 1.38rem); letter-spacing: 0.1em;
+  color: var(--ink-accent); font-variant-numeric: tabular-nums;
+}
+.tp-filo-dove {
+  font-size: clamp(0.78rem, 0.64vw, 1.38rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note);
+}
+.tp-filo-t {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1rem, 0.94vw, 1.86rem); line-height: 1.26;
+  color: var(--ink-primary); text-wrap: balance;
+}
+@media (max-width: 900px) {
+  .tp-filo-eti { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+  .tp-filo-fig { display: none; }
+}
+
+/* A 1280×800, con un «Scopri come» aperto, cinque slide sforavano la
+   safe-area di 3-9 pixel: il minimo, ma il check `c` dentro `exp` è HARD.
+   Si recuperano dallo spazio DENTRO il blocco aperto — non dal corpo del
+   testo, e non dai salti fra blocchi di testo, che il check `g` misura. */
+@media (max-height: 820px) {
+  [data-slide] .hiw-body { padding-top: 0.25rem; }
+  [data-slide] .hiw-body > * + * { margin-top: 0.55rem !important; }
+  [data-slide] .hiw-body .xd-fig { height: clamp(2.8rem, 3.6vw, 5rem); margin-bottom: 0.3rem; }
+}
+
+/* 1280×800 con un blocco aperto: servono ~50 px, e si prendono tutti dalle
+   SPAZIATURE — figura del drill-down, respiro fra i blocchi, padding dei
+   riquadri. Il corpo del testo non scende di un punto: è il contratto di
+   leggibilità, e una slide che si legge male in sala non la salva nessun gate. */
+@media (max-height: 820px) {
+  /* ⚠️ SOLO sulle slide marcate `data-stretto`. Stringere il respiro fra i
+     blocchi su TUTTE le slide faceva risalire il check `g` da 9 a 27 rilievi:
+     SOFT, ma è un peggioramento vero del ritmo pagato per un problema che
+     hanno sei slide su trentaquattro. Si marca chi ne ha bisogno. */
+  [data-stretto] .xd-sl { gap: 0.5rem; }
+  [data-slide] .hiw-body { padding-top: 0; }
+  [data-slide] .dett-fig-box { padding: 0.4rem !important; }
+  [data-slide] .dett-voce { gap: 0.35rem !important; }
+  [data-slide] .dett-testo { gap: 0.28rem !important; }
+  [data-slide] .xd-fig { height: clamp(2.4rem, 3.2vw, 4.4rem); margin-bottom: 0.25rem; }
+  .tp-filo-fig { height: 2rem; }
+  .tp-filo { gap: 0.1rem; }
+}
+@media (max-height: 820px) {
+  [data-slide] .dett-fig-box { padding: 0.3rem !important; }
+  [data-stretto] .xd-sl { gap: 0.45rem; }
+}
+@media (max-height: 820px) {
+  /* La figura del drill-down ha un rapporto 120×72: a 15rem di larghezza sono
+     162 px di altezza, e due voci riempiono il blocco da sole. Si stringe la
+     larghezza — il disegno resta leggibile, il testo non si tocca. */
+  [data-slide] .dett-fig { max-width: 11rem !important; }
+}
+/* La variante «la figura è il contenuto» stringe ancora di più la testa
+   (0,3rem = 5px) e vince per specificità sulla regola qui sopra: il check `g`
+   la trovava su tutte le slide d'idea. Stesso minimo, stessa ragione. */
+.xd-sl--fig .xd-sl-head { gap: 0.9rem; }

@@ -38,6 +38,10 @@ export interface Card {
    */
   anc?: string;
   /** La stessa cosa in meno parole, per il taglio da dieci minuti. */
+  /** La riga del drill-down: UNA riga, ~15 parole. La regola dice venti al
+   *  massimo, e `bBreve` ne porta venticinque: aperte in `Dettaglio` fanno
+   *  quattro righe per voce, e il blocco sfonda il viewport a 1280×800. */
+  bRiga?: string;
   bBreve?: string;
   /** Le fonti che reggono QUESTA voce, per chiave. */
   fonti?: ChiaveFonte[];
@@ -77,7 +81,11 @@ export const TESTE = {
   mappa: {
     eyebrow: 'La mappa',
     titolo: 'Quattro punti, in ordine di percorso',
-    lead: 'Sono anche i quattro capitoli che seguono. Se uno solo vi interessa, si va diretti lì: il resto si legge dopo, o non si legge.',
+    // Il lead era due righe e, con il drill-down aperto a 1280×800, erano le
+    // due righe che facevano sforare la safe-area. La seconda metà — «se
+    // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
+    // nel blocco che si apre, non addosso a chi parla.
+    lead: 'Sono anche i quattro capitoli che seguono.',
     leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto. Se uno vi interessa, si apre quello e il resto resta chiuso.',
   },
 };
@@ -229,6 +237,7 @@ export const PUNTI: Punto[] = [
     dove: 'Prima del sito',
     t: 'Nella risposta che qualcun altro scrive',
     b: 'Chi organizza un viaggio chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra. E quel canale sta diventando anche un posto dove si compra.',
+    bRiga: 'Se nella risposta non ci siete voi, la vendita è persa prima di una vostra pagina.',
     bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita è persa prima che si apra una vostra pagina.',
   },
   {
@@ -236,6 +245,7 @@ export const PUNTI: Punto[] = [
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
     b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
+    bRiga: 'Chi compone un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
     bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
   },
   {
@@ -243,6 +253,7 @@ export const PUNTI: Punto[] = [
     dove: 'A valle',
     t: 'Nel materiale che non si riesce a produrre',
     b: 'Una squadra sola vende tre prodotti più i servizi, su più mercati e in più lingue. Il materiale da produrre si moltiplica, e a mano non si tiene il passo.',
+    bRiga: 'Il materiale si moltiplica per prodotto, mercato e lingua: a mano non si tiene il passo.',
     bBreve: 'Una squadra sola vende tre prodotti su più mercati e più lingue. Il materiale si moltiplica, e a mano non si tiene il passo.',
   },
   {
@@ -250,6 +261,7 @@ export const PUNTI: Punto[] = [
     dove: 'Nel canale che è vostro',
     t: 'In 12.400 agenzie che non vi rispondono',
     b: 'La rete intermediata vende ogni giorno. Non sapete quali agenzie vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
+    bRiga: 'La rete vende ogni giorno, e non sapete chi vende che cosa.',
     bBreve: 'La rete intermediata vende ogni giorno. Non sapete chi vende che cosa, né dove si ferma la proposta multiprodotto.',
   },
 ];

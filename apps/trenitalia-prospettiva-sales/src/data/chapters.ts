@@ -15,16 +15,29 @@ export interface Chapter {
    *  di capitolo: in nav, sette titoli lunghi sfondano la barra e l'ultimo si taglia
    *  — e una voce tagliata non è una destinazione. */
   short: string;
+  /** Il punto del capitolo: la frase che sta nel pannello di colore del
+   *  divisore. Una sola, e dice la conseguenza — non riassume il capitolo. */
+  punto: string;
+  /** Lo sfondo del divisore. Ogni capitolo il suo: fino al 4 novembre erano
+   *  tutti e sette lo stesso, e sette divisori identici non sono un ritmo. */
+  foto: 'cover' | 'close' | 'search' | 'journey' | 'paper-grid' | 'network' | 'chapter';
 }
 
 export const CHAPTERS: Chapter[] = [
-  { slug: 'apertura', num: '01', title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' }, short: 'Il vostro anno' },
-  { slug: 'domanda', num: '02', title: { it: 'La domanda', en: 'La domanda' }, short: 'La domanda' },
-  { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'Gli assistenti' },
-  { slug: 'viaggio', num: '04', title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' }, short: 'Il viaggio' },
-  { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' }, short: 'Il contenuto' },
-  { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie' },
-  { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta' },
+  { slug: 'apertura', num: '01', title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' }, short: 'Il vostro anno',
+    punto: 'Prima di parlare di noi, tre fatti che riguardano voi: li avete detti, annunciati o decisi voi.', foto: 'cover' },
+  { slug: 'domanda', num: '02', title: { it: 'La domanda', en: 'La domanda' }, short: 'La domanda',
+    punto: 'Una domanda sola. Tutto il resto del documento prova a risponderle.', foto: 'close' },
+  { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'Gli assistenti',
+    punto: 'Il primo punto del percorso, prima di ogni vostra pagina: non una teoria, una misura.', foto: 'search' },
+  { slug: 'viaggio', num: '04', title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' }, short: 'Il viaggio',
+    punto: 'Qui abbiamo più domande che risposte: l’intermodale è il vostro mestiere, non il nostro.', foto: 'journey' },
+  { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' }, short: 'Il contenuto',
+    punto: 'Un problema nato con la squadra commerciale unica, e che non si risolve aggiungendo persone.', foto: 'paper-grid' },
+  { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
+    punto: 'Un canale vostro, che vende ogni giorno e non vi racconta quasi niente.', foto: 'network' },
+  { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta',
+    punto: 'Quattro punti sono troppi per cominciare da tutti: ne proponiamo uno, e potete deciderlo da soli.', foto: 'chapter' },
 ];
 
 export function chapterIndex(slug: string): number {

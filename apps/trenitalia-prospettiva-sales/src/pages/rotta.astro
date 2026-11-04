@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
@@ -54,39 +55,37 @@ const first = CHAPTERS[0];
   <!-- Avanti oltre l'ultima slide → si torna alla copertina: il deck è un anello. -->
   <DeckContainer wallScale nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Quattro punti sono troppi per cominciare da tutti. Ne proponiamo uno,
-          ed è quello che potete decidere senza chiedere niente a nessuno.
-        </p>
-        <AgendaCapitolo slug="rotta" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_chapter.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="rotta" />
     </Slide>
 
     <!-- ── Il passo ──────────────────────────────────────────────────────── -->
     <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">{ASK.eyebrow}</p>
+        <p class="xd-n">{ASK.eyebrow}</p>
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
         <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
-        <p class="ex-src" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
       </div>
     </Slide>
 
     <!-- ── Le domande aperte ─────────────────────────────────────────────── -->
     <Slide id="slide-domande" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Quello che non sappiamo</p>
-          <h2 class="ex-head-title">Quattro cose che possiamo imparare solo da voi</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Quello che non sappiamo</p>
+          <h2 class="xd-h2">Quattro cose che possiamo imparare solo da voi</h2>
+          <p class="xd-sub">
             Questo documento è costruito su fonti pubbliche e su una misura nostra. Quattro cose
             importanti ci mancano, e nessuna si indovina.
           </p>
@@ -94,7 +93,7 @@ const first = CHAPTERS[0];
         <ul class="tp-domande" role="list" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
           {DOMANDE_APERTE.map((d) => <li class="tp-domande-row">{d}</li>)}
         </ul>
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Le prime due sono l’ordine del giorno della mezza giornata sulle agenzie. Le altre due
           sono tavoli separati, con altre persone: non le mettiamo nello stesso invito.
         </p>

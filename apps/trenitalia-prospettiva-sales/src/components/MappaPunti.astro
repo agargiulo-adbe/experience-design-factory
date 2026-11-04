@@ -1,0 +1,45 @@
+---
+/**
+ * LA MAPPA DEI QUATTRO PUNTI — la spina dorsale del deck, in registro XD.
+ *
+ * Era quattro card di prosa: 207 parole visibili, la slide più pesante del
+ * percorso. Chi guarda legge invece di ascoltare, e questa è proprio la slide
+ * su cui chi parla deve essere ascoltato — è la mappa di tutto il resto.
+ *
+ * Ora: una linea con quattro fermate, un'ancora per fermata, e il paragrafo
+ * che spiega ciascuna dietro «Scopri come». Il testo non si butta — il deck
+ * viene inoltrato e deve reggere senza chi l'ha presentato — ma sta a
+ * richiesta, non addosso a chi parla.
+ *
+ * ⚠️ Niente parole dentro l'SVG: un testo in un disegno non cresce con la
+ * radice e su una parete di sala sparisce. Le etichette sono HTML, in colonne
+ * allineate ai nodi.
+ */
+import type { Punto } from '../data/contenuti';
+
+interface Props { punti: Punto[]; }
+const { punti } = Astro.props as Props;
+const n = punti.length;
+/** I nodi stanno al centro di ciascuna colonna: così l'etichetta sotto cade
+ *  esattamente sotto la sua fermata, a qualunque larghezza. */
+const x = (i: number) => ((i + 0.5) / n) * 1000;
+---
+<div class="tp-filo">
+  <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
+       aria-label={`Il percorso d'acquisto in ${n} punti, in ordine`}>
+    {/* ⚠️ Solo la linea nell'SVG. I nodi erano `<circle>` e con
+        `preserveAspectRatio="none"` — che serve perché la linea arrivi ai
+        bordi — uscivano ellissi schiacciate. I pallini sono CSS, sulle
+        colonne delle etichette: restano tondi a qualunque larghezza. */}
+    <line class="tp-filo-l" x1={x(0)} y1="32" x2={x(n - 1)} y2="32" />
+  </svg>
+  <ol class="tp-filo-eti" data-stagger="0.1">
+    {punti.map((p) => (
+      <li>
+        <span class="tp-filo-num">{p.n}</span>
+        <span class="tp-filo-dove">{p.dove}</span>
+        <span class="tp-filo-t">{p.t}</span>
+      </li>
+    ))}
+  </ol>
+</div>

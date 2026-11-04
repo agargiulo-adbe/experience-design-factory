@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import SlideIdea from '../components/SlideIdea.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
@@ -47,18 +48,16 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Qui abbiamo più domande che risposte: l’intermodale è il vostro mestiere,
-          non il nostro.
-        </p>
-        <AgendaCapitolo slug="viaggio" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_journey.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="viaggio" />
     </Slide>
 
     <!-- ── L'idea, nel registro XD ───────────────────────────────────────
@@ -72,11 +71,11 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
     <!-- ── Quello che è già partito ──────────────────────────────────────── -->
     <Slide id="slide-gia" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Il punto di partenza è vostro</p>
-          <h2 class="ex-head-title">L’intermodale è già nel vostro perimetro</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Il punto di partenza è vostro</p>
+          <h2 class="xd-h2">L’intermodale è già nel vostro perimetro</h2>
+          <p class="xd-sub">
             Treno, gomma, sosta e aria sono già nel perimetro. Quello che manca non è un pezzo
             di offerta: è il momento dell’acquisto visto come un viaggio solo.
           </p>
@@ -100,7 +99,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             ))}
           </Dettaglio>
         </HowItWorks>
-        <p class="ex-src" data-reveal data-reveal-delay="0.24">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.24">
           Fonti: {fontiGia.map((f, i) => (
             <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
           ))}.
@@ -112,7 +111,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
     <Slide id="slide-matera" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow">«Come arrivo da Roma a Matera senza auto», chiesto a due assistenti</p>
+        <p class="xd-n">«Come arrivo da Roma a Matera senza auto», chiesto a due assistenti</p>
         <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
           <span class="ex-frase">Tutti e due aprono con gli <strong>operatori di autobus</strong>.</span> E il biglietto
           combinato treno più autobus, tutti e due lo attribuiscono prima al
@@ -123,7 +122,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
           intermodalità non esiste, ed è la domanda in cui partite avvantaggiati: la gomma è
           vostra, le destinazioni sono vostre. La risposta, no.
         </p>
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Fra le otto domande del capitolo precedente: {SOURCES.misura.label}, non una fonte pubblica.
         </p>
       </div>
@@ -132,14 +131,14 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
     <!-- ── Che cosa cambia nell'acquisto ─────────────────────────────────── -->
     <Slide id="slide-acquisto" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Dentro l’offerta</p>
-          <h2 class="ex-head-title">Riconoscere chi sta componendo un viaggio</h2>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Dentro l’offerta</p>
+          <h2 class="xd-h2">Riconoscere chi sta componendo un viaggio</h2>
           {/* Il lead è UNA riga: il punto. L'esempio del treno per Bari a luglio
               stava in cinque righe di paragrafo — ora lo dice la figura del
               dettaglio, che mostra i due viaggi che diventano lo stesso punto. */}
-          <p class="ex-head-lead">
+          <p class="xd-sub">
             Chi va a Bari in vacanza e chi ci va per lavoro, nel momento in cui comprano, sono lo
             stesso cliente. <strong>Distinguerli cambia che cosa si propone.</strong>
           </p>
@@ -175,13 +174,13 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
     </Slide>
 
     <!-- ── Chi incontra il viaggiatore prima di voi ───────────────────────── -->
-    <Slide id="slide-prima" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-prima" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Prima ancora della scelta del treno</p>
-          <h2 class="ex-head-title">Il viaggio si decide prima, e altrove</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Prima ancora della scelta del treno</p>
+          <h2 class="xd-h2">Il viaggio si decide prima, e altrove</h2>
+          <p class="xd-sub">
             Chi decide dieci giorni in Italia lo decide davanti a una compagnia aerea o a un
             operatore turistico, mesi prima di scegliere il treno. <strong>E su quei viaggiatori si
             può lavorare in due senza scambiarsi i dati.</strong>
@@ -211,7 +210,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             esiste — verificato — e un caso preso da un altro settore apre la
             domanda «e nel nostro?» invece di chiuderla: si dice che è un'ipotesi
             e si chiude lì. */}
-        <p class="ex-src" data-reveal data-reveal-delay="0.26">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Il canale cinese: <a href={SOURCES.trenitaliaCinese.url} target="_blank" rel="noopener noreferrer">{SOURCES.trenitaliaCinese.label}</a> ·
           <a href={SOURCES.fsCina.url} target="_blank" rel="noopener noreferrer">{SOURCES.fsCina.label}</a>.
           Il protocollo con Costa: <a href={SOURCES.costaTtg.url} target="_blank" rel="noopener noreferrer">{SOURCES.costaTtg.label}</a>.
@@ -230,11 +229,11 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
          di dividere, non di rimpicciolire. -->
     <Slide id="slide-collab" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">Lavorare in due sugli stessi viaggiatori</p>
-          <h2 class="ex-head-title">Dove si innesta, e dove no</h2>
-          <p class="ex-head-lead">
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Lavorare in due sugli stessi viaggiatori</p>
+          <h2 class="xd-h2">Dove si innesta, e dove no</h2>
+          <p class="xd-sub">
             Sta prima della scelta del vettore, sopra un accordo che esiste già, e <strong>vive in
             un ambiente a sé</strong>: ciascuna delle due aziende tiene i propri dati dove sono, e si
             incrocia soltanto chi interessa a entrambe.

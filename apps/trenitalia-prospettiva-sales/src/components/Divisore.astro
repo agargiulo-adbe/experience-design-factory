@@ -1,0 +1,56 @@
+---
+/**
+ * IL DIVISORE DI CAPITOLO — la forma XD, adattata alla dominante scura.
+ *
+ * Tre campi: il titolo grande a sinistra, la fotografia al centro, il pannello
+ * di colore a destra con il punto del capitolo. È il momento in cui la pagina
+ * non deve dire altro: in sala si capisce di aver cambiato capitolo prima di
+ * leggere, ed è metà del ritmo di un deck.
+ *
+ * ⚠️ XD COMPONE IL DIVISORE PER UNA DOMINANTE CHIARA: `bg="secondary"`, e il
+ * titolo prende `--color-ink`, cioè l'inchiostro scuro. Qui `--surface-secondary`
+ * è l'ardesia PIENA — scura — e il titolo uscirebbe ardesia su ardesia:
+ * invisibile, e nessun check di layout lo vedrebbe (il check `h` misura i
+ * bottoni, non la prosa). Quindi la slide dichiara `bg="primary"` e la pelle
+ * ribalta `.xd-div-t`. È la regola degli inchiostri che si ribaltano con la
+ * superficie, applicata a un componente del motore.
+ *
+ * ⚠️ IL FONDO LO METTE LA PAGINA, non questo componente: Astro non propaga
+ * `slot="backdrop"` attraverso un componente, e un `<div slot="backdrop">`
+ * scritto qui dentro finirebbe nel contenuto, in posizione assoluta sopra il
+ * testo. Il difetto non si vede aprendo la pagina: si vede misurando i pixel.
+ */
+import { agendaCapitolo } from '../data/slides';
+
+interface Props {
+  num: string;
+  titolo: string;
+  /** Il punto del capitolo: una frase, nel pannello di colore. */
+  punto: string;
+  /** Lo slug, per generare l'agenda dal registro delle slide. */
+  slug: string;
+}
+const { num, titolo, punto, slug } = Astro.props as Props;
+/** ⚠️ L'agenda è GENERATA, mai scritta a mano: le agendine scritte a mano sono
+ *  divergite dal contenuto senza che nessun gate se ne accorgesse. Il perché
+ *  sta in `src/data/slides.ts`. Qui sta nel pannello, sotto il punto: il
+ *  divisore resta un respiro, e chi guarda sa comunque dove sta andando. */
+const voci = agendaCapitolo(slug);
+---
+<div class="xd-div" data-reveal>
+  <div class="xd-div-sx">
+    <p class="xd-div-num">Capitolo {num}</p>
+    <h2 class="xd-div-t">{titolo}</h2>
+  </div>
+  <div class="xd-div-dx" data-reveal data-reveal-delay="0.12">
+    <p class="xd-div-oc">Il punto</p>
+    <p class="xd-div-l">{punto}</p>
+    {voci.length > 0 && (
+      <ol class="xd-div-ag" data-stagger>
+        {voci.map((v, i) => (
+          <li><span class="xd-div-ag-n">{i + 1}</span><span>{v}</span></li>
+        ))}
+      </ol>
+    )}
+  </div>
+</div>

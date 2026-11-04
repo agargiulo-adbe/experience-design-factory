@@ -3,11 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Figura from '../components/Figura.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import MappaPunti from '../components/MappaPunti.astro';
+import Divisore from '../components/Divisore.astro';
 import AgendaCapitolo from '../components/AgendaCapitolo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { DOMANDA, PUNTI, TESTE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
+import bg_close from '../assets/generated/bg/bg-close.webp';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_journey from '../assets/generated/bg/bg-journey.webp';
 
@@ -36,53 +43,64 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
-      <div class="ex-ch" data-reveal>
-        <p class="ex-ch-num">Capitolo {ch.num}</p>
-        <h2 class="ex-ch-title" data-reveal data-reveal-delay="0.08">{ch.title.it}</h2>
-        <p class="ex-ch-lead" data-reveal data-reveal-delay="0.15">
-          Una sola. Tutto il resto del documento prova a risponderle.
-        </p>
-        <AgendaCapitolo slug="domanda" />
-      </div>
+    <!-- ── Divisore di capitolo ─────────────────────────────────────────
+         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
+         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
+         del metodo impilati, era una slide di contenuto travestita da respiro.
+         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
+         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
+         `slot="backdrop"` attraverso un componente. -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_close.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="domanda" />
     </Slide>
 
     <!-- ── La domanda, grande e sola ─────────────────────────────────────── -->
     <Slide id="slide-domanda" bg="brand" align="center">
       <div class="tp-quote" data-reveal>
-        <p class="slide-eyebrow" data-reveal>{DOMANDA.eyebrow}</p>
+        <p class="xd-n" data-reveal>{DOMANDA.eyebrow}</p>
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={DOMANDA.titolo} />
         <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">{DOMANDA.sub}</p>
                 <p class="tp-domanda-peri" data-reveal data-reveal-delay="0.26">{DOMANDA.perimetri}</p>
-        <p class="ex-src" data-reveal data-reveal-delay="0.32">
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.32">
           <a href={SOURCES.riorgCommerciale.url} target="_blank" rel="noopener noreferrer">{SOURCES.riorgCommerciale.label}</a>
         </p>
       </div>
     </Slide>
 
     <!-- ── I quattro punti = i quattro capitoli che seguono ───────────────── -->
-    <Slide id="slide-mappa" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-mappa" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
-      <div class="ex-content" data-reveal>
-        <div class="ex-head">
-          <p class="slide-eyebrow">{TESTE.mappa.eyebrow}</p>
-          <h2 class="ex-head-title">{TESTE.mappa.titolo}</h2>
-          <p class="ex-head-lead">{TESTE.mappa.lead}</p>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{TESTE.mappa.eyebrow}</p>
+          <h2 class="xd-h2">{TESTE.mappa.titolo}</h2>
+          <p class="xd-sub">{TESTE.mappa.lead}</p>
         </div>
-        <ul class="tp-mappa" role="list" data-stagger="0.12" data-reveal data-reveal-delay="0.12">
-          {PUNTI.map((p) => (
-            <li class="tp-mappa-row">
-              <span class="tp-mappa-n" aria-hidden="true">{p.n}</span>
-              <span class="tp-mappa-body">
-                <span class="tp-mappa-dove">{p.dove}</span>
-                <span class="tp-mappa-t">{p.t}</span>
-                <span class="tp-mappa-b">{p.b}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
+        {/* ⚠️ ERA QUATTRO CARD DI PROSA: 207 parole visibili, la slide più
+            pesante del percorso — e proprio quella su cui chi parla deve
+            essere ascoltato, perché è la mappa di tutto il resto. In video
+            le slide si leggono invece di ascoltarle.
+            Ora la mappa è un filo con quattro fermate e un'ancora ciascuna;
+            i paragrafi stanno dietro «Scopri come», dalla stessa fonte. */}
+        <MappaPunti punti={PUNTI} />
+        {/* ⚠️ DENTRO UN «SCOPRI COME» VANNO FIGURE, NON PARAGRAFI. Quattro
+            paragrafi qui dentro sono lo stesso muro di testo, soltanto
+            nascosto — e aperto in sala sfondavano la safe-area (check `exp`,
+            HARD). La forma è `Dettaglio` + `DettaglioVoce`: un micro-diagramma
+            che si muove, l'ancora che lo nomina, una riga che sopravvive
+            all'inoltro. La riga breve viene dalla stessa fonte dei punti. */}
+        <HowItWorks title="Che cosa succede in ciascuno" label="Che cosa succede in ciascuno" tone="onLight" data-reveal data-reveal-delay="0.24">
+          <Dettaglio>
+            {PUNTI.map((p, i) => (
+              <DettaglioVoce>
+                <Figura k={(['risposta-citata', 'indistinguibile', 'materiale-che-si-moltiplica', 'rete-muta'] as const)[i]} />
+                <p slot="ancora">{p.dove}</p>
+                <p slot="riga">{p.bRiga ?? p.bBreve ?? p.b}</p>
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
       </div>
     </Slide>
 
