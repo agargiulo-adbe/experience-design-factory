@@ -420,3 +420,53 @@ giusto — è così che sono stati fatti i commit del 12 ottobre, senza sfiorare
 ---
 
 ---
+
+### 37.14 La notte del 4-5 novembre: rielaborazione del testo, e il panel che non si è potuto fare
+
+**Stato: pronto per la sala, con quattro decisioni aperte.** Giro integrale sulla copia:
+tutte le **468 stringhe rese** su 41 slide e 9 rotte riesaminate, estratte dal DOM con i
+drill-down aperti (non dal sorgente). Modificate 34 stringhe più tre legature; il registro
+completo, con il motivo di ciò che è rimasto, sta nel documento di lavoro in cartella
+d'account.
+
+**Il capitolo degli assistenti ora dice quello che la misura dimostra.** Il titolo è il
+confronto fra i due motori e le due cifre stanno affiancate con lo stesso peso: con una sola
+in evidenza la slide sembrava dire «gli assistenti non vi citano», cioè il contrario del
+risultato. Fuori due affermazioni che la misura non sostiene (il legame con la lingua, e il
+prodotto che «torna vostro»); dentro la superficie davvero misurata e la dichiarazione che la
+schermata del mock è un esempio. Via la promessa di rifare la misura «davanti a voi».
+
+**Tono.** Tolte le ultime due affermazioni di assenza sul cliente, due righe che riducevano
+il ruolo dell'interlocutore, un frammento a effetto e una costruzione simmetrica.
+
+**Misure.** Gulpease 76,1 → **76,7** · perni retorici 7 → **4** ogni 100 stringhe · telai 30
+(7,6%) → **18** (4,5%). Il capitolo peggiore passa da 50 perni/100 e Gulpease 68,5 a **0** e
+**76,4**. Nessun marcatore **spostato**: scendono entrambe le famiglie.
+
+**Gate finali**: `copy-audit` 405 stringhe 0 HARD e 1 SOFT (la sola riga protetta
+dall'owner) · `audit:wrap` 46 = baseline · `audit:taglio` ALLINEATO · `audit:deck` **0 HARD**
+· `audit:ink` PULITO su 573 blocchi e 13 drill-down · `audit:fonti` 0 link rotti ·
+`audit:ritmo` 73 = baseline · `astro check` 0 errori.
+
+**Difetti chiusi.** La riga di fonte non si sovrappone più alla firma co-brand a blocco
+aperto: il contorno arretra su `html[data-hiw-open]`, che è la leva prescritta — il check `b`
+quella collisione non la vede, e andava misurata a mano. Lo stato di disponibilità di un
+prodotto esce dalla slide, per coerenza con la decisione già presa sull'altro.
+
+⚠️ **Trappola annotata.** Stringere gli spazi su `html[data-hiw-open]` per recuperare un
+pixel ha prodotto **36 HARD**: `0.6rem` sta sotto i 16px che il check `g` pretende fra due
+blocchi impilati. Si taglia la copia, non lo spazio.
+
+⚠️ **IL PANEL NON È STATO ESEGUITO, e resta P0.** Lanciato con i ritratti giusti
+(`PANEL-PERSONAS-SALES.md`, sei personas, non quello dell'altra experience FS), pacchetto di
+evidenza completo, sei personas più il fact-checker: **tutti e sette gli agenti sono falliti
+sul limite di spesa dell'account**, zero verdetti. Al suo posto è stato fatto il **solo
+fact-check, a mano, sulle stringhe modificate**, che ha trovato un rilievo reale e l'ha
+corretto. Il panel va rifatto quando il limite si libera. ⚠️ I ritratti descrivono ancora il
+deck come «27 slide» e il filo vecchio: vanno aggiornati prima del prossimo giro.
+
+**Non verificato, e dichiarato**: le due referenze di altri clienti Adobe (le pagine non si
+aprono nemmeno da browser vero) e l'itinerario del mock via Ferrandina (nessuna fonte).
+
+---
+
