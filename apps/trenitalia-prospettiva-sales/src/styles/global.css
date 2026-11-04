@@ -1064,11 +1064,13 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    ogni ancora cade sotto la sua fermata. */
 .tp-filo { width: 100%; display: grid; gap: 0.2rem; }
 .tp-filo-fig { width: 100%; height: clamp(1.6rem, 2.2vw, 3.2rem); display: block; margin-bottom: -1.05rem; }
-.tp-filo-l { stroke: var(--xd-dark-line); stroke-width: 2; }
+/* ⚠️ `--xd-dark-line` è un bianco trasparente: su una slide chiara la
+   linea spariva. `--line-default` si ribalta con la superficie. */
+.tp-filo-l { stroke: var(--line-default); stroke-width: 2; }
 .tp-filo-n { fill: var(--accent-primary); }
 .tp-filo-eti {
   list-style: none; margin: 0; padding: 0;
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 1.2rem;
+  display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 0 1.2rem;
 }
 .tp-filo-eti li { display: grid; gap: 0.28rem; justify-items: center; text-align: center; min-width: 0; margin-inline: 0; position: relative; }
 /* Il pallino della fermata: CSS e non SVG, così resta tondo. Si siede sulla
@@ -1138,3 +1140,57 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    (0,3rem = 5px) e vince per specificità sulla regola qui sopra: il check `g`
    la trovava su tutte le slide d'idea. Stesso minimo, stessa ragione. */
 .xd-sl--fig .xd-sl-head { gap: 0.9rem; }
+
+/* ── La cronologia ───────────────────────────────────────────────────────
+   Stessa grammatica della mappa dei quattro punti: le due slide stanno nello
+   stesso capitolo e devono somigliarsi. La tappa di oggi è l'unica accesa. */
+.tp-crono .tp-filo-num { font-size: clamp(0.84rem, 0.72vw, 1.5rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note); }
+.tp-crono .tp-filo-t { font-size: clamp(0.94rem, 0.86vw, 1.7rem); }
+.tp-crono li[data-ora] .tp-filo-num { color: var(--ink-accent); }
+.tp-crono li[data-ora]::before { box-shadow: 0 0 0 5px rgba(var(--color-rosso-rgb), 0.22); }
+.tp-crono li:not([data-ora])::before { background: var(--line-default); }
+
+/* ── Il ventaglio dei mercati ────────────────────────────────────────────
+   Una sola origine, più destinazioni: è la figura che dice quello che la
+   slide afferma. Le linee sono SVG, le etichette HTML — così crescono con la
+   radice e su una parete di sala si leggono ancora. */
+.tp-vent { width: 100%; display: grid; gap: 0.3rem; }
+.tp-vent-fig { width: 100%; height: clamp(2.6rem, 3.4vw, 5rem); display: block; }
+.tp-vent-r { stroke: var(--line-default); stroke-width: 1.6; }
+.tp-vent-o { fill: var(--accent-primary); }
+.tp-vent-eti {
+  list-style: none; margin: 0; padding: 0; order: -1;
+  display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: 0 0.8rem;
+}
+.tp-vent-eti li {
+  margin-inline: 0; min-width: 0; text-align: center;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.92rem, 0.84vw, 1.66rem); line-height: 1.24;
+  color: var(--ink-primary); text-wrap: balance;
+}
+.tp-vent-o {
+  display: inline-block; width: 0.62rem; height: 0.62rem; border-radius: 50%;
+  background: var(--accent-primary); margin-right: 0.5rem; vertical-align: middle;
+}
+.tp-vent-base {
+  margin: 0; max-width: none; text-align: center;
+  font-size: clamp(0.8rem, 0.68vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent);
+}
+@media (max-width: 900px) {
+  .tp-vent-fig { display: none; }
+  .tp-vent-eti { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+}
+@media (max-height: 820px) {
+  /* Con la cronologia in pagina, il blocco aperto della slide del contesto
+     sforava: si stringe la linea del tempo, non il testo. */
+  .tp-crono .tp-filo-fig { height: 1.4rem; margin-bottom: -0.9rem; }
+  .tp-crono .tp-filo-eti li::before { width: 0.6rem; height: 0.6rem; margin-bottom: 0.2rem; }
+  .tp-crono .tp-filo-eti { gap: 0 0.8rem; }
+}
+@media (max-height: 820px) {
+  [data-stretto] .dett-fig { max-width: 9rem !important; }
+}
+@media (max-height: 820px) {
+  [data-stretto] .dett-fig { max-width: 7.5rem !important; }
+}

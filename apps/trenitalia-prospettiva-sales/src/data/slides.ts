@@ -40,8 +40,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
     // indietro, come l'agenda che la annunciava.
     { id: 'slide-mercato', label: 'Il mercato che resta · il 96%, con la data in chiaro',
       agenda: 'Il 96% che resta' },
-    { id: 'slide-novantasei', label: 'La sua frase · internazionalizzazione, e dove investono',
-      agenda: 'La parola che ha usato lui' },
+    { id: 'slide-novantasei', label: 'Internazionalizzazione, e dove si sta investendo',
+      agenda: 'La parola chiave dell’anno' },
     { id: 'slide-contesto', label: 'Tre cose nello stesso anno',
       agenda: 'Il mercato, il prezzo, il momento' },
   ]},
@@ -102,7 +102,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'dieci-minuti', label: 'In dieci minuti · il taglio corto', slides: [
     { id: 'slide-cover', label: 'Copertina' },
-    { id: 'slide-novantasei', label: 'Le sue parole · internazionalizzazione' },
+    { id: 'slide-novantasei', label: 'Internazionalizzazione' },
     { id: 'slide-contesto', label: 'Tre cose nello stesso anno' },
     { id: 'slide-domanda', label: 'La domanda' },
     { id: 'slide-mappa', label: 'I quattro punti, in breve' },

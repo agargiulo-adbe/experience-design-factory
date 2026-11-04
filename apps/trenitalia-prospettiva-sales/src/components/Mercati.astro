@@ -1,0 +1,28 @@
+---
+/**
+ * IL VENTAGLIO DEI MERCATI — un elemento grafico per la slide
+ * dell'internazionalizzazione, nella stessa famiglia visiva del 96%.
+ *
+ * La slide prima porta una figura e questa no: due slide vicine, una con un
+ * disegno e una senza, si leggono come due registri diversi. Qui il disegno
+ * dice la cosa che la slide afferma — una macchina sola, più mercati — e la
+ * dice senza parole dentro l'SVG.
+ *
+ * I mercati sono quelli nominati nell'intervista al TTG del 15 ottobre 2026,
+ * non una nostra selezione.
+ */
+interface Props { mercati: string[]; base: string; }
+const { mercati, base } = Astro.props as Props;
+const n = mercati.length;
+const x = (i: number) => ((i + 0.5) / n) * 1000;
+---
+<div class="tp-vent">
+  <svg class="tp-vent-fig" viewBox="0 0 1000 96" preserveAspectRatio="none" role="img"
+       aria-label={`Una sola piattaforma verso ${n} mercati`}>
+    {mercati.map((_, i) => <line class="tp-vent-r" x1="500" y1="92" x2={x(i)} y2="16" />)}
+  </svg>
+  <ol class="tp-vent-eti" style={`--cols:${n}`}>
+    {mercati.map((m) => <li>{m}</li>)}
+  </ol>
+  <p class="tp-vent-base"><span class="tp-vent-o" aria-hidden="true"></span>{base}</p>
+</div>

@@ -68,10 +68,10 @@ export const TESTE = {
     // 16 ott: la cornice è la parola che ha usato LUI al TTG il giorno prima.
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
-    titolo: 'Tre cose che capitano nello stesso anno',
+    titolo: 'Tre cose nello stesso anno',
     // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
     // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
-    lead: 'Il Frecciarossa in Germania dall’estate 2027 e a Berlino nel 2028, dopo Spagna e Francia; e mercati nuovi fra Asia, Sud America e Australia. Tutto questo arriva nell’anno in cui il mercato interno si allarga e il prezzo non sale.',
+    lead: 'Il piano che deciderà i prossimi anni si sta scrivendo adesso.',
     leadBreve: 'Il Frecciarossa in Germania dal 2027 e a Berlino nel 2028: tutto nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
   },
   mappa: {
@@ -123,14 +123,37 @@ export const MERCATO = {
   /** Le due zone della figura. Il 96% è SUO, e l'etichetta lo attribuisce
    *  senza aprire un blocco di citazione: in XD le parole sono poche. */
   quota: { n: '4%', l: 'tre quarti di chi arriva dall’estero si ferma qui' },
-  resto: { n: '96%', l: 'il resto: con le sue parole, «non ancora esplorato»' },
+  resto: { n: '96%', l: 'il resto del territorio, quello ancora da far conoscere' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% non si raggiunge abbassando il prezzo: si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
 
+/* ── Capitolo 01 · le date, su una linea ──────────────────────────────────
+   4 nov. Erano quattro righe di prosa nel lead della slide del contesto, ed
+   elencavano sei date: le date in prosa si leggono due volte. Su una linea si
+   leggono una volta sola, e si vede la cosa che conta — che cadono tutte nei
+   prossimi diciotto mesi.
+   ⚠️ Nessuna data è nostra: ognuna sta nelle fonti già citate in fondo a
+   quella slide (Altroconsumo gen 2026 · FS News 22 set 2026 · intervista al
+   TTG 15 ott 2026 · fsnews.it 14 ott 2026). I mercati nuovi — Asia, Sud
+   America, Australia — NON hanno una data e per questo non sono una tappa:
+   stanno nella slide dell'internazionalizzazione, dove sono un indirizzo. */
+export const CRONOLOGIA: { q: string; t: string; ora?: boolean }[] = [
+  { q: 'gennaio 2026', t: 'Prezzo dinamico sulle Frecce' },
+  { q: 'adesso', t: 'Piano di Gruppo in scrittura', ora: true },
+  { q: 'marzo 2027', t: 'Il nuovo sito' },
+  { q: 'estate 2027', t: 'Frecciarossa in Germania' },
+  { q: '2028', t: 'Fino a Berlino' },
+];
+
+/* I mercati nominati al TTG il 15 ottobre 2026. L'elenco è suo, non una
+   nostra selezione, e «Italia» non è fra questi: è la base da cui parte la
+   stessa piattaforma. */
+export const MERCATI = ['Europa', 'Nord America', 'Asia', 'Sud America', 'Australia'];
+
 export const APERTURA = {
   eyebrow: 'Rimini, TTG Travel Experience, 15 ottobre 2026',
-  /** La parola che ha usato lui, grande quanto la pagina. */
+  /** La parola chiave dell'anno commerciale, grande quanto la pagina. */
   dato: 'Internazionalizzazione.',
   /** Sue parole, verbatim. */
   citazione:
@@ -155,12 +178,12 @@ export const APERTURA = {
     // copy-audit-ignore L3 · la doppia relativa è la formulazione scelta
     // dall'owner il 3 nov 2026: riscriverla toglie alla frase la forza che ha
     // davanti a chi considera l'internazionalizzazione una traslazione.
-    'Quello che costruite per l’Italia è la stessa cosa che vi porta fuori. Non serve un programma estero a parte: servono la lingua e il canale giusti sulla stessa macchina.',
+    'Non serve un programma estero a parte: la macchina che serve l’Italia è la stessa che serve Monaco, New York o Shanghai. Cambiano la lingua e il canale, non l’impianto.',
   /** La riga di fonte, identica nei due percorsi: il link lo mette la pagina,
    *  le parole stanno qui — scritte a mano in due posti, divergevano. */
   fonte: {
-    prima: 'Le sue parole, al TTG di quest’anno:',
-    dopo: 'I mercati che ha indicato: Europa e Nord America, «ma anche quelli emergenti per noi, come Asia, Sud America e Australia».',
+    prima: 'Fonte:',
+    dopo: 'I mercati indicati nell’intervista: Europa e Nord America, «ma anche quelli emergenti per noi, come Asia, Sud America e Australia».',
   },
 };
 
@@ -178,6 +201,7 @@ export const CONTESTO: Card[] = [
        sua vetrina e non un rivenditore. ⚠️ È una proposta, e la slide lo dice. */
     k: 'Il mercato',
     t: 'Un concorrente in più, e una vetrina da aprire',
+    anc: 'Chi altro vende, e dove',
     b: 'SNCF ha il via libera dal 7 marzo 2026 e dichiara di volere il 15% entro il 2030.',
     bBreve: 'Sull’alta velocità siete in due, e la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
     fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
@@ -185,13 +209,20 @@ export const CONTESTO: Card[] = [
   {
     k: 'Il prezzo',
     t: 'Una leva che si muove da sola',
-    b: 'La leva lavora da anni. È cambiato il tetto: verso l’alto, ormai, non si muove più.',
+    anc: 'Da quando, e fin dove',
+    /* ⚠️ Diceva «la leva lavora da anni», e non regge: il prezzo dinamico
+       sulle Frecce è partito il 1º gennaio 2026 — dieci mesi, non anni — e
+       vale SOLO sull'alta velocità, mentre in questa stanza si vendono tre
+       prodotti. In sala quella data la conoscono meglio di noi. Ora la riga
+       dice quello che dicono le fonti: da quando, su che cosa, e il tetto. */
+    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto il tetto è dichiarato: i biglietti non aumentano.',
     bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
-    fonti: ['prezziFermi'],
+    fonti: ['pricing', 'prezziFermi'],
   },
   {
     k: 'Il momento',
     t: 'Un piano in scrittura, un sito in rifacimento',
+    anc: 'Le due finestre aperte',
     b: 'Il piano di Gruppo arriva entro fine anno e il sito entro marzo 2027: adesso si decide.',
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
     fonti: ['piano', 'ttgSales2026', 'monaco'],
@@ -217,10 +248,19 @@ export const DOMANDA = {
    *  subordinate e una doppia relativa. Qui sopra sta il fatto, sotto la domanda. */
   eyebrow: 'Il prezzo si muove già da sé, e più in alto non va',
   titolo: 'Allora dove si perdono le vendite?',
-  sub: 'Ha quattro risposte, e stanno in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
-  subBreve: 'Ha quattro risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  sub: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  subBreve: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  /** ⚠️ 4 nov — LA RIGA RESTA, LA MAPPA DELLE DIREZIONI NO. Il panel l'aveva
+   *  chiesta da tre poltrone diverse: dichiarare noi che non tutto si decide
+   *  qui vale molto più che farselo dire. Ma la versione precedente elencava
+   *  quale direzione tiene che cosa, citando i documenti sindacali del 30
+   *  marzo: in sala è spiegare a un direttore che cosa non è suo, con in mano
+   *  le carte interne della sua azienda, e la domanda che arriva è «chi ve
+   *  l'ha detto?». È lo stesso errore già corretto su PICO il 15 ottobre.
+   *  Resta la rassicurazione, che è la metà utile; i confini li traccia lui,
+   *  se vuole. Via anche la fonte, che serviva solo alla mappa. */
   perimetri:
-    'Due di questi quattro punti non si decidono in questa stanza: dal settembre 2025 il percorso di acquisto sta in Customer Operations, marca e prezzo nel marketing. Lo scriviamo noi, e quello che vi chiediamo alla fine resta tutto dentro il vostro perimetro.',
+    'Non tutto quello che segue si decide in questa stanza, e lo sappiamo: quello che vi chiediamo alla fine resta dentro il vostro perimetro.',
 };
 
 /** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
@@ -243,9 +283,9 @@ export const PUNTI: Punto[] = [
     n: '02',
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
-    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Nel momento in cui compra, però, chi sta componendo un viaggio è indistinguibile da chiunque altro.',
-    bRiga: 'Chi compone un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
-    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Chi sta componendo un viaggio, nel momento in cui compra, è indistinguibile da chiunque altro.',
+    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Sul percorso d’acquisto pubblico, però, non c’è un passaggio in cui qualcuno dichiari di stare componendo un viaggio: le prenotazioni restano acquisti separati.',
+    bRiga: 'Sul percorso pubblico nulla lega fra loro le prenotazioni di uno stesso viaggio.',
+    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Sul percorso d’acquisto, però, nulla lega fra loro le prenotazioni di uno stesso viaggio.',
   },
   {
     n: '03',
@@ -344,6 +384,7 @@ export const GIA: Card[] = [
        in una quarta card: la griglia è a tre, e provata a quattro si rompe. */
     k: 'Gomma',
     t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
+    anc: 'La gomma, dentro casa',
     b: 'Interamente vostra: 10.300 collegamenti al giorno, e più di 1.700 destinazioni raggiunte.',
     bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno e più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
     fonti: ['busitalia', 'ttgOfferta'],
@@ -351,6 +392,7 @@ export const GIA: Card[] = [
   {
     k: 'Sosta',
     t: 'I parcheggi di stazione',
+    anc: 'La sosta, già a sistema',
     b: 'Si aggiungono a un biglietto già comprato, fino al giorno prima: il viaggio comincia lì.',
     fonti: ['fsPark'],
   },
@@ -364,6 +406,7 @@ export const GIA: Card[] = [
        non è esclusivo, ed è il motivo per cui va governato. */
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
+    anc: 'Il volo, già in prova',
     b: 'Partito nel 2023, e da marzo c’è un laboratorio comune. A maggio però hanno firmato anche con Italo.',
     bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo è nato un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
     fonti: ['itaAirways', 'itaItalo'],
@@ -488,11 +531,13 @@ export const UNPOSTO: Card[] = [
   {
     k: 'Il marchio',
     t: 'Conforme senza una revisione a mano',
+    anc: 'La conformità, prima di pubblicare',
     b: 'Le regole del marchio stanno dentro lo strumento, non in un documento che qualcuno deve ricordarsi di aprire.',
   },
   {
     k: 'Le persone',
     t: 'Le stesse, con meno passaggi a mano',
+    anc: 'Gli stessi passaggi, meno mani',
     b: 'Le persone restano le stesse: cambia quante versioni riescono a far uscire in una settimana.',
   },
 ];

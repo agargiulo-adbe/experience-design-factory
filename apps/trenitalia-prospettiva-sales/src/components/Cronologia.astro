@@ -1,0 +1,35 @@
+---
+/**
+ * LA CRONOLOGIA — le date dell'anno commerciale, al posto di un paragrafo.
+ *
+ * Era un lead di quattro righe che elencava date in prosa: «dall'estate 2027
+ * e a Berlino nel 2028, dopo Spagna e Francia…». Le date in prosa si leggono
+ * due volte; su una linea si leggono una volta sola.
+ *
+ * Stessa grammatica della mappa dei quattro punti — linea, fermate, etichette
+ * in HTML — perché le due slide stanno nello stesso capitolo e devono
+ * somigliarsi. ⚠️ Niente parole dentro l'SVG.
+ *
+ * Ogni tappa ha la sua fonte, già citata in fondo alla slide che ospita
+ * questo componente: nessuna data qui è nostra.
+ */
+export interface Tappa { q: string; t: string; ora?: boolean }
+interface Props { tappe: Tappa[]; }
+const { tappe } = Astro.props as Props;
+const n = tappe.length;
+const x = (i: number) => ((i + 0.5) / n) * 1000;
+---
+<div class="tp-filo tp-crono">
+  <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
+       aria-label="Le date dell’anno commerciale, in ordine">
+    <line class="tp-filo-l" x1={x(0)} y1="32" x2={x(n - 1)} y2="32" />
+  </svg>
+  <ol class="tp-filo-eti" style={`--cols:${n}`} data-stagger="0.09">
+    {tappe.map((t) => (
+      <li data-ora={t.ora ? '' : undefined}>
+        <span class="tp-filo-num">{t.q}</span>
+        <span class="tp-filo-t">{t.t}</span>
+      </li>
+    ))}
+  </ol>
+</div>

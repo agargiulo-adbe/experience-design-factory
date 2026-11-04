@@ -25,7 +25,7 @@ export interface Chapter {
 
 export const CHAPTERS: Chapter[] = [
   { slug: 'apertura', num: '01', title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' }, short: 'Il vostro anno',
-    punto: 'Prima di parlare di noi, tre fatti che riguardano voi: li avete detti, annunciati o decisi voi.', foto: 'cover' },
+    punto: 'Tre fatti che cambiano l’anno commerciale, e nessuno dei tre arriva da noi.', foto: 'cover' },
   { slug: 'domanda', num: '02', title: { it: 'La domanda', en: 'La domanda' }, short: 'La domanda',
     punto: 'Una domanda sola. Tutto il resto del documento prova a risponderle.', foto: 'close' },
   { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'Gli assistenti',
@@ -35,7 +35,7 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' }, short: 'Il contenuto',
     punto: 'Un problema nato con la squadra commerciale unica, e che non si risolve aggiungendo persone.', foto: 'paper-grid' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
-    punto: 'Un canale vostro, che vende ogni giorno e non vi racconta quasi niente.', foto: 'network' },
+    punto: 'Un canale che vende ogni giorno: quanto se ne vede, dalla sede?', foto: 'network' },
   { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta',
     punto: 'Quattro punti sono troppi per cominciare da tutti: ne proponiamo uno, e potete deciderlo da soli.', foto: 'chapter' },
 ];

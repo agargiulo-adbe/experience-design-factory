@@ -72,10 +72,7 @@ export const IDEE: Idea[] = [
     titolo: 'Un master approvato, quattro mercati',
     mock: 'contenuto',
     cifra: { k: 'da giorni a minuti', v: 'il tempo fra la campagna approvata e la variante pubblicata, su 4.400 asset creativi' },
-    // copy-audit-ignore L3 · la doppia relativa è la formulazione scelta dall'owner
-    // il 3 nov: è la frase che regge davanti a chi legge «internazionalizzazione»
-    // come una traslazione, e riscriverla la indebolisce.
-    chiusa: 'Quello che costruite per l’Italia è la stessa cosa che vi porta fuori: cambia la lingua, non l’impianto.',
+    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: cambia la lingua, non l’impianto.',
     prova: {
       chi: 'Santander Brasil',
       settore: 'banca, dieci mercati nel gruppo',
@@ -90,6 +87,11 @@ export const IDEE: Idea[] = [
     titolo: 'La rete vende meglio se ha in mano la stessa cosa del sito',
     mock: 'rete',
     cifra: { k: 'oltre 70.000', v: 'i punti vendita fuori dalle biglietterie sul Regionale; il dato è del 2014 e va riconfermato' },
+    /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
+       chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
+       non esiste fonte, e un'affermazione di assenza su un cliente si verifica
+       sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
+       e la domanda la fa la slide che chiude il capitolo. */
     chiusa: 'La proposta e il materiale arrivano già pronti al banco: l’agenzia smette di costruirseli.',
     fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi.`,
   },

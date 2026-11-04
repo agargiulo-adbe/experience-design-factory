@@ -4,9 +4,11 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
+import Mercati from '../components/Mercati.astro';
+import Cronologia from '../components/Cronologia.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MERCATO, APERTURA, CONTESTO, TESTE, fontiDi } from '../data/contenuti';
+import { MERCATO, MERCATI, CRONOLOGIA, APERTURA, CONTESTO, TESTE, fontiDi } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import bg_cover from '../assets/generated/bg/bg-cover.webp';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
@@ -93,10 +95,10 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.2">{MERCATO.chiusa}</p>
 
         <p class="xd-fonte" data-reveal data-reveal-delay="0.28">
-          Le sue parole sul 96%: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a>.
-          Il 4% e i tre quarti sono un dato di contesto del TTG, non una sua citazione:
+          Fonti: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a>.
+          Il 4% e i tre quarti sono un dato di contesto del TTG:
           <a href={SOURCES.turismo75.url} target="_blank" rel="noopener noreferrer">{SOURCES.turismo75.label}</a>.
-          Sono dichiarazioni di un anno fa: le sue parole di quest’anno stanno nella slide dopo.
+          Sono dati del TTG 2025: il quadro di quest’anno è nella slide dopo.
         </p>
       </div>
     </Slide>
@@ -112,10 +114,13 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
             capo dentro lo stesso paragrafo hanno riquadri che si intersecano, e il
             check `e` dell'audit li legge come testo sopra testo. */}
         <p class="tp-quote-after" data-reveal data-reveal-delay="0.18" set:html={`${APERTURA.citazione} ${APERTURA.lettura}`} />
-        {/* ⚠️ IL PONTE. La parola è la sua, ma dentro l'azienda c'è chi la
-            legge come una traslazione dell'esistente: questa riga tiene la
-            parola e sposta l'argomento, così regge davanti a tutti e due.
-            Il perché per esteso sta in `contenuti.ts`, accanto al testo. */}
+        {/* Il ponte: tiene la parola e sposta l’argomento. Il perché per
+            esteso sta in `contenuti.ts`, accanto al testo. */}
+        {/* Un elemento grafico anche qui: la slide prima ne ha uno, e due
+            slide vicine — una con un disegno e una senza — si leggono come
+            due registri diversi. Il disegno dice quello che la slide afferma:
+            una piattaforma sola, i mercati che ha nominato al TTG. */}
+        <Mercati mercati={MERCATI} base="Dalla stessa piattaforma" />
         <p class="tp-quote-ponte" data-reveal data-reveal-delay="0.24">{APERTURA.ponte}</p>
         <p class="xd-fonte" data-reveal data-reveal-delay="0.3">
           {APERTURA.fonte.prima} <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a>.
@@ -125,7 +130,7 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
     </Slide>
 
     <!-- ── Il contesto: suo, non nostro ──────────────────────────────────── -->
-    <Slide id="slide-contesto" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <Slide id="slide-contesto" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
@@ -133,6 +138,10 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
           <h2 class="xd-h2">{TESTE.contesto.titolo}</h2>
           <p class="xd-sub">{TESTE.contesto.lead}</p>
         </div>
+        {/* Le date erano sei, in prosa, nel lead. Qui sono una linea: si legge
+            una volta sola, e si vede che cadono tutte nei prossimi diciotto
+            mesi. Le fonti sono quelle già citate in fondo alla slide. */}
+        <Cronologia tappe={CRONOLOGIA} />
         <div class="tp-ancore" data-stagger>
           {CONTESTO.map((x) => (
             <div class="tp-anc">
