@@ -68,7 +68,7 @@ export const TESTE = {
     // 16 ott: la cornice è la parola che ha usato LUI al TTG il giorno prima.
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
-    titolo: 'Il piano dei prossimi anni si scrive adesso',
+    titolo: 'Il piano si scrive adesso',
     // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
     // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
     lead: 'Nello stesso anno si muovono il mercato, il prezzo e il momento.',
@@ -215,7 +215,7 @@ export const CONTESTO: Card[] = [
        vale SOLO sull'alta velocità, mentre in questa stanza si vendono tre
        prodotti. In sala quella data la conoscono meglio di noi. Ora la riga
        dice quello che dicono le fonti: da quando, su che cosa, e il tetto. */
-    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto, il vertice di Gruppo ha dichiarato che i biglietti non aumenteranno.',
+    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto il vertice di Gruppo ha dichiarato che non aumenteranno.',
     bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['pricing', 'prezziFermi'],
   },

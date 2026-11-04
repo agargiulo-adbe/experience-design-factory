@@ -62,7 +62,7 @@ export const IDEE: Idea[] = [
        non scompone per lingua (quattro domande IT e quattro EN, nessun dato separato)
        e non misura a chi torni il prodotto. Quello che mostra davvero è il link: su
        ChatGPT i link sono «prenota con Trenitalia». */
-    chiusa: 'Dove la risposta cita il vostro sito, il link che compare porta a comprare da voi.',
+    chiusa: 'Dove la risposta cita il vostro sito, il link che compare porta a\u00a0comprare da voi.',
     fonte: `${SOURCES.misura.label}, su 8 domande. Possiamo ripeterla insieme. La schermata è un esempio nostro, non una risposta registrata.`,
   },
   {
