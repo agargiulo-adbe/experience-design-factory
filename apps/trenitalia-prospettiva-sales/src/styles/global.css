@@ -1194,3 +1194,25 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 @media (max-height: 820px) {
   [data-stretto] .dett-fig { max-width: 7.5rem !important; }
 }
+
+/* ── Il contorno arretra quando un dettaglio si apre ─────────────────────
+   Il check `b` dell'audit guarda i comandi del deck: NON vede la firma
+   co-brand né il credito «creato con», che vivono fuori dalla slide. Su
+   `ricerca/slide-canale`, con il blocco aperto, la riga di fonte arrivava a
+   1013px e la firma partiva da 1005: otto pixel di sovrapposizione, misurati,
+   che nessun gate segnalava. Il motore marca `html[data-hiw-open]` apposta, e
+   la regola di `CLAUDE.md` dice che è la pelle a far arretrare il contorno —
+   la stessa leva con cui il motore nasconde il comando audio.
+   Si spegne l'opacità, non si sposta: spostare la firma la farebbe ballare a
+   ogni apertura, e il lockup `hero` non c'entra (lì la firma fissa è già
+   spenta dal runtime). */
+html[data-hiw-open] .edf-cobrand--chrome,
+html[data-hiw-open] .edf-madewith {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-hiw-open] .edf-cobrand--chrome,
+  html[data-hiw-open] .edf-madewith { transition: none; }
+}

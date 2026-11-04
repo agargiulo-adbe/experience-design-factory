@@ -35,11 +35,16 @@ const i = trovaIdea(slug);
       <div class="tp-idea-dx">
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.16">{i.chiusa}</p>
 
-        <ul class="xd-num" style="--cols:1" data-reveal data-reveal-delay="0.22">
-          <li class="xd-num-i">
-            <span class="xd-num-k" data-display>{i.cifra.k}</span>
-            <span class="xd-num-v">{i.cifra.v}</span>
-          </li>
+        {/* Una cifra di norma, DUE quando il punto è il confronto: con una sola
+            in evidenza il lato taciuto pesa meno, e su una slide di misura è
+            proprio il confronto il fatto. `--cols` segue il numero di voci. */}
+        <ul class="xd-num" style={`--cols:${(i.cifre ?? [i.cifra]).length}`} data-reveal data-reveal-delay="0.22">
+          {(i.cifre ?? [i.cifra]).map((c) => (
+            <li class="xd-num-i">
+              <span class="xd-num-k" data-display>{c.k}</span>
+              <span class="xd-num-v">{c.v}</span>
+            </li>
+          ))}
         </ul>
 
         {i.prova && (

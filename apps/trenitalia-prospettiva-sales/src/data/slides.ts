@@ -52,10 +52,10 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-mappa', label: 'La mappa · quattro punti',
       agenda: 'I quattro punti, in ordine' },
   ]},
-  { slug: 'ricerca', label: 'Quando un viaggio si cerca con l\'intelligenza artificiale (03)', slides: [
+  { slug: 'ricerca', label: 'Quando il viaggio si cerca con un assistente (03)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
     { id: 'slide-idea', label: 'L’idea · mockup, cifra, referenza',
-      agenda: 'Essere la fonte, non una voce' },
+      agenda: 'Da quale sito prendono la risposta' },
     { id: 'slide-referto', label: 'Il referto · le otto domande e i due assistenti',
       agenda: 'Otto domande, due assistenti' },
     { id: 'slide-frecce', label: 'Di chi sono le Frecce',
@@ -63,7 +63,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-leva', label: 'Che cosa si misura, che cosa si cambia',
       agenda: 'Che cosa si misura, e si cambia' },
     { id: 'slide-canale', label: 'Il secondo tempo del canale · dove oggi vi citano, domani si compra',
-      agenda: 'Dove citano, domani si compra' },
+      agenda: 'Dove vi citano, domani si compra' },
   ]},
   { slug: 'viaggio', label: 'Un viaggio, non più prodotti (04)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
@@ -74,13 +74,13 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-matera', label: 'Il caso Roma-Matera',
       agenda: 'Dove il viaggio torna un biglietto' },
     { id: 'slide-acquisto', label: 'Riconoscere chi compone un viaggio',
-      agenda: 'Riconoscere chi compone il viaggio' },
+      agenda: 'Chi sta componendo un viaggio' },
     { id: 'slide-prima', label: 'Il viaggio comincia altrove',
       agenda: 'Chi lo incontra prima di voi' },
     { id: 'slide-collab', label: 'Dove si innesta la collaborazione sui dati',
       agenda: 'Dove si innesta il dato condiviso' },
   ]},
-  { slug: 'contenuto', label: 'Il contenuto che l\'offerta richiede (05)', slides: [
+  { slug: 'contenuto', label: 'Il contenuto che l\'offerta chiede (05)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
     { id: 'slide-idea', label: 'L’idea · mockup, cifra, referenza',
       agenda: 'Un master, quattro mercati' },

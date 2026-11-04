@@ -31,6 +31,9 @@ export interface Idea {
   mock: 'ricerca' | 'viaggio' | 'contenuto' | 'rete';
   /** La cifra: una sola, grande. */
   cifra: { k: string; v: string };
+  /** Due cifre affiancate, quando il punto della slide È il confronto e
+   *  metterne una sola darebbe a un lato più peso dell'altro. */
+  cifre?: { k: string; v: string }[];
   /** Il punto della slide. Una frase, e si vede che è una frase. */
   chiusa: string;
   /** La referenza. Assente dove non ne esiste una che possiamo provare:
@@ -45,11 +48,22 @@ export const IDEE: Idea[] = [
   {
     slug: 'ricerca',
     occhiello: 'L’idea, in una schermata',
-    titolo: 'Essere la fonte, non una delle voci',
+    /* Il titolo È il confronto: con una cifra sola in evidenza la slide sembrava
+       dire «gli assistenti non vi citano», e la misura dice il contrario — dipende
+       da quale assistente. Le due cifre stanno affiancate e con lo stesso peso. */
+    titolo: 'Su ChatGPT siete fra le fonti 7 volte su 8. Su Google, 2.',
     mock: 'ricerca',
-    cifra: { k: '2 su 8', v: 'le risposte di Google che citano trenitalia.com fra le fonti. Su ChatGPT, sulle stesse otto domande, sono 7.' },
-    chiusa: 'Dove la pagina giusta esiste nella lingua giusta, la risposta la usa, e il prodotto torna vostro.',
-    fonte: `${SOURCES.misura.label}. Nessuna referenza pubblica di un altro cliente su questo tema regge la verifica: la prova qui è la nostra misura, e si rifà davanti a voi.`,
+    cifra: { k: '7 su 8', v: 'le risposte di ChatGPT che citano trenitalia.com fra le fonti' },
+    cifre: [
+      { k: '7 su 8', v: 'le risposte di ChatGPT che citano trenitalia.com fra le fonti' },
+      { k: '2 su 8', v: 'le stesse otto domande, nella risposta generata dentro la ricerca Google' },
+    ],
+    /* La chiusa diceva «nella lingua giusta» e «il prodotto torna vostro». La misura
+       non scompone per lingua (quattro domande IT e quattro EN, nessun dato separato)
+       e non misura a chi torni il prodotto. Quello che mostra davvero è il link: su
+       ChatGPT i link sono «prenota con Trenitalia». */
+    chiusa: 'Dove la risposta cita il vostro sito, il link che compare porta a comprare da voi.',
+    fonte: `${SOURCES.misura.label}, su 8 domande. Possiamo ripeterla insieme. La schermata è un esempio nostro, non una risposta registrata.`,
   },
   {
     slug: 'viaggio',

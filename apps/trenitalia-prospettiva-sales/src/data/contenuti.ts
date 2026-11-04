@@ -68,11 +68,11 @@ export const TESTE = {
     // 16 ott: la cornice è la parola che ha usato LUI al TTG il giorno prima.
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
-    titolo: 'Tre cose nello stesso anno',
+    titolo: 'Il piano dei prossimi anni si scrive adesso',
     // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
     // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
-    lead: 'Il piano che deciderà i prossimi anni si sta scrivendo adesso.',
-    leadBreve: 'Il Frecciarossa in Germania dal 2027 e a Berlino nel 2028: tutto nell’anno in cui il mercato si allarga e la leva del prezzo si chiude verso l’alto.',
+    lead: 'Nello stesso anno si muovono il mercato, il prezzo e il momento.',
+    leadBreve: 'Il Frecciarossa in Germania dal 2027, a Berlino nel 2028. Nello stesso anno il mercato si allarga, e il vertice di Gruppo dichiara che i biglietti non aumenteranno.',
   },
   mappa: {
     eyebrow: 'La mappa',
@@ -125,7 +125,7 @@ export const MERCATO = {
   quota: { n: '4%', l: 'tre quarti di chi arriva dall’estero si ferma qui' },
   resto: { n: '96%', l: 'il resto del territorio, quello ancora da far conoscere' },
   /** Il punto della slide. */
-  chiusa: 'Quel 96% non si raggiunge abbassando il prezzo: si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
+  chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
 
 /* ── Capitolo 01 · le date, su una linea ──────────────────────────────────
@@ -215,7 +215,7 @@ export const CONTESTO: Card[] = [
        vale SOLO sull'alta velocità, mentre in questa stanza si vendono tre
        prodotti. In sala quella data la conoscono meglio di noi. Ora la riga
        dice quello che dicono le fonti: da quando, su che cosa, e il tetto. */
-    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto il tetto è dichiarato: i biglietti non aumentano.',
+    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto, il vertice di Gruppo ha dichiarato che i biglietti non aumenteranno.',
     bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['pricing', 'prezziFermi'],
   },
@@ -223,7 +223,7 @@ export const CONTESTO: Card[] = [
     k: 'Il momento',
     t: 'Un piano in scrittura, un sito in rifacimento',
     anc: 'Le due finestre aperte',
-    b: 'Il piano di Gruppo arriva entro fine anno e il sito entro marzo 2027: adesso si decide.',
+    b: 'Il piano di Gruppo arriva entro fine anno, il sito entro marzo 2027. Adesso si decide.',
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
     fonti: ['piano', 'ttgSales2026', 'monaco'],
   },
@@ -274,7 +274,7 @@ export const DOMANDA = {
    *  Resta la rassicurazione, che è la metà utile; i confini li traccia lui,
    *  se vuole. Via anche la fonte, che serviva solo alla mappa. */
   perimetri:
-    'Non tutto quello che segue si decide in questa stanza, e lo sappiamo: quello che vi chiediamo alla fine resta dentro il vostro perimetro.',
+    'Non tutto quello che segue si decide in questa stanza, e lo sappiamo. La cosa che vi chiediamo alla fine resta nel vostro perimetro.',
   /** La riga di fonte della slide, identica nei due percorsi: le parole stanno
    *  qui, i link li compone la pagina da `sources.ts`. Porta il tetto del prezzo
    *  dove è attribuito — a chi l'ha detto e quando — invece di lasciarlo in
@@ -314,7 +314,7 @@ export const PUNTI: Punto[] = [
     dove: 'A valle',
     t: 'Nel materiale che non si riesce a produrre',
     b: 'Una squadra sola vende tre prodotti più i servizi, su più mercati e in più lingue. Il materiale da produrre si moltiplica, e a mano non si tiene il passo.',
-    bRiga: 'Il materiale si moltiplica per prodotto, mercato e lingua: a mano non si tiene il passo.',
+    bRiga: 'Il materiale si moltiplica per prodotto, mercato e lingua, e a mano non si tiene il passo.',
     bBreve: 'Una squadra sola vende tre prodotti su più mercati e più lingue. Il materiale si moltiplica, e a mano non si tiene il passo.',
   },
   {
@@ -363,14 +363,14 @@ export const REFERTO_INTERO: { m: string; g: string; c: string }[] = [
 
 export const REFERTO: Stat[] = [
   { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
-  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti: la risposta si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio), che vendono comunque i vostri biglietti' },
+  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti della risposta generata dentro la ricerca, che si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio)' },
   { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
-  { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'le Frecce elencate come se fossero aziende in concorrenza con voi' },
+  { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'nella risposta generata dentro la ricerca, le Frecce elencate come se fossero aziende in concorrenza con voi' },
 ];
 
 export const KPI: Card[] = [
   { k: 'Presenza', t: 'Su quante domande comparite',
-    anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua: non una fotografia sola.' },
+    anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua, invece di una fotografia sola.' },
   /* 16 ott, SECONDA versione. La prima diceva che i rivenditori «si prendono la
      relazione», cioè li trattava da minaccia. La verifica ha smontato la
      premessa, e il cliente avrebbe avuto in mano i numeri per smontarla in
@@ -429,7 +429,7 @@ export const GIA: Card[] = [
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
     anc: 'Il volo, già in prova',
-    b: 'Partito nel 2023, e da marzo c’è un laboratorio comune. A maggio però hanno firmato anche con Italo.',
+    b: 'Partito nel 2023, e da marzo c’è un laboratorio comune. A maggio ITA Airways ha firmato anche con Italo.',
     bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo è nato un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
     fonti: ['itaAirways', 'itaItalo'],
   },
@@ -451,7 +451,7 @@ export const PRIMA: Card[] = [
     k: 'Dove sta il valore',
     t: 'Arrivare prima della scelta del vettore',
     anc: 'Prima che il vettore sia scelto',
-    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci, e oggi non lo sapete.',
+    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci.',
     bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
   },
   {
@@ -473,7 +473,7 @@ export const PRIMA: Card[] = [
     k: 'La Cina, dove siete già',
     t: 'Vendete dentro WeChat dal 2025',
     anc: 'Un canale che non vi racconta',
-    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali. Le vendite su quel mercato sono raddoppiate in un anno, e quello che quel canale sa di chi compra resta lì.',
+    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali. Le vendite su quel mercato sono raddoppiate in un anno, e quello che quel canale sa di chi compra vive dentro WeChat.',
     bBreve: 'Non c’è un sito in cinese: c’è un mini-program che vende, e le vendite su quel mercato sono raddoppiate in un anno.',
     fonti: ['trenitaliaCinese', 'fsCina'],
   },
@@ -548,7 +548,7 @@ export const UNPOSTO: Card[] = [
     k: 'Il tempo',
     t: 'Dal brief alla vetrina',
     anc: 'Il tempo, non il costo',
-    b: 'Non quanto costa una variante, ma dopo quanti giorni è davanti a un cliente: lì si perde una stagione.',
+    b: 'Il metro è dopo quanti giorni una variante arriva davanti a un cliente. Lì si perde una stagione.',
   },
   {
     k: 'Il marchio',
@@ -602,7 +602,7 @@ export const SAPERE: Card[] = [
   {
     k: 'Chi vende che cosa',
     t: 'Per rete, per agenzia, per prodotto',
-    anc: 'Il venduto, finalmente letto',
+    anc: 'Il venduto, letto per agenzia',
     b: 'Dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
     bBreve: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
@@ -638,7 +638,7 @@ export const ASK = {
   /** Che cosa serve davvero: «i vostri dati» non è un perimetro, e chi tiene la
    *  piattaforma commerciale lo chiede al primo giro. */
   servono:
-    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scegliete voi, e vale l’accordo di riservatezza come per qualunque altro dato. Se estrarlo costa più di mezza giornata, guardiamo quello che c’è.',
+    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scegliete voi, e vale l’accordo di riservatezza come per qualunque altro dato. Se estrarlo costa più di qualche ora, guardiamo quello che c’è.',
 };
 
 export const DOMANDE_APERTE = [
