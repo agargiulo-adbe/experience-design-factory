@@ -38,10 +38,6 @@ export interface Card {
    */
   anc?: string;
   /** La stessa cosa in meno parole, per il taglio da dieci minuti. */
-  /** La riga del drill-down: UNA riga, ~15 parole. La regola dice venti al
-   *  massimo, e `bBreve` ne porta venticinque: aperte in `Dettaglio` fanno
-   *  quattro righe per voce, e il blocco sfonda il viewport a 1280×800. */
-  bRiga?: string;
   bBreve?: string;
   /** Le fonti che reggono QUESTA voce, per chiave. */
   fonti?: ChiaveFonte[];
@@ -227,7 +223,10 @@ export const DOMANDA = {
     'Due di questi quattro punti non si decidono in questa stanza: dal settembre 2025 il percorso di acquisto sta in Customer Operations, marca e prezzo nel marketing. Lo scriviamo noi, e quello che vi chiediamo alla fine resta tutto dentro il vostro perimetro.',
 };
 
-export interface Punto { n: string; dove: string; t: string; b: string; bBreve: string }
+/** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
+ *  consente venti, e `bBreve` ne porta venticinque — aperte in `Dettaglio`
+ *  fanno quattro righe per voce e il blocco sfonda il viewport a 1280×800. */
+export interface Punto { n: string; dove: string; t: string; b: string; bRiga?: string; bBreve: string }
 export const PUNTI: Punto[] = [
   {
     /* 16 ott: il punto 01 copre adesso anche il secondo tempo di quel canale,
