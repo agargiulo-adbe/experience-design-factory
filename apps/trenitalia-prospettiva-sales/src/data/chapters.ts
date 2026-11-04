@@ -33,7 +33,7 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'viaggio', num: '04', title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' }, short: 'Il viaggio',
     punto: 'Qui abbiamo più domande che risposte: l’intermodale è il vostro mestiere, non il nostro.', foto: 'journey' },
   { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta richiede', en: 'Il contenuto che l\'offerta richiede' }, short: 'Il contenuto',
-    punto: 'Un problema nato con la squadra commerciale unica, e che non si risolve aggiungendo persone.', foto: 'paper-grid' },
+    punto: 'La squadra è una e i prodotti sono tre: ogni campagna si moltiplica per\u00a0mercato e per\u00a0lingua.', foto: 'paper-grid' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
     punto: 'Un canale che vende ogni giorno: quanto se ne vede, dalla sede?', foto: 'network' },
   { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta',

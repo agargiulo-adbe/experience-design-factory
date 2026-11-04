@@ -200,9 +200,9 @@ export const CONTESTO: Card[] = [
        disintermediazione che tocca davvero questa stanza, perché riguarda la
        sua vetrina e non un rivenditore. ⚠️ È una proposta, e la slide lo dice. */
     k: 'Il mercato',
-    t: 'Un concorrente in più, e una vetrina da aprire',
+    t: 'Un terzo operatore, e\u00a0una\u00a0vetrina da aprire',
     anc: 'Chi altro vende, e dove',
-    b: 'SNCF ha il via libera dal 7 marzo 2026 e dichiara di volere il 15% entro il 2030.',
+    b: 'Siete in due. Il terzo ha il via libera, ma entra non prima della fine del 2027. La Commissione ha proposto che chi ha metà del mercato venda anche i treni degli altri.',
     bBreve: 'Sull’alta velocità siete in due, e la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
     fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
   },
@@ -245,8 +245,22 @@ export const CONTESTO: Card[] = [
 export const DOMANDA = {
   /** La premessa sta nell'occhiello, non nel titolo: è contesto, e finché occupava
    *  il posto della domanda la domanda arrivava in terza riga, dietro due
-   *  subordinate e una doppia relativa. Qui sopra sta il fatto, sotto la domanda. */
-  eyebrow: 'Il prezzo si muove già da sé, e più in alto non va',
+   *  subordinate e una doppia relativa. Qui sopra sta il fatto, sotto la domanda.
+   *
+   *  ⚠️ 4 nov — DUE CORREZIONI DI FATTO, ed è la riga su cui poggia tutto il deck.
+   *  Diceva «Il prezzo si muove già da sé, e più in alto non va». Entrambe le
+   *  metà erano più larghe delle loro fonti:
+   *  · il prezzo dinamico riguarda SOLO l'alta velocità (Altroconsumo, gen 2026:
+   *    Intercity e Regionale restano a tariffa fissa). Il commento della card
+   *    `Il prezzo` lo sapeva già e lo scriveva — «in questa stanza si vendono tre
+   *    prodotti» — ma la correzione era arrivata alla card e non qui;
+   *  · «più in alto non va» non è un tetto: è una frase dell'AD di Gruppo in
+   *    conferenza stampa il 23 settembre 2026, verificata alla fonte. Una
+   *    dichiarazione invecchia e si attribuisce, quindi non sta più
+   *    nell'occhiello: sta in `fonte`, con il link e la data.
+   *  Era anche l'UNICA slide di contenuto del deck senza riga di fonte — in
+   *  entrambi i percorsi — ed era quella che affermava di più. */
+  eyebrow: 'Sulle Frecce il prezzo si muove già con la domanda',
   titolo: 'Allora dove si perdono le vendite?',
   sub: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   subBreve: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
@@ -261,6 +275,14 @@ export const DOMANDA = {
    *  se vuole. Via anche la fonte, che serviva solo alla mappa. */
   perimetri:
     'Non tutto quello che segue si decide in questa stanza, e lo sappiamo: quello che vi chiediamo alla fine resta dentro il vostro perimetro.',
+  /** La riga di fonte della slide, identica nei due percorsi: le parole stanno
+   *  qui, i link li compone la pagina da `sources.ts`. Porta il tetto del prezzo
+   *  dove è attribuito — a chi l'ha detto e quando — invece di lasciarlo in
+   *  occhiello come se fosse una regola. */
+  fonte: {
+    prezzo: 'Il prezzo dinamico sulle Frecce:',
+    tetto: 'Sul tetto, la dichiarazione del vertice di Gruppo:',
+  },
 };
 
 /** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
@@ -298,10 +320,10 @@ export const PUNTI: Punto[] = [
   {
     n: '04',
     dove: 'Nel canale che è vostro',
-    t: 'In 12.400 agenzie che non vi rispondono',
-    b: 'La rete intermediata vende ogni giorno. Non sapete quali agenzie vendono che cosa, dove si ferma la proposta multiprodotto, quale materiale funziona.',
-    bRiga: 'La rete vende ogni giorno, e non sapete chi vende che cosa.',
-    bBreve: 'La rete intermediata vende ogni giorno. Non sapete chi vende che cosa, né dove si ferma la proposta multiprodotto.',
+    t: 'In 12.400 agenzie, lette dai conti',
+    b: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia e per prodotto, dove si ferma la proposta multiprodotto, quale materiale funziona?',
+    bRiga: 'La rete vende ogni giorno: quanto di quel venduto si legge per agenzia?',
+    bBreve: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia, e dove si ferma la proposta multiprodotto?',
   },
 ];
 
@@ -485,10 +507,10 @@ export const PRIMA: Card[] = [
      scoprono da soli questi collegamenti. Esporsi non basta. */
 export const CANALE: Card[] = [
   {
-    k: 'La vostra ambizione',
+    k: 'La direzione',
     t: 'Vendere dentro i canali agentici',
-    anc: 'Un pilastro già vostro',
-    b: 'Non è una proposta nostra: è uno dei pilastri che avete dichiarato di avere in lavorazione.',
+    anc: 'Una direzione che si apre',
+    b: 'Non è una proposta nostra: è una direzione che si sta aprendo. Quanto è già sul vostro tavolo?',
   },
   {
     k: 'Che cosa cambia',
@@ -551,8 +573,8 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di tutto questo canale sapete quello che vi raccontano i conti.',
-  dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale sapete quello che vi raccontano i conti.',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di questo canale, che cosa riuscite a\u00a0leggere oltre i conti?',
+  dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale, che cosa riuscite a\u00a0leggere oltre i conti?',
   domanda:
     // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
     // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
@@ -595,7 +617,7 @@ export const SAPERE: Card[] = [
     k: 'Che cosa succede se…',
     t: 'Provare un’alternativa invece di deciderla',
     anc: 'Una fetta prima di tutte',
-    b: 'Su un sito si fa. Qui no, e una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
+    b: 'Su un sito si fa; qui, per quanto ne sappiamo, no. Una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
     bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
   },
 ];

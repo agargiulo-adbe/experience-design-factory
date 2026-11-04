@@ -96,7 +96,9 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-settantamila', label: 'Settantamila punti vendita',
       agenda: 'Quanto è grande la rete' },
     { id: 'slide-sapere', label: 'Che cosa sapreste',
-      agenda: 'Che cosa sapreste, e oggi no' },
+      // 4 nov: diceva «e oggi no». La stessa affermazione di assenza del lead,
+      // sul divisore di capitolo, dove è la prima cosa che si legge.
+      agenda: 'Che cosa sapreste della rete' },
     { id: 'slide-serve', label: 'La domanda, e che cosa serve',
       agenda: 'Che cosa serve, concretamente' },
   ]},

@@ -54,7 +54,7 @@ export const IDEE: Idea[] = [
   {
     slug: 'viaggio',
     occhiello: 'L’idea, in una schermata',
-    titolo: 'Una soluzione intera, non tre prodotti da cercare',
+    titolo: 'Una soluzione intera, da cercare una volta sola',
     mock: 'viaggio',
     cifra: { k: '+11%', v: 'le vendite dalle proposte personalizzate, ordinate dal sistema invece che a mano' },
     chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
@@ -72,7 +72,7 @@ export const IDEE: Idea[] = [
     titolo: 'Un master approvato, quattro mercati',
     mock: 'contenuto',
     cifra: { k: 'da giorni a minuti', v: 'il tempo fra la campagna approvata e la variante pubblicata, su 4.400 asset creativi' },
-    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: cambia la lingua, non l’impianto.',
+    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
     prova: {
       chi: 'Santander Brasil',
       settore: 'banca, dieci mercati nel gruppo',
