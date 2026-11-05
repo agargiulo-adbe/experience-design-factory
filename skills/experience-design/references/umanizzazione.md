@@ -1,9 +1,11 @@
 # Umanizzare la copia di una experience
 
 > Quando: dopo che il contenuto è fermo e prima della consegna, su una experience
-> intera. Non è una passata di stile: è un giro misurato, con un prima e un dopo.
+> intera. **Prima si decide che cosa dice la slide (Giro 0), poi come suona (Giri 1-3)**, e
+> quelli non sono una passata di stile: sono giri misurati, con un prima e un dopo.
 > Metodo ricavato e verificato su `intesa-esperienza-cliente` il 30 ott 2026 (41 slide, 956
-> stringhe, 12 pagine). I numeri citati qui sotto sono quelli veri di quel giro.
+> stringhe, 12 pagine). I numeri citati qui sotto sono quelli veri di quel giro; il Giro 0
+> è arrivato dopo, il 4 nov 2026, su un'altra experience.
 
 ## Il principio: togliere un marcatore, non spostarlo
 
@@ -29,10 +31,34 @@ ancora, spostati. Per questo **il gate si rilancia finché non esce pulito**, no
 una volta sola. Su `intesa-esperienza-cliente` sono servite tre passate: la seconda ha trovato
 tre marcatori creati dalle correzioni della prima.
 
-## I tre giri, in quest'ordine
+## I quattro giri, in quest'ordine
 
 L'ordine non è arbitrario: ogni giro raccoglie quello che il precedente ha
-dislocato, e usa uno strumento che il precedente non aveva.
+dislocato, e usa uno strumento che il precedente non aveva. Il Giro 0 viene prima
+di tutti perché decide **che cosa** dice la slide: rifinire il ritmo di una frase
+che dice la cosa sbagliata è lavoro buttato.
+
+### Giro 0 — il messaggio
+
+Si legge **slide per slide**, percorso intero e taglio corto compresi, e prima di
+riscrivere si risponde: qual è il fatto che regge la slide, e se c'è sta nel
+titolo; il titolo informa, o funzionerebbe anche per un altro cliente; la frase si
+capisce al primo ascolto; la slide dimostra ciò che afferma; si vede prima la
+prova e poi la conclusione; un esempio ricostruito è etichettato come tale; la riga
+di fonte fa solo la nota, e non nasconde un'affermazione che conta.
+
+**Qui non vale il ±10%**: serve il testo giusto, non uno della stessa lunghezza. Se
+il testo nuovo non entra si taglia, si cambia composizione o si divide la slide —
+**mai si rimpicciolisce il tipo**. Nessun numero, fatto, fonte o nome di prodotto
+nuovo: un dato promosso a titolo si riscontra prima alla fonte, e citazioni
+verbatim e righe marcate da non toccare restano come sono. Si applica da soli ciò
+che cambia la forma usando fatti già verificati; ciò che cambia una tesi, una
+promessa, l'ask o una frase protetta va in una lista per chi possiede il contenuto,
+con la riscrittura pronta.
+
+Il ±10% dei giri seguenti si misura **sul testo uscito da qui**, e il Giro 0 si
+committa a parte. La checklist per slide, i vincoli e il registro da tenere stanno
+in **`/umanizza`**.
 
 ### Giro 1 — i segni
 
@@ -99,8 +125,10 @@ Il giudizio che il gate dichiara di non dare. Si legge come il destinatario.
 | **elenco in prosa** | quattro verbi coordinati | due frasi al minimo; la risposta vera sono **ancore**, e lì l'intervento esce dalla copia ed entra nella composizione |
 | **parola vuota** | dice una categoria, non una cosa | si sostituisce con **parole che il deck già usa** altrove, non con parole nostre: «Ingaggiare il cliente» → «Parlare a uno per uno» |
 
-Vincoli che valgono su ogni riscrittura, e si **verificano prima di scrivere**:
-lunghezza entro **±10%**; numeri, nomi di prodotto, fonti e citazioni intoccati;
+Vincoli che valgono su ogni riscrittura dei **Giri 1-3**, e si **verificano prima
+di scrivere**: lunghezza entro **±10%** rispetto al testo uscito dal Giro 0 — che
+invece quel limite non ce l'ha, perché lì si cambia quello che la slide dice;
+numeri, nomi di prodotto, fonti e citazioni intoccati;
 plurale istituzionale; le due lingue ciascuna idiomatica. Una riscrittura può
 toccare **una lingua sola**: su `adobe.astro` l'inglese sforava `L1` a 29 parole e
 l'italiano no, perché più compatto. La coppia bilingue non deve essere simmetrica.

@@ -54,19 +54,26 @@ e il segnale è che la slide porta più di un disegno piccolo. ⚠️ **Nessun g
 `audit:ritmo` conta se c'è un elemento visivo, non in che registro è. Resta un giudizio da
 fare sullo screenshot a 1920. Casi e trappole in **`references/xd.md`**.
 
-## Step 0-bis bis — Umanizzare la copia, in tre giri misurati
-Quando il contenuto è fermo e prima della consegna. **Non è una passata di stile: è un
-giro con un prima e un dopo.** La regola che tiene insieme tutto: un intervento che fa
+## Step 0-bis bis — Umanizzare la copia, in quattro giri
+Quando il contenuto è fermo e prima della consegna. **Prima si decide che cosa dice la
+slide, poi come suona**, e i giri che rifiniscono il testo **non sono una passata di
+stile: hanno un prima e un dopo.** La regola che tiene insieme tutto: un intervento che fa
 scendere un contatore può aver **spostato** il marcatore invece di toglierlo. Misurato su
 `intesa-esperienza-cliente`: `copy-audit` segnalava 8 trattini-perno, e sostituirli con i due punti li
 avrebbe azzerati — ma il deck aveva già **49 due-punti-perno**, sei volte tanto. Tutti i
 gate verdi, il testo peggiore.
 Quindi: prima di toccare si misura anche quello che il gate NON guarda (**`pnpm lenti
 --app <alias>`**: stilometria per pagina, perni, telai di frase, aperture ripetute), e
-alla fine si riconfronta. I tre giri sono **i segni** (`copy-audit` finché non esce 0, e
+alla fine si riconfronta. I quattro giri sono **il messaggio** (**Giro 0**: il titolo che
+funzionerebbe per qualunque cliente, la formula a contrasto, la frase da rileggere due
+volte, l'affermazione che la slide non dimostra — qui **non vale il ±10%**, serve il testo
+giusto e non uno della stessa lunghezza, e se non entra si taglia o si divide la slide, mai
+si rimpicciolisce il tipo; ciò che cambia una tesi, una promessa o l'ask va a chi possiede
+il contenuto con la riscrittura pronta), **i segni** (`copy-audit` finché non esce 0, e
 si rilancia: la seconda passata trova i marcatori creati dalla prima), **la misura**
 (stilometria per PAGINA, concentrazione dei telai, e si **guardano** gli screenshot a
-1920), **l'orecchio** (l'altra lingua, i fatti attribuiti a terzi, il tono). Ordine dei
+1920), **l'orecchio** (l'altra lingua, i fatti attribuiti a terzi, il tono). **Il ±10% vale
+dai Giri 1-3**, misurato sul testo uscito dal Giro 0, che si committa a parte. Ordine dei
 gate dopo ogni modifica di copia: `copy-audit` → `audit:wrap` → `audit:deck`.
 Le eccezioni si dichiarano sulla riga con `copy-audit-ignore` **e il motivo accanto**.
 Metodo, tipi di intervento con il prima/dopo vero, i due buchi di gate trovati e le due
@@ -351,7 +358,10 @@ playback one — fix the asset, not with JavaScript.
   no staccato tricolons ("Ogni giorno. Ogni query."), no symmetrical `non solo X, ma Y`, no empty
   value‑speak ("crea valore", "un'unica visione"), no buzzword stacking or over‑parallel bullets.
   Natural, concrete sentences, varied rhythm. Bilingual: EN and IT each idiomatic (never a literal
-  echo); `<T en it>` ALWAYS keeps both. Keep length ~±10% so the audit doesn't break. (CLAUDE.md → Working rules.)
+  echo); `<T en it>` ALWAYS keeps both. Keep length ~±10% so the audit doesn't break — **from Giro 1**
+  of `/umanizza` onward, measured against the text that came out of **Giro 0**, where a title that fails
+  to inform or a sentence nobody gets on first hearing is rewritten **at any length** (if it doesn't fit:
+  cut copy or split the slide, never shrink the type). (CLAUDE.md → Working rules.)
 
 ## Il taglio «In dieci minuti» (BINDING per ogni experience con due percorsi)
 Un'ora concessa diventa venti minuti più spesso di quanto si ammetta, e il taglio corto è

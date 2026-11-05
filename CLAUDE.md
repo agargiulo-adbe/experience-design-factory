@@ -308,7 +308,12 @@ Copy must read like a sharp human wrote it, never "AI‑generated". Kill the tel
 - symmetrical `non solo X, ma Y` / "not just X — but Y";
 - empty value‑speak & superlatives ("crea valore", "un'unica visione", "the speed decides who stays");
 - buzzword stacking, over‑parallel bullets, AI connectors ("Inoltre", "In a world where", "It's not just about…").
-Rewrite into natural, concrete sentences with varied rhythm. **Never touch** product/persona names, numbers, sources, claims; **keep each string within ±10% of its length** so the deck audit (height/legibility) doesn't break. Bilingual (Ferrari): EN and IT each idiomatic, never a literal echo; `<T en it>` ALWAYS keeps BOTH languages. Memory: `copy-must-be-human`.
+Rewrite into natural, concrete sentences with varied rhythm. **Never touch** product/persona names, numbers, sources, claims; **keep each string within ±10% of its length** so the deck audit (height/legibility) doesn't break.
+That length bound applies **from Giro 1** of `/umanizza` onward, measured against the text that came
+out of **Giro 0** — where it does **not** apply: there a title that fails to inform, or a sentence
+nobody gets on first hearing, is rewritten at whatever length it takes, because what's needed is the
+right text, not one of the same size. If the new text doesn't fit: cut copy, change the composition
+or split the slide — **never shrink the type**. Bilingual (Ferrari): EN and IT each idiomatic, never a literal echo; `<T en it>` ALWAYS keeps BOTH languages. Memory: `copy-must-be-human`.
 
 ### Il deck parla all'organizzazione, non alla persona in sala (BINDING, ogni experience)
 Chi riceve il deck lo gira ai colleghi: la copia che sopravvive al meeting è quella che
@@ -500,10 +505,18 @@ punti come perno retorico**. Sei volte tanto. Tutti i gate verdi, e il testo peg
 - **Il gate si rilancia finché non esce 0, non una volta.** La seconda passata trova i
   marcatori creati dalla prima: riscrivendo una doppia relativa ne è uscita un'altra,
   spostata di tre parole. Su quel deck sono servite tre passate.
-- **Tre giri, in quest'ordine.** I **segni** (la rubrica, riga per riga) · la **misura**
+- **Quattro giri, in quest'ordine, e il primo decide che cosa dice la slide — non come suona.**
+  Il **messaggio** (**Giro 0**: si riscrive il titolo che funzionerebbe per qualunque cliente, la
+  formula a contrasto, la frase da rileggere due volte, l'affermazione che la slide non dimostra.
+  Qui **non vale il ±10%**: serve il testo giusto, non uno della stessa lunghezza, e se non entra
+  si taglia, si cambia composizione o si divide la slide — mai si rimpicciolisce il tipo. Ciò che
+  cambia una tesi, una promessa o l'ask non si applica da soli: va a chi possiede il contenuto,
+  con la riscrittura pronta) · i **segni** (la rubrica, riga per riga) · la **misura**
   (stilometria per PAGINA — una media per app nasconde il capitolo pesante — più la
   **concentrazione dei telai** di frase, e si **guardano** gli screenshot a 1920) ·
   l'**orecchio** (l'altra lingua, dove si sente meno; i fatti attribuiti a terzi; il tono).
+  **Il ±10% vale dai Giri 1-3**, misurato sul testo uscito dal Giro 0, e il Giro 0 si committa
+  a parte dagli altri tre. Il giro completo sta in **`/umanizza`**.
 - **La concentrazione è il segnale, non il totale.** Su quel deck 33 stringhe su 513
   giravano sulla negazione, e lette una per una erano quasi tutte guadagnate — l'argomento
   del deck *è* «quello che date per fatto non succede». Cinque telai identici dentro lo
