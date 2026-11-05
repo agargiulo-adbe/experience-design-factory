@@ -1,14 +1,23 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-11-03**.
+> Documento di passaggio di consegne. Stato al **2026-11-05**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
 > segnalalo e aggiorna questo file.
 >
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
-> `.md` costa ~34k token su 18 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
+> `.md` costa ~40k token su 21 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> 🧭 **Il 5 novembre `/umanizza` passa a quattro giri** (change log 2026-11-05, Parte 3). Il giro
+> di rielaborazione del testo fatto a mano il 4 novembre sulla Prospettiva Sales aveva una natura
+> sua — non togliere marcatori, ma cambiare **che cosa la slide dice** — e adesso è il **Giro 0,
+> il messaggio**, davanti ai tre esistenti. La conseguenza da sapere prima di riscrivere una
+> copia: il vincolo **±10%** di lunghezza vale **dai Giri 1-3**, misurato sul testo uscito dal
+> Giro 0, dove invece non c'è. Allineati i quattro punti che dicevano «tre giri» e «±10% sempre».
+> 🔒 L'esempio nel comando è **inventato**: quello vero portava nome del cliente, copia di slide e
+> dati della misura, e il repo è pubblico.
 >
 > 🚄 **Il 3 novembre la Prospettiva della Direzione Sales prende superficie — e un rilievo umano
 > salva l'apertura concordata col cliente** (change log 2026-11-03, Parte 3 · §37, Parte 16). Cinque
@@ -277,7 +286,13 @@
 > di media query a 1280×800, le due decisioni di riservatezza) **sono scesi nella Parte 10**: non sono
 > chiusi, ma nessuno di loro decide che cosa si fa questa settimana.
 >
-> ⚠️ **Nota di dimensione** (rimisurata il **3 nov**): il giro del 3 nov ha richiesto **due parti
+> ⚠️ **Nota di dimensione, rimisurata il 5 nov.** Il giro del 5 nov ha aggiunto **una** voce di
+> change log (2,4 KB) e non ha richiesto ribilanciamenti: tutte e 21 le parti sono dentro il
+> contratto. ⚠️ Ma il margine è finito: **Parte 7 a 145 byte dal tetto, Parte 3 a 759, Parte 10 a
+> 780**. La prossima voce in cima al change log **impone** la catena **3 → 4 → 14 → 17 → 20**
+> prima di scrivere, e la Parte 7 non ha più spazio per nulla. Il backlog in Parte 2 ha 1,3 KB.
+>
+> ⚠️ **Nota di dimensione precedente** (rimisurata il **3 nov**): il giro del 3 nov ha richiesto **due parti
 > nuove**, ed è la prima volta che succede in un solo giro. La **Parte 18** era andata a **51,8 KB**
 > — oltre il tetto — perché §43 (BPER) le era cresciuta dentro: §43 è uscita nella **Parte 19**
 > (11,7 KB) e la 18 è scesa a 40,2. Il change log ha richiesto la catena annunciata **3 → 4 → 14 →
@@ -336,12 +351,12 @@
 
 <!-- HANDOVER-SPLIT -->
 
-Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 KB, ≤1800 char per riga). **20 parti.**
+Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 KB, ≤1800 char per riga). **21 parti.**
 **Leggi le parti in ordine.** Se devi decidere cosa fare, la Parte 2 basta: è il backlog P0/P1.
 
 - [Parte 1 — §1–7: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console](./HANDOVER-01.md) — come è fatta la Factory e come si lavora.
 - [Parte 2 — §9 Deploy & segreti · §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso.
-- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **4 nov 2026** (tutto il deck della Prospettiva Sales passa al registro XD, e il giro di revisione sulla voce), poi il **3 nov** (lo strato XD, le figure recuperate, il 96% che torna) e a ritroso fino al **19 ott**. Ribilanciata il 4 nov.
+- [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **5 nov 2026** (`/umanizza` a quattro giri, e il ±10% che vale dal Giro 1), poi il **4 nov** (tutto il deck della Prospettiva Sales passa al registro XD, e il giro di revisione sulla voce), poi il **3 nov** (lo strato XD, le figure recuperate, il 96% che torna) e a ritroso fino al **19 ott**. Ribilanciata il 4 nov.
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal **18 ott 2026** all'indietro. Ribilanciata il 4 nov.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
 - [Parte 6 — §15 hub e parity · §16 Agos · §17 Brand Visibility e de-AI · §18–20 Ferrari /scoping · §22 **core trasversali**](./HANDOVER-06.md) — §22 contiene la regola sugli stili scoped contro il DOM a runtime e, da §22.y, **la clip nascosta da `prefers-reduced-motion`** con la regola sul misurare nelle condizioni di chi guarda.

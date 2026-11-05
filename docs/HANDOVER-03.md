@@ -5,6 +5,44 @@
 
 ## 11. Change log recente
 
+### Change log — `/umanizza` passa a quattro giri: il Giro 0 decide che cosa dice la slide (2026-11-05)
+
+**Un commit** (`de91557`), quattro file di metodo: il comando `.claude/commands/umanizza.md`,
+`CLAUDE.md`, `skills/experience-design/SKILL.md` e
+`skills/experience-design/references/umanizzazione.md`. Nessuna app toccata, nessun gate rilanciato
+(sono documenti).
+
+**Da dove viene.** La rielaborazione del testo della Prospettiva Sales (change log 2026-11-04,
+§37.14) era un giro di natura diversa dai tre dell'umanizzazione: non toglieva marcatori, cambiava
+**che cosa la slide dice** — gli slogan che nascondevano il dato che li reggeva, le frasi da
+rileggere due volte, le cause che la slide non dimostrava. Quel giro adesso ha un nome e sta nel
+comando: **Giro 0 — il messaggio**, e viene prima dei tre. Rifinire il ritmo di una frase che dice
+la cosa sbagliata è lavoro buttato.
+
+**La regola che cambia, ed è il motivo dell'allineamento.** Il vincolo di lunghezza **±10%** era
+scritto in quattro punti come se valesse sempre: ora vale **dai Giri 1-3** e si misura sul testo
+uscito dal Giro 0, dove invece **non c'è** — lì serve il testo giusto, non uno della stessa misura.
+Se il testo nuovo non entra si taglia, si cambia composizione o si divide la slide, **mai si
+rimpicciolisce il tipo** (contratto di leggibilità). Il Giro 0 **si committa a parte** dagli altri
+tre, e ciò che cambia una tesi, una promessa o l'ask **non si applica da soli**: va a chi possiede
+il contenuto, con la riscrittura pronta.
+
+**I quattro punti allineati**, che prima dicevano «tre giri» e «±10%» senza eccezioni: la voce di
+copia (riga 311) e la sezione «Umanizzare è un giro MISURATO» in `CLAUDE.md`; lo **Step 0-bis bis**
+e la voce di copia nella skill `experience-design`; il titolo dei giri, la nuova sezione del Giro 0
+e i vincoli di riscrittura in `references/umanizzazione.md`.
+
+🔒 **L'esempio prima/dopo dentro il comando è inventato, per scelta.** Il sorgente ne portava uno
+vero — nome del cliente, copia di tre slide e i numeri della misura — e il repo è pubblico: è stato
+sostituito da un esempio costruito che porta gli stessi tre difetti (lo slogan che nasconde il dato,
+la frase farraginosa con una causa non dimostrata, il confronto sepolto nel testo). Verificato riga
+per riga: sulle **124 righe aggiunte** non c'è un nome di cliente, una riga di slide o un dato di
+misura. La memoria `umanizzare-e-misurato` è stata riscritta sui quattro giri, e al suo interno è
+stato corretto lo slug morto `intesa-mutuo` → `intesa-esperienza-cliente`.
+
+⚠️ **I commit sono locali su indicazione dell'owner: niente push.** Dopo questo giro di handover
+`main` è **avanti di due** su `origin/main`.
+
 ### Change log — Trenitalia Direzione Sales: tutto il deck passa al registro XD, e un giro di revisione prima della sessione (2026-11-04) → §37.13 (Parte 16)
 
 **Tre commit** (`63ab31c`, `2a86721`, `05bf555`), tutti su `apps/trenitalia-prospettiva-sales`.
