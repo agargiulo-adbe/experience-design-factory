@@ -24,12 +24,30 @@ interface Props {
   /** Slide background tone — sets an AA-contrast trigger colour. */
   tone?: 'onLight' | 'onDark';
   class?: string;
+  /**
+   * A FISARMONICA: due blocchi con lo stesso `gruppo` non stanno mai aperti
+   * insieme — aprendone uno, l'altro si chiude.
+   *
+   * ⚠️ Perché sta nel motore e non nella pelle. Una slide può portare due
+   * drill-down che sono **due viste alternative** della stessa cosa (sulla
+   * Prospettiva Trenitalia: «che cosa succede in ciascuno» e «con che cosa si
+   * fanno», tutti e due sui quattro punti). Aperti insieme sommano le loro
+   * altezze e il contenuto esce dalla slide: misurato il 6 nov 2026 a
+   * 1920×1080 — 105 px oltre il fondo, più uno scroll nascosto, che è il
+   * check `k` ed è HARD.
+   * E il gate NON lo vede: `exp` apre una disclosure per volta e rimisura,
+   * quindi una slide con due blocchi passa tutti e tre i viewport e si rompe
+   * solo in mano a chi li apre tutti e due. L'ha trovata una persona.
+   * La fisarmonica toglie il caso per costruzione, invece di rincorrerlo con
+   * le spaziature.
+   */
+  gruppo?: string;
 }
-const { label = 'Scopri come', title, tone = 'onLight', class: className } = Astro.props;
+const { label = 'Scopri come', title, tone = 'onLight', class: className, gruppo } = Astro.props;
 const regionId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[var(--ink-secondary)]';
 ---
-<div class:list={["hiw", className]} data-hiw>
+<div class:list={["hiw", className]} data-hiw data-hiw-gruppo={gruppo}>
   <button
     type="button"
     class:list={["hiw-trigger inline-flex items-center gap-2 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide underline underline-offset-4 decoration-1 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4", triggerColor]}
@@ -104,7 +122,25 @@ const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[va
         }
       }
 
-      trigger.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!open); });
+      /* La fisarmonica: chi apre avvisa il suo gruppo, e gli altri si
+         chiudono. L'avviso passa da `document` perché i blocchi non si
+         conoscono fra loro, e porta il mittente per non chiudere sé stesso. */
+      const gruppo = root.dataset.hiwGruppo;
+      if (gruppo) {
+        document.addEventListener('hiw:esclusivo', (ev) => {
+          const d = (ev as CustomEvent).detail as { gruppo: string; da: HTMLElement };
+          if (d.gruppo === gruppo && d.da !== root && open) setOpen(false);
+        });
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const prossimo = !open;
+        if (prossimo && gruppo) {
+          document.dispatchEvent(new CustomEvent('hiw:esclusivo', { detail: { gruppo, da: root } }));
+        }
+        setOpen(prossimo);
+      });
       // Esc collapses (no focus trap needed — content is in normal flow)
       trigger.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) { e.preventDefault(); setOpen(false); } });
     });

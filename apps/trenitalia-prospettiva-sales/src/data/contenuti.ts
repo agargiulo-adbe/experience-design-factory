@@ -55,7 +55,7 @@ export interface Stat {
 export const COVER = {
   tag: 'Quattro punti in cui una vendita si perde, prima del treno.',
   /** La riga della slide-firma, identica nei due percorsi. */
-  firma: 'Il passo dopo: mezza giornata sui dati della rete delle agenzie.',
+  firma: 'Si comincia da dove vendete già ogni giorno.',
 };
 
 /* ── Le teste di slide che i due percorsi condividono ─────────────────────
@@ -694,6 +694,42 @@ export const DOMANDE_APERTE = [
    drill-down: in sala si apre se qualcuno chiede, e intanto non appesantisce
    una slide che deve reggere da sola. */
 export type Stato = 'avete' | 'nuovo';
+/**
+ * IL COLORE DI OGNI PRODOTTO — uno stabile, lo stesso ovunque compaia.
+ *
+ * PERCHÉ SERVE. Sulla mappa delle quattro idee gli stessi prodotti tornano in
+ * colonne diverse — Analytics e Target stanno sia nel viaggio sia nelle
+ * agenzie — e leggendo nomi lunghi in quattro colonne quella ricorrenza non si
+ * vede. Il colore la rende immediata: lo stesso punto, nella stessa tinta, in
+ * due colonne lontane.
+ *
+ * ⚠️ IL COLORE STA NEL PUNTO, NON NEL NOME. Colorare i nomi costerebbe tre
+ * cose: entrerebbe in conflitto con il colore che già dice lo stato (già
+ * vostro / si aggiunge), richiederebbe due palette — una per le slide chiare e
+ * una per quelle scure — e a corpo piccolo porterebbe metà dei nomi sotto la
+ * soglia AA, che è il gate `audit:ink`. Il punto è decorazione, il nome resta
+ * inchiostro leggibile, e la distinzione si vede lo stesso.
+ *
+ * Le tinte sono a luminanza media di proposito: devono reggere sia sul fondo
+ * ardesia del drill-down sia sull'avorio della slide di chiusura. I prodotti
+ * della stessa famiglia prendono tinte vicine (Experience Manager e i suoi
+ * Assets), così la parentela si legge senza scriverla.
+ */
+export const COLORE_PEZZO: Record<string, string> = {
+  'Adobe Experience Manager': '#e8743b',
+  'Adobe Experience Manager Assets': '#f0a94b',
+  'LLM Apps, dentro Adobe Experience Manager': '#b05ccc',
+  'Adobe Brand Visibility': '#d9486e',
+  'Adobe Analytics': '#3d8ee0',
+  'Customer Journey Analytics': '#38b6c4',
+  'Adobe Target': '#2fae6b',
+  'Adobe Real-Time CDP Collaboration': '#7a8cf0',
+  'Adobe Creative Cloud, con Firefly': '#e05b9a',
+  'Adobe Workfront': '#c9a227',
+  'Adobe GenStudio for Performance Marketing': '#5fb3a3',
+  'CX Enterprise Coworker': '#8aa0c9',
+};
+
 export interface Pezzo {
   nome: string;
   /** La fonte pubblica del prodotto: il nome in slide è un link verificabile. */

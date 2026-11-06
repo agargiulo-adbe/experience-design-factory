@@ -86,7 +86,7 @@ export const IDEE: Idea[] = [
     occhiello: 'L’idea, in una schermata',
     titolo: 'Una soluzione intera, da cercare una volta sola',
     mock: 'viaggio',
-    cifra: { k: '+11%', v: 'le vendite dalle proposte personalizzate, ordinate dal sistema invece che a mano' },
+    cifra: { k: '+11%', v: 'le vendite di Telmore dalle proposte ordinate dal sistema; la stessa classifica fatta a mano ne portava il 9%' },
     chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
     prova: {
       chi: 'Telmore',

@@ -21,9 +21,30 @@ interface Props {
    * `pnpm --filter <app> audit:deck -- --tv` a 0 HARD, non prima.
    */
   wallScale?: boolean;
+  /**
+   * LO ZOOM DEL DECK — due comandi `−` e `+` nella barra, che ingrandiscono o
+   * rimpiccioliscono TUTTE le slide insieme.
+   *
+   * A che cosa serve davvero: una sala con un proiettore vecchio, uno schermo
+   * piccolo in fondo al tavolo, qualcuno che non ha gli occhiali. Oggi la sola
+   * risposta è lo zoom del browser, che però rompe la safe-area del deck
+   * perché cambia la larghezza del viewport in CSS pixel. Qui invece si scala
+   * la **radice**: crescono insieme il tipo e tutte le misure in `rem`, quindi
+   * la composizione resta quella verificata e cambia solo la scala.
+   *
+   * ⚠️ OPT-IN, e acceso SOLO sulle experience NUOVE (è nel template). Sulle
+   * experience già in sala non si accende: ogni gradino di zoom è una
+   * composizione diversa, e andrebbe ripassata con `audit:deck` prima di
+   * metterla in mano a qualcuno. Chi vuole accenderla su un deck esistente lo
+   * fa dopo aver passato i tre viewport a ogni gradino.
+   *
+   * La scelta si ricorda in `localStorage['edf:zoom']` e sopravvive agli swap
+   * SPA, come il comando del movimento e quello dell'audio.
+   */
+  zoom?: boolean;
   class?: string;
 }
-const { nextHref, prevHref, hint = false, wallScale = false, class: className } = Astro.props;
+const { nextHref, prevHref, hint = false, wallScale = false, zoom = false, class: className } = Astro.props;
 // Lo slug di progetto usato dall'Admin coincide con l'ultimo segmento di `base`
 // in ogni app (verificato su tutte). Ricavarlo qui evita di cablare una prop in
 // ogni BaseLayout: ogni deck, presente e futuro, eredita il gating dei capitoli.
@@ -33,6 +54,7 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
 <div
   data-deck
   data-wall-scale={wallScale ? '' : undefined}
+  data-deck-zoom-on={zoom ? '' : undefined}
   data-deck-next={nextHref}
   data-deck-prev-href={prevHref}
   class:list={["deck fixed inset-0 overflow-hidden bg-[var(--surface-primary)]", className]}
@@ -56,6 +78,21 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
           <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
+      {zoom && (
+        <span class="deck-zoom" data-deck-zoom>
+          <button type="button" data-deck-zoom-giu aria-label="Riduci la dimensione delle slide" class="deck-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+              <path d="M6 12h12" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <span class="deck-zoom-v tabular-nums" data-deck-zoom-val aria-live="polite">100%</span>
+          <button type="button" data-deck-zoom-su aria-label="Ingrandisci la dimensione delle slide" class="deck-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+              <path d="M12 6v12M6 12h12" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </span>
+      )}
       <button type="button" data-deck-fs aria-label="Schermo intero" class="deck-btn ml-1">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
           <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -135,6 +172,16 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
   }
   .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
   .deck-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  /* Lo zoom sta in un gruppo unico — meno · valore · più — perché due bottoni
+     separati in mezzo agli altri si leggono come «indietro/avanti». */
+  .deck-zoom { display: inline-flex; align-items: center; gap: 0.15rem; pointer-events: auto; }
+  .deck-zoom-v {
+    min-width: 3.4ch; text-align: center;
+    font-size: clamp(0.78rem, 0.9vw, 0.95rem); letter-spacing: 0.08em; font-weight: 600;
+    color: var(--ink-tertiary); white-space: nowrap;
+  }
+  [data-deck][data-on-dark] .deck-zoom-v { color: rgba(246, 241, 231, 0.92); } /* core-contract-ignore — chrome fuori dalla slide, come il contatore qui sotto. */
+
   .deck-progress {
     font-size: clamp(1.1rem, 1.4vw, 1.4rem);   /* era max 1.15rem → ora max 1.4rem */
     letter-spacing: 0.2em;
@@ -307,6 +354,7 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
   @media (min-width: 3200px) {
     html:has([data-deck][data-wall-scale]) { font-size: 28px; }
   }
+
 </style>
 
 <!--
@@ -462,6 +510,81 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
       });
     } catch (e) {}
   }
+})();
+</script>
+
+<script is:inline>
+/* ── LO ZOOM DEL DECK ──────────────────────────────────────────────────────
+   Scala la RADICE, non il browser: crescono insieme il tipo e ogni misura in
+   `rem`, quindi la composizione resta quella verificata dall'audit e cambia
+   solo la scala. Lo zoom del browser invece cambia la larghezza del viewport
+   in CSS pixel, e con lei la safe-area del deck.
+   Sei gradini, da 85% a 140%: sotto l'85% si va sotto i minimi del contratto
+   di leggibilità, sopra il 140% le slide dense sbordano. La scelta si ricorda
+   e sopravvive agli swap SPA.
+   ⚠️ `is:inline` e nessun import: deve valere anche prima dell'idratazione,
+   se no all'apertura si vede un salto di scala. */
+(function () {
+  var GRADINI = [0.85, 0.925, 1, 1.075, 1.15, 1.25, 1.4];
+  var CHIAVE = 'edf:zoom';
+  var i = 2;
+  try { var v = parseFloat(localStorage.getItem(CHIAVE) || ''); if (v) { var k = GRADINI.indexOf(v); if (k >= 0) i = k; } } catch (e) {}
+
+  function applica() {
+    var f = GRADINI[i];
+    var html = document.documentElement;
+    /* ⚠️ LA BASE SI LEGGE, NON SI ASSUME. La radice non ha un valore solo: è
+       18px ai viewport di proiezione e sale a 20/24/28 sopra i 2000 con
+       `wallScale`. Scrivere qui una base a memoria cambierebbe la scala anche
+       a zoom 100% — misurato. Quindi: si azzera lo stile in linea, si legge
+       quello che dice davvero il foglio, e lo si moltiplica. A 100% lo stile
+       resta azzerato e il deck è esattamente quello verificato dall'audit. */
+    html.style.fontSize = '';
+    if (f !== 1) {
+      var base = parseFloat(getComputedStyle(html).fontSize) || 18;
+      html.style.fontSize = (base * f) + 'px';
+    }
+    html.style.setProperty('--edf-zoom', String(f));
+    var v = document.querySelector('[data-deck-zoom-val]');
+    if (v) v.textContent = Math.round(f * 100) + '%';
+    var giu = document.querySelector('[data-deck-zoom-giu]');
+    var su = document.querySelector('[data-deck-zoom-su]');
+    if (giu) giu.disabled = i === 0;
+    if (su) su.disabled = i === GRADINI.length - 1;
+    try { localStorage.setItem(CHIAVE, String(f)); } catch (e) {}
+  }
+  function sposta(d) { var n = i + d; if (n < 0 || n >= GRADINI.length) return; i = n; applica(); }
+
+  function aggancia() {
+    if (!document.querySelector('[data-deck-zoom]')) return;
+    var giu = document.querySelector('[data-deck-zoom-giu]');
+    var su = document.querySelector('[data-deck-zoom-su]');
+    if (giu && !giu.dataset.pronto) { giu.dataset.pronto = '1'; giu.addEventListener('click', function (e) { e.stopPropagation(); sposta(-1); }); }
+    if (su && !su.dataset.pronto) { su.dataset.pronto = '1'; su.addEventListener('click', function (e) { e.stopPropagation(); sposta(1); }); }
+    applica();
+  }
+  /* Le scorciatoie da tastiera di chi presenta. `+`/`-` non collidono con i
+     comandi del deck (frecce, spazio, F) e sono quelle che la mano cerca. */
+  document.addEventListener('keydown', function (e) {
+    if (!document.querySelector('[data-deck-zoom]')) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.key === '+' || e.key === '=') { e.preventDefault(); sposta(1); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); sposta(-1); }
+    else if (e.key === '0') { e.preventDefault(); i = 2; applica(); }
+  });
+  /* Il viewport cambia la base (una finestra trascinata su un proiettore, la
+     rotazione di un tablet): la base si rilegge e lo zoom si riapplica. */
+  var attesa;
+  window.addEventListener('resize', function () {
+    if (!document.querySelector('[data-deck-zoom]')) return;
+    clearTimeout(attesa);
+    attesa = setTimeout(applica, 150);
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', aggancia);
+  else aggancia();
+  document.addEventListener('astro:after-swap', aggancia);
 })();
 </script>
 

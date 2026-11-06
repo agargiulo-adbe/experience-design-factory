@@ -882,10 +882,32 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    cifra galleggia a metà di un mockup alto. */
 .tp-idea {
   display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
-  gap: clamp(1.1rem, 2.2vw, 2.6rem); align-items: start; width: 100%;
+  gap: clamp(1.1rem, 2.2vw, 2.6rem); align-items: stretch; width: 100%;
 }
-.tp-idea-sx { min-width: 0; }
-.tp-idea-dx { min-width: 0; display: grid; gap: 0.7rem; align-content: start; }
+/* ⚠️ `stretch` e non `start`: con `start` la colonna del mockup restava
+   incollata in alto e quella dei blocchi scendeva molto più giù — i due lati
+   non chiudevano alla stessa quota e la slide pendeva. Ora le due colonne
+   hanno la stessa altezza e il mockup si centra dentro la sua, così lo spazio
+   è coperto in modo simmetrico qualunque sia la lunghezza della colonna
+   destra. */
+.tp-idea-sx { min-width: 0; display: grid; align-content: center; }
+.tp-idea-dx { min-width: 0; display: grid; gap: 1.15rem; align-content: center; }
+
+/* ── LA FRECCIA IN GIÙ FRA I BLOCCHI ──────────────────────────────────────
+   I blocchi della colonna destra entrano uno per volta (`data-reveal` con i
+   suoi ritardi) e si leggono in sequenza: la frase, la cifra, che cosa serve
+   saper fare, con che cosa, la referenza. La freccia dice che è una sequenza
+   e non un elenco — e compare INSIEME al blocco che la segue, perché è un
+   `::before` di quel blocco e ne eredita l'animazione: nessun JavaScript in
+   più, e con «Riduci movimento» resta ferma e visibile come tutto il resto. */
+.tp-idea-dx > * + * { position: relative; }
+.tp-idea-dx > * + *::before {
+  content: ''; position: absolute; left: 0.12rem; top: -0.82rem;
+  width: 0.46rem; height: 0.46rem;
+  border-right: 2px solid var(--ink-accent);
+  border-bottom: 2px solid var(--ink-accent);
+  transform: rotate(45deg);
+}
 /* Dentro la colonna stretta, cifra e referenza partono dal bordo della
    colonna e non dalla pagina: è il check `m`, ed è HARD. */
 .tp-idea-dx .xd-num { margin-top: 0; padding-top: 0.75rem; }
@@ -1311,10 +1333,22 @@ html[data-hiw-open] .edf-madewith {
    sei nomi colorati diventano un muro, e il verde su fondo chiaro scende
    sotto soglia a corpo piccolo. Il colore resta all'intestazione e alla
    barra, il nome prende l'inchiostro del testo. */
+/* Due colonne: il punto del prodotto, poi il nome. Il punto tiene la sua
+   colonna, quindi i nomi restano incolonnati anche quando uno va a capo —
+   che è metà della leggibilità di questo blocco. */
 .tp-pz-v {
-  margin-inline: 0; min-width: 0; display: grid; gap: 0.05rem;
+  margin-inline: 0; min-width: 0;
+  display: grid; grid-template-columns: 0.62em minmax(0, 1fr); gap: 0.05rem 0.5rem;
+  align-items: start;
   font-size: clamp(0.86rem, 0.74vw, 1.5rem); line-height: 1.32;
   color: var(--ink-body);
+}
+/* IL COLORE DEL PRODOTTO sta qui e non nel nome: il nome deve restare
+   inchiostro leggibile su fondo chiaro e su fondo scuro, e il colore che
+   qualifica lo STATO è già quello del gruppo. Dettaglio in `contenuti.ts`. */
+.tp-pz-p {
+  width: 0.62em; height: 0.62em; margin-top: 0.42em; border-radius: 50%;
+  background: var(--c); flex: none;
 }
 .tp-pz-n { font-weight: 600; overflow-wrap: anywhere; color: var(--ink-body); }
 /* ⚠️ Il link eredita `currentColor` dal gruppo e uscirebbe verde o rosso: sei
@@ -1324,13 +1358,25 @@ html[data-hiw-open] .edf-madewith {
    di base sui link. */
 .tp-pz .tp-pz-n a { color: var(--ink-body); text-decoration-color: var(--line-subtle); }
 .tp-pz .tp-pz-n a:hover { text-decoration-color: var(--ink-accent); }
-.tp-pz-a { font-size: 0.88em; color: var(--ink-note); overflow-wrap: anywhere; }
+.tp-pz-a { grid-column: 2; font-size: 0.88em; color: var(--ink-note); overflow-wrap: anywhere; }
 @media (max-height: 900px) {
   .tp-pz { gap: 0.45rem; }
   .tp-pz-g { gap: 0.12rem; }
 }
 /* A 1280×800 lo strato aperto arriva a filo dei comandi del deck: qui si
    recuperano i pixel sulle spaziature, mai sul corpo del testo. */
+/* Sulla slide dell'idea la colonna destra porta cinque blocchi: frase, cifra,
+   capability, prodotti e referenza. Coi prodotti raggruppati è cresciuta, e a
+   1280×800 sul capitolo del contenuto — che ha sei prodotti, il massimo — il
+   titolo usciva dalla safe-area in alto (check `c`, HARD, misurato il 6 nov).
+   Qui si recuperano i pixel sulle spaziature e sulle frecce, mai sul corpo. */
+@media (max-height: 860px) {
+  .tp-idea-dx { gap: 0.8rem; }
+  .tp-idea-dx > * + *::before { top: -0.6rem; }
+  .tp-idea-dx .tp-pz { gap: 0.3rem; }
+  .tp-idea-dx .tp-pz-g { gap: 0.08rem; }
+  .tp-idea-dx .tp-pz-l { gap: 0.08rem; }
+}
 @media (max-height: 820px) {
   .tp-pz { gap: 0.32rem; }
   .tp-pz-l { gap: 0.1rem; }

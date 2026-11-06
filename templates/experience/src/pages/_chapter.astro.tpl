@@ -52,7 +52,7 @@ const ancore = [
     <Navigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))} zoom>
 
     <!-- ── Cover del capitolo ────────────────────────────────────────────── -->
     <Slide id="slide-cover" bg="inverse" align="center">
