@@ -11,6 +11,7 @@
  * minuti». Se una cifra cambia, cambia in un posto solo.
  */
 import { SOURCES, type Fonte } from './sources';
+import { SERVE, type Pezzo } from './contenuti';
 
 export interface Prova {
   /** Il nome di chi l'ha fatto. Mai un logo ricostruito a mano. */
@@ -42,6 +43,19 @@ export interface Idea {
   /** La riga di fonte, SENZA il link della referenza: quello lo compone la
    *  slide da `prova.fonte`, così l'indirizzo sta in un posto solo. */
   fonte: string;
+  /** ── IL LIVELLO DI MEZZO ──────────────────────────────────────────────
+   *  Che cosa Adobe sa fare perché quell'idea stia in piedi. In termini di
+   *  business, non di prodotto: è la richiesta del dry run del 5 nov 2026 —
+   *  «deve restare evidente che quelle sono le idee, quelle le capability e
+   *  quelli i prodotti». Una o due per idea, mai tre: è un ponte, non un
+   *  elenco, e il rilievo che l'ha generato era «dove sta Adobe? Non l'ho
+   *  vista: siamo troppo sullo sfondo». */
+  capability: string[];
+  /** ── IL LIVELLO DI SOTTO ──────────────────────────────────────────────
+   *  I gruppi di `SERVE` che servono questa idea. Si REFERENZIANO, non si
+   *  ricopiano: gli stati dei prodotti sono letti dal contratto e vivono in
+   *  un posto solo (`contenuti.ts`). Due gruppi dove l'idea ha due facce. */
+  gruppi: (keyof typeof SERVE)[];
 }
 
 export const IDEE: Idea[] = [
@@ -63,6 +77,8 @@ export const IDEE: Idea[] = [
        e non misura a chi torni il prodotto. Quello che mostra davvero è il link: su
        ChatGPT i link sono «prenota con Trenitalia». */
     chiusa: 'Su ChatGPT il link dice «prenota con Trenitalia», e manda a\u00a0comprare da voi invece che da un rivenditore.',
+    capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
+    gruppi: ['visibilita', 'canale'],
     fonte: `${SOURCES.misura.label}, su 8 domande. Possiamo ripeterla insieme. La schermata è un esempio nostro, non una risposta registrata.`,
   },
   {
@@ -78,6 +94,8 @@ export const IDEE: Idea[] = [
       fatto: '+11% le vendite dalle proposte personalizzate e +25% le vendite incrociate ai già clienti, con la stessa vetrina di prima.',
       fonte: SOURCES.telmore,
     },
+    capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
+    gruppi: ['acquisto', 'collaborazione'],
     fonte: 'L’itinerario in schermata è un esempio nostro, non un prodotto a listino.',
   },
   {
@@ -93,6 +111,8 @@ export const IDEE: Idea[] = [
       fatto: '530 offerte al retail e 800 alle PMI con oltre 4.400 asset creativi, e il tempo di uscita sceso da giorni a minuti.',
       fonte: SOURCES.santander,
     },
+    capability: ['Produrre le varianti su scala, governate'],
+    gruppi: ['contenuto'],
     fonte: 'La validazione automatica di marchio oggi lavora in inglese: la revisione umana su ogni lingua resta, e va messa a piano.',
   },
   {
@@ -107,8 +127,27 @@ export const IDEE: Idea[] = [
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
     chiusa: 'La proposta e il materiale arrivano già pronti al banco: l’agenzia smette di costruirseli.',
+    capability: ['Misurare il venduto per rete', 'Combinare il canale con i digitali'],
+    gruppi: ['rete'],
     fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi.`,
   },
 ];
 
 export const idea = (slug: Idea['slug']) => IDEE.find((i) => i.slug === slug)!;
+
+/** I prodotti di un'idea, presi dai suoi gruppi in `SERVE` e **deduplicati per
+ *  nome**: due facce della stessa idea citano spesso lo stesso prodotto — AEM
+ *  sta sia nella visibilità sia nel canale — e in slide va nominato una volta.
+ *  Vince la prima occorrenza, cioè quella del gruppo principale. */
+export function pezziDi(slug: Idea['slug']): Pezzo[] {
+  const visti = new Set<string>();
+  const out: Pezzo[] = [];
+  for (const g of idea(slug).gruppi) {
+    for (const pz of SERVE[g]) {
+      if (visti.has(pz.nome)) continue;
+      visti.add(pz.nome);
+      out.push(pz);
+    }
+  }
+  return out;
+}

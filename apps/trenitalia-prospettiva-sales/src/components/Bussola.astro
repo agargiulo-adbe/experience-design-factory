@@ -1,0 +1,47 @@
+---
+/**
+ * LA BUSSOLA DELLE QUATTRO IDEE — «siamo qui», sul divisore di capitolo.
+ *
+ * Richiesta del dry run del 5 novembre 2026: portare le quattro idee dentro i
+ * capitoli «come se fosse una mappa, in modo da avere sempre un riferimento di
+ * che cosa si sta parlando». Un deck di sette capitoli presentato in un'ora
+ * perde l'orientamento proprio dove serve — dentro il terzo caso d'uso, quando
+ * chi ascolta non ricorda più quale dei quattro punti si stia aprendo.
+ *
+ * ⚠️ STA SUL DIVISORE, non sulle slide di contenuto. Il divisore è il respiro:
+ * è il momento in cui si cambia capitolo, cioè esattamente quando serve sapere
+ * dove si è. Sulle slide di contenuto sarebbe un quinto blocco che compete col
+ * titolo — e `slide-idea` porta già mockup, cifra, capability, prodotti e
+ * referenza: una riga in più la fa sbordare a 1280.
+ *
+ * ⚠️ È UNA MAPPA, NON UN ELENCO: quattro etichette corte e nient'altro. Le
+ * capability e i prodotti stanno sulla mappa intera (`MappaIdee.astro`), che si
+ * proietta due volte — quando le idee si annunciano e quando si tirano le somme.
+ *
+ * Niente pastiglia piena sull'idea corrente: l'inchiostro d'accento su fondo
+ * scuro è già misurato da `audit:ink`, il bianco su rosso al corpo piccolo
+ * starebbe al limite. L'accento più il punto pieno bastano a dire «qui».
+ */
+import { IDEE } from '../data/idee';
+import { CHAPTERS } from '../data/chapters';
+
+interface Props {
+  /** Il capitolo che si sta aprendo. */
+  qui: string;
+}
+const { qui } = Astro.props as Props;
+const voci = IDEE.map((i) => {
+  const c = CHAPTERS.find((x) => x.slug === i.slug)!;
+  return { slug: i.slug, num: c.num, nome: c.short };
+});
+---
+<div class="tp-bus" data-reveal data-reveal-delay="0.18">
+  <p class="tp-bus-k">Le quattro idee</p>
+  <ol class="tp-bus-l">
+    {voci.map((v) => (
+      <li class="tp-bus-i" data-qui={v.slug === qui ? '' : null}>
+        <span class="tp-bus-n">{v.num}</span><span class="tp-bus-t">{v.nome}</span>
+      </li>
+    ))}
+  </ol>
+</div>

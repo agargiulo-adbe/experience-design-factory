@@ -12,11 +12,13 @@
  */
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import MockIdea from './MockIdea.astro';
-import { idea as trovaIdea, type Idea } from '../data/idee';
+import { idea as trovaIdea, pezziDi, type Idea } from '../data/idee';
+import CheServe from './CheServe.astro';
 
 interface Props { slug: Idea['slug']; }
 const { slug } = Astro.props as Props;
 const i = trovaIdea(slug);
+const pezzi = pezziDi(slug);
 ---
 <Slide id="slide-idea" bg="primary" align="left">
   <div slot="backdrop" class="xd-bg-piano"></div>
@@ -46,6 +48,25 @@ const i = trovaIdea(slug);
             </li>
           ))}
         </ul>
+
+        {/* ── I TRE LIVELLI ────────────────────────────────────────────────
+            Il rilievo del dry run del 5 nov: «parliamo tantissimo di quello
+            che loro hanno dichiarato, ma dove sta Adobe? Non l'ho vista.
+            Siamo troppo sullo sfondo». Era vero e si misurava: i nomi dei
+            prodotti stavano tutti e sei dentro `slot="nota"` del drill-down,
+            cioè nello strato della profondità, mentre quella stanza li vuole
+            in quello che si proietta.
+            Qui l'idea (il titolo) porta sotto di sé le CAPABILITY — che cosa
+            bisogna saper fare — e i PRODOTTI con la pastiglia che dice se
+            sono già loro. Tre livelli, una sola lettura. */}
+        <div class="tp-liv" data-reveal data-reveal-delay="0.24">
+          <p class="tp-liv-k">Che cosa serve saper fare</p>
+          <ul class="tp-liv-cap">
+            {i.capability.map((c) => <li>{c}</li>)}
+          </ul>
+          <p class="tp-liv-k">Con che cosa</p>
+          <CheServe pezzi={pezzi} />
+        </div>
 
         {i.prova && (
           <div class="xd-ref" style="--cols:1" data-reveal data-reveal-delay="0.28">

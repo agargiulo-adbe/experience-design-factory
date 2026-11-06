@@ -51,6 +51,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
       agenda: 'Dove si perdono le vendite' },
     { id: 'slide-mappa', label: 'La mappa · quattro punti',
       agenda: 'I quattro punti, in ordine' },
+    { id: 'slide-contributi', label: 'Le quattro idee · capability e prodotti',
+      agenda: 'E che cosa ci mettiamo noi' },
   ]},
   { slug: 'ricerca', label: 'Quando il viaggio si cerca con un assistente (03)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
@@ -113,6 +115,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'rotta', label: 'La rotta (07)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
+    { id: 'slide-ripresa', label: 'La ripresa · le quattro idee, e la domanda',
+      agenda: 'Da dove conviene cominciare' },
     { id: 'slide-passo', label: 'Il passo che chiediamo',
       agenda: 'Il passo che chiediamo' },
     { id: 'slide-domande', label: 'Le quattro domande aperte',

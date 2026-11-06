@@ -1,0 +1,43 @@
+---
+/**
+ * LA MAPPA DELLE QUATTRO IDEE — idea → capability → prodotti, su una pagina.
+ *
+ * PERCHÉ ESISTE. Dal dry run del 5 novembre 2026, ed è il rilievo che la
+ * riunione ha ripetuto tre volte: «parliamo tantissimo e bene di quello che
+ * loro hanno dichiarato, ma parliamo poco di noi — dove sta Adobe? Non l'ho
+ * vista, siamo troppo sullo sfondo». La richiesta è un cappello che si vede
+ * all'inizio e si richiude alla fine: queste sono le idee, queste le cose che
+ * bisogna saper fare, questi i prodotti — e quali di quei prodotti sono già
+ * loro.
+ *
+ * ⚠️ NON è un listino. I prodotti arrivano da `SERVE` in `contenuti.ts`, cioè
+ * dalla lettura del contratto, e la pastiglia dice soltanto `già vostro` o
+ * `si aggiunge`: nessun importo, nessuna quantità, nessuna scadenza. Il terzo
+ * stato — «prezzo già fissato» — è uscito il 5 novembre perché l'accordo si
+ * rinegozia e un prezzo di oggi non è un impegno per domani.
+ *
+ * In chiusura la stessa mappa torna con una TESTA diversa — annuncia la prima
+ * volta, chiede la seconda. La differenza sta nella pagina, non qui: una
+ * ripetizione identica rende meno di una ripresa.
+ */
+import { IDEE, pezziDi } from '../data/idee';
+import { CHAPTERS } from '../data/chapters';
+import CheServe from './CheServe.astro';
+
+const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
+---
+<ol class="tp-mi" data-stagger="0.08">
+  {IDEE.map((i) => {
+    const ch = corto(i.slug);
+    return (
+      <li class="tp-mi-i">
+        <p class="tp-mi-n">{ch.num}</p>
+        <p class="tp-mi-t">{ch.short}</p>
+        <ul class="tp-mi-cap">
+          {i.capability.map((c) => <li>{c}</li>)}
+        </ul>
+        <CheServe pezzi={pezziDi(i.slug)} />
+      </li>
+    );
+  })}
+</ol>

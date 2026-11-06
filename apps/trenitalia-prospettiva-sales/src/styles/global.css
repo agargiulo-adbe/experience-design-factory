@@ -685,7 +685,6 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .tp-serve-n[data-stato='avete']::before { color: var(--ink-accent-2); }
 /* «prezzo già fissato» è una terza cosa, e si vede: non è loro oggi, ma non è
    nemmeno da negoziare. Prende l'accento del marchio, che qui è inchiostro. */
-.tp-serve-n[data-stato='prezzo']::before { color: var(--ink-accent); }
 .tp-serve-n[data-stato='nuovo']::before { color: var(--ink-note); }
 /* La legenda va a capo da sé e resta nota: è la chiave di lettura, non il contenuto. */
 .tp-serve-leg { display: block; font-size: 0.86em; opacity: 0.85; margin-top: 0.15rem; }
@@ -1215,4 +1214,116 @@ html[data-hiw-open] .edf-madewith {
 @media (prefers-reduced-motion: reduce) {
   html[data-hiw-open] .edf-cobrand--chrome,
   html[data-hiw-open] .edf-madewith { transition: none; }
+}
+
+/* ── I tre livelli sulla slide dell'idea ─────────────────────────────────
+   Idea (il titolo) → capability → prodotti. Nasce dal dry run del 5 nov:
+   i nomi dei prodotti stavano tutti dentro il drill-down, e in sala Adobe
+   non si vedeva. Qui salgono nello strato che si proietta, piccoli ma
+   presenti: la pastiglia dice se un prodotto è già loro o si aggiunge. */
+.tp-liv { display: grid; gap: 0.3rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); }
+.tp-liv-k {
+  margin: 0; max-width: none; font-size: clamp(0.74rem, 0.6vw, 1.32rem);
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note);
+}
+.tp-liv-k + .tp-liv-k { margin-top: 0.45rem; }
+.tp-liv-cap { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.22rem; }
+.tp-liv-cap li {
+  margin-inline: 0; padding-left: 0.85rem; position: relative;
+  font-size: clamp(0.9rem, 0.78vw, 1.6rem); line-height: 1.36;
+  font-weight: 700; color: var(--ink-primary);
+}
+.tp-liv-cap li::before {
+  content: ''; position: absolute; left: 0; top: 0.52em;
+  width: 0.32rem; height: 0.32rem; border-radius: 50%; background: var(--accent-primary);
+}
+@media (max-height: 900px) { .tp-liv { padding-top: 0.5rem; gap: 0.22rem; } }
+
+/* ── La mappa delle quattro idee ─────────────────────────────────────────
+   Quattro colonne: numero, idea, che cosa serve saper fare, con che cosa.
+   Apre il percorso e lo richiude. Le pastiglie vanno a capo dentro la
+   colonna — in quattro colonne strette un elenco in riga si spezza male. */
+.tp-mi {
+  list-style: none; margin: 0; padding: 0; width: 100%;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(1rem, 1.8vw, 2.2rem);
+}
+.tp-mi-i {
+  min-width: 0; margin-inline: 0; display: grid; gap: 0.35rem; align-content: start;
+  padding-top: 0.8rem; border-top: 3px solid var(--accent-primary);
+}
+.tp-mi-n {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.8rem, 0.68vw, 1.44rem); letter-spacing: 0.1em;
+  color: var(--ink-accent); font-variant-numeric: tabular-nums;
+}
+.tp-mi-t {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.05rem, 0.98vw, 1.95rem); line-height: 1.22;
+  color: var(--ink-primary); text-wrap: balance;
+}
+.tp-mi-cap { list-style: none; margin: 0.15rem 0 0.35rem; padding: 0; display: grid; gap: 0.2rem; }
+.tp-mi-cap li {
+  margin-inline: 0; font-size: clamp(0.86rem, 0.74vw, 1.52rem); line-height: 1.34;
+  color: var(--ink-body);
+}
+/* Dentro la mappa le pastiglie si impilano: la riga unica è pensata per una
+   colonna larga, qui ne ha un quarto. */
+/* ⚠️ `.tp-serve-n` nasce `white-space: nowrap`, ed è giusto nella riga unica
+   per cui è stato scritto: il nome di un prodotto non si spezza a metà. In
+   una colonna larga un quarto di pagina, però, quel nowrap faceva **uscire i
+   nomi dalla colonna e sovrapporli a quella accanto** — testo su testo, che
+   è il check `e` ed è HARD. Qui la pastiglia e il nome diventano una riga
+   che può andare a capo; il nome resta intero. */
+.tp-mi .tp-serve { display: grid; gap: 0.3rem; margin: 0; min-width: 0; }
+.tp-mi .tp-serve-sep { display: none; }
+.tp-mi .tp-serve-leg { display: none; }
+.tp-mi .tp-serve-n {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.4rem;
+  min-width: 0; white-space: normal; line-height: 1.3;
+  font-size: clamp(0.84rem, 0.72vw, 1.48rem);
+}
+.tp-mi .tp-serve-n::before { flex: none; }
+.tp-mi .tp-serve-n a { overflow-wrap: anywhere; }
+.tp-mi-cap li { overflow-wrap: anywhere; }
+@media (max-height: 900px) { .tp-mi-i { padding-top: 0.55rem; gap: 0.25rem; } }
+@media (max-width: 900px) { .tp-mi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; } }
+
+/* ── LA BUSSOLA DELLE QUATTRO IDEE ────────────────────────────────────────
+   Il «siamo qui» sul divisore di capitolo. Vive nella colonna di sinistra,
+   sotto il titolo, e si tiene nella metà che la fotografia non occupa: lo
+   sfondo del divisore porta la foto da 40% a 68%, quindi la bussola si cappa
+   a 30ch e non ci finisce sopra.
+   Il bordo sinistro è quello del titolo e del numero di capitolo — il check
+   `m` misura i blocchi a bandiera di primo livello, e un elenco rientrato
+   sarebbe una riga storta. */
+.tp-bus { display: grid; gap: 0.5rem; margin: 0; max-width: 34rem; min-width: 0; }
+.tp-bus-k {
+  margin: 0; max-width: none; font-size: clamp(0.78rem, 0.62vw, 1.4rem);
+  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+.tp-bus-l {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.95rem;
+}
+.tp-bus-i {
+  display: flex; align-items: baseline; gap: 0.38rem; min-width: 0;
+  font-size: clamp(0.9rem, 0.76vw, 1.6rem); line-height: 1.3;
+  color: var(--ink-tertiary);
+}
+.tp-bus-n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.tp-bus-t { overflow-wrap: anywhere; }
+/* L'idea che si sta aprendo: accento, grassetto e un punto pieno davanti.
+   Il punto è un `::before` e non un carattere nel markup: un glifo dentro il
+   testo entrerebbe nelle misure degli a capo. */
+.tp-bus-i[data-qui] { color: var(--ink-accent); font-weight: 700; }
+.tp-bus-i[data-qui]::before {
+  content: ''; flex: none; align-self: center;
+  width: 0.42em; height: 0.42em; border-radius: 50%;
+  background: var(--accent-primary);
+}
+@media (max-height: 820px) {
+  .tp-bus { gap: 0.35rem; }
+  .tp-bus-l { gap: 0.25rem 0.8rem; }
 }

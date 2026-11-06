@@ -21,6 +21,7 @@
  * testo. Il difetto non si vede aprendo la pagina: si vede misurando i pixel.
  */
 import { agendaCapitolo } from '../data/slides';
+import Bussola from './Bussola.astro';
 
 interface Props {
   num: string;
@@ -29,8 +30,13 @@ interface Props {
   punto: string;
   /** Lo slug, per generare l'agenda dal registro delle slide. */
   slug: string;
+  /** Mostra la bussola delle quattro idee con questo capitolo acceso. Si passa
+   *  solo sui quattro capitoli che SONO un'idea: sull'apertura e sulla domanda
+   *  le idee non sono ancora state dette, e anticiparle sul divisore toglie
+   *  alla slide che le annuncia il suo mestiere. */
+  bussola?: boolean;
 }
-const { num, titolo, punto, slug } = Astro.props as Props;
+const { num, titolo, punto, slug, bussola = false } = Astro.props as Props;
 /** ⚠️ L'agenda è GENERATA, mai scritta a mano: le agendine scritte a mano sono
  *  divergite dal contenuto senza che nessun gate se ne accorgesse. Il perché
  *  sta in `src/data/slides.ts`. Qui sta nel pannello, sotto il punto: il
@@ -41,6 +47,7 @@ const voci = agendaCapitolo(slug);
   <div class="xd-div-sx">
     <p class="xd-div-num">Capitolo {num}</p>
     <h2 class="xd-div-t">{titolo}</h2>
+    {bussola && <Bussola qui={slug} />}
   </div>
   <div class="xd-div-dx" data-reveal data-reveal-delay="0.12">
     <p class="xd-div-oc">Il punto</p>

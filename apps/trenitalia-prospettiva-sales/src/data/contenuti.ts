@@ -654,12 +654,12 @@ export const DOMANDE_APERTE = [
    l'impressione che si debba comprare tutto da capo. Qui si dice il contrario,
    ed è vero — ed è vero più di quanto pensassimo prima di leggere il contratto.
 
-   TRE STATI, e non due: la terza riga esiste perché l'accordo quadro ha una
-   sezione che fissa il prezzo di prodotti NON ancora acquistati. Dire «si
-   aggiunge» di una cosa che ha già il suo prezzo nel loro contratto sarebbe
-   falso in difetto.
+   DUE STATI. Ce n'era un terzo — «prezzo già fissato nell'accordo quadro» —
+   e il 5 nov 2026 è uscito su indicazione di chi tiene il conto: l'accordo si
+   rinegozia l'anno prossimo, quindi portare in sala un prezzo di oggi come se
+   valesse domani è un impegno che non possiamo prendere. Chi lo usava era
+   **solo Workfront**, che torna dove sta per contratto: non licenziato.
    · `avete`  — licenziato oggi: qui si estende a un uso nuovo;
-   · `prezzo` — non licenziato, ma con prezzo già fissato nell'accordo quadro;
    · `nuovo`  — non c'è, e va aggiunto.
 
    LETTO SUL CONTRATTO, non a memoria. La copia sta nella cartella d'account,
@@ -694,7 +694,7 @@ export const DOMANDE_APERTE = [
    Il blocco vive DENTRO «Che cosa serve, concretamente», cioè dietro il
    drill-down: in sala si apre se qualcuno chiede, e intanto non appesantisce
    una slide che deve reggere da sola. */
-export type Stato = 'avete' | 'prezzo' | 'nuovo';
+export type Stato = 'avete' | 'nuovo';
 export interface Pezzo {
   nome: string;
   /** La fonte pubblica del prodotto: il nome in slide è un link verificabile. */
@@ -706,7 +706,6 @@ export interface Pezzo {
 
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
   avete: { eti: 'già vostro', spiega: 'nel contratto' },
-  prezzo: { eti: 'prezzo già fissato', spiega: 'nell\u2019accordo quadro' },
   nuovo: { eti: 'si aggiunge', spiega: 'oggi non c\u2019\u00e8' },
 };
 
@@ -720,7 +719,18 @@ export const SERVE: Record<
   ],
   canale: [
     { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'la base su cui si innesta' },
-    { nome: 'LLM Apps', fonte: 'llmApps', stato: 'nuovo', a: 'l\u2019offerta dentro l\u2019assistente' },
+    /* ⚠️ VERIFICATO ALLA FONTE il 5 nov 2026, e il deck sbagliava due volte.
+       Il comunicato Adobe del 20 aprile dice, verbatim: «LLM Apps (**a new
+       capability in AEM**) will enable brands to build branded experiences
+       that run directly within LLM interfaces». Quindi (a) non è un prodotto
+       a sé ma una capability di AEM, e il nome lo dice; (b) la riga diceva
+       «l'offerta dentro l'assistente», e nello stesso comunicato quel vettore
+       — «Reach» — contiene anche Brand Concierge, cioè il checkout dentro la
+       conversazione: territorio presidiato da un accordo che il cliente ha
+       dichiarato pubblicamente, e che non possiamo nominare né sfiorare.
+       Ora la riga parla di PRESENZA DI MARCA, non di vendita. */
+    { nome: 'LLM Apps, dentro Adobe Experience Manager', fonte: 'llmApps', stato: 'nuovo',
+      a: 'la presenza di marca dentro le interfacce AI: la base AEM c\u2019\u00e8 gi\u00e0' },
   ],
   acquisto: [
     { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il punto di partenza' },
@@ -734,7 +744,7 @@ export const SERVE: Record<
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
     { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
-    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'prezzo', a: 'chi chiede, chi produce, chi approva' },
+    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'chi chiede, chi produce, chi approva' },
     { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'il lavoro agentico sulla produzione' },
   ],
