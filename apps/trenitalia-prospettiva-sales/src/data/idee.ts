@@ -77,14 +77,14 @@ export const IDEE: Idea[] = [
        e non misura a chi torni il prodotto. Quello che mostra davvero è il link: su
        ChatGPT i link sono «prenota con Trenitalia». */
     chiusa: 'Su ChatGPT il link dice «prenota con Trenitalia», e manda a\u00a0comprare da voi invece che da un rivenditore.',
-    capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
+    capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
     gruppi: ['visibilita', 'canale'],
     fonte: `${SOURCES.misura.label}, su 8 domande. Possiamo ripeterla insieme. La schermata è un esempio nostro, non una risposta registrata.`,
   },
   {
     slug: 'viaggio',
     occhiello: 'L’idea, in una schermata',
-    titolo: 'Una soluzione intera, da cercare una volta sola',
+    titolo: 'Una soluzione intera, da cercare una volta sola',
     mock: 'viaggio',
     cifra: { k: '+11%', v: 'le vendite dalle proposte personalizzate, ordinate dal sistema invece che a mano' },
     chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
@@ -94,7 +94,7 @@ export const IDEE: Idea[] = [
       fatto: '+11% le vendite dalle proposte personalizzate e +25% le vendite incrociate ai già clienti, con la stessa vetrina di prima.',
       fonte: SOURCES.telmore,
     },
-    capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
+    capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
     gruppi: ['acquisto', 'collaborazione'],
     fonte: 'L’itinerario in schermata è un esempio nostro, non un prodotto a listino.',
   },
@@ -104,7 +104,7 @@ export const IDEE: Idea[] = [
     titolo: 'Un master approvato, quattro mercati',
     mock: 'contenuto',
     cifra: { k: 'da giorni a minuti', v: 'il tempo fra la campagna approvata e la variante pubblicata, su 4.400 asset creativi' },
-    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
+    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
     prova: {
       chi: 'Santander Brasil',
       settore: 'banca, dieci mercati nel gruppo',
@@ -118,15 +118,15 @@ export const IDEE: Idea[] = [
   {
     slug: 'rete',
     occhiello: 'L’idea, in una schermata',
-    titolo: 'La rete vende meglio se ha in mano la stessa cosa del sito',
+    titolo: 'La stessa proposta del sito arriva al banco dell’agenzia',
     mock: 'rete',
-    cifra: { k: 'oltre 70.000', v: 'i punti vendita fuori dalle biglietterie sul Regionale; il dato è del 2014 e va riconfermato' },
+    cifra: { k: 'oltre 70.000', v: 'i punti vendita fuori dalle biglietterie sul Regionale; il dato è del 2014 e va riconfermato' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
-    chiusa: 'La proposta e il materiale arrivano già pronti al banco: l’agenzia smette di costruirseli.',
+    chiusa: 'L’agenzia smette di costruirsi le proposte a mano, e vende quello che il sito sta già spingendo.',
     capability: ['Misurare il venduto per rete', 'Combinare il canale con i digitali'],
     gruppi: ['rete'],
     fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi.`,

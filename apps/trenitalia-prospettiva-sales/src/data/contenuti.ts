@@ -122,7 +122,7 @@ export const MERCATO = {
   eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025',
   /** Le due zone della figura. Il 96% è SUO, e l'etichetta lo attribuisce
    *  senza aprire un blocco di citazione: in XD le parole sono poche. */
-  quota: { n: '4%', l: 'tre quarti di chi arriva dall’estero si ferma qui' },
+  quota: { n: '4%', l: 'il territorio su cui si concentra oggi la domanda estera' },
   resto: { n: '96%', l: 'il resto del territorio, quello ancora da far conoscere' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
@@ -178,7 +178,7 @@ export const APERTURA = {
     // copy-audit-ignore L3 · la doppia relativa è la formulazione scelta
     // dall'owner il 3 nov 2026: riscriverla toglie alla frase la forza che ha
     // davanti a chi considera l'internazionalizzazione una traslazione.
-    'Non serve un programma estero a parte: la macchina che serve l’Italia è la stessa che serve Monaco, New York o Shanghai. Cambiano la lingua e il canale, non l’impianto.',
+    'Non serve un programma estero a parte: la macchina che serve l’Italia serve anche Monaco, New York e Shanghai. Cambiano la lingua e il canale, non l’impianto.',
   /** La riga di fonte, identica nei due percorsi: il link lo mette la pagina,
    *  le parole stanno qui — scritte a mano in due posti, divergevano. */
   fonte: {
@@ -221,7 +221,7 @@ export const CONTESTO: Card[] = [
   },
   {
     k: 'Il momento',
-    t: 'Un piano in scrittura, un sito in rifacimento',
+    t: 'Un piano in scrittura, un sito in rifacimento',
     anc: 'Le due finestre aperte',
     b: 'Il piano di Gruppo arriva entro fine anno, il sito entro marzo 2027. Adesso si decide.',
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
@@ -262,8 +262,8 @@ export const DOMANDA = {
    *  entrambi i percorsi — ed era quella che affermava di più. */
   eyebrow: 'Sulle Frecce il prezzo si muove già con la domanda',
   titolo: 'Allora dove si perdono le vendite?',
-  sub: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
-  subBreve: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  sub: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  subBreve: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
   /** ⚠️ 4 nov — LA RIGA RESTA, LA MAPPA DELLE DIREZIONI NO. Il panel l'aveva
    *  chiesta da tre poltrone diverse: dichiarare noi che non tutto si decide
    *  qui vale molto più che farselo dire. Ma la versione precedente elencava
@@ -274,7 +274,7 @@ export const DOMANDA = {
    *  Resta la rassicurazione, che è la metà utile; i confini li traccia lui,
    *  se vuole. Via anche la fonte, che serviva solo alla mappa. */
   perimetri:
-    'Non tutto quello che segue si decide in questa stanza, e lo sappiamo. La cosa che vi chiediamo alla fine resta nel vostro perimetro.',
+    'Non tutto quello che segue si decide in questa stanza, e lo sappiamo. La cosa che vi chiediamo alla fine resta nel vostro perimetro.',
   /** La riga di fonte della slide, identica nei due percorsi: le parole stanno
    *  qui, i link li compone la pagina da `sources.ts`. Porta il tetto del prezzo
    *  dove è attribuito — a chi l'ha detto e quando — invece di lasciarlo in
@@ -322,7 +322,7 @@ export const PUNTI: Punto[] = [
     dove: 'Nel canale che è vostro',
     t: 'In 12.400 agenzie, lette dai conti',
     b: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia e per prodotto, dove si ferma la proposta multiprodotto, quale materiale funziona?',
-    bRiga: 'La rete vende ogni giorno: quanto di quel venduto si legge per agenzia?',
+    bRiga: 'La rete vende ogni giorno: quanto di quel venduto si legge per agenzia?',
     bBreve: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia, e dove si ferma la proposta multiprodotto?',
   },
 ];
@@ -370,7 +370,7 @@ export const REFERTO: Stat[] = [
 
 export const KPI: Card[] = [
   { k: 'Presenza', t: 'Su quante domande comparite',
-    anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua, invece di una fotografia sola.' },
+    anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua, invece di una fotografia sola.' },
   /* 16 ott, SECONDA versione. La prima diceva che i rivenditori «si prendono la
      relazione», cioè li trattava da minaccia. La verifica ha smontato la
      premessa, e il cliente avrebbe avuto in mano i numeri per smontarla in
@@ -407,7 +407,7 @@ export const GIA: Card[] = [
     k: 'Gomma',
     t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
     anc: 'La gomma, dentro casa',
-    b: 'Interamente vostra: 10.300 collegamenti al giorno, e più di 1.700 destinazioni raggiunte.',
+    b: 'Interamente vostra: 10.300 collegamenti al giorno, e più di 1.700 destinazioni raggiunte.',
     bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno e più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
     fonti: ['busitalia', 'ttgOfferta'],
   },
@@ -415,7 +415,7 @@ export const GIA: Card[] = [
     k: 'Sosta',
     t: 'I parcheggi di stazione',
     anc: 'La sosta, già a sistema',
-    b: 'Si aggiungono a un biglietto già comprato, fino al giorno prima: il viaggio comincia lì.',
+    b: 'Si aggiungono a un biglietto già comprato, fino al giorno prima: il viaggio comincia lì.',
     fonti: ['fsPark'],
   },
   {
@@ -539,8 +539,8 @@ export const CANALE: Card[] = [
    primo che qualcuno chiede. */
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
-  { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
-  { v: '70.000', l: 'punti vendita fuori dalle biglietterie', s: 'tabaccherie, bar, edicole, ricevitorie e self service sul Regionale: dato del 2014, da aggiornare insieme' },
+  { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
+  { v: '70.000', l: 'punti vendita fuori dalle biglietterie', s: 'tabaccherie, bar, edicole, ricevitorie e self service sul Regionale: dato del 2014, da aggiornare insieme' },
 ];
 
 export const UNPOSTO: Card[] = [
@@ -552,7 +552,7 @@ export const UNPOSTO: Card[] = [
   },
   {
     k: 'Il marchio',
-    t: 'Conforme senza una revisione a mano',
+    t: 'Conforme senza una revisione a mano',
     anc: 'La conformità, prima di pubblicare',
     b: 'Le regole del marchio stanno dentro lo strumento, non in un documento che qualcuno deve ricordarsi di aprire.',
   },
@@ -573,8 +573,8 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014. Di questo canale, che cosa riuscite a\u00a0leggere oltre i conti?',
-  dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. Di questo canale, che cosa riuscite a\u00a0leggere oltre i conti?',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014.',
+  dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero.',
   domanda:
     // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
     // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
@@ -589,7 +589,7 @@ export const RETE = {
     // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
     // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
     // resta, ma come principio sui sistemi, non come informazione su di loro.
-    'Misurare un canale costa poco mentre si mette mano al sistema che lo serve, e diventa un progetto a sé dopo. Del canale intermediato, oggi che cosa riuscite a vedere?',
+    'Si misura mentre si mette mano al sistema che serve quel canale. Del canale intermediato, oggi che cosa riuscite a vedere?',
 };
 
 /* 20 ott: il blocco era scarno e il valore non si vedeva — tre righe che
@@ -603,7 +603,7 @@ export const SAPERE: Card[] = [
     k: 'Chi vende che cosa',
     t: 'Per rete, per agenzia, per prodotto',
     anc: 'Il venduto, letto per agenzia',
-    b: 'Dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
+    b: 'Dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
     bBreve: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
   {
@@ -618,7 +618,7 @@ export const SAPERE: Card[] = [
     t: 'Provare un’alternativa invece di deciderla',
     anc: 'Una fetta prima di tutte',
     b: 'Su un sito si fa; qui, per quanto ne sappiamo, no. Una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
-    bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
+    bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
   },
 ];
 

@@ -27,17 +27,17 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'apertura', num: '01', title: { it: 'Il vostro anno, visto da fuori', en: 'Il vostro anno, visto da fuori' }, short: 'Il vostro anno',
     punto: 'Tre fatti che cambiano l’anno commerciale, e nessuno dei tre arriva da noi.', foto: 'cover' },
   { slug: 'domanda', num: '02', title: { it: 'La domanda', en: 'La domanda' }, short: 'La domanda',
-    punto: 'Una domanda sola. Tutto il resto del documento risponde a quella.', foto: 'close' },
-  { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'Gli assistenti',
+    punto: 'Una domanda sola. Tutto il resto del documento risponde a quella.', foto: 'close' },
+  { slug: 'ricerca', num: '03', title: { it: 'Quando il viaggio si cerca con un assistente', en: 'Quando il viaggio si cerca con un assistente' }, short: 'Gli assistenti',
     punto: 'Il primo punto del percorso sta prima di ogni vostra pagina, e questa volta è una misura.', foto: 'search' },
   { slug: 'viaggio', num: '04', title: { it: 'Un viaggio, non più prodotti', en: 'Un viaggio, non più prodotti' }, short: 'Il viaggio',
-    punto: 'Qui abbiamo più domande che risposte: l’intermodale è il vostro mestiere, non il nostro.', foto: 'journey' },
-  { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta chiede', en: 'Il contenuto che l\'offerta chiede' }, short: 'Il contenuto',
+    punto: 'Qui abbiamo più domande che risposte: l’intermodale è il vostro mestiere, non il nostro.', foto: 'journey' },
+  { slug: 'contenuto', num: '05', title: { it: 'Il contenuto che l\'offerta chiede', en: 'Il contenuto che l\'offerta chiede' }, short: 'Il contenuto',
     punto: 'La squadra è una e i prodotti sono tre: ogni campagna si moltiplica per\u00a0mercato e per\u00a0lingua.', foto: 'paper-grid' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
-    punto: 'Un canale che vende ogni giorno: quanto se ne vede oggi?', foto: 'network' },
+    punto: 'Un canale che vende ogni giorno: quanto se ne vede oggi?', foto: 'network' },
   { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta',
-    punto: 'Quattro punti sono troppi per cominciare da tutti: ne proponiamo uno, e la decisione è vostra.', foto: 'chapter' },
+    punto: 'Quattro punti sono troppi per cominciare da tutti: ne proponiamo uno, e la decisione è vostra.', foto: 'chapter' },
 ];
 
 export function chapterIndex(slug: string): number {
