@@ -574,7 +574,6 @@ export const UNPOSTO: Card[] = [
 export const RETE = {
   numero: '12.400',
   dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014.',
-  dopoBreve: 'agenzie di viaggio vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero.',
   domanda:
     // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
     // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
