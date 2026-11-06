@@ -91,7 +91,7 @@ export const IDEE: Idea[] = [
     prova: {
       chi: 'Telmore',
       settore: 'telecomunicazioni, Danimarca',
-      fatto: '+11% le vendite dalle proposte personalizzate e +25% le vendite incrociate ai già clienti, con la stessa vetrina di prima.',
+      fatto: '+25% le vendite incrociate ai già clienti e +21% la crescita delle vendite digitali.',
       fonte: SOURCES.telmore,
     },
     capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
@@ -103,7 +103,7 @@ export const IDEE: Idea[] = [
     occhiello: 'L’idea, in una schermata',
     titolo: 'Un master approvato, quattro mercati',
     mock: 'contenuto',
-    cifra: { k: 'da giorni a minuti', v: 'il tempo fra la campagna approvata e la variante pubblicata, su 4.400 asset creativi' },
+    cifra: { k: 'da giorni a minuti', v: 'il tempo di lancio di una campagna, con un parco di oltre 4.400 asset creativi' },
     chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
     prova: {
       chi: 'Santander Brasil',

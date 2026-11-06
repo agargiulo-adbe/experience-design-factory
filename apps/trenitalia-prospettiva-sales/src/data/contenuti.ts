@@ -122,8 +122,8 @@ export const MERCATO = {
   eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025',
   /** Le due zone della figura. Il 96% è SUO, e l'etichetta lo attribuisce
    *  senza aprire un blocco di citazione: in XD le parole sono poche. */
-  quota: { n: '4%', l: 'il territorio su cui si concentra oggi la domanda estera' },
-  resto: { n: '96%', l: 'il resto del territorio, quello ancora da far conoscere' },
+  quota: { n: '4%', l: 'dove si concentra oggi la domanda estera' },
+  resto: { n: '96%', l: 'il resto, quello ancora da far conoscere' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
@@ -223,8 +223,8 @@ export const CONTESTO: Card[] = [
     k: 'Il momento',
     t: 'Un piano in scrittura, un sito in rifacimento',
     anc: 'Le due finestre aperte',
-    b: 'Il piano di Gruppo arriva entro fine anno, il sito entro marzo 2027. Adesso si decide.',
-    bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito entro marzo 2027: quello che si decide adesso entra lì dentro.',
+    b: 'Il piano di Gruppo arriva entro fine anno, e il nuovo sito è previsto per marzo 2027. Adesso si decide.',
+    bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito è previsto per marzo 2027: quello che si decide adesso entra lì dentro.',
     fonti: ['piano', 'ttgSales2026', 'monaco'],
   },
 ];
