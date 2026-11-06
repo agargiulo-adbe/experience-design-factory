@@ -25,6 +25,17 @@ import { CHAPTERS } from '../data/chapters';
 import PezziPerStato from './PezziPerStato.astro';
 
 interface Props {
+  /** ⚠️ 6 nov 2026, SECONDO GIRO DEL PANEL, ed è l'obiezione che per
+   *  l'arbitro affondava il documento: nel taglio corto — «quello che gira di
+   *  più», letto senza nessuno accanto — questa mappa rendeva una griglia di
+   *  TREDICI nomi di prodotto Adobe, con «Real-Time CDP Collaboration» sotto
+   *  «si aggiunge», subito prima della richiesta. Cinque personas su sei: così
+   *  si legge come un catalogo, e come uno strato di dato cliente proposto
+   *  sopra quello che il Gruppo ha annunciato a marzo.
+   *  Con `soloCapability` restano le quattro idee e che cosa bisogna saper
+   *  fare. L'elenco dei prodotti sta nel percorso intero, dove c'è chi lo
+   *  apre e lo spiega. */
+  soloCapability?: boolean;
   /** Senza le capability: dentro il drill-down della mappa lo strato risponde
    *  a «con che cosa si fanno», e le capability sono già dette sulla slide di
    *  ciascuna idea. Tenerle qui costava tre righe per colonna e a 1280×800
@@ -32,7 +43,7 @@ interface Props {
    *  che è HARD, misurato il 6 novembre 2026. */
   soloPezzi?: boolean;
 }
-const { soloPezzi = false } = Astro.props as Props;
+const { soloPezzi = false, soloCapability = false } = Astro.props as Props;
 const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
 ---
 <ol class="tp-mi" data-stagger="0.08">
@@ -52,7 +63,7 @@ const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
             costerebbe altezza a un blocco che a 1280×800 è già al limite
             (check `c` dentro `exp`, HARD). */}
         {!soloPezzi && <p class="tp-mi-mis">{i.misura}</p>}
-        <PezziPerStato pezzi={pezziDi(i.slug)} />
+        {!soloCapability && <PezziPerStato pezzi={pezziDi(i.slug)} />}
       </li>
     );
   })}
