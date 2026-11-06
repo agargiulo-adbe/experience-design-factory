@@ -102,7 +102,7 @@ export const IDEE: Idea[] = [
        intermediata, e una percentuale altrui in cifra grande apre la domanda
        «e da noi?» invece di chiuderla. Resta il meccanismo, e il numero
        grande torna a essere loro. */
-    cifra: { k: '4', v: 'i pezzi di uno stesso viaggio che oggi si prenotano uno per\u00a0uno' },
+    cifra: { k: '3', v: 'le tratte di uno stesso viaggio che oggi si prenotano una per\u00a0una' },
     chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
     prova: {
       chi: 'Telmore',
@@ -142,7 +142,7 @@ export const IDEE: Idea[] = [
        release notes dicono 12 lingue in disponibilità generale più 5 in beta;
        quello che è limitato all'inglese è l'analisi del tono del testo, che è
        un'altra funzione. */
-    fonte: `La validazione di marchio copre 12 lingue in disponibilità generale e 5 in beta (${SOURCES.genstudioRelease.label}): sulle altre la revisione umana è una vostra scelta di processo.`,
+    fonte: `La generazione multilingua con validazione di marchio è dichiarata su 12 lingue (${SOURCES.genstudioRelease.label}): la revisione umana resta una vostra scelta di processo.`,
   },
   {
     slug: 'rete',

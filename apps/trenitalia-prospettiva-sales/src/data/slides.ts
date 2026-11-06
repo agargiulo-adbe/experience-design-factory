@@ -123,8 +123,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
       agenda: 'Il passo che chiediamo' },
     { id: 'slide-esito', label: 'Che cosa esce dalla mezza giornata · esito, stanza, misura',
       agenda: 'Che cosa esce, e chi serve' },
-    { id: 'slide-domande', label: 'Le quattro domande aperte',
-      agenda: 'Le quattro domande aperte' },
+    { id: 'slide-domande', label: 'Le sei domande aperte',
+      agenda: 'Le sei domande aperte' },
     { id: 'slide-signature', label: 'Slide-firma · Adobe × Trenitalia' },
   ]},
 ];

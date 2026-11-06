@@ -128,7 +128,13 @@ export const MERCATO = {
      reggere da sola: chi guarda legge il numero e la sua riga, non il
      titolo sopra. E il 96% è SUO, dell'ottobre 2025: la data in chiaro. */
   quota: { n: '4%', l: 'il territorio su cui si ferma il 75% dei visitatori stranieri' },
-  resto: { n: '96%', l: 'il resto: «il mercato che resta», sue parole dell’ottobre 2025' },
+  /* ⚠️ 6 nov 2026, SECONDO GIRO DEL PANEL: qui era finita una citazione
+     fabbricata — «il mercato che resta» fra virgolette e attribuito a lui —
+     nata da una correzione del primo giro che voleva solo datare il dato. Il
+     verbatim è un altro, ed è l'errore che riconosce per primo l'uomo che
+     quella frase l'ha detta. Le virgolette stanno solo attorno alle parole
+     che la fonte porta davvero. */
+  resto: { n: '96%', l: 'il resto del territorio, «non ancora esplorato»: parole sue dell’ottobre 2025' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
@@ -329,7 +335,7 @@ export const DOMANDA = {
 export const INNESTO = {
   eyebrow: 'Prima della mappa',
   titolo: 'Dove ci innestiamo, e che cosa non tocchiamo',
-  lead: 'La piattaforma del dato di cliente l’avete scelta a marzo. Niente di quello che segue chiede di rifarla.',
+  lead: 'La piattaforma del dato di cliente il Gruppo l’ha annunciata a marzo. Niente di quello che segue chiede di rifarla.',
   voci: [
     {
       k: 'Resta dov’è',
@@ -347,7 +353,7 @@ export const INNESTO = {
       b: 'Chi tiene il dato, chi lo espone e chi autorizza: si decide prima di qualunque prova, non dopo.',
     },
   ],
-  chiusa: 'Il vostro traguardo dichiarato per quest’anno è l’acquisto del biglietto tramite un agente: i quattro punti che seguono stanno tutti prima di quel momento.',
+  chiusa: 'Fra i traguardi che il Gruppo dichiara per quest’anno c’è l’acquisto del biglietto tramite un agente. I quattro punti che seguono stanno prima di quel momento. Il capitolo 03 lo attraversa, e lo diciamo noi.',
 };
 
 /** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
@@ -389,7 +395,7 @@ export const PUNTI: Punto[] = [
        verifica sulle sue pagine prima di scriverla; qui diventa la domanda. */
     bRiga: 'Quale identificativo tiene insieme le due prenotazioni oggi, e\u00a0fin dove arriva?',
     tavolo: 'tavolo condiviso',
-    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Sul percorso d’acquisto, però, nulla lega fra loro le prenotazioni di uno stesso viaggio.',
+    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Quale identificativo tiene insieme le due prenotazioni di uno stesso viaggio, e fin dove arriva?',
   },
   {
     n: '05',
@@ -539,7 +545,7 @@ export const PRIMA: Card[] = [
     k: 'Con chi, adesso',
     t: 'Quello che avete appena firmato',
     anc: 'Un accordo che esiste già',
-    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma, e da gennaio 2027 un motore di prenotazione collega i due sistemi. La prima domanda è quanto ne copra già.',
+    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma. Da gennaio 2027 un motore di prenotazione collega i due sistemi. La prima domanda è quanto ne copra già.',
     bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione da gennaio 2027. È il caso da cui partire: quanto copre già?',
     fonti: ['costaTtg'],
   },
@@ -624,7 +630,7 @@ export const CANALE: Card[] = [
     k: 'La direzione',
     t: 'Vendere dentro la conversazione',
     anc: 'Una direzione che si apre',
-    b: 'Non è una proposta nostra: «acquisto biglietti tramite agente AI» è un vostro traguardo dichiarato per quest’anno.',
+    b: 'Non è una proposta nostra: «acquisto biglietti tramite agente AI» è fra i traguardi che il Gruppo ha dichiarato per quest’anno.',
   },
   {
     k: 'Che cosa cambia',
@@ -672,8 +678,12 @@ export const UNPOSTO: Card[] = [
   },
   {
     k: 'Il marchio',
-    t: 'Conforme senza una revisione a mano',
-    anc: 'La conformità, prima di pubblicare',
+    /* 6 nov 2026, secondo giro: «conforme senza una revisione a mano»
+       prometteva di togliere la firma di una persona, e non è quello che lo
+       strumento fa. Il vantaggio vero è che gli errori formali si fermano
+       prima della pubblicazione; l'approvazione resta di chi la dà oggi. */
+    t: 'Le regole dentro lo strumento, l’approvazione resta\u00a0vostra',
+    anc: 'Le regole, prima di pubblicare',
     b: 'Le regole del marchio stanno dentro lo strumento, non in un documento che qualcuno deve ricordarsi di aprire.',
   },
   {
@@ -708,7 +718,7 @@ export const RETE = {
     // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
     // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
     // resta, ma come principio sui sistemi, non come informazione su di loro.
-    'La misura entra nel giro di un intervento già aperto sul sistema con cui le agenzie vendono. Dopo diventa un progetto a sé, con il suo budget. In che stato è quel sistema, oggi?',
+    'La misura entra nel giro di un intervento già aperto su quel sistema; altrimenti diventa un progetto a sé. In che stato è, oggi?',
 };
 
 /* 20 ott: il blocco era scarno e il valore non si vedeva — tre righe che

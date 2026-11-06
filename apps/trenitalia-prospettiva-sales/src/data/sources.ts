@@ -412,10 +412,10 @@ export const SOURCES = {
      slide dell'idea del contenuto. */
   genstudioRelease: {
     url: 'https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/release-notes',
-    label: 'GenStudio · note di rilascio',
-    data: 'letta il 6 novembre 2026',
+    label: 'GenStudio · note di rilascio, agosto 2025',
+    data: 'voce del 15 agosto 2025, letta il 6 novembre 2026',
     cosaDice:
-      'La generazione multilingua con validazione di marchio è dichiarata su 12 lingue in disponibilità generale più 5 in beta. L\'unica funzione limitata all\'inglese è l\'analisi degli attributi di testo («currently available only for ads in English»), che valuta il tono della copia: un\'altra cosa.',
+      'Verbatim: «This feature currently supports 12 languages» (voce del 15 agosto 2025). ⚠️ Sulla ripartizione fra disponibilità generale e beta le letture della stessa pagina divergono, quindi in slide va il solo numero che la formula porta: 12, con la sua data. L\'unica funzione limitata all\'inglese è l\'analisi degli attributi di testo («currently available only for ads in English»), che valuta il tono della copia: un\'altra cosa.',
   },
   analytics: {
     url: 'https://experienceleague.adobe.com/en/docs/analytics/analyze/home',

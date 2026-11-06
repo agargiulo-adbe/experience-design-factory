@@ -136,7 +136,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
       // è falsa — le note di rilascio dichiarano 12 lingue in disponibilità
       // generale più 5 in beta. Era un limite inventato a nostro danno, e
       // stava in slide come prova di onestà.
-      attenzione: 'La validazione di marchio copre 12 lingue in disponibilità generale più 5 in beta: se chiedono l’elenco, si manda la pagina delle note di rilascio. Limitata all’inglese è l’analisi del tono del testo, che è un’altra funzione.' },
+      attenzione: 'La validazione multilingua è dichiarata su 12 lingue nelle note di rilascio di agosto 2025. Se chiedono l’elenco, si manda quella pagina, dicendo che il numero ha quella data. Limitata all’inglese è l’analisi del tono del testo: un’altra funzione.' },
     { id: 'slide-aritmetica',
       dire: 'Il conto è semplice: un venditore che conosceva un prodotto oggi ne vende tre, più i servizi. A mano quel numero di versioni non esce.',
       seChiedono: { d: 'Vuol dire sostituire l’agenzia creativa?', r: 'No. Vuol dire che il master resta loro e le varianti smettono di essere lavoro a mano.' } },
