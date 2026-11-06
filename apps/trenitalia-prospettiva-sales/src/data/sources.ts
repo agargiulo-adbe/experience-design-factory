@@ -308,6 +308,33 @@ export const SOURCES = {
      italiana, due compagnie aeree — sono rimaste fuori perché la loro
      pagina non ha risposto dal nostro percorso di rete: un link che cade
      mentre il cliente lo apre è peggio di nessun link. */
+  /* ── La referenza sul canale agenziale ──────────────────────────────────
+     DUE FONTI PER DUE COSE DIVERSE, e vanno tenute separate.
+     La SCALA viene dalle loro pagine, con il link: è un fatto loro, pubblico
+     e corrente. Il MECCANISMO viene dall'intervento al Summit, e si cita
+     senza link perché una sessione di conferenza non è una pagina che si
+     apre — la regola del repo dice di nominarla dicendo che cos'è. */
+  unipolRete: {
+    /* ⚠️ `audit:fonti` segnala questo link come generico — «porta alla
+       homepage, non all'affermazione» — e di norma ha ragione: una
+       homepage data per sei fatti è il difetto che quel check esiste per
+       trovare. Qui no: quelle tre cifre stanno proprio sulla homepage, in
+       un riquadro di indicatori, e le pagine istituzionali che le
+       porterebbero più in profondità non rispondono (404 su /it/chi-siamo
+       e /it/gruppo, provate il 6 nov 2026). Il rilievo resta SOFT e
+       dichiarato, non silenziato. */
+    url: 'https://www.unipol.it/',
+    label: 'unipol.it',
+    data: 'letta il 6 novembre 2026',
+    cosaDice:
+      'Verbatim dalla loro homepage: «+2.000 agenzie sul territorio», «+25.000 professionisti in tutta Italia», «17,6 milioni di clienti / assicurati». ⚠️ CONFLITTO FRA FONTI, da sapere: la stampa di settore riporta 2.035 agenzie e 4.910 subagenzie al 31 dicembre 2025, in calo dalle 2.127 dell\'anno prima. In slide vale il numero che danno loro sulle proprie pagine, ed è tondo apposta. ⚠️ E supera il deck del Summit, che portava 2.100 agenzie e 16,8 milioni di clienti: quelle cifre hanno un anno e non si usano.',
+  },
+  unipolSummit: {
+    label: 'Adobe Summit 2026, sessione CP16',
+    data: 'aprile 2026',
+    cosaDice:
+      'Intervento di Unipol in sessione. Dall\'architettura mostrata: la stessa piattaforma di analisi raccoglie sito, app, lo STRUMENTO DI VENDITA DEGLI AGENTI, il CRM degli agenti (attività aperte, gestite, chiuse) e il database delle POLIZZE EMESSE. Verbatim dalla slide dell\'obiettivo: «a holistic view of the customer journey → no longer split by channel, but analyzed end-to-end across both digital and agencies». ⚠️ L\'abstract PUBBLICO della sessione non nomina le agenzie: parla di performance di sistema, esperienza, navigazione, ticketing e marketing. Il pezzo sul canale agenziale sta nelle slide presentate, quindi la fonte si cita come intervento, senza link. ⚠️ NON è documentata la QUOTAZIONE in agenzia: nei materiali il preventivo compare solo sui flussi digitali del sito. ⚠️ Le metriche della sessione (−20% troubleshooting, 2× root cause, −90% tempo di analisi) NON si usano qui: misurano la velocità dell\'analisi, non il venduto per rete.',
+  },
   telmore: {
     url: 'https://business.adobe.com/customer-success-stories/telmore-case-study.html',
     label: 'Adobe · il caso Telmore',

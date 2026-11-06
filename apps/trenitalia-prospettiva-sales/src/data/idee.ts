@@ -127,9 +127,31 @@ export const IDEE: Idea[] = [
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
     chiusa: 'L’agenzia smette di costruirsi le proposte a mano, e vende quello che il sito sta già spingendo.',
+    /* ⚠️ ERA L'UNICA DELLE QUATTRO IDEE SENZA REFERENZA, ed è quella su cui
+       si fa la richiesta. Unipol è il caso più vicino che esista: la rete
+       agenziale più estesa d'Italia, e lo strumento con cui l'agente vende
+       portato dentro la stessa analisi del sito.
+       TRE REGOLE RISPETTATE, e sono il motivo per cui questa voce è scritta
+       così e non in modo più comodo:
+       · la SCALA viene dalle loro pagine, con il link — il deck del Summit
+         portava 2.100 agenzie e 16,8 milioni di clienti, cifre di un anno fa
+         già superate da loro stessi;
+       · il MECCANISMO viene dall'intervento al Summit, citato come tale e
+         senza link, perché una sessione non è una pagina che si apre;
+       · NESSUNA metrica di Unipol. Quelle della sessione misurano la
+         velocità dell'analisi, non il venduto per rete: sotto una frase sulle
+         agenzie sarebbero la prova sbagliata.
+       E non si dice «quotazioni»: nei loro materiali il preventivo sta solo
+       sui flussi digitali del sito, mai sul canale agenziale. */
+    prova: {
+      chi: 'Unipol',
+      settore: 'assicurazioni, Italia',
+      fatto: '17,6 milioni di clienti e +2.000 agenzie: lo strumento con cui l’agente vende e le polizze emesse stanno nella stessa analisi del sito.',
+      fonte: SOURCES.unipolRete,
+    },
     capability: ['Misurare il venduto per rete', 'Combinare il canale con i digitali'],
     gruppi: ['rete'],
-    fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi.`,
+    fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi. Il canale agenziale di Unipol è stato raccontato da loro ad ${SOURCES.unipolSummit.label}.`,
   },
 ];
 
