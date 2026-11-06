@@ -466,6 +466,51 @@ giusto — è così che sono stati fatti i commit del 12 ottobre, senza sfiorare
 
 ---
 
+### 37.17 La sera del 6 novembre: l'ask cambia, contro il verdetto del panel
+
+**La mezza giornata sui dati della rete agenzie esce dalla richiesta.** È una decisione
+dell'owner **contro** il verdetto appena incassato: quella voce era l'unica che tutte e sei le
+personas avevano messo fra le «non toccare», ed era l'unica cosa che il Direttore Sales poteva
+concedere da solo. La ragione sta agli atti perché fra un mese serve: quella sessione è già
+intrinseca al lavoro che corre con il presidio digitale e con la società tecnologica del
+Gruppo, quindi a lui non chiede niente che non stia già succedendo.
+
+Al suo posto **tre cose che può dare solo lui** — `rotta/slide-passo`, «Confermate la rotta, e
+portateci al tavolo»: il riscontro sulle priorità, gli spunti che non abbiamo raccolto, e un
+posto al tavolo quando si pianifica l'offerta integrata. La chiusa porta il confine («non
+chiediamo di cambiare chi vi accompagna»): **in slide un nome di terzi non ci va.**
+
+`rotta/slide-esito` cambia soggetto insieme all'ask: da «che cosa esce dalla sessione» a **che
+cosa va previsto perché una rotta diventi un piano** — la base che c'è già, le due voci da
+prevedere, l'indicatore su cui si vede l'effetto. Niente listino: le capacità, non i prodotti
+in corpo grande. **Dieci righe cadevano con la mezza giornata** e sono state riallineate (due
+divisori, la chiusa delle domande, la mappa del taglio corto, il capitolo 04, quattro note per
+chi presenta, tre etichette di registro).
+
+**Quattro giri di `/umanizza`**, registro in cartella d'account. Due cose che solo i giri hanno
+preso, e sono tutte e due di quelle che nessun conteggio dà:
+- dopo il Giro 0 le due slide avevano la **stessa forma** ed erano consecutive. Le tre voci
+  dell'esito non sono parallele, sono una **progressione**: diventano un filo a tre fermate,
+  che porta anche la figura che mancava al capitolo (`audit:ritmo` segnalava quattro slide di
+  fila senza un elemento visivo). ⚠️ `--cols` va dichiarato, o con tre fermate si ammassano;
+- «quello che si aggiunge è **poco**» era un giudizio che la slide non dimostra, e in sala si
+  contesta in un secondo. Adesso dice «sono due voci».
+
+⚠️ **Trappola di metodo, e vale per ogni app**: lo spazio unificatore scritto come carattere
+dentro un heredoc viene **appiattito a spazio normale**, e il legame non si forma. Non si vede
+in nessuna diff — lo prende solo `audit:wrap`. Si scrive come codice.
+
+**Gate**: `copy-audit` 0 HARD e **0 SOFT** su 554 stringhe · `audit:deck` **0 HARD** ·
+`audit:ink` PULITO · `audit:taglio` ALLINEATO · `audit:wrap` 17 contro 18 di baseline, con
+`rotta` pulita · `astro check` 0 errori. Gulpease della pagina `rotta` 67,8 → 68,7, e resta la
+più bassa del deck.
+
+**Aperto**: il taglio corto è a **9 slide** contro un massimo dichiarato di 8 (SOFT `c4`). Le
+due in più sono volute — la richiesta e che cosa va previsto, in un file che si legge senza
+nessuno accanto: si decide se alzare il massimo o tagliare altrove.
+
+---
+
 ### 37.16 Il panel del 6 novembre — due giri, e due regressioni fatte dalle correzioni
 
 **Il P0 che stava agli atti dal 4 novembre è chiuso.** Il verdetto precedente era del
