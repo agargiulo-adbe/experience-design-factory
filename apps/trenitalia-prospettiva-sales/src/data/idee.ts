@@ -56,11 +56,19 @@ export interface Idea {
    *  ricopiano: gli stati dei prodotti sono letti dal contratto e vivono in
    *  un posto solo (`contenuti.ts`). Due gruppi dove l'idea ha due facce. */
   gruppi: (keyof typeof SERVE)[];
+  /** ⚠️ 6 nov 2026, panel, e sopravviveva dal giro del 12 ottobre: in
+   *  quarantatré slide non compariva un solo indicatore del mestiere del
+   *  cliente. «In comitato ci si va con le unità di misura», e senza, quattro
+   *  idee sono quattro conversazioni. Una riga per idea, dichiarata come il
+   *  numero che guarderemmo INSIEME — non come un beneficio promesso, che il
+   *  vocabolario di questo deck vieta. */
+  misura: string;
 }
 
 export const IDEE: Idea[] = [
   {
     slug: 'ricerca',
+    misura: 'Da quante risposte arrivate, e quanto di quel traffico diventa un biglietto',
     occhiello: 'L’idea, in una schermata',
     /* Il titolo È il confronto: con una cifra sola in evidenza la slide sembrava
        dire «gli assistenti non vi citano», e la misura dice il contrario — dipende
@@ -83,15 +91,26 @@ export const IDEE: Idea[] = [
   },
   {
     slug: 'viaggio',
+    misura: 'Quanta parte del venduto aggancia più di un prodotto',
     occhiello: 'L’idea, in una schermata',
     titolo: 'Una soluzione intera, da cercare una volta sola',
     mock: 'viaggio',
-    cifra: { k: '+11%', v: 'le vendite di Telmore dalle proposte ordinate dal sistema; la stessa classifica fatta a mano ne portava il 9%' },
+    /* ⚠️ 6 nov 2026, panel: qui c'era «+11%», la metrica di una telco danese,
+       in corpo grande sopra una slide che parla di treni. Quattro personas su
+       sei l'hanno messa fra le condizioni: nessuno dei due settori di
+       referenza ha posti che scadono, curva di riempimento o rete
+       intermediata, e una percentuale altrui in cifra grande apre la domanda
+       «e da noi?» invece di chiuderla. Resta il meccanismo, e il numero
+       grande torna a essere loro. */
+    cifra: { k: '4', v: 'i pezzi di uno stesso viaggio che oggi si prenotano uno per\u00a0uno' },
     chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
     prova: {
       chi: 'Telmore',
       settore: 'telecomunicazioni, Danimarca',
-      fatto: '+25% le vendite incrociate ai già clienti e +21% la crescita delle vendite digitali.',
+      /* Meccanismo, non risultato: le percentuali sono uscite il 6 nov 2026
+         col panel. Il perimetro si dichiara, perché è la prima cosa che
+         chiede chi vende posti su un treno. */
+      fatto: 'Le proposte ordinate dal sistema invece che elencate a\u00a0mano. Altro perimetro: telco ad abbonamento, nessun posto che scade.',
       fonte: SOURCES.telmore,
     },
     capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
@@ -100,27 +119,46 @@ export const IDEE: Idea[] = [
   },
   {
     slug: 'contenuto',
+    misura: 'Quanti giorni passano dal brief alla vetrina, per mercato',
     occhiello: 'L’idea, in una schermata',
     titolo: 'Un master approvato, quattro mercati',
     mock: 'contenuto',
-    cifra: { k: 'da giorni a minuti', v: 'il tempo di lancio di una campagna, con un parco di oltre 4.400 asset creativi' },
+    /* ⚠️ 6 nov 2026, panel: era «da giorni a minuti», il tempo di uscita di
+       una banca brasiliana, su una pila che NON comprende GenStudio né
+       Firefly — due dei tre nomi che la slide affianca. */
+    cifra: { k: '3 × 5', v: 'tre prodotti per cinque mercati, prima ancora delle\u00a0lingue' },
     chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
     prova: {
       chi: 'Santander Brasil',
       settore: 'banca, dieci mercati nel gruppo',
-      fatto: '530 offerte al retail e 800 alle PMI con oltre 4.400 asset creativi, e il tempo di uscita sceso da giorni a minuti.',
+      fatto: 'Un master approvato e le sue varianti per mercato, in un flusso\u00a0solo. Altro perimetro: una banca, e senza gli strumenti di generazione nominati qui accanto.',
       fonte: SOURCES.santander,
     },
     capability: ['Produrre le varianti su scala, governate'],
     gruppi: ['contenuto'],
-    fonte: 'La validazione automatica di marchio oggi lavora in inglese: la revisione umana su ogni lingua resta, e va messa a piano.',
+    /* ⚠️ 6 nov 2026, REFUTATA dal fact-check, ed era l'errore nella direzione
+       peggiore: svendeva una capacità che esiste e inventava un costo di
+       progetto — su una riga che la slide portava come prova di onestà. Le
+       release notes dicono 12 lingue in disponibilità generale più 5 in beta;
+       quello che è limitato all'inglese è l'analisi del tono del testo, che è
+       un'altra funzione. */
+    fonte: `La validazione di marchio copre 12 lingue in disponibilità generale e 5 in beta (${SOURCES.genstudioRelease.label}): sulle altre la revisione umana è una vostra scelta di processo.`,
   },
   {
     slug: 'rete',
+    misura: 'Venduto per agenzia attiva, e il peso dell’intermediato sul diretto',
     occhiello: 'L’idea, in una schermata',
     titolo: 'La stessa proposta del sito arriva al banco dell’agenzia',
     mock: 'rete',
-    cifra: { k: 'oltre 70.000', v: 'i punti vendita fuori dalle biglietterie sul Regionale; il dato è del 2014 e va riconfermato' },
+    /* ⚠️ 6 nov 2026, panel: SEI personas su sei, il rilievo più corale del
+       giro e il secondo che sopravvive dal 12 ottobre. La cifra grande del
+       capitolo che parla del CANALE AGENZIALE erano i 70.000 punti vendita
+       sul Regionale fuori dalle biglietterie: altro contratto, altro
+       margine, altro prodotto, altra direzione — e un dato del 2014.
+       Dichiarare l'età non salva la cifra: in proiezione si legge il numero,
+       non la nota. Il numero del canale è loro, è di ottobre 2025, e lo ha
+       detto lui al TTG. I 70.000 restano, in nota, su `slide-settantamila`. */
+    cifra: { k: '12.400', v: 'le agenzie di viaggio che vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
@@ -151,7 +189,7 @@ export const IDEE: Idea[] = [
     },
     capability: ['Misurare il venduto per rete', 'Combinare il canale con i digitali'],
     gruppi: ['rete'],
-    fonte: `${SOURCES.retePunti.label}. Il numero è loro e ha dodici anni: in slide sta come ordine di grandezza, non come misura di oggi. Il canale agenziale di Unipol è stato raccontato da loro ad ${SOURCES.unipolSummit.label}.`,
+    fonte: `${SOURCES.agenzie.label}, e le cifre dette dal Direttore Sales al TTG nell’ottobre 2025. Il canale agenziale di Unipol è stato raccontato da loro ad ${SOURCES.unipolSummit.label}: l’abstract pubblico di quella sessione non nomina le agenzie, il pezzo sul canale sta nelle slide presentate.`,
   },
 ];
 

@@ -283,6 +283,17 @@ export const SOURCES = {
       'Protocollo d\'intesa ITA Airways × Italo firmato a Roma dai due Amministratori Delegati (Joerg Eberhart e Gianbattista La Rocca). Biglietto combinato treno più aereo in un\'unica operazione, in vendita «da luglio» tramite le agenzie di viaggio, i GDS per i travel manager e il sito di ITA. Italo aveva già integrato bus e servizi navali. ⚠️ Non sostituisce l\'accordo con Trenitalia: si aggiunge.',
   },
 
+  /* ⚠️ Aggiunta il 6 nov 2026 dal panel, ed è la fonte che mancava di più:
+     in 43 slide non compariva la piattaforma che il Gruppo ha già scelto, e
+     il nostro interlocutore ne è sponsor pubblico. Il comunicato è loro. */
+  foundation: {
+    url: 'https://www.fsnews.it/it/focus-on/innovazione/2026/3/5/fs-technology-salesforce-foundation-digitale.html',
+    label: 'FS News, 5 marzo 2026',
+    data: '5 marzo 2026',
+    cosaDice:
+      'Il Gruppo FS lancia una «nuova foundation agentica integrata» con Salesforce, con la regia di FSTechnology: si supera la frammentazione delle applicazioni verticali per un modello di piattaforma unico. Clean architecture con MuleSoft come motore di integrazione e il data cloud come cuore della strategia del dato. Perimetro: Trenitalia, Busitalia, i circa 100 parcheggi di FS Park e FS Logistix, oltre 800 milioni di passeggeri. Traguardi dichiarati per il 2026: «acquisto biglietti tramite agente AI» e «riprotezione automatica» in caso di eventi straordinari; per il 2027 i nuovi programmi CartaFreccia e X-GO. ⚠️ È la fonte PUBBLICA che regge la riga del capitolo 03 sulla vendita dentro l\'assistente: prima quella frase poggiava su quanto detto in una riunione, e «ce l\'avete detto voi» è una fonte che in sala non si può mostrare.',
+  },
+
   /* ── Il canale intermediato ───────────────────────────────────────────── */
   agenzie: {
     url: 'https://www.trenitalia.com/it/informazioni/diventa-agenzia-partner.html',
@@ -394,6 +405,17 @@ export const SOURCES = {
     label: 'Adobe GenStudio for Performance Marketing',
     data: 'documentazione pubblica',
     cosaDice: 'Produzione di varianti di campagna conformi alle regole di marca, con misura attaccata al singolo pezzo.',
+  },
+  /* ⚠️ Aggiunta il 6 nov 2026 dal panel: il deck affermava che la validazione
+     di marchio «oggi lavora in inglese», ed è falso — era un limite inventato
+     a nostro danno. Questa è la pagina che lo smentisce, e va citata sotto la
+     slide dell'idea del contenuto. */
+  genstudioRelease: {
+    url: 'https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/release-notes',
+    label: 'GenStudio · note di rilascio',
+    data: 'letta il 6 novembre 2026',
+    cosaDice:
+      'La generazione multilingua con validazione di marchio è dichiarata su 12 lingue in disponibilità generale più 5 in beta. L\'unica funzione limitata all\'inglese è l\'analisi degli attributi di testo («currently available only for ads in English»), che valuta il tono della copia: un\'altra cosa.',
   },
   analytics: {
     url: 'https://experienceleague.adobe.com/en/docs/analytics/analyze/home',

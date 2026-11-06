@@ -72,7 +72,7 @@ export const TESTE = {
     // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
     // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
     lead: 'Nello stesso anno si muovono il mercato, il prezzo e il momento.',
-    leadBreve: 'Il Frecciarossa in Germania dal 2027, a Berlino nel 2028. Nello stesso anno il mercato si allarga, e il vertice di Gruppo dichiara che i biglietti non aumenteranno.',
+    leadBreve: 'Il Frecciarossa in Germania dal 2027, a Berlino nel 2028. E il vertice di Gruppo dichiara che i biglietti non aumenteranno.',
   },
   mappa: {
     eyebrow: 'La mappa',
@@ -122,8 +122,13 @@ export const MERCATO = {
   eyebrow: 'Rimini, TTG Travel Experience, ottobre 2025',
   /** Le due zone della figura. Il 96% è SUO, e l'etichetta lo attribuisce
    *  senza aprire un blocco di citazione: in XD le parole sono poche. */
-  quota: { n: '4%', l: 'dove si concentra oggi la domanda estera' },
-  resto: { n: '96%', l: 'il resto, quello ancora da far conoscere' },
+  /* ⚠️ 6 nov 2026, panel: l'etichetta diceva «dove si concentra oggi la
+     domanda estera», e proiettata suona come se il 100% della domanda estera
+     stesse sul 4%. I tre quarti stavano solo nel titolo. La cifra deve
+     reggere da sola: chi guarda legge il numero e la sua riga, non il
+     titolo sopra. E il 96% è SUO, dell'ottobre 2025: la data in chiaro. */
+  quota: { n: '4%', l: 'il territorio su cui si ferma il 75% dei visitatori stranieri' },
+  resto: { n: '96%', l: 'il resto: «il mercato che resta», sue parole dell’ottobre 2025' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
@@ -155,14 +160,22 @@ export const APERTURA = {
   eyebrow: 'Rimini, TTG Travel Experience, 15 ottobre 2026',
   /** La parola chiave dell'anno commerciale, grande quanto la pagina. */
   dato: 'Internazionalizzazione.',
-  /** Sue parole, verbatim. */
-  citazione:
-    '«La parola chiave è internazionalizzazione: vogliamo rafforzare la collaborazione con i nostri <strong>partner</strong>.»',
+  /** Sue parole, verbatim.
+   *  ⚠️ 6 nov 2026, panel: la frase era tagliata a metà — si fermava a
+   *  «partner» — e la seconda metà è proprio quella che regge la tesi estera
+   *  del capitolo. Un virgolettato troncato è la prima cosa che nota chi
+   *  quell'intervista l'ha rilasciata. Se un giorno non entrasse più nella
+   *  slide, il taglio si segnala con […] DENTRO le virgolette. */
+  // copy-audit-ignore L1 · è un virgolettato VERBATIM, e la frase intera è
+  // esattamente ciò che il panel ha chiesto di ripristinare: accorciarla per
+  // far scendere un contatore rimetterebbe il difetto appena tolto.
+  citazione: // copy-audit-ignore L1 · virgolettato verbatim: accorciarlo rimetterebbe il troncamento che il panel ha fatto togliere
+    '«La parola chiave è internazionalizzazione: vogliamo rafforzare la collaborazione con i nostri <strong>partner</strong> per consolidare la nostra presenza sul mercato italiano e, allo stesso tempo, promuovere la nostra offerta <strong>oltre i confini nazionali</strong>.»',
   /** E la seconda metà della stessa intervista: dove dice di investire. */
   lettura:
     'E, nella stessa intervista: «stiamo investendo significativamente nell’evoluzione dei nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
   letturaBreve:
-    'E, nella stessa intervista, sugli investimenti: «i nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
+    'E, nella stessa intervista, sugli investimenti: «i nostri <strong>canali digitali diretti</strong>, in particolare nell’app e nel sito web».',
   /** ⚠️ IL PONTE, ed è la riga che decide come va l'ora.
    *  «Internazionalizzazione» è la parola del Direttore Sales, ma dentro
    *  l'azienda c'è chi la legge come una traslazione dell'esistente e non
@@ -199,23 +212,33 @@ export const CONTESTO: Card[] = [
        sulla propria piattaforma anche i treni degli altri — è il tema di
        disintermediazione che tocca davvero questa stanza, perché riguarda la
        sua vetrina e non un rivenditore. ⚠️ È una proposta, e la slide lo dice. */
+    /* 6 nov 2026, panel: il titolo diceva «una vetrina da aprire». Per chi
+       fa la piattaforma quella non è una vetrina: è ospitare il concorrente
+       sul proprio canale, su richiesta sua, col proprio costo — il lavoro di
+       sistema più grosso nominato in tutto il deck. Chiamarlo vetrina dice
+       che non si sa quanto costa. E il taglio corto affermava più del lungo:
+       «il mercato si allarga», senza via libera e senza data. */
     k: 'Il mercato',
-    t: 'Un terzo operatore, e\u00a0una\u00a0vetrina da aprire',
+    t: 'Un terzo operatore, e\u00a0un\u00a0obbligo possibile',
     anc: 'Chi altro vende, e dove',
-    b: 'Siete in due. Il terzo ha il via libera, ma entra non prima della fine del 2027. La Commissione ha proposto che chi ha metà del mercato venda anche i treni degli altri.',
-    bBreve: 'Sull’alta velocità siete in due, e la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
+    b: 'Siete in due. Il terzo ha il via libera, ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri, su richiesta loro.',
+    bBreve: 'Sull’alta velocità siete in due: il terzo ha il via libera ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
     fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
   },
   {
+    /* 6 nov 2026, panel: il titolo diceva «una leva che si muove da sola».
+       Il prezzo dinamico non si muove da solo — è revenue management
+       governato, con un responsabile che è in azienda e che quella leva l'ha
+       appena resa dinamica. Il taglio corto lo scriveva già meglio del lungo. */
     k: 'Il prezzo',
-    t: 'Una leva che si muove da sola',
+    t: 'Il revenue management lavora\u00a0già',
     anc: 'Da quando, e fin dove',
     /* ⚠️ Diceva «la leva lavora da anni», e non regge: il prezzo dinamico
        sulle Frecce è partito il 1º gennaio 2026 — dieci mesi, non anni — e
        vale SOLO sull'alta velocità, mentre in questa stanza si vendono tre
        prodotti. In sala quella data la conoscono meglio di noi. Ora la riga
        dice quello che dicono le fonti: da quando, su che cosa, e il tetto. */
-    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda. Verso l’alto il vertice di Gruppo ha dichiarato che non aumenteranno.',
+    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda, e la leva ha un responsabile. È cambiato il tetto: il vertice di Gruppo ha dichiarato che i biglietti non aumenteranno.',
     bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['pricing', 'prezziFermi'],
   },
@@ -285,44 +308,105 @@ export const DOMANDA = {
   },
 };
 
+/* ── Capitolo 02 · dove ci innestiamo ──────────────────────────────────────
+   6 nov 2026, IL RILIEVO PIÙ GRAVE DEL PANEL: in 43 slide non compariva mai
+   la piattaforma che il Gruppo ha già scelto per il dato di cliente e per lo
+   strato agentico — e il nostro interlocutore ne è sponsor pubblico. Cinque
+   personas su sei l'hanno sollevato, tre hanno dichiarato che senza questa
+   slide il documento non lo inoltrano: una mappa che elenca «già vostro / si
+   aggiunge» come se il campo fosse libero chiede a un direttore di
+   rimangiarsi, davanti ai suoi, una decisione che ha firmato.
+
+   TRE REGOLE PER SCRIVERLA, e sono il motivo per cui dice così poco:
+   · si cita il LORO comunicato, non quello del fornitore, e con il link;
+   · non si giudica quella scelta, non si dice che cosa le manca, non si
+     propone di sostituirla. Si dice dove finisce la nostra e basta;
+   · la cucitura è una DOMANDA. Dove passi lo sanno loro, non noi.
+
+   ⚠️ Se l'owner preferisce non nominare un fornitore terzo in slide, si
+   toglie questa voce e il deck torna esattamente com'era: è un oggetto solo,
+   reso da una slide sola. */
+export const INNESTO = {
+  eyebrow: 'Prima della mappa',
+  titolo: 'Dove ci innestiamo, e che cosa non tocchiamo',
+  lead: 'La piattaforma del dato di cliente l’avete scelta a marzo. Niente di quello che segue chiede di rifarla.',
+  voci: [
+    {
+      k: 'Resta dov’è',
+      t: 'Il dato di cliente e l’orchestrazione del Gruppo',
+      b: 'La foundation annunciata a marzo con la regia della società tecnologica, i sistemi core in migrazione, il sistema con cui le agenzie vendono.',
+    },
+    {
+      k: 'Si affianca',
+      t: 'La misura di quello che succede\u00a0prima',
+      b: 'Prima del sito, dentro l’offerta, a valle e nel canale: quattro punti che oggi nessuno legge insieme.',
+    },
+    {
+      k: 'Dove passa la cucitura',
+      t: 'È una domanda, e la risposta è vostra',
+      b: 'Chi tiene il dato, chi lo espone e chi autorizza: si decide prima di qualunque prova, non dopo.',
+    },
+  ],
+  chiusa: 'Il vostro traguardo dichiarato per quest’anno è l’acquisto del biglietto tramite un agente: i quattro punti che seguono stanno tutti prima di quel momento.',
+};
+
 /** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
  *  consente venti, e `bBreve` ne porta venticinque — aperte in `Dettaglio`
  *  fanno quattro righe per voce e il blocco sfonda il viewport a 1280×800. */
-export interface Punto { n: string; dove: string; t: string; b: string; bRiga?: string; bBreve: string }
+/** `tavolo` — 6 nov 2026, panel. Quattro capitoli su sette descrivono
+ *  superfici che non si decidono alla Direzione Sales, e la cautela stava in
+ *  un posto solo (`DOMANDA.perimetri`): in sala basta, nel file inoltrato no.
+ *  ⚠️ NON si riapre la mappa delle direzioni tolta il 4 novembre — elencare
+ *  quale direzione tiene che cosa, con in mano le carte interne della loro
+ *  azienda, è spiegare a un direttore che cosa non è suo, e la domanda che
+ *  arriva è «chi ve l'ha detto?». Qui si dichiara solo il NOSTRO modo di
+ *  stare al tavolo: dove il punto è condiviso portiamo domande, dove è suo
+ *  lo diciamo. Il confine lo traccia lui, se vuole.
+ *  Due parole, non una riga: sta sulla mappa sotto ogni fermata, e la
+ *  spiegazione per esteso resta una sola, in `DOMANDA.perimetri`. */
+export interface Punto { n: string; dove: string; t: string; b: string; bRiga?: string; bBreve: string; tavolo?: string }
 export const PUNTI: Punto[] = [
   {
     /* 16 ott: il punto 01 copre adesso anche il secondo tempo di quel canale,
        perché il capitolo 03 lo contiene. La mappa e i capitoli devono dire la
        stessa cosa: è la prima a essere letta e l'ultima a essere ricordata. */
-    n: '01',
+    n: '03',
     dove: 'Prima del sito',
     t: 'Nella risposta che qualcun altro scrive',
     b: 'Chi organizza un viaggio chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra. E quel canale sta diventando anche un posto dove si compra.',
     bRiga: 'Se nella risposta non ci siete voi, la vendita è persa prima di una vostra pagina.',
+    tavolo: 'tavolo condiviso',
     bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita è persa prima che si apra una vostra pagina.',
   },
   {
-    n: '02',
+    n: '04',
     dove: 'Dentro l’offerta',
     t: 'Nel momento in cui il viaggio torna a essere un biglietto',
     b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Sul percorso d’acquisto pubblico, però, non c’è un passaggio in cui qualcuno dichiari di stare componendo un viaggio: le prenotazioni restano acquisti separati.',
-    bRiga: 'Sul percorso pubblico nulla lega fra loro le prenotazioni di uno stesso viaggio.',
+    /* 6 nov, panel: era un'affermazione di assenza sui loro sistemi, scritta
+       da fuori — e due slide dopo il deck elenca Air-Rail dal 2023 e la sosta
+       che si aggiunge a un biglietto già comprato. Un'assenza sul cliente si
+       verifica sulle sue pagine prima di scriverla; qui diventa la domanda. */
+    bRiga: 'Quale identificativo tiene insieme le due prenotazioni oggi, e\u00a0fin dove arriva?',
+    tavolo: 'tavolo condiviso',
     bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Sul percorso d’acquisto, però, nulla lega fra loro le prenotazioni di uno stesso viaggio.',
   },
   {
-    n: '03',
+    n: '05',
     dove: 'A valle',
     t: 'Nel materiale che non si riesce a produrre',
-    b: 'Una squadra sola vende tre prodotti più i servizi, su più mercati e in più lingue. Il materiale da produrre si moltiplica, e a mano non si tiene il passo.',
+    b: 'Una squadra sola copre tre prodotti più i servizi, su più mercati e in più lingue. I tre non hanno le stesse leve: alta velocità a mercato, Intercity su servizio universale, Regionale su contratti con le Regioni. Il materiale si moltiplica, e a mano non si tiene il passo.',
     bRiga: 'Il materiale si moltiplica per prodotto, mercato e lingua, e a mano non si tiene il passo.',
+    tavolo: 'tavolo condiviso',
     bBreve: 'Una squadra sola vende tre prodotti su più mercati e più lingue. Il materiale si moltiplica, e a mano non si tiene il passo.',
   },
   {
-    n: '04',
+    n: '06',
     dove: 'Nel canale che è vostro',
     t: 'In 12.400 agenzie, lette dai conti',
     b: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia e per prodotto, dove si ferma la proposta multiprodotto, quale materiale funziona?',
     bRiga: 'La rete vende ogni giorno: quanto di quel venduto si legge per agenzia?',
+    tavolo: 'il vostro tavolo',
     bBreve: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia, e dove si ferma la proposta multiprodotto?',
   },
 ];
@@ -386,10 +470,17 @@ export const KPI: Card[] = [
      Quello che resta vero, e che è un argomento di margine e non di furto: se
      nella risposta generata comparite tramite un rivenditore invece che da voi,
      quella vendita la pagate in commissione. */
-  { k: 'Confronto', t: 'Con chi entra, e attraverso chi passate',
+  { k: 'Commissione', t: 'Attraverso chi passate, e quanto vi\u00a0costa',
     anc: 'Il passaggio che costa commissione', b: 'Comparire tramite un rivenditore è pagare in commissione una vendita che poteva arrivare diretta.' },
+  /* ⚠️ 6 nov 2026, panel: la riga diceva «le visite che nascono da una
+     risposta generata, oggi indistinte dal resto del traffico». È
+     un'affermazione di assenza sui loro sistemi, scritta da fuori: il sito è
+     strumentato, e quello che manca semmai è la definizione condivisa. Una
+     capacità che sembra mancare si verifica sulle loro pagine prima di
+     scriverla; qui diventa la domanda. In coda il costo del contatto, che
+     quattro personas hanno chiesto e che è la misura di chi assiste. */
   { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti',
-    anc: 'Il traffico che oggi è indistinto', b: 'Le visite che nascono da una risposta generata, oggi indistinte dal resto del traffico.' },
+    anc: 'Il traffico che oggi è indistinto', b: 'Quel traffico oggi lo isolate, e con quale regola di attribuzione? E una risposta sbagliata non è solo una vendita persa: è una chiamata in più.' },
 ];
 
 /* ── Capitolo 04 · quello che è già partito ────────────────────────────────
@@ -407,8 +498,13 @@ export const GIA: Card[] = [
     k: 'Gomma',
     t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
     anc: 'La gomma, dentro casa',
-    b: 'Interamente vostra: 10.300 collegamenti al giorno, e più di 1.700 destinazioni raggiunte.',
-    bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno e più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
+    /* ⚠️ 6 nov 2026, REFUTATA dalla fonte che la slide stessa cita, e il
+       commento qui sopra lo diceva già: i 10.300 collegamenti sono di
+       Busitalia, le 1.700 destinazioni sono dell'offerta Trenitalia nel suo
+       insieme. Erano cuciti in una frase sola, come se fossero lo stesso
+       soggetto — ed è un numero loro, su una slide del loro mestiere. */
+    b: 'Interamente vostra: 10.300 collegamenti al giorno. E l’offerta integrata treno più bus arriva a più di 1.700 destinazioni.',
+    bBreve: 'Busitalia è interamente vostra: 10.300 collegamenti al giorno, dentro un’offerta integrata che arriva a più di 1.700 destinazioni. Da gennaio porta anche City Sightseeing.',
     fonti: ['busitalia', 'ttgOfferta'],
   },
   {
@@ -429,8 +525,8 @@ export const GIA: Card[] = [
     k: 'Aria',
     t: 'Air-Rail dal 2023, e un laboratorio comune',
     anc: 'Il volo, già in prova',
-    b: 'Partito nel 2023, e da marzo c’è un laboratorio comune. A maggio ITA Airways ha firmato anche con Italo.',
-    bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo è nato un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
+    b: 'Partito nel 2023, e da marzo c’è un memorandum che istituisce un laboratorio comune. A maggio ITA Airways ha firmato anche con Italo.',
+    bBreve: 'Il biglietto integrato con ITA Airways è partito nel 2023, e a marzo un memorandum ha istituito un laboratorio comune sull’intelligenza artificiale. A maggio la stessa compagnia ha firmato anche con Italo.',
     fonti: ['itaAirways', 'itaItalo'],
   },
 ];
@@ -443,8 +539,8 @@ export const PRIMA: Card[] = [
     k: 'Con chi, adesso',
     t: 'Quello che avete appena firmato',
     anc: 'Un accordo che esiste già',
-    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma e dal 2027 collega i due sistemi di prenotazione. È il caso da cui partire: ha una data, e il perimetro l’avete scelto voi.',
-    bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione dal 2027. È il caso da cui partire.',
+    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma, e da gennaio 2027 un motore di prenotazione collega i due sistemi. La prima domanda è quanto ne copra già.',
+    bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione da gennaio 2027. È il caso da cui partire: quanto copre già?',
     fonti: ['costaTtg'],
   },
   {
@@ -471,10 +567,16 @@ export const PRIMA: Card[] = [
        l'orchestrazione, ma dove girano quei dati è una domanda da legale, non
        da slide. Qui si dice il fatto e si lascia la domanda aperta. */
     k: 'La Cina, dove siete già',
-    t: 'Vendete dentro WeChat dal 2025',
+    /* ⚠️ 6 nov 2026, panel: due affermazioni cadevano cliccando il link in
+       calce alla slide. «Non c'è un vostro sito in cinese» — ma la fonte
+       citata È una pagina di trenitalia.com in cinese: in sala si apre il
+       link che sta sotto, non le rotte /zh e /cn. E «dal 2025» non è nella
+       fonte, che annuncia una nuova offerta su un canale già attivo e parla
+       di un raddoppio «rispetto all'anno precedente». */
+    t: 'Vendete dentro WeChat',
     anc: 'Un canale che non vi racconta',
-    b: 'Non c’è un vostro sito in cinese: c’è un mini-program che vende Frecce, Intercity e regionali. Le vendite su quel mercato sono raddoppiate in un anno, e quello che quel canale sa di chi compra vive dentro WeChat.',
-    bBreve: 'Non c’è un sito in cinese: c’è un mini-program che vende, e le vendite su quel mercato sono raddoppiate in un anno.',
+    b: 'Il canale cinese non è un sito transazionale: su trenitalia.com c’è una pagina in cinese che porta al mini-program WeChat, e si compra lì. Nel 2025 le vendite su quel mercato sono raddoppiate, e quello che il canale sa di chi compra vive dentro WeChat.',
+    bBreve: 'Il canale cinese passa dal mini-program WeChat, non da un sito transazionale: nel 2025 le vendite su quel mercato sono raddoppiate rispetto all’anno prima.',
     fonti: ['trenitaliaCinese', 'fsCina'],
   },
 ];
@@ -491,9 +593,21 @@ export const PRIMA: Card[] = [
    decidendo. Questo capitolo è quello del «prima», quindi è qui che la vendita
    dentro l'assistente appartiene.
 
-   PERCHÉ NON È UNA NOSTRA IDEA: alla stessa riunione hanno dichiarato che
-   «acquistare direttamente dai canali agentici» è una delle ambizioni e dei
-   pilastri su cui stanno già lavorando. La slide parte da lì, non da noi.
+   PERCHÉ NON È UNA NOSTRA IDEA, e dal 6 nov 2026 lo dice una fonte PUBBLICA
+   invece di una riunione: il comunicato del Gruppo del 5 marzo 2026 mette
+   «acquisto biglietti tramite agente AI» fra i traguardi dichiarati per il
+   2026. Prima la frase poggiava su quanto detto a voce in una riunione, e
+   «ce l'avete detto voi» è una fonte che in sala non si può mostrare.
+
+   ⚠️ NON SI DICE «canali agentici» (6 nov 2026, panel). È un calco da
+   «agentic channels», e in casa loro «canale agenziale» è la rete delle
+   agenzie di viaggio, cioè il capitolo 06 di questo stesso documento: due
+   cose diverse con parole quasi identiche, a quattro capitoli di distanza.
+   Si dice «dentro la conversazione».
+
+   ⚠️ E SE LA VENDITA AVVIENE LÌ, È UN CANALE DISTRIBUTIVO NUOVO, non solo un
+   innesto di piattaforma: di chi è quel cliente, quanto costa quel
+   passaggio, chi emette e chi assiste. Sono domande, e le facciamo noi.
 
    ⚠️ VINCOLI VERIFICATI il 16 ott, nessuno negoziabile.
    · Il prodotto si chiama LLM Apps ed È annunciato pubblicamente: una frase nel
@@ -508,15 +622,15 @@ export const PRIMA: Card[] = [
 export const CANALE: Card[] = [
   {
     k: 'La direzione',
-    t: 'Vendere dentro i canali agentici',
+    t: 'Vendere dentro la conversazione',
     anc: 'Una direzione che si apre',
-    b: 'Non è una proposta nostra: è una direzione che si sta aprendo. Quanto è già sul vostro tavolo?',
+    b: 'Non è una proposta nostra: «acquisto biglietti tramite agente AI» è un vostro traguardo dichiarato per quest’anno.',
   },
   {
     k: 'Che cosa cambia',
     t: 'La risposta diventa anche il banco',
-    anc: 'È il viaggiatore a chiamarvi',
-    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta, e poi va altrove a comprare.',
+    anc: 'È il viaggiatore a chiamarvi',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta, e poi va altrove a comprare. Se un giorno comprasse lì, di chi è quel cliente e chi emette?',
   },
   {
     /* 17 ott, due passate. Prima la card non nominava il prodotto (residuo di
@@ -540,7 +654,13 @@ export const CANALE: Card[] = [
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
   { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
-  { v: '70.000', l: 'punti vendita fuori dalle biglietterie', s: 'tabaccherie, bar, edicole, ricevitorie e self service sul Regionale: dato del 2014, da aggiornare insieme' },
+  /* ⚠️ 6 nov 2026, panel: la terza cifra erano i «70.000 punti vendita»,
+     affiancati alle 12.400 agenzie con lo stesso peso — due reti diverse,
+     due prodotti, due contratti, e un dato del 2014 accanto a uno del 2025.
+     Dichiarare l'età non basta: in proiezione si legge il numero. Al loro
+     posto il moltiplicatore che manca davvero all'aritmetica del capitolo,
+     ed è loro e del 2026: i mercati. I 70.000 restano nel capitolo 06. */
+  { v: '5', l: 'i mercati che nominate', s: 'Europa, Nord America, Asia, Sud America e Australia: i mercati indicati nell’intervista dell’ottobre 2026' },
 ];
 
 export const UNPOSTO: Card[] = [
@@ -573,7 +693,7 @@ export const UNPOSTO: Card[] = [
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
 export const RETE = {
   numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Più di <strong>settantamila</strong> sono i punti vendita fuori dalle biglietterie (tabaccherie, bar, edicole, ricevitorie), che vendono il Regionale: è un dato del 2014.',
+  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Altra rete e altro prodotto: <strong>oltre 70mila</strong> sono i punti vendita fuori dalle\u00a0biglietterie che vendono il Regionale. È un dato del 2014, da riconfermare insieme.',
   domanda:
     // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
     // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
@@ -588,7 +708,7 @@ export const RETE = {
     // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
     // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
     // resta, ma come principio sui sistemi, non come informazione su di loro.
-    'Si misura mentre si mette mano al sistema che serve quel canale. Del canale intermediato, oggi che cosa riuscite a vedere?',
+    'La misura entra nel giro di un intervento già aperto sul sistema con cui le agenzie vendono. Dopo diventa un progetto a sé, con il suo budget. In che stato è quel sistema, oggi?',
 };
 
 /* 20 ott: il blocco era scarno e il valore non si vedeva — tre righe che
@@ -640,11 +760,59 @@ export const ASK = {
     'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scegliete voi, e vale l’accordo di riservatezza come per qualunque altro dato. Se estrarlo costa più di qualche ora, guardiamo quello che c’è.',
 };
 
+/* ── Capitolo 07 · che cosa esce dalla mezza giornata ──────────────────────
+   6 nov 2026, panel. La richiesta era la parte migliore del documento — tutte
+   e sei le personas l'hanno messa fra le cose da non toccare — e si fermava un
+   passo prima di diventare una data: diceva benissimo che cosa serve a noi e
+   non diceva che cosa resta a loro, chi deve essere nella stanza e quale
+   numero ne esce. Tre frasi, in ordine di chi le ha chieste: «io dico sì e
+   poi il sì non si trasforma in una data» (la Direzione Sales), «non è
+   difendibile dai miei acquisti» (la Direzione Generale), «non so a chi
+   girarla» (la società tecnologica del Gruppo).
+
+   ⚠️ LA FORMULA DELL'ASK NON SI TOCCA e la richiesta non si allarga: questo
+   blocco sta su una slide SUA, dopo. Mezza giornata resta mezza giornata. */
+export const ESITO = {
+  eyebrow: 'Perché un sì diventi una data',
+  titolo: 'Che cosa esce da quella mezza giornata',
+  voci: [
+    {
+      k: 'Che cosa vi lasciamo',
+      t: 'Una lettura del venduto, e la mappa dei buchi di dato',
+      b: 'Resta a voi, senza vincoli su quello che decidete dopo: non è un passo dentro un affidamento.',
+    },
+    {
+      k: 'Chi serve nella stanza',
+      t: 'Chi possiede quel dato, chi governa il\u00a0sistema, e noi',
+      b: 'Vale l’accordo di riservatezza in essere, e l’estratto aggregato esce con il via libera di chi lo possiede.',
+    },
+    {
+      k: 'Il numero che guarderemmo',
+      t: 'Venduto per agenzia, e quanta parte è multiprodotto',
+      b: 'Più il peso del canale intermediato su quello diretto: è la misura su cui si capisce se vale la pena continuare.',
+    },
+  ],
+  /** ⚠️ La riga che tiene la richiesta al suo posto: senza, questo blocco la
+   *  allarga da solo, ed era esattamente la cosa che il panel chiedeva di non
+   *  fare. */
+  chiusa: 'Mezza giornata, e alla fine decidete voi se c’è un seguito. Niente licenze, nessuna prova tecnica.',
+};
+
 export const DOMANDE_APERTE = [
   'Quanta parte delle vendite passa dai vostri canali e quanta dagli intermediari, e quale dei due volete far crescere?',
   'Quale dato esiste oggi per rete e per agenzia, e chi lo possiede?',
   'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
   'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
+  // 6 nov 2026, panel: la mappa copre chi compra per sé o tramite un'agenzia
+  // di viaggio, e il corporate — convenzioni, business travel, grandi clienti
+  // — ha un percorso tutto suo, che sul checkout pubblico non passa.
+  // Dichiararlo fuori perimetro costa una riga; farselo chiedere, l'ora.
+  'Il canale corporate — convenzioni, business travel, grandi clienti — non è in questi quattro punti: ha un percorso suo. È in questo perimetro, o è un altro tavolo?',
+  // 6 nov 2026, panel, dal seggio della Direzione Sales: in un canale
+  // intermediato quello che muove il venduto sono l'incentivo e la
+  // convenzione — un'agenzia vende ciò che le rende di più. La misura è una
+  // leva a due mani, e la seconda è loro: meglio chiederlo noi.
+  'Senza toccare le condizioni con le agenzie, che cosa cambia aver misurato?',
 ];
 
 /* ── Che cosa serve, concretamente ─────────────────────────────────────────

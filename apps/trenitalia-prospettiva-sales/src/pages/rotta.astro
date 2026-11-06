@@ -8,7 +8,7 @@ import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug } from '../data/chapters';
 import MappaIdee from '../components/MappaIdee.astro';
-import { ASK, COVER, DOMANDE_APERTE } from '../data/contenuti';
+import { ASK, COVER, DOMANDE_APERTE, ESITO } from '../data/contenuti';
 import bg_alba_aperta from '../assets/generated/bg/bg-alba-aperta.webp';
 import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
@@ -64,7 +64,7 @@ const first = CHAPTERS[0];
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_alba_aperta.src})`}></div>
-      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug="rotta" />
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="rotta" />
     </Slide>
 
     <!-- ── Il passo ──────────────────────────────────────────────────────── -->
@@ -83,9 +83,15 @@ const first = CHAPTERS[0];
         <div class="xd-sl-head">
           <p class="xd-n">Le quattro idee, in una pagina</p>
           <h2 class="xd-h2">Quale di queste quattro vale la pena aprire per prima?</h2>
+          {/* ⚠️ 6 nov 2026, panel: sei nomi marcati «si aggiunge» arrivavano
+              senza una riga che dicesse dove finiscono rispetto a quello che
+              il Gruppo ha già scelto. Qui la riga c'è, e richiude il cerchio
+              aperto dalla slide «Dove ci innestiamo» del capitolo 02. */}
           <p class="xd-sub">
-            Su tutte e quattro una parte della tecnologia è già in casa vostra. Da dove
-            conviene cominciare lo sapete voi meglio di noi: è la domanda con cui chiudiamo.
+            Su tutte e quattro una parte della tecnologia è già in casa vostra. Nessuna sostituisce
+            la piattaforma del dato di cliente scelta a marzo: si appoggiano a quello che gira già.
+            Da dove conviene cominciare lo sapete voi meglio di noi, ed è la domanda con cui
+            chiudiamo.
           </p>
         </div>
         <MappaIdee />
@@ -99,6 +105,34 @@ const first = CHAPTERS[0];
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
         <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
+      </div>
+    </Slide>
+
+
+    <!-- ── Che cosa esce dalla mezza giornata ─────────────────────────────
+         6 nov 2026, panel. Sta DOPO la richiesta e su una slide sua: la
+         formula dell'ask è la cosa che tutte e sei le personas hanno messo
+         fra quelle da non toccare, e infilarci dentro tre blocchi l'avrebbe
+         riscritta. Qui si risponde alle tre domande che impedivano al sì di
+         diventare una data — che cosa resta a noi, chi deve esserci, quale
+         numero ne esce — senza allargare di un'ora la richiesta. -->
+    <Slide id="slide-esito" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{ESITO.eyebrow}</p>
+          <h2 class="xd-h2">{ESITO.titolo}</h2>
+        </div>
+        <div class="tp-ancore" data-stagger data-reveal data-reveal-delay="0.12">
+          {ESITO.voci.map((v) => (
+            <div class="tp-anc">
+              <p class="tp-anc-k">{v.k}</p>
+              <p class="tp-anc-n">{v.t}</p>
+              <p class="tp-anc-b">{v.b}</p>
+            </div>
+          ))}
+        </div>
+        <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESITO.chiusa}</p>
       </div>
     </Slide>
 

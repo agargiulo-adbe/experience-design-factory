@@ -132,7 +132,11 @@ export const NOTE: Record<string, NotaSlide[]> = {
     { id: 'slide-idea',
       dire: 'Un master approvato una volta, e da lì le varianti per mercato e per lingua.',
       fatto: 'La referenza è Santander Brasil: 530 offerte al retail e 800 alle PMI con oltre 4.400 asset, e il tempo di lancio sceso da giorni a minuti.',
-      attenzione: 'La validazione automatica di marchio oggi lavora in inglese: la revisione umana sulle altre lingue resta, ed è scritto in slide.' },
+      // ⚠️ 6 nov 2026: la riga diceva «la validazione lavora in inglese», ed
+      // è falsa — le note di rilascio dichiarano 12 lingue in disponibilità
+      // generale più 5 in beta. Era un limite inventato a nostro danno, e
+      // stava in slide come prova di onestà.
+      attenzione: 'La validazione di marchio copre 12 lingue in disponibilità generale più 5 in beta: se chiedono l’elenco, si manda la pagina delle note di rilascio. Limitata all’inglese è l’analisi del tono del testo, che è un’altra funzione.' },
     { id: 'slide-aritmetica',
       dire: 'Il conto è semplice: un venditore che conosceva un prodotto oggi ne vende tre, più i servizi. A mano quel numero di versioni non esce.',
       seChiedono: { d: 'Vuol dire sostituire l’agenzia creativa?', r: 'No. Vuol dire che il master resta loro e le varianti smettono di essere lavoro a mano.' } },

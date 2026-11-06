@@ -30,13 +30,16 @@ interface Props {
   punto: string;
   /** Lo slug, per generare l'agenda dal registro delle slide. */
   slug: string;
+  /** Di chi è il tavolo: una riga sotto il punto, dove il capitolo tocca il
+   *  perimetro di un'altra direzione. Vive in `chapters.ts`. */
+  tavolo?: string;
   /** Mostra la bussola delle quattro idee con questo capitolo acceso. Si passa
    *  solo sui quattro capitoli che SONO un'idea: sull'apertura e sulla domanda
    *  le idee non sono ancora state dette, e anticiparle sul divisore toglie
    *  alla slide che le annuncia il suo mestiere. */
   bussola?: boolean;
 }
-const { num, titolo, punto, slug, bussola = false } = Astro.props as Props;
+const { num, titolo, punto, slug, tavolo, bussola = false } = Astro.props as Props;
 /** ⚠️ L'agenda è GENERATA, mai scritta a mano: le agendine scritte a mano sono
  *  divergite dal contenuto senza che nessun gate se ne accorgesse. Il perché
  *  sta in `src/data/slides.ts`. Qui sta nel pannello, sotto il punto: il
@@ -52,6 +55,7 @@ const voci = agendaCapitolo(slug);
   <div class="xd-div-dx" data-reveal data-reveal-delay="0.12">
     <p class="xd-div-oc">Il punto</p>
     <p class="xd-div-l">{punto}</p>
+    {tavolo && <p class="xd-div-tav">{tavolo}</p>}
     {voci.length > 0 && (
       <ol class="xd-div-ag" data-stagger>
         {voci.map((v, i) => (
