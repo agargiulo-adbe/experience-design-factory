@@ -5,6 +5,102 @@
 
 ## 11. Change log recente
 
+### Change log — i tre livelli, i quattro giri di `/umanizza`, la fisarmonica nel motore e la referenza che mancava (2026-11-06) → §37.15 (Parte 16)
+
+**Sette commit** (`04a718d` `06435dd` `1e36957` `d0f4a57` `062f210` `6a99e9c` `f466943`), quasi
+tutti su `apps/trenitalia-prospettiva-sales`, due anche su `packages/core` e sul template.
+
+**I tre livelli — idea, capability, prodotto.** Il rilievo del dry run del 5 novembre era «dove
+sta Adobe? Non l'ho vista: siamo troppo sullo sfondo», e si misurava: **tutte e sei le istanze di
+`CheServe` stavano in `slot="nota"` di un drill-down**, cioè i nomi dei prodotti vivevano nello
+strato della profondità mentre quella stanza li vuole in quello che si proietta. `idee.ts` porta
+ora `capability` e `gruppi`, che **referenziano** i gruppi di `SERVE`: gli stati dei prodotti
+restano letti dal contratto e vivono in un posto solo. Nuovi `MappaIdee.astro` (la mappa intera),
+`PezziPerStato.astro` e `Bussola.astro` (il «siamo qui» sul divisore dei quattro capitoli che
+*sono* un'idea). Via lo stato «prezzo già fissato»: l'accordo si rinegozia.
+
+**`/umanizza`, tutti e quattro i giri.** Giro 0 (`06435dd`): nove slide su 36 riscritte. Il
+difetto più grave non era un titolo debole — `ricerca/slide-canale` diceva «oggi la risposta manda
+altrove a comprare» e **la nostra misura, tre slide prima, dice il contrario** (su ChatGPT il link
+è «prenota con Trenitalia»). Giri 1-3 (`1e36957`): i telai sono rimasti **18, identici uno per
+uno**, quindi nessun marcatore è stato spostato invece che tolto; su `rete` i perni retorici sono
+passati da 7 per 100 stringhe a **0**. ⚠️ Il Giro 3 ha riaperto **le due referenze che
+`audit:fonti` non riesce ad aprire** (business.adobe.com blocca gli accessi automatici), quindi le
+uniche mai verificate da un gate: Telmore regge e meglio di come lo dicevamo (classifica a mano
+9%, del sistema 11%), ma **«con la stessa vetrina di prima» nella pagina non c'è** — era una
+nostra deduzione dentro una referenza; e la cifra di Santander **diceva più della fonte**.
+
+**Il motore — due drill-down sulla stessa slide non stanno più aperti insieme.** `HowItWorks`
+prende **`gruppo`**: due blocchi con lo stesso nome si escludono a fisarmonica. Serviva perché una
+slide può portare due viste **alternative** della stessa cosa, e aperte insieme sommano le
+altezze: misurato **105 px oltre il fondo** a 1920×1080, più uno scroll nascosto (check `k`,
+HARD). ⚠️ **Il gate non lo vedeva**: `exp` apre una disclosure per volta, quindi la slide passava
+tutti e tre i viewport e si rompeva solo in mano a chi le apriva tutte e due. L'ha trovata una
+persona, guardando.
+
+**Il motore — lo zoom del deck.** `zoom` sul `DeckContainer`: due comandi − e +, `+`/`-`/`0` da
+tastiera, sei gradini da 85% a 140%, la scelta ricordata in `localStorage['edf:zoom']`. Scala la
+**radice** e non il browser, così la composizione resta quella verificata dall'audit (lo zoom del
+browser cambia la larghezza del viewport e con lei la safe-area). ⚠️ La base della radice si
+**legge a runtime**, non si assume: non è un valore solo (18px in proiezione, 20/24/28 sopra i
+2000 con `wallScale`), e una base scritta a memoria cambiava la scala anche a zoom 100%. ⚠️
+**Opt-in, acceso SOLO nel template**: lo ereditano le experience nuove, le attuali restano spente
+— ogni gradino è una composizione diversa e andrebbe ripassata con `audit:deck`. Verificato
+inerte dove è spento.
+
+**I prodotti, a colpo d'occhio.** Ogni prodotto ha il suo colore stabile (`COLORE_PEZZO`), così la
+ricorrenza si vede: Analytics e Target tornano nel viaggio e nelle agenzie. ⚠️ Il colore sta nel
+**punto**, non nel nome — colorare i nomi entra in conflitto col colore che dice lo stato, chiede
+due palette per chiaro e scuro, e a corpo piccolo porta metà dei nomi sotto AA. Via anche la
+legenda «già vostro, nel contratto · si aggiunge, oggi non c'è» da tutte le slide: spiegava due
+simboli che ora si spiegano da soli.
+
+**Le note per chi presenta** (`/relatore/`, linkata dalla console del deck). Per un collega che
+apre il deck un'ora prima di entrare in sala: una riga per slide, sempre nello stesso ordine —
+*Dillo così · Il fatto · Se chiedono · Attenzione*, incolonnate e colorate per famiglia. **Si
+genera dal registro delle slide**, quindi una slide senza nota compare in rosso invece di passare
+inosservata. ⚠️ È pubblica come il deck: niente dati di contratto, niente nomi, niente misure
+interne, e **nessuna indicazione su che cosa non si nomina in quella stanza** — quella parte resta
+nel dossier riservato.
+
+**I divisori che si aprono.** Il problema non erano i prompt: la famiglia `ink` rimappa la
+luminanza fra `#141a25` e `#7c8aa3`, quindi il punto più chiaro restava un'ardesia media e
+**nessuna immagine poteva uscire luminosa**, «at night» nel prompt o no. Tre slot nuovi (`alba`,
+estremo chiaro `#cfd7e4`) per i tre capitoli che aprono una possibilità. ⚠️ Al primo giro erano
+stati schiariti **sul posto**: ma `bg-journey` fa da fondo anche a sei slide di contenuto, e
+**nove blocchi di testo sono scesi sotto AA**. Ora sono asset separati. ⚠️ `build-assets`
+**riscrive `provenance.json` con i soli slot generati**: dopo un giro parziale va ricomposto a
+mano.
+
+**Il taglio da dieci minuti, allineato al 100%.** La mappa delle idee rientra nella slide dei
+quattro punti come terzo strato dietro «Scopri come» (regola dei due registri: i prodotti sono
+profondità); nel taglio invece **diventa una slide**, perché come drill-down non entrava e perché
+quella è la versione che l'interlocutore gira al suo capo. Otto slide invece di sette, dichiarate
+in `cut-routes.ts` col motivo. Trovata e rimossa a mano una **versione breve orfana**
+(`RETE.dopoBreve`): non rendeva più da nessuna parte, ed è il modo esatto in cui i due percorsi
+ricominciano a divergere — `audit:taglio` non la vede, perché guarda quello che è reso.
+
+**La referenza che mancava sul canale agenziale** (`f466943`). L'idea sulle agenzie era l'unica
+delle quattro senza referenza, ed è quella su cui si fa la richiesta. Ora porta **Unipol**: la
+scala dalle **loro pagine** col link («+2.000 agenzie sul territorio», «17,6 milioni di clienti»,
+lette il 6 nov), il meccanismo dall'**intervento ad Adobe Summit 2026, sessione CP16**, citato
+come intervento e **senza link** perché una sessione non è una pagina che si apre. Tre cose tenute
+fuori, e il perché conta più di quello che c'è: le cifre del deck del Summit (2.100 agenzie, 16,8
+milioni di clienti) **hanno un anno e sono superate dalle loro stesse pagine**; le metriche della
+sessione (−20% troubleshooting, 2× root cause, −90% tempo di analisi) **misurano la velocità
+dell'analisi, non il venduto per rete** e sotto una frase sulle agenzie sarebbero la prova
+sbagliata; e la **quotazione in agenzia non si dice**, perché nei materiali il preventivo compare
+solo sui flussi digitali del sito. Nessun ruolo e nessun nome: il repo è pubblico, e sul titolo di
+chi ha parlato il registro d'account segnala un **conflitto fra la sua firma e il profilo
+pubblico**, da chiarire prima di usarlo in un documento.
+
+**Gate a fine giornata:** `copy-audit` **0 HARD e 0 SOFT** su 512 stringhe · `audit:wrap` **1**,
+falso positivo («IT», codice di mercato in uno `<span>`) · `audit:deck` **0 HARD** su 129 misure
+(soft 79, fisiologici su un deck ad ancore) · `audit:ink` **pulito** su 737 blocchi e 14
+«Scopri come» aperti · `audit:taglio` **allineato** · `audit:fonti` nessun link rotto, **1 SOFT
+dichiarato col motivo** (la homepage di Unipol è davvero il posto dove quelle cifre stanno) ·
+`audit:og` PASS · `audit:docs` pulito · `pnpm build` verde su tutte le app · `astro check` 0.
+
 ### Change log — `/umanizza` passa a quattro giri: il Giro 0 decide che cosa dice la slide (2026-11-05)
 
 **Un commit** (`de91557`), quattro file di metodo: il comando `.claude/commands/umanizza.md`,
@@ -434,28 +530,3 @@ da più lontano, il rapporto *scendeva*. Il testo dentro una figura si lega al v
 - **Trenitalia Prospettiva — ogni idea dice con che cosa si fa, e quasi sempre è roba che hanno già** (`8ee387a`): il feedback dopo la presentazione, punto per punto. **L'apertura citava il 2025** mentre le due slide dopo erano già sul TTG 2026 — aprire un documento del 2026 con la dichiarazione dell'anno prima si fa rispondere «quello lo dicevamo allora»; ora porta le sue parole del **15 ottobre 2026**, verificate sull'articolo, e dove dice di investire: i canali digitali diretti. **«Che cosa serve, concretamente» su ogni idea**, sei blocchi con lo stesso titolo ovunque, dentro il drill-down perché la slide regga anche chiusa; la legenda ha **tre stati e non due**, perché l'accordo quadro arrivato quella mattina fissa il prezzo di prodotti non ancora acquistati — dire «si aggiunge» di qualcosa che ha già il suo prezzo nel contratto sarebbe falso in difetto (letto sul contratto: Firefly arriva con le postazioni Creative Cloud, Workfront ha il prezzo bloccato). **La data collaboration ha una slide sua** invece di una riga di fonte in fondo. Nel capitolo del contenuto entrano **Firefly e Workfront**, e il paragrafo del drill-down era **bianco su fondo chiaro** perché il corpo non dichiarava un inchiostro suo: nessun check lo vedeva. **Il canale delle agenzie** era l'unico senza i prodotti dietro. Due slide nuove registrate nell'admin, perché con il blocco aperto le due d'origine uscivano dalla safe-area e **il contratto dice di dividere, non di rimpicciolire il tipo**. Gate: `audit:deck` 0 HARD su 9 rotte a tre viewport con ogni disclosure ri-misurata da aperta · `ink` PULITO su 347 blocchi · `copy-audit` 0 HARD e 0 SOFT su 273 stringhe.
 - **Trenitalia Prospettiva — la trascrizione dice che su WhatsApp non si compra, e il deck lo diceva** (`4269b4a`): riascoltata la call per intero, **476 segmenti**, non il riassunto automatico, che su questo punto era vago. Il deck scriveva «dentro WhatsApp l'assistente porta al carrello»: in riunione la parola «vendono» è stata **corretta a voce da chi l'aveva detta** — è un canale di assistenza che rimanda il link su app e sito, provato a mano. Era un conflitto fra due fonti nostre (la pagina CartaFRECCIA Oro lascia intendere l'acquisto, la prova diretta dice di no): **vince la prova diretta**, e la fonte ora porta il conflitto scritto perché nessuno lo rifaccia. **LLM Apps è pull, non push** — è il viaggiatore a richiamare l'app nella conversazione, non pubblicità dentro ChatGPT: era la domanda rimasta aperta più a lungo. **Il DAM non è del marketing di Trenitalia** ma di un'altra società del gruppo: «già vostro» diventa «c'è già nel gruppo, da estendere». **Di Firefly hanno la versione base**, quella delle postazioni Creative Cloud; verificato sull'accordo quadro che i modelli personalizzati non ci sono, né licenziati né a prezzo bloccato.
 
-### Change log — la posta si consegna come bozza formattata, e gli strumenti entrano nel repo (2026-10-19) → commit `620a605` `48af440` `46e666a`
-
-- **Una mail chiesta si consegna come bozza già impaginata** (`620a605`): regola dell'owner del 19 ott, scritta in `docs/CLAUDE.md`. `docs/Claude/email.py --bozza --a --cc --oggetto` apre in Outlook la bozza **formattata**, destinatari compilati, e **non invia**; prima il formato c'era ma restava in un `.html` da incollare a mano, cioè un passaggio che qualcuno prima o poi salta. **La cosa che non era ovvia**, ed è il motivo per cui prima si incollava: la proprietà `content` di un outgoing message **rende** l'HTML — il readback inganna, perché `content of msg` restituisce i tag e sembra che Outlook li tratti come testo. Si chiude solo **fotografando la finestra**. Resta scritto come metodo: quando lo strumento dice una cosa e il risultato ne dice un'altra, comanda il risultato. Registrati anche i due sbarramenti del connettore Microsoft 365 che costavano due chiamate buttate a ogni giro (manca `Mail.ReadWrite` → 403; rifiuta l'HTML con `style=`, quindi il nostro formato non ci passerebbe comunque) e una trappola trovata per strada: `every outgoing message` **non è l'elenco delle bozze**, è tutta la posta in uscita storica, e non ci si cicla sopra per cancellare. ⚠️ Nello stesso commit viaggia anche la sezione «WhatsApp è sempre una fonte», scritta da una sessione precedente e rimasta non committata nello stesso file.
-- **Gli strumenti di posta entrano nel repo** (`48af440`): la regola rimandava a `docs/Claude/email.py` ma quella cartella era ignorata per intero — la regola nel repo, lo strumento no, e in un clone il comando non esiste. Il motivo dell'esclusione era vero e **non lo è più**: i dati riservati del Radar e della Sintesi task sono traslocati in `docs/Adobe/Radar/` il 12 ott (lo racconta `LEGGIMI.md`). Entrano `email.py` (compone le bozze nel formato di casa) e `posta.py` (cerca nello store locale di Outlook senza sbagliare il verdetto). Il guardiano resta **fail-closed su due livelli**: si ignora tutto e si riammettono i soli file nominati — verificato che un `export-cliente.csv` lasciato lì dentro resta fuori da git. Prima di tracciare, tolti da `email.py` gli **indirizzi veri di tre colleghi** rimasti nell'esempio d'uso della docstring: su un repo pubblico vale la stessa regola dei nomi dei referenti.
-- **Il gate `docs-guard` impara gli strumenti, uno per uno e non la cartella** (`46e666a`): il commit precedente era stato pushato **con il gate rosso e sei rilievi**, guardando la coda dell'output invece di contare i rilievi — esattamente l'errore contro cui esiste la nota «un PASS che arriva in fretta si conta, non si legge». Il gate ha **due liste** e se ne conosceva una sola: oltre alle riammissioni dichiarate nel `.gitignore`, tiene un proprio elenco di ciò che può essere **tracciato** sotto `docs/`. La riammissione è **nominale, non a cartella** — verificato creando un `intruso.py`: due rilievi, come deve. Le due liste restano separate e si allineano a mano, ed è voluto: tracciare un file nuovo sotto `docs/` su un repo pubblico sono **due decisioni, non una**.
-
-### Change log — il TTG nel deck della Direzione Sales, e quattro fatti dati per buoni che non reggevano (2026-10-16/17) → §37.11 (Parte 16), commit `3bcf049`→`f9d882e`
-
-- **La review interna ha spostato l'asse**: due dei canali conversazionali che stavamo per proporre il cliente li ha **già** (un mini-program cinese che vende dal 2025, un assistente su messaggistica che porta al carrello in Italia), e il canale agentico è **un pilastro che ha dichiarato lui**. Il capitolo è passato da «ecco un'opportunità» a «ecco dove siete già, e qual è il passo». Dentro sono entrati gli annunci del **TTG** — la parola dell'anno in apertura, il protocollo con la compagnia di crociere come caso da cui parte la data collaboration, l'offerta su gomma assorbita in una card esistente perché la griglia è a tre — e la **proposta UE del 13 maggio 2026**, marcata come proposta e non come norma.
-- **Quattro affermazioni della riunione smentite dalla verifica**, ed è il valore della passata: i rivenditori non sono una minaccia (il cliente li corteggia con provvigioni pubblicate, e la valutazione d'impatto europea dice che la gran parte del venduto online resta diretto → riscritto come **argomento di margine**); la **referenza citata a voce non esiste**, e la decisione d'account è di non metterne **nessuna** — un caso di un altro settore apre la domanda «e nel nostro?» invece di chiuderla; il prodotto agentico **non è in general availability** ma solo annunciato, quindi in slide restano **nome e concetto e lo stato si dice a voce**, perché il deck gira senza chi l'ha presentato; l'accordo con la compagnia aerea **non è in scadenza** (a scadere è un accordo con un'altra compagnia), e verificando è uscito che **lo stesso vettore ha firmato la stessa intesa con l'operatore concorrente** — l'asset c'è e non è esclusivo.
-- `audit:fonti` ha imparato il **terzo falso allarme** (`NGHTTP2_INTERNAL_ERROR` e parenti → «bloccato», non «irraggiungibile»), e una fonte è stata presa da una testata di settore perché il sito del vettore risponde **403** a ogni accesso automatico. Gate al 17 ott: `audit:deck` **0 HARD**, `copy-audit` 0 e 0, `wrap` pulito, `ink` pulito su 349 blocchi, `taglio` ALLINEATO, nessun link rotto.
-
-### Change log — il dossier esposto si chiude, il contratto del motore diventa un gate, e ogni link porta la sua anteprima (2026-10-15/16) → commit `b84f3a8` `8ee761f` `b028d7b` `6f0dc68` `5ccef30` `57f5f0d` `6d2c763` `a70eabc`
-
-Otto commit che il giro di handover del 17 ott aveva lasciato fuori e dichiarato come buco. Raccontati qui dai diff, non dai messaggi.
-
-- **Il P0 più vecchio si chiude**: il dossier FSTechnology era servito **in chiaro** nel file `.astro` — `apps/trenitalia-connessioni/src/pages/dossier.astro` passa da **533 righe a 43**, un wrapper gated sul motore unico, e il contenuto riservato esce dal bundle pubblico. Nello stesso commit il **disclaimer stampava i tag** del markup. Resta aperto solo il **P2 sulla storia di git**, che è una decisione dell'autore.
-- **Il motore dei dossier migliora dove si leggeva peggio** (`8ee761f`): la gerarchia si apre e le **quattro colonne strette diventano due** — il difetto tipico dei dossier letti sul telefono.
-- **Due regole del motore smettono di essere solo scritte** (`b028d7b`): nasce **`scripts/core-contract-audit.ts`** (226 righe) e `dossier-audit` cresce. È lo stesso movimento di `audit:wrap` e `audit:taglio`: una regola affidata alla memoria di chi modifica non è una regola.
-- **Ogni link porta la sua anteprima** (`a70eabc`, 49 file): `pnpm og` genera firma, sigla del tipo e badge per tutte le app, con il gate **`pnpm audit:og`** (`scripts/og-audit.ts`). Serve soprattutto ai deck `noindex`: chi riceve il link in chat vede comunque il riquadro.
-- **Trenitalia Direzione Sales, tre correzioni** (`6f0dc68` `5ccef30` `57f5f0d`): **via il rifacimento di PICO**, che era affermato **senza fonte**; il **nome del prodotto esce dai requisiti**, come aveva chiesto il panel; ed entra il **canale che si estende** — dove il viaggio si cerca, presto si compra.
-- **Un dossier nuovo**: `apps/mef-giustizia-tributaria` (`6d2c763`), **Giustizia Tributaria del MEF** — app minimale con la sola pagina del dossier, come le due Intesa, più la migrazione `0029_seed_mef_giustizia_tributaria.sql` e la pagina che **mancava al deploy**. ⚠️ Non ha una sezione propria in questo handover: è l'unica cosa del 15-16 ott che resta da raccontare per esteso (da verificare con chi l'ha scritta).
-
-
----

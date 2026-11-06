@@ -198,3 +198,16 @@ In UniCredit `admin.astro`: `PAGE_REGISTRY` elenca le slide dei **6 capitoli in 
 
 > **§8 «Deck visual contract & audit» è nella [Parte 18](./HANDOVER-18.md)**: la Parte 1 aveva
 > superato il tetto di 48 KB il 21 ott 2026.
+
+## 9. Deploy & segreti
+
+- Repo pubblico `agargiulo-adbe/experience-design-factory`; Pages source = **GitHub Actions**.
+- Build unisce i `dist`: **root = factory-hub** (landing) + un sotto-percorso per ognuna delle 10 experience + `/console/` + `/showcase/`. Ogni app: `base = /experience-design-factory[/<app>]`, `trailingSlash: 'always'`. Max Mara è passata da root a `/generazioni-maxmara/`; l'hub serve gli **stub di redirect** per i vecchi deep-link maxmara root-level (preservano `location.search`).
+- Il job di deploy **ritenta** sui fallimenti transitori `syncing_files` di Pages e salta i commit stale.
+- Env di build: `PUBLIC_SUPABASE_URL` / `PUBLIC_SUPABASE_ANON_KEY` da **GitHub Actions secrets** (mai in repo). **Mai committare** `.env`/token/service_role.
+- SQL remoto: `supabase db query --linked` (serve `supabase link` + login account agargiulo-adbe).
+
+---
+
+---
+

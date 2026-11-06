@@ -396,6 +396,51 @@ trattandosi del messaggio privato di una collega. La trascrizione è stata fatta
 esportato a mano: l'audio non è mai uscito dalla macchina. ⚠️ La trascrizione **sbaglia i nomi
 propri**, come sempre.
 
+### 37.15 Il 6 novembre: i tre livelli, i quattro giri, e la referenza che mancava
+
+Giornata lunga, **sette commit**, e tre cose che vale la pena sapere prima di rimettere mano a
+questo deck.
+
+**Dove sta Adobe — i tre livelli.** Il rilievo del dry run si misurava: tutte e sei le istanze di
+`CheServe` stavano in `slot="nota"` di un drill-down. Ora ogni idea porta **capability** (che cosa
+bisogna saper fare, in termini di business) e **prodotti con lo stato**, e `idee.ts` *referenzia* i
+gruppi di `SERVE` invece di ricopiarli: il contratto resta letto in un posto solo. La mappa intera
+(`MappaIdee.astro`) si proietta in chiusura e si apre a richiesta sulla slide dei quattro punti; la
+**bussola** (`Bussola.astro`) dice «siamo qui» sul divisore dei quattro capitoli che *sono*
+un'idea. Ogni prodotto ha un colore stabile (`COLORE_PEZZO`) **nel punto e non nel nome**, perché
+il colore del nome collide con quello dello stato e a corpo piccolo scende sotto AA.
+
+**`/umanizza`, i quattro giri.** Giro 0: nove slide riscritte, e il difetto peggiore era una slide
+che **contraddiceva la nostra stessa misura** tre slide prima. Giri 1-3: telai fermi a 18, perni
+su `rete` da 7 a 0, e il Giro 3 ha riaperto **le due referenze che nessun gate riesce ad aprire** —
+trovando una deduzione nostra spacciata per fatto di Telmore e una cifra di Santander che diceva
+più della fonte. Registro completo in `docs/Ferrovie/UMANIZZA-giro0-prospettiva-sales-2026-11-06.md`
+(git-ignorato).
+
+**La referenza sul canale agenziale.** Era l'unica delle quattro idee senza, ed è quella su cui si
+fa la richiesta. Ora c'è **Unipol**, con la regola delle due fonti separate: la **scala** dalle
+loro pagine col link, il **meccanismo** dall'intervento ad Adobe Summit 2026 (sessione CP16),
+citato senza link. ⚠️ **Nessuna metrica è attribuita a loro**: quelle della sessione misurano la
+velocità dell'analisi, non il venduto per rete. ⚠️ Le cifre del deck del Summit sono **superate
+dalle loro stesse pagine**. ⚠️ Non si dice «quotazioni»: nei materiali il preventivo sta solo sui
+flussi digitali del sito. ⚠️ **Resta da coordinare con il thread del case study Unipol**, che è in
+lavorazione e deve ancora chiedere il materiale al cliente (voce nel backlog, Parte 2).
+
+**Tre trappole che questo giro ha trovato, e che valgono per ogni deck.**
+1. **Due drill-down aperti insieme sfondano la slide, e `exp` non lo vede** — ne apre uno per
+   volta. Risolto nel motore con `gruppo` su `HowItWorks` (fisarmonica), non con le spaziature.
+2. **`build-assets` riscrive `provenance.json` con i soli slot generati**: dopo un giro parziale
+   va ricomposto a mano, se no le voci degli altri asset spariscono.
+3. **Schiarire un asset condiviso rompe il contrasto altrove**: `bg-journey` fa da fondo anche a
+   sei slide di contenuto, e il primo tentativo ha portato nove blocchi sotto AA. Gli sfondi
+   chiari sono asset **separati**, usati solo sui divisori.
+
+**Le note per chi presenta** vivono in `/relatore/` e sono linkate dalla console. Si generano dal
+registro delle slide: una slide senza nota compare in rosso. ⚠️ **Sono pubbliche come il deck** —
+niente dati di contratto, niente nomi, e **nessuna indicazione su che cosa non si nomina in quella
+stanza**: quella parte resta nel dossier riservato, e chi presenta la legge da lì.
+
+
 ## 38. TIM — «Una campagna, molti formati» (stato di fatto, 12 ott 2026)
 
 `apps/tim-contenuti-su-scala` · tipo **Prospettiva** · 4 capitoli · accento `#004691` ·
