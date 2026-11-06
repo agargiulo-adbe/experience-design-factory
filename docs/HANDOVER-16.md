@@ -466,6 +466,88 @@ giusto — è così che sono stati fatti i commit del 12 ottobre, senza sfiorare
 
 ---
 
+### 37.16 Il panel del 6 novembre — due giri, e due regressioni fatte dalle correzioni
+
+**Il P0 che stava agli atti dal 4 novembre è chiuso.** Il verdetto precedente era del
+**12 ottobre** e da allora il deck era stato riscritto quattro volte: di quello che va in sala
+il 10 novembre il panel non aveva mai visto niente. Sei personas cieche
+(`PANEL-PERSONAS-SALES.md`), fact-checker e arbitro, **due giri**, nessun agente perso.
+Verdetti e grezzi in `docs/Ferrovie/PANEL-VERDICT-2026-11-06-round{1,2}.md` e
+`docs/Ferrovie/panel/2026-11-06-round{1,2}/` (git-ignorati). Commit `7abb952` → `791fb1d`.
+
+| asse | giro 1 | giro 2 | Δ |
+|---|---|---|---|
+| credibilità dei fatti | 3,2 | **3,7** | +0,50 |
+| rilevanza per me | 2,8 | **3,7** | +0,84 |
+| chiarezza | 4,0 | **4,0** | — |
+| rischio *(5 = nessuno percepito)* | 2,3 | **3,3** | +1,00 |
+| azionabilità | 3,2 | **3,8** | +0,66 |
+
+Sei «accetto a condizione» su sei in tutti e due i giri — e al 12 ottobre la Direzione Sales
+era un «sì», quindi la riscrittura di quattro settimane **era costata il sì**. Al secondo giro
+la richiesta la accettano tutti e sei; quello che non accettano è che il documento giri.
+
+**I quattro rilievi che nessun gate poteva vedere.**
+- **In 43 slide non compariva la piattaforma che il Gruppo ha già scelto** per il dato di
+  cliente, e il nostro interlocutore ne è sponsor pubblico. Cinque personas su sei, tre
+  dichiarano che senza quella slide il file non lo inoltrano. Nasce `domanda/slide-innesto`:
+  che cosa resta dov'è, che cosa si affianca, dove passa la cucitura — citando il **loro**
+  comunicato del 5 marzo 2026, senza giudicare quella scelta. Lo stesso comunicato porta
+  «acquisto biglietti tramite agente AI» fra i traguardi dichiarati per il 2026, e **sostituisce
+  una riunione come fonte** della riga del capitolo 03: «ce l'avete detto voi» non si mostra.
+- **Il numero grande del capitolo sulle agenzie non erano le agenzie.** Sei personas su sei, e
+  sopravviveva dal 12 ottobre: i «oltre 70.000» sono i punti vendita sul Regionale fuori dalle
+  biglietterie, da un comunicato del 2014. Ora la cifra è **12.400**, è loro, è dell'ottobre
+  2025; i 70.000 restano in nota dove si possono spiegare.
+- **La richiesta si fermava un passo prima di diventare una data.** La formula dell'ask è fra
+  le cose da **non toccare** per tutte e sei; nasce `rotta/slide-esito` subito dopo: che cosa
+  vi lasciamo, chi serve nella stanza, il numero che guarderemmo.
+- **Quattro capitoli su sette stanno nel perimetro di altre direzioni**, e la cautela stava in
+  un posto solo. Ora due parole sotto ogni fermata della mappa e una riga su ogni divisore.
+  ⚠️ **Non torna la mappa delle direzioni tolta il 4 novembre**: si dichiara come stiamo noi al
+  tavolo, non che cosa è di chi. Elencare a un direttore ciò che non è suo, con in mano le
+  carte della sua azienda, è l'errore che quella rimozione aveva chiuso.
+
+**⚠️ E DUE REGRESSIONI, NATE DALLE CORREZIONI DEL PRIMO GIRO.** Vanno agli atti perché sono la
+stessa classe di errore che il panel esiste per trovare, e questa volta l'ha introdotta la
+correzione — il secondo giro serve a questo, e qui si è ripagato da solo:
+- **una citazione fabbricata**: per datare il 96% la riga è diventata «il resto: *"il mercato
+  che resta"*, sue parole dell'ottobre 2025». Quella stringa non esiste in nessuna fonte — il
+  verbatim è «quel 96% del territorio italiano non ancora esplorato» — e al primo giro la riga
+  **non aveva virgolette ed era giusta**;
+- **un numero inventato al posto di un limite inventato**: «12 lingue in disponibilità generale
+  più 5 in beta», dove le note di rilascio dicono solo «supports 12 languages». Il limite
+  originale («lavora in inglese») era falso **a nostro danno**; la correzione ha sbagliato
+  nell'altra direzione. In slide va il numero che la formula porta, con la data della voce.
+
+**Difetto di motore trovato dal gate**, e vale per ogni app: nel markup di un `.astro` la
+sequenza `\u00a0` **non è un escape** — finisce in pagina come testo. L'ha preso `audit:taglio`,
+che l'ha letto come «00», cioè un numero che il taglio afferma e il percorso intero no.
+
+**Gate finali**: `copy-audit` 0 HARD e **0 SOFT** su 544 stringhe · `audit:deck` **0 HARD**
+(76 soft, `a`/`g`/`i`, come alla baseline) · `audit:ink` **PULITO** su 806 blocchi e 14
+drill-down · `audit:taglio` **ALLINEATO** · nessun link rotto · `astro check` 0 errori.
+
+**⚠️ Quattro punti aperti, e due vogliono una persona.**
+1. **Una voce della griglia è marcata «già vostro» su cinque slide**, e il fact-checker non la
+   trova nell'installato verificato, mentre il commento nel codice dichiara il contrario.
+   **Due fonti interne in conflitto**, e si riporta il conflitto: lo scioglie chi tiene il conto.
+   È l'affermazione a più alto rischio del documento, perché dice al cliente che cosa ha già
+   comprato. In più il link sotto quella voce documenta **un prodotto diverso** da quello che la
+   riga nomina. Quale voce, e con quali fonti, sta nel verdetto in cartella d'account.
+2. **La pastiglia dice «già vostro · nel contratto»**, e l'intestazione di quelle righe non è
+   la società che siede in sala ma un'altra del Gruppo: detta così attribuisce a un tavolo un
+   contratto che sta altrove. Il cambio è di tre parole sull'etichetta dello stato; la
+   formulazione esatta sta nel verdetto, in cartella d'account.
+3. **`PezziPerStato` ha le cautele e non le mostra**: `descrizioni` non è passato da nessuna
+   pagina, quindi «c'è già nel gruppo, da estendere» non si legge e resta «già vostro».
+4. **L'estratto chiesto non contiene il numero promesso**: `slide-passo` chiede il venduto per
+   agenzia, `slide-esito` promette anche il peso dell'intermediato sul diretto, che esce da un
+   altro sistema. E le 6.000 agenzie estere passano dai sistemi di distribuzione: il venduto per
+   singola agenzia lì non è dato loro.
+
+---
+
 ### 37.14 La notte del 4-5 novembre: rielaborazione del testo, e il panel che non si è potuto fare
 
 **Stato: pronto per la sala, con quattro decisioni aperte.** Giro integrale sulla copia:
