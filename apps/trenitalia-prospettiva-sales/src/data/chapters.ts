@@ -47,9 +47,9 @@ export const CHAPTERS: Chapter[] = [
     tavolo: 'Qui portiamo domande.' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
     punto: 'Un canale che vende ogni giorno: quanto se ne vede oggi?', foto: 'network',
-    tavolo: 'Qui vi chiediamo mezza giornata.' },
+    tavolo: 'Qui la decisione è vostra.' },
   { slug: 'rotta', num: '07', title: { it: 'La rotta', en: 'La rotta' }, short: 'La rotta',
-    punto: 'Quattro punti sono troppi per cominciare da tutti: ne proponiamo uno, e la decisione è vostra.', foto: 'chapter' },
+    punto: 'Quattro direzioni sono troppe per aprirle tutte: diteci quali sono le vostre, e quando se ne parla.', foto: 'chapter' },
 ];
 
 export function chapterIndex(slug: string): number {

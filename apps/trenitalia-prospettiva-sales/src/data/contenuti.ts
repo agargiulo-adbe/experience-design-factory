@@ -751,61 +751,84 @@ export const SAPERE: Card[] = [
   },
 ];
 
-/* ── Capitolo 07 · il passo e le domande ───────────────────────────────────
+/* ── Capitolo 07 · quello che chiediamo ────────────────────────────────────
+   ⚠️ 6 nov 2026, sera: L'ASK CAMBIA, ED È UNA DECISIONE DELL'OWNER CONTRO IL
+   VERDETTO DEL PANEL. La mezza giornata sui dati della rete agenzie era la
+   voce che tutte e sei le personas avevano messo fra le «non toccare», ed era
+   l'unica cosa che il Direttore Sales poteva concedere da solo. Esce lo
+   stesso, e la ragione è di chi conosce la stanza: quella sessione è già
+   intrinseca al lavoro che corre con il presidio digitale e con la società
+   tecnologica del Gruppo, quindi a lui non chiede niente che non stia già
+   succedendo. Qui si chiede l'unica cosa che può dare lui: una rotta
+   confermata, e un posto al tavolo quando il piano si scrive.
+
    L'ask sta in un posto solo: due versioni della richiesta sono il modo più
    rapido di sembrare confusi davanti a un cliente. */
 export const ASK = {
   eyebrow: 'Quello che vi chiediamo',
-  // «mentre la piattaforma si rifà» affermava come fatto, nel titolo dell'ask e
-  // su entrambi i percorsi, ciò che la slide del capitolo 06 poneva come
-  // domanda — e quel fatto non ha fonte pubblica. Uscito il 15 ott.
-  titolo: 'Una sessione sui vostri dati,<br />prima di qualunque progetto.',
-    // Le tre «che cosa» sono la formula che il panel ha messo fra le cose da NON
-  // toccare: cinque personas su sei la citano come la riga che fa accettare la
-  // riunione. Il ritmo è voluto, non è una frase contorta — eccezione dichiarata.
-  sub: 'Guardare insieme come vende la rete delle agenzie: che cosa sapete già, che cosa manca, e che cosa cambierebbe potendolo vedere. Mezza giornata, i vostri dati, nessun impegno dopo. <strong class="ex-frase">Non è un progetto e non è un’offerta.</strong>',  // copy-audit-ignore
-  /** Che cosa serve davvero: «i vostri dati» non è un perimetro, e chi tiene la
-   *  piattaforma commerciale lo chiede al primo giro. */
-  servono:
-    'Che cosa serve: un estratto <strong>aggregato</strong> delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scegliete voi, e vale l’accordo di riservatezza come per qualunque altro dato. Se estrarlo costa più di qualche ora, guardiamo quello che c’è.',
-};
-
-/* ── Capitolo 07 · che cosa esce dalla mezza giornata ──────────────────────
-   6 nov 2026, panel. La richiesta era la parte migliore del documento — tutte
-   e sei le personas l'hanno messa fra le cose da non toccare — e si fermava un
-   passo prima di diventare una data: diceva benissimo che cosa serve a noi e
-   non diceva che cosa resta a loro, chi deve essere nella stanza e quale
-   numero ne esce. Tre frasi, in ordine di chi le ha chieste: «io dico sì e
-   poi il sì non si trasforma in una data» (la Direzione Sales), «non è
-   difendibile dai miei acquisti» (la Direzione Generale), «non so a chi
-   girarla» (la società tecnologica del Gruppo).
-
-   ⚠️ LA FORMULA DELL'ASK NON SI TOCCA e la richiesta non si allarga: questo
-   blocco sta su una slide SUA, dopo. Mezza giornata resta mezza giornata. */
-export const ESITO = {
-  eyebrow: 'Perché un sì diventi una data',
-  titolo: 'Che cosa esce da quella mezza giornata',
-  voci: [
+  titolo: 'Confermate la rotta,<br />e portateci al\u00a0tavolo.',
+  sub: 'Nessuna delle tre chiede un progetto, un budget o una firma.',
+  /** I tre punti, nell'ordine in cui si dicono. `t` è l'ancora (≤6 parole),
+   *  `b` la riga che sopravvive all'inoltro. */
+  punti: [
     {
-      k: 'Che cosa vi lasciamo',
-      t: 'Una lettura del venduto, e la mappa dei buchi di dato',
-      b: 'Resta a voi, senza vincoli su quello che decidete dopo: non è un passo dentro un affidamento.',
+      k: 'Il riscontro',
+      t: 'Quali di queste quattro sono priorità\u00a0vostre',
+      b: 'Delle quattro direzioni del documento, quali state già mettendo in campo, e in che ordine.',
     },
     {
-      k: 'Chi serve nella stanza',
-      t: 'Chi possiede quel dato, chi governa il\u00a0sistema, e noi',
-      b: 'Vale l’accordo di riservatezza in essere, e l’estratto aggregato esce con il via libera di chi lo possiede.',
+      k: 'Gli spunti',
+      t: 'Che cosa non abbiamo\u00a0visto',
+      b: 'Questo documento è costruito da fuori, su fonti pubbliche e una misura nostra. Le domande aperte sono lì per questo.',
     },
     {
-      k: 'Il numero che guarderemmo',
-      t: 'Venduto per agenzia, e quanta parte è multiprodotto',
-      b: 'Più il peso del canale intermediato su quello diretto: è la misura su cui si capisce se vale la pena continuare.',
+      k: 'Il tavolo',
+      t: 'Esserci quando si pianifica l’offerta\u00a0integrata',
+      b: 'E quando si disegna l’approccio per le Frecce, dopo la definizione dei nuovi prodotti: è lì che un’idea diventa un caso d’uso.',
     },
   ],
-  /** ⚠️ La riga che tiene la richiesta al suo posto: senza, questo blocco la
-   *  allarga da solo, ed era esattamente la cosa che il panel chiedeva di non
-   *  fare. */
-  chiusa: 'Mezza giornata, e alla fine decidete voi se c’è un seguito. Niente licenze, nessuna prova tecnica.',
+  /** ⚠️ Il confine, e vale la pena sapere perché è scritto così. Nelle parole
+   *  interne è «non vogliamo sostituire chi li segue né fare i consulenti
+   *  strategici». In slide un nome di terzi non ci va: resta il confine. */
+  chiusa: 'Non chiediamo di cambiare chi vi accompagna. Chiediamo di essere nella stanza quando il piano si scrive.',
+};
+
+/* ── Capitolo 07 · che cosa va previsto ────────────────────────────────────
+   6 nov 2026. Questa slide nasce dal panel — la Direzione Generale chiedeva
+   una taglia e un indicatore, «senza unità di misura non entra nel piano» —
+   e la sera cambia soggetto insieme all'ask: non è più che cosa esce da una
+   sessione, è che cosa va messo nel piano perché una direzione confermata
+   diventi un programma.
+
+   ⚠️ NIENTE LISTINO, e niente importi: la seconda voce nomina le CAPACITÀ,
+   non i prodotti in corpo grande. I nomi stanno già dove devono, nella mappa
+   di `slide-ripresa`, marcati «si aggiunge». Quello che sappiamo noi sul come
+   stanno rinnovando sta nelle note per chi presenta, non qui. */
+export const ESITO = {
+  eyebrow: 'Perché una rotta diventi un piano',
+  titolo: 'Che cosa va previsto, e su che cosa si\u00a0vede',
+  sub: 'Su tutte e quattro le direzioni una parte è già nel Gruppo. Quello che si aggiunge sono due voci, e vanno previste prima.',
+  voci: [
+    {
+      k: 'Quello che c’è già',
+      t: 'La base, e non si rifà\u00a0niente',
+      b: 'Analisi del sito, prova sul traffico, gestione dei contenuti: le quattro direzioni si appoggiano lì sopra.',
+    },
+    {
+      k: 'Quello che si aggiunge',
+      t: 'Due voci, e vanno\u00a0previste',
+      b: 'La lettura unica del percorso d’acquisto oggi non c’è. La prova sul traffico c’è, e va estesa al volume che serve.',
+    },
+    {
+      k: 'Su che cosa si vede',
+      t: 'Un indicatore vostro per\u00a0direzione',
+      b: 'Scelto insieme prima di cominciare: è la condizione perché il piano regga davanti a chi lo approva.',
+    },
+  ],
+  chiusa: 'Che cosa serve lo diciamo qui. Quanto pesa si misura insieme, sul perimetro che scegliete voi.',
+  /** L'etichetta della figura: è testo per chi usa un lettore di schermo, e
+   *  stava scritta a mano in due pagine — l'ha preso `audit:taglio`. */
+  figura: 'Dalla base che c’è già all’indicatore su cui si vede l’effetto, in tre passi',
 };
 
 export const DOMANDE_APERTE = [

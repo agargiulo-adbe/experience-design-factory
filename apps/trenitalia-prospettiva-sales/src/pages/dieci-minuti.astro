@@ -168,7 +168,7 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
             accanto, quindi il marcatore non può mancare del tutto. */}
         <p class="xd-fonte" data-reveal data-reveal-delay="0.2">
           Tre di questi quattro punti si decidono anche altrove: lì portiamo domande. Il quarto,
-          il canale delle agenzie, è quello su cui vi chiediamo mezza giornata.
+          il canale delle agenzie, è quello dove la decisione è vostra.
         </p>
       </div>
     </Slide>
@@ -207,7 +207,7 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
     </Slide>
 
     <!-- ── 6 · Il passo, parola per parola come nel percorso intero ─────── -->
-    <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">
+    <Slide id="slide-passo" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="clip">
       <LoopVideo
         slot="backdrop"
         src={CLIP_CHIUSURA}
@@ -215,15 +215,29 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
         scrim="absolute inset-0 bg-[rgba(27,34,48,0.78)]"
         opacity={0.8}
       />
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">{ASK.eyebrow}</p>
-        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
-        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
+      {/* Stessa fonte del percorso intero, stessa forma: l'ask è uno solo, e
+          qui non si riscrive. Sul fondo resta la clip, che è il respiro con
+          cui il taglio corto chiude. */}
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{ASK.eyebrow}</p>
+          <h2 class="xd-h2" set:html={ASK.titolo} />
+          <p class="xd-sub">{ASK.sub}</p>
+        </div>
+        <div class="tp-ancore" data-stagger data-reveal data-reveal-delay="0.14">
+          {ASK.punti.map((v) => (
+            <div class="tp-anc">
+              <p class="tp-anc-k">{v.k}</p>
+              <p class="tp-anc-n">{v.t}</p>
+              <p class="tp-anc-b">{v.b}</p>
+            </div>
+          ))}
+        </div>
+        <p class="xd-chiusa" data-reveal data-reveal-delay="0.26">{ASK.chiusa}</p>
       </div>
     </Slide>
 
-    <!-- ── Che cosa esce dalla mezza giornata ─────────────────────────────
+    <!-- ── Che cosa va previsto ───────────────────────────────────────────
          Stessa fonte del percorso intero (`ESITO`), nessuna stringa riscritta
          a mano. Qui pesa più che nel lungo: questa è la pagina che viene
          girata al capo, e chi la legge non ha nessuno accanto a cui chiedere
@@ -234,15 +248,28 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
         <div class="xd-sl-head">
           <p class="xd-n">{ESITO.eyebrow}</p>
           <h2 class="xd-h2">{ESITO.titolo}</h2>
+          <p class="xd-sub">{ESITO.sub}</p>
         </div>
-        <div class="tp-ancore" data-stagger data-reveal data-reveal-delay="0.12">
-          {ESITO.voci.map((v) => (
-            <div class="tp-anc">
-              <p class="tp-anc-k">{v.k}</p>
-              <p class="tp-anc-n">{v.t}</p>
-              <p class="tp-anc-b">{v.b}</p>
-            </div>
-          ))}
+        {/* Il filo a tre fermate: stessa forma del percorso intero, e il perché
+            sta sulla slide gemella in `rotta.astro`. */}
+        <div class="tp-filo" data-reveal data-reveal-delay="0.12">
+          <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
+               aria-label={ESITO.figura}>
+            <line class="tp-filo-l" x1="166" y1="32" x2="834" y2="32" />
+          </svg>
+          {/* `--cols` va dichiarato: la griglia del filo nasce a quattro
+              colonne, e con tre fermate si ammassavano a sinistra lasciando
+              mezza pagina vuota. Si vede solo guardando la slide. */}
+          <ol class="tp-filo-eti" style="--cols: 3" data-stagger="0.1">
+            {ESITO.voci.map((v, i) => (
+              <li>
+                <span class="tp-filo-num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="tp-filo-dove">{v.k}</span>
+                <span class="tp-filo-t">{v.t}</span>
+                <span class="tp-filo-b">{v.b}</span>
+              </li>
+            ))}
+          </ol>
         </div>
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESITO.chiusa}</p>
       </div>

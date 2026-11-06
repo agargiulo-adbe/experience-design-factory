@@ -98,39 +98,74 @@ const first = CHAPTERS[0];
       </div>
     </Slide>
 
-    <Slide id="slide-passo" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+    <!-- ── Quello che chiediamo ───────────────────────────────────────────
+         ⚠️ 6 nov 2026, sera: la richiesta non è più una sessione sui dati. Il
+         perché sta sul blocco `ASK` in `src/data/contenuti.ts`, ed è una
+         decisione di chi conosce la stanza, presa contro il verdetto del
+         panel: va letta lì prima di rimetterci mano.
+         La slide passa da citazione centrata a tre ancore, perché l'ask non è
+         più una frase sola: sono tre cose, e in sala si indicano una per una. -->
+    <Slide id="slide-passo" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">{ASK.eyebrow}</p>
-        <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={ASK.titolo} />
-        <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18" set:html={ASK.sub} />
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.26" set:html={ASK.servono} />
-      </div>
-    </Slide>
-
-
-    <!-- ── Che cosa esce dalla mezza giornata ─────────────────────────────
-         6 nov 2026, panel. Sta DOPO la richiesta e su una slide sua: la
-         formula dell'ask è la cosa che tutte e sei le personas hanno messo
-         fra quelle da non toccare, e infilarci dentro tre blocchi l'avrebbe
-         riscritta. Qui si risponde alle tre domande che impedivano al sì di
-         diventare una data — che cosa resta a noi, chi deve esserci, quale
-         numero ne esce — senza allargare di un'ora la richiesta. -->
-    <Slide id="slide-esito" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{ESITO.eyebrow}</p>
-          <h2 class="xd-h2">{ESITO.titolo}</h2>
+          <p class="xd-n">{ASK.eyebrow}</p>
+          <h2 class="xd-h2" set:html={ASK.titolo} />
+          <p class="xd-sub">{ASK.sub}</p>
         </div>
-        <div class="tp-ancore" data-stagger data-reveal data-reveal-delay="0.12">
-          {ESITO.voci.map((v) => (
+        <div class="tp-ancore" data-stagger data-reveal data-reveal-delay="0.14">
+          {ASK.punti.map((v) => (
             <div class="tp-anc">
               <p class="tp-anc-k">{v.k}</p>
               <p class="tp-anc-n">{v.t}</p>
               <p class="tp-anc-b">{v.b}</p>
             </div>
           ))}
+        </div>
+        <p class="xd-chiusa" data-reveal data-reveal-delay="0.26">{ASK.chiusa}</p>
+      </div>
+    </Slide>
+
+
+    <!-- ── Che cosa va previsto ───────────────────────────────────────────
+         Nasce dal panel (la Direzione Generale chiedeva una taglia e un
+         indicatore: «senza unità di misura non entra nel piano») e la sera
+         del 6 novembre cambia soggetto insieme all'ask: non più che cosa
+         esce da una sessione, ma che cosa va messo nel piano perché una
+         direzione confermata diventi un programma. -->
+    <Slide id="slide-esito" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{ESITO.eyebrow}</p>
+          <h2 class="xd-h2">{ESITO.titolo}</h2>
+          <p class="xd-sub">{ESITO.sub}</p>
+        </div>
+        {/* ⚠️ 6 nov 2026, Giro 2 di `/umanizza`: guardando le due slide di fila
+            a 1920 avevano la STESSA forma — occhiello, titolo, tre ancore,
+            barra di chiusa — e sono consecutive. Il gate del ritmo lo conferma
+            di sbieco: quattro slide di fila nel capitolo senza un elemento
+            visivo. Qui le tre voci NON sono parallele come quelle dell'ask:
+            sono una progressione (la base, quello che si aggiunge, dove si
+            vede l'effetto), e il filo a tre fermate è la loro forma. */}
+        <div class="tp-filo" data-reveal data-reveal-delay="0.12">
+          <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
+               aria-label={ESITO.figura}>
+            <line class="tp-filo-l" x1="166" y1="32" x2="834" y2="32" />
+          </svg>
+          {/* `--cols` va dichiarato: la griglia del filo nasce a quattro
+              colonne, e con tre fermate si ammassavano a sinistra lasciando
+              mezza pagina vuota. Si vede solo guardando la slide. */}
+          <ol class="tp-filo-eti" style="--cols: 3" data-stagger="0.1">
+            {ESITO.voci.map((v, i) => (
+              <li>
+                <span class="tp-filo-num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="tp-filo-dove">{v.k}</span>
+                <span class="tp-filo-t">{v.t}</span>
+                <span class="tp-filo-b">{v.b}</span>
+              </li>
+            ))}
+          </ol>
         </div>
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESITO.chiusa}</p>
       </div>
@@ -152,8 +187,8 @@ const first = CHAPTERS[0];
           {DOMANDE_APERTE.map((d) => <li class="tp-domande-row">{d}</li>)}
         </ul>
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          Le prime due sono l’ordine del giorno della mezza giornata sulle agenzie. Le altre
-          quattro sono tavoli separati, con altre persone: non le mettiamo nello stesso invito.
+          Le prime due le porteremmo volentieri a chi tiene quel dato. Le altre quattro sono
+          tavoli separati, con altre persone: non le mettiamo nello stesso invito.
         </p>
       </div>
     </Slide>

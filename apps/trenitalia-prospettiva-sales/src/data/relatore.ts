@@ -43,18 +43,22 @@ export const MINUTI: Record<string, number> = {
 export const TRE_COSE: string[] = [
   'La vendita si perde in quattro punti diversi, e tre stanno prima o fuori dal sito.',
   'Su tutte e quattro le idee una parte della tecnologia è già nel loro contratto.',
-  'Non chiediamo un progetto: chiediamo mezza giornata sui loro dati, sul canale delle agenzie.',
+  'Non chiediamo un progetto. Chiediamo una rotta confermata, e un posto al tavolo quando il piano si scrive.',
 ];
 
-/** Che cosa si chiede, parola per parola. È anche l'ultima slide. */
+/** Che cosa si chiede, parola per parola. È anche l'ultima slide.
+ *  ⚠️ 6 nov 2026, sera: la mezza giornata sui dati della rete agenzie è uscita
+ *  dall'ask. Quella sessione è già intrinseca al lavoro che corre con il
+ *  presidio digitale e con la società tecnologica del Gruppo, quindi a lui non
+ *  chiede niente che non stia già succedendo. */
 export const ASK_A_VOCE =
-  'Una sessione sui vostri dati, prima di qualunque progetto: guardiamo insieme come vende la rete delle agenzie.';
+  'Tre cose: ditemi quali di queste quattro direzioni sono vostre, ditemi che cosa non abbiamo visto, e portateci al tavolo quando si pianifica l’offerta integrata.';
 
 export const NOTE: Record<string, NotaSlide[]> = {
   index: [
     { id: 'slide-cover',
       dire: 'Un’ora, quattro punti in cui una vendita si perde prima che qualcuno salga su un treno. Niente slide di prodotto: alla fine vi chiediamo una cosa sola.',
-      seChiedono: { d: 'È una proposta commerciale?', r: 'No. È una lettura del vostro anno fatta da fuori, e una domanda. L’unica richiesta è mezza giornata di lavoro insieme.' } },
+      seChiedono: { d: 'È una proposta commerciale?', r: 'No. È una lettura del vostro anno fatta da fuori, e tre domande. Non c’è un listino in queste pagine.' } },
   ],
 
   apertura: [
@@ -157,31 +161,34 @@ export const NOTE: Record<string, NotaSlide[]> = {
       dire: 'Di un canale digitale si sa chi entra e dove si ferma. Che cosa sapreste della rete, se la guardaste come guardate un sito?' },
     { id: 'slide-serve',
       dire: 'E c’è una ragione di tempo: si misura mentre si mette mano al sistema che serve quel canale, e dopo diventa un progetto a sé.',
-      seChiedono: { d: 'Che cosa serve da noi?', r: 'Un estratto aggregato delle vendite per agenzia e per prodotto, nel formato che la piattaforma ha già. Il periodo lo scelgono loro.' } },
+      seChiedono: { d: 'Che cosa serve da noi?', r: 'Per vedere il venduto per agenzia serve un estratto aggregato, nel formato che il sistema ha già. Non si chiede qui: si chiede a chi tiene quel dato, quando se ne parla.' } },
   ],
 
   rotta: [
-    { id: 'slide-cover', dire: 'Quattro punti sono troppi per cominciare da tutti. Ne proponiamo uno, e la decisione è loro.' },
+    { id: 'slide-cover', dire: 'Quattro direzioni sono troppe per aprirle tutte. Quali sono le vostre, e quando se ne parla.' },
     { id: 'slide-ripresa',
       dire: 'Ecco le quattro idee di nuovo: le capacità da avere, e i prodotti. Su tutte e quattro una parte è già in casa vostra.',
       attenzione: 'È il momento in cui si tace e si lascia guardare la slide. La domanda in titolo è per loro.' },
     { id: 'slide-passo',
       dire: ASK_A_VOCE,
-      attenzione: 'Non è un progetto e non è un’offerta, e va detto con queste parole. Mezza giornata, i loro dati, nessun impegno dopo.' },
+      attenzione: 'Nessuna delle tre costa un progetto, un budget o una firma. Va detto prima che se lo chiedano. Il terzo punto è quello che conta: essere al tavolo quando si pianifica l’offerta integrata. Si chiede senza nominare chi li segue oggi.' },
+    { id: 'slide-esito',
+      dire: 'E perché una rotta diventi un piano. Si guarda la base che c’è già, le due voci da prevedere, e l’indicatore su cui si vede l’effetto.',
+      attenzione: 'Le due voci da prevedere sono la lettura unica del percorso d’acquisto e il traffico su cui si prova. È questo che si porta a casa. ⚠️ Niente importi e niente listino in sala. E quello che sappiamo sul come stanno rinnovando resta fuori dalla stanza.' },
     { id: 'slide-domande',
-      dire: 'E quattro cose che possiamo imparare solo da voi. Chiudere con le domande, non con una promessa.' },
+      dire: 'E sei cose che possiamo imparare solo da voi. Chiudere con le domande, non con una promessa.' },
     { id: 'slide-signature', dire: 'Grazie. Il link resta vostro: il percorso intero è nel menu, e c’è anche una versione da dieci minuti.' },
   ],
 
   'dieci-minuti': [
     { id: 'slide-cover',
       dire: 'Se l’ora diventa venti minuti si apre questa: stesse fonti, stessi numeri, sei slide e la richiesta dentro.',
-      attenzione: 'È anche la versione che l’interlocutore gira al suo capo: qui le quattro idee con i prodotti si proiettano, non stanno dietro un drill-down.' },
+      attenzione: 'È anche la versione che l’interlocutore gira al suo capo, e si legge senza nessuno accanto: per questo porta la riga del confine e non l’elenco dei prodotti.' },
     { id: 'slide-novantasei', dire: 'La parola dell’anno, con la sua fonte.' },
     { id: 'slide-contesto', dire: 'Le tre cose che si muovono nello stesso anno.' },
     { id: 'slide-domanda', dire: 'La domanda. Identica al percorso intero, parola per parola.' },
     { id: 'slide-mappa', dire: 'I quattro punti, con una riga ciascuno.' },
-    { id: 'slide-contributi', dire: 'Le quattro idee e i prodotti, con quali sono già loro.' },
+    { id: 'slide-contributi', dire: 'Le quattro idee e che cosa bisogna saper fare. I prodotti stanno nel percorso intero.' },
     { id: 'slide-passo', dire: ASK_A_VOCE },
     { id: 'slide-signature', dire: 'Chiusura.' },
   ],
