@@ -55,7 +55,13 @@ export const CUT_SETS: Record<string, CutSpec> = {
   'trenitalia-prospettiva-sales': {
     taglio: 'dieci-minuti',
     fonti: ['src/data/contenuti.ts', 'src/data/sources.ts'],
-    slideMax: 7,
+    /* 8 e non 7 dal 6 nov 2026: è entrata «Quattro idee, e su tutte e quattro
+       una parte è già vostra». Nel percorso intero quello strato sta dietro
+       «Scopri come», perché in sala c'è chi lo apre a voce; qui no — questa è
+       la versione che l'interlocutore gira al suo capo, e la domanda «e voi
+       che cosa ci mettete» la fa proprio chi non era in sala. Una slide che
+       risponde a quella domanda vale più di una slide risparmiata. */
+    slideMax: 8,
     numeriSoloNelTaglio: ['10'],
   },
 };

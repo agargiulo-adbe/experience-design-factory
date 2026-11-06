@@ -58,6 +58,30 @@ const ink = (id: string, prompt: string, seed: number): AssetSlot => ({
   aspect: '16:9', width: 2400, grade: 'duotone', duotone: ['#141a25', '#7c8aa3'], seed, alt: '',
 });
 
+/**
+ * ALBA — i divisori che si aprono verso la luce (6 nov 2026).
+ *
+ * ⚠️ IL PROBLEMA NON ERANO I PROMPT, ERA IL DUOTONE. `ink` rimappa la
+ * luminanza fra #141a25 e #7c8aa3: il punto più chiaro resta un'ardesia
+ * media, quindi NESSUNA immagine poteva uscire luminosa, «at night» nel
+ * prompt o no. Qui l'estremo chiaro sale a #cfd7e4 — un'ardesia molto
+ * schiarita, che è ancora il colore del cliente: l'immagine si apre, la
+ * dominante resta sua, e il rosso resta l'accento raro che mette il CSS.
+ *
+ * Non tutti e sette: i capitoli che aprono una possibilità — l'apertura, il
+ * viaggio, la rotta — e non quelli che dichiarano un problema. Un deck tutto
+ * schiarito perde il contrasto fra le due cose, che è metà del racconto.
+ */
+const alba = (id: string, prompt: string, seed: number): AssetSlot => ({
+  id, type: 'firefly', contentClass: 'art',
+  prompt: prompt +
+    ', pale slate sky at first light, soft luminous haze, light slate #cfd7e4 highlights, ' +
+    'slate #2f394e mid-tones, one sparing crimson #d91835 accent, open airy space, ' +
+    'calm and wide, cinematic, abstract, high detail, no text',
+  negativePrompt: NO_TEXT + ', night, darkness, heavy shadows, blown white highlights, busy composition, low quality',
+  aspect: '16:9', width: 2400, grade: 'duotone', duotone: ['#232c3e', '#cfd7e4'], seed, alt: '',
+});
+
 /** Slide chiare (`.ex-bg-paper`). */
 const soft = (id: string, prompt: string, seed: number): AssetSlot => ({
   id, type: 'firefly', contentClass: 'art', prompt: prompt + PALETTE_SOFT,
@@ -85,6 +109,24 @@ export const assets: AssetSlot[] = [
   ink('bg-close',
     'a single line of light opening into the distance toward a faint dawn glow, ' +
     'almost empty frame, quiet and hopeful', 706),
+
+  // ── ALBA — SOLO i divisori di capitolo ──────────────────────────────────
+  // ⚠️ SOLO i divisori, e il perché è misurato. Al primo giro avevo schiarito
+  // `bg-cover`, `bg-journey` e `bg-close` sul posto: ma quelle tre immagini
+  // non stanno solo sui divisori — `bg-journey` fa da fondo anche a sei slide
+  // di contenuto. Schiarire l'asset condiviso ha portato NOVE blocchi di testo
+  // sotto la soglia AA (`audit:ink`), perché lì il testo sta sopra l'immagine
+  // a tutta pagina e non nella colonna del divisore. Qui sono tre slot nuovi:
+  // il divisore si apre, le slide di contenuto restano scure.
+  alba('bg-alba-piana',
+    'a single luminous line travelling across a vast open plain toward the horizon, small ' +
+    'points of light marking stops along it, seen from very far above at first light', 731),
+  alba('bg-alba-convergenza',
+    'four separate light trails converging into one single brighter line, seen from above ' +
+    'in the clear air of early morning', 732),
+  alba('bg-alba-aperta',
+    'a single line of light opening into the distance toward a wide bright dawn, ' +
+    'almost empty frame, quiet and hopeful', 733),
 
   // ── SOFT — slide chiare ─────────────────────────────────────────────────
   soft('bg-paper-lines',

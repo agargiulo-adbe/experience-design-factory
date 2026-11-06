@@ -743,9 +743,9 @@ export const SERVE: Record<
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
-    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
+    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
     { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'chi chiede, chi produce, chi approva' },
-    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
+    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'il lavoro agentico sulla produzione' },
   ],
   rete: [

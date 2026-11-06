@@ -1,0 +1,164 @@
+---
+/**
+ * NOTE PER CHI PRESENTA — il deck raccontato a chi lo apre per la prima volta.
+ *
+ * NON È UNA SLIDE E NON È UN DOSSIER. È un foglio che si tiene aperto sul
+ * portatile mentre si presenta: si legge di sbieco, quindi la gerarchia conta
+ * più della prosa. Una riga per slide, sempre nello stesso ordine — che cosa
+ * si dice, qual è il fatto, che cosa arriva se chiedono.
+ *
+ * ⚠️ SI GENERA DAL REGISTRO, non si scrive a mano. Capitoli da `chapters.ts`,
+ * slide e agende da `slides.ts`, note da `relatore.ts`: se una slide entra nel
+ * deck e nessuno le scrive la nota, qui compare in rosso «nota da scrivere».
+ * Una pagina per il relatore che diverge dal deck è peggio di nessuna pagina.
+ *
+ * ⚠️ È PUBBLICA come il resto del deck: niente dati di contratto, niente nomi
+ * di persone, niente misure interne. Vedi il docblock di `relatore.ts`.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+import { PAGE_REGISTRY } from '../data/slides';
+import { NOTE, MINUTI, TRE_COSE, ASK_A_VOCE, nota } from '../data/relatore';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+/** Il percorso intero, nell'ordine dei capitoli; il taglio corto a parte. */
+const ordine = ['index', ...CHAPTERS.map((c) => c.slug)];
+const sezioni = ordine
+  .map((slug) => PAGE_REGISTRY.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+const taglio = PAGE_REGISTRY.find((p) => p.slug === 'dieci-minuti')!;
+
+const capitolo = (slug: string) => CHAPTERS.find((c) => c.slug === slug);
+const titoloDi = (slug: string) =>
+  slug === 'index' ? 'Copertina' : (capitolo(slug)?.title.it ?? slug);
+const numeroDi = (slug: string) => (slug === 'index' ? '00' : (capitolo(slug)?.num ?? ''));
+
+const totaleMinuti = Object.values(MINUTI).reduce((a, b) => a + b, 0);
+const slideTotali = sezioni.reduce((n, s) => n + s.slides.length, 0);
+const senzaNota = sezioni.flatMap((s) => s.slides.filter((x) => !nota(s.slug, x.id)).map((x) => `${s.slug}/${x.id}`));
+---
+<BaseLayout title={`Note per chi presenta — ${SITE.name}`}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <main class="rel">
+    <header class="rel-top">
+      <p class="rel-oc">Note per chi presenta</p>
+      <h1 class="rel-h1">{SITE.name}</h1>
+      <p class="rel-sub">
+        Per un collega che apre questo deck adesso. Una riga per slide: come si apre a voce,
+        qual è il fatto, che cosa arriva se chiedono.
+      </p>
+
+      <div class="rel-meta">
+        <div class="rel-meta-i"><span class="rel-meta-k">In sala</span><span class="rel-meta-v">La Direzione Sales del cliente</span></div>
+        <div class="rel-meta-i"><span class="rel-meta-k">Durata</span><span class="rel-meta-v">{totaleMinuti} minuti su un’ora, {slideTotali} slide</span></div>
+        <div class="rel-meta-i"><span class="rel-meta-k">Se il tempo si stringe</span><span class="rel-meta-v"><a href={href(base, '/dieci-minuti')}>la versione da dieci minuti</a>, stesse fonti</span></div>
+      </div>
+
+      <section class="rel-tre">
+        <p class="rel-tre-k">Le tre cose che devono restare</p>
+        <ol class="rel-tre-l">{TRE_COSE.map((t) => <li>{t}</li>)}</ol>
+      </section>
+
+      <section class="rel-ask">
+        <p class="rel-ask-k">La richiesta, parola per parola</p>
+        <p class="rel-ask-v">{ASK_A_VOCE}</p>
+      </section>
+
+      {senzaNota.length > 0 && (
+        <p class="rel-buco">
+          ⚠️ {senzaNota.length} slide nel registro non hanno la loro nota: {senzaNota.join(' · ')}
+        </p>
+      )}
+    </header>
+
+    {sezioni.map((sez) => (
+      <section class="rel-cap">
+        <div class="rel-cap-h">
+          <span class="rel-cap-n">{numeroDi(sez.slug)}</span>
+          <h2 class="rel-cap-t">{titoloDi(sez.slug)}</h2>
+          {MINUTI[sez.slug] && <span class="rel-cap-m">{MINUTI[sez.slug]} min</span>}
+          <a class="rel-cap-a" href={href(base, sez.slug === 'index' ? '/' : `/${sez.slug}`)}>apri il capitolo →</a>
+        </div>
+        {capitolo(sez.slug) && <p class="rel-cap-p">{capitolo(sez.slug)!.punto}</p>}
+
+        <ol class="rel-sl">
+          {sez.slides.map((s, i) => {
+            const n = nota(sez.slug, s.id);
+            return (
+              <li class="rel-s">
+                <div class="rel-s-id">
+                  <span class="rel-s-n">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="rel-s-e">{s.agenda ?? s.label}</span>
+                </div>
+                <div class="rel-s-c">
+                  {n ? (
+                    <>
+                      <p class="rel-dire"><span class="rel-tag">Dillo così</span><span>{n.dire}</span></p>
+                      {n.fatto && <p class="rel-fatto"><span class="rel-tag rel-tag--f">Il fatto</span><span>{n.fatto}</span></p>}
+                      {n.seChiedono && (
+                        <p class="rel-chiede">
+                          <span class="rel-tag rel-tag--d">Se chiedono</span>
+                          <span><span class="rel-d">«{n.seChiedono.d}»</span>{' '}{n.seChiedono.r}</span>
+                        </p>
+                      )}
+                      {n.attenzione && <p class="rel-att"><span class="rel-tag rel-tag--a">Attenzione</span><span>{n.attenzione}</span></p>}
+                    </>
+                  ) : (
+                    <p class="rel-att"><span class="rel-tag rel-tag--a">Nota da scrivere</span><span>Questa slide è nel registro e non ha ancora la sua nota.</span></p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    ))}
+
+    <section class="rel-cap rel-cap--taglio">
+      <div class="rel-cap-h">
+        <span class="rel-cap-n">10′</span>
+        <h2 class="rel-cap-t">Se l’ora diventa venti minuti</h2>
+        <a class="rel-cap-a" href={href(base, '/dieci-minuti')}>apri il taglio →</a>
+      </div>
+      <p class="rel-cap-p">
+        Stesse fonti e stessi numeri del percorso intero: il taglio non riscrive niente a mano.
+      </p>
+      <ol class="rel-sl">
+        {taglio.slides.map((s, i) => {
+          const n = nota('dieci-minuti', s.id);
+          return (
+            <li class="rel-s">
+              <div class="rel-s-id">
+                <span class="rel-s-n">{String(i + 1).padStart(2, '0')}</span>
+                <span class="rel-s-e">{s.label}</span>
+              </div>
+              <div class="rel-s-c">
+                {n
+                  ? <>
+                      <p class="rel-dire"><span class="rel-tag">Dillo così</span><span>{n.dire}</span></p>
+                      {n.attenzione && <p class="rel-att"><span class="rel-tag rel-tag--a">Attenzione</span><span>{n.attenzione}</span></p>}
+                    </>
+                  : <p class="rel-att"><span class="rel-tag rel-tag--a">Nota da scrivere</span><span>Slide senza nota.</span></p>}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+
+    <footer class="rel-fine">
+      <p>
+        Questa pagina si genera dal registro delle slide: se il deck cambia e la nota no,
+        qui compare «nota da scrivere». Il materiale riservato sul cliente non sta qui.
+      </p>
+    </footer>
+  </main>
+</BaseLayout>

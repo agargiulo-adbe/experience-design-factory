@@ -22,8 +22,17 @@
  */
 import { IDEE, pezziDi } from '../data/idee';
 import { CHAPTERS } from '../data/chapters';
-import CheServe from './CheServe.astro';
+import PezziPerStato from './PezziPerStato.astro';
 
+interface Props {
+  /** Senza le capability: dentro il drill-down della mappa lo strato risponde
+   *  a «con che cosa si fanno», e le capability sono già dette sulla slide di
+   *  ciascuna idea. Tenerle qui costava tre righe per colonna e a 1280×800
+   *  portava il blocco aperto fuori dalla safe-area — check `c` dentro `exp`,
+   *  che è HARD, misurato il 6 novembre 2026. */
+  soloPezzi?: boolean;
+}
+const { soloPezzi = false } = Astro.props as Props;
 const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
 ---
 <ol class="tp-mi" data-stagger="0.08">
@@ -33,10 +42,12 @@ const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
       <li class="tp-mi-i">
         <p class="tp-mi-n">{ch.num}</p>
         <p class="tp-mi-t">{ch.short}</p>
-        <ul class="tp-mi-cap">
-          {i.capability.map((c) => <li>{c}</li>)}
-        </ul>
-        <CheServe pezzi={pezziDi(i.slug)} />
+        {!soloPezzi && (
+          <ul class="tp-mi-cap">
+            {i.capability.map((c) => <li>{c}</li>)}
+          </ul>
+        )}
+        <PezziPerStato pezzi={pezziDi(i.slug)} />
       </li>
     );
   })}

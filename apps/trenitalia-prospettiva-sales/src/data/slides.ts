@@ -51,8 +51,6 @@ export const PAGE_REGISTRY: PageEntry[] = [
       agenda: 'Dove si perdono le vendite' },
     { id: 'slide-mappa', label: 'La mappa · quattro punti',
       agenda: 'I quattro punti, in ordine' },
-    { id: 'slide-contributi', label: 'Le quattro idee · capability e prodotti',
-      agenda: 'E che cosa ci mettiamo noi' },
   ]},
   { slug: 'ricerca', label: 'Quando il viaggio si cerca con un assistente (03)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },
@@ -110,6 +108,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-contesto', label: 'Tre cose nello stesso anno' },
     { id: 'slide-domanda', label: 'La domanda' },
     { id: 'slide-mappa', label: 'I quattro punti, in breve' },
+    { id: 'slide-contributi', label: 'Le quattro idee · capability e prodotti' },
     { id: 'slide-passo', label: 'Il passo che chiediamo' },
     { id: 'slide-signature', label: 'Slide-firma · Adobe × Trenitalia' },
   ]},

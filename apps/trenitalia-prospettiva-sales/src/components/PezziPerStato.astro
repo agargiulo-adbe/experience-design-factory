@@ -1,0 +1,67 @@
+---
+/**
+ * I PRODOTTI, RAGGRUPPATI PER STATO.
+ *
+ * PERCHÉ NON È `CheServe`. `CheServe` mette la pastiglia **accanto** a ogni
+ * nome, ed è giusto nella riga unica dentro un drill-down: lì i prodotti sono
+ * due o tre e la riga è larga. Nella mappa delle quattro idee la stessa forma
+ * si rompe, ed è stato misurato il 6 novembre 2026 guardando la slide: la
+ * pastiglia si ripete sei volte per colonna, in una colonna larga un quarto di
+ * pagina va a capo **staccandosi dal nome che qualifica**, e le due pastiglie
+ * — bordo sottile di `currentColor`, verde contro grigio — a corpo piccolo si
+ * assomigliano. Tre difetti che nessun gate vede: le scatole sono a posto, il
+ * contrasto è a posto, è la lettura che non funziona.
+ *
+ * LA FORMA GIUSTA È L'OPPOSTA: l'etichetta si dice **una volta**, come
+ * intestazione di gruppo, e i prodotti stanno sotto. Il tag non si ripete, non
+ * può separarsi dal nome perché non è più inline, e la distinzione la porta la
+ * struttura — due blocchi, due barre di colore — invece del colore di una
+ * pastiglia piccola. È anche il motivo per cui la legenda non serve più.
+ *
+ * L'ordine è sempre «già vostri» prima: la cosa che cambia il peso della
+ * proposta è quanta parte è già loro, e si legge per prima.
+ */
+import { LEGENDA, type Pezzo, type Stato } from '../data/contenuti';
+import { SOURCES, type ChiaveFonte, type Fonte } from '../data/sources';
+
+interface Props {
+  pezzi: Pezzo[];
+  /** Mostra anche a che cosa serve ogni pezzo. Fuori dalla mappa, dove c'è
+   *  spazio: in quattro colonne la riga di servizio raddoppia l'altezza. */
+  descrizioni?: boolean;
+}
+const { pezzi, descrizioni = false } = Astro.props as Props;
+
+// Una fonte senza `url` è interna: si nomina senza finto link (regola del repo).
+const linkDi = (k?: ChiaveFonte): string | undefined => {
+  if (!k) return undefined;
+  const f: Fonte = SOURCES[k];
+  return f.url;
+};
+
+/** I gruppi nell'ordine in cui si leggono, e solo quelli che esistono qui. */
+const ORDINE: Stato[] = ['avete', 'nuovo'];
+const gruppi = ORDINE
+  .map((st) => ({ stato: st, voci: pezzi.filter((p) => p.stato === st) }))
+  .filter((g) => g.voci.length > 0);
+---
+<div class="tp-pz">
+  {gruppi.map((g) => (
+    <div class="tp-pz-g" data-stato={g.stato}>
+      <p class="tp-pz-k">{LEGENDA[g.stato].eti}</p>
+      <ul class="tp-pz-l">
+        {g.voci.map((p) => {
+          const url = linkDi(p.fonte);
+          return (
+            <li class="tp-pz-v">
+              <span class="tp-pz-n">{url
+                ? <a href={url} target="_blank" rel="noopener noreferrer">{p.nome}</a>
+                : p.nome}</span>
+              {descrizioni && <span class="tp-pz-a">{p.a}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  ))}
+</div>
