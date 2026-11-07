@@ -79,12 +79,21 @@ NOME_OK = re.compile(
 # quando il nome non basta finisce in 03-analisi, che è il default onesto.
 REGOLE = [
     ("_superato", lambda n: bool(re.search(r"\.pre\d|\.bak$|~$|\.old$", n))),
+    # Un accordo quadro non porta «signed» nel nome, e finiva fra le analisi —
+    # cioè la fonte di primo livello di un account classificata come materiale
+    # di lavoro. Visto su un account il 7 nov 2026.
     ("01-contratti", lambda n: any(k in n.lower() for k in (
         "gfa", "signed", "firma", "contratto", "proposta_contratto",
-        "sales order", "salesorder", "dx for", "product description"))),
+        "sales order", "salesorder", "dx for", "product description",
+        "framework agreement", "accordo quadro", "amendment", "addendum",
+        "annex"))),
+    # `data.xlsx` è il nome che i gestionali danno agli export scaricati a
+    # mano, e `_data` non lo aggancia: serve il nome per intero.
     ("02-dati", lambda n: any(k in n.lower() for k in (
         "usage", "dashboard", "invoice", "fattur", "demand", "entitlement",
-        "footprint", "_data", "export")) or n.lower().endswith((".xlsm",))),
+        "footprint", "_data", "export"))
+        or bool(re.match(r"^data[ _(-]*\d*\)?\.", n.lower()))
+        or n.lower().endswith((".xlsm",))),
     ("05-fonti", lambda n: any(k in n.lower() for k in (
         "screenshot", "trascrizione", "transcript", "riunione", "call_",
         "plaud")) or n.lower().endswith((".png", ".jpg", ".jpeg", ".eml",
