@@ -112,6 +112,38 @@ cena executive, un workshop, una scadenza di iscrizione — **proponi la riga**:
 
 Come per il registro delle opportunità: **proponi, non scrivere d'iniziativa.**
 
-## 7 — Chiudi
+## 7 — Riordina la cartella dell'account
+
+Una cartella d'account si sporca da sé: il 23 ott 2026 quella di Enel aveva 27 elementi in
+radice — contratti firmati, export di sistema, analisi nostre, consegnati e screenshot allo
+stesso livello, con quattro convenzioni di nome diverse. Riordinarla è un gesto meccanico, e
+i gesti meccanici affidati alla memoria decadono: per questo sta qui, nella chiusura.
+
+**Si lancia in dry-run e si guarda il piano:**
+
+```
+python3 scripts/account-tidy.py <Account>
+```
+
+Poi, se il piano convince: `--esegui`, e `--tag` se l'account ha una cartella Teams
+dichiarata in `docs/Adobe/Radar/teams_cartelle.md`.
+
+La tassonomia e la convenzione di nome stanno scritte in testa allo script, che è la fonte
+di verità; qui bastano le tre regole che non si deducono:
+
+- **`output/` è il «consegnato»** della tassonomia. Il nome resta `output` perché è il
+  percorso che i generatori in `build/` hanno scritto dentro: rinominarlo romperebbe ogni
+  builder di ogni account per guadagnare una parola.
+- **Ciò che è già su Teams non si rinomina.** Rinominare un file sincronizzato su SharePoint
+  ne crea uno nuovo e rompe i link già girati ai colleghi. Lo script lo rileva e lascia il
+  nome com'è.
+- **Il tag blu dice «le due copie sono la stessa».** Dove differiscono, lo script **toglie**
+  il tag invece di metterlo: un blu su due file diversi è un'informazione falsa, e su Enel
+  ce n'era già uno.
+
+⚠️ **Le divergenze con Teams non le risolve lo script**: le stampa. Quale delle due copie
+valga lo decide una persona, perché la più recente non è sempre quella giusta.
+
+## 8 — Chiudi
 Stampa il percorso del file e le righe aggiunte. Se hai toccato file **fuori** da `docs/`,
 dillo e lascia decidere: da qui non si committa.

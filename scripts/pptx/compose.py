@@ -107,9 +107,12 @@ def bullet(p, on):
 
 
 def riga(tf, testo, size, *, bold=False, color=INK, first=False,
-         bul=False, before=0, after=4, spacing=1.18):
+         bul=False, before=0, after=4, spacing=1.18, align=PP_ALIGN.LEFT):
+    # `align` esiste per un caso solo e dichiarato: l'etichetta di valore sopra
+    # una colonna di `colonne_nel_tempo`, dove centrare è prassi di grafico e
+    # non composizione. Il testo di una slide resta a bandiera sinistra.
     p = tf.paragraphs[0] if first else tf.add_paragraph()
-    p.alignment = PP_ALIGN.LEFT
+    p.alignment = align
     p.line_spacing = spacing
     if before:
         p.space_before = Pt(before)
@@ -534,6 +537,15 @@ def colonne(lay, titolo_, cols, fonte=None):
     s = slide(lay)
     titolo(s, titolo_)
     idx = {LAY_2COL: [1, 13], LAY_3COL: [1, 13, 14], LAY_4COL: [1, 13, 14, 15]}[lay]
+    # Lo `zip` qui sotto accoppia indici e blocchi e si ferma al più corto: un
+    # blocco in più del layout sparirebbe SENZA ERRORE, e nessun gate se ne
+    # accorge — misura quello che è reso, non quello che è stato passato.
+    # Successo il 26 ott 2026 sull'annex Enel: una colonna aggiunta a un layout
+    # da tre ha fatto sparire l'ultima. Da qui in poi si rompe, e si vede.
+    if len(cols) != len(idx):
+        raise SystemExit(
+            f"colonne(): {len(cols)} blocchi su un layout da {len(idx)} colonne — "
+            f"il surplus sparirebbe in silenzio. Slide: «{titolo_}»")
     for i, voci in zip(idx, cols):
         blocchi(s.placeholders[i].text_frame, voci)
     pulisci(s, {0, *idx})
@@ -649,7 +661,7 @@ def congiunzione(s, x, y, w=0.30):
 
 
 def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
-                      nota=None, fonte=None, y=1.95, alt=2.95):
+                      nota=None, fonte=None, y=1.95, alt=2.95, valori=True):
     """Una serie nel tempo, a colonne, con la SOGLIA disegnata come linea.
 
     PERCHÉ DISEGNATA E NON UN GRAFICO NATIVO. Il racconto di una licenza è
@@ -660,6 +672,14 @@ def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
     esattamente al suo posto, e le colonne sopra il limite si tingono di
     rosso da sole. È la stessa famiglia di `strati` e `linea_del_tempo`:
     il template disegna con rettangoli e linee.
+
+    IL VALORE STA SULLA COLONNA, e di default. Una colonna senza il suo numero
+    chiede di stimarlo a occhio, ed è esattamente ciò che non si fa su un dato
+    contestato: due barre appena sotto la soglia e una appena sopra si leggono
+    identiche. Misurato il 26 ott 2026 — il panel review del documento Enel ha
+    bocciato la chiarezza su questo, cinque lettori su cinque, su un grafico
+    che reggeva il numero centrale del documento. `valori=False` solo dove la
+    serie è un andamento e non una misura.
 
     serie = [(etichetta, valore), ...] — etichetta vuota = tacca senza testo
     """
@@ -673,11 +693,16 @@ def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
     vmax = max(v for _, v in serie)
     if soglia:
         vmax = max(vmax, soglia)
-    vmax *= 1.12                                   # aria sopra la colonna più alta
+    # aria sopra la colonna più alta: più generosa quando i valori stanno in
+    # pagina, se no l'etichetta della più alta esce dall'area di tracciato.
+    vmax *= 1.22 if valori else 1.12
     base = y + alt
 
     def h_di(v):
         return max(0.02, alt * v / vmax)
+
+    def _num(v):
+        return f"{v:,.0f}".replace(",", ".")
 
     for i, (et, v) in enumerate(serie):
         xi = x0 + i * (larg + gap)
@@ -700,6 +725,28 @@ def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
             tf.margin_left = tf.margin_right = 0
             tf.margin_top = tf.margin_bottom = 0
             riga(tf, et, S, color=INK2, first=True, after=0)
+        if valori:
+            # DOVE va il numero, e perché non sempre nello stesso posto. Sopra
+            # soglia va FUORI, sopra la colonna, in nero e in grassetto: colore
+            # e numero dicono la stessa cosa, e chi stampa in bianco e nero
+            # vede comunque quale barra sfora. Sotto soglia va DENTRO la
+            # colonna, in alto — perché la fascia fra la cima della colonna e
+            # la linea di soglia è dove vive l'etichetta della soglia, e due
+            # testi là dentro si scontrano. Misurato sui due grafici Enel: con
+            # il valore sempre fuori, cinque sovrapposizioni su quindici
+            # colonne. Dentro c'è spazio solo se la colonna è alta: se non lo
+            # è, si torna fuori e si accetta il rischio, che su una colonna
+            # bassa è lontano dalla soglia per costruzione.
+            dentro = (not sopra) and h > 0.44
+            yv = (base - h + 0.05) if dentro else (base - h - 0.30)
+            vb = s.shapes.add_textbox(Inches(xi - 0.08), Inches(yv),
+                                      Inches(larg + 0.16), Inches(0.26))
+            vf = vb.text_frame
+            vf.word_wrap = False
+            vf.margin_left = vf.margin_right = 0
+            vf.margin_top = vf.margin_bottom = 0
+            riga(vf, _num(v), S, bold=sopra, color=INK if sopra else INK2,
+                 first=True, after=0, align=PP_ALIGN.CENTER)
 
     # l'asse dei mesi
     asse = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x0), Inches(base),
@@ -707,8 +754,12 @@ def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
     asse.fill.solid(); asse.fill.fore_color.rgb = RGBColor(0xDD, 0xDD, 0xDD)
     asse.line.fill.background(); asse.shadow.inherit = False
 
-    # LA SOGLIA. Sta sopra le colonne, e porta la sua etichetta a sinistra
-    # perché a destra finirebbe fuori dalla safe-area.
+    # LA SOGLIA. La sua etichetta si posa SOPRA la linea, ma non a caso: si
+    # ancora alla prima colonna che sta SOTTO soglia, perché lì — e solo lì —
+    # sopra la linea il fondo è bianco. Ancorarla a sinistra senza guardare la
+    # serie la fa finire in nero sopra una colonna rossa, che è esattamente
+    # com'era uscita la prima volta sul grafico delle righe di Enel: leggibile
+    # a metà, e illeggibile proprio nella parola che conta.
     if soglia is not None:
         ys = base - h_di(soglia)
         ln = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(x0), Inches(ys),
@@ -716,8 +767,10 @@ def colonne_nel_tempo(titolo_, serie, *, soglia=None, nota_soglia=None,
         ln.fill.solid(); ln.fill.fore_color.rgb = INK
         ln.line.fill.background(); ln.shadow.inherit = False
         if nota_soglia:
-            tb = s.shapes.add_textbox(Inches(x0), Inches(ys - 0.33),
-                                      Inches(span), Inches(0.28))
+            libera = next((i for i, (_, v) in enumerate(serie) if v <= soglia), 0)
+            xs = x0 + libera * (larg + gap)
+            tb = s.shapes.add_textbox(Inches(xs), Inches(ys - 0.30),
+                                      Inches(span - (xs - x0)), Inches(0.28))
             tf = tb.text_frame
             tf.word_wrap = False
             tf.margin_left = tf.margin_right = 0
@@ -1022,6 +1075,41 @@ def apri(template, immagini=None):
     if len(LAYOUTS) < 100:
         raise SystemExit(f"template con {len(LAYOUTS)} layout: non è quello di Brand Center")
     return prs
+
+
+def piede_di_pagina(anno, *, confidenziale=True):
+    """Allinea la riga di copyright di TUTTI i master, e dice se il documento
+    può portare «Adobe Confidential».
+
+    PERCHÉ ESISTE. Il template di Brand Center ha dieci master e non sono
+    coerenti: nove portano «© 2026», **slideMaster2 è rimasto al 2025** — e i
+    layout a colonne che quasi ogni deck usa ereditano proprio da quello. Un
+    deck composto nel 2026 esce quindi con l'anno sbagliato su ogni pagina, e
+    nessun gate lo vede: `audit:pptx` ha «2025» e «2026» entrambi nella
+    whitelist del chrome, perché da lì li aveva presi. Trovato il 26 ott 2026
+    dal panel review sul documento Enel, su ventuno pagine da consegnare.
+
+    E «Adobe Confidential» su un documento che si consegna al cliente afferma
+    una classifica che quel documento non ha: invita chi legge a chiedersi che
+    cos'altro non gli è stato detto. Su un artefatto customer facing si passa
+    `confidenziale=False` e resta «© <anno> Adobe. All Rights Reserved.».
+    La classifica la decide chi manda, non il template.
+    """
+    coda = " Adobe Confidential." if confidenziale else ""
+    atteso = f"© {anno} Adobe. All Rights Reserved.{coda}"
+    tocchi = 0
+    for m in prs.slide_masters:
+        for sh in m.shapes:
+            if not sh.has_text_frame:
+                continue
+            for p in sh.text_frame.paragraphs:
+                for r in p.runs:
+                    if "Adobe. All Rights Reserved" in (r.text or ""):
+                        if r.text != atteso:
+                            r.text = atteso
+                            tocchi += 1
+    print(f"piè di pagina: «{atteso}» · {tocchi} run allineati")
+    return tocchi
 
 
 def fascia_del_piede(pdf):

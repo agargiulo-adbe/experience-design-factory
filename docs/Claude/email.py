@@ -68,6 +68,10 @@ def _inline(t):
     t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)",
                r'<a href="\2" style="color:#1F3864">\1</a>', t)
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    # *corsivo* -> <i>. DOPO il grassetto, se no `**x**` diventa `<i>*x*</i>`.
+    # Senza questa riga gli asterischi restavano a video: visto il 23 ott 2026
+    # su una citazione di una mail del cliente, in una bozza già formattata.
+    t = re.sub(r"(?<!\*)\*([^*\n]+?)\*(?!\*)", r"<i>\1</i>", t)
     t = t.replace(" -- ", " &mdash; ").replace("—", "&mdash;")
     t = t.replace("'", "&rsquo;")
     return t
@@ -88,9 +92,23 @@ def componi(sorgente, font=None, larghezze=None):
         if not righe_tab:
             return
         ncol = max(len(c) for c in righe_tab)
-        larg = larghezze if larghezze and len(larghezze) == ncol else None
+        # PERCHÉ UN DEFAULT. Senza `width` esplicito Word usa il layout
+        # automatico e dà alla prima colonna la sua larghezza MINIMA: il 23 ott
+        # 2026 «Entitlement» è uscito spezzato in «En / titl / em / ent», una
+        # lettera per riga. `table-layout:fixed` più una larghezza per cella
+        # è l'unica cosa che glielo impedisce. Il flag --widths resta, per
+        # quando le proporzioni di default non vanno bene.
+        if larghezze and len(larghezze) == ncol:
+            larg = larghezze
+        elif ncol == 1:
+            larg = [100]
+        else:
+            prima = {2: 26, 3: 24}.get(ncol, 22)
+            resto = (100 - prima) // (ncol - 1)
+            larg = [prima] + [resto] * (ncol - 2) + [100 - prima - resto * (ncol - 2)]
         out.append('<table border="0" cellspacing="0" cellpadding="0" '
-                   'style="border:none;border-collapse:collapse;width:100%">')
+                   'style="border:none;border-collapse:collapse;'
+                   'table-layout:fixed;width:100%">')
         for n, celle in enumerate(righe_tab):
             intestazione = (n == 0)
             fondo = "" if intestazione or n % 2 else "background-color:#F6F8FA;"

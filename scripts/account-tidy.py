@@ -266,7 +266,17 @@ def giro(account: str, esegui: bool, tag: bool) -> int:
     for f in sorted(base.iterdir()):
         if f.name.startswith(".") or f.is_dir():
             continue
-        if f.name in ("ACCOUNT.md", "CLAUDE.md"):
+        # Restano in radice i file il cui PERCORSO è una convenzione che
+        # qualcun altro cerca per nome: il registro, e i file del panel review.
+        # `.claude/panel-review.md` dichiara `docs/<Cliente>/PANEL-PERSONAS.md`
+        # e `docs/<Cliente>/PANEL-VERDICT-<data>-round<N>.md`: spostarli in
+        # 03-analisi con un nome nuovo fa girare il prossimo panel su ritratti
+        # che non trova, e il verdetto esce plausibile e inutile. Trovato il
+        # 26 ott 2026 sulla chiusura di Enel, in dry-run.
+        # I `CASO-<slug>.md` stanno qui per la stessa ragione: il `ACCOUNT.md`
+        # li richiama per percorso.
+        if f.name in ("ACCOUNT.md", "CLAUDE.md") or f.name.startswith(
+                ("PANEL-", "CASO-")):
             continue
         dest = classifica(f.name)
         if dest == "_superato":

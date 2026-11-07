@@ -52,10 +52,19 @@ l'identificativo** che permette di ritrovarla.
 2. **Teams**, via lo **stesso** connettore Microsoft 365 (`chat_message_search`), non
    Centralino. Molte decisioni operative vivono in chat e non arrivano mai in una mail:
    una quota, un «ok» a un prezzo, un cambio di proprietario.
-3. **Trascrizioni delle riunioni — la cartella `/Plaud` su Dropbox** (`Dropbox search`,
-   che cerca anche **nel contenuto**, non solo nei nomi dei file). I file sono `.txt`
-   nominati per data e tema. Se una riunione recente non c'è ancora — la sincronizzazione
-   ha latenza — si guarda il Plaud MCP (`list_files` con `date_from`).
+3. **Trascrizioni delle riunioni — la cartella `/Plaud` su Dropbox**, e si cerca **nel
+   contenuto**: `Dropbox search` con `query` = nome dell'account, `path` = `/Plaud` e
+   `last_modified_after` = la data di `aggiornato`. I file sono `.txt` nominati per data e tema.
+   ⚠️ **Il Plaud MCP non la sostituisce.** `list_files` elenca per **titolo**, e il titolo di
+   una riunione lo scrive un riassunto automatico: nomina il cliente quando gli pare, e ne
+   storpia il nome («Easybank» per Isybank). Misurato su Intesa il 23 ott 2026 — la ricerca
+   per contenuto ha restituito **due file che l'elenco per titolo non dava**, e uno era la
+   call con Accenture del 16 ott che il registro segnava come esito mancante. L'MCP serve a
+   due cose: le riunioni **non ancora sincronizzate** (la cartella ha latenza, `list_files`
+   con `date_from`) e la **nota** di una registrazione già trovata (`get_note`, molto più
+   corta del `.txt` intero).
+   **Nell'esito si dichiara quale delle due ricerche si è fatta:** un giro con il solo elenco
+   per titolo non è un giro completo su questa fonte.
 4. **WhatsApp**, via Centralino (`mail_search` con `accounts`). Vedi sotto: l'account che
    porta il lavoro e il modo di cercarlo non sono quelli che il nome suggerisce. **Non è
    opzionale e non è l'ultima per importanza**: è la fonte dove arrivano le cose dette in
@@ -68,6 +77,43 @@ l'identificativo** che permette di ritrovarla.
 
 **Niente altro.** Non aprire Fluffy né il web: qui serve sapere cosa si è mosso, non
 riverificare il mondo.
+
+### I documenti contrattuali si leggono una volta, e il filtro per data non li vede mai
+Il passo 5 cerca **che cosa si è mosso**, quindi filtra per data. Un Sales Order firmato
+mesi prima dell'ultimo aggiornamento non si è mosso: non compare, e **non comparirà mai**.
+Così un documento resta in cartella senza essere stato aperto, mentre le sue clausole
+vengono discusse a memoria o per parafrasi.
+
+Misurato su un account il 3 nov 2026, ed è costato una raccomandazione sbagliata: il
+Partner Sales Order era in cartella da settembre, mai letto. Dentro c'erano la quantità
+scopata, il prezzo unitario, un License Term **unico su due anni** (non due annuali),
+l'**assenza** di un Overusage Rate sulla riga in discussione, un Initial Implementation
+Period azzerato a **0 giorni**, una promozione **non rinnovabile e già scaduta** che il
+registro portava come domanda aperta, e una rampa di migrazione **non rinnovabile** che
+nessuno aveva in programma. Nel frattempo il fabbisogno era stato dimensionato sul run
+rate, e il numero che stava per andare al cliente era fuori di un ordine di grandezza.
+
+Quindi, **una volta per account e fuori dal filtro di data**:
+- `find . -type f \( -iname "*.pdf" -o -iname "*.xlsx" -o -iname "*.docx" \)` sulla
+  cartella, e si guardano i **nomi**: Sales Order, contratti firmati, footprint, ordini,
+  allegati di rinnovo. Un PDF che finisce in `- signed.pdf` è una fonte di primo livello,
+  non un allegato.
+- Un `.pdf` contrattuale si **estrae e si legge** (`pdftotext -layout`), tutto: la Pricing
+  Detail, **le note numerate** e i Terms and Conditions. Il valore che decide una
+  conversazione sta quasi sempre in una nota, e una riga **senza** nota di overusage dice
+  quanto una riga che ce l'ha.
+- **Si legge chi è la controparte**, non solo chi è il cliente: su un *Partner* Sales Order
+  l'obbligo di pagare è del partner, e «Customer» nelle note significa due cose diverse a
+  seconda del comma.
+- Nel registro, la sezione **Installato** dichiara **quali documenti contrattuali esistono
+  in cartella e quando ognuno è stato letto l'ultima volta**. Un documento senza data di
+  lettura è un buco visibile; senza quella riga è un buco invisibile.
+- Se Installato cita una clausola, un importo o una data **senza** rimandare al documento da
+  cui viene, vale come «da riverificare»: è lì che la parafrasi diverge dal testo.
+
+Vale per ogni apertura, anche quando il registro sembra completo: la gerarchia delle fonti
+mette gli artefatti contrattuali **sopra** la corrispondenza, e una fonte di primo livello
+non letta non è un dettaglio di metodo.
 
 ### Tre regole sulle trascrizioni, che non sono una fonte come le altre
 - **Valgono meno della corrispondenza.** Nella gerarchia stanno sotto: artefatti approvati
