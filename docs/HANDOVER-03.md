@@ -14,6 +14,12 @@
   `docs/Claude/email.py` (il generatore delle bozze Outlook, corpo 11pt e interlinea 1,15), e
   **`/account-open` e `/account-close` più espliciti** (+88 righe fra i due comandi).
   ⚠️ **Nessuna experience toccata**: nessun gate di deck si apre, e il gate panel 3.4 non lo guarda.
+- `3bc2104` **`account-tidy.py`: un accordo quadro è un contratto, non un'analisi.** Due regole di
+  smistamento sbagliavano su file veri. «framework agreement», «accordo quadro», «amendment»,
+  «addendum» e «annex» non portano `signed` nel nome e finivano in `03-analisi`: una fonte di
+  primo livello classificata come materiale di lavoro. E `data.xlsx` — il nome che i gestionali
+  danno agli export scaricati a mano — non veniva agganciato da `_data`, che cerca il suffisso:
+  serve il nome per intero. Entrambe trovate smistando materiale d'account, non leggendo il codice.
 - ✅ **Il working tree è pulito, e due voci di backlog si chiudono con lui.** Il `[P1]` «sedici file
   modificati e non committati» (agg. 5 nov) e il `[P2]` «working tree non pulito» (agg. 19 ott)
   descrivevano lo stesso lavoro in sospeso di più workstream: le nove modifiche su
