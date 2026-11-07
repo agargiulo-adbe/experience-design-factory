@@ -5,6 +5,106 @@
 
 ## 11. Change log recente
 
+### Change log — Intesa, la Storia: i quattro giri di `/umanizza`, e un occhiello mai tradotto (2026-11-06/07) → §42 (Parte 18)
+
+**Quattro commit** (`7ea2762` `a144a21` `1eca541` `e15d136`) su `apps/intesa-esperienza-cliente`,
+da un'altra sessione. Il giro completo su **53 slide**, lette a stato pienamente rivelato — nel
+deck i substep si aprono con ↓ e non con →, e la prima cattura le mostrava a metà.
+
+**Prima dei giri, la base.** Il lavoro di copertina del 5 novembre era nel working tree e mai
+committato: committato da solo, perché la base di un giro va committata prima dei giri. Nello
+stesso tree c'erano otto file di un **Giro 1 interrotto** che portava `copy-audit` da 4 SOFT a 0
+**imbottendo le frasi**, e faceva scendere il Gulpease su cinque pagine su cinque toccate.
+Riportati a HEAD su decisione dell'autore: è il caso da manuale di un contatore che scende
+mentre il testo peggiora.
+
+**Giro 0 — il messaggio.** Tre titoli che funzionavano per qualunque cliente, riscritti: «Dalla
+prima scintilla creativa alla distribuzione su ogni canale» → «Adobe ha due metà. Oggi parliamo
+di quella che arriva al cliente»; e il titolo che *contava* i riquadri invece di dire che cosa
+dicono → «Leader nei quattro Forrester Wave del 2026 che riguardano questo tavolo». Una
+**ricostruzione che sembrava un dato vero**: i quattro numeri grandi dell'imbuto, in un deck per
+una banca, si leggono come i suoi — «ordini di grandezza illustrativi» stava solo nella riga di
+fonte a 12px, e ora le didascalie dicono «· illustrativo». E **la domanda più dura della stanza**
+(«perché non costruirlo in casa?») era in fondo a una riga di fonte: adesso è una chiusa che si
+legge. ⚠️ Affiancata e non impilata — in colonna il titolo finiva sopra la safe-area a 1440 e
+1280 (check `c`, HARD).
+
+**Giri 1-3.** `copy-audit` 4 → **0 SOFT** su 1.178 stringhe; il trattino-perno chiuso con la
+**virgola** e non con i due punti, perché il deck ha già sedici perni e la cadenza è quella —
+misurati prima di toccare, riverificati dopo: **16 → 16, telai 42 → 42, tolti e non spostati**.
+Gli a capo: 18 rilievi e 8 parole appese → **zero in tre passate** (18 → 13 → 11), perché legare
+sposta il punto di rottura. La misura ha trovato una pagina fuori scala — `analytics`, Gulpease
+67,7 IT / 66,4 EN — e l'ha **lasciata stare**: è la slide tecnica di migrazione, la densità è
+appropriata. Lì però lo sguardo ha preso quello che nessun gate vede: fra `</span>` e `<a>` c'era
+un a capo, e in resa usciva «Workspace ( quick start)». E su `circolo/slide-due-ritorni` una
+**banda vuota di 549px** misurata e non stimata, riequilibrata per id a 171px.
+
+**L'orecchio, ed è dove il giro si è ripagato.** I fatti di terzi non sono stati pingati: aperti
+e cercati. Tutti confermati alla fonte — i quattro Forrester Wave col trimestre esatto, e le due
+referenze bancarie con i loro numeri. Otto interventi sull'inglese invisibili a ogni conteggio.
+E **un occhiello che non era mai stato tradotto**: `risultati/slide-italia` lo teneva in un `<p>`
+invece che in un `<T>`, e in inglese la pagina usciva con una riga in italiano in mezzo a tutto
+il resto. **Unico caso in tutto il deck, e non lo vedeva nessun gate** — né `copy-audit`, né
+`audit:deck`, né le lenti: per loro è testo in pagina e basta. Si vede guardando la slide
+nell'altra lingua, che è il mestiere del Giro 3.
+
+⚠️ **Il panel è del 30 ottobre e non copre niente di tutto questo**: è il P0 in testa alla
+Parte 2, con l'incontro il 19 novembre e il check col referente l'11.
+
+### Change log — la Prospettiva Sales passa dal panel, e la sera l'ask cambia contro il verdetto (2026-11-06/07) → §37.16–37.17 (Parte 16)
+
+**Sei commit** (`7abb952` `80bfcbe` `791fb1d` `1b9d25b` `26b8a44` `fc53d8b`).
+
+**Il panel, due giri, nessun agente perso.** Il verdetto precedente era del **12 ottobre** e da
+allora il deck era stato riscritto quattro volte. Rischio 2,3 → **3,3** (il salto più grosso),
+rilevanza 2,8 → **3,7**, credibilità 3,2 → **3,7**, azionabilità 3,2 → **3,8**, chiarezza ferma a
+4,0. Sei «accetto a condizione» su sei in tutti e due i giri — e al 12 ottobre il Direttore Sales
+era un **sì**: le quattro riscritture gli avevano fatto perdere quel sì.
+
+**I quattro rilievi che nessun gate poteva vedere.** In 43 slide non compariva **la piattaforma
+che il Gruppo ha già scelto** per il dato di cliente, e l'interlocutore ne è sponsor pubblico:
+cinque personas su sei, tre dichiaravano che senza quella slide il file non lo inoltrano — nasce
+`domanda/slide-innesto`, costruita sul **loro** comunicato del 5 marzo, che porta anche «acquisto
+biglietti tramite agente AI» fra i traguardi 2026 e **sostituisce una riunione come fonte** del
+capitolo 03. Il numero grande del capitolo sulle agenzie **non erano le agenzie** (i 70.000 sono
+punti vendita sul Regionale, da un comunicato del 2014): ora è **12.400**, loro, dell'ottobre
+2025. La richiesta si fermava un passo prima di diventare una data → nasce `rotta/slide-esito`.
+E quattro capitoli su sette stanno nel perimetro di altre direzioni: due parole sotto ogni
+fermata della mappa e una riga su ogni divisore — ⚠️ **senza riaprire la mappa delle direzioni
+tolta il 4 novembre**, che era l'errore opposto.
+
+⚠️ **E DUE REGRESSIONI, FATTE DALLE CORREZIONI DEL PRIMO GIRO.** Vanno agli atti perché sono la
+classe di errore che il panel esiste per trovare, e questa volta l'ha introdotta la correzione —
+il secondo giro si è ripagato da solo: **una citazione fabbricata** («il mercato che resta» fra
+virgolette e attribuito a lui; il verbatim è un altro, e al primo giro la riga **non aveva
+virgolette ed era giusta») e **un numero inventato al posto di un limite inventato** («12 lingue
+in GA più 5 in beta» dove la fonte dice solo «supports 12 languages»).
+
+**La sera: l'ask cambia, contro il verdetto.** La mezza giornata sui dati della rete agenzie era
+l'unica voce che tutte e sei le personas avevano messo fra le «non toccare», ed era l'unica cosa
+che il Direttore Sales poteva concedere da solo. Esce per **decisione dell'owner**, con la ragione
+agli atti: quella sessione è già intrinseca al lavoro che corre con il presidio digitale e con la
+società tecnologica del Gruppo. Al suo posto **tre cose che può dare solo lui** — il riscontro
+sulle priorità, gli spunti che non abbiamo raccolto, un posto al tavolo quando si pianifica
+l'offerta integrata — e `slide-esito` cambia soggetto: **che cosa va previsto perché una rotta
+diventi un piano**. Dieci righe cadevano con la mezza giornata e sono state riallineate.
+
+**Quattro giri di `/umanizza` sulle due slide nuove**, e due cose che solo i giri hanno preso:
+dopo il Giro 0 le due slide avevano la **stessa forma** ed erano consecutive — le tre voci
+dell'esito non sono parallele ma una **progressione**, e diventano un filo a tre fermate, che
+porta anche la figura che mancava al capitolo; e «quello che si aggiunge è **poco**» era un
+giudizio che la slide non dimostra, diventato «sono due voci».
+
+⚠️ **Trappola di metodo, e vale per ogni app**: lo spazio unificatore scritto come **carattere**
+dentro un heredoc viene appiattito a spazio normale, e il legame non si forma. Non si vede in
+nessuna diff — lo prende solo `audit:wrap`. Si scrive come codice. Stessa famiglia: nel markup di
+un `.astro` la sequenza `\u00a0` **non è un escape** e finisce in pagina come testo, e lì l'ha
+preso `audit:taglio` leggendola come un numero orfano.
+
+**Gate finali**: `copy-audit` 0 HARD e **0 SOFT** su 554 stringhe · `audit:deck` **0 HARD** ·
+`audit:ink` PULITO su 806 blocchi · `audit:taglio` ALLINEATO · `audit:wrap` 17 contro 18 di
+baseline · `astro check` 0 errori.
+
 ### Change log — i tre livelli, i quattro giri di `/umanizza`, la fisarmonica nel motore e la referenza che mancava (2026-11-06) → §37.15 (Parte 16)
 
 **Sette commit** (`04a718d` `06435dd` `1e36957` `d0f4a57` `062f210` `6a99e9c` `f466943`), quasi
@@ -497,36 +597,3 @@ unificatore**: legare la frase intera la rende inseparabile e sborda (check `c`,
 `.ex-frase { display: inline-block }`, con due trappole — `vertical-align: top`, e `display:
 block` sugli `<span>` di lingua dentro `<T>`, che restano inline e si sovrappongono di quindici
 pixel, che è esattamente ciò che il check `e` guarda. Memoria: `coda-di-frase-orfana`.
-
-### Change log — il catalogo del motore, il ritmo, e le slide che si leggono da fondo sala (2026-10-24) → §40 (Parte 18)
-
-**`pnpm deck:catalogo` e `pnpm audit:ritmo`.** Misurato su nove deck: **26 slide su 213 (il
-12%) portano un elemento visivo**, e sei deck su nove usano una struttura sola — mentre il
-motore ha **30 blocchi e 11 scene di meccanismo** mai aperti. Il repo aveva già imparato questa
-lezione **per i `.pptx`** (il catalogo dei 166 layout, i check `D`/`V`/`G`) e per l'HTML non
-esisteva né il catalogo né i check. `audit:ritmo` misura `R` due slide consecutive dello stesso
-tipo, `G` quattro di fila senza elemento visivo, `V` la pagina coperta. Memoria:
-`catalogo-prima-di-comporre`.
-
-**Due difetti del motore trovati usando le scene**, corretti per tutti: `personalize` attenuava
-le opzioni scartate a `opacity: 0.2` — testo a **1,5:1 su bianco** — e ora marca `data-scartato`
-lasciando il contrasto alla pelle; e una fase non ancora entrata va a `visibility: hidden`, se
-no i gate misurano testo invisibile e i lettori di schermo lo leggono.
-
-**Le slide si leggono da fondo sala, e ora si misura** (famiglia `S` di `audit:ritmo`, con
-`--sala` a 3840×2160). Il contratto di leggibilità è tarato su 1920, dove il corpo minimo è
-l'**1,3% dell'altezza**; `wallScale` alza la radice sopra i 3200 e **non basta**: misurato, a
-3840 il corpo più piccolo di una figura scendeva allo **0,97%** — su una parete, che si guarda
-da più lontano, il rapporto *scendeva*. Il testo dentro una figura si lega al viewport con
-`clamp(rem, vw, tetto)`, mai alla sola radice.
-
-### Change log — la console porta al dossier, l'Intesa trova la sua cifra e un affondo, la Prospettiva dice con che cosa si fa (2026-10-20) → §33.10 (Parte 11), §37.12 (Parte 16), commit `836255f` `171eb5d` `6299f6d` `8ee387a` `4269b4a` `40d50ba`
-
-- **La console porta al dossier** (`836255f`): una prop sola nel motore condiviso — `dossiers` — e **sette console** la passano. Il blocco sta **nel corpo e non nell'intestazione**: lì, a 1280, due dossier e un nome lungo mandavano a capo marchio e badge (misurato su Connessioni Intelligenti). I dossier restano gated: il link non apre niente, porta al login. Il caso cross-app è **Trenitalia Prospettiva Sales**, il cui dossier è nato dentro l'app `trenitalia-connessioni` l'8 ott, prima che l'experience esistesse: il link si costruisce dalla **radice del sito**, non dal base dell'app. Il template delle nuove experience porta il campo già pronto, commentato. Verificato: typecheck 0 errori su 19 app, build intera, ogni rotta linkata esiste nel dist, `audit:og` PASS, e le console senza dossier non rendono nulla.
-- **Intesa — la cifra fa il lavoro che faceva la frase, e ogni fonte si apre** (`171eb5d`): la slide dei tre obiettivi era un muro di tre periodi in grassetto più una nota di trentaquattro parole che spiegava i corpi del carattere — vera nel posto sbagliato, e **falsa al primo riflow**, perché su telefono i due corpi quasi coincidono. La distinzione fra la loro parola e la nostra lettura diventa un'etichetta attaccata alla riga che qualifica, sopra un filetto alla stessa quota nelle tre colonne (**subgrid**: `margin-top: auto` allineava il fondo e bastava una riga in meno per sfalsarlo di 26px a 1280). La cifra sostituisce la frase: da ~170 a ~60 parole, bilingue perché «2,5 mln» in inglese è «2.5m». **Le fonti**: i tre obiettivi citavano due documenti non apribili e i 20 miliardi erano affermati senza alcun documento; il comunicato della Divisione Banca dei Territori è stato trovato e verificato (importo, settori, data) e porta le «circa 800.000 piccole e piccolissime aziende clienti della Divisione» al posto di un vago «centinaia di migliaia». Nasce `IsuFonte`: etichetta, una citazione per riga, e **la citazione è il link**; la classe `ex-src` non è cosmetica, senza di essa `audit:fonti` non vedeva nessuna riga di fonte su questa app. Gate: `audit:deck` 0 HARD · `audit:ink` PULITO · `audit:fonti` nessun link rotto · `audit:wrap` PULITO · `audit:taglio` ALLINEATO · `copy-audit` 0 HARD su 372 stringhe.
-- **Intesa — tre righe che passavano i gate e non dicevano niente** (`6299f6d`): i gate cercano **segni** (frasi lunghe, subordinate, em-dash), non il vuoto e non il falso, e tutte e tre uscivano con 0 HARD. Un piano cloud non tocca i contenuti ma **i sistemi che li gestiscono** — «quello che gestisce» era stato amputato per far scendere il conteggio parole, cioè tagliato per lunghezza e non per dire meglio; ora la riga nomina i sistemi e porta una **scadenza**. «Si parla a chi non vi conosce ancora» aveva perso il soggetto: adesso sono clienti, e sono i loro. «Tutti e tre passano da quello che il cliente legge» era **falso sul secondo** (il 100% in cloud è un obiettivo di infrastruttura): un tricolon forzato che in sala il CDO smonta in due secondi, e da lì non crede più nemmeno agli altri due. Gate: 75 slide auditate, 0 HARD, soft invariati; `copy-audit` SOFT 32→31.
-- **Intesa — le dieci richieste della revisione del 20 ott, e un affondo che prima non c'era** (`40d50ba`): dal parlato della revisione con l'AE e il lead della patch, **non dal riassunto automatico**, che diceva «incontro del 21 ottobre» e sbagliava — il calendario dice **22 ott 16:00 su Teams**, invito del cliente, e il «domani» ripetuto in call è l'evento del 21 sovrapposto parlando. **L'ordine degli obiettivi cambia**: il cloud scende in terza perché è il più lontano dalla conversazione, i 20 miliardi salgono in seconda. **La sintesi che ripeteva** sparisce dal taglio corto; resta la domanda, che è la riga che fa parlare. **Il nesso**, chiesto tre volte in call: una riga sulle copertine invece di un'agenda standard, e una domanda sotto le tre carte — una slide che ELENCA gli obiettivi di chi ascolta è una lezione, la stessa che CHIEDE è un'apertura. **L'affondo sul decisioning**: quattro slide, rotta a sé fuori dai capitoli, a un clic dalla slide che lo riguarda (la posizione — uno strato in più, e la colonna che conta dice che cosa NON si tocca; che cosa legge e che cosa decide; i due punti da verificare su un'architettura vera; come si prova senza spostare niente), e chiude sulla domanda competitiva che il registro segna come aperta. **Fuori deliberatamente**: la leva commerciale discussa in call, non confermata per iscritto — un documento che il cliente può girare non è il posto dove scriverla. **La filiera** porta i due capi, dal brief alla pubblicazione, fuori dal binario delle tre tappe. `IsuFonte` impara le **fonti non pubbliche**: si citano dicendo che cosa sono, senza link. Gate: 88 slide-viewport, 0 HARD (soft a 38→36, i 19→14) · `audit:ink` PULITO su 316 blocchi · `copy-audit` 0 HARD su 450 stringhe, SOFT 32→21.
-- **Un attrezzo nuovo, di tutti i deck**: `pnpm deck:pdf --app <alias>` (`40d50ba`, `scripts/deck-pdf.ts`) **non stampa la pagina, la fotografa** slide per slide e impagina gli scatti — un deck `fixed inset-0` mandato in stampa dà una pagina sola e il resto sparito. Nasce da un bisogno misurato: in quella stessa revisione la condivisione schermo si è inchiodata **due volte**.
-- **Trenitalia Prospettiva — ogni idea dice con che cosa si fa, e quasi sempre è roba che hanno già** (`8ee387a`): il feedback dopo la presentazione, punto per punto. **L'apertura citava il 2025** mentre le due slide dopo erano già sul TTG 2026 — aprire un documento del 2026 con la dichiarazione dell'anno prima si fa rispondere «quello lo dicevamo allora»; ora porta le sue parole del **15 ottobre 2026**, verificate sull'articolo, e dove dice di investire: i canali digitali diretti. **«Che cosa serve, concretamente» su ogni idea**, sei blocchi con lo stesso titolo ovunque, dentro il drill-down perché la slide regga anche chiusa; la legenda ha **tre stati e non due**, perché l'accordo quadro arrivato quella mattina fissa il prezzo di prodotti non ancora acquistati — dire «si aggiunge» di qualcosa che ha già il suo prezzo nel contratto sarebbe falso in difetto (letto sul contratto: Firefly arriva con le postazioni Creative Cloud, Workfront ha il prezzo bloccato). **La data collaboration ha una slide sua** invece di una riga di fonte in fondo. Nel capitolo del contenuto entrano **Firefly e Workfront**, e il paragrafo del drill-down era **bianco su fondo chiaro** perché il corpo non dichiarava un inchiostro suo: nessun check lo vedeva. **Il canale delle agenzie** era l'unico senza i prodotti dietro. Due slide nuove registrate nell'admin, perché con il blocco aperto le due d'origine uscivano dalla safe-area e **il contratto dice di dividere, non di rimpicciolire il tipo**. Gate: `audit:deck` 0 HARD su 9 rotte a tre viewport con ogni disclosure ri-misurata da aperta · `ink` PULITO su 347 blocchi · `copy-audit` 0 HARD e 0 SOFT su 273 stringhe.
-- **Trenitalia Prospettiva — la trascrizione dice che su WhatsApp non si compra, e il deck lo diceva** (`4269b4a`): riascoltata la call per intero, **476 segmenti**, non il riassunto automatico, che su questo punto era vago. Il deck scriveva «dentro WhatsApp l'assistente porta al carrello»: in riunione la parola «vendono» è stata **corretta a voce da chi l'aveva detta** — è un canale di assistenza che rimanda il link su app e sito, provato a mano. Era un conflitto fra due fonti nostre (la pagina CartaFRECCIA Oro lascia intendere l'acquisto, la prova diretta dice di no): **vince la prova diretta**, e la fonte ora porta il conflitto scritto perché nessuno lo rifaccia. **LLM Apps è pull, non push** — è il viaggiatore a richiamare l'app nella conversazione, non pubblicità dentro ChatGPT: era la domanda rimasta aperta più a lungo. **Il DAM non è del marketing di Trenitalia** ma di un'altra società del gruppo: «già vostro» diventa «c'è già nel gruppo, da estendere». **Di Firefly hanno la versione base**, quella delle postazioni Creative Cloud; verificato sull'accordo quadro che i modelli personalizzati non ci sono, né licenziati né a prezzo bloccato.
-
