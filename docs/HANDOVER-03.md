@@ -5,6 +5,23 @@
 
 ## 11. Change log recente
 
+### Change log — il motore .pptx prende i trattamenti, i comandi d'account diventano espliciti (2026-11-07) → §39 (Parte 21)
+
+- `5b19769` **`scripts/pptx/compose.py` cresce di 104 righe: trattamenti e geometria.** È il motore
+  dei deck consegnati come **file**, ed è di tutti i clienti — i builder lo importano e restano
+  contenuto puro, quindi un miglioramento qui vale per ogni deck futuro (regola «un artefatto, un
+  design system» in `CLAUDE.md`). Insieme: rifiniture di `scripts/account-tidy.py` e di
+  `docs/Claude/email.py` (il generatore delle bozze Outlook, corpo 11pt e interlinea 1,15), e
+  **`/account-open` e `/account-close` più espliciti** (+88 righe fra i due comandi).
+  ⚠️ **Nessuna experience toccata**: nessun gate di deck si apre, e il gate panel 3.4 non lo guarda.
+- ✅ **Il working tree è pulito, e due voci di backlog si chiudono con lui.** Il `[P1]` «sedici file
+  modificati e non committati» (agg. 5 nov) e il `[P2]` «working tree non pulito» (agg. 19 ott)
+  descrivevano lo stesso lavoro in sospeso di più workstream: le nove modifiche su
+  `intesa-esperienza-cliente` sono entrate la notte fra il 6 e il 7, il resto con `5b19769`.
+  Verificato file per file con `git diff --quiet HEAD`. Erano il rischio da cui sono nati i 18
+  file di TIM finiti su `main` per un `git add -A` (§38): chiuso finché resta pulito.
+
+
 ### Change log — Intesa, la Storia: i quattro giri di `/umanizza`, e un occhiello mai tradotto (2026-11-06/07) → §42 (Parte 18)
 
 **Quattro commit** (`7ea2762` `a144a21` `1eca541` `e15d136`) su `apps/intesa-esperienza-cliente`,
