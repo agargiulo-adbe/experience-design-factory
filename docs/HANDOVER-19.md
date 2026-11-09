@@ -153,3 +153,18 @@ diciassette negazioni in coda ne è stata tolta **una**, l'unica che non si guad
   resta `false`.
 
 ---
+
+---
+
+## 37.18 Prospettiva Sales · Panel review del 9 novembre (giro delta) e stato al 10
+
+> Sta qui e non nella Parte 16 per dimensione. Il resto di §37 è nella Parte 16.
+
+**Panel review — 2026-11-09, giro delta, sei personas più fact-checker e arbitro.** Credibilità 3,5 (−0,17) · rilevanza 3,33 (−0,34) · chiarezza 4 (=) · rischio 2,83 (−0,5) · azionabilità 2,33 (−1,5). Verdetto: può andare in sala dopo i 14 P0, quasi tutti di una riga. Verdetto completo e JSON in `docs/Ferrovie/` (git-ignorata), `PANEL-VERDICT-2026-11-09-round1.md`. ⚠️ Il pacchetto è stato catturato con «Riduci movimento», altrimenti i sotto-passi risultano vuoti: `scripts/panel-evidence.mjs` non lo fa ancora.
+
+**Applicati:** la frase finale, la contraddizione fra «subito» e marzo 2027, «già nel Gruppo», l'anno di AEM, «una sola filiera», la Germania tolta dai concorrenti, CJA tolta dall'incrocio con Costa (fra le sorgenti documentate di Collaboration non compare), i limiti della misura, il numero da guardare sulla mappa, la riga sul confine con la piattaforma del Gruppo.
+
+**Decisioni dell'owner, il 10 nov:** nessuna riga sul passo successivo; resta il nome «Real-Time Collaboration» benché il fact-check lo dia per errore; lo sponsor si dice a voce.
+
+**I consensi, per chi ne parlerà.** Il responsabile dei canali digitali ha detto di faticare a *spostare* i consensi fra due piattaforme web. CJA con Privacy & Security Shield non lo risolve: legge e filtra (GA 21 set 2026), non sposta né riconcilia; serve un dataset Profile popolato con `consentPoliciesIDMap`, e con il solo CJA è da confermare. Il filtro esclude chi non ha tutte le policy e non si recupera. Il codice al banco è di campagna, non di persona, e una locandina si misura solo con un codice per scheda.
+

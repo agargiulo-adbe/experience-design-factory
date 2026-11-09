@@ -5,6 +5,19 @@
 
 ## 11. Change log recente
 
+### 2026-11-10 (notte) · Prospettiva Sales: panel, mockup, Brand Center, contenuto chiaro
+
+Sei commit da `5e98621` a `264b4e0`, tutti su `apps/trenitalia-prospettiva-sales`. Dettaglio e verdetto in §37.18 (Parte 19).
+
+- **Committato e in rete** il deck a 25 slide (`5e98621`), che era solo in locale.
+- **Mockup delle quattro idee rifatti:** schermate protagoniste, prima/dopo con ↓ solo su personalizzazione e contenuto. Sulla ricerca nessun «dopo»: sarebbe una risposta inventata. La homepage del «prima» ricalca quella vera; tolte le note che ripetevano la barra.
+- **Contenuto da mercato a pubblico,** con tre immagini Firefly diverse: il responsabile dei canali digitali ha detto che tradurre non è una priorità. «Materiale» è sparito: fra ferrovieri è il rotabile.
+- **Brand Center letto** (`docs/Adobe Material/Adobe Brand Center/`): i loghi delle applicazioni Experience Cloud sono ritirati, più prodotti = lockup della Cloud + nomi in testo. La striscia ora apre con il lockup CX Enterprise ufficiale e ogni tessera porta un'ancora di massimo sei parole. Memoria `brand-center-loghi-prodotto`.
+- **Contenuto chiaro:** copertine, capitoli, domanda e firma restano foto, clip e rosso; la striscia Adobe è l'unico blocco scuro. Blocco in fondo a `global.css`, escluso per id: i token in `:root` non cambiano.
+- **Sequenza** dichiara che al punto 2 si aggiunge CJA, e ogni passo entra con ↓. «Già vostro» è diventato «già nel Gruppo» (il contratto è di FS Technology).
+- **CI rossa da `5e98621`** per due errori di typecheck: corretta in `98740de`.
+- ⚠️ Trappola del giro: `object-view-box` al posto di `transform: scale` sulle foto, perché lo scale è letto come scorrimento nascosto e testo su immagine (check `k` e `d`).
+
 ### 2026-11-09 (sera) · Prospettiva Sales: le due call di revisione, e il deck cambia forma
 
 Dopo la review interna e l'allineamento con il responsabile dei canali digitali il percorso passa **da 38 a 25 slide**. ⚠️ Niente è committato, e il panel non copre questo stato.
@@ -536,39 +549,3 @@ typecheck 0. In più `pnpm lint` torna a **0 errori**: due `prefer-const` preesi
 `scripts/accounts.ts` e `scripts/og-images.ts`.
 
 ⚠️ Tutto su `publish/intesa-esperienza-cliente`, che il deploy non pubblica: va su `main` quando si decide.
-
-### Change log — il dossier del 5 novembre, bilingue, e il motore che non traduceva (2026-10-26) → §40 (Parte 18)
-
-**Il dossier interno dell'incontro del 5 novembre.** Quattordici sezioni sopra il motore unico;
-il guscio nel repo (trenta righe), il contenuto in `restricted_docs` sotto RLS e il seed
-git-ignorato. Ricerca su registro d'account, posta fino a quella mattina, calendario, Radar e
-ritratti pubblici. **Due cose sono uscite dalla posta e non dal deck**: la richiesta alla
-Business Unit del 26 ott — che porta l'architettura del cliente ricostruita riga per riga e il
-caso d'uso in due fasi, con **Isybank nella prima** — e un **secondo tavolo aperto dal
-procurement** del Wealth Management il 23. Applicando il seed si è scoperto che la migrazione
-`0030` non era **mai stata applicata** al database remoto: stava nel repo dal 23 ott e il buco
-si è visto solo da una violazione di chiave esterna (memoria `migrazione-committata-non-applicata`).
-
-**Tre regole nuove per i dossier, da altrettanti difetti del primo giro** (`skills/dossier/`
-§0-bis, memoria `dossier-deduce-non-trascrive`). Il documento portava **41 virgolettati**,
-quattro citazioni di registrazioni e due minutaggi. **Un dossier deduce, non trascrive**: un
-virgolettato trasforma una lettura in una prova, e un riferimento a una registrazione dichiara
-come abbiamo raccolto il fatto invece di che cosa sappiamo. Di conseguenza **mai minutaggi** —
-esistono solo se esiste una registrazione. E **nel blocco `people` solo le persone del
-cliente**: il team Adobe non è informazione per il lettore, perché il lettore *è* quel team; le
-decisioni sul nostro lato stanno fra i buchi aperti. Il controllo entra nella checklist di
-consegna: due `grep` che devono dare zero.
-
-**Il bilingue del motore era vero a metà** (memoria `campo-fuori-dal-traduttore`). Il dossier
-chiedeva la versione inglese, e si è scoperto che `L()` traduceva ogni blocco **tranne
-`table`** — intestazioni e celle restavano italiane — e che **otto campi** stavano fuori: la
-cifra di una statistica, l'anno di una riga di cronologia, il nome di una persona, il badge di
-una voce, l'etichetta e la riga Adobe di un'idea, il tipo e il testo di una fonte. ⚠️ **Il
-difetto è silenzioso per costruzione**: un campo fuori da `L()` che riceve una coppia `{it,en}`
-stampa **`[object Object]`**, che è testo valido — nessun blocco è vuoto, nessun check scatta.
-`audit:dossier` dava **PASS a cinque viewport** con `[object Object]` grande come un titolo in
-cima alla prima sezione. Si è visto solo aprendo la pagina in inglese. Corrette anche le
-**etichette del guscio**, che erano in italiano fisso (da dire, da non dire, indice, i messaggi
-del gate, gli `aria-label`), con la trappola che `.dw-lbl` sta sia nel bottone dell'indice sia
-in quello del PDF: tradurli insieme faceva comparire due «Contents» affiancati.
-

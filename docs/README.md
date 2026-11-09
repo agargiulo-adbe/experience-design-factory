@@ -26,12 +26,9 @@ fail-closed: ignora tutto e riammette i soli documenti della Factory). Il repo �
 - **memory `MEMORY.md`** (~3k tok) — index of auto-memories, **111 al 19 ott 2026** (nuove: `grafo-contatti-dalla-posta` e `apertura-e-giro-di-ritorno`; `launchd-non-e-la-tua-shell` aggiornata con «`env -i` non è launchd»). I singoli file si caricano a richiamo, non tutti insieme.
 
 ## Read order (on demand, via the Read tool)
-1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-11-09**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe/≤1800 char per riga, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **21 parti**, da leggere in ordine (≈34k tok totali; ognuna sta in una singola `Read`). La mappa sezione→parte sta nel manifest e non si duplica qui; quattro cose vale la pena sapere prima di aprirlo:
-   - **Se devi decidere cosa fare, la Parte 2 basta**: contiene il **backlog P0 e P1 caldi**. Al 9 nov conta **19 P0 e 32 P1**, più **27 P1 di fondo
-     e 48 P2** nella Parte 10. ⚠️ **I due P0 in testa sono entrambi della Prospettiva Sales di Trenitalia e scadono insieme: la stanza è il 10
-     novembre.** Il panel è del 6 nov (due giri, tutti gli assi in salita — §37.16) ma non copre né l'ask sostituito la sera stessa contro il verdetto
-     (§37.17: `rotta/slide-passo` e `rotta/slide-esito`), né il giro del **9 nov**, che ha cambiato il registro di tutto il deck e aggiunto
-     **`slide-citta`**; e quel giro **non è committato**, quindi in rete c'è ancora lo stato del 7. Subito dopo viene il gate 3.4 su **BPER**, stanza
+1. **`docs/HANDOVER.md`** — **read this first.** Dated current state (**2026-11-10**). **Splittato per dimensione** (contratto ≤48KB/≤1500 righe/≤1800 char per riga, via il comando `/handover`): `HANDOVER.md` è un **manifest** che instrada a **21 parti**, da leggere in ordine (≈34k tok totali; ognuna sta in una singola `Read`). La mappa sezione→parte sta nel manifest e non si duplica qui; quattro cose vale la pena sapere prima di aprirlo:
+   - **Se devi decidere cosa fare, la Parte 2 basta**: contiene il **backlog P0 e P1 caldi**. Al 10 nov conta **18 P0 e 32 P1**, più **27 P1 di fondo
+     e 48 P2** nella Parte 10. ⚠️ **La Prospettiva Sales di Trenitalia ha la stanza il 10 novembre** ed è in rete: il panel è del 9 nov (§37.18, Parte 19) e non copre l'ultimo giro. Subito dopo viene il gate 3.4 su **BPER**, stanza
      il **12 novembre**. ⚠️ **Per l'incontro Intesa ci sono DUE experience e su nessuna delle due il panel è mai stato lanciato** — «Adobe × Intesa
      Sanpaolo» (§42, Parte 18) e «Dove ci innestiamo» (§40, Parte 18): la Storia è slittata al **19 nov**, la stanza del Blueprint era il **5 nov** e
      se si è tenuta l'esito non è registrato; **le personas di quel tavolo si scrivono una volta** perché servono a entrambe. ⚠️ «Su scala umana» è
