@@ -755,9 +755,9 @@ export const TEMPI = {
   titolo: 'Prima quello che si può avviare subito',
   sub: 'Una proposta da riordinare con le vostre priorità, nel rispetto dei processi di FS Technology e del Gruppo.',
   voci: [
-    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Misura: impatto minimo. Pagine: con il rifacimento del sito' },
-    { k: 'Da subito, con quello che c’è', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Analytics e Target già nel Gruppo, provati prima su una parte del traffico.', dip: 'Nessun prodotto nuovo. Si estende con il sito, entro marzo 2027' },
-    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM. Si aggiunge Customer Journey Analytics' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
+    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
+    { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com e lefrecce.it, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
+    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
     { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Il venduto in agenzia, letto insieme a quello che succede online.', dip: 'Dipende dal\u00a0sistema delle agenzie' },
   ],

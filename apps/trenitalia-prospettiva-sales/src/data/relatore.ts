@@ -151,7 +151,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
       attenzione: 'È il momento in cui si tace e si lascia guardare la slide. La domanda in titolo è per loro.' },
     { id: 'slide-tempi',
       dire: 'Una possibile sequenza: prima quello che si può avviare subito, poi quello che dipende da nuovo CRM e sistemi di vendita. Si riordina con voi.',
-      attenzione: 'Nessuna data del nuovo CRM: la dice il cliente. L’esperienza unica è un obiettivo di lungo periodo, da costruire con FS Technology.' },
+      attenzione: 'Ogni ↓ scopre un passo, l’ultimo è la fascia dei contenuti. Nessuna data del nuovo CRM: la dice il cliente. L’esperienza unica è un obiettivo di lungo periodo, da costruire con FS Technology.' },
     { id: 'slide-signature', dire: 'Grazie. Il link resta vostro: il percorso intero è nel menu, e c’è anche una versione da dieci minuti.' },
   ],
 
