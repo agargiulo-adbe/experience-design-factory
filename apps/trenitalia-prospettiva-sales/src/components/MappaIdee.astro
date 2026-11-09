@@ -66,12 +66,15 @@ const link = (p: Pezzo) => (p.fonte ? (SOURCES[p.fonte] as { url?: string }).url
           <a class="tp-rt-t" href={href(import.meta.env.BASE_URL, '/' + i.slug)}>{corto(i.slug).short}</a>
           {!soloPezzi && <p class="tp-rt-c">{i.capability.map((c, k) => (k ? c[0].toLowerCase() + c.slice(1) : c)).join('; ')}</p>}
           {(['avete', 'nuovo'] as const).map((st) => (
-            <ul class="tp-rt-g" data-stato={st} aria-label={st === 'avete' ? 'Già vostri' : 'Da aggiungere'}>
+            <ul class="tp-rt-g" data-stato={st} aria-label={st === 'avete' ? 'Già nel Gruppo' : 'Da aggiungere'}>
               {pezziDi(i.slug).filter((p) => p.stato === st).map((p) => (
                 <li>{link(p) ? <a href={link(p)} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</li>
               ))}
             </ul>
           ))}
+          {/* Panel del 9 nov: gli indicatori stavano solo nel taglio corto, e la versione
+              lunga li perdeva proprio dove si chiede di scegliere. */}
+          {!soloPezzi && <p class="tp-rt-m"><strong>Il numero</strong> {i.misura}</p>}
         </li>
       ))}
     </ol>

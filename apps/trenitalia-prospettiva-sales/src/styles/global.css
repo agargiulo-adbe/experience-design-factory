@@ -38,7 +38,8 @@
    distribuibile (Google Fonts, Open Font License). È il caso raro in cui si usa
    il carattere vero del cliente. Non cambiarlo per gusto.
 
-   DOMINANTE SCURA, e il perché: un keynote si proietta in una sala con le luci
+   DOMINANTE SCURA solo per copertine e capitoli (il contenuto è chiaro, vedi in
+   fondo al file). Il perché dell'impianto: un keynote si proietta in una sala con le luci
    basse, e l'ardesia notte è un colore del loro sistema abbassato di luminosità,
    non un fondo inventato. `--surface-inverse` è quindi la superficie CHIARA —
    come in `trenitalia-connessioni`, con cui questa experience deve stare in piedi
@@ -1976,7 +1977,7 @@ li[data-trenitalia] .mk-ordine-n { background: var(--color-rosso-scuro); }
 /* ═══ LE REGOLE DEL DECK (9 nov 2026) ═══════════════════════════════════════════
    Il colore dice che tipo di slide è:
      copertina e firma = clip · capitolo = fotografia · la domanda = rosso ·
-     contenuto = sempre ardesia.
+     contenuto = chiaro (blocco in fondo al file).
    Il titolo sta sempre alla stessa altezza: passando da una slide all'altra non salta.
    Sotto il titolo, il corpo si centra nello spazio che resta.
    Tre soli contenitori: la voce (filetto rosso in alto), il riquadro (fondo appena
@@ -2074,4 +2075,72 @@ li[data-trenitalia] .mk-ordine-n { background: var(--color-rosso-scuro); }
 @media (min-width: 901px) {
   .tp-rt { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(max-content, 1fr) minmax(0, 1fr); }
   .tp-rt > li:nth-child(3) .tp-rt-g > li { white-space: nowrap; }
+}
+
+/* ═══ IL CONTENUTO È CHIARO (9 nov 2026) ═══════════════════════════════════════
+   Copertine, capitoli, la domanda e la firma restano foto, clip e rosso: lì non si
+   legge, si cambia passo. Le slide di contenuto stanno sul chiaro, perché:
+   · trenitalia.com è bianco (240 occorrenze) e l'ardesia è il colore dei dettagli;
+   · sul fondo scuro il rosso di marchio faceva 3,1:1 e diventava rosa, un colore
+     che il cliente non ha: sul chiaro torna il suo #b51039 (6,4:1);
+   · il deck viene inoltrato e letto di giorno su un portatile.
+   ⚠️ Il selettore esclude per id, non ribalta i token in :root: copertine e capitoli
+   dipendono ancora dalla dominante scura. La striscia Adobe resta ardesia: è l'unico
+   blocco scuro, tiene il peso della pagina, e il lockup ufficiale è quello per fondi
+   scuri (Red-White). */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) {
+  --surface-primary: var(--color-nebbia);
+  --surface-secondary: var(--color-bianco);
+  --surface-tertiary: var(--color-chiaro);
+  --surface-inverse: var(--color-ardesia-notte);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-tertiary: var(--color-grigio-600);
+  --ink-body: var(--color-ardesia);
+  --ink-note: var(--color-grigio-600);
+  --ink-accent: var(--color-rosso-scuro);
+  --ink-accent-2: var(--color-verde);
+  --ink-brand: var(--color-rosso-scuro);
+  --ink-link: var(--color-rosso-scuro);
+  --ink-inverse: var(--color-bianco);
+  --line-subtle: var(--color-grigio-200);
+  --line-default: var(--color-grigio-300);
+  --line-strong: var(--color-ardesia-chiara);
+  --xd-dark-bg: var(--color-nebbia);
+  --xd-dark-ink: var(--color-ardesia-notte);
+  --xd-dark-body: var(--color-ardesia);
+  --xd-dark-note: var(--color-grigio-600);
+  --xd-dark-accent: var(--color-rosso-scuro);
+  --xd-dark-surface: var(--color-bianco);
+  --xd-dark-surface-2: var(--color-chiaro);
+  --xd-dark-line: var(--color-grigio-300);
+  --xd-piano: linear-gradient(160deg, #ffffff 0%, var(--color-chiaro) 100%);
+  color: var(--color-ardesia-notte);
+}
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-box, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-stat, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-ask, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .xd-sl .xd-chiusa, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .xd-ref-b, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-dom li {
+  background: var(--color-bianco); border-color: var(--color-grigio-300);
+}
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .mk-schermo { box-shadow: 0 10px 28px rgba(27, 34, 48, 0.14); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-terr-resto { fill: rgba(27, 34, 48, 0.07); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-inc-fig circle { fill: rgba(27, 34, 48, 0.04); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-inc-fig p[data-on] { color: var(--color-ardesia-notte); }
+
+/* La striscia Adobe: l'unico blocco scuro. Piena = si aggiunge, a filetto = già nel Gruppo. */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe { background: var(--color-ardesia); border-color: var(--color-ardesia); box-shadow: 0 10px 26px rgba(27, 34, 48, 0.18); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-k { color: var(--color-grigio-200); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-t[data-stato='avete'] { background: transparent; border-color: rgba(255, 255, 255, 0.45); color: var(--color-bianco); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-t[data-stato='nuovo'] { background: var(--color-bianco); border-color: var(--color-bianco); color: var(--color-ardesia-notte); }
+
+/* La mappa: stessa grammatica, sul chiaro. */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g > li { border-color: var(--color-ardesia); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g[data-stato='nuovo'] > li { background: var(--color-ardesia); color: var(--color-bianco); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g[data-stato='avete'] > li { background: transparent; color: var(--color-ardesia-notte); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-leg span::before { border-color: var(--color-ardesia); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-leg span[data-stato='nuovo']::before { background: var(--color-ardesia); }
+[data-slide] p.tp-rt-m { margin: 0; max-width: none; font-size: clamp(0.95rem, 0.9vw, 1.6rem); line-height: 1.35; color: var(--ink-body); }
+[data-slide] p.tp-rt-m strong { display: block; font-size: clamp(0.76rem, 0.72vw, 1.3rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+@media (max-height: 960px) and (min-width: 901px) { [data-slide] p.tp-rt-m { display: none; } }
+@media (min-width: 901px) {
+  .tp-rt[data-capability] { grid-template-rows: repeat(5, auto); }
+  .tp-rt[data-capability] > li { grid-row: span 5; }
 }
