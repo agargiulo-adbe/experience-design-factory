@@ -1,0 +1,305 @@
+---
+/**
+ * Approfondimenti — i quattro dettagli tecnici, fuori dal percorso.
+ *
+ * Non è un capitolo e non sta nella barra: è come `dieci-minuti`, una rotta
+ * a parte. Ci si arriva dai «Apri il dettaglio» della slide dei componenti
+ * in `messa-a-terra`, e l'ultima slide riporta lì. Sono le slide che il team
+ * voleva «riassumere e ottimizzare»: il riassunto è quella slide, il
+ * dettaglio resta intero per chi apre il deck dopo l'incontro.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import FiguraCap from '../components/FiguraCap.astro';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const TORNA = `${href(base, '/messa-a-terra')}#slide-ingaggio-ciclo`;
+
+/* Le fonti che entrano nella misura unica. Dal deck, slide «CJA + RT-CDP». */
+const FONTI_DATO = [
+  { it: 'App e home banking', en: 'App and online banking' },
+  { it: 'Sito', en: 'Website' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'CRM di filiale', en: 'Branch CRM' },
+  { it: 'Data lake e core banking', en: 'Data lake and core banking' },
+];
+/* ⚠️ QUI C'ERANO TRE BLOCCHI, E DICEVANO LA COSA SBAGLIATA.
+   Erano «Controllo di Gestione», «Advanced Analytics» e «Da definire
+   insieme»: i primi due sono reparti, non domande, e il terzo non è un
+   uso del dato — è una lista di cose da concordare, messa alla pari
+   degli altri due come se CJA servisse a produrre questioni aperte.
+   Il modo in cui Adobe presenta CJA a una banca retail è un altro, e si
+   legge nel materiale di Field Readiness (business case CJA per banche
+   retail nordamericane, letti il 30 ott 2026): **una domanda per area
+   operativa**, con chi la fa e che cosa la rende rispondibile. Le aree
+   che tornano sono acquisizione, legame fra digitale e filiale, share of
+   wallet e abbandono — e sono esattamente le quattro di una banca
+   italiana che vende mutui.
+   ⚠️ Niente nomi di quelle banche in slide: quel materiale è interno. Lo
+   schema si riusa, i clienti citati no.
+   Le cose da concordare restano, ma dove vanno: nella riga di chiusura,
+   non in un blocco che finge di essere un beneficio. */
+const DOMANDE_CJA = [
+  { q: { it: 'Quale canale porta davvero clienti nuovi?', en: 'Which channel actually brings new customers?' },
+    chi: { it: 'Marketing e Controllo di Gestione', en: 'Marketing and management control' },
+    d: { it: 'Attribuzione su dati a livello di evento al posto dell’ultimo clic, con la finestra di osservazione dichiarata.', en: 'Attribution on event-level data instead of last click, with the lookback window stated.' } },
+  { q: { it: 'Quanto il digitale porta in filiale?', en: 'How much does digital bring into the branch?' },
+    chi: { it: 'Direzione commerciale e rete', en: 'Commercial division and the network' },
+    d: { it: 'Il percorso online e l’esito allo sportello nello stesso dato: prodotti per cliente, tempo per acquisire.', en: 'The online path and the counter outcome in one dataset: products per customer, time to acquire.' } },
+  { q: { it: 'Dove si perde il cross-sell?', en: 'Where is cross-sell lost?' },
+    chi: { it: 'Prodotto', en: 'Product' },
+    d: { it: 'Coorti e punti di abbandono per segmento, dentro Analysis Workspace, senza un’estrazione dedicata.', en: 'Cohorts and drop-off points per segment, inside Analysis Workspace, without a dedicated extraction.' } },
+  { q: { it: 'Chi sta per andarsene, e da dove si vede?', en: 'Who is about to leave, and where does it show?' },
+    chi: { it: 'CRM e retention', en: 'CRM and retention' },
+    d: { it: 'I punti in cui il percorso si rompe, e i segmenti a rischio che ne derivano, su eventi di tutti i canali.', en: 'The points where the journey breaks, and the at-risk segments that result, on events from every channel.' } },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   IL PROFILO — Real-Time CDP. Quattro passaggi e UNA scelta di disegno.
+   La scelta è la slide 56 del deck del 5 novembre («duplicare o federare
+   il profilo»), e la verifica sta su due fonti: la guida GTM di
+   Real-Time CDP su Field Readiness (30 ott 2026) e la documentazione
+   pubblica di Federated Audience Composition.
+   ⚠️ IL LIMITE SI DICHIARA COL PREGIO, e qui è preciso: un'audience
+   federata è una composizione STATICA, aggiornata a ogni esecuzione
+   pianificata, e non si usa nella qualificazione a evento. Venderla come
+   «tempo reale» è il modo più rapido di perdere credibilità col loro IT
+   al secondo incontro. Richiede inoltre i pacchetti Prime o Ultimate e
+   l'acquisto del modulo: sta nella riga di fonte, non in slide.
+   ══════════════════════════════════════════════════════════════════════ */
+const PROFILO = [
+  { fig: 'archivio', t: { it: 'Uno schema dati comune', en: 'One common data schema' },
+    d: { it: 'Eventi e attributi scritti nello stesso modo, da qualunque canale arrivino.', en: 'Events and attributes written the same way, whichever channel they come from.' } },
+  { fig: 'grafo', t: { it: 'Gli identificativi si cuciono', en: 'Identifiers get stitched' },
+    d: { it: 'Cookie, ID dell’app, email, codice cliente: lo stitching li riporta alla stessa persona.', en: 'Cookie, app ID, email, customer number: stitching ties them back to one person.' } },
+  { fig: 'serie', t: { it: 'Il grafo si aggiorna da sé', en: 'The graph updates itself' },
+    d: { it: 'Man mano che i dati arrivano, non al ricarico della notte.', en: 'As data arrives, not at the nightly reload.' } },
+  { fig: 'bordo', t: { it: 'Il consenso viaggia col profilo', en: 'Consent travels with the profile' },
+    d: { it: 'Vale su ogni canale, e si revoca in un posto solo.', en: 'It holds on every channel, and is revoked in one place.' } },
+];
+const SCELTA_PROFILO = [
+  { t: { it: 'Portare il dato in piattaforma', en: 'Bring the data into the platform' },
+    d: { it: 'Il profilo si costruisce qui: segmentazione libera e qualificazione nel momento in cui l’evento arriva.', en: 'The profile is built here: free segmentation and qualification the moment the event lands.' },
+    q: { it: 'Serve una copia del dato', en: 'A copy of the data is needed' } },
+  { t: { it: 'Lasciarlo dov’è, e interrogarlo', en: 'Leave it where it is, and query it' },
+    d: { it: 'Le audience si compongono sul vostro data warehouse senza copiare il dato. Si ricompongono a ogni esecuzione pianificata, non a evento.', en: 'Audiences are composed on your data warehouse without copying the data. They recompose at each scheduled run, not on an event.' },
+    q: { it: 'Il dato regolamentato non si muove', en: 'Regulated data does not move' } },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   LA REGIA — tre modi di eseguire la stessa decisione.
+   Dal materiale di affiancamento su Decisioning per una grande banca
+   nordamericana (Field Readiness, letto il 30 ott 2026), che li chiama
+   «tre gruppi di esecuzione»: SDK al bordo, dentro il percorso, e
+   chiamata dal backend del cliente.
+   ⚠️ È LA SLIDE CHE PARLA AL LORO STACK REALE, e per questo il terzo
+   modo non è un dettaglio tecnico: dice che l'orchestrazione può restare
+   dove è oggi e cambiare solo chi decide. Senza quella frase, la
+   proposta suona come «sostituite tutto».
+   ⚠️ Niente nomi di quella banca in slide: il materiale è interno.
+   ══════════════════════════════════════════════════════════════════════ */
+const ESEC = [
+  { fig: 'bordo', t: { it: 'Al bordo, in sessione', en: 'At the edge, in session' },
+    chi: { it: 'SDK web e app, o Edge API', en: 'Web and app SDK, or Edge API' },
+    d: { it: 'L’offerta compare sulla pagina o nella schermata mentre la persona è lì.', en: 'The offer appears on the page or screen while the person is there.' } },
+  { fig: 'regia', t: { it: 'Dentro il percorso', en: 'Inside the journey' },
+    chi: { it: 'Journey Optimizer', en: 'Journey Optimizer' },
+    d: { it: 'Il percorso decide quando, e la decisione entra nel messaggio al momento dell’invio.', en: 'The journey decides when, and the decision enters the message at send time.' } },
+  { fig: 'canali', t: { it: 'Dai vostri sistemi', en: 'From your own systems' },
+    chi: { it: 'API di decisioning', en: 'Decisioning API' },
+    d: { it: 'Il vostro backend resta il motore di campagna e chiede solo quale offerta. La postazione del contact center fa la stessa chiamata.', en: 'Your backend stays the campaign engine and only asks which offer. The contact-centre desktop makes the same call.' } },
+];
+
+/* ══════════════════════════════════════════════════════════════════════
+   L'ARBITRO — come ragiona una decisione, in cinque passaggi.
+   Dalla mappatura fra caso d'uso e capacità AJO per una banca (Field
+   Readiness, 30 ott 2026): catalogo delle risoluzioni, regole di
+   eleggibilità, vincoli, formula di ranking, esito di ripiego.
+   ⚠️ IL CONFINE È CITATO, non addolcito: quel materiale dice che il
+   motore «non deve essere il sistema di record per eleggibilità
+   creditizia, saldi e approvazioni». In una banca è la frase che fa
+   passare la slide, perché è la paura che ha chi la guarda.
+   ══════════════════════════════════════════════════════════════════════ */
+const DECIDE = [
+  { n: '1', t: { it: 'Il catalogo', en: 'The catalogue' },
+    d: { it: 'Le offerte che esistono, con le loro date e i canali su cui possono uscire.', en: 'The offers that exist, with their dates and the channels they may go out on.' } },
+  { n: '2', t: { it: 'L’eleggibilità', en: 'Eligibility' },
+    d: { it: 'Chi può ricevere che cosa. Sul credito la dichiara il core, non il motore.', en: 'Who can receive what. On credit the core declares it, not the engine.' } },
+  { n: '3', t: { it: 'I vincoli', en: 'The constraints' },
+    d: { it: 'Limite per offerta, consenso, capienza di un’offerta, esclusioni.', en: 'Per-offer limit, consent, an offer’s capacity, exclusions.' } },
+  { n: '4', t: { it: 'La classifica', en: 'The ranking' },
+    d: { it: 'Fra le ammesse, l’ordine: quanto vale per la persona e quanto per la banca.', en: 'Among those allowed, the order: what it is worth to the person and to the bank.' } },
+  { n: '5', t: { it: 'Il ripiego', en: 'The fallback' },
+    d: { it: 'Che cosa esce quando nessuna è ammessa. Dichiarato, non lasciato al caso.', en: 'What goes out when none is allowed. Declared, not left to chance.' } },
+];
+---
+<BaseLayout title="Approfondimenti">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={TORNA} prevHref={TORNA}>
+
+    <Slide id="slide-ingaggio-dato" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · la misura unica" en="Deep dive · one measurement" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una sola misura di app, sito, contact center e filiale" en="One measurement across app, site, contact centre and branch" />
+
+        <div class="im-flusso">
+          <ul class="im-flusso-fonti" data-substep data-side="in">
+            {FONTI_DATO.map((f) => <li><span data-lang-it>{f.it}</span><span data-lang-en>{f.en}</span></li>)}
+          </ul>
+          <span class="im-flusso-fr" aria-hidden="true">→</span>
+          <section class="im-flusso-aep" data-substep data-side="in">
+            <span class="im-flusso-t">Experience Platform</span>
+            <T as="span" class="im-flusso-d" it="Identità cross-canale, consenso e schema dati comune. Il grafo si aggiorna man mano che i dati arrivano." en="Cross-channel identity, consent and a common data schema. The graph updates as data arrives." />
+          </section>
+          <span class="im-flusso-fr" aria-hidden="true">→</span>
+          <section class="im-flusso-cja" data-substep data-side="in">
+            <span class="im-flusso-t">Customer Journey Analytics</span>
+            <T as="span" class="im-flusso-d" it="Percorsi, funnel, coorti e attribuzione su dati a livello di evento." en="Journeys, funnels, cohorts and attribution on event-level data." />
+          </section>
+        </div>
+
+        {/* Quattro DOMANDE, non tre reparti: una per area operativa, con
+            chi la fa e che cosa la rende rispondibile. Vedi il commento
+            su `DOMANDE_CJA` per il perché del cambio. */}
+        <ul class="im-dom" data-substep data-side="in">
+          {DOMANDE_CJA.map((d) => (
+            <li class="im-dom-i">
+              <T as="span" class="im-dom-chi" it={d.chi.it} en={d.chi.en} />
+              <T as="span" class="im-dom-q" it={d.q.it} en={d.q.en} />
+              <T as="span" class="im-dom-d" it={d.d.it} en={d.d.en} />
+            </li>
+          ))}
+        </ul>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Tre cose si concordano prima: quali identificativi compongono il grafo, la tassonomia degli eventi (anche in filiale), i KPI con i gruppi di controllo dal giorno uno. L’attribuzione sostituisce la congettura sull’ultimo clic con modelli regolati o algoritmici. Il limite si dichiara, perché non misura quello che succede fuori dai canali osservati e la finestra di osservazione è una scelta. Modelli: </span>
+          <span data-lang-en>Three things get agreed first: which identifiers build the graph, the event taxonomy (in the branch too), KPIs with control groups from day one. Attribution replaces last-click guesswork with rule-based or algorithmic models. The limit is stated, because it does not measure what happens outside the observed channels and the lookback window is a choice. Models: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
+          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* ── Il profilo · Real-Time CDP ───────────────────────────────── */}
+    <Slide id="slide-ingaggio-profilo" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · il profilo" en="Deep dive · the profile" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una persona sola, da identificativi che non si parlano" en="One single person, from identifiers that do not talk to each other" />
+        <T as="p" class="im-ado-l" it="Giulia è un cookie sul sito, un numero di telefono al contact center e un codice cliente dopo la firma. Il profilo è il posto in cui diventa una." en="Giulia is a cookie on the site, a phone number at the call centre and a customer number after signature. The profile is where she becomes one." />
+
+        <div class="im-bv im-cat">
+          {PROFILO.map((c, i) => (
+            <>
+              <section class="im-bv-i" data-substep data-side="in">
+                <FiguraCap segno={c.fig} />
+                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+              </section>
+              {i < PROFILO.length - 1 && <span class="im-bv-op im-cat-op" aria-hidden="true">→</span>}
+            </>
+          ))}
+        </div>
+
+        {/* La scelta di disegno. Due strade, entrambe legittime: è la
+            domanda che il loro IT fa per primo, e arrivarci prima di
+            loro vale più che rispondere dopo. */}
+        <div class="im-scelta" data-substep data-side="in">
+          <T as="p" class="im-scelta-k" it="Una scelta di disegno, da fare insieme" en="One design choice, to make together" />
+          <div class="im-scelta-g">
+            {SCELTA_PROFILO.map((o) => (
+              <section class="im-scelta-i">
+                <T as="span" class="im-scelta-t" it={o.t.it} en={o.t.en} />
+                <T as="span" class="im-scelta-d" it={o.d.it} en={o.d.en} />
+                <T as="span" class="im-scelta-q" it={o.q.it} en={o.q.en} />
+              </section>
+            ))}
+          </div>
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>La seconda strada è </span><span data-lang-en>The second route is </span>
+          <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/overview" target="_blank" rel="noopener">Federated Audience Composition</a><span
+            data-lang-it>: un modulo di Real-Time CDP e Journey Optimizer, con i suoi prerequisiti di pacchetto e un elenco di data warehouse supportati da verificare col vostro. Compone audience senza copiare il dato, e quelle audience si aggiornano a ogni esecuzione pianificata, non alla qualificazione a evento. Per il caso del mutuo serve la prima strada (riconoscimento in sessione, decisione a evento); la seconda vale per le audience sui dati regolamentati dei clienti. Verificato sulla documentazione pubblica, 30 ott 2026.</span>
+          <span data-lang-en>: a module of Real-Time CDP and Journey Optimizer, with its own package prerequisites and a list of supported data warehouses to check against yours. It composes audiences without copying the data, and those audiences refresh at each scheduled run, not on event qualification. For the mortgage case the first route is needed (in-session recognition, event-driven decision); the second holds for audiences on customers’ regulated data. Verified on the public documentation, 30 Oct 2026.</span>
+          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* ── La regia · Journey Optimizer ─────────────────────────────── */}
+    <Slide id="slide-ingaggio-regia" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · la regia" en="Deep dive · orchestration" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tre modi di eseguire la stessa decisione" en="Three ways to execute the same decision" />
+        <T as="p" class="im-ado-l" it="La decisione si configura una volta. Dove viene eseguita è una scelta, e le tre strade convivono." en="The decision is configured once. Where it runs is a choice, and the three routes coexist." />
+
+        <div class="im-esec">
+          {ESEC.map((e) => (
+            <section class="im-esec-i" data-substep data-side="in">
+              <FiguraCap segno={e.fig} class="im-esec-fig" />
+              <T as="span" class="im-bv-t" it={e.t.it} en={e.t.en} />
+              <T as="span" class="im-esec-chi" it={e.chi.it} en={e.chi.en} />
+              <T as="span" class="im-bv-d" it={e.d.it} en={e.d.en} />
+            </section>
+          ))}
+        </div>
+
+        <div class="im-csc-conf im-csc-conf--eng" data-substep data-side="in">
+          <T as="span" class="im-csc-conf-t" it="Il terzo modo è la risposta a «e quello che abbiamo già?»" en="The third route answers “what about what we already have?”" />
+          <T as="span" class="im-csc-conf-d" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola è una; il contatore si comporta diversamente al bordo (per identità, in tempo reale) e nel percorso (per profilo, con qualche minuto)." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule is one; the counter behaves differently at the edge (per identity, in real time) and in the journey (per profile, with a few minutes’ lag)." />
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>I tre modi di esecuzione e il comportamento dei contatori, dalla documentazione pubblica (30 ott 2026): </span><span data-lang-en>The three execution routes and the counters’ behaviour, from the public documentation (30 Oct 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/api-reference/offer-delivery-api/start-offer-delivery-apis" target="_blank" rel="noopener">Decisioning · delivery APIs</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/conflict-prioritization/capping-rules/rule-sets" target="_blank" rel="noopener">rule sets</a>
+          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* ── L'arbitro · AI Decisioning ───────────────────────────────── */}
+    <Slide id="slide-ingaggio-arbitro" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · l’arbitro" en="Deep dive · the arbiter" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come ragiona una decisione, in cinque passaggi" en="How a decision reasons, in five steps" />
+        <T as="p" class="im-ado-l" it="Le quattro candidate della slide d’apertura passano da qui: una sola esce, scelta in cinque passaggi." en="The four candidates from the opening slide pass through here, and only one goes out. These are the five steps that pick it." />
+
+        <ol class="im-dec">
+          {DECIDE.map((d) => (
+            <li class="im-dec-i" data-substep data-side="in">
+              <span class="im-dec-n">{d.n}</span>
+              <T as="span" class="im-bv-t" it={d.t.it} en={d.t.en} />
+              <T as="span" class="im-bv-d" it={d.d.it} en={d.d.en} />
+            </li>
+          ))}
+        </ol>
+
+        {/* Il confine. Si dice prima, perché è la paura di chi guarda. */}
+        <div class="im-confine" data-substep data-side="in">
+          <T as="span" class="im-confine-t" it="Dove si fermano le nostre regole" en="Where our rules stop" />
+          <T as="span" class="im-confine-d" it="Il motore non è il sistema di record dell’eleggibilità creditizia, dei saldi e delle approvazioni: quelli restano nel core banking. Qui si scelgono offerta, canale e momento fra ciò che il core ha già dichiarato ammissibile." en="The engine is not the system of record for credit eligibility, balances or approvals: those stay in core banking. Here offer, channel and timing are chosen among what the core has already declared eligible." />
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>I cinque passaggi, dalla documentazione pubblica (30 ott 2026): </span><span data-lang-en>The five steps, from the public documentation (30 Oct 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/get-started-decision/starting-offer-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span data-lang-it>. Il confine con il core banking è una scelta di disegno nostra, da confermare con voi.</span><span data-lang-en>. The boundary with core banking is a design choice of ours, to confirm with you.</span>
+          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+        </p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

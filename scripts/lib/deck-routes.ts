@@ -153,6 +153,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'rete',       route: '/experience-design-factory/trenitalia-prospettiva-sales/rete/' },
     { name: 'rotta',      route: '/experience-design-factory/trenitalia-prospettiva-sales/rotta/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/trenitalia-prospettiva-sales/dieci-minuti/' },
+    { name: 'appendice',  route: '/experience-design-factory/trenitalia-prospettiva-sales/appendice/' },
   ],
   'tim-contenuti-su-scala': [
     { name: 'home',      route: '/experience-design-factory/tim-contenuti-su-scala/' },
@@ -176,7 +177,8 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'scenario',   route: '/experience-design-factory/intesa-esperienza-cliente/scenario/' },
     { name: 'persona',    route: '/experience-design-factory/intesa-esperienza-cliente/persona/' },
     { name: 'momenti',    route: '/experience-design-factory/intesa-esperienza-cliente/momenti/' },
-    { name: 'circolo',  route: '/experience-design-factory/intesa-esperienza-cliente/circolo/' },
+    { name: 'messa-a-terra',  route: '/experience-design-factory/intesa-esperienza-cliente/messa-a-terra/' },
+    { name: 'approfondimenti',  route: '/experience-design-factory/intesa-esperienza-cliente/approfondimenti/' },
     { name: 'coworker',   route: '/experience-design-factory/intesa-esperienza-cliente/coworker/' },
     { name: 'risultati',  route: '/experience-design-factory/intesa-esperienza-cliente/risultati/' },
     { name: 'analytics',  route: '/experience-design-factory/intesa-esperienza-cliente/analytics/' },

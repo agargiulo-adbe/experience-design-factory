@@ -51,16 +51,16 @@ export const AGENDA: VoceAgenda[] = [
   {
     n: '04', capitolo: 'momenti',
     titolo: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' },
-    riga: { it: 'Sopra la sua vista, sotto la vostra; poi gli approfondimenti su dato, profilo, regia e arbitro', en: 'Her view above, yours below; then the deep dives on data, profile, orchestration and the arbiter' },
+    riga: { it: 'Sopra la sua vista, sotto la vostra', en: 'Her view above, yours below' },
   },
   {
-    n: '05', capitolo: 'circolo',
-    titolo: { it: 'Il giro che si chiude', en: 'The loop that closes' },
-    riga: { it: 'Il ritorno, e su chi lavora: su lei, e sulla prospect ancora da conoscere', en: 'The return, and who it works on: on her, and on the prospect still unknown' },
+    n: '05', capitolo: 'messa-a-terra',
+    titolo: { it: 'Come si mette a terra', en: 'How it gets built' },
+    riga: { it: 'Sulla vostra architettura: l’esistente, il nuovo, e ciò che resta vostro', en: 'On your architecture: what you have, what gets added, what stays yours' },
   },
   {
     n: '06', capitolo: 'coworker',
-    titolo: { it: 'Il lavoro si chiede a parole', en: 'The work is asked for in words' },
+    titolo: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' },
     riga: { it: 'Dall’obiettivo alla campagna pronta, con i vostri dati', en: 'From objective to a campaign ready to go, on your data' },
   },
   {

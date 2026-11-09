@@ -44,10 +44,6 @@ import { TRE } from '../data/tre';
    ⚠️ Due tornano più avanti come scene dei momenti 01 e 02. Il riuso è
    voluto: qui sono texture dietro un numero, lì sono la scena — e
    l'eco aiuta a riconoscerle quando arrivano. */
-import f1 from '../assets/generated/scena-08-tracce.webp';
-import f2 from '../assets/generated/scena-02-bar.webp';
-import f3 from '../assets/generated/lavoro-01-ricerca.webp';
-const FOTO = [f1, f2, f3];
 /* I quadranti, estratti dal deck ufficiale. Non ricostruiti: un Wave
    ridisegnato da noi non sarebbe più una fonte. */
 import wCdp from '../assets/forrester/forrester-cdp.png';
@@ -175,6 +171,11 @@ const WAVE = [
    conversazionale a supporto del vostro lavoro» è una promessa che in
    sala si capisce senza glossario. Il nome del prodotto resta accanto,
    piccolo: serve sapere di che cosa si parla, ma non è quello il titolo. */
+/* ⚠️ I BLOCCHI DELLA SLIDE «LE TRE COSE» STANNO QUI (Teams, 30 ott 2026:
+   «ridondante rispetto alla 05, ne farei una unica»). Le tre cose che si
+   annunciano sono tre di questi blocchi: si numerano e prendono la loro riga
+   da `tre.ts`, che resta la fonte unica anche per la ripresa finale. */
+const NUMERATA: Record<string, { n: string; riga: { it: string; en: string } }> = Object.fromEntries(TRE.map((c) => [c.gruppo, { n: c.n, riga: c.riga }]));
 const CANALI = [
   { g: 'trovare', t: { it: 'Farsi trovare nell’era dell’AI', en: 'Being found in the age of AI' },
     p: 'Adobe Brand Visibility',
@@ -239,7 +240,7 @@ const FASCE = [
             di chiunque altro, e muto su che cosa guarda questo capitolo.
             Il fatto della slide è la figura: due metà, e oggi se ne
             guarda una. Quello sta nel titolo. */}
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Adobe ha due metà. Oggi parliamo di quella che arriva al cliente" en="Adobe has two halves. Today we look at the one that reaches the customer" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una piattaforma unica per gestire end-to-end la Customer Experience: comprendere, decidere, creare e attivare" en="One platform to run the customer experience end to end: understand, decide, create and activate" />{/* copy-audit-ignore D4 — è la frase proposta dal team (Teams, 30 ott 2026) al posto di quella autoreferenziale. */}
 
         {/* La figura è l'argomento: Adobe fa gli strumenti con cui il
             contenuto nasce E il sistema con cui arriva al cliente. Il
@@ -325,60 +326,32 @@ const FASCE = [
           <T as="h2" class="im-orch-t" it="Orchestrare l’esperienza del cliente" en="Orchestrating the customer experience" />
           <T as="p" class="im-orch-c" it="Dati, contenuti e decisione nello stesso sistema: per servire i clienti di Intesa Sanpaolo uno per uno, in app, sul sito, al contact center e in filiale." en="Data, content and decisioning in one system. To serve Intesa Sanpaolo’s customers one by one: in the app, on the site, at the contact centre, in the branch." />
         </div>
-        <T as="p" class="im-ado-l im-ado-l--sotto" it="Tre canali, una misura che li attraversa tutti e, sotto, il modo in cui il lavoro si chiede." en="Three channels, one measurement running across all of them and, underneath, how the work gets requested." />
+        <T as="p" class="im-ado-l im-ado-l--sotto" it="Oggi ne guardiamo tre, numerate qui sotto: prima che vi conoscano, mentre decidono, e dopo." en="Today we look at three, numbered below: before they know you, while they decide, and after." />
         <div class="im-arch" data-reveal data-reveal-delay="0.12">
           <ul class="im-arch-su">
             {CANALI.map((b) => (
               <li class="im-arch-b" data-gruppo={b.g} data-substep data-side="in">
+                {NUMERATA[b.g] && <span class="im-arch-n">{NUMERATA[b.g].n}</span>}
                 <T as="span" class="im-arch-t" it={b.t.it} en={b.t.en} />
-                <T as="span" class="im-arch-d" it={b.d.it} en={b.d.en} />
+                <T as="span" class="im-arch-d" it={(NUMERATA[b.g]?.riga ?? b.d).it} en={(NUMERATA[b.g]?.riga ?? b.d).en} />
                 <span class="im-arch-pro">{b.p}</span>
               </li>
             ))}
           </ul>
           {FASCE.map((f) => (
             <section class="im-arch-b im-arch-f" data-gruppo={f.g} data-alta={f.alta ? '' : undefined} data-substep data-side="in">
+              {NUMERATA[f.g] && <span class="im-arch-n">{NUMERATA[f.g].n}</span>}
               <div class="im-arch-f-t">
                 <T as="span" class="im-arch-t" it={f.t.it} en={f.t.en} />
                 <span class="im-arch-pro">{f.p}</span>
               </div>
-              <T as="span" class="im-arch-d" it={f.d.it} en={f.d.en} />
+              <T as="span" class="im-arch-d" it={(NUMERATA[f.g]?.riga ?? f.d).it} en={(NUMERATA[f.g]?.riga ?? f.d).en} />
             </section>
           ))}
         </div>
         {/* I nomi, una volta sola: lo stesso prodotto compariva con tre
             nomi e l'offerta con tre (panel, 30 ott 2026). */}
-        <T as="p" class="im-fonte-riga" it="I nomi, una volta: CX Analytics è la famiglia della misura, e dentro stanno Customer Journey Analytics e Adobe Analytics, che avete. Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning. Brand Visibility è un prodotto a sé, non una funzione di AEM." en="The names, once: CX Analytics is the measurement family, and inside it sit Customer Journey Analytics and Adobe Analytics, which you have. Decisioning is the Journey Optimizer module that public cases still call Offer Decisioning. Brand Visibility is a product of its own, not an AEM feature." />
-      </div>
-    </Slide>
-
-    {/* ── LA MAPPA, PRIMA DI PERCORRERLA ──────────────────────────────
-        L'anticipazione in apertura è la parte della vecchia formula «dì
-        quello che dirai, dillo, ripeti» che le prove reggono davvero
-        (advance organizer); la ripetizione finale no. Il perché, con le
-        misure, sta nel commento di `src/data/tre.ts`.
-        ⚠️ NIENTE `data-substep` QUI: una mappa si guarda tutta insieme.
-        Farla comparire a pezzi la trasformerebbe nel racconto che deve
-        invece annunciare. */}
-    <Slide id="slide-tre" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Di che cosa vi parliamo" en="What we are here to talk about" />
-        <T as="h2" class="im-tre-h" it="Prima che vi conoscano, mentre decidono, dopo" en="Before they know you, while they decide, after" />
-        <T as="p" class="im-ado-l" it="Tre momenti del percorso di una persona, e che cosa cambia in ciascuno." en="Three moments in a person’s path, and what changes in each one." />
-
-        <ul class="im-tre">
-          {TRE.map((c, i) => (
-            <li class="im-tre-i" data-gruppo={c.gruppo}>
-              <figure class="im-tre-foto" style={`--foto: url(${FOTO[i].src})`}>
-                <span class="im-tre-n">{c.n}</span>
-              </figure>
-              <T as="span" class="im-tre-t" it={c.t.it} en={c.t.en} />
-              <T as="span" class="im-tre-d" it={c.riga.it} en={c.riga.en} />
-              <span class="im-tre-pro">{c.prodotto}</span>
-            </li>
-          ))}
-        </ul>
+        <T as="p" class="im-fonte-riga" it="I nomi, una volta. CX Analytics è la famiglia della misura: Customer Journey Analytics e Adobe Analytics, che avete. Decisioning è il modulo di Journey Optimizer, nei casi pubblici ancora Offer Decisioning." en="The names, once. CX Analytics is the measurement family: Customer Journey Analytics and Adobe Analytics, which you have. Decisioning is the Journey Optimizer module, still Offer Decisioning in public cases." />
       </div>
     </Slide>
 

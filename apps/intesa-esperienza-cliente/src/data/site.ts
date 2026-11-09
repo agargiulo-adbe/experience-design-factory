@@ -22,7 +22,7 @@ export const SITE = {
      barra faceva sembrare l'intero incontro una storia sul mutuo.
      Il titolo del racconto resta, e vive nel capitolo e nella copertina. */
   name: 'Adobe × Intesa Sanpaolo',
-  sottotitolo: '5 novembre 2026',
+  sottotitolo: '19 novembre 2026',
   client: 'Intesa Sanpaolo',
   type: 'storia' as ExperienceType,
   langs: ['it'] as Array<'it' | 'en'>,

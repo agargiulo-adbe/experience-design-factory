@@ -105,7 +105,7 @@ export interface Momento {
    Il primo serve se al team non piacciono mezz'ora prima dell'incontro;
    il secondo se la decisione è presa.
    ══════════════════════════════════════════════════════════════════════ */
-export const DOMANDE_IN_SLIDE = true;
+export const DOMANDE_IN_SLIDE = false;
 
 export const MOMENTI: Momento[] = [
   {
@@ -121,7 +121,7 @@ export const MOMENTI: Momento[] = [
     prodotto: 'Brand Visibility',
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
-      titolo: { it: 'Non sta scegliendo fra le vostre offerte. Sta scegliendo se guardarvi.', en: 'She is not choosing among your offers. She is choosing whether to look at you.' },
+      titolo: { it: 'Giulia chiede a un assistente AI quale mutuo scegliere. Se Intesa non è citata, il confronto parte senza di voi.', en: 'Giulia asks an AI assistant which mortgage to choose. If Intesa is not cited, the comparison starts without you.' },
       corpo: {
         it: 'Lo chiede a ChatGPT, non a un motore di ricerca: «qual è il mutuo migliore per chi compra la prima casa?». La risposta cita tre banche. Giulia non è vostra cliente e non ha motivo di partire da voi: se il marchio non compare qui, il confronto comincia senza di voi.',
         en: 'She asks ChatGPT, not a search engine: “which mortgage is best for a first home?”. The answer cites three banks. Giulia is not your customer and has no reason to start from you: if the brand is absent here, the comparison starts without you.',
@@ -185,7 +185,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Era un numero di sessione. Adesso è una persona.', en: 'It was a session number. Now it is a person.' },
+      titolo: { it: 'Dopo il consenso, le due sessioni anonime delle sere prima si agganciano al suo profilo.', en: 'After consent, the two anonymous sessions from the earlier evenings link to her profile.' },
       corpo: {
         it: 'Le visite anonime delle sere prima si collegano al profilo nell’istante del consenso, se il consenso ai cookie c’era già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
         en: 'Her anonymous visits from the previous evenings link to the profile the instant consent is given, if cookie consent was already there. If not, you start from today’s simulation. In the CRM she has no customer record: she can have a lead.',

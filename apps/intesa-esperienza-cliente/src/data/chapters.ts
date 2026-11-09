@@ -27,10 +27,12 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'scenario', num: '02', title: { it: 'Scenario', en: 'Scenario' } },
   { slug: 'persona', num: '03', title: { it: 'La persona', en: 'The persona' } },
   { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' }, breve: { it: 'I sette momenti', en: 'Seven moments' } },
-  { slug: 'circolo', num: '05', title: { it: 'Il circolo che si chiude', en: 'The loop that closes' }, breve: { it: 'Il circolo', en: 'The loop' } },
+  /* Il capitolo «fuori dalla storia» (Teams, 30 ott 2026): le slide tecniche
+     che stavano nei momenti, più il circolo. Vedi `pages/messa-a-terra.astro`. */
+  { slug: 'messa-a-terra', num: '05', title: { it: 'Come si mette a terra', en: 'How it gets built' }, breve: { it: 'Messa a terra', en: 'How it’s built' } },
   /* Il lavoro si chiede a parole: l'intro a Coworker e il video con i
      dati del cliente, che si innesta dalla console di amministrazione. */
-  { slug: 'coworker', num: '06', title: { it: 'Il lavoro si chiede a parole', en: 'The work is asked for in words' }, breve: { it: 'Il lavoro a parole', en: 'Work in words' } },
+  { slug: 'coworker', num: '06', title: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' }, breve: { it: 'Coworker', en: 'Coworker' } },
   { slug: 'risultati', num: '07', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' }, breve: { it: 'Referenze', en: 'References' } },
   /* ⚠️ Capitoli in attesa di contenuto: le slide ci sono ma dichiarano
      di essere segnaposto. Un capitolo vuoto e muto è peggio di un
