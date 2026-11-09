@@ -35,15 +35,15 @@ export interface NotaSlide {
 
 /** Quanto dura un capitolo, in minuti, su un'ora piena. */
 export const MINUTI: Record<string, number> = {
-  apertura: 7, domanda: 6, ricerca: 11, viaggio: 11,
-  contenuto: 7, rete: 8, rotta: 10,
+  apertura: 3, domanda: 6, ricerca: 13, viaggio: 13,
+  contenuto: 8, rete: 5, rotta: 12,
 };
 
 /** Le tre cose che devono restare se il resto si perde. */
 export const TRE_COSE: string[] = [
-  'La vendita si perde in quattro punti diversi, e tre stanno prima o fuori dal sito.',
-  'Su tutte e quattro le idee una parte della tecnologia è già nel loro contratto.',
-  'Non chiediamo un progetto. Chiediamo una rotta confermata, e un posto al tavolo quando il piano si scrive.',
+  'Quattro idee per ottimizzare le vendite, dalla ricerca del viaggio all’acquisto.',
+  'Su tre delle quattro idee una parte della tecnologia è già nel loro contratto.',
+  'Non chiediamo un progetto: la domanda è quali di queste idee sono priorità vostre.',
 ];
 
 /** Che cosa si chiede, parola per parola. È anche l'ultima slide.
@@ -52,144 +52,124 @@ export const TRE_COSE: string[] = [
  *  presidio digitale e con la società tecnologica del Gruppo, quindi a lui non
  *  chiede niente che non stia già succedendo. */
 export const ASK_A_VOCE =
-  'Tre cose: ditemi quali di queste quattro direzioni sono vostre, ditemi che cosa non abbiamo visto, e portateci al tavolo quando si pianifica l’offerta integrata.';
+  'Tre cose: quali di queste quattro direzioni sono priorità vostre, che cosa non abbiamo visto, e la possibilità di offrirvi il nostro contributo nella pianificazione dell’offerta integrata.';
 
 export const NOTE: Record<string, NotaSlide[]> = {
   index: [
     { id: 'slide-cover',
-      dire: 'Un’ora, quattro punti in cui una vendita si perde prima che qualcuno salga su un treno. Niente slide di prodotto: alla fine vi chiediamo una cosa sola.',
-      seChiedono: { d: 'È una proposta commerciale?', r: 'No. È una lettura del vostro anno fatta da fuori, e tre domande. Non c’è un listino in queste pagine.' } },
+      dire: 'Un’ora, quattro idee per ottimizzare le vendite, e per ognuna i prodotti con cui realizzarla.',
+      seChiedono: { d: 'È una proposta commerciale?', r: 'È una lettura del vostro anno fatta da fuori, con i prodotti che servirebbero. Non c’è un listino in queste pagine.' } },
+    { id: 'slide-chi-siamo',
+      dire: 'Chi siamo, che cosa copre Adobe dall’inizio alla fine, e il percorso fatto insieme dal 2017.',
+      attenzione: 'Coworker è lo strato che attraversa le fasi: che cosa è attivo su quale prodotto si dice a voce. La tappa accesa è il 2026: il progetto di trasformazione del sito di FS Italiane.' },
   ],
 
   apertura: [
-    { id: 'slide-cover', dire: 'Partiamo da tre fatti che cambiano l’anno commerciale. Nessuno dei tre arriva da noi: sono vostri, o del mercato.' },
-    { id: 'slide-mercato',
-      dire: 'Al TTG dell’anno scorso il tema era il 96% del territorio che gli stranieri non vedono. Il rovescio è che tre quarti di loro si concentrano sul 4%.',
-      fatto: 'Il 96% è una citazione del vostro Direttore Sales; il 75%/4% è un dato di contesto del TTG, non una sua frase. Fonti in slide.',
-      attenzione: 'Il 75%/4% va detto come dato che circolava al TTG, mai come una sua dichiarazione: la differenza è in slide ed è giusto che si veda.' },
-    { id: 'slide-novantasei',
-      dire: 'Quest’anno la parola che ha usato lui è una sola: internazionalizzazione. E nella stessa intervista dice dove stanno investendo: app e sito.',
-      fatto: 'Intervista al Direttore Sales, TTG, 15 ottobre 2026. I mercati sono i suoi, non una nostra selezione.',
-      seChiedono: { d: 'Serve un programma estero separato?', r: 'No, ed è il punto della slide: la macchina che serve l’Italia è la stessa. Cambiano lingua e canale, non l’impianto.' } },
-    { id: 'slide-contesto',
-      dire: 'Tre cose si muovono nello stesso anno: il mercato, il prezzo e il momento. È la finestra in cui quello che si decide entra nel piano.',
-      fatto: 'Prezzo dinamico sulle Frecce da gennaio 2026; piano di Gruppo entro fine anno; nuovo sito previsto per marzo 2027, parole sue.',
-      seChiedono: { d: 'Il prezzo non è già la leva?', r: 'Lo è, e lavora da gennaio. Ma verso l’alto il vertice ha dichiarato che non aumenteranno: da lì in poi la leva è un’altra.' } },
+    { id: 'slide-cover', dire: 'Partiamo da quattro fatti che conoscete già: li mettiamo in fila per dire da dove nascono le idee.' },
+    { id: 'slide-problemi',
+      dire: 'Il territorio poco visitato, i mercati esteri, la concorrenza e il momento: nuovo sito e piano. Sono le premesse, e ci stiamo un minuto.',
+      fatto: 'Il 75%/4% è un dato di contesto del TTG 2025, l’internazionalizzazione è una parola del Direttore Sales al TTG 2026, il sito di marzo 2027 è una sua dichiarazione. Fonti in slide.',
+      attenzione: 'Il 75%/4% va detto come dato che circolava al TTG, mai come una sua dichiarazione.' },
   ],
 
   domanda: [
-    { id: 'slide-cover', dire: 'Da qui in avanti tutto risponde a una domanda sola.' },
     { id: 'slide-domanda',
-      dire: 'Il prezzo si muove già con la domanda. Allora dove si perdono le vendite che il prezzo non recupera?',
-      attenzione: 'Qui si fa una pausa. È la domanda del documento: se la si copre parlando, il resto dell’ora non ha una cornice.' },
+      dire: 'Il prezzo si muove già con la domanda. Allora come si ottimizzano le vendite?',
+      attenzione: 'Qui si fa una pausa: è la domanda del documento.' },
     { id: 'slide-mappa',
-      dire: 'Quattro possibili risposte, in ordine di percorso: prima del sito, dentro l’offerta, a valle, e nel canale che è vostro. Sono anche i quattro capitoli che seguono.',
-      seChiedono: { d: 'E voi che cosa ci mettete?', r: 'Si apre il secondo blocco della slide: per ogni idea le cose da saper fare e i prodotti, con quali sono già vostri. È lì apposta, non va proiettato prima che lo chiedano.' } },
+      dire: 'Quattro idee, in ordine di percorso, e per ognuna che cosa avete già e che cosa si aggiunge.',
+      seChiedono: { d: 'Che cosa cambia in ciascuna delle quattro idee?', r: 'Ogni idea ha il suo capitolo, raggiungibile dal nome.' } },
   ],
 
   ricerca: [
     { id: 'slide-cover', dire: 'Il primo punto sta prima di ogni vostra pagina. Ed è l’unico capitolo in cui portiamo una misura fatta da noi.' },
-    { id: 'slide-idea',
-      dire: 'Abbiamo fatto le stesse otto domande di viaggio a due assistenti. Su ChatGPT siete fra le fonti sette volte su otto; nella risposta generata di Google, due.',
-      fatto: 'Misura Adobe dell’11 e 12 ottobre 2026, otto domande, due assistenti. Il campione è piccolo e lo diciamo in slide.',
+    { id: 'slide-campione',
+      dire: 'Prima il campione: otto domande di viaggio, nessuna di marca, poste a due assistenti. Da qui vengono tutti i numeri che seguono.',
+      fatto: 'Misura Adobe dell’11 e 12 ottobre 2026. Il metodo è in slide perché la prima cosa che si controlla è come è stata fatta la misura.',
       seChiedono: { d: 'Otto domande sono poche.', r: 'Sì, ed è scritto. Non è una statistica: è una fotografia ripetibile. L’offerta è rifarla insieme con le vostre domande.' } },
+    { id: 'slide-idea',
+      dire: 'Ne prendiamo una, la prima: come arrivo da Roma a Matera senza auto. Tutti e due gli assistenti AI aprono con gli operatori di autobus.',
+      fatto: 'Tutti e due aprono con gli autobus e danno il combinato prima al concorrente. ChatGPT cita Freccialink dopo. La schermata riassume l’esito su ChatGPT.' },
     { id: 'slide-referto',
-      dire: 'Queste sono le otto domande, una per conversazione nuova, nessuna di marca. Due assistenti, due risposte diverse.',
-      fatto: 'Il metodo è in slide perché la prima cosa che si controlla è come è stata fatta la misura.' },
-    { id: 'slide-frecce',
-      dire: 'Su una delle otto, Google mette sullo stesso piano Frecciarossa, Italo, Trenitalia e Intercity, come fossero quattro aziende in concorrenza. Due sono vostri prodotti.',
-      fatto: 'Verbatim dalla risposta generata, domanda 8. Sulla stessa domanda ChatGPT non sbaglia.',
+      dire: 'Su tutte e otto: su ChatGPT siete fra le fonti sette volte su otto, su Google due. E Google mette sullo stesso piano Frecciarossa, Italo, Trenitalia e Intercity, come fossero aziende in concorrenza.',
       attenzione: 'L’errore è dell’assistente, non loro: attribuirlo a «gli assistenti» in generale sarebbe falso, perché l’altro non sbaglia mai sulle otto.' },
     { id: 'slide-leva',
-      dire: 'La leva è concreta: si cambia la pagina e si rimisura se la risposta cambia. Non è ottimizzazione per un motore, è scrivere le pagine che quei sistemi leggono.',
+      dire: 'Non un intervento una tantum: molte domande, misurate spesso. Va tracciato il traffico, va distinto chi è una persona da chi è un agente, e così si governa la risposta. Poi c’è un secondo tempo: dove oggi vi citano, domani si potrebbe comprare.',
+      attenzione: 'Sul secondo tempo basta dire che il presidio esiste, al condizionale: niente commissioni e accordi con le piattaforme, che sono ancora in divenire.',
       seChiedono: { d: 'È SEO?', r: 'No. La SEO ottimizza un posizionamento in un elenco; qui si lavora su che cosa un sistema generativo cita come fonte, e si misura.' } },
-    { id: 'slide-canale',
-      dire: 'E c’è un secondo tempo: dove oggi vi citano, domani si potrebbe comprare.',
-      attenzione: 'Al condizionale, sempre. È una direzione dichiarata in un comunicato, non una roadmap: raccontarla come certa è il modo più rapido di perdere credibilità sul resto.' },
   ],
 
   viaggio: [
-    { id: 'slide-cover', dire: 'Questo è il capitolo in cui abbiamo più domande che risposte: l’intermodale è il vostro mestiere, non il nostro.' },
+    { id: 'slide-cover', dire: 'Seconda idea: la personalizzazione su larga scala, prima chi non è registrato e poi chi lo è.' },
     { id: 'slide-idea',
-      dire: 'L’idea è una soluzione intera da cercare una volta sola, treno, gomma e ultimo miglio insieme, invece di tre prodotti da comporre a mano.',
-      fatto: 'La referenza è Telmore, telco danese: +25% le vendite incrociate ai già clienti e +21% la crescita del digitale.',
-      attenzione: 'È fuori settore e si dice: una referenza fuori settore dichiarata è onesta, una nascosta si scopre.' },
-    { id: 'slide-gia',
-      dire: 'Il punto di partenza è già vostro: l’intermodale è nel vostro perimetro, non è una cosa da costruire.',
-      fatto: 'Fonti loro, in slide.' },
-    { id: 'slide-matera',
-      dire: 'Roma-Matera: tutti e due gli assistenti aprono con gli operatori di autobus, e il biglietto combinato lo attribuiscono prima al concorrente.',
-      fatto: 'Dalle stesse otto domande del capitolo precedente. La gomma su quella tratta è vostra, e nella risposta non compare.' },
-    { id: 'slide-acquisto',
-      dire: 'Chi va a Bari in vacanza e chi ci va per lavoro: all’acquisto li distinguete?',
-      attenzione: 'È una domanda, non un’accusa. Se rispondono «sì, lo facciamo», è una buona notizia e si va oltre: non si insiste.' },
+      dire: 'Il punto è personalizzare su larga scala. Un cliente CartaFreccia Oro trova in homepage Matera e un vantaggio del suo livello. La combinazione esiste già, e con chi non è registrato si parte da posizione e navigazione.',
+      fatto: 'Brightline è un operatore ferroviario ad alta velocità in Florida, con storia pubblica su prenotazione e personalizzazione.',
+      attenzione: 'Il primo ↓ cambia la schermata da «prima» a «dopo». Si propone solo ciò che si può comprare: composizione, prezzo e acquisto restano nei loro sistemi. Il Freccialink oggi non si aggiunge a un Frecciarossa già acquistato. Non aprire il tema del pop-up di geolocalizzazione, se non lo aprono loro.' },
+    { id: 'slide-momenti',
+      dire: 'Si comincia da chi non è registrato, con posizione, navigazione e cookie, dove c’è il consenso. Con il nuovo CRM si aggiunge la storia del cliente. E la proposta deve sapere quando fermarsi.',
+      attenzione: 'Se chiedono di CartaFreccia dopo la fine del 2026: la logica per livello vale per qualunque programma fedeltà. I tempi del nuovo CRM li dice il cliente, non noi.',
+      seChiedono: { d: 'E la geolocalizzazione?', r: 'Si apre la pagina /appendice/: una slide, solo perimetro e che cosa dimostra, senza numeri.' } },
     { id: 'slide-prima',
-      dire: 'Il viaggio si decide prima, e altrove. Chi ha prenotato una crociera sta ancora decidendo come arrivare al porto.',
+      dire: 'La personalizzazione comincia prima, e altrove. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci: conoscendolo, gli si fa una proposta vantaggiosa prima del confronto con Italo.',
       fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: è il caso da cui partire perché ha una data ed è loro.' },
     { id: 'slide-collab',
-      dire: 'Si lavora in due sugli stessi viaggiatori senza scambiarsi i dati: ciascuno tiene i suoi dove sono, e si incrocia solo chi interessa a entrambe.',
-      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No, ed è il punto: nessuno consegna il proprio elenco. Ogni azienda resta nel proprio ambiente con le proprie regole di accesso.' } },
+      dire: 'Si lavora in due sugli stessi viaggiatori senza scambiarsi i dati: si incrocia solo chi interessa a entrambe le aziende.',
+      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro, con controlli di accesso dichiarati da tutte e due le aziende. Titolarità e base giuridica si definiscono prima.' } },
   ],
 
   contenuto: [
-    { id: 'slide-cover', dire: 'Terzo punto, a valle: la squadra è una e i prodotti sono tre.' },
+    { id: 'slide-cover', dire: 'Terza idea, a valle: la squadra è una e i prodotti sono tre.' },
     { id: 'slide-idea',
-      dire: 'Un master approvato una volta, e da lì le varianti per mercato e per lingua.',
-      fatto: 'La referenza è Santander Brasil: 530 offerte al retail e 800 alle PMI con oltre 4.400 asset, e il tempo di lancio sceso da giorni a minuti.',
+      dire: 'Una campagna approvata una volta, e da lì le varianti per mercato: per chi arriva dall’estero il messaggio si fa più commerciale.',
       // ⚠️ 6 nov 2026: la riga diceva «la validazione lavora in inglese», ed
       // è falsa — le note di rilascio dichiarano 12 lingue in disponibilità
       // generale più 5 in beta. Era un limite inventato a nostro danno, e
       // stava in slide come prova di onestà.
-      attenzione: 'La validazione multilingua è dichiarata su 12 lingue nelle note di rilascio di agosto 2025. Se chiedono l’elenco, si manda quella pagina, dicendo che il numero ha quella data. Limitata all’inglese è l’analisi del tono del testo: un’altra funzione.' },
-    { id: 'slide-aritmetica',
-      dire: 'Il conto è semplice: un venditore che conosceva un prodotto oggi ne vende tre, più i servizi. A mano quel numero di versioni non esce.',
-      seChiedono: { d: 'Vuol dire sostituire l’agenzia creativa?', r: 'No. Vuol dire che il master resta loro e le varianti smettono di essere lavoro a mano.' } },
+      attenzione: 'Il primo ↓ cambia la schermata dalla campagna alle versioni per mercato. Non si vende la traduzione: non è una priorità, e non si propone lo stesso sito copiato in ogni paese. Content Analytics scompone i contenuti solo in inglese: se si parla di mercati esteri va detto.' },
     { id: 'slide-unposto',
-      dire: 'Nasce, si approva, si traduce e si misura nello stesso posto: è il punto, non i nomi dei prodotti.' },
+      dire: 'Ogni campagna si crea, si approva, si adatta e si misura nello stesso strumento. Qui sotto i prodotti: quali avete e che cosa fa ognuno.',
+      seChiedono: { d: 'Vuol dire sostituire l’agenzia creativa?', r: 'No. La campagna resta loro, e le versioni smettono di essere lavoro a mano.' } },
   ],
 
   rete: [
-    { id: 'slide-cover', dire: 'Ultimo punto, ed è quello su cui facciamo la richiesta: il canale che è già vostro.' },
+    { id: 'slide-cover', dire: 'Ultimo punto, e lo diciamo subito: è tutto da approfondire.' },
     { id: 'slide-idea',
-      dire: 'L’idea: la stessa proposta che il sito sta spingendo arriva pronta al banco dell’agenzia, invece di essere costruita lì a mano.',
-      attenzione: 'Questa è l’unica delle quattro idee senza una referenza: non si promette un risultato, si descrive che cosa succede.' },
-    { id: 'slide-settantamila',
-      dire: '12.400 agenzie vendono i vostri biglietti, 6.400 in Italia e 6.000 all’estero. E fuori dalle biglietterie si parla di oltre settantamila punti vendita.',
-      fatto: 'Le 12.400 agenzie sono un numero loro dell’ottobre 2025. I settantamila punti vendita vengono da un comunicato del 2014.',
-      attenzione: 'Il dato del 2014 va detto come ordine di grandezza, non come misura di oggi. È scritto in slide: dirlo prima che lo notino loro vale molto.' },
-    { id: 'slide-sapere',
-      dire: 'Di un canale digitale si sa chi entra e dove si ferma. Che cosa sapreste della rete, se la guardaste come guardate un sito?' },
-    { id: 'slide-serve',
-      dire: 'E c’è una ragione di tempo: si misura mentre si mette mano al sistema che serve quel canale, e dopo diventa un progetto a sé.',
-      seChiedono: { d: 'Che cosa serve da noi?', r: 'Per vedere il venduto per agenzia serve un estratto aggregato, nel formato che il sistema ha già. Non si chiede qui: si chiede a chi tiene quel dato, quando se ne parla.' } },
+      dire: 'Il venduto per agenzia lo avete già. L’ipotesi è legarlo a ciò che succede prima sul digitale, come fa Unipol nel suo settore.',
+      fatto: 'Unipol misura sito, app e agenzie insieme. Settore diverso, e si dice.',
+      attenzione: 'Nessun numero di agenzie. Le agenzie fisiche vendono su un sistema diverso dal sito, quindi è un’ipotesi. Le agenzie online restano fuori: non si dice a loro come vendere. Il codice è di campagna, non della persona: dà totali per codice, e solo se il sistema delle agenzie lo registra. Lo username al banco non esiste. CartaFreccia legherebbe la persona, ma va verificato che la vendita in agenzia la registri. Una locandina non genera eventi: si misura solo con un codice o un QR per materiale. Il tracciamento del personale va visto con i legali.',
+      // ⚠️ 9 nov 2026: la frase di prima lasciava intendere che bastasse far
+      // arrivare i consensi su Experience Platform. La documentazione chiede
+      // Shield e un dataset Profile già popolato, e Customer Journey Analytics
+      // legge soltanto: non sposta né riconcilia.
+      seChiedono: { d: 'E i consensi fra le due piattaforme?', r: 'Customer Journey Analytics non li sposta e non li riconcilia. Con Privacy & Security Shield può riportare e filtrare i consensi già consolidati sul Profilo di Experience Platform. Prima va capito quale consenso si deve spostare e quale sistema fa fede: è un lavoro da disegnare con FS Technology.' } },
   ],
 
   rotta: [
     { id: 'slide-cover', dire: 'Quattro direzioni sono troppe per aprirle tutte. Quali sono le vostre, e quando se ne parla.' },
     { id: 'slide-ripresa',
-      dire: 'Ecco le quattro idee di nuovo: le capacità da avere, e i prodotti. Su tutte e quattro una parte è già in casa vostra.',
+      dire: 'Ecco le quattro idee di nuovo: le capacità da avere, e i prodotti. Su tre delle quattro una parte è già in casa vostra.',
       attenzione: 'È il momento in cui si tace e si lascia guardare la slide. La domanda in titolo è per loro.' },
-    { id: 'slide-passo',
-      dire: ASK_A_VOCE,
-      attenzione: 'Nessuna delle tre costa un progetto, un budget o una firma. Va detto prima che se lo chiedano. Il terzo punto è quello che conta: essere al tavolo quando si pianifica l’offerta integrata. Si chiede senza nominare chi li segue oggi.' },
-    { id: 'slide-esito',
-      dire: 'E perché una rotta diventi un piano. Si guarda la base che c’è già, le due voci da prevedere, e l’indicatore su cui si vede l’effetto.',
-      attenzione: 'Le due voci da prevedere sono la lettura unica del percorso d’acquisto e il traffico su cui si prova. È questo che si porta a casa. ⚠️ Niente importi e niente listino in sala. E quello che sappiamo sul come stanno rinnovando resta fuori dalla stanza.' },
-    { id: 'slide-domande',
-      dire: 'E sei cose che possiamo imparare solo da voi. Chiudere con le domande, non con una promessa.' },
+    { id: 'slide-tempi',
+      dire: 'Una possibile sequenza: prima quello che si può avviare subito, poi quello che dipende da nuovo CRM e sistemi di vendita. Si riordina con voi.',
+      attenzione: 'Nessuna data del nuovo CRM: la dice il cliente. L’esperienza unica è un obiettivo di lungo periodo, da costruire con FS Technology.' },
     { id: 'slide-signature', dire: 'Grazie. Il link resta vostro: il percorso intero è nel menu, e c’è anche una versione da dieci minuti.' },
+  ],
+
+  appendice: [
+    { id: 'slide-citta',
+      dire: 'Una proposta legata alla città di provenienza, costruita e pubblicata dal vostro team.',
+      attenzione: 'Si apre solo se lo chiedono. Solo perimetro e che cosa dimostra, nessun risultato: se qualcuno in sala vuole raccontarli, la parola è sua.' },
   ],
 
   'dieci-minuti': [
     { id: 'slide-cover',
-      dire: 'Se l’ora diventa venti minuti si apre questa: stesse fonti, stessi numeri, sei slide e la richiesta dentro.',
+      dire: 'Se l’ora diventa venti minuti si apre questa: stesse fonti, stessi numeri, poche slide e una possibile sequenza.',
       attenzione: 'È anche la versione che l’interlocutore gira al suo capo, e si legge senza nessuno accanto: per questo porta la riga del confine e non l’elenco dei prodotti.' },
-    { id: 'slide-novantasei', dire: 'La parola dell’anno, con la sua fonte.' },
-    { id: 'slide-contesto', dire: 'Le tre cose che si muovono nello stesso anno.' },
+    { id: 'slide-problemi', dire: 'Quattro fatti e le date, in un minuto.' },
     { id: 'slide-domanda', dire: 'La domanda. Identica al percorso intero, parola per parola.' },
-    { id: 'slide-mappa', dire: 'I quattro punti, con una riga ciascuno.' },
+    { id: 'slide-mappa', dire: 'Le quattro idee, con una riga ciascuna.' },
     { id: 'slide-contributi', dire: 'Le quattro idee e che cosa bisogna saper fare. I prodotti stanno nel percorso intero.' },
-    { id: 'slide-passo', dire: ASK_A_VOCE },
+    { id: 'slide-tempi', dire: 'Prima quello che si può avviare subito, poi quello che dipende da altri sistemi.' },
     { id: 'slide-signature', dire: 'Chiusura.' },
   ],
 };

@@ -3,20 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import Figura from '../components/Figura.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import MappaPunti from '../components/MappaPunti.astro';
 import MappaIdee from '../components/MappaIdee.astro';
-import Divisore from '../components/Divisore.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { DOMANDA, INNESTO, PUNTI, TESTE } from '../data/contenuti';
+import { DOMANDA, INNESTO, TESTE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
-import bg_close from '../assets/generated/bg/bg-close.webp';
-import bg_journey from '../assets/generated/bg/bg-journey.webp';
-import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
 
 /**
  * Capitolo 02 — La domanda.
@@ -34,6 +25,9 @@ const SLUG = 'domanda';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+/* 9 nov 2026: «Dove ci innestiamo» disattivata su richiesta dell'owner. Per riaccenderla:
+   `true` qui, e la voce in `slides.ts`. */
+const MOSTRA_INNESTO = false;
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -43,25 +37,12 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo ─────────────────────────────────────────
-         La forma XD: titolo grande, fotografia, pannello di colore. Sostituisce
-         la vecchia cover a testo centrato — con l'agenda, il lead e il blocco
-         del metodo impilati, era una slide di contenuto travestita da respiro.
-         Titolo, punto e fotografia vengono da `chapters.ts`: una fonte sola.
-         ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
-         `slot="backdrop"` attraverso un componente. -->
-    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_close.src})`}></div>
-      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="domanda" />
-    </Slide>
-
     <!-- ── La domanda, grande e sola ─────────────────────────────────────── -->
     <Slide id="slide-domanda" bg="brand" align="center">
       <div class="tp-quote" data-reveal>
-        <p class="xd-n" data-reveal>{DOMANDA.eyebrow}</p>
+        <p class="xd-n" data-reveal><span class="tp-gancio-a">{DOMANDA.eyebrow.split(', e ')[0]},</span> <span class="tp-gancio-b">e {DOMANDA.eyebrow.split(', e ')[1]}</span></p>
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={DOMANDA.titolo} />
         <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">{DOMANDA.sub}</p>
-                <p class="tp-domanda-peri" data-reveal data-reveal-delay="0.26">{DOMANDA.perimetri}</p>
         <p class="xd-fonte" data-reveal data-reveal-delay="0.32">
           {DOMANDA.fonte.prezzo} <a href={SOURCES.pricing.url} target="_blank" rel="noopener noreferrer">{SOURCES.pricing.label}</a>.
           {DOMANDA.fonte.tetto} <a href={SOURCES.prezziFermi.url} target="_blank" rel="noopener noreferrer">{SOURCES.prezziFermi.label}</a>.
@@ -78,8 +59,9 @@ const currentPath = Astro.url.pathname;
          domanda. Non si giudica e non si propone di sostituirla.
          ⚠️ Per toglierla basta cancellare questa slide: la voce vive in
          `INNESTO` e non è usata altrove. -->
-    <Slide id="slide-innesto" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
+    {MOSTRA_INNESTO && (
+    <Slide id="slide-innesto" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{INNESTO.eyebrow}</p>
@@ -101,57 +83,32 @@ const currentPath = Astro.url.pathname;
         </p>
       </div>
     </Slide>
+    )}
 
     <!-- ── I quattro punti = i quattro capitoli che seguono ───────────────── -->
-    <Slide id="slide-mappa" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
+    <Slide id="slide-mappa" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{TESTE.mappa.eyebrow}</p>
           <h2 class="xd-h2">{TESTE.mappa.titolo}</h2>
           <p class="xd-sub">{TESTE.mappa.lead}</p>
         </div>
-        {/* ⚠️ ERA QUATTRO CARD DI PROSA: 207 parole visibili, la slide più
-            pesante del percorso — e proprio quella su cui chi parla deve
-            essere ascoltato, perché è la mappa di tutto il resto. In video
-            le slide si leggono invece di ascoltarle.
-            Ora la mappa è un filo con quattro fermate e un'ancora ciascuna;
-            i paragrafi stanno dietro «Scopri come», dalla stessa fonte. */}
-        <MappaPunti punti={PUNTI} />
-        {/* ⚠️ DENTRO UN «SCOPRI COME» VANNO FIGURE, NON PARAGRAFI. Quattro
-            paragrafi qui dentro sono lo stesso muro di testo, soltanto
-            nascosto — e aperto in sala sfondavano la safe-area (check `exp`,
-            HARD). La forma è `Dettaglio` + `DettaglioVoce`: un micro-diagramma
-            che si muove, l'ancora che lo nomina, una riga che sopravvive
-            all'inoltro. La riga breve viene dalla stessa fonte dei punti. */}
-        <HowItWorks title="Che cosa succede in ciascuno" label="Che cosa succede in ciascuno" tone="onLight" gruppo="mappa" data-reveal data-reveal-delay="0.24">
-          <Dettaglio>
-            {PUNTI.map((p, i) => (
-              <DettaglioVoce>
-                <Figura k={(['risposta-citata', 'indistinguibile', 'materiale-che-si-moltiplica', 'rete-muta'] as const)[i]} />
-                <p slot="ancora">{p.dove}</p>
-                <p slot="riga">{p.bRiga ?? p.bBreve ?? p.b}</p>
-              </DettaglioVoce>
-            ))}
-          </Dettaglio>
-        </HowItWorks>
+        {/* 9 nov 2026: la tabella idee-prodotti si proietta, non sta più dietro un
+            «Scopri come». Il cliente: «dite pure che avete una serie di prodotti».
+            A drill-down aperto cede il posto: mai rimpicciolire. */}
+        <div class="tp-cede" data-reveal data-reveal-delay="0.12"><MappaIdee soloPezzi /></div>
 
-        {/* ── IL TERZO STRATO: con che cosa si fanno ──────────────────────
-            Il 6 novembre questa era una slide a sé («E che cosa ci mettiamo
-            noi»). È rientrata qui dentro, e il motivo è la regola dei due
-            registri: i nomi dei prodotti sono PROFONDITÀ, e la profondità sta
-            a richiesta. Sulla mappa si proiettano i quattro punti; chi chiede
-            «e voi che cosa ci mettete» apre questo, e trova idea, capability
-            e prodotti con lo stato — tre livelli, una lettura.
-            La stessa mappa torna PROIETTATA in chiusura (`rotta/slide-ripresa`),
-            dove non è più un dettaglio ma la domanda con cui si chiude. */}
-        <HowItWorks title="Con che cosa si fanno, e quanto è già vostro" label="Con che cosa si fanno, e quanto è già vostro" tone="onLight" gruppo="mappa" data-reveal data-reveal-delay="0.3">
-          <MappaIdee soloPezzi />
-        </HowItWorks>
       </div>
     </Slide>
 
 
 
   </DeckContainer>
+  <script is:inline data-astro-rerun>
+    try {
+      var g = (sessionStorage.getItem('tp-gancio') || '').split(' ');
+      if (g.length === 4) ['t', 'r', 'b', 'l'].forEach(function (k, i) { document.documentElement.style.setProperty('--tp-g-' + k, g[i]); });
+    } catch (e) {}
+  </script>
 </BaseLayout>

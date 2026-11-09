@@ -10,11 +10,12 @@ import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import MappaIdee from '../components/MappaIdee.astro';
 import { CHAPTERS } from '../data/chapters';
-import { APERTURA, CONTESTO, COVER, DOMANDA, INNESTO, PUNTI, ASK, ESITO, TESTE, card, fontiDi } from '../data/contenuti';
+import { COVER, CRONOLOGIA, DOMANDA, INNESTO, PROBLEMI, PUNTI, ASK, TEMPI, TESTE, fontiDi } from '../data/contenuti';
+import Cronologia from '../components/Cronologia.astro';
+import ProblemiAncore from '../components/ProblemiAncore.astro';
+import Tempi from '../components/Tempi.astro';
 import { SOURCES } from '../data/sources';
-import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
 import bg_close from '../assets/generated/bg/bg-close.webp';
-import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
 
 /**
  * «In dieci minuti» — il taglio corto.
@@ -42,9 +43,12 @@ import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
  */
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+/* 9 nov 2026: «Quello che vi chiediamo» disattivata su richiesta dell'owner. Per
+   riaccenderla: `true` qui, e la voce in `slides.ts`. */
+const MOSTRA_PASSO = false;
 const type = EXPERIENCE_TYPES[SITE.type];
 const first = CHAPTERS[0];
-const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
+const fontiProblemi = [...new Map(PROBLEMI.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
 const CLIP_COVER = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-cover.loop.mp4';
 const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-close.loop.mp4';
 ---
@@ -69,8 +73,7 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
         <h1 class="ex-cover-title" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
         <p class="ex-cover-tag" data-reveal data-reveal-delay="0.16">{COVER.tag}</p>
         <p class="ex-cover-lead" data-reveal data-reveal-delay="0.22">
-          <span class="ex-frase">In dieci minuti: il vostro anno, la domanda, i quattro punti e il passo che
-          chiediamo.</span> <span class="ex-frase">Il percorso intero è nel menu, se il tempo c’è.</span>
+          <span class="ex-frase">In dieci minuti: il&nbsp;vostro anno, la&nbsp;domanda, le&nbsp;quattro idee e&nbsp;una&nbsp;possibile sequenza.</span> <span class="ex-frase">Il percorso intero è nel menu, se il tempo c’è.</span>
         </p>
         <p class="ex-cover-note" data-reveal data-reveal-delay="0.3">
           {type.coverLine.it} · fonti dichiarate slide per slide
@@ -78,49 +81,18 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
       </div>
     </Slide>
 
-    <!-- ── 2 · La sua frase: il dato, poi le sue parole ──────────────────── -->
-    <Slide id="slide-novantasei" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">{APERTURA.eyebrow}</p>
-        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08" set:html={APERTURA.dato} />
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18" set:html={`${APERTURA.citazione} ${APERTURA.letturaBreve}`} />
-        {/* Il ponte sta anche nel taglio, e dalla STESSA fonte: è la riga che
-            regge davanti a chi legge «internazionalizzazione» come una
-            traslazione, e il taglio è la versione che viene girata al capo. */}
-        <p class="tp-quote-ponte" data-reveal data-reveal-delay="0.24">{APERTURA.ponte}</p>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.3">
-          {APERTURA.fonte.prima} <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a>.
-          {APERTURA.fonte.dopo}
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── 3 · Il contesto, in tre carte brevi ───────────────────────────── -->
-    <Slide id="slide-contesto" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <!-- Lo stesso sfondo della stessa slide nel percorso intero, e non per gusto:
-           con `bg-journey` l'occhiello rosso di marchio scendeva a 3,01:1 sul grigio
-           chiaro della foto — `audit:ink` lo ha misurato, nessun altro check lo vedeva. -->
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
+    <!-- ── 2 · I problemi chiave: stessa fonte del percorso intero ───────── -->
+    <Slide id="slide-problemi" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{CHAPTERS[0].title.it}</p>
           <h2 class="xd-h2">{TESTE.contesto.titolo}</h2>
-          <p class="xd-sub">{TESTE.contesto.leadBreve}</p>
         </div>
-                <div class="ex-cards" data-reveal data-reveal-delay="0.14">
-          {CONTESTO.map((x) => card(x, 'breve')).map((x) => (
-            <div class="ex-card">
-              <p class="ex-card-k">{x.k}</p>
-              <p class="ex-card-t">{x.t}</p>
-              <p class="ex-card-b">{x.b}</p>
-            </div>
-          ))}
-        </div>
-        <!-- Le fonti stanno anche qui: questa pagina viene letta da sola, da chi non era
-             in sala, e un taglio senza fonti è un taglio che chiede di fidarsi. -->
+        <Cronologia tappe={CRONOLOGIA} />
+        <ProblemiAncore />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.24">
-          Fonti: {fontiContesto.map((f, i) => (
+          Fonti: {fontiProblemi.map((f, i) => (
             <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
           ))}.
         </p>
@@ -130,10 +102,9 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
     <!-- ── 4 · La domanda, e i quattro punti sotto ───────────────────────── -->
     <Slide id="slide-domanda" bg="brand" align="center">
       <div class="tp-quote" data-reveal>
-        <p class="xd-n" data-reveal>{DOMANDA.eyebrow}</p>
+        <p class="xd-n" data-reveal><span class="tp-gancio-a">{DOMANDA.eyebrow.split(', e ')[0]},</span> <span class="tp-gancio-b">e {DOMANDA.eyebrow.split(', e ')[1]}</span></p>
         <h2 class="tp-domanda" data-display data-reveal data-reveal-delay="0.06" set:html={DOMANDA.titolo} />
         <p class="tp-domanda-sub" data-reveal data-reveal-delay="0.18">{DOMANDA.subBreve}</p>
-                <p class="tp-domanda-peri" data-reveal data-reveal-delay="0.26">{DOMANDA.perimetri}</p>
         <p class="xd-fonte" data-reveal data-reveal-delay="0.32">
           {DOMANDA.fonte.prezzo} <a href={SOURCES.pricing.url} target="_blank" rel="noopener noreferrer">{SOURCES.pricing.label}</a>.
           {DOMANDA.fonte.tetto} <a href={SOURCES.prezziFermi.url} target="_blank" rel="noopener noreferrer">{SOURCES.prezziFermi.label}</a>.
@@ -142,8 +113,8 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
     </Slide>
 
     <!-- ── 5 · I quattro punti, in forma breve ───────────────────────────── -->
-    <Slide id="slide-mappa" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_chapter.src})`} data-parallax></div>
+    <Slide id="slide-mappa" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{TESTE.mappa.eyebrow}</p>
@@ -167,8 +138,8 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
             1280×800, ed è un HARD. Questa è la pagina che gira senza nessuno
             accanto, quindi il marcatore non può mancare del tutto. */}
         <p class="xd-fonte" data-reveal data-reveal-delay="0.2">
-          Tre di questi quattro punti si decidono anche altrove: lì portiamo domande. Il quarto,
-          il canale delle agenzie, è quello dove la decisione è vostra.
+          Alcuni di questi punti si decidono anche altrove: lì portiamo domande. Sulle agenzie
+          è tutto da approfondire insieme.
         </p>
       </div>
     </Slide>
@@ -184,8 +155,8 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
          blocco aperto usciva dalla safe-area a tutti e tre i viewport
          (check `j` e `c` dentro `exp`, HARD). Stesso componente e stessa
          fonte del lungo: se i prodotti cambiano, cambiano in un posto solo. -->
-    <Slide id="slide-contributi" data-stretto bg="inverse" align="left">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
+    <Slide id="slide-contributi" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">E che cosa ci mettiamo noi</p>
@@ -206,7 +177,21 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
       </div>
     </Slide>
 
+    <!-- ── La macro timeline: stessa fonte del percorso intero ──────────── -->
+    <Slide id="slide-tempi" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{TEMPI.eyebrow}</p>
+          <h2 class="xd-h2">{TEMPI.titolo}</h2>
+          <p class="xd-sub">{TEMPI.sub}</p>
+        </div>
+        <Tempi />
+      </div>
+    </Slide>
+
     <!-- ── 6 · Il passo, parola per parola come nel percorso intero ─────── -->
+    {MOSTRA_PASSO && (
     <Slide id="slide-passo" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="clip">
       <LoopVideo
         slot="backdrop"
@@ -236,44 +221,7 @@ const CLIP_CHIUSURA = 'https://github.com/agargiulo-adbe/experience-design-facto
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.26">{ASK.chiusa}</p>
       </div>
     </Slide>
-
-    <!-- ── Che cosa va previsto ───────────────────────────────────────────
-         Stessa fonte del percorso intero (`ESITO`), nessuna stringa riscritta
-         a mano. Qui pesa più che nel lungo: questa è la pagina che viene
-         girata al capo, e chi la legge non ha nessuno accanto a cui chiedere
-         «sì, ma poi che cosa ci resta in mano». -->
-    <Slide id="slide-esito" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{ESITO.eyebrow}</p>
-          <h2 class="xd-h2">{ESITO.titolo}</h2>
-          <p class="xd-sub">{ESITO.sub}</p>
-        </div>
-        {/* Il filo a tre fermate: stessa forma del percorso intero, e il perché
-            sta sulla slide gemella in `rotta.astro`. */}
-        <div class="tp-filo" data-reveal data-reveal-delay="0.12">
-          <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
-               aria-label={ESITO.figura}>
-            <line class="tp-filo-l" x1="166" y1="32" x2="834" y2="32" />
-          </svg>
-          {/* `--cols` va dichiarato: la griglia del filo nasce a quattro
-              colonne, e con tre fermate si ammassavano a sinistra lasciando
-              mezza pagina vuota. Si vede solo guardando la slide. */}
-          <ol class="tp-filo-eti" style="--cols: 3" data-stagger="0.1">
-            {ESITO.voci.map((v, i) => (
-              <li>
-                <span class="tp-filo-num">{String(i + 1).padStart(2, '0')}</span>
-                <span class="tp-filo-dove">{v.k}</span>
-                <span class="tp-filo-t">{v.t}</span>
-                <span class="tp-filo-b">{v.b}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESITO.chiusa}</p>
-      </div>
-    </Slide>
+    )}
 
     <!-- ── 7 · Slide-firma ───────────────────────────────────────────────── -->
     <Slide id="slide-signature" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">

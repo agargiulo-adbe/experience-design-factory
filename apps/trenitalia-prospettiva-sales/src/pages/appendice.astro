@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import MockIdea from '../components/MockIdea.astro';
+import { href } from '@edf/core/utils/url.js';
+
+/**
+ * Appendice — fuori dal percorso, e non compare nella navigazione.
+ *
+ * 9 nov 2026: la slide sulla proposta per città si apre solo se in sala lo
+ * chiedono. Si raggiunge dall'indirizzo /appendice/, e avanti e indietro
+ * riportano al capitolo del viaggio.
+ *
+ * ⚠️ Niente risultati, per scelta: restano perimetro e che cosa dimostra. I
+ * numeri li racconta, se vuole, chi ha seguito quel lavoro.
+ */
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title="Appendice">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, '/viaggio')} prevHref={href(base, '/viaggio')}>
+    <Slide id="slide-citta" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Quello che state già facendo</p>
+          <h2 class="xd-h2">Una proposta legata alla città di&nbsp;provenienza: l’avete già provata</h2>
+        </div>
+        <div class="tp-idea">
+          <div class="tp-idea-sx" data-reveal data-reveal-delay="0.1">
+            <MockIdea variante="citta" />
+          </div>
+          <div class="tp-idea-dx">
+            <div class="tp-box" data-substep>
+              <p class="tp-box-k">Il perimetro</p>
+              <p class="tp-box-t">In homepage, su un campione limitato</p>
+              <p class="tp-box-b">Un’offerta mostrata a chi entra da una città, riconosciuta dall’indirizzo IP, con Adobe Target.</p>
+            </div>
+            <div class="tp-box" data-substep>
+              <p class="tp-box-k">Come è fatto</p>
+              <p class="tp-box-t">Un modello riutilizzabile</p>
+              <p class="tp-box-b">Pubblico, proposta e confronto con un gruppo di controllo sono già impostati, e si adattano ad altre città.</p>
+            </div>
+            <div class="tp-box" data-substep>
+              <p class="tp-box-k">Che cosa dimostra</p>
+              <p class="tp-box-t">Il team lo gestisce in autonomia</p>
+              <p class="tp-box-b">Dopo la formazione, il team Trenitalia ha costruito e pubblicato l’attività senza supporto diretto.</p>
+            </div>
+            <div class="tp-box tp-box--ponte" data-substep>
+              <p class="tp-box-t">La posizione è il primo segnale. Il passo successivo è capire quale viaggio sta componendo chi naviga.</p>
+            </div>
+          </div>
+        </div>
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.2">
+          La schermata è un esempio nostro. Attività realizzata da FS Technology con il partner di progetto e il supporto di Adobe Ultimate Success.
+        </p>
+      </div>
+    </Slide>
+  </DeckContainer>
+</BaseLayout>

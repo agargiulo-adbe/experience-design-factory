@@ -5,17 +5,13 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
 import SlideIdea from '../components/SlideIdea.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import CheServe from '../components/CheServe.astro';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Figura from '../components/Figura.astro';
+import Fascia from '../components/Fascia.astro';
 import { href } from '@edf/core/utils/url.js';
+import bg_sole from '../assets/generated/sole/sole-ricerca.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { CANALE, REFERTO, REFERTO_INTERO, DOMANDE, KPI, SERVE } from '../data/contenuti';
+import { REFERTO, DOMANDE, KPI } from '../data/contenuti';
+import { pezziDi } from '../data/idee';
 import { SOURCES } from '../data/sources';
-import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
-import bg_search from '../assets/generated/bg/bg-search.webp';
 
 /**
  * Capitolo 03 — Quando un viaggio si cerca con l'intelligenza artificiale.
@@ -70,8 +66,34 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
          ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_search.src})`}></div>
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_sole.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="ricerca" bussola />
+    </Slide>
+
+    <!-- ── Il campione ────────────────────────────────────────────────────
+         9 nov 2026, review: si parlava di «7 su 8» prima di dire quali fossero
+         le otto, e chi guardava non capiva a che cosa legare i numeri. L'unica
+         eccezione alla forma comune delle idee: prima dell'idea va il campione. -->
+    <Slide id="slide-campione" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Il campione</p>
+          <h2 class="xd-h2">Otto domande di viaggio, due&nbsp;assistenti</h2>
+          <p class="xd-sub">
+            Abbiamo escluso domande di marchio. Le abbiamo poste a ChatGPT e alla risposta generata di Google: da qui vengono tutti i numeri che seguono.
+          </p>
+        </div>
+        <ol class="tp-dom" data-stagger="0.05">
+          {DOMANDE.map((d) => (
+            <li><span class="tp-dom-n">{d.n}</span><span class="tp-dom-t">{d.t}</span><span class="tp-dom-l">{d.lang}</span></li>
+          ))}
+        </ol>
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.2">
+          {SOURCES.misura.label}, dall’Italia, una&nbsp;conversazione nuova per&nbsp;domanda. Contato il&nbsp;dominio trenitalia.com fra&nbsp;le&nbsp;fonti citate:
+          <strong>lefrecce.it non è contato a&nbsp;parte</strong>, quindi su&nbsp;Google siamo semmai sottostimati. Un giro solo, a&nbsp;mano: possiamo ripeterla&nbsp;insieme.
+        </p>
+      </div>
     </Slide>
 
     <!-- ── L'idea, nel registro XD ───────────────────────────────────────
@@ -83,11 +105,11 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
     <SlideIdea slug="ricerca" />
 
     <!-- ── Il referto ────────────────────────────────────────────────────── -->
-    <Slide id="slide-referto" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
+    <Slide id="slide-referto" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">Una misura, non una teoria</p>
+          <p class="xd-n">Che cosa abbiamo osservato</p>
           <h2 class="xd-h2">Le stesse otto domande, due assistenti, due risposte diverse</h2>
           <!-- Lead accorciato quando è arrivato il blocco sul metodo: diceva le stesse
                cose, e una slide che ripete sé stessa due centimetri più sotto non è
@@ -108,7 +130,7 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
               nel lead, dove si proietta e dove non costa altezza al blocco
               che si apre (`exp` è HARD, e lì il margine era di 52 px). */}
           <p class="xd-sub">
-            Nominati quasi sempre. Quella che conta per la vendita è un’altra misura: da quale
+            Il marchio è quasi sempre incluso nelle risposte. Quella che conta per la vendita è un’altra misura: da quale
             sito arriva la risposta, perché è da lì che parte il clic.
           </p>
         </div>
@@ -127,89 +149,26 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
             </div>
           ))}
         </div>
-        {/* Le quattro cifre sopra sono una selezione: chi chiede «e il resto?»
-            lo vede qui, dalla stessa misura, senza aprire un allegato. */}
-        {/* Le quattro cifre sopra sono una selezione: chi chiede «e il resto?»
-            lo vede qui, dalla stessa misura e senza aprire un allegato.
-            L'elenco delle otto domande sta sulla copertina del capitolo: insieme,
-            elenco e tabella sbordano (check `exp`, HARD). */}
-        <HowItWorks title="Il referto per intero" label="Il referto per intero" tone="onLight" data-reveal data-reveal-delay="0.24">
-          <table class="tp-ref-tab">
-            <thead><tr><th>Che cosa abbiamo contato</th><th>Google · risposta generata</th><th>ChatGPT</th></tr></thead>
-            <tbody>
-              {REFERTO_INTERO.map((r) => (
-                <tr><td>{r.m}</td><td>{r.g}</td><td>{r.c}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </HowItWorks>
-        {/* La chiusa stava qui e diceva «non è un problema degli assistenti,
-            è un problema di quale assistente». È vera e sta bene — ma con il
-            referto aperto costava i 52 px che facevano sforare la slide a
-            1280×800. Fra una frase e il campione verificabile vince il
-            campione: la frase la dice chi presenta, il referto no. */}
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.32">
-          {SOURCES.misura.label}, dall’Italia, su 8 domande senza nomi di marca, quattro in italiano e
-          quattro in inglese. Contato il dominio trenitalia.com fra le fonti citate:
-          <strong>lefrecce.it non è contato a parte</strong>, quindi su Google siamo semmai
-          sottostimati. Due assistenti su quattro (Perplexity si ferma a tre interrogazioni, Gemini
-          non era in sessione), un giro solo, a mano. Possiamo ripeterla insieme.
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── L'errore sul marchio, e di chi è ────────────────────────────── -->
-    <Slide id="slide-frecce" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">Domanda {domandaCitata.n} delle otto: «{domandaCitata.t}», posta a due assistenti</p>
-        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
-          «Le principali compagnie che operano su questa tratta sono <strong>Frecciarossa,
-          Italo, Trenitalia e Intercity</strong>.»
-        </p>
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          Quattro nomi sullo stesso piano, come fossero quattro aziende in concorrenza. Due
-          sono vostri prodotti, e lo dice <strong>la risposta generata dentro la ricerca
-          Google</strong>. <!-- copy-audit-ignore · citazione verbatim di ChatGPT: il trattino è suo -->
-          Sulla stessa domanda ChatGPT scrive «Trenitalia — ricerca biglietti:
-          confronta Frecciarossa, Intercity e regionali», e sulle stesse otto domande
-          non sbaglia mai.
-        </p>
-        {/* ⚠️ IL CAMPIONE STA SULLA SLIDE CHE CITA UNA DELLE OTTO.
-            Il rilievo del 3 novembre: il deck contava otto domande senza
-            mostrarle mai, e qui cita una risposta — Torino-Bologna — che chi
-            guarda non poteva ricollegare alla misura. Ora la domanda citata ha
-            il suo numero nell'occhiello, e l'elenco intero si apre qui sotto.
-            ⚠️ Elenco e tabella sono DIVISI, per misura e non per gusto: insieme
-            non entrano in nessuna disclosure di questo capitolo, e sulla
-            copertina nemmeno l'elenco da solo ci sta a 1280×800 (agenda a cinque
-            voci più titolo di capitolo). La tabella sta sulla slide dei numeri.
-            Il check è `exp`, ed è HARD su tutti e tre i viewport. */}
-        <HowItWorks title="Le otto domande, una per conversazione nuova" label="Le otto domande, una per conversazione nuova" tone="onLight" data-reveal data-reveal-delay="0.3">
-          <ol class="tp-dom">
-            {DOMANDE.map((d) => (
-              <li><span class="tp-dom-n">{d.n}</span><span class="tp-dom-t">{d.t}</span><span class="tp-dom-l">{d.lang}</span></li>
-            ))}
-          </ol>
-        </HowItWorks>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          {SOURCES.misura.label}: l’errore si ripete su un’altra delle otto domande.
-        </p>
+        <div class="tp-ask tp-cede" data-reveal data-reveal-delay="0.2">
+          <p class="tp-ask-k">Esempio · domanda {domandaCitata.n}, risposta generata di Google</p>
+          <p class="tp-ask-t">«Le principali compagnie che operano su questa tratta sono Frecciarossa, Italo, Trenitalia e Intercity.» Quattro nomi sullo&nbsp;stesso piano, come fossero aziende in&nbsp;concorrenza.</p>
+        </div>
+        <p class="xd-fonte" data-reveal data-reveal-delay="0.32">{SOURCES.misura.label}.</p>
       </div>
     </Slide>
 
     <!-- ── Che cosa si misura, che cosa si cambia ────────────────────────── -->
-    <Slide id="slide-leva" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
+    <Slide id="slide-leva" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Che cosa si misura</p>
-          <h2 class="xd-h2">Si cambia la pagina, e si vede se la risposta cambia</h2>
+          <h2 class="xd-h2">Si cambia la pagina e si vede se la risposta cambia</h2>
           {/* Il lead è UNA riga: il punto della slide, non il paragrafo che lo spiega.
               La prova — la risposta sulla Puglia che è quasi un testo loro — sta
               nella riga sotto le ancore, dove chi presenta la può indicare. */}
           <p class="xd-sub">
-            <strong>Quando la pagina giusta esiste, la risposta la usa.</strong>
+            <strong>Da intervento una tantum a lavoro ricorrente:</strong> molte domande, misurate spesso, e&nbsp;pagine che si aggiornano di conseguenza.
           </p>
         </div>
         <div class="tp-ancore" data-stagger>
@@ -220,82 +179,13 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
             </div>
           ))}
         </div>
-        <p class="tp-ancore-dopo" data-reveal data-reveal-delay="0.2">
-          Alla domanda sulla Puglia la risposta è quasi un vostro testo: «parti dal sito o
-          dall’app di Trenitalia», su entrambi gli assistenti.
-        </p>
-        <!-- `tone` sembra invertito e non lo è: il componente assume una dominante chiara,
-             dove `onLight` significa «inchiostro --ink-secondary». Qui la dominante è scura,
-             quindi --ink-secondary È l'inchiostro chiaro, cioè quello che serve su questa
-             slide. Si sceglie il tono che rende giusto, non quello che suona giusto. -->
-        {/* 26 ott: il dettaglio si apre su FIGURE, non su paragrafi. In sala questo
-            blocco si apre per rispondere a una domanda, e nessuno legge due
-            paragrafi davanti a un cliente che aspetta: ogni voce è un meccanismo
-            che si vede, l'ancora lo nomina, la riga porta il fatto che sopravvive
-            all'inoltro. I pezzi restano sotto — li ha chiesti il cliente il 20. */}
-        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {KPI.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['risposta-citata', 'pagina-che-manca', 'pubblicare-dove-si-pubblica'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-            <CheServe slot="nota" pezzi={SERVE.visibilita} />
-          </Dettaglio>
-        </HowItWorks>
-      </div>
-    </Slide>
-
-    <!-- ── Il secondo tempo dello stesso canale ───────────────────────────
-         16 ott. Chiude il capitolo: le tre slide prima dicono che su quel
-         canale vi citano male, questa dice che su quello stesso canale, fra
-         poco, si comprerà. Il perché sta qui e non nel capitolo del viaggio è
-         scritto per esteso in `contenuti.ts`, insieme ai vincoli sul prodotto:
-         annunciato sì, disponibile no, e nessun cliente da nominare. -->
-    <Slide id="slide-canale" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_search.src})`} data-parallax></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">Il secondo tempo dello stesso canale</p>
-          <h2 class="xd-h2">Dove oggi vi citano, domani si potrebbe comprare</h2>
-          <p class="xd-sub">
-            <strong>Oggi la risposta rimanda al vostro sito. Il banco potrebbe spostarsi dentro la conversazione.</strong>
-          </p>
+        <div class="tp-ask tp-cede" data-reveal data-reveal-delay="0.2">
+          <p class="tp-ask-k">Il secondo tempo dello stesso canale</p>
+          <p class="tp-ask-t">Oggi la risposta rimanda al vostro sito, domani l’acquisto potrebbe spostarsi nella conversazione. Attraverso LLM Apps si può presidiare anche quel passaggio.</p>
         </div>
-        {/* 26 ott: ancore, non card. L'occhiello e il nome restano in pagina; il
-            paragrafo di ciascuna passa nel dettaglio qui sotto, dove si apre per
-            rispondere a una domanda invece di stare addosso a chi parla. */}
-        <div class="tp-ancore" data-stagger>
-          {CANALE.map((x) => (
-            <div class="tp-anc">
-              <p class="tp-anc-k">{x.k}</p>
-              <p class="tp-anc-n">{x.t}</p>
-            </div>
-          ))}
-        </div>
-        <p class="tp-ancore-dopo" data-reveal data-reveal-delay="0.2">
-          Su WhatsApp un assistente vostro informa e rimanda al sito: lì chi scrive vi ha già scelti.
-        </p>
-        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {CANALE.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['richiamata-dal-viaggiatore', 'offerta-nella-conversazione', 'pubblicare-dove-si-pubblica'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-            <CheServe slot="nota" pezzi={SERVE.canale} />
-          </Dettaglio>
-        </HowItWorks>
-        {/* Gli assistenti non scoprono da soli questi collegamenti — esporsi non
-            basta, ed è il motivo per cui la visibilità resta il primo passo. Sta
-            nel dettaglio, non qui: la riga delle fonti porta le fonti. */}
+        <Fascia pezzi={pezziDi('ricerca')} />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Il traguardo dichiarato: <a href={SOURCES.foundation.url} target="_blank" rel="noopener noreferrer">{SOURCES.foundation.label}</a> ·
-          il canale su messaggistica: <a href={SOURCES.whatsappTrenitalia.url} target="_blank" rel="noopener noreferrer">{SOURCES.whatsappTrenitalia.label}</a> ·
           su LLM Apps: <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>
         </p>
       </div>

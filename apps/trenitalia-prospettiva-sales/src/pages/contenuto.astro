@@ -5,18 +5,12 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
 import SlideIdea from '../components/SlideIdea.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import CheServe from '../components/CheServe.astro';
+import Fascia from '../components/Fascia.astro';
 import { href } from '@edf/core/utils/url.js';
+import bg_sole from '../assets/generated/sole/sole-contenuto.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MOLTIPLICATORI, UNPOSTO, SERVE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
-import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
-import bg_network from '../assets/generated/bg/bg-network.webp';
-import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Figura from '../components/Figura.astro';
 
 /**
  * Capitolo 05 — Il contenuto che l'offerta richiede.
@@ -35,6 +29,9 @@ const SLUG = 'contenuto';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+/* 9 nov 2026: «Una squadra commerciale unica» disattivata su richiesta dell'owner. Per
+   riaccenderla: `true` qui, e la voce in `slides.ts`. */
+const MOSTRA_ARITMETICA = false;
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -52,7 +49,7 @@ const currentPath = Astro.url.pathname;
          ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_paper_grid.src})`}></div>
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_sole.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="contenuto" bussola />
     </Slide>
 
@@ -65,22 +62,23 @@ const currentPath = Astro.url.pathname;
     <SlideIdea slug="contenuto" />
 
     <!-- ── L'aritmetica ──────────────────────────────────────────────────── -->
-    <Slide id="slide-aritmetica" data-stretto bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_network.src})`} data-parallax></div>
+    {MOSTRA_ARITMETICA && (
+    <Slide id="slide-aritmetica" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">A valle</p>
-          <h2 class="xd-h2">Un venditore che conosceva un prodotto oggi ne vende tre, più i servizi</h2>
+          <h2 class="xd-h2">Una squadra commerciale unica: chi vendeva un prodotto oggi ne vende tre, più i servizi</h2>
           {/* ⚠️ IL LEAD ERA CINQUE RIGHE, e il punto è uno solo. Il resto —
               perché le squadre sono state unite, e che i mercati crescono —
               è contesto: sta dietro «Scopri come», dove risponde a chi lo
               chiede invece di occupare la slide. */}
           <p class="xd-sub">
-            Ogni prodotto, per ogni mercato, in ogni lingua, su ogni canale. Le varianti si
+            Ogni prodotto, per ogni mercato, su ogni canale e in ogni formato. Le varianti si
             moltiplicano fra loro.
           </p>
         </div>
-        <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
+        <div class="tp-stats tp-stats--due" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
           {MOLTIPLICATORI.map((m) => (
             <div class="tp-stat">
               <p class="tp-stat-v" data-display>{m.v}</p>
@@ -90,7 +88,7 @@ const currentPath = Astro.url.pathname;
           ))}
         </div>
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.2">
-          A mano quel numero di versioni non si produce. O se ne fanno meno, o si fanno in un altro modo.
+          Con queste moltiplicazioni il lavoro manuale ha un limite: o si fanno meno versioni, o si cambia il modo di farle.
         </p>
         {/* ⚠️ QUI NON C'È UN «SCOPRI COME», ed è una scelta. Ne avevo messo
             uno con i due fatti di contorno — la squadra unica, la Cina — ma
@@ -100,22 +98,21 @@ const currentPath = Astro.url.pathname;
             che ripete quello che la slide dice già non vale quel prezzo. */}
         <p class="xd-fonte" data-reveal data-reveal-delay="0.28">
           Numeri vostri: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a> ·
-          <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a> ·
-          <a href={SOURCES.fsCina.url} target="_blank" rel="noopener noreferrer">{SOURCES.fsCina.label}</a>.
+          <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a>.
         </p>
       </div>
     </Slide>
+    )}
 
     <!-- ── Un posto solo ─────────────────────────────────────────────────── -->
-    <Slide id="slide-unposto" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
+    <Slide id="slide-unposto" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">Come si produce, oggi, quel numero di varianti</p>
-          <h2 class="xd-h2">Nasce, si approva, si traduce e si misura nello stesso posto</h2>
+          <p class="xd-n">Come produrre tutte le versioni di una campagna</p>
+          <h2 class="xd-h2">Ogni campagna si crea, si approva, si adatta e si misura nello stesso strumento</h2>
           <p class="xd-sub">
-            Con le agenzie dentro lo stesso flusso, e la misura attaccata al pezzo. Chi approva
-            resta chi approva oggi.
+            Team interni e agenzie creative lavorano sullo stesso strumento, e ogni contenuto porta con sé i suoi risultati. Le approvazioni restano a voi.
           </p>
         </div>
         <div class="tp-ancore" data-stagger>
@@ -126,23 +123,7 @@ const currentPath = Astro.url.pathname;
             </div>
           ))}
         </div>
-        {/* 20 ott: il titolo è lo stesso su ogni idea del deck — «Che cosa serve,
-            concretamente» — perché un lettore impari dove guardare una volta sola.
-            `tone` qui è `onDark` e non è un errore: il componente assume una
-            dominante chiara, e in questa skin la dominante è scura; su una slide
-            che rende CHIARA serve l'inchiostro dell'altro verso. */}
-        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onDark" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {UNPOSTO.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['un-posto-solo', 'chi-chiede-chi-approva', 'materiale-che-si-moltiplica'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-            <CheServe slot="nota" pezzi={SERVE.contenuto} />
-          </Dettaglio>
-        </HowItWorks>
+        <Fascia pezzi={SERVE.contenuto} />
       </div>
     </Slide>
 

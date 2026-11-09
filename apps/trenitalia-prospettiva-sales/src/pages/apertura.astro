@@ -4,21 +4,12 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Mercati from '../components/Mercati.astro';
 import Cronologia from '../components/Cronologia.astro';
+import ProblemiAncore from '../components/ProblemiAncore.astro';
 import { href } from '@edf/core/utils/url.js';
+import bg_sole from '../assets/generated/sole/sole-apertura.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MERCATO, MERCATI, CRONOLOGIA, APERTURA, CONTESTO, TESTE, fontiDi } from '../data/contenuti';
-import { SOURCES } from '../data/sources';
-import bg_alba_piana from '../assets/generated/bg/bg-alba-piana.webp';
-import bg_cover from '../assets/generated/bg/bg-cover.webp';
-import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
-import bg_close from '../assets/generated/bg/bg-close.webp';
-import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Figura from '../components/Figura.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import { CRONOLOGIA, PROBLEMI, TESTE, fontiDi } from '../data/contenuti';
 
 /**
  * Capitolo 01 — Il vostro anno, visto da fuori.
@@ -40,7 +31,7 @@ const currentPath = Astro.url.pathname;
 
 // Le fonti della slide del contesto: una per fatto, dedotte dalle carte, senza
 // ripetere la stessa pagina due volte.
-const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
+const fontiProblemi = [...new Map(PROBLEMI.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -57,113 +48,24 @@ const fontiContesto = [...new Map(CONTESTO.flatMap((c) => fontiDi(c)).map((f) =>
          ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_alba_piana.src})`}></div>
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_sole.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="apertura" />
     </Slide>
 
-    <!-- ── Il 96% che resta — la grandezza, prima delle parole ───────────
-         3 nov 2026. Rimessa: era l'apertura concordata con il cliente
-         nell'agenda del 9 ottobre, ed era sparita dal deck senza che l'indice
-         del capitolo se ne accorgesse. Il perché, le due fonti e la regola
-         sulla data in chiaro stanno in `contenuti.ts`, accanto al testo.
-         Registro XD: una figura, una cifra, poche parole. -->
-    <Slide id="slide-mercato" bg="primary" align="left">
+    <!-- ── I problemi chiave, su una slide ─────────────────────────────────
+         9 nov 2026: tre slide di premessa sono diventate questa, su richiesta
+         del cliente. La linea delle date resta perché si legge una volta sola. -->
+    <Slide id="slide-problemi" data-stretto bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{MERCATO.eyebrow}</p>
-          <h2 class="xd-h2">Tre quarti di chi arriva dall’estero si ferma sul 4% del territorio</h2>
-        </div>
-
-        <div class="tp-territorio" data-reveal data-reveal-delay="0.1">
-          {/* La figura NON porta testo dentro: un testo dentro un SVG non cresce
-              con la radice e su una parete di sala sparisce. Le etichette sono
-              HTML, allineate alle due zone. */}
-          {/* ⚠️ Il rapporto della viewBox è quello reso, se no `meet` centra il
-              disegno dentro l'elemento e la scheggia del 4% finisce in mezzo
-              alla pagina invece che sul bordo, sotto la sua etichetta.
-              Misurato: 211 px di scarto, e l'allineamento non torna più. */}
-          <svg class="tp-terr-fig" viewBox="0 0 1000 70" preserveAspectRatio="none" role="img" aria-label="Il territorio italiano: il 4% dove si concentra la maggior parte dei visitatori stranieri, e il 96% che resta">
-            <rect class="tp-terr-resto" x="46" y="14" width="954" height="42" rx="6" />
-            <rect class="tp-terr-quota" x="0" y="4" width="38" height="62" rx="5" />
-          </svg>
-          <div class="tp-terr-eti">
-            <p class="tp-terr-e tp-terr-e--on"><span>{MERCATO.quota.n}</span>{MERCATO.quota.l}</p>
-            <p class="tp-terr-e"><span>{MERCATO.resto.n}</span>{MERCATO.resto.l}</p>
-          </div>
-        </div>
-
-        <p class="xd-chiusa" data-reveal data-reveal-delay="0.2">{MERCATO.chiusa}</p>
-
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.28">
-          Fonti: <a href={SOURCES.ttg96.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttg96.label}</a>.
-          Il 4% e i tre quarti sono un dato di contesto del TTG:
-          <a href={SOURCES.turismo75.url} target="_blank" rel="noopener noreferrer">{SOURCES.turismo75.label}</a>.
-          Sono dati del TTG 2025: il quadro di quest’anno è nella slide dopo.
-        </p>
-      </div>
-    </Slide>
-
-
-    <!-- ── Il 96% — il dato, poi le sue parole ───────────────────────────── -->
-    <Slide id="slide-novantasei" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">{APERTURA.eyebrow}</p>
-        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08" set:html={APERTURA.dato} />
-        {/* Un solo nodo di testo, non due <span> affiancati: due span che vanno a
-            capo dentro lo stesso paragrafo hanno riquadri che si intersecano, e il
-            check `e` dell'audit li legge come testo sopra testo. */}
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18" set:html={`${APERTURA.citazione} ${APERTURA.lettura}`} />
-        {/* Il ponte: tiene la parola e sposta l’argomento. Il perché per
-            esteso sta in `contenuti.ts`, accanto al testo. */}
-        {/* Un elemento grafico anche qui: la slide prima ne ha uno, e due
-            slide vicine — una con un disegno e una senza — si leggono come
-            due registri diversi. Il disegno dice quello che la slide afferma:
-            una piattaforma sola, i mercati che ha nominato al TTG. */}
-        <Mercati mercati={MERCATI} base="Dalla stessa piattaforma" />
-        <p class="tp-quote-ponte" data-reveal data-reveal-delay="0.24">{APERTURA.ponte}</p>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.3">
-          {APERTURA.fonte.prima} <a href={SOURCES.ttgSales2026.url} target="_blank" rel="noopener noreferrer">{SOURCES.ttgSales2026.label}</a>.
-          {APERTURA.fonte.dopo}
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── Il contesto: suo, non nostro ──────────────────────────────────── -->
-    <Slide id="slide-contesto" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{ch.title.it}</p>
           <h2 class="xd-h2">{TESTE.contesto.titolo}</h2>
-          <p class="xd-sub">{TESTE.contesto.lead}</p>
         </div>
-        {/* Le date erano sei, in prosa, nel lead. Qui sono una linea: si legge
-            una volta sola, e si vede che cadono tutte nei prossimi diciotto
-            mesi. Le fonti sono quelle già citate in fondo alla slide. */}
         <Cronologia tappe={CRONOLOGIA} />
-        <div class="tp-ancore" data-stagger>
-          {CONTESTO.map((x) => (
-            <div class="tp-anc">
-              <p class="tp-anc-k">{x.k}</p>
-              <p class="tp-anc-n">{x.t}</p>
-            </div>
-          ))}
-        </div>
-        <HowItWorks title="Da dove viene, in concreto" label="Da dove viene, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {CONTESTO.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['concorrente-in-piu', 'tetto-del-prezzo', 'finestra-aperta'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-          </Dettaglio>
-        </HowItWorks>
+        <ProblemiAncore />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.24">
-          Fonti: {fontiContesto.map((f, i) => (
+          Fonti: {fontiProblemi.map((f, i) => (
             <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
           ))}.
         </p>

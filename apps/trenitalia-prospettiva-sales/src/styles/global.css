@@ -905,26 +905,61 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    è coperto in modo simmetrico qualunque sia la lunghezza della colonna
    destra. */
 .tp-idea-sx { min-width: 0; display: grid; align-content: center; }
-.tp-idea-dx { min-width: 0; display: grid; gap: 1.15rem; align-content: center; }
+.tp-idea-dx { min-width: 0; display: grid; gap: 0.7rem; align-content: center; }
 
-/* ── LA FRECCIA IN GIÙ FRA I BLOCCHI ──────────────────────────────────────
-   I blocchi della colonna destra entrano uno per volta (`data-reveal` con i
-   suoi ritardi) e si leggono in sequenza: la frase, la cifra, che cosa serve
-   saper fare, con che cosa, la referenza. La freccia dice che è una sequenza
-   e non un elenco — e compare INSIEME al blocco che la segue, perché è un
-   `::before` di quel blocco e ne eredita l'animazione: nessun JavaScript in
-   più, e con «Riduci movimento» resta ferma e visibile come tutto il resto. */
-.tp-idea-dx > * + * { position: relative; }
-.tp-idea-dx > * + *::before {
-  content: ''; position: absolute; left: 0.12rem; top: -0.82rem;
-  width: 0.46rem; height: 0.46rem;
-  border-right: 2px solid var(--ink-accent);
-  border-bottom: 2px solid var(--ink-accent);
-  transform: rotate(45deg);
+/* ── I BOX CHE SI SCOPRONO A MANO ─────────────────────────────────────────
+   Chiesto il 9 nov 2026: la colonna destra entra un box alla volta, quando
+   chi parla preme ↓. Lo spazio resta riservato, così il mockup non si muove.
+   ⚠️ `visibility: hidden` ACCANTO a `opacity: 0`: una fase non ancora entrata
+   è ASSENTE, se no i gate misurano testo invisibile. Con «Riduci movimento»
+   e senza JavaScript è tutto visibile: è lo stato che `audit:deck` misura. */
+[data-substep] {
+  opacity: 0; visibility: hidden; transform: translateY(10px);
+  transition: opacity 320ms ease-out, transform 320ms ease-out, visibility 0s linear 320ms;
+}
+[data-substep][data-substep-active] {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 320ms ease-out, transform 320ms ease-out, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-substep] { opacity: 1; visibility: visible; transform: none; transition: none; }
+}
+html:not(.js) [data-substep] { opacity: 1; visibility: visible; transform: none; }
+
+.tp-box {
+  min-width: 0; margin-inline: 0; padding: 0.85rem 1.1rem; border-radius: 10px;
+  background: var(--xd-dark-surface); border: 1px solid var(--xd-dark-line);
+  border-left: 3px solid var(--ink-accent);
+}
+.tp-box-k {
+  margin: 0 0 0.25rem; max-width: none; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent);
+}
+.tp-box-t {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.02rem, 0.98vw, 1.9rem); line-height: 1.32; color: var(--xd-dark-ink); text-wrap: pretty;
+}
+.tp-box-b {
+  margin: 0.2rem 0 0; max-width: none; font-size: clamp(0.95rem, 0.86vw, 1.62rem);
+  line-height: 1.5; color: var(--xd-dark-body);
+}
+.tp-box--due { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 1.2rem; }
+.tp-box--ponte { background: transparent; border-color: transparent; border-left-color: var(--ink-accent); }
+.tp-box .xd-num { margin: 0; padding: 0; border: 0; }
+/* Una cifra sola sta in riga con la sua frase: la colonna destra ora porta i
+   box, e l'altezza si recupera qui, mai sul corpo del testo. */
+.tp-box .xd-num[style*="--cols:1"] .xd-num-i {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem;
+}
+/* Su schermi bassi la colonna dei box si allarga, così i nomi dei prodotti non
+   vanno a capo, e l'etichetta sopra la frase cede il posto. */
+@media (max-height: 920px) and (min-width: 1101px) {
+  .tp-idea { grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr); }
+  .tp-box { padding: 0.6rem 0.95rem; }
+  .tp-box > .tp-box-k:first-child { display: none; }
 }
 /* Dentro la colonna stretta, cifra e referenza partono dal bordo della
    colonna e non dalla pagina: è il check `m`, ed è HARD. */
-.tp-idea-dx .xd-num { margin-top: 0; padding-top: 0.75rem; }
 .tp-idea-dx .xd-ref { max-width: none; }
 .tp-ref-set { font-family: var(--font-body); font-weight: 600; font-size: clamp(0.84rem, 0.72vw, 1.5rem); color: var(--ink-tertiary); letter-spacing: 0; }
 
@@ -1406,9 +1441,9 @@ html[data-hiw-open] .edf-madewith {
    titolo usciva dalla safe-area in alto (check `c`, HARD, misurato il 6 nov).
    Qui si recuperano i pixel sulle spaziature e sulle frecce, mai sul corpo. */
 @media (max-height: 860px) {
-  .tp-idea-dx { gap: 0.7rem; }
+  .tp-idea-dx { gap: 0.5rem; }
+  .tp-box { padding: 0.6rem 0.95rem; }
   .tp-idea-dx .xd-ref-b { padding-top: 0.6rem; padding-bottom: 0.6rem; }
-  .tp-idea-dx > * + *::before { top: -0.6rem; }
   .tp-idea-dx .tp-pz { gap: 0.3rem; }
   .tp-idea-dx .tp-pz-g { gap: 0.08rem; }
   .tp-idea-dx .tp-pz-l { gap: 0.08rem; }
@@ -1578,4 +1613,469 @@ body:has(.rel) { background: #f7f8fa; }
   .rel { padding-top: 1rem; max-width: none; }
   .rel-cap { break-inside: avoid; }
   .rel-s { break-inside: avoid; }
+}
+
+/* ── La mappa dei prodotti, in tabella ─────────────────────────────────────
+   9 nov 2026: quattro colonne di elenchi facevano muro. Una riga per idea. */
+/* Quello che cede il posto: con il dettaglio aperto il blocco non serve più, e
+   la slide resta dentro la safe-area senza rimpicciolire il tipo. */
+.xd-sl:has([data-hiw-on]) .tp-cede { display: none; }
+
+/* 9 nov 2026 — allineamento con il cliente: quattro ancore sui problemi chiave,
+   due moltiplicatori, la fascia dei prodotti proiettata, la dipendenza di ogni
+   fase. Dove il drill-down si apre, la fascia cede (`.tp-cede`): mai rimpicciolire. */
+.tp-ancore--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tp-stats--due { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .tp-ancore--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) { .tp-ancore--4, .tp-stats--due { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* ── LA STRISCIA ADOBE E LE ETICHETTE SUL MOCKUP (9 nov 2026) ─────────────────
+   Fondo bianco e inchiostri espliciti: sta su slide scure e chiare. La forma della
+   tessera porta lo stato insieme alla parola. Il marchio resta nel suo rosso. */
+.tp-adobe { display: grid; gap: clamp(0.7rem, 1.2vw, 1.4rem); align-items: stretch; width: 100%; margin-inline: 0; padding: clamp(0.6rem, 1.1vh, 0.95rem) clamp(0.8rem, 1.1vw, 1.2rem); border-radius: 12px; background: var(--color-bianco); color: var(--color-ardesia-notte); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22); text-align: left; }
+.tp-adobe-m { display: grid; align-content: center; justify-items: start; gap: 0.1rem; min-width: 0; }
+.tp-adobe-m svg { width: clamp(1.5rem, 1.7vw, 2.8rem); height: auto; fill: #eb1000; display: block; }
+.tp-adobe-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1.15vw, 2rem); line-height: 1.15; color: var(--color-ardesia-notte); }
+.tp-adobe-s { font-size: 0.78rem; line-height: 1.25; font-weight: 600; color: var(--color-ardesia); }
+.tp-adobe-g { display: grid; align-content: start; gap: 0.3rem; min-width: 0; }
+.tp-adobe-k { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-ardesia); }
+.tp-adobe-l { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--c, 1), minmax(0, 1fr)); gap: 0.5rem; }
+.tp-adobe-t { display: grid; align-content: start; gap: 0.12rem; min-width: 0; margin-inline: 0; padding: clamp(0.4rem, 0.8vh, 0.65rem) clamp(0.55rem, 0.7vw, 0.8rem); border-radius: 8px; border: 2px solid var(--color-ardesia-notte); }
+.tp-adobe-t[data-stato='avete'] { background: var(--color-ardesia-notte); color: var(--color-bianco); }
+.tp-adobe-t[data-stato='nuovo'] { background: var(--color-bianco); color: var(--color-ardesia-notte); }
+.tp-adobe-p { font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.22; overflow-wrap: break-word; }
+[data-slide] .tp-adobe-p a { color: inherit; text-decoration-color: currentColor; text-underline-offset: 0.16em; text-decoration-thickness: 1px; }
+.tp-adobe-a { font-size: clamp(0.95rem, 0.86vw, 1.55rem); line-height: 1.4; overflow-wrap: anywhere; }
+.mk-riga { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; min-width: 0; }
+.mk-pins { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; }
+.mk-pin { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.14rem 0.5rem; border-radius: 999px; background: var(--color-ardesia-notte); color: var(--color-bianco); font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; line-height: 1.3; white-space: nowrap; }
+.mk-pin svg { width: 0.9em; height: 0.9em; fill: currentColor; flex-shrink: 0; }
+.mk-barra .mk-pin { margin-left: auto; }
+@media (max-width: 900px) {
+  .tp-adobe { grid-template-columns: minmax(0, 1fr) !important; }
+  .tp-adobe-l { grid-template-columns: minmax(0, 1fr); }
+}
+/* Su uno schermo basso la fonte finiva sotto i comandi del deck, e il
+   check `b` non vede la firma. Si toglie la riga di servizio, mai si rimpicciolisce. */
+@media (max-height: 860px) { .tp-adobe .tp-adobe-a { display: none; } }
+
+/* ── CHI SIAMO — tre righe: etichetta a sinistra, contenuto a destra ──────────
+   Gli inchiostri si ribaltano con la superficie: la slide è su fondo chiaro. */
+.tp-chi { display: grid; width: 100%; }
+.tp-chi-r { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: clamp(1rem, 2vw, 2.4rem); align-items: center; padding: clamp(0.7rem, 1.5vh, 1.15rem) 0; border-top: 1px solid var(--line-default); margin-inline: 0; text-align: left; }
+.tp-chi-k { font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.05vw, 1.85rem); line-height: 1.25; color: var(--ink-accent); }
+.tp-chi-team, .tp-chi-fasi { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.7rem, 1.2vw, 1.4rem); }
+.tp-chi-team { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tp-chi-team li { display: flex; align-items: center; gap: 0.65rem; min-width: 0; margin-inline: 0; }
+.tp-chi-ph { flex: none; display: grid; place-items: center; width: clamp(2.6rem, 3vw, 4.8rem); aspect-ratio: 1; border-radius: 50%; border: 2px dashed var(--ink-note); font-size: 0.82rem; font-weight: 700; color: var(--ink-note); }
+.tp-chi-p { display: grid; min-width: 0; line-height: 1.3; }
+.tp-chi-p strong { font-size: clamp(1rem, 1vw, 1.75rem); color: var(--ink-primary); }
+.tp-chi-p span { font-size: clamp(0.95rem, 0.86vw, 1.55rem); color: var(--ink-body); }
+.tp-chi-fasi { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tp-chi-fasi li { display: grid; align-content: start; gap: 0.2rem; min-width: 0; margin-inline: 0; padding-top: 0.45rem; border-top: 3px solid var(--ink-accent); }
+.tp-chi-fasi strong { font-family: var(--font-display); font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.25; color: var(--ink-primary); }
+.tp-chi-fasi span { font-size: clamp(0.95rem, 0.86vw, 1.55rem); line-height: 1.4; color: var(--ink-body); }
+.tp-chi-storia .tp-filo-eti li { align-content: start; }
+.tp-chi-storia .tp-filo-eti { gap: 0 0.8rem; }
+.tp-chi-storia li[data-ora] .tp-filo-t { color: var(--ink-accent); }
+@media (max-width: 900px) {
+  .tp-chi-r { grid-template-columns: minmax(0, 1fr); }
+  .tp-chi-team, .tp-chi-fasi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tp-chi-storia .tp-filo-fig { display: none; }
+  .tp-chi-storia .tp-filo-eti { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+}
+
+/* ── Copertine di capitolo: titolo a sinistra, fotografia solare fino al bordo ──
+   9 nov 2026: niente pannello a destra. La foto sfuma sul fondo prima del titolo,
+   così l'inchiostro del titolo resta sul fondo scuro e il contrasto non dipende
+   dall'immagine. */
+.xd-div-bg::before { inset: 0 0 0 36%; filter: none; -webkit-mask-image: linear-gradient(to right, transparent, #000 26% 100%); mask-image: linear-gradient(to right, transparent, #000 26% 100%); }
+/* Il velo in basso: il credito Firefly e i comandi del deck stanno sulla foto, e su
+   una foto luminosa il credito spariva. */
+.xd-div-bg::after { inset: auto 0 0 0; height: 24%; border: 0; box-shadow: none; background: linear-gradient(to top, rgba(20, 26, 37, 0.9), rgba(20, 26, 37, 0)); }
+.xd-div { grid-template-columns: minmax(0, 1fr); }
+
+/* ── Chi siamo: foto del team e offerta a tessere con lo strato Coworker ───────
+   Tessere e strato si ispirano alla slide Adobe «Nuova era, nuovi strumenti»: gradiente
+   viola-rosso, fascia che sormonta. Tinte abbastanza scure da reggere il bianco. */
+.tp-chi-foto { flex: none; display: block; width: clamp(3rem, 3.6vw, 5.6rem); height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px var(--color-bianco), 0 0 0 4px var(--accent-primary); }
+.tp-chi-team li { gap: 0.8rem; }
+.tp-chi-off { display: grid; min-width: 0; }
+.tp-chi-off .tp-chi-fasi { gap: 0.5rem; }
+.tp-chi-off .tp-chi-fasi li { border-top: 0; border-radius: 10px 10px 0 0; padding: 0.55rem 0.75rem 1.5rem; }
+.tp-chi-off .tp-chi-fasi li:nth-child(1) { background: linear-gradient(160deg, #6b3fc4, #8a3bab); }
+.tp-chi-off .tp-chi-fasi li:nth-child(2) { background: linear-gradient(160deg, #8a3bab, #a03a8f); }
+.tp-chi-off .tp-chi-fasi li:nth-child(3) { background: linear-gradient(160deg, #a03a8f, #ad3874); }
+.tp-chi-off .tp-chi-fasi li:nth-child(4) { background: linear-gradient(160deg, #ad3874, #b4365a); }
+.tp-chi-off .tp-chi-fasi li:nth-child(5) { background: linear-gradient(160deg, #b4365a, #b73a2c); }
+.tp-chi-off .tp-chi-fasi strong, .tp-chi-off .tp-chi-fasi span { color: var(--color-bianco); }
+.tp-chi-cw { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 0.7rem; flex-wrap: wrap; margin: -1rem 0 0; padding: clamp(0.5rem, 1vh, 0.8rem) 1rem; border-radius: 12px; color: var(--color-bianco); background: linear-gradient(100deg, #1e2a80 0%, #1e2a80 42%, #145f80 58%, #7a4a10 78%, #8f2a1f 100%); box-shadow: 0 8px 22px rgba(20, 26, 37, 0.38); text-align: center; }
+.tp-chi-cw svg { width: 1.25em; height: auto; fill: currentColor; flex: none; }
+.tp-chi-cw strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.1rem, 1.2vw, 2.1rem); color: var(--color-bianco); }
+.tp-chi-cw span { font-size: clamp(0.95rem, 0.9vw, 1.6rem); color: var(--color-bianco); }
+@media (max-height: 860px) {
+  .tp-chi-r { padding: 0.45rem 0; }
+  .tp-chi-off .tp-chi-fasi li { padding: 0.4rem 0.6rem 1.35rem; }
+  .tp-chi-off .tp-chi-fasi span { line-height: 1.3; }
+  .tp-chi-foto { width: 2.8rem; }
+}
+@media (max-height: 860px) { .tp-chi-r { grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 0.8rem; } }
+/* Tessere della striscia Adobe: stessa altezza fra «già vostro» e «si aggiunge». */
+.tp-adobe-g { grid-template-rows: auto 1fr; align-content: stretch; }
+.tp-adobe-l { align-items: stretch; }
+
+/* ── LA ROADMAP: un binario in posa ───────────────────────────────────────────
+   Rotaie e traverse sono due bordi e un gradiente ripetuto. Posato = rosso pieno,
+   ancora da posare = tratteggiato. Il dettaglio di ogni fase resta a bandiera, e la
+   riga sulla dipendenza chiude tutte le colonne alla stessa quota. */
+.tp-rm { --s: clamp(2.8rem, 3.2vw, 5.4rem); --gap: clamp(1rem, 1.5vw, 2.6rem); --r: clamp(0.7rem, 0.72vw, 1.2rem); list-style: none; margin: clamp(0.5rem, 1.4vh, 1.2rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 0; width: 100%; margin-bottom: clamp(0.6rem, 1.4vh, 1.1rem); }
+.tp-rm li { position: relative; padding-right: var(--gap); display: grid; grid-template-rows: var(--s) auto auto 1fr auto; justify-items: start; min-width: 0; margin-inline: 0; text-align: left; }
+.tp-rm li::after { content: ''; position: absolute; z-index: 0; top: calc((var(--s) - var(--r)) / 2); left: var(--s); right: 0; height: var(--r); box-sizing: border-box; border-block: 2px solid var(--c); background: repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 13px); }
+.tp-rm li:last-child::after { right: 0; -webkit-mask-image: linear-gradient(to right, #000 35%, transparent); mask-image: linear-gradient(to right, #000 35%, transparent); }
+.tp-rm li[data-tratto='posato'] { --c: var(--accent-primary); }
+.tp-rm li[data-tratto='pronto'], .tp-rm li[data-tratto='da-posare'] { --c: var(--ink-note); }
+.tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-block-style: dashed; }
+.tp-rm-n { position: relative; z-index: 1; display: grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.35rem, 1.5vw, 2.5rem); line-height: 1; font-variant-numeric: lining-nums; color: var(--color-bianco); background: var(--accent-primary); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34); }
+.tp-rm li[data-tratto='da-posare'] .tp-rm-n { background: var(--color-ardesia-notte); box-shadow: inset 0 0 0 2px var(--ink-note), 0 8px 22px rgba(0, 0, 0, 0.34); }
+.tp-rm-q { margin: clamp(0.75rem, 1.4vh, 1.1rem) 0 0; max-width: none; font-size: clamp(0.8rem, 0.72vw, 1.4rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; color: var(--ink-note); }
+.tp-rm-t { margin: 0.3rem 0 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.12rem, 1.28vw, 2.2rem); line-height: 1.24; letter-spacing: -0.01em; color: var(--ink-primary); text-wrap: balance; }
+.tp-rm-b { margin: 0.45rem 0 0; max-width: none; font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.5; color: var(--ink-body); }
+.tp-rm-d { margin: 0.7rem 0 0; max-width: none; display: flex; align-items: center; gap: 0.45rem; font-size: clamp(0.86rem, 0.8vw, 1.45rem); font-weight: 700; line-height: 1.3; color: var(--ink-accent); }
+.tp-rm-d::before { content: ''; flex: none; width: 0.6em; height: 0.6em; border-radius: 50%; background: currentColor; }
+.tp-rm li[data-tratto='da-posare'] .tp-rm-d::before { background: transparent; box-shadow: inset 0 0 0 2px currentColor; }
+@media (max-height: 860px) { .tp-rm { --s: 2.7rem; } .tp-rm-b { line-height: 1.38; } }
+@media (max-width: 900px) {
+  .tp-rm { grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; }
+  .tp-rm li { grid-template-rows: none; padding-right: 0; padding-left: calc(var(--s) + 0.9rem); }
+  .tp-rm-n { position: absolute; left: 0; top: 0; }
+  .tp-rm-q { margin-top: 0; }
+  .tp-rm li::after { top: var(--s); bottom: -1.5rem; left: calc((var(--s) - var(--r)) / 2); right: auto; width: var(--r); height: auto; border-block: 0; border-inline: 2px solid var(--c); background: repeating-linear-gradient(180deg, var(--c) 0 2px, transparent 2px 13px); }
+  .tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-inline-style: dashed; }
+  .tp-rm li:last-child::after { display: none; }
+}
+
+/* La fascia trasversale della roadmap: i contenuti non sono una fase, valgono per tutte. */
+.tp-rm-strato { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.2rem; width: 100%; margin-inline: 0; padding: clamp(0.7rem, 1.4vh, 1.1rem) clamp(1rem, 1.4vw, 1.7rem); border-radius: 12px; background: var(--accent-primary); color: var(--color-bianco); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3); text-align: left; }
+.tp-rm-strato strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.4vw, 2.4rem); line-height: 1.2; color: var(--color-bianco); }
+.tp-rm-strato span { font-size: clamp(0.95rem, 0.95vw, 1.7rem); line-height: 1.4; color: var(--color-bianco); }
+
+/* Slide dell'idea: mockup e riquadri iniziano e finiscono alla stessa quota. */
+.tp-idea-sx { align-content: stretch; }
+.tp-idea-sx .mk { height: 100%; align-items: stretch; }
+.tp-idea-sx .mk-schermo { height: 100%; width: 100%; display: flex; flex-direction: column; }
+.tp-idea-sx .mk-corpo { flex: 1; display: grid; align-content: center; }
+.tp-idea-dx { align-content: stretch; }
+.tp-idea-dx > .tp-box, .tp-idea-dx > .xd-ref { display: grid; align-content: center; }
+/* Sugli schermi intorno agli 880 px la slide dell'idea toccava nav e firma: si recupera sugli spazi. */
+@media (max-height: 960px) and (min-width: 901px) {
+  .tp-idea-dx { gap: 0.5rem; }
+  .tp-box { padding: 0.55rem 0.95rem; }
+  .tp-idea-dx .xd-ref-b { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  .tp-adobe { padding-block: 0.5rem; }
+  .tp-adobe-t { padding-block: 0.35rem; }
+  .tp-adobe-a { line-height: 1.3; }
+}
+
+/* Agenda in copertina: la voce che raccoglie le quattro idee ha il colore di marchio. */
+.xd-cop .xd-cop-cap.tp-cop-idee { background: var(--accent-primary); border-color: var(--accent-primary); }
+.xd-cop .xd-cop-cap.tp-cop-idee .xd-cop-n, .xd-cop .xd-cop-cap.tp-cop-idee .xd-cop-tit { color: var(--color-bianco); }
+.xd-cop .xd-cop-cap .xd-cop-n { white-space: nowrap; }
+
+.xd-cop .xd-cop-cap { grid-template-columns: 3.6rem minmax(0, 1fr); }
+.xd-cop .xd-cop-n { flex: none; width: 3.6rem; }
+
+/* ── I quattro fatti: il legame ad Adobe e il gancio verso la domanda ──────────
+   Sequenza unica quando la slide diventa attiva: la graffa si disegna, entra il
+   marchio, poi il binario corre verso destra. Lo stato di base è quello finale. */
+.tp-probl { row-gap: clamp(0.5rem, 1vh, 0.8rem); }
+.tp-lega { grid-column: 1 / -1; position: relative; display: grid; justify-items: center; min-width: 0; margin-inline: 0; }
+.tp-lega-u { position: relative; display: block; width: 75%; height: clamp(0.8rem, 1.5vh, 1.2rem); box-sizing: border-box; border: 2px solid var(--ink-note); border-top: 0; border-radius: 0 0 8px 8px; }
+.tp-lega-u::before { content: ''; position: absolute; left: 33.33%; width: 33.33%; top: 0; bottom: 0; box-sizing: border-box; border-inline: 2px solid var(--ink-note); }
+.tp-lega-u::after { content: ''; position: absolute; left: 50%; top: 100%; height: clamp(0.5rem, 1vh, 0.8rem); width: 2px; margin-left: -1px; background: var(--ink-note); }
+.tp-lega-n { grid-column: 2 / 4; justify-self: center; margin: 0; max-width: none; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.35rem 0.95rem 0.35rem 0.75rem; border-radius: 999px; background: var(--color-bianco); box-shadow: 0 8px 20px rgba(27, 34, 48, 0.16); font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.2; color: var(--color-ardesia-notte); }
+.tp-lega-n svg { width: 1.2em; height: auto; fill: #eb1000; flex: none; }
+@keyframes tp-disegna { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes tp-entra { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  #slide-problemi:not([data-substep-index='0']) .tp-lega-u { animation: tp-disegna 620ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+  #slide-problemi:not([data-substep-index='0']) .tp-lega-n { animation: tp-entra 520ms cubic-bezier(0.16, 1, 0.3, 1) 300ms backwards; }
+
+  /* La domanda si apre dalla punta del binario: il colore allaga la carta e la
+     frase sul terzo operatore arriva da lì. */
+  @keyframes tp-arriva { 0% { opacity: 0; transform: translate(33vw, 9vh); } 18% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+  @keyframes tp-compare { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes tp-allarga { from { clip-path: inset(var(--tp-g-t, 58%) var(--tp-g-r, 6%) var(--tp-g-b, 27%) var(--tp-g-l, 74%) round 12px); } to { clip-path: inset(0 0 0 0 round 0); } }
+  #slide-domanda::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: var(--xd-piano, var(--color-ardesia-notte)); }
+  #slide-domanda::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: var(--accent-primary); animation: tp-allarga 900ms cubic-bezier(0.65, 0, 0.2, 1) both; }
+  #slide-domanda .tp-quote { position: relative; z-index: 1; }
+  #slide-domanda .tp-gancio-a { display: inline-block; animation: tp-arriva 1000ms cubic-bezier(0.16, 1, 0.3, 1) 200ms backwards; }
+  #slide-domanda .tp-gancio-b { display: block; animation: tp-compare 500ms ease-out 1050ms backwards; }
+}
+@media (max-width: 900px) { .tp-lega, .tp-lega-n { grid-column: 1 / -1; } }
+
+/* Le due frasi del raccordo stanno su righe proprie anche senza movimento. */
+.tp-gancio-a, .tp-gancio-b { display: block; }
+
+/* ── REVISIONE DI COERENZA (9 nov 2026) ───────────────────────────────────────
+   Una sola misura per tutto il percorso. Il contenuto si fermava a 1404 px su 1920 e
+   lasciava 400 px vuoti a destra contro i 115 a sinistra: ora occupa la safe-area.
+   I titoli di contenuto erano di due corpi (40 e 50 px): ora uno solo. */
+[data-slide] .xd-sl { max-width: 94rem; }
+[data-slide] .xd-sl .xd-h2 { font-size: clamp(1.55rem, 2.3vw, 2.75rem); line-height: 1.14; max-width: 34ch; }
+[data-slide] .xd-sl .xd-sub { font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.5; max-width: 72ch; }
+[data-slide] .xd-sl .xd-chiusa { font-size: clamp(1rem, 1.02vw, 1.8rem); max-width: 80ch; }
+[data-slide] .xd-sl .xd-sl-head { gap: 0.45rem; }
+
+/* Le linee del tempo stanno a bandiera, come il resto della slide e la roadmap. */
+.tp-crono .tp-filo-fig { display: none; }
+.tp-crono .tp-filo-eti li { justify-items: start; align-content: start; text-align: left; }
+.tp-crono .tp-filo-eti li::before { position: relative; z-index: 1; width: 0.7rem; height: 0.7rem; }
+.tp-crono .tp-filo-eti { position: relative; }
+.tp-crono .tp-filo-eti::before { content: ''; position: absolute; top: calc(0.35rem - 1px); left: 0; right: calc(100% / var(--cols, 5)); height: 2px; background: var(--line-default); }
+
+/* La barra resta su una riga e mostra tutte le voci anche sui portatili. */
+@media (max-width: 1500px) { .ex-nav-link > span:first-child:not(:only-child) { display: none; } }
+@media (max-width: 900px) { .tp-crono .tp-filo-eti::before { display: none; } }
+
+/* Il mockup parte dallo stesso bordo del titolo e chiude a filo della colonna. */
+.tp-idea-sx .mk-schermo { max-width: none; }
+@media (max-height: 860px) { .tp-rm-strato { padding-block: 0.5rem; } }
+
+/* ── I mockup delle quattro idee: la schermata è la protagonista ───────────────
+   9 nov 2026, notte. Erano elenchi larghi quanto il testo accanto, al 27-35% della
+   pagina, con il corpo sotto il minimo. Ora la colonna è la più larga, la schermata
+   prende l'altezza che resta e nessun corpo scende sotto il contratto. */
+@media (min-width: 901px) {
+  #slide-idea .tp-idea { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr); }
+  #slide-idea .tp-idea-sx .mk-schermo { min-height: clamp(19rem, 42vh, 46rem); }
+}
+/* Sui portatili la colonna di destra torna più larga: stretta, il testo va a capo
+   e la riga sfonda in basso. Le altezze minime cedono, il corpo no. */
+@media (min-width: 901px) and (max-height: 900px) {
+  #slide-idea .tp-idea { grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); }
+  #slide-idea .tp-idea-sx .mk-schermo { min-height: 0; }
+  #slide-idea .mk-home { min-height: 6.4rem; }
+  #slide-idea .mk-master { min-height: 8rem; }
+  #slide-idea .mk-mercati li { grid-template-rows: minmax(3.2rem, 1fr) auto; }
+  #slide-idea .mk-percorso li { min-height: 3.8rem; padding-block: 0.4rem; }
+  #slide-idea .mk-tessere li, #slide-idea .mk-poi li { padding-block: 0.32rem; }
+  #slide-idea .mk-ordine li { padding-block: 0.28rem; }
+  #slide-idea .mk-ordine-n { width: 1.8rem; height: 1.8rem; }
+  #slide-idea .mk-campo { padding-block: 0.18rem; }
+  #slide-idea .mk-home-t { gap: 0.3rem; }
+  #slide-idea .mk-cta { padding-block: 0.26rem; }
+  #slide-idea .mk-home-h { font-size: 1.3rem; }
+}
+.tp-idea-sx .mk-corpo--piena { align-content: stretch; grid-auto-rows: auto; }
+.mk-corpo--piena > :first-child { min-height: 0; }
+/* Un solo blocco cresce, gli altri stanno alla loro misura: se no l'avanzo si
+   divide in parti uguali e le tessere restano mezze vuote. */
+.tp-idea-sx .mk-corpo--piena:has(> .mk-tessere),
+.tp-idea-sx .mk-corpo--piena:has(> .mk-regole) { grid-template-rows: minmax(0, 1fr) auto; }
+.tp-idea-sx .mk-corpo--piena:has(> .mk-ordine) { grid-template-rows: auto minmax(0, 1fr); }
+.tp-idea-sx .mk-corpo--piena:has(> .mk-percorso) { grid-template-rows: minmax(0, 1fr) auto auto; }
+
+/* Prima e dopo stanno nella stessa cella: l'altezza è quella della più alta. */
+.mk-fasi { display: grid; width: 100%; height: 100%; }
+.mk-fase { grid-area: 1 / 1; min-width: 0; }
+.mk-fase--prima { transition: opacity 320ms ease-out; }
+[data-slide]:not([data-substep-index='0']) .mk-fase--prima { opacity: 0; visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .mk-fase--prima { opacity: 0; visibility: hidden; } }
+html:not(.js) .mk-fase--prima { opacity: 0; visibility: hidden; }
+
+/* La fotografia non impone l'altezza: riempie quella che la schermata le lascia. */
+.mk-foto { position: relative; min-height: 0; overflow: hidden; border-radius: 10px; background: var(--color-nebbia); }
+.mk-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Due tagli davvero diversi della stessa fotografia, ritagliati sulla sorgente:
+   un `transform: scale` fa traboccare il contenitore e il deck lo legge come
+   scorrimento nascosto (check k) e come testo su immagine (check d). */
+.mk-foto--a img { object-view-box: inset(22% 44% 8% 0%); }
+.mk-foto--b img { object-view-box: inset(18% 0% 12% 44%); }
+
+.mk-home { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr); gap: clamp(0.8rem, 1.2vw, 2rem); min-height: clamp(9rem, 20vh, 22rem); }
+.mk-home-t { display: grid; align-content: center; justify-items: start; gap: clamp(0.5rem, 1vh, 1rem); min-width: 0; }
+.mk-home-h { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 1.75vw, 3.2rem); line-height: 1.12; color: var(--color-ardesia-notte); }
+.mk-campi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; width: 100%; }
+.mk-campo { display: grid; gap: 0.1rem; padding: 0.42rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-grigio-300); background: var(--color-bianco); font-size: clamp(0.95rem, 0.92vw, 1.7rem); font-weight: 600; color: var(--color-ardesia-notte); }
+.mk-campo small, .mk-tessere small, .mk-mercato-t small, .mk-percorso small, .mk-poi small { font-size: clamp(0.76rem, 0.72vw, 1.36rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-cta { padding: 0.5rem 1.3rem; border-radius: 8px; background: var(--color-rosso-scuro); color: var(--color-bianco); font-family: var(--font-display); font-weight: 700; font-size: clamp(0.95rem, 0.92vw, 1.7rem); }
+
+.mk-tessere { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-tessere li { display: grid; gap: 0.12rem; align-content: start; padding: 0.6rem 0.75rem; border-radius: 8px; background: var(--color-nebbia); border-top: 3px solid var(--color-grigio-300); }
+.mk-tessere li[data-on] { border-top-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-tessere strong { font-family: var(--font-display); font-size: clamp(1rem, 0.95vw, 1.8rem); color: var(--color-ardesia-notte); }
+.mk-tessere span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+
+/* Il contenuto: la campagna, e le versioni per mercato. */
+.mk-master { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.2vw, 2rem); min-height: clamp(11rem, 26vh, 28rem); background: none; padding: 0; }
+.mk-master-t { display: grid; align-content: center; justify-items: start; gap: 0.55rem; min-width: 0; }
+.mk-mercati { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.6rem, 1vw, 1.6rem); }
+.mk-mercati li { display: grid; grid-template-rows: minmax(clamp(5.5rem, 13vh, 16rem), 1fr) auto; gap: 0.5rem; min-width: 0; }
+.mk-mercato-t { display: grid; gap: 0.1rem; }
+.mk-mercato-t strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.3vw, 2.4rem); line-height: 1.15; color: var(--color-ardesia-notte); }
+.mk-mercato-t span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+[data-slide] .mk-regole { margin: 0; max-width: none; width: 100%; padding: 0.5rem 0.75rem; border-radius: 8px; background: var(--color-ardesia-notte); color: var(--color-bianco); font-size: clamp(0.95rem, 0.92vw, 1.7rem); line-height: 1.35; }
+
+/* La risposta: tre posizioni, e l'ultima è la loro. */
+.mk-bolla { justify-self: end; margin: 0; max-width: none; padding: 0.6rem 1rem; border-radius: 14px 14px 3px 14px; background: var(--color-ardesia-notte); color: var(--color-bianco); font-weight: 700; font-size: clamp(1.05rem, 1.1vw, 2rem); }
+.mk-ordine { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; gap: 0.5rem; }
+.mk-ordine li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.9rem; padding: 0.6rem 0.9rem; border-radius: 10px; background: var(--color-nebbia); }
+.mk-ordine li[data-trenitalia] { background: var(--color-chiaro); box-shadow: inset 0 0 0 2px var(--color-rosso); }
+.mk-ordine-n { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: var(--color-ardesia); color: var(--color-bianco); font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1.05vw, 1.9rem); }
+li[data-trenitalia] .mk-ordine-n { background: var(--color-rosso-scuro); }
+.mk-ordine-t { display: grid; gap: 0.05rem; font-size: clamp(1rem, 1vw, 1.85rem); color: var(--color-ardesia); }
+.mk-ordine-t strong { font-family: var(--font-display); font-size: clamp(1.1rem, 1.15vw, 2.1rem); color: var(--color-ardesia-notte); }
+.mk-qui { padding: 0.32rem 0.8rem; border-radius: 999px; background: var(--color-rosso-scuro); color: var(--color-bianco); font-weight: 700; font-size: clamp(0.92rem, 0.88vw, 1.6rem); white-space: nowrap; }
+
+/* L'agenzia: il percorso del codice, senza un numero. */
+.mk-percorso { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.1rem, 1.6vw, 2.6rem); }
+.mk-percorso li { position: relative; display: grid; align-content: start; gap: 0.25rem; min-height: clamp(6.5rem, 15vh, 15rem); padding: 0.75rem 0.9rem; border-radius: 10px; background: var(--color-nebbia); border-top: 3px solid var(--color-ardesia-chiara); }
+.mk-percorso li[data-on] { background: var(--color-chiaro); border-top-color: var(--color-rosso); }
+/* La freccia sta sul blocco che SEGUE, a sinistra: oltre il bordo destro
+   allargherebbe lo scorrimento della scheda (check c). */
+.mk-percorso li:not(:first-child)::before { content: ''; position: absolute; top: 50%; left: calc(-1 * clamp(1.1rem, 1.6vw, 2.6rem) + 0.28rem); width: 0.55rem; height: 0.55rem; border-top: 2px solid var(--color-ardesia); border-right: 2px solid var(--color-ardesia); transform: translateY(-50%) rotate(45deg); }
+.mk-percorso strong { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.08rem, 1.12vw, 2.05rem); line-height: 1.22; color: var(--color-ardesia-notte); }
+.mk-poi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-poi li { display: grid; gap: 0.1rem; padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--color-grigio-300); }
+.mk-poi span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+
+/* Il corpo che restava dal vecchio elenco, riportato al minimo del contratto. */
+.mk-tratta-d { font-size: clamp(0.95rem, 0.9vw, 1.68rem); }
+.mk-nota { font-size: clamp(0.95rem, 0.88vw, 1.6rem); }
+
+@media (max-width: 900px) {
+  .mk-home, .mk-master, .mk-percorso, .mk-tessere { grid-template-columns: minmax(0, 1fr); }
+  .mk-home, .mk-master { min-height: 0; }
+  .mk-foto { min-height: 8rem; }
+  .mk-percorso li:not(:first-child)::before { display: none; }
+  .mk-ordine li { grid-template-columns: auto minmax(0, 1fr); }
+  .mk-qui { grid-column: 2; justify-self: start; }
+}
+
+/* ── La domanda centrale: il tipo più grande del percorso ──────────────────────
+   Era 57 px, meno del titolo di una copertina di capitolo, sulla frase che regge il
+   deck. Ora prende la larghezza della pagina su una riga, e tutto il resto arretra. */
+.tp-quote:has(> .tp-domanda) { max-width: none; gap: clamp(1rem, 2.4vh, 2rem); }
+[data-slide] .tp-quote > .tp-domanda { font-size: clamp(2.6rem, 5.8vw, 16rem); line-height: 1.04; letter-spacing: -0.035em; max-width: none; white-space: nowrap; }
+[data-slide] .tp-quote > .tp-domanda-sub { font-size: clamp(1.1rem, 1.5vw, 3rem); line-height: 1.4; max-width: 56ch; }
+@media (max-width: 900px) { [data-slide] .tp-quote > .tp-domanda { white-space: normal; text-wrap: balance; } }
+
+/* ── La mappa delle idee: lo stesso linguaggio della striscia Adobe ────────────
+   Pannello chiaro, tessera piena = già vostro, bordata = si aggiunge. La forma porta
+   lo stato insieme alla parola, e vale uguale su slide scure e chiare perché il
+   pannello si porta i suoi inchiostri. */
+@media (max-height: 860px) {
+}
+
+/* Su uno schermo basso la colonna delle capacità cede il posto ai prodotti: mai rimpicciolire. */
+@media (max-height: 860px) and (min-width: 901px) {
+}
+/* Su telefono ogni idea è un blocco, e l'etichetta sta sopra le tessere. */
+@media (max-width: 900px) {
+}
+
+/* ═══ LE REGOLE DEL DECK (9 nov 2026) ═══════════════════════════════════════════
+   Il colore dice che tipo di slide è:
+     copertina e firma = clip · capitolo = fotografia · la domanda = rosso ·
+     contenuto = sempre ardesia.
+   Il titolo sta sempre alla stessa altezza: passando da una slide all'altra non salta.
+   Sotto il titolo, il corpo si centra nello spazio che resta.
+   Tre soli contenitori: la voce (filetto rosso in alto), il riquadro (fondo appena
+   più chiaro, un bordo sottile) e il pannello chiaro (Adobe, mockup, mappa). */
+@media (min-width: 901px) {
+  /* La riserva del motore è simmetrica e sprecava spazio in alto: qui il titolo parte
+     sotto la barra (T) e il corpo si ferma sopra i comandi (R). */
+  [data-slide] .slide-inner:has(> .xd-sl) { --t: calc(60px + max(1.4rem, 2.6vh)); --r: 104px; height: calc(100dvh - var(--t) - var(--r)); max-height: none !important; margin-top: calc(var(--t) - var(--r)); justify-content: flex-start; }
+  [data-slide] .slide-inner > .xd-sl { flex: 1 1 auto; min-height: 0; padding-bottom: 9vh; }
+  [data-slide] .slide-inner > .xd-sl > .xd-sl-head + * { margin-top: auto; }
+  [data-slide] .slide-inner > .xd-sl > :last-child { margin-bottom: auto; }
+}
+[data-slide] .tp-box, [data-slide] .tp-stat, [data-slide] .tp-ask, [data-slide] .xd-sl .xd-chiusa, [data-slide] .xd-ref-b {
+  background: rgba(255, 255, 255, 0.055); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px;
+}
+[data-slide] .tp-ask, [data-slide] .xd-sl .xd-chiusa { padding: clamp(0.7rem, 1.4vh, 1rem) clamp(1rem, 1.2vw, 1.5rem); max-width: none; }
+[data-slide] .xd-ref-b { padding: clamp(0.6rem, 1.2vh, 0.9rem) 1.1rem; }
+[data-slide] .xd-ref-b .xd-ref-n, [data-slide] .xd-ref-b .xd-marchio--testo { color: var(--xd-dark-ink); }
+[data-slide] .xd-ref-b .xd-ref-f, [data-slide] .xd-ref-b .tp-ref-set { color: var(--xd-dark-body); }
+[data-slide] .tp-ask-t { max-width: none; }
+@media (max-height: 860px) and (min-width: 901px) { .tp-rm-b { display: none; } }
+
+/* ── La concorrenza: l'unica tessera rossa, poi il riflettore ──────────────────
+   Il suo rosso è lo stesso della slide dopo: con → la tessera si allarga e la diventa.
+   Con ↓ il resto arretra e l'occhio resta qui. */
+.tp-focus { position: absolute; width: 0; height: 0; }
+
+/* Le otto domande sono il campione della misura: si leggono dal fondo della sala. */
+[data-slide] .tp-dom { gap: clamp(0.5rem, 1vh, 0.8rem) clamp(0.6rem, 0.8vw, 1rem); }
+[data-slide] .tp-dom li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: clamp(0.8rem, 1vw, 1.6rem); min-height: clamp(3.4rem, 8.4vh, 6.4rem); padding: clamp(0.5rem, 1.1vh, 0.9rem) clamp(1rem, 1.3vw, 2rem); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; background: rgba(255, 255, 255, 0.055); }
+[data-slide] .tp-dom .tp-dom-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 1.8vw, 3rem); line-height: 1; color: var(--ink-accent); min-width: 1.1em; }
+[data-slide] .tp-dom .tp-dom-t { font-size: clamp(1.1rem, 1.36vw, 2.4rem); line-height: 1.3; font-weight: 500; color: var(--ink-primary); }
+[data-slide] .tp-dom .tp-dom-l { font-size: clamp(0.8rem, 0.74vw, 1.35rem); font-weight: 700; letter-spacing: 0.08em; color: var(--ink-note); }
+
+/* ── La mappa delle idee: un percorso, non una tabella ─────────────────────────
+   Quattro colonne sullo stesso binario della roadmap. Tessera piena = già vostro,
+   bordata = da aggiungere: la forma porta lo stato, la legenda lo dice una volta. */
+.tp-rt-w { display: grid; gap: clamp(0.7rem, 1.5vh, 1.2rem); width: 100%; margin-inline: 0; }
+.tp-rt { --s: clamp(2.8rem, 3.2vw, 5.4rem); --r: clamp(0.7rem, 0.72vw, 1.2rem); list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); width: 100%; }
+.tp-rt:not([data-capability]) { grid-template-rows: repeat(3, auto); }
+.tp-rt > li { position: relative; display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: clamp(0.5rem, 1vh, 0.8rem); align-content: start; min-width: 0; margin-inline: 0; padding-right: clamp(1rem, 1.5vw, 2.4rem); padding-top: calc(var(--s) + clamp(0.5rem, 1vh, 0.8rem)); text-align: left; }
+.tp-rt:not([data-capability]) > li { grid-row: span 3; }
+.tp-rt > li:last-child { padding-right: 0; }
+.tp-rt > li::after { content: ''; position: absolute; top: calc((var(--s) - var(--r)) / 2); left: var(--s); right: 0; height: var(--r); box-sizing: border-box; border-block: 2px solid var(--ink-note); background: repeating-linear-gradient(90deg, var(--ink-note) 0 2px, transparent 2px 13px); }
+.tp-rt > li:last-child::after { -webkit-mask-image: linear-gradient(to right, #000 35%, transparent); mask-image: linear-gradient(to right, #000 35%, transparent); }
+.tp-rt-n { position: absolute; z-index: 1; top: 0; left: 0; display: grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 1.4vw, 2.4rem); line-height: 1; color: var(--color-bianco); background: var(--accent-primary); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34); }
+[data-slide] a.tp-rt-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.6vw, 2.8rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--ink-primary); text-decoration: none; }
+[data-slide] a.tp-rt-t:hover { color: var(--ink-accent); }
+[data-slide] p.tp-rt-c { margin: 0; max-width: none; font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.4; color: var(--ink-body); }
+.tp-rt-g { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; gap: clamp(0.3rem, 0.6vh, 0.45rem); min-width: 0; }
+.tp-rt-g > li { margin-inline: 0; padding: clamp(0.3rem, 0.7vh, 0.5rem) clamp(0.6rem, 0.7vw, 1rem); border-radius: 8px; box-sizing: border-box; border: 2px solid var(--color-bianco); font-family: var(--font-display); font-weight: 700; font-size: clamp(0.98rem, 0.95vw, 1.7rem); line-height: 1.25; }
+.tp-rt-g[data-stato='avete'] > li { background: var(--color-bianco); color: var(--color-ardesia-notte); }
+.tp-rt-g[data-stato='nuovo'] > li { background: transparent; color: var(--color-bianco); }
+.tp-rt-g a { color: inherit; text-decoration: none; }
+.tp-rt-g a:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+[data-slide] p.tp-rt-leg { margin: 0; max-width: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; font-size: clamp(0.82rem, 0.76vw, 1.4rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-body); }
+.tp-rt-leg span::before { content: ''; display: inline-block; width: 0.85em; height: 0.85em; margin-right: 0.5em; border-radius: 3px; box-sizing: border-box; border: 2px solid var(--color-bianco); vertical-align: -0.08em; }
+.tp-rt-leg span[data-stato='avete']::before { background: var(--color-bianco); }
+@media (max-height: 860px) and (min-width: 901px) {
+  .tp-rt { --s: 2.5rem; }
+  [data-slide] p.tp-rt-c { display: none; }
+  .tp-rt-g > li { padding-block: 0.16rem; }
+}
+@media (max-width: 900px) {
+  .tp-rt, .tp-rt:not([data-capability]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; row-gap: 1.3rem; }
+  .tp-rt > li, .tp-rt:not([data-capability]) > li { grid-row: auto; grid-template-rows: none; padding-right: 0; padding-top: 0; padding-left: calc(var(--s) + 0.8rem); }
+  .tp-rt > li::after { display: none; }
+  [data-slide] .tp-dom { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* L'incrocio: il disegno dice il titolo, solo la parte in comune è accesa. */
+.tp-inc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(2rem, 4vw, 6rem); align-items: center; width: 100%; margin-inline: 0; }
+.tp-inc-fig { position: relative; height: clamp(11rem, 36vh, 30rem); aspect-ratio: 440 / 280; margin-inline: 0; }
+.tp-inc-fig svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tp-inc-fig circle { fill: rgba(255, 255, 255, 0.05); stroke: var(--ink-note); stroke-width: 1.5; }
+.tp-inc-fig path { fill: var(--accent-primary); }
+[data-slide] .tp-inc-fig p { position: absolute; top: 50%; width: 27%; margin: 0; max-width: none; transform: translate(-50%, -50%); text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(0.98rem, 1.02vw, 1.8rem); line-height: 1.25; color: var(--ink-body); }
+[data-slide] .tp-inc-fig p[data-on] { color: var(--color-bianco); }
+.tp-inc-v { display: grid; gap: clamp(0.9rem, 2vh, 1.6rem); min-width: 0; }
+@media (max-width: 900px) { .tp-inc { grid-template-columns: minmax(0, 1fr); } .tp-inc-fig { height: auto; width: 100%; } }
+
+/* Slide dei problemi, tre tempi: quattro punti uguali · ↓ Adobe · ↓ la concorrenza in rosso.
+   Il rosso è dietro al testo, così il testo non si sposta quando la tessera si accende. */
+#slide-problemi[data-substep-index='0'] .tp-lega, #slide-problemi[data-substep-index='0'] .tp-lega-n { opacity: 0; visibility: hidden; }
+.tp-probl [data-gancio] { position: relative; isolation: isolate; }
+.tp-probl [data-gancio]::before { content: ''; position: absolute; z-index: -1; inset: -2px 0 -0.8rem -1rem; border-radius: 12px; background: var(--accent-primary); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34); opacity: 0; transition: opacity 380ms ease-out; }
+.tp-probl [data-gancio] .tp-anc-k, .tp-probl [data-gancio] .tp-anc-n { transition: color 380ms ease-out; }
+#slide-problemi .tp-crono, #slide-problemi .tp-anc:not([data-gancio]), #slide-problemi .xd-fonte { transition: opacity 420ms ease-out; }
+#slide-problemi[data-substep-index='2'] .tp-crono, #slide-problemi[data-substep-index='2'] .tp-anc:not([data-gancio]), #slide-problemi[data-substep-index='2'] .tp-lega, #slide-problemi[data-substep-index='2'] .tp-lega-n, #slide-problemi[data-substep-index='2'] .xd-fonte { opacity: 0.3; }
+#slide-problemi[data-substep-index='2'] [data-gancio] { border-top-color: transparent; }
+#slide-problemi[data-substep-index='2'] [data-gancio]::before { opacity: 1; }
+#slide-problemi[data-substep-index='2'] [data-gancio] .tp-anc-k, #slide-problemi[data-substep-index='2'] [data-gancio] .tp-anc-n { color: var(--color-bianco); }
+
+/* La colonna del contenuto prende la larghezza che serve ai nomi lunghi: una riga sola. */
+@media (min-width: 901px) {
+  .tp-rt { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(max-content, 1fr) minmax(0, 1fr); }
+  .tp-rt > li:nth-child(3) .tp-rt-g > li { white-space: nowrap; }
 }

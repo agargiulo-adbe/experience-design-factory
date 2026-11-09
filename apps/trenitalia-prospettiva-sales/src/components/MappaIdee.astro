@@ -20,15 +20,18 @@
  * volta, chiede la seconda. La differenza sta nella pagina, non qui: una
  * ripetizione identica rende meno di una ripresa.
  */
+import { href } from '@edf/core/utils/url.js';
 import { IDEE, pezziDi } from '../data/idee';
 import { CHAPTERS } from '../data/chapters';
 import PezziPerStato from './PezziPerStato.astro';
+import { SOURCES } from '../data/sources';
+import type { Pezzo } from '../data/contenuti';
 
 interface Props {
   /** ⚠️ 6 nov 2026, SECONDO GIRO DEL PANEL, ed è l'obiezione che per
    *  l'arbitro affondava il documento: nel taglio corto — «quello che gira di
    *  più», letto senza nessuno accanto — questa mappa rendeva una griglia di
-   *  TREDICI nomi di prodotto Adobe, con «Real-Time CDP Collaboration» sotto
+   *  TREDICI nomi di prodotto Adobe, con «Real-Time Collaboration» sotto
    *  «si aggiunge», subito prima della richiesta. Cinque personas su sei: così
    *  si legge come un catalogo, e come uno strato di dato cliente proposto
    *  sopra quello che il Gruppo ha annunciato a marzo.
@@ -45,7 +48,37 @@ interface Props {
 }
 const { soloPezzi = false, soloCapability = false } = Astro.props as Props;
 const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
+
+/* 9 nov 2026, review: quattro colonne di elenchi facevano muro. In tabella ogni
+   idea è una riga e i prodotti stanno su due sole colonne. Il prefisso «Adobe»
+   si toglie perché lo dice già l'intestazione. */
+const breve = (n: string) => n === 'LLM Apps, dentro Adobe Experience Manager' ? 'LLM Apps' : n.replace(/^Adobe /, '').replace(/,\s*con\s+/, ' con ');
+const link = (p: Pezzo) => (p.fonte ? SOURCES[p.fonte].url : undefined);
 ---
+{/* 9 nov 2026: niente più tabella su pannello bianco, che sembrava incollata. Le quattro
+    idee sono un percorso: lo stesso binario numerato della roadmap. */}
+{!soloCapability && (
+  <div class="tp-rt-w">
+    <ol class="tp-rt" data-capability={soloPezzi ? undefined : ''}>
+      {IDEE.map((i, n) => (
+        <li>
+          <span class="tp-rt-n" aria-hidden="true">{n + 1}</span>
+          <a class="tp-rt-t" href={href(import.meta.env.BASE_URL, '/' + i.slug)}>{corto(i.slug).short}</a>
+          {!soloPezzi && <p class="tp-rt-c">{i.capability.map((c, k) => (k ? c[0].toLowerCase() + c.slice(1) : c)).join('; ')}</p>}
+          {(['avete', 'nuovo'] as const).map((st) => (
+            <ul class="tp-rt-g" data-stato={st} aria-label={st === 'avete' ? 'Già vostri' : 'Da aggiungere'}>
+              {pezziDi(i.slug).filter((p) => p.stato === st).map((p) => (
+                <li>{link(p) ? <a href={link(p)} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</li>
+              ))}
+            </ul>
+          ))}
+        </li>
+      ))}
+    </ol>
+    <p class="tp-rt-leg"><span data-stato="avete">Prodotti Adobe già vostri</span><span data-stato="nuovo">Prodotti Adobe da aggiungere</span></p>
+  </div>
+)}
+{soloCapability && (
 <ol class="tp-mi" data-stagger="0.08">
   {IDEE.map((i) => {
     const ch = corto(i.slug);
@@ -68,3 +101,4 @@ const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
     );
   })}
 </ol>
+)}

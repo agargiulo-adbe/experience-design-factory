@@ -65,7 +65,7 @@ export const SOURCES = {
   /* 17 ott 2026: qui stava la referenza Alterra Mountain Company. È uscita per
      decisione d'account — nel deck non va nessuna referenza di un altro cliente.
      Resta a verbale il perché non ce n'era una buona: fra i clienti pubblici di
-     Real-Time CDP Collaboration non c'è né un vettore né una ferrovia né una
+     Real-Time Collaboration non c'è né un vettore né una ferrovia né una
      crociera (verificato il 16 ott 2026), e un caso di un altro settore apre la
      domanda «e nel nostro?» invece di chiuderla. */
   /* ⚠️ Fonte PRIMARIA, letta il 16 ott 2026 sulla pagina di Trenitalia: la voce
@@ -353,6 +353,19 @@ export const SOURCES = {
     cosaDice:
       'Telmore, telco danese, 750.000 clienti. Verbatim dai risultati: «21% digital sales growth with 25% increase in cross sales to existing customers», «11% lift in sales from personalized offers ranked using artificial intelligence», «19.5% increase in customer matches on Facebook». Prodotti: Experience Platform, Real-Time CDP, Journey Optimizer, Customer Journey Analytics, Analytics, Target.',
   },
+  brightline: {
+    url: 'https://business.adobe.com/customer-success-stories/brightline.html',
+    label: 'Adobe · il caso Brightline',
+    data: 'letta il 9 novembre 2026',
+    cosaDice:
+      'Operatore ferroviario ad alta velocità in Florida. Verbatim: «real-time, personalized offers, upsells, and reminders»; se il viaggiatore abbandona la prenotazione, Journey Optimizer invia un promemoria. Prodotti dichiarati: Real-Time CDP, Customer Journey Analytics, Journey Optimizer, AEM Sites e Assets. NON è una referenza sul contenuto: Firefly e GenStudio sono solo un\'intenzione futura.',
+  },
+  contentAnalytics: {
+    url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/content-analytics/content-analytics',
+    label: 'Experience League · Content Analytics',
+    data: 'letta il 9 novembre 2026',
+    cosaDice: 'Come il contenuto, accanto al comportamento, incide sugli indicatori. La scomposizione automatica dei contenuti è dichiarata solo in inglese: da dire se si parla di mercati esteri.',
+  },
   santander: {
     url: 'https://business.adobe.com/br/customer-success-stories/santander-case-study.html',
     label: 'Adobe · il caso Santander Brasil',
@@ -390,7 +403,7 @@ export const SOURCES = {
   },
   rtcdpCollab: {
     url: 'https://experienceleague.adobe.com/en/docs/real-time-cdp-collaboration/using/home',
-    label: 'Adobe Real-Time CDP Collaboration',
+    label: 'Adobe Real-Time Collaboration',
     data: 'documentazione pubblica',
     cosaDice: 'Due aziende lavorano sugli stessi clienti senza trasferirsi i dati: ciascuna resta nel proprio ambiente governato.',
   },

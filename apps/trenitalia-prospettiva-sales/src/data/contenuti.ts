@@ -53,7 +53,7 @@ export interface Stat {
 
 /* ── Copertina e firma: le righe che vivono in entrambi i percorsi ───────── */
 export const COVER = {
-  tag: 'Quattro punti in cui una vendita si perde, prima del treno.',
+  tag: 'Quattro idee per\u00a0ottimizzare le\u00a0vendite, con\u00a0le\u00a0tecnologie per\u00a0realizzarle.',
   /** La riga della slide-firma, identica nei due percorsi. */
   firma: 'Si comincia da dove vendete già ogni giorno.',
 };
@@ -68,21 +68,19 @@ export const TESTE = {
     // 16 ott: la cornice è la parola che ha usato LUI al TTG il giorno prima.
     // Stava per diventare una quarta card, ma rompeva la griglia a tre ed era
     // comunque la cosa sbagliata: non è un quarto fattore, è il titolo dell'anno.
-    titolo: 'Il piano si scrive adesso',
+    titolo: 'Il 2027 si prepara adesso',
     // 20 ott: il lead apriva ripetendo «internazionalizzazione», che adesso è la
     // slide precedente. Qui resta quello che quella parola vuol dire in concreto.
-    lead: 'Nello stesso anno si muovono il mercato, il prezzo e il momento.',
-    leadBreve: 'Il Frecciarossa in Germania dal 2027, a Berlino nel 2028. E il vertice di Gruppo dichiara che i biglietti non aumenteranno.',
   },
   mappa: {
     eyebrow: 'La mappa',
-    titolo: 'Quattro punti, in ordine di percorso',
+    titolo: 'Quattro idee, in ordine di percorso',
     // Il lead era due righe e, con il drill-down aperto a 1280×800, erano le
     // due righe che facevano sforare la safe-area. La seconda metà — «se
     // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
     // nel blocco che si apre, non addosso a chi parla.
-    lead: 'Sono anche i quattro capitoli che seguono.',
-    leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto. Se uno vi interessa, si apre quello e il resto resta chiuso.',
+    lead: 'Per ognuna, i prodotti che avete già e quelli da aggiungere.',
+    leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto.',
   },
 };
 
@@ -134,7 +132,7 @@ export const MERCATO = {
      verbatim è un altro, ed è l'errore che riconosce per primo l'uomo che
      quella frase l'ha detta. Le virgolette stanno solo attorno alle parole
      che la fonte porta davvero. */
-  resto: { n: '96%', l: 'il resto del territorio, «non ancora esplorato»: parole sue dell’ottobre 2025' },
+  resto: { n: '96%', l: 'il resto del territorio, «non ancora esplorato»: parole del Direttore Sales, ottobre 2025' },
   /** Il punto della slide. */
   chiusa: 'Quel 96% si raggiunge arrivandoci, e facendosi trovare da chi lo sta cercando.',
 };
@@ -227,8 +225,8 @@ export const CONTESTO: Card[] = [
     k: 'Il mercato',
     t: 'Un terzo operatore, e\u00a0un\u00a0obbligo possibile',
     anc: 'Chi altro vende, e dove',
-    b: 'Siete in due. Il terzo ha il via libera, ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri, su richiesta loro.',
-    bBreve: 'Sull’alta velocità siete in due: il terzo ha il via libera ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
+    b: 'Oggi gli operatori sono due. Il terzo ha il via libera, ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri, su richiesta loro.',
+    bBreve: 'Sull’alta velocità oggi gli operatori sono due: il terzo ha il via libera ma entra non prima della fine del 2027. E la Commissione ha proposto che chi ha metà del mercato venda sulla propria piattaforma anche i treni degli altri.',
     fonti: ['sncfVialibera', 'sncf', 'ueTicketing'],
   },
   {
@@ -244,8 +242,8 @@ export const CONTESTO: Card[] = [
        vale SOLO sull'alta velocità, mentre in questa stanza si vendono tre
        prodotti. In sala quella data la conoscono meglio di noi. Ora la riga
        dice quello che dicono le fonti: da quando, su che cosa, e il tetto. */
-    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda, e la leva ha un responsabile. È cambiato il tetto: il vertice di Gruppo ha dichiarato che i biglietti non aumenteranno.',
-    bBreve: 'Il revenue management lavora già. È cambiato il tetto: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
+    b: 'Dal gennaio 2026 il prezzo delle Frecce si muove con la domanda, e ha già chi se ne occupa. La novità è il limite: il vertice di Gruppo ha dichiarato che i biglietti non aumenteranno.',
+    bBreve: 'Il revenue management lavora già. La novità è il limite: il vertice del Gruppo ha dichiarato che i biglietti non aumenteranno.',
     fonti: ['pricing', 'prezziFermi'],
   },
   {
@@ -256,6 +254,23 @@ export const CONTESTO: Card[] = [
     bBreve: 'Il piano di Gruppo arriva entro fine anno e il nuovo sito è previsto per marzo 2027: quello che si decide adesso entra lì dentro.',
     fonti: ['piano', 'ttgSales2026', 'monaco'],
   },
+];
+
+/* ── Capitolo 01 · i problemi chiave, su una slide ─────────────────────────
+   9 nov 2026, allineamento con il responsabile dei canali digitali: «questa
+   parte introduttiva la farei molto più corta», tre o quattro slide sui problemi
+   chiave. Le tre slide del capitolo 01 sono diventate questa. MERCATO, APERTURA e
+   CONTESTO restano qui sopra con le loro verifiche, se una va ripresa a voce.
+   Il prezzo non è fra i quattro: apre la slide della domanda, subito dopo. */
+export const PROBLEMI: Card[] = [
+  { k: 'Il territorio', t: 'Tre quarti degli\u00a0stranieri si\u00a0fermano sul\u00a04% del territorio',
+    b: 'Dato di contesto del TTG 2025: il resto è il 96% «non ancora esplorato».', fonti: ['ttg96', 'turismo75'] },
+  { k: 'I mercati', t: '«La parola chiave è internazionalizzazione […]»',
+    b: 'Parole del Direttore Sales al TTG del 15 ottobre 2026.', fonti: ['ttgSales2026'] },
+  { k: 'Il momento', t: 'Un piano in scrittura, un\u00a0sito in rifacimento',
+    b: 'Il piano di Gruppo arriva entro fine anno, il nuovo sito è previsto per marzo 2027.', fonti: ['piano', 'ttgSales2026', 'pricing'] },
+  { k: 'La concorrenza', t: 'Un terzo operatore in\u00a0arrivo, e la Germania dal\u00a02027',
+    b: 'Il terzo operatore entra non prima della fine del 2027.', fonti: ['sncfVialibera', 'sncf', 'monaco'] },
 ];
 
 /* ── Capitolo 02 · la domanda e i quattro punti ────────────────────────────
@@ -289,10 +304,10 @@ export const DOMANDA = {
    *    nell'occhiello: sta in `fonte`, con il link e la data.
    *  Era anche l'UNICA slide di contenuto del deck senza riga di fonte — in
    *  entrambi i percorsi — ed era quella che affermava di più. */
-  eyebrow: 'Sulle Frecce il prezzo si muove già con la domanda',
-  titolo: 'Allora dove si perdono le vendite?',
-  sub: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
-  subBreve: 'Quattro possibili risposte, in quattro punti diversi del percorso che una persona fa prima di salire su un treno.',
+  eyebrow: 'Con un terzo operatore in arrivo, e il prezzo delle Frecce che si muove già con la domanda',
+  titolo: 'Come ottimizzare le vendite?',
+  sub: 'Quattro idee, dalla ricerca del viaggio all’acquisto.',
+  subBreve: 'Quattro idee, dalla ricerca del viaggio all’acquisto.',
   /** ⚠️ 4 nov — LA RIGA RESTA, LA MAPPA DELLE DIREZIONI NO. Il panel l'aveva
    *  chiesta da tre poltrone diverse: dichiarare noi che non tutto si decide
    *  qui vale molto più che farselo dire. Ma la versione precedente elencava
@@ -345,15 +360,15 @@ export const INNESTO = {
     {
       k: 'Si affianca',
       t: 'La misura di quello che succede\u00a0prima',
-      b: 'Prima del sito, dentro l’offerta, a valle e nel canale: quattro punti che oggi nessuno legge insieme.',
+      b: 'Prima del sito, dentro l’offerta, a valle e nel canale: quattro punti da leggere insieme.',
     },
     {
-      k: 'Dove passa la cucitura',
-      t: 'È una domanda, e la risposta è vostra',
-      b: 'Chi tiene il dato, chi lo espone e chi autorizza: si decide prima di qualunque prova, non dopo.',
+      k: 'Dove si collegano i sistemi',
+      t: 'Una scelta che spetta a voi',
+      b: 'Chi tiene il dato, chi lo espone e chi autorizza: si decide prima di qualunque test.',
     },
   ],
-  chiusa: 'Fra i traguardi che il Gruppo dichiara per quest’anno c’è l’acquisto del biglietto tramite un agente. I quattro punti che seguono stanno prima di quel momento. Il capitolo 03 lo attraversa, e lo diciamo noi.',
+  chiusa: 'Fra i traguardi che il Gruppo dichiara per quest’anno c’è l’acquisto del biglietto tramite un agente. I quattro punti che seguono stanno prima di quel momento. L’idea 1 ne parla apertamente.',
 };
 
 /** `bRiga` è la riga del drill-down: UNA riga, ~15 parole. La regola ne
@@ -376,44 +391,40 @@ export const PUNTI: Punto[] = [
     /* 16 ott: il punto 01 copre adesso anche il secondo tempo di quel canale,
        perché il capitolo 03 lo contiene. La mappa e i capitoli devono dire la
        stessa cosa: è la prima a essere letta e l'ultima a essere ricordata. */
-    n: '03',
+    n: '1',
     dove: 'Prima del sito',
     t: 'Nella risposta che qualcun altro scrive',
     b: 'Chi organizza un viaggio chiede a un assistente, e riceve una risposta che cita qualcuno. Se non siete voi, la vendita è persa prima che una vostra pagina si apra. E quel canale sta diventando anche un posto dove si compra.',
-    bRiga: 'Se nella risposta non ci siete voi, la vendita è persa prima di una vostra pagina.',
-    tavolo: 'tavolo condiviso',
-    bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita è persa prima che si apra una vostra pagina.',
+    bRiga: 'Se nella risposta non ci siete voi, la vendita può sfuggire prima del vostro sito.',
+    bBreve: 'Chi organizza un viaggio chiede a un assistente, e la risposta cita qualcuno. Se non siete voi, la vendita può sfuggire prima del vostro sito.',
   },
   {
-    n: '04',
-    dove: 'Dentro l’offerta',
-    t: 'Nel momento in cui il viaggio torna a essere un biglietto',
-    b: 'Treno, autobus, sosta e volo sono già nella vostra offerta, e da ieri c’è anche la crociera. Sul percorso d’acquisto pubblico, però, non c’è un passaggio in cui qualcuno dichiari di stare componendo un viaggio: le prenotazioni restano acquisti separati.',
+    n: '2',
+    dove: 'Sul sito e in app',
+    t: 'Nella proposta che ognuno vede',
+    b: 'La proposta può cambiare in base a chi arriva: prima chi non è registrato, poi chi lo è. Su larga scala, e sempre con offerte che si possono comprare.',
     /* 6 nov, panel: era un'affermazione di assenza sui loro sistemi, scritta
        da fuori — e due slide dopo il deck elenca Air-Rail dal 2023 e la sosta
        che si aggiunge a un biglietto già comprato. Un'assenza sul cliente si
        verifica sulle sue pagine prima di scriverla; qui diventa la domanda. */
-    bRiga: 'Quale identificativo tiene insieme le due prenotazioni oggi, e\u00a0fin dove arriva?',
-    tavolo: 'tavolo condiviso',
-    bBreve: 'Treno, autobus, sosta e volo sono già nella vostra offerta. Quale identificativo tiene insieme le due prenotazioni di uno stesso viaggio, e fin dove arriva?',
+    bRiga: 'La proposta può cambiare in base a chi arriva, registrato o no?',
+    bBreve: 'La proposta può cambiare in base a chi arriva, registrato o no: su larga scala, e sempre con offerte che si possono comprare.',
   },
   {
-    n: '05',
+    n: '3',
     dove: 'A valle',
-    t: 'Nel materiale che non si riesce a produrre',
-    b: 'Una squadra sola copre tre prodotti più i servizi, su più mercati e in più lingue. I tre non hanno le stesse leve: alta velocità a mercato, Intercity su servizio universale, Regionale su contratti con le Regioni. Il materiale si moltiplica, e a mano non si tiene il passo.',
-    bRiga: 'Il materiale si moltiplica per prodotto, mercato e lingua, e a mano non si tiene il passo.',
-    tavolo: 'tavolo condiviso',
-    bBreve: 'Una squadra sola vende tre prodotti su più mercati e più lingue. Il materiale si moltiplica, e a mano non si tiene il passo.',
+    t: 'Nei contenuti per ogni mercato',
+    b: 'Una squadra sola copre tre prodotti più i servizi, su più mercati e canali. I tre non hanno le stesse leve: alta velocità a mercato, Intercity su servizio universale, Regionale su contratti con le Regioni. I contenuti si moltiplicano, e a mano è difficile stare al passo.',
+    bRiga: 'I contenuti si moltiplicano per prodotto, mercato e canale, e a mano è difficile stare al passo.',
+    bBreve: 'Una squadra sola vende tre prodotti su più mercati e canali. I contenuti si moltiplicano, e a mano è difficile stare al passo.',
   },
   {
-    n: '06',
+    n: '4',
     dove: 'Nel canale che è vostro',
-    t: 'In 12.400 agenzie, lette dai conti',
-    b: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia e per prodotto, dove si ferma la proposta multiprodotto, quale materiale funziona?',
-    bRiga: 'La rete vende ogni giorno: quanto di quel venduto si legge per agenzia?',
-    tavolo: 'il vostro tavolo',
-    bBreve: 'La rete intermediata vende ogni giorno. Quanto di quel venduto si legge per agenzia, e dove si ferma la proposta multiprodotto?',
+    t: 'Nelle agenzie: tutto da approfondire',
+    b: 'Il venduto per agenzia lo avete già. Si può legare a ciò che succede prima sul digitale? Va approfondito insieme, sul sistema con cui le agenzie vendono.',
+    bRiga: 'Il venduto per agenzia c’è già: si può legare al percorso digitale?',
+    bBreve: 'Il venduto per agenzia lo avete già. Si può legare a ciò che succede prima sul digitale? Va approfondito insieme.',
   },
 ];
 
@@ -441,20 +452,10 @@ export const DOMANDE: { n: number; t: string; lang: 'IT' | 'EN' }[] = [
   { n: 8, t: 'come andare da Torino a Bologna in giornata senza auto', lang: 'IT' },
 ];
 
-/* Il referto per intero: le quattro cifre della slide sono una selezione di
-   queste righe, e chi chiede «e il resto?» deve poterlo vedere senza aprire un
-   allegato. Stessa fonte, stessa misura. */
-export const REFERTO_INTERO: { m: string; g: string; c: string }[] = [
-  { m: 'Trenitalia nominata nella risposta', g: '6 su 8', c: '7 su 8' },
-  { m: 'trenitalia.com citato come fonte', g: '2 su 8', c: '7 su 8' },
-  { m: 'Un concorrente fra le fonti o nominato', g: '4 su 8', c: '5 su 8' },
-  { m: 'Prodotti attribuiti a chi non li fa', g: '2 su 8', c: '0 su 8' },
-];
-
 export const REFERTO: Stat[] = [
   { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
   { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti della risposta generata dentro la ricerca, che si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio)' },
-  { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a Trenitalia, sempre' },
+  { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a\u00a0Trenitalia, sempre' },
   { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'nella risposta generata dentro la ricerca, le Frecce elencate come se fossero aziende in concorrenza con voi' },
 ];
 
@@ -485,8 +486,8 @@ export const KPI: Card[] = [
      capacità che sembra mancare si verifica sulle loro pagine prima di
      scriverla; qui diventa la domanda. In coda il costo del contatto, che
      quattro personas hanno chiesto e che è la misura di chi assiste. */
-  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti',
-    anc: 'Il traffico che oggi è indistinto', b: 'Quel traffico oggi lo isolate, e con quale regola di attribuzione? E una risposta sbagliata non è solo una vendita persa: è una chiamata in più.' },
+  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti AI',
+    anc: 'Tracciare, distinguere, governare', b: 'Il traffico che arriva dagli assistenti AI si riesce oggi a isolare? Serve distinguere le persone dagli agenti e sapere quali fonti gli assistenti considerano autorevoli: una risposta sbagliata è una chiamata in più all’assistenza.' },
 ];
 
 /* ── Capitolo 04 · quello che è già partito ────────────────────────────────
@@ -502,7 +503,7 @@ export const GIA: Card[] = [
        progetti per il turismo congressuale presentati al TTG. Stanno qui e non
        in una quarta card: la griglia è a tre, e provata a quattro si rompe. */
     k: 'Gomma',
-    t: 'Busitalia, al 100%, e quello che ci ha portato dentro',
+    t: 'Busitalia, interamente del\u00a0Gruppo, e i suoi collegamenti',
     anc: 'La gomma, dentro casa',
     /* ⚠️ 6 nov 2026, REFUTATA dalla fonte che la slide stessa cita, e il
        commento qui sopra lo diceva già: i 10.300 collegamenti sono di
@@ -543,7 +544,7 @@ export const PRIMA: Card[] = [
     // 16 ott: non più «un partner del viaggio» generico. Ne hanno firmato uno
     // ieri, in pubblico, e il deck lo nomina con la sua fonte.
     k: 'Con chi, adesso',
-    t: 'Quello che avete appena firmato',
+    t: 'L’accordo con Costa Crociere',
     anc: 'Un accordo che esiste già',
     b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma. Da gennaio 2027 un motore di prenotazione collega i due sistemi. La prima domanda è quanto ne copra già.',
     bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione da gennaio 2027. È il caso da cui partire: quanto copre già?',
@@ -551,39 +552,10 @@ export const PRIMA: Card[] = [
   },
   {
     k: 'Dove sta il valore',
-    t: 'Arrivare prima della scelta del vettore',
-    anc: 'Prima che il vettore sia scelto',
-    b: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci.',
-    bBreve: 'Chi ha già scelto data e tratta confronta solo il prezzo. Chi sta ancora decidendo, no.',
-  },
-  {
-    /* 16 ott. La card diceva «lì non si compra su un sito», come se fosse un
-       fenomeno da spiegare a loro. Verificato sulla LORO pagina: ci sono già
-       dentro e ci vendono dal 2025 — mini-program WeChat che vende, account
-       che informa, e nessun sito in cinese (le rotte /zh, /cn, /chi danno 404).
-       Dire a un cliente una cosa che lui ha già fatto, come se fosse un'idea
-       nostra, è il modo più rapido di perdere la stanza. Quindi la card parte
-       da lì e sposta la domanda su quello che manca: i dati di quel canale.
-
-       ⚠️ NON si propone di attivare su WeChat con la nostra tecnologia, e la
-       ragione è contrattuale, non tecnica: nei termini generali Adobe la Cina
-       continentale è un «Restricted Country», e l'elenco dei servizi ammessi
-       non comprende la piattaforma né l'orchestrazione. Esiste dal 2 ottobre
-       2026 il modo di trattare un canale non nativo come WeChat dentro
-       l'orchestrazione, ma dove girano quei dati è una domanda da legale, non
-       da slide. Qui si dice il fatto e si lascia la domanda aperta. */
-    k: 'La Cina, dove siete già',
-    /* ⚠️ 6 nov 2026, panel: due affermazioni cadevano cliccando il link in
-       calce alla slide. «Non c'è un vostro sito in cinese» — ma la fonte
-       citata È una pagina di trenitalia.com in cinese: in sala si apre il
-       link che sta sotto, non le rotte /zh e /cn. E «dal 2025» non è nella
-       fonte, che annuncia una nuova offerta su un canale già attivo e parla
-       di un raddoppio «rispetto all'anno precedente». */
-    t: 'Vendete dentro WeChat',
-    anc: 'Un canale che non vi racconta',
-    b: 'Il canale cinese non è un sito transazionale: su trenitalia.com c’è una pagina in cinese che porta al mini-program WeChat, e si compra lì. Nel 2025 le vendite su quel mercato sono raddoppiate, e quello che il canale sa di chi compra vive dentro WeChat.',
-    bBreve: 'Il canale cinese passa dal mini-program WeChat, non da un sito transazionale: nel 2025 le vendite su quel mercato sono raddoppiate rispetto all’anno prima.',
-    fonti: ['trenitaliaCinese', 'fsCina'],
+    t: 'Proporre il treno a chi ha già prenotato la crociera',
+    anc: 'Il treno, per chi ha la crociera',
+    b: 'Con data e tratta già decise, si sceglie soprattutto sul prezzo. Chi ha prenotato una crociera da Genova deve ancora capire come arrivarci: conoscerlo permette una proposta vantaggiosa prima di ogni confronto.',
+    bBreve: 'Con data e tratta già decise, si sceglie soprattutto sul prezzo. Chi deve ancora capire come arrivare si può raggiungere prima di ogni confronto.',
   },
 ];
 
@@ -634,9 +606,9 @@ export const CANALE: Card[] = [
   },
   {
     k: 'Che cosa cambia',
-    t: 'La risposta diventa anche il banco',
-    anc: 'È il viaggiatore a chiamarvi',
-    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta, e poi va altrove a comprare. Se un giorno comprasse lì, di chi è quel cliente e chi emette?',
+    t: 'La risposta come punto vendita',
+    anc: 'Di chi è quel cliente',
+    b: 'Chi chiede «come arrivo a Matera senza auto» oggi riceve una risposta, e poi va altrove a comprare. Se un giorno comprasse lì, di chi è quel cliente e chi emette il biglietto?',
   },
   {
     /* 17 ott, due passate. Prima la card non nominava il prodotto (residuo di
@@ -659,8 +631,8 @@ export const CANALE: Card[] = [
    primo che qualcuno chiede. */
 export const MOLTIPLICATORI: Stat[] = [
   { v: '3', l: 'prodotti più i servizi', s: 'Alta Velocità, Intercity e Regionale: una squadra sola li vende tutti' },
-  { v: '12.400', l: 'agenzie, in Italia e all’estero', s: '6.400 sul territorio italiano e 6.000 fuori: numeri vostri, ottobre 2025' },
-  /* ⚠️ 6 nov 2026, panel: la terza cifra erano i «70.000 punti vendita»,
+  /* ⚠️ 9 nov 2026: la cifra delle agenzie è uscita su richiesta del cliente. Prima,
+     6 nov 2026, panel: la terza cifra erano i «70.000 punti vendita»,
      affiancati alle 12.400 agenzie con lo stesso peso — due reti diverse,
      due prodotti, due contratti, e un dato del 2014 accanto a uno del 2025.
      Dichiarare l'età non basta: in proiezione si legge il numero. Al loro
@@ -672,9 +644,9 @@ export const MOLTIPLICATORI: Stat[] = [
 export const UNPOSTO: Card[] = [
   {
     k: 'Il tempo',
-    t: 'Dal brief alla vetrina',
+    t: 'Meno giorni dal brief alla vetrina',
     anc: 'Il tempo, non il costo',
-    b: 'Il metro è dopo quanti giorni una variante arriva davanti a un cliente. Lì si perde una stagione.',
+    b: 'Il metro è dopo quanti giorni una variante arriva davanti a un cliente. È lì che si gioca una stagione.',
   },
   {
     k: 'Il marchio',
@@ -688,8 +660,8 @@ export const UNPOSTO: Card[] = [
   },
   {
     k: 'Le persone',
-    t: 'Le stesse, con meno passaggi a mano',
-    anc: 'Gli stessi passaggi, meno mani',
+    t: 'Stessi team, meno lavoro manuale',
+    anc: 'Le stesse persone, meno lavoro manuale',
     b: 'Le persone restano le stesse: cambia quante versioni riescono a far uscire in una settimana.',
   },
 ];
@@ -701,26 +673,6 @@ export const UNPOSTO: Card[] = [
    ricevitorie Sisal), le agenzie di viaggio sono 12.400 e sono il suo canale.
    E il rifacimento della piattaforma, che era affermato, non ha una fonte
    pubblica: diventa una domanda, che in una Prospettiva vale più di un'asserzione. */
-export const RETE = {
-  numero: '12.400',
-  dopo: 'agenzie di viaggio vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025. Altra rete e altro prodotto: <strong>oltre 70mila</strong> sono i punti vendita fuori dalle\u00a0biglietterie che vendono il Regionale. È un dato del 2014, da riconfermare insieme.',
-  domanda:
-    // 15 ott — PICO esce dal deck. Diceva «ci risulta che la stiate rifacendo»:
-    // di quel rifacimento NON ESISTE FONTE PUBBLICA (riverificato il 15 ott: si
-    // trovano una manutenzione programmata dei canali agenzie e il pricing
-    // dinamico di gennaio, nessun rifacimento annunciato), e «ci risulta»
-    // ammette per iscritto di avere una fonte che non possiamo citare. Chiedere
-    // proprio quello, proprio a loro, fa arrivare «chi ve l'ha detto?»: non è un
-    // rischio, è la domanda naturale, e si risponde male. In più non è il suo
-    // cantiere — il percorso di acquisto sta in un'altra direzione da settembre
-    // 2025 — quindi gli si chiedeva di commentare il lavoro di un collega.
-    // Tolto anche «finché il capitolato è aperto»: presumeva una gara in corso
-    // di cui non abbiamo prova. L'argomento regge senza: 12.400 agenzie che
-    // vendono ogni giorno e una misura che non c'è. Il «quando conviene farlo»
-    // resta, ma come principio sui sistemi, non come informazione su di loro.
-    'La misura entra nel giro di un intervento già aperto su quel sistema; altrimenti diventa un progetto a sé. In che stato è, oggi?',
-};
-
 /* 20 ott: il blocco era scarno e il valore non si vedeva — tre righe che
    dicevano che cosa si misura, nessuna che dicesse che cosa se ne ricava.
    Ora ogni voce porta la conseguenza, e «che cosa converte» dice di QUALI
@@ -729,24 +681,24 @@ export const RETE = {
    stampa locandine. */
 export const SAPERE: Card[] = [
   {
-    k: 'Chi vende che cosa',
-    t: 'Per rete, per agenzia, per prodotto',
-    anc: 'Il venduto, letto per agenzia',
-    b: 'Dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
+    k: 'Dal digitale al banco',
+    t: 'Il venduto, letto insieme al percorso digitale',
+    anc: 'Il venduto, con quello che viene prima',
+    b: 'Il dato transazionale c’è già, fino alla singola agenzia. Si aggiunge che cosa è successo prima, online.',
     bBreve: 'È la misura diretta della riorganizzazione commerciale: dove la proposta multiprodotto arriva, e dove si ferma al solo treno.',
   },
   {
     k: 'Che cosa converte',
-    t: 'Quale materiale vende, e quale resta nel cassetto',
+    t: 'Quali contenuti vendono, e quali restano nel cassetto',
     anc: 'Digitale e cartaceo insieme',
-    b: 'Schede ed email, ma anche brochure e materiale da banco: in agenzia si stampa ancora, e molto.',
-    bBreve: 'Digitale e cartaceo: schede ed email, ma anche brochure e materiale da banco. Produrne meno, e più di quelli che funzionano.',
+    b: 'Schede ed email, ma anche brochure e stampati da banco: in agenzia si stampa ancora, e molto.',
+    bBreve: 'Digitale e cartaceo: schede ed email, ma anche brochure e stampati da banco. Produrne meno, e più di quelli che funzionano.',
   },
   {
     k: 'Che cosa succede se…',
-    t: 'Provare un’alternativa invece di deciderla',
-    anc: 'Una fetta prima di tutte',
-    b: 'Su un sito si fa; qui, per quanto ne sappiamo, no. Una campagna sbagliata su 12.400 agenzie si scopre a stagione finita.',
+    t: 'Provare un’alternativa prima di adottarla',
+    anc: 'Prima su poche agenzie',
+    b: 'Sul sito si prova una proposta su una parte del traffico. Sulla rete si potrebbe fare lo stesso, prima di estenderla a tutte le agenzie.',
     bBreve: 'Una proposta diversa su una parte della rete, misurata due settimane prima di portarla a tutte. Su un sito si fa; qui, per quanto ne sappiamo, no.',
   },
 ];
@@ -760,13 +712,13 @@ export const SAPERE: Card[] = [
    intrinseca al lavoro che corre con il presidio digitale e con la società
    tecnologica del Gruppo, quindi a lui non chiede niente che non stia già
    succedendo. Qui si chiede l'unica cosa che può dare lui: una rotta
-   confermata, e un posto al tavolo quando il piano si scrive.
+   confermata, e un posto al tavolo quando il\u00a0piano si\u00a0scrive.
 
    L'ask sta in un posto solo: due versioni della richiesta sono il modo più
    rapido di sembrare confusi davanti a un cliente. */
 export const ASK = {
   eyebrow: 'Quello che vi chiediamo',
-  titolo: 'Confermate la rotta,<br />e portateci al\u00a0tavolo.',
+  titolo: 'Una conferma sulla roadmap,<br />e il nostro contributo all’offerta.',
   sub: 'Nessuna delle tre chiede un progetto, un budget o una firma.',
   /** I tre punti, nell'ordine in cui si dicono. `t` è l'ancora (≤6 parole),
    *  `b` la riga che sopravvive all'inoltro. */
@@ -779,18 +731,38 @@ export const ASK = {
     {
       k: 'Gli spunti',
       t: 'Che cosa non abbiamo\u00a0visto',
-      b: 'Questo documento è costruito da fuori, su fonti pubbliche e una misura nostra. Le domande aperte sono lì per questo.',
+      b: 'Questo documento è costruito da fuori, su fonti pubbliche e una misura nostra: quello che ci sfugge lo sapete voi.',
     },
     {
-      k: 'Il tavolo',
-      t: 'Esserci quando si pianifica l’offerta\u00a0integrata',
+      k: 'Il contributo',
+      t: 'Offrirvi il nostro contributo nella\u00a0pianificazione dell’offerta\u00a0integrata',
       b: 'E quando si disegna l’approccio per le Frecce, dopo la definizione dei nuovi prodotti: è lì che un’idea diventa un caso d’uso.',
     },
   ],
   /** ⚠️ Il confine, e vale la pena sapere perché è scritto così. Nelle parole
    *  interne è «non vogliamo sostituire chi li segue né fare i consulenti
    *  strategici». In slide un nome di terzi non ci va: resta il confine. */
-  chiusa: 'Non chiediamo di cambiare chi vi accompagna. Chiediamo di essere nella stanza quando il piano si scrive.',
+  chiusa: 'Ogni passo segue i processi di FS Technology e del Gruppo, e chi vi accompagna oggi resta.',
+};
+
+/* ── Capitolo 07 · la macro timeline ───────────────────────────────────────
+   9 nov 2026: l'ha chiesta il responsabile dei canali digitali («proverei a
+   proporre una specie di roadmap»), distinguendo quello che si può avviare da
+   quello che dipende da altri. ⚠️ Il repo è pubblico: nessuna data del nuovo CRM,
+   che viene da una conversazione. L'unica data è quella del sito, che è pubblica. */
+export const TEMPI = {
+  eyebrow: 'Una possibile sequenza',
+  titolo: 'Prima quello che si può avviare subito',
+  sub: 'Una proposta da riordinare con le vostre priorità, nel rispetto dei processi di FS Technology e del Gruppo.',
+  voci: [
+    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
+    { k: 'Con il nuovo sito, marzo 2027', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Analytics su trenitalia.com e lefrecce.it alimenta Customer Journey Analytics, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
+    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Storico e preferenze di ogni cliente in un’unica vista.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
+    { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
+    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Il venduto in agenzia, letto insieme a quello che succede online.', dip: 'Dipende dal\u00a0sistema delle agenzie' },
+  ],
+  strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti da produrre.' },
+  figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
 };
 
 /* ── Capitolo 07 · che cosa va previsto ────────────────────────────────────
@@ -817,7 +789,7 @@ export const ESITO = {
     {
       k: 'Quello che si aggiunge',
       t: 'Due voci, e vanno\u00a0previste',
-      b: 'La lettura unica del percorso d’acquisto oggi non c’è. La prova sul traffico c’è, e va estesa al volume che serve.',
+      b: 'Si aggiunge la lettura unica del percorso d’acquisto. La prova sul traffico c’è, e va estesa al volume che serve.',
     },
     {
       k: 'Su che cosa si vede',
@@ -835,17 +807,17 @@ export const DOMANDE_APERTE = [
   'Quanta parte delle vendite passa dai vostri canali e quanta dagli intermediari, e quale dei due volete far crescere?',
   'Quale dato esiste oggi per rete e per agenzia, e chi lo possiede?',
   'Del percorso intermodale, quanto è già deciso e quanto è ancora da disegnare?',
-  'Il materiale per i mercati esteri, in tutte le lingue: chi lo fa oggi?',
+  'I contenuti per i mercati esteri, in tutte le lingue: chi li fa oggi?',
   // 6 nov 2026, panel: la mappa copre chi compra per sé o tramite un'agenzia
   // di viaggio, e il corporate — convenzioni, business travel, grandi clienti
   // — ha un percorso tutto suo, che sul checkout pubblico non passa.
   // Dichiararlo fuori perimetro costa una riga; farselo chiedere, l'ora.
-  'Il canale corporate — convenzioni, business travel, grandi clienti — non è in questi quattro punti: ha un percorso suo. È in questo perimetro, o è un altro tavolo?',
+  'Il canale corporate — convenzioni, business travel, grandi clienti — non è in questi quattro punti: ha un percorso suo. Rientra in questo lavoro, o va affrontato a parte?',
   // 6 nov 2026, panel, dal seggio della Direzione Sales: in un canale
   // intermediato quello che muove il venduto sono l'incentivo e la
   // convenzione — un'agenzia vende ciò che le rende di più. La misura è una
   // leva a due mani, e la seconda è loro: meglio chiederlo noi.
-  'Senza toccare le condizioni con le agenzie, che cosa cambia aver misurato?',
+  'Se le condizioni con le agenzie restano quelle di oggi, che cosa cambierebbe avendo la misura?',
 ];
 
 /* ── Che cosa serve, concretamente ─────────────────────────────────────────
@@ -924,11 +896,12 @@ export const COLORE_PEZZO: Record<string, string> = {
   'Adobe Analytics': '#3d8ee0',
   'Customer Journey Analytics': '#38b6c4',
   'Adobe Target': '#2fae6b',
-  'Adobe Real-Time CDP Collaboration': '#7a8cf0',
+  'Adobe Real-Time Collaboration': '#7a8cf0',
   'Adobe Creative Cloud, con Firefly': '#e05b9a',
   'Adobe Workfront': '#c9a227',
   'Adobe GenStudio for Performance Marketing': '#5fb3a3',
   'CX Enterprise Coworker': '#8aa0c9',
+  'Adobe Content Analytics': '#6fa8dc',
 };
 
 export interface Pezzo {
@@ -950,7 +923,7 @@ export const SERVE: Record<
   Pezzo[]
 > = {
   visibilita: [
-    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'la misura, e le pagine che mancano' },
+    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'il governo continuo di come comparite nelle risposte AI' },
     { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'dove le pagine già nascono' },
   ],
   canale: [
@@ -966,34 +939,77 @@ export const SERVE: Record<
        dichiarato pubblicamente, e che non possiamo nominare né sfiorare.
        Ora la riga parla di PRESENZA DI MARCA, non di vendita. */
     { nome: 'LLM Apps, dentro Adobe Experience Manager', fonte: 'llmApps', stato: 'nuovo',
-      a: 'la presenza di marca dentro le interfacce AI: la base AEM c\u2019\u00e8 gi\u00e0' },
+      a: 'la presenza di marca dentro gli assistenti AI' },
   ],
   acquisto: [
-    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il punto di partenza' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il percorso per intero' },
-    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'provare una proposta diversa' },
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'già su trenitalia.com e lefrecce.it: i segmenti di chi non è registrato' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'più fonti dati in un’unica vista: livello CartaFreccia, storico e navigazione' },
+    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'la home per segmento, provata prima su una parte del traffico' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'agenti AI su analisi dei segmenti e attivazione della personalizzazione' },
   ],
   collaborazione: [
-    { nome: 'Adobe Real-Time CDP Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'il luogo neutro dell\u2019incrocio' },
-    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'il vostro lato dell\u2019incrocio' },
+    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'il luogo neutro dell\u2019incrocio' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il vostro lato dell\u2019incrocio' },
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
     { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
     { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'chi chiede, chi produce, chi approva' },
-    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna' },
-    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'il lavoro agentico sulla produzione' },
+    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna paid media' },
+    { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'quali contenuti funzionano davvero' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'agenti AI sulla produzione dei contenuti' },
   ],
   rete: [
-    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'la misura che già usate' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il venduto per rete e per agenzia' },
-    /* 20 ott: Target torna nominabile QUI. Il verdetto del panel del 12 ott
-       riguardava il nominarlo «fra i requisiti della nuova piattaforma» \u2014 un
-       fornitore che si autonomina dentro un capitolato \u00e8 un tema di procurement.
-       Questo blocco \u00e8 un'altra cosa: \u00e8 che cosa serve alla NOSTRA proposta, e
-       tacerlo proprio dove il cliente chiede i prodotti sarebbe reticenza. */
-    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'provare su una parte della rete' },
+    /* 9 nov 2026: verificato su Experience League e Fluffy. Senza tracciamento in agenzia
+       si misura direttamente con CJA, e Target non identifica agenzie: fuori tutti e due. */
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'quante vendite in agenzia nascono da un’offerta vista online, grazie a un codice mostrato al banco' },
   ],
+};
+
+/* ── Chi siamo ─────────────────────────────────────────────────────────────
+   9 nov 2026, richiesta dell'owner: dopo la copertina, tre righe.
+   ⚠️ Nomi e foto del team sono dati dall'owner per la sala. Il repo è pubblico:
+   prima di un push si decide se restano.
+   ⚠️ La timeline viene da una slide di lavoro Adobe sull'account, non da una
+   fonte pubblica: per questo non porta link. Le metriche di quella slide (pagine
+   viste, redattori, siti) restano fuori: sono dati del cliente.
+   L'offerta nomina solo prodotti già presenti nel deck: niente orchestrazione
+   dei messaggi, che confina con la piattaforma scelta dal Gruppo. */
+export const CHI_SIAMO = {
+  eyebrow: 'Adobe e il Gruppo FS',
+  titolo: 'Chi siamo',
+  team: {
+    k: 'Il team Adobe per Ferrovie',
+    persone: [
+      { foto: 'capuano', nome: 'Rosa Capuano', ruolo: 'Enterprise Sales Director' },
+      { foto: 'perrone', nome: 'Dario Perrone', ruolo: 'Digital Experience Account Executive' },
+      { foto: 'gargiulo', nome: 'Antonio Gargiulo', ruolo: 'Product Sales Specialist Data & Analytics' },
+      { foto: 'tammaro', nome: 'Riccardo Tammaro', ruolo: 'Product Sales Specialist Content' },
+    ],
+  },
+  offerta: {
+    k: 'L’offerta Adobe, end to end', // copy-audit-ignore · «end to end» è la parola chiesta dall'owner
+    fasi: [
+      { k: 'Farsi trovare', p: 'Brand Visibility · LLM Apps' },
+      { k: 'Creare', p: 'Creative Cloud con Firefly · GenStudio · Workfront' },
+      { k: 'Pubblicare', p: 'Experience Manager · Assets' },
+      { k: 'Personalizzare', p: 'Target' },
+      { k: 'Misurare', p: 'Analytics · Customer Journey Analytics · Content Analytics' },
+    ],
+    /* Lo strato che attraversa tutte le fasi, chiesto dall'owner. Che cosa è attivo
+       su quale prodotto si dice a voce: la disponibilità cambia per prodotto. */
+    strato: { t: 'CX Enterprise Coworker', b: 'agenti AI accanto ai vostri team, su tutte le fasi' },
+  },
+  storia: {
+    k: 'Adobe e Ferrovie, la storia',
+    tappe: [
+      { q: '2017', t: 'Fondazione digitale', b: 'Adozione di AEM on-prem 6.4 e Adobe Analytics' },
+      { q: '2024-2025', t: 'Migrazione al cloud', b: 'Febbraio 2025, ultima fase: 26 siti migrati, 6 nativi cloud' },
+      { q: '2025', t: 'Go-live strategici', b: 'Trenitalia e FS Logistix su piattaforme evolute' },
+      { q: '2026', t: 'Site transformation', b: 'FS Italiane: trasformazione del sito entro l’anno', ora: true },
+      { q: '2027 e oltre', t: 'Evoluzione', b: 'Altri siti del Gruppo FS, e AEM Assets' },
+    ],
+  },
 };
 
 /* ── Servizi ───────────────────────────────────────────────────────────────

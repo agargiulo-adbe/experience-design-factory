@@ -6,13 +6,11 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
 import CoBrand from '../components/CoBrand.astro';
 import { href } from '@edf/core/utils/url.js';
+import bg_sole from '../assets/generated/sole/sole-rotta.webp';
 import { CHAPTERS, prevSlug } from '../data/chapters';
 import MappaIdee from '../components/MappaIdee.astro';
-import { ASK, COVER, DOMANDE_APERTE, ESITO } from '../data/contenuti';
-import bg_alba_aperta from '../assets/generated/bg/bg-alba-aperta.webp';
-import bg_chapter from '../assets/generated/bg/bg-chapter.webp';
-import bg_close from '../assets/generated/bg/bg-close.webp';
-import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
+import Tempi from '../components/Tempi.astro';
+import { ASK, COVER, TEMPI } from '../data/contenuti';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 
 /**
@@ -23,13 +21,9 @@ import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
  * sui loro dati della rete agenzie — la cosa più piccola che fa succedere la
  * seconda riunione.
  *
- * Il passo e le domande aperte stanno in `src/data/contenuti.ts`: l'ask vive
+ * Il passo sta in `src/data/contenuti.ts`: l'ask vive
  * anche nel taglio «In dieci minuti», e due versioni della richiesta sono il
  * modo più rapido di sembrare confusi davanti a un cliente.
- *
- * Le domande aperte stanno in slide per scelta: sono il modo di dire che non siamo
- * venuti con una risposta preconfezionata, e sono anche il contenuto del tavolo di
- * lavoro che il tipo «Prospettiva» chiede come passo successivo.
  *
  * L'ultima slide è la slide-firma: lockup grande, una riga, la via di ritorno.
  * Dove c'è un `hero` la firma fissa si spegne da sola (runtime del DeckContainer).
@@ -44,6 +38,9 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media/trenitalia-prospettiva-close.loop.mp4';
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+/* 9 nov 2026: «Quello che vi chiediamo» disattivata su richiesta dell'owner. Per
+   riaccenderla: `true` qui, e la voce in `slides.ts`. */
+const MOSTRA_PASSO = false;
 const first = CHAPTERS[0];
 
 ---
@@ -63,7 +60,7 @@ const first = CHAPTERS[0];
          ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_alba_aperta.src})`}></div>
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_sole.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="rotta" />
     </Slide>
 
@@ -77,8 +74,8 @@ const first = CHAPTERS[0];
          qui il cambio è il mestiere della slide — non annuncia, chiede.
          «Non voglio andare lì a fare la presentazione»: la domanda sulle
          priorità è il punto d'uscita dell'ora. -->
-    <Slide id="slide-ripresa" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
+    <Slide id="slide-ripresa" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Le quattro idee, in una pagina</p>
@@ -88,13 +85,24 @@ const first = CHAPTERS[0];
               il Gruppo ha già scelto. Qui la riga c'è, e richiude il cerchio
               aperto dalla slide «Dove ci innestiamo» del capitolo 02. */}
           <p class="xd-sub">
-            Su tutte e quattro una parte della tecnologia è già in casa vostra. Nessuna sostituisce
-            la piattaforma del dato di cliente scelta a marzo: si appoggiano a quello che gira già.
-            Da dove conviene cominciare lo sapete voi meglio di noi, ed è la domanda con cui
-            chiudiamo.
+            Su tre delle quattro una parte della tecnologia è già in casa vostra, e nessuna sostituisce
+            la piattaforma del dato di cliente scelta a marzo.
           </p>
         </div>
         <MappaIdee />
+      </div>
+    </Slide>
+
+    <!-- ── La macro timeline, chiesta dal cliente il 9 novembre ──────────── -->
+    <Slide id="slide-tempi" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{TEMPI.eyebrow}</p>
+          <h2 class="xd-h2">{TEMPI.titolo}</h2>
+          <p class="xd-sub">{TEMPI.sub}</p>
+        </div>
+        <Tempi />
       </div>
     </Slide>
 
@@ -105,8 +113,9 @@ const first = CHAPTERS[0];
          panel: va letta lì prima di rimetterci mano.
          La slide passa da citazione centrata a tre ancore, perché l'ask non è
          più una frase sola: sono tre cose, e in sala si indicano una per una. -->
-    <Slide id="slide-passo" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_close.src})`} data-parallax></div>
+    {MOSTRA_PASSO && (
+    <Slide id="slide-passo" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">{ASK.eyebrow}</p>
@@ -125,73 +134,8 @@ const first = CHAPTERS[0];
         <p class="xd-chiusa" data-reveal data-reveal-delay="0.26">{ASK.chiusa}</p>
       </div>
     </Slide>
+    )}
 
-
-    <!-- ── Che cosa va previsto ───────────────────────────────────────────
-         Nasce dal panel (la Direzione Generale chiedeva una taglia e un
-         indicatore: «senza unità di misura non entra nel piano») e la sera
-         del 6 novembre cambia soggetto insieme all'ask: non più che cosa
-         esce da una sessione, ma che cosa va messo nel piano perché una
-         direzione confermata diventi un programma. -->
-    <Slide id="slide-esito" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{ESITO.eyebrow}</p>
-          <h2 class="xd-h2">{ESITO.titolo}</h2>
-          <p class="xd-sub">{ESITO.sub}</p>
-        </div>
-        {/* ⚠️ 6 nov 2026, Giro 2 di `/umanizza`: guardando le due slide di fila
-            a 1920 avevano la STESSA forma — occhiello, titolo, tre ancore,
-            barra di chiusa — e sono consecutive. Il gate del ritmo lo conferma
-            di sbieco: quattro slide di fila nel capitolo senza un elemento
-            visivo. Qui le tre voci NON sono parallele come quelle dell'ask:
-            sono una progressione (la base, quello che si aggiunge, dove si
-            vede l'effetto), e il filo a tre fermate è la loro forma. */}
-        <div class="tp-filo" data-reveal data-reveal-delay="0.12">
-          <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img"
-               aria-label={ESITO.figura}>
-            <line class="tp-filo-l" x1="166" y1="32" x2="834" y2="32" />
-          </svg>
-          {/* `--cols` va dichiarato: la griglia del filo nasce a quattro
-              colonne, e con tre fermate si ammassavano a sinistra lasciando
-              mezza pagina vuota. Si vede solo guardando la slide. */}
-          <ol class="tp-filo-eti" style="--cols: 3" data-stagger="0.1">
-            {ESITO.voci.map((v, i) => (
-              <li>
-                <span class="tp-filo-num">{String(i + 1).padStart(2, '0')}</span>
-                <span class="tp-filo-dove">{v.k}</span>
-                <span class="tp-filo-t">{v.t}</span>
-                <span class="tp-filo-b">{v.b}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESITO.chiusa}</p>
-      </div>
-    </Slide>
-
-    <!-- ── Le domande aperte ─────────────────────────────────────────────── -->
-    <Slide id="slide-domande" bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">Quello che non sappiamo</p>
-          <h2 class="xd-h2">Sei cose che possiamo imparare solo da voi</h2>
-          <p class="xd-sub">
-            Questo documento è costruito su fonti pubbliche e su una misura nostra. Sei cose
-            importanti ci mancano, e nessuna si indovina.
-          </p>
-        </div>
-        <ul class="tp-domande" role="list" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
-          {DOMANDE_APERTE.map((d) => <li class="tp-domande-row">{d}</li>)}
-        </ul>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          Le prime due le porteremmo volentieri a chi tiene quel dato. Le altre quattro sono
-          tavoli separati, con altre persone: non le mettiamo nello stesso invito.
-        </p>
-      </div>
-    </Slide>
 
     <!-- ── Slide-firma ───────────────────────────────────────────────────── -->
     <Slide id="slide-signature" bg="primary" align="center" data-made-with="Adobe Firefly" data-made-with-for="clip">

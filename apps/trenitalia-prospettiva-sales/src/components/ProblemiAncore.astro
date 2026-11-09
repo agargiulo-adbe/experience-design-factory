@@ -1,0 +1,50 @@
+---
+/**
+ * I QUATTRO FATTI, con il legame ad Adobe e il gancio verso la slide dopo.
+ * Una fonte sola per il percorso intero e il taglio corto.
+ *
+ * La graffa lega Adobe a tutti e quattro i punti. Sotto la concorrenza parte anche
+ * un binario verso destra, e la slide della domanda si apre dalla sua punta. Le animazioni partono quando la slide è attiva; lo stato finale è
+ * quello di base, così con «Riduci movimento» si legge tutto subito.
+ */
+import { PROBLEMI } from '../data/contenuti';
+---
+<div class="tp-ancore tp-ancore--4 tp-probl" data-stagger>
+  {PROBLEMI.map((x) => (
+    <div class="tp-anc" data-gancio={x.k === 'La concorrenza' ? '' : undefined}>
+      <p class="tp-anc-k">{x.k}</p>
+      <p class="tp-anc-n">{x.t}</p>
+    </div>
+  ))}
+  <div class="tp-lega"><span class="tp-lega-u" aria-hidden="true"></span></div>
+  <p class="tp-lega-n">
+      <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" /></svg>
+      <span>Dove Adobe può contribuire</span>
+  </p>
+  <span class="tp-focus" data-substep aria-hidden="true"></span>
+  <span class="tp-focus" data-substep aria-hidden="true"></span>
+</div>
+<script is:inline data-astro-rerun>
+  /* La tessera si misura a slide attiva e a layout finito: durante il caricamento
+     il resto della slide non c'è ancora e la posizione risulta sbagliata. */
+  (function () {
+    if (window.__tpGancio) return;
+    window.__tpGancio = true;
+    function misura() {
+      var c = document.querySelector('.tp-probl [data-gancio]');
+      if (!c) return;
+      var s = c.closest('[data-slide]');
+      if (s.getAttribute('aria-hidden') === 'true') return;
+      var r = c.getBoundingClientRect(), f = s.getBoundingClientRect(), e = parseFloat(getComputedStyle(c).fontSize);
+      var v = [(r.top - f.top) / f.height, (f.right - r.right) / f.width, (f.bottom + 0 - r.bottom - e * 0.8) / f.height, (r.left - e - f.left) / f.width]
+        .map(function (n) { return (n * 100).toFixed(2) + '%'; });
+      ['t', 'r', 'b', 'l'].forEach(function (k, i) { document.documentElement.style.setProperty('--tp-g-' + k, v[i]); });
+      try { sessionStorage.setItem('tp-gancio', v.join(' ')); } catch (e) {}
+    }
+    ['deck:change', 'deck:substep'].forEach(function (ev) {
+      document.addEventListener(ev, function () { setTimeout(misura, 1100); });
+    });
+    window.addEventListener('resize', function () { setTimeout(misura, 200); });
+    setTimeout(misura, 1100);
+  })();
+</script>

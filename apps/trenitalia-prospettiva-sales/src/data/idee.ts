@@ -21,6 +21,8 @@ export interface Prova {
   /** Il fatto, con le parole del caso. */
   fatto: string;
   fonte: Fonte;
+  /** Non mostra la riga «Fonte: …» sotto la slide (richiesta dell'owner, 9 nov 2026). */
+  senzaRigaFonte?: boolean;
 }
 
 export interface Idea {
@@ -69,71 +71,50 @@ export const IDEE: Idea[] = [
   {
     slug: 'ricerca',
     misura: 'Da quante risposte arrivate, e quanto di quel traffico diventa un biglietto',
-    occhiello: 'L’idea, in una schermata',
-    /* Il titolo È il confronto: con una cifra sola in evidenza la slide sembrava
-       dire «gli assistenti non vi citano», e la misura dice il contrario — dipende
-       da quale assistente. Le due cifre stanno affiancate e con lo stesso peso. */
-    titolo: 'Su ChatGPT siete fra le fonti 7 volte su 8. Su Google, 2.',
+    occhiello: 'Idea 1 di 4',
+    /* 9 nov 2026, review: questa slide approfondisce UNA delle otto domande. Le
+       cifre su tutte e otto stanno sulla slide degli esiti, dopo il campione. */
+    titolo: 'La prima delle otto: come arrivo da Roma a\u00a0Matera senza\u00a0auto',
     mock: 'ricerca',
-    cifra: { k: '7 su 8', v: 'le risposte di ChatGPT che citano trenitalia.com fra le fonti' },
-    cifre: [
-      { k: '7 su 8', v: 'le risposte di ChatGPT che citano trenitalia.com fra le fonti' },
-      { k: '2 su 8', v: 'le stesse otto domande, nella risposta generata dentro la ricerca Google' },
-    ],
-    /* La chiusa diceva «nella lingua giusta» e «il prodotto torna vostro». La misura
-       non scompone per lingua (quattro domande IT e quattro EN, nessun dato separato)
-       e non misura a chi torni il prodotto. Quello che mostra davvero è il link: su
-       ChatGPT i link sono «prenota con Trenitalia». */
-    chiusa: 'Su ChatGPT il link dice «prenota con Trenitalia», e manda a\u00a0comprare da voi invece che da un rivenditore.',
+    cifra: { k: '2 su 2', v: 'gli assistenti AI che su questa domanda aprono con gli operatori di autobus' },
+    chiusa: 'Il biglietto combinato treno più autobus va prima al concorrente. ChatGPT cita Freccialink solo dopo.',
     capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
     gruppi: ['visibilita', 'canale'],
-    fonte: `${SOURCES.misura.label}, su 8 domande. Possiamo ripeterla insieme. La schermata è un esempio nostro, non una risposta registrata.`,
+    fonte: `${SOURCES.misura.label}, domanda 1 delle 8. La schermata riassume l’esito su ChatGPT, non è la risposta registrata.`,
   },
   {
     slug: 'viaggio',
-    misura: 'Quanta parte del venduto aggancia più di un prodotto',
-    occhiello: 'L’idea, in una schermata',
-    titolo: 'Una soluzione intera, da cercare una volta sola',
+    misura: 'Quanta conversione in\u00a0più portano le\u00a0proposte personalizzate',
+    occhiello: 'Idea 2 di 4',
+    titolo: 'Personalizzazione su larga scala: la\u00a0proposta giusta a\u00a0ogni cliente',
     mock: 'viaggio',
-    /* ⚠️ 6 nov 2026, panel: qui c'era «+11%», la metrica di una telco danese,
-       in corpo grande sopra una slide che parla di treni. Quattro personas su
-       sei l'hanno messa fra le condizioni: nessuno dei due settori di
-       referenza ha posti che scadono, curva di riempimento o rete
-       intermediata, e una percentuale altrui in cifra grande apre la domanda
-       «e da noi?» invece di chiuderla. Resta il meccanismo, e il numero
-       grande torna a essere loro. */
-    cifra: { k: '3', v: 'le tratte di uno stesso viaggio che oggi si prenotano una per\u00a0una' },
-    chiusa: 'L’ultimo miglio dentro la stessa ricerca: chi compra smette di cercarlo altrove.',
+    /* 9 nov 2026, review: in call si è visto che su trenitalia.com Roma-Matera
+       esce già con Frecciarossa più Freccialink. La cifra diceva «tre tratte che
+       oggi si prenotano una per una», e la combinazione esiste: l'idea non è
+       farla, è capire quale proporre a chi. Il 96% è suo, ottobre 2025. */
+    cifra: { k: 'CartaFreccia', v: 'la proposta cambia con il livello: stessa tratta, vantaggi diversi per chi viaggia di più' },
+    chiusa: 'Il cliente CartaFreccia trova in homepage la meta giusta e un vantaggio legato al suo livello. Con chi non è registrato si parte da posizione e navigazione.',
     prova: {
-      chi: 'Telmore',
-      settore: 'telecomunicazioni, Danimarca',
-      /* Meccanismo, non risultato: le percentuali sono uscite il 6 nov 2026
-         col panel. Il perimetro si dichiara, perché è la prima cosa che
-         chiede chi vende posti su un treno. */
-      fatto: 'Le proposte ordinate dal sistema invece che elencate a\u00a0mano. Altro perimetro: telco ad abbonamento, nessun posto che scade.',
-      fonte: SOURCES.telmore,
+      chi: 'Brightline',
+      settore: 'alta velocità ferroviaria, Florida',
+      fatto: 'Chi abbandona la prenotazione riceve un promemoria con l’itinerario salvato. Chi viaggia spesso riceve parcheggio scontato e upgrade dell’ultimo minuto, in app, ai chioschi e via email.',
+      fonte: SOURCES.brightline,
     },
-    capability: ['Riconoscere lo stesso cliente su prodotti diversi', 'Provare una proposta su una parte del traffico'],
+    capability: ['Riconoscere chi arriva, registrato o no', 'Provare una\u00a0proposta su\u00a0una\u00a0parte del\u00a0traffico'],
     gruppi: ['acquisto', 'collaborazione'],
-    fonte: 'L’itinerario in schermata è un esempio nostro, non un prodotto a listino.',
+    fonte: 'Schermata d’esempio. Si propone solo ciò che si può comprare: prezzo e acquisto restano nei vostri sistemi.',
   },
   {
     slug: 'contenuto',
     misura: 'Quanti giorni passano dal brief alla vetrina, per mercato',
-    occhiello: 'L’idea, in una schermata',
-    titolo: 'Un master approvato, quattro mercati',
+    occhiello: 'Idea 3 di 4',
+    titolo: 'Una sola campagna approvata, adattata a ogni mercato',
     mock: 'contenuto',
     /* ⚠️ 6 nov 2026, panel: era «da giorni a minuti», il tempo di uscita di
        una banca brasiliana, su una pila che NON comprende GenStudio né
        Firefly — due dei tre nomi che la slide affianca. */
-    cifra: { k: '3 × 5', v: 'tre prodotti per cinque mercati, prima ancora delle\u00a0lingue' },
-    chiusa: 'La campagna che esce in Italia è già pronta per Monaco e per Shanghai: si rifà la lingua, si tiene il resto.',
-    prova: {
-      chi: 'Santander Brasil',
-      settore: 'banca, dieci mercati nel gruppo',
-      fatto: 'Un master approvato e le sue varianti per mercato, in un flusso\u00a0solo. Altro perimetro: una banca, e senza gli strumenti di generazione nominati qui accanto.',
-      fonte: SOURCES.santander,
-    },
+    cifra: { k: '3 × 5', v: 'le versioni minime di ogni campagna: tre prodotti per cinque mercati' },
+    chiusa: 'Dalla stessa campagna nascono le versioni per Monaco e per Parigi: cambiano offerta e messaggio, restano logo, tono e regole del marchio.',
     capability: ['Produrre le varianti su scala, governate'],
     gruppi: ['contenuto'],
     /* ⚠️ 6 nov 2026, REFUTATA dal fact-check, ed era l'errore nella direzione
@@ -142,13 +123,13 @@ export const IDEE: Idea[] = [
        release notes dicono 12 lingue in disponibilità generale più 5 in beta;
        quello che è limitato all'inglese è l'analisi del tono del testo, che è
        un'altra funzione. */
-    fonte: `La generazione multilingua con validazione di marchio è dichiarata su 12 lingue (${SOURCES.genstudioRelease.label}): la revisione umana resta una vostra scelta di processo.`,
+    fonte: 'La schermata è un esempio nostro: la revisione umana resta una vostra scelta di processo.',
   },
   {
     slug: 'rete',
     misura: 'Venduto per agenzia attiva, e il peso dell’intermediato sul diretto',
-    occhiello: 'L’idea, in una schermata',
-    titolo: 'La stessa proposta del sito arriva al banco dell’agenzia',
+    occhiello: 'Idea 4 di 4',
+    titolo: 'Quanto del\u00a0venduto in\u00a0agenzia nasce sul\u00a0digitale?',
     mock: 'rete',
     /* ⚠️ 6 nov 2026, panel: SEI personas su sei, il rilievo più corale del
        giro e il secondo che sopravvive dal 12 ottobre. La cifra grande del
@@ -157,14 +138,16 @@ export const IDEE: Idea[] = [
        margine, altro prodotto, altra direzione — e un dato del 2014.
        Dichiarare l'età non salva la cifra: in proiezione si legge il numero,
        non la nota. Il numero del canale è loro, è di ottobre 2025, e lo ha
-       detto lui al TTG. I 70.000 restano, in nota, su `slide-settantamila`. */
-    cifra: { k: '12.400', v: 'le agenzie di viaggio che vendono i vostri biglietti: 6.400 in Italia e 6.000 all’estero, numeri vostri dell’ottobre 2025' },
+       detto lui al TTG.
+       9 nov 2026: su richiesta del cliente nessun numero di agenzie in questo
+       capitolo, e il capitolo diventa dichiaratamente da approfondire. */
+    cifra: { k: 'Da approfondire', v: 'una possibilità da verificare insieme: le agenzie vendono su un sistema diverso dal sito' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
-    chiusa: 'L’agenzia smette di costruirsi le proposte a mano, e vende quello che il sito sta già spingendo.',
+    chiusa: 'Il venduto per agenzia lo avete già. Il passo in più è capire quali vendite partono da una ricerca o da un’offerta vista online.',
     /* ⚠️ ERA L'UNICA DELLE QUATTRO IDEE SENZA REFERENZA, ed è quella su cui
        si fa la richiesta. Unipol è il caso più vicino che esista: la rete
        agenziale più estesa d'Italia, e lo strumento con cui l'agente vende
@@ -186,10 +169,11 @@ export const IDEE: Idea[] = [
       settore: 'assicurazioni, Italia',
       fatto: '17,6 milioni di clienti e +2.000 agenzie: lo strumento con cui l’agente vende e le polizze emesse stanno nella stessa analisi del sito.',
       fonte: SOURCES.unipolRete,
+      senzaRigaFonte: true,
     },
-    capability: ['Misurare il venduto per rete', 'Combinare il canale con i digitali'],
+    capability: ['Legare il venduto al percorso digitale', 'Capire quali materiali portano vendite'],
     gruppi: ['rete'],
-    fonte: `${SOURCES.agenzie.label}, e le cifre dette dal Direttore Sales al TTG nell’ottobre 2025. Il canale agenziale di Unipol è stato raccontato da loro ad ${SOURCES.unipolSummit.label}: l’abstract pubblico di quella sessione non nomina le agenzie, il pezzo sul canale sta nelle slide presentate.`,
+    fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026.',
   },
 ];
 

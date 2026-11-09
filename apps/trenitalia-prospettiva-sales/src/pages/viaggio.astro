@@ -5,22 +5,15 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
 import SlideIdea from '../components/SlideIdea.astro';
-import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import CheServe from '../components/CheServe.astro';
+import Fascia from '../components/Fascia.astro';
 import { href } from '@edf/core/utils/url.js';
+import bg_sole from '../assets/generated/sole/sole-viaggio.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { GIA, PRIMA, fontiDi, SERVE } from '../data/contenuti';
+import { PRIMA, SERVE } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
-import bg_alba_convergenza from '../assets/generated/bg/bg-alba-convergenza.webp';
-import bg_journey from '../assets/generated/bg/bg-journey.webp';
-import bg_paper_grid from '../assets/generated/bg/bg-paper-grid.webp';
-import bg_paper_lines from '../assets/generated/bg/bg-paper-lines.webp';
-import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
-import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
-import Figura from '../components/Figura.astro';
 
 /**
- * Capitolo 04 — Un viaggio, non più prodotti.
+ * Capitolo 04 — La personalizzazione su larga scala (fino al 9 nov 2026: il viaggio).
  *
  * Il capitolo in cui si parla poco e si ascolta: è il suo mestiere, viene
  * dall'intermodale. Si apre con una DOMANDA sul laboratorio con ITA Airways,
@@ -35,9 +28,6 @@ const SLUG = 'viaggio';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-
-// Una fonte per fatto, dedotta dalle carte: la pagina non scrive indirizzi.
-const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label, f])).values()];
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -55,7 +45,7 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
          ⚠️ Il fondo sta QUI e non dentro `Divisore.astro`: Astro non propaga
          `slot="backdrop"` attraverso un componente. -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_alba_convergenza.src})`}></div>
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${bg_sole.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} tavolo={ch.tavolo} slug="viaggio" bussola />
     </Slide>
 
@@ -67,117 +57,50 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
          `data/idee.ts`: una sola fonte per tutte e quattro. -->
     <SlideIdea slug="viaggio" />
 
-    <!-- ── Quello che è già partito ──────────────────────────────────────── -->
-    <Slide id="slide-gia" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
+    <!-- ── Prima chi non è registrato, poi chi lo è ────────────────────────
+         9 nov 2026, allineamento con il cliente: la priorità è la profilazione,
+         e l'intermodale regge solo se quello che si racconta si può comprare.
+         Roma-Caserta e Matera restano come esempio, nella riga di chiusura.
+         CartaFreccia è nominata su richiesta dell'owner: il sito ne dava la chiusura a fine 2026. -->
+    <Slide id="slide-momenti" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">Il punto di partenza è vostro</p>
-          <h2 class="xd-h2">L’intermodale è già nel vostro perimetro</h2>
+          <p class="xd-n">Su larga scala, un passo alla volta</p>
+          <h2 class="xd-h2">Prima chi non è registrato, poi chi&nbsp;lo&nbsp;è</h2>
           <p class="xd-sub">
-            Treno, gomma, sosta e aria sono già nel perimetro. Manca il momento dell’acquisto
-            visto come un viaggio solo.
+            <strong>Si può partire subito con gli strumenti che avete.<br />Con il nuovo CRM la proposta diventa più precisa.</strong>
           </p>
         </div>
         <div class="tp-ancore" data-stagger>
-          {GIA.map((x) => (
-            <div class="tp-anc">
-              <p class="tp-anc-k">{x.k}</p>
-              <p class="tp-anc-n">{x.t}</p>
-            </div>
-          ))}
+          <div class="tp-anc">
+            <p class="tp-anc-k">Subito</p>
+            <p class="tp-anc-n">Chi non è registrato</p>
+            <p class="tp-anc-b">Posizione, pagine viste e&nbsp;cookie, dove c’è il&nbsp;consenso, per&nbsp;un&nbsp;primo segmento.</p>
+          </div>
+          <div class="tp-anc">
+            <p class="tp-anc-k">Con il nuovo CRM</p>
+            <p class="tp-anc-n">Chi è registrato</p>
+            <p class="tp-anc-b">Storico, preferenze e livello CartaFreccia cambiano la&nbsp;proposta.</p>
+          </div>
+          <div class="tp-anc">
+            <p class="tp-anc-k">Sempre</p>
+            <p class="tp-anc-n">Una proposta che&nbsp;sa quando fermarsi</p>
+            <p class="tp-anc-b">Chi ha già fatto un&nbsp;viaggio non lo&nbsp;rivede a&nbsp;ogni&nbsp;visita.</p>
+          </div>
         </div>
-        <HowItWorks title="Che cosa c’è già, in concreto" label="Che cosa c’è già, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {GIA.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['rete-su-gomma', 'sosta-prenotata', 'biglietto-unico'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-          </Dettaglio>
-        </HowItWorks>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.24">
-          Fonti: {fontiGia.map((f, i) => (
-            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>
-          ))}.
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── Il caso Roma-Matera: la prova che viene dalla misura ──────────── -->
-    <Slide id="slide-matera" bg="inverse" align="center" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_lines.src})`} data-parallax></div>
-      <div class="tp-quote" data-reveal>
-        <p class="xd-n">«Come arrivo da Roma a Matera senza auto», chiesto a due assistenti</p>
-        <p class="tp-quote-big" data-display data-reveal data-reveal-delay="0.08">
-          <span class="ex-frase">Tutti e due aprono con gli <strong>operatori di autobus</strong>,</span> e il biglietto
-          combinato treno più autobus lo attribuiscono prima al
-          <strong>concorrente</strong>.
-        </p>
-        <p class="tp-quote-after" data-reveal data-reveal-delay="0.18">
-          <strong>Busitalia non è nominata da nessuno dei due.</strong> È la tratta che senza
-          intermodalità non esiste, ed è quella in cui partite avvantaggiati: la gomma è vostra
-          e le destinazioni sono vostre. Nella risposta non se ne trova traccia.
-        </p>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          Fra le otto domande del capitolo precedente: {SOURCES.misura.label}, non una fonte pubblica.
-        </p>
-      </div>
-    </Slide>
-
-    <!-- ── Che cosa cambia nell'acquisto ─────────────────────────────────── -->
-    <Slide id="slide-acquisto" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">Dentro l’offerta</p>
-          <h2 class="xd-h2">Chi va a Bari in vacanza e chi ci va per lavoro: li distinguete all’acquisto?</h2>
-          {/* Il lead è UNA riga: il punto. L'esempio del treno per Bari a luglio
-              stava in cinque righe di paragrafo — ora lo dice la figura del
-              dettaglio, che mostra i due viaggi che diventano lo stesso punto. */}
-          <p class="xd-sub">
-            <strong>Distinguerli cambia che cosa si propone, e quando.</strong>
-          </p>
-        </div>
-        <div class="tp-ask" data-reveal data-reveal-delay="0.16">
-          <p class="tp-ask-k">La domanda che vi facciamo</p>
-          <p class="tp-ask-t">
-            Il laboratorio con ITA Airways quanto di questo copre già? Se copre anche
-            l’acquisto, è una buona notizia e passiamo oltre. Se riguarda i flussi, lo spazio è nel momento in cui si compra.
-          </p>
-        </div>
-        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
-          <Dettaglio>
-            <DettaglioVoce>
-              <Figura k="tre-tracce-un-percorso" />
-              <p slot="ancora">Il percorso letto per intero</p>
-              <p slot="riga">Treno, gomma e sosta come una cosa sola, non tre tracce separate.</p>
-            </DettaglioVoce>
-            <DettaglioVoce>
-              <Figura k="indistinguibile" />
-              <p slot="ancora">Due viaggi, un punto solo</p>
-              <p slot="riga">Quanta parte del venduto diretto è riconosciuta al momento dell’acquisto, e quanta no?</p>
-            </DettaglioVoce>
-            <DettaglioVoce>
-              <Figura k="prova-su-una-parte" />
-              <p slot="ancora">Una proposta diversa, misurata</p>
-              <p slot="riga">Su una parte del traffico, prima di portarla a tutti: questa la comprate già.</p>
-            </DettaglioVoce>
-            <CheServe slot="nota" pezzi={SERVE.acquisto} />
-          </Dettaglio>
-        </HowItWorks>
+        <p class="xd-chiusa tp-cede" data-reveal data-reveal-delay="0.2">Un esempio: chi ha comprato Roma-Caserta per la Reggia, patrimonio UNESCO, torna sul sito e trova un’offerta personalizzata per&nbsp;Matera.</p>
+        <Fascia pezzi={SERVE.acquisto} />
       </div>
     </Slide>
 
     <!-- ── Chi incontra il viaggiatore prima di voi ───────────────────────── -->
-    <Slide id="slide-prima" data-stretto bg="inverse" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-paper" style={`--bg-src: url(${bg_paper_grid.src})`} data-parallax></div>
+    <Slide id="slide-prima" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Prima ancora della scelta del treno</p>
-          <h2 class="xd-h2">Il viaggio si decide prima, e altrove</h2>
+          <h2 class="xd-h2">La personalizzazione comincia prima, e altrove</h2>
           <p class="xd-sub">
             Chi programma dieci giorni in Italia di solito sceglie volo o pacchetto mesi prima
             del treno. <strong>E su quei viaggiatori si può lavorare in due senza scambiarsi i
@@ -189,28 +112,16 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
             <div class="tp-anc">
               <p class="tp-anc-k">{x.k}</p>
               <p class="tp-anc-n">{x.t}</p>
+              <p class="tp-anc-b">{x.bBreve ?? x.b}</p>
             </div>
           ))}
         </div>
-        <HowItWorks title="Che cosa cambia, in concreto" label="Che cosa cambia, in concreto" tone="onLight" data-reveal data-reveal-delay="0.2">
-          <Dettaglio>
-            {PRIMA.map((x, i) => (
-              <DettaglioVoce>
-                <Figura k={(['due-lati-un-incrocio', 'indistinguibile', 'rete-muta'] as const)[i]} />
-                <p slot="ancora">{x.anc ?? x.t}</p>
-                <p slot="riga">{x.b}</p>
-              </DettaglioVoce>
-            ))}
-          </Dettaglio>
-        </HowItWorks>
         {/* 17 ott: nel deck non va nessuna referenza di un altro cliente
             (decisione d'account). Il precedente ferroviario o crocieristico non
             esiste — verificato — e un caso preso da un altro settore apre la
             domanda «e nel nostro?» invece di chiuderla: si dice che è un'ipotesi
             e si chiude lì. */}
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          Il canale cinese: <a href={SOURCES.trenitaliaCinese.url} target="_blank" rel="noopener noreferrer">{SOURCES.trenitaliaCinese.label}</a> ·
-          <a href={SOURCES.fsCina.url} target="_blank" rel="noopener noreferrer">{SOURCES.fsCina.label}</a>.
           Il protocollo con Costa: <a href={SOURCES.costaTtg.url} target="_blank" rel="noopener noreferrer">{SOURCES.costaTtg.label}</a>.
         </p>
       </div>
@@ -225,8 +136,8 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
          parte e non in fondo alla precedente perché lì, col blocco aperto, la
          slide usciva dalla safe-area a tutti e tre i viewport: il contratto dice
          di dividere, non di rimpicciolire. -->
-    <Slide id="slide-collab" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
-      <div slot="backdrop" class="ex-bg-night" style={`--bg-src: url(${bg_journey.src})`} data-parallax></div>
+    <Slide id="slide-collab" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Lavorare in due sugli stessi viaggiatori</p>
@@ -240,39 +151,25 @@ const fontiGia = [...new Map(GIA.flatMap((c) => fontiDi(c)).map((f) => [f.label,
               azienda apre un fascicolo, non un progetto». Ora il meccanismo
               dice quello che il prodotto dichiara, e la domanda di titolarità
               sta in pagina, non dietro il drill-down. */}
-          <h2 class="xd-h2">Si incrocia solo chi interessa a tutte e due</h2>
-          <p class="xd-sub">
-            Sta prima della scelta del vettore, sopra un accordo che esiste già. Gli elenchi si
-            incrociano in <strong>un ambiente neutro, con i suoi controlli di accesso</strong>:
-            nessuna delle due aziende passa all’altra il proprio file.
-          </p>
+          <h2 class="xd-h2">Si incrociano solo i&nbsp;clienti che&nbsp;interessano a&nbsp;entrambe le&nbsp;aziende</h2>
+          <p class="xd-sub">Si parte dall’accordo con&nbsp;Costa Crociere, per&nbsp;raggiungere i viaggiatori prima che&nbsp;scelgano il&nbsp;treno.</p>
         </div>
-        <div class="tp-ask" data-reveal data-reveal-delay="0.16">
-          <p class="tp-ask-k">La domanda che viene prima</p>
-          <p class="tp-ask-t">
-            Chi è titolare di quei dati, su quale base giuridica e con quale contratto. Si definisce
-            prima di qualunque prova, e non sta dentro quello che vi chiediamo qui.
-          </p>
+        <div class="tp-inc" data-reveal data-reveal-delay="0.12">
+          <div class="tp-inc-fig">
+            <svg viewBox="100 10 440 280" aria-hidden="true">
+              <circle cx="250" cy="150" r="138" /><circle cx="390" cy="150" r="138" />
+              <path d="M320 30.5 A138 138 0 0 1 320 269.5 A138 138 0 0 1 320 30.5 Z" />
+            </svg>
+            <p style="left:17%">I vostri clienti</p>
+            <p style="left:50%" data-on>Solo i clienti in&nbsp;comune</p>
+            <p style="left:83%">I clienti di&nbsp;Costa</p>
+          </div>
+          <div class="tp-inc-v">
+            <div class="tp-anc"><p class="tp-anc-k">Il luogo</p><p class="tp-anc-n">Un ambiente neutro in mezzo</p><p class="tp-anc-b">Gli elenchi si incrociano lì, con i suoi controlli di accesso. Nell’acquisto non entra nessun sistema nuovo.</p></div>
+            <div class="tp-anc"><p class="tp-anc-k">I dati</p><p class="tp-anc-n">Nessuna delle due passa all’altra i propri dati</p><p class="tp-anc-b">Un incrocio governato, con&nbsp;regole di&nbsp;accesso dichiarate da&nbsp;tutte e&nbsp;due le&nbsp;aziende.</p></div>
+          </div>
         </div>
-        <HowItWorks title="Che cosa serve, concretamente" label="Che cosa serve, concretamente" tone="onLight" data-reveal data-reveal-delay="0.22">
-          <Dettaglio>
-            <DettaglioVoce>
-              <Figura k="due-lati-un-incrocio" />
-              <p slot="ancora">Un luogo neutro in mezzo</p>
-              <p slot="riga">Gli elenchi si incrociano in un ambiente neutro, e nell’acquisto non entra nessun sistema nuovo.</p>
-            </DettaglioVoce>
-            <DettaglioVoce>
-              <Figura k="nessuno-consegna" />
-              <p slot="ancora">Nessuna delle due passa il proprio file</p>
-              {/* Lo stato di disponibilità del prodotto NON sta in slide: è la stessa
-                  decisione presa su LLM Apps — a che punto è un prodotto si dice a voce,
-                  non in una riga che il deck si porta in giro per i corridoi del cliente.
-                  Il link al prodotto resta nella pastiglia «Che cosa serve» qui sotto. */}
-              <p slot="riga">Un incrocio governato, con regole di accesso che dichiarano tutte e due le aziende.</p>
-            </DettaglioVoce>
-            <CheServe slot="nota" pezzi={SERVE.collaborazione} />
-          </Dettaglio>
-        </HowItWorks>
+        <Fascia pezzi={SERVE.collaborazione} />
       </div>
     </Slide>
 

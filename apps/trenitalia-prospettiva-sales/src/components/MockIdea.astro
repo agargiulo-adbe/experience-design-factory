@@ -8,87 +8,180 @@
  * metri. I micro-diagrammi — piccoli e molti — stanno dietro «Scopri come» e
  * rispondono a una domanda: non sono questi, e non li sostituiscono.
  *
- * Quattro varianti, una per idea del percorso. La pelle richiama il vero
- * trenitalia.com: barra rossa di marchio, superficie chiara, Poppins.
+ * 9 nov 2026, notte: erano quattro elenchi sotto una barra rossa, tutti uguali.
+ * Ora ogni idea ha la sua schermata, e il prima/dopo c'è solo dove è onesto:
+ * · viaggio e contenuto: ↓ passa dalla schermata di partenza a quella nuova;
+ * · ricerca: NESSUN dopo. Una risposta in cui Trenitalia esce prima sarebbe
+ *   inventata, ed è il difetto tolto la mattina stessa. ↓ segna dove arriva;
+ * · rete: è un'ipotesi, quindi si disegna il percorso e non un risultato.
  *
- * ⚠️ Niente testo dentro un SVG: il testo qui è HTML, così cresce con la
- * radice e su una parete di sala si legge ancora.
+ * ⚠️ STATO DI BASE = IL DOPO. Con «Riduci movimento» i sotto-passi sono tutti
+ * visibili, e due schermate impilate sarebbero testo su testo. La fase «prima»
+ * esiste solo a sotto-passo zero con il movimento acceso (regole `.mk-fase`).
+ *
+ * ⚠️ Niente testo sopra le immagini e niente testo dentro un SVG: il testo qui
+ * è HTML, così cresce con la radice e su una parete di sala si legge ancora.
  */
-interface Props { variante: 'ricerca' | 'viaggio' | 'contenuto' | 'rete'; }
+import { Image } from 'astro:assets';
+import fotoBinari from '../assets/generated/sole/sole-viaggio.webp';
+import fotoMatera from '../assets/generated/sole/sole-ricerca.webp';
+import fotoPuglia from '../assets/generated/sole/sole-contenuto.webp';
+
+interface Props { variante: 'ricerca' | 'viaggio' | 'contenuto' | 'rete' | 'citta'; }
 const { variante } = Astro.props as Props;
 ---
 <div class="mk" data-variante={variante} aria-hidden="true">
 
+  {/* Riscritto il 9 nov 2026 sull'esito registrato nella misura, domanda 1 su
+      ChatGPT. L'ordine è quello della risposta: non si abbellisce. */}
   {variante === 'ricerca' && (
     <div class="mk-schermo mk-schermo--chat">
-      <div class="mk-barra"><span class="mk-barra-t">Risposta generata · esempio</span></div>
+      <div class="mk-barra"><span class="mk-barra-t">ChatGPT · sintesi della risposta</span></div>
+      <div class="mk-corpo mk-corpo--piena">
+        <p class="mk-bolla">Come arrivo da Roma a Matera senza auto?</p>
+        <ol class="mk-ordine">
+          <li><span class="mk-ordine-n">1</span><span class="mk-ordine-t"><strong>In apertura</strong>Gli operatori di autobus</span></li>
+          <li><span class="mk-ordine-n">2</span><span class="mk-ordine-t"><strong>Treno più autobus</strong>Prima il concorrente</span></li>
+          <li data-trenitalia>
+            <span class="mk-ordine-n">3</span>
+            <span class="mk-ordine-t"><strong>Solo dopo</strong>Freccialink di Trenitalia</span>
+            <span class="mk-qui" data-substep>Qui arriva Trenitalia</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  )}
+
+  {variante === 'citta' && (
+    <div class="mk-schermo mk-schermo--app">
+      <div class="mk-barra"><span class="mk-barra-t">Homepage · esempio</span></div>
       <div class="mk-corpo">
-        <p class="mk-dom">«Come arrivo a Matera senza auto?»</p>
-        <div class="mk-risposta" data-stagger="0.12">
-          <p>La tratta si copre in treno fino a Ferrandina e poi con il collegamento
-             su gomma. L’orario e l’acquisto stanno sul sito dell’operatore.</p>
-          <div class="mk-card">
-            <span class="mk-card-m">Frecciarossa</span>
-            <span class="mk-card-o">un prodotto Trenitalia</span>
+        <p class="mk-occ">Una proposta per città</p>
+        <ol class="mk-tratte" data-stagger="0.13">
+          <li><span class="mk-tratta-m">A chi</span><span class="mk-tratta-d">Chi entra da una città scelta</span></li>
+          <li><span class="mk-tratta-m">Che cosa</span><span class="mk-tratta-d">Un’offerta sulla tratta che parte da lì</span></li>
+          <li data-ultimo><span class="mk-tratta-m">Confronto</span><span class="mk-tratta-d">Con la proposta e&nbsp;senza</span></li>
+        </ol>
+        <div class="mk-totale"><span>Stesso modello</span><strong>Altre città</strong></div>
+      </div>
+    </div>
+  )}
+
+  {/* Nessuna tariffa e nessun vantaggio specifico: sono dettagli che il cliente
+      conosce a memoria, e sbagliarne uno costa la slide. */}
+  {variante === 'viaggio' && (
+    <div class="mk-fasi">
+      <div class="mk-schermo mk-fase mk-fase--prima">
+        <div class="mk-barra"><span class="mk-barra-t">Prima · la stessa homepage per tutti</span></div>
+        <div class="mk-corpo mk-corpo--piena">
+          <div class="mk-home">
+            <div class="mk-home-t">
+              <p class="mk-home-h">Dove vuoi andare?</p>
+              <div class="mk-campi">
+                <span class="mk-campo"><small>Da</small>Partenza</span>
+                <span class="mk-campo"><small>A</small>Arrivo</span>
+              </div>
+              <span class="mk-cta">Cerca</span>
+            </div>
+            <div class="mk-foto"><Image src={fotoBinari} alt="" widths={[640, 1100]} sizes="30vw" /></div>
+          </div>
+          <ul class="mk-tessere">
+            <li><strong>Offerte</strong><span>Per tutti</span></li>
+            <li><strong>Frecce</strong><span>Per tutti</span></li>
+            <li><strong>Regionale</strong><span>Per tutti</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mk-schermo mk-fase mk-fase--dopo" data-substep>
+        <div class="mk-barra"><span class="mk-barra-t">Dopo · homepage personalizzata, esempio</span></div>
+        <div class="mk-corpo mk-corpo--piena">
+          <div class="mk-home">
+            <div class="mk-home-t">
+              <span class="mk-chip mk-chip--on">CartaFreccia Oro</span>
+              <p class="mk-home-h">Matera, la prossima meta</p>
+              <div class="mk-campi">
+                <span class="mk-campo"><small>Da</small>Roma Termini</span>
+                <span class="mk-campo"><small>A</small>Matera</span>
+              </div>
+              <span class="mk-cta">Scegli il treno</span>
+            </div>
+            <div class="mk-foto"><Image src={fotoMatera} alt="" widths={[640, 1100]} sizes="30vw" /></div>
+          </div>
+          <ul class="mk-tessere">
+            <li data-on><strong>Il tuo vantaggio</strong><span>Riservato al livello Oro</span></li>
+            <li><strong>Il viaggio</strong><span>Frecciarossa + Freccialink</span></li>
+            <li><strong>Perché qui</strong><span>Dopo Caserta e la Reggia</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* Per mercato, non per lingua: la traduzione non è una leva (revisione del
+      9 nov). I due messaggi dicono cose diverse apposta. */}
+  {variante === 'contenuto' && (
+    <div class="mk-fasi">
+      <div class="mk-schermo mk-fase mk-fase--prima">
+        <div class="mk-barra"><span class="mk-barra-t">Prima · una campagna approvata</span></div>
+        <div class="mk-corpo mk-corpo--piena">
+          <div class="mk-master">
+            <div class="mk-foto"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="30vw" /></div>
+            <div class="mk-master-t">
+              <span class="mk-chip">Approvata</span>
+              <p class="mk-home-h">Estate in Puglia</p>
+              <p class="mk-nota">Una sola versione, per&nbsp;il&nbsp;mercato italiano.</p>
+            </div>
           </div>
         </div>
-        <p class="mk-fonti-k">Fonti citate</p>
-        <ul class="mk-fonti" data-stagger="0.09">
-          <li class="mk-chip mk-chip--on">trenitalia.com</li>
-          <li class="mk-chip">un portale di viaggi</li>
-          <li class="mk-chip">un blog</li>
-        </ul>
+      </div>
+
+      <div class="mk-schermo mk-fase mk-fase--dopo" data-substep>
+        <div class="mk-barra"><span class="mk-barra-t">Dopo · la stessa campagna, per mercato</span></div>
+        <div class="mk-corpo mk-corpo--piena">
+          <ul class="mk-mercati">
+            <li>
+              <div class="mk-foto mk-foto--a"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="24vw" /></div>
+              <div class="mk-mercato-t">
+                <small>Monaco</small>
+                <strong lang="de">Sommer in Apulien</strong>
+                <span>Offerta per chi parte dalla Germania</span>
+              </div>
+            </li>
+            <li>
+              <div class="mk-foto mk-foto--b"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="24vw" /></div>
+              <div class="mk-mercato-t">
+                <small>Parigi</small>
+                <strong lang="fr">Cap sur les Pouilles</strong>
+                <span>Offerta per chi parte dalla Francia</span>
+              </div>
+            </li>
+          </ul>
+          <p class="mk-regole"><strong>Restano</strong> logo, tono e regole del marchio. La revisione umana resta.</p>
+        </div>
       </div>
     </div>
   )}
 
-  {variante === 'viaggio' && (
-    <div class="mk-schermo mk-schermo--app">
-      <div class="mk-barra"><span class="mk-barra-t">Roma → Matera</span></div>
-      <div class="mk-corpo">
-        <p class="mk-occ">Una soluzione, un prezzo</p>
-        <ol class="mk-tratte" data-stagger="0.13">
-          <li><span class="mk-tratta-m">Frecciarossa</span><span class="mk-tratta-d">Roma T.ni → Salerno</span><span class="mk-tratta-o">2h 05</span></li>
-          <li><span class="mk-tratta-m">Intercity</span><span class="mk-tratta-d">Salerno → Ferrandina</span><span class="mk-tratta-o">1h 40</span></li>
-          <li data-ultimo><span class="mk-tratta-m">Collegamento su gomma</span><span class="mk-tratta-d">Ferrandina → Matera</span><span class="mk-tratta-o">0h 45</span></li>
-        </ol>
-        {/* ⚠️ NESSUNA TARIFFA INVENTATA. Qui c'era «€ 61,90»: una cifra nostra, su
-            una relazione vera, davanti a chi i prezzi li conosce a memoria. La riga
-            di fonte della slide dichiara che l'itinerario è un esempio nostro, ma un
-            prezzo preciso e sbagliato è il dettaglio che viene corretto a voce e fa
-            rileggere con sospetto tutto il resto. Il mock dice la cosa che deve dire
-            — tre tratte, un acquisto solo — senza affermare quanto costa. */}
-        <div class="mk-totale"><span>Tre tratte, un biglietto</span><strong>Un prezzo</strong></div>
-      </div>
-    </div>
-  )}
-
-  {variante === 'contenuto' && (
-    <div class="mk-schermo mk-schermo--studio">
-      <div class="mk-barra"><span class="mk-barra-t">Campagna · Estate in Puglia</span></div>
-      <div class="mk-corpo">
-        <div class="mk-master"><span class="mk-master-k">Master approvato</span><span class="mk-master-t">Estate in Puglia</span></div>
-        <ul class="mk-varianti" data-stagger="0.1">
-          <li><span class="mk-var-l">IT</span><span class="mk-var-d">sito e app</span></li>
-          <li><span class="mk-var-l">EN</span><span class="mk-var-d">mercati esteri</span></li>
-          <li><span class="mk-var-l">DE</span><span class="mk-var-d">Germania</span></li>
-          <li data-attesa><span class="mk-var-l">中文</span><span class="mk-var-d">Cina</span></li>
-        </ul>
-        <p class="mk-nota">Stesso master, quattro mercati. La revisione umana resta.</p>
-      </div>
-    </div>
-  )}
-
+  {/* Un'ipotesi, e si vede: un percorso senza numeri (richiesta del cliente).
+      Il codice è DI CAMPAGNA, non della persona: Customer Journey Analytics lega
+      i dataset solo su un identificativo di persona comune, quindi qui si leggono
+      totali per codice. E una locandina non genera eventi: si misura solo dando
+      un codice a ogni materiale. Verificato su Experience League, 9 nov 2026. */}
   {variante === 'rete' && (
     <div class="mk-schermo mk-schermo--rete">
-      <div class="mk-barra"><span class="mk-barra-t">Punto vendita · agenzia convenzionata</span></div>
-      <div class="mk-corpo">
-        <div class="mk-rete-griglia" data-stagger="0.12">
-          <div class="mk-rete-b"><span class="mk-rete-k">Richiesta</span><span class="mk-rete-v">Gruppo, 18 persone, Puglia</span></div>
-          <div class="mk-rete-b" data-on><span class="mk-rete-k">Proposta pronta</span><span class="mk-rete-v">Frecciarossa + collegamento, tariffa gruppi</span></div>
-          <div class="mk-rete-b"><span class="mk-rete-k">Materiale</span><span class="mk-rete-v">Scheda e locandina, già di marchio</span></div>
-        </div>
-        <p class="mk-nota">Quello che l’agenzia chiede al telefono, davanti al cliente.</p>
+      <div class="mk-barra"><span class="mk-barra-t">Dal digitale al banco · ipotesi da verificare</span></div>
+      <div class="mk-corpo mk-corpo--piena">
+        <ol class="mk-percorso" data-stagger="0.12">
+          <li><small>Online</small><strong>Un’offerta con un codice di campagna</strong></li>
+          <li><small>Al banco</small><strong>Il cliente lo mostra, l’agenzia lo registra</strong></li>
+          <li data-on><small>In CJA</small><strong>Quante vendite per codice</strong></li>
+        </ol>
+        <ul class="mk-poi">
+          <li><small>I contenuti</small><span>Un codice per materiale: quale porta più vendite</span></li>
+          <li><small>Le prove</small><span>Una proposta su poche agenzie</span></li>
+        </ul>
+        <p class="mk-nota">Da approfondire: il sistema delle agenzie deve poter registrare il&nbsp;codice.</p>
       </div>
     </div>
   )}

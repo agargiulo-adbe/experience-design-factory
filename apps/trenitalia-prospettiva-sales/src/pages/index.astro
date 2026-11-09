@@ -8,7 +8,11 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
-import { COVER } from '../data/contenuti';
+import { CHI_SIAMO, COVER } from '../data/contenuti';
+import capuano from '../assets/team/capuano.png';
+import perrone from '../assets/team/perrone.png';
+import gargiulo from '../assets/team/gargiulo.png';
+import tammaro from '../assets/team/tammaro.png';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 
 /**
@@ -28,6 +32,7 @@ import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
  * Il lockup co-brand `hero` sta sulla PRIMA e sull'ULTIMA slide del percorso:
  * regola del motore, e dove c'è un hero la firma fissa si spegne da sola.
  */
+const FOTO = { capuano, perrone, gargiulo, tammaro } as const;
 const type = EXPERIENCE_TYPES[SITE.type];
 // Le clip NON stanno nel repo: `apps/*/public/media/*.mp4` è git-ignorato, quindi
 // un file locale non arriverebbe mai al sito pubblicato. Vivono sulla Release
@@ -39,6 +44,11 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
 const last = CHAPTERS[CHAPTERS.length - 1];
+const SOLO_IDEE = ['ricerca', 'viaggio', 'contenuto', 'rete'];
+const VOCI = [
+  ...CHAPTERS.filter((c) => !SOLO_IDEE.includes(c.slug)).map((c) => ({ slug: c.slug, num: c.num, titolo: c.title.it, idee: false })),
+  { slug: 'ricerca', num: '03–06', titolo: 'Quattro idee e le tecnologie per\u00a0realizzarle', idee: true },
+].sort((a, b) => a.num.localeCompare(b.num));
 ---
 <BaseLayout title={SITE.name}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -76,16 +86,77 @@ const last = CHAPTERS[CHAPTERS.length - 1];
         <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="L’agenda della sessione">
           <p class="xd-cop-occ">Agenda</p>
           <ol class="xd-cop-indice" data-stagger>
-            {CHAPTERS.map((c) => (
+            {/* 9 nov 2026: i quattro capitoli-idea sono una voce sola, di colore diverso. Il
+                numero resta «03–06» perché divisori e barra in alto contano così. */}
+            {VOCI.map((v) => (
               <li>
-                <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
-                  <span class="xd-cop-n">{c.num}</span>
-                  <span class="xd-cop-tit">{c.title.it}</span>
+                <a href={href(base, '/' + v.slug)} class:list={['xd-cop-cap', v.idee && 'tp-cop-idee']}>
+                  <span class="xd-cop-n">{v.num}</span>
+                  <span class="xd-cop-tit">{v.titolo}</span>
                 </a>
               </li>
             ))}
           </ol>
                   </nav>
+      </div>
+    </Slide>
+
+    <!-- ── 1 · Chi siamo: il team, l'offerta, la storia con il Gruppo ───── -->
+    <Slide id="slide-chi-siamo" data-stretto bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{CHI_SIAMO.eyebrow}</p>
+          <h2 class="xd-h2">{CHI_SIAMO.titolo}</h2>
+        </div>
+
+        <div class="tp-chi">
+          <div class="tp-chi-r" data-substep>
+            <p class="tp-chi-k">{CHI_SIAMO.team.k}</p>
+            <ul class="tp-chi-team">
+              {CHI_SIAMO.team.persone.map((x) => (
+                <li>
+                  <img class="tp-chi-foto" src={FOTO[x.foto as keyof typeof FOTO].src} alt="" width="256" height="256" loading="eager" />
+                  <span class="tp-chi-p"><strong>{x.nome}</strong><span>{x.ruolo}</span></span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="tp-chi-r" data-substep>
+            <p class="tp-chi-k">{CHI_SIAMO.offerta.k}</p>
+            <div class="tp-chi-off">
+              <ol class="tp-chi-fasi">
+                {CHI_SIAMO.offerta.fasi.map((f) => (
+                  <li><strong>{f.k}</strong><span>{f.p}</span></li>
+                ))}
+              </ol>
+              <div class="tp-chi-cw">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" /></svg>
+                <strong>{CHI_SIAMO.offerta.strato.t}</strong>
+                <span>{CHI_SIAMO.offerta.strato.b}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tp-chi-r" data-substep>
+            <p class="tp-chi-k">{CHI_SIAMO.storia.k}</p>
+            <div class="tp-filo tp-crono tp-chi-storia">
+              <svg class="tp-filo-fig" viewBox="0 0 1000 64" preserveAspectRatio="none" role="img" aria-label="Le tappe di Adobe e del Gruppo FS, dal 2017 a oggi">
+                <line class="tp-filo-l" x1="100" y1="32" x2="900" y2="32" />
+              </svg>
+              <ol class="tp-filo-eti" style="--cols:5">
+                {CHI_SIAMO.storia.tappe.map((t) => (
+                  <li data-ora={t.ora ? '' : undefined}>
+                    <span class="tp-filo-num">{t.q}</span>
+                    <span class="tp-filo-t">{t.t}</span>
+                    <span class="tp-filo-b">{t.b}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
       </div>
     </Slide>
 
