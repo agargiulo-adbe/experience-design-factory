@@ -9,6 +9,75 @@
      divisa in quattro parti a confini ### — questa continua dal change log della Parte 3 e prosegue
      nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 13 ott 2026 -->
 
+### Change log — «Dove ci innestiamo»: il deck del 5 novembre, e quattro fatti corretti alla fonte (2026-10-23 → 2026-10-26) → §40 (Parte 18)
+
+**Un'experience nuova in tre giorni.** `apps/intesa-innesto`, Blueprint per la Divisione Banca
+dei Territori: **23 slide su 7 rotte**, design system letto dal CSS di produzione del cliente
+(verde `#258900`, Open Sans). Il cuore è la slide dell'architettura — un SVG con uno strato
+HTML di ancore sopra, che **nasce a fasi** sotto le frecce del deck: prima quello che hanno,
+poi dove si ferma, poi il pezzo che si appoggia sopra. Geometria **calcolata e non posata a
+occhio**: cinque nodi identici di 248 unità che fanno esattamente 1440.
+
+**Il fact check del 24-25 ha corretto quattro cose di merito** (§40.3). Le quattro cifre
+pubbliche erano **giuste e la fonte sbagliata**: il comunicato del piano d'impresa esiste e non
+le contiene — stanno in una dichiarazione del Gruppo di febbraio 2026, che per giunta dice
+«prodotti **per i privati**» e «**applicativi** cloud a **fine 2025**», non «infrastruttura».
+**«Adobe AI Decisioning» non è un prodotto**: la Product Description di AJO dice che
+*Decisioning* è un **add-on**, e il nome era sbagliato in slide, in figura, nel segnaposto
+video e nella console (memoria `decisioning-e-un-add-on-ajo`). Il recupero a ritroso di CJA
+**non è «sei mesi»**: a regime è 1–30 giorni, i 13 o 25 mesi sono il backfill iniziale. E i due
+innesti **poggiano su una base Experience Platform che oggi non c'è**, dichiarata nella slide
+che già si chiama «Non è un rifacimento. Non è nemmeno gratis».
+
+⚠️ **Due numeri della figura non avevano fonte** e sono diventati domande (memoria
+`un-numero-che-sembra-misurato`): «da 6 a 24 ore» e «cap settimanale». Che il ritardo ci sia
+l'ha detto il cliente, quanto sia era nostro; che un tetto ci sia è mestiere, che fosse
+settimanale un'invenzione. **In un diagramma un intervallo numerico si legge come misurato**
+qualunque cosa dica la didascalia — e il 5 novembre in sala c'è chi quel numero lo conosce.
+
+**Il guscio sensoriale acceso e misurato** (§40.4): sette sfondi Firefly e due clip in loop. Il
+primo giro di sfondi aveva **la luce al centro**, cioè dove va il titolo. Le clip sono ricucite
+(la chiusura derivava e ha chiuso il giro in `--boomerang`), e il velo è misurato sul punto più
+chiaro sotto il titolo: **5,19:1 nel caso peggiore** contro i 3:1 richiesti. **Il marchio** era
+ancora il segnaposto del template, con il commento «da sostituire» nel file: ora è l'innesto, e
+la gerarchia sta nel **peso del tratto** perché a 16px l'opacità faceva sparire la linea.
+
+### Change log — ancore, non prosa: la regola entra nel template, nei gate e in tutti i deck (2026-10-24) → §40 (Parte 18)
+
+**Il drill-down si apre su figure, non su paragrafi.** La regola «ancore, non prosa» era
+risolta a metà: la pagina restava pulita e il «Scopri come» diventava quattro paragrafi dietro
+un bottone — lo stesso muro di testo, nascosto nel posto peggiore, perché quel blocco in sala si
+apre **per rispondere a una domanda**. Nascono `Dettaglio` e `DettaglioVoce` nel motore: per
+ogni voce un micro-diagramma che si muove, l'ancora che lo nomina, una riga col fatto. La copia
+arriva **per slot e non per prop**, se no `copy-audit` non la vede (378 → 426 stringhe
+misurate). Memoria: `drill-down-e-una-figura`.
+
+Tre trappole, tutte misurate: **il corpo va in `rem`, non in `vw`** — il `clamp(rem, vw, tetto)`
+vale per il testo *dentro* un SVG, e legato al viewport cresceva il doppio della colonna, con
+`audit:wrap` che a 3840 tirava su **22 preposizioni appese**; su schermo basso si restringe **il
+disegno, mai il tipo**; e una voce sola va **in riga**, perché a tutta larghezza è
+un'illustrazione e ristretta è un francobollo.
+
+**`audit:ink` ora apre ogni «Scopri come» prima di misurare**: a blocco chiuso quel testo non lo
+guardava nessun gate, ed è la trappola nota (`.hiw-body` non dichiara un colore). Su Intesa i
+blocchi misurati passano da 194 a **241**. Passato anche sugli altri tre deck col drill-down:
+`intesa-scala-umana` e `trenitalia-prospettiva-sales` puliti, ⚠️ **`generazioni-maxmara` ha 73
+blocchi sotto AA** — cammello su avorio usato come inchiostro, preesistente (P1 nuovo).
+
+**Il template genera la forma giusta dal primo giorno** — un `Dettaglio` a tre figure e un
+vocabolario di partenza con cinque meccanismi — e **finalmente dichiara l'anteprima del link**:
+scriveva i meta a mano senza `og:image`, così ogni experience generata nasceva col riquadro
+grigio. Da 167 a **175 pagine su 175** (memoria `og-meta-scritti-a-mano`). ⚠️ La lezione:
+**quando una regola gradua a componente del motore, il template si aggiorna nello stesso giro**,
+se no la regola vale per il passato e non per il futuro.
+
+**La coda di frase orfana — famiglia `F` di `audit:wrap`.** `text-wrap: balance` bilancia le
+righe e non sa niente delle frasi: un titolo di due frasi si spezza dentro la prima e lascia
+una parola più il punto a capo da sole. Sei casi trovati. ⚠️ **Il rimedio non è lo spazio
+unificatore**: legare la frase intera la rende inseparabile e sborda (check `c`, HARD). È
+`.ex-frase { display: inline-block }`, con due trappole — `vertical-align: top`, e `display:
+block` sugli `<span>` di lingua dentro `<T>`, che restano inline e si sovrappongono di quindici
+pixel, che è esattamente ciò che il check `e` guarda. Memoria: `coda-di-frase-orfana`.
 ### Change log — il catalogo del motore, il ritmo, e le slide che si leggono da fondo sala (2026-10-24) → §40 (Parte 18)
 
 **`pnpm deck:catalogo` e `pnpm audit:ritmo`.** Misurato su nove deck: **26 slide su 213 (il
@@ -123,14 +192,4 @@ Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a c
 - Audit dopo: trenitalia `--tv` 373 controlli **0 HARD**, agos 137 controlli **0 HARD** (47 soft = baseline storica). Build dei 16 pacchetti verde.
 - ⚠️ **Resta da guardare**: sette app portano un override non condizionato del contatore (`aperture-email`, `atelier`, `eni-orbita`, `isybank-momento`, `mim-alfabeti`, `poste-sei-domande` oltre ad Agos, ora corretta). Oggi non fanno danno perché su quelle app nessuna slide cambia verdetto, ma è la stessa trappola: se una slide chiara comparisse, il contatore sparirebbe.
 
-
-### Change log — Trenitalia: il design system vero, la grafica, e due giri di panel (2026-10-09) → §36 (Parte 8), commit da `cc5e222` ad `a81579e`
-
-- **La pelle era inventata e adesso è letta** (`cc5e222`). Il deck girava su rosso #E2001A — che è il corporate del Gruppo FS, non quello del sito — su un'**ambra #F5A623 che non esiste in nessuna fonte FS**, e su Space Grotesk. `pnpm brand:tokens` su trenitalia.com restituisce un design system che **si nomina da solo**: `.color-primary-blu` #2f394e (285 occorrenze), `.color-red` #d91835 (34), `.color-primary-green` #006666 (9), **Poppins** 26 volte — e Poppins è distribuibile, quindi niente sostituta. Due estensioni dichiarate perché il sito non ha un tema scuro: il fondo #1b2230 (lo stesso #2f394e abbassato) e le schiariture #ff8d9d / #4fbdb4 per il testo, perché i pieni danno 3,14:1 e 2,35:1.
-- **Gli sfondi c'erano ma non si vedevano**: `opacity-12` sotto un velo al 90%, cioè annullati. Venti immagini Firefly su tutte le slide con uno scrim **radiale** (denso al centro, leggero ai bordi) e due clip in loop su copertina e chiusure. Il **primo giro di generazione è stato buttato**: con gli esadecimali nel prompt e le parole «rete/nodi/flusso» il modello ha consegnato neon ciano, arancio nonostante il negative, e la stessa prospettiva in cinque immagini su ventidue. Rifatto con `contentClass: 'photo'` e parole di colore.
-- **Tredici diagrammi** da una libreria di cinque componenti (`DiagFlusso` · `DiagSoglia` · `DiagStrati` · `DiagFasi` · `DiagIncrocio`), ognuno con la sua variante per fondo chiaro, al posto del testo che già dicevano. `wallScale` su tutte le pagine dopo un giro `--tv` a 0 HARD: il check `i` scende da 99 a 31, e 94 di quei 99 stavano a 2560 e 3840.
-- **Incoerenze fra slide** (`60b0335`, `2fcf223`), il grosso visibile solo confrontandole: il nome della clean room era «Adobe Data Collaboration» — verificato su Experience League, il prodotto è **Adobe Real-Time CDP Collaboration**; lo stesso componente rendeva in due modi perché gli aggiustamenti erano finiti in `<style>` dentro un ramo solo; due copertine di capitolo su dieci erano **bianche su bianco**; «L'opportunità» aveva due trattamenti; il ramo FS Park **non nominava mai la foundation Salesforce di Gruppo**, a cui l'altro ramo dedica una slide e che comprende FS Park per nome.
-- **Un difetto del motore, non dell'app** (`39efb3b`): `DARK_CLASSES` in `deck.ts` tiene per scura la classe della superficie *inverse*, vero nelle experience a dominante chiara e falso nelle quattro a dominante scura — su `/scenario/` la firma co-brand era bianca su #f8f9fa. Aggirato qui, registrato come **P1** per il core.
-- **Panel review, due giri** (`551c5cb`, `0f3714b`, `c327e16`, `a81579e`) con **il responsabile del digitale di Trenitalia** come stakeholder principale e cinque altri ritratti. Medie da **2,17 → 4,00** (credibilità dei fatti), 2,33 → 3,50, 3,17 → 4,00, 2,00 → 3,50, 2,33 → 3,67. Fuori l'**incidente di sicurezza del cliente** usato come leva di vendita (cinque personas su sei si fermavano lì), «100% GDPR-compliant», «da sei perimetri a uno solo»; dentro la **slide del POC** che mancava al ramo Trenitalia, misure con baseline al posto dei «KPI target», e il **varco** fra le fonti di FS Park. ⚠️ Un giro è stato **buttato perché il pacchetto di evidenza mentiva**: lo script di cattura fotografava le slide a metà dissolvenza, e tre personas hanno scritto «questa slide arriva vuota» su slide che si vedono benissimo.
-- Audit `--tv`: **13 rotte × 5 viewport, 373 controlli, 0 HARD**.
 

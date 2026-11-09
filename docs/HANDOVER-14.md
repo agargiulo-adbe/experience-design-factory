@@ -10,6 +10,16 @@
      il 12 ott per fare posto al change log dell'11-12 ott. I confini sono tutti a un ### -->
 
 
+### Change log — Trenitalia: il design system vero, la grafica, e due giri di panel (2026-10-09) → §36 (Parte 8), commit da `cc5e222` ad `a81579e`
+
+- **La pelle era inventata e adesso è letta** (`cc5e222`). Il deck girava su rosso #E2001A — che è il corporate del Gruppo FS, non quello del sito — su un'**ambra #F5A623 che non esiste in nessuna fonte FS**, e su Space Grotesk. `pnpm brand:tokens` su trenitalia.com restituisce un design system che **si nomina da solo**: `.color-primary-blu` #2f394e (285 occorrenze), `.color-red` #d91835 (34), `.color-primary-green` #006666 (9), **Poppins** 26 volte — e Poppins è distribuibile, quindi niente sostituta. Due estensioni dichiarate perché il sito non ha un tema scuro: il fondo #1b2230 (lo stesso #2f394e abbassato) e le schiariture #ff8d9d / #4fbdb4 per il testo, perché i pieni danno 3,14:1 e 2,35:1.
+- **Gli sfondi c'erano ma non si vedevano**: `opacity-12` sotto un velo al 90%, cioè annullati. Venti immagini Firefly su tutte le slide con uno scrim **radiale** (denso al centro, leggero ai bordi) e due clip in loop su copertina e chiusure. Il **primo giro di generazione è stato buttato**: con gli esadecimali nel prompt e le parole «rete/nodi/flusso» il modello ha consegnato neon ciano, arancio nonostante il negative, e la stessa prospettiva in cinque immagini su ventidue. Rifatto con `contentClass: 'photo'` e parole di colore.
+- **Tredici diagrammi** da una libreria di cinque componenti (`DiagFlusso` · `DiagSoglia` · `DiagStrati` · `DiagFasi` · `DiagIncrocio`), ognuno con la sua variante per fondo chiaro, al posto del testo che già dicevano. `wallScale` su tutte le pagine dopo un giro `--tv` a 0 HARD: il check `i` scende da 99 a 31, e 94 di quei 99 stavano a 2560 e 3840.
+- **Incoerenze fra slide** (`60b0335`, `2fcf223`), il grosso visibile solo confrontandole: il nome della clean room era «Adobe Data Collaboration» — verificato su Experience League, il prodotto è **Adobe Real-Time CDP Collaboration**; lo stesso componente rendeva in due modi perché gli aggiustamenti erano finiti in `<style>` dentro un ramo solo; due copertine di capitolo su dieci erano **bianche su bianco**; «L'opportunità» aveva due trattamenti; il ramo FS Park **non nominava mai la foundation Salesforce di Gruppo**, a cui l'altro ramo dedica una slide e che comprende FS Park per nome.
+- **Un difetto del motore, non dell'app** (`39efb3b`): `DARK_CLASSES` in `deck.ts` tiene per scura la classe della superficie *inverse*, vero nelle experience a dominante chiara e falso nelle quattro a dominante scura — su `/scenario/` la firma co-brand era bianca su #f8f9fa. Aggirato qui, registrato come **P1** per il core.
+- **Panel review, due giri** (`551c5cb`, `0f3714b`, `c327e16`, `a81579e`) con **il responsabile del digitale di Trenitalia** come stakeholder principale e cinque altri ritratti. Medie da **2,17 → 4,00** (credibilità dei fatti), 2,33 → 3,50, 3,17 → 4,00, 2,00 → 3,50, 2,33 → 3,67. Fuori l'**incidente di sicurezza del cliente** usato come leva di vendita (cinque personas su sei si fermavano lì), «100% GDPR-compliant», «da sei perimetri a uno solo»; dentro la **slide del POC** che mancava al ramo Trenitalia, misure con baseline al posto dei «KPI target», e il **varco** fra le fonti di FS Park. ⚠️ Un giro è stato **buttato perché il pacchetto di evidenza mentiva**: lo script di cattura fotografava le slide a metà dissolvenza, e tre personas hanno scritto «questa slide arriva vuota» su slide che si vedono benissimo.
+- Audit `--tv`: **13 rotte × 5 viewport, 373 controlli, 0 HARD**.
+
 ### Change log — il guscio sensoriale: marchio, movimento, suono, scala (2026-10-09) → `CLAUDE.md`, `skills/experience-design/references/sensory-shell.md`, commit `f84c767`→`fc28457`
 
 - **Quattro cose che si vedono prima che si legga una riga, e che nessun check faceva fallire** (`f84c767`), ora generalizzate in una regola BINDING e in un reference della skill: **marchio** (ogni experience ha il suo `public/favicon.svg` geometrico — mai una lettera, mai il logo del cliente — e `pnpm brand:icons` ne deriva `icon-192`, `apple-touch-icon` e `og.png`); **movimento** (la clip in loop sta su copertina e chiusura, dove non si parla; `--boomerang` quando la clip deriva e nessuna dissolvenza fa combaciare testa e coda); **suono**; **scala**.
@@ -167,28 +177,3 @@ Nessun commit: il deck vive in `docs/Intesa Sanpaolo/`, git-ignorata. Tracciato 
   conteggi della pagina riconciliati col registry (11 totali, 6 pubblicate, 2 interne, 9 clienti).
 
 
-### Change log — la tassonomia in vetrina, i due gate, la seconda skill; terzo giro di panel (2026-10-03)
-- `6335a33` **feat(showcase)** — risposta alla domanda dell'autore («tassonomia e panel meritano più
-  risalto?»). Nuova fascia **`#deliverables`** con i quattro tipi nominati per la domanda del cliente,
-  resa da `experienceTypes.ts`; **`#why`** ristrutturato (quattro valori brevi + i **due gate in
-  coppia**, «si vede» e «regge», + la nota «che cosa ha cambiato»); **passo 07** del flusso riscritto
-  (diceva «verificato contro la KB», che non è il gate); **`#skill` a due skill**, la seconda è il
-  panel review con zip e `INSTALL.md`; **card remota di `#proof`** riparata (stili scoped di Astro
-  contro DOM costruito a runtime — memoria `astro-scoped-css-runtime-dom`); **nav** stretta perché le
-  voci sono dodici. **Rimosso** il blocco «Dove vive, chi la vede» su decisione dell'autore.
-  Dettaglio in **§13.10 (HANDOVER-05)**. Build 14 app verde, pushato.
-- **Terzo giro di panel sulla delta** (§13.11): credibilità **4,0 → 3,3**, rischio **2,0 → 1,3**
-  (minimo dei tre giri), rilevanza e azionabilità +0,2. **15 P0 · 20 P1 · 11 P2**, nove P0 applicati
-  nello stesso commit. La lezione, scritta perché non vada persa: **togliere la dichiarazione di un
-  rischio non toglie il rischio** — la rimozione ha lasciato un rimando morto, una frase che negava
-  nomi presenti dieci volte nel DOM, e i punteggi interni del panel accanto al nome di un cliente su
-  una pagina senza login. Tutte e tre corrette; la decisione di fondo resta dell'autore (§10).
-- **Trovato dal panel, fuori dalla vetrina**: sette `docs/HANDOVER-*.md` **tracciati** nominano
-  referenti reali dei clienti su un repository **pubblico** (`raw.githubusercontent` risponde 200).
-  Prima voce P0 di §10, memoria `client-names-public-repo`.
-
-### Change log — il marchio smette di sembrare rotto, e il link condiviso mostra un'immagine (2026-10-02, sera tardi) → dettaglio §32.9
-- `f954792` **feat(poste)** — segnalazione dell'owner su screenshot di Teams: «il logo e il favicon restano bruttini, sembra un'immagine non caricata». Era vero, ed era lo **stesso difetto del 30/9 spostato di un passo**: il «?» era stato tracciato per non dipendere dal font, ma un arco di 3,4px con un puntino **a 16px legge come un carattere che non ha caricato**. Il problema non era il font, era che **un glifo sottile non regge alla misura di una favicon**. Sostituito dalla **faccia del sei** (due colonne per tre, l'ultimo punto giallo = la risposta): forma piena, non lettera. Verificata a 16/24/32/64/96 px e nella nav a 1920.
-- Stessa richiesta, seconda parte: **l'anteprima del link non aveva immagine**. Mancava `og:image` — Teams prendeva titolo e descrizione e metteva il suo segnaposto grigio. Aggiunta una card **1200×630** renderizzata con Playwright dal **poster vero della copertina** + lockup Adobe × Posteitaliane + titolo, col giallo solo su «dentro Adobe Analytics». Più `og:url`, `og:locale`, dimensioni e alt, `twitter:card`, `canonical`, `theme-color`, icone raster 192/180. ⚠️ **Gli URL vanno assoluti** (da `Astro.site`): con un path relativo l'unfurler non risolve e la card resta vuota — la trappola per cui il fix sembra applicato e non si vede. ⚠️ Il deck resta `noindex`: **Teams lo ignora** (verificato live), **LinkedIn potrebbe no**.
-- `ef5f741` **docs** — §32.9 e il **P2** per il resto della Factory: hub, showcase e le altre nove experience condividono il link senza immagine. La ricetta è nel commit, ma la card è arte per experience: una alla volta.
-- **Gate**: build verde, `astro check` 0 errori, `audit:deck` **0 HARD** e soft invariati (il marchio sta nella nav, fuori dalle misure), deploy Pages **success**, `og.png` verificato sul live (200, 409 KB, `image/png`).

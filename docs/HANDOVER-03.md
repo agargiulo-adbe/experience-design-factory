@@ -5,6 +5,16 @@
 
 ## 11. Change log recente
 
+### Change log — la Prospettiva Sales cambia registro su tutto il deck, e una slide nuova su quello che il cliente ha già fatto (2026-11-09) → §37 (Parte 16)
+
+⚠️ **Questa giornata non è committata**: 14 file modificati nel working tree, e la stanza è **il 10 novembre**. Quello che oggi è in rete è ancora lo stato del 7 nov. — `apps/trenitalia-prospettiva-sales`, `docs/Claude/posta.py`
+
+- **Un giro di registro su tutto il deck, ~40 stringhe.** Il movimento è uno solo e si riconosce voce per voce: l'affermazione sul cliente diventa domanda o constatazione, e il dito puntato sparisce. L'**ask** è il caso che conta — «Confermate la rotta, e portateci al tavolo.» diventa «Una conferma sulla rotta, e un posto al tavolo.», e la chiusa «Non chiediamo di cambiare chi vi accompagna. Chiediamo di essere nella stanza quando il piano si scrive.» diventa «Chi vi accompagna oggi resta. Ci piacerebbe partecipare quando il piano si scrive.» (`ASK_A_VOCE` in `relatore.ts` allineato, perché l'ask sta in un posto solo). Poi: «la vendita è persa prima che una vostra pagina si apra» → «può sfuggire prima del vostro sito»; «a mano non si tiene il passo» → «a mano è difficile stare al passo»; l'etichetta dei punti da «tavolo condiviso» / «il vostro tavolo» a «decisione condivisa» / «decisione vostra»; «Siete in due» → «Oggi gli operatori sono due»; «Un canale che non vi racconta» (WeChat) → «I dati restano dentro WeChat»; «Quello che avete appena firmato» → «L'accordo con Costa Crociere». Due correzioni non sono di tono ma di **attribuzione**: il 96% passa da «parole sue dell'ottobre 2025» a «parole del Direttore Sales, ottobre 2025» (in un deck che gira, «sue» non ha antecedente), e le due referenze dichiarano «Settore diverso» invece di «Altro perimetro».
+- **Slide nuova, `slide-citta`, nel capitolo 04** — «Una proposta legata alla città di chi naviga: l'avete già provata». È la prima slide del deck che parte da **un lavoro loro**: offerta mostrata a chi entra da una città, riconosciuta dall'indirizzo IP, **con Adobe Target**, in homepage su campione limitato; pubblico, proposta e gruppo di controllo già impostati e riusabili su altre città; e il punto vero — **dopo la formazione il team Trenitalia l'ha costruita e pubblicata in autonomia**. In fonte: realizzata da FS Technology con il partner di progetto e il supporto di Adobe Ultimate Success; la schermata è un esempio nostro. ⚠️ **Nessun risultato in slide, per scelta**: restano perimetro e che cosa dimostra, perché in sala c'è chi quel lavoro l'ha seguito e i numeri li racconta lui se vuole — e la nota per chi presenta lo dice (`attenzione`). Nuova variante `citta` in `MockIdea.astro`.
+- **`SlideIdea.astro`: la colonna destra si scopre a mano.** I quattro blocchi passano da `data-reveal` automatico a **`data-substep`** — ↓ ne fa entrare uno, ↑ lo ritira, → passa alla slide dopo: chi parla decide quando si legge, invece di avere tutto addosso all'ingresso. Con «Riduci movimento» sono tutti visibili, ed è lo stato che i gate misurano.
+- **`docs/Claude/posta.py`: il profilo Outlook non è più scritto a mano.** Era fisso su `Main Profile`; su un'installazione nuova si chiama `Main Identity`, e lo script falliva **senza dire perché** — visto il 9 nov migrando su un altro Mac. Ora il profilo si cerca (`glob("*/HxStore.hxd")`) e fra più candidati vince il più grande, che è quello con dentro la posta; se non trova nulla restituisce il percorso storico, così il messaggio d'errore a valle resta quello di sempre.
+- ⚠️ **Gate 3.4**: il panel è del **6 novembre**, due giri, e non copre **né** il registro nuovo **né** la slide nuova. Vedi il P0 in testa alla Parte 2.
+
 ### Change log — il motore .pptx prende i trattamenti, i comandi d'account diventano espliciti (2026-11-07) → §39 (Parte 21)
 
 - `5b19769` **`scripts/pptx/compose.py` cresce di 104 righe: trattamenti e geometria.** È il motore
@@ -551,72 +561,3 @@ cima alla prima sezione. Si è visto solo aprendo la pagina in inglese. Corrette
 del gate, gli `aria-label`), con la trappola che `.dw-lbl` sta sia nel bottone dell'indice sia
 in quello del PDF: tradurli insieme faceva comparire due «Contents» affiancati.
 
-### Change log — «Dove ci innestiamo»: il deck del 5 novembre, e quattro fatti corretti alla fonte (2026-10-23 → 2026-10-26) → §40 (Parte 18)
-
-**Un'experience nuova in tre giorni.** `apps/intesa-innesto`, Blueprint per la Divisione Banca
-dei Territori: **23 slide su 7 rotte**, design system letto dal CSS di produzione del cliente
-(verde `#258900`, Open Sans). Il cuore è la slide dell'architettura — un SVG con uno strato
-HTML di ancore sopra, che **nasce a fasi** sotto le frecce del deck: prima quello che hanno,
-poi dove si ferma, poi il pezzo che si appoggia sopra. Geometria **calcolata e non posata a
-occhio**: cinque nodi identici di 248 unità che fanno esattamente 1440.
-
-**Il fact check del 24-25 ha corretto quattro cose di merito** (§40.3). Le quattro cifre
-pubbliche erano **giuste e la fonte sbagliata**: il comunicato del piano d'impresa esiste e non
-le contiene — stanno in una dichiarazione del Gruppo di febbraio 2026, che per giunta dice
-«prodotti **per i privati**» e «**applicativi** cloud a **fine 2025**», non «infrastruttura».
-**«Adobe AI Decisioning» non è un prodotto**: la Product Description di AJO dice che
-*Decisioning* è un **add-on**, e il nome era sbagliato in slide, in figura, nel segnaposto
-video e nella console (memoria `decisioning-e-un-add-on-ajo`). Il recupero a ritroso di CJA
-**non è «sei mesi»**: a regime è 1–30 giorni, i 13 o 25 mesi sono il backfill iniziale. E i due
-innesti **poggiano su una base Experience Platform che oggi non c'è**, dichiarata nella slide
-che già si chiama «Non è un rifacimento. Non è nemmeno gratis».
-
-⚠️ **Due numeri della figura non avevano fonte** e sono diventati domande (memoria
-`un-numero-che-sembra-misurato`): «da 6 a 24 ore» e «cap settimanale». Che il ritardo ci sia
-l'ha detto il cliente, quanto sia era nostro; che un tetto ci sia è mestiere, che fosse
-settimanale un'invenzione. **In un diagramma un intervallo numerico si legge come misurato**
-qualunque cosa dica la didascalia — e il 5 novembre in sala c'è chi quel numero lo conosce.
-
-**Il guscio sensoriale acceso e misurato** (§40.4): sette sfondi Firefly e due clip in loop. Il
-primo giro di sfondi aveva **la luce al centro**, cioè dove va il titolo. Le clip sono ricucite
-(la chiusura derivava e ha chiuso il giro in `--boomerang`), e il velo è misurato sul punto più
-chiaro sotto il titolo: **5,19:1 nel caso peggiore** contro i 3:1 richiesti. **Il marchio** era
-ancora il segnaposto del template, con il commento «da sostituire» nel file: ora è l'innesto, e
-la gerarchia sta nel **peso del tratto** perché a 16px l'opacità faceva sparire la linea.
-
-### Change log — ancore, non prosa: la regola entra nel template, nei gate e in tutti i deck (2026-10-24) → §40 (Parte 18)
-
-**Il drill-down si apre su figure, non su paragrafi.** La regola «ancore, non prosa» era
-risolta a metà: la pagina restava pulita e il «Scopri come» diventava quattro paragrafi dietro
-un bottone — lo stesso muro di testo, nascosto nel posto peggiore, perché quel blocco in sala si
-apre **per rispondere a una domanda**. Nascono `Dettaglio` e `DettaglioVoce` nel motore: per
-ogni voce un micro-diagramma che si muove, l'ancora che lo nomina, una riga col fatto. La copia
-arriva **per slot e non per prop**, se no `copy-audit` non la vede (378 → 426 stringhe
-misurate). Memoria: `drill-down-e-una-figura`.
-
-Tre trappole, tutte misurate: **il corpo va in `rem`, non in `vw`** — il `clamp(rem, vw, tetto)`
-vale per il testo *dentro* un SVG, e legato al viewport cresceva il doppio della colonna, con
-`audit:wrap` che a 3840 tirava su **22 preposizioni appese**; su schermo basso si restringe **il
-disegno, mai il tipo**; e una voce sola va **in riga**, perché a tutta larghezza è
-un'illustrazione e ristretta è un francobollo.
-
-**`audit:ink` ora apre ogni «Scopri come» prima di misurare**: a blocco chiuso quel testo non lo
-guardava nessun gate, ed è la trappola nota (`.hiw-body` non dichiara un colore). Su Intesa i
-blocchi misurati passano da 194 a **241**. Passato anche sugli altri tre deck col drill-down:
-`intesa-scala-umana` e `trenitalia-prospettiva-sales` puliti, ⚠️ **`generazioni-maxmara` ha 73
-blocchi sotto AA** — cammello su avorio usato come inchiostro, preesistente (P1 nuovo).
-
-**Il template genera la forma giusta dal primo giorno** — un `Dettaglio` a tre figure e un
-vocabolario di partenza con cinque meccanismi — e **finalmente dichiara l'anteprima del link**:
-scriveva i meta a mano senza `og:image`, così ogni experience generata nasceva col riquadro
-grigio. Da 167 a **175 pagine su 175** (memoria `og-meta-scritti-a-mano`). ⚠️ La lezione:
-**quando una regola gradua a componente del motore, il template si aggiorna nello stesso giro**,
-se no la regola vale per il passato e non per il futuro.
-
-**La coda di frase orfana — famiglia `F` di `audit:wrap`.** `text-wrap: balance` bilancia le
-righe e non sa niente delle frasi: un titolo di due frasi si spezza dentro la prima e lascia
-una parola più il punto a capo da sole. Sei casi trovati. ⚠️ **Il rimedio non è lo spazio
-unificatore**: legare la frase intera la rende inseparabile e sborda (check `c`, HARD). È
-`.ex-frase { display: inline-block }`, con due trappole — `vertical-align: top`, e `display:
-block` sugli `<span>` di lingua dentro `<T>`, che restano inline e si sovrappongono di quindici
-pixel, che è esattamente ciò che il check `e` guarda. Memoria: `coda-di-frase-orfana`.
