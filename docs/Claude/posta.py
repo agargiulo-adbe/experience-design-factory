@@ -47,9 +47,27 @@ import re
 import sys
 import time
 
-STORE = pathlib.Path(os.path.expanduser(
-    "~/Library/Group Containers/UBF8T346G9.Office/Outlook/"
-    "Outlook 15 Profiles/Main Profile/HxStore.hxd"))
+# Il nome del profilo NON è fisso: un'installazione vecchia lo chiama
+# «Main Profile», una nuova «Main Identity» (visto il 9 nov 2026 migrando
+# su un altro Mac: lo script falliva senza dire perché). Si cerca il
+# profilo invece di scriverlo, e fra più candidati vince il più grande,
+# che è quello con dentro la posta.
+_PROFILI = pathlib.Path(os.path.expanduser(
+    "~/Library/Group Containers/UBF8T346G9.Office/Outlook/Outlook 15 Profiles"))
+
+
+def _trova_store() -> pathlib.Path:
+    candidati = sorted(
+        _PROFILI.glob("*/HxStore.hxd"),
+        key=lambda f: f.stat().st_size if f.exists() else 0,
+        reverse=True,
+    )
+    # se non c'è nulla si restituisce comunque il percorso storico, così il
+    # messaggio d'errore a valle resta quello di sempre
+    return candidati[0] if candidati else _PROFILI / "Main Profile/HxStore.hxd"
+
+
+STORE = _trova_store()
 CACHE = pathlib.Path(os.path.expanduser("~/.cache/posta-outlook"))
 INDICE = CACHE / "indice.txt"
 META = CACHE / "indice.json"
