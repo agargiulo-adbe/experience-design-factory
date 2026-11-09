@@ -30,6 +30,9 @@ interface Props {
   /** 1–7 = la fermata accesa. 0 = il giro intero, nessuna accesa. */
   attivo?: number;
   grande?: boolean;
+  /** La variante da protagonista: l'anello occupa il riquadro e le etichette
+      laterali sporgono nelle colonne accanto. Solo dove quelle colonne ci sono. */
+  ampio?: boolean;
   /** Le sette fermate compaiono una alla volta con la freccia in basso.
       Ogni passo è UN `data-substep`: arco, freccia, nodo ed etichetta
       stanno nello stesso elemento, se no servirebbero quattro passi per
@@ -41,7 +44,7 @@ interface Props {
   ritratto?: string;
   class?: string;
 }
-const { attivo = 0, grande = false, aPassi = false, ritratto, class: className } = Astro.props;
+const { attivo = 0, grande = false, ampio = false, aPassi = false, ritratto, class: className } = Astro.props;
 
 const N = MOMENTI.length;
 const PASSO = 360 / N;
@@ -53,20 +56,27 @@ const ang = (i: number) => (-90 + i * PASSO) * (Math.PI / 180);
    le etichette larghe una percentuale anch'esse: una larghezza in rem
    dentro un contenitore che scala in percentuale esce dal riquadro ai
    viewport stretti, ed è esattamente il `c`/`j` che l'audit ha trovato. */
-const R = grande ? 23 : 40;
+const R = ampio ? 32 : grande ? 23 : 40;
 /* ⚠️ `ETI` non è una scelta estetica: è vincolata dalla larghezza delle
    etichette. Un'etichetta a destra occupa `ex + 0,92 × larghezza`, e deve
    stare entro il 100%. Con etichette al 20% del riquadro il massimo è
    ETI = 31: a 38 uscivano di 37px, ed è il `c`/`j` che l'audit trovava a
    tutti e tre i viewport. Se si cambia la larghezza, si rifà questo conto. */
-const ETI = grande ? 31 : 0;
+const ETI = ampio ? 41 : grande ? 31 : 0;
 
+/* Il riquadro «ampio» è più largo che alto: in verticale l'anello riempie, ai
+   lati le etichette hanno il loro spazio DENTRO il riquadro (un figlio che
+   sporge gonfia lo scrollWidth, ed è il `c` HARD). L'SVG resta centrato e
+   circolare; solo le ascisse in percentuale si dividono per il rapporto. */
+const ASPETTO = ampio ? 1.3 : 1;
 const nodi = MOMENTI.map((m, i) => ({
   m, i,
-  x: 50 + R * Math.cos(ang(i)),
+  x: 50 + (R / ASPETTO) * Math.cos(ang(i)),
   y: 50 + R * Math.sin(ang(i)),
-  ex: 50 + ETI * Math.cos(ang(i)),
-  ey: 50 + ETI * Math.sin(ang(i)),
+  ex: 50 + (ETI / ASPETTO) * Math.cos(ang(i)),
+  /* Nell'ampio le due etichette in basso scendono un poco: a 1280×800 il nodo
+     copriva l'inizio del testo, e nessun gate lo vede. */
+  ey: 50 + ETI * Math.sin(ang(i)) + (ampio && Math.sin(ang(i)) > 0.6 ? 2.5 : 0),
 }));
 
 /* Un ARCO per segmento, del colore del gruppo da cui parte: così i
@@ -107,7 +117,7 @@ const LEGENDA = [
 
 const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
 ---
-<figure class:list={['im-cer', grande && 'im-cer--grande', aPassi && 'im-cer--passi', className]}>
+<figure class:list={['im-cer', grande && 'im-cer--grande', ampio && 'im-cer--ampio', aPassi && 'im-cer--passi', className]}>
   <div class="im-cer-campo">
 
     {/* L'anello di guida: c'è da subito, anche a passi spenti, così il

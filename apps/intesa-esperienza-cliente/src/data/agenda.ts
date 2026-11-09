@@ -23,59 +23,49 @@ export interface VoceAgenda {
   riga: { it: string; en: string };
   /** Lo slug del capitolo, quando esiste. `null` = ancora da innestare. */
   capitolo: string | null;
+  /** La slide di arrivo, quando la voce non comincia dalla prima del capitolo. */
+  ancora?: string;
 }
 
 export const AGENDA: VoceAgenda[] = [
-  /* ⚠️ UN INDICE SOLO (panel del 30 ott 2026). La copertina titolava
-     «02 Tutta l'offerta Adobe · 03 Lo stesso mutuo · 04 Dal dato alla
-     decisione» mentre la barra e le cover dicevano «02 Scenario · 03 La
-     persona · 04 I sette momenti»: due indici dello stesso documento,
-     e chi seguiva l'agenda non ritrovava i capitoli. Ora i numeri e i
-     titoli sono quelli della barra, che è quella che si percorre; la
-     `riga` resta il posto dove l'agenda dice di che cosa si parla. */
+  /* ⚠️ L'AGENDA CONCORDATA DAL TEAM (9 nov 2026), parole sue, ed è più corta
+     della barra dei capitoli: sette voci contro nove capitoli. «Dove ci
+     innestiamo» copre i capitoli 04 e 05. Il pannello del 30 ott aveva
+     chiesto un indice solo: qui la differenza è voluta, e la decisione è di
+     chi presenta. */
   {
     n: '01', capitolo: 'adobe',
-    titolo: { it: 'Adobe per Intesa Sanpaolo', en: 'Adobe for Intesa Sanpaolo' },
-    riga: { it: 'Chi siamo, i blocchi dell’offerta, e le tre cose di cui si parla oggi', en: 'Who we are, the building blocks, and the three things on the table today' },
+    titolo: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' },
+    riga: { it: 'Posizionamento nei servizi finanziari e obiettivo dell’incontro', en: 'Our position in financial services and the aim of this meeting' },
   },
   {
-    n: '02', capitolo: 'scenario',
-    titolo: { it: 'Scenario', en: 'Scenario' },
-    riga: { it: 'Il segnale che c’è già, e il motore di targeting che resta', en: 'The signal that already exists, and the targeting engine that stays' },
+    n: '02', capitolo: 'adobe', ancora: 'slide-cx',
+    titolo: { it: 'L’offerta Adobe', en: 'The Adobe offering' },
+    riga: { it: 'Da farsi trovare alla misura: i tre blocchi principali dell’offerta', en: 'From being found to measurement: the three main building blocks' },
   },
   {
-    n: '03', capitolo: 'persona',
-    titolo: { it: 'La persona', en: 'The persona' },
-    riga: { it: 'Giulia, 34 anni, non è vostra cliente: le sue tracce, e i dati che mancano', en: 'Giulia, 34, not your customer: her traces, and the data that is missing' },
+    n: '03', capitolo: 'scenario',
+    titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
+    riga: { it: 'Misurare i canali, scegliere chi contattare, decidere l’offerta', en: 'Measuring channels, choosing whom to contact, deciding the offer' },
   },
   {
     n: '04', capitolo: 'momenti',
-    titolo: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' },
-    riga: { it: 'Sopra la sua vista, sotto la vostra', en: 'Her view above, yours below' },
+    titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
+    riga: { it: 'L’architettura di arrivo: che cosa resta vostro, che cosa aggiungiamo', en: 'The target architecture: what stays yours, what we add' },
   },
   {
-    n: '05', capitolo: 'messa-a-terra',
-    titolo: { it: 'Come si mette a terra', en: 'How it gets built' },
-    riga: { it: 'Sulla vostra architettura: l’esistente, il nuovo, e ciò che resta vostro', en: 'On your architecture: what you have, what gets added, what stays yours' },
+    n: '05', capitolo: 'coworker',
+    titolo: { it: 'AI Conversazionali: motore di lavoro', en: 'Conversational AI: the engine of the work' },
+    riga: { it: 'Dalla domanda al dato, dall’obiettivo alla campagna pronta', en: 'From question to data, from objective to a campaign ready to go' },
   },
   {
-    n: '06', capitolo: 'coworker',
-    titolo: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' },
-    riga: { it: 'Dall’obiettivo alla campagna pronta, con i vostri dati', en: 'From objective to a campaign ready to go, on your data' },
-  },
-  {
-    n: '07', capitolo: 'risultati',
+    n: '06', capitolo: 'risultati',
     titolo: { it: 'Banche che lo fanno già', en: 'Banks already doing it' },
     riga: { it: 'Che cosa hanno in produzione, con quali numeri', en: 'What they run in production, with which numbers' },
   },
   {
-    n: '08', capitolo: 'analytics',
-    titolo: { it: 'CX Analytics', en: 'CX analytics' },
-    riga: { it: 'Che cosa si misura, e che cosa se ne fa chi decide', en: 'What gets measured, and what the decision-makers do with it' },
-  },
-  {
-    n: '09', capitolo: 'prossimi-passi',
+    n: '07', capitolo: 'prossimi-passi',
     titolo: { it: 'Prossimi passi', en: 'Next steps' },
-    riga: { it: 'Le misure dal giorno uno, e quello che ci serve da voi', en: 'The measures from day one, and what we need from you' },
+    riga: { it: 'Che cosa facciamo da qui, chi lo fa, entro quando', en: 'What we do from here, who does it, by when' },
   },
 ];

@@ -107,6 +107,11 @@ export interface Momento {
    ══════════════════════════════════════════════════════════════════════ */
 export const DOMANDE_IN_SLIDE = false;
 
+/* Il paragrafo sotto i titoli dei sette momenti: spento il 9 nov 2026 su
+   richiesta di chi presenta («togli sottotitoli da tutti i passaggi»). Il testo
+   resta qui, in `corpo`, ed è la traccia di chi parla: `true` lo riaccende. */
+export const CORPO_IN_SLIDE = false;
+
 export const MOMENTI: Momento[] = [
   {
     n: '01', of: '07',
@@ -205,7 +210,7 @@ export const MOMENTI: Momento[] = [
     prodotto: 'Journey Optimizer · Decisioning',
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
-      titolo: { it: 'Le manca una busta paga, e chiude', en: 'A payslip is missing, and she closes the tab' },
+      titolo: { it: 'Manca un foglio, e la casa aspetta il fine settimana', en: 'One sheet of paper is missing, and the house waits for the weekend' },
       corpo: {
         it: 'Non ha cambiato idea: le serve un documento che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto la stessa domanda l’ha fatta ad altre due banche, e una di loro le scrive domani.',
         en: 'She has not changed her mind: she needs a document she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she asked two other banks the same question, and one writes to her tomorrow.',
@@ -213,7 +218,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'decisione', scena: 'lavoro-04-decisione',
-      titolo: { it: 'Quattro cose da dirle, e una sola può partire', en: 'Four things to tell her, and only one can go' },
+      titolo: { it: 'Next Best Experience: delle quattro proposte ne parte una sola', en: 'Next Best Experience: of the four proposals, only one goes out' },
       corpo: {
         it: 'Su chi non è ancora cliente il profilo è sottile: due sessioni, una simulazione, un consenso. Serve il posto dove si decide quale proposta parte, su quale canale e dentro la politica di contatto, valutata quando si decide.',
         en: 'For someone not yet a customer the profile is thin: two sessions, one simulation, one consent. What is missing is where to decide which proposal goes, on which channel and within the contact policy, evaluated at decision time.',
@@ -254,14 +259,14 @@ export const MOMENTI: Momento[] = [
     ora: { it: 'Ore 11:30, due giorni dopo', en: '11:30 AM, two days later' },
     dove: { it: 'In filiale', en: 'In branch' },
     short: { it: 'In filiale', en: 'In branch' },
-    funzione: { it: 'Il quadro si chiede', en: 'The briefing is asked for' },
+    funzione: { it: 'Il gestore sa già chi è', en: 'The adviser already knows who she is' },
     canale: { it: 'Filiale', en: 'Branch' },
     gruppo: 'piattaforma',
     verifica: { it: 'Oggi che cosa vede, di una persona non ancora cliente, chi riceve l’appuntamento?', en: 'Today, what does the person taking the appointment see about someone who is not yet a customer?' },
     prodotto: 'CX Enterprise Coworker',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
-      titolo: { it: 'Non è ancora vostra cliente, e il gestore sa già tutto', en: 'She is not your customer yet, and the adviser already knows' },
+      titolo: { it: 'Non è ancora vostra cliente, ma il gestore sa già tutto', en: 'She is not your customer yet, but the adviser already knows everything' },
       corpo: {
         it: 'Entra per l’appuntamento e trova la sua simulazione già aperta: stesso importo, stessa rata, stessi documenti. Non le viene chiesto di raccontare da capo quello che ha già fatto sul sito tre sere prima.',
         en: 'She arrives for the appointment and finds her simulation already open: same amount, same instalment, same documents. She is not asked to retell what she already did on the site three evenings earlier.',
@@ -269,9 +274,9 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'coworker', scena: 'lavoro-06-filiale-back',
-      titolo: { it: 'Il quadro non si costruisce a mano: si chiede', en: 'The briefing is not built by hand: it is asked for' },
+      titolo: { it: 'Il gestore chiede a parole il prospetto di Giulia, senza compilarlo a mano', en: 'The adviser asks in plain words for Giulia’s summary, with nothing to compile by hand' },
       corpo: {
-        it: 'Nel CRM ha solo il lead aperto dal percorso, con l’appuntamento. Il quadro arriva sulla postazione all’apertura, via API; chi lo riceve chiede a parole quello che manca. È uno scenario da costruire con voi, non una funzione pronta.',
+        it: 'Nel CRM ha solo il lead aperto dal percorso, con l’appuntamento. Il prospetto arriva sulla postazione all’apertura, via API; chi lo riceve chiede a parole quello che manca. È uno scenario da costruire con voi, non una funzione pronta.',
         en: 'In the CRM she has only the lead opened by the journey, with the appointment. The briefing lands on the workstation when it opens, via API; whoever receives it asks in words for what is missing. A scenario to build with you, not a ready-made feature.',
       },
     },

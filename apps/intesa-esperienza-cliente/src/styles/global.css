@@ -2935,7 +2935,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-cop-sx { display: grid; gap: 0.9rem; min-width: 0; justify-items: start; margin-left: 0; max-width: 33rem; }
 .im-cop-lockup { margin-bottom: 0.1rem; }
 .im-cop-t {
-  margin: 0; max-width: 11ch;
+  margin: 0; max-width: 15ch;
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(2rem, 3vw, 4.7rem); line-height: 1.02;
   letter-spacing: -0.025em; color: #ffffff; text-wrap: balance;
@@ -3931,24 +3931,87 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-giro .im-rit { margin-top: 0; max-width: none; }
 .im-giro .im-fronte-l li { font-size: clamp(0.95rem, 0.78vw, 1.75rem); }
 .im-giro-n { margin: 0.7rem 0 0; max-width: none; font-size: clamp(0.9rem, 0.72vw, 1.62rem); line-height: 1.4; color: var(--color-grey-200); }
-.im-arch-b:has(> .im-arch-n) { position: relative; }
-.im-arch-b:has(> .im-arch-n) .im-arch-t { padding-right: 2.2rem; }
-.im-arch-n {
-  position: absolute; top: 0.6rem; right: 0.7rem; width: 1.6rem; height: 1.6rem; border-radius: 999px;
-  display: grid; place-items: center; background: #ffffff; color: #071a00;
-  font-size: clamp(0.8rem, 0.68vw, 1.5rem); font-weight: 700; line-height: 1;
-}
 @media (max-width: 900px) { .im-giro { grid-template-columns: minmax(0, 1fr); } }
 
 /* I due titoli del Giro 9 nov portano una frase intera, non un'etichetta:
    a colonna stretta diventavano cinque righe. */
 #slide-m-01 .im-due-banda[data-lato='cliente'] .im-due-t,
+#slide-m-06 .im-due-banda[data-lato='interno'] .im-due-t,
 #slide-m-03 .im-due-banda[data-lato='interno'] .im-due-t { max-width: 34ch; text-wrap: pretty; }
 
-/* A 1280×800 il titolo del banner andava a tre righe, e con le tre cose
-   numerate dentro la slide sbordava di 5px sopra la safe-area (check `c`).
-   Due righe bastano, e il corpo non si tocca. */
-@media (max-height: 880px) {
-  #slide-cx .im-orch { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
-  #slide-cx .im-orch-t { max-width: none; }
+
+/* L'agenda di copertina porta anche il sottotitolo di ogni voce. */
+.im-cop-voce { display: grid; gap: 0.08rem; min-width: 0; }
+.im-cop-riga { display: block; font-size: clamp(0.78rem, 0.66vw, 1.48rem); font-weight: 400; line-height: 1.32; color: #dfeadb; }
+
+/* I tre canali sono i titoli della slide: più grandi delle due fasce sotto. */
+#slide-cx .im-arch-su .im-arch-t { font-size: clamp(1.4rem, 1.4vw, 2.9rem); line-height: 1.16; }
+
+/* Slide dei blocchi: tutto centrato, e in banner e fasce il testo sta sotto
+   il titolo invece che accanto (richiesta del 9 nov 2026). */
+#slide-cx .im-orch { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; gap: 0.35rem; }
+#slide-cx .im-orch-t { max-width: none; }
+#slide-cx .im-orch-c { max-width: 62rem; text-wrap: balance; }
+#slide-cx .im-arch-b { justify-items: center; text-align: center; }
+#slide-cx .im-arch-f { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; }
+#slide-cx .im-arch-f-t { display: contents; }
+#slide-cx .im-arch-f .im-arch-pro { order: 3; }
+#slide-cx .im-fonte-riga { max-width: none; margin-inline: auto; text-align: center; }
+/* A 1280×800 banner e fasce impilati non lasciano posto alla nota sui nomi
+   (check `c`): si taglia la nota, il corpo non si tocca. */
+@media (max-height: 880px) { #slide-cx .im-fonte-riga { display: none; } }
+
+/* Il motore resta: tre nodi vostri, l'arbitro, una proposta. Inchiostri pieni
+   e colori di stato uguali a quelli della mappa della slide prima. */
+.im-arb { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(2.5rem, 5rem) minmax(0, 1fr) minmax(2.5rem, 5rem) minmax(0, 1fr); align-items: stretch; margin-top: 0.3rem; }
+.im-arb-col { display: grid; grid-template-rows: auto 1fr; gap: 0.5rem; min-width: 0; margin-inline: 0; }
+.im-arb-k { margin: 0; max-width: none; text-align: center; font-size: clamp(0.82rem, 0.68vw, 1.5rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #eef6ea; }
+.im-arb-k[data-stato='vostro'] { color: #ffc27a; }
+.im-arb-k[data-stato='nuovo'] { color: #9fd68a; }
+.im-arb-in { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; gap: 0.55rem; }
+.im-arb-n { display: grid; gap: 0.12rem; align-content: center; justify-items: center; text-align: center; min-width: 0; margin-inline: 0; padding: 0.7rem 0.9rem; border-radius: 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.18); border-top: 4px solid #c96f00; }
+.im-arb-n--c { border-top-color: var(--color-verde-chiaro); padding: 1rem; }
+.im-arb-t { font-size: clamp(1.1rem, 1.08vw, 2.3rem); font-weight: 700; line-height: 1.2; color: #ffffff; }
+.im-arb-d { font-size: clamp(0.92rem, 0.76vw, 1.7rem); line-height: 1.35; color: #e3eedf; }
+.im-arb-fig { height: clamp(3rem, 4vw, 6.4rem); margin-bottom: 0.3rem; }
+.im-arb-fili { width: 100%; height: calc(100% - 1.9rem); align-self: end; overflow: visible; }
+.im-arb-fili path { fill: none; stroke: #9fd68a; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.im-arb-dett { margin-top: 0.2rem; }
+#slide-motore .hiw-trigger { color: #ffffff; }
+#slide-motore .dett-ancora > p { color: #ffffff; }
+#slide-motore .dett-riga > p { color: #e3eedf; }
+#slide-motore .fg { color: #dfeadb; }
+#slide-motore .dett-fig-box { border-color: rgba(255, 255, 255, 0.2); }
+@media (max-width: 900px) {
+  .im-arb { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
+  .im-arb-fili { display: none; }
 }
+/* A 1280×800 il dettaglio aperto non sta insieme al disegno (`exp`): mentre è
+   aperto il disegno si fa da parte, il corpo non si tocca. */
+@media (max-height: 880px) { #slide-motore:has([data-hiw][data-hiw-on]) .im-arb { display: none; } }
+
+/* Il cerchio di Giulia da protagonista (9 nov 2026). L'anello passa dal 46% al
+   64% del riquadro, che è più largo che alto per tenere dentro le etichette
+   laterali. La legenda va nella colonna di destra e libera altezza: la figura
+   si scioglie nella griglia della slide (`display: contents`) così legenda e
+   riquadro sono celle vere, senza figli assoluti che sporgono. */
+.im-cerslide--persona { max-width: none; }
+.im-cer--ampio .im-cer-volto { width: clamp(5.4rem, 12.5vw, 15rem); }
+.im-cerslide--persona .im-cer--ampio .im-cer-campo { aspect-ratio: 1.3 / 1; max-width: none; }
+@media (min-width: 1101px) {
+  .im-cerslide--persona .im-cer--ampio { display: contents; }
+  .im-cerslide--persona .im-cer--ampio .im-cer-campo { grid-column: 2; grid-row: 2; width: min(88vh, 62vw); }
+  .im-cerslide--persona .im-cer--ampio .im-cer-leg {
+    grid-column: 3; grid-row: 2; justify-self: start; align-self: center;
+    margin: 0; flex-direction: column; flex-wrap: nowrap; align-items: flex-start;
+  }
+}
+
+/* La frase finale sta con l'elenco di quello che manca, di cui è la conseguenza:
+   in fondo finiva sotto i comandi del deck, e il check `b` non lo vedeva. */
+.im-cerslide--persona { grid-template-rows: auto minmax(0, 1fr); }
+.im-lato { grid-column: 1; grid-row: 2; align-self: center; justify-self: end; display: grid; gap: 1.1rem; width: min(100%, 22rem); }
+.im-lato .im-manca--lato { width: 100%; justify-self: stretch; }
+.im-lato .im-cerslide-l { text-align: left; margin-inline: 0; }
+.im-cer--ampio .im-cer-leg-l { text-align: left; }
+@media (max-width: 1100px) { .im-lato { grid-column: 1; grid-row: auto; justify-self: stretch; width: 100%; } }

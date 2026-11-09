@@ -23,6 +23,10 @@ import { href } from '@edf/core/utils/url.js';
 import Divisore from '../components/Divisore.astro';
 import FiguraCap from '../components/FiguraCap.astro';
 import RailTerra from '../components/RailTerra.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import fondo from '../assets/generated/lavoro-07-misura.webp';
 
@@ -186,6 +190,16 @@ const FRECCE = [
   { da: 'Core banking', a: 'Arbitro', d: { it: 'eleggibilità: attributo precalcolato o chiamata sincrona, da capire con voi', en: 'eligibility: precomputed attribute or synchronous call, to work out with you' }, aperta: true },
 ];
 
+/* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
+   target li costruisce, «nessuno decide» suonava «il vostro lavoro non serve»:
+   il posto esiste, manca la decisione su chi non è cliente. Spostata qui dallo
+   Scenario e ridotta a un disegno il 9 nov 2026 su richiesta di chi presenta:
+   sta subito dopo la mappa, che dice che il motore resta vostro. */
+const ENTRA = [
+  { t: { it: 'Score e audience', en: 'Scores and audiences' }, d: { it: 'dal vostro motore', en: 'from your engine' } },
+  { t: { it: 'Eleggibilità', en: 'Eligibility' }, d: { it: 'dal core banking', en: 'from core banking' } },
+  { t: { it: 'Politica di contatto', en: 'Contact policy' }, d: { it: 'regola vostra', en: 'your rule' } },
+];
 const RITORNO = [
   { k: { it: 'Le domande che non vi citavano', en: 'The questions that did not cite you' },
     v: { it: 'diventano il piano dei contenuti del mese dopo', en: 'become next month’s content plan' } },
@@ -244,6 +258,77 @@ const RITORNO = [
         </div>
 
         <T as="p" class="im-fonte-riga" it="L’installato è un’ipotesi nostra: le voci «da confermare» si chiudono con il vostro footprint, prima dell’incontro." en="The installed base is our assumption: the “to confirm” items close with your footprint, before the meeting." />
+      </div>
+    </Slide>
+
+    <Slide id="slide-motore" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <RailTerra attivo="mappa" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il vostro motore di targeting resta dov’è" en="Your targeting engine stays where it is" />
+        <T as="p" class="im-ado-l" it="Nel pilota l’arbitro entra su chi non è nel CRM, sui canali digitali." en="In the pilot the arbiter comes in on people not in the CRM, on digital channels." />
+
+        {/* Il disegno è l'argomento: tre cose vostre entrano, l'arbitro non
+            le rifà, e ne esce una sola. Le parole stanno in HTML, accanto ai
+            nodi, così crescono con la pagina; l'SVG porta solo i tratti. */}
+        <div class="im-arb">
+          <section class="im-arb-col" data-substep data-side="in">
+            <T as="p" class="im-arb-k" data-stato="vostro" it="Resta vostro" en="Stays yours" />
+            <ul class="im-arb-in">
+              {ENTRA.map((e) => (
+                <li class="im-arb-n">
+                  <T as="span" class="im-arb-t" it={e.t.it} en={e.t.en} />
+                  <T as="span" class="im-arb-d" it={e.d.it} en={e.d.en} />
+                </li>
+              ))}
+            </ul>
+          </section>
+          <svg class="im-arb-fili" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 50 C55 50 45 150 100 150" /><path d="M0 150 L100 150" /><path d="M0 250 C55 250 45 150 100 150" />
+          </svg>
+          <section class="im-arb-col" data-substep data-side="in">
+            <T as="p" class="im-arb-k" data-stato="nuovo" it="Si aggiunge" en="Gets added" />
+            <div class="im-arb-n im-arb-n--c">
+              <FiguraCap segno="arbitro" class="im-arb-fig" />
+              <T as="span" class="im-arb-t" it="L’arbitro" en="The arbiter" />
+              <T as="span" class="im-arb-d" it="sceglie, non ricalcola" en="chooses, does not recalculate" />
+            </div>
+          </section>
+          <svg class="im-arb-fili" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 150 L100 150" /></svg>
+          <section class="im-arb-col" data-substep data-side="in">
+            <T as="p" class="im-arb-k" it="Esce" en="Comes out" />
+            <div class="im-arb-n im-arb-n--c">
+              <FiguraCap segno="canali" class="im-arb-fig" />
+              <T as="span" class="im-arb-t" it="Una proposta" en="One proposal" />
+              <T as="span" class="im-arb-d" it="sul canale giusto, senza estrazioni a mano" en="on the right channel, with no manual extraction" />
+            </div>
+          </section>
+        </div>
+
+        <HowItWorks title="Il confine fra motore e arbitro" tone="onDark" class="ex-dett im-arb-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="una-via" />
+              <T slot="ancora" as="p" it="Sul cliente" en="On customers" />
+              <T slot="riga" as="p" it="Next best action e pressione commerciale restano del motore." en="Next best action and commercial pressure stay with the engine." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="prima-dopo" />
+              <T slot="ancora" as="p" it="Dopo la firma" en="After signature" />
+              <T slot="riga" as="p" it="Le proposte del motore entrano come candidate: la regola di chi vince si scrive insieme." en="The engine’s proposals come in as candidates: the rule on who wins gets written together." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="tetto" />
+              <T slot="ancora" as="p" it="Il tetto per persona" en="The per-person cap" />
+              <T slot="riga" as="p" it="L’arbitro lo legge se il motore lo applica già su tutti i canali; se no, lo aggiunge." en="The arbiter reads it if the engine already applies it across every channel; if not, it adds it." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="una-esce" />
+              <T slot="ancora" as="p" it="Perché non costruirlo in casa" en="Why not build it in-house" />
+              <T slot="riga" as="p" it="Un motore a batch non fa il ripiego in sessione, al bordo e via API, su chi non ha una scheda." en="A batch engine does not do in-session fallback, at the edge and over API, for people without a record." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
       </div>
     </Slide>
 

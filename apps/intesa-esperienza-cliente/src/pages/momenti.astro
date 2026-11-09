@@ -20,7 +20,7 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { MOMENTI, DOMANDE_IN_SLIDE } from '../data/momenti';
+import { MOMENTI, DOMANDE_IN_SLIDE, CORPO_IN_SLIDE } from '../data/momenti';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
 import Divisore from '../components/Divisore.astro';
@@ -91,8 +91,8 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondoCap.src}); --fuoco: center 42%`}></div>
       <Divisore num={ch.num}
         tIt="Sette momenti, e le due viste sullo stesso minuto" tEn="Seven moments, and both views of the same minute"
-        lIt="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. Ogni momento si apre in tre passi, con la freccia in basso."
-        lEn="Above, what Giulia sees; below, what you do at the same instant. Each moment opens in three steps, with the down arrow." />
+        lIt="Sopra quello che vede Giulia, sotto quello che fate voi nello stesso istante. Ogni momento si apre in tre passi."
+        lEn="Above, what Giulia sees; below, what you do at the same instant. Each moment opens in three steps." />
     </Slide>
 
     {MOMENTI.map((m, i) => (
@@ -119,7 +119,7 @@ const currentPath = Astro.url.pathname;
                 </span>
               </p>
               <T as="h2" class="im-due-t" it={m.cliente.titolo.it} en={m.cliente.titolo.en} />
-              <T as="p" class="im-due-b" it={m.cliente.corpo.it} en={m.cliente.corpo.en} />
+              {CORPO_IN_SLIDE && <T as="p" class="im-due-b" it={m.cliente.corpo.it} en={m.cliente.corpo.en} />}
             </div>
             <div class="im-due-mock">
               <MockCliente chrome={m.cliente.chrome} scena={SCENE_CLI[i]} compatto />
@@ -137,7 +137,7 @@ const currentPath = Astro.url.pathname;
                 </span>
               </p>
               <T as="h2" class="im-due-t" it={m.interno.titolo.it} en={m.interno.titolo.en} />
-              <T as="p" class="im-due-b" it={m.interno.corpo.it} en={m.interno.corpo.en} />
+              {CORPO_IN_SLIDE && <T as="p" class="im-due-b" it={m.interno.corpo.it} en={m.interno.corpo.en} />}
               <p class="im-due-pro">{m.prodotto}</p>
               {DOMANDE_IN_SLIDE && <DaVerificare it={m.verifica.it} en={m.verifica.en} />}
             </div>
