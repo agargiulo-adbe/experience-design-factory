@@ -55,7 +55,7 @@ export interface Stat {
 export const COVER = {
   tag: 'Quattro idee per\u00a0ottimizzare le\u00a0vendite, con\u00a0le\u00a0tecnologie per\u00a0realizzarle.',
   /** La riga della slide-firma, identica nei due percorsi. */
-  firma: 'Si comincia da dove vendete già ogni giorno.',
+  firma: 'Da quale cominciare lo decidiamo insieme.',
 };
 
 /* ── Le teste di slide che i due percorsi condividono ─────────────────────
@@ -269,7 +269,7 @@ export const PROBLEMI: Card[] = [
     b: 'Parole del Direttore Sales al TTG del 15 ottobre 2026.', fonti: ['ttgSales2026'] },
   { k: 'Il momento', t: 'Un piano in scrittura, un\u00a0sito in rifacimento',
     b: 'Il piano di Gruppo arriva entro fine anno, il nuovo sito è previsto per marzo 2027.', fonti: ['piano', 'ttgSales2026', 'pricing'] },
-  { k: 'La concorrenza', t: 'Un terzo operatore in\u00a0arrivo, e la Germania dal\u00a02027',
+  { k: 'La concorrenza', t: 'Un terzo operatore atteso, a\u00a0condizioni ancora aperte',
     b: 'Il terzo operatore entra non prima della fine del 2027.', fonti: ['sncfVialibera', 'sncf', 'monaco'] },
 ];
 
@@ -477,7 +477,7 @@ export const KPI: Card[] = [
      Quello che resta vero, e che è un argomento di margine e non di furto: se
      nella risposta generata comparite tramite un rivenditore invece che da voi,
      quella vendita la pagate in commissione. */
-  { k: 'Commissione', t: 'Attraverso chi passate, e quanto vi\u00a0costa',
+  { k: 'Costo di distribuzione', t: 'Attraverso chi passate',
     anc: 'Il passaggio che costa commissione', b: 'Comparire tramite un rivenditore è pagare in commissione una vendita che poteva arrivare diretta.' },
   /* ⚠️ 6 nov 2026, panel: la riga diceva «le visite che nascono da una
      risposta generata, oggi indistinte dal resto del traffico». È
@@ -546,8 +546,8 @@ export const PRIMA: Card[] = [
     k: 'Con chi, adesso',
     t: 'L’accordo con Costa Crociere',
     anc: 'Un accordo che esiste già',
-    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma. Da gennaio 2027 un motore di prenotazione collega i due sistemi. La prima domanda è quanto ne copra già.',
-    bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, collega i due sistemi di prenotazione da gennaio 2027. È il caso da cui partire: quanto copre già?',
+    b: 'Il protocollo con Costa Crociere, presentato al TTG il 15 ottobre, porta la vostra offerta dentro la loro piattaforma. Da gennaio 2027 è annunciato il collegamento dei due sistemi di prenotazione: riguarda la vendita. La prima domanda è quanto ne copra già.',
+    bBreve: 'Il protocollo con Costa, presentato al TTG il 15 ottobre, annuncia il collegamento dei due sistemi di prenotazione da gennaio 2027. Quanto copre già?',
     fonti: ['costaTtg'],
   },
   {
@@ -755,13 +755,13 @@ export const TEMPI = {
   titolo: 'Prima quello che si può avviare subito',
   sub: 'Una proposta da riordinare con le vostre priorità, nel rispetto dei processi di FS Technology e del Gruppo.',
   voci: [
-    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
-    { k: 'Con il nuovo sito, marzo 2027', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Analytics su trenitalia.com e lefrecce.it alimenta Customer Journey Analytics, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
-    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Storico e preferenze di ogni cliente in un’unica vista.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
+    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Misura: impatto minimo. Pagine: con il rifacimento del sito' },
+    { k: 'Da subito, con quello che c’è', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Analytics e Target già nel Gruppo, provati prima su una parte del traffico.', dip: 'Nessun prodotto nuovo. Si estende con il sito, entro marzo 2027' },
+    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM. Si aggiunge Customer Journey Analytics' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
     { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Il venduto in agenzia, letto insieme a quello che succede online.', dip: 'Dipende dal\u00a0sistema delle agenzie' },
   ],
-  strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti da produrre.' },
+  strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti. La misura per contenuto arriva con Customer Journey Analytics.' },
   figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
 };
 
@@ -914,7 +914,7 @@ export interface Pezzo {
 }
 
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
-  avete: { eti: 'già vostro', spiega: 'nel contratto' },
+  avete: { eti: 'già nel Gruppo', spiega: 'contratto FS Technology' },
   nuovo: { eti: 'si aggiunge', spiega: 'oggi non c\u2019\u00e8' },
 };
 
@@ -943,13 +943,12 @@ export const SERVE: Record<
   ],
   acquisto: [
     { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'già su trenitalia.com e lefrecce.it: i segmenti di chi non è registrato' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'più fonti dati in un’unica vista: livello CartaFreccia, storico e navigazione' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'livello CartaFreccia e navigazione, letti nella stessa analisi' },
     { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'la home per segmento, provata prima su una parte del traffico' },
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'agenti AI su analisi dei segmenti e attivazione della personalizzazione' },
   ],
   collaborazione: [
     { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'il luogo neutro dell\u2019incrocio' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'il vostro lato dell\u2019incrocio' },
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
@@ -1003,11 +1002,11 @@ export const CHI_SIAMO = {
   storia: {
     k: 'Adobe e Ferrovie, la storia',
     tappe: [
-      { q: '2017', t: 'Fondazione digitale', b: 'Adozione di AEM on-prem 6.4 e Adobe Analytics' },
+      { q: '2017', t: 'Fondazione digitale', b: 'Adozione di Adobe Experience Manager e Adobe Analytics' },
       { q: '2024-2025', t: 'Migrazione al cloud', b: 'Febbraio 2025, ultima fase: 26 siti migrati, 6 nativi cloud' },
       { q: '2025', t: 'Go-live strategici', b: 'Trenitalia e FS Logistix su piattaforme evolute' },
       { q: '2026', t: 'Site transformation', b: 'FS Italiane: trasformazione del sito entro l’anno', ora: true },
-      { q: '2027 e oltre', t: 'Evoluzione', b: 'Altri siti del Gruppo FS, e AEM Assets' },
+      { q: '2027 e oltre', t: 'Evoluzione', b: 'Altri siti del Gruppo FS, e AEM Assets da estendere' },
     ],
   },
 };

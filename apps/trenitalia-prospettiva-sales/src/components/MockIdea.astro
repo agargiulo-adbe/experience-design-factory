@@ -23,9 +23,12 @@
  * è HTML, così cresce con la radice e su una parete di sala si legge ancora.
  */
 import { Image } from 'astro:assets';
-import fotoBinari from '../assets/generated/sole/sole-viaggio.webp';
+import fotoPromo from '../assets/generated/mock/mock-promo.webp';
 import fotoMatera from '../assets/generated/sole/sole-ricerca.webp';
 import fotoPuglia from '../assets/generated/sole/sole-contenuto.webp';
+import fotoFamiglia from '../assets/generated/puglia/puglia-famiglia.webp';
+import fotoCoppia from '../assets/generated/puglia/puglia-coppia.webp';
+import fotoBici from '../assets/generated/puglia/puglia-bici.webp';
 
 interface Props { variante: 'ricerca' | 'viaggio' | 'contenuto' | 'rete' | 'citta'; }
 const { variante } = Astro.props as Props;
@@ -45,7 +48,8 @@ const { variante } = Astro.props as Props;
           <li data-trenitalia>
             <span class="mk-ordine-n">3</span>
             <span class="mk-ordine-t"><strong>Solo dopo</strong>Freccialink di Trenitalia</span>
-            <span class="mk-qui" data-substep>Qui arriva Trenitalia</span>
+            {/* Con ↓ la riga si accende e basta: la scritta ripeteva «Freccialink di Trenitalia». */}
+            <span class="mk-evidenza" data-substep></span>
           </li>
         </ol>
       </div>
@@ -68,96 +72,100 @@ const { variante } = Astro.props as Props;
   )}
 
   {/* Nessuna tariffa e nessun vantaggio specifico: sono dettagli che il cliente
-      conosce a memoria, e sbagliarne uno costa la slide. */}
+      conosce a memoria, e sbagliarne uno costa la slide.
+      La struttura è quella della homepage vera, letta il 9 nov 2026: il modulo di
+      ricerca in testa e sotto la promozione del momento, uguale per tutti.
+      ⚠️ «Perché qui» cita solo ciò che Trenitalia può sapere: un biglietto comprato.
+      Che il viaggiatore sia andato alla Reggia non lo sa nessuno. */}
   {variante === 'viaggio' && (
     <div class="mk-fasi">
       <div class="mk-schermo mk-fase mk-fase--prima">
         <div class="mk-barra"><span class="mk-barra-t">Prima · la stessa homepage per tutti</span></div>
         <div class="mk-corpo mk-corpo--piena">
-          <div class="mk-home">
-            <div class="mk-home-t">
-              <p class="mk-home-h">Dove vuoi andare?</p>
-              <div class="mk-campi">
-                <span class="mk-campo"><small>Da</small>Partenza</span>
-                <span class="mk-campo"><small>A</small>Arrivo</span>
-              </div>
-              <span class="mk-cta">Cerca</span>
-            </div>
-            <div class="mk-foto"><Image src={fotoBinari} alt="" widths={[640, 1100]} sizes="30vw" /></div>
+          <div class="mk-ricerca">
+            <span class="mk-campo"><small>Partenza da</small>Inserisci stazione</span>
+            <span class="mk-campo"><small>Arrivo a</small>Inserisci stazione</span>
+            <span class="mk-cta">Cerca</span>
           </div>
-          <ul class="mk-tessere">
-            <li><strong>Offerte</strong><span>Per tutti</span></li>
-            <li><strong>Frecce</strong><span>Per tutti</span></li>
-            <li><strong>Regionale</strong><span>Per tutti</span></li>
-          </ul>
+          <div class="mk-promo">
+            <div class="mk-foto"><Image src={fotoPromo} alt="" widths={[640, 1100]} sizes="30vw" /></div>
+            <div class="mk-home-t">
+              <small class="mk-promo-k">L’offerta del momento</small>
+              <p class="mk-home-h">Le feste si raggiungono in treno</p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="mk-schermo mk-fase mk-fase--dopo" data-substep>
-        <div class="mk-barra"><span class="mk-barra-t">Dopo · homepage personalizzata, esempio</span></div>
+        <div class="mk-barra"><span class="mk-barra-t">Dopo · homepage personalizzata</span></div>
         <div class="mk-corpo mk-corpo--piena">
-          <div class="mk-home">
+          <div class="mk-ricerca">
+            <span class="mk-campo"><small>Partenza da</small>Roma Termini</span>
+            <span class="mk-campo"><small>Arrivo a</small>Matera</span>
+            <span class="mk-cta">Scegli il treno</span>
+          </div>
+          <div class="mk-promo">
+            <div class="mk-foto"><Image src={fotoMatera} alt="" widths={[640, 1100]} sizes="30vw" /></div>
             <div class="mk-home-t">
               <span class="mk-chip mk-chip--on">CartaFreccia Oro</span>
               <p class="mk-home-h">Matera, la prossima meta</p>
-              <div class="mk-campi">
-                <span class="mk-campo"><small>Da</small>Roma Termini</span>
-                <span class="mk-campo"><small>A</small>Matera</span>
-              </div>
-              <span class="mk-cta">Scegli il treno</span>
             </div>
-            <div class="mk-foto"><Image src={fotoMatera} alt="" widths={[640, 1100]} sizes="30vw" /></div>
           </div>
           <ul class="mk-tessere">
             <li data-on><strong>Il tuo vantaggio</strong><span>Riservato al livello Oro</span></li>
             <li><strong>Il viaggio</strong><span>Frecciarossa + Freccialink</span></li>
-            <li><strong>Perché qui</strong><span>Dopo Caserta e la Reggia</span></li>
+            <li><strong>Perché qui</strong><span>Dopo il tuo Roma-Caserta</span></li>{/* copy-audit-ignore · testo d'interfaccia dentro il mockup: è il sito che parla a chi naviga */}
           </ul>
         </div>
       </div>
     </div>
   )}
 
-  {/* Per mercato, non per lingua: la traduzione non è una leva (revisione del
-      9 nov). I due messaggi dicono cose diverse apposta. */}
+  {/* Per pubblico, non per lingua: «la mia priorità non è tradurre le pagine»
+      (responsabile dei canali digitali, 9 nov 2026). Il contenuto segue la
+      personalizzazione: più segmenti, più versioni. Tre immagini diverse apposta. */}
   {variante === 'contenuto' && (
     <div class="mk-fasi">
       <div class="mk-schermo mk-fase mk-fase--prima">
-        <div class="mk-barra"><span class="mk-barra-t">Prima · una campagna approvata</span></div>
+        <div class="mk-barra"><span class="mk-barra-t">Prima · una sola versione, uguale per tutti</span></div>
         <div class="mk-corpo mk-corpo--piena">
           <div class="mk-master">
             <div class="mk-foto"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="30vw" /></div>
             <div class="mk-master-t">
               <span class="mk-chip">Approvata</span>
               <p class="mk-home-h">Estate in Puglia</p>
-              <p class="mk-nota">Una sola versione, per&nbsp;il&nbsp;mercato italiano.</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="mk-schermo mk-fase mk-fase--dopo" data-substep>
-        <div class="mk-barra"><span class="mk-barra-t">Dopo · la stessa campagna, per mercato</span></div>
+        <div class="mk-barra"><span class="mk-barra-t">Dopo · la stessa campagna, per ogni pubblico</span></div>
         <div class="mk-corpo mk-corpo--piena">
           <ul class="mk-mercati">
             <li>
-              <div class="mk-foto mk-foto--a"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="24vw" /></div>
+              <div class="mk-foto"><Image src={fotoFamiglia} alt="" widths={[480, 800]} sizes="18vw" /></div>
               <div class="mk-mercato-t">
-                <small>Monaco</small>
-                <strong lang="de">Sommer in Apulien</strong>
-                <span>Offerta per chi parte dalla Germania</span>
+                <small>Famiglie · sito</small>
+                <strong>Tutti al mare</strong>
               </div>
             </li>
             <li>
-              <div class="mk-foto mk-foto--b"><Image src={fotoPuglia} alt="" widths={[640, 1100]} sizes="24vw" /></div>
+              <div class="mk-foto"><Image src={fotoCoppia} alt="" widths={[480, 800]} sizes="18vw" /></div>
               <div class="mk-mercato-t">
-                <small>Parigi</small>
-                <strong lang="fr">Cap sur les Pouilles</strong>
-                <span>Offerta per chi parte dalla Francia</span>
+                <small>Coppie · social</small>
+                <strong>Due giorni nei borghi</strong>
+              </div>
+            </li>
+            <li>
+              <div class="mk-foto"><Image src={fotoBici} alt="" widths={[480, 800]} sizes="18vw" /></div>
+              <div class="mk-mercato-t">
+                <small>Chi viaggia da solo · email</small>
+                <strong>In bici fra gli ulivi</strong>
               </div>
             </li>
           </ul>
-          <p class="mk-regole"><strong>Restano</strong> logo, tono e regole del marchio. La revisione umana resta.</p>
         </div>
       </div>
     </div>
@@ -178,10 +186,9 @@ const { variante } = Astro.props as Props;
           <li data-on><small>In CJA</small><strong>Quante vendite per codice</strong></li>
         </ol>
         <ul class="mk-poi">
-          <li><small>I contenuti</small><span>Un codice per materiale: quale porta più vendite</span></li>
+          <li><small>I contenuti</small><span>Un codice per materiale: quali vengono usati di più</span></li>
           <li><small>Le prove</small><span>Una proposta su poche agenzie</span></li>
         </ul>
-        <p class="mk-nota">Da approfondire: il sistema delle agenzie deve poter registrare il&nbsp;codice.</p>
       </div>
     </div>
   )}

@@ -104,14 +104,14 @@ export const NOTE: Record<string, NotaSlide[]> = {
     { id: 'slide-idea',
       dire: 'Il punto è personalizzare su larga scala. Un cliente CartaFreccia Oro trova in homepage Matera e un vantaggio del suo livello. La combinazione esiste già, e con chi non è registrato si parte da posizione e navigazione.',
       fatto: 'Brightline è un operatore ferroviario ad alta velocità in Florida, con storia pubblica su prenotazione e personalizzazione.',
-      attenzione: 'Il primo ↓ cambia la schermata da «prima» a «dopo». Si propone solo ciò che si può comprare: composizione, prezzo e acquisto restano nei loro sistemi. Il Freccialink oggi non si aggiunge a un Frecciarossa già acquistato. Non aprire il tema del pop-up di geolocalizzazione, se non lo aprono loro.' },
+      attenzione: 'Il primo ↓ cambia la schermata da «prima» a «dopo». Se chiedono del disservizio: con circolazione perturbata o rimborso in corso la proposta si sospende, e chi assiste lo decide chi possiede il servizio. Si propone solo ciò che si può comprare: composizione, prezzo e acquisto restano nei loro sistemi. Il Freccialink oggi non si aggiunge a un Frecciarossa già acquistato. Non aprire il tema del pop-up di geolocalizzazione, se non lo aprono loro.' },
     { id: 'slide-momenti',
       dire: 'Si comincia da chi non è registrato, con posizione, navigazione e cookie, dove c’è il consenso. Con il nuovo CRM si aggiunge la storia del cliente. E la proposta deve sapere quando fermarsi.',
       attenzione: 'Se chiedono di CartaFreccia dopo la fine del 2026: la logica per livello vale per qualunque programma fedeltà. I tempi del nuovo CRM li dice il cliente, non noi.',
       seChiedono: { d: 'E la geolocalizzazione?', r: 'Si apre la pagina /appendice/: una slide, solo perimetro e che cosa dimostra, senza numeri.' } },
     { id: 'slide-prima',
       dire: 'La personalizzazione comincia prima, e altrove. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci: conoscendolo, gli si fa una proposta vantaggiosa prima del confronto con Italo.',
-      fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: è il caso da cui partire perché ha una data ed è loro.' },
+      fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: ha una data ed è loro.' },
     { id: 'slide-collab',
       dire: 'Si lavora in due sugli stessi viaggiatori senza scambiarsi i dati: si incrocia solo chi interessa a entrambe le aziende.',
       seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro, con controlli di accesso dichiarati da tutte e due le aziende. Titolarità e base giuridica si definiscono prima.' } },
@@ -120,14 +120,14 @@ export const NOTE: Record<string, NotaSlide[]> = {
   contenuto: [
     { id: 'slide-cover', dire: 'Terza idea, a valle: la squadra è una e i prodotti sono tre.' },
     { id: 'slide-idea',
-      dire: 'Una campagna approvata una volta, e da lì le varianti per mercato: per chi arriva dall’estero il messaggio si fa più commerciale.',
+      dire: 'Una campagna approvata una volta, e da lì le versioni per ogni pubblico. Più la proposta è personale, più contenuti servono.',
       // ⚠️ 6 nov 2026: la riga diceva «la validazione lavora in inglese», ed
       // è falsa — le note di rilascio dichiarano 12 lingue in disponibilità
       // generale più 5 in beta. Era un limite inventato a nostro danno, e
       // stava in slide come prova di onestà.
-      attenzione: 'Il primo ↓ cambia la schermata dalla campagna alle versioni per mercato. Non si vende la traduzione: non è una priorità, e non si propone lo stesso sito copiato in ogni paese. Content Analytics scompone i contenuti solo in inglese: se si parla di mercati esteri va detto.' },
+      attenzione: 'Il primo ↓ cambia la schermata dalla campagna alle versioni per pubblico. Non si vende la traduzione: non è una priorità, e non si propone lo stesso sito copiato in ogni paese. Content Analytics scompone i contenuti solo in inglese: se si parla di mercati esteri va detto.' },
     { id: 'slide-unposto',
-      dire: 'Ogni campagna si crea, si approva, si adatta e si misura nello stesso strumento. Qui sotto i prodotti: quali avete e che cosa fa ognuno.',
+      dire: 'Ogni campagna si crea, si approva, si adatta e si misura in una sola filiera collegata. Qui sotto i prodotti: quali avete e che cosa fa ognuno.',
       seChiedono: { d: 'Vuol dire sostituire l’agenzia creativa?', r: 'No. La campagna resta loro, e le versioni smettono di essere lavoro a mano.' } },
   ],
 
@@ -136,7 +136,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
     { id: 'slide-idea',
       dire: 'Il venduto per agenzia lo avete già. L’ipotesi è legarlo a ciò che succede prima sul digitale, come fa Unipol nel suo settore.',
       fatto: 'Unipol misura sito, app e agenzie insieme. Settore diverso, e si dice.',
-      attenzione: 'Nessun numero di agenzie. Le agenzie fisiche vendono su un sistema diverso dal sito, quindi è un’ipotesi. Le agenzie online restano fuori: non si dice a loro come vendere. Il codice è di campagna, non della persona: dà totali per codice, e solo se il sistema delle agenzie lo registra. Lo username al banco non esiste. CartaFreccia legherebbe la persona, ma va verificato che la vendita in agenzia la registri. Una locandina non genera eventi: si misura solo con un codice o un QR per materiale. Il tracciamento del personale va visto con i legali.',
+      attenzione: 'Nessun numero di agenzie. Le agenzie fisiche vendono su un sistema diverso dal sito, quindi è un’ipotesi. Le agenzie online restano fuori: non si dice a loro come vendere. Il codice è di campagna, non della persona: dà totali per codice, e solo se il sistema delle agenzie lo registra. Lo username al banco non esiste. CartaFreccia legherebbe la persona, ma va verificato che la vendita in agenzia la registri. Una locandina non genera eventi: con un codice o un QR per materiale si contano gli usi, non le vendite in più. Per quelle si confrontano le agenzie che hanno ricevuto una scheda con altre a parità di zona e condizioni: è un metodo da provare insieme. Prima di misurare si decide che cosa si fa di quel dato verso la rete. Il tracciamento del personale va visto con i legali.',
       // ⚠️ 9 nov 2026: la frase di prima lasciava intendere che bastasse far
       // arrivare i consensi su Experience Platform. La documentazione chiede
       // Shield e un dataset Profile già popolato, e Customer Journey Analytics
@@ -147,7 +147,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
   rotta: [
     { id: 'slide-cover', dire: 'Quattro direzioni sono troppe per aprirle tutte. Quali sono le vostre, e quando se ne parla.' },
     { id: 'slide-ripresa',
-      dire: 'Ecco le quattro idee di nuovo: le capacità da avere, e i prodotti. Su tre delle quattro una parte è già in casa vostra.',
+      dire: 'Ecco le quattro idee di nuovo: le capacità da avere, e i prodotti. Su tre delle quattro una parte è già nel Gruppo.',
       attenzione: 'È il momento in cui si tace e si lascia guardare la slide. La domanda in titolo è per loro.' },
     { id: 'slide-tempi',
       dire: 'Una possibile sequenza: prima quello che si può avviare subito, poi quello che dipende da nuovo CRM e sistemi di vendita. Si riordina con voi.',

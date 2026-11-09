@@ -76,7 +76,7 @@ export const IDEE: Idea[] = [
        cifre su tutte e otto stanno sulla slide degli esiti, dopo il campione. */
     titolo: 'La prima delle otto: come arrivo da Roma a\u00a0Matera senza\u00a0auto',
     mock: 'ricerca',
-    cifra: { k: '2 su 2', v: 'gli assistenti AI che su questa domanda aprono con gli operatori di autobus' },
+    cifra: { k: 'Su questa domanda', v: 'entrambi gli assistenti aprono con gli operatori di autobus' },
     chiusa: 'Il biglietto combinato treno più autobus va prima al concorrente. ChatGPT cita Freccialink solo dopo.',
     capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
     gruppi: ['visibilita', 'canale'],
@@ -100,21 +100,24 @@ export const IDEE: Idea[] = [
       fatto: 'Chi abbandona la prenotazione riceve un promemoria con l’itinerario salvato. Chi viaggia spesso riceve parcheggio scontato e upgrade dell’ultimo minuto, in app, ai chioschi e via email.',
       fonte: SOURCES.brightline,
     },
-    capability: ['Riconoscere chi arriva, registrato o no', 'Provare una\u00a0proposta su\u00a0una\u00a0parte del\u00a0traffico'],
+    capability: ['Distinguere i segmenti di chi arriva, con il consenso', 'Provare una\u00a0proposta su\u00a0una\u00a0parte del\u00a0traffico'],
     gruppi: ['acquisto', 'collaborazione'],
     fonte: 'Schermata d’esempio. Si propone solo ciò che si può comprare: prezzo e acquisto restano nei vostri sistemi.',
   },
   {
     slug: 'contenuto',
-    misura: 'Quanti giorni passano dal brief alla vetrina, per mercato',
+    misura: 'Quanti giorni passano dal brief alla vetrina, per campagna',
     occhiello: 'Idea 3 di 4',
-    titolo: 'Una sola campagna approvata, adattata a ogni mercato',
+    titolo: 'Una sola campagna approvata, adattata a ogni pubblico',
     mock: 'contenuto',
     /* ⚠️ 6 nov 2026, panel: era «da giorni a minuti», il tempo di uscita di
        una banca brasiliana, su una pila che NON comprende GenStudio né
        Firefly — due dei tre nomi che la slide affianca. */
-    cifra: { k: '3 × 5', v: 'le versioni minime di ogni campagna: tre prodotti per cinque mercati' },
-    chiusa: 'Dalla stessa campagna nascono le versioni per Monaco e per Parigi: cambiano offerta e messaggio, restano logo, tono e regole del marchio.',
+    /* 9 nov 2026: era «3 × 5, tre prodotti per cinque mercati». Il responsabile dei
+       canali digitali ha detto che la traduzione non è una priorità: il contenuto
+       serve la personalizzazione, e la cifra lo dice. */
+    cifra: { k: 'Più pubblici', v: 'più versioni da produrre: il contenuto cresce con la personalizzazione' },
+    chiusa: 'Dalla stessa campagna nascono le versioni per ogni pubblico e canale: cambiano immagine e messaggio, restano logo, tono e regole del marchio.',
     capability: ['Produrre le varianti su scala, governate'],
     gruppi: ['contenuto'],
     /* ⚠️ 6 nov 2026, REFUTATA dal fact-check, ed era l'errore nella direzione
@@ -141,7 +144,7 @@ export const IDEE: Idea[] = [
        detto lui al TTG.
        9 nov 2026: su richiesta del cliente nessun numero di agenzie in questo
        capitolo, e il capitolo diventa dichiaratamente da approfondire. */
-    cifra: { k: 'Da approfondire', v: 'una possibilità da verificare insieme: le agenzie vendono su un sistema diverso dal sito' },
+    cifra: { k: 'Da approfondire', v: 'il sistema con cui le agenzie vendono deve poter registrare il codice' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
@@ -171,9 +174,9 @@ export const IDEE: Idea[] = [
       fonte: SOURCES.unipolRete,
       senzaRigaFonte: true,
     },
-    capability: ['Legare il venduto al percorso digitale', 'Capire quali materiali portano vendite'],
+    capability: ['Legare il venduto al percorso digitale', 'Capire quali materiali si possono misurare, e come'],
     gruppi: ['rete'],
-    fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026.',
+    fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026: lì l’agente lavora sullo strumento della compagnia, l’agenzia di viaggi no. Vale il meccanismo.',
   },
 ];
 
