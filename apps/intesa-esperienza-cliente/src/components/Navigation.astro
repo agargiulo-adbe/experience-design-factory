@@ -5,7 +5,7 @@
  */
 import { href } from '@edf/core/utils/url.js';
 import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
-import { CHAPTERS } from '../data/chapters';
+import { VOCI_NAV } from '../data/chapters';
 import { SITE } from '../data/site';
 
 interface Props {
@@ -14,9 +14,9 @@ interface Props {
 }
 const { currentPath, base } = Astro.props;
 
-function isActive(slug: string) {
-  const norm = currentPath.replace(/\/+$/, '');
-  return norm.endsWith('/' + slug);
+function isActive(pagine: string[]) {
+  const ultimo = currentPath.replace(/\/+$/, '').split('/').pop() ?? '';
+  return pagine.includes(ultimo);
 }
 ---
 <nav class="ex-nav flex items-center justify-between px-6 py-3" aria-label="Navigazione">
@@ -45,15 +45,15 @@ function isActive(slug: string) {
   </a>
 
   <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
-    {CHAPTERS.map((c) => (
+    {VOCI_NAV.map((c) => (
       <li role="listitem" class="flex-shrink-0">
         <a
-          href={href(base, '/' + c.slug)}
-          class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.slug) && 'ex-nav-link--active']}
-          aria-current={isActive(c.slug) ? 'page' : undefined}
+          href={`${href(base, '/' + c.slug)}${c.ancora ? `#${c.ancora}` : ''}`}
+          class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.pagine) && 'ex-nav-link--active']}
+          aria-current={isActive(c.pagine) ? 'page' : undefined}
         >
-          <span class="text-[var(--ink-note)] mr-1 tabular-nums">{c.num}</span>
-          <span data-lang-it>{(c.breve ?? c.title).it}</span><span data-lang-en>{(c.breve ?? c.title).en}</span>
+          <span class="text-[var(--ink-note)] mr-1 tabular-nums">{c.n}</span>
+          <span data-lang-it>{c.it}</span><span data-lang-en>{c.en}</span>
         </a>
       </li>
     ))}

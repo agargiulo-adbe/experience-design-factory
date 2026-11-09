@@ -1,0 +1,75 @@
+---
+/**
+ * NOTE PER CHI PRESENTA: un foglio da tenere aperto sul portatile. Si genera dal
+ * registro delle slide: se una slide non ha la nota, qui compare in rosso.
+ * È pubblica come il deck: vedi il docblock di `data/relatore.ts`.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+import { PAGE_REGISTRY } from '../data/slides';
+import { NOTE, TRE_COSE } from '../data/relatore';
+import { MOMENTI } from '../data/momenti';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const ordine = ['index', ...CHAPTERS.map((c) => c.slug), 'approfondimenti'];
+const sezioni = ordine.map((s) => PAGE_REGISTRY.find((p) => p.slug === s)).filter((p): p is NonNullable<typeof p> => Boolean(p));
+const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
+---
+<BaseLayout title={`Note per chi presenta — ${SITE.name}`}>
+  <div class="fixed top-0 left-0 right-0 z-50"><Navigation currentPath={currentPath} base={base} /></div>
+  <main class="rel">
+    <p class="rel-oc">Note per chi presenta</p>
+    <h1 class="rel-h1">{SITE.name}</h1>
+    <section class="rel-tre">
+      <h2 class="rel-k">Le tre cose che devono restare</h2>
+      <ol>{TRE_COSE.map((t) => <li>{t}</li>)}</ol>
+    </section>
+    {sezioni.map((s) => (
+      <section class="rel-sez">
+        <h2 class="rel-cap">{s.label}</h2>
+        {s.slides.map((x) => {
+          const n = NOTE[s.slug]?.[x.id];
+          const m = s.slug === 'momenti' ? momento(x.id) : undefined;
+          return (
+            <article class="rel-v">
+              <h3 class="rel-t">{x.label}</h3>
+              {m ? (
+                <>
+                  <p><strong>Giulia.</strong> {m.cliente.corpo.it}</p>
+                  <p><strong>In banca.</strong> {m.interno.corpo.it}</p>
+                  <p class="rel-se"><strong>Da chiedere.</strong> {m.verifica.it}</p>
+                </>
+              ) : n ? (
+                <>
+                  <p>{n.dire}</p>
+                  {n.attenzione && <p class="rel-at"><strong>Attenzione.</strong> {n.attenzione}</p>}
+                  {n.seChiedono && <p class="rel-se"><strong>Se chiedono.</strong> {n.seChiedono}</p>}
+                </>
+              ) : <p class="rel-manca">Nota da scrivere</p>}
+            </article>
+          );
+        })}
+      </section>
+    ))}
+  </main>
+</BaseLayout>
+<style>
+  :global(body) { overflow: auto; }
+  .rel { min-height: 100vh; padding: 6rem max(1.25rem, calc((100vw - 54rem) / 2)) 4rem; background: #0b2204; color: #f2f8f0; line-height: 1.55; }
+  .rel-oc { margin: 0; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9fd68a; }
+  .rel-h1 { margin: 0.2rem 0 1.5rem; font-size: 2.2rem; line-height: 1.15; color: #ffffff; }
+  .rel-tre { padding: 1rem 1.25rem; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; background: rgba(255, 255, 255, 0.06); }
+  .rel-k { margin: 0 0 0.4rem; font-size: 1.05rem; color: #ffffff; }
+  .rel-tre ol { margin: 0; padding-left: 1.2rem; }
+  .rel-sez { margin-top: 2.2rem; }
+  .rel-cap { margin: 0 0 0.6rem; padding-bottom: 0.35rem; border-bottom: 2px solid #4fc21f; font-size: 1.3rem; color: #ffffff; }
+  .rel-v { padding: 0.7rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.14); }
+  .rel-t { margin: 0 0 0.25rem; font-size: 1rem; color: #9fd68a; }
+  .rel-v p { margin: 0.2rem 0; max-width: none; text-align: left; }
+  .rel-at { color: #ffc27a; }
+  .rel-se { color: #dfeadb; }
+  .rel-manca { color: #ff9a8f; font-weight: 700; }
+</style>

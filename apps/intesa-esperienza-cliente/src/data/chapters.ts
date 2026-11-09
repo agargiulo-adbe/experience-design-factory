@@ -19,26 +19,30 @@ export interface Chapter {
 }
 
 export const CHAPTERS: Chapter[] = [
-  /* Il capitolo 01 viene dal deck del 5 novembre (slide 2, 6, 7, 8, 11): è il
-     solo capitolo in cui il design system NON è di Intesa ma di Adobe, perché
-     parla di Adobe. Sta qui dentro come CITAZIONE — dichiarata, non ridisegnata
-     in verde — e non altrove, perché un documento solo vale più di due. */
-  { slug: 'adobe', num: '01', title: { it: 'Adobe per Intesa Sanpaolo', en: 'Adobe for Intesa Sanpaolo' }, breve: { it: 'Adobe', en: 'Adobe' } },
-  { slug: 'scenario', num: '02', title: { it: 'Scenario', en: 'Scenario' } },
-  { slug: 'persona', num: '03', title: { it: 'La persona', en: 'The persona' } },
-  { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' }, breve: { it: 'I sette momenti', en: 'Seven moments' } },
-  /* Il capitolo «fuori dalla storia» (Teams, 30 ott 2026): le slide tecniche
-     che stavano nei momenti, più il circolo. Vedi `pages/messa-a-terra.astro`. */
-  { slug: 'messa-a-terra', num: '05', title: { it: 'Come si mette a terra', en: 'How it gets built' }, breve: { it: 'Messa a terra', en: 'How it’s built' } },
-  /* Il lavoro si chiede a parole: l'intro a Coworker e il video con i
-     dati del cliente, che si innesta dalla console di amministrazione. */
-  { slug: 'coworker', num: '06', title: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' }, breve: { it: 'Coworker', en: 'Coworker' } },
-  { slug: 'risultati', num: '07', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' }, breve: { it: 'Referenze', en: 'References' } },
-  /* ⚠️ Capitoli in attesa di contenuto: le slide ci sono ma dichiarano
-     di essere segnaposto. Un capitolo vuoto e muto è peggio di un
-     capitolo che dice «qui arriva questo, e lo porta chi di dovere». */
-  { slug: 'analytics', num: '08', title: { it: 'CX Analytics', en: 'CX analytics' } },
-  { slug: 'prossimi-passi', num: '09', title: { it: 'Prossimi passi', en: 'Next steps' } },
+  /* L'ordine delle PAGINE. I numeri e la barra seguono invece le sette voci
+     dell'agenda concordata (`VOCI_NAV`): una voce può coprire più pagine, come
+     «Dove ci innestiamo». CX Analytics sta dopo lo Scenario perché è il cuore
+     di «Dal dato alla decisione», e non nomina Giulia prima che arrivi. */
+  { slug: 'adobe', num: '01', title: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' } },
+  { slug: 'scenario', num: '03', title: { it: 'Scenario', en: 'Scenario' } },
+  { slug: 'analytics', num: '03', title: { it: 'CX Analytics', en: 'CX analytics' } },
+  { slug: 'persona', num: '04', title: { it: 'La persona', en: 'The persona' } },
+  { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
+  { slug: 'messa-a-terra', num: '04', title: { it: 'Come si mette a terra', en: 'How it gets built' } },
+  { slug: 'coworker', num: '05', title: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' } },
+  { slug: 'risultati', num: '06', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' } },
+  { slug: 'prossimi-passi', num: '07', title: { it: 'Prossimi passi', en: 'Next steps' } },
+];
+
+/** La barra: le sette voci dell'agenda. `pagine` accende la voce. */
+export const VOCI_NAV = [
+  { n: '01', it: 'Adobe', en: 'Adobe', slug: 'adobe', pagine: ['adobe'] },
+  { n: '02', it: 'L’offerta', en: 'The offering', slug: 'adobe', ancora: 'slide-cx', pagine: [] as string[] },
+  { n: '03', it: 'Dal dato alla decisione', en: 'From data to decision', slug: 'scenario', pagine: ['scenario', 'analytics'] },
+  { n: '04', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'persona', pagine: ['persona', 'momenti', 'messa-a-terra', 'approfondimenti'] },
+  { n: '05', it: 'AI Conversazionali', en: 'Conversational AI', slug: 'coworker', pagine: ['coworker'] },
+  { n: '06', it: 'Banche', en: 'Banks', slug: 'risultati', pagine: ['risultati'] },
+  { n: '07', it: 'Prossimi passi', en: 'Next steps', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },
 ];
 
 export function chapterIndex(slug: string): number {

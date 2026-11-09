@@ -20,6 +20,41 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const TORNA = `${href(base, '/messa-a-terra')}#slide-ingaggio-ciclo`;
 
+/* ══════════════════════════════════════════════════════════════════════
+   I CASI D'USO — RIFATTI (revisione critica, 30 ott 2026).
+   ⚠️ I quattro precedenti erano giusti e piccoli: continuità operativa
+   (la simulazione che riparte, l'appuntamento che prosegue, il
+   promemoria del documento). Raccontavano che l'esperienza è più comoda,
+   e un cliente che ha già pezzi di un altro stack risponde «anche noi
+   facciamo così». Non è quello che serve dimostrare: serve mostrare che
+   cosa **non si può fare** quando profilo, decisione e misura stanno in tre sistemi diversi.
+   Quindi ogni caso d'uso porta due righe nuove: che cosa SERVE perché
+   funzioni, e che cosa succede quando quei pezzi sono separati. È lì che
+   si vede la differenza fra una somma di strumenti e uno stack.
+   ⚠️ Nessun fornitore si nomina: la frase «quando i pezzi stanno in
+   sistemi diversi» dice la stessa cosa e non obbliga nessuno in sala a
+   difendere una scelta fatta da altri.
+   ══════════════════════════════════════════════════════════════════════ */
+const CASI = [
+  { da: { it: 'Simulazione sul sito', en: 'Simulation on the site' }, a: { it: 'Gestore in filiale', en: 'Adviser in the branch' },
+    t: { it: 'Chi non vi conosce, riconosciuto in filiale', en: 'Someone who does not know you, recognised in the branch' },
+    serve: { it: 'Un’identità che parte da una visita anonima, una decisione presa in sessione, e una misura che tiene insieme digitale e sportello.', en: 'An identity that starts from an anonymous visit, a decision taken in session, and one measurement holding digital and counter together.' },
+    pezzi: { it: 'A pezzi separati: il sito non sa chi è, la filiale ignora la simulazione, e nessuno dei due sa dell’altro.', en: 'With the pieces apart: the site does not know who it is, the branch is unaware of the simulation, and neither knows about the other.' } },
+  { da: { it: 'Quattro proposte', en: 'Four proposals' }, a: { it: 'Una, sul canale giusto', en: 'One, on the right channel' },
+    t: { it: 'Una politica di contatto che vale su tutto', en: 'A contact policy that holds everywhere' },
+    serve: { it: 'Un arbitro sopra i canali: regole di frequenza e consenso condivisi su email, SMS, push e canali custom, filiale compresa se registra i contatti. Per in-app e web vale il limite per offerta.', en: 'One arbiter above the channels: frequency rules and consent shared across email, SMS, push and custom channels, the branch included if it logs contacts. For in-app and web the per-offer limit applies.' },
+    pezzi: { it: 'A pezzi separati: ogni canale ha il suo limite, e la stessa persona riceve tre cose in un giorno e niente la settimana dopo.', en: 'With the pieces apart: each channel has its own limit, and the same person gets three things in a day and nothing the week after.' } },
+  { da: { it: 'I vostri sistemi', en: 'Your own systems' }, a: { it: 'La stessa decisione', en: 'The same decision' },
+    t: { it: 'La decisione chiesta da chi ce l’ha già', en: 'The decision asked for by whoever already has one' },
+    serve: { it: 'Un motore interrogabile via API dal vostro backend e dalla postazione del contact center, senza spostare l’orchestrazione.', en: 'An engine callable over API from your backend and from the contact-centre desktop, without moving the orchestration.' },
+    pezzi: { it: 'A pezzi separati: la regola si riscrive in ogni canale, e due canali danno due risposte diverse alla stessa persona.', en: 'With the pieces apart: the rule gets rewritten in every channel, and two channels give the same person two different answers.' } },
+  { da: { it: 'Un evento di vita', en: 'A life event' }, a: { it: 'La proposta, quando serve', en: 'The proposal, when it is needed' },
+    t: { it: 'Il cross-sell dopo la firma, non a fine trimestre', en: 'Cross-sell after signature, not at quarter end' },
+    serve: { it: 'L’evento, l’eleggibilità che arriva dal core, e l’uplift misurato su un gruppo di controllo.', en: 'The event, eligibility coming from the core, and uplift measured against a control group.' },
+    pezzi: { it: 'A pezzi separati: la proposta parte quando chiude il trimestre, e di quanto sia servita non si sa dire.', en: 'With the pieces apart: the proposal goes out when the quarter closes, and nobody can say how much it helped.' } },
+];
+
+
 /* Le fonti che entrano nella misura unica. Dal deck, slide «CJA + RT-CDP». */
 const FONTI_DATO = [
   { it: 'App e home banking', en: 'App and online banking' },
@@ -152,16 +187,16 @@ const DECIDE = [
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una sola misura di app, sito, contact center e filiale" en="One measurement across app, site, contact centre and branch" />
 
         <div class="im-flusso">
-          <ul class="im-flusso-fonti" data-substep data-side="in">
+          <ul class="im-flusso-fonti">
             {FONTI_DATO.map((f) => <li><span data-lang-it>{f.it}</span><span data-lang-en>{f.en}</span></li>)}
           </ul>
           <span class="im-flusso-fr" aria-hidden="true">→</span>
-          <section class="im-flusso-aep" data-substep data-side="in">
+          <section class="im-flusso-aep">
             <span class="im-flusso-t">Experience Platform</span>
             <T as="span" class="im-flusso-d" it="Identità cross-canale, consenso e schema dati comune. Il grafo si aggiorna man mano che i dati arrivano." en="Cross-channel identity, consent and a common data schema. The graph updates as data arrives." />
           </section>
           <span class="im-flusso-fr" aria-hidden="true">→</span>
-          <section class="im-flusso-cja" data-substep data-side="in">
+          <section class="im-flusso-cja">
             <span class="im-flusso-t">Customer Journey Analytics</span>
             <T as="span" class="im-flusso-d" it="Percorsi, funnel, coorti e attribuzione su dati a livello di evento." en="Journeys, funnels, cohorts and attribution on event-level data." />
           </section>
@@ -170,7 +205,7 @@ const DECIDE = [
         {/* Quattro DOMANDE, non tre reparti: una per area operativa, con
             chi la fa e che cosa la rende rispondibile. Vedi il commento
             su `DOMANDE_CJA` per il perché del cambio. */}
-        <ul class="im-dom" data-substep data-side="in">
+        <ul class="im-dom">
           {DOMANDE_CJA.map((d) => (
             <li class="im-dom-i">
               <T as="span" class="im-dom-chi" it={d.chi.it} en={d.chi.en} />
@@ -200,7 +235,7 @@ const DECIDE = [
         <div class="im-bv im-cat">
           {PROFILO.map((c, i) => (
             <>
-              <section class="im-bv-i" data-substep data-side="in">
+              <section class="im-bv-i">
                 <FiguraCap segno={c.fig} />
                 <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
                 <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
@@ -213,7 +248,7 @@ const DECIDE = [
         {/* La scelta di disegno. Due strade, entrambe legittime: è la
             domanda che il loro IT fa per primo, e arrivarci prima di
             loro vale più che rispondere dopo. */}
-        <div class="im-scelta" data-substep data-side="in">
+        <div class="im-scelta">
           <T as="p" class="im-scelta-k" it="Una scelta di disegno, da fare insieme" en="One design choice, to make together" />
           <div class="im-scelta-g">
             {SCELTA_PROFILO.map((o) => (
@@ -246,7 +281,7 @@ const DECIDE = [
 
         <div class="im-esec">
           {ESEC.map((e) => (
-            <section class="im-esec-i" data-substep data-side="in">
+            <section class="im-esec-i">
               <FiguraCap segno={e.fig} class="im-esec-fig" />
               <T as="span" class="im-bv-t" it={e.t.it} en={e.t.en} />
               <T as="span" class="im-esec-chi" it={e.chi.it} en={e.chi.en} />
@@ -255,7 +290,7 @@ const DECIDE = [
           ))}
         </div>
 
-        <div class="im-csc-conf im-csc-conf--eng" data-substep data-side="in">
+        <div class="im-csc-conf im-csc-conf--eng">
           <T as="span" class="im-csc-conf-t" it="Il terzo modo è la risposta a «e quello che abbiamo già?»" en="The third route answers “what about what we already have?”" />
           <T as="span" class="im-csc-conf-d" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola è una; il contatore si comporta diversamente al bordo (per identità, in tempo reale) e nel percorso (per profilo, con qualche minuto)." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule is one; the counter behaves differently at the edge (per identity, in real time) and in the journey (per profile, with a few minutes’ lag)." />
         </div>
@@ -279,7 +314,7 @@ const DECIDE = [
 
         <ol class="im-dec">
           {DECIDE.map((d) => (
-            <li class="im-dec-i" data-substep data-side="in">
+            <li class="im-dec-i">
               <span class="im-dec-n">{d.n}</span>
               <T as="span" class="im-bv-t" it={d.t.it} en={d.t.en} />
               <T as="span" class="im-bv-d" it={d.d.it} en={d.d.en} />
@@ -288,7 +323,7 @@ const DECIDE = [
         </ol>
 
         {/* Il confine. Si dice prima, perché è la paura di chi guarda. */}
-        <div class="im-confine" data-substep data-side="in">
+        <div class="im-confine">
           <T as="span" class="im-confine-t" it="Dove si fermano le nostre regole" en="Where our rules stop" />
           <T as="span" class="im-confine-d" it="Il motore non è il sistema di record dell’eleggibilità creditizia, dei saldi e delle approvazioni: quelli restano nel core banking. Qui si scelgono offerta, canale e momento fra ciò che il core ha già dichiarato ammissibile." en="The engine is not the system of record for credit eligibility, balances or approvals: those stay in core banking. Here offer, channel and timing are chosen among what the core has already declared eligible." />
         </div>
@@ -298,6 +333,32 @@ const DECIDE = [
           <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/get-started-decision/starting-offer-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span data-lang-it>. Il confine con il core banking è una scelta di disegno nostra, da confermare con voi.</span><span data-lang-en>. The boundary with core banking is a design choice of ours, to confirm with you.</span>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-ingaggio-casi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · casi d’uso" en="Deep dive · use cases" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro cose che riescono solo se i pezzi stanno insieme" en="Four things that only work when the pieces hold together" />
+        <T as="p" class="im-ado-l" it="Chi arriva dopo non chiede di nuovo. I quattro casi hanno questo in comune, e lo perdono quando i pezzi stanno in sistemi diversi." en="Whoever comes next does not ask again. The four cases share this, and lose it when the pieces live in different systems." />
+
+        <ul class="im-casi">
+          {CASI.map((c) => (
+            <li class="im-casi-i">
+              <p class="im-casi-rotta">
+                <T as="span" class="im-casi-da" it={c.da.it} en={c.da.en} />
+                <span class="im-casi-fr" aria-hidden="true">→</span>
+                <T as="span" class="im-casi-a" it={c.a.it} en={c.a.en} />
+              </p>
+              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-bv-d" it={c.serve.it} en={c.serve.en} />
+              <T as="span" class="im-casi-pezzi" it={c.pezzi.it} en={c.pezzi.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Casi d’uso proposti sul vostro perimetro, da prioritizzare insieme: la fattibilità di ciascuno dipende da quali dati sono già in piattaforma. La riga in basso di ogni caso dice che cosa resta fuori portata con profilo, decisione e misura in tre sistemi diversi." en="Use cases proposed for your perimeter, to be prioritised together: the feasibility of each depends on which data is already on the platform. The bottom line of each case says what stays out of reach when profile, decision and measurement live in different systems." />
+        <p class="im-fonte-riga"><a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a></p>
       </div>
     </Slide>
 

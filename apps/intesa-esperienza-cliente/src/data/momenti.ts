@@ -190,7 +190,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Dopo il consenso, le due sessioni anonime delle sere prima si agganciano al suo profilo.', en: 'After consent, the two anonymous sessions from the earlier evenings link to her profile.' },
+      titolo: { it: 'Con il consenso ai cookie, le due sessioni anonime si agganciano al suo profilo', en: 'With cookie consent, the two anonymous sessions link to her profile' },
       corpo: {
         it: 'Le visite anonime delle sere prima si collegano al profilo nell’istante del consenso, se il consenso ai cookie c’era già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
         en: 'Her anonymous visits from the previous evenings link to the profile the instant consent is given, if cookie consent was already there. If not, you start from today’s simulation. In the CRM she has no customer record: she can have a lead.',

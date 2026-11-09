@@ -53,7 +53,7 @@ export const TRE: Cosa[] = [
   {
     n: '3', gruppo: 'piattaforma', prodotto: 'Adobe CX Analytics',
     t: { it: 'Misurare in un posto solo', en: 'Measuring in one place' },
-    riga: { it: 'App, sito, contact center e filiale oggi stanno in quattro report: li mette insieme a mano chi decide.', en: 'App, site, contact centre and branch sit in four reports today: whoever decides joins them by hand.' },
+    riga: { it: 'App, sito, contact center e filiale: quanti report servono oggi per tenerli insieme?', en: 'App, site, contact centre and branch: how many reports does it take today to hold them together?' },
     // Giro 1 (6 nov 2026): il trattino faceva la virgola (`D1`), e la
     // virgola è la correzione giusta. NON i due punti: la frase ne ha
     // già uno sull'elenco, e il deck gira su quella cadenza — sedici

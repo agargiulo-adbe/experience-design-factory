@@ -49,7 +49,7 @@ export const AGENDA: VoceAgenda[] = [
     riga: { it: 'Misurare i canali, scegliere chi contattare, decidere l’offerta', en: 'Measuring channels, choosing whom to contact, deciding the offer' },
   },
   {
-    n: '04', capitolo: 'momenti',
+    n: '04', capitolo: 'persona',
     titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
     riga: { it: 'L’architettura di arrivo: che cosa resta vostro, che cosa aggiungiamo', en: 'The target architecture: what stays yours, what we add' },
   },

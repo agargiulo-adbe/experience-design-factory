@@ -3,86 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
 import { href } from '@edf/core/utils/url.js';
 import { SITE } from '../data/site';
+import { PAGE_REGISTRY } from '../data/slides';
 
 const base = import.meta.env.BASE_URL;
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
-
-interface SlideEntry { id: string; label: string; }
-interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
-
-// Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
-// accende e spegne. Ogni <Slide id> nuova va registrata qui.
-const PAGE_REGISTRY: PageEntry[] = [
-  { slug: 'index', label: 'Copertina dell’incontro (00)', slides: [
-    { id: 'slide-cover', label: 'Copertina dell’incontro — titolo e indice dei nove capitoli' },
-  ]},
-  { slug: 'adobe', label: 'Adobe per Intesa Sanpaolo (01)', slides: [
-    { id: 'slide-cover',     label: 'Cover — Adobe per Intesa Sanpaolo' },
-    { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Chi è Adobe — le due aree, e quella di oggi' },
-    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari — quattro numeri e i quattro Forrester Wave' },
-    { id: 'slide-cx',        label: 'Adobe CX Enterprise — i blocchi, le tre cose di cui si parla, e i nomi' },
-  ]},
-  { slug: 'scenario', label: 'Scenario (02)', slides: [
-    { id: 'slide-cover',      label: 'Cover — il mutuo è l’acquisizione più lunga' },
-    { id: 'slide-segnale',    label: 'Il segnale c’è già — l’imbuto e le quattro candidate' },
-  ]},
-  { slug: 'persona', label: 'La persona (03)', slides: [
-    { id: 'slide-cover',  label: 'Cover — Giulia, 34 anni, non è vostra cliente' },
-    { id: 'slide-giro-di-giulia', label: 'La protagonista, che cosa non avete di lei, e le sette fermate' },
-  ]},
-  { slug: 'momenti', label: 'I sette momenti, dai due lati (04)', slides: [
-    { id: 'slide-cover', label: 'Cover — sopra Giulia, sotto chi prepara' },
-    { id: 'slide-m-01', label: '01 Farsi trovare — l’assistente la cita, o no' },
-    { id: 'slide-m-02', label: '02 Content Factory — la variante per la sua città' },
-    { id: 'slide-m-03', label: '03 Engagement — da visita anonima a nome' },
-    { id: 'slide-m-04', label: '04 Engagement — quattro candidate, una parte' },
-    { id: 'slide-m-05', label: '05 Engagement — il percorso parte dall’evento' },
-    { id: 'slide-m-06', label: '06 AI Platform — il gestore sa già chi è' },
-    { id: 'slide-m-07', label: '07 CX Analytics — quanto è costato acquisirla' },
-  ]},
-  { slug: 'messa-a-terra', label: 'Come si mette a terra (05)', slides: [
-    { id: 'slide-cover', label: 'Cover — quello che avete visto, sulla vostra architettura' },
-    { id: 'slide-ingaggio-mappa', label: 'La mappa: che cosa avete, che cosa si aggiunge, che cosa resta vostro' },
-    { id: 'slide-motore', label: 'Il motore di targeting resta: che cosa entra nell’arbitro, che cosa esce' },
-    { id: 'slide-integrazioni', label: 'Sei collegamenti, e dove gira sotto quale contratto' },
-    { id: 'slide-brand-visibility', label: 'Brand Visibility, quattro capacità e due strati' },
-    { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
-    { id: 'slide-ingaggio-ciclo', label: 'I quattro componenti del ciclo di ingaggio' },
-    { id: 'slide-ingaggio-casi', label: 'Quattro casi d’uso che reggono solo a stack intero' },
-    { id: 'slide-ritorno', label: 'Che cosa il percorso lascia a Giulia e alla prospect successiva' },
-  ]},
-  { slug: 'approfondimenti', label: 'Approfondimenti (fuori percorso)', slides: [
-    { id: 'slide-ingaggio-dato', label: 'Una sola misura, e le quattro domande di CJA' },
-    { id: 'slide-ingaggio-profilo', label: 'Il profilo: stitching, grafo, e duplicare o federare' },
-    { id: 'slide-ingaggio-regia', label: 'Tre modi di eseguire la stessa decisione' },
-    { id: 'slide-ingaggio-arbitro', label: 'Come ragiona una decisione, e dove si ferma' },
-  ]},
-  { slug: 'coworker', label: 'Coworker, il lavoro si chiede a parole (06)', slides: [
-    { id: 'slide-cover', label: 'Cover — divisore del capitolo' },
-    { id: 'slide-cosa',  label: 'Che cos’è Coworker — chat, agenti, dove gira' },
-    { id: 'slide-video', label: 'Video demo con i dati del cliente — slot da console' },
-  ]},
-  { slug: 'risultati', label: 'Banche che lo fanno già (07)', slides: [
-    { id: 'slide-cover',   label: 'Cover — una banca che lo fa già' },
-    { id: 'slide-tsb',     label: 'TSB — le quattro cifre, con la fonte' },
-    { id: 'slide-italia',  label: 'Crédit Agricole Italia e Santander Brasil' },
-  ]},
-  { slug: 'analytics', label: 'CX Analytics (08)', slides: [
-    { id: 'slide-cover',  label: 'Cover — CX Analytics' },
-    { id: 'slide-passaggio', label: 'Da Adobe Analytics a CJA — che cosa cambia per chi lo usa oggi' },
-    { id: 'slide-attribuzione', label: 'L’attribuzione dopo l’ultimo clic, e la riga della filiale' },
-  ]},
-  { slug: 'prossimi-passi', label: 'Prossimi passi (09)', slides: [
-    { id: 'slide-cover',  label: 'Cover — prossimi passi' },
-    { id: 'slide-ripresa', label: 'La ripresa — le stesse tre, dopo averle viste' },
-    { id: 'slide-da-voi', label: 'Che cosa misureremmo dal giorno uno, e l’ask' },
-    { id: 'slide-fasi',   label: 'Il seguito a tappe — disegno, mutuo sui prospect, dopo il trimestre' },
-    { id: 'slide-serve',  label: 'Che cosa ci serve — cinque cose, e chi le porta' },
-    { id: 'slide-firma',  label: 'La firma — Adobe × Intesa Sanpaolo, chiude il percorso' },
-  ]},
-];
 
 interface SolutionEntry {
   id: string; name: string; shortName: string;
@@ -128,6 +53,7 @@ const deckHref = href(base, '/');
 // da RLS e non entra mai nel bundle statico.
 const siteRoot = base.replace(/[^/]+\/?$/, '');
 const DOSSIERS = [
+  { href: href(base, '/relatore'), label: 'Note per chi presenta, slide per slide' },
   { href: href(siteRoot, '/intesa-innesto/dossier'), label: 'Chi c’è in sala il 5 novembre, e come si convince' },
   { href: href(siteRoot, '/intesa-scala-umana/dossier'), label: 'L’incontro del 22 ottobre, che lo precede' },
 ];
