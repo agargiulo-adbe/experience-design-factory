@@ -5,6 +5,17 @@
 
 ## 11. Change log recente
 
+### 2026-11-09 (sera) · Prospettiva Sales: le due call di revisione, e il deck cambia forma
+
+Dopo la review interna e l'allineamento con il responsabile dei canali digitali il percorso passa **da 38 a 25 slide**. ⚠️ Niente è committato, e il panel non copre questo stato.
+
+- **Struttura:** introduzione a una slide di problemi + domanda + mappa; agenda con le quattro idee in una voce sola; «Chi siamo» dopo la copertina; capitolo 07 «La Roadmap» a cinque fasi con la distinzione fra ciò che si avvia subito e ciò che dipende da altri sistemi.
+- **Contenuto:** l'idea 2 diventa «Personalizzazione su larga scala» (intermodale come esempio, si propone solo ciò che si può comprare); agenzie dichiarate ipotesi da approfondire, nessun numero di agenzie, online fuori perimetro; niente traduzione come leva; «Come ottimizzare le vendite?» sostituisce «Dove si perdono le vendite?». Tolti WeChat, Santander, Busitalia (nessun collegamento trovato su Roma-Matera).
+- **Disattivate con un flag:** `slide-innesto`, `slide-aritmetica`, `slide-passo`. Fuori percorso: `/appendice/`.
+- **Regole di design nuove** (in fondo a `global.css`): il colore dice il tipo di slide, titolo a quota fissa, tre soli contenitori. Componenti nuovi `Fascia` (striscia Adobe), `Tempi`, `ProblemiAncore`. Sei foto Firefly per le copertine in `src/assets/generated/sole/`.
+- **Agenzie, verificato su Fluffy:** resta solo CJA (Analytics non serve, Target identifica visitatori e non agenzie); legare online e banco richiede una chiave comune, per esempio un codice offerta.
+- **Gancio animato:** la tessera «La concorrenza» si accende con ↓ e con → si allarga fino a diventare la slide della domanda.
+
 ### Change log — la Prospettiva Sales cambia registro su tutto il deck, e una slide nuova su quello che il cliente ha già fatto (2026-11-09) → §37 (Parte 16)
 
 ⚠️ **Questa giornata non è committata**: 14 file modificati nel working tree, e la stanza è **il 10 novembre**. Quello che oggi è in rete è ancora lo stato del 7 nov. — `apps/trenitalia-prospettiva-sales`, `docs/Claude/posta.py`

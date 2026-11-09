@@ -10,6 +10,8 @@
 > `.md` costa ~40k token su 21 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
+> 🚄 **La sera del 9 novembre la Prospettiva Sales passa da 38 a 25 slide, dopo due call di revisione** (change log, Parte 3): personalizzazione al posto dell'intermodale, agenzie come ipotesi, roadmap a cinque fasi, design unificato. ⚠️ **Niente è committato e il panel non lo copre, e la stanza è il 10 novembre alle 14:30**: i due P0 in testa alla Parte 2.
+>
 > 🚄 **Il 9 novembre la Prospettiva Sales cambia registro su tutto il deck, e prende una slide nuova —
 > e niente di questo è committato** (change log 2026-11-09, Parte 3 · §37, Parte 16). ~40 stringhe
 > riscritte con un movimento solo: l'affermazione sul cliente diventa domanda o constatazione.
