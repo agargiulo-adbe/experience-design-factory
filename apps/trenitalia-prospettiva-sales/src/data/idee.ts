@@ -174,7 +174,7 @@ export const IDEE: Idea[] = [
       fonte: SOURCES.unipolRete,
       senzaRigaFonte: true,
     },
-    capability: ['Legare il venduto al percorso digitale', 'Capire quali materiali si possono misurare, e come'],
+    capability: ['Legare il venduto al percorso digitale', 'Capire quali schede e locandine si possono misurare, e come'],
     gruppi: ['rete'],
     fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026: lì l’agente lavora sullo strumento della compagnia, l’agenzia di viaggi no. Vale il meccanismo.',
   },

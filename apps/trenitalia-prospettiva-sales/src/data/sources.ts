@@ -456,7 +456,7 @@ export const SOURCES = {
     url: 'https://experienceleague.adobe.com/en/docs/workfront/using/home',
     label: 'Adobe Workfront',
     data: 'documentazione pubblica',
-    cosaDice: 'Il governo del lavoro: richieste, assegnazioni, scadenze, approvazioni e stato di avanzamento su campagne e materiali. È il pezzo che tiene insieme chi chiede e chi produce.',
+    cosaDice: 'Il governo del lavoro: richieste, assegnazioni, scadenze, approvazioni e stato di avanzamento su campagne e contenuti. È il pezzo che tiene insieme chi chiede e chi produce.',
   },
   coworker: {
     // La descrizione di prodotto su helpx risponde 403 a qualunque accesso automatico —
