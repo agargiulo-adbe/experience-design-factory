@@ -923,8 +923,8 @@ export const SERVE: Record<
   Pezzo[]
 > = {
   visibilita: [
-    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'il governo continuo di come comparite nelle risposte AI' },
-    { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'dove le pagine già nascono' },
+    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'Come comparite nelle risposte AI' },
+    { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'Dove le pagine già nascono' },
   ],
   canale: [
     { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'la base su cui si innesta' },
@@ -939,29 +939,29 @@ export const SERVE: Record<
        dichiarato pubblicamente, e che non possiamo nominare né sfiorare.
        Ora la riga parla di PRESENZA DI MARCA, non di vendita. */
     { nome: 'LLM Apps, dentro Adobe Experience Manager', fonte: 'llmApps', stato: 'nuovo',
-      a: 'la presenza di marca dentro gli assistenti AI' },
+      a: 'La marca dentro gli assistenti AI' },
   ],
   acquisto: [
-    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'già su trenitalia.com e lefrecce.it: i segmenti di chi non è registrato' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'livello CartaFreccia e navigazione, letti nella stessa analisi' },
-    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'la home per segmento, provata prima su una parte del traffico' },
-    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'agenti AI su analisi dei segmenti e attivazione della personalizzazione' },
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'I segmenti di chi naviga' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'CartaFreccia e navigazione insieme' },
+    { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'La home per segmento' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sui segmenti' },
   ],
   collaborazione: [
-    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'il luogo neutro dell\u2019incrocio' },
+    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'L\u2019incrocio neutro con i partner' },
   ],
   contenuto: [
-    { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'c\u2019\u00e8 gi\u00e0 nel gruppo, da estendere' },
-    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'gli strumenti di oggi: si aggiunge la scala' },
-    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'chi chiede, chi produce, chi approva' },
-    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'le varianti di campagna paid media' },
-    { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'quali contenuti funzionano davvero' },
-    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'agenti AI sulla produzione dei contenuti' },
+    { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'Da estendere a Trenitalia' },
+    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'Gli strumenti di oggi, su scala' },
+    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'Chi chiede, produce, approva' },
+    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'Le varianti per il paid media' },
+    { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'Quali contenuti funzionano davvero' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione' },
   ],
   rete: [
     /* 9 nov 2026: verificato su Experience League e Fluffy. Senza tracciamento in agenzia
        si misura direttamente con CJA, e Target non identifica agenzie: fuori tutti e due. */
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'quante vendite in agenzia nascono da un’offerta vista online, grazie a un codice mostrato al banco' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Quante vendite per codice' },
   ],
 };
 
@@ -1006,7 +1006,7 @@ export const CHI_SIAMO = {
       { q: '2024-2025', t: 'Migrazione al cloud', b: 'Febbraio 2025, ultima fase: 26 siti migrati, 6 nativi cloud' },
       { q: '2025', t: 'Go-live strategici', b: 'Trenitalia e FS Logistix su piattaforme evolute' },
       { q: '2026', t: 'Site transformation', b: 'FS Italiane: trasformazione del sito entro l’anno', ora: true },
-      { q: '2027 e oltre', t: 'Evoluzione', b: 'Altri siti del Gruppo FS, e AEM Assets da estendere' },
+      { q: '2027 e oltre', t: 'Evoluzione', b: 'Altri siti del Gruppo FS, e Experience Manager Assets da estendere' },
     ],
   },
 };

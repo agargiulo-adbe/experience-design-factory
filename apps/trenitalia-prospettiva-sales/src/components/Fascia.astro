@@ -7,16 +7,22 @@
  * marchio non compariva. Qui il marchio Adobe apre la riga e ogni prodotto ha una
  * tessera: nome grande e una riga su che cosa fa in QUESTA idea. Niente listino.
  *
- * Lo stato si legge due volte, a parole e dalla forma: tessera piena = già vostro,
- * tessera bordata = si aggiunge. Il colore da solo non è un'informazione.
+ * Lo stato si legge due volte, a parole e dalla forma: tessera piena = si aggiunge,
+ * tessera chiara = già nel Gruppo. Il peso va su ciò che si propone.
+ *
+ * ⚠️ MARCHIO, letto su Brand Center il 9 nov 2026 (Brand Guidelines, giugno 2026):
+ * una comunicazione con più prodotti apre con il lockup della Cloud; i loghi dei
+ * prodotti di Experience Cloud sono RITIRATI, i nomi stanno in testo. Il wordmark
+ * non si ricompone con il testo e i lockup non si costruiscono né si ritoccano: il
+ * file è quello ufficiale, stacked perché la colonna è stretta.
  *
  * ⚠️ Fondo bianco e inchiostri espliciti: la striscia sta su slide scure e chiare,
- * e `.tp-pz` eredita. Le ICONE dei singoli prodotti non si ricostruiscono: quando
- * arrivano da Brand Center vanno accanto al nome, e il marchio corporate resta.
+ * e `.tp-pz` eredita.
  * Dove si apre un drill-down cede il posto (`cede`): mai rimpicciolire.
  */
 import { LEGENDA, type Pezzo, type Stato } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
+import lockup from '../assets/brand/adobe-cx-enterprise-stacked.svg';
 interface Props { pezzi: Pezzo[]; cede?: boolean; }
 const { pezzi, cede = true } = Astro.props as Props;
 /* Il prefisso «Adobe» lo dice già il marchio che apre la riga. */
@@ -28,16 +34,14 @@ const colonne = `minmax(0, 8rem) ${gruppi.map((g) => `minmax(0, ${g.voci.length}
 ---
 <div class:list={['tp-adobe', cede && 'tp-cede']} style={`grid-template-columns: ${colonne}`} data-reveal data-reveal-delay="0.18">
   <div class="tp-adobe-m">
-    <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M13.966 22.624l-1.69-4.281H8.122l3.892-9.144 5.662 13.425zM8.884 1.376H0v21.248zm15.116 0h-8.876L24 22.624z" /></svg>
-    <p class="tp-adobe-n">Adobe</p>
-    <p class="tp-adobe-s">con che cosa si fa</p>
+    <img src={lockup.src} width={lockup.width} height={lockup.height} alt="Adobe CX Enterprise" />
   </div>
   {gruppi.map((g) => (
     <div class="tp-adobe-g">
       <p class="tp-adobe-k">{LEGENDA[g.stato].eti}</p>
       <ul class="tp-adobe-l" style={`--c:${g.voci.length}`}>
         {g.voci.map((p) => {
-          const url = p.fonte ? SOURCES[p.fonte].url : undefined;
+          const url = p.fonte ? (SOURCES[p.fonte] as { url?: string }).url : undefined;
           return (
             <li class="tp-adobe-t" data-stato={g.stato}>
               <span class="tp-adobe-p">{url ? <a href={url} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</span>
