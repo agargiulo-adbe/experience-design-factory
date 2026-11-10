@@ -76,7 +76,7 @@ export const IDEE: Idea[] = [
        cifre su tutte e otto stanno sulla slide degli esiti, dopo il campione. */
     titolo: 'La prima delle otto: come arrivo da Roma a\u00a0Matera senza\u00a0auto',
     mock: 'ricerca',
-    cifra: { k: 'Su questa domanda', v: 'entrambi gli assistenti aprono con gli operatori di autobus' },
+    cifra: { k: '7 e 2 su 8', v: 'sulle otto domande, trenitalia.com fra le fonti: ChatGPT e Google' },
     chiusa: 'Il biglietto combinato treno più autobus va prima al concorrente. ChatGPT cita Freccialink solo dopo.',
     capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
     gruppi: ['visibilita', 'canale'],

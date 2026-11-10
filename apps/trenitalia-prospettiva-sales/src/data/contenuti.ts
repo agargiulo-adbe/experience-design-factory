@@ -985,7 +985,7 @@ export const SERVE: Record<
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sui segmenti', pop: 'coworker-acquisto' },
   ],
   collaborazione: [
-    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'L\u2019incrocio neutro con i partner', pop: 'collab-costa' },
+    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'Incrocio e attivazione con i partner', pop: 'collab-costa' },
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'Da estendere a Trenitalia' },

@@ -89,15 +89,15 @@ export const SCENE: Record<ScenaId, Scena> = {
   'collab-costa': {
     prodotto: 'Real-Time Collaboration',
     caso: 'Trenitalia e Costa Crociere',
-    cosa: 'Due partner trovano i clienti in comune senza consegnarsi le proprie basi clienti.',
+    cosa: 'Due partner trovano i clienti in comune e li raggiungono, senza consegnarsi le proprie basi clienti.',
     passi: [
       'Trenitalia e Costa hanno ciascuna i propri clienti, e li tengono.',
       'Gli elenchi si incontrano in un ambiente neutro di collaborazione, con controlli di accesso.',
       'Nel confronto nessuna delle due vede i dati dell’altra: si vede quanto si sovrappongono.',
-      'Da lì nasce un pubblico per una proposta comune: il treno fino al porto.',
+      'Il pubblico in comune si attiva sui canali concordati, e la campagna si misura: il treno fino al porto.',
       'Prima di qualunque prova si definiscono titolarità, base giuridica, contratto e valutazione d’impatto.',
     ],
-    nota: 'Schema illustrativo. L’attivazione verso il partner ha regole sue, da definire insieme.',
+    nota: 'Schema illustrativo. Si attiva sulle destinazioni concordate fra i partner, sopra una soglia minima di sovrapposizione.',
     fonti: [fonte(SOURCES.rtcdpCollab)],
   },
   'bv-ricerca': {

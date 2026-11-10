@@ -88,7 +88,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
       fatto: 'Misura Adobe dell’11 e 12 ottobre 2026. Il metodo è in slide perché la prima cosa che si controlla è come è stata fatta la misura.',
       seChiedono: { d: 'Otto domande sono poche.', r: 'Sì, ed è scritto. Non è una statistica: è una fotografia ripetibile. L’offerta è rifarla insieme con le vostre domande.' } },
     { id: 'slide-idea',
-      dire: 'Ne prendiamo una, la prima: come arrivo da Roma a Matera senza auto. Tutti e due gli assistenti AI aprono con gli operatori di autobus.',
+      dire: 'Ne prendiamo una, la prima: come arrivo da Roma a Matera senza auto. Tutti e due gli assistenti AI aprono con gli operatori di autobus. E su tutte e otto: siete fra le fonti sette volte su ChatGPT, due su Google.',
       fatto: 'Tutti e due aprono con gli autobus e danno il combinato prima al concorrente. ChatGPT cita Freccialink dopo. La schermata riassume l’esito su ChatGPT. Su tutte e otto: trenitalia.com è fra le fonti 7 volte su ChatGPT e 2 su Google, che in due risposte elenca le Frecce come aziende in concorrenza. L’errore è di Google: ChatGPT non sbaglia mai sulle otto.',
       seChiedono: { d: 'È SEO?', r: 'No. La SEO ottimizza un posizionamento in un elenco; qui si lavora su che cosa un sistema generativo cita come fonte, e si misura.' } },
   ],
@@ -106,7 +106,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
     { id: 'slide-prima',
       dire: 'La personalizzazione comincia prima, e altrove. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci: conoscendolo, gli si fa una proposta vantaggiosa prima del confronto con Italo.',
       fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: ha una data ed è loro.',
-      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro. Si apre la tessera Real-Time Collaboration. Titolarità, base giuridica e contratto si definiscono prima di qualunque prova.' } },
+      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro, e il pubblico in comune si attiva sui canali concordati. Si apre la tessera Real-Time Collaboration. Titolarità, base giuridica e contratto si definiscono prima di qualunque prova.' } },
   ],
 
   contenuto: [

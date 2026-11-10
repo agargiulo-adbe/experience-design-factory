@@ -405,7 +405,7 @@ export const SOURCES = {
     url: 'https://experienceleague.adobe.com/en/docs/real-time-cdp-collaboration/using/home',
     label: 'Adobe Real-Time Collaboration',
     data: 'documentazione pubblica',
-    cosaDice: 'Due aziende lavorano sugli stessi clienti senza trasferirsi i dati: ciascuna resta nel proprio ambiente governato.',
+    cosaDice: 'Due aziende lavorano sugli stessi clienti senza trasferirsi i dati. Tre usi documentati: Discover (sovrapposizione aggregata), Activate (invio del pubblico alla destinazione della connessione, sopra una soglia di sovrapposizione), Measure (report di campagna). Collaborazione fra brand supportata da luglio 2025.',
   },
   aem: {
     url: 'https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/overview/introduction',
