@@ -19,9 +19,9 @@
  *   sa farlo in chat. ⚠️ Il pannello A4T non si migra: da dire a chi gestisce Target.
  * · Coworker su Target: legge i risultati, diagnostica le varianti perdenti,
  *   dimensiona la durata dei test. Rilascio per modulo e per coorte ancora in corso.
- * · Person ID di CJA: «any of these identities», Tracking Code compreso. Da qui
- *   l'analisi per agenzia. Experimentation panel: Lift e Confidence, dati di
- *   esperimento anche non Adobe. Lookup dataset = le classificazioni.
+ * · Schede in agenzia: il pannello degli esperimenti NON si usa. Senza assegnazione
+ *   casuale «does not have a causal interpretation» e non prende dati di sintesi.
+ *   Il confronto si progetta prima di spedire; CJA lo mostra accanto a sito e app.
  *
  * ⚠️ Nessun numero inventato: le barre sono senza cifre e la nota lo dichiara. Le
  * uniche cifre sono quelle della misura Adobe di ottobre, già nel capitolo ricerca.
@@ -104,13 +104,13 @@ export const SCENE: Record<ScenaId, Scena> = {
   'bv-ricerca': {
     prodotto: 'Brand Visibility',
     caso: 'Presidiare le risposte degli assistenti AI',
-    cosa: 'La misura che abbiamo fatto a mano in ottobre, resa continua e collegata alle pagine.',
+    cosa: 'La misura di ottobre, resa continua e collegata alle pagine.',
     passi: [
       'Si parte dalle domande dei viaggiatori, senza nomi di marca.',
       'Per ogni assistente si vede se trenitalia.com è fra le fonti citate.',
       'Si vede chi viene citato al vostro posto: oggi, su Google, soprattutto i rivenditori.',
-      'Le correzioni arrivano pagina per pagina, nel flusso di Experience Manager.',
-      'La misura continua, e si vede se le correzioni hanno spostato qualcosa.',
+      'Con Experience Manager si ottimizzano le pagine, e aumenta la probabilità di essere citati.',
+      'La misura continua, e si vede se le ottimizzazioni hanno spostato qualcosa.',
     ],
     nota: 'I due valori sono la misura Adobe dell’11 e 12 ottobre, otto domande. Il resto è illustrativo.',
     fonti: [fonte(SOURCES.brandVisibility)],
@@ -184,19 +184,19 @@ export const SCENE: Record<ScenaId, Scena> = {
   'cja-rete': {
     prodotto: 'Customer Journey Analytics',
     caso: 'Schede e locandine in agenzia',
-    cosa: 'Quali schede e locandine fanno vendere di più, senza toccare il sistema di vendita.',
+    cosa: 'Provare su una campagna se una scheda fa vendere, senza toccare il sistema di vendita.',
     passi: [
-      'La scheda Matera è andata in sei agenzie su dodici: basta l’elenco di dove e quando.',
-      'Il venduto verso Matera per agenzia lo avete già: si carica così com’è.',
-      'Customer Journey Analytics unisce i due file e ragiona per agenzia.',
-      'Si confrontano le sei agenzie con la scheda Matera e le sei senza, nello stesso periodo.',
-      'Lo stesso confronto, scheda per scheda, dice quale fa vendere di più e quale non stampare più.',
-      'Un QR per scheda aggiunge chi la inquadra e poi va sul sito.',
+      'La scheda Matera parte in due ondate, con le agenzie assegnate a sorte fra gruppi simili.',
+      'Serve il venduto del prodotto per agenzia e per settimana, dai vostri sistemi.',
+      'Customer Journey Analytics mette il confronto accanto a quello che succede su sito e app.',
+      'Si confronta quanto crescono i due gruppi, finché la seconda ondata non parte.',
+      'Si controlla il diretto nella stessa zona: una vendita spostata dall’app non è una vendita in più.',
+      'Un QR per agenzia dice se la scheda viene guardata. Il metro resta il venduto.',
     ],
-    nota: 'Ipotesi da verificare sui vostri dati: nessun dato di persona, e il confronto regge se le agenzie sono paragonabili. Valori illustrativi.',
+    nota: 'Ipotesi da verificare sui vostri dati. Si misura chi riceve la scheda, non chi la espone, e un esito incerto si dichiara tale. Nessun dato di viaggiatori o addetti. Valori illustrativi.',
     fonti: [
-      { label: 'Il pannello degli esperimenti', url: `${EL}/analytics-platform/using/cja-workspace/panels/experimentation` },
-      { label: 'Identificativi e tabelle di riferimento', url: `${EL}/analytics-platform/using/technotes/glossary` },
+      { label: 'Dati di sintesi in Customer Journey Analytics', url: `${EL}/analytics-platform/using/cja-dataviews/summary-data` },
+      { label: 'Codici di tracciamento in Analytics', url: `${EL}/analytics/components/dimensions/tracking-code` },
     ],
   },
 };

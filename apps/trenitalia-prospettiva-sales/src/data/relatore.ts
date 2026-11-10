@@ -134,9 +134,9 @@ export const NOTE: Record<string, NotaSlide[]> = {
   rete: [
     { id: 'slide-cover', dire: 'Ultimo punto, e lo diciamo subito: è tutto da approfondire.' },
     { id: 'slide-idea',
-      dire: 'Il venduto per agenzia lo avete già. Basta sapere dove è andata ogni scheda per confrontare le agenzie che l’hanno avuta con le altre. Sul sistema di vendita non si tocca niente, e nessuno deve digitare un codice.',
-      fatto: 'Unipol misura sito, app e agenzie insieme. Settore diverso, e si dice.',
-      attenzione: 'Nessun numero di agenzie. Le agenzie online restano fuori: non si dice a loro come vendere. L’unità è l’agenzia, non la persona: nessun dato personale. Servono due file, il venduto per agenzia e l’elenco di dove è andata ogni scheda. Se quell’elenco oggi non esiste, si comincia dalla prossima campagna. Il confronto regge se le agenzie sono paragonabili: meglio assegnare la scheda a metà di un gruppo simile, e dirlo prima. Un’agenzia vende anche altri fornitori e segue le sue convenzioni. Il QR conta chi inquadra, non le vendite in più. Il meccanismo con Customer Journey Analytics è da provare sui loro dati. Prima di misurare si decide che cosa si fa di quel dato verso la rete.',
+      dire: 'Il venduto per agenzia lo avete già. Alla prossima campagna la scheda parte in due ondate, decise prima, e si guarda se il primo gruppo cresce più del secondo. Il sistema di vendita resta com’è, e nessuno deve digitare un codice.',
+      fatto: 'Unipol porta agenzie e sito nella stessa analisi. Settore diverso, e sulla carta non è una prova.',
+      attenzione: 'Nessun numero di agenzie. Le agenzie online restano fuori. Nessun dato di viaggiatori o addetti, e le ditte individuali passano dal DPO. Si misura la scheda ricevuta, non quella esposta: l’elenco nasce dall’assegnazione a sorte, e nessuna agenzia resta senza. Il lavoro dei consulenti va tenuto uguale nei due gruppi. Il diretto della stessa zona dice se la vendita si è solo spostata. Una scheda sola può non muovere abbastanza: «non si può concludere» è un esito previsto, e la soglia si scrive prima. Per questa sola domanda Customer Journey Analytics non serve: ha senso insieme al caso sito e app. Prima si decide che cosa si dice alla rete: nessuna classifica.',
       // ⚠️ 9 nov 2026: la frase di prima lasciava intendere che bastasse far
       // arrivare i consensi su Experience Platform. La documentazione chiede
       // Shield e un dataset Profile già popolato, e Customer Journey Analytics

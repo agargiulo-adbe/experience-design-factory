@@ -269,8 +269,8 @@ export const PROBLEMI: Card[] = [
     b: 'Parole del Direttore Sales al TTG del 15 ottobre 2026.', fonti: ['ttgSales2026'] },
   { k: 'Il momento', t: 'Un piano in scrittura, un\u00a0sito in rifacimento',
     b: 'Il piano di Gruppo arriva entro fine anno, il nuovo sito è previsto per marzo 2027.', fonti: ['piano', 'ttgSales2026', 'pricing'] },
-  { k: 'La concorrenza', t: 'Un terzo operatore atteso, a\u00a0condizioni ancora aperte',
-    b: 'Il terzo operatore entra non prima della fine del 2027.', fonti: ['sncfVialibera', 'sncf', 'monaco'] },
+  { k: 'La concorrenza', t: 'Un terzo operatore sull’alta velocità, non prima di\u00a0fine\u00a02027',
+    b: 'SNCF ha avuto il via libera a marzo 2026: la partenza slitta alla fine del 2027, nel migliore dei casi.', fonti: ['sncfVialibera', 'sncf', 'monaco'] },
 ];
 
 /* ── Capitolo 02 · la domanda e i quattro punti ────────────────────────────
@@ -759,7 +759,7 @@ export const TEMPI = {
     { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com e lefrecce.it, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
     { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
-    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Quali schede e locandine fanno vendere, a partire dal venduto per agenzia che avete già.', dip: 'Serve sapere dove va ogni\u00a0scheda' },
+    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Alla prossima campagna si prova quali schede e locandine fanno vendere, in due ondate.', dip: 'Serve decidere prima a\u00a0chi va ogni\u00a0scheda' },
   ],
   strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti. La misura per contenuto arriva con Customer Journey Analytics.' },
   figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
@@ -962,9 +962,10 @@ export const SERVE: Record<
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione', pop: 'coworker-contenuto' },
   ],
   rete: [
-    /* 9 nov 2026: verificato su Experience League e Fluffy. Senza tracciamento in agenzia
-       si misura direttamente con CJA, e Target non identifica agenzie: fuori tutti e due. */
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Quali schede fanno vendere', pop: 'cja-rete' },
+    /* 10 nov 2026: per la sola domanda sulle schede CJA non serve, e si dice. Ha senso
+       perché mette il confronto accanto a sito e app. Il QR gira su Analytics, già nel Gruppo. */
+    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'Il QR delle schede' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Le due ondate accanto a sito e app', pop: 'cja-rete' },
   ],
 };
 
