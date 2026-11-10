@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-10 (pomeriggio) · Prospettiva Sales: agenzie, misure, registrati e mappa dopo il dry run
+
+Diciassette commit da `65745cf` a `3942b9a`. Dettaglio in §37.20 (Parte 19). ⚠️ Online indietro alle 14:27.
+
 ### 2026-11-10 (mattina) · Prospettiva Sales: pop-in dei prodotti, test sulle schede, versione senza rete
 
 Dodici commit da `b23baee` in avanti. Dettaglio in §37.19 (Parte 19).
