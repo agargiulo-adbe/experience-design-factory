@@ -7,14 +7,14 @@
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-10**: 19 P0 e 37 P1 qui,
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-10**: 18 P0 e 38 P1 qui,
 > più 27 P1 di fondo e 49 P2 nella Parte 10.
 > Le voci chiuse non restano qui: diventano una riga nel change log datato (§11).
 
 **P0 — adesso**
 
-- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato corrente** — `/panel-review apps/intesa-esperienza-cliente` · **§42.11-42.12 (Parte 18)** · l'ultimo verdetto è del 30 ott; dopo sono entrati i giri del 6-7 nov, la riorganizzazione del 9 nov (in rete) e il giro del 10 nov (locale: CX Analytics dentro «Dove ci innestiamo», Scenario sul dato Nomisma, momenti rifatti). Gate verdi. Da chiudere prima del check dell'11 nov, 14:15; stanza il 19 (agg. 2026-11-10)
-- **[P0] `intesa-esperienza-cliente` — commit e pubblicazione del giro del 10 nov, quando l'owner lo chiede** — §42.12 · lavoro solo locale, in rete `6cd6c58`. Prima: rilanciare `audit:taglio` (ultimo giro in timeout di rete), build, `audit:deck` 0 HARD, `audit:og`. Stage esplicito (`/commit`), mai `git add -A` (agg. 2026-11-10)
+- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato corrente** — `/panel-review apps/intesa-esperienza-cliente` · **§42.11-42.12 (Parte 18)** · l'ultimo verdetto è del 30 ott; dopo sono entrati i giri del 6-7 nov, la riorganizzazione del 9 nov e il giro del 10 nov, **ora pubblicato** (`cb4bdea`: innesto a tre componenti, slide capacità, ritorno a mappa, Scenario sul dato Nomisma). Da chiudere sullo stato pubblicato **prima del check col referente dell'11 nov, 14:15**; stanza il 19 (agg. 2026-11-10)
+- **[P1] `intesa-esperienza-cliente` — rilanciare `audit:taglio`, `audit:og` e `audit:fonti` sul deck pubblicato** — §42.12 · non rifatti dopo le ultime modifiche (`audit:fonti` in timeout di rete); da verificare i quattro link nuovi a Experience League di `slide-capacita` (agg. 2026-11-10)
 - **[P1] Intesa — correggere il registro d'account sull'installato CRM/campagne** — `docs/Intesa Sanpaolo/ACCOUNT.md` (riservato) · tre punti sul perimetro dell'installato per società del gruppo, più il prospect da segnare **non confermato**. Il dettaglio sta solo nel registro (agg. 2026-11-10)
 - **[P1] Intesa — benchmark di acquisizione bancaria dal connettore «Adobe Goldmine»** — §42.12 · da interrogare prima di mettere un ordine di grandezza in slide; se non c'è, la slide resta sul dato Nomisma (agg. 2026-11-10)
 - **[P1] Intesa — fonti pubbliche per i casi FSI prima di citarli** — §42.12 · NatWest, TSB, Crédit Agricole, Sabadell: pagina pubblica che dica il fatto, con link che risponde (`audit:fonti`), altrimenti non entrano (agg. 2026-11-10)
