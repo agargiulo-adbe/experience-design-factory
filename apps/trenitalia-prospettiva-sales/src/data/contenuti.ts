@@ -916,6 +916,16 @@ export interface Pezzo {
   pop?: ScenaId;
 }
 
+/** Il nome sulle pillole: il prefisso «Adobe» lo dice già il marchio che apre la riga.
+ *  GenStudio si accorcia perché il nome intero allargava la sua colonna; per esteso
+ *  resta nel pop-in. Una funzione sola, così striscia e mappa non divergono. */
+export const nomeBreve = (nome: string) => {
+  const n = nome.replace(/\u00a0/g, ' ');
+  if (n.startsWith('LLM Apps')) return 'LLM Apps';
+  if (n.includes('GenStudio')) return 'GenStudio';
+  return n.replace(/^Adobe /, '').replace(/,\s*con\s+/, ' con ');
+};
+
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
   avete: { eti: 'già nel Gruppo', spiega: 'contratto FS Technology' },
   nuovo: { eti: 'si aggiunge', spiega: 'oggi non c\u2019\u00e8' },

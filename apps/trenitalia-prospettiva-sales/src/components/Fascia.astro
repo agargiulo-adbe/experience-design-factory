@@ -23,14 +23,14 @@
  * e `.tp-pz` eredita.
  * Dove si apre un drill-down cede il posto (`cede`): mai rimpicciolire.
  */
-import { LEGENDA, type Pezzo, type Stato } from '../data/contenuti';
+import { LEGENDA, nomeBreve, type Pezzo, type Stato } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import lockup from '../assets/brand/adobe-cx-enterprise-stacked.svg';
 import ProdottoPop from './ProdottoPop.astro';
 interface Props { pezzi: Pezzo[]; cede?: boolean; }
 const { pezzi, cede = true } = Astro.props as Props;
 /* Il prefisso «Adobe» lo dice già il marchio che apre la riga. */
-const breve = (n: string) => n === 'LLM Apps, dentro Adobe Experience Manager' ? 'LLM Apps' : n.replace(/\u00a0/g, ' ').replace(/^Adobe /, '').replace(/,\s*con\s+/, ' con ');
+const breve = nomeBreve;
 const gruppi = (['avete', 'nuovo'] as Stato[])
   .map((stato) => ({ stato, voci: pezzi.filter((p) => p.stato === stato) }))
   .filter((g) => g.voci.length > 0);
