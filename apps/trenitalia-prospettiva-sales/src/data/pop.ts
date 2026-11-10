@@ -118,11 +118,11 @@ export const SCENE: Record<ScenaId, Scena> = {
   'llm-ricerca': {
     prodotto: 'LLM Apps, dentro Experience Manager',
     caso: 'La marca dentro gli assistenti AI',
-    cosa: 'Un’esperienza con la marca Trenitalia dentro la conversazione. Annunciata, non ancora disponibile.',
+    cosa: 'Un’esperienza con la marca Trenitalia dentro la conversazione.',
     passi: [
       'Un viaggiatore chiede come arrivare a Matera senza auto.',
       'Oggi l’assistente risponde con un testo, e sceglie lui le fonti.',
-      'Domani la risposta può contenere Freccialink con la vostra marca, dai contenuti di Experience Manager.',
+      'Con un’app Trenitalia il viaggiatore la richiama per nome, o l’assistente la propone se pertinente.',
       'L’acquisto resta su trenitalia.com.',
     ],
     nota: 'Esempio illustrativo di una capacità annunciata: disponibilità e superfici da confermare.',
