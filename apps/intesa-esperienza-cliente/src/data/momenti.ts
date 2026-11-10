@@ -32,8 +32,8 @@
  *   FARSI TROVARE       01        la banca è citata nella risposta
  *   CONTENT FACTORY     02        la variante per il suo segmento
  *   CUSTOMER ENGAGEMENT 03 04 05  profilo, decisione, regia
- *   AI PLATFORM         06        il quadro si chiede a parole
- *   CX ANALYTICS        07        l'esito torna nella misura
+ *   CUSTOMER ENGAGEMENT 06        il percorso attiva la filiale, via CRM
+ *   CX ANALYTICS        07        l'esito torna nella misura, filiale compresa
  *
  * ── Perché ogni momento ha un'ORA ─────────────────────────────────────
  * È il meccanismo che fa funzionare la Storia di UniCredit. «Ore 21:40,
@@ -44,7 +44,7 @@
 export type ChromeCliente = 'assistente' | 'feed' | 'sito' | 'posta' | 'filiale' | 'app';
 export type SchermoAdobe =
   | 'visibilita' | 'genstudio' | 'profilo' | 'decisione'
-  | 'percorso' | 'coworker' | 'misura';
+  | 'percorso' | 'filiale' | 'misura';
 
 export interface Momento {
   n: string;
@@ -116,25 +116,25 @@ export const MOMENTI: Momento[] = [
   {
     n: '01', of: '07',
     blocco: { it: 'Farsi trovare', en: 'Brand visibility' },
-    ora: { it: 'Ore 21:40, sul divano', en: '9:40 PM, on the sofa' },
-    dove: { it: 'Prima di sapere chi siete', en: 'Before she knows who you are' },
-    short: { it: 'Chiede', en: 'Asks' },
-    funzione: { it: 'Vi trovano, o no', en: 'Found, or not' },
+    ora: { it: 'Una sera a casa', en: 'One evening at home' },
+    dove: { it: 'Chiede a un assistente AI', en: 'Asking an AI assistant' },
+    short: { it: 'Cerca un mutuo', en: 'Looks for a mortgage' },
+    funzione: { it: 'La banca viene citata', en: 'The bank gets cited' },
     canale: { it: 'Assistente AI', en: 'AI assistant' },
     gruppo: 'trovare',
     verifica: { it: 'Oggi sapete su quali domande venite citati, e su quali no?', en: 'Do you know today which questions cite you, and which do not?' },
     prodotto: 'Brand Visibility',
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
-      titolo: { it: 'Giulia chiede a un assistente AI quale mutuo scegliere. Se Intesa non è citata, il confronto parte senza di voi.', en: 'Giulia asks an AI assistant which mortgage to choose. If Intesa is not cited, the comparison starts without you.' },
+      titolo: { it: 'Chiede a un assistente AI quale mutuo scegliere e trova Intesa Sanpaolo', en: 'She asks an AI assistant which mortgage to choose and finds Intesa Sanpaolo' },
       corpo: {
-        it: 'Lo chiede a ChatGPT, non a un motore di ricerca: «qual è il mutuo migliore per chi compra la prima casa?». La risposta cita tre banche. Giulia non è vostra cliente e non ha motivo di partire da voi: se il marchio non compare qui, il confronto comincia senza di voi.',
-        en: 'She asks ChatGPT, not a search engine: “which mortgage is best for a first home?”. The answer cites three banks. Giulia is not your customer and has no reason to start from you: if the brand is absent here, the comparison starts without you.',
+        it: 'Chiede a ChatGPT: «qual è il mutuo migliore per chi compra la prima casa?». La risposta cita tre banche. Giulia non è vostra cliente e non ha motivo di partire da voi: se il marchio non compare qui, il confronto comincia senza di voi.',
+        en: 'She asks ChatGPT: “which mortgage is best for a first home?”. The answer cites three banks. Giulia is not your customer and has no reason to start from you: if the brand is absent here, the comparison starts without you.',
       },
     },
     interno: {
       prodotto: 'visibilita', scena: 'lavoro-01-ricerca',
-      titolo: { it: 'Dove compare il marchio, e dove no', en: 'Where the brand shows up, and where it does not' },
+      titolo: { it: 'Intesa misura su quali domande è citata e copre quelle che mancano', en: 'Intesa measures which questions cite it and covers the missing ones' },
       corpo: {
         it: 'Su otto domande che contano, la banca è citata in tre: i numeri si misurano insieme, domanda per domanda. Sulle cinque che mancano si verifica prima il perché. Per chi non vi conosce questa è la prima impressione, e spesso l’unica.',
         en: 'Across eight questions that matter, the bank is cited in three: the numbers get measured together, question by question. On the five missing ones the why is checked first. For someone who does not know you, this is the first impression, and often the only one.',
@@ -144,45 +144,45 @@ export const MOMENTI: Momento[] = [
   {
     n: '02', of: '07',
     blocco: { it: 'Content Factory', en: 'Content supply chain' },
-    ora: { it: 'Il mattino dopo, al bar', en: 'Next morning, at the café' },
-    dove: { it: 'Nel suo feed', en: 'In her feed' },
-    short: { it: 'Riconosce', en: 'Recognises' },
-    funzione: { it: 'Varianti già verificate', en: 'Pre-checked variants' },
+    ora: { it: 'Il mattino dopo', en: 'The next morning' },
+    dove: { it: 'Sui social', en: 'On social media' },
+    short: { it: 'Vede l’annuncio', en: 'Sees the ad' },
+    funzione: { it: 'Annuncio su misura', en: 'A tailored ad' },
     canale: { it: 'Social', en: 'Social' },
     gruppo: 'contenuto',
     verifica: { it: 'Oggi l’informativa si applica alla produzione, o si verifica in revisione?', en: 'Today, is the disclosure applied at production, or checked at review?' },
-    prodotto: 'GenStudio',
+    prodotto: 'GenStudio for Performance Marketing',
     cliente: {
       chrome: 'feed', scena: 'scena-02-bar',
-      titolo: { it: 'Il messaggio parla la sua lingua, non quella di tutti', en: 'The message speaks her language, not everyone’s' },
+      titolo: { it: 'Vede un annuncio sul mutuo per la prima casa a Torino', en: 'She sees an ad for a first-home mortgage in Turin' },
       corpo: {
-        it: 'Fra un caffè e il tram compare un annuncio: «Il mutuo per la prima casa, a Torino». Non è la campagna per tutti: è la variante per chi compra la prima casa nella sua città, una delle dodici nate da un brief solo.',
-        en: 'Between a coffee and the tram an ad appears: “First-home mortgage, in Turin.” Not the campaign for everyone. It is the variant for first-home buyers in her city, one of twelve born from a single brief.',
+        it: 'Fra un caffè e il tram compare un annuncio: «Il mutuo per la prima casa, a Torino». È la variante per chi compra la prima casa nella sua città, una delle dodici nate da un brief solo.',
+        en: 'Between a coffee and the tram an ad appears: “First-home mortgage, in Turin”. It is the variant for first-home buyers in her city, one of twelve born from a single brief.',
       },
     },
     interno: {
       prodotto: 'genstudio', scena: 'lavoro-02-contenuti',
-      titolo: { it: 'Dodici varianti da un brief, già verificate', en: 'Twelve variants from one brief, already checked' },
+      titolo: { it: 'Il team crea dodici annunci da un solo brief, già validati', en: 'The team creates twelve ads from one brief, already validated' },
       corpo: {
-        it: 'Il tempo non se ne va nel produrle: se ne va nell’approvarle. Qui ogni variante è verificata contro linee guida e informative prima dell’approvazione. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
-        en: 'Time is not spent producing them: it is spent approving them. Here every variant is checked against guidelines and disclosures before approval. With someone who does not know you yet, no relationship later makes up for a generic message.',
+        it: 'Il tempo se ne va soprattutto nelle approvazioni. Qui ogni variante è verificata contro linee guida e informative prima dell’approvazione. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
+        en: 'Most of the time goes into approvals. Here every variant is checked against guidelines and disclosures before approval. With someone who does not know you yet, no relationship later makes up for a generic message.',
       },
     },
   },
   {
     n: '03', of: '07',
     blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
-    ora: { it: 'Ore 21:48, al tavolo di cucina', en: '9:48 PM, at the kitchen table' },
-    dove: { it: 'Sul vostro sito', en: 'On your site' },
-    short: { it: 'Simula', en: 'Simulates' },
-    funzione: { it: 'Da anonima a nome', en: 'Anonymous to named' },
+    ora: { it: 'La sera stessa', en: 'That same evening' },
+    dove: { it: 'Sul sito della banca', en: 'On the bank’s website' },
+    short: { it: 'Simula la rata', en: 'Simulates the payment' },
+    funzione: { it: 'La visita diventa un contatto', en: 'The visit becomes a contact' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova quando lascia il nome, e con quale consenso?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves a name, and under which consent?' },
     prodotto: 'Real-Time CDP',
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
-      titolo: { it: 'Simula senza dire chi è, e il numero la convince', en: 'She simulates without saying who she is, and the number convinces her' },
+      titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’indirizzo per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her address to save the result' },
       corpo: {
         it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’indirizzo e dà il consenso. In quel momento smette di essere una visita anonima e diventa un nome, con una data.',
         en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her address and gives consent. At that moment she stops being an anonymous visit and becomes a name, with a date.',
@@ -200,25 +200,25 @@ export const MOMENTI: Momento[] = [
   {
     n: '04', of: '07',
     blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
-    ora: { it: 'Ore 22:05, la sera dopo', en: '10:05 PM, the next evening' },
-    dove: { it: 'Sul vostro sito', en: 'On your site' },
-    short: { it: 'Si ferma', en: 'Stalls' },
-    funzione: { it: 'Si sceglie, col limite', en: 'One is chosen, within the limit' },
+    ora: { it: 'La sera dopo', en: 'The next evening' },
+    dove: { it: 'Sul sito della banca', en: 'On the bank’s website' },
+    short: { it: 'Si interrompe', en: 'Stops halfway' },
+    funzione: { it: 'Una proposta sola, la più utile', en: 'One offer, the most useful' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi la politica di contatto si valuta quando si sceglie, o si applica all’invio?', en: 'Today, is the contact policy weighed when choosing, or applied at send time?' },
     prodotto: 'Journey Optimizer · Decisioning',
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
-      titolo: { it: 'Manca un foglio, e la casa aspetta il fine settimana', en: 'One sheet of paper is missing, and the house waits for the weekend' },
+      titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
       corpo: {
-        it: 'Non ha cambiato idea: le serve un documento che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto la stessa domanda l’ha fatta ad altre due banche, e una di loro le scrive domani.',
-        en: 'She has not changed her mind: she needs a document she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she asked two other banks the same question, and one writes to her tomorrow.',
+        it: 'Le serve un documento che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto la stessa domanda l’ha fatta ad altre due banche, e una di loro le scrive domani.',
+        en: 'She needs a document she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she asked two other banks the same question, and one writes to her tomorrow.',
       },
     },
     interno: {
       prodotto: 'decisione', scena: 'lavoro-04-decisione',
-      titolo: { it: 'Next Best Experience: delle quattro proposte ne parte una sola', en: 'Next Best Experience: of the four proposals, only one goes out' },
+      titolo: { it: 'Delle quattro proposte possibili, il sito le mostra il promemoria sulle buste paga mancanti', en: 'Of the four possible offers, the site shows her the reminder about the missing payslips' },
       corpo: {
         it: 'Su chi non è ancora cliente il profilo è sottile: due sessioni, una simulazione, un consenso. Serve il posto dove si decide quale proposta parte, su quale canale e dentro la politica di contatto, valutata quando si decide.',
         en: 'For someone not yet a customer the profile is thin: two sessions, one simulation, one consent. What is missing is where to decide which proposal goes, on which channel and within the contact policy, evaluated at decision time.',
@@ -228,56 +228,56 @@ export const MOMENTI: Momento[] = [
   {
     n: '05', of: '07',
     blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
-    ora: { it: 'Ore 8:02, il mattino dopo', en: '8:02 AM, the next morning' },
-    dove: { it: 'Nella sua posta', en: 'In her inbox' },
-    short: { it: 'Riprende', en: 'Resumes' },
-    funzione: { it: 'Parte dall’evento', en: 'Triggered by the event' },
+    ora: { it: 'Il mattino dopo', en: 'The next morning' },
+    dove: { it: 'Via email', en: 'By email' },
+    short: { it: 'Riprende la pratica', en: 'Resumes the application' },
+    funzione: { it: 'Un richiamo su tre canali', en: 'One follow-up, three channels' },
     canale: { it: 'Email', en: 'Email' },
     gruppo: 'engagement',
-    verifica: { it: 'Oggi quanto passa fra il gesto di una prospect e il primo contatto?', en: 'Today, how long passes between a prospect’s action and the first contact?' },
+    verifica: { it: 'Oggi quanto passa fra il gesto di un prospect e il primo contatto?', en: 'Today, how long passes between a prospect’s action and the first contact?' },
     prodotto: 'Journey Optimizer',
     cliente: {
       chrome: 'posta', scena: 'scena-05-colazione',
-      titolo: { it: 'Un messaggio solo, e riprende da dove era rimasta', en: 'One message, and she picks up where she left off' },
+      titolo: { it: 'Riceve un’email e completa la richiesta', en: 'She gets an email and completes the application' },
       corpo: {
-        it: 'Non ha la vostra app: ha lasciato un indirizzo, e quello è l’unico canale che avete. Arriva la sua simulazione, con il link per riprenderla e una proposta di appuntamento. Carica il documento mentre fa colazione, e accetta la data.',
-        en: 'She does not have your app: she left an address, and that is the only channel you have. Her simulation arrives, with the link to resume it and a proposed appointment. She uploads the document over breakfast, and accepts the date.',
+        it: 'Ha lasciato un indirizzo email, ed è l’unico modo per scriverle. Arriva la sua simulazione, con il link per riprenderla e una proposta di appuntamento. Carica il documento mentre fa colazione, e accetta la data.',
+        en: 'She left an email address, and that is the only way to write to her. Her simulation arrives, with the link to resume it and a proposed appointment. She uploads the document over breakfast, and accepts the date.',
       },
     },
     interno: {
       prodotto: 'percorso', scena: 'lavoro-05-orchestrazione',
-      titolo: { it: 'Il percorso è partito dall’evento, non da una lista', en: 'The journey started from the event, not from a list' },
+      titolo: { it: 'Se la richiesta si ferma, la banca la ricorda su email, sito e social', en: 'If the application stalls, the bank follows up by email, on the site and on social' },
       corpo: {
-        it: 'L’audience l’avete definita una volta, con le regole: il percorso parte dall’evento, non dall’estrazione mensile. Aspetta dodici ore, prova la mail con la proposta di appuntamento, e se il clic non arriva riprova con la variante giusta. Dodici ore, non il ciclo del mese dopo.',
-        en: 'You defined the audience once, with rules: the journey starts from the event, not from the monthly extraction. It waits twelve hours, tries email with the proposed appointment, and if the click does not come tries again with the right variant. Twelve hours, not next month’s cycle.',
+        it: 'L’audience si definisce una volta, con le regole, e il percorso parte dall’evento. Aspetta dodici ore, prova la mail con la proposta di appuntamento e, se il clic non arriva, riprova con la variante giusta.',
+        en: 'The audience is defined once, with rules, and the journey starts from the event. It waits twelve hours, tries email with the proposed appointment and, if the click does not come, tries again with the right variant.',
       },
     },
   },
   {
     n: '06', of: '07',
-    blocco: { it: 'AI Platform', en: 'AI platform' },
-    ora: { it: 'Ore 11:30, due giorni dopo', en: '11:30 AM, two days later' },
+    blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
+    ora: { it: 'Due giorni dopo', en: 'Two days later' },
     dove: { it: 'In filiale', en: 'In branch' },
-    short: { it: 'In filiale', en: 'In branch' },
-    funzione: { it: 'Il gestore sa già chi è', en: 'The adviser already knows who she is' },
+    short: { it: 'Va in filiale', en: 'Goes to the branch' },
+    funzione: { it: 'La filiale è informata', en: 'The branch is informed' },
     canale: { it: 'Filiale', en: 'Branch' },
-    gruppo: 'piattaforma',
-    verifica: { it: 'Oggi che cosa vede, di una persona non ancora cliente, chi riceve l’appuntamento?', en: 'Today, what does the person taking the appointment see about someone who is not yet a customer?' },
-    prodotto: 'CX Enterprise Coworker',
+    gruppo: 'engagement',
+    verifica: { it: 'Oggi che cosa arriva al CRM di filiale, di una persona non ancora cliente?', en: 'Today, what reaches the branch CRM about someone who is not yet a customer?' },
+    prodotto: 'Journey Optimizer',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
-      titolo: { it: 'Non è ancora vostra cliente, ma il gestore sa già tutto', en: 'She is not your customer yet, but the adviser already knows everything' },
+      titolo: { it: 'In filiale trova la simulazione già aperta', en: 'In the branch she finds her simulation already open' },
       corpo: {
         it: 'Entra per l’appuntamento e trova la sua simulazione già aperta: stesso importo, stessa rata, stessi documenti. Non le viene chiesto di raccontare da capo quello che ha già fatto sul sito tre sere prima.',
         en: 'She arrives for the appointment and finds her simulation already open: same amount, same instalment, same documents. She is not asked to retell what she already did on the site three evenings earlier.',
       },
     },
     interno: {
-      prodotto: 'coworker', scena: 'lavoro-06-filiale-back',
-      titolo: { it: 'Il gestore chiede a parole il prospetto di Giulia, senza compilarlo a mano', en: 'The adviser asks in plain words for Giulia’s summary, with nothing to compile by hand' },
+      prodotto: 'filiale', scena: 'lavoro-06-filiale-back',
+      titolo: { it: 'Il percorso passa al CRM di filiale lead, appuntamento e simulazione', en: 'The journey hands lead, appointment and simulation to the branch CRM' },
       corpo: {
-        it: 'Nel CRM ha solo il lead aperto dal percorso, con l’appuntamento. Il prospetto arriva sulla postazione all’apertura, via API; chi lo riceve chiede a parole quello che manca. È uno scenario da costruire con voi, non una funzione pronta.',
-        en: 'In the CRM she has only the lead opened by the journey, with the appointment. The briefing lands on the workstation when it opens, via API; whoever receives it asks in words for what is missing. A scenario to build with you, not a ready-made feature.',
+        it: 'Il percorso scrive nel CRM di filiale il lead, la data e la simulazione appena lei accetta l’appuntamento, via API e dentro i consensi. Chi la riceve lavora nel CRM che usa già. La stessa azione vale per un’audience intera: ogni persona arriva in filiale come lead da lavorare. Il collegamento con il vostro CRM si disegna con voi.',
+        en: 'When she accepts the appointment, the journey writes the lead, the date and the simulation into the branch CRM, over API and within consent. Whoever receives her works in the CRM they already use. The same action works for a whole audience: each person reaches the branch as a lead to work. The link with your CRM gets designed with you.',
       },
     },
   },
@@ -285,16 +285,16 @@ export const MOMENTI: Momento[] = [
     n: '07', of: '07',
     blocco: { it: 'CX Analytics', en: 'CX analytics' },
     ora: { it: 'Tre settimane dopo', en: 'Three weeks later' },
-    dove: { it: 'Qui diventa cliente', en: 'Here she becomes a customer' },
-    short: { it: 'Firma', en: 'Signs' },
-    funzione: { it: 'Quanto costa acquisirla', en: 'What acquiring her costs' },
-    canale: { it: 'App', en: 'App' },
+    dove: { it: 'Diventa cliente', en: 'She becomes a customer' },
+    short: { it: 'Diventa cliente', en: 'Becomes a customer' },
+    funzione: { it: 'Costo di acquisizione misurato', en: 'Acquisition cost measured' },
+    canale: { it: 'Filiale e app', en: 'Branch and app' },
     gruppo: 'piattaforma',
     verifica: { it: 'Oggi sapete quale momento ha prodotto il cliente, o solo quanto ha reso il canale?', en: 'Today, do you know which moment produced the customer, or only what the channel returned?' },
     prodotto: 'Customer Journey Analytics',
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',
-      titolo: { it: 'Firma, e solo adesso scarica l’app', en: 'She signs, and only now downloads the app' },
+      titolo: { it: 'Firma la richiesta e scarica l’app', en: 'She signs the application and downloads the app' },
       corpo: {
         it: 'Richiesta firmata; l’istruttoria comincia adesso. L’app le serve da oggi: prima non aveva motivo di averla, ed è il motivo per cui nei momenti precedenti non c’era. Da qui in avanti il canale è vostro, e la relazione comincia.',
         en: 'Application signed; the credit assessment starts now. The app matters from today: before she had no reason to have it, which is why it was absent from the earlier moments. From here the channel is yours, and the relationship begins.',
@@ -302,10 +302,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'misura', scena: 'lavoro-07-misura',
-      titolo: { it: 'Dove si perde, e quanto è costato acquisirla', en: 'Where it leaks, and what it cost to acquire her' },
+      titolo: { it: 'Si vede dove si perdono i potenziali clienti, filiale compresa', en: 'You can see where prospects are lost, branch included' },
       corpo: {
-        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Il numero che conta non è il tasso di apertura: è quanto costa acquisirla, e dove si perdono.',
-        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. The number that matters is not open rate: it is what she cost to acquire, and where others are lost.',
+        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa acquisirla, e dove si perdono le altre.',
+        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what she cost to acquire, and where others are lost.',
       },
     },
   },

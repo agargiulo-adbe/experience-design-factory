@@ -29,14 +29,14 @@ export interface RigaImbuto {
 }
 
 export const IMBUTO: RigaImbuto[] = [
-  { n: '1,4 mln', v: 100, l: { it: 'visite che non sapete di chi sono', en: 'visits you cannot attribute' } },
-  { n: '96.000', v: 44, l: { it: 'simulazioni avviate', en: 'simulations started' } },
-  { n: '22.000', v: 26, l: { it: 'lasciano un nome e un consenso', en: 'leave a name and consent' } },
+  { n: '1,4 mln', v: 100, l: { it: 'visite alle pagine dei mutui', en: 'visits to the mortgage pages' } },
+  { n: '96.000', v: 44, l: { it: 'simulano la rata', en: 'simulate the repayment' } },
+  { n: '22.000', v: 26, l: { it: 'lasciano nome e consenso', en: 'leave a name and consent' } },
   { n: '6.400', v: 15, l: { it: 'appuntamenti in filiale', en: 'branch appointments' }, offline: true },
-  { n: '1.900', v: 8, l: { it: 'richieste firmate', en: 'signed applications' } },
+  { n: '1.900', v: 8, l: { it: 'firmano la richiesta', en: 'sign the application' } },
 ];
 
 export const IMBUTO_NOTA = {
-  it: 'Ordini di grandezza illustrativi: la forma della perdita, non i vostri numeri, che non abbiamo.',
-  en: 'Illustrative orders of magnitude: the shape of the loss, not your numbers, which we do not have.',
+  it: 'Ordini di grandezza illustrativi, non i vostri dati.',
+  en: 'Illustrative orders of magnitude, not your data.',
 };

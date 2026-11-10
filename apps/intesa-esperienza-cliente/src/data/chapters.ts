@@ -25,11 +25,10 @@ export const CHAPTERS: Chapter[] = [
      di «Dal dato alla decisione», e non nomina Giulia prima che arrivi. */
   { slug: 'adobe', num: '01', title: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' } },
   { slug: 'scenario', num: '03', title: { it: 'Dal dato alla decisione', en: 'From data to decision' } },
-  { slug: 'analytics', num: '03', title: { it: 'CX Analytics', en: 'CX analytics' } },
-  { slug: 'persona', num: '04', title: { it: 'La persona', en: 'The persona' } },
-  { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
+  { slug: 'persona', num: '03', title: { it: 'La persona', en: 'The persona' } },
+  { slug: 'momenti', num: '03', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
   { slug: 'messa-a-terra', num: '04', title: { it: 'Come si mette a terra', en: 'How it gets built' } },
-  { slug: 'coworker', num: '05', title: { it: 'Coworker, il lavoro si chiede a parole', en: 'Coworker, the work is asked for in words' } },
+  { slug: 'coworker', num: '05', title: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { slug: 'risultati', num: '06', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' } },
   { slug: 'prossimi-passi', num: '07', title: { it: 'Prossimi passi', en: 'Next steps' } },
 ];
@@ -38,8 +37,8 @@ export const CHAPTERS: Chapter[] = [
 export const VOCI_NAV = [
   { n: '01', it: 'Adobe', en: 'Adobe', slug: 'adobe', pagine: ['adobe'] },
   { n: '02', it: 'L’offerta', en: 'The offering', slug: 'adobe', ancora: 'slide-cx', pagine: [] as string[] },
-  { n: '03', it: 'Dal dato alla decisione', en: 'From data to decision', slug: 'scenario', pagine: ['scenario', 'analytics'] },
-  { n: '04', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'persona', pagine: ['persona', 'momenti', 'messa-a-terra', 'approfondimenti'] },
+  { n: '03', it: 'Dal dato alla decisione', en: 'From data to decision', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
+  { n: '04', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'messa-a-terra', pagine: ['messa-a-terra', 'approfondimenti'] },
   { n: '05', it: 'AI Conversazionali', en: 'Conversational AI', slug: 'coworker', pagine: ['coworker'] },
   { n: '06', it: 'Banche', en: 'Banks', slug: 'risultati', pagine: ['risultati'] },
   { n: '07', it: 'Prossimi passi', en: 'Next steps', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },

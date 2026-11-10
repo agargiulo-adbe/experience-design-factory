@@ -45,7 +45,7 @@ export const AGENDA: VoceAgenda[] = [
     titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
   },
   {
-    n: '04', capitolo: 'persona',
+    n: '04', capitolo: 'messa-a-terra',
     titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
   },
   {

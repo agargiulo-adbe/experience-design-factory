@@ -3951,7 +3951,8 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-seg-n { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 2.5vw, 5rem); line-height: 1.05; letter-spacing: -0.02em; color: #ffffff; }
 .im-seg-l { font-size: clamp(1.05rem, 1.05vw, 2.3rem); color: #e3eedf; }
 .im-seg-b { display: block; height: clamp(0.6rem, 0.7vw, 1.3rem); border-radius: 4px; background: rgba(255, 255, 255, 0.13); }
-.im-seg-b i { display: block; height: 100%; border-radius: 4px; background: var(--color-verde-chiaro); }
+.im-seg-b i { display: block; height: 100%; border-radius: 4px; background: #9aa596; }
+.im-seg-r[data-noti] .im-seg-b i { background: var(--color-verde-chiaro); }
 .im-seg-r[data-ultimo] .im-seg-b i { background: #ffffff; }
 @media (max-width: 900px) { .im-seg { grid-template-columns: minmax(0, 1fr); } }
 
@@ -4016,3 +4017,294 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 #slide-passaggio:has([data-hiw][data-hiw-on]) .im-pas,
 #slide-attribuzione:has([data-hiw][data-hiw-on]) .im-att,
 #slide-attribuzione:has([data-hiw][data-hiw-on]) .im-ado-l { display: none; }
+
+/* Lo zoom sui Wave, al passaggio del mouse: etichetta e quadrante crescono insieme
+   dal fondo della loro colonna, il resto della slide si abbassa. Trasformazione pura,
+   quindi la griglia non si muove. Su touch non esiste passaggio: resta la griglia. */
+@media (hover: hover) {
+  .im-wave-i { position: relative; transform-origin: 50% 100%; transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.26s ease, background-color 0.2s ease; }
+  .im-wave-i:nth-child(1) { transform-origin: 0% 100%; }
+  .im-wave-i:nth-child(2) { transform-origin: 30% 100%; }
+  .im-wave-i:nth-child(3) { transform-origin: 70% 100%; }
+  .im-wave-i:nth-child(4) { transform-origin: 100% 100%; }
+  .im-wave-i:hover, .im-wave-i:has(:focus-visible) {
+    z-index: 10; transform: scale(1.85); background: #0a2402; border-radius: 6px;
+    outline: 6px solid #0a2402; box-shadow: 0 0 0 100vmax rgba(6, 22, 2, 0.82);
+    transition-delay: 0.08s;
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) { .im-wave-i { transition: none; } }
+
+/* L'innesto: l'architettura di oggi e i due componenti che si aggiungono. */
+.im-inn { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto clamp(2.6rem, 3.6vw, 6rem) auto clamp(2.6rem, 3.6vw, 6rem) auto; column-gap: clamp(2.2rem, 3vw, 6rem); margin-top: 0.8rem; }
+.im-inn-oggi { grid-column: 1 / -1; grid-row: 1; display: grid; grid-template-columns: subgrid; list-style: none; margin: 0; padding: 0; }
+.im-inn-n { position: relative; display: grid; align-content: center; gap: 0.2rem; min-height: clamp(5.4rem, 6.6vw, 12rem); margin-inline: 0; padding: 0.8rem 1.1rem; border-radius: 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.28); }
+.im-inn-n[data-forte] { border: 2px solid #ffffff; background: rgba(255, 255, 255, 0.13); }
+.im-inn-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 1.32vw, 2.8rem); line-height: 1.15; color: #ffffff; }
+.im-inn-d { font-size: clamp(1rem, 0.94vw, 2.05rem); line-height: 1.3; color: #e3eedf; }
+.im-inn-fr { position: absolute; top: 50%; left: calc(clamp(2.2rem, 3vw, 6rem) * -0.86); width: clamp(1.5rem, 2vw, 4rem); translate: 0 -50%; fill: none; stroke: #9fd68a; stroke-width: 2; }
+.im-inn-dec { grid-column: 2 / 4; grid-row: 2 / 4; display: grid; grid-template-rows: subgrid; position: relative; z-index: 2; }
+.im-inn-fili { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.im-inn-f { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; min-width: 0; }
+.im-inn-f::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #9fd68a; }
+.im-inn-f::after { content: ''; position: absolute; left: calc(50% - 5px); bottom: 0; border: 6px solid transparent; border-top-color: #9fd68a; border-bottom: 0; }
+.im-inn-f[data-su]::after { bottom: auto; top: 0; border-top: 0; border-bottom: 6px solid #9fd68a; }
+.im-inn-f > span { grid-column: 2; min-width: 0; padding-left: 1rem; font-size: clamp(0.98rem, 0.9vw, 1.95rem); line-height: 1.12; color: #ffffff; }
+.im-inn-b { display: grid; justify-items: center; gap: 0.2rem; width: 100%; padding: 0.85rem 1.2rem; border: 0; border-radius: 12px; background: #1f7400; color: #ffffff; font: inherit; text-align: center; cursor: pointer; transition: background 0.18s ease; }
+.im-inn-b:hover { background: #258900; }
+.im-inn-b:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+.im-inn-b .im-inn-d { color: #ffffff; }
+.im-inn-come { margin-top: 0.15rem; font-size: clamp(0.98rem, 0.9vw, 1.95rem); font-weight: 700; text-decoration: underline; text-underline-offset: 0.2em; color: #ffffff; }
+.im-inn-cja { grid-column: 1 / -1; grid-row: 2 / 6; display: grid; grid-template-columns: subgrid; grid-template-rows: subgrid; }
+.im-inn-f--lungo { grid-column: 4; grid-row: 1 / 4; }
+.im-inn-f--ritorno { grid-column: 2 / 4; grid-row: 3; }
+.im-inn-b--largo { grid-column: 1 / -1; grid-row: 4; }
+@media (max-width: 900px) {
+  .im-inn { display: flex; flex-direction: column; gap: 0.8rem; }
+  .im-inn-oggi { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .im-inn-fr, .im-inn-fili, .im-inn-f--lungo, .im-inn-f--ritorno { display: none; }
+  .im-inn-dec, .im-inn-cja { display: block; }
+}
+
+/* Le quattro risposte per una banca. */
+.im-banca { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.2rem, 2vw, 4rem); }
+.im-banca-i { display: grid; gap: 0.55rem; align-content: start; min-width: 0; margin-inline: 0; padding-top: 1rem; border-top: 2px solid rgba(159, 214, 138, 0.7); }
+.im-banca-fig { width: 100%; height: clamp(5.5rem, 7.4vw, 14rem); }
+.im-banca-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem, 1.55vw, 3.2rem); line-height: 1.16; color: #ffffff; }
+.im-banca-d { font-size: clamp(1.05rem, 1.05vw, 2.3rem); line-height: 1.38; color: #e3eedf; }
+.im-banca-s { margin: 0.8rem 0 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.15rem, 1.2vw, 2.5rem); color: #ffffff; }
+@media (max-width: 900px) { .im-banca { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Il post social del momento 02: si riconosce a colpo d'occhio dalla forma. */
+.im-cli--feed .im-cli-barra { display: none; }
+.im-ig-testa { display: flex; align-items: center; gap: 0.55rem; padding: 0.5rem 0.7rem; }
+.im-ig-av { flex: none; display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: conic-gradient(from 210deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5, #feda75); }
+.im-ig-av i { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 2px solid #ffffff; background: var(--color-verde-scuro); color: #ffffff; font-style: normal; font-weight: 700; font-size: 0.72rem; }
+.im-ig-piu { margin-left: auto; display: flex; gap: 3px; }
+.im-ig-piu i { width: 4px; height: 4px; border-radius: 50%; background: var(--color-ink); }
+.im-ig-img { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.3rem; height: clamp(6.4rem, 19vh, 15rem); padding: 0.7rem 0.8rem; background-size: cover; background-position: 22% 30%; }
+.im-ig-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6, 22, 2, 0.86), rgba(6, 22, 2, 0.1) 72%); }
+.im-ig-chip, .im-ig-t { position: relative; margin: 0; max-width: none; }
+.im-ig-chip { align-self: flex-start; padding: 0.08rem 0.55rem; border-radius: 999px; background: #ffffff; color: var(--color-verde-scuro); font-size: clamp(0.8rem, 0.68vw, 1.5rem); font-weight: 700; }
+.im-ig-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.08rem, 1.12vw, 2.4rem); line-height: 1.16; color: #ffffff; text-wrap: balance; }
+.im-ig-cta { display: flex; justify-content: space-between; align-items: center; margin: 0; max-width: none; padding: 0.4rem 0.7rem; background: var(--color-verde-scuro); color: #ffffff; font-weight: 700; font-size: clamp(0.9rem, 0.76vw, 1.7rem); }
+.im-ig-cta svg { width: 0.5rem; height: 0.85rem; fill: none; stroke: #ffffff; stroke-width: 2; }
+.im-ig-az { display: flex; gap: 0.7rem; padding: 0.42rem 0.7rem 0.2rem; }
+.im-ig-az svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: var(--color-ink); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+.im-ig-salva { margin-left: auto; }
+.im-ig-info { margin: 0; max-width: none; padding: 0 0.7rem 0.5rem; font-size: clamp(0.74rem, 0.6vw, 1.35rem); line-height: 1.3; color: var(--color-grey-600); }
+
+/* Il canvas di Journey Optimizer, nel momento 05. */
+.im-aj { display: grid; gap: 0.5rem; }
+.im-aj-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; font-size: clamp(0.92rem, 0.8vw, 1.8rem); color: var(--color-ink); }
+.im-aj-live { padding: 0.05rem 0.55rem; border-radius: 999px; background: #e3f4e0; color: #16610a; font-size: clamp(0.78rem, 0.66vw, 1.45rem); font-weight: 700; }
+.im-aj-tela { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; gap: 0.3rem; padding: 0.8rem 0.5rem; border-radius: 6px; background-color: #f6f7f9; background-image: radial-gradient(#cfd3d9 1px, transparent 1px); background-size: 12px 12px; }
+.im-aj-n { position: relative; display: grid; justify-items: center; gap: 0.3rem; min-width: 0; text-align: center; font-size: clamp(0.78rem, 0.66vw, 1.45rem); line-height: 1.16; color: var(--color-ink); }
+.im-aj-n i { position: relative; z-index: 1; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 10px; background: #6d7480; box-shadow: 0 2px 5px rgba(20, 24, 30, 0.22); }
+.im-aj-n svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.im-aj-n[data-t='evento'] i { background: #16803c; }
+.im-aj-n[data-t='email'] i { background: #1473e6; }
+.im-aj-n[data-t='cond'] i { background: #d97706; }
+.im-aj-n[data-t='ok'] i { background: #16803c; }
+.im-aj-n[data-ora] i { outline: 3px solid rgba(20, 115, 230, 0.32); }
+.im-aj-n[data-ora] span { font-weight: 700; }
+.im-aj-tela > .im-aj-n:not(:first-child)::before { content: ''; position: absolute; top: 1.25rem; right: 50%; width: calc(100% + 0.3rem); height: 2px; background: #98a0ac; }
+.im-aj-rami { position: relative; display: grid; gap: 0.5rem; }
+.im-aj-rami::before { content: ''; position: absolute; top: 1.25rem; right: 100%; width: calc(50% + 0.3rem); height: 2px; background: #98a0ac; }
+.im-aj-rami i { width: 2rem; height: 2rem; border-radius: 8px; }
+.im-aj-rami .im-aj-n:first-child i { margin-top: 0.25rem; }
+.im-aj-rami svg { width: 1.15rem; height: 1.15rem; }
+
+/* La mail del momento 05: mittente, testata di marchio, riepilogo, una sola azione. */
+.im-em-da { display: flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.8rem; }
+.im-em-av { flex: none; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--color-verde-scuro); color: #ffffff; font-weight: 700; font-size: 0.72rem; }
+.im-em-chi { display: grid; min-width: 0; line-height: 1.2; font-size: clamp(0.72rem, 0.6vw, 1.32rem); color: var(--color-grey-600); }
+.im-em-chi strong { font-size: clamp(0.86rem, 0.72vw, 1.6rem); color: var(--color-ink); }
+.im-em-az { margin-left: auto; width: 1.25rem; height: 1.25rem; fill: none; stroke: var(--color-grey-600); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.im-em { border-top: 1px solid var(--color-grey-200); }
+.im-em-banda { padding: 0.5rem 0.8rem; background: var(--color-verde-scuro); color: #ffffff; }
+.im-em-logo { display: block; width: clamp(7rem, 7vw, 15rem); line-height: 0; }
+.im-em-logo svg { width: 100%; height: auto; fill: currentColor; }
+.im-em-corpo { display: grid; gap: 0.5rem; padding: 0.6rem 0.8rem 0.7rem; }
+.im-em-corpo p { margin: 0; max-width: none; }
+.im-em-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.98vw, 2.15rem); line-height: 1.18; color: var(--color-ink); }
+.im-em-num { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; border-radius: 6px; background: var(--color-verde-velo); }
+.im-em-num div { display: grid; gap: 0.02rem; margin: 0; padding: 0.35rem 0.6rem; }
+.im-em-num div + div { border-left: 1px solid rgba(31, 116, 0, 0.18); }
+.im-em-num dd { margin: 0; font-weight: 700; font-size: clamp(0.95rem, 0.86vw, 1.9rem); color: var(--color-ink); white-space: nowrap; }
+.im-em-num dt { font-size: clamp(0.72rem, 0.6vw, 1.32rem); color: var(--color-grey-600); }
+.im-em-num [data-on] dd { color: var(--color-verde-scuro); }
+.im-em-manca { display: flex; align-items: center; gap: 0.45rem; font-size: clamp(0.86rem, 0.74vw, 1.65rem); font-weight: 600; color: var(--color-ink); }
+.im-em-manca i { flex: none; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #d97706; }
+.im-em-cta { padding: 0.45rem; border-radius: 6px; background: var(--color-verde-scuro); color: #ffffff; text-align: center; font-weight: 700; font-size: clamp(0.92rem, 0.82vw, 1.8rem); }
+.im-em-app { text-align: center; font-size: clamp(0.76rem, 0.64vw, 1.42rem); color: var(--color-grey-600); }
+
+.im-aj-tela[data-col='4'] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.im-aj-n[data-t='crm'] i { background: #6b4fd8; }
+.im-aj-n[data-t='crm'][data-ora] i { outline-color: rgba(107, 79, 216, 0.32); }
+.im-aj-dati { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.4rem; font-size: clamp(0.78rem, 0.68vw, 1.5rem); color: var(--color-ink); }
+.im-aj-dati small { font-size: inherit; font-weight: 700; margin-right: 0.15rem; }
+.im-aj-dati span { padding: 0.1rem 0.5rem; border-radius: 4px; background: #eeeaf9; font-weight: 600; white-space: nowrap; }
+.im-aj-dati span[data-ok] { background: #e3f4e0; color: #16610a; }
+
+/* Analysis Workspace, nel momento 07: l'abbandono in colonne, filiale compresa, e il merito. */
+.im-cj-dv { padding: 0.05rem 0.5rem; border-radius: 4px; background: #eef0f3; color: var(--color-grey-600); font-size: clamp(0.76rem, 0.64vw, 1.42rem); font-weight: 600; white-space: nowrap; }
+.im-cj-fall { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; padding: 0.6rem 0.5rem 0.45rem; border-radius: 6px; background: #f6f7f9; }
+.im-cj-col { display: grid; justify-items: center; gap: 0.2rem; min-width: 0; }
+.im-cj-n { font-weight: 700; font-size: clamp(0.84rem, 0.74vw, 1.65rem); color: var(--color-ink); white-space: nowrap; }
+.im-cj-b { display: flex; align-items: flex-end; width: 100%; height: clamp(3.4rem, 8.4vh, 7rem); }
+.im-cj-b i { display: block; width: 100%; min-height: 6px; border-radius: 4px 4px 0 0; background: #1473e6; }
+.im-cj-col[data-offline] .im-cj-b i { background: var(--color-verde-scuro); }
+.im-cj-col[data-ultimo] .im-cj-b i { background: #0d4f9e; }
+.im-cj-l { font-size: clamp(0.78rem, 0.66vw, 1.45rem); color: var(--color-ink); }
+.im-cj-col[data-offline] .im-cj-l { font-weight: 700; }
+.im-cj-attr { display: grid; gap: 0.2rem; }
+.im-cj-attr small { font-size: clamp(0.78rem, 0.68vw, 1.5rem); font-weight: 700; color: var(--color-ink); }
+.im-cj-seg { display: flex; gap: 2px; border-radius: 4px; overflow: hidden; }
+.im-cj-seg span { padding: 0.18rem 0.5rem; background: #1473e6; color: #ffffff; font-size: clamp(0.78rem, 0.66vw, 1.45rem); font-weight: 600; }
+.im-cj-seg span:nth-child(2) { background: #0d4f9e; }
+.im-cj-seg span[data-on] { background: var(--color-verde-scuro); }
+
+/* Scenario: l'imbuto diviso in due zone, chi è anonimo e chi ha lasciato il nome. */
+.im-seg-zona { margin: 0; max-width: none; font-size: clamp(0.8rem, 0.75vw, 1.6rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9d3c5; }
+.im-seg-zona[data-nome] { padding-top: clamp(0.7rem, 1vw, 2rem); border-top: 2px dashed rgba(255, 255, 255, 0.45); color: #ffffff; }
+.im-seg-fig .im-seg-zona { max-width: none; width: 100%; }
+/* Il bollino del prodotto sta sul bordo basso del mock: la barra del merito resta sopra. */
+.im-cj-attr { padding-bottom: 1.6rem; }
+
+/* 02 · GenStudio: lo stesso creativo in tre formati. */
+.im-gs { display: grid; grid-template-columns: 1fr 0.78fr 1.45fr; gap: 0.5rem; align-items: end; margin-bottom: 0.6rem; }
+.im-gs-v { margin: 0; min-width: 0; display: grid; gap: 0.3rem; padding: 0.35rem; border: 1px solid var(--color-grey-200); border-radius: 4px; }
+.im-gs-v[data-scelta] { border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde); background: var(--color-verde-velo); }
+.im-gs-img { position: relative; border-radius: 3px; background-size: cover; background-position: center 40%; overflow: hidden; }
+.im-gs-v[data-f="feed"] .im-gs-img { aspect-ratio: 1 / 1; }
+.im-gs-v[data-f="storia"] .im-gs-img { aspect-ratio: 9 / 16; background-position: 58% center; }
+.im-gs-v[data-f="banner"] .im-gs-img { aspect-ratio: 1.91 / 1; background-position: center 55%; }
+.im-gs-h { position: absolute; inset: auto 0 0 0; padding: 0.3rem 0.35rem; background: rgba(6, 22, 2, 0.82); color: #ffffff; font-weight: 700; line-height: 1.2; font-size: clamp(0.7rem, 0.58vw, 1.3rem); }
+.im-gs-v figcaption { display: grid; gap: 0.05rem; font-size: clamp(0.72rem, 0.6vw, 1.32rem); color: var(--color-ink); line-height: 1.25; }
+.im-gs-v figcaption em { font-style: normal; color: var(--color-verde-scuro); }
+/* 04 · Decisioning: quattro proposte, regole, classifica, una esce. */
+.im-dc-fasi { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.25rem; }
+.im-dc-fasi li { position: relative; padding: 0.3rem 0.4rem; border-radius: 4px; background: #eef0f3; color: var(--color-ink); font-weight: 600; text-align: center; font-size: clamp(0.72rem, 0.6vw, 1.32rem); }
+.im-dc-fasi li[data-on] { background: var(--color-verde-scuro); color: #ffffff; }
+.im-dc { list-style: none; margin: 0 0 0.55rem; padding: 0; display: grid; gap: 0.35rem; }
+.im-dc li { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto; gap: 0.6rem; align-items: center; padding: 0.4rem 0.55rem; border-radius: 4px; border: 1px solid var(--color-grey-200); font-size: clamp(0.8rem, 0.68vw, 1.5rem); color: var(--color-ink); }
+.im-dc li[data-stato="scelta"] { border-color: var(--color-verde); box-shadow: inset 0 0 0 1px var(--color-verde); background: var(--color-verde-velo); font-weight: 700; }
+.im-dc li[data-stato="esclusa"] .im-dc-l { text-decoration: line-through; color: var(--color-grey-600); }
+.im-dc-b { display: block; height: 0.5rem; border-radius: 3px; background: #e6e9ee; }
+.im-dc-b i { display: block; height: 100%; border-radius: 3px; background: #8a96a8; }
+.im-dc li[data-stato="scelta"] .im-dc-b i { background: var(--color-verde-scuro); }
+.im-dc em { font-style: normal; font-variant-numeric: tabular-nums; color: var(--color-grey-600); white-space: nowrap; }
+.im-dc li[data-stato="scelta"] em { color: var(--color-verde-scuro); }
+.im-dc-out { margin: 0; max-width: none; padding: 0.45rem 0.6rem; border-radius: 4px; background: var(--color-verde-scuro); color: #ffffff; font-size: clamp(0.8rem, 0.7vw, 1.5rem); }
+
+/* Scenario: due dati di mercato, poi le quattro fasi divise dal consenso. */
+.im-seg-dati { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 4rem); }
+.im-seg-dato { margin: 0; max-width: none; display: grid; gap: 0.3rem; }
+.im-seg-dato .im-seg-n { font-size: clamp(3rem, 4.4vw, 9rem); line-height: 1; }
+.im-seg-fasi { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem 0.4rem; padding-top: clamp(0.9rem, 1.3vw, 2.6rem); border-top: 1px solid rgba(255, 255, 255, 0.2); }
+.im-seg-fasi .im-seg-zona { grid-column: span 2; margin: 0; max-width: none; border-top: 0; padding-top: 0; }
+.im-seg-fasi .im-seg-zona[data-nome] { padding-left: 0.6rem; border-left: 2px dashed rgba(255, 255, 255, 0.5); }
+.im-seg-fase { margin: 0; max-width: none; padding: 0.5rem 0.6rem; border-radius: 6px; background: rgba(255, 255, 255, 0.1); color: #e3eedf; font-weight: 600; text-align: center; font-size: clamp(0.95rem, 0.9vw, 2rem); }
+.im-seg-fase[data-noti] { background: var(--color-verde-scuro); color: #ffffff; }
+
+/* Persona: la premessa e l'esito del giro, ai due capi della colonna sinistra. */
+.im-cerslide--persona .im-capo { grid-column: 1; grid-row: 2; justify-self: end; width: min(100%, 22rem); display: grid; gap: 0.5rem; padding-left: 1rem; border-left: 3px solid rgba(255, 255, 255, 0.35); }
+.im-cerslide--persona .im-capo:not(.im-capo--esito) { align-self: start; margin-top: 6vh; }
+.im-cerslide--persona .im-capo--esito { grid-column: 1; justify-self: end; align-self: end; margin-bottom: 6vh; border-left-color: var(--color-verde-chiaro); }
+.im-capo-k { margin: 0; max-width: none; font-size: clamp(0.78rem, 0.72vw, 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9d3c5; text-align: left; }
+.im-capo-t { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 1.5vw, 3.2rem); line-height: 1.25; color: #ffffff; text-align: left; }
+.im-capo--esito .im-capo-k { color: var(--color-verde-chiaro); }
+@media (max-width: 1200px) { .im-cerslide--persona .im-capo { grid-column: 1; grid-row: auto; justify-self: stretch; width: auto; margin: 0 !important; } }
+.im-cerslide--persona .im-capo .im-capo-k, .im-cerslide--persona .im-capo .im-capo-t { text-align: left; margin-inline: 0; }
+
+/* Innesto: la domanda su Real-Time CDP, tratteggiata perché non è un pezzo deciso. */
+.im-inn-dom { margin: clamp(0.9rem, 1.4vw, 2.6rem) 0 0; max-width: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 1rem; padding: 0.7rem 1.1rem; border: 2px dashed rgba(255, 255, 255, 0.45); border-radius: 12px; }
+.im-inn-dom-k { font-size: clamp(0.78rem, 0.72vw, 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b9e6a3; }
+.im-inn-dom-t { font-size: clamp(1rem, 0.95vw, 2.1rem); color: #ffffff; }
+
+/* 01 · Brand Visibility: quante risposte citano la banca, e che cosa fare dove manca. */
+.im-bv-kpi { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: center; margin: 0.5rem 0 0.7rem; }
+.im-bv-n { margin: 0; display: flex; align-items: baseline; gap: 0.3rem; color: var(--color-ink); }
+.im-bv-n strong { font-family: var(--font-display); font-size: clamp(2.4rem, 2.6vw, 5.4rem); line-height: 1; color: var(--color-verde-scuro); }
+.im-bv-n span { font-weight: 700; font-size: clamp(0.95rem, 0.9vw, 2rem); }
+.im-bv-k { display: grid; gap: 0.35rem; min-width: 0; }
+.im-bv-kl { font-size: clamp(0.8rem, 0.7vw, 1.5rem); font-weight: 600; color: var(--color-ink); }
+.im-bv-seg { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; }
+.im-bv-seg i { display: block; height: clamp(0.55rem, 0.6vw, 1.2rem); border-radius: 2px; background: #e2e5ea; }
+.im-bv-seg i[data-on] { background: var(--color-verde-scuro); }
+.im-bvq { list-style: none; margin: 0; padding: 0; display: grid; }
+.im-bvq li { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; padding: 0.38rem 0; border-top: 1px solid #e6e9ee; font-size: clamp(0.8rem, 0.7vw, 1.5rem); color: var(--color-ink); }
+.im-bvq em { font-style: normal; white-space: nowrap; font-weight: 600; color: #a14e00; }
+.im-bvq li[data-citata] em { color: var(--color-verde-scuro); }
+.im-bvq { padding-bottom: 1.4rem; }
+
+/* 05 · i tre canali del richiamo: il sito e i media portano i colori loro. */
+.im-aj-n[data-t="web"] i { background: #5c6b80; }
+.im-aj-n[data-t="media"] i { background: #b4378c; }
+.im-aj-tela[data-col='4'] .im-aj-rami { gap: 0.2rem; }
+.im-aj-tela[data-col='4'] .im-aj-rami .im-aj-n i { width: clamp(1.9rem, 1.9vw, 4rem); height: clamp(1.9rem, 1.9vw, 4rem); }
+.im-aj-dati { padding-left: 1.6rem; }
+
+/* Scenario: il 45% è il dato, il 65% il contesto; la simulazione è il segnale. */
+.im-seg-dati { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: end; }
+.im-seg-dato:not([data-primo]) .im-seg-n { font-size: clamp(2rem, 2.6vw, 5.4rem); color: #c9d3c5; }
+.im-seg-fase[data-segnale] { box-shadow: inset 0 0 0 2px var(--color-verde-chiaro); color: #ffffff; }
+
+/* Innesto: Real-Time CDP a sinistra di Decisioning, sui prospect. Contorno e
+   non pieno: si aggiunge, ma il suo perimetro va chiarito con loro. */
+.im-inn-cdp { grid-column: 1; grid-row: 3; position: relative; display: grid; justify-items: center; align-content: center; gap: 0.2rem; padding: 0.85rem 1rem; border: 2px solid #6cc04a; border-radius: 12px; background: rgba(31, 116, 0, 0.35); text-align: center; }
+.im-inn-cdp-fr { position: absolute; right: 100%; bottom: clamp(2.6rem, 3.4vw, 6rem); width: clamp(2.2rem, 3vw, 6rem); height: auto; fill: none; stroke: #b9e6a3; stroke-width: 1.6; }
+
+/* Capability: quattro passi in fila (riconosce, sceglie, agisce, misura), un disegno
+   per meccanismo, e la riga «Per Giulia» che li aggancia alla storia. */
+.im-capg { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1.6rem, 2.2vw, 4.4rem); margin: 0.8rem 0 0; }
+.im-capg-col { position: relative; display: grid; grid-template-rows: auto auto auto 1fr auto; gap: 0.45rem; padding: clamp(1rem, 1.2vw, 2.4rem); border-radius: 14px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); }
+.im-capg-fig { width: 100%; height: clamp(3.2rem, 4.6vw, 9rem); margin-bottom: 0.3rem; }
+.im-capg-fig .tr { fill: none; stroke: #9fb39a; stroke-width: 2; }
+.im-capg-fig .fr { fill: none; stroke: #b9e6a3; stroke-width: 2.2; }
+.im-capg-fig .ac { fill: none; stroke: #6cc04a; stroke-width: 3; }
+.im-capg-fig .pi { fill: rgba(255, 255, 255, 0.18); }
+.im-capg-fig .acf { fill: #6cc04a; }
+.im-capg-r { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.5rem, 1.7vw, 3.6rem); line-height: 1.05; color: #ffffff; text-align: left; }
+.im-capg-p { margin: 0; max-width: none; font-size: clamp(0.8rem, 0.74vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #b9e6a3; text-align: left; }
+.im-capg ul { list-style: none; margin: 0.3rem 0 0; padding: 0; display: grid; align-content: start; gap: 0.45rem; }
+.im-capg ul li { position: relative; padding-left: 1rem; font-size: clamp(0.98rem, 0.92vw, 2rem); line-height: 1.35; color: #eef6ea; text-align: left; }
+.im-capg ul li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #6cc04a; }
+.im-capg-g { margin: 0.4rem 0 0; max-width: none; display: grid; gap: 0.15rem; padding: 0.55rem 0.7rem; border-radius: 8px; background: rgba(108, 192, 74, 0.16); font-size: clamp(0.95rem, 0.86vw, 1.9rem); line-height: 1.35; color: #ffffff; text-align: left; }
+.im-capg-gk { font-size: clamp(0.76rem, 0.68vw, 1.45rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b9e6a3; }
+.im-capg-fr { position: absolute; right: 100%; top: 50%; width: clamp(1.4rem, 2vw, 4rem); margin-right: clamp(0.1rem, 0.1vw, 0.2rem); transform: translateY(-50%); fill: none; stroke: #b9e6a3; stroke-width: 1.8; }
+@media (max-width: 900px) { .im-capg { grid-template-columns: repeat(2, minmax(0, 1fr)); } .im-capg-fr { display: none; } }
+@media (max-width: 1500px) {
+  .im-cerslide--persona .im-capo .im-capo-t { font-size: clamp(1.05rem, 1.25vw, 1.4rem); }
+  .im-cerslide--persona .im-capo:not(.im-capo--esito) { margin-top: 2vh; }
+  .im-cerslide--persona .im-capo--esito { margin-bottom: 2vh; }
+}
+
+/* Ritorno: che cosa si impara da Giulia → dove torna per il prossimo. Una riga
+   per lezione, il numero del momento da cui viene, la freccia, la destinazione. */
+.im-rt { display: grid; gap: 0.7rem; margin-top: 0.8rem; max-width: 78rem; }
+.im-rt-testa { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) clamp(3rem, 5vw, 7rem) minmax(0, 1fr); gap: 1rem; padding: 0 1rem; font-size: clamp(0.78rem, 0.72vw, 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b9e6a3; }
+.im-rt-testa > :first-child { grid-column: 2; }
+.im-rt-testa > :last-child { grid-column: 4; }
+.im-rt-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.55rem; }
+.im-rt-i { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr) clamp(3rem, 5vw, 7rem) minmax(0, 1fr); gap: 1rem; align-items: center; padding: 0.7rem 1rem; border-radius: 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.14); }
+.im-rt-m { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; border: 2px solid #6cc04a; font-weight: 700; font-size: clamp(0.85rem, 0.78vw, 1.7rem); color: #ffffff; }
+.im-rt-i[data-g="trovare"] .im-rt-m { border-color: #5b9bff; }
+.im-rt-i[data-g="content"] .im-rt-m { border-color: #e06aa8; }
+.im-rt-k { font-size: clamp(1.02rem, 0.98vw, 2.1rem); line-height: 1.3; color: #eef6ea; }
+.im-rt-fr { width: 100%; height: auto; fill: none; stroke: #6cc04a; stroke-width: 2; }
+.im-rt-v { display: grid; gap: 0.1rem; padding: 0.45rem 0.7rem; border-radius: 8px; background: rgba(108, 192, 74, 0.18); }
+.im-rt-v strong { font-size: clamp(1.02rem, 0.98vw, 2.1rem); color: #ffffff; }
+.im-rt-v small { font-size: clamp(0.78rem, 0.7vw, 1.5rem); color: #b9e6a3; }
+.im-rt-dopo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 1rem; margin-top: 0.4rem; padding: 0.7rem 1rem; border-radius: 12px; border: 2px dashed rgba(255, 255, 255, 0.35); }
+.im-rt-dk { margin: 0; max-width: none; font-size: clamp(0.78rem, 0.72vw, 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b9e6a3; }
+.im-rt-dv { margin: 0; max-width: none; font-size: clamp(1rem, 0.95vw, 2.05rem); color: #ffffff; }
+@media (max-height: 920px) {
+  .im-rt { gap: 0.45rem; margin-top: 0.4rem; }
+  .im-rt-l { gap: 0.35rem; }
+  .im-rt-i { padding: 0.4rem 0.9rem; }
+  .im-rt-v { padding: 0.3rem 0.6rem; }
+  .im-rt-m { width: 2rem; height: 2rem; }
+  .im-rt-dopo { margin-top: 0.2rem; padding: 0.45rem 0.9rem; }
+}

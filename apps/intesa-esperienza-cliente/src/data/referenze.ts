@@ -26,14 +26,14 @@ export const FONTI = {
    nominato»: falso — la pagina di U.S. Bank nomina «the offer decisioning
    capability of Adobe Journey Optimizer». Corretto il 30 ott 2026. */
 export const TSB_SUB = {
-  it: 'Una delle poche referenze bancarie pubbliche che nominano Offer Decisioning, e porta un caso di mutuo. Una pratica lasciata a metà in app, ripresa in tempo reale: parole loro.',
-  en: 'One of the few public banking references naming Offer Decisioning, and it carries a mortgage case. An application left half-done in the app, resumed in real time: their words.',
+  it: 'Prima banca britannica su Experience Platform e una delle poche referenze pubbliche che nominano Offer Decisioning. Porta un caso di mutuo. Una pratica lasciata a metà in app, ripresa in tempo reale: parole loro.',
+  en: 'The first UK bank on Experience Platform and one of the few public references naming Offer Decisioning. It carries a mortgage case. An application left half-done in the app, resumed in real time: their words.',
 };
 /* Il «prima», perché una referenza senza il prima non pesa: scala,
    canali, stack di partenza. */
 export const TSB_PRIMA = {
-  it: 'Il prima: una grande banca retail con il 91% dei prodotti già acquistati sui canali digitali e un dato che arrivava in nove giorni. La scala non è la vostra; la forma del caso sì.',
-  en: 'The before: a large retail bank with 91% of products already bought on digital channels and data arriving in nine days. The scale is not yours; the shape of the case is.',
+  it: 'Il prima: una grande banca retail con il 91% dei prodotti già acquistati sui canali digitali e un dato che arrivava in nove giorni. La scala è diversa dalla vostra, il tipo di caso è lo stesso.',
+  en: 'The before: a large retail bank with 91% of products already bought on digital channels and data arriving in nine days. The scale differs from yours, the type of case is the same.',
 };
 export const CA_PRIMA = {
   it: 'Oltre 150 percorsi su acquisizione, ingaggio e retention, con Journey Optimizer, Real-Time CDP, Customer Journey Analytics, Target e Workfront. Prima fase in produzione in meno di sei mesi, su canali digitali e di filiale.',
@@ -97,8 +97,8 @@ export const MISURE = [
 /* Le condizioni del trimestre, sotto l'ask: un pilota senza soglia si
    dichiara riuscito sempre. */
 export const TRIMESTRE = {
-  it: 'Il trimestre parte dal primo invio, con la soglia dichiarata prima. Dentro, i KPI intermedi: riprese, appuntamenti, richieste firmate; le erogazioni dopo. Gruppo di controllo e aggancio della firma in filiale si decidono al primo tavolo; il costo per canale lo caricate voi. Dopo il trimestre viene il cross-sell dopo la firma, su clienti che nel CRM ci sono: un secondo giro, non un’alternativa.',
-  en: 'The quarter starts at the first send, with the threshold declared beforehand. Inside, the intermediate KPIs: resumptions, appointments, signed applications; approvals later. Control group and the branch-signature link get decided at the first table; channel cost is loaded by you. After the quarter comes cross-sell after signature, on customers the CRM does know: a second loop, not an alternative.',
+  it: 'Il trimestre parte dal primo invio, con la soglia dichiarata prima. Dentro, i KPI intermedi: riprese, appuntamenti, richieste firmate; le erogazioni dopo. Gruppo di controllo e aggancio della firma in filiale si decidono al primo tavolo; il costo per canale lo caricate voi. Dopo il trimestre viene il cross-sell dopo la firma, su clienti che nel CRM ci sono, come secondo giro.',
+  en: 'The quarter starts at the first send, with the threshold declared beforehand. Inside, the intermediate KPIs: resumptions, appointments, signed applications; approvals later. Control group and the branch-signature link get decided at the first table; channel cost is loaded by you. After the quarter comes cross-sell after signature, on customers the CRM does know, as a second loop.',
 };
 
 /* L'ASK, in un posto solo. */

@@ -1,0 +1,184 @@
+---
+/**
+ * IL MOCKUP A PASSI di un componente che si innesta. Stessa meccanica del pop-in di
+ * Trenitalia: `<dialog>` nativo, i pezzi entrano al passo `data-da`, niente testo
+ * dentro un SVG. Da chiuso è `display: none`, quindi i gate di layout non lo misurano.
+ */
+import { SCENE, type ScenaId } from '../data/pop';
+import '../styles/pop.css';
+interface Props { scena: ScenaId; }
+const { scena } = Astro.props as Props;
+const s = SCENE[scena];
+const frecciaD = 'M1 7h24M19 1l6 6-6 6';
+---
+<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={s.passi.length} data-scena={scena} aria-label={s.prodotto}>
+  <div class="pp-in">
+    <header class="pp-testa">
+      <div class="pp-testa-t">
+        <p class="pp-k">Si aggiunge · sopra quello che avete</p>
+        <h3 class="pp-h">{s.prodotto}</h3>
+      </div>
+      <p class="pp-cosa">{s.cosa}</p>
+      <button type="button" class="pp-x" data-pp-chiudi aria-label="Chiudi">×</button>
+    </header>
+
+    <div class="pp-scena">
+      {scena === 'cja' && (
+        <div class="pp-cja">
+          <div class="pp-strato" data-da="2">
+            <div class="pp-strato-t"><strong>Customer Journey Analytics</strong><span>Lo strato che legge tutti i canali insieme</span></div>
+            <div class="pp-strato-pila">
+              <ol class="pp-viaggio" data-da="5" data-a="5">
+                <li><small>Sito</small><strong>Simula il mutuo</strong></li>
+                <li><small>Email</small><strong>Riprende la richiesta</strong></li>
+                <li><small>Filiale</small><strong>Appuntamento tenuto</strong></li>
+                <li data-on><small>Un percorso solo</small><strong>Richiesta firmata</strong></li>
+              </ol>
+              <div class="pp-barre" data-da="6">
+                <p class="pp-barre-t">Peso di ogni canale sulle firme</p>
+                <p><span>Sito</span><i style="--v:78%"></i></p>
+                <p><span>Email</span><i style="--v:34%"></i></p>
+                <p data-on><span>Filiale</span><i style="--v:60%"></i></p>
+              </div>
+            </div>
+          </div>
+          <div class="pp-fili">
+            <span class="pp-filo" data-da="2"></span>
+            <span class="pp-filo" data-da="2"></span>
+            <span class="pp-filo" data-da="3"></span>
+            <span class="pp-filo" data-da="3"></span>
+            <span class="pp-filo" data-da="4"></span>
+          </div>
+          <ul class="pp-fonti">
+            <li class="pp-f" data-gia><small>Adobe Analytics</small><strong>Sito</strong></li>
+            <li class="pp-f" data-gia><small>Adobe Analytics</small><strong>App</strong></li>
+            <li class="pp-f" data-da="3"><small>Dal CRM</small><strong>Filiale</strong></li>
+            <li class="pp-f" data-da="3"><small>Dal contact center</small><strong>Chiamate</strong></li>
+            <li class="pp-f" data-gia data-da="4"><small>Da SAS, a monte</small><strong>Segmenti e score</strong></li>
+          </ul>
+        </div>
+      )}
+
+      {scena === 'decisioning' && (
+        <div class="pp-dec">
+          <div class="pp-dec-c">
+            <div class="pp-c">
+              <small>A monte, come oggi</small>
+              <strong>SAS</strong>
+              <ul class="pp-sas"><li>Target</li><li>Propensione</li><li>Eleggibilità</li></ul>
+            </div>
+            <div class="pp-dec-fr" data-da="2">
+              <svg viewBox="0 0 28 14" aria-hidden="true"><path d={frecciaD} /></svg>
+              <span>attributi del profilo</span>
+            </div>
+          </div>
+          <div class="pp-strato" data-da="2">
+            <div class="pp-strato-t"><strong>AI Decisioning</strong><span>L’arbitro fra le proposte</span></div>
+            <ul class="pp-cand" data-da="3">
+              <li data-primo><span>Promemoria documenti</span><em data-da="5">prima in classifica</em></li>
+              <li><span>Invito in filiale</span><em data-da="5">seconda</em></li>
+              <li><span>Contatto dal contact center</span><em data-da="4">oltre la contact policy</em></li>
+              <li><span>Sconto prima casa under 36</span><em data-da="4">già vista 3 volte</em></li>
+            </ul>
+          </div>
+          <div class="pp-dec-c">
+            <div class="pp-c pp-c--ok" data-da="6"><small>Esce una proposta sola</small><strong>Promemoria documenti, via email</strong></div>
+            <div class="pp-c" data-da="6"><small>L’invio</small><strong>Dai canali e dalle campagne di oggi</strong></div>
+            <div class="pp-striscia" data-da="7"><strong>Customer Journey Analytics</strong><span>misura l’esito</span></div>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <footer class="pp-piede">
+      <div class="pp-didas" aria-live="polite">
+        {s.passi.map((p, i) => (<p class="pp-d" data-passo-t={i + 1}><span class="pp-d-n">{i + 1}</span>{p}</p>))}
+      </div>
+      <div class="pp-nav">
+        <div class="pp-punti" aria-hidden="true">{s.passi.map((_, i) => <span data-punto={i + 1}></span>)}</div>
+        <button type="button" class="pp-b-n" data-pp-prev aria-label="Passo precedente">←</button>
+        <button type="button" class="pp-b-n pp-b-n--av" data-pp-next>Avanti →</button>
+      </div>
+      <p class="pp-nota">
+        {s.nota}
+        {s.fonti.map((f) => <> · <a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>)}
+      </p>
+    </footer>
+  </div>
+</dialog>
+
+<script>
+  /* Una delega sola sul documento: regge ai cambi di capitolo (ClientRouter) e a
+     più istanze per pagina. Lo script di un componente Astro gira una volta. */
+  const aperto = () => document.querySelector<HTMLDialogElement>('dialog.pp[open]');
+
+  function vai(d: HTMLDialogElement, n: number) {
+    const tot = Number(d.dataset.tot);
+    const p = Math.min(Math.max(1, n), tot);
+    d.dataset.passo = String(p);
+    d.querySelectorAll<HTMLElement>('[data-da],[data-a]').forEach((el) => {
+      const da = Number(el.dataset.da ?? 1);
+      const a = Number(el.dataset.a ?? 99);
+      el.classList.toggle('pp-on', p >= da && p <= a);
+    });
+    d.querySelectorAll<HTMLElement>('[data-passo-t]').forEach((el) => {
+      el.classList.toggle('pp-on', Number(el.dataset.passoT) === p);
+    });
+    d.querySelectorAll<HTMLElement>('[data-punto]').forEach((el) => {
+      el.classList.toggle('pp-on', Number(el.dataset.punto) <= p);
+    });
+    const prev = d.querySelector<HTMLButtonElement>('[data-pp-prev]');
+    const next = d.querySelector<HTMLButtonElement>('[data-pp-next]');
+    if (prev) prev.disabled = p === 1;
+    if (next) next.textContent = p === tot ? 'Chiudi' : 'Avanti →';
+  }
+
+  function avanti(d: HTMLDialogElement) {
+    const p = Number(d.dataset.passo);
+    if (p >= Number(d.dataset.tot)) d.close();
+    else vai(d, p + 1);
+  }
+
+  function apri(d: HTMLDialogElement) {
+    d.closest('[data-deck]')?.setAttribute('data-deck-lock', '');
+    d.showModal();
+    vai(d, 1);
+    d.querySelector<HTMLElement>('[data-pp-next]')?.focus();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const open = t.closest<HTMLElement>('[data-pp-open]');
+    if (open) {
+      const d = open.parentElement?.querySelector<HTMLDialogElement>('dialog.pp');
+      if (d) { e.preventDefault(); apri(d); }
+      return;
+    }
+    const d = t.closest<HTMLDialogElement>('dialog.pp');
+    if (!d) return;
+    if (t === d || t.closest('[data-pp-chiudi]')) d.close();
+    else if (t.closest('[data-pp-next]')) avanti(d);
+    else if (t.closest('[data-pp-prev]')) vai(d, Number(d.dataset.passo) - 1);
+  });
+
+  /* `close` non risale: si ascolta in cattura. Copre Esc, la ×, l'ultimo passo. */
+  document.addEventListener('close', (e) => {
+    const d = e.target as HTMLElement;
+    if (d.matches?.('dialog.pp')) d.closest('[data-deck]')?.removeAttribute('data-deck-lock');
+  }, true);
+
+  /* In cattura sul documento: a pop-in aperto i tasti non arrivano al deck, che
+     ascolta su window. Vale anche per i telecomandi, che mandano PageDown/PageUp. */
+  document.addEventListener('keydown', (e) => {
+    const d = aperto();
+    if (!d) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) {
+      if ((e.target as HTMLElement).tagName === 'A') return;
+      e.preventDefault(); e.stopPropagation(); avanti(d);
+    } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+      e.preventDefault(); e.stopPropagation(); vai(d, Number(d.dataset.passo) - 1);
+    } else if (e.key !== 'Escape' && e.key !== 'Tab') {
+      e.stopPropagation();
+    }
+  }, true);
+</script>

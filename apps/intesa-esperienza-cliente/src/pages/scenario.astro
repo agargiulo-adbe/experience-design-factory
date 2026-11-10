@@ -17,9 +17,8 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 /* Torino al tramonto, non l'astrazione scura: il divisore è una pagina
    CHIARA, e una foto quasi nera lì dentro è una macchia, non una
    fotografia. Visto guardando la slide, non deducendolo. */
-import fondo from '../assets/generated/fondo-apertura.webp';
+import fondo from '../assets/generated/cover-dato.webp';
 import tracce from '../assets/generated/scena-08-tracce.webp';
-import { IMBUTO, IMBUTO_NOTA } from '../data/imbuto';
 
 const SLUG = 'scenario';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -27,7 +26,14 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
 /* L'imbuto: dalla FONTE UNICA `data/imbuto.ts`. Numeri illustrativi. */
-const IMBUTO_SCENA = IMBUTO.filter((r) => !r.offline);
+/* Il dato di mercato: l'imbuto con numeri inventati faceva un'assunzione su
+   Intesa che non conosciamo (owner, 10 nov 2026). Questo è verificato alla
+   fonte: Borsino Mutui di Nomisma e MutuiSupermarket.it, maggio 2026. */
+const NOMISMA = 'https://www.teleborsa.it/DettaglioNews/51_2026-05-18_TLB/Nomisma-MutuiSupermarket-il-65-degli-italiani-cerca-il-mutuo-online-1-su-3-si-fida-dellAI.html';
+const FASI = [
+  { it: 'Visita', en: 'Visit' }, { it: 'Simula la rata', en: 'Simulates' },
+  { it: 'Consenso', en: 'Consent' }, { it: 'Firma', en: 'Signs' },
+];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -36,27 +42,30 @@ const IMBUTO_SCENA = IMBUTO.filter((r) => !r.offline);
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 46%`}></div>
+    <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 46%`}></div>
       <Divisore num={ch.num}
         tIt="Dal dato alla decisione" tEn="From data to decision" />
     </Slide>
 
     <Slide id="slide-segnale" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${tracce.src})`}></div>
+      <div slot="backdrop" class="im-bg-scena" style={`--bg: url('${tracce.src}')`}></div>
       <div class="im-seg" data-reveal>
         <div class="im-seg-testa">
-          <T as="h2" class="im-h2" it="Il segnale c’è già e si spegne da solo" en="The signal already exists and fades on its own" />
-          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce e lascia tracce su canali separati." en="Whoever is shopping for a mortgage does not know you and leaves traces on separate channels." />
+          <T as="h2" class="im-h2" it="Quasi una famiglia su due vuole simulare la rata prima di lasciare il nome" en="Almost one household in two wants to simulate the repayment before giving a name" />
+          <T as="p" class="im-sub" it="Il segnale più forte arriva da una persona ancora anonima. Se si risponde solo dopo il consenso, si arriva tardi." en="The strongest signal comes from someone still anonymous. Responding only after consent is too late." />
         </div>
         <figure class="im-seg-fig">
-          {IMBUTO_SCENA.map((f, i) => (
-            <div class="im-seg-r" data-ultimo={i === IMBUTO_SCENA.length - 1 ? '' : null}>
-              <p class="im-seg-riga"><span class="im-seg-n">{f.n}</span><T as="span" class="im-seg-l" it={f.l.it} en={f.l.en} /></p>
-              <span class="im-seg-b"><i style={`width:${f.v}%`}></i></span>
-            </div>
-          ))}
-          <T as="figcaption" class="im-fonte-riga" it={IMBUTO_NOTA.it} en={IMBUTO_NOTA.en} />
+          <div class="im-seg-dati">
+            <p class="im-seg-dato" data-primo=""><span class="im-seg-n">45%</span><T as="span" class="im-seg-l" it="vuole simulare la rata" en="want to simulate the repayment" /></p>
+            <p class="im-seg-dato"><span class="im-seg-n">65%</span><T as="span" class="im-seg-l" it="si informa sul mutuo online" en="research mortgages online" /></p>
+          </div>
+          <div class="im-seg-fasi">
+            <T as="p" class="im-seg-zona" it="Anonimi" en="Anonymous" />
+            <T as="p" class="im-seg-zona" data-nome="" it="Con nome e consenso" en="With a name and consent" />
+            {FASI.map((f, i) => <T as="p" class="im-seg-fase" data-noti={i >= 2 ? '' : null} data-segnale={i === 1 ? '' : null} it={f.it} en={f.en} />)}
+          </div>
+          <figcaption class="im-fonte-riga"><span data-lang-it>Fonte: </span><span data-lang-en>Source: </span><a href={NOMISMA} target="_blank" rel="noopener">Nomisma e MutuiSupermarket.it, Borsino Mutui Acquisto Casa, maggio 2026</a></figcaption>
         </figure>
       </div>
     </Slide>

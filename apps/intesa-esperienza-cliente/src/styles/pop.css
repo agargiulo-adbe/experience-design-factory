@@ -1,0 +1,137 @@
+/* Il pop-in a passi (components/InnestoPop.astro). Stessa meccanica del pop-in di
+   Trenitalia, con i token di Intesa: si ricopia qui perché quello sta in un'altra
+   app. Alla terza copia va promosso nel motore. */
+dialog.pp {
+  --color-bianco: #ffffff; --color-ardesia: #0f3a02; --color-ardesia-notte: #071a02;
+  --color-nebbia: #f1f7ee; --color-chiaro: #e7f1e2; --color-rosso: #1f7400; --color-rosso-scuro: #1f7400;
+  --color-verde: #1f7400; --color-grigio-200: #dfe5dc; --color-grigio-300: #c8d0c4; --color-grigio-400: #98a294; --color-grigio-600: #4c5549;
+}
+dialog.pp {
+  position: fixed; inset: 0; margin: auto; padding: 0; border: 0;
+  width: min(94vw, 112rem); height: min(92vh, 66rem);
+  border-radius: 1.1rem; overflow: hidden;
+  background: var(--color-bianco); color: var(--color-ardesia-notte);
+  font-family: var(--font-body); text-align: left;
+  box-shadow: 0 30px 90px rgba(10, 14, 24, 0.5);
+}
+dialog.pp::backdrop { background: rgba(20, 26, 38, 0.74); backdrop-filter: blur(6px); }
+dialog.pp[open] { animation: pp-entra 0.36s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes pp-entra { from { opacity: 0; transform: translateY(1.4rem) scale(0.985); } to { opacity: 1; transform: none; } }
+
+dialog.pp p, dialog.pp h3, dialog.pp ul, dialog.pp ol, dialog.pp figure { margin: 0; padding: 0; max-width: none; text-align: left; list-style: none; color: inherit; }
+dialog.pp small { display: block; font-size: clamp(0.82rem, 0.8vw, 1.25rem); font-weight: 600; letter-spacing: 0.02em; color: var(--color-grigio-600); line-height: 1.3; }
+dialog.pp strong { font-weight: 700; }
+dialog.pp em { font-style: normal; }
+
+.pp-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+/* ── Testata ─────────────────────────────────────────────── */
+.pp-testa { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2.5rem; padding: 1rem 1.6rem 1rem 2rem; background: var(--color-ardesia); color: var(--color-bianco); }
+dialog.pp .pp-k { font-size: clamp(0.82rem, 0.8vw, 1.25rem); font-weight: 600; color: var(--color-grigio-200); white-space: nowrap; }
+dialog.pp .pp-h { font-family: var(--font-display); font-size: clamp(1.5rem, 1.7vw, 2.7rem); font-weight: 700; line-height: 1.15; color: var(--color-bianco); }
+dialog.pp .pp-cosa { font-size: clamp(1rem, 1vw, 1.6rem); line-height: 1.4; color: var(--color-bianco); max-width: 44rem; }
+.pp-x { width: 2.75rem; height: 2.75rem; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: transparent; color: var(--color-bianco); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.pp-x:hover { background: rgba(255, 255, 255, 0.14); }
+
+/* ── La scena e l'ingresso dei pezzi ─────────────────────── */
+.pp-scena { min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); align-items: center; padding: clamp(1rem, 2.4vh, 2rem) clamp(1.4rem, 2.2vw, 3rem); background: var(--color-nebbia); overflow: hidden; }
+.pp [data-da], .pp [data-a] { transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.42s; }
+.pp [data-da]:not(.pp-on), .pp [data-a]:not(.pp-on) { opacity: 0; visibility: hidden; transform: translateY(0.7rem); }
+.pp-pila { display: grid; }
+.pp-pila > * { grid-area: 1 / 1; }
+/* I blocchi di base */
+.pp-c { display: grid; gap: 0.3rem; padding: clamp(0.8rem, 1.5vh, 1.2rem) clamp(1rem, 1.2vw, 1.6rem); background: var(--color-bianco); border: 1px solid var(--color-grigio-200); border-radius: 0.75rem; color: var(--color-ardesia-notte); }
+dialog.pp .pp-c strong { font-size: clamp(1.1rem, 1.15vw, 1.9rem); line-height: 1.3; }
+.pp-c--ok { border-color: var(--color-verde); box-shadow: inset 0.3rem 0 0 var(--color-verde); }
+.pp-risultati { display: grid; gap: 0.75rem; align-content: center; min-width: 0; }
+/* Le barre: senza cifre, perché i valori sono illustrativi */
+.pp-barre { display: grid; gap: 0.55rem; margin-top: 0.3rem; }
+dialog.pp .pp-barre p { display: grid; grid-template-columns: minmax(9rem, 1fr) 2fr; align-items: center; gap: 0.9rem; font-size: clamp(1rem, 1vw, 1.6rem); font-weight: 500; }
+.pp-barre i { display: block; height: 1.05rem; width: var(--v); border-radius: 0.3rem; background: var(--color-grigio-400); transform-origin: left; animation: pp-barra 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pp-barre [data-on] i { background: var(--color-rosso); }
+.pp-barre [data-spento] i { background: var(--color-grigio-300); }
+.pp-on .pp-barre i { animation: pp-barra 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes pp-barra { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* ── CJA: lo strato sopra le fonti ───────────────────────── */
+.pp-cja { display: grid; gap: 0; }
+[data-scena='cja'] .pp-f { padding: clamp(0.9rem, 2.4vh, 1.7rem) 1rem; }
+[data-scena='cja'] .pp-strato { padding-block: clamp(1rem, 2.8vh, 2rem); gap: clamp(0.9rem, 2vh, 1.5rem); }
+[data-scena='cja'] .pp-viaggio li { padding-block: clamp(0.7rem, 2vh, 1.4rem); }
+[data-scena='cja'] .pp-riga { padding-block: clamp(0.7rem, 1.8vh, 1.2rem); }
+.pp-strato { display: grid; gap: 0.9rem; padding: clamp(0.9rem, 1.8vh, 1.4rem) clamp(1.2rem, 1.6vw, 2rem); border-radius: 0.9rem; background: var(--color-ardesia-notte); color: var(--color-bianco); }
+.pp-strato-t { display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; }
+dialog.pp .pp-strato-t strong { font-family: var(--font-display); font-size: clamp(1.25rem, 1.4vw, 2.2rem); }
+dialog.pp .pp-strato-t span { font-size: clamp(1rem, 1vw, 1.6rem); color: var(--color-grigio-200); }
+.pp-viaggio { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+.pp-viaggio li { position: relative; display: grid; gap: 0.15rem; padding: 0.7rem 1rem; border-radius: 0.55rem; background: rgba(255, 255, 255, 0.1); }
+dialog.pp .pp-viaggio small { color: var(--color-grigio-200); }
+dialog.pp .pp-viaggio strong { font-size: clamp(1.05rem, 1.1vw, 1.8rem); }
+.pp-viaggio li[data-on] { background: var(--color-rosso); }
+dialog.pp .pp-viaggio li[data-on] small { color: var(--color-bianco); }
+.pp-fili, .pp-fonti { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.7rem; }
+.pp-fili { height: clamp(2.6rem, 7vh, 4.8rem); }
+.pp-filo { position: relative; justify-self: center; width: 2px; height: 100%; background: var(--color-grigio-400); }
+.pp-filo--poi { background: repeating-linear-gradient(to bottom, var(--color-grigio-400) 0 5px, transparent 5px 10px); }
+.pp-filo::after { content: ''; position: absolute; left: -4px; bottom: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--color-rosso); animation: pp-sale 1.7s linear infinite; }
+.pp-filo--poi::after { background: var(--color-grigio-400); }
+.pp-filo:nth-child(2)::after { animation-delay: 0.5s; }
+.pp-filo:nth-child(3)::after { animation-delay: 0.9s; }
+@keyframes pp-sale { from { bottom: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { bottom: calc(100% - 10px); opacity: 0; } }
+.pp-f { display: grid; gap: 0.15rem; padding: 0.8rem 0.9rem; border-radius: 0.65rem; background: var(--color-bianco); border: 1.5px solid var(--color-grigio-300); }
+dialog.pp .pp-f strong { font-size: clamp(1.02rem, 1.05vw, 1.75rem); overflow-wrap: anywhere; }
+.pp-f[data-gia] { border-color: var(--color-ardesia); background: var(--color-grigio-200); }
+.pp-f--poi { border-style: dashed; background: transparent; }
+/* ── Piede ───────────────────────────────────────────────── */
+.pp-piede { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem 2rem; align-items: center; padding: 0.85rem 2rem 0.75rem; background: var(--color-bianco); border-top: 1px solid var(--color-grigio-200); }
+.pp-didas { display: grid; min-height: 3.6em; align-items: center; }
+dialog.pp .pp-d { grid-area: 1 / 1; display: flex; gap: 0.8rem; align-items: center; font-family: var(--font-display); font-size: clamp(1.2rem, 1.3vw, 2.1rem); font-weight: 600; line-height: 1.3; opacity: 0; visibility: hidden; transition: opacity 0.3s; }
+dialog.pp .pp-d.pp-on { opacity: 1; visibility: visible; }
+.pp-d-n { flex: none; display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--color-rosso); color: var(--color-bianco); font-size: 1rem; }
+.pp-nav { display: flex; align-items: center; gap: 0.7rem; }
+.pp-punti { display: flex; gap: 0.35rem; margin-right: 0.5rem; }
+.pp-punti span { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-grigio-300); transition: background 0.3s; }
+.pp-punti span.pp-on { background: var(--color-rosso); }
+.pp-b-n { min-height: 2.75rem; min-width: 2.75rem; padding: 0 1.1rem; border-radius: 0.55rem; border: 1.5px solid var(--color-ardesia); background: var(--color-bianco); color: var(--color-ardesia-notte); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; white-space: nowrap; }
+.pp-b-n:disabled { opacity: 0.35; cursor: default; }
+.pp-b-n--av { background: var(--color-rosso); border-color: var(--color-rosso); color: var(--color-bianco); }
+dialog.pp .pp-nota { grid-column: 1 / -1; font-size: clamp(0.82rem, 0.8vw, 1.25rem); line-height: 1.35; color: var(--color-grigio-600); }
+dialog.pp .pp-nota a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+.pp-striscia { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1.3rem; border-radius: 0.75rem; background: var(--color-ardesia); color: var(--color-bianco); }
+dialog.pp .pp-striscia strong { font-size: clamp(1.05rem, 1.1vw, 1.8rem); }
+dialog.pp .pp-striscia span { font-size: clamp(1rem, 1vw, 1.6rem); }
+.pp-strato-pila { display: grid; }
+.pp-strato-pila > * { grid-area: 1 / 1; }
+dialog.pp .pp-barre-t { font-size: clamp(1.05rem, 1.1vw, 1.8rem); font-weight: 700; }
+.pp-strato .pp-barre i { background: #98a294; }
+.pp-strato .pp-barre [data-on] i { background: #4fc21f; }
+
+/* AI Decisioning: da SAS a una proposta */
+.pp-dec { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr) minmax(0, 0.9fr); gap: clamp(1rem, 1.6vw, 2.2rem); align-items: center; }
+.pp-dec-c { display: grid; gap: 0.7rem; min-width: 0; }
+.pp-dec-fr { display: grid; gap: 0.2rem; justify-items: center; text-align: center; }
+dialog.pp .pp-dec-fr span { font-size: clamp(0.95rem, 0.95vw, 1.5rem); font-weight: 600; color: var(--color-grigio-600); }
+.pp-dec-fr svg { width: 2.4rem; height: 1rem; fill: none; stroke: var(--color-rosso); stroke-width: 2; }
+dialog.pp .pp-sas li { font-size: clamp(1.05rem, 1.1vw, 1.8rem); font-weight: 600; padding: 0.3rem 0; border-top: 1px solid var(--color-grigio-200); }
+.pp-cand { display: grid; gap: 0.5rem; }
+dialog.pp .pp-cand li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 0.7rem 1rem; border-radius: 0.55rem; background: rgba(255, 255, 255, 0.1); font-size: clamp(1.02rem, 1.05vw, 1.75rem); font-weight: 600; transition: background 0.4s; }
+dialog.pp .pp-cand em { font-size: clamp(0.95rem, 0.95vw, 1.5rem); font-weight: 700; color: #cfe6c4; white-space: nowrap; }
+.pp[data-passo='5'] .pp-cand li[data-primo], .pp[data-passo='6'] .pp-cand li[data-primo], .pp[data-passo='7'] .pp-cand li[data-primo] { background: var(--color-rosso); }
+.pp[data-passo='6'] .pp-cand li:not([data-primo]), .pp[data-passo='7'] .pp-cand li:not([data-primo]) { opacity: 0.62; }
+
+@media (max-height: 760px) { .pp-testa .pp-cosa { display: none; } }
+@media (max-width: 900px) {
+  dialog.pp { width: 100vw; height: 100dvh; border-radius: 0; }
+  .pp-testa { grid-template-columns: minmax(0, 1fr) auto; }
+  .pp-testa .pp-cosa { display: none; }
+  .pp-scena { overflow-y: auto; align-items: start; }
+  .pp-dec { grid-template-columns: minmax(0, 1fr); }
+  .pp-fili { display: none; }
+  .pp-fonti, .pp-viaggio { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .pp-piede { grid-template-columns: minmax(0, 1fr); }
+  .pp-punti { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.pp[open] { animation: none; }
+  .pp [data-da], .pp [data-a] { transform: none !important; transition: opacity 0.15s linear, visibility 0.15s; }
+  .pp-filo::after { display: none; }
+  .pp-barre i, .pp-on .pp-barre i { animation: none; }
+}

@@ -26,7 +26,7 @@ const currentPath = Astro.url.pathname;
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${ritratto.src}); --fuoco: center 20%`}></div>
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${ritratto.src}'); --fuoco: center 20%`}></div>
       <Divisore num={ch.num}
         tIt="Giulia, 34 anni, non è vostra cliente" tEn="Giulia, 34, and not your customer" />
     </Slide>
@@ -43,23 +43,26 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-cerslide im-cerslide--persona" data-reveal>
         <header class="im-cerslide-testa">
-          <T as="p" class="im-mom-blocco" it="La protagonista, e il suo giro" en="The lead character, and her loop" />
-          <T as="h2" class="im-cerslide-t" it="Sette momenti per acquisire Giulia. Quello che si impara vale per la prossima." en="Seven moments to win Giulia. What we learn carries over to the next customer." data-reveal data-reveal-delay="0.08" />
+          <T as="p" class="im-mom-blocco" it="Il percorso di Giulia" en="Giulia’s journey" />
+          <T as="h2" class="im-cerslide-t" it="Giulia diventa cliente in sette momenti" en="Giulia becomes a customer in seven moments" data-reveal data-reveal-delay="0.08" />
         </header>
 
-        {/* Quello che di lei NON avete: è la premessa del giro, e sta
-            accanto all'anello invece che su una slide sua. */}
-        <div class="im-lato">
-        <ul class="im-manca im-manca--lato" data-reveal data-reveal-delay="0.14">
-          <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna posizione nel CRM" en="No position in the CRM" /></li>
-          <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuna app da notificare" en="No app to notify" /></li>
-          <li class="im-manca-i"><span class="im-manca-x" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Nessuno storico su cui modellare" en="No history to model on" /></li>
-          <li class="im-manca-i" data-si><span class="im-manca-v" aria-hidden="true"></span><T as="span" class="im-manca-l" it="Due sere di navigazione anonima" en="Two evenings browsing anonymously" /></li>
-        </ul>
-        <T as="p" class="im-cerslide-l" it="Fino al settimo momento l’unico modo di raggiungerla è un indirizzo che deve ancora darvi." en="Until the seventh moment the only way to reach her is an address she has yet to give you." data-reveal data-reveal-delay="0.26" />
+        {/* La premessa e l'esito del giro, ai due capi della sequenza: la
+            premessa c'è da subito, l'esito entra dopo il settimo momento.
+            Sta DOPO l'anello nel DOM perché i passi si scoprono in
+            quest'ordine. Era una riga sola a lato, e si perdeva (owner,
+            10 nov 2026). */}
+        <div class="im-capo" data-reveal data-reveal-delay="0.26">
+          <T as="p" class="im-capo-k" it="Il punto di partenza" en="The starting point" />
+          <T as="p" class="im-capo-t" it="Non è ancora cliente. La banca non sa niente di lei." en="She is not a customer yet. The bank knows nothing about her." />
         </div>
 
         <CircoloJourney grande ampio aPassi ritratto={ritratto.src} data-reveal data-reveal-delay="0.16" />
+
+        <div class="im-capo im-capo--esito" data-substep data-side="in">
+          <T as="p" class="im-capo-k" it="Dopo sette momenti" en="Seven moments later" />
+          <T as="p" class="im-capo-t" it="Ha firmato. La banca sa da dove è arrivata, dove si è fermata e quanto è costato acquisirla." en="She has signed. The bank knows where she came from, where she stopped and what it cost to acquire her." />
+        </div>
       </div>
     </Slide>
 

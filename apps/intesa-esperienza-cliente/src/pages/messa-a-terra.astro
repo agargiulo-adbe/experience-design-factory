@@ -9,10 +9,9 @@
  * sulla loro architettura. Quindi: capitolo a sé, che assorbe il circolo,
  * e che si apre sull'architettura invece che sui prodotti.
  *
- * La RAIL in testa sostituisce l'occhiello e dice a che punto si è della
- * messa a terra: è il segno, a colpo d'occhio, che si è usciti dalla storia.
- * I quattro dettagli tecnici stanno in `/approfondimenti`, a un clic dalla
- * slide dei componenti: ci sono se la sala li chiede, e non allungano l'ora.
+ * Dal 10 nov 2026 sono tre slide: la mappa, il motore e il ritorno. Collegamenti,
+ * Brand Visibility, Content Factory e i quattro componenti stanno in
+ * `/approfondimenti`, a un clic dalla mappa: l'ora e mezza non li reggeva.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -20,15 +19,16 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import Divisore from '../components/Divisore.astro';
 import FiguraCap from '../components/FiguraCap.astro';
-import RailTerra from '../components/RailTerra.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
+import InnestoPop from '../components/InnestoPop.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import fondo from '../assets/generated/lavoro-07-misura.webp';
+import Divisore from '../components/Divisore.astro';
+import fondo from '../assets/generated/cover-innesto.webp';
+import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
 
 const SLUG = 'messa-a-terra';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -36,125 +36,73 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const DETTAGLI = href(base, '/approfondimenti');
 
-/* L'APPROFONDIMENTO SU «FARSI TROVARE», dopo il giro di Giulia.
-   Lo schema è quello che il team usa già: due strati — i segnali e le
-   ottimizzazioni — e quattro capacità che si sommano.
-   Le voci vengono dal materiale Adobe di Field Readiness letto il 30 ott
-   2026 (Brand Visibility per FSI B2C, il lavoro GEO per una banca
-   europea, la guida GTM): traffico reale degli agenti dai log del CDN,
-   come gli LLM citano il marchio, raccomandazioni prescrittive e
-   distribuzione dei fix **al bordo, senza passare dal CMS**.
-   ⚠️ Niente proiezioni di mercato in slide: le percentuali che girano su
-   quel materiale sono riprese da terzi e non ho la fonte primaria. Un
-   numero che un CIO va a cercare e non trova vale meno di nessun numero. */
-const BV = [
-  { strato: 'segnali', fig: 'grafo', t: { it: 'Dati di mercato', en: 'Market intelligence' },
-    d: { it: 'Chi viene citato accanto a voi, su ChatGPT, Perplexity, Copilot.', en: 'Who gets cited next to you, on ChatGPT, Perplexity, Copilot.' } },
-  { strato: 'segnali', fig: 'serie', t: { it: 'Segnali di casa vostra', en: 'Brand-owned signals' },
-    d: { it: 'Il traffico degli agenti dai log del vostro CDN: serve l’inoltro dei log, da concordare con l’IT.', en: 'Agent traffic from your CDN logs: log forwarding is needed, to agree with IT.' } },
-  { strato: 'ottimizzazioni', fig: 'bordo', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
-    d: { it: 'I correttivi vanno in rete al bordo del vostro CDN, dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN, inside your change management.' } },
-  { strato: 'ottimizzazioni', fig: 'esito', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
-    d: { it: 'Dalla citazione al traffico che arriva; la pratica aperta la misura CX Analytics.', en: 'From citation to the traffic that arrives; the opened application is measured by CX Analytics.' } },
+/* L'architettura di oggi, a grandi blocchi. SAS è pubblico (storie cliente su
+   sas.com); il resto della catena si dice per funzione e resta un'ipotesi. */
+const EL = 'https://experienceleague.adobe.com/en/docs';
+const CAPACITA = [
+  { p: 'Real-Time CDP', k: 'riconosce', r: { it: 'Riconosce', en: 'Recognises' }, v: [
+    { it: 'Profilo anche anonimo', en: 'Profiles for anonymous visitors' },
+    { it: 'Si unisce al consenso', en: 'Merges at consent' },
+    { it: 'Segmenti in tempo reale', en: 'Real-time segments' },
+  ], g: { it: 'la riconosce quando lascia il nome', en: 'recognises her when she gives her name' } },
+  { p: 'Decisioning', k: 'sceglie', r: { it: 'Sceglie', en: 'Chooses' }, v: [
+    { it: 'Un catalogo di offerte', en: 'One offer catalogue' },
+    { it: 'Regole e limiti per persona', en: 'Rules and caps per person' },
+    { it: 'Classifica con l’AI', en: 'AI ranking' },
+  ], g: { it: 'sceglie il promemoria buste paga', en: 'picks the payslip reminder' } },
+  { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Agisce', en: 'Acts' }, v: [
+    { it: 'Parte da un evento', en: 'Triggered by an event' },
+    { it: 'Email, sito, app, SMS', en: 'Email, site, app, SMS' },
+    { it: 'Consenso e frequenza', en: 'Consent and frequency' },
+  ], g: { it: 'la ricorda su email, sito e social', en: 'follows up by email, site and social' } },
+  { p: 'Customer Journey Analytics', k: 'misura', r: { it: 'Misura', en: 'Measures' }, v: [
+    { it: 'Un percorso fra i canali', en: 'One journey across channels' },
+    { it: 'Parte da Analytics', en: 'Starts from Analytics' },
+    { it: 'Attribuzione algoritmica', en: 'Algorithmic attribution' },
+  ], g: { it: 'misura quanto è costato acquisirla', en: 'measures what it cost to acquire her' } },
+];
+const DOC = [
+  { l: 'Real-Time CDP · segmentazione edge', u: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
+  { l: 'Journey Optimizer', u: `${EL}/journey-optimizer/using/ajo-home` },
+  { l: 'Decisioning', u: `${EL}/journey-optimizer/using/decisioning/gs-decision` },
+  { l: 'Connettore Analytics', u: `${EL}/experience-platform/sources/connectors/adobe-applications/analytics` },
+];
+const OGGI = [
+  { t: 'Data warehouse', d: { it: 'i dati dei clienti', en: 'customer data' } },
+  { t: 'SAS', forte: true, d: { it: 'target, propensione, eleggibilità', en: 'targets, propensity, eligibility' } },
+  { t: 'Campagne', d: { it: 'segmenti, contact policy e invii', en: 'segments, contact policy and sends' } },
+  { t: 'Canali', d: { it: 'app, sito, contact center, filiale', en: 'app, site, contact centre, branch' } },
 ];
 
-/* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
-   I quattro passi vengono dai sei pilastri del Content Supply Chain
-   Maturity Assessment di Adobe (strategia e modello operativo, flussi e
-   pianificazione, creazione e produzione, gestione degli asset, consegna
-   e attivazione, misura e insight), raggruppati in quattro perché sei
-   colonne su una slide non si leggono.
-   La fascia sotto è il punto per una banca, e viene dal value prop per i
-   servizi finanziari di GenStudio letto su Field Readiness il 30 ott
-   2026 — «scalable, compliant campaign content»: la conformità non è un
-   passaggio a valle, sta dentro la produzione. */
-const CSC = [
-  { fig: 'flusso', t: { it: 'Pianificare', en: 'Plan' },
-    d: { it: 'Una campagna nasce con dentro le sue approvazioni.', en: 'A campaign is born with its approvals inside it.' } },
-  { fig: 'varianti', t: { it: 'Produrre', en: 'Produce' },
-    d: { it: 'Dodici varianti da un brief solo, verificate prima dell’approvazione.', en: 'Twelve variants from one brief, checked before approval.' } },
-  { fig: 'archivio', t: { it: 'Gestire', en: 'Manage' },
-    d: { it: 'Si sa che cosa si può usare, dove e fino a quando.', en: 'You know what can be used, where and until when.' } },
-  { fig: 'canali', t: { it: 'Attivare e misurare', en: 'Activate and measure' },
-    d: { it: 'L’esito rientra nel brief successivo.', en: 'The outcome feeds the next brief.' } },
+/* IL BLOCCO SU CUSTOMER JOURNEY ANALYTICS: dopo lo schema dell'innesto (10 nov 2026). Fonti pubbliche in calce a ogni slide. */
+const FONTI = [
+  { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale', en: 'Branch' },
+  { it: 'CRM', en: 'CRM' },
+];
+const TAPPE = [
+  { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale', en: 'Branch' },
+  { it: 'Firma', en: 'Signing' },
 ];
 
-/* L'APPROFONDIMENTO SU «INGAGGIARE IL CLIENTE» — tre slide.
-   Il contenuto viene dalle due slide che il team ha già costruito nel
-   deck («Quattro componenti che abilitano un ciclo di lavoro virtuoso»
-   e «CJA + RT-CDP: una sola misura»), più la verifica su Field Readiness
-   del 30 ott 2026 per le parti tecniche: il profilo si costruisce da uno
-   schema dati comune (XDM) con **stitching** di identificatori diversi,
-   l'**identity graph si aggiorna man mano che i dati arrivano**, e
-   l'attribuzione in CJA usa modelli regolati, algoritmici e data-driven
-   al posto dell'ultimo clic.
-   ⚠️ Il limite si dichiara insieme al pregio: l'attribuzione non cattura
-   gli impatti fuori dai canali misurati, e la finestra di osservazione è
-   un vincolo. Dirlo prima vale più che scoprirlo dopo. */
-const CICLO = [
-  { n: '1', ancora: 'slide-ingaggio-dato', fig: 'misura', t: { it: 'La misura', en: 'Measurement' },
-    s: { it: 'Analisi omnicanale', en: 'Omnichannel analytics' },
-    d: { it: 'Percorsi, funnel, coorti e attribuzione su dati a livello di evento, su tutti i canali.', en: 'Journeys, funnels, cohorts and attribution on event-level data, across every channel.' },
-    i: { it: 'Un solo dato per app, sito, contact center e filiale, per Controllo di Gestione e Advanced Analytics.', en: 'One dataset across app, site, contact centre and branch, for management control and advanced analytics.' } },
-  { n: '2', ancora: 'slide-ingaggio-profilo', fig: 'profilo', t: { it: 'Il profilo', en: 'The profile' },
-    s: { it: 'Da audience a target', en: 'From audience to target' },
-    d: { it: 'Identità, consenso e segmenti attivabili su ogni canale, su Experience Platform.', en: 'Identity, consent and segments activatable on every channel, on Experience Platform.' },
-    i: { it: 'Riceve dal data lake e dagli eventi digitali, ed espone audience e attributi. Gli score del vostro motore entrano in batch quando la persona è riconosciuta: su una prospect non esistono ancora.', en: 'Fed by the data lake and digital events, and exposes audiences and attributes. Your engine’s scores come in by batch once the person is recognised: on a prospect they do not exist yet.' } },
-  { n: '3', ancora: 'slide-ingaggio-regia', fig: 'regia', t: { it: 'La regia', en: 'Orchestration' },
-    s: { it: 'In tempo reale', en: 'In real time' },
-    d: { it: 'Percorsi uno-a-uno su email, push, SMS, in-app e web, attivati da eventi, con consenso e regole di conformità.', en: 'One-to-one journeys over email, push, SMS, in-app and web, triggered by events, with consent and compliance rules.' },
-    i: { it: 'Governa i canali digitali e passa segnali e proposte al CRM di filiale, che resta vostro.', en: 'Runs the digital channels and passes signals and proposals to the branch CRM, which stays yours.' } },
-  { n: '4', ancora: 'slide-ingaggio-arbitro', fig: 'arbitro', t: { it: 'L’arbitro', en: 'The arbiter' },
-    s: { it: 'L’ultimo strato decisionale', en: 'The last decision layer' },
-    d: { it: 'Regole, vincoli e priorità per scegliere la prossima esperienza migliore, ogni volta.', en: 'Rules, constraints and priorities to pick the next best experience, every time.' },
-    i: { it: 'Coesiste col motore di targeting: il motore produce score e audience, qui si arbitrano offerta e canale per ogni contatto.', en: 'It coexists with the targeting engine: the engine produces scores and audiences, here offer and channel are arbitrated per contact.' } },
+const BANCA = [
+  { fig: 'flusso', t: { it: 'Il percorso in sequenza', en: 'The journey in sequence' }, d: { it: 'Digitale, contact center e filiale in ordine, su una persona sola.', en: 'Digital, contact centre and branch in order, on one person.' } },
+  { fig: 'esito', t: { it: 'Il digitale fino allo sportello', en: 'Digital through to the counter' }, d: { it: 'Vendite in filiale e al contact center attribuite ai contatti digitali.', en: 'Branch and contact-centre sales attributed to digital touches.' } },
+  { fig: 'serie', t: { it: 'Dove si rompe la pratica', en: 'Where the application breaks' }, d: { it: 'Abbandoni delle richieste e chiamate evitabili, punto per punto.', en: 'Abandoned applications and avoidable calls, point by point.' } },
+  { fig: 'regia', t: { it: 'Dalla lettura all’azione', en: 'From reading to action' }, d: { it: 'Chi si ferma diventa un’audience per il percorso successivo.', en: 'Whoever stalls becomes an audience for the next journey.' } },
 ];
 
-/* ══════════════════════════════════════════════════════════════════════
-   LA MAPPA — esistente, nuovo, vostro. E le frecce con un nome.
-   ⚠️ L'installato è un'IPOTESI dichiarata, non un fatto: Adobe
-   Analytics e AEM sono noti; l'uso che ne fanno e i sistemi loro
-   (motore, data lake, CRM) sono caselle «da confermare» finché il
-   footprint non le chiude. Scrivere lo stack del cliente a memoria è
-   il modo più rapido di perdere il seggio tecnico.
-   ══════════════════════════════════════════════════════════════════════ */
-const MAPPA = [
-  { stato: 'avete', t: { it: 'Avete', en: 'You have' }, v: [
-    { n: 'Adobe Analytics', d: { it: 'la misura di sito e app · uso da confermare', en: 'site and app measurement · usage to confirm' } },
-    { n: 'Adobe Experience Manager', d: { it: 'il sito, on-premise', en: 'the site, on-premise' } },
-    { n: 'CRM di filiale', d: { it: 'lead, appuntamenti, pratiche', en: 'leads, appointments, applications' } },
-    { n: 'Motore di targeting', d: { it: 'score, audience, politica di contatto', en: 'scores, audiences, contact policy' } },
-    { n: 'Data lake e core', d: { it: 'eleggibilità, saldi, approvazioni', en: 'eligibility, balances, approvals' } },
-  ] },
-  { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
-    { n: 'Real-Time CDP', d: { it: 'profilo e consenso, su Experience Platform', en: 'profile and consent, on Experience Platform' } },
-    { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e l’arbitro (Decisioning)', en: 'event-driven journeys, and the arbiter (Decisioning)' } },
-    { n: 'Customer Journey Analytics', d: { it: 'la misura unica, Analytics compreso', en: 'the one measurement, Analytics included' } },
-    { n: 'Brand Visibility', d: { it: 'come comparite nelle risposte generate', en: 'how you show up in generated answers' } },
-  ] },
-  { stato: 'vostro', t: { it: 'Resta vostro', en: 'Stays yours' }, v: [
-    { n: 'Eleggibilità e approvazioni', d: { it: 'nel core, come oggi', en: 'in the core, as today' } },
-    { n: 'Target e audience', d: { it: 'nel motore, definiti da chi li definisce', en: 'in the engine, defined by whoever defines them' } },
-    { n: 'Politica di contatto', d: { it: 'regola vostra; l’arbitro la legge', en: 'your rule; the arbiter reads it' } },
-    { n: 'Sito, app, filiale', d: { it: 'i canali: AEM, l’app, la Rete', en: 'the channels: AEM, the app, the branch network' } },
-  ] },
+/* Altezze schematiche, senza valori: dicono la forma, e la slide lo dichiara. */
+const TOCCHI = [
+  { it: 'Ricerca', en: 'Search' }, { it: 'Social', en: 'Social' }, { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' }, { it: 'Email', en: 'Email' }, { it: 'Filiale', en: 'Branch' },
 ];
-/* Ogni freccia porta un nome, una direzione e una modalità. Quella senza
-   risposta resta aperta, e si dice. */
-const FRECCE = [
-  /* ⚠️ Secondo giro di panel (30 ott 2026): il lead lo scrive il PERCORSO
-     di Journey Optimizer, non il modulo di decisione; e mancavano le due
-     frecce che fanno funzionare il pilota — gli eventi in sessione verso
-     il profilo (l'SDK su AEM on-premise è l'integrazione più grossa, e si
-     dice) e il ritorno dalla filiale, senza il quale la misura si ferma
-     alla porta dello sportello. */
-  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via SDK: su AEM on-premise è l’integrazione da disegnare per prima', en: 'in-session events via SDK: on AEM on-premise the integration to design first' }, aperta: true },
-  { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore, per la misura', en: 'site and app events, via connector, for measurement' } },
-  { da: 'Data lake', a: 'Real-Time CDP', d: { it: 'score e attributi dei clienti, batch notturno, dalla fase 2', en: 'customer scores and attributes, nightly batch, from phase 2' } },
-  { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead e appuntamento, API', en: 'lead and appointment, API' } },
-  { da: 'CRM di filiale', a: 'Profilo e misura', d: { it: 'appuntamento tenuto, pratica, delibera: il ritorno che chiude l’imbuto', en: 'appointment held, application, approval: the return that closes the funnel' } },
-  { da: 'Core banking', a: 'Arbitro', d: { it: 'eleggibilità: attributo precalcolato o chiamata sincrona, da capire con voi', en: 'eligibility: precomputed attribute or synchronous call, to work out with you' }, aperta: true },
-];
+const PERCORSO = [34, 44, 92, 62, 30, 72];
 
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
    target li costruisce, «nessuno decide» suonava «il vostro lavoro non serve»:
@@ -167,14 +115,14 @@ const ENTRA = [
   { t: { it: 'Politica di contatto', en: 'Contact policy' }, d: { it: 'regola vostra', en: 'your rule' } },
 ];
 const RITORNO = [
-  { k: { it: 'Le domande che non vi citavano', en: 'The questions that did not cite you' },
-    v: { it: 'diventano il piano dei contenuti del mese dopo', en: 'become next month’s content plan' } },
-  { k: { it: 'La variante che ha funzionato a Torino', en: 'The variant that worked in Turin' },
-    v: { it: 'è il punto di partenza per Milano e Bologna', en: 'is the starting point for Milan and Bologna' } },
-  { k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
-    v: { it: 'è il passo da togliere a chi viene dopo', en: 'is the step to remove for whoever comes next' } },
-  { k: { it: 'La proposta che ha accettato', en: 'The proposal she accepted' },
-    v: { it: 'entra nella classifica che decide per la prossima prospect', en: 'enters the ranking that decides for the next prospect' } },
+  { m: '01', g: 'trovare', k: { it: 'Le domande che non vi citavano', en: 'The questions that did not cite you' },
+    v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility' },
+  { m: '02', g: 'content', k: { it: 'La variante che ha funzionato', en: 'The variant that worked' },
+    v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio' },
+  { m: '04', g: 'engagement', k: { it: 'La proposta che ha accettato', en: 'The offer she accepted' },
+    v: { it: 'Classifica delle proposte', en: 'Offer ranking' }, p: 'Decisioning' },
+  { m: '05', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
+    v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer' },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -184,53 +132,229 @@ const RITORNO = [
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 42%`}></div>
-      <Divisore num={ch.num}
-        tIt="Quello che avete visto, sulla vostra architettura" tEn="What you have just seen, on your architecture" />
+    <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 42%`}></div>
+      <Divisore num={ch.num} tIt="Dove ci innestiamo" tEn="Where we plug in" />
     </Slide>
 
-    {/* ══ LA MAPPA: ACCANTO A CHE COSA (panel del 30 ott 2026, P0) ═══
-        Nessuna slide diceva quali prodotti Adobe la banca ha già, che
-        cosa è nuovo, che cosa è da capire, dove gira ciascuno e che
-        cosa passa su ogni freccia: «una marketecture, non la nostra
-        architettura», e quattro personas su sei ne facevano una
-        condizione. È la domanda fatta il 22 ottobre. Apre gli
-        approfondimenti, ed è la prima cosa che si apre al tavolo
-        tecnico. Le caselle «da confermare» restano tali: l'installato
-        vero si legge dal footprint prima del 5, non si indovina. */}
-    <Slide id="slide-ingaggio-mappa" bg="inverse" align="left">
+    {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con SAS a monte;
+        la freccia giù accende i due componenti Adobe. Ogni componente apre il suo
+        mockup a passi. Le etichette sono HTML accanto ai nodi, l'SVG porta i tratti. */}
+    <Slide id="slide-innesto" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="mappa" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa avete, che cosa si aggiunge, che cosa resta vostro" en="What you have, what gets added, what stays yours" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="SAS e le campagne restano dove sono, e Adobe aggiunge tre componenti" en="SAS and campaigns stay where they are, and Adobe adds three components" />
+        <div class="im-inn">
+          <ol class="im-inn-oggi">
+            {OGGI.map((n, i) => (
+              <li class="im-inn-n" data-forte={n.forte ? '' : null}>
+                <span class="im-inn-t">{n.t}</span>
+                <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />
+                {i > 0 && <svg class="im-inn-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
+              </li>
+            ))}
+          </ol>
 
-        <div class="im-mappa">
-          {MAPPA.map((col) => (
-            <section class="im-mappa-c" data-stato={col.stato}>
-              <T as="p" class="im-mappa-k" it={col.t.it} en={col.t.en} />
-              <ul class="im-mappa-l">
-                {col.v.map((x) => (
-                  <li>
-                    <span class="im-mappa-n">{x.n}</span>
-                    <T as="span" class="im-mappa-d" it={x.d.it} en={x.d.en} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {/* Real-Time CDP per chi non è ancora cliente: il CRM e il CDP che la
+              banca ha già restano sui clienti noti; qui entra il comportamento
+              anonimo, che si unisce al profilo al consenso (10 nov 2026). */}
+          <div class="im-inn-cdp" data-substep>
+            <span class="im-inn-t">Real-Time CDP</span>
+            <T as="span" class="im-inn-d" it="Chi non è ancora cliente, dal primo clic al consenso" en="People who are not yet customers, from first click to consent" />
+          </div>
+
+          <div class="im-inn-dec" data-substep>
+            <svg class="im-inn-cdp-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
+            <div class="im-inn-fili">
+              <span class="im-inn-f"><T as="span" it="score e audience" en="scores and audiences" /></span>
+              <span class="im-inn-f" data-su><T as="span" it="quale proposta" en="which proposal" /></span>
+            </div>
+            <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
+              <span class="im-inn-t">Journey Optimizer · Decisioning</span>
+              <T as="span" class="im-inn-d" it="Parte dagli eventi in tempo reale e sceglie quale proposta esce. L’invio può restare vostro." en="Starts from real-time events and chooses which proposal goes out. Sending can stay yours." />
+              <T as="span" class="im-inn-come" it="Come funziona" en="How it works" />
+            </button>
+            <InnestoPop scena="decisioning" />
+          </div>
+
+          <div class="im-inn-cja" data-substep>
+            <span class="im-inn-f im-inn-f--lungo"><T as="span" it="gli esiti" en="outcomes" /></span>
+            <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="il risultato" en="the result" /></span>
+            <button type="button" class="im-inn-b im-inn-b--largo" data-pp-open aria-haspopup="dialog">
+              <span class="im-inn-t">Customer Journey Analytics</span>
+              <T as="span" class="im-inn-d" it="Legge Adobe Analytics, che avete, più filiale, contact center e CRM" en="Reads Adobe Analytics, which you have, plus branch, contact centre and CRM" />
+              <T as="span" class="im-inn-come" it="Come funziona" en="How it works" />
+            </button>
+            <InnestoPop scena="cja" />
+          </div>
         </div>
 
-        <T as="p" class="im-fonte-riga" it="L’installato è un’ipotesi nostra: le voci «da confermare» si chiudono con il vostro footprint, prima dell’incontro." en="The installed base is our assumption: the “to confirm” items close with your footprint, before the meeting." />
+        <p class="im-fonte-riga">
+          <span data-lang-it>L’architettura attuale è una nostra ipotesi, da correggere con voi. </span><span data-lang-en>The current architecture is our assumption, to correct with you. </span>
+          <a href={DETTAGLI}><span data-lang-it>Dettagli tecnici →</span><span data-lang-en>Technical detail →</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* LE CAPABILITY, una colonna per componente, nell'ordine dello schema.
+        Solo cose documentate su Experience League (link in fondo), lette il
+        10 nov 2026. Ancore, non frasi: il dettaglio lo dà chi parla. */}
+    <Slide id="slide-capacita" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa porta ciascun componente" en="What each component brings" />
+        <ol class="im-capg">
+          {CAPACITA.map((c, i) => (
+            <li class="im-capg-col" data-substep data-k={c.k}>
+              <svg class="im-capg-fig" viewBox="0 0 120 64" aria-hidden="true">
+                {c.k === 'riconosce' && <><circle cx="30" cy="22" r="9" class="tr" /><path d="M14 52c2-11 9-16 16-16s14 5 16 16" class="tr" /><path d="M52 32h16M62 26l6 6-6 6" class="fr" /><circle cx="90" cy="22" r="9" class="ac" /><path d="M74 52c2-11 9-16 16-16s14 5 16 16" class="ac" /></>}
+                {c.k === 'sceglie' && <><rect x="8" y="6" width="34" height="9" rx="2" class="pi" /><rect x="8" y="20" width="34" height="9" rx="2" class="pi" /><rect x="8" y="34" width="34" height="9" rx="2" class="pi" /><rect x="8" y="48" width="34" height="9" rx="2" class="pi" /><path d="M46 10 C62 10 62 31 76 31M46 24 C62 24 62 31 76 31M46 38 C62 38 62 31 76 31M46 52 C62 52 62 31 76 31" class="tr" /><rect x="80" y="23" width="32" height="16" rx="3" class="acf" /></>}
+                {c.k === 'agisce' && <><circle cx="14" cy="32" r="7" class="acf" /><path d="M21 32h22M43 32 C58 32 58 10 74 10M43 32h31M43 32 C58 32 58 54 74 54" class="tr" /><rect x="78" y="3" width="30" height="14" rx="3" class="pi" /><rect x="78" y="25" width="30" height="14" rx="3" class="pi" /><rect x="78" y="47" width="30" height="14" rx="3" class="pi" /></>}
+                {c.k === 'misura' && <><path d="M8 58h104" class="tr" /><rect x="14" y="10" width="16" height="48" rx="2" class="pi" /><rect x="38" y="24" width="16" height="34" rx="2" class="pi" /><rect x="62" y="36" width="16" height="22" rx="2" class="pi" /><rect x="86" y="44" width="16" height="14" rx="2" class="acf" /></>}
+              </svg>
+              <T as="p" class="im-capg-r" it={c.r.it} en={c.r.en} />
+              <p class="im-capg-p">{c.p}</p>
+              <ul>{c.v.map((v) => <T as="li" it={v.it} en={v.en} />)}</ul>
+              <p class="im-capg-g"><T as="span" class="im-capg-gk" it="Per Giulia" en="For Giulia" /><T as="span" it={c.g.it} en={c.g.en} /></p>
+              {i > 0 && <svg class="im-capg-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
+            </li>
+          ))}
+        </ol>
+        <p class="im-fonte-riga">
+          <span data-lang-it>Documentazione: </span><span data-lang-en>Documentation: </span>
+          {DOC.map((d, k) => <>{k > 0 && ' · '}<a href={d.u} target="_blank" rel="noopener">{d.l}</a></>)}
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-unifica" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Customer Journey Analytics legge sito, app, contact center e filiale come un percorso solo" en="Customer Journey Analytics reads site, app, contact centre and branch as one journey" />
+        <div class="im-un">
+          <ul class="im-un-fonti">
+            {FONTI.map((f) => <T as="li" it={f.it} en={f.en} />)}
+          </ul>
+          <div class="im-un-misura" data-substep>
+            <div class="im-un-rami" aria-hidden="true">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                {[10, 30, 50, 70, 90].map((y) => <path d={`M0 ${y} C 55 ${y}, 45 50, 100 50`} />)}
+              </svg>
+            </div>
+            <div class="im-un-hub">
+              <span class="im-un-hub-t">CX Analytics</span>
+              <span class="im-un-hub-d">Customer Journey Analytics</span>
+            </div>
+          </div>
+          <div class="im-un-esito" data-substep>
+            <span class="im-un-ponte" aria-hidden="true"></span>
+            <div class="im-un-pers">
+              <T as="p" class="im-un-pers-t" it="Una persona, dal primo contatto alla firma" en="One person, from first contact to signing" />
+              <ol class="im-un-linea">
+                {TAPPE.map((t) => (
+                  <li><span class="im-un-punto" aria-hidden="true"></span><T as="span" it={t.it} en={t.en} /></li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
+        <p class="im-fonte-riga">
+          <span data-lang-it>Il dato di Adobe Analytics entra senza toccare l’implementazione. Filiale, contact center e CRM entrano se si decide di portarli nel dato. Fonti: </span><span data-lang-en>Adobe Analytics data comes in without touching the implementation. Branch, contact centre and CRM come in if the decision is made to bring them into the data. Sources: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/sources/connectors/adobe-applications/analytics" target="_blank" rel="noopener"><span data-lang-it>il connettore di Analytics</span><span data-lang-en>the Analytics connector</span></a> · <a href="https://business.adobe.com/solutions/cx-analytics.html" target="_blank" rel="noopener">Adobe CX Analytics</a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* I MESSAGGI PER UNA BANCA. Da «CJA Analytics Modernization for FSI», dai business
+        case bancari e dai casi cliente su Field Readiness (10 nov 2026). Il dettaglio
+        Analytics → CJA è negli approfondimenti. */}
+    <Slide id="slide-cja-banca" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro risposte che una banca ottiene da Customer Journey Analytics" en="Four answers a bank gets from Customer Journey Analytics" />
+        <ul class="im-banca">
+          {BANCA.map((b) => (
+            <li class="im-banca-i" data-substep>
+              <FiguraCap segno={b.fig} class="im-banca-fig" />
+              <T as="span" class="im-banca-t" it={b.t.it} en={b.t.en} />
+              <T as="span" class="im-banca-d" it={b.d.it} en={b.d.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-banca-s" it="Si affianca a SAS e al BI che avete, e li lascia dove sono." en="It sits alongside SAS and your BI, and leaves them where they are." />
+        <p class="im-fonte-riga">
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-faq" target="_blank" rel="noopener"><span data-lang-it>Online e offline in Customer Journey Analytics</span><span data-lang-en>Online and offline in Customer Journey Analytics</span></a><span> · </span>
+          <a href={`${href(base, '/approfondimenti')}#slide-passaggio`}><span data-lang-it>Da Adobe Analytics a Customer Journey Analytics →</span><span data-lang-en>From Adobe Analytics to Customer Journey Analytics →</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-attribuzione" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto del digitale arriva in filiale?" en="How much of digital reaches the branch?" />
+        <T as="p" class="im-ado-l" it="Si vede soltanto se la filiale entra nel dato." en="It only shows if the branch is in the data." />
+
+        <div class="im-att">
+          <div class="im-att-r" data-substep>
+            <div class="im-att-e">
+              <T as="span" class="im-att-t" it="Ultimo clic" en="Last click" />
+              <T as="span" class="im-att-d" it="Tutto il peso va a un canale solo" en="One channel gets the credit" />
+            </div>
+            <div class="im-att-barre">
+              {TOCCHI.map((_, i) => i === 4
+                ? <span class="im-att-b" style="--h:100%"></span>
+                : i === 5
+                  ? <T as="span" class="im-att-no" it="Non si vede" en="Not visible" />
+                  : <span></span>)}
+            </div>
+          </div>
+          <div class="im-att-r" data-substep>
+            <div class="im-att-e">
+              <T as="span" class="im-att-t" it="Tutto il percorso" en="The whole journey" />
+              <T as="span" class="im-att-d" it="Il peso si divide fra i canali, filiale compresa" en="The credit is shared, branch included" />
+            </div>
+            <div class="im-att-barre" aria-hidden="true">
+              {PERCORSO.map((h, i) => <span class="im-att-b" style={`--h:${h}%`} data-filiale={i === 5 ? '' : null}></span>)}
+            </div>
+          </div>
+          <div class="im-att-asse">
+            <ol>{TOCCHI.map((t) => <T as="li" it={t.it} en={t.en} />)}</ol>
+          </div>
+        </div>
+
+        <HowItWorks title="Come si misura" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <FiguraCap segno="serie" />
+              <T slot="ancora" as="p" it="Oggi, da verificare" en="Today, to check" />
+              <T slot="riga" as="p" it="Quale modello usate in Adobe Analytics, e su quali canali." en="Which model you use in Adobe Analytics, and on which channels." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="grafo" />
+              <T slot="ancora" as="p" it="I modelli" en="The models" />
+              <T slot="riga" as="p" it="Regolati o algoritmici, con la finestra dichiarata. Si cambiano al report, senza ricaricare." en="Rule-based or algorithmic, with the window stated. Switched at report time, without reloading." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="esito" />
+              <T slot="ancora" as="p" it="La riga della filiale" en="The branch row" />
+              <T slot="riga" as="p" it="Appuntamenti nati online e chiusi allo sportello, richieste firmate, tempo alla delibera." en="Appointments born online and closed at the counter, signed applications, time to approval." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Esempio illustrativo. L’attribuzione non misura quello che succede fuori dai canali osservati. Modelli: </span><span data-lang-en>Illustrative example. Attribution does not measure what happens outside the observed channels. Models: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
+        </p>
       </div>
     </Slide>
 
     <Slide id="slide-motore" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="mappa" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il vostro motore di targeting resta dov’è" en="Your targeting engine stays where it is" />
-        <T as="p" class="im-ado-l" it="Nel pilota l’arbitro entra su chi non è nel CRM, sui canali digitali." en="In the pilot the arbiter comes in on people not in the CRM, on digital channels." />
+        <T as="p" class="im-ado-l" it="Nel pilota l’arbitro entra su chi non è ancora nel CRM. Chi lo segue oggi?" en="In the pilot the arbiter starts with people not yet in the CRM. Who follows them today?" />
 
         {/* Il disegno è l'argomento: tre cose vostre entrano, l'arbitro non
             le rifà, e ne esce una sola. Le parole stanno in HTML, accanto ai
@@ -255,7 +379,7 @@ const RITORNO = [
             <div class="im-arb-n im-arb-n--c">
               <FiguraCap segno="arbitro" class="im-arb-fig" />
               <T as="span" class="im-arb-t" it="L’arbitro" en="The arbiter" />
-              <T as="span" class="im-arb-d" it="sceglie, non ricalcola" en="chooses, does not recalculate" />
+              <T as="span" class="im-arb-d" it="sceglie fra le proposte" en="chooses among the proposals" />
             </div>
           </section>
           <svg class="im-arb-fili" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 150 L100 150" /></svg>
@@ -296,139 +420,6 @@ const RITORNO = [
       </div>
     </Slide>
 
-    {/* ⚠️ LE FRECCE STAVANO SULLA MAPPA, sotto tre colonne, ed è la slide che
-        il team ha chiamato «troppo densa» (Teams, 30 ott 2026). Qui stanno
-        da sole, e accanto hanno la domanda che in una banca viene subito
-        dopo: dove gira e sotto quale contratto. */}
-    <Slide id="slide-integrazioni" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="mappa" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Sei collegamenti, e due si disegnano con voi" en="Six connections, and two get designed with you" />
-        <T as="p" class="im-ado-l" it="Ogni freccia porta un contenuto, un verso e una modalità." en="Each arrow says what passes, in which direction and how." />
-
-        <ul class="im-frecce">
-          {FRECCE.map((f) => (
-            <li class="im-frecce-i" data-aperta={f.aperta ? '' : null}>
-              <span class="im-frecce-da">{f.da}</span><span class="im-frecce-fr" aria-hidden="true">→</span><span class="im-frecce-a">{f.a}</span>
-              <T as="span" class="im-frecce-d" it={f.d.it} en={f.d.en} />
-            </li>
-          ))}
-        </ul>
-
-        <div class="im-csc-conf">
-          <T as="span" class="im-csc-conf-t" it="Dove gira, e sotto quale contratto" en="Where it runs, and under which contract" />
-          <T as="span" class="im-csc-conf-d" it="Experience Platform gira in cloud Adobe, istanza in regione europea; AEM e il CRM di filiale restano dove sono. Il modello contrattuale entra nel vostro registro degli outsourcing con gli addenda DORA di Adobe: la criticità la decidete voi nella vostra analisi d’impatto." en="Experience Platform runs in Adobe’s cloud, instance in a European region; AEM and the branch CRM stay where they are. The contractual model enters your outsourcing register with Adobe’s DORA addenda: criticality is for you to decide, in your own impact analysis." />
-        </div>
-      </div>
-    </Slide>
-
-
-    {/* Il momento 01 ha mostrato l'assistente che la banca c'è o non c'è. Qui si guarda come lo si governa. */}
-    <Slide id="slide-brand-visibility" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="trovare" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come si misura e si corregge il modo in cui comparite" en="How to measure and correct the way you show up" />
-        <T as="p" class="im-ado-l" it="Due strati: prima la misura di come comparite nelle risposte generate, poi l’intervento. Senza il primo il secondo è un’opinione." en="Two layers: first you measure how you show up in generated answers, then you act. Without the first, the second is an opinion." />
-
-        {/* ⚠️ Gli operatori sono COLONNE della griglia, non figli in
-            posizione assoluta che sporgono dalla card: un figlio assoluto
-            con `right` negativo gonfia lo `scrollWidth` del genitore, e
-            il check `c` lo legge come overflow — un HARD. */}
-        <div class="im-bv">
-          {BV.map((c, i) => (
-            <>
-              <section class="im-bv-i" data-strato={c.strato}>
-                <FiguraCap segno={c.fig} />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-              </section>
-              {i < BV.length - 1 && <span class="im-bv-op" aria-hidden="true">{i === 1 ? '=' : '+'}</span>}
-            </>
-          ))}
-        </div>
-
-        <div class="im-bv-strati">
-          <T as="span" class="im-bv-strato" data-strato="segnali" it="Strato dei segnali" en="Signal layer" />
-          <T as="span" class="im-bv-strato" data-strato="ottimizzazioni" it="Strato delle ottimizzazioni" en="Optimisation layer" />
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Capacità verificate sulla documentazione pubblica, 30 ott 2026: </span><span data-lang-en>Capabilities verified on the public documentation, 30 Oct 2026: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener">Adobe Brand Visibility</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/resources/optimize-at-edge/overview" target="_blank" rel="noopener">Optimize at Edge</a>
-        </p>
-      </div>
-    </Slide>
-
-    {/* Secondo approfondimento: la fabbrica di contenuti. Sta DOPO
-        Brand Visibility perché è il blocco successivo nel giro di
-        Giulia — prima vi trovano, poi quello che trovano deve parlare
-        la sua lingua. */}
-    <Slide id="slide-content-factory" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="contenuto" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="La catena del contenuto, dal brief alla misura" en="The content chain, from brief to measurement" />
-        <T as="p" class="im-ado-l" it="Quattro passi di un giro solo. Il tempo di una campagna non se ne va nel produrre: se ne va nell’approvare e nel ricominciare da capo." en="Four steps of one loop. A campaign’s time does not go into producing: it goes into approving, and into starting over." />
-
-        <div class="im-bv im-csc">
-          {CSC.map((c, i) => (
-            <>
-              <section class="im-bv-i">
-                <FiguraCap segno={c.fig} />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-              </section>
-              {i < CSC.length - 1 && <span class="im-bv-op im-csc-op" aria-hidden="true">→</span>}
-            </>
-          ))}
-        </div>
-
-        {/* La riga che per una banca è il punto. */}
-        <div class="im-csc-conf">
-          <T as="span" class="im-csc-conf-t" it="La verifica sta dentro la produzione, non dopo" en="The check lives inside production, not after it" />
-          <T as="span" class="im-csc-conf-d" it="Ogni variante è controllata contro linee guida e informative prima dell’approvazione. Su una campagna di mutuo, è la differenza fra uscire questa settimana e uscire il mese prossimo." en="Every variant is checked against guidelines and disclosures before approval. On a mortgage campaign, it is the difference between launching this week and launching next month." />
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>I quattro passi sono uno schema nostro. La verifica delle varianti è documentata: </span><span data-lang-en>The four steps are our own framing. Variant checking is documented: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio · brand validation</a>
-        </p>
-      </div>
-    </Slide>
-
-    {/* ── Ingaggiare il cliente, in tre tempi ──────────────────────── */}
-    <Slide id="slide-ingaggio-ciclo" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="ingaggio" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro componenti di un ciclo che si chiude" en="Four components of a loop that closes" />
-
-        <ul class="im-ciclo">
-          {CICLO.map((c) => (
-            <li class="im-ciclo-i">
-              <div class="im-ciclo-su">
-                <span class="im-ciclo-n">{c.n}</span>
-                <FiguraCap segno={c.fig} class="im-ciclo-fig" />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-                <a class="im-apri" href={`${DETTAGLI}#${c.ancora}`}><span data-lang-it>Apri il dettaglio →</span><span data-lang-en>Open the detail →</span></a>
-              </div>
-              <T as="p" class="im-ciclo-giu" it={c.i.it} en={c.i.en} />
-            </li>
-          ))}
-        </ul>
-        <T as="p" class="im-ciclo-base" it="Sotto tutti e quattro, Adobe Experience Platform." en="Beneath all four, Adobe Experience Platform." />
-        <p class="im-fonte-riga">
-          <span data-lang-it>La riga verde è quello che succederebbe nel vostro perimetro, e va confermata con voi. </span><span data-lang-en>The green line is what would happen inside your perimeter, and is to be confirmed with you. </span>
-          <a href={`${DETTAGLI}#slide-ingaggio-casi`}><span data-lang-it>Quattro casi d’uso →</span><span data-lang-en>Four use cases →</span></a>
-        </p>
-      </div>
-    </Slide>
-
     {/* ⚠️ ERANO UN CAPITOLO DI TRE SLIDE, «Il circolo». Il team ha chiesto
         di capire se tenerlo, o di assorbirlo (Teams, 30 ott 2026). Le due
         slide dicevano in parte la stessa cosa: le tre voci della «prospect
@@ -437,35 +428,29 @@ const RITORNO = [
     <Slide id="slide-ritorno" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <RailTerra attivo="giro" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa il percorso di Giulia lascia a lei, e alla prospect successiva" en="What Giulia’s journey leaves to her, and to the next prospect" />
-        <T as="p" class="im-ado-l" it="Sono cose che il mese dopo non si ricostruiscono a mano: arrivano nel piano dei contenuti, nel brief, nel percorso e nella classifica dell’arbitro." en="These are things nobody rebuilds by hand a month later: they land in the content plan, in the brief, in the journey and in the arbiter’s ranking." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia rende più facile il prossimo cliente" en="What Giulia teaches makes the next customer easier" />
 
-        <div class="im-giro">
-          <section class="im-giro-c">
-            <T as="p" class="im-fronte-t" it="La prospect successiva" en="The next prospect" />
-            <ul class="im-rit">
-              {RITORNO.map((r) => (
-                <li class="im-rit-i">
-                  <span class="im-rit-f" aria-hidden="true"></span>
-                  <T as="span" class="im-rit-k" it={r.k.it} en={r.k.en} />
-                  <T as="span" class="im-rit-v" it={r.v.it} en={r.v.en} />
-                </li>
-              ))}
-            </ul>
-          </section>
-          <section class="im-fronte im-giro-c" data-chi="lei">
-            <T as="p" class="im-fronte-t" it="Giulia, da cliente" en="Giulia, as a customer" />
-            <ul class="im-fronte-l">
-              <li><T as="span" it="La polizza casa quando trasloca, non a dicembre" en="Home cover when she moves, not in December" /></li>
-              <li><T as="span" it="Il conto per la famiglia quando cambia il nucleo" en="A family account when the household changes" /></li>
-              <li><T as="span" it="Una politica di contatto che vale su tutti i canali" en="A contact policy that holds across every channel" /></li>
-            </ul>
-            <T as="p" class="im-giro-n" it="Le proposte del vostro motore entrano come candidate, con l’eleggibilità dal core: è il secondo giro, dopo il primo trimestre." en="Your engine’s proposals come in as candidates, with eligibility from the core: the second loop, after the first quarter." />
-          </section>
+        <div class="im-rt">
+          <div class="im-rt-testa" aria-hidden="true">
+            <T as="span" it="Si impara da Giulia" en="Learned from Giulia" />
+            <span></span>
+            <T as="span" it="Torna per il prossimo" en="Feeds the next one" />
+          </div>
+          <ol class="im-rt-l">
+            {RITORNO.map((r) => (
+              <li class="im-rt-i" data-substep data-g={r.g}>
+                <span class="im-rt-m">{r.m}</span>
+                <T as="span" class="im-rt-k" it={r.k.it} en={r.k.en} />
+                <svg class="im-rt-fr" viewBox="0 0 60 14" aria-hidden="true"><path d="M1 7h56M51 1l6 6-6 6" /></svg>
+                <span class="im-rt-v"><T as="strong" it={r.v.it} en={r.v.en} /><small>{r.p}</small></span>
+              </li>
+            ))}
+          </ol>
+          <div class="im-rt-dopo" data-substep>
+            <T as="p" class="im-rt-dk" it="E Giulia, da cliente" en="And Giulia, as a customer" />
+            <T as="p" class="im-rt-dv" it="Polizza casa al trasloco · conto famiglia · una sola politica di contatto" en="Home cover when she moves · family account · one contact policy" />
+          </div>
         </div>
-
-        <T as="p" class="im-ado-sott" it="Acquisire costa. Quello che viene dopo è margine, e dipende da quanto bene è andato il primo giro." en="Acquisition costs. What follows is margin, and it depends on how well the first loop went." />
       </div>
     </Slide>
 
